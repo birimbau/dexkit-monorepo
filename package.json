@@ -1,14 +1,15 @@
 {
-  "name": "test-turbo",
+  "name": "dexkit-monorepo",
   "version": "0.0.0",
   "private": true,
   "workspaces": [
-    "apps/*",
     "packages/*"
   ],
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev --parallel",
+    "storybook": "turbo run storybook",
+    "bundle:widgets": "turbo run bundle:widgets",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },

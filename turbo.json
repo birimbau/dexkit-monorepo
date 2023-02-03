@@ -3,10 +3,15 @@
   "pipeline": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": ["dist/**", ".next/**"]
+      "outputs": ["dist/**"],
+      "cache": false
     },
     "lint": {
       "outputs": []
+    },
+    "storybook": {},
+    "bundle:widgets": {
+      "cache": false
     },
     "dev": {
       "cache": false
