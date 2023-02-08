@@ -11,7 +11,10 @@ import { metaMask } from "../connectors";
 import { MagicLoginType } from "../connectors/magic";
 import { CONNECTORS, WRAPED_TOKEN_ADDRESS } from "../constants";
 import { ERC20Abi, WETHAbi } from "../constants/abis";
+import { ChainId } from "../constants/enum";
+import { getPricesByChain, getTokensBalance } from "../services";
 import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "../services/zeroex/constants";
+import { Token } from "../types";
 import { isAddressEqual } from "../utils";
 
 export function useOrderedConnectors() {
@@ -227,7 +230,7 @@ export const TOKEN_BALANCE = "TOKEN_BALANCE";
 export interface TokenBalanceParams {
   account?: string;
   contractAddress?: string;
-  provider?: ethers.providers.Web3Provider;
+  provider?: ethers.providers.BaseProvider;
 }
 
 export function useTokenBalance({
@@ -247,5 +250,51 @@ export function useTokenBalance({
     const contract = new ethers.Contract(contractAddress, ERC20Abi, provider);
 
     return (await contract.balanceOf(account)) as BigNumber;
+  });
+}
+
+export const MULTI_TOKEN_BALANCE_QUERY = "MULTI_TOKEN_BALANCE_QUERY";
+
+export function useMultiTokenBalance({
+  tokens,
+  account,
+  provider,
+}: {
+  account?: string;
+  tokens?: Token[];
+  provider?: ethers.providers.BaseProvider;
+}) {
+  const enabled = Boolean(tokens && provider && account);
+
+  return useQuery(
+    [MULTI_TOKEN_BALANCE_QUERY, tokens, account],
+    async () => {
+      if (!tokens || !provider || !account) {
+        return;
+      }
+
+      return await getTokensBalance(tokens, provider, account);
+    },
+    { enabled: enabled }
+  );
+}
+
+export const COIN_PRICES_QUERY = "";
+
+export function useCoinPrices({
+  currency,
+  tokens,
+  chainId,
+}: {
+  tokens?: Token[];
+  chainId?: ChainId;
+  currency?: string;
+}) {
+  return useQuery([COIN_PRICES_QUERY, chainId, tokens, currency], async () => {
+    if (!chainId || !tokens || !currency) {
+      return;
+    }
+
+    return await getPricesByChain(chainId, tokens, currency);
   });
 }

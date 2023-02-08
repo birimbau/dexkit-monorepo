@@ -1,23 +1,52 @@
 import { Grid } from "@mui/material";
 import { ComponentMeta, ComponentStory } from "@storybook/react";
 import { useWeb3React } from "@web3-react/core";
+import { useMemo, useState } from "react";
 import DexkitContextProvider from "../../src/components/DexkitContextProvider";
+import { GET_NATIVE_TOKEN } from "../../src/constants";
+import { ChainId } from "../../src/constants/enum";
+import { usePlatformCoinSearch } from "../../src/hooks/api";
+import { apiCoinToTokens } from "../../src/utils/api";
+import SwapConfirmDialog from "../../src/widgets/swap/dialogs/SwapConfirmDialog";
 import {
   useErc20ApproveMutation,
   useSwapExec,
+  useSwapProvider,
   useSwapState,
 } from "../../src/widgets/swap/hooks";
 import Swap, { SwapProps } from "../../src/widgets/swap/Swap";
 import SwapSelectCoinDialog from "../../src/widgets/swap/SwapSelectCoinDialog";
-import { TEST_TOKENS } from "../SelectCoinList/constants";
 
 const Component = ({ args }: { args: SwapProps }) => {
-  const { provider, connector, account } = useWeb3React();
+  const { provider, connector, account, isActive, isActivating } =
+    useWeb3React();
 
   const execSwapMutation = useSwapExec();
+
+  const [selectedChainId, setSelectedChainId] = useState<ChainId>(
+    ChainId.Ethereum
+  );
+
+  const swapProvider = useSwapProvider({
+    provider,
+    defaultChainId: selectedChainId,
+  });
+
   const approveMutation = useErc20ApproveMutation({});
 
+  const [query, setQuery] = useState("");
+
+  const searchQuery = usePlatformCoinSearch({
+    keyword: query,
+    network: "ethereum",
+  });
+
+  const handleChangeSelectedNetwork = (chainId: ChainId) => {
+    setSelectedChainId(chainId);
+  };
+
   const {
+    chainId,
     buyToken,
     sellToken,
     showSelect,
@@ -29,6 +58,7 @@ const Component = ({ args }: { args: SwapProps }) => {
     buyTokenBalance,
     sellTokenBalance,
     insufficientBalance,
+    showConfirmSwap,
     handleConnectWallet,
     handleOpenSelectToken,
     handleSwapTokens,
@@ -36,31 +66,80 @@ const Component = ({ args }: { args: SwapProps }) => {
     handleChangeSellAmount,
     handleChangeBuyAmount,
     handleExecSwap,
+    handleConfirmExecSwap,
+    handleCloseSelectToken,
+    handleCloseConfirmSwap,
+    handleChangeNetwork,
   } = useSwapState({
     execMutation: execSwapMutation,
     approveMutation,
-    provider,
+    provider: swapProvider,
+    onChangeNetwork: handleChangeSelectedNetwork,
     connector,
     account,
+    isActive,
+    isActivating,
   });
 
-  const handleQueryChange = (value: string) => {};
+  const tokens = useMemo(() => {
+    if (searchQuery.data && chainId) {
+      let tokens = [
+        GET_NATIVE_TOKEN(chainId),
+        ...apiCoinToTokens(searchQuery.data),
+      ];
 
-  const { isActive } = useWeb3React();
+      if (query !== "") {
+        tokens = tokens.filter(
+          (c) =>
+            c.name.toLowerCase().search(query?.toLowerCase()) > -1 ||
+            c.symbol.toLowerCase().search(query?.toLowerCase()) > -1 ||
+            c.contractAddress.toLowerCase().search(query?.toLowerCase()) > -1
+        );
+      }
+
+      return tokens;
+    }
+
+    return [];
+  }, [searchQuery.data, chainId, query]);
+
+  const handleQueryChange = (value: string) => setQuery(value);
 
   return (
     <>
-      <SwapSelectCoinDialog
-        tokens={TEST_TOKENS}
-        onQueryChange={handleQueryChange}
-        onSelect={handleSelectToken}
-        DialogProps={{ open: showSelect, maxWidth: "sm", fullWidth: true }}
+      {chainId && (
+        <SwapSelectCoinDialog
+          tokens={tokens}
+          onQueryChange={handleQueryChange}
+          onSelect={handleSelectToken}
+          DialogProps={{
+            open: showSelect,
+            maxWidth: "sm",
+            fullWidth: true,
+            onClose: handleCloseSelectToken,
+          }}
+          account={account}
+          provider={swapProvider}
+        />
+      )}
+
+      <SwapConfirmDialog
+        DialogProps={{
+          open: showConfirmSwap,
+          maxWidth: "xs",
+          fullWidth: true,
+          onClose: handleCloseConfirmSwap,
+        }}
+        quote={quote}
+        onConfirm={handleConfirmExecSwap}
+        chainId={chainId}
       />
 
       <Grid container spacing={2} justifyContent="center">
         <Grid item xs={12} sm={3}>
           <Swap
             {...args}
+            chainId={chainId}
             isActive={isActive}
             buyToken={buyToken}
             sellToken={sellToken}
@@ -79,6 +158,7 @@ const Component = ({ args }: { args: SwapProps }) => {
             sellTokenBalance={sellTokenBalance}
             insufficientBalance={insufficientBalance}
             buyTokenBalance={buyTokenBalance}
+            onChangeNetwork={handleChangeNetwork}
           />
         </Grid>
       </Grid>

@@ -1,3 +1,4 @@
+import { TokenBalances } from "@indexed-finance/multicall";
 import TipsAndUpdates from "@mui/icons-material/TipsAndUpdates";
 
 import { Box, List, Stack, Typography } from "@mui/material";
@@ -11,9 +12,14 @@ import SelectCoinListItem from "./SelectCoinListItem";
 export interface SelectCoinListProps {
   tokens: Token[];
   onSelect: (token: Token) => void;
+  tokenBalances?: TokenBalances;
 }
 
-function SelectCoinList({ tokens, onSelect }: SelectCoinListProps) {
+function SelectCoinList({
+  tokens,
+  onSelect,
+  tokenBalances,
+}: SelectCoinListProps) {
   if (tokens.length === 0) {
     return (
       <Box py={2}>
@@ -38,7 +44,12 @@ function SelectCoinList({ tokens, onSelect }: SelectCoinListProps) {
   return (
     <List disablePadding>
       {tokens.map((token: Token, index: number) => (
-        <SelectCoinListItem key={index} token={token} onSelect={onSelect} />
+        <SelectCoinListItem
+          key={index}
+          token={token}
+          onSelect={onSelect}
+          tokenBalances={tokenBalances}
+        />
       ))}
     </List>
   );

@@ -1,5 +1,6 @@
 import { BigNumber } from "ethers";
 import React from "react";
+import { ChainId } from "../../constants/enum";
 import { ZeroExQuoteResponse } from "../../services/zeroex/types";
 import { Token } from "../../types";
 
@@ -11,8 +12,10 @@ export type SwapSide = "sell" | "buy";
 export type ExecType = "swap" | "wrap" | "unwrap" | "approve" | "quote";
 
 export type SwapState = {
-  buyToken: Token | undefined;
-  sellToken: Token | undefined;
+  chainId?: ChainId;
+  buyToken?: Token;
+  sellToken?: Token;
+  showConfirmSwap: boolean;
   showSelect: boolean;
   selectSide: SwapSide | undefined;
   sellAmount: BigNumber;
@@ -39,4 +42,8 @@ export type SwapState = {
   handleChangeBuyAmount: (value: BigNumber) => void;
   handleSwapTokens: () => void;
   handleExecSwap: () => void;
+  handleCloseSelectToken: () => void;
+  handleCloseConfirmSwap: () => void;
+  handleConfirmExecSwap: () => void;
+  handleChangeNetwork: (chainId: ChainId) => void;
 };

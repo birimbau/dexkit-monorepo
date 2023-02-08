@@ -4,7 +4,8 @@ import {
   Card,
   CardContent,
   CircularProgress,
-  Typography,
+  Divider,
+  IconButton,
 } from "@mui/material";
 import { Stack } from "@mui/system";
 import { BigNumber, providers } from "ethers";
@@ -14,13 +15,15 @@ import SwapTokenField from "./SwapCurrencyField";
 import SwapSwitchTokensButton from "./SwapSwitchTokensButton";
 import { ExecType, SwapSide } from "./types";
 
+import SettingsIcon from "@mui/icons-material/Settings";
 import WalletIcon from "@mui/icons-material/Wallet";
-import { useMemo } from "react";
+import SwitchNetworkSelect from "../../components/SwitchNetworkSelect";
+import { ChainId } from "../../constants/enum";
 import { ZeroExQuoteResponse } from "../../services/zeroex/types";
-import { formatBigNumber } from "../../utils";
+import SwapFeeSummary from "./SwapFeeSummary";
 
 export interface SwapProps {
-  chainId?: number;
+  chainId?: ChainId;
   currency?: string;
   provider?: providers.Web3Provider;
   account?: string;
@@ -43,6 +46,7 @@ export interface SwapProps {
   onChangeSellAmount: (value: BigNumber) => void;
   onChangeBuyAmount: (value: BigNumber) => void;
   onConnectWallet: () => void;
+  onChangeNetwork: (chanId: ChainId) => void;
   onExec: () => void;
 }
 
@@ -66,6 +70,7 @@ export default function Swap({
   onChangeSellAmount,
   onChangeBuyAmount,
   onConnectWallet,
+  onChangeNetwork,
   onExec,
 }: SwapProps) {
   const handleSelectSellToken = (token?: Token) => {
@@ -75,18 +80,6 @@ export default function Swap({
   const handleSelectBuyToken = (token?: Token) => {
     onSelectToken("buy", token);
   };
-
-  const maxFee = useMemo(() => {
-    if (quote) {
-      return BigNumber.from(quote.gas)
-        .mul(quote.gasPrice)
-        .add(BigNumber.from(quote.value));
-    }
-
-    return BigNumber.from(0);
-  }, [quote]);
-
-  console.log("maxFee", maxFee);
 
   const renderExecuteButton = () => {
     if (insufficientBalance) {
@@ -112,6 +105,25 @@ export default function Swap({
 
   return (
     <Card>
+      <Box sx={{ p: 2 }}>
+        <Stack
+          direction="row"
+          alignItems="center"
+          justifyContent="space-between"
+          spacing={2}
+        >
+          <SwitchNetworkSelect
+            chainId={chainId}
+            onChangeNetwork={onChangeNetwork}
+            SelectProps={{ size: "small" }}
+          />
+
+          <IconButton size="small">
+            <SettingsIcon />
+          </IconButton>
+        </Stack>
+      </Box>
+      <Divider />
       <CardContent>
         <Stack spacing={2}>
           <Stack>
@@ -145,14 +157,7 @@ export default function Swap({
             />
           </Stack>
           {execType === "swap" && quote && (
-            <Stack spacing={2} direction="row" justifyContent="space-between">
-              <Typography>
-                <FormattedMessage id="gas.price" defaultMessage="Gas Price" />
-              </Typography>
-              <Typography color="text.secondary">
-                {maxFee && formatBigNumber(maxFee, 18)}
-              </Typography>
-            </Stack>
+            <SwapFeeSummary quote={quote} chainId={chainId} />
           )}
           {isActive ? (
             <Button

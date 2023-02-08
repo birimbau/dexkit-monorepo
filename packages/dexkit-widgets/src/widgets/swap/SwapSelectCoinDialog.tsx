@@ -6,10 +6,12 @@ import {
   Divider,
   Stack,
 } from "@mui/material";
+import { providers } from "ethers";
 import { FormattedMessage } from "react-intl";
 import AppDialogTitle from "../../components/AppDialogTitle";
 import SearchTextField from "../../components/SearchTextField";
 import SelectCoinList from "../../components/SelectCoinList";
+import { useMultiTokenBalance } from "../../hooks";
 import { Token } from "../../types";
 
 export interface SwapSelectCoinDialogProps {
@@ -17,11 +19,15 @@ export interface SwapSelectCoinDialogProps {
   onQueryChange: (value: string) => void;
   onSelect: (token: Token) => void;
   tokens: Token[];
+  account?: string;
+  provider?: providers.BaseProvider;
 }
 
 export default function SwapSelectCoinDialog({
   DialogProps,
   tokens,
+  account,
+  provider,
   onSelect,
   onQueryChange,
 }: SwapSelectCoinDialogProps) {
@@ -32,6 +38,8 @@ export default function SwapSelectCoinDialog({
       onClose({}, "backdropClick");
     }
   };
+
+  const tokenBalances = useMultiTokenBalance({ tokens, account, provider });
 
   return (
     <Dialog {...DialogProps} onClose={handleClose}>
@@ -51,7 +59,11 @@ export default function SwapSelectCoinDialog({
             />
           </Box>
           <Divider />
-          <SelectCoinList tokens={tokens} onSelect={onSelect} />
+          <SelectCoinList
+            tokens={tokens}
+            onSelect={onSelect}
+            tokenBalances={tokenBalances.data}
+          />
         </Stack>
       </DialogContent>
     </Dialog>
