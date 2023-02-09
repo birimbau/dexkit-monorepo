@@ -9,11 +9,16 @@ import { useMemo } from "react";
 import { useOrderedConnectors } from "../hooks";
 import { showConnectWalletAtom } from "./atoms";
 
+import { ThemeProvider } from "@emotion/react";
+import { Theme } from "@mui/material";
+import { DEFAULT_THEME } from "../constants/theme";
 import { getConnectorName } from "../utils";
 
 export interface DexkitContextProviderProps {
   children: React.ReactNode | React.ReactNode[];
   renderDialogs?: () => React.ReactNode | React.ReactNode[];
+  locale?: string;
+  theme?: Theme;
 }
 
 const queryClient = new QueryClient();
@@ -21,6 +26,8 @@ const queryClient = new QueryClient();
 export default function DexkitContextProvider({
   children,
   renderDialogs,
+  locale,
+  theme,
 }: DexkitContextProviderProps) {
   const connectors = useOrderedConnectors();
 
@@ -40,24 +47,26 @@ export default function DexkitContextProvider({
 
   return (
     <QueryClientProvider client={queryClient}>
-      <IntlProvider locale="en" defaultLocale="en">
-        <SnackbarProvider
-          anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
-          maxSnack={3}
-        >
-          <Web3ReactProvider connectors={connectors} key={key}>
-            <ConnectWalletDialog
-              DialogProps={{
-                open: showConnectWallet,
-                maxWidth: "sm",
-                fullWidth: true,
-                onClose: handleCloseConnectWallet,
-              }}
-            />
-            {renderDialogs ? renderDialogs() : null}
-            {children}
-          </Web3ReactProvider>
-        </SnackbarProvider>
+      <IntlProvider locale={locale ? locale : "en"} defaultLocale="en">
+        <ThemeProvider theme={theme ? theme : DEFAULT_THEME}>
+          <SnackbarProvider
+            anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+            maxSnack={3}
+          >
+            <Web3ReactProvider connectors={connectors} key={key}>
+              <ConnectWalletDialog
+                DialogProps={{
+                  open: showConnectWallet,
+                  maxWidth: "sm",
+                  fullWidth: true,
+                  onClose: handleCloseConnectWallet,
+                }}
+              />
+              {renderDialogs ? renderDialogs() : null}
+              {children}
+            </Web3ReactProvider>
+          </SnackbarProvider>
+        </ThemeProvider>
       </IntlProvider>
     </QueryClientProvider>
   );

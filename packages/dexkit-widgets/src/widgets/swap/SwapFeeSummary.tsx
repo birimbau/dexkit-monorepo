@@ -92,22 +92,14 @@ export default function SwapFeeSummary({
           </Typography>
           <Typography color="text.secondary">
             <>
-              {formatBigNumber(totalFee, 18)} {NETWORK_SYMBOL(chainId)}
+              <FormattedNumber
+                currencyDisplay="narrowSymbol"
+                style="currency"
+                value={totalFiat}
+                currency={currency}
+              />{" "}
+              ({formatBigNumber(totalFee, 18)} {NETWORK_SYMBOL(chainId)})
             </>
-          </Typography>
-        </Stack>
-
-        <Stack spacing={2} direction="row" justifyContent="space-between">
-          <Typography>
-            <FormattedMessage id="total.fiat" defaultMessage="Total fiat" />
-          </Typography>
-          <Typography color="text.secondary">
-            <FormattedNumber
-              currencyDisplay="narrowSymbol"
-              style="currency"
-              value={totalFiat}
-              currency={currency}
-            />
           </Typography>
         </Stack>
       </Stack>

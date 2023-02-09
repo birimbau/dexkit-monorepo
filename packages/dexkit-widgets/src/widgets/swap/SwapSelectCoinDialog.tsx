@@ -11,8 +11,10 @@ import { FormattedMessage } from "react-intl";
 import AppDialogTitle from "../../components/AppDialogTitle";
 import SearchTextField from "../../components/SearchTextField";
 import SelectCoinList from "../../components/SelectCoinList";
-import { useMultiTokenBalance } from "../../hooks";
+import { ChainId } from "../../constants/enum";
+import { useAsyncMemo, useMultiTokenBalance } from "../../hooks";
 import { Token } from "../../types";
+import SwapFeaturedTokens from "./SwapFeaturedTokens";
 
 export interface SwapSelectCoinDialogProps {
   DialogProps: DialogProps;
@@ -41,6 +43,18 @@ export default function SwapSelectCoinDialog({
 
   const tokenBalances = useMultiTokenBalance({ tokens, account, provider });
 
+  const chainId = useAsyncMemo<ChainId | undefined>(
+    async (initial?: ChainId) => {
+      if (provider) {
+        return (await provider?.getNetwork()).chainId;
+      }
+
+      return initial;
+    },
+    undefined,
+    [provider]
+  );
+
   return (
     <Dialog {...DialogProps} onClose={handleClose}>
       <AppDialogTitle
@@ -58,6 +72,7 @@ export default function SwapSelectCoinDialog({
               TextFieldProps={{ fullWidth: true }}
             />
           </Box>
+          <SwapFeaturedTokens onSelect={onSelect} chainId={chainId} />
           <Divider />
           <SelectCoinList
             tokens={tokens}
