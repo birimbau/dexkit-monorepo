@@ -2,13 +2,15 @@
   "name": "@dexkit/widgets",
   "version": "0.0.0",
   "license": "MIT",
-  "main": "src/index.tsx",
-  "typings": "src/index.tsx",
+  "main": "dist/index.js",
+  "typings": "src/index.d.ts",
   "scripts": {
     "lint": "TIMING=1 eslint \"**/*.ts*\"",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
-    "bundle:widgets": "rollup -c rollup.config.js"
+    "build": "tsup src/index.tsx --format cjs --dts",
+    "bundle:widgets": "rollup -c rollup.config.js",
+    "install": "yarn run build"
   },
   "devDependencies": {
     "@babel/core": "^7.20.12",
