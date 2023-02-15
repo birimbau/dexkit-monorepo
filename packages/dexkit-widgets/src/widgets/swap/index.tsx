@@ -10,9 +10,9 @@ import { apiCoinToTokens } from "../../utils/api";
 import SwapConfirmDialog from "./dialogs/SwapConfirmDialog";
 import SwapSettingsDialog from "./dialogs/SwapSettingsDialog";
 
-declare global {
-  function renderSwapWidget(id: string, options: RenderOptions): void;
-}
+// declare global {
+//   function renderSwapWidget(id: string, options: RenderOptions): void;
+// }
 
 import {
   useErc20ApproveMutation,
