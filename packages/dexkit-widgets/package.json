@@ -2,8 +2,8 @@
   "name": "@dexkit/widgets",
   "version": "0.0.0",
   "license": "MIT",
-  "main": "src/index.ts",
-  "typings": "src/index.ts",
+  "main": "src/index.tsx",
+  "typings": "src/index.tsx",
   "scripts": {
     "lint": "TIMING=1 eslint \"**/*.ts*\"",
     "storybook": "start-storybook -p 6006",
