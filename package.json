@@ -6,6 +6,7 @@
     "packages/*"
   ],
   "scripts": {
+    "prepare": "turbo run build",
     "build": "turbo run build",
     "dev": "turbo run dev --parallel",
     "storybook": "turbo run storybook",
