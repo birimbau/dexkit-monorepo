@@ -8,7 +8,6 @@
     "lint": "TIMING=1 eslint \"**/*.ts*\"",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
-    "build": "tsup src/index.ts --format cjs --dts",
     "bundle:widgets": "rollup -c rollup.config.js"
   },
   "devDependencies": {
