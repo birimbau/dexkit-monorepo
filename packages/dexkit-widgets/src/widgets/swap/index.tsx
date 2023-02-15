@@ -2,8 +2,6 @@ import Swap from "./Swap";
 
 import { useWeb3React } from "@web3-react/core";
 import { useMemo, useState } from "react";
-import { createRoot } from "react-dom/client";
-import DexkitContextProvider from "../../components/DexkitContextProvider";
 import { GET_NATIVE_TOKEN } from "../../constants";
 import { ChainId } from "../../constants/enum";
 import { NETWORKS } from "../../constants/networks";
@@ -223,28 +221,28 @@ export function SwapWidget({
   );
 }
 
-globalThis.renderSwapWidget = function renderSwapWidget(
-  id: string,
-  options: RenderOptions
-) {
-  const container = document.getElementById(id);
+// globalThis.renderSwapWidget = function renderSwapWidget(
+//   id: string,
+//   options: RenderOptions
+// ) {
+//   const container = document.getElementById(id);
 
-  const root = createRoot(container!); // createRoot(container!) if you use TypeScript
+//   const root = createRoot(container!); // createRoot(container!) if you use TypeScript
 
-  root.render(
-    <DexkitContextProvider>
-      {({
-        handleNotification,
-        handleConnectWallet,
-        handleShowTransactions,
-      }) => (
-        <SwapWidget
-          renderOptions={options}
-          onNotification={handleNotification}
-          onConnectWallet={handleConnectWallet}
-          onShowTransactions={handleShowTransactions}
-        />
-      )}
-    </DexkitContextProvider>
-  );
-};
+//   root.render(
+//     <DexkitContextProvider>
+//       {({
+//         handleNotification,
+//         handleConnectWallet,
+//         handleShowTransactions,
+//       }) => (
+//         <SwapWidget
+//           renderOptions={options}
+//           onNotification={handleNotification}
+//           onConnectWallet={handleConnectWallet}
+//           onShowTransactions={handleShowTransactions}
+//         />
+//       )}
+//     </DexkitContextProvider>
+//   );
+// };
