@@ -5,10 +5,14 @@ import { ChainId } from "./enum";
 import ethereumIcon from "../../assets/icons/networks/ethereum.png";
 // @ts-ignore
 import polygonIcon from "../../assets/icons/networks/polygon.png";
-
-export const RPC_PROVIDER_URLS = {
-  [ChainId.Ethereum]: "",
-};
+// @ts-ignore
+import avaxIcon from "../../assets/icons/networks/avax.png";
+// @ts-ignore
+import bnbIcon from "../../assets/icons/networks/bnb.svg";
+// @ts-ignore
+import optimismIcon from "../../assets/icons/networks/optimism.svg";
+// @ts-ignore
+import fantomIcon from "../../assets/icons/networks/fantom.png";
 
 export const NETWORKS: { [key: number]: Network } = {
   [ChainId.Ethereum]: {
@@ -53,6 +57,7 @@ export const NETWORKS: { [key: number]: Network } = {
     coingeckoPlatformId: "binancecoin",
     wrappedAddress: "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c",
     providerRpcUrl: "https://bscrpc.com",
+    imageUrl: bnbIcon,
   },
 
   [ChainId.Avax]: {
@@ -64,6 +69,7 @@ export const NETWORKS: { [key: number]: Network } = {
     coingeckoPlatformId: "avalanche-2",
     wrappedAddress: "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7",
     providerRpcUrl: "https://api.avax.network/ext/bc/C/rpc",
+    imageUrl: avaxIcon,
   },
   [ChainId.Fantom]: {
     chainId: ChainId.Fantom,
@@ -73,7 +79,7 @@ export const NETWORKS: { [key: number]: Network } = {
     slug: "fantom",
     coingeckoPlatformId: "fantom",
     wrappedAddress: "0x21be370D5312f44cB42ce377BC9b8a0cEF1A4C83",
-    // imageUrl: fantomIcon.src,
+    imageUrl: fantomIcon,
     providerRpcUrl: "https://rpc.ftm.tools",
   },
   [ChainId.Optimism]: {
@@ -84,7 +90,7 @@ export const NETWORKS: { [key: number]: Network } = {
     slug: "optimism",
     coingeckoPlatformId: "ethereum",
     wrappedAddress: "0x4200000000000000000000000000000000000006",
-    // imageUrl: optimismIcon.src,
+    imageUrl: optimismIcon,
     providerRpcUrl: "https://mainnet.optimism.io",
   },
 
@@ -96,11 +102,11 @@ export const NETWORKS: { [key: number]: Network } = {
     slug: "goerli",
     coingeckoPlatformId: "ethereum",
     wrappedAddress: "0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6",
-    // imageUrl: optimismIcon.src,
+    imageUrl: ethereumIcon,
     providerRpcUrl: "https://endpoints.omniatech.io/v1/eth/goerli/public",
     testnet: process.env.NODE_ENV !== "development",
   },
 };
 
 export const NETWORK_SYMBOL = (chainId?: ChainId) =>
-  chainId ? NETWORKS[chainId].symbol : undefined;
+  chainId && NETWORKS[chainId] ? NETWORKS[chainId].symbol : undefined;

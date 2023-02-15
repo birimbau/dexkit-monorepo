@@ -18,6 +18,7 @@ export const CONNECTORS: { [key: string]: [Connector, Web3ReactHooks] } = {
 
 export const WRAPED_TOKEN_ADDRESS: { [key: number]: string } = {
   [ChainId.Goerli]: "0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6",
+  [ChainId.Polygon]: "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270",
 };
 
 export function TOKEN_ICON_URL(addr: string, chainId?: ChainId) {
@@ -65,9 +66,49 @@ export const ETHEREUM_TOKEN: Token = {
   decimals: 18,
 };
 
+export const BNB_TOKEN: Token = {
+  chainId: ChainId.BSC,
+  contractAddress: ZEROEX_NATIVE_TOKEN_ADDRESS,
+  name: "BNB",
+  symbol: "BNB",
+  coingeckoId: "binance-smart-chain",
+  decimals: 18,
+};
+
+export const MATIC_TOKEN: Token = {
+  chainId: ChainId.Polygon,
+  contractAddress: ZEROEX_NATIVE_TOKEN_ADDRESS,
+  name: "Matic",
+  symbol: "MATIC",
+  coingeckoId: "matic-network",
+  decimals: 18,
+};
+
+export const FANTOM_TOKEN: Token = {
+  chainId: ChainId.Fantom,
+  contractAddress: ZEROEX_NATIVE_TOKEN_ADDRESS,
+  name: "Fantom",
+  symbol: "FTM",
+  coingeckoId: "fantom",
+  decimals: 18,
+};
+
+export const OPTIMISM_TOKEN: Token = {
+  chainId: ChainId.Optimism,
+  contractAddress: ZEROEX_NATIVE_TOKEN_ADDRESS,
+  name: "Optimism",
+  symbol: "ETH",
+  coingeckoId: "optimism",
+  decimals: 18,
+};
+
 export const NATIVE_TOKENS: { [key: number]: Token } = {
   [ChainId.Goerli]: GOERLI_ETHEREUM_TOKEN,
   [ChainId.Ethereum]: ETHEREUM_TOKEN,
+  [ChainId.Polygon]: MATIC_TOKEN,
+  [ChainId.Fantom]: FANTOM_TOKEN,
+  [ChainId.BSC]: BNB_TOKEN,
+  [ChainId.Optimism]: OPTIMISM_TOKEN,
 };
 
 export function GET_NATIVE_TOKEN(chainId: ChainId) {

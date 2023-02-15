@@ -3,19 +3,73 @@ import { useWeb3React, Web3ReactHooks } from "@web3-react/core";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Connector } from "@web3-react/types";
 import { BigNumber, ethers, providers } from "ethers";
-import { useAtomValue, useSetAtom } from "jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { useSnackbar } from "notistack";
-import { useEffect, useMemo, useState } from "react";
-import { currencyAtom, walletConnectorAtom } from "../components/atoms";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useIntl } from "react-intl";
+import {
+  currencyAtom,
+  recentTokensAtom,
+  showTransactionsAtom,
+  transactionsAtom,
+  walletConnectorAtom,
+} from "../components/atoms";
 import { metaMask } from "../connectors";
 import { MagicLoginType } from "../connectors/magic";
 import { CONNECTORS, WRAPED_TOKEN_ADDRESS } from "../constants";
 import { ERC20Abi, WETHAbi } from "../constants/abis";
-import { ChainId } from "../constants/enum";
+import { ChainId, TransactionStatus } from "../constants/enum";
+import { NETWORKS } from "../constants/networks";
 import { getPricesByChain, getTokensBalance } from "../services";
 import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "../services/zeroex/constants";
-import { Token } from "../types";
-import { isAddressEqual } from "../utils";
+import { Token, Transaction } from "../types";
+import { isAddressEqual, tokenKey } from "../utils";
+import { NotificationCallbackParams } from "../widgets/swap/types";
+
+export function useBlockNumber() {
+  const { provider } = useWeb3React();
+
+  const [blockNumber, setBlockNumber] = useState(0);
+
+  useEffect(() => {
+    if (provider) {
+      const handleBlockNumber = (blockNumber: any) => {
+        setBlockNumber(blockNumber);
+      };
+
+      provider?.on("block", handleBlockNumber);
+
+      return () => {
+        provider?.removeListener("block", handleBlockNumber);
+      };
+    }
+  }, [provider]);
+
+  return blockNumber;
+}
+
+export function useTransactions() {
+  const [isOpen, setOpen] = useAtom(showTransactionsAtom);
+
+  const updateTransactions = useSetAtom(transactionsAtom);
+
+  const addTransaction = useCallback(
+    ({ transaction }: { transaction: Transaction }) => {
+      if (transaction) {
+        updateTransactions((txs: { [key: string]: Transaction }) => {
+          const copyTxs = { ...txs };
+
+          copyTxs[transaction.hash] = transaction;
+
+          return copyTxs;
+        });
+      }
+    },
+    [updateTransactions]
+  );
+
+  return { isOpen, setOpen, addTransaction };
+}
 
 export function useOrderedConnectors() {
   const selectedWallet = useAtomValue(walletConnectorAtom);
@@ -129,8 +183,14 @@ export interface WrapTokenParams {
   onHash: (hash: string) => void;
 }
 
-export function useWrapToken() {
+export function useWrapToken({
+  onNotification,
+}: {
+  onNotification: (params: NotificationCallbackParams) => void;
+}) {
   const { enqueueSnackbar } = useSnackbar();
+  const { formatMessage } = useIntl();
+  const { addTransaction } = useTransactions();
 
   const wrapMutation = useMutation(
     async ({ provider, amount, onHash }: WrapTokenParams) => {
@@ -149,6 +209,15 @@ export function useWrapToken() {
       );
 
       const tx = await contract.deposit({ value: amount });
+
+      onNotification({
+        chainId,
+        title: formatMessage(
+          { id: "wrap.symbol", defaultMessage: "Wrap {symbol}" },
+          { symbol: NETWORKS[chainId].symbol }
+        ),
+        hash: tx.hash,
+      });
 
       onHash(tx.hash);
 
@@ -180,6 +249,19 @@ export function useWrapToken() {
       );
 
       const tx = await contract.withdraw(amount);
+
+      addTransaction({
+        transaction: {
+          chainId,
+          created: Date.now(),
+          hash: tx.hash,
+          status: TransactionStatus.Pending,
+          title: formatMessage(
+            { id: "wrap.symbol", defaultMessage: "Unwrap {symbol}" },
+            { symbol: NETWORKS[chainId].symbol }
+          ),
+        },
+      });
 
       onHash(tx.hash);
 
@@ -297,4 +379,56 @@ export function useCoinPrices({
 
     return await getPricesByChain(chainId, tokens, currency);
   });
+}
+
+export function useRecentTokens() {
+  const [recentTokens, setRecentTokens] = useAtom(recentTokensAtom);
+
+  const add = useCallback((token: Token) => {
+    setRecentTokens((recentTokens) => {
+      let copyRecentTokens = [...recentTokens];
+      let recentToken = recentTokens.find(
+        (r) => tokenKey(r.token) === tokenKey(token)
+      );
+
+      if (recentToken) {
+        recentToken.count = recentToken.count + 1;
+      } else {
+        copyRecentTokens.push({ token, count: 1 });
+      }
+
+      return copyRecentTokens;
+    });
+  }, []);
+
+  const clear = useCallback((chainId?: ChainId) => {
+    setRecentTokens((coins) => {
+      if (chainId) {
+        return [...coins.filter((t) => t.token.chainId !== chainId)];
+      }
+
+      return [];
+    });
+  }, []);
+
+  const tokens = useMemo(() => {
+    return recentTokens
+      .sort((a, b) => {
+        if (a.count > b.count) {
+          return -1;
+        } else if (a.count < b.count) {
+          return 1;
+        }
+
+        return 0;
+      })
+      .map((t) => t.token)
+      .slice(0, 5);
+  }, [recentTokens]);
+
+  return {
+    tokens,
+    add,
+    clear,
+  };
 }

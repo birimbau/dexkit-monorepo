@@ -1,4 +1,4 @@
-import { ChainId } from "../constants/enum";
+import { ChainId, TransactionStatus } from "../constants/enum";
 
 export type Token = {
   chainId: ChainId;
@@ -24,6 +24,20 @@ export type Network = {
   providerRpcUrl?: string;
 };
 
-export type CoinPrices = {
+export type TokenPrices = {
   [key: number]: { [key: string]: { [key: string]: number } };
+};
+
+export interface Transaction {
+  hash: string;
+  icon?: string;
+  checked?: boolean;
+  title?: string;
+  status: TransactionStatus;
+  created: number;
+  chainId: ChainId;
+}
+
+export type AppState = {
+  transactions: { [key: string]: Transaction };
 };

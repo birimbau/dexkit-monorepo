@@ -1,9 +1,11 @@
 import {
   Box,
+  Button,
   Dialog,
   DialogContent,
   DialogProps,
   Divider,
+  ListSubheader,
   Stack,
 } from "@mui/material";
 import { providers } from "ethers";
@@ -20,7 +22,9 @@ export interface SwapSelectCoinDialogProps {
   DialogProps: DialogProps;
   onQueryChange: (value: string) => void;
   onSelect: (token: Token) => void;
+  onClearRecentTokens: () => void;
   tokens: Token[];
+  recentTokens?: Token[];
   account?: string;
   provider?: providers.BaseProvider;
 }
@@ -28,10 +32,12 @@ export interface SwapSelectCoinDialogProps {
 export default function SwapSelectCoinDialog({
   DialogProps,
   tokens,
+  recentTokens,
   account,
   provider,
   onSelect,
   onQueryChange,
+  onClearRecentTokens,
 }: SwapSelectCoinDialogProps) {
   const { onClose } = DialogProps;
 
@@ -65,14 +71,57 @@ export default function SwapSelectCoinDialog({
       />
       <Divider />
       <DialogContent sx={{ px: 0 }}>
-        <Stack spacing={2}>
-          <Box sx={{ px: 2 }}>
-            <SearchTextField
-              onChange={onQueryChange}
-              TextFieldProps={{ fullWidth: true }}
-            />
-          </Box>
-          <SwapFeaturedTokens onSelect={onSelect} chainId={chainId} />
+        <Stack>
+          <Stack spacing={2} sx={{ pb: 2 }}>
+            <Box sx={{ px: 2 }}>
+              <SearchTextField
+                onChange={onQueryChange}
+                TextFieldProps={{ fullWidth: true }}
+              />
+            </Box>
+            <SwapFeaturedTokens onSelect={onSelect} chainId={chainId} />
+          </Stack>
+          {recentTokens && recentTokens?.length > 0 && (
+            <>
+              <Divider />
+              <SelectCoinList
+                subHeader={
+                  <Box
+                    sx={{
+                      px: 2,
+                      background: (theme) => theme.palette.grey[200],
+                    }}
+                  >
+                    <Stack
+                      justifyContent="space-between"
+                      alignItems="center"
+                      direction="row"
+                    >
+                      <ListSubheader
+                        sx={{ p: 0, m: 0 }}
+                        component="div"
+                        disableSticky
+                      >
+                        <FormattedMessage id="recent" defaultMessage="Recent" />
+                      </ListSubheader>
+
+                      <Button
+                        onClick={onClearRecentTokens}
+                        size="small"
+                        color="primary"
+                      >
+                        <FormattedMessage id="clear" defaultMessage="Clear" />
+                      </Button>
+                    </Stack>
+                  </Box>
+                }
+                tokens={recentTokens}
+                tokenBalances={tokenBalances.data}
+                onSelect={onSelect}
+              />
+            </>
+          )}
+
           <Divider />
           <SelectCoinList
             tokens={tokens}

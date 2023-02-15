@@ -30,9 +30,7 @@ export default function SwapFeeSummary({
 
   const maxFee = useMemo(() => {
     if (quote) {
-      return BigNumber.from(quote.gas)
-        .mul(quote.gasPrice)
-        .add(BigNumber.from(quote.value));
+      return BigNumber.from(quote.gas).mul(quote.gasPrice);
     }
 
     return BigNumber.from(0);
@@ -54,13 +52,25 @@ export default function SwapFeeSummary({
     const amount = parseFloat(ethers.utils.formatEther(totalFee));
 
     if (coinPrices.data && chainId && currency) {
-      const price = coinPrices.data[chainId][ethers.constants.AddressZero];
+      const t = coinPrices.data[chainId];
 
-      return amount * price[currency];
+      if (t) {
+        const price = t[ethers.constants.AddressZero];
+
+        return amount * price[currency];
+      }
     }
 
     return 0;
   }, [totalFee, coinPrices.data, chainId, currency]);
+
+  const priceImpact = useMemo(() => {
+    if (quote) {
+      return parseFloat(quote.estimatedPriceImpact);
+    }
+
+    return 0;
+  }, [quote]);
 
   return (
     <Box>
@@ -84,6 +94,13 @@ export default function SwapFeeSummary({
               {formatBigNumber(amount, 18)} {NETWORK_SYMBOL(chainId)}
             </>
           </Typography>
+        </Stack>
+
+        <Stack spacing={2} direction="row" justifyContent="space-between">
+          <Typography>
+            <FormattedMessage id="price.impact" defaultMessage="Price impact" />
+          </Typography>
+          <Typography color="text.secondary">{priceImpact}%</Typography>
         </Stack>
 
         <Stack spacing={2} direction="row" justifyContent="space-between">

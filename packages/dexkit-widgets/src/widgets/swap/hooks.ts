@@ -5,19 +5,23 @@ import {
   useQuery,
   UseQueryResult,
 } from "@tanstack/react-query";
+
+import transakSDK from "@transak/transak-sdk";
+
 import { Connector } from "@web3-react/types";
 import { BigNumber, ethers, providers } from "ethers";
-import { useSetAtom } from "jotai";
+import { useAtomValue } from "jotai";
 import { useSnackbar } from "notistack";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useIntl } from "react-intl";
-import { showConnectWalletAtom } from "../../components/atoms";
+import { WRAPED_TOKEN_ADDRESS } from "../../constants";
 import { ERC20Abi } from "../../constants/abis";
 import { ChainId } from "../../constants/enum";
 import { NETWORKS } from "../../constants/networks";
 import {
   useAsyncMemo,
   useDebounce,
+  useRecentTokens,
   useTokenBalance,
   useWrapToken,
 } from "../../hooks";
@@ -31,7 +35,13 @@ import {
 import { ZeroExQuote, ZeroExQuoteResponse } from "../../services/zeroex/types";
 import { Token } from "../../types";
 import { isAddressEqual, switchNetwork } from "../../utils";
-import { ExecType, SwapSide, SwapState } from "./types";
+import { isAutoSlippageAtom, maxSlippageAtom } from "./atoms";
+import {
+  ExecType,
+  NotificationCallbackParams,
+  SwapSide,
+  SwapState,
+} from "./types";
 
 export function useErc20ApproveMutation(
   options?: Omit<UseMutationOptions, any>
@@ -77,6 +87,7 @@ export interface SwapQuoteParams {
   skipValidation?: boolean;
   quoteFor?: SwapSide;
   account?: string;
+  slippagePercentage?: number;
 }
 
 export interface UseQuoteSwap {
@@ -92,15 +103,17 @@ export const SWAP_QUOTE = "SWAP_QUOTE";
 
 export function useSwapQuote({
   onSuccess,
+  maxSlippage,
 }: {
   onSuccess: (data: ZeroExQuoteResponse | null | undefined) => void;
+  maxSlippage?: number;
 }): UseQuoteSwap {
   const [params, setParams] = useState<SwapQuoteParams>();
   const [enabled, setEnabled] = useState(true);
   const [skipValidation, setSkipValidation] = useState(true);
 
   const quoteQuery = useQuery(
-    [SWAP_QUOTE, params],
+    [SWAP_QUOTE, params, maxSlippage],
     async ({ signal }) => {
       if (!params) {
         return;
@@ -123,15 +136,17 @@ export function useSwapQuote({
         const quoteParam: ZeroExQuote = {
           buyToken: buyToken?.contractAddress,
           sellToken: sellToken?.contractAddress,
-
           affiliateAddress: ZEROEX_AFFILIATE_ADDRESS,
-          slippagePercentage: 0.03,
           feeRecipient: ZEROEX_FEE_RECIPIENT,
           skipValidation: canSkipValitaion,
         };
 
         if (account && !skipValidation) {
           quoteParam.takerAddress = account;
+        }
+
+        if (maxSlippage !== undefined) {
+          quoteParam.slippagePercentage = maxSlippage;
         }
 
         if (quoteFor === "buy" && buyTokenAmount?.gt(0)) {
@@ -164,7 +179,13 @@ export interface SwapExecParams {
   onHash: (hash: string) => void;
 }
 
-export function useSwapExec() {
+export function useSwapExec({
+  onNotification,
+}: {
+  onNotification: (params: NotificationCallbackParams) => void;
+}) {
+  const { formatMessage } = useIntl();
+
   return useMutation(async ({ quote, provider, onHash }: SwapExecParams) => {
     if (!provider) {
       throw new Error("no provider");
@@ -178,10 +199,21 @@ export function useSwapExec() {
       throw new Error("no max fee per gas");
     }
 
+    const chainId = (await provider.getNetwork()).chainId;
+
     const tx = await provider.getSigner().sendTransaction({
       data: quote?.data,
       value: ethers.BigNumber.from(quote?.value),
       to: quote?.to,
+    });
+
+    onNotification({
+      chainId,
+      title: formatMessage({
+        id: "swap.tokens",
+        defaultMessage: "Swap Tokens", // TODO: add token symbols and amounts
+      }),
+      hash: tx.hash,
     });
 
     onHash(tx.hash);
@@ -194,11 +226,17 @@ export function useSwapState({
   execMutation,
   approveMutation,
   provider,
+  defaultSellToken,
+  defaultBuyToken,
   connector,
   account,
   isActive,
   isActivating,
+  transakApiKey,
   onChangeNetwork,
+  onNotification,
+  onConnectWallet,
+  onShowTransactions,
 }: {
   execMutation: UseMutationResult<
     ethers.providers.TransactionReceipt,
@@ -222,18 +260,69 @@ export function useSwapState({
   isActive?: boolean;
   isActivating?: boolean;
   account?: string;
+  defaultSellToken?: Token;
+  defaultBuyToken?: Token;
+  transakApiKey?: string;
   onChangeNetwork: (chainId: ChainId) => void;
+  onNotification: (params: NotificationCallbackParams) => void;
+  onConnectWallet: () => void;
+  onShowTransactions: () => void;
 }): SwapState {
-  const { wrapMutation, unwrapMutation } = useWrapToken();
+  const maxSlippage = useAtomValue(maxSlippageAtom);
+  const isAutoSlippage = useAtomValue(isAutoSlippageAtom);
+
+  const transak = useMemo(() => {
+    if (transakApiKey) {
+      return new transakSDK({
+        apiKey: transakApiKey, // (Required)
+        environment:
+          process.env.NODE_ENV === "production" ? "PRODUCTION" : "STAGING", // (Required)
+      });
+    }
+  }, [transakApiKey]);
+
+  useEffect(() => {
+    if (transak) {
+      let allEventsCallback = transak.on(transak.ALL_EVENTS, (data: any) => {
+        console.log(data);
+      });
+
+      // This will trigger when the user closed the widget
+      let widgetCloseCallback = transak.on(
+        transak.EVENTS.TRANSAK_WIDGET_CLOSE,
+        (orderData: any) => {
+          transak.close();
+        }
+      );
+
+      // This will trigger when the user marks payment is made
+      let orderSuccessFulCallback = transak.on(
+        transak.EVENTS.TRANSAK_ORDER_SUCCESSFUL,
+        (orderData: any) => {
+          console.log(orderData);
+          transak.close();
+        }
+      );
+
+      return () => {
+        // TODO: remove callbacks;
+      };
+    }
+  }, [transak]);
+
+  const { wrapMutation, unwrapMutation } = useWrapToken({ onNotification });
 
   const [showSelect, setShowSelectToken] = useState(false);
 
   const [quoteFor, setQuoteFor] = useState<SwapSide>();
-  const [sellToken, setSellToken] = useState<Token>();
-  const [buyToken, setBuyToken] = useState<Token>();
+  const [sellToken, setSellToken] =
+    useState<Token | undefined>(defaultSellToken);
+  const [buyToken, setBuyToken] = useState<Token | undefined>(defaultBuyToken);
   const [sellAmount, setSellAmount] = useState<BigNumber>(BigNumber.from(0));
   const [buyAmount, setBuyAmount] = useState<BigNumber>(BigNumber.from(0));
   const [selectSide, setSelectSide] = useState<SwapSide>();
+
+  const [showSettings, setShowSettings] = useState(false);
 
   const lazySellAmount = useDebounce<BigNumber>(sellAmount, 500);
   const lazyBuyAmount = useDebounce<BigNumber>(buyAmount, 500);
@@ -265,7 +354,18 @@ export function useSwapState({
     }
   };
 
-  const quote = useSwapQuote({ onSuccess: handleQuoteSuccess });
+  const handleCloseSettings = () => {
+    setShowSettings(false);
+  };
+
+  const handleShowSettings = () => {
+    setShowSettings(true);
+  };
+
+  const quote = useSwapQuote({
+    onSuccess: handleQuoteSuccess,
+    maxSlippage: !isAutoSlippage ? maxSlippage : undefined,
+  });
 
   const { quoteQuery } = quote;
 
@@ -288,7 +388,11 @@ export function useSwapState({
     setShowSelectToken(true);
   };
 
+  const recentTokens = useRecentTokens();
+
   const handleSelectToken = (token: Token) => {
+    recentTokens.add(token);
+
     if (selectSide === "sell") {
       if (
         token.chainId === buyToken?.chainId &&
@@ -315,6 +419,10 @@ export function useSwapState({
     setShowSelectToken(false);
   };
 
+  const handleClearRecentTokens = () => {
+    recentTokens.clear();
+  };
+
   const handleChangeBuyAmount = useCallback(
     (value: BigNumber) => {
       if (buyToken) {
@@ -335,10 +443,12 @@ export function useSwapState({
     [sellToken]
   );
 
-  const setShowConnectWallet = useSetAtom(showConnectWalletAtom);
-
   const handleConnectWallet = () => {
-    setShowConnectWallet(true);
+    onConnectWallet();
+  };
+
+  const handleShowTransactions = () => {
+    onShowTransactions();
   };
 
   const handleCloseSelectToken = () => {
@@ -368,12 +478,42 @@ export function useSwapState({
     [provider]
   );
 
+  const isProviderReady = useAsyncMemo<boolean>(
+    async (initial) => {
+      if (provider) {
+        await provider.ready;
+
+        return true;
+      }
+
+      return initial;
+    },
+    false,
+    [provider]
+  );
+
   const execType: ExecType = useAsyncMemo<ExecType>(
     async (initial) => {
       let result: ExecType = initial;
 
+      const isBuyTokenWrapped =
+        lazyBuyToken &&
+        chainId &&
+        isAddressEqual(
+          WRAPED_TOKEN_ADDRESS[chainId],
+          lazyBuyToken.contractAddress
+        );
+
+      const isSellTokenWrapped =
+        lazySellToken &&
+        chainId &&
+        isAddressEqual(
+          WRAPED_TOKEN_ADDRESS[chainId],
+          lazySellToken.contractAddress
+        );
+
       if (lazyBuyToken && lazySellToken && quoteQuery.data) {
-        if (!lazyBuyToken.isWrapped && !lazySellToken.isWrapped) {
+        if (!isBuyTokenWrapped && !isSellTokenWrapped) {
           if (account) {
             const sufficientAllowance = await hasSufficientAllowance({
               spender: quoteQuery.data.allowanceTarget,
@@ -390,13 +530,13 @@ export function useSwapState({
       }
 
       result =
-        lazyBuyToken?.isWrapped &&
+        isBuyTokenWrapped &&
         isAddressEqual(
           lazySellToken?.contractAddress,
           ZEROEX_NATIVE_TOKEN_ADDRESS
         )
           ? "wrap"
-          : lazySellToken?.isWrapped &&
+          : isSellTokenWrapped &&
             isAddressEqual(
               lazyBuyToken?.contractAddress,
               ZEROEX_NATIVE_TOKEN_ADDRESS
@@ -414,6 +554,7 @@ export function useSwapState({
       account,
       lazySellAmount,
       provider,
+      chainId,
     ]
   );
 
@@ -439,15 +580,19 @@ export function useSwapState({
         {
           quote: quoteQuery.data,
           provider: provider as providers.Web3Provider,
-          onHash: (hash: string) => {
-            console.log(hash);
-          },
+          onHash: (hash: string) => {},
         },
         {
           onSuccess: (receipt: ethers.providers.TransactionReceipt) => {},
           onError,
         }
       );
+    }
+  };
+
+  const handleShowTransak = () => {
+    if (transak) {
+      transak.init();
     }
   };
 
@@ -461,9 +606,7 @@ export function useSwapState({
         {
           provider: provider as providers.Web3Provider,
           amount: lazySellAmount,
-          onHash: (hash: string) => {
-            console.log(hash);
-          },
+          onHash: (hash: string) => {},
         },
         {
           onSuccess: (receipt: ethers.providers.TransactionReceipt) => {},
@@ -486,9 +629,7 @@ export function useSwapState({
         {
           provider: provider as providers.Web3Provider,
           amount: lazySellAmount,
-          onHash: (hash: string) => {
-            console.log(hash);
-          },
+          onHash: (hash: string) => {},
         },
         {
           onSuccess: (receipt: ethers.providers.TransactionReceipt) => {
@@ -557,9 +698,13 @@ export function useSwapState({
       execMutation.isLoading ||
       approveMutation.isLoading,
     quote: quoteQuery.data,
+    isQuoting: quoteQuery.isFetching,
     sellTokenBalance: sellTokenBalance.data,
     buyTokenBalance: buyTokenBalance.data,
     showConfirmSwap,
+    showSettings,
+    isProviderReady,
+    recentTokens: recentTokens.tokens,
     setQuoteFor,
     setSellAmount,
     setBuyAmount,
@@ -576,6 +721,11 @@ export function useSwapState({
     handleCloseConfirmSwap,
     handleConfirmExecSwap,
     handleChangeNetwork,
+    handleCloseSettings,
+    handleShowSettings,
+    handleShowTransactions,
+    handleClearRecentTokens,
+    handleShowTransak,
   };
 }
 

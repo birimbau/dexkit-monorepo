@@ -22,13 +22,15 @@ const Template: ComponentStory<typeof SelectCoinsList> = (
 
   return (
     <DexkitContextProvider>
-      <Grid container spacing={2} justifyContent="center">
-        <Grid item xs={12} sm={3}>
-          <Card>
-            <SelectCoinsList {...args} onSelect={handleSelect} />
-          </Card>
+      {({}) => (
+        <Grid container spacing={2} justifyContent="center">
+          <Grid item xs={12} sm={3}>
+            <Card>
+              <SelectCoinsList {...args} onSelect={handleSelect} />
+            </Card>
+          </Grid>
         </Grid>
-      </Grid>
+      )}
     </DexkitContextProvider>
   );
 };

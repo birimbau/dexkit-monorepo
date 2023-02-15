@@ -27,6 +27,10 @@ export type SwapState = {
   sellTokenBalance?: BigNumber;
   buyTokenBalance?: BigNumber;
   insufficientBalance: boolean;
+  showSettings: boolean;
+  isProviderReady?: boolean;
+  isQuoting?: boolean;
+  recentTokens?: Token[];
   handleConnectWallet: () => void;
   handleOpenSelectToken: (
     selectFor: SwapSide,
@@ -46,4 +50,23 @@ export type SwapState = {
   handleCloseConfirmSwap: () => void;
   handleConfirmExecSwap: () => void;
   handleChangeNetwork: (chainId: ChainId) => void;
+  handleCloseSettings: () => void;
+  handleShowSettings: () => void;
+  handleShowTransactions: () => void;
+  handleClearRecentTokens: () => void;
+  handleShowTransak: () => void;
+};
+
+export type RenderOptions = {
+  disableNotificationsButton?: boolean;
+  defaultSellToken?: Token;
+  defaultBuyToken?: Token;
+  defaultChainId?: ChainId;
+  transakApiKey?: string;
+};
+
+export type NotificationCallbackParams = {
+  title: string;
+  hash: string;
+  chainId: ChainId;
 };

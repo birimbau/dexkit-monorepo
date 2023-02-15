@@ -1,6 +1,7 @@
 import { MetaMask } from "@web3-react/metamask";
 import { Connector } from "@web3-react/types";
 import { BigNumber, ethers } from "ethers";
+import { NETWORKS } from "../constants/networks";
 import { Token } from "../types";
 // import { MagicConnector } from "../connectors/magic";
 
@@ -49,4 +50,10 @@ export async function switchNetwork(connector: Connector, chainId: number) {
 
 export function tokenKey(token: Token) {
   return `${token.chainId}-${token.contractAddress.toLowerCase()}`;
+}
+
+export function getBlockExplorerUrl(chainId?: number) {
+  if (chainId) {
+    return NETWORKS[chainId].explorerUrl;
+  }
 }

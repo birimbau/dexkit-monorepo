@@ -13,12 +13,14 @@ export interface SelectCoinListProps {
   tokens: Token[];
   onSelect: (token: Token) => void;
   tokenBalances?: TokenBalances;
+  subHeader?: React.ReactNode;
 }
 
 function SelectCoinList({
   tokens,
   onSelect,
   tokenBalances,
+  subHeader,
 }: SelectCoinListProps) {
   if (tokens.length === 0) {
     return (
@@ -42,7 +44,7 @@ function SelectCoinList({
   }
 
   return (
-    <List disablePadding>
+    <List disablePadding subheader={subHeader}>
       {tokens.map((token: Token, index: number) => (
         <SelectCoinListItem
           key={index}

@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 import { COINGECKO_ENDPOIT, COINGECKO_PLATFORM_ID } from "../constants";
 import { ERC20Abi } from "../constants/abis";
 import { ChainId } from "../constants/enum";
-import { CoinPrices, Token } from "../types";
+import { Token, TokenPrices } from "../types";
 import { isAddressEqual } from "../utils";
 import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "./zeroex/constants";
 
@@ -103,7 +103,7 @@ export const getCoinPrices = async ({
 }: {
   tokens: Token[];
   currency: string;
-}): Promise<CoinPrices> => {
+}): Promise<TokenPrices> => {
   const priceResponce = (
     await axios.get<{ [key: string]: { [key: string]: number } }>(
       `${COINGECKO_ENDPOIT}/simple/price?ids=${tokens
@@ -112,7 +112,7 @@ export const getCoinPrices = async ({
     )
   ).data;
 
-  const results: CoinPrices = {};
+  const results: TokenPrices = {};
 
   for (const key of Object.keys(priceResponce)) {
     const result = priceResponce[key];
@@ -121,7 +121,9 @@ export const getCoinPrices = async ({
 
     if (token?.chainId) {
       results[token.chainId] = {
-        [ethers.constants.AddressZero]: { [currency]: amount },
+        [isAddressEqual(token.contractAddress, ZEROEX_NATIVE_TOKEN_ADDRESS)
+          ? ethers.constants.AddressZero
+          : token.contractAddress]: { [currency]: amount },
       };
     }
   }
@@ -133,7 +135,7 @@ export async function getPricesByChain(
   chainId: ChainId,
   tokens: Token[],
   currency: string
-): Promise<CoinPrices> {
+): Promise<TokenPrices> {
   return await getCoinPrices({
     tokens,
     currency,

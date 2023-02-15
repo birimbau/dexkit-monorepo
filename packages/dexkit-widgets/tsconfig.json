@@ -4,7 +4,8 @@
   "compilerOptions": {
     "module": "ESNext",
     "outDir": "dist/",
-    "declarationDir": "types"
+    "lib": ["ES5", "ES6", "ESNext", "ES2016", "DOM", "es2017"],
+    "target": "ES6"
   },
   "exclude": ["dist", "build"]
 }

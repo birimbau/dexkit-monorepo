@@ -12,7 +12,7 @@ export type ZeroExQuote = {
   buyAmount?: string;
 
   // 0.03 = 3%
-  slippagePercentage: number;
+  slippagePercentage?: number;
 
   // bigNumber
   gasPrice?: string;

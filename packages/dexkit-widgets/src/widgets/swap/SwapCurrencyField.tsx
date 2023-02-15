@@ -13,6 +13,7 @@ export interface SwapTokenFieldProps {
   onSelectToken: (token?: Token) => void;
   value: BigNumber;
   balance?: BigNumber;
+  showBalance?: boolean;
 }
 
 function SwapTokenField({
@@ -22,6 +23,7 @@ function SwapTokenField({
   token,
   value,
   balance,
+  showBalance,
 }: SwapTokenFieldProps) {
   const handleMax = () => {
     if (balance) {
@@ -53,7 +55,7 @@ function SwapTokenField({
           ButtonBaseProps={{ onClick: () => onSelectToken(token) }}
         />
       </Stack>
-      {token && balance && (
+      {token && balance && showBalance && (
         <Stack
           direction="row"
           spacing={0.5}

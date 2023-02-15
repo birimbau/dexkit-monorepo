@@ -22,11 +22,13 @@ const Template: ComponentStory<typeof SwapSelectCoinDialog> = (
 
   return (
     <DexkitContextProvider>
-      <SwapSelectCoinDialog
-        {...args}
-        onQueryChange={handleChange}
-        onSelect={handleSelect}
-      />
+      {({}) => (
+        <SwapSelectCoinDialog
+          {...args}
+          onQueryChange={handleChange}
+          onSelect={handleSelect}
+        />
+      )}
     </DexkitContextProvider>
   );
 };

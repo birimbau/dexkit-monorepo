@@ -10,3 +10,9 @@ export enum ChainId {
   Celo = 42220,
   Goerli = 5,
 }
+
+export enum TransactionStatus {
+  Pending,
+  Failed,
+  Confirmed,
+}
