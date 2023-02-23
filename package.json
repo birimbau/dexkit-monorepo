@@ -3,10 +3,10 @@
   "version": "0.0.0",
   "private": true,
   "workspaces": [
+    "apps/*",
     "packages/*"
   ],
   "scripts": {
-    "prepare": "turbo run build",
     "build": "turbo run build",
     "dev": "turbo run dev --parallel",
     "storybook": "turbo run storybook",
@@ -16,12 +16,38 @@
   },
   "devDependencies": {
     "eslint-config-custom": "*",
+    "next-transpile-modules": "^10.0.0",
     "prettier": "latest",
     "turbo": "latest"
   },
   "engines": {
     "node": ">=14.0.0"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@emotion/react": "^11.10.5",
+    "@emotion/styled": "^11.10.5",
+    "@indexed-finance/multicall": "^2.0.0",
+    "@mui/icons-material": "^5.11.0",
+    "@mui/material": "^5.11.6",
+    "@tanstack/react-query": "^4.23.0",
+    "@transak/transak-sdk": "^1.3.0",
+    "@walletconnect/ethereum-provider": "^1.7.7",
+    "@web3-react/coinbase-wallet": "8.0.34-beta.0",
+    "@web3-react/core": "8.0.28-beta.0",
+    "@web3-react/gnosis-safe": "8.0.7-beta.0",
+    "@web3-react/metamask": "8.0.23-beta.0",
+    "@web3-react/network": "^8.0.0-beta.0",
+    "@web3-react/types": "8.0.16-beta.0",
+    "@web3-react/walletconnect": "8.0.30-beta.0",
+    "ethers": "^5.7.2",
+    "jotai": "^1.6.5",
+    "jotai-optics": "^0.3.0",
+    "moment": "^2.29.4",
+    "notistack": "^2.0.8",
+    "optics-ts": "^2.4.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-intl": "^5.24.8"
+  },
   "packageManager": "yarn@1.22.18"
 }

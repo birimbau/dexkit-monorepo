@@ -1,9 +1,7 @@
 import { Box, Stack, Typography } from "@mui/material";
 import { BigNumber, ethers } from "ethers";
-import { useAtomValue } from "jotai";
 import { useMemo } from "react";
 import { FormattedMessage, FormattedNumber } from "react-intl";
-import { currencyAtom } from "../../components/atoms";
 import { GET_NATIVE_TOKEN } from "../../constants";
 import { ChainId } from "../../constants/enum";
 import { NETWORK_SYMBOL } from "../../constants/networks";
@@ -14,14 +12,14 @@ import { formatBigNumber } from "../../utils";
 export interface SwapFeeSummaryProps {
   quote?: ZeroExQuoteResponse | null;
   chainId?: ChainId;
+  currency: string;
 }
 
 export default function SwapFeeSummary({
   quote,
   chainId,
+  currency,
 }: SwapFeeSummaryProps) {
-  const currency = useAtomValue(currencyAtom);
-
   const coinPrices = useCoinPrices({
     currency,
     tokens: chainId ? [GET_NATIVE_TOKEN(chainId)] : [],

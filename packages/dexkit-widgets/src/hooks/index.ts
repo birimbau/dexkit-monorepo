@@ -3,7 +3,8 @@ import { useWeb3React, Web3ReactHooks } from "@web3-react/core";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Connector } from "@web3-react/types";
 import { BigNumber, ethers, providers } from "ethers";
-import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
+import { useUpdateAtom } from "jotai/utils";
 import { useSnackbar } from "notistack";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useIntl } from "react-intl";
@@ -18,7 +19,7 @@ import { metaMask } from "../connectors";
 import { MagicLoginType } from "../connectors/magic";
 import { CONNECTORS, WRAPED_TOKEN_ADDRESS } from "../constants";
 import { ERC20Abi, WETHAbi } from "../constants/abis";
-import { ChainId, TransactionStatus } from "../constants/enum";
+import { ChainId } from "../constants/enum";
 import { NETWORKS } from "../constants/networks";
 import { getPricesByChain, getTokensBalance } from "../services";
 import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "../services/zeroex/constants";
@@ -51,7 +52,7 @@ export function useBlockNumber() {
 export function useTransactions() {
   const [isOpen, setOpen] = useAtom(showTransactionsAtom);
 
-  const updateTransactions = useSetAtom(transactionsAtom);
+  const updateTransactions = useUpdateAtom(transactionsAtom);
 
   const addTransaction = useCallback(
     ({ transaction }: { transaction: Transaction }) => {
@@ -98,7 +99,7 @@ export function useOrderedConnectors() {
 export function useWalletActivate() {
   const { connector } = useWeb3React();
 
-  const setWalletConnector = useSetAtom(walletConnectorAtom);
+  const setWalletConnector = useUpdateAtom(walletConnectorAtom);
 
   return useMutation(
     async ({
@@ -190,7 +191,6 @@ export function useWrapToken({
 }) {
   const { enqueueSnackbar } = useSnackbar();
   const { formatMessage } = useIntl();
-  const { addTransaction } = useTransactions();
 
   const wrapMutation = useMutation(
     async ({ provider, amount, onHash }: WrapTokenParams) => {
@@ -250,17 +250,13 @@ export function useWrapToken({
 
       const tx = await contract.withdraw(amount);
 
-      addTransaction({
-        transaction: {
-          chainId,
-          created: Date.now(),
-          hash: tx.hash,
-          status: TransactionStatus.Pending,
-          title: formatMessage(
-            { id: "wrap.symbol", defaultMessage: "Unwrap {symbol}" },
-            { symbol: NETWORKS[chainId].symbol }
-          ),
-        },
+      onNotification({
+        chainId,
+        title: formatMessage(
+          { id: "wrap.symbol", defaultMessage: "Unwrap {symbol}" },
+          { symbol: NETWORKS[chainId].symbol }
+        ),
+        hash: tx.hash,
       });
 
       onHash(tx.hash);

@@ -57,12 +57,19 @@ export type SwapState = {
   handleShowTransak: () => void;
 };
 
+//TODO: array of tokens by chainId e defaultChainId without
 export type RenderOptions = {
   disableNotificationsButton?: boolean;
-  defaultSellToken?: Token;
-  defaultBuyToken?: Token;
+  configsByChain: {
+    [key: number]: {
+      slippage: number;
+      sellToken?: Token;
+      buyToken?: Token;
+    };
+  };
   defaultChainId?: ChainId;
   transakApiKey?: string;
+  currency?: string;
 };
 
 export type NotificationCallbackParams = {

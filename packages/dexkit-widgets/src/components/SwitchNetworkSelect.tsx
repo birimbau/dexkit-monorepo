@@ -76,6 +76,7 @@ function SwitchNetworkSelect({
           : undefined
       }
     >
+      <MenuItem value=""></MenuItem>
       {Object.keys(NETWORKS)
         .filter((key) => {
           return !NETWORKS[parseChainId(key)].testnet;

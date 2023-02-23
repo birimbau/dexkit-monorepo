@@ -1,0 +1,155 @@
+import {
+  Box,
+  Divider,
+  Grid,
+  IconButton,
+  Paper,
+  Skeleton,
+  Stack,
+  Tooltip,
+  Typography,
+} from '@mui/material';
+import { FormattedMessage } from 'react-intl';
+
+import LaunchIcon from '@mui/icons-material/Launch';
+import {
+  useAsset,
+  useAssetBalance,
+  useAssetMetadata,
+  useFavoriteAssets,
+} from '../../../hooks/nft';
+import Link from '../../../components/Link';
+import {
+  getBlockExplorerUrl,
+  getNetworkSlugFromChainId,
+  isAddressEqual,
+  truncateAddress,
+} from '../../../utils/blockchain';
+import { useWeb3React } from '@web3-react/core';
+import Heart from '../../../components/icons/Heart';
+import { useState } from 'react';
+import ShareDialog from './dialogs/ShareDialog';
+import { getWindowUrl } from '../../../utils/browser';
+import { Share } from '@mui/icons-material';
+
+interface Props {
+  address: string;
+  id: string;
+}
+
+export function AssetPageActions({ address, id }: Props) {
+  const { data: asset } = useAsset(address, id);
+  const { data: metadata } = useAssetMetadata(asset);
+
+  const { account } = useWeb3React();
+  const { data: assetBalance } = useAssetBalance(asset, account);
+
+  const favorites = useFavoriteAssets();
+
+  const handleToggleFavorite = () => {
+    if (asset !== undefined) {
+      favorites.toggleFavorite({ ...asset, metadata });
+    }
+  };
+
+  const [openShare, setOpenShare] = useState(false);
+
+  const handleCloseShareDialog = () => setOpenShare(false);
+
+  const handleOpenShareDialog = () => setOpenShare(true);
+
+  return (
+    <>
+      <ShareDialog
+        dialogProps={{
+          open: openShare,
+          fullWidth: true,
+          maxWidth: 'sm',
+          onClose: handleCloseShareDialog,
+        }}
+        url={`${getWindowUrl()}/asset/${getNetworkSlugFromChainId(
+          asset?.chainId
+        )}/${address}/${id}`}
+      />
+      <Grid container spacing={2} alignItems="stretch" alignContent="center">
+        <Grid item xs>
+          {asset?.protocol === 'ERC721' ? (
+            <Paper variant="outlined" sx={{ p: 1, height: '100%' }}>
+              <Typography variant="caption" color="textSecondary">
+                <FormattedMessage id="owned.by" defaultMessage="Owned by" />
+              </Typography>
+              <Link
+                href={`${getBlockExplorerUrl(asset?.chainId)}/address/${
+                  asset?.owner
+                }`}
+                color="primary"
+                target="_blank"
+              >
+                <Stack
+                  component="span"
+                  direction="row"
+                  alignItems="center"
+                  alignContent="center"
+                  spacing={0.5}
+                >
+                  <div>
+                    {isAddressEqual(account, asset?.owner) ? (
+                      <FormattedMessage id="you" defaultMessage="you" />
+                    ) : (
+                      truncateAddress(asset?.owner)
+                    )}
+                  </div>
+                  <LaunchIcon fontSize="inherit" />
+                </Stack>
+              </Link>
+            </Paper>
+          ) : (
+            account &&
+            assetBalance?.balance && (
+              <Paper variant="outlined" sx={{ p: 2, height: '100%' }}>
+                <Typography>
+                  <FormattedMessage id="you.own" defaultMessage="You own" />:{' '}
+                  {assetBalance?.balance?.toString() || ''}{' '}
+                </Typography>
+              </Paper>
+            )
+          )}
+        </Grid>
+        <Grid item>
+          <Paper variant="outlined" sx={{ p: 1, height: '100%' }}>
+            <Stack
+              direction="row"
+              sx={{ height: '100%' }}
+              divider={<Divider flexItem orientation="vertical" />}
+              alignItems="center"
+              spacing={2}
+            >
+              <Tooltip
+                title={
+                  <FormattedMessage id="favorite" defaultMessage="Favorite" />
+                }
+              >
+                <IconButton onClick={handleToggleFavorite}>
+                  <Heart
+                    sx={
+                      favorites.isFavorite(asset)
+                        ? (theme) => ({
+                            '& path': { fill: theme.palette.error.light },
+                          })
+                        : undefined
+                    }
+                  />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Share">
+                <IconButton onClick={handleOpenShareDialog}>
+                  <Share />
+                </IconButton>
+              </Tooltip>
+            </Stack>
+          </Paper>
+        </Grid>
+      </Grid>
+    </>
+  );
+}

@@ -44,11 +44,11 @@ export function SwapWidget({
     useWeb3React();
 
   const {
-    defaultBuyToken,
-    defaultSellToken,
+    configsByChain,
     defaultChainId,
     disableNotificationsButton,
     transakApiKey,
+    currency,
   } = options;
 
   const execSwapMutation = useSwapExec({ onNotification });
@@ -56,6 +56,13 @@ export function SwapWidget({
   const [selectedChainId, setSelectedChainId] = useState<ChainId>(
     defaultChainId ? defaultChainId : ChainId.Ethereum
   );
+
+  const isAutoSlippage = !(selectedChainId && configsByChain[selectedChainId]);
+
+  const maxSlippage =
+    selectedChainId && configsByChain[selectedChainId]
+      ? configsByChain[selectedChainId].slippage
+      : 0;
 
   const swapProvider = useSwapProvider({
     provider,
@@ -114,8 +121,16 @@ export function SwapWidget({
     account,
     isActive,
     isActivating,
-    defaultBuyToken,
-    defaultSellToken,
+    maxSlippage,
+    isAutoSlippage,
+    defaultBuyToken:
+      selectedChainId && configsByChain[selectedChainId]
+        ? configsByChain[selectedChainId].buyToken
+        : undefined,
+    defaultSellToken:
+      selectedChainId && configsByChain[selectedChainId]
+        ? configsByChain[selectedChainId].sellToken
+        : undefined,
   });
 
   const [query, setQuery] = useState("");
@@ -168,7 +183,6 @@ export function SwapWidget({
           onClearRecentTokens={handleClearRecentTokens}
         />
       )}
-
       <SwapConfirmDialog
         DialogProps={{
           open: showConfirmSwap,
@@ -180,7 +194,6 @@ export function SwapWidget({
         onConfirm={handleConfirmExecSwap}
         chainId={chainId}
       />
-
       <SwapSettingsDialog
         DialogProps={{
           open: showSettings,
@@ -188,8 +201,13 @@ export function SwapWidget({
           fullWidth: true,
           onClose: handleCloseSettings,
         }}
+        onAutoSlippage={() => {}}
+        onChangeSlippage={() => {}}
+        maxSlippage={maxSlippage}
+        isAutoSlippage={isAutoSlippage}
       />
       <Swap
+        currency={"usd"}
         disableNotificationsButton={disableNotificationsButton}
         chainId={chainId}
         isActive={isActive}

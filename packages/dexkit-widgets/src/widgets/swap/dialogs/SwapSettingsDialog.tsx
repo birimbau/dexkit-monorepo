@@ -10,24 +10,27 @@ import {
   Switch,
   TextField,
 } from "@mui/material";
-import { useAtom } from "jotai";
 import { ChangeEvent, memo, useMemo, useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 import AppDialogTitle from "../../../components/AppDialogTitle";
-import { isAutoSlippageAtom, maxSlippageAtom } from "../atoms";
 
 interface SwapSettingsDialogProps {
   DialogProps: DialogProps;
+  maxSlippage: number;
+  isAutoSlippage: boolean;
+  onAutoSlippage: (value: boolean) => void;
+  onChangeSlippage: (value: number) => void;
 }
 
-function SwapSettingsDialog({ DialogProps }: SwapSettingsDialogProps) {
+function SwapSettingsDialog({
+  DialogProps,
+  maxSlippage,
+  isAutoSlippage,
+  onAutoSlippage,
+  onChangeSlippage,
+}: SwapSettingsDialogProps) {
   const { onClose } = DialogProps;
 
-  const [maxSlippage, setMaxSlippage] = useAtom(maxSlippageAtom);
-  const [isAutoSlippageStore, setIsAutoSlippageStore] =
-    useAtom(isAutoSlippageAtom);
-
-  const [isAutoSlippage, setIsAutoSlippage] = useState(isAutoSlippageStore);
   const [slippage, setSlippage] = useState<string>(
     (maxSlippage * 100).toString()
   );
@@ -40,7 +43,7 @@ function SwapSettingsDialog({ DialogProps }: SwapSettingsDialogProps) {
     event: ChangeEvent<HTMLInputElement>,
     checked: boolean
   ) => {
-    return setIsAutoSlippage(checked);
+    return onAutoSlippage(checked);
   };
 
   const handleChangeSlippage = (e: ChangeEvent<HTMLInputElement>) => {
@@ -48,13 +51,11 @@ function SwapSettingsDialog({ DialogProps }: SwapSettingsDialogProps) {
   };
 
   const handleSave = () => {
-    setIsAutoSlippageStore(isAutoSlippage);
-
     if (isAutoSlippage) {
-      setMaxSlippage(0.0);
+      onChangeSlippage(0);
       setSlippage("0.0");
     } else {
-      setMaxSlippage(parseFloat(slippage) / 100);
+      onChangeSlippage(parseFloat(slippage) / 100);
     }
     handleClose();
   };

@@ -29,7 +29,7 @@ import SwapFeeSummary from "./SwapFeeSummary";
 
 export interface SwapProps {
   chainId?: ChainId;
-  currency?: string;
+  currency: string;
   provider?: providers.Web3Provider;
   account?: string;
   isActivating?: boolean;
@@ -70,6 +70,7 @@ export default function Swap({
   sellAmount,
   sellToken,
   buyToken,
+  currency,
   isExecuting,
   quote,
   sellTokenBalance,
@@ -89,6 +90,7 @@ export default function Swap({
   onShowTransak,
 }: SwapProps) {
   const handleSelectSellToken = (token?: Token) => {
+    console.log("sadas");
     onSelectToken("sell", token);
   };
 
@@ -145,7 +147,7 @@ export default function Swap({
           >
             {!disableNotificationsButton && (
               <IconButton size="small" onClick={onShowTransactions}>
-                <AppNotificationsBadge />
+                <AppNotificationsBadge /> 1
               </IconButton>
             )}
 
@@ -196,7 +198,11 @@ export default function Swap({
             />
           </Stack>
           {execType === "swap" && quote && (
-            <SwapFeeSummary quote={quote} chainId={chainId} />
+            <SwapFeeSummary
+              quote={quote}
+              chainId={chainId}
+              currency={currency}
+            />
           )}
           {isActive ? (
             <Button

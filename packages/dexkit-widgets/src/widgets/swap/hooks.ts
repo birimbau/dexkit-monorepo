@@ -10,7 +10,6 @@ import transakSDK from "@transak/transak-sdk";
 
 import { Connector } from "@web3-react/types";
 import { BigNumber, ethers, providers } from "ethers";
-import { useAtomValue } from "jotai";
 import { useSnackbar } from "notistack";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useIntl } from "react-intl";
@@ -35,7 +34,6 @@ import {
 import { ZeroExQuote, ZeroExQuoteResponse } from "../../services/zeroex/types";
 import { Token } from "../../types";
 import { isAddressEqual, switchNetwork } from "../../utils";
-import { isAutoSlippageAtom, maxSlippageAtom } from "./atoms";
 import {
   ExecType,
   NotificationCallbackParams,
@@ -232,6 +230,8 @@ export function useSwapState({
   account,
   isActive,
   isActivating,
+  maxSlippage,
+  isAutoSlippage,
   transakApiKey,
   onChangeNetwork,
   onNotification,
@@ -267,10 +267,9 @@ export function useSwapState({
   onNotification: (params: NotificationCallbackParams) => void;
   onConnectWallet: () => void;
   onShowTransactions: () => void;
+  maxSlippage: number;
+  isAutoSlippage: boolean;
 }): SwapState {
-  const maxSlippage = useAtomValue(maxSlippageAtom);
-  const isAutoSlippage = useAtomValue(isAutoSlippageAtom);
-
   const transak = useMemo(() => {
     if (transakApiKey) {
       return new transakSDK({
@@ -315,8 +314,9 @@ export function useSwapState({
   const [showSelect, setShowSelectToken] = useState(false);
 
   const [quoteFor, setQuoteFor] = useState<SwapSide>();
-  const [sellToken, setSellToken] =
-    useState<Token | undefined>(defaultSellToken);
+  const [sellToken, setSellToken] = useState<Token | undefined>(
+    defaultSellToken
+  );
   const [buyToken, setBuyToken] = useState<Token | undefined>(defaultBuyToken);
   const [sellAmount, setSellAmount] = useState<BigNumber>(BigNumber.from(0));
   const [buyAmount, setBuyAmount] = useState<BigNumber>(BigNumber.from(0));

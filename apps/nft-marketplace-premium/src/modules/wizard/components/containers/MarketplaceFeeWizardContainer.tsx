@@ -1,0 +1,102 @@
+import Button from '@mui/material/Button';
+import Divider from '@mui/material/Divider';
+import Grid from '@mui/material/Grid';
+import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
+import { useCallback, useEffect, useState } from 'react';
+import { FormattedMessage } from 'react-intl';
+import { AppConfig } from '../../../../types/config';
+import FeesSection from '../sections/FeesSection';
+import { FeeForm } from '../sections/FeesSectionForm';
+
+interface Props {
+  config: AppConfig;
+  onSave: (config: AppConfig) => void;
+}
+
+export default function MarketplaceFeeWizardContainer({
+  config,
+  onSave,
+}: Props) {
+  const [fees, setFees] = useState<FeeForm[]>([]);
+  const handleSaveFees = (fee: FeeForm) => {
+    setFees((values) => [...values, fee]);
+  };
+
+  const handleRemoveFees = useCallback((index: number) => {
+    setFees((value) => {
+      const newArr = [...value];
+
+      newArr.splice(index, 1);
+
+      return newArr;
+    });
+  }, []);
+
+  useEffect(() => {
+    if (config.fees) {
+      setFees(
+        config.fees?.map((f: any) => ({
+          amountPercentage: f.amount_percentage,
+          recipient: f.recipient,
+        })) || []
+      );
+    }
+  }, [config]);
+
+  const handleSave = () => {
+    if (fees) {
+      const newConfig = {
+        ...config,
+        fees: fees.map((f) => {
+          return {
+            amount_percentage: f.amountPercentage,
+            recipient: f.recipient,
+          };
+        }),
+      };
+      onSave(newConfig);
+    }
+  };
+
+  return (
+    <Grid container spacing={2}>
+      <Grid item xs={12}>
+        <Stack>
+          <Typography variant={'subtitle2'}>
+            <FormattedMessage
+              id="marketplace.fees"
+              defaultMessage="Marketplace fees"
+            />
+          </Typography>
+          <Typography variant={'body2'}>
+            <FormattedMessage
+              id="edit.marketplace.fees"
+              defaultMessage="Edit marketplace fees"
+            />
+          </Typography>
+        </Stack>
+      </Grid>
+      <Grid item xs={12}>
+        <Divider />
+      </Grid>
+      <Grid item xs={12} sm={6}>
+        <FeesSection
+          fees={fees}
+          onSave={handleSaveFees}
+          onRemove={handleRemoveFees}
+        />
+      </Grid>
+      <Grid item xs={12}>
+        <Divider />
+      </Grid>
+      <Grid item xs={12}>
+        <Stack spacing={1} direction="row" justifyContent="flex-end">
+          <Button variant="contained" color="primary" onClick={handleSave}>
+            <FormattedMessage id="save" defaultMessage="Save" />
+          </Button>
+        </Stack>
+      </Grid>
+    </Grid>
+  );
+}
