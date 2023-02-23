@@ -31,6 +31,8 @@ function SwapTokenField({
     }
   };
 
+  console.log("balance", balance);
+
   return (
     <Box
       sx={(theme) => ({

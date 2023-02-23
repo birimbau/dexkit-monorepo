@@ -26,6 +26,8 @@ export default function SwapFeeSummary({
     chainId,
   });
 
+  console.log("currency", currency);
+
   const maxFee = useMemo(() => {
     if (quote) {
       return BigNumber.from(quote.gas).mul(quote.gasPrice);

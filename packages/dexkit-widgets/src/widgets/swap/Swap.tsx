@@ -147,7 +147,7 @@ export default function Swap({
           >
             {!disableNotificationsButton && (
               <IconButton size="small" onClick={onShowTransactions}>
-                <AppNotificationsBadge /> 1
+                <AppNotificationsBadge />
               </IconButton>
             )}
 

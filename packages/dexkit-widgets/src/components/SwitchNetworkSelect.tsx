@@ -40,7 +40,7 @@ function SwitchNetworkSelect({
     <Select
       {...SelectProps}
       disabled={isLoading}
-      value={String(chainId)}
+      value={chainId ? String(chainId) : ""}
       onChange={handleChange}
       renderValue={
         chainId

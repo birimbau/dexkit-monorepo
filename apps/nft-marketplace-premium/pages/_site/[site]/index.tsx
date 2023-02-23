@@ -13,8 +13,9 @@ import { AppConfig, AppPageSection } from '../../../src/types/config';
 
 import { SectionsRenderer } from '@/modules/wizard/components/sections/SectionsRenderer';
 import { SwapWidget } from '@dexkit/widgets';
-import { NoSsr } from '@mui/material';
-import { AppErrorBoundary } from 'src/components/AppErrorBoundary';
+import { Button, NoSsr } from '@mui/material';
+import { Suspense } from 'react';
+import { ErrorBoundary } from 'react-error-boundary';
 
 const Home: NextPage<{ sections: AppPageSection[] }> = ({ sections }) => {
   return (
@@ -22,18 +23,22 @@ const Home: NextPage<{ sections: AppPageSection[] }> = ({ sections }) => {
       <SectionsRenderer sections={sections} />
       {/*<ActionButtonsSection />*/}
       <NoSsr>
-        <AppErrorBoundary
+        <ErrorBoundary
           fallbackRender={({ error, resetErrorBoundary }) => (
-            <div onClick={resetErrorBoundary}>{JSON.stringify(error)}</div>
+            <div onClick={resetErrorBoundary}>
+              <Button>{error.message}</Button>
+            </div>
           )}
         >
-          <SwapWidget
-            renderOptions={{ configsByChain: {}, currency: 'usd' }}
-            onConnectWallet={() => {}}
-            onNotification={() => {}}
-            onShowTransactions={() => {}}
-          />
-        </AppErrorBoundary>
+          <Suspense fallback={<h1>loading</h1>}>
+            <SwapWidget
+              renderOptions={{ configsByChain: {}, currency: 'usd' }}
+              onConnectWallet={() => {}}
+              onNotification={() => {}}
+              onShowTransactions={() => {}}
+            />
+          </Suspense>
+        </ErrorBoundary>
       </NoSsr>
     </MainLayout>
   );
