@@ -1,19 +1,6 @@
 import { Network } from "../types";
 import { ChainId } from "./enum";
 
-// @ts-ignore
-import ethereumIcon from "../../assets/icons/networks/ethereum.png";
-// @ts-ignore
-import polygonIcon from "../../assets/icons/networks/polygon.png";
-// @ts-ignore
-import avaxIcon from "../../assets/icons/networks/avax.png";
-// @ts-ignore
-import bnbIcon from "../../assets/icons/networks/bnb.svg";
-// @ts-ignore
-import optimismIcon from "../../assets/icons/networks/optimism.svg";
-// @ts-ignore
-import fantomIcon from "../../assets/icons/networks/fantom.png";
-
 export const NETWORKS: { [key: number]: Network } = {
   [ChainId.Ethereum]: {
     chainId: ChainId.Ethereum,
@@ -23,7 +10,8 @@ export const NETWORKS: { [key: number]: Network } = {
     slug: "ethereum",
     coingeckoPlatformId: "ethereum",
     wrappedAddress: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
-    imageUrl: ethereumIcon,
+    imageUrl:
+      "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/info/logo.png",
     providerRpcUrl: `https://eth.llamarpc.com`,
   },
   [ChainId.Mumbai]: {
@@ -33,7 +21,8 @@ export const NETWORKS: { [key: number]: Network } = {
     name: "Mumbai",
     slug: "mumbai",
     wrappedAddress: "0x9c3c9283d3e44854697cd22d3faa240cfb032889",
-    imageUrl: polygonIcon,
+    imageUrl:
+      "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/info/logo.png",
     providerRpcUrl: `https://rpc.ankr.com/polygon_mumbai`,
     testnet: true,
   },
@@ -46,7 +35,8 @@ export const NETWORKS: { [key: number]: Network } = {
     coingeckoPlatformId: "matic-network",
     wrappedAddress: `0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270`,
     providerRpcUrl: `https://poly-rpc.gateway.pokt.network`,
-    imageUrl: polygonIcon,
+    imageUrl:
+      "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/info/logo.png",
   },
   [ChainId.BSC]: {
     chainId: ChainId.BSC,
@@ -57,7 +47,8 @@ export const NETWORKS: { [key: number]: Network } = {
     coingeckoPlatformId: "binancecoin",
     wrappedAddress: "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c",
     providerRpcUrl: "https://bscrpc.com",
-    imageUrl: bnbIcon,
+    imageUrl:
+      "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/binance/info/logo.png",
   },
 
   [ChainId.Avax]: {
@@ -69,7 +60,8 @@ export const NETWORKS: { [key: number]: Network } = {
     coingeckoPlatformId: "avalanche-2",
     wrappedAddress: "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7",
     providerRpcUrl: "https://api.avax.network/ext/bc/C/rpc",
-    imageUrl: avaxIcon,
+    imageUrl:
+      "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/avalanchec/info/logo.png",
   },
   [ChainId.Fantom]: {
     chainId: ChainId.Fantom,
@@ -79,7 +71,8 @@ export const NETWORKS: { [key: number]: Network } = {
     slug: "fantom",
     coingeckoPlatformId: "fantom",
     wrappedAddress: "0x21be370D5312f44cB42ce377BC9b8a0cEF1A4C83",
-    imageUrl: fantomIcon,
+    imageUrl:
+      "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/fantom/info/logo.png",
     providerRpcUrl: "https://rpc.ftm.tools",
   },
   [ChainId.Optimism]: {
@@ -90,7 +83,8 @@ export const NETWORKS: { [key: number]: Network } = {
     slug: "optimism",
     coingeckoPlatformId: "ethereum",
     wrappedAddress: "0x4200000000000000000000000000000000000006",
-    imageUrl: optimismIcon,
+    imageUrl:
+      "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/optimism/info/logo.png",
     providerRpcUrl: "https://mainnet.optimism.io",
   },
 
@@ -102,7 +96,8 @@ export const NETWORKS: { [key: number]: Network } = {
     slug: "goerli",
     coingeckoPlatformId: "ethereum",
     wrappedAddress: "0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6",
-    imageUrl: ethereumIcon,
+    imageUrl:
+      "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/info/logo.png",
     providerRpcUrl: "https://endpoints.omniatech.io/v1/eth/goerli/public",
     testnet: process.env.NODE_ENV !== "development",
   },

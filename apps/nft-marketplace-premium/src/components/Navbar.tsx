@@ -44,6 +44,7 @@ import {
   drawerIsOpenAtom,
   hasPendingTransactionsAtom,
   localeAtom,
+  showAppTransactionsAtom,
   showSelectCurrencyAtom,
   showSelectLocaleAtom,
   uncheckedTransactionsAtom,
@@ -99,7 +100,9 @@ function Navbar() {
     return uncheckedTransactions.filter((tx) => tx.chainId === chainId);
   }, [chainId, uncheckedTransactions]);
 
-  const [showTransactions, setShowTransactions] = useState(false);
+  const [showTransactions, setShowTransactions] = useAtom(
+    showAppTransactionsAtom
+  );
 
   const handleOpenTransactions = () => setShowTransactions(true);
   const handleCloseNotifications = () => setShowTransactions(false);

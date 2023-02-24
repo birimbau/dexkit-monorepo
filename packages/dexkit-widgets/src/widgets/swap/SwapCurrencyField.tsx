@@ -31,8 +31,6 @@ function SwapTokenField({
     }
   };
 
-  console.log("balance", balance);
-
   return (
     <Box
       sx={(theme) => ({
@@ -66,13 +64,10 @@ function SwapTokenField({
         >
           <Typography variant="body2" align="right">
             <FormattedMessage
-              id="balance"
+              id="token.balance"
               defaultMessage="balance: {balance}"
               values={{
-                balance:
-                  balance && token
-                    ? formatBigNumber(balance, token?.decimals)
-                    : 0,
+                balance: formatBigNumber(balance, token?.decimals),
               }}
             />
           </Typography>

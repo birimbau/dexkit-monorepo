@@ -12,34 +12,12 @@ import { getAppConfig } from '../../../src/services/app';
 import { AppConfig, AppPageSection } from '../../../src/types/config';
 
 import { SectionsRenderer } from '@/modules/wizard/components/sections/SectionsRenderer';
-import { SwapWidget } from '@dexkit/widgets';
-import { Button, NoSsr } from '@mui/material';
-import { Suspense } from 'react';
-import { ErrorBoundary } from 'react-error-boundary';
 
 const Home: NextPage<{ sections: AppPageSection[] }> = ({ sections }) => {
   return (
     <MainLayout disablePadding>
       <SectionsRenderer sections={sections} />
       {/*<ActionButtonsSection />*/}
-      <NoSsr>
-        <ErrorBoundary
-          fallbackRender={({ error, resetErrorBoundary }) => (
-            <div onClick={resetErrorBoundary}>
-              <Button>{error.message}</Button>
-            </div>
-          )}
-        >
-          <Suspense fallback={<h1>loading</h1>}>
-            <SwapWidget
-              renderOptions={{ configsByChain: {}, currency: 'usd' }}
-              onConnectWallet={() => {}}
-              onNotification={() => {}}
-              onShowTransactions={() => {}}
-            />
-          </Suspense>
-        </ErrorBoundary>
-      </NoSsr>
     </MainLayout>
   );
 };

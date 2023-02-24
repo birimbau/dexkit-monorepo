@@ -32,6 +32,10 @@ export interface SwapWidgetProps {
   }: NotificationCallbackParams) => void;
   onConnectWallet: () => void;
   onShowTransactions: () => void;
+  maxSlippage: number;
+  isAutoSlippage: boolean;
+  onChangeSlippage: (value: number) => void;
+  onAutoSlippage: (value: boolean) => void;
 }
 
 export function SwapWidget({
@@ -39,6 +43,10 @@ export function SwapWidget({
   onNotification,
   onConnectWallet,
   onShowTransactions,
+  maxSlippage,
+  isAutoSlippage,
+  onChangeSlippage,
+  onAutoSlippage,
 }: SwapWidgetProps) {
   const { provider, connector, account, isActive, isActivating } =
     useWeb3React();
@@ -56,13 +64,6 @@ export function SwapWidget({
   const [selectedChainId, setSelectedChainId] = useState<ChainId>(
     defaultChainId ? defaultChainId : ChainId.Ethereum
   );
-
-  const isAutoSlippage = !(selectedChainId && configsByChain[selectedChainId]);
-
-  const maxSlippage =
-    selectedChainId && configsByChain[selectedChainId]
-      ? configsByChain[selectedChainId].slippage
-      : 0;
 
   const swapProvider = useSwapProvider({
     provider,
@@ -201,8 +202,8 @@ export function SwapWidget({
           fullWidth: true,
           onClose: handleCloseSettings,
         }}
-        onAutoSlippage={() => {}}
-        onChangeSlippage={() => {}}
+        onAutoSlippage={onAutoSlippage}
+        onChangeSlippage={onChangeSlippage}
         maxSlippage={maxSlippage}
         isAutoSlippage={isAutoSlippage}
       />

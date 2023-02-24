@@ -22,10 +22,10 @@ export const appStateAtom = atomWithStorage<AppState>('appState', {
   accountAssets: {
     lastTimeFetched: {
       time: new Date().getTime(),
-      query: ''
-    }
+      query: '',
+    },
   },
-  hiddenAssets: {}
+  hiddenAssets: {},
 });
 
 export const transactionsAtom = focusAtom<
@@ -91,15 +91,27 @@ export const assetsAtom = focusAtom<AppState, { [key: string]: Asset }, void>(
   (o) => o.prop('assets')
 );
 
-export const accountAssetsAtom = focusAtom<AppState, { data?: { network?: string, assets?: Asset[], account?: string, total?: number, page?: number, perPage?: number; }[], lastTimeFetched?: { query: string, time: number } }, void>(
-  appStateAtom,
-  (o) => o.prop('accountAssets')
-);
+export const accountAssetsAtom = focusAtom<
+  AppState,
+  {
+    data?: {
+      network?: string;
+      assets?: Asset[];
+      account?: string;
+      total?: number;
+      page?: number;
+      perPage?: number;
+    }[];
+    lastTimeFetched?: { query: string; time: number };
+  },
+  void
+>(appStateAtom, (o) => o.prop('accountAssets'));
 
-export const hiddenAssetsAtom = focusAtom<AppState, { [key: string]: boolean }, void>(
-  appStateAtom,
-  (o) => o.prop('hiddenAssets')
-);
+export const hiddenAssetsAtom = focusAtom<
+  AppState,
+  { [key: string]: boolean },
+  void
+>(appStateAtom, (o) => o.prop('hiddenAssets'));
 
 export const transactionDialogOpenAtom = atom(false);
 export const transactionDialogHashAtom = atom<string | undefined>(undefined);
@@ -131,3 +143,5 @@ export const maxSlippageAtom = atomWithStorage<number>('maxSlippage', 0.0);
 
 export const showSelectCurrencyAtom = atom<boolean>(false);
 export const showSelectLocaleAtom = atom<boolean>(false);
+
+export const showAppTransactionsAtom = atom<boolean>(false);

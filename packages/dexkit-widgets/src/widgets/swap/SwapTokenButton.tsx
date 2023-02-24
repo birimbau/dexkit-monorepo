@@ -8,7 +8,6 @@ import {
 import { memo } from "react";
 import { FormattedMessage } from "react-intl";
 import { TOKEN_ICON_URL } from "../../constants";
-import { ChainId } from "../../constants/enum";
 import { Token } from "../../types";
 
 export interface SwapTokenButtonProps {
@@ -35,7 +34,7 @@ function SwapTokenButton({ token, ButtonBaseProps }: SwapTokenButtonProps) {
             })}
             src={
               token?.contractAddress
-                ? TOKEN_ICON_URL(token?.contractAddress, ChainId.Ethereum)
+                ? TOKEN_ICON_URL(token?.contractAddress, token.chainId)
                 : undefined
             }
           />

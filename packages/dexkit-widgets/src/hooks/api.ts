@@ -22,7 +22,6 @@ export function usePlatformCoinSearch({
       );
 
       return [...req.data];
-    },
-    { suspense: true }
+    }
   );
 }
