@@ -29,7 +29,13 @@ const WidgetComponent = () => {
 
   return (
     <SwapWidget
-      renderOptions={{ configsByChain: {}, currency: 'usd' }}
+      renderOptions={{
+        configsByChain: {},
+        currency: 'usd',
+        transakApiKey:
+          process.env.NEXT_PUBLIC_TRANSAK_API_KEY ||
+          `4cf44cc4-69d7-4f4d-8237-05cc9076aa41`,
+      }}
       onConnectWallet={() => {
         setOpen(true);
       }}

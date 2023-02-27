@@ -16,6 +16,7 @@ export interface SwapConfirmDialogProps {
   quote?: ZeroExQuoteResponse | null;
   chainId?: ChainId;
   onConfirm: () => void;
+  currency: string;
 }
 
 export default function SwapConfirmDialog({
@@ -23,6 +24,7 @@ export default function SwapConfirmDialog({
   quote,
   chainId,
   onConfirm,
+  currency,
 }: SwapConfirmDialogProps) {
   const { onClose } = DialogProps;
 
@@ -41,7 +43,7 @@ export default function SwapConfirmDialog({
         onClose={handleClose}
       />
       <DialogContent dividers>
-        <SwapFeeSummary quote={quote} chainId={chainId} />
+        <SwapFeeSummary quote={quote} chainId={chainId} currency={currency} />
       </DialogContent>
       <DialogActions>
         <Button onClick={onConfirm} variant="contained">

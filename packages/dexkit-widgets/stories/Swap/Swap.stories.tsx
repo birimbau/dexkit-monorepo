@@ -16,9 +16,13 @@ const Template: ComponentStory<typeof SwapWidget> = (args: SwapWidgetProps) => {
   return (
     <DexkitContextProvider>
       {({
+        isAutoSlippage,
+        maxSlippage,
         handleNotification,
         handleConnectWallet,
         handleShowTransactions,
+        handleAutoSlippage,
+        handleChangeSlippage,
       }) => (
         <Grid container justifyContent="center" spacing={2}>
           <Grid item xs={12} sm={4}>
@@ -27,6 +31,10 @@ const Template: ComponentStory<typeof SwapWidget> = (args: SwapWidgetProps) => {
               onNotification={handleNotification}
               onConnectWallet={handleConnectWallet}
               onShowTransactions={handleShowTransactions}
+              isAutoSlippage={isAutoSlippage}
+              maxSlippage={maxSlippage}
+              onChangeSlippage={handleChangeSlippage}
+              onAutoSlippage={handleAutoSlippage}
             />
           </Grid>
         </Grid>
@@ -38,14 +46,21 @@ const Template: ComponentStory<typeof SwapWidget> = (args: SwapWidgetProps) => {
 export const Default = Template.bind({});
 
 Default.args = {
-  renderOptions: {},
+  renderOptions: {
+    configsByChain: {},
+  },
 };
 
 export const TokensSelected = Template.bind({});
 
 TokensSelected.args = {
   renderOptions: {
-    defaultSellToken: OPTIMISM_TOKEN,
+    configsByChain: {
+      [ChainId.Optimism]: {
+        slippage: 0,
+        sellToken: OPTIMISM_TOKEN,
+      },
+    },
     defaultChainId: ChainId.Optimism,
   },
 };
@@ -54,6 +69,7 @@ export const NoNotifications = Template.bind({});
 
 NoNotifications.args = {
   renderOptions: {
+    configsByChain: {},
     disableNotificationsButton: true,
   },
 };
@@ -62,6 +78,26 @@ export const WithTransak = Template.bind({});
 
 WithTransak.args = {
   renderOptions: {
+    configsByChain: {},
     transakApiKey: "4cf44cc4-69d7-4f4d-8237-05cc9076aa41",
+  },
+};
+
+export const WithTransakButton = Template.bind({});
+
+WithTransakButton.args = {
+  renderOptions: {
+    configsByChain: {},
+    transakApiKey: "4cf44cc4-69d7-4f4d-8237-05cc9076aa41",
+    enableBuyCryptoButton: true,
+  },
+};
+
+export const DisableFooter = Template.bind({});
+
+DisableFooter.args = {
+  renderOptions: {
+    configsByChain: {},
+    disableFooter: true,
   },
 };

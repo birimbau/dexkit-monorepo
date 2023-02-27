@@ -35,7 +35,7 @@ function SwapTokenButton({ token, ButtonBaseProps }: SwapTokenButtonProps) {
             src={
               token?.contractAddress
                 ? TOKEN_ICON_URL(token?.contractAddress, token.chainId)
-                : undefined
+                : token?.logoURI
             }
           />
 

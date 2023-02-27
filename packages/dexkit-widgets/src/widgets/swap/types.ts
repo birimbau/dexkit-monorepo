@@ -60,6 +60,8 @@ export type SwapState = {
 //TODO: array of tokens by chainId e defaultChainId without
 export type RenderOptions = {
   disableNotificationsButton?: boolean;
+  enableBuyCryptoButton?: boolean;
+  disableFooter?: boolean;
   configsByChain: {
     [key: number]: {
       slippage: number;

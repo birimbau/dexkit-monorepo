@@ -57,6 +57,8 @@ export function SwapWidget({
     disableNotificationsButton,
     transakApiKey,
     currency,
+    disableFooter,
+    enableBuyCryptoButton,
   } = options;
 
   const execSwapMutation = useSwapExec({ onNotification });
@@ -124,6 +126,7 @@ export function SwapWidget({
     isActivating,
     maxSlippage,
     isAutoSlippage,
+    transakApiKey,
     defaultBuyToken:
       selectedChainId && configsByChain[selectedChainId]
         ? configsByChain[selectedChainId].buyToken
@@ -194,6 +197,7 @@ export function SwapWidget({
         quote={quote}
         onConfirm={handleConfirmExecSwap}
         chainId={chainId}
+        currency={currency || "usd"}
       />
       <SwapSettingsDialog
         DialogProps={{
@@ -235,6 +239,8 @@ export function SwapWidget({
         onShowSettings={handleShowSettings}
         onShowTransactions={handleShowTransactions}
         onShowTransak={transakApiKey ? handleShowTransak : undefined}
+        disableFooter={disableFooter}
+        enableBuyCryptoButton={enableBuyCryptoButton}
       />
     </>
   );

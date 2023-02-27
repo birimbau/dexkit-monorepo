@@ -6,8 +6,8 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import Icon from '../../../components/Icon';
 import DollarSquare from '../../../components/icons/DollarSquare';
 
-import { SwappableAssetV4 } from '@traderxyz/nft-swap-sdk';
 import { useQueryClient } from '@tanstack/react-query';
+import { SwappableAssetV4 } from '@traderxyz/nft-swap-sdk';
 import {
   useConnectWalletDialog,
   useSignMessageDialog,
@@ -165,7 +165,7 @@ export function AssetPricePaper({ address, id }: Props) {
   }, [signMessageDialog]);
 
   const handleInvalidateCache = useCallback(() => {
-    queryClient.invalidateQueries(GET_NFT_ORDERS);
+    queryClient.invalidateQueries({ queryKey: [GET_NFT_ORDERS] });
   }, [signMessageDialog]);
 
   const handleSignMessageError = useCallback(

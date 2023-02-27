@@ -5,7 +5,7 @@ import ConnectWalletDialog from "./dialogs/ConnectWalletDialog";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useAtom } from "jotai";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useOrderedConnectors, useTransactions } from "../hooks";
 import { showConnectWalletAtom, showTransactionsAtom } from "./atoms";
 
@@ -29,6 +29,10 @@ export interface DexkitContextProviderProps {
     }: NotificationCallbackParams) => void;
     handleConnectWallet: () => void;
     handleShowTransactions: () => void;
+    handleAutoSlippage: (value: boolean) => void;
+    handleChangeSlippage: (value: number) => void;
+    isAutoSlippage: boolean;
+    maxSlippage: number;
   }) => React.ReactNode | React.ReactNode[];
   renderDialogs?: () => React.ReactNode | React.ReactNode[];
   locale?: string;
@@ -44,6 +48,9 @@ export default function DexkitContextProvider({
   theme,
 }: DexkitContextProviderProps) {
   const connectors = useOrderedConnectors();
+
+  const [isAutoSlippage, setIsAutoSlippage] = useState(true);
+  const [maxSlippage, setMaxSlippage] = useState(0);
 
   const [showConnectWallet, setShowConnectWallet] = useAtom(
     showConnectWalletAtom
@@ -91,6 +98,14 @@ export default function DexkitContextProvider({
     setShowTransactions(true);
   };
 
+  const handleAutoSlippage = (value: boolean) => {
+    setIsAutoSlippage(value);
+  };
+
+  const handleChangeSlippage = (value: number) => {
+    setMaxSlippage(value);
+  };
+
   return (
     <QueryClientProvider client={queryClient}>
       <IntlProvider locale={locale ? locale : "en"} defaultLocale="en">
@@ -121,6 +136,10 @@ export default function DexkitContextProvider({
                 handleNotification,
                 handleConnectWallet,
                 handleShowTransactions,
+                isAutoSlippage,
+                maxSlippage,
+                handleAutoSlippage,
+                handleChangeSlippage,
               })}
               <Updater />
             </Web3ReactProvider>

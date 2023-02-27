@@ -1,3 +1,5 @@
+import Search from "@mui/icons-material/Search";
+
 import {
   Box,
   Button,
@@ -5,11 +7,12 @@ import {
   DialogContent,
   DialogProps,
   Divider,
+  InputAdornment,
   ListSubheader,
   Stack,
 } from "@mui/material";
 import { providers } from "ethers";
-import { FormattedMessage } from "react-intl";
+import { FormattedMessage, useIntl } from "react-intl";
 import AppDialogTitle from "../../components/AppDialogTitle";
 import SearchTextField from "../../components/SearchTextField";
 import SelectCoinList from "../../components/SelectCoinList";
@@ -40,6 +43,8 @@ export default function SwapSelectCoinDialog({
   onClearRecentTokens,
 }: SwapSelectCoinDialogProps) {
   const { onClose } = DialogProps;
+
+  const { formatMessage } = useIntl();
 
   const handleClose = () => {
     if (onClose) {
@@ -76,7 +81,21 @@ export default function SwapSelectCoinDialog({
             <Box sx={{ px: 2 }}>
               <SearchTextField
                 onChange={onQueryChange}
-                TextFieldProps={{ fullWidth: true }}
+                TextFieldProps={{
+                  fullWidth: true,
+                  InputProps: {
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <Search color="primary" />
+                      </InputAdornment>
+                    ),
+                  },
+                  placeholder: formatMessage({
+                    id: "search.for.a.coin.by.name.symbol.and.address",
+                    defaultMessage:
+                      "Search for a coin by name, symbol and address",
+                  }),
+                }}
               />
             </Box>
             <SwapFeaturedTokens onSelect={onSelect} chainId={chainId} />

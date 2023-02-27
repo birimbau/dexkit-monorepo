@@ -230,6 +230,7 @@ export function useSwapState({
   account,
   isActive,
   isActivating,
+  disableFooter,
   maxSlippage,
   isAutoSlippage,
   transakApiKey,
@@ -255,6 +256,8 @@ export function useSwapState({
     },
     unknown
   >;
+  disableFooter?: boolean;
+  enableBuyCryptoButton?: boolean;
   provider?: ethers.providers.BaseProvider;
   connector?: Connector;
   isActive?: boolean;

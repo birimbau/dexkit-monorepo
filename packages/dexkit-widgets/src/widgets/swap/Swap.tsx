@@ -17,6 +17,7 @@ import SwapTokenField from "./SwapCurrencyField";
 import SwapSwitchTokensButton from "./SwapSwitchTokensButton";
 import { ExecType, SwapSide } from "./types";
 
+import { CreditCard } from "@mui/icons-material";
 import SettingsIcon from "@mui/icons-material/Settings";
 import WalletIcon from "@mui/icons-material/Wallet";
 import { AppNotificationsBadge } from "../../components/AppNotificationBadge";
@@ -49,6 +50,8 @@ export interface SwapProps {
   isProviderReady?: boolean;
   isQuoting?: boolean;
   disableNotificationsButton?: boolean;
+  enableBuyCryptoButton?: boolean;
+  disableFooter?: boolean;
   onSelectToken: (selectFor: SwapSide, token?: Token) => void;
   onSwapTokens: () => void;
   onChangeSellAmount: (value: BigNumber) => void;
@@ -72,12 +75,14 @@ export default function Swap({
   buyToken,
   currency,
   isExecuting,
+  disableFooter,
   quote,
   sellTokenBalance,
   buyTokenBalance,
   insufficientBalance,
   isProviderReady,
   disableNotificationsButton,
+  enableBuyCryptoButton,
   onSelectToken,
   onSwapTokens,
   onChangeSellAmount,
@@ -90,7 +95,6 @@ export default function Swap({
   onShowTransak,
 }: SwapProps) {
   const handleSelectSellToken = (token?: Token) => {
-    console.log("sadas");
     onSelectToken("sell", token);
   };
 
@@ -145,12 +149,20 @@ export default function Swap({
             justifyContent="space-between"
             spacing={1}
           >
+            {enableBuyCryptoButton && (
+              <Button
+                onClick={onShowTransak}
+                size="small"
+                startIcon={<CreditCard />}
+              >
+                <FormattedMessage id="buy.crypto" defaultMessage="Buy Crypto" />
+              </Button>
+            )}
             {!disableNotificationsButton && (
               <IconButton size="small" onClick={onShowTransactions}>
                 <AppNotificationsBadge />
               </IconButton>
             )}
-
             <IconButton size="small" onClick={onShowSettings}>
               <SettingsIcon />
             </IconButton>
@@ -238,21 +250,23 @@ export default function Swap({
             </Button>
           )}
           {onShowTransak && insufficientBalance && isActive && (
-            <Button variant="outlined" color="primary">
+            <Button onClick={onShowTransak} variant="outlined" color="primary">
               <FormattedMessage id="buy.crypto" defaultMessage="Buy Crypto" />
             </Button>
           )}
         </Stack>
       </CardContent>
-      <Box sx={{ px: 2, py: 1 }}>
-        <Typography variant="body1" align="center">
-          <FormattedMessage
-            id="powered.by.dexkit"
-            defaultMessage="Powered by {dexkit}"
-            values={{ dexkit: <strong>DexKit</strong> }}
-          />
-        </Typography>
-      </Box>
+      {!disableFooter && (
+        <Box sx={{ px: 2, py: 1 }}>
+          <Typography variant="body1" align="center">
+            <FormattedMessage
+              id="powered.by.dexkit"
+              defaultMessage="Powered by {dexkit}"
+              values={{ dexkit: <strong>DexKit</strong> }}
+            />
+          </Typography>
+        </Box>
+      )}
     </Card>
   );
 }
