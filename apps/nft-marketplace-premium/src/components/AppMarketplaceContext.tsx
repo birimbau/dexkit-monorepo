@@ -1,5 +1,5 @@
 import { DexkitProvider } from '@dexkit/ui/components';
-import { createTheme, responsiveFontSizes } from '@mui/material';
+import { createTheme, responsiveFontSizes, Theme } from '@mui/material';
 import { useAtomValue } from 'jotai';
 import { DefaultSeo } from 'next-seo';
 import { useMemo } from 'react';
@@ -19,7 +19,7 @@ export function AppMarketplaceContext({
   const appConfig = useAppConfig();
   const locale = useAtomValue(localeAtom);
 
-  const theme = useMemo(() => {
+  const theme = useMemo<Theme>(() => {
     let tempTheme = getTheme(defaultAppConfig.theme)?.theme;
     let fontFamily;
     if (appConfig?.font) {

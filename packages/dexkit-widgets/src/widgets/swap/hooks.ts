@@ -736,7 +736,7 @@ export function useSwapProvider({
   provider,
   defaultChainId,
 }: {
-  provider?: ethers.providers.BaseProvider;
+  provider?: ethers.providers.BaseProvider | ethers.providers.Web3Provider;
   defaultChainId: ChainId;
 }) {
   if (!provider) {

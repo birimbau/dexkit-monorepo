@@ -1,6 +1,5 @@
 import { CacheProvider, EmotionCache } from '@emotion/react';
-import CssBaseline from '@mui/material/CssBaseline';
-import { responsiveFontSizes, ThemeProvider } from '@mui/material/styles';
+import { responsiveFontSizes } from '@mui/material/styles';
 import {
   DehydratedState,
   Hydrate,
@@ -13,28 +12,16 @@ import * as React from 'react';
 import createEmotionCache from '../src/createEmotionCache';
 import { getTheme } from '../src/theme';
 
-import { DefaultSeo } from 'next-seo';
-
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 
-import { Web3ReactProvider } from '@web3-react/core';
-import { Provider } from 'jotai';
-import { hooks as metaMaskHooks, metaMask } from '../src/connectors/metamask';
-import {
-  hooks as walletConnectHooks,
-  walletConnect,
-} from '../src/connectors/walletConnect';
-
 import { useRouter } from 'next/router';
-import { SnackbarProvider } from 'notistack';
-import AppIntlProvider from '../src/components/AppIntlProvider';
-import { Updater } from '../src/components/transactions/Updater';
 
 import { Backdrop, CircularProgress, createTheme } from '@mui/material';
 import defaultAppConfig from '../config/app.json';
 
+import { AppMarketplaceContext } from 'src/components/AppMarketplaceContext';
 import { AppConfigContext } from '../src/contexts';
 import { AppConfig } from '../src/types/config';
 import './customCss.css';
@@ -176,40 +163,24 @@ export default function MyApp(props: MyAppProps) {
           <meta name="theme-color" content={theme?.palette.primary.main} />
         </Head>
         <AppConfigContext.Provider value={config}>
-          <ThemeProvider theme={theme}>
-            <QueryClientProvider client={queryClient}>
-              <Hydrate state={pageProps.dehydratedState}>
-                <Provider>
-                  <SnackbarProvider maxSnack={3}>
-                    <AppIntlProvider>
-                      <DefaultSeo {...SEO} />
-                      <CssBaseline />
-                      <LocalizationProvider dateAdapter={AdapterMoment}>
-                        <Web3ReactProvider
-                          connectors={[
-                            [metaMask as any, metaMaskHooks],
-                            [walletConnect, walletConnectHooks],
-                          ]}
-                        >
-                          <Updater />
-                          <Backdrop
-                            sx={{
-                              color: theme.palette.primary.main,
-                              zIndex: theme.zIndex.drawer + 1,
-                            }}
-                            open={loading}
-                          >
-                            <CircularProgress color="inherit" size={80} />
-                          </Backdrop>
-                          {getLayout(<Component {...pageProps} />)}
-                        </Web3ReactProvider>
-                      </LocalizationProvider>
-                    </AppIntlProvider>
-                  </SnackbarProvider>
-                </Provider>
-              </Hydrate>
-            </QueryClientProvider>
-          </ThemeProvider>
+          <QueryClientProvider client={queryClient}>
+            <Hydrate state={pageProps.dehydratedState}>
+              <LocalizationProvider dateAdapter={AdapterMoment}>
+                <AppMarketplaceContext>
+                  <Backdrop
+                    sx={{
+                      color: theme.palette.primary.main,
+                      zIndex: theme.zIndex.drawer + 1,
+                    }}
+                    open={loading}
+                  >
+                    <CircularProgress color="inherit" size={80} />
+                  </Backdrop>
+                  {getLayout(<Component {...pageProps} />)}
+                </AppMarketplaceContext>
+              </LocalizationProvider>
+            </Hydrate>
+          </QueryClientProvider>
         </AppConfigContext.Provider>
       </CacheProvider>
     </>

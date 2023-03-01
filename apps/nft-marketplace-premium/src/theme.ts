@@ -1,10 +1,10 @@
-import { Theme } from '@mui/material/styles';
+import { Theme } from '@mui/material';
 
-import defaultTheme from './themes/index';
-import kittygotchiTheme from './themes/kittygotchi';
 import boredApeTheme from './themes/boredape';
 import cryptoPunkTheme from './themes/cryptopunk';
 import customTheme from './themes/custom';
+import defaultTheme from './themes/index';
+import kittygotchiTheme from './themes/kittygotchi';
 
 type ThemeEntry = { theme: Theme; name: string };
 
