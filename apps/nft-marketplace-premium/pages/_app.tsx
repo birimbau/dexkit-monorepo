@@ -1,15 +1,15 @@
 import { CacheProvider, EmotionCache } from '@emotion/react';
 import CssBaseline from '@mui/material/CssBaseline';
 import { responsiveFontSizes, ThemeProvider } from '@mui/material/styles';
-import { AppProps } from 'next/app';
-import Head from 'next/head';
-import * as React from 'react';
 import {
   DehydratedState,
   Hydrate,
   QueryClient,
   QueryClientProvider,
 } from '@tanstack/react-query';
+import { AppProps } from 'next/app';
+import Head from 'next/head';
+import * as React from 'react';
 import createEmotionCache from '../src/createEmotionCache';
 import { getTheme } from '../src/theme';
 
@@ -34,6 +34,7 @@ import { Updater } from '../src/components/transactions/Updater';
 
 import { Backdrop, CircularProgress, createTheme } from '@mui/material';
 import defaultAppConfig from '../config/app.json';
+
 import { AppConfigContext } from '../src/contexts';
 import { AppConfig } from '../src/types/config';
 import './customCss.css';

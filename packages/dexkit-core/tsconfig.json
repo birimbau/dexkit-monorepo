@@ -1,9 +1,11 @@
 {
   "extends": "tsconfig/react-library.json",
-  "include": [
-    ".",
-    "../dexkit-widgets/src/connectors",
-    "../dexkit-widgets/src/constants/networks.ts"
-  ],
-  "exclude": ["dist", "build", "node_modules"]
+  "include": ["."],
+  "exclude": ["dist", "build", "node_modules"],
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@dexkit/core/constants": ["@dexkit/core/src/constants"]
+    }
+  }
 }
