@@ -1,10 +1,8 @@
-import { Box, NoSsr, useTheme } from '@mui/material';
+import { Box, NoSsr } from '@mui/material';
 import { useWeb3React } from '@web3-react/core';
-import React, { useEffect } from 'react';
-import { Footer } from '../Footer';
-import Navbar from '../Navbar';
-import dynamic from 'next/dynamic';
 import { useAtom } from 'jotai';
+import dynamic from 'next/dynamic';
+import React, { useEffect } from 'react';
 import {
   useConnectWalletDialog,
   useSignMessageDialog,
@@ -17,17 +15,25 @@ import {
   switchNetworkChainIdAtom,
   switchNetworkOpenAtom,
 } from '../../state/atoms';
+import { Footer } from '../Footer';
+import Navbar from '../Navbar';
 const SignMessageDialog = dynamic(() => import('../dialogs/SignMessageDialog'));
 const SwitchNetworkDialog = dynamic(
   () => import('../dialogs/SwitchNetworkDialog')
 );
 const TransactionDialog = dynamic(() => import('../dialogs/TransactionDialog'));
 
+import { useWalletActivate } from '@dexkit/core/hooks';
+import { WalletActivateParams } from '@dexkit/core/types';
 import { useRouter } from 'next/router';
 import AppDrawer from '../AppDrawer';
-const ConnectWalletDialog = dynamic(
-  () => import('../dialogs/ConnectWalletDialog')
+
+const ConnectWalletDialog = dynamic(() =>
+  import('@dexkit/ui/components/ConnectWalletDialog').then(
+    (c) => c.ConnectWalletDialog
+  )
 );
+
 const SelectCurrencyDialog = dynamic(
   () => import('../dialogs/SelectCurrencyDialog')
 );
@@ -42,7 +48,7 @@ interface Props {
 }
 
 const MainLayout: React.FC<Props> = ({ children, noSsr, disablePadding }) => {
-  const { connector } = useWeb3React();
+  const { connector, isActive } = useWeb3React();
   const router = useRouter();
 
   const transactions = useTransactions();
@@ -122,6 +128,12 @@ const MainLayout: React.FC<Props> = ({ children, noSsr, disablePadding }) => {
 
   const handleCloseDrawer = () => setIsDrawerOpen(false);
 
+  const walletActivate = useWalletActivate();
+
+  const handleActivateWallet = async (params: WalletActivateParams) => {
+    await walletActivate.mutation.mutateAsync(params);
+  };
+
   const render = () => (
     <>
       <AppDrawer open={isDrawerOpen} onClose={handleCloseDrawer} />
@@ -174,12 +186,16 @@ const MainLayout: React.FC<Props> = ({ children, noSsr, disablePadding }) => {
         chainId={switchChainId}
       />
       <ConnectWalletDialog
-        dialogProps={{
+        DialogProps={{
           open: connectWalletDialog.isOpen,
           onClose: handleCloseConnectWalletDialog,
           fullWidth: true,
           maxWidth: 'sm',
         }}
+        isActivating={walletActivate.mutation.isLoading}
+        activeConnectorName={walletActivate.connectorName}
+        isActive={isActive}
+        activate={handleActivateWallet}
       />
       <Navbar />
       <Box sx={{ minHeight: '100vh' }} py={disablePadding ? 0 : 4}>
