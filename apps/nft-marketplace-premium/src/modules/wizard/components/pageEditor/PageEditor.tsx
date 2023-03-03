@@ -31,8 +31,8 @@ import '@react-page/plugins-html5-video/lib/index.css';
 import video from '@react-page/plugins-video';
 import '@react-page/plugins-video/lib/index.css';
 
-import ExtendedSpacer from './plugins/ExtendedSpacerPlugin';
 import '@react-page/plugins-spacer/lib/index.css';
+import ExtendedSpacer from './plugins/ExtendedSpacerPlugin';
 
 import { Theme } from '@mui/material';
 import { styled } from '@mui/system';
@@ -45,10 +45,10 @@ import ContainerPlugin from './plugins/ContainerPlugin';
 import CustomContentPluginTwitter from './plugins/CustomContentPluginTwitter';
 import { DefaultSlate } from './plugins/DefaultSlate';
 import ImagePlugin from './plugins/ImagePlugin';
-import StackPlugin from './plugins/StackPlugin';
-import SwapPlugin from './plugins/SwapPlugin';
-import WidgetPlugin from './plugins/WidgetPlugin';
 import SearchNFTPlugin from './plugins/SearchNFTPlugin';
+import StackPlugin from './plugins/StackPlugin';
+import Swap2Plugin from './plugins/Swap2Plugin';
+import WidgetPlugin from './plugins/WidgetPlugin';
 // Define which plugins we want to use.
 const cellPlugins = [
   background({
@@ -72,7 +72,8 @@ const cellPlugins = [
   StackPlugin,
 
   //  CustomLayoutPlugin,
-  SwapPlugin,
+  // SwapPlugin,
+  Swap2Plugin,
   SearchNFTPlugin,
   DefaultSlate,
   CustomContentPluginTwitter,

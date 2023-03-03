@@ -1,14 +1,16 @@
 import { Dialog, DialogProps } from '@mui/material';
 import { FormattedMessage } from 'react-intl';
 import { AppDialogTitle } from '../../../../components/AppDialogTitle';
-import { AppPageSection } from '../../../../types/config';
+import { AppConfig, AppPageSection } from '../../../../types/config';
 import dynamic from 'next/dynamic';
 const PreviewPagePlatform = dynamic(() => import('../PreviewPagePlatform'));
 interface Props {
   dialogProps: DialogProps;
-  sections: AppPageSection[];
+  sections?: AppPageSection[];
   name: string;
   disabled?: boolean;
+  withLayout?: boolean;
+  appConfig?: AppConfig;
 }
 
 export default function PreviewPageDialog({
@@ -16,6 +18,8 @@ export default function PreviewPageDialog({
   sections,
   name,
   disabled,
+  withLayout,
+  appConfig,
 }: Props) {
   const { onClose } = dialogProps;
 
@@ -37,7 +41,12 @@ export default function PreviewPageDialog({
         }
         onClose={handleClose}
       />
-      <PreviewPagePlatform sections={sections} disabled={disabled} />
+      <PreviewPagePlatform
+        sections={sections}
+        disabled={disabled}
+        withLayout={withLayout}
+        appConfig={appConfig}
+      />
     </Dialog>
   );
 }

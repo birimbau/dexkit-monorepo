@@ -2,14 +2,24 @@ import { Divider, Grid, Stack, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { AppConfig } from '../../../../types/config';
+import { StepperButtonProps } from '../../types';
 import GeneralSection, { GeneralSectionForm } from '../sections/GeneralSection';
 
 interface Props {
   config: AppConfig;
   onSave: (config: AppConfig) => void;
+  onChange: (config: AppConfig) => void;
+  isOnStepper?: boolean;
+  stepperButtonProps?: StepperButtonProps;
 }
 
-export default function GeneralWizardContainer({ config, onSave }: Props) {
+export default function GeneralWizardContainer({
+  config,
+  onSave,
+  onChange,
+  isOnStepper,
+  stepperButtonProps,
+}: Props) {
   const [generalData, setGeneralData] = useState<GeneralSectionForm>();
   const handleSubmitGeneral = (form: GeneralSectionForm) => {
     setGeneralData(form);
@@ -28,6 +38,24 @@ export default function GeneralWizardContainer({ config, onSave }: Props) {
       onSave(newConfig);
     }
   };
+
+  const onChangeGeneral = (form: GeneralSectionForm) => {
+    if (form) {
+      const newConfig = {
+        ...config,
+        name: form.name,
+        email: form.email,
+        favicon_url: form.faviconUrl,
+        currency: form.currency,
+        logo: {
+          url: form.logoUrl,
+        },
+        locale: form.locale,
+      };
+      onChange(newConfig);
+    }
+  };
+
   useEffect(() => {
     if (config) {
       setGeneralData({
@@ -62,7 +90,10 @@ export default function GeneralWizardContainer({ config, onSave }: Props) {
       <Grid item xs={12}>
         <GeneralSection
           initialValues={generalData}
+          onChange={onChangeGeneral}
           onSubmit={handleSubmitGeneral}
+          isOnStepper={isOnStepper}
+          stepperButtonProps={stepperButtonProps}
         />
       </Grid>
     </Grid>

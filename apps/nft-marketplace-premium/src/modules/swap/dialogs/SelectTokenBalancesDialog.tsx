@@ -8,25 +8,27 @@ import {
   List,
   ListItem,
   ListItemIcon,
+  ListItemSecondaryAction,
   ListItemText,
+  Skeleton,
   TextField,
+  Typography,
 } from '@mui/material';
 import { useWeb3React } from '@web3-react/core';
-import { BigNumber } from 'ethers';
 import { memo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { AppDialogTitle } from '../../../components/AppDialogTitle';
 import { ChainId } from '../../../constants/enum';
 import { useERC20BalancesProxyAllowancesQuery } from '../../../hooks/balances';
 import { useTokenList } from '../../../hooks/blockchain';
-import { TokenBalance, Token } from '../../../types/blockchain';
+import { Token, TokenBalance } from '../../../types/blockchain';
 import { TOKEN_ICON_URL } from '../../../utils/token';
 import SelectTokenDialogListItem from './SelectTokenDialogListItem';
 
 interface Props {
   dialogProps: DialogProps;
-  onSelect: (tokenBalance: TokenBalance) => void;
-  excludeToken?: TokenBalance;
+  onSelect: (token: Token) => void;
+  excludeToken?: Token;
   selectedChainId?: ChainId;
 }
 
@@ -38,14 +40,18 @@ function SelectTokenBalanceDialog({
 }: Props) {
   const { onClose } = dialogProps;
   const { chainId, isActive } = useWeb3React();
-  const tokenBalancesQuery = useERC20BalancesProxyAllowancesQuery(
-    undefined,
-    selectedChainId || chainId
-  );
   const tokens = useTokenList({
     chainId: selectedChainId,
     includeNative: true,
   });
+
+  const tokenBalancesQuery = useERC20BalancesProxyAllowancesQuery(
+    tokens,
+    undefined,
+    selectedChainId || chainId,
+    false
+  );
+
   const [value, setValue] = useState('');
 
   const tokenBalances = tokenBalancesQuery.data;
@@ -79,11 +85,46 @@ function SelectTokenBalanceDialog({
             />
           </Grid>
           <Grid item xs={12}>
+            {tokenBalancesQuery.isLoading && (
+              <List disablePadding>
+                {Array(5)
+                  .fill(1)
+                  .map((_, index) => (
+                    <ListItem button key={index}>
+                      <ListItemIcon>
+                        <Skeleton>
+                          <Avatar
+                            sx={(theme) => ({
+                              width: theme.spacing(4),
+                              height: theme.spacing(4),
+                            })}
+                          >
+                            TK
+                          </Avatar>
+                        </Skeleton>
+                      </ListItemIcon>
+
+                      <Skeleton>
+                        {' '}
+                        <ListItemText primary={'tk'} secondary={'TOKEN'} />
+                      </Skeleton>
+
+                      <ListItemSecondaryAction>
+                        <Skeleton>
+                          {' '}
+                          <Typography>0.00</Typography>
+                        </Skeleton>
+                      </ListItemSecondaryAction>
+                    </ListItem>
+                  ))}
+              </List>
+            )}
+
             {isActive && chainId ? (
               <List disablePadding>
                 {tokenBalances
                   ?.filter((token) => {
-                    return excludeToken !== token;
+                    return excludeToken !== token.token;
                   })
                   ?.filter((tokenBalance) => {
                     return (
@@ -108,7 +149,7 @@ function SelectTokenBalanceDialog({
               <List disablePadding>
                 {tokens
                   ?.filter((token) => {
-                    return excludeToken?.token !== token;
+                    return excludeToken !== token;
                   })
                   ?.filter((token) => {
                     return (
@@ -122,13 +163,7 @@ function SelectTokenBalanceDialog({
                     <ListItem
                       button
                       key={index}
-                      onClick={() =>
-                        onSelect({
-                          token: token,
-                          isProxyUnlocked: false,
-                          balance: BigNumber.from(0),
-                        })
-                      }
+                      onClick={() => onSelect(token)}
                     >
                       <ListItemIcon>
                         <Avatar

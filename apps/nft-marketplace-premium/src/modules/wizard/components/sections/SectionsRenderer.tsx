@@ -1,10 +1,26 @@
-import CallToActionSection from '@/modules/home/components/CallToActionSection';
-import CollectionsSection from '@/modules/home/components/CollectionsSection';
-import CustomSection from '@/modules/home/components/CustomSection';
-import { FeaturedSection } from '@/modules/home/components/FeaturedSection';
-import VideoSection from '@/modules/home/components/VideoSection';
+import dynamic from 'next/dynamic';
+
+const CallToActionSection = dynamic(
+  () => import('@/modules/home/components/CallToActionSection')
+);
+const CollectionsSection = dynamic(
+  () => import('@/modules/home/components/CollectionsSection')
+);
+const CustomSection = dynamic(
+  () => import('@/modules/home/components/CustomSection')
+);
+const FeaturedSection = dynamic(
+  () => import('@/modules/home/components/FeaturedSection')
+);
+const SwapSection = dynamic(
+  () => import('@/modules/home/components/SwapSection')
+);
+const VideoSection = dynamic(
+  () => import('@/modules/home/components/VideoSection')
+);
 import { useTheme } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
+
 import { AppPageSection } from 'src/types/config';
 
 interface Props {
@@ -46,6 +62,8 @@ export function SectionsRenderer({ sections }: Props) {
       return <CollectionsSection key={index} section={section} />;
     } else if (section.type === 'custom') {
       return <CustomSection key={index} section={section} />;
+    } else if (section.type === 'swap') {
+      return <SwapSection key={index} section={section} />;
     }
   });
 

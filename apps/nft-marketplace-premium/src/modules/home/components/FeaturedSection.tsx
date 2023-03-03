@@ -58,3 +58,5 @@ export function FeaturedSection({ title, items, disabled }: Props) {
     </Box>
   );
 }
+
+export default FeaturedSection;

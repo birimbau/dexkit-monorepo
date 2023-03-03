@@ -1,3 +1,4 @@
+import { SwapConfig } from '@/modules/swap/types';
 import { Token } from './blockchain';
 
 export type VideoEmbedType = 'youtube' | 'vimeo';
@@ -72,6 +73,12 @@ export interface CollectionAppPageSection extends PageSection {
   items: SectionItem[];
 }
 
+export interface SwapPageSection extends PageSection {
+  type: 'swap';
+  title?: string;
+  config?: SwapConfig;
+}
+
 export interface CustomEditorSection extends PageSection {
   type: 'custom';
   title?: string;
@@ -83,7 +90,8 @@ export type AppPageSection =
   | VideoEmbedAppPageSection
   | FeaturedAppPageSection
   | CollectionAppPageSection
-  | CustomEditorSection;
+  | CustomEditorSection
+  | SwapPageSection;
 
 export interface AppPageOptions {
   key?: string;

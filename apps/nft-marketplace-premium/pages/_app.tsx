@@ -1,16 +1,18 @@
 import { CacheProvider, EmotionCache } from '@emotion/react';
 import { responsiveFontSizes } from '@mui/material/styles';
+import { AppProps } from 'next/app';
+import Head from 'next/head';
+import * as React from 'react';
 import {
   DehydratedState,
   Hydrate,
   QueryClient,
   QueryClientProvider,
 } from '@tanstack/react-query';
-import { AppProps } from 'next/app';
-import Head from 'next/head';
-import * as React from 'react';
 import createEmotionCache from '../src/createEmotionCache';
 import { getTheme } from '../src/theme';
+
+import { DefaultSeo } from 'next-seo';
 
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
@@ -20,8 +22,7 @@ import { useRouter } from 'next/router';
 
 import { Backdrop, CircularProgress, createTheme } from '@mui/material';
 import defaultAppConfig from '../config/app.json';
-
-import { AppMarketplaceContext } from 'src/components/AppMarketplaceContext';
+import { AppMarketplaceContext } from '../src/components/AppMarketplaceContext';
 import { AppConfigContext } from '../src/contexts';
 import { AppConfig } from '../src/types/config';
 import './customCss.css';
@@ -165,6 +166,7 @@ export default function MyApp(props: MyAppProps) {
         <AppConfigContext.Provider value={config}>
           <QueryClientProvider client={queryClient}>
             <Hydrate state={pageProps.dehydratedState}>
+              <DefaultSeo {...SEO} />
               <LocalizationProvider dateAdapter={AdapterMoment}>
                 <AppMarketplaceContext>
                   <Backdrop

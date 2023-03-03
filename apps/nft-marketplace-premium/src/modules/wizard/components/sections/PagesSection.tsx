@@ -1,5 +1,6 @@
 import AddIcon from '@mui/icons-material/Add';
 import { Box, Button, Stack, Theme, Typography } from '@mui/material';
+import dynamic from 'next/dynamic';
 import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import {
@@ -8,8 +9,8 @@ import {
   AppPageSection,
   CustomEditorSection,
 } from '../../../../types/config';
-import EditSectionDialog from '../dialogs/EditSectionDialog';
-import PageEditorDialog from '../dialogs/PageEditorDialog';
+const EditSectionDialog = dynamic(() => import('../dialogs/EditSectionDialog'));
+const PageEditorDialog = dynamic(() => import('../dialogs/PageEditorDialog'));
 import PagesSectionPage from './PagesSectionPage';
 
 interface Props {

@@ -17,6 +17,7 @@ import { AppPageSection } from '../../../../types/config';
 import CallToActionSectionForm from '../forms/CallToActionSectionForm';
 import CollectionSectionForm from '../forms/CollectionSectionForm';
 import FeaturedSectionForm from '../forms/FeaturedSectionForm';
+import { SwapConfigSectionForm } from '../forms/SwapConfigSectionForm';
 import VideoSectionForm from '../forms/VideoSectionForm';
 
 interface Props {
@@ -32,6 +33,7 @@ type SectionType =
   | 'call-to-action'
   | 'featured'
   | 'collections'
+  | 'swap'
   | 'custom';
 
 export default function EditSectionDialog({
@@ -93,6 +95,14 @@ export default function EditSectionDialog({
           onCancel={handleClose}
           onSave={handleSave}
           section={section?.type === 'collections' ? section : undefined}
+        />
+      );
+    } else if (sectionType === 'swap') {
+      return (
+        <SwapConfigSectionForm
+          onCancel={handleClose}
+          onSave={handleSave}
+          section={section?.type === 'swap' ? section : undefined}
         />
       );
     }
@@ -157,6 +167,9 @@ export default function EditSectionDialog({
                     id="featured"
                     defaultMessage="Collections"
                   />
+                </MenuItem>
+                <MenuItem value="swap">
+                  <FormattedMessage id="swap" defaultMessage="Swap" />
                 </MenuItem>
               </Select>
             </FormControl>

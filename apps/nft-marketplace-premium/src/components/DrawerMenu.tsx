@@ -3,6 +3,8 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { ListItemButton, ListItemSecondaryAction, styled } from '@mui/material';
 import List from '@mui/material/List';
 import ListItemText from '@mui/material/ListItemText';
+import { useRouter } from 'next/router';
+import * as React from 'react';
 import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { MenuTree } from '../types/config';
@@ -41,7 +43,7 @@ export default function DrawerMenu(props: Props) {
     <List disablePadding>
       {menu.map((m, key) =>
         m.children ? (
-          <List key={key}>
+          <List>
             <ListItemButton divider onClick={() => onShowKey(key)}>
               <FormattedMessage
                 id={m.name.toLowerCase()}

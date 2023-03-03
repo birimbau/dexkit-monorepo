@@ -1,16 +1,61 @@
+import SwapSkeleton from '@/modules/swap/Swap.skeleton';
+import { SwapConfig } from '@/modules/swap/types';
 import Button from '@mui/material/Button';
 import NoSsr from '@mui/material/NoSsr';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import React from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Suspense } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { FormattedMessage } from 'react-intl';
 import { QueryErrorResetBoundary } from '@tanstack/react-query';
 import Swap from '../../../../swap/Swap';
 
-function SwapWidget() {
+interface Props {
+  formData?: SwapConfig;
+  isEditMode?: boolean;
+}
+
+function SwapWidget(props: Props) {
+  const { isEditMode, formData } = props;
+  const defaultChainId = formData?.defaultChainId;
+  const defaultEditChainId = formData?.defaultEditChainId;
+  const configByChain = formData?.configByChain;
+
+  const [chainId, setChainId] = useState(
+    isEditMode ? defaultEditChainId : defaultChainId
+  );
+
+  const handleChangeChainId = (newChain: number) => {
+    setChainId(newChain);
+  };
+  useEffect(() => {
+    if (isEditMode) {
+      setChainId(defaultEditChainId);
+    } else {
+      setChainId(defaultChainId);
+    }
+  }, [defaultChainId, isEditMode, defaultEditChainId]);
+
+  const defaultSellToken = useMemo(() => {
+    if (chainId && configByChain) {
+      return configByChain[chainId]?.defaultSellToken;
+    }
+  }, [configByChain, chainId]);
+
+  const defaultBuyToken = useMemo(() => {
+    if (chainId && configByChain) {
+      return configByChain[chainId]?.defaultBuyToken;
+    }
+  }, [configByChain, chainId]);
+
+  const slippage = useMemo(() => {
+    if (chainId && configByChain) {
+      return configByChain[chainId]?.slippage;
+    }
+  }, [configByChain, chainId]);
+
   return (
     <NoSsr>
       <QueryErrorResetBoundary>
@@ -41,8 +86,15 @@ function SwapWidget() {
               </Paper>
             )}
           >
-            <Suspense fallback={null}>
-              <Swap />
+            <Suspense fallback={<SwapSkeleton />}>
+              <Swap
+                defaultChainId={chainId}
+                onChangeChainId={handleChangeChainId}
+                defaultSellToken={defaultBuyToken}
+                defaultBuyToken={defaultSellToken}
+                defaultSlippage={slippage}
+                isEditMode={isEditMode}
+              />
             </Suspense>
           </ErrorBoundary>
         )}

@@ -8,15 +8,26 @@ import { FormattedMessage } from 'react-intl';
 import { Token } from '../../../../types/blockchain';
 import { AppConfig } from '../../../../types/config';
 import { isAddressEqual } from '../../../../utils/blockchain';
+import { StepperButtonProps } from '../../types';
 import { TOKEN_KEY } from '../../utils';
 import TokensSection from '../sections/TokensSection';
+import { StepperButtons } from '../steppers/StepperButtons';
 
 interface Props {
   config: AppConfig;
   onSave: (config: AppConfig) => void;
+  isOnStepper?: boolean;
+  isSwap?: boolean;
+  stepperButtonProps?: StepperButtonProps;
 }
 
-export default function TokenWizardContainer({ config, onSave }: Props) {
+export default function TokenWizardContainer({
+  config,
+  onSave,
+  isOnStepper,
+  stepperButtonProps,
+  isSwap,
+}: Props) {
   const [selectedKeys, setSelectedKeys] = useState<{
     [key: string]: boolean;
   }>({});
@@ -122,8 +133,8 @@ export default function TokenWizardContainer({ config, onSave }: Props) {
           </Typography>
           <Typography variant={'body2'}>
             <FormattedMessage
-              id="select.tokens.for.your.marketplace"
-              defaultMessage="Select tokens for your marketplace"
+              id="featured.token.in.your.app"
+              defaultMessage="Featured tokens in your app"
             />
           </Typography>
         </Stack>
@@ -139,18 +150,31 @@ export default function TokenWizardContainer({ config, onSave }: Props) {
           selectedKeys={selectedKeys}
           onRemove={handleRemoveTokens}
           tokens={tokens}
-          onMakeTradable={handleMakeTradable}
+          onMakeTradable={isSwap ? undefined : handleMakeTradable}
         />
       </Grid>
       <Grid item xs={12}>
         <Divider />
       </Grid>
       <Grid item xs={12}>
-        <Stack spacing={1} direction="row" justifyContent="flex-end">
-          <Button variant="contained" color="primary" onClick={handleSave}>
-            <FormattedMessage id="save" defaultMessage="Save" />
-          </Button>
-        </Stack>
+        {isOnStepper ? (
+          <StepperButtons
+            {...stepperButtonProps}
+            handleNext={() => {
+              handleSave();
+              if (stepperButtonProps?.handleNext) {
+                stepperButtonProps.handleNext();
+              }
+            }}
+            disableContinue={false}
+          />
+        ) : (
+          <Stack spacing={1} direction="row" justifyContent="flex-end">
+            <Button variant="contained" color="primary" onClick={handleSave}>
+              <FormattedMessage id="save" defaultMessage="Save" />
+            </Button>
+          </Stack>
+        )}
       </Grid>
     </Grid>
   );

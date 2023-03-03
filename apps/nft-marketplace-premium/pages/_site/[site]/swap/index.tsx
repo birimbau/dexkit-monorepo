@@ -15,6 +15,7 @@ import { NextSeo } from 'next-seo';
 import { PageHeader } from '../../../../src/components/PageHeader';
 import { getAppConfig } from '../../../../src/services/app';
 import { ChainId } from '../../../../src/constants/enum';
+import SwapSkeleton from '@/modules/swap/Swap.skeleton';
 
 const SwapPage: NextPage = () => {
   const { formatMessage } = useIntl();
@@ -77,7 +78,7 @@ const SwapPage: NextPage = () => {
                         </Paper>
                       )}
                     >
-                      <Suspense fallback={null}>
+                      <Suspense fallback={<SwapSkeleton />}>
                         <Swap defaultChainId={ChainId.ETH} />
                       </Suspense>
                     </ErrorBoundary>

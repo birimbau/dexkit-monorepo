@@ -18,7 +18,9 @@ import { FormattedMessage } from 'react-intl';
 
 import * as Yup from 'yup';
 import MediaDialog from '../../../../components/mediaDialog';
+import { StepperButtonProps } from '../../types';
 import InputInfoAdornment from '../InputInfoAdornment';
+import { StepperButtons } from '../steppers/StepperButtons';
 
 export interface GeneralSectionForm {
   name: string;
@@ -42,6 +44,9 @@ interface Props {
   isEdit?: boolean;
   initialValues?: GeneralSectionForm;
   onSubmit?: (form: GeneralSectionForm) => void;
+  onChange?: (form: GeneralSectionForm) => void;
+  isOnStepper?: boolean;
+  stepperButtonProps?: StepperButtonProps;
 }
 
 const CustomImage = styled('img')(({ theme }) => ({
@@ -54,7 +59,13 @@ const FaviconImage = styled('img')(({ theme }) => ({
   width: theme.spacing(10),
 }));
 
-export default function GeneralSection({ onSubmit, initialValues }: Props) {
+export default function GeneralSection({
+  onSubmit,
+  onChange,
+  initialValues,
+  isOnStepper,
+  stepperButtonProps,
+}: Props) {
   const [openMediaDialog, setOpenMediaDialog] = useState(false);
   const [mediaFieldToEdit, setMediaFieldToEdit] = useState<string>();
 
@@ -99,6 +110,9 @@ export default function GeneralSection({ onSubmit, initialValues }: Props) {
         onConfirmSelectFile={(file) => {
           if (mediaFieldToEdit && file) {
             formik.setFieldValue(mediaFieldToEdit, file.url);
+            if (onChange) {
+              onChange({ ...formik.values, [mediaFieldToEdit]: file.url });
+            }
           }
           setMediaFieldToEdit(undefined);
           setOpenMediaDialog(false);
@@ -106,7 +120,14 @@ export default function GeneralSection({ onSubmit, initialValues }: Props) {
       />
 
       <Stack>
-        <form onSubmit={formik.handleSubmit}>
+        <form
+          onSubmit={formik.handleSubmit}
+          onChange={() => {
+            if (onChange && formik.isValid) {
+              onChange(formik.values);
+            }
+          }}
+        >
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <TextField
@@ -229,16 +250,33 @@ export default function GeneralSection({ onSubmit, initialValues }: Props) {
               <Divider />
             </Grid>
             <Grid item xs={12}>
-              <Stack spacing={1} direction="row" justifyContent="flex-end">
-                <Button
-                  disabled={!formik.isValid}
-                  type="submit"
-                  variant="contained"
-                  color="primary"
-                >
-                  <FormattedMessage id="save" defaultMessage="Save" />
-                </Button>
-              </Stack>
+              {isOnStepper ? (
+                <StepperButtons
+                  {...stepperButtonProps}
+                  handleNext={() => {
+                    formik.submitForm();
+                    if (stepperButtonProps?.handleNext) {
+                      stepperButtonProps.handleNext();
+                    }
+                  }}
+                  disableContinue={
+                    !formik.isValid ||
+                    !formik.values.email ||
+                    !formik.values.name
+                  }
+                />
+              ) : (
+                <Stack spacing={1} direction="row" justifyContent="flex-end">
+                  <Button
+                    disabled={!formik.isValid}
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                  >
+                    <FormattedMessage id="save" defaultMessage="Save" />
+                  </Button>
+                </Stack>
+              )}
             </Grid>
           </Grid>
         </form>

@@ -15,7 +15,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-
+import dynamic from 'next/dynamic';
 import ArrowDownwardRoundedIcon from '@mui/icons-material/ArrowDownwardRounded';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
@@ -52,38 +52,48 @@ import {
   getERC20TokenAllowance,
 } from '../../services/balances';
 import {
-  getChainLogoImage,
   getChainName,
-  getChainSymbol,
   getNativeCurrencySymbol,
   getProviderByChainId,
 } from '../../utils/blockchain';
-import SwapSettingsDialog from './components/dialogs/SwapSettingsDialog';
-import SelectTokenBalancesDialog from './dialogs/SelectTokenBalancesDialog';
+
+const SwapSettingsDialog = dynamic(
+  () => import('./components/dialogs/SwapSettingsDialog')
+);
+const SelectTokenBalancesDialog = dynamic(
+  () => import('./dialogs/SelectTokenBalancesDialog')
+);
+const ConfirmSwapTransaction = dynamic(
+  () => import('./dialogs/ConfirmSwapTransaction')
+);
 
 import SettingsIcon from '@mui/icons-material/Settings';
 import { useAtomValue } from 'jotai';
-import ChooseNetworkDialog from '../../components/dialogs/ChooseNetworkDialog';
+import { ChainId } from 'src/constants/enum';
+import { NetworkSelectButton } from '../../components/NetworkSelectButton';
 import { useSwitchNetwork } from '../../hooks/blockchain';
 import { useCurrency, useNativeCoinPriceQuery } from '../../hooks/currency';
 import { isAutoSlippageAtom, maxSlippageAtom } from '../../state/atoms';
-import ConfirmSwapTransaction from './dialogs/ConfirmSwapTransaction';
-import { NetworkSelectButton } from '../../components/NetworkSelectButton';
-import { ChainId } from 'src/constants/enum';
 
 interface Props {
+  onChangeChainId?: (chainId: number) => void;
   defaultSlippage?: number;
   defaultChainId?: number;
-  defaultBuyTokenBalance?: TokenBalance;
-  defaultSellTokenBalance?: TokenBalance;
+  defaultBuyToken?: Token;
+  defaultSellToken?: Token;
+  isEditMode?: boolean;
 }
 
 export function Swap(props: Props) {
   const {
-    defaultBuyTokenBalance,
-    defaultSellTokenBalance,
+    defaultBuyToken,
+    defaultSellToken,
+    defaultSlippage,
     defaultChainId = ChainId.ETH,
+    onChangeChainId,
+    isEditMode,
   } = props;
+
   const {
     chainId: walletChainId,
     provider: walletProvider,
@@ -91,7 +101,17 @@ export function Swap(props: Props) {
     isActive,
     isActivating,
   } = useWeb3React();
-  const [chainId, setChainId] = useState(walletChainId || defaultChainId);
+  const [chainId, setChainId] = useState(
+    isEditMode
+      ? defaultChainId || walletChainId
+      : walletChainId || defaultChainId
+  );
+
+  useEffect(() => {
+    if (isEditMode && defaultChainId) {
+      setChainId(defaultChainId);
+    }
+  }, [isEditMode, defaultChainId]);
 
   const { openDialog } = useSwitchNetwork();
 
@@ -103,17 +123,38 @@ export function Swap(props: Props) {
       return getProviderByChainId(chainId);
     }
   }, [chainId, defaultChainId, walletChainId]);
+  const [sellToken, setSellToken] = useState<Token | undefined>(
+    defaultSellToken?.chainId === chainId ? defaultSellToken : undefined
+  );
+  const [buyToken, setBuyToken] = useState<Token | undefined>(
+    defaultBuyToken?.chainId === chainId ? defaultBuyToken : undefined
+  );
+  // remove buy token when chain id changes
+  useEffect(() => {
+    if (buyToken && buyToken?.chainId !== chainId) {
+      setBuyToken(undefined);
+    }
+  }, [chainId, buyToken]);
+  // remove sell token when chain id changes
+  useEffect(() => {
+    if (sellToken && sellToken?.chainId !== chainId) {
+      setSellToken(undefined);
+    }
+  }, [chainId, sellToken]);
 
-  const [sellToken, setSellToken] = useState<TokenBalance | undefined>(
-    defaultSellTokenBalance?.token?.chainId === chainId
-      ? defaultSellTokenBalance
-      : undefined
-  );
-  const [buyToken, setBuyToken] = useState<TokenBalance | undefined>(
-    defaultBuyTokenBalance?.token?.chainId === chainId
-      ? defaultBuyTokenBalance
-      : undefined
-  );
+  // set sell token from form
+  useEffect(() => {
+    if (defaultSellToken && defaultSellToken?.chainId === chainId) {
+      setSellToken(defaultSellToken);
+    }
+  }, [defaultSellToken, chainId]);
+  // set buy token from form
+  useEffect(() => {
+    if (defaultBuyToken && defaultBuyToken?.chainId === chainId) {
+      setBuyToken(defaultBuyToken);
+    }
+  }, [defaultBuyToken, chainId]);
+
   useEffect(() => {
     // we are not allowing to change chainId when user sets defaultChainId
     if (walletChainId && !defaultChainId) {
@@ -143,11 +184,12 @@ export function Swap(props: Props) {
 
   const transactions = useTransactions();
 
-  const sellTokenBalance = useErc20Balance(
+  const sellTokenBalanceQuery = useErc20Balance(
     provider,
-    sellToken?.token.address,
+    sellToken?.address,
     account
   );
+  const sellTokenBalance = sellTokenBalanceQuery.data;
 
   const approveToken = useErc20ApproveMutation(
     walletProvider,
@@ -196,11 +238,11 @@ export function Swap(props: Props) {
   const handleSetValues = (quote?: Quote) => {
     if (quote) {
       setSellAmountValue(
-        ethers.utils.formatUnits(quote.sellAmount, sellToken?.token.decimals)
+        ethers.utils.formatUnits(quote.sellAmount, sellToken?.decimals)
       );
 
       setBuyAmountValue(
-        ethers.utils.formatUnits(quote.buyAmount, buyToken?.token.decimals)
+        ethers.utils.formatUnits(quote.buyAmount, buyToken?.decimals)
       );
       setQuote(quote);
     }
@@ -212,8 +254,8 @@ export function Swap(props: Props) {
 
   const swapQuery = useSwapQuote({
     chainId,
-    sellToken: sellToken?.token,
-    buyToken: buyToken?.token,
+    sellToken: sellToken,
+    buyToken: buyToken,
     takerAddress: account,
     skipValidation,
     onSuccess: handleSetValues,
@@ -223,13 +265,17 @@ export function Swap(props: Props) {
       ? appConfig.swapFees?.amount_percentage / 100
       : 0,
     feeRecipient: appConfig.swapFees?.recipient,
-    maxSlippage: !isAutoSlippage ? maxSlippage : undefined,
+    maxSlippage: !isAutoSlippage
+      ? maxSlippage
+      : defaultSlippage !== undefined
+      ? Number(defaultSlippage) / 100
+      : undefined,
   });
 
   const handleSetMax = () => {
-    if (sellToken) {
+    if (sellToken && sellTokenBalance) {
       setSellAmountValue(
-        ethers.utils.formatUnits(sellToken.balance, sellToken?.token.decimals)
+        ethers.utils.formatUnits(sellTokenBalance, sellToken?.decimals)
       );
       setInputFocus('sell');
       swapQuery.refetch();
@@ -239,8 +285,8 @@ export function Swap(props: Props) {
   const handleSwapSuccess = useCallback(
     (hash: string) => {
       const metadata: SwapTransactionMetadata = {
-        buyToken: buyToken?.token as Token,
-        sellToken: sellToken?.token as Token,
+        buyToken: buyToken as Token,
+        sellToken: sellToken as Token,
         sellAmount: BigNumber.from(quote?.sellAmount as string),
         buyAmount: BigNumber.from(quote?.buyAmount as string),
       };
@@ -254,8 +300,8 @@ export function Swap(props: Props) {
     onError: (error: any) => transactions.setDialogError(error),
     onMutate: () => {
       const metadata: SwapTransactionMetadata = {
-        buyToken: buyToken?.token as Token,
-        sellToken: sellToken?.token as Token,
+        buyToken: buyToken as Token,
+        sellToken: sellToken as Token,
         sellAmount: BigNumber.from(quote?.sellAmount as string),
         buyAmount: BigNumber.from(quote?.buyAmount as string),
       };
@@ -269,13 +315,13 @@ export function Swap(props: Props) {
     setSelectFor(undefined);
   };
 
-  const handleSelectSellToken = (tokenBalance: TokenBalance) => {
-    setSellToken(tokenBalance);
+  const handleSelectSellToken = (token: Token) => {
+    setSellToken(token);
     handleClose();
   };
 
-  const handleSelectBuyToken = (tokenBalance: TokenBalance) => {
-    setBuyToken(tokenBalance);
+  const handleSelectBuyToken = (token: Token) => {
+    setBuyToken(token);
     handleClose();
   };
 
@@ -294,11 +340,11 @@ export function Swap(props: Props) {
 
   const handleChangeBuyAmount = (e: ChangeEvent<HTMLInputElement>) => {
     if (NUMBER_REGEX.test(e.target.value) || e.target.value === '') {
-      if (buyToken && buyToken.token.decimals) {
+      if (buyToken && buyToken.decimals) {
         const value = e.target.value;
         const decimals = value.split('.')[1]?.length || 0;
-        if (decimals > buyToken.token.decimals) {
-          setBuyAmountValue(Number(value).toFixed(buyToken.token.decimals));
+        if (decimals > buyToken.decimals) {
+          setBuyAmountValue(Number(value).toFixed(buyToken.decimals));
         } else {
           setBuyAmountValue(value);
         }
@@ -308,11 +354,11 @@ export function Swap(props: Props) {
 
   const handleChangeSellAmount = (e: ChangeEvent<HTMLInputElement>) => {
     if (NUMBER_REGEX.test(e.target.value) || e.target.value === '') {
-      if (sellToken && sellToken.token.decimals) {
+      if (sellToken && sellToken.decimals) {
         const value = e.target.value;
         const decimals = value.split('.')[1]?.length || 0;
-        if (decimals > sellToken.token.decimals) {
-          setSellAmountValue(Number(value).toFixed(sellToken.token.decimals));
+        if (decimals > sellToken.decimals) {
+          setSellAmountValue(Number(value).toFixed(sellToken.decimals));
         } else {
           setSellAmountValue(value);
         }
@@ -352,10 +398,8 @@ export function Swap(props: Props) {
   };
 
   const handleConfirmSwap = async () => {
-    if (quote && sellToken && sellToken?.token) {
-      const {
-        token: { address, decimals },
-      } = sellToken;
+    if (quote && sellToken) {
+      const { address, decimals } = sellToken;
 
       if (address && decimals) {
         if (
@@ -376,7 +420,7 @@ export function Swap(props: Props) {
           if (sellToken) {
             approveToken.mutateAsync({
               spender: quote.allowanceTarget,
-              tokenAddress: sellToken.token.address,
+              tokenAddress: sellToken.address,
               amount: ethers.constants.MaxUint256,
             });
           }
@@ -386,17 +430,15 @@ export function Swap(props: Props) {
   };
 
   const handleSwap = async () => {
-    if (quote && sellToken && sellToken?.token) {
-      const {
-        token: { address, decimals },
-      } = sellToken;
+    if (quote && sellToken && sellToken) {
+      const { address, decimals } = sellToken;
 
       if (address && decimals) {
         setShowConfirmSwap(false);
         await execSwap.mutateAsync(quote);
         execSwap.reset();
         setSkipValidation(true);
-        sellTokenBalance.refetch();
+        sellTokenBalanceQuery.refetch();
         setQuote(undefined);
       }
     }
@@ -414,24 +456,24 @@ export function Swap(props: Props) {
 
   const isOverSellAmount = useMemo(() => {
     if (NUMBER_REGEX.test(sellAmount)) {
-      if (sellToken && sellToken.token.decimals) {
+      if (sellToken && sellToken.decimals && sellTokenBalance) {
         const decimals = sellAmount.split('.')[1]?.length || 0;
-        if (decimals > sellToken.token.decimals) {
-          return sellToken?.balance.lt(
+        if (decimals > sellToken.decimals) {
+          return sellTokenBalance.lt(
             ethers.utils.parseUnits(
-              Number(sellAmount).toFixed(sellToken.token.decimals),
-              sellToken.token.decimals
+              Number(sellAmount).toFixed(sellToken.decimals),
+              sellToken.decimals
             )
           );
         } else {
-          return sellToken?.balance.lt(
-            ethers.utils.parseUnits(sellAmount, sellToken.token.decimals)
+          return sellTokenBalance.lt(
+            ethers.utils.parseUnits(sellAmount, sellToken.decimals)
           );
         }
       }
     }
     return false;
-  }, [sellToken?.token, sellAmount]);
+  }, [sellToken, sellAmount, sellTokenBalance]);
 
   const [showSettings, setShowSettings] = useState(false);
 
@@ -454,8 +496,8 @@ export function Swap(props: Props) {
             onClose: closeConfirmSwap,
           }}
           quote={quote}
-          sellToken={sellToken?.token}
-          buyToken={buyToken?.token}
+          sellToken={sellToken}
+          buyToken={buyToken}
           confirm={() => handleSwap()}
           errorMessage={swapQuery.error?.message}
         />
@@ -510,6 +552,9 @@ export function Swap(props: Props) {
                 chainId={chainId}
                 onChange={(newChain) => {
                   setChainId(newChain);
+                  if (onChangeChainId) {
+                    onChangeChainId(newChain);
+                  }
                   setSellToken(undefined);
                   setBuyToken(undefined);
                   setSellAmountValue('');
@@ -525,7 +570,7 @@ export function Swap(props: Props) {
         <Divider />
         <CardContent>
           <Grid container spacing={2}>
-            {sellToken && sellTokenBalance.data && (
+            {sellToken && sellTokenBalance && (
               <Grid item xs={12}>
                 <Stack
                   direction="row"
@@ -535,10 +580,10 @@ export function Swap(props: Props) {
                 >
                   <Typography>
                     {ethers.utils.formatUnits(
-                      sellTokenBalance.data,
-                      sellToken.token.decimals
+                      sellTokenBalance,
+                      sellToken.decimals
                     )}{' '}
-                    {sellToken.token.symbol}
+                    {sellToken.symbol}
                   </Typography>
                 </Stack>
               </Grid>
@@ -551,10 +596,10 @@ export function Swap(props: Props) {
                     variant="outlined"
                     fullWidth
                     startIcon={
-                      sellToken?.token.logoURI && (
+                      sellToken?.logoURI && (
                         <Avatar
                           sx={{ width: 'auto', height: '1rem' }}
-                          src={sellToken?.token.logoURI}
+                          src={sellToken?.logoURI}
                         />
                       )
                     }
@@ -562,7 +607,7 @@ export function Swap(props: Props) {
                     onClick={() => handleSelect('sell')}
                   >
                     {sellToken != undefined ? (
-                      sellToken?.token.symbol
+                      sellToken?.symbol
                     ) : (
                       <FormattedMessage id="select" defaultMessage="Select" />
                     )}
@@ -614,10 +659,10 @@ export function Swap(props: Props) {
                     size="large"
                     fullWidth
                     startIcon={
-                      buyToken?.token.logoURI && (
+                      buyToken?.logoURI && (
                         <Avatar
                           sx={{ width: 'auto', height: '1rem' }}
-                          src={buyToken?.token.logoURI}
+                          src={buyToken?.logoURI}
                         />
                       )
                     }
@@ -625,7 +670,7 @@ export function Swap(props: Props) {
                     onClick={() => handleSelect('buy')}
                   >
                     {buyToken != undefined ? (
-                      buyToken?.token.symbol
+                      buyToken?.symbol
                     ) : (
                       <FormattedMessage id="select" defaultMessage="Select" />
                     )}
@@ -698,9 +743,9 @@ export function Swap(props: Props) {
                     <Typography color="textSecondary">
                       {ethers.utils.formatUnits(
                         BigNumber.from(quote.sellAmount),
-                        sellToken?.token?.decimals || 18
+                        sellToken?.decimals || 18
                       )}{' '}
-                      {sellToken?.token.symbol}
+                      {sellToken?.symbol}
                     </Typography>
                   </Stack>
                   {appConfig.swapFees?.amount_percentage !== undefined && (
@@ -721,9 +766,9 @@ export function Swap(props: Props) {
                           BigNumber.from(quote.buyAmount)
                             .mul(appConfig.swapFees.amount_percentage * 100)
                             .div(10000),
-                          buyToken?.token.decimals
+                          buyToken?.decimals
                         )}{' '}
-                        {buyToken?.token.symbol.toUpperCase()}
+                        {buyToken?.symbol.toUpperCase()}
                       </Typography>
                     </Stack>
                   )}
@@ -742,9 +787,9 @@ export function Swap(props: Props) {
                     <Typography color="textSecondary">
                       {ethers.utils.formatUnits(
                         BigNumber.from(quote.buyAmount),
-                        buyToken?.token?.decimals || 18
+                        buyToken?.decimals || 18
                       )}{' '}
-                      {buyToken?.token.symbol}
+                      {buyToken?.symbol}
                     </Typography>
                   </Stack>
                 </Stack>

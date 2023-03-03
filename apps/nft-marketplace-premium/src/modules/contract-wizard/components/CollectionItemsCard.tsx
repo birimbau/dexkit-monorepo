@@ -84,7 +84,7 @@ export default function CollectionItemsCard() {
                   ))}
                   <Button
                     variant="outlined"
-                    onClick={() => arrayHelper.push({})}
+                    onClick={() => arrayHelper.push({ quantity: 1 })}
                   >
                     <FormattedMessage id="add.nft" defaultMessage="Add nft" />
                   </Button>

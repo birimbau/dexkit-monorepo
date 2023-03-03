@@ -22,7 +22,7 @@ export default function TokensSectionList({
   onMakeTradable,
   search,
 }: Props) {
-  const lazySearch = useDebounce<string>(search, 500);
+  const lazySearch = useDebounce<string>(search?.toLowerCase(), 500);
 
   const filteredTokens = useMemo(() => {
     if (!tokens) {
@@ -46,6 +46,7 @@ export default function TokensSectionList({
           token={token}
           selectable={selectable}
           onClick={() => onSelect(TOKEN_KEY(token))}
+          disableMakeTradable={onMakeTradable === undefined}
           onMakeTradable={() => {
             if (onMakeTradable) {
               onMakeTradable(TOKEN_KEY(token));

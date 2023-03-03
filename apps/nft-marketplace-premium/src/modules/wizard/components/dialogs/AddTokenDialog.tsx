@@ -17,7 +17,7 @@ import {
   Typography,
 } from '@mui/material';
 import { FormikHelpers, useFormik } from 'formik';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import * as Yup from 'yup';
@@ -33,6 +33,8 @@ import { Token } from '../../../../types/blockchain';
 import { Network } from '../../../../types/chains';
 import { isAddressEqual } from '../../../../utils/blockchain';
 import { ipfsUriToUrl } from '../../../../utils/ipfs';
+import { ImageFormUpload } from '@/modules/contract-wizard/components/ImageFormUpload';
+import { SearchTokenAutocomplete } from '../pageEditor/components/SearchTokenAutocomplete';
 
 interface Props {
   dialogProps: DialogProps;
@@ -46,6 +48,7 @@ interface Form {
   name: string;
   symbol: string;
   decimals: number;
+  logoURI?: string;
 }
 
 const FormSchema: Yup.SchemaOf<Form> = Yup.object().shape({
@@ -59,6 +62,7 @@ const FormSchema: Yup.SchemaOf<Form> = Yup.object().shape({
   name: Yup.string().required(),
   symbol: Yup.string().required(),
   decimals: Yup.number().required(),
+  logoURI: Yup.string(),
 });
 
 function AddTokenDialog({ dialogProps, tokens, onSave }: Props) {
@@ -66,6 +70,7 @@ function AddTokenDialog({ dialogProps, tokens, onSave }: Props) {
 
   const { formatMessage } = useIntl();
   const { enqueueSnackbar } = useSnackbar();
+  const [autocompleteToken, setAutoCompleteToken] = useState<any>();
 
   const handleSubmit = useCallback(
     (values: Form, formikHelpers: FormikHelpers<Form>) => {
@@ -80,7 +85,7 @@ function AddTokenDialog({ dialogProps, tokens, onSave }: Props) {
           address: values.contractAddress.toLocaleLowerCase(),
           chainId: Number(values.chainId),
           decimals: values.decimals,
-          logoURI: '',
+          logoURI: values.logoURI || '',
           name: values.name,
           symbol: values.symbol,
         });
@@ -116,6 +121,7 @@ function AddTokenDialog({ dialogProps, tokens, onSave }: Props) {
       name: '',
       decimals: 0,
       symbol: '',
+      logoURI: '',
     },
     validationSchema: FormSchema,
     onSubmit: handleSubmit,
@@ -201,12 +207,38 @@ function AddTokenDialog({ dialogProps, tokens, onSave }: Props) {
       />
       <DialogContent dividers>
         <Stack spacing={2}>
+          <Alert severity="info">
+            <FormattedMessage
+              id={'token.import.info'}
+              defaultMessage={
+                'You can search tokens on our API or import it directly by contract address'
+              }
+            />
+          </Alert>
           {tokenData.isError && (
             <Alert severity="error" onClose={handleCloseError}>
               {String(tokenData.error)}
             </Alert>
           )}
+
           <FormControl>
+            <SearchTokenAutocomplete
+              data={autocompleteToken}
+              onChange={(tk: any) => {
+                setAutoCompleteToken(tk);
+                if (tk) {
+                  formik.setValues(
+                    (value) => ({
+                      ...value,
+                      contractAddress: tk?.address || '',
+                      chainId: tk?.chainId || 0,
+                      logoURI: tk?.image || '',
+                    }),
+                    true
+                  );
+                }
+              }}
+            />
             <Select
               fullWidth
               value={formik.values.chainId}
@@ -327,6 +359,21 @@ function AddTokenDialog({ dialogProps, tokens, onSave }: Props) {
                 : undefined
             }
           />
+          <Stack spacing={2}>
+            <Box pl={2}>
+              <Typography variant="caption">
+                {' '}
+                <FormattedMessage id="logo" defaultMessage="Logo" />{' '}
+              </Typography>
+            </Box>
+            <ImageFormUpload
+              error={Boolean(formik?.errors?.logoURI)}
+              value={formik.values.logoURI || null}
+              onSelectFile={(file) => formik.setFieldValue('logoURI', file)}
+              imageHeight={10}
+              imageWidth={10}
+            />
+          </Stack>
         </Stack>
       </DialogContent>
       <DialogActions>

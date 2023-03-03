@@ -3,7 +3,7 @@ import { AppCollection } from '../../../types/config';
 
 export const collectionAtom = atom<AppCollection | undefined>(undefined);
 
-interface CustomThemeInterface {
+export interface CustomThemeInterface {
   typography?: any;
   palette?: {
     mode?: 'dark' | 'light';

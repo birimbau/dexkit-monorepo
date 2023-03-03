@@ -12,14 +12,16 @@ import {
 
 import Link from './Link';
 import { FormattedMessage } from 'react-intl';
-import { SocialMedia } from '../types/config';
+import { AppConfig, SocialMedia } from '../types/config';
 import TwitterIcon from '@mui/icons-material/Twitter';
-import { useAppConfig } from '../hooks/app';
 import NavbarMenu from './Menu';
 
-export function Footer() {
-  const appConfig = useAppConfig();
+interface Props {
+  appConfig: AppConfig;
+  isPreview?: boolean;
+}
 
+export function Footer({ appConfig, isPreview }: Props) {
   const renderIcon = (media: SocialMedia) => {
     if (media?.type === 'instagram') {
       return <InstagramIcon />;
@@ -66,7 +68,7 @@ export function Footer() {
                   ) : (
                     <Link
                       color="inherit"
-                      href={m.href || '/'}
+                      href={isPreview ? '#' : m.href || '/'}
                       key={key}
                       target={m.type === 'External' ? '_blank' : undefined}
                     >
@@ -80,7 +82,7 @@ export function Footer() {
               </Stack>
             ) : (
               <Link
-                href="https://dexkit.com/contact-us/"
+                href={isPreview ? '' : 'https://dexkit.com/contact-us/'}
                 color="inherit"
                 target="_blank"
               >
@@ -102,7 +104,11 @@ export function Footer() {
                 id="is.powered.by"
                 description="is powered by"
               />{' '}
-              <Link variant="inherit" href="https://0x.org/" color="inherit">
+              <Link
+                variant="inherit"
+                href={isPreview ? '#' : 'https://0x.org/'}
+                color="inherit"
+              >
                 <strong>0x</strong>
               </Link>{' '}
               <FormattedMessage
@@ -112,7 +118,7 @@ export function Footer() {
               />{' '}
               <Link
                 variant="inherit"
-                href="https://www.dexkit.com"
+                href={isPreview ? '#' : 'https://www.dexkit.com'}
                 target="_blank"
                 color="inherit"
               >

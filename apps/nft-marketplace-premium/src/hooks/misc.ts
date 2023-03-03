@@ -1,10 +1,10 @@
+import { useMutation } from '@tanstack/react-query';
 import { atom, useAtom, useAtomValue } from 'jotai';
 import { useCallback, useEffect, useState } from 'react';
-import { useMutation } from '@tanstack/react-query';
 import { isBalancesVisibleAtom } from '../state/atoms';
 
-import { metaMask } from '../../src/connectors/metamask';
-import { walletConnect } from '../../src/connectors/walletConnect';
+import { metaMask } from '../connectors/metamask';
+import { walletConnect } from '../connectors/walletConnect';
 
 export function usePositionPaginator(pageSize = 5) {
   const [position, setPosition] = useState({ offset: 0, limit: pageSize });

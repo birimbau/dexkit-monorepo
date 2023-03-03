@@ -54,12 +54,13 @@ export const useERC20BalancesQuery = (select?: SelectCalback, defaultChainId?: C
 };
 
 export const useERC20BalancesProxyAllowancesQuery = (
+  tokens?: Token[],
   select?: SelectCalback,
-  defaultChainId?: ChainId
+  defaultChainId?: ChainId,
+  useSuspense?: boolean,
 ) => {
   const { provider: walletProvider, account, chainId: walletChainId } = useWeb3React();
   const chainId = defaultChainId || walletChainId;
-  const tokens = useTokenList({ chainId, includeNative: true });
 
   return useQuery(
     [GET_ERC20_BALANCES, account, chainId, tokens],
@@ -72,7 +73,7 @@ export const useERC20BalancesProxyAllowancesQuery = (
       ) {
         return;
       }
-      if (tokens.length === 0) {
+      if (tokens && tokens.length === 0) {
         return [];
       }
       const provider = defaultChainId === walletChainId ? walletProvider : getProviderByChainId(chainId);
@@ -87,7 +88,7 @@ export const useERC20BalancesProxyAllowancesQuery = (
         provider
       );
     },
-    { enabled: chainId !== undefined, select, suspense: true }
+    { enabled: chainId !== undefined, select, suspense: useSuspense }
   );
 };
 

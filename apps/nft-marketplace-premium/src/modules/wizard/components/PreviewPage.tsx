@@ -1,6 +1,6 @@
-import { useMediaQuery, useTheme } from '@mui/material';
-import { AppPageSection } from '../../../types/config';
-import ActionButtonsSection from '../../home/components/ActionButtonsSection';
+import SwapSection from '@/modules/home/components/SwapSection';
+import MainLayout from 'src/components/layouts/main';
+import { AppConfig, AppPageSection } from '../../../types/config';
 import CallToActionSection from '../../home/components/CallToActionSection';
 import CollectionsSection from '../../home/components/CollectionsSection';
 import CustomSection from '../../home/components/CustomSection';
@@ -8,18 +8,22 @@ import { FeaturedSection } from '../../home/components/FeaturedSection';
 import VideoSection from '../../home/components/VideoSection';
 
 interface Props {
-  sections: AppPageSection[];
+  sections?: AppPageSection[];
   disabled?: boolean;
   previewPlatform: 'mobile' | 'desktop';
+  withLayout?: boolean;
+  appConfig?: AppConfig;
 }
 
 export default function PreviewPage({
   sections,
   disabled,
   previewPlatform,
+  withLayout,
+  appConfig,
 }: Props) {
   const renderSections = () => {
-    return sections.map((section, index: number) => {
+    return (sections || []).map((section, index: number) => {
       if (previewPlatform === 'mobile' && section.hideMobile) {
         return null;
       }
@@ -63,9 +67,18 @@ export default function PreviewPage({
         );
       } else if (section.type === 'custom') {
         return <CustomSection key={index} section={section} />;
+      } else if (section.type === 'swap') {
+        return <SwapSection key={index} section={section} />;
       }
     });
   };
-
-  return <>{renderSections()}</>;
+  if (withLayout) {
+    return (
+      <MainLayout disablePadding appConfigProps={appConfig} isPreview={true}>
+        {renderSections() || null}{' '}
+      </MainLayout>
+    );
+  } else {
+    return <>{renderSections() || null}</>;
+  }
 }

@@ -148,7 +148,7 @@ export default function VideoSectionForm({ onSave, onCancel, section }: Props) {
               <FormattedMessage id="save" defaultMessage="Save" />
             </Button>
             <Button onClick={onCancel}>
-              <FormattedMessage id="save" defaultMessage="Cancel" />
+              <FormattedMessage id="cancel" defaultMessage="Cancel" />
             </Button>
           </Stack>
         </Grid>

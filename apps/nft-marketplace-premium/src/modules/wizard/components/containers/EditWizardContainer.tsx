@@ -19,9 +19,9 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
-import dynamic from 'next/dynamic';
 import { NextSeo } from 'next-seo';
-import { useEffect, useMemo, useState } from 'react';
+import dynamic from 'next/dynamic';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import AppConfirmDialog from '../../../../components/AppConfirmDialog';
 import Link from '../../../../components/Link';
@@ -32,6 +32,7 @@ import { SiteResponse } from '../../../../types/whitelabel';
 import { useAppWizardConfig } from '../../hooks';
 
 import SignConfigDialog from '../dialogs/SignConfigDialog';
+import { PreviewAppButton } from '../PreviewAppButton';
 import { WelcomeMessage } from '../WelcomeMessage';
 
 const OwnershipWizardContainer = dynamic(
@@ -106,9 +107,11 @@ export function EditWizardContainer({ site }: Props) {
 
   const sendConfigMutation = useSendConfigMutation({ slug: site?.slug });
 
-  const { setWizardConfig } = useAppWizardConfig();
+  const { setWizardConfig, wizardConfig } = useAppWizardConfig();
 
-  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const [showPreview, setShowPreview] = useState(false);
 
   const [showSendingConfig, setShowSendingConfig] = useState(false);
 
@@ -119,6 +122,12 @@ export function EditWizardContainer({ site }: Props) {
       setWizardConfig(config);
     }
   }, [config]);
+
+  useEffect(() => {
+    if (config) {
+      setWizardConfig(config);
+    }
+  }, [activeMenu, config]);
 
   // Pages forms
   const handleCloseConfirmSendConfig = () => {
@@ -131,11 +140,19 @@ export function EditWizardContainer({ site }: Props) {
   };
 
   const handleClosePreview = () => {
-    setIsPreviewOpen(false);
+    setShowPreview(false);
   };
 
   const handleShowPreview = () => {
-    setIsPreviewOpen(true);
+    setShowPreview(true);
+  };
+
+  const handleCloseMenu = () => {
+    setIsMenuOpen(false);
+  };
+
+  const handleShowMenu = () => {
+    setIsMenuOpen(true);
   };
 
   const handleCloseSendingConfig = () => {
@@ -148,6 +165,15 @@ export function EditWizardContainer({ site }: Props) {
     const newSite = { ...site, config: _config };
     sendConfigMutation.mutate(newSite);
   };
+
+  const handleChange = useCallback(
+    (_config: AppConfig) => {
+      const newConfig = { ...wizardConfig, ..._config };
+      setWizardConfig(newConfig);
+    },
+
+    [wizardConfig, setWizardConfig]
+  );
 
   const renderMenu = () => (
     <Box sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
@@ -384,7 +410,7 @@ export function EditWizardContainer({ site }: Props) {
 
   return (
     <>
-      <Drawer open={isPreviewOpen} onClose={handleClosePreview}>
+      <Drawer open={isMenuOpen} onClose={handleCloseMenu}>
         <Box
           sx={(theme) => ({ minWidth: `${theme.breakpoints.values.sm / 2}px` })}
         >
@@ -490,33 +516,39 @@ export function EditWizardContainer({ site }: Props) {
           <Grid item xs={12} sm={12}>
             <WelcomeMessage />
           </Grid>
+
           <Grid item xs={12} sm={12}>
             <Stack direction={'row'} justifyContent={'space-between'}>
-              <Typography variant="h5">
-                <FormattedMessage
-                  id="edit.marketplace"
-                  defaultMessage="Edit Marketplace"
-                />
-              </Typography>
-              {site?.previewUrl && (
-                <Stack direction={'row'} spacing={2}>
-                  <Typography variant="body1">
-                    <FormattedMessage
-                      id="preview.url"
-                      defaultMessage="Preview Url"
-                    />
-                    :
-                  </Typography>
-
-                  <Link target={'_blank'} href={site.previewUrl}>
-                    {site.previewUrl}
-                  </Link>
-                </Stack>
+              {!isMobile && (
+                <Typography variant="h5">
+                  <FormattedMessage
+                    id="edit.marketplace"
+                    defaultMessage="Edit Marketplace"
+                  />
+                </Typography>
               )}
+              <Stack direction={'row'} spacing={2}>
+                <PreviewAppButton appConfig={wizardConfig} />
+                {site?.previewUrl && (
+                  <>
+                    <Typography variant="body1">
+                      <FormattedMessage
+                        id="preview.url"
+                        defaultMessage="Preview Url"
+                      />
+                      :
+                    </Typography>
+
+                    <Link target={'_blank'} href={site.previewUrl}>
+                      {site.previewUrl}
+                    </Link>
+                  </>
+                )}
+              </Stack>
 
               {isMobile && (
                 <Button
-                  onClick={handleShowPreview}
+                  onClick={handleShowMenu}
                   size="small"
                   variant="outlined"
                 >
@@ -531,7 +563,11 @@ export function EditWizardContainer({ site }: Props) {
           <Grid item xs={12} sm={10}>
             <Stack spacing={2}>
               {activeMenu === ActiveMenu.General && config && (
-                <GeneralWizardContainer config={config} onSave={handleSave} />
+                <GeneralWizardContainer
+                  config={config}
+                  onSave={handleSave}
+                  onChange={handleChange}
+                />
               )}
               {activeMenu === ActiveMenu.Domain && config && (
                 <DomainWizardContainer
@@ -549,7 +585,11 @@ export function EditWizardContainer({ site }: Props) {
               )}
 
               {activeMenu === ActiveMenu.Theme && config && (
-                <ThemeWizardContainer config={config} onSave={handleSave} />
+                <ThemeWizardContainer
+                  config={config}
+                  onSave={handleSave}
+                  onChange={handleChange}
+                />
               )}
 
               {activeMenu === ActiveMenu.Pages && config && (
@@ -574,7 +614,11 @@ export function EditWizardContainer({ site }: Props) {
               )}
 
               {activeMenu === ActiveMenu.Menu && config && (
-                <PagesMenuWizardContainer config={config} onSave={handleSave} />
+                <PagesMenuWizardContainer
+                  config={config}
+                  onSave={handleSave}
+                  onChange={handleChange}
+                />
               )}
 
               {activeMenu === ActiveMenu.Tokens && config && (
@@ -595,6 +639,7 @@ export function EditWizardContainer({ site }: Props) {
                 <FooterMenuWizardContainer
                   config={config}
                   onSave={handleSave}
+                  onChange={handleChange}
                 />
               )}
             </Stack>

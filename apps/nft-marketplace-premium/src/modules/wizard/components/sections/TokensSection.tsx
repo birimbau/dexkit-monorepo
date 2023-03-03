@@ -15,20 +15,23 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import dynamic from 'next/dynamic';
 import { ChangeEvent, useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import AppConfirmDialog from '../../../../components/AppConfirmDialog';
 import { Token } from '../../../../types/blockchain';
 import { WIZARD_MAX_TOKENS } from '../../constants';
-import AddTokenDialog from '../dialogs/AddTokenDialog';
-import ImportTokenListDialog from '../dialogs/ImportTokenListDialog';
+const AddTokenDialog = dynamic(() => import('../dialogs/AddTokenDialog'));
+const ImportTokenListDialog = dynamic(
+  () => import('../dialogs/ImportTokenListDialog')
+);
 import TokensSectionList from './TokensSectionList';
 
 interface Props {
   tokens: Token[];
   selectedKeys: { [key: string]: boolean };
   onSelect: (key: string) => void;
-  onMakeTradable: (key: string) => void;
+  onMakeTradable?: (key: string) => void;
   onSave: (token: Token[]) => void;
   onSelectAll: () => void;
   onRemove: () => void;
@@ -210,7 +213,7 @@ export default function TokensSection({
                 startIcon={<Add />}
                 variant="outlined"
               >
-                <FormattedMessage id="add" defaultMessage="Add" />
+                <FormattedMessage id="import" defaultMessage="Import" />
               </Button>
               <Button
                 onClick={handleShowImportTokenList}
@@ -218,7 +221,10 @@ export default function TokensSection({
                 startIcon={<ImportExport />}
                 variant="outlined"
               >
-                <FormattedMessage id="import" defaultMessage="Import" />
+                <FormattedMessage
+                  id="add.from.token.list"
+                  defaultMessage="Add from token list"
+                />
               </Button>
             </Stack>
           </Stack>

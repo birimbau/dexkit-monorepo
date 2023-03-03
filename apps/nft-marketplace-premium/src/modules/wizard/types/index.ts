@@ -31,3 +31,13 @@ export enum WizardSetupSteps {
   Layout,
   Done,
 }
+
+export interface StepperButtonProps {
+  handleNext?: () => void;
+  handleBack?: () => void;
+  disableContinue?: boolean,
+  isLastStep?: boolean;
+  isFirstStep?: boolean;
+}
+
+

@@ -27,6 +27,7 @@ import {
 
 import DeleteIcon from '@mui/icons-material/Delete';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
+import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
 import { useState } from 'react';
 import AppConfirmDialog from '../../../../components/AppConfirmDialog';
 import AddPageDialog from '../dialogs/AddPageDialog';
@@ -177,6 +178,34 @@ export default function PagesSectionPage({
               }
               subtitle={section.title || ''}
               icon={<AppsIcon />}
+              onSwap={onSwap}
+              onRemove={onRemove}
+              onEdit={onEdit}
+              onClone={onClone}
+              onView={onView}
+              index={index}
+              onHideDesktop={onHideDesktop}
+              onHideMobile={onHideMobile}
+              hideDesktop={section.hideDesktop}
+              hideMobile={section.hideMobile}
+              isVisible={isVisible}
+              length={sections.length}
+            />
+          </CardContent>
+          <Divider />
+          {isVisible && (
+            <PreviewPagePlatform sections={[section]} disabled={true} />
+          )}
+        </Card>
+      );
+    } else if (section.type === 'swap') {
+      return (
+        <Card key={index}>
+          <CardContent>
+            <SectionHeader
+              title={<FormattedMessage id="swap" defaultMessage="Swap" />}
+              subtitle={section.title || ''}
+              icon={<SwapHorizIcon />}
               onSwap={onSwap}
               onRemove={onRemove}
               onEdit={onEdit}

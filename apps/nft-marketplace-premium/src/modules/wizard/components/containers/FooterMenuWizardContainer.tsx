@@ -3,7 +3,7 @@ import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { AppConfig, MenuTree } from '../../../../types/config';
 import MenuSection from '../sections/MenuSection';
@@ -11,15 +11,25 @@ import MenuSection from '../sections/MenuSection';
 interface Props {
   config: AppConfig;
   onSave: (config: AppConfig) => void;
+  onChange: (config: AppConfig) => void;
 }
 
-export default function FooterMenuWizardContainer({ config, onSave }: Props) {
+export default function FooterMenuWizardContainer({
+  config,
+  onSave,
+  onChange,
+}: Props) {
   const [menu, setMenu] = useState<MenuTree[]>(config.footerMenuTree || []);
 
   const handleSave = () => {
     const newConfig = { ...config, footerMenuTree: menu };
     onSave(newConfig);
   };
+
+  useEffect(() => {
+    const newConfig = { ...config, footerMenuTree: menu };
+    onChange(newConfig);
+  }, [menu]);
 
   return (
     <Grid container spacing={2}>

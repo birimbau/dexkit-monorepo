@@ -24,6 +24,7 @@ interface Props {
   selected?: boolean;
   onClick: () => void;
   onMakeTradable?: () => void;
+  disableMakeTradable?: boolean;
   divider?: boolean;
 }
 
@@ -34,6 +35,7 @@ export default function TokensSectionListItem({
   onClick,
   onMakeTradable,
   divider,
+  disableMakeTradable,
 }: Props) {
   const { formatMessage } = useIntl();
 
@@ -93,29 +95,31 @@ export default function TokensSectionListItem({
           </Stack>
         }
       />
-      <ListItemSecondaryAction>
-        {selectable ? (
-          <Checkbox
-            checked={Boolean(selected)}
-            onChange={(e, checked) => onClick()}
-            inputProps={{ 'aria-label': 'controlled' }}
-          />
-        ) : (
-          <Tooltip
-            title={
-              <FormattedMessage
-                id="make.token.available.on.the.marketplace"
-                defaultMessage="Make token available on the marketplace"
-              />
-            }
-          >
-            <Switch
-              checked={Boolean(token.tradable)}
-              onClick={onMakeTradable}
+      {!(disableMakeTradable === true) && (
+        <ListItemSecondaryAction>
+          {selectable ? (
+            <Checkbox
+              checked={Boolean(selected)}
+              onChange={(e, checked) => onClick()}
+              inputProps={{ 'aria-label': 'controlled' }}
             />
-          </Tooltip>
-        )}
-      </ListItemSecondaryAction>
+          ) : (
+            <Tooltip
+              title={
+                <FormattedMessage
+                  id="make.token.available.on.the.marketplace"
+                  defaultMessage="Make token available on the marketplace"
+                />
+              }
+            >
+              <Switch
+                checked={Boolean(token.tradable)}
+                onClick={onMakeTradable}
+              />
+            </Tooltip>
+          )}
+        </ListItemSecondaryAction>
+      )}
     </ListItem>
   );
 }

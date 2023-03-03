@@ -11,32 +11,43 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { useAtom } from 'jotai';
-import { useCallback, useMemo, useState } from 'react';
+import { useAtomValue } from 'jotai';
+import Head from 'next/head';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
+import Fonts from 'src/constants/fonts.json';
 import { getTheme } from '../../../../theme';
 import { AppConfig } from '../../../../types/config';
 import { customThemeAtom } from '../../state';
+import { StepperButtonProps } from '../../types';
+import { generateTheme } from '../../utils';
 import ThemeSection from '../sections/ThemeSection';
+import { StepperButtons } from '../steppers/StepperButtons';
 import ThemePreview from '../ThemePreview';
-import Fonts from 'src/constants/fonts.json';
-import Head from 'next/head';
 
 interface Props {
   config: AppConfig;
   onSave: (config: AppConfig) => void;
+  onChange: (config: AppConfig) => void;
+  isOnStepper?: boolean;
+  stepperButtonProps?: StepperButtonProps;
+  showSwap?: boolean;
 }
 
-export default function ThemeWizardContainer({ config, onSave }: Props) {
+export default function ThemeWizardContainer({
+  config,
+  onSave,
+  onChange,
+  isOnStepper,
+  stepperButtonProps,
+  showSwap,
+}: Props) {
   const [selectedThemeId, setSelectedThemeId] = useState<string>(config.theme);
   const [selectedFont, setSelectedFont] = useState<
     { family: string; category?: string } | undefined
   >(config?.font);
-  const [customTheme, setCustomTheme] = useAtom(customThemeAtom);
+  const customTheme = useAtomValue(customThemeAtom);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
-  const handleClosePreview = () => {
-    setIsPreviewOpen(false);
-  };
 
   const handleShowPreview = () => {
     setIsPreviewOpen(true);
@@ -50,36 +61,7 @@ export default function ThemeWizardContainer({ config, onSave }: Props) {
   );
 
   const selectedTheme = useMemo(() => {
-    if (selectedThemeId !== undefined) {
-      let fontFamily;
-      if (selectedFont) {
-        fontFamily = `'${selectedFont.family}', ${selectedFont.category}`;
-      }
-
-      if (selectedThemeId === 'custom') {
-        return responsiveFontSizes(
-          fontFamily
-            ? createTheme({
-                ...customTheme,
-                typography: {
-                  fontFamily,
-                },
-              })
-            : createTheme(customTheme)
-        );
-      }
-      const theme = getTheme(selectedThemeId).theme;
-      return responsiveFontSizes(
-        fontFamily
-          ? createTheme({
-              ...theme,
-              typography: {
-                fontFamily,
-              },
-            })
-          : createTheme(theme)
-      );
-    }
+    return generateTheme({ selectedFont, customTheme, selectedThemeId });
   }, [selectedThemeId, customTheme, selectedFont]);
 
   const handleCancelEdit = () => {
@@ -88,7 +70,7 @@ export default function ThemeWizardContainer({ config, onSave }: Props) {
 
   const renderThemePreview = () => {
     if (selectedTheme) {
-      return <ThemePreview selectedTheme={selectedTheme} />;
+      return <ThemePreview selectedTheme={selectedTheme} showSwap={showSwap} />;
     }
   };
   const handleSave = () => {
@@ -101,6 +83,16 @@ export default function ThemeWizardContainer({ config, onSave }: Props) {
     }
     onSave(newConfig);
   };
+  useEffect(() => {
+    const newConfig = { ...config, theme: selectedThemeId };
+    if (newConfig.theme === 'custom' && customTheme) {
+      newConfig.customTheme = JSON.stringify(customTheme);
+    }
+    if (selectedFont) {
+      newConfig.font = selectedFont;
+    }
+    onChange(newConfig);
+  }, [selectedThemeId, selectedFont, customTheme]);
 
   const handleSelectedFont = (event: any, value: string | null) => {
     if (value) {
@@ -174,14 +166,27 @@ export default function ThemeWizardContainer({ config, onSave }: Props) {
           <Divider />
         </Grid>
         <Grid item xs={12}>
-          <Stack spacing={1} direction="row" justifyContent="flex-end">
-            <Button variant="contained" color="primary" onClick={handleSave}>
-              <FormattedMessage id="save" defaultMessage="Save" />
-            </Button>
-            <Button startIcon={<Cancel />} onClick={handleCancelEdit}>
-              <FormattedMessage id="cancel" defaultMessage="Cancel" />
-            </Button>
-          </Stack>
+          {isOnStepper ? (
+            <StepperButtons
+              {...stepperButtonProps}
+              handleNext={() => {
+                handleSave();
+                if (stepperButtonProps?.handleNext) {
+                  stepperButtonProps.handleNext();
+                }
+              }}
+              disableContinue={false}
+            />
+          ) : (
+            <Stack spacing={1} direction="row" justifyContent="flex-end">
+              <Button variant="contained" color="primary" onClick={handleSave}>
+                <FormattedMessage id="save" defaultMessage="Save" />
+              </Button>
+              <Button startIcon={<Cancel />} onClick={handleCancelEdit}>
+                <FormattedMessage id="cancel" defaultMessage="Cancel" />
+              </Button>
+            </Stack>
+          )}
         </Grid>
       </Grid>
     </>

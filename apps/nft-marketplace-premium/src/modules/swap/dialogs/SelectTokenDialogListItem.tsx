@@ -9,18 +9,18 @@ import {
 
 import { formatUnits } from 'ethers/lib/utils';
 import { ChainId } from '../../../constants/enum';
-import { TokenBalance } from '../../../types/blockchain';
+import { Token, TokenBalance } from '../../../types/blockchain';
 import { TOKEN_ICON_URL } from '../../../utils/token';
 
 interface Props {
   chainId: ChainId;
   tokenBalance: TokenBalance;
-  onSelect: (tokenBalance: TokenBalance) => void;
+  onSelect: (token: Token) => void;
 }
 
 function SelectTokenDialogListItem({ tokenBalance, onSelect, chainId }: Props) {
   return (
-    <ListItem button onClick={() => onSelect(tokenBalance)}>
+    <ListItem button onClick={() => onSelect(tokenBalance.token)}>
       <ListItemIcon>
         {tokenBalance.token.logoURI ? (
           <Avatar

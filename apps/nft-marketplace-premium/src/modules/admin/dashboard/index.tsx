@@ -1,10 +1,11 @@
 // in src/admin/App.jsx
-import { Admin, Resource, ShowGuesser } from 'react-admin';
+import { Admin, EditGuesser, Resource, ShowGuesser } from 'react-admin';
 import { AuthProvider } from './authProvider';
 
 import dataProvider from './dataProvider';
 import { AssetEdit } from './edits/asset';
 import { CollectionEdit } from './edits/collection';
+import { SiteEdit } from './edits/site';
 import { AssetList } from './lists/asset';
 import { CoinList } from './lists/coin';
 import { CoinPlatformList } from './lists/coinPlatform';
@@ -29,7 +30,7 @@ const App = () => (
       edit={CollectionEdit}
     />
     <Resource name="asset" list={AssetList} show={AssetShow} edit={AssetEdit} />
-    <Resource name="site" list={SiteList} show={ShowGuesser} />
+    <Resource name="site" list={SiteList} show={ShowGuesser} edit={SiteEdit} />
     <Resource name="coin" list={CoinList} show={CoinShow} />
     <Resource
       name="coin-platform"

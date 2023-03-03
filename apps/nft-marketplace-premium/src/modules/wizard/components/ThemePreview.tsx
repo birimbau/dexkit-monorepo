@@ -13,6 +13,7 @@ import { useIntl } from 'react-intl';
 import { ChainId } from '../../../constants/enum';
 import AssetFromApi from '../../nft/components/AssetFromApi';
 import { KITTYGOTCHI_CONTRACT } from '../constants';
+import SwapWidget from './pageEditor/components/SwapWidget';
 
 interface Props {
   selectedTheme: Theme;
@@ -27,7 +28,7 @@ export default function ThemePreview({ selectedTheme, showSwap }: Props) {
       <Stack spacing={2}>
         <Box>
           {showSwap ? (
-            <Swap />
+            <SwapWidget />
           ) : (
             <Grid container spacing={2}>
               <Grid item xs={6}>

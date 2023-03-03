@@ -14,8 +14,10 @@ export default async function handler(
 
   try {
     const response = await dexkitNFTapi.get(`/account/nfts/${networks}/${accounts}`)
+    console.log(response);
     return res.json(response.data);
   } catch (e) {
+    console.log(e);
     return res.json([])
   }
 

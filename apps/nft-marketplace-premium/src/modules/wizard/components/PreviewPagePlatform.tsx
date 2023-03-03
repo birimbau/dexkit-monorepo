@@ -1,16 +1,23 @@
 import Stack from '@mui/material/Stack';
 import { useState } from 'react';
 import { PreviewPortal } from 'src/components/PreviewPortal';
-import { AppPageSection } from '../../../types/config';
+import { AppConfig, AppPageSection } from '../../../types/config';
 import { PreviewPlatformType } from './PreviewPlatformType';
 import PreviewPage from './PreviewPage';
 
 interface Props {
-  sections: AppPageSection[];
+  sections?: AppPageSection[];
   disabled?: boolean;
+  withLayout?: boolean;
+  appConfig?: AppConfig;
 }
 
-export default function PreviewPagePlatform({ sections, disabled }: Props) {
+export default function PreviewPagePlatform({
+  sections,
+  disabled,
+  withLayout,
+  appConfig,
+}: Props) {
   const [previewPlatform, setPreviewPlatform] = useState<any>('desktop');
 
   return (
@@ -26,6 +33,8 @@ export default function PreviewPagePlatform({ sections, disabled }: Props) {
           sections={sections}
           disabled={disabled}
           previewPlatform={previewPlatform}
+          withLayout={withLayout}
+          appConfig={appConfig}
         />
       )}
       {previewPlatform === 'mobile' && (
@@ -39,6 +48,8 @@ export default function PreviewPagePlatform({ sections, disabled }: Props) {
               sections={sections}
               disabled={disabled}
               previewPlatform={previewPlatform}
+              withLayout={withLayout}
+              appConfig={appConfig}
             />
           </PreviewPortal>
         </Stack>

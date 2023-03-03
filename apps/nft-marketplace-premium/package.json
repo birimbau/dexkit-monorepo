@@ -31,7 +31,7 @@
     "@indexed-finance/multicall": "^2.0.0",
     "@mui/x-date-pickers": "^5.0.0-alpha.2",
     "@react-hook/intersection-observer": "^3.1.1",
-    "@react-page/editor": "^5.1.5",
+    "@react-page/editor": "^5.4.3",
     "@react-page/plugins-background": "^5.1.5",
     "@react-page/plugins-divider": "^5.1.5",
     "@react-page/plugins-html5-video": "^5.1.5",

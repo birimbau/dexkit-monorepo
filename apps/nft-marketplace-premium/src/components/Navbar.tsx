@@ -44,7 +44,6 @@ import {
   drawerIsOpenAtom,
   hasPendingTransactionsAtom,
   localeAtom,
-  showAppTransactionsAtom,
   showSelectCurrencyAtom,
   showSelectLocaleAtom,
   uncheckedTransactionsAtom,
@@ -55,9 +54,14 @@ import Notification from './icons/Notification';
 import Wallet from './icons/Wallet';
 import NavbarMenu from './Menu';
 import { WalletButton } from './WalletButton';
+import { AppConfig } from 'src/types/config';
 
-function Navbar() {
-  const appConfig = useAppConfig();
+interface Props {
+  appConfig: AppConfig;
+  isPreview?: boolean;
+}
+
+function Navbar({ appConfig, isPreview }: Props) {
   const { isActive, chainId } = useWeb3React();
 
   const buttonRef = useRef<HTMLElement | null>(null);
@@ -100,9 +104,7 @@ function Navbar() {
     return uncheckedTransactions.filter((tx) => tx.chainId === chainId);
   }, [chainId, uncheckedTransactions]);
 
-  const [showTransactions, setShowTransactions] = useAtom(
-    showAppTransactionsAtom
-  );
+  const [showTransactions, setShowTransactions] = useState(false);
 
   const handleOpenTransactions = () => setShowTransactions(true);
   const handleCloseNotifications = () => setShowTransactions(false);
@@ -218,7 +220,7 @@ function Navbar() {
       >
         <Divider />
         <List disablePadding>
-          <ListItem button component={Link} href="/wallet">
+          <ListItem button component={Link} href={isPreview ? '#' : '/wallet'}>
             <ListItemIcon>
               <Wallet />
             </ListItemIcon>
@@ -246,7 +248,7 @@ function Navbar() {
             </IconButton>
           )}
           {appConfig?.logo ? (
-            <Link href="/">
+            <Link href={isPreview ? '#' : '/'}>
               <Image
                 src={appConfig?.logo.url}
                 alt={appConfig.name}
@@ -260,7 +262,7 @@ function Navbar() {
               sx={{ textDecoration: 'none' }}
               variant="h6"
               color="primary"
-              href="/"
+              href={isPreview ? '#' : '/'}
             >
               {appConfig.name}
             </Link>
@@ -290,11 +292,11 @@ function Navbar() {
               >
                 {appConfig.menuTree.map((m, key) =>
                   m.children ? (
-                    <NavbarMenu menu={m} key={key} />
+                    <NavbarMenu menu={m} key={key} isPreview={isPreview} />
                   ) : (
                     <Link
                       color="inherit"
-                      href={m.href || '/'}
+                      href={isPreview ? '#' : m.href || '/'}
                       sx={{ fontWeight: 600, textDecoration: 'none' }}
                       key={key}
                     >
@@ -318,14 +320,14 @@ function Navbar() {
               >
                 <Link
                   color="inherit"
-                  href="/"
+                  href={isPreview ? '#' : '/'}
                   sx={{ fontWeight: 600, textDecoration: 'none' }}
                 >
                   <FormattedMessage id="home" defaultMessage="Home" />
                 </Link>
                 <Link
                   color="inherit"
-                  href="/swap"
+                  href={isPreview ? '#' : '/swap'}
                   sx={{ fontWeight: 600, textDecoration: 'none' }}
                 >
                   <FormattedMessage id="swap" defaultMessage="Swap" />
@@ -333,7 +335,7 @@ function Navbar() {
                 {isActive && (
                   <Link
                     color="inherit"
-                    href="/wallet"
+                    href={isPreview ? '#' : '/wallet'}
                     sx={{ fontWeight: 600, textDecoration: 'none' }}
                   >
                     <FormattedMessage id="wallet" defaultMessage="Wallet" />

@@ -9,11 +9,12 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 interface Props {
   menu: MenuTree;
+  isPreview?: boolean;
 }
 
 export default function NavbarMenu(props: Props) {
   const router = useRouter();
-  const { menu } = props;
+  const { menu, isPreview } = props;
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -60,7 +61,11 @@ export default function NavbarMenu(props: Props) {
         }}
       >
         {menu.children?.map((m, k) => (
-          <MenuItem onClick={() => goToRoute(m.href || '/')} key={k}>
+          <MenuItem
+            onClick={() => goToRoute(m.href || '/')}
+            key={k}
+            disabled={isPreview}
+          >
             <FormattedMessage
               id={m.name.toLowerCase()}
               defaultMessage={m.name}
