@@ -195,7 +195,7 @@ export function AssetTabs({ address, id }: Props) {
         } as BuyTransactionMetadata);
       }
 
-      queryClient.invalidateQueries(GET_NFT_ORDERS);
+      queryClient.invalidateQueries([GET_NFT_ORDERS]);
     },
     [transactions, provider, asset]
   );
@@ -261,7 +261,7 @@ export function AssetTabs({ address, id }: Props) {
   const queryClient = useQueryClient();
 
   const handleInvalidateCache = () => {
-    queryClient.invalidateQueries(GET_NFT_ORDERS);
+    queryClient.invalidateQueries([GET_NFT_ORDERS]);
   };
 
   const handleCloseConfirmBuy = () => {

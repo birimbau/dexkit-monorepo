@@ -1,14 +1,13 @@
 import { CollectionOwnershipNFTFormType } from '@/modules/contract-wizard/types';
-import { useWeb3React } from '@web3-react/core';
 import {
   useMutation,
   UseMutationOptions,
   useQuery,
   useQueryClient
 } from '@tanstack/react-query';
+import { useWeb3React } from '@web3-react/core';
 import { AppWhitelabelType } from '../constants/enum';
 import {
-  upsertWhitelabelAsset,
   deleteConfig,
   deletePageTemplate,
   getConfig,
@@ -20,7 +19,7 @@ import {
   getVerifyDomain,
   sendConfig,
   setupDomainConfig,
-  upsertPageTemplate
+  upsertPageTemplate, upsertWhitelabelAsset
 } from '../services/whitelabel';
 import { AppConfig } from '../types/config';
 import { PageTemplateFormData } from '../types/whitelabel';
@@ -224,7 +223,7 @@ export const useVerifyDomainMutation = () => {
 
   return useMutation(async ({ domain }: { domain: string }) => {
     await getVerifyDomain(domain);
-    queryClient.invalidateQueries(QUERY_WHITELABEL_CONFIG_NAME)
+    queryClient.invalidateQueries([QUERY_WHITELABEL_CONFIG_NAME])
 
   });
 };
@@ -251,7 +250,7 @@ export const useSetupDomainConfigMutation = () => {
           await loginMutation.mutateAsync()
         }
         await setupDomainConfig(domain);
-        queryClient.invalidateQueries(QUERY_WHITELABEL_CONFIG_NAME)
+        queryClient.invalidateQueries([QUERY_WHITELABEL_CONFIG_NAME])
 
       }
     }
@@ -275,7 +274,7 @@ export const useUpsertWhitelabelAssetMutation = () => {
           await loginMutation.mutateAsync()
         }
         await upsertWhitelabelAsset(siteId, nft);
-        queryClient.invalidateQueries(QUERY_WHITELABEL_CONFIG_NAME)
+        queryClient.invalidateQueries([QUERY_WHITELABEL_CONFIG_NAME])
       }
     }
   );

@@ -12,11 +12,7 @@ export default class MyDocument extends Document {
           <meta name="theme-color" content={theme.palette.primary.main} />
           <link rel="shortcut icon" href="/favicon.ico" />
           <link rel="preconnect" href="https://fonts.googleapis.com" />
-          <link
-            rel="preconnect"
-            href="https://fonts.gstatic.com"
-            crossOrigin="crossOrigin"
-          />
+          <link rel="preconnect" href="https://fonts.gstatic.com" />
           <link
             href="https://fonts.googleapis.com/css2?family=Sora:wght@100;200;400;500;600;700;800&display=swap"
             rel="stylesheet"
@@ -72,9 +68,9 @@ MyDocument.getInitialProps = async (ctx) => {
   ctx.renderPage = () =>
     originalRenderPage({
       enhanceApp: (App: any) =>
-        (function EnhanceApp(props) {
+        function EnhanceApp(props) {
           return <App emotionCache={cache} {...props} />;
-        }),
+        },
     });
 
   const initialProps = await Document.getInitialProps(ctx);

@@ -11,6 +11,8 @@
     "dev": "turbo run dev --parallel --filter=nft-marketplace",
     "storybook": "turbo run storybook",
     "bundle:widgets": "turbo run bundle:widgets",
+    "build:whitelabel": "turbo run build --parallel --filter=nft-marketplace",
+    "build:wallet": "turbo run build --parallel --filter=dexkit-wallet",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
@@ -28,7 +30,7 @@
     "@emotion/styled": "^11.10.5",
     "@indexed-finance/multicall": "^2.0.0",
     "@mui/icons-material": "5.11",
-    "@mui/material": "5.11",
+    "@mui/material": "5.11.6",
     "@tanstack/react-query": "^4.23.0",
     "@transak/transak-sdk": "^1.3.0",
     "@walletconnect/ethereum-provider": "^1.7.7",
