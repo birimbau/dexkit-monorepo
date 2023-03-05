@@ -33,7 +33,7 @@ function ConnectWalletDialog({ dialogProps }: Props) {
 
   const [connectorName, setConnectorName] = useState<string>();
 
-  const handelClose = () => {
+  const handleClose = () => {
     onClose!({}, 'backdropClick');
   };
 
@@ -43,12 +43,12 @@ function ConnectWalletDialog({ dialogProps }: Props) {
   const handleActivateWallet = async (connectorName: string) => {
     setConnectorName(connectorName);
     await walletActivate.mutateAsync({ connectorName });
-    handelClose();
+    handleClose();
     setConnectorName(undefined);
   };
 
   return (
-    <Dialog {...dialogProps} onClose={handelClose}>
+    <Dialog {...dialogProps} onClose={handleClose}>
       <AppDialogTitle
         title={
           <FormattedMessage
@@ -56,7 +56,7 @@ function ConnectWalletDialog({ dialogProps }: Props) {
             defaultMessage={'Connect your wallet'}
           />
         }
-        onClose={handelClose}
+        onClose={handleClose}
       />
       <Divider />
       <DialogContent sx={{ padding: 0 }}>

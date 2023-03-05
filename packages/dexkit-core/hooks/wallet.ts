@@ -5,6 +5,7 @@ import { WalletActivateParams } from "../types";
 
 import { useAtom } from "jotai";
 import { walletConnectorAtom } from "../atoms";
+import { walletConnect } from "../constants/connectors/walletConnect";
 
 export function useWalletActivate() {
   const { connector } = useWeb3React();
@@ -25,6 +26,9 @@ export function useWalletActivate() {
       //   loginType,
       //   email,
       // });
+    } else if (params.connectorName === 'walletConnect') {
+      setWalletConnector("walletConnect");
+      return await walletConnect.activate();
     }
   });
 

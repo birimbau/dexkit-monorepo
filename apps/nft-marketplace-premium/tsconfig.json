@@ -25,7 +25,8 @@
     "**/*.ts",
     "**/*.tsx",
     "next-sitemap.config.js",
-    "scripts/local-diff.js"
+    "scripts/local-diff.js",
+    "../../packages/dexkit-core/constants/connectors/walletConnect.ts"
   ],
   "exclude": ["node_modules"]
 }

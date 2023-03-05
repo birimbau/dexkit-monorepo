@@ -1,13 +1,13 @@
 import { Network } from '../types/chains';
 import { ChainId } from './enum';
 
+import arbitrumIcon from '../../public/assets/images/icons/arbitrum.png';
 import avaxIcon from '../../public/assets/images/icons/avax.png';
 import bscIcon from '../../public/assets/images/icons/bnb.svg';
-import optimismIcon from '../../public/assets/images/icons/optimism.svg';
-import fantomIcon from '../../public/assets/images/icons/fantom.svg';
 import ethIcon from '../../public/assets/images/icons/eth.png';
+import fantomIcon from '../../public/assets/images/icons/fantom.svg';
+import optimismIcon from '../../public/assets/images/icons/optimism.svg';
 import polygonIcon from '../../public/assets/images/icons/polygon.png';
-import arbitrumIcon from '../../public/assets/images/icons/arbitrum.png';
 const alchemyKey = process.env.NEXT_PUBLIC_ALCHEMY_API_KEY || process.env.ALCHEMY_API_KEY;
 
 export const NETWORKS: { [key: number]: Network } = {
@@ -20,7 +20,7 @@ export const NETWORKS: { [key: number]: Network } = {
     coingeckoId: 'ethereum',
     wrappedAddress: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
     imageUrl: ethIcon.src,
-    providerRpcUrl: `https://eth-mainnet.g.alchemy.com/v2/${alchemyKey}`,
+    providerRpcUrl: `https://rpc.ankr.com/eth`,
   },
   [ChainId.Goerli]: {
     chainId: ChainId.Goerli,

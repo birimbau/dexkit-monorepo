@@ -33,6 +33,7 @@ import {
   useTransactions,
 } from '../../../../src/hooks/app';
 import {
+  useAccountAssetsBalance,
   useApproveAssetMutation,
   useFavoriteAssets,
   useMakeListingMutation,
@@ -56,6 +57,7 @@ import { Asset } from '../../../../src/types/nft';
 import {
   getBlockExplorerUrl,
   getChainName,
+  getChainSlug,
   isAddressEqual,
   truncateAddress,
 } from '../../../../src/utils/blockchain';
@@ -79,6 +81,9 @@ export const OrdersIndex: NextPage = () => {
   const favorites = useFavoriteAssets();
 
   const { account, provider, chainId } = useWeb3React();
+
+  const { accountAssets } = useAccountAssetsBalance(account ? [account] : []);
+
   const nftSwapSdk = useSwapSdkV4(provider, chainId);
 
   const signMessageDialog = useSignMessageDialog();
@@ -88,10 +93,21 @@ export const OrdersIndex: NextPage = () => {
   const { formatMessage } = useIntl();
 
   const assets = useMemo(() => {
-    return Object.keys(favorites.assets).map((key) => {
-      return favorites.assets[key];
-    });
-  }, [favorites.assets]);
+    const favAssets =
+      Object.keys(favorites.assets).map((key) => {
+        return favorites.assets[key];
+      }) || [];
+    if (chainId) {
+      return (
+        accountAssets?.data
+          ?.filter((a) => a.network === getChainSlug(chainId))
+          .map((a) => a.assets as unknown as Asset)
+          .filter((a) => a !== undefined)
+          .flat() || []
+      ).concat(favAssets);
+    }
+    return favAssets;
+  }, [favorites.assets, accountAssets, chainId]);
 
   const handleChangeOption = (event: any, value: Asset | null) => {
     setAsset(value);

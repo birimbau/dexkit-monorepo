@@ -40,12 +40,12 @@ import {
 } from '../../../../utils/blockchain';
 import { ipfsUriToUrl } from '../../../../utils/ipfs';
 
-import * as Yup from 'yup';
 import { ethers } from 'ethers';
+import { useSnackbar } from 'notistack';
+import * as Yup from 'yup';
+import { useDebounce } from '../../../../hooks/misc';
 import { getAssetData, getAssetMetadata } from '../../../../services/nft';
 import { Asset } from '../../../../types/nft';
-import { useSnackbar } from 'notistack';
-import { useDebounce } from '../../../../hooks/misc';
 
 interface Form {
   contractAddress: string;
@@ -244,7 +244,8 @@ export function ImportAssetDialog({ dialogProps }: Props) {
     assetParams?.contractAddress,
     assetParams?.tokenId,
     undefined,
-    true
+    true,
+    selectedOption?.chainId
   );
 
   const { data: metadata, isLoading: metadataIsLoading } =

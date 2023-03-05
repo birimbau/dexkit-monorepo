@@ -1,6 +1,7 @@
 import { initializeConnector } from '@web3-react/core';
 import { WalletConnect } from '@web3-react/walletconnect';
-import { NETWORKS } from '../constants/chain';
+//TODO: Unify networks between both apps
+import { NETWORKS } from '../../../../apps/nft-marketplace-premium/src/constants/chain';
 
 
 const rpcs: { [key: number]: string } = {}
@@ -11,7 +12,7 @@ for (const key in NETWORKS) {
   }
 }
 
-export const [walletConnect, hooks] = initializeConnector<WalletConnect>(
+export const [walletConnect, walletConnectHooks] = initializeConnector<WalletConnect>(
   (actions) =>
     new WalletConnect(actions, {
       rpc: rpcs,

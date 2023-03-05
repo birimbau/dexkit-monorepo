@@ -1,16 +1,16 @@
 import {
-  NftSwapV4,
-  SwappableAssetV4,
-  SwappableNftV4
-} from '@traderxyz/nft-swap-sdk';
-import { useCallback, useMemo } from 'react';
-import {
   useMutation,
   UseMutationOptions,
   useQuery,
   useQueryClient,
   UseQueryOptions
 } from '@tanstack/react-query';
+import {
+  NftSwapV4,
+  SwappableAssetV4,
+  SwappableNftV4
+} from '@traderxyz/nft-swap-sdk';
+import { useCallback, useMemo } from 'react';
 
 import { BigNumber, ethers } from 'ethers';
 import { WETHAbi } from '../constants/abis';
@@ -45,19 +45,19 @@ import {
 } from '../types/nft';
 
 import { PostOrderResponsePayload } from '@traderxyz/nft-swap-sdk/dist/sdk/v4/orderbook';
+import axios from 'axios';
 import { useAtom, useAtomValue } from 'jotai';
+import { NETWORKS } from '../constants/chain';
+import { CollectionUniformItem } from '../modules/wizard/components/pageEditor/components/CollectionAutocompleteUniform';
 import { getERC20Balance } from '../services/balances';
 import { getOrderbookOrders } from '../services/nft';
 import { accountAssetsAtom, assetsAtom, hiddenAssetsAtom } from '../state/atoms';
+import { AssetRari } from '../types/rarible';
 import { getChainSlug, getNetworkSlugFromChainId, isAddressEqual } from '../utils/blockchain';
 import { calculeFees, parseAssetApi } from '../utils/nfts';
 import { TraderOrderFilter } from '../utils/types';
 import { useAppConfig } from './app';
 import { useNetworkProvider, useTokenList } from './blockchain';
-import { CollectionUniformItem } from '../modules/wizard/components/pageEditor/components/CollectionAutocompleteUniform';
-import { NETWORKS } from '../constants/chain';
-import axios from 'axios';
-import { AssetRari } from '../types/rarible';
 
 export const GET_ASSET_DATA = 'GET_ASSET_DATA';
 
@@ -835,15 +835,15 @@ export function useAccountAssetsBalance(accounts: string[]) {
     [GET_ACCOUNTS_ASSETS, accounts],
     async () => {
       if (!accounts) {
-        return;
+        return false;
       }
       if (!accounts.length) {
-        return;
+        return false;
       }
       const atualDate = new Date().getTime();
       const query = JSON.stringify(accounts);
       if (accountAssets?.lastTimeFetched && accountAssets?.lastTimeFetched.time < atualDate + 86400000 && accountAssets?.lastTimeFetched.query === query) {
-        return;
+        return false;
       }
       const networks = Object.values(NETWORKS).filter(n => !n.testnet).map(n => n.slug).join(',');
       const accFlat = accounts.join(',')
