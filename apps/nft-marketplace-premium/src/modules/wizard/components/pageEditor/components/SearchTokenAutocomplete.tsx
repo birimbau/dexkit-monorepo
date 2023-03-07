@@ -104,8 +104,8 @@ export function SearchTokenAutocomplete(props: Props) {
               ),
             }}
           />
-          <Box sx={{ p: 2 }}>
-            {false && (
+          {false && (
+            <Box sx={{ p: 2 }}>
               <Stack
                 justifyContent={'center'}
                 alignItems={'center'}
@@ -125,8 +125,8 @@ export function SearchTokenAutocomplete(props: Props) {
                   </Box>
                 )}
               </Stack>
-            )}
-          </Box>
+            </Box>
+          )}
         </>
       )}
     />

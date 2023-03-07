@@ -57,19 +57,19 @@ export type SwapState = {
   handleShowTransak: () => void;
 };
 
+export type ChainConfig = {
+  slippage: number;
+  sellToken?: Token;
+  buyToken?: Token;
+  featuredTokens?: Token[];
+};
+
 //TODO: array of tokens by chainId e defaultChainId without
 export type RenderOptions = {
   disableNotificationsButton?: boolean;
   enableBuyCryptoButton?: boolean;
   disableFooter?: boolean;
-  configsByChain: {
-    [key: number]: {
-      slippage: number;
-      sellToken?: Token;
-      buyToken?: Token;
-      featuredTokens?: Token[];
-    };
-  };
+  configsByChain: { [key: number]: ChainConfig };
   zeroExApiKey?: string;
   defaultChainId?: ChainId;
   transakApiKey?: string;

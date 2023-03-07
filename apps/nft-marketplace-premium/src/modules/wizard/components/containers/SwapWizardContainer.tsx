@@ -1,4 +1,5 @@
 import { SwapConfig } from '@/modules/swap/types';
+import { SwapWidget } from '@dexkit/widgets';
 import { ThemeProvider } from '@emotion/react';
 import { Theme } from '@mui/material';
 import Button from '@mui/material/Button';
@@ -6,12 +7,12 @@ import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
+import { Token } from 'src/types/blockchain';
 import { AppConfig, SwapPageSection } from '../../../../types/config';
 import { StepperButtonProps } from '../../types';
 import { SwapConfigForm } from '../forms/SwapConfigForm';
-import SwapWidget from '../pageEditor/components/SwapWidget';
 import { StepperButtons } from '../steppers/StepperButtons';
 
 interface Props {
@@ -38,6 +39,11 @@ export default function SwapWizardContainer({
       ) as SwapPageSection
     )?.config
   );
+
+  const featuredTokens = useMemo<Token[]>(() => {
+    return config?.tokens?.length ? config?.tokens[0].tokens || [] : [];
+  }, []);
+
   const changeConfig = function (
     configToChange: AppConfig,
     formData?: SwapConfig
@@ -103,7 +109,22 @@ export default function SwapWizardContainer({
       </Grid>
       <Grid item xs={6}>
         <ThemeProvider theme={swapTheme}>
-          <SwapWidget isEditMode={true} formData={swapFormData} />
+          <SwapWidget
+            onAutoSlippage={() => {}}
+            isAutoSlippage
+            onChangeSlippage={() => {}}
+            onConnectWallet={() => {}}
+            maxSlippage={0}
+            onNotification={() => {}}
+            renderOptions={{
+              configsByChain: swapFormData?.configByChain
+                ? swapFormData?.configByChain
+                : {},
+              defaultChainId: swapFormData?.defaultChainId,
+            }}
+            disableWallet={true}
+            onShowTransactions={() => {}}
+          />
         </ThemeProvider>
       </Grid>
       <Grid item xs={12}>

@@ -1,4 +1,5 @@
 import { SwapConfig } from '@/modules/swap/types';
+import { ChainConfig } from '@dexkit/widgets/src/widgets/swap/types';
 import {
   Alert,
   Container,
@@ -20,25 +21,29 @@ interface Props {
 
 export function SwapConfigForm({ onChange, data }: Props) {
   const [formData, setFormData] = useState<SwapConfig | undefined>(data);
+
   const [selectedChainId, setSelectedChainId] = useState<number | undefined>(
     data?.defaultChainId
   );
+
   const sellToken = useMemo(() => {
     if (selectedChainId && formData?.configByChain) {
-      return formData.configByChain[selectedChainId]?.defaultSellToken;
+      return formData.configByChain[selectedChainId]?.sellToken;
     }
   }, [selectedChainId, formData]);
 
   const buyToken = useMemo(() => {
     if (selectedChainId && formData?.configByChain) {
-      return formData.configByChain[selectedChainId]?.defaultBuyToken;
+      return formData.configByChain[selectedChainId]?.buyToken;
     }
   }, [selectedChainId, formData]);
 
   const slippage = useMemo(() => {
     if (selectedChainId && formData?.configByChain) {
-      return formData.configByChain[selectedChainId]?.slippage || '';
+      return formData.configByChain[selectedChainId]?.slippage;
     }
+
+    return 0;
   }, [selectedChainId, formData]);
 
   useEffect(() => {
@@ -69,17 +74,17 @@ export function SwapConfigForm({ onChange, data }: Props) {
             <NetworkSelectDropdown
               chainId={formData?.defaultChainId}
               onChange={(chainId) => {
-                setFormData({
+                setFormData((formData) => ({
                   ...formData,
                   defaultChainId: chainId,
-                });
+                }));
               }}
-              labelId={'default-network'}
+              labelId="default-network"
             />
           </FormControl>
         </Grid>
         <Grid item xs={12}>
-          <Divider></Divider>
+          <Divider />
         </Grid>
         <Grid item xs={12}>
           <Alert severity="info">
@@ -97,10 +102,10 @@ export function SwapConfigForm({ onChange, data }: Props) {
             <NetworkSelectDropdown
               onChange={(chainId) => {
                 setSelectedChainId(chainId);
-                setFormData({
+                setFormData((formData) => ({
                   ...formData,
                   defaultEditChainId: chainId,
-                });
+                }));
               }}
               labelId={'config-per-network'}
               chainId={selectedChainId}
@@ -110,42 +115,10 @@ export function SwapConfigForm({ onChange, data }: Props) {
 
         <Grid item xs={12}>
           <SearchTokenAutocomplete
-            chainId={selectedChainId}
-            disabled={selectedChainId === undefined}
             label={
               <FormattedMessage
                 id="search.default.input.token"
                 defaultMessage="Search default input token"
-              />
-            }
-            data={buyToken}
-            onChange={(tk: any) => {
-              if (selectedChainId) {
-                let oldFormData;
-                if (formData?.configByChain) {
-                  oldFormData = formData?.configByChain[selectedChainId];
-                }
-                setFormData({
-                  ...formData,
-                  configByChain: {
-                    ...formData?.configByChain,
-                    [selectedChainId]: {
-                      ...oldFormData,
-                      defaultBuyToken: tk,
-                    },
-                  },
-                });
-              }
-            }}
-          />
-        </Grid>
-
-        <Grid item xs={12}>
-          <SearchTokenAutocomplete
-            label={
-              <FormattedMessage
-                id="search.default.output.token"
-                defaultMessage="Search default output token"
               />
             }
             disabled={selectedChainId === undefined}
@@ -153,25 +126,74 @@ export function SwapConfigForm({ onChange, data }: Props) {
             chainId={selectedChainId}
             onChange={(tk: any) => {
               if (selectedChainId) {
-                let oldFormData;
-                if (formData?.configByChain) {
+                let oldFormData: ChainConfig = {
+                  slippage: 0,
+                };
+
+                if (
+                  formData?.configByChain &&
+                  formData?.configByChain[selectedChainId]
+                ) {
                   oldFormData = formData?.configByChain[selectedChainId];
                 }
-                setFormData({
+
+                setFormData((formData) => ({
                   ...formData,
                   configByChain: {
                     ...formData?.configByChain,
                     [selectedChainId]: {
                       ...oldFormData,
-                      defaultSellToken: tk,
+                      sellToken: tk,
                     },
                   },
-                });
+                }));
               }
             }}
           />
         </Grid>
 
+        <Grid item xs={12}>
+          <SearchTokenAutocomplete
+            chainId={selectedChainId}
+            disabled={selectedChainId === undefined}
+            label={
+              <FormattedMessage
+                id="search.default.output.token"
+                defaultMessage="Search default output token"
+              />
+            }
+            data={buyToken}
+            onChange={(tk: any) => {
+              if (selectedChainId) {
+                let oldFormData: ChainConfig = { slippage: 0 };
+
+                if (
+                  formData?.configByChain &&
+                  formData?.configByChain[selectedChainId]
+                ) {
+                  oldFormData = formData?.configByChain[selectedChainId];
+                }
+
+                setFormData((formData) => {
+                  if (formData) {
+                    return {
+                      ...formData,
+                      configByChain: {
+                        ...formData.configByChain,
+                        [selectedChainId]: {
+                          ...oldFormData,
+                          buyToken: tk,
+                        },
+                      },
+                    };
+                  }
+
+                  return formData;
+                });
+              }
+            }}
+          />
+        </Grid>
         <Grid item xs={12}>
           <TextField
             inputProps={{ type: 'number', min: 0, max: 50, step: 0.01 }}
@@ -204,7 +226,7 @@ export function SwapConfigForm({ onChange, data }: Props) {
                     ...formData?.configByChain,
                     [selectedChainId]: {
                       ...oldFormData,
-                      slippage: value,
+                      slippage: parseInt(value),
                     },
                   },
                 });
