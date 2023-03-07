@@ -1,4 +1,5 @@
 import {
+  Alert,
   Box,
   Button,
   Card,
@@ -21,6 +22,7 @@ import { CreditCard } from "@mui/icons-material";
 import SettingsIcon from "@mui/icons-material/Settings";
 import WalletIcon from "@mui/icons-material/Wallet";
 import { AppNotificationsBadge } from "../../components/AppNotificationBadge";
+import TransakIcon from "../../components/icons/TransakIcon";
 import SwitchNetworkSelect from "../../components/SwitchNetworkSelect";
 import { ChainId } from "../../constants/enum";
 import { ZeroExQuoteResponse } from "../../services/zeroex/types";
@@ -216,6 +218,28 @@ export default function Swap({
               currency={currency}
             />
           )}
+          {insufficientBalance && (
+            <Alert severity="error">
+              <FormattedMessage
+                id="insufficient.symbol.balance"
+                defaultMessage="Insufficient {symbol} balance"
+                values={{ symbol: sellToken?.symbol }}
+              />
+            </Alert>
+          )}
+          {onShowTransak && insufficientBalance && isActive && (
+            <Button
+              startIcon={<TransakIcon />}
+              onClick={onShowTransak}
+              variant="outlined"
+              color="primary"
+            >
+              <FormattedMessage
+                id="buy.crypto.with.transak"
+                defaultMessage="Buy crypto with Transak"
+              />
+            </Button>
+          )}
           {isActive ? (
             <Button
               onClick={onExec}
@@ -247,11 +271,6 @@ export default function Swap({
                 id="connect.wallet"
                 defaultMessage="Connect Wallet"
               />
-            </Button>
-          )}
-          {onShowTransak && insufficientBalance && isActive && (
-            <Button onClick={onShowTransak} variant="outlined" color="primary">
-              <FormattedMessage id="buy.crypto" defaultMessage="Buy Crypto" />
             </Button>
           )}
         </Stack>

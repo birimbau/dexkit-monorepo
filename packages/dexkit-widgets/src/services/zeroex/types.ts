@@ -33,6 +33,8 @@ export type ZeroExQuote = {
   enableSlippageProtection?: boolean;
 
   priceImpactProtectionPercentage?: boolean;
+
+  intentOnFilling?: boolean;
 };
 
 export type ZeroExQuoteResponse = {

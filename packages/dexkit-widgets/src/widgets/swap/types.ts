@@ -67,8 +67,10 @@ export type RenderOptions = {
       slippage: number;
       sellToken?: Token;
       buyToken?: Token;
+      featuredTokens?: Token[];
     };
   };
+  zeroExApiKey?: string;
   defaultChainId?: ChainId;
   transakApiKey?: string;
   currency?: string;

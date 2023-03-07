@@ -13,6 +13,7 @@
     "install": "yarn run build"
   },
   "devDependencies": {
+    "@dexkit/core": "*",
     "@babel/core": "^7.20.12",
     "@rollup/plugin-commonjs": "^24.0.1",
     "@rollup/plugin-image": "^3.0.2",

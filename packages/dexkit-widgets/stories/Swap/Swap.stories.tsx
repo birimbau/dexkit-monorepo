@@ -4,12 +4,15 @@ import DexkitContextProvider from "../../src/components/DexkitContextProvider";
 import { OPTIMISM_TOKEN } from "../../src/constants";
 import { ChainId } from "../../src/constants/enum";
 import { SwapWidget, SwapWidgetProps } from "../../src/widgets/swap";
+import { TEST_TOKENS } from "../SelectCoinList/constants";
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
   title: "Example/Swap",
   component: SwapWidget,
 } as ComponentMeta<typeof SwapWidget>;
+
+const zeroExApiKey = process.env.ZRX_RFQ_API_KEY;
 
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
 const Template: ComponentStory<typeof SwapWidget> = (args: SwapWidgetProps) => {
@@ -48,6 +51,8 @@ export const Default = Template.bind({});
 Default.args = {
   renderOptions: {
     configsByChain: {},
+    zeroExApiKey,
+    defaultChainId: 137,
   },
 };
 
@@ -71,6 +76,7 @@ NoNotifications.args = {
   renderOptions: {
     configsByChain: {},
     disableNotificationsButton: true,
+    zeroExApiKey,
   },
 };
 
@@ -80,6 +86,7 @@ WithTransak.args = {
   renderOptions: {
     configsByChain: {},
     transakApiKey: "4cf44cc4-69d7-4f4d-8237-05cc9076aa41",
+    zeroExApiKey,
   },
 };
 
@@ -90,6 +97,7 @@ WithTransakButton.args = {
     configsByChain: {},
     transakApiKey: "4cf44cc4-69d7-4f4d-8237-05cc9076aa41",
     enableBuyCryptoButton: true,
+    zeroExApiKey,
   },
 };
 
@@ -99,5 +107,23 @@ DisableFooter.args = {
   renderOptions: {
     configsByChain: {},
     disableFooter: true,
+    zeroExApiKey,
+  },
+};
+
+export const FeaturedTokens = Template.bind({});
+
+FeaturedTokens.args = {
+  renderOptions: {
+    configsByChain: {
+      [ChainId.Polygon]: {
+        featuredTokens: TEST_TOKENS.filter(
+          (c) => c.chainId === ChainId.Polygon
+        ),
+        slippage: 0,
+      },
+    },
+    defaultChainId: ChainId.Polygon,
+    zeroExApiKey,
   },
 };
