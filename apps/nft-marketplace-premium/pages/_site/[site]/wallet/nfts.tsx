@@ -11,12 +11,13 @@ import {
   useTheme,
 } from '@mui/material';
 import Tab from '@mui/material/Tab';
+import { QueryErrorResetBoundary } from '@tanstack/react-query';
 import { useWeb3React } from '@web3-react/core';
 import { GetStaticProps, GetStaticPropsContext, NextPage } from 'next';
+import dynamic from 'next/dynamic';
 import { Suspense, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { FormattedMessage } from 'react-intl';
-import { QueryErrorResetBoundary } from '@tanstack/react-query';
 import MainLayout from '../../../../src/components/layouts/main';
 import { NetworkwAccordion } from '../../../../src/components/NetworkAccordion';
 import { PageHeader } from '../../../../src/components/PageHeader';
@@ -24,10 +25,15 @@ import SidebarFilters from '../../../../src/components/SidebarFilters';
 import SidebarFiltersContent from '../../../../src/components/SidebarFiltersContent';
 import FavoriteAssetsSection from '../../../../src/modules/favorites/components/FavoriteAssetsSection';
 import TableSkeleton from '../../../../src/modules/nft/components/tables/TableSkeleton';
-import { ImportAssetDialog } from '../../../../src/modules/orders/components/dialogs/ImportAssetDialog';
 import HiddenAssetsSection from '../../../../src/modules/wallet/components/HiddenAssetsSection';
 import WalletAssetsSection from '../../../../src/modules/wallet/components/WalletAssetsSection';
 import { getAppConfig } from '../../../../src/services/app';
+const ImportAssetDialog = dynamic(
+  () =>
+    import(
+      '../../../../src/modules/orders/components/dialogs/ImportAssetDialog'
+    )
+);
 
 function a11yProps(index: number) {
   return {

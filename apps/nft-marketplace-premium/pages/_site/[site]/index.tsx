@@ -12,6 +12,8 @@ import { getAppConfig } from '../../../src/services/app';
 import { AppConfig, AppPageSection } from '../../../src/types/config';
 
 import { SectionsRenderer } from '@/modules/wizard/components/sections/SectionsRenderer';
+import { GET_ASSETS_ORDERBOOK } from 'src/hooks/nft';
+import { getDKAssetOrderbook } from 'src/services/nft';
 
 const Home: NextPage<{ sections: AppPageSection[] }> = ({ sections }) => {
   return (
@@ -32,6 +34,16 @@ export const getStaticProps: GetStaticProps = async ({
   const queryClient = new QueryClient();
   const appConfig: AppConfig = await getAppConfig(params?.site);
   const homePage = appConfig.pages.home;
+  for (let section of homePage.sections) {
+    if (section.type === 'asset-store') {
+      const maker = section.config?.storeAccount?.toLowerCase();
+      const assetResponse = await getDKAssetOrderbook({ maker });
+      await queryClient.prefetchQuery(
+        [GET_ASSETS_ORDERBOOK, { maker }],
+        async () => assetResponse.data
+      );
+    }
+  }
 
   /* for (let section of homePage.sections) {
     if (

@@ -144,8 +144,8 @@ export const URL_REGEX =
 
 
 
-export const DEXKIT_NFT_BASE_URI = 'https://nft-api.dexkit.com'
-//export const DEXKIT_NFT_BASE_URI = 'http://localhost:3000'
+//export const DEXKIT_NFT_BASE_URI = 'https://nft-api.dexkit.com'
+export const DEXKIT_NFT_BASE_URI = DEXKIT_BASE_API_URL
 
 export const DEXKIT_NFT_METADATA_URI = `${DEXKIT_NFT_BASE_URI}/asset/metadata`
 

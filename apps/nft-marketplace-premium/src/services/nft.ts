@@ -3,7 +3,7 @@ import axios from 'axios';
 import { BigNumber, ethers } from 'ethers';
 import { Interface } from 'ethers/lib/utils';
 import { ERC1155Abi, ERC165Abi, ERC721Abi } from '../constants/abis';
-import { Asset, AssetAPI, AssetMetadata, Collection, CollectionAPI, OrderBookItem } from '../types/nft';
+import { Asset, AssetAPI, AssetMetadata, Collection, CollectionAPI, OrderbookAPI, OrderBookItem } from '../types/nft';
 import { ipfsUriToUrl } from '../utils/ipfs';
 import { getMulticallFromProvider } from './multical';
 
@@ -26,7 +26,9 @@ const DEXKIT_NFT_BASE_URL = `${DEXKIT_BASE_API_URL}`;
 //const DEXKIT_NFT_BASE_URL = 'http://localhost:3000'
 const metadataENSapi = axios.create({ baseURL: ENS_BASE_URL });
 
-const dexkitNFTapi = axios.create({ baseURL: DEXKIT_NFT_BASE_URL, timeout: 1500 });
+const dexkitNFTapi = axios.create({ baseURL: DEXKIT_NFT_BASE_URL, timeout: 2500 });
+
+const orderbookNFTapi = axios.create({ baseURL: DEXKIT_NFT_BASE_URL, timeout: 10000 });
 
 export async function getAssetDexKitApi({
   networkId,
@@ -404,6 +406,35 @@ export async function getAssetsFromOrderbook(
   provider?: ethers.providers.JsonRpcProvider,
   filters?: TraderOrderFilter
 ) {
+  if (provider === undefined) {
+    return;
+  }
+
+  const orderbook = await getOrderbookOrders(filters);
+
+  const ids = new Set<{
+    id: string, address: string, chainId: string
+  }>(
+    orderbook.orders.map((order) => {
+      return {
+        id: order.nftTokenId,
+        address: order.nftToken,
+        chainId: order.chainId,
+
+      }
+    })
+  );
+
+
+
+
+}
+
+
+export async function getCollectionAssetsFromOrderbook(
+  provider?: ethers.providers.JsonRpcProvider,
+  filters?: TraderOrderFilter
+) {
   if (provider === undefined || filters?.nftToken === undefined) {
     return;
   }
@@ -567,10 +598,14 @@ export interface OrderbookResponse {
   orders: OrderBookItem[];
 }
 
-export function getOrderbookOrders(orderFilter: TraderOrderFilter) {
+export function getOrderbookOrders(orderFilter?: TraderOrderFilter) {
   return axios
     .get<OrderbookResponse>(`${TRADER_ORDERBOOK_API}`, { params: orderFilter })
     .then((resp) => resp.data);
+}
+
+export async function getDKAssetOrderbook(orderFilter?: TraderOrderFilter) {
+  return await orderbookNFTapi.get<OrderbookAPI>(`/asset/orderbook`, { params: orderFilter });
 }
 
 /**

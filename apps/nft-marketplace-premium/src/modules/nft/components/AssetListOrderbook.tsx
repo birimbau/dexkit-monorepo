@@ -4,7 +4,7 @@ import { FormattedMessage } from 'react-intl';
 import Link from '../../../components/Link';
 import { ChainId } from '../../../constants/enum';
 
-import { useAssetsFromOrderbook } from '../../../hooks/nft';
+import { useAssetListFromOrderbook } from '../../../hooks/nft';
 import { AssetCard } from './AssetCard';
 
 interface Props {
@@ -14,17 +14,14 @@ interface Props {
 }
 
 export function AssetList({ contractAddress, search, chainId }: Props) {
-  const { data: assets } = useAssetsFromOrderbook(
-    {
-      nftToken: contractAddress as string,
-    },
-    chainId
-  );
+  const { data: assets } = useAssetListFromOrderbook({
+    nftToken: contractAddress as string,
+    chainId,
+  });
 
   const filteredAssets = useMemo(() => {
     return assets;
   }, [search]);
-  console.log(filteredAssets);
 
   return (
     <Grid container spacing={2}>

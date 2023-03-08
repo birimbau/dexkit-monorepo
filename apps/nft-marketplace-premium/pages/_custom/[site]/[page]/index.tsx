@@ -9,6 +9,7 @@ import MainLayout from '../../../../src/components/layouts/main';
 
 import { dehydrate, QueryClient } from '@tanstack/react-query';
 import {
+  GET_ASSETS_ORDERBOOK,
   GET_ASSET_DATA,
   GET_ASSET_METADATA,
   GET_COLLECTION_DATA,
@@ -18,6 +19,7 @@ import {
   getAssetData,
   getAssetMetadata,
   getCollectionData,
+  getDKAssetOrderbook,
 } from '../../../../src/services/nft';
 import { AppConfig, AppPageSection } from '../../../../src/types/config';
 import { getNetworkSlugFromChainId } from '../../../../src/utils/blockchain';
@@ -115,6 +117,17 @@ export const getStaticProps: GetStaticProps = async ({
           );
         }
       }
+    }
+  }
+
+  for (let section of homePage.sections) {
+    if (section.type === 'asset-store') {
+      const maker = section.config?.storeAccount?.toLowerCase();
+      const assetResponse = await getDKAssetOrderbook({ maker });
+      await queryClient.prefetchQuery(
+        [GET_ASSETS_ORDERBOOK, { maker }],
+        async () => assetResponse.data
+      );
     }
   }
 

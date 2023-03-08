@@ -1,3 +1,4 @@
+import AssetStoreSection from '@/modules/home/components/AssetStoreSection';
 import SwapSection from '@/modules/home/components/SwapSection';
 import MainLayout from 'src/components/layouts/main';
 import { AppConfig, AppPageSection } from '../../../types/config';
@@ -69,6 +70,8 @@ export default function PreviewPage({
         return <CustomSection key={index} section={section} />;
       } else if (section.type === 'swap') {
         return <SwapSection key={index} section={section} />;
+      } else if (section.type === 'asset-store') {
+        return <AssetStoreSection key={index} section={section} />;
       }
     });
   };

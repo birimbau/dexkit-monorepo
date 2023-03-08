@@ -14,6 +14,7 @@ import { useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { AppDialogTitle } from '../../../../components/AppDialogTitle';
 import { AppPageSection } from '../../../../types/config';
+import { AssetStoreSectionForm } from '../forms/AssetStoreSectionForm';
 import CallToActionSectionForm from '../forms/CallToActionSectionForm';
 import CollectionSectionForm from '../forms/CollectionSectionForm';
 import FeaturedSectionForm from '../forms/FeaturedSectionForm';
@@ -34,7 +35,8 @@ type SectionType =
   | 'featured'
   | 'collections'
   | 'swap'
-  | 'custom';
+  | 'custom'
+  | 'asset-store';
 
 export default function EditSectionDialog({
   dialogProps,
@@ -105,6 +107,14 @@ export default function EditSectionDialog({
           section={section?.type === 'swap' ? section : undefined}
         />
       );
+    } else if (sectionType === 'asset-store') {
+      return (
+        <AssetStoreSectionForm
+          onCancel={handleClose}
+          onSave={handleSave}
+          section={section?.type === 'asset-store' ? section : undefined}
+        />
+      );
     }
 
     return null;
@@ -170,6 +180,9 @@ export default function EditSectionDialog({
                 </MenuItem>
                 <MenuItem value="swap">
                   <FormattedMessage id="swap" defaultMessage="Swap" />
+                </MenuItem>
+                <MenuItem value="asset-store">
+                  <FormattedMessage id="nft.store" defaultMessage="NFT store" />
                 </MenuItem>
               </Select>
             </FormControl>
