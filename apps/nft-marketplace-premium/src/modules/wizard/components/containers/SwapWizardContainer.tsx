@@ -1,4 +1,7 @@
 import { SwapConfig } from '@/modules/swap/types';
+import { SwapWidget } from '@dexkit/widgets';
+import { Token as WidgetToken } from '@dexkit/widgets/src/types';
+
 import { ThemeProvider } from '@emotion/react';
 import { Theme } from '@mui/material';
 import Button from '@mui/material/Button';
@@ -6,12 +9,12 @@ import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
+import { Token } from 'src/types/blockchain';
 import { AppConfig, SwapPageSection } from '../../../../types/config';
 import { StepperButtonProps } from '../../types';
 import { SwapConfigForm } from '../forms/SwapConfigForm';
-import SwapWidget from '../pageEditor/components/SwapWidget';
 import { StepperButtons } from '../steppers/StepperButtons';
 
 interface Props {
@@ -38,6 +41,21 @@ export default function SwapWizardContainer({
       ) as SwapPageSection
     )?.config
   );
+
+  const featuredTokens = useMemo<WidgetToken[]>(() => {
+    let tokens = config?.tokens?.length ? config?.tokens[0].tokens || [] : [];
+
+    return tokens.map<WidgetToken>((t: Token) => {
+      return {
+        contractAddress: t.address,
+        chainId: t.chainId as number,
+        decimals: t.decimals,
+        name: t.name,
+        symbol: t.symbol,
+      } as WidgetToken;
+    });
+  }, [config]);
+
   const changeConfig = function (
     configToChange: AppConfig,
     formData?: SwapConfig
@@ -103,7 +121,23 @@ export default function SwapWizardContainer({
       </Grid>
       <Grid item xs={6}>
         <ThemeProvider theme={swapTheme}>
-          <SwapWidget isEditMode={true} formData={swapFormData} />
+          <SwapWidget
+            onAutoSlippage={() => {}}
+            isAutoSlippage
+            onChangeSlippage={() => {}}
+            onConnectWallet={() => {}}
+            maxSlippage={0}
+            onNotification={() => {}}
+            renderOptions={{
+              configsByChain: swapFormData?.configByChain
+                ? swapFormData?.configByChain
+                : {},
+              defaultChainId: swapFormData?.defaultChainId,
+              featuredTokens: featuredTokens,
+            }}
+            disableWallet={true}
+            onShowTransactions={() => {}}
+          />
         </ThemeProvider>
       </Grid>
       <Grid item xs={12}>

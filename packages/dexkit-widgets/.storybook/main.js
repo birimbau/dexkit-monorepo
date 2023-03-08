@@ -10,4 +10,7 @@ module.exports = {
   ],
   framework: "@storybook/react",
   staticDirs: ["../assets"],
+  env: (config) => ({
+    ...config,
+  }),
 };

@@ -8,7 +8,9 @@ import ethIcon from '../../public/assets/images/icons/eth.png';
 import fantomIcon from '../../public/assets/images/icons/fantom.svg';
 import optimismIcon from '../../public/assets/images/icons/optimism.svg';
 import polygonIcon from '../../public/assets/images/icons/polygon.png';
-const alchemyKey = process.env.NEXT_PUBLIC_ALCHEMY_API_KEY || process.env.ALCHEMY_API_KEY;
+
+const alchemyKey =
+  process.env.NEXT_PUBLIC_ALCHEMY_API_KEY || process.env.ALCHEMY_API_KEY;
 
 export const NETWORKS: { [key: number]: Network } = {
   [ChainId.ETH]: {
@@ -58,8 +60,8 @@ export const NETWORKS: { [key: number]: Network } = {
     nativeCurrency: {
       name: 'Matic',
       decimals: 18,
-      symbol: 'MATIC'
-    }
+      symbol: 'MATIC',
+    },
   },
   [ChainId.BSC]: {
     chainId: ChainId.BSC,
@@ -74,8 +76,8 @@ export const NETWORKS: { [key: number]: Network } = {
     nativeCurrency: {
       name: 'Binance coin',
       decimals: 18,
-      symbol: 'BNB'
-    }
+      symbol: 'BNB',
+    },
   },
   [ChainId.AVAX]: {
     chainId: ChainId.AVAX,
@@ -113,8 +115,8 @@ export const NETWORKS: { [key: number]: Network } = {
     nativeCurrency: {
       name: 'Ethereum',
       decimals: 18,
-      symbol: 'ETH'
-    }
+      symbol: 'ETH',
+    },
   },
   [ChainId.Arbitrum]: {
     chainId: ChainId.Arbitrum,
@@ -131,8 +133,6 @@ export const NETWORKS: { [key: number]: Network } = {
       name: 'Ethereum',
       decimals: 18,
       symbol: 'ETH',
-    }
+    },
   },
 };
-
-

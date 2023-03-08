@@ -4,6 +4,8 @@ import {
   DialogActions,
   DialogContent,
   DialogProps,
+  Divider,
+  LinearProgress,
 } from "@mui/material";
 import { FormattedMessage } from "react-intl";
 import AppDialogTitle from "../../../components/AppDialogTitle";
@@ -15,6 +17,7 @@ export interface SwapConfirmDialogProps {
   DialogProps: DialogProps;
   quote?: ZeroExQuoteResponse | null;
   chainId?: ChainId;
+  isQuoting?: boolean;
   onConfirm: () => void;
   currency: string;
 }
@@ -22,6 +25,7 @@ export interface SwapConfirmDialogProps {
 export default function SwapConfirmDialog({
   DialogProps,
   quote,
+  isQuoting,
   chainId,
   onConfirm,
   currency,
@@ -42,11 +46,17 @@ export default function SwapConfirmDialog({
         }
         onClose={handleClose}
       />
-      <DialogContent dividers>
+      {isQuoting ? (
+        <LinearProgress color="primary" sx={{ height: "1px" }} />
+      ) : (
+        <Divider />
+      )}
+      <DialogContent>
         <SwapFeeSummary quote={quote} chainId={chainId} currency={currency} />
       </DialogContent>
+      <Divider />
       <DialogActions>
-        <Button onClick={onConfirm} variant="contained">
+        <Button disabled={isQuoting} onClick={onConfirm} variant="contained">
           <FormattedMessage id="confirm" defaultMessage="Confirm" />
         </Button>
         <Button onClick={handleClose}>

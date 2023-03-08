@@ -1,3 +1,5 @@
+import ArrowDownwardRoundedIcon from '@mui/icons-material/ArrowDownwardRounded';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import {
   Alert,
   Avatar,
@@ -16,8 +18,6 @@ import {
   Typography,
 } from '@mui/material';
 import dynamic from 'next/dynamic';
-import ArrowDownwardRoundedIcon from '@mui/icons-material/ArrowDownwardRounded';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 import { SwappableAssetV4 } from '@traderxyz/nft-swap-sdk';
 import { useWeb3React } from '@web3-react/core';
@@ -40,7 +40,6 @@ import {
   Quote,
   SwapTransactionMetadata,
   Token,
-  TokenBalance,
   TransactionType,
 } from '../../types/blockchain';
 

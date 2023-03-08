@@ -41,6 +41,15 @@ Default.args = {
   tokens: TEST_TOKENS,
 };
 
+export const FeaturedTokens = Template.bind({});
+// More on args: https://storybook.js.org/docs/react/writing-stories/args
+
+FeaturedTokens.args = {
+  DialogProps: { open: true, maxWidth: "sm", fullWidth: true },
+  tokens: TEST_TOKENS,
+  featuredTokens: TEST_TOKENS,
+};
+
 // export const Secondary = Template.bind({});
 // Secondary.args = {
 //   label: 'Button',

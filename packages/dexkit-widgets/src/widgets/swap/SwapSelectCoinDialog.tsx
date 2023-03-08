@@ -30,11 +30,13 @@ export interface SwapSelectCoinDialogProps {
   recentTokens?: Token[];
   account?: string;
   provider?: providers.BaseProvider;
+  featuredTokens?: Token[];
 }
 
 export default function SwapSelectCoinDialog({
   DialogProps,
   tokens,
+  featuredTokens,
   recentTokens,
   account,
   provider,
@@ -98,7 +100,13 @@ export default function SwapSelectCoinDialog({
                 }}
               />
             </Box>
-            <SwapFeaturedTokens onSelect={onSelect} chainId={chainId} />
+            {featuredTokens && featuredTokens.length > 0 && (
+              <SwapFeaturedTokens
+                onSelect={onSelect}
+                chainId={chainId}
+                tokens={featuredTokens}
+              />
+            )}
           </Stack>
           {recentTokens && recentTokens?.length > 0 && (
             <>

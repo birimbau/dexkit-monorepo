@@ -30,8 +30,18 @@ export const GOERLI_ETHEREUM_TOKEN: Token = {
   decimals: 18,
 };
 
+export const POLYGON_USDT_TOKEN: Token = {
+  chainId: ChainId.Polygon,
+  contractAddress: "0xc2132d05d31c914a87c6611c10748aeb04b58e8f",
+  decimals: 6,
+  name: "Tether",
+  symbol: "USDT",
+  coingeckoId: "tether",
+};
+
 export const TEST_TOKENS = [
   GOERLI_ETHEREUM_TOKEN,
   GOERLI_WETH_TOKEN,
   GOERLI_UNI_TOKEN,
+  POLYGON_USDT_TOKEN,
 ];

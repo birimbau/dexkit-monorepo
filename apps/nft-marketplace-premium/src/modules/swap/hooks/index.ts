@@ -1,22 +1,30 @@
-
-
-import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { useMemo } from 'react';
 import { useTokenList } from 'src/hooks/blockchain';
 import { DkApiPlatformCoin } from 'src/types/api';
 import { Token } from 'src/types/blockchain';
-import { getChainIdFromSlug, getNetworkSlugFromChainId, isAddressEqual } from 'src/utils/blockchain';
+import {
+  getChainIdFromSlug,
+  getNetworkSlugFromChainId,
+  isAddressEqual,
+} from 'src/utils/blockchain';
 import { getApiCoinPlatforms, getApiCoins } from '../services';
 
-
-export function useSearchSwapTokens({ keyword, network, excludeNative, excludeTokenList }: {
+export function useSearchSwapTokens({
+  keyword,
+  network,
+  excludeNative,
+  excludeTokenList,
+}: {
   keyword?: string;
   network?: string;
   excludeNative?: boolean;
-  excludeTokenList?: boolean
+  excludeTokenList?: boolean;
 }) {
-
-  const tokensFromList = useTokenList({ chainId: getChainIdFromSlug(network)?.chainId, includeNative: excludeNative ? false : true });
+  const tokensFromList = useTokenList({
+    chainId: getChainIdFromSlug(network)?.chainId,
+    includeNative: excludeNative ? false : true,
+  });
 
   const coinSearchQuery = usePlatformCoinSearch({ keyword, network });
 
@@ -50,12 +58,9 @@ export function useSearchSwapTokens({ keyword, network, excludeNative, excludeTo
       }
 
       return coins.reduce<Token[]>((acc, current) => {
-
         const found =
-          acc.find(
-            (c) =>
-              isAddressEqual(c.address, current.address)
-          ) !== undefined;
+          acc.find((c) => isAddressEqual(c.address, current.address)) !==
+          undefined;
 
         if (!found) {
           acc.push(current);
@@ -65,7 +70,6 @@ export function useSearchSwapTokens({ keyword, network, excludeNative, excludeTo
       }, []);
     } else {
       let tokens = tokensFromList;
-
 
       if (keyword) {
         tokens = tokens.filter(
@@ -81,14 +85,7 @@ export function useSearchSwapTokens({ keyword, network, excludeNative, excludeTo
   }, [coinSearchQuery.data, network, keyword, tokensFromList]);
 
   return { tokens, isLoading: coinSearchQuery.isLoading };
-
-
-
 }
-
-
-
-
 
 export const COIN_PLATFORM_SEARCH_QUERY = 'COIN_PLATFORM_SEARCH_QUERY';
 
@@ -103,10 +100,12 @@ export function usePlatformCoinSearch({
     [COIN_PLATFORM_SEARCH_QUERY, keyword, network],
     async ({ signal }) => {
       if (keyword) {
-        const req = await getApiCoinPlatforms({ signal, keyword, network })
+        const req = await getApiCoinPlatforms({ signal, keyword, network });
 
         return req.data;
       }
+
+      return [];
     }
   );
 }
@@ -121,7 +120,7 @@ export function useCoinSearch({
   network?: string;
 }) {
   return useQuery([COIN_SEARCH_QUERY, keyword, network], async ({ signal }) => {
-    const req = await getApiCoins({ signal, keyword, network })
+    const req = await getApiCoins({ signal, keyword, network });
 
     return req.data;
   });
