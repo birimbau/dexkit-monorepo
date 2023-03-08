@@ -1,6 +1,6 @@
+import { ChainConfig } from '@dexkit/widgets/src/widgets/swap/types';
 import { Container } from '@mui/material';
 import type { CellPlugin } from '@react-page/editor';
-import { Token } from 'src/types/blockchain';
 import { SwapConfigForm } from '../../forms/SwapConfigForm';
 import SwapWidget from '../components/SwapWidget';
 
@@ -8,11 +8,7 @@ type Data = {
   defaultChainId?: number;
   defaultEditChainId?: number;
   configByChain?: {
-    [chain: number]: {
-      defaultSellToken?: Token;
-      defaultBuyToken?: Token;
-      slippage?: number;
-    };
+    [chain: number]: ChainConfig;
   };
 };
 // you can pass the shape of the data as the generic type argument

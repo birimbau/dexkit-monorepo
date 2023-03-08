@@ -1,8 +1,12 @@
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import {
   Avatar,
   Box,
   Card,
   CardActionArea,
+  CardActions,
   CardContent,
   IconButton,
   Menu,
@@ -12,31 +16,34 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
+import dynamic from 'next/dynamic';
 import { useMemo, useState } from 'react';
-import Heart from '../../../components/icons/Heart';
+import { FormattedMessage } from 'react-intl';
 import Link from '../../../components/Link';
-import { Asset, AssetMetadata } from '../../../types/nft';
+import { Asset, AssetMetadata, OrderBookItem } from '../../../types/nft';
 import {
   getChainLogoImage,
   getChainName,
   getNetworkSlugFromChainId,
 } from '../../../utils/blockchain';
 import { truncateErc1155TokenId } from '../../../utils/nfts';
+import { AssetBuyOrder } from './AssetBuyOrder';
 import { AssetMedia } from './AssetMedia';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { FormattedMessage } from 'react-intl';
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import VisibilityIcon from '@mui/icons-material/Visibility';
+const AssetDetailsDialog = dynamic(
+  () => import('./dialogs/AssetDetailsDialog')
+);
 interface Props {
   asset?: Asset;
   assetMetadata?: AssetMetadata;
   onFavorite?: (asset: Asset) => void;
   isFavorite?: boolean;
+  showAssetDetailsInDialog?: boolean;
   onHide?: (asset: Asset) => void;
   isHidden?: boolean;
   showControls?: boolean;
   lazyLoadMetadata?: boolean;
   disabled?: boolean;
+  orderBookItem?: OrderBookItem;
 }
 
 export function BaseAssetCard({
@@ -48,9 +55,11 @@ export function BaseAssetCard({
   onHide,
   disabled,
   assetMetadata,
+  orderBookItem,
+  showAssetDetailsInDialog,
 }: Props) {
   const metadata = assetMetadata || asset?.metadata;
-
+  const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -70,51 +79,76 @@ export function BaseAssetCard({
     return [];
   }, [metadata, asset]);
 
+  const assetDetails = (
+    <>
+      {' '}
+      {asset ? (
+        <AssetMedia asset={asset} />
+      ) : (
+        <Box
+          sx={{
+            position: 'relative',
+            overflow: ' hidden',
+            paddingTop: '80%',
+          }}
+        >
+          <Skeleton
+            variant="rectangular"
+            sx={{
+              position: 'absolute',
+              display: 'block',
+              width: '100%',
+              height: '100%',
+            }}
+          />
+        </Box>
+      )}
+      <CardContent>
+        <Typography variant="caption">
+          {asset === undefined ? <Skeleton /> : asset?.collectionName}
+        </Typography>
+        <Typography variant="body2" sx={{ fontWeight: 600 }}>
+          {asset === undefined ? (
+            <Skeleton />
+          ) : assetName ? (
+            assetName
+          ) : (
+            `${asset?.collectionName} #${truncateErc1155TokenId(asset?.id)}`
+          )}
+        </Typography>
+      </CardContent>
+    </>
+  );
+
   return (
     <Card sx={{ position: 'relative', heigh: '100%', borderRadius: '12px' }}>
-      <CardActionArea
-        LinkComponent={Link}
-        disabled={disabled}
-        href={`/asset/${getNetworkSlugFromChainId(asset?.chainId)}/${
-          asset?.contractAddress
-        }/${asset?.id}`}
-      >
-        {asset ? (
-          <AssetMedia asset={asset} />
-        ) : (
-          <Box
-            sx={{
-              position: 'relative',
-              overflow: ' hidden',
-              paddingTop: '80%',
-            }}
-          >
-            <Skeleton
-              variant="rectangular"
-              sx={{
-                position: 'absolute',
-                display: 'block',
-                width: '100%',
-                height: '100%',
+      {showAssetDetailsInDialog ? (
+        <>
+          {openDetailsDialog && (
+            <AssetDetailsDialog
+              dialogProps={{
+                open: openDetailsDialog,
+                onClose: () => setOpenDetailsDialog(false),
+                fullWidth: true,
               }}
+              asset={asset}
             />
-          </Box>
-        )}
-        <CardContent>
-          <Typography variant="caption">
-            {asset === undefined ? <Skeleton /> : asset?.collectionName}
-          </Typography>
-          <Typography variant="body2" sx={{ fontWeight: 600 }}>
-            {asset === undefined ? (
-              <Skeleton />
-            ) : assetName ? (
-              assetName
-            ) : (
-              `${asset?.collectionName} #${truncateErc1155TokenId(asset?.id)}`
-            )}
-          </Typography>
-        </CardContent>
-      </CardActionArea>
+          )}
+          <CardActionArea onClick={() => setOpenDetailsDialog(true)}>
+            {assetDetails}
+          </CardActionArea>
+        </>
+      ) : (
+        <CardActionArea
+          LinkComponent={Link}
+          disabled={disabled}
+          href={`/asset/${getNetworkSlugFromChainId(asset?.chainId)}/${
+            asset?.contractAddress
+          }/${asset?.id}`}
+        >
+          {assetDetails}
+        </CardActionArea>
+      )}
       {showControls && (
         <IconButton
           aria-controls={open ? 'asset-menu-action' : undefined}
@@ -189,6 +223,11 @@ export function BaseAssetCard({
           </MenuItem>
         )}
       </Menu>
+      {orderBookItem && (
+        <CardActions disableSpacing>
+          <AssetBuyOrder orderBookItem={orderBookItem} asset={asset} />
+        </CardActions>
+      )}
 
       {/*onFavorite && isFavorite && asset && (
         <IconButton

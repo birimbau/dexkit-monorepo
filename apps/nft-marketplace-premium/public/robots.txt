@@ -3,7 +3,7 @@ User-agent: *
 Allow: /
 
 # Host
-Host: https://www.kittygotchi.com
+Host: https://www.whitelabel-nft.dexkit.com
 
 # Sitemaps
-Sitemap: https://www.kittygotchi.com/sitemap.xml
+Sitemap: https://www.whitelabel-nft.dexkit.com/sitemap.xml

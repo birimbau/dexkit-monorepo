@@ -1,3 +1,5 @@
+import { useTheme } from '@mui/material';
+import useMediaQuery from '@mui/material/useMediaQuery';
 import dynamic from 'next/dynamic';
 
 const CallToActionSection = dynamic(
@@ -18,9 +20,8 @@ const SwapSection = dynamic(
 const VideoSection = dynamic(
   () => import('@/modules/home/components/VideoSection')
 );
-import { useTheme } from '@mui/material';
-import useMediaQuery from '@mui/material/useMediaQuery';
 
+import AssetStoreSection from '@/modules/home/components/AssetStoreSection';
 import { AppPageSection } from 'src/types/config';
 
 interface Props {
@@ -64,6 +65,8 @@ export function SectionsRenderer({ sections }: Props) {
       return <CustomSection key={index} section={section} />;
     } else if (section.type === 'swap') {
       return <SwapSection key={index} section={section} />;
+    } else if (section.type === 'asset-store') {
+      return <AssetStoreSection key={index} section={section} />;
     }
   });
 

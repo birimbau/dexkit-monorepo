@@ -1,42 +1,32 @@
 import {
+  Alert,
   Button,
+  Chip,
   Dialog,
   DialogActions,
   DialogContent,
   DialogProps,
-  FormControl,
   Grid,
-  ListItemIcon,
-  InputAdornment,
-  MenuItem,
-  Select,
-  TextField,
-  Typography,
-  ListItemText,
-  SelectChangeEvent,
-  Stack,
-  Skeleton,
   Paper,
-  Alert,
-  CardMedia,
+  Skeleton,
+  Stack,
   Tooltip,
-  Chip,
-  Divider,
+  Typography,
 } from '@mui/material';
 import { AppDialogTitle } from '../../../../components/AppDialogTitle';
 
+import { Box } from '@mui/material';
+import { useWeb3React } from '@web3-react/core';
 import { ethers } from 'ethers';
+import Image from 'next/image';
 import { useMemo } from 'react';
 import { FormattedMessage, FormattedNumber, useIntl } from 'react-intl';
-import { Token } from '../../../../types/blockchain';
-import { ipfsUriToUrl } from '../../../../utils/ipfs';
-import { useErc20Balance } from '../../../../hooks/nft';
-import { useWeb3React } from '@web3-react/core';
-import { Box } from '@mui/material';
-import { isAddressEqual } from '../../../../utils/blockchain';
 import { useCoinPricesQuery, useCurrency } from '../../../../hooks/currency';
+import { useErc20Balance } from '../../../../hooks/nft';
+import { Token } from '../../../../types/blockchain';
 import { Asset, AssetMetadata } from '../../../../types/nft';
-import Image from 'next/image';
+import { isAddressEqual } from '../../../../utils/blockchain';
+import { ipfsUriToUrl } from '../../../../utils/ipfs';
 
 interface Props {
   tokens: Token[];

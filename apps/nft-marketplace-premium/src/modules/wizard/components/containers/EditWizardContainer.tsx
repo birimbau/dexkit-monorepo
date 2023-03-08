@@ -436,8 +436,8 @@ export function EditWizardContainer({ site }: Props) {
 
       <NextSeo
         title={formatMessage({
-          id: 'marketplace.setup',
-          defaultMessage: 'Marketplace Setup',
+          id: 'app.setup',
+          defaultMessage: 'App Setup',
         })}
       />
       <AppConfirmDialog
@@ -458,7 +458,7 @@ export function EditWizardContainer({ site }: Props) {
           </Typography>
           <Typography variant="body1" align="center" color="textSecondary">
             <FormattedMessage
-              id="do.you.really.want.to.send.this.marketplace.settings"
+              id="do.you.really.want.to.send.this.app.settings"
               defaultMessage="Do you really want to send it?"
             />
           </Typography>
@@ -495,10 +495,7 @@ export function EditWizardContainer({ site }: Props) {
                   },
                   {
                     caption: (
-                      <FormattedMessage
-                        id="marketplaces"
-                        defaultMessage="Marketplaces"
-                      />
+                      <FormattedMessage id="apps" defaultMessage="Apps" />
                     ),
                     uri: '/admin',
                   },

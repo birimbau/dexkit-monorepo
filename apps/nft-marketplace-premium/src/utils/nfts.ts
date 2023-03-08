@@ -66,7 +66,10 @@ export function isERC1155Owner(assetBalance?: AssetBalance) {
   return assetBalance?.balance?.gt(0) && assetBalance.asset.protocol === 'ERC1155'
 }
 
-export function parseAssetApi(assetApi: AssetAPI): Asset {
+export function parseAssetApi(assetApi?: AssetAPI): Asset | undefined {
+  if (!assetApi) {
+    return;
+  }
 
   const rawMetadata = assetApi.rawData
     ? JSON.parse(assetApi.rawData)

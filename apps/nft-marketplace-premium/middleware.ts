@@ -7,7 +7,7 @@ export const config = {
     '/asset/:path*',
     '/order/:path*',
     '/collection/:path*',
-    '/wallet/:path*'
+    '/wallet/:path*',
   ],
 };
 

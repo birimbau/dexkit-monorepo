@@ -1,5 +1,6 @@
 import { SwapConfig } from '@/modules/swap/types';
 import { Token } from './blockchain';
+import { AssetStoreOptions } from './nft';
 
 export type VideoEmbedType = 'youtube' | 'vimeo';
 
@@ -79,6 +80,12 @@ export interface SwapPageSection extends PageSection {
   config?: SwapConfig;
 }
 
+export interface AssetStorePageSection extends PageSection {
+  type: 'asset-store';
+  title?: string;
+  config?: AssetStoreOptions;
+}
+
 export interface CustomEditorSection extends PageSection {
   type: 'custom';
   title?: string;
@@ -91,7 +98,7 @@ export type AppPageSection =
   | FeaturedAppPageSection
   | CollectionAppPageSection
   | CustomEditorSection
-  | SwapPageSection;
+  | SwapPageSection | AssetStorePageSection;
 
 export interface AppPageOptions {
   key?: string;

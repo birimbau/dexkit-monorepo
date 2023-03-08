@@ -16,11 +16,11 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
+import { dehydrate, QueryClient } from '@tanstack/react-query';
 import { NextSeo } from 'next-seo';
 import { useRouter } from 'next/router';
 import { Suspense, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { dehydrate, QueryClient } from '@tanstack/react-query';
 import { AppErrorBoundary } from '../../../../../../src/components/AppErrorBoundary';
 import Funnel from '../../../../../../src/components/icons/Filter';
 import MainLayout from '../../../../../../src/components/layouts/main';
@@ -31,39 +31,39 @@ import {
   NETWORK_ID,
 } from '../../../../../../src/constants/enum';
 import {
+  MAP_COIN_TO_RARIBLE,
+  MAP_NETWORK_TO_RARIBLE,
+} from '../../../../../../src/constants/marketplaces';
+import {
   GET_ASSET_LIST_FROM_COLLECTION,
   GET_COLLECTION_STATS,
 } from '../../../../../../src/hooks/collection';
 import {
-  ASSETS_FROM_ORDERBOOK,
+  COLLECTION_ASSETS_FROM_ORDERBOOK,
   GET_COLLECTION_DATA,
   useCollection,
 } from '../../../../../../src/hooks/nft';
 import { AssetListCollection } from '../../../../../../src/modules/nft/components/AssetListCollection';
 import { AssetList } from '../../../../../../src/modules/nft/components/AssetListOrderbook';
+import { ChipFilterTraits } from '../../../../../../src/modules/nft/components/ChipFilterTraits';
 import { CollectionHeader } from '../../../../../../src/modules/nft/components/CollectionHeader';
 import CollectionPageHeader from '../../../../../../src/modules/nft/components/CollectionPageHeader';
+import { CollectionStats } from '../../../../../../src/modules/nft/components/CollectionStats';
 import { CollectionTraits } from '../../../../../../src/modules/nft/components/CollectionTraits';
 import TableSkeleton from '../../../../../../src/modules/nft/components/tables/TableSkeleton';
 import { getAppConfig } from '../../../../../../src/services/app';
 import {
   getApiCollectionData,
-  getAssetsFromOrderbook,
   getCollectionAssetsDexKitApi,
+  getCollectionAssetsFromOrderbook,
   getCollectionData,
   getSyncCollectionData,
 } from '../../../../../../src/services/nft';
 import { getProviderBySlug } from '../../../../../../src/services/providers';
+import { getRariCollectionStats } from '../../../../../../src/services/rarible';
 import { Asset } from '../../../../../../src/types/nft';
 import { getChainIdFromSlug } from '../../../../../../src/utils/blockchain';
 import { TraderOrderFilter } from '../../../../../../src/utils/types';
-import { ChipFilterTraits } from '../../../../../../src/modules/nft/components/ChipFilterTraits';
-import { CollectionStats } from '../../../../../../src/modules/nft/components/CollectionStats';
-import { getRariCollectionStats } from '../../../../../../src/services/rarible';
-import {
-  MAP_COIN_TO_RARIBLE,
-  MAP_NETWORK_TO_RARIBLE,
-} from '../../../../../../src/constants/marketplaces';
 
 const CollectionPage: NextPage = () => {
   const router = useRouter();
@@ -348,10 +348,10 @@ export const getStaticProps: GetStaticProps = async ({
 
   const filters: TraderOrderFilter = { nftToken: address };
 
-  const assets = await getAssetsFromOrderbook(provider, filters);
+  const assets = await getCollectionAssetsFromOrderbook(provider, filters);
 
   await queryClient.prefetchQuery(
-    [ASSETS_FROM_ORDERBOOK, filters],
+    [COLLECTION_ASSETS_FROM_ORDERBOOK, filters],
     async () => assets
   );
 

@@ -1,3 +1,4 @@
+import { DkApiPlatformCoin } from '@dexkit/widgets/src/types/api';
 import { BigNumber } from 'ethers';
 import { NFTType, SellOrBuy } from '../constants/enum';
 import { Token } from './blockchain';
@@ -119,4 +120,24 @@ export type AssetAPI = {
   description: string | null
   protocol?: 'ERC1155' | 'ERC721';
   spamInfo?: any
+}
+
+export type OrderbookAPI = {
+  data: {
+    asset?: AssetAPI,
+    order?: OrderBookItem,
+    token?: DkApiPlatformCoin
+  }[]
+  total: number,
+  take: number,
+  skip: number;
+}
+
+export type AssetStoreOptions = {
+  name?: string;
+  title?: string;
+  profileImageURL?: string;
+  backgroundImageURL?: string;
+  description?: string;
+  storeAccount?: string;
 }

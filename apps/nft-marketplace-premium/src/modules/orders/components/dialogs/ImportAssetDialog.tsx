@@ -66,7 +66,7 @@ interface Props {
   dialogProps: DialogProps;
 }
 
-export function ImportAssetDialog({ dialogProps }: Props) {
+export default function ImportAssetDialog({ dialogProps }: Props) {
   const favorites = useFavoriteAssets();
 
   const { onClose } = dialogProps;

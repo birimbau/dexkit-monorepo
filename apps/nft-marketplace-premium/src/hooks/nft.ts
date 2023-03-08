@@ -25,10 +25,10 @@ import {
   getAssetData,
   getAssetDexKitApi,
   getAssetMetadata,
-  getAssetsData,
-  getAssetsFromOrderbook,
+  getAssetsData, getCollectionAssetsFromOrderbook,
   getCollectionByApi,
   getCollectionData,
+  getDKAssetOrderbook,
   getERC1155Balance,
   searchAssetsDexKitApi
 } from '../services/nft';
@@ -637,6 +637,17 @@ export const useOrderBook = (orderFilter: TraderOrderFilter) => {
   );
 };
 
+export const GET_ASSETS_ORDERBOOK = 'GET_ASSETS_ORDERBOOK';
+
+export const useAssetsOrderBook = (orderFilter?: TraderOrderFilter) => {
+  return useQuery(
+    [GET_ASSETS_ORDERBOOK, orderFilter],
+    async () => {
+      return (await getDKAssetOrderbook(orderFilter)).data;
+    }
+  );
+};
+
 export const GET_ASSET_LIST_FROM_ORDERBOOK = 'GET_ASSET_LIST_FROM_ORDERBOOK';
 
 export const useAssetListFromOrderbook = (orderFilter: TraderOrderFilter) => {
@@ -828,7 +839,7 @@ export function useHiddenAssets() {
 
 const GET_ACCOUNTS_ASSETS = 'GET_ACCOUNTS_ASSETS';
 
-export function useAccountAssetsBalance(accounts: string[]) {
+export function useAccountAssetsBalance(accounts: string[], useSuspense = true) {
   const [accountAssets, setAccountAssets] = useAtom(accountAssetsAtom);
 
   const accountAssetsQuery = useQuery(
@@ -858,7 +869,7 @@ export function useAccountAssetsBalance(accounts: string[]) {
       if (response.data && response.data.length) {
         setAccountAssets({
           data: response.data.map(a => {
-            return { ...a, assets: a.assets?.map(parseAssetApi) }
+            return { ...a, assets: a.assets?.map(parseAssetApi) as unknown as Asset[] }
           }), lastTimeFetched: {
             time: new Date().getTime(),
             query: JSON.stringify(accounts)
@@ -868,7 +879,7 @@ export function useAccountAssetsBalance(accounts: string[]) {
 
       }
       return true;
-    }, { suspense: true }
+    }, { suspense: useSuspense }
   );
   return { accountAssets, accountAssetsQuery };
 }
@@ -889,13 +900,9 @@ export function useTotalAssetsBalance(accounts: string[], networks: string[]) {
   return { totalAccountAssets };
 }
 
+export const COLLECTION_ASSETS_FROM_ORDERBOOK = 'COLLECTION_ASSETS_FROM_ORDERBOOK';
 
-
-
-
-export const ASSETS_FROM_ORDERBOOK = 'ASSETS_FROM_ORDERBOOK';
-
-export function useAssetsFromOrderbook(filters: TraderOrderFilter, networkChainId?: ChainId) {
+export function useCollectionAssetsFromOrderbook(filters: TraderOrderFilter, networkChainId?: ChainId) {
   const { provider, chainId: injectedChainId } = useWeb3React();
   const chainId = networkChainId || injectedChainId;
 
@@ -905,13 +912,13 @@ export function useAssetsFromOrderbook(filters: TraderOrderFilter, networkChainI
     chainId === filters.chainId;
 
   return useQuery(
-    [ASSETS_FROM_ORDERBOOK, filters],
+    [COLLECTION_ASSETS_FROM_ORDERBOOK, filters],
     () => {
       if (provider === undefined) {
         return;
       }
 
-      return getAssetsFromOrderbook(provider, filters);
+      return getCollectionAssetsFromOrderbook(provider, filters);
     },
     { enabled: isProviderEnabled }
   );
