@@ -61,12 +61,12 @@ export type ChainConfig = {
   slippage: number;
   sellToken?: Token;
   buyToken?: Token;
-  featuredTokens?: Token[];
 };
 
 //TODO: array of tokens by chainId e defaultChainId without
 export type RenderOptions = {
   disableNotificationsButton?: boolean;
+  featuredTokens?: Token[];
   enableBuyCryptoButton?: boolean;
   disableFooter?: boolean;
   configsByChain: { [key: number]: ChainConfig };

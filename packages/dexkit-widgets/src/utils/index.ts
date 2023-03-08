@@ -28,9 +28,35 @@ export function isAddressEqual(address?: string, other?: string) {
 }
 
 export function formatBigNumber(val: BigNumber, decimals: number) {
+  // TODO: improve this code in the future
+  // pass to a memoized component or something
   const value = ethers.utils.formatUnits(val, decimals);
 
-  return value;
+  let index = value.indexOf(".");
+
+  if (val.isZero()) {
+    return value;
+  }
+
+  while (true) {
+    index = index + 1;
+
+    if (value.at(index) !== "0") {
+      break;
+    }
+  }
+
+  let ending = index;
+
+  while (true) {
+    ending = ending + 1;
+
+    if (ending === value.length - 1 || ending === index + 4) {
+      break;
+    }
+  }
+
+  return value.substring(0, ending);
 }
 
 export function parseChainId(chainId: string | number) {

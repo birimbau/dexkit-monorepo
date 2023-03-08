@@ -63,6 +63,7 @@ export function SwapWidget({
     disableFooter,
     enableBuyCryptoButton,
     zeroExApiKey,
+    featuredTokens,
   } = options;
 
   const execSwapMutation = useSwapExec({ onNotification });
@@ -172,15 +173,11 @@ export function SwapWidget({
         );
       }
 
-      console.log("before", tokens.length);
-
       let tokensCopy = [
         ...tokens.filter((t) => {
           return !DKAPI_INVALID_ADDRESSES.includes(t.contractAddress);
         }),
       ];
-
-      console.log("after", tokensCopy.length);
 
       return tokensCopy;
     }
@@ -189,6 +186,10 @@ export function SwapWidget({
   }, [searchQuery.data, chainId, query]);
 
   const handleQueryChange = (value: string) => setQuery(value);
+
+  const featuredTokensByChain = useMemo(() => {
+    return featuredTokens?.filter((t) => t.chainId === selectedChainId);
+  }, [featuredTokens, selectedChainId]);
 
   return (
     <>
@@ -206,7 +207,7 @@ export function SwapWidget({
           }}
           account={account}
           provider={swapProvider}
-          featuredTokens={configsByChain[selectedChainId]?.featuredTokens}
+          featuredTokens={featuredTokensByChain}
           onClearRecentTokens={handleClearRecentTokens}
         />
       )}

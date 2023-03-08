@@ -91,7 +91,7 @@ export default function SwapFeeSummary({
           </Typography>
           <Typography color="text.secondary">
             <>
-              {formatBigNumber(amount, 18)} {NETWORK_SYMBOL(chainId)}
+              {formatBigNumber(amount, 18)} {NETWORK_SYMBOL(chainId)}{" "}
             </>
           </Typography>
         </Stack>

@@ -215,24 +215,29 @@ export function useSwapExec({
 
     const chainId = (await provider.getNetwork()).chainId;
 
-    const tx = await provider.getSigner().sendTransaction({
-      data: quote?.data,
-      value: ethers.BigNumber.from(quote?.value),
-      to: quote?.to,
-    });
+    try {
+      const tx = await provider.getSigner().sendTransaction({
+        data: quote?.data,
+        value: ethers.BigNumber.from(quote?.value),
+        to: quote?.to,
+      });
 
-    onNotification({
-      chainId,
-      title: formatMessage({
-        id: "swap.tokens",
-        defaultMessage: "Swap Tokens", // TODO: add token symbols and amounts
-      }),
-      hash: tx.hash,
-    });
+      onNotification({
+        chainId,
+        title: formatMessage({
+          id: "swap.tokens",
+          defaultMessage: "Swap Tokens", // TODO: add token symbols and amounts
+        }),
+        hash: tx.hash,
+      });
 
-    onHash(tx.hash);
+      onHash(tx.hash);
 
-    return await tx.wait();
+      return await tx.wait();
+    } catch (err) {
+      console.log("chega aqui");
+      throw err;
+    }
   });
 }
 
@@ -604,7 +609,7 @@ export function useSwapState({
 
   const handleConfirmExecSwap = async () => {
     if (quoteQuery.data) {
-      const onError = (err: unknown) => {
+      const onError = async (err: unknown) => {
         enqueueSnackbar(
           formatMessage({
             id: "transaction.rejected",
@@ -616,17 +621,19 @@ export function useSwapState({
 
       handleCloseConfirmSwap();
 
-      await execMutation.mutateAsync(
-        {
-          quote: quoteQuery.data,
-          provider: provider as providers.Web3Provider,
-          onHash: (hash: string) => {},
-        },
-        {
-          onSuccess: (receipt: ethers.providers.TransactionReceipt) => {},
-          onError,
-        }
-      );
+      try {
+        await execMutation.mutateAsync(
+          {
+            quote: quoteQuery.data,
+            provider: provider as providers.Web3Provider,
+            onHash: (hash: string) => {},
+          },
+          {
+            onSuccess: (receipt: ethers.providers.TransactionReceipt) => {},
+            onError,
+          }
+        );
+      } catch (err: unknown) {}
     }
   };
 

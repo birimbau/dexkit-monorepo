@@ -117,12 +117,10 @@ FeaturedTokens.args = {
   renderOptions: {
     configsByChain: {
       [ChainId.Polygon]: {
-        featuredTokens: TEST_TOKENS.filter(
-          (c) => c.chainId === ChainId.Polygon
-        ),
         slippage: 0,
       },
     },
+    featuredTokens: TEST_TOKENS.filter((c) => c.chainId === ChainId.Polygon),
     defaultChainId: ChainId.Polygon,
     zeroExApiKey,
   },

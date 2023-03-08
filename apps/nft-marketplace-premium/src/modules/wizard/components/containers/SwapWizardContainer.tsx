@@ -1,5 +1,7 @@
 import { SwapConfig } from '@/modules/swap/types';
 import { SwapWidget } from '@dexkit/widgets';
+import { Token as WidgetToken } from '@dexkit/widgets/src/types';
+
 import { ThemeProvider } from '@emotion/react';
 import { Theme } from '@mui/material';
 import Button from '@mui/material/Button';
@@ -40,9 +42,19 @@ export default function SwapWizardContainer({
     )?.config
   );
 
-  const featuredTokens = useMemo<Token[]>(() => {
-    return config?.tokens?.length ? config?.tokens[0].tokens || [] : [];
-  }, []);
+  const featuredTokens = useMemo<WidgetToken[]>(() => {
+    let tokens = config?.tokens?.length ? config?.tokens[0].tokens || [] : [];
+
+    return tokens.map<WidgetToken>((t: Token) => {
+      return {
+        contractAddress: t.address,
+        chainId: t.chainId as number,
+        decimals: t.decimals,
+        name: t.name,
+        symbol: t.symbol,
+      } as WidgetToken;
+    });
+  }, [config]);
 
   const changeConfig = function (
     configToChange: AppConfig,
@@ -121,6 +133,7 @@ export default function SwapWizardContainer({
                 ? swapFormData?.configByChain
                 : {},
               defaultChainId: swapFormData?.defaultChainId,
+              featuredTokens: featuredTokens,
             }}
             disableWallet={true}
             onShowTransactions={() => {}}
