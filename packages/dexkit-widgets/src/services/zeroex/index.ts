@@ -1,4 +1,4 @@
-import axios, { AxiosInstance } from "axios";
+import axios, { AxiosInstance, AxiosRequestHeaders } from "axios";
 import { ChainId } from "../../constants/enum";
 import {
   ZEROEX_QUOTE_ENDPOINT,
@@ -15,8 +15,17 @@ export function getZeroExApiClient(chainId: ChainId) {
 export class ZeroExApiClient {
   private axiosInstance: AxiosInstance;
 
-  constructor(chainId: ChainId) {
-    this.axiosInstance = axios.create({ baseURL: ZERO_EX_URL(chainId) });
+  constructor(chainId: ChainId, zeroExApiKey?: string) {
+    const headers: AxiosRequestHeaders = {};
+
+    if (zeroExApiKey) {
+      headers["0x-api-key"] = zeroExApiKey;
+    }
+
+    this.axiosInstance = axios.create({
+      baseURL: ZERO_EX_URL(chainId),
+      headers,
+    });
   }
 
   async quote(

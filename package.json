@@ -8,7 +8,7 @@
   ],
   "scripts": {
     "build": "turbo run build",
-    "dev": "turbo run dev --parallel --filter=nft-marketplace",
+    "dev": "turbo run dev --parallel",
     "dev:whitelabel": "turbo run dev --parallel --filter=nft-marketplace",
     "storybook": "turbo run storybook",
     "bundle:widgets": "turbo run bundle:widgets",

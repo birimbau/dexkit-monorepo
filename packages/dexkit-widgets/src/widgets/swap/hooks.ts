@@ -92,6 +92,7 @@ export interface UseQuoteSwap {
   enabled: boolean;
   setParams: React.Dispatch<React.SetStateAction<SwapQuoteParams | undefined>>;
   setSkipValidation: React.Dispatch<React.SetStateAction<boolean>>;
+  setIntentOnFilling: React.Dispatch<React.SetStateAction<boolean>>;
   params: SwapQuoteParams | undefined;
   setEnabled: React.Dispatch<boolean>;
   quoteQuery: UseQueryResult<ZeroExQuoteResponse | null | undefined, unknown>;
@@ -102,16 +103,26 @@ export const SWAP_QUOTE = "SWAP_QUOTE";
 export function useSwapQuote({
   onSuccess,
   maxSlippage,
+  zeroExApiKey,
 }: {
   onSuccess: (data: ZeroExQuoteResponse | null | undefined) => void;
   maxSlippage?: number;
+  zeroExApiKey?: string;
 }): UseQuoteSwap {
   const [params, setParams] = useState<SwapQuoteParams>();
   const [enabled, setEnabled] = useState(true);
   const [skipValidation, setSkipValidation] = useState(true);
+  const [intentOnFilling, setIntentOnFilling] = useState(false);
 
   const quoteQuery = useQuery(
-    [SWAP_QUOTE, params, maxSlippage],
+    [
+      SWAP_QUOTE,
+      params,
+      maxSlippage,
+      zeroExApiKey,
+      skipValidation,
+      intentOnFilling,
+    ],
     async ({ signal }) => {
       if (!params) {
         return;
@@ -128,7 +139,7 @@ export function useSwapQuote({
         quoteFor,
       } = { ...params, skipValidation };
 
-      const client = new ZeroExApiClient(chainId);
+      const client = new ZeroExApiClient(chainId, zeroExApiKey);
 
       if (buyToken && sellToken && quoteFor) {
         const quoteParam: ZeroExQuote = {
@@ -141,6 +152,10 @@ export function useSwapQuote({
 
         if (account && !skipValidation) {
           quoteParam.takerAddress = account;
+        }
+
+        if (intentOnFilling && zeroExApiKey) {
+          quoteParam.intentOnFilling = true;
         }
 
         if (maxSlippage !== undefined) {
@@ -168,6 +183,7 @@ export function useSwapQuote({
     setEnabled,
     quoteQuery,
     setSkipValidation,
+    setIntentOnFilling,
   };
 }
 
@@ -199,24 +215,29 @@ export function useSwapExec({
 
     const chainId = (await provider.getNetwork()).chainId;
 
-    const tx = await provider.getSigner().sendTransaction({
-      data: quote?.data,
-      value: ethers.BigNumber.from(quote?.value),
-      to: quote?.to,
-    });
+    try {
+      const tx = await provider.getSigner().sendTransaction({
+        data: quote?.data,
+        value: ethers.BigNumber.from(quote?.value),
+        to: quote?.to,
+      });
 
-    onNotification({
-      chainId,
-      title: formatMessage({
-        id: "swap.tokens",
-        defaultMessage: "Swap Tokens", // TODO: add token symbols and amounts
-      }),
-      hash: tx.hash,
-    });
+      onNotification({
+        chainId,
+        title: formatMessage({
+          id: "swap.tokens",
+          defaultMessage: "Swap Tokens", // TODO: add token symbols and amounts
+        }),
+        hash: tx.hash,
+      });
 
-    onHash(tx.hash);
+      onHash(tx.hash);
 
-    return await tx.wait();
+      return await tx.wait();
+    } catch (err) {
+      console.log("chega aqui");
+      throw err;
+    }
   });
 }
 
@@ -231,6 +252,7 @@ export function useSwapState({
   isActive,
   isActivating,
   disableFooter,
+  zeroExApiKey,
   maxSlippage,
   isAutoSlippage,
   transakApiKey,
@@ -239,6 +261,7 @@ export function useSwapState({
   onConnectWallet,
   onShowTransactions,
 }: {
+  zeroExApiKey?: string;
   execMutation: UseMutationResult<
     ethers.providers.TransactionReceipt,
     unknown,
@@ -317,10 +340,20 @@ export function useSwapState({
   const [showSelect, setShowSelectToken] = useState(false);
 
   const [quoteFor, setQuoteFor] = useState<SwapSide>();
-  const [sellToken, setSellToken] = useState<Token | undefined>(
-    defaultSellToken
-  );
-  const [buyToken, setBuyToken] = useState<Token | undefined>(defaultBuyToken);
+
+  const [sellToken, setSellToken] = useState<Token | undefined>();
+  const [buyToken, setBuyToken] = useState<Token | undefined>();
+
+  useEffect(() => {
+    if (defaultSellToken) {
+      setSellToken(defaultSellToken);
+    }
+
+    if (defaultBuyToken) {
+      setBuyToken(defaultBuyToken);
+    }
+  }, [defaultBuyToken, defaultSellToken]);
+
   const [sellAmount, setSellAmount] = useState<BigNumber>(BigNumber.from(0));
   const [buyAmount, setBuyAmount] = useState<BigNumber>(BigNumber.from(0));
   const [selectSide, setSelectSide] = useState<SwapSide>();
@@ -368,6 +401,7 @@ export function useSwapState({
   const quote = useSwapQuote({
     onSuccess: handleQuoteSuccess,
     maxSlippage: !isAutoSlippage ? maxSlippage : undefined,
+    zeroExApiKey,
   });
 
   const { quoteQuery } = quote;
@@ -461,13 +495,21 @@ export function useSwapState({
   const handleCloseConfirmSwap = () => {
     setShowConfirmSwap(false);
     quote.setSkipValidation(true);
+    quote.setIntentOnFilling(false);
   };
 
-  const handleChangeNetwork = async (chainId: ChainId) => {
+  const handleChangeNetwork = async (newChainId: ChainId) => {
+    if (chainId !== newChainId) {
+      setSellAmount(BigNumber.from(0));
+      setBuyAmount(BigNumber.from(0));
+      setSellToken(undefined);
+      setBuyToken(undefined);
+    }
+
     if (isActive && connector) {
-      switchNetwork(connector, chainId);
+      switchNetwork(connector, newChainId);
     } else {
-      onChangeNetwork(chainId);
+      onChangeNetwork(newChainId);
     }
   };
 
@@ -567,7 +609,7 @@ export function useSwapState({
 
   const handleConfirmExecSwap = async () => {
     if (quoteQuery.data) {
-      const onError = (err: unknown) => {
+      const onError = async (err: unknown) => {
         enqueueSnackbar(
           formatMessage({
             id: "transaction.rejected",
@@ -579,17 +621,19 @@ export function useSwapState({
 
       handleCloseConfirmSwap();
 
-      await execMutation.mutateAsync(
-        {
-          quote: quoteQuery.data,
-          provider: provider as providers.Web3Provider,
-          onHash: (hash: string) => {},
-        },
-        {
-          onSuccess: (receipt: ethers.providers.TransactionReceipt) => {},
-          onError,
-        }
-      );
+      try {
+        await execMutation.mutateAsync(
+          {
+            quote: quoteQuery.data,
+            provider: provider as providers.Web3Provider,
+            onHash: (hash: string) => {},
+          },
+          {
+            onSuccess: (receipt: ethers.providers.TransactionReceipt) => {},
+            onError,
+          }
+        );
+      } catch (err: unknown) {}
     }
   };
 
@@ -603,6 +647,8 @@ export function useSwapState({
     if (execType === "swap" && quoteQuery.data) {
       setShowConfirmSwap(true);
       quote.setSkipValidation(false);
+      quote.setIntentOnFilling(true);
+
       quote.quoteQuery.refetch();
     } else if (execType === "wrap") {
       await wrapMutation.mutateAsync(
@@ -735,11 +781,13 @@ export function useSwapState({
 export function useSwapProvider({
   provider,
   defaultChainId,
+  disableWallet,
 }: {
   provider?: ethers.providers.BaseProvider | ethers.providers.Web3Provider;
   defaultChainId: ChainId;
+  disableWallet?: boolean;
 }) {
-  if (!provider) {
+  if (!provider || disableWallet) {
     return new ethers.providers.JsonRpcProvider(
       NETWORKS[defaultChainId].providerRpcUrl
     );

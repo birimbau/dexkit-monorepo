@@ -11,7 +11,7 @@ import { memo } from "react";
 import { TOKEN_ICON_URL } from "../constants";
 import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "../services/zeroex/constants";
 import { Token } from "../types";
-import { isAddressEqual } from "../utils";
+import { formatBigNumber, isAddressEqual } from "../utils";
 
 export interface SelectCoinListItemProps {
   token: Token;
@@ -48,8 +48,8 @@ function SelectCoinListItem({
         secondary={token.name}
       />
       <Box sx={{ mr: 2 }}>
-        {tokenBalances
-          ? ethers.utils.formatUnits(balance, token.decimals)
+        {tokenBalances && token && balance
+          ? formatBigNumber(balance, token.decimals)
           : "0.0"}
       </Box>
     </ListItemButton>

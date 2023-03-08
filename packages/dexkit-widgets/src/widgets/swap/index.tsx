@@ -1,7 +1,8 @@
 import Swap from "./Swap";
 
+import { DKAPI_INVALID_ADDRESSES } from "@dexkit/core/constants";
 import { useWeb3React } from "@web3-react/core";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { GET_NATIVE_TOKEN } from "../../constants";
 import { ChainId } from "../../constants/enum";
 import { NETWORKS } from "../../constants/networks";
@@ -30,6 +31,7 @@ export interface SwapWidgetProps {
     hash,
     chainId,
   }: NotificationCallbackParams) => void;
+  disableWallet?: boolean;
   onConnectWallet: () => void;
   onShowTransactions: () => void;
   maxSlippage: number;
@@ -39,6 +41,7 @@ export interface SwapWidgetProps {
 }
 
 export function SwapWidget({
+  disableWallet,
   renderOptions: options,
   onNotification,
   onConnectWallet,
@@ -59,17 +62,26 @@ export function SwapWidget({
     currency,
     disableFooter,
     enableBuyCryptoButton,
+    zeroExApiKey,
+    featuredTokens,
   } = options;
 
   const execSwapMutation = useSwapExec({ onNotification });
 
   const [selectedChainId, setSelectedChainId] = useState<ChainId>(
-    defaultChainId ? defaultChainId : ChainId.Ethereum
+    ChainId.Ethereum
   );
+
+  useEffect(() => {
+    if (defaultChainId) {
+      setSelectedChainId(defaultChainId);
+    }
+  }, [defaultChainId]);
 
   const swapProvider = useSwapProvider({
     provider,
     defaultChainId: selectedChainId,
+    disableWallet,
   });
 
   const approveMutation = useErc20ApproveMutation({ onNotification });
@@ -113,6 +125,7 @@ export function SwapWidget({
     handleClearRecentTokens,
     handleShowTransak,
   } = useSwapState({
+    zeroExApiKey,
     execMutation: execSwapMutation,
     approveMutation,
     provider: swapProvider,
@@ -122,7 +135,7 @@ export function SwapWidget({
     onShowTransactions,
     connector,
     account,
-    isActive,
+    isActive: isActive && !disableWallet,
     isActivating,
     maxSlippage,
     isAutoSlippage,
@@ -160,13 +173,23 @@ export function SwapWidget({
         );
       }
 
-      return tokens;
+      let tokensCopy = [
+        ...tokens.filter((t) => {
+          return !DKAPI_INVALID_ADDRESSES.includes(t.contractAddress);
+        }),
+      ];
+
+      return tokensCopy;
     }
 
     return [];
   }, [searchQuery.data, chainId, query]);
 
   const handleQueryChange = (value: string) => setQuery(value);
+
+  const featuredTokensByChain = useMemo(() => {
+    return featuredTokens?.filter((t) => t.chainId === selectedChainId);
+  }, [featuredTokens, selectedChainId]);
 
   return (
     <>
@@ -184,6 +207,7 @@ export function SwapWidget({
           }}
           account={account}
           provider={swapProvider}
+          featuredTokens={featuredTokensByChain}
           onClearRecentTokens={handleClearRecentTokens}
         />
       )}
@@ -195,6 +219,7 @@ export function SwapWidget({
           onClose: handleCloseConfirmSwap,
         }}
         quote={quote}
+        isQuoting={isQuoting}
         onConfirm={handleConfirmExecSwap}
         chainId={chainId}
         currency={currency || "usd"}
@@ -215,7 +240,7 @@ export function SwapWidget({
         currency={"usd"}
         disableNotificationsButton={disableNotificationsButton}
         chainId={chainId}
-        isActive={isActive}
+        isActive={isActive && !disableWallet}
         buyToken={buyToken}
         sellToken={sellToken}
         onSelectToken={handleOpenSelectToken}
