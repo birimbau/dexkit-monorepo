@@ -97,7 +97,7 @@ export function AssetStoreContainer({
               )}
             </Stack>
           </Grid>
-          <Grid item xs={12} sm={3}>
+          <Grid item xs={12} sm={6} md={4} xl={3}>
             <TextField
               fullWidth
               size="small"

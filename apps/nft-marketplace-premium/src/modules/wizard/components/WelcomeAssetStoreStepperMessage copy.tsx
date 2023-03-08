@@ -6,7 +6,7 @@ import {
   WIZARD_DOCS_URL,
 } from '../../../constants';
 
-export function WelcomeMessage() {
+export function WelcomeAssetStoreStepperMessage() {
   const handleHrefDiscord = (chunks: any): ReactNode => (
     <a
       className="external_link"
@@ -32,8 +32,8 @@ export function WelcomeMessage() {
   return (
     <Alert severity="info">
       <FormattedMessage
-        id="wizard.welcome.index.message"
-        defaultMessage="Welcome to DexAppBuilder! This is a beta product with constant development and at the moment is offered for free. 
+        id="quick.wizard.nft.store.welcome.index.message"
+        defaultMessage="Welcome to DexAppBuilder! Here you can quick start your NFT store.
     If you need support please reach us on our <a>dedicated Discord channel</a>. Please check our <d>docs</d> for whitelabels. Reach us at our email <b>info@dexkit.com</b> if you need a custom solution that the wizard not attend."
         values={{
           //@ts-ignore

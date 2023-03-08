@@ -1,5 +1,6 @@
 import { Search } from '@mui/icons-material';
 import Add from '@mui/icons-material/Add';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import {
   Alert,
   Box,
@@ -17,6 +18,7 @@ import { useWeb3React } from '@web3-react/core';
 import { NextPage } from 'next';
 import { ChangeEvent, ReactNode, useCallback, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
+import Wallet from '../../src/components/icons/Wallet';
 import AuthMainLayout from '../../src/components/layouts/authMain';
 import Link from '../../src/components/Link';
 import { PageHeader } from '../../src/components/PageHeader';
@@ -24,15 +26,13 @@ import {
   DEXKIT_DISCORD_SUPPORT_CHANNEL,
   WIZARD_DOCS_URL,
 } from '../../src/constants';
+import { useConnectWalletDialog } from '../../src/hooks/app';
 import { useDebounce } from '../../src/hooks/misc';
 import { useWhitelabelConfigsByOwnerQuery } from '../../src/hooks/whitelabel';
 import MarketplacesTableSkeleton from '../../src/modules/admin/components/tables/MaketplacesTableSkeleton';
 import MarketplacesTable from '../../src/modules/admin/components/tables/MarketplacesTable';
 import ConfigureDomainDialog from '../../src/modules/wizard/components/dialogs/ConfigureDomainDialog';
 import { ConfigResponse } from '../../src/types/whitelabel';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import Wallet from '../../src/components/icons/Wallet';
-import { useConnectWalletDialog } from '../../src/hooks/app';
 
 export const AdminIndexPage: NextPage = () => {
   const { account, isActive } = useWeb3React();
@@ -127,15 +127,12 @@ export const AdminIndexPage: NextPage = () => {
             alignContent="center"
           >
             <Typography variant="h5">
-              <FormattedMessage
-                id="no.marketplaces"
-                defaultMessage="No Marketplaces"
-              />
+              <FormattedMessage id="no.apps" defaultMessage="No Apps" />
             </Typography>
             <Typography variant="body1" color="textSecondary">
               <FormattedMessage
-                id="create.one.to.start.selling.NFTs"
-                defaultMessage="Create one to start selling NFTs"
+                id="create.one.to.start.selling.NFTs.or.crypto"
+                defaultMessage="Create one App to start trade NFTs or crypto"
               />
             </Typography>
           </Stack>
@@ -170,8 +167,8 @@ export const AdminIndexPage: NextPage = () => {
             </Typography>
             <Typography variant="body1" color="textSecondary">
               <FormattedMessage
-                id="connect.wallet.to.see.marketplaces.associated.with.your.account"
-                defaultMessage="Connect wallet to see marketplactes associated with your account"
+                id="connect.wallet.to.see.apps.associated.with.your.account"
+                defaultMessage="Connect wallet to see apps associated with your account"
               />
             </Typography>
           </Stack>
@@ -216,12 +213,7 @@ export const AdminIndexPage: NextPage = () => {
                   uri: '/admin',
                 },
                 {
-                  caption: (
-                    <FormattedMessage
-                      id="Marketplaces"
-                      defaultMessage="Marketplaces"
-                    />
-                  ),
+                  caption: <FormattedMessage id="apps" defaultMessage="Apps" />,
                   uri: '/admin',
                   active: true,
                 },
@@ -232,7 +224,7 @@ export const AdminIndexPage: NextPage = () => {
             <Alert severity="info">
               <FormattedMessage
                 id="wizard.welcome.index.message"
-                defaultMessage="Welcome to DexKit Marketplace wizard! This is a beta product with constant development and at the moment is offered for free. 
+                defaultMessage="Welcome to DexAppBuilder! This is a beta product with constant development and at the moment is offered for free. 
               If you need support please reach us on our <a>dedicated Discord channel</a>. Please check our <d>docs</d> for whitelabels. Reach us at our email <b>info@dexkit.com</b> if you need a custom solution that the wizard not attend."
                 values={{
                   //@ts-ignore

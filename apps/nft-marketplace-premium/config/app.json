@@ -6,7 +6,7 @@
   "theme": "kittygotchi",
   "domain": "https://whitelabel-nft.dexkit.com",
   "logo": {
-    "url": "/assets/images/market-logo.svg",
+    "url": "https://dexkit-storage.nyc3.cdn.digitaloceanspaces.com/dexkit/images/logo/dexappbuilder.svg",
     "height": "50",
     "width": "150"
   },
@@ -374,11 +374,13 @@
   },
   "seo": {
     "home": {
-      "title": "Wizard",
-      "description": "DexKit Wizard: use our wizard to build your marketplace in seconds. You are able to display your nfts, sell them, profit from nft sales, earn from swap fees. Options are endless",
+      "title": "DexAppBuilder",
+      "description": "DexAppBuilder: use our decentralized app builder to create your marketplace in seconds. You are able to display your nfts, sell them, profit from nft sales, earn from swap fees. Options are endless",
       "images": [
         {
-          "url": "https://dexkit-storage.nyc3.digitaloceanspaces.com/dexkit/media-library/account/0x5bd68b4d6f90bcc9f3a9456791c0db5a43df676d/SEO_HOME.jpg"
+          "url": "https://dexkit-storage.nyc3.cdn.digitaloceanspaces.com/dexkit%2Fimages%2Finternal%2Fdexappbuilderopengraph.png",
+          "alt": "DexAppBuilder: create crypto apps easily",
+          "type": "image/png"
         }
       ]
     }

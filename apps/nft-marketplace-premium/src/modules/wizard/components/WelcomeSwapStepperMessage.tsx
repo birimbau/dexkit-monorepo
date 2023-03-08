@@ -33,7 +33,7 @@ export function WelcomeSwapStepperMessage() {
     <Alert severity="info">
       <FormattedMessage
         id="quick.wizard.swap.welcome.index.message"
-        defaultMessage="Welcome to CryptoApp Builder KIT! Here you can quick start your crypto aggregator
+        defaultMessage="Welcome to DexAppBuilder! Here you can quick start your crypto aggregator
     If you need support please reach us on our <a>dedicated Discord channel</a>. Please check our <d>docs</d> for whitelabels. Reach us at our email <b>info@dexkit.com</b> if you need a custom solution that the wizard not attend."
         values={{
           //@ts-ignore

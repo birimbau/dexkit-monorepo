@@ -307,16 +307,16 @@
       "uri": "/",
       "sections": [
         {
-          "type": "swap",
-          "title": "Swap"
+          "type": "asset-store",
+          "title": "Asset Store"
         }
       ]
     }
   },
   "seo": {
     "home": {
-      "title": "Crypto Aggregator",
-      "description": "Crypto Aggregator built by the quick wizard from CryptoAPP Builder KIT. Swap easily and at best prices.",
+      "title": "NFT store",
+      "description": "NFT store built by the quick wizard from DexAppBuilder. Selling your NFTs was never so easy.",
       "images": [
         {
           "url": "https://dexkit-storage.nyc3.cdn.digitaloceanspaces.com/dexkit%2Fimages%2Finternal%2Fdexappbuilderopengraph.png",
