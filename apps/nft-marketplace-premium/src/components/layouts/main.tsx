@@ -1,10 +1,8 @@
-import { Box, NoSsr, useTheme } from '@mui/material';
+import { Box, NoSsr } from '@mui/material';
 import { useWeb3React } from '@web3-react/core';
-import React, { useEffect, useMemo } from 'react';
-import { Footer } from '../Footer';
-import Navbar from '../Navbar';
-import dynamic from 'next/dynamic';
 import { useAtom } from 'jotai';
+import dynamic from 'next/dynamic';
+import React, { useEffect, useMemo } from 'react';
 import {
   useAppConfig,
   useConnectWalletDialog,
@@ -13,11 +11,14 @@ import {
 } from '../../hooks/app';
 import {
   drawerIsOpenAtom,
+  selectedWalletAtom,
   showSelectCurrencyAtom,
   showSelectLocaleAtom,
   switchNetworkChainIdAtom,
   switchNetworkOpenAtom,
 } from '../../state/atoms';
+import { Footer } from '../Footer';
+import Navbar from '../Navbar';
 const SignMessageDialog = dynamic(() => import('../dialogs/SignMessageDialog'));
 const SwitchNetworkDialog = dynamic(
   () => import('../dialogs/SwitchNetworkDialog')
@@ -25,11 +26,13 @@ const SwitchNetworkDialog = dynamic(
 const TransactionDialog = dynamic(() => import('../dialogs/TransactionDialog'));
 
 import { useRouter } from 'next/router';
-import AppDrawer from '../AppDrawer';
 import { AppConfig } from 'src/types/config';
-const ConnectWalletDialog = dynamic(
-  () => import('../dialogs/ConnectWalletDialog')
-);
+import AppDrawer from '../AppDrawer';
+
+import { useWalletActivate } from '@dexkit/core/hooks';
+import { WalletActivateParams } from '@dexkit/core/types';
+import { ConnectWalletDialog } from '@dexkit/ui';
+
 const SelectCurrencyDialog = dynamic(
   () => import('../dialogs/SelectCurrencyDialog')
 );
@@ -52,7 +55,7 @@ const MainLayout: React.FC<Props> = ({
   appConfigProps,
   isPreview,
 }) => {
-  const { connector } = useWeb3React();
+  const { connector, isActive } = useWeb3React();
   const router = useRouter();
 
   const defaultAppConfig = useAppConfig();
@@ -116,9 +119,19 @@ const MainLayout: React.FC<Props> = ({
     setShowShowSelectLocale(false);
   };
 
+  const walletActivate = useWalletActivate({
+    magicRedirectUrl: process.env.NEXT_PUBLIC_MAGIC_REDIRECT_URL || '',
+    selectedWalletAtom,
+  });
+
+  const handleActivateWallet = async (params: WalletActivateParams) => {
+    await walletActivate.mutation.mutateAsync(params);
+  };
+
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      connector.activate();
+      // connector.activate();
+
       const handleNetworkChange = (newNetwork: any, oldNetwork: any) => {
         // When a Provider makes its initial connection, it emits a "network"
         // event with a null oldNetwork along with the newNetwork. So, if the
@@ -136,6 +149,16 @@ const MainLayout: React.FC<Props> = ({
       };
     }
   }, []);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && connector) {
+      console.log('mudou é chamado?', connector);
+
+      if (connector.connectEagerly) {
+        connector.connectEagerly();
+      }
+    }
+  }, [connector]);
 
   const [isDrawerOpen, setIsDrawerOpen] = useAtom(drawerIsOpenAtom);
 
@@ -193,12 +216,16 @@ const MainLayout: React.FC<Props> = ({
         chainId={switchChainId}
       />
       <ConnectWalletDialog
-        dialogProps={{
+        DialogProps={{
           open: connectWalletDialog.isOpen,
           onClose: handleCloseConnectWalletDialog,
           fullWidth: true,
           maxWidth: 'sm',
         }}
+        isActive={isActive}
+        isActivating={walletActivate.mutation.isLoading}
+        activeConnectorName={walletActivate.connectorName}
+        activate={handleActivateWallet}
       />
       <Navbar appConfig={appConfig} isPreview={isPreview} />
       <Box

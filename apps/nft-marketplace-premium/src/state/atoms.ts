@@ -145,3 +145,5 @@ export const showSelectCurrencyAtom = atom<boolean>(false);
 export const showSelectLocaleAtom = atom<boolean>(false);
 
 export const showAppTransactionsAtom = atom<boolean>(false);
+
+export const selectedWalletAtom = atomWithStorage<string>('connector', '');

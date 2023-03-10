@@ -498,6 +498,16 @@ export function useSwapState({
     quote.setIntentOnFilling(false);
   };
 
+  const chainId = useAsyncMemo<ChainId | undefined>(
+    async (initial) => {
+      if (provider) {
+        return (await provider.getNetwork()).chainId;
+      }
+    },
+    undefined,
+    [provider]
+  );
+
   const handleChangeNetwork = async (newChainId: ChainId) => {
     if (chainId !== newChainId) {
       setSellAmount(BigNumber.from(0));
@@ -512,16 +522,6 @@ export function useSwapState({
       onChangeNetwork(newChainId);
     }
   };
-
-  const chainId = useAsyncMemo<ChainId | undefined>(
-    async (initial) => {
-      if (provider) {
-        return (await provider.getNetwork()).chainId;
-      }
-    },
-    undefined,
-    [provider]
-  );
 
   const isProviderReady = useAsyncMemo<boolean>(
     async (initial) => {

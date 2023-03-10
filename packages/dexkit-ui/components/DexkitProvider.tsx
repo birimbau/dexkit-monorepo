@@ -10,6 +10,7 @@ import { getConnectorName } from "@dexkit/core/utils";
 import { CssBaseline, Theme, ThemeProvider } from "@mui/material";
 import { PrimitiveAtom, Provider } from "jotai";
 
+import { MagicStateProvider } from "./MagicStateProvider";
 import TransactionUpdater from "./TransactionUpdater";
 
 export interface DexkitProviderProps {
@@ -17,18 +18,23 @@ export interface DexkitProviderProps {
   locale: string;
   defaultLocale?: string;
   children: React.ReactNode | React.ReactNode[];
+  options?: {
+    magicRedirectUrl: string;
+  };
   pendingTransactionsAtom: PrimitiveAtom<{
     [hash: string]: Transaction;
   }>;
+  selectedWalletAtom: PrimitiveAtom<string>;
 }
 
 export function DexkitProvider({
   children,
   theme,
   pendingTransactionsAtom,
+  selectedWalletAtom,
   locale,
 }: DexkitProviderProps) {
-  const connectors = useOrderedConnectors();
+  const connectors = useOrderedConnectors({ selectedWalletAtom });
 
   const web3ReactKey = useMemo(
     () =>
@@ -46,7 +52,7 @@ export function DexkitProvider({
               anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
             >
               <CssBaseline />
-              {children}
+              <MagicStateProvider currency="usd">{children}</MagicStateProvider>
               <TransactionUpdater
                 pendingTransactionsAtom={pendingTransactionsAtom}
               />
