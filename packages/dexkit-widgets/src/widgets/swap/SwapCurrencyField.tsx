@@ -8,6 +8,7 @@ import SwapTokenButton from "./SwapTokenButton";
 
 export interface SwapTokenFieldProps {
   InputBaseProps?: InputBaseProps;
+  disabled?: boolean;
   onChange: (value: BigNumber) => void;
   token?: Token;
   onSelectToken: (token?: Token) => void;
@@ -22,6 +23,7 @@ function SwapTokenField({
   onSelectToken,
   token,
   value,
+  disabled,
   balance,
   showBalance,
 }: SwapTokenFieldProps) {
@@ -37,7 +39,13 @@ function SwapTokenField({
         px: 2,
         py: 1,
         borderRadius: theme.shape.borderRadius / 2,
-        backgroundColor: theme.palette.grey[300],
+        borderWidth: 1,
+        borderStyle: "solid",
+        borderColor: theme.palette.divider,
+        "&:focus-within": {
+          borderColor: theme.palette.primary.main,
+          borderWidth: 2,
+        },
       })}
     >
       <Stack direction="row" alignItems="center" spacing={2}>
@@ -45,6 +53,7 @@ function SwapTokenField({
           InputBaseProps={{
             ...InputBaseProps,
             sx: { fontSize: "2rem", flex: 1 },
+            disabled,
           }}
           onChange={onChange}
           value={value}

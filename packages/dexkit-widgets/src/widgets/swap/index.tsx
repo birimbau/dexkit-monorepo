@@ -68,9 +68,7 @@ export function SwapWidget({
 
   const execSwapMutation = useSwapExec({ onNotification });
 
-  const [selectedChainId, setSelectedChainId] = useState<ChainId>(
-    ChainId.Ethereum
-  );
+  const [selectedChainId, setSelectedChainId] = useState<ChainId>();
 
   useEffect(() => {
     if (defaultChainId) {
@@ -79,7 +77,6 @@ export function SwapWidget({
   }, [defaultChainId]);
 
   const swapProvider = useSwapProvider({
-    provider,
     defaultChainId: selectedChainId,
     disableWallet,
   });
@@ -108,6 +105,7 @@ export function SwapWidget({
     isQuoting,
     isProviderReady,
     recentTokens,
+    quoteFor,
     handleConnectWallet,
     handleOpenSelectToken,
     handleSwapTokens,
@@ -129,6 +127,7 @@ export function SwapWidget({
     execMutation: execSwapMutation,
     approveMutation,
     provider: swapProvider,
+    connectorProvider: provider,
     onChangeNetwork: handleChangeSelectedNetwork,
     onNotification,
     onConnectWallet,
@@ -237,9 +236,10 @@ export function SwapWidget({
         isAutoSlippage={isAutoSlippage}
       />
       <Swap
-        currency={"usd"}
+        currency={currency}
         disableNotificationsButton={disableNotificationsButton}
         chainId={chainId}
+        quoteFor={quoteFor}
         isActive={isActive && !disableWallet}
         buyToken={buyToken}
         sellToken={sellToken}

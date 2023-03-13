@@ -33,6 +33,8 @@ import SwapFeeSummary from "./SwapFeeSummary";
 export interface SwapProps {
   chainId?: ChainId;
   currency: string;
+  disabled?: boolean;
+  quoteFor?: SwapSide;
   provider?: providers.Web3Provider;
   account?: string;
   isActivating?: boolean;
@@ -68,6 +70,8 @@ export interface SwapProps {
 
 export default function Swap({
   chainId,
+  disabled,
+  quoteFor,
   isActive,
   execType,
   isQuoting,
@@ -119,6 +123,8 @@ export default function Swap({
       <FormattedMessage id="wrap" defaultMessage="Wrap" />
     ) : execType === "unwrap" ? (
       <FormattedMessage id="Unwrap" defaultMessage="Unwrap" />
+    ) : execType === "switch" ? (
+      <FormattedMessage id="switch.network" defaultMessage="Switch Network" />
     ) : execType === "approve" ? (
       <FormattedMessage id="approve" defaultMessage="Approve" />
     ) : (
@@ -172,7 +178,7 @@ export default function Swap({
         </Stack>
       </Box>
 
-      {isQuoting ? (
+      {isQuoting && !disabled ? (
         <LinearProgress color="primary" sx={{ height: "1px" }} />
       ) : (
         <Divider />
@@ -188,16 +194,17 @@ export default function Swap({
               value={sellAmount}
               balance={sellTokenBalance}
               showBalance={isActive}
+              disabled={isQuoting && quoteFor === "buy"}
             />
             <Stack alignItems="center">
               <Box
                 sx={{
-                  marginTop: (theme) => -2.5,
-                  marginBottom: (theme) => -2.5,
+                  marginTop: (theme) => -2,
+                  marginBottom: (theme) => -2,
                 }}
               >
                 <SwapSwitchTokensButton
-                  ButtonBaseProps={{ onClick: onSwapTokens }}
+                  IconButtonProps={{ onClick: onSwapTokens }}
                 />
               </Box>
             </Stack>
@@ -209,16 +216,17 @@ export default function Swap({
               value={buyAmount}
               balance={buyTokenBalance}
               showBalance={isActive}
+              disabled={isQuoting && quoteFor === "sell"}
             />
           </Stack>
-          {execType === "swap" && quote && (
+          {quote && (
             <SwapFeeSummary
               quote={quote}
               chainId={chainId}
               currency={currency}
             />
           )}
-          {insufficientBalance && (
+          {insufficientBalance && isActive && (
             <Alert severity="error">
               <FormattedMessage
                 id="insufficient.symbol.balance"
@@ -249,7 +257,8 @@ export default function Swap({
               disabled={
                 isExecuting ||
                 (!quote && execType === "swap") ||
-                insufficientBalance
+                insufficientBalance ||
+                disabled
               }
               startIcon={
                 isExecuting ? (

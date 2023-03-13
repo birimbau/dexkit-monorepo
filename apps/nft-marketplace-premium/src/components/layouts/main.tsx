@@ -131,12 +131,15 @@ const MainLayout: React.FC<Props> = ({
   useEffect(() => {
     if (typeof window !== 'undefined') {
       // connector.activate();
-
       const handleNetworkChange = (newNetwork: any, oldNetwork: any) => {
+        if (connector && connector.connectEagerly) {
+          connector.connectEagerly();
+        }
+
         // When a Provider makes its initial connection, it emits a "network"
         // event with a null oldNetwork along with the newNetwork. So, if the
         // oldNetwork exists, it represents a changing network
-        window.location.reload();
+        //window.location.reload();
       };
 
       connector?.provider?.on('chainChanged', handleNetworkChange);
@@ -148,12 +151,10 @@ const MainLayout: React.FC<Props> = ({
         );
       };
     }
-  }, []);
+  }, [connector]);
 
   useEffect(() => {
     if (typeof window !== 'undefined' && connector) {
-      console.log('mudou é chamado?', connector);
-
       if (connector.connectEagerly) {
         connector.connectEagerly();
       }
