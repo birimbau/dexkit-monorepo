@@ -649,7 +649,7 @@ export function useSwapState({
           await execMutation.mutateAsync(
             {
               quote: data,
-              provider: provider as providers.Web3Provider,
+              provider: connectorProvider as providers.Web3Provider,
               onHash: (hash: string) => {},
             },
             {
@@ -678,7 +678,7 @@ export function useSwapState({
     } else if (execType === "wrap") {
       await wrapMutation.mutateAsync(
         {
-          provider: provider as providers.Web3Provider,
+          provider: connectorProvider as providers.Web3Provider,
           amount: lazySellAmount,
           onHash: (hash: string) => {},
         },
@@ -693,7 +693,7 @@ export function useSwapState({
         await approveMutation.mutateAsync(
           {
             spender: data.allowanceTarget,
-            provider: provider as providers.Web3Provider,
+            provider: connectorProvider as providers.Web3Provider,
             tokenAddress: data.sellTokenAddress,
             amount: ethers.constants.MaxUint256,
           },
@@ -705,7 +705,7 @@ export function useSwapState({
     } else if (execType === "unwrap") {
       await unwrapMutation.mutateAsync(
         {
-          provider: provider as providers.Web3Provider,
+          provider: connectorProvider as providers.Web3Provider,
           amount: lazySellAmount,
           onHash: (hash: string) => {},
         },
@@ -718,7 +718,14 @@ export function useSwapState({
     } else if (execType === "switch" && connector && chainId) {
       switchNetwork(connector, chainId);
     }
-  }, [quoteQuery.data, execType, lazySellAmount, provider, chainId, connector]);
+  }, [
+    quoteQuery.data,
+    execType,
+    lazySellAmount,
+    chainId,
+    connector,
+    connectorProvider,
+  ]);
 
   useEffect(() => {
     (async () => {
