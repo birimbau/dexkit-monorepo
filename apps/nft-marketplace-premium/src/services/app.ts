@@ -51,6 +51,12 @@ export async function getAppConfig(site?: string): Promise<AppConfig> {
   if (site?.endsWith('dex-kit.vercel.app')) {
     return Promise.resolve(appConfigJson as AppConfig);
   }
+
+  //@ts-ignore
+  if (site?.endsWith('.vercel.app')) {
+    return Promise.resolve(appConfigJson as AppConfig);
+  }
+
   const configResponse = (await getConfig({ domain: site })).data;
   if (configResponse) {
     return JSON.parse(configResponse.config) as AppConfig;
