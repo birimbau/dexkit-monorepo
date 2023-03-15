@@ -22,13 +22,6 @@ export function CurrencyField({
     triggerChange: false,
   });
 
-  const handleChange = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
-      setIntervalValue({ value: e.target.value, triggerChange: true });
-    },
-    [decimals]
-  );
-
   useDebounceCallback<BigNumber>(
     value,
     (value) => {
@@ -49,12 +42,18 @@ export function CurrencyField({
     500
   );
 
+  const handleChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+    setIntervalValue({ value: e.target.value, triggerChange: true });
+  }, []);
+
   useDebounceCallback<{ value: string; triggerChange: boolean }>(
     internalValue,
     (value) => {
-      if (value.triggerChange) {
-        onChange(ethers.utils.parseUnits(value.value, decimals));
-      }
+      try {
+        if (internalValue.triggerChange && decimals) {
+          onChange(ethers.utils.parseUnits(internalValue.value, decimals));
+        }
+      } catch (err) {}
     },
     500
   );

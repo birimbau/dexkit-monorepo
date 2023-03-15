@@ -22,7 +22,7 @@ function SwapTokenButton({ token, ButtonBaseProps }: SwapTokenButtonProps) {
       sx={(theme) => ({
         borderRadius: theme.shape.borderRadius / 2,
         p: 1,
-        background: theme.palette.grey[400],
+        border: `1px solid ${theme.palette.divider}`,
       })}
     >
       {token ? (

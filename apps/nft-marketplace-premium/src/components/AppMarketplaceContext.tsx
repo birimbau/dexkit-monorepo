@@ -4,7 +4,11 @@ import { useAtomValue } from 'jotai';
 import { DefaultSeo } from 'next-seo';
 import { useMemo } from 'react';
 import { useAppConfig } from 'src/hooks/app';
-import { localeAtom, pendingTransactionsAtom } from 'src/state/atoms';
+import {
+  localeAtom,
+  pendingTransactionsAtom,
+  selectedWalletAtom,
+} from 'src/state/atoms';
 import { getTheme } from 'src/theme';
 
 import defaultAppConfig from '../../config/app.json';
@@ -97,6 +101,10 @@ export function AppMarketplaceContext({
       locale={locale}
       defaultLocale={appConfig.locale}
       theme={theme}
+      selectedWalletAtom={selectedWalletAtom}
+      options={{
+        magicRedirectUrl: process.env.NEXT_PUBLIC_MAGIC_REDIRECT_URL || '',
+      }}
     >
       <DefaultSeo {...SEO} />
       {children}

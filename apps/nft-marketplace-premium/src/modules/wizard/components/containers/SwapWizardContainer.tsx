@@ -134,6 +134,7 @@ export default function SwapWizardContainer({
                 : {},
               defaultChainId: swapFormData?.defaultChainId,
               featuredTokens: featuredTokens,
+              currency: 'usd',
             }}
             disableWallet={true}
             onShowTransactions={() => {}}

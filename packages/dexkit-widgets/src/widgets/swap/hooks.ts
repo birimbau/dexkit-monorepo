@@ -34,12 +34,7 @@ import {
 import { ZeroExQuote, ZeroExQuoteResponse } from "../../services/zeroex/types";
 import { Token } from "../../types";
 import { isAddressEqual, switchNetwork } from "../../utils";
-import {
-  ExecType,
-  NotificationCallbackParams,
-  SwapSide,
-  SwapState,
-} from "./types";
+import { ExecType, NotificationCallbackParams, SwapSide } from "./types";
 
 export function useErc20ApproveMutation(
   options?: Omit<UseMutationOptions, any>
@@ -95,7 +90,10 @@ export interface UseQuoteSwap {
   setIntentOnFilling: React.Dispatch<React.SetStateAction<boolean>>;
   params: SwapQuoteParams | undefined;
   setEnabled: React.Dispatch<boolean>;
-  quoteQuery: UseQueryResult<ZeroExQuoteResponse | null | undefined, unknown>;
+  quoteQuery: UseQueryResult<
+    [string, ZeroExQuoteResponse | null] | undefined,
+    unknown
+  >;
 }
 
 export const SWAP_QUOTE = "SWAP_QUOTE";
@@ -105,7 +103,7 @@ export function useSwapQuote({
   maxSlippage,
   zeroExApiKey,
 }: {
-  onSuccess: (data: ZeroExQuoteResponse | null | undefined) => void;
+  onSuccess: (data?: [string, ZeroExQuoteResponse | null]) => void;
   maxSlippage?: number;
   zeroExApiKey?: string;
 }): UseQuoteSwap {
@@ -164,16 +162,20 @@ export function useSwapQuote({
 
         if (quoteFor === "buy" && buyTokenAmount?.gt(0)) {
           quoteParam.buyAmount = buyTokenAmount?.toString();
-          return await client.quote(quoteParam, { signal });
+          return [quoteFor, await client.quote(quoteParam, { signal })];
         } else if (quoteFor === "sell" && sellTokenAmount?.gt(0)) {
           quoteParam.sellAmount = sellTokenAmount?.toString();
-          return await client.quote(quoteParam, { signal });
+          return [quoteFor, await client.quote(quoteParam, { signal })];
         }
       }
 
       return null;
     },
-    { enabled: Boolean(params) && enabled, refetchInterval: 10000, onSuccess }
+    {
+      enabled: Boolean(params) && enabled,
+      refetchInterval: 10000,
+      onSuccess,
+    }
   );
 
   return {
@@ -235,7 +237,6 @@ export function useSwapExec({
 
       return await tx.wait();
     } catch (err) {
-      console.log("chega aqui");
       throw err;
     }
   });
@@ -248,6 +249,7 @@ export function useSwapState({
   defaultSellToken,
   defaultBuyToken,
   connector,
+  connectorProvider,
   account,
   isActive,
   isActivating,
@@ -282,6 +284,7 @@ export function useSwapState({
   disableFooter?: boolean;
   enableBuyCryptoButton?: boolean;
   provider?: ethers.providers.BaseProvider;
+  connectorProvider?: ethers.providers.Web3Provider;
   connector?: Connector;
   isActive?: boolean;
   isActivating?: boolean;
@@ -295,7 +298,7 @@ export function useSwapState({
   onShowTransactions: () => void;
   maxSlippage: number;
   isAutoSlippage: boolean;
-}): SwapState {
+}) {
   const transak = useMemo(() => {
     if (transakApiKey) {
       return new transakSDK({
@@ -308,9 +311,7 @@ export function useSwapState({
 
   useEffect(() => {
     if (transak) {
-      let allEventsCallback = transak.on(transak.ALL_EVENTS, (data: any) => {
-        console.log(data);
-      });
+      let allEventsCallback = transak.on(transak.ALL_EVENTS, (data: any) => {});
 
       // This will trigger when the user closed the widget
       let widgetCloseCallback = transak.on(
@@ -324,7 +325,6 @@ export function useSwapState({
       let orderSuccessFulCallback = transak.on(
         transak.EVENTS.TRANSAK_ORDER_SUCCESSFUL,
         (orderData: any) => {
-          console.log(orderData);
           transak.close();
         }
       );
@@ -360,11 +360,11 @@ export function useSwapState({
 
   const [showSettings, setShowSettings] = useState(false);
 
+  const lazySellToken = useDebounce<Token | undefined>(sellToken, 500);
+  const lazyBuyToken = useDebounce<Token | undefined>(buyToken, 500);
   const lazySellAmount = useDebounce<BigNumber>(sellAmount, 500);
   const lazyBuyAmount = useDebounce<BigNumber>(buyAmount, 500);
   const lazyQuoteFor = useDebounce<SwapSide>(quoteFor, 500);
-  const lazySellToken = useDebounce<Token | undefined>(sellToken, 500);
-  const lazyBuyToken = useDebounce<Token | undefined>(buyToken, 500);
 
   const [showConfirmSwap, setShowConfirmSwap] = useState(false);
 
@@ -380,23 +380,22 @@ export function useSwapState({
     contractAddress: lazyBuyToken?.contractAddress,
   });
 
-  const handleQuoteSuccess = (data?: ZeroExQuoteResponse | null) => {
-    if (data) {
-      if (lazyQuoteFor === "buy") {
-        setSellAmount(BigNumber.from(data.sellAmount));
-      } else {
-        setBuyAmount(BigNumber.from(data.buyAmount));
+  const handleQuoteSuccess = useCallback(
+    (data?: [string, ZeroExQuoteResponse | null]) => {
+      if (data) {
+        const [quotedFor, quote] = data;
+
+        if (quotedFor === "buy" && quote) {
+          setSellAmount(BigNumber.from(quote?.sellAmount));
+        } else if (quotedFor === "sell" && quote) {
+          setBuyAmount(BigNumber.from(quote?.buyAmount));
+        }
+
+        setQuoteFor(undefined);
       }
-    }
-  };
-
-  const handleCloseSettings = () => {
-    setShowSettings(false);
-  };
-
-  const handleShowSettings = () => {
-    setShowSettings(true);
-  };
+    },
+    [quoteFor]
+  );
 
   const quote = useSwapQuote({
     onSuccess: handleQuoteSuccess,
@@ -406,19 +405,34 @@ export function useSwapState({
 
   const { quoteQuery } = quote;
 
-  const handleSwapTokens = () => {
+  const handleCloseSettings = () => {
+    setShowSettings(false);
+  };
+
+  const handleShowSettings = () => {
+    setShowSettings(true);
+  };
+
+  const handleSwapTokens = useCallback(() => {
     const sell = sellToken;
     const buy = buyToken;
 
-    const tempSellAmount = sellAmount;
-    const tempBuyAmount = buyAmount;
+    const sellValue = sellAmount;
+    const buyValue = buyAmount;
 
-    setBuyToken(sell);
-    setBuyAmount(tempSellAmount);
+    if (quote.params?.quoteFor === "buy") {
+      setSellAmount(buyValue);
+      setBuyAmount(BigNumber.from(0));
+      setQuoteFor("sell");
+    } else if (quote.params?.quoteFor === "sell") {
+      setBuyAmount(sellValue);
+      setSellAmount(BigNumber.from(0));
+      setQuoteFor("buy");
+    }
 
     setSellToken(buy);
-    setSellAmount(tempBuyAmount);
-  };
+    setBuyToken(sell);
+  }, [sellToken, buyToken, sellAmount, buyAmount, quote.params?.quoteFor]);
 
   const handleOpenSelectToken = (selectFor: SwapSide, token?: Token) => {
     setSelectSide(selectFor);
@@ -439,7 +453,6 @@ export function useSwapState({
       } else {
         setSellToken(token);
       }
-      setQuoteFor("buy");
     } else {
       if (
         token.chainId === sellToken?.chainId &&
@@ -449,7 +462,6 @@ export function useSwapState({
       } else {
         setBuyToken(token);
       }
-      setQuoteFor("sell");
     }
 
     setSelectSide(undefined);
@@ -462,8 +474,9 @@ export function useSwapState({
 
   const handleChangeBuyAmount = useCallback(
     (value: BigNumber) => {
+      setQuoteFor("buy");
+
       if (buyToken) {
-        setQuoteFor("buy");
         setBuyAmount(value);
       }
     },
@@ -472,8 +485,8 @@ export function useSwapState({
 
   const handleChangeSellAmount = useCallback(
     (value: BigNumber) => {
+      setQuoteFor("sell");
       if (sellToken) {
-        setQuoteFor("sell");
         setSellAmount(value);
       }
     },
@@ -498,21 +511,6 @@ export function useSwapState({
     quote.setIntentOnFilling(false);
   };
 
-  const handleChangeNetwork = async (newChainId: ChainId) => {
-    if (chainId !== newChainId) {
-      setSellAmount(BigNumber.from(0));
-      setBuyAmount(BigNumber.from(0));
-      setSellToken(undefined);
-      setBuyToken(undefined);
-    }
-
-    if (isActive && connector) {
-      switchNetwork(connector, newChainId);
-    } else {
-      onChangeNetwork(newChainId);
-    }
-  };
-
   const chainId = useAsyncMemo<ChainId | undefined>(
     async (initial) => {
       if (provider) {
@@ -522,6 +520,16 @@ export function useSwapState({
     undefined,
     [provider]
   );
+
+  const handleChangeNetwork = async (newChainId: ChainId) => {
+    onChangeNetwork(newChainId);
+    setQuoteFor(undefined);
+    setSellAmount(BigNumber.from(0));
+    setBuyAmount(BigNumber.from(0));
+    setSellToken(undefined);
+    setBuyToken(undefined);
+    quote.setParams(undefined);
+  };
 
   const isProviderReady = useAsyncMemo<boolean>(
     async (initial) => {
@@ -560,18 +568,31 @@ export function useSwapState({
       if (lazyBuyToken && lazySellToken && quoteQuery.data) {
         if (!isBuyTokenWrapped && !isSellTokenWrapped) {
           if (account) {
-            const sufficientAllowance = await hasSufficientAllowance({
-              spender: quoteQuery.data.allowanceTarget,
-              tokenAddress: quoteQuery.data.sellTokenAddress,
-              amount: BigNumber.from(quoteQuery.data.sellAmount),
-              provider,
-              account,
-            });
-            if (!sufficientAllowance) {
-              return "approve";
+            const [, data] = quoteQuery.data;
+            if (data) {
+              const sufficientAllowance = await hasSufficientAllowance({
+                spender: data.allowanceTarget,
+                tokenAddress: data.sellTokenAddress,
+                amount: BigNumber.from(data.sellAmount),
+                provider,
+                account,
+              });
+
+              if (!sufficientAllowance) {
+                return "approve";
+              }
             }
           }
         }
+
+        const connectorChainId = (await connectorProvider?.getNetwork())
+          ?.chainId;
+
+        if (connectorChainId && chainId && chainId !== connectorChainId) {
+          return "switch";
+        }
+
+        return "swap";
       }
 
       result =
@@ -593,6 +614,7 @@ export function useSwapState({
     },
     "quote",
     [
+      connectorProvider,
       lazyBuyToken,
       lazySellToken,
       quoteQuery.data,
@@ -622,17 +644,20 @@ export function useSwapState({
       handleCloseConfirmSwap();
 
       try {
-        await execMutation.mutateAsync(
-          {
-            quote: quoteQuery.data,
-            provider: provider as providers.Web3Provider,
-            onHash: (hash: string) => {},
-          },
-          {
-            onSuccess: (receipt: ethers.providers.TransactionReceipt) => {},
-            onError,
-          }
-        );
+        const [, data] = quoteQuery.data;
+        if (data) {
+          await execMutation.mutateAsync(
+            {
+              quote: data,
+              provider: connectorProvider as providers.Web3Provider,
+              onHash: (hash: string) => {},
+            },
+            {
+              onSuccess: (receipt: ethers.providers.TransactionReceipt) => {},
+              onError,
+            }
+          );
+        }
       } catch (err: unknown) {}
     }
   };
@@ -653,7 +678,7 @@ export function useSwapState({
     } else if (execType === "wrap") {
       await wrapMutation.mutateAsync(
         {
-          provider: provider as providers.Web3Provider,
+          provider: connectorProvider as providers.Web3Provider,
           amount: lazySellAmount,
           onHash: (hash: string) => {},
         },
@@ -662,21 +687,25 @@ export function useSwapState({
         }
       );
     } else if (execType === "approve" && quoteQuery.data) {
-      await approveMutation.mutateAsync(
-        {
-          spender: quoteQuery.data.allowanceTarget,
-          provider: provider as providers.Web3Provider,
-          tokenAddress: quoteQuery.data.sellTokenAddress,
-          amount: ethers.constants.MaxUint256,
-        },
-        {
-          onSuccess: () => {},
-        }
-      );
+      const [, data] = quoteQuery.data;
+
+      if (data) {
+        await approveMutation.mutateAsync(
+          {
+            spender: data.allowanceTarget,
+            provider: connectorProvider as providers.Web3Provider,
+            tokenAddress: data.sellTokenAddress,
+            amount: ethers.constants.MaxUint256,
+          },
+          {
+            onSuccess: () => {},
+          }
+        );
+      }
     } else if (execType === "unwrap") {
       await unwrapMutation.mutateAsync(
         {
-          provider: provider as providers.Web3Provider,
+          provider: connectorProvider as providers.Web3Provider,
           amount: lazySellAmount,
           onHash: (hash: string) => {},
         },
@@ -686,8 +715,17 @@ export function useSwapState({
           },
         }
       );
+    } else if (execType === "switch" && connector && chainId) {
+      switchNetwork(connector, chainId);
     }
-  }, [quoteQuery.data, execType, lazySellAmount, provider]);
+  }, [
+    quoteQuery.data,
+    execType,
+    lazySellAmount,
+    chainId,
+    connector,
+    connectorProvider,
+  ]);
 
   useEffect(() => {
     (async () => {
@@ -714,10 +752,10 @@ export function useSwapState({
             account,
           });
         }
-        setQuoteFor(undefined);
       }
     })();
   }, [
+    quote,
     lazyQuoteFor,
     lazySellAmount,
     lazyBuyAmount,
@@ -728,6 +766,14 @@ export function useSwapState({
     provider,
   ]);
 
+  const quoteData = useMemo(() => {
+    if (quoteQuery.data) {
+      const [, data] = quoteQuery.data;
+
+      return data;
+    }
+  }, [quoteQuery.data]);
+
   return {
     chainId,
     buyToken: lazyBuyToken,
@@ -737,8 +783,8 @@ export function useSwapState({
     execType,
     sellAmount: lazySellAmount,
     buyAmount: lazyBuyAmount,
-    quoteFor: lazyQuoteFor,
-    insufficientBalance: lazySellAmount.gt(
+    quoteFor: quote.params?.quoteFor,
+    insufficientBalance: lazySellAmount?.gt(
       sellTokenBalance.data ?? BigNumber.from(0)
     ),
     isExecuting:
@@ -746,7 +792,7 @@ export function useSwapState({
       unwrapMutation.isLoading ||
       execMutation.isLoading ||
       approveMutation.isLoading,
-    quote: quoteQuery.data,
+    quote: quoteData,
     isQuoting: quoteQuery.isFetching,
     sellTokenBalance: sellTokenBalance.data,
     buyTokenBalance: buyTokenBalance.data,
@@ -779,19 +825,16 @@ export function useSwapState({
 }
 
 export function useSwapProvider({
-  provider,
   defaultChainId,
-  disableWallet,
 }: {
-  provider?: ethers.providers.BaseProvider | ethers.providers.Web3Provider;
-  defaultChainId: ChainId;
+  defaultChainId?: ChainId;
   disableWallet?: boolean;
 }) {
-  if (!provider || disableWallet) {
-    return new ethers.providers.JsonRpcProvider(
-      NETWORKS[defaultChainId].providerRpcUrl
-    );
-  }
-
-  return provider;
+  return useMemo(() => {
+    if (defaultChainId) {
+      return new ethers.providers.JsonRpcProvider(
+        NETWORKS[defaultChainId].providerRpcUrl
+      );
+    }
+  }, [defaultChainId]);
 }

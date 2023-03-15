@@ -9,7 +9,13 @@ export type Empty = {
 };
 
 export type SwapSide = "sell" | "buy";
-export type ExecType = "swap" | "wrap" | "unwrap" | "approve" | "quote";
+export type ExecType =
+  | "swap"
+  | "wrap"
+  | "unwrap"
+  | "approve"
+  | "quote"
+  | "switch";
 
 export type SwapState = {
   chainId?: ChainId;
@@ -73,7 +79,7 @@ export type RenderOptions = {
   zeroExApiKey?: string;
   defaultChainId?: ChainId;
   transakApiKey?: string;
-  currency?: string;
+  currency: string;
 };
 
 export type NotificationCallbackParams = {
