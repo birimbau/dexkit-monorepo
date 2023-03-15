@@ -1,17 +1,18 @@
+import { useMutation, UseMutationOptions } from '@tanstack/react-query';
 import { useWeb3React } from '@web3-react/core';
 import { useAtomValue } from 'jotai';
 import { useUpdateAtom } from 'jotai/utils';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useMutation, UseMutationOptions } from '@tanstack/react-query';
 import {
   switchNetworkChainIdAtom,
   switchNetworkOpenAtom,
-  tokensAtom
+  tokensAtom,
 } from '../state/atoms';
 import {
   getNativeCurrencyImage,
-  getNativeCurrencySymbol, getProviderByChainId,
-  switchNetwork
+  getNativeCurrencySymbol,
+  getProviderByChainId,
+  switchNetwork,
 } from '../utils/blockchain';
 
 import { ZEROEX_NATIVE_TOKEN_ADDRESS } from '../constants';
@@ -64,7 +65,9 @@ export function useSwitchNetworkMutation() {
 
   return useMutation<unknown, Error, { chainId: number }>(
     async ({ chainId }) => {
-      return switchNetwork(connector, chainId);
+      if (connector) {
+        return switchNetwork(connector, chainId);
+      }
     }
   );
 }
@@ -110,7 +113,7 @@ export function useTokenList({
     const isNoWrappedTokenInList =
       tokenList &&
       tokenList.findIndex((t) => t.address.toLowerCase() === wrappedAddress) ===
-      -1;
+        -1;
     // Wrapped Token is not on the list, we will add it here
     if (wrappedAddress && isNoWrappedTokenInList) {
       tokenList = [
@@ -156,4 +159,3 @@ export function useTokenData(options?: Omit<UseMutationOptions, any>) {
 export function useNetworkProvider(chainId?: ChainId) {
   return getProviderByChainId(chainId);
 }
-
