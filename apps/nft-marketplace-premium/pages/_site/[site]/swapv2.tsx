@@ -1,58 +1,19 @@
-import { ChainId } from '@dexkit/core';
 import { SwapWidget } from '@dexkit/widgets';
 import { NoSsr } from '@mui/material';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
-import { useAtom } from 'jotai';
-import { useUpdateAtom } from 'jotai/utils';
 import type { GetStaticProps, GetStaticPropsContext, NextPage } from 'next';
 import { NextSeo } from 'next-seo';
 import { FormattedMessage, useIntl } from 'react-intl';
 import MainLayout from 'src/components/layouts/main';
 import { PageHeader } from 'src/components/PageHeader';
-import { useConnectWalletDialog, useTransactions } from 'src/hooks/app';
+import { useSwapState } from 'src/hooks/swap';
 import { getAppConfig } from 'src/services/app';
-import {
-  isAutoSlippageAtom,
-  maxSlippageAtom,
-  showAppTransactionsAtom,
-} from 'src/state/atoms';
 
 const WidgetComponent = () => {
-  const { setOpen } = useConnectWalletDialog();
+  const swapState = useSwapState();
 
-  const [maxSlippage, setMaxSlippage] = useAtom(maxSlippageAtom);
-  const [isAutoSlippage, setIsAutoSlippage] = useAtom(isAutoSlippageAtom);
-
-  const { addTransaction } = useTransactions();
-
-  const setShowAppTransactions = useUpdateAtom(showAppTransactionsAtom);
-
-  return (
-    <SwapWidget
-      renderOptions={{
-        disableFooter: true,
-        disableNotificationsButton: true,
-        configsByChain: {},
-        currency: 'usd',
-        defaultChainId: ChainId.Polygon,
-        transakApiKey:
-          process.env.NEXT_PUBLIC_TRANSAK_API_KEY ||
-          `4cf44cc4-69d7-4f4d-8237-05cc9076aa41`,
-      }}
-      onConnectWallet={() => {
-        setOpen(true);
-      }}
-      onNotification={({ title, hash, chainId }) => {}}
-      onShowTransactions={() => {
-        setShowAppTransactions(true);
-      }}
-      isAutoSlippage={isAutoSlippage}
-      maxSlippage={maxSlippage}
-      onAutoSlippage={(value: boolean) => setIsAutoSlippage(value)}
-      onChangeSlippage={(value: number) => setMaxSlippage(value)}
-    />
-  );
+  return <SwapWidget {...swapState} />;
 };
 
 const SwapV2Page: NextPage = () => {

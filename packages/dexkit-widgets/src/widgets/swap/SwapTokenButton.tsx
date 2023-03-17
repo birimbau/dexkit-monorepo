@@ -2,6 +2,7 @@ import {
   Avatar,
   ButtonBase,
   ButtonBaseProps,
+  lighten,
   Stack,
   Typography,
 } from "@mui/material";
@@ -22,7 +23,11 @@ function SwapTokenButton({ token, ButtonBaseProps }: SwapTokenButtonProps) {
       sx={(theme) => ({
         borderRadius: theme.shape.borderRadius / 2,
         p: 1,
-        border: `1px solid ${theme.palette.divider}`,
+        border: `1px solid ${
+          theme.palette.mode === "dark"
+            ? lighten(theme.palette.divider, 0.2)
+            : theme.palette.divider
+        }`,
       })}
     >
       {token ? (
@@ -33,9 +38,9 @@ function SwapTokenButton({ token, ButtonBaseProps }: SwapTokenButtonProps) {
               width: theme.spacing(4),
             })}
             src={
-              token?.contractAddress
-                ? TOKEN_ICON_URL(token?.contractAddress, token.chainId)
-                : token?.logoURI
+              token.logoURI
+                ? token.logoURI
+                : TOKEN_ICON_URL(token.contractAddress, token.chainId)
             }
           />
 
