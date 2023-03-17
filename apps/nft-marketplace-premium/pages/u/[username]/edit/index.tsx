@@ -1,18 +1,18 @@
-import { UserContainer } from '@/modules/user/componentes/containers/UserContainer';
+import { UserEditContainer } from '@/modules/user/componentes/containers/UserEditContainer';
 import { GET_USER_BY_USERNAME_QUERY } from '@/modules/user/hooks';
 import { getUserByUsername } from '@/modules/user/services';
 import Box from '@mui/material/Box';
 import { dehydrate, QueryClient } from '@tanstack/react-query';
 import { GetStaticProps, GetStaticPropsContext, NextPage } from 'next';
-import MainLayout from 'src/components/layouts/main';
+import AuthMainLayout from 'src/components/layouts/authMain';
 
-const User: NextPage<{ username: string }> = ({ username }) => {
+const UserEdit: NextPage<{ username: string }> = ({ username }) => {
   return (
-    <MainLayout disablePadding>
+    <AuthMainLayout disablePadding>
       <Box py={4}>
-        <UserContainer username={username} />
+        <UserEditContainer username={username} />
       </Box>
-    </MainLayout>
+    </AuthMainLayout>
   );
 };
 
@@ -47,4 +47,4 @@ export async function getStaticPaths() {
   };
 }
 
-export default User;
+export default UserEdit;

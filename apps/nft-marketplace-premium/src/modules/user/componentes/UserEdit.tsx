@@ -17,10 +17,12 @@ import {
   styled,
   Typography,
   useMediaQuery,
+  useTheme,
 } from '@mui/material';
 import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { PageHeader } from 'src/components/PageHeader';
+import UserGeneralForm from './forms/UserGeneralForm';
 
 interface Props {
   username?: string;
@@ -145,11 +147,20 @@ export function UserEdit(props: Props) {
                   {
                     caption: (
                       <FormattedMessage
+                        id="user.name.variable"
+                        defaultMessage="User: "
+                      />
+                    ),
+                    uri: '/user/profile',
+                  },
+                  {
+                    caption: (
+                      <FormattedMessage
                         id="user.edit"
                         defaultMessage="User Edit"
                       />
                     ),
-                    uri: '/user/edit',
+                    uri: '/user/profile/edit',
                   },
                 ]}
               />
@@ -160,10 +171,7 @@ export function UserEdit(props: Props) {
             <Stack direction={'row'} justifyContent={'space-between'}>
               {!isMobile && (
                 <Typography variant="h5">
-                  <FormattedMessage
-                    id="edit.marketplace"
-                    defaultMessage="Edit Marketplace"
-                  />
+                  <FormattedMessage id="user.edit" defaultMessage="User Edit" />
                 </Typography>
               )}
 
@@ -183,7 +191,7 @@ export function UserEdit(props: Props) {
           </Grid>
           <Grid item xs={12} sm={10}>
             <Stack spacing={2}>
-              {activeMenu === ActiveMenu.General && <></>}
+              {activeMenu === ActiveMenu.General && <UserGeneralForm />}
             </Stack>
           </Grid>
         </Grid>

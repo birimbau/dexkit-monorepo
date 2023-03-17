@@ -4,7 +4,8 @@ import Typography from '@mui/material/Typography';
 
 import Box from '@mui/material/Box';
 
-import { useTheme } from '@mui/material';
+import TwitterIcon from '@mui/icons-material/Twitter';
+import { IconButton, Stack, useTheme } from '@mui/material';
 import Image from 'next/image';
 
 interface Props {
@@ -15,10 +16,12 @@ interface Props {
   bio?: string;
   shortBio?: string;
   createdBy?: string;
+  twitterUsername?: string;
 }
 
 export function UserHeader(props: Props) {
-  const { profileImageURL, backgroundImageURL, bio, shortBio, name } = props;
+  const { profileImageURL, backgroundImageURL, bio, shortBio, username } =
+    props;
   const theme = useTheme();
   return (
     <Grid container spacing={2}>
@@ -70,7 +73,7 @@ export function UserHeader(props: Props) {
           variant="h5"
           component="h1"
         >
-          {name}
+          {username}
         </Typography>
       </Grid>
       {shortBio && (
@@ -89,8 +92,9 @@ export function UserHeader(props: Props) {
           </Typography>
         </Grid>
       )}
-      {bio && (
-        <Grid item xs={12}>
+
+      <Grid item xs={12}>
+        <Stack direction="row" justifyContent="space-between">
           <Typography
             sx={{
               display: 'block',
@@ -101,10 +105,24 @@ export function UserHeader(props: Props) {
             variant="caption"
             component="p"
           >
-            {bio}
+            {bio || ''}
           </Typography>
-        </Grid>
-      )}
+          <Box>
+            <IconButton aria-label="twitter">
+              <TwitterIcon />
+            </IconButton>
+            <IconButton aria-label="discord">
+              <Image
+                priority
+                src="/assets/icons/discord.svg"
+                height={24}
+                width={24}
+                alt="Discord"
+              />
+            </IconButton>
+          </Box>
+        </Stack>
+      </Grid>
     </Grid>
   );
 }
