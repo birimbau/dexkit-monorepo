@@ -1,10 +1,8 @@
-import { Box, NoSsr, useTheme } from '@mui/material';
+import { Box, NoSsr } from '@mui/material';
 import { useWeb3React } from '@web3-react/core';
-import React, { useEffect, useMemo } from 'react';
-import { Footer } from '../Footer';
-import Navbar from '../Navbar';
-import dynamic from 'next/dynamic';
 import { useAtom } from 'jotai';
+import dynamic from 'next/dynamic';
+import React, { useEffect, useMemo } from 'react';
 import {
   useAppConfig,
   useConnectWalletDialog,
@@ -18,6 +16,8 @@ import {
   switchNetworkChainIdAtom,
   switchNetworkOpenAtom,
 } from '../../state/atoms';
+import { Footer } from '../Footer';
+import Navbar from '../Navbar';
 const SignMessageDialog = dynamic(() => import('../dialogs/SignMessageDialog'));
 const SwitchNetworkDialog = dynamic(
   () => import('../dialogs/SwitchNetworkDialog')
@@ -25,8 +25,8 @@ const SwitchNetworkDialog = dynamic(
 const TransactionDialog = dynamic(() => import('../dialogs/TransactionDialog'));
 
 import { useRouter } from 'next/router';
-import AppDrawer from '../AppDrawer';
 import { AppConfig } from 'src/types/config';
+import AppDrawer from '../AppDrawer';
 const ConnectWalletDialog = dynamic(
   () => import('../dialogs/ConnectWalletDialog')
 );
@@ -144,62 +144,74 @@ const MainLayout: React.FC<Props> = ({
   const render = () => (
     <>
       <AppDrawer open={isDrawerOpen} onClose={handleCloseDrawer} />
-      <SelectCurrencyDialog
-        dialogProps={{
-          open: showSelectCurrency,
-          onClose: handleCloseCurrencySelect,
-          fullWidth: true,
-          maxWidth: 'xs',
-        }}
-      />
-      <SelectLanguageDialog
-        dialogProps={{
-          open: showSelectLocale,
-          onClose: handleCloseLocaleSelect,
-          fullWidth: true,
-          maxWidth: 'xs',
-        }}
-      />
-      <TransactionDialog
-        dialogProps={{
-          open: transactions.isOpen,
-          onClose: handleCloseTransactionDialog,
-          fullWidth: true,
-          maxWidth: 'xs',
-        }}
-        hash={transactions.hash}
-        metadata={transactions.metadata}
-        type={transactions.type}
-        error={transactions.error}
-      />
-      <SignMessageDialog
-        dialogProps={{
-          open: signMessageDialog.open,
-          onClose: handleCloseSignMessageDialog,
-          fullWidth: true,
-          maxWidth: 'xs',
-        }}
-        error={signMessageDialog.error}
-        success={signMessageDialog.isSuccess}
-        message={signMessageDialog.message}
-      />
-      <SwitchNetworkDialog
-        dialogProps={{
-          open: switchOpen,
-          onClose: handleCloseSwitchNetworkDialog,
-          fullWidth: true,
-          maxWidth: 'xs',
-        }}
-        chainId={switchChainId}
-      />
-      <ConnectWalletDialog
-        dialogProps={{
-          open: connectWalletDialog.isOpen,
-          onClose: handleCloseConnectWalletDialog,
-          fullWidth: true,
-          maxWidth: 'sm',
-        }}
-      />
+      {showSelectCurrency && (
+        <SelectCurrencyDialog
+          dialogProps={{
+            open: showSelectCurrency,
+            onClose: handleCloseCurrencySelect,
+            fullWidth: true,
+            maxWidth: 'xs',
+          }}
+        />
+      )}
+      {showSelectLocale && (
+        <SelectLanguageDialog
+          dialogProps={{
+            open: showSelectLocale,
+            onClose: handleCloseLocaleSelect,
+            fullWidth: true,
+            maxWidth: 'xs',
+          }}
+        />
+      )}
+      {transactions.isOpen && (
+        <TransactionDialog
+          dialogProps={{
+            open: transactions.isOpen,
+            onClose: handleCloseTransactionDialog,
+            fullWidth: true,
+            maxWidth: 'xs',
+          }}
+          hash={transactions.hash}
+          metadata={transactions.metadata}
+          type={transactions.type}
+          error={transactions.error}
+        />
+      )}
+      {signMessageDialog.open && (
+        <SignMessageDialog
+          dialogProps={{
+            open: signMessageDialog.open,
+            onClose: handleCloseSignMessageDialog,
+            fullWidth: true,
+            maxWidth: 'xs',
+          }}
+          error={signMessageDialog.error}
+          success={signMessageDialog.isSuccess}
+          message={signMessageDialog.message}
+        />
+      )}
+      {switchOpen && (
+        <SwitchNetworkDialog
+          dialogProps={{
+            open: switchOpen,
+            onClose: handleCloseSwitchNetworkDialog,
+            fullWidth: true,
+            maxWidth: 'xs',
+          }}
+          chainId={switchChainId}
+        />
+      )}
+      {connectWalletDialog.isOpen && (
+        <ConnectWalletDialog
+          dialogProps={{
+            open: connectWalletDialog.isOpen,
+            onClose: handleCloseConnectWalletDialog,
+            fullWidth: true,
+            maxWidth: 'sm',
+          }}
+        />
+      )}
       <Navbar appConfig={appConfig} isPreview={isPreview} />
       <Box
         sx={{ minHeight: isPreview ? undefined : '100vh' }}

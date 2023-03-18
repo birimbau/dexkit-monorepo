@@ -1,14 +1,14 @@
 import { CacheProvider, EmotionCache } from '@emotion/react';
 import { responsiveFontSizes } from '@mui/material/styles';
-import { AppProps } from 'next/app';
-import Head from 'next/head';
-import * as React from 'react';
 import {
   DehydratedState,
   Hydrate,
   QueryClient,
   QueryClientProvider,
 } from '@tanstack/react-query';
+import { AppProps } from 'next/app';
+import Head from 'next/head';
+import * as React from 'react';
 import createEmotionCache from '../src/createEmotionCache';
 import { getTheme } from '../src/theme';
 
@@ -21,6 +21,7 @@ import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { useRouter } from 'next/router';
 
 import { Backdrop, CircularProgress, createTheme } from '@mui/material';
+import { AssetAPI } from 'src/types/nft';
 import defaultAppConfig from '../config/app.json';
 import { AppMarketplaceContext } from '../src/components/AppMarketplaceContext';
 import { AppConfigContext } from '../src/contexts';
@@ -39,8 +40,9 @@ export default function MyApp(props: MyAppProps) {
 
   const [loading, setLoading] = React.useState(false);
 
-  const { appConfig } = pageProps as {
+  const { appConfig, appNFT } = pageProps as {
     appConfig: AppConfig;
+    appNFT: AssetAPI;
     dehydratedState: DehydratedState;
   };
 
@@ -163,7 +165,7 @@ export default function MyApp(props: MyAppProps) {
           <meta name="viewport" content="initial-scale=1, width=device-width" />
           <meta name="theme-color" content={theme?.palette.primary.main} />
         </Head>
-        <AppConfigContext.Provider value={config}>
+        <AppConfigContext.Provider value={{ appConfig: config, appNFT }}>
           <QueryClientProvider client={queryClient}>
             <Hydrate state={pageProps.dehydratedState}>
               <DefaultSeo {...SEO} />

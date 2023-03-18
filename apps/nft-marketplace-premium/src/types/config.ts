@@ -158,6 +158,7 @@ interface AppToken {
 export interface AppConfig {
   name: string;
   locale?: string;
+  hide_powered_by?: boolean;
   font?: {
     family: string;
     category?: string;
