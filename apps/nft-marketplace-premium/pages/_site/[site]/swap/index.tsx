@@ -3,19 +3,19 @@ import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
+import { QueryErrorResetBoundary } from '@tanstack/react-query';
 import type { GetStaticProps, GetStaticPropsContext, NextPage } from 'next';
 import { Suspense } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { QueryErrorResetBoundary } from '@tanstack/react-query';
 import MainLayout from '../../../../src/components/layouts/main';
 import Swap from '../../../../src/modules/swap/Swap';
 
+import SwapSkeleton from '@/modules/swap/Swap.skeleton';
 import { NextSeo } from 'next-seo';
 import { PageHeader } from '../../../../src/components/PageHeader';
-import { getAppConfig } from '../../../../src/services/app';
 import { ChainId } from '../../../../src/constants/enum';
-import SwapSkeleton from '@/modules/swap/Swap.skeleton';
+import { getAppConfig } from '../../../../src/services/app';
 
 const SwapPage: NextPage = () => {
   const { formatMessage } = useIntl();
@@ -100,10 +100,10 @@ type Params = {
 export const getStaticProps: GetStaticProps = async ({
   params,
 }: GetStaticPropsContext<Params>) => {
-  const appConfig = await getAppConfig(params?.site);
+  const { appConfig, appNFT } = await getAppConfig(params?.site);
 
   return {
-    props: { appConfig },
+    props: { appConfig, appNFT },
   };
 };
 

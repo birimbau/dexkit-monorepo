@@ -1,8 +1,8 @@
 import { Container, Grid } from '@mui/material';
+import { dehydrate, QueryClient } from '@tanstack/react-query';
 import type { GetStaticProps, GetStaticPropsContext, NextPage } from 'next';
 import { NextSeo } from 'next-seo';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { dehydrate, QueryClient } from '@tanstack/react-query';
 import MainLayout from '../../../src/components/layouts/main';
 import { PageHeader } from '../../../src/components/PageHeader';
 import CollectionFromConfigCard from '../../../src/modules/nft/components/CollectionFromConfig';
@@ -84,7 +84,7 @@ export const getStaticProps: GetStaticProps = async ({
 }: GetStaticPropsContext<Params>) => {
   const queryClient = new QueryClient();
 
-  const appConfig = await getAppConfig(params?.site);
+  const { appConfig, appNFT } = await getAppConfig(params?.site);
 
   /*  for (let collection of collectionListJson.collections) {
     const provider = getProviderByChainId(collection.chainId);
@@ -108,6 +108,7 @@ export const getStaticProps: GetStaticProps = async ({
     props: {
       dehydratedState: dehydrate(queryClient),
       appConfig,
+      appNFT,
     },
     revalidate: 300,
   };

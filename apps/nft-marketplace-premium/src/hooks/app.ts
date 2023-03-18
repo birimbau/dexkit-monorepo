@@ -134,7 +134,11 @@ export function useConnectWalletDialog() {
 // App config context is passed on _app.tsx, in each page we need to pass
 // app config in static props to context be initialized
 export function useAppConfig() {
-  return useContext(AppConfigContext);
+  return useContext(AppConfigContext).appConfig;
+}
+
+export function useAppNFT() {
+  return useContext(AppConfigContext).appNFT;
 }
 
 export function useCollections() {

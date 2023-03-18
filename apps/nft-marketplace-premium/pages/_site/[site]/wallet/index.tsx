@@ -2,7 +2,6 @@ import { NavigateNext, Search } from '@mui/icons-material';
 import {
   Box,
   Button,
-  Chip,
   Collapse,
   Container,
   Divider,
@@ -53,15 +52,15 @@ import { truncateAddress } from '../../../../src/utils/blockchain';
 
 import ImportExportIcon from '@mui/icons-material/ImportExport';
 import ImportTokenDialog from '../../../../src/components/dialogs/ImportTokenDialog';
+import CloseCircle from '../../../../src/components/icons/CloseCircle';
+import Wallet from '../../../../src/components/icons/Wallet';
+import { NetworkSelectButton } from '../../../../src/components/NetworkSelectButton';
 import {
   useAppConfig,
   useConnectWalletDialog,
 } from '../../../../src/hooks/app';
 import { useCurrency } from '../../../../src/hooks/currency';
 import { getAppConfig } from '../../../../src/services/app';
-import CloseCircle from '../../../../src/components/icons/CloseCircle';
-import Wallet from '../../../../src/components/icons/Wallet';
-import { NetworkSelectButton } from '../../../../src/components/NetworkSelectButton';
 
 enum WalletTabs {
   Transactions,
@@ -533,10 +532,10 @@ export const getStaticProps: GetStaticProps = async ({
   if (params !== undefined) {
     const { site } = params;
 
-    const appConfig = await getAppConfig(site);
+    const { appConfig, appNFT } = await getAppConfig(site);
 
     return {
-      props: { appConfig },
+      props: { appConfig, appNFT },
     };
   }
 

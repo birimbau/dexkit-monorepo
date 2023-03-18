@@ -1,7 +1,7 @@
 import Container from '@mui/material/Container';
+import { dehydrate, QueryClient } from '@tanstack/react-query';
 import type { GetStaticProps, GetStaticPropsContext, NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { dehydrate, QueryClient } from '@tanstack/react-query';
 
 import { Grid, Skeleton } from '@mui/material';
 import MainLayout from '../../../../../../src/components/layouts/main';
@@ -22,15 +22,15 @@ import { NextSeo } from 'next-seo';
 import { FormattedMessage } from 'react-intl';
 import { PageHeader } from '../../../../../../src/components/PageHeader';
 import { ChainId, NETWORK_ID } from '../../../../../../src/constants/enum';
+import { MAP_NETWORK_TO_RARIBLE } from '../../../../../../src/constants/marketplaces';
 import { getAppConfig } from '../../../../../../src/services/app';
+import { getRariAsset } from '../../../../../../src/services/rarible';
 import {
   getChainIdFromSlug,
   getNetworkSlugFromChainId,
 } from '../../../../../../src/utils/blockchain';
 import { ipfsUriToUrl } from '../../../../../../src/utils/ipfs';
 import { truncateErc1155TokenId } from '../../../../../../src/utils/nfts';
-import { MAP_NETWORK_TO_RARIBLE } from '../../../../../../src/constants/marketplaces';
-import { getRariAsset } from '../../../../../../src/services/rarible';
 
 const AssetDetailPage: NextPage = () => {
   const router = useRouter();
@@ -118,7 +118,7 @@ export const getStaticProps: GetStaticProps = async ({
   if (params !== undefined) {
     const { address, id, network, site } = params;
 
-    const appConfig = await getAppConfig(site);
+    const { appConfig, appNFT } = await getAppConfig(site);
 
     const queryClient = new QueryClient();
     const item = {
@@ -145,7 +145,7 @@ export const getStaticProps: GetStaticProps = async ({
     }
 
     return {
-      props: { dehydratedState: dehydrate(queryClient), appConfig },
+      props: { dehydratedState: dehydrate(queryClient), appConfig, appNFT },
       revalidate: 5,
     };
   }

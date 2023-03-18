@@ -40,10 +40,10 @@ import {
 import { getTheme } from '../../../../theme';
 import { AppConfig } from '../../../../types/config';
 import { customThemeAtom } from '../../state';
-const SignConfigDialog = dynamic(() => import('../dialogs/SignConfigDialog'));
 import { PagePreviewPaper } from '../sections/PagePreviewPaper';
 import ThemePreview from '../ThemePreview';
 import { WelcomeMessage } from '../WelcomeMessage';
+const SignConfigDialog = dynamic(() => import('../dialogs/SignConfigDialog'));
 
 const defaultConfig = theDefaultConfig as AppConfig;
 
@@ -79,6 +79,14 @@ export function CreateWizardContainer({ slug, isSwapWizard }: Props) {
   const [selectedThemeId, setSelectedThemeId] = useState<string>();
 
   const currentPage = useMemo(() => {
+    if (
+      clonedConfigQuery.data &&
+      clonedConfigQuery.data.config &&
+      clonedConfigQuery.data.nft
+    ) {
+      return defaultConfig.pages['home'];
+    }
+
     if (clonedConfigQuery.data && clonedConfigQuery.data.config) {
       const clonedConfig = JSON.parse(
         clonedConfigQuery.data.config
@@ -167,17 +175,10 @@ export function CreateWizardContainer({ slug, isSwapWizard }: Props) {
       </Drawer>
 
       <NextSeo
-        title={
-          isSwapWizard
-            ? formatMessage({
-                id: 'swap.setup',
-                defaultMessage: 'Swap Setup',
-              })
-            : formatMessage({
-                id: 'marketplace.setup',
-                defaultMessage: 'Marketplace Setup',
-              })
-        }
+        title={formatMessage({
+          id: 'crypto.app.setup',
+          defaultMessage: 'Crypto App Setup',
+        })}
       />
       <AppConfirmDialog
         dialogProps={{
@@ -197,7 +198,7 @@ export function CreateWizardContainer({ slug, isSwapWizard }: Props) {
           </Typography>
           <Typography variant="body1" align="center" color="textSecondary">
             <FormattedMessage
-              id="do.you.really.want.to.send.this.marketplace.settings"
+              id="do.you.really.want.to.send.this.app.settings"
               defaultMessage="Do you really want to send it?"
             />
           </Typography>
@@ -239,10 +240,7 @@ export function CreateWizardContainer({ slug, isSwapWizard }: Props) {
                         defaultMessage="Swap apps"
                       />
                     ) : (
-                      <FormattedMessage
-                        id="marketplaces"
-                        defaultMessage="Marketplaces"
-                      />
+                      <FormattedMessage id="apps" defaultMessage="Apps" />
                     ),
                     uri: '/admin',
                   },
@@ -277,17 +275,10 @@ export function CreateWizardContainer({ slug, isSwapWizard }: Props) {
               />
             </Typography>
             <Typography variant="h5">
-              {isSwapWizard ? (
-                <FormattedMessage
-                  id="create.your.swap.app"
-                  defaultMessage="Create your Swap app"
-                />
-              ) : (
-                <FormattedMessage
-                  id="create.your.marketplace"
-                  defaultMessage="Create your Marketplace"
-                />
-              )}
+              <FormattedMessage
+                id="create.your.app"
+                defaultMessage="Create your App"
+              />
             </Typography>
           </Grid>
           <Grid item xs={12} sm={4}>
@@ -296,7 +287,7 @@ export function CreateWizardContainer({ slug, isSwapWizard }: Props) {
                 validationSchema={FormSchema}
                 onSubmit={(values, { setSubmitting }) => {
                   let clonedConfig = {};
-                  if (clonedConfigQuery.data) {
+                  if (clonedConfigQuery.data && !clonedConfigQuery.data.nft) {
                     clonedConfig = JSON.parse(clonedConfigQuery.data.config);
                   }
                   const submitConfig = {
@@ -327,17 +318,10 @@ export function CreateWizardContainer({ slug, isSwapWizard }: Props) {
                           fullWidth
                           name="name"
                           label={
-                            isSwapWizard ? (
-                              <FormattedMessage
-                                id="name.of.your.swap.app"
-                                defaultMessage="Name of your swap app"
-                              />
-                            ) : (
-                              <FormattedMessage
-                                id="name.of.your.marketplace"
-                                defaultMessage="Name of your marketplace"
-                              />
-                            )
+                            <FormattedMessage
+                              id="name.of.your.app"
+                              defaultMessage="Name of your app"
+                            />
                           }
                         />
                       </Grid>
@@ -368,17 +352,10 @@ export function CreateWizardContainer({ slug, isSwapWizard }: Props) {
                               variant="contained"
                               color="primary"
                             >
-                              {isSwapWizard ? (
-                                <FormattedMessage
-                                  id="create.swap.app"
-                                  defaultMessage="Create swap app"
-                                />
-                              ) : (
-                                <FormattedMessage
-                                  id="create.marketplace"
-                                  defaultMessage="Create Marketplace"
-                                />
-                              )}
+                              <FormattedMessage
+                                id="create.app"
+                                defaultMessage="Create App"
+                              />
                             </Button>
                           ) : (
                             <Button
@@ -408,7 +385,16 @@ export function CreateWizardContainer({ slug, isSwapWizard }: Props) {
               <ThemeProvider theme={selectedTheme ? selectedTheme : theme}>
                 <Container>
                   <Stack spacing={2}>
-                    {slug && (
+                    {clonedConfigQuery?.data?.nft && (
+                      <Typography variant="subtitle1">
+                        <FormattedMessage
+                          id="this.app.is.not.clonable"
+                          defaultMessage="This app is not clonable."
+                        />
+                      </Typography>
+                    )}
+
+                    {slug && !clonedConfigQuery?.data?.nft && (
                       <Typography variant="subtitle1">
                         <FormattedMessage
                           id="you.are.cloning"

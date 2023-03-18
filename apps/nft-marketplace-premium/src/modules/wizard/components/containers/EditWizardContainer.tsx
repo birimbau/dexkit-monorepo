@@ -518,10 +518,7 @@ export function EditWizardContainer({ site }: Props) {
             <Stack direction={'row'} justifyContent={'space-between'}>
               {!isMobile && (
                 <Typography variant="h5">
-                  <FormattedMessage
-                    id="edit.marketplace"
-                    defaultMessage="Edit Marketplace"
-                  />
+                  <FormattedMessage id="edit.app" defaultMessage="Edit App" />
                 </Typography>
               )}
               <Stack direction={'row'} spacing={2}>

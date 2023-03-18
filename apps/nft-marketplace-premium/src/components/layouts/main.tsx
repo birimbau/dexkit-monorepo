@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic';
 import React, { useEffect, useMemo } from 'react';
 import {
   useAppConfig,
+  useAppNFT,
   useConnectWalletDialog,
   useSignMessageDialog,
   useTransactions,
@@ -59,6 +60,7 @@ const MainLayout: React.FC<Props> = ({
   const router = useRouter();
 
   const defaultAppConfig = useAppConfig();
+  const appNFT = useAppNFT();
   const appConfig = useMemo(() => {
     if (appConfigProps) {
       return appConfigProps;
@@ -168,54 +170,64 @@ const MainLayout: React.FC<Props> = ({
   const render = () => (
     <>
       <AppDrawer open={isDrawerOpen} onClose={handleCloseDrawer} />
-      <SelectCurrencyDialog
-        dialogProps={{
-          open: showSelectCurrency,
-          onClose: handleCloseCurrencySelect,
-          fullWidth: true,
-          maxWidth: 'xs',
-        }}
-      />
-      <SelectLanguageDialog
-        dialogProps={{
-          open: showSelectLocale,
-          onClose: handleCloseLocaleSelect,
-          fullWidth: true,
-          maxWidth: 'xs',
-        }}
-      />
-      <TransactionDialog
-        dialogProps={{
-          open: transactions.isOpen,
-          onClose: handleCloseTransactionDialog,
-          fullWidth: true,
-          maxWidth: 'xs',
-        }}
-        hash={transactions.hash}
-        metadata={transactions.metadata}
-        type={transactions.type}
-        error={transactions.error}
-      />
-      <SignMessageDialog
-        dialogProps={{
-          open: signMessageDialog.open,
-          onClose: handleCloseSignMessageDialog,
-          fullWidth: true,
-          maxWidth: 'xs',
-        }}
-        error={signMessageDialog.error}
-        success={signMessageDialog.isSuccess}
-        message={signMessageDialog.message}
-      />
-      <SwitchNetworkDialog
-        dialogProps={{
-          open: switchOpen,
-          onClose: handleCloseSwitchNetworkDialog,
-          fullWidth: true,
-          maxWidth: 'xs',
-        }}
-        chainId={switchChainId}
-      />
+      {showSelectCurrency && (
+        <SelectCurrencyDialog
+          dialogProps={{
+            open: showSelectCurrency,
+            onClose: handleCloseCurrencySelect,
+            fullWidth: true,
+            maxWidth: 'xs',
+          }}
+        />
+      )}
+      {showSelectLocale && (
+        <SelectLanguageDialog
+          dialogProps={{
+            open: showSelectLocale,
+            onClose: handleCloseLocaleSelect,
+            fullWidth: true,
+            maxWidth: 'xs',
+          }}
+        />
+      )}
+      {transactions.isOpen && (
+        <TransactionDialog
+          dialogProps={{
+            open: transactions.isOpen,
+            onClose: handleCloseTransactionDialog,
+            fullWidth: true,
+            maxWidth: 'xs',
+          }}
+          hash={transactions.hash}
+          metadata={transactions.metadata}
+          type={transactions.type}
+          error={transactions.error}
+        />
+      )}
+      {signMessageDialog.open && (
+        <SignMessageDialog
+          dialogProps={{
+            open: signMessageDialog.open,
+            onClose: handleCloseSignMessageDialog,
+            fullWidth: true,
+            maxWidth: 'xs',
+          }}
+          error={signMessageDialog.error}
+          success={signMessageDialog.isSuccess}
+          message={signMessageDialog.message}
+        />
+      )}
+      {switchOpen && (
+        <SwitchNetworkDialog
+          dialogProps={{
+            open: switchOpen,
+            onClose: handleCloseSwitchNetworkDialog,
+            fullWidth: true,
+            maxWidth: 'xs',
+          }}
+          chainId={switchChainId}
+        />
+      )}
       <ConnectWalletDialog
         DialogProps={{
           open: connectWalletDialog.isOpen,
@@ -235,7 +247,7 @@ const MainLayout: React.FC<Props> = ({
       >
         {children}
       </Box>
-      <Footer appConfig={appConfig} isPreview={isPreview} />
+      <Footer appConfig={appConfig} isPreview={isPreview} appNFT={appNFT} />
     </>
   );
 

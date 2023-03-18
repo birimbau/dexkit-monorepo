@@ -57,10 +57,10 @@ type Params = {
 export const getStaticProps: GetStaticProps = async ({
   params,
 }: GetStaticPropsContext<Params>) => {
-  const appConfig = await getAppConfig(params?.site);
+  const { appConfig, appNFT } = await getAppConfig(params?.site);
 
   return {
-    props: { appConfig },
+    props: { appConfig, appNFT },
   };
 };
 

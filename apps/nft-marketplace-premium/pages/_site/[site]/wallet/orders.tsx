@@ -13,12 +13,12 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
+import { QueryErrorResetBoundary } from '@tanstack/react-query';
 import { useWeb3React } from '@web3-react/core';
 import type { GetStaticProps, GetStaticPropsContext, NextPage } from 'next';
 import { Suspense, useEffect, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { FormattedMessage } from 'react-intl';
-import { QueryErrorResetBoundary } from '@tanstack/react-query';
 import Funnel from '../../../../src/components/icons/Filter';
 import MainLayout from '../../../../src/components/layouts/main';
 import { NetworkSelectDropdown } from '../../../../src/components/NetworkSelectDropdown';
@@ -255,10 +255,10 @@ export const getStaticProps: GetStaticProps = async ({
   if (params !== undefined) {
     const { site } = params;
 
-    const appConfig = await getAppConfig(site);
+    const { appConfig, appNFT } = await getAppConfig(site);
 
     return {
-      props: { appConfig },
+      props: { appConfig, appNFT },
     };
   }
 
