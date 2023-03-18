@@ -49,7 +49,10 @@ export const getStaticProps: GetStaticProps = async ({
 
   if (!homePage) {
     return {
-      notFound: true,
+      redirect: {
+        destination: '/404',
+        permanent: true,
+      },
     };
   }
 
