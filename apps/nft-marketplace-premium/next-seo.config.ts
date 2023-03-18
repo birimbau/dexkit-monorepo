@@ -1,7 +1,7 @@
 import { getAppConfig } from './src/services/app';
 
 export default async function getSeoConfig(site: string) {
-  const config = await getAppConfig(site);
+  const { appConfig: config } = await getAppConfig(site);
 
   const seoConfig: any = {
     defaultTitle: config.seo?.home?.title || config.name,

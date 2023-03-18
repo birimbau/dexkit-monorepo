@@ -39,7 +39,9 @@ export function WalletButton(props: Props) {
     if (connector?.deactivate) {
       connector.deactivate();
     } else {
-      connector.resetState();
+      if (connector?.resetState) {
+        connector?.resetState();
+      }
     }
   }, [connector]);
 
