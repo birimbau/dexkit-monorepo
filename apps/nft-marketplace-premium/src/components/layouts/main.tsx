@@ -5,12 +5,14 @@ import dynamic from 'next/dynamic';
 import React, { useEffect, useMemo } from 'react';
 import {
   useAppConfig,
+  useAppNFT,
   useConnectWalletDialog,
   useSignMessageDialog,
   useTransactions,
 } from '../../hooks/app';
 import {
   drawerIsOpenAtom,
+  selectedWalletAtom,
   showSelectCurrencyAtom,
   showSelectLocaleAtom,
   switchNetworkChainIdAtom,
@@ -27,9 +29,11 @@ const TransactionDialog = dynamic(() => import('../dialogs/TransactionDialog'));
 import { useRouter } from 'next/router';
 import { AppConfig } from 'src/types/config';
 import AppDrawer from '../AppDrawer';
-const ConnectWalletDialog = dynamic(
-  () => import('../dialogs/ConnectWalletDialog')
-);
+
+import { useWalletActivate } from '@dexkit/core/hooks';
+import { WalletActivateParams } from '@dexkit/core/types';
+import { ConnectWalletDialog } from '@dexkit/ui';
+
 const SelectCurrencyDialog = dynamic(
   () => import('../dialogs/SelectCurrencyDialog')
 );
@@ -52,10 +56,11 @@ const MainLayout: React.FC<Props> = ({
   appConfigProps,
   isPreview,
 }) => {
-  const { connector } = useWeb3React();
+  const { connector, isActive } = useWeb3React();
   const router = useRouter();
 
   const defaultAppConfig = useAppConfig();
+  const appNFT = useAppNFT();
   const appConfig = useMemo(() => {
     if (appConfigProps) {
       return appConfigProps;
@@ -116,14 +121,27 @@ const MainLayout: React.FC<Props> = ({
     setShowShowSelectLocale(false);
   };
 
+  const walletActivate = useWalletActivate({
+    magicRedirectUrl: process.env.NEXT_PUBLIC_MAGIC_REDIRECT_URL || '',
+    selectedWalletAtom,
+  });
+
+  const handleActivateWallet = async (params: WalletActivateParams) => {
+    await walletActivate.mutation.mutateAsync(params);
+  };
+
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      connector.activate();
+      // connector.activate();
       const handleNetworkChange = (newNetwork: any, oldNetwork: any) => {
+        if (connector && connector.connectEagerly) {
+          connector.connectEagerly();
+        }
+
         // When a Provider makes its initial connection, it emits a "network"
         // event with a null oldNetwork along with the newNetwork. So, if the
         // oldNetwork exists, it represents a changing network
-        window.location.reload();
+        //window.location.reload();
       };
 
       connector?.provider?.on('chainChanged', handleNetworkChange);
@@ -135,7 +153,15 @@ const MainLayout: React.FC<Props> = ({
         );
       };
     }
-  }, []);
+  }, [connector]);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && connector) {
+      if (connector.connectEagerly) {
+        connector.connectEagerly();
+      }
+    }
+  }, [connector]);
 
   const [isDrawerOpen, setIsDrawerOpen] = useAtom(drawerIsOpenAtom);
 
@@ -202,16 +228,18 @@ const MainLayout: React.FC<Props> = ({
           chainId={switchChainId}
         />
       )}
-      {connectWalletDialog.isOpen && (
-        <ConnectWalletDialog
-          dialogProps={{
-            open: connectWalletDialog.isOpen,
-            onClose: handleCloseConnectWalletDialog,
-            fullWidth: true,
-            maxWidth: 'sm',
-          }}
-        />
-      )}
+      <ConnectWalletDialog
+        DialogProps={{
+          open: connectWalletDialog.isOpen,
+          onClose: handleCloseConnectWalletDialog,
+          fullWidth: true,
+          maxWidth: 'sm',
+        }}
+        isActive={isActive}
+        isActivating={walletActivate.mutation.isLoading}
+        activeConnectorName={walletActivate.connectorName}
+        activate={handleActivateWallet}
+      />
       <Navbar appConfig={appConfig} isPreview={isPreview} />
       <Box
         sx={{ minHeight: isPreview ? undefined : '100vh' }}
@@ -219,7 +247,7 @@ const MainLayout: React.FC<Props> = ({
       >
         {children}
       </Box>
-      <Footer appConfig={appConfig} isPreview={isPreview} />
+      <Footer appConfig={appConfig} isPreview={isPreview} appNFT={appNFT} />
     </>
   );
 

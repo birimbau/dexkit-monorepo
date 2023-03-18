@@ -38,6 +38,7 @@ export interface ConnectWalletDialogProps {
   isActivating: boolean;
   isActive: boolean;
   activeConnectorName?: string;
+  magicRedirectUrl?: string;
 }
 
 export function ConnectWalletDialog({
@@ -72,7 +73,11 @@ export function ConnectWalletDialog({
       if (connectorName === "metamask") {
         await activate({ connectorName });
       } else if (connectorName === "magic") {
-        await activate({ connectorName, email, loginType });
+        await activate({
+          connectorName,
+          email,
+          loginType,
+        });
       }
     } catch (err: any) {
       enqueueSnackbar(err.message, {

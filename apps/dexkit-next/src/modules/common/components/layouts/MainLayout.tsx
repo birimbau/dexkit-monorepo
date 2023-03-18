@@ -28,6 +28,7 @@ import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import {
   firstVisitAtom,
+  selectedWalletAtom,
   showConnectWalletAtom,
   showNotificationsAtom,
   showWelcomeAtom,
@@ -206,7 +207,10 @@ export default function MainLayout({
     }
   }, [account, connector]);
 
-  const walletActivate = useWalletActivate();
+  const walletActivate = useWalletActivate({
+    magicRedirectUrl: process.env.NEXT_PUBLIC_MAGIC_REDIRECT_URL || '',
+    selectedWalletAtom,
+  });
 
   const handleActivate = (params: WalletActivateParams) =>
     walletActivate.mutation.mutateAsync(params);
