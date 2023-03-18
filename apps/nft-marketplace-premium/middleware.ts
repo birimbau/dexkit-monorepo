@@ -82,7 +82,7 @@ export default function middleware(req: NextRequest) {
   if (isBasePath(url.pathname)) {
     // rewrite everything else to `/_sites/[site] dynamic route
     url.pathname = `/_site/${hostname}${url.pathname}`;
-    console.log(url);
+
 
     return NextResponse.rewrite(url);
   } else {

@@ -160,8 +160,8 @@ export default function SwapFeeSummary({
             <Tooltip
               title={
                 <FormattedMessage
-                  id="if.price.impact.is.too.high.you.will.lose.a.large.portion.of.your.money.to.complete.the.transaction"
-                  defaultMessage="if price impact is too high, you will lose a large portion of your money to complete the transaction"
+                  id="price.impact.swap.message.info"
+                  defaultMessage="Price impact refers to the fluctuation in the price of a coin that happens when a trade takes place. When the price impact is high, it can sometimes lead to buying coins at a price lower than what was initially expected."
                 />
               }
             >
@@ -215,7 +215,7 @@ export default function SwapFeeSummary({
                 <>
                   <FormattedMessage
                     id="gas.gas"
-                    defaultMessage="Gas: {gas}"
+                    defaultMessage="Gas: {gas} Gwei"
                     values={{
                       gas: gasPriceQuery.data
                         ? formatBigNumber(gasPriceQuery.data, 9)

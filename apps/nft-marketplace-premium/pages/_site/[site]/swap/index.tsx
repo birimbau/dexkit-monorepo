@@ -1,21 +1,20 @@
-import { NoSsr, Paper, Stack } from '@mui/material';
-import Button from '@mui/material/Button';
+import { SwapWidget } from '@dexkit/widgets';
+import { NoSsr } from '@mui/material';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
-import Typography from '@mui/material/Typography';
-import { QueryErrorResetBoundary } from '@tanstack/react-query';
 import type { GetStaticProps, GetStaticPropsContext, NextPage } from 'next';
-import { Suspense } from 'react';
-import { ErrorBoundary } from 'react-error-boundary';
-import { FormattedMessage, useIntl } from 'react-intl';
-import MainLayout from '../../../../src/components/layouts/main';
-import Swap from '../../../../src/modules/swap/Swap';
-
-import SwapSkeleton from '@/modules/swap/Swap.skeleton';
 import { NextSeo } from 'next-seo';
-import { PageHeader } from '../../../../src/components/PageHeader';
-import { ChainId } from '../../../../src/constants/enum';
-import { getAppConfig } from '../../../../src/services/app';
+import { FormattedMessage, useIntl } from 'react-intl';
+import MainLayout from 'src/components/layouts/main';
+import { PageHeader } from 'src/components/PageHeader';
+import { useSwapState } from 'src/hooks/swap';
+import { getAppConfig } from 'src/services/app';
+
+const WidgetComponent = () => {
+  const swapState = useSwapState();
+
+  return <SwapWidget {...swapState} />;
+};
 
 const SwapPage: NextPage = () => {
   const { formatMessage } = useIntl();
@@ -47,43 +46,7 @@ const SwapPage: NextPage = () => {
             </Grid>
             <Grid item xs={12} sm={6}>
               <NoSsr>
-                <QueryErrorResetBoundary>
-                  {({ reset }) => (
-                    <ErrorBoundary
-                      onReset={reset}
-                      fallbackRender={({ resetErrorBoundary, error }) => (
-                        <Paper sx={{ p: 1 }}>
-                          <Stack justifyContent="center" alignItems="center">
-                            <Typography variant="h6">
-                              <FormattedMessage
-                                id="something.went.wrong"
-                                defaultMessage="Oops, something went wrong"
-                                description="Something went wrong error message"
-                              />
-                            </Typography>
-                            <Typography variant="body1" color="textSecondary">
-                              {String(error)}
-                            </Typography>
-                            <Button
-                              color="primary"
-                              onClick={resetErrorBoundary}
-                            >
-                              <FormattedMessage
-                                id="try.again"
-                                defaultMessage="Try again"
-                                description="Try again"
-                              />
-                            </Button>
-                          </Stack>
-                        </Paper>
-                      )}
-                    >
-                      <Suspense fallback={<SwapSkeleton />}>
-                        <Swap defaultChainId={ChainId.ETH} />
-                      </Suspense>
-                    </ErrorBoundary>
-                  )}
-                </QueryErrorResetBoundary>
+                <WidgetComponent />
               </NoSsr>
             </Grid>
           </Grid>

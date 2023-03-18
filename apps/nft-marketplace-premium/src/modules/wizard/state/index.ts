@@ -28,10 +28,10 @@ export const customThemeAtom = atom<CustomThemeInterface | undefined>({
   palette: {
     mode: 'light',
     background: {
-      default: '#000',
+      default: '#fff',
     },
     text: {
-      primary: '#fff',
+      primary: '#000',
     },
     primary: {
       main: '#bfc500',
