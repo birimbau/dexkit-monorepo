@@ -14,17 +14,33 @@ export const NETWORKS: { [key: number]: Network } = {
       "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/info/logo.png",
     providerRpcUrl: `https://eth.llamarpc.com`,
   },
-  [ChainId.Mumbai]: {
-    chainId: ChainId.Mumbai,
-    symbol: "MATIC",
-    explorerUrl: "https://mumbai.polygonscan.com",
-    name: "Mumbai",
-    slug: "mumbai",
-    wrappedAddress: "0x9c3c9283d3e44854697cd22d3faa240cfb032889",
+  [ChainId.Optimism]: {
+    chainId: ChainId.Optimism,
+    symbol: "OP",
+    coinName: "Ethereum",
+    coinSymbol: 'ETH',
+    coinImageUrl: 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/info/logo.png',
+    explorerUrl: "https://optimistic.etherscan.io",
+    name: "Optimism",
+    slug: "optimism",
+    coingeckoPlatformId: "ethereum",
+    wrappedAddress: "0x4200000000000000000000000000000000000006",
     imageUrl:
-      "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/info/logo.png",
-    providerRpcUrl: `https://rpc.ankr.com/polygon_mumbai`,
-    testnet: true,
+      "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/optimism/info/logo.png",
+    providerRpcUrl: "https://rpc.ankr.com/optimism",
+  },
+  [ChainId.BSC]: {
+    chainId: ChainId.BSC,
+    symbol: "BNB",
+    coinName: 'Binance Coin',
+    explorerUrl: "https://bscscan.com",
+    name: "Smart Chain",
+    slug: "bsc",
+    coingeckoPlatformId: "binancecoin",
+    wrappedAddress: "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c",
+    providerRpcUrl: "https://bscrpc.com",
+    imageUrl:
+      "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/binance/info/logo.png",
   },
   [ChainId.Polygon]: {
     chainId: ChainId.Polygon,
@@ -38,31 +54,6 @@ export const NETWORKS: { [key: number]: Network } = {
     imageUrl:
       "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/info/logo.png",
   },
-  [ChainId.BSC]: {
-    chainId: ChainId.BSC,
-    symbol: "BNB",
-    explorerUrl: "https://bscscan.com",
-    name: "Smart Chain",
-    slug: "bsc",
-    coingeckoPlatformId: "binancecoin",
-    wrappedAddress: "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c",
-    providerRpcUrl: "https://bscrpc.com",
-    imageUrl:
-      "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/binance/info/logo.png",
-  },
-
-  [ChainId.Avax]: {
-    chainId: ChainId.Avax,
-    symbol: "AVAX",
-    explorerUrl: "https://snowtrace.io",
-    name: "Avalanche",
-    slug: "avalanche",
-    coingeckoPlatformId: "avalanche-2",
-    wrappedAddress: "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7",
-    providerRpcUrl: "https://api.avax.network/ext/bc/C/rpc",
-    imageUrl:
-      "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/avalanchec/info/logo.png",
-  },
   [ChainId.Fantom]: {
     chainId: ChainId.Fantom,
     symbol: "FTM",
@@ -75,17 +66,35 @@ export const NETWORKS: { [key: number]: Network } = {
       "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/fantom/info/logo.png",
     providerRpcUrl: "https://rpc.ftm.tools",
   },
-  [ChainId.Optimism]: {
-    chainId: ChainId.Optimism,
-    symbol: "ETH",
-    explorerUrl: "https://optimistic.etherscan.io",
-    name: "Optimism",
-    slug: "optimism",
+  [ChainId.Arbitrum]: {
+    chainId: ChainId.Arbitrum,
+    symbol: "ARB",
+    coinName: "Ethereum",
+    coinSymbol: 'ETH',
+    coinImageUrl: 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/info/logo.png',
+    explorerUrl: "https://arbiscan.io",
+    name: "Arbitrum",
+    slug: "arbitrum",
     coingeckoPlatformId: "ethereum",
-    wrappedAddress: "0x4200000000000000000000000000000000000006",
+    wrappedAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
     imageUrl:
-      "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/optimism/info/logo.png",
-    providerRpcUrl: "https://mainnet.optimism.io",
+      "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/arbitrum/info/logo.png",
+    providerRpcUrl: "https://rpc.ankr.com/arbitrum",
+  },
+
+
+
+  [ChainId.Avax]: {
+    chainId: ChainId.Avax,
+    symbol: "AVAX",
+    explorerUrl: "https://snowtrace.io",
+    name: "Avalanche",
+    slug: "avalanche",
+    coingeckoPlatformId: "avalanche-2",
+    wrappedAddress: "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7",
+    providerRpcUrl: "https://api.avax.network/ext/bc/C/rpc",
+    imageUrl:
+      "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/avalanchec/info/logo.png",
   },
 
   [ChainId.Goerli]: {
@@ -101,7 +110,23 @@ export const NETWORKS: { [key: number]: Network } = {
     providerRpcUrl: "https://endpoints.omniatech.io/v1/eth/goerli/public",
     testnet: process.env.NODE_ENV !== "development",
   },
+  [ChainId.Mumbai]: {
+    chainId: ChainId.Mumbai,
+    symbol: "MATIC",
+    explorerUrl: "https://mumbai.polygonscan.com",
+    name: "Mumbai",
+    slug: "mumbai",
+    wrappedAddress: "0x9c3c9283d3e44854697cd22d3faa240cfb032889",
+    imageUrl:
+      "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/info/logo.png",
+    providerRpcUrl: `https://rpc.ankr.com/polygon_mumbai`,
+    testnet: process.env.NODE_ENV !== "development",
+  },
 };
 
 export const NETWORK_SYMBOL = (chainId?: ChainId) =>
   chainId && NETWORKS[chainId] ? NETWORKS[chainId].symbol : undefined;
+
+export const NETWORK_COIN_SYMBOL = (chainId?: ChainId) =>
+  chainId && NETWORKS[chainId] ? NETWORKS[chainId]?.coinSymbol ? NETWORKS[chainId]?.coinSymbol : NETWORKS[chainId].symbol : undefined;
+

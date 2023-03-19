@@ -1,3 +1,5 @@
+import { ChainId } from "@dexkit/core/constants/enums";
+import { NETWORKS } from "@dexkit/core/constants/networks";
 import { useIsMobile } from "@dexkit/core/hooks";
 import { AppDialogTitle } from "@dexkit/ui/components";
 import {
@@ -14,8 +16,7 @@ import {
 } from "@mui/material";
 import { memo } from "react";
 import { FormattedMessage } from "react-intl";
-import { ChainId } from "../constants/enum";
-import { NETWORKS } from "../constants/networks";
+
 import { parseChainId } from "../utils";
 
 interface SwitchNetworkDialogProps {

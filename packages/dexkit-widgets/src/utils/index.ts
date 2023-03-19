@@ -1,7 +1,7 @@
+import { NETWORKS } from "@dexkit/core/constants/networks";
 import { MetaMask } from "@web3-react/metamask";
 import { Connector } from "@web3-react/types";
 import { BigNumber, ethers } from "ethers";
-import { NETWORKS } from "../constants/networks";
 import { Token } from "../types";
 // import { MagicConnector } from "../connectors/magic";
 

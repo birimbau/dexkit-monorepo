@@ -1,3 +1,4 @@
+import { ChainId } from "@dexkit/core/constants/enums";
 import { Web3ReactHooks } from "@web3-react/core";
 import { Connector } from "@web3-react/types";
 import { ethers } from "ethers";
@@ -6,7 +7,7 @@ import { metaMask } from "../connectors";
 import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "../services/zeroex/constants";
 import { Token } from "../types";
 import { isAddressEqual } from "../utils";
-import { ChainId } from "./enum";
+
 // import { magic, magicHooks } from '../connectors/magic';
 
 export const CONNECTORS: { [key: string]: [Connector, Web3ReactHooks] } = {
@@ -41,7 +42,9 @@ export function TOKEN_ICON_URL(addr: string, chainId?: ChainId) {
       case ChainId.Celo:
         return `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/celo/info/logo.png`;
       case ChainId.Optimism:
-        return `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/optimism/info/logo.png`;
+        return `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/info/logo.png`;
+      case ChainId.Arbitrum:
+        return `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/info/logo.png`;
       default:
         return "";
     }
@@ -62,6 +65,8 @@ export function TOKEN_ICON_URL(addr: string, chainId?: ChainId) {
       return `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/celo/assets/${address}/logo.png`;
     case ChainId.Optimism:
       return `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/optimism/assets/${address}/logo.png`;
+    case ChainId.Arbitrum:
+      return `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/arbitrum/assets/${address}/logo.png`;
     default:
       return "";
   }
@@ -139,7 +144,8 @@ export const NATIVE_TOKENS: { [key: number]: Token } = {
   [ChainId.Polygon]: MATIC_TOKEN,
   [ChainId.Fantom]: FANTOM_TOKEN,
   [ChainId.BSC]: BNB_TOKEN,
-  [ChainId.Optimism]: OPTIMISM_TOKEN,
+  [ChainId.Optimism]: ETHEREUM_TOKEN,
+  [ChainId.Arbitrum]: ETHEREUM_TOKEN,
 };
 
 export function GET_NATIVE_TOKEN(chainId: ChainId) {

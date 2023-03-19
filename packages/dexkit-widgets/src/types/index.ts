@@ -1,4 +1,5 @@
-import { ChainId, TransactionStatus } from "../constants/enum";
+import { ChainId } from "@dexkit/core/constants/enums";
+import { TransactionStatus } from "../constants/enum";
 
 export type Token = {
   chainId: ChainId;

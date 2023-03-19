@@ -1,3 +1,4 @@
+import { ChainId } from "@dexkit/core/constants/enums";
 import { useIsMobile } from "@dexkit/core/hooks";
 import Search from "@mui/icons-material/Search";
 
@@ -17,7 +18,6 @@ import { FormattedMessage, useIntl } from "react-intl";
 import AppDialogTitle from "../../components/AppDialogTitle";
 import SearchTextField from "../../components/SearchTextField";
 import SelectCoinList from "../../components/SelectCoinList";
-import { ChainId } from "../../constants/enum";
 import { useAsyncMemo, useMultiTokenBalance } from "../../hooks";
 import { Token } from "../../types";
 import SwapFeaturedTokens from "./SwapFeaturedTokens";

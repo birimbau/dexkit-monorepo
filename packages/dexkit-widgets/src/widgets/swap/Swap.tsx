@@ -19,6 +19,7 @@ import SwapTokenField from "./SwapCurrencyField";
 import SwapSwitchTokensButton from "./SwapSwitchTokensButton";
 import { ExecType, SwapSide } from "./types";
 
+import { ChainId } from "@dexkit/core/constants/enums";
 import { NETWORKS } from "@dexkit/core/constants/networks";
 import { useIsMobile } from "@dexkit/core/hooks";
 import { CreditCard } from "@mui/icons-material";
@@ -27,7 +28,6 @@ import WalletIcon from "@mui/icons-material/Wallet";
 import { AppNotificationsBadge } from "../../components/AppNotificationBadge";
 import TransakIcon from "../../components/icons/TransakIcon";
 import SwitchNetworkSelect from "../../components/SwitchNetworkSelect";
-import { ChainId } from "../../constants/enum";
 import { ZeroExQuoteResponse } from "../../services/zeroex/types";
 import SwapFeeSummary from "./SwapFeeSummary";
 
@@ -133,8 +133,8 @@ export default function Swap({
       <FormattedMessage id="Unwrap" defaultMessage="Unwrap" />
     ) : execType === "switch" ? (
       <FormattedMessage
-        id="switch.network"
-        defaultMessage="Switch to {networkName}"
+        id="switch.wallet.network"
+        defaultMessage="Switch wallet to {networkName}"
         values={{ networkName }}
       />
     ) : execType === "approve" ? (

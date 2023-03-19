@@ -1,3 +1,4 @@
+import { ChainId } from "@dexkit/core/constants/enums";
 import { useIsMobile } from "@dexkit/core/hooks";
 import {
   Button,
@@ -13,7 +14,7 @@ import {
 import { BigNumber } from "ethers";
 import { FormattedMessage } from "react-intl";
 import AppDialogTitle from "../../../components/AppDialogTitle";
-import { ChainId } from "../../../constants/enum";
+
 import { ZeroExQuoteResponse } from "../../../services/zeroex/types";
 import { Token } from "../../../types";
 import { formatBigNumber } from "../../../utils";

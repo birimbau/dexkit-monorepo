@@ -4,6 +4,9 @@ export type Network = {
   chainId: ChainId;
   name: string;
   symbol: string;
+  coinName?: string;
+  coinSymbol?: string;
+  coinImageUrl?: string;
   coingeckoPlatformId?: string;
   imageUrl?: string;
   testnet?: boolean;

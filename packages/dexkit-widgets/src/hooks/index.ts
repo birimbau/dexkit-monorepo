@@ -1,5 +1,7 @@
 import { useWeb3React, Web3ReactHooks } from "@web3-react/core";
 
+import { MagicLoginType } from "@dexkit/core/constants";
+import { ChainId } from "@dexkit/core/constants/enums";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Connector } from "@web3-react/types";
 import { BigNumber, ethers, providers } from "ethers";
@@ -13,13 +15,10 @@ import {
   recentTokensAtom,
   showTransactionsAtom,
   transactionsAtom,
-  walletConnectorAtom,
+  walletConnectorAtom
 } from "../components/atoms";
-import { metaMask } from "../connectors";
-import { MagicLoginType } from "../connectors/magic";
 import { CONNECTORS, WRAPED_TOKEN_ADDRESS } from "../constants";
 import { ERC20Abi, WETHAbi } from "../constants/abis";
-import { ChainId } from "../constants/enum";
 import { getPricesByChain, getTokensBalance } from "../services";
 import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "../services/zeroex/constants";
 import { Token, Transaction } from "../types";
@@ -115,7 +114,7 @@ export function useWalletActivate() {
       }
       if (connectorName === "metamask") {
         setWalletConnector("metamask");
-        return await metaMask.connector.activate();
+        return await connector.activate();
       } else if (connectorName === "magic") {
         // setWalletConnector("magic");
         // return await magic.activate({

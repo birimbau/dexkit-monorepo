@@ -1,9 +1,11 @@
+import { ChainId } from "@dexkit/core/constants/enums";
+import { NETWORKS } from "@dexkit/core/constants/networks";
 import {
   useMutation,
   UseMutationOptions,
   UseMutationResult,
   useQuery,
-  UseQueryResult,
+  UseQueryResult
 } from "@tanstack/react-query";
 
 import transakSDK from "@transak/transak-sdk";
@@ -15,20 +17,19 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useIntl } from "react-intl";
 import { WRAPED_TOKEN_ADDRESS } from "../../constants";
 import { ERC20Abi } from "../../constants/abis";
-import { ChainId } from "../../constants/enum";
-import { NETWORKS } from "../../constants/networks";
+
 import {
   useAsyncMemo,
   useDebounce,
   useRecentTokens,
   useTokenBalance,
-  useWrapToken,
+  useWrapToken
 } from "../../hooks";
 import { hasSufficientAllowance } from "../../services";
 import { ZeroExApiClient } from "../../services/zeroex";
 import {
   ZEROEX_AFFILIATE_ADDRESS,
-  ZEROEX_NATIVE_TOKEN_ADDRESS,
+  ZEROEX_NATIVE_TOKEN_ADDRESS
 } from "../../services/zeroex/constants";
 import { ZeroExQuote, ZeroExQuoteResponse } from "../../services/zeroex/types";
 import { Token } from "../../types";
@@ -102,7 +103,6 @@ export interface SwapQuoteParams {
 
 export interface UseQuoteSwap {
   enabled: boolean;
-  setParams: React.Dispatch<React.SetStateAction<SwapQuoteParams | undefined>>;
   setSkipValidation: React.Dispatch<React.SetStateAction<boolean>>;
   setIntentOnFilling: React.Dispatch<React.SetStateAction<boolean>>;
   params: SwapQuoteParams | undefined;
@@ -120,6 +120,7 @@ export function useSwapQuote({
   maxSlippage,
   zeroExApiKey,
   swapFees,
+  params
 }: {
   onSuccess: (data?: [string, ZeroExQuoteResponse | null]) => void;
   maxSlippage?: number;
@@ -128,16 +129,29 @@ export function useSwapQuote({
     recipient: string;
     amount_percentage: number;
   };
+  params: SwapQuoteParams
 }): UseQuoteSwap {
-  const [params, setParams] = useState<SwapQuoteParams>();
+
   const [enabled, setEnabled] = useState(true);
   const [skipValidation, setSkipValidation] = useState(true);
   const [intentOnFilling, setIntentOnFilling] = useState(false);
 
+  const refetchParams = params.quoteFor === 'buy' ? {
+    sellToken: params.sellToken,
+    buyToken: params.buyToken,
+    buyTokenAmount: params.buyTokenAmount,
+  } : {
+    sellToken: params.sellToken,
+    sellTokenAmount: params.sellTokenAmount,
+    buyToken: params.buyToken,
+  }
+
   const quoteQuery = useQuery(
     [
       SWAP_QUOTE,
-      params,
+      refetchParams,
+      params.chainId,
+      params.account,
       maxSlippage,
       zeroExApiKey,
       skipValidation,
@@ -146,7 +160,7 @@ export function useSwapQuote({
     ],
     async ({ signal }) => {
       if (!params) {
-        return;
+        return null;
       }
 
       const {
@@ -187,18 +201,19 @@ export function useSwapQuote({
         }
 
         if (quoteFor === "buy" && buyTokenAmount?.gt(0)) {
+
           quoteParam.buyAmount = buyTokenAmount?.toString();
           return [quoteFor, await client.quote(quoteParam, { signal })];
         } else if (quoteFor === "sell" && sellTokenAmount?.gt(0)) {
+
           quoteParam.sellAmount = sellTokenAmount?.toString();
           return [quoteFor, await client.quote(quoteParam, { signal })];
         }
       }
-
       return null;
     },
     {
-      enabled: Boolean(params) && enabled,
+      enabled: Boolean(params),
       refetchInterval: 10000,
       onSuccess,
     }
@@ -206,7 +221,6 @@ export function useSwapQuote({
 
   return {
     enabled,
-    setParams,
     params,
     setEnabled,
     quoteQuery,
@@ -293,6 +307,8 @@ export function useSwapState({
   defaultBuyToken,
   connector,
   connectorProvider,
+  selectedChainId,
+  connectedChainId,
   account,
   swapFees,
   isActive,
@@ -338,6 +354,8 @@ export function useSwapState({
   isActive?: boolean;
   isActivating?: boolean;
   account?: string;
+  selectedChainId?: ChainId;
+  connectedChainId?: ChainId;
   defaultSellToken?: Token;
   defaultBuyToken?: Token;
   transakApiKey?: string;
@@ -360,7 +378,7 @@ export function useSwapState({
 
   useEffect(() => {
     if (transak) {
-      let allEventsCallback = transak.on(transak.ALL_EVENTS, (data: any) => {});
+      let allEventsCallback = transak.on(transak.ALL_EVENTS, (data: any) => { });
 
       // This will trigger when the user closed the widget
       let widgetCloseCallback = transak.on(
@@ -404,11 +422,11 @@ export function useSwapState({
 
   const [showSettings, setShowSettings] = useState(false);
 
-  const lazySellToken = useDebounce<Token | undefined>(sellToken, 500);
-  const lazyBuyToken = useDebounce<Token | undefined>(buyToken, 500);
-  const lazySellAmount = useDebounce<BigNumber>(sellAmount, 500);
-  const lazyBuyAmount = useDebounce<BigNumber>(buyAmount, 500);
-  const lazyQuoteFor = useDebounce<SwapSide>(quoteFor, 500);
+  const lazySellToken = useDebounce<Token | undefined>(sellToken, 200);
+  const lazyBuyToken = useDebounce<Token | undefined>(buyToken, 200);
+  const lazySellAmount = useDebounce<BigNumber>(sellAmount, 200);
+  const lazyBuyAmount = useDebounce<BigNumber>(buyAmount, 200);
+  const lazyQuoteFor = useDebounce<SwapSide>(quoteFor, 200);
 
   const [showConfirmSwap, setShowConfirmSwap] = useState(false);
 
@@ -434,8 +452,6 @@ export function useSwapState({
         } else if (quotedFor === "sell" && quote) {
           setBuyAmount(BigNumber.from(quote?.buyAmount));
         }
-
-        setQuoteFor(undefined);
       }
     },
     [quoteFor]
@@ -446,6 +462,16 @@ export function useSwapState({
     maxSlippage: !isAutoSlippage ? maxSlippage : undefined,
     zeroExApiKey,
     swapFees,
+    params: {
+      chainId: selectedChainId as ChainId,
+      sellToken: lazySellToken,
+      buyToken: lazyBuyToken,
+      sellTokenAmount: lazySellAmount,
+      buyTokenAmount: lazyBuyAmount,
+      quoteFor: lazyQuoteFor,
+      account,
+    }
+
   });
 
   const { quoteQuery } = quote;
@@ -492,7 +518,7 @@ export function useSwapState({
     if (selectSide === "sell") {
       if (
         token.chainId === buyToken?.chainId &&
-        isAddressEqual(token.contractAddress, buyToken.contractAddress)
+        isAddressEqual(token.contractAddress, buyToken?.contractAddress)
       ) {
         handleSwapTokens();
       } else {
@@ -501,7 +527,7 @@ export function useSwapState({
     } else {
       if (
         token.chainId === sellToken?.chainId &&
-        isAddressEqual(token.contractAddress, sellToken.contractAddress)
+        isAddressEqual(token.contractAddress, sellToken?.contractAddress)
       ) {
         handleSwapTokens();
       } else {
@@ -556,15 +582,9 @@ export function useSwapState({
     quote.setIntentOnFilling(false);
   };
 
-  const chainId = useAsyncMemo<ChainId | undefined>(
-    async (initial) => {
-      if (provider) {
-        return (await provider.getNetwork()).chainId;
-      }
-    },
-    undefined,
-    [provider]
-  );
+  const chainId = useMemo(() => {
+    return selectedChainId;
+  }, [selectedChainId])
 
   const handleChangeNetwork = async (newChainId: ChainId) => {
     onChangeNetwork(newChainId);
@@ -573,7 +593,6 @@ export function useSwapState({
     setBuyAmount(BigNumber.from(0));
     setSellToken(undefined);
     setBuyToken(undefined);
-    quote.setParams(undefined);
   };
 
   const isProviderReady = useAsyncMemo<boolean>(
@@ -593,6 +612,9 @@ export function useSwapState({
   const execType: ExecType = useAsyncMemo<ExecType>(
     async (initial) => {
       let result: ExecType = initial;
+      if (connectedChainId && chainId && chainId !== connectedChainId) {
+        return "switch";
+      }
 
       const isBuyTokenWrapped =
         lazyBuyToken &&
@@ -609,6 +631,7 @@ export function useSwapState({
           WRAPED_TOKEN_ADDRESS[chainId],
           lazySellToken.contractAddress
         );
+
 
       if (lazyBuyToken && lazySellToken && quoteQuery.data) {
         if (!isBuyTokenWrapped && !isSellTokenWrapped) {
@@ -630,42 +653,35 @@ export function useSwapState({
           }
         }
 
-        const connectorChainId = (await connectorProvider?.getNetwork())
-          ?.chainId;
-
-        if (connectorChainId && chainId && chainId !== connectorChainId) {
-          return "switch";
-        }
-
         return "swap";
       }
 
       result =
         isBuyTokenWrapped &&
-        isAddressEqual(
-          lazySellToken?.contractAddress,
-          ZEROEX_NATIVE_TOKEN_ADDRESS
-        )
+          isAddressEqual(
+            lazySellToken?.contractAddress,
+            ZEROEX_NATIVE_TOKEN_ADDRESS
+          )
           ? "wrap"
           : isSellTokenWrapped &&
             isAddressEqual(
               lazyBuyToken?.contractAddress,
               ZEROEX_NATIVE_TOKEN_ADDRESS
             )
-          ? "unwrap"
-          : "swap";
+            ? "unwrap"
+            : "swap";
 
       return result;
     },
     "quote",
     [
-      connectorProvider,
+      provider,
+      connectedChainId,
       lazyBuyToken,
       lazySellToken,
       quoteQuery.data,
       account,
       lazySellAmount,
-      provider,
       chainId,
     ]
   );
@@ -695,17 +711,17 @@ export function useSwapState({
             {
               quote: data,
               provider: connectorProvider as providers.Web3Provider,
-              onHash: (hash: string) => {},
+              onHash: (hash: string) => { },
               sellToken,
               buyToken,
             },
             {
-              onSuccess: (receipt: ethers.providers.TransactionReceipt) => {},
+              onSuccess: (receipt: ethers.providers.TransactionReceipt) => { },
               onError,
             }
           );
         }
-      } catch (err: unknown) {}
+      } catch (err: unknown) { }
     }
   };
 
@@ -727,10 +743,10 @@ export function useSwapState({
         {
           provider: connectorProvider as providers.Web3Provider,
           amount: lazySellAmount,
-          onHash: (hash: string) => {},
+          onHash: (hash: string) => { },
         },
         {
-          onSuccess: (receipt: ethers.providers.TransactionReceipt) => {},
+          onSuccess: (receipt: ethers.providers.TransactionReceipt) => { },
         }
       );
     } else if (execType === "approve" && quoteQuery.data) {
@@ -746,7 +762,7 @@ export function useSwapState({
             token: sellToken,
           },
           {
-            onSuccess: () => {},
+            onSuccess: () => { },
           }
         );
       }
@@ -755,7 +771,7 @@ export function useSwapState({
         {
           provider: connectorProvider as providers.Web3Provider,
           amount: lazySellAmount,
-          onHash: (hash: string) => {},
+          onHash: (hash: string) => { },
         },
         {
           onSuccess: (receipt: ethers.providers.TransactionReceipt) => {
@@ -776,33 +792,22 @@ export function useSwapState({
     connectorProvider,
   ]);
 
-  useEffect(() => {
-    (async () => {
-      if (
-        lazySellToken &&
-        lazyBuyToken &&
-        lazyQuoteFor &&
-        (lazySellAmount || lazyBuyAmount)
-      ) {
-        if (execType === "wrap" || execType === "unwrap") {
-          setBuyAmount(lazySellAmount);
-        } else if (provider && lazyQuoteFor) {
-          if (!quote.enabled) {
-            quote.setEnabled(true);
-          }
-
-          quote.setParams({
-            chainId: (await provider.getNetwork()).chainId,
-            sellToken: lazySellToken,
-            buyToken: lazyBuyToken,
-            sellTokenAmount: lazySellAmount,
-            buyTokenAmount: lazyBuyAmount,
-            quoteFor: lazyQuoteFor,
-            account,
-          });
+  /*useEffect(() => {
+    if (
+      lazySellToken &&
+      lazyBuyToken &&
+      lazyQuoteFor &&
+      (lazySellAmount || lazyBuyAmount)
+    ) {
+      if (execType === "wrap" || execType === "unwrap") {
+        setBuyAmount(lazySellAmount);
+      } else if (lazyQuoteFor) {
+        if (!quote.enabled) {
+          quote.setEnabled(true);
         }
       }
-    })();
+    }
+
   }, [
     quote,
     lazyQuoteFor,
@@ -811,9 +816,7 @@ export function useSwapState({
     lazySellToken,
     lazyBuyToken,
     execType,
-    account,
-    provider,
-  ]);
+  ]);*/
 
   const quoteData = useMemo(() => {
     if (quoteQuery.data) {
