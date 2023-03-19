@@ -1,6 +1,6 @@
 import { useWeb3React, Web3ReactHooks } from "@web3-react/core";
 
-import { MagicLoginType } from "@dexkit/core/constants";
+import { CONNECTORS, MagicLoginType } from "@dexkit/core/constants";
 import { ChainId } from "@dexkit/core/constants/enums";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Connector } from "@web3-react/types";
@@ -17,7 +17,7 @@ import {
   transactionsAtom,
   walletConnectorAtom
 } from "../components/atoms";
-import { CONNECTORS, WRAPED_TOKEN_ADDRESS } from "../constants";
+import { WRAPED_TOKEN_ADDRESS } from "../constants";
 import { ERC20Abi, WETHAbi } from "../constants/abis";
 import { getPricesByChain, getTokensBalance } from "../services";
 import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "../services/zeroex/constants";

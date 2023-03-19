@@ -1,19 +1,12 @@
 import { ChainId } from "@dexkit/core/constants/enums";
-import { Web3ReactHooks } from "@web3-react/core";
-import { Connector } from "@web3-react/types";
 import { ethers } from "ethers";
 import { isAddress } from "ethers/lib/utils";
-import { metaMask } from "../connectors";
 import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "../services/zeroex/constants";
 import { Token } from "../types";
 import { isAddressEqual } from "../utils";
 
-// import { magic, magicHooks } from '../connectors/magic';
 
-export const CONNECTORS: { [key: string]: [Connector, Web3ReactHooks] } = {
-  metamask: [metaMask.connector, metaMask.hooks],
-  // magic: [magic, magicHooks],
-};
+
 
 export const WRAPED_TOKEN_ADDRESS: { [key: number]: string } = {
   [ChainId.Goerli]: "0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6",
