@@ -83,6 +83,11 @@
           "type": "External",
           "href": "https://dexkit.canny.io/feature-requests",
           "name": "Request Feature"
+        },
+        {
+          "type": "External",
+          "href": "https://discord.gg/FnkrFAY7Za",
+          "name": "Discord"
         }
       ]
     }
