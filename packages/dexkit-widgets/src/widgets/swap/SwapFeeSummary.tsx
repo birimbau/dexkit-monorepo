@@ -51,7 +51,7 @@ export default function SwapFeeSummary({
   }, [quote]);
 
   const totalFee = useMemo(() => {
-    return maxFee.add(amount);
+    return maxFee;
   }, [amount, maxFee]);
 
   const totalFiat = useMemo(() => {

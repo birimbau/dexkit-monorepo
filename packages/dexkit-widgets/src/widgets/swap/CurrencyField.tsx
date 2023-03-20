@@ -39,7 +39,7 @@ export function CurrencyField({
         });
       }
     },
-    500
+    0
   );
 
   const handleChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
@@ -55,7 +55,7 @@ export function CurrencyField({
         }
       } catch (err) {}
     },
-    500
+    0
   );
 
   return (
