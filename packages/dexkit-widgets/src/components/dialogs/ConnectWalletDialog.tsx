@@ -23,8 +23,8 @@ import { useWeb3React } from "@web3-react/core";
 
 import AppDialogTitle from "../AppDialogTitle";
 
+import { MagicLoginType } from "@dexkit/core/constants";
 import { useSnackbar } from "notistack";
-import { MagicLoginType } from "../../connectors/magic";
 import { useWalletActivate } from "../../hooks";
 
 interface Props {

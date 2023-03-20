@@ -2,11 +2,11 @@ import MultiCall, { TokenBalances } from "@indexed-finance/multicall";
 import { ethers } from "ethers";
 import { COINGECKO_ENDPOIT, COINGECKO_PLATFORM_ID } from "../constants";
 import { ERC20Abi } from "../constants/abis";
-import { ChainId } from "../constants/enum";
 import { Token, TokenPrices } from "../types";
 import { isAddressEqual } from "../utils";
 import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "./zeroex/constants";
 
+import { ChainId } from "@dexkit/core/constants/enums";
 import axios from "axios";
 
 export const getERC20TokenAllowance = async (

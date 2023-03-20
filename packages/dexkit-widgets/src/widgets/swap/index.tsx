@@ -1,11 +1,9 @@
 import Swap from "./Swap";
 
-import { DKAPI_INVALID_ADDRESSES } from "@dexkit/core/constants";
+import { ChainId, DKAPI_INVALID_ADDRESSES } from "@dexkit/core/constants";
 import { useWeb3React } from "@web3-react/core";
 import { useEffect, useMemo, useState } from "react";
 import { GET_NATIVE_TOKEN } from "../../constants";
-import { ChainId } from "../../constants/enum";
-import { NETWORKS } from "../../constants/networks";
 import { usePlatformCoinSearch } from "../../hooks/api";
 import { apiCoinToTokens } from "../../utils/api";
 import SwapConfirmDialog from "./dialogs/SwapConfirmDialog";
@@ -15,6 +13,7 @@ import SwapSettingsDialog from "./dialogs/SwapSettingsDialog";
 //   function renderSwapWidget(id: string, options: RenderOptions): void;
 // }
 
+import { NETWORKS } from "@dexkit/core/constants/networks";
 import SwitchNetworkDialog from "../../components/SwitchNetworkDialog";
 import {
   useErc20ApproveMutation,
@@ -57,8 +56,14 @@ export function SwapWidget({
   onChangeSlippage,
   onAutoSlippage,
 }: SwapWidgetProps) {
-  const { provider, connector, account, isActive, isActivating } =
-    useWeb3React();
+  const {
+    provider,
+    connector,
+    account,
+    isActive,
+    isActivating,
+    chainId: connectedChainId,
+  } = useWeb3React();
 
   const {
     configsByChain,
@@ -130,6 +135,8 @@ export function SwapWidget({
     handleShowTransak,
   } = useSwapState({
     zeroExApiKey,
+    selectedChainId,
+    connectedChainId,
     execMutation: execSwapMutation,
     approveMutation,
     provider: swapProvider,

@@ -1,11 +1,11 @@
+import { ChainId } from "@dexkit/core/constants/enums";
+import { NETWORK_COIN_SYMBOL } from "@dexkit/core/constants/networks";
 import { Info, Sync } from "@mui/icons-material";
 import { Box, IconButton, Stack, Tooltip, Typography } from "@mui/material";
 import { BigNumber, ethers } from "ethers";
 import { useMemo, useState } from "react";
 import { FormattedMessage, FormattedNumber } from "react-intl";
 import { GET_NATIVE_TOKEN } from "../../constants";
-import { ChainId } from "../../constants/enum";
-import { NETWORK_SYMBOL } from "../../constants/networks";
 import { useCoinPrices, useGasPrice } from "../../hooks";
 import { ZeroExQuoteResponse } from "../../services/zeroex/types";
 import { Token } from "../../types";
@@ -51,7 +51,7 @@ export default function SwapFeeSummary({
   }, [quote]);
 
   const totalFee = useMemo(() => {
-    return maxFee.add(amount);
+    return maxFee;
   }, [amount, maxFee]);
 
   const totalFiat = useMemo(() => {
@@ -207,7 +207,7 @@ export default function SwapFeeSummary({
                   value={totalFiat}
                   currency={currency}
                 />{" "}
-                ({formatBigNumber(totalFee, 18)} {NETWORK_SYMBOL(chainId)})
+                ({formatBigNumber(totalFee, 18)} {NETWORK_COIN_SYMBOL(chainId)})
               </>
             </Typography>
             <Tooltip

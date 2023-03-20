@@ -1,3 +1,5 @@
+import { ChainId } from "@dexkit/core/constants/enums";
+import { NETWORKS } from "@dexkit/core/constants/networks";
 import {
   Avatar,
   CircularProgress,
@@ -12,9 +14,9 @@ import {
 } from "@mui/material";
 import { memo, useState } from "react";
 import { FormattedMessage } from "react-intl";
-import { ChainId } from "../constants/enum";
+
 // import { MagicConnector } from '../connectors/magic';
-import { NETWORKS } from "../constants/networks";
+
 import { parseChainId } from "../utils";
 
 interface SwitchNetworkSelectProps {

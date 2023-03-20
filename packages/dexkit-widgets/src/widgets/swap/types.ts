@@ -1,6 +1,6 @@
+import { ChainId } from "@dexkit/core/constants/enums";
 import { BigNumber } from "ethers";
 import React from "react";
-import { ChainId } from "../../constants/enum";
 import { ZeroExQuoteResponse } from "../../services/zeroex/types";
 import { Token } from "../../types";
 

@@ -1,9 +1,10 @@
+import { ChainId } from "@dexkit/core/constants/enums";
 import axios, { AxiosInstance, AxiosRequestHeaders } from "axios";
-import { ChainId } from "../../constants/enum";
+
 import {
   ZEROEX_QUOTE_ENDPOINT,
   ZEROEX_TOKENS_ENDPOINT,
-  ZERO_EX_URL,
+  ZERO_EX_URL
 } from "./constants";
 
 import { ZeroExQuote, ZeroExQuoteResponse } from "./types";
@@ -32,6 +33,7 @@ export class ZeroExApiClient {
     quote: ZeroExQuote,
     { signal }: { signal?: AbortSignal }
   ): Promise<ZeroExQuoteResponse> {
+
     const resp = await this.axiosInstance.get(ZEROEX_QUOTE_ENDPOINT, {
       params: quote,
       signal,

@@ -1,7 +1,8 @@
+import { ChainId } from "@dexkit/core/constants/enums";
 import { Avatar, Box, Chip, Grid } from "@mui/material";
 import { memo } from "react";
 import { TOKEN_ICON_URL } from "../../constants";
-import { ChainId } from "../../constants/enum";
+
 import { Token } from "../../types";
 
 export interface SwapFeaturedTokensProps {
