@@ -37,8 +37,6 @@
   ],
   "menuTree": [
     { "type": "Page", "href": "/", "name": "Home" },
-    { "type": "Page", "href": "/swap", "name": "Swap" },
-    { "type": "Page", "href": "/wallet", "name": "Wallet" },
     {
       "type": "Menu",
       "href": "",
@@ -63,6 +61,28 @@
           "type": "Page",
           "href": "/admin",
           "name": "Manage Apps"
+        }
+      ]
+    },
+    {
+      "type": "Menu",
+      "href": "",
+      "name": "Support",
+      "children": [
+        {
+          "type": "External",
+          "href": "https://docs.dexkit.com/defi-products/nft-marketplace/creating-my-first-marketplace",
+          "name": "Docs"
+        },
+        {
+          "type": "External",
+          "href": "https://dexkit.atlassian.net/servicedesk/customer/portals",
+          "name": "Help"
+        },
+        {
+          "type": "External",
+          "href": "https://dexkit.canny.io/feature-requests",
+          "name": "Request Feature"
         }
       ]
     }

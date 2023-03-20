@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, useMemo } from 'react';
 
 // The editor core
 import Editor, {
@@ -36,6 +36,7 @@ import ExtendedSpacer from './plugins/ExtendedSpacerPlugin';
 
 import { Theme } from '@mui/material';
 import { styled } from '@mui/system';
+import { BuilderKit } from '../../constants';
 import AssetListPlugin from './plugins/AssetListPlugin';
 import AssetPlugin from './plugins/AssetPlugin';
 import ButtonPlugin from './plugins/ButtonPlugin';
@@ -80,6 +81,56 @@ const cellPlugins = [
   video,
   WidgetPlugin,
 ];
+
+const nftPlugins = [
+  background({
+    enabledModes:
+      ModeEnum.COLOR_MODE_FLAG |
+      ModeEnum.GRADIENT_MODE_FLAG |
+      ModeEnum.IMAGE_MODE_FLAG,
+  }),
+  ButtonPlugin,
+  CodeSnippet,
+  CollectionPlugin,
+  ContainerPlugin,
+  divider,
+  html5video,
+  ImagePlugin,
+  AssetPlugin,
+  AssetListPlugin,
+  ExtendedSpacer,
+  StackPlugin,
+  SearchNFTPlugin,
+  DefaultSlate,
+  CustomContentPluginTwitter,
+  video,
+  WidgetPlugin,
+];
+
+const swapPlugins = [
+  background({
+    enabledModes:
+      ModeEnum.COLOR_MODE_FLAG |
+      ModeEnum.GRADIENT_MODE_FLAG |
+      ModeEnum.IMAGE_MODE_FLAG,
+  }),
+  ButtonPlugin,
+  CodeSnippet,
+  ContainerPlugin,
+  divider,
+  html5video,
+  ImagePlugin,
+  ExtendedSpacer,
+  StackPlugin,
+  //  CustomLayoutPlugin,
+  // SwapPlugin,
+  Swap2Plugin,
+  DefaultSlate,
+  CustomContentPluginTwitter,
+  video,
+  WidgetPlugin,
+];
+
 // https://github.com/react-page/react-page/issues/970
 const BottomToolbarStyled = styled(BottomToolbar)({
   '&, & > *': {
@@ -99,10 +150,11 @@ interface Props {
   value?: string | undefined | null;
   onChange?: (value: string | null) => void;
   theme?: Theme;
+  builderKit?: BuilderKit;
 }
 
 export default function PageEditor(props: Props) {
-  const { readOnly, onChange, value, theme } = props;
+  const { readOnly, onChange, value, theme, builderKit } = props;
 
   const onChangeValue = (val: Value | null) => {
     if (onChange) {
@@ -114,12 +166,22 @@ export default function PageEditor(props: Props) {
     }
   };
 
+  const plugins = useMemo(() => {
+    if (builderKit === BuilderKit.NFT) {
+      return nftPlugins;
+    }
+    if (builderKit === BuilderKit.Swap) {
+      return swapPlugins;
+    }
+    return cellPlugins;
+  }, [builderKit]);
+
   return (
     <Editor
       components={{
         BottomToolbar: CustomToolbar,
       }}
-      cellPlugins={cellPlugins}
+      cellPlugins={plugins}
       value={JSON.parse(value || 'null')}
       onChange={onChangeValue}
       readOnly={readOnly}

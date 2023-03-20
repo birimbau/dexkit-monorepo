@@ -1,11 +1,12 @@
+import dynamic from 'next/dynamic';
 import { Dispatch, SetStateAction, useCallback, useState } from 'react';
 import { AppPage, AppPageOptions, AppPageSection } from '../../../types/config';
-import dynamic from 'next/dynamic';
+import { BuilderKit } from '../constants';
+import PagesSection from './sections/PagesSection';
 
 const ConfirmRemoveSectionDialog = dynamic(
   () => import('./dialogs/ConfirmRemoveSectionDialog')
 );
-import PagesSection from './sections/PagesSection';
 
 interface Props {
   pages: {
@@ -19,6 +20,7 @@ interface Props {
   theme: any;
   currentPage: AppPage;
   setCurrentPage: Dispatch<SetStateAction<AppPage>>;
+  builderKit?: BuilderKit;
 }
 
 export function PagesContainer({
@@ -27,6 +29,7 @@ export function PagesContainer({
   theme,
   currentPage,
   setCurrentPage,
+  builderKit,
 }: Props) {
   const [showConfirmRemove, setShowConfirmRemove] = useState(false);
   const [selectedSectionIndex, setSelectedSectionindex] = useState<number>(-1);
@@ -201,6 +204,7 @@ export function PagesContainer({
         onConfirm={handleConfimRemoveSection}
       />
       <PagesSection
+        builderKit={builderKit}
         pages={pages}
         theme={theme}
         sections={currentPage.sections}

@@ -31,6 +31,8 @@ import { AppConfig } from '../../../../types/config';
 import { SiteResponse } from '../../../../types/whitelabel';
 import { useAppWizardConfig } from '../../hooks';
 
+import { BuilderKit } from '../../constants';
+import BuilderKitMenu from '../BuilderKitMenu';
 import SignConfigDialog from '../dialogs/SignConfigDialog';
 import { PreviewAppButton } from '../PreviewAppButton';
 import { WelcomeMessage } from '../WelcomeMessage';
@@ -71,20 +73,20 @@ interface Props {
 }
 
 enum ActiveMenu {
-  General,
-  Domain,
-  Social,
-  Theme,
-  Pages,
-  Menu,
-  FooterMenu,
-  Seo,
-  Analytics,
-  MarketplaceFees,
-  SwapFees,
-  Collections,
-  Tokens,
-  Ownership,
+  General = 'general',
+  Domain = 'domain',
+  Social = 'social',
+  Theme = 'theme',
+  Pages = 'pages',
+  Menu = 'menu',
+  FooterMenu = 'footer-menu',
+  Seo = 'seo',
+  Analytics = 'analytics',
+  MarketplaceFees = 'marketplace-fees',
+  SwapFees = 'swap-fees',
+  Collections = 'collections',
+  Tokens = 'tokens',
+  Ownership = 'ownership',
 }
 
 const ListSubheaderCustom = styled(ListSubheader)({
@@ -100,6 +102,10 @@ export function EditWizardContainer({ site }: Props) {
   const { formatMessage } = useIntl();
 
   const [activeMenu, setActiveMenu] = useState<ActiveMenu>(ActiveMenu.General);
+  const [activeBuilderKit, setActiveBuilderKit] = useState<BuilderKit>(
+    BuilderKit.ALL
+  );
+  console.log(activeBuilderKit);
 
   const theme = useTheme();
 
@@ -335,36 +341,40 @@ export function EditWizardContainer({ site }: Props) {
             </ListSubheaderCustom>
           }
         >
-          <ListItem disablePadding>
-            <ListItemButton
-              selected={activeMenu === ActiveMenu.MarketplaceFees}
-              onClick={() => setActiveMenu(ActiveMenu.MarketplaceFees)}
-            >
-              <ListItemText
-                primary={
-                  <FormattedMessage
-                    id="marketplace.fees"
-                    defaultMessage={'Marketplace fees'}
-                  />
-                }
-              />
-            </ListItemButton>
-          </ListItem>
-          <ListItem disablePadding>
-            <ListItemButton
-              selected={activeMenu === ActiveMenu.SwapFees}
-              onClick={() => setActiveMenu(ActiveMenu.SwapFees)}
-            >
-              <ListItemText
-                primary={
-                  <FormattedMessage
-                    id="swap.fees"
-                    defaultMessage={'Swap fees'}
-                  />
-                }
-              />
-            </ListItemButton>
-          </ListItem>
+          {activeBuilderKit !== BuilderKit.Swap && (
+            <ListItem disablePadding>
+              <ListItemButton
+                selected={activeMenu === ActiveMenu.MarketplaceFees}
+                onClick={() => setActiveMenu(ActiveMenu.MarketplaceFees)}
+              >
+                <ListItemText
+                  primary={
+                    <FormattedMessage
+                      id="marketplace.fees"
+                      defaultMessage={'Marketplace fees'}
+                    />
+                  }
+                />
+              </ListItemButton>
+            </ListItem>
+          )}
+          {activeBuilderKit !== BuilderKit.NFT && (
+            <ListItem disablePadding>
+              <ListItemButton
+                selected={activeMenu === ActiveMenu.SwapFees}
+                onClick={() => setActiveMenu(ActiveMenu.SwapFees)}
+              >
+                <ListItemText
+                  primary={
+                    <FormattedMessage
+                      id="swap.fees"
+                      defaultMessage={'Swap fees'}
+                    />
+                  }
+                />
+              </ListItemButton>
+            </ListItem>
+          )}
         </List>
       </nav>
       <Divider />
@@ -376,21 +386,23 @@ export function EditWizardContainer({ site }: Props) {
             </ListSubheaderCustom>
           }
         >
-          <ListItem disablePadding>
-            <ListItemButton
-              selected={activeMenu === ActiveMenu.Collections}
-              onClick={() => setActiveMenu(ActiveMenu.Collections)}
-            >
-              <ListItemText
-                primary={
-                  <FormattedMessage
-                    id="collections"
-                    defaultMessage={'Collections'}
-                  />
-                }
-              />
-            </ListItemButton>
-          </ListItem>
+          {activeBuilderKit !== BuilderKit.Swap && (
+            <ListItem disablePadding>
+              <ListItemButton
+                selected={activeMenu === ActiveMenu.Collections}
+                onClick={() => setActiveMenu(ActiveMenu.Collections)}
+              >
+                <ListItemText
+                  primary={
+                    <FormattedMessage
+                      id="collections"
+                      defaultMessage={'Collections'}
+                    />
+                  }
+                />
+              </ListItemButton>
+            </ListItem>
+          )}
           <ListItem disablePadding>
             <ListItemButton
               selected={activeMenu === ActiveMenu.Tokens}
@@ -436,8 +448,8 @@ export function EditWizardContainer({ site }: Props) {
 
       <NextSeo
         title={formatMessage({
-          id: 'app.setup',
-          defaultMessage: 'App Setup',
+          id: 'app.builder.setup',
+          defaultMessage: 'App Builder Setup',
         })}
       />
       <AppConfirmDialog
@@ -517,9 +529,15 @@ export function EditWizardContainer({ site }: Props) {
           <Grid item xs={12} sm={12}>
             <Stack direction={'row'} justifyContent={'space-between'}>
               {!isMobile && (
-                <Typography variant="h5">
-                  <FormattedMessage id="edit.app" defaultMessage="Edit App" />
-                </Typography>
+                <Stack direction={'row'} alignItems={'center'} spacing={2}>
+                  <Typography variant="h5">
+                    <FormattedMessage id="edit.app" defaultMessage="Edit App" />
+                  </Typography>
+                  <BuilderKitMenu
+                    menu={activeBuilderKit}
+                    onChangeMenu={(menu) => setActiveBuilderKit(menu)}
+                  />
+                </Stack>
               )}
               <Stack direction={'row'} spacing={2}>
                 <PreviewAppButton appConfig={wizardConfig} />
@@ -581,13 +599,18 @@ export function EditWizardContainer({ site }: Props) {
               {activeMenu === ActiveMenu.Theme && config && (
                 <ThemeWizardContainer
                   config={config}
+                  showSwap={activeBuilderKit === BuilderKit.Swap}
                   onSave={handleSave}
                   onChange={handleChange}
                 />
               )}
 
               {activeMenu === ActiveMenu.Pages && config && (
-                <PagesWizardContainer config={config} onSave={handleSave} />
+                <PagesWizardContainer
+                  config={config}
+                  onSave={handleSave}
+                  builderKit={activeBuilderKit}
+                />
               )}
 
               {activeMenu === ActiveMenu.MarketplaceFees && config && (
