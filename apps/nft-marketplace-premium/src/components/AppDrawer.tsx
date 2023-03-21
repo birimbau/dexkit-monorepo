@@ -24,10 +24,9 @@ import { useWeb3React } from '@web3-react/core';
 import { useAtomValue } from 'jotai';
 import { useUpdateAtom } from 'jotai/utils';
 import { FormattedMessage } from 'react-intl';
-import { useAppConfig, useConnectWalletDialog } from '../hooks/app';
+import { useAppConfig, useConnectWalletDialog, useLocale } from '../hooks/app';
 import {
   currencyAtom,
-  localeAtom,
   showSelectCurrencyAtom,
   showSelectLocaleAtom,
 } from '../state/atoms';
@@ -60,7 +59,7 @@ function AppDrawer({ open, onClose }: Props) {
     connectWalletDialog.setOpen(true);
   };
 
-  const locale = useAtomValue(localeAtom);
+  const { locale } = useLocale();
   const currency = useAtomValue(currencyAtom);
 
   const setShowShowSelectCurrency = useUpdateAtom(showSelectCurrencyAtom);

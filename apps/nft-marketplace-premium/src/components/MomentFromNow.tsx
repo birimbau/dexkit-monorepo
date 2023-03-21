@@ -1,14 +1,13 @@
-import { useAtomValue } from 'jotai';
 import moment from 'moment';
 import { memo } from 'react';
-import { localeAtom } from '../state/atoms';
+import { useLocale } from 'src/hooks/app';
 
 interface Props {
   from: moment.Moment;
 }
 
 function MomentFromNow({ from }: Props) {
-  const locale = useAtomValue(localeAtom);
+  const { locale } = useLocale();
   const datetime = moment(from);
 
   datetime.locale(locale);

@@ -1,7 +1,5 @@
-import { useAtomValue } from 'jotai';
 import { IntlProvider } from 'react-intl';
-import { useAppConfig } from '../hooks/app';
-import { localeAtom } from '../state/atoms';
+import { useAppConfig, useLocale } from '../hooks/app';
 import { loadLocaleData } from '../utils/intl';
 
 interface Props {
@@ -10,7 +8,7 @@ interface Props {
 
 function AppIntlProvider({ children }: Props) {
   const appConfig = useAppConfig();
-  const locale = useAtomValue(localeAtom);
+  const { locale } = useLocale();
 
   return (
     <IntlProvider
