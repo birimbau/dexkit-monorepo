@@ -22,6 +22,8 @@ export const ZEROEX_CHAIN_PREFIX = (chainId?: number) => {
       return "fantom.";
     case ChainId.Optimism:
       return "optimism.";
+    case ChainId.Arbitrum:
+      return "arbitrum.";
     case ChainId.Goerli:
       return "goerli.";
     default:
