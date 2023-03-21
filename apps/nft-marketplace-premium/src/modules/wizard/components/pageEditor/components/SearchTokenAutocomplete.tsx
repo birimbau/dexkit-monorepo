@@ -81,7 +81,7 @@ export function SearchTokenAutocomplete(props: Props) {
           {...props}
         >
           <img loading="lazy" width="20" src={`${option.logoURI}`} alt="" />
-          {getChainName(option.chainId)} - {option.logoURI} -
+          {getChainName(option.chainId)} - {option.name} -
           {option?.symbol.toUpperCase() || ''}
         </Box>
       )}

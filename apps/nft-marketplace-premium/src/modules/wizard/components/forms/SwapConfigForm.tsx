@@ -143,14 +143,16 @@ export function SwapConfigForm({ onChange, data }: Props) {
                     ...formData?.configByChain,
                     [selectedChainId]: {
                       ...oldFormData,
-                      sellToken: {
-                        chainId: tk.chainId as number,
-                        contractAddress: tk.address,
-                        decimals: tk.decimals,
-                        name: tk.name,
-                        symbol: tk.symbol,
-                        logoURI: tk.logoURI,
-                      },
+                      sellToken: tk
+                        ? {
+                            chainId: tk.chainId as number,
+                            contractAddress: tk.address,
+                            decimals: tk.decimals,
+                            name: tk.name,
+                            symbol: tk.symbol,
+                            logoURI: tk.logoURI,
+                          }
+                        : undefined,
                     },
                   },
                 }));
@@ -189,14 +191,16 @@ export function SwapConfigForm({ onChange, data }: Props) {
                         ...formData.configByChain,
                         [selectedChainId]: {
                           ...oldFormData,
-                          buyToken: {
-                            chainId: tk.chainId as number,
-                            contractAddress: tk.address,
-                            decimals: tk.decimals,
-                            name: tk.name,
-                            symbol: tk.symbol,
-                            logoURI: tk.logoURI,
-                          },
+                          buyToken: tk
+                            ? {
+                                chainId: tk.chainId as number,
+                                contractAddress: tk.address,
+                                decimals: tk.decimals,
+                                name: tk.name,
+                                symbol: tk.symbol,
+                                logoURI: tk.logoURI,
+                              }
+                            : undefined,
                         },
                       },
                     };
