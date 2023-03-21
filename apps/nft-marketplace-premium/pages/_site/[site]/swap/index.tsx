@@ -7,13 +7,15 @@ import { NextSeo } from 'next-seo';
 import { FormattedMessage, useIntl } from 'react-intl';
 import MainLayout from 'src/components/layouts/main';
 import { PageHeader } from 'src/components/PageHeader';
+import { useAppConfig } from 'src/hooks/app';
 import { useSwapState } from 'src/hooks/swap';
 import { getAppConfig } from 'src/services/app';
 
 const WidgetComponent = () => {
   const swapState = useSwapState();
+  const appConfig = useAppConfig();
 
-  return <SwapWidget {...swapState} />;
+  return <SwapWidget {...swapState} swapFees={appConfig.swapFees} />;
 };
 
 const SwapPage: NextPage = () => {
