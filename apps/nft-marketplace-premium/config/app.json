@@ -40,6 +40,33 @@
     {
       "type": "Menu",
       "href": "",
+      "name": "Pages",
+      "children": [
+        {
+          "type": "Page",
+          "href": "/swap",
+          "name": "Swap"
+        },
+        {
+          "type": "Page",
+          "href": "/wallet",
+          "name": "Wallet"
+        },
+        {
+          "type": "Page",
+          "href": "/collections",
+          "name": "Collections"
+        },
+        {
+          "type": "Page",
+          "href": "/order/create",
+          "name": "Order create"
+        }
+      ]
+    },
+    {
+      "type": "Menu",
+      "href": "",
       "name": "App Builder",
       "children": [
         {
