@@ -1,4 +1,5 @@
 import { NETWORKS } from "@dexkit/core/constants/networks";
+import { MagicConnector } from "@dexkit/core/types/magic";
 import { MetaMask } from "@web3-react/metamask";
 import { Connector } from "@web3-react/types";
 import { BigNumber, ethers } from "ethers";
@@ -71,6 +72,8 @@ export async function switchNetwork(connector: Connector, chainId: number) {
       method: "wallet_switchEthereumChain",
       params: [{ chainId: `0x${chainId.toString(16)}` }],
     });
+  } else if (connector instanceof MagicConnector) {
+    connector.changeNetwork(chainId);
   }
 }
 

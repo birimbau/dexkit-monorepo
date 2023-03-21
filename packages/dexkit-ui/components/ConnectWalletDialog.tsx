@@ -1,5 +1,7 @@
 import {
   Avatar,
+  Box,
+  Button,
   CircularProgress,
   Dialog,
   DialogContent,
@@ -11,6 +13,7 @@ import {
   ListItemButton,
   ListItemText,
   Stack,
+  TextField,
 } from "@mui/material";
 
 import { ChangeEvent, useState } from "react";
@@ -166,7 +169,7 @@ export function ConnectWalletDialog({
       />
       <Divider />
       <DialogContent sx={{ padding: 0 }}>
-        {/* <Box p={2}>
+        <Box p={2}>
           <Stack spacing={2}>
             <TextField
               disabled={
@@ -202,7 +205,7 @@ export function ConnectWalletDialog({
               />
             </Button>
           </Stack>
-        </Box> */}
+        </Box>
         <Divider />
         <List disablePadding>{renderConnectors()}</List>
       </DialogContent>

@@ -60,8 +60,6 @@ export function useTransactions() {
       if (chainId !== undefined) {
         setHash(hash);
 
-        console.log('chama nego');
-
         updateTransactions((txs) => ({
           ...txs,
           [hash]: {

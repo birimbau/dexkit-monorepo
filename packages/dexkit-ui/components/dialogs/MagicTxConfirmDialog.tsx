@@ -31,7 +31,8 @@ import {
   truncateAddress,
 } from "@dexkit/core/utils";
 
-import { useErc20Balance } from "@dexkit/core/hooks";
+import { GET_NATIVE_TOKEN } from "@dexkit/core/constants";
+import { useCoinPrices, useErc20Balance } from "@dexkit/core/hooks";
 import { AppDialogTitle } from "../AppDialogTitle";
 
 interface TransactionConfirmDialogProps {
@@ -55,6 +56,12 @@ export function MagicTxConfirmDialog(props: TransactionConfirmDialogProps) {
   const { dialogProps } = props;
   const { provider, chainId, account } = useWeb3React();
 
+  const coinPrices = useCoinPrices({
+    currency,
+    tokens: chainId ? [GET_NATIVE_TOKEN(chainId)] : [],
+    chainId,
+  });
+
   const tokenBalancesQuery = useErc20Balance({
     account,
     provider,
@@ -65,9 +72,25 @@ export function MagicTxConfirmDialog(props: TransactionConfirmDialogProps) {
     return tokenBalancesQuery.data;
   }, [tokenBalancesQuery.data]);
 
-  const etherPrice = useMemo(() => {
-    return 0;
+  const totalFee = useMemo(() => {
+    return BigNumber.from(0);
   }, []);
+
+  const etherPrice = useMemo(() => {
+    const amount = parseFloat(ethers.utils.formatEther(totalFee));
+
+    if (coinPrices.data && chainId && currency) {
+      const t = coinPrices.data[chainId];
+
+      if (t) {
+        const price = t[ethers.constants.AddressZero];
+
+        return amount * price[currency];
+      }
+    }
+
+    return 0;
+  }, [coinPrices]);
 
   const [isInsufficientFunds, setIsInsufficientFunds] = useState(false);
 
@@ -305,15 +328,8 @@ export function MagicTxConfirmDialog(props: TransactionConfirmDialogProps) {
                 </Typography>
               </Typography>
               <Typography variant="body1" color="textSecondary">
-                $
-                {(etherPrice || 0) *
-                  (gasCost(values) +
-                    parseInt(
-                      values.value
-                        ? ethers.utils.formatEther(values.value)
-                        : "0"
-                    ))}{" "}
-                <FormattedMessage id="usd" defaultMessage={"USD"} />
+                {etherPrice}
+                <FormattedMessage id="usd" defaultMessage="USD" />
               </Typography>
             </Box>
           </Grid>
@@ -409,7 +425,7 @@ export function MagicTxConfirmDialog(props: TransactionConfirmDialogProps) {
                               label={
                                 <FormattedMessage
                                   id="gas.price"
-                                  defaultMessage={"Gas price"}
+                                  defaultMessage="Gas price"
                                 />
                               }
                             />

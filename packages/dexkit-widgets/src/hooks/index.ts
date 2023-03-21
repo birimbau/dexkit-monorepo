@@ -15,7 +15,7 @@ import {
   recentTokensAtom,
   showTransactionsAtom,
   transactionsAtom,
-  walletConnectorAtom
+  walletConnectorAtom,
 } from "../components/atoms";
 import { WRAPED_TOKEN_ADDRESS } from "../constants";
 import { ERC20Abi, WETHAbi } from "../constants/abis";
@@ -356,7 +356,7 @@ export function useMultiTokenBalance({
   );
 }
 
-export const COIN_PRICES_QUERY = "";
+export const COIN_PRICES_QUERY = "COIN_PRICES_QUERY";
 
 export function useCoinPrices({
   currency,

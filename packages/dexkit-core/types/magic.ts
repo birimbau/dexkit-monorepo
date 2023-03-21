@@ -50,7 +50,7 @@ export class ProviderWrapper {
       );
 
       return this.provider.request(newArgs);
-    } else if (args.method === "eth_signTypedData_v4") {
+    } else if (args.method === "personal_sign") {
       this.eventEmitter?.emit("sign", args);
 
       await waitForEvent(this.eventEmitter, "sign.confirm", "sign.cancel");
@@ -162,7 +162,7 @@ export class MagicConnector extends Connector {
       localStorage.removeItem("loginType");
     }
 
-    this.actions.update({ accounts: [], chainId: undefined });
+    this.actions.resetState();
   }
 
   public async changeNetwork(chainId: number) {

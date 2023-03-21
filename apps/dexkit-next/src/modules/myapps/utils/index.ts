@@ -1,8 +1,6 @@
-import { ethers } from "ethers";
-import { AppWhitelabelType } from "../constants/enum";
-import { WhitelabelFormData } from "../types";
-
-
+import { ethers } from 'ethers';
+import { AppWhitelabelType } from '../constants/enum';
+import { WhitelabelFormData } from '../types';
 
 export async function signWhitelabelData({
   provider,
@@ -21,7 +19,6 @@ export async function signWhitelabelData({
   message: string;
   slug?: string;
 }) {
-
   if (!provider || chainId === undefined || !owner) {
     return;
   }
@@ -71,9 +68,12 @@ export async function signWhitelabelData({
   };
 
   return dataToSend;
-};
+}
 
-export function getSignMessage(context: 'edit' | 'delete' | 'addDomain', type: AppWhitelabelType) {
+export function getSignMessage(
+  context: 'edit' | 'delete' | 'addDomain',
+  type: AppWhitelabelType
+) {
   if (type === AppWhitelabelType.MARKETPLACE) {
     if (context === 'edit') {
       return {

@@ -16,6 +16,16 @@ export const WALLET_CONNECTORS: {
     name: "Wallet Connect",
     icon: "https://raw.githubusercontent.com/DexKit/assets/main/walletconnect-circle-blue.svg",
   },
-  // { id: "magic", name: "Google", icon: "", loginType: "google" },
-  // { id: "magic", name: "Twitter", icon: "", loginType: "twitter" },
+  {
+    id: "magic",
+    name: "Google",
+    icon: "https://raw.githubusercontent.com/DexKit/assets/main/google-icon.svg",
+    loginType: "google",
+  },
+  {
+    id: "magic",
+    name: "Twitter",
+    icon: "https://raw.githubusercontent.com/DexKit/assets/main/twitter-logo.svg",
+    loginType: "twitter",
+  },
 ];

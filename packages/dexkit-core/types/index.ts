@@ -1,5 +1,23 @@
 import { ChainId, MagicLoginType, TransactionStatus } from "../constants";
 
+export type Token = {
+  chainId: ChainId;
+  contractAddress: string;
+  name: string;
+  symbol: string;
+  coingeckoId?: string;
+  decimals: number;
+  /**
+   * @deprecated
+   */
+  isWrapped?: boolean;
+  logoURI?: string;
+};
+
+export type TokenPrices = {
+  [key: number]: { [key: string]: { [key: string]: number } };
+};
+
 export type Network = {
   chainId: ChainId;
   name: string;
