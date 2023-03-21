@@ -35,7 +35,7 @@ export function SearchTokenAutocomplete(props: Props) {
             (n) => n.chainId === value?.chainId
           )?.name,
           chainId: value.chainId as number,
-          image: value.logoURI,
+          logoURI: value?.logoURI,
           decimals: value.decimals,
         };
       }) || []
@@ -66,8 +66,8 @@ export function SearchTokenAutocomplete(props: Props) {
             network: value.network,
             chainId: value.chainId,
             symbol: value.symbol,
-            image: value.image,
             decimals: value.decimals,
+            logoURI: value?.logoURI,
           });
         } else {
           onChange(undefined);
@@ -80,8 +80,8 @@ export function SearchTokenAutocomplete(props: Props) {
           sx={{ '& > img': { mr: 2, flexShrink: 0 } }}
           {...props}
         >
-          <img loading="lazy" width="20" src={`${option.image}`} alt="" />
-          {getChainName(option.chainId)} - {option.name} -
+          <img loading="lazy" width="20" src={`${option.logoURI}`} alt="" />
+          {getChainName(option.chainId)} - {option.logoURI} -
           {option?.symbol.toUpperCase() || ''}
         </Box>
       )}
@@ -115,7 +115,7 @@ export function SearchTokenAutocomplete(props: Props) {
                 <img
                   loading="lazy"
                   width="25"
-                  src={`${formValue.image}`}
+                  src={`${formValue.logoURI}`}
                   alt=""
                 />
                 {formValue.chainId && (
