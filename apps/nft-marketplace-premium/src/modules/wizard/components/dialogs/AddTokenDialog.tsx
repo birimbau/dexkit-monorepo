@@ -239,6 +239,8 @@ function AddTokenDialog({ dialogProps, tokens, onSave }: Props) {
                 }
               }}
             />
+          </FormControl>
+          <FormControl>
             <Select
               fullWidth
               value={formik.values.chainId}

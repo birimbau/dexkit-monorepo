@@ -60,7 +60,7 @@
         {
           "type": "Page",
           "href": "/order/create",
-          "name": "Order create"
+          "name": "Create order"
         }
       ]
     },
