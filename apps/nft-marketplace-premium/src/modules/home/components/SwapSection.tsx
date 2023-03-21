@@ -19,7 +19,7 @@ export function SwapSection({ section }: Props) {
 
   return (
     <Box py={4}>
-      <Container maxWidth={'md'}>
+      <Container maxWidth={'xs'}>
         <SwapWidget
           {...swapState}
           renderOptions={{
