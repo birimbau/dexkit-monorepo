@@ -22,6 +22,7 @@ import { FormattedMessage, useIntl } from 'react-intl';
 
 import * as Yup from 'yup';
 
+import { ImageFormUpload } from '@/modules/contract-wizard/components/ImageFormUpload';
 import { AxiosError } from 'axios';
 import { ethers } from 'ethers';
 import { useSnackbar } from 'notistack';
@@ -33,7 +34,6 @@ import { Token } from '../../../../types/blockchain';
 import { Network } from '../../../../types/chains';
 import { isAddressEqual } from '../../../../utils/blockchain';
 import { ipfsUriToUrl } from '../../../../utils/ipfs';
-import { ImageFormUpload } from '@/modules/contract-wizard/components/ImageFormUpload';
 import { SearchTokenAutocomplete } from '../pageEditor/components/SearchTokenAutocomplete';
 
 interface Props {
@@ -232,7 +232,7 @@ function AddTokenDialog({ dialogProps, tokens, onSave }: Props) {
                       ...value,
                       contractAddress: tk?.address || '',
                       chainId: tk?.chainId || 0,
-                      logoURI: tk?.image || '',
+                      logoURI: tk?.logoURI || '',
                     }),
                     true
                   );
