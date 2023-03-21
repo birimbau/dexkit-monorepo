@@ -49,7 +49,12 @@ export function PreviewAppButton({ appConfig }: Props) {
           withLayout={true}
         />
       </ThemeProvider>
-      <Button onClick={handleShowPreview} size="small" variant="outlined">
+      <Button
+        onClick={handleShowPreview}
+        size="small"
+        variant="outlined"
+        className={'preview-app-button'}
+      >
         <FormattedMessage id="preview.app" defaultMessage="Preview App" />
       </Button>
     </>

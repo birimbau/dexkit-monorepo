@@ -1,6 +1,6 @@
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { useWeb3React } from "@web3-react/core";
 import { useContext } from "react";
-import { useMutation, useQuery } from '@tanstack/react-query';
 import { MIN_KIT_HOLDING_AI_GENERATION, WHITELISTED_AI_ACCOUNTS } from "src/constants";
 import { getKitBalanceOfThreshold } from "src/services/balances";
 import { AuthContext } from "../contexts";
@@ -47,10 +47,10 @@ export function useIsLoggedIn() {
 
 
 export function useAccountHoldDexkitMutation() {
-  const { account, provider } = useWeb3React();
+  const { account } = useWeb3React();
 
   return useMutation(async () => {
-    if (!account || !provider) {
+    if (!account) {
       return;
     }
     if (WHITELISTED_AI_ACCOUNTS.map(a => a.toLowerCase()).includes(account.toLowerCase())) {
@@ -65,10 +65,10 @@ export function useAccountHoldDexkitMutation() {
 }
 
 export function useAccountHoldDexkitQuery() {
-  const { account, provider } = useWeb3React();
+  const { account } = useWeb3React();
 
   return useQuery([account], async () => {
-    if (!account || !provider) {
+    if (!account) {
       return;
     }
     if (WHITELISTED_AI_ACCOUNTS.map(a => a.toLowerCase()).includes(account.toLowerCase())) {

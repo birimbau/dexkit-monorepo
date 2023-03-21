@@ -166,7 +166,10 @@ function WizardCreateCollectionContainer() {
               },
               {
                 caption: (
-                  <FormattedMessage id="wizard" defaultMessage="Wizard" />
+                  <FormattedMessage
+                    id="contract.generator"
+                    defaultMessage="Contract generator"
+                  />
                 ),
                 uri: '/contract-wizard',
               },
