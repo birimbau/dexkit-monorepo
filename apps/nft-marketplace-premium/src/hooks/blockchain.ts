@@ -6,13 +6,13 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   switchNetworkChainIdAtom,
   switchNetworkOpenAtom,
-  tokensAtom,
+  tokensAtom
 } from '../state/atoms';
 import {
   getNativeCurrencyImage,
   getNativeCurrencySymbol,
   getProviderByChainId,
-  switchNetwork,
+  switchNetwork
 } from '../utils/blockchain';
 
 import { ZEROEX_NATIVE_TOKEN_ADDRESS } from '../constants';
@@ -72,13 +72,15 @@ export function useSwitchNetworkMutation() {
   );
 }
 
-export function useTokenList({
+export function  useTokenList({
   chainId,
   includeNative = false,
   onlyTradable,
+  onlyNative
 }: {
   chainId?: number;
   includeNative?: boolean;
+  onlyNative?:boolean;
   onlyTradable?: boolean;
 }) {
   const appConfig = useAppConfig();
@@ -104,6 +106,19 @@ export function useTokenList({
     if (chainId === undefined) {
       return [] as Token[];
     }
+    if(onlyNative){
+      return [
+        {
+          address: ZEROEX_NATIVE_TOKEN_ADDRESS,
+          chainId,
+          decimals: 18,
+          logoURI: getNativeCurrencyImage(chainId),
+          name: getNativeCurrencySymbol(chainId),
+          symbol: getNativeCurrencySymbol(chainId),
+        }
+      ] as Token[];
+    }
+
 
     let tokenList: Token[] = [
       ...tokens.filter((token: Token) => token.chainId === chainId),
@@ -144,7 +159,7 @@ export function useTokenList({
     }
 
     return [...tokenList] as Token[];
-  }, [chainId]);
+  }, [chainId, onlyNative, includeNative]);
 }
 
 export function useTokenData(options?: Omit<UseMutationOptions, any>) {

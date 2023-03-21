@@ -6,7 +6,7 @@ import { Token } from 'src/types/blockchain';
 import {
   getChainIdFromSlug,
   getNetworkSlugFromChainId,
-  isAddressEqual,
+  isAddressEqual
 } from 'src/utils/blockchain';
 import { getApiCoinPlatforms, getApiCoins } from '../services';
 
@@ -15,15 +15,22 @@ export function useSearchSwapTokens({
   network,
   excludeNative,
   excludeTokenList,
+  featuredTokens,
 }: {
   keyword?: string;
   network?: string;
   excludeNative?: boolean;
   excludeTokenList?: boolean;
+  featuredTokens?: Token[]
 }) {
   const tokensFromList = useTokenList({
     chainId: getChainIdFromSlug(network)?.chainId,
     includeNative: excludeNative ? false : true,
+  });
+
+  const nativeToken = useTokenList({
+    chainId: getChainIdFromSlug(network)?.chainId,
+    onlyNative: true,
   });
 
   const coinSearchQuery = usePlatformCoinSearch({ keyword, network });
@@ -45,8 +52,11 @@ export function useSearchSwapTokens({
           } as Token;
         });
 
-      if (network && !excludeTokenList) {
+      if (network && !excludeTokenList && !featuredTokens) {
         coins = [...tokensFromList, ...coins];
+      }
+      if (featuredTokens) {
+        coins = [...nativeToken, ...featuredTokens, ...coins];
       }
 
       if (keyword) {
@@ -59,7 +69,7 @@ export function useSearchSwapTokens({
 
       return coins.reduce<Token[]>((acc, current) => {
         const found =
-          acc.find((c) => isAddressEqual(c.address, current.address)) !==
+          acc.find((c) => isAddressEqual(c.address, current.address) && c.chainId === current.chainId) !==
           undefined;
 
         if (!found) {

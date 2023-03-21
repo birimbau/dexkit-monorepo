@@ -4,6 +4,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import React, { useMemo, useState } from 'react';
+import { Token } from 'src/types/blockchain';
 import { NETWORKS } from '../../../../../constants/chain';
 import { getChainName, getChainSlug } from '../../../../../utils/blockchain';
 
@@ -13,14 +14,16 @@ interface Props {
   data?: any;
   disabled?: boolean;
   onChange?: any;
+  featuredTokens?: Token[];
 }
 
 export function SearchTokenAutocomplete(props: Props) {
-  const { data, label, onChange, chainId, disabled } = props;
+  const { data, label, onChange, chainId, disabled, featuredTokens } = props;
   const [search, setSearch] = useState<string>();
   const tokensQuery = useSearchSwapTokens({
     keyword: search,
     network: getChainSlug(chainId),
+    featuredTokens,
   });
   const formValue = data;
 

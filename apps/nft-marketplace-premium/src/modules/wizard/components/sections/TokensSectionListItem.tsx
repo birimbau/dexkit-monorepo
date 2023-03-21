@@ -95,7 +95,8 @@ export default function TokensSectionListItem({
           </Stack>
         }
       />
-      {!(disableMakeTradable === true) && (
+
+      {(!(disableMakeTradable === true) || selectable) && (
         <ListItemSecondaryAction>
           {selectable ? (
             <Checkbox

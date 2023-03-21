@@ -12,14 +12,16 @@ import TextField from '@mui/material/TextField';
 import { useEffect, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { NetworkSelectDropdown } from 'src/components/NetworkSelectDropdown';
+import { Token } from 'src/types/blockchain';
 import { SearchTokenAutocomplete } from '../pageEditor/components/SearchTokenAutocomplete';
 
 interface Props {
   data?: SwapConfig;
   onChange?: (data: SwapConfig) => void;
+  featuredTokens?: Token[];
 }
 
-export function SwapConfigForm({ onChange, data }: Props) {
+export function SwapConfigForm({ onChange, data, featuredTokens }: Props) {
   const [formData, setFormData] = useState<SwapConfig | undefined>(data);
 
   const [selectedChainId, setSelectedChainId] = useState<number | undefined>(
@@ -121,6 +123,7 @@ export function SwapConfigForm({ onChange, data }: Props) {
                 defaultMessage="Search default input token"
               />
             }
+            featuredTokens={featuredTokens}
             disabled={selectedChainId === undefined}
             data={sellToken}
             chainId={selectedChainId}
@@ -171,6 +174,7 @@ export function SwapConfigForm({ onChange, data }: Props) {
                 defaultMessage="Search default output token"
               />
             }
+            featuredTokens={featuredTokens}
             data={buyToken}
             onChange={(tk: any) => {
               if (selectedChainId) {
