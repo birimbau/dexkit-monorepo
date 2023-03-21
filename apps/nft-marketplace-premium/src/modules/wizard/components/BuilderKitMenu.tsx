@@ -24,7 +24,7 @@ export default function BuilderKitMenu(props: Props) {
   };
 
   return (
-    <>
+    <div className={'kit-builder-menu'}>
       <Button
         id="builderkit-menu"
         aria-controls={open ? 'builderkit-menu' : undefined}
@@ -54,7 +54,6 @@ export default function BuilderKitMenu(props: Props) {
         {Object.values(BuilderKit).map((m, k) => (
           <MenuItem
             onClick={() => {
-              console.log(m);
               onChangeMenu(m);
               handleClose();
             }}
@@ -64,6 +63,6 @@ export default function BuilderKitMenu(props: Props) {
           </MenuItem>
         ))}
       </Menu>
-    </>
+    </div>
   );
 }

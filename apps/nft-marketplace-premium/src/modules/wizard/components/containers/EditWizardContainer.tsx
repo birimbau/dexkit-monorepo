@@ -31,7 +31,12 @@ import { AppConfig } from '../../../../types/config';
 import { SiteResponse } from '../../../../types/whitelabel';
 import { useAppWizardConfig } from '../../hooks';
 
+import TourIcon from '@mui/icons-material/Tour';
+import { TourProvider, useTour } from '@reactour/tour';
+import { useAtom } from 'jotai';
 import { BuilderKit } from '../../constants';
+import { OnboardBuilderSteps } from '../../constants/onboard/steps';
+import { isFirstVisitOnEditWizardAtom } from '../../state';
 import BuilderKitMenu from '../BuilderKitMenu';
 import SignConfigDialog from '../dialogs/SignConfigDialog';
 import { PreviewAppButton } from '../PreviewAppButton';
@@ -72,7 +77,7 @@ interface Props {
   site?: SiteResponse;
 }
 
-enum ActiveMenu {
+export enum ActiveMenu {
   General = 'general',
   Domain = 'domain',
   Social = 'social',
@@ -93,6 +98,25 @@ const ListSubheaderCustom = styled(ListSubheader)({
   fontWeight: 'bold',
 });
 
+function TourButton() {
+  const { setIsOpen } = useTour();
+  const [isFirstVisit, setIsFirstVisit] = useAtom(isFirstVisitOnEditWizardAtom);
+  useEffect(() => {
+    if (isFirstVisit) {
+      setTimeout(() => {
+        setIsFirstVisit(false);
+        setIsOpen(true);
+      }, 2000);
+    }
+  }, [isFirstVisit]);
+
+  return (
+    <IconButton onClick={() => setIsOpen(true)}>
+      <TourIcon />
+    </IconButton>
+  );
+}
+
 export function EditWizardContainer({ site }: Props) {
   const config = useMemo(() => {
     if (site?.config) {
@@ -105,7 +129,6 @@ export function EditWizardContainer({ site }: Props) {
   const [activeBuilderKit, setActiveBuilderKit] = useState<BuilderKit>(
     BuilderKit.ALL
   );
-  console.log(activeBuilderKit);
 
   const theme = useTheme();
 
@@ -421,7 +444,16 @@ export function EditWizardContainer({ site }: Props) {
   );
 
   return (
-    <>
+    <TourProvider
+      steps={OnboardBuilderSteps({ onChangeMenu: setActiveMenu })}
+      styles={{
+        maskWrapper: (base) => ({
+          ...base,
+          zIndex: 20000,
+        }),
+        badge: (base) => ({ ...base, color: 'blue' }),
+      }}
+    >
       <Drawer open={isMenuOpen} onClose={handleCloseMenu}>
         <Box
           sx={(theme) => ({ minWidth: `${theme.breakpoints.values.sm / 2}px` })}
@@ -523,7 +555,9 @@ export function EditWizardContainer({ site }: Props) {
             </Stack>
           </Grid>
           <Grid item xs={12} sm={12}>
-            <WelcomeMessage />
+            <div className={'welcome-dex-app-builder'}>
+              <WelcomeMessage />
+            </div>
           </Grid>
 
           <Grid item xs={12} sm={12}>
@@ -537,13 +571,14 @@ export function EditWizardContainer({ site }: Props) {
                     menu={activeBuilderKit}
                     onChangeMenu={(menu) => setActiveBuilderKit(menu)}
                   />
+                  <TourButton />
                 </Stack>
               )}
-              <Stack direction={'row'} spacing={2}>
+              <Stack direction={'row'} spacing={2} alignItems={'center'}>
                 <PreviewAppButton appConfig={wizardConfig} />
                 {site?.previewUrl && (
-                  <>
-                    <Typography variant="body1">
+                  <Box className={'preview-app-link'}>
+                    <Typography variant="body1" className="">
                       <FormattedMessage
                         id="preview.url"
                         defaultMessage="Preview Url"
@@ -554,7 +589,7 @@ export function EditWizardContainer({ site }: Props) {
                     <Link target={'_blank'} href={site.previewUrl}>
                       {site.previewUrl}
                     </Link>
-                  </>
+                  </Box>
                 )}
               </Stack>
 
@@ -573,7 +608,7 @@ export function EditWizardContainer({ site }: Props) {
             {!isMobile && renderMenu()}
           </Grid>
           <Grid item xs={12} sm={10}>
-            <Stack spacing={2}>
+            <Stack spacing={2} className={'builder-forms'}>
               {activeMenu === ActiveMenu.General && config && (
                 <GeneralWizardContainer
                   config={config}
@@ -588,6 +623,7 @@ export function EditWizardContainer({ site }: Props) {
                   site={site}
                 />
               )}
+
               {activeMenu === ActiveMenu.Ownership && config && (
                 <OwnershipWizardContainer
                   config={config}
@@ -676,6 +712,6 @@ export function EditWizardContainer({ site }: Props) {
           )*/}
         </Grid>
       </Container>
-    </>
+    </TourProvider>
   );
 }

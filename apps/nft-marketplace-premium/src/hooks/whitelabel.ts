@@ -6,6 +6,8 @@ import {
   useQueryClient
 } from '@tanstack/react-query';
 import { useWeb3React } from '@web3-react/core';
+import { useSetAtom } from 'jotai';
+import { holdsKitDialogAtom } from 'src/state/atoms';
 import { AppWhitelabelType } from '../constants/enum';
 import {
   deleteConfig,
@@ -143,7 +145,7 @@ export const useWhitelabelConfigQuery = ({
   slug?: string;
 }) => {
   return useQuery(
-    [QUERY_WHITELABEL_CONFIG_NAME, domain, slug],
+    [QUERY_WHITELABEL_CONFIG_NAME, domain || '', slug || ''],
     async () => {
       if (domain === undefined && slug === undefined) {
         return;
@@ -260,6 +262,7 @@ export const useSetupDomainConfigMutation = () => {
 
 export const useUpsertWhitelabelAssetMutation = () => {
   const { account, provider, chainId } = useWeb3React();
+  const setIsHoldingKit = useSetAtom(holdsKitDialogAtom)
   const isHoldingKit = useAccountHoldDexkitMutation()
   const queryClient = useQueryClient()
   const { isLoggedIn } = useAuth()
@@ -268,7 +271,13 @@ export const useUpsertWhitelabelAssetMutation = () => {
   return useMutation<any, any, any>(
     async ({ siteId, nft }: { siteId: number, nft: CollectionOwnershipNFTFormType }) => {
       if (account && provider && chainId !== undefined) {
-        await isHoldingKit.mutateAsync();
+        try {
+          await isHoldingKit.mutateAsync();
+        } catch {
+          setIsHoldingKit(true);
+          return false;
+        }
+
 
         if (!isLoggedIn) {
           await loginMutation.mutateAsync()

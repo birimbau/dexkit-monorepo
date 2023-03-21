@@ -7,10 +7,10 @@ import {
 } from '@mui/material';
 
 import { NextPage } from 'next';
-import { EditWizardContainer } from '../../../src/modules/wizard/components/containers/EditWizardContainer';
 import { useRouter } from 'next/router';
 import AuthMainLayout from '../../../src/components/layouts/authMain';
 import { useWhitelabelConfigQuery } from '../../../src/hooks/whitelabel';
+import { EditWizardContainer } from '../../../src/modules/wizard/components/containers/EditWizardContainer';
 
 export const WizardEditPage: NextPage = () => {
   const router = useRouter();

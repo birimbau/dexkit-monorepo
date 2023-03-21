@@ -1,7 +1,9 @@
 import { Alert, Box, CircularProgress, useTheme } from '@mui/material';
 import Button from '@mui/material/Button';
+import { useSetAtom } from 'jotai';
 import { FormattedMessage } from 'react-intl';
 import { useAccountHoldDexkitQuery } from 'src/hooks/account';
+import { holdsKitDialogAtom } from 'src/state/atoms';
 import { useCreateAIImageMutation } from '../hooks';
 
 interface Props {
@@ -11,10 +13,16 @@ interface Props {
 
 export function GenerateAIImageButton({ description, onImageUrl }: Props) {
   const theme = useTheme();
+  const setIsHoldingKit = useSetAtom(holdsKitDialogAtom);
   const generateImageMutation = useCreateAIImageMutation();
   const isHoldingKitQuery = useAccountHoldDexkitQuery();
 
   const handleCreateImage = async () => {
+    if (isHoldingKitQuery.data === false) {
+      setIsHoldingKit(true);
+      return;
+    }
+
     generateImageMutation.reset();
     if (description && onImageUrl) {
       const imageUrl = await generateImageMutation.mutateAsync({ description });
@@ -36,8 +44,7 @@ export function GenerateAIImageButton({ description, onImageUrl }: Props) {
         disabled={
           !description ||
           generateImageMutation.isLoading ||
-          isHoldingKitQuery.isLoading ||
-          isHoldingKitQuery.data === false
+          isHoldingKitQuery.isLoading
         }
         onClick={handleCreateImage}
       >
