@@ -1,6 +1,6 @@
 import { MetaMask } from "@web3-react/metamask";
 import { Connector } from "@web3-react/types";
-import { ethers } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import { EventEmitter } from "events";
 import { ChainId } from "../constants";
 import { NETWORKS } from "../constants/networks";
@@ -72,4 +72,36 @@ export function isAddressEqual(address?: string, other?: string) {
   }
 
   return address.toLowerCase() === other.toLowerCase();
+}
+
+export function formatBigNumber(val: BigNumber, decimals: number) {
+  // TODO: improve this code in the future
+  // pass to a memoized component or something
+  const value = ethers.utils.formatUnits(val, decimals);
+
+  let index = value.indexOf(".");
+
+  if (val.isZero()) {
+    return value;
+  }
+
+  while (true) {
+    index = index + 1;
+
+    if (value.at(index) !== "0") {
+      break;
+    }
+  }
+
+  let ending = index;
+
+  while (true) {
+    ending = ending + 1;
+
+    if (ending === value.length - 1 || ending === index + 4) {
+      break;
+    }
+  }
+
+  return value.substring(0, ending);
 }
