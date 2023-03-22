@@ -1,3 +1,4 @@
+import { DexKitContext } from '@dexkit/ui';
 import { useWeb3React } from '@web3-react/core';
 import { atom, useAtom, useAtomValue } from 'jotai';
 
@@ -149,7 +150,8 @@ export function useCollections() {
 }
 
 export function useLocale() {
-  const [loc, setLocale] = useAtom(localeAtom);
+  const loc = useAtomValue(localeAtom);
+  const { setLocale } = useContext(DexKitContext);
   const locUser = useAtomValue(localeUserAtom);
   const appConfig = useAppConfig();
   const locale = useMemo(() => {
@@ -159,8 +161,7 @@ export function useLocale() {
     if (appConfig.locale && appConfig.locale !== loc) {
       return appConfig.locale
     }
-    return loc;
+    return loc || 'en-US' as string;
   }, [appConfig.locale, locUser, loc])
-
   return { locale, setLocale }
 }

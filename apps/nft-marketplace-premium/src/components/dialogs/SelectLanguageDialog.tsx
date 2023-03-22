@@ -1,3 +1,4 @@
+import { DexKitContext } from '@dexkit/ui';
 import {
   Button,
   Dialog,
@@ -12,7 +13,7 @@ import {
   Stack,
 } from '@mui/material';
 import { useAtom } from 'jotai';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { useLocale } from 'src/hooks/app';
 import { LANGUAGES } from '../../constants';
@@ -28,6 +29,7 @@ function SelectLanguageDialog({ dialogProps }: Props) {
   const { onClose } = dialogProps;
 
   const { locale } = useLocale();
+  const { setLocale } = useContext(DexKitContext);
   const [localeUser, setLocaleUser] = useAtom(localeUserAtom);
 
   const [selectedLocale, setSelectedLocale] = useState(localeUser || locale);
@@ -43,6 +45,7 @@ function SelectLanguageDialog({ dialogProps }: Props) {
   };
 
   const handleConfirmSelect = () => {
+    setLocale(selectedLocale);
     setLocaleUser(selectedLocale);
     handleClose();
   };
