@@ -56,8 +56,6 @@ export function MagicTxConfirmDialog(props: TransactionConfirmDialogProps) {
   const { dialogProps } = props;
   const { provider, chainId, account } = useWeb3React();
 
-  console.log(data);
-
   const coinPrices = useCoinPrices({
     currency,
     tokens: chainId ? [GET_NATIVE_TOKEN(chainId)] : [],
