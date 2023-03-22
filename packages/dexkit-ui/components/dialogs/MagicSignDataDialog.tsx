@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 
 import { FormattedMessage } from "react-intl";
 
@@ -17,9 +17,9 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import Divider from "@mui/material/Divider";
 import Grid from "@mui/material/Grid";
-import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import { useWeb3React } from "@web3-react/core";
+import { ethers } from "ethers";
 import { AppDialogTitle } from "../AppDialogTitle";
 
 interface ObjectToTreeProps {
@@ -88,6 +88,13 @@ export const MagicSignDataDialog: React.FC<Props> = ({
     }
   }, [onClose]);
 
+  const decodedText = useMemo(() => {
+    if (signData?.params) {
+      const ar = signData.params as string[];
+      return new TextDecoder().decode(ethers.utils.arrayify(ar[0]));
+    }
+  }, []);
+
   return (
     <Dialog {...dialogProps}>
       <AppDialogTitle
@@ -123,13 +130,16 @@ export const MagicSignDataDialog: React.FC<Props> = ({
                 </Typography>
               </Grid>
               <Grid item xs={12}>
-                {signData && signData.params && signData.params.length > 0 && (
-                  <Paper variant="outlined">
-                    <ObjectToTree
-                      nodes={JSON.parse(signData.params[1]).message}
-                    />
-                  </Paper>
-                )}
+                <Typography
+                  sx={{
+                    textOverflow: "ellipsis",
+                    overflow: "hidden",
+                  }}
+                  variant="body1"
+                  color="text.secondary"
+                >
+                  {decodedText}
+                </Typography>
               </Grid>
             </Grid>
           </Grid>

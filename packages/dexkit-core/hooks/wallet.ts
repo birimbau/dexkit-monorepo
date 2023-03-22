@@ -1,13 +1,15 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useWeb3React } from "@web3-react/core";
 import { metaMask } from "../constants/connectors/metamask";
-import { WalletActivateParams } from "../types";
+import { Token, WalletActivateParams } from "../types";
 
 import { BigNumber, ethers } from "ethers";
 import { PrimitiveAtom, useAtom } from "jotai";
+import { ChainId } from "../constants";
 import { magic } from "../constants/connectors/magic";
 import { walletConnect } from "../constants/connectors/walletConnect";
 import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "../constants/zrx";
+import { getPricesByChain } from "../services";
 import { isAddressEqual } from "../utils";
 import { ERC20Abi } from "./abis";
 
@@ -71,5 +73,25 @@ export function useErc20Balance({
     const contract = new ethers.Contract(contractAddress, ERC20Abi, provider);
 
     return (await contract.balanceOf(account)) as BigNumber;
+  });
+}
+
+export const COIN_PRICES_QUERY = "COIN_PRICES_QUERY";
+
+export function useCoinPrices({
+  currency,
+  tokens,
+  chainId,
+}: {
+  tokens?: Token[];
+  chainId?: ChainId;
+  currency?: string;
+}) {
+  return useQuery([COIN_PRICES_QUERY, chainId, tokens, currency], async () => {
+    if (!chainId || !tokens || !currency) {
+      return;
+    }
+
+    return await getPricesByChain(chainId, tokens, currency);
   });
 }

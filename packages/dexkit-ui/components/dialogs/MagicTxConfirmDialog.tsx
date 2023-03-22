@@ -31,7 +31,8 @@ import {
   truncateAddress,
 } from "@dexkit/core/utils";
 
-import { useErc20Balance } from "@dexkit/core/hooks";
+import { GET_NATIVE_TOKEN } from "@dexkit/core/constants";
+import { useCoinPrices, useErc20Balance } from "@dexkit/core/hooks";
 import { AppDialogTitle } from "../AppDialogTitle";
 
 interface TransactionConfirmDialogProps {
@@ -55,6 +56,12 @@ export function MagicTxConfirmDialog(props: TransactionConfirmDialogProps) {
   const { dialogProps } = props;
   const { provider, chainId, account } = useWeb3React();
 
+  const coinPrices = useCoinPrices({
+    currency,
+    tokens: chainId ? [GET_NATIVE_TOKEN(chainId)] : [],
+    chainId,
+  });
+
   const tokenBalancesQuery = useErc20Balance({
     account,
     provider,
@@ -65,13 +72,45 @@ export function MagicTxConfirmDialog(props: TransactionConfirmDialogProps) {
     return tokenBalancesQuery.data;
   }, [tokenBalancesQuery.data]);
 
-  const etherPrice = useMemo(() => {
-    return 0;
-  }, []);
-
   const [isInsufficientFunds, setIsInsufficientFunds] = useState(false);
 
   const [values, setValues] = useState<ValuesType>({});
+
+  const isEIP1559 = useCallback(() => {
+    return values.maxFeePerGas && values.maxPriorityFeePerGas;
+  }, [values]);
+
+  const totalFee = useMemo(() => {
+    console.log("gas", values);
+
+    if (values.gasLimit) {
+      if (isEIP1559() && values.maxFeePerGas) {
+        return values.gasLimit.mul(values.maxFeePerGas);
+      }
+
+      if (values.gasPrice) {
+        return values.gasLimit.mul(values.gasPrice);
+      }
+    }
+
+    return BigNumber.from(0);
+  }, [values, isEIP1559]);
+
+  const etherPrice = useMemo(() => {
+    const amount = parseFloat(ethers.utils.formatEther(totalFee));
+
+    if (coinPrices.data && chainId && currency) {
+      const t = coinPrices.data[chainId];
+
+      if (t) {
+        const price = t[ethers.constants.AddressZero];
+
+        return amount * price[currency];
+      }
+    }
+
+    return 0;
+  }, [coinPrices, totalFee]);
 
   const handleCancel = useCallback(() => {
     setIsInsufficientFunds(false);
@@ -126,10 +165,6 @@ export function MagicTxConfirmDialog(props: TransactionConfirmDialogProps) {
     },
     [values]
   );
-
-  const isEIP1559 = useCallback(() => {
-    return values.maxFeePerGas && values.maxPriorityFeePerGas;
-  }, [values]);
 
   useEffect(() => {
     if (data && dialogProps.open) {
@@ -256,7 +291,7 @@ export function MagicTxConfirmDialog(props: TransactionConfirmDialogProps) {
               justifyContent="space-between"
             >
               <Typography variant="body1">
-                <FormattedMessage id="gas.cost" defaultMessage={"Gas cost"} />
+                <FormattedMessage id="gas.cost" defaultMessage="Gas cost" />
               </Typography>
               <Typography variant="body1" color="textSecondary">
                 {gasCost(values)} {getNativeTokenSymbol(chainId)}
@@ -272,12 +307,10 @@ export function MagicTxConfirmDialog(props: TransactionConfirmDialogProps) {
                 justifyContent="space-between"
               >
                 <Typography variant="body1">
-                  <Typography variant="body1">
-                    <FormattedMessage
-                      id="send.amount"
-                      defaultMessage={"Send amount"}
-                    />
-                  </Typography>
+                  <FormattedMessage
+                    id="send.amount"
+                    defaultMessage="Send amount"
+                  />
                 </Typography>
                 <Typography variant="body1" color="textSecondary">
                   {values.value ? ethers.utils.formatEther(values.value) : 0}{" "}
@@ -297,23 +330,13 @@ export function MagicTxConfirmDialog(props: TransactionConfirmDialogProps) {
               justifyContent="space-between"
             >
               <Typography variant="body1">
-                <Typography variant="body1">
-                  <FormattedMessage
-                    id="total.cost"
-                    defaultMessage={"Total cost"}
-                  />
-                </Typography>
+                <FormattedMessage
+                  id="total.cost"
+                  defaultMessage={"Total cost"}
+                />
               </Typography>
               <Typography variant="body1" color="textSecondary">
-                $
-                {(etherPrice || 0) *
-                  (gasCost(values) +
-                    parseInt(
-                      values.value
-                        ? ethers.utils.formatEther(values.value)
-                        : "0"
-                    ))}{" "}
-                <FormattedMessage id="usd" defaultMessage={"USD"} />
+                {etherPrice} {currency.toUpperCase()}
               </Typography>
             </Box>
           </Grid>
@@ -326,13 +349,8 @@ export function MagicTxConfirmDialog(props: TransactionConfirmDialogProps) {
                   alignContent="center"
                   justifyContent="space-between"
                 >
-                  <Typography>
-                    <Typography variant="body1">
-                      <FormattedMessage
-                        id="advanced"
-                        defaultMessage={"Advanced"}
-                      />
-                    </Typography>
+                  <Typography variant="body1">
+                    <FormattedMessage id="advanced" defaultMessage="Advanced" />
                   </Typography>
                   <IconButton size="small" onClick={handleToggleAdvanced}>
                     {showAdvanced ? <ExpandLessIcon /> : <ExpandMoreIcon />}
@@ -368,7 +386,7 @@ export function MagicTxConfirmDialog(props: TransactionConfirmDialogProps) {
                               label={
                                 <FormattedMessage
                                   id="max.priority.fee"
-                                  defaultMessage={"Max priority fee"}
+                                  defaultMessage="Max priority fee"
                                 />
                               }
                             />
@@ -387,7 +405,7 @@ export function MagicTxConfirmDialog(props: TransactionConfirmDialogProps) {
                               label={
                                 <FormattedMessage
                                   id="max.fee"
-                                  defaultMessage={"Max fee"}
+                                  defaultMessage="Max fee"
                                 />
                               }
                             />
@@ -409,7 +427,7 @@ export function MagicTxConfirmDialog(props: TransactionConfirmDialogProps) {
                               label={
                                 <FormattedMessage
                                   id="gas.price"
-                                  defaultMessage={"Gas price"}
+                                  defaultMessage="Gas price"
                                 />
                               }
                             />
@@ -428,7 +446,7 @@ export function MagicTxConfirmDialog(props: TransactionConfirmDialogProps) {
                 {" "}
                 <FormattedMessage
                   id="insufficient.funds"
-                  defaultMessage={"Insufficient funds"}
+                  defaultMessage="Insufficient funds"
                 />{" "}
               </Alert>
             </Grid>
