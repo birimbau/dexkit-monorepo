@@ -1,20 +1,36 @@
 import { ChainId } from '@0x/contract-addresses';
+import { useQuery } from '@tanstack/react-query';
 import { useWeb3React } from '@web3-react/core';
 import axios from 'axios';
-import { useAtom, useAtomValue } from 'jotai';
-import { useQuery } from '@tanstack/react-query';
+import { useAtomValue } from 'jotai';
+import { useMemo } from 'react';
 import {
   COINGECKO_ENDPOIT,
   COINGECKO_PLATFORM_ID,
-  ZEROEX_NATIVE_TOKEN_ADDRESS,
+  ZEROEX_NATIVE_TOKEN_ADDRESS
 } from '../constants';
 import { NETWORKS } from '../constants/chain';
 import { getCoinPrices, getTokenPrices } from '../services/currency';
-import { currencyAtom } from '../state/atoms';
+import { currencyAtom, currencyUserAtom } from '../state/atoms';
+import { useAppConfig } from './app';
 import { useTokenList } from './blockchain';
 
 export function useCurrency(): string {
-  return useAtomValue(currencyAtom) || 'usd';
+  const appConfig = useAppConfig();
+  const curr = useAtomValue(currencyAtom);
+  const currUser = useAtomValue(currencyUserAtom);
+
+  const currency = useMemo(() => {
+    if (currUser) {
+      return currUser;
+    }
+    if (appConfig.currency && appConfig.currency !== curr) {
+      return appConfig.currency
+    }
+    return curr || 'usd' as string;
+  }, [appConfig.locale, curr, currUser])
+
+  return currency || 'usd';
 }
 
 export const GET_COIN_PRICES = 'GET_COIN_PRICES';
@@ -109,7 +125,7 @@ export const GET_NATIVE_COIN_PRICE = 'GET_NATIVE_COIN_PRICE';
 export const useNativeCoinPriceQuery = (defaultChainId?: number) => {
   const { provider, chainId: walletChainId } = useWeb3React();
   const chainId = defaultChainId || walletChainId;
-  const [currency] = useAtom(currencyAtom);
+  const currency = useCurrency();
   return useQuery(
     [GET_NATIVE_COIN_PRICE, chainId, currency],
     async () => {
