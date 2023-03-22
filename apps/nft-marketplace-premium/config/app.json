@@ -37,8 +37,33 @@
   ],
   "menuTree": [
     { "type": "Page", "href": "/", "name": "Home" },
-    { "type": "Page", "href": "/swap", "name": "Swap" },
-    { "type": "Page", "href": "/wallet", "name": "Wallet" },
+    {
+      "type": "Menu",
+      "href": "",
+      "name": "Pages",
+      "children": [
+        {
+          "type": "Page",
+          "href": "/swap",
+          "name": "Swap"
+        },
+        {
+          "type": "Page",
+          "href": "/wallet",
+          "name": "Wallet"
+        },
+        {
+          "type": "Page",
+          "href": "/collections",
+          "name": "Collections"
+        },
+        {
+          "type": "Page",
+          "href": "/order/create",
+          "name": "Create order"
+        }
+      ]
+    },
     {
       "type": "Menu",
       "href": "",
@@ -63,6 +88,45 @@
           "type": "Page",
           "href": "/admin",
           "name": "Manage Apps"
+        }
+      ]
+    },
+    {
+      "type": "Menu",
+      "href": "",
+      "name": "Contract Generator",
+      "children": [
+        {
+          "type": "Page",
+          "href": "/contract-wizard",
+          "name": "Create collection"
+        }
+      ]
+    },
+    {
+      "type": "Menu",
+      "href": "",
+      "name": "Support",
+      "children": [
+        {
+          "type": "External",
+          "href": "https://docs.dexkit.com/defi-products/nft-marketplace/creating-my-first-marketplace",
+          "name": "Docs"
+        },
+        {
+          "type": "External",
+          "href": "https://dexkit.atlassian.net/servicedesk/customer/portals",
+          "name": "Help"
+        },
+        {
+          "type": "External",
+          "href": "https://dexkit.canny.io/feature-requests",
+          "name": "Request Feature"
+        },
+        {
+          "type": "External",
+          "href": "https://discord.gg/FnkrFAY7Za",
+          "name": "Discord"
         }
       ]
     }
@@ -313,7 +377,7 @@
       "sections": [
         {
           "type": "custom",
-          "data": "{\"id\":\"atybdk\",\"version\":1,\"rows\":[{\"id\":\"e8gic5\",\"cells\":[{\"id\":\"suexnz\",\"size\":12,\"plugin\":{\"id\":\"container\",\"version\":1},\"dataI18n\":{\"default\":null},\"rows\":[{\"id\":\"aiusq5\",\"cells\":[{\"id\":\"mgjbzi\",\"size\":12,\"plugin\":{\"id\":\"ory/editor/core/content/spacer\",\"version\":1},\"dataI18n\":{\"default\":{\"height\":83,\"hideInMobile\":true}},\"rows\":[],\"inline\":null}]},{\"id\":\"g5kbf4\",\"cells\":[{\"id\":\"xqi2b6\",\"size\":6,\"plugin\":{\"id\":\"stack\",\"version\":1},\"dataI18n\":{\"default\":{\"padding\":2}},\"rows\":[{\"id\":\"6mdiim\",\"cells\":[{\"id\":\"swb0va\",\"size\":12,\"plugin\":{\"id\":\"ory/editor/core/content/slate\",\"version\":1},\"dataI18n\":{\"default\":{\"slate\":[{\"type\":\"HEADINGS/HEADING-ONE\",\"children\":[{\"text\":\"Welcome to DexKit App Builder\",\"EMPHASIZE/STRONG\":true}],\"data\":{\"align\":\"left\"}}]}},\"rows\":[],\"inline\":null}]},{\"id\":\"69lfno\",\"cells\":[{\"id\":\"5ubv5t\",\"size\":12,\"plugin\":{\"id\":\"ory/editor/core/content/slate\",\"version\":1},\"dataI18n\":{\"default\":{\"slate\":[{\"type\":\"PARAGRAPH/PARAGRAPH\",\"children\":[{\"text\":\"Start your crypto app in seconds using our wizard.\\nYou will start for free with a\"},{\"text\":\" .dexkit.app\",\"SetColor\":{\"color\":\"rgba(0,0,255,1)\"}},{\"text\":\" domain and you can earn fees selling your nfts or tokens. \\n\\n\"},{\"text\":\"Note: this whole page was done using our wizard.\",\"EMPHASIZE/EM\":true}]},{\"type\":\"PARAGRAPH/PARAGRAPH\",\"children\":[{\"text\":\"\"}]}]}},\"rows\":[],\"inline\":null}]},{\"id\":\"um7acr\",\"cells\":[{\"id\":\"wnh7zg\",\"size\":12,\"plugin\":{\"id\":\"button-dexkit-plugin\",\"version\":1},\"dataI18n\":{\"default\":{\"text\":\"Open Wizard\",\"variant\":\"contained\",\"color\":\"primary\",\"size\":\"large\",\"position\":\"center\",\"action\":\"Open page\",\"pageUri\":\"/admin/setup\"}},\"rows\":[],\"inline\":null}]}],\"inline\":null},{\"id\":\"ko90yf\",\"size\":6,\"plugin\":{\"id\":\"image-dexkit-plugin\",\"version\":1},\"dataI18n\":{\"default\":{\"width\":1200,\"height\":600,\"padding\":0,\"src\":\"https://dexkit-storage.nyc3.digitaloceanspaces.com/dexkit/media-library/account/0x5bd68b4d6f90bcc9f3a9456791c0db5a43df676d/FrontPage.png\",\"alt\":\"Start marketplace page\"}},\"rows\":[],\"inline\":null}]},{\"id\":\"iieuco\",\"cells\":[{\"id\":\"hrpsap\",\"size\":12,\"plugin\":{\"id\":\"ory/editor/core/content/spacer\",\"version\":1},\"dataI18n\":{\"default\":{\"height\":100,\"hideInDesktop\":false,\"hideInMobile\":true}},\"rows\":[],\"inline\":null}]}],\"inline\":null}]}]}",
+          "data": "{\"id\":\"atybdk\",\"version\":1,\"rows\":[{\"id\":\"e8gic5\",\"cells\":[{\"id\":\"suexnz\",\"size\":12,\"plugin\":{\"id\":\"container\",\"version\":1},\"dataI18n\":{\"default\":null},\"rows\":[{\"id\":\"aiusq5\",\"cells\":[{\"id\":\"mgjbzi\",\"size\":12,\"plugin\":{\"id\":\"ory/editor/core/content/spacer\",\"version\":1},\"dataI18n\":{\"default\":{\"height\":83,\"hideInMobile\":true}},\"rows\":[],\"inline\":null}]},{\"id\":\"g5kbf4\",\"cells\":[{\"id\":\"xqi2b6\",\"size\":6,\"plugin\":{\"id\":\"stack\",\"version\":1},\"dataI18n\":{\"default\":{\"padding\":2}},\"rows\":[{\"id\":\"6mdiim\",\"cells\":[{\"id\":\"swb0va\",\"size\":12,\"plugin\":{\"id\":\"ory/editor/core/content/slate\",\"version\":1},\"dataI18n\":{\"default\":{\"slate\":[{\"type\":\"HEADINGS/HEADING-ONE\",\"children\":[{\"text\":\"Welcome to DexKit App Builder\",\"EMPHASIZE/STRONG\":true}],\"data\":{\"align\":\"left\"}}]}},\"rows\":[],\"inline\":null}]},{\"id\":\"69lfno\",\"cells\":[{\"id\":\"5ubv5t\",\"size\":12,\"plugin\":{\"id\":\"ory/editor/core/content/slate\",\"version\":1},\"dataI18n\":{\"default\":{\"slate\":[{\"type\":\"PARAGRAPH/PARAGRAPH\",\"children\":[{\"text\":\"Start your crypto app in seconds using our wizard.\\nYou will start for free with a\"},{\"text\":\" .dexkit.app\",\"SetColor\":{\"color\":\"rgba(0,0,255,1)\"}},{\"text\":\" domain and you can earn fees selling your nfts or tokens. \\n\\n\"},{\"text\":\"Note: this whole page was done using our wizard.\",\"EMPHASIZE/EM\":true}]},{\"type\":\"PARAGRAPH/PARAGRAPH\",\"children\":[{\"text\":\"\"}]}]}},\"rows\":[],\"inline\":null}]},{\"id\":\"um7acr\",\"cells\":[{\"id\":\"wnh7zg\",\"size\":12,\"plugin\":{\"id\":\"button-dexkit-plugin\",\"version\":1},\"dataI18n\":{\"default\":{\"text\":\"Open Builder\",\"variant\":\"contained\",\"color\":\"primary\",\"size\":\"large\",\"position\":\"center\",\"action\":\"Open page\",\"pageUri\":\"/admin/setup\"}},\"rows\":[],\"inline\":null}]}],\"inline\":null},{\"id\":\"ko90yf\",\"size\":6,\"plugin\":{\"id\":\"image-dexkit-plugin\",\"version\":1},\"dataI18n\":{\"default\":{\"width\":1200,\"height\":600,\"padding\":0,\"src\":\"https://dexkit-storage.nyc3.digitaloceanspaces.com/dexkit/media-library/account/0x5bd68b4d6f90bcc9f3a9456791c0db5a43df676d/FrontPage.png\",\"alt\":\"Start marketplace page\"}},\"rows\":[],\"inline\":null}]},{\"id\":\"iieuco\",\"cells\":[{\"id\":\"hrpsap\",\"size\":12,\"plugin\":{\"id\":\"ory/editor/core/content/spacer\",\"version\":1},\"dataI18n\":{\"default\":{\"height\":100,\"hideInDesktop\":false,\"hideInMobile\":true}},\"rows\":[],\"inline\":null}]}],\"inline\":null}]}]}",
           "title": "Welcome"
         },
         {
@@ -353,7 +417,7 @@
         },
         {
           "type": "custom",
-          "data": "{\"id\":\"8tvx5p\",\"version\":1,\"rows\":[{\"id\":\"mappfc\",\"cells\":[{\"id\":\"oovx7x\",\"size\":12,\"plugin\":{\"id\":\"container\",\"version\":1},\"dataI18n\":{\"default\":null},\"rows\":[{\"id\":\"yfeq9v\",\"cells\":[{\"id\":\"bf15wt\",\"size\":12,\"plugin\":{\"id\":\"ory/editor/core/content/spacer\",\"version\":1},\"dataI18n\":{\"default\":{\"height\":100,\"hideInDesktop\":false,\"hideInMobile\":true}},\"rows\":[],\"inline\":null}]},{\"id\":\"tk4x67\",\"cells\":[{\"id\":\"g9y4rh\",\"size\":12,\"plugin\":{\"id\":\"ory/editor/core/content/slate\",\"version\":1},\"dataI18n\":{\"default\":{\"slate\":[{\"type\":\"HEADINGS/HEADING-ONE\",\"children\":[{\"text\":\"Do you want to learn more how to use this amazing tool?\"}],\"data\":{\"align\":\"center\"}}]}},\"rows\":[],\"inline\":null}]},{\"id\":\"9p87n6\",\"cells\":[{\"id\":\"suklrr\",\"size\":12,\"plugin\":{\"id\":\"ory/editor/core/content/slate\",\"version\":1},\"dataI18n\":{\"default\":{\"slate\":[{\"type\":\"PARAGRAPH/PARAGRAPH\",\"children\":[{\"text\":\"Check our docs and understand more details of DexKit Wizard.\"}],\"data\":{\"align\":\"center\"}}]}},\"rows\":[],\"inline\":null}]},{\"id\":\"8cpkzj\",\"cells\":[{\"id\":\"c6uap5\",\"size\":12,\"plugin\":{\"id\":\"button-dexkit-plugin\",\"version\":1},\"dataI18n\":{\"default\":{\"text\":\"Open Docs\",\"variant\":\"contained\",\"color\":\"secondary\",\"size\":\"large\",\"position\":\"center\",\"padding\":2,\"action\":\"Open link\",\"href\":\"https://docs.dexkit.com/defi-products/nft-marketplace/creating-my-first-marketplace\",\"targetBlank\":true}},\"rows\":[],\"inline\":null}]},{\"id\":\"fh8rdq\",\"cells\":[{\"id\":\"idvnbg\",\"size\":12,\"plugin\":{\"id\":\"ory/editor/core/content/spacer\",\"version\":1},\"dataI18n\":{\"default\":{\"height\":100,\"hideInDesktop\":false,\"hideInMobile\":true}},\"rows\":[],\"inline\":null}]}],\"inline\":null}]}]}"
+          "data": "{\"id\":\"8tvx5p\",\"version\":1,\"rows\":[{\"id\":\"mappfc\",\"cells\":[{\"id\":\"oovx7x\",\"size\":12,\"plugin\":{\"id\":\"container\",\"version\":1},\"dataI18n\":{\"default\":null},\"rows\":[{\"id\":\"yfeq9v\",\"cells\":[{\"id\":\"bf15wt\",\"size\":12,\"plugin\":{\"id\":\"ory/editor/core/content/spacer\",\"version\":1},\"dataI18n\":{\"default\":{\"height\":100,\"hideInDesktop\":false,\"hideInMobile\":true}},\"rows\":[],\"inline\":null}]},{\"id\":\"tk4x67\",\"cells\":[{\"id\":\"g9y4rh\",\"size\":12,\"plugin\":{\"id\":\"ory/editor/core/content/slate\",\"version\":1},\"dataI18n\":{\"default\":{\"slate\":[{\"type\":\"HEADINGS/HEADING-ONE\",\"children\":[{\"text\":\"Do you want to learn more how to use this amazing tool?\"}],\"data\":{\"align\":\"center\"}}]}},\"rows\":[],\"inline\":null}]},{\"id\":\"9p87n6\",\"cells\":[{\"id\":\"suklrr\",\"size\":12,\"plugin\":{\"id\":\"ory/editor/core/content/slate\",\"version\":1},\"dataI18n\":{\"default\":{\"slate\":[{\"type\":\"PARAGRAPH/PARAGRAPH\",\"children\":[{\"text\":\"Check our docs and understand more details of DexAppBuilder.\"}],\"data\":{\"align\":\"center\"}}]}},\"rows\":[],\"inline\":null}]},{\"id\":\"8cpkzj\",\"cells\":[{\"id\":\"c6uap5\",\"size\":12,\"plugin\":{\"id\":\"button-dexkit-plugin\",\"version\":1},\"dataI18n\":{\"default\":{\"text\":\"Open Docs\",\"variant\":\"contained\",\"color\":\"secondary\",\"size\":\"large\",\"position\":\"center\",\"padding\":2,\"action\":\"Open link\",\"href\":\"https://docs.dexkit.com/defi-products/nft-marketplace/creating-my-first-marketplace\",\"targetBlank\":true}},\"rows\":[],\"inline\":null}]},{\"id\":\"fh8rdq\",\"cells\":[{\"id\":\"idvnbg\",\"size\":12,\"plugin\":{\"id\":\"ory/editor/core/content/spacer\",\"version\":1},\"dataI18n\":{\"default\":{\"height\":100,\"hideInDesktop\":false,\"hideInMobile\":true}},\"rows\":[],\"inline\":null}]}],\"inline\":null}]}]}"
         }
       ],
       "title": "Home",

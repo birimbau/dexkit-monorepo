@@ -99,6 +99,32 @@ export default function SwapFeeSummary({
     return 0.0;
   }, [sellToken, buyToken, quote, toggleSide]);
 
+  /* const fiatNativePrice = useMemo(() => {
+  if (coinPrices.data && chainId && currency) {
+    const t = coinPrices.data[chainId];
+
+    if (t) {
+      const price = t[ethers.constants.AddressZero];
+      return price[currency];
+    }
+  }
+}, [coinPrices.data, chainId, currency]);*/
+
+  /*const unitPriceFiat = useMemo(() => {
+    if (
+      buyToken &&
+      sellToken &&
+      quote &&
+      fiatNativePrice &&
+      quote.sellTokenToEthRate &&
+      quote.buyTokenToEthRate
+    ) {
+      return toggleSide
+        ? Number(fiatNativePrice) / Number(quote.sellTokenToEthRate || 0)
+        : Number(fiatNativePrice) / Number(quote.buyTokenToEthRate || 0);
+    }
+  }, [sellToken, buyToken, quote, toggleSide, fiatNativePrice]);*/
+
   return (
     <Box>
       <Stack spacing={1}>
@@ -125,6 +151,18 @@ export default function SwapFeeSummary({
                 {sellToken?.symbol.toUpperCase()}
               </Typography>
             )}
+            {/*unitPriceFiat && (
+              <Typography variant="body2">
+                (
+                <FormattedNumber
+                  currencyDisplay="narrowSymbol"
+                  style="currency"
+                  value={unitPriceFiat}
+                  currency={currency}
+                />
+                )
+              </Typography>
+            )*/}
             <IconButton onClick={handelToggle} size="small">
               <Sync fontSize="inherit" />
             </IconButton>

@@ -3,20 +3,20 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { useWeb3React } from '@web3-react/core';
 import axios from 'axios';
 import { ethers } from 'ethers';
-import { useAtomValue } from 'jotai';
+import { useAtomValue, useSetAtom } from 'jotai';
 import { useMemo } from 'react';
+import { useAccountHoldDexkitMutation, useAuth, useLoginAccountMutation } from 'src/hooks/account';
+import { myAppsApi } from 'src/services/whitelabel';
+import { holdsKitDialogAtom } from 'src/state/atoms';
+import { CollectionAPI } from 'src/types/nft';
+import { isIpfsUri } from 'src/utils/ipfs';
 import { collectionsAtom, tokensAtom } from '../atoms';
 import {
   ERC20_BASE_CONTRACT_URL,
-  ERC721_BASE_CONTRACT_URL,
+  ERC721_BASE_CONTRACT_URL
 } from '../constants';
 import { ERC721Abi } from '../constants/contracts/abis/ERC721Abi';
 import { TokenForm, WizardCollection, WizardItem } from '../types';
-import { isIpfsUri } from 'src/utils/ipfs';
-import { DEXKIT_BASE_API_URL } from 'src/constants';
-import { CollectionAPI } from 'src/types/nft';
-import { useAccountHoldDexkitMutation, useAuth, useLoginAccountMutation } from 'src/hooks/account';
-import { myAppsApi } from 'src/services/whitelabel';
 
 const wizardBaseAPI = axios.create({
   baseURL: process.env.NEXT_PUBLIC_WIZARD_API_ENDPOINT,
@@ -214,10 +214,17 @@ export function useCreateAIImageMutation() {
   const { isLoggedIn } = useAuth()
   const loginMutation = useLoginAccountMutation();
   const isHoldingKit = useAccountHoldDexkitMutation()
+  const setIsHoldingKitDialog = useSetAtom(holdsKitDialogAtom);
   return useMutation(async ({ description }: {
     description: string
   }) => {
-    await isHoldingKit.mutateAsync();
+    try {
+      await isHoldingKit.mutateAsync();
+    } catch {
+      setIsHoldingKitDialog(true);
+      return;
+    }
+
 
     if (!isLoggedIn) {
       await loginMutation.mutateAsync()

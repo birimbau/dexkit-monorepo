@@ -57,6 +57,10 @@ export default function SwapWizardContainer({
     });
   }, [config]);
 
+  const tokens = useMemo<Token[]>(() => {
+    return config?.tokens?.length ? config?.tokens[0].tokens || [] : [];
+  }, [config]);
+
   const changeConfig = function (
     configToChange: AppConfig,
     formData?: SwapConfig
@@ -105,8 +109,6 @@ export default function SwapWizardContainer({
 
   const currency = useCurrency();
 
-  console.log();
-
   return (
     <Grid container spacing={2}>
       <Grid item xs={12}>
@@ -126,7 +128,11 @@ export default function SwapWizardContainer({
         <Divider />
       </Grid>
       <Grid item xs={6}>
-        <SwapConfigForm onChange={setSwapFormData} data={swapFormData} />
+        <SwapConfigForm
+          onChange={setSwapFormData}
+          data={swapFormData}
+          featuredTokens={tokens}
+        />
       </Grid>
       <Grid item xs={6}>
         <ThemeProvider theme={swapTheme}>

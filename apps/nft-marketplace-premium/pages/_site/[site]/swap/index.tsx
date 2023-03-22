@@ -1,23 +1,38 @@
-import { SwapWidget } from '@dexkit/widgets';
+import SwapSection from '@/modules/home/components/SwapSection';
 import { NoSsr } from '@mui/material';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import type { GetStaticProps, GetStaticPropsContext, NextPage } from 'next';
 import { NextSeo } from 'next-seo';
+import { useMemo } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import MainLayout from 'src/components/layouts/main';
 import { PageHeader } from 'src/components/PageHeader';
-import { useSwapState } from 'src/hooks/swap';
+import { useAppConfig } from 'src/hooks/app';
 import { getAppConfig } from 'src/services/app';
-
-const WidgetComponent = () => {
-  const swapState = useSwapState();
-
-  return <SwapWidget {...swapState} />;
-};
+import { SwapPageSection } from 'src/types/config';
 
 const SwapPage: NextPage = () => {
   const { formatMessage } = useIntl();
+  const appConfig = useAppConfig();
+  const swapSection = useMemo(() => {
+    const swapSectionPageIndex = appConfig.pages['home']?.sections.findIndex(
+      (s) => s.type === 'swap'
+    );
+    if (swapSectionPageIndex !== -1) {
+      return (
+        (appConfig.pages['home']?.sections[
+          swapSectionPageIndex
+        ] as SwapPageSection) ||
+        ({
+          type: 'swap',
+        } as SwapPageSection)
+      );
+    }
+    return {
+      type: 'swap',
+    } as SwapPageSection;
+  }, [appConfig]);
 
   return (
     <>
@@ -46,7 +61,7 @@ const SwapPage: NextPage = () => {
             </Grid>
             <Grid item xs={12} sm={6}>
               <NoSsr>
-                <WidgetComponent />
+                <SwapSection section={swapSection} />
               </NoSsr>
             </Grid>
           </Grid>

@@ -187,9 +187,11 @@ export function SwapWidget({
       }
 
       let tokensCopy = [
-        ...tokens.filter((t) => {
-          return !DKAPI_INVALID_ADDRESSES.includes(t.contractAddress);
-        }),
+        ...tokens
+          .filter((t) => t)
+          .filter((t) => {
+            return !DKAPI_INVALID_ADDRESSES.includes(t?.contractAddress);
+          }),
       ];
 
       return tokensCopy;

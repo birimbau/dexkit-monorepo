@@ -7,7 +7,7 @@ import {
   Transaction,
   TransactionMetadata,
   TransactionStatus,
-  TransactionType,
+  TransactionType
 } from '../types/blockchain';
 
 import { Asset } from '../types/nft';
@@ -131,6 +131,8 @@ export const transactionDialogRedirectUrlAtom = atom<string | undefined>(
 );
 
 export const drawerIsOpenAtom = atom(false);
+
+export const holdsKitDialogAtom = atom(false);
 
 // Swap settings
 

@@ -3,6 +3,7 @@ import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
+import { useRouter } from 'next/router';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import AppConfirmDialog from 'src/components/AppConfirmDialog';
@@ -24,6 +25,7 @@ interface Props {
 export default function AssetStoreStepperContainer({ site }: Props) {
   const sendConfigMutation = useSendConfigMutation({ slug: site?.slug });
   const [showConfirmSendConfig, setShowConfirmSendConfig] = useState(false);
+  const router = useRouter();
   const [wizardConfig, setWizardConfig] = useState(defaultConfig);
   const config = useMemo(() => {
     if (site?.config) {
@@ -68,6 +70,10 @@ export default function AssetStoreStepperContainer({ site }: Props) {
 
   const handleCloseSendingConfig = () => {
     setShowSendingConfig(false);
+    const data = sendConfigMutation?.data;
+    if (data && data?.slug) {
+      router.push(`/admin/edit/${data.slug}`);
+    }
     sendConfigMutation.reset();
   };
 

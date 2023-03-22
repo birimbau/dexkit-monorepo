@@ -31,6 +31,13 @@ import { AppConfig } from '../../../../types/config';
 import { SiteResponse } from '../../../../types/whitelabel';
 import { useAppWizardConfig } from '../../hooks';
 
+import TourIcon from '@mui/icons-material/Tour';
+import { TourProvider, useTour } from '@reactour/tour';
+import { useAtom } from 'jotai';
+import { BuilderKit } from '../../constants';
+import { OnboardBuilderSteps } from '../../constants/onboard/steps';
+import { isFirstVisitOnEditWizardAtom } from '../../state';
+import BuilderKitMenu from '../BuilderKitMenu';
 import SignConfigDialog from '../dialogs/SignConfigDialog';
 import { PreviewAppButton } from '../PreviewAppButton';
 import { WelcomeMessage } from '../WelcomeMessage';
@@ -70,26 +77,45 @@ interface Props {
   site?: SiteResponse;
 }
 
-enum ActiveMenu {
-  General,
-  Domain,
-  Social,
-  Theme,
-  Pages,
-  Menu,
-  FooterMenu,
-  Seo,
-  Analytics,
-  MarketplaceFees,
-  SwapFees,
-  Collections,
-  Tokens,
-  Ownership,
+export enum ActiveMenu {
+  General = 'general',
+  Domain = 'domain',
+  Social = 'social',
+  Theme = 'theme',
+  Pages = 'pages',
+  Menu = 'menu',
+  FooterMenu = 'footer-menu',
+  Seo = 'seo',
+  Analytics = 'analytics',
+  MarketplaceFees = 'marketplace-fees',
+  SwapFees = 'swap-fees',
+  Collections = 'collections',
+  Tokens = 'tokens',
+  Ownership = 'ownership',
 }
 
 const ListSubheaderCustom = styled(ListSubheader)({
   fontWeight: 'bold',
 });
+
+function TourButton() {
+  const { setIsOpen } = useTour();
+  const [isFirstVisit, setIsFirstVisit] = useAtom(isFirstVisitOnEditWizardAtom);
+  useEffect(() => {
+    if (isFirstVisit) {
+      setTimeout(() => {
+        setIsFirstVisit(false);
+        setIsOpen(true);
+      }, 2000);
+    }
+  }, [isFirstVisit]);
+
+  return (
+    <IconButton onClick={() => setIsOpen(true)}>
+      <TourIcon />
+    </IconButton>
+  );
+}
 
 export function EditWizardContainer({ site }: Props) {
   const config = useMemo(() => {
@@ -100,6 +126,9 @@ export function EditWizardContainer({ site }: Props) {
   const { formatMessage } = useIntl();
 
   const [activeMenu, setActiveMenu] = useState<ActiveMenu>(ActiveMenu.General);
+  const [activeBuilderKit, setActiveBuilderKit] = useState<BuilderKit>(
+    BuilderKit.ALL
+  );
 
   const theme = useTheme();
 
@@ -335,36 +364,40 @@ export function EditWizardContainer({ site }: Props) {
             </ListSubheaderCustom>
           }
         >
-          <ListItem disablePadding>
-            <ListItemButton
-              selected={activeMenu === ActiveMenu.MarketplaceFees}
-              onClick={() => setActiveMenu(ActiveMenu.MarketplaceFees)}
-            >
-              <ListItemText
-                primary={
-                  <FormattedMessage
-                    id="marketplace.fees"
-                    defaultMessage={'Marketplace fees'}
-                  />
-                }
-              />
-            </ListItemButton>
-          </ListItem>
-          <ListItem disablePadding>
-            <ListItemButton
-              selected={activeMenu === ActiveMenu.SwapFees}
-              onClick={() => setActiveMenu(ActiveMenu.SwapFees)}
-            >
-              <ListItemText
-                primary={
-                  <FormattedMessage
-                    id="swap.fees"
-                    defaultMessage={'Swap fees'}
-                  />
-                }
-              />
-            </ListItemButton>
-          </ListItem>
+          {activeBuilderKit !== BuilderKit.Swap && (
+            <ListItem disablePadding>
+              <ListItemButton
+                selected={activeMenu === ActiveMenu.MarketplaceFees}
+                onClick={() => setActiveMenu(ActiveMenu.MarketplaceFees)}
+              >
+                <ListItemText
+                  primary={
+                    <FormattedMessage
+                      id="marketplace.fees"
+                      defaultMessage={'Marketplace fees'}
+                    />
+                  }
+                />
+              </ListItemButton>
+            </ListItem>
+          )}
+          {activeBuilderKit !== BuilderKit.NFT && (
+            <ListItem disablePadding>
+              <ListItemButton
+                selected={activeMenu === ActiveMenu.SwapFees}
+                onClick={() => setActiveMenu(ActiveMenu.SwapFees)}
+              >
+                <ListItemText
+                  primary={
+                    <FormattedMessage
+                      id="swap.fees"
+                      defaultMessage={'Swap fees'}
+                    />
+                  }
+                />
+              </ListItemButton>
+            </ListItem>
+          )}
         </List>
       </nav>
       <Divider />
@@ -376,21 +409,23 @@ export function EditWizardContainer({ site }: Props) {
             </ListSubheaderCustom>
           }
         >
-          <ListItem disablePadding>
-            <ListItemButton
-              selected={activeMenu === ActiveMenu.Collections}
-              onClick={() => setActiveMenu(ActiveMenu.Collections)}
-            >
-              <ListItemText
-                primary={
-                  <FormattedMessage
-                    id="collections"
-                    defaultMessage={'Collections'}
-                  />
-                }
-              />
-            </ListItemButton>
-          </ListItem>
+          {activeBuilderKit !== BuilderKit.Swap && (
+            <ListItem disablePadding>
+              <ListItemButton
+                selected={activeMenu === ActiveMenu.Collections}
+                onClick={() => setActiveMenu(ActiveMenu.Collections)}
+              >
+                <ListItemText
+                  primary={
+                    <FormattedMessage
+                      id="collections"
+                      defaultMessage={'Collections'}
+                    />
+                  }
+                />
+              </ListItemButton>
+            </ListItem>
+          )}
           <ListItem disablePadding>
             <ListItemButton
               selected={activeMenu === ActiveMenu.Tokens}
@@ -409,7 +444,16 @@ export function EditWizardContainer({ site }: Props) {
   );
 
   return (
-    <>
+    <TourProvider
+      steps={OnboardBuilderSteps({ onChangeMenu: setActiveMenu })}
+      styles={{
+        maskWrapper: (base) => ({
+          ...base,
+          zIndex: 20000,
+        }),
+        badge: (base) => ({ ...base, color: 'blue' }),
+      }}
+    >
       <Drawer open={isMenuOpen} onClose={handleCloseMenu}>
         <Box
           sx={(theme) => ({ minWidth: `${theme.breakpoints.values.sm / 2}px` })}
@@ -436,8 +480,8 @@ export function EditWizardContainer({ site }: Props) {
 
       <NextSeo
         title={formatMessage({
-          id: 'app.setup',
-          defaultMessage: 'App Setup',
+          id: 'app.builder.setup',
+          defaultMessage: 'App Builder Setup',
         })}
       />
       <AppConfirmDialog
@@ -511,21 +555,30 @@ export function EditWizardContainer({ site }: Props) {
             </Stack>
           </Grid>
           <Grid item xs={12} sm={12}>
-            <WelcomeMessage />
+            <div className={'welcome-dex-app-builder'}>
+              <WelcomeMessage />
+            </div>
           </Grid>
 
           <Grid item xs={12} sm={12}>
             <Stack direction={'row'} justifyContent={'space-between'}>
               {!isMobile && (
-                <Typography variant="h5">
-                  <FormattedMessage id="edit.app" defaultMessage="Edit App" />
-                </Typography>
+                <Stack direction={'row'} alignItems={'center'} spacing={2}>
+                  <Typography variant="h5">
+                    <FormattedMessage id="edit.app" defaultMessage="Edit App" />
+                  </Typography>
+                  <BuilderKitMenu
+                    menu={activeBuilderKit}
+                    onChangeMenu={(menu) => setActiveBuilderKit(menu)}
+                  />
+                  <TourButton />
+                </Stack>
               )}
-              <Stack direction={'row'} spacing={2}>
+              <Stack direction={'row'} spacing={2} alignItems={'center'}>
                 <PreviewAppButton appConfig={wizardConfig} />
                 {site?.previewUrl && (
-                  <>
-                    <Typography variant="body1">
+                  <Box className={'preview-app-link'}>
+                    <Typography variant="body1" className="">
                       <FormattedMessage
                         id="preview.url"
                         defaultMessage="Preview Url"
@@ -536,7 +589,7 @@ export function EditWizardContainer({ site }: Props) {
                     <Link target={'_blank'} href={site.previewUrl}>
                       {site.previewUrl}
                     </Link>
-                  </>
+                  </Box>
                 )}
               </Stack>
 
@@ -555,7 +608,7 @@ export function EditWizardContainer({ site }: Props) {
             {!isMobile && renderMenu()}
           </Grid>
           <Grid item xs={12} sm={10}>
-            <Stack spacing={2}>
+            <Stack spacing={2} className={'builder-forms'}>
               {activeMenu === ActiveMenu.General && config && (
                 <GeneralWizardContainer
                   config={config}
@@ -570,6 +623,7 @@ export function EditWizardContainer({ site }: Props) {
                   site={site}
                 />
               )}
+
               {activeMenu === ActiveMenu.Ownership && config && (
                 <OwnershipWizardContainer
                   config={config}
@@ -581,13 +635,18 @@ export function EditWizardContainer({ site }: Props) {
               {activeMenu === ActiveMenu.Theme && config && (
                 <ThemeWizardContainer
                   config={config}
+                  showSwap={activeBuilderKit === BuilderKit.Swap}
                   onSave={handleSave}
                   onChange={handleChange}
                 />
               )}
 
               {activeMenu === ActiveMenu.Pages && config && (
-                <PagesWizardContainer config={config} onSave={handleSave} />
+                <PagesWizardContainer
+                  config={config}
+                  onSave={handleSave}
+                  builderKit={activeBuilderKit}
+                />
               )}
 
               {activeMenu === ActiveMenu.MarketplaceFees && config && (
@@ -653,6 +712,6 @@ export function EditWizardContainer({ site }: Props) {
           )*/}
         </Grid>
       </Container>
-    </>
+    </TourProvider>
   );
 }

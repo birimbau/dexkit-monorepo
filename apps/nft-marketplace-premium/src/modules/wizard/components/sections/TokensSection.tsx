@@ -1,4 +1,4 @@
-import { ImportExport, Search } from '@mui/icons-material';
+import { Search } from '@mui/icons-material';
 import Add from '@mui/icons-material/Add';
 import Delete from '@mui/icons-material/Delete';
 import DoneAllIcon from '@mui/icons-material/DoneAll';
@@ -21,11 +21,11 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import AppConfirmDialog from '../../../../components/AppConfirmDialog';
 import { Token } from '../../../../types/blockchain';
 import { WIZARD_MAX_TOKENS } from '../../constants';
+import TokensSectionList from './TokensSectionList';
 const AddTokenDialog = dynamic(() => import('../dialogs/AddTokenDialog'));
 const ImportTokenListDialog = dynamic(
   () => import('../dialogs/ImportTokenListDialog')
 );
-import TokensSectionList from './TokensSectionList';
 
 interface Props {
   tokens: Token[];
@@ -49,7 +49,6 @@ export default function TokensSection({
   const { formatMessage } = useIntl();
   const [showAddToken, setShowAddToken] = useState(false);
   const [showRemoveTokens, setShowRemoveTokens] = useState(false);
-  const [showImportTokenList, setShowImportTokenList] = useState(false);
   const [search, setSearch] = useState('');
 
   const [isSelectEnabled, setIsSelectEnabled] = useState(false);
@@ -60,10 +59,6 @@ export default function TokensSection({
 
   const handleShowAddToken = () => {
     setShowAddToken(true);
-  };
-
-  const handleShowImportTokenList = () => {
-    setShowImportTokenList(true);
   };
 
   const handleCloseAddToken = () => {
@@ -78,16 +73,8 @@ export default function TokensSection({
     }
   };
 
-  const handleCloseImportTokenList = () => {
-    setShowImportTokenList(false);
-  };
-
   const handleSaveToken = (token: Token) => {
     onSave([token]);
-  };
-
-  const handleSaveTokens = (tokens: Token[]) => {
-    onSave(tokens);
   };
 
   const handleShowRemoveTokens = () => {
@@ -118,16 +105,6 @@ export default function TokensSection({
 
   return (
     <>
-      <ImportTokenListDialog
-        tokens={tokens}
-        dialogProps={{
-          maxWidth: 'xs',
-          fullWidth: true,
-          open: showImportTokenList,
-          onClose: handleCloseImportTokenList,
-        }}
-        onSave={handleSaveTokens}
-      />
       <AddTokenDialog
         tokens={tokens}
         onSave={handleSaveToken}
@@ -214,17 +191,6 @@ export default function TokensSection({
                 variant="outlined"
               >
                 <FormattedMessage id="import" defaultMessage="Import" />
-              </Button>
-              <Button
-                onClick={handleShowImportTokenList}
-                size="small"
-                startIcon={<ImportExport />}
-                variant="outlined"
-              >
-                <FormattedMessage
-                  id="add.from.token.list"
-                  defaultMessage="Add from token list"
-                />
               </Button>
             </Stack>
           </Stack>

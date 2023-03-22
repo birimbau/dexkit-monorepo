@@ -41,3 +41,11 @@ export const CORE_PAGES: { [key: string]: AppPageOptions } = {
     uri: '/wallet'
   }
 }
+
+
+export enum BuilderKit {
+  ALL = 'All KITs',
+  NFT = 'NFT KITs',
+  Swap = 'Swap KITs',
+
+}

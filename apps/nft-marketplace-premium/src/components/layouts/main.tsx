@@ -12,6 +12,7 @@ import {
 } from '../../hooks/app';
 import {
   drawerIsOpenAtom,
+  holdsKitDialogAtom,
   selectedWalletAtom,
   showSelectCurrencyAtom,
   showSelectLocaleAtom,
@@ -33,6 +34,7 @@ import AppDrawer from '../AppDrawer';
 import { useWalletActivate } from '@dexkit/core/hooks';
 import { WalletActivateParams } from '@dexkit/core/types';
 import { ConnectWalletDialog } from '@dexkit/ui';
+const HoldingKitDialog = dynamic(() => import('../dialogs/HoldingKitDialog'));
 
 const SelectCurrencyDialog = dynamic(
   () => import('../dialogs/SelectCurrencyDialog')
@@ -70,6 +72,8 @@ const MainLayout: React.FC<Props> = ({
   }, [defaultAppConfig, appConfigProps]);
 
   const transactions = useTransactions();
+
+  const [holdsKitDialog, setHoldsKitDialog] = useAtom(holdsKitDialogAtom);
 
   const [switchOpen, setSwitchOpen] = useAtom(switchNetworkOpenAtom);
   const [switchChainId, setSwitchChainId] = useAtom(switchNetworkChainIdAtom);
@@ -184,6 +188,17 @@ const MainLayout: React.FC<Props> = ({
           }}
         />
       )}
+      {holdsKitDialog && (
+        <HoldingKitDialog
+          dialogProps={{
+            open: holdsKitDialog,
+            onClose: () => setHoldsKitDialog(false),
+            fullWidth: true,
+            maxWidth: 'xs',
+          }}
+        />
+      )}
+
       {showSelectLocale && (
         <SelectLanguageDialog
           dialogProps={{

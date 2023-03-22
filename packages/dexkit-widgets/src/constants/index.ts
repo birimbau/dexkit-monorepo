@@ -87,6 +87,17 @@ export const ETHEREUM_TOKEN: Token = {
     "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/info/logo.png",
 };
 
+export const AVAX_TOKEN: Token = {
+  chainId: ChainId.Avax,
+  contractAddress: ZEROEX_NATIVE_TOKEN_ADDRESS,
+  name: "Avalanche",
+  symbol: "AVAX",
+  coingeckoId: "avalanche-2",
+  decimals: 18,
+  logoURI:
+    "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/avalanchex/info/logo.png",
+};
+
 export const BNB_TOKEN: Token = {
   chainId: ChainId.BSC,
   contractAddress: ZEROEX_NATIVE_TOKEN_ADDRESS,
@@ -136,6 +147,7 @@ export const NATIVE_TOKENS: { [key: number]: Token } = {
   [ChainId.Ethereum]: ETHEREUM_TOKEN,
   [ChainId.Polygon]: MATIC_TOKEN,
   [ChainId.Fantom]: FANTOM_TOKEN,
+  [ChainId.Avax]: AVAX_TOKEN,
   [ChainId.BSC]: BNB_TOKEN,
   [ChainId.Optimism]: ETHEREUM_TOKEN,
   [ChainId.Arbitrum]: ETHEREUM_TOKEN,
@@ -151,7 +163,7 @@ export const COINGECKO_PLATFORM_ID: { [key: number]: string } = {
   [ChainId.Ethereum]: "ethereum",
   [ChainId.Polygon]: "polygon-pos",
   [ChainId.BSC]: "binance-smart-chain",
-  [ChainId.Avax]: "avalanche",
+  [ChainId.Avax]: "avalanche-2",
   [ChainId.Celo]: "celo",
   [ChainId.Fantom]: "fantom",
   [ChainId.Optimism]: "optimistic-ethereum",

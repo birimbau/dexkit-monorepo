@@ -11,14 +11,20 @@ import { useEffect, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { getTheme } from '../../../../theme';
 import { AppConfig, AppPage } from '../../../../types/config';
+import { BuilderKit } from '../../constants';
 import { PagesContainer } from '../PagesContainer';
 
 interface Props {
   config: AppConfig;
   onSave: (config: AppConfig) => void;
+  builderKit?: BuilderKit;
 }
 
-export default function PagesWizardContainer({ config, onSave }: Props) {
+export default function PagesWizardContainer({
+  config,
+  onSave,
+  builderKit,
+}: Props) {
   const [currentPage, setCurrentPage] = useState<AppPage>(config.pages['home']);
   const [pages, setPages] = useState<{ [key: string]: AppPage }>(config.pages);
   useEffect(() => {
@@ -66,6 +72,7 @@ export default function PagesWizardContainer({ config, onSave }: Props) {
       <Grid item xs={12}>
         {currentPage && pages && (
           <PagesContainer
+            builderKit={builderKit}
             pages={pages}
             currentPage={currentPage}
             setPages={setPages}
