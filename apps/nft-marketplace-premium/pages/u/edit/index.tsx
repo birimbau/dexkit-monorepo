@@ -2,7 +2,7 @@ import { UserEditContainer } from '@/modules/user/componentes/containers/UserEdi
 import { GET_USER_BY_USERNAME_QUERY } from '@/modules/user/hooks';
 import { getUserByUsername } from '@/modules/user/services';
 import Box from '@mui/material/Box';
-import { dehydrate, QueryClient } from '@tanstack/react-query';
+import { QueryClient } from '@tanstack/react-query';
 import { GetStaticProps, GetStaticPropsContext, NextPage } from 'next';
 import AuthMainLayout from 'src/components/layouts/authMain';
 
@@ -33,18 +33,11 @@ export const getStaticProps: GetStaticProps = async ({
 
   return {
     props: {
-      dehydratedState: dehydrate(queryClient),
-      username: params?.username,
+      //  dehydratedState: dehydrate(queryClient),
+      // username: params?.username,
     },
     revalidate: 3000,
   };
 };
-
-export async function getStaticPaths() {
-  return {
-    paths: [],
-    fallback: 'blocking', // false or 'blocking'
-  };
-}
 
 export default UserEdit;

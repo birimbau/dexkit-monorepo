@@ -29,9 +29,11 @@ export function UserContainer({ username }: { username?: string }) {
   const { account } = useWeb3React();
   const [search, setSearch] = useState<string>();
   const assetOrderbookQuery = useAssetsOrderBook({
-    maker: user?.accounts[0].address,
+    maker:
+      user?.accounts && user?.accounts.length ? user?.accounts[0].address : '',
   });
-  const defaultAccount = user?.accounts[0].address;
+  const defaultAccount =
+    user?.accounts && user?.accounts.length ? user?.accounts[0].address : '';
 
   return (
     <>
