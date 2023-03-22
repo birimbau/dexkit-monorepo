@@ -1,4 +1,4 @@
-import { DexKitContext } from '@dexkit/ui';
+import { useDexKitContext } from '@dexkit/ui';
 import { useWeb3React } from '@web3-react/core';
 import { atom, useAtom, useAtomValue } from 'jotai';
 
@@ -151,7 +151,7 @@ export function useCollections() {
 
 export function useLocale() {
   const loc = useAtomValue(localeAtom);
-  const { setLocale } = useContext(DexKitContext);
+  const { setLocale } = useDexKitContext();
   const locUser = useAtomValue(localeUserAtom);
   const appConfig = useAppConfig();
   const locale = useMemo(() => {
