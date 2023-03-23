@@ -21,16 +21,11 @@ import {
 import { AttachMoney, Language } from '@mui/icons-material';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import { useWeb3React } from '@web3-react/core';
-import { useAtomValue } from 'jotai';
 import { useUpdateAtom } from 'jotai/utils';
 import { FormattedMessage } from 'react-intl';
-import { useAppConfig, useConnectWalletDialog } from '../hooks/app';
-import {
-  currencyAtom,
-  localeAtom,
-  showSelectCurrencyAtom,
-  showSelectLocaleAtom,
-} from '../state/atoms';
+import { useCurrency } from 'src/hooks/currency';
+import { useAppConfig, useConnectWalletDialog, useLocale } from '../hooks/app';
+import { showSelectCurrencyAtom, showSelectLocaleAtom } from '../state/atoms';
 import { getChainLogoImage, getChainName } from '../utils/blockchain';
 import DrawerMenu from './DrawerMenu';
 import Wallet from './icons/Wallet';
@@ -60,8 +55,8 @@ function AppDrawer({ open, onClose }: Props) {
     connectWalletDialog.setOpen(true);
   };
 
-  const locale = useAtomValue(localeAtom);
-  const currency = useAtomValue(currencyAtom);
+  const { locale } = useLocale();
+  const currency = useCurrency();
 
   const setShowShowSelectCurrency = useUpdateAtom(showSelectCurrencyAtom);
 

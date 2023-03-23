@@ -1,22 +1,25 @@
+import { useDexKitContext } from '@dexkit/ui';
 import { useWeb3React } from '@web3-react/core';
-import { atom, useAtom } from 'jotai';
+import { atom, useAtom, useAtomValue } from 'jotai';
 
 import { useUpdateAtom } from 'jotai/utils';
-import { useCallback, useContext } from 'react';
+import { useCallback, useContext, useMemo } from 'react';
 import { AppConfigContext } from '../contexts';
 import {
+  localeAtom,
+  localeUserAtom,
   transactionDialogErrorAtom,
   transactionDialogHashAtom,
   transactionDialogMetadataAtom,
   transactionDialogOpenAtom,
   transactionDialogRedirectUrlAtom,
   transactionDialogTypeAtom,
-  transactionsAtom,
+  transactionsAtom
 } from '../state/atoms';
 import {
   TransactionMetadata,
   TransactionStatus,
-  TransactionType,
+  TransactionType
 } from '../types/blockchain';
 
 export function useTransactions() {
@@ -142,4 +145,21 @@ export function useAppNFT() {
 export function useCollections() {
   const appConfig = useAppConfig();
   return appConfig?.collections;
+}
+
+export function useLocale() {
+  const loc = useAtomValue(localeAtom);
+  const { setLocale } = useDexKitContext();
+  const locUser = useAtomValue(localeUserAtom);
+  const appConfig = useAppConfig();
+  const locale = useMemo(() => {
+    if (locUser) {
+      return locUser;
+    }
+    if (appConfig.locale && appConfig.locale !== loc) {
+      return appConfig.locale
+    }
+    return loc || 'en-US' as string;
+  }, [appConfig.locale, locUser, loc])
+  return { locale, setLocale }
 }

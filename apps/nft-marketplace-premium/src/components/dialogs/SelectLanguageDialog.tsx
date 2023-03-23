@@ -14,8 +14,9 @@ import {
 import { useAtom } from 'jotai';
 import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
+import { useLocale } from 'src/hooks/app';
 import { LANGUAGES } from '../../constants';
-import { localeAtom } from '../../state/atoms';
+import { localeUserAtom } from '../../state/atoms';
 import { Language } from '../../types/app';
 import { AppDialogTitle } from '../AppDialogTitle';
 
@@ -26,9 +27,11 @@ interface Props {
 function SelectLanguageDialog({ dialogProps }: Props) {
   const { onClose } = dialogProps;
 
-  const [locale, setLocale] = useAtom(localeAtom);
+  const { locale, setLocale } = useLocale();
 
-  const [selectedLocale, setSelectedLocale] = useState(locale);
+  const [localeUser, setLocaleUser] = useAtom(localeUserAtom);
+
+  const [selectedLocale, setSelectedLocale] = useState(localeUser || locale);
 
   const handleClose = () => {
     if (onClose) {
@@ -42,6 +45,7 @@ function SelectLanguageDialog({ dialogProps }: Props) {
 
   const handleConfirmSelect = () => {
     setLocale(selectedLocale);
+    setLocaleUser(selectedLocale);
     handleClose();
   };
 

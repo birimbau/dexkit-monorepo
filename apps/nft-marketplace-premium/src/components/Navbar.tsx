@@ -37,14 +37,13 @@ import { useAtom, useAtomValue } from 'jotai';
 import { useUpdateAtom } from 'jotai/utils';
 import Image from 'next/image';
 import { FormattedMessage } from 'react-intl';
+import { useCurrency } from 'src/hooks/currency';
 import { AppConfig } from 'src/types/config';
-import { useConnectWalletDialog } from '../hooks/app';
+import { useConnectWalletDialog, useLocale } from '../hooks/app';
 import { useSelectNetworkDialog } from '../hooks/misc';
 import {
-  currencyAtom,
   drawerIsOpenAtom,
   hasPendingTransactionsAtom,
-  localeAtom,
   showAppTransactionsAtom,
   showSelectCurrencyAtom,
   showSelectLocaleAtom,
@@ -141,8 +140,8 @@ function Navbar({ appConfig, isPreview }: Props) {
     handleSettingsMenuClose();
   };
 
-  const currency = useAtomValue(currencyAtom);
-  const locale = useAtomValue(localeAtom);
+  const currency = useCurrency();
+  const { locale } = useLocale();
 
   const [transactions, updateTransactions] = useAtom(transactionsAtom);
 
