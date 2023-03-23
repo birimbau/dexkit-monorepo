@@ -1,21 +1,21 @@
-import { useAppWizardConfig } from '@/modules/wizard/hooks';
+import { useMediaQuery, useTheme } from '@mui/material';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import { useCallback, useState } from 'react';
+import { useRouter } from 'next/router';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
+import AppConfirmDialog from 'src/components/AppConfirmDialog';
 import { PageHeader } from 'src/components/PageHeader';
 import { useSendConfigMutation } from 'src/hooks/whitelabel';
+import { AppConfig } from 'src/types/config';
 import { SiteResponse } from 'src/types/whitelabel';
+import theDefaultConfig from '../../../../../../config/quick.swap.default.app.json';
+import SignConfigDialog from '../../dialogs/SignConfigDialog';
 import { PreviewAppButton } from '../../PreviewAppButton';
 import { WelcomeSwapStepperMessage } from '../../WelcomeSwapStepperMessage';
 import SwapStepper from '../SwapStepper/SwapStepper';
-import theDefaultConfig from '../../../../../../config/quick.swap.default.app.json';
-import { AppConfig } from 'src/types/config';
-import AppConfirmDialog from 'src/components/AppConfirmDialog';
-import SignConfigDialog from '../../dialogs/SignConfigDialog';
-import { useMediaQuery, useTheme } from '@mui/material';
 const defaultConfig = theDefaultConfig as unknown as AppConfig;
 
 interface Props {
@@ -25,13 +25,25 @@ interface Props {
 export default function SwapStepperContainer({ site }: Props) {
   const sendConfigMutation = useSendConfigMutation({ slug: site?.slug });
   const [showConfirmSendConfig, setShowConfirmSendConfig] = useState(false);
-
+  const router = useRouter();
+  const config = useMemo(() => {
+    if (site?.config) {
+      return JSON.parse(site?.config);
+    }
+  }, [site?.config]);
   const theme = useTheme();
 
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const [showSendingConfig, setShowSendingConfig] = useState(false);
   const [wizardConfig, setWizardConfig] = useState(defaultConfig);
+
+  useEffect(() => {
+    if (config) {
+      setWizardConfig(config);
+    }
+  }, [config]);
+
   // Pages forms
   const handleCloseConfirmSendConfig = () => {
     setShowConfirmSendConfig(false);
@@ -59,6 +71,10 @@ export default function SwapStepperContainer({ site }: Props) {
 
   const handleCloseSendingConfig = () => {
     setShowSendingConfig(false);
+    const data = sendConfigMutation?.data;
+    if (data && data?.slug) {
+      router.push(`/admin/edit/${data?.slug}`);
+    }
     sendConfigMutation.reset();
   };
 
@@ -123,11 +139,11 @@ export default function SwapStepperContainer({ site }: Props) {
                 {
                   caption: (
                     <FormattedMessage
-                      id="swap.quick.wizard"
-                      defaultMessage="Swap quick wizard"
+                      id="swap.quick.builder"
+                      defaultMessage="Swap quick builder"
                     />
                   ),
-                  uri: '/admin/quick-wizard/swap',
+                  uri: '/admin/quick-builder/swap',
                   active: true,
                 },
               ]}
@@ -142,8 +158,8 @@ export default function SwapStepperContainer({ site }: Props) {
             {!isMobile && (
               <Typography variant="h5">
                 <FormattedMessage
-                  id="quick.swap.wizard"
-                  defaultMessage="Quick swap wizard"
+                  id="quick.swap.builder"
+                  defaultMessage="Quick swap builder"
                 />
               </Typography>
             )}

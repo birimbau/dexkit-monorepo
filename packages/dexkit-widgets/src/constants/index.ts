@@ -1,17 +1,12 @@
-import { Web3ReactHooks } from "@web3-react/core";
-import { Connector } from "@web3-react/types";
+import { ChainId } from "@dexkit/core/constants/enums";
 import { ethers } from "ethers";
-import { metaMask } from "../connectors";
+import { isAddress } from "ethers/lib/utils";
 import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "../services/zeroex/constants";
 import { Token } from "../types";
 import { isAddressEqual } from "../utils";
-import { ChainId } from "./enum";
-// import { magic, magicHooks } from '../connectors/magic';
 
-export const CONNECTORS: { [key: string]: [Connector, Web3ReactHooks] } = {
-  metamask: [metaMask.connector, metaMask.hooks],
-  // magic: [magic, magicHooks],
-};
+
+
 
 export const WRAPED_TOKEN_ADDRESS: { [key: number]: string } = {
   [ChainId.Goerli]: "0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6",
@@ -19,6 +14,10 @@ export const WRAPED_TOKEN_ADDRESS: { [key: number]: string } = {
 };
 
 export function TOKEN_ICON_URL(addr: string, chainId?: ChainId) {
+  if (!isAddress(addr)) {
+    return;
+  }
+
   const address = ethers.utils.getAddress(addr);
 
   if (isAddressEqual(address, ZEROEX_NATIVE_TOKEN_ADDRESS)) {
@@ -36,7 +35,9 @@ export function TOKEN_ICON_URL(addr: string, chainId?: ChainId) {
       case ChainId.Celo:
         return `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/celo/info/logo.png`;
       case ChainId.Optimism:
-        return `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/optimism/info/logo.png`;
+        return `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/info/logo.png`;
+      case ChainId.Arbitrum:
+        return `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/info/logo.png`;
       default:
         return "";
     }
@@ -57,6 +58,8 @@ export function TOKEN_ICON_URL(addr: string, chainId?: ChainId) {
       return `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/celo/assets/${address}/logo.png`;
     case ChainId.Optimism:
       return `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/optimism/assets/${address}/logo.png`;
+    case ChainId.Arbitrum:
+      return `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/arbitrum/assets/${address}/logo.png`;
     default:
       return "";
   }
@@ -82,6 +85,17 @@ export const ETHEREUM_TOKEN: Token = {
   decimals: 18,
   logoURI:
     "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/info/logo.png",
+};
+
+export const AVAX_TOKEN: Token = {
+  chainId: ChainId.Avax,
+  contractAddress: ZEROEX_NATIVE_TOKEN_ADDRESS,
+  name: "Avalanche",
+  symbol: "AVAX",
+  coingeckoId: "avalanche-2",
+  decimals: 18,
+  logoURI:
+    "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/avalanchex/info/logo.png",
 };
 
 export const BNB_TOKEN: Token = {
@@ -133,8 +147,10 @@ export const NATIVE_TOKENS: { [key: number]: Token } = {
   [ChainId.Ethereum]: ETHEREUM_TOKEN,
   [ChainId.Polygon]: MATIC_TOKEN,
   [ChainId.Fantom]: FANTOM_TOKEN,
+  [ChainId.Avax]: AVAX_TOKEN,
   [ChainId.BSC]: BNB_TOKEN,
-  [ChainId.Optimism]: OPTIMISM_TOKEN,
+  [ChainId.Optimism]: ETHEREUM_TOKEN,
+  [ChainId.Arbitrum]: ETHEREUM_TOKEN,
 };
 
 export function GET_NATIVE_TOKEN(chainId: ChainId) {
@@ -147,7 +163,7 @@ export const COINGECKO_PLATFORM_ID: { [key: number]: string } = {
   [ChainId.Ethereum]: "ethereum",
   [ChainId.Polygon]: "polygon-pos",
   [ChainId.BSC]: "binance-smart-chain",
-  [ChainId.Avax]: "avalanche",
+  [ChainId.Avax]: "avalanche-2",
   [ChainId.Celo]: "celo",
   [ChainId.Fantom]: "fantom",
   [ChainId.Optimism]: "optimistic-ethereum",

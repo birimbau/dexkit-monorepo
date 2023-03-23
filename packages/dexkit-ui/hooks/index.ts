@@ -1,11 +1,14 @@
 import { CONNECTORS } from "@dexkit/core/constants";
 import { Web3ReactHooks } from "@web3-react/core";
 import { Connector } from "@web3-react/types";
-import { useAtomValue } from "jotai";
+import { PrimitiveAtom, useAtomValue } from "jotai";
 import { useMemo } from "react";
-import { selectedWalletAtom } from "../atoms";
 
-export function useOrderedConnectors() {
+export function useOrderedConnectors({
+  selectedWalletAtom,
+}: {
+  selectedWalletAtom: PrimitiveAtom<string>;
+}) {
   const selectedWallet = useAtomValue(selectedWalletAtom);
 
   return useMemo(() => {

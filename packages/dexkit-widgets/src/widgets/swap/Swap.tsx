@@ -1,5 +1,6 @@
 import {
   Alert,
+  Avatar,
   Box,
   Button,
   Card,
@@ -18,13 +19,15 @@ import SwapTokenField from "./SwapCurrencyField";
 import SwapSwitchTokensButton from "./SwapSwitchTokensButton";
 import { ExecType, SwapSide } from "./types";
 
+import { ChainId } from "@dexkit/core/constants/enums";
+import { NETWORKS } from "@dexkit/core/constants/networks";
+import { useIsMobile } from "@dexkit/core/hooks";
 import { CreditCard } from "@mui/icons-material";
 import SettingsIcon from "@mui/icons-material/Settings";
 import WalletIcon from "@mui/icons-material/Wallet";
 import { AppNotificationsBadge } from "../../components/AppNotificationBadge";
 import TransakIcon from "../../components/icons/TransakIcon";
 import SwitchNetworkSelect from "../../components/SwitchNetworkSelect";
-import { ChainId } from "../../constants/enum";
 import { ZeroExQuoteResponse } from "../../services/zeroex/types";
 import SwapFeeSummary from "./SwapFeeSummary";
 
@@ -33,7 +36,9 @@ import SwapFeeSummary from "./SwapFeeSummary";
 export interface SwapProps {
   chainId?: ChainId;
   currency: string;
-  provider?: providers.Web3Provider;
+  disabled?: boolean;
+  quoteFor?: SwapSide;
+  provider?: providers.Web3Provider | providers.BaseProvider;
   account?: string;
   isActivating?: boolean;
   isActive?: boolean;
@@ -54,12 +59,14 @@ export interface SwapProps {
   disableNotificationsButton?: boolean;
   enableBuyCryptoButton?: boolean;
   disableFooter?: boolean;
+  networkName?: string;
   onSelectToken: (selectFor: SwapSide, token?: Token) => void;
   onSwapTokens: () => void;
   onChangeSellAmount: (value: BigNumber) => void;
   onChangeBuyAmount: (value: BigNumber) => void;
   onConnectWallet: () => void;
   onChangeNetwork: (chanId: ChainId) => void;
+  onToggleChangeNetwork: () => void;
   onShowSettings: () => void;
   onShowTransactions: () => void;
   onExec: () => void;
@@ -68,6 +75,9 @@ export interface SwapProps {
 
 export default function Swap({
   chainId,
+  networkName,
+  disabled,
+  quoteFor,
   isActive,
   execType,
   isQuoting,
@@ -76,6 +86,7 @@ export default function Swap({
   sellToken,
   buyToken,
   currency,
+  provider,
   isExecuting,
   disableFooter,
   quote,
@@ -95,6 +106,7 @@ export default function Swap({
   onShowTransactions,
   onExec,
   onShowTransak,
+  onToggleChangeNetwork,
 }: SwapProps) {
   const handleSelectSellToken = (token?: Token) => {
     onSelectToken("sell", token);
@@ -110,7 +122,7 @@ export default function Swap({
         <FormattedMessage
           id="insufficient.symbol.balance"
           defaultMessage="Insufficient {symbol} balance"
-          values={{ symbol: sellToken?.symbol }}
+          values={{ symbol: sellToken?.symbol.toUpperCase() }}
         />
       );
     }
@@ -119,12 +131,20 @@ export default function Swap({
       <FormattedMessage id="wrap" defaultMessage="Wrap" />
     ) : execType === "unwrap" ? (
       <FormattedMessage id="Unwrap" defaultMessage="Unwrap" />
+    ) : execType === "switch" ? (
+      <FormattedMessage
+        id="switch.wallet.network"
+        defaultMessage="Switch wallet to {networkName}"
+        values={{ networkName }}
+      />
     ) : execType === "approve" ? (
       <FormattedMessage id="approve" defaultMessage="Approve" />
     ) : (
       <FormattedMessage id="swap" defaultMessage="Swap" />
     );
   };
+
+  const isMobile = useIsMobile();
 
   return (
     <Card>
@@ -136,13 +156,34 @@ export default function Swap({
           spacing={2}
         >
           <Box>
-            {isProviderReady && (
-              <SwitchNetworkSelect
-                chainId={chainId}
-                onChangeNetwork={onChangeNetwork}
-                SelectProps={{ size: "small" }}
-              />
-            )}
+            {isProviderReady &&
+              chainId &&
+              (isMobile ? (
+                <Button
+                  sx={{
+                    color: (theme) => theme.palette.text.primary,
+                    borderColor: (theme) => theme.palette.divider,
+                  }}
+                  onClick={onToggleChangeNetwork}
+                  startIcon={
+                    NETWORKS[chainId] ? (
+                      <Avatar
+                        sx={{ width: "1rem", height: "1rem" }}
+                        src={NETWORKS[chainId].imageUrl}
+                      />
+                    ) : undefined
+                  }
+                  variant="outlined"
+                >
+                  {NETWORKS[chainId] ? NETWORKS[chainId].name : ""}
+                </Button>
+              ) : (
+                <SwitchNetworkSelect
+                  chainId={chainId}
+                  onChangeNetwork={onChangeNetwork}
+                  SelectProps={{ size: "small" }}
+                />
+              ))}
           </Box>
 
           <Stack
@@ -172,7 +213,7 @@ export default function Swap({
         </Stack>
       </Box>
 
-      {isQuoting ? (
+      {isQuoting && !disabled ? (
         <LinearProgress color="primary" sx={{ height: "1px" }} />
       ) : (
         <Divider />
@@ -188,16 +229,17 @@ export default function Swap({
               value={sellAmount}
               balance={sellTokenBalance}
               showBalance={isActive}
+              disabled={isQuoting && quoteFor === "buy"}
             />
             <Stack alignItems="center">
               <Box
                 sx={{
-                  marginTop: (theme) => -2.5,
-                  marginBottom: (theme) => -2.5,
+                  marginTop: (theme) => -2,
+                  marginBottom: (theme) => -2,
                 }}
               >
                 <SwapSwitchTokensButton
-                  ButtonBaseProps={{ onClick: onSwapTokens }}
+                  IconButtonProps={{ onClick: onSwapTokens }}
                 />
               </Box>
             </Stack>
@@ -209,21 +251,25 @@ export default function Swap({
               value={buyAmount}
               balance={buyTokenBalance}
               showBalance={isActive}
+              disabled={isQuoting && quoteFor === "sell"}
             />
           </Stack>
-          {execType === "swap" && quote && (
+          {quote && (
             <SwapFeeSummary
               quote={quote}
               chainId={chainId}
               currency={currency}
+              sellToken={sellToken}
+              buyToken={buyToken}
+              provider={provider}
             />
           )}
-          {insufficientBalance && (
+          {insufficientBalance && isActive && (
             <Alert severity="error">
               <FormattedMessage
                 id="insufficient.symbol.balance"
                 defaultMessage="Insufficient {symbol} balance"
-                values={{ symbol: sellToken?.symbol }}
+                values={{ symbol: sellToken?.symbol.toUpperCase() }}
               />
             </Alert>
           )}
@@ -249,7 +295,8 @@ export default function Swap({
               disabled={
                 isExecuting ||
                 (!quote && execType === "swap") ||
-                insufficientBalance
+                insufficientBalance ||
+                disabled
               }
               startIcon={
                 isExecuting ? (

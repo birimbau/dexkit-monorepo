@@ -1,3 +1,5 @@
+import { ChainId } from "@dexkit/core/constants/enums";
+import { useIsMobile } from "@dexkit/core/hooks";
 import Search from "@mui/icons-material/Search";
 
 import {
@@ -16,7 +18,6 @@ import { FormattedMessage, useIntl } from "react-intl";
 import AppDialogTitle from "../../components/AppDialogTitle";
 import SearchTextField from "../../components/SearchTextField";
 import SelectCoinList from "../../components/SelectCoinList";
-import { ChainId } from "../../constants/enum";
 import { useAsyncMemo, useMultiTokenBalance } from "../../hooks";
 import { Token } from "../../types";
 import SwapFeaturedTokens from "./SwapFeaturedTokens";
@@ -68,8 +69,10 @@ export default function SwapSelectCoinDialog({
     [provider]
   );
 
+  const isMobile = useIsMobile();
+
   return (
-    <Dialog {...DialogProps} onClose={handleClose}>
+    <Dialog {...DialogProps} onClose={handleClose} fullScreen={isMobile}>
       <AppDialogTitle
         title={
           <FormattedMessage id="select.token" defaultMessage="Select token" />
@@ -116,7 +119,6 @@ export default function SwapSelectCoinDialog({
                   <Box
                     sx={{
                       px: 2,
-                      background: (theme) => theme.palette.grey[200],
                     }}
                   >
                     <Stack

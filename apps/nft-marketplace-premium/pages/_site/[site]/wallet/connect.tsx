@@ -1,6 +1,3 @@
-import React, { useState } from 'react';
-import type { GetStaticProps, GetStaticPropsContext, NextPage } from 'next';
-import MainLayout from '../../../../src/components/layouts/main';
 import {
   Box,
   Container,
@@ -10,14 +7,17 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
+import type { GetStaticProps, GetStaticPropsContext, NextPage } from 'next';
+import { useState } from 'react';
+import MainLayout from '../../../../src/components/layouts/main';
 import { WalletButton } from '../../../../src/modules/wallet/components/WalletButton';
 
 import metamaskIcon from '../../../../public/assets/images/metamask-fox.svg';
 
 import walletConnectIcon from '../../../../public/assets/images/walletconnect-circle-blue.svg';
 
-import { PageHeader } from '../../../../src/components/PageHeader';
 import { FormattedMessage } from 'react-intl';
+import { PageHeader } from '../../../../src/components/PageHeader';
 import { useWalletActivate } from '../../../../src/hooks/misc';
 import { getAppConfig } from '../../../../src/services/app';
 
@@ -149,10 +149,10 @@ export const getStaticProps: GetStaticProps = async ({
   if (params !== undefined) {
     const { site } = params;
 
-    const appConfig = await getAppConfig(site);
+    const { appConfig, appNFT } = await getAppConfig(site);
 
     return {
-      props: { appConfig },
+      props: { appConfig, appNFT },
     };
   }
 

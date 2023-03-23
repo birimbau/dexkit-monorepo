@@ -1,27 +1,29 @@
 import InstagramIcon from '@mui/icons-material/Instagram';
-import FacebookIcon from '@mui/icons-material/Facebook';
 
 import {
+  Box,
   Container,
   Grid,
   IconButton,
   Stack,
   Typography,
-  Box,
 } from '@mui/material'; // always use @mui/material instead of @mui/system
 
-import Link from './Link';
-import { FormattedMessage } from 'react-intl';
-import { AppConfig, SocialMedia } from '../types/config';
 import TwitterIcon from '@mui/icons-material/Twitter';
+import { useMemo } from 'react';
+import { FormattedMessage } from 'react-intl';
+import { AssetAPI } from 'src/types/nft';
+import { AppConfig, SocialMedia } from '../types/config';
+import Link from './Link';
 import NavbarMenu from './Menu';
 
 interface Props {
+  appNFT?: AssetAPI;
   appConfig: AppConfig;
   isPreview?: boolean;
 }
 
-export function Footer({ appConfig, isPreview }: Props) {
+export function Footer({ appConfig, isPreview, appNFT }: Props) {
   const renderIcon = (media: SocialMedia) => {
     if (media?.type === 'instagram') {
       return <InstagramIcon />;
@@ -39,6 +41,13 @@ export function Footer({ appConfig, isPreview }: Props) {
 
     return '';
   };
+
+  const showAppSignature = useMemo(() => {
+    if (appNFT && appConfig?.hide_powered_by === true) {
+      return false;
+    }
+    return true;
+  }, [appNFT, appConfig]);
 
   return (
     <Box py={2} sx={{ bgcolor: (theme) => theme.palette.background.paper }}>
@@ -94,38 +103,40 @@ export function Footer({ appConfig, isPreview }: Props) {
               </Link>
             )}
           </Grid>
-          <Grid item>
-            <Typography variant="body1" align="center">
-              <Link href="/" color="primary">
-                {appConfig.name}
-              </Link>{' '}
-              <FormattedMessage
-                defaultMessage="is powered by"
-                id="is.powered.by"
-                description="is powered by"
-              />{' '}
-              <Link
-                variant="inherit"
-                href={isPreview ? '#' : 'https://0x.org/'}
-                color="inherit"
-              >
-                <strong>0x</strong>
-              </Link>{' '}
-              <FormattedMessage
-                id="and.made.with.love.by"
-                defaultMessage="and made with ❤️ by"
-                description="and made with ❤️ by"
-              />{' '}
-              <Link
-                variant="inherit"
-                href={isPreview ? '#' : 'https://www.dexkit.com'}
-                target="_blank"
-                color="inherit"
-              >
-                <strong>DexKit</strong>
-              </Link>
-            </Typography>
-          </Grid>
+          {showAppSignature && (
+            <Grid item>
+              <Typography variant="body1" align="center">
+                <Link href="/" color="primary">
+                  {appConfig.name}
+                </Link>{' '}
+                <FormattedMessage
+                  defaultMessage="is powered by"
+                  id="is.powered.by"
+                  description="is powered by"
+                />{' '}
+                <Link
+                  variant="inherit"
+                  href={isPreview ? '#' : 'https://0x.org/'}
+                  color="inherit"
+                >
+                  <strong>0x</strong>
+                </Link>{' '}
+                <FormattedMessage
+                  id="and.made.with.love.by"
+                  defaultMessage="and made with ❤️ by"
+                  description="and made with ❤️ by"
+                />{' '}
+                <Link
+                  variant="inherit"
+                  href={isPreview ? '#' : 'https://www.dexkit.com'}
+                  target="_blank"
+                  color="inherit"
+                >
+                  <strong>DexKit</strong>
+                </Link>
+              </Typography>
+            </Grid>
+          )}
           <Grid item>
             <Stack direction="row" spacing={1}>
               {appConfig?.social &&

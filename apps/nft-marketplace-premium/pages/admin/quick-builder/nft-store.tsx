@@ -4,22 +4,24 @@ import { NextSeo } from 'next-seo';
 import { useRouter } from 'next/router';
 import { useIntl } from 'react-intl';
 import MainLayout from 'src/components/layouts/main';
-import { useAppConfig } from 'src/hooks/app';
+import { useWhitelabelConfigQuery } from 'src/hooks/whitelabel';
 import { AuthProvider } from 'src/providers/authProvider';
 import { ConfigWizardProvider } from 'src/providers/configWizardProvider';
 
 export const AssetStoreQuickWizard: NextPage = () => {
   const router = useRouter();
-  const { clone } = router.query as { clone?: string };
+  const { slug } = router.query as { slug?: string };
   const { formatMessage } = useIntl();
-  const appConfig = useAppConfig();
+  const { data: site } = useWhitelabelConfigQuery({
+    slug,
+  });
   return (
     <>
       <NextSeo
         title={formatMessage({
-          id: 'quick.store.wizard.title',
+          id: 'quick.store.builder.title',
           defaultMessage:
-            'Create a NFT store app in seconds using our quick wizard',
+            'Create a NFT store app in seconds using our quick app builder',
         })}
         description={formatMessage({
           id: 'quick.swap.wizard.description',
@@ -35,7 +37,7 @@ export const AssetStoreQuickWizard: NextPage = () => {
       <ConfigWizardProvider>
         <AuthProvider>
           <MainLayout>
-            <AssetStoreStepperContainer />
+            <AssetStoreStepperContainer site={site} />
           </MainLayout>
         </AuthProvider>
       </ConfigWizardProvider>

@@ -21,7 +21,7 @@ import {
   getCollectionData,
   getDKAssetOrderbook,
 } from '../../../../src/services/nft';
-import { AppConfig, AppPageSection } from '../../../../src/types/config';
+import { AppPageSection } from '../../../../src/types/config';
 import { getNetworkSlugFromChainId } from '../../../../src/utils/blockchain';
 
 import { SectionsRenderer } from '@/modules/wizard/components/sections/SectionsRenderer';
@@ -44,12 +44,15 @@ export const getStaticProps: GetStaticProps = async ({
   params,
 }: GetStaticPropsContext<Params>) => {
   const queryClient = new QueryClient();
-  const appConfig: AppConfig = await getAppConfig(params?.site);
+  const { appConfig, appNFT } = await getAppConfig(params?.site);
   const homePage = appConfig.pages[params?.page || ''];
 
   if (!homePage) {
     return {
-      notFound: true,
+      redirect: {
+        destination: '/404',
+        permanent: true,
+      },
     };
   }
 
@@ -136,6 +139,7 @@ export const getStaticProps: GetStaticProps = async ({
       dehydratedState: dehydrate(queryClient),
       sections: homePage.sections,
       appConfig,
+      appNFT,
     },
     revalidate: 300,
   };

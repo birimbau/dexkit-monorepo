@@ -1,23 +1,26 @@
-import { Box, NoSsr, useTheme } from '@mui/material';
+import { Box, NoSsr } from '@mui/material';
 import { useWeb3React } from '@web3-react/core';
-import React, { useEffect, useMemo } from 'react';
-import { Footer } from '../Footer';
-import Navbar from '../Navbar';
-import dynamic from 'next/dynamic';
 import { useAtom } from 'jotai';
+import dynamic from 'next/dynamic';
+import React, { useEffect, useMemo } from 'react';
 import {
   useAppConfig,
+  useAppNFT,
   useConnectWalletDialog,
   useSignMessageDialog,
   useTransactions,
 } from '../../hooks/app';
 import {
   drawerIsOpenAtom,
+  holdsKitDialogAtom,
+  selectedWalletAtom,
   showSelectCurrencyAtom,
   showSelectLocaleAtom,
   switchNetworkChainIdAtom,
   switchNetworkOpenAtom,
 } from '../../state/atoms';
+import { Footer } from '../Footer';
+import Navbar from '../Navbar';
 const SignMessageDialog = dynamic(() => import('../dialogs/SignMessageDialog'));
 const SwitchNetworkDialog = dynamic(
   () => import('../dialogs/SwitchNetworkDialog')
@@ -25,11 +28,14 @@ const SwitchNetworkDialog = dynamic(
 const TransactionDialog = dynamic(() => import('../dialogs/TransactionDialog'));
 
 import { useRouter } from 'next/router';
-import AppDrawer from '../AppDrawer';
 import { AppConfig } from 'src/types/config';
-const ConnectWalletDialog = dynamic(
-  () => import('../dialogs/ConnectWalletDialog')
-);
+import AppDrawer from '../AppDrawer';
+
+import { useWalletActivate } from '@dexkit/core/hooks';
+import { WalletActivateParams } from '@dexkit/core/types';
+import { ConnectWalletDialog } from '@dexkit/ui';
+const HoldingKitDialog = dynamic(() => import('../dialogs/HoldingKitDialog'));
+
 const SelectCurrencyDialog = dynamic(
   () => import('../dialogs/SelectCurrencyDialog')
 );
@@ -52,10 +58,11 @@ const MainLayout: React.FC<Props> = ({
   appConfigProps,
   isPreview,
 }) => {
-  const { connector } = useWeb3React();
+  const { connector, isActive } = useWeb3React();
   const router = useRouter();
 
   const defaultAppConfig = useAppConfig();
+  const appNFT = useAppNFT();
   const appConfig = useMemo(() => {
     if (appConfigProps) {
       return appConfigProps;
@@ -65,6 +72,8 @@ const MainLayout: React.FC<Props> = ({
   }, [defaultAppConfig, appConfigProps]);
 
   const transactions = useTransactions();
+
+  const [holdsKitDialog, setHoldsKitDialog] = useAtom(holdsKitDialogAtom);
 
   const [switchOpen, setSwitchOpen] = useAtom(switchNetworkOpenAtom);
   const [switchChainId, setSwitchChainId] = useAtom(switchNetworkChainIdAtom);
@@ -116,14 +125,27 @@ const MainLayout: React.FC<Props> = ({
     setShowShowSelectLocale(false);
   };
 
+  const walletActivate = useWalletActivate({
+    magicRedirectUrl: process.env.NEXT_PUBLIC_MAGIC_REDIRECT_URL || '',
+    selectedWalletAtom,
+  });
+
+  const handleActivateWallet = async (params: WalletActivateParams) => {
+    await walletActivate.mutation.mutateAsync(params);
+  };
+
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      connector.activate();
+      // connector.activate();
       const handleNetworkChange = (newNetwork: any, oldNetwork: any) => {
+        if (connector && connector.connectEagerly) {
+          connector.connectEagerly();
+        }
+
         // When a Provider makes its initial connection, it emits a "network"
         // event with a null oldNetwork along with the newNetwork. So, if the
         // oldNetwork exists, it represents a changing network
-        window.location.reload();
+        //window.location.reload();
       };
 
       connector?.provider?.on('chainChanged', handleNetworkChange);
@@ -135,7 +157,15 @@ const MainLayout: React.FC<Props> = ({
         );
       };
     }
-  }, []);
+  }, [connector]);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && connector) {
+      if (connector.connectEagerly) {
+        connector.connectEagerly();
+      }
+    }
+  }, [connector]);
 
   const [isDrawerOpen, setIsDrawerOpen] = useAtom(drawerIsOpenAtom);
 
@@ -144,61 +174,86 @@ const MainLayout: React.FC<Props> = ({
   const render = () => (
     <>
       <AppDrawer open={isDrawerOpen} onClose={handleCloseDrawer} />
-      <SelectCurrencyDialog
-        dialogProps={{
-          open: showSelectCurrency,
-          onClose: handleCloseCurrencySelect,
-          fullWidth: true,
-          maxWidth: 'xs',
-        }}
-      />
-      <SelectLanguageDialog
-        dialogProps={{
-          open: showSelectLocale,
-          onClose: handleCloseLocaleSelect,
-          fullWidth: true,
-          maxWidth: 'xs',
-        }}
-      />
-      <TransactionDialog
-        dialogProps={{
-          open: transactions.isOpen,
-          onClose: handleCloseTransactionDialog,
-          fullWidth: true,
-          maxWidth: 'xs',
-        }}
-        hash={transactions.hash}
-        metadata={transactions.metadata}
-        type={transactions.type}
-        error={transactions.error}
-      />
-      <SignMessageDialog
-        dialogProps={{
-          open: signMessageDialog.open,
-          onClose: handleCloseSignMessageDialog,
-          fullWidth: true,
-          maxWidth: 'xs',
-        }}
-        error={signMessageDialog.error}
-        success={signMessageDialog.isSuccess}
-        message={signMessageDialog.message}
-      />
-      <SwitchNetworkDialog
-        dialogProps={{
-          open: switchOpen,
-          onClose: handleCloseSwitchNetworkDialog,
-          fullWidth: true,
-          maxWidth: 'xs',
-        }}
-        chainId={switchChainId}
-      />
+      {showSelectCurrency && (
+        <SelectCurrencyDialog
+          dialogProps={{
+            open: showSelectCurrency,
+            onClose: handleCloseCurrencySelect,
+            fullWidth: true,
+            maxWidth: 'xs',
+          }}
+        />
+      )}
+      {holdsKitDialog && (
+        <HoldingKitDialog
+          dialogProps={{
+            open: holdsKitDialog,
+            onClose: () => setHoldsKitDialog(false),
+            fullWidth: true,
+            maxWidth: 'xs',
+          }}
+        />
+      )}
+
+      {showSelectLocale && (
+        <SelectLanguageDialog
+          dialogProps={{
+            open: showSelectLocale,
+            onClose: handleCloseLocaleSelect,
+            fullWidth: true,
+            maxWidth: 'xs',
+          }}
+        />
+      )}
+      {transactions.isOpen && (
+        <TransactionDialog
+          dialogProps={{
+            open: transactions.isOpen,
+            onClose: handleCloseTransactionDialog,
+            fullWidth: true,
+            maxWidth: 'xs',
+          }}
+          hash={transactions.hash}
+          metadata={transactions.metadata}
+          type={transactions.type}
+          error={transactions.error}
+        />
+      )}
+      {signMessageDialog.open && (
+        <SignMessageDialog
+          dialogProps={{
+            open: signMessageDialog.open,
+            onClose: handleCloseSignMessageDialog,
+            fullWidth: true,
+            maxWidth: 'xs',
+          }}
+          error={signMessageDialog.error}
+          success={signMessageDialog.isSuccess}
+          message={signMessageDialog.message}
+        />
+      )}
+      {switchOpen && (
+        <SwitchNetworkDialog
+          dialogProps={{
+            open: switchOpen,
+            onClose: handleCloseSwitchNetworkDialog,
+            fullWidth: true,
+            maxWidth: 'xs',
+          }}
+          chainId={switchChainId}
+        />
+      )}
       <ConnectWalletDialog
-        dialogProps={{
+        DialogProps={{
           open: connectWalletDialog.isOpen,
           onClose: handleCloseConnectWalletDialog,
           fullWidth: true,
           maxWidth: 'sm',
         }}
+        isActive={isActive}
+        isActivating={walletActivate.mutation.isLoading}
+        activeConnectorName={walletActivate.connectorName}
+        activate={handleActivateWallet}
       />
       <Navbar appConfig={appConfig} isPreview={isPreview} />
       <Box
@@ -207,7 +262,7 @@ const MainLayout: React.FC<Props> = ({
       >
         {children}
       </Box>
-      <Footer appConfig={appConfig} isPreview={isPreview} />
+      <Footer appConfig={appConfig} isPreview={isPreview} appNFT={appNFT} />
     </>
   );
 

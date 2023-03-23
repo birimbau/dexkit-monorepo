@@ -1,6 +1,6 @@
+import { ChainId } from "@dexkit/core/constants/enums";
 import { BigNumber } from "ethers";
 import React from "react";
-import { ChainId } from "../../constants/enum";
 import { ZeroExQuoteResponse } from "../../services/zeroex/types";
 import { Token } from "../../types";
 
@@ -9,7 +9,13 @@ export type Empty = {
 };
 
 export type SwapSide = "sell" | "buy";
-export type ExecType = "swap" | "wrap" | "unwrap" | "approve" | "quote";
+export type ExecType =
+  | "swap"
+  | "wrap"
+  | "unwrap"
+  | "approve"
+  | "quote"
+  | "switch";
 
 export type SwapState = {
   chainId?: ChainId;
@@ -73,11 +79,29 @@ export type RenderOptions = {
   zeroExApiKey?: string;
   defaultChainId?: ChainId;
   transakApiKey?: string;
-  currency?: string;
+  currency: string;
 };
+
+export type SwapNotificationParams = {
+  type: "swap";
+  sellToken: Token;
+  buyToken: Token;
+  sellAmount: string;
+  buyAmount: string;
+};
+
+export type ApproveNotificationParams = {
+  type: "approve";
+  token: Token;
+};
+
+export type BaseNotificationParams =
+  | ApproveNotificationParams
+  | SwapNotificationParams;
 
 export type NotificationCallbackParams = {
   title: string;
   hash: string;
   chainId: ChainId;
+  params: BaseNotificationParams;
 };

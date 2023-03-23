@@ -1,10 +1,12 @@
 import React, { Dispatch, SetStateAction } from 'react';
 import { AppConfig } from '../types/config';
 
+import { AssetAPI } from 'src/types/nft';
 import defaultAppConfig from '../../config/app.json';
 
-export const AppConfigContext = React.createContext<AppConfig>(
-  defaultAppConfig as AppConfig
+export const AppConfigContext = React.createContext<{ appConfig: AppConfig, appNFT?: AssetAPI }>({
+  appConfig: defaultAppConfig as AppConfig
+}
 );
 
 interface IAppWizardConfigContext {

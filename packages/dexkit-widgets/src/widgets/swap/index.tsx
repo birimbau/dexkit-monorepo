@@ -1,11 +1,9 @@
 import Swap from "./Swap";
 
-import { DKAPI_INVALID_ADDRESSES } from "@dexkit/core/constants";
+import { ChainId, DKAPI_INVALID_ADDRESSES } from "@dexkit/core/constants";
 import { useWeb3React } from "@web3-react/core";
 import { useEffect, useMemo, useState } from "react";
 import { GET_NATIVE_TOKEN } from "../../constants";
-import { ChainId } from "../../constants/enum";
-import { NETWORKS } from "../../constants/networks";
 import { usePlatformCoinSearch } from "../../hooks/api";
 import { apiCoinToTokens } from "../../utils/api";
 import SwapConfirmDialog from "./dialogs/SwapConfirmDialog";
@@ -15,6 +13,8 @@ import SwapSettingsDialog from "./dialogs/SwapSettingsDialog";
 //   function renderSwapWidget(id: string, options: RenderOptions): void;
 // }
 
+import { NETWORKS } from "@dexkit/core/constants/networks";
+import SwitchNetworkDialog from "../../components/SwitchNetworkDialog";
 import {
   useErc20ApproveMutation,
   useSwapExec,
@@ -38,10 +38,15 @@ export interface SwapWidgetProps {
   isAutoSlippage: boolean;
   onChangeSlippage: (value: number) => void;
   onAutoSlippage: (value: boolean) => void;
+  swapFees?: {
+    recipient: string;
+    amount_percentage: number;
+  };
 }
 
 export function SwapWidget({
   disableWallet,
+  swapFees,
   renderOptions: options,
   onNotification,
   onConnectWallet,
@@ -51,8 +56,14 @@ export function SwapWidget({
   onChangeSlippage,
   onAutoSlippage,
 }: SwapWidgetProps) {
-  const { provider, connector, account, isActive, isActivating } =
-    useWeb3React();
+  const {
+    provider,
+    connector,
+    account,
+    isActive,
+    isActivating,
+    chainId: connectedChainId,
+  } = useWeb3React();
 
   const {
     configsByChain,
@@ -68,9 +79,7 @@ export function SwapWidget({
 
   const execSwapMutation = useSwapExec({ onNotification });
 
-  const [selectedChainId, setSelectedChainId] = useState<ChainId>(
-    ChainId.Ethereum
-  );
+  const [selectedChainId, setSelectedChainId] = useState<ChainId>();
 
   useEffect(() => {
     if (defaultChainId) {
@@ -79,7 +88,6 @@ export function SwapWidget({
   }, [defaultChainId]);
 
   const swapProvider = useSwapProvider({
-    provider,
     defaultChainId: selectedChainId,
     disableWallet,
   });
@@ -108,6 +116,7 @@ export function SwapWidget({
     isQuoting,
     isProviderReady,
     recentTokens,
+    quoteFor,
     handleConnectWallet,
     handleOpenSelectToken,
     handleSwapTokens,
@@ -126,15 +135,19 @@ export function SwapWidget({
     handleShowTransak,
   } = useSwapState({
     zeroExApiKey,
+    selectedChainId,
+    connectedChainId,
     execMutation: execSwapMutation,
     approveMutation,
     provider: swapProvider,
+    connectorProvider: provider,
     onChangeNetwork: handleChangeSelectedNetwork,
     onNotification,
     onConnectWallet,
     onShowTransactions,
     connector,
     account,
+    swapFees,
     isActive: isActive && !disableWallet,
     isActivating,
     maxSlippage,
@@ -174,9 +187,11 @@ export function SwapWidget({
       }
 
       let tokensCopy = [
-        ...tokens.filter((t) => {
-          return !DKAPI_INVALID_ADDRESSES.includes(t.contractAddress);
-        }),
+        ...tokens
+          .filter((t) => t)
+          .filter((t) => {
+            return !DKAPI_INVALID_ADDRESSES.includes(t?.contractAddress);
+          }),
       ];
 
       return tokensCopy;
@@ -190,6 +205,12 @@ export function SwapWidget({
   const featuredTokensByChain = useMemo(() => {
     return featuredTokens?.filter((t) => t.chainId === selectedChainId);
   }, [featuredTokens, selectedChainId]);
+
+  const [showSwitchNetwork, setShowSwitchNetwork] = useState(false);
+
+  const handleToggleSwitchNetwork = () => {
+    setShowSwitchNetwork((value) => !value);
+  };
 
   return (
     <>
@@ -211,6 +232,16 @@ export function SwapWidget({
           onClearRecentTokens={handleClearRecentTokens}
         />
       )}
+      <SwitchNetworkDialog
+        onChangeNetwork={handleChangeNetwork}
+        DialogProps={{
+          open: showSwitchNetwork,
+          maxWidth: "xs",
+          fullWidth: true,
+          onClose: handleToggleSwitchNetwork,
+        }}
+        chainId={chainId}
+      />
       <SwapConfirmDialog
         DialogProps={{
           open: showConfirmSwap,
@@ -223,6 +254,8 @@ export function SwapWidget({
         onConfirm={handleConfirmExecSwap}
         chainId={chainId}
         currency={currency || "usd"}
+        sellToken={sellToken}
+        buyToken={buyToken}
       />
       <SwapSettingsDialog
         DialogProps={{
@@ -237,9 +270,10 @@ export function SwapWidget({
         isAutoSlippage={isAutoSlippage}
       />
       <Swap
-        currency={"usd"}
+        currency={currency}
         disableNotificationsButton={disableNotificationsButton}
         chainId={chainId}
+        quoteFor={quoteFor}
         isActive={isActive && !disableWallet}
         buyToken={buyToken}
         sellToken={sellToken}
@@ -248,6 +282,10 @@ export function SwapWidget({
         onConnectWallet={handleConnectWallet}
         sellAmount={sellAmount}
         buyAmount={buyAmount}
+        networkName={
+          chainId && NETWORKS[chainId] ? NETWORKS[chainId].name : undefined
+        }
+        onToggleChangeNetwork={handleToggleSwitchNetwork}
         onChangeBuyAmount={handleChangeBuyAmount}
         onChangeSellAmount={handleChangeSellAmount}
         onExec={handleExecSwap}

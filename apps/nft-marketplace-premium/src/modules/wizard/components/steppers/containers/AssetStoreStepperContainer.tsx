@@ -3,7 +3,8 @@ import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import { useCallback, useState } from 'react';
+import { useRouter } from 'next/router';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import AppConfirmDialog from 'src/components/AppConfirmDialog';
 import { PageHeader } from 'src/components/PageHeader';
@@ -24,13 +25,24 @@ interface Props {
 export default function AssetStoreStepperContainer({ site }: Props) {
   const sendConfigMutation = useSendConfigMutation({ slug: site?.slug });
   const [showConfirmSendConfig, setShowConfirmSendConfig] = useState(false);
+  const router = useRouter();
+  const [wizardConfig, setWizardConfig] = useState(defaultConfig);
+  const config = useMemo(() => {
+    if (site?.config) {
+      return JSON.parse(site?.config);
+    }
+  }, [site?.config]);
 
   const theme = useTheme();
 
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const [showSendingConfig, setShowSendingConfig] = useState(false);
-  const [wizardConfig, setWizardConfig] = useState(defaultConfig);
+  useEffect(() => {
+    if (config) {
+      setWizardConfig(config);
+    }
+  }, [config]);
   // Pages forms
   const handleCloseConfirmSendConfig = () => {
     setShowConfirmSendConfig(false);
@@ -58,6 +70,10 @@ export default function AssetStoreStepperContainer({ site }: Props) {
 
   const handleCloseSendingConfig = () => {
     setShowSendingConfig(false);
+    const data = sendConfigMutation?.data;
+    if (data && data?.slug) {
+      router.push(`/admin/edit/${data.slug}`);
+    }
     sendConfigMutation.reset();
   };
 
@@ -122,11 +138,11 @@ export default function AssetStoreStepperContainer({ site }: Props) {
                 {
                   caption: (
                     <FormattedMessage
-                      id="nft.store.quick.wizard"
-                      defaultMessage="NFT store quick wizard"
+                      id="nft.store.quick.builder"
+                      defaultMessage="NFT store quick builder"
                     />
                   ),
-                  uri: '/admin/quick-wizard/store',
+                  uri: '/admin/quick-wizard/builder',
                   active: true,
                 },
               ]}
@@ -141,8 +157,8 @@ export default function AssetStoreStepperContainer({ site }: Props) {
             {!isMobile && (
               <Typography variant="h5">
                 <FormattedMessage
-                  id="quick.nft.store.wizard"
-                  defaultMessage="Quick NFT store wizard"
+                  id="quick.nft.store.builder"
+                  defaultMessage="Quick NFT store builder"
                 />
               </Typography>
             )}

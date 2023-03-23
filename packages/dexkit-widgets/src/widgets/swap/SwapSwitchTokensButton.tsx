@@ -1,25 +1,28 @@
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
-import { ButtonBase, ButtonBaseProps } from "@mui/material";
+import { darken, IconButton, IconButtonProps } from "@mui/material";
 
 export interface SwapSwitchTokensButtonProps {
-  ButtonBaseProps: ButtonBaseProps;
+  IconButtonProps: IconButtonProps;
 }
 
 export default function SwapSwitchTokensButton({
-  ButtonBaseProps,
+  IconButtonProps,
 }: SwapSwitchTokensButtonProps) {
   return (
-    <ButtonBase
-      {...ButtonBaseProps}
+    <IconButton
+      {...IconButtonProps}
       sx={(theme) => ({
-        backgroundColor: theme.palette.grey[300],
         borderRadius: theme.shape.borderRadius / 2,
-        border: `solid ${theme.palette.common.white}`,
-        borderWidth: theme.spacing(0.75),
-        p: 1,
+        backgroundColor: theme.palette.background.paper,
+        borderWidth: 1,
+        borderStyle: "solid",
+        borderColor: theme.palette.divider,
+        "&:hover": {
+          backgroundColor: darken(theme.palette.background.paper, 0.15),
+        },
       })}
     >
       <ArrowDownwardIcon />
-    </ButtonBase>
+    </IconButton>
   );
 }

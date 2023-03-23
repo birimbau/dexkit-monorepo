@@ -5,10 +5,10 @@ import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
+import { dehydrate, QueryClient } from '@tanstack/react-query';
 import { GetStaticProps, GetStaticPropsContext, NextPage } from 'next';
 import { NextSeo } from 'next-seo';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { dehydrate, QueryClient } from '@tanstack/react-query';
 import MainLayout from '../../src/components/layouts/main';
 import Link from '../../src/components/Link';
 import { PageHeader } from '../../src/components/PageHeader';
@@ -100,16 +100,35 @@ export const SiteIndexPage: NextPage = () => {
                     </Typography>
                   </CardContent>
                   <CardActions>
-                    <Stack spacing={2} direction={'row'} sx={{ pl: 2 }}>
-                      <Link
-                        href={`/admin/create?clone=${site.slug}`}
-                        underline="none"
-                      >
-                        <FormattedMessage
-                          id={'clone'}
-                          defaultMessage={'Clone'}
-                        />
-                      </Link>
+                    <Stack
+                      spacing={2}
+                      direction={'row'}
+                      sx={{ pl: 2 }}
+                      alignItems={'center'}
+                    >
+                      {site.nft ? (
+                        <Button
+                          variant="contained"
+                          href={`/asset/${site.nft.networkId}/${
+                            site.nft.address
+                          }/${Number(site.nft.tokenId)}`}
+                        >
+                          <FormattedMessage
+                            id={'buy.app'}
+                            defaultMessage={'Buy App'}
+                          />
+                        </Button>
+                      ) : (
+                        <Link
+                          href={`/admin/create?clone=${site.slug}`}
+                          underline="none"
+                        >
+                          <FormattedMessage
+                            id={'clone'}
+                            defaultMessage={'Clone'}
+                          />
+                        </Link>
+                      )}
                       {site.previewUrl && (
                         <Link
                           href={site?.previewUrl || ''}

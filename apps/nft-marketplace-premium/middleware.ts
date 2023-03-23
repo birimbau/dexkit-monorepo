@@ -8,10 +8,11 @@ export const config = {
     '/order/:path*',
     '/collection/:path*',
     '/wallet/:path*',
+    '/404/:path*'
   ],
 };
 
-const basePaths = ['/asset', '/collection', '/order', '/swap', '/collections', '/wallet'];
+const basePaths = ['/asset', '/collection', '/order', '/swap', '/collections', '/wallet', '/404'];
 
 function isBasePath(path: string) {
   let isPath = false;
@@ -81,6 +82,7 @@ export default function middleware(req: NextRequest) {
   if (isBasePath(url.pathname)) {
     // rewrite everything else to `/_sites/[site] dynamic route
     url.pathname = `/_site/${hostname}${url.pathname}`;
+
 
     return NextResponse.rewrite(url);
   } else {

@@ -1,5 +1,7 @@
 import { useWeb3React, Web3ReactHooks } from "@web3-react/core";
 
+import { CONNECTORS, MagicLoginType } from "@dexkit/core/constants";
+import { ChainId } from "@dexkit/core/constants/enums";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Connector } from "@web3-react/types";
 import { BigNumber, ethers, providers } from "ethers";
@@ -13,14 +15,10 @@ import {
   recentTokensAtom,
   showTransactionsAtom,
   transactionsAtom,
-  walletConnectorAtom,
+  walletConnectorAtom
 } from "../components/atoms";
-import { metaMask } from "../connectors";
-import { MagicLoginType } from "../connectors/magic";
-import { CONNECTORS, WRAPED_TOKEN_ADDRESS } from "../constants";
+import { WRAPED_TOKEN_ADDRESS } from "../constants";
 import { ERC20Abi, WETHAbi } from "../constants/abis";
-import { ChainId } from "../constants/enum";
-import { NETWORKS } from "../constants/networks";
 import { getPricesByChain, getTokensBalance } from "../services";
 import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "../services/zeroex/constants";
 import { Token, Transaction } from "../types";
@@ -116,7 +114,7 @@ export function useWalletActivate() {
       }
       if (connectorName === "metamask") {
         setWalletConnector("metamask");
-        return await metaMask.connector.activate();
+        return await connector.activate();
       } else if (connectorName === "magic") {
         // setWalletConnector("magic");
         // return await magic.activate({
@@ -210,14 +208,15 @@ export function useWrapToken({
 
       const tx = await contract.deposit({ value: amount });
 
-      onNotification({
-        chainId,
-        title: formatMessage(
-          { id: "wrap.symbol", defaultMessage: "Wrap {symbol}" },
-          { symbol: NETWORKS[chainId].symbol }
-        ),
-        hash: tx.hash,
-      });
+      // onNotification({
+      //   chainId,
+      //   title: formatMessage(
+      //     { id: "wrap.symbol", defaultMessage: "Wrap {symbol}" },
+      //     { symbol: NETWORKS[chainId].symbol }
+      //   ),
+      //   hash: tx.hash,
+      //   params: {},
+      // });
 
       onHash(tx.hash);
 
@@ -250,14 +249,14 @@ export function useWrapToken({
 
       const tx = await contract.withdraw(amount);
 
-      onNotification({
-        chainId,
-        title: formatMessage(
-          { id: "wrap.symbol", defaultMessage: "Unwrap {symbol}" },
-          { symbol: NETWORKS[chainId].symbol }
-        ),
-        hash: tx.hash,
-      });
+      // onNotification({
+      //   chainId,
+      //   title: formatMessage(
+      //     { id: "wrap.symbol", defaultMessage: "Unwrap {symbol}" },
+      //     { symbol: NETWORKS[chainId].symbol }
+      //   ),
+      //   hash: tx.hash,
+      // });
 
       onHash(tx.hash);
 
@@ -427,4 +426,24 @@ export function useRecentTokens() {
     add,
     clear,
   };
+}
+
+export const GAS_PRICE_QUERY = "";
+
+export function useGasPrice({
+  provider,
+}: {
+  provider?: ethers.providers.BaseProvider;
+}) {
+  return useQuery(
+    [GAS_PRICE_QUERY],
+    async () => {
+      if (provider) {
+        return await provider.getGasPrice();
+      }
+
+      return BigNumber.from(0);
+    },
+    { refetchInterval: 20000 }
+  );
 }

@@ -14,6 +14,7 @@ import { useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { AppDialogTitle } from '../../../../components/AppDialogTitle';
 import { AppPageSection } from '../../../../types/config';
+import { BuilderKit } from '../../constants';
 import { AssetStoreSectionForm } from '../forms/AssetStoreSectionForm';
 import CallToActionSectionForm from '../forms/CallToActionSectionForm';
 import CollectionSectionForm from '../forms/CollectionSectionForm';
@@ -27,6 +28,7 @@ interface Props {
   onSave: (section: AppPageSection, index: number) => void;
   index: number;
   section?: AppPageSection;
+  builderKit?: BuilderKit;
 }
 
 type SectionType =
@@ -44,6 +46,7 @@ export default function EditSectionDialog({
   onSave,
   index,
   section,
+  builderKit,
 }: Props) {
   const { onClose } = dialogProps;
   const [sectionType, setSectionType] = useState<SectionType | undefined>(
@@ -163,27 +166,40 @@ export default function EditSectionDialog({
                 <MenuItem value="video">
                   <FormattedMessage id="video" defaultMessage="Video" />
                 </MenuItem>
-                <MenuItem value="call-to-action">
-                  <FormattedMessage
-                    id="call.to.action"
-                    defaultMessage="Call to action"
-                  />
-                </MenuItem>
-                <MenuItem value="featured">
-                  <FormattedMessage id="featured" defaultMessage="Featured" />
-                </MenuItem>
-                <MenuItem value="collections">
-                  <FormattedMessage
-                    id="featured"
-                    defaultMessage="Collections"
-                  />
-                </MenuItem>
-                <MenuItem value="swap">
-                  <FormattedMessage id="swap" defaultMessage="Swap" />
-                </MenuItem>
-                <MenuItem value="asset-store">
-                  <FormattedMessage id="nft.store" defaultMessage="NFT store" />
-                </MenuItem>
+                {builderKit !== BuilderKit.Swap && (
+                  <MenuItem value="call-to-action">
+                    <FormattedMessage
+                      id="call.to.action"
+                      defaultMessage="Call to action"
+                    />
+                  </MenuItem>
+                )}
+                {builderKit !== BuilderKit.Swap && (
+                  <MenuItem value="featured">
+                    <FormattedMessage id="featured" defaultMessage="Featured" />
+                  </MenuItem>
+                )}
+                {builderKit !== BuilderKit.Swap && (
+                  <MenuItem value="collections">
+                    <FormattedMessage
+                      id="featured"
+                      defaultMessage="Collections"
+                    />
+                  </MenuItem>
+                )}
+                {builderKit !== BuilderKit.NFT && (
+                  <MenuItem value="swap">
+                    <FormattedMessage id="swap" defaultMessage="Swap" />
+                  </MenuItem>
+                )}
+                {builderKit !== BuilderKit.Swap && (
+                  <MenuItem value="asset-store">
+                    <FormattedMessage
+                      id="nft.store"
+                      defaultMessage="NFT store"
+                    />
+                  </MenuItem>
+                )}
               </Select>
             </FormControl>
           </Grid>

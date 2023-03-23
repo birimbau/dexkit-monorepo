@@ -1,7 +1,5 @@
 import {
   Avatar,
-  Box,
-  Button,
   CircularProgress,
   Dialog,
   DialogContent,
@@ -13,7 +11,6 @@ import {
   ListItemButton,
   ListItemText,
   Stack,
-  TextField,
 } from "@mui/material";
 
 import { ChangeEvent, useState } from "react";
@@ -38,6 +35,7 @@ export interface ConnectWalletDialogProps {
   isActivating: boolean;
   isActive: boolean;
   activeConnectorName?: string;
+  magicRedirectUrl?: string;
 }
 
 export function ConnectWalletDialog({
@@ -72,7 +70,11 @@ export function ConnectWalletDialog({
       if (connectorName === "metamask") {
         await activate({ connectorName });
       } else if (connectorName === "magic") {
-        await activate({ connectorName, email, loginType });
+        await activate({
+          connectorName,
+          email,
+          loginType,
+        });
       }
     } catch (err: any) {
       enqueueSnackbar(err.message, {
@@ -164,7 +166,7 @@ export function ConnectWalletDialog({
       />
       <Divider />
       <DialogContent sx={{ padding: 0 }}>
-        <Box p={2}>
+        {/* <Box p={2}>
           <Stack spacing={2}>
             <TextField
               disabled={
@@ -200,7 +202,7 @@ export function ConnectWalletDialog({
               />
             </Button>
           </Stack>
-        </Box>
+        </Box> */}
         <Divider />
         <List disablePadding>{renderConnectors()}</List>
       </DialogContent>

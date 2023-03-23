@@ -9,9 +9,10 @@ import {
   AppPageSection,
   CustomEditorSection,
 } from '../../../../types/config';
+import { BuilderKit } from '../../constants';
+import PagesSectionPage from './PagesSectionPage';
 const EditSectionDialog = dynamic(() => import('../dialogs/EditSectionDialog'));
 const PageEditorDialog = dynamic(() => import('../dialogs/PageEditorDialog'));
-import PagesSectionPage from './PagesSectionPage';
 
 interface Props {
   pages: { [key: string]: AppPage };
@@ -29,9 +30,11 @@ interface Props {
   onCancelEdit: () => void;
   onSwap: (index: number, direction: 'up' | 'down') => void;
   theme?: Theme;
+  builderKit?: BuilderKit;
 }
 
 export default function PagesSection({
+  builderKit,
   sections,
   section,
   theme,
@@ -128,6 +131,7 @@ export default function PagesSection({
             fullWidth: true,
             onClose: handleClose,
           }}
+          builderKit={builderKit}
           isEdit={isEdit}
           section={section}
           onSave={handleSave}
@@ -141,6 +145,7 @@ export default function PagesSection({
             fullScreen: true,
             onClose: handleCloseEditor,
           }}
+          builderKit={builderKit}
           section={section as CustomEditorSection}
           index={currentIndex}
           onSave={handleSave}

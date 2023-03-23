@@ -1,7 +1,10 @@
 import { atom } from 'jotai';
+import { atomWithStorage } from 'jotai/utils';
 import { AppCollection } from '../../../types/config';
 
 export const collectionAtom = atom<AppCollection | undefined>(undefined);
+
+export const isFirstVisitOnEditWizardAtom = atomWithStorage<boolean>('isFirstVisitOnEditWizard', true);
 
 export interface CustomThemeInterface {
   typography?: any;
@@ -28,10 +31,10 @@ export const customThemeAtom = atom<CustomThemeInterface | undefined>({
   palette: {
     mode: 'light',
     background: {
-      default: '#000',
+      default: '#fff',
     },
     text: {
-      primary: '#fff',
+      primary: '#000',
     },
     primary: {
       main: '#bfc500',

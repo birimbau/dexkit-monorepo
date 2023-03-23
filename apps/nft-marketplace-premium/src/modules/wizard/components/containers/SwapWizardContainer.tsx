@@ -2,8 +2,8 @@ import { SwapConfig } from '@/modules/swap/types';
 import { SwapWidget } from '@dexkit/widgets';
 import { Token as WidgetToken } from '@dexkit/widgets/src/types';
 
-import { ThemeProvider } from '@emotion/react';
-import { Theme } from '@mui/material';
+import { ChainId } from '@dexkit/core/constants';
+import { Theme, ThemeProvider } from '@mui/material';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
@@ -11,12 +11,13 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { useEffect, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
+import { useCurrency } from 'src/hooks/currency';
 import { Token } from 'src/types/blockchain';
+import { useSwapState } from '../../../../hooks/swap';
 import { AppConfig, SwapPageSection } from '../../../../types/config';
 import { StepperButtonProps } from '../../types';
 import { SwapConfigForm } from '../forms/SwapConfigForm';
 import { StepperButtons } from '../steppers/StepperButtons';
-
 interface Props {
   config: AppConfig;
   swapTheme: Theme;
@@ -56,6 +57,10 @@ export default function SwapWizardContainer({
     });
   }, [config]);
 
+  const tokens = useMemo<Token[]>(() => {
+    return config?.tokens?.length ? config?.tokens[0].tokens || [] : [];
+  }, [config]);
+
   const changeConfig = function (
     configToChange: AppConfig,
     formData?: SwapConfig
@@ -90,13 +95,19 @@ export default function SwapWizardContainer({
   const handleSave = () => {
     onSave(changeConfig(config, swapFormData));
   };
+
   const handleOnChange = (form: SwapConfig) => {
     setSwapFormData(form);
     onChange(changeConfig(config, swapFormData));
   };
+
   useEffect(() => {
     onChange(changeConfig(config, swapFormData));
   }, [swapFormData]);
+
+  const swapState = useSwapState();
+
+  const currency = useCurrency();
 
   return (
     <Grid container spacing={2}>
@@ -117,26 +128,27 @@ export default function SwapWizardContainer({
         <Divider />
       </Grid>
       <Grid item xs={6}>
-        <SwapConfigForm onChange={setSwapFormData} data={swapFormData} />
+        <SwapConfigForm
+          onChange={setSwapFormData}
+          data={swapFormData}
+          featuredTokens={tokens}
+        />
       </Grid>
       <Grid item xs={6}>
         <ThemeProvider theme={swapTheme}>
           <SwapWidget
-            onAutoSlippage={() => {}}
-            isAutoSlippage
-            onChangeSlippage={() => {}}
-            onConnectWallet={() => {}}
-            maxSlippage={0}
-            onNotification={() => {}}
+            {...swapState}
             renderOptions={{
+              ...swapState.renderOptions,
               configsByChain: swapFormData?.configByChain
                 ? swapFormData?.configByChain
                 : {},
-              defaultChainId: swapFormData?.defaultChainId,
+              defaultChainId: swapFormData?.defaultChainId || ChainId.Ethereum,
               featuredTokens: featuredTokens,
+              currency,
+              zeroExApiKey: process.env.NEXT_PUBLIC_ZRX_API_KEY || '',
+              transakApiKey: process.env.NEXT_PUBLIC_TRANSAK_API_KEY || '',
             }}
-            disableWallet={true}
-            onShowTransactions={() => {}}
           />
         </ThemeProvider>
       </Grid>

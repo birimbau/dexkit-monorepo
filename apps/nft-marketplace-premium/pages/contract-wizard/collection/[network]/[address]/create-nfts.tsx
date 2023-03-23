@@ -17,8 +17,8 @@ const WizardCreateAssetPage: NextPage = () => {
     <AuthProvider>
       <NextSeo
         title={formatMessage({
-          id: 'contract.wizard',
-          defaultMessage: 'Contract Wizard',
+          id: 'contract.generator',
+          defaultMessage: 'Contract generator',
         })}
         description={formatMessage({
           id: 'contract.wizard.description',

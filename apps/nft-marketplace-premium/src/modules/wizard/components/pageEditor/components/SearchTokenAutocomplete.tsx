@@ -4,6 +4,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import React, { useMemo, useState } from 'react';
+import { Token } from 'src/types/blockchain';
 import { NETWORKS } from '../../../../../constants/chain';
 import { getChainName, getChainSlug } from '../../../../../utils/blockchain';
 
@@ -13,14 +14,16 @@ interface Props {
   data?: any;
   disabled?: boolean;
   onChange?: any;
+  featuredTokens?: Token[];
 }
 
 export function SearchTokenAutocomplete(props: Props) {
-  const { data, label, onChange, chainId, disabled } = props;
+  const { data, label, onChange, chainId, disabled, featuredTokens } = props;
   const [search, setSearch] = useState<string>();
   const tokensQuery = useSearchSwapTokens({
     keyword: search,
     network: getChainSlug(chainId),
+    featuredTokens,
   });
   const formValue = data;
 
@@ -35,7 +38,7 @@ export function SearchTokenAutocomplete(props: Props) {
             (n) => n.chainId === value?.chainId
           )?.name,
           chainId: value.chainId as number,
-          image: value.logoURI,
+          logoURI: value?.logoURI,
           decimals: value.decimals,
         };
       }) || []
@@ -66,8 +69,8 @@ export function SearchTokenAutocomplete(props: Props) {
             network: value.network,
             chainId: value.chainId,
             symbol: value.symbol,
-            image: value.image,
             decimals: value.decimals,
+            logoURI: value?.logoURI,
           });
         } else {
           onChange(undefined);
@@ -80,7 +83,7 @@ export function SearchTokenAutocomplete(props: Props) {
           sx={{ '& > img': { mr: 2, flexShrink: 0 } }}
           {...props}
         >
-          <img loading="lazy" width="20" src={`${option.image}`} alt="" />
+          <img loading="lazy" width="20" src={`${option.logoURI}`} alt="" />
           {getChainName(option.chainId)} - {option.name} -
           {option?.symbol.toUpperCase() || ''}
         </Box>
@@ -115,7 +118,7 @@ export function SearchTokenAutocomplete(props: Props) {
                 <img
                   loading="lazy"
                   width="25"
-                  src={`${formValue.image}`}
+                  src={`${formValue.logoURI}`}
                   alt=""
                 />
                 {formValue.chainId && (

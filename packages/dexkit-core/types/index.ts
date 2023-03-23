@@ -1,5 +1,21 @@
 import { ChainId, MagicLoginType, TransactionStatus } from "../constants";
 
+export type Network = {
+  chainId: ChainId;
+  name: string;
+  symbol: string;
+  coinName?: string;
+  coinSymbol?: string;
+  coinImageUrl?: string;
+  coingeckoPlatformId?: string;
+  imageUrl?: string;
+  testnet?: boolean;
+  explorerUrl?: string;
+  wrappedAddress?: string;
+  slug?: string;
+  providerRpcUrl?: string;
+};
+
 export type BaseActivateParams = {
   connectorName: "magic" | "metamask" | "walletConnect";
 };
@@ -18,7 +34,10 @@ export type ActivateMagicParams = BaseActivateParams & {
   email?: string;
 };
 
-export type WalletActivateParams = ActivateMetamaskParams | ActivateMagicParams | ActivateWalletConnectParams;
+export type WalletActivateParams =
+  | ActivateMetamaskParams
+  | ActivateMagicParams
+  | ActivateWalletConnectParams;
 
 export interface Transaction {
   title?: string;

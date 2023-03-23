@@ -1,8 +1,8 @@
 import Container from '@mui/material/Container';
+import { dehydrate, QueryClient } from '@tanstack/react-query';
 import type { GetStaticProps, GetStaticPropsContext, NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { useMemo } from 'react';
-import { dehydrate, QueryClient } from '@tanstack/react-query';
 import {
   getChainIdFromSlug,
   getNetworkSlugFromChainId,
@@ -119,7 +119,7 @@ export const getStaticProps: GetStaticProps = async ({
 }: GetStaticPropsContext<Params>) => {
   if (params) {
     const { hash, network, site } = params;
-    const appConfig = await getAppConfig(site);
+    const { appConfig, appNFT } = await getAppConfig(site);
 
     const chainId = getChainIdFromSlug(network || '')?.chainId;
 
@@ -160,6 +160,7 @@ export const getStaticProps: GetStaticProps = async ({
       props: {
         dehydratedState: dehydrate(queryClient),
         appConfig,
+        appNFT,
       },
       revalidate: 5,
     };

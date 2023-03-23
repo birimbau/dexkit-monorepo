@@ -15,6 +15,7 @@ import {
 import { FormikHelpers, useFormik } from 'formik';
 import { useCallback, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
+import { CURRENCIES, LANGUAGES } from 'src/constants';
 
 import * as Yup from 'yup';
 import MediaDialog from '../../../../components/mediaDialog';
@@ -209,7 +210,11 @@ export default function GeneralSection({
                   }
                   error={Boolean(formik.errors.locale)}
                 >
-                  <MenuItem value="en-US">English (US)</MenuItem>
+                  {LANGUAGES.map((lang, index) => (
+                    <MenuItem key={index} value={lang.locale}>
+                      {lang.name}
+                    </MenuItem>
+                  ))}
                 </Select>
                 {Boolean(formik.errors.locale) && (
                   <FormHelperText
@@ -235,7 +240,11 @@ export default function GeneralSection({
                   }
                   error={Boolean(formik.errors.currency)}
                 >
-                  <MenuItem value="usd">USD</MenuItem>
+                  {CURRENCIES.map((curr, index) => (
+                    <MenuItem key={index} value={curr.symbol}>
+                      {curr.name}
+                    </MenuItem>
+                  ))}
                 </Select>
                 {Boolean(formik.errors.currency) && (
                   <FormHelperText
