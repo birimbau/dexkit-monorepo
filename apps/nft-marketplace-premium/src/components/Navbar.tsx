@@ -48,14 +48,17 @@ import {
   showAppTransactionsAtom,
   showSelectCurrencyAtom,
   showSelectLocaleAtom,
+  transactionsAtom,
   uncheckedTransactionsAtom,
 } from '../state/atoms';
-import { AppTransactionsDialog } from './dialogs/AppTransactionsDialog';
 import SelectNetworkDialog from './dialogs/SelectNetworkDialog';
 import Notification from './icons/Notification';
 import Wallet from './icons/Wallet';
 import NavbarMenu from './Menu';
 import { WalletButton } from './WalletButton';
+
+import NotificationsDialog from '@dexkit/ui/components/dialogs/NotificationsDialog';
+import { COMMON_NOTIFICATION_TYPES } from '@dexkit/ui/constants/messages/common';
 
 interface Props {
   appConfig: AppConfig;
@@ -141,6 +144,10 @@ function Navbar({ appConfig, isPreview }: Props) {
   const currency = useAtomValue(currencyAtom);
   const locale = useAtomValue(localeAtom);
 
+  const [transactions, updateTransactions] = useAtom(transactionsAtom);
+
+  const handleClearNotifications = () => {};
+
   return (
     <>
       <Menu
@@ -199,13 +206,25 @@ function Navbar({ appConfig, isPreview }: Props) {
           />
         </MenuItem>
       </Menu>
-      <AppTransactionsDialog
+      {/* <AppTransactionsDialog
         dialogProps={{
           maxWidth: 'sm',
           open: showTransactions,
           fullWidth: true,
           onClose: handleCloseNotifications,
         }}
+      /> */}
+      <NotificationsDialog
+        DialogProps={{
+          maxWidth: 'sm',
+          open: showTransactions,
+          fullWidth: true,
+          onClose: handleCloseNotifications,
+        }}
+        notificationTypes={COMMON_NOTIFICATION_TYPES}
+        transactions={transactions}
+        notifications={[]}
+        onClear={handleClearNotifications}
       />
       <SelectNetworkDialog
         dialogProps={{

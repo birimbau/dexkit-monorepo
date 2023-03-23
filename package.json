@@ -11,6 +11,7 @@
     "dev": "turbo run dev --parallel",
     "dev:whitelabel": "turbo run dev --parallel --filter=nft-marketplace",
     "storybook": "turbo run storybook",
+    "storybook:ui": "turbo run storybook --filter=@dexkit/ui",
     "bundle:widgets": "turbo run bundle:widgets",
     "build:whitelabel": "turbo run build --parallel --filter=nft-marketplace",
     "build:wallet": "turbo run build --parallel --filter=dexkit-wallet",
