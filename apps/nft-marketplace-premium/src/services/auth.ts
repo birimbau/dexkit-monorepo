@@ -88,6 +88,12 @@ export function getAccessToken() {
   }
 
 }
+
+export async function getAuthUser() {
+  const response = await axios.get('/api/dex-auth/user', { withCredentials: true });
+  return response.data;
+}
+
 export async function getAccessTokenAndRefresh() {
   if (access_token) {
     return access_token;

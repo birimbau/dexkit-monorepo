@@ -1,12 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useWeb3React } from '@web3-react/core';
 import { useAuth, useLoginAccountMutation } from 'src/hooks/account';
-import { getUserAddAccountMessage, getUserByAccount, getUserByUsername, getUserConnectDiscord, getUserConnectTwitter, postUserAddAccount, upsertUser } from '../services';
+import { getUserAddAccountMessage, getUserByAccount, getUserByUsername, getUserConnectDiscord, getUserConnectTwitter, postUserAddAccount, postUserRemoveAccount, upsertUser } from '../services';
 import { UserOptions } from '../types';
 
 
 
-export function useAddAccounttUserMutation() {
+export function useAddAccountUserMutation() {
   const { account, provider } = useWeb3React();
   const { isLoggedIn } = useAuth()
   const queryClient = useQueryClient();
@@ -18,11 +18,23 @@ export function useAddAccounttUserMutation() {
       return
     }
     const messageToSign = await getUserAddAccountMessage({ address: account });
-
     const signature = await provider.getSigner().signMessage(messageToSign.data);
-
-
     const user = await postUserAddAccount({ signature, address: account })
+    queryClient.refetchQueries([GET_AUTH_USER])
+    return user;
+
+  })
+}
+
+export function useRemoveAccountUserMutation() {
+
+  const { isLoggedIn } = useAuth()
+  const queryClient = useQueryClient();
+  return useMutation(async (account?: string) => {
+    if (!isLoggedIn || !account) {
+      return
+    }
+    const user = await postUserRemoveAccount({ address: account })
     queryClient.refetchQueries([GET_AUTH_USER])
     return user;
 

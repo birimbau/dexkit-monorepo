@@ -4,15 +4,18 @@ import { getUserByUsername } from '@/modules/user/services';
 import Box from '@mui/material/Box';
 import { QueryClient } from '@tanstack/react-query';
 import { GetStaticProps, GetStaticPropsContext, NextPage } from 'next';
+import { SessionProvider } from 'next-auth/react';
 import AuthMainLayout from 'src/components/layouts/authMain';
 
-const UserEdit: NextPage<{ username: string }> = ({ username }) => {
+const UserEdit: NextPage = () => {
   return (
-    <AuthMainLayout disablePadding>
-      <Box py={4}>
-        <UserEditContainer username={username} />
-      </Box>
-    </AuthMainLayout>
+    <SessionProvider>
+      <AuthMainLayout disablePadding>
+        <Box py={4}>
+          <UserEditContainer />
+        </Box>
+      </AuthMainLayout>
+    </SessionProvider>
   );
 };
 

@@ -19,14 +19,22 @@ export const AppWizardConfigContext = React.createContext<IAppWizardConfigContex
     defaultAppConfig as AppConfig
 });
 
+export interface AuthUser {
+  address?: string
+}
+
 interface IAuthContext {
   isLoggedIn: boolean;
+  user?: AuthUser
   setIsLoggedIn?: Dispatch<SetStateAction<boolean>>
+  setUser?: Dispatch<SetStateAction<AuthUser>>
 }
 
 const AUTH_INITIAL_VALUES = {
   isLoggedIn: false,
-  setIsLoggedIn: undefined
+  setIsLoggedIn: undefined,
+  user: undefined,
+  setUser: undefined
 }
 
 

@@ -5,22 +5,26 @@ import { MIN_KIT_HOLDING_AI_GENERATION, WHITELISTED_AI_ACCOUNTS } from "src/cons
 import { getKitBalanceOfThreshold } from "src/services/balances";
 import { AuthContext } from "../contexts";
 import { loginApp, requestSignature, setAccessToken } from "../services/auth";
+import { useSignMessageDialog } from './app';
 
 export function useAuth() {
-  const { setIsLoggedIn, isLoggedIn } = useContext(AuthContext);
-  return { setIsLoggedIn, isLoggedIn }
+  const { setIsLoggedIn, isLoggedIn, user, setUser } = useContext(AuthContext);
+  return { setIsLoggedIn, isLoggedIn, user }
 }
 
 
 
 export function useLoginAccountMutation() {
   const { account, provider } = useWeb3React();
+  const signMessageDialog = useSignMessageDialog();
+
   const { setIsLoggedIn } = useAuth();
 
   return useMutation(async () => {
     if (!account || !provider) {
       return;
     }
+    signMessageDialog.setOpen(true)
     const messageToSign = await requestSignature({ address: account });
 
     const signature = await provider.getSigner().signMessage(messageToSign.data);
@@ -31,6 +35,14 @@ export function useLoginAccountMutation() {
     }
     setAccessToken(loginResponse.data.access_token)
     return loginResponse.data;
+  }, {
+    onError(error) {
+      console.log(error)
+      signMessageDialog.setError(Error('Error signing message'));
+    },
+    onSettled() {
+      signMessageDialog.setOpen(false)
+    }
   })
 }
 

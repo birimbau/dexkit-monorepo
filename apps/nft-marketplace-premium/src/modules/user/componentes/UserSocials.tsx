@@ -1,69 +1,101 @@
+import { Divider } from '@mui/material';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
-import { signIn } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
+import { useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
-import {
-  useUserConnectDiscordMutation,
-  useUserConnectTwitterMutation,
-} from '../hooks';
 
-interface Props {}
+interface Props {
+  credentials?: { provider: string; username: string }[];
+}
 
-export function UserSocials(props: Props) {
-  const connectTwitterMutation = useUserConnectTwitterMutation();
-  const connectDiscordMutation = useUserConnectDiscordMutation();
+export function UserSocials({ credentials }: Props) {
+  const params = useSession();
+  const twitterUsername = useMemo(() => {
+    if (credentials) {
+      const cred = credentials.find((c) => c.provider === 'twitter');
+      if (cred) {
+        return cred.username;
+      }
+    }
+  }, [credentials]);
+  const discordUsername = useMemo(() => {
+    if (credentials) {
+      const cred = credentials.find((c) => c.provider === 'discord');
+      if (cred) {
+        return cred.username;
+      }
+    }
+  }, [credentials]);
+
   return (
     <>
       <Typography variant="h5">
         <FormattedMessage id={'socials'} defaultMessage={'Socials'} />
       </Typography>
       <Grid container spacing={2}>
-        <Grid item>
-          <Button
-            variant={'contained'}
-            onClick={
-              async () => {
+        <Grid item xs={12}>
+          {twitterUsername && (
+            <Typography>
+              {' '}
+              <FormattedMessage
+                id="twitter.username"
+                defaultMessage={'Twitter username'}
+              />
+              : {twitterUsername || ''}
+            </Typography>
+          )}
+        </Grid>
+        {discordUsername && (
+          <Grid item xs={12}>
+            <Typography>
+              {' '}
+              <FormattedMessage
+                id="discord.username"
+                defaultMessage={'Discord username'}
+              />
+              : {discordUsername || ''}
+            </Typography>
+          </Grid>
+        )}
+        {twitterUsername ||
+          (discordUsername && (
+            <Grid item xs={12}>
+              <Divider />
+            </Grid>
+          ))}
+
+        {!twitterUsername && (
+          <Grid item>
+            <Button
+              variant={'contained'}
+              onClick={async () => {
                 signIn('twitter');
-                /*const csrfTokenResponse = await axios.get('/api/auth/csrf');
-                const data = csrfTokenResponse.data;
-                
-                const response = await axios.post(
-                  '/api/auth/signin/twitter',
-                  data
-                );*/
-                // console.log(response);
-              }
-              // window.open('http://localhost:3000/auth/twitter', '_blank')
-            }
-          >
-            <FormattedMessage
-              id="connect.twitter"
-              defaultMessage={'Connect Twitter'}
-            />
-          </Button>
-        </Grid>
-        <Grid item>
-          <Button
-            variant={'contained'}
-            onClick={async () => {
-              signIn('discord');
-              //window.open('http://localhost:3000/auth/discord', '_blank')
-              // const csrfTokenResponse = await axios.get('/api/auth/csrf');
-              // const data = csrfTokenResponse.data;
-              // console.log(csrfToken);
-              // const response = await axios.post(
-              //  '/api/auth/signin/discord',
-              //</Grid>  data
-              //);
-            }}
-          >
-            <FormattedMessage
-              id="connect.discord"
-              defaultMessage={'Connect Discord'}
-            />
-          </Button>
-        </Grid>
+              }}
+            >
+              <FormattedMessage
+                id="connect.twitter"
+                defaultMessage={'Connect Twitter'}
+              />
+            </Button>
+          </Grid>
+        )}
+        {!discordUsername && (
+          <Grid item>
+            <Button
+              variant={'contained'}
+              onClick={async () => {
+                signIn('discord');
+              }}
+            >
+              <FormattedMessage
+                id="connect.discord"
+                defaultMessage={'Connect Discord'}
+              />
+            </Button>
+          </Grid>
+        )}
       </Grid>
     </>
   );

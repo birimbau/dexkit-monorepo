@@ -20,7 +20,7 @@ import {
   useTheme,
 } from '@mui/material';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import AppConfirmDialog from 'src/components/AppConfirmDialog';
 import { PageHeader } from 'src/components/PageHeader';
@@ -33,10 +33,9 @@ import { UserAccounts } from '../UserAccounts';
 import { UserSocials } from '../UserSocials';
 
 enum ActiveMenu {
-  General,
-  Accounts,
-  Socials,
-  Airdrop,
+  General = 'general',
+  Accounts = 'accounts',
+  Socials = 'socials',
 }
 
 const ListSubheaderCustom = styled(ListSubheader)({
@@ -47,13 +46,23 @@ export function UserEditContainer() {
   const userQuery = useAuthUserQuery();
   const { isLoggedIn } = useAuth();
   const router = useRouter();
+  const { tab } = router.query as { tab?: ActiveMenu };
 
   const user = userQuery.data;
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [userForm, setUserForm] = useState<UserOptions>();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [activeMenu, setActiveMenu] = useState<ActiveMenu>(ActiveMenu.General);
+  const [activeMenu, setActiveMenu] = useState<ActiveMenu>(
+    tab || ActiveMenu.General
+  );
+
+  useEffect(() => {
+    router.replace({
+      query: { ...router.query, tab: activeMenu },
+    });
+  }, [activeMenu]);
+
   const upsertUserMutation = useUpsertUserMutation();
   const [showUpsertUser, setShowUpsertUser] = useState(false);
 
@@ -111,18 +120,6 @@ export function UserEditContainer() {
               <ListItemText
                 primary={
                   <FormattedMessage id="socials" defaultMessage={'Socials'} />
-                }
-              />
-            </ListItemButton>
-          </ListItem>
-          <ListItem disablePadding>
-            <ListItemButton
-              selected={activeMenu === ActiveMenu.Airdrop}
-              onClick={() => setActiveMenu(ActiveMenu.Airdrop)}
-            >
-              <ListItemText
-                primary={
-                  <FormattedMessage id="Airdrop" defaultMessage={'Airdrop'} />
                 }
               />
             </ListItemButton>
@@ -202,7 +199,7 @@ export function UserEditContainer() {
               alignContent="center"
               justifyContent="space-between"
             >
-              {user ? (
+              {user && (
                 <PageHeader
                   breadcrumbs={[
                     {
@@ -231,26 +228,7 @@ export function UserEditContainer() {
                         />
                       ),
                       uri: `/u/${user.username}/edit`,
-                    },
-                  ]}
-                />
-              ) : (
-                <PageHeader
-                  breadcrumbs={[
-                    {
-                      caption: (
-                        <FormattedMessage id="home" defaultMessage="Home" />
-                      ),
-                      uri: '/',
-                    },
-                    {
-                      caption: (
-                        <FormattedMessage
-                          id="create.user.profile"
-                          defaultMessage="Create user profile"
-                        />
-                      ),
-                      uri: '/u/create',
+                      active: true,
                     },
                   ]}
                 />
@@ -260,24 +238,17 @@ export function UserEditContainer() {
 
           <Grid item xs={12} sm={12}>
             <Stack direction={'row'} justifyContent={'space-between'}>
-              {!isMobile && (
-                <Typography variant="h5">
-                  {user ? (
-                    <FormattedMessage
-                      id="edit.user.profile"
-                      defaultMessage="Edit user profile: {username}"
-                      values={{
-                        username: user.username,
-                      }}
-                    />
-                  ) : (
-                    <FormattedMessage
-                      id="create.user.profile"
-                      defaultMessage="Create user profile"
-                    />
-                  )}
-                </Typography>
-              )}
+              <Typography variant="h5">
+                {user && (
+                  <FormattedMessage
+                    id="edit.user.profile"
+                    defaultMessage="Edit user profile: {username}"
+                    values={{
+                      username: user.username,
+                    }}
+                  />
+                )}
+              </Typography>
 
               {isMobile && (
                 <Button
@@ -315,7 +286,9 @@ export function UserEditContainer() {
               {activeMenu === ActiveMenu.Accounts && user && (
                 <UserAccounts accounts={user.accounts} />
               )}
-              {activeMenu === ActiveMenu.Socials && user && <UserSocials />}
+              {activeMenu === ActiveMenu.Socials && user && (
+                <UserSocials credentials={user.credentials} />
+              )}
             </Stack>
           </Grid>
         </Grid>

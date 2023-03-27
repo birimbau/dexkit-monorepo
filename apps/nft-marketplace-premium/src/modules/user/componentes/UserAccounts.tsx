@@ -1,12 +1,32 @@
-import { CircularProgress, Divider } from '@mui/material';
+import { isAddressEqual, truncateAddress } from '@dexkit/core/utils';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import DeleteIcon from '@mui/icons-material/Delete';
+import {
+  CircularProgress,
+  Divider,
+  IconButton,
+  List,
+  ListItem,
+  ListItemAvatar,
+  ListItemText,
+  Tooltip,
+  useMediaQuery,
+  useTheme,
+} from '@mui/material';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { useWeb3React } from '@web3-react/core';
+import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { useAddAccounttUserMutation } from '../hooks';
+import AppConfirmDialog from 'src/components/AppConfirmDialog';
+import { useAuth } from 'src/hooks/account';
+import {
+  useAddAccountUserMutation,
+  useRemoveAccountUserMutation,
+} from '../hooks';
 
 interface Props {
   accounts: { address: string }[];
@@ -14,12 +34,52 @@ interface Props {
 
 export function UserAccounts(props: Props) {
   const { account } = useWeb3React();
-  const userAddAcountMutation = useAddAccounttUserMutation();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const { user } = useAuth();
+  const [accountToDelete, setAccountToDelete] = useState<string>();
+  const [openAccountToDeleteDialog, setOpenAccountToDeleteDialog] =
+    useState<boolean>(false);
+  const userAddAcountMutation = useAddAccountUserMutation();
+  const userRemoveAcountMutation = useRemoveAccountUserMutation();
 
   const { accounts } = props;
 
   return (
     <>
+      {openAccountToDeleteDialog && (
+        <AppConfirmDialog
+          dialogProps={{
+            open: openAccountToDeleteDialog,
+            onClose: () => {
+              setAccountToDelete(undefined);
+              setOpenAccountToDeleteDialog(false);
+            },
+          }}
+          onConfirm={async () => {
+            await userRemoveAcountMutation.mutateAsync(accountToDelete);
+            setAccountToDelete(undefined);
+            setOpenAccountToDeleteDialog(false);
+          }}
+          title={
+            <FormattedMessage
+              id={'delete.account.from.user'}
+              defaultMessage={'Delete account from user'}
+            />
+          }
+        >
+          <Typography variant="subtitle1">
+            <FormattedMessage
+              id={'are.you.sure.you.want.to.delete.this.account'}
+              defaultMessage={'Account to remove: {account}'}
+              values={{
+                account: accountToDelete,
+              }}
+            />
+          </Typography>
+        </AppConfirmDialog>
+      )}
+
       <Typography variant="h5">
         <FormattedMessage id={'accounts'} defaultMessage={'Accounts'} />
       </Typography>
@@ -32,11 +92,61 @@ export function UserAccounts(props: Props) {
             />
           </Typography>
         </Grid>
-        {accounts.map((v, index) => (
-          <Grid item xs={12} key={index}>
-            <Typography variant="body1">{v.address}</Typography>
-          </Grid>
-        ))}
+        <Grid item xs={12}>
+          <List>
+            {accounts.map((v, index) => (
+              <ListItem
+                key={index}
+                secondaryAction={
+                  <>
+                    {isAddressEqual(user?.address, v.address) !== true && (
+                      <Tooltip
+                        title={
+                          <FormattedMessage
+                            id={'remove.account.from.user'}
+                            defaultMessage={'Remove account from user'}
+                          />
+                        }
+                      >
+                        <IconButton
+                          aria-label="delete"
+                          onClick={() => {
+                            setOpenAccountToDeleteDialog(true);
+                            setAccountToDelete(v.address);
+                          }}
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      </Tooltip>
+                    )}
+                  </>
+                }
+              >
+                <ListItemAvatar>
+                  {isAddressEqual(user?.address, v.address) === true && (
+                    <Tooltip
+                      title={
+                        <FormattedMessage
+                          id={
+                            'account.which.you.signed.message.to.authenticate.to.app'
+                          }
+                          defaultMessage={
+                            'Account which you signed message to authenticate to app'
+                          }
+                        />
+                      }
+                    >
+                      <AccountCircleIcon />
+                    </Tooltip>
+                  )}
+                </ListItemAvatar>
+                <ListItemText
+                  primary={isMobile ? truncateAddress(v.address) : v.address}
+                />
+              </ListItem>
+            ))}
+          </List>
+        </Grid>
         <Grid item xs={12}>
           <Divider />
         </Grid>
@@ -64,7 +174,7 @@ export function UserAccounts(props: Props) {
                 {userAddAcountMutation.isLoading ? (
                   <FormattedMessage
                     id={'sign.message'}
-                    defaultMessage={'sign.message'}
+                    defaultMessage={'Sign message'}
                   />
                 ) : (
                   <FormattedMessage
@@ -77,10 +187,10 @@ export function UserAccounts(props: Props) {
 
             <Typography variant="body1">
               <FormattedMessage
-                id="connected.account"
-                defaultMessage={'Connected account'}
+                id="wallet.connected.account"
+                defaultMessage={'Wallet connected account'}
               />
-              :{account}
+              :{isMobile ? truncateAddress(account) : account}
             </Typography>
           </Stack>
         </Grid>

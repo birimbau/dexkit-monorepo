@@ -3,7 +3,7 @@ import DiscordProvider from "next-auth/providers/discord";
 import TwitterProvider from "next-auth/providers/twitter";
 import { myAppsApi } from "src/services/whitelabel";
 
-const getOptions = (req: any) => {
+/*const getOptions = (req: any) => {
 
   return {
     // Configure one or more authentication providers
@@ -19,12 +19,15 @@ const getOptions = (req: any) => {
     ],
     callbacks: {
       async signIn({ user, account, credentials }) {
-        await myAppsApi.post('/user-credentials', { user, provider: account?.provider, credentials }, {
-          headers: {
-            'Authorization': `Bearer ${req.cookies.refresh_token}`
-          }
-        })
-
+        try {
+          await myAppsApi.post('/user-credentials/create-from-auth-callback', { user, provider: account?.provider, credentials }, {
+            headers: {
+              'Dexkit-Api-Key': `${process.env.MARKETPLACE_API_KEY}`
+            }
+          })
+        } catch (e) {
+          console.log('error on signin')
+        }
         return true
       },
 
@@ -32,11 +35,11 @@ const getOptions = (req: any) => {
 
 
   } as AuthOptions
-}
+}*/
 
 
-/*export const authOptions: AuthOptions = {
-  
+export const authOptions: AuthOptions = {
+
   providers: [
     TwitterProvider({
       clientId: process.env.TWITTER_API_KEY || '',
@@ -50,24 +53,20 @@ const getOptions = (req: any) => {
     // ...add more providers here
   ],
   callbacks: {
-    async signIn({ user, account, profile, email, credentials }) {
-      await myAppsApi.post('/user-credentials', ,{
-        headers: {
-          'Authorization': `Bearer ${req.cookies.ref}`
-        }
-      })
-
-
-      console.log(user);
-      console.log(account);
-      console.log(email);
-      console.log(credentials);
-      console.log(profile);
+    async signIn({ user, account, credentials }) {
+      try {
+        await myAppsApi.post('/user-credentials/create-from-auth-callback', { user, provider: account?.provider, credentials }, {
+          headers: {
+            'Dexkit-Api-Key': `${process.env.MARKETPLACE_API_KEY}`
+          }
+        })
+      } catch (e) {
+        console.log('error on signin')
+      }
       return true
     },
-
   }
-}*/
+}
 
-export default (req: any, res: any) => NextAuth(req, res, getOptions(req))
-//export default NextAuth(authOptions)
+//xport default (req: any, res: any) => NextAuth(req, res, getOptions(req))
+export default NextAuth(authOptions)

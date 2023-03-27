@@ -14,7 +14,7 @@ export function getUserByUsername(username?: string) {
   return myAppsApi.get<UserOptions & { accounts: { address: string }[] }>(`/user/username/${username}`)
 }
 export function getUserByAccount() {
-  return myAppsApi.get<UserOptions & { accounts: { address: string }[] }>(`/user/authenticated/account`)
+  return myAppsApi.get<UserOptions & { accounts: { address: string }[] } & { credentials?: { provider: string, username: string }[] }>(`/user/authenticated/account`)
 }
 
 export function getUserAddAccountMessage({ address }: { address: string }) {
@@ -23,6 +23,10 @@ export function getUserAddAccountMessage({ address }: { address: string }) {
 
 export function postUserAddAccount({ signature, address }: { address: string, signature: string }) {
   return myAppsApi.post<UserOptions & { accounts: { address: string }[] }>(`/user/add-account`, { signature, address })
+}
+
+export function postUserRemoveAccount({ address }: { address: string }) {
+  return myAppsApi.post<UserOptions & { accounts: { address: string }[] }>(`/user/remove-account`, { address })
 }
 
 
