@@ -18,6 +18,8 @@ export const appStateAtom = atomWithStorage<AppState>('appState', {
   isBalancesVisible: true,
   currency: 'usd',
   locale: 'en-US',
+  currencyUser: '',
+  localeUser: '',
   assets: {},
   accountAssets: {
     lastTimeFetched: {
@@ -84,6 +86,15 @@ export const currencyAtom = focusAtom<AppState, string, void>(
 
 export const localeAtom = focusAtom<AppState, string, void>(appStateAtom, (o) =>
   o.prop('locale')
+);
+
+export const currencyUserAtom = focusAtom<AppState, string, void>(
+  appStateAtom,
+  (o) => o.prop('currencyUser')
+);
+
+export const localeUserAtom = focusAtom<AppState, string, void>(appStateAtom, (o) =>
+  o.prop('localeUser')
 );
 
 export const assetsAtom = focusAtom<AppState, { [key: string]: Asset }, void>(

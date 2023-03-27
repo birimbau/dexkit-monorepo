@@ -14,8 +14,9 @@ import {
 import { useAtom } from 'jotai';
 import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
+import { useCurrency } from 'src/hooks/currency';
 import { CURRENCIES } from '../../constants';
-import { currencyAtom } from '../../state/atoms';
+import { currencyUserAtom } from '../../state/atoms';
 import { Currency } from '../../types/app';
 import { AppDialogTitle } from '../AppDialogTitle';
 
@@ -25,10 +26,11 @@ interface Props {
 
 function SelectCurrencyDialog({ dialogProps }: Props) {
   const { onClose } = dialogProps;
+  const curr = useCurrency();
 
-  const [currency, setCurrency] = useAtom(currencyAtom);
+  const [currency, setCurrency] = useAtom(currencyUserAtom);
 
-  const [selectedCurrency, setSelectedCurrency] = useState(currency);
+  const [selectedCurrency, setSelectedCurrency] = useState(currency || curr);
 
   const handleClose = () => {
     if (onClose) {
