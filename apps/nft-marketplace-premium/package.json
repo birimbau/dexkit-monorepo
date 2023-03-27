@@ -43,6 +43,7 @@
     "@traderxyz/nft-swap-sdk": "0.30.0",
     "@transak/transak-sdk": "^1.0.31",
     "axios": "^0.27.2",
+    "cookie": "^0.5.0",
     "eslint-config-custom": "*",
     "formik": "^2.2.9",
     "formik-mui": "^5.0.0-alpha.0",

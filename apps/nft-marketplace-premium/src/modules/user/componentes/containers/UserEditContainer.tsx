@@ -19,20 +19,18 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
+import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import AppConfirmDialog from 'src/components/AppConfirmDialog';
 import { PageHeader } from 'src/components/PageHeader';
-import { useUpsertUserMutation, useUserQuery } from '../../hooks';
+import { useAuth } from 'src/hooks/account';
+import { useAuthUserQuery, useUpsertUserMutation } from '../../hooks';
 import { UserOptions } from '../../types';
 import UpsertUserDialog from '../dialogs/UpsertuserDialog';
 import UserGeneralForm from '../forms/UserGeneralForm';
 import { UserAccounts } from '../UserAccounts';
 import { UserSocials } from '../UserSocials';
-
-interface Props {
-  username?: string;
-}
 
 enum ActiveMenu {
   General,
@@ -45,8 +43,11 @@ const ListSubheaderCustom = styled(ListSubheader)({
   fontWeight: 'bold',
 });
 
-export function UserEditContainer({ username }: Props) {
-  const userQuery = useUserQuery(username);
+export function UserEditContainer() {
+  const userQuery = useAuthUserQuery();
+  const { isLoggedIn } = useAuth();
+  const router = useRouter();
+
   const user = userQuery.data;
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));

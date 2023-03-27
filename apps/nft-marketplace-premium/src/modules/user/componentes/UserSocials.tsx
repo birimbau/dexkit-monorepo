@@ -1,7 +1,7 @@
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
-import axios from 'axios';
+import { signIn } from 'next-auth/react';
 import { FormattedMessage } from 'react-intl';
 import {
   useUserConnectDiscordMutation,
@@ -24,25 +24,44 @@ export function UserSocials(props: Props) {
             variant={'contained'}
             onClick={
               async () => {
-                const response = await axios.get(
-                  'http://localhost:3000/auth/twitter/verify'
-                );
-                console.log(response);
+                signIn('twitter');
+                /*const csrfTokenResponse = await axios.get('/api/auth/csrf');
+                const data = csrfTokenResponse.data;
+                
+                const response = await axios.post(
+                  '/api/auth/signin/twitter',
+                  data
+                );*/
+                // console.log(response);
               }
               // window.open('http://localhost:3000/auth/twitter', '_blank')
             }
           >
-            Connect Twitter
+            <FormattedMessage
+              id="connect.twitter"
+              defaultMessage={'Connect Twitter'}
+            />
           </Button>
         </Grid>
         <Grid item>
           <Button
             variant={'contained'}
-            onClick={() =>
-              window.open('http://localhost:3000/auth/discord', '_blank')
-            }
+            onClick={async () => {
+              signIn('discord');
+              //window.open('http://localhost:3000/auth/discord', '_blank')
+              // const csrfTokenResponse = await axios.get('/api/auth/csrf');
+              // const data = csrfTokenResponse.data;
+              // console.log(csrfToken);
+              // const response = await axios.post(
+              //  '/api/auth/signin/discord',
+              //</Grid>  data
+              //);
+            }}
           >
-            Connect Discord
+            <FormattedMessage
+              id="connect.discord"
+              defaultMessage={'Connect Discord'}
+            />
           </Button>
         </Grid>
       </Grid>

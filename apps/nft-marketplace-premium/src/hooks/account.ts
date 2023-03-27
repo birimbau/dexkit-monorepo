@@ -4,15 +4,11 @@ import { useContext } from "react";
 import { MIN_KIT_HOLDING_AI_GENERATION, WHITELISTED_AI_ACCOUNTS } from "src/constants";
 import { getKitBalanceOfThreshold } from "src/services/balances";
 import { AuthContext } from "../contexts";
-import { login, requestSignature, setAccessToken } from "../services/auth";
+import { loginApp, requestSignature, setAccessToken } from "../services/auth";
 
 export function useAuth() {
   const { setIsLoggedIn, isLoggedIn } = useContext(AuthContext);
-
-
-
   return { setIsLoggedIn, isLoggedIn }
-
 }
 
 
@@ -29,7 +25,7 @@ export function useLoginAccountMutation() {
 
     const signature = await provider.getSigner().signMessage(messageToSign.data);
 
-    const loginResponse = await login({ signature, address: account });
+    const loginResponse = await loginApp({ signature, address: account });
     if (setIsLoggedIn) {
       setIsLoggedIn(true);
     }
