@@ -72,8 +72,15 @@ export async function getPageTemplatesByOwner(owner: string) {
 export async function getConfig(queryParameters: {
   domain?: string;
   slug?: string;
+  appPage?: string;
 }) {
-  return await myAppsApi.get<ConfigResponse>(`/site`, { params: queryParameters });
+  return await myAppsApi.get<ConfigResponse>(`/site`, {
+    params: {
+      domain: queryParameters.domain,
+      slug: queryParameters.slug,
+      ['app-page']: queryParameters.appPage
+    }
+  });
 };
 
 /**

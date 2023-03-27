@@ -267,7 +267,7 @@ export const getStaticProps: GetStaticProps = async ({
 }: GetStaticPropsContext<Params>) => {
   const network = params?.network;
   const address = params?.address;
-  const { appConfig, appNFT } = await getAppConfig(params?.site);
+  const { appConfig, appNFT } = await getAppConfig(params?.site, 'home');
   const queryClient = new QueryClient();
   let collection: Collection | undefined;
   try {

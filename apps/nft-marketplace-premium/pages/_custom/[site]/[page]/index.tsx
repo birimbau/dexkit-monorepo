@@ -44,7 +44,7 @@ export const getStaticProps: GetStaticProps = async ({
   params,
 }: GetStaticPropsContext<Params>) => {
   const queryClient = new QueryClient();
-  const { appConfig, appNFT } = await getAppConfig(params?.site);
+  const { appConfig, appNFT } = await getAppConfig(params?.site, params?.page);
   const homePage = appConfig.pages[params?.page || ''];
 
   if (!homePage) {
