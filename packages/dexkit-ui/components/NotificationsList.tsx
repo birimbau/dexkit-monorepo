@@ -1,6 +1,5 @@
 import { TransactionStatus } from "@dexkit/core/constants";
-import { Transaction } from "@dexkit/core/types";
-import { getBlockExplorerUrl } from "@dexkit/core/utils";
+import { AppTransaction } from "@dexkit/core/types";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import FiberManualRecord from "@mui/icons-material/FiberManualRecord";
 import {
@@ -18,11 +17,12 @@ import AppLink from "./AppLink";
 import MomentFromSpan from "./MomentFromSpan";
 import { NotificationMessage } from "./NotificationMessage";
 
+import { getBlockExplorerUrl } from "@dexkit/core/utils";
 import Icon from "@mui/material/Icon";
 
 export interface NotificationsListProps {
   notifications: AppNotification[];
-  transactions: { [key: string]: Transaction };
+  transactions: { [key: string]: AppTransaction };
   notificationTypes: { [key: string]: AppNotificationType };
 }
 
@@ -32,7 +32,7 @@ export default function NotificationsList({
   notificationTypes,
 }: NotificationsListProps) {
   const renderSecondaryAction = (
-    transactions: { [key: string]: Transaction },
+    transactions: { [key: string]: AppTransaction },
     notification: AppNotification
   ) => {
     if (notification.metadata) {
@@ -57,7 +57,7 @@ export default function NotificationsList({
   };
 
   const getNotificationUrl = (
-    transactions: { [key: string]: Transaction },
+    transactions: { [key: string]: AppTransaction },
     notification: AppNotification
   ) => {
     if (notification.url) {

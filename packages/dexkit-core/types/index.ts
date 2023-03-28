@@ -57,7 +57,7 @@ export type WalletActivateParams =
   | ActivateMagicParams
   | ActivateWalletConnectParams;
 
-export interface Transaction {
+export interface AppTransaction {
   title?: string;
   status: TransactionStatus;
   created: number;

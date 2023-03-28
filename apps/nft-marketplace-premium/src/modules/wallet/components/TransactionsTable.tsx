@@ -1,6 +1,5 @@
+import { useDexKitContext } from '@dexkit/ui';
 import {
-  Box,
-  lighten,
   Stack,
   Table,
   TableBody,
@@ -9,21 +8,10 @@ import {
   TableHead,
   TableRow,
   Typography,
-  useTheme,
 } from '@mui/material';
-import { useWeb3React } from '@web3-react/core';
-import { useAtom, useAtomValue } from 'jotai';
-import { useCallback, useMemo } from 'react';
+import { useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
-import CardTick from '../../../components/icons/CardTick';
-import CloseCircle from '../../../components/icons/CloseCircle';
-import MoneyReceive from '../../../components/icons/MoneyReceive';
-import MoneySend from '../../../components/icons/MoneySend';
-import { transactionsAtom } from '../../../state/atoms';
-import { TransactionType } from '../../../types/blockchain';
 import { TransactionsTableRow } from './TransactionsTableRow';
-
-import ArrowSwap from '../../../components/icons/ArrowSwap';
 
 export enum TransactionsTableFilter {
   Transactions,
@@ -35,82 +23,18 @@ export function TransactionsTable({
 }: {
   filter: TransactionsTableFilter;
 }) {
-  const { chainId } = useWeb3React();
-  const transactions = useAtomValue(transactionsAtom);
+  const { notifications } = useDexKitContext();
 
-  const notificationsKeys = useMemo(() => {
-    return Object.keys(transactions);
-  }, [transactions]);
+  const filteredNotifications = useMemo(() => {
+    if (filter === TransactionsTableFilter.Trades) {
+      return notifications.filter((n) => n.subtype === 'swap');
+    }
 
-  const theme = useTheme();
-
-  const renderIcon = useCallback(
-    (hash: string) => {
-      let icon: React.ReactNode;
-      let bgcolor: string = theme.palette.action.hover;
-
-      if (transactions[hash].type === TransactionType.CANCEL) {
-        icon = <CloseCircle />;
-        bgcolor = lighten(theme.palette.error.light, 0.8);
-      } else if (transactions[hash].type === TransactionType.BUY) {
-        icon = <MoneySend />;
-        bgcolor = lighten(theme.palette.success.light, 0.8);
-      } else if (transactions[hash].type === TransactionType.ACCEPT) {
-        icon = <MoneyReceive />;
-        bgcolor = lighten(theme.palette.success.light, 0.8);
-      } else if (transactions[hash].type === TransactionType.SWAP) {
-        icon = <ArrowSwap />;
-        bgcolor = lighten(theme.palette.success.light, 0.8);
-      } else if (
-        transactions[hash].type === TransactionType.APPROVAL_FOR_ALL ||
-        transactions[hash].type === TransactionType.APPROVE
-      ) {
-        icon = <CardTick />;
-        bgcolor = lighten(theme.palette.info.light, 0.8);
-      }
-
-      return (
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignitems: 'center',
-            p: 1,
-            bgcolor,
-            borderRadius: (theme) => theme.shape.borderRadius,
-          }}
-        >
-          {icon}
-        </Box>
-      );
-    },
-    [transactions, theme]
-  );
+    return notifications.filter((n) => n.subtype !== 'swap');
+  }, [notifications, filter]);
 
   const renderTransactionsList = () => {
-    const filteredNotificationsKeys = notificationsKeys
-      .filter((hash) => {
-        if (transactions[hash].chainId !== chainId) {
-          return false;
-        }
-
-        if (filter === TransactionsTableFilter.Transactions) {
-          return transactions[hash].type !== TransactionType.SWAP;
-        }
-
-        return transactions[hash].type === TransactionType.SWAP;
-      })
-      .reverse()
-      .map((hash, index: number) => (
-        <TransactionsTableRow
-          key={index}
-          icon={renderIcon(hash)}
-          transaction={transactions[hash]}
-          hash={hash}
-        />
-      ));
-
-    if (filteredNotificationsKeys.length === 0) {
+    if (filteredNotifications.length === 0) {
       return (
         <TableRow>
           <TableCell colSpan={5}>
@@ -127,7 +51,11 @@ export function TransactionsTable({
       );
     }
 
-    return filteredNotificationsKeys;
+    if (filteredNotifications.length > 0) {
+      return filteredNotifications.map((notification, key) => (
+        <TransactionsTableRow key={key} notification={notification} />
+      ));
+    }
   };
 
   return (

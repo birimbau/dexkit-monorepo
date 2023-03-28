@@ -1,3 +1,5 @@
+import { AppTransaction } from '@dexkit/core/types';
+import { AppNotification } from '@dexkit/ui/types';
 import { atom } from 'jotai';
 import { focusAtom } from 'jotai/optics';
 import { atomWithStorage } from 'jotai/utils';
@@ -7,7 +9,7 @@ import {
   Transaction,
   TransactionMetadata,
   TransactionStatus,
-  TransactionType
+  TransactionType,
 } from '../types/blockchain';
 
 import { Asset } from '../types/nft';
@@ -93,8 +95,9 @@ export const currencyUserAtom = focusAtom<AppState, string, void>(
   (o) => o.prop('currencyUser')
 );
 
-export const localeUserAtom = focusAtom<AppState, string, void>(appStateAtom, (o) =>
-  o.prop('localeUser')
+export const localeUserAtom = focusAtom<AppState, string, void>(
+  appStateAtom,
+  (o) => o.prop('localeUser')
 );
 
 export const assetsAtom = focusAtom<AppState, { [key: string]: Asset }, void>(
@@ -160,3 +163,12 @@ export const showSelectLocaleAtom = atom<boolean>(false);
 export const showAppTransactionsAtom = atom<boolean>(false);
 
 export const selectedWalletAtom = atomWithStorage<string>('connector', '');
+
+export const transactionsAtomV2 = atomWithStorage<{
+  [key: string]: AppTransaction;
+}>('dexkit.transactions', {});
+
+export const notificationsAtom = atomWithStorage<AppNotification[]>(
+  'dexkit.notifications',
+  []
+);

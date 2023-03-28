@@ -3,7 +3,7 @@ import {
   UseMutationOptions,
   useQuery,
 } from '@tanstack/react-query';
-import { BigNumber, ethers } from 'ethers';
+import { ethers } from 'ethers';
 
 import {
   NotificationCallbackParams,
@@ -16,12 +16,13 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ZERO_EX_QUOTE_ENDPOINT } from '../constants';
 
 import { ChainId } from '@dexkit/core';
+import { useDexKitContext } from '@dexkit/ui';
 import {
   isAutoSlippageAtom,
   maxSlippageAtom,
   tokensAtom,
 } from '../state/atoms';
-import { Quote, Token, TransactionType } from '../types/blockchain';
+import { Quote, Token } from '../types/blockchain';
 import { useAppConfig, useConnectWalletDialog, useTransactions } from './app';
 
 export function useSwapState() {
@@ -72,35 +73,45 @@ export function useSwapState() {
     } as RenderOptions;
   }, [featuredTokens, chainId]);
 
+  const { createNotification } = useDexKitContext();
+
   const onNotification = useCallback(
     ({ title, hash, chainId, params }: NotificationCallbackParams) => {
       if (params.type === 'swap') {
-        addTransaction(hash, TransactionType.SWAP, {
-          buyToken: {
-            address: params.buyToken.contractAddress,
-            chainId: params.buyToken.chainId as number,
-            decimals: params.buyToken.decimals,
-            logoURI: params.buyToken.logoURI || '',
-            name: params.buyToken.name,
-            symbol: params.buyToken.symbol,
+        createNotification({
+          type: 'transaction',
+          subtype: 'swap',
+          icon: 'swap_vert',
+          values: {
+            sellTokenSymbol: params.sellToken.symbol.toUpperCase(),
+            sellAmount: ethers.utils.formatUnits(
+              params.sellAmount,
+              params.sellToken.decimals
+            ),
+            buyTokenSymbol: params.buyToken.symbol.toUpperCase(),
+            buyAmount: ethers.utils.formatUnits(
+              params.buyAmount,
+              params.buyToken.decimals
+            ),
           },
-          sellToken: {
-            address: params.sellToken.contractAddress,
-            chainId: params.sellToken.chainId as number,
-            decimals: params.sellToken.decimals,
-            logoURI: params.sellToken.logoURI || '',
-            name: params.sellToken.name,
-            symbol: params.sellToken.symbol,
+          metadata: {
+            hash,
+            chainId,
           },
-          sellAmount: BigNumber.from(params.sellAmount),
-          buyAmount: BigNumber.from(params.buyAmount),
         });
       } else if (params.type === 'approve') {
-        addTransaction(hash, TransactionType.APPROVE, {
-          name: params.token.name,
-          symbol: params.token.symbol,
-          decimals: params.token.decimals,
-          amount: '0',
+        createNotification({
+          type: 'transaction',
+          subtype: 'approve',
+          icon: 'check_circle',
+          values: {
+            symbol: params.token.symbol.toUpperCase(),
+            name: params.token.name,
+          },
+          metadata: {
+            hash,
+            chainId,
+          },
         });
       }
     },

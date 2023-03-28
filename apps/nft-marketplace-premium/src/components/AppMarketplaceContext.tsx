@@ -1,9 +1,13 @@
 import { DexkitProvider } from '@dexkit/ui/components';
+import { COMMON_NOTIFICATION_TYPES } from '@dexkit/ui/constants/messages/common';
 import { createTheme, responsiveFontSizes, Theme } from '@mui/material';
 import { DefaultSeo } from 'next-seo';
 import { useMemo, useState } from 'react';
 import { useAppConfig, useLocale } from 'src/hooks/app';
-import { pendingTransactionsAtom, selectedWalletAtom } from 'src/state/atoms';
+import {
+  notificationsAtom, selectedWalletAtom,
+  transactionsAtomV2
+} from 'src/state/atoms';
 import { getTheme } from 'src/theme';
 import defaultAppConfig from '../../config/app.json';
 import { loadLocaleData } from '../utils/intl';
@@ -92,7 +96,6 @@ export function AppMarketplaceContext({
   }, [appConfig]);
   return (
     <DexkitProvider
-      pendingTransactionsAtom={pendingTransactionsAtom}
       locale={locale}
       defaultLocale={locale}
       localeMessages={loadLocaleData(locale)}
@@ -101,7 +104,10 @@ export function AppMarketplaceContext({
       options={{
         magicRedirectUrl: process.env.NEXT_PUBLIC_MAGIC_REDIRECT_URL || '',
       }}
-      setLocale={(loc) => setLocale(loc)}
+      notificationTypes={COMMON_NOTIFICATION_TYPES}
+      transactionsAtom={transactionsAtomV2}
+      notificationsAtom={notificationsAtom}
+      onChangeLocale={(loc) => setLocale(loc)}
     >
       <DefaultSeo {...SEO} />
       {children}

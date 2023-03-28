@@ -9,22 +9,23 @@ export const COMMON_NOTIFICATION_TYPES: { [key: string]: AppNotificationType } =
     },
     unwrap: {
       type: "unwrap",
-      message: "Approve {name} ({symbol}) to trade",
-      id: "approve.name.symbol.to.trade",
+      message: "Unwrap {amount} ({symbol})",
+      id: "unwrap.amount.symbol",
     },
     wrap: {
       type: "wrap",
-      message: "Approve {name} ({symbol}) to trade",
-      id: "approve.name.symbol.to.trade",
+      message: "Unwrap {amount} ({symbol})",
+      id: "wrap.amount.symbol",
     },
     swap: {
       type: "swap",
-      message: "Swap {sellAmount} {sellSymbol} for {buyAmount} {buySymbol}",
-      id: "swap.notification",
+      message:
+        "Swap {sellAmount} {sellTokenSymbol} for {buyAmount} {buyTokenSymbol}",
+      id: "swap.sellamount.symbol.for.buyamount.symbol",
     },
     transfer: {
       type: "transfer",
-      message: "Swap {sellAmount} {sellSymbol} for {buyAmount} {buySymbol}",
-      id: "swap.notification",
+      message: "Send {amount} {symbol} to {address}",
+      id: "send.amount.symbol.to.address",
     },
   };

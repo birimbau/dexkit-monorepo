@@ -13,6 +13,15 @@ export type AppNotification = {
   date: number;
   values?: Record<string, string>;
   checked?: boolean;
-  metadata?: Record<string, string>;
+  metadata?: Record<string, any>;
   url?: string;
+};
+
+export type CreateAppNotificationParams = {
+  type: NotificationTypes;
+  subtype: string;
+  icon?: string;
+  values?: Record<string, string>;
+  url?: string;
+  metadata?: Record<string, any>;
 };

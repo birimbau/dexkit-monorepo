@@ -1,25 +1,39 @@
 import { useWeb3React } from "@web3-react/core";
 import { PrimitiveAtom, useAtom } from "jotai";
 import { useSnackbar } from "notistack";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { useIntl } from "react-intl";
 
 import { TransactionStatus } from "@dexkit/core/constants";
 import { useBlockNumber } from "@dexkit/core/hooks";
-import { Transaction } from "@dexkit/core/types";
+import { AppTransaction } from "@dexkit/core/types";
 
 interface Props {
   pendingTransactionsAtom: PrimitiveAtom<{
-    [hash: string]: Transaction;
+    [hash: string]: AppTransaction;
   }>;
 }
 
 export default function TransactionUpdater({ pendingTransactionsAtom }: Props) {
   const { chainId, provider } = useWeb3React();
 
-  const [pendingTransactions, setPendingTransactions] = useAtom(
+  const [transactions, setPendingTransactions] = useAtom(
     pendingTransactionsAtom
   );
+
+  const pendingTransactions = useMemo(() => {
+    let objs = Object.keys(transactions)
+      .map((key) => {
+        return { key, tx: transactions[key] };
+      })
+      .filter((t) => t.tx.status === TransactionStatus.Pending);
+
+    return objs.reduce((prev: any, curr) => {
+      prev[curr.key] = curr.tx;
+
+      return prev;
+    }, {});
+  }, [transactions]);
 
   const blockNumber = useBlockNumber();
 
