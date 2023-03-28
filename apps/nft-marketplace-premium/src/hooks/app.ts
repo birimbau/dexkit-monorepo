@@ -14,12 +14,12 @@ import {
   transactionDialogOpenAtom,
   transactionDialogRedirectUrlAtom,
   transactionDialogTypeAtom,
-  transactionsAtom
+  transactionsAtom,
 } from '../state/atoms';
 import {
   TransactionMetadata,
   TransactionStatus,
-  TransactionType
+  TransactionType,
 } from '../types/blockchain';
 
 export function useTransactions() {
@@ -149,7 +149,7 @@ export function useCollections() {
 
 export function useLocale() {
   const loc = useAtomValue(localeAtom);
-  const { setLocale } = useDexKitContext();
+  const { onChangeLocale } = useDexKitContext();
   const locUser = useAtomValue(localeUserAtom);
   const appConfig = useAppConfig();
   const locale = useMemo(() => {
@@ -157,9 +157,9 @@ export function useLocale() {
       return locUser;
     }
     if (appConfig.locale && appConfig.locale !== loc) {
-      return appConfig.locale
+      return appConfig.locale;
     }
-    return loc || 'en-US' as string;
-  }, [appConfig.locale, locUser, loc])
-  return { locale, setLocale }
+    return loc || ('en-US' as string);
+  }, [appConfig.locale, locUser, loc]);
+  return { locale, onChangeLocale };
 }
