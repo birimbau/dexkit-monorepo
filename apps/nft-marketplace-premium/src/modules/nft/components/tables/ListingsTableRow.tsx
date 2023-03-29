@@ -78,7 +78,7 @@ export function ListingsTableRow({
           ratio = tokenData[currency];
         }
 
-        if (ratio) {
+        if (ratio && order?.erc20TokenAmount !== undefined) {
           return (
             ratio *
             parseFloat(
@@ -108,10 +108,11 @@ export function ListingsTableRow({
             />
           </Tooltip>
           <Typography variant="body1">
-            {ethers.utils.formatUnits(
-              order.erc20TokenAmount,
-              token?.decimals || 18
-            )}{' '}
+            {order.erc20TokenAmount !== undefined &&
+              ethers.utils.formatUnits(
+                order.erc20TokenAmount,
+                token?.decimals || 18
+              )}{' '}
             {token?.symbol.toUpperCase()}
           </Typography>
         </Stack>

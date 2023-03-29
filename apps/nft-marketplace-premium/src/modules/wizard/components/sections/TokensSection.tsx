@@ -23,9 +23,6 @@ import { Token } from '../../../../types/blockchain';
 import { WIZARD_MAX_TOKENS } from '../../constants';
 import TokensSectionList from './TokensSectionList';
 const AddTokenDialog = dynamic(() => import('../dialogs/AddTokenDialog'));
-const ImportTokenListDialog = dynamic(
-  () => import('../dialogs/ImportTokenListDialog')
-);
 
 interface Props {
   tokens: Token[];

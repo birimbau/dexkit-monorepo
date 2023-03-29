@@ -2,7 +2,9 @@ import { CONNECTORS } from "@dexkit/core/constants";
 import { Web3ReactHooks } from "@web3-react/core";
 import { Connector } from "@web3-react/types";
 import { PrimitiveAtom, useAtomValue } from "jotai";
-import { useMemo } from "react";
+import { useContext, useMemo } from "react";
+import { DexKitContext } from "../context/DexKitContext";
+
 
 export function useOrderedConnectors({
   selectedWalletAtom,
@@ -30,4 +32,10 @@ export function useOrderedConnectors({
 
     return connectors;
   }, [selectedWallet]);
+}
+
+
+export function useDexKitContext() {
+  const { setLocale } = useContext(DexKitContext);
+  return { setLocale }
 }

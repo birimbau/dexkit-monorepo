@@ -148,16 +148,20 @@ const MainLayout: React.FC<Props> = ({
         //window.location.reload();
       };
 
-      connector?.provider?.on('chainChanged', handleNetworkChange);
+      if (connector?.provider?.on) {
+        connector?.provider?.on('chainChanged', handleNetworkChange);
+      }
 
       return () => {
-        connector?.provider?.removeListener(
-          'chainChanged',
-          handleNetworkChange
-        );
+        if (connector?.provider?.removeListener) {
+          connector?.provider?.removeListener(
+            'chainChanged',
+            handleNetworkChange
+          );
+        }
       };
     }
-  }, [connector]);
+  }, [connector, connector?.provider]);
 
   useEffect(() => {
     if (typeof window !== 'undefined' && connector) {

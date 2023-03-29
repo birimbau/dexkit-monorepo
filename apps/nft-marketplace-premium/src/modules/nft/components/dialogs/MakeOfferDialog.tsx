@@ -69,17 +69,16 @@ interface Props {
 }
 
 export function MakeOfferDialog({ dialogProps, onConfirm, asset }: Props) {
-  const { provider, account, chainId } = useWeb3React();
+  const { provider, account } = useWeb3React();
+  const { data: metadata } = useAssetMetadata(asset);
 
   const tokenList = useTokenList({
-    chainId,
+    chainId: asset?.chainId,
     includeNative: false,
     onlyTradable: true,
   });
 
   const { onClose } = dialogProps;
-
-  const { data: metadata } = useAssetMetadata(asset);
 
   const { formatMessage } = useIntl();
 

@@ -356,7 +356,7 @@ export function useMultiTokenBalance({
   );
 }
 
-export const COIN_PRICES_QUERY = "";
+export const COIN_PRICES_QUERY = "COIN_PRICES_QUERY";
 
 export function useCoinPrices({
   currency,

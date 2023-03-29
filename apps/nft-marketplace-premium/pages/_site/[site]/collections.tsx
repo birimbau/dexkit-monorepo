@@ -84,7 +84,7 @@ export const getStaticProps: GetStaticProps = async ({
 }: GetStaticPropsContext<Params>) => {
   const queryClient = new QueryClient();
 
-  const { appConfig, appNFT } = await getAppConfig(params?.site);
+  const { appConfig, appNFT } = await getAppConfig(params?.site, 'home');
 
   /*  for (let collection of collectionListJson.collections) {
     const provider = getProviderByChainId(collection.chainId);

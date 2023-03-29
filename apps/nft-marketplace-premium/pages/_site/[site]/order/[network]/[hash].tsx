@@ -119,7 +119,7 @@ export const getStaticProps: GetStaticProps = async ({
 }: GetStaticPropsContext<Params>) => {
   if (params) {
     const { hash, network, site } = params;
-    const { appConfig, appNFT } = await getAppConfig(site);
+    const { appConfig, appNFT } = await getAppConfig(site, 'home');
 
     const chainId = getChainIdFromSlug(network || '')?.chainId;
 

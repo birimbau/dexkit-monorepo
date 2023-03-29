@@ -3,7 +3,7 @@ import {
   useMutation,
   UseMutationOptions,
   useQuery,
-  useQueryClient
+  useQueryClient,
 } from '@tanstack/react-query';
 import { useWeb3React } from '@web3-react/core';
 import { useSetAtom } from 'jotai';
@@ -21,48 +21,62 @@ import {
   getVerifyDomain,
   sendConfig,
   setupDomainConfig,
-  upsertPageTemplate, upsertWhitelabelAsset
+  upsertPageTemplate,
+  upsertWhitelabelAsset,
 } from '../services/whitelabel';
 import { AppConfig } from '../types/config';
 import { PageTemplateFormData } from '../types/whitelabel';
-import { useAccountHoldDexkitMutation, useAuth, useLoginAccountMutation } from './account';
-
+import {
+  useAccountHoldDexkitMutation,
+  useAuth,
+  useLoginAccountMutation,
+} from './account';
 
 export const useSendConfigMutation = ({ slug }: { slug?: string }) => {
   const { account, provider, chainId } = useWeb3React();
-  const { isLoggedIn } = useAuth()
+  const { isLoggedIn } = useAuth();
   const loginMutation = useLoginAccountMutation();
   const configQuery = useWhitelabelConfigQuery({
     slug: slug as string,
   });
 
-  return useMutation(async ({ config, email }: { config: AppConfig, email?: string }) => {
-    if (account && provider && chainId !== undefined) {
-      const type = AppWhitelabelType.MARKETPLACE;
-      if (!isLoggedIn) {
-        await loginMutation.mutateAsync()
+  return useMutation(
+    async ({ config, email }: { config: AppConfig; email?: string }) => {
+      if (account && provider && chainId !== undefined) {
+        const type = AppWhitelabelType.MARKETPLACE;
+        if (!isLoggedIn) {
+          await loginMutation.mutateAsync();
+        }
+        const response = await sendConfig({
+          config: JSON.stringify(config),
+          type,
+          slug,
+          email,
+        });
+        configQuery.refetch();
+        return response.data;
       }
-      const response = await sendConfig({ config: JSON.stringify(config), type, slug, email });
-      configQuery.refetch();
-      return response.data;
     }
-  });
+  );
 };
 
 export const useUpsertPageTemplateMutation = () => {
   const { account, provider, chainId } = useWeb3React();
-  const { isLoggedIn } = useAuth()
-  const loginMutation = useLoginAccountMutation()
-  const queryClient = useQueryClient()
+  const { isLoggedIn } = useAuth();
+  const loginMutation = useLoginAccountMutation();
+  const queryClient = useQueryClient();
 
   return useMutation(async ({ data }: { data?: PageTemplateFormData }) => {
     if (account && provider && chainId !== undefined && data) {
       if (!isLoggedIn) {
-        await loginMutation.mutateAsync()
+        await loginMutation.mutateAsync();
       }
       await upsertPageTemplate(data);
       if (data.id) {
-        queryClient.invalidateQueries([QUERY_PAGE_TEMPLATES_CONFIG_BY_ID, data.id])
+        queryClient.invalidateQueries([
+          QUERY_PAGE_TEMPLATES_CONFIG_BY_ID,
+          data.id,
+        ]);
       }
     }
   });
@@ -81,21 +95,18 @@ export const useWhitelabelConfigsByOwnerQuery = ({
   return useQuery([QUERY_WHITELABEL_CONFIGS_BY_OWNER_NAME, owner], async () => {
     if (!owner) return;
 
-    return ((await getConfigsByOwner(owner)).data).map((resp) => ({
+    return (await getConfigsByOwner(owner)).data.map((resp) => ({
       ...resp,
       appConfig: JSON.parse(resp.config) as AppConfig,
     }));
   });
 };
 
-export const QUERY_WHITELABEL_SITES_QUERY =
-  'GET_WHITELABEL_SITESQUERY';
+export const QUERY_WHITELABEL_SITES_QUERY = 'GET_WHITELABEL_SITESQUERY';
 
 export const useWhitelabelSitesListQuery = () => {
   return useQuery([QUERY_WHITELABEL_SITES_QUERY], async () => {
-
-
-    return ((await getSites({})).data).map((resp) => ({
+    return (await getSites({})).data.map((resp) => ({
       ...resp,
       appConfig: JSON.parse(resp.config) as AppConfig,
     }));
@@ -105,28 +116,27 @@ export const useWhitelabelSitesListQuery = () => {
 export const QUERY_PAGE_TEMPLATES_CONFIGS_BY_OWNER_NAME =
   'GET_PAGE_TEMPLATES_CONFIGS_BY_OWNER_QUERY';
 
-
 export const usePageTemplatesByOwnerQuery = ({
   owner,
 }: ConfigsByOwnerParams) => {
-  return useQuery([QUERY_PAGE_TEMPLATES_CONFIGS_BY_OWNER_NAME, owner], async () => {
-    if (!owner) return;
+  return useQuery(
+    [QUERY_PAGE_TEMPLATES_CONFIGS_BY_OWNER_NAME, owner],
+    async () => {
+      if (!owner) return;
 
-    return ((await getPageTemplatesByOwner(owner)).data);
-  });
+      return (await getPageTemplatesByOwner(owner)).data;
+    }
+  );
 };
 
 export const QUERY_PAGE_TEMPLATES_CONFIG_BY_ID =
   'GET_PAGE_TEMPLATES_CONFIG_BY_ID_QUERY';
 
-
-export const usePageTemplateByIdQuery = ({
-  id,
-}: { id: string }) => {
+export const usePageTemplateByIdQuery = ({ id }: { id: string }) => {
   return useQuery([QUERY_PAGE_TEMPLATES_CONFIG_BY_ID, id], async () => {
     if (!id) return;
 
-    return ((await getPageTemplateById(id)).data);
+    return (await getPageTemplateById(id)).data;
   });
 };
 
@@ -164,23 +174,19 @@ export const useDeleteMyAppMutation = ({
 }) => {
   const { account, provider, chainId } = useWeb3React();
   const { refetch } = useWhitelabelConfigsByOwnerQuery({ owner: account });
-  const { isLoggedIn } = useAuth()
-  const loginMutation = useLoginAccountMutation()
+  const { isLoggedIn } = useAuth();
+  const loginMutation = useLoginAccountMutation();
 
-  return useMutation<any, any, any>(
-    async ({ slug }: { slug: string }) => {
-      if (account && provider && chainId !== undefined) {
-        if (!isLoggedIn) {
-          await loginMutation.mutateAsync()
-        }
-
-
-        await deleteConfig(slug);
-        refetch()
+  return useMutation<any, any, any>(async ({ slug }: { slug: string }) => {
+    if (account && provider && chainId !== undefined) {
+      if (!isLoggedIn) {
+        await loginMutation.mutateAsync();
       }
-    },
-    options
-  );
+
+      await deleteConfig(slug);
+      refetch();
+    }
+  }, options);
 };
 
 export const useDeletePageTemplateMutation = ({
@@ -190,28 +196,23 @@ export const useDeletePageTemplateMutation = ({
 }) => {
   const { account, provider, chainId } = useWeb3React();
   const { refetch } = usePageTemplatesByOwnerQuery({ owner: account });
-  const { isLoggedIn } = useAuth()
-  const loginMutation = useLoginAccountMutation()
+  const { isLoggedIn } = useAuth();
+  const loginMutation = useLoginAccountMutation();
 
-  return useMutation<any, any, any>(
-    async ({ id }: { id: string }) => {
-
-      if (account && provider && chainId !== undefined && id) {
-        if (!isLoggedIn) {
-          await loginMutation.mutateAsync()
-        }
-        await deletePageTemplate(id);
-        refetch()
+  return useMutation<any, any, any>(async ({ id }: { id: string }) => {
+    if (account && provider && chainId !== undefined && id) {
+      if (!isLoggedIn) {
+        await loginMutation.mutateAsync();
       }
-    },
-    options
-  );
+      await deletePageTemplate(id);
+      refetch();
+    }
+  }, options);
 };
 
 export const useDomainConfigStatusMutation = () => {
   const { account } = useWeb3React();
   const { refetch } = useWhitelabelConfigsByOwnerQuery({ owner: account });
-
 
   return useMutation(async ({ domain }: { domain: string }) => {
     await getDomainConfigStatus(domain);
@@ -220,56 +221,52 @@ export const useDomainConfigStatusMutation = () => {
 };
 
 export const useVerifyDomainMutation = () => {
-  const queryClient = useQueryClient()
-
+  const queryClient = useQueryClient();
 
   return useMutation(async ({ domain }: { domain: string }) => {
     await getVerifyDomain(domain);
-    queryClient.invalidateQueries([QUERY_WHITELABEL_CONFIG_NAME])
-
+    queryClient.invalidateQueries([QUERY_WHITELABEL_CONFIG_NAME]);
   });
 };
-
 
 export const useSetupDomainConfigMutation = () => {
   const { account, provider, chainId } = useWeb3React();
 
   // Get QueryClient from the context
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
 
+  const { isLoggedIn } = useAuth();
+  const loginMutation = useLoginAccountMutation();
 
-  const { isLoggedIn } = useAuth()
-  const loginMutation = useLoginAccountMutation()
-
-  return useMutation(
-    async ({
-      domain,
-    }: {
-      domain: string;
-    }) => {
-      if (account && provider && chainId !== undefined) {
-        if (!isLoggedIn) {
-          await loginMutation.mutateAsync()
-        }
-        await setupDomainConfig(domain);
-        queryClient.invalidateQueries([QUERY_WHITELABEL_CONFIG_NAME])
-
+  return useMutation(async ({ domain }: { domain: string }) => {
+    if (account && provider && chainId !== undefined) {
+      if (!isLoggedIn) {
+        await loginMutation.mutateAsync();
       }
+      await setupDomainConfig(domain);
+      queryClient.invalidateQueries([QUERY_WHITELABEL_CONFIG_NAME]);
     }
-  );
+  });
 };
-
 
 export const useUpsertWhitelabelAssetMutation = () => {
   const { account, provider, chainId } = useWeb3React();
+
   const setIsHoldingKit = useSetAtom(holdsKitDialogAtom)
-  const isHoldingKit = useAccountHoldDexkitMutation()
-  const queryClient = useQueryClient()
-  const { isLoggedIn } = useAuth()
-  const loginMutation = useLoginAccountMutation()
+  const isHoldingKit = useAccountHoldDexkitMutation();
+  const queryClient = useQueryClient();
+  const { isLoggedIn } = useAuth();
+  const loginMutation = useLoginAccountMutation();
+
 
   return useMutation<any, any, any>(
-    async ({ siteId, nft }: { siteId: number, nft: CollectionOwnershipNFTFormType }) => {
+    async ({
+      siteId,
+      nft,
+    }: {
+      siteId: number;
+      nft: CollectionOwnershipNFTFormType;
+    }) => {
       if (account && provider && chainId !== undefined) {
         try {
           await isHoldingKit.mutateAsync();
@@ -280,10 +277,10 @@ export const useUpsertWhitelabelAssetMutation = () => {
 
 
         if (!isLoggedIn) {
-          await loginMutation.mutateAsync()
+          await loginMutation.mutateAsync();
         }
         await upsertWhitelabelAsset(siteId, nft);
-        queryClient.invalidateQueries([QUERY_WHITELABEL_CONFIG_NAME])
+        queryClient.invalidateQueries([QUERY_WHITELABEL_CONFIG_NAME]);
       }
     }
   );

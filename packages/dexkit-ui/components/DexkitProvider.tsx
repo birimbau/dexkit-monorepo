@@ -1,4 +1,4 @@
-import { IntlProvider } from "react-intl";
+import { IntlProvider, MessageFormatElement } from "react-intl";
 
 import { Web3ReactProvider } from "@web3-react/core";
 import { SnackbarProvider } from "notistack";
@@ -8,8 +8,9 @@ import { useOrderedConnectors } from "../hooks";
 import { Transaction } from "@dexkit/core/types";
 import { getConnectorName } from "@dexkit/core/utils";
 import { CssBaseline, Theme, ThemeProvider } from "@mui/material";
-import { PrimitiveAtom, Provider } from "jotai";
+import { PrimitiveAtom } from "jotai";
 
+import { DexKitContext } from "../context/DexKitContext";
 import { MagicStateProvider } from "./MagicStateProvider";
 import TransactionUpdater from "./TransactionUpdater";
 
@@ -17,6 +18,10 @@ export interface DexkitProviderProps {
   theme: Theme;
   locale: string;
   defaultLocale?: string;
+  setLocale: (locale: string) => void;
+  localeMessages?:
+    | Record<string, string>
+    | Record<string, MessageFormatElement[]>;
   children: React.ReactNode | React.ReactNode[];
   options?: {
     magicRedirectUrl: string;
@@ -33,6 +38,8 @@ export function DexkitProvider({
   pendingTransactionsAtom,
   selectedWalletAtom,
   locale,
+  setLocale,
+  localeMessages,
 }: DexkitProviderProps) {
   const connectors = useOrderedConnectors({ selectedWalletAtom });
 
@@ -43,8 +50,16 @@ export function DexkitProvider({
   );
 
   return (
-    <Provider>
-      <IntlProvider locale={locale} defaultLocale={locale}>
+    <DexKitContext.Provider
+      value={{
+        setLocale: setLocale,
+      }}
+    >
+      <IntlProvider
+        locale={locale}
+        defaultLocale={locale}
+        messages={localeMessages}
+      >
         <Web3ReactProvider connectors={connectors} key={web3ReactKey}>
           <ThemeProvider theme={theme}>
             <SnackbarProvider
@@ -60,6 +75,6 @@ export function DexkitProvider({
           </ThemeProvider>
         </Web3ReactProvider>
       </IntlProvider>
-    </Provider>
+    </DexKitContext.Provider>
   );
 }
