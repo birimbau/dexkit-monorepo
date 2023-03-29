@@ -1,41 +1,43 @@
 import {
-  Paper,
+  IconButton,
+  ListItemIcon,
+  ListItemText,
+  Menu,
+  MenuItem,
   Stack,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
-  Typography,
   TableRow,
-  IconButton,
-  MenuItem,
-  Menu,
-  ListItemIcon,
-  ListItemText,
+  Typography,
 } from '@mui/material';
+import { ethers } from 'ethers';
 import {
   getNetworkSlugFromChainId,
   isAddressEqual,
 } from '../../../../utils/blockchain';
-import { ethers } from 'ethers';
 
-import { FormattedMessage } from 'react-intl';
 import { useWeb3React } from '@web3-react/core';
-import { useBestSellOrderAssetRari, useOrderBook } from '../../../../hooks/nft';
-import { SwapApiOrder } from '../../../../types/nft';
-import { useAsset } from '../../../../hooks/nft';
-import ListingsTableRow from './ListingsTableRow';
+import { FormattedMessage } from 'react-intl';
 import { usePositionPaginator } from '../../../../hooks/misc';
+import {
+  useAsset,
+  useBestSellOrderAssetRari,
+  useOrderBook,
+} from '../../../../hooks/nft';
+import { SwapApiOrder } from '../../../../types/nft';
+import ListingsTableRow from './ListingsTableRow';
 
+import { Share, Visibility } from '@mui/icons-material';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
-import { TraderOrderStatus } from '../../../../constants/enum';
 import moment from 'moment';
-import { Share, Visibility } from '@mui/icons-material';
-import { useState } from 'react';
-import { useCurrency } from '../../../../hooks/currency';
 import { useRouter } from 'next/router';
+import { useState } from 'react';
+import { TraderOrderStatus } from '../../../../constants/enum';
+import { useCurrency } from '../../../../hooks/currency';
 import ListingsTableRaribleRow from './ListingsTableRaribleRow';
 
 interface Props {
@@ -61,6 +63,7 @@ export function ListingsTable({
     asset?.contractAddress,
     asset?.id
   );
+
   const { account } = useWeb3React();
 
   const currency = useCurrency();
@@ -124,7 +127,7 @@ export function ListingsTable({
       }
     );
 
-    if (tempOrders?.length === 0 && !raribleAsset) {
+    if (tempOrders?.length === 0 && !raribleAsset?.bestSellOrder) {
       return (
         <TableRow>
           <TableCell colSpan={4}>
