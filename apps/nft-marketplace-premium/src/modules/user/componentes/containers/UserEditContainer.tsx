@@ -1,6 +1,7 @@
 import Box from '@mui/material/Box';
 
 import Close from '@mui/icons-material/Close';
+import Visibility from '@mui/icons-material/Visibility';
 import {
   Button,
   Container,
@@ -15,16 +16,16 @@ import {
   ListSubheader,
   Stack,
   styled,
+  Tooltip,
   Typography,
   useMediaQuery,
   useTheme,
 } from '@mui/material';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import AppConfirmDialog from 'src/components/AppConfirmDialog';
 import { PageHeader } from 'src/components/PageHeader';
-import { useAuth } from 'src/hooks/account';
 import { useAuthUserQuery, useUpsertUserMutation } from '../../hooks';
 import { UserOptions } from '../../types';
 import UpsertUserDialog from '../dialogs/UpsertuserDialog';
@@ -44,24 +45,21 @@ const ListSubheaderCustom = styled(ListSubheader)({
 
 export function UserEditContainer() {
   const userQuery = useAuthUserQuery();
-  const { isLoggedIn } = useAuth();
   const router = useRouter();
   const { tab } = router.query as { tab?: ActiveMenu };
-
   const user = userQuery.data;
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [userForm, setUserForm] = useState<UserOptions>();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [activeMenu, setActiveMenu] = useState<ActiveMenu>(
-    tab || ActiveMenu.General
-  );
 
-  useEffect(() => {
+  const activeMenu = tab || ActiveMenu.General;
+
+  const handleChangetab = (mn: ActiveMenu) => {
     router.replace({
-      query: { ...router.query, tab: activeMenu },
+      query: { ...router.query, tab: mn },
     });
-  }, [activeMenu]);
+  };
 
   const upsertUserMutation = useUpsertUserMutation();
   const [showUpsertUser, setShowUpsertUser] = useState(false);
@@ -91,7 +89,7 @@ export function UserEditContainer() {
           <ListItem disablePadding>
             <ListItemButton
               selected={activeMenu === ActiveMenu.General}
-              onClick={() => setActiveMenu(ActiveMenu.General)}
+              onClick={() => handleChangetab(ActiveMenu.General)}
             >
               <ListItemText
                 primary={
@@ -103,7 +101,7 @@ export function UserEditContainer() {
           <ListItem disablePadding>
             <ListItemButton
               selected={activeMenu === ActiveMenu.Accounts}
-              onClick={() => setActiveMenu(ActiveMenu.Accounts)}
+              onClick={() => handleChangetab(ActiveMenu.Accounts)}
             >
               <ListItemText
                 primary={
@@ -115,7 +113,7 @@ export function UserEditContainer() {
           <ListItem disablePadding>
             <ListItemButton
               selected={activeMenu === ActiveMenu.Socials}
-              onClick={() => setActiveMenu(ActiveMenu.Socials)}
+              onClick={() => handleChangetab(ActiveMenu.Socials)}
             >
               <ListItemText
                 primary={
@@ -223,8 +221,8 @@ export function UserEditContainer() {
                     {
                       caption: (
                         <FormattedMessage
-                          id="edit.user"
-                          defaultMessage="Edit user"
+                          id="edit.profile"
+                          defaultMessage="Edit profile"
                         />
                       ),
                       uri: `/u/${user.username}/edit`,
@@ -238,17 +236,31 @@ export function UserEditContainer() {
 
           <Grid item xs={12} sm={12}>
             <Stack direction={'row'} justifyContent={'space-between'}>
-              <Typography variant="h5">
-                {user && (
-                  <FormattedMessage
-                    id="edit.user.profile"
-                    defaultMessage="Edit user profile: {username}"
-                    values={{
-                      username: user.username,
-                    }}
-                  />
-                )}
-              </Typography>
+              <Box display={'flex'} alignItems={'center'}>
+                <Typography variant="h5">
+                  {user && (
+                    <FormattedMessage
+                      id="edit.user.profile"
+                      defaultMessage="Edit user profile: {username}"
+                      values={{
+                        username: user.username,
+                      }}
+                    />
+                  )}
+                </Typography>
+                <Tooltip
+                  title={
+                    <FormattedMessage
+                      id="view.public.profile"
+                      defaultMessage="View public profile"
+                    />
+                  }
+                >
+                  <IconButton href={`/u/${user?.username}`}>
+                    <Visibility />
+                  </IconButton>
+                </Tooltip>
+              </Box>
 
               {isMobile && (
                 <Button

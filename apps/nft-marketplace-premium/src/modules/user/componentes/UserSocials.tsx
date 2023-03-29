@@ -3,15 +3,20 @@ import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import { signIn, useSession } from 'next-auth/react';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
+import { useAuth } from 'src/hooks/account';
+import { useAuthUserQuery } from '../hooks';
 
 interface Props {
   credentials?: { provider: string; username: string }[];
 }
 
 export function UserSocials({ credentials }: Props) {
-  const params = useSession();
+  const { isLoggedIn } = useAuth();
+  const { status, data } = useSession();
+  const userQuery = useAuthUserQuery();
+
   const twitterUsername = useMemo(() => {
     if (credentials) {
       const cred = credentials.find((c) => c.provider === 'twitter');
@@ -29,6 +34,27 @@ export function UserSocials({ credentials }: Props) {
     }
   }, [credentials]);
 
+  useEffect(() => {
+    if (status === 'authenticated' && isLoggedIn) {
+      if (
+        data.user?.name === twitterUsername ||
+        data.user?.name === discordUsername
+      ) {
+        return;
+      }
+      if (
+        data.user?.name !== twitterUsername ||
+        data.user?.name !== discordUsername
+      ) {
+        fetch('/api/dex-auth/verify-provider').then((r) => {
+          if (r.status === 200) {
+            userQuery.refetch();
+          }
+        });
+      }
+    }
+  }, [status, data, twitterUsername, discordUsername, isLoggedIn]);
+
   return (
     <>
       <Typography variant="h5">
@@ -43,7 +69,7 @@ export function UserSocials({ credentials }: Props) {
                 id="twitter.username"
                 defaultMessage={'Twitter username'}
               />
-              : {twitterUsername || ''}
+              : <b>{twitterUsername || ''}</b>
             </Typography>
           )}
         </Grid>
@@ -55,16 +81,15 @@ export function UserSocials({ credentials }: Props) {
                 id="discord.username"
                 defaultMessage={'Discord username'}
               />
-              : {discordUsername || ''}
+              : <b>{discordUsername || ''}</b>
             </Typography>
           </Grid>
         )}
-        {twitterUsername ||
-          (discordUsername && (
-            <Grid item xs={12}>
-              <Divider />
-            </Grid>
-          ))}
+        {(twitterUsername || discordUsername) && (
+          <Grid item xs={12}>
+            <Divider />
+          </Grid>
+        )}
 
         {!twitterUsername && (
           <Grid item>

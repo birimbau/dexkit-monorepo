@@ -6,7 +6,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  res.setHeader('Set-Cookie', serialize('refresh_token', ''));
+  res.setHeader('Set-Cookie', [serialize('refresh_token', ''), serialize('refresh_token_auth', '')]);
   const authHeader = req.headers['authorization'] || '';
   const token = authHeader.substring(7, authHeader.length);
   const response = await logout({ accessTk: token });

@@ -64,7 +64,7 @@ export const authOptions: AuthOptions = {
         console.log('error on signin')
       }
       return true
-    },
+    }
   }
 }
 

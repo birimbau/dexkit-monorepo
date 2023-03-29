@@ -37,20 +37,13 @@ export function useLoginAccountMutation() {
     return loginResponse.data;
   }, {
     onError(error) {
-      console.log(error)
-      signMessageDialog.setError(Error('Error signing message'));
+      signMessageDialog.setOpen(false)
+      // signMessageDialog.setError(Error('Error signing message'));
     },
     onSettled() {
       signMessageDialog.setOpen(false)
     }
   })
-}
-
-export function useIsLoggedIn() {
-
-
-
-
 }
 
 

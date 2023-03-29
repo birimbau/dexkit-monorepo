@@ -1,8 +1,13 @@
 import axios from 'axios';
+import { DEXKIT_BASE_API_URL } from 'src/constants';
 import { myAppsApi } from 'src/services/whitelabel';
 import { UserOptions } from '../types';
 
-
+const USER_ENDPOINT = `${DEXKIT_BASE_API_URL}/user`;
+/**
+ * not this endpoint is intended to use without the interceptor, we set the bearear token automatically
+ */
+export const userApi = axios.create({ baseURL: USER_ENDPOINT, headers: { 'content-type': 'application/json' } });
 
 export function getUsernameExists(username?: string) {
 
@@ -13,6 +18,18 @@ export function getUsernameExists(username?: string) {
 export function getUserByUsername(username?: string) {
   return myAppsApi.get<UserOptions & { accounts: { address: string }[] }>(`/user/username/${username}`)
 }
+
+
+export function getUserByAccountRefresh({ token }: { token: string }) {
+  return userApi.get<UserOptions & { accounts: { address: string }[] } & { credentials?: { provider: string, username: string }[] }>(`/authenticated-refresh/account`,
+    {
+      headers: {
+        authorization: `Bearer ${token}`
+      }
+    })
+}
+
+
 export function getUserByAccount() {
   return myAppsApi.get<UserOptions & { accounts: { address: string }[] } & { credentials?: { provider: string, username: string }[] }>(`/user/authenticated/account`)
 }

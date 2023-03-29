@@ -4,4 +4,6 @@ export type UserOptions = {
   shortBio?: string;
   profileImageURL?: string;
   backgroundImageURL?: string;
+  discordVerified?: boolean;
+  twitterVerified?: boolean;
 }

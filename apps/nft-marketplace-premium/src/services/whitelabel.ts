@@ -19,6 +19,7 @@ export const myAppsApi = axios.create({ baseURL: MY_APPS_ENDPOINT, headers: { 'c
 
 myAppsApi.interceptors.request.use(async (config) => {
   const access_token = await getAccessTokenAndRefresh()
+  console.log('getting access token on interceptor')
   if (access_token)
     config.headers = {
       ...config.headers,

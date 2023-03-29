@@ -5,15 +5,28 @@ import { useEffect } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { PageHeader } from 'src/components/PageHeader';
 import { useAuth, useLoginAccountMutation } from 'src/hooks/account';
+import { useAuthUserQuery } from '../../hooks';
 export function UserLogin() {
   const router = useRouter();
   const { isLoggedIn } = useAuth();
+  const userQuery = useAuthUserQuery();
+  const user = userQuery.data;
+
   const loginMutation = useLoginAccountMutation();
   useEffect(() => {
-    if (isLoggedIn) {
+    if (isLoggedIn && user?.username && userQuery.isFetched) {
       router.push('/u/edit');
     }
-  }, [isLoggedIn]);
+
+    if (isLoggedIn && !user?.username && userQuery.isFetched) {
+      router.push('/u/create-profile');
+    }
+  }, [isLoggedIn, user, userQuery.isFetched]);
+
+  const handleLogin = async () => {
+    await loginMutation.mutateAsync();
+    userQuery.refetch();
+  };
 
   return (
     <>
@@ -75,7 +88,7 @@ export function UserLogin() {
                       <CircularProgress></CircularProgress>
                     )
                   }
-                  onClick={() => loginMutation.mutate()}
+                  onClick={handleLogin}
                 >
                   {loginMutation.isLoading ? (
                     <FormattedMessage

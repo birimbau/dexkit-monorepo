@@ -4,13 +4,18 @@ import Typography from '@mui/material/Typography';
 
 import Box from '@mui/material/Box';
 
+import { Verified } from '@mui/icons-material';
 import TwitterIcon from '@mui/icons-material/Twitter';
-import { IconButton, Stack, useTheme } from '@mui/material';
+import { IconButton, Stack, Tooltip, useTheme } from '@mui/material';
 import Image from 'next/image';
+import { FormattedMessage } from 'react-intl';
+import { ShareButton } from 'src/components/ShareButton';
 
 interface Props {
   username?: string;
   name?: string;
+  twitterVerified?: boolean;
+  discordVerified?: boolean;
   profileImageURL?: string;
   backgroundImageURL?: string;
   bio?: string;
@@ -20,61 +25,90 @@ interface Props {
 }
 
 export function UserHeader(props: Props) {
-  const { profileImageURL, backgroundImageURL, bio, shortBio, username } =
-    props;
+  const {
+    profileImageURL,
+    backgroundImageURL,
+    bio,
+    shortBio,
+    username,
+    twitterVerified,
+    discordVerified,
+  } = props;
   const theme = useTheme();
+
   return (
     <Grid container spacing={2}>
-      <Grid item xs={12} sx={{ backgroundImage: `url(${backgroundImageURL})` }}>
-        <Box
-          sx={{
-            display: 'flex',
-            algnItems: 'center',
-            alignContent: 'center',
-            justifyContent: { xs: 'left', sm: 'left' },
-          }}
-        >
-          {profileImageURL ? (
-            <Box
-              sx={(theme) => ({
-                position: 'relative',
-                height: theme.spacing(14),
-                width: theme.spacing(14),
-                borderRadius: '50%',
-                borderWidth: 20,
-                borderColor: 'white',
-              })}
-            >
-              <Image
-                src={profileImageURL}
-                alt={bio}
-                height={theme.spacing(14)}
-                width={theme.spacing(14)}
-              />
-            </Box>
-          ) : (
-            <Avatar
-              sx={(theme) => ({
-                height: theme.spacing(14),
-                width: theme.spacing(14),
-              })}
+      <Grid
+        item
+        xs={12}
+        sx={(theme) => ({
+          height: theme.spacing(20),
+          position: 'relative',
+          backgroundImage: `url(${backgroundImageURL})`,
+        })}
+      >
+        {profileImageURL ? (
+          <Box
+            sx={(theme) => ({
+              position: 'absolute',
+              bottom: theme.spacing(-2),
+              left: theme.spacing(3),
+            })}
+          >
+            <Image
+              src={profileImageURL}
+              alt={bio}
+              height={theme.spacing(14)}
+              width={theme.spacing(14)}
             />
-          )}
-        </Box>
+          </Box>
+        ) : (
+          <Avatar
+            sx={(theme) => ({
+              height: theme.spacing(14),
+              width: theme.spacing(14),
+            })}
+          />
+        )}
       </Grid>
       <Grid item xs>
-        <Typography
-          sx={{
-            display: 'block',
-            textOverflow: 'ellipsis',
-            overflow: 'hidden',
-            textAlign: { xs: 'center', sm: 'left' },
-          }}
-          variant="h5"
-          component="h1"
+        <Stack
+          direction={'row'}
+          alignItems={'center'}
+          justifyContent={'space-between'}
         >
-          {username}
-        </Typography>
+          <Box display={'flex'} alignItems={'center'}>
+            <Typography
+              sx={{
+                display: 'block',
+                textOverflow: 'ellipsis',
+                overflow: 'hidden',
+                textAlign: { xs: 'center', sm: 'left' },
+              }}
+              variant="h5"
+              component="h1"
+            >
+              {username}
+            </Typography>
+            <Tooltip
+              title={
+                <FormattedMessage
+                  id={'user.verified.social'}
+                  defaultMessage={'Verified in: {discord} {twitter}'}
+                  values={{
+                    discord: discordVerified ? 'Discord' : '',
+                    twitter: twitterVerified ? 'Twitter' : '',
+                  }}
+                />
+              }
+            >
+              <IconButton color={'primary'}>
+                <Verified />
+              </IconButton>
+            </Tooltip>
+          </Box>
+          <ShareButton />
+        </Stack>
       </Grid>
       {shortBio && (
         <Grid item xs={12}>
@@ -93,36 +127,40 @@ export function UserHeader(props: Props) {
         </Grid>
       )}
 
-      <Grid item xs={12}>
-        <Stack direction="row" justifyContent="space-between">
-          <Typography
-            sx={{
-              display: 'block',
-              textOverflow: 'ellipsis',
-              overflow: 'hidden',
-              textAlign: { xs: 'center', sm: 'left' },
-            }}
-            variant="caption"
-            component="p"
-          >
-            {bio || ''}
-          </Typography>
-          <Box>
-            <IconButton aria-label="twitter">
-              <TwitterIcon />
-            </IconButton>
-            <IconButton aria-label="discord">
-              <Image
-                priority
-                src="/assets/icons/discord.svg"
-                height={24}
-                width={24}
-                alt="Discord"
-              />
-            </IconButton>
-          </Box>
-        </Stack>
-      </Grid>
+      {bio && (
+        <Grid item xs={12}>
+          <Stack direction="row" justifyContent="space-between">
+            <Typography
+              sx={{
+                display: 'block',
+                textOverflow: 'ellipsis',
+                overflow: 'hidden',
+                textAlign: { xs: 'center', sm: 'left' },
+              }}
+              variant="caption"
+              component="p"
+            >
+              {bio || ''}
+            </Typography>
+            {false && (
+              <Box>
+                <IconButton aria-label="twitter">
+                  <TwitterIcon />
+                </IconButton>
+                <IconButton aria-label="discord">
+                  <Image
+                    priority
+                    src="/assets/icons/discord.svg"
+                    height={24}
+                    width={24}
+                    alt="Discord"
+                  />
+                </IconButton>
+              </Box>
+            )}
+          </Stack>
+        </Grid>
+      )}
     </Grid>
   );
 }
