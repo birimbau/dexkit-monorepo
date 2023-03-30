@@ -133,9 +133,17 @@ export const transactionDialogErrorAtom = atom<Error | undefined>(undefined);
 export const transactionDialogMetadataAtom = atom<
   TransactionMetadata | undefined
 >(undefined);
+
+/** @deprecated */
 export const transactionDialogTypeAtom = atom<TransactionType | undefined>(
   undefined
 );
+
+export const transactionValuesAtom = atom<Record<string, any> | undefined>(
+  undefined
+);
+
+export const transactionTypeAtom = atom<string | undefined>(undefined);
 
 export const switchNetworkOpenAtom = atom(false);
 export const switchNetworkChainIdAtom = atom<number | undefined>(undefined);

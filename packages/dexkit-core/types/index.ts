@@ -63,4 +63,6 @@ export interface AppTransaction {
   created: number;
   chainId: ChainId;
   checkedBlockNumber?: number;
+  type?: string;
+  values: Record<string, any>;
 }

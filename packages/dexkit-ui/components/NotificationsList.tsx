@@ -18,7 +18,9 @@ import MomentFromSpan from "./MomentFromSpan";
 import { NotificationMessage } from "./NotificationMessage";
 
 import { getBlockExplorerUrl } from "@dexkit/core/utils";
+import ErrorIcon from "@mui/icons-material/Error";
 import Icon from "@mui/material/Icon";
+import { useCallback } from "react";
 
 export interface NotificationsListProps {
   notifications: AppNotification[];
@@ -48,6 +50,8 @@ export default function NotificationsList({
             return <CircularProgress size="1.5rem" color="primary" />;
           } else if (status === TransactionStatus.Confirmed) {
             return <CheckCircleIcon color="success" />;
+          } else if (status === TransactionStatus.Failed) {
+            return <ErrorIcon color="error" />;
           }
         }
       }
@@ -75,6 +79,20 @@ export default function NotificationsList({
     return "#";
   };
 
+  const avatarColor = useCallback(
+    (notification: AppNotification) => {
+      if (
+        notificationTypes[notification.subtype] &&
+        notificationTypes[notification.subtype].color
+      ) {
+        return notificationTypes[notification.subtype].color || "primary.light";
+      }
+
+      return "primary.light";
+    },
+    [notificationTypes]
+  );
+
   return (
     <List sx={{ p: 0 }}>
       {notifications.map((notification, key) => (
@@ -85,7 +103,12 @@ export default function NotificationsList({
           key={key}
         >
           <ListItemAvatar>
-            <Avatar>
+            <Avatar
+              variant="rounded"
+              sx={{
+                backgroundColor: avatarColor(notification),
+              }}
+            >
               {notification.icon && <Icon>{notification.icon}</Icon>}
             </Avatar>
           </ListItemAvatar>

@@ -1,9 +1,10 @@
-export type NotificationTypes = "transaction";
+export type NotificationTypes = "transaction" | "common";
 
 export type AppNotificationType = {
   type: string;
   message: string;
   id: string;
+  color?: string;
 };
 
 export type AppNotification = {

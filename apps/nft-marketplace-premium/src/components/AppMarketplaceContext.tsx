@@ -3,10 +3,12 @@ import { COMMON_NOTIFICATION_TYPES } from '@dexkit/ui/constants/messages/common'
 import { createTheme, responsiveFontSizes, Theme } from '@mui/material';
 import { DefaultSeo } from 'next-seo';
 import { useMemo, useState } from 'react';
+import { WHITELABEL_NOTIFICATION_TYPES } from 'src/constants/messages';
 import { useAppConfig, useLocale } from 'src/hooks/app';
 import {
-  notificationsAtom, selectedWalletAtom,
-  transactionsAtomV2
+  notificationsAtom,
+  selectedWalletAtom,
+  transactionsAtomV2,
 } from 'src/state/atoms';
 import { getTheme } from 'src/theme';
 import defaultAppConfig from '../../config/app.json';
@@ -104,7 +106,10 @@ export function AppMarketplaceContext({
       options={{
         magicRedirectUrl: process.env.NEXT_PUBLIC_MAGIC_REDIRECT_URL || '',
       }}
-      notificationTypes={COMMON_NOTIFICATION_TYPES}
+      notificationTypes={{
+        ...WHITELABEL_NOTIFICATION_TYPES,
+        ...COMMON_NOTIFICATION_TYPES,
+      }}
       transactionsAtom={transactionsAtomV2}
       notificationsAtom={notificationsAtom}
       onChangeLocale={(loc) => setLocale(loc)}

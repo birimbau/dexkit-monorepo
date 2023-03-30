@@ -89,11 +89,15 @@ export function useDexkitContextState({
                 chainId,
                 created: date,
                 status: TransactionStatus.Pending,
+                values: params.values,
+                type: params.subtype,
               },
             };
           });
         }
       }
+
+      console.log(newNotification);
 
       return [...notifications, newNotification];
     });
@@ -106,7 +110,7 @@ export function useDexkitContextState({
     checkAllNotifications,
     onChangeLocale,
     notificationTypes,
-    notifications,
+    notifications: notifications.reverse(),
   };
 }
 

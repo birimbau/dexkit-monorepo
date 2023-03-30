@@ -9,11 +9,32 @@ export interface Props {
 }
 
 export function NotificationMessage({ types, type, values }: Props) {
+  const renderValues = (values?: Record<string, ReactNode>) => {
+    if (values) {
+      return Object.keys(values)
+        .map((key) => {
+          return { key, value: values[key] };
+        })
+        .reduce((curr: Record<string, ReactNode>, next) => {
+          curr[next.key] = <strong>{next.value}</strong>;
+
+          return curr;
+        }, {} as Record<string, ReactNode>);
+    }
+
+    return {};
+  };
+
+  if (types[type] === undefined) {
+    console.log(type, types);
+    debugger;
+  }
+
   return (
     <FormattedMessage
       id={types[type].id}
       defaultMessage={types[type].message}
-      values={values}
+      values={renderValues(values)}
     />
   );
 }

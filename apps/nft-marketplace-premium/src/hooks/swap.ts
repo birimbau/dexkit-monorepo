@@ -23,7 +23,7 @@ import {
   tokensAtom,
 } from '../state/atoms';
 import { Quote, Token } from '../types/blockchain';
-import { useAppConfig, useConnectWalletDialog, useTransactions } from './app';
+import { useAppConfig, useConnectWalletDialog } from './app';
 
 export function useSwapState() {
   const { chainId } = useWeb3React();
@@ -31,8 +31,6 @@ export function useSwapState() {
   const [maxSlippage, setMaxSlippage] = useAtom(maxSlippageAtom);
 
   const appConfig = useAppConfig();
-
-  const { addTransaction } = useTransactions();
 
   const onChangeSlippage = useCallback((value: number) => {
     setMaxSlippage(value);
@@ -115,7 +113,7 @@ export function useSwapState() {
         });
       }
     },
-    [addTransaction]
+    []
   );
 
   const connectWalletDialog = useConnectWalletDialog();

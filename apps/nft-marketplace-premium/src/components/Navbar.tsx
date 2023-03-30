@@ -55,7 +55,6 @@ import { WalletButton } from './WalletButton';
 
 import { useDexKitContext, useNotifications } from '@dexkit/ui';
 import NotificationsDialog from '@dexkit/ui/components/dialogs/NotificationsDialog';
-import { COMMON_NOTIFICATION_TYPES } from '@dexkit/ui/constants/messages/common';
 
 interface Props {
   appConfig: AppConfig;
@@ -138,6 +137,7 @@ function Navbar({ appConfig, isPreview }: Props) {
     checkAllNotifications,
     transactions,
     clearNotifications,
+    notificationTypes,
   } = useDexKitContext();
 
   const {
@@ -228,7 +228,7 @@ function Navbar({ appConfig, isPreview }: Props) {
           fullWidth: true,
           onClose: handleCloseNotifications,
         }}
-        notificationTypes={COMMON_NOTIFICATION_TYPES}
+        notificationTypes={notificationTypes}
         transactions={transactions}
         notifications={notifications}
         onClear={handleClearNotifications}

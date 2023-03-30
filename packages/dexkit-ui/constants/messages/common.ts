@@ -6,6 +6,12 @@ export const COMMON_NOTIFICATION_TYPES: { [key: string]: AppNotificationType } =
       type: "approve",
       message: "Approve {name} ({symbol}) to trade",
       id: "approve.name.symbol.to.trade",
+      color: "primary.light",
+    },
+    approveForAll: {
+      type: "approveForAll",
+      message: "Approve {name} ({tokenId}) to trade",
+      id: "approve.name.tokenId.to.trade",
     },
     unwrap: {
       type: "unwrap",
@@ -19,6 +25,7 @@ export const COMMON_NOTIFICATION_TYPES: { [key: string]: AppNotificationType } =
     },
     swap: {
       type: "swap",
+      color: "primary.light",
       message:
         "Swap {sellAmount} {sellTokenSymbol} for {buyAmount} {buyTokenSymbol}",
       id: "swap.sellamount.symbol.for.buyamount.symbol",

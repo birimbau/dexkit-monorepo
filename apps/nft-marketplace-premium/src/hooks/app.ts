@@ -13,8 +13,9 @@ import {
   transactionDialogMetadataAtom,
   transactionDialogOpenAtom,
   transactionDialogRedirectUrlAtom,
-  transactionDialogTypeAtom,
   transactionsAtom,
+  transactionTypeAtom,
+  transactionValuesAtom,
 } from '../state/atoms';
 import {
   TransactionMetadata,
@@ -22,24 +23,42 @@ import {
   TransactionType,
 } from '../types/blockchain';
 
-export function useTransactions() {
+export function useTransactionDialog() {
   const updateTransactions = useUpdateAtom(transactionsAtom);
 
   const [isOpen, setDialogIsOpen] = useAtom(transactionDialogOpenAtom);
   const [hash, setHash] = useAtom(transactionDialogHashAtom);
   const [error, setError] = useAtom(transactionDialogErrorAtom);
   const [metadata, setMetadata] = useAtom(transactionDialogMetadataAtom);
-  const [type, setType] = useAtom(transactionDialogTypeAtom);
+  const [type, setType] = useAtom(transactionTypeAtom);
+
+  const [values, setValues] = useAtom(transactionValuesAtom);
+
   const [redirectUrl, setRedirectUrl] = useAtom(
     transactionDialogRedirectUrlAtom
   );
 
   const { chainId } = useWeb3React();
 
+  const watch = useCallback((hash: string) => {
+    setHash(hash);
+  }, []);
+
+  const open = useCallback((type: string, values: Record<string, any>) => {
+    setDialogIsOpen(true);
+    setValues(values);
+    setType(type);
+  }, []);
+
+  const close = useCallback(() => {
+    setDialogIsOpen(false);
+    setType(undefined);
+    setValues(undefined);
+  }, []);
+
   const showDialog = useCallback(
     (open: boolean, metadata?: TransactionMetadata, type?: TransactionType) => {
       setDialogIsOpen(open);
-      setType(type);
       setMetadata(metadata);
 
       if (!open) {
@@ -53,9 +72,11 @@ export function useTransactions() {
 
   const setDialogError = useCallback(
     (error?: Error) => {
-      setError(error);
+      if (isOpen) {
+        setError(error);
+      }
     },
-    [setError]
+    [setError, isOpen]
   );
 
   const addTransaction = useCallback(
@@ -80,6 +101,9 @@ export function useTransactions() {
   );
 
   return {
+    values,
+    open,
+    close,
     redirectUrl,
     setRedirectUrl,
     error,
@@ -95,6 +119,7 @@ export function useTransactions() {
     showDialog,
     setDialogError,
     addTransaction,
+    watch,
   };
 }
 
