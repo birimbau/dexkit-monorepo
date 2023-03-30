@@ -8,7 +8,7 @@ import appMutantBoredApeJson from '../../config/app.mutantboredape.json';
 import { getConfig } from './whitelabel';
 
 
-export async function getAppConfig(site?: string): Promise<{ appConfig: AppConfig, appNFT?: AssetAPI | null }> {
+export async function getAppConfig(site?: string, appPage?: string): Promise<{ appConfig: AppConfig, appNFT?: AssetAPI | null }> {
   /**/
   if (site === 'boredapes.dexkit.com') {
     return Promise.resolve({ appConfig: appBoredApeJson as AppConfig, appNFT: null });
@@ -24,7 +24,7 @@ export async function getAppConfig(site?: string): Promise<{ appConfig: AppConfi
   if (site?.startsWith('whitelabel-nft.dexkit.com')) {
     const slug = site.split(':');
     if (slug.length > 1) {
-      const configResponse = (await getConfig({ slug: slug[1] })).data;
+      const configResponse = (await getConfig({ slug: slug[1], appPage })).data;
       if (configResponse) {
         return { appConfig: JSON.parse(configResponse.config) as AppConfig, appNFT: configResponse.nft === undefined ? null : configResponse.nft };
       }
@@ -35,7 +35,7 @@ export async function getAppConfig(site?: string): Promise<{ appConfig: AppConfi
   if (site?.startsWith('dexkit.app')) {
     const slug = site.split(':');
     if (slug.length > 1) {
-      const configResponse = await (await getConfig({ slug: slug[1] })).data;
+      const configResponse = await (await getConfig({ slug: slug[1], appPage })).data;
       if (configResponse) {
         return { appConfig: JSON.parse(configResponse.config) as AppConfig, appNFT: configResponse.nft === undefined ? null : configResponse.nft };
       }
@@ -58,7 +58,7 @@ export async function getAppConfig(site?: string): Promise<{ appConfig: AppConfi
     return Promise.resolve({ appConfig: appConfigJson as AppConfig, appNFT: null });
   }
 
-  const configResponse = (await getConfig({ domain: site })).data;
+  const configResponse = (await getConfig({ domain: site, appPage })).data;
   if (configResponse) {
     return { appConfig: JSON.parse(configResponse.config) as AppConfig, appNFT: configResponse.nft === undefined ? configResponse.nft : null };
   }

@@ -664,14 +664,14 @@ export const useAssetsOrderBook = (orderFilter?: TraderOrderFilter) => {
 export const GET_ASSET_LIST_FROM_ORDERBOOK = 'GET_ASSET_LIST_FROM_ORDERBOOK';
 
 export const useAssetListFromOrderbook = (orderFilter: TraderOrderFilter) => {
-  const ordebookQuery = useOrderBook(orderFilter);
-  const { provider } = useWeb3React();
 
+  const ordebookQuery = useOrderBook(orderFilter);
+  const provider = useNetworkProvider(orderFilter.chainId)
   return useQuery(
     [GET_ASSET_LIST_FROM_ORDERBOOK, ordebookQuery.data],
     async () => {
       if (ordebookQuery.data === undefined || provider === undefined) {
-        return;
+        return [];
       }
       // We are mapping Collections ---> nft token id's ---> orders
       const orderItemsMap = new Map<string, Map<string, OrderBookItem>>();

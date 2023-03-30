@@ -532,7 +532,7 @@ export const getStaticProps: GetStaticProps = async ({
   if (params !== undefined) {
     const { site } = params;
 
-    const { appConfig, appNFT } = await getAppConfig(site);
+    const { appConfig, appNFT } = await getAppConfig(site, 'home');
 
     return {
       props: { appConfig, appNFT },
