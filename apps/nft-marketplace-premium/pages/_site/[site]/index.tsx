@@ -32,7 +32,7 @@ export const getStaticProps: GetStaticProps = async ({
   params,
 }: GetStaticPropsContext<Params>) => {
   const queryClient = new QueryClient();
-  const { appConfig, appNFT } = await getAppConfig(params?.site);
+  const { appConfig, appNFT } = await getAppConfig(params?.site, 'home');
   const homePage = appConfig.pages.home;
   for (let section of homePage.sections) {
     if (section.type === 'asset-store') {

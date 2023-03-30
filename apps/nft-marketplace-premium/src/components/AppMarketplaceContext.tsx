@@ -1,17 +1,18 @@
 import { DexkitProvider } from '@dexkit/ui/components';
+import { COMMON_NOTIFICATION_TYPES } from '@dexkit/ui/constants/messages/common';
 import { createTheme, responsiveFontSizes, Theme } from '@mui/material';
-import { useAtomValue } from 'jotai';
 import { DefaultSeo } from 'next-seo';
-import { useMemo } from 'react';
-import { useAppConfig } from 'src/hooks/app';
+import { useMemo, useState } from 'react';
+import { WHITELABEL_NOTIFICATION_TYPES } from 'src/constants/messages';
+import { useAppConfig, useLocale } from 'src/hooks/app';
 import {
-  localeAtom,
-  pendingTransactionsAtom,
+  notificationsAtom,
   selectedWalletAtom,
+  transactionsAtomV2,
 } from 'src/state/atoms';
 import { getTheme } from 'src/theme';
-
 import defaultAppConfig from '../../config/app.json';
+import { loadLocaleData } from '../utils/intl';
 
 export interface AppMarketplaceContextProps {
   children: React.ReactNode | React.ReactNode[];
@@ -21,7 +22,8 @@ export function AppMarketplaceContext({
   children,
 }: AppMarketplaceContextProps) {
   const appConfig = useAppConfig();
-  const locale = useAtomValue(localeAtom);
+  const { locale: defaultLocale } = useLocale();
+  const [locale, setLocale] = useState(defaultLocale);
 
   const theme = useMemo<Theme>(() => {
     let tempTheme = getTheme(defaultAppConfig.theme)?.theme;
@@ -94,17 +96,23 @@ export function AppMarketplaceContext({
       return seoConfig;
     }
   }, [appConfig]);
-
   return (
     <DexkitProvider
-      pendingTransactionsAtom={pendingTransactionsAtom}
       locale={locale}
-      defaultLocale={appConfig.locale}
+      defaultLocale={locale}
+      localeMessages={loadLocaleData(locale)}
       theme={theme}
       selectedWalletAtom={selectedWalletAtom}
       options={{
         magicRedirectUrl: process.env.NEXT_PUBLIC_MAGIC_REDIRECT_URL || '',
       }}
+      notificationTypes={{
+        ...WHITELABEL_NOTIFICATION_TYPES,
+        ...COMMON_NOTIFICATION_TYPES,
+      }}
+      transactionsAtom={transactionsAtomV2}
+      notificationsAtom={notificationsAtom}
+      onChangeLocale={(loc) => setLocale(loc)}
     >
       <DefaultSeo {...SEO} />
       {children}

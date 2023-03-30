@@ -1,9 +1,8 @@
-import * as React from 'react';
-import Document, { Html, Head, Main, NextScript } from 'next/document';
 import createEmotionServer from '@emotion/server/create-instance';
+import Document, { Head, Html, Main, NextScript } from 'next/document';
 
-import createEmotionCache from '../src/createEmotionCache';
 import Script from 'next/script';
+import createEmotionCache from '../src/createEmotionCache';
 import { AppConfig } from '../src/types/config';
 
 export default class MyDocument extends Document {
@@ -29,6 +28,10 @@ export default class MyDocument extends Document {
               rel="stylesheet"
             />
           )}
+          <link
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/icon?family=Material+Icons"
+          />
           {(this.props as any).emotionStyleTags}
           <Script
             id="google-analytics-script"
@@ -92,10 +95,10 @@ MyDocument.getInitialProps = async (ctx) => {
   ctx.renderPage = () =>
     originalRenderPage({
       enhanceApp: (App: any) =>
-        (function EnhanceApp(props) {
+        function EnhanceApp(props) {
           pageProps = props.pageProps;
           return <App emotionCache={cache} {...props} />;
-        }),
+        },
     });
 
   const initialProps = await Document.getInitialProps(ctx);

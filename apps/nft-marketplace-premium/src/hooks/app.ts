@@ -1,17 +1,21 @@
+import { useDexKitContext } from '@dexkit/ui';
 import { useWeb3React } from '@web3-react/core';
-import { atom, useAtom } from 'jotai';
+import { atom, useAtom, useAtomValue } from 'jotai';
 
 import { useUpdateAtom } from 'jotai/utils';
-import { useCallback, useContext } from 'react';
+import { useCallback, useContext, useMemo } from 'react';
 import { AppConfigContext } from '../contexts';
 import {
+  localeAtom,
+  localeUserAtom,
   transactionDialogErrorAtom,
   transactionDialogHashAtom,
   transactionDialogMetadataAtom,
   transactionDialogOpenAtom,
   transactionDialogRedirectUrlAtom,
-  transactionDialogTypeAtom,
   transactionsAtom,
+  transactionTypeAtom,
+  transactionValuesAtom,
 } from '../state/atoms';
 import {
   TransactionMetadata,
@@ -19,24 +23,42 @@ import {
   TransactionType,
 } from '../types/blockchain';
 
-export function useTransactions() {
+export function useTransactionDialog() {
   const updateTransactions = useUpdateAtom(transactionsAtom);
 
   const [isOpen, setDialogIsOpen] = useAtom(transactionDialogOpenAtom);
   const [hash, setHash] = useAtom(transactionDialogHashAtom);
   const [error, setError] = useAtom(transactionDialogErrorAtom);
   const [metadata, setMetadata] = useAtom(transactionDialogMetadataAtom);
-  const [type, setType] = useAtom(transactionDialogTypeAtom);
+  const [type, setType] = useAtom(transactionTypeAtom);
+
+  const [values, setValues] = useAtom(transactionValuesAtom);
+
   const [redirectUrl, setRedirectUrl] = useAtom(
     transactionDialogRedirectUrlAtom
   );
 
   const { chainId } = useWeb3React();
 
+  const watch = useCallback((hash: string) => {
+    setHash(hash);
+  }, []);
+
+  const open = useCallback((type: string, values: Record<string, any>) => {
+    setDialogIsOpen(true);
+    setValues(values);
+    setType(type);
+  }, []);
+
+  const close = useCallback(() => {
+    setDialogIsOpen(false);
+    setType(undefined);
+    setValues(undefined);
+  }, []);
+
   const showDialog = useCallback(
     (open: boolean, metadata?: TransactionMetadata, type?: TransactionType) => {
       setDialogIsOpen(open);
-      setType(type);
       setMetadata(metadata);
 
       if (!open) {
@@ -50,9 +72,11 @@ export function useTransactions() {
 
   const setDialogError = useCallback(
     (error?: Error) => {
-      setError(error);
+      if (isOpen) {
+        setError(error);
+      }
     },
-    [setError]
+    [setError, isOpen]
   );
 
   const addTransaction = useCallback(
@@ -77,6 +101,9 @@ export function useTransactions() {
   );
 
   return {
+    values,
+    open,
+    close,
     redirectUrl,
     setRedirectUrl,
     error,
@@ -92,6 +119,7 @@ export function useTransactions() {
     showDialog,
     setDialogError,
     addTransaction,
+    watch,
   };
 }
 
@@ -142,4 +170,21 @@ export function useAppNFT() {
 export function useCollections() {
   const appConfig = useAppConfig();
   return appConfig?.collections;
+}
+
+export function useLocale() {
+  const loc = useAtomValue(localeAtom);
+  const { onChangeLocale } = useDexKitContext();
+  const locUser = useAtomValue(localeUserAtom);
+  const appConfig = useAppConfig();
+  const locale = useMemo(() => {
+    if (locUser) {
+      return locUser;
+    }
+    if (appConfig.locale && appConfig.locale !== loc) {
+      return appConfig.locale;
+    }
+    return loc || ('en-US' as string);
+  }, [appConfig.locale, locUser, loc]);
+  return { locale, onChangeLocale };
 }

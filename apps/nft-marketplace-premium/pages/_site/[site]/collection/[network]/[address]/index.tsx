@@ -61,7 +61,7 @@ import {
 } from '../../../../../../src/services/nft';
 import { getProviderBySlug } from '../../../../../../src/services/providers';
 import { getRariCollectionStats } from '../../../../../../src/services/rarible';
-import { Asset } from '../../../../../../src/types/nft';
+import { Asset, Collection } from '../../../../../../src/types/nft';
 import { getChainIdFromSlug } from '../../../../../../src/utils/blockchain';
 import { TraderOrderFilter } from '../../../../../../src/utils/types';
 
@@ -235,6 +235,9 @@ const CollectionPage: NextPage = () => {
                             <Suspense fallback={<TableSkeleton rows={4} />}>
                               <AssetList
                                 contractAddress={address as string}
+                                chainId={
+                                  getChainIdFromSlug(network as string)?.chainId
+                                }
                                 search={search}
                               />
                             </Suspense>
@@ -264,54 +267,57 @@ export const getStaticProps: GetStaticProps = async ({
 }: GetStaticPropsContext<Params>) => {
   const network = params?.network;
   const address = params?.address;
-  const { appConfig, appNFT } = await getAppConfig(params?.site);
+  const { appConfig, appNFT } = await getAppConfig(params?.site, 'home');
   const queryClient = new QueryClient();
-  let collection = await getApiCollectionData(network, address);
-  let collectionAssets: Asset[] = [];
-  if (
-    collection &&
-    (collection.syncStatus === CollectionSyncStatus.Synced ||
-      collection.syncStatus === CollectionSyncStatus.Syncing) &&
-    address &&
-    network
-  ) {
-    collectionAssets = (
-      await getCollectionAssetsDexKitApi({
-        networkId: network,
-        contractAddress: address,
-        skip: 0,
-        take: 50,
-      })
-    ).data.map((asset) => {
-      let metadata: any = {};
-      if (asset.rawData) {
-        metadata = JSON.parse(asset.rawData);
-      }
-      if (asset.imageUrl && metadata) {
-        metadata.image = asset.imageUrl;
-      }
-      return {
-        contractAddress: asset.address,
-        id: String(asset.tokenId),
-        chainId: asset.chainId,
-        tokenURI: asset.tokenURI,
-        collectionName: asset.collectionName,
-        symbol: asset.symbol,
-        metadata,
-      };
-    }) as Asset[];
-  }
-  // We sync here the collection
-  if (collection?.syncStatus === CollectionSyncStatus.NotSynced) {
-    getSyncCollectionData(network, address);
-  }
-
-  await queryClient.prefetchQuery(
-    [GET_ASSET_LIST_FROM_COLLECTION, network, address, 0, 50],
-    async () => {
-      return collectionAssets;
+  let collection: Collection | undefined;
+  try {
+    collection = await getApiCollectionData(network, address);
+    let collectionAssets: Asset[] = [];
+    if (
+      collection &&
+      (collection.syncStatus === CollectionSyncStatus.Synced ||
+        collection.syncStatus === CollectionSyncStatus.Syncing) &&
+      address &&
+      network
+    ) {
+      collectionAssets = (
+        await getCollectionAssetsDexKitApi({
+          networkId: network,
+          contractAddress: address,
+          skip: 0,
+          take: 50,
+        })
+      ).data.map((asset) => {
+        let metadata: any = {};
+        if (asset.rawData) {
+          metadata = JSON.parse(asset.rawData);
+        }
+        if (asset.imageUrl && metadata) {
+          metadata.image = asset.imageUrl;
+        }
+        return {
+          contractAddress: asset.address,
+          id: String(asset.tokenId),
+          chainId: asset.chainId,
+          tokenURI: asset.tokenURI,
+          collectionName: asset.collectionName,
+          symbol: asset.symbol,
+          metadata,
+        };
+      }) as Asset[];
     }
-  );
+    // We sync here the collection
+    if (collection?.syncStatus === CollectionSyncStatus.NotSynced) {
+      getSyncCollectionData(network, address);
+    }
+    await queryClient.prefetchQuery(
+      [GET_ASSET_LIST_FROM_COLLECTION, network, address, 0, 50],
+      async () => {
+        return collectionAssets;
+      }
+    );
+  } catch {}
+
   try {
     if (network === NETWORK_ID.Ethereum || network === NETWORK_ID.Polygon) {
       const { data } = await getRariCollectionStats(
@@ -332,7 +338,9 @@ export const getStaticProps: GetStaticProps = async ({
 
   const provider = getProviderBySlug(network as string);
   if (!collection) {
-    collection = await getCollectionData(provider, address as string);
+    try {
+      collection = await getCollectionData(provider, address as string);
+    } catch {}
   }
 
   await queryClient.prefetchQuery(
@@ -347,13 +355,14 @@ export const getStaticProps: GetStaticProps = async ({
   );
 
   const filters: TraderOrderFilter = { nftToken: address };
+  try {
+    const assets = await getCollectionAssetsFromOrderbook(provider, filters);
 
-  const assets = await getCollectionAssetsFromOrderbook(provider, filters);
-
-  await queryClient.prefetchQuery(
-    [COLLECTION_ASSETS_FROM_ORDERBOOK, filters],
-    async () => assets
-  );
+    await queryClient.prefetchQuery(
+      [COLLECTION_ASSETS_FROM_ORDERBOOK, filters],
+      async () => assets
+    );
+  } catch {}
 
   return {
     props: { dehydratedState: dehydrate(queryClient), appConfig, appNFT },

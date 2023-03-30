@@ -1,5 +1,5 @@
 import { Token, Transaction } from './blockchain';
-import { Asset, HiddenAsset } from './nft';
+import { Asset } from './nft';
 
 export interface AppState {
   transactions: { [hash: string]: Transaction };
@@ -7,6 +7,8 @@ export interface AppState {
   isBalancesVisible: boolean;
   currency: string;
   locale: string;
+  currencyUser: string;
+  localeUser: string;
   assets: { [key: string]: Asset };
   accountAssets: {
     data?: { network?: string, assets?: Asset[], account?: string, total?: number, page?: number, perPage?: number; }[]

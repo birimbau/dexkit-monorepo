@@ -6,12 +6,13 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import Icon from '../../../components/Icon';
 import DollarSquare from '../../../components/icons/DollarSquare';
 
+import { useDexKitContext } from '@dexkit/ui';
 import { useQueryClient } from '@tanstack/react-query';
 import { SwappableAssetV4 } from '@traderxyz/nft-swap-sdk';
 import {
   useConnectWalletDialog,
   useSignMessageDialog,
-  useTransactions,
+  useTransactionDialog,
 } from '../../../hooks/app';
 import { useSwitchNetwork } from '../../../hooks/blockchain';
 import {
@@ -24,15 +25,7 @@ import {
   useMakeOfferMutation,
   useSwapSdkV4,
 } from '../../../hooks/nft';
-import {
-  getERC20Decimals,
-  getERC20Name,
-  getERC20Symbol,
-} from '../../../services/balances';
-import {
-  ApproveTransactionMetadata,
-  TransactionType,
-} from '../../../types/blockchain';
+import { getERC20Name, getERC20Symbol } from '../../../services/balances';
 import { isAddressEqual } from '../../../utils/blockchain';
 import { getAssetProtocol, isERC1155Owner } from '../../../utils/nfts';
 import { MakeListingDialog } from './dialogs/MakeListingDialog';
@@ -60,30 +53,41 @@ export function AssetPricePaper({ address, id }: Props) {
   const nftSwapSdk = useSwapSdkV4(provider, chainId);
 
   const { openDialog: switchNetwork } = useSwitchNetwork();
-  const transactions = useTransactions();
+
+  const transactions = useTransactionDialog();
+
+  const { createNotification } = useDexKitContext();
 
   const handleApproveAssetSuccess = useCallback(
     async (hash: string, swapAsset: SwappableAssetV4) => {
       if (asset !== undefined) {
         if (swapAsset.type === 'ERC721') {
-          transactions.addTransaction(hash, TransactionType.APPROVAL_FOR_ALL, {
-            asset,
-          });
-        } else if (swapAsset.type === 'ERC20') {
-          const decimals = await getERC20Decimals(
-            swapAsset.tokenAddress,
-            provider
-          );
+          const values = { name: asset.collectionName, tokenId: asset.id };
 
+          createNotification({
+            type: 'transaction',
+            subtype: 'approveForAll',
+            icon: 'check',
+            values,
+            metadata: { chainId, hash },
+          });
+
+          transactions.watch(hash);
+        } else if (swapAsset.type === 'ERC20') {
           const symbol = await getERC20Symbol(swapAsset.tokenAddress, provider);
           const name = await getERC20Name(swapAsset.tokenAddress, provider);
 
-          transactions.addTransaction(hash, TransactionType.APPROVE, {
-            amount: swapAsset.amount,
-            symbol,
-            decimals,
-            name,
+          const values = { name, symbol };
+
+          createNotification({
+            type: 'transaction',
+            subtype: 'approve',
+            icon: 'check',
+            values,
+            metadata: { chainId, hash },
           });
+
+          transactions.watch(hash);
         }
       }
     },
@@ -91,34 +95,18 @@ export function AssetPricePaper({ address, id }: Props) {
   );
 
   const handleApproveAssetMutate = useCallback(
-    async (variable: { asset: SwappableAssetV4 }) => {
+    async ({ asset: swapAsset }: { asset: SwappableAssetV4 }) => {
       if (asset) {
-        if (
-          variable.asset.type === 'ERC721' ||
-          variable.asset.type === 'ERC1155'
-        ) {
-          transactions.showDialog(
-            true,
-            { asset: asset },
-            TransactionType.APPROVAL_FOR_ALL
-          );
+        if (swapAsset.type === 'ERC721' || swapAsset.type === 'ERC1155') {
+          transactions.open('approveForAll', {
+            name: asset.collectionName,
+            tokenId: asset.id,
+          });
         } else {
-          const amount = variable.asset.amount;
+          const symbol = await getERC20Symbol(swapAsset.tokenAddress, provider);
+          const name = await getERC20Name(swapAsset.tokenAddress, provider);
 
-          const decimals = await getERC20Decimals(
-            variable.asset.tokenAddress,
-            provider
-          );
-          const symbol = await getERC20Symbol(
-            variable.asset.tokenAddress,
-            provider
-          );
-
-          transactions.showDialog(
-            true,
-            { amount, decimals, symbol } as ApproveTransactionMetadata,
-            TransactionType.APPROVE
-          );
+          transactions.open('approve', { name, symbol });
         }
       }
     },
@@ -178,7 +166,19 @@ export function AssetPricePaper({ address, id }: Props) {
   const handleSignMessageSuccess = useCallback(() => {
     handleInvalidateCache();
     signMessageDialog.setIsSuccess(true);
-  }, [signMessageDialog]);
+
+    if (asset) {
+      createNotification({
+        type: 'common',
+        subtype: 'createListing',
+        icon: 'list',
+        values: {
+          collectionName: asset.collectionName,
+          id: asset.id,
+        },
+      });
+    }
+  }, [signMessageDialog, asset]);
 
   const makeListing = useMakeListingMutation(
     nftSwapSdk,

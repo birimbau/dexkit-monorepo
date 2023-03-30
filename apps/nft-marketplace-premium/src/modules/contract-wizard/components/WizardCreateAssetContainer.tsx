@@ -44,6 +44,8 @@ function WizardCreateAssetContainer(props: Props) {
     setItemsTxHash(hash);
     if (chainId !== undefined) {
       const now = Date.now();
+
+      // TODO: add notification.
     }
   };
 

@@ -3,12 +3,12 @@ import {
   UseMutationOptions,
   useQuery,
   useQueryClient,
-  UseQueryOptions
+  UseQueryOptions,
 } from '@tanstack/react-query';
 import {
   NftSwapV4,
   SwappableAssetV4,
-  SwappableNftV4
+  SwappableNftV4,
 } from '@traderxyz/nft-swap-sdk';
 import { useCallback, useMemo } from 'react';
 
@@ -25,12 +25,13 @@ import {
   getAssetData,
   getAssetDexKitApi,
   getAssetMetadata,
-  getAssetsData, getCollectionAssetsFromOrderbook,
+  getAssetsData,
+  getCollectionAssetsFromOrderbook,
   getCollectionByApi,
   getCollectionData,
   getDKAssetOrderbook,
   getERC1155Balance,
-  searchAssetsDexKitApi
+  searchAssetsDexKitApi,
 } from '../services/nft';
 
 import { ChainId, NFTType } from '../constants/enum';
@@ -41,7 +42,7 @@ import {
   AssetMetadata,
   HiddenAsset,
   OrderBookItem,
-  SwapApiOrder
+  SwapApiOrder,
 } from '../types/nft';
 
 import { PostOrderResponsePayload } from '@traderxyz/nft-swap-sdk/dist/sdk/v4/orderbook';
@@ -51,9 +52,17 @@ import { NETWORKS } from '../constants/chain';
 import { CollectionUniformItem } from '../modules/wizard/components/pageEditor/components/CollectionAutocompleteUniform';
 import { getERC20Balance } from '../services/balances';
 import { getOrderbookOrders } from '../services/nft';
-import { accountAssetsAtom, assetsAtom, hiddenAssetsAtom } from '../state/atoms';
+import {
+  accountAssetsAtom,
+  assetsAtom,
+  hiddenAssetsAtom,
+} from '../state/atoms';
 import { AssetRari } from '../types/rarible';
-import { getChainSlug, getNetworkSlugFromChainId, isAddressEqual } from '../utils/blockchain';
+import {
+  getChainSlug,
+  getNetworkSlugFromChainId,
+  isAddressEqual,
+} from '../utils/blockchain';
 import { calculeFees, parseAssetApi } from '../utils/nfts';
 import { TraderOrderFilter } from '../utils/types';
 import { useAppConfig } from './app';
@@ -66,11 +75,15 @@ export function useAsset(
   tokenId?: string,
   options?: Omit<UseQueryOptions<Asset>, any>,
   lazy?: boolean,
-  networkChainId?: ChainId,
+  networkChainId?: ChainId
 ) {
   const queryClient = useQueryClient();
   const networkProvider = useNetworkProvider(networkChainId);
-  const { provider: injectedProvider, chainId: injectedChainId, isActive } = useWeb3React();
+  const {
+    provider: injectedProvider,
+    chainId: injectedChainId,
+    isActive,
+  } = useWeb3React();
 
   const assetCached = queryClient.getQueryState<Asset | undefined>([
     GET_ASSET_DATA,
@@ -107,7 +120,11 @@ export function useAsset(
           tokenId: tokenId,
         });
       } catch {
-        console.log(`error fetching token ${tokenId}, address: ${contractAddress} at ${getChainSlug(chainId)} from api`);
+        console.log(
+          `error fetching token ${tokenId}, address: ${contractAddress} at ${getChainSlug(
+            chainId
+          )} from api`
+        );
       }
       if (assetApi) {
         const rawMetadata = assetApi.rawData
@@ -122,9 +139,9 @@ export function useAsset(
           symbol: assetApi.symbol || '',
           metadata: { ...rawMetadata, image: assetApi?.imageUrl },
           owner: asset?.owner,
-          protocol: asset?.protocol
+          protocol: asset?.protocol,
         };
-        return newAsset
+        return newAsset;
       }
       return asset;
     },
@@ -157,18 +174,20 @@ export function useAssetBalance(asset?: Asset, account?: string) {
     let balance: BigNumber | undefined;
 
     if (asset?.protocol === 'ERC1155') {
-      balance = await getERC1155Balance({ provider, account, contractAddress: asset.contractAddress, tokenId: asset.id })
+      balance = await getERC1155Balance({
+        provider,
+        account,
+        contractAddress: asset.contractAddress,
+        tokenId: asset.id,
+      });
     }
 
     return {
       asset,
-      balance
-    } as AssetBalance
-
-  })
+      balance,
+    } as AssetBalance;
+  });
 }
-
-
 
 export function useFullAsset({
   address,
@@ -250,9 +269,12 @@ export function useCollection(
     [GET_COLLECTION_DATA, contractAddress, chainId],
     async () => {
       if (!chainId || contractAddress === undefined) {
-        return
+        return;
       }
-      const collection = await getApiCollectionData(getNetworkSlugFromChainId(chainId), contractAddress);
+      const collection = await getApiCollectionData(
+        getNetworkSlugFromChainId(chainId),
+        contractAddress
+      );
       if (collection) {
         return collection;
       }
@@ -277,48 +299,40 @@ export function useCollection(
   );
 }
 
-export const GET_ACCOUNT_CONTRACT_COLLECTION_DATA = 'GET_ACCOUNT_CONTRACT_COLLECTION_DATA';
+export const GET_ACCOUNT_CONTRACT_COLLECTION_DATA =
+  'GET_ACCOUNT_CONTRACT_COLLECTION_DATA';
 
-export function useAccountContractCollection(
-  account?: string
-) {
-
-  return useQuery(
-    [GET_COLLECTION_DATA, account],
-    async () => {
-      if (account === undefined) {
-        return
-      }
-      const contractData = await getApiAccountContractCollectionData(account);
-      if (contractData) {
-        return contractData;
-      }
+export function useAccountContractCollection(account?: string) {
+  return useQuery([GET_COLLECTION_DATA, account], async () => {
+    if (account === undefined) {
+      return;
     }
-  );
+    const contractData = await getApiAccountContractCollectionData(account);
+    if (contractData) {
+      return contractData;
+    }
+  });
 }
 
 export const GET_CONTRACT_COLLECTION_DATA = 'GET_CONTRACT_COLLECTION_DATA';
 
-export function useContractCollection(
-  networkId?: string,
-  address?: string
-) {
-
+export function useContractCollection(networkId?: string, address?: string) {
   return useQuery(
     [GET_CONTRACT_COLLECTION_DATA, address?.toLowerCase(), networkId],
     async () => {
       if (!networkId || address === undefined) {
-        return
+        return;
       }
-      const contractData = await getApiContractCollectionData(networkId, address);
+      const contractData = await getApiContractCollectionData(
+        networkId,
+        address
+      );
       if (contractData) {
         return contractData;
       }
     }
   );
 }
-
-
 
 export const GET_ASSET_METADATA = 'GET_ASSET_METADATA';
 
@@ -337,17 +351,19 @@ export function useAssetMetadata(
         return asset.metadata;
       }
 
-      return await getAssetMetadata(asset?.tokenURI, {
-        image: '',
-        name: `${asset.collectionName} #${asset.id}`,
-      }, asset?.protocol === 'ERC1155', asset?.id);
+      return await getAssetMetadata(
+        asset?.tokenURI,
+        {
+          image: '',
+          name: `${asset.collectionName} #${asset.id}`,
+        },
+        asset?.protocol === 'ERC1155',
+        asset?.id
+      );
     },
     { ...options, enabled: asset?.tokenURI !== undefined }
   );
 }
-
-
-
 
 export function useSwapSdkV4(provider: any, chainId?: number) {
   return useMemo(() => {
@@ -640,25 +656,22 @@ export const useOrderBook = (orderFilter: TraderOrderFilter) => {
 export const GET_ASSETS_ORDERBOOK = 'GET_ASSETS_ORDERBOOK';
 
 export const useAssetsOrderBook = (orderFilter?: TraderOrderFilter) => {
-  return useQuery(
-    [GET_ASSETS_ORDERBOOK, orderFilter],
-    async () => {
-      return (await getDKAssetOrderbook(orderFilter)).data;
-    }
-  );
+  return useQuery([GET_ASSETS_ORDERBOOK, orderFilter], async () => {
+    return (await getDKAssetOrderbook(orderFilter)).data;
+  });
 };
 
 export const GET_ASSET_LIST_FROM_ORDERBOOK = 'GET_ASSET_LIST_FROM_ORDERBOOK';
 
 export const useAssetListFromOrderbook = (orderFilter: TraderOrderFilter) => {
-  const ordebookQuery = useOrderBook(orderFilter);
-  const { provider } = useWeb3React();
 
+  const ordebookQuery = useOrderBook(orderFilter);
+  const provider = useNetworkProvider(orderFilter.chainId)
   return useQuery(
     [GET_ASSET_LIST_FROM_ORDERBOOK, ordebookQuery.data],
     async () => {
       if (ordebookQuery.data === undefined || provider === undefined) {
-        return;
+        return [];
       }
       // We are mapping Collections ---> nft token id's ---> orders
       const orderItemsMap = new Map<string, Map<string, OrderBookItem>>();
@@ -732,7 +745,12 @@ export const useAssetMetadataFromList = (orderFilter: TraderOrderFilter) => {
 
       for (let index = 0; index < data.length; index++) {
         const asset = data[index];
-        const metadata = await getAssetMetadata(asset.tokenURI, undefined, asset.protocol === 'ERC1155', asset.id);
+        const metadata = await getAssetMetadata(
+          asset.tokenURI,
+          undefined,
+          asset.protocol === 'ERC1155',
+          asset.id
+        );
         assetMetadata.push({
           ...asset,
           metadata: metadata,
@@ -772,7 +790,7 @@ export function useFavoriteAssets() {
         asset !== undefined &&
         assets !== undefined &&
         assets[
-        `${asset.chainId}-${asset.contractAddress.toLowerCase()}-${asset.id}`
+          `${asset.chainId}-${asset.contractAddress.toLowerCase()}-${asset.id}`
         ] !== undefined
       );
     },
@@ -790,15 +808,14 @@ export function useFavoriteAssets() {
   return { add, remove, assets, isFavorite, toggleFavorite };
 }
 
-
-
 export function useHiddenAssets() {
   const [assets, setAssets] = useAtom(hiddenAssetsAtom);
 
   const add = (asset: HiddenAsset) => {
     setAssets((value) => ({
       ...value,
-      [`${asset.chainId}-${asset.contractAddress?.toLowerCase()}-${asset.id}`]: true
+      [`${asset.chainId}-${asset.contractAddress?.toLowerCase()}-${asset.id}`]:
+        true,
     }));
   };
 
@@ -807,18 +824,20 @@ export function useHiddenAssets() {
       let tempValue = { ...value };
 
       tempValue[
-        `${asset.chainId}-${asset.contractAddress?.toLowerCase()}-${asset.id}`] = false;
+        `${asset.chainId}-${asset.contractAddress?.toLowerCase()}-${asset.id}`
+      ] = false;
 
       return tempValue;
     });
   };
   const isHidden = useCallback(
     (asset?: Asset) => {
-
       return (
         asset !== undefined &&
         assets !== undefined &&
-        assets[`${asset.chainId}-${asset.contractAddress.toLowerCase()}-${asset.id}`] === true
+        assets[
+          `${asset.chainId}-${asset.contractAddress.toLowerCase()}-${asset.id}`
+        ] === true
       );
     },
     [assets]
@@ -836,10 +855,12 @@ export function useHiddenAssets() {
   return { add, remove, assets, isHidden, toggleHidden };
 }
 
-
 const GET_ACCOUNTS_ASSETS = 'GET_ACCOUNTS_ASSETS';
 
-export function useAccountAssetsBalance(accounts: string[], useSuspense = true) {
+export function useAccountAssetsBalance(
+  accounts: string[],
+  useSuspense = true
+) {
   const [accountAssets, setAccountAssets] = useAtom(accountAssetsAtom);
 
   const accountAssetsQuery = useQuery(
@@ -853,33 +874,48 @@ export function useAccountAssetsBalance(accounts: string[], useSuspense = true) 
       }
       const atualDate = new Date().getTime();
       const query = JSON.stringify(accounts);
-      if (accountAssets?.lastTimeFetched && accountAssets?.lastTimeFetched.time < atualDate + 86400000 && accountAssets?.lastTimeFetched.query === query) {
+      if (
+        accountAssets?.lastTimeFetched &&
+        accountAssets?.lastTimeFetched.time < atualDate + 86400000 &&
+        accountAssets?.lastTimeFetched.query === query
+      ) {
         return false;
       }
-      const networks = Object.values(NETWORKS).filter(n => !n.testnet).map(n => n.slug).join(',');
-      const accFlat = accounts.join(',')
-      const response = await axios.get<{
-        total?: number,
-        page?: number,
-        account?: string
-        network?: string,
-        perPage?: number,
-        assets?: AssetAPI[]
-      }[]>(`/api/wallet/nft`, { params: { accounts: accFlat, networks: networks } });
+      const networks = Object.values(NETWORKS)
+        .filter((n) => !n.testnet)
+        .map((n) => n.slug)
+        .join(',');
+      const accFlat = accounts.join(',');
+      const response = await axios.get<
+        {
+          total?: number;
+          page?: number;
+          account?: string;
+          network?: string;
+          perPage?: number;
+          assets?: AssetAPI[];
+        }[]
+      >(`/api/wallet/nft`, {
+        params: { accounts: accFlat, networks: networks },
+      });
       if (response.data && response.data.length) {
         setAccountAssets({
-          data: response.data.map(a => {
-            return { ...a, assets: a.assets?.map(parseAssetApi) as unknown as Asset[] }
-          }), lastTimeFetched: {
+          data: response.data.map((a) => {
+            return {
+              ...a,
+              assets: a.assets?.map(parseAssetApi) as unknown as Asset[],
+            };
+          }),
+          lastTimeFetched: {
             time: new Date().getTime(),
-            query: JSON.stringify(accounts)
-          }
+            query: JSON.stringify(accounts),
+          },
         });
         return true;
-
       }
       return true;
-    }, { suspense: useSuspense }
+    },
+    { suspense: useSuspense }
   );
   return { accountAssets, accountAssetsQuery };
 }
@@ -890,19 +926,26 @@ export function useTotalAssetsBalance(accounts: string[], networks: string[]) {
   const totalAccountAssets = useMemo(() => {
     if (accounts && accountAssets && accountAssets.data) {
       return accountAssets.data
-        .filter(a => accounts.includes(a?.account || ''))
-        .filter(a => networks.length ? networks.includes(a.network || '') : true)
-        .map(a => a.assets?.length).reduce((c, p) => (c || 0) + (p || 0))
+        .filter((a) => accounts.includes(a?.account || ''))
+        .filter((a) =>
+          networks.length ? networks.includes(a.network || '') : true
+        )
+        .map((a) => a.assets?.length)
+        .reduce((c, p) => (c || 0) + (p || 0));
     }
-    return undefined
-  }, [accounts, networks])
+    return undefined;
+  }, [accounts, networks]);
 
   return { totalAccountAssets };
 }
 
-export const COLLECTION_ASSETS_FROM_ORDERBOOK = 'COLLECTION_ASSETS_FROM_ORDERBOOK';
+export const COLLECTION_ASSETS_FROM_ORDERBOOK =
+  'COLLECTION_ASSETS_FROM_ORDERBOOK';
 
-export function useCollectionAssetsFromOrderbook(filters: TraderOrderFilter, networkChainId?: ChainId) {
+export function useCollectionAssetsFromOrderbook(
+  filters: TraderOrderFilter,
+  networkChainId?: ChainId
+) {
   const { provider, chainId: injectedChainId } = useWeb3React();
   const chainId = networkChainId || injectedChainId;
 
@@ -926,26 +969,45 @@ export function useCollectionAssetsFromOrderbook(filters: TraderOrderFilter, net
 
 const SEARCH_ASSETS = 'SEARCH_ASSETS';
 
-export function useSearchAssets(search?: string, collections?: CollectionUniformItem[]) {
-
+export function useSearchAssets(
+  search?: string,
+  collections?: CollectionUniformItem[]
+) {
   return useQuery([SEARCH_ASSETS, search], () => {
     if (!search) {
-      return []
+      return [];
     }
     let collectionsFilter = undefined;
     if (collections) {
-      collectionsFilter = collections.map((c) => `${getNetworkSlugFromChainId(c.chainId)}:${c.contractAddress.toLowerCase()}`).join(',')
+      collectionsFilter = collections
+        .map(
+          (c) =>
+            `${getNetworkSlugFromChainId(
+              c.chainId
+            )}:${c.contractAddress.toLowerCase()}`
+        )
+        .join(',');
     }
 
-    return searchAssetsDexKitApi({ keyword: search, collections: collectionsFilter })
-
-  })
+    return searchAssetsDexKitApi({
+      keyword: search,
+      collections: collectionsFilter,
+    });
+  });
 }
 
 export const BEST_SELL_ORDER_RARIBLE = 'BEST_SELL_ORDER_RARIBLE';
 
-export function useBestSellOrderAssetRari(network?: string, address?: string, id?: string) {
-  return useQuery<AssetRari | undefined>([BEST_SELL_ORDER_RARIBLE, network, address, id], () => {
-    return undefined;
-  }, { enabled: false })
+export function useBestSellOrderAssetRari(
+  network?: string,
+  address?: string,
+  id?: string
+) {
+  return useQuery<AssetRari | undefined>(
+    [BEST_SELL_ORDER_RARIBLE, network, address, id],
+    () => {
+      return undefined;
+    },
+    { enabled: false }
+  );
 }
