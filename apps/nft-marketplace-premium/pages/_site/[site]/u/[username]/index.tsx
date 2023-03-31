@@ -5,6 +5,7 @@ import Box from '@mui/material/Box';
 import { dehydrate, QueryClient } from '@tanstack/react-query';
 import { GetStaticProps, GetStaticPropsContext, NextPage } from 'next';
 import MainLayout from 'src/components/layouts/main';
+import { getAppConfig } from 'src/services/app';
 
 const User: NextPage<{ username: string }> = ({ username }) => {
   return (
@@ -18,6 +19,7 @@ const User: NextPage<{ username: string }> = ({ username }) => {
 
 type Params = {
   username?: string;
+  site?: string;
 };
 
 export const getStaticProps: GetStaticProps = async ({
@@ -30,11 +32,13 @@ export const getStaticProps: GetStaticProps = async ({
     [GET_USER_BY_USERNAME_QUERY, params?.username],
     async () => data
   );
+  const configResponse = await getAppConfig(params?.site, 'no-page-defined');
 
   return {
     props: {
       dehydratedState: dehydrate(queryClient),
       username: params?.username,
+      ...configResponse,
     },
     revalidate: 3000,
   };

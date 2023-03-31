@@ -57,7 +57,8 @@ export function UserEditContainer() {
 
   const handleChangetab = (mn: ActiveMenu) => {
     router.replace({
-      query: { ...router.query, tab: mn },
+      pathname: '/u/edit',
+      query: { tab: mn },
     });
   };
 

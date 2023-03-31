@@ -15,6 +15,14 @@ export function getUsernameExists(username?: string) {
 
 }
 
+export function postClaimCampaign() {
+  return myAppsApi.post<{ txHash: string }>(`/campaign/claim/0`)
+}
+
+export function getClaimCampaign() {
+  return myAppsApi.get<{ id: number, status: 'pending' | 'complete' | 'error', txHash: string }>(`/campaign/claim/0`)
+}
+
 export function getUserByUsername(username?: string) {
   return myAppsApi.get<UserOptions & { accounts: { address: string }[] }>(`/user/username/${username}`)
 }

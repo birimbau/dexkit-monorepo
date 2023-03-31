@@ -44,7 +44,8 @@ export const getStaticProps: GetStaticProps = async ({
   params,
 }: GetStaticPropsContext<Params>) => {
   const queryClient = new QueryClient();
-  const { appConfig, appNFT } = await getAppConfig(params?.site, params?.page);
+  const configResponse = await getAppConfig(params?.site, params?.page);
+  const { appConfig } = configResponse;
   const homePage = appConfig.pages[params?.page || ''];
 
   if (!homePage) {
@@ -138,8 +139,7 @@ export const getStaticProps: GetStaticProps = async ({
     props: {
       dehydratedState: dehydrate(queryClient),
       sections: homePage.sections,
-      appConfig,
-      appNFT,
+      ...configResponse,
     },
     revalidate: 300,
   };

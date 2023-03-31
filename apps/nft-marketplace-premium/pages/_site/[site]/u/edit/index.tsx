@@ -7,6 +7,7 @@ import { GetServerSideProps, GetServerSidePropsContext, NextPage } from 'next';
 import { SessionProvider } from 'next-auth/react';
 
 import AuthMainLayout from 'src/components/layouts/authMain';
+import { getAppConfig } from 'src/services/app';
 
 const UserEdit: NextPage = () => {
   return (
@@ -22,13 +23,14 @@ const UserEdit: NextPage = () => {
 
 type Params = {
   username?: string;
+  site?: string;
 };
 
 export const getServerSideProps: GetServerSideProps = async ({
   req,
   res,
+  params,
 }: GetServerSidePropsContext<Params>) => {
-  console.log(req.cookies);
   const token = req.cookies.refresh_token;
   if (!token) {
     return {
@@ -41,13 +43,15 @@ export const getServerSideProps: GetServerSideProps = async ({
 
   const queryClient = new QueryClient();
   const { data } = await getUserByAccountRefresh({ token });
-  console.log(data);
+
+  const configResponse = await getAppConfig(params?.site, 'no-page-defined');
 
   await queryClient.prefetchQuery([GET_AUTH_USER], async () => data);
 
   return {
     props: {
       dehydratedState: dehydrate(queryClient),
+      ...configResponse,
       // username: params?.username,
     },
     //revalidate: 3000,

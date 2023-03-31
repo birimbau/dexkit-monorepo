@@ -1,6 +1,7 @@
 import { useAuthUserQuery } from '@/modules/user/hooks';
 import { Logout } from '@mui/icons-material';
 import EditIcon from '@mui/icons-material/Edit';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import PersonIcon from '@mui/icons-material/Person';
 import {
   Avatar,
@@ -18,7 +19,6 @@ import { useCallback, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { isBalancesVisibleAtom } from '../state/atoms';
 import { getWalletIcon, truncateAddress } from '../utils/blockchain';
-
 interface Props {
   align?: 'center' | 'left';
 }
@@ -90,6 +90,7 @@ export function WalletButton(props: Props) {
                 : truncateAddress(account)
               : '**********'}
           </Typography>
+          <ExpandMoreIcon />
         </Stack>
       </ButtonBase>
       <Menu

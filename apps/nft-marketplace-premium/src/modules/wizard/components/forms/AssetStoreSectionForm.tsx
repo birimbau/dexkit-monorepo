@@ -15,7 +15,6 @@ export function AssetStoreSectionForm({ onSave, onCancel, section }: Props) {
       item={data}
       onChange={(d) => setData(d)}
       onSubmit={(val) => {
-        console.log(val);
         onSave({
           type: 'asset-store',
           title: val.title,

@@ -142,6 +142,10 @@ export function useAppNFT() {
   return useContext(AppConfigContext).appNFT;
 }
 
+export function useSiteId() {
+  return useContext(AppConfigContext).siteId;
+}
+
 export function useCollections() {
   const appConfig = useAppConfig();
   return appConfig?.collections;

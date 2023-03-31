@@ -1,4 +1,4 @@
-import { getAccessToken, login, setAccessToken } from 'src/services/auth';
+import { getAccessToken, setAccessToken } from 'src/services/auth';
 
 export const AuthProvider = {
   // send username and password to the auth server and get back credentials
@@ -8,7 +8,6 @@ export const AuthProvider = {
 
   // wheauthen the dataProvider returns an error, check if this is an ntication error
   checkError: (error: any) => {
-    console.log(error);
     const status = error.response.status;
     if (status === 401 || status === 403) {
       setAccessToken(undefined);

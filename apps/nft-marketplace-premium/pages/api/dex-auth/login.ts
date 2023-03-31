@@ -10,7 +10,6 @@ export default async function handler(
     const { address, signature } = req.body.data;
     const response = await login({ address, signature });
     const data = (await response.data);
-    console.log('refresh_token on login', data.refresh_token);
     res.setHeader('Set-Cookie', [serialize('refresh_token', data.refresh_token, { httpOnly: true, path: '/', }), serialize('refresh_token_auth', data.refresh_token, { httpOnly: true })]);
     return res.status(response.status).json({ access_token: data.access_token });
   }

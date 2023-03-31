@@ -626,7 +626,6 @@ export async function fetchAssetForQueryClient({ item, queryClient }: { item: { 
       tokenId: item.tokenId,
     });
   } catch (e) {
-    console.log(e);
     console.log(`fetchAsset: error fetching token ${item.tokenId}, address: ${item.contractAddress} at ${slug} from api`);
   }
 

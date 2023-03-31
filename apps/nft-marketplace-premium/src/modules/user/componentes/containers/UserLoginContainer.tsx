@@ -6,7 +6,7 @@ import { FormattedMessage } from 'react-intl';
 import { PageHeader } from 'src/components/PageHeader';
 import { useAuth, useLoginAccountMutation } from 'src/hooks/account';
 import { useAuthUserQuery } from '../../hooks';
-export function UserLogin() {
+export function UserLoginContainer() {
   const router = useRouter();
   const { isLoggedIn } = useAuth();
   const userQuery = useAuthUserQuery();

@@ -1,9 +1,51 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useWeb3React } from '@web3-react/core';
 import { useAuth, useLoginAccountMutation } from 'src/hooks/account';
-import { getUserAddAccountMessage, getUserByAccount, getUserByUsername, getUserConnectDiscord, getUserConnectTwitter, postUserAddAccount, postUserRemoveAccount, upsertUser } from '../services';
+import { useSiteId } from 'src/hooks/app';
+import { getClaimCampaign, getUserAddAccountMessage, getUserByAccount, getUserByUsername, getUserConnectDiscord, getUserConnectTwitter, postClaimCampaign, postUserAddAccount, postUserRemoveAccount, upsertUser } from '../services';
 import { UserOptions } from '../types';
 
+
+
+export function useClaimCampaignMutation() {
+  const { account, } = useWeb3React();
+  const { isLoggedIn } = useAuth()
+  const queryClient = useQueryClient();
+  return useMutation(async () => {
+    /* if (!account) {
+       return;
+     }
+     if (!isLoggedIn) {
+       return
+     }*/
+  
+      const response = await postClaimCampaign();
+
+      return response.data;
+    
+  }, {
+    onSuccess() {
+      queryClient.refetchQueries([GET_USER_CLAIM_CAMPAIGN_QUERY])
+    }
+  })
+}
+
+export const GET_USER_CLAIM_CAMPAIGN_QUERY = 'GET_USER_CLAIM_CAMPAIGN_QUERY';
+
+export function useUserClaimCampaignQuery() {
+  const { account, } = useWeb3React();
+  const { isLoggedIn } = useAuth()
+  return useQuery([GET_USER_CLAIM_CAMPAIGN_QUERY, account, isLoggedIn], async () => {
+    if (!account) {
+      return;
+    }
+    if (!isLoggedIn) {
+      return
+    }
+    const { data } = await getClaimCampaign();
+    return data;
+  })
+}
 
 
 export function useAddAccountUserMutation() {
@@ -44,6 +86,7 @@ export function useRemoveAccountUserMutation() {
 
 export function useUpsertUserMutation() {
   const { isLoggedIn } = useAuth()
+  const siteId = useSiteId()
   const loginMutation = useLoginAccountMutation()
   return useMutation(async (user?: UserOptions) => {
     if (!user) {
@@ -52,7 +95,7 @@ export function useUpsertUserMutation() {
     if (!isLoggedIn) {
       await loginMutation.mutateAsync()
     }
-    await upsertUser(user);
+    await upsertUser({ ...user, createdOnSiteId: siteId });
   })
 }
 

@@ -88,6 +88,21 @@ export function getAccessToken() {
   }
 
 }
+/**
+ * We refresh here the access token, this is called on 401 error
+ * @returns 
+ */
+export async function getRefreshAccessToken() {
+  try {
+    const response = await axios.get('/api/dex-auth/refresh-token', { withCredentials: true });
+    access_token = response.data.access_token;
+    return access_token;
+  } catch (error) {
+    await axios.get('/api/dex-auth/logout', { withCredentials: true });
+    access_token = undefined;
+    return access_token;
+  }
+}
 
 
 export async function getAccessTokenAndRefresh() {
@@ -96,13 +111,9 @@ export async function getAccessTokenAndRefresh() {
   }
   if (!access_token && !refreshedWasCalled) {
     try {
-      console.log('calling dex auth');
       const response = await axios.get('/api/dex-auth/refresh-token', { withCredentials: true });
       refreshedWasCalled = false;
-      console.log('access token');
-      console.log(response.data.access_token);
       access_token = response.data.access_token;
-
       return access_token;
     } catch (error) {
       access_token = undefined;

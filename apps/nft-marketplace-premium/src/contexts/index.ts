@@ -4,7 +4,7 @@ import { AppConfig } from '../types/config';
 import { AssetAPI } from 'src/types/nft';
 import defaultAppConfig from '../../config/app.json';
 
-export const AppConfigContext = React.createContext<{ appConfig: AppConfig, appNFT?: AssetAPI }>({
+export const AppConfigContext = React.createContext<{ appConfig: AppConfig, appNFT?: AssetAPI, siteId?: number }>({
   appConfig: defaultAppConfig as AppConfig
 }
 );

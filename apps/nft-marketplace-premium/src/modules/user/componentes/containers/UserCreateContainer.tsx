@@ -1,11 +1,4 @@
-import {
-  Container,
-  Grid,
-  Stack,
-  Typography,
-  useMediaQuery,
-  useTheme,
-} from '@mui/material';
+import { Container, Grid, Stack, Typography } from '@mui/material';
 import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import AppConfirmDialog from 'src/components/AppConfirmDialog';
@@ -16,10 +9,7 @@ import UpsertUserDialog from '../dialogs/UpsertuserDialog';
 import UserGeneralForm from '../forms/UserGeneralForm';
 
 export function UserCreateContainer() {
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [userForm, setUserForm] = useState<UserOptions>();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const upsertUserMutation = useUpsertUserMutation();
   const [showUpsertUser, setShowUpsertUser] = useState(false);
 

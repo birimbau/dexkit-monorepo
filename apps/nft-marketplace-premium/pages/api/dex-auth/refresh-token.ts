@@ -6,9 +6,9 @@ export default async function handler(
   res: NextApiResponse
 ) {
   try {
-    console.log(req.cookies)
-    const refreshToken = req.cookies.refresh_token_auth || req.cookies.refresh_token;
-    const response = await requestAccestoken({ refreshToken: req.cookies.refresh_token_auth as string })
+
+    const refreshToken = req.cookies?.refresh_token_auth || req.cookies?.refresh_token;
+    const response = await requestAccestoken({ refreshToken: refreshToken as string })
     const data = (await response.data);
     return res.status(response.status).json({ access_token: data.access_token });
 
