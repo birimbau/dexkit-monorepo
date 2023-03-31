@@ -1,4 +1,5 @@
 import { Search } from '@mui/icons-material';
+import FilterListIcon from '@mui/icons-material/FilterList';
 import {
   Box,
   Chip,
@@ -22,13 +23,21 @@ import { Asset } from '../../../types/nft';
 import { getNetworkSlugFromChainId } from '../../../utils/blockchain';
 
 import { AssetCard } from '../../nft/components/AssetCard';
+import WalletAssetsFilter from './WalletAssetsFilter';
 
 interface Props {
   onOpenFilters?: () => void;
-  filters?: { myNfts: boolean; chainId?: ChainId; networks: string[] };
+  filters?: {
+    myNfts: boolean;
+    chainId?: ChainId;
+    networks: string[];
+    account?: string;
+  };
+  setFilters?: any;
 }
 
-function HiddenAssetsSection({ onOpenFilters, filters }: Props) {
+function HiddenAssetsSection({ onOpenFilters, filters, setFilters }: Props) {
+  const [openFilter, setOpenFilter] = useState(false);
   const { account } = useWeb3React();
   const [search, setSearch] = useState('');
   const { accountAssets } = useAccountAssetsBalance(account ? [account] : []);
@@ -125,6 +134,13 @@ function HiddenAssetsSection({ onOpenFilters, filters }: Props) {
               alignContent="center"
               spacing={2}
             >
+              <IconButton
+                onClick={() => {
+                  setOpenFilter(!openFilter);
+                }}
+              >
+                <FilterListIcon />
+              </IconButton>
               <TextField
                 type="search"
                 size="small"
@@ -201,7 +217,19 @@ function HiddenAssetsSection({ onOpenFilters, filters }: Props) {
             </Stack>
           )}
         </Grid>
-        {renderAssets()}
+        {openFilter && (
+          <Grid item xs={3}>
+            <WalletAssetsFilter
+              setFilters={setFilters}
+              filters={filters}
+              onClose={() => setOpenFilter(false)}
+            />
+          </Grid>
+        )}
+
+        <Grid container item xs={openFilter ? 9 : 12}>
+          {renderAssets()}
+        </Grid>
       </Grid>
     </>
   );

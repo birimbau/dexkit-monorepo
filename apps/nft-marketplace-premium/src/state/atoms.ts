@@ -9,7 +9,7 @@ import {
   Transaction,
   TransactionMetadata,
   TransactionStatus,
-  TransactionType,
+  TransactionType
 } from '../types/blockchain';
 
 import { Asset } from '../types/nft';

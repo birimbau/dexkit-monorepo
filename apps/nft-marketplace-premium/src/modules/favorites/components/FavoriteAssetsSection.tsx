@@ -1,4 +1,6 @@
+import WalletAssetsFilter from '@/modules/wallet/components/WalletAssetsFilter';
 import { ImportExport, Search } from '@mui/icons-material';
+import FilterListIcon from '@mui/icons-material/FilterList';
 import {
   Box,
   Button,
@@ -27,11 +29,18 @@ import RemoveFavoriteDialog from './RemoveFavoriteDialog';
 
 interface Props {
   onOpenFilters?: () => void;
-  filters?: { myNfts: boolean; chainId?: ChainId };
+  filters?: { myNfts: boolean; chainId?: ChainId; account?: string };
+  setFilters?: any;
   onImport: () => void;
 }
 
-function FavoriteAssetsSection({ onOpenFilters, filters, onImport }: Props) {
+function FavoriteAssetsSection({
+  onOpenFilters,
+  filters,
+  onImport,
+  setFilters,
+}: Props) {
+  const [openFilter, setOpenFilter] = useState(false);
   const { account } = useWeb3React();
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState('');
@@ -164,6 +173,13 @@ function FavoriteAssetsSection({ onOpenFilters, filters, onImport }: Props) {
               alignContent="center"
               spacing={2}
             >
+              <IconButton
+                onClick={() => {
+                  setOpenFilter(!openFilter);
+                }}
+              >
+                <FilterListIcon />
+              </IconButton>
               <TextField
                 type="search"
                 size="small"
@@ -259,7 +275,19 @@ function FavoriteAssetsSection({ onOpenFilters, filters, onImport }: Props) {
             </Stack>
           )}
         </Grid>
-        {renderAssets()}
+        {openFilter && (
+          <Grid item xs={3}>
+            <WalletAssetsFilter
+              setFilters={setFilters}
+              filters={filters}
+              onClose={() => setOpenFilter(false)}
+            />
+          </Grid>
+        )}
+
+        <Grid container item xs={openFilter ? 9 : 12}>
+          {renderAssets()}
+        </Grid>
       </Grid>
     </>
   );

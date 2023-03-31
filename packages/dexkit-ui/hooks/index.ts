@@ -8,7 +8,7 @@ import { DexKitContext, DexkitContextState } from "../context/DexKitContext";
 import {
   AppNotification,
   AppNotificationType,
-  CreateAppNotificationParams,
+  CreateAppNotificationParams
 } from "../types";
 
 export function useOrderedConnectors({
@@ -96,8 +96,6 @@ export function useDexkitContextState({
           });
         }
       }
-
-      console.log(newNotification);
 
       return [...notifications, newNotification];
     });

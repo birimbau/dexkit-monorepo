@@ -267,7 +267,7 @@ export const getStaticProps: GetStaticProps = async ({
 }: GetStaticPropsContext<Params>) => {
   const network = params?.network;
   const address = params?.address;
-  const { appConfig, appNFT } = await getAppConfig(params?.site, 'home');
+  const configResponse = await getAppConfig(params?.site, 'home');
   const queryClient = new QueryClient();
   let collection: Collection | undefined;
   try {
@@ -365,7 +365,7 @@ export const getStaticProps: GetStaticProps = async ({
   } catch {}
 
   return {
-    props: { dehydratedState: dehydrate(queryClient), appConfig, appNFT },
+    props: { dehydratedState: dehydrate(queryClient), ...configResponse },
     revalidate: 60,
   };
 };

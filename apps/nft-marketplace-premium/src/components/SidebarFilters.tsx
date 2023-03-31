@@ -1,18 +1,7 @@
-import { Search } from '@mui/icons-material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import {
-  Box,
-  Divider,
-  IconButton,
-  InputAdornment,
-  Stack,
-  TextField,
-  Typography,
-} from '@mui/material';
+import { Box, Divider, IconButton, Stack, Typography } from '@mui/material';
 import React from 'react';
-import { FormattedMessage } from 'react-intl';
 import Funnel from './icons/Filter';
-import SidebarFiltersAccordion from './SidebarFiltersAccordion';
 import SidebarFiltersContent from './SidebarFiltersContent';
 
 interface Props {

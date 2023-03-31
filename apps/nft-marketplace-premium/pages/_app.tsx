@@ -40,9 +40,10 @@ export default function MyApp(props: MyAppProps) {
 
   const [loading, setLoading] = React.useState(false);
 
-  const { appConfig, appNFT } = pageProps as {
+  const { appConfig, appNFT, siteId } = pageProps as {
     appConfig: AppConfig;
     appNFT: AssetAPI;
+    siteId: number | undefined;
     dehydratedState: DehydratedState;
   };
 
@@ -165,7 +166,9 @@ export default function MyApp(props: MyAppProps) {
           <meta name="viewport" content="initial-scale=1, width=device-width" />
           <meta name="theme-color" content={theme?.palette.primary.main} />
         </Head>
-        <AppConfigContext.Provider value={{ appConfig: config, appNFT }}>
+        <AppConfigContext.Provider
+          value={{ appConfig: config, appNFT, siteId }}
+        >
           <QueryClientProvider client={queryClient}>
             <Hydrate state={pageProps.dehydratedState}>
               <DefaultSeo {...SEO} />
