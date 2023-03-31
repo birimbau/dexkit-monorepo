@@ -1,37 +1,56 @@
 import { useWeb3React } from '@web3-react/core';
+import jwt_decode from 'jwt-decode';
 import { ReactNode, useEffect, useState } from 'react';
-import { AuthContext } from '../contexts';
+import { AuthContext, AuthUser } from '../contexts';
 import { useLoginAccountMutation } from '../hooks/account';
-import { getAccessToken } from '../services/auth';
-
+import { getAccessToken, getAccessTokenAndRefresh } from '../services/auth';
 interface Props {
   children: ReactNode;
 }
 
 export function AuthProvider(props: Props) {
-  // const { account } = useWeb3React();
+  const { account } = useWeb3React();
+  const [triedLogin, setTriedLogin] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  // const loginMutation = useLoginAccountMutation();
+  const [user, setUser] = useState<AuthUser | undefined>(undefined);
+  const loginMutation = useLoginAccountMutation();
   const { children } = props;
 
-  /*useEffect(() => {
-    if (account && !isLoggedIn) {
-      loginMutation.mutateAsync().then(() => setIsLoggedIn(true));
-    }
-  }, [account, isLoggedIn]);
-
   useEffect(() => {
-    if (account) {
-      getAccessToken().then((accessToken) => {
-        if (accessToken) {
-          setIsLoggedIn(true);
+    if (account && !isLoggedIn && triedLogin) {
+      loginMutation.mutateAsync().then((d) => {
+        setIsLoggedIn(true);
+        if (d?.access_token) {
+          setUser(jwt_decode(d?.access_token));
         }
       });
     }
-  }, [account]);*/
+  }, [account, isLoggedIn, triedLogin]);
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      const accessToken = getAccessToken();
+      if (accessToken) {
+        setUser(jwt_decode(accessToken));
+      }
+    }
+  }, [isLoggedIn]);
+
+  useEffect(() => {
+    if (account) {
+      getAccessTokenAndRefresh()
+        .then((accessToken) => {
+          if (accessToken) {
+            setUser(jwt_decode(accessToken));
+            setIsLoggedIn(true);
+          }
+        })
+        .finally(() => setTriedLogin(true));
+    }
+  }, [account]);
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, setIsLoggedIn }}>
+    <AuthContext.Provider value={{ isLoggedIn, setIsLoggedIn, user }}>
       {children}
     </AuthContext.Provider>
   );

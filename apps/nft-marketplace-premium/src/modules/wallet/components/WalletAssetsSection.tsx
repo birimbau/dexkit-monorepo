@@ -1,4 +1,6 @@
+import TableSkeleton from '@/modules/nft/components/tables/TableSkeleton';
 import { Search } from '@mui/icons-material';
+import FilterListIcon from '@mui/icons-material/FilterList';
 import {
   Box,
   Chip,
@@ -11,29 +13,45 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
-import { useWeb3React } from '@web3-react/core';
 import { ChangeEvent, useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import CloseCircle from '../../../components/icons/CloseCircle';
 import Funnel from '../../../components/icons/Filter';
 import { ChainId } from '../../../constants/enum';
-import { useHiddenAssets, useAccountAssetsBalance } from '../../../hooks/nft';
+import { useAccountAssetsBalance, useHiddenAssets } from '../../../hooks/nft';
 import { Asset } from '../../../types/nft';
 import {
   getNetworkSlugFromChainId,
   isAddressEqual,
 } from '../../../utils/blockchain';
 import { AssetCard } from '../../nft/components/AssetCard';
-
+import WalletAssetsFilter from './WalletAssetsFilter';
 interface Props {
   onOpenFilters?: () => void;
-  filters?: { myNfts: boolean; chainId?: ChainId; networks: string[] };
+  filters?: {
+    myNfts: boolean;
+    chainId?: ChainId;
+    networks: string[];
+    account?: string;
+  };
+  accounts?: string[];
+  setFilters?: any;
   onImport: () => void;
 }
 
-function WalletAssetsSection({ onOpenFilters, filters }: Props) {
-  const { account } = useWeb3React();
-  const { accountAssets } = useAccountAssetsBalance(account ? [account] : []);
+function WalletAssetsSection({
+  onOpenFilters,
+  filters,
+  setFilters,
+  accounts,
+}: Props) {
+  const [openFilter, setOpenFilter] = useState(false);
+
+  const { accountAssets, accountAssetsQuery } = useAccountAssetsBalance(
+    filters?.account ? [filters?.account] : [],
+    false
+  );
+
   const { isHidden, toggleHidden, assets: hiddenAssets } = useHiddenAssets();
   const [search, setSearch] = useState('');
   const assets = useMemo(() => {
@@ -63,7 +81,7 @@ function WalletAssetsSection({ onOpenFilters, filters }: Props) {
       })
       .filter((asset) => {
         if (filters?.myNfts) {
-          return isAddressEqual(asset.owner, account);
+          return isAddressEqual(asset.owner, filters?.account);
         }
         /*if (filters?.chainId) {
           return Number(asset.chainId) === Number(filters.chainId);
@@ -142,6 +160,14 @@ function WalletAssetsSection({ onOpenFilters, filters }: Props) {
               alignContent="center"
               spacing={2}
             >
+              <IconButton
+                onClick={() => {
+                  setOpenFilter(!openFilter);
+                }}
+              >
+                <FilterListIcon />
+              </IconButton>
+
               <TextField
                 type="search"
                 size="small"
@@ -217,7 +243,21 @@ function WalletAssetsSection({ onOpenFilters, filters }: Props) {
             </Stack>
           )}
         </Grid>
-        {renderAssets()}
+        {openFilter && (
+          <Grid item xs={3}>
+            <WalletAssetsFilter
+              setFilters={setFilters}
+              filters={filters}
+              accounts={accounts}
+              onClose={() => setOpenFilter(false)}
+            />
+          </Grid>
+        )}
+
+        <Grid container item xs={openFilter ? 9 : 12}>
+          {accountAssetsQuery.isLoading && <TableSkeleton rows={4} />}
+          {!accountAssetsQuery.isLoading && renderAssets()}
+        </Grid>
       </Grid>
     </>
   );

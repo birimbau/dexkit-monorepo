@@ -15,7 +15,7 @@ import {
   transactionDialogRedirectUrlAtom,
   transactionsAtom,
   transactionTypeAtom,
-  transactionValuesAtom,
+  transactionValuesAtom
 } from '../state/atoms';
 import {
   TransactionMetadata,
@@ -165,6 +165,10 @@ export function useAppConfig() {
 
 export function useAppNFT() {
   return useContext(AppConfigContext).appNFT;
+}
+
+export function useSiteId() {
+  return useContext(AppConfigContext).siteId;
 }
 
 export function useCollections() {

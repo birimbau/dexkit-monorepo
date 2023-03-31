@@ -1,0 +1,144 @@
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useWeb3React } from '@web3-react/core';
+import { useAuth, useLoginAccountMutation } from 'src/hooks/account';
+import { useSiteId } from 'src/hooks/app';
+import { getClaimCampaign, getUserAddAccountMessage, getUserByAccount, getUserByUsername, getUserConnectDiscord, getUserConnectTwitter, postClaimCampaign, postUserAddAccount, postUserRemoveAccount, upsertUser } from '../services';
+import { UserOptions } from '../types';
+
+
+
+export function useClaimCampaignMutation({ onSuccess }: { onSuccess?: ({ txHash }: { txHash: string }) => void }) {
+  const queryClient = useQueryClient();
+  return useMutation(async () => {
+
+
+    const response = await postClaimCampaign();
+
+    return response.data;
+
+  }, {
+    onSuccess(data) {
+      if (onSuccess) {
+        onSuccess(data)
+      }
+
+      queryClient.refetchQueries([GET_USER_CLAIM_CAMPAIGN_QUERY])
+    }
+  })
+}
+
+export const GET_USER_CLAIM_CAMPAIGN_QUERY = 'GET_USER_CLAIM_CAMPAIGN_QUERY';
+
+export function useUserClaimCampaignQuery() {
+  const { account, } = useWeb3React();
+  const { isLoggedIn } = useAuth()
+  return useQuery([GET_USER_CLAIM_CAMPAIGN_QUERY, account, isLoggedIn], async () => {
+    if (!account) {
+      return;
+    }
+    if (!isLoggedIn) {
+      return
+    }
+    const { data } = await getClaimCampaign();
+    return data;
+  })
+}
+
+
+export function useAddAccountUserMutation() {
+  const { account, provider } = useWeb3React();
+  const { isLoggedIn } = useAuth()
+  const queryClient = useQueryClient();
+  return useMutation(async () => {
+    if (!provider || !account) {
+      return;
+    }
+    if (!isLoggedIn) {
+      return
+    }
+    const messageToSign = await getUserAddAccountMessage({ address: account });
+    const signature = await provider.getSigner().signMessage(messageToSign.data);
+    const user = await postUserAddAccount({ signature, address: account })
+    queryClient.refetchQueries([GET_AUTH_USER])
+    return user;
+
+  })
+}
+
+export function useRemoveAccountUserMutation() {
+
+  const { isLoggedIn } = useAuth()
+  const queryClient = useQueryClient();
+  return useMutation(async (account?: string) => {
+    if (!isLoggedIn || !account) {
+      return
+    }
+    const user = await postUserRemoveAccount({ address: account })
+    queryClient.refetchQueries([GET_AUTH_USER])
+    return user;
+
+  })
+}
+
+
+export function useUpsertUserMutation() {
+  const { isLoggedIn } = useAuth()
+  const siteId = useSiteId()
+  const loginMutation = useLoginAccountMutation()
+  return useMutation(async (user?: UserOptions) => {
+    if (!user) {
+      return;
+    }
+    if (!isLoggedIn) {
+      await loginMutation.mutateAsync()
+    }
+    await upsertUser({ ...user, createdOnSiteId: siteId });
+  })
+}
+
+export function useUserConnectTwitterMutation() {
+  const { isLoggedIn } = useAuth()
+  const loginMutation = useLoginAccountMutation()
+  return useMutation(async () => {
+
+    if (!isLoggedIn) {
+      await loginMutation.mutateAsync()
+    }
+
+    await getUserConnectTwitter();
+  })
+}
+
+
+export function useUserConnectDiscordMutation() {
+  const { isLoggedIn } = useAuth()
+  const loginMutation = useLoginAccountMutation()
+  return useMutation(async () => {
+
+    if (!isLoggedIn) {
+      await loginMutation.mutateAsync()
+    }
+    await getUserConnectDiscord();
+  })
+}
+
+export const GET_USER_BY_USERNAME_QUERY = 'GET_USER_BY_USERNAME_QUERY';
+
+export function useUserQuery(username?: string) {
+  return useQuery([GET_USER_BY_USERNAME_QUERY, username], async () => {
+    if (username) {
+      const userRequest = await getUserByUsername(username);
+      return userRequest.data;
+    }
+    return null
+  })
+}
+
+export const GET_AUTH_USER = 'GET_AUTH_USER';
+export function useAuthUserQuery() {
+
+  return useQuery([GET_AUTH_USER], async () => {
+    const userRequest = await getUserByAccount();
+    return userRequest.data;
+  })
+}

@@ -97,8 +97,6 @@ export function useDexkitContextState({
         }
       }
 
-      console.log(newNotification);
-
       return [...notifications, newNotification];
     });
   };

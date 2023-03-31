@@ -4,45 +4,46 @@ import { useContext } from "react";
 import { MIN_KIT_HOLDING_AI_GENERATION, WHITELISTED_AI_ACCOUNTS } from "src/constants";
 import { getKitBalanceOfThreshold } from "src/services/balances";
 import { AuthContext } from "../contexts";
-import { login, requestSignature, setAccessToken } from "../services/auth";
+import { loginApp, requestSignature, setAccessToken } from "../services/auth";
+import { useSignMessageDialog } from './app';
 
 export function useAuth() {
-  const { setIsLoggedIn, isLoggedIn } = useContext(AuthContext);
-
-
-
-  return { setIsLoggedIn, isLoggedIn }
-
+  const { setIsLoggedIn, isLoggedIn, user, setUser } = useContext(AuthContext);
+  return { setIsLoggedIn, isLoggedIn, user }
 }
 
 
 
 export function useLoginAccountMutation() {
   const { account, provider } = useWeb3React();
+  const signMessageDialog = useSignMessageDialog();
+
   const { setIsLoggedIn } = useAuth();
 
   return useMutation(async () => {
     if (!account || !provider) {
       return;
     }
+    signMessageDialog.setOpen(true)
     const messageToSign = await requestSignature({ address: account });
 
     const signature = await provider.getSigner().signMessage(messageToSign.data);
 
-    const loginResponse = await login({ signature, address: account });
+    const loginResponse = await loginApp({ signature, address: account });
     if (setIsLoggedIn) {
       setIsLoggedIn(true);
     }
     setAccessToken(loginResponse.data.access_token)
     return loginResponse.data;
+  }, {
+    onError(error) {
+      signMessageDialog.setOpen(false)
+      // signMessageDialog.setError(Error('Error signing message'));
+    },
+    onSettled() {
+      signMessageDialog.setOpen(false)
+    }
   })
-}
-
-export function useIsLoggedIn() {
-
-
-
-
 }
 
 
