@@ -46,15 +46,7 @@ import {
   useMakeOfferMutation,
   useSwapSdkV4,
 } from 'src/hooks/nft';
-import {
-  getERC20Decimals,
-  getERC20Name,
-  getERC20Symbol,
-} from 'src/services/balances';
-import {
-  ApproveTransactionMetadata,
-  TransactionType,
-} from 'src/types/blockchain';
+import { getERC20Name, getERC20Symbol } from 'src/services/balances';
 import { Asset } from 'src/types/nft';
 import {
   getBlockExplorerUrl,
@@ -129,7 +121,6 @@ export const CreateAssetOrderContainer = () => {
           createNotification({
             type: 'transaction',
             subtype: 'approveForAll',
-            icon: 'check',
             values: {
               name: asset.collectionName,
               tokenId: asset.id,
@@ -143,7 +134,6 @@ export const CreateAssetOrderContainer = () => {
           createNotification({
             type: 'transaction',
             subtype: 'approve',
-            icon: 'check',
             values: {
               name: asset.collectionName,
               tokenId: asset.id,
@@ -168,18 +158,13 @@ export const CreateAssetOrderContainer = () => {
           variable.asset.type === 'ERC721' ||
           variable.asset.type === 'ERC1155'
         ) {
-          transactions.showDialog(
-            true,
-            { asset: asset },
-            TransactionType.APPROVAL_FOR_ALL
-          );
-        } else {
-          const amount = variable.asset.amount;
+          const values = {
+            name: asset.collectionName,
+            tokenId: asset.id,
+          };
 
-          const decimals = await getERC20Decimals(
-            variable.asset.tokenAddress,
-            provider
-          );
+          transactions.open('approveForAll', values);
+        } else {
           const symbol = await getERC20Symbol(
             variable.asset.tokenAddress,
             provider
@@ -190,11 +175,12 @@ export const CreateAssetOrderContainer = () => {
             provider
           );
 
-          transactions.showDialog(
-            true,
-            { amount, decimals, symbol, name } as ApproveTransactionMetadata,
-            TransactionType.APPROVE
-          );
+          const values = {
+            name,
+            symbol,
+          };
+
+          transactions.open('approve', values);
         }
       }
     },
@@ -223,7 +209,6 @@ export const CreateAssetOrderContainer = () => {
         createNotification({
           type: 'common',
           subtype: 'createListing',
-          icon: 'list',
           values: {
             collectionName: asset.collectionName,
             id: asset.id,

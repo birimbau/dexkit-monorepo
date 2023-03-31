@@ -58,7 +58,6 @@ export function AssetBuyOrder({ asset, orderBookItem }: Props) {
           createNotification({
             type: 'transaction',
             subtype: 'approveForAll',
-            icon: 'check',
             values,
             metadata: { chainId, hash },
           });
@@ -73,7 +72,6 @@ export function AssetBuyOrder({ asset, orderBookItem }: Props) {
           createNotification({
             type: 'transaction',
             subtype: 'approve',
-            icon: 'check',
             values,
             metadata: { chainId, hash },
           });

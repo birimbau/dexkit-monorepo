@@ -20,8 +20,8 @@ import moment from 'moment';
 import { useCallback, useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
 import AppFeePercentageSpan from '../../../components/AppFeePercentageSpan';
-import Calendar from '../../../components/icons/Calendar';
 import Link from '../../../components/Link';
+import Calendar from '../../../components/icons/Calendar';
 import { ZEROEX_NATIVE_TOKEN_ADDRESS } from '../../../constants';
 import { useAppConfig, useTransactionDialog } from '../../../hooks/app';
 import { useSwitchNetwork, useTokenList } from '../../../hooks/blockchain';
@@ -35,11 +35,7 @@ import {
   useSwapSdkV4,
 } from '../../../hooks/nft';
 import { getERC20Decimals, getERC20Symbol } from '../../../services/balances';
-import {
-  AcceptTransactionMetadata,
-  BuyTransactionMetadata,
-  TransactionType,
-} from '../../../types/blockchain';
+
 import { OrderBookItem, SwapApiOrder } from '../../../types/nft';
 import {
   getBlockExplorerUrl,
@@ -137,7 +133,6 @@ function OrderRightSection({ order }: Props) {
         createNotification({
           type: 'common',
           subtype: 'cancelOffer',
-          icon: 'close',
           values,
           metadata: {
             hash,
@@ -177,29 +172,18 @@ function OrderRightSection({ order }: Props) {
 
         const symbol = await getERC20Symbol(order.erc20Token, provider);
 
-        if (accept) {
-          const metadata = {
-            asset,
-            order,
-            tokenDecimals: decimals,
-            symbol,
-          } as AcceptTransactionMetadata;
+        const values = {
+          collectionName: asset.collectionName,
+          id: asset.id,
+          amount: ethers.utils.formatUnits(order.erc20TokenAmount, decimals),
+          symbol,
+        };
 
-          return transactions.showDialog(
-            true,
-            metadata,
-            TransactionType.ACCEPT
-          );
+        if (accept) {
+          return transactions.open('acceptOffer', values);
         }
 
-        const metadata = {
-          asset,
-          order,
-          tokenDecimals: decimals,
-          symbol,
-        } as BuyTransactionMetadata;
-
-        transactions.showDialog(true, metadata, TransactionType.BUY);
+        transactions.open('buyNft', values);
       }
     },
     [transactions, asset]
@@ -272,7 +256,6 @@ function OrderRightSection({ order }: Props) {
           createNotification({
             type: 'transaction',
             subtype: 'approveForAll',
-            icon: 'check',
             values,
             metadata: { chainId, hash },
           });
@@ -285,7 +268,6 @@ function OrderRightSection({ order }: Props) {
           createNotification({
             type: 'transaction',
             subtype: 'approve',
-            icon: 'check',
             values,
             metadata: { chainId, hash },
           });
@@ -303,23 +285,28 @@ function OrderRightSection({ order }: Props) {
     handleApproveAsset,
     {
       onError: (error: any) => transactions.setDialogError(error),
-      onMutate: (variable: { asset: SwappableAssetV4 }) => {
+      onMutate: async (variable: { asset: SwappableAssetV4 }) => {
         if (asset) {
           if (
             variable.asset.type === 'ERC721' ||
             variable.asset.type === 'ERC1155'
           ) {
-            transactions.showDialog(
-              true,
-              { asset: asset },
-              TransactionType.APPROVAL_FOR_ALL
-            );
+            const values = { name: asset.collectionName, tokenId: asset.id };
+
+            transactions.open('approveForAll', values);
           } else {
-            transactions.showDialog(
-              true,
-              { asset: asset },
-              TransactionType.APPROVE
+            const symbol = await getERC20Symbol(
+              variable.asset.tokenAddress,
+              provider
             );
+            const name = await getERC20Symbol(
+              variable.asset.tokenAddress,
+              provider
+            );
+
+            const values = { name, symbol };
+
+            transactions.open('approve', values);
           }
         }
       },

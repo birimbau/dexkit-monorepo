@@ -20,7 +20,7 @@ import {
 import {
   TransactionMetadata,
   TransactionStatus,
-  TransactionType
+  TransactionType,
 } from '../types/blockchain';
 
 export function useTransactionDialog() {
