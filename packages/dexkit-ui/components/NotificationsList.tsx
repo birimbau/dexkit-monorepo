@@ -93,6 +93,19 @@ export default function NotificationsList({
     [notificationTypes]
   );
 
+  const renderIcon = useCallback((notification: AppNotification) => {
+    if (notification.icon) {
+      return notification.icon;
+    }
+
+    if (
+      notificationTypes[notification.subtype] &&
+      notificationTypes[notification.subtype].icon
+    ) {
+      return notificationTypes[notification.subtype].icon;
+    }
+  }, []);
+
   return (
     <List sx={{ p: 0 }}>
       {notifications.map((notification, key) => (
@@ -109,7 +122,7 @@ export default function NotificationsList({
                 backgroundColor: avatarColor(notification),
               }}
             >
-              {notification.icon && <Icon>{notification.icon}</Icon>}
+              <Icon>{renderIcon(notification)}</Icon>
             </Avatar>
           </ListItemAvatar>
           <ListItemText
