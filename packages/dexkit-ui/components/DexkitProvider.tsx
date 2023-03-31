@@ -3,14 +3,15 @@ import { IntlProvider, MessageFormatElement } from "react-intl";
 import { Web3ReactProvider } from "@web3-react/core";
 import { SnackbarProvider } from "notistack";
 import { useMemo } from "react";
-import { useOrderedConnectors } from "../hooks";
+import { useDexkitContextState, useOrderedConnectors } from "../hooks";
 
-import { Transaction } from "@dexkit/core/types";
+import { AppTransaction } from "@dexkit/core/types";
 import { getConnectorName } from "@dexkit/core/utils";
 import { CssBaseline, Theme, ThemeProvider } from "@mui/material";
-import { PrimitiveAtom } from "jotai";
+import { PrimitiveAtom, SetStateAction, WritableAtom } from "jotai";
 
 import { DexKitContext } from "../context/DexKitContext";
+import { AppNotification, AppNotificationType } from "../types";
 import { MagicStateProvider } from "./MagicStateProvider";
 import TransactionUpdater from "./TransactionUpdater";
 
@@ -18,7 +19,8 @@ export interface DexkitProviderProps {
   theme: Theme;
   locale: string;
   defaultLocale?: string;
-  setLocale: (locale: string) => void;
+  onChangeLocale: (locale: string) => void;
+  notificationTypes: { [key: string]: AppNotificationType };
   localeMessages?:
     | Record<string, string>
     | Record<string, MessageFormatElement[]>;
@@ -26,20 +28,31 @@ export interface DexkitProviderProps {
   options?: {
     magicRedirectUrl: string;
   };
-  pendingTransactionsAtom: PrimitiveAtom<{
-    [hash: string]: Transaction;
-  }>;
+  transactionsAtom: WritableAtom<
+    {
+      [key: string]: AppTransaction;
+    },
+    SetStateAction<{
+      [key: string]: AppTransaction;
+    }>,
+    void
+  >;
+
+  notificationsAtom: PrimitiveAtom<AppNotification[]>;
+
   selectedWalletAtom: PrimitiveAtom<string>;
 }
 
 export function DexkitProvider({
   children,
   theme,
-  pendingTransactionsAtom,
   selectedWalletAtom,
+  transactionsAtom,
   locale,
-  setLocale,
+  onChangeLocale,
   localeMessages,
+  notificationTypes,
+  notificationsAtom,
 }: DexkitProviderProps) {
   const connectors = useOrderedConnectors({ selectedWalletAtom });
 
@@ -49,12 +62,15 @@ export function DexkitProvider({
     [connectors]
   );
 
+  const appState = useDexkitContextState({
+    notificationTypes,
+    notificationsAtom,
+    transactionsAtom,
+    onChangeLocale,
+  });
+
   return (
-    <DexKitContext.Provider
-      value={{
-        setLocale: setLocale,
-      }}
-    >
+    <DexKitContext.Provider value={appState}>
       <IntlProvider
         locale={locale}
         defaultLocale={locale}
@@ -68,9 +84,7 @@ export function DexkitProvider({
             >
               <CssBaseline />
               <MagicStateProvider currency="usd">{children}</MagicStateProvider>
-              <TransactionUpdater
-                pendingTransactionsAtom={pendingTransactionsAtom}
-              />
+              <TransactionUpdater pendingTransactionsAtom={transactionsAtom} />
             </SnackbarProvider>
           </ThemeProvider>
         </Web3ReactProvider>

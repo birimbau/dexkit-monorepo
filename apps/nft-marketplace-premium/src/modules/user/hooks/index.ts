@@ -7,24 +7,21 @@ import { UserOptions } from '../types';
 
 
 
-export function useClaimCampaignMutation() {
-  const { account, } = useWeb3React();
-  const { isLoggedIn } = useAuth()
+export function useClaimCampaignMutation({ onSuccess }: { onSuccess?: ({ txHash }: { txHash: string }) => void }) {
   const queryClient = useQueryClient();
   return useMutation(async () => {
-    /* if (!account) {
-       return;
-     }
-     if (!isLoggedIn) {
-       return
-     }*/
-  
-      const response = await postClaimCampaign();
 
-      return response.data;
-    
+
+    const response = await postClaimCampaign();
+
+    return response.data;
+
   }, {
-    onSuccess() {
+    onSuccess(data) {
+      if (onSuccess) {
+        onSuccess(data)
+      }
+
       queryClient.refetchQueries([GET_USER_CLAIM_CAMPAIGN_QUERY])
     }
   })

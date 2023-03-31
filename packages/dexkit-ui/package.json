@@ -8,24 +8,29 @@
     "build-storybook": "build-storybook"
   },
   "devDependencies": {
-    "@dexkit/core": "*",
     "@babel/core": "^7.21.0",
+    "@dexkit/core": "*",
     "@mui/lab": "5.0.0-alpha.121",
     "@storybook/addon-actions": "^6.5.16",
     "@storybook/addon-essentials": "^6.5.16",
     "@storybook/addon-interactions": "^6.5.16",
     "@storybook/addon-links": "^6.5.16",
+    "@storybook/builder-vite": "^0.4.2",
     "@storybook/builder-webpack5": "^6.5.16",
     "@storybook/manager-webpack5": "^6.5.16",
     "@storybook/react": "^6.5.16",
     "@storybook/testing-library": "^0.0.13",
+    "@vitejs/plugin-react": "^3.1.0",
     "babel-loader": "^8.3.0",
     "eslint": "^7.32.0",
     "eslint-config-custom": "*",
+    "react-docgen-typescript-loader": "^3.7.2",
     "storybook": "^6.5.16",
+    "ts-loader": "^9.4.2",
     "tsconfig": "*",
     "tsup": "^6.5.0",
-    "typescript": "^4.5.2"
+    "typescript": "^4.5.2",
+    "vite": "^4.2.1"
   },
   "dependencies": {}
 }

@@ -9,7 +9,9 @@
     "lint": {
       "outputs": []
     },
-    "storybook": {},
+    "storybook": {
+      "cache": false
+    },
     "bundle:widgets": {
       "cache": false
     },

@@ -8,7 +8,7 @@ import {
   useAppNFT,
   useConnectWalletDialog,
   useSignMessageDialog,
-  useTransactions,
+  useTransactionDialog,
 } from '../../hooks/app';
 import {
   drawerIsOpenAtom,
@@ -34,6 +34,8 @@ import AppDrawer from '../AppDrawer';
 import { useWalletActivate } from '@dexkit/core/hooks';
 import { WalletActivateParams } from '@dexkit/core/types';
 import { ConnectWalletDialog } from '@dexkit/ui';
+import WatchTransactionDialog from '@dexkit/ui/components/dialogs/WatchTransactionDialog';
+
 const HoldingKitDialog = dynamic(() => import('../dialogs/HoldingKitDialog'));
 
 const SelectCurrencyDialog = dynamic(
@@ -71,7 +73,7 @@ const MainLayout: React.FC<Props> = ({
     }
   }, [defaultAppConfig, appConfigProps]);
 
-  const transactions = useTransactions();
+  const transactions = useTransactionDialog();
 
   const [holdsKitDialog, setHoldsKitDialog] = useAtom(holdsKitDialogAtom);
 
@@ -210,17 +212,16 @@ const MainLayout: React.FC<Props> = ({
         />
       )}
       {transactions.isOpen && (
-        <TransactionDialog
-          dialogProps={{
+        <WatchTransactionDialog
+          DialogProps={{
             open: transactions.isOpen,
             onClose: handleCloseTransactionDialog,
             fullWidth: true,
             maxWidth: 'xs',
           }}
           hash={transactions.hash}
-          metadata={transactions.metadata}
           type={transactions.type}
-          error={transactions.error}
+          values={transactions.values}
         />
       )}
       {signMessageDialog.open && (

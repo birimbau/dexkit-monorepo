@@ -1,3 +1,5 @@
+import { AppTransaction } from '@dexkit/core/types';
+import { AppNotification } from '@dexkit/ui/types';
 import { atom } from 'jotai';
 import { focusAtom } from 'jotai/optics';
 import { atomWithStorage } from 'jotai/utils';
@@ -93,8 +95,9 @@ export const currencyUserAtom = focusAtom<AppState, string, void>(
   (o) => o.prop('currencyUser')
 );
 
-export const localeUserAtom = focusAtom<AppState, string, void>(appStateAtom, (o) =>
-  o.prop('localeUser')
+export const localeUserAtom = focusAtom<AppState, string, void>(
+  appStateAtom,
+  (o) => o.prop('localeUser')
 );
 
 export const assetsAtom = focusAtom<AppState, { [key: string]: Asset }, void>(
@@ -130,9 +133,17 @@ export const transactionDialogErrorAtom = atom<Error | undefined>(undefined);
 export const transactionDialogMetadataAtom = atom<
   TransactionMetadata | undefined
 >(undefined);
+
+/** @deprecated */
 export const transactionDialogTypeAtom = atom<TransactionType | undefined>(
   undefined
 );
+
+export const transactionValuesAtom = atom<Record<string, any> | undefined>(
+  undefined
+);
+
+export const transactionTypeAtom = atom<string | undefined>(undefined);
 
 export const switchNetworkOpenAtom = atom(false);
 export const switchNetworkChainIdAtom = atom<number | undefined>(undefined);
@@ -160,3 +171,12 @@ export const showSelectLocaleAtom = atom<boolean>(false);
 export const showAppTransactionsAtom = atom<boolean>(false);
 
 export const selectedWalletAtom = atomWithStorage<string>('connector', '');
+
+export const transactionsAtomV2 = atomWithStorage<{
+  [key: string]: AppTransaction;
+}>('dexkit.transactions', {});
+
+export const notificationsAtom = atomWithStorage<AppNotification[]>(
+  'dexkit.notifications',
+  []
+);

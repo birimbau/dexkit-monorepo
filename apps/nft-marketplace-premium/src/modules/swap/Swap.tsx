@@ -32,7 +32,7 @@ import {
 import {
   useAppConfig,
   useConnectWalletDialog,
-  useTransactions,
+  useTransactionDialog,
 } from '../../hooks/app';
 import { useErc20Balance } from '../../hooks/nft';
 import { useDebounce, useExecSwap, useSwapQuote } from '../../hooks/swap';
@@ -181,7 +181,7 @@ export function Swap(props: Props) {
 
   const [showConfirmSwap, setShowConfirmSwap] = useState(false);
 
-  const transactions = useTransactions();
+  const transactions = useTransactionDialog();
 
   const sellTokenBalanceQuery = useErc20Balance(
     provider,

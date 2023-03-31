@@ -1,4 +1,5 @@
 import { ChainId } from '@dexkit/core';
+import { useDexKitContext } from '@dexkit/ui/hooks';
 import { getBlockExplorerUrl } from '@dexkit/widgets/src/utils';
 import CelebrationIcon from '@mui/icons-material/Celebration';
 import CloseIcon from '@mui/icons-material/Close';
@@ -28,7 +29,17 @@ export function UserAirdrop() {
   const router = useRouter();
   const authUserQuery = useAuthUserQuery();
   const authUser = authUserQuery.data;
-  const claimCampaignMutation = useClaimCampaignMutation();
+  const { createNotification } = useDexKitContext();
+  const onSuccess = ({ txHash }: { txHash: string }) => {
+    createNotification({
+      type: 'transaction',
+      subtype: 'claimAirdrop',
+      icon: 'celebration',
+      metadata: { chainId: ChainId.Polygon, hash: txHash },
+    });
+  };
+
+  const claimCampaignMutation = useClaimCampaignMutation({ onSuccess });
   const claimCampaignQuery = useUserClaimCampaignQuery();
   const postData = claimCampaignMutation.data;
   const needToCompleteProfile =

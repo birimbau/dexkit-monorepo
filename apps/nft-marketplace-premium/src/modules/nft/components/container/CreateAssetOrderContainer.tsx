@@ -6,6 +6,7 @@ const OrderCreatedDialog = dynamic(
 );
 import MakeListingForm from '@/modules/orders/components/forms/MakeListingForm';
 import MakeOfferForm from '@/modules/orders/components/forms/MakeOfferForm';
+import { useDexKitContext } from '@dexkit/ui';
 import ImportExportIcon from '@mui/icons-material/ImportExport';
 import Launch from '@mui/icons-material/Launch';
 import {
@@ -36,7 +37,7 @@ import Image from 'next/image';
 import { useCallback, useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import Link from 'src/components/Link';
-import { useSignMessageDialog, useTransactions } from 'src/hooks/app';
+import { useSignMessageDialog, useTransactionDialog } from 'src/hooks/app';
 import {
   useAccountAssetsBalance,
   useApproveAssetMutation,
@@ -85,7 +86,9 @@ export const CreateAssetOrderContainer = () => {
 
   const signMessageDialog = useSignMessageDialog();
 
-  const transactions = useTransactions();
+  const transactions = useTransactionDialog();
+
+  const { createNotification } = useDexKitContext();
 
   const { formatMessage } = useIntl();
 
@@ -123,26 +126,39 @@ export const CreateAssetOrderContainer = () => {
     async (hash: string, swapAsset: SwappableAssetV4) => {
       if (asset !== null) {
         if (swapAsset.type === 'ERC721') {
-          transactions.addTransaction(hash, TransactionType.APPROVAL_FOR_ALL, {
-            asset,
+          createNotification({
+            type: 'transaction',
+            subtype: 'approveForAll',
+            icon: 'check',
+            values: {
+              name: asset.collectionName,
+              tokenId: asset.id,
+            },
+            metadata: {
+              chainId,
+              hash,
+            },
           });
         } else if (swapAsset.type === 'ERC20') {
-          const decimals = await getERC20Decimals(
-            swapAsset.tokenAddress,
-            provider
-          );
-
-          const symbol = await getERC20Symbol(swapAsset.tokenAddress, provider);
-
-          transactions.addTransaction(hash, TransactionType.APPROVE, {
-            amount: swapAsset.amount,
-            symbol,
-            decimals,
+          createNotification({
+            type: 'transaction',
+            subtype: 'approve',
+            icon: 'check',
+            values: {
+              name: asset.collectionName,
+              tokenId: asset.id,
+            },
+            metadata: {
+              chainId,
+              hash,
+            },
           });
         }
+
+        transactions.watch(hash);
       }
     },
-    [transactions, asset]
+    [transactions, asset, chainId]
   );
 
   const handleApproveAssetMutate = useCallback(
@@ -202,8 +218,20 @@ export const CreateAssetOrderContainer = () => {
       signMessageDialog.setOpen(false);
       setShowOrderCreated(true);
       setOrderCreated(data);
+
+      if (asset) {
+        createNotification({
+          type: 'common',
+          subtype: 'createListing',
+          icon: 'list',
+          values: {
+            collectionName: asset.collectionName,
+            id: asset.id,
+          },
+        });
+      }
     },
-    [signMessageDialog]
+    [signMessageDialog, asset]
   );
 
   const approveAsset = useApproveAssetMutation(

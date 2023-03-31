@@ -4,11 +4,12 @@ import { BigNumber, ethers } from "ethers";
 import { EventEmitter } from "events";
 import { ChainId } from "../constants";
 import { NETWORKS } from "../constants/networks";
+import { MagicConnector } from "../types/magic";
 
 export function getConnectorName(connector?: Connector) {
-  // if (connector instanceof MagicConnector) {
-  //   return 'magic';
-  // }
+  if (connector instanceof MagicConnector) {
+    return "magic";
+  }
 
   if (connector instanceof MetaMask) {
     return "metamask";
@@ -104,4 +105,10 @@ export function formatBigNumber(val: BigNumber, decimals: number) {
   }
 
   return value.substring(0, ending);
+}
+
+export function getBlockExplorerUrl(chainId?: number) {
+  if (chainId) {
+    return NETWORKS[chainId].explorerUrl;
+  }
 }
