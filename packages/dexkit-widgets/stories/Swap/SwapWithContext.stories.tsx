@@ -1,19 +1,26 @@
 import { useWalletActivate } from "@dexkit/core/hooks";
 import { WalletActivateParams } from "@dexkit/core/types";
 import { ConnectWalletDialog, DexkitProvider } from "@dexkit/ui/components";
+import { AppNotification } from "@dexkit/ui/types";
 import { createTheme, Grid } from "@mui/material";
 import { ComponentMeta, ComponentStory } from "@storybook/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useWeb3React } from "@web3-react/core";
 import { atom } from "jotai";
+import { atomWithStorage } from "jotai/utils";
 import { useState } from "react";
 import { SwapWidget, SwapWidgetProps } from "../../src/widgets/swap";
 
-const pendingTransactionsAtom = atom<{}>({});
+const transactionsAtom = atom<{}>({});
+const notificationsAtom = atom<AppNotification[]>([]);
+const selectedWalletAtom = atomWithStorage<string>("connector", "");
 
 function Component(props: SwapWidgetProps) {
   const { isActive } = useWeb3React();
-  const walletActivate = useWalletActivate();
+  const walletActivate = useWalletActivate({
+    magicRedirectUrl: "",
+    selectedWalletAtom: selectedWalletAtom,
+  });
   const [showConnectWallet, setShowConnectWallet] = useState(false);
 
   const handleClose = () => {};
@@ -57,13 +64,18 @@ const queryClient = new QueryClient();
 
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
 const Template: ComponentStory<typeof SwapWidget> = (args: SwapWidgetProps) => {
+  const [locale, setLocale] = useState("en-US");
   return (
     <QueryClientProvider client={queryClient}>
       <DexkitProvider
-        locale="en-US"
-        pendingTransactionsAtom={pendingTransactionsAtom}
-        defaultLocale="en-US"
+        locale={locale}
+        defaultLocale={locale}
+        selectedWalletAtom={selectedWalletAtom}
+        transactionsAtom={transactionsAtom}
+        notificationTypes={{}}
+        notificationsAtom={notificationsAtom}
         theme={createTheme()}
+        onChangeLocale={(loc) => setLocale(loc)}
       >
         <Grid container justifyContent="center" spacing={2}>
           <Grid item xs={12} sm={4}>
@@ -87,6 +99,7 @@ export const Default = Template.bind({});
 
 Default.args = {
   renderOptions: {
+    currency: "usd",
     configsByChain: {},
     zeroExApiKey,
     defaultChainId: 137,

@@ -1,8 +1,8 @@
+import { ChainId } from "@dexkit/core/constants";
 import { Grid } from "@mui/material";
 import { ComponentMeta, ComponentStory } from "@storybook/react";
 import DexkitContextProvider from "../../src/components/DexkitContextProvider";
 import { OPTIMISM_TOKEN } from "../../src/constants";
-import { ChainId } from "../../src/constants/enum";
 import { SwapWidget, SwapWidgetProps } from "../../src/widgets/swap";
 import { TEST_TOKENS } from "../SelectCoinList/constants";
 
@@ -50,6 +50,7 @@ export const Default = Template.bind({});
 
 Default.args = {
   renderOptions: {
+    currency: "usd",
     configsByChain: {},
     zeroExApiKey,
     defaultChainId: 137,
@@ -60,6 +61,7 @@ export const TokensSelected = Template.bind({});
 
 TokensSelected.args = {
   renderOptions: {
+    currency: "usd",
     configsByChain: {
       [ChainId.Optimism]: {
         slippage: 0,
@@ -74,6 +76,7 @@ export const NoNotifications = Template.bind({});
 
 NoNotifications.args = {
   renderOptions: {
+    currency: "usd",
     configsByChain: {},
     disableNotificationsButton: true,
     zeroExApiKey,
@@ -84,6 +87,7 @@ export const WithTransak = Template.bind({});
 
 WithTransak.args = {
   renderOptions: {
+    currency: "usd",
     configsByChain: {},
     transakApiKey: "4cf44cc4-69d7-4f4d-8237-05cc9076aa41",
     zeroExApiKey,
@@ -94,6 +98,7 @@ export const WithTransakButton = Template.bind({});
 
 WithTransakButton.args = {
   renderOptions: {
+    currency: "usd",
     configsByChain: {},
     transakApiKey: "4cf44cc4-69d7-4f4d-8237-05cc9076aa41",
     enableBuyCryptoButton: true,
@@ -105,6 +110,7 @@ export const DisableFooter = Template.bind({});
 
 DisableFooter.args = {
   renderOptions: {
+    currency: "usd",
     configsByChain: {},
     disableFooter: true,
     zeroExApiKey,
@@ -115,6 +121,7 @@ export const FeaturedTokens = Template.bind({});
 
 FeaturedTokens.args = {
   renderOptions: {
+    currency: "usd",
     configsByChain: {
       [ChainId.Polygon]: {
         slippage: 0,
