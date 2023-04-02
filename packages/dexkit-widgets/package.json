@@ -6,7 +6,7 @@
   "types": "src/index.tsx",
   "scripts": {
     "lint": "TIMING=1 eslint \"**/*.ts*\"",
-    "storybook": "start-storybook -p 6006",
+    "storybook": "start-storybook -p 6006 --quiet",
     "build-storybook": "build-storybook",
     "build": "echo '' > /dev/null",
     "bundle:widgets": "rollup -c rollup.config.js",

@@ -15,7 +15,7 @@ import {
 } from "@mui/material";
 import { Connector } from "@web3-react/types";
 import { isAddress } from "ethers/lib/utils";
-import { ChangeEvent, SyntheticEvent, useMemo } from "react";
+import { ChangeEvent, SyntheticEvent, useMemo, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { switchNetwork } from "../../../../utils";
 import { Coin } from "../../types";
@@ -49,6 +49,8 @@ export function EvmSendForm({
   connector,
   balance,
 }: EvmSendFormProps) {
+  const [addressTouched, setAddressTouched] = useState(false);
+
   const handleChangeCoin = (
     event: SyntheticEvent<Element, Event>,
     value: Coin | null,
@@ -64,6 +66,7 @@ export function EvmSendForm({
   ) => {
     if (typeof newValue === "string") {
       onChange({ ...values, address: newValue });
+      setAddressTouched(true);
     }
   };
 
@@ -167,9 +170,9 @@ export function EvmSendForm({
             {...params}
             label={<FormattedMessage id="address" defaultMessage="Address" />}
             name="address"
-            error={!isAddressValid}
+            error={!isAddressValid && addressTouched}
             helperText={
-              !isAddressValid ? (
+              !isAddressValid && addressTouched ? (
                 <FormattedMessage
                   id="invalid address"
                   defaultMessage="Invalid address"

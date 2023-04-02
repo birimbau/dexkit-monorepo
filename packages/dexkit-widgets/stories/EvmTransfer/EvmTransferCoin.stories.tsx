@@ -46,3 +46,11 @@ Default.args = {
   defaultCoin: POLYGON_USDT_TOKEN,
   onSubmit: () => {},
 } as EvmTransferCoinProps;
+
+export const Empty = Template.bind({});
+
+Empty.args = {
+  evmAccounts: [],
+  coins: [],
+  onSubmit: () => {},
+} as EvmTransferCoinProps;
