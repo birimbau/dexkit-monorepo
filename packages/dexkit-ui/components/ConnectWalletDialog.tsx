@@ -19,6 +19,8 @@ import { ChangeEvent, useState } from "react";
 
 import { FormattedMessage, useIntl } from "react-intl";
 
+import { WALLET_CONNECTORS } from "@dexkit/core/connectors";
+
 import { MagicLoginType } from "@dexkit/core/constants";
 
 import { useSnackbar } from "notistack";
@@ -26,7 +28,6 @@ import { useSnackbar } from "notistack";
 import { AppDialogTitle } from "./AppDialogTitle";
 
 import { WalletActivateParams } from "@dexkit/core/types";
-import { WALLET_CONNECTORS } from "../constants";
 
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import Wallet from "@mui/icons-material/Wallet";
@@ -107,7 +108,7 @@ export function ConnectWalletDialog({
   const renderConnectors = () => {
     return WALLET_CONNECTORS.map((conn, index: number) => (
       <>
-        {isMobile && conn.id === "metamask" ? null : (
+        {conn.shouldDisplay() && (
           <ListItemButton
             divider
             key={index}
