@@ -37,7 +37,6 @@ import { useDexKitContext } from '@dexkit/ui';
 import { SwappableAssetV4 } from '@traderxyz/nft-swap-sdk';
 import { ethers } from 'ethers';
 import { OrderDirection } from 'src/types/orderbook';
-import { useTransactionDialog } from '../../../hooks/app';
 import { useSwitchNetwork, useTokenList } from '../../../hooks/blockchain';
 import {
   getERC20Decimals,
@@ -79,9 +78,7 @@ export function AssetTabs({ address, id }: Props) {
     AssetTabsOptions.Listings
   );
 
-  const transactions = useTransactionDialog();
-
-  const { createNotification } = useDexKitContext();
+  const { createNotification, watchTransactionDialog } = useDexKitContext();
 
   const nftSwapSdk = useSwapSdkV4(provider, chainId);
 
@@ -118,10 +115,10 @@ export function AssetTabs({ address, id }: Props) {
           });
         }
 
-        transactions.watch(hash);
+        watchTransactionDialog.watch(hash);
       }
     },
-    [transactions, provider, asset, chainId]
+    [watchTransactionDialog, provider, asset, chainId]
   );
 
   const approveAsset = useApproveAssetMutation(
@@ -129,7 +126,7 @@ export function AssetTabs({ address, id }: Props) {
     account,
     handleApproveAsset,
     {
-      onError: (error: any) => transactions.setDialogError(error),
+      onError: (error: any) => watchTransactionDialog.setDialogError(error),
       onMutate: async (variable: { asset: SwappableAssetV4 }) => {
         if (asset) {
           if (
@@ -138,7 +135,7 @@ export function AssetTabs({ address, id }: Props) {
           ) {
             const values = { asset: asset };
 
-            transactions.open('approveForAll', values);
+            watchTransactionDialog.open('approveForAll', values);
           } else {
             const symbol = await getERC20Symbol(
               asset.contractAddress,
@@ -149,7 +146,7 @@ export function AssetTabs({ address, id }: Props) {
 
             const values = { name, symbol };
 
-            transactions.open('approve', values);
+            watchTransactionDialog.open('approve', values);
           }
         }
       },
@@ -208,12 +205,12 @@ export function AssetTabs({ address, id }: Props) {
 
       queryClient.invalidateQueries([GET_NFT_ORDERS]);
     },
-    [transactions, provider, asset]
+    [watchTransactionDialog, provider, asset]
   );
 
   const handleFillSignedOrderError = useCallback(
-    (error: any) => transactions.setDialogError(error),
-    [transactions]
+    (error: any) => watchTransactionDialog.setDialogError(error),
+    [watchTransactionDialog]
   );
 
   const handleMutateSignedOrder = useCallback(
@@ -231,7 +228,7 @@ export function AssetTabs({ address, id }: Props) {
             id: asset.id,
           };
 
-          return transactions.open('acceptOffer', values);
+          return watchTransactionDialog.open('acceptOffer', values);
         }
 
         const values = {
@@ -241,10 +238,10 @@ export function AssetTabs({ address, id }: Props) {
           id: asset.id,
         };
 
-        transactions.open('buyNft', values);
+        watchTransactionDialog.open('buyNft', values);
       }
     },
-    [transactions, asset]
+    [watchTransactionDialog, asset]
   );
 
   const fillSignedOrder = useFillSignedOrderMutation(nftSwapSdk, account, {
@@ -303,34 +300,34 @@ export function AssetTabs({ address, id }: Props) {
           });
         }
 
-        transactions.watch(hash);
+        watchTransactionDialog.watch(hash);
       }
     },
-    [transactions, asset]
+    [watchTransactionDialog, asset]
   );
 
   const handleCancelSignedOrderError = useCallback(
-    (error: any) => transactions.setDialogError(error),
-    [transactions]
+    (error: any) => watchTransactionDialog.setDialogError(error),
+    [watchTransactionDialog]
   );
 
   const handleCancelSignedOrderMutate = useCallback(
     ({ order }: { order: SwapApiOrder }) => {
       if (asset !== undefined) {
         if (order.direction === OrderDirection.Buy) {
-          transactions.open('cancelOffer', {
+          watchTransactionDialog.open('cancelOffer', {
             collectionName: asset.collectionName,
             id: asset.id,
           });
         } else {
-          transactions.open('cancelListing', {
+          watchTransactionDialog.open('cancelListing', {
             collectionName: asset.collectionName,
             id: asset.id,
           });
         }
       }
     },
-    [transactions, asset]
+    [watchTransactionDialog, asset]
   );
 
   const cancelSignedOrder = useCancelSignedOrderMutation(
@@ -388,7 +385,7 @@ export function AssetTabs({ address, id }: Props) {
       order: selectedOrder,
     });
   }, [
-    transactions,
+    watchTransactionDialog,
     fillSignedOrder,
     nftSwapSdk,
     address,

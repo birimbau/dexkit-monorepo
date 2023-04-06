@@ -13,12 +13,18 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
+import { useWeb3React } from '@web3-react/core';
+import dynamic from 'next/dynamic';
 import { ChangeEvent, useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import CloseCircle from '../../../components/icons/CloseCircle';
 import Funnel from '../../../components/icons/Filter';
 import { ChainId } from '../../../constants/enum';
-import { useAccountAssetsBalance, useHiddenAssets } from '../../../hooks/nft';
+import {
+  useAccountAssetsBalance,
+  useAsset,
+  useHiddenAssets,
+} from '../../../hooks/nft';
 import { Asset } from '../../../types/nft';
 import {
   getNetworkSlugFromChainId,
@@ -26,6 +32,12 @@ import {
 } from '../../../utils/blockchain';
 import { AssetCard } from '../../nft/components/AssetCard';
 import WalletAssetsFilter from './WalletAssetsFilter';
+const EvmTransferNftDialog = dynamic(
+  () =>
+    import(
+      '@dexkit/ui/modules/evm-transfer-nft/components/dialogs/EvmTransferNftDialog'
+    )
+);
 interface Props {
   onOpenFilters?: () => void;
   filters?: {
@@ -45,11 +57,21 @@ function WalletAssetsSection({
   setFilters,
   accounts,
 }: Props) {
+  const { account, chainId, provider } = useWeb3React();
   const [openFilter, setOpenFilter] = useState(false);
+  const [assetTransfer, setAssetTransfer] = useState<Asset | undefined>();
 
   const { accountAssets, accountAssetsQuery } = useAccountAssetsBalance(
     filters?.account ? [filters?.account] : [],
     false
+  );
+  // We are calling this hook, because from api is missing the owner and this is in realtime
+  const assetToTransfer = useAsset(
+    assetTransfer?.contractAddress,
+    assetTransfer?.id,
+    undefined,
+    true,
+    assetTransfer?.chainId
   );
 
   const { isHidden, toggleHidden, assets: hiddenAssets } = useHiddenAssets();
@@ -101,6 +123,10 @@ function WalletAssetsSection({
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
   };
+  const onTransfer = (asset: Asset) => {
+    setAssetTransfer(asset);
+  };
+  console.log(assetTransfer);
 
   const renderAssets = () => {
     if (filteredAssetList.length === 0) {
@@ -140,6 +166,7 @@ function WalletAssetsSection({
           showControls={true}
           onHide={toggleHidden}
           isHidden={isHidden(asset)}
+          onTransfer={onTransfer}
         />
       </Grid>
     ));
@@ -150,6 +177,27 @@ function WalletAssetsSection({
 
   return (
     <>
+      {assetTransfer !== undefined && (
+        <EvmTransferNftDialog
+          DialogProps={{
+            open: assetTransfer !== undefined,
+            onClose: () => {
+              setAssetTransfer(undefined);
+            },
+          }}
+          params={{
+            chainId: chainId,
+            account: account,
+            provider: provider,
+            contractAddress: assetToTransfer.data?.contractAddress,
+            tokenId: assetToTransfer.data?.id,
+            isLoadingNft: assetToTransfer.isLoading,
+            nft: assetToTransfer?.data || assetTransfer,
+            nftMetadata:
+              assetToTransfer?.data?.metadata || assetTransfer.metadata,
+          }}
+        />
+      )}
       <Grid container spacing={2}>
         <Grid item xs={12}>
           {isDesktop ? (

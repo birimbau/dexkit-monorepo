@@ -31,8 +31,8 @@ import {
   truncateAddress,
 } from "@dexkit/core/utils";
 
-import { GET_NATIVE_TOKEN } from "@dexkit/core/constants";
-import { useCoinPrices, useErc20Balance } from "@dexkit/core/hooks";
+import { ChainId, GET_NATIVE_TOKEN } from "@dexkit/core/constants";
+import { useCoinPrices, useErc20BalanceQuery } from "@dexkit/core/hooks";
 import { AppDialogTitle } from "../AppDialogTitle";
 
 interface TransactionConfirmDialogProps {
@@ -49,6 +49,7 @@ interface ValuesType {
   gasPrice?: ethers.BigNumber | null;
   gasLimit?: ethers.BigNumber | null;
   value?: ethers.BigNumber | null;
+  nonce?: number | null;
 }
 
 export function MagicTxConfirmDialog(props: TransactionConfirmDialogProps) {
@@ -62,7 +63,7 @@ export function MagicTxConfirmDialog(props: TransactionConfirmDialogProps) {
     chainId,
   });
 
-  const tokenBalancesQuery = useErc20Balance({
+  const tokenBalancesQuery = useErc20BalanceQuery({
     account,
     provider,
     contractAddress: ZEROEX_NATIVE_TOKEN_ADDRESS,
@@ -81,8 +82,6 @@ export function MagicTxConfirmDialog(props: TransactionConfirmDialogProps) {
   }, [values]);
 
   const totalFee = useMemo(() => {
-    console.log("gas", values);
-
     if (values.gasLimit) {
       if (isEIP1559() && values.maxFeePerGas) {
         return values.gasLimit.mul(values.maxFeePerGas);
@@ -172,7 +171,6 @@ export function MagicTxConfirmDialog(props: TransactionConfirmDialogProps) {
         if (data.params.length > 0) {
           (async () => {
             let params = data.params[0];
-
             let pr = provider;
             let vals: ValuesType = {};
 
@@ -186,19 +184,40 @@ export function MagicTxConfirmDialog(props: TransactionConfirmDialogProps) {
                 setIsInsufficientFunds(true);
               }
             }
+            if (account) {
+              const nonce = await pr.getTransactionCount(account);
+              if (nonce !== undefined) {
+                vals.nonce = nonce;
+              }
+            }
 
             if (params.value) {
               vals.value = BigNumber.from(params.value);
             }
 
             if (chainId && hasLondonHardForkSupport(chainId)) {
-              let result = await estimateFees(provider);
+              if (chainId === ChainId.Polygon) {
+                const estimatedFeeResponse = await fetch(
+                  "https://gasstation-mainnet.matic.network/v2"
+                );
+                const estimatedFee = await estimatedFeeResponse.json();
+                vals.maxFeePerGas = ethers.utils.parseUnits(
+                  String(estimatedFee["fast"].maxFee.toFixed(6)),
+                  "gwei"
+                );
+                vals.maxPriorityFeePerGas = ethers.utils.parseUnits(
+                  String(estimatedFee["fast"].maxPriorityFee.toFixed(6)),
+                  "gwei"
+                );
+              } else {
+                let result = await estimateFees(provider);
 
-              vals.maxFeePerGas = BigNumber.from(result.maxFeePerGas);
+                vals.maxFeePerGas = BigNumber.from(result.maxFeePerGas);
 
-              vals.maxPriorityFeePerGas = BigNumber.from(
-                result.maxPriorityFeePerGas
-              );
+                vals.maxPriorityFeePerGas = BigNumber.from(
+                  result.maxPriorityFeePerGas
+                );
+              }
             } else {
               vals.gasPrice = await pr.getGasPrice();
             }
@@ -208,7 +227,7 @@ export function MagicTxConfirmDialog(props: TransactionConfirmDialogProps) {
         }
       }
     }
-  }, [data, chainId, dialogProps.open]);
+  }, [data, chainId, dialogProps.open, account]);
 
   const gasCost = useCallback(
     (values: any) => {
@@ -434,6 +453,26 @@ export function MagicTxConfirmDialog(props: TransactionConfirmDialogProps) {
                           </Grid>
                         </>
                       )}
+                      <>
+                        {values?.nonce !== undefined && (
+                          <Grid item xs={12}>
+                            <TextField
+                              size="small"
+                              value={values?.nonce}
+                              onChange={handleChange}
+                              name="nonce"
+                              fullWidth
+                              variant="outlined"
+                              label={
+                                <FormattedMessage
+                                  id="nonce"
+                                  defaultMessage="Nonce"
+                                />
+                              }
+                            />
+                          </Grid>
+                        )}
+                      </>
                     </Grid>
                   </Box>
                 </Collapse>

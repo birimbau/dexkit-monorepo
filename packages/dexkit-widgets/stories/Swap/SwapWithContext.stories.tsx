@@ -1,6 +1,7 @@
 import { useWalletActivate } from "@dexkit/core/hooks";
 import { WalletActivateParams } from "@dexkit/core/types";
-import { ConnectWalletDialog, DexkitProvider } from "@dexkit/ui/components";
+import { DexkitProvider } from "@dexkit/ui/components";
+import ConnectWalletDialog from "@dexkit/ui/components/ConnectWalletDialog";
 import { AppNotification } from "@dexkit/ui/types";
 import { createTheme, Grid } from "@mui/material";
 import { ComponentMeta, ComponentStory } from "@storybook/react";

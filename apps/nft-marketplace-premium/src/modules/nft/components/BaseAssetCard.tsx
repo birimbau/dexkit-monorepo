@@ -1,4 +1,5 @@
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import SendIcon from '@mui/icons-material/Send';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import {
@@ -44,6 +45,7 @@ interface Props {
   lazyLoadMetadata?: boolean;
   disabled?: boolean;
   orderBookItem?: OrderBookItem;
+  onTransfer?: (asset: Asset) => void;
 }
 
 export function BaseAssetCard({
@@ -56,6 +58,7 @@ export function BaseAssetCard({
   disabled,
   assetMetadata,
   orderBookItem,
+  onTransfer,
   showAssetDetailsInDialog,
 }: Props) {
   const metadata = assetMetadata || asset?.metadata;
@@ -220,6 +223,24 @@ export function BaseAssetCard({
                 </Typography>
               </Stack>
             )}
+          </MenuItem>
+        )}
+        {onTransfer !== undefined && asset && (
+          <MenuItem
+            onClick={() => {
+              onTransfer(asset);
+              handleClose();
+            }}
+          >
+            <Stack spacing={2} direction={'row'}>
+              <SendIcon />
+              <Typography>
+                <FormattedMessage
+                  id="transfer.nft"
+                  defaultMessage={'Transfer NFT'}
+                />
+              </Typography>
+            </Stack>
           </MenuItem>
         )}
       </Menu>

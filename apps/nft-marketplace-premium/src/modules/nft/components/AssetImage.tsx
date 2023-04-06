@@ -34,15 +34,15 @@ export function AssetImage({ src }: Props) {
           })}
         />
       ) : (
-        <img
-          src={src}
+        <Image
+          src={ipfsUriToUrl(src)}
+          unoptimized={true}
           style={{
             position: 'absolute',
             top: 0,
             width: '100%',
           }}
-          height={'380px'}
-          width={'350px'}
+          fill
           alt={formatMessage({
             id: 'nft.image',
             defaultMessage: 'NFT Image',

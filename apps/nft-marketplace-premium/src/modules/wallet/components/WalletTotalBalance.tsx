@@ -18,7 +18,7 @@ export function WalletTotalBalance({ chainId }: Props) {
     includeNative: true,
     chainId: chainId,
   });
-  const tokenBalancesQuery = useERC20BalancesQuery(undefined, chainId);
+  const tokenBalancesQuery = useERC20BalancesQuery(undefined, chainId, false);
 
   const totalBalance = useMemo(() => {
     if (tokenBalancesQuery.data && coinPricesQuery.data) {

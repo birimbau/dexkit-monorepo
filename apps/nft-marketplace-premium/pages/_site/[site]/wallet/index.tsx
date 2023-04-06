@@ -50,7 +50,14 @@ import WalletActionButton from '../../../../src/modules/wallet/components/Wallet
 import { WalletTotalBalanceCointainer } from '../../../../src/modules/wallet/components/WalletTotalBalanceContainer';
 import { truncateAddress } from '../../../../src/utils/blockchain';
 
+import { TransferCoinButton } from '@/modules/wallet/components/TransferCoinButton';
+import { copyToClipboard } from '@dexkit/core/utils';
+import CopyIconButton from '@dexkit/ui/components/CopyIconButton';
+import FileCopy from '@mui/icons-material/FileCopy';
 import ImportExportIcon from '@mui/icons-material/ImportExport';
+import dynamic from 'next/dynamic';
+
+import { useEvmCoins } from 'src/hooks/blockchain';
 import ImportTokenDialog from '../../../../src/components/dialogs/ImportTokenDialog';
 import CloseCircle from '../../../../src/components/icons/CloseCircle';
 import Wallet from '../../../../src/components/icons/Wallet';
@@ -61,6 +68,9 @@ import {
 } from '../../../../src/hooks/app';
 import { useCurrency } from '../../../../src/hooks/currency';
 import { getAppConfig } from '../../../../src/services/app';
+const EvmReceiveDialog = dynamic(
+  () => import('@dexkit/ui/components/dialogs/EvmReceiveDialog')
+);
 
 enum WalletTabs {
   Transactions,
@@ -70,10 +80,11 @@ enum WalletTabs {
 const WalletPage: NextPage = () => {
   const appConfig = useAppConfig();
 
-  const { account, isActive, chainId: walletChainId } = useWeb3React();
+  const { account, isActive, chainId: walletChainId, ENSName } = useWeb3React();
   const [chainId, setChainId] = useState(walletChainId);
 
   const { formatMessage } = useIntl();
+  const evmCoins = useEvmCoins({ defaultChainId: chainId });
 
   const favorites = useFavoriteAssets();
 
@@ -151,6 +162,15 @@ const WalletPage: NextPage = () => {
   const handleOpenImportTokenDialog = () => {
     setIsImportDialogOpen(true);
   };
+  const handleCopy = () => {
+    if (account) {
+      if (ENSName) {
+        copyToClipboard(ENSName);
+      } else {
+        copyToClipboard(account);
+      }
+    }
+  };
 
   useEffect(() => {
     // we are not allowing to change chainId when user sets defaultChainId
@@ -175,6 +195,17 @@ const WalletPage: NextPage = () => {
           fullWidth: true,
         }}
         account={account}
+      />
+      <EvmReceiveDialog
+        dialogProps={{
+          open: isReceiveOpen,
+          onClose: handleCloseReceive,
+          maxWidth: 'sm',
+          fullWidth: true,
+        }}
+        receiver={account}
+        chainId={chainId}
+        coins={evmCoins}
       />
       <ImportTokenDialog
         dialogProps={{
@@ -216,52 +247,77 @@ const WalletPage: NextPage = () => {
                     alignContent="center"
                     spacing={2}
                   >
-                    <Grid item xs={12}>
-                      <Stack
-                        direction="row"
-                        justifyContent="space-between"
-                        alignContent="center"
-                      >
-                        <Box>
-                          <Typography variant="caption" color="textSecondary">
-                            {isBalancesVisible
-                              ? truncateAddress(account)
-                              : '*****'}
-                          </Typography>
-                          <Stack
-                            direction="row"
-                            alignItems="center"
-                            alignContent="center"
-                            spacing={1}
-                          >
-                            <Typography variant="h5">
-                              <NoSsr>
-                                <WalletTotalBalanceCointainer
-                                  chainId={chainId}
-                                />
-                              </NoSsr>
+                    {isActive && (
+                      <Grid item xs={12}>
+                        <Stack
+                          direction="row"
+                          justifyContent="space-between"
+                          alignContent="center"
+                        >
+                          <Box>
+                            <Typography color="textSecondary" variant="caption">
+                              {isBalancesVisible
+                                ? ENSName
+                                  ? ENSName
+                                  : truncateAddress(account)
+                                : '*****'}
+                              <CopyIconButton
+                                iconButtonProps={{
+                                  onClick: handleCopy,
+                                  size: 'small',
+                                  color: 'inherit',
+                                }}
+                                tooltip={formatMessage({
+                                  id: 'copy',
+                                  defaultMessage: 'Copy',
+                                  description: 'Copy text',
+                                })}
+                                activeTooltip={formatMessage({
+                                  id: 'copied',
+                                  defaultMessage: 'Copied!',
+                                  description: 'Copied text',
+                                })}
+                              >
+                                <FileCopy fontSize="inherit" color="inherit" />
+                              </CopyIconButton>
                             </Typography>
-                            <IconButton onClick={handleToggleVisibility}>
-                              {isBalancesVisible ? (
-                                <VisibilityIcon />
-                              ) : (
-                                <VisibilityOffIcon />
-                              )}
-                            </IconButton>
-                          </Stack>
-                        </Box>
-                        <NetworkSelectButton
-                          chainId={chainId}
-                          onChange={(newChainId) => setChainId(newChainId)}
-                        />
-                      </Stack>
-                    </Grid>
+
+                            <Stack
+                              direction="row"
+                              alignItems="center"
+                              alignContent="center"
+                              spacing={1}
+                            >
+                              <Typography variant="h5">
+                                <NoSsr>
+                                  <WalletTotalBalanceCointainer
+                                    chainId={chainId}
+                                  />
+                                </NoSsr>
+                              </Typography>
+                              <IconButton onClick={handleToggleVisibility}>
+                                {isBalancesVisible ? (
+                                  <VisibilityIcon />
+                                ) : (
+                                  <VisibilityOffIcon />
+                                )}
+                              </IconButton>
+                            </Stack>
+                          </Box>
+                          <NetworkSelectButton
+                            chainId={chainId}
+                            onChange={(newChainId) => setChainId(newChainId)}
+                          />
+                        </Stack>
+                      </Grid>
+                    )}
                     <Grid item xs={12}>
                       <Grid container spacing={2} alignItems="center">
                         {appConfig.transak?.enabled && (
                           <Grid item>
                             <Button
                               onClick={handleBuy}
+                              disabled={!isActive}
                               variant="contained"
                               color="primary"
                             >
@@ -274,6 +330,7 @@ const WalletPage: NextPage = () => {
                           <Button
                             onClick={handleOpenReceive}
                             variant="outlined"
+                            disabled={!isActive}
                             color="primary"
                           >
                             <FormattedMessage
@@ -282,13 +339,18 @@ const WalletPage: NextPage = () => {
                             />
                           </Button>
                         </Grid>
+                        <Grid item>
+                          <TransferCoinButton />
+                        </Grid>
                       </Grid>
                     </Grid>
                   </Grid>
                 </Grid>
+
                 <Grid item xs={12}>
                   <Divider />
                 </Grid>
+
                 <Grid item xs={12}>
                   <Grid container spacing={2} alignItems="center">
                     <Grid
@@ -313,6 +375,7 @@ const WalletPage: NextPage = () => {
                       <Button
                         onClick={handleOpenImportTokenDialog}
                         variant="outlined"
+                        disabled={!isActive}
                         startIcon={<ImportExportIcon />}
                         fullWidth
                       >
@@ -324,6 +387,7 @@ const WalletPage: NextPage = () => {
                     </Grid>
                   </Grid>
                 </Grid>
+
                 <Grid item xs={12}>
                   {!isActive && (
                     <Stack
@@ -369,150 +433,170 @@ const WalletPage: NextPage = () => {
                   )}
                 </Grid>
 
-                <Grid item xs={12}>
-                  <NoSsr>
-                    <Collapse in={isTableOpen}>
-                      <WalletBalances chainId={chainId} />
-                    </Collapse>
-                  </NoSsr>
-                </Grid>
+                {isActive && (
+                  <Grid item xs={12}>
+                    <NoSsr>
+                      <Collapse in={isTableOpen}>
+                        <WalletBalances chainId={chainId} />
+                      </Collapse>
+                    </NoSsr>
+                  </Grid>
+                )}
 
-                <Grid item xs={12}>
-                  <Button
-                    onClick={handleToggleBalances}
-                    fullWidth
-                    sx={(theme) => ({
-                      backgroundColor: theme.palette.background.paper,
-                      py: 2,
-                    })}
-                    startIcon={
-                      isTableOpen ? <ExpandLessIcon /> : <ExpandMoreIcon />
-                    }
-                  >
-                    {isTableOpen ? (
-                      <FormattedMessage id="close" defaultMessage="Close" />
-                    ) : (
-                      <FormattedMessage id="open" defaultMessage="Open" />
-                    )}
-                  </Button>
-                </Grid>
+                {isActive && (
+                  <Grid item xs={12}>
+                    <Button
+                      onClick={handleToggleBalances}
+                      fullWidth
+                      sx={(theme) => ({
+                        backgroundColor: theme.palette.background.paper,
+                        py: 2,
+                      })}
+                      startIcon={
+                        isTableOpen ? <ExpandLessIcon /> : <ExpandMoreIcon />
+                      }
+                    >
+                      {isTableOpen ? (
+                        <FormattedMessage id="close" defaultMessage="Close" />
+                      ) : (
+                        <FormattedMessage id="open" defaultMessage="Open" />
+                      )}
+                    </Button>
+                  </Grid>
+                )}
 
-                <Grid item xs={12}>
-                  <Grid container spacing={2}>
-                    <Grid item xs={12} sm={6}>
-                      <WalletActionButton
-                        LinkComponent={Link}
-                        href="/wallet/nfts"
-                      >
-                        <Stack
-                          direction="row"
-                          spacing={1}
-                          alignItems="center"
-                          alignContent="center"
+                <>
+                  <Grid item xs={12}>
+                    <Grid container spacing={2}>
+                      <Grid item xs={12} sm={6}>
+                        <WalletActionButton
+                          disabled={!isActive}
+                          LinkComponent={Link}
+                          href="/wallet/nfts"
                         >
-                          <Typography variant="h5">
-                            <FormattedMessage id="nfts" defaultMessage="NFTs" />
-                          </Typography>
-                          {/*Object.keys(favorites.assets).length > 0 && (
+                          <Stack
+                            direction="row"
+                            spacing={1}
+                            alignItems="center"
+                            alignContent="center"
+                          >
+                            <Typography variant="h5">
+                              <FormattedMessage
+                                id="nfts"
+                                defaultMessage="NFTs"
+                              />
+                            </Typography>
+                            {/*Object.keys(favorites.assets).length > 0 && (
                             <Chip
                               label={Object.keys(favorites.assets).length}
                               color="secondary"
                             />
                           )*/}
-                        </Stack>
+                          </Stack>
 
-                        <Stack
-                          direction="row"
-                          spacing={0.5}
-                          alignItems="center"
-                          alignContent="center"
-                        >
-                          <Typography
-                            sx={{
-                              fontWeight: 600,
-                              textTransform: 'uppercase',
-                            }}
-                            color="primary"
-                            variant="body1"
+                          <Stack
+                            direction="row"
+                            spacing={0.5}
+                            alignItems="center"
+                            alignContent="center"
                           >
-                            <FormattedMessage id="open" defaultMessage="Open" />
-                          </Typography>
-                          <NavigateNext color="primary" />
-                        </Stack>
-                      </WalletActionButton>
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                      <WalletActionButton
-                        LinkComponent={Link}
-                        href="/wallet/orders"
-                      >
-                        <Stack
-                          direction="row"
-                          spacing={1}
-                          alignItems="center"
-                          alignContent="center"
+                            <Typography
+                              sx={{
+                                fontWeight: 600,
+                                textTransform: 'uppercase',
+                              }}
+                              color="primary"
+                              variant="body1"
+                            >
+                              <FormattedMessage
+                                id="open"
+                                defaultMessage="Open"
+                              />
+                            </Typography>
+                            <NavigateNext color="primary" />
+                          </Stack>
+                        </WalletActionButton>
+                      </Grid>
+                      <Grid item xs={12} sm={6}>
+                        <WalletActionButton
+                          disabled={!isActive}
+                          LinkComponent={Link}
+                          href="/wallet/orders"
                         >
-                          <Typography variant="h5">
-                            <FormattedMessage
-                              id="orders"
-                              defaultMessage="Orders"
-                            />
-                          </Typography>
-                          {/* <Chip label="302" color="secondary" /> */}
-                        </Stack>
+                          <Stack
+                            direction="row"
+                            spacing={1}
+                            alignItems="center"
+                            alignContent="center"
+                          >
+                            <Typography variant="h5">
+                              <FormattedMessage
+                                id="orders"
+                                defaultMessage="Orders"
+                              />
+                            </Typography>
+                            {/* <Chip label="302" color="secondary" /> */}
+                          </Stack>
 
-                        <Stack
-                          direction="row"
-                          spacing={0.5}
-                          alignItems="center"
-                          alignContent="center"
-                        >
-                          <Typography
-                            sx={{
-                              fontWeight: 600,
-                              textTransform: 'uppercase',
-                            }}
-                            color="primary"
-                            variant="body1"
+                          <Stack
+                            direction="row"
+                            spacing={0.5}
+                            alignItems="center"
+                            alignContent="center"
                           >
-                            <FormattedMessage id="open" defaultMessage="Open" />
-                          </Typography>
-                          <NavigateNext color="primary" />
-                        </Stack>
-                      </WalletActionButton>
+                            <Typography
+                              sx={{
+                                fontWeight: 600,
+                                textTransform: 'uppercase',
+                              }}
+                              color="primary"
+                              variant="body1"
+                            >
+                              <FormattedMessage
+                                id="open"
+                                defaultMessage="Open"
+                              />
+                            </Typography>
+                            <NavigateNext color="primary" />
+                          </Stack>
+                        </WalletActionButton>
+                      </Grid>
                     </Grid>
                   </Grid>
-                </Grid>
-                <Grid item xs={12}>
-                  <Tabs value={selectedTab} onChange={handleChangeTab}>
-                    <Tab
-                      value={WalletTabs.Transactions}
-                      label={
-                        <FormattedMessage
-                          id="transactions"
-                          defaultMessage="Transactions"
-                        />
-                      }
-                    />
-                    <Tab
-                      value={WalletTabs.Trades}
-                      label={
-                        <FormattedMessage id="trades" defaultMessage="Trades" />
-                      }
-                    />
-                  </Tabs>
-                </Grid>
-                <Grid item xs={12}>
-                  <NoSsr>
-                    <TransactionsTable
-                      filter={
-                        selectedTab === WalletTabs.Transactions
-                          ? TransactionsTableFilter.Transactions
-                          : TransactionsTableFilter.Trades
-                      }
-                    />
-                  </NoSsr>
-                </Grid>
+                  <Grid item xs={12}>
+                    <Tabs value={selectedTab} onChange={handleChangeTab}>
+                      <Tab
+                        value={WalletTabs.Transactions}
+                        label={
+                          <FormattedMessage
+                            id="transactions"
+                            defaultMessage="Transactions"
+                          />
+                        }
+                      />
+                      <Tab
+                        value={WalletTabs.Trades}
+                        label={
+                          <FormattedMessage
+                            id="trades"
+                            defaultMessage="Trades"
+                          />
+                        }
+                      />
+                    </Tabs>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <NoSsr>
+                      <TransactionsTable
+                        filter={
+                          selectedTab === WalletTabs.Transactions
+                            ? TransactionsTableFilter.Transactions
+                            : TransactionsTableFilter.Trades
+                        }
+                      />
+                    </NoSsr>
+                  </Grid>
+                </>
               </Grid>
             </Grid>
           </Grid>

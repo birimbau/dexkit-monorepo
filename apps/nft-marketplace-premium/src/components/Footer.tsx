@@ -54,6 +54,8 @@ export function Footer({ appConfig, isPreview, appNFT }: Props) {
       py={2}
       sx={{
         bgcolor: (theme) => theme.palette.background.paper,
+        minHeight: '50px',
+        width: '100%',
       }}
     >
       <Container>

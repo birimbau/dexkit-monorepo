@@ -187,7 +187,8 @@ export async function getCollectionByApi({
 export async function getAssetData(
   provider?: ethers.providers.JsonRpcProvider,
   contractAddress?: string,
-  id?: string
+  id?: string,
+  account?: string
 ): Promise<Asset | undefined> {
   if (!provider || !contractAddress || !id) {
     return;
@@ -208,6 +209,15 @@ export async function getAssetData(
       target: contractAddress,
       function: 'ownerOf',
       args: [id],
+    });
+  }
+
+  if (isERC1155 && account) {
+    calls.push({
+      interface: iface,
+      target: contractAddress,
+      function: 'balanceOf',
+      args: [account, id],
     });
   }
 
@@ -239,11 +249,20 @@ export async function getAssetData(
     let tokenURI;
     let name;
     let symbol;
+    let balance;
     if (isERC1155) {
 
-      tokenURI = results[0];
-      name = results[1];
-      symbol = results[2];
+      if (account) {
+        balance = results[0]
+        tokenURI = results[1];
+        name = results[2];
+        symbol = results[3];
+      } else {
+        tokenURI = results[0];
+        name = results[1];
+        symbol = results[2];
+      }
+
 
     } else {
       owner = results[0];
@@ -264,7 +283,8 @@ export async function getAssetData(
       id,
       contractAddress,
       chainId,
-      protocol: isERC1155 ? 'ERC1155' : 'ERC721'
+      protocol: isERC1155 ? 'ERC1155' : 'ERC721',
+      balance,
     };
   }
 }

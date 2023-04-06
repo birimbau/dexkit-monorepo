@@ -1,3 +1,5 @@
+
+import { providers } from "ethers";
 import { Network } from "../types";
 import { ChainId } from "./enums";
 
@@ -124,9 +126,18 @@ export const NETWORKS: { [key: number]: Network } = {
   },
 };
 
+export const NETWORK_NAME = (chainId?: ChainId) =>
+  chainId && NETWORKS[chainId] ? NETWORKS[chainId].name : undefined;
+
+
 export const NETWORK_SYMBOL = (chainId?: ChainId) =>
   chainId && NETWORKS[chainId] ? NETWORKS[chainId].symbol : undefined;
 
 export const NETWORK_COIN_SYMBOL = (chainId?: ChainId) =>
   chainId && NETWORKS[chainId] ? NETWORKS[chainId]?.coinSymbol ? NETWORKS[chainId]?.coinSymbol : NETWORKS[chainId].symbol : undefined;
+
+export const NETWORK_PROVIDER = (chainId?: ChainId) => {
+  return chainId && NETWORKS[chainId] ? new providers.JsonRpcProvider(NETWORKS[chainId].providerRpcUrl
+  ) : undefined;
+}
 

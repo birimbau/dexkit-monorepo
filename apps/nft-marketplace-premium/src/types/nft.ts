@@ -89,6 +89,7 @@ export interface Asset {
   symbol: string;
   type?: string;
   metadata?: AssetMetadata;
+  balance?: BigNumber;
   protocol?: 'ERC1155' | 'ERC721';
 }
 

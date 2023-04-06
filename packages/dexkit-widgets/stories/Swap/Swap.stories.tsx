@@ -1,7 +1,7 @@
 import { ChainId } from "@dexkit/core/constants";
 import { Grid } from "@mui/material";
 import { ComponentMeta, ComponentStory } from "@storybook/react";
-import DexkitContextProvider from "../../src/components/DexkitContextProvider";
+import { WidgetContext } from "../../src/components/WidgetContext";
 import { OPTIMISM_TOKEN } from "../../src/constants";
 import { SwapWidget, SwapWidgetProps } from "../../src/widgets/swap";
 import { TEST_TOKENS } from "../SelectCoinList/constants";
@@ -17,32 +17,22 @@ const zeroExApiKey = process.env.ZRX_RFQ_API_KEY;
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
 const Template: ComponentStory<typeof SwapWidget> = (args: SwapWidgetProps) => {
   return (
-    <DexkitContextProvider>
-      {({
-        isAutoSlippage,
-        maxSlippage,
-        handleNotification,
-        handleConnectWallet,
-        handleShowTransactions,
-        handleAutoSlippage,
-        handleChangeSlippage,
-      }) => (
-        <Grid container justifyContent="center" spacing={2}>
-          <Grid item xs={12} sm={4}>
-            <SwapWidget
-              {...args}
-              onNotification={handleNotification}
+    <WidgetContext>
+      <Grid container justifyContent="center" spacing={2}>
+        <Grid item xs={12} sm={4}>
+          <SwapWidget
+            {...args}
+            /*  onNotification={handleNotification}
               onConnectWallet={handleConnectWallet}
               onShowTransactions={handleShowTransactions}
               isAutoSlippage={isAutoSlippage}
               maxSlippage={maxSlippage}
               onChangeSlippage={handleChangeSlippage}
-              onAutoSlippage={handleAutoSlippage}
-            />
-          </Grid>
+              onAutoSlippage={handleAutoSlippage}*/
+          />
         </Grid>
-      )}
-    </DexkitContextProvider>
+      </Grid>
+    </WidgetContext>
   );
 };
 

@@ -7,6 +7,7 @@ interface Props {
   onFavorite?: (asset: Asset) => void;
   isFavorite?: boolean;
   onHide?: (asset: Asset) => void;
+  onTransfer?: (asset: Asset) => void;
   isHidden?: boolean;
   showControls?: boolean;
   lazyLoadMetadata?: boolean;
@@ -22,6 +23,7 @@ export function AssetCard({
   showControls,
   lazyLoadMetadata,
   disabled,
+  onTransfer,
 }: Props) {
   const { data: metadata } = useAssetMetadata(asset, {
     enabled: lazyLoadMetadata,
@@ -32,6 +34,7 @@ export function AssetCard({
       isFavorite={isFavorite}
       disabled={disabled}
       asset={asset}
+      onTransfer={onTransfer}
       onHide={onHide}
       isHidden={isHidden}
       showControls={showControls}

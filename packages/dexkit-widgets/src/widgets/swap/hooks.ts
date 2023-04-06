@@ -5,7 +5,7 @@ import {
   UseMutationOptions,
   UseMutationResult,
   useQuery,
-  UseQueryResult,
+  UseQueryResult
 } from "@tanstack/react-query";
 
 import transakSDK from "@transak/transak-sdk";
@@ -23,13 +23,13 @@ import {
   useDebounce,
   useRecentTokens,
   useTokenBalance,
-  useWrapToken,
+  useWrapToken
 } from "../../hooks";
 import { hasSufficientAllowance } from "../../services";
 import { ZeroExApiClient } from "../../services/zeroex";
 import {
   ZEROEX_AFFILIATE_ADDRESS,
-  ZEROEX_NATIVE_TOKEN_ADDRESS,
+  ZEROEX_NATIVE_TOKEN_ADDRESS
 } from "../../services/zeroex/constants";
 import { ZeroExQuote, ZeroExQuoteResponse } from "../../services/zeroex/types";
 import { Token } from "../../types";
@@ -138,15 +138,15 @@ export function useSwapQuote({
   const refetchParams =
     params.quoteFor === "buy"
       ? {
-          sellToken: params.sellToken,
-          buyToken: params.buyToken,
-          buyTokenAmount: params.buyTokenAmount,
-        }
+        sellToken: params.sellToken,
+        buyToken: params.buyToken,
+        buyTokenAmount: params.buyTokenAmount,
+      }
       : {
-          sellToken: params.sellToken,
-          sellTokenAmount: params.sellTokenAmount,
-          buyToken: params.buyToken,
-        };
+        sellToken: params.sellToken,
+        sellTokenAmount: params.sellTokenAmount,
+        buyToken: params.buyToken,
+      };
 
   const quoteQuery = useQuery(
     [
@@ -370,7 +370,7 @@ export function useSwapState({
 
   useEffect(() => {
     if (transak) {
-      let allEventsCallback = transak.on(transak.ALL_EVENTS, (data: any) => {});
+      let allEventsCallback = transak.on(transak.ALL_EVENTS, (data: any) => { });
 
       // This will trigger when the user closed the widget
       let widgetCloseCallback = transak.on(
@@ -644,18 +644,18 @@ export function useSwapState({
 
       result =
         isBuyTokenWrapped &&
-        isAddressEqual(
-          lazySellToken?.contractAddress,
-          ZEROEX_NATIVE_TOKEN_ADDRESS
-        )
+          isAddressEqual(
+            lazySellToken?.contractAddress,
+            ZEROEX_NATIVE_TOKEN_ADDRESS
+          )
           ? "wrap"
           : isSellTokenWrapped &&
             isAddressEqual(
               lazyBuyToken?.contractAddress,
               ZEROEX_NATIVE_TOKEN_ADDRESS
             )
-          ? "unwrap"
-          : "swap";
+            ? "unwrap"
+            : "swap";
 
       return result;
     },
@@ -697,17 +697,17 @@ export function useSwapState({
             {
               quote: data,
               provider: connectorProvider as providers.Web3Provider,
-              onHash: (hash: string) => {},
+              onHash: (hash: string) => { },
               sellToken,
               buyToken,
             },
             {
-              onSuccess: (receipt: ethers.providers.TransactionReceipt) => {},
+              onSuccess: (receipt: ethers.providers.TransactionReceipt) => { },
               onError,
             }
           );
         }
-      } catch (err: unknown) {}
+      } catch (err: unknown) { }
     }
   };
 
@@ -729,10 +729,10 @@ export function useSwapState({
         {
           provider: connectorProvider as providers.Web3Provider,
           amount: lazySellAmount,
-          onHash: (hash: string) => {},
+          onHash: (hash: string) => { },
         },
         {
-          onSuccess: (receipt: ethers.providers.TransactionReceipt) => {},
+          onSuccess: (receipt: ethers.providers.TransactionReceipt) => { },
         }
       );
     } else if (execType === "approve" && quoteQuery.data) {
@@ -748,7 +748,7 @@ export function useSwapState({
             token: sellToken,
           },
           {
-            onSuccess: () => {},
+            onSuccess: () => { },
           }
         );
       }
@@ -757,7 +757,7 @@ export function useSwapState({
         {
           provider: connectorProvider as providers.Web3Provider,
           amount: lazySellAmount,
-          onHash: (hash: string) => {},
+          onHash: (hash: string) => { },
         },
         {
           onSuccess: (receipt: ethers.providers.TransactionReceipt) => {

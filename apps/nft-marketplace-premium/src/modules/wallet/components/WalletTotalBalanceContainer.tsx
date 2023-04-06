@@ -1,8 +1,3 @@
-import { Button, Paper, Skeleton, Stack, Typography } from '@mui/material';
-import { Suspense } from 'react';
-import { ErrorBoundary } from 'react-error-boundary';
-import { FormattedMessage } from 'react-intl';
-import { QueryErrorResetBoundary } from '@tanstack/react-query';
 import { ChainId } from '../../../constants/enum';
 import { WalletTotalBalance } from './WalletTotalBalance';
 
@@ -10,7 +5,7 @@ interface Props {
   chainId?: ChainId;
 }
 
-export function WalletTotalBalanceCointainer({ chainId }: Props) {
+/*export function WalletTotalBalanceCointainer({ chainId }: Props) {
   return (
     <QueryErrorResetBoundary>
       {({ reset }) => (
@@ -45,4 +40,8 @@ export function WalletTotalBalanceCointainer({ chainId }: Props) {
       )}
     </QueryErrorResetBoundary>
   );
+}*/
+
+export function WalletTotalBalanceCointainer({ chainId }: Props) {
+  return <WalletTotalBalance chainId={chainId} />;
 }

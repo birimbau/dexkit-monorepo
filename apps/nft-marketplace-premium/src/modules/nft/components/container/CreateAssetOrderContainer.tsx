@@ -37,7 +37,7 @@ import Image from 'next/image';
 import { useCallback, useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import Link from 'src/components/Link';
-import { useSignMessageDialog, useTransactionDialog } from 'src/hooks/app';
+import { useSignMessageDialog } from 'src/hooks/app';
 import {
   useAccountAssetsBalance,
   useApproveAssetMutation,
@@ -86,9 +86,7 @@ export const CreateAssetOrderContainer = () => {
 
   const signMessageDialog = useSignMessageDialog();
 
-  const transactions = useTransactionDialog();
-
-  const { createNotification } = useDexKitContext();
+  const { createNotification, watchTransactionDialog } = useDexKitContext();
 
   const { formatMessage } = useIntl();
 
@@ -155,10 +153,10 @@ export const CreateAssetOrderContainer = () => {
           });
         }
 
-        transactions.watch(hash);
+        watchTransactionDialog.watch(hash);
       }
     },
-    [transactions, asset, chainId]
+    [watchTransactionDialog, asset, chainId]
   );
 
   const handleApproveAssetMutate = useCallback(
@@ -168,7 +166,7 @@ export const CreateAssetOrderContainer = () => {
           variable.asset.type === 'ERC721' ||
           variable.asset.type === 'ERC1155'
         ) {
-          transactions.showDialog(
+          watchTransactionDialog.showDialog(
             true,
             { asset: asset },
             TransactionType.APPROVAL_FOR_ALL
@@ -190,7 +188,7 @@ export const CreateAssetOrderContainer = () => {
             provider
           );
 
-          transactions.showDialog(
+          watchTransactionDialog.showDialog(
             true,
             { amount, decimals, symbol, name } as ApproveTransactionMetadata,
             TransactionType.APPROVE
@@ -198,14 +196,14 @@ export const CreateAssetOrderContainer = () => {
         }
       }
     },
-    [transactions, asset]
+    [watchTransactionDialog, asset]
   );
 
   const handleApproveAssetError = useCallback(
     (error: any) => {
-      transactions.setDialogError(error);
+      watchTransactionDialog.setDialogError(error);
     },
-    [transactions]
+    [watchTransactionDialog]
   );
 
   const handleSignMessageSuccess = useCallback(
