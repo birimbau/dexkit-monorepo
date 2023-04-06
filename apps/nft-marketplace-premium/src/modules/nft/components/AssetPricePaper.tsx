@@ -65,7 +65,6 @@ export function AssetPricePaper({ address, id }: Props) {
           createNotification({
             type: 'transaction',
             subtype: 'approveForAll',
-            icon: 'check',
             values,
             metadata: { chainId, hash },
           });
@@ -80,7 +79,6 @@ export function AssetPricePaper({ address, id }: Props) {
           createNotification({
             type: 'transaction',
             subtype: 'approve',
-            icon: 'check',
             values,
             metadata: { chainId, hash },
           });
@@ -169,7 +167,6 @@ export function AssetPricePaper({ address, id }: Props) {
       createNotification({
         type: 'common',
         subtype: 'createListing',
-        icon: 'list',
         values: {
           collectionName: asset.collectionName,
           id: asset.id,

@@ -5,6 +5,7 @@ export type AppNotificationType = {
   message: string;
   id: string;
   color?: string;
+  icon?: string;
 };
 
 export type AppNotification = {

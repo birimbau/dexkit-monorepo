@@ -10,8 +10,6 @@ import {
 
 
 
-
-
 const signMessageDialogOpenAtom = atom(false);
 const signMessageDialogErrorAtom = atom<Error | undefined>(undefined);
 const signMessageDialogSuccessAtom = atom<boolean>(false);

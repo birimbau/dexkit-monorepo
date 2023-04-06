@@ -89,7 +89,6 @@ export function AssetTabs({ address, id }: Props) {
           createNotification({
             type: 'transaction',
             subtype: 'approveForAll',
-            icon: 'check',
             values: {
               name: asset.collectionName,
               tokenId: asset.id,
@@ -103,7 +102,6 @@ export function AssetTabs({ address, id }: Props) {
           createNotification({
             type: 'transaction',
             subtype: 'approve',
-            icon: 'check',
             values: {
               name: asset.collectionName,
               tokenId: asset.id,
@@ -182,7 +180,6 @@ export function AssetTabs({ address, id }: Props) {
         createNotification({
           type: 'transaction',
           subtype: 'acceptOffer',
-          icon: 'check',
           values,
           metadata: { chainId, hash },
         });
@@ -197,7 +194,6 @@ export function AssetTabs({ address, id }: Props) {
         createNotification({
           type: 'transaction',
           subtype: 'buyNft',
-          icon: 'check',
           values,
           metadata: { chainId, hash },
         });
