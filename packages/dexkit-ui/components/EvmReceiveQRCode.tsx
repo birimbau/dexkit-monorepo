@@ -23,6 +23,5 @@ export default function EvmReceiveQRCode({
       amount,
     });
   }, [contractAddress, receiver, chainId, amount]);
-  console.log(url);
   return <QRCode value={url} />;
 }

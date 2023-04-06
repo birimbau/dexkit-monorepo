@@ -43,6 +43,7 @@
     "@svgr/webpack": "^6.2.1",
     "@traderxyz/nft-swap-sdk": "0.30.0",
     "@transak/transak-sdk": "^1.0.31",
+    "@vercel/og": "^0.5.0",
     "axios": "^0.27.2",
     "cookie": "^0.5.0",
     "eslint-config-custom": "*",
@@ -70,6 +71,7 @@
     "remark-gfm": "^3.0.1",
     "sharp": "^0.30.7",
     "slugify": "^1.6.5",
+    "yaqrcode": "^0.2.1",
     "yup": "^0.32.11"
   },
   "devDependencies": {

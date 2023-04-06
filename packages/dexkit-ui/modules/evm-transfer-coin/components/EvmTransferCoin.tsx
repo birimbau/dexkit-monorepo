@@ -4,7 +4,11 @@ import {
   useEvmNativeBalanceQuery,
 } from "@dexkit/core/hooks";
 import { Coin, EvmCoin } from "@dexkit/core/types";
-import { copyToClipboard, truncateAddress } from "@dexkit/core/utils";
+import {
+  buildEtherReceiveAddress,
+  copyToClipboard,
+  truncateAddress,
+} from "@dexkit/core/utils";
 import CopyIconButton from "@dexkit/ui/components/CopyIconButton";
 import { useDexKitContext } from "@dexkit/ui/hooks";
 import FileCopy from "@mui/icons-material/FileCopy";
@@ -29,6 +33,7 @@ export interface EvmTransferCoinProps {
   evmAccounts?: { address: string }[];
   to?: string;
   amount?: number;
+  onChangePaymentUrl?: (payment?: string) => void;
 }
 
 export default function EvmTransferCoin({
@@ -43,6 +48,7 @@ export default function EvmTransferCoin({
   onConnectWallet,
   to,
   amount,
+  onChangePaymentUrl,
 }: EvmTransferCoinProps) {
   const { formatMessage } = useIntl();
 
@@ -128,6 +134,32 @@ export default function EvmTransferCoin({
     coin?: Coin | null;
   }) => {
     setValues(values);
+    if (onChangePaymentUrl) {
+      onChangePaymentUrl(
+        buildEtherReceiveAddress({
+          receiver: values?.address,
+          chainId: values?.coin?.network.chainId
+            ? values?.coin?.network.chainId
+            : chainId,
+          amount: values?.amount
+            ? values?.coin
+              ? ethers.utils
+                  .parseUnits(
+                    values?.amount?.toString() || "0",
+                    values.coin.decimals
+                  )
+                  .toString()
+              : ethers.utils
+                  .parseEther(values?.amount?.toString() || "0")
+                  .toString()
+            : undefined,
+          contractAddress:
+            values?.coin?.coinType === CoinTypes.EVM_ERC20
+              ? values.coin.contractAddress
+              : undefined,
+        })
+      );
+    }
   };
 
   const handleSubmit = async () => {

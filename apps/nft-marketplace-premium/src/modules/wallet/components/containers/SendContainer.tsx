@@ -1,6 +1,16 @@
 import EvmTransferCoin from '@dexkit/ui/modules/evm-transfer-coin/components/EvmTransferCoin';
-import { Box, Container, Grid, useMediaQuery, useTheme } from '@mui/material';
+import {
+  Box,
+  Container,
+  Grid,
+  Stack,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from '@mui/material';
 import { useWeb3React } from '@web3-react/core';
+import QRCode from 'qrcode.react';
+import { useState } from 'react';
 
 import { FormattedMessage } from 'react-intl';
 
@@ -14,9 +24,14 @@ interface Props {
 function SendContainer({ paymentURL }: Props) {
   const theme = useTheme();
   const { account, chainId, provider } = useWeb3React();
+  const [payment, setPayment] = useState(paymentURL);
   const paymentUrlParsed = useParsePaymentRequest({ paymentURL });
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const evmCoins = useEvmCoins({ defaultChainId: paymentUrlParsed?.chainId });
+
+  const onChangePayment = (code?: string) => {
+    setPayment(code);
+  };
 
   return (
     <>
@@ -48,6 +63,19 @@ function SendContainer({ paymentURL }: Props) {
                 ]}
               />
             </Grid>
+            {paymentURL && payment && !isMobile && (
+              <Grid item xs={12}>
+                <Stack justifyContent={'center'} alignItems={'center'}>
+                  <QRCode value={payment} />
+                  <Typography variant="caption">
+                    <FormattedMessage
+                      id="scan.using.crypto.mobile.app"
+                      defaultMessage="Scan QR code using crypto mobile app like Metamask or Trust"
+                    />
+                  </Typography>
+                </Stack>
+              </Grid>
+            )}
             <Grid item xs={12}>
               <EvmTransferCoin
                 account={account}
@@ -61,6 +89,7 @@ function SendContainer({ paymentURL }: Props) {
                 provider={provider}
                 coins={evmCoins}
                 to={paymentUrlParsed?.to}
+                onChangePaymentUrl={onChangePayment}
               />
             </Grid>
           </Grid>

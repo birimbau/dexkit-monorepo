@@ -262,17 +262,11 @@ export function useParsePaymentRequest({ paymentURL }: { paymentURL?: string }) 
       return amount;
     }
 
-
   }, [defaultCoin])
-
-
-
-
   return {
     ...paymentUrlParsed,
     amount,
     defaultCoin
   }
-
-
 }
+

@@ -113,7 +113,7 @@ export default function EvmReceive({
 
   return (
     <Stack spacing={3}>
-      <Stack justifyContent="center" alignItems="center">
+      <Stack justifyContent="center" alignItems="center" spacing={1}>
         <EvmReceiveQRCode
           receiver={receiver}
           chainId={coin?.network.chainId ? coin?.network.chainId : chainId}
@@ -130,6 +130,12 @@ export default function EvmReceive({
               : undefined
           }
         />
+        <Typography variant="caption">
+          <FormattedMessage
+            id="scan.using.crypto.mobile.app"
+            defaultMessage="Scan QR code using crypto mobile app like Metamask or Trust"
+          />
+        </Typography>
       </Stack>
       <Stack justifyContent="space-between" direction={"row"}>
         <Typography>
