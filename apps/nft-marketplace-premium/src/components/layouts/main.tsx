@@ -167,7 +167,6 @@ const MainLayout: React.FC<Props> = ({
   useEffect(() => {
     if (typeof window !== 'undefined' && connector) {
       if (connector.connectEagerly) {
-        console.log(connector);
         connector.connectEagerly();
       }
     }

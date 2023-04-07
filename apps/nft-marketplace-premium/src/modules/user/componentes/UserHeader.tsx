@@ -90,22 +90,25 @@ export function UserHeader(props: Props) {
             >
               {username}
             </Typography>
-            <Tooltip
-              title={
-                <FormattedMessage
-                  id={'user.verified.social'}
-                  defaultMessage={'Verified in: {discord} {twitter}'}
-                  values={{
-                    discord: discordVerified ? 'Discord' : '',
-                    twitter: twitterVerified ? 'Twitter' : '',
-                  }}
-                />
-              }
-            >
-              <IconButton color={'primary'}>
-                <Verified />
-              </IconButton>
-            </Tooltip>
+            {discordVerified ||
+              (twitterVerified && (
+                <Tooltip
+                  title={
+                    <FormattedMessage
+                      id={'user.verified.social'}
+                      defaultMessage={'Verified in: {discord} {twitter}'}
+                      values={{
+                        discord: discordVerified ? 'Discord' : '',
+                        twitter: twitterVerified ? 'Twitter' : '',
+                      }}
+                    />
+                  }
+                >
+                  <IconButton color={'primary'}>
+                    <Verified />
+                  </IconButton>
+                </Tooltip>
+              ))}
           </Box>
           <ShareButton />
         </Stack>

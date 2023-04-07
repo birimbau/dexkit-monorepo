@@ -136,8 +136,8 @@ export function useUserQuery(username?: string) {
 
 export const GET_AUTH_USER = 'GET_AUTH_USER';
 export function useAuthUserQuery() {
-
-  return useQuery([GET_AUTH_USER], async () => {
+  const { account } = useWeb3React();
+  return useQuery([GET_AUTH_USER, account], async () => {
     const userRequest = await getUserByAccount();
     return userRequest.data;
   })

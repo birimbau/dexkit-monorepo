@@ -9,12 +9,12 @@ export default async function handler(
 ) {
   const session = await getServerSession(req, res, authOptions)
   if (!session) {
-    res.status(401).json({ message: "You must be logged in on provider." });
+    res.status(401).json({ message: "You must be logged on provider." });
     return;
   }
   const refreshToken = req.cookies.refresh_token_auth;
   if (!refreshToken) {
-    res.status(401).json({ message: "You must be logged in on app." });
+    res.status(401).json({ message: "You must be logged on app." });
     return;
   }
 

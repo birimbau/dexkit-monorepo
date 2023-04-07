@@ -17,6 +17,7 @@ import { useAtomValue } from 'jotai';
 import { useRouter } from 'next/router';
 import { useCallback, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
+import { useLogoutAccountMutation } from 'src/hooks/account';
 import { isBalancesVisibleAtom } from '../state/atoms';
 import { getWalletIcon, truncateAddress } from '../utils/blockchain';
 interface Props {
@@ -27,6 +28,7 @@ export function WalletButton(props: Props) {
   const { align } = props;
   const router = useRouter();
   const { connector, account, ENSName } = useWeb3React();
+  const logoutMutation = useLogoutAccountMutation();
   const userQuery = useAuthUserQuery();
   const user = userQuery.data;
 
@@ -44,6 +46,7 @@ export function WalletButton(props: Props) {
   const justifyContent = align === 'left' ? 'flex-start' : 'center';
 
   const handleLogoutWallet = useCallback(() => {
+    logoutMutation.mutate();
     if (connector?.deactivate) {
       connector.deactivate();
     } else {

@@ -45,7 +45,7 @@ export async function loginApp({ address, signature }: { address: string, signat
 
 export async function logout({ accessTk }: { accessTk: string }) {
 
-  return authApi.post<{ logout: boolean }>('/logout', {
+  return authApi.get<{ logout: boolean }>('/logout', {
     headers: {
       'Authorization': `Bearer ${accessTk}`
     }
@@ -58,11 +58,11 @@ export async function logout({ accessTk }: { accessTk: string }) {
  * @returns 
  */
 
-export async function logoutApp() {
-
-  return axios.post<{ logout: boolean }>('/logout', {
+export async function logoutApp({ accessTk }: { accessTk: string }) {
+  console.log(access_token);
+  return axios.get<{ logout: boolean }>('/api/dex-auth/logout', {
     headers: {
-      'Authorization': `Bearer ${access_token}`
+      'Authorization': `Bearer ${accessTk}`
     }
   });
 }

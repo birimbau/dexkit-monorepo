@@ -4,7 +4,7 @@ import { useContext } from "react";
 import { MIN_KIT_HOLDING_AI_GENERATION, WHITELISTED_AI_ACCOUNTS } from "src/constants";
 import { getKitBalanceOfThreshold } from "src/services/balances";
 import { AuthContext } from "../contexts";
-import { loginApp, requestSignature, setAccessToken } from "../services/auth";
+import { getRefreshAccessToken, loginApp, logoutApp, requestSignature, setAccessToken } from "../services/auth";
 import { useSignMessageDialog } from './app';
 
 export function useAuth() {
@@ -43,6 +43,34 @@ export function useLoginAccountMutation() {
     onSettled() {
       signMessageDialog.setOpen(false)
     }
+  })
+}
+
+export function useLogoutAccountMutation() {
+  const { account } = useWeb3React();
+
+  const { setIsLoggedIn } = useAuth();
+
+  return useMutation(async () => {
+    if (!account) {
+      return;
+    }
+    const accessTk = await getRefreshAccessToken();
+    if (accessTk) {
+      const logoutResponse = await logoutApp({ accessTk });
+      const data = logoutResponse.data;
+      if (data.logout) {
+        if (setIsLoggedIn) {
+          setIsLoggedIn(true);
+        }
+        setAccessToken(undefined)
+      }
+      return data.logout;
+    }
+    throw Error('not able to logout')
+
+
+
   })
 }
 
