@@ -1,3 +1,4 @@
+import { ChainId } from '@dexkit/core/constants';
 import {
   Avatar,
   Box,
@@ -17,7 +18,6 @@ import {
 import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { NETWORKS } from '../../constants/chain';
-import { ChainId } from '../../constants/enum';
 import { Network } from '../../types/chains';
 import { AppDialogTitle } from '../AppDialogTitle';
 

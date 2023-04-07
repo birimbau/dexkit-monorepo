@@ -18,7 +18,7 @@ export interface AppMarketplaceContextProps {
   children: React.ReactNode | React.ReactNode[];
 }
 
-export function AppMarketplaceContext({
+export function AppMarketplaceProvider({
   children,
 }: AppMarketplaceContextProps) {
   const appConfig = useAppConfig();

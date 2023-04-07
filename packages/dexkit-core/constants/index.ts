@@ -173,3 +173,5 @@ export const NATIVE_TOKENS: { [key: number]: Token } = {
 export function GET_NATIVE_TOKEN(chainId: ChainId) {
   return NATIVE_TOKENS[chainId];
 }
+
+export const IPFS_GATEWAY = 'https://gateway.pinata.cloud/ipfs/';

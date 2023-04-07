@@ -1,7 +1,7 @@
+import { ChainId } from '@dexkit/core/constants';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import { useState } from 'react';
-import { ChainId } from '../constants/enum';
 import {
   getChainLogoImage,
   getChainName,

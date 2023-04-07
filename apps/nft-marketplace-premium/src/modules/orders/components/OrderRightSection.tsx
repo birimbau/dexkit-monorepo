@@ -20,10 +20,10 @@ import moment from 'moment';
 import { useCallback, useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
 import AppFeePercentageSpan from '../../../components/AppFeePercentageSpan';
-import Link from '../../../components/Link';
 import Calendar from '../../../components/icons/Calendar';
+import Link from '../../../components/Link';
 import { ZEROEX_NATIVE_TOKEN_ADDRESS } from '../../../constants';
-import { useAppConfig, useTransactionDialog } from '../../../hooks/app';
+import { useAppConfig } from '../../../hooks/app';
 import { useSwitchNetwork, useTokenList } from '../../../hooks/blockchain';
 import { useCoinPricesQuery, useCurrency } from '../../../hooks/currency';
 import {
@@ -68,8 +68,7 @@ function OrderRightSection({ order }: Props) {
     return tokens.find((t) => isAddressEqual(t.address, order?.erc20Token));
   }, [tokens, order]);
 
-  const transactions = useTransactionDialog();
-  const { createNotification } = useDexKitContext();
+  const { createNotification, watchTransactionDialog } = useDexKitContext();
 
   const nftSwapSdk = useSwapSdkV4(provider, chainId);
 
@@ -112,14 +111,14 @@ function OrderRightSection({ order }: Props) {
   }, [token, coinPricesQuery, currency, order]);
 
   const handleCancelSignedOrderError = useCallback(
-    (error: any) => transactions.setDialogError(error),
-    [transactions]
+    (error: any) => watchTransactionDialog.setDialogError(error),
+    [watchTransactionDialog]
   );
 
   const handleCancelOrderHash = useCallback(
     (hash: string, order: SwapApiOrder) => {
       if (asset !== undefined) {
-        transactions.setRedirectUrl(
+        watchTransactionDialog.setRedirectUrl(
           `/asset/${getNetworkSlugFromChainId(asset?.chainId)}/${
             asset?.contractAddress
           }/${asset?.id}`
@@ -140,10 +139,10 @@ function OrderRightSection({ order }: Props) {
           },
         });
 
-        transactions.watch(hash);
+        watchTransactionDialog.watch(hash);
       }
     },
-    [transactions, asset, chainId]
+    [watchTransactionDialog, asset, chainId]
   );
 
   const handleCancelSignedOrderMutate = useCallback(
@@ -154,15 +153,15 @@ function OrderRightSection({ order }: Props) {
           id: asset.id,
         };
 
-        transactions.open('cancelOffer', values);
+        watchTransactionDialog.open('cancelOffer', values);
       }
     },
-    [transactions]
+    [watchTransactionDialog]
   );
 
   const handleFillSignedOrderError = useCallback(
-    (error: any) => transactions.setDialogError(error),
-    [transactions]
+    (error: any) => watchTransactionDialog.setDialogError(error),
+    [watchTransactionDialog]
   );
 
   const handleMutateSignedOrder = useCallback(
@@ -180,13 +179,13 @@ function OrderRightSection({ order }: Props) {
         };
 
         if (accept) {
-          return transactions.open('acceptOffer', values);
+          return watchTransactionDialog.open('acceptOffer', values);
         }
 
-        transactions.open('buyNft', values);
+        watchTransactionDialog.open('buyNft', values);
       }
     },
-    [transactions, asset]
+    [watchTransactionDialog, asset]
   );
 
   const handleBuyOrderSuccess = useCallback(
@@ -203,7 +202,7 @@ function OrderRightSection({ order }: Props) {
         return;
       }
 
-      transactions.setRedirectUrl(
+      watchTransactionDialog.setRedirectUrl(
         `/asset/${getNetworkSlugFromChainId(asset?.chainId)}/${
           asset?.contractAddress
         }/${asset?.id}`
@@ -242,9 +241,9 @@ function OrderRightSection({ order }: Props) {
         });
       }
 
-      transactions.watch(hash);
+      watchTransactionDialog.watch(hash);
     },
-    [transactions, provider, asset]
+    [watchTransactionDialog, provider, asset]
   );
 
   const handleApproveAsset = useCallback(
@@ -273,10 +272,10 @@ function OrderRightSection({ order }: Props) {
           });
         }
 
-        transactions.watch(hash);
+        watchTransactionDialog.watch(hash);
       }
     },
-    [transactions, provider, asset, chainId]
+    [watchTransactionDialog, provider, asset, chainId]
   );
 
   const approveAsset = useApproveAssetMutation(
@@ -284,7 +283,7 @@ function OrderRightSection({ order }: Props) {
     account,
     handleApproveAsset,
     {
-      onError: (error: any) => transactions.setDialogError(error),
+      onError: (error: any) => watchTransactionDialog.setDialogError(error),
       onMutate: async (variable: { asset: SwappableAssetV4 }) => {
         if (asset) {
           if (
@@ -293,7 +292,7 @@ function OrderRightSection({ order }: Props) {
           ) {
             const values = { name: asset.collectionName, tokenId: asset.id };
 
-            transactions.open('approveForAll', values);
+            watchTransactionDialog.open('approveForAll', values);
           } else {
             const symbol = await getERC20Symbol(
               variable.asset.tokenAddress,
@@ -306,7 +305,7 @@ function OrderRightSection({ order }: Props) {
 
             const values = { name, symbol };
 
-            transactions.open('approve', values);
+            watchTransactionDialog.open('approve', values);
           }
         }
       },
@@ -394,7 +393,14 @@ function OrderRightSection({ order }: Props) {
     await fillSignedOrder.mutateAsync({
       order: order.order,
     });
-  }, [transactions, fillSignedOrder, nftSwapSdk, account, order, approveAsset]);
+  }, [
+    watchTransactionDialog,
+    fillSignedOrder,
+    nftSwapSdk,
+    account,
+    order,
+    approveAsset,
+  ]);
 
   const renderActionButton = () => {
     if (isAddressEqual(order?.order.maker, account)) {

@@ -1,127 +1,14 @@
 import { useDexKitContext } from '@dexkit/ui';
-import { useWeb3React } from '@web3-react/core';
 import { atom, useAtom, useAtomValue } from 'jotai';
-
-import { useUpdateAtom } from 'jotai/utils';
-import { useCallback, useContext, useMemo } from 'react';
+import { useContext, useMemo } from 'react';
 import { AppConfigContext } from '../contexts';
 import {
   localeAtom,
-  localeUserAtom,
-  transactionDialogErrorAtom,
-  transactionDialogHashAtom,
-  transactionDialogMetadataAtom,
-  transactionDialogOpenAtom,
-  transactionDialogRedirectUrlAtom,
-  transactionsAtom,
-  transactionTypeAtom,
-  transactionValuesAtom
+  localeUserAtom
 } from '../state/atoms';
-import {
-  TransactionMetadata,
-  TransactionStatus,
-  TransactionType,
-} from '../types/blockchain';
 
-export function useTransactionDialog() {
-  const updateTransactions = useUpdateAtom(transactionsAtom);
 
-  const [isOpen, setDialogIsOpen] = useAtom(transactionDialogOpenAtom);
-  const [hash, setHash] = useAtom(transactionDialogHashAtom);
-  const [error, setError] = useAtom(transactionDialogErrorAtom);
-  const [metadata, setMetadata] = useAtom(transactionDialogMetadataAtom);
-  const [type, setType] = useAtom(transactionTypeAtom);
 
-  const [values, setValues] = useAtom(transactionValuesAtom);
-
-  const [redirectUrl, setRedirectUrl] = useAtom(
-    transactionDialogRedirectUrlAtom
-  );
-
-  const { chainId } = useWeb3React();
-
-  const watch = useCallback((hash: string) => {
-    setHash(hash);
-  }, []);
-
-  const open = useCallback((type: string, values: Record<string, any>) => {
-    setDialogIsOpen(true);
-    setValues(values);
-    setType(type);
-  }, []);
-
-  const close = useCallback(() => {
-    setDialogIsOpen(false);
-    setType(undefined);
-    setValues(undefined);
-  }, []);
-
-  const showDialog = useCallback(
-    (open: boolean, metadata?: TransactionMetadata, type?: TransactionType) => {
-      setDialogIsOpen(open);
-      setMetadata(metadata);
-
-      if (!open) {
-        setHash(undefined);
-        setMetadata(undefined);
-        setType(undefined);
-      }
-    },
-    []
-  );
-
-  const setDialogError = useCallback(
-    (error?: Error) => {
-      if (isOpen) {
-        setError(error);
-      }
-    },
-    [setError, isOpen]
-  );
-
-  const addTransaction = useCallback(
-    (hash: string, type: TransactionType, metadata?: TransactionMetadata) => {
-      if (chainId !== undefined) {
-        setHash(hash);
-
-        updateTransactions((txs) => ({
-          ...txs,
-          [hash]: {
-            chainId,
-            created: new Date().getTime(),
-            status: TransactionStatus.Pending,
-            type,
-            metadata,
-            checked: false,
-          },
-        }));
-      }
-    },
-    [chainId]
-  );
-
-  return {
-    values,
-    open,
-    close,
-    redirectUrl,
-    setRedirectUrl,
-    error,
-    hash,
-    metadata,
-    type,
-    setHash,
-    isOpen,
-    setDialogIsOpen,
-    setError,
-    setMetadata,
-    setType,
-    showDialog,
-    setDialogError,
-    addTransaction,
-    watch,
-  };
-}
 
 const signMessageDialogOpenAtom = atom(false);
 const signMessageDialogErrorAtom = atom<Error | undefined>(undefined);

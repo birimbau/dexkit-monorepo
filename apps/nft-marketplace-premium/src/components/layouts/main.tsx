@@ -8,7 +8,6 @@ import {
   useAppNFT,
   useConnectWalletDialog,
   useSignMessageDialog,
-  useTransactionDialog,
 } from '../../hooks/app';
 import {
   drawerIsOpenAtom,
@@ -25,7 +24,6 @@ const SignMessageDialog = dynamic(() => import('../dialogs/SignMessageDialog'));
 const SwitchNetworkDialog = dynamic(
   () => import('../dialogs/SwitchNetworkDialog')
 );
-const TransactionDialog = dynamic(() => import('../dialogs/TransactionDialog'));
 
 import { useRouter } from 'next/router';
 import { AppConfig } from 'src/types/config';
@@ -33,7 +31,8 @@ import AppDrawer from '../AppDrawer';
 
 import { useWalletActivate } from '@dexkit/core/hooks';
 import { WalletActivateParams } from '@dexkit/core/types';
-import { ConnectWalletDialog } from '@dexkit/ui';
+import { useDexKitContext } from '@dexkit/ui';
+import ConnectWalletDialog from '@dexkit/ui/components/ConnectWalletDialog';
 import WatchTransactionDialog from '@dexkit/ui/components/dialogs/WatchTransactionDialog';
 
 const HoldingKitDialog = dynamic(() => import('../dialogs/HoldingKitDialog'));
@@ -60,7 +59,7 @@ const MainLayout: React.FC<Props> = ({
   appConfigProps,
   isPreview,
 }) => {
-  const { connector, isActive } = useWeb3React();
+  const { connector, isActive, isActivating } = useWeb3React();
   const router = useRouter();
 
   const defaultAppConfig = useAppConfig();
@@ -73,7 +72,7 @@ const MainLayout: React.FC<Props> = ({
     }
   }, [defaultAppConfig, appConfigProps]);
 
-  const transactions = useTransactionDialog();
+  const { watchTransactionDialog } = useDexKitContext();
 
   const [holdsKitDialog, setHoldsKitDialog] = useAtom(holdsKitDialogAtom);
 
@@ -94,15 +93,15 @@ const MainLayout: React.FC<Props> = ({
   };
 
   const handleCloseTransactionDialog = () => {
-    if (transactions.redirectUrl) {
-      router.replace(transactions.redirectUrl);
+    if (watchTransactionDialog.redirectUrl) {
+      router.replace(watchTransactionDialog.redirectUrl);
     }
-    transactions.setRedirectUrl(undefined);
-    transactions.setDialogIsOpen(false);
-    transactions.setHash(undefined);
-    transactions.setType(undefined);
-    transactions.setMetadata(undefined);
-    transactions.setError(undefined);
+    watchTransactionDialog.setRedirectUrl(undefined);
+    watchTransactionDialog.setDialogIsOpen(false);
+    watchTransactionDialog.setHash(undefined);
+    watchTransactionDialog.setType(undefined);
+    watchTransactionDialog.setMetadata(undefined);
+    watchTransactionDialog.setError(undefined);
   };
 
   const handleCloseSwitchNetworkDialog = () => {
@@ -168,6 +167,7 @@ const MainLayout: React.FC<Props> = ({
   useEffect(() => {
     if (typeof window !== 'undefined' && connector) {
       if (connector.connectEagerly) {
+        console.log(connector);
         connector.connectEagerly();
       }
     }
@@ -211,17 +211,18 @@ const MainLayout: React.FC<Props> = ({
           }}
         />
       )}
-      {transactions.isOpen && (
+      {watchTransactionDialog.isOpen && (
         <WatchTransactionDialog
           DialogProps={{
-            open: transactions.isOpen,
+            open: watchTransactionDialog.isOpen,
             onClose: handleCloseTransactionDialog,
             fullWidth: true,
             maxWidth: 'xs',
           }}
-          hash={transactions.hash}
-          type={transactions.type}
-          values={transactions.values}
+          error={watchTransactionDialog.error}
+          hash={watchTransactionDialog.hash}
+          type={watchTransactionDialog.type}
+          values={watchTransactionDialog.values}
         />
       )}
       {signMessageDialog.open && (
@@ -250,7 +251,7 @@ const MainLayout: React.FC<Props> = ({
       )}
       <ConnectWalletDialog
         DialogProps={{
-          open: connectWalletDialog.isOpen,
+          open: connectWalletDialog.isOpen || isActivating,
           onClose: handleCloseConnectWalletDialog,
           fullWidth: true,
           maxWidth: 'sm',
@@ -260,14 +261,20 @@ const MainLayout: React.FC<Props> = ({
         activeConnectorName={walletActivate.connectorName}
         activate={handleActivateWallet}
       />
-      <Navbar appConfig={appConfig} isPreview={isPreview} />
       <Box
-        sx={{ minHeight: isPreview ? undefined : '100vh' }}
-        py={disablePadding ? 0 : 4}
+        style={{
+          minHeight: '100vh',
+          margin: 0,
+          display: 'flex',
+          flexDirection: 'column',
+        }}
       >
-        {children}
+        <Navbar appConfig={appConfig} isPreview={isPreview} />
+        <Box sx={{ flex: 1 }} py={disablePadding ? 0 : 4}>
+          {children}
+        </Box>
+        <Footer appConfig={appConfig} isPreview={isPreview} appNFT={appNFT} />
       </Box>
-      <Footer appConfig={appConfig} isPreview={isPreview} appNFT={appNFT} />
     </>
   );
 

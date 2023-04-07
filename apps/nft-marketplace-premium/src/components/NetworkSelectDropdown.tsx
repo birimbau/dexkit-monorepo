@@ -1,3 +1,4 @@
+import { ChainId } from '@dexkit/core/constants';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import ListItemIcon from '@mui/material/ListItemIcon';
@@ -7,7 +8,6 @@ import Select from '@mui/material/Select';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { NETWORKS } from '../constants/chain';
-import { ChainId } from '../constants/enum';
 import { Network } from '../types/chains';
 
 interface Props {

@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start -p $PORT",
     "lint": "next lint",
+    "test": "jest",
     "postbuild": "next-sitemap",
     "post-update": "echo \"codesandbox preview only, need an update\" && yarn upgrade --latest",
     "extract": "formatjs extract",
@@ -42,6 +43,7 @@
     "@svgr/webpack": "^6.2.1",
     "@traderxyz/nft-swap-sdk": "0.30.0",
     "@transak/transak-sdk": "^1.0.31",
+    "@vercel/og": "^0.5.0",
     "axios": "^0.27.2",
     "cookie": "^0.5.0",
     "eslint-config-custom": "*",
@@ -60,6 +62,7 @@
     "react-admin": "^4.7.1",
     "react-error-boundary": "^3.1.4",
     "react-markdown": "^8.0.3",
+    "react-qr-reader": "^3.0.0-beta-1",
     "react-query": "^3.34.19",
     "react-resizable": "^3.0.4",
     "react-syntax-highlighter": "^15.5.0",
@@ -68,6 +71,7 @@
     "remark-gfm": "^3.0.1",
     "sharp": "^0.30.7",
     "slugify": "^1.6.5",
+    "yaqrcode": "^0.2.1",
     "yup": "^0.32.11"
   },
   "devDependencies": {

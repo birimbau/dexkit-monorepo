@@ -5,10 +5,10 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 
 import { useMemo } from 'react';
-import { ChainId } from '../../../constants/enum';
 import { useCollection } from '../../../hooks/nft';
 import { isAddressEqual } from '../../../utils/blockchain';
 
+import { ChainId } from '@dexkit/core/constants';
 import { styled, useTheme } from '@mui/material';
 import Image from 'next/image';
 import { useAppConfig } from '../../../hooks/app';

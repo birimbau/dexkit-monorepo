@@ -1,7 +1,7 @@
+import { ChainId } from '@dexkit/core/constants';
 import { ethers } from 'ethers';
 import { useMemo } from 'react';
 import { FormattedNumber } from 'react-intl';
-import { ChainId } from '../../../constants/enum';
 import { useERC20BalancesQuery } from '../../../hooks/balances';
 import { useCoinPricesQuery, useCurrency } from '../../../hooks/currency';
 import { useIsBalanceVisible } from '../../../hooks/misc';
@@ -18,7 +18,7 @@ export function WalletTotalBalance({ chainId }: Props) {
     includeNative: true,
     chainId: chainId,
   });
-  const tokenBalancesQuery = useERC20BalancesQuery(undefined, chainId);
+  const tokenBalancesQuery = useERC20BalancesQuery(undefined, chainId, false);
 
   const totalBalance = useMemo(() => {
     if (tokenBalancesQuery.data && coinPricesQuery.data) {

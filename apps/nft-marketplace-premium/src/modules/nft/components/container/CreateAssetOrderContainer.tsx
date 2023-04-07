@@ -37,7 +37,7 @@ import Image from 'next/image';
 import { useCallback, useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import Link from 'src/components/Link';
-import { useSignMessageDialog, useTransactionDialog } from 'src/hooks/app';
+import { useSignMessageDialog } from 'src/hooks/app';
 import {
   useAccountAssetsBalance,
   useApproveAssetMutation,
@@ -78,9 +78,7 @@ export const CreateAssetOrderContainer = () => {
 
   const signMessageDialog = useSignMessageDialog();
 
-  const transactions = useTransactionDialog();
-
-  const { createNotification } = useDexKitContext();
+  const { createNotification, watchTransactionDialog } = useDexKitContext();
 
   const { formatMessage } = useIntl();
 
@@ -145,10 +143,10 @@ export const CreateAssetOrderContainer = () => {
           });
         }
 
-        transactions.watch(hash);
+        watchTransactionDialog.watch(hash);
       }
     },
-    [transactions, asset, chainId]
+    [watchTransactionDialog, asset, chainId]
   );
 
   const handleApproveAssetMutate = useCallback(
@@ -163,7 +161,7 @@ export const CreateAssetOrderContainer = () => {
             tokenId: asset.id,
           };
 
-          transactions.open('approveForAll', values);
+          watchTransactionDialog.open('approveForAll', values);
         } else {
           const symbol = await getERC20Symbol(
             variable.asset.tokenAddress,
@@ -180,18 +178,18 @@ export const CreateAssetOrderContainer = () => {
             symbol,
           };
 
-          transactions.open('approve', values);
+          watchTransactionDialog.open('approve', values);
         }
       }
     },
-    [transactions, asset]
+    [watchTransactionDialog, asset]
   );
 
   const handleApproveAssetError = useCallback(
     (error: any) => {
-      transactions.setDialogError(error);
+      watchTransactionDialog.setDialogError(error);
     },
-    [transactions]
+    [watchTransactionDialog]
   );
 
   const handleSignMessageSuccess = useCallback(

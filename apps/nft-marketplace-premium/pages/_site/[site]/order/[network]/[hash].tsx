@@ -13,11 +13,11 @@ import {
   getOrderbookOrders,
 } from '../../../../../src/services/nft';
 
+import { ChainId } from '@dexkit/core/constants';
 import { Grid, Skeleton } from '@mui/material';
 import { FormattedMessage, useIntl } from 'react-intl';
 import MainLayout from '../../../../../src/components/layouts/main';
 import { PageHeader } from '../../../../../src/components/PageHeader';
-import { ChainId } from '../../../../../src/constants/enum';
 import {
   GET_NFT_ORDERS,
   useAsset,

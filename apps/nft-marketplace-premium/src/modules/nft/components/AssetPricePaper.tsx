@@ -12,7 +12,6 @@ import { SwappableAssetV4 } from '@traderxyz/nft-swap-sdk';
 import {
   useConnectWalletDialog,
   useSignMessageDialog,
-  useTransactionDialog,
 } from '../../../hooks/app';
 import { useSwitchNetwork } from '../../../hooks/blockchain';
 import {
@@ -30,6 +29,7 @@ import { isAddressEqual } from '../../../utils/blockchain';
 import { getAssetProtocol, isERC1155Owner } from '../../../utils/nfts';
 import { MakeListingDialog } from './dialogs/MakeListingDialog';
 import { MakeOfferDialog } from './dialogs/MakeOfferDialog';
+import { TransferAssetButton } from './TransferAssetButton';
 
 interface Props {
   address: string;
@@ -54,9 +54,7 @@ export function AssetPricePaper({ address, id }: Props) {
 
   const { openDialog: switchNetwork } = useSwitchNetwork();
 
-  const transactions = useTransactionDialog();
-
-  const { createNotification } = useDexKitContext();
+  const { createNotification, watchTransactionDialog } = useDexKitContext();
 
   const handleApproveAssetSuccess = useCallback(
     async (hash: string, swapAsset: SwappableAssetV4) => {
@@ -71,7 +69,7 @@ export function AssetPricePaper({ address, id }: Props) {
             metadata: { chainId, hash },
           });
 
-          transactions.watch(hash);
+          watchTransactionDialog.watch(hash);
         } else if (swapAsset.type === 'ERC20') {
           const symbol = await getERC20Symbol(swapAsset.tokenAddress, provider);
           const name = await getERC20Name(swapAsset.tokenAddress, provider);
@@ -85,18 +83,18 @@ export function AssetPricePaper({ address, id }: Props) {
             metadata: { chainId, hash },
           });
 
-          transactions.watch(hash);
+          watchTransactionDialog.watch(hash);
         }
       }
     },
-    [transactions, asset]
+    [watchTransactionDialog, asset]
   );
 
   const handleApproveAssetMutate = useCallback(
     async ({ asset: swapAsset }: { asset: SwappableAssetV4 }) => {
       if (asset) {
         if (swapAsset.type === 'ERC721' || swapAsset.type === 'ERC1155') {
-          transactions.open('approveForAll', {
+          watchTransactionDialog.open('approveForAll', {
             name: asset.collectionName,
             tokenId: asset.id,
           });
@@ -104,18 +102,18 @@ export function AssetPricePaper({ address, id }: Props) {
           const symbol = await getERC20Symbol(swapAsset.tokenAddress, provider);
           const name = await getERC20Name(swapAsset.tokenAddress, provider);
 
-          transactions.open('approve', { name, symbol });
+          watchTransactionDialog.open('approve', { name, symbol });
         }
       }
     },
-    [transactions, asset]
+    [watchTransactionDialog, asset]
   );
 
   const handleApproveAssetError = useCallback(
     (error: any) => {
-      transactions.setDialogError(error);
+      watchTransactionDialog.setDialogError(error);
     },
-    [transactions]
+    [watchTransactionDialog]
   );
 
   const approveAsset = useApproveAssetMutation(
@@ -361,18 +359,21 @@ export function AssetPricePaper({ address, id }: Props) {
             </Box> */}
             {isAddressEqual(account, asset?.owner) ||
             isERC1155Owner(assetBalance) ? (
-              <Button
-                size="large"
-                onClick={handleOpenMakeListingDialog}
-                startIcon={<DollarSquare color="primary" />}
-                variant="outlined"
-              >
-                <FormattedMessage
-                  defaultMessage="Sell"
-                  description="Sell button"
-                  id="sell"
-                />
-              </Button>
+              <>
+                <Button
+                  size="large"
+                  onClick={handleOpenMakeListingDialog}
+                  startIcon={<DollarSquare color="primary" />}
+                  variant="outlined"
+                >
+                  <FormattedMessage
+                    defaultMessage="Sell"
+                    description="Sell button"
+                    id="sell"
+                  />
+                </Button>
+                <TransferAssetButton asset={asset} />
+              </>
             ) : (
               <Button
                 size="large"

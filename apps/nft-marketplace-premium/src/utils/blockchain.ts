@@ -1,4 +1,4 @@
-import { ChainId } from '../constants/enum';
+
 
 import { MetaMask } from '@web3-react/metamask';
 import { WalletConnect } from '@web3-react/walletconnect';
@@ -6,6 +6,9 @@ import { WalletConnect } from '@web3-react/walletconnect';
 import metaMaskImage from '../../public/assets/images/metamask-fox.svg';
 import walletConnectImage from '../../public/assets/images/walletconnect-circle-blue.svg';
 
+import { ChainId } from '@dexkit/core/constants';
+import { MagicConnector } from '@dexkit/core/types/magic';
+import { WALLET_CONNECTORS } from '@dexkit/ui/constants';
 import { Connector } from '@web3-react/types';
 import { ethers } from 'ethers';
 import { NETWORKS } from '../constants/chain';
@@ -91,12 +94,26 @@ export const truncateAddress = (address: string | undefined) => {
 export function getName(connector: any) {
   if (connector instanceof MetaMask) return 'MetaMask';
   if (connector instanceof WalletConnect) return 'WalletConnect';
+  if (connector instanceof MagicConnector) {
+    if (typeof window !== "undefined") {
+      const loginType = localStorage.getItem("loginType");
+      return WALLET_CONNECTORS.find(w => w.id === 'magic' && w.loginType === loginType)?.name
+    }
+  }
   return 'Unknown';
 }
 
 export function getWalletIcon(connector: any) {
   if (connector instanceof MetaMask) return metaMaskImage.src;
   if (connector instanceof WalletConnect) return walletConnectImage.src;
+  if (connector instanceof MagicConnector) {
+    if (typeof window !== "undefined") {
+      const loginType = localStorage.getItem("loginType");
+      return WALLET_CONNECTORS.find(w => w.id === 'magic' && w.loginType === loginType)?.icon
+    }
+  }
+
+
   return undefined;
 }
 

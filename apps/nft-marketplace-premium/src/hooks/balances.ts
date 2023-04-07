@@ -1,11 +1,11 @@
+import { ChainId } from '@dexkit/core/constants';
+import { useMutation, UseMutationOptions, useQuery } from '@tanstack/react-query';
 import { SwappableAssetV4 } from '@traderxyz/nft-swap-sdk';
 import { useWeb3React } from '@web3-react/core';
 import { ethers } from 'ethers';
 import { useCallback } from 'react';
-import { useMutation, UseMutationOptions, useQuery } from '@tanstack/react-query';
 import { ZEROEX_NATIVE_TOKEN_ADDRESS } from '../constants';
 import { ERC20Abi } from '../constants/abis';
-import { ChainId } from '../constants/enum';
 import {
   getERC20Balances,
   getERC20WithProxyUnlockedBalances
@@ -23,7 +23,10 @@ type SelectCalback = (data?: TokenBalance[]) => TokenBalance[] | undefined;
 export const selectNativeCurrency: SelectCalback = (data?: TokenBalance[]) =>
   data?.filter((t) => t.token.address === ZEROEX_NATIVE_TOKEN_ADDRESS);
 
-export const useERC20BalancesQuery = (select?: SelectCalback, defaultChainId?: ChainId) => {
+
+
+
+export const useERC20BalancesQuery = (select?: SelectCalback, defaultChainId?: ChainId, enableSuspense = true) => {
   const { provider: walletProvider, account, chainId: walletChainId } = useWeb3React();
   const chainId = defaultChainId || walletChainId;
   const tokens = useTokenList({ chainId, includeNative: true });
@@ -49,7 +52,7 @@ export const useERC20BalancesQuery = (select?: SelectCalback, defaultChainId?: C
 
       return getERC20Balances(account, tokens, chainId, provider);
     },
-    { enabled: chainId !== undefined, select, suspense: true }
+    { enabled: chainId !== undefined, select, suspense: enableSuspense }
   );
 };
 

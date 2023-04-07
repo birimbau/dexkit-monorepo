@@ -1,6 +1,6 @@
+import { ChainId } from '@dexkit/core/constants';
 import axios from 'axios';
 import { COINGECKO_ENDPOIT, COINGECKO_PLATFORM_ID } from '../constants';
-import { ChainId } from '../constants/enum';
 
 export const getTokenPrices = async ({
   chainId,

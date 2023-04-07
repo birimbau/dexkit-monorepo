@@ -3,12 +3,12 @@ import {
   UseMutationOptions,
   useQuery,
   useQueryClient,
-  UseQueryOptions,
+  UseQueryOptions
 } from '@tanstack/react-query';
 import {
   NftSwapV4,
   SwappableAssetV4,
-  SwappableNftV4,
+  SwappableNftV4
 } from '@traderxyz/nft-swap-sdk';
 import { useCallback, useMemo } from 'react';
 
@@ -31,10 +31,10 @@ import {
   getCollectionData,
   getDKAssetOrderbook,
   getERC1155Balance,
-  searchAssetsDexKitApi,
+  searchAssetsDexKitApi
 } from '../services/nft';
 
-import { ChainId, NFTType } from '../constants/enum';
+import { NFTType } from '../constants/enum';
 import {
   Asset,
   AssetAPI,
@@ -42,9 +42,10 @@ import {
   AssetMetadata,
   HiddenAsset,
   OrderBookItem,
-  SwapApiOrder,
+  SwapApiOrder
 } from '../types/nft';
 
+import { ChainId } from '@dexkit/core/constants';
 import { PostOrderResponsePayload } from '@traderxyz/nft-swap-sdk/dist/sdk/v4/orderbook';
 import axios from 'axios';
 import { useAtom, useAtomValue } from 'jotai';
@@ -55,13 +56,13 @@ import { getOrderbookOrders } from '../services/nft';
 import {
   accountAssetsAtom,
   assetsAtom,
-  hiddenAssetsAtom,
+  hiddenAssetsAtom
 } from '../state/atoms';
 import { AssetRari } from '../types/rarible';
 import {
   getChainSlug,
   getNetworkSlugFromChainId,
-  isAddressEqual,
+  isAddressEqual
 } from '../utils/blockchain';
 import { calculeFees, parseAssetApi } from '../utils/nfts';
 import { TraderOrderFilter } from '../utils/types';
@@ -83,6 +84,7 @@ export function useAsset(
     provider: injectedProvider,
     chainId: injectedChainId,
     isActive,
+    account,
   } = useWeb3React();
 
   const assetCached = queryClient.getQueryState<Asset | undefined>([
@@ -108,9 +110,10 @@ export function useAsset(
         contractAddress === undefined ||
         tokenId === undefined
       ) {
+
         return;
       }
-      const asset = await getAssetData(provider, contractAddress, tokenId);
+      const asset = await getAssetData(provider, contractAddress, tokenId, account);
 
       let assetApi: AssetAPI | undefined;
       try {
@@ -140,6 +143,7 @@ export function useAsset(
           metadata: { ...rawMetadata, image: assetApi?.imageUrl },
           owner: asset?.owner,
           protocol: asset?.protocol,
+          balance: asset?.balance
         };
         return newAsset;
       }
@@ -790,7 +794,7 @@ export function useFavoriteAssets() {
         asset !== undefined &&
         assets !== undefined &&
         assets[
-          `${asset.chainId}-${asset.contractAddress.toLowerCase()}-${asset.id}`
+        `${asset.chainId}-${asset.contractAddress.toLowerCase()}-${asset.id}`
         ] !== undefined
       );
     },
@@ -836,7 +840,7 @@ export function useHiddenAssets() {
         asset !== undefined &&
         assets !== undefined &&
         assets[
-          `${asset.chainId}-${asset.contractAddress.toLowerCase()}-${asset.id}`
+        `${asset.chainId}-${asset.contractAddress.toLowerCase()}-${asset.id}`
         ] === true
       );
     },
