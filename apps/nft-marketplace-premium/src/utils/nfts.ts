@@ -1,6 +1,7 @@
+import { ChainId } from '@dexkit/core/constants';
 import { UserFacingFeeStruct } from '@traderxyz/nft-swap-sdk';
 import { ethers } from 'ethers';
-import { ChainId, NETWORK_ID } from '../constants/enum';
+import { NETWORK_ID } from '../constants/enum';
 import { MARKETPLACES, MARKETPLACES_INFO } from '../constants/marketplaces';
 import { Asset, AssetAPI, AssetBalance, AssetMetadata } from '../types/nft';
 import { getNetworkSlugFromChainId } from './blockchain';
@@ -89,7 +90,7 @@ export function parseAssetApi(assetApi?: AssetAPI): Asset | undefined {
 
 
 export function getMarketplaceForAssetURL(platform: MARKETPLACES, asset?: Asset) {
-  if (platform === MARKETPLACES.OPEN_SEA && asset?.chainId !== ChainId.FANTOM) {
+  if (platform === MARKETPLACES.OPEN_SEA && asset?.chainId !== ChainId.Fantom) {
     const openSeaInfo = MARKETPLACES_INFO[MARKETPLACES.OPEN_SEA];
     const networkSlug = getNetworkSlugFromChainId(asset?.chainId) as NETWORK_ID;
     //@ts-ignore
@@ -97,17 +98,17 @@ export function getMarketplaceForAssetURL(platform: MARKETPLACES, asset?: Asset)
 
     return `${openSeaInfo.baseAssetUrl}${net}/${asset?.contractAddress}/${asset?.id}`
   }
-  if (platform === MARKETPLACES.LOOKS_RARE && asset?.chainId !== ChainId.ETH) {
+  if (platform === MARKETPLACES.LOOKS_RARE && asset?.chainId !== ChainId.Ethereum) {
     const marketplaceInfo = MARKETPLACES_INFO[MARKETPLACES.LOOKS_RARE];
     return `${marketplaceInfo.baseAssetUrl}${asset?.contractAddress}/${asset?.id}`
   }
 
-  if (platform === MARKETPLACES.SUDOSWAP && asset?.chainId !== ChainId.ETH) {
+  if (platform === MARKETPLACES.SUDOSWAP && asset?.chainId !== ChainId.Ethereum) {
     const marketplaceInfo = MARKETPLACES_INFO[MARKETPLACES.SUDOSWAP];
     return `${marketplaceInfo.baseAssetUrl}${asset?.contractAddress}/${asset?.id}`
   }
 
-  if (platform === MARKETPLACES.RARIBLE && (asset?.chainId === ChainId.ETH || asset?.chainId === ChainId.Polygon)) {
+  if (platform === MARKETPLACES.RARIBLE && (asset?.chainId === ChainId.Ethereum || asset?.chainId === ChainId.Polygon)) {
     const marketplaceInfo = MARKETPLACES_INFO[MARKETPLACES.RARIBLE];
     const networkSlug = getNetworkSlugFromChainId(asset?.chainId) as any;
     //@ts-ignore

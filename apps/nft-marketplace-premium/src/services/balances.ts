@@ -1,4 +1,5 @@
 import { getContractAddressesForChainOrThrow } from '@0x/contract-addresses';
+import { ChainId } from '@dexkit/core/constants';
 import { BigNumber, Contract, ethers } from 'ethers';
 import { Interface } from 'ethers/lib/utils';
 import { NETWORKS } from 'src/constants/chain';
@@ -8,7 +9,6 @@ import {
   ZEROEX_NATIVE_TOKEN_ADDRESS
 } from '../constants';
 import { ERC20Abi } from '../constants/abis';
-import { ChainId, NETWORK_ID } from '../constants/enum';
 import { Token, TokenBalance } from '../types/blockchain';
 import { getChainIdFromSlug, getNativeCurrencySymbol } from '../utils/blockchain';
 import {

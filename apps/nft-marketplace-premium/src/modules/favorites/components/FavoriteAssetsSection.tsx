@@ -1,4 +1,5 @@
 import WalletAssetsFilter from '@/modules/wallet/components/WalletAssetsFilter';
+import { ChainId } from '@dexkit/core/constants';
 import { ImportExport, Search } from '@mui/icons-material';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import {
@@ -20,7 +21,7 @@ import { ChangeEvent, useCallback, useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import CloseCircle from '../../../components/icons/CloseCircle';
 import Funnel from '../../../components/icons/Filter';
-import { ChainId } from '../../../constants/enum';
+
 import { useFavoriteAssets } from '../../../hooks/nft';
 import { Asset } from '../../../types/nft';
 import { isAddressEqual } from '../../../utils/blockchain';

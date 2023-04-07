@@ -1,8 +1,8 @@
+import { ChainId } from '@dexkit/core/constants';
 import { Button, Grid, Stack, Typography } from '@mui/material';
 import { useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
 import Link from '../../../components/Link';
-import { ChainId } from '../../../constants/enum';
 
 import { useAssetListFromOrderbook } from '../../../hooks/nft';
 import { AssetCard } from './AssetCard';

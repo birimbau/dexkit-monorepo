@@ -3,10 +3,10 @@ import { Connector } from "@web3-react/types";
 import { build, BuildInput } from 'eth-url-parser';
 import { BigNumber, ethers } from "ethers";
 import { EventEmitter } from "events";
-import { EvmCoin, TokenWhitelabelApp } from "types";
 import { ChainId, CoinTypes, IPFS_GATEWAY } from "../constants";
 import { NETWORKS } from "../constants/networks";
 import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "../constants/zrx";
+import { EvmCoin, TokenWhitelabelApp } from "../types";
 import { MagicConnector } from "../types/magic";
 
 export function getConnectorName(connector?: Connector) {

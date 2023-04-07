@@ -1,3 +1,4 @@
+import { ChainId } from '@dexkit/core/constants';
 import { useMutation, UseMutationOptions, useQuery } from '@tanstack/react-query';
 import { SwappableAssetV4 } from '@traderxyz/nft-swap-sdk';
 import { useWeb3React } from '@web3-react/core';
@@ -5,7 +6,6 @@ import { ethers } from 'ethers';
 import { useCallback } from 'react';
 import { ZEROEX_NATIVE_TOKEN_ADDRESS } from '../constants';
 import { ERC20Abi } from '../constants/abis';
-import { ChainId } from '../constants/enum';
 import {
   getERC20Balances,
   getERC20WithProxyUnlockedBalances

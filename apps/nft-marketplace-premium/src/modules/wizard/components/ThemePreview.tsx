@@ -1,4 +1,4 @@
-import Swap from '@/modules/swap/Swap';
+import { ChainId } from '@dexkit/core/constants';
 import {
   Box,
   Button,
@@ -10,7 +10,7 @@ import {
   Typography,
 } from '@mui/material';
 import { useIntl } from 'react-intl';
-import { ChainId } from '../../../constants/enum';
+
 import AssetFromApi from '../../nft/components/AssetFromApi';
 import { KITTYGOTCHI_CONTRACT } from '../constants';
 import SwapWidget from './pageEditor/components/SwapWidget';

@@ -7,9 +7,9 @@ import { Asset, AssetAPI, AssetMetadata, Collection, CollectionAPI, OrderbookAPI
 import { ipfsUriToUrl } from '../utils/ipfs';
 import { getMulticallFromProvider } from './multical';
 
+import { ChainId } from '@dexkit/core/constants';
 import { QueryClient } from '@tanstack/react-query';
 import { DEXKIT_AUTHENTICATE_API_KEY, DEXKIT_BASE_API_URL, TRADER_ORDERBOOK_API } from '../constants';
-import { ChainId } from '../constants/enum';
 import { GET_ASSET_DATA, GET_ASSET_METADATA } from '../hooks/nft';
 import { getChainIdFromSlug, getNetworkSlugFromChainId } from '../utils/blockchain';
 import { isENSContract } from '../utils/nfts';

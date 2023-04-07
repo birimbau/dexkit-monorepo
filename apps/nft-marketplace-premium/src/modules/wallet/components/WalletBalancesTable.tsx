@@ -1,3 +1,4 @@
+import { ChainId } from '@dexkit/core/constants';
 import {
   Skeleton,
   Table,
@@ -9,7 +10,6 @@ import {
 } from '@mui/material';
 import { useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { ChainId } from '../../../constants/enum';
 import { useERC20BalancesQuery } from '../../../hooks/balances';
 import { useCoinPricesQuery, useCurrency } from '../../../hooks/currency';
 import { useIsBalanceVisible } from '../../../hooks/misc';

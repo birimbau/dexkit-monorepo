@@ -1,4 +1,4 @@
-import { ChainId } from '../../../constants/enum';
+import { ChainId } from '@dexkit/core/constants';
 import { useFullAsset } from '../../../hooks/nft';
 import { AssetCard } from './AssetCard';
 

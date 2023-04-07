@@ -34,7 +34,7 @@ import {
   searchAssetsDexKitApi
 } from '../services/nft';
 
-import { ChainId, NFTType } from '../constants/enum';
+import { NFTType } from '../constants/enum';
 import {
   Asset,
   AssetAPI,
@@ -45,6 +45,7 @@ import {
   SwapApiOrder
 } from '../types/nft';
 
+import { ChainId } from '@dexkit/core/constants';
 import { PostOrderResponsePayload } from '@traderxyz/nft-swap-sdk/dist/sdk/v4/orderbook';
 import axios from 'axios';
 import { useAtom, useAtomValue } from 'jotai';

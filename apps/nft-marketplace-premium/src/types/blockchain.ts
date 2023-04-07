@@ -1,5 +1,5 @@
+import { ChainId } from '@dexkit/core/constants';
 import { BigNumber } from 'ethers';
-import { ChainId } from '../constants/enum';
 import { Asset, SwapApiOrder } from './nft';
 
 export enum TransactionStatus {

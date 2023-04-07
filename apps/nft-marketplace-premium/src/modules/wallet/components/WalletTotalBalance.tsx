@@ -1,7 +1,7 @@
+import { ChainId } from '@dexkit/core/constants';
 import { ethers } from 'ethers';
 import { useMemo } from 'react';
 import { FormattedNumber } from 'react-intl';
-import { ChainId } from '../../../constants/enum';
 import { useERC20BalancesQuery } from '../../../hooks/balances';
 import { useCoinPricesQuery, useCurrency } from '../../../hooks/currency';
 import { useIsBalanceVisible } from '../../../hooks/misc';
