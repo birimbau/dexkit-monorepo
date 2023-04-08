@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { AppPageSection, AssetStorePageSection } from 'src/types/config';
+import { AppPageSection, AssetStorePageSection } from '../../types/section';
 import AssetStoreForm from './AssetStoreForm';
 
 interface Props {

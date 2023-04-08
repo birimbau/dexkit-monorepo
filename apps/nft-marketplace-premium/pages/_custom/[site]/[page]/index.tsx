@@ -21,10 +21,11 @@ import {
   getCollectionData,
   getDKAssetOrderbook,
 } from '../../../../src/services/nft';
-import { AppPageSection } from '../../../../src/types/config';
+
 import { getNetworkSlugFromChainId } from '../../../../src/utils/blockchain';
 
 import { SectionsRenderer } from '@/modules/wizard/components/sections/SectionsRenderer';
+import { AppPageSection } from '@/modules/wizard/types/section';
 import { getProviderBySlug } from '../../../../src/services/providers';
 
 const CustomPage: NextPage<{ sections: AppPageSection[] }> = ({ sections }) => {

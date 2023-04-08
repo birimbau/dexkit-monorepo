@@ -1,8 +1,9 @@
 import { Dialog, DialogProps } from '@mui/material';
+import dynamic from 'next/dynamic';
 import { FormattedMessage } from 'react-intl';
 import { AppDialogTitle } from '../../../../components/AppDialogTitle';
-import { AppConfig, AppPageSection } from '../../../../types/config';
-import dynamic from 'next/dynamic';
+import { AppConfig } from '../../../../types/config';
+import { AppPageSection } from '../../types/section';
 const PreviewPagePlatform = dynamic(() => import('../PreviewPagePlatform'));
 interface Props {
   dialogProps: DialogProps;

@@ -12,15 +12,14 @@ import {
 import { FormikHelpers, useFormik } from 'formik';
 import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import {
-  AppPageSection,
-  CallToActionAppPageSection,
-  PageSectionVariant,
-  SectionItem,
-} from '../../../../types/config';
+import { PageSectionVariant, SectionItem } from '../../../../types/config';
 
 import AddIcon from '@mui/icons-material/Add';
 import * as Yup from 'yup';
+import {
+  AppPageSection,
+  CallToActionAppPageSection,
+} from '../../types/section';
 import { PageSectionItem } from '../PageSectionItem';
 import AddItemForm from './AddItemForm';
 

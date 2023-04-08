@@ -14,8 +14,9 @@ import { FormattedMessage } from 'react-intl';
 import { useCurrency } from 'src/hooks/currency';
 import { Token } from 'src/types/blockchain';
 import { useSwapState } from '../../../../hooks/swap';
-import { AppConfig, SwapPageSection } from '../../../../types/config';
+import { AppConfig } from '../../../../types/config';
 import { StepperButtonProps } from '../../types';
+import { SwapPageSection } from '../../types/section';
 import { SwapConfigForm } from '../forms/SwapConfigForm';
 import { StepperButtons } from '../steppers/StepperButtons';
 interface Props {
