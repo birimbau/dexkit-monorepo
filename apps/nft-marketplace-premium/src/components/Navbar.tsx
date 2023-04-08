@@ -263,7 +263,12 @@ function Navbar({ appConfig, isPreview }: Props) {
           </ListItem> */}
         </List>
       </Popover>
-      <AppBar variant="elevation" color="default" position="sticky">
+      <AppBar
+        variant="elevation"
+        color="default"
+        position="sticky"
+        sx={{ zIndex: 10 }}
+      >
         <Toolbar variant="dense" sx={{ py: 1 }}>
           {isMobile && (
             <IconButton

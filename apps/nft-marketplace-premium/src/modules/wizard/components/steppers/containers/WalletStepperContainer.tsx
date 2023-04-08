@@ -11,18 +11,18 @@ import { PageHeader } from 'src/components/PageHeader';
 import { useSendConfigMutation } from 'src/hooks/whitelabel';
 import { AppConfig } from 'src/types/config';
 import { SiteResponse } from 'src/types/whitelabel';
-import theDefaultConfig from '../../../../../../config/quick.store.default.app.json';
+import theDefaultConfig from '../../../../../../config/quick.wallet.default.app.json';
 import SignConfigDialog from '../../dialogs/SignConfigDialog';
 import { PreviewAppButton } from '../../PreviewAppButton';
-import AssetStoreStepper from '../AssetStoreStepper.tsx';
-import { WelcomeAssetStoreStepperMessage } from '../Welcome/WelcomeAssetStoreStepperMessage';
+import WalletStepper from '../WalletStepper.tsx';
+import { WelcomeWalletStepperMessage } from '../Welcome/WelcomeWalletStepperMessage';
 const defaultConfig = theDefaultConfig as unknown as AppConfig;
 
 interface Props {
   site?: SiteResponse;
 }
 
-export default function AssetStoreStepperContainer({ site }: Props) {
+export default function WalletStepperContainer({ site }: Props) {
   const sendConfigMutation = useSendConfigMutation({ slug: site?.slug });
   const [showConfirmSendConfig, setShowConfirmSendConfig] = useState(false);
   const router = useRouter();
@@ -91,14 +91,14 @@ export default function AssetStoreStepperContainer({ site }: Props) {
         <Stack>
           <Typography variant="h5" align="center">
             <FormattedMessage
-              id="create.nft.store.app"
-              defaultMessage="Create nft store app"
+              id="create.wallet.app"
+              defaultMessage="Create wallet app"
             />
           </Typography>
           <Typography variant="body1" align="center" color="textSecondary">
             <FormattedMessage
-              id="do.you.really.want.to.create.a.nft.store.app"
-              defaultMessage="Do you really want to create a nft store app?"
+              id="do.you.really.want.to.create.a.wallet.app"
+              defaultMessage="Do you really want to create a wallet app?"
             />
           </Typography>
         </Stack>
@@ -138,8 +138,8 @@ export default function AssetStoreStepperContainer({ site }: Props) {
                 {
                   caption: (
                     <FormattedMessage
-                      id="nft.store.quick.builder"
-                      defaultMessage="NFT store quick builder"
+                      id="wallet.quick.builder"
+                      defaultMessage="Wallet quick builder"
                     />
                   ),
                   uri: '/admin/quick-wizard/builder',
@@ -150,15 +150,15 @@ export default function AssetStoreStepperContainer({ site }: Props) {
           </Stack>
         </Grid>
         <Grid item xs={12} sm={12}>
-          <WelcomeAssetStoreStepperMessage />
+          <WelcomeWalletStepperMessage />
         </Grid>
         <Grid item xs={12} sm={12}>
           <Stack direction={'row'} justifyContent={'space-between'}>
             {!isMobile && (
               <Typography variant="h5">
                 <FormattedMessage
-                  id="quick.nft.store.builder"
-                  defaultMessage="Quick NFT store builder"
+                  id="quick.waççet.builder"
+                  defaultMessage="Quick wallet builder"
                 />
               </Typography>
             )}
@@ -168,7 +168,7 @@ export default function AssetStoreStepperContainer({ site }: Props) {
           </Stack>
         </Grid>
         <Grid item xs={12} sm={12}>
-          <AssetStoreStepper
+          <WalletStepper
             onSave={handleSave}
             onChange={handleChange}
             config={wizardConfig}

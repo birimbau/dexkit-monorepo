@@ -1,7 +1,7 @@
 import MainLayout from 'src/components/layouts/main';
 import { AppConfig } from '../../../types/config';
 import { AppPageSection } from '../types/section';
-import { SectionRender } from './sections/SectionRender';
+import { SectionRender } from './section-config/SectionRender';
 
 interface Props {
   sections?: AppPageSection[];

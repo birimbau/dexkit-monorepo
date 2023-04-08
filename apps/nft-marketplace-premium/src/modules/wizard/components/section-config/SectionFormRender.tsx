@@ -6,6 +6,7 @@ import FeaturedSectionForm from '../forms/FeaturedSectionForm';
 import MDSectionForm from '../forms/MDSectionForm';
 import { SwapConfigSectionForm } from '../forms/SwapConfigSectionForm';
 import VideoSectionForm from '../forms/VideoSectionForm';
+import WalletSectionForm from '../forms/WalletSectionForm';
 
 interface Props {
   sectionType: SectionType | undefined;
@@ -71,6 +72,14 @@ export function SectionFormRender({
   } else if (sectionType === 'markdown') {
     return (
       <MDSectionForm
+        onCancel={onClose}
+        onSave={onSave}
+        section={section?.type === sectionType ? section : undefined}
+      />
+    );
+  } else if (sectionType === 'wallet') {
+    return (
+      <WalletSectionForm
         onCancel={onClose}
         onSave={onSave}
         section={section?.type === sectionType ? section : undefined}

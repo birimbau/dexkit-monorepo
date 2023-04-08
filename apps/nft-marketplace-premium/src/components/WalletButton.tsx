@@ -3,6 +3,7 @@ import { Logout } from '@mui/icons-material';
 import EditIcon from '@mui/icons-material/Edit';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import PersonIcon from '@mui/icons-material/Person';
+import SwitchAccountIcon from '@mui/icons-material/SwitchAccount';
 import {
   Avatar,
   ButtonBase,
@@ -18,6 +19,7 @@ import { useRouter } from 'next/router';
 import { useCallback, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { useLogoutAccountMutation } from 'src/hooks/account';
+import { useConnectWalletDialog } from 'src/hooks/app';
 import { isBalancesVisibleAtom } from '../state/atoms';
 import { getWalletIcon, truncateAddress } from '../utils/blockchain';
 interface Props {
@@ -31,7 +33,10 @@ export function WalletButton(props: Props) {
   const logoutMutation = useLogoutAccountMutation();
   const userQuery = useAuthUserQuery();
   const user = userQuery.data;
-
+  const connectWalletDialog = useConnectWalletDialog();
+  const handleSwitchWallet = () => {
+    connectWalletDialog.setOpen(true);
+  };
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: any) => {
@@ -125,6 +130,12 @@ export function WalletButton(props: Props) {
             <FormattedMessage id="edit.profile" defaultMessage="Edit profile" />
           </MenuItem>
         )}
+        <MenuItem onClick={handleSwitchWallet}>
+          <ListItemIcon>
+            <SwitchAccountIcon fontSize="small" />
+          </ListItemIcon>
+          <FormattedMessage id="switch.wallet" defaultMessage="Switch wallet" />
+        </MenuItem>
         <MenuItem onClick={handleLogoutWallet}>
           <ListItemIcon>
             <Logout fontSize="small" />

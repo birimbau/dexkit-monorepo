@@ -1,12 +1,9 @@
 import Alert from '@mui/material/Alert';
 import { ReactNode } from 'react';
 import { FormattedMessage } from 'react-intl';
-import {
-  DEXKIT_DISCORD_SUPPORT_CHANNEL,
-  WIZARD_DOCS_URL,
-} from '../../../constants';
+import { DEXKIT_DISCORD_SUPPORT_CHANNEL, WIZARD_DOCS_URL } from 'src/constants';
 
-export function WelcomeAssetStoreStepperMessage() {
+export function WelcomeSwapStepperMessage() {
   const handleHrefDiscord = (chunks: any): ReactNode => (
     <a
       className="external_link"
@@ -32,8 +29,8 @@ export function WelcomeAssetStoreStepperMessage() {
   return (
     <Alert severity="info">
       <FormattedMessage
-        id="quick.wizard.nft.store.welcome.index.message"
-        defaultMessage="Welcome to DexAppBuilder! Here you can quick start your NFT store.
+        id="quick.wizard.swap.welcome.index.message"
+        defaultMessage="Welcome to DexAppBuilder! Here you can quick start your crypto aggregator
     If you need support please reach us on our <a>dedicated Discord channel</a>. Please check our <d>docs</d> for whitelabels. Reach us at our email <b>info@dexkit.com</b> if you need a custom solution that the wizard not attend."
         values={{
           //@ts-ignore

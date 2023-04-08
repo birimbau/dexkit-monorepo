@@ -6,8 +6,10 @@ import { FormattedMessage } from 'react-intl';
 import { AppPage, AppPageOptions } from '../../../../types/config';
 import { BuilderKit } from '../../constants';
 import { AppPageSection, CustomEditorSection } from '../../types/section';
-import PagesSectionPage from './PagesSectionPage';
-const EditSectionDialog = dynamic(() => import('../dialogs/EditSectionDialog'));
+import PagesSectionPage from '../section-config/PagesSectionPage';
+const EditSectionDialog = dynamic(
+  () => import('../section-config/dialogs/EditSectionDialog')
+);
 const PageEditorDialog = dynamic(() => import('../dialogs/PageEditorDialog'));
 
 interface Props {

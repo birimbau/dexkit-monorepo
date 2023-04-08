@@ -2,7 +2,7 @@ import { useTheme } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { AppPageSection } from '../../types/section';
 
-import { SectionRender } from './SectionRender';
+import { SectionRender } from '../section-config/SectionRender';
 
 interface Props {
   sections: AppPageSection[];

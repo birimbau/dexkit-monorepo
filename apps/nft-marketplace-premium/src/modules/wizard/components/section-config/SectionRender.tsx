@@ -21,6 +21,7 @@ const VideoSection = dynamic(
 
 import AssetStoreSection from '@/modules/home/components/AssetStoreSection';
 import { MDSection } from '@/modules/home/components/MDSection';
+import WalletSection from '@/modules/home/components/WalletSection';
 import { AppPageSection } from '../../types/section';
 
 interface Props {
@@ -50,6 +51,8 @@ export function SectionRender({ section }: Props) {
     return <AssetStoreSection section={section} />;
   } else if (section.type === 'markdown') {
     return <MDSection section={section} />;
+  } else if (section.type === 'wallet') {
+    return <WalletSection section={section} />;
   }
 
   return <></>;
