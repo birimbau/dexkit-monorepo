@@ -104,7 +104,10 @@ export function AppMarketplaceProvider({
       theme={theme}
       selectedWalletAtom={selectedWalletAtom}
       options={{
-        magicRedirectUrl: process.env.NEXT_PUBLIC_MAGIC_REDIRECT_URL || '',
+        magicRedirectUrl:
+          typeof window !== 'undefined'
+            ? window.location.href
+            : process.env.NEXT_PUBLIC_MAGIC_REDIRECT_URL || '',
       }}
       notificationTypes={{
         ...WHITELABEL_NOTIFICATION_TYPES,

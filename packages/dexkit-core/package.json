@@ -8,9 +8,13 @@
     "lint": "TIMING=1 eslint \"**/*.ts*\""
   },
   "devDependencies": {
+    "@types/ua-parser-js": "^0.7.36",
     "eslint": "^7.32.0",
     "eslint-config-custom": "*",
     "tsconfig": "*",
     "typescript": "^4.5.2"
+  },
+  "dependencies": {
+    "ua-parser-js": "^1.0.35"
   }
 }

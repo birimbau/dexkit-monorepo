@@ -14,11 +14,15 @@ import {
   ListItemText,
   Stack,
   TextField,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 
 import { ChangeEvent, useState } from "react";
 
 import { FormattedMessage, useIntl } from "react-intl";
+
+import { WALLET_CONNECTORS } from "@dexkit/core/connectors";
 
 import { MagicLoginType } from "@dexkit/core/constants";
 
@@ -27,7 +31,6 @@ import { useSnackbar } from "notistack";
 import { AppDialogTitle } from "./AppDialogTitle";
 
 import { WalletActivateParams } from "@dexkit/core/types";
-import { WALLET_CONNECTORS } from "../constants";
 
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import Wallet from "@mui/icons-material/Wallet";
@@ -51,6 +54,8 @@ export default function ConnectWalletDialog({
   const { onClose } = dialogProps;
 
   const { formatMessage } = useIntl();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const [connectorName, setConnectorName] = useState<string>();
   const [loginType, setLoginType] = useState<MagicLoginType>();
@@ -62,7 +67,7 @@ export default function ConnectWalletDialog({
   const { enqueueSnackbar } = useSnackbar();
 
   const handleActivateWallet = async (
-    connectorName: string,
+    connectorName: WalletActivateParams["connectorName"],
     loginType?: MagicLoginType,
     email?: string
   ) => {
@@ -70,14 +75,14 @@ export default function ConnectWalletDialog({
     setLoginType(loginType);
 
     try {
-      if (connectorName === "metamask") {
-        await activate({ connectorName });
-      } else if (connectorName === "magic") {
+      if (connectorName === "magic") {
         await activate({
           connectorName,
           email,
           loginType,
         });
+      } else {
+        await activate({ connectorName });
       }
     } catch (err: any) {
       enqueueSnackbar(err.message, {
@@ -105,53 +110,60 @@ export default function ConnectWalletDialog({
 
   const renderConnectors = () => {
     return WALLET_CONNECTORS.map((conn, index: number) => (
-      <ListItemButton
-        divider
-        key={index}
-        disabled={
-          isActivating &&
-          connectorName === conn.id &&
-          conn.loginType === loginType
-        }
-        onClick={() => handleActivateWallet(conn.id, conn.loginType)}
-      >
-        <ListItemAvatar>
-          <Avatar src={conn.icon}>
-            {isActivating &&
-            connectorName === conn.id &&
-            conn.loginType === loginType ? (
-              <CircularProgress
-                color="primary"
-                sx={{ fontSize: (theme) => theme.spacing(4) }}
-              />
-            ) : (
-              <Avatar
-                sx={(theme) => ({
-                  background: lighten(theme.palette.background.default, 0.05),
-                  padding: theme.spacing(1),
-                  width: "auto",
-                  height: theme.spacing(5),
-                })}
-                src={conn.icon}
-                alt={conn.name}
-              />
-            )}
-          </Avatar>
-        </ListItemAvatar>
-        <ListItemText primary={conn.name} />
-        {isActive && activeConnectorName === conn.id && (
-          <Stack
-            direction="row"
-            justifyContent="center"
-            alignItems="center"
-            alignContent="center"
+      <>
+        {conn.shouldDisplay() && (
+          <ListItemButton
+            divider
+            key={index}
+            disabled={
+              isActivating &&
+              connectorName === conn.id &&
+              conn.loginType === loginType
+            }
+            onClick={() => handleActivateWallet(conn.id, conn.loginType)}
           >
-            <FiberManualRecordIcon
-              sx={{ color: (theme) => theme.palette.success.light }}
-            />
-          </Stack>
+            <ListItemAvatar>
+              <Avatar src={conn.icon}>
+                {isActivating &&
+                connectorName === conn.id &&
+                conn.loginType === loginType ? (
+                  <CircularProgress
+                    color="primary"
+                    sx={{ fontSize: (theme) => theme.spacing(4) }}
+                  />
+                ) : (
+                  <Avatar
+                    sx={(theme) => ({
+                      background: lighten(
+                        theme.palette.background.default,
+                        0.05
+                      ),
+                      padding: theme.spacing(1),
+                      width: "auto",
+                      height: theme.spacing(5),
+                    })}
+                    src={conn.icon}
+                    alt={conn.name}
+                  />
+                )}
+              </Avatar>
+            </ListItemAvatar>
+            <ListItemText primary={conn.name} />
+            {isActive && activeConnectorName === conn.id && (
+              <Stack
+                direction="row"
+                justifyContent="center"
+                alignItems="center"
+                alignContent="center"
+              >
+                <FiberManualRecordIcon
+                  sx={{ color: (theme) => theme.palette.success.light }}
+                />
+              </Stack>
+            )}
+          </ListItemButton>
         )}
-      </ListItemButton>
+      </>
     ));
   };
 
