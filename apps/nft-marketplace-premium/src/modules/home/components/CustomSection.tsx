@@ -1,4 +1,4 @@
-import { CustomEditorSection } from '../../../types/config';
+import { CustomEditorSection } from '@/modules/wizard/types/section';
 import PageEditor from '../../wizard/components/pageEditor/PageEditor';
 
 interface Props {

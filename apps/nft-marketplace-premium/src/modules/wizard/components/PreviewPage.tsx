@@ -1,12 +1,7 @@
-import AssetStoreSection from '@/modules/home/components/AssetStoreSection';
-import SwapSection from '@/modules/home/components/SwapSection';
 import MainLayout from 'src/components/layouts/main';
-import { AppConfig, AppPageSection } from '../../../types/config';
-import CallToActionSection from '../../home/components/CallToActionSection';
-import CollectionsSection from '../../home/components/CollectionsSection';
-import CustomSection from '../../home/components/CustomSection';
-import { FeaturedSection } from '../../home/components/FeaturedSection';
-import VideoSection from '../../home/components/VideoSection';
+import { AppConfig } from '../../../types/config';
+import { AppPageSection } from '../types/section';
+import { SectionRender } from './sections/SectionRender';
 
 interface Props {
   sections?: AppPageSection[];
@@ -24,7 +19,7 @@ export default function PreviewPage({
   appConfig,
 }: Props) {
   const renderSections = () => {
-    return (sections || []).map((section, index: number) => {
+    return (sections || []).map((section) => {
       if (previewPlatform === 'mobile' && section.hideMobile) {
         return null;
       }
@@ -32,47 +27,7 @@ export default function PreviewPage({
         return null;
       }
 
-      if (section.type === 'featured') {
-        return (
-          <FeaturedSection
-            title={section.title}
-            items={section.items}
-            key={index}
-            disabled={disabled}
-          />
-        );
-      } else if (section.type === 'video') {
-        return (
-          <VideoSection
-            embedType={section.embedType}
-            videoUrl={section.videoUrl}
-            title={section.title}
-            key={index}
-          />
-        );
-      } else if (section.type === 'call-to-action') {
-        return (
-          <CallToActionSection
-            section={section}
-            key={index}
-            disabled={disabled}
-          />
-        );
-      } else if (section.type === 'collections') {
-        return (
-          <CollectionsSection
-            key={index}
-            section={section}
-            disabled={disabled}
-          />
-        );
-      } else if (section.type === 'custom') {
-        return <CustomSection key={index} section={section} />;
-      } else if (section.type === 'swap') {
-        return <SwapSection key={index} section={section} />;
-      } else if (section.type === 'asset-store') {
-        return <AssetStoreSection key={index} section={section} />;
-      }
+      return SectionRender({ section: section });
     });
   };
   if (withLayout) {

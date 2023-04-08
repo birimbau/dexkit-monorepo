@@ -19,24 +19,21 @@ import {
 
 import { FormattedMessage } from 'react-intl';
 
-import {
-  AppPage,
-  AppPageOptions,
-  AppPageSection,
-} from '../../../../types/config';
+import { AppPage, AppPageOptions } from '../../../../types/config';
 
 import DeleteIcon from '@mui/icons-material/Delete';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
+import FormatColorTextIcon from '@mui/icons-material/FormatColorText';
 import StoreIcon from '@mui/icons-material/Store';
 import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
 import { useState } from 'react';
 import AppConfirmDialog from '../../../../components/AppConfirmDialog';
+import { AppPageSection } from '../../types/section';
 import AddPageDialog from '../dialogs/AddPageDialog';
 import PreviewPageDialog from '../dialogs/PreviewPageDialog';
 import PagesMenu from '../PagesMenu';
 import PreviewPagePlatform from '../PreviewPagePlatform';
 import { SectionHeader } from './SectionHeader';
-
 interface Props {
   sections: AppPageSection[];
   pages: { [key: string]: AppPage };
@@ -77,225 +74,84 @@ export default function PagesSectionPage({
     index: number,
     isVisible: boolean
   ) => {
+    let title;
+    let subtitle;
+    let icon;
     if (section.type === 'video') {
-      return (
-        <Card key={index}>
-          <CardContent>
-            <SectionHeader
-              title={<FormattedMessage id="video" defaultMessage="Video" />}
-              subtitle={section.title}
-              icon={<VideocamIcon />}
-              onSwap={onSwap}
-              onRemove={onRemove}
-              onClone={onClone}
-              onEdit={onEdit}
-              onView={onView}
-              index={index}
-              onHideDesktop={onHideDesktop}
-              onHideMobile={onHideMobile}
-              hideDesktop={section.hideDesktop}
-              hideMobile={section.hideMobile}
-              isVisible={isVisible}
-              length={sections.length}
-            />
-          </CardContent>
-
-          {isVisible && (
-            <PreviewPagePlatform sections={[section]} disabled={true} />
-          )}
-        </Card>
-      );
+      title = <FormattedMessage id="video" defaultMessage="Video" />;
+      subtitle = section.title;
+      icon = <VideocamIcon />;
     } else if (section.type === 'call-to-action') {
-      return (
-        <Card key={index}>
-          <CardContent>
-            <SectionHeader
-              title={
-                <FormattedMessage
-                  id="call.to.action"
-                  defaultMessage="Call to Action"
-                />
-              }
-              subtitle={section.title}
-              icon={<CallToAction />}
-              onSwap={onSwap}
-              onRemove={onRemove}
-              onClone={onClone}
-              onEdit={onEdit}
-              onView={onView}
-              index={index}
-              onHideDesktop={onHideDesktop}
-              onHideMobile={onHideMobile}
-              hideDesktop={section.hideDesktop}
-              hideMobile={section.hideMobile}
-              isVisible={isVisible}
-              length={sections.length}
-            />
-          </CardContent>
-          {isVisible && (
-            <PreviewPagePlatform sections={[section]} disabled={true} />
-          )}
-        </Card>
+      title = (
+        <FormattedMessage id="call.to.action" defaultMessage="Call to Action" />
       );
+      subtitle = section.title;
+      icon = <CallToAction />;
     } else if (section.type === 'featured') {
-      return (
-        <Card key={index}>
-          <CardContent>
-            <SectionHeader
-              title={
-                <FormattedMessage id="featured" defaultMessage="Featured" />
-              }
-              subtitle={section.title}
-              icon={<BookmarkIcon />}
-              onSwap={onSwap}
-              onRemove={onRemove}
-              onEdit={onEdit}
-              onClone={onClone}
-              onView={onView}
-              index={index}
-              onHideDesktop={onHideDesktop}
-              onHideMobile={onHideMobile}
-              hideDesktop={section.hideDesktop}
-              hideMobile={section.hideMobile}
-              isVisible={isVisible}
-              length={sections.length}
-            />
-          </CardContent>
-          {isVisible && (
-            <PreviewPagePlatform sections={[section]} disabled={true} />
-          )}
-        </Card>
-      );
+      title = <FormattedMessage id="featured" defaultMessage="Featured" />;
+      subtitle = section.title;
+      icon = <BookmarkIcon />;
     } else if (section.type === 'collections') {
-      return (
-        <Card key={index}>
-          <CardContent>
-            <SectionHeader
-              title={
-                <FormattedMessage
-                  id="collections"
-                  defaultMessage="Collections"
-                />
-              }
-              subtitle={section.title || ''}
-              icon={<AppsIcon />}
-              onSwap={onSwap}
-              onRemove={onRemove}
-              onEdit={onEdit}
-              onClone={onClone}
-              onView={onView}
-              index={index}
-              onHideDesktop={onHideDesktop}
-              onHideMobile={onHideMobile}
-              hideDesktop={section.hideDesktop}
-              hideMobile={section.hideMobile}
-              isVisible={isVisible}
-              length={sections.length}
-            />
-          </CardContent>
-          <Divider />
-          {isVisible && (
-            <PreviewPagePlatform sections={[section]} disabled={true} />
-          )}
-        </Card>
+      title = (
+        <FormattedMessage id="collections" defaultMessage="Collections" />
       );
+      subtitle = section.title || '';
+      icon = <AppsIcon />;
     } else if (section.type === 'swap') {
-      return (
-        <Card key={index}>
-          <CardContent>
-            <SectionHeader
-              title={<FormattedMessage id="swap" defaultMessage="Swap" />}
-              subtitle={section.title || ''}
-              icon={<SwapHorizIcon />}
-              onSwap={onSwap}
-              onRemove={onRemove}
-              onEdit={onEdit}
-              onClone={onClone}
-              onView={onView}
-              index={index}
-              onHideDesktop={onHideDesktop}
-              onHideMobile={onHideMobile}
-              hideDesktop={section.hideDesktop}
-              hideMobile={section.hideMobile}
-              isVisible={isVisible}
-              length={sections.length}
-            />
-          </CardContent>
-          <Divider />
-          {isVisible && (
-            <PreviewPagePlatform sections={[section]} disabled={true} />
-          )}
-        </Card>
-      );
+      title = <FormattedMessage id="swap" defaultMessage="Swap" />;
+      subtitle = section.title || '';
+      icon = <SwapHorizIcon />;
     } else if (section.type === 'asset-store') {
-      return (
-        <Card key={index}>
-          <CardContent>
-            <SectionHeader
-              title={
-                <FormattedMessage id="nft.store" defaultMessage="NFT store" />
-              }
-              subtitle={section.title || ''}
-              icon={<StoreIcon />}
-              onSwap={onSwap}
-              onRemove={onRemove}
-              onEdit={onEdit}
-              onClone={onClone}
-              onView={onView}
-              index={index}
-              onHideDesktop={onHideDesktop}
-              onHideMobile={onHideMobile}
-              hideDesktop={section.hideDesktop}
-              hideMobile={section.hideMobile}
-              isVisible={isVisible}
-              length={sections.length}
-            />
-          </CardContent>
-          <Divider />
-          {isVisible && (
-            <PreviewPagePlatform sections={[section]} disabled={true} />
-          )}
-        </Card>
-      );
+      title = <FormattedMessage id="nft.store" defaultMessage="NFT store" />;
+      subtitle = section.title || '';
+      icon = <StoreIcon />;
     } else if (section.type === 'custom') {
-      return (
-        <Card key={index}>
-          <CardContent>
-            <SectionHeader
-              title={
-                section?.title ? (
-                  section.title
-                ) : (
-                  <FormattedMessage
-                    id="custom.page.editor"
-                    defaultMessage="Custom Page Editor"
-                  />
-                )
-              }
-              icon={<AutoAwesomeIcon />}
-              onSwap={onSwap}
-              onRemove={onRemove}
-              onEdit={onEdit}
-              onClone={onClone}
-              onView={onView}
-              index={index}
-              onHideDesktop={onHideDesktop}
-              onHideMobile={onHideMobile}
-              hideDesktop={section.hideDesktop}
-              hideMobile={section.hideMobile}
-              isVisible={isVisible}
-              length={sections.length}
-            />
-          </CardContent>
-          <Divider />
-          {isVisible && (
-            <PreviewPagePlatform sections={[section]} disabled={true} />
-          )}
-        </Card>
+      title = section?.title ? (
+        section.title
+      ) : (
+        <FormattedMessage
+          id="custom.page.editor"
+          defaultMessage="Custom Page Editor"
+        />
       );
+      subtitle = section.title || '';
+      icon = <AutoAwesomeIcon />;
+    } else if (section.type === 'markdown') {
+      title = <FormattedMessage id="markdown" defaultMessage="Markdown" />;
+      subtitle = section.title || '';
+      icon = <FormatColorTextIcon />;
+    }
+    if (!title) {
+      return null;
     }
 
-    return null;
+    return (
+      <Card key={index}>
+        <CardContent>
+          <SectionHeader
+            title={title}
+            subtitle={subtitle}
+            icon={icon}
+            onSwap={onSwap}
+            onRemove={onRemove}
+            onClone={onClone}
+            onEdit={onEdit}
+            onView={onView}
+            index={index}
+            onHideDesktop={onHideDesktop}
+            onHideMobile={onHideMobile}
+            hideDesktop={section.hideDesktop}
+            hideMobile={section.hideMobile}
+            isVisible={isVisible}
+            length={sections.length}
+          />
+        </CardContent>
+
+        {isVisible && (
+          <PreviewPagePlatform sections={[section]} disabled={true} />
+        )}
+      </Card>
+    );
   };
 
   const [showPreview, setShowPreview] = useState(false);

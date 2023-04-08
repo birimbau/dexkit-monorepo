@@ -3,13 +3,9 @@ import { Box, Button, Stack, Theme, Typography } from '@mui/material';
 import dynamic from 'next/dynamic';
 import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import {
-  AppPage,
-  AppPageOptions,
-  AppPageSection,
-  CustomEditorSection,
-} from '../../../../types/config';
+import { AppPage, AppPageOptions } from '../../../../types/config';
 import { BuilderKit } from '../../constants';
+import { AppPageSection, CustomEditorSection } from '../../types/section';
 import PagesSectionPage from './PagesSectionPage';
 const EditSectionDialog = dynamic(() => import('../dialogs/EditSectionDialog'));
 const PageEditorDialog = dynamic(() => import('../dialogs/PageEditorDialog'));
@@ -127,7 +123,7 @@ export default function PagesSection({
         <EditSectionDialog
           dialogProps={{
             open: isOpen,
-            maxWidth: 'sm',
+            maxWidth: 'md',
             fullWidth: true,
             onClose: handleClose,
           }}

@@ -2,14 +2,11 @@ import { Button, Grid, Paper, Stack, TextField } from '@mui/material';
 import { FormikHelpers, useFormik } from 'formik';
 import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import {
-  AppPageSection,
-  FeaturedAppPageSection,
-  SectionItem,
-} from '../../../../types/config';
+import { SectionItem } from '../../../../types/config';
 
 import AddIcon from '@mui/icons-material/Add';
 import * as Yup from 'yup';
+import { AppPageSection, FeaturedAppPageSection } from '../../types/section';
 import { PageSectionItem } from '../PageSectionItem';
 import AddItemForm from './AddItemForm';
 

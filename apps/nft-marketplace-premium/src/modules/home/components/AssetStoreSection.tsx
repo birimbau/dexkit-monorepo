@@ -1,6 +1,6 @@
 import { AssetStoreContainer } from '@/modules/nft/components/container/AssetStoreContainer';
+import { AssetStorePageSection } from '@/modules/wizard/types/section';
 import Box from '@mui/material/Box';
-import { AssetStorePageSection } from '../../../types/config';
 
 interface Props {
   section: AssetStorePageSection;

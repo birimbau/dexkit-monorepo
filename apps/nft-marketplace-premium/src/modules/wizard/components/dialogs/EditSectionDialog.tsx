@@ -13,14 +13,9 @@ import {
 import { useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { AppDialogTitle } from '../../../../components/AppDialogTitle';
-import { AppPageSection } from '../../../../types/config';
 import { BuilderKit } from '../../constants';
-import { AssetStoreSectionForm } from '../forms/AssetStoreSectionForm';
-import CallToActionSectionForm from '../forms/CallToActionSectionForm';
-import CollectionSectionForm from '../forms/CollectionSectionForm';
-import FeaturedSectionForm from '../forms/FeaturedSectionForm';
-import { SwapConfigSectionForm } from '../forms/SwapConfigSectionForm';
-import VideoSectionForm from '../forms/VideoSectionForm';
+import { AppPageSection, SectionType } from '../../types/section';
+import { SectionFormRender } from '../sections/SectionFormRender';
 
 interface Props {
   dialogProps: DialogProps;
@@ -30,15 +25,6 @@ interface Props {
   section?: AppPageSection;
   builderKit?: BuilderKit;
 }
-
-type SectionType =
-  | 'video'
-  | 'call-to-action'
-  | 'featured'
-  | 'collections'
-  | 'swap'
-  | 'custom'
-  | 'asset-store';
 
 export default function EditSectionDialog({
   dialogProps,
@@ -65,62 +51,18 @@ export default function EditSectionDialog({
   };
 
   const handleSave = (section: AppPageSection) => {
+    console.log('savingsection', section);
     onSave(section, index);
     handleClose();
   };
 
-  const renderSectionType = (sectionType?: string) => {
-    if (sectionType === 'video') {
-      return (
-        <VideoSectionForm
-          onSave={handleSave}
-          onCancel={handleClose}
-          section={section?.type === 'video' ? section : undefined}
-        />
-      );
-    } else if (sectionType === 'call-to-action') {
-      return (
-        <CallToActionSectionForm
-          onSave={handleSave}
-          onCancel={handleClose}
-          section={section?.type === 'call-to-action' ? section : undefined}
-        />
-      );
-    } else if (sectionType === 'featured') {
-      return (
-        <FeaturedSectionForm
-          onCancel={handleClose}
-          onSave={handleSave}
-          section={section?.type === 'featured' ? section : undefined}
-        />
-      );
-    } else if (sectionType === 'collections') {
-      return (
-        <CollectionSectionForm
-          onCancel={handleClose}
-          onSave={handleSave}
-          section={section?.type === 'collections' ? section : undefined}
-        />
-      );
-    } else if (sectionType === 'swap') {
-      return (
-        <SwapConfigSectionForm
-          onCancel={handleClose}
-          onSave={handleSave}
-          section={section?.type === 'swap' ? section : undefined}
-        />
-      );
-    } else if (sectionType === 'asset-store') {
-      return (
-        <AssetStoreSectionForm
-          onCancel={handleClose}
-          onSave={handleSave}
-          section={section?.type === 'asset-store' ? section : undefined}
-        />
-      );
-    }
-
-    return null;
+  const renderSectionType = (sectionType?: SectionType) => {
+    return SectionFormRender({
+      section,
+      sectionType,
+      onSave: handleSave,
+      onClose: handleClose,
+    });
   };
 
   useEffect(() => {
@@ -200,6 +142,9 @@ export default function EditSectionDialog({
                     />
                   </MenuItem>
                 )}
+                <MenuItem value="markdown">
+                  <FormattedMessage id="markdown" defaultMessage="Markdown" />
+                </MenuItem>
               </Select>
             </FormControl>
           </Grid>

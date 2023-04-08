@@ -1,4 +1,5 @@
 import { AppPageOptions } from "../../../types/config";
+import { SectionMetadata } from "../types/section";
 
 export const MAX_FEES = 10;
 
@@ -49,3 +50,15 @@ export enum BuilderKit {
   Swap = 'Swap KITs',
 
 }
+
+
+
+export const SectionsMetadata: SectionMetadata[] = [
+  {
+    type: 'video',
+    title: 'Video',
+    icon: 'videocam'
+  }
+
+
+]
