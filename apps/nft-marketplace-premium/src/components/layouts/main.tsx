@@ -248,18 +248,20 @@ const MainLayout: React.FC<Props> = ({
           chainId={switchChainId}
         />
       )}
-      <ConnectWalletDialog
-        DialogProps={{
-          open: connectWalletDialog.isOpen || isActivating,
-          onClose: handleCloseConnectWalletDialog,
-          fullWidth: true,
-          maxWidth: 'sm',
-        }}
-        isActive={isActive}
-        isActivating={walletActivate.mutation.isLoading}
-        activeConnectorName={walletActivate.connectorName}
-        activate={handleActivateWallet}
-      />
+      {connectWalletDialog.isOpen && (
+        <ConnectWalletDialog
+          DialogProps={{
+            open: connectWalletDialog.isOpen || isActivating,
+            onClose: handleCloseConnectWalletDialog,
+            fullWidth: true,
+            maxWidth: 'sm',
+          }}
+          isActive={isActive}
+          isActivating={walletActivate.mutation.isLoading}
+          activeConnectorName={walletActivate.connectorName}
+          activate={handleActivateWallet}
+        />
+      )}
       <Box
         style={{
           minHeight: '100vh',
