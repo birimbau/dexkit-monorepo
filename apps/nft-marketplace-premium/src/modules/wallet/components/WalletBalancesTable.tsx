@@ -18,10 +18,12 @@ import WalletTableRow from './WalletTableRow';
 interface Props {
   isBalancesVisible: boolean;
   chainId?: ChainId;
+  filter?: string;
 }
 
-function WalletBalancesTable({ isBalancesVisible, chainId }: Props) {
+function WalletBalancesTable({ isBalancesVisible, chainId, filter }: Props) {
   const tokenBalancesQuery = useERC20BalancesQuery(undefined, chainId, false);
+
   const coinPricesQuery = useCoinPricesQuery({
     includeNative: true,
     chainId,
@@ -41,6 +43,20 @@ function WalletBalancesTable({ isBalancesVisible, chainId }: Props) {
     });
   }, [prices, tokenBalancesQuery.data, currency]);
 
+  const tokenBalancesWithPricesFiltered = useMemo(() => {
+    if (filter) {
+      const lowercasedFilter = filter.toLowerCase();
+      return tokenBalancesWithPrices?.filter(
+        (t) =>
+          t?.token?.name?.toLowerCase().search(lowercasedFilter) !== -1 ||
+          t?.token?.symbol?.toLowerCase().search(lowercasedFilter) !== -1 ||
+          t?.token?.address?.toLowerCase().search(lowercasedFilter) !== -1
+      );
+    }
+
+    return tokenBalancesWithPrices;
+  }, [tokenBalancesWithPrices, filter]);
+
   return (
     <TableContainer>
       <Table>
@@ -58,7 +74,7 @@ function WalletBalancesTable({ isBalancesVisible, chainId }: Props) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {tokenBalancesWithPrices?.map((token, index: number) => (
+          {tokenBalancesWithPricesFiltered?.map((token, index: number) => (
             <WalletTableRow
               key={index}
               isLoadingCurrency={coinPricesQuery.isLoading}
@@ -112,6 +128,7 @@ function WalletTableSkeleton({ rows = 4 }: { rows: number }) {
 
 interface WalletProps {
   chainId?: ChainId;
+  filter?: string;
 }
 
 /*function WalletBalances({ chainId }: WalletProps) {
@@ -157,13 +174,14 @@ interface WalletProps {
     </QueryErrorResetBoundary>
   );
 }*/
-function WalletBalances({ chainId }: WalletProps) {
+function WalletBalances({ chainId, filter }: WalletProps) {
   const isBalancesVisible = useIsBalanceVisible();
 
   return (
     <WalletBalancesTable
       isBalancesVisible={isBalancesVisible}
       chainId={chainId}
+      filter={filter}
     />
   );
 }

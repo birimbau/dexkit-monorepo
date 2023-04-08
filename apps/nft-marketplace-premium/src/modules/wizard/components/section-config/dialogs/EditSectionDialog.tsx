@@ -12,10 +12,10 @@ import {
 } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { AppDialogTitle } from '../../../../components/AppDialogTitle';
-import { BuilderKit } from '../../constants';
-import { AppPageSection, SectionType } from '../../types/section';
-import { SectionFormRender } from '../sections/SectionFormRender';
+import { AppDialogTitle } from '../../../../../components/AppDialogTitle';
+import { BuilderKit } from '../../../constants';
+import { AppPageSection, SectionType } from '../../../types/section';
+import { SectionFormRender } from '../SectionFormRender';
 
 interface Props {
   dialogProps: DialogProps;
@@ -144,6 +144,9 @@ export default function EditSectionDialog({
                 )}
                 <MenuItem value="markdown">
                   <FormattedMessage id="markdown" defaultMessage="Markdown" />
+                </MenuItem>
+                <MenuItem value="wallet">
+                  <FormattedMessage id="wallet" defaultMessage="Wallet" />
                 </MenuItem>
               </Select>
             </FormControl>

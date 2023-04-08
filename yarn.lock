@@ -5210,7 +5210,7 @@
     tiny-warning "^1.0.3"
     uuid "^8.3.2"
 
-"@transak/transak-sdk@^1.0.31", "@transak/transak-sdk@^1.2.3", "@transak/transak-sdk@^1.3.0":
+"@transak/transak-sdk@^1.2.3", "@transak/transak-sdk@^1.3.0":
   version "1.3.0"
   resolved "https://registry.npmjs.org/@transak/transak-sdk/-/transak-sdk-1.3.0.tgz"
   integrity sha512-XTKnM1OhB6r/TFkMIPczukACUUq41E5hF4cnQ6+Jn6iIjHqLgC7a4yrNlHMI2swv6yNPT0yCd2dGVUfNCjMGIQ==

@@ -12,11 +12,13 @@ export type SectionType =
   | 'swap'
   | 'custom'
   | 'asset-store'
-  | 'markdown';
+  | 'markdown'
+  | 'wallet';
 
 
 export interface PageSection {
   type: SectionType,
+  title?: string;
   variant?: PageSectionVariant;
   hideMobile?: boolean;
   hideDesktop?: boolean;
@@ -76,6 +78,10 @@ export interface MarkdownEditorPageSection extends PageSection {
   config?: { source?: string };
 }
 
+export interface WalletPageSection extends PageSection {
+  type: 'wallet';
+}
+
 export type AppPageSection =
   | CallToActionAppPageSection
   | VideoEmbedAppPageSection
@@ -85,6 +91,7 @@ export type AppPageSection =
   | SwapPageSection
   | AssetStorePageSection
   | MarkdownEditorPageSection
+  | WalletPageSection
   ;
 
 export interface SectionMetadata {
