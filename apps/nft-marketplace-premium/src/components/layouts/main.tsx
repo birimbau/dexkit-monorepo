@@ -127,7 +127,10 @@ const MainLayout: React.FC<Props> = ({
   };
 
   const walletActivate = useWalletActivate({
-    magicRedirectUrl: process.env.NEXT_PUBLIC_MAGIC_REDIRECT_URL || '',
+    magicRedirectUrl:
+      typeof window !== 'undefined'
+        ? window.location.href
+        : process.env.NEXT_PUBLIC_MAGIC_REDIRECT_URL || '',
     selectedWalletAtom,
   });
 
