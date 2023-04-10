@@ -39,7 +39,8 @@ export function UserContainer({ username }: { username?: string }) {
   const activeMenu = tab || ActiveMenu.Offers;
   const changeActiveMenu = (mn: ActiveMenu) => {
     router.replace({
-      query: { ...router.query, tab: mn },
+      pathname: `/u/${username}`,
+      query: { tab: mn },
     });
   };
 
