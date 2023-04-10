@@ -16,6 +16,7 @@ import { FormattedMessage } from 'react-intl';
 import { AppConfig } from 'src/types/config';
 import GeneralWizardContainer from '../../containers/GeneralWizardContainer';
 import ThemeWizardContainer from '../../containers/ThemeWizardContainer';
+import TokenWizardContainer from '../../containers/TokenWizardContainer';
 
 const steps = [
   {
@@ -35,6 +36,16 @@ const steps = [
       <FormattedMessage
         id="wallet.step.theme.info"
         defaultMessage={'Choose wallet app theme and font.'}
+      />
+    ),
+  },
+  {
+    label: 'Choose Tokens',
+    id: 'default-tokens',
+    description: (
+      <FormattedMessage
+        id="choose.default.tokens.on.wallet.app"
+        defaultMessage={`Choose default tokens on your wallet app.`}
       />
     ),
   },
@@ -99,6 +110,20 @@ export default function WalletStepper({ config, onSave, onChange }: Props) {
                     onSave={onChange}
                     onChange={onChange}
                     isOnStepper={true}
+                    stepperButtonProps={{
+                      handleNext: handleNext,
+                      handleBack: handleBack,
+                      isLastStep: index === steps.length - 1,
+                      isFirstStep: index === 0,
+                    }}
+                  />
+                )}
+                {step.id === 'default-tokens' && (
+                  <TokenWizardContainer
+                    config={config}
+                    onSave={onChange}
+                    isOnStepper={true}
+                    isSwap={true}
                     stepperButtonProps={{
                       handleNext: handleNext,
                       handleBack: handleBack,
