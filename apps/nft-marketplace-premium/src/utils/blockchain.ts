@@ -6,9 +6,9 @@ import { WalletConnect } from '@web3-react/walletconnect';
 import metaMaskImage from '../../public/assets/images/metamask-fox.svg';
 import walletConnectImage from '../../public/assets/images/walletconnect-circle-blue.svg';
 
+import { WALLET_CONNECTORS } from '@dexkit/core/connectors';
 import { ChainId } from '@dexkit/core/constants';
 import { MagicConnector } from '@dexkit/core/types/magic';
-import { WALLET_CONNECTORS } from '@dexkit/ui/constants';
 import { Connector } from '@web3-react/types';
 import { ethers } from 'ethers';
 import { NETWORKS } from '../constants/chain';
