@@ -49,7 +49,7 @@ export default function middleware(req: NextRequest) {
     return NextResponse.rewrite(url);
   }
 
-  if (hostname === 'whitelabel-nft.dexkit.com' || hostname === 'dexappbuilder.dexkit.com') {
+  if (hostname === 'whitelabel-nft.dexkit.com' || hostname === 'dexappbuilder.dexkit.com' || hostname === 'dexappbuilder-dev.dexkit.com') {
     // we pass here the search param to be used on get config
     const search = url.searchParams.get('mid');
     if (search) {
