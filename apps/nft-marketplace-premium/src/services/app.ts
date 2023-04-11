@@ -21,7 +21,7 @@ export async function getAppConfig(site?: string, appPage?: string): Promise<{ a
   if (site === 'cryptopunks.dexkit.com') {
     return Promise.resolve({ appConfig: appCryptoPunksJson as AppConfig, appNFT: null, });
   }
-  if (site?.startsWith('whitelabel-nft.dexkit.com') || site?.startsWith('dexappbuilder.dexkit.com')) {
+  if (site?.startsWith('whitelabel-nft.dexkit.com') || site?.startsWith('dexappbuilder.dexkit.com') || site?.startsWith('dexappbuilder-dev.dexkit.com')) {
     const slug = site.split(':');
     if (slug.length > 1) {
       const configResponse = (await getConfig({ slug: slug[1], appPage })).data;
