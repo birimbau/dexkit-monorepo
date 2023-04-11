@@ -17,8 +17,8 @@ import Typography from '@mui/material/Typography';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import AppMutationDialog from 'src/components/dialogs/AppMutationDialog';
 import { LoginAppButton } from 'src/components/LoginAppButton';
+import AppMutationDialog from 'src/components/dialogs/AppMutationDialog';
 import {
   useAuthUserQuery,
   useClaimCampaignMutation,
@@ -39,13 +39,16 @@ export function UserAirdrop() {
     });
   };
 
+  const verifiedDiscord =
+    authUser?.credentials?.findIndex((c) => c.provider === 'discord') !== -1;
+  const verifiedTwitter =
+    authUser?.credentials?.findIndex((c) => c.provider === 'twitter') !== -1;
+
   const claimCampaignMutation = useClaimCampaignMutation({ onSuccess });
   const claimCampaignQuery = useUserClaimCampaignQuery();
   const postData = claimCampaignMutation.data;
   const needToCompleteProfile =
-    !authUser?.discordVerified ||
-    !authUser?.twitterVerified ||
-    !authUser?.username;
+    !verifiedDiscord || !verifiedTwitter || !authUser?.username;
 
   const claimData = claimCampaignQuery?.data;
   return (
@@ -200,12 +203,8 @@ export function UserAirdrop() {
                 </ListItem>
                 <ListItem>
                   <ListItemIcon>
-                    {authUser?.discordVerified && (
-                      <DoneIcon color={'success'} />
-                    )}
-                    {!authUser?.discordVerified && (
-                      <CloseIcon color={'error'} />
-                    )}
+                    {verifiedDiscord && <DoneIcon color={'success'} />}
+                    {!verifiedDiscord && <CloseIcon color={'error'} />}
                   </ListItemIcon>
                   <ListItemText
                     primary={
@@ -218,12 +217,8 @@ export function UserAirdrop() {
                 </ListItem>
                 <ListItem>
                   <ListItemIcon>
-                    {authUser?.twitterVerified && (
-                      <DoneIcon color={'success'} />
-                    )}
-                    {!authUser?.twitterVerified && (
-                      <CloseIcon color={'error'} />
-                    )}
+                    {verifiedTwitter && <DoneIcon color={'success'} />}
+                    {!verifiedTwitter && <CloseIcon color={'error'} />}
                   </ListItemIcon>
                   <ListItemText
                     primary={
