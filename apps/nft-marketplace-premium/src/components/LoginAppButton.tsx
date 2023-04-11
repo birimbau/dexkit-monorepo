@@ -30,6 +30,10 @@ export function LoginAppButton({ onLogin }: Props) {
   };
 
   const isSameUserAccount = useMemo(() => {
+    if (!account?.toLowerCase()) {
+      return false;
+    }
+
     if (account?.toLowerCase() === user?.address?.toLowerCase()) {
       return true;
     }

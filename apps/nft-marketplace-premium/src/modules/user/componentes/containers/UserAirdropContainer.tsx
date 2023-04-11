@@ -1,9 +1,18 @@
-import { Container, Grid, Stack, Typography } from '@mui/material';
+import {
+  Container,
+  Grid,
+  Stack,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from '@mui/material';
 import { FormattedMessage } from 'react-intl';
 import { PageHeader } from 'src/components/PageHeader';
 import { UserAirdrop } from '../UserAirdrop';
 
 export function UserAirdropContainer() {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   return (
     <>
       <Container maxWidth={'xl'}>
@@ -31,22 +40,25 @@ export function UserAirdropContainer() {
                       />
                     ),
                     uri: '/u/airdrop',
+                    active: true,
                   },
                 ]}
               />
             </Stack>
           </Grid>
 
-          <Grid item xs={12} sm={12}>
-            <Stack direction={'row'} justifyContent={'space-between'}>
-              <Typography variant="h5">
-                <FormattedMessage
-                  id="kit.airdrop"
-                  defaultMessage="KIT Airdrop"
-                />
-              </Typography>
-            </Stack>
-          </Grid>
+          {!isMobile && (
+            <Grid item xs={12} sm={12}>
+              <Stack direction={'row'} justifyContent={'space-between'}>
+                <Typography variant="h5">
+                  <FormattedMessage
+                    id="kit.airdrop"
+                    defaultMessage="KIT Airdrop"
+                  />
+                </Typography>
+              </Stack>
+            </Grid>
+          )}
 
           <Grid item xs={12} sm={12}>
             <UserAirdrop />

@@ -27,7 +27,7 @@ interface IAuthContext {
   isLoggedIn: boolean;
   user?: AuthUser
   setIsLoggedIn?: Dispatch<SetStateAction<boolean>>
-  setUser?: Dispatch<SetStateAction<AuthUser>>
+  setUser?: Dispatch<SetStateAction<AuthUser | undefined>>
 }
 
 const AUTH_INITIAL_VALUES = {
