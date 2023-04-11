@@ -39,10 +39,13 @@ export function UserAirdrop() {
     });
   };
 
-  const verifiedDiscord =
-    authUser?.credentials?.findIndex((c) => c.provider === 'discord') !== -1;
-  const verifiedTwitter =
-    authUser?.credentials?.findIndex((c) => c.provider === 'twitter') !== -1;
+  const verifiedDiscord = authUser?.credentials
+    ? authUser?.credentials?.findIndex((c) => c.provider === 'discord') !== -1
+    : false;
+
+  const verifiedTwitter = authUser?.credentials
+    ? authUser?.credentials?.findIndex((c) => c.provider === 'twitter') !== -1
+    : false;
 
   const claimCampaignMutation = useClaimCampaignMutation({ onSuccess });
   const claimCampaignQuery = useUserClaimCampaignQuery();
