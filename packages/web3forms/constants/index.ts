@@ -1,3 +1,8 @@
-export default {};
-
-export const VIEWS_MAPPING = {};
+export const PARSE_UNITS = [
+  "wei",
+  "kwei",
+  "gwei",
+  "microether",
+  "milliether",
+  "ether",
+];

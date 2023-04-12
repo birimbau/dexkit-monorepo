@@ -1,43 +1,34 @@
+import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
+import Typography from "@mui/material/Typography";
 
 import { FormattedMessage } from "react-intl";
 
 import { Field, Formik } from "formik";
 
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  CircularProgress,
-  Divider,
-} from "@mui/material";
 import { TextField } from "formik-mui";
 import { useCallback } from "react";
 import { CallParams, FunctionInput } from "../types";
 import { getSchemaForInputs } from "../utils";
 
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-
 export function isFunctionCall(stateMutability: string) {
   return stateMutability === "nonpayable" || stateMutability === "payable";
 }
 
-export interface ContractFieldProps {
+export interface ContractConstructorProps {
   inputs: FunctionInput[];
   name?: string;
   stateMutability: string;
-  isCalling?: boolean;
   onCall: ({ name, args, call, payable }: CallParams) => void;
 }
 
-export default function ContractFunction({
+export default function ContractConstructor({
   inputs,
   name,
   stateMutability,
-  isCalling,
   onCall,
-}: ContractFieldProps) {
+}: ContractConstructorProps) {
   const renderInputs = () => {
     return inputs.map((input, key) => {
       return (
@@ -76,20 +67,6 @@ export default function ContractFunction({
     [name, stateMutability, onCall]
   );
 
-  const renderSubmitMessage = () => {
-    if (isCalling) {
-      if (stateMutability === "nonpayable" || stateMutability === "payable") {
-        return <FormattedMessage id="calling" defaultMessage="Calling" />;
-      } else if (stateMutability === "view") {
-        return <FormattedMessage id="loading" defaultMessage="Loading" />;
-      }
-    } else if (stateMutability === "view") {
-      return <FormattedMessage id="get" defaultMessage="Get" />;
-    } else {
-      return <FormattedMessage id="call" defaultMessage="Call" />;
-    }
-  };
-
   return (
     <Formik
       initialValues={getInitialValues(inputs)}
@@ -97,32 +74,23 @@ export default function ContractFunction({
       validationSchema={getSchemaForInputs(inputs)}
     >
       {({ submitForm, isValid }) => (
-        <Accordion>
-          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            {name}
-          </AccordionSummary>
-          <Divider />
-          <AccordionDetails>
-            <Grid container spacing={2}>
-              {renderInputs()}
-              <Grid item xs={12}>
-                <Button
-                  size="small"
-                  disabled={!isValid || isCalling}
-                  onClick={submitForm}
-                  startIcon={
-                    isCalling && (
-                      <CircularProgress size="1rem" color="inherit" />
-                    )
-                  }
-                  variant="contained"
-                >
-                  {renderSubmitMessage()}
-                </Button>
-              </Grid>
+        <Box>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <Typography variant="body1">{name}</Typography>
             </Grid>
-          </AccordionDetails>
-        </Accordion>
+            {renderInputs()}
+            <Grid item xs={12}>
+              <Button
+                disabled={!isValid}
+                onClick={submitForm}
+                variant="contained"
+              >
+                <FormattedMessage id="call" defaultMessage="Call" />
+              </Button>
+            </Grid>
+          </Grid>
+        </Box>
       )}
     </Formik>
   );

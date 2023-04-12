@@ -81,8 +81,6 @@ export function MagicTxConfirmDialog(props: TransactionConfirmDialogProps) {
   }, [values]);
 
   const totalFee = useMemo(() => {
-    console.log("gas", values);
-
     if (values.gasLimit) {
       if (isEIP1559() && values.maxFeePerGas) {
         return values.gasLimit.mul(values.maxFeePerGas);

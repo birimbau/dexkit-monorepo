@@ -43,6 +43,7 @@ import ButtonPlugin from './plugins/ButtonPlugin';
 import CodeSnippet from './plugins/CodeSnippet';
 import CollectionPlugin from './plugins/CollectionPlugin';
 import ContainerPlugin from './plugins/ContainerPlugin';
+import ContractFormPlugin from './plugins/ContractFormPlugin';
 import CustomContentPluginTwitter from './plugins/CustomContentPluginTwitter';
 import { DefaultSlate } from './plugins/DefaultSlate';
 import ImagePlugin from './plugins/ImagePlugin';
@@ -80,6 +81,7 @@ const cellPlugins = [
   CustomContentPluginTwitter,
   video,
   WidgetPlugin,
+  ContractFormPlugin,
 ];
 
 const nftPlugins = [
@@ -105,6 +107,8 @@ const nftPlugins = [
   CustomContentPluginTwitter,
   video,
   WidgetPlugin,
+
+  ContractFormPlugin,
 ];
 
 const swapPlugins = [
@@ -129,6 +133,8 @@ const swapPlugins = [
   CustomContentPluginTwitter,
   video,
   WidgetPlugin,
+
+  ContractFormPlugin,
 ];
 
 // https://github.com/react-page/react-page/issues/970
