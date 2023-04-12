@@ -1,10 +1,11 @@
 import { ChainId } from '@dexkit/core';
+import { useIsMobile } from '@dexkit/core/hooks';
 import { useDexKitContext } from '@dexkit/ui/hooks';
 import { getBlockExplorerUrl } from '@dexkit/widgets/src/utils';
 import CelebrationIcon from '@mui/icons-material/Celebration';
 import CloseIcon from '@mui/icons-material/Close';
 import DoneIcon from '@mui/icons-material/Done';
-import { Stack } from '@mui/material';
+import { Alert, Stack } from '@mui/material';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
@@ -25,9 +26,14 @@ import {
   useClaimCampaignMutation,
   useUserClaimCampaignQuery,
 } from '../hooks';
+import UserCreateDialog from './dialogs/UserCreateDialog';
+import UserEditDialog from './dialogs/UserEditDialog';
 export function UserAirdrop() {
   const [open, setOpen] = useState<boolean>(false);
+  const [openUserDialog, setOpenUserDialog] = useState<boolean>(false);
+  const [openUserEditDialog, setOpenUserEditDialog] = useState<boolean>(false);
   const router = useRouter();
+  const isMobile = useIsMobile();
   const authUserQuery = useAuthUserQuery();
   const authUser = authUserQuery.data;
   const { user } = useAuth();
@@ -49,15 +55,39 @@ export function UserAirdrop() {
     ? authUser?.credentials?.findIndex((c) => c.provider === 'twitter') !== -1
     : false;
 
+  const hasUsernme = authUser?.username ? true : false;
+
   const claimCampaignMutation = useClaimCampaignMutation({ onSuccess });
   const claimCampaignQuery = useUserClaimCampaignQuery();
   const postData = claimCampaignMutation.data;
   const needToCompleteProfile =
-    !verifiedDiscord || !verifiedTwitter || !authUser?.username;
+    !verifiedDiscord || !verifiedTwitter || !hasUsernme;
 
   const claimData = claimCampaignQuery?.data;
   return (
     <>
+      {openUserEditDialog && (
+        <UserEditDialog
+          dialogProps={{
+            open: openUserEditDialog,
+            onClose: () => setOpenUserEditDialog(false),
+            fullWidth: true,
+            fullScreen: isMobile ? true : false,
+            maxWidth: 'lg',
+          }}
+        />
+      )}
+      {openUserDialog && (
+        <UserCreateDialog
+          dialogProps={{
+            open: openUserDialog,
+            onClose: () => setOpenUserDialog(false),
+            fullWidth: true,
+            fullScreen: isMobile ? true : false,
+            maxWidth: 'lg',
+          }}
+        />
+      )}
       <AppMutationDialog
         dialogProps={{
           open: open,
@@ -238,24 +268,65 @@ export function UserAirdrop() {
             </Box>
           </Grid>
         )}
-        {needToCompleteProfile && user && (
+        {needToCompleteProfile && user && !authUser && (
           <Grid item xs={12}>
             <Box display={'flex'} justifyContent={'center'}>
-              <Button
-                variant={'contained'}
-                onClick={() => {
-                  router.push('/u/edit');
-                }}
-              >
-                <FormattedMessage
-                  id="complete.profile"
-                  defaultMessage={'Complete Profile'}
-                />
-              </Button>
+              <Stack spacing={2}>
+                <Alert severity={'info'}>
+                  <Typography variant={'body1'}>
+                    {' '}
+                    <FormattedMessage
+                      id="complete.profile.info"
+                      defaultMessage="Please complete your profile by clicking on complete profile"
+                    />
+                  </Typography>
+                </Alert>
+                <Button
+                  variant={'contained'}
+                  onClick={() => {
+                    //router.push('/u/edit');
+                    setOpenUserDialog(true);
+                  }}
+                >
+                  <FormattedMessage
+                    id="complete.profile"
+                    defaultMessage={'Complete Profile'}
+                  />
+                </Button>
+              </Stack>
             </Box>
           </Grid>
         )}
-        <Grid item xs={12}>
+        {needToCompleteProfile && user && authUser && (
+          <Grid item xs={12}>
+            <Box display={'flex'} justifyContent={'center'}>
+              <Stack spacing={2}>
+                <Alert severity={'info'}>
+                  <Typography variant={'body1'}>
+                    {' '}
+                    <FormattedMessage
+                      id="complete.socials info"
+                      defaultMessage="Please connect your socials medias"
+                    />
+                  </Typography>
+                </Alert>
+                <Button
+                  variant={'contained'}
+                  onClick={() => {
+                    //router.push('/u/edit');
+                    setOpenUserEditDialog(true);
+                  }}
+                >
+                  <FormattedMessage
+                    id="connect.socials"
+                    defaultMessage={'Connect socials'}
+                  />
+                </Button>
+              </Stack>
+            </Box>
+          </Grid>
+        )}
+        <Grid item xs={12} sm={6}>
           <Box display={'flex'} justifyContent={'center'}>
             {!user && <LoginAppButton />}
           </Box>

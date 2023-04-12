@@ -33,17 +33,29 @@ import UserGeneralForm from '../forms/UserGeneralForm';
 import { UserAccounts } from '../UserAccounts';
 import { UserSocials } from '../UserSocials';
 
-enum ActiveMenu {
+export enum ActiveMenu {
   General = 'general',
   Accounts = 'accounts',
   Socials = 'socials',
+}
+
+interface Props {
+  initialActiveMenu?: ActiveMenu;
+  hideSideBar?: boolean;
+  hideHeader?: boolean;
+  hideTitle?: boolean;
 }
 
 const ListSubheaderCustom = styled(ListSubheader)({
   fontWeight: 'bold',
 });
 
-export function UserEditContainer() {
+export function UserEditContainer({
+  initialActiveMenu,
+  hideSideBar,
+  hideHeader,
+  hideTitle,
+}: Props) {
   const userQuery = useAuthUserQuery();
   const router = useRouter();
   const { tab } = router.query as { tab?: ActiveMenu };
@@ -53,7 +65,7 @@ export function UserEditContainer() {
   const [userForm, setUserForm] = useState<UserOptions>();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const activeMenu = tab || ActiveMenu.General;
+  const activeMenu = tab || initialActiveMenu || ActiveMenu.General;
 
   const handleChangetab = (mn: ActiveMenu) => {
     router.replace({
@@ -191,92 +203,98 @@ export function UserEditContainer() {
       />
       <Container maxWidth={'xl'}>
         <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <Stack
-              direction="row"
-              alignItems="center"
-              alignContent="center"
-              justifyContent="space-between"
-            >
-              {user && (
-                <PageHeader
-                  breadcrumbs={[
-                    {
-                      caption: (
-                        <FormattedMessage id="home" defaultMessage="Home" />
-                      ),
-                      uri: '/',
-                    },
-                    {
-                      caption: (
-                        <FormattedMessage
-                          id="user.name.variable"
-                          defaultMessage="User: {username}"
-                          values={{
-                            username: user.username,
-                          }}
-                        />
-                      ),
-                      uri: `/u/${user.username}`,
-                    },
-                    {
-                      caption: (
-                        <FormattedMessage
-                          id="edit.profile"
-                          defaultMessage="Edit profile"
-                        />
-                      ),
-                      uri: `/u/${user.username}/edit`,
-                      active: true,
-                    },
-                  ]}
-                />
-              )}
-            </Stack>
-          </Grid>
+          {hideHeader !== true && (
+            <Grid item xs={12}>
+              <Stack
+                direction="row"
+                alignItems="center"
+                alignContent="center"
+                justifyContent="space-between"
+              >
+                {user && (
+                  <PageHeader
+                    breadcrumbs={[
+                      {
+                        caption: (
+                          <FormattedMessage id="home" defaultMessage="Home" />
+                        ),
+                        uri: '/',
+                      },
+                      {
+                        caption: (
+                          <FormattedMessage
+                            id="user.name.variable"
+                            defaultMessage="User: {username}"
+                            values={{
+                              username: user.username,
+                            }}
+                          />
+                        ),
+                        uri: `/u/${user.username}`,
+                      },
+                      {
+                        caption: (
+                          <FormattedMessage
+                            id="edit.profile"
+                            defaultMessage="Edit profile"
+                          />
+                        ),
+                        uri: `/u/${user.username}/edit`,
+                        active: true,
+                      },
+                    ]}
+                  />
+                )}
+              </Stack>
+            </Grid>
+          )}
 
-          <Grid item xs={12} sm={12}>
-            <Stack direction={'row'} justifyContent={'space-between'}>
-              <Box display={'flex'} alignItems={'center'}>
-                <Typography variant="h5">
-                  {user && (
-                    <FormattedMessage
-                      id="edit.user.profile"
-                      defaultMessage="Edit user profile: {username}"
-                      values={{
-                        username: user.username,
-                      }}
-                    />
-                  )}
-                </Typography>
-                <Tooltip
-                  title={
-                    <FormattedMessage
-                      id="view.public.profile"
-                      defaultMessage="View public profile"
-                    />
-                  }
-                >
-                  <IconButton href={`/u/${user?.username}`}>
-                    <Visibility />
-                  </IconButton>
-                </Tooltip>
-              </Box>
+          {hideTitle !== true && (
+            <Grid item xs={12} sm={12}>
+              <Stack direction={'row'} justifyContent={'space-between'}>
+                <Box display={'flex'} alignItems={'center'}>
+                  <Typography variant="h5">
+                    {user && (
+                      <FormattedMessage
+                        id="edit.user.profile"
+                        defaultMessage="Edit user profile: {username}"
+                        values={{
+                          username: user.username,
+                        }}
+                      />
+                    )}
+                  </Typography>
+                  <Tooltip
+                    title={
+                      <FormattedMessage
+                        id="view.public.profile"
+                        defaultMessage="View public profile"
+                      />
+                    }
+                  >
+                    <IconButton href={`/u/${user?.username}`}>
+                      <Visibility />
+                    </IconButton>
+                  </Tooltip>
+                </Box>
 
-              {isMobile && (
-                <Button
-                  onClick={() => setIsMenuOpen(true)}
-                  size="small"
-                  variant="outlined"
-                >
-                  <FormattedMessage id="menu" defaultMessage="Menu" />
-                </Button>
-              )}
-            </Stack>
-          </Grid>
-          <Grid item xs={12} sm={2}>
-            {!isMobile && renderMenu()}
-          </Grid>
+                {isMobile && hideSideBar !== true && (
+                  <Button
+                    onClick={() => setIsMenuOpen(true)}
+                    size="small"
+                    variant="outlined"
+                  >
+                    <FormattedMessage id="menu" defaultMessage="Menu" />
+                  </Button>
+                )}
+              </Stack>
+            </Grid>
+          )}
+          {hideSideBar !== true && (
+            <Grid item xs={12} sm={2}>
+              {!isMobile && renderMenu()}
+            </Grid>
+          )}
           <Grid item xs={12} sm={10}>
             <Stack spacing={2}>
               {activeMenu === ActiveMenu.General && user && (

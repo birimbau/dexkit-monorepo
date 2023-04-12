@@ -2,16 +2,19 @@ import { UserAirdropContainer } from '@/modules/user/componentes/containers/User
 import Box from '@mui/material/Box';
 import { dehydrate, QueryClient } from '@tanstack/react-query';
 import { GetStaticProps, GetStaticPropsContext, NextPage } from 'next';
+import { SessionProvider } from 'next-auth/react';
 import AuthMainLayout from 'src/components/layouts/authMain';
 import { getAppConfig } from 'src/services/app';
 
 const User: NextPage = () => {
   return (
-    <AuthMainLayout disablePadding>
-      <Box py={4}>
-        <UserAirdropContainer />
-      </Box>
-    </AuthMainLayout>
+    <SessionProvider>
+      <AuthMainLayout disablePadding>
+        <Box py={4}>
+          <UserAirdropContainer />
+        </Box>
+      </AuthMainLayout>
+    </SessionProvider>
   );
 };
 
