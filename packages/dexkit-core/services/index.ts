@@ -1,5 +1,5 @@
 import MultiCall, { TokenBalances } from "@indexed-finance/multicall";
-import { ethers } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import { COINGECKO_ENDPOIT, COINGECKO_PLATFORM_ID } from "../constants";
 import { ERC20Abi } from "../constants/abis";
 import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "../constants/zrx";
@@ -51,11 +51,17 @@ export const hasSufficientAllowance = async ({
   return allowance.gte(amount);
 };
 
+
+
 export async function getTokensBalance(
-  tokens: Token[],
-  provider: ethers.providers.BaseProvider,
-  account: string
-): Promise<TokenBalances> {
+  tokens?: { contractAddress: string }[],
+  provider?: ethers.providers.BaseProvider,
+  account?: string
+): Promise<TokenBalances | undefined> {
+  if (!provider || !tokens || !account) {
+    return
+  }
+
   await provider.ready;
 
   const multicall = new MultiCall(provider);
@@ -73,6 +79,23 @@ export async function getTokensBalance(
 
   return balances;
 }
+
+export async function getTokenBalance(
+  token?: { contractAddress: string },
+  provider?: ethers.providers.BaseProvider,
+  account?: string
+): Promise<BigNumber | undefined> {
+  if (!token || provider || account) {
+    return;
+  }
+  const balance = (await getTokensBalance([token], provider, account));
+  if (balance) {
+    return balance[0]
+  }
+  return;
+
+}
+
 
 export const getTokenPrices = async ({
   chainId,

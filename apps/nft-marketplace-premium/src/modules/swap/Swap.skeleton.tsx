@@ -17,7 +17,8 @@ import {
 
 import SettingsIcon from '@mui/icons-material/Settings';
 import { FormattedMessage } from 'react-intl';
-import { ChainId } from 'src/constants/enum';
+
+import { ChainId } from '@dexkit/core/constants';
 import { NetworkSelectButton } from '../../components/NetworkSelectButton';
 
 export function SwapSkeleton() {
@@ -48,7 +49,7 @@ export function SwapSkeleton() {
             >
               <Skeleton>
                 <NetworkSelectButton
-                  chainId={ChainId.ETH}
+                  chainId={ChainId.Ethereum}
                   onChange={() => {}}
                 />
               </Skeleton>

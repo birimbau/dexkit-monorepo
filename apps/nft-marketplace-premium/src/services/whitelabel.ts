@@ -2,7 +2,7 @@ import { CollectionOwnershipNFTFormType } from '@/modules/contract-wizard/types'
 import axios from 'axios';
 import { DEXKIT_BASE_API_URL } from '../constants';
 import { ConfigResponse, PageTemplateFormData, PageTemplateResponse, SiteResponse, WhitelabelFormData } from '../types/whitelabel';
-import { getAccessToken } from './auth';
+import { getAccessToken, getAccessTokenAndRefresh, getRefreshAccessToken } from './auth';
 
 //const MY_APPS_ENDPOINT = 'https://dexkitapi-8oo4v.ondigitalocean.app';
 //const MY_APPS_ENDPOINT = 'http://localhost:3000';
@@ -18,14 +18,36 @@ const MY_APPS_ENDPOINT = `${DEXKIT_BASE_API_URL}`;
 export const myAppsApi = axios.create({ baseURL: MY_APPS_ENDPOINT, headers: { 'content-type': 'application/json' } });
 
 myAppsApi.interceptors.request.use(async (config) => {
-  const access_token = await getAccessToken()
+  const access_token = await getAccessTokenAndRefresh()
   if (access_token)
     config.headers = {
       ...config.headers,
       authorization: `Bearer ${access_token}`
     }
   return config;
+}, async function (error) {
+  try {
+    const access_token = await getAccessToken()
+    if (error.response.status === 401 && access_token) {
+      return await getAccessTokenAndRefresh();
+    }
+  } catch {
+    return Promise.reject(error);
+  }
+});
 
+myAppsApi.interceptors.response.use(async (response) => {
+  return response;
+}, async function (error) {
+  try {
+    const access_token = await getAccessToken()
+    if (error.response.status === 401 && access_token) {
+      return await getRefreshAccessToken();
+    }
+  } catch {
+    return Promise.reject(error);
+  }
+  return Promise.reject(error);
 });
 
 

@@ -41,4 +41,10 @@ export const COMMON_NOTIFICATION_TYPES: { [key: string]: AppNotificationType } =
       id: "send.amount.symbol.to.address",
       icon: "shortcut",
     },
+    nftTransfer: {
+      type: "nftTransfer",
+      message: "Transfer {name} #{id}",
+      id: "transfer.name.id",
+      icon: "shortcut",
+    },
   };

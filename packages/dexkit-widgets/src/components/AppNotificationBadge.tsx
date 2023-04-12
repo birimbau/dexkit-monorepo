@@ -1,7 +1,10 @@
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import { Badge } from "@mui/material";
 import { useAtomValue } from "jotai";
-import { hasPendingTransactionsAtom, pendingTransactionsAtom } from "./atoms";
+import {
+  hasPendingTransactionsAtom,
+  pendingTransactionsAtom,
+} from "../state/atoms";
 
 export function AppNotificationsBadge() {
   const hasPendingTransactions = useAtomValue(hasPendingTransactionsAtom);

@@ -1,26 +1,27 @@
-import {
-  Box,
-  Button,
-  Container,
-  Paper,
-  Stack,
-  Typography,
-} from '@mui/material';
+import { useWalletActivate } from '@dexkit/core/hooks';
+import { WalletActivateParams } from '@dexkit/core/types';
+import ConnectWalletDialog from '@dexkit/ui/components/ConnectWalletDialog';
+import { Box, Button, Container } from '@mui/material';
 import { useWeb3React } from '@web3-react/core';
-import * as React from 'react';
-import { useState } from 'react';
-import { useLogin, useNotify, Notification } from 'react-admin';
+import { useLogin } from 'react-admin';
 import { FormattedMessage } from 'react-intl';
-import ConnectWalletDialog from 'src/components/dialogs/ConnectWalletDialog';
 import { useLoginAccountMutation } from 'src/hooks/account';
 import { useConnectWalletDialog } from 'src/hooks/app';
+import { selectedWalletAtom } from 'src/state/atoms';
 
 const MyLoginPage = () => {
   const { account } = useWeb3React();
   const login = useLogin();
-  const notify = useNotify();
   const loginMutation = useLoginAccountMutation();
   const connectWalletDialog = useConnectWalletDialog();
+  const walletActivate = useWalletActivate({
+    magicRedirectUrl:
+      typeof window !== 'undefined'
+        ? window.location.href
+        : process.env.NEXT_PUBLIC_MAGIC_REDIRECT_URL || '',
+    selectedWalletAtom,
+  });
+  const { isActive } = useWeb3React();
 
   const handleLoginMutation = async () => {
     await loginMutation.mutateAsync();
@@ -35,15 +36,23 @@ const MyLoginPage = () => {
     connectWalletDialog.setOpen(true);
   };
 
+  const handleActivateWallet = async (params: WalletActivateParams) => {
+    await walletActivate.mutation.mutateAsync(params);
+  };
+
   return (
     <Container maxWidth="xs">
       <ConnectWalletDialog
-        dialogProps={{
+        DialogProps={{
           open: connectWalletDialog.isOpen,
           onClose: handleCloseConnectWalletDialog,
           fullWidth: true,
           maxWidth: 'sm',
         }}
+        isActive={isActive}
+        isActivating={walletActivate.mutation.isLoading}
+        activeConnectorName={walletActivate.connectorName}
+        activate={handleActivateWallet}
       />
       <Box
         sx={{

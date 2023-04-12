@@ -34,7 +34,7 @@ import {
   searchAssetsDexKitApi,
 } from '../services/nft';
 
-import { ChainId, NFTType } from '../constants/enum';
+import { NFTType } from '../constants/enum';
 import {
   Asset,
   AssetAPI,
@@ -45,6 +45,7 @@ import {
   SwapApiOrder,
 } from '../types/nft';
 
+import { ChainId } from '@dexkit/core/constants';
 import { PostOrderResponsePayload } from '@traderxyz/nft-swap-sdk/dist/sdk/v4/orderbook';
 import axios from 'axios';
 import { useAtom, useAtomValue } from 'jotai';
@@ -83,6 +84,7 @@ export function useAsset(
     provider: injectedProvider,
     chainId: injectedChainId,
     isActive,
+    account,
   } = useWeb3React();
 
   const assetCached = queryClient.getQueryState<Asset | undefined>([
@@ -110,7 +112,12 @@ export function useAsset(
       ) {
         return;
       }
-      const asset = await getAssetData(provider, contractAddress, tokenId);
+      const asset = await getAssetData(
+        provider,
+        contractAddress,
+        tokenId,
+        account
+      );
 
       let assetApi: AssetAPI | undefined;
       try {
@@ -140,6 +147,7 @@ export function useAsset(
           metadata: { ...rawMetadata, image: assetApi?.imageUrl },
           owner: asset?.owner,
           protocol: asset?.protocol,
+          balance: asset?.balance,
         };
         return newAsset;
       }
@@ -664,9 +672,8 @@ export const useAssetsOrderBook = (orderFilter?: TraderOrderFilter) => {
 export const GET_ASSET_LIST_FROM_ORDERBOOK = 'GET_ASSET_LIST_FROM_ORDERBOOK';
 
 export const useAssetListFromOrderbook = (orderFilter: TraderOrderFilter) => {
-
   const ordebookQuery = useOrderBook(orderFilter);
-  const provider = useNetworkProvider(orderFilter.chainId)
+  const provider = useNetworkProvider(orderFilter.chainId);
   return useQuery(
     [GET_ASSET_LIST_FROM_ORDERBOOK, ordebookQuery.data],
     async () => {

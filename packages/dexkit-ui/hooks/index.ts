@@ -1,9 +1,18 @@
-import { CONNECTORS, TransactionStatus } from "@dexkit/core/constants";
-import { AppTransaction } from "@dexkit/core/types";
+import {
+  ChainId,
+  CONNECTORS,
+  TransactionStatus,
+  TransactionType,
+} from "@dexkit/core/constants";
+import { AppTransaction, TransactionMetadata } from "@dexkit/core/types";
+import { switchNetwork } from "@dexkit/core/utils";
+import { useMutation } from "@tanstack/react-query";
 import { useWeb3React, Web3ReactHooks } from "@web3-react/core";
 import { Connector } from "@web3-react/types";
 import { PrimitiveAtom, useAtom, useAtomValue } from "jotai";
-import { useContext, useMemo } from "react";
+import { useUpdateAtom } from "jotai/utils";
+import { useCallback, useContext, useMemo, useState } from "react";
+
 import { DexKitContext, DexkitContextState } from "../context/DexKitContext";
 import {
   AppNotification,
@@ -52,6 +61,9 @@ export function useDexkitContextState({
 }): DexkitContextState {
   const [notifications, setNotifications] = useAtom(notificationsAtom);
   const [transactions, setTransactions] = useAtom(transactionsAtom);
+  const watchTransactionDialog = useWatchTransactionDialog({
+    transactionsAtom,
+  });
 
   const checkAllNotifications = () => {
     setNotifications((notifications) => {
@@ -97,8 +109,6 @@ export function useDexkitContextState({
         }
       }
 
-      console.log(newNotification);
-
       return [...notifications, newNotification];
     });
   };
@@ -111,6 +121,7 @@ export function useDexkitContextState({
     onChangeLocale,
     notificationTypes,
     notifications: notifications.reverse(),
+    watchTransactionDialog,
   };
 }
 
@@ -160,5 +171,132 @@ export function useNotifications() {
     uncheckedTransactions,
     hasPendingTransactions,
     filteredUncheckedTransactions,
+  };
+}
+
+export function useSwitchNetworkMutation() {
+  const { connector } = useWeb3React();
+
+  return useMutation<unknown, Error, { chainId: number }>(
+    async ({ chainId }) => {
+      if (connector) {
+        return switchNetwork(connector, chainId);
+      }
+    }
+  );
+}
+
+export function useWatchTransactionDialog({
+  transactionsAtom,
+}: {
+  transactionsAtom: PrimitiveAtom<{
+    [key: string]: AppTransaction;
+  }>;
+}) {
+  const updateTransactions = useUpdateAtom(transactionsAtom);
+
+  const [isOpen, setDialogIsOpen] = useState(false);
+  const [hash, setHash] = useState<string>();
+  const [error, setError] = useState<Error>();
+  const [metadata, setMetadata] = useState<TransactionMetadata>();
+  const [type, setType] = useState<string>();
+
+  const [values, setValues] = useState<Record<string, any>>();
+
+  const [redirectUrl, setRedirectUrl] = useState<string>();
+
+  const watch = useCallback((hash: string) => {
+    setHash(hash);
+  }, []);
+
+  const open = useCallback((type: string, values: Record<string, any>) => {
+    setDialogIsOpen(true);
+    setValues(values);
+    setType(type);
+  }, []);
+
+  const close = useCallback(() => {
+    setDialogIsOpen(false);
+    setType(undefined);
+    setValues(undefined);
+    setMetadata(undefined);
+    setError(undefined);
+  }, []);
+
+  const showDialog = useCallback(
+    (open: boolean, metadata?: TransactionMetadata, type?: TransactionType) => {
+      setDialogIsOpen(open);
+      setMetadata(metadata);
+
+      if (!open) {
+        setHash(undefined);
+        setMetadata(undefined);
+        setType(undefined);
+        setError(undefined);
+      }
+    },
+    []
+  );
+
+  const setDialogError = useCallback(
+    (error?: Error) => {
+      if (isOpen) {
+        setError(error);
+      }
+    },
+    [setError, isOpen]
+  );
+
+  const addTransaction = ({
+    hash,
+    type,
+    metadata,
+    values,
+    chainId,
+  }: {
+    hash: string;
+    type: TransactionType;
+    metadata?: TransactionMetadata;
+    values: Record<string, any>;
+    chainId: ChainId;
+  }) => {
+    if (chainId !== undefined) {
+      setHash(hash);
+
+      updateTransactions((txs) => ({
+        ...txs,
+        [hash]: {
+          chainId,
+          created: new Date().getTime(),
+          status: TransactionStatus.Pending,
+          type,
+          metadata,
+          checked: false,
+          values,
+        },
+      }));
+    }
+  };
+
+  return {
+    values,
+    open,
+    close,
+    redirectUrl,
+    setRedirectUrl,
+    error,
+    hash,
+    metadata,
+    type,
+    setHash,
+    isOpen,
+    setDialogIsOpen,
+    setError,
+    setMetadata,
+    setType,
+    showDialog,
+    setDialogError,
+    addTransaction,
+    watch,
   };
 }

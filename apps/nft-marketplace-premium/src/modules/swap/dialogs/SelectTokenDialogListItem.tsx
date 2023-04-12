@@ -1,14 +1,14 @@
 import {
+  Avatar,
   ListItem,
   ListItemIcon,
-  Avatar,
-  ListItemText,
   ListItemSecondaryAction,
+  ListItemText,
   Typography,
 } from '@mui/material';
 
+import { ChainId } from '@dexkit/core/constants';
 import { formatUnits } from 'ethers/lib/utils';
-import { ChainId } from '../../../constants/enum';
 import { Token, TokenBalance } from '../../../types/blockchain';
 import { TOKEN_ICON_URL } from '../../../utils/token';
 

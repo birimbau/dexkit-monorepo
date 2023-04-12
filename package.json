@@ -13,6 +13,7 @@
     "storybook": "turbo run storybook",
     "storybook:ui": "turbo run storybook --filter=@dexkit/ui",
     "storybook:web3forms": "turbo run storybook --filter=@dexkit/web3forms",
+    "storybook:widget": "turbo run storybook --filter=@dexkit/widgets",
     "bundle:widgets": "turbo run bundle:widgets",
     "build:whitelabel": "turbo run build --parallel --filter=nft-marketplace",
     "build:wallet": "turbo run build --parallel --filter=dexkit-wallet",
@@ -20,6 +21,7 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {
+    "@playwright/test": "^1.32.2",
     "eslint-config-custom": "*",
     "next-transpile-modules": "^10.0.0",
     "prettier": "latest",
@@ -58,5 +60,9 @@
     "react-dom": "^18.2.0",
     "react-intl": "^5.24.8"
   },
-  "packageManager": "yarn@1.22.18"
+  "packageManager": "yarn@1.22.18",
+  "main": "index.js",
+  "repository": "https://github.com/DexKit/dexkit-monorepo.git",
+  "author": "JoaoCampos89 <jcampos893@gmail.com>",
+  "license": "MIT"
 }

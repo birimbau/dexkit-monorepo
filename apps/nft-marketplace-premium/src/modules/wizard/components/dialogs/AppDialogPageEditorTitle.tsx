@@ -1,18 +1,17 @@
+import CloseIcon from '@mui/icons-material/Close';
+import EditIcon from '@mui/icons-material/Edit';
 import {
-  Box,
   Button,
-  DialogProps,
   DialogTitle,
   IconButton,
   Stack,
   TextField,
   Typography,
 } from '@mui/material';
-import EditIcon from '@mui/icons-material/Edit';
-import CloseIcon from '@mui/icons-material/Close';
-import { CustomEditorSection } from '../../../../types/config';
-import { FormattedMessage } from 'react-intl';
+
 import { useState } from 'react';
+import { FormattedMessage } from 'react-intl';
+import { CustomEditorSection } from '../../types/section';
 
 interface Props {
   section?: CustomEditorSection;

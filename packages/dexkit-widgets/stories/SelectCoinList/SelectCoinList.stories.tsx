@@ -1,10 +1,10 @@
 import { Card, Grid } from "@mui/material";
 import { ComponentMeta, ComponentStory } from "@storybook/react";
 import { useCallback } from "react";
-import DexkitContextProvider from "../../src/components/DexkitContextProvider";
 import SelectCoinsList, {
   SelectCoinListProps,
 } from "../../src/components/SelectCoinList";
+import { WidgetContext } from "../../src/components/WidgetContext";
 import { Token } from "../../src/types";
 import { TEST_TOKENS } from "./constants";
 
@@ -21,17 +21,15 @@ const Template: ComponentStory<typeof SelectCoinsList> = (
   const handleSelect = useCallback((token: Token) => {}, []);
 
   return (
-    <DexkitContextProvider>
-      {({}) => (
-        <Grid container spacing={2} justifyContent="center">
-          <Grid item xs={12} sm={3}>
-            <Card>
-              <SelectCoinsList {...args} onSelect={handleSelect} />
-            </Card>
-          </Grid>
+    <WidgetContext>
+      <Grid container spacing={2} justifyContent="center">
+        <Grid item xs={12} sm={3}>
+          <Card>
+            <SelectCoinsList {...args} onSelect={handleSelect} />
+          </Card>
         </Grid>
-      )}
-    </DexkitContextProvider>
+      </Grid>
+    </WidgetContext>
   );
 };
 

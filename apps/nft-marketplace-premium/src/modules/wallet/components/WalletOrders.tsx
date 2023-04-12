@@ -1,7 +1,8 @@
+import { ChainId } from '@dexkit/core/constants';
 import { IconButton, Stack } from '@mui/material';
 import { useWeb3React } from '@web3-react/core';
 import { useMemo } from 'react';
-import { ChainId, SellOrBuy, TraderOrderStatus } from '../../../constants/enum';
+import { SellOrBuy, TraderOrderStatus } from '../../../constants/enum';
 import { useTokenList } from '../../../hooks/blockchain';
 import { usePositionPaginator } from '../../../hooks/misc';
 import { useAssetMetadataFromList, useOrderBook } from '../../../hooks/nft';

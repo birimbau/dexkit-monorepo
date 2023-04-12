@@ -1,5 +1,6 @@
 import { ComponentMeta, ComponentStory } from "@storybook/react";
-import DexkitContextProvider from "../../src/components/DexkitContextProvider";
+import { WidgetContext } from "../../src/components/WidgetContext";
+
 import { Token } from "../../src/types";
 import SwapSelectCoinDialog, {
   SwapSelectCoinDialogProps,
@@ -21,15 +22,13 @@ const Template: ComponentStory<typeof SwapSelectCoinDialog> = (
   const handleSelect = (token: Token) => {};
 
   return (
-    <DexkitContextProvider>
-      {({}) => (
-        <SwapSelectCoinDialog
-          {...args}
-          onQueryChange={handleChange}
-          onSelect={handleSelect}
-        />
-      )}
-    </DexkitContextProvider>
+    <WidgetContext>
+      <SwapSelectCoinDialog
+        {...args}
+        onQueryChange={handleChange}
+        onSelect={handleSelect}
+      />
+    </WidgetContext>
   );
 };
 

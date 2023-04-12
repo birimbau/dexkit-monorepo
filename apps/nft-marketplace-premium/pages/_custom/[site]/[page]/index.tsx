@@ -21,10 +21,11 @@ import {
   getCollectionData,
   getDKAssetOrderbook,
 } from '../../../../src/services/nft';
-import { AppPageSection } from '../../../../src/types/config';
+
 import { getNetworkSlugFromChainId } from '../../../../src/utils/blockchain';
 
 import { SectionsRenderer } from '@/modules/wizard/components/sections/SectionsRenderer';
+import { AppPageSection } from '@/modules/wizard/types/section';
 import { getProviderBySlug } from '../../../../src/services/providers';
 
 const CustomPage: NextPage<{ sections: AppPageSection[] }> = ({ sections }) => {
@@ -44,7 +45,8 @@ export const getStaticProps: GetStaticProps = async ({
   params,
 }: GetStaticPropsContext<Params>) => {
   const queryClient = new QueryClient();
-  const { appConfig, appNFT } = await getAppConfig(params?.site, params?.page);
+  const configResponse = await getAppConfig(params?.site, params?.page);
+  const { appConfig } = configResponse;
   const homePage = appConfig.pages[params?.page || ''];
 
   if (!homePage) {
@@ -138,8 +140,7 @@ export const getStaticProps: GetStaticProps = async ({
     props: {
       dehydratedState: dehydrate(queryClient),
       sections: homePage.sections,
-      appConfig,
-      appNFT,
+      ...configResponse,
     },
     revalidate: 300,
   };

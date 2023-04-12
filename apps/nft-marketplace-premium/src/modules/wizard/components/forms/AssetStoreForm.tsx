@@ -30,9 +30,7 @@ const AssetStoreOptionsSchema: Yup.SchemaOf<AssetStoreOptions> =
     profileImageURL: Yup.string(),
     backgroundImageURL: Yup.string(),
     description: Yup.string(),
-    storeAccount: Yup.string()
-      .matches(new RegExp('^0x[a-fA-F0-9]{40}$'))
-      .required(),
+    storeAccount: Yup.string().matches(new RegExp('^0x[a-fA-F0-9]{40}$')),
   });
 
 interface Props {

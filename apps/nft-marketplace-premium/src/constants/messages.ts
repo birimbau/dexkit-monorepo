@@ -32,6 +32,12 @@ export const WHITELABEL_NOTIFICATION_TYPES: {
     type: 'cancelOrder',
     message: 'Cancel listing for the asset {collectionName} #{id}',
     id: 'cancel.order',
+
     icon: 'cancel',
+  },
+  claimAirdrop: {
+    type: 'claimAirdrop',
+    message: 'Claimed KIT airdrop',
+    id: 'claim.airdrop',
   },
 };

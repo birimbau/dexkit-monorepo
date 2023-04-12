@@ -23,7 +23,7 @@ import { useRouter } from 'next/router';
 import { Backdrop, CircularProgress, createTheme } from '@mui/material';
 import { AssetAPI } from 'src/types/nft';
 import defaultAppConfig from '../config/app.json';
-import { AppMarketplaceContext } from '../src/components/AppMarketplaceContext';
+import { AppMarketplaceProvider } from '../src/components/AppMarketplaceProvider';
 import { AppConfigContext } from '../src/contexts';
 import { AppConfig } from '../src/types/config';
 import './customCss.css';
@@ -40,9 +40,10 @@ export default function MyApp(props: MyAppProps) {
 
   const [loading, setLoading] = React.useState(false);
 
-  const { appConfig, appNFT } = pageProps as {
+  const { appConfig, appNFT, siteId } = pageProps as {
     appConfig: AppConfig;
     appNFT: AssetAPI;
+    siteId: number | undefined;
     dehydratedState: DehydratedState;
   };
 
@@ -165,12 +166,14 @@ export default function MyApp(props: MyAppProps) {
           <meta name="viewport" content="initial-scale=1, width=device-width" />
           <meta name="theme-color" content={theme?.palette.primary.main} />
         </Head>
-        <AppConfigContext.Provider value={{ appConfig: config, appNFT }}>
+        <AppConfigContext.Provider
+          value={{ appConfig: config, appNFT, siteId }}
+        >
           <QueryClientProvider client={queryClient}>
             <Hydrate state={pageProps.dehydratedState}>
               <DefaultSeo {...SEO} />
               <LocalizationProvider dateAdapter={AdapterMoment}>
-                <AppMarketplaceContext>
+                <AppMarketplaceProvider>
                   <Backdrop
                     sx={{
                       color: theme.palette.primary.main,
@@ -181,7 +184,7 @@ export default function MyApp(props: MyAppProps) {
                     <CircularProgress color="inherit" size={80} />
                   </Backdrop>
                   {getLayout(<Component {...pageProps} />)}
-                </AppMarketplaceContext>
+                </AppMarketplaceProvider>
               </LocalizationProvider>
             </Hydrate>
           </QueryClientProvider>

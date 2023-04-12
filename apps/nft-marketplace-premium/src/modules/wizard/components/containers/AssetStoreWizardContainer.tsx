@@ -9,8 +9,9 @@ import Typography from '@mui/material/Typography';
 import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { AssetStoreOptions } from 'src/types/nft';
-import { AppConfig, AssetStorePageSection } from '../../../../types/config';
+import { AppConfig } from '../../../../types/config';
 import { StepperButtonProps } from '../../types';
+import { AssetStorePageSection } from '../../types/section';
 import AssetStoreForm from '../forms/AssetStoreForm';
 import { StepperButtons } from '../steppers/StepperButtons';
 

@@ -86,6 +86,11 @@
         },
         {
           "type": "Page",
+          "href": "/admin/quick-builder/wallet",
+          "name": "Create Wallet App"
+        },
+        {
+          "type": "Page",
           "href": "/admin",
           "name": "Manage Apps"
         }

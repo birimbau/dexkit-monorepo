@@ -84,7 +84,7 @@ export const getStaticProps: GetStaticProps = async ({
 }: GetStaticPropsContext<Params>) => {
   const queryClient = new QueryClient();
 
-  const { appConfig, appNFT } = await getAppConfig(params?.site, 'home');
+  const configResponse = await getAppConfig(params?.site, 'home');
 
   /*  for (let collection of collectionListJson.collections) {
     const provider = getProviderByChainId(collection.chainId);
@@ -107,8 +107,7 @@ export const getStaticProps: GetStaticProps = async ({
   return {
     props: {
       dehydratedState: dehydrate(queryClient),
-      appConfig,
-      appNFT,
+      ...configResponse,
     },
     revalidate: 300,
   };

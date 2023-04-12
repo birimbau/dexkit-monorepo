@@ -18,19 +18,30 @@ import walletConnectIcon from '../../../../public/assets/images/walletconnect-ci
 
 import { FormattedMessage } from 'react-intl';
 import { PageHeader } from '../../../../src/components/PageHeader';
-import { useWalletActivate } from '../../../../src/hooks/misc';
+
+import { useWalletActivate } from '@dexkit/core/hooks';
+import { WalletActivateParams } from '@dexkit/core/types';
+import { selectedWalletAtom } from 'src/state/atoms';
 import { getAppConfig } from '../../../../src/services/app';
 
 const ConnectWallet: NextPage = () => {
-  const walletActivate = useWalletActivate();
+  const walletActivate = useWalletActivate({
+    magicRedirectUrl:
+      typeof window !== 'undefined'
+        ? window.location.href
+        : process.env.NEXT_PUBLIC_MAGIC_REDIRECT_URL || '',
+    selectedWalletAtom,
+  });
   const [connectorName, setConnectorName] = useState<string>();
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-  const handleActivateWallet = async (connectorName: string) => {
+  const handleActivateWallet = async ({
+    connectorName,
+  }: WalletActivateParams) => {
     setConnectorName(connectorName);
-    await walletActivate.mutateAsync({ connectorName });
+    await walletActivate.mutation.mutateAsync({ connectorName });
     setConnectorName(undefined);
   };
 
@@ -97,32 +108,38 @@ const ConnectWallet: NextPage = () => {
                       <Grid item xs={6} sm={3}>
                         <WalletButton
                           loading={
-                            walletActivate.isLoading &&
+                            walletActivate.mutation.isLoading &&
                             connectorName === 'metamask'
                           }
                           disabled={
-                            walletActivate.isLoading &&
+                            walletActivate.mutation.isLoading &&
                             connectorName === 'metamask'
                           }
                           caption="MetaMask"
                           src={metamaskIcon.src}
-                          onClick={() => handleActivateWallet('metamask')}
+                          onClick={() =>
+                            handleActivateWallet({ connectorName: 'metamask' })
+                          }
                         />
                       </Grid>
                     )}
                     <Grid item xs={6} sm={3}>
                       <WalletButton
                         disabled={
-                          walletActivate.isLoading &&
+                          walletActivate.mutation.isLoading &&
                           connectorName === 'walletConnect'
                         }
                         loading={
-                          walletActivate.isLoading &&
+                          walletActivate.mutation.isLoading &&
                           connectorName === 'walletConnect'
                         }
                         caption="WalletConnect"
                         src={walletConnectIcon.src}
-                        onClick={() => handleActivateWallet('walletConnect')}
+                        onClick={() =>
+                          handleActivateWallet({
+                            connectorName: 'walletConnect',
+                          })
+                        }
                       />
                     </Grid>
                     {/* <Grid item xs={6} sm={3}>
@@ -149,10 +166,10 @@ export const getStaticProps: GetStaticProps = async ({
   if (params !== undefined) {
     const { site } = params;
 
-    const { appConfig, appNFT } = await getAppConfig(site, 'home');
+    const configResponse = await getAppConfig(site, 'home');
 
     return {
-      props: { appConfig, appNFT },
+      props: { ...configResponse },
     };
   }
 

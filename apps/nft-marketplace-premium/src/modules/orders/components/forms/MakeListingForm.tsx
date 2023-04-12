@@ -100,7 +100,7 @@ export default function MakeListingForm({ onConfirm, disabled }: Props) {
         values.taker
       );
 
-      formikHelpers.resetForm();
+      // formikHelpers.resetForm();
     }
   };
 

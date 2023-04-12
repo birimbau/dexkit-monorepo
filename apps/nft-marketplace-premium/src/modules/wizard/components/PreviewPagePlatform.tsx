@@ -1,9 +1,10 @@
 import Stack from '@mui/material/Stack';
 import { useState } from 'react';
 import { PreviewPortal } from 'src/components/PreviewPortal';
-import { AppConfig, AppPageSection } from '../../../types/config';
-import { PreviewPlatformType } from './PreviewPlatformType';
+import { AppConfig } from '../../../types/config';
+import { AppPageSection } from '../types/section';
 import PreviewPage from './PreviewPage';
+import { PreviewPlatformType } from './PreviewPlatformType';
 
 interface Props {
   sections?: AppPageSection[];

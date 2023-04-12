@@ -18,10 +18,11 @@ import AssetRightSection from '../../../../../../src/modules/nft/components/Asse
 
 import AssetHead from '../../../../../../src/modules/nft/components/AssetHead';
 
+import { ChainId } from '@dexkit/core/constants';
 import { NextSeo } from 'next-seo';
 import { FormattedMessage } from 'react-intl';
 import { PageHeader } from '../../../../../../src/components/PageHeader';
-import { ChainId, NETWORK_ID } from '../../../../../../src/constants/enum';
+import { NETWORK_ID } from '../../../../../../src/constants/enum';
 import { MAP_NETWORK_TO_RARIBLE } from '../../../../../../src/constants/marketplaces';
 import { getAppConfig } from '../../../../../../src/services/app';
 import { getRariAsset } from '../../../../../../src/services/rarible';
@@ -118,7 +119,7 @@ export const getStaticProps: GetStaticProps = async ({
   if (params !== undefined) {
     const { address, id, network, site } = params;
 
-    const { appConfig, appNFT } = await getAppConfig(site, 'home');
+    const configResponse = await getAppConfig(site, 'home');
 
     const queryClient = new QueryClient();
     const item = {
@@ -145,7 +146,7 @@ export const getStaticProps: GetStaticProps = async ({
     }
 
     return {
-      props: { dehydratedState: dehydrate(queryClient), appConfig, appNFT },
+      props: { dehydratedState: dehydrate(queryClient), ...configResponse },
       revalidate: 5,
     };
   }

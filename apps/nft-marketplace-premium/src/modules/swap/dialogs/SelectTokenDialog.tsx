@@ -1,3 +1,4 @@
+import { ChainId } from '@dexkit/core/constants';
 import { Close } from '@mui/icons-material';
 import {
   Avatar,
@@ -17,7 +18,6 @@ import {
 } from '@mui/material';
 import { memo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { ChainId } from '../../../constants/enum';
 import { useTokenList } from '../../../hooks/blockchain';
 import { Token } from '../../../types/blockchain';
 import { TOKEN_ICON_URL } from '../../../utils/token';
