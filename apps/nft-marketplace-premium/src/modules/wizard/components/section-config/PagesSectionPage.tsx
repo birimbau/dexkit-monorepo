@@ -24,16 +24,17 @@ import { AppPage, AppPageOptions } from '../../../../types/config';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
 import FormatColorTextIcon from '@mui/icons-material/FormatColorText';
+import GavelIcon from '@mui/icons-material/Gavel';
 import StoreIcon from '@mui/icons-material/Store';
 import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
 import Wallet from '@mui/icons-material/Wallet';
 import { useState } from 'react';
 import AppConfirmDialog from '../../../../components/AppConfirmDialog';
 import { AppPageSection } from '../../types/section';
-import AddPageDialog from '../dialogs/AddPageDialog';
-import PreviewPageDialog from '../dialogs/PreviewPageDialog';
 import PagesMenu from '../PagesMenu';
 import PreviewPagePlatform from '../PreviewPagePlatform';
+import AddPageDialog from '../dialogs/AddPageDialog';
+import PreviewPageDialog from '../dialogs/PreviewPageDialog';
 import { SectionHeader } from '../sections/SectionHeader';
 interface Props {
   sections: AppPageSection[];
@@ -125,6 +126,10 @@ export default function PagesSectionPage({
       title = <FormattedMessage id="wallet" defaultMessage="Wallet" />;
       subtitle = section.title || '';
       icon = <Wallet />;
+    } else if (section.type === 'contract') {
+      title = <FormattedMessage id="contract" defaultMessage="Contract" />;
+      subtitle = section.title || '';
+      icon = <GavelIcon />;
     }
     if (!title) {
       return null;

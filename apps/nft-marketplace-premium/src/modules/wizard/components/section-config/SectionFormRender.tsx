@@ -2,6 +2,7 @@ import { AppPageSection, SectionType } from '../../types/section';
 import { AssetStoreSectionForm } from '../forms/AssetStoreSectionForm';
 import CallToActionSectionForm from '../forms/CallToActionSectionForm';
 import CollectionSectionForm from '../forms/CollectionSectionForm';
+import { ContractSectionForm } from '../forms/ContractSectionForm';
 import FeaturedSectionForm from '../forms/FeaturedSectionForm';
 import MDSectionForm from '../forms/MDSectionForm';
 import { SwapConfigSectionForm } from '../forms/SwapConfigSectionForm';
@@ -80,6 +81,14 @@ export function SectionFormRender({
   } else if (sectionType === 'wallet') {
     return (
       <WalletSectionForm
+        onCancel={onClose}
+        onSave={onSave}
+        section={section?.type === sectionType ? section : undefined}
+      />
+    );
+  } else if (sectionType === 'contract') {
+    return (
+      <ContractSectionForm
         onCancel={onClose}
         onSave={onSave}
         section={section?.type === sectionType ? section : undefined}

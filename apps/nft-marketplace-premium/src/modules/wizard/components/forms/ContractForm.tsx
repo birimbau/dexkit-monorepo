@@ -33,24 +33,27 @@ import {
 import { Checkbox, Switch, TextField } from 'formik-mui';
 
 export interface ContractFormProps {
-  params: ContractFormParams;
+  params?: ContractFormParams;
   onChange: (
-    data: Partial<ContractFormParams>,
+    data: ContractFormParams,
     options?: CellPluginOnChangeOptions | undefined
   ) => void;
+  onCancel?: () => void;
 }
 
 type TABS = 'write' | 'read';
 
 type FieldVisibility = 'all' | 'only-visible' | 'hidden';
 
-export default function ContractForm({ params, onChange }: ContractFormProps) {
+export default function ContractForm({
+  params,
+  onChange,
+  onCancel,
+}: ContractFormProps) {
+  const [abi, setAbi] = useState<AbiFragment[] | undefined>(params?.abi);
   const handleSubmit = async (values: ContractFormParams) => {
-    console.log(values);
-    onChange(values);
+    onChange({ ...values, abi: abi as AbiFragment[] });
   };
-
-  const [abi, setAbi] = useState<AbiFragment[]>();
 
   const handlePaste = (data: string) => {
     try {
@@ -254,7 +257,7 @@ export default function ContractForm({ params, onChange }: ContractFormProps) {
   ) : (
     <Formik
       initialValues={
-        Object.keys(params).length > 1
+        params && Object.keys(params).length > 1
           ? params
           : { abi, chainId: 1, contractAddress: '', fields: mappedFields }
       }
@@ -311,10 +314,15 @@ export default function ContractForm({ params, onChange }: ContractFormProps) {
             </Grid>
           </Grid>
           <Grid item xs={12}>
-            <Stack justifyContent="flex-end" direction="row">
+            <Stack justifyContent="flex-end" direction="row" spacing={2}>
               <Button onClick={submitForm} variant="contained" color="primary">
                 <FormattedMessage id="Save" defaultMessage="Save" />
               </Button>
+              {onCancel && (
+                <Button onClick={onCancel}>
+                  <FormattedMessage id="cancel" defaultMessage="Cancel" />
+                </Button>
+              )}
             </Stack>
           </Grid>
         </Grid>

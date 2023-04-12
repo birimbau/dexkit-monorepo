@@ -1,5 +1,6 @@
 
 import { SwapConfig } from "@/modules/swap/types";
+import { ContractFormParams } from "@dexkit/web3forms/types";
 import React from "react";
 import { PageSectionVariant, SectionItem, VideoEmbedType } from "../../../types/config";
 import { AssetStoreOptions } from "../../../types/nft";
@@ -13,7 +14,8 @@ export type SectionType =
   | 'custom'
   | 'asset-store'
   | 'markdown'
-  | 'wallet';
+  | 'wallet'
+  | 'contract';
 
 
 export interface PageSection {
@@ -82,6 +84,11 @@ export interface WalletPageSection extends PageSection {
   type: 'wallet';
 }
 
+export interface ContractPageSection extends PageSection {
+  type: 'contract';
+  config?: ContractFormParams;
+}
+
 export type AppPageSection =
   | CallToActionAppPageSection
   | VideoEmbedAppPageSection
@@ -92,6 +99,7 @@ export type AppPageSection =
   | AssetStorePageSection
   | MarkdownEditorPageSection
   | WalletPageSection
+  | ContractPageSection
   ;
 
 export interface SectionMetadata {

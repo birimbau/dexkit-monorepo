@@ -148,6 +148,9 @@ export default function EditSectionDialog({
                 <MenuItem value="wallet">
                   <FormattedMessage id="wallet" defaultMessage="Wallet" />
                 </MenuItem>
+                <MenuItem value="contract">
+                  <FormattedMessage id="contract" defaultMessage="Contract" />
+                </MenuItem>
               </Select>
             </FormControl>
           </Grid>
