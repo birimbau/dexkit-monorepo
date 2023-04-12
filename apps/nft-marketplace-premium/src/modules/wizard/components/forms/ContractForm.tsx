@@ -242,8 +242,6 @@ export default function ContractForm({ params, onChange }: ContractFormProps) {
             visible: false,
           };
         }
-
-        console.log('entra', obj);
       }
       return obj;
     }
@@ -264,9 +262,6 @@ export default function ContractForm({ params, onChange }: ContractFormProps) {
     >
       {({ errors, values, submitForm }) => (
         <Grid container spacing={2}>
-          <Grid item xs={12}>
-            {JSON.stringify(errors, null, 2)}
-          </Grid>
           <Grid item xs={12}>
             <Tabs value={selectedTab} onChange={handleChange}>
               <Tab
