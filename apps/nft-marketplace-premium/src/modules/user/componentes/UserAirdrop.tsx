@@ -19,6 +19,7 @@ import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { LoginAppButton } from 'src/components/LoginAppButton';
 import AppMutationDialog from 'src/components/dialogs/AppMutationDialog';
+import { useAuth } from 'src/hooks/account';
 import {
   useAuthUserQuery,
   useClaimCampaignMutation,
@@ -29,6 +30,7 @@ export function UserAirdrop() {
   const router = useRouter();
   const authUserQuery = useAuthUserQuery();
   const authUser = authUserQuery.data;
+  const { user } = useAuth();
   const { createNotification } = useDexKitContext();
   const onSuccess = ({ txHash }: { txHash: string }) => {
     createNotification({
@@ -236,7 +238,7 @@ export function UserAirdrop() {
             </Box>
           </Grid>
         )}
-        {needToCompleteProfile && authUser && (
+        {needToCompleteProfile && user && (
           <Grid item xs={12}>
             <Box display={'flex'} justifyContent={'center'}>
               <Button
@@ -255,7 +257,7 @@ export function UserAirdrop() {
         )}
         <Grid item xs={12}>
           <Box display={'flex'} justifyContent={'center'}>
-            {!authUser && <LoginAppButton />}
+            {!user && <LoginAppButton />}
           </Box>
         </Grid>
 
