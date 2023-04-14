@@ -73,7 +73,7 @@ export function useEnsNameQuery({
 }: {
   address?: string;
 }) {
-  return useQuery([ENS_NAME_QUERY], async () => {
+  return useQuery([ENS_NAME_QUERY, address], async () => {
     if (!address) {
       return;
     }
