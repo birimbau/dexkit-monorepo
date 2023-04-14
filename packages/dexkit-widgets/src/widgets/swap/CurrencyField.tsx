@@ -9,6 +9,7 @@ interface Props {
   InputBaseProps?: InputBaseProps;
   value: BigNumber;
   decimals?: number;
+  isUserInput?: boolean;
 }
 
 export function CurrencyField({
@@ -16,8 +17,9 @@ export function CurrencyField({
   InputBaseProps,
   value,
   decimals,
+  isUserInput,
 }: Props) {
-  const [internalValue, setIntervalValue] = useState({
+  const [internalValue, setInternalValue] = useState({
     value: "",
     triggerChange: false,
   });
@@ -25,15 +27,17 @@ export function CurrencyField({
   useDebounceCallback<BigNumber>(
     value,
     (value) => {
+      if (isUserInput) {
+        return;
+      }
       try {
         const val = ethers.utils.formatUnits(value, decimals);
-
-        setIntervalValue({
+        setInternalValue({
           value: val,
           triggerChange: false,
         });
       } catch (err) {
-        setIntervalValue({
+        setInternalValue({
           value: "",
           triggerChange: false,
         });
@@ -43,7 +47,7 @@ export function CurrencyField({
   );
 
   const handleChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    setIntervalValue({ value: e.target.value, triggerChange: true });
+    setInternalValue({ value: e.target.value, triggerChange: true });
   }, []);
 
   useDebounceCallback<{ value: string; triggerChange: boolean }>(
@@ -53,7 +57,9 @@ export function CurrencyField({
         if (internalValue.triggerChange && decimals) {
           onChange(ethers.utils.parseUnits(internalValue.value, decimals));
         }
-      } catch (err) {}
+      } catch (err) {
+        onChange(BigNumber.from(0));
+      }
     },
     0
   );
