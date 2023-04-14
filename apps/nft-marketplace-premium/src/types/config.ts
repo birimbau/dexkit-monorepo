@@ -1,4 +1,5 @@
 import { AppPageSection } from '@/modules/wizard/types/section';
+import { ThemeMode } from '@dexkit/ui/constants/enum';
 import { Token } from './blockchain';
 
 export type VideoEmbedType = 'youtube' | 'vimeo';
@@ -102,8 +103,11 @@ export interface AppConfig {
     family: string;
     category?: string;
   }
+  themeMode?: ThemeMode;
   theme: string;
   customTheme?: string;
+  customThemeLight?: string;
+  customThemeDark?: string;
   domain: string;
   email: string;
   currency: string;

@@ -1,13 +1,17 @@
+import { ThemeMode } from '@dexkit/ui/constants/enum';
 import { Cancel } from '@mui/icons-material';
 import {
   Autocomplete,
   Box,
   Button,
-  createTheme,
   Divider,
+  FormControl,
   Grid,
-  responsiveFontSizes,
+  InputLabel,
+  MenuItem,
+  Select,
   Stack,
+  Switch,
   TextField,
   Typography,
 } from '@mui/material';
@@ -16,14 +20,13 @@ import Head from 'next/head';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import Fonts from 'src/constants/fonts.json';
-import { getTheme } from '../../../../theme';
 import { AppConfig } from '../../../../types/config';
 import { customThemeAtom } from '../../state';
 import { StepperButtonProps } from '../../types';
 import { generateTheme } from '../../utils';
+import ThemePreview from '../ThemePreview';
 import ThemeSection from '../sections/ThemeSection';
 import { StepperButtons } from '../steppers/StepperButtons';
-import ThemePreview from '../ThemePreview';
 
 interface Props {
   config: AppConfig;
@@ -43,6 +46,12 @@ export default function ThemeWizardContainer({
   showSwap,
 }: Props) {
   const [selectedThemeId, setSelectedThemeId] = useState<string>(config.theme);
+  const [selectedThemeMode, setSelectedThemeMode] = useState<ThemeMode>(
+    config.themeMode || ThemeMode.light
+  );
+  const [defaultThemeMode, setDefaultThemeMode] = useState<ThemeMode>(
+    config.themeMode || ThemeMode.light
+  );
   const [selectedFont, setSelectedFont] = useState<
     { family: string; category?: string } | undefined
   >(config?.font);
@@ -61,7 +70,12 @@ export default function ThemeWizardContainer({
   );
 
   const selectedTheme = useMemo(() => {
-    return generateTheme({ selectedFont, customTheme, selectedThemeId });
+    return generateTheme({
+      selectedFont,
+      customTheme,
+      selectedThemeId,
+      mode: selectedThemeMode,
+    });
   }, [selectedThemeId, customTheme, selectedFont]);
 
   const handleCancelEdit = () => {
@@ -134,7 +148,7 @@ export default function ThemeWizardContainer({
           <Divider />
         </Grid>
         <Grid item xs={12} sm={6}>
-          <Box pb={2}>
+          <Stack spacing={2}>
             <Autocomplete
               disablePortal
               id="font-selection"
@@ -151,13 +165,79 @@ export default function ThemeWizardContainer({
                 />
               )}
             />
-          </Box>
 
-          <ThemeSection
-            selectedId={selectedThemeId}
-            onSelect={handleSelectTheme}
-            onPreview={handleShowPreview}
-          />
+            <FormControl fullWidth>
+              <InputLabel id="theme-mode-label">
+                <FormattedMessage
+                  id={'theme.mode'}
+                  defaultMessage={'Theme mode'}
+                />
+              </InputLabel>
+              <Select
+                labelId="theme-mode-label"
+                id="theme-mode"
+                value={selectedThemeMode}
+                label={
+                  <FormattedMessage
+                    id={'theme.mode'}
+                    defaultMessage={'Theme mode'}
+                  />
+                }
+                onChange={(ev) => {
+                  console.log(ev.target.value);
+                  setSelectedThemeMode(ev.target.value as ThemeMode);
+                }}
+              >
+                <MenuItem value={ThemeMode.light}>
+                  <FormattedMessage id={'light'} defaultMessage={'Light'} />
+                </MenuItem>
+                <MenuItem value={ThemeMode.dark}>
+                  <FormattedMessage id={'dark'} defaultMessage={'Dark'} />
+                </MenuItem>
+              </Select>
+            </FormControl>
+
+            <Box>
+              <ThemeSection
+                mode={selectedThemeMode}
+                selectedId={selectedThemeId}
+                onSelect={handleSelectTheme}
+                onPreview={handleShowPreview}
+              />
+            </Box>
+            <Box>
+              <Typography variant="body2">
+                <FormattedMessage
+                  id="default.theme.mode"
+                  defaultMessage={'Default Theme mode'}
+                />
+              </Typography>
+              <Stack
+                direction={'row'}
+                alignContent={'center'}
+                alignItems={'center'}
+              >
+                <Typography variant="body1">
+                  {' '}
+                  <FormattedMessage id="light" defaultMessage={'Light'} />
+                </Typography>
+                <Switch
+                  defaultChecked={defaultThemeMode === ThemeMode.dark}
+                  onChange={() => {
+                    if (defaultThemeMode === 'dark') {
+                      setDefaultThemeMode(ThemeMode.light);
+                    } else {
+                      setDefaultThemeMode(ThemeMode.dark);
+                    }
+                  }}
+                />
+                <Typography variant="body1">
+                  {' '}
+                  <FormattedMessage id="dark" defaultMessage={'Dark'} />
+                </Typography>
+              </Stack>
+            </Box>
+          </Stack>
         </Grid>
         <Grid item xs={12} sm={6}>
           {renderThemePreview()}

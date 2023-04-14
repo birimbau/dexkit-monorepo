@@ -1,3 +1,4 @@
+import { ThemeMode } from '@dexkit/ui/constants/enum';
 import { createTheme, responsiveFontSizes } from '@mui/material/styles';
 import { getTheme } from 'src/theme';
 import { Token } from '../../../types/blockchain';
@@ -31,8 +32,8 @@ export function APP_COLLECTION_KEY(collection: AppCollection) {
 
 
 
-export function generateTheme({ selectedFont, selectedThemeId, customTheme }:
-  { selectedFont?: { family?: string, category?: string }, selectedThemeId: string, customTheme?: CustomThemeInterface }) {
+export function generateTheme({ selectedFont, selectedThemeId, customTheme, mode }:
+  { selectedFont?: { family?: string, category?: string }, selectedThemeId: string, customTheme?: CustomThemeInterface, mode?: ThemeMode }) {
 
   let fontFamily;
   if (selectedFont) {
@@ -51,7 +52,8 @@ export function generateTheme({ selectedFont, selectedThemeId, customTheme }:
         : createTheme(customTheme)
     );
   }
-  const theme = getTheme(selectedThemeId).theme;
+  const theme = getTheme({ name: selectedThemeId, mode }).theme;
+  console.log(theme);
   return responsiveFontSizes(
     fontFamily
       ? createTheme({

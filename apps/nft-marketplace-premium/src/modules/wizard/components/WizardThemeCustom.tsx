@@ -1,13 +1,6 @@
-import {
-  Box,
-  FormControlLabel,
-  Stack,
-  Switch,
-  Typography,
-} from '@mui/material';
+import { Box, Stack } from '@mui/material';
 import { useAtom } from 'jotai';
 import { MuiColorInput } from 'mui-color-input';
-import { FormattedMessage } from 'react-intl';
 import { customThemeAtom } from '../state';
 import { TooltipInfo } from './InputInfoAdornment';
 
@@ -16,39 +9,6 @@ function WizardThemeCustom() {
 
   return (
     <Stack spacing={0.5} justifyContent="flex-start" alignItems="flex-start">
-      <Typography variant="body2">
-        <FormattedMessage
-          id="customize.colors"
-          defaultMessage={'Customize colours'}
-        />
-      </Typography>
-      <FormControlLabel
-        control={
-          <Switch
-            defaultChecked={customTheme?.palette?.mode === 'dark'}
-            onChange={() => {
-              if (customTheme?.palette?.mode === 'dark') {
-                setCustomTheme({
-                  palette: {
-                    ...customTheme.palette,
-                    mode: 'light',
-                  },
-                });
-              } else {
-                if (customTheme?.palette?.mode) {
-                  setCustomTheme({
-                    palette: {
-                      ...customTheme.palette,
-                      mode: 'dark',
-                    },
-                  });
-                }
-              }
-            }}
-          />
-        }
-        label={<FormattedMessage id="dark.mode" defaultMessage={'Dark mode'} />}
-      />
       <Box display={'flex'} justifyContent={'center'}>
         <MuiColorInput
           value={customTheme?.palette?.primary?.main || '#000'}

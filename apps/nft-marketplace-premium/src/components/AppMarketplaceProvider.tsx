@@ -26,14 +26,14 @@ export function AppMarketplaceProvider({
   const [locale, setLocale] = useState(defaultLocale);
 
   const theme = useMemo<Theme>(() => {
-    let tempTheme = getTheme(defaultAppConfig.theme)?.theme;
+    let tempTheme = getTheme({ name: defaultAppConfig.theme })?.theme;
     let fontFamily;
     if (appConfig?.font) {
       fontFamily = `'${appConfig.font.family}', ${appConfig.font.category}`;
     }
 
     if (appConfig) {
-      tempTheme = getTheme(appConfig.theme)?.theme;
+      tempTheme = getTheme({ name: appConfig.theme })?.theme;
     }
     if (appConfig && appConfig.theme === 'custom' && appConfig.customTheme) {
       const customTheme = JSON.parse(appConfig.customTheme);
