@@ -93,9 +93,9 @@ export default function ConnectWalletDialog({
           horizontal: "right",
         },
       });
+      setConnectorName(undefined);
     }
     handelClose();
-    setConnectorName(undefined);
   };
 
   const [email, setEmail] = useState("");

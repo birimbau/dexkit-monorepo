@@ -47,13 +47,15 @@ import {
   showSelectCurrencyAtom,
   showSelectLocaleAtom,
 } from '../state/atoms';
+import NavbarMenu from './Menu';
+import { WalletButton } from './WalletButton';
 import SelectNetworkDialog from './dialogs/SelectNetworkDialog';
 import Notification from './icons/Notification';
 import Wallet from './icons/Wallet';
-import NavbarMenu from './Menu';
-import { WalletButton } from './WalletButton';
 
+import { MagicConnector } from '@dexkit/core/types/magic';
 import { useDexKitContext, useNotifications } from '@dexkit/ui';
+import MagicNetworkSelect from '@dexkit/ui/components/MagicNetworkSelect';
 import NotificationsDialog from '@dexkit/ui/components/dialogs/NotificationsDialog';
 
 interface Props {
@@ -62,7 +64,7 @@ interface Props {
 }
 
 function Navbar({ appConfig, isPreview }: Props) {
-  const { isActive, chainId } = useWeb3React();
+  const { isActive, chainId, connector } = useWeb3React();
 
   const buttonRef = useRef<HTMLElement | null>(null);
 
@@ -430,6 +432,9 @@ function Navbar({ appConfig, isPreview }: Props) {
                 </Button>
               ) : (
                 <Stack direction="row" alignItems="center" spacing={2}>
+                  {connector instanceof MagicConnector && (
+                    <MagicNetworkSelect />
+                  )}
                   <WalletButton />
 
                   <NoSsr>
