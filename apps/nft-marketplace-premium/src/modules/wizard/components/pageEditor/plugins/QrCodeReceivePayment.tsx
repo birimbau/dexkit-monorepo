@@ -7,7 +7,6 @@ import { Container } from '@mui/material';
 import type { CellPlugin } from '@react-page/editor';
 import { useWeb3React } from '@web3-react/core';
 import { ethers } from 'ethers';
-import React from 'react';
 import { useEvmCoins } from 'src/hooks/blockchain';
 
 type Props = {
@@ -47,7 +46,7 @@ const QrCodeReceive: CellPlugin<Props> = {
   version: 1,
   controls: {
     type: 'custom',
-    Component: React.memo((data) => {
+    Component: (data) => {
       const { account, chainId } = useWeb3React();
       const evmCoins = useEvmCoins({
         defaultChainId: data.data.chainId || chainId,
@@ -65,7 +64,7 @@ const QrCodeReceive: CellPlugin<Props> = {
           />
         </Container>
       );
-    }),
+    },
   },
 };
 
