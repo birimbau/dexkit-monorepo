@@ -9,3 +9,6 @@ export async function getTokenData(chainId: number, address: string) {
 
   return response.data;
 }
+
+
+

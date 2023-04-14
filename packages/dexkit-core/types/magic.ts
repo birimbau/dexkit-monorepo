@@ -62,7 +62,7 @@ export class ProviderWrapper {
   }
 }
 
-export type MagicLoginType = "email" | "google" | "twitter";
+export type MagicLoginType = "email" | "google" | "twitter" | "discord";
 
 export class MagicConnector extends Connector {
   private options: MagicConnectOptions;
@@ -127,6 +127,12 @@ export class MagicConnector extends Connector {
         } else if (loginType === "google" && redirectUrl) {
           await magic.oauth.loginWithRedirect({
             provider: "google",
+            redirectURI: redirectUrl,
+          })
+        }
+        else if (loginType === "discord" && redirectUrl) {
+          await magic.oauth.loginWithRedirect({
+            provider: "discord",
             redirectURI: redirectUrl,
           });
 
@@ -193,7 +199,7 @@ export class MagicConnector extends Connector {
         if (!(await this.magicInstance.user.isLoggedIn())) {
           try {
             await this.magicInstance.oauth.getRedirectResult();
-          } catch (err) {}
+          } catch (err) { }
         }
       });
     });

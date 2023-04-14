@@ -3,15 +3,12 @@ import { useWeb3React } from "@web3-react/core";
 import { metaMask } from "../constants/connectors/metamask";
 import { Token, WalletActivateParams } from "../types";
 
-import { BigNumber, ethers } from "ethers";
 import { PrimitiveAtom, useAtom } from "jotai";
 import { ChainId } from "../constants";
 import { magic } from "../constants/connectors/magic";
 import { walletConnect } from "../constants/connectors/walletConnect";
-import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "../constants/zrx";
+import { NETWORK_PROVIDER } from "../constants/networks";
 import { getPricesByChain } from "../services";
-import { isAddressEqual } from "../utils";
-import { ERC20Abi } from "./abis";
 
 export function useWalletActivate({
   magicRedirectUrl,
@@ -48,33 +45,6 @@ export function useWalletActivate({
   return { connectorName: walletConnector, mutation };
 }
 
-export const ERC20_BALANCE = "ERC20_BALANCE";
-
-export interface Erc20BalanceParams {
-  account?: string;
-  contractAddress?: string;
-  provider?: ethers.providers.BaseProvider;
-}
-
-export function useErc20Balance({
-  account,
-  contractAddress,
-  provider,
-}: Erc20BalanceParams) {
-  return useQuery([ERC20_BALANCE, account, contractAddress], async () => {
-    if (!contractAddress || !provider || !account) {
-      return BigNumber.from(0);
-    }
-
-    if (isAddressEqual(contractAddress, ZEROEX_NATIVE_TOKEN_ADDRESS)) {
-      return await provider.getBalance(account);
-    }
-
-    const contract = new ethers.Contract(contractAddress, ERC20Abi, provider);
-
-    return (await contract.balanceOf(account)) as BigNumber;
-  });
-}
 
 export const COIN_PRICES_QUERY = "COIN_PRICES_QUERY";
 
@@ -93,5 +63,48 @@ export function useCoinPrices({
     }
 
     return await getPricesByChain(chainId, tokens, currency);
+  });
+}
+
+export const ENS_NAME_QUERY = "ENS_NAME_QUERY";
+
+export function useEnsNameQuery({
+  address
+}: {
+  address?: string;
+}) {
+  return useQuery([ENS_NAME_QUERY, address], async () => {
+    if (!address) {
+      return;
+    }
+    if (address.split('.').length < 2) {
+      return
+    }
+
+    const provider = NETWORK_PROVIDER(ChainId.Ethereum);
+    if (!provider) {
+      return;
+    }
+
+    return await provider.resolveName(address);
+  });
+}
+
+export function useEnsNameMutation(
+) {
+  return useMutation(async (address: string) => {
+    if (!address) {
+      return;
+    }
+    if (address.split('.').length < 2) {
+      return
+    }
+
+    const provider = NETWORK_PROVIDER(ChainId.Ethereum);
+    if (!provider) {
+      return;
+    }
+
+    return await provider.resolveName(address);
   });
 }

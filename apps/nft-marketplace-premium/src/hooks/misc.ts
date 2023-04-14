@@ -1,9 +1,7 @@
-import { useMutation } from '@tanstack/react-query';
 import { atom, useAtom, useAtomValue } from 'jotai';
 import { useCallback, useEffect, useState } from 'react';
 import { isBalancesVisibleAtom } from '../state/atoms';
 
-import { CONNECTORS } from '@dexkit/core';
 
 export function usePositionPaginator(pageSize = 5) {
   const [position, setPosition] = useState({ offset: 0, limit: pageSize });
@@ -25,15 +23,7 @@ export function useIsBalanceVisible() {
   return useAtomValue(isBalancesVisibleAtom);
 }
 
-export function useWalletActivate() {
-  return useMutation(async ({ connectorName }: { connectorName: string }) => {
-    if (connectorName === 'metamask') {
-      return await CONNECTORS['metamask'][0].activate();
-    } else if (connectorName === 'walletConnect') {
-      return await CONNECTORS['walletConnect'][0].activate();
-    }
-  });
-}
+
 
 const showSelectIsOpenAtom = atom(false);
 

@@ -1,6 +1,5 @@
-import { SwapConfig } from '@/modules/swap/types';
+import { AppPageSection } from '@/modules/wizard/types/section';
 import { Token } from './blockchain';
-import { AssetStoreOptions } from './nft';
 
 export type VideoEmbedType = 'youtube' | 'vimeo';
 
@@ -38,67 +37,7 @@ export type SectionItem = AssetItemType | CollectionItemType;
 
 export type PageSectionVariant = 'dark' | 'light';
 
-export interface PageSection {
-  variant?: PageSectionVariant;
-  hideMobile?: boolean;
-  hideDesktop?: boolean;
-}
 
-export interface CallToActionAppPageSection extends PageSection {
-  type: 'call-to-action';
-  title: string;
-  subtitle: string;
-  button: {
-    title: string;
-    url: string;
-  };
-  items: SectionItem[];
-}
-
-export interface VideoEmbedAppPageSection extends PageSection {
-  type: 'video';
-  title: string;
-  embedType: VideoEmbedType;
-  videoUrl: string;
-}
-
-export interface FeaturedAppPageSection extends PageSection {
-  type: 'featured';
-  title: string;
-  items: SectionItem[];
-}
-
-export interface CollectionAppPageSection extends PageSection {
-  type: 'collections';
-  title: string;
-  items: SectionItem[];
-}
-
-export interface SwapPageSection extends PageSection {
-  type: 'swap';
-  title?: string;
-  config?: SwapConfig;
-}
-
-export interface AssetStorePageSection extends PageSection {
-  type: 'asset-store';
-  title?: string;
-  config?: AssetStoreOptions;
-}
-
-export interface CustomEditorSection extends PageSection {
-  type: 'custom';
-  title?: string;
-  data: string | null | undefined;
-}
-
-export type AppPageSection =
-  | CallToActionAppPageSection
-  | VideoEmbedAppPageSection
-  | FeaturedAppPageSection
-  | CollectionAppPageSection
-  | CustomEditorSection
-  | SwapPageSection | AssetStorePageSection;
 
 export interface AppPageOptions {
   key?: string;

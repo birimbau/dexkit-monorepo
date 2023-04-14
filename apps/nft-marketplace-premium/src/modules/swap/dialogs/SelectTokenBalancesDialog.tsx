@@ -1,3 +1,4 @@
+import { ChainId } from '@dexkit/core/constants';
 import {
   Avatar,
   Dialog,
@@ -18,7 +19,7 @@ import { useWeb3React } from '@web3-react/core';
 import { memo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { AppDialogTitle } from '../../../components/AppDialogTitle';
-import { ChainId } from '../../../constants/enum';
+
 import { useERC20BalancesProxyAllowancesQuery } from '../../../hooks/balances';
 import { useTokenList } from '../../../hooks/blockchain';
 import { Token, TokenBalance } from '../../../types/blockchain';

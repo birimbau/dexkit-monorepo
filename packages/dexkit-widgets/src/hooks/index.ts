@@ -1,29 +1,44 @@
-import { useWeb3React, Web3ReactHooks } from "@web3-react/core";
+import { useWeb3React } from "@web3-react/core";
 
-import { CONNECTORS, MagicLoginType } from "@dexkit/core/constants";
-import { ChainId } from "@dexkit/core/constants/enums";
+import { ChainId, TransactionStatus, TransactionType } from "@dexkit/core/constants/enums";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { Connector } from "@web3-react/types";
+
 import { BigNumber, ethers, providers } from "ethers";
-import { useAtom, useAtomValue } from "jotai";
+import { useAtom } from "jotai";
 import { useUpdateAtom } from "jotai/utils";
 import { useSnackbar } from "notistack";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useIntl } from "react-intl";
-import {
-  currencyAtom,
-  recentTokensAtom,
-  showTransactionsAtom,
-  transactionsAtom,
-  walletConnectorAtom
-} from "../components/atoms";
 import { WRAPED_TOKEN_ADDRESS } from "../constants";
 import { ERC20Abi, WETHAbi } from "../constants/abis";
 import { getPricesByChain, getTokensBalance } from "../services";
 import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "../services/zeroex/constants";
-import { Token, Transaction } from "../types";
+import { Token } from "../types";
 import { isAddressEqual, tokenKey } from "../utils";
 import { NotificationCallbackParams } from "../widgets/swap/types";
+
+import { TransactionMetadata } from "@dexkit/core/types";
+import {
+  isConnectWalletOpenAtom,
+  recentTokensAtom,
+  transactionDialogErrorAtom,
+  transactionDialogHashAtom,
+  transactionDialogMetadataAtom,
+  transactionDialogOpenAtom,
+  transactionDialogRedirectUrlAtom,
+  transactionsAtom,
+  transactionTypeAtom,
+  transactionValuesAtom
+} from '../state/atoms';
+
+export function useConnectWalletDialog() {
+  const [isOpen, setOpen] = useAtom(isConnectWalletOpenAtom);
+
+  return {
+    isOpen,
+    setOpen,
+  };
+}
 
 export function useBlockNumber() {
   const { provider } = useWeb3React();
@@ -45,89 +60,6 @@ export function useBlockNumber() {
   }, [provider]);
 
   return blockNumber;
-}
-
-export function useTransactions() {
-  const [isOpen, setOpen] = useAtom(showTransactionsAtom);
-
-  const updateTransactions = useUpdateAtom(transactionsAtom);
-
-  const addTransaction = useCallback(
-    ({ transaction }: { transaction: Transaction }) => {
-      if (transaction) {
-        updateTransactions((txs: { [key: string]: Transaction }) => {
-          const copyTxs = { ...txs };
-
-          copyTxs[transaction.hash] = transaction;
-
-          return copyTxs;
-        });
-      }
-    },
-    [updateTransactions]
-  );
-
-  return { isOpen, setOpen, addTransaction };
-}
-
-export function useOrderedConnectors() {
-  const selectedWallet = useAtomValue(walletConnectorAtom);
-
-  return useMemo(() => {
-    let connectors: [Connector, Web3ReactHooks][] = [];
-
-    if (selectedWallet) {
-      const otherConnectors = Object.keys(CONNECTORS)
-        .filter((key) => selectedWallet !== key)
-        .map((key) => CONNECTORS[key]);
-
-      connectors = [CONNECTORS[selectedWallet], ...otherConnectors];
-    } else {
-      const otherConnectors = Object.keys(CONNECTORS).map(
-        (key) => CONNECTORS[key]
-      );
-
-      connectors = otherConnectors;
-    }
-
-    return connectors;
-  }, [selectedWallet]);
-}
-
-export function useWalletActivate() {
-  const { connector } = useWeb3React();
-
-  const setWalletConnector = useUpdateAtom(walletConnectorAtom);
-
-  return useMutation(
-    async ({
-      connectorName,
-      loginType,
-      email,
-    }: {
-      connectorName: string;
-      loginType?: MagicLoginType;
-      email?: string;
-    }) => {
-      if (connector.deactivate) {
-        await connector.deactivate();
-      }
-      if (connectorName === "metamask") {
-        setWalletConnector("metamask");
-        return await connector.activate();
-      } else if (connectorName === "magic") {
-        // setWalletConnector("magic");
-        // return await magic.activate({
-        //   loginType,
-        //   email,
-        // });
-      }
-    }
-  );
-}
-
-export function useCurrency() {
-  return useAtomValue(currencyAtom);
 }
 
 export function useDebounce<T>(value: any, delay: number) {
@@ -208,15 +140,6 @@ export function useWrapToken({
 
       const tx = await contract.deposit({ value: amount });
 
-      // onNotification({
-      //   chainId,
-      //   title: formatMessage(
-      //     { id: "wrap.symbol", defaultMessage: "Wrap {symbol}" },
-      //     { symbol: NETWORKS[chainId].symbol }
-      //   ),
-      //   hash: tx.hash,
-      //   params: {},
-      // });
 
       onHash(tx.hash);
 
@@ -248,16 +171,6 @@ export function useWrapToken({
       );
 
       const tx = await contract.withdraw(amount);
-
-      // onNotification({
-      //   chainId,
-      //   title: formatMessage(
-      //     { id: "wrap.symbol", defaultMessage: "Unwrap {symbol}" },
-      //     { symbol: NETWORKS[chainId].symbol }
-      //   ),
-      //   hash: tx.hash,
-      // });
-
       onHash(tx.hash);
 
       return (await tx.wait()) as ethers.providers.TransactionReceipt;
@@ -376,6 +289,129 @@ export function useCoinPrices({
   });
 }
 
+
+
+export const GAS_PRICE_QUERY = "";
+
+export function useGasPrice({
+  provider,
+}: {
+  provider?: ethers.providers.BaseProvider;
+}) {
+  return useQuery(
+    [GAS_PRICE_QUERY],
+    async () => {
+      if (provider) {
+        return await provider.getGasPrice();
+      }
+
+      return BigNumber.from(0);
+    },
+    { refetchInterval: 20000 }
+  );
+}
+
+
+export function useTransactionDialog() {
+  const updateTransactions = useUpdateAtom(transactionsAtom);
+
+  const [isOpen, setDialogIsOpen] = useAtom(transactionDialogOpenAtom);
+  const [hash, setHash] = useAtom(transactionDialogHashAtom);
+  const [error, setError] = useAtom(transactionDialogErrorAtom);
+  const [metadata, setMetadata] = useAtom(transactionDialogMetadataAtom);
+  const [type, setType] = useAtom(transactionTypeAtom);
+
+  const [values, setValues] = useAtom(transactionValuesAtom);
+
+  const [redirectUrl, setRedirectUrl] = useAtom(
+    transactionDialogRedirectUrlAtom
+  );
+
+  const { chainId } = useWeb3React();
+
+  const watch = useCallback((hash: string) => {
+    setHash(hash);
+  }, []);
+
+  const open = useCallback((type: string, values: Record<string, any>) => {
+    setDialogIsOpen(true);
+    setValues(values);
+    setType(type);
+  }, []);
+
+  const close = useCallback(() => {
+    setDialogIsOpen(false);
+    setType(undefined);
+    setValues(undefined);
+  }, []);
+
+  const showDialog = useCallback(
+    (open: boolean, metadata?: TransactionMetadata, type?: TransactionType) => {
+      setDialogIsOpen(open);
+      setMetadata(metadata);
+
+      if (!open) {
+        setHash(undefined);
+        setMetadata(undefined);
+        setType(undefined);
+      }
+    },
+    []
+  );
+
+  const setDialogError = useCallback(
+    (error?: Error) => {
+      if (isOpen) {
+        setError(error);
+      }
+    },
+    [setError, isOpen]
+  );
+
+  const addTransaction = useCallback(
+    (hash: string, type: TransactionType, metadata?: TransactionMetadata) => {
+      if (chainId !== undefined) {
+        setHash(hash);
+
+        updateTransactions((txs) => ({
+          ...txs,
+          [hash]: {
+            chainId,
+            created: new Date().getTime(),
+            status: TransactionStatus.Pending,
+            type,
+            metadata,
+            checked: false,
+          },
+        }));
+      }
+    },
+    [chainId]
+  );
+
+  return {
+    values,
+    open,
+    close,
+    redirectUrl,
+    setRedirectUrl,
+    error,
+    hash,
+    metadata,
+    type,
+    setHash,
+    isOpen,
+    setDialogIsOpen,
+    setError,
+    setMetadata,
+    setType,
+    showDialog,
+    setDialogError,
+    addTransaction,
+    watch,
+  };
+}
+
 export function useRecentTokens() {
   const [recentTokens, setRecentTokens] = useAtom(recentTokensAtom);
 
@@ -426,24 +462,4 @@ export function useRecentTokens() {
     add,
     clear,
   };
-}
-
-export const GAS_PRICE_QUERY = "";
-
-export function useGasPrice({
-  provider,
-}: {
-  provider?: ethers.providers.BaseProvider;
-}) {
-  return useQuery(
-    [GAS_PRICE_QUERY],
-    async () => {
-      if (provider) {
-        return await provider.getGasPrice();
-      }
-
-      return BigNumber.from(0);
-    },
-    { refetchInterval: 20000 }
-  );
 }

@@ -1,4 +1,5 @@
-import { ChainId } from "../../src/constants/enum";
+
+import { ChainId } from "@dexkit/core/constants";
 import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "../../src/services/zeroex/constants";
 import { Token } from "../../src/types";
 

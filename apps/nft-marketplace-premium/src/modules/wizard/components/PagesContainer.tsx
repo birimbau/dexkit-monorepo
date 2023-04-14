@@ -1,7 +1,8 @@
 import dynamic from 'next/dynamic';
 import { Dispatch, SetStateAction, useCallback, useState } from 'react';
-import { AppPage, AppPageOptions, AppPageSection } from '../../../types/config';
+import { AppPage, AppPageOptions } from '../../../types/config';
 import { BuilderKit } from '../constants';
+import { AppPageSection } from '../types/section';
 import PagesSection from './sections/PagesSection';
 
 const ConfirmRemoveSectionDialog = dynamic(

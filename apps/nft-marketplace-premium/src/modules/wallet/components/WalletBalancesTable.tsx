@@ -1,3 +1,4 @@
+import { ChainId } from '@dexkit/core/constants';
 import {
   Skeleton,
   Table,
@@ -7,15 +8,8 @@ import {
   TableHead,
   TableRow,
 } from '@mui/material';
-import Button from '@mui/material/Button';
-import Paper from '@mui/material/Paper';
-import Stack from '@mui/material/Stack';
-import Typography from '@mui/material/Typography';
-import { Suspense, useMemo } from 'react';
-import { ErrorBoundary } from 'react-error-boundary';
+import { useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { QueryErrorResetBoundary } from '@tanstack/react-query';
-import { ChainId } from '../../../constants/enum';
 import { useERC20BalancesQuery } from '../../../hooks/balances';
 import { useCoinPricesQuery, useCurrency } from '../../../hooks/currency';
 import { useIsBalanceVisible } from '../../../hooks/misc';
@@ -24,10 +18,12 @@ import WalletTableRow from './WalletTableRow';
 interface Props {
   isBalancesVisible: boolean;
   chainId?: ChainId;
+  filter?: string;
 }
 
-function WalletBalancesTable({ isBalancesVisible, chainId }: Props) {
-  const tokenBalancesQuery = useERC20BalancesQuery(undefined, chainId);
+function WalletBalancesTable({ isBalancesVisible, chainId, filter }: Props) {
+  const tokenBalancesQuery = useERC20BalancesQuery(undefined, chainId, false);
+
   const coinPricesQuery = useCoinPricesQuery({
     includeNative: true,
     chainId,
@@ -47,6 +43,20 @@ function WalletBalancesTable({ isBalancesVisible, chainId }: Props) {
     });
   }, [prices, tokenBalancesQuery.data, currency]);
 
+  const tokenBalancesWithPricesFiltered = useMemo(() => {
+    if (filter) {
+      const lowercasedFilter = filter.toLowerCase();
+      return tokenBalancesWithPrices?.filter(
+        (t) =>
+          t?.token?.name?.toLowerCase().search(lowercasedFilter) !== -1 ||
+          t?.token?.symbol?.toLowerCase().search(lowercasedFilter) !== -1 ||
+          t?.token?.address?.toLowerCase().search(lowercasedFilter) !== -1
+      );
+    }
+
+    return tokenBalancesWithPrices;
+  }, [tokenBalancesWithPrices, filter]);
+
   return (
     <TableContainer>
       <Table>
@@ -64,15 +74,30 @@ function WalletBalancesTable({ isBalancesVisible, chainId }: Props) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {tokenBalancesWithPrices?.map((token, index: number) => (
+          {tokenBalancesWithPricesFiltered?.map((token, index: number) => (
             <WalletTableRow
               key={index}
+              isLoadingCurrency={coinPricesQuery.isLoading}
               tokenBalance={token}
               price={token.price}
               isBalancesVisible={isBalancesVisible}
               currency={currency}
             />
           ))}
+          {tokenBalancesQuery.isLoading &&
+            new Array(4).fill(null).map((_, index) => (
+              <TableRow key={index}>
+                <TableCell>
+                  <Skeleton />
+                </TableCell>
+                <TableCell>
+                  <Skeleton />
+                </TableCell>
+                <TableCell>
+                  <Skeleton />
+                </TableCell>
+              </TableRow>
+            ))}
         </TableBody>
       </Table>
     </TableContainer>
@@ -103,9 +128,10 @@ function WalletTableSkeleton({ rows = 4 }: { rows: number }) {
 
 interface WalletProps {
   chainId?: ChainId;
+  filter?: string;
 }
 
-function WalletBalances({ chainId }: WalletProps) {
+/*function WalletBalances({ chainId }: WalletProps) {
   const isBalancesVisible = useIsBalanceVisible();
 
   return (
@@ -146,6 +172,17 @@ function WalletBalances({ chainId }: WalletProps) {
         </ErrorBoundary>
       )}
     </QueryErrorResetBoundary>
+  );
+}*/
+function WalletBalances({ chainId, filter }: WalletProps) {
+  const isBalancesVisible = useIsBalanceVisible();
+
+  return (
+    <WalletBalancesTable
+      isBalancesVisible={isBalancesVisible}
+      chainId={chainId}
+      filter={filter}
+    />
   );
 }
 

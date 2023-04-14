@@ -50,7 +50,14 @@ export function Footer({ appConfig, isPreview, appNFT }: Props) {
   }, [appNFT, appConfig]);
 
   return (
-    <Box py={2} sx={{ bgcolor: (theme) => theme.palette.background.paper }}>
+    <Box
+      py={2}
+      sx={{
+        bgcolor: (theme) => theme.palette.background.paper,
+        minHeight: '50px',
+        width: '100%',
+      }}
+    >
       <Container>
         <Grid
           container

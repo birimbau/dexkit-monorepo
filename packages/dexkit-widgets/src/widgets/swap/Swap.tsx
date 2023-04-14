@@ -26,8 +26,8 @@ import { CreditCard } from "@mui/icons-material";
 import SettingsIcon from "@mui/icons-material/Settings";
 import WalletIcon from "@mui/icons-material/Wallet";
 import { AppNotificationsBadge } from "../../components/AppNotificationBadge";
-import TransakIcon from "../../components/icons/TransakIcon";
 import SwitchNetworkSelect from "../../components/SwitchNetworkSelect";
+import TransakIcon from "../../components/icons/TransakIcon";
 import { ZeroExQuoteResponse } from "../../services/zeroex/types";
 import SwapFeeSummary from "./SwapFeeSummary";
 
@@ -229,6 +229,7 @@ export default function Swap({
               value={sellAmount}
               balance={sellTokenBalance}
               showBalance={isActive}
+              isUserInput={quoteFor === "sell"}
               disabled={isQuoting && quoteFor === "buy"}
             />
             <Stack alignItems="center">
@@ -251,6 +252,7 @@ export default function Swap({
               value={buyAmount}
               balance={buyTokenBalance}
               showBalance={isActive}
+              isUserInput={quoteFor === "buy"}
               disabled={isQuoting && quoteFor === "sell"}
             />
           </Stack>

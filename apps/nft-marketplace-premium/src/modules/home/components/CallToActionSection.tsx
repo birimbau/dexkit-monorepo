@@ -1,6 +1,7 @@
+import { CallToActionAppPageSection } from '@/modules/wizard/types/section';
 import { Box, Button, Container, Grid, Typography } from '@mui/material';
 import Link from '../../../components/Link';
-import { CallToActionAppPageSection } from '../../../types/config';
+
 import AssetFromApi from '../../nft/components/AssetFromApi';
 import { CollectionFromApiCard } from '../../nft/components/CollectionFromApi';
 

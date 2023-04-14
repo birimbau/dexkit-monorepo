@@ -1,10 +1,11 @@
+import { CollectionAppPageSection } from '@/modules/wizard/types/section';
 import { Button, Grid } from '@mui/material';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import { FormattedMessage } from 'react-intl';
 import Link from '../../../components/Link';
-import { CollectionAppPageSection } from '../../../types/config';
+
 import { CollectionFromApiCard } from '../../nft/components/CollectionFromApi';
 
 interface Props {

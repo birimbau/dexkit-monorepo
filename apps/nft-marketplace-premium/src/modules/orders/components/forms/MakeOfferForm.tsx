@@ -92,7 +92,7 @@ export default function MakeOfferForm({ onConfirm, asset, disabled }: Props) {
       values.expiry || null
     );
 
-    formikHelpers.resetForm();
+    //   formikHelpers.resetForm();
   };
 
   const form = useFormik<Form>({

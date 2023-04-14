@@ -27,7 +27,7 @@ interface Props {
 function SelectLanguageDialog({ dialogProps }: Props) {
   const { onClose } = dialogProps;
 
-  const { locale, setLocale } = useLocale();
+  const { locale, onChangeLocale } = useLocale();
 
   const [localeUser, setLocaleUser] = useAtom(localeUserAtom);
 
@@ -44,7 +44,7 @@ function SelectLanguageDialog({ dialogProps }: Props) {
   };
 
   const handleConfirmSelect = () => {
-    setLocale(selectedLocale);
+    onChangeLocale(selectedLocale);
     setLocaleUser(selectedLocale);
     handleClose();
   };

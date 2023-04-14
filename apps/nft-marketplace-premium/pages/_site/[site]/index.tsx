@@ -9,9 +9,9 @@ import MainLayout from '../../../src/components/layouts/main';
 
 import { dehydrate, QueryClient } from '@tanstack/react-query';
 import { getAppConfig } from '../../../src/services/app';
-import { AppPageSection } from '../../../src/types/config';
 
 import { SectionsRenderer } from '@/modules/wizard/components/sections/SectionsRenderer';
+import { AppPageSection } from '@/modules/wizard/types/section';
 import { GET_ASSETS_ORDERBOOK } from 'src/hooks/nft';
 import { getDKAssetOrderbook } from 'src/services/nft';
 
@@ -32,7 +32,8 @@ export const getStaticProps: GetStaticProps = async ({
   params,
 }: GetStaticPropsContext<Params>) => {
   const queryClient = new QueryClient();
-  const { appConfig, appNFT } = await getAppConfig(params?.site, 'home');
+  const configResponse = await getAppConfig(params?.site, 'home');
+  const { appConfig } = configResponse;
   const homePage = appConfig.pages.home;
   for (let section of homePage.sections) {
     if (section.type === 'asset-store') {
@@ -87,8 +88,7 @@ export const getStaticProps: GetStaticProps = async ({
     props: {
       dehydratedState: dehydrate(queryClient),
       sections: homePage.sections,
-      appConfig,
-      appNFT,
+      ...configResponse,
     },
     revalidate: 300,
   };

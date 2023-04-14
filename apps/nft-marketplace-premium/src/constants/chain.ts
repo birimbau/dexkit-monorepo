@@ -1,6 +1,8 @@
 import { Network } from '../types/chains';
-import { ChainId } from './enum';
 
+
+
+import { ChainId } from '@dexkit/core/constants/enums';
 import arbitrumIcon from '../../public/assets/images/icons/arbitrum.png';
 import avaxIcon from '../../public/assets/images/icons/avax.png';
 import bscIcon from '../../public/assets/images/icons/bnb.svg';
@@ -13,8 +15,8 @@ const alchemyKey =
   process.env.NEXT_PUBLIC_ALCHEMY_API_KEY || process.env.ALCHEMY_API_KEY;
 
 export const NETWORKS: { [key: number]: Network } = {
-  [ChainId.ETH]: {
-    chainId: ChainId.ETH,
+  [ChainId.Ethereum]: {
+    chainId: ChainId.Ethereum,
     symbol: 'ETH',
     explorerUrl: 'https://etherscan.io',
     name: 'Ethereum',
@@ -79,8 +81,8 @@ export const NETWORKS: { [key: number]: Network } = {
       symbol: 'BNB',
     },
   },
-  [ChainId.AVAX]: {
-    chainId: ChainId.AVAX,
+  [ChainId.Avax]: {
+    chainId: ChainId.Avax,
     symbol: 'AVAX',
     explorerUrl: 'https://snowtrace.io',
     name: 'Avalanche',
@@ -90,8 +92,8 @@ export const NETWORKS: { [key: number]: Network } = {
     imageUrl: avaxIcon.src,
     providerRpcUrl: 'https://api.avax.network/ext/bc/C/rpc',
   },
-  [ChainId.FANTOM]: {
-    chainId: ChainId.FANTOM,
+  [ChainId.Fantom]: {
+    chainId: ChainId.Fantom,
     symbol: 'FTM',
     explorerUrl: 'https://ftmscan.com',
     name: 'Fantom',

@@ -1,4 +1,5 @@
 import SwapSection from '@/modules/home/components/SwapSection';
+import { SwapPageSection } from '@/modules/wizard/types/section';
 import { NoSsr } from '@mui/material';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
@@ -10,7 +11,6 @@ import MainLayout from 'src/components/layouts/main';
 import { PageHeader } from 'src/components/PageHeader';
 import { useAppConfig } from 'src/hooks/app';
 import { getAppConfig } from 'src/services/app';
-import { SwapPageSection } from 'src/types/config';
 
 const SwapPage: NextPage = () => {
   const { formatMessage } = useIntl();
@@ -78,10 +78,12 @@ type Params = {
 export const getStaticProps: GetStaticProps = async ({
   params,
 }: GetStaticPropsContext<Params>) => {
-  const { appConfig, appNFT } = await getAppConfig(params?.site, 'home');
+  const configResponse = await getAppConfig(params?.site, 'home');
 
   return {
-    props: { appConfig, appNFT },
+    props: {
+      ...configResponse,
+    },
   };
 };
 

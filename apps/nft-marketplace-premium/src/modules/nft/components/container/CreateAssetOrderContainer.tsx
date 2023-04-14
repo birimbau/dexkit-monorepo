@@ -6,6 +6,7 @@ const OrderCreatedDialog = dynamic(
 );
 import MakeListingForm from '@/modules/orders/components/forms/MakeListingForm';
 import MakeOfferForm from '@/modules/orders/components/forms/MakeOfferForm';
+import { useDexKitContext } from '@dexkit/ui';
 import ImportExportIcon from '@mui/icons-material/ImportExport';
 import Launch from '@mui/icons-material/Launch';
 import {
@@ -36,7 +37,7 @@ import Image from 'next/image';
 import { useCallback, useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import Link from 'src/components/Link';
-import { useSignMessageDialog, useTransactions } from 'src/hooks/app';
+import { useSignMessageDialog } from 'src/hooks/app';
 import {
   useAccountAssetsBalance,
   useApproveAssetMutation,
@@ -45,15 +46,7 @@ import {
   useMakeOfferMutation,
   useSwapSdkV4,
 } from 'src/hooks/nft';
-import {
-  getERC20Decimals,
-  getERC20Name,
-  getERC20Symbol,
-} from 'src/services/balances';
-import {
-  ApproveTransactionMetadata,
-  TransactionType,
-} from 'src/types/blockchain';
+import { getERC20Name, getERC20Symbol } from 'src/services/balances';
 import { Asset } from 'src/types/nft';
 import {
   getBlockExplorerUrl,
@@ -85,7 +78,7 @@ export const CreateAssetOrderContainer = () => {
 
   const signMessageDialog = useSignMessageDialog();
 
-  const transactions = useTransactions();
+  const { createNotification, watchTransactionDialog } = useDexKitContext();
 
   const { formatMessage } = useIntl();
 
@@ -123,26 +116,37 @@ export const CreateAssetOrderContainer = () => {
     async (hash: string, swapAsset: SwappableAssetV4) => {
       if (asset !== null) {
         if (swapAsset.type === 'ERC721') {
-          transactions.addTransaction(hash, TransactionType.APPROVAL_FOR_ALL, {
-            asset,
+          createNotification({
+            type: 'transaction',
+            subtype: 'approveForAll',
+            values: {
+              name: asset.collectionName,
+              tokenId: asset.id,
+            },
+            metadata: {
+              chainId,
+              hash,
+            },
           });
         } else if (swapAsset.type === 'ERC20') {
-          const decimals = await getERC20Decimals(
-            swapAsset.tokenAddress,
-            provider
-          );
-
-          const symbol = await getERC20Symbol(swapAsset.tokenAddress, provider);
-
-          transactions.addTransaction(hash, TransactionType.APPROVE, {
-            amount: swapAsset.amount,
-            symbol,
-            decimals,
+          createNotification({
+            type: 'transaction',
+            subtype: 'approve',
+            values: {
+              name: asset.collectionName,
+              tokenId: asset.id,
+            },
+            metadata: {
+              chainId,
+              hash,
+            },
           });
         }
+
+        watchTransactionDialog.watch(hash);
       }
     },
-    [transactions, asset]
+    [watchTransactionDialog, asset, chainId]
   );
 
   const handleApproveAssetMutate = useCallback(
@@ -152,18 +156,13 @@ export const CreateAssetOrderContainer = () => {
           variable.asset.type === 'ERC721' ||
           variable.asset.type === 'ERC1155'
         ) {
-          transactions.showDialog(
-            true,
-            { asset: asset },
-            TransactionType.APPROVAL_FOR_ALL
-          );
-        } else {
-          const amount = variable.asset.amount;
+          const values = {
+            name: asset.collectionName,
+            tokenId: asset.id,
+          };
 
-          const decimals = await getERC20Decimals(
-            variable.asset.tokenAddress,
-            provider
-          );
+          watchTransactionDialog.open('approveForAll', values);
+        } else {
           const symbol = await getERC20Symbol(
             variable.asset.tokenAddress,
             provider
@@ -174,22 +173,23 @@ export const CreateAssetOrderContainer = () => {
             provider
           );
 
-          transactions.showDialog(
-            true,
-            { amount, decimals, symbol, name } as ApproveTransactionMetadata,
-            TransactionType.APPROVE
-          );
+          const values = {
+            name,
+            symbol,
+          };
+
+          watchTransactionDialog.open('approve', values);
         }
       }
     },
-    [transactions, asset]
+    [watchTransactionDialog, asset]
   );
 
   const handleApproveAssetError = useCallback(
     (error: any) => {
-      transactions.setDialogError(error);
+      watchTransactionDialog.setDialogError(error);
     },
-    [transactions]
+    [watchTransactionDialog]
   );
 
   const handleSignMessageSuccess = useCallback(
@@ -202,8 +202,19 @@ export const CreateAssetOrderContainer = () => {
       signMessageDialog.setOpen(false);
       setShowOrderCreated(true);
       setOrderCreated(data);
+
+      if (asset) {
+        createNotification({
+          type: 'common',
+          subtype: 'createListing',
+          values: {
+            collectionName: asset.collectionName,
+            id: asset.id,
+          },
+        });
+      }
     },
-    [signMessageDialog]
+    [signMessageDialog, asset]
   );
 
   const approveAsset = useApproveAssetMutation(

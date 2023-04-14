@@ -1,3 +1,4 @@
+import { SwapPageSection } from '@/modules/wizard/types/section';
 import { ChainId } from '@dexkit/core';
 import { SwapWidget } from '@dexkit/widgets';
 import { Container } from '@mui/material';
@@ -6,7 +7,6 @@ import { useWeb3React } from '@web3-react/core';
 import { useSwapState } from 'src/hooks/swap';
 
 import { useCurrency } from '../../../hooks/currency';
-import { SwapPageSection } from '../../../types/config';
 
 interface Props {
   section: SwapPageSection;
@@ -19,7 +19,7 @@ export function SwapSection({ section }: Props) {
 
   return (
     <Box py={4}>
-      <Container maxWidth={'xs'}>
+      <Container maxWidth={'xs'} disableGutters>
         <SwapWidget
           {...swapState}
           renderOptions={{

@@ -1,11 +1,16 @@
 import { Web3ReactHooks } from "@web3-react/core";
 import { Connector } from "@web3-react/types";
-import { magic, magicHooks } from "./connectors/magic";
 import { metaMask, metaMaskHooks } from "./connectors/metamask";
 import { walletConnect, walletConnectHooks } from "./connectors/walletConnect";
 import { ChainId } from "./enums";
 
-export type MagicLoginType = "email" | "google" | "twitter";
+import { ethers } from "ethers";
+import { isAddress } from "ethers/lib/utils";
+import { Token } from "../types";
+import { isAddressEqual } from "../utils";
+import { magic, magicHooks } from "./connectors/magic";
+import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "./zrx";
+
 
 export const CONNECTORS: { [key: string]: [Connector, Web3ReactHooks] } = {
   metamask: [metaMask, metaMaskHooks],
@@ -30,12 +35,6 @@ export const COINGECKO_PLATFORM_ID: { [key: number]: string } = {
   [ChainId.Fantom]: "fantom",
   [ChainId.Optimism]: "optimistic-ethereum",
 };
-
-import { ethers } from "ethers";
-import { isAddress } from "ethers/lib/utils";
-import { Token } from "../types";
-import { isAddressEqual } from "../utils";
-import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "./zrx";
 
 export const WRAPED_TOKEN_ADDRESS: { [key: number]: string } = {
   [ChainId.Goerli]: "0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6",
@@ -173,3 +172,5 @@ export const NATIVE_TOKENS: { [key: number]: Token } = {
 export function GET_NATIVE_TOKEN(chainId: ChainId) {
   return NATIVE_TOKENS[chainId];
 }
+
+export const IPFS_GATEWAY = 'https://gateway.pinata.cloud/ipfs/';

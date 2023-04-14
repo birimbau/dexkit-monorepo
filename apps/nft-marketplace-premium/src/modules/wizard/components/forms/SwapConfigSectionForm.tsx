@@ -1,7 +1,8 @@
 import { Button, Grid, Stack } from '@mui/material';
 import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { AppPageSection, SwapPageSection } from 'src/types/config';
+import { AppPageSection, SwapPageSection } from '../../types/section';
+
 import { SwapConfigForm } from './SwapConfigForm';
 
 interface Props {

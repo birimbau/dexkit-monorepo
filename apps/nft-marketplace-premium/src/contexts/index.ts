@@ -4,7 +4,7 @@ import { AppConfig } from '../types/config';
 import { AssetAPI } from 'src/types/nft';
 import defaultAppConfig from '../../config/app.json';
 
-export const AppConfigContext = React.createContext<{ appConfig: AppConfig, appNFT?: AssetAPI }>({
+export const AppConfigContext = React.createContext<{ appConfig: AppConfig, appNFT?: AssetAPI, siteId?: number }>({
   appConfig: defaultAppConfig as AppConfig
 }
 );
@@ -19,14 +19,22 @@ export const AppWizardConfigContext = React.createContext<IAppWizardConfigContex
     defaultAppConfig as AppConfig
 });
 
+export interface AuthUser {
+  address?: string
+}
+
 interface IAuthContext {
   isLoggedIn: boolean;
+  user?: AuthUser
   setIsLoggedIn?: Dispatch<SetStateAction<boolean>>
+  setUser?: Dispatch<SetStateAction<AuthUser | undefined>>
 }
 
 const AUTH_INITIAL_VALUES = {
   isLoggedIn: false,
-  setIsLoggedIn: undefined
+  setIsLoggedIn: undefined,
+  user: undefined,
+  setUser: undefined
 }
 
 

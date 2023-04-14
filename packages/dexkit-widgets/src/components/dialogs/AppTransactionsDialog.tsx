@@ -14,10 +14,10 @@ import { useWeb3React } from "@web3-react/core";
 import { useAtom, useAtomValue } from "jotai";
 import { useMemo } from "react";
 import { FormattedMessage } from "react-intl";
+import { transactionsAtom, uncheckedTransactionsAtom } from "../../state/atoms";
 import { Transaction } from "../../types";
 import AppDialogTitle from "../AppDialogTitle";
 import AppTransactionList from "../AppTransactionList";
-import { transactionsAtom, uncheckedTransactionsAtom } from "../atoms";
 
 interface AppTransactionsDialogProps {
   DialogProps: DialogProps;

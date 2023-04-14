@@ -8,11 +8,12 @@ export const config = {
     '/order/:path*',
     '/collection/:path*',
     '/wallet/:path*',
-    '/404/:path*'
+    '/404/:path*',
+    '/u/:path*'
   ],
 };
 
-const basePaths = ['/asset', '/collection', '/order', '/swap', '/collections', '/wallet', '/404'];
+const basePaths = ['/asset', '/collection', '/order', '/swap', '/collections', '/wallet', '/404', '/u'];
 
 function isBasePath(path: string) {
   let isPath = false;
@@ -48,7 +49,7 @@ export default function middleware(req: NextRequest) {
     return NextResponse.rewrite(url);
   }
 
-  if (hostname === 'whitelabel-nft.dexkit.com') {
+  if (hostname === 'whitelabel-nft.dexkit.com' || hostname === 'dexappbuilder.dexkit.com' || hostname === 'dexappbuilder-dev.dexkit.com') {
     // we pass here the search param to be used on get config
     const search = url.searchParams.get('mid');
     if (search) {

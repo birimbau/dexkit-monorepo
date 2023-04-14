@@ -47,21 +47,6 @@ export const enum NETWORK_ID {
   Arbitrum = 'arbitrum'
 }
 
-export enum ChainId {
-  ETH = 1,
-  Ropsten = 3,
-  BSC = 56,
-  Polygon = 137,
-  AVAX = 43114,
-  FANTOM = 250,
-  Rinkeby = 4,
-  Goerli = 5,
-  Mumbai = 80001,
-  Arbitrum = 42161,
-  Optimism = 10,
-  CELO = 42220,
-}
-
 export enum NFTType {
   ERC1155 = 'ERC1155',
   ERC721 = 'ERC721',

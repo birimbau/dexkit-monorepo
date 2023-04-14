@@ -1,6 +1,6 @@
 import { Box, Paper, Stack, Typography } from '@mui/material';
 import { FormattedMessage } from 'react-intl';
-import { AppPageSection } from '../../../../types/config';
+import { AppPageSection } from '../../types/section';
 import PreviewPagePlatform from '../PreviewPagePlatform';
 
 interface Props {

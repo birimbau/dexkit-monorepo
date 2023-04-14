@@ -1,5 +1,7 @@
 import {
   Avatar,
+  Box,
+  Button,
   CircularProgress,
   Dialog,
   DialogContent,
@@ -11,6 +13,7 @@ import {
   ListItemButton,
   ListItemText,
   Stack,
+  TextField,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
@@ -21,14 +24,13 @@ import { FormattedMessage, useIntl } from "react-intl";
 
 import { WALLET_CONNECTORS } from "@dexkit/core/connectors";
 
-import { MagicLoginType } from "@dexkit/core/constants";
-
 import { useSnackbar } from "notistack";
 
 import { AppDialogTitle } from "./AppDialogTitle";
 
 import { WalletActivateParams } from "@dexkit/core/types";
 
+import { MagicLoginType } from "@dexkit/core/types/magic";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import Wallet from "@mui/icons-material/Wallet";
 
@@ -41,7 +43,7 @@ export interface ConnectWalletDialogProps {
   magicRedirectUrl?: string;
 }
 
-export function ConnectWalletDialog({
+export default function ConnectWalletDialog({
   DialogProps: dialogProps,
   activate,
   isActivating,
@@ -55,7 +57,9 @@ export function ConnectWalletDialog({
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const [connectorName, setConnectorName] = useState<string>();
-  const [loginType, setLoginType] = useState<MagicLoginType>();
+  const [loginType, setLoginType] = useState<MagicLoginType | undefined>(
+    localStorage.getItem("loginType") as MagicLoginType
+  );
 
   const handelClose = () => {
     onClose!({}, "backdropClick");
@@ -89,9 +93,9 @@ export function ConnectWalletDialog({
           horizontal: "right",
         },
       });
+      setConnectorName(undefined);
     }
     handelClose();
-    setConnectorName(undefined);
   };
 
   const [email, setEmail] = useState("");
@@ -146,18 +150,33 @@ export function ConnectWalletDialog({
               </Avatar>
             </ListItemAvatar>
             <ListItemText primary={conn.name} />
-            {isActive && activeConnectorName === conn.id && (
-              <Stack
-                direction="row"
-                justifyContent="center"
-                alignItems="center"
-                alignContent="center"
-              >
-                <FiberManualRecordIcon
-                  sx={{ color: (theme) => theme.palette.success.light }}
-                />
-              </Stack>
-            )}
+            {isActive &&
+              activeConnectorName === conn.id &&
+              (activeConnectorName === "magic" ? (
+                conn.loginType === loginType ? (
+                  <Stack
+                    direction="row"
+                    justifyContent="center"
+                    alignItems="center"
+                    alignContent="center"
+                  >
+                    <FiberManualRecordIcon
+                      sx={{ color: (theme) => theme.palette.success.light }}
+                    />
+                  </Stack>
+                ) : null
+              ) : (
+                <Stack
+                  direction="row"
+                  justifyContent="center"
+                  alignItems="center"
+                  alignContent="center"
+                >
+                  <FiberManualRecordIcon
+                    sx={{ color: (theme) => theme.palette.success.light }}
+                  />
+                </Stack>
+              ))}
           </ListItemButton>
         )}
       </>
@@ -178,7 +197,7 @@ export function ConnectWalletDialog({
       />
       <Divider />
       <DialogContent sx={{ padding: 0 }}>
-        {/* <Box p={2}>
+        <Box p={2}>
           <Stack spacing={2}>
             <TextField
               disabled={
@@ -214,7 +233,7 @@ export function ConnectWalletDialog({
               />
             </Button>
           </Stack>
-        </Box> */}
+        </Box>
         <Divider />
         <List disablePadding>{renderConnectors()}</List>
       </DialogContent>

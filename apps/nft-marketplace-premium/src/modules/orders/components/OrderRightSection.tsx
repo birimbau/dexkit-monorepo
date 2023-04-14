@@ -1,3 +1,4 @@
+import { useDexKitContext } from '@dexkit/ui';
 import {
   Alert,
   Box,
@@ -22,7 +23,7 @@ import AppFeePercentageSpan from '../../../components/AppFeePercentageSpan';
 import Calendar from '../../../components/icons/Calendar';
 import Link from '../../../components/Link';
 import { ZEROEX_NATIVE_TOKEN_ADDRESS } from '../../../constants';
-import { useAppConfig, useTransactions } from '../../../hooks/app';
+import { useAppConfig } from '../../../hooks/app';
 import { useSwitchNetwork, useTokenList } from '../../../hooks/blockchain';
 import { useCoinPricesQuery, useCurrency } from '../../../hooks/currency';
 import {
@@ -33,17 +34,8 @@ import {
   useFillSignedOrderMutation,
   useSwapSdkV4,
 } from '../../../hooks/nft';
-import {
-  getERC20Decimals,
-  getERC20Name,
-  getERC20Symbol,
-} from '../../../services/balances';
-import {
-  AcceptTransactionMetadata,
-  BuyTransactionMetadata,
-  CancelTransactionMetadata,
-  TransactionType,
-} from '../../../types/blockchain';
+import { getERC20Decimals, getERC20Symbol } from '../../../services/balances';
+
 import { OrderBookItem, SwapApiOrder } from '../../../types/nft';
 import {
   getBlockExplorerUrl,
@@ -76,7 +68,7 @@ function OrderRightSection({ order }: Props) {
     return tokens.find((t) => isAddressEqual(t.address, order?.erc20Token));
   }, [tokens, order]);
 
-  const transactions = useTransactions();
+  const { createNotification, watchTransactionDialog } = useDexKitContext();
 
   const nftSwapSdk = useSwapSdkV4(provider, chainId);
 
@@ -119,40 +111,57 @@ function OrderRightSection({ order }: Props) {
   }, [token, coinPricesQuery, currency, order]);
 
   const handleCancelSignedOrderError = useCallback(
-    (error: any) => transactions.setDialogError(error),
-    [transactions]
+    (error: any) => watchTransactionDialog.setDialogError(error),
+    [watchTransactionDialog]
   );
 
   const handleCancelOrderHash = useCallback(
     (hash: string, order: SwapApiOrder) => {
       if (asset !== undefined) {
-        const metadata = { asset, order };
-        transactions.setRedirectUrl(
+        watchTransactionDialog.setRedirectUrl(
           `/asset/${getNetworkSlugFromChainId(asset?.chainId)}/${
             asset?.contractAddress
           }/${asset?.id}`
         );
 
-        transactions.addTransaction(hash, TransactionType.CANCEL, metadata);
+        const values = {
+          collectionName: asset.collectionName,
+          id: asset.id,
+        };
+
+        createNotification({
+          type: 'common',
+          subtype: 'cancelOffer',
+          values,
+          metadata: {
+            hash,
+            chainId,
+          },
+        });
+
+        watchTransactionDialog.watch(hash);
       }
     },
-    [transactions, asset]
+    [watchTransactionDialog, asset, chainId]
   );
 
   const handleCancelSignedOrderMutate = useCallback(
     ({ order }: { order: SwapApiOrder }) => {
       if (asset !== undefined) {
-        const metadata: CancelTransactionMetadata = { asset, order };
+        const values = {
+          collectionName: asset.collectionName,
+          id: asset.id,
+        };
 
-        transactions.showDialog(true, metadata, TransactionType.CANCEL);
+        watchTransactionDialog.open('cancelOffer', values);
       }
     },
-    [transactions]
+    [watchTransactionDialog]
   );
 
   const handleFillSignedOrderError = useCallback(
-    (error: any) => transactions.setDialogError(error),
-    [transactions]
+    (error: any) => watchTransactionDialog.setDialogError(error),
+    [watchTransactionDialog]
   );
 
   const handleMutateSignedOrder = useCallback(
@@ -162,32 +171,21 @@ function OrderRightSection({ order }: Props) {
 
         const symbol = await getERC20Symbol(order.erc20Token, provider);
 
-        if (accept) {
-          const metadata = {
-            asset,
-            order,
-            tokenDecimals: decimals,
-            symbol,
-          } as AcceptTransactionMetadata;
+        const values = {
+          collectionName: asset.collectionName,
+          id: asset.id,
+          amount: ethers.utils.formatUnits(order.erc20TokenAmount, decimals),
+          symbol,
+        };
 
-          return transactions.showDialog(
-            true,
-            metadata,
-            TransactionType.ACCEPT
-          );
+        if (accept) {
+          return watchTransactionDialog.open('acceptOffer', values);
         }
 
-        const metadata = {
-          asset,
-          order,
-          tokenDecimals: decimals,
-          symbol,
-        } as BuyTransactionMetadata;
-
-        transactions.showDialog(true, metadata, TransactionType.BUY);
+        watchTransactionDialog.open('buyNft', values);
       }
     },
-    [transactions, asset]
+    [watchTransactionDialog, asset]
   );
 
   const handleBuyOrderSuccess = useCallback(
@@ -204,7 +202,7 @@ function OrderRightSection({ order }: Props) {
         return;
       }
 
-      transactions.setRedirectUrl(
+      watchTransactionDialog.setRedirectUrl(
         `/asset/${getNetworkSlugFromChainId(asset?.chainId)}/${
           asset?.contractAddress
         }/${asset?.id}`
@@ -214,51 +212,70 @@ function OrderRightSection({ order }: Props) {
 
       const symbol = await getERC20Symbol(order.erc20Token, provider);
 
+      const values = {
+        collectionName: asset.collectionName,
+        id: asset.id,
+        amount: ethers.utils.formatUnits(order.erc20TokenAmount, decimals),
+        symbol,
+      };
+
       if (accept) {
-        transactions.addTransaction(hash, TransactionType.ACCEPT, {
-          asset,
-          order,
-          tokenDecimals: decimals,
-          symbol,
-        } as AcceptTransactionMetadata);
+        createNotification({
+          type: 'transaction',
+          subtype: 'acceptOffer',
+          values,
+          metadata: {
+            chainId,
+            hash,
+          },
+        });
       } else {
-        transactions.addTransaction(hash, TransactionType.BUY, {
-          asset,
-          order,
-          tokenDecimals: decimals,
-          symbol,
-        } as BuyTransactionMetadata);
+        createNotification({
+          type: 'transaction',
+          subtype: 'buyNft',
+          values,
+          metadata: {
+            chainId,
+            hash,
+          },
+        });
       }
+
+      watchTransactionDialog.watch(hash);
     },
-    [transactions, provider, asset]
+    [watchTransactionDialog, provider, asset]
   );
 
   const handleApproveAsset = useCallback(
     async (hash: string, swapAsset: SwappableAssetV4) => {
       if (asset !== undefined) {
         if (swapAsset.type === 'ERC721' || swapAsset.type === 'ERC1155') {
-          transactions.addTransaction(hash, TransactionType.APPROVAL_FOR_ALL, {
-            asset: asset,
+          const values = { name: asset.collectionName, tokenId: asset.id };
+
+          createNotification({
+            type: 'transaction',
+            subtype: 'approveForAll',
+            values,
+            metadata: { chainId, hash },
           });
         } else {
-          const decimals = await getERC20Decimals(
-            swapAsset.tokenAddress,
-            provider
-          );
-
           const symbol = await getERC20Symbol(swapAsset.tokenAddress, provider);
-          const name = await getERC20Name(swapAsset.tokenAddress, provider);
+          const name = await getERC20Symbol(swapAsset.tokenAddress, provider);
 
-          transactions.addTransaction(hash, TransactionType.APPROVE, {
-            amount: swapAsset.amount,
-            symbol,
-            decimals,
-            name,
+          const values = { name, symbol };
+
+          createNotification({
+            type: 'transaction',
+            subtype: 'approve',
+            values,
+            metadata: { chainId, hash },
           });
         }
+
+        watchTransactionDialog.watch(hash);
       }
     },
-    [transactions, provider, asset]
+    [watchTransactionDialog, provider, asset, chainId]
   );
 
   const approveAsset = useApproveAssetMutation(
@@ -266,24 +283,29 @@ function OrderRightSection({ order }: Props) {
     account,
     handleApproveAsset,
     {
-      onError: (error: any) => transactions.setDialogError(error),
-      onMutate: (variable: { asset: SwappableAssetV4 }) => {
+      onError: (error: any) => watchTransactionDialog.setDialogError(error),
+      onMutate: async (variable: { asset: SwappableAssetV4 }) => {
         if (asset) {
           if (
             variable.asset.type === 'ERC721' ||
             variable.asset.type === 'ERC1155'
           ) {
-            transactions.showDialog(
-              true,
-              { asset: asset },
-              TransactionType.APPROVAL_FOR_ALL
-            );
+            const values = { name: asset.collectionName, tokenId: asset.id };
+
+            watchTransactionDialog.open('approveForAll', values);
           } else {
-            transactions.showDialog(
-              true,
-              { asset: asset },
-              TransactionType.APPROVE
+            const symbol = await getERC20Symbol(
+              variable.asset.tokenAddress,
+              provider
             );
+            const name = await getERC20Symbol(
+              variable.asset.tokenAddress,
+              provider
+            );
+
+            const values = { name, symbol };
+
+            watchTransactionDialog.open('approve', values);
           }
         }
       },
@@ -371,7 +393,14 @@ function OrderRightSection({ order }: Props) {
     await fillSignedOrder.mutateAsync({
       order: order.order,
     });
-  }, [transactions, fillSignedOrder, nftSwapSdk, account, order, approveAsset]);
+  }, [
+    watchTransactionDialog,
+    fillSignedOrder,
+    nftSwapSdk,
+    account,
+    order,
+    approveAsset,
+  ]);
 
   const renderActionButton = () => {
     if (isAddressEqual(order?.order.maker, account)) {

@@ -1,5 +1,12 @@
-import { Stack, Avatar, TableCell, TableRow, Typography } from '@mui/material';
-import { Box } from '@mui/material';
+import {
+  Avatar,
+  Box,
+  Skeleton,
+  Stack,
+  TableCell,
+  TableRow,
+  Typography,
+} from '@mui/material';
 import { useWeb3React } from '@web3-react/core';
 import { ethers } from 'ethers';
 import { FormattedNumber } from 'react-intl';
@@ -10,6 +17,7 @@ import { TOKEN_ICON_URL } from '../../../utils/token';
 
 interface Props {
   isBalancesVisible: boolean;
+  isLoadingCurrency?: boolean;
   tokenBalance: TokenBalance;
   currency: string;
   price?: number;
@@ -18,6 +26,7 @@ interface Props {
 function WalletTableRow({
   tokenBalance,
   isBalancesVisible,
+  isLoadingCurrency,
   price,
   currency,
 }: Props) {
@@ -59,7 +68,15 @@ function WalletTableRow({
           </Box>
         </Stack>
       </TableCell>
-      <TableCell>{isBalancesVisible ? totalInCurrency : '*****'}</TableCell>
+      <TableCell>
+        {isLoadingCurrency ? (
+          <Skeleton>*****</Skeleton>
+        ) : isBalancesVisible ? (
+          totalInCurrency
+        ) : (
+          '*****'
+        )}
+      </TableCell>
       <TableCell>
         {isBalancesVisible ? (
           <>

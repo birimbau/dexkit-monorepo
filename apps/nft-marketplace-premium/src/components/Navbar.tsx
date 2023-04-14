@@ -4,7 +4,7 @@ import AppBar from '@mui/material/AppBar';
 import IconButton from '@mui/material/IconButton';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import { useMemo, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 
 import {
   Avatar,
@@ -33,7 +33,7 @@ import Link from './Link';
 
 import { AttachMoney, Language } from '@mui/icons-material';
 import SettingsIcon from '@mui/icons-material/Settings';
-import { useAtom, useAtomValue } from 'jotai';
+import { useAtom } from 'jotai';
 import { useUpdateAtom } from 'jotai/utils';
 import Image from 'next/image';
 import { FormattedMessage } from 'react-intl';
@@ -43,18 +43,20 @@ import { useConnectWalletDialog, useLocale } from '../hooks/app';
 import { useSelectNetworkDialog } from '../hooks/misc';
 import {
   drawerIsOpenAtom,
-  hasPendingTransactionsAtom,
   showAppTransactionsAtom,
   showSelectCurrencyAtom,
   showSelectLocaleAtom,
-  uncheckedTransactionsAtom,
 } from '../state/atoms';
-import { AppTransactionsDialog } from './dialogs/AppTransactionsDialog';
+import NavbarMenu from './Menu';
+import { WalletButton } from './WalletButton';
 import SelectNetworkDialog from './dialogs/SelectNetworkDialog';
 import Notification from './icons/Notification';
 import Wallet from './icons/Wallet';
-import NavbarMenu from './Menu';
-import { WalletButton } from './WalletButton';
+
+import { MagicConnector } from '@dexkit/core/types/magic';
+import { useDexKitContext, useNotifications } from '@dexkit/ui';
+import MagicNetworkSelect from '@dexkit/ui/components/MagicNetworkSelect';
+import NotificationsDialog from '@dexkit/ui/components/dialogs/NotificationsDialog';
 
 interface Props {
   appConfig: AppConfig;
@@ -62,7 +64,7 @@ interface Props {
 }
 
 function Navbar({ appConfig, isPreview }: Props) {
-  const { isActive, chainId } = useWeb3React();
+  const { isActive, chainId, connector } = useWeb3React();
 
   const buttonRef = useRef<HTMLElement | null>(null);
 
@@ -92,24 +94,15 @@ function Navbar({ appConfig, isPreview }: Props) {
     setMenuOpen(false);
   };
 
-  const hasPendingTransactions = useAtomValue(hasPendingTransactionsAtom);
-
-  const uncheckedTransactions = useAtomValue(uncheckedTransactionsAtom);
-
   const [, setShowShowSelectCurrency] = useAtom(showSelectCurrencyAtom);
 
   const [, setShowShowSelectLocale] = useAtom(showSelectLocaleAtom);
-
-  const filteredUncheckedTransactions = useMemo(() => {
-    return uncheckedTransactions.filter((tx) => tx.chainId === chainId);
-  }, [chainId, uncheckedTransactions]);
 
   const [showTransactions, setShowTransactions] = useAtom(
     showAppTransactionsAtom
   );
 
   const handleOpenTransactions = () => setShowTransactions(true);
-  const handleCloseNotifications = () => setShowTransactions(false);
 
   const setIsDrawerOpen = useUpdateAtom(drawerIsOpenAtom);
 
@@ -138,7 +131,31 @@ function Navbar({ appConfig, isPreview }: Props) {
   };
 
   const currency = useCurrency();
+
   const { locale } = useLocale();
+
+  const {
+    notifications,
+    checkAllNotifications,
+    transactions,
+    clearNotifications,
+    notificationTypes,
+  } = useDexKitContext();
+
+  const {
+    filteredUncheckedTransactions,
+    hasPendingTransactions,
+    uncheckedTransactions,
+  } = useNotifications();
+
+  const handleCloseNotifications = () => {
+    checkAllNotifications();
+    setShowTransactions(false);
+  };
+
+  const handleClearNotifications = () => {
+    clearNotifications();
+  };
 
   return (
     <>
@@ -198,13 +215,25 @@ function Navbar({ appConfig, isPreview }: Props) {
           />
         </MenuItem>
       </Menu>
-      <AppTransactionsDialog
+      {/* <AppTransactionsDialog
         dialogProps={{
           maxWidth: 'sm',
           open: showTransactions,
           fullWidth: true,
           onClose: handleCloseNotifications,
         }}
+      /> */}
+      <NotificationsDialog
+        DialogProps={{
+          maxWidth: 'sm',
+          open: showTransactions,
+          fullWidth: true,
+          onClose: handleCloseNotifications,
+        }}
+        notificationTypes={notificationTypes}
+        transactions={transactions}
+        notifications={notifications}
+        onClear={handleClearNotifications}
       />
       <SelectNetworkDialog
         dialogProps={{
@@ -236,7 +265,12 @@ function Navbar({ appConfig, isPreview }: Props) {
           </ListItem> */}
         </List>
       </Popover>
-      <AppBar variant="elevation" color="default" position="sticky">
+      <AppBar
+        variant="elevation"
+        color="default"
+        position="sticky"
+        sx={{ zIndex: 10 }}
+      >
         <Toolbar variant="dense" sx={{ py: 1 }}>
           {isMobile && (
             <IconButton
@@ -398,6 +432,9 @@ function Navbar({ appConfig, isPreview }: Props) {
                 </Button>
               ) : (
                 <Stack direction="row" alignItems="center" spacing={2}>
+                  {connector instanceof MagicConnector && (
+                    <MagicNetworkSelect />
+                  )}
                   <WalletButton />
 
                   <NoSsr>

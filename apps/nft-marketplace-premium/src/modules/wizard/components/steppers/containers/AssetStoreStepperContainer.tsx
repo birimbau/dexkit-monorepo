@@ -14,8 +14,8 @@ import { SiteResponse } from 'src/types/whitelabel';
 import theDefaultConfig from '../../../../../../config/quick.store.default.app.json';
 import SignConfigDialog from '../../dialogs/SignConfigDialog';
 import { PreviewAppButton } from '../../PreviewAppButton';
-import { WelcomeAssetStoreStepperMessage } from '../../WelcomeAssetStoreStepperMessage copy';
 import AssetStoreStepper from '../AssetStoreStepper.tsx';
+import { WelcomeAssetStoreStepperMessage } from '../Welcome/WelcomeAssetStoreStepperMessage';
 const defaultConfig = theDefaultConfig as unknown as AppConfig;
 
 interface Props {

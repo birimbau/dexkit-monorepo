@@ -17,3 +17,22 @@ export enum TransactionStatus {
   Failed,
   Confirmed,
 }
+
+export enum CoinTypes {
+  EVM_NATIVE = 'evm-native',
+  EVM_ERC20 = 'evm-erc20',
+  BITCOIN_NATIVE = 'bitcoin',
+  SOLANA_NATIVE = 'solana-native',
+}
+
+
+export enum TransactionType {
+  APPROVE,
+  APPROVAL_FOR_ALL,
+  WRAP,
+  BUY,
+  ACCEPT,
+  CANCEL,
+  MAKE_OFFER,
+  SWAP,
+}

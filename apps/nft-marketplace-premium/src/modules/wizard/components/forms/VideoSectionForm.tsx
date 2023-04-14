@@ -1,26 +1,21 @@
 import {
-  Grid,
-  FormControl,
-  Select,
-  MenuItem,
-  TextField,
-  SelectChangeEvent,
-  InputLabel,
   Button,
+  FormControl,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Select,
   Stack,
+  TextField,
 } from '@mui/material';
 import { FormikHelpers, useFormik } from 'formik';
-import { ChangeEvent, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import LazyYoutubeFrame from '../../../../components/LazyYoutubeFrame';
-import {
-  AppPageSection,
-  VideoEmbedAppPageSection,
-  VideoEmbedType,
-} from '../../../../types/config';
+import { VideoEmbedType } from '../../../../types/config';
 
 import * as Yup from 'yup';
 import { useDebounce } from '../../../../hooks/misc';
+import { AppPageSection, VideoEmbedAppPageSection } from '../../types/section';
 
 interface Form {
   videoType: string;

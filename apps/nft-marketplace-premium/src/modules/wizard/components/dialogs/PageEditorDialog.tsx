@@ -10,8 +10,8 @@ import {
 import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import { CustomEditorSection } from '../../../../types/config';
 import { BuilderKit } from '../../constants';
+import { CustomEditorSection } from '../../types/section';
 
 import PageEditor from '../pageEditor/PageEditor';
 import { AppDialogPageEditorTitle } from './AppDialogPageEditorTitle';

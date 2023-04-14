@@ -14,8 +14,8 @@ import { SiteResponse } from 'src/types/whitelabel';
 import theDefaultConfig from '../../../../../../config/quick.swap.default.app.json';
 import SignConfigDialog from '../../dialogs/SignConfigDialog';
 import { PreviewAppButton } from '../../PreviewAppButton';
-import { WelcomeSwapStepperMessage } from '../../WelcomeSwapStepperMessage';
 import SwapStepper from '../SwapStepper/SwapStepper';
+import { WelcomeSwapStepperMessage } from '../Welcome/WelcomeSwapStepperMessage';
 const defaultConfig = theDefaultConfig as unknown as AppConfig;
 
 interface Props {

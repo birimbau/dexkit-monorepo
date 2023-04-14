@@ -1,21 +1,13 @@
 import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
-import Paper from '@mui/material/Paper';
-import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 
 import Box from '@mui/material/Box';
 
-import { ChainId } from '../../../constants/enum';
-import { useCollection, useContractCollection } from '../../../hooks/nft';
-import { useMemo } from 'react';
-import { getAppConfig } from '../../../services/app';
-import { isAddressEqual } from '../../../utils/blockchain';
+import { useContractCollection } from '../../../hooks/nft';
 
-import Image from 'next/image';
 import { styled, useTheme } from '@mui/material';
-import { useAppConfig } from '../../../hooks/app';
+import Image from 'next/image';
 
 const Img = styled(Image)({});
 
