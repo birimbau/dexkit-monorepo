@@ -5,7 +5,7 @@
   "currency": "usd",
   "hide_powered_by": false,
   "theme": "kittygotchi",
-  "domain": "https://whitelabel-nft.dexkit.com",
+  "domain": "https://dexappbuilder.dexkit.com",
   "logo": {
     "url": "https://dexkit-storage.nyc3.cdn.digitaloceanspaces.com/dexkit/images/logo/dexappbuilder.svg",
     "height": "50",
