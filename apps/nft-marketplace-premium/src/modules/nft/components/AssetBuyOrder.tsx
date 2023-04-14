@@ -22,6 +22,7 @@ import { useDexKitContext } from '@dexkit/ui';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { SwappableAssetV4 } from '@traderxyz/nft-swap-sdk';
 import { ethers } from 'ethers';
+import { useConnectWalletDialog } from 'src/hooks/app';
 import { OrderDirection } from 'src/types/orderbook';
 import { useSwitchNetwork, useTokenList } from '../../../hooks/blockchain';
 import {
@@ -41,6 +42,7 @@ interface Props {
 
 export function AssetBuyOrder({ asset, orderBookItem }: Props) {
   const { account, provider, chainId } = useWeb3React();
+  const connectWalletDialog = useConnectWalletDialog();
 
   const nftSwapSdk = useSwapSdkV4(provider, asset?.chainId);
 
@@ -263,9 +265,6 @@ export function AssetBuyOrder({ asset, orderBookItem }: Props) {
           collectionName: asset.collectionName,
           id: asset.id,
         };
-
-        console.log('hello');
-
         if (order.direction === OrderDirection.Buy) {
           watchTransactionDialog.open('cancelOffer', values);
         } else {
@@ -295,6 +294,8 @@ export function AssetBuyOrder({ asset, orderBookItem }: Props) {
       } else {
         setOpenConfirmBuy(true);
       }
+    } else {
+      connectWalletDialog.setOpen(true);
     }
   }, [asset, chainId, switchNetwork]);
 
