@@ -98,7 +98,7 @@ export default function ThemeSection({
 
       {renderThemes()}
       <Grid item xs={12}>
-        {selectedId === 'custom' && <WizardThemeCustom />}
+        {selectedId === 'custom' && <WizardThemeCustom mode={mode} />}
       </Grid>
     </Grid>
   );

@@ -1,8 +1,13 @@
+import { ThemeMode } from '@dexkit/ui/constants/enum';
 import { Box, Stack } from '@mui/material';
 import { useAtom } from 'jotai';
 import { MuiColorInput } from 'mui-color-input';
 import { customThemeAtom } from '../state';
 import { TooltipInfo } from './InputInfoAdornment';
+
+interface Props {
+  mode: ThemeMode;
+}
 
 function WizardThemeCustom() {
   const [customTheme, setCustomTheme] = useAtom(customThemeAtom);

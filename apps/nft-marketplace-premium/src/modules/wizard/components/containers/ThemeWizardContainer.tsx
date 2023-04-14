@@ -21,7 +21,11 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import Fonts from 'src/constants/fonts.json';
 import { AppConfig } from '../../../../types/config';
-import { customThemeAtom } from '../../state';
+import {
+  customThemeAtom,
+  customThemeDarkAtom,
+  customThemeLightAtom,
+} from '../../state';
 import { StepperButtonProps } from '../../types';
 import { generateTheme } from '../../utils';
 import ThemePreview from '../ThemePreview';
@@ -56,6 +60,8 @@ export default function ThemeWizardContainer({
     { family: string; category?: string } | undefined
   >(config?.font);
   const customTheme = useAtomValue(customThemeAtom);
+  const customThemeDark = useAtomValue(customThemeDarkAtom);
+  const customThemeLight = useAtomValue(customThemeLightAtom);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
   const handleShowPreview = () => {
@@ -72,11 +78,20 @@ export default function ThemeWizardContainer({
   const selectedTheme = useMemo(() => {
     return generateTheme({
       selectedFont,
-      customTheme,
+      customTheme:
+        selectedThemeMode === ThemeMode.dark
+          ? customThemeDark
+          : customThemeLight,
       selectedThemeId,
       mode: selectedThemeMode,
     });
-  }, [selectedThemeId, customTheme, selectedFont]);
+  }, [
+    selectedThemeId,
+    customTheme,
+    customThemeDark,
+    customThemeLight,
+    selectedFont,
+  ]);
 
   const handleCancelEdit = () => {
     setSelectedThemeId(config.theme);
@@ -88,9 +103,21 @@ export default function ThemeWizardContainer({
     }
   };
   const handleSave = () => {
-    const newConfig = { ...config, theme: selectedThemeId };
+    const newConfig = {
+      ...config,
+      theme: selectedThemeId,
+      themeMode: defaultThemeMode,
+    };
+    // We will not use anymore this configuration so we will just delete it from the config
     if (newConfig.theme === 'custom' && customTheme) {
-      newConfig.customTheme = JSON.stringify(customTheme);
+      delete newConfig.customTheme;
+    }
+    if (newConfig.theme === 'custom' && customThemeDark) {
+      newConfig.customThemeDark = JSON.stringify(customThemeDark);
+    }
+
+    if (newConfig.theme === 'custom' && customThemeLightAtom) {
+      newConfig.customThemeLight = JSON.stringify(customThemeLightAtom);
     }
     if (selectedFont) {
       newConfig.font = selectedFont;
@@ -99,14 +126,29 @@ export default function ThemeWizardContainer({
   };
   useEffect(() => {
     const newConfig = { ...config, theme: selectedThemeId };
+    // We will not use anymore this configuration so we will just delete it from the config
     if (newConfig.theme === 'custom' && customTheme) {
-      newConfig.customTheme = JSON.stringify(customTheme);
+      delete newConfig.customTheme;
     }
+    if (newConfig.theme === 'custom' && customThemeDark) {
+      newConfig.customThemeDark = JSON.stringify(customThemeDark);
+    }
+
+    if (newConfig.theme === 'custom' && customThemeLight) {
+      newConfig.customThemeLight = JSON.stringify(customThemeLight);
+    }
+
     if (selectedFont) {
       newConfig.font = selectedFont;
     }
     onChange(newConfig);
-  }, [selectedThemeId, selectedFont, customTheme]);
+  }, [
+    selectedThemeId,
+    selectedFont,
+    customTheme,
+    customThemeDark,
+    customThemeLight,
+  ]);
 
   const handleSelectedFont = (event: any, value: string | null) => {
     if (value) {
