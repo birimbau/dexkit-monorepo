@@ -29,7 +29,7 @@ export async function getAppConfig(site?: string, appPage?: string): Promise<{ a
         return { appConfig: JSON.parse(configResponse.config) as AppConfig, appNFT: configResponse.nft === undefined ? null : configResponse.nft, siteId: configResponse?.id };
       }
     }
-    return Promise.resolve({ appConfig: appConfigJson as AppConfig, });
+    return Promise.resolve({ appConfig: appConfigJson as AppConfig });
   }
 
   if (site?.startsWith('dexkit.app')) {

@@ -18,6 +18,8 @@ import {
   Typography,
 } from '@mui/material';
 
+import { MagicConnector } from '@dexkit/core/types/magic';
+import MagicNetworkSelect from '@dexkit/ui/components/MagicNetworkSelect';
 import { AttachMoney, Language } from '@mui/icons-material';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import { useWeb3React } from '@web3-react/core';
@@ -47,7 +49,7 @@ interface Props {
 }
 
 function AppDrawer({ open, onClose }: Props) {
-  const { isActive, chainId } = useWeb3React();
+  const { isActive, chainId, connector } = useWeb3React();
   const appConfig = useAppConfig();
   const connectWalletDialog = useConnectWalletDialog();
 
@@ -95,32 +97,36 @@ function AppDrawer({ open, onClose }: Props) {
           ) : (
             <Stack spacing={2}>
               <WalletButton align="left" />
-              <Box
-                sx={(theme) => ({
-                  px: 2,
-                  py: 1,
-                  border: `1px solid ${theme.palette.divider}`,
-                  borderRadius: theme.spacing(1),
-                })}
-              >
-                <Stack
-                  direction="row"
-                  spacing={1}
-                  alignItems="center"
-                  alignContent="center"
+              {connector instanceof MagicConnector ? (
+                <MagicNetworkSelect />
+              ) : (
+                <Box
+                  sx={(theme) => ({
+                    px: 2,
+                    py: 1,
+                    border: `1px solid ${theme.palette.divider}`,
+                    borderRadius: theme.spacing(1),
+                  })}
                 >
-                  <Avatar
-                    src={getChainLogoImage(chainId)}
-                    sx={(theme) => ({
-                      width: 'auto',
-                      height: theme.spacing(2),
-                    })}
-                  />
-                  <Typography variant="body1">
-                    {getChainName(chainId)}
-                  </Typography>
-                </Stack>
-              </Box>
+                  <Stack
+                    direction="row"
+                    spacing={1}
+                    alignItems="center"
+                    alignContent="center"
+                  >
+                    <Avatar
+                      src={getChainLogoImage(chainId)}
+                      sx={(theme) => ({
+                        width: 'auto',
+                        height: theme.spacing(2),
+                      })}
+                    />
+                    <Typography variant="body1">
+                      {getChainName(chainId)}
+                    </Typography>
+                  </Stack>
+                </Box>
+              )}
             </Stack>
           )}
         </Box>

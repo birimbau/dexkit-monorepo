@@ -22,6 +22,7 @@ export interface SwapTokenFieldProps {
   value: BigNumber;
   balance?: BigNumber;
   showBalance?: boolean;
+  isUserInput?: boolean;
 }
 
 function SwapTokenField({
@@ -33,6 +34,7 @@ function SwapTokenField({
   disabled,
   balance,
   showBalance,
+  isUserInput,
 }: SwapTokenFieldProps) {
   const handleMax = () => {
     if (balance) {
@@ -67,6 +69,7 @@ function SwapTokenField({
           }}
           onChange={onChange}
           value={value}
+          isUserInput={isUserInput}
           decimals={token?.decimals}
         />
         <SwapTokenButton
