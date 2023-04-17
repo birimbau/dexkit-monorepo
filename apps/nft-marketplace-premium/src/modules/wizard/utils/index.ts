@@ -53,7 +53,7 @@ export function generateTheme({ selectedFont, selectedThemeId, customTheme, mode
     );
   }
   const theme = getTheme({ name: selectedThemeId, mode }).theme;
-  console.log(theme);
+
   return responsiveFontSizes(
     fontFamily
       ? createTheme({

@@ -235,7 +235,6 @@ export default function ThemeWizardContainer({
                   />
                 }
                 onChange={(ev) => {
-                  console.log(ev.target.value);
                   setSelectedThemeMode(ev.target.value as ThemeMode);
                 }}
               >
