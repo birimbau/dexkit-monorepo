@@ -4,7 +4,7 @@ import { Token } from './blockchain';
 
 export type VideoEmbedType = 'youtube' | 'vimeo';
 
-export type SocialMediaTypes = 'instagram' | 'facebook' | 'twitter';
+export type SocialMediaTypes = 'instagram' | 'facebook' | 'twitter' | 'youtube' | 'linkedin' | 'pinterest' | 'reddit';
 
 export interface MenuTree {
   name: string;
