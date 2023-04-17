@@ -40,7 +40,7 @@ export const getStaticProps: GetStaticProps = async ({
       const maker = section.config?.storeAccount?.toLowerCase();
       const assetResponse = await getDKAssetOrderbook({ maker });
       await queryClient.prefetchQuery(
-        [GET_ASSETS_ORDERBOOK, { maker }],
+        [GET_ASSETS_ORDERBOOK, { maker: maker || null }],
         async () => assetResponse.data
       );
     }

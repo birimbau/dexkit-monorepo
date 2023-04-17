@@ -82,19 +82,20 @@ export function AssetStoreContainer({
                 />
       </Typography>*/}
 
-              {account?.toLowerCase() === storeAccount?.toLowerCase() && (
-                <Box>
-                  <Button
-                    variant="contained"
-                    onClick={() => setOpenAssetOrderDialog(true)}
-                  >
-                    <FormattedMessage
-                      id={'create.order'}
-                      defaultMessage={'Create Order'}
-                    />
-                  </Button>
-                </Box>
-              )}
+              {account?.toLowerCase() === storeAccount?.toLowerCase() &&
+                account && (
+                  <Box>
+                    <Button
+                      variant="contained"
+                      onClick={() => setOpenAssetOrderDialog(true)}
+                    >
+                      <FormattedMessage
+                        id={'create.order'}
+                        defaultMessage={'Create Order'}
+                      />
+                    </Button>
+                  </Box>
+                )}
             </Stack>
           </Grid>
           <Grid item xs={12} sm={6} md={4} xl={3}>

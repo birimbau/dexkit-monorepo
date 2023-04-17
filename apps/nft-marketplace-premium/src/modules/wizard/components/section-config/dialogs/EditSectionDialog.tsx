@@ -51,6 +51,7 @@ export default function EditSectionDialog({
   };
 
   const handleSave = (section: AppPageSection) => {
+    console.log('savingsection', section);
     onSave(section, index);
     handleClose();
   };
