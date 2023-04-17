@@ -1,10 +1,11 @@
 import { DexkitProvider } from '@dexkit/ui/components';
+import { ThemeMode } from '@dexkit/ui/constants/enum';
 import { COMMON_NOTIFICATION_TYPES } from '@dexkit/ui/constants/messages/common';
 import { createTheme, responsiveFontSizes, Theme } from '@mui/material';
 import { DefaultSeo } from 'next-seo';
 import { useMemo, useState } from 'react';
 import { WHITELABEL_NOTIFICATION_TYPES } from 'src/constants/messages';
-import { useAppConfig, useLocale } from 'src/hooks/app';
+import { useAppConfig, useLocale, useThemeMode } from 'src/hooks/app';
 import {
   notificationsAtom,
   selectedWalletAtom,
@@ -24,30 +25,50 @@ export function AppMarketplaceProvider({
   const appConfig = useAppConfig();
   const { locale: defaultLocale } = useLocale();
   const [locale, setLocale] = useState(defaultLocale);
+  const { mode, userMode } = useThemeMode();
 
   const theme = useMemo<Theme>(() => {
-    let tempTheme = getTheme({ name: defaultAppConfig.theme })?.theme;
+    let tempTheme = getTheme({
+      name: defaultAppConfig.theme,
+      mode:
+        defaultAppConfig.theme === 'BoredApe' &&
+        !userMode &&
+        defaultAppConfig?.defaultThemeMode
+          ? ThemeMode.dark
+          : mode || (defaultAppConfig?.defaultThemeMode as ThemeMode),
+    })?.theme;
     let fontFamily;
     if (appConfig?.font) {
       fontFamily = `'${appConfig.font.family}', ${appConfig.font.category}`;
     }
 
     if (appConfig) {
-      tempTheme = getTheme({ name: appConfig.theme })?.theme;
+      tempTheme = getTheme({ name: appConfig.theme, mode })?.theme;
     }
-    if (appConfig && appConfig.theme === 'custom' && appConfig.customTheme) {
-      const customTheme = JSON.parse(appConfig.customTheme);
 
-      return responsiveFontSizes(
-        fontFamily
-          ? createTheme({
-              ...customTheme,
-              typography: {
-                fontFamily,
-              },
-            })
-          : createTheme(customTheme)
-      );
+    if (appConfig && appConfig.theme === 'custom') {
+      let customTheme;
+      if (appConfig.customTheme) {
+        customTheme = JSON.parse(appConfig.customTheme);
+      }
+      if (mode === ThemeMode.dark && appConfig.customThemeDark) {
+        customTheme = JSON.parse(appConfig.customThemeDark);
+      }
+      if (mode === ThemeMode.light && appConfig.customThemeLight) {
+        customTheme = JSON.parse(appConfig.customThemeLight);
+      }
+      if (customTheme) {
+        return responsiveFontSizes(
+          fontFamily
+            ? createTheme({
+                ...customTheme,
+                typography: {
+                  fontFamily,
+                },
+              })
+            : createTheme(customTheme)
+        );
+      }
     }
 
     return responsiveFontSizes(
@@ -60,7 +81,7 @@ export function AppMarketplaceProvider({
           })
         : createTheme(tempTheme)
     );
-  }, [appConfig]);
+  }, [appConfig, mode]);
 
   const SEO = useMemo(() => {
     const config = appConfig;

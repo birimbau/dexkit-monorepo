@@ -5,11 +5,12 @@ export default createTheme({
         fontFamily: "'Montserrat', sans-serif",
     },
     palette: {
+        mode: 'light',
         background: {
-            default: '#000',
+            default: '#fff',
         },
         text: {
-            primary: '#fff',
+            primary: '#000',
         },
         primary: {
             main: '#bfc500',

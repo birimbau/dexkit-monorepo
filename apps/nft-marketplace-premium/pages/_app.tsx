@@ -20,6 +20,7 @@ import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 
 import { useRouter } from 'next/router';
 
+import { ThemeMode } from '@dexkit/ui/constants/enum';
 import { Backdrop, CircularProgress, createTheme } from '@mui/material';
 import { AssetAPI } from 'src/types/nft';
 import defaultAppConfig from '../config/app.json';
@@ -36,6 +37,7 @@ interface MyAppProps extends AppProps<{ dehydratedState: DehydratedState }> {
 
 export default function MyApp(props: MyAppProps) {
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props;
+
   const router = useRouter();
 
   const [loading, setLoading] = React.useState(false);
@@ -60,17 +62,42 @@ export default function MyApp(props: MyAppProps) {
   const getLayout = (Component as any).getLayout || ((page: any) => page);
 
   const theme = React.useMemo(() => {
-    let tempTheme = getTheme(defaultAppConfig.theme)?.theme;
+    let tempTheme = getTheme({
+      name: defaultAppConfig.theme,
+      mode:
+        defaultAppConfig.theme === 'BoredApe' &&
+        !defaultAppConfig.defaultThemeMode
+          ? ThemeMode.dark
+          : (defaultAppConfig.defaultThemeMode as ThemeMode),
+    })?.theme;
     let fontFamily;
     if (appConfig?.font) {
       fontFamily = `'${appConfig.font.family}', ${appConfig.font.category}`;
     }
 
     if (appConfig) {
-      tempTheme = getTheme(appConfig.theme)?.theme;
+      tempTheme = getTheme({
+        name: appConfig.theme,
+        mode: appConfig.defaultThemeMode,
+      })?.theme;
     }
     if (appConfig && appConfig.theme === 'custom' && appConfig.customTheme) {
-      const customTheme = JSON.parse(appConfig.customTheme);
+      let customTheme;
+      if (appConfig.customTheme) {
+        customTheme = JSON.parse(appConfig.customTheme);
+      }
+      if (
+        appConfig.defaultThemeMode === ThemeMode.dark &&
+        appConfig.customThemeDark
+      ) {
+        customTheme = JSON.parse(appConfig.customThemeDark);
+      }
+      if (
+        appConfig.defaultThemeMode === ThemeMode.light &&
+        appConfig.customThemeLight
+      ) {
+        customTheme = JSON.parse(appConfig.customThemeLight);
+      }
 
       return responsiveFontSizes(
         fontFamily

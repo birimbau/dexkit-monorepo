@@ -36,7 +36,8 @@ export default createTheme({
 
   palette: {
     background: {
-      default: '#fff',
+      default: '#FFFFFF',
+      paper: '#FAFAFA',
     },
     divider: '#212529',
     text: {

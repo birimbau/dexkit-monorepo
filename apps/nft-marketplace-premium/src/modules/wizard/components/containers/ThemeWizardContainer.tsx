@@ -51,11 +51,11 @@ export default function ThemeWizardContainer({
 }: Props) {
   const [selectedThemeId, setSelectedThemeId] = useState<string>(config.theme);
   const [selectedThemeMode, setSelectedThemeMode] = useState<ThemeMode>(
-    config.themeMode || ThemeMode.light
+    config.defaultThemeMode || ThemeMode.light
   );
-  const [defaultThemeMode, setDefaultThemeMode] = useState<ThemeMode>(
-    config.themeMode || ThemeMode.light
-  );
+  const [defaultThemeMode, setDefaultThemeMode] = useState<
+    ThemeMode | undefined
+  >(config?.defaultThemeMode);
   const [selectedFont, setSelectedFont] = useState<
     { family: string; category?: string } | undefined
   >(config?.font);
@@ -87,6 +87,7 @@ export default function ThemeWizardContainer({
     });
   }, [
     selectedThemeId,
+    selectedThemeMode,
     customTheme,
     customThemeDark,
     customThemeLight,
@@ -122,6 +123,10 @@ export default function ThemeWizardContainer({
     if (selectedFont) {
       newConfig.font = selectedFont;
     }
+    if (defaultThemeMode) {
+      config.defaultThemeMode = defaultThemeMode;
+    }
+
     onSave(newConfig);
   };
   useEffect(() => {
@@ -141,6 +146,10 @@ export default function ThemeWizardContainer({
     if (selectedFont) {
       newConfig.font = selectedFont;
     }
+    if (defaultThemeMode) {
+      newConfig.defaultThemeMode = defaultThemeMode;
+    }
+
     onChange(newConfig);
   }, [
     selectedThemeId,
@@ -245,6 +254,7 @@ export default function ThemeWizardContainer({
                 selectedId={selectedThemeId}
                 onSelect={handleSelectTheme}
                 onPreview={handleShowPreview}
+                legacyTheme={config?.customTheme}
               />
             </Box>
             <Box>

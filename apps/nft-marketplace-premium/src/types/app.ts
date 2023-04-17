@@ -1,3 +1,4 @@
+import { ThemeMode } from '@dexkit/ui/constants/enum';
 import { Token, Transaction } from './blockchain';
 import { Asset } from './nft';
 
@@ -8,6 +9,7 @@ export interface AppState {
   currency: string;
   locale: string;
   currencyUser: string;
+  themeMode?: ThemeMode;
   localeUser: string;
   assets: { [key: string]: Asset };
   accountAssets: {

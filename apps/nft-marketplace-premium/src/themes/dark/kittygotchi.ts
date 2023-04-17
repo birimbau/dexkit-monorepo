@@ -37,6 +37,11 @@ export default createTheme({
   palette: {
     mode: 'dark',
     divider: '#DCDCDC',
+    background: {
+      default: '#151b22',
+      //  paper: '#212529',
+      paper: '#212529',
+    },
     text: {
       primary: '#fff',
       secondary: '#737372',

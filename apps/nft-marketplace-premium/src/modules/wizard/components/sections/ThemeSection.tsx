@@ -9,13 +9,18 @@ import {
 import { useAtomValue } from 'jotai';
 import { FormattedMessage } from 'react-intl';
 import { darkThemes, getTheme, lightThemes } from '../../../../theme';
-import { customThemeAtom } from '../../state';
+import {
+  customThemeAtom,
+  customThemeDarkAtom,
+  customThemeLightAtom,
+} from '../../state';
 import WizardThemeButton from '../WizardThemeButton';
 import WizardThemeCustom from '../WizardThemeCustom';
 
 interface Props {
   selectedId?: string;
   mode?: ThemeMode;
+  legacyTheme?: string;
   onSelect: (id: string) => void;
   onPreview: () => void;
 }
@@ -24,10 +29,13 @@ export default function ThemeSection({
   selectedId,
   mode,
   onSelect,
+  legacyTheme,
   onPreview,
 }: Props) {
   const theme = useTheme();
   const customTheme = useAtomValue(customThemeAtom);
+  const customThemeDark = useAtomValue(customThemeDarkAtom);
+  const customThemeLight = useAtomValue(customThemeLightAtom);
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const renderThemes = () => {
@@ -38,16 +46,27 @@ export default function ThemeSection({
           return;
         }
         let { theme, name } = tempTheme;
-        if (customTheme && key === 'custom') {
+        if (customThemeDark && key === 'custom' && mode === ThemeMode.dark) {
           theme = {
             ...theme,
             palette: {
               ...theme.palette,
-              ...(customTheme.palette as any),
+              ...(customThemeDark.palette as any),
               mode,
             },
           };
         }
+        if (customThemeLight && key === 'custom' && mode === ThemeMode.light) {
+          theme = {
+            ...theme,
+            palette: {
+              ...theme.palette,
+              ...(customThemeLight.palette as any),
+              mode,
+            },
+          };
+        }
+
         return (
           <Grid item xs={6} sm={4} key={key}>
             <WizardThemeButton
@@ -98,7 +117,9 @@ export default function ThemeSection({
 
       {renderThemes()}
       <Grid item xs={12}>
-        {selectedId === 'custom' && <WizardThemeCustom mode={mode} />}
+        {selectedId === 'custom' && (
+          <WizardThemeCustom mode={mode} legacyTheme={legacyTheme} />
+        )}
       </Grid>
     </Grid>
   );

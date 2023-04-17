@@ -103,7 +103,7 @@ export interface AppConfig {
     family: string;
     category?: string;
   }
-  themeMode?: ThemeMode;
+  defaultThemeMode?: ThemeMode;
   theme: string;
   customTheme?: string;
   customThemeLight?: string;
@@ -115,6 +115,11 @@ export interface AppConfig {
     width?: string;
     height?: string;
     url: string;
+  };
+  logoDark?: {
+    width?: string;
+    height?: string;
+    url?: string;
   };
   favicon_url?: string;
   social?: SocialMedia[];
