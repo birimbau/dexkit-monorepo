@@ -39,7 +39,7 @@ import Image from 'next/image';
 import { FormattedMessage } from 'react-intl';
 import { useCurrency } from 'src/hooks/currency';
 import { AppConfig } from 'src/types/config';
-import { useConnectWalletDialog, useLocale } from '../hooks/app';
+import { useConnectWalletDialog, useLocale, useThemeMode } from '../hooks/app';
 import { useSelectNetworkDialog } from '../hooks/misc';
 import {
   drawerIsOpenAtom,
@@ -57,6 +57,8 @@ import { MagicConnector } from '@dexkit/core/types/magic';
 import { useDexKitContext, useNotifications } from '@dexkit/ui';
 import MagicNetworkSelect from '@dexkit/ui/components/MagicNetworkSelect';
 import NotificationsDialog from '@dexkit/ui/components/dialogs/NotificationsDialog';
+import { ThemeMode } from '@dexkit/ui/constants/enum';
+import { ThemeModeSelector } from './ThemeModeSelector';
 
 interface Props {
   appConfig: AppConfig;
@@ -65,6 +67,7 @@ interface Props {
 
 function Navbar({ appConfig, isPreview }: Props) {
   const { isActive, chainId, connector } = useWeb3React();
+  const { mode } = useThemeMode();
 
   const buttonRef = useRef<HTMLElement | null>(null);
 
@@ -214,6 +217,9 @@ function Navbar({ appConfig, isPreview }: Props) {
             }
           />
         </MenuItem>
+        <MenuItem>
+          <ThemeModeSelector />
+        </MenuItem>
       </Menu>
       {/* <AppTransactionsDialog
         dialogProps={{
@@ -283,7 +289,19 @@ function Navbar({ appConfig, isPreview }: Props) {
               <MenuIcon />
             </IconButton>
           )}
-          {appConfig?.logo ? (
+          {appConfig.logoDark &&
+          appConfig.logoDark?.url &&
+          mode === ThemeMode.dark ? (
+            <Link href={isPreview ? '#' : '/'}>
+              <Image
+                src={appConfig?.logoDark?.url || ''}
+                alt={appConfig.name}
+                title={appConfig.name}
+                width={appConfig?.logoDark?.width || theme.spacing(6)}
+                height={appConfig?.logoDark?.height || theme.spacing(6)}
+              />
+            </Link>
+          ) : appConfig?.logo ? (
             <Link href={isPreview ? '#' : '/'}>
               <Image
                 src={appConfig?.logo.url}

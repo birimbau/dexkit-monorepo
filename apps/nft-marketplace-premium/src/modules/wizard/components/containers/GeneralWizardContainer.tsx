@@ -50,6 +50,9 @@ export default function GeneralWizardContainer({
         logo: {
           url: form.logoUrl,
         },
+        logoDark: {
+          url: form?.logoDarkUrl,
+        },
         locale: form.locale,
       };
       onChange(newConfig);
@@ -64,6 +67,7 @@ export default function GeneralWizardContainer({
         faviconUrl: config.favicon_url || '',
         locale: config.locale || '',
         logoUrl: config.logo?.url || '',
+        logoDarkUrl: config.logoDark?.url || '',
         name: config.name,
       });
     }

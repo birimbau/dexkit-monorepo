@@ -44,3 +44,41 @@ export const customThemeAtom = atom<CustomThemeInterface | undefined>({
     },
   }
 });
+
+export const customThemeLightAtom = atom<CustomThemeInterface | undefined>({
+  typography: {},
+  palette: {
+    mode: 'light',
+    background: {
+      default: '#fff',
+    },
+    text: {
+      primary: '#000',
+    },
+    primary: {
+      main: '#bfc500',
+    },
+    secondary: {
+      main: '#f44336',
+    },
+  }
+});
+
+export const customThemeDarkAtom = atom<CustomThemeInterface | undefined>({
+  typography: {},
+  palette: {
+    mode: 'dark',
+    background: {
+      default: '#000',
+    },
+    text: {
+      primary: '#fff',
+    },
+    primary: {
+      main: '#bfc500',
+    },
+    secondary: {
+      main: '#f44336',
+    },
+  }
+});

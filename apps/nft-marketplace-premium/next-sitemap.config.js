@@ -1,5 +1,5 @@
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {
-  siteUrl: process.env.SITE_URL || 'https://whitelabel-nft.dexkit.com',
+  siteUrl: process.env.SITE_URL || 'https://dexappbuilder.dexkit.com',
   generateRobotsTxt: true,
 };

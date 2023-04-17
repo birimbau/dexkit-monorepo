@@ -17,18 +17,19 @@ import { useCallback, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { CURRENCIES, LANGUAGES } from 'src/constants';
 
+import ImageIcon from '@mui/icons-material/Image';
 import * as Yup from 'yup';
 import MediaDialog from '../../../../components/mediaDialog';
 import { StepperButtonProps } from '../../types';
 import InputInfoAdornment from '../InputInfoAdornment';
 import { StepperButtons } from '../steppers/StepperButtons';
-
 export interface GeneralSectionForm {
   name: string;
   email: string;
   locale: string;
   currency: string;
   logoUrl: string;
+  logoDarkUrl?: string;
   faviconUrl: string;
 }
 
@@ -38,6 +39,7 @@ const FormSchema: Yup.SchemaOf<GeneralSectionForm> = Yup.object().shape({
   locale: Yup.string().required(),
   currency: Yup.string().required(),
   logoUrl: Yup.string().url().required(),
+  logoDarkUrl: Yup.string().url(),
   faviconUrl: Yup.string().url().required(),
 });
 
@@ -51,6 +53,11 @@ interface Props {
 }
 
 const CustomImage = styled('img')(({ theme }) => ({
+  height: theme.spacing(20),
+  width: theme.spacing(20),
+}));
+
+const NoImage = styled(ImageIcon)(({ theme }) => ({
   height: theme.spacing(20),
   width: theme.spacing(20),
 }));
@@ -89,6 +96,7 @@ export default function GeneralSection({
       currency: 'usd',
       locale: 'en-US',
       logoUrl: '',
+      logoDarkUrl: '',
       faviconUrl: '',
     },
     enableReinitialize: true,
@@ -169,7 +177,7 @@ export default function GeneralSection({
                 }}
               />
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={4}>
               <Typography variant="body2">
                 <FormattedMessage id="logo" defaultMessage="Logo" />
               </Typography>
@@ -182,7 +190,27 @@ export default function GeneralSection({
                 <CustomImage src={formik.values.logoUrl} />
               </Button>
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={4}>
+              <Typography variant="body2">
+                <FormattedMessage
+                  id="logo.for.dark.mode"
+                  defaultMessage="Logo for Dark Mode"
+                />
+              </Typography>
+              <Button
+                onClick={() => {
+                  setOpenMediaDialog(true);
+                  setMediaFieldToEdit('logoDarkUrl');
+                }}
+              >
+                {formik.values?.logoDarkUrl ? (
+                  <CustomImage src={formik.values.logoDarkUrl} />
+                ) : (
+                  <NoImage />
+                )}
+              </Button>
+            </Grid>
+            <Grid item xs={4}>
               <Typography variant="body2">
                 <FormattedMessage id="favicon" defaultMessage="Favicon" />
               </Typography>

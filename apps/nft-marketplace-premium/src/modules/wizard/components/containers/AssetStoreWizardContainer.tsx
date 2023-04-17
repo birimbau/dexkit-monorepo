@@ -75,7 +75,6 @@ export default function AssetStoreWizardContainer({
   };
   const handleOnChange = (form: AssetStoreOptions, isFormValid: boolean) => {
     setFormData(form);
-    console.log(form);
     setIsValid(isFormValid);
     onChange(changeConfig(config, form));
   };
