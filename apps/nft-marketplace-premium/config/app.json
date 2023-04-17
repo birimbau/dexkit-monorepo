@@ -4,10 +4,16 @@
   "locale": "en-US",
   "currency": "usd",
   "hide_powered_by": false,
+  "defaultThemeMode": "light",
   "theme": "kittygotchi",
   "domain": "https://dexappbuilder.dexkit.com",
   "logo": {
     "url": "https://dexkit-storage.nyc3.cdn.digitaloceanspaces.com/dexkit/images/logo/dexappbuilder.svg",
+    "height": "50",
+    "width": "150"
+  },
+  "logoDark": {
+    "url": "https://dexkit-storage.nyc3.cdn.digitaloceanspaces.com/dexkit/images/logo/dexappbuilder-dark.svg",
     "height": "50",
     "width": "150"
   },

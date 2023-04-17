@@ -1,3 +1,4 @@
+import { ThemeMode } from '@dexkit/ui/constants/enum';
 import Button from '@mui/material/Button';
 import { ThemeProvider } from '@mui/material/styles';
 import { useAtomValue } from 'jotai';
@@ -5,7 +6,7 @@ import dynamic from 'next/dynamic';
 import { useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { AppConfig } from 'src/types/config';
-import { customThemeAtom } from '../state';
+import { customThemeDarkAtom, customThemeLightAtom } from '../state';
 import { generateTheme } from '../utils';
 const PreviewPageDialog = dynamic(() => import('./dialogs/PreviewPageDialog'));
 
@@ -15,7 +16,8 @@ interface Props {
 
 export function PreviewAppButton({ appConfig }: Props) {
   const [showPreview, setShowPreview] = useState(false);
-  const customTheme = useAtomValue(customThemeAtom);
+  const customThemeDark = useAtomValue(customThemeDarkAtom);
+  const customThemeLight = useAtomValue(customThemeLightAtom);
   const handleClosePreview = () => {
     setShowPreview(false);
   };
@@ -27,10 +29,13 @@ export function PreviewAppButton({ appConfig }: Props) {
   const selectedTheme = useMemo(() => {
     return generateTheme({
       selectedFont: appConfig?.font,
-      customTheme,
+      customTheme:
+        appConfig?.defaultThemeMode === ThemeMode.dark
+          ? customThemeDark
+          : customThemeLight,
       selectedThemeId: appConfig?.theme || '',
     });
-  }, [appConfig?.theme, customTheme, appConfig?.font]);
+  }, [appConfig?.theme, appConfig?.font, customThemeDark, customThemeLight]);
 
   return (
     <>

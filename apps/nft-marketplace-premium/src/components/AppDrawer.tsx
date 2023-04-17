@@ -32,6 +32,7 @@ import { getChainLogoImage, getChainName } from '../utils/blockchain';
 import DrawerMenu from './DrawerMenu';
 import Wallet from './icons/Wallet';
 import Link from './Link';
+import { ThemeModeSelector } from './ThemeModeSelector';
 import { WalletButton } from './WalletButton';
 
 const CustomListItemSecondaryAction = styled(ListItemSecondaryAction)({
@@ -246,6 +247,11 @@ function AppDrawer({ open, onClose }: Props) {
             <CustomListItemSecondaryAction>
               <ChevronRightIcon color="primary" />
             </CustomListItemSecondaryAction>
+          </ListItem>
+          <ListItem divider>
+            <ListItemIcon />
+
+            <ListItemText primary={<ThemeModeSelector />} />
           </ListItem>
         </List>
       </Box>

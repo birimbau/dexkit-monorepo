@@ -12,6 +12,7 @@ import {
   TransactionType,
 } from '../types/blockchain';
 
+import { ThemeMode } from '@dexkit/ui/constants/enum';
 import { Asset } from '../types/nft';
 
 export const appStateAtom = atomWithStorage<AppState>('appState', {
@@ -23,6 +24,7 @@ export const appStateAtom = atomWithStorage<AppState>('appState', {
   currencyUser: '',
   localeUser: '',
   assets: {},
+  themeMode: undefined,
   accountAssets: {
     lastTimeFetched: {
       time: new Date().getTime(),
@@ -84,6 +86,11 @@ export const tokensAtom = focusAtom<AppState, Token[], void>(
 export const currencyAtom = focusAtom<AppState, string, void>(
   appStateAtom,
   (o) => o.prop('currency')
+);
+
+export const userThemeModeAtom = focusAtom<AppState, ThemeMode | undefined, void>(
+  appStateAtom,
+  (o) => o.prop('themeMode')
 );
 
 export const localeAtom = focusAtom<AppState, string, void>(appStateAtom, (o) =>

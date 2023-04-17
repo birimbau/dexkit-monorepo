@@ -264,8 +264,6 @@ export function AssetBuyOrder({ asset, orderBookItem }: Props) {
           id: asset.id,
         };
 
-        console.log('hello');
-
         if (order.direction === OrderDirection.Buy) {
           watchTransactionDialog.open('cancelOffer', values);
         } else {

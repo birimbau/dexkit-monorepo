@@ -1,13 +1,17 @@
+import { ThemeMode } from '@dexkit/ui/constants/enum';
 import { Cancel } from '@mui/icons-material';
 import {
   Autocomplete,
   Box,
   Button,
-  createTheme,
   Divider,
+  FormControl,
   Grid,
-  responsiveFontSizes,
+  InputLabel,
+  MenuItem,
+  Select,
   Stack,
+  Switch,
   TextField,
   Typography,
 } from '@mui/material';
@@ -16,14 +20,17 @@ import Head from 'next/head';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import Fonts from 'src/constants/fonts.json';
-import { getTheme } from '../../../../theme';
 import { AppConfig } from '../../../../types/config';
-import { customThemeAtom } from '../../state';
+import {
+  customThemeAtom,
+  customThemeDarkAtom,
+  customThemeLightAtom,
+} from '../../state';
 import { StepperButtonProps } from '../../types';
 import { generateTheme } from '../../utils';
+import ThemePreview from '../ThemePreview';
 import ThemeSection from '../sections/ThemeSection';
 import { StepperButtons } from '../steppers/StepperButtons';
-import ThemePreview from '../ThemePreview';
 
 interface Props {
   config: AppConfig;
@@ -43,10 +50,18 @@ export default function ThemeWizardContainer({
   showSwap,
 }: Props) {
   const [selectedThemeId, setSelectedThemeId] = useState<string>(config.theme);
+  const [selectedThemeMode, setSelectedThemeMode] = useState<ThemeMode>(
+    config.defaultThemeMode || ThemeMode.light
+  );
+  const [defaultThemeMode, setDefaultThemeMode] = useState<
+    ThemeMode | undefined
+  >(config?.defaultThemeMode);
   const [selectedFont, setSelectedFont] = useState<
     { family: string; category?: string } | undefined
   >(config?.font);
   const customTheme = useAtomValue(customThemeAtom);
+  const customThemeDark = useAtomValue(customThemeDarkAtom);
+  const customThemeLight = useAtomValue(customThemeLightAtom);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
   const handleShowPreview = () => {
@@ -61,8 +76,23 @@ export default function ThemeWizardContainer({
   );
 
   const selectedTheme = useMemo(() => {
-    return generateTheme({ selectedFont, customTheme, selectedThemeId });
-  }, [selectedThemeId, customTheme, selectedFont]);
+    return generateTheme({
+      selectedFont,
+      customTheme:
+        selectedThemeMode === ThemeMode.dark
+          ? customThemeDark
+          : customThemeLight,
+      selectedThemeId,
+      mode: selectedThemeMode,
+    });
+  }, [
+    selectedThemeId,
+    selectedThemeMode,
+    customTheme,
+    customThemeDark,
+    customThemeLight,
+    selectedFont,
+  ]);
 
   const handleCancelEdit = () => {
     setSelectedThemeId(config.theme);
@@ -74,25 +104,60 @@ export default function ThemeWizardContainer({
     }
   };
   const handleSave = () => {
-    const newConfig = { ...config, theme: selectedThemeId };
+    const newConfig = {
+      ...config,
+      theme: selectedThemeId,
+      themeMode: defaultThemeMode,
+    };
+    // We will not use anymore this configuration so we will just delete it from the config
     if (newConfig.theme === 'custom' && customTheme) {
-      newConfig.customTheme = JSON.stringify(customTheme);
+      delete newConfig.customTheme;
+    }
+    if (newConfig.theme === 'custom' && customThemeDark) {
+      newConfig.customThemeDark = JSON.stringify(customThemeDark);
+    }
+
+    if (newConfig.theme === 'custom' && customThemeLightAtom) {
+      newConfig.customThemeLight = JSON.stringify(customThemeLightAtom);
     }
     if (selectedFont) {
       newConfig.font = selectedFont;
     }
+    if (defaultThemeMode) {
+      config.defaultThemeMode = defaultThemeMode;
+    }
+
     onSave(newConfig);
   };
   useEffect(() => {
     const newConfig = { ...config, theme: selectedThemeId };
+    // We will not use anymore this configuration so we will just delete it from the config
     if (newConfig.theme === 'custom' && customTheme) {
-      newConfig.customTheme = JSON.stringify(customTheme);
+      delete newConfig.customTheme;
     }
+    if (newConfig.theme === 'custom' && customThemeDark) {
+      newConfig.customThemeDark = JSON.stringify(customThemeDark);
+    }
+
+    if (newConfig.theme === 'custom' && customThemeLight) {
+      newConfig.customThemeLight = JSON.stringify(customThemeLight);
+    }
+
     if (selectedFont) {
       newConfig.font = selectedFont;
     }
+    if (defaultThemeMode) {
+      newConfig.defaultThemeMode = defaultThemeMode;
+    }
+
     onChange(newConfig);
-  }, [selectedThemeId, selectedFont, customTheme]);
+  }, [
+    selectedThemeId,
+    selectedFont,
+    customTheme,
+    customThemeDark,
+    customThemeLight,
+  ]);
 
   const handleSelectedFont = (event: any, value: string | null) => {
     if (value) {
@@ -134,7 +199,7 @@ export default function ThemeWizardContainer({
           <Divider />
         </Grid>
         <Grid item xs={12} sm={6}>
-          <Box pb={2}>
+          <Stack spacing={2}>
             <Autocomplete
               disablePortal
               id="font-selection"
@@ -151,13 +216,79 @@ export default function ThemeWizardContainer({
                 />
               )}
             />
-          </Box>
 
-          <ThemeSection
-            selectedId={selectedThemeId}
-            onSelect={handleSelectTheme}
-            onPreview={handleShowPreview}
-          />
+            <FormControl fullWidth>
+              <InputLabel id="theme-mode-label">
+                <FormattedMessage
+                  id={'theme.mode'}
+                  defaultMessage={'Theme mode'}
+                />
+              </InputLabel>
+              <Select
+                labelId="theme-mode-label"
+                id="theme-mode"
+                value={selectedThemeMode}
+                label={
+                  <FormattedMessage
+                    id={'theme.mode'}
+                    defaultMessage={'Theme mode'}
+                  />
+                }
+                onChange={(ev) => {
+                  setSelectedThemeMode(ev.target.value as ThemeMode);
+                }}
+              >
+                <MenuItem value={ThemeMode.light}>
+                  <FormattedMessage id={'light'} defaultMessage={'Light'} />
+                </MenuItem>
+                <MenuItem value={ThemeMode.dark}>
+                  <FormattedMessage id={'dark'} defaultMessage={'Dark'} />
+                </MenuItem>
+              </Select>
+            </FormControl>
+
+            <Box>
+              <ThemeSection
+                mode={selectedThemeMode}
+                selectedId={selectedThemeId}
+                onSelect={handleSelectTheme}
+                onPreview={handleShowPreview}
+                legacyTheme={config?.customTheme}
+              />
+            </Box>
+            <Box>
+              <Typography variant="body2">
+                <FormattedMessage
+                  id="default.theme.mode"
+                  defaultMessage={'Default Theme mode'}
+                />
+              </Typography>
+              <Stack
+                direction={'row'}
+                alignContent={'center'}
+                alignItems={'center'}
+              >
+                <Typography variant="body1">
+                  {' '}
+                  <FormattedMessage id="light" defaultMessage={'Light'} />
+                </Typography>
+                <Switch
+                  defaultChecked={defaultThemeMode === ThemeMode.dark}
+                  onChange={() => {
+                    if (defaultThemeMode === 'dark') {
+                      setDefaultThemeMode(ThemeMode.light);
+                    } else {
+                      setDefaultThemeMode(ThemeMode.dark);
+                    }
+                  }}
+                />
+                <Typography variant="body1">
+                  {' '}
+                  <FormattedMessage id="dark" defaultMessage={'Dark'} />
+                </Typography>
+              </Stack>
+            </Box>
+          </Stack>
         </Grid>
         <Grid item xs={12} sm={6}>
           {renderThemePreview()}

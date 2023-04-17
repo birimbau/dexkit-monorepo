@@ -135,7 +135,7 @@ export function CreateWizardContainer({ slug, isSwapWizard }: Props) {
         return responsiveFontSizes(createTheme(customTheme));
       }
 
-      return responsiveFontSizes(getTheme(selectedThemeId).theme);
+      return responsiveFontSizes(getTheme({ name: selectedThemeId }).theme);
     }
   }, [selectedThemeId, customTheme]);
 
