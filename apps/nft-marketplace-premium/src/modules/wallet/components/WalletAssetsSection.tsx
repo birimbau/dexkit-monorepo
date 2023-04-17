@@ -126,7 +126,6 @@ function WalletAssetsSection({
   const onTransfer = (asset: Asset) => {
     setAssetTransfer(asset);
   };
-  console.log(assetTransfer);
 
   const renderAssets = () => {
     if (filteredAssetList.length === 0) {
