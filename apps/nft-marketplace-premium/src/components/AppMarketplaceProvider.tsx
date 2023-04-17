@@ -81,7 +81,7 @@ export function AppMarketplaceProvider({
           })
         : createTheme(tempTheme)
     );
-  }, [appConfig, mode]);
+  }, [appConfig, mode, userMode]);
 
   const SEO = useMemo(() => {
     const config = appConfig;
