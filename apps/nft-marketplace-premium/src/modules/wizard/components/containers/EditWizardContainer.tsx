@@ -688,7 +688,7 @@ export function EditWizardContainer({ site }: Props) {
                 <AnalyticsWizardContainer config={config} onSave={handleSave} />
               )}
               {activeMenu === ActiveMenu.Social && config && (
-                <SocialWizardContainer config={config} onSave={handleSave} />
+                <SocialWizardContainer config={config} onSave={handleSave} onChange={handleChange} />
               )}
               {activeMenu === ActiveMenu.FooterMenu && config && (
                 <FooterMenuWizardContainer
