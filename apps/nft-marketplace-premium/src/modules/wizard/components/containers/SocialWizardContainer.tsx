@@ -1,40 +1,113 @@
 import FacebookIcon from '@mui/icons-material/Facebook';
+import ImageIcon from '@mui/icons-material/Image';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
-import PinterestIcon from '@mui/icons-material/Pinterest';
 import RedditIcon from '@mui/icons-material/Reddit';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import YouTubeIcon from '@mui/icons-material/YouTube';
+import { Box, styled } from '@mui/material';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
 import InputAdornment from '@mui/material/InputAdornment';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import { Field, Form, Formik } from 'formik';
+import { Field, FieldArray, Form, Formik } from 'formik';
 import { TextField } from 'formik-mui';
+import dynamic from 'next/dynamic';
+import { useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import * as Yup from 'yup';
 import { AppConfig, SocialMedia } from '../../../../types/config';
-
+const MediaDialog = dynamic(() => import('../../../../components/mediaDialog'));
 interface Props {
   config: AppConfig;
   onSave: (config: AppConfig) => void;
+  onChange?: (config: AppConfig) => void;
 }
 
 interface SocialOptions {
   twitter?: string;
   instagram?: string;
   facebook?: string;
+  reddit?: string;
+  youtube?: string;
+  linkedin?: string;
 }
+
+const BackgroundImage = styled('img')(({ theme }) => ({
+  height: theme.spacing(4),
+  width: theme.spacing(4),
+}));
+
+const EmptyImageProfile = styled(ImageIcon)(({ theme }) => ({
+  height: theme.spacing(4),
+  width: theme.spacing(4),
+}));
 
 const SocialOptionsSchema: Yup.SchemaOf<SocialOptions> = Yup.object().shape({
   twitter: Yup.string(),
   instagram: Yup.string(),
   facebook: Yup.string(),
+  linkedin: Yup.string(),
+  youtube: Yup.string(),
+  reddit: Yup.string(),
+  custom: Yup.array().of(
+    Yup.object().shape({
+      iconUrl: Yup.string().required().url(),
+      label: Yup.string().required(),
+      link: Yup.string().required().url(),
+    })
+  ),
 });
 
-export default function SocialWizardContainer({ config, onSave }: Props) {
+function OnChangeListener({
+  values,
+  onChange,
+  config,
+  isValid,
+}: {
+  values: any;
+  onChange: any;
+  config: any;
+  isValid: boolean;
+}) {
+  useEffect(() => {
+    if (onChange && values && config && isValid) {
+      const socials: SocialMedia[] = [];
+      if (values.twitter) {
+        socials.push({ type: 'twitter', handle: values.twitter });
+      }
+      if (values.instagram) {
+        socials.push({ type: 'instagram', handle: values.instagram });
+      }
+      if (values.facebook) {
+        socials.push({ type: 'facebook', handle: values.facebook });
+      }
+      if (values.linkedin) {
+        socials.push({ type: 'linkedin', handle: values.linkedin });
+      }
+      if (values.reddit) {
+        socials.push({ type: 'reddit', handle: values.reddit });
+      }
+
+      config.social = socials;
+      config.social_custom = values.custom;
+      onChange(config);
+    }
+  }, [values, onChange, config, isValid]);
+
+  return null;
+}
+
+export default function SocialWizardContainer({
+  config,
+  onSave,
+  onChange,
+}: Props) {
+  const [openMediaDialog, setOpenMediaDialog] = useState(false);
+  const [mediaFieldToEdit, setMediaFieldToEdit] = useState<string>();
+
   return (
     <Formik
       initialValues={{
@@ -42,9 +115,10 @@ export default function SocialWizardContainer({ config, onSave }: Props) {
         instagram: config.social?.find((s) => s.type === 'instagram')?.handle,
         facebook: config.social?.find((s) => s.type === 'facebook')?.handle,
         linkedin: config.social?.find((s) => s.type === 'linkedin')?.handle,
-        pinterest: config.social?.find((s) => s.type === 'pinterest')?.handle,
+        //  pinterest: config.social?.find((s) => s.type === 'pinterest')?.handle,
         youtube: config.social?.find((s) => s.type === 'youtube')?.handle,
         reddit: config.social?.find((s) => s.type === 'reddit')?.handle,
+        custom: config?.social_custom || [],
       }}
       validationSchema={SocialOptionsSchema}
       onSubmit={(values, helpers) => {
@@ -61,19 +135,46 @@ export default function SocialWizardContainer({ config, onSave }: Props) {
         if (values.linkedin) {
           socials.push({ type: 'linkedin', handle: values.linkedin });
         }
-        if (values.pinterest) {
-          socials.push({ type: 'pinterest', handle: values.pinterest });
-        }
         if (values.reddit) {
           socials.push({ type: 'reddit', handle: values.reddit });
         }
 
         config.social = socials;
+        config.social_custom = values.custom;
         onSave(config);
       }}
     >
-      {({ submitForm }) => (
+      {({ submitForm, values, setFieldValue, isValid }) => (
         <Form>
+          <OnChangeListener
+            values={values}
+            onChange={onChange}
+            config={config}
+            isValid={isValid}
+          />
+          {openMediaDialog && (
+            <MediaDialog
+              dialogProps={{
+                open: openMediaDialog,
+                maxWidth: 'lg',
+                fullWidth: true,
+                onClose: () => {
+                  setOpenMediaDialog(false);
+                  setMediaFieldToEdit(undefined);
+                },
+              }}
+              onConfirmSelectFile={(file) => {
+                if (mediaFieldToEdit && file) {
+                  setFieldValue(mediaFieldToEdit, file.url);
+                  /*if (onChange) {
+                    onChange({ ...values, [mediaFieldToEdit]: file.url });
+                  }*/
+                }
+                setMediaFieldToEdit(undefined);
+                setOpenMediaDialog(false);
+              }}
+            />
+          )}
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <Stack>
@@ -132,7 +233,10 @@ export default function SocialWizardContainer({ config, onSave }: Props) {
                 component={TextField}
                 name="youtube"
                 label={
-                  <FormattedMessage id={'youtube'} defaultMessage={'Youtube'} />
+                  <FormattedMessage
+                    id={'youtube.channel'}
+                    defaultMessage={'Youtube channel'}
+                  />
                 }
                 InputProps={{
                   startAdornment: (
@@ -149,8 +253,8 @@ export default function SocialWizardContainer({ config, onSave }: Props) {
                 name="linkedin"
                 label={
                   <FormattedMessage
-                    id={'linkedin'}
-                    defaultMessage={'Linkedin'}
+                    id={'linkedin.company'}
+                    defaultMessage={'Linkedin company'}
                   />
                 }
                 InputProps={{
@@ -198,7 +302,76 @@ export default function SocialWizardContainer({ config, onSave }: Props) {
                 }}
               />
             </Grid>
-            <Grid item xs={12}>
+            <FieldArray
+              name="custom"
+              render={(arrayHelpers) => (
+                <Box p={2}>
+                  {values.custom && values.custom.length > 0 ? (
+                    values.custom.map((media, index) => (
+                      <Stack key={index} spacing={1} direction={'row'}>
+                        <Button
+                          onClick={() => {
+                            setOpenMediaDialog(true);
+                            setMediaFieldToEdit(`custom.${index}.iconUrl`);
+                          }}
+                        >
+                          {values?.custom[index]?.iconUrl ? (
+                            <BackgroundImage
+                              src={values?.custom[index]?.iconUrl}
+                            />
+                          ) : (
+                            <EmptyImageProfile />
+                          )}
+                        </Button>
+                        <Field
+                          name={`custom.${index}.label`}
+                          component={TextField}
+                          label={
+                            <FormattedMessage
+                              id={'label'}
+                              defaultMessage={'Label'}
+                            />
+                          }
+                        />
+
+                        <Field
+                          name={`custom.${index}.link`}
+                          component={TextField}
+                          label={
+                            <FormattedMessage
+                              id={'link'}
+                              defaultMessage={'Link'}
+                            />
+                          }
+                        />
+                        <Button
+                          type="button"
+                          onClick={() => arrayHelpers.remove(index)} // remove a media from the list
+                        >
+                          -
+                        </Button>
+                        <Button
+                          type="button"
+                          onClick={() => arrayHelpers.insert(index, '')} // insert an media string at a position
+                        >
+                          +
+                        </Button>
+                      </Stack>
+                    ))
+                  ) : (
+                    <Button type="button" onClick={() => arrayHelpers.push('')}>
+                      {/* show this when user has removed all friends from the list */}
+                      <FormattedMessage
+                        id={'add.custom'}
+                        defaultMessage={'Add Custom'}
+                      />
+                    </Button>
+                  )}
+                </Box>
+              )}
+            />
+
+            {/*   <Grid item xs={12}>
               <Field
                 component={TextField}
                 name="pinterest"
@@ -216,7 +389,7 @@ export default function SocialWizardContainer({ config, onSave }: Props) {
                   ),
                 }}
               />
-            </Grid>
+              </Grid>*/}
 
             <Grid item xs={12}>
               <Divider />

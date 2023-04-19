@@ -57,6 +57,10 @@ export interface SocialMedia {
   handle: string;
 }
 
+export interface SocialMediaCustom {
+  link: string, iconUrl: string, label: string;
+}
+
 interface SeoImage {
   url: string;
   width?: number;
@@ -123,6 +127,7 @@ export interface AppConfig {
   };
   favicon_url?: string;
   social?: SocialMedia[];
+  social_custom?: SocialMediaCustom[];
   pages: { [key: string]: AppPage };
   transak?: { enabled: boolean };
   fees?: {
