@@ -217,9 +217,11 @@ function Navbar({ appConfig, isPreview }: Props) {
             }
           />
         </MenuItem>
-        <MenuItem>
-          <ThemeModeSelector />
-        </MenuItem>
+        {false && (
+          <MenuItem>
+            <ThemeModeSelector />
+          </MenuItem>
+        )}
       </Menu>
       {/* <AppTransactionsDialog
         dialogProps={{

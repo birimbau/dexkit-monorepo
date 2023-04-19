@@ -248,11 +248,13 @@ function AppDrawer({ open, onClose }: Props) {
               <ChevronRightIcon color="primary" />
             </CustomListItemSecondaryAction>
           </ListItem>
-          <ListItem divider>
-            <ListItemIcon />
+          {false && (
+            <ListItem divider>
+              <ListItemIcon />
 
-            <ListItemText primary={<ThemeModeSelector />} />
-          </ListItem>
+              <ListItemText primary={<ThemeModeSelector />} />
+            </ListItem>
+          )}
         </List>
       </Box>
     </Drawer>
