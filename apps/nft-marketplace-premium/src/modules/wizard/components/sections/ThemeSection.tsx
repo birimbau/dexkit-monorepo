@@ -8,12 +8,8 @@ import {
 } from '@mui/material';
 import { useAtomValue } from 'jotai';
 import { FormattedMessage } from 'react-intl';
-import { darkThemes, getTheme, lightThemes } from '../../../../theme';
-import {
-  customThemeAtom,
-  customThemeDarkAtom,
-  customThemeLightAtom,
-} from '../../state';
+import { getTheme, themes } from '../../../../theme';
+import { customThemeDarkAtom, customThemeLightAtom } from '../../state';
 import WizardThemeButton from '../WizardThemeButton';
 import WizardThemeCustom from '../WizardThemeCustom';
 
@@ -33,58 +29,61 @@ export default function ThemeSection({
   onPreview,
 }: Props) {
   const theme = useTheme();
-  const customTheme = useAtomValue(customThemeAtom);
   const customThemeDark = useAtomValue(customThemeDarkAtom);
   const customThemeLight = useAtomValue(customThemeLightAtom);
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const renderThemes = () => {
-    return Object.keys(mode === ThemeMode.dark ? darkThemes : lightThemes).map(
-      (key: string) => {
-        const tempTheme = getTheme({ name: key, mode });
-        if (!tempTheme) {
-          return;
-        }
-        let { theme, name } = tempTheme;
-        if (customThemeDark && key === 'custom' && mode === ThemeMode.dark) {
-          theme = {
-            ...theme,
-            palette: {
-              ...theme.palette,
-              ...(customThemeDark.palette as any),
-              mode,
-            },
-          };
-        }
-        if (customThemeLight && key === 'custom' && mode === ThemeMode.light) {
-          theme = {
-            ...theme,
-            palette: {
-              ...theme.palette,
-              ...(customThemeLight.palette as any),
-              mode,
-            },
-          };
-        }
-
-        return (
-          <Grid item xs={6} sm={4} key={key}>
-            <WizardThemeButton
-              selected={selectedId === key}
-              name={name}
-              id={key}
-              onClick={onSelect}
-              colors={{
-                primary: theme.palette.primary.main,
-                background: theme.palette.background.default,
-                secondary: theme.palette.secondary.main,
-                text: theme.palette.text.primary,
-              }}
-            />
-          </Grid>
-        );
+    return Object.keys(themes).map((key: string) => {
+      const tempTheme = getTheme({ name: key });
+      if (!tempTheme) {
+        return;
       }
-    );
+      let { theme, name } = tempTheme;
+      if (key === 'custom') {
+        theme = {
+          ...theme,
+          colorSchemes: {
+            dark: {
+              palette: {
+                ...theme?.colorSchemes?.dark,
+                ...(customThemeDark?.palette as any),
+              },
+            },
+            light: {
+              palette: {
+                ...theme?.colorSchemes.light,
+                ...(customThemeLight?.palette as any),
+              },
+            },
+          },
+        };
+      }
+
+      return (
+        <Grid item xs={6} sm={4} key={key}>
+          <WizardThemeButton
+            selected={selectedId === key}
+            name={name}
+            id={key}
+            onClick={onSelect}
+            colors={{
+              primary:
+                theme.colorSchemes[mode || ThemeMode.light].palette.primary
+                  .main,
+              background:
+                theme.colorSchemes[mode || ThemeMode.light].palette.background
+                  .default,
+              secondary:
+                theme.colorSchemes[mode || ThemeMode.light].palette.secondary
+                  .main,
+              text: theme.colorSchemes[mode || ThemeMode.light].palette.text
+                .primary,
+            }}
+          />
+        </Grid>
+      );
+    });
   };
 
   return (

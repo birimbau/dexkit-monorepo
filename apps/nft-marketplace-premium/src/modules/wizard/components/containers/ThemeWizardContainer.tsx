@@ -78,10 +78,17 @@ export default function ThemeWizardContainer({
   const selectedTheme = useMemo(() => {
     return generateTheme({
       selectedFont,
-      customTheme:
-        selectedThemeMode === ThemeMode.dark
-          ? customThemeDark
-          : customThemeLight,
+      customTheme: {
+        colorSchemes: {
+          dark: {
+            ...customThemeDark,
+          },
+          light: {
+            ...customThemeLight,
+          },
+        },
+      },
+
       selectedThemeId,
       mode: selectedThemeMode,
     });

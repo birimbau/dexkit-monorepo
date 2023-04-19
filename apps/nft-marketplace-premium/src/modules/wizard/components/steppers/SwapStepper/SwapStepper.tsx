@@ -1,24 +1,28 @@
-import * as React from 'react';
+import {
+  customThemeAtom,
+  customThemeDarkAtom,
+  customThemeLightAtom,
+} from '@/modules/wizard/state';
+import { generateTheme } from '@/modules/wizard/utils';
+import { useTheme } from '@mui/material';
 import Box from '@mui/material/Box';
-import Stepper from '@mui/material/Stepper';
-import Step from '@mui/material/Step';
-import StepLabel from '@mui/material/StepLabel';
-import StepContent from '@mui/material/StepContent';
 import Button from '@mui/material/Button';
-import Paper from '@mui/material/Paper';
-import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
+import Paper from '@mui/material/Paper';
+import Step from '@mui/material/Step';
+import StepContent from '@mui/material/StepContent';
+import StepLabel from '@mui/material/StepLabel';
+import Stepper from '@mui/material/Stepper';
+import Typography from '@mui/material/Typography';
+import { useAtomValue } from 'jotai';
+import * as React from 'react';
+import { useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
-import ThemeWizardContainer from '../../containers/ThemeWizardContainer';
 import { AppConfig } from 'src/types/config';
 import GeneralWizardContainer from '../../containers/GeneralWizardContainer';
-import TokenWizardContainer from '../../containers/TokenWizardContainer';
 import SwapWizardContainer from '../../containers/SwapWizardContainer';
-import { useTheme } from '@mui/material';
-import { useAtomValue } from 'jotai';
-import { customThemeAtom } from '@/modules/wizard/state';
-import { useMemo } from 'react';
-import { generateTheme } from '@/modules/wizard/utils';
+import ThemeWizardContainer from '../../containers/ThemeWizardContainer';
+import TokenWizardContainer from '../../containers/TokenWizardContainer';
 
 const steps = [
   {
@@ -63,11 +67,22 @@ export default function SwapStepper({ config, onSave, onChange }: Props) {
   const [activeStep, setActiveStep] = React.useState(0);
 
   const customTheme = useAtomValue(customThemeAtom);
+  const customThemeDark = useAtomValue(customThemeDarkAtom);
+  const customThemeLight = useAtomValue(customThemeLightAtom);
 
   const selectedTheme = useMemo(() => {
     return generateTheme({
       selectedFont: config?.font,
-      customTheme,
+      customTheme: {
+        colorSchemes: {
+          dark: {
+            ...customThemeDark,
+          },
+          light: {
+            ...customThemeLight,
+          },
+        },
+      },
       selectedThemeId: config?.theme || '',
     });
   }, [config?.theme, customTheme, config?.font]);

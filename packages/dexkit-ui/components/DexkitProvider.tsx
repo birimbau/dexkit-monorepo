@@ -7,16 +7,26 @@ import { useDexkitContextState, useOrderedConnectors } from "../hooks";
 
 import { AppTransaction } from "@dexkit/core/types";
 import { getConnectorName } from "@dexkit/core/utils";
-import { CssBaseline, Theme, ThemeProvider } from "@mui/material";
+import { CssBaseline } from "@mui/material";
 import { PrimitiveAtom, SetStateAction, WritableAtom } from "jotai";
 
+import {
+  Experimental_CssVarsProvider as CssVarsProvider,
+  SupportedColorScheme,
+} from "@mui/material/styles";
+import React from "react";
+import { ThemeMode } from "../constants/enum";
 import { DexKitContext } from "../context/DexKitContext";
 import { AppNotification, AppNotificationType } from "../types";
 import { MagicStateProvider } from "./MagicStateProvider";
 import TransactionUpdater from "./TransactionUpdater";
-
 export interface DexkitProviderProps {
-  theme: Theme;
+  themeMode: ThemeMode;
+  theme: {
+    cssVarPrefix?: string | undefined;
+    colorSchemes: Record<SupportedColorScheme, Record<string, any>>;
+  };
+
   locale: string;
   defaultLocale?: string;
   onChangeLocale: (locale: string) => void;
@@ -46,6 +56,7 @@ export interface DexkitProviderProps {
 export function DexkitProvider({
   children,
   theme,
+  themeMode,
   selectedWalletAtom,
   transactionsAtom,
   locale,
@@ -77,7 +88,7 @@ export function DexkitProvider({
         messages={localeMessages}
       >
         <Web3ReactProvider connectors={connectors} key={web3ReactKey}>
-          <ThemeProvider theme={theme}>
+          <CssVarsProvider theme={theme}>
             <SnackbarProvider
               maxSnack={3}
               anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
@@ -86,7 +97,7 @@ export function DexkitProvider({
               <MagicStateProvider currency="usd">{children}</MagicStateProvider>
               <TransactionUpdater pendingTransactionsAtom={transactionsAtom} />
             </SnackbarProvider>
-          </ThemeProvider>
+          </CssVarsProvider>
         </Web3ReactProvider>
       </IntlProvider>
     </DexKitContext.Provider>

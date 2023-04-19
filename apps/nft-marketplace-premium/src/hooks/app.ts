@@ -1,6 +1,8 @@
 import { useDexKitContext } from '@dexkit/ui';
 import { ThemeMode } from '@dexkit/ui/constants/enum';
+import useMediaQuery from '@mui/material/useMediaQuery';
 import { atom, useAtom, useAtomValue } from 'jotai';
+import { useTheme } from "next-themes";
 import { useContext, useMemo } from 'react';
 import { AppConfigContext } from '../contexts';
 import {
@@ -8,7 +10,6 @@ import {
   localeUserAtom,
   userThemeModeAtom
 } from '../state/atoms';
-
 
 
 
@@ -65,9 +66,14 @@ export function useCollections() {
   return appConfig?.collections;
 }
 
+const DARK_SCHEME_QUERY = '(prefers-color-scheme: dark)'
+
 export function useThemeMode() {
+  const { setTheme } = useTheme();
+  const systemPrefersDark = useMediaQuery(DARK_SCHEME_QUERY)
   const [userMode, setThemeMode] = useAtom(userThemeModeAtom);
   const appConfig = useAppConfig();
+
   const mode = useMemo(() => {
     if (userMode) {
       return userMode
@@ -75,12 +81,15 @@ export function useThemeMode() {
     if (appConfig.defaultThemeMode) {
       return appConfig.defaultThemeMode;
     }
-    return ThemeMode.light;
-  }, [userMode])
+    return systemPrefersDark ? ThemeMode.dark : ThemeMode.light;
+  }, [userMode, appConfig, systemPrefersDark])
 
 
 
-  return { mode, setThemeMode, userMode };
+
+
+
+  return { mode: mode, setThemeMode, userMode };
 }
 
 export function useLocale() {

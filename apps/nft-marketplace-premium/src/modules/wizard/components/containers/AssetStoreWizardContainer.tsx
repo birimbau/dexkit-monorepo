@@ -1,11 +1,11 @@
 import { AssetStoreContainer } from '@/modules/nft/components/container/AssetStoreContainer';
-import { ThemeProvider } from '@emotion/react';
-import { Alert, Theme } from '@mui/material';
+import { Alert } from '@mui/material';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
+import { Theme, ThemeProvider } from '@mui/material/styles';
 import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { AssetStoreOptions } from 'src/types/nft';

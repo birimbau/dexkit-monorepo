@@ -1,11 +1,11 @@
 import { ThemeMode } from '@dexkit/ui/constants/enum';
-import { createTheme, responsiveFontSizes } from '@mui/material/styles';
+import { createTheme, experimental_extendTheme as extendTheme } from '@mui/material/styles';
 import { getTheme } from 'src/theme';
 import { Token } from '../../../types/blockchain';
 import { AppCollection } from '../../../types/config';
 import { FeeForm } from '../components/sections/FeesSectionForm';
 import { MAX_FEES } from '../constants';
-import { CustomThemeInterface } from '../state';
+import { CustomThemeColorSchemesInterface } from '../state';
 
 export function totalInFees(fees: FeeForm[]) {
   return fees.reduce((prev, current) => current.amountPercentage + prev, 0.0);
@@ -33,7 +33,7 @@ export function APP_COLLECTION_KEY(collection: AppCollection) {
 
 
 export function generateTheme({ selectedFont, selectedThemeId, customTheme, mode }:
-  { selectedFont?: { family?: string, category?: string }, selectedThemeId: string, customTheme?: CustomThemeInterface, mode?: ThemeMode }) {
+  { selectedFont?: { family?: string, category?: string }, selectedThemeId: string, customTheme?: CustomThemeColorSchemesInterface, mode?: ThemeMode }) {
 
   let fontFamily;
   if (selectedFont) {
@@ -41,29 +41,65 @@ export function generateTheme({ selectedFont, selectedThemeId, customTheme, mode
   }
 
   if (selectedThemeId === 'custom') {
-    return responsiveFontSizes(
-      fontFamily
-        ? createTheme({
-          ...customTheme,
-          typography: {
-            fontFamily,
-          },
-        })
-        : createTheme(customTheme)
-    );
-  }
-  const theme = getTheme({ name: selectedThemeId, mode }).theme;
-
-  return responsiveFontSizes(
-    fontFamily
+    let paletteTheme = mode === ThemeMode.dark ? customTheme?.colorSchemes?.dark : customTheme?.colorSchemes?.light;
+    return fontFamily
       ? createTheme({
-        ...theme,
+        typography: {
+          fontFamily,
+        },
+        ...paletteTheme
+      })
+      : createTheme({
+
+        ...paletteTheme
+      })
+
+  }
+  const theme = getTheme({ name: selectedThemeId }).theme;
+  let paletteTheme = mode === ThemeMode.dark ? theme.colorSchemes.dark : theme.colorSchemes.light;
+  return fontFamily
+    ? createTheme({
+      typography: {
+        fontFamily,
+      },
+      ...paletteTheme
+    })
+    : createTheme({
+      typography: {
+        fontFamily,
+      },
+      ...paletteTheme
+    })
+}
+
+export function generateCSSVarsTheme({ selectedFont, selectedThemeId, customTheme }:
+  { selectedFont?: { family?: string, category?: string }, selectedThemeId: string, customTheme?: CustomThemeColorSchemesInterface, mode?: ThemeMode }) {
+
+  let fontFamily;
+  if (selectedFont) {
+    fontFamily = `'${selectedFont.family}', ${selectedFont.category}`;
+  }
+
+  if (selectedThemeId === 'custom') {
+    return fontFamily
+      ? extendTheme({
+        ...customTheme,
         typography: {
           fontFamily,
         },
       })
-      : createTheme(theme)
-  );
+      : extendTheme(customTheme)
 
+  }
+  const theme = getTheme({ name: selectedThemeId }).theme;
+
+  return fontFamily
+    ? extendTheme({
+      ...theme,
+      typography: {
+        fontFamily,
+      },
+    })
+    : extendTheme(theme)
 
 }

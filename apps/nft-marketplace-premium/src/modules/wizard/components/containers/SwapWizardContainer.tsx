@@ -3,12 +3,12 @@ import { SwapWidget } from '@dexkit/widgets';
 import { Token as WidgetToken } from '@dexkit/widgets/src/types';
 
 import { ChainId } from '@dexkit/core/constants';
-import { Theme, ThemeProvider } from '@mui/material';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
+import { Theme, ThemeProvider } from '@mui/material/styles';
 import { useEffect, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { useCurrency } from 'src/hooks/currency';

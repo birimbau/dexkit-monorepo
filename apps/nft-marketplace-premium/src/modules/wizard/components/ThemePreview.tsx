@@ -1,14 +1,6 @@
 import { ChainId } from '@dexkit/core/constants';
-import {
-  Box,
-  Button,
-  Grid,
-  Stack,
-  TextField,
-  Theme,
-  ThemeProvider,
-  Typography,
-} from '@mui/material';
+import { Box, Button, Grid, Stack, TextField, Typography } from '@mui/material';
+import { Theme, ThemeProvider } from '@mui/material/styles';
 import { useIntl } from 'react-intl';
 
 import AssetFromApi from '../../nft/components/AssetFromApi';
@@ -22,6 +14,7 @@ interface Props {
 
 export default function ThemePreview({ selectedTheme, showSwap }: Props) {
   const { formatMessage } = useIntl();
+  console.log(selectedTheme);
 
   return (
     <ThemeProvider theme={selectedTheme}>

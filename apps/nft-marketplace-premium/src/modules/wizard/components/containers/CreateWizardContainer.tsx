@@ -2,18 +2,20 @@ import {
   Box,
   Button,
   Container,
-  createTheme,
   Divider,
   Drawer,
   Grid,
   IconButton,
-  responsiveFontSizes,
   Stack,
-  ThemeProvider,
   Typography,
   useMediaQuery,
   useTheme,
 } from '@mui/material';
+import {
+  createTheme,
+  experimental_extendTheme as extendTheme,
+  ThemeProvider,
+} from '@mui/material/styles';
 import dynamic from 'next/dynamic';
 
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
@@ -69,6 +71,10 @@ export function CreateWizardContainer({ slug, isSwapWizard }: Props) {
   const connectWalletDialog = useConnectWalletDialog();
 
   const theme = useTheme();
+
+  const defaultTheme = useMemo(() => {
+    return extendTheme({ ...theme });
+  }, [theme]);
 
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -132,10 +138,12 @@ export function CreateWizardContainer({ slug, isSwapWizard }: Props) {
   const selectedTheme = useMemo(() => {
     if (selectedThemeId !== undefined) {
       if (selectedThemeId === 'custom') {
-        return responsiveFontSizes(createTheme(customTheme));
+        return createTheme(customTheme?.colorSchemes?.light);
       }
 
-      return responsiveFontSizes(getTheme({ name: selectedThemeId }).theme);
+      return createTheme(
+        getTheme({ name: selectedThemeId }).theme.colorSchemes.light
+      );
     }
   }, [selectedThemeId, customTheme]);
 
@@ -382,7 +390,9 @@ export function CreateWizardContainer({ slug, isSwapWizard }: Props) {
           </Grid>
           {!isMobile && (
             <Grid item xs={12} sm={8}>
-              <ThemeProvider theme={selectedTheme ? selectedTheme : theme}>
+              <ThemeProvider
+                theme={selectedTheme ? selectedTheme : defaultTheme}
+              >
                 <Container>
                   <Stack spacing={2}>
                     {clonedConfigQuery?.data?.nft && (
