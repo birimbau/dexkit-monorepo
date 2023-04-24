@@ -1,13 +1,23 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { BigNumber, ethers } from "ethers";
 import { useSnackbar } from "notistack";
 import { useIntl } from "react-intl";
-import { ContractDeployParams } from "../types";
+
+import axios from "axios";
+
+import { ChainId } from "@dexkit/core/constants";
+import { ETHER_SCAN_API_URL } from "../constants";
+import {
+  AbiFragment,
+  ContractDeployParams,
+  ContractFormParams,
+} from "../types";
 
 export interface UseContractCallMutationOptions {
   contractAddress?: string;
   abi: ethers.ContractInterface;
   provider?: ethers.providers.Web3Provider;
+  onSuccess?: (data: { name: string; result: any }) => void;
 }
 
 export interface UseContractCallMutationParams {
@@ -22,6 +32,7 @@ export function useContractCallMutation({
   contractAddress,
   abi,
   provider,
+  onSuccess,
 }: UseContractCallMutationOptions) {
   const { enqueueSnackbar } = useSnackbar();
   const { formatMessage } = useIntl();
@@ -37,7 +48,7 @@ export function useContractCallMutation({
       let contract: ethers.Contract;
 
       if (!contractAddress || !provider) {
-        return;
+        throw new Error("no provider");
       }
 
       let cb;
@@ -70,9 +81,10 @@ export function useContractCallMutation({
         }
       }
 
-      return result;
+      return { name, result };
     },
     {
+      onSuccess: onSuccess,
       onError: (err: any) => {
         enqueueSnackbar(
           formatMessage(
@@ -154,6 +166,108 @@ export function useContractDeployMutation({
           { variant: "error" }
         );
       },
+    }
+  );
+}
+
+export const CALL_ON_MOUNT_QUERY = "CALL_ON_MOUNT_QUERY";
+
+export function useCallOnMountFields({
+  contractAddress,
+  abi,
+  provider,
+  params,
+  onSuccess,
+}: {
+  contractAddress: string;
+  abi: AbiFragment[];
+  provider?: ethers.providers.JsonRpcProvider;
+  params: ContractFormParams;
+  onSuccess: (results: { [key: string]: any }) => void;
+}) {
+  return useQuery(
+    [CALL_ON_MOUNT_QUERY, params],
+    async () => {
+      if (provider) {
+        let contract = new ethers.Contract(contractAddress, abi, provider);
+
+        let results: { [key: string]: any } = {};
+
+        for (let field of Object.keys(params.fields)) {
+          if (params.fields[field].callOnMount) {
+            const cb = contract[field];
+            const args = Object.keys(params.fields[field].input).map(
+              (key) => params.fields[field].input[key].defaultValue
+            );
+
+            let result = await cb(...args);
+
+            results[field] = result;
+          }
+        }
+
+        console.log("results", results);
+
+        return results;
+      }
+
+      return {};
+    },
+    {
+      onSuccess,
+    }
+  );
+}
+
+// https://api.etherscan.io/api?module=contract&action=getabi&address=0xfb6916095ca1df60bb79ce92ce3ea74c37c5d359
+
+export const SCAN_CONTRACT_ABI = "SCAN_CONTRACT_ABI";
+
+export function useScanContractAbi({
+  contractAddress,
+  onSuccess,
+  chainId,
+  enabled,
+}: {
+  contractAddress: string;
+  onSuccess: (abi: AbiFragment[]) => void;
+  chainId?: ChainId;
+  enabled?: boolean;
+}) {
+  return useQuery(
+    [SCAN_CONTRACT_ABI, contractAddress],
+    async ({ signal }) => {
+      if (!ethers.utils.isAddress(contractAddress)) {
+        throw new Error("invalid contract address");
+      }
+
+      console.log("chain", chainId);
+
+      if (!chainId) {
+        throw new Error("no chain id");
+      }
+
+      const resp = await axios.get(
+        `https://api.${ETHER_SCAN_API_URL[chainId] ?? ""}.io/api`,
+        {
+          params: {
+            action: "getabi",
+            module: "contract",
+            address: contractAddress,
+          },
+          signal,
+        }
+      );
+
+      console.log("vem até aqui");
+
+      return JSON.parse(resp.data.result);
+    },
+    {
+      onSuccess,
+      enabled,
+      refetchOnMount: false,
+      refetchOnWindowFocus: false,
     }
   );
 }

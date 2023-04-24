@@ -1,4 +1,5 @@
 import { ThemeMode } from '@dexkit/ui/constants/enum';
+import { AbiFragment } from '@dexkit/web3forms/types';
 import { createTheme, responsiveFontSizes } from '@mui/material/styles';
 import { getTheme } from 'src/theme';
 import { Token } from '../../../types/blockchain';
@@ -29,12 +30,17 @@ export function APP_COLLECTION_KEY(collection: AppCollection) {
   return `${collection.chainId}-${collection.contractAddress.toLowerCase()}`;
 }
 
-
-
-
-export function generateTheme({ selectedFont, selectedThemeId, customTheme, mode }:
-  { selectedFont?: { family?: string, category?: string }, selectedThemeId: string, customTheme?: CustomThemeInterface, mode?: ThemeMode }) {
-
+export function generateTheme({
+  selectedFont,
+  selectedThemeId,
+  customTheme,
+  mode,
+}: {
+  selectedFont?: { family?: string; category?: string };
+  selectedThemeId: string;
+  customTheme?: CustomThemeInterface;
+  mode?: ThemeMode;
+}) {
   let fontFamily;
   if (selectedFont) {
     fontFamily = `'${selectedFont.family}', ${selectedFont.category}`;
@@ -44,11 +50,11 @@ export function generateTheme({ selectedFont, selectedThemeId, customTheme, mode
     return responsiveFontSizes(
       fontFamily
         ? createTheme({
-          ...customTheme,
-          typography: {
-            fontFamily,
-          },
-        })
+            ...customTheme,
+            typography: {
+              fontFamily,
+            },
+          })
         : createTheme(customTheme)
     );
   }
@@ -57,13 +63,62 @@ export function generateTheme({ selectedFont, selectedThemeId, customTheme, mode
   return responsiveFontSizes(
     fontFamily
       ? createTheme({
-        ...theme,
-        typography: {
-          fontFamily,
-        },
-      })
+          ...theme,
+          typography: {
+            fontFamily,
+          },
+        })
       : createTheme(theme)
   );
+}
 
+export function inputMapping(abi: AbiFragment[]) {
+  let fields: {
+    [key: string]: {
+      name: string;
+      visible: boolean;
+      lockInputs: boolean;
+      callOnMount: boolean;
+      collapse: boolean;
+      hideInputs: boolean;
+      callToAction: string;
+      input: {
+        [key: string]: {
+          label: string;
+          defaultValue: string;
+        };
+      };
+    };
+  } = {};
 
+  for (let item of abi) {
+    if (item.name) {
+      let inputs: {
+        [key: string]: {
+          label: string;
+          defaultValue: string;
+        };
+      } = {};
+
+      for (let inp of item.inputs) {
+        inputs[inp.name] = {
+          defaultValue: '',
+          label: inp.name,
+        };
+      }
+
+      fields[item.name] = {
+        name: item.name,
+        input: inputs,
+        callOnMount: false,
+        lockInputs: false,
+        visible: false,
+        collapse: false,
+        hideInputs: false,
+        callToAction: '',
+      };
+    }
+  }
+
+  return fields;
 }

@@ -15,42 +15,27 @@ import { AbiFragment } from "../types";
 
 const ABI: AbiFragment[] = [
   {
-    inputs: [],
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "constructor",
-  },
-  {
-    inputs: [],
+    inputs: [
+      {
+        name: "visible",
+        type: "bool",
+      },
+    ],
     name: "retrieve",
     outputs: [
       {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
+        name: "visible",
+        type: "bool",
       },
     ],
     stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "num",
-        type: "uint256",
-      },
-    ],
-    name: "store",
-    outputs: [],
-    stateMutability: "nonpayable",
     type: "function",
   },
 ];
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-  title: "Components/ContractForm",
+  title: "Components/ContractFormInputTypes",
   component: ContractFormView,
   // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
   argTypes: {},
@@ -90,7 +75,14 @@ const Template: ComponentStory<typeof ContractFormView> = (args) => {
               abi: ABI,
               contractAddress: "0xf68018ce37827a097df2d8ce8e20faf6ccf7dfae",
               chainId: ChainId.Ethereum,
-              fields: {},
+              fields: {
+                retrieve: {
+                  visible: true,
+                  callOnMount: false,
+                  readOnly: false,
+                  input: {},
+                },
+              },
             }}
           />
         </DexkitProvider>

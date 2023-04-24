@@ -1,5 +1,5 @@
-import { useContext } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { useContext } from 'react';
 import { AppWizardConfigContext } from '../../../contexts';
 
 import { getTokenList } from '../services';

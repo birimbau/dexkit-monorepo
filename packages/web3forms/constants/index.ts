@@ -1,8 +1,14 @@
+import { ChainId } from "@dexkit/core/constants";
+
 export const PARSE_UNITS = [
-  "wei",
-  "kwei",
-  "gwei",
-  "microether",
-  "milliether",
   "ether",
+  "milliether",
+  "microether",
+  "gwei",
+  "kwei",
+  "wei",
 ];
+
+export const ETHER_SCAN_API_URL: { [key: number]: string } = {
+  [ChainId.Ethereum]: "etherscan",
+};

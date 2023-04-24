@@ -19,22 +19,28 @@ export interface ContractDeployParams {
 
 export interface AbiFragment {
   type: "function" | "constructor";
-  name?: string;
+  name: string;
   inputs: { type: string; name: string; internalType?: string }[];
   outputs: {}[];
   stateMutability: string;
 }
 
+export type ContractFromField = {
+  name: string;
+  visible: boolean;
+  lockInputs: boolean;
+  hideInputs: boolean;
+  callOnMount: boolean;
+  collapse: boolean;
+  callToAction: string;
+  input: { [key: string]: { label: string; defaultValue: string } };
+};
+
 export type ContractFormParams = {
   contractAddress: string;
   chainId: ChainId;
   fields: {
-    [key: string]: {
-      visible: boolean;
-      readOnly: boolean;
-      callOnMount: boolean;
-      input: { [key: string]: string };
-    };
+    [key: string]: ContractFromField;
   };
   abi: AbiFragment[];
 };
