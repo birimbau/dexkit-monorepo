@@ -108,7 +108,13 @@ export default function ThemeWizardContainer({
 
   const renderThemePreview = () => {
     if (selectedTheme) {
-      return <ThemePreview selectedTheme={selectedTheme} showSwap={showSwap} />;
+      return (
+        <ThemePreview
+          selectedTheme={selectedTheme}
+          showSwap={showSwap}
+          selectedThemeMode={selectedThemeMode}
+        />
+      );
     }
   };
   const handleSave = () => {
