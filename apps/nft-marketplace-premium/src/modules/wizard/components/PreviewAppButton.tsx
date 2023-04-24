@@ -44,7 +44,7 @@ export function PreviewAppButton({ appConfig }: Props) {
       selectedThemeId: appConfig?.theme || '',
       mode,
     });
-  }, [appConfig?.theme, appConfig?.font]);
+  }, [appConfig?.theme, appConfig?.font, customThemeDark, customThemeLight]);
 
   return (
     <>
