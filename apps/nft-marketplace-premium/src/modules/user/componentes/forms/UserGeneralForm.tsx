@@ -147,7 +147,7 @@ export default function UserGeneralForm({
                     InputProps={{ disabled: initialValues ? true : false }}
                   />
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={12} sm={6}>
                   <Typography variant="body2">
                     <FormattedMessage
                       id="profileImage"
@@ -167,7 +167,7 @@ export default function UserGeneralForm({
                     )}
                   </Button>
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={12} sm={6}>
                   <Typography variant="body2">
                     <FormattedMessage
                       id="backgroundImage"

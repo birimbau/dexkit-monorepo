@@ -165,6 +165,8 @@ export function EditWizardContainer({ site }: Props) {
 
   const handleConfirmSendConfig = async () => {
     setShowConfirmSendConfig(false);
+    const newSite = { ...site, config: wizardConfig };
+    sendConfigMutation.mutate(newSite);
     setShowSendingConfig(true);
   };
 
@@ -191,8 +193,8 @@ export function EditWizardContainer({ site }: Props) {
 
   const handleSave = (_config: AppConfig) => {
     setShowConfirmSendConfig(true);
-    const newSite = { ...site, config: _config };
-    sendConfigMutation.mutate(newSite);
+    const newConfig = { ...wizardConfig, ..._config };
+    setWizardConfig(newConfig);
   };
 
   const handleChange = useCallback(
@@ -686,7 +688,7 @@ export function EditWizardContainer({ site }: Props) {
                 <AnalyticsWizardContainer config={config} onSave={handleSave} />
               )}
               {activeMenu === ActiveMenu.Social && config && (
-                <SocialWizardContainer config={config} onSave={handleSave} />
+                <SocialWizardContainer config={config} onSave={handleSave} onChange={handleChange} />
               )}
               {activeMenu === ActiveMenu.FooterMenu && config && (
                 <FooterMenuWizardContainer

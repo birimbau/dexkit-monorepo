@@ -11,7 +11,6 @@ import { isAddressEqual } from "../utils";
 import { magic, magicHooks } from "./connectors/magic";
 import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "./zrx";
 
-export type MagicLoginType = "email" | "google" | "twitter";
 
 export const CONNECTORS: { [key: string]: [Connector, Web3ReactHooks] } = {
   metamask: [metaMask, metaMaskHooks],

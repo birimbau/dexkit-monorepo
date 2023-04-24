@@ -1,6 +1,6 @@
 import { WalletActivateParams } from "@dexkit/core/types";
-import { MagicLoginType } from "./constants";
 import { getIsCoinbaseWallet, getIsInjected, getIsMetaMaskWallet } from "./constants/connectors/utils";
+import { MagicLoginType } from "./types/magic";
 import { isMobile } from "./utils/userAgent";
 //@dev https://github.com/Uniswap/interface/blob/main/src/connection/index.ts
 const getIsCoinbaseWalletBrowser = () => isMobile && getIsCoinbaseWallet()
@@ -39,6 +39,13 @@ export const WALLET_CONNECTORS: {
       name: "Twitter",
       icon: "https://raw.githubusercontent.com/DexKit/assets/main/twitter-logo.svg",
       loginType: "twitter",
+      shouldDisplay: () => !getIsInjectedMobileBrowser(),
+    },
+    {
+      id: "magic",
+      name: "Discord",
+      icon: "https://raw.githubusercontent.com/DexKit/assets/main/discord-logo.svg",
+      loginType: "discord",
       shouldDisplay: () => !getIsInjectedMobileBrowser(),
     },
   ];

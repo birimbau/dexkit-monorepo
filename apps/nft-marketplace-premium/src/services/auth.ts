@@ -59,7 +59,6 @@ export async function logout({ accessTk }: { accessTk: string }) {
  */
 
 export async function logoutApp({ accessTk }: { accessTk: string }) {
-  console.log(access_token);
   return axios.get<{ logout: boolean }>('/api/dex-auth/logout', {
     headers: {
       'Authorization': `Bearer ${accessTk}`

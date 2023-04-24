@@ -42,7 +42,7 @@ export default function PagesWizardContainer({
         return responsiveFontSizes(createTheme(JSON.parse(config.customTheme)));
       }
 
-      return responsiveFontSizes(getTheme(config.theme).theme);
+      return responsiveFontSizes(getTheme({ name: config.theme }).theme);
     }
   }, [config.customTheme, config.theme]);
 

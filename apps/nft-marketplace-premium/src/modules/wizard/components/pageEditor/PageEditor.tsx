@@ -47,6 +47,7 @@ import ContractFormPlugin from './plugins/ContractFormPlugin';
 import CustomContentPluginTwitter from './plugins/CustomContentPluginTwitter';
 import { DefaultSlate } from './plugins/DefaultSlate';
 import ImagePlugin from './plugins/ImagePlugin';
+import QrCodeReceive from './plugins/QrCodeReceivePayment';
 import SearchNFTPlugin from './plugins/SearchNFTPlugin';
 import StackPlugin from './plugins/StackPlugin';
 import Swap2Plugin from './plugins/Swap2Plugin';
@@ -69,7 +70,7 @@ const cellPlugins = [
   ImagePlugin,
   AssetPlugin,
   AssetListPlugin,
-
+  QrCodeReceive,
   ExtendedSpacer,
   StackPlugin,
 
@@ -100,6 +101,7 @@ const nftPlugins = [
   ImagePlugin,
   AssetPlugin,
   AssetListPlugin,
+  QrCodeReceive,
   ExtendedSpacer,
   StackPlugin,
   SearchNFTPlugin,
@@ -124,6 +126,7 @@ const swapPlugins = [
   divider,
   html5video,
   ImagePlugin,
+  QrCodeReceive,
   ExtendedSpacer,
   StackPlugin,
   //  CustomLayoutPlugin,

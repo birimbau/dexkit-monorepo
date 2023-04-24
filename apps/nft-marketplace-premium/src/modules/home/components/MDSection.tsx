@@ -1,5 +1,5 @@
 import { MarkdownEditorPageSection } from '@/modules/wizard/types/section';
-import { Container } from '@mui/material';
+import { Container, useTheme } from '@mui/material';
 import '@uiw/react-markdown-preview/markdown.css';
 import '@uiw/react-md-editor/markdown-editor.css';
 import dynamic from 'next/dynamic';
@@ -17,9 +17,17 @@ interface Props {
 }
 
 export function MDSection({ section }: Props) {
+  const theme = useTheme();
+
   return (
     <Container>
-      <EditerMarkdown source={section.config?.source} />
+      <EditerMarkdown
+        source={section.config?.source}
+        style={{
+          backgroundColor: theme.palette.background.paper,
+          color: theme.palette.text.primary,
+        }}
+      />
     </Container>
   );
 }

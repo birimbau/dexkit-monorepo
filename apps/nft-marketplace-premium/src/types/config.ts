@@ -1,9 +1,10 @@
 import { AppPageSection } from '@/modules/wizard/types/section';
+import { ThemeMode } from '@dexkit/ui/constants/enum';
 import { Token } from './blockchain';
 
 export type VideoEmbedType = 'youtube' | 'vimeo';
 
-export type SocialMediaTypes = 'instagram' | 'facebook' | 'twitter';
+export type SocialMediaTypes = 'instagram' | 'facebook' | 'twitter' | 'youtube' | 'linkedin' | 'pinterest' | 'reddit';
 
 export interface MenuTree {
   name: string;
@@ -56,6 +57,10 @@ export interface SocialMedia {
   handle: string;
 }
 
+export interface SocialMediaCustom {
+  link: string, iconUrl: string, label: string;
+}
+
 interface SeoImage {
   url: string;
   width?: number;
@@ -102,8 +107,11 @@ export interface AppConfig {
     family: string;
     category?: string;
   }
+  defaultThemeMode?: ThemeMode;
   theme: string;
   customTheme?: string;
+  customThemeLight?: string;
+  customThemeDark?: string;
   domain: string;
   email: string;
   currency: string;
@@ -112,8 +120,14 @@ export interface AppConfig {
     height?: string;
     url: string;
   };
+  logoDark?: {
+    width?: string;
+    height?: string;
+    url?: string;
+  };
   favicon_url?: string;
   social?: SocialMedia[];
+  social_custom?: SocialMediaCustom[];
   pages: { [key: string]: AppPage };
   transak?: { enabled: boolean };
   fees?: {

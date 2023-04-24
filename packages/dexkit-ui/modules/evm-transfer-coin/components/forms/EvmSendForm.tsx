@@ -179,9 +179,9 @@ export function EvmSendForm({
               />
             }
             name="address"
-            error={!isAddressValid && addressTouched && ensNameQuery.isLoading}
+            error={!isAddressValid && addressTouched && !ensNameQuery.isLoading}
             helperText={
-              !isAddressValid && addressTouched && ensNameQuery.isLoading ? (
+              !isAddressValid && addressTouched && !ensNameQuery.isLoading ? (
                 <FormattedMessage
                   id="invalid address"
                   defaultMessage="Invalid address"

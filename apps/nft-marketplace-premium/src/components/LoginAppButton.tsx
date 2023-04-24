@@ -1,6 +1,6 @@
 import { useAuthUserQuery } from '@/modules/user/hooks';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import { Button } from '@mui/material';
+import { Alert, Button, Stack, Typography } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useWeb3React } from '@web3-react/core';
 import { useMemo } from 'react';
@@ -54,24 +54,46 @@ export function LoginAppButton({ onLogin }: Props) {
 
   if (!account || !isActive) {
     return (
-      <Button
-        variant="outlined"
-        color="inherit"
-        onClick={handleOpenConnectWalletDialog}
-        startIcon={<Wallet />}
-        endIcon={<ChevronRightIcon />}
-      >
-        <FormattedMessage
-          id="connect.wallet"
-          defaultMessage="Connect Wallet"
-          description="Connect wallet button"
-        />
-      </Button>
+      <Stack spacing={2}>
+        <Alert severity={'info'}>
+          <Typography variant={'body1'}>
+            {' '}
+            <FormattedMessage
+              id="start.by.connect.wallet"
+              defaultMessage="Start by connecting your wallet. If you don't have one, you can create one by clicking on connect wallet button and choosing our Discord, Google, Twitter or email wallet"
+            />
+            .
+          </Typography>
+        </Alert>
+        <Button
+          variant="outlined"
+          color="inherit"
+          onClick={handleOpenConnectWalletDialog}
+          startIcon={<Wallet />}
+          endIcon={<ChevronRightIcon />}
+        >
+          <FormattedMessage
+            id="connect.wallet"
+            defaultMessage="Connect Wallet"
+            description="Connect wallet button"
+          />
+        </Button>
+      </Stack>
     );
   }
 
   return (
-    <>
+    <Stack spacing={2}>
+      <Alert severity={'info'}>
+        <Typography variant={'body1'}>
+          {' '}
+          <FormattedMessage
+            id="login.by.connect.wallet"
+            defaultMessage="Login with your wallet. You will need to sign a message."
+          />
+          .
+        </Typography>
+      </Alert>
       <Button
         variant={'contained'}
         disabled={loginMutation.isLoading || isSameUserAccount}
@@ -80,6 +102,6 @@ export function LoginAppButton({ onLogin }: Props) {
       >
         {buttonMsg()}
       </Button>
-    </>
+    </Stack>
   );
 }

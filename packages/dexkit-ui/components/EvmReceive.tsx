@@ -42,7 +42,9 @@ export interface EvmReceiveProps {
   baseShareURL?: string;
   coins?: EvmCoin[];
 }
-
+/**
+ * TODO: Migrate to here EvmReceiveForm
+ **/
 export default function EvmReceive({
   receiver,
   chainId,

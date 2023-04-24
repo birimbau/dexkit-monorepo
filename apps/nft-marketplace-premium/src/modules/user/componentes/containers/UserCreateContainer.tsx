@@ -1,5 +1,5 @@
 import { Container, Grid, Stack, Typography } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import AppConfirmDialog from 'src/components/AppConfirmDialog';
 import { PageHeader } from 'src/components/PageHeader';
@@ -8,7 +8,12 @@ import { UserOptions } from '../../types';
 import UpsertUserDialog from '../dialogs/UpsertuserDialog';
 import UserGeneralForm from '../forms/UserGeneralForm';
 
-export function UserCreateContainer() {
+interface Props {
+  hideHeader?: boolean;
+  onComplete?: () => void;
+}
+
+export function UserCreateContainer({ hideHeader, onComplete }: Props) {
   const [userForm, setUserForm] = useState<UserOptions>();
   const upsertUserMutation = useUpsertUserMutation();
   const [showUpsertUser, setShowUpsertUser] = useState(false);
@@ -21,8 +26,13 @@ export function UserCreateContainer() {
   const handleConfirmSendConfig = async () => {
     setShowConfirmUpsertUser(false);
     setShowUpsertUser(true);
-    upsertUserMutation.mutate(userForm);
+    await upsertUserMutation.mutateAsync(userForm);
   };
+  useEffect(() => {
+    if (upsertUserMutation.isSuccess && onComplete) {
+      onComplete();
+    }
+  }, [upsertUserMutation.isSuccess]);
 
   return (
     <>
@@ -65,34 +75,37 @@ export function UserCreateContainer() {
       />
       <Container maxWidth={'xl'}>
         <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <Stack
-              direction="row"
-              alignItems="center"
-              alignContent="center"
-              justifyContent="space-between"
-            >
-              <PageHeader
-                breadcrumbs={[
-                  {
-                    caption: (
-                      <FormattedMessage id="home" defaultMessage="Home" />
-                    ),
-                    uri: '/',
-                  },
-                  {
-                    caption: (
-                      <FormattedMessage
-                        id="create.user.profile"
-                        defaultMessage="Create user profile"
-                      />
-                    ),
-                    uri: '/u/create',
-                  },
-                ]}
-              />
-            </Stack>
-          </Grid>
+          {hideHeader !== true && (
+            <Grid item xs={12}>
+              <Stack
+                direction="row"
+                alignItems="center"
+                alignContent="center"
+                justifyContent="space-between"
+              >
+                <PageHeader
+                  breadcrumbs={[
+                    {
+                      caption: (
+                        <FormattedMessage id="home" defaultMessage="Home" />
+                      ),
+                      uri: '/',
+                    },
+                    {
+                      caption: (
+                        <FormattedMessage
+                          id="create.user.profile"
+                          defaultMessage="Create user profile"
+                        />
+                      ),
+                      uri: '/u/create',
+                      active: true,
+                    },
+                  ]}
+                />
+              </Stack>
+            </Grid>
+          )}
 
           <Grid item xs={12} sm={12}>
             <Stack direction={'row'} justifyContent={'space-between'}>

@@ -3,13 +3,9 @@ export * from "./coin";
 export * from "./nft";
 
 import { Dispatch, SetStateAction } from "react";
-import {
-  ChainId,
-  MagicLoginType,
-  TransactionStatus,
-  TransactionType,
-} from "../constants";
+import { ChainId, TransactionStatus, TransactionType } from "../constants";
 import { TransactionMetadata } from "./blockchain";
+import { MagicLoginType } from "./magic";
 
 export type TokenWhitelabelApp = {
   address: string;

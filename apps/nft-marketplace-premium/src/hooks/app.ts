@@ -1,8 +1,9 @@
 import { useDexKitContext } from '@dexkit/ui';
+import { ThemeMode } from '@dexkit/ui/constants/enum';
 import { atom, useAtom, useAtomValue } from 'jotai';
 import { useContext, useMemo } from 'react';
 import { AppConfigContext } from '../contexts';
-import { localeAtom, localeUserAtom } from '../state/atoms';
+import { localeAtom, localeUserAtom, userThemeModeAtom } from '../state/atoms';
 
 const signMessageDialogOpenAtom = atom(false);
 const signMessageDialogErrorAtom = atom<Error | undefined>(undefined);
@@ -55,6 +56,22 @@ export function useSiteId() {
 export function useCollections() {
   const appConfig = useAppConfig();
   return appConfig?.collections;
+}
+
+export function useThemeMode() {
+  const [userMode, setThemeMode] = useAtom(userThemeModeAtom);
+  const appConfig = useAppConfig();
+  const mode = useMemo(() => {
+    if (userMode) {
+      return userMode;
+    }
+    if (appConfig.defaultThemeMode) {
+      return appConfig.defaultThemeMode;
+    }
+    return ThemeMode.light;
+  }, [userMode]);
+
+  return { mode, setThemeMode, userMode };
 }
 
 export function useLocale() {

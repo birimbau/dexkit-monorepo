@@ -98,11 +98,11 @@ export function useTokenList({
 }) {
   const appConfig = useAppConfig();
 
-  const tokensValues = useAtomValue(tokensAtom);
+  const tokensValues = useAtomValue(tokensAtom) || [];
 
   const tokenListJson = useMemo(() => {
     if (appConfig.tokens?.length === 1) {
-      return appConfig.tokens[0].tokens;
+      return appConfig.tokens[0].tokens || [];
     }
 
     return [];

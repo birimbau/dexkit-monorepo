@@ -260,7 +260,7 @@ const MainLayout: React.FC<Props> = ({
             maxWidth: 'sm',
           }}
           isActive={isActive}
-          isActivating={walletActivate.mutation.isLoading}
+          isActivating={walletActivate.mutation.isLoading || isActivating}
           activeConnectorName={walletActivate.connectorName}
           activate={handleActivateWallet}
         />
