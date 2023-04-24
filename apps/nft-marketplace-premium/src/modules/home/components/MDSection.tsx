@@ -24,8 +24,8 @@ export function MDSection({ section }: Props) {
       <EditerMarkdown
         source={section.config?.source}
         style={{
-          backgroundColor: theme.palette.background.paper,
-          color: theme.palette.text.primary,
+          backgroundColor: theme.vars.palette.background.paper,
+          color: theme.vars.palette.text.primary,
         }}
       />
     </Container>

@@ -1,10 +1,10 @@
 import {
   Avatar,
   ButtonBase,
-  Paper,
-  Grid,
-  Typography,
   CircularProgress,
+  Grid,
+  Paper,
+  Typography,
   useTheme,
 } from '@mui/material';
 
@@ -35,7 +35,7 @@ export function WalletButton({
         width: '100%',
         display: 'flex',
         borderRadius: theme.spacing(0.5),
-        border: `1px solid ${theme.palette.divider}`,
+        border: `1px solid ${theme.vars.palette.divider}`,
         textOverflow: 'ellipsis',
         overflow: 'hidden',
       })}

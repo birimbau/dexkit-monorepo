@@ -68,7 +68,7 @@ export function WalletButton(props: Props) {
         sx={(theme) => ({
           px: 2,
           py: 1,
-          border: `1px solid ${theme.palette.divider}`,
+          border: `1px solid ${theme.vars.palette.divider}`,
           borderRadius: theme.spacing(1),
           justifyContent,
         })}

@@ -449,8 +449,13 @@ export function EditWizardContainer({ site }: Props) {
     <TourProvider
       steps={OnboardBuilderSteps({ onChangeMenu: setActiveMenu })}
       styles={{
+        popover: (base) => ({
+          ...base,
+          background: theme.vars.palette.background.default,
+        }),
         maskWrapper: (base) => ({
           ...base,
+
           zIndex: 20000,
         }),
         badge: (base) => ({ ...base, color: 'blue' }),
@@ -688,7 +693,11 @@ export function EditWizardContainer({ site }: Props) {
                 <AnalyticsWizardContainer config={config} onSave={handleSave} />
               )}
               {activeMenu === ActiveMenu.Social && config && (
-                <SocialWizardContainer config={config} onSave={handleSave} onChange={handleChange} />
+                <SocialWizardContainer
+                  config={config}
+                  onSave={handleSave}
+                  onChange={handleChange}
+                />
               )}
               {activeMenu === ActiveMenu.FooterMenu && config && (
                 <FooterMenuWizardContainer
