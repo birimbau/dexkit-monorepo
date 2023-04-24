@@ -11,10 +11,7 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
-import {
-  Experimental_CssVarsProvider as CssVarsProvider,
-  experimental_extendTheme as extendTheme,
-} from '@mui/material/styles';
+import { Experimental_CssVarsProvider as CssVarsProvider } from '@mui/material/styles';
 import dynamic from 'next/dynamic';
 
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
@@ -70,10 +67,6 @@ export function CreateWizardContainer({ slug, isSwapWizard }: Props) {
   const connectWalletDialog = useConnectWalletDialog();
 
   const theme = useTheme();
-
-  const defaultTheme = useMemo(() => {
-    return extendTheme({ ...theme });
-  }, [theme]);
 
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -387,9 +380,7 @@ export function CreateWizardContainer({ slug, isSwapWizard }: Props) {
           </Grid>
           {!isMobile && (
             <Grid item xs={12} sm={8}>
-              <CssVarsProvider
-                theme={selectedTheme ? selectedTheme : defaultTheme}
-              >
+              <CssVarsProvider theme={selectedTheme}>
                 <Container>
                   <Stack spacing={2}>
                     {clonedConfigQuery?.data?.nft && (

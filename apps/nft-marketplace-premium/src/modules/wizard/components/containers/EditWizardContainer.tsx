@@ -455,7 +455,6 @@ export function EditWizardContainer({ site }: Props) {
         }),
         maskWrapper: (base) => ({
           ...base,
-
           zIndex: 20000,
         }),
         badge: (base) => ({ ...base, color: 'blue' }),
