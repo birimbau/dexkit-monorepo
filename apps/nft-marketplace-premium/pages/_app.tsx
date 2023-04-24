@@ -194,7 +194,10 @@ export default function MyApp(props: MyAppProps) {
       <Head>
         <link rel="shortcut icon" href={favicon} />
         <meta name="viewport" content="initial-scale=1, width=device-width" />
-        <meta name="theme-color" content={theme?.palette.primary.main} />
+        <meta
+          name="theme-color"
+          content={theme?.colorSchemes?.light?.palette?.primary?.main}
+        />
       </Head>
       <AppConfigContext.Provider value={{ appConfig: config, appNFT, siteId }}>
         <QueryClientProvider client={queryClient}>
@@ -205,7 +208,7 @@ export default function MyApp(props: MyAppProps) {
                 <Backdrop
                   open={loading}
                   sx={{
-                    color: theme.palette.primary.main,
+                    color: theme?.colorSchemes?.light?.palette?.primary?.main,
                     zIndex: theme.zIndex.drawer + 1,
                   }}
                 >

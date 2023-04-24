@@ -82,7 +82,7 @@ export default function AssetStoreStepper({ config, onSave, onChange }: Props) {
       },
       selectedThemeId: config?.theme || '',
     });
-  }, [config?.theme, customTheme, config?.font]);
+  }, [config?.theme, config?.font, customThemeDark, customThemeLight]);
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
