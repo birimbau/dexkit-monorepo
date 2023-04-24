@@ -1,5 +1,9 @@
-import { customThemeAtom } from '@/modules/wizard/state';
-import { generateTheme } from '@/modules/wizard/utils';
+import {
+  customThemeAtom,
+  customThemeDarkAtom,
+  customThemeLightAtom,
+} from '@/modules/wizard/state';
+import { generateCSSVarsTheme } from '@/modules/wizard/utils';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
@@ -59,14 +63,26 @@ export default function AssetStoreStepper({ config, onSave, onChange }: Props) {
   const [activeStep, setActiveStep] = React.useState(0);
 
   const customTheme = useAtomValue(customThemeAtom);
+  const customThemeDark = useAtomValue(customThemeDarkAtom);
+  const customThemeLight = useAtomValue(customThemeLightAtom);
 
   const selectedTheme = useMemo(() => {
-    return generateTheme({
+    return generateCSSVarsTheme({
       selectedFont: config?.font,
-      customTheme,
+      cssVarPrefix: 'theme-preview',
+      customTheme: {
+        colorSchemes: {
+          dark: {
+            ...customThemeDark,
+          },
+          light: {
+            ...customThemeLight,
+          },
+        },
+      },
       selectedThemeId: config?.theme || '',
     });
-  }, [config?.theme, customTheme, config?.font]);
+  }, [config?.theme, config?.font, customThemeDark, customThemeLight]);
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);

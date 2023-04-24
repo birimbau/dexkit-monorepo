@@ -1,93 +1,130 @@
 import { ChainId } from '@dexkit/core/constants';
+import { Box, Button, Grid, Stack, TextField, Typography } from '@mui/material';
 import {
-  Box,
-  Button,
-  Grid,
-  Stack,
-  TextField,
+  Experimental_CssVarsProvider as CssVarsProvider,
+  CssVarsTheme,
   Theme,
-  ThemeProvider,
-  Typography,
-} from '@mui/material';
+  useColorScheme,
+} from '@mui/material/styles';
 import { useIntl } from 'react-intl';
 
+import { ThemeMode } from '@dexkit/ui/constants/enum';
+import React, { useEffect } from 'react';
 import AssetFromApi from '../../nft/components/AssetFromApi';
 import { KITTYGOTCHI_CONTRACT } from '../constants';
 import SwapWidget from './pageEditor/components/SwapWidget';
 
 interface Props {
-  selectedTheme: Theme;
+  selectedTheme: Omit<Theme, 'palette'> & CssVarsTheme;
   showSwap?: boolean;
+  selectedThemeMode?: ThemeMode;
 }
 
-export default function ThemePreview({ selectedTheme, showSwap }: Props) {
+function ColorSchemePicker({
+  selectedThemeMode,
+}: {
+  selectedThemeMode?: ThemeMode;
+}) {
+  const { mode, setMode } = useColorScheme();
+  useEffect(() => {
+    if (selectedThemeMode) {
+      setMode(selectedThemeMode);
+    }
+  }, [selectedThemeMode]);
+  return <></>;
+}
+
+const useEnhancedEffect =
+  typeof window !== 'undefined' ? React.useLayoutEffect : React.useEffect;
+
+export default function ThemePreview({
+  selectedTheme,
+  showSwap,
+  selectedThemeMode,
+}: Props) {
   const { formatMessage } = useIntl();
+  const [node, setNode] = React.useState<null | HTMLElement>(null);
+  useEnhancedEffect(() => {
+    setNode(
+      document.getElementById('theme-preview-container') as null | HTMLElement
+    );
+  }, []);
 
   return (
-    <ThemeProvider theme={selectedTheme}>
-      <Stack spacing={2}>
-        <Box>
-          {showSwap ? (
-            <SwapWidget />
-          ) : (
-            <Grid container spacing={2}>
-              <Grid item xs={6}>
-                <AssetFromApi
-                  chainId={ChainId.Polygon}
-                  contractAddress={KITTYGOTCHI_CONTRACT}
-                  tokenId="42"
-                  disabled={true}
-                />
+    <div id="theme-preview-container">
+      <CssVarsProvider
+        theme={selectedTheme}
+        colorSchemeNode={node || null}
+        disableNestedContext={true}
+        colorSchemeSelector="#theme-preview-container"
+        colorSchemeStorageKey="theme-preview-color-scheme"
+        modeStorageKey="theme-preview-mode"
+      >
+        <ColorSchemePicker selectedThemeMode={selectedThemeMode} />
+        <Stack spacing={2}>
+          <Box>
+            {showSwap ? (
+              <SwapWidget />
+            ) : (
+              <Grid container spacing={2}>
+                <Grid item xs={6}>
+                  <AssetFromApi
+                    chainId={ChainId.Polygon}
+                    contractAddress={KITTYGOTCHI_CONTRACT}
+                    tokenId="42"
+                    disabled={true}
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <AssetFromApi
+                    chainId={ChainId.Polygon}
+                    contractAddress={KITTYGOTCHI_CONTRACT}
+                    tokenId="50"
+                    disabled={true}
+                  />
+                </Grid>
               </Grid>
-              <Grid item xs={6}>
-                <AssetFromApi
-                  chainId={ChainId.Polygon}
-                  contractAddress={KITTYGOTCHI_CONTRACT}
-                  tokenId="50"
-                  disabled={true}
-                />
-              </Grid>
-            </Grid>
-          )}
-        </Box>
-        <Stack direction="row" spacing={2} flexWrap="wrap">
-          <Button>Button</Button>
-          <Button variant="contained" color="primary">
-            Button
-          </Button>
-          <Button variant="contained" color="secondary">
-            Button
-          </Button>
+            )}
+          </Box>
+          <Stack direction="row" spacing={2} flexWrap="wrap">
+            <Button>Button</Button>
+            <Button variant="contained" color="primary">
+              Button
+            </Button>
+            <Button variant="contained" color="secondary">
+              Button
+            </Button>
+          </Stack>
+          <Stack direction="row" spacing={2} flexWrap="wrap">
+            <Button variant="outlined" color="primary">
+              Button
+            </Button>
+            <Button variant="outlined" color="secondary">
+              Button
+            </Button>
+          </Stack>
+          <Stack direction="row" spacing={1}>
+            <TextField
+              placeholder={formatMessage({
+                id: 'text.field',
+                defaultMessage: 'Text field',
+              })}
+              fullWidth
+            />
+          </Stack>
+          <Stack>
+            <Typography variant="h5">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit
+            </Typography>
+            <Typography variant="body1">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit
+            </Typography>
+            <Typography variant="body2">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit
+            </Typography>
+          </Stack>
         </Stack>
-        <Stack direction="row" spacing={2} flexWrap="wrap">
-          <Button variant="outlined" color="primary">
-            Button
-          </Button>
-          <Button variant="outlined" color="secondary">
-            Button
-          </Button>
-        </Stack>
-        <Stack direction="row" spacing={1}>
-          <TextField
-            placeholder={formatMessage({
-              id: 'text.field',
-              defaultMessage: 'Text field',
-            })}
-            fullWidth
-          />
-        </Stack>
-        <Stack>
-          <Typography variant="h5">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit
-          </Typography>
-          <Typography variant="body1">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit
-          </Typography>
-          <Typography variant="body2">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit
-          </Typography>
-        </Stack>
-      </Stack>
-    </ThemeProvider>
+      </CssVarsProvider>
+    </div>
   );
 }
