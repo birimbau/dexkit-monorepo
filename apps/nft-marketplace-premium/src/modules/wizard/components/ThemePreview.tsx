@@ -1,6 +1,10 @@
 import { ChainId } from '@dexkit/core/constants';
 import { Box, Button, Grid, Stack, TextField, Typography } from '@mui/material';
-import { Theme, ThemeProvider } from '@mui/material/styles';
+import {
+  Experimental_CssVarsProvider as CssVarsProvider,
+  CssVarsTheme,
+  Theme,
+} from '@mui/material/styles';
 import { useIntl } from 'react-intl';
 
 import AssetFromApi from '../../nft/components/AssetFromApi';
@@ -8,16 +12,15 @@ import { KITTYGOTCHI_CONTRACT } from '../constants';
 import SwapWidget from './pageEditor/components/SwapWidget';
 
 interface Props {
-  selectedTheme: Theme;
+  selectedTheme: Omit<Theme, 'palette'> & CssVarsTheme;
   showSwap?: boolean;
 }
 
 export default function ThemePreview({ selectedTheme, showSwap }: Props) {
   const { formatMessage } = useIntl();
-  console.log(selectedTheme);
 
   return (
-    <ThemeProvider theme={selectedTheme}>
+    <CssVarsProvider theme={selectedTheme}>
       <Stack spacing={2}>
         <Box>
           {showSwap ? (
@@ -81,6 +84,6 @@ export default function ThemePreview({ selectedTheme, showSwap }: Props) {
           </Typography>
         </Stack>
       </Stack>
-    </ThemeProvider>
+    </CssVarsProvider>
   );
 }

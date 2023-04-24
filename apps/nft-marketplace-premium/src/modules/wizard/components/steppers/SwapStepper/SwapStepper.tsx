@@ -3,7 +3,7 @@ import {
   customThemeDarkAtom,
   customThemeLightAtom,
 } from '@/modules/wizard/state';
-import { generateTheme } from '@/modules/wizard/utils';
+import { generateCSSVarsTheme } from '@/modules/wizard/utils';
 import { useTheme } from '@mui/material';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -71,8 +71,9 @@ export default function SwapStepper({ config, onSave, onChange }: Props) {
   const customThemeLight = useAtomValue(customThemeLightAtom);
 
   const selectedTheme = useMemo(() => {
-    return generateTheme({
+    return generateCSSVarsTheme({
       selectedFont: config?.font,
+      cssVarPrefix: 'theme-preview',
       customTheme: {
         colorSchemes: {
           dark: {
@@ -85,7 +86,7 @@ export default function SwapStepper({ config, onSave, onChange }: Props) {
       },
       selectedThemeId: config?.theme || '',
     });
-  }, [config?.theme, customTheme, config?.font]);
+  }, [config?.theme, config?.font, customThemeDark, customThemeLight]);
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);

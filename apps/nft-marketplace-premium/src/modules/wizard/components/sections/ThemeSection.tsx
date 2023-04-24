@@ -44,12 +44,14 @@ export default function ThemeSection({
         theme = {
           ...theme,
           colorSchemes: {
+            //@ts-ignore
             dark: {
               palette: {
                 ...theme?.colorSchemes?.dark,
                 ...(customThemeDark?.palette as any),
               },
             },
+            //@ts-ignore
             light: {
               palette: {
                 ...theme?.colorSchemes.light,

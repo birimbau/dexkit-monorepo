@@ -18,7 +18,10 @@ import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 
 import { useRouter } from 'next/router';
 
+import { ThemeMode } from '@dexkit/ui/constants/enum';
 import { Backdrop, CircularProgress } from '@mui/material';
+import { experimental_extendTheme as extendTheme } from '@mui/material/styles';
+import { getTheme } from 'src/theme';
 import { AssetAPI } from 'src/types/nft';
 import defaultAppConfig from '../config/app.json';
 import { AppMarketplaceProvider } from '../src/components/AppMarketplaceProvider';
@@ -58,6 +61,71 @@ export default function MyApp(props: MyAppProps) {
   );
 
   const getLayout = (Component as any).getLayout || ((page: any) => page);
+
+  const theme = React.useMemo(() => {
+    let tempTheme = getTheme({
+      name: defaultAppConfig.theme,
+    })?.theme;
+    let fontFamily;
+    if (appConfig?.font) {
+      fontFamily = `'${appConfig.font.family}', ${appConfig.font.category}`;
+    }
+
+    if (appConfig) {
+      tempTheme = getTheme({
+        name: appConfig.theme,
+      })?.theme;
+    }
+
+    if (appConfig && appConfig.theme === 'custom') {
+      let customTheme = {
+        dark: {},
+        light: {},
+      };
+
+      if (appConfig?.customThemeLight) {
+        customTheme.light = JSON.parse(appConfig.customThemeLight);
+      }
+      if (appConfig?.customThemeDark) {
+        customTheme.dark = JSON.parse(appConfig.customThemeDark);
+      }
+      //@deprecated remove customTheme later
+      if (appConfig?.customTheme) {
+        const parsedCustomTheme = JSON.parse(appConfig.customTheme);
+        if (parsedCustomTheme?.palette?.mode === ThemeMode.light) {
+          customTheme.light = parsedCustomTheme;
+        } else {
+          customTheme.dark = parsedCustomTheme;
+        }
+      }
+
+      if (customTheme) {
+        return fontFamily
+          ? extendTheme({
+              typography: {
+                fontFamily,
+              },
+              colorSchemes: {
+                ...customTheme,
+              },
+            })
+          : extendTheme({
+              colorSchemes: {
+                ...customTheme,
+              },
+            });
+      }
+    }
+
+    return fontFamily
+      ? extendTheme({
+          ...tempTheme,
+          typography: {
+            fontFamily,
+          },
+        })
+      : extendTheme(tempTheme);
+  }, [appConfig]);
 
   const SEO = React.useMemo(() => {
     const config = appConfig;
@@ -126,6 +194,7 @@ export default function MyApp(props: MyAppProps) {
       <Head>
         <link rel="shortcut icon" href={favicon} />
         <meta name="viewport" content="initial-scale=1, width=device-width" />
+        <meta name="theme-color" content={theme?.palette.primary.main} />
       </Head>
       <AppConfigContext.Provider value={{ appConfig: config, appNFT, siteId }}>
         <QueryClientProvider client={queryClient}>
@@ -133,7 +202,13 @@ export default function MyApp(props: MyAppProps) {
             <DefaultSeo {...SEO} />
             <LocalizationProvider dateAdapter={AdapterMoment}>
               <AppMarketplaceProvider>
-                <Backdrop open={loading}>
+                <Backdrop
+                  open={loading}
+                  sx={{
+                    color: theme.palette.primary.main,
+                    zIndex: theme.zIndex.drawer + 1,
+                  }}
+                >
                   <CircularProgress color="inherit" size={80} />
                 </Backdrop>
                 {getLayout(<Component {...pageProps} />)}

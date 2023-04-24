@@ -1,4 +1,4 @@
-import { SupportedColorScheme } from '@mui/material/styles';
+import { CssVarsTheme, Theme } from '@mui/material/styles';
 
 
 import boredApeTheme from './themes/boredape';
@@ -9,11 +9,8 @@ import kittygotchiTheme from './themes/kittygotchi';
 
 
 type ThemeEntry = {
-  theme: {
-    cssVarPrefix?: string | undefined;
-    colorSchemes: Record<SupportedColorScheme, Record<string, any>>;
-  }
-  ; name: string
+  theme: Omit<Theme, 'palette'> & CssVarsTheme;
+  name: string
 };
 
 

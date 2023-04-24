@@ -27,7 +27,7 @@ import {
   customThemeLightAtom,
 } from '../../state';
 import { StepperButtonProps } from '../../types';
-import { generateTheme } from '../../utils';
+import { generateCSSVarsTheme } from '../../utils';
 import ThemePreview from '../ThemePreview';
 import ThemeSection from '../sections/ThemeSection';
 import { StepperButtons } from '../steppers/StepperButtons';
@@ -76,8 +76,9 @@ export default function ThemeWizardContainer({
   );
 
   const selectedTheme = useMemo(() => {
-    return generateTheme({
+    return generateCSSVarsTheme({
       selectedFont,
+      cssVarPrefix: 'theme_preview',
       customTheme: {
         colorSchemes: {
           dark: {

@@ -72,8 +72,8 @@ export function generateTheme({ selectedFont, selectedThemeId, customTheme, mode
     })
 }
 
-export function generateCSSVarsTheme({ selectedFont, selectedThemeId, customTheme }:
-  { selectedFont?: { family?: string, category?: string }, selectedThemeId: string, customTheme?: CustomThemeColorSchemesInterface, mode?: ThemeMode }) {
+export function generateCSSVarsTheme({ selectedFont, selectedThemeId, customTheme, cssVarPrefix }:
+  { selectedFont?: { family?: string, category?: string }, selectedThemeId: string, customTheme?: CustomThemeColorSchemesInterface, mode?: ThemeMode, cssVarPrefix?: string }) {
 
   let fontFamily;
   if (selectedFont) {
@@ -83,12 +83,14 @@ export function generateCSSVarsTheme({ selectedFont, selectedThemeId, customThem
   if (selectedThemeId === 'custom') {
     return fontFamily
       ? extendTheme({
+
         ...customTheme,
+        cssVarPrefix: cssVarPrefix,
         typography: {
           fontFamily,
         },
       })
-      : extendTheme(customTheme)
+      : extendTheme({ ...customTheme, cssVarPrefix: cssVarPrefix, })
 
   }
   const theme = getTheme({ name: selectedThemeId }).theme;
@@ -96,10 +98,11 @@ export function generateCSSVarsTheme({ selectedFont, selectedThemeId, customThem
   return fontFamily
     ? extendTheme({
       ...theme,
+      cssVarPrefix: cssVarPrefix,
       typography: {
         fontFamily,
       },
     })
-    : extendTheme(theme)
+    : extendTheme({ ...theme, cssVarPrefix: cssVarPrefix })
 
 }

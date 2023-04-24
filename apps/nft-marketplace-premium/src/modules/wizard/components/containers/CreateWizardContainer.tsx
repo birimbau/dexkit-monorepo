@@ -12,9 +12,8 @@ import {
   useTheme,
 } from '@mui/material';
 import {
-  createTheme,
+  Experimental_CssVarsProvider as CssVarsProvider,
   experimental_extendTheme as extendTheme,
-  ThemeProvider,
 } from '@mui/material/styles';
 import dynamic from 'next/dynamic';
 
@@ -138,12 +137,10 @@ export function CreateWizardContainer({ slug, isSwapWizard }: Props) {
   const selectedTheme = useMemo(() => {
     if (selectedThemeId !== undefined) {
       if (selectedThemeId === 'custom') {
-        return createTheme(customTheme?.colorSchemes?.light);
+        return getTheme({ name: 'custom' }).theme;
       }
 
-      return createTheme(
-        getTheme({ name: selectedThemeId }).theme.colorSchemes.light
-      );
+      return getTheme({ name: selectedThemeId }).theme;
     }
   }, [selectedThemeId, customTheme]);
 
@@ -390,7 +387,7 @@ export function CreateWizardContainer({ slug, isSwapWizard }: Props) {
           </Grid>
           {!isMobile && (
             <Grid item xs={12} sm={8}>
-              <ThemeProvider
+              <CssVarsProvider
                 theme={selectedTheme ? selectedTheme : defaultTheme}
               >
                 <Container>
@@ -439,7 +436,7 @@ export function CreateWizardContainer({ slug, isSwapWizard }: Props) {
                     />
                   </Stack>
                 </Container>
-              </ThemeProvider>
+              </CssVarsProvider>
             </Grid>
           )}
         </Grid>

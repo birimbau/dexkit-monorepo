@@ -5,7 +5,11 @@ import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import { Theme, ThemeProvider } from '@mui/material/styles';
+import {
+  Experimental_CssVarsProvider as CssVarsProvider,
+  CssVarsTheme,
+  Theme,
+} from '@mui/material/styles';
 import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { AssetStoreOptions } from 'src/types/nft';
@@ -17,7 +21,7 @@ import { StepperButtons } from '../steppers/StepperButtons';
 
 interface Props {
   config: AppConfig;
-  configTheme: Theme;
+  configTheme: Omit<Theme, 'palette'> & CssVarsTheme;
   onSave: (config: AppConfig) => void;
   onChange: (config: AppConfig) => void;
   isOnStepper?: boolean;
@@ -109,9 +113,9 @@ export default function AssetStoreWizardContainer({
         </Stack>
       </Grid>
       <Grid item xs={6}>
-        <ThemeProvider theme={configTheme}>
+        <CssVarsProvider theme={configTheme}>
           <AssetStoreContainer {...formData} />
-        </ThemeProvider>
+        </CssVarsProvider>
       </Grid>
       <Grid item xs={12}>
         <Divider />

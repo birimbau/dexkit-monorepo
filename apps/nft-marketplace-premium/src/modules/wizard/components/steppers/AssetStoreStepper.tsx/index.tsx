@@ -3,7 +3,7 @@ import {
   customThemeDarkAtom,
   customThemeLightAtom,
 } from '@/modules/wizard/state';
-import { generateTheme } from '@/modules/wizard/utils';
+import { generateCSSVarsTheme } from '@/modules/wizard/utils';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
@@ -67,8 +67,9 @@ export default function AssetStoreStepper({ config, onSave, onChange }: Props) {
   const customThemeLight = useAtomValue(customThemeLightAtom);
 
   const selectedTheme = useMemo(() => {
-    return generateTheme({
+    return generateCSSVarsTheme({
       selectedFont: config?.font,
+      cssVarPrefix: 'theme-preview',
       customTheme: {
         colorSchemes: {
           dark: {
