@@ -11,12 +11,12 @@ import {
   CardContent,
   Divider,
   Stack,
-  Theme,
-  ThemeProvider,
   Typography,
-  useTheme,
 } from '@mui/material';
-
+import {
+  Experimental_CssVarsProvider as CssVarsProvider,
+  SupportedColorScheme,
+} from '@mui/material/styles';
 import { FormattedMessage } from 'react-intl';
 
 import { AppPage, AppPageOptions } from '../../../../types/config';
@@ -30,10 +30,10 @@ import Wallet from '@mui/icons-material/Wallet';
 import { useState } from 'react';
 import AppConfirmDialog from '../../../../components/AppConfirmDialog';
 import { AppPageSection } from '../../types/section';
-import AddPageDialog from '../dialogs/AddPageDialog';
-import PreviewPageDialog from '../dialogs/PreviewPageDialog';
 import PagesMenu from '../PagesMenu';
 import PreviewPagePlatform from '../PreviewPagePlatform';
+import AddPageDialog from '../dialogs/AddPageDialog';
+import PreviewPageDialog from '../dialogs/PreviewPageDialog';
 import { SectionHeader } from '../sections/SectionHeader';
 interface Props {
   sections: AppPageSection[];
@@ -50,7 +50,10 @@ interface Props {
   onHideMobile: (index: number) => void;
   isVisibleIndexes: number[];
   onSwap: (index: number, direction: 'up' | 'down') => void;
-  theme?: Theme;
+  theme?: {
+    cssVarPrefix?: string | undefined;
+    colorSchemes: Record<SupportedColorScheme, Record<string, any>>;
+  };
 }
 
 export default function PagesSectionPage({
@@ -207,11 +210,9 @@ export default function PagesSectionPage({
     setShowDeleteDialogPage(true);
   };
 
-  const defaultTheme = useTheme();
-
   return (
     <>
-      <ThemeProvider theme={theme ? theme : defaultTheme}>
+      <CssVarsProvider theme={theme}>
         <PreviewPageDialog
           dialogProps={{
             open: showPreview,
@@ -223,7 +224,7 @@ export default function PagesSectionPage({
           sections={sections}
           name={currentPage?.title || 'Home'}
         />
-      </ThemeProvider>
+      </CssVarsProvider>
       <AddPageDialog
         dialogProps={{
           open: showAddPage,

@@ -3,12 +3,16 @@ import { SwapWidget } from '@dexkit/widgets';
 import { Token as WidgetToken } from '@dexkit/widgets/src/types';
 
 import { ChainId } from '@dexkit/core/constants';
-import { Theme, ThemeProvider } from '@mui/material';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
+import {
+  Experimental_CssVarsProvider as CssVarsProvider,
+  CssVarsTheme,
+  Theme,
+} from '@mui/material/styles';
 import { useEffect, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { useCurrency } from 'src/hooks/currency';
@@ -21,7 +25,7 @@ import { SwapConfigForm } from '../forms/SwapConfigForm';
 import { StepperButtons } from '../steppers/StepperButtons';
 interface Props {
   config: AppConfig;
-  swapTheme: Theme;
+  swapTheme: Omit<Theme, 'palette'> & CssVarsTheme;
   onSave: (config: AppConfig) => void;
   onChange: (config: AppConfig) => void;
   isOnStepper?: boolean;
@@ -136,7 +140,7 @@ export default function SwapWizardContainer({
         />
       </Grid>
       <Grid item xs={6}>
-        <ThemeProvider theme={swapTheme}>
+        <CssVarsProvider theme={swapTheme}>
           <SwapWidget
             {...swapState}
             renderOptions={{
@@ -151,7 +155,7 @@ export default function SwapWizardContainer({
               transakApiKey: process.env.NEXT_PUBLIC_TRANSAK_API_KEY || '',
             }}
           />
-        </ThemeProvider>
+        </CssVarsProvider>
       </Grid>
       <Grid item xs={12}>
         <Divider />

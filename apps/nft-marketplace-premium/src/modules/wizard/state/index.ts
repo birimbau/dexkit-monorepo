@@ -6,10 +6,31 @@ export const collectionAtom = atom<AppCollection | undefined>(undefined);
 
 export const isFirstVisitOnEditWizardAtom = atomWithStorage<boolean>('isFirstVisitOnEditWizard', true);
 
-export interface CustomThemeInterface {
+export interface CustomThemeColorSchemesInterface {
   typography?: any;
+  colorSchemes: {
+    [key: string]: {
+      palette?: {
+        background?: {
+          default: string
+        };
+        text?: {
+          primary: string
+        };
+        primary?: {
+          main: string
+        };
+        secondary?: {
+          main: string
+        }
+      }
+    }
+
+  }
+}
+
+export interface CustomThemeInterface {
   palette?: {
-    mode?: 'dark' | 'light';
     background?: {
       default: string
     };
@@ -26,29 +47,46 @@ export interface CustomThemeInterface {
 }
 
 
-export const customThemeAtom = atom<CustomThemeInterface | undefined>({
+export const customThemeAtom = atom<CustomThemeColorSchemesInterface | undefined>({
   typography: {},
-  palette: {
-    mode: 'light',
-    background: {
-      default: '#fff',
+  colorSchemes: {
+    dark: {
+      palette: {
+        background: {
+          default: '#000',
+        },
+        text: {
+          primary: '#fff',
+        },
+        primary: {
+          main: '#bfc500',
+        },
+        secondary: {
+          main: '#f44336',
+        },
+      }
     },
-    text: {
-      primary: '#000',
-    },
-    primary: {
-      main: '#bfc500',
-    },
-    secondary: {
-      main: '#f44336',
-    },
+    light: {
+      palette: {
+        background: {
+          default: '#fff',
+        },
+        text: {
+          primary: '#000',
+        },
+        primary: {
+          main: '#bfc500',
+        },
+        secondary: {
+          main: '#f44336',
+        },
+      }
+    }
   }
 });
 
 export const customThemeLightAtom = atom<CustomThemeInterface | undefined>({
-  typography: {},
   palette: {
-    mode: 'light',
     background: {
       default: '#fff',
     },
@@ -62,12 +100,10 @@ export const customThemeLightAtom = atom<CustomThemeInterface | undefined>({
       main: '#f44336',
     },
   }
-});
+})
 
 export const customThemeDarkAtom = atom<CustomThemeInterface | undefined>({
-  typography: {},
   palette: {
-    mode: 'dark',
     background: {
       default: '#000',
     },

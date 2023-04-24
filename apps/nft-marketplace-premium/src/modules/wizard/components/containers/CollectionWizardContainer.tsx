@@ -1,4 +1,5 @@
-import { ThemeProvider, Typography } from '@mui/material';
+import { Typography } from '@mui/material';
+
 import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
@@ -193,12 +194,10 @@ export default function CollectionWizardContainer({ config, onSave }: Props) {
       </Grid>
       <Grid item xs={12} sm={6}>
         {previewCollection && (
-          <ThemeProvider theme={config.theme}>
-            <CollectionPreviewPaper
-              previewCollection={previewCollection}
-              onClose={handleCloseCollectionPreview}
-            />
-          </ThemeProvider>
+          <CollectionPreviewPaper
+            previewCollection={previewCollection}
+            onClose={handleCloseCollectionPreview}
+          />
         )}
       </Grid>
       <Grid item xs={12}>
