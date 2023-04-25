@@ -24,6 +24,7 @@ import {
   Stack,
 } from '@mui/material';
 import { ContractFormSchema } from '../../../constants/schemas';
+import ChangeListener from '../../ChangeListener';
 import ContractFormAbiFetcher from './ContractFormAbiFetcher';
 import ContractFormFilteredFields from './ContractFormFilteredFields';
 import ContractInitialForm from './ContractInitialForm';
@@ -37,6 +38,7 @@ export const DEFAULT_STATE = {
 
 export interface ContractFormProps {
   params?: ContractFormParams;
+  updateOnChange?: boolean;
   onChange: (
     data: ContractFormParams,
     options?: CellPluginOnChangeOptions | undefined
@@ -48,6 +50,7 @@ type TABS = 'write' | 'read';
 
 export default function ContractForm({
   params,
+  updateOnChange,
   onChange,
   onCancel,
 }: ContractFormProps) {
@@ -101,7 +104,7 @@ export default function ContractForm({
       validationSchema={ContractFormSchema}
       validateOnChange
     >
-      {({ errors, values, submitForm, setFieldValue }) => (
+      {({ errors, values, submitForm, setFieldValue, isValid }) => (
         <>
           <ContractFormAbiFetcher
             contractAddress={values.contractAddress}
@@ -117,6 +120,13 @@ export default function ContractForm({
               values.contractAddress !== currentContract
             }
           />
+          {updateOnChange && (
+            <ChangeListener
+              values={values}
+              isValid={isValid}
+              onChange={onChange}
+            />
+          )}
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <ContractInitialForm abi={values.abi} />
@@ -212,13 +222,16 @@ export default function ContractForm({
             )}
             <Grid item xs={12}>
               <Stack justifyContent="flex-end" direction="row" spacing={2}>
-                <Button
-                  onClick={submitForm}
-                  variant="contained"
-                  color="primary"
-                >
-                  <FormattedMessage id="Save" defaultMessage="Save" />
-                </Button>
+                {!updateOnChange && (
+                  <Button
+                    onClick={submitForm}
+                    variant="contained"
+                    color="primary"
+                  >
+                    <FormattedMessage id="Save" defaultMessage="Save" />
+                  </Button>
+                )}
+
                 {onCancel && (
                   <Button onClick={onCancel}>
                     <FormattedMessage id="cancel" defaultMessage="Cancel" />

@@ -81,6 +81,7 @@ export function inputMapping(abi: AbiFragment[]) {
       callOnMount: boolean;
       collapse: boolean;
       hideInputs: boolean;
+      hideLabel: boolean;
       callToAction: string;
       input: {
         [key: string]: {
@@ -115,6 +116,7 @@ export function inputMapping(abi: AbiFragment[]) {
         visible: false,
         collapse: false,
         hideInputs: false,
+        hideLabel: false,
         callToAction: '',
       };
     }

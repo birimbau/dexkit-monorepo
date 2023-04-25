@@ -67,6 +67,7 @@ function ContractFormAccordion({ func }: Props) {
               size="small"
             />
           </Grid>
+
           <FormikConsumer>
             {({ values }) =>
               !(values as ContractFormParams).fields[func.name].callOnMount ? (
@@ -95,19 +96,43 @@ function ContractFormAccordion({ func }: Props) {
                   <FastField
                     component={Switch}
                     type="checkbox"
-                    name={`fields.${func.name}.lockInputs`}
+                    name={`fields.${func.name}.hideInputs`}
                   />
                 }
                 label={
                   <FormattedMessage
-                    id="lock.inputs"
-                    defaultMessage="Lock inputs"
+                    id="hide.inputs"
+                    defaultMessage="Hide inputs"
                   />
                 }
               />
             </Grid>
           )}
-
+          <FormikConsumer>
+            {({ values }) =>
+              !(values as ContractFormParams).fields[func.name].hideInputs
+                ? func.inputs.length > 0 && (
+                    <Grid item>
+                      <FormControlLabel
+                        control={
+                          <FastField
+                            component={Switch}
+                            type="checkbox"
+                            name={`fields.${func.name}.lockInputs`}
+                          />
+                        }
+                        label={
+                          <FormattedMessage
+                            id="lock.inputs"
+                            defaultMessage="Lock inputs"
+                          />
+                        }
+                      />
+                    </Grid>
+                  )
+                : null
+            }
+          </FormikConsumer>
           {func.stateMutability === 'view' && (
             <Grid item>
               <FormControlLabel
@@ -128,29 +153,10 @@ function ContractFormAccordion({ func }: Props) {
             </Grid>
           )}
 
-          {func.inputs.length > 0 && (
-            <Grid item>
-              <FormControlLabel
-                control={
-                  <FastField
-                    component={Switch}
-                    type="checkbox"
-                    name={`fields.${func.name}.hideInputs`}
-                  />
-                }
-                label={
-                  <FormattedMessage
-                    id="hide.inputs"
-                    defaultMessage="Hide inputs"
-                  />
-                }
-              />
-            </Grid>
-          )}
-
           <FormikConsumer>
             {({ values }) =>
-              !(values as ContractFormParams).fields[func.name].callOnMount ? (
+              !(values as ContractFormParams).fields[func.name].callOnMount &&
+              !(values as ContractFormParams).fields[func.name].hideInputs ? (
                 <Grid item>
                   <FormControlLabel
                     control={
@@ -171,6 +177,21 @@ function ContractFormAccordion({ func }: Props) {
               ) : undefined
             }
           </FormikConsumer>
+
+          <Grid item>
+            <FormControlLabel
+              control={
+                <FastField
+                  component={Switch}
+                  type="checkbox"
+                  name={`fields.${func.name}.hideLabel`}
+                />
+              }
+              label={
+                <FormattedMessage id="hide.label" defaultMessage="Hide label" />
+              }
+            />
+          </Grid>
 
           {func.inputs.length > 0 && (
             <Grid item xs={12}>

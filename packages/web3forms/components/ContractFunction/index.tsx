@@ -136,18 +136,38 @@ export default function ContractFunction({
       : name;
   }, [name, params]);
 
-  if (
-    name &&
-    params.fields[name] !== undefined &&
-    params.fields[name].callOnMount
-  ) {
+  const hideLabel: boolean = useMemo(() => {
+    if (
+      name &&
+      params.fields[name] &&
+      params.fields[name].hideLabel !== undefined
+    ) {
+      return params.fields[name].hideLabel;
+    }
+
+    return false;
+  }, [params.fields]);
+
+  const callOnMount =
+    name && params.fields[name] && params.fields[name].callOnMount;
+
+  const collapse =
+    name && params.fields[name] ? params.fields[name].collapse : undefined;
+
+  if (callOnMount) {
     return (
       <Card>
         <Box sx={{ p: 2 }}>
-          <Typography variant="body1" sx={{ fontWeight: 600 }}>
-            {fieldName}
-            {result && <>: {result}</>}
-          </Typography>
+          {!hideLabel ? (
+            <Typography variant="body1" sx={{ fontWeight: 600 }}>
+              {fieldName}
+              {result && <>: {result}</>}
+            </Typography>
+          ) : (
+            <Typography variant="body1" sx={{ fontWeight: 600 }}>
+              {result}
+            </Typography>
+          )}
         </Box>
       </Card>
     );
@@ -159,22 +179,20 @@ export default function ContractFunction({
       onSubmit={handleSubmit}
       validationSchema={getSchemaForInputs(inputs)}
     >
-      {({ submitForm, isValid }) => (
-        <Accordion
-          defaultExpanded={
-            name && params.fields[name]
-              ? params.fields[name].collapse
-              : undefined
-          }
-        >
-          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography variant="body1" sx={{ fontWeight: 600 }}>
-              {fieldName}
-              {result && <>: {result}</>}
-            </Typography>
-          </AccordionSummary>
-          <Divider />
-          <AccordionDetails>
+      {({ submitForm, isValid, errors }) => (
+        <Accordion defaultExpanded={collapse}>
+          {!hideLabel && (
+            <>
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                <Typography variant="body1" sx={{ fontWeight: 600 }}>
+                  {fieldName}
+                  {result && <>: {result}</>}
+                </Typography>
+              </AccordionSummary>
+              <Divider />
+            </>
+          )}
+          <AccordionDetails sx={{ p: 2 }}>
             <Grid container spacing={2}>
               <ContractFunctionInputs
                 name={name}
@@ -182,10 +200,9 @@ export default function ContractFunction({
                 params={params}
               />
               <Grid item xs={12}>
-                <Stack spacing={1} direction="row">
-                  {name &&
-                    params.fields[name] &&
-                    !params.fields[name].callOnMount && (
+                <Box>
+                  <Stack spacing={1} direction="row">
+                    {!callOnMount && (
                       <Button
                         size="small"
                         disabled={!isValid || isCalling}
@@ -201,27 +218,28 @@ export default function ContractFunction({
                       </Button>
                     )}
 
-                  {(stateMutability === "nonpayable" ||
-                    stateMutability === "payable") &&
-                    name &&
-                    results &&
-                    results[name] && (
-                      <Button
-                        LinkComponent="a"
-                        href={`${getBlockExplorerUrl(chainId)}/tx/${
-                          results[name]
-                        }`}
-                        target="_blank"
-                        size="small"
-                        variant="outlined"
-                      >
-                        <FormattedMessage
-                          id="view.transaction"
-                          defaultMessage="View Transaction"
-                        />
-                      </Button>
-                    )}
-                </Stack>
+                    {(stateMutability === "nonpayable" ||
+                      stateMutability === "payable") &&
+                      name &&
+                      results &&
+                      results[name] && (
+                        <Button
+                          LinkComponent="a"
+                          href={`${getBlockExplorerUrl(chainId)}/tx/${
+                            results[name]
+                          }`}
+                          target="_blank"
+                          size="small"
+                          variant="outlined"
+                        >
+                          <FormattedMessage
+                            id="view.transaction"
+                            defaultMessage="View Transaction"
+                          />
+                        </Button>
+                      )}
+                  </Stack>
+                </Box>
               </Grid>
             </Grid>
           </AccordionDetails>

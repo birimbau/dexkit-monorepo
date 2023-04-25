@@ -32,6 +32,7 @@ export type ContractFromField = {
   hideInputs: boolean;
   callOnMount: boolean;
   collapse: boolean;
+  hideLabel: boolean;
   callToAction: string;
   input: { [key: string]: { label: string; defaultValue: string } };
 };

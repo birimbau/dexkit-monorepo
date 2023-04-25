@@ -11,8 +11,8 @@ import { TextField } from 'formik-mui';
 import * as Yup from 'yup';
 
 import { ImageFormUpload } from '@/modules/contract-wizard/components/ImageFormUpload';
-import { useEffect } from 'react';
 import { FormattedMessage } from 'react-intl';
+import ChangeListener from '../ChangeListener';
 
 interface AssetStoreOptions {
   name?: string;
@@ -38,24 +38,6 @@ interface Props {
   onSubmit?: (item: AssetStoreOptions) => void;
   onChange?: (item: AssetStoreOptions, isValid: boolean) => void;
   item?: AssetStoreOptions;
-}
-
-export function ChangeListener({
-  values,
-  onChange,
-  isValid,
-}: {
-  values: any;
-  onChange: any;
-  isValid: any;
-}) {
-  useEffect(() => {
-    if (onChange) {
-      onChange(values, isValid);
-    }
-  }, [values, isValid]);
-
-  return <></>;
 }
 
 export default function AssetStoreForm({

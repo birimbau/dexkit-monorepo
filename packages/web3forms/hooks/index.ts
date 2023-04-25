@@ -206,8 +206,6 @@ export function useCallOnMountFields({
           }
         }
 
-        console.log("results", results);
-
         return results;
       }
 
@@ -241,8 +239,6 @@ export function useScanContractAbi({
         throw new Error("invalid contract address");
       }
 
-      console.log("chain", chainId);
-
       if (!chainId) {
         throw new Error("no chain id");
       }
@@ -258,8 +254,6 @@ export function useScanContractAbi({
           signal,
         }
       );
-
-      console.log("vem até aqui");
 
       return JSON.parse(resp.data.result);
     },

@@ -82,7 +82,7 @@ export default function ContractFormView({ params }: Props) {
 
       await callOnMountQuery.refetch();
     },
-    [chainId, params.chainId]
+    [chainId, params.chainId, callOnMountQuery]
   );
 
   const handleConfirm = useCallback(
