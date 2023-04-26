@@ -3,19 +3,11 @@ import { useIsMobile } from '@dexkit/core/hooks';
 import { useDexKitContext } from '@dexkit/ui/hooks';
 import { getBlockExplorerUrl } from '@dexkit/widgets/src/utils';
 import CelebrationIcon from '@mui/icons-material/Celebration';
-import CloseIcon from '@mui/icons-material/Close';
-import DoneIcon from '@mui/icons-material/Done';
-import { Alert, Stack } from '@mui/material';
+import { Stack } from '@mui/material';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import ListSubheader from '@mui/material/ListSubheader';
 import Typography from '@mui/material/Typography';
-import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { LoginAppButton } from 'src/components/LoginAppButton';
@@ -28,11 +20,10 @@ import {
 } from '../hooks';
 import UserCreateDialog from './dialogs/UserCreateDialog';
 import UserEditDialog from './dialogs/UserEditDialog';
-export function UserAirdrop() {
+export function UserAirdropWebsummit() {
   const [open, setOpen] = useState<boolean>(false);
   const [openUserDialog, setOpenUserDialog] = useState<boolean>(false);
   const [openUserEditDialog, setOpenUserEditDialog] = useState<boolean>(false);
-  const router = useRouter();
   const isMobile = useIsMobile();
   const authUserQuery = useAuthUserQuery();
   const authUser = authUserQuery.data;
@@ -47,23 +38,12 @@ export function UserAirdrop() {
     });
   };
 
-  const verifiedDiscord = authUser?.credentials
-    ? authUser?.credentials?.findIndex((c) => c.provider === 'discord') !== -1
-    : false;
-
-  const verifiedTwitter = authUser?.credentials
-    ? authUser?.credentials?.findIndex((c) => c.provider === 'twitter') !== -1
-    : false;
-
-  const hasUsernme = authUser?.username ? true : false;
-
   const claimCampaignMutation = useClaimCampaignMutation({ onSuccess });
   const claimCampaignQuery = useUserClaimCampaignQuery();
   const postData = claimCampaignMutation.data;
-  const needToCompleteProfile =
-    !verifiedDiscord || !verifiedTwitter || !hasUsernme;
 
   const claimData = claimCampaignQuery?.data;
+
   return (
     <>
       {openUserEditDialog && (
@@ -197,146 +177,25 @@ export function UserAirdrop() {
             alignContent={'center'}
             alignItems={'center'}
           >
-            <Typography variant="h3">
-              <FormattedMessage
-                id="airdrop.user.info.completed"
-                defaultMessage={'Airdrop campaign completed'}
-              />
-            </Typography>
             <Typography variant="h6">
               <FormattedMessage
-                id="airdrop.user.info"
+                id="airdrop.user.info.web.submmit"
                 defaultMessage={
-                  'Airdrop for users that complete profile and connect to both Discord and Twitter'
+                  'Airdrop for users that attend Websummit and want to know more about blockchain tech'
+                }
+              />
+            </Typography>
+            <Typography variant="body1">
+              <FormattedMessage
+                id="airdrop.user.info.web.submmit"
+                defaultMessage={
+                  'Note: You need to be on Rio de Janeiro to claim this airdrop'
                 }
               />
             </Typography>
           </Stack>
         </Grid>
-        {!claimData?.status && (
-          <Grid item xs={12}>
-            <Box display={'flex'} justifyContent={'center'}>
-              <List
-                sx={{
-                  width: '100%',
-                  maxWidth: 360,
-                  bgcolor: 'background.paper',
-                }}
-                component="nav"
-                aria-labelledby="nested-list-subheader"
-                subheader={
-                  <ListSubheader component="div" id="nested-list-subheader">
-                    <FormattedMessage
-                      id="airdrop.requirements"
-                      defaultMessage={'Airdrop requirements'}
-                    />
-                  </ListSubheader>
-                }
-              >
-                <ListItem>
-                  <ListItemIcon>
-                    {authUser?.username && <DoneIcon color={'success'} />}
-                    {!authUser?.username && <CloseIcon color={'error'} />}
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={
-                      <FormattedMessage
-                        id="complete.user.profile"
-                        defaultMessage={'Complete user profile'}
-                      />
-                    }
-                  />
-                </ListItem>
-                <ListItem>
-                  <ListItemIcon>
-                    {verifiedDiscord && <DoneIcon color={'success'} />}
-                    {!verifiedDiscord && <CloseIcon color={'error'} />}
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={
-                      <FormattedMessage
-                        id="verify.discord"
-                        defaultMessage={'Verify Discord'}
-                      />
-                    }
-                  />
-                </ListItem>
-                <ListItem>
-                  <ListItemIcon>
-                    {verifiedTwitter && <DoneIcon color={'success'} />}
-                    {!verifiedTwitter && <CloseIcon color={'error'} />}
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={
-                      <FormattedMessage
-                        id="verify.discord"
-                        defaultMessage={'Verify Twitter'}
-                      />
-                    }
-                  />
-                </ListItem>
-              </List>
-            </Box>
-          </Grid>
-        )}
-        {needToCompleteProfile && user && !authUser && (
-          <Grid item xs={12}>
-            <Box display={'flex'} justifyContent={'center'}>
-              <Stack spacing={2}>
-                <Alert severity={'info'}>
-                  <Typography variant={'body1'}>
-                    {' '}
-                    <FormattedMessage
-                      id="complete.profile.info"
-                      defaultMessage="Please complete your profile by clicking on complete profile"
-                    />
-                  </Typography>
-                </Alert>
-                <Button
-                  variant={'contained'}
-                  onClick={() => {
-                    //router.push('/u/edit');
-                    setOpenUserDialog(true);
-                  }}
-                >
-                  <FormattedMessage
-                    id="complete.profile"
-                    defaultMessage={'Complete Profile'}
-                  />
-                </Button>
-              </Stack>
-            </Box>
-          </Grid>
-        )}
-        {needToCompleteProfile && user && authUser && (
-          <Grid item xs={12}>
-            <Box display={'flex'} justifyContent={'center'}>
-              <Stack spacing={2}>
-                <Alert severity={'info'}>
-                  <Typography variant={'body1'}>
-                    {' '}
-                    <FormattedMessage
-                      id="complete.socials info"
-                      defaultMessage="Please connect your socials medias"
-                    />
-                  </Typography>
-                </Alert>
-                <Button
-                  variant={'contained'}
-                  onClick={() => {
-                    //router.push('/u/edit');
-                    setOpenUserEditDialog(true);
-                  }}
-                >
-                  <FormattedMessage
-                    id="connect.socials"
-                    defaultMessage={'Connect socials'}
-                  />
-                </Button>
-              </Stack>
-            </Box>
-          </Grid>
-        )}
+
         <Grid item xs={12} sm={6}>
           <Box display={'flex'} justifyContent={'center'}>
             {!user && <LoginAppButton />}

@@ -104,7 +104,7 @@ function AppDrawer({ open, onClose }: Props) {
                   sx={(theme) => ({
                     px: 2,
                     py: 1,
-                    border: `1px solid ${theme.palette.divider}`,
+                    border: `1px solid ${theme.vars.palette.divider}`,
                     borderRadius: theme.spacing(1),
                   })}
                 >
@@ -248,13 +248,11 @@ function AppDrawer({ open, onClose }: Props) {
               <ChevronRightIcon color="primary" />
             </CustomListItemSecondaryAction>
           </ListItem>
-          {false && (
-            <ListItem divider>
-              <ListItemIcon />
+          <ListItem divider>
+            <ListItemIcon />
 
-              <ListItemText primary={<ThemeModeSelector />} />
-            </ListItem>
-          )}
+            <ListItemText primary={<ThemeModeSelector />} />
+          </ListItem>
         </List>
       </Box>
     </Drawer>

@@ -1,8 +1,8 @@
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Box, Divider, IconButton, Stack, Typography } from '@mui/material';
 import React from 'react';
-import Funnel from './icons/Filter';
 import SidebarFiltersContent from './SidebarFiltersContent';
+import Funnel from './icons/Filter';
 
 interface Props {
   title: React.ReactNode | React.ReactNode[];
@@ -14,7 +14,7 @@ export default function SidebarFilters({ onClose, title, children }: Props) {
   return (
     <Box
       sx={{
-        backgroundColor: (theme) => theme.palette.background.paper,
+        backgroundColor: (theme) => theme.vars.palette.background.paper,
         height: '100%',
       }}
     >

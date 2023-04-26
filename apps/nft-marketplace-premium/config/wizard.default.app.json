@@ -8,13 +8,13 @@
   "domain": "https://www.kittygotchi.com",
   "logo": {
     "url": "https://dexkit-storage.nyc3.cdn.digitaloceanspaces.com/dexkit/images/logo/market-logo.svg",
-    "height": "50",
-    "width": "150"
+    "height": 50,
+    "width": 150
   },
   "logoDark": {
     "url": "https://dexkit-storage.nyc3.cdn.digitaloceanspaces.com/dexkit/images/logo/market-logo.svg",
-    "height": "50",
-    "width": "150"
+    "height": 50,
+    "width": 150
   },
   "favicon_url": "https://dexkit-storage.nyc3.cdn.digitaloceanspaces.com/dexkit/images/logo/favicon.ico",
   "social": [

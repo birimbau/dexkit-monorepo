@@ -1,6 +1,7 @@
 import createEmotionServer from '@emotion/server/create-instance';
 import Document, { Head, Html, Main, NextScript } from 'next/document';
 
+import { getInitColorSchemeScript } from '@mui/material/styles';
 import Script from 'next/script';
 import createEmotionCache from '../src/createEmotionCache';
 import { AppConfig } from '../src/types/config';
@@ -51,6 +52,7 @@ export default class MyDocument extends Document {
           </Script>
         </Head>
         <body>
+          {getInitColorSchemeScript()}
           <Main />
           <NextScript />
         </body>

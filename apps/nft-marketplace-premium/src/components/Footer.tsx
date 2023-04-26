@@ -7,9 +7,12 @@ import {
   IconButton,
   Stack,
   Typography,
+  useTheme,
 } from '@mui/material'; // always use @mui/material instead of @mui/system
 
+import { Facebook, LinkedIn, Reddit, YouTube } from '@mui/icons-material';
 import TwitterIcon from '@mui/icons-material/Twitter';
+import Image from 'next/image';
 import { useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { AssetAPI } from 'src/types/nft';
@@ -24,11 +27,20 @@ interface Props {
 }
 
 export function Footer({ appConfig, isPreview, appNFT }: Props) {
+  const theme = useTheme();
   const renderIcon = (media: SocialMedia) => {
     if (media?.type === 'instagram') {
       return <InstagramIcon />;
     } else if (media?.type === 'twitter') {
       return <TwitterIcon />;
+    } else if (media?.type === 'reddit') {
+      return <Reddit />;
+    } else if (media?.type === 'youtube') {
+      return <YouTube />;
+    } else if (media?.type === 'linkedin') {
+      return <LinkedIn />;
+    } else if (media?.type === 'facebook') {
+      return <Facebook />;
     }
   };
 
@@ -37,6 +49,14 @@ export function Footer({ appConfig, isPreview, appNFT }: Props) {
       return `https://instagram.com/${media?.handle}`;
     } else if (media?.type === 'twitter') {
       return `https://twitter.com/${media?.handle}`;
+    } else if (media.type === 'reddit') {
+      return `https://reddit.com/r/${media?.handle}`;
+    } else if (media.type === 'youtube') {
+      return `https://youtube.com/channel/${media?.handle}`;
+    } else if (media.type === 'linkedin') {
+      return `https://linkedin.com/company/${media.handle}`;
+    } else if (media.type === 'facebook') {
+      return `https://facebook.com/${media.handle}`;
     }
 
     return '';
@@ -53,7 +73,7 @@ export function Footer({ appConfig, isPreview, appNFT }: Props) {
     <Box
       py={2}
       sx={{
-        bgcolor: (theme) => theme.palette.background.paper,
+        bgcolor: (theme) => theme.vars.palette.background.paper,
         minHeight: '50px',
         width: '100%',
       }}
@@ -156,6 +176,22 @@ export function Footer({ appConfig, isPreview, appNFT }: Props) {
                     size="small"
                   >
                     {renderIcon(media)}
+                  </IconButton>
+                ))}
+              {appConfig?.social_custom &&
+                appConfig.social_custom.map((media, index) => (
+                  <IconButton
+                    key={index}
+                    href={media.link}
+                    LinkComponent={Link}
+                    target="_blank"
+                    size="small"
+                  >
+                    <Image
+                      src={media.iconUrl}
+                      height={theme.spacing(3)}
+                      width={theme.spacing(3)}
+                    />
                   </IconButton>
                 ))}
             </Stack>

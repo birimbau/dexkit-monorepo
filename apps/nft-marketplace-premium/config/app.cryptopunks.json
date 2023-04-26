@@ -7,8 +7,8 @@
   "domain": "https://www.cryptopunks.dexkit.com",
   "logo": {
     "url": "/assets/images/cryptopunks-logo.png",
-    "height": "50",
-    "width": "150"
+    "height": 50,
+    "width": 150
   },
   "favicon_url": "",
   "social": [{ "type": "twitter", "handle": "larvalabs" }],

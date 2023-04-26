@@ -1,36 +1,34 @@
 import {
-  Box,
   Divider,
   Grid,
   IconButton,
   Paper,
-  Skeleton,
   Stack,
   Tooltip,
-  Typography,
+  Typography
 } from '@mui/material';
 import { FormattedMessage } from 'react-intl';
 
+import { Share } from '@mui/icons-material';
 import LaunchIcon from '@mui/icons-material/Launch';
+import { useWeb3React } from '@web3-react/core';
+import { useState } from 'react';
+import Link from '../../../components/Link';
+import Heart from '../../../components/icons/Heart';
 import {
   useAsset,
   useAssetBalance,
   useAssetMetadata,
   useFavoriteAssets,
 } from '../../../hooks/nft';
-import Link from '../../../components/Link';
 import {
   getBlockExplorerUrl,
   getNetworkSlugFromChainId,
   isAddressEqual,
   truncateAddress,
 } from '../../../utils/blockchain';
-import { useWeb3React } from '@web3-react/core';
-import Heart from '../../../components/icons/Heart';
-import { useState } from 'react';
-import ShareDialog from './dialogs/ShareDialog';
 import { getWindowUrl } from '../../../utils/browser';
-import { Share } from '@mui/icons-material';
+import ShareDialog from './dialogs/ShareDialog';
 
 interface Props {
   address: string;
@@ -134,7 +132,7 @@ export function AssetPageActions({ address, id }: Props) {
                     sx={
                       favorites.isFavorite(asset)
                         ? (theme) => ({
-                            '& path': { fill: theme.palette.error.light },
+                            '& path': { fill: theme.vars.palette.error.light },
                           })
                         : undefined
                     }

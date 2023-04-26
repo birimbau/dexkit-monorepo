@@ -4,7 +4,7 @@ import { Token } from './blockchain';
 
 export type VideoEmbedType = 'youtube' | 'vimeo';
 
-export type SocialMediaTypes = 'instagram' | 'facebook' | 'twitter';
+export type SocialMediaTypes = 'instagram' | 'facebook' | 'twitter' | 'youtube' | 'linkedin' | 'pinterest' | 'reddit';
 
 export interface MenuTree {
   name: string;
@@ -55,6 +55,10 @@ export type AppPage = {
 export interface SocialMedia {
   type: SocialMediaTypes;
   handle: string;
+}
+
+export interface SocialMediaCustom {
+  link: string, iconUrl: string, label: string;
 }
 
 interface SeoImage {
@@ -112,17 +116,22 @@ export interface AppConfig {
   email: string;
   currency: string;
   logo?: {
-    width?: string;
-    height?: string;
+    width?: number;
+    height?: number;
+    widthMobile?: number;
+    heightMobile?: number;
     url: string;
   };
   logoDark?: {
-    width?: string;
-    height?: string;
+    width?: number;
+    height?: number;
+    widthMobile?: number;
+    heightMobile?: number;
     url?: string;
   };
   favicon_url?: string;
   social?: SocialMedia[];
+  social_custom?: SocialMediaCustom[];
   pages: { [key: string]: AppPage };
   transak?: { enabled: boolean };
   fees?: {

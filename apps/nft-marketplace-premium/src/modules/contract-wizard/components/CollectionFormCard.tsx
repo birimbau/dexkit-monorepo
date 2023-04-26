@@ -64,7 +64,7 @@ export default function CollectionFormCard() {
                         errors?.file
                           ? {
                               border: (theme) =>
-                                `1px solid ${theme.palette.error.main}`,
+                                `1px solid ${theme.vars.palette.error.main}`,
                             }
                           : undefined
                       }

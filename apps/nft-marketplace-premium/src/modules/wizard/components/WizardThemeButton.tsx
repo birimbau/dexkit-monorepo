@@ -1,11 +1,10 @@
 import {
+  Avatar,
+  AvatarGroup,
   ButtonBase,
   Paper,
   Stack,
   Typography,
-  AvatarGroup,
-  Avatar,
-  Box,
 } from '@mui/material';
 import { memo } from 'react';
 
@@ -38,11 +37,13 @@ function WizardThemeButton({ selected, name, id, colors, onClick }: Props) {
         flexDirection: 'column',
         alignItems: 'flex-start',
         borderColor: (theme) =>
-          selected ? theme.palette.primary.main : theme.palette.divider,
+          selected
+            ? theme.vars.palette.primary.main
+            : theme.vars.palette.divider,
         backgroundColor: (theme) =>
           selected
-            ? theme.palette.action.hover
-            : theme.palette.background.paper,
+            ? theme.vars.palette.action.hover
+            : theme.vars.palette.background.paper,
       }}
       onClick={handleClick}
     >
