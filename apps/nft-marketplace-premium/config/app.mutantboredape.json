@@ -7,8 +7,8 @@
   "domain": "https://www.mutantboredapes.dexkit.com",
   "logo": {
     "url": "/assets/images/mutantboredape-logo.png",
-    "height": "50",
-    "width": "150"
+    "height": 50,
+    "width": 150
   },
   "favicon_url": "/assets/mutantboredape/favicon.ico",
   "social": [{ "type": "twitter", "handle": "BoredApeYC" }],
