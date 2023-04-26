@@ -1,4 +1,4 @@
-import { Divider, Grid, Stack, Typography, useTheme } from '@mui/material';
+import { Divider, Grid, Stack, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { AppConfig } from '../../../../types/config';
@@ -21,7 +21,7 @@ export default function GeneralWizardContainer({
   stepperButtonProps,
 }: Props) {
   const [generalData, setGeneralData] = useState<GeneralSectionForm>();
-  const theme = useTheme();
+
   const handleSubmitGeneral = (form: GeneralSectionForm) => {
     setGeneralData(form);
     if (form) {

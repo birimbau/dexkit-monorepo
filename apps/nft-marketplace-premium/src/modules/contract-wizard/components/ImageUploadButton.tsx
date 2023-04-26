@@ -39,7 +39,6 @@ export function ImageUploadButton(props: ImageUploadButtonProps) {
   useEffect(() => {}, []);
 
   const handleClick = useCallback(() => {
-
     if (file !== null) {
       onChange(null);
     }
@@ -82,7 +81,9 @@ export function ImageUploadButton(props: ImageUploadButtonProps) {
       <CustomButton
         sx={
           error
-            ? { border: (theme) => `1px solid ${theme.palette.error.main}` }
+            ? {
+                border: (theme) => `1px solid ${theme.vars.palette.error.main}`,
+              }
             : undefined
         }
         onClick={handleClick}
