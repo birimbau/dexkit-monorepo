@@ -1,4 +1,4 @@
-import { Divider, Grid, Stack, Typography } from '@mui/material';
+import { Divider, Grid, Stack, Typography, useTheme } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { AppConfig } from '../../../../types/config';
@@ -21,6 +21,7 @@ export default function GeneralWizardContainer({
   stepperButtonProps,
 }: Props) {
   const [generalData, setGeneralData] = useState<GeneralSectionForm>();
+  const theme = useTheme();
   const handleSubmitGeneral = (form: GeneralSectionForm) => {
     setGeneralData(form);
     if (form) {
@@ -32,6 +33,17 @@ export default function GeneralWizardContainer({
         currency: form.currency,
         logo: {
           url: form.logoUrl,
+          width: form.logoWidth || 48,
+          height: form.logoHeight || 48,
+          widthMobile: form.logoWidthMobile || 48,
+          heightMobile: form.logoHeightMobile || 48,
+        },
+        logoDark: {
+          url: form?.logoDarkUrl,
+          width: form.logoWidth || 48,
+          height: form.logoHeight || 48,
+          widthMobile: form.logoWidthMobile || 48,
+          heightMobile: form.logoHeightMobile || 48,
         },
         locale: form.locale,
       };
@@ -49,9 +61,17 @@ export default function GeneralWizardContainer({
         currency: form.currency,
         logo: {
           url: form.logoUrl,
+          width: form?.logoWidth || 48,
+          height: form?.logoHeight || 48,
+          widthMobile: form?.logoWidthMobile || 48,
+          heightMobile: form?.logoHeightMobile || 48,
         },
         logoDark: {
           url: form?.logoDarkUrl,
+          width: form?.logoWidth || 48,
+          height: form?.logoHeight || 48,
+          widthMobile: form?.logoWidthMobile || 48,
+          heightMobile: form?.logoHeightMobile || 48,
         },
         locale: form.locale,
       };
@@ -68,6 +88,10 @@ export default function GeneralWizardContainer({
         locale: config.locale || '',
         logoUrl: config.logo?.url || '',
         logoDarkUrl: config.logoDark?.url || '',
+        logoHeight: Number(config.logo?.height || 48),
+        logoWidth: Number(config.logo?.width || 48),
+        logoHeightMobile: Number(config.logo?.heightMobile || 48),
+        logoWidthMobile: Number(config.logo?.widthMobile || 48),
         name: config.name,
       });
     }

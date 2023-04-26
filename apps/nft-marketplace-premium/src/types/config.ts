@@ -116,13 +116,17 @@ export interface AppConfig {
   email: string;
   currency: string;
   logo?: {
-    width?: string;
-    height?: string;
+    width?: number;
+    height?: number;
+    widthMobile?: number;
+    heightMobile?: number;
     url: string;
   };
   logoDark?: {
-    width?: string;
-    height?: string;
+    width?: number;
+    height?: number;
+    widthMobile?: number;
+    heightMobile?: number;
     url?: string;
   };
   favicon_url?: string;
