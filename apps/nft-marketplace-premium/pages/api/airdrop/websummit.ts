@@ -10,11 +10,14 @@ export default async function handler(
   if (!refreshToken) {
     return res.status(401).json({ message: "You must be logged on app." });
 
+
   }
   console.log(req.headers['x-vercel-ip-city']);
   console.log(req.headers['x-vercel-ip-country-region'])
-  if (req.headers['x-vercel-ip-country'] !== 'BR' && req.headers['x-vercel-ip-city'] !== 'Rio de Janeiro') {
-    return res.status(401).json({ message: "You not attend requirements for airdrop." });
+  if (req.headers['x-vercel-ip-country'] === 'BR' && req.headers['x-vercel-ip-city'] === 'Rio de Janeiro') {
+
+  } else {
+    return res.status(401).json({ message: `You not attend requirements for airdrop: ${req.headers['x-vercel-ip-country']}: ${req.headers['x-vercel-ip-city']}` });
   }
 
 
