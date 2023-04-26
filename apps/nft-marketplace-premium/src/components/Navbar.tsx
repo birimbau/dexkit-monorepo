@@ -298,14 +298,18 @@ function Navbar({ appConfig, isPreview }: Props) {
                 alt={appConfig.name}
                 title={appConfig.name}
                 width={
-                  isMobile
+                  isMobile && appConfig?.logoDark?.widthMobile
                     ? appConfig?.logoDark?.widthMobile
-                    : appConfig?.logoDark?.width || theme.spacing(6)
+                    : appConfig?.logoDark?.width ||
+                      appConfig?.logo?.width ||
+                      theme.spacing(6)
                 }
                 height={
-                  isMobile
+                  isMobile && appConfig?.logoDark?.heightMobile
                     ? appConfig?.logoDark?.heightMobile
-                    : appConfig?.logoDark?.height || theme.spacing(6)
+                    : appConfig?.logoDark?.height ||
+                      appConfig?.logo?.height ||
+                      theme.spacing(6)
                 }
               />
             </Link>
@@ -316,12 +320,12 @@ function Navbar({ appConfig, isPreview }: Props) {
                 alt={appConfig.name}
                 title={appConfig.name}
                 width={
-                  isMobile
+                  isMobile && appConfig?.logo?.widthMobile
                     ? appConfig?.logo?.widthMobile
                     : appConfig?.logo?.width || theme.spacing(6)
                 }
                 height={
-                  isMobile
+                  isMobile && appConfig?.logo?.heightMobile
                     ? appConfig?.logo?.heightMobile
                     : appConfig?.logo?.height || theme.spacing(6)
                 }

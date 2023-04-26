@@ -81,6 +81,7 @@ export default function GeneralWizardContainer({
 
   useEffect(() => {
     if (config) {
+      console.log(config);
       setGeneralData({
         currency: config.currency,
         email: config.email,
@@ -95,7 +96,7 @@ export default function GeneralWizardContainer({
         name: config.name,
       });
     }
-  }, [config]);
+  }, []);
 
   return (
     <Grid container spacing={2}>
