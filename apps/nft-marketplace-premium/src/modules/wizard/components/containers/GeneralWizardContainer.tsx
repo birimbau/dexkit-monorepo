@@ -81,7 +81,6 @@ export default function GeneralWizardContainer({
 
   useEffect(() => {
     if (config) {
-      console.log(config);
       setGeneralData({
         currency: config.currency,
         email: config.email,
