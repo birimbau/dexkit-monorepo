@@ -60,7 +60,13 @@ export default function ContractFunction({
         if (name && input.name && params.fields[name].input) {
           const inp = params.fields[name].input[input.name];
 
-          const defaultValue = inp ? inp.defaultValue : "";
+          let defaultValue: any;
+
+          if (inp.inputType === "normal" || inp.inputType === "address") {
+            defaultValue = inp ? inp.defaultValue : "";
+          } else if (inp.inputType === "switch") {
+            defaultValue = inp ? Boolean(inp.defaultValue) : false;
+          }
 
           obj[input.name] = defaultValue;
         }
@@ -119,6 +125,10 @@ export default function ContractFunction({
   }, [stateMutability, name, params]);
 
   const result = useMemo(() => {
+    if (stateMutability !== "view") {
+      return "";
+    }
+
     if (name && results && results[name]) {
       let value = results[name];
 
@@ -128,7 +138,7 @@ export default function ContractFunction({
 
       return String(value);
     }
-  }, [results, name]);
+  }, [results, name, stateMutability]);
 
   const fieldName = useMemo(() => {
     return name && params.fields[name] && params.fields[name].name
@@ -179,11 +189,13 @@ export default function ContractFunction({
       onSubmit={handleSubmit}
       validationSchema={getSchemaForInputs(inputs)}
     >
-      {({ submitForm, isValid, errors }) => (
-        <Accordion defaultExpanded={collapse}>
+      {({ submitForm, isValid, values, errors }) => (
+        <Accordion key={String(collapse)} defaultExpanded={collapse}>
           {!hideLabel && (
             <>
-              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <AccordionSummary
+                expandIcon={!collapse ? <ExpandMoreIcon /> : undefined}
+              >
                 <Typography variant="body1" sx={{ fontWeight: 600 }}>
                   {fieldName}
                   {result && <>: {result}</>}

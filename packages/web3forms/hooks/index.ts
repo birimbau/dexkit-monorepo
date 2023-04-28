@@ -244,7 +244,7 @@ export function useScanContractAbi({
       }
 
       const resp = await axios.get(
-        `https://api.${ETHER_SCAN_API_URL[chainId] ?? ""}.io/api`,
+        `https://api.${ETHER_SCAN_API_URL[chainId] ?? ""}/api`,
         {
           params: {
             action: "getabi",

@@ -1,19 +1,23 @@
+import { WEB3FORMS_INPUT_TYPES } from '@dexkit/web3forms/constants';
 import { AbiFragment, ContractFormParams } from '@dexkit/web3forms/types';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import {
   Accordion,
   AccordionDetails,
+  Card,
   Divider,
   FormControlLabel,
   Grid,
   IconButton,
+  MenuItem,
   Stack,
   Typography,
 } from '@mui/material';
 import { FastField, Field, FormikConsumer } from 'formik';
-import { Checkbox, Switch, TextField } from 'formik-mui';
+import { Checkbox, Select, Switch, TextField } from 'formik-mui';
 import { memo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
+import ContractFormInputParams from './ContractFormInputParams';
 
 export interface Props {
   func: AbiFragment;
@@ -51,195 +55,274 @@ function ContractFormAccordion({ func }: Props) {
         </IconButton>
       </Stack>
       <Divider />
-      <AccordionDetails>
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <FastField
-              component={TextField}
-              name={`fields.${func.name}.name`}
-              label={
-                <FormattedMessage
-                  id="function.name"
-                  defaultMessage="Function name"
-                />
-              }
-              fullWidth
-              size="small"
-            />
-          </Grid>
-
-          <FormikConsumer>
-            {({ values }) =>
-              !(values as ContractFormParams).fields[func.name].callOnMount ? (
-                <Grid item xs={12}>
-                  <FastField
-                    component={TextField}
-                    name={`fields.${func.name}.callToAction`}
-                    label={
-                      <FormattedMessage
-                        id="call.label"
-                        defaultMessage="Call label"
-                      />
-                    }
-                    fullWidth
-                    size="small"
-                  />
-                </Grid>
-              ) : null
-            }
-          </FormikConsumer>
-
-          {func.inputs.length > 0 && (
-            <Grid item>
-              <FormControlLabel
-                control={
-                  <FastField
-                    component={Switch}
-                    type="checkbox"
-                    name={`fields.${func.name}.hideInputs`}
-                  />
-                }
-                label={
-                  <FormattedMessage
-                    id="hide.inputs"
-                    defaultMessage="Hide inputs"
-                  />
-                }
-              />
-            </Grid>
-          )}
-          <FormikConsumer>
-            {({ values }) =>
-              !(values as ContractFormParams).fields[func.name].hideInputs
-                ? func.inputs.length > 0 && (
-                    <Grid item>
-                      <FormControlLabel
-                        control={
-                          <FastField
-                            component={Switch}
-                            type="checkbox"
-                            name={`fields.${func.name}.lockInputs`}
-                          />
-                        }
-                        label={
-                          <FormattedMessage
-                            id="lock.inputs"
-                            defaultMessage="Lock inputs"
-                          />
-                        }
-                      />
-                    </Grid>
-                  )
-                : null
-            }
-          </FormikConsumer>
-          {func.stateMutability === 'view' && (
-            <Grid item>
-              <FormControlLabel
-                control={
-                  <FastField
-                    component={Switch}
-                    type="checkbox"
-                    name={`fields.${func.name}.callOnMount`}
-                  />
-                }
-                label={
-                  <FormattedMessage
-                    id="call.on.view"
-                    defaultMessage="Call on view"
-                  />
-                }
-              />
-            </Grid>
-          )}
-
-          <FormikConsumer>
-            {({ values }) =>
-              !(values as ContractFormParams).fields[func.name].callOnMount &&
-              !(values as ContractFormParams).fields[func.name].hideInputs ? (
-                <Grid item>
-                  <FormControlLabel
-                    control={
-                      <FastField
-                        component={Switch}
-                        type="checkbox"
-                        name={`fields.${func.name}.collapse`}
-                      />
-                    }
-                    label={
-                      <FormattedMessage
-                        id="collapse"
-                        defaultMessage="Collapse"
-                      />
-                    }
-                  />
-                </Grid>
-              ) : undefined
-            }
-          </FormikConsumer>
-
-          <Grid item>
-            <FormControlLabel
-              control={
-                <FastField
-                  component={Switch}
-                  type="checkbox"
-                  name={`fields.${func.name}.hideLabel`}
-                />
-              }
-              label={
-                <FormattedMessage id="hide.label" defaultMessage="Hide label" />
-              }
-            />
-          </Grid>
-
-          {func.inputs.length > 0 && (
+      {expanded && (
+        <AccordionDetails>
+          <Grid container spacing={2}>
             <Grid item xs={12}>
-              <Grid container spacing={2}>
-                <Grid item xs={12}>
-                  <Typography variant="body1" sx={{ fontWeight: 600 }}>
-                    <FormattedMessage id="inputs" defaultMessage="Inputs" />
-                  </Typography>
-                </Grid>
-                {func.inputs.map((input, index) => (
-                  <Grid item xs={12} key={index}>
-                    <Grid container spacing={2}>
-                      <Grid item xs={12} sm={4}>
-                        <FastField
-                          component={TextField}
-                          name={`fields.${func.name}.input.${input.name}.label`}
-                          label={
-                            <FormattedMessage
-                              id="label"
-                              defaultMessage="Label"
-                            />
-                          }
-                          fullWidth
-                          size="small"
-                        />
-                      </Grid>
-                      <Grid item xs={12} sm={8}>
-                        <FastField
-                          component={TextField}
-                          name={`fields.${func.name}.input.${input.name}.defaultValue`}
-                          label={
-                            <FormattedMessage
-                              id="default.value"
-                              defaultMessage="Default value"
-                            />
-                          }
-                          fullWidth
-                          size="small"
-                        />
-                      </Grid>
-                    </Grid>
-                  </Grid>
-                ))}
-              </Grid>
+              <FastField
+                component={TextField}
+                name={`fields.${func.name}.name`}
+                label={
+                  <FormattedMessage
+                    id="function.name"
+                    defaultMessage="Function name"
+                  />
+                }
+                fullWidth
+                size="small"
+              />
             </Grid>
-          )}
-        </Grid>
-      </AccordionDetails>
+
+            <FormikConsumer>
+              {({ values }) =>
+                !(values as ContractFormParams).fields[func.name]
+                  .callOnMount ? (
+                  <Grid item xs={12}>
+                    <FastField
+                      component={TextField}
+                      name={`fields.${func.name}.callToAction`}
+                      label={
+                        <FormattedMessage
+                          id="call.label"
+                          defaultMessage="Call label"
+                        />
+                      }
+                      fullWidth
+                      size="small"
+                    />
+                  </Grid>
+                ) : null
+              }
+            </FormikConsumer>
+
+            {func.inputs.length > 0 && (
+              <Grid item>
+                <FormControlLabel
+                  control={
+                    <FastField
+                      component={Switch}
+                      type="checkbox"
+                      name={`fields.${func.name}.hideInputs`}
+                    />
+                  }
+                  label={
+                    <FormattedMessage
+                      id="hide.inputs"
+                      defaultMessage="Hide inputs"
+                    />
+                  }
+                />
+              </Grid>
+            )}
+            <FormikConsumer>
+              {({ values }) =>
+                !(values as ContractFormParams).fields[func.name].hideInputs
+                  ? func.inputs.length > 0 && (
+                      <Grid item>
+                        <FormControlLabel
+                          control={
+                            <FastField
+                              component={Switch}
+                              type="checkbox"
+                              name={`fields.${func.name}.lockInputs`}
+                            />
+                          }
+                          label={
+                            <FormattedMessage
+                              id="lock.inputs"
+                              defaultMessage="Lock inputs"
+                            />
+                          }
+                        />
+                      </Grid>
+                    )
+                  : null
+              }
+            </FormikConsumer>
+            {func.stateMutability === 'view' && (
+              <Grid item>
+                <FormControlLabel
+                  control={
+                    <FastField
+                      component={Switch}
+                      type="checkbox"
+                      name={`fields.${func.name}.callOnMount`}
+                    />
+                  }
+                  label={
+                    <FormattedMessage
+                      id="call.on.view"
+                      defaultMessage="Call on view"
+                    />
+                  }
+                />
+              </Grid>
+            )}
+
+            <FormikConsumer>
+              {({ values }) =>
+                !(values as ContractFormParams).fields[func.name].callOnMount &&
+                !(values as ContractFormParams).fields[func.name].hideInputs ? (
+                  <Grid item>
+                    <FormControlLabel
+                      control={
+                        <FastField
+                          component={Switch}
+                          type="checkbox"
+                          name={`fields.${func.name}.collapse`}
+                        />
+                      }
+                      label={
+                        <FormattedMessage
+                          id="collapse"
+                          defaultMessage="Collapse"
+                        />
+                      }
+                    />
+                  </Grid>
+                ) : undefined
+              }
+            </FormikConsumer>
+
+            <Grid item>
+              <FormControlLabel
+                control={
+                  <FastField
+                    component={Switch}
+                    type="checkbox"
+                    name={`fields.${func.name}.hideLabel`}
+                  />
+                }
+                label={
+                  <FormattedMessage
+                    id="hide.label"
+                    defaultMessage="Hide label"
+                  />
+                }
+              />
+            </Grid>
+
+            {func.inputs.length > 0 && (
+              <Grid item xs={12}>
+                <Grid container spacing={2}>
+                  <Grid item xs={12}>
+                    <Typography variant="body1" sx={{ fontWeight: 600 }}>
+                      <FormattedMessage id="inputs" defaultMessage="Inputs" />
+                    </Typography>
+                  </Grid>
+                  {func.inputs.map((input, index) => (
+                    <Grid item xs={12} key={index}>
+                      <Card sx={{ p: 2 }}>
+                        <Grid container spacing={2}>
+                          <Grid item xs={12}>
+                            <Typography
+                              variant="body1"
+                              sx={{ fontWeight: 600 }}
+                            >
+                              {input.name}
+                            </Typography>
+                          </Grid>
+                          <Grid item xs={12}>
+                            <FastField
+                              component={Select}
+                              name={`fields.${func.name}.input.${input.name}.inputType`}
+                              size="small"
+                              fullWidth
+                              displayEmpty
+                              InputLabelProps={{ shrink: true }}
+                              inputLabel={{ shrink: true }}
+                              formControl={{ fullWidth: true }}
+                              label={
+                                <FormattedMessage
+                                  id="input.type"
+                                  defaultMessage="Input Type"
+                                />
+                              }
+                            >
+                              <MenuItem value="">
+                                <FormattedMessage
+                                  id="default"
+                                  defaultMessage="Default"
+                                />
+                              </MenuItem>
+                              {Object.keys(WEB3FORMS_INPUT_TYPES)
+                                .map((key) => key)
+                                .filter(
+                                  (key) =>
+                                    WEB3FORMS_INPUT_TYPES[key].type === '' ||
+                                    WEB3FORMS_INPUT_TYPES[key].type ===
+                                      input.type
+                                )
+                                .map((key) => (
+                                  <MenuItem key={key} value={key}>
+                                    <FormattedMessage
+                                      id={WEB3FORMS_INPUT_TYPES[key].messageId}
+                                      defaultMessage={
+                                        WEB3FORMS_INPUT_TYPES[key]
+                                          .defaultMessage
+                                      }
+                                    />
+                                  </MenuItem>
+                                ))}
+                            </FastField>
+                          </Grid>
+                          <Grid item xs={12}>
+                            <Grid container spacing={2}>
+                              <Grid item xs={12} sm={4}>
+                                <FastField
+                                  component={TextField}
+                                  name={`fields.${func.name}.input.${input.name}.label`}
+                                  label={
+                                    <FormattedMessage
+                                      id="label"
+                                      defaultMessage="Label"
+                                    />
+                                  }
+                                  fullWidth
+                                  size="small"
+                                />
+                              </Grid>
+                              <Grid item xs={12} sm={8}>
+                                <FastField
+                                  component={TextField}
+                                  name={`fields.${func.name}.input.${input.name}.defaultValue`}
+                                  label={
+                                    <FormattedMessage
+                                      id="default.value"
+                                      defaultMessage="Default value"
+                                    />
+                                  }
+                                  fullWidth
+                                  size="small"
+                                />
+                              </Grid>
+                              <Grid item xs={12}>
+                                <FormikConsumer>
+                                  {({ values }) => (
+                                    <ContractFormInputParams
+                                      funcName={func.name}
+                                      inputName={input.name}
+                                      input={
+                                        (values as ContractFormParams).fields[
+                                          func.name
+                                        ].input[input.name]
+                                      }
+                                    />
+                                  )}
+                                </FormikConsumer>
+                              </Grid>
+                            </Grid>
+                          </Grid>
+                        </Grid>
+                      </Card>
+                    </Grid>
+                  ))}
+                </Grid>
+              </Grid>
+            )}
+          </Grid>
+        </AccordionDetails>
+      )}
     </Accordion>
   );
 }

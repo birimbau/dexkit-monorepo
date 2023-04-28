@@ -1,5 +1,9 @@
 import { ThemeMode } from '@dexkit/ui/constants/enum';
-import { AbiFragment } from '@dexkit/web3forms/types';
+import {
+  AbiFragment,
+  ContractFormField,
+  ContractFormFieldInput,
+} from '@dexkit/web3forms/types';
 import { createTheme, responsiveFontSizes } from '@mui/material/styles';
 import { getTheme } from 'src/theme';
 import { Token } from '../../../types/blockchain';
@@ -74,37 +78,20 @@ export function generateTheme({
 
 export function inputMapping(abi: AbiFragment[]) {
   let fields: {
-    [key: string]: {
-      name: string;
-      visible: boolean;
-      lockInputs: boolean;
-      callOnMount: boolean;
-      collapse: boolean;
-      hideInputs: boolean;
-      hideLabel: boolean;
-      callToAction: string;
-      input: {
-        [key: string]: {
-          label: string;
-          defaultValue: string;
-        };
-      };
-    };
+    [key: string]: ContractFormField;
   } = {};
 
   for (let item of abi) {
     if (item.name) {
       let inputs: {
-        [key: string]: {
-          label: string;
-          defaultValue: string;
-        };
+        [key: string]: ContractFormFieldInput;
       } = {};
 
       for (let inp of item.inputs) {
         inputs[inp.name] = {
           defaultValue: '',
           label: inp.name,
+          inputType: 'normal',
         };
       }
 
