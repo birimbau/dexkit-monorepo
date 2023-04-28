@@ -13,11 +13,7 @@ import { FormattedMessage } from 'react-intl';
 import { LoginAppButton } from 'src/components/LoginAppButton';
 import AppMutationDialog from 'src/components/dialogs/AppMutationDialog';
 import { useAuth } from 'src/hooks/account';
-import {
-  useAuthUserQuery,
-  useClaimCampaignMutation,
-  useUserClaimCampaignQuery,
-} from '../hooks';
+import { useClaimCampaignMutation, useUserClaimCampaignQuery } from '../hooks';
 import UserCreateDialog from './dialogs/UserCreateDialog';
 import UserEditDialog from './dialogs/UserEditDialog';
 export function UserAirdropWebsummit() {
@@ -25,9 +21,7 @@ export function UserAirdropWebsummit() {
   const [openUserDialog, setOpenUserDialog] = useState<boolean>(false);
   const [openUserEditDialog, setOpenUserEditDialog] = useState<boolean>(false);
   const isMobile = useIsMobile();
-  const authUserQuery = useAuthUserQuery();
-  const authUser = authUserQuery.data;
-  const { user } = useAuth();
+  const { user, isLoggedIn } = useAuth();
   const { createNotification } = useDexKitContext();
   const onSuccess = ({ txHash }: { txHash: string }) => {
     createNotification({
@@ -202,7 +196,7 @@ export function UserAirdropWebsummit() {
           </Box>
         </Grid>
 
-        {!claimCampaignQuery.isLoading && !claimData && authUser && (
+        {!claimCampaignQuery.isLoading && !claimData && isLoggedIn && (
           <Grid item xs={12}>
             <Box display={'flex'} justifyContent={'center'}>
               <Button
