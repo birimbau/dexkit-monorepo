@@ -6,11 +6,11 @@ export default async function handler(
   res: NextApiResponse
 ) {
   const refreshToken = req.cookies?.refresh_token_auth || req.cookies?.refresh_token;
+  console.log(req.cookies?.refresh_token);
+  console.log(req.cookies?.refresh_token_auth);
   console.log(req.cookies);
   if (!refreshToken) {
     return res.status(401).json({ message: "You must be logged on app." });
-
-
   }
   console.log(req.headers['x-vercel-ip-city']);
   console.log(req.headers['x-vercel-ip-country-region'])
@@ -20,13 +20,15 @@ export default async function handler(
     return res.status(401).json({ message: `You not attend requirements for airdrop: ${req.headers['x-vercel-ip-country']}: ${req.headers['x-vercel-ip-city']}` });
   }
 
-
-  const { data } = await myAppsApi.post<{ txHash: string }>('/campaign/claim/1', {
-    headers: {
-      'Authorization': `Bearer ${refreshToken}`,
-      'DexKit-Api-Key': process.env.MARKETPLACE_API_KEY as string
-    }
-  })
-
-  return res.status(200).json({ txHash: data.txHash });
+  try {
+    const { data } = await myAppsApi.post<{ txHash: string }>('/campaign/claim/1', undefined, {
+      headers: {
+        'authorization': `Bearer ${refreshToken}`,
+        'DexKit-Api-Key': process.env.MARKETPLACE_API_KEY as string
+      }
+    })
+    return res.status(200).json({ txHash: data.txHash });
+  } catch (e) {
+    return res.status(500).json({ message: 'Requirements not attended' });
+  }
 }
