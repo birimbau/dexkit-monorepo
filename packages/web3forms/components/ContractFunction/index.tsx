@@ -13,6 +13,7 @@ import {
   Card,
   CircularProgress,
   Divider,
+  Skeleton,
   Stack,
   Typography,
 } from "@mui/material";
@@ -22,7 +23,7 @@ import { getSchemaForInputs } from "../../utils";
 
 import { ChainId } from "@dexkit/core/constants";
 import { NETWORKS } from "@dexkit/core/constants/networks";
-import { getBlockExplorerUrl } from "@dexkit/core/utils";
+import { getBlockExplorerUrl, parseChainId } from "@dexkit/core/utils";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { ethers } from "ethers";
 import ContractFunctionInputs from "./ContractFunctionInputs";
@@ -39,6 +40,7 @@ export interface ContractFieldProps {
   isCalling?: boolean;
   chainId?: ChainId;
   results?: { [key: string]: any };
+  isResultsLoading?: boolean;
   onCall: ({ name, args, call, payable }: CallParams) => void;
 }
 
@@ -50,6 +52,7 @@ export default function ContractFunction({
   isCalling,
   params,
   results,
+  isResultsLoading,
   onCall,
 }: ContractFieldProps) {
   const getInitialValues = useCallback(
@@ -90,9 +93,11 @@ export default function ContractFunction({
   );
 
   const submitMessage = useMemo(() => {
+    const paramsChainId = parseChainId(params.chainId);
+
     if (
       (stateMutability === "nonpayable" || stateMutability === "payable") &&
-      params.chainId !== chainId
+      paramsChainId !== chainId
     ) {
       return (
         <FormattedMessage
@@ -100,8 +105,8 @@ export default function ContractFunction({
           defaultMessage="Switch to {network}"
           values={{
             network:
-              params.chainId && NETWORKS[params.chainId]
-                ? NETWORKS[params.chainId].name
+              paramsChainId && NETWORKS[paramsChainId]
+                ? NETWORKS[paramsChainId].name
                 : "unknown",
           }}
         />
@@ -122,7 +127,7 @@ export default function ContractFunction({
       }
       return <FormattedMessage id="call" defaultMessage="Call" />;
     }
-  }, [stateMutability, name, params]);
+  }, [stateMutability, name, params, chainId]);
 
   const result = useMemo(() => {
     if (stateMutability !== "view") {
@@ -195,11 +200,16 @@ export default function ContractFunction({
             <>
               <AccordionSummary
                 expandIcon={!collapse ? <ExpandMoreIcon /> : undefined}
+                sx={{ width: "100%" }}
               >
-                <Typography variant="body1" sx={{ fontWeight: 600 }}>
-                  {fieldName}
-                  {result && <>: {result}</>}
-                </Typography>
+                {isResultsLoading ? (
+                  <Skeleton sx={{ width: "100%" }} />
+                ) : (
+                  <Typography variant="body1" sx={{ fontWeight: 600 }}>
+                    {fieldName}
+                    {result && <>: {result}</>}
+                  </Typography>
+                )}
               </AccordionSummary>
               <Divider />
             </>

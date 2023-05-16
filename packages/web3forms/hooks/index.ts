@@ -102,7 +102,7 @@ export interface UseContractDeployMutationOptions {
   contractBytecode?: string;
   abi: ethers.ContractInterface;
   provider?: ethers.providers.Web3Provider;
-  onContractCreated: (contract: ethers.Contract) => void;
+  onContractCreated?: (contract: ethers.Contract) => void;
 }
 
 export function useContractDeployMutation({
@@ -136,28 +136,27 @@ export function useContractDeployMutation({
 
       let result;
 
-      if (args.length > 0) {
-        if (payable) {
-          result = await factory.deploy(...args, {
-            value,
-          });
+      try {
+        if (args.length > 0) {
+          if (payable) {
+            result = await factory.deploy(...args, {
+              value,
+            });
+          } else {
+            result = await factory.deploy(...args);
+          }
         } else {
-          result = await factory.deploy(...args);
+          if (payable) {
+            result = await factory.deploy({ value });
+          } else {
+            result = await factory.deploy();
+          }
         }
-      } else {
-        if (payable) {
-          result = await factory.deploy({ value });
-        } else {
-          result = await factory.deploy();
+
+        if (onContractCreated) {
+          onContractCreated(result);
         }
-      }
-
-      onContractCreated(result);
-
-      return result;
-    },
-    {
-      onError: (err: any) => {
+      } catch (err: any) {
         enqueueSnackbar(
           formatMessage(
             { id: "error.err", defaultMessage: "Error: {err}" },
@@ -165,7 +164,9 @@ export function useContractDeployMutation({
           ),
           { variant: "error" }
         );
-      },
+      }
+
+      return result;
     }
   );
 }

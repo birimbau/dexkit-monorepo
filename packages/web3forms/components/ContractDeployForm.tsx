@@ -1,7 +1,10 @@
 import { Box, Button } from "@mui/material";
 
+import { ChainId } from "@dexkit/core/constants";
+import { useSwitchNetworkMutation } from "@dexkit/ui/hooks";
 import { useWeb3React } from "@web3-react/core";
 import { BigNumber, ethers } from "ethers";
+import { useSnackbar } from "notistack";
 import { useCallback, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { useContractDeployMutation } from "../hooks";
@@ -13,14 +16,16 @@ export interface ContractDeployFormProps {
   abi: AbiFragment[];
   contractType: string;
   contractBytecode: string;
+  onContractCreated?: (contract: ethers.Contract) => void;
 }
 
 export default function ContractDeployForm({
   abi,
   contractType,
   contractBytecode,
+  onContractCreated,
 }: ContractDeployFormProps) {
-  const { provider } = useWeb3React();
+  const { provider, chainId } = useWeb3React();
 
   const [showConfirm, setShowConfirm] = useState(false);
 
@@ -28,7 +33,7 @@ export default function ContractDeployForm({
     provider,
     contractBytecode,
     abi,
-    onContractCreated: (contract: ethers.Contract) => {},
+    onContractCreated,
   });
 
   const [deployParams, setDeployParams] = useState<ContractDeployParams>();
@@ -38,17 +43,32 @@ export default function ContractDeployForm({
     setShowConfirm(true);
   }, []);
 
+  const { enqueueSnackbar } = useSnackbar();
+
   const handleConfirm = async (value: BigNumber) => {
     if (deployParams) {
-      setShowConfirm(false);
-      await contractDeployMutation.mutateAsync({ params: deployParams, value });
-      setDeployParams(undefined);
+      try {
+        setShowConfirm(false);
+        await contractDeployMutation.mutateAsync({
+          params: deployParams,
+          value,
+        });
+        setDeployParams(undefined);
+      } catch (err) {
+        enqueueSnackbar(String(err), { variant: "error" });
+      }
     }
   };
 
   const handleClose = () => {
     setShowConfirm(false);
     setDeployParams(undefined);
+  };
+
+  const switchNetworkMutation = useSwitchNetworkMutation();
+
+  const handleSwitchNetwork = async (chainId?: ChainId) => {
+    await switchNetworkMutation.mutateAsync({ chainId: chainId as number });
   };
 
   const renderForm = () => {
@@ -61,6 +81,11 @@ export default function ContractDeployForm({
           name={contractConstructor.name}
           stateMutability={contractConstructor.stateMutability}
           onCall={handleCall}
+          chainId={chainId}
+          onSwitchNetwork={handleSwitchNetwork}
+          isLoading={
+            switchNetworkMutation.isLoading || contractDeployMutation.isLoading
+          }
         />
       );
     }

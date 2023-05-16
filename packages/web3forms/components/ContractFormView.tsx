@@ -68,7 +68,7 @@ export default function ContractFormView({ params }: Props) {
 
   const handleCall = useCallback(
     async (callParams: CallParams) => {
-      if (params.chainId !== chainId) {
+      if (params.chainId !== chainId && callParams && callParams.call) {
         await switchNetworkMutation.mutateAsync({ chainId: params.chainId });
       }
 
@@ -126,6 +126,7 @@ export default function ContractFormView({ params }: Props) {
                 params={params}
                 chainId={chainId}
                 results={results}
+                isResultsLoading={callOnMountQuery.isFetching}
                 isCalling={
                   contractCallMutation.isLoading &&
                   callParams?.name === item.name

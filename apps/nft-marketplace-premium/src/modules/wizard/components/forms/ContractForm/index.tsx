@@ -13,6 +13,7 @@ import { FormattedMessage } from 'react-intl';
 import LazyTextField from '@dexkit/ui/components/LazyTextField';
 
 import { inputMapping } from '@/modules/wizard/utils';
+import { parseChainId } from '@dexkit/core/utils';
 import { Search } from '@mui/icons-material';
 import {
   Box,
@@ -61,10 +62,7 @@ export default function ContractForm({
     onChange({
       ...values,
       // to solve a bug of formik.
-      chainId:
-        typeof values.chainId === 'string'
-          ? parseInt(values.chainId)
-          : values.chainId,
+      chainId: parseChainId(values.chainId),
     });
   };
 
@@ -110,8 +108,13 @@ export default function ContractForm({
             contractAddress={values.contractAddress}
             chainId={values.chainId}
             onSuccess={(abi: AbiFragment[]) => {
-              const fields = inputMapping(abi);
-              setFieldValue('fields', fields);
+              console.log(values.fields);
+
+              if (Object.keys(values.fields).length === 0) {
+                const fields = inputMapping(abi);
+                setFieldValue('fields', fields);
+              }
+
               setFieldValue('abi', abi);
               setCurrentContract(values.contractAddress);
             }}
@@ -124,7 +127,9 @@ export default function ContractForm({
             <ChangeListener
               values={values}
               isValid={isValid}
-              onChange={onChange}
+              onChange={(vals: any) =>
+                onChange({ ...vals, chainId: parseChainId(vals.chainId) })
+              }
             />
           )}
           <Grid container spacing={2}>

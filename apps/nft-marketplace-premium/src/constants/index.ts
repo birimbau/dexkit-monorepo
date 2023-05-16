@@ -3,7 +3,6 @@ import moment from 'moment';
 import { Currency, Language } from '../types/app';
 import { Token } from '../types/blockchain';
 
-
 export const TRADER_ORDERBOOK_API = 'https://api.trader.xyz/orderbook/orders';
 
 export const ZEROEX_NATIVE_TOKEN_ADDRESS =
@@ -116,7 +115,7 @@ export const IS_STAGING = process.env.IS_STAGING === 'true' ? true : false;
 // LOCALHOST API http://localhost:3000
 //export const DEXKIT_BASE_API_URL = 'http://localhost:3000'
 //export const DEXKIT_BASE_API_URL = 'https://dexkit-main-api-9vzhs.ondigitalocean.app'
-export const DEXKIT_BASE_API_URL = 'https://nft-api.dexkit.com'
+export const DEXKIT_BASE_API_URL = 'https://nft-api.dexkit.com';
 
 export const DEXKIT_BASE_FILES_HOST =
   'https://dexkit-storage.nyc3.digitaloceanspaces.com';
