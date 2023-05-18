@@ -109,26 +109,30 @@ export async function getFormTemplate({
 export async function listFormTemplates({
   creatorAddress,
   signal,
+  query,
 }: {
   creatorAddress: string;
   signal?: AbortSignal;
+  query?: string;
 }) {
   return await myAppsApi.get(`/forms/templates`, {
     signal,
-    params: { creatorAddress },
+    params: { creatorAddress, query },
   });
 }
 
 export async function listForms({
   creatorAddress,
   signal,
+  query,
 }: {
   creatorAddress: string;
+  query?: string;
   signal?: AbortSignal;
 }) {
   return await myAppsApi.get(`/forms`, {
     signal,
-    params: { creatorAddress },
+    params: { creatorAddress, query },
   });
 }
 

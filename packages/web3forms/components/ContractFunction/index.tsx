@@ -65,7 +65,7 @@ export default function ContractFunction({
 
           let defaultValue: any;
 
-          if (inp.inputType === "normal" || inp.inputType === "address") {
+          if (inp?.inputType === "normal" || inp?.inputType === "address") {
             defaultValue = inp ? inp.defaultValue : "";
           } else if (inp.inputType === "switch") {
             defaultValue = inp ? Boolean(inp.defaultValue) : false;
@@ -192,6 +192,7 @@ export default function ContractFunction({
 
   return (
     <Formik
+      key={String(inputs)}
       initialValues={getInitialValues(inputs, params)}
       onSubmit={handleSubmit}
       validationSchema={getSchemaForInputs(inputs)}

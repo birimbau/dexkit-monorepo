@@ -169,20 +169,21 @@ export const LIST_FORMS = 'LIST_FORMS';
 
 export function useListFormsQuery({
   creatorAddress,
+  query,
 }: {
   creatorAddress?: string;
+  query?: string;
 }) {
   return useQuery<ContractFormData[] | null>(
-    [LIST_FORMS, creatorAddress],
+    [LIST_FORMS, creatorAddress, query],
     async ({ signal }) => {
       if (!creatorAddress) {
         return null;
       }
 
-      const data = (await listForms({ creatorAddress: creatorAddress, signal }))
-        .data;
-
-      console.log(data);
+      const data = (
+        await listForms({ creatorAddress: creatorAddress, signal, query })
+      ).data;
 
       return data.map(
         (form: any) =>
@@ -204,18 +205,24 @@ export const LIST_FORM_TEMPLATES = 'LIST_FORM_TEMPLATES';
 
 export function useListFormTemplatesQuery({
   creatorAddress,
+  query,
 }: {
   creatorAddress?: string;
+  query?: string;
 }) {
   return useQuery<FormTemplate[] | null>(
-    [LIST_FORM_TEMPLATES, creatorAddress],
+    [LIST_FORM_TEMPLATES, creatorAddress, query],
     async ({ signal }) => {
       if (!creatorAddress) {
         return null;
       }
 
       const data = (
-        await listFormTemplates({ creatorAddress: creatorAddress, signal })
+        await listFormTemplates({
+          creatorAddress: creatorAddress,
+          signal,
+          query,
+        })
       ).data;
 
       return data.map(
