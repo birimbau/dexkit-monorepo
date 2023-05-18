@@ -49,7 +49,7 @@ export default function CreateTemplatePage() {
         { variant: 'success' }
       );
 
-      router.push(`/forms/templates/${result.id}`);
+      router.push(`/forms/contract-templates/${result.id}`);
     } catch (err) {
       enqueueSnackbar(String(err), { variant: 'error' });
     }
@@ -75,8 +75,8 @@ export default function CreateTemplatePage() {
                 {
                   caption: (
                     <FormattedMessage
-                      id="templates"
-                      defaultMessage="Templates"
+                      id="contract.templates"
+                      defaultMessage="Contract Templates"
                     />
                   ),
                   uri: `/forms`,
@@ -85,7 +85,7 @@ export default function CreateTemplatePage() {
                   caption: (
                     <FormattedMessage id="create" defaultMessage="Create" />
                   ),
-                  uri: `/forms/templates/create`,
+                  uri: `/forms/contract-templates/create`,
                   active: true,
                 },
               ]}

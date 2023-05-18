@@ -27,7 +27,7 @@ import {
   customThemeLightAtom,
 } from '../../state';
 import { StepperButtonProps } from '../../types';
-import { generateTheme } from '../../utils';
+import { generateCSSVarsTheme } from '../../utils';
 import ThemePreview from '../ThemePreview';
 import ThemeSection from '../sections/ThemeSection';
 import { StepperButtons } from '../steppers/StepperButtons';
@@ -76,12 +76,20 @@ export default function ThemeWizardContainer({
   );
 
   const selectedTheme = useMemo(() => {
-    return generateTheme({
+    return generateCSSVarsTheme({
       selectedFont,
-      customTheme:
-        selectedThemeMode === ThemeMode.dark
-          ? customThemeDark
-          : customThemeLight,
+      cssVarPrefix: 'theme_preview',
+      customTheme: {
+        colorSchemes: {
+          dark: {
+            ...customThemeDark,
+          },
+          light: {
+            ...customThemeLight,
+          },
+        },
+      },
+
       selectedThemeId,
       mode: selectedThemeMode,
     });
@@ -100,7 +108,13 @@ export default function ThemeWizardContainer({
 
   const renderThemePreview = () => {
     if (selectedTheme) {
-      return <ThemePreview selectedTheme={selectedTheme} showSwap={showSwap} />;
+      return (
+        <ThemePreview
+          selectedTheme={selectedTheme}
+          showSwap={showSwap}
+          selectedThemeMode={selectedThemeMode}
+        />
+      );
     }
   };
   const handleSave = () => {

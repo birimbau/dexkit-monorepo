@@ -154,6 +154,13 @@ export default function ContractFunctionInputs({
                   ? params.fields[name].lockInputs
                   : undefined
               }
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    {input.type.toUpperCase()}
+                  </InputAdornment>
+                ),
+              }}
             />
           </Grid>
         );

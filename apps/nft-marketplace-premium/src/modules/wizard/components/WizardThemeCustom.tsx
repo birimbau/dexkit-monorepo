@@ -20,7 +20,7 @@ function WizardThemeCustom({ mode, legacyTheme }: Props) {
   useEffect(() => {
     if (legacyTheme) {
       const legacyThemeParsed = JSON.parse(legacyTheme);
-      if (legacyThemeParsed?.pallete.mode === ThemeMode.dark) {
+      if (legacyThemeParsed?.pallete?.mode === ThemeMode.dark) {
         setCustomThemeDark({
           palette: {
             ...legacyThemeParsed?.palette,

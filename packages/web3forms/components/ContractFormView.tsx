@@ -77,12 +77,15 @@ export default function ContractFormView({ params }: Props) {
       if (callParams && callParams.call) {
         setShowConfirm(true);
       } else {
-        await contractCallMutation.mutateAsync({ ...callParams });
+        await contractCallMutation.mutateAsync({
+          ...callParams,
+          rpcProvider,
+        });
       }
 
       await callOnMountQuery.refetch();
     },
-    [chainId, params.chainId, callOnMountQuery]
+    [chainId, params.chainId, callOnMountQuery, rpcProvider]
   );
 
   const handleConfirm = useCallback(

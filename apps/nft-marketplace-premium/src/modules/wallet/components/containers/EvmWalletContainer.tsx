@@ -38,11 +38,11 @@ import FileCopy from '@mui/icons-material/FileCopy';
 import ImportExportIcon from '@mui/icons-material/ImportExport';
 import dynamic from 'next/dynamic';
 
+import Link from 'src/components/Link';
+import { NetworkSelectButton } from 'src/components/NetworkSelectButton';
 import ImportTokenDialog from 'src/components/dialogs/ImportTokenDialog';
 import CloseCircle from 'src/components/icons/CloseCircle';
 import Wallet from 'src/components/icons/Wallet';
-import Link from 'src/components/Link';
-import { NetworkSelectButton } from 'src/components/NetworkSelectButton';
 import { useAppConfig, useConnectWalletDialog } from 'src/hooks/app';
 import { useEvmCoins } from 'src/hooks/blockchain';
 import { useCurrency } from 'src/hooks/currency';
@@ -400,7 +400,7 @@ const EvmWalletContainer = () => {
                   onClick={handleToggleBalances}
                   fullWidth
                   sx={(theme) => ({
-                    backgroundColor: theme.palette.background.paper,
+                    backgroundColor: theme.vars.palette.background.paper,
                     py: 2,
                   })}
                   startIcon={

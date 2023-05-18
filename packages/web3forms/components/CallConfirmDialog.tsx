@@ -1,17 +1,21 @@
 import Button from "@mui/material/Button";
 import DialogActions from "@mui/material/DialogActions";
 
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import Dialog, { DialogProps } from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import { FormattedMessage } from "react-intl";
 
 import { AppDialogTitle } from "@dexkit/ui/components/AppDialogTitle";
 import {
+  Box,
   Grid,
   MenuItem,
   Select,
   SelectChangeEvent,
+  Stack,
   TextField,
+  Typography,
 } from "@mui/material";
 import { BigNumber, ethers } from "ethers";
 import { ChangeEvent, useState } from "react";
@@ -20,11 +24,13 @@ import { PARSE_UNITS } from "../constants";
 export interface CallConfirmDialogProps {
   DialogProps: DialogProps;
   onConfirm: (value: BigNumber) => void;
+  payable?: boolean;
 }
 
 export default function CallConfirmDialog({
   DialogProps,
   onConfirm,
+  payable,
 }: CallConfirmDialogProps) {
   const { onClose } = DialogProps;
 
@@ -71,25 +77,50 @@ export default function CallConfirmDialog({
         }
       />
       <DialogContent dividers>
-        <Grid container spacing={2}>
-          <Grid item xs>
-            <TextField
-              label={<FormattedMessage id="amount" defaultMessage="Amount" />}
-              value={value.value}
-              onChange={handleChange}
-              fullWidth
-            />
-          </Grid>
-          <Grid item>
-            <Select value={unit} onChange={handleChangeUnit}>
-              {PARSE_UNITS.map((unit, key) => (
-                <MenuItem value={unit} key={key}>
-                  {unit.toUpperCase()}
-                </MenuItem>
-              ))}
-            </Select>
-          </Grid>
-        </Grid>
+        <Stack spacing={2}>
+          <Stack spacing={2}>
+            <CheckCircleIcon fontSize="large" />
+            <Box>
+              <Typography variant="h5" align="center">
+                <FormattedMessage
+                  id="confir.transaction"
+                  defaultMessage="Confirm transaction"
+                />
+              </Typography>
+              <Typography color="text.secondary" align="center" variant="body1">
+                <FormattedMessage
+                  id="please.confirm.the.transaction.in.your.wallet"
+                  defaultMessage="Please, confirm the transaction in your wallet"
+                />
+              </Typography>
+            </Box>
+          </Stack>
+          {!payable && (
+            <Box>
+              <Grid container spacing={2}>
+                <Grid item xs>
+                  <TextField
+                    label={
+                      <FormattedMessage id="amount" defaultMessage="Amount" />
+                    }
+                    value={value.value}
+                    onChange={handleChange}
+                    fullWidth
+                  />
+                </Grid>
+                <Grid item>
+                  <Select value={unit} onChange={handleChangeUnit}>
+                    {PARSE_UNITS.map((unit, key) => (
+                      <MenuItem value={unit} key={key}>
+                        {unit.toUpperCase()}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </Grid>
+              </Grid>
+            </Box>
+          )}
+        </Stack>
       </DialogContent>
       <DialogActions>
         <Button onClick={handleConfirm} variant="contained" color="primary">

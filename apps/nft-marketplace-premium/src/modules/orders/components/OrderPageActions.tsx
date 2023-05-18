@@ -14,8 +14,8 @@ import { Share } from '@mui/icons-material';
 import LaunchIcon from '@mui/icons-material/Launch';
 import { useWeb3React } from '@web3-react/core';
 import { useState } from 'react';
-import Heart from '../../../components/icons/Heart';
 import Link from '../../../components/Link';
+import Heart from '../../../components/icons/Heart';
 import {
   useAsset,
   useAssetMetadata,
@@ -121,7 +121,9 @@ export function OrderPageActions({ address, id, nonce }: Props) {
                       sx={
                         favorites.isFavorite(asset)
                           ? (theme) => ({
-                              '& path': { fill: theme.palette.error.light },
+                              '& path': {
+                                fill: theme.vars.palette.error.light,
+                              },
                             })
                           : undefined
                       }

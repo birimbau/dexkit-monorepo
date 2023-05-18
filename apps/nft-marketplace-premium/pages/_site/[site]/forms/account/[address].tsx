@@ -96,11 +96,14 @@ export default function FormsAccountPage() {
               justifyContent="space-between"
             >
               <Typography variant="h5">
-                <FormattedMessage id="templates" defaultMessage="Templates" />
+                <FormattedMessage
+                  id="contract.templates"
+                  defaultMessage="Contract Templates"
+                />
               </Typography>
               <Button
                 LinkComponent={Link}
-                href="/forms/templates/create"
+                href="/forms/contract-templates/create"
                 size="small"
                 variant="outlined"
               >
@@ -181,11 +184,10 @@ export default function FormsAccountPage() {
                       <TableRow key={template.id}>
                         <TableCell>{template.id}</TableCell>
                         <TableCell>
-                          <Link href={`/forms/templates/${template.id}`}>
-                            <FormattedMessage
-                              id="template"
-                              defaultMessage="Template"
-                            />
+                          <Link
+                            href={`/forms/contract-templates/${template.id}`}
+                          >
+                            {template.name}
                           </Link>
                         </TableCell>
                         <TableCell>{template.description}</TableCell>
@@ -310,11 +312,11 @@ export default function FormsAccountPage() {
                             <TableCell>
                               {form.templateId ? (
                                 <Link
-                                  href={`/forms/templates/${form.templateId}`}
+                                  href={`/forms/contract-templates/${form.templateId}`}
                                 >
                                   <FormattedMessage
                                     id="template"
-                                    defaultMessage="Template"
+                                    defaultMessage="Contract Template"
                                   />
                                 </Link>
                               ) : (

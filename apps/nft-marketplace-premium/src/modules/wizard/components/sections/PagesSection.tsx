@@ -1,5 +1,12 @@
 import AddIcon from '@mui/icons-material/Add';
-import { Box, Button, Stack, Theme, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  CssVarsTheme,
+  Stack,
+  Theme,
+  Typography,
+} from '@mui/material';
 import dynamic from 'next/dynamic';
 import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
@@ -27,7 +34,7 @@ interface Props {
   onAdd: () => void;
   onCancelEdit: () => void;
   onSwap: (index: number, direction: 'up' | 'down') => void;
-  theme?: Theme;
+  theme?: Omit<Theme, 'palette'> & CssVarsTheme;
   builderKit?: BuilderKit;
 }
 

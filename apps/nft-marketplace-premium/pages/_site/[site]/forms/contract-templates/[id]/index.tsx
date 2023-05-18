@@ -101,7 +101,9 @@ export default function TemplatePage() {
           maxWidth: 'sm',
           fullWidth: true,
         }}
-        url={`${getWindowUrl()}/forms/templates/${formTemplateQuery.data?.id}`}
+        url={`${getWindowUrl()}/forms/contract-templates/${
+          formTemplateQuery.data?.id
+        }`}
       />
       <Container>
         <Stack spacing={2}>
@@ -121,15 +123,15 @@ export default function TemplatePage() {
                 {
                   caption: (
                     <FormattedMessage
-                      id="templates"
-                      defaultMessage="Templates"
+                      id="contract.templates"
+                      defaultMessage="Contract Templates"
                     />
                   ),
-                  uri: `/forms/templates`,
+                  uri: `/forms/contract-templates`,
                 },
                 {
                   caption: formTemplateQuery.data?.name,
-                  uri: `/forms/templates/${formTemplateQuery.data?.id}`,
+                  uri: `/forms/contract-templates/${formTemplateQuery.data?.id}`,
                   active: true,
                 },
               ]}
@@ -184,6 +186,7 @@ export default function TemplatePage() {
                     alignContent="center"
                   >
                     <Button
+                      size="small"
                       startIcon={<UpgradeIcon />}
                       onClick={handleShowDeploy}
                       variant="contained"
@@ -192,6 +195,7 @@ export default function TemplatePage() {
                     </Button>
 
                     <Button
+                      size="small"
                       onClick={handleShowShare}
                       variant="outlined"
                       startIcon={<ShareIcon />}
@@ -204,8 +208,9 @@ export default function TemplatePage() {
                       account
                     ) && (
                       <Button
+                        size="small"
                         LinkComponent={Link}
-                        href={`/forms/templates/${formTemplateQuery.data?.id}/edit`}
+                        href={`/forms/contract-templates/${formTemplateQuery.data?.id}/edit`}
                         variant="outlined"
                         startIcon={<EditIcon />}
                       >
@@ -217,6 +222,12 @@ export default function TemplatePage() {
               </CardContent>
             </Card>
           </Box>
+          <Typography variant="h5">
+            <FormattedMessage
+              id="contract.instances"
+              defaultMessage="Contract instances"
+            />
+          </Typography>
           <TableContainer component={Paper}>
             <Table>
               <TableHead>

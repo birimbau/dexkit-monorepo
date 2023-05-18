@@ -13,6 +13,7 @@ import { parseChainId } from "@dexkit/core/utils";
 import {
   Avatar,
   CircularProgress,
+  InputAdornment,
   ListItemText,
   MenuItem,
   Select,
@@ -58,6 +59,13 @@ export default function ContractConstructor({
             fullWidth
             label={input.name}
             name={input.name}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  {input.type.toUpperCase()}
+                </InputAdornment>
+              ),
+            }}
           />
         </Grid>
       );
@@ -131,7 +139,12 @@ export default function ContractConstructor({
         <Box>
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              <Typography variant="body1">{name}</Typography>
+              <Typography variant="body1">
+                <FormattedMessage
+                  id="select.the.network.you.want.to.deploy.this.contract"
+                  defaultMessage="Select the network you want to deploy this contract"
+                />
+              </Typography>
             </Grid>
             <Grid item xs={12}>
               <Select
@@ -179,6 +192,14 @@ export default function ContractConstructor({
                     </MenuItem>
                   ))}
               </Select>
+            </Grid>
+            <Grid item xs={12}>
+              <Typography variant="body1">
+                <FormattedMessage
+                  id="pass.contract.contructor.arguments"
+                  defaultMessage="Pass the contract constructor arguments"
+                />
+              </Typography>
             </Grid>
             {renderInputs()}
             <Grid item xs={12}>

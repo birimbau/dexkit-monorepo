@@ -26,6 +26,7 @@ export interface UseContractCallMutationParams {
   name: string;
   payable?: boolean;
   value?: BigNumber;
+  rpcProvider?: ethers.providers.JsonRpcProvider;
 }
 
 export function useContractCallMutation({
@@ -44,8 +45,11 @@ export function useContractCallMutation({
       args,
       payable,
       value,
+      rpcProvider,
     }: UseContractCallMutationParams) => {
       let contract: ethers.Contract;
+
+      let currProvider = rpcProvider ? rpcProvider : provider;
 
       if (!contractAddress || !provider) {
         throw new Error("no provider");
@@ -60,7 +64,7 @@ export function useContractCallMutation({
           provider?.getSigner()
         );
       } else {
-        contract = new ethers.Contract(contractAddress, abi, provider);
+        contract = new ethers.Contract(contractAddress, abi, currProvider);
       }
 
       cb = contract[name];
@@ -77,6 +81,7 @@ export function useContractCallMutation({
         if (payable) {
           result = await cb({ value });
         } else {
+          console.log("vem aqui", contractAddress, abi, provider);
           result = await cb();
         }
       }

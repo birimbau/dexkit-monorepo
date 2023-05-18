@@ -82,6 +82,8 @@ export default function ContractFunction({
 
   const handleSubmit = useCallback(
     async (values: any) => {
+      console.log(name, stateMutability, onCall);
+
       onCall({
         name: !name ? "constructor" : name,
         args: Object.keys(values).map((key) => values[key]),

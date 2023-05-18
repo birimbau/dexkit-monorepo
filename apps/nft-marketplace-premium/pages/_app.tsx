@@ -1,5 +1,4 @@
 import { CacheProvider, EmotionCache } from '@emotion/react';
-import { responsiveFontSizes } from '@mui/material/styles';
 import {
   DehydratedState,
   Hydrate,
@@ -10,7 +9,6 @@ import { AppProps } from 'next/app';
 import Head from 'next/head';
 import * as React from 'react';
 import createEmotionCache from '../src/createEmotionCache';
-import { getTheme } from '../src/theme';
 
 import { DefaultSeo } from 'next-seo';
 
@@ -21,13 +19,17 @@ import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { useRouter } from 'next/router';
 
 import { ThemeMode } from '@dexkit/ui/constants/enum';
-import { Backdrop, CircularProgress, createTheme } from '@mui/material';
+import { Backdrop, CircularProgress } from '@mui/material';
+import { experimental_extendTheme as extendTheme } from '@mui/material/styles';
+import type {} from '@mui/material/themeCssVarsAugmentation';
+import { getTheme } from 'src/theme';
 import { AssetAPI } from 'src/types/nft';
 import defaultAppConfig from '../config/app.json';
 import { AppMarketplaceProvider } from '../src/components/AppMarketplaceProvider';
 import { AppConfigContext } from '../src/contexts';
 import { AppConfig } from '../src/types/config';
 import './customCss.css';
+
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
 
@@ -64,11 +66,6 @@ export default function MyApp(props: MyAppProps) {
   const theme = React.useMemo(() => {
     let tempTheme = getTheme({
       name: defaultAppConfig.theme,
-      mode:
-        defaultAppConfig.theme === 'BoredApe' &&
-        !defaultAppConfig.defaultThemeMode
-          ? ThemeMode.dark
-          : (defaultAppConfig.defaultThemeMode as ThemeMode),
     })?.theme;
     let fontFamily;
     if (appConfig?.font) {
@@ -78,49 +75,57 @@ export default function MyApp(props: MyAppProps) {
     if (appConfig) {
       tempTheme = getTheme({
         name: appConfig.theme,
-        mode: appConfig.defaultThemeMode,
       })?.theme;
     }
-    if (appConfig && appConfig.theme === 'custom' && appConfig.customTheme) {
-      let customTheme;
-      if (appConfig.customTheme) {
-        customTheme = JSON.parse(appConfig.customTheme);
+
+    if (appConfig && appConfig.theme === 'custom') {
+      let customTheme = {
+        dark: {},
+        light: {},
+      };
+
+      if (appConfig?.customThemeLight) {
+        customTheme.light = JSON.parse(appConfig.customThemeLight);
       }
-      if (
-        appConfig.defaultThemeMode === ThemeMode.dark &&
-        appConfig.customThemeDark
-      ) {
-        customTheme = JSON.parse(appConfig.customThemeDark);
+      if (appConfig?.customThemeDark) {
+        customTheme.dark = JSON.parse(appConfig.customThemeDark);
       }
-      if (
-        appConfig.defaultThemeMode === ThemeMode.light &&
-        appConfig.customThemeLight
-      ) {
-        customTheme = JSON.parse(appConfig.customThemeLight);
+      //@deprecated remove customTheme later
+      if (appConfig?.customTheme) {
+        const parsedCustomTheme = JSON.parse(appConfig.customTheme);
+        if (parsedCustomTheme?.palette?.mode === ThemeMode.light) {
+          customTheme.light = parsedCustomTheme;
+        } else {
+          customTheme.dark = parsedCustomTheme;
+        }
       }
 
-      return responsiveFontSizes(
-        fontFamily
-          ? createTheme({
-              ...customTheme,
+      if (customTheme) {
+        return fontFamily
+          ? extendTheme({
               typography: {
                 fontFamily,
               },
+              colorSchemes: {
+                ...customTheme,
+              },
             })
-          : createTheme(customTheme)
-      );
+          : extendTheme({
+              colorSchemes: {
+                ...customTheme,
+              },
+            });
+      }
     }
 
-    return responsiveFontSizes(
-      fontFamily
-        ? createTheme({
-            ...tempTheme,
-            typography: {
-              fontFamily,
-            },
-          })
-        : createTheme(tempTheme)
-    );
+    return fontFamily
+      ? extendTheme({
+          colorSchemes: tempTheme.colorSchemes,
+          typography: {
+            fontFamily,
+          },
+        })
+      : extendTheme({ colorSchemes: tempTheme.colorSchemes });
   }, [appConfig]);
 
   const SEO = React.useMemo(() => {
@@ -186,37 +191,36 @@ export default function MyApp(props: MyAppProps) {
   const favicon = config.favicon_url || '/favicon.ico';
 
   return (
-    <>
-      <CacheProvider value={emotionCache}>
-        <Head>
-          <link rel="shortcut icon" href={favicon} />
-          <meta name="viewport" content="initial-scale=1, width=device-width" />
-          <meta name="theme-color" content={theme?.palette.primary.main} />
-        </Head>
-        <AppConfigContext.Provider
-          value={{ appConfig: config, appNFT, siteId }}
-        >
-          <QueryClientProvider client={queryClient}>
-            <Hydrate state={pageProps.dehydratedState}>
-              <DefaultSeo {...SEO} />
-              <LocalizationProvider dateAdapter={AdapterMoment}>
-                <AppMarketplaceProvider>
-                  <Backdrop
-                    sx={{
-                      color: theme.palette.primary.main,
-                      zIndex: theme.zIndex.drawer + 1,
-                    }}
-                    open={loading}
-                  >
-                    <CircularProgress color="inherit" size={80} />
-                  </Backdrop>
-                  {getLayout(<Component {...pageProps} />)}
-                </AppMarketplaceProvider>
-              </LocalizationProvider>
-            </Hydrate>
-          </QueryClientProvider>
-        </AppConfigContext.Provider>
-      </CacheProvider>
-    </>
+    <CacheProvider value={emotionCache}>
+      <Head>
+        <link rel="shortcut icon" href={favicon} />
+        <meta name="viewport" content="initial-scale=1, width=device-width" />
+        <meta
+          name="theme-color"
+          content={theme?.colorSchemes?.light?.palette?.primary?.main}
+        />
+      </Head>
+      <AppConfigContext.Provider value={{ appConfig: config, appNFT, siteId }}>
+        <QueryClientProvider client={queryClient}>
+          <Hydrate state={pageProps.dehydratedState}>
+            <DefaultSeo {...SEO} />
+            <LocalizationProvider dateAdapter={AdapterMoment}>
+              <AppMarketplaceProvider>
+                <Backdrop
+                  open={loading}
+                  sx={{
+                    color: theme?.colorSchemes?.light?.palette?.primary?.main,
+                    zIndex: theme.zIndex.drawer + 1,
+                  }}
+                >
+                  <CircularProgress color="inherit" size={80} />
+                </Backdrop>
+                {getLayout(<Component {...pageProps} />)}
+              </AppMarketplaceProvider>
+            </LocalizationProvider>
+          </Hydrate>
+        </QueryClientProvider>
+      </AppConfigContext.Provider>
+    </CacheProvider>
   );
 }

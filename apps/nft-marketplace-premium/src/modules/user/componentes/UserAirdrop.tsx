@@ -191,7 +191,18 @@ export function UserAirdrop() {
       />
       <Grid container spacing={2} justifyContent={'center'} alignItems="center">
         <Grid item xs={12}>
-          <Box display={'flex'} justifyContent={'center'}>
+          <Stack
+            spacing={2}
+            justifyContent={'center'}
+            alignContent={'center'}
+            alignItems={'center'}
+          >
+            <Typography variant="h3">
+              <FormattedMessage
+                id="airdrop.user.info.completed"
+                defaultMessage={'Airdrop campaign completed'}
+              />
+            </Typography>
             <Typography variant="h6">
               <FormattedMessage
                 id="airdrop.user.info"
@@ -200,7 +211,7 @@ export function UserAirdrop() {
                 }
               />
             </Typography>
-          </Box>
+          </Stack>
         </Grid>
         {!claimData?.status && (
           <Grid item xs={12}>

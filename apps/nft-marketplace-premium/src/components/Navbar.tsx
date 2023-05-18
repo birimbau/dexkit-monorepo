@@ -297,8 +297,16 @@ function Navbar({ appConfig, isPreview }: Props) {
                 src={appConfig?.logoDark?.url || ''}
                 alt={appConfig.name}
                 title={appConfig.name}
-                width={appConfig?.logoDark?.width || theme.spacing(6)}
-                height={appConfig?.logoDark?.height || theme.spacing(6)}
+                width={
+                  isMobile
+                    ? appConfig?.logoDark?.widthMobile
+                    : appConfig?.logoDark?.width || theme.spacing(6)
+                }
+                height={
+                  isMobile
+                    ? appConfig?.logoDark?.heightMobile
+                    : appConfig?.logoDark?.height || theme.spacing(6)
+                }
               />
             </Link>
           ) : appConfig?.logo ? (
@@ -307,8 +315,16 @@ function Navbar({ appConfig, isPreview }: Props) {
                 src={appConfig?.logo.url}
                 alt={appConfig.name}
                 title={appConfig.name}
-                width={appConfig?.logo?.width || theme.spacing(6)}
-                height={appConfig?.logo?.height || theme.spacing(6)}
+                width={
+                  isMobile
+                    ? appConfig?.logo?.widthMobile
+                    : appConfig?.logo?.width || theme.spacing(6)
+                }
+                height={
+                  isMobile
+                    ? appConfig?.logo?.heightMobile
+                    : appConfig?.logo?.height || theme.spacing(6)
+                }
               />
             </Link>
           ) : (
@@ -413,7 +429,7 @@ function Navbar({ appConfig, isPreview }: Props) {
                   sx={(theme) => ({
                     px: 2,
                     py: 1,
-                    border: `1px solid ${theme.palette.divider}`,
+                    border: `1px solid ${theme.vars.palette.divider}`,
                     borderRadius: theme.spacing(1),
                   })}
                 >

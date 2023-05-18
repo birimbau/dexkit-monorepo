@@ -112,6 +112,7 @@ export default function ContractDeployForm({
           maxWidth: "sm",
         }}
         onConfirm={handleConfirm}
+        payable={deployParams?.payable}
       />
       {renderForm()}
     </Box>

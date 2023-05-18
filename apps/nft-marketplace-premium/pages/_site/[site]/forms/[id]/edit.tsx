@@ -185,7 +185,7 @@ export default function FormsEditPage() {
                         name="name"
                         InputLabelProps={{ shrink: true }}
                         label={
-                          <FormattedMessage id="title" defaultMessage="Name" />
+                          <FormattedMessage id="name" defaultMessage="Name" />
                         }
                       />
                     </Grid>

@@ -1,7 +1,7 @@
 import { DexkitProvider } from '@dexkit/ui/components';
 import { ThemeMode } from '@dexkit/ui/constants/enum';
 import { COMMON_NOTIFICATION_TYPES } from '@dexkit/ui/constants/messages/common';
-import { createTheme, responsiveFontSizes, Theme } from '@mui/material';
+import { experimental_extendTheme as extendTheme } from '@mui/material/styles';
 import { DefaultSeo } from 'next-seo';
 import { useMemo, useState } from 'react';
 import { WHITELABEL_NOTIFICATION_TYPES } from 'src/constants/messages';
@@ -25,17 +25,11 @@ export function AppMarketplaceProvider({
   const appConfig = useAppConfig();
   const { locale: defaultLocale } = useLocale();
   const [locale, setLocale] = useState(defaultLocale);
-  const { mode, userMode } = useThemeMode();
+  const { mode } = useThemeMode();
 
-  const theme = useMemo<Theme>(() => {
+  const theme = useMemo(() => {
     let tempTheme = getTheme({
       name: defaultAppConfig.theme,
-      mode:
-        defaultAppConfig.theme === 'BoredApe' &&
-        !userMode &&
-        defaultAppConfig?.defaultThemeMode
-          ? ThemeMode.dark
-          : mode || (defaultAppConfig?.defaultThemeMode as ThemeMode),
     })?.theme;
     let fontFamily;
     if (appConfig?.font) {
@@ -43,45 +37,59 @@ export function AppMarketplaceProvider({
     }
 
     if (appConfig) {
-      tempTheme = getTheme({ name: appConfig.theme, mode })?.theme;
+      tempTheme = getTheme({
+        name: appConfig.theme,
+      })?.theme;
     }
 
     if (appConfig && appConfig.theme === 'custom') {
-      let customTheme;
+      let customTheme = {
+        dark: {},
+        light: {},
+      };
       if (appConfig.customTheme) {
-        customTheme = JSON.parse(appConfig.customTheme);
+        const parsedCustomTheme = JSON.parse(appConfig.customTheme);
+        if (parsedCustomTheme.palette.mode === ThemeMode.light) {
+          customTheme.light = parsedCustomTheme;
+        } else {
+          customTheme.dark = parsedCustomTheme;
+        }
+      }
+
+      if (mode === ThemeMode.light && appConfig.customThemeLight) {
+        customTheme.light = JSON.parse(appConfig.customThemeLight);
       }
       if (mode === ThemeMode.dark && appConfig.customThemeDark) {
-        customTheme = JSON.parse(appConfig.customThemeDark);
+        customTheme.dark = JSON.parse(appConfig.customThemeDark);
       }
-      if (mode === ThemeMode.light && appConfig.customThemeLight) {
-        customTheme = JSON.parse(appConfig.customThemeLight);
-      }
+
       if (customTheme) {
-        return responsiveFontSizes(
-          fontFamily
-            ? createTheme({
+        return fontFamily
+          ? extendTheme({
+              typography: {
+                fontFamily,
+              },
+              colorSchemes: {
                 ...customTheme,
-                typography: {
-                  fontFamily,
-                },
-              })
-            : createTheme(customTheme)
-        );
+              },
+            })
+          : extendTheme({
+              colorSchemes: {
+                ...customTheme,
+              },
+            });
       }
     }
 
-    return responsiveFontSizes(
-      fontFamily
-        ? createTheme({
-            ...tempTheme,
-            typography: {
-              fontFamily,
-            },
-          })
-        : createTheme(tempTheme)
-    );
-  }, [appConfig, mode, userMode]);
+    return fontFamily
+      ? extendTheme({
+          typography: {
+            fontFamily,
+          },
+          colorSchemes: tempTheme.colorSchemes,
+        })
+      : extendTheme({ colorSchemes: tempTheme.colorSchemes });
+  }, [appConfig]);
 
   const SEO = useMemo(() => {
     const config = appConfig;
@@ -123,6 +131,7 @@ export function AppMarketplaceProvider({
       defaultLocale={locale}
       localeMessages={loadLocaleData(locale)}
       theme={theme}
+      themeMode={mode}
       selectedWalletAtom={selectedWalletAtom}
       options={{
         magicRedirectUrl:

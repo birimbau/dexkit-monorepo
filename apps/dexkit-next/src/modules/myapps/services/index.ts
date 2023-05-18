@@ -1,9 +1,10 @@
 import axios from 'axios';
 import { ConfigResponse, WhitelabelFormData } from '../types';
 
-const MY_APPS_ENDPOINT = 'https://dexkitapi-8oo4v.ondigitalocean.app';
-//const MY_APPS_ENDPOINT = 'http://localhost:3005';
+const MY_APPS_ENDPOINT =
+  process.env.NEXT_PUBLIC_DEXKIT_DASH_ENDPOINT ?? 'http://localhost:3005';
 //const MY_APPS_ENDPOINT = 'https://squid-app-xzo63.ondigitalocean.app';
+//const MY_APPS_ENDPOINT = 'https://dexkitapi-8oo4v.ondigitalocean.app';
 
 /**
  * send config to server

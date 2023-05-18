@@ -1,5 +1,3 @@
-import { customThemeAtom } from '@/modules/wizard/state';
-import { generateTheme } from '@/modules/wizard/utils';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
@@ -9,9 +7,7 @@ import StepContent from '@mui/material/StepContent';
 import StepLabel from '@mui/material/StepLabel';
 import Stepper from '@mui/material/Stepper';
 import Typography from '@mui/material/Typography';
-import { useAtomValue } from 'jotai';
 import * as React from 'react';
-import { useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { AppConfig } from 'src/types/config';
 import GeneralWizardContainer from '../../containers/GeneralWizardContainer';
@@ -59,16 +55,6 @@ interface Props {
 
 export default function WalletStepper({ config, onSave, onChange }: Props) {
   const [activeStep, setActiveStep] = React.useState(0);
-
-  const customTheme = useAtomValue(customThemeAtom);
-
-  const selectedTheme = useMemo(() => {
-    return generateTheme({
-      selectedFont: config?.font,
-      customTheme,
-      selectedThemeId: config?.theme || '',
-    });
-  }, [config?.theme, customTheme, config?.font]);
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);

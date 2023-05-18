@@ -16,11 +16,11 @@ export function getUsernameExists(username?: string) {
 }
 
 export function postClaimCampaign() {
-  return myAppsApi.post<{ txHash: string }>(`/campaign/claim/0`)
+  return myAppsApi.post<{ txHash: string }>(`/campaign/claim/1`)
 }
 
 export function getClaimCampaign() {
-  return myAppsApi.get<{ id: number, status: 'pending' | 'complete' | 'error', txHash: string }>(`/campaign/claim/0`)
+  return myAppsApi.get<{ id: number, status: 'pending' | 'complete' | 'error', txHash: string }>(`/campaign/claim/1`)
 }
 
 export function getUserByUsername(username?: string) {

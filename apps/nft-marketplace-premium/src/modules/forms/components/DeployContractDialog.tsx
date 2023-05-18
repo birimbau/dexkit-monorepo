@@ -67,8 +67,8 @@ export default function DeployContractDialog({
       <AppDialogTitle
         title={
           <FormattedMessage
-            id="deploy.contract"
-            defaultMessage="Deploy contract"
+            id="deploy.contract.template"
+            defaultMessage="Deploy Contract Template"
           />
         }
         onClose={handleClose}

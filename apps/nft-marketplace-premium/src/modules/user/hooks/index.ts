@@ -1,8 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useWeb3React } from '@web3-react/core';
+import axios from 'axios';
 import { useAuth, useLoginAccountMutation } from 'src/hooks/account';
 import { useSiteId } from 'src/hooks/app';
-import { getClaimCampaign, getUserAddAccountMessage, getUserByAccount, getUserByUsername, getUserConnectDiscord, getUserConnectTwitter, postClaimCampaign, postUserAddAccount, postUserRemoveAccount, upsertUser } from '../services';
+import { getClaimCampaign, getUserAddAccountMessage, getUserByAccount, getUserByUsername, getUserConnectDiscord, getUserConnectTwitter, postUserAddAccount, postUserRemoveAccount, upsertUser } from '../services';
 import { UserOptions } from '../types';
 
 
@@ -12,7 +13,7 @@ export function useClaimCampaignMutation({ onSuccess }: { onSuccess?: ({ txHash 
   return useMutation(async () => {
 
 
-    const response = await postClaimCampaign();
+    const response = await axios.post<{ txHash: string }>(`/api/airdrop/websummit`);
 
     return response.data;
 

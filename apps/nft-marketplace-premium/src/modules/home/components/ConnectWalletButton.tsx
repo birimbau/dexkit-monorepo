@@ -1,5 +1,4 @@
-import { ArrowForward } from '@mui/icons-material';
-import { ButtonBase, Icon, Stack, Typography } from '@mui/material';
+import { ButtonBase, Stack, Typography } from '@mui/material';
 
 import img from '../../../../public/assets/images/connect-wallet-background.svg';
 
@@ -14,7 +13,7 @@ export const ConnectWalletButton = ({ title, subtitle }: Props) => {
   return (
     <ButtonBase
       sx={{
-        background: (theme) => theme.palette.background.paper,
+        background: (theme) => theme.vars.palette.background.paper,
         borderRadius: (theme) => theme.shape.borderRadius,
         backgroundImage: `url(${img.src})`,
         backgroundRepeat: 'no-repeat',

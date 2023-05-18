@@ -175,7 +175,7 @@ export default function FormPage() {
                     {formQuery.data?.templateId && (
                       <Button
                         size="small"
-                        href={`/forms/templates/${formQuery.data?.templateId}`}
+                        href={`/forms/contract-templates/${formQuery.data?.templateId}`}
                         variant="outlined"
                         startIcon={<AccountTreeIcon />}
                       >

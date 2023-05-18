@@ -13,7 +13,7 @@ import {
   Typography,
 } from '@mui/material';
 import { FormikHelpers, useFormik } from 'formik';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { CURRENCIES, LANGUAGES } from 'src/constants';
 
@@ -31,6 +31,10 @@ export interface GeneralSectionForm {
   logoUrl: string;
   logoDarkUrl?: string;
   faviconUrl: string;
+  logoWidth?: number;
+  logoHeight?: number;
+  logoWidthMobile?: number;
+  logoHeightMobile?: number;
 }
 
 const FormSchema: Yup.SchemaOf<GeneralSectionForm> = Yup.object().shape({
@@ -41,6 +45,10 @@ const FormSchema: Yup.SchemaOf<GeneralSectionForm> = Yup.object().shape({
   logoUrl: Yup.string().url().required(),
   logoDarkUrl: Yup.string().url(),
   faviconUrl: Yup.string().url().required(),
+  logoWidth: Yup.number().min(0),
+  logoHeight: Yup.number().min(0),
+  logoWidthMobile: Yup.number().min(0),
+  logoHeightMobile: Yup.number().min(0),
 });
 
 interface Props {
@@ -67,6 +75,24 @@ const FaviconImage = styled('img')(({ theme }) => ({
   width: theme.spacing(10),
 }));
 
+function OnChangeListener({
+  values,
+  isValid,
+  onChange,
+}: {
+  values: any;
+  isValid: any;
+  onChange: any;
+}) {
+  useEffect(() => {
+    if (onChange) {
+      onChange(values);
+    }
+  }, [values, isValid]);
+
+  return <></>;
+}
+
 export default function GeneralSection({
   onSubmit,
   onChange,
@@ -75,6 +101,7 @@ export default function GeneralSection({
   stepperButtonProps,
 }: Props) {
   const [openMediaDialog, setOpenMediaDialog] = useState(false);
+
   const [mediaFieldToEdit, setMediaFieldToEdit] = useState<string>();
 
   const handleSubmit = useCallback(
@@ -98,6 +125,10 @@ export default function GeneralSection({
       logoUrl: '',
       logoDarkUrl: '',
       faviconUrl: '',
+      logoHeight: 48,
+      logoWidth: 48,
+      logoHeightMobile: 48,
+      logoWidthMobile: 48,
     },
     enableReinitialize: true,
     onSubmit: handleSubmit,
@@ -129,14 +160,12 @@ export default function GeneralSection({
       />
 
       <Stack>
-        <form
-          onSubmit={formik.handleSubmit}
-          onChange={() => {
-            if (onChange && formik.isValid) {
-              onChange(formik.values);
-            }
-          }}
-        >
+        <form onSubmit={formik.handleSubmit}>
+          <OnChangeListener
+            values={formik.values}
+            onChange={onChange}
+            isValid={formik.isValid}
+          />
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <TextField
@@ -178,37 +207,140 @@ export default function GeneralSection({
               />
             </Grid>
             <Grid item xs={4}>
-              <Typography variant="body2">
-                <FormattedMessage id="logo" defaultMessage="Logo" />
-              </Typography>
-              <Button
-                onClick={() => {
-                  setOpenMediaDialog(true);
-                  setMediaFieldToEdit('logoUrl');
-                }}
-              >
-                <CustomImage src={formik.values.logoUrl} />
-              </Button>
+              <Stack spacing={2}>
+                <Typography variant="body2">
+                  <FormattedMessage id="logo" defaultMessage="Logo" />
+                </Typography>
+                <Button
+                  onClick={() => {
+                    setOpenMediaDialog(true);
+                    setMediaFieldToEdit('logoUrl');
+                  }}
+                >
+                  <CustomImage src={formik.values.logoUrl} />
+                </Button>
+
+                <TextField
+                  fullWidth
+                  type="number"
+                  name="logoWidth"
+                  label={
+                    <FormattedMessage
+                      id="logo.width"
+                      defaultMessage="Logo width (px)"
+                    />
+                  }
+                  InputLabelProps={{ shrink: true }}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.logoWidth}
+                  error={
+                    Boolean(formik.errors.logoWidth) && formik.touched.logoWidth
+                  }
+                  helperText={
+                    Boolean(formik.errors.logoWidth) && formik.touched.logoWidth
+                      ? formik.errors.logoWidth
+                      : undefined
+                  }
+                />
+                <TextField
+                  fullWidth
+                  type="number"
+                  name="logoWidthMobile"
+                  label={
+                    <FormattedMessage
+                      id="logo.width.on.mobile"
+                      defaultMessage="Logo width on Mobile (px)"
+                    />
+                  }
+                  InputLabelProps={{ shrink: true }}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.logoWidthMobile}
+                  error={
+                    Boolean(formik.errors.logoWidthMobile) &&
+                    formik.touched.logoWidthMobile
+                  }
+                  helperText={
+                    Boolean(formik.errors.logoWidthMobile) &&
+                    formik.touched.logoWidthMobile
+                      ? formik.errors.logoWidthMobile
+                      : undefined
+                  }
+                />
+              </Stack>
             </Grid>
             <Grid item xs={4}>
-              <Typography variant="body2">
-                <FormattedMessage
-                  id="logo.for.dark.mode"
-                  defaultMessage="Logo for Dark Mode"
+              <Stack spacing={2}>
+                <Typography variant="body2">
+                  <FormattedMessage
+                    id="logo.for.dark.mode"
+                    defaultMessage="Logo for Dark Mode"
+                  />
+                </Typography>
+                <Button
+                  onClick={() => {
+                    setOpenMediaDialog(true);
+                    setMediaFieldToEdit('logoDarkUrl');
+                  }}
+                >
+                  {formik.values?.logoDarkUrl ? (
+                    <CustomImage src={formik.values.logoDarkUrl} />
+                  ) : (
+                    <NoImage />
+                  )}
+                </Button>
+                <TextField
+                  fullWidth
+                  type="number"
+                  name="logoHeight"
+                  label={
+                    <FormattedMessage
+                      id="logo.height"
+                      defaultMessage="Logo height (px)"
+                    />
+                  }
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.logoHeight}
+                  InputLabelProps={{ shrink: true }}
+                  error={
+                    Boolean(formik.errors.logoHeight) &&
+                    formik.touched.logoHeight
+                  }
+                  helperText={
+                    Boolean(formik.errors.logoHeight) &&
+                    formik.touched.logoHeight
+                      ? formik.errors.logoHeight
+                      : undefined
+                  }
                 />
-              </Typography>
-              <Button
-                onClick={() => {
-                  setOpenMediaDialog(true);
-                  setMediaFieldToEdit('logoDarkUrl');
-                }}
-              >
-                {formik.values?.logoDarkUrl ? (
-                  <CustomImage src={formik.values.logoDarkUrl} />
-                ) : (
-                  <NoImage />
-                )}
-              </Button>
+                <TextField
+                  fullWidth
+                  type="number"
+                  name="logoHeightMobile"
+                  label={
+                    <FormattedMessage
+                      id="logo.height.on.mobile"
+                      defaultMessage="Logo height on Mobile (px)"
+                    />
+                  }
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.logoHeightMobile}
+                  InputLabelProps={{ shrink: true }}
+                  error={
+                    Boolean(formik.errors.logoHeightMobile) &&
+                    formik.touched.logoHeightMobile
+                  }
+                  helperText={
+                    Boolean(formik.errors.logoHeightMobile) &&
+                    formik.touched.logoHeightMobile
+                      ? formik.errors.logoHeightMobile
+                      : undefined
+                  }
+                />
+              </Stack>
             </Grid>
             <Grid item xs={4}>
               <Typography variant="body2">
@@ -246,7 +378,7 @@ export default function GeneralSection({
                 </Select>
                 {Boolean(formik.errors.locale) && (
                   <FormHelperText
-                    sx={{ color: (theme) => theme.palette.error.main }}
+                    sx={{ color: (theme) => theme.vars.palette.error.main }}
                   >
                     {formik.errors.locale}
                   </FormHelperText>
@@ -276,7 +408,7 @@ export default function GeneralSection({
                 </Select>
                 {Boolean(formik.errors.currency) && (
                   <FormHelperText
-                    sx={{ color: (theme) => theme.palette.error.main }}
+                    sx={{ color: (theme) => theme.vars.palette.error.main }}
                   >
                     {formik.errors.currency}
                   </FormHelperText>

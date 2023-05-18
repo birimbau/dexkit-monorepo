@@ -65,7 +65,6 @@ export default function FormsCreatePage({
   });
 
   const handleChange = (params: ContractFormParams) => {
-    console.log('typeof', typeof params.chainId);
     setParams(params);
   };
 
@@ -83,7 +82,9 @@ export default function FormsCreatePage({
     setShowConfirm(false);
   };
 
-  const createFormMutation = useCreateFormMutation({ templateId });
+  const createFormMutation = useCreateFormMutation({
+    templateId: templateId === null ? undefined : templateId,
+  });
 
   const { account } = useWeb3React();
 
@@ -95,8 +96,6 @@ export default function FormsCreatePage({
   const handleConfirm = async () => {
     setShowConfirm(false);
 
-    console.log('typeof', typeof params.chainId);
-    debugger;
     if (account && params && values.name && values.description) {
       try {
         let result = await createFormMutation.mutateAsync({
@@ -216,7 +215,7 @@ export default function FormsCreatePage({
                       value={values.name}
                       onChange={handleChangeInputs}
                       label={
-                        <FormattedMessage id="title" defaultMessage="Title" />
+                        <FormattedMessage id="name" defaultMessage="Name" />
                       }
                     />
                   </Grid>
