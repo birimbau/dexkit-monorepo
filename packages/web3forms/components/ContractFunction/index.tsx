@@ -67,7 +67,7 @@ export default function ContractFunction({
 
           if (inp?.inputType === "normal" || inp?.inputType === "address") {
             defaultValue = inp ? inp.defaultValue : "";
-          } else if (inp.inputType === "switch") {
+          } else if (inp?.inputType === "switch") {
             defaultValue = inp ? Boolean(inp.defaultValue) : false;
           }
 

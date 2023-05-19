@@ -1,4 +1,4 @@
-import { AbiFragment, ContractFormParams } from '@dexkit/web3forms/types';
+import { ContractFormParams } from '@dexkit/web3forms/types';
 
 import Grid from '@mui/material/Grid';
 import InputAdornment from '@mui/material/InputAdornment';
@@ -12,7 +12,6 @@ import { FormattedMessage } from 'react-intl';
 
 import LazyTextField from '@dexkit/ui/components/LazyTextField';
 
-import { inputMapping } from '@/modules/wizard/utils';
 import { parseChainId } from '@dexkit/core/utils';
 import { Search } from '@mui/icons-material';
 import {
@@ -26,7 +25,6 @@ import {
 } from '@mui/material';
 import { ContractFormSchema } from '../../../constants/schemas';
 import ChangeListener from '../../ChangeListener';
-import ContractFormAbiFetcher from './ContractFormAbiFetcher';
 import ContractFormFilteredFields from './ContractFormFilteredFields';
 import ContractInitialForm from './ContractInitialForm';
 
@@ -93,8 +91,6 @@ export default function ContractForm({
 
   const hasParams = params && Object.keys(params).length > 1;
 
-  const [currentContract, setCurrentContract] = useState<string>();
-
   return (
     <Formik
       initialValues={hasParams ? params : DEFAULT_STATE}
@@ -104,25 +100,6 @@ export default function ContractForm({
     >
       {({ errors, values, submitForm, setFieldValue, isValid }) => (
         <>
-          <ContractFormAbiFetcher
-            contractAddress={values.contractAddress}
-            chainId={values.chainId}
-            onSuccess={(abi: AbiFragment[]) => {
-              console.log(values.fields);
-
-              if (Object.keys(values.fields).length === 0) {
-                const fields = inputMapping(abi);
-                setFieldValue('fields', fields);
-              }
-
-              setFieldValue('abi', abi);
-              setCurrentContract(values.contractAddress);
-            }}
-            enabled={
-              values.contractAddress !== '' &&
-              values.contractAddress !== currentContract
-            }
-          />
           {updateOnChange && (
             <ChangeListener
               values={values}
@@ -134,7 +111,7 @@ export default function ContractForm({
           )}
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              <ContractInitialForm abi={values.abi} />
+              <ContractInitialForm abi={values.abi} chainId={values.chainId} />
             </Grid>
             {values.abi.length > 0 && (
               <Grid item xs={12}>

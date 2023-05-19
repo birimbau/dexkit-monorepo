@@ -1,18 +1,21 @@
+import { ChainId } from '@dexkit/core';
 import { NETWORKS } from '@dexkit/core/constants/networks';
 import { parseChainId } from '@dexkit/core/utils';
 import { AbiFragment } from '@dexkit/web3forms/types';
 import { FormControl, Grid, InputLabel, MenuItem } from '@mui/material';
 import { Field } from 'formik';
-import { Select, TextField } from 'formik-mui';
+import { Select } from 'formik-mui';
 import { memo } from 'react';
 import { FormattedMessage } from 'react-intl';
 import ContractFormAbiInput from './ContractFormAbiInput';
+import ContractFormAddressInput from './ContractFormAddressInput';
 
 export interface Props {
   abi?: AbiFragment[];
+  chainId?: ChainId;
 }
 
-function ContractInitialForm({ abi }: Props) {
+function ContractInitialForm({ abi, chainId }: Props) {
   return (
     <Grid container spacing={2}>
       <Grid item>
@@ -37,17 +40,7 @@ function ContractInitialForm({ abi }: Props) {
         </FormControl>
       </Grid>
       <Grid item xs>
-        <Field
-          component={TextField}
-          name="contractAddress"
-          label={
-            <FormattedMessage
-              id="contract.address"
-              defaultMessage="Contract address"
-            />
-          }
-          fullWidth
-        />
+        <ContractFormAddressInput chainId={chainId} />
       </Grid>
       <Grid item xs={12}>
         <ContractFormAbiInput abiStr={JSON.stringify(abi, null, 2) || ''} />

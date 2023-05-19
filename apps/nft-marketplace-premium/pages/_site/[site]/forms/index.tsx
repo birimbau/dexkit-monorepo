@@ -1,4 +1,5 @@
 import ContractButton from '@/modules/forms/components/ContractButton';
+import WalletIcon from '@mui/icons-material/Wallet';
 import { Box, Button, Container, Grid, Stack, Typography } from '@mui/material';
 import { useWeb3React } from '@web3-react/core';
 import { useRouter } from 'next/router';
@@ -6,6 +7,7 @@ import { FormattedMessage } from 'react-intl';
 import Link from 'src/components/Link';
 import { PageHeader } from 'src/components/PageHeader';
 import AuthMainLayout from 'src/components/layouts/authMain';
+import { useConnectWalletDialog } from 'src/hooks/app';
 
 export default function FormsPage() {
   const router = useRouter();
@@ -14,7 +16,11 @@ export default function FormsPage() {
     router.push('/forms/create');
   };
 
-  const { account } = useWeb3React();
+  const { account, isActive } = useWeb3React();
+
+  const connectWalletDialog = useConnectWalletDialog();
+
+  const handleConnectWallet = () => connectWalletDialog.setOpen(true);
 
   return (
     <>
@@ -57,16 +63,29 @@ export default function FormsPage() {
                         />
                       </Typography>
                     </Box>
-                    <Button
-                      LinkComponent={Link}
-                      href={`/forms/account/${account}`}
-                      variant="outlined"
-                    >
-                      <FormattedMessage
-                        id="my.forms"
-                        defaultMessage="My forms"
-                      />
-                    </Button>
+                    {isActive ? (
+                      <Button
+                        LinkComponent={Link}
+                        href={`/forms/account/${account}`}
+                        variant="outlined"
+                      >
+                        <FormattedMessage
+                          id="my.forms"
+                          defaultMessage="My forms"
+                        />
+                      </Button>
+                    ) : (
+                      <Button
+                        onClick={handleConnectWallet}
+                        variant="outlined"
+                        startIcon={<WalletIcon />}
+                      >
+                        <FormattedMessage
+                          id="connect.wallet"
+                          defaultMessage="Connect wallet"
+                        />
+                      </Button>
+                    )}
                   </Stack>
                 </Box>
               </Grid>

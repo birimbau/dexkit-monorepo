@@ -239,7 +239,7 @@ export function useScanContractAbi({
   enabled?: boolean;
 }) {
   return useQuery(
-    [SCAN_CONTRACT_ABI, contractAddress],
+    [SCAN_CONTRACT_ABI, contractAddress, chainId],
     async ({ signal }) => {
       if (!ethers.utils.isAddress(contractAddress)) {
         throw new Error("invalid contract address");

@@ -118,14 +118,18 @@ export default function MyApp(props: MyAppProps) {
       }
     }
 
+    let temp: any = tempTheme;
+
+    delete temp['vars'];
+
     return fontFamily
       ? extendTheme({
-          colorSchemes: tempTheme.colorSchemes,
+          ...temp,
           typography: {
             fontFamily,
           },
         })
-      : extendTheme({ colorSchemes: tempTheme.colorSchemes });
+      : extendTheme({ ...temp });
   }, [appConfig]);
 
   const SEO = React.useMemo(() => {

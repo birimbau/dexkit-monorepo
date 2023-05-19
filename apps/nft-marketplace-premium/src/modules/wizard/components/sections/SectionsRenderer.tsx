@@ -19,11 +19,7 @@ export function SectionsRenderer({ sections }: Props) {
     if (!isMobile && section.hideDesktop) {
       return null;
     }
-    return (
-      <>
-        <SectionRender key={key} section={section} />
-      </>
-    );
+    return <SectionRender key={key} section={section} />;
   });
 
   return <>{sectionsToRender}</>;
