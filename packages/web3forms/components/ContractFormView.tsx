@@ -9,9 +9,9 @@ import { useCallback, useMemo, useState } from "react";
 import { useCallOnMountFields, useContractCallMutation } from "../hooks";
 import { CallParams, ContractFormParams } from "../types";
 
+import { useSnackbar } from "notistack";
 import CallConfirmDialog from "./CallConfirmDialog";
 import ContractFormFunctions from "./ContractFormFunctions";
-import ContractFunction from "./ContractFunction";
 
 export interface Props {
   params: ContractFormParams;
@@ -66,6 +66,8 @@ export default function ContractFormView({ params }: Props) {
 
   const switchNetworkMutation = useSwitchNetworkMutation();
 
+  const { enqueueSnackbar } = useSnackbar();
+
   const handleCall = useCallback(
     async (callParams: CallParams) => {
       if (params.chainId !== chainId && callParams && callParams.call) {
@@ -77,10 +79,14 @@ export default function ContractFormView({ params }: Props) {
       if (callParams && callParams.call) {
         setShowConfirm(true);
       } else {
-        await contractCallMutation.mutateAsync({
-          ...callParams,
-          rpcProvider,
-        });
+        try {
+          await contractCallMutation.mutateAsync({
+            ...callParams,
+            rpcProvider,
+          });
+        } catch (err) {
+          enqueueSnackbar(String(err), { variant: "error" });
+        }
       }
 
       await callOnMountQuery.refetch();
@@ -101,44 +107,6 @@ export default function ContractFormView({ params }: Props) {
   const handleClose = () => {
     setShowConfirm(false);
     setCallParams(undefined);
-  };
-
-  const renderFields = () => {
-    return abi
-      .filter((i) => i.type === "function")
-      .filter((i) => {
-        if (i.name) {
-          let field = params.fields[i.name];
-
-          if (field) {
-            return field.visible;
-          }
-        }
-
-        return false;
-      })
-      .map((item, key) => {
-        if (item.type === "function") {
-          return (
-            <Grid item xs={12} key={key}>
-              <ContractFunction
-                inputs={item.inputs}
-                name={item.name}
-                stateMutability={item.stateMutability}
-                onCall={handleCall}
-                params={params}
-                chainId={chainId}
-                results={results}
-                isResultsLoading={callOnMountQuery.isFetching}
-                isCalling={
-                  contractCallMutation.isLoading &&
-                  callParams?.name === item.name
-                }
-              />
-            </Grid>
-          );
-        }
-      });
   };
 
   return (

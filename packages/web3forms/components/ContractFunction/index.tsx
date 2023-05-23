@@ -76,6 +76,8 @@ export default function ContractFunction({
             defaultValue = inp ? inp.defaultValue : "";
           } else if (inp?.inputType === "switch") {
             defaultValue = inp ? Boolean(inp.defaultValue) : false;
+          } else if (inp?.inputType === "decimal") {
+            defaultValue = inp ? inp.defaultValue : "";
           }
 
           obj[input.name] = defaultValue;
@@ -89,16 +91,22 @@ export default function ContractFunction({
 
   const handleSubmit = useCallback(
     async (values: any) => {
-      console.log(name, stateMutability, onCall);
-
       onCall({
         name: !name ? "constructor" : name,
-        args: Object.keys(values).map((key) => values[key]),
+        args: Object.keys(values).map((key) => {
+          let inputParams = name ? params.fields[name].input[key] : undefined;
+
+          if (inputParams && inputParams.inputType === "decimal") {
+            return ethers.utils.parseUnits(values[key], inputParams.decimals);
+          }
+
+          return values[key];
+        }),
         call: isFunctionCall(stateMutability),
         payable: stateMutability === "payable",
       });
     },
-    [name, stateMutability, onCall]
+    [name, stateMutability, onCall, params.fields]
   );
 
   const submitMessage = useMemo(() => {
@@ -225,7 +233,7 @@ export default function ContractFunction({
     >
       {({ submitForm, isValid, values, errors }) => (
         <Accordion
-          key={`${String(collapse)}-${JSON.stringify(values)}`}
+          key={`${String(collapse)}-${name}`}
           defaultExpanded={collapse}
         >
           {!hideLabel && (

@@ -67,25 +67,29 @@ export function useContractCallMutation({
         contract = new ethers.Contract(contractAddress, abi, currProvider);
       }
 
-      cb = contract[name];
+      try {
+        cb = contract[name];
 
-      let result: any;
+        let result: any;
 
-      if (args.length > 0) {
-        if (payable) {
-          result = await cb(...args, { value });
+        if (args.length > 0) {
+          if (payable) {
+            result = await cb(...args, { value });
+          } else {
+            result = await cb(...args);
+          }
         } else {
-          result = await cb(...args);
+          if (payable) {
+            result = await cb({ value });
+          } else {
+            result = await cb();
+          }
         }
-      } else {
-        if (payable) {
-          result = await cb({ value });
-        } else {
-          result = await cb();
-        }
+
+        return { name, result };
+      } catch (err) {
+        throw err;
       }
-
-      return { name, result };
     },
     {
       onSuccess: onSuccess,

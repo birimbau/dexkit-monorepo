@@ -17,6 +17,8 @@ export const ETHER_SCAN_API_URL: { [key: number]: string } = {
   [ChainId.BSC]: "api.bscscan.com",
   [ChainId.Fantom]: "api.ftmscan.com",
   [ChainId.Avax]: "api.snowtrace.io",
+  [ChainId.Mumbai]: "api-testnet.polygonscan.com",
+  [ChainId.Goerli]: "api-goerli.etherscan.io",
 };
 
 export const WEB3FORMS_INPUT_TYPES: {
@@ -38,5 +40,11 @@ export const WEB3FORMS_INPUT_TYPES: {
     messageId: "switch.button",
     defaultMessage: "Switch Button",
     type: "bool",
+  },
+  decimal: {
+    name: "decimal",
+    messageId: "formatted.decimal",
+    defaultMessage: "Formatted Decimal",
+    type: "uint256",
   },
 };

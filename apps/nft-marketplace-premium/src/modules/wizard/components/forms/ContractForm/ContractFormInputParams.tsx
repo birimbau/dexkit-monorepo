@@ -2,14 +2,14 @@ import { truncateAddress } from '@dexkit/core/utils';
 import {
   ContractFormFieldInput,
   ContractFormFieldInputAddress,
+  ContractFormFieldInputDecimal,
   ContractFormParams,
 } from '@dexkit/web3forms/types';
-import { TextField } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import { isAddress } from 'ethers/lib/utils';
 
 import { Field, useFormikContext } from 'formik';
-import { Autocomplete } from 'formik-mui';
+import { Autocomplete, TextField } from 'formik-mui';
 import { FormattedMessage } from 'react-intl';
 
 function AddressInput({
@@ -21,8 +21,6 @@ function AddressInput({
   funcName?: string;
   inputName?: string;
 }) {
-  const { values } = useFormikContext<ContractFormParams>();
-
   return (
     <Grid container spacing={2}>
       <Grid item xs={12}>
@@ -62,6 +60,33 @@ function AddressInput({
   );
 }
 
+function DecimalInput({
+  input,
+  funcName,
+  inputName,
+}: {
+  input: ContractFormFieldInputDecimal;
+  funcName?: string;
+  inputName?: string;
+}) {
+  const { values } = useFormikContext<ContractFormParams>();
+
+  return (
+    <Grid container spacing={2}>
+      <Grid item xs={12}>
+        <Field
+          component={TextField}
+          label={<FormattedMessage id="decimals" defaultMessage="Decimals" />}
+          fullWidth
+          size="small"
+          type="number"
+          name={`fields.${funcName}.input.${inputName}.decimals`}
+        />
+      </Grid>
+    </Grid>
+  );
+}
+
 export interface ContractFormInputParamsProps {
   input?: ContractFormFieldInput;
   funcName?: string;
@@ -76,6 +101,10 @@ export default function ContractFormInputParams({
   if (input?.inputType === 'address') {
     return (
       <AddressInput funcName={funcName} inputName={inputName} input={input} />
+    );
+  } else if (input?.inputType === 'decimal') {
+    return (
+      <DecimalInput funcName={funcName} inputName={inputName} input={input} />
     );
   }
 
