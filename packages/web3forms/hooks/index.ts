@@ -226,20 +226,15 @@ export function useCallOnMountFields({
 
 export const SCAN_CONTRACT_ABI = "SCAN_CONTRACT_ABI";
 
-export function useScanContractAbi({
-  contractAddress,
-  onSuccess,
-  chainId,
-  enabled,
-}: {
-  contractAddress: string;
-  onSuccess: (abi: AbiFragment[]) => void;
-  chainId?: ChainId;
-  enabled?: boolean;
-}) {
-  return useQuery(
-    [SCAN_CONTRACT_ABI, contractAddress, chainId],
-    async ({ signal }) => {
+export function useScanContractAbiMutation() {
+  return useMutation(
+    async ({
+      contractAddress,
+      chainId,
+    }: {
+      contractAddress: string;
+      chainId: ChainId;
+    }) => {
       if (!ethers.utils.isAddress(contractAddress)) {
         throw new Error("invalid contract address");
       }
@@ -256,17 +251,14 @@ export function useScanContractAbi({
             module: "contract",
             address: contractAddress,
           },
-          signal,
         }
       );
 
+      if (resp.data.message === "NOTOK") {
+        throw new Error("rate limit");
+      }
+
       return JSON.parse(resp.data.result);
-    },
-    {
-      onSuccess,
-      enabled,
-      refetchOnMount: false,
-      refetchOnWindowFocus: false,
     }
   );
 }

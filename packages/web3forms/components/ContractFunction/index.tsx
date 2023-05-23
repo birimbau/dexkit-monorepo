@@ -159,8 +159,6 @@ export default function ContractFunction({
   }, [results, name, stateMutability]);
 
   const fieldName = useMemo(() => {
-    console.log(params.fields);
-
     return name && params.fields[name] && params.fields[name].name
       ? params.fields[name].name
       : name;

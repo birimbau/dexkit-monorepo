@@ -1,12 +1,13 @@
 import { inputMapping } from '@/modules/wizard/utils';
 import { ChainId } from '@dexkit/core';
 import LazyTextField from '@dexkit/ui/components/LazyTextField';
-import { useScanContractAbi } from '@dexkit/web3forms/hooks';
-import { AbiFragment, ContractFormParams } from '@dexkit/web3forms/types';
+import { useScanContractAbiMutation } from '@dexkit/web3forms/hooks';
+import { ContractFormParams } from '@dexkit/web3forms/types';
 import { CircularProgress, InputAdornment } from '@mui/material';
 import { isAddress } from 'ethers/lib/utils';
 import { useFormikContext } from 'formik';
-import { useCallback, useState } from 'react';
+import { useSnackbar } from 'notistack';
+import { useCallback } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 export interface ContractFormAddressInputProps {
@@ -18,45 +19,46 @@ export default function ContractFormAddressInput({
 }: ContractFormAddressInputProps) {
   const { setFieldValue, values } = useFormikContext<ContractFormParams>();
 
-  const [enabled, setEnabled] = useState(isAddress(values.contractAddress));
+  const scanContractAbiMutation = useScanContractAbiMutation();
 
-  const handleChange = useCallback((value: string) => {
-    setFieldValue('contractAddress', value);
+  const { enqueueSnackbar } = useSnackbar();
 
-    if (isAddress(value)) {
-      setEnabled(true);
-    } else {
-      setEnabled(false);
-    }
-  }, []);
+  const handleChange = useCallback(
+    async (value: string) => {
+      if (isAddress(value)) {
+        try {
+          let abi = await scanContractAbiMutation.mutateAsync({
+            chainId: values.chainId,
+            contractAddress: value,
+          });
 
-  const scanContractAbiQuery = useScanContractAbi({
-    contractAddress: values.contractAddress,
-    onSuccess: (abi: AbiFragment[]) => {
-      let newAbi = [...abi];
+          let newAbi = [...abi];
 
-      // this code is to fix abi fragments that come without input name
-      for (let i = 0; i < abi.length; i++) {
-        const fragment = abi[i];
+          // this code is to fix abi fragments that come without input name
+          for (let i = 0; i < abi.length; i++) {
+            const fragment = abi[i];
 
-        for (let j = 0; j < fragment.inputs.length; j++) {
-          const input = fragment.inputs[j];
+            for (let j = 0; j < fragment.inputs.length; j++) {
+              const input = fragment.inputs[j];
 
-          if (input.name === '') {
-            newAbi[i].inputs[j].name = `input${j}`;
+              if (input.name === '') {
+                newAbi[i].inputs[j].name = `input${j}`;
+              }
+            }
           }
+
+          const fields = inputMapping(newAbi);
+          setFieldValue('fields', fields);
+          setFieldValue('abi', newAbi);
+        } catch (err) {
+          enqueueSnackbar(String(err), { variant: 'error' });
         }
       }
 
-      const fields = inputMapping(newAbi);
-      setFieldValue('fields', fields);
-      setFieldValue('abi', newAbi);
-
-      setEnabled(false);
+      setFieldValue('contractAddress', value);
     },
-    chainId,
-    enabled,
-  });
+    [values.chainId]
+  );
 
   return (
     <LazyTextField
@@ -71,7 +73,7 @@ export default function ContractFormAddressInput({
         ),
         fullWidth: true,
         InputProps: {
-          endAdornment: scanContractAbiQuery.isFetching ? (
+          endAdornment: scanContractAbiMutation.isLoading ? (
             <InputAdornment position="end">
               <CircularProgress color="inherit" size="1rem" />
             </InputAdornment>
