@@ -81,7 +81,6 @@ export function useContractCallMutation({
         if (payable) {
           result = await cb({ value });
         } else {
-          console.log("vem aqui", contractAddress, abi, provider);
           result = await cb();
         }
       }
@@ -250,7 +249,7 @@ export function useScanContractAbi({
       }
 
       const resp = await axios.get(
-        `https://api.${ETHER_SCAN_API_URL[chainId] ?? ""}/api`,
+        `https://${ETHER_SCAN_API_URL[chainId] ?? ""}/api`,
         {
           params: {
             action: "getabi",

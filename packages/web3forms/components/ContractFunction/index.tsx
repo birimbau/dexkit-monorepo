@@ -18,7 +18,12 @@ import {
   Typography,
 } from "@mui/material";
 import { useCallback, useMemo } from "react";
-import { CallParams, ContractFormParams, FunctionInput } from "../../types";
+import {
+  CallParams,
+  ContractFormParams,
+  FunctionInput,
+  OutputType,
+} from "../../types";
 import { getSchemaForInputs } from "../../utils";
 
 import { ChainId } from "@dexkit/core/constants";
@@ -34,6 +39,7 @@ export function isFunctionCall(stateMutability: string) {
 
 export interface ContractFieldProps {
   inputs: FunctionInput[];
+  output?: OutputType;
   params: ContractFormParams;
   name?: string;
   stateMutability: string;
@@ -46,6 +52,7 @@ export interface ContractFieldProps {
 
 export default function ContractFunction({
   inputs,
+  output,
   name,
   stateMutability,
   chainId,
@@ -60,7 +67,7 @@ export default function ContractFunction({
       let obj: { [key: string]: string } = {};
 
       for (let input of inputs) {
-        if (name && input.name && params.fields[name].input) {
+        if (name !== undefined && input.name && params.fields[name].input) {
           const inp = params.fields[name].input[input.name];
 
           let defaultValue: any;
@@ -140,6 +147,10 @@ export default function ContractFunction({
       let value = results[name];
 
       if (value instanceof ethers.BigNumber) {
+        if (output?.type === "decimal") {
+          return ethers.utils.formatUnits(value, output?.decimals);
+        }
+
         return value.toString();
       }
 
@@ -148,6 +159,8 @@ export default function ContractFunction({
   }, [results, name, stateMutability]);
 
   const fieldName = useMemo(() => {
+    console.log(params.fields);
+
     return name && params.fields[name] && params.fields[name].name
       ? params.fields[name].name
       : name;
@@ -174,11 +187,26 @@ export default function ContractFunction({
   if (callOnMount) {
     return (
       <Card>
-        <Box sx={{ p: 2 }}>
+        <Box
+          sx={{
+            p: 2,
+            width: "100%",
+            wordBreak: "break-word",
+            whiteSpace: "pre-wrap",
+            display: "block",
+            overflowWrap: "break-word",
+            hyphens: "auto",
+          }}
+        >
           {!hideLabel ? (
             <Typography variant="body1" sx={{ fontWeight: 600 }}>
-              {fieldName}
-              {result && <>: {result}</>}
+              {isResultsLoading ? (
+                <Skeleton sx={{ width: "100%" }} />
+              ) : (
+                <>
+                  {fieldName} {result && <>: {result}</>}
+                </>
+              )}
             </Typography>
           ) : (
             <Typography variant="body1" sx={{ fontWeight: 600 }}>
@@ -198,21 +226,45 @@ export default function ContractFunction({
       validationSchema={getSchemaForInputs(inputs)}
     >
       {({ submitForm, isValid, values, errors }) => (
-        <Accordion key={String(collapse)} defaultExpanded={collapse}>
+        <Accordion
+          key={`${String(collapse)}-${JSON.stringify(values)}`}
+          defaultExpanded={collapse}
+        >
           {!hideLabel && (
             <>
               <AccordionSummary
                 expandIcon={!collapse ? <ExpandMoreIcon /> : undefined}
-                sx={{ width: "100%" }}
+                sx={{
+                  width: "100%",
+                }}
               >
-                {isResultsLoading ? (
-                  <Skeleton sx={{ width: "100%" }} />
-                ) : (
-                  <Typography variant="body1" sx={{ fontWeight: 600 }}>
-                    {fieldName}
-                    {result && <>: {result}</>}
-                  </Typography>
-                )}
+                <Box
+                  sx={{
+                    width: "100%",
+                    wordBreak: "break-word",
+                    whiteSpace: "pre-wrap",
+                    display: "block",
+                    overflowWrap: "break-word",
+                    hyphens: "auto",
+                  }}
+                >
+                  {isResultsLoading ? (
+                    <Skeleton sx={{ width: "100%" }} />
+                  ) : (
+                    <Typography
+                      component="div"
+                      variant="body1"
+                      sx={{
+                        width: "100%",
+                        fontWeight: 600,
+                        wordBreak: "break-word",
+                        display: "block",
+                      }}
+                    >
+                      {fieldName} {result && <>: {result}</>}
+                    </Typography>
+                  )}
+                </Box>
               </AccordionSummary>
               <Divider />
             </>

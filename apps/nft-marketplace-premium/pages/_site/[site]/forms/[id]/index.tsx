@@ -24,9 +24,12 @@ import {
 } from '@mui/material';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 import { getWindowUrl } from 'src/utils/browser';
-import { useFormQuery } from '../../../../../src/modules/forms/hooks';
+import {
+  useCloseFormMutation,
+  useFormQuery,
+} from '../../../../../src/modules/forms/hooks';
 
 import AccountTreeIcon from '@mui/icons-material/AccountTree';
 import EditIcon from '@mui/icons-material/Edit';
@@ -34,6 +37,10 @@ import { useWeb3React } from '@web3-react/core';
 import NextLink from 'next/link';
 import { PageHeader } from 'src/components/PageHeader';
 import AuthMainLayout from 'src/components/layouts/authMain';
+
+import FileCopyIcon from '@mui/icons-material/FileCopy';
+import { useSnackbar } from 'notistack';
+import AppConfirmDialog from 'src/components/AppConfirmDialog';
 
 export default function FormPage() {
   const router = useRouter();
@@ -60,6 +67,45 @@ export default function FormPage() {
     router.push(`/forms/${formQuery.data?.id}/edit`);
   };
 
+  const [showConfirmClone, setShowConfirmClone] = useState(false);
+
+  const cloneFormMutation = useCloseFormMutation();
+
+  const handleCloneForm = () => {
+    setShowConfirmClone(true);
+  };
+
+  const { formatMessage } = useIntl();
+  const { enqueueSnackbar } = useSnackbar();
+
+  const handleConfirmClone = async () => {
+    if (formQuery.data?.id) {
+      try {
+        let result = await cloneFormMutation.mutateAsync({
+          id: formQuery.data?.id,
+        });
+        setShowConfirmClone(false);
+        enqueueSnackbar(
+          formatMessage({
+            id: 'form.created.successfully',
+            defaultMessage: 'Fomr created successfully',
+          }),
+          {
+            variant: 'success',
+          }
+        );
+
+        router.push(`/forms/${result.id}`);
+      } catch (err) {
+        enqueueSnackbar(String(err), { variant: 'error' });
+      }
+    }
+  };
+
+  const handleCloseClone = () => {
+    setShowConfirmClone(false);
+  };
+
   return (
     <>
       <ShareDialog
@@ -71,6 +117,22 @@ export default function FormPage() {
         }}
         url={`${getWindowUrl()}/forms/${formQuery.data?.id}`}
       />
+      <AppConfirmDialog
+        onConfirm={handleConfirmClone}
+        dialogProps={{
+          maxWidth: 'sm',
+          fullWidth: true,
+          open: showConfirmClone,
+          onClose: handleCloseClone,
+        }}
+      >
+        <Typography variant="body1">
+          <FormattedMessage
+            id="do.you.really.want.to.clone.this.form"
+            defaultMessage="Do you really want to clone this form?"
+          />
+        </Typography>
+      </AppConfirmDialog>
       <Container>
         <Grid container spacing={2}>
           <Grid item xs={12}>
@@ -158,6 +220,14 @@ export default function FormPage() {
                       startIcon={<ShareIcon />}
                     >
                       <FormattedMessage id="share" defaultMessage="Share" />
+                    </Button>
+                    <Button
+                      size="small"
+                      onClick={handleCloneForm}
+                      variant="outlined"
+                      startIcon={<FileCopyIcon />}
+                    >
+                      <FormattedMessage id="clone" defaultMessage="Clone" />
                     </Button>
                     {isAddressEqual(
                       formQuery.data?.creatorAddress,

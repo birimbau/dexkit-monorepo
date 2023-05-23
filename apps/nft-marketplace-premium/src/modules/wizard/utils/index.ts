@@ -160,6 +160,7 @@ export function inputMapping(abi: AbiFragment[]) {
         collapse: false,
         hideInputs: false,
         hideLabel: false,
+        output: { type: '' },
         callToAction: '',
       };
     }

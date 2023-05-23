@@ -159,6 +159,7 @@ export default function ContractFormView({ params }: Props) {
           params={params}
           results={results}
           chainId={chainId}
+          isResultsLoading={callOnMountQuery.isLoading}
           isCalling={contractCallMutation.isLoading}
           callFuncName={callParams?.name}
         />

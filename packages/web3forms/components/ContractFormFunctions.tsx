@@ -11,6 +11,7 @@ export interface ContractFormFunctionsProps {
   isCalling?: boolean;
   results: { [key: string]: any };
   chainId?: ChainId;
+  isResultsLoading?: boolean;
 }
 
 export default function ContractFormFunctions({
@@ -20,6 +21,7 @@ export default function ContractFormFunctions({
   results,
   chainId,
   onCall,
+  isResultsLoading,
   callFuncName,
 }: ContractFormFunctionsProps) {
   return (
@@ -43,12 +45,14 @@ export default function ContractFormFunctions({
               <Grid item xs={12} key={key}>
                 <ContractFunction
                   inputs={item.inputs}
+                  output={params.fields[item.name]?.output}
                   name={item.name}
                   stateMutability={item.stateMutability}
                   onCall={onCall}
                   params={params}
                   chainId={chainId}
                   results={results}
+                  isResultsLoading={isResultsLoading}
                   isCalling={isCalling && callFuncName === item.name}
                 />
               </Grid>

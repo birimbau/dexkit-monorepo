@@ -23,11 +23,17 @@ export type AbiFragmentInput = {
   internalType?: string;
 };
 
+export type FragmentOutput = {
+  internalType?: string;
+  name?: string;
+  type?: string;
+};
+
 export interface AbiFragment {
   type: "function" | "constructor";
   name: string;
   inputs: AbiFragmentInput[];
-  outputs: {}[];
+  outputs: FragmentOutput[];
   stateMutability: string;
 }
 
@@ -60,6 +66,17 @@ export type ContractFormFieldInput =
   | ContractFormFieldSwitch
   | ContractFormFieldInputAddress;
 
+export type NoOutputType = {
+  type: "";
+};
+
+export type DecimalOutputType = {
+  type: "decimal";
+  decimals: number;
+};
+
+export type OutputType = NoOutputType | DecimalOutputType;
+
 export type ContractFormField = {
   name: string;
   visible: boolean;
@@ -69,6 +86,7 @@ export type ContractFormField = {
   collapse: boolean;
   hideLabel: boolean;
   callToAction: string;
+  output?: OutputType;
   input: {
     [key: string]: ContractFormFieldInput;
   };

@@ -18,22 +18,39 @@ export default function ContractFormAddressInput({
 }: ContractFormAddressInputProps) {
   const { setFieldValue, values } = useFormikContext<ContractFormParams>();
 
-  const [enabled, setEnabled] = useState(false);
+  const [enabled, setEnabled] = useState(isAddress(values.contractAddress));
 
   const handleChange = useCallback((value: string) => {
+    setFieldValue('contractAddress', value);
+
     if (isAddress(value)) {
       setEnabled(true);
-      setFieldValue('contractAddress', value);
+    } else {
+      setEnabled(false);
     }
   }, []);
 
   const scanContractAbiQuery = useScanContractAbi({
     contractAddress: values.contractAddress,
     onSuccess: (abi: AbiFragment[]) => {
-      const fields = inputMapping(abi);
+      let newAbi = [...abi];
 
+      // this code is to fix abi fragments that come without input name
+      for (let i = 0; i < abi.length; i++) {
+        const fragment = abi[i];
+
+        for (let j = 0; j < fragment.inputs.length; j++) {
+          const input = fragment.inputs[j];
+
+          if (input.name === '') {
+            newAbi[i].inputs[j].name = `input${j}`;
+          }
+        }
+      }
+
+      const fields = inputMapping(newAbi);
       setFieldValue('fields', fields);
-      setFieldValue('abi', abi);
+      setFieldValue('abi', newAbi);
 
       setEnabled(false);
     },

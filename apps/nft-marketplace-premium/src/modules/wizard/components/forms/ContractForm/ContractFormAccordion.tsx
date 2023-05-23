@@ -317,6 +317,76 @@ function ContractFormAccordion({ func }: Props) {
                       </Card>
                     </Grid>
                   ))}
+                  {func.stateMutability === 'view' && (
+                    <>
+                      <Grid item xs={12}>
+                        <Typography variant="body1" sx={{ fontWeight: 600 }}>
+                          <FormattedMessage
+                            id="output"
+                            defaultMessage="Output"
+                          />
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={12}>
+                        <FastField
+                          component={Select}
+                          name={`fields.${func.name}.output.type`}
+                          size="small"
+                          fullWidth
+                          displayEmpty
+                          InputLabelProps={{ shrink: true }}
+                          inputLabel={{ shrink: true }}
+                          formControl={{
+                            fullWidth: true,
+                            InputLabelProps: { shrink: true },
+                          }}
+                          label={
+                            <FormattedMessage
+                              id="output.type"
+                              defaultMessage="Output Type"
+                            />
+                          }
+                        >
+                          <MenuItem value="">
+                            <FormattedMessage
+                              id="default"
+                              defaultMessage="Default"
+                            />
+                          </MenuItem>
+                          <MenuItem value="decimal">
+                            <FormattedMessage
+                              id="formatted.decimal"
+                              defaultMessage="Formatted decimal"
+                            />
+                          </MenuItem>
+                        </FastField>
+                      </Grid>
+                      <FormikConsumer>
+                        {({ values }) =>
+                          (values as ContractFormParams).fields[func.name]
+                            .output &&
+                          (values as ContractFormParams).fields[func.name]
+                            .output?.type === 'decimal' && (
+                            <Grid item xs={12}>
+                              <FastField
+                                component={TextField}
+                                type="number"
+                                name={`fields.${func.name}.output.decimals`}
+                                label={
+                                  <FormattedMessage
+                                    id="decimals"
+                                    defaultMessage="Decimals"
+                                  />
+                                }
+                                fullWidth
+                                size="small"
+                              />
+                            </Grid>
+                          )
+                        }
+                      </FormikConsumer>
+                    </>
+                  )}
                 </Grid>
               </Grid>
             )}

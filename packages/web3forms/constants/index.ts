@@ -10,8 +10,13 @@ export const PARSE_UNITS = [
 ];
 
 export const ETHER_SCAN_API_URL: { [key: number]: string } = {
-  [ChainId.Ethereum]: "etherscan.io",
-  [ChainId.Polygon]: "polygonscan.com",
+  [ChainId.Ethereum]: "api.etherscan.io",
+  [ChainId.Polygon]: "api.polygonscan.com",
+  [ChainId.Arbitrum]: "api.arbiscan.io",
+  [ChainId.Optimism]: "api-optimistic.etherscan.io",
+  [ChainId.BSC]: "api.bscscan.com",
+  [ChainId.Fantom]: "api.ftmscan.com",
+  [ChainId.Avax]: "api.snowtrace.io",
 };
 
 export const WEB3FORMS_INPUT_TYPES: {

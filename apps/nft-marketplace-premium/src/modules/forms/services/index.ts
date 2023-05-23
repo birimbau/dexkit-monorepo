@@ -165,3 +165,7 @@ export async function listTemplateInstances(
 ): Promise<TemplateInstance[]> {
   return (await myAppsApi.get(`/forms/templates/${templateId}/instances`)).data;
 }
+
+export async function cloneForm({ id }: { id: number }) {
+  return (await myAppsApi.post<{ id: number }>(`/forms/${id}/clone`)).data;
+}

@@ -78,7 +78,7 @@ export default function CallConfirmDialog({
       />
       <DialogContent dividers>
         <Stack spacing={2}>
-          <Stack spacing={2}>
+          <Stack spacing={2} alignItems="center">
             <CheckCircleIcon fontSize="large" />
             <Box>
               <Typography variant="h5" align="center">

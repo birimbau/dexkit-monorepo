@@ -3,6 +3,7 @@ import { ContractFormParams } from '@dexkit/web3forms/types';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { ethers } from 'ethers';
 import {
+  cloneForm,
   createForm,
   createFormTemplate,
   createTemplateInstance,
@@ -293,4 +294,10 @@ export function useListTemplateInstances({
     },
     { enabled: templateId !== undefined }
   );
+}
+
+export function useCloseFormMutation() {
+  return useMutation(async ({ id }: { id: number }) => {
+    return await cloneForm({ id });
+  });
 }
