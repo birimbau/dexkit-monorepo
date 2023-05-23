@@ -10,7 +10,18 @@ import { ContractFormParams, FunctionInput } from "../../types";
 
 import ContactsIcon from "@mui/icons-material/Contacts";
 import { useCallback, useState } from "react";
+import { useIntl } from "react-intl";
 import SelectAddressDialog from "../SelectAddressDialog";
+
+const patternTwoDigisAfterComma = /^\d+(\.\d{0,18})?$/;
+
+function validateDecimal(message: string) {
+  return (value: string) => {
+    if (!patternTwoDigisAfterComma.test(value)) {
+      return message;
+    }
+  };
+}
 
 export interface ContractFunctionInputsProps {
   name?: string;
@@ -23,6 +34,8 @@ export default function ContractFunctionInputs({
   params,
   inputs,
 }: ContractFunctionInputsProps) {
+  const { formatMessage } = useIntl();
+
   const getInputParams = (input: FunctionInput) => {
     const inputParams =
       name &&
@@ -152,6 +165,16 @@ export default function ContractFunctionInputs({
               disabled={
                 name && params.fields[name]
                   ? params.fields[name].lockInputs
+                  : undefined
+              }
+              validate={
+                inputParams?.inputType === "decimal"
+                  ? validateDecimal(
+                      formatMessage({
+                        id: "invalid.decimal",
+                        defaultMessage: "Invalid decimal",
+                      })
+                    )
                   : undefined
               }
               InputProps={{
