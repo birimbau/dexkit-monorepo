@@ -8,6 +8,7 @@ import {
 import Grid from '@mui/material/Grid';
 import { isAddress } from 'ethers/lib/utils';
 
+import { TextField as MuiTextField } from '@mui/material';
 import { Field, useFormikContext } from 'formik';
 import { Autocomplete, TextField } from 'formik-mui';
 import { FormattedMessage } from 'react-intl';
@@ -46,7 +47,7 @@ function AddressInput({
           }}
           filterSelectedOptions
           renderInput={(params: any) => (
-            <TextField
+            <MuiTextField
               {...params}
               label={
                 <FormattedMessage id="addresses" defaultMessage="Addresses" />
