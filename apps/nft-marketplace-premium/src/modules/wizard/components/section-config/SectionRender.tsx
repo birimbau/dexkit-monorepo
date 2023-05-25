@@ -23,6 +23,8 @@ import AssetStoreSection from '@/modules/home/components/AssetStoreSection';
 import { MDSection } from '@/modules/home/components/MDSection';
 import WalletSection from '@/modules/home/components/WalletSection';
 import { AppPageSection } from '../../types/section';
+import ContractSection from '../sections/ContractSection';
+import UserContractSection from '../sections/UserContractSection';
 
 interface Props {
   section: AppPageSection;
@@ -53,6 +55,10 @@ export function SectionRender({ section }: Props) {
     return <MDSection section={section} />;
   } else if (section.type === 'wallet') {
     return <WalletSection section={section} />;
+  } else if (section.type === 'contract') {
+    return <ContractSection section={section} />;
+  } else if (section.type === 'user-contract-form') {
+    return <UserContractSection section={section} />;
   }
 
   return <></>;

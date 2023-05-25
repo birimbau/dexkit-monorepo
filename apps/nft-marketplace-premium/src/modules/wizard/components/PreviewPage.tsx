@@ -19,7 +19,7 @@ export default function PreviewPage({
   appConfig,
 }: Props) {
   const renderSections = () => {
-    return (sections || []).map((section) => {
+    return (sections || []).map((section, key) => {
       if (previewPlatform === 'mobile' && section.hideMobile) {
         return null;
       }
@@ -27,7 +27,7 @@ export default function PreviewPage({
         return null;
       }
 
-      return SectionRender({ section: section });
+      return <SectionRender section={section} key={key} />;
     });
   };
   if (withLayout) {

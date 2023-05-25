@@ -25,7 +25,11 @@ export function useAppWizardConfig() {
   return { wizardConfig, setWizardConfig };
 }
 
-export function usePreviewThemeFromConfig({ appConfig }: { appConfig?: AppConfig }) {
+export function usePreviewThemeFromConfig({
+  appConfig,
+}: {
+  appConfig?: AppConfig;
+}) {
   const customThemeDark = useAtomValue(customThemeDarkAtom);
   const customThemeLight = useAtomValue(customThemeLightAtom);
   const selectedTheme = useMemo(() => {
@@ -47,12 +51,11 @@ export function usePreviewThemeFromConfig({ appConfig }: { appConfig?: AppConfig
       mode: appConfig?.defaultThemeMode,
     });
   }, [
-
     customThemeDark,
     customThemeLight,
     appConfig?.theme,
     appConfig?.defaultThemeMode,
-    appConfig?.font
+    appConfig?.font,
   ]);
 
   return selectedTheme;

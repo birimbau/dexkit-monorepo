@@ -3,12 +3,12 @@ import {
   UseMutationOptions,
   useQuery,
   useQueryClient,
-  UseQueryOptions
+  UseQueryOptions,
 } from '@tanstack/react-query';
 import {
   NftSwapV4,
   SwappableAssetV4,
-  SwappableNftV4
+  SwappableNftV4,
 } from '@traderxyz/nft-swap-sdk';
 import { useCallback, useMemo } from 'react';
 
@@ -31,7 +31,7 @@ import {
   getCollectionData,
   getDKAssetOrderbook,
   getERC1155Balance,
-  searchAssetsDexKitApi
+  searchAssetsDexKitApi,
 } from '../services/nft';
 
 import { NFTType } from '../constants/enum';
@@ -42,7 +42,7 @@ import {
   AssetMetadata,
   HiddenAsset,
   OrderBookItem,
-  SwapApiOrder
+  SwapApiOrder,
 } from '../types/nft';
 
 import { ChainId } from '@dexkit/core/constants';
@@ -56,13 +56,13 @@ import { getOrderbookOrders } from '../services/nft';
 import {
   accountAssetsAtom,
   assetsAtom,
-  hiddenAssetsAtom
+  hiddenAssetsAtom,
 } from '../state/atoms';
 import { AssetRari } from '../types/rarible';
 import {
   getChainSlug,
   getNetworkSlugFromChainId,
-  isAddressEqual
+  isAddressEqual,
 } from '../utils/blockchain';
 import { calculeFees, parseAssetApi } from '../utils/nfts';
 import { TraderOrderFilter } from '../utils/types';
@@ -110,10 +110,14 @@ export function useAsset(
         contractAddress === undefined ||
         tokenId === undefined
       ) {
-
         return;
       }
-      const asset = await getAssetData(provider, contractAddress, tokenId, account);
+      const asset = await getAssetData(
+        provider,
+        contractAddress,
+        tokenId,
+        account
+      );
 
       let assetApi: AssetAPI | undefined;
       try {
@@ -143,7 +147,7 @@ export function useAsset(
           metadata: { ...rawMetadata, image: assetApi?.imageUrl },
           owner: asset?.owner,
           protocol: asset?.protocol,
-          balance: asset?.balance
+          balance: asset?.balance,
         };
         return newAsset;
       }
@@ -668,9 +672,8 @@ export const useAssetsOrderBook = (orderFilter?: TraderOrderFilter) => {
 export const GET_ASSET_LIST_FROM_ORDERBOOK = 'GET_ASSET_LIST_FROM_ORDERBOOK';
 
 export const useAssetListFromOrderbook = (orderFilter: TraderOrderFilter) => {
-
   const ordebookQuery = useOrderBook(orderFilter);
-  const provider = useNetworkProvider(orderFilter.chainId)
+  const provider = useNetworkProvider(orderFilter.chainId);
   return useQuery(
     [GET_ASSET_LIST_FROM_ORDERBOOK, ordebookQuery.data],
     async () => {
@@ -794,7 +797,7 @@ export function useFavoriteAssets() {
         asset !== undefined &&
         assets !== undefined &&
         assets[
-        `${asset.chainId}-${asset.contractAddress.toLowerCase()}-${asset.id}`
+          `${asset.chainId}-${asset.contractAddress.toLowerCase()}-${asset.id}`
         ] !== undefined
       );
     },
@@ -840,7 +843,7 @@ export function useHiddenAssets() {
         asset !== undefined &&
         assets !== undefined &&
         assets[
-        `${asset.chainId}-${asset.contractAddress.toLowerCase()}-${asset.id}`
+          `${asset.chainId}-${asset.contractAddress.toLowerCase()}-${asset.id}`
         ] === true
       );
     },

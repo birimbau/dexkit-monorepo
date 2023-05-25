@@ -24,6 +24,7 @@ import { AppPage, AppPageOptions } from '../../../../types/config';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
 import FormatColorTextIcon from '@mui/icons-material/FormatColorText';
+import GavelIcon from '@mui/icons-material/Gavel';
 import StoreIcon from '@mui/icons-material/Store';
 import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
 import Wallet from '@mui/icons-material/Wallet';
@@ -128,6 +129,19 @@ export default function PagesSectionPage({
       title = <FormattedMessage id="wallet" defaultMessage="Wallet" />;
       subtitle = section.title || '';
       icon = <Wallet />;
+    } else if (section.type === 'contract') {
+      title = <FormattedMessage id="contract" defaultMessage="Contract" />;
+      subtitle = section.title || '';
+      icon = <GavelIcon />;
+    } else if (section.type === 'user-contract-form') {
+      title = (
+        <FormattedMessage
+          id="user.contract.form"
+          defaultMessage="User contract form"
+        />
+      );
+      subtitle = section.title || '';
+      icon = <GavelIcon />;
     }
     if (!title) {
       return null;

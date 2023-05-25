@@ -1,6 +1,6 @@
 import { MetaMask } from "@web3-react/metamask";
 import { Connector } from "@web3-react/types";
-import { build, BuildInput } from 'eth-url-parser';
+import { build, BuildInput } from "eth-url-parser";
 import { BigNumber, ethers } from "ethers";
 import { EventEmitter } from "events";
 import { ChainId, CoinTypes, IPFS_GATEWAY } from "../constants";
@@ -123,30 +123,30 @@ export function copyToClipboard(textToCopy: string) {
     return navigator.clipboard.writeText(textToCopy);
   } else {
     // text area method
-    let textArea = document.createElement('textarea');
+    let textArea = document.createElement("textarea");
     textArea.value = textToCopy;
     // make the textarea out of viewport
-    textArea.style.position = 'fixed';
-    textArea.style.left = '-999999px';
-    textArea.style.top = '-999999px';
+    textArea.style.position = "fixed";
+    textArea.style.left = "-999999px";
+    textArea.style.top = "-999999px";
     document.body.appendChild(textArea);
     textArea.focus();
     textArea.select();
     return new Promise((res, rej) => {
       // here the magic happens
-      document.execCommand('copy') ? res(null) : rej();
+      document.execCommand("copy") ? res(null) : rej();
       textArea.remove();
     });
   }
 }
 export function isIpfsUrl(url: string) {
-  return url.startsWith('ipfs://');
+  return url.startsWith("ipfs://");
 }
 export function getNormalizedUrl(url: string) {
   let fetchUrl = url;
 
   if (isIpfsUrl(url)) {
-    let path = url.substring('ipfs://'.length, url.length);
+    let path = url.substring("ipfs://".length, url.length);
     fetchUrl = `${IPFS_GATEWAY}${path}`;
   }
 
@@ -156,12 +156,11 @@ export function getNormalizedUrl(url: string) {
 export async function switchNetwork(connector: Connector, chainId: number) {
   if (connector instanceof MetaMask) {
     return connector.provider?.request({
-      method: 'wallet_switchEthereumChain',
+      method: "wallet_switchEthereumChain",
       params: [{ chainId: `0x${chainId.toString(16)}` }],
     });
   }
 }
-
 
 export function buildEtherReceiveAddress({
   receiver,
@@ -180,17 +179,16 @@ export function buildEtherReceiveAddress({
         chain_id: `${chainId}` as `${number}`,
         target_address: contractAddress,
       };
-      params.function_name = 'transfer';
+      params.function_name = "transfer";
 
       params.parameters = {};
       if (receiver) {
-        params.parameters['address'] = receiver;
+        params.parameters["address"] = receiver;
       }
 
       if (amount) {
-        params.parameters['uint256'] = amount;
+        params.parameters["uint256"] = amount;
       }
-
 
       return build(params);
     } else {
@@ -200,39 +198,36 @@ export function buildEtherReceiveAddress({
       };
       params.parameters = {};
       if (amount) {
-        params.parameters['value'] = amount;
+        params.parameters["value"] = amount;
       }
 
       return build(params);
     }
   }
 
-  return '';
+  return "";
 }
-
-
 
 export function convertTokenToEvmCoin(token: TokenWhitelabelApp): EvmCoin {
   const network = NETWORKS[token.chainId];
 
-
-  if (token.address.toLowerCase() === ZEROEX_NATIVE_TOKEN_ADDRESS.toLowerCase()) {
-
+  if (
+    token.address.toLowerCase() === ZEROEX_NATIVE_TOKEN_ADDRESS.toLowerCase()
+  ) {
     return {
       network: {
         id: network.slug as string,
         name: network.name,
         chainId: token.chainId,
         icon: network.coinImageUrl,
-        coingeckoPlatformId: network.coingeckoPlatformId
+        coingeckoPlatformId: network.coingeckoPlatformId,
       },
       coinType: CoinTypes.EVM_NATIVE,
       name: token.name,
       symbol: token.symbol,
       decimals: token.decimals,
       imageUrl: token.logoURI,
-    }
-
+    };
   } else {
     return {
       network: {
@@ -240,7 +235,7 @@ export function convertTokenToEvmCoin(token: TokenWhitelabelApp): EvmCoin {
         name: network.name,
         chainId: token.chainId,
         icon: network.coinImageUrl,
-        coingeckoPlatformId: network.coingeckoPlatformId
+        coingeckoPlatformId: network.coingeckoPlatformId,
       },
       coinType: CoinTypes.EVM_ERC20,
       contractAddress: token.address,
@@ -248,9 +243,6 @@ export function convertTokenToEvmCoin(token: TokenWhitelabelApp): EvmCoin {
       symbol: token.symbol,
       decimals: token.decimals,
       imageUrl: token.logoURI,
-    }
+    };
   }
-
-
-
 }

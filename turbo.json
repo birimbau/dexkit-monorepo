@@ -12,6 +12,9 @@
     "storybook": {
       "cache": false
     },
+    "storybook:web3forms": {
+      "cache": false
+    },
     "bundle:widgets": {
       "cache": false
     },

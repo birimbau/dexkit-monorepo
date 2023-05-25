@@ -43,6 +43,7 @@ import ButtonPlugin from './plugins/ButtonPlugin';
 import CodeSnippet from './plugins/CodeSnippet';
 import CollectionPlugin from './plugins/CollectionPlugin';
 import ContainerPlugin from './plugins/ContainerPlugin';
+import ContractFormPlugin from './plugins/ContractFormPlugin';
 import CustomContentPluginTwitter from './plugins/CustomContentPluginTwitter';
 import { DefaultSlate } from './plugins/DefaultSlate';
 import ImagePlugin from './plugins/ImagePlugin';
@@ -50,6 +51,7 @@ import QrCodeReceive from './plugins/QrCodeReceivePayment';
 import SearchNFTPlugin from './plugins/SearchNFTPlugin';
 import StackPlugin from './plugins/StackPlugin';
 import Swap2Plugin from './plugins/Swap2Plugin';
+import UserContractFormPlugin from './plugins/UserContractFormPlugin';
 import WidgetPlugin from './plugins/WidgetPlugin';
 // Define which plugins we want to use.
 const cellPlugins = [
@@ -81,6 +83,8 @@ const cellPlugins = [
   CustomContentPluginTwitter,
   video,
   WidgetPlugin,
+  ContractFormPlugin,
+  UserContractFormPlugin,
 ];
 
 const nftPlugins = [
@@ -107,6 +111,10 @@ const nftPlugins = [
   CustomContentPluginTwitter,
   video,
   WidgetPlugin,
+
+  ContractFormPlugin,
+
+  UserContractFormPlugin,
 ];
 
 const swapPlugins = [
@@ -132,6 +140,10 @@ const swapPlugins = [
   CustomContentPluginTwitter,
   video,
   WidgetPlugin,
+
+  ContractFormPlugin,
+
+  UserContractFormPlugin,
 ];
 
 // https://github.com/react-page/react-page/issues/970

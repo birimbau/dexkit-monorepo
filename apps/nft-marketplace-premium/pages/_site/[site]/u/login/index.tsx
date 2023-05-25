@@ -25,6 +25,7 @@ type Params = {
   site?: string;
 };
 
+// TODO: pass all
 export const getStaticProps: GetStaticProps = async ({
   params,
 }: GetStaticPropsContext<Params>) => {

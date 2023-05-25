@@ -4,13 +4,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { atom, useAtom, useAtomValue } from 'jotai';
 import { useContext, useMemo } from 'react';
 import { AppConfigContext } from '../contexts';
-import {
-  localeAtom,
-  localeUserAtom,
-  userThemeModeAtom
-} from '../state/atoms';
-
-
+import { localeAtom, localeUserAtom, userThemeModeAtom } from '../state/atoms';
 
 const signMessageDialogOpenAtom = atom(false);
 const signMessageDialogErrorAtom = atom<Error | undefined>(undefined);
@@ -65,28 +59,22 @@ export function useCollections() {
   return appConfig?.collections;
 }
 
-const DARK_SCHEME_QUERY = '(prefers-color-scheme: dark)'
+const DARK_SCHEME_QUERY = '(prefers-color-scheme: dark)';
 
 export function useThemeMode() {
-
-  const systemPrefersDark = useMediaQuery(DARK_SCHEME_QUERY)
+  const systemPrefersDark = useMediaQuery(DARK_SCHEME_QUERY);
   const [userMode, setThemeMode] = useAtom(userThemeModeAtom);
   const appConfig = useAppConfig();
 
   const mode = useMemo(() => {
     if (userMode) {
-      return userMode
+      return userMode;
     }
     if (appConfig.defaultThemeMode) {
       return appConfig.defaultThemeMode;
     }
     return systemPrefersDark ? ThemeMode.dark : ThemeMode.light;
-  }, [userMode, appConfig, systemPrefersDark])
-
-
-
-
-
+  }, [userMode, appConfig, systemPrefersDark]);
 
   return { mode: mode, setThemeMode, userMode };
 }

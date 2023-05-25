@@ -1,4 +1,9 @@
-import { ChainId, CONNECTORS, TransactionStatus, TransactionType } from "@dexkit/core/constants";
+import {
+  ChainId,
+  CONNECTORS,
+  TransactionStatus,
+  TransactionType,
+} from "@dexkit/core/constants";
 import { AppTransaction, TransactionMetadata } from "@dexkit/core/types";
 import { switchNetwork } from "@dexkit/core/utils";
 import { useMutation } from "@tanstack/react-query";
@@ -56,7 +61,9 @@ export function useDexkitContextState({
 }): DexkitContextState {
   const [notifications, setNotifications] = useAtom(notificationsAtom);
   const [transactions, setTransactions] = useAtom(transactionsAtom);
-  const watchTransactionDialog = useWatchTransactionDialog({ transactionsAtom });
+  const watchTransactionDialog = useWatchTransactionDialog({
+    transactionsAtom,
+  });
 
   const checkAllNotifications = () => {
     setNotifications((notifications) => {
@@ -179,11 +186,12 @@ export function useSwitchNetworkMutation() {
   );
 }
 
-
-export function useWatchTransactionDialog({ transactionsAtom }: {
+export function useWatchTransactionDialog({
+  transactionsAtom,
+}: {
   transactionsAtom: PrimitiveAtom<{
     [key: string]: AppTransaction;
-  }>
+  }>;
 }) {
   const updateTransactions = useUpdateAtom(transactionsAtom);
 
@@ -195,12 +203,11 @@ export function useWatchTransactionDialog({ transactionsAtom }: {
 
   const [values, setValues] = useState<Record<string, any>>();
 
-  const [redirectUrl, setRedirectUrl] = useState<string>()
+  const [redirectUrl, setRedirectUrl] = useState<string>();
 
   const watch = useCallback((hash: string) => {
     setHash(hash);
   }, []);
-
 
   const open = useCallback((type: string, values: Record<string, any>) => {
     setDialogIsOpen(true);
@@ -213,7 +220,7 @@ export function useWatchTransactionDialog({ transactionsAtom }: {
     setType(undefined);
     setValues(undefined);
     setMetadata(undefined);
-    setError(undefined)
+    setError(undefined);
   }, []);
 
   const showDialog = useCallback(
@@ -225,7 +232,7 @@ export function useWatchTransactionDialog({ transactionsAtom }: {
         setHash(undefined);
         setMetadata(undefined);
         setType(undefined);
-        setError(undefined)
+        setError(undefined);
       }
     },
     []
@@ -240,27 +247,36 @@ export function useWatchTransactionDialog({ transactionsAtom }: {
     [setError, isOpen]
   );
 
-  const addTransaction =
-    ({ hash, type, metadata, values, chainId }: { hash: string, type: TransactionType, metadata?: TransactionMetadata, values: Record<string, any>, chainId: ChainId }) => {
-      if (chainId !== undefined) {
-        setHash(hash);
+  const addTransaction = ({
+    hash,
+    type,
+    metadata,
+    values,
+    chainId,
+  }: {
+    hash: string;
+    type: TransactionType;
+    metadata?: TransactionMetadata;
+    values: Record<string, any>;
+    chainId: ChainId;
+  }) => {
+    if (chainId !== undefined) {
+      setHash(hash);
 
-        updateTransactions((txs) => ({
-          ...txs,
-          [hash]: {
-            chainId,
-            created: new Date().getTime(),
-            status: TransactionStatus.Pending,
-            type,
-            metadata,
-            checked: false,
-            values,
-          },
-        }));
-      }
+      updateTransactions((txs) => ({
+        ...txs,
+        [hash]: {
+          chainId,
+          created: new Date().getTime(),
+          status: TransactionStatus.Pending,
+          type,
+          metadata,
+          checked: false,
+          values,
+        },
+      }));
     }
-
-
+  };
 
   return {
     values,
