@@ -27,8 +27,7 @@ import {
 import { getSchemaForInputs } from "../../utils";
 
 import { ChainId } from "@dexkit/core/constants";
-import { NETWORKS } from "@dexkit/core/constants/networks";
-import { getBlockExplorerUrl, parseChainId } from "@dexkit/core/utils";
+import { getBlockExplorerUrl } from "@dexkit/core/utils";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { ethers } from "ethers";
 import ContractFunctionInputs from "./ContractFunctionInputs";
@@ -67,7 +66,12 @@ export default function ContractFunction({
       let obj: { [key: string]: string } = {};
 
       for (let input of inputs) {
-        if (name !== undefined && input.name && params.fields[name].input) {
+        if (
+          name !== undefined &&
+          input.name &&
+          params.fields[name] &&
+          params.fields[name].input
+        ) {
           const inp = params.fields[name].input[input.name];
 
           let defaultValue: any;
@@ -110,26 +114,6 @@ export default function ContractFunction({
   );
 
   const submitMessage = useMemo(() => {
-    const paramsChainId = parseChainId(params.chainId);
-
-    if (
-      (stateMutability === "nonpayable" || stateMutability === "payable") &&
-      paramsChainId !== chainId
-    ) {
-      return (
-        <FormattedMessage
-          id="switch.to.network"
-          defaultMessage="Switch to {network}"
-          values={{
-            network:
-              paramsChainId && NETWORKS[paramsChainId]
-                ? NETWORKS[paramsChainId].name
-                : "unknown",
-          }}
-        />
-      );
-    }
-
     if (isCalling) {
       if (stateMutability === "nonpayable" || stateMutability === "payable") {
         return <FormattedMessage id="calling" defaultMessage="Calling" />;

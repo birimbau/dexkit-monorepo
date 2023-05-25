@@ -13,6 +13,9 @@ import { useSnackbar } from "notistack";
 import CallConfirmDialog from "./CallConfirmDialog";
 import ContractFormFunctions from "./ContractFormFunctions";
 
+import AppConfirmDialog from "@dexkit/ui/components/AppConfirmDialog";
+import { FormattedMessage } from "react-intl";
+
 export interface Props {
   params: ContractFormParams;
 }
@@ -68,13 +71,28 @@ export default function ContractFormView({ params }: Props) {
 
   const { enqueueSnackbar } = useSnackbar();
 
+  const [showConfirmSwitch, setShowConfirmSwitch] = useState(false);
+
+  const handleConfirmSwitchNetwork = async () => {
+    try {
+      await switchNetworkMutation.mutateAsync({ chainId: params.chainId });
+      setShowConfirmSwitch(false);
+    } catch (err) {
+      enqueueSnackbar(String(err), { variant: "error" });
+    }
+  };
+
+  const handleCloseConfirmSwitch = () => {
+    setShowConfirmSwitch(false);
+  };
+
   const handleCall = useCallback(
     async (callParams: CallParams) => {
       if (params.chainId !== chainId && callParams && callParams.call) {
-        await switchNetworkMutation.mutateAsync({ chainId: params.chainId });
+        setCallParams(callParams);
+        setShowConfirmSwitch(true);
+        return;
       }
-
-      setCallParams(callParams);
 
       if (callParams && callParams.call) {
         setShowConfirm(true);
@@ -120,6 +138,36 @@ export default function ContractFormView({ params }: Props) {
         }}
         onConfirm={handleConfirm}
       />
+      <AppConfirmDialog
+        DialogProps={{
+          open: showConfirmSwitch,
+          onClose: handleCloseConfirmSwitch,
+          maxWidth: "sm",
+          fullWidth: true,
+        }}
+        onConfirm={handleConfirmSwitchNetwork}
+        isConfirming={switchNetworkMutation.isLoading}
+        title={
+          <FormattedMessage
+            id="switch.network"
+            defaultMessage="switch.network"
+          />
+        }
+      >
+        <FormattedMessage
+          id="do.you.really.want.to.switch.to.network"
+          defaultMessage="Do you really want to switch to {network}?"
+          values={{
+            network: (
+              <strong>
+                {params.chainId && NETWORKS[params.chainId]
+                  ? NETWORKS[params.chainId].name
+                  : undefined}
+              </strong>
+            ),
+          }}
+        />
+      </AppConfirmDialog>
       <Grid container spacing={1}>
         <ContractFormFunctions
           abi={abi}
@@ -128,7 +176,9 @@ export default function ContractFormView({ params }: Props) {
           results={results}
           chainId={chainId}
           isResultsLoading={callOnMountQuery.isLoading}
-          isCalling={contractCallMutation.isLoading}
+          isCalling={
+            contractCallMutation.isLoading || switchNetworkMutation.isLoading
+          }
           callFuncName={callParams?.name}
         />
       </Grid>

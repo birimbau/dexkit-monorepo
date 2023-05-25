@@ -51,6 +51,7 @@ import QrCodeReceive from './plugins/QrCodeReceivePayment';
 import SearchNFTPlugin from './plugins/SearchNFTPlugin';
 import StackPlugin from './plugins/StackPlugin';
 import Swap2Plugin from './plugins/Swap2Plugin';
+import UserContractFormPlugin from './plugins/UserContractFormPlugin';
 import WidgetPlugin from './plugins/WidgetPlugin';
 // Define which plugins we want to use.
 const cellPlugins = [
@@ -83,6 +84,7 @@ const cellPlugins = [
   video,
   WidgetPlugin,
   ContractFormPlugin,
+  UserContractFormPlugin,
 ];
 
 const nftPlugins = [
@@ -111,6 +113,8 @@ const nftPlugins = [
   WidgetPlugin,
 
   ContractFormPlugin,
+
+  UserContractFormPlugin,
 ];
 
 const swapPlugins = [
@@ -138,6 +142,8 @@ const swapPlugins = [
   WidgetPlugin,
 
   ContractFormPlugin,
+
+  UserContractFormPlugin,
 ];
 
 // https://github.com/react-page/react-page/issues/970

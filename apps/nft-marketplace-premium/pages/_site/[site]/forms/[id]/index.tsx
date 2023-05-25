@@ -1,24 +1,11 @@
 import ShareDialog from '@/modules/nft/components/dialogs/ShareDialog';
-import {
-  getBlockExplorerUrl,
-  isAddressEqual,
-  truncateAddress,
-} from '@dexkit/core/utils';
 import ContractFormView from '@dexkit/web3forms/components/ContractFormView';
-import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
-import ShareIcon from '@mui/icons-material/Share';
 import {
-  Avatar,
   Box,
-  Button,
-  Card,
-  CardContent,
   CircularProgress,
   Container,
   Grid,
-  Link,
   NoSsr,
-  Skeleton,
   Stack,
   Typography,
 } from '@mui/material';
@@ -31,14 +18,11 @@ import {
   useFormQuery,
 } from '../../../../../src/modules/forms/hooks';
 
-import AccountTreeIcon from '@mui/icons-material/AccountTree';
-import EditIcon from '@mui/icons-material/Edit';
 import { useWeb3React } from '@web3-react/core';
-import NextLink from 'next/link';
 import { PageHeader } from 'src/components/PageHeader';
 import AuthMainLayout from 'src/components/layouts/authMain';
 
-import FileCopyIcon from '@mui/icons-material/FileCopy';
+import FormInfoCard from '@/modules/forms/components/FormInfoCard';
 import { useSnackbar } from 'notistack';
 import AppConfirmDialog from 'src/components/AppConfirmDialog';
 
@@ -169,7 +153,20 @@ export default function FormPage() {
             </NoSsr>
           </Grid>
           <Grid item xs={12}>
-            <Card>
+            <FormInfoCard
+              onClone={handleCloneForm}
+              onEdit={handleEdit}
+              onShare={handleShowShare}
+              account={account}
+              contractAddress={formQuery.data?.params.contractAddress}
+              chainId={formQuery.data?.params.chainId}
+              creatorAddress={formQuery.data?.creatorAddress}
+              name={formQuery.data?.name}
+              description={formQuery.data?.description}
+              isLoading={formQuery.isLoading}
+              templateId={formQuery.data?.templateId}
+            />
+            {/* <Card>
               <CardContent>
                 <Stack spacing={2}>
                   <Box>
@@ -272,7 +269,7 @@ export default function FormPage() {
                   </Stack>
                 </Stack>
               </CardContent>
-            </Card>
+            </Card> */}
           </Grid>
           <Grid item xs={12}>
             {formQuery.data?.params ? (

@@ -133,6 +133,15 @@ export default function PagesSectionPage({
       title = <FormattedMessage id="contract" defaultMessage="Contract" />;
       subtitle = section.title || '';
       icon = <GavelIcon />;
+    } else if (section.type === 'user-contract-form') {
+      title = (
+        <FormattedMessage
+          id="user.contract.form"
+          defaultMessage="User contract form"
+        />
+      );
+      subtitle = section.title || '';
+      icon = <GavelIcon />;
     }
     if (!title) {
       return null;

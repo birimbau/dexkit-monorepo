@@ -1,9 +1,12 @@
-
-import { SwapConfig } from "@/modules/swap/types";
-import { ContractFormParams } from "@dexkit/web3forms/types";
-import React from "react";
-import { PageSectionVariant, SectionItem, VideoEmbedType } from "../../../types/config";
-import { AssetStoreOptions } from "../../../types/nft";
+import { SwapConfig } from '@/modules/swap/types';
+import { ContractFormParams } from '@dexkit/web3forms/types';
+import React from 'react';
+import {
+  PageSectionVariant,
+  SectionItem,
+  VideoEmbedType,
+} from '../../../types/config';
+import { AssetStoreOptions } from '../../../types/nft';
 
 export type SectionType =
   | 'video'
@@ -15,11 +18,11 @@ export type SectionType =
   | 'asset-store'
   | 'markdown'
   | 'wallet'
-  | 'contract';
-
+  | 'contract'
+  | 'user-contract-form';
 
 export interface PageSection {
-  type: SectionType,
+  type: SectionType;
   title?: string;
   variant?: PageSectionVariant;
   hideMobile?: boolean;
@@ -89,6 +92,11 @@ export interface ContractPageSection extends PageSection {
   config?: ContractFormParams;
 }
 
+export interface UserContractPageSection extends PageSection {
+  type: 'user-contract-form';
+  formId: number;
+}
+
 export type AppPageSection =
   | CallToActionAppPageSection
   | VideoEmbedAppPageSection
@@ -100,12 +108,11 @@ export type AppPageSection =
   | MarkdownEditorPageSection
   | WalletPageSection
   | ContractPageSection
-  ;
+  | UserContractPageSection;
 
 export interface SectionMetadata {
-  type: SectionType,
+  type: SectionType;
   title?: string | React.ReactNode;
   subtitle?: string;
   icon?: string;
-
 }

@@ -150,6 +150,9 @@ export default function EditSectionDialog({
                 <MenuItem value="contract">
                   <FormattedMessage id="contract" defaultMessage="Contract" />
                 </MenuItem>
+                <MenuItem value="user-contract-form">
+                  <FormattedMessage id="User contract form" defaultMessage="User contract form" />
+                </MenuItem>
               </Select>
             </FormControl>
           </Grid>
