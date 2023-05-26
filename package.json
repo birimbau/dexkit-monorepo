@@ -14,6 +14,7 @@
     "storybook:ui": "turbo run storybook --filter=@dexkit/ui",
     "storybook:web3forms": "turbo run storybook --filter=@dexkit/web3forms",
     "storybook:widget": "turbo run storybook --filter=@dexkit/widgets",
+    "storybook:exchange": "turbo run storybook --filter=@dexkit/exchange",
     "bundle:widgets": "turbo run bundle:widgets",
     "build:whitelabel": "turbo run build --parallel --filter=nft-marketplace",
     "build:wallet": "turbo run build --parallel --filter=dexkit-wallet",
