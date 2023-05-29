@@ -2,9 +2,15 @@ import { ChainId } from '@dexkit/core';
 import { NETWORKS } from '@dexkit/core/constants/networks';
 import { parseChainId } from '@dexkit/core/utils';
 import { AbiFragment } from '@dexkit/web3forms/types';
-import { FormControl, Grid, InputLabel, MenuItem } from '@mui/material';
+import {
+  FormControl,
+  FormControlLabel,
+  Grid,
+  InputLabel,
+  MenuItem,
+} from '@mui/material';
 import { Field } from 'formik';
-import { Select } from 'formik-mui';
+import { Checkbox, Select } from 'formik-mui';
 import { memo } from 'react';
 import { FormattedMessage } from 'react-intl';
 import ContractFormAbiInput from './ContractFormAbiInput';
@@ -18,6 +24,19 @@ export interface Props {
 function ContractInitialForm({ abi, chainId }: Props) {
   return (
     <Grid container spacing={2}>
+      <Grid item xs={12}>
+        <FormControlLabel
+          label={
+            <FormattedMessage
+              id="use.as.a.proxy"
+              defaultMessage="Use as a proxy"
+            />
+          }
+          control={
+            <Field type="checkbox" component={Checkbox} name="isProxy" />
+          }
+        />
+      </Grid>
       <Grid item>
         <FormControl>
           <InputLabel shrink>

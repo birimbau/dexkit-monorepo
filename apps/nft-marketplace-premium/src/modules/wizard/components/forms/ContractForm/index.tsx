@@ -33,6 +33,7 @@ export const DEFAULT_STATE = {
   chainId: 1,
   contractAddress: '',
   fields: {},
+  isProxy: false,
 };
 
 export interface ContractFormProps {
@@ -91,7 +92,7 @@ export default function ContractForm({
     setFieldVisibility(event.target.value);
   };
 
-  const hasParams = params && Object.keys(params).length > 1;
+  const hasParams = params && Object.keys(params).length >= 1;
 
   return (
     <Formik

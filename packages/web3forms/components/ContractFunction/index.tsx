@@ -96,7 +96,7 @@ export default function ContractFunction({
 
       return obj;
     },
-    []
+    [account]
   );
 
   const handleSubmit = useCallback(
@@ -198,6 +198,10 @@ export default function ContractFunction({
   const collapse =
     name && params.fields[name] ? params.fields[name].collapse : undefined;
 
+  const key = useMemo(() => {
+    return name ? JSON.stringify(params.fields[name]) : undefined;
+  }, [params.fields, name]);
+
   if (callOnMount) {
     return (
       <Card>
@@ -231,10 +235,6 @@ export default function ContractFunction({
       </Card>
     );
   }
-
-  const key = useMemo(() => {
-    return name ? JSON.stringify(params.fields[name]) : undefined;
-  }, [params.fields, name]);
 
   return (
     <Formik

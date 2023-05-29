@@ -1,13 +1,17 @@
+import { getContractImplementation } from '@/modules/wizard/services';
 import { inputMapping } from '@/modules/wizard/utils';
 import { ChainId } from '@dexkit/core';
+import { NETWORKS } from '@dexkit/core/constants/networks';
 import LazyTextField from '@dexkit/ui/components/LazyTextField';
 import { useScanContractAbiMutation } from '@dexkit/web3forms/hooks';
 import { AbiFragment, ContractFormParams } from '@dexkit/web3forms/types';
-import { CircularProgress, InputAdornment } from '@mui/material';
+import RefreshIcon from '@mui/icons-material/Refresh';
+import { CircularProgress, IconButton, InputAdornment } from '@mui/material';
+import { ethers } from 'ethers';
 import { isAddress } from 'ethers/lib/utils';
 import { useFormikContext } from 'formik';
 import { useSnackbar } from 'notistack';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 export interface ContractFormAddressInputProps {
@@ -23,18 +27,39 @@ export default function ContractFormAddressInput({
 
   const { enqueueSnackbar } = useSnackbar();
 
-  const handleChange = useCallback(
+  const jsonProvider = useMemo(() => {
+    if (chainId) {
+      return new ethers.providers.JsonRpcProvider(
+        NETWORKS[chainId].providerRpcUrl
+      );
+    }
+  }, [chainId]);
+
+  const fetchAbi = useCallback(
     async (value: string) => {
       if (isAddress(value)) {
         try {
+          let address: string = value;
+
+          if (values.isProxy && jsonProvider) {
+            const implementationAddress = await getContractImplementation({
+              contractAddress: value,
+              provider: jsonProvider,
+            });
+
+            if (!isAddress(implementationAddress)) {
+              throw new Error('is not a proxy');
+            }
+
+            address = implementationAddress;
+          }
+
           let abi = await scanContractAbiMutation.mutateAsync({
             chainId: values.chainId,
-            contractAddress: value,
+            contractAddress: address,
           });
 
           let newAbi: AbiFragment[] = [...abi];
-
-          console.log(newAbi);
 
           // this code is to fix abi fragments that come without input name
           for (let i = 0; i < newAbi.length; i++) {
@@ -61,11 +86,18 @@ export default function ContractFormAddressInput({
           enqueueSnackbar(String(err), { variant: 'error' });
         }
       }
-
-      setFieldValue('contractAddress', value);
     },
-    [values.chainId]
+    [values.chainId, values.isProxy, jsonProvider]
   );
+
+  const handleChange = useCallback(async (value: string) => {
+    await fetchAbi(value);
+    setFieldValue('contractAddress', value);
+  }, []);
+
+  const handleRefresh = async () => {
+    await fetchAbi(values.contractAddress);
+  };
 
   return (
     <LazyTextField
@@ -84,7 +116,16 @@ export default function ContractFormAddressInput({
             <InputAdornment position="end">
               <CircularProgress color="inherit" size="1rem" />
             </InputAdornment>
-          ) : undefined,
+          ) : (
+            <IconButton
+              disabled={values.contractAddress === ''}
+              size="small"
+              color="primary"
+              onClick={handleRefresh}
+            >
+              <RefreshIcon />
+            </IconButton>
+          ),
         },
       }}
     />
