@@ -68,11 +68,18 @@ export interface ContractFormFieldInputDecimal {
   defaultValue: string;
 }
 
+export interface ContractFormFieldInputConnectedAccount {
+  inputType: "connectedAccount";
+  label: string;
+  defaultValue: string;
+}
+
 export type ContractFormFieldInput =
   | ContractFormFieldNormal
   | ContractFormFieldSwitch
   | ContractFormFieldInputAddress
-  | ContractFormFieldInputDecimal;
+  | ContractFormFieldInputDecimal
+  | ContractFormFieldInputConnectedAccount;
 
 export type NoOutputType = {
   type: "";
@@ -87,6 +94,7 @@ export type OutputType = NoOutputType | DecimalOutputType;
 
 export type ContractFormField = {
   name: string;
+  description?: string;
   visible: boolean;
   lockInputs: boolean;
   hideInputs: boolean;

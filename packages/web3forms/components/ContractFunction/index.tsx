@@ -9,6 +9,7 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
+  Alert,
   Box,
   Card,
   CircularProgress,
@@ -29,6 +30,7 @@ import { getSchemaForInputs } from "../../utils";
 import { ChainId } from "@dexkit/core/constants";
 import { getBlockExplorerUrl } from "@dexkit/core/utils";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { useWeb3React } from "@web3-react/core";
 import { ethers } from "ethers";
 import ContractFunctionInputs from "./ContractFunctionInputs";
 
@@ -61,6 +63,8 @@ export default function ContractFunction({
   isResultsLoading,
   onCall,
 }: ContractFieldProps) {
+  const { account } = useWeb3React();
+
   const getInitialValues = useCallback(
     (inputs: FunctionInput[], params: ContractFormParams) => {
       let obj: { [key: string]: string } = {};
@@ -82,6 +86,8 @@ export default function ContractFunction({
             defaultValue = inp ? Boolean(inp.defaultValue) : false;
           } else if (inp?.inputType === "decimal") {
             defaultValue = inp ? inp.defaultValue : "";
+          } else if (inp?.inputType === "connectedAccount") {
+            defaultValue = account;
           }
 
           obj[input.name] = defaultValue;
@@ -168,6 +174,24 @@ export default function ContractFunction({
     return false;
   }, [params.fields]);
 
+  const hideInputs: boolean = useMemo(() => {
+    if (
+      name &&
+      params.fields[name] &&
+      params.fields[name].hideInputs !== undefined
+    ) {
+      return params.fields[name].hideInputs;
+    }
+
+    return false;
+  }, [params.fields, name]);
+
+  const description = useMemo(() => {
+    return name && params.fields[name]
+      ? params.fields[name].description
+      : undefined;
+  }, [params.fields, name]);
+
   const callOnMount =
     name && params.fields[name] && params.fields[name].callOnMount;
 
@@ -208,12 +232,17 @@ export default function ContractFunction({
     );
   }
 
+  const key = useMemo(() => {
+    return name ? JSON.stringify(params.fields[name]) : undefined;
+  }, [params.fields, name]);
+
   return (
     <Formik
-      key={String(inputs)}
+      key={key}
       initialValues={getInitialValues(inputs, params)}
       onSubmit={handleSubmit}
       validationSchema={getSchemaForInputs(inputs)}
+      validateOnMount={hideInputs}
     >
       {({ submitForm, isValid, values, errors }) => (
         <Accordion
@@ -261,11 +290,25 @@ export default function ContractFunction({
           )}
           <AccordionDetails sx={{ p: 2 }}>
             <Grid container spacing={2}>
+              <Grid item xs={12}>
+                {description}
+              </Grid>
               <ContractFunctionInputs
                 name={name}
                 inputs={inputs}
                 params={params}
               />
+              {hideInputs && Object.keys(errors).length > 0 && (
+                <Grid item xs={12}>
+                  <Alert severity="warning">
+                    <FormattedMessage
+                      id="this.function.will.not.work.correctly.please.contact.the.creator"
+                      defaultMessage="this function will not work correctly. Please, contact the creator"
+                    />
+                  </Alert>
+                </Grid>
+              )}
+
               <Grid item xs={12}>
                 <Box>
                   <Stack spacing={1} direction="row">

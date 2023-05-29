@@ -101,6 +101,12 @@ export default function FormsEditPage() {
     );
   }, [params]);
 
+  const [isValid, setIsValid] = useState(false);
+
+  const handleFormValid = (valid: boolean) => {
+    setIsValid(valid);
+  };
+
   return (
     <>
       <AppConfirmDialog
@@ -163,7 +169,7 @@ export default function FormsEditPage() {
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <Button
-                  disabled={updateFormMutation.isLoading}
+                  disabled={updateFormMutation.isLoading || !isValid}
                   onClick={handleShowConfirm}
                   variant="contained"
                 >
@@ -212,6 +218,7 @@ export default function FormsEditPage() {
                         updateOnChange
                         params={params}
                         onChange={handleChange}
+                        onValid={handleFormValid}
                       />
                     </Grid>
                   </Grid>

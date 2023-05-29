@@ -5,17 +5,24 @@ import { UserContractForm } from '../../forms/UserContractForm';
 import UserContractSection from '../../sections/UserContractSection';
 
 // you can pass the shape of the data as the generic type argument
-const UserContractFormPlugin: CellPlugin<{ formId?: number }> = {
+const UserContractFormPlugin: CellPlugin<{
+  formId?: number;
+  hideFormInfo?: boolean;
+}> = {
   Renderer: ({ data, isEditMode }) => {
     return data.formId ? (
       <UserContractSection
-        section={{ formId: data.formId, type: 'user-contract-form' }}
+        section={{
+          formId: data.formId,
+          type: 'user-contract-form',
+          hideFormInfo: data.hideFormInfo,
+        }}
       />
     ) : null;
   },
   id: 'user-contract-form-plugin',
-  title: 'User Contract Form',
-  description: 'User Contract Form',
+  title: 'Contract from user Form',
+  description: 'Contract from user Form',
   version: 1,
   controls: {
     type: 'custom',
@@ -24,12 +31,13 @@ const UserContractFormPlugin: CellPlugin<{ formId?: number }> = {
         <Box p={2}>
           <UserContractForm
             onCancel={() => {}}
-            onSave={(formId?: number) => {
+            onSave={(formId?: number, hideFormInfo?: boolean) => {
               if (formId) {
-                onChange({ formId });
+                onChange({ formId, hideFormInfo });
               }
             }}
             formId={data.formId}
+            hideFormInfo={data.hideFormInfo}
             saveOnChange
           />
         </Box>

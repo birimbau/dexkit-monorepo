@@ -88,8 +88,9 @@ export default function ContractFormView({ params }: Props) {
 
   const handleCall = useCallback(
     async (callParams: CallParams) => {
+      setCallParams(callParams);
+
       if (params.chainId !== chainId && callParams && callParams.call) {
-        setCallParams(callParams);
         setShowConfirmSwitch(true);
         return;
       }
@@ -127,6 +128,13 @@ export default function ContractFormView({ params }: Props) {
     setCallParams(undefined);
   };
 
+  const execLabel =
+    callParams?.name &&
+    params.fields[callParams?.name] &&
+    params.fields[callParams?.name].callToAction
+      ? params.fields[callParams?.name].callToAction
+      : callParams?.name;
+
   return (
     <Box>
       <CallConfirmDialog
@@ -137,6 +145,7 @@ export default function ContractFormView({ params }: Props) {
           maxWidth: "sm",
         }}
         onConfirm={handleConfirm}
+        execLabel={execLabel}
       />
       <AppConfirmDialog
         DialogProps={{

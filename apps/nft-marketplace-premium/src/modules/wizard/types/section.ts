@@ -95,6 +95,7 @@ export interface ContractPageSection extends PageSection {
 export interface UserContractPageSection extends PageSection {
   type: 'user-contract-form';
   formId: number;
+  hideFormInfo?: boolean;
 }
 
 export type AppPageSection =
