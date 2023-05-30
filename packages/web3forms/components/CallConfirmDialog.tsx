@@ -1,7 +1,6 @@
 import Button from "@mui/material/Button";
 import DialogActions from "@mui/material/DialogActions";
 
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import Dialog, { DialogProps } from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import { FormattedMessage } from "react-intl";
@@ -25,12 +24,14 @@ export interface CallConfirmDialogProps {
   DialogProps: DialogProps;
   onConfirm: (value: BigNumber) => void;
   payable?: boolean;
+  execLabel?: string;
 }
 
 export default function CallConfirmDialog({
   DialogProps,
   onConfirm,
   payable,
+  execLabel,
 }: CallConfirmDialogProps) {
   const { onClose } = DialogProps;
 
@@ -79,23 +80,31 @@ export default function CallConfirmDialog({
       <DialogContent dividers>
         <Stack spacing={2}>
           <Stack spacing={2} alignItems="center">
-            <CheckCircleIcon fontSize="large" />
             <Box>
               <Typography variant="h5" align="center">
                 <FormattedMessage
-                  id="confir.transaction"
+                  id="confirm.transaction"
                   defaultMessage="Confirm transaction"
                 />
               </Typography>
-              <Typography color="text.secondary" align="center" variant="body1">
+              <Typography align="center" variant="body1" color="text.secondary">
                 <FormattedMessage
                   id="please.confirm.the.transaction.in.your.wallet"
                   defaultMessage="Please, confirm the transaction in your wallet"
                 />
               </Typography>
+              {execLabel && (
+                <Typography align="center" variant="body1">
+                  <FormattedMessage
+                    id="method.label"
+                    defaultMessage="Method: {label}"
+                    values={{ label: <strong>{execLabel}</strong> }}
+                  />
+                </Typography>
+              )}
             </Box>
           </Stack>
-          {!payable && (
+          {payable && (
             <Box>
               <Grid container spacing={2}>
                 <Grid item xs>

@@ -1,26 +1,31 @@
 import { useListFormsQuery } from '@/modules/forms/hooks';
 import LazyTextField from '@dexkit/ui/components/LazyTextField';
+import { Info } from '@mui/icons-material';
 import Search from '@mui/icons-material/Search';
 import {
   Box,
   Button,
   Card,
   CardContent,
+  Checkbox,
+  FormControlLabel,
   Grid,
   InputAdornment,
   Skeleton,
   Stack,
+  Tooltip,
   Typography,
 } from '@mui/material';
 import { useWeb3React } from '@web3-react/core';
-import { useCallback, useEffect, useState } from 'react';
+import { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import UserContractFormCard from '../UserContractFormCard';
 
 interface Props {
-  onSave: (formId?: number) => void;
+  onSave: (formId?: number, hideFormInfo?: boolean) => void;
   onCancel: () => void;
   formId?: number;
+  hideFormInfo?: boolean;
   saveOnChange?: boolean;
 }
 
@@ -28,6 +33,7 @@ export function UserContractForm({
   onSave,
   onCancel,
   formId,
+  hideFormInfo,
   saveOnChange,
 }: Props) {
   const { account } = useWeb3React();
@@ -38,6 +44,8 @@ export function UserContractForm({
 
   const [selectedFormId, setSelectedFormId] = useState<number>();
 
+  const [hideInfo, setHideInfo] = useState<boolean>(false);
+
   const handleChange = (value: string) => {
     setQuery(value);
   };
@@ -47,23 +55,31 @@ export function UserContractForm({
       setSelectedFormId(id);
 
       if (saveOnChange && id) {
-        onSave(id);
+        onSave(id, hideInfo);
       }
     },
-    [saveOnChange]
+    [saveOnChange, hideInfo]
   );
 
   const handleSave = useCallback(() => {
     if (selectedFormId) {
-      onSave(selectedFormId);
+      onSave(selectedFormId, hideInfo);
     }
-  }, [onSave, selectedFormId]);
+  }, [onSave, selectedFormId, hideInfo]);
+
+  const handleChangeHideInfo = (e: ChangeEvent<HTMLInputElement>) => {
+    setHideInfo(e.target.checked);
+  };
 
   useEffect(() => {
     if (!selectedFormId) {
       setSelectedFormId(formId);
     }
-  }, [formId]);
+    if (hideFormInfo !== undefined) {
+      console.log('mount2', hideFormInfo);
+      setHideInfo(hideFormInfo);
+    }
+  }, [formId, hideFormInfo]);
 
   return (
     <Box>
@@ -113,6 +129,31 @@ export function UserContractForm({
                 </Grid>
               ))}
           </Grid>
+        </Grid>
+        <Grid item xs={12}>
+          <Stack direction="row" alignItems="center" alignContent="center">
+            <FormControlLabel
+              control={
+                <Checkbox checked={hideInfo} onChange={handleChangeHideInfo} />
+              }
+              label={
+                <FormattedMessage
+                  id="hide.form.info"
+                  defaultMessage="Hide form info"
+                />
+              }
+            />
+            <Tooltip
+              title={
+                <FormattedMessage
+                  id="hide.form.info.tooltip"
+                  defaultMessage="Hide form info like: contract address, description and name from the section"
+                />
+              }
+            >
+              <Info />
+            </Tooltip>
+          </Stack>
         </Grid>
         {!saveOnChange && (
           <Grid item xs={12}>

@@ -2,11 +2,11 @@ import { inputMapping } from '@/modules/wizard/utils';
 import PasteIconButton from '@dexkit/ui/components/PasteIconButton';
 import { AbiFragment, ContractFormParams } from '@dexkit/web3forms/types';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
-import { InputAdornment, TextField } from '@mui/material';
+import { Box, InputAdornment, TextField, Tooltip } from '@mui/material';
 import { useFormikContext } from 'formik';
 import { useSnackbar } from 'notistack';
 import { memo } from 'react';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 
 export interface ContractFormAbiInputProps {
   abiStr: string;
@@ -29,6 +29,8 @@ function ContractFormAbiInput({ abiStr }: ContractFormAbiInputProps) {
     }
   };
 
+  const { formatMessage } = useIntl();
+
   return (
     <TextField
       fullWidth
@@ -40,7 +42,16 @@ function ContractFormAbiInput({ abiStr }: ContractFormAbiInputProps) {
       InputProps={{
         endAdornment: (
           <InputAdornment position="end">
-            <PasteIconButton icon={<FileCopyIcon />} onPaste={handlePaste} />
+            <Tooltip
+              title={<FormattedMessage id="paste" defaultMessage="Paste" />}
+            >
+              <Box>
+                <PasteIconButton
+                  icon={<FileCopyIcon />}
+                  onPaste={handlePaste}
+                />
+              </Box>
+            </Tooltip>
           </InputAdornment>
         ),
       }}

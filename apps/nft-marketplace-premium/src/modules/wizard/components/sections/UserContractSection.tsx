@@ -105,21 +105,23 @@ export default function UserContractSection({ section }: Props) {
       </AppConfirmDialog>
       <Container sx={{ py: 2 }}>
         <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <FormInfoCard
-              onClone={handleCloneForm}
-              onEdit={handleEdit}
-              onShare={handleShowShare}
-              account={account}
-              contractAddress={formQuery.data?.params.contractAddress}
-              chainId={formQuery.data?.params.chainId}
-              creatorAddress={formQuery.data?.creatorAddress}
-              name={formQuery.data?.name}
-              description={formQuery.data?.description}
-              isLoading={formQuery.isLoading}
-              templateId={formQuery.data?.templateId}
-            />
-          </Grid>
+          {!section?.hideFormInfo && (
+            <Grid item xs={12}>
+              <FormInfoCard
+                onClone={handleCloneForm}
+                onEdit={handleEdit}
+                onShare={handleShowShare}
+                account={account}
+                contractAddress={formQuery.data?.params.contractAddress}
+                chainId={formQuery.data?.params.chainId}
+                creatorAddress={formQuery.data?.creatorAddress}
+                name={formQuery.data?.name}
+                description={formQuery.data?.description}
+                isLoading={formQuery.isLoading}
+                templateId={formQuery.data?.templateId}
+              />
+            </Grid>
+          )}
           <Grid item xs={12}>
             {formQuery.data?.params ? (
               <ContractFormView params={formQuery.data?.params} />

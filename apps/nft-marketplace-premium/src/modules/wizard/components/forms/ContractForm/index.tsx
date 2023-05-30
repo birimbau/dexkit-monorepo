@@ -33,6 +33,7 @@ export const DEFAULT_STATE = {
   chainId: 1,
   contractAddress: '',
   fields: {},
+  disableProxy: false,
 };
 
 export interface ContractFormProps {
@@ -43,6 +44,7 @@ export interface ContractFormProps {
     options?: CellPluginOnChangeOptions | undefined
   ) => void;
   onCancel?: () => void;
+  onValid?: (isValid: boolean) => void;
 }
 
 type TABS = 'write' | 'read';
@@ -52,6 +54,7 @@ export default function ContractForm({
   updateOnChange,
   onChange,
   onCancel,
+  onValid,
 }: ContractFormProps) {
   const handleSubmit = async (
     values: ContractFormParams,
@@ -89,7 +92,7 @@ export default function ContractForm({
     setFieldVisibility(event.target.value);
   };
 
-  const hasParams = params && Object.keys(params).length > 1;
+  const hasParams = params && Object.keys(params).length >= 1;
 
   return (
     <Formik
@@ -97,16 +100,20 @@ export default function ContractForm({
       onSubmit={handleSubmit}
       validationSchema={ContractFormSchema}
       validateOnChange
+      validateOnBlur
     >
-      {({ errors, values, submitForm, setFieldValue, isValid }) => (
+      {({ values, submitForm, isValid }) => (
         <>
           {updateOnChange && (
             <ChangeListener
               values={values}
               isValid={isValid}
-              onChange={(vals: any) =>
-                onChange({ ...vals, chainId: parseChainId(vals.chainId) })
-              }
+              onChange={(vals: any) => {
+                if (onValid) {
+                  onValid(isValid);
+                }
+                onChange({ ...vals, chainId: parseChainId(vals.chainId) });
+              }}
             />
           )}
           <Grid container spacing={2}>

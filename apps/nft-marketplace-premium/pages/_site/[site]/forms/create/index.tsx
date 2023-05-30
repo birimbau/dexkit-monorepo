@@ -57,6 +57,7 @@ export default function FormsCreatePage({
     contractAddress:
       contractAddress && isAddress(contractAddress) ? contractAddress : '',
     fields: abi ? inputMapping(abi) : {},
+    disableProxy: false,
   });
 
   const [values, setValues] = useState({

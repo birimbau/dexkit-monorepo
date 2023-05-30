@@ -4,6 +4,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import {
   Accordion,
   AccordionDetails,
+  Box,
   Card,
   Divider,
   FormControlLabel,
@@ -16,8 +17,14 @@ import {
 import { FastField, Field, FormikConsumer } from 'formik';
 import { Checkbox, Select, Switch, TextField } from 'formik-mui';
 import { memo, useState } from 'react';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 import ContractFormInputParams from './ContractFormInputParams';
+
+function requiredField(message: string) {
+  return (value: string) => {
+    return !value ? message : undefined;
+  };
+}
 
 export interface Props {
   func: AbiFragment;
@@ -25,6 +32,8 @@ export interface Props {
 
 function ContractFormAccordion({ func }: Props) {
   const [expanded, setExpanded] = useState(false);
+
+  const { formatMessage } = useIntl();
 
   return (
     <Accordion expanded={expanded}>
@@ -68,6 +77,23 @@ function ContractFormAccordion({ func }: Props) {
                     defaultMessage="Function name"
                   />
                 }
+                fullWidth
+                size="small"
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <FastField
+                component={TextField}
+                name={`fields.${func.name}.description`}
+                label={
+                  <FormattedMessage
+                    id="short.description"
+                    defaultMessage="Short description"
+                  />
+                }
+                multiline
+                rows={3}
                 fullWidth
                 size="small"
               />
@@ -223,48 +249,95 @@ function ContractFormAccordion({ func }: Props) {
                             </Typography>
                           </Grid>
                           <Grid item xs={12}>
-                            <FastField
-                              component={Select}
-                              name={`fields.${func.name}.input.${input.name}.inputType`}
-                              size="small"
-                              fullWidth
-                              displayEmpty
-                              InputLabelProps={{ shrink: true }}
-                              inputLabel={{ shrink: true }}
-                              formControl={{ fullWidth: true }}
-                              label={
-                                <FormattedMessage
-                                  id="input.type"
-                                  defaultMessage="Input Type"
-                                />
-                              }
-                            >
-                              <MenuItem value="">
-                                <FormattedMessage
-                                  id="default"
-                                  defaultMessage="Default"
-                                />
-                              </MenuItem>
-                              {Object.keys(WEB3FORMS_INPUT_TYPES)
-                                .map((key) => key)
-                                .filter(
-                                  (key) =>
-                                    WEB3FORMS_INPUT_TYPES[key].type === '' ||
-                                    WEB3FORMS_INPUT_TYPES[key].type ===
-                                      input.type
-                                )
-                                .map((key) => (
-                                  <MenuItem key={key} value={key}>
-                                    <FormattedMessage
-                                      id={WEB3FORMS_INPUT_TYPES[key].messageId}
-                                      defaultMessage={
-                                        WEB3FORMS_INPUT_TYPES[key]
-                                          .defaultMessage
+                            <FormikConsumer>
+                              {({ values }) => (
+                                <Box>
+                                  <Stack spacing={2}>
+                                    <FastField
+                                      component={Select}
+                                      name={`fields.${func.name}.input.${input.name}.inputType`}
+                                      size="small"
+                                      fullWidth
+                                      displayEmpty
+                                      InputLabelProps={{ shrink: true }}
+                                      inputLabel={{ shrink: true }}
+                                      formControl={{ fullWidth: true }}
+                                      label={
+                                        <FormattedMessage
+                                          id="input.type"
+                                          defaultMessage="Input Type"
+                                        />
                                       }
-                                    />
-                                  </MenuItem>
-                                ))}
-                            </FastField>
+                                    >
+                                      <MenuItem value="">
+                                        <FormattedMessage
+                                          id="default"
+                                          defaultMessage="Default"
+                                        />
+                                      </MenuItem>
+                                      {Object.keys(WEB3FORMS_INPUT_TYPES)
+                                        .map((key) => key)
+                                        .filter(
+                                          (key) =>
+                                            WEB3FORMS_INPUT_TYPES[key].type ===
+                                              '' ||
+                                            WEB3FORMS_INPUT_TYPES[key].type ===
+                                              input.type
+                                        )
+                                        .map((key) => (
+                                          <MenuItem key={key} value={key}>
+                                            <FormattedMessage
+                                              id={
+                                                WEB3FORMS_INPUT_TYPES[key]
+                                                  .messageId
+                                              }
+                                              defaultMessage={
+                                                WEB3FORMS_INPUT_TYPES[key]
+                                                  .defaultMessage
+                                              }
+                                            />
+                                          </MenuItem>
+                                        ))}
+                                    </FastField>
+                                    {WEB3FORMS_INPUT_TYPES[
+                                      (values as ContractFormParams).fields[
+                                        func.name
+                                      ].input[input.name].inputType
+                                    ] && (
+                                      <Typography
+                                        variant="body1"
+                                        color="text.secondary"
+                                      >
+                                        <FormattedMessage
+                                          id={
+                                            (values as ContractFormParams)
+                                              .fields[func.name]
+                                              ? WEB3FORMS_INPUT_TYPES[
+                                                  (values as ContractFormParams)
+                                                    .fields[func.name].input[
+                                                    input.name
+                                                  ].inputType
+                                                ]?.helpMessageId
+                                              : undefined
+                                          }
+                                          defaultMessage={
+                                            (values as ContractFormParams)
+                                              .fields[func.name]
+                                              ? WEB3FORMS_INPUT_TYPES[
+                                                  (values as ContractFormParams)
+                                                    .fields[func.name].input[
+                                                    input.name
+                                                  ].inputType
+                                                ]?.helpDefaultMessage
+                                              : undefined
+                                          }
+                                        />
+                                      </Typography>
+                                    )}
+                                  </Stack>
+                                </Box>
+                              )}
+                            </FormikConsumer>
                           </Grid>
                           <Grid item xs={12}>
                             <Grid container spacing={2}>
@@ -283,18 +356,40 @@ function ContractFormAccordion({ func }: Props) {
                                 />
                               </Grid>
                               <Grid item xs={12} sm={8}>
-                                <FastField
-                                  component={TextField}
-                                  name={`fields.${func.name}.input.${input.name}.defaultValue`}
-                                  label={
-                                    <FormattedMessage
-                                      id="default.value"
-                                      defaultMessage="Default value"
+                                <FormikConsumer>
+                                  {({ values }) => (
+                                    <FastField
+                                      component={TextField}
+                                      name={`fields.${func.name}.input.${input.name}.defaultValue`}
+                                      validate={
+                                        (values as ContractFormParams).fields[
+                                          func.name
+                                        ]?.hideInputs
+                                          ? requiredField(
+                                              formatMessage(
+                                                {
+                                                  id: 'field.is.required',
+                                                  defaultMessage:
+                                                    '{field} is required',
+                                                },
+                                                {
+                                                  field: input.name,
+                                                }
+                                              )
+                                            )
+                                          : undefined
+                                      }
+                                      label={
+                                        <FormattedMessage
+                                          id="default.value"
+                                          defaultMessage="Default value"
+                                        />
+                                      }
+                                      fullWidth
+                                      size="small"
                                     />
-                                  }
-                                  fullWidth
-                                  size="small"
-                                />
+                                  )}
+                                </FormikConsumer>
                               </Grid>
                               <Grid item xs={12}>
                                 <FormikConsumer>

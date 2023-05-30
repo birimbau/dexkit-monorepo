@@ -2,6 +2,9 @@ import { useQuery } from '@tanstack/react-query';
 import { useContext, useMemo } from 'react';
 import { AppWizardConfigContext } from '../../../contexts';
 
+import { ChainId } from '@dexkit/core';
+import { NETWORKS } from '@dexkit/core/constants/networks';
+import { ethers } from 'ethers';
 import { useAtomValue } from 'jotai/utils';
 import { AppConfig } from 'src/types/config';
 import { getTokenList } from '../services';
@@ -59,4 +62,16 @@ export function usePreviewThemeFromConfig({
   ]);
 
   return selectedTheme;
+}
+
+export const JSON_RPC_PROVIDER = 'JSON_RPC_PROVIDER';
+
+export function useJsonRpcProvider({ chainId }: { chainId: ChainId }) {
+  return useQuery([JSON_RPC_PROVIDER, chainId], () => {
+    if (chainId) {
+      return new ethers.providers.JsonRpcProvider(
+        NETWORKS[chainId].providerRpcUrl
+      );
+    }
+  });
 }
