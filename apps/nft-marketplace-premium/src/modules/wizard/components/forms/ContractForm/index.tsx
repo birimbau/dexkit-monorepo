@@ -33,7 +33,7 @@ export const DEFAULT_STATE = {
   chainId: 1,
   contractAddress: '',
   fields: {},
-  isProxy: false,
+  disableProxy: false,
 };
 
 export interface ContractFormProps {

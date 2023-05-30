@@ -41,17 +41,15 @@ export default function ContractFormAddressInput({
         try {
           let address: string = value;
 
-          if (values.isProxy && jsonProvider) {
+          if (!values.disableProxy && jsonProvider) {
             const implementationAddress = await getContractImplementation({
               contractAddress: value,
               provider: jsonProvider,
             });
 
-            if (!isAddress(implementationAddress)) {
-              throw new Error('is not a proxy');
+            if (isAddress(implementationAddress)) {
+              address = implementationAddress;
             }
-
-            address = implementationAddress;
           }
 
           let abi = await scanContractAbiMutation.mutateAsync({
@@ -87,13 +85,16 @@ export default function ContractFormAddressInput({
         }
       }
     },
-    [values.chainId, values.isProxy, jsonProvider]
+    [values.chainId, values.disableProxy, jsonProvider]
   );
 
-  const handleChange = useCallback(async (value: string) => {
-    await fetchAbi(value);
-    setFieldValue('contractAddress', value);
-  }, []);
+  const handleChange = useCallback(
+    async (value: string) => {
+      await fetchAbi(value);
+      setFieldValue('contractAddress', value);
+    },
+    [fetchAbi]
+  );
 
   const handleRefresh = async () => {
     await fetchAbi(values.contractAddress);

@@ -1,7 +1,10 @@
+import { useJsonRpcProvider } from '@/modules/wizard/hooks';
+import { getContractImplementation } from '@/modules/wizard/services';
 import { ChainId } from '@dexkit/core';
 import { NETWORKS } from '@dexkit/core/constants/networks';
 import { parseChainId } from '@dexkit/core/utils';
-import { AbiFragment } from '@dexkit/web3forms/types';
+import { AbiFragment, ContractFormParams } from '@dexkit/web3forms/types';
+import { useAsyncMemo } from '@dexkit/widgets/src/hooks';
 import {
   FormControl,
   FormControlLabel,
@@ -9,7 +12,8 @@ import {
   InputLabel,
   MenuItem,
 } from '@mui/material';
-import { Field } from 'formik';
+import { isAddress } from 'ethers/lib/utils';
+import { Field, useFormikContext } from 'formik';
 import { Checkbox, Select } from 'formik-mui';
 import { memo } from 'react';
 import { FormattedMessage } from 'react-intl';
@@ -22,21 +26,46 @@ export interface Props {
 }
 
 function ContractInitialForm({ abi, chainId }: Props) {
+  const { values } = useFormikContext<ContractFormParams>();
+
+  const rpcJsonQuery = useJsonRpcProvider({ chainId: values.chainId });
+
+  const isProxyContract = useAsyncMemo(
+    async () => {
+      if (values.contractAddress && rpcJsonQuery.data) {
+        try {
+          const implAddr = await getContractImplementation({
+            provider: rpcJsonQuery.data,
+            contractAddress: values.contractAddress,
+          });
+          return isAddress(implAddr);
+        } catch (err) {}
+      }
+
+      return false;
+    },
+    false,
+    [values.contractAddress, rpcJsonQuery.data]
+  );
+
   return (
     <Grid container spacing={2}>
-      <Grid item xs={12}>
-        <FormControlLabel
-          label={
-            <FormattedMessage
-              id="use.as.a.proxy"
-              defaultMessage="Use as a proxy"
-            />
-          }
-          control={
-            <Field type="checkbox" component={Checkbox} name="isProxy" />
-          }
-        />
-      </Grid>
+      {isProxyContract && (
+        <Grid item xs={12}>
+          <FormControlLabel
+            label={
+              <FormattedMessage
+                id="disable.proxy"
+                defaultMessage="Disable proxy"
+              />
+            }
+            control={
+              <Field type="checkbox" component={Checkbox} name="isProxy" />
+            }
+          />
+        </Grid>
+      )}
+
       <Grid item>
         <FormControl>
           <InputLabel shrink>

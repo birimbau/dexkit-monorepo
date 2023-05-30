@@ -110,7 +110,7 @@ export type ContractFormField = {
 
 export type ContractFormParams = {
   contractAddress: string;
-  isProxy?: boolean;
+  disableProxy?: boolean;
   chainId: ChainId;
   fields: {
     [key: string]: ContractFormField;
