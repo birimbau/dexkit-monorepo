@@ -99,11 +99,17 @@ export function SectionFormRender({
     return (
       <UserContractForm
         onCancel={onClose}
-        onSave={(formId) => {
+        onSave={(formId, hideFormInfo) => {
           if (formId) {
-            onSave({ type: 'user-contract-form', formId });
+            console.log('TYT', formId, hideFormInfo);
+            onSave({ type: 'user-contract-form', formId, hideFormInfo });
           }
         }}
+        hideFormInfo={
+          section?.type === 'user-contract-form'
+            ? section.hideFormInfo
+            : undefined
+        }
         formId={
           section?.type === 'user-contract-form' ? section.formId : undefined
         }

@@ -66,6 +66,8 @@ const cellPlugins = [
   CodeSnippet,
   CollectionPlugin,
   ContainerPlugin,
+  ContractFormPlugin,
+  UserContractFormPlugin,
   divider,
   html5video,
   ImagePlugin,
@@ -83,8 +85,6 @@ const cellPlugins = [
   CustomContentPluginTwitter,
   video,
   WidgetPlugin,
-  ContractFormPlugin,
-  UserContractFormPlugin,
 ];
 
 const nftPlugins = [
@@ -98,6 +98,8 @@ const nftPlugins = [
   CodeSnippet,
   CollectionPlugin,
   ContainerPlugin,
+  ContractFormPlugin,
+  UserContractFormPlugin,
   divider,
   html5video,
   ImagePlugin,
@@ -111,10 +113,6 @@ const nftPlugins = [
   CustomContentPluginTwitter,
   video,
   WidgetPlugin,
-
-  ContractFormPlugin,
-
-  UserContractFormPlugin,
 ];
 
 const swapPlugins = [
@@ -127,6 +125,8 @@ const swapPlugins = [
   ButtonPlugin,
   CodeSnippet,
   ContainerPlugin,
+  ContractFormPlugin,
+  UserContractFormPlugin,
   divider,
   html5video,
   ImagePlugin,
@@ -140,10 +140,6 @@ const swapPlugins = [
   CustomContentPluginTwitter,
   video,
   WidgetPlugin,
-
-  ContractFormPlugin,
-
-  UserContractFormPlugin,
 ];
 
 // https://github.com/react-page/react-page/issues/970

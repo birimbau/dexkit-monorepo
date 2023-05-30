@@ -154,6 +154,7 @@ export function inputMapping(abi: AbiFragment[]) {
       fields[item.name] = {
         name: item.name,
         input: inputs,
+        description: '',
         callOnMount: false,
         lockInputs: false,
         visible: false,
