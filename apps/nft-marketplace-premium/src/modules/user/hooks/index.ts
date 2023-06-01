@@ -13,7 +13,7 @@ export function useClaimCampaignMutation({ onSuccess }: { onSuccess?: ({ txHash 
   return useMutation(async () => {
 
 
-    const response = await axios.post<{ txHash: string }>(`/api/airdrop/websummit`);
+    const response = await axios.post<{ txHash: string }>(`/api/airdrop/websummit`, undefined, { withCredentials: true });
 
     return response.data;
 

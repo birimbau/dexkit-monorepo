@@ -1,3 +1,4 @@
+import { GatedCondition } from '@/modules/wizard/types';
 import { AppPageSection } from '@/modules/wizard/types/section';
 import { ThemeMode } from '@dexkit/ui/constants/enum';
 import { Token } from './blockchain';
@@ -45,9 +46,12 @@ export interface AppPageOptions {
   title?: string;
   clonedPageKey?: string;
   uri?: string;
+  isEditGatedConditions?: boolean;
+  gatedConditions?: GatedCondition[];
 }
 
 export type AppPage = {
+  gatedConditions?: GatedCondition[];
   sections: AppPageSection[];
 } & AppPageOptions
 

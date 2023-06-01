@@ -1,15 +1,16 @@
 import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
-import { useEffect, useState } from 'react';
-import { getChainName } from 'src/utils/blockchain';
+import { useEffect, useMemo, useState } from 'react';
+import { getChainName, getChainSymbol } from 'src/utils/blockchain';
 import { useAppWizardConfig } from '../../hooks';
 
 type Data = {
   image: string;
   name: string;
   backgroundImage: string;
-  network?: string;
+  network: string;
+  chainId: number;
   contractAddress: string;
   description?: string;
   uri?: string;
@@ -17,8 +18,8 @@ type Data = {
 
 interface Props {
   formValue: {
-    chainId: number;
-    contractAddress: string;
+    chainId?: number;
+    contractAddress?: string;
     backgroundImageUrl?: string;
   };
   onChange: (formValue: any) => void;
@@ -35,32 +36,49 @@ export function CollectionItemAutocomplete(props: Props) {
         name: value.name,
         contractAddress: value.contractAddress,
         backgroundImage: value.backgroundImage,
-        network: getChainName(value.chainId),
+        network: getChainName(value.chainId) as string,
         chainId: value.chainId,
         image: value.image,
       };
     }) || [];
 
   useEffect(() => {
-    if (formValue && collections) {
+    if (
+      formValue &&
+      collections &&
+      formValue.chainId !== collectionValue?.chainId &&
+      formValue.contractAddress?.toLowerCase() !==
+        collectionValue?.contractAddress.toLowerCase()
+    ) {
       const coll = collections.find(
         (c) =>
-          c.chainId === formValue.chainId &&
-          c.contractAddress === formValue.contractAddress
+          Number(c.chainId) === Number(formValue.chainId) &&
+          c.contractAddress?.toLowerCase() ===
+            formValue.contractAddress?.toLowerCase()
       );
       if (coll) {
-        setCollectionValue(coll);
+        setCollectionValue({ ...coll });
       }
     }
-  }, [formValue, collections]);
+  }, [formValue, collections, collectionValue]);
+
+  const dataValue = useMemo(() => {
+    return { ...collectionValue };
+  }, [collectionValue]);
 
   return (
     <Autocomplete
       id="item-collection"
       sx={{ width: 300 }}
-      inputValue={collectionValue?.name ? collectionValue.name : ''}
+      value={dataValue || null}
+      defaultValue={dataValue || null}
       options={collections}
       autoHighlight
+      isOptionEqualToValue={(op, val) =>
+        op?.chainId === val?.chainId &&
+        op?.contractAddress?.toLowerCase() ===
+          val?.contractAddress?.toLowerCase()
+      }
       onChange={(_change, value) => {
         if (value) {
           onChange({
@@ -73,7 +91,9 @@ export function CollectionItemAutocomplete(props: Props) {
           });
         }
       }}
-      getOptionLabel={(option) => option.name}
+      getOptionLabel={(option) =>
+        option.name ? `${getChainSymbol(option.chainId)}-${option.name}` : ''
+      }
       renderOption={(props, option) => (
         <Box
           component="li"

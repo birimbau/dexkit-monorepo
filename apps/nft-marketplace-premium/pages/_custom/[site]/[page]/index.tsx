@@ -1,17 +1,16 @@
+import jwt_decode from 'jwt-decode';
 import type {
-  GetStaticPaths,
-  GetStaticPathsContext,
-  GetStaticProps,
-  GetStaticPropsContext,
+  GetServerSideProps,
+  GetServerSidePropsContext,
   NextPage,
 } from 'next';
 import MainLayout from '../../../../src/components/layouts/main';
 
 import { dehydrate, QueryClient } from '@tanstack/react-query';
 import {
-  GET_ASSETS_ORDERBOOK,
   GET_ASSET_DATA,
   GET_ASSET_METADATA,
+  GET_ASSETS_ORDERBOOK,
   GET_COLLECTION_DATA,
 } from '../../../../src/hooks/nft';
 import { getAppConfig } from '../../../../src/services/app';
@@ -24,11 +23,45 @@ import {
 
 import { getNetworkSlugFromChainId } from '../../../../src/utils/blockchain';
 
+import { getUserByAccountRefresh } from '@/modules/user/services';
+import { GatedConditionView } from '@/modules/wizard/components/GatedConditionView';
 import { SectionsRenderer } from '@/modules/wizard/components/sections/SectionsRenderer';
+import { checkGatedConditions } from '@/modules/wizard/services';
+import { GatedCondition } from '@/modules/wizard/types';
 import { AppPageSection } from '@/modules/wizard/types/section';
 import { getProviderBySlug } from '../../../../src/services/providers';
 
-const CustomPage: NextPage<{ sections: AppPageSection[] }> = ({ sections }) => {
+const CustomPage: NextPage<{
+  sections: AppPageSection[];
+  account?: string;
+  isProtected: boolean;
+  conditions?: GatedCondition[];
+  result: boolean;
+  partialResults: { [key: number]: boolean };
+  balances: { [key: number]: string };
+}> = ({
+  sections,
+  isProtected,
+  account,
+  conditions,
+  result,
+  partialResults,
+  balances,
+}) => {
+  if (isProtected) {
+    return (
+      <MainLayout>
+        <GatedConditionView
+          account={account}
+          conditions={conditions}
+          result={result}
+          partialResults={partialResults}
+          balances={balances}
+        />
+      </MainLayout>
+    );
+  }
+
   return (
     <MainLayout disablePadding>
       <SectionsRenderer sections={sections} />
@@ -41,14 +74,16 @@ type Params = {
   page?: string;
 };
 
-export const getStaticProps: GetStaticProps = async ({
+export const getServerSideProps: GetServerSideProps = async ({
+  req,
+  res,
   params,
-}: GetStaticPropsContext<Params>) => {
+  query,
+}: GetServerSidePropsContext<Params>) => {
   const queryClient = new QueryClient();
   const configResponse = await getAppConfig(params?.site, params?.page);
   const { appConfig } = configResponse;
   const homePage = appConfig.pages[params?.page || ''];
-
   if (!homePage) {
     return {
       redirect: {
@@ -56,6 +91,62 @@ export const getStaticProps: GetStaticProps = async ({
         permanent: true,
       },
     };
+  }
+  if (homePage.gatedConditions && homePage.gatedConditions.length > 0) {
+    const token = req.cookies.refresh_token;
+    // if user not authenticated, we just need to say that is protected page and needs authentication
+    if (!token) {
+      return {
+        props: {
+          isProtected: true,
+          account: undefined,
+          sections: homePage.sections,
+          result: false,
+          balances: {},
+          partialResults: {},
+          ...configResponse,
+        },
+      };
+    }
+    if (token) {
+      try {
+        await getUserByAccountRefresh({ token });
+        const account = (jwt_decode(token) as { address: string }).address;
+        const conditions = homePage.gatedConditions;
+        const gatedResults = await checkGatedConditions({
+          account,
+          conditions,
+        });
+
+        if (!gatedResults?.result) {
+          return {
+            props: {
+              isProtected: true,
+              account: account,
+              sections: homePage.sections,
+              result: gatedResults?.result,
+              balances: gatedResults?.balances,
+              partialResults: gatedResults?.partialResults,
+              conditions: homePage.gatedConditions,
+              ...configResponse,
+            },
+          };
+        }
+      } catch {
+        // error on getting token needs to authenticate again
+        return {
+          props: {
+            isProtected: true,
+            account: undefined,
+            sections: homePage.sections,
+            result: false,
+            balances: {},
+            partialResults: {},
+            ...configResponse,
+          },
+        };
+      }
+    }
   }
 
   for (let section of homePage.sections) {
@@ -142,16 +233,6 @@ export const getStaticProps: GetStaticProps = async ({
       sections: homePage.sections,
       ...configResponse,
     },
-    revalidate: 300,
-  };
-};
-
-export const getStaticPaths: GetStaticPaths<
-  Params
-> = ({}: GetStaticPathsContext) => {
-  return {
-    paths: [],
-    fallback: 'blocking',
   };
 };
 

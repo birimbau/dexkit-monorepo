@@ -42,7 +42,7 @@ function WizardThemeCustom({ mode, legacyTheme }: Props) {
     } else {
       return customThemeLight;
     }
-  }, [mode, customThemeLightAtom, customThemeDarkAtom]);
+  }, [mode, customThemeLight, customThemeDark]);
 
   const setActiveTheme = useMemo(() => {
     if (mode === ThemeMode.dark) {
@@ -57,7 +57,7 @@ function WizardThemeCustom({ mode, legacyTheme }: Props) {
       <Box display={'flex'} justifyContent={'center'}>
         <MuiColorInput
           value={activeTheme?.palette?.primary?.main || '#000'}
-          onChange={(color) =>
+          onChange={(color) => {
             setActiveTheme({
               palette: {
                 ...activeTheme?.palette,
@@ -65,8 +65,8 @@ function WizardThemeCustom({ mode, legacyTheme }: Props) {
                   main: color,
                 },
               },
-            })
-          }
+            });
+          }}
         />
         <TooltipInfo field={'custom.primary.color'} />
       </Box>

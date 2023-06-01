@@ -7,8 +7,9 @@ import { NETWORKS } from '@dexkit/core/constants/networks';
 import { ethers } from 'ethers';
 import { useAtomValue } from 'jotai/utils';
 import { AppConfig } from 'src/types/config';
-import { getTokenList } from '../services';
+import { checkGatedConditions, getTokenList } from '../services';
 import { customThemeDarkAtom, customThemeLightAtom } from '../state';
+import { GatedCondition } from '../types';
 import { generateCSSVarsTheme } from '../utils';
 
 export const TOKEN_LIST_URL = 'TOKEN_LIST_URL';
@@ -64,6 +65,13 @@ export function usePreviewThemeFromConfig({
   return selectedTheme;
 }
 
+export function useCheckGatedConditions({ conditions, account }: { conditions: GatedCondition[], account?: string }) {
+
+  return useQuery(['GET_CHECKED_GATED_CONDITIONS', account, conditions], () => {
+    return checkGatedConditions({ account, conditions })
+
+  })
+}
 export const JSON_RPC_PROVIDER = 'JSON_RPC_PROVIDER';
 
 export function useJsonRpcProvider({ chainId }: { chainId: ChainId }) {

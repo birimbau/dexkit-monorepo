@@ -206,7 +206,7 @@ export default function GeneralSection({
                 }}
               />
             </Grid>
-            <Grid item xs={4}>
+            <Grid item xs={6}>
               <Stack spacing={2}>
                 <Typography variant="body2">
                   <FormattedMessage id="logo" defaultMessage="Logo" />
@@ -270,7 +270,7 @@ export default function GeneralSection({
                 />
               </Stack>
             </Grid>
-            <Grid item xs={4}>
+            <Grid item xs={6}>
               <Stack spacing={2}>
                 <Typography variant="body2">
                   <FormattedMessage
@@ -342,7 +342,7 @@ export default function GeneralSection({
                 />
               </Stack>
             </Grid>
-            <Grid item xs={4}>
+            <Grid item xs={6}>
               <Typography variant="body2">
                 <FormattedMessage id="favicon" defaultMessage="Favicon" />
               </Typography>

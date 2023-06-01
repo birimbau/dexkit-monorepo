@@ -1,5 +1,6 @@
 import { getContractAddressesForChainOrThrow } from '@0x/contract-addresses';
 import { ChainId } from '@dexkit/core/constants';
+import { ERC1155Abi } from '@dexkit/core/constants/abis';
 import { BigNumber, Contract, ethers } from 'ethers';
 import { Interface } from 'ethers/lib/utils';
 import { NETWORKS } from 'src/constants/chain';
@@ -204,6 +205,17 @@ export async function getBalanceOf(networkId: string, address: string, owner: st
   const provider = new ethers.providers.JsonRpcProvider(network.providerRpcUrl)
   const contract = new Contract(address, iface, provider);
   return (await contract.balanceOf(owner)) as BigNumber;
+}
+
+export async function getBalanceOfERC1155(networkId: string, address: string, owner: string, tokenId: string) {
+  const network = NETWORKS[getChainIdFromSlug(networkId)?.chainId as any];
+  if (!network) {
+    throw new Error('network not supported')
+  }
+  const iface = new Interface(ERC1155Abi);
+  const provider = new ethers.providers.JsonRpcProvider(network.providerRpcUrl)
+  const contract = new Contract(address, iface, provider);
+  return (await contract.balanceOf(owner, tokenId)) as BigNumber;
 }
 
 export async function getKitBalanceOfThreshold(owner: string, amountUnits: string) {

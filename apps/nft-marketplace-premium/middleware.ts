@@ -50,6 +50,7 @@ export default function middleware(req: NextRequest) {
     return NextResponse.rewrite(url);
   }
 
+
   if (url.pathname.startsWith('/site')) {
     return NextResponse.rewrite(url);
   }

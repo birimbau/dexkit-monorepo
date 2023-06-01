@@ -95,7 +95,7 @@ export default function GeneralWizardContainer({
         name: config.name,
       });
     }
-  }, [config]);
+  }, []);
 
   return (
     <Grid container spacing={2}>
