@@ -81,14 +81,18 @@ export function AppMarketplaceProvider({
       }
     }
 
+    let temp: any = tempTheme;
+
+    delete temp['vars'];
+
     return fontFamily
       ? extendTheme({
-          ...tempTheme,
+          ...temp,
           typography: {
             fontFamily,
           },
         })
-      : extendTheme(tempTheme);
+      : extendTheme({ ...temp });
   }, [appConfig]);
 
   const SEO = useMemo(() => {

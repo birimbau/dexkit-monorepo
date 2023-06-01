@@ -27,9 +27,9 @@ import {
 import { getERC20Name, getERC20Symbol } from '../../../services/balances';
 import { isAddressEqual } from '../../../utils/blockchain';
 import { getAssetProtocol, isERC1155Owner } from '../../../utils/nfts';
+import { TransferAssetButton } from './TransferAssetButton';
 import { MakeListingDialog } from './dialogs/MakeListingDialog';
 import { MakeOfferDialog } from './dialogs/MakeOfferDialog';
-import { TransferAssetButton } from './TransferAssetButton';
 
 interface Props {
   address: string;

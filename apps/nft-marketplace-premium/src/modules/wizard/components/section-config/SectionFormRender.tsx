@@ -2,9 +2,11 @@ import { AppPageSection, SectionType } from '../../types/section';
 import { AssetStoreSectionForm } from '../forms/AssetStoreSectionForm';
 import CallToActionSectionForm from '../forms/CallToActionSectionForm';
 import CollectionSectionForm from '../forms/CollectionSectionForm';
+import { ContractSectionForm } from '../forms/ContractSectionForm';
 import FeaturedSectionForm from '../forms/FeaturedSectionForm';
 import MDSectionForm from '../forms/MDSectionForm';
 import { SwapConfigSectionForm } from '../forms/SwapConfigSectionForm';
+import { UserContractForm } from '../forms/UserContractForm';
 import VideoSectionForm from '../forms/VideoSectionForm';
 import WalletSectionForm from '../forms/WalletSectionForm';
 
@@ -83,6 +85,34 @@ export function SectionFormRender({
         onCancel={onClose}
         onSave={onSave}
         section={section?.type === sectionType ? section : undefined}
+      />
+    );
+  } else if (sectionType === 'contract') {
+    return (
+      <ContractSectionForm
+        onCancel={onClose}
+        onSave={onSave}
+        section={section?.type === sectionType ? section : undefined}
+      />
+    );
+  } else if (sectionType === 'user-contract-form') {
+    return (
+      <UserContractForm
+        onCancel={onClose}
+        onSave={(formId, hideFormInfo) => {
+          if (formId) {
+            console.log('TYT', formId, hideFormInfo);
+            onSave({ type: 'user-contract-form', formId, hideFormInfo });
+          }
+        }}
+        hideFormInfo={
+          section?.type === 'user-contract-form'
+            ? section.hideFormInfo
+            : undefined
+        }
+        formId={
+          section?.type === 'user-contract-form' ? section.formId : undefined
+        }
       />
     );
   }

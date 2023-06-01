@@ -43,6 +43,7 @@ import ButtonPlugin from './plugins/ButtonPlugin';
 import CodeSnippet from './plugins/CodeSnippet';
 import CollectionPlugin from './plugins/CollectionPlugin';
 import ContainerPlugin from './plugins/ContainerPlugin';
+import ContractFormPlugin from './plugins/ContractFormPlugin';
 import CustomContentPluginTwitter from './plugins/CustomContentPluginTwitter';
 import { DefaultSlate } from './plugins/DefaultSlate';
 import ImagePlugin from './plugins/ImagePlugin';
@@ -50,6 +51,7 @@ import QrCodeReceive from './plugins/QrCodeReceivePayment';
 import SearchNFTPlugin from './plugins/SearchNFTPlugin';
 import StackPlugin from './plugins/StackPlugin';
 import Swap2Plugin from './plugins/Swap2Plugin';
+import UserContractFormPlugin from './plugins/UserContractFormPlugin';
 import WidgetPlugin from './plugins/WidgetPlugin';
 // Define which plugins we want to use.
 const cellPlugins = [
@@ -64,6 +66,8 @@ const cellPlugins = [
   CodeSnippet,
   CollectionPlugin,
   ContainerPlugin,
+  ContractFormPlugin,
+  UserContractFormPlugin,
   divider,
   html5video,
   ImagePlugin,
@@ -94,6 +98,8 @@ const nftPlugins = [
   CodeSnippet,
   CollectionPlugin,
   ContainerPlugin,
+  ContractFormPlugin,
+  UserContractFormPlugin,
   divider,
   html5video,
   ImagePlugin,
@@ -119,6 +125,8 @@ const swapPlugins = [
   ButtonPlugin,
   CodeSnippet,
   ContainerPlugin,
+  ContractFormPlugin,
+  UserContractFormPlugin,
   divider,
   html5video,
   ImagePlugin,
