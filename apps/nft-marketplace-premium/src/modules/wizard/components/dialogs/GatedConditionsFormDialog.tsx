@@ -159,7 +159,7 @@ export default function GatedConditionsFormDialog({
                 render={(arrayHelpers) => (
                   <Box sx={{ p: 2 }}>
                     {values.conditions.map((condition, index) => (
-                      <Box sx={{ p: 2 }}>
+                      <Box sx={{ p: 2 }} key={index}>
                         <Grid container spacing={4} key={index}>
                           {index !== 0 && (
                             <Grid item xs={12}>
