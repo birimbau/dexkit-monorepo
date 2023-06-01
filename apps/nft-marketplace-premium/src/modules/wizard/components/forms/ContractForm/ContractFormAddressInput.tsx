@@ -42,10 +42,14 @@ export default function ContractFormAddressInput({
           let address: string = value;
 
           if (!values.disableProxy && jsonProvider) {
-            const implementationAddress = await getContractImplementation({
-              contractAddress: value,
-              provider: jsonProvider,
-            });
+            let implementationAddress: string = '';
+
+            try {
+              implementationAddress = await getContractImplementation({
+                contractAddress: value,
+                provider: jsonProvider,
+              });
+            } catch (err) {}
 
             if (isAddress(implementationAddress)) {
               address = implementationAddress;

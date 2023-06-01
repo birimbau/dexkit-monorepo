@@ -60,7 +60,7 @@ function ContractInitialForm({ abi, chainId }: Props) {
               />
             }
             control={
-              <Field type="checkbox" component={Checkbox} name="isProxy" />
+              <Field type="checkbox" component={Checkbox} name="disableProxy" />
             }
           />
         </Grid>
