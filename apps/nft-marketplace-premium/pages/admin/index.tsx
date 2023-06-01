@@ -18,10 +18,10 @@ import { useWeb3React } from '@web3-react/core';
 import { NextPage } from 'next';
 import { ChangeEvent, ReactNode, useCallback, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import Wallet from '../../src/components/icons/Wallet';
-import AuthMainLayout from '../../src/components/layouts/authMain';
 import Link from '../../src/components/Link';
 import { PageHeader } from '../../src/components/PageHeader';
+import Wallet from '../../src/components/icons/Wallet';
+import AuthMainLayout from '../../src/components/layouts/authMain';
 import {
   DEXKIT_DISCORD_SUPPORT_CHANNEL,
   WIZARD_DOCS_URL,

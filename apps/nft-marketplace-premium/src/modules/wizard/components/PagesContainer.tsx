@@ -114,6 +114,20 @@ export function PagesContainer({
   };
   const onEditPage = (pageOptions: AppPageOptions) => {
     setPages((value) => {
+      // Logic to add conditions to current page
+      if (pageOptions.isEditGatedConditions) {
+        if (!pageOptions?.key) {
+          return value;
+        }
+        const newPages = { ...value };
+        newPages[pageOptions.key || ''] = {
+          ...newPages[pageOptions.key || ''],
+          gatedConditions: pageOptions?.gatedConditions,
+        };
+        setCurrentPage(newPages[pageOptions.key || '']);
+        return newPages;
+      }
+
       // we don't allow edit home page
       if (pageOptions?.key === 'home') {
         return value;

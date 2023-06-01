@@ -174,6 +174,141 @@ export function useTokenList({
     return [...tokenList] as Token[];
   }, [chainId, onlyNative, includeNative]);
 }
+/**
+ * If chainId is not passed it returns all tokens from all chains
+ * @param param0 
+ * @returns 
+ */
+export function useAllTokenList({
+  chainId,
+  includeNative = false,
+  onlyTradable,
+  onlyNative
+}: {
+  chainId?: number;
+  includeNative?: boolean;
+  onlyNative?: boolean;
+  onlyTradable?: boolean;
+}) {
+  const appConfig = useAppConfig();
+
+  const tokensValues = useAtomValue(tokensAtom) || [];
+
+  const tokenListJson = useMemo(() => {
+    if (appConfig.tokens?.length === 1) {
+      return appConfig.tokens[0].tokens || [];
+    }
+
+    return [];
+  }, [appConfig]);
+
+  // TODO: do the right logic
+  let tokens = [...tokensValues, ...tokenListJson];
+
+
+
+  if (onlyTradable) {
+    tokens = tokens.filter((t) => Boolean(t.tradable));
+  }
+
+  return useMemo(() => {
+
+    if (onlyNative && chainId) {
+      return [
+        {
+          address: ZEROEX_NATIVE_TOKEN_ADDRESS,
+          chainId,
+          decimals: 18,
+          logoURI: getNativeCurrencyImage(chainId),
+          name: getNativeCurrencySymbol(chainId),
+          symbol: getNativeCurrencySymbol(chainId),
+        }
+      ] as Token[];
+    }
+    let tokenList: Token[] = [...tokens]
+    if (chainId) {
+      tokenList = [
+        ...tokens.filter((token: Token) => token.chainId === chainId),
+      ];
+    }
+
+    if (chainId) {
+      const wrappedAddress = NETWORKS[chainId]?.wrappedAddress;
+      const isNoWrappedTokenInList =
+        tokenList &&
+        tokenList.findIndex((t) => t.address.toLowerCase() === wrappedAddress) ===
+        -1;
+      // Wrapped Token is not on the list, we will add it here
+      if (wrappedAddress && isNoWrappedTokenInList) {
+        tokenList = [
+          {
+            address: wrappedAddress,
+            chainId,
+            decimals: 18,
+            logoURI: getNativeCurrencyImage(chainId),
+            name: `Wrapped ${getNativeCurrencySymbol(chainId)}`,
+            symbol: `W${getNativeCurrencySymbol(chainId)}`,
+          } as Token,
+          ...tokenList,
+        ];
+      }
+    } else {
+      // if no chainId, we just add all networks
+      for (const ch of Object.keys(NETWORKS)) {
+        const chain = Number(ch);
+        const wrappedAddress = NETWORKS[chain]?.wrappedAddress;
+        const isNoWrappedTokenInList =
+          tokenList &&
+          tokenList.findIndex((t) => t.address.toLowerCase() === wrappedAddress) ===
+          -1;
+        // Wrapped Token is not on the list, we will add it here
+        if (wrappedAddress && isNoWrappedTokenInList) {
+          tokenList = [
+            {
+              address: wrappedAddress,
+              chainId: chain,
+              decimals: 18,
+              logoURI: getNativeCurrencyImage(chain),
+              name: `Wrapped ${getNativeCurrencySymbol(chain)}`,
+              symbol: `W${getNativeCurrencySymbol(chain)}`,
+            } as Token,
+            ...tokenList,
+          ];
+        }
+      }
+    }
+    if (includeNative && chainId) {
+      return [
+        {
+          address: ZEROEX_NATIVE_TOKEN_ADDRESS,
+          chainId,
+          decimals: 18,
+          logoURI: getNativeCurrencyImage(chainId),
+          name: getNativeCurrencySymbol(chainId),
+          symbol: getNativeCurrencySymbol(chainId),
+        },
+        ...tokenList,
+      ] as Token[];
+    } else {
+      for (const ch of Object.keys(NETWORKS)) {
+        const chain = Number(ch);
+        tokenList = [
+          {
+            address: ZEROEX_NATIVE_TOKEN_ADDRESS,
+            chainId: chain,
+            decimals: 18,
+            logoURI: getNativeCurrencyImage(chain),
+            name: getNativeCurrencySymbol(chain),
+            symbol: getNativeCurrencySymbol(chain),
+          },
+          ...tokenList,
+        ] as Token[];;
+      }
+    }
+
+    return [...tokenList] as Token[];
+  }, [chainId, onlyNative, includeNative]);
+}
 
 export function useTokenData(options?: Omit<UseMutationOptions, any>) {
   return useMutation(
