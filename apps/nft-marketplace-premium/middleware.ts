@@ -7,13 +7,24 @@ export const config = {
     '/asset/:path*',
     '/order/:path*',
     '/collection/:path*',
+    '/forms/:path*',
     '/wallet/:path*',
     '/404/:path*',
-    '/u/:path*'
+    '/u/:path*',
   ],
 };
 
-const basePaths = ['/asset', '/collection', '/order', '/swap', '/collections', '/wallet', '/404', '/u'];
+const basePaths = [
+  '/asset',
+  '/collection',
+  '/order',
+  '/swap',
+  '/forms',
+  '/collections',
+  '/wallet',
+  '/404',
+  '/u',
+];
 
 function isBasePath(path: string) {
   let isPath = false;
@@ -26,20 +37,19 @@ function isBasePath(path: string) {
     isPath = isPath || path.startsWith(p);
   }
   return isPath;
-
 }
-
 
 export default function middleware(req: NextRequest) {
   const url = req.nextUrl;
 
   let hostname = req.headers.get('host') || 'marketplace.localhost';
 
-  hostname = hostname.replace(':3001', '')
+  hostname = hostname.replace(':3001', '');
 
   if (url.pathname.startsWith('/admin')) {
     return NextResponse.rewrite(url);
   }
+
 
   if (url.pathname.startsWith('/site')) {
     return NextResponse.rewrite(url);
@@ -49,7 +59,11 @@ export default function middleware(req: NextRequest) {
     return NextResponse.rewrite(url);
   }
 
-  if (hostname === 'whitelabel-nft.dexkit.com' || hostname === 'dexappbuilder.dexkit.com' || hostname === 'dexappbuilder-dev.dexkit.com') {
+  if (
+    hostname === 'whitelabel-nft.dexkit.com' ||
+    hostname === 'dexappbuilder.dexkit.com' ||
+    hostname === 'dexappbuilder-dev.dexkit.com'
+  ) {
     // we pass here the search param to be used on get config
     const search = url.searchParams.get('mid');
     if (search) {
@@ -64,7 +78,6 @@ export default function middleware(req: NextRequest) {
     }
   }
 
-
   if (hostname.endsWith('.dexkit.app')) {
     // we pass here the slug param to be used on get config
     let slug;
@@ -73,7 +86,6 @@ export default function middleware(req: NextRequest) {
     } else {
       slug = hostname.split('.dexkit.app')[0];
     }
-
 
     if (slug) {
       hostname = `dexkit.app:${slug}`;
@@ -84,17 +96,11 @@ export default function middleware(req: NextRequest) {
     // rewrite everything else to `/_sites/[site] dynamic route
     url.pathname = `/_site/${hostname}${url.pathname}`;
 
-
     return NextResponse.rewrite(url);
   } else {
-
     // is not on base path, let's go to custom pages
     url.pathname = `/_custom/${hostname}${url.pathname}`;
 
     return NextResponse.rewrite(url);
-
   }
-
-
-
 }

@@ -2,10 +2,10 @@ import axios from 'axios';
 import { DEXKIT_BASE_API_URL } from 'src/constants';
 import { getAccessToken } from 'src/services/auth';
 
-const DEXKTI_DASH_ENDPOINT = `${DEXKIT_BASE_API_URL}`;
+const DEXKIT_DASH_ENDPOINT = `${DEXKIT_BASE_API_URL}`;
 
 export const myAppsApi = axios.create({
-  baseURL: DEXKTI_DASH_ENDPOINT,
+  baseURL: DEXKIT_DASH_ENDPOINT,
   headers: { 'content-type': 'application/json' },
 });
 

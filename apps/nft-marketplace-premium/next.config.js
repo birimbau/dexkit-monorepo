@@ -5,6 +5,7 @@ const withTM = require('next-transpile-modules')([
   '@dexkit/widgets',
   '@dexkit/ui',
   '@dexkit/core',
+  '@dexkit/web3forms',
 ]); // pass the modules you would like to see transpiled
 
 module.exports = removeImports(

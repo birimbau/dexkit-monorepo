@@ -2,10 +2,14 @@ import { useQuery } from '@tanstack/react-query';
 import { useContext, useMemo } from 'react';
 import { AppWizardConfigContext } from '../../../contexts';
 
+import { ChainId } from '@dexkit/core';
+import { NETWORKS } from '@dexkit/core/constants/networks';
+import { ethers } from 'ethers';
 import { useAtomValue } from 'jotai/utils';
 import { AppConfig } from 'src/types/config';
-import { getTokenList } from '../services';
+import { checkGatedConditions, getTokenList } from '../services';
 import { customThemeDarkAtom, customThemeLightAtom } from '../state';
+import { GatedCondition } from '../types';
 import { generateCSSVarsTheme } from '../utils';
 
 export const TOKEN_LIST_URL = 'TOKEN_LIST_URL';
@@ -25,7 +29,11 @@ export function useAppWizardConfig() {
   return { wizardConfig, setWizardConfig };
 }
 
-export function usePreviewThemeFromConfig({ appConfig }: { appConfig?: AppConfig }) {
+export function usePreviewThemeFromConfig({
+  appConfig,
+}: {
+  appConfig?: AppConfig;
+}) {
   const customThemeDark = useAtomValue(customThemeDarkAtom);
   const customThemeLight = useAtomValue(customThemeLightAtom);
   const selectedTheme = useMemo(() => {
@@ -47,13 +55,31 @@ export function usePreviewThemeFromConfig({ appConfig }: { appConfig?: AppConfig
       mode: appConfig?.defaultThemeMode,
     });
   }, [
-
     customThemeDark,
     customThemeLight,
     appConfig?.theme,
     appConfig?.defaultThemeMode,
-    appConfig?.font
+    appConfig?.font,
   ]);
 
   return selectedTheme;
+}
+
+export function useCheckGatedConditions({ conditions, account }: { conditions: GatedCondition[], account?: string }) {
+
+  return useQuery(['GET_CHECKED_GATED_CONDITIONS', account, conditions], () => {
+    return checkGatedConditions({ account, conditions })
+
+  })
+}
+export const JSON_RPC_PROVIDER = 'JSON_RPC_PROVIDER';
+
+export function useJsonRpcProvider({ chainId }: { chainId: ChainId }) {
+  return useQuery([JSON_RPC_PROVIDER, chainId], () => {
+    if (chainId) {
+      return new ethers.providers.JsonRpcProvider(
+        NETWORKS[chainId].providerRpcUrl
+      );
+    }
+  });
 }

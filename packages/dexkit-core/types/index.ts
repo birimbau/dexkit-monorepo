@@ -1,12 +1,11 @@
-export * from './blockchain';
-export * from './coin';
-export * from './nft';
+export * from "./blockchain";
+export * from "./coin";
+export * from "./nft";
 
-
-import { Dispatch, SetStateAction } from 'react';
+import { Dispatch, SetStateAction } from "react";
 import { ChainId, TransactionStatus, TransactionType } from "../constants";
-import { TransactionMetadata } from './blockchain';
-import { MagicLoginType } from './magic';
+import { TransactionMetadata } from "./blockchain";
+import { MagicLoginType } from "./magic";
 
 export type TokenWhitelabelApp = {
   address: string;
@@ -17,7 +16,6 @@ export type TokenWhitelabelApp = {
   logoURI: string;
   tradable?: boolean;
 };
-
 
 export type Token = {
   chainId: ChainId;
@@ -87,29 +85,40 @@ export interface AppTransaction {
 }
 
 export interface WatchTransactionDialogProperties {
-  values: Record<string, any> | undefined
-  open: (type: string, values: Record<string, any>) => void
-  close: () => void
-  redirectUrl: string | undefined
-  setRedirectUrl: (update?: SetStateAction<string | undefined>) => void
-  error: Error | undefined
-  hash: string | undefined
-  metadata: TransactionMetadata | undefined
-  type: string | undefined
-  isOpen: boolean
-  setHash: Dispatch<SetStateAction<string | undefined>>
-  setType: Dispatch<SetStateAction<string | undefined>>
-  setDialogIsOpen: (update: SetStateAction<boolean>) => void
-  setError: (update?: SetStateAction<Error | undefined>) => void
-  setMetadata: (update?: SetStateAction<TransactionMetadata | undefined>) => void
-  showDialog: (open: boolean, metadata?: TransactionMetadata, type?: TransactionType) => void
-  setDialogError: (error?: Error) => void
-  addTransaction: ({ hash, type, metadata, values }: {
+  values: Record<string, any> | undefined;
+  open: (type: string, values: Record<string, any>) => void;
+  close: () => void;
+  redirectUrl: string | undefined;
+  setRedirectUrl: (update?: SetStateAction<string | undefined>) => void;
+  error: Error | undefined;
+  hash: string | undefined;
+  metadata: TransactionMetadata | undefined;
+  type: string | undefined;
+  isOpen: boolean;
+  setHash: Dispatch<SetStateAction<string | undefined>>;
+  setType: Dispatch<SetStateAction<string | undefined>>;
+  setDialogIsOpen: (update: SetStateAction<boolean>) => void;
+  setError: (update?: SetStateAction<Error | undefined>) => void;
+  setMetadata: (
+    update?: SetStateAction<TransactionMetadata | undefined>
+  ) => void;
+  showDialog: (
+    open: boolean,
+    metadata?: TransactionMetadata,
+    type?: TransactionType
+  ) => void;
+  setDialogError: (error?: Error) => void;
+  addTransaction: ({
+    hash,
+    type,
+    metadata,
+    values,
+  }: {
     hash: string;
     type: TransactionType;
     metadata?: TransactionMetadata | undefined;
     values: Record<string, any>;
-    chainId: ChainId
-  }) => void
-  watch: (hash: string) => void
+    chainId: ChainId;
+  }) => void;
+  watch: (hash: string) => void;
 }

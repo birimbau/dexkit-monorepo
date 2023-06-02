@@ -51,7 +51,6 @@ export default function EditSectionDialog({
   };
 
   const handleSave = (section: AppPageSection) => {
-    console.log('savingsection', section);
     onSave(section, index);
     handleClose();
   };
@@ -147,6 +146,12 @@ export default function EditSectionDialog({
                 </MenuItem>
                 <MenuItem value="wallet">
                   <FormattedMessage id="wallet" defaultMessage="Wallet" />
+                </MenuItem>
+                <MenuItem value="contract">
+                  <FormattedMessage id="contract" defaultMessage="Contract" />
+                </MenuItem>
+                <MenuItem value="user-contract-form">
+                  <FormattedMessage id="User contract form" defaultMessage="User contract form" />
                 </MenuItem>
               </Select>
             </FormControl>

@@ -24,15 +24,19 @@ import { AppPage, AppPageOptions } from '../../../../types/config';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
 import FormatColorTextIcon from '@mui/icons-material/FormatColorText';
+import GavelIcon from '@mui/icons-material/Gavel';
+import ShieldIcon from '@mui/icons-material/Shield';
 import StoreIcon from '@mui/icons-material/Store';
 import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
 import Wallet from '@mui/icons-material/Wallet';
 import { useState } from 'react';
 import AppConfirmDialog from '../../../../components/AppConfirmDialog';
+import { GatedCondition } from '../../types';
 import { AppPageSection } from '../../types/section';
 import PagesMenu from '../PagesMenu';
 import PreviewPagePlatform from '../PreviewPagePlatform';
 import AddPageDialog from '../dialogs/AddPageDialog';
+import GatedConditionsFormDialog from '../dialogs/GatedConditionsFormDialog';
 import PreviewPageDialog from '../dialogs/PreviewPageDialog';
 import { SectionHeader } from '../sections/SectionHeader';
 interface Props {
@@ -128,6 +132,19 @@ export default function PagesSectionPage({
       title = <FormattedMessage id="wallet" defaultMessage="Wallet" />;
       subtitle = section.title || '';
       icon = <Wallet />;
+    } else if (section.type === 'contract') {
+      title = <FormattedMessage id="contract" defaultMessage="Contract" />;
+      subtitle = section.title || '';
+      icon = <GavelIcon />;
+    } else if (section.type === 'user-contract-form') {
+      title = (
+        <FormattedMessage
+          id="user.contract.form"
+          defaultMessage="User contract form"
+        />
+      );
+      subtitle = section.title || '';
+      icon = <GavelIcon />;
     }
     if (!title) {
       return null;
@@ -171,6 +188,8 @@ export default function PagesSectionPage({
 
   const [showAddPage, setShowAddPage] = useState(false);
 
+  const [showGatedModalForm, setShowGatedModalForm] = useState(false);
+
   const handleShowPreview = () => {
     setShowPreview(true);
   };
@@ -181,6 +200,10 @@ export default function PagesSectionPage({
 
   const handleShowAddPage = () => {
     setShowAddPage(true);
+  };
+
+  const handleShowGatedModalForm = () => {
+    setShowGatedModalForm(true);
   };
 
   const handleClonePage = () => {
@@ -195,6 +218,11 @@ export default function PagesSectionPage({
     setShowAddPage(false);
     setPageToClone(undefined);
   };
+
+  const handleCloseGatedModalForm = () => {
+    setShowGatedModalForm(false);
+  };
+
   const handleConfirmDeletePage = () => {
     setShowDeleteDialogPage(false);
     if (currentPage && currentPage.key) {
@@ -209,6 +237,18 @@ export default function PagesSectionPage({
   const handleShowPageDeleteDialog = () => {
     setShowDeleteDialogPage(true);
   };
+
+  const onEditGatedContidions = (gatedConditions: GatedCondition[]) => {
+    console.log(gatedConditions);
+    onEditPage({
+      isEditGatedConditions: true,
+      gatedConditions: gatedConditions,
+      title: currentPage?.title,
+      key: currentPage?.key,
+    });
+  };
+
+  console.log(currentPage);
 
   return (
     <>
@@ -235,6 +275,17 @@ export default function PagesSectionPage({
         clonedPage={pageToClone}
         onCancel={handleCloseAddPage}
         onSubmit={onEditPage}
+      />
+      <GatedConditionsFormDialog
+        dialogProps={{
+          open: showGatedModalForm,
+          maxWidth: 'sm',
+          fullWidth: true,
+          onClose: handleCloseGatedModalForm,
+        }}
+        conditions={currentPage?.gatedConditions}
+        onCancel={handleCloseGatedModalForm}
+        onSubmit={onEditGatedContidions}
       />
       <AppConfirmDialog
         dialogProps={{
@@ -297,8 +348,24 @@ export default function PagesSectionPage({
               size="small"
               startIcon={<AddIcon />}
             >
-              <FormattedMessage id="create.page" defaultMessage="Create page" />
+              <FormattedMessage
+                id="create.new.page"
+                defaultMessage="Create new page"
+              />
             </Button>
+            {currentPage?.key !== 'home' && (
+              <Button
+                variant="outlined"
+                onClick={handleShowGatedModalForm}
+                size="small"
+                startIcon={<ShieldIcon />}
+              >
+                <FormattedMessage
+                  id="gated.conditions"
+                  defaultMessage="Gated conditions"
+                />
+              </Button>
+            )}
             <Button
               variant="outlined"
               onClick={handleClonePage}

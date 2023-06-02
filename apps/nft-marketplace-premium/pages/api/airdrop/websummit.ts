@@ -12,8 +12,7 @@ export default async function handler(
   if (!refreshToken) {
     return res.status(401).json({ message: "You must be logged on app." });
   }
-  console.log(req.headers['x-vercel-ip-city']);
-  console.log(req.headers['x-vercel-ip-country-region'])
+
   if (req.headers['x-vercel-ip-country'] === 'BR' && req.headers['x-vercel-ip-city'] === encodeURIComponent('Rio de Janeiro')) {
 
   } else {

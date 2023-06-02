@@ -25,11 +25,6 @@ export function NotificationMessage({ types, type, values }: Props) {
     return {};
   };
 
-  if (types[type] === undefined) {
-    console.log(type, types);
-    debugger;
-  }
-
   return (
     <FormattedMessage
       id={types[type].id}
