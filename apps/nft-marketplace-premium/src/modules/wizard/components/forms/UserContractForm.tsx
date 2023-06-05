@@ -67,16 +67,21 @@ export function UserContractForm({
     }
   }, [onSave, selectedFormId, hideInfo]);
 
-  const handleChangeHideInfo = (e: ChangeEvent<HTMLInputElement>) => {
-    setHideInfo(e.target.checked);
-  };
+  const handleChangeHideInfo = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      if (saveOnChange) {
+        onSave(selectedFormId, e.target.checked);
+      }
+      setHideInfo(e.target.checked);
+    },
+    [saveOnChange]
+  );
 
   useEffect(() => {
     if (!selectedFormId) {
       setSelectedFormId(formId);
     }
     if (hideFormInfo !== undefined) {
-      console.log('mount2', hideFormInfo);
       setHideInfo(hideFormInfo);
     }
   }, [formId, hideFormInfo]);
