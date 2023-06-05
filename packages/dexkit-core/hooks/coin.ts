@@ -1,11 +1,15 @@
-import { useQuery } from "@tanstack/react-query";
+import {
+  UseMutationOptions,
+  useMutation,
+  useQuery,
+} from "@tanstack/react-query";
 import { BigNumber, ethers } from "ethers";
 import { ERC20Abi } from "../constants/abis";
 import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "../constants/zrx";
+import { getERC20TokenAllowance } from "../services";
 import { isAddressEqual } from "../utils";
 
-
-export const ERC20_BALANCE = 'ERC20_BALANCE';
+export const ERC20_BALANCE = "ERC20_BALANCE";
 
 export interface Erc20BalanceParams {
   account?: string;
@@ -19,6 +23,7 @@ export function useErc20BalanceQuery({
   provider,
 }: Erc20BalanceParams) {
   return useQuery([ERC20_BALANCE, account, contractAddress], async () => {
+    console.log("passa aqui", !contractAddress, provider, account);
     if (!contractAddress || !provider || !account) {
       return BigNumber.from(0);
     }
@@ -33,7 +38,7 @@ export function useErc20BalanceQuery({
   });
 }
 
-const EVM_NATIVE_BALANCE_QUERY = 'EVM_NATIVE_BALANCE_QUERY';
+const EVM_NATIVE_BALANCE_QUERY = "EVM_NATIVE_BALANCE_QUERY";
 
 export function useEvmNativeBalanceQuery({
   provider,
@@ -51,4 +56,71 @@ export function useEvmNativeBalanceQuery({
   });
 }
 
+export const TOKEN_ALLOWANCE_QUERY = "TOKEN_ALLOWANCE_QUERY";
 
+export function useTokenAllowanceQuery({
+  tokenAddress,
+  account,
+  spender,
+  provider,
+}: {
+  account?: string;
+  tokenAddress?: string;
+  spender?: string;
+  provider?: ethers.providers.Web3Provider;
+}) {
+  return useQuery(
+    [TOKEN_ALLOWANCE_QUERY, tokenAddress, account, spender],
+    async () => {
+      if (!provider || !tokenAddress || !account || !spender) {
+        return ethers.BigNumber.from(0);
+      }
+
+      return await getERC20TokenAllowance(
+        provider,
+        tokenAddress,
+        account,
+        spender
+      );
+    }
+  );
+}
+
+export function useApproveToken({
+  spender,
+  tokenContract,
+  provider,
+  options,
+  onSubmited,
+}: {
+  spender?: string;
+  tokenContract?: string;
+  provider?: ethers.providers.Web3Provider;
+  onSubmited: (hash: string) => void;
+  options?: Omit<
+    UseMutationOptions<
+      ethers.ContractReceipt | undefined,
+      unknown,
+      void,
+      unknown
+    >,
+    "mutationFn"
+  >;
+}) {
+  return useMutation(async () => {
+    if (!tokenContract || !spender) {
+      return;
+    }
+
+    const tx = await approveToken(
+      tokenContract,
+      spender,
+      BigNumber.from("1000000").mul(BigNumber.from("10").pow(18)),
+      provider
+    );
+
+    onSubmited(tx.hash);
+
+    return await tx.wait();
+  }, options);
+}

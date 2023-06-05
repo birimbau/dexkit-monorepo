@@ -1,5 +1,4 @@
 import { ComponentMeta, ComponentStory } from "@storybook/react";
-import TradeWidget from "../components/TradeWidget";
 
 import { getConnectorName } from "@dexkit/core/utils";
 import { useOrderedConnectors } from "@dexkit/ui/hooks";
@@ -8,15 +7,17 @@ import ThemeProvider from "@mui/material/styles/ThemeProvider";
 import createTheme from "@mui/material/styles/createTheme";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Web3ReactProvider, useWeb3React } from "@web3-react/core";
+import { ethers } from "ethers";
 import { atom } from "jotai";
 import { useEffect, useMemo } from "react";
 import { IntlProvider } from "react-intl";
+import ReviewOrderDialog from "../components/TradeWidget/ReviewOrderDialog";
 
 export default {
-  title: "Components/TradeWdiget",
-  component: TradeWidget,
+  title: "Components/ReviewOrderDialog",
+  component: ReviewOrderDialog,
   argTypes: {},
-} as ComponentMeta<typeof TradeWidget>;
+} as ComponentMeta<typeof ReviewOrderDialog>;
 
 const theme = createTheme({
   typography: {
@@ -46,13 +47,16 @@ const ConnectorActivator = () => {
       connector &&
       connector.connectEagerly
     ) {
+      setTimeout(() => {
+        connector.connectEagerly!();
+      }, 1000);
     }
   }, [connector]);
 
   return <Button onClick={() => connector.connectEagerly!()}>Connect</Button>;
 };
 
-const Template: ComponentStory<typeof TradeWidget> = (args) => {
+const Template: ComponentStory<typeof ReviewOrderDialog> = (args) => {
   const connectors = useOrderedConnectors({ selectedWalletAtom });
 
   const web3ReactKey = useMemo(
@@ -73,7 +77,15 @@ const Template: ComponentStory<typeof TradeWidget> = (args) => {
         <Web3ReactProvider key={web3ReactKey} connectors={connectors}>
           <QueryClientProvider client={client}>
             <ConnectorActivator />
-            <TradeWidget {...args} />
+            <ReviewOrderDialog
+              DialogProps={{
+                open: true,
+                fullWidth: true,
+                maxWidth: "sm",
+                onClose: () => {},
+              }}
+              makerAmount={ethers.BigNumber.from("100000")}
+            />
           </QueryClientProvider>
         </Web3ReactProvider>
       </ThemeProvider>
