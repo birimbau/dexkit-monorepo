@@ -59,18 +59,16 @@ export async function checkGatedConditions({ account, conditions }: { account?: 
         const balance = await getERC20Balance(condition.address, account, getProviderByChainId(condition.chainId));
         balances[index] = ethers.utils.formatUnits(balance, condition.decimals);
         partialResults[index] = false;
-        if (balance.gt(ethers.utils.parseUnits(condition.amount, condition.decimals))) {
+        if (balance.gt(ethers.utils.parseUnits(String(condition.amount), condition.decimals))) {
           thisCondition = true
           partialResults[index] = true;
         }
       }
       if (condition.type === 'collection' && condition.protocol !== 'ERC1155') {
-        const balance = await getBalanceOf(getNetworkSlugFromChainId(condition.chainId) as string, condition.address as string, account)
-        console.log(balance.toString());
-        console.log(ethers.utils.parseUnits(condition.amount, 0).toString());
+        const balance = await getBalanceOf(getNetworkSlugFromChainId(condition.chainId) as string, condition.address as string, account);
         balances[index] = ethers.utils.formatUnits(balance, 0);
         partialResults[index] = false;
-        if (balance.gte(ethers.utils.parseUnits(condition.amount, 0))) {
+        if (balance.gte(ethers.utils.parseUnits(String(condition.amount), 0))) {
           thisCondition = true;
           partialResults[index] = true;
         }
@@ -79,7 +77,7 @@ export async function checkGatedConditions({ account, conditions }: { account?: 
         const balance = await getBalanceOfERC1155(getNetworkSlugFromChainId(condition.chainId) as string, condition.address as string, account, condition.tokenId as string)
         balances[index] = ethers.utils.formatUnits(balance, 0);
         partialResults[index] = false;
-        if (balance.gte(ethers.utils.parseUnits(condition.amount, 0))) {
+        if (balance.gte(ethers.utils.parseUnits(String(condition.amount), 0))) {
           thisCondition = true;
           partialResults[index] = true;
         }
