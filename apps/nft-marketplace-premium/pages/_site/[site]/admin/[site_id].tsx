@@ -23,14 +23,14 @@ import { getAppConfig } from 'src/services/app';
 
 export const WizardPage: NextPage = () => {
   const router = useRouter();
-  const { site } = router.query;
+  const { site_id } = router.query;
   const {
     data: config,
     error: configError,
     isLoading: isConfigLoading,
     isError: isConfigError,
   } = useWhitelabelConfigQuery({
-    domain: site as string,
+    domain: site_id as string,
   });
 
   const theme = useTheme();

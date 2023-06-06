@@ -11,6 +11,7 @@ export const config = {
     '/wallet/:path*',
     '/404/:path*',
     '/u/:path*',
+    '/admin/:path*'
   ],
 };
 
@@ -23,6 +24,7 @@ const basePaths = [
   '/collections',
   '/wallet',
   '/404',
+  '/admin',
   '/u',
 ];
 
@@ -46,7 +48,7 @@ export default function middleware(req: NextRequest) {
 
   hostname = hostname.replace(':3001', '');
 
-  if (url.pathname.startsWith('/admin')) {
+  if (url.pathname.startsWith('/super-admin')) {
     return NextResponse.rewrite(url);
   }
 
