@@ -29,6 +29,8 @@ import { SectionsRenderer } from '@/modules/wizard/components/sections/SectionsR
 import { checkGatedConditions } from '@/modules/wizard/services';
 import { GatedCondition } from '@/modules/wizard/types';
 import { AppPageSection } from '@/modules/wizard/types/section';
+import { SessionProvider } from 'next-auth/react';
+import AuthMainLayout from 'src/components/layouts/authMain';
 import { getProviderBySlug } from '../../../../src/services/providers';
 
 const CustomPage: NextPage<{
@@ -50,15 +52,17 @@ const CustomPage: NextPage<{
 }) => {
   if (isProtected) {
     return (
-      <MainLayout>
-        <GatedConditionView
-          account={account}
-          conditions={conditions}
-          result={result}
-          partialResults={partialResults}
-          balances={balances}
-        />
-      </MainLayout>
+      <SessionProvider>
+        <AuthMainLayout>
+          <GatedConditionView
+            account={account}
+            conditions={conditions}
+            result={result}
+            partialResults={partialResults}
+            balances={balances}
+          />
+        </AuthMainLayout>
+      </SessionProvider>
     );
   }
 
