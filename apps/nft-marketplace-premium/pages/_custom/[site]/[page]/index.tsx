@@ -117,20 +117,35 @@ export const getServerSideProps: GetServerSideProps = async ({
         await getUserByAccountRefresh({ token });
         const account = (jwt_decode(token) as { address: string }).address;
         const conditions = homePage.gatedConditions;
-        const gatedResults = await checkGatedConditions({
-          account,
-          conditions,
-        });
+        try {
+          const gatedResults = await checkGatedConditions({
+            account,
+            conditions,
+          });
 
-        if (!gatedResults?.result) {
+          if (!gatedResults?.result) {
+            return {
+              props: {
+                isProtected: true,
+                account: account,
+                sections: homePage.sections,
+                result: gatedResults?.result,
+                balances: gatedResults?.balances,
+                partialResults: gatedResults?.partialResults,
+                conditions: homePage.gatedConditions,
+                ...configResponse,
+              },
+            };
+          }
+        } catch {
           return {
             props: {
               isProtected: true,
               account: account,
               sections: homePage.sections,
-              result: gatedResults?.result,
-              balances: gatedResults?.balances,
-              partialResults: gatedResults?.partialResults,
+              result: false,
+              balances: {},
+              partialResults: {},
               conditions: homePage.gatedConditions,
               ...configResponse,
             },

@@ -39,8 +39,6 @@ export function GatedConditionView({
   partialResults: { [key: number]: boolean };
   balances: { [key: number]: string };
 }) {
-  console.log(conditions);
-
   return (
     <Container>
       <Grid container spacing={2}>
@@ -88,7 +86,7 @@ export function GatedConditionView({
                 )}
                 <Box py={1}>
                   <Stack key={index} spacing={2} direction={'row'}>
-                    {partialResults[index] === true ? (
+                    {partialResults[index] && partialResults[index] === true ? (
                       <CheckCircleOutlineIcon color={'success'} />
                     ) : (
                       <CheckCircleOutlineIcon color={'error'} />
@@ -118,7 +116,9 @@ export function GatedConditionView({
                           </b>
                         </Typography>
                         <Typography>|</Typography>
-                        <ShowBalance balance={balances[index]} />
+                        {balances[index] && (
+                          <ShowBalance balance={balances[index]} />
+                        )}
                       </>
                     )}
                     {condition.type === 'coin' && (
@@ -148,7 +148,9 @@ export function GatedConditionView({
                           </b>
                         </Typography>
                         <Typography>|</Typography>
-                        <ShowBalance balance={balances[index]} />
+                        {balances[index] && (
+                          <ShowBalance balance={balances[index]} />
+                        )}
                       </>
                     )}
                   </Stack>
