@@ -21,16 +21,16 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
+import { QueryClient, dehydrate } from '@tanstack/react-query';
 import { NextSeo } from 'next-seo';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { dehydrate, QueryClient } from '@tanstack/react-query';
 import { AppErrorBoundary } from 'src/components/AppErrorBoundary';
-import Funnel from 'src/components/icons/Filter';
-import MainLayout from 'src/components/layouts/main';
 import SidebarFilters from 'src/components/SidebarFilters';
 import SidebarFiltersContent from 'src/components/SidebarFiltersContent';
+import Funnel from 'src/components/icons/Filter';
+import MainLayout from 'src/components/layouts/main';
 import { CollectionSyncStatus, NETWORK_ID } from 'src/constants/enum';
 import {
   MAP_COIN_TO_RARIBLE,
@@ -45,6 +45,7 @@ import {
   GET_CONTRACT_COLLECTION_DATA,
   useCollection,
 } from 'src/hooks/nft';
+import { getAppConfig } from 'src/services/app';
 import {
   getApiContractCollectionData,
   getCollectionAssetsDexKitApi,
@@ -261,6 +262,7 @@ export const getStaticProps: GetStaticProps = async ({
   const network = params?.network;
   const address = params?.address?.toLowerCase();
   const queryClient = new QueryClient();
+  const configResponse = await getAppConfig(params?.site, 'no-page-defined');
   const contract = await getApiContractCollectionData(network, address);
   const collection = contract?.collection;
 
@@ -342,7 +344,7 @@ export const getStaticProps: GetStaticProps = async ({
   }
 
   return {
-    props: { dehydratedState: dehydrate(queryClient) },
+    props: { dehydratedState: dehydrate(queryClient), ...configResponse },
     revalidate: 60,
   };
 };

@@ -1,11 +1,19 @@
 import WizardCreateCollectionContainer from '@/modules/contract-wizard/components/WizardCreateCollectionContainer';
+import { QueryClient, dehydrate } from '@tanstack/react-query';
 
-import type { NextPage } from 'next';
+import type {
+  GetStaticPaths,
+  GetStaticPathsContext,
+  GetStaticProps,
+  GetStaticPropsContext,
+  NextPage,
+} from 'next';
 import { NextSeo } from 'next-seo';
 import { useIntl } from 'react-intl';
 import MainLayout from 'src/components/layouts/main';
 import { useAppConfig } from 'src/hooks/app';
 import { AuthProvider } from 'src/providers/authProvider';
+import { getAppConfig } from 'src/services/app';
 
 const WizardCreateCollectionPage: NextPage = () => {
   const appConfig = useAppConfig();
@@ -42,6 +50,34 @@ const WizardCreateCollectionPage: NextPage = () => {
       </MainLayout>
     </AuthProvider>
   );
+};
+
+type Params = {
+  site?: string;
+};
+
+export const getStaticProps: GetStaticProps = async ({
+  params,
+}: GetStaticPropsContext<Params>) => {
+  const queryClient = new QueryClient();
+  const configResponse = await getAppConfig(params?.site, 'no-page-defined');
+
+  return {
+    props: {
+      dehydratedState: dehydrate(queryClient),
+      ...configResponse,
+    },
+    revalidate: 300,
+  };
+};
+
+export const getStaticPaths: GetStaticPaths<
+  Params
+> = ({}: GetStaticPathsContext) => {
+  return {
+    paths: [],
+    fallback: 'blocking',
+  };
 };
 
 export default WizardCreateCollectionPage;

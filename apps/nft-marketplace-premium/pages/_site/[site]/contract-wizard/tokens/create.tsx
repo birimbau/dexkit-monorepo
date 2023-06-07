@@ -258,4 +258,32 @@ const WizardCreateTokenPage: NextPage = () => {
   );
 };
 
+type Params = {
+  site?: string;
+};
+
+export const getStaticProps: GetStaticProps = async ({
+  params,
+}: GetStaticPropsContext<Params>) => {
+  const queryClient = new QueryClient();
+  const configResponse = await getAppConfig(params?.site, 'no-page-defined');
+
+  return {
+    props: {
+      dehydratedState: dehydrate(queryClient),
+      ...configResponse,
+    },
+    revalidate: 300,
+  };
+};
+
+export const getStaticPaths: GetStaticPaths<
+  Params
+> = ({}: GetStaticPathsContext) => {
+  return {
+    paths: [],
+    fallback: 'blocking',
+  };
+};
+
 export default WizardCreateTokenPage;

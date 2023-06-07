@@ -11,13 +11,21 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
-import type { NextPage } from 'next';
+import { dehydrate, QueryClient } from '@tanstack/react-query';
+import type {
+  GetStaticPaths,
+  GetStaticPathsContext,
+  GetStaticProps,
+  GetStaticPropsContext,
+  NextPage,
+} from 'next';
 import { NextSeo } from 'next-seo';
 import { FormattedMessage, useIntl } from 'react-intl';
 import MainLayout from 'src/components/layouts/main';
 import Link from 'src/components/Link';
 import { PageHeader } from 'src/components/PageHeader';
 import { useAppConfig } from 'src/hooks/app';
+import { getAppConfig } from 'src/services/app';
 
 const WizardIndexPage: NextPage = () => {
   const appConfig = useAppConfig();
@@ -152,6 +160,34 @@ const WizardIndexPage: NextPage = () => {
       </Container>
     </MainLayout>
   );
+};
+
+type Params = {
+  site?: string;
+};
+
+export const getStaticProps: GetStaticProps = async ({
+  params,
+}: GetStaticPropsContext<Params>) => {
+  const queryClient = new QueryClient();
+  const configResponse = await getAppConfig(params?.site, 'no-page-defined');
+
+  return {
+    props: {
+      dehydratedState: dehydrate(queryClient),
+      ...configResponse,
+    },
+    revalidate: 300,
+  };
+};
+
+export const getStaticPaths: GetStaticPaths<
+  Params
+> = ({}: GetStaticPathsContext) => {
+  return {
+    paths: [],
+    fallback: 'blocking',
+  };
 };
 
 export default WizardIndexPage;
