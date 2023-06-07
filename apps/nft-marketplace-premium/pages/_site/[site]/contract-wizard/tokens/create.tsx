@@ -12,10 +12,17 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
+import { dehydrate, QueryClient } from '@tanstack/react-query';
 import { useWeb3React } from '@web3-react/core';
 import { Field, Form, Formik } from 'formik';
 import { TextField } from 'formik-mui';
-import type { NextPage } from 'next';
+import type {
+  GetStaticPaths,
+  GetStaticPathsContext,
+  GetStaticProps,
+  GetStaticPropsContext,
+  NextPage,
+} from 'next';
 import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
 import { useState } from 'react';
@@ -23,6 +30,7 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import AppConfirmDialog from 'src/components/AppConfirmDialog';
 import MainLayout from 'src/components/layouts/main';
 import { PageHeader } from 'src/components/PageHeader';
+import { getAppConfig } from 'src/services/app';
 
 const INITIAL_VALUES: TokenForm = {
   name: '',
