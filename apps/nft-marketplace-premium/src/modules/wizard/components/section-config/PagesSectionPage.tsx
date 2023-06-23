@@ -239,7 +239,6 @@ export default function PagesSectionPage({
   };
 
   const onEditGatedContidions = (gatedConditions: GatedCondition[]) => {
-    console.log(gatedConditions);
     onEditPage({
       isEditGatedConditions: true,
       gatedConditions: gatedConditions,
@@ -247,8 +246,6 @@ export default function PagesSectionPage({
       key: currentPage?.key,
     });
   };
-
-  console.log(currentPage);
 
   return (
     <>

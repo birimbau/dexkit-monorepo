@@ -29,6 +29,8 @@ import { SectionsRenderer } from '@/modules/wizard/components/sections/SectionsR
 import { checkGatedConditions } from '@/modules/wizard/services';
 import { GatedCondition } from '@/modules/wizard/types';
 import { AppPageSection } from '@/modules/wizard/types/section';
+import { SessionProvider } from 'next-auth/react';
+import AuthMainLayout from 'src/components/layouts/authMain';
 import { getProviderBySlug } from '../../../../src/services/providers';
 
 const CustomPage: NextPage<{
@@ -50,15 +52,17 @@ const CustomPage: NextPage<{
 }) => {
   if (isProtected) {
     return (
-      <MainLayout>
-        <GatedConditionView
-          account={account}
-          conditions={conditions}
-          result={result}
-          partialResults={partialResults}
-          balances={balances}
-        />
-      </MainLayout>
+      <SessionProvider>
+        <AuthMainLayout>
+          <GatedConditionView
+            account={account}
+            conditions={conditions}
+            result={result}
+            partialResults={partialResults}
+            balances={balances}
+          />
+        </AuthMainLayout>
+      </SessionProvider>
     );
   }
 
@@ -113,20 +117,35 @@ export const getServerSideProps: GetServerSideProps = async ({
         await getUserByAccountRefresh({ token });
         const account = (jwt_decode(token) as { address: string }).address;
         const conditions = homePage.gatedConditions;
-        const gatedResults = await checkGatedConditions({
-          account,
-          conditions,
-        });
+        try {
+          const gatedResults = await checkGatedConditions({
+            account,
+            conditions,
+          });
 
-        if (!gatedResults?.result) {
+          if (!gatedResults?.result) {
+            return {
+              props: {
+                isProtected: true,
+                account: account,
+                sections: homePage.sections,
+                result: gatedResults?.result,
+                balances: gatedResults?.balances,
+                partialResults: gatedResults?.partialResults,
+                conditions: homePage.gatedConditions,
+                ...configResponse,
+              },
+            };
+          }
+        } catch {
           return {
             props: {
               isProtected: true,
               account: account,
               sections: homePage.sections,
-              result: gatedResults?.result,
-              balances: gatedResults?.balances,
-              partialResults: gatedResults?.partialResults,
+              result: false,
+              balances: {},
+              partialResults: {},
               conditions: homePage.gatedConditions,
               ...configResponse,
             },
