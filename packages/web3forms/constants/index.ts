@@ -68,3 +68,5 @@ export const WEB3FORMS_INPUT_TYPES: {
     type: "uint256",
   },
 };
+
+export const THIRDWEB_CONTRACT_LIST_URL = "";

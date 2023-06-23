@@ -18,6 +18,15 @@
   "pre-push": [
     "build"
   ],
+  "browser": {
+    "child_process": false,
+    "fs": false,
+    "path": false,
+    "os": false,
+    "net": false,
+    "dgram": false,
+    "module": false
+  },
   "dependencies": {
     "@0x/contract-addresses": "^7.4.1",
     "@date-io/moment": "^2.13.1",

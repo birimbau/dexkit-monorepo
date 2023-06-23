@@ -6,6 +6,11 @@ export const EvmSchemaTypes: { [key: string]: Yup.Schema } = {
   string: Yup.string().required(),
   bytes: Yup.string().required(),
   bool: Yup.bool().required(),
+  "address[]": Yup.array(
+    Yup.string().test("address", "invalid address", (value) => {
+      return value !== undefined ? ethers.utils.isAddress(value) : true;
+    })
+  ).required(),
   address: Yup.string()
     .test("address", "invalid address", (value) => {
       return value !== undefined ? ethers.utils.isAddress(value) : true;

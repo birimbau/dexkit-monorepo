@@ -20,10 +20,11 @@ import {
   SelectChangeEvent,
   Stack,
 } from "@mui/material";
-import { TextField } from "formik-mui";
+import MuiTextField from "@mui/material/TextField";
+import { Autocomplete, TextField } from "formik-mui";
 import { useSnackbar } from "notistack";
 import { ReactNode, useCallback, useState } from "react";
-import { CallParams, FunctionInput } from "../types";
+import { CallParams, FunctionInput, ThirdWebDeployFormParams } from "../types";
 import { getSchemaForInputs } from "../utils";
 
 export function isFunctionCall(stateMutability: string) {
@@ -38,6 +39,7 @@ export interface ContractConstructorProps {
   onSwitchNetwork?: (chainId?: ChainId) => Promise<void>;
   chainId?: ChainId;
   isLoading?: boolean;
+  params: ThirdWebDeployFormParams;
 }
 
 export default function ContractConstructor({
@@ -48,9 +50,39 @@ export default function ContractConstructor({
   onCall,
   chainId,
   onSwitchNetwork,
+  params,
 }: ContractConstructorProps) {
   const renderInputs = () => {
     return inputs.map((input, key) => {
+      if (input.type === "address[]") {
+        return (
+          <Grid item xs={12} key={key}>
+            <Field
+              component={Autocomplete}
+              freeSolo
+              multiple
+              size="small"
+              autoSelect
+              name={input.name}
+              options={[]}
+              filterSelectedOptions
+              renderInput={(params: any) => (
+                <MuiTextField
+                  {...params}
+                  label={
+                    <FormattedMessage
+                      id="addresses"
+                      defaultMessage="Addresses"
+                    />
+                  }
+                  placeholder="Address"
+                />
+              )}
+            />
+          </Grid>
+        );
+      }
+
       return (
         <Grid item xs={12} key={key}>
           <Field
@@ -73,10 +105,14 @@ export default function ContractConstructor({
   };
 
   const getInitialValues = useCallback((inputs: FunctionInput[]) => {
-    let obj: { [key: string]: string } = {};
+    let obj: { [key: string]: any } = {};
 
     for (let input of inputs) {
-      obj[input.name] = "";
+      if (input.type === "address[]") {
+        obj[input.name] = [];
+      } else {
+        obj[input.name] = "";
+      }
     }
 
     return obj;

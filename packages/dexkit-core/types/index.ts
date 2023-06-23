@@ -2,6 +2,7 @@ export * from "./blockchain";
 export * from "./coin";
 export * from "./nft";
 
+import { AxiosInstance } from "axios";
 import { Dispatch, SetStateAction } from "react";
 import { ChainId, TransactionStatus, TransactionType } from "../constants";
 import { TransactionMetadata } from "./blockchain";
@@ -121,4 +122,8 @@ export interface WatchTransactionDialogProperties {
     chainId: ChainId;
   }) => void;
   watch: (hash: string) => void;
+}
+
+export interface DexkitApiProviderState {
+  instance: AxiosInstance | null;
 }

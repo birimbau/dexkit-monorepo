@@ -1,22 +1,18 @@
-import Delete from '@mui/icons-material/Delete';
 import {
   Box,
   Button,
   Card,
   CardContent,
-  Divider,
   Grid,
   Stack,
-  Typography,
+  Typography
 } from '@mui/material';
-import { FieldArray, Form, useFormikContext, Field } from 'formik';
-import React, { useState } from 'react';
+import { Field, FieldArray, Form, useFormikContext } from 'formik';
 import { TextField } from 'formik-mui';
+import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import AppConfirmDialog from 'src/components/AppConfirmDialog';
 import { CollectionItemFormType } from '../types';
 import CollectionItemAttributeForm from './CollectionItemAttributeForm';
-import CollectionItemForm from './CollectionItemForm';
 import { ImageFormUpload } from './ImageFormUpload';
 
 interface Props {
