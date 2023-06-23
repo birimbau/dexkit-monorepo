@@ -61,7 +61,6 @@ export default function GatedConditionsFormDialog({
   dialogProps,
   conditions,
 }: Props) {
-  console.log(conditions);
   const { onClose } = dialogProps;
   const handleClose = () => {
     if (onClose) {
