@@ -164,3 +164,19 @@ export async function getPricesByChain(
     currency,
   });
 }
+
+export const getCoinPricesByCID = async ({
+  coingeckoIds,
+  currency = 'usd',
+}: {
+  coingeckoIds: string[];
+  currency: string;
+}): Promise<{ [key: string]: { [key: string]: number } }> => {
+  const priceResponce = await axios.get(
+    `${COINGECKO_ENDPOIT}/simple/price?ids=${coingeckoIds.concat(
+      ','
+    )}&vs_currencies=${currency}`
+  );
+
+  return priceResponce.data as { [key: string]: { [key: string]: number } };
+};

@@ -5,7 +5,7 @@ import { SnackbarProvider } from "notistack";
 import { useMemo } from "react";
 import { useDexkitContextState, useOrderedConnectors } from "../hooks";
 
-import { AppTransaction } from "@dexkit/core/types";
+import { AppTransaction, Asset, TokenWhitelabelApp } from "@dexkit/core/types";
 import { getConnectorName } from "@dexkit/core/utils";
 import { CssBaseline } from "@mui/material";
 import { PrimitiveAtom, SetStateAction, WritableAtom } from "jotai";
@@ -47,9 +47,10 @@ export interface DexkitProviderProps {
     }>,
     void
   >;
-
   notificationsAtom: PrimitiveAtom<AppNotification[]>;
-
+  tokensAtom: PrimitiveAtom<TokenWhitelabelApp[]>;
+  assetsAtom: PrimitiveAtom<{ [key: string]: Asset }>;
+  currencyUserAtom: PrimitiveAtom<string>;
   selectedWalletAtom: PrimitiveAtom<string>;
 }
 
@@ -57,9 +58,12 @@ export function DexkitProvider({
   children,
   theme,
   themeMode,
+  currencyUserAtom,
   selectedWalletAtom,
   transactionsAtom,
   locale,
+  tokensAtom,
+  assetsAtom,
   onChangeLocale,
   localeMessages,
   notificationTypes,
@@ -76,7 +80,10 @@ export function DexkitProvider({
   const appState = useDexkitContextState({
     notificationTypes,
     notificationsAtom,
+    tokensAtom,
+    assetsAtom,
     transactionsAtom,
+    currencyUserAtom,
     onChangeLocale,
   });
 

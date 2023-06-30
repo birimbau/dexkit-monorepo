@@ -9,6 +9,9 @@ import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "../constants/zrx";
 import { EvmCoin, TokenWhitelabelApp } from "../types";
 import { MagicConnector } from "../types/magic";
 
+export * from './ipfs';
+export * from './numbers';
+
 export function getConnectorName(connector?: Connector) {
   if (connector instanceof MagicConnector) {
     return "magic";

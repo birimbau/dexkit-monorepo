@@ -4,21 +4,52 @@ import {
   TransactionStatus,
   TransactionType,
 } from "@dexkit/core/constants";
-import { AppTransaction, TransactionMetadata } from "@dexkit/core/types";
+import { AppTransaction, Asset, TokenWhitelabelApp, TransactionMetadata } from "@dexkit/core/types";
 import { switchNetwork } from "@dexkit/core/utils";
 import { useMutation } from "@tanstack/react-query";
 import { useWeb3React, Web3ReactHooks } from "@web3-react/core";
 import { Connector } from "@web3-react/types";
-import { PrimitiveAtom, useAtom, useAtomValue } from "jotai";
+import { atom, PrimitiveAtom, useAtom, useAtomValue } from "jotai";
 import { useUpdateAtom } from "jotai/utils";
 import { useCallback, useContext, useMemo, useState } from "react";
 
+import { AppConfigContext, AppWizardConfigContext } from "../context/AppConfigContext";
 import { DexKitContext, DexkitContextState } from "../context/DexKitContext";
+import { localeUserAtom } from "../state";
 import {
   AppNotification,
   AppNotificationType,
   CreateAppNotificationParams,
 } from "../types";
+
+export * from './blockchain';
+
+// App config context needs to be initialized on widgets
+export function useAppConfig() {
+  return useContext(AppConfigContext).appConfig;
+}
+
+export function useLocale() {
+  const [locUser, setLocUser] = useAtom(localeUserAtom);
+  const appConfig = useAppConfig();
+  const locale = useMemo(() => {
+    if (locUser) {
+      return locUser;
+    }
+    if (appConfig.locale) {
+      return appConfig.locale;
+    }
+    return ('en-US' as string);
+  }, [appConfig.locale, locUser]);
+  return { locale, onChangeLocale: setLocUser };
+}
+
+
+// Wizard App config context needs to be initialized on widgets that needs wizard to customize
+export function useAppWizardConfig() {
+  const { wizardConfig, setWizardConfig } = useContext(AppWizardConfigContext);
+  return { wizardConfig, setWizardConfig };
+}
 
 export function useOrderedConnectors({
   selectedWalletAtom,
@@ -51,15 +82,25 @@ export function useOrderedConnectors({
 export function useDexkitContextState({
   notificationTypes,
   notificationsAtom,
+  tokensAtom,
+  assetsAtom,
   transactionsAtom,
   onChangeLocale,
+  currencyUserAtom,
+
 }: {
   notificationTypes: { [key: string]: AppNotificationType };
   notificationsAtom: PrimitiveAtom<AppNotification[]>;
+  tokensAtom: PrimitiveAtom<TokenWhitelabelApp[]>;
+  assetsAtom: PrimitiveAtom<{ [key: string]: Asset }>;
+  currencyUserAtom: PrimitiveAtom<string>;
   transactionsAtom: PrimitiveAtom<{ [key: string]: AppTransaction }>;
   onChangeLocale: (locale: string) => void;
 }): DexkitContextState {
   const [notifications, setNotifications] = useAtom(notificationsAtom);
+  const tokens = useAtomValue(tokensAtom);
+  const [assets, setAssets] = useAtom(assetsAtom);
+  const currencyUser = useAtomValue(currencyUserAtom);
   const [transactions, setTransactions] = useAtom(transactionsAtom);
   const watchTransactionDialog = useWatchTransactionDialog({
     transactionsAtom,
@@ -114,6 +155,10 @@ export function useDexkitContextState({
   };
 
   return {
+    tokens,
+    assets,
+    currencyUser,
+    setAssets,
     transactions,
     createNotification,
     clearNotifications,
@@ -298,5 +343,55 @@ export function useWatchTransactionDialog({
     setDialogError,
     addTransaction,
     watch,
+  };
+}
+
+const signMessageDialogOpenAtom = atom(false);
+const signMessageDialogErrorAtom = atom<Error | undefined>(undefined);
+const signMessageDialogSuccessAtom = atom<boolean>(false);
+const signMessageDialogMessage = atom<string | undefined>(undefined);
+
+export function useSignMessageDialog() {
+  const [open, setOpen] = useAtom(signMessageDialogOpenAtom);
+  const [error, setError] = useAtom(signMessageDialogErrorAtom);
+  const [isSuccess, setIsSuccess] = useAtom(signMessageDialogSuccessAtom);
+  const [message, setMessage] = useAtom(signMessageDialogMessage);
+
+  return {
+    isSuccess,
+    setIsSuccess,
+    error,
+    setError,
+    open,
+    setOpen,
+    message,
+    setMessage,
+  };
+}
+const isConnectWalletOpenAtom = atom(false);
+
+export function useConnectWalletDialog() {
+  const [isOpen, setOpen] = useAtom(isConnectWalletOpenAtom);
+
+  return {
+    isOpen,
+    setOpen,
+  };
+}
+
+
+export const switchNetworkOpenAtom = atom(false);
+export const switchNetworkChainIdAtom = atom<number | undefined>(undefined);
+
+
+export function useSwitchNetwork() {
+  const [isOpenSwitchNetwork, setOpenSwitchNetwork] = useAtom(switchNetworkOpenAtom);
+  const [networkChainId, setNetworkChainId] = useAtom(switchNetworkChainIdAtom);
+
+  return {
+    isOpenSwitchNetwork,
+    setOpenSwitchNetwork,
+    networkChainId,
+    setNetworkChainId
   };
 }

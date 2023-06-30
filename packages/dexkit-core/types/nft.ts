@@ -1,3 +1,4 @@
+import { BigNumber } from "ethers";
 
 export type Nft = {
   contractAddress: string;
@@ -28,6 +29,7 @@ export interface Asset {
   collectionName: string;
   symbol: string;
   type?: string;
+  balance?: BigNumber;
   metadata?: AssetMetadata;
   protocol?: 'ERC1155' | 'ERC721';
 }
