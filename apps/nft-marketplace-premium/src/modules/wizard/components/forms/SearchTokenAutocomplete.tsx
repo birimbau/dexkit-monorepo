@@ -3,7 +3,7 @@ import { Stack } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Token } from 'src/types/blockchain';
 import { getChainName, getChainSymbol } from 'src/utils/blockchain';
 
@@ -19,11 +19,38 @@ interface Props {
 export function SearchTokenAutocomplete(props: Props) {
   const { data, label, onChange, chainId, disabled, tokens } = props;
 
+  const [search, setSearch] = useState<string>();
+
   const formValue = useMemo(() => {
     return { ...data };
   }, [data]);
 
   const assets = useMemo(() => {
+    if (search) {
+      return (
+        tokens
+          ?.filter(
+            (v) =>
+              v.name.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
+              v.symbol.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
+              v.address.toLowerCase().indexOf(search.toLowerCase()) !== -1
+          )
+          .map((value) => {
+            return {
+              name: (value.name as string) || '',
+              address: value.address.toLowerCase(),
+              symbol: value.symbol,
+              network: Object.values(NETWORKS).find(
+                (n) => n.chainId === value?.chainId
+              )?.name,
+              chainId: value.chainId as number,
+              logoURI: value?.logoURI,
+              decimals: value.decimals,
+            };
+          }) || []
+      );
+    }
+
     return (
       tokens?.map((value) => {
         return {
@@ -39,7 +66,7 @@ export function SearchTokenAutocomplete(props: Props) {
         };
       }) || []
     );
-  }, [formValue, chainId, tokens]);
+  }, [formValue, chainId, tokens, search]);
 
   return (
     <Autocomplete
@@ -94,6 +121,7 @@ export function SearchTokenAutocomplete(props: Props) {
           <TextField
             {...params}
             label={label || 'Search Token'}
+            onChange={(ev) => setSearch(ev.currentTarget.value)}
             inputProps={{
               ...params.inputProps,
               autoComplete: 'new-password', // disable autocomplete and autofill

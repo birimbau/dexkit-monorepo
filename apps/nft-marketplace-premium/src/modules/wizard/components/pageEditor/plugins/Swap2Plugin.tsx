@@ -1,5 +1,6 @@
 import { RenderOptions } from '@dexkit/widgets/src/widgets/swap/types';
 
+import { useAppWizardConfig } from '@/modules/wizard/hooks';
 import { Container } from '@mui/material';
 import type { CellPlugin } from '@react-page/editor';
 import { SwapConfigForm } from '../../forms/SwapConfigForm';
@@ -16,11 +17,21 @@ const Swap2Plugin: CellPlugin<RenderOptions> = {
   version: 1,
   controls: {
     type: 'custom',
-    Component: (data) => (
-      <Container sx={{ p: 2 }}>
-        <SwapConfigForm data={data.data} onChange={data.onChange} />
-      </Container>
-    ),
+    Component: (data) => {
+      const { wizardConfig } = useAppWizardConfig();
+
+      return (
+        <Container sx={{ p: 2 }}>
+          <SwapConfigForm
+            data={data.data}
+            onChange={data.onChange}
+            featuredTokens={
+              wizardConfig?.tokens ? wizardConfig?.tokens[0].tokens : undefined
+            }
+          />
+        </Container>
+      );
+    },
   },
 };
 
