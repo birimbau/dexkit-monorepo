@@ -6,11 +6,20 @@ import {
   useTheme,
 } from '@mui/material';
 
-import { NextPage } from 'next';
+import {
+  GetStaticPaths,
+  GetStaticPathsContext,
+  GetStaticProps,
+  GetStaticPropsContext,
+  NextPage,
+} from 'next';
 import { useRouter } from 'next/router';
-import AuthMainLayout from '../../../src/components/layouts/authMain';
-import { useWhitelabelConfigQuery } from '../../../src/hooks/whitelabel';
-import { EditWizardContainer } from '../../../src/modules/wizard/components/containers/EditWizardContainer';
+
+import { EditWizardContainer } from '@/modules/wizard/components/containers/EditWizardContainer';
+import { QueryClient, dehydrate } from '@tanstack/react-query';
+import AuthMainLayout from 'src/components/layouts/authMain';
+import { useWhitelabelConfigQuery } from 'src/hooks/whitelabel';
+import { getAppConfig } from 'src/services/app';
 
 export const WizardEditPage: NextPage = () => {
   const router = useRouter();
@@ -49,6 +58,34 @@ export const WizardEditPage: NextPage = () => {
 
 (WizardEditPage as any).getLayout = function getLayout(page: any) {
   return <AuthMainLayout noSsr>{page}</AuthMainLayout>;
+};
+
+type Params = {
+  site?: string;
+};
+
+export const getStaticProps: GetStaticProps = async ({
+  params,
+}: GetStaticPropsContext<Params>) => {
+  const queryClient = new QueryClient();
+  const configResponse = await getAppConfig(params?.site, 'no-page-defined');
+
+  return {
+    props: {
+      dehydratedState: dehydrate(queryClient),
+      ...configResponse,
+    },
+    revalidate: 300,
+  };
+};
+
+export const getStaticPaths: GetStaticPaths<
+  Params
+> = ({}: GetStaticPathsContext) => {
+  return {
+    paths: [],
+    fallback: 'blocking',
+  };
 };
 
 export default WizardEditPage;
