@@ -6,7 +6,7 @@ import { Box, InputAdornment, TextField, Tooltip } from '@mui/material';
 import { useFormikContext } from 'formik';
 import { useSnackbar } from 'notistack';
 import { memo } from 'react';
-import { FormattedMessage, useIntl } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 
 export interface ContractFormAbiInputProps {
   abiStr: string;
@@ -28,8 +28,6 @@ function ContractFormAbiInput({ abiStr }: ContractFormAbiInputProps) {
       enqueueSnackbar(String(err), { variant: 'error' });
     }
   };
-
-  const { formatMessage } = useIntl();
 
   return (
     <TextField

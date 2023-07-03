@@ -11,15 +11,17 @@ import { ethers } from 'ethers';
 import { isAddress } from 'ethers/lib/utils';
 import { useFormikContext } from 'formik';
 import { useSnackbar } from 'notistack';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 export interface ContractFormAddressInputProps {
   chainId?: ChainId;
+  fetchOnMount?: boolean;
 }
 
 export default function ContractFormAddressInput({
   chainId,
+  fetchOnMount,
 }: ContractFormAddressInputProps) {
   const { setFieldValue, values } = useFormikContext<ContractFormParams>();
 
@@ -103,6 +105,14 @@ export default function ContractFormAddressInput({
   const handleRefresh = async () => {
     await fetchAbi(values.contractAddress);
   };
+
+  useEffect(() => {
+    if (fetchOnMount) {
+      (async () => {
+        await fetchAbi(values.contractAddress);
+      })();
+    }
+  }, [fetchOnMount]);
 
   return (
     <LazyTextField

@@ -1,4 +1,5 @@
 import ContractButton from '@/modules/forms/components/ContractButton';
+import { THIRDWEB_ICON_URL } from '@dexkit/web3forms/constants';
 import WalletIcon from '@mui/icons-material/Wallet';
 import { Box, Button, Container, Grid, Stack, Typography } from '@mui/material';
 import { useWeb3React } from '@web3-react/core';
@@ -8,6 +9,47 @@ import Link from 'src/components/Link';
 import { PageHeader } from 'src/components/PageHeader';
 import AuthMainLayout from 'src/components/layouts/authMain';
 import { useConnectWalletDialog } from 'src/hooks/app';
+
+const THIRDWEB_CONTRACT_LIST: {
+  name: string;
+  description: string;
+  publisherIcon: string;
+  publisherName: string;
+  slug: string;
+}[] = [
+  {
+    name: 'Token',
+    description:
+      'The Token contract is suited for creating a digital currency and is compliant with the ERC20 standard.',
+    publisherIcon: THIRDWEB_ICON_URL,
+    publisherName: 'ThirdWeb',
+    slug: 'TokenERC20',
+  },
+  {
+    name: 'StakeERC721',
+    description:
+      'This contract allows users to stake their ERC-721 NFTs and get ERC-20 tokens as staking rewards.',
+    publisherIcon: THIRDWEB_ICON_URL,
+    publisherName: 'ThirdWeb',
+    slug: 'NFTStake',
+  },
+  {
+    name: 'Marketplace',
+    description:
+      'A Marketplace is a contract where you can buy and sell NFTs, such as OpenSea or Rarible.',
+    publisherIcon: THIRDWEB_ICON_URL,
+    publisherName: 'ThirdWeb',
+    slug: 'MarketplaceV3',
+  },
+  {
+    name: 'NFT Drop',
+    description:
+      'The NFT Drop contract is ideal when you want to release a collection of unique NFTs using the ERC721A Standard.',
+    publisherIcon: THIRDWEB_ICON_URL,
+    publisherName: 'ThirdWeb',
+    slug: 'DropERC721',
+  },
+];
 
 export default function FormsPage() {
   const router = useRouter();
@@ -53,13 +95,13 @@ export default function FormsPage() {
                       <Typography variant="h4">
                         <FormattedMessage
                           id="web3forms.deplopy"
-                          defaultMessage="Web3Forms Deploy"
+                          defaultMessage="DexGenerator"
                         />
                       </Typography>
                       <Typography variant="body1" color="text.secondary">
                         <FormattedMessage
-                          id="explore.our.new.took.web3forms.deploy"
-                          defaultMessage="Explore our new tool: Web3Forms deploy"
+                          id="explore.our.new.tool.dexgenerator"
+                          defaultMessage="Explore our new tool: DexGenerator"
                         />
                       </Typography>
                     </Box>
@@ -92,8 +134,8 @@ export default function FormsPage() {
               <Grid item xs={12}>
                 <Typography variant="h5">
                   <FormattedMessage
-                    id="available.now"
-                    defaultMessage="Available Now"
+                    id="forms.by.dexkit"
+                    defaultMessage="Forms by Dexkit"
                   />
                 </Typography>
               </Grid>
@@ -111,7 +153,11 @@ export default function FormsPage() {
                           defaultMessage="Create custom form"
                         />
                       }
-                      creator={{ imageUrl: '', name: 'DexKit' }}
+                      creator={{
+                        imageUrl:
+                          'https://raw.githubusercontent.com/DexKit/assets/main/images/logo_256x256.png',
+                        name: 'DexKit',
+                      }}
                     />
                   </Grid>
                 </Grid>
@@ -119,37 +165,30 @@ export default function FormsPage() {
               <Grid item xs={12}>
                 <Typography variant="h5">
                   <FormattedMessage
-                    id="coming.soon"
-                    defaultMessage="Coming soon"
+                    id="deploy.thirdweb.contracts"
+                    defaultMessage="Deploy ThirdWeb Contracts"
                   />
                 </Typography>
               </Grid>
               <Grid item xs={12}>
                 <Grid container spacing={2}>
-                  <Grid item xs={12} sm={4}>
-                    <ContractButton
-                      title="Token"
-                      description=""
-                      creator={{ imageUrl: '', name: 'DexKit' }}
-                      disabled
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={4}>
-                    <ContractButton
-                      title="NFT Collection"
-                      description="create a nft collection"
-                      creator={{ imageUrl: '', name: 'DexKit' }}
-                      disabled
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={4}>
-                    <ContractButton
-                      title="Airdrop"
-                      description="create an airdrop"
-                      creator={{ imageUrl: '', name: 'DexKit' }}
-                      disabled
-                    />
-                  </Grid>
+                  {THIRDWEB_CONTRACT_LIST.map((contract, key) => (
+                    <Grid item xs={12} sm={4} key={key}>
+                      <ContractButton
+                        title={contract.name}
+                        description={contract.description}
+                        creator={{
+                          imageUrl: contract.publisherIcon,
+                          name: contract.publisherName,
+                        }}
+                        onClick={() => {
+                          router.push(
+                            `/forms/deploy/thirdweb/${contract.slug}`
+                          );
+                        }}
+                      />
+                    </Grid>
+                  ))}
                 </Grid>
               </Grid>
             </Grid>

@@ -51,6 +51,7 @@ export default function GenericForm({
             fullWidth
             validate={getValidation(el.component.type)}
             disabled={el.locked}
+            helperText={el.helperText}
             required
             label={el.label}
           />
@@ -65,6 +66,7 @@ export default function GenericForm({
             autoSelect
             name={el.ref}
             required
+            helperText={el.helperText}
             options={[]}
             filterSelectedOptions
             renderInput={(params: any) => (
@@ -85,6 +87,7 @@ export default function GenericForm({
                 name={el.ref}
                 type="checkbox"
                 size="small"
+                helperText={el.helperText}
                 validate={getValidation(el.component.type)}
                 disabled={el.locked}
                 required
@@ -103,6 +106,7 @@ export default function GenericForm({
             label={el.label}
             name={el.ref}
             decimals={el.component.decimals}
+            helperText={el.helperText}
           />
         );
       } else {
@@ -114,6 +118,7 @@ export default function GenericForm({
             fullWidth
             disabled={el.locked}
             label={el.label}
+            helperText={el.helperText}
             required
           />
         );
@@ -164,7 +169,6 @@ export default function GenericForm({
       .map((el) => {
         if (el.type === "input") {
           if (el.component?.type === "address" && el.ref) {
-            console.log("netra aqui", el.component);
             if (el.component.subtype === "connected-address") {
               return { [el.ref]: account };
             }
@@ -373,9 +377,6 @@ export default function GenericForm({
             >
               {actionLabel}
             </Button>
-          </Grid>
-          <Grid item xs={12}>
-            {JSON.stringify(values, null, 2)}
           </Grid>
         </Grid>
       )}

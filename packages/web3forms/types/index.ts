@@ -178,6 +178,7 @@ export type FormInput = {
   label: string;
   defaultValue?: any;
   component?: InputComponent;
+  helperText?: string;
   col?: {
     sm?: number;
     xs?: number;

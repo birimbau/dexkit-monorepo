@@ -15,12 +15,14 @@ export interface DecimalInputProps {
   decimals: number;
   name: string;
   label: string;
+  helperText?: string;
 }
 
 export default function DecimalInput({
   decimals,
   name,
   label,
+  helperText,
 }: DecimalInputProps) {
   return (
     <Field
@@ -30,6 +32,7 @@ export default function DecimalInput({
       fullWidth
       label={label}
       validate={validateDecimal("invalid decimal", decimals)}
+      helperText={helperText}
     />
   );
 }

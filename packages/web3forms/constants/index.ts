@@ -70,3 +70,6 @@ export const WEB3FORMS_INPUT_TYPES: {
 };
 
 export const THIRDWEB_CONTRACT_LIST_URL = "";
+
+export const THIRDWEB_ICON_URL =
+  "https://ipfs-public.thirdwebcdn.com/ipfs/QmeNn6emc8Z3VMTFBKSSozSHiG3qt36bFi7EuPCiGGpo17/0.png";

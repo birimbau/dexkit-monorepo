@@ -245,6 +245,7 @@ export default function FormsCreatePage({
                         updateOnChange
                         params={params}
                         onChange={handleChange}
+                        fetchOnMount
                       />
                     ) : (
                       <ContractForm
