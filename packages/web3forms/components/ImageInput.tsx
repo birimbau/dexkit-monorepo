@@ -27,7 +27,7 @@ export function ImageInput({ name, label }: ImageInputProps) {
     setShowDialog(false);
   };
 
-  const ipfsFileListQuery = useIpfsFileListQuery({ page: 1 });
+  const ipfsFileListQuery = useIpfsFileListQuery({ page: 1, onlyImages: true });
 
   const theme = useTheme();
 

@@ -80,6 +80,7 @@ export default function IpfsMediaDialog({
           let cid = await ipfsFileUploadMutation.mutateAsync({
             content: Buffer.from(e.target.result),
             token: "",
+            isImage: true,
           });
 
           setSelectedCid(cid);

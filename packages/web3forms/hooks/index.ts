@@ -282,10 +282,20 @@ export function useIfpsUploadMutation() {
   const { instance } = useContext(DexkitApiProvider);
 
   return useMutation(
-    async ({ content }: { content: Buffer; token?: string }) => {
+    async ({
+      content,
+      isImage,
+    }: {
+      content: Buffer;
+      token?: string;
+      isImage?: boolean;
+    }) => {
       const formData = new FormData();
 
       formData.append("file", new Blob([content]));
+
+      if (isImage) {
+      }
 
       if (instance) {
         const pinataKey = (await instance.get("/auth/pinata-key")).data.JWT;
@@ -303,6 +313,7 @@ export function useIfpsUploadMutation() {
 
         await instance.post("/account-file/ipfs/add-file", {
           cid: res.data.IpfsHash,
+          isImage,
         });
 
         return res.data.IpfsHash;
@@ -313,7 +324,13 @@ export function useIfpsUploadMutation() {
 
 export const IPFS_FILE_LIST_QUERY = "IPFS_FILE_LIST_QUERY";
 
-export function useIpfsFileListQuery({ page = 1 }: { page?: number }) {
+export function useIpfsFileListQuery({
+  page = 1,
+  onlyImages,
+}: {
+  page?: number;
+  onlyImages?: boolean;
+}) {
   const { instance } = useContext(DexkitApiProvider);
 
   return useInfiniteQuery<{ items: { cid: string }[]; nextCursor?: number }>(
@@ -324,7 +341,7 @@ export function useIpfsFileListQuery({ page = 1 }: { page?: number }) {
           await instance.get<{ items: { cid: string }[]; nextCursor?: number }>(
             "/account-file/ipfs/files",
             {
-              params: { cursor: pageParam, limit: 12 },
+              params: { cursor: pageParam, limit: 12, onlyImages },
             }
           )
         ).data;
