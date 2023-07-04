@@ -16,8 +16,6 @@ export function AuthProvider(props: Props) {
   const loginMutation = useLoginAccountMutation();
   const { children } = props;
 
-  console.log('isLoggedIn', isLoggedIn, triedLogin, account);
-
   useEffect(() => {
     if (account && !isLoggedIn && triedLogin) {
       loginMutation.mutateAsync().then((d) => {
@@ -42,7 +40,6 @@ export function AuthProvider(props: Props) {
     if (account) {
       getAccessTokenAndRefresh()
         .then((accessToken) => {
-          console.log('accessToken', accessToken);
           if (accessToken) {
             setUser(jwt_decode(accessToken));
             setIsLoggedIn(true);

@@ -128,17 +128,13 @@ export async function getAccessTokenAndRefresh() {
     return access_token;
   }
 
-  console.log();
-
   if (!access_token && !refreshedWasCalled) {
     try {
-      console.log('entra no token refresh');
       const response = await axios.get('/api/dex-auth/refresh-token', {
         withCredentials: true,
       });
       refreshedWasCalled = false;
       access_token = response.data.access_token;
-      console.log('entra no token refresh 2', response.data.access_token);
       return access_token;
     } catch (error) {
       access_token = undefined;

@@ -78,7 +78,7 @@ export default function ContractFunction({
         ) {
           const inp = params.fields[name].input[input.name];
 
-          let defaultValue: any;
+          let defaultValue: any = inp ? inp.defaultValue : "";
 
           if (inp?.inputType === "normal" || inp?.inputType === "address") {
             defaultValue = inp ? inp.defaultValue : "";
@@ -108,6 +108,12 @@ export default function ContractFunction({
 
           if (inputParams && inputParams.inputType === "decimal") {
             return ethers.utils.parseUnits(values[key], inputParams.decimals);
+          }
+
+          if (name) {
+            if (ethers.utils.isBytesLike(values[key])) {
+              return ethers.utils.arrayify(values[key]);
+            }
           }
 
           return values[key];

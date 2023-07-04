@@ -3,6 +3,10 @@ import { EvmSchemaTypes } from "../constants/validation";
 import * as Yup from "yup";
 import { FunctionInput } from "../types";
 
+import { getTrustedForwarders } from "@thirdweb-dev/sdk/evm";
+import { ThirdwebStorage } from "@thirdweb-dev/storage";
+import { ethers } from "ethers";
+
 export function getSchemaForInput(type: string) {
   return EvmSchemaTypes[type];
 }
@@ -15,4 +19,17 @@ export function getSchemaForInputs(inputs: FunctionInput[]) {
   }
 
   return Yup.object(obj);
+}
+export async function dkGetTrustedForwarders(
+  provider?: ethers.providers.Provider
+) {
+  if (!provider) {
+    return null;
+  }
+
+  const storage = new ThirdwebStorage();
+
+  let trustedForwarders = await getTrustedForwarders(provider, storage);
+
+  return trustedForwarders;
 }

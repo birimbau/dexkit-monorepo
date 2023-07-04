@@ -28,6 +28,7 @@ function getValidation(type?: string) {
 export interface GenericFormProps {
   form: Form;
   output: FormOutputFormat;
+  context?: { [key: string]: any };
   onSubmit: (values: any[]) => Promise<void>;
   actionLabel: React.ReactNode;
 }
@@ -36,6 +37,7 @@ export default function GenericForm({
   form,
   output,
   onSubmit,
+  context,
   actionLabel,
 }: GenericFormProps) {
   const { account } = useWeb3React();
@@ -194,6 +196,14 @@ export default function GenericForm({
             el.component.subtype === "connected-address"
           ) {
             return { [el.ref]: account };
+          } else if (
+            el.component?.type === "hidden" &&
+            typeof el.defaultValue === "object" &&
+            context
+          ) {
+            if ("ref" in el.defaultValue) {
+              return { [el.ref]: context[el.defaultValue.ref] };
+            }
           }
 
           return { [el.ref]: el.defaultValue ? el.defaultValue : undefined };
@@ -206,7 +216,7 @@ export default function GenericForm({
 
   const getValidationSchema = (elements: FormElement[]): any => {
     const mapping: any = (els: FormElement[]) => {
-      return els.map((el: any) => {
+      return els.map((el: FormElement) => {
         if (el.type === "input") {
           if (el.component?.type === "address" && el.ref) {
             return {
@@ -233,6 +243,21 @@ export default function GenericForm({
               ),
             };
           } else if (el.component?.type === "image" && el.ref) {
+            return {
+              [el.ref]: Yup.string().required(),
+            };
+          } else if (
+            el.component?.type === "hidden" &&
+            typeof el.defaultValue === "object"
+          ) {
+            if ("ref" in el.defaultValue) {
+              if (el.defaultValue.ref === "trustedForwarders") {
+                return {
+                  [el.ref]: Yup.array(Yup.string()).required(),
+                };
+              }
+            }
+
             return {
               [el.ref]: Yup.string().required(),
             };

@@ -39,6 +39,7 @@ import useThirdwebContractMetadataQuery, {
   useDeployThirdWebContractMutation,
   useFormConfigParamsQuery,
 } from '@dexkit/web3forms/hooks';
+import { dkGetTrustedForwarders } from '@dexkit/web3forms/utils';
 import { CheckCircle } from '@mui/icons-material';
 import { useWeb3React } from '@web3-react/core';
 import { useRouter } from 'next/router';
@@ -176,6 +177,20 @@ export default function DeployPage() {
   ) => {
     setSelectedChainId(parseChainId(event.target.value));
   };
+
+  const { provider } = useWeb3React();
+
+  const [trustedForwarders, setTrustedForwarders] = useState<string[]>([]);
+
+  useEffect(() => {
+    (async () => {
+      const forwarders = await dkGetTrustedForwarders(provider);
+
+      if (forwarders !== null) {
+        setTrustedForwarders(forwarders);
+      }
+    })();
+  }, [provider]);
 
   return (
     <>
@@ -389,11 +404,6 @@ export default function DeployPage() {
                     >
                       {Object.keys(NETWORKS)
                         .map((key) => NETWORKS[parseChainId(key)])
-                        .filter((n) => {
-                          return !(
-                            n.testnet && process.env.NODE_ENV === 'production'
-                          );
-                        })
                         .map((network) => (
                           <MenuItem
                             value={network.chainId.toString()}
@@ -415,6 +425,7 @@ export default function DeployPage() {
                       output={{
                         objects: formConfigParamsQuery.data.output,
                       }}
+                      context={{ trustedForwarders }}
                       onSubmit={handleSubmit}
                       form={{
                         elements: formConfigParamsQuery.data.form,
