@@ -32,6 +32,7 @@ import { getBlockExplorerUrl } from "@dexkit/core/utils";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useWeb3React } from "@web3-react/core";
 import { ethers } from "ethers";
+import { isAddress } from "ethers/lib/utils";
 import ContractFunctionInputs from "./ContractFunctionInputs";
 
 export function isFunctionCall(stateMutability: string) {
@@ -112,7 +113,11 @@ export default function ContractFunction({
 
           if (name) {
             if (ethers.utils.isBytesLike(values[key])) {
-              return ethers.utils.arrayify(values[key]);
+              if (!isAddress(values[key])) {
+                const arr = ethers.utils.arrayify(values[key]);
+
+                return ethers.utils.arrayify(values[key]);
+              }
             }
           }
 
