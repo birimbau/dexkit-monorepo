@@ -9,11 +9,11 @@ import { AppNotification } from "@dexkit/ui/types";
 import { useWeb3React } from "@web3-react/core";
 import { atom } from "jotai";
 import { useEffect } from "react";
-import { renderDexAppBuilder } from "..";
+import { RenderDexAppBuilder } from "..";
 import theme from "../theme";
 
 function AppBuilder() {
-  return renderDexAppBuilder({ slug: "home" });
+  return RenderDexAppBuilder({ slug: "home" });
 }
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export

@@ -1,7 +1,8 @@
 import dynamic from "next/dynamic";
+import { useEffect, useState } from "react";
 import { AppPageSection } from "../types";
-import AssetStoreSection from "./sections/AssetStoreSection";
-import { MDSection } from "./sections/MDSection";
+const AssetStoreSection = dynamic(() => import("./sections/AssetStoreSection"));
+const MDSection = dynamic(() => import("./sections/MDSection"));
 
 const CallToActionSection = dynamic(
   () => import("./sections/CallToActionSection")
@@ -15,11 +16,33 @@ const FeaturedSection = dynamic(() => import("./sections/FeaturedSection"));
 const SwapSection = dynamic(() => import("./sections/SwapSection"));
 const VideoSection = dynamic(() => import("./sections/VideoSection"));
 
-import ContractSection from "./sections/ContractSection";
-import UserContractSection from "./sections/UserContractSection";
+const ContractSection = dynamic(() => import("./sections/ContractSection"));
+const UserContractSection = dynamic(
+  () => import("./sections/UserContractSection")
+);
 
 interface Props {
   section: AppPageSection;
+}
+
+function LoadPlugin({ path, data }: { path: string; data: any }) {
+  const [pluginRender, setPluginRender] = useState<
+    { render: ({ data }: { data: any }) => JSX.Element } | undefined
+  >();
+  useEffect(() => {
+    if (path) {
+      async function loadPlugin() {
+        const plugin = await import(path);
+        setPluginRender(plugin.render);
+      }
+      loadPlugin();
+    }
+  }, [path]);
+  if (pluginRender) {
+    return pluginRender.render({ data: data });
+  } else {
+    return <></>;
+  }
 }
 
 export function SectionRender({ section }: Props) {
@@ -51,6 +74,8 @@ export function SectionRender({ section }: Props) {
     return <ContractSection section={section} />;
   } else if (section.type === "user-contract-form") {
     return <UserContractSection section={section} />;
+  } else if (section.type === "plugin") {
+    return <LoadPlugin data={section.data} path={section.pluginPath} />;
   }
 
   return <></>;

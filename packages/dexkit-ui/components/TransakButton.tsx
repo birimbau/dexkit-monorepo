@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import { FormattedMessage } from "react-intl";
 import { useAppConfig } from "../hooks";
 import { useCurrency } from "../hooks/currency";
-import "./Transak";
+//import "./Transak";
 
 interface Props {
   label?: string;

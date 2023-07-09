@@ -16,7 +16,7 @@ interface Props {
   section: MarkdownEditorPageSection;
 }
 
-export function MDSection({ section }: Props) {
+export default function MDSection({ section }: Props) {
   const theme = useTheme();
 
   return (

@@ -3,6 +3,8 @@ import { providers } from "ethers";
 import { Network } from "../types";
 import { ChainId } from "./enums";
 
+const IS_TESTNET = typeof process !== 'undefined' ? process?.env.NODE_ENV !== "development" : true;
+
 export const NETWORKS: { [key: number]: Network } = {
   [ChainId.Ethereum]: {
     chainId: ChainId.Ethereum,
@@ -110,7 +112,7 @@ export const NETWORKS: { [key: number]: Network } = {
     imageUrl:
       "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/info/logo.png",
     providerRpcUrl: "https://endpoints.omniatech.io/v1/eth/goerli/public",
-    testnet: process?.env.NODE_ENV !== "development",
+    testnet: IS_TESTNET,
   },
   [ChainId.Mumbai]: {
     chainId: ChainId.Mumbai,
@@ -122,7 +124,7 @@ export const NETWORKS: { [key: number]: Network } = {
     imageUrl:
       "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/info/logo.png",
     providerRpcUrl: `https://rpc.ankr.com/polygon_mumbai`,
-    testnet: process?.env.NODE_ENV !== "development",
+    testnet: IS_TESTNET,
   },
 };
 

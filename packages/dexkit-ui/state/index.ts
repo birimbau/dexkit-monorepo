@@ -1,5 +1,6 @@
 import { Asset } from "@dexkit/core/types/nft";
-import { atomWithStorage } from "jotai/utils/atomWithStorage";
+import { atomWithStorage } from "jotai/utils";
+
 
 
 

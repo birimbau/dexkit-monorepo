@@ -1,5 +1,4 @@
 import { AppConfig } from "@dexkit/ui/types/config";
-import { createRoot } from "react-dom/client";
 import { SectionRender } from "./components/SectionRender";
 import { useWhitelabelConfigQuery } from "./hooks";
 
@@ -10,7 +9,7 @@ interface Props {
   withLayout?: boolean;
 }
 
-export function renderDexAppBuilder({ slug, page }: Props) {
+export default function RenderDexAppBuilder({ slug, page }: Props) {
   const configResponse = useWhitelabelConfigQuery({ slug, page });
 
   if (configResponse.data) {
@@ -25,7 +24,7 @@ export function renderDexAppBuilder({ slug, page }: Props) {
   return <></>;
 }
 
-export function renderDexAppBuilderFromConfig({
+/*export function renderDexAppBuilderFromConfig({
   config,
 }: {
   config: AppConfig;
@@ -34,12 +33,22 @@ export function renderDexAppBuilderFromConfig({
     <SectionRender key={k} section={section} />
   ));
   return <>{toRender}</>;
-}
+}*/
 
-export function renderDexAppBuilderWidget({ id }: { id: string }) {
+/*export function renderDexAppBuilderWidget({ id }: { id: string }) {
   const container = document.getElementById(id);
 
   const root = createRoot(container!);
 
-  root.render(renderDexAppBuilder({ slug: "crypto-fans" }));
+  root.render(<RenderDexAppBuilder slug="crypto-fans" />);
 }
+
+window.renderDexAppBuilderWidget =
+  function renderDexAppBuilderWidget({ id }: { id: string }) {
+    const container = document.getElementById(id);
+
+    const root = createRoot(container!);
+
+    root.render(<RenderDexAppBuilder slug="crypto-fans" />);
+  };
+  */

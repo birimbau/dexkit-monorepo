@@ -10,7 +10,7 @@ export const config = {
     '/forms/:path*',
     '/wallet/:path*',
     '/404/:path*',
-    '/u/:path*',
+    '/u/:path*'
   ],
 };
 
@@ -23,7 +23,7 @@ const basePaths = [
   '/collections',
   '/wallet',
   '/404',
-  '/u',
+  '/u'
 ];
 
 function isBasePath(path: string) {
@@ -49,6 +49,11 @@ export default function middleware(req: NextRequest) {
   if (url.pathname.startsWith('/admin')) {
     return NextResponse.rewrite(url);
   }
+
+  if (url.pathname.startsWith('/render')) {
+    return NextResponse.rewrite(url);
+  }
+
 
 
   if (url.pathname.startsWith('/site')) {

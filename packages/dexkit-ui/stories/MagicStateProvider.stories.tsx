@@ -1,32 +1,43 @@
-import { createTheme } from "@mui/material";
-import { ComponentMeta, ComponentStory } from "@storybook/react";
+import { TokenWhitelabelApp } from "@dexkit/core/types";
+import { Meta, StoryObj } from "@storybook/react";
 import { atom } from "jotai";
 import { DexkitProvider } from "../components";
-
-const pendingTransactionsAtom = atom<{}>({});
+import { ThemeMode } from "../constants/enum";
+import theme from "../theme";
+import { AppNotification } from "../types";
 
 function Component() {
   return (
     <DexkitProvider
+      theme={theme}
       locale="en-US"
-      theme={createTheme()}
-      defaultLocale="en-US"
-      pendingTransactionsAtom={pendingTransactionsAtom}
+      themeMode={ThemeMode.light}
+      assetsAtom={atom({})}
+      currencyUserAtom={atom("")}
+      tokensAtom={atom<TokenWhitelabelApp[]>([])}
+      notificationTypes={{}}
+      notificationsAtom={atom<AppNotification[]>([])}
+      onChangeLocale={() => {}}
+      transactionsAtom={atom<{}>({})}
+      selectedWalletAtom={atom<string>("")}
     >
       <h1>hello</h1>
     </DexkitProvider>
   );
 }
 
-export default {
+const meta: Meta<typeof Component> = {
   title: "Components/Magic",
   component: Component,
-  // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
-  argTypes: {},
-} as ComponentMeta<typeof Component>;
+  // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
+  tags: ["autodocs"],
+  parameters: {
+    // More on Story layout: https://storybook.js.org/docs/react/configure/story-layout
+    layout: "fullscreen",
+  },
+};
 
-// More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
-const Template: ComponentStory<typeof Component> = (args) => <Component />;
+export default meta;
+type Story = StoryObj<typeof Component>;
 
-export const Default = Template.bind({});
-Default.args = {};
+export const Default: Story = {};

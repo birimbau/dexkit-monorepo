@@ -61,7 +61,8 @@ export type SectionType =
   | 'markdown'
   | 'wallet'
   | 'contract'
-  | 'user-contract-form';
+  | 'user-contract-form'
+  | 'plugin';
 
 export interface PageSection {
   type: SectionType;
@@ -140,6 +141,12 @@ export interface UserContractPageSection extends PageSection {
   hideFormInfo?: boolean;
 }
 
+export interface PluginPageSection<T> extends PageSection {
+  type: 'plugin';
+  data?: T;
+  pluginPath: string;
+}
+
 export type AppPageSection =
   | CallToActionAppPageSection
   | VideoEmbedAppPageSection
@@ -151,7 +158,8 @@ export type AppPageSection =
   | MarkdownEditorPageSection
   | WalletPageSection
   | ContractPageSection
-  | UserContractPageSection;
+  | UserContractPageSection
+  | PluginPageSection<unknown>;
 
 export interface SectionMetadata {
   type: SectionType;

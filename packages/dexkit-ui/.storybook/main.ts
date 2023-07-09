@@ -1,6 +1,5 @@
 import type { StorybookConfig } from "@storybook/react-vite";
 import { mergeConfig } from "vite";
-
 const config: StorybookConfig = {
   async viteFinal(config, { configType }) {
     return mergeConfig(config, {
@@ -15,8 +14,12 @@ const config: StorybookConfig = {
   ],
   framework: {
     name: "@storybook/react-vite",
-    //name: '@storybook/nextjs',
-    options: {},
+    // name: '@storybook/nextjs',
+    options: {
+
+    }
+
+
   },
   docs: {
     autodocs: "tag",
