@@ -1,17 +1,21 @@
 import { ChainId } from '@dexkit/core';
+import { DexkitApiProvider } from '@dexkit/core/providers';
 import { ContractFormParams } from '@dexkit/web3forms/types';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, useMutation, useQuery } from '@tanstack/react-query';
 import { ethers } from 'ethers';
+import { useContext } from 'react';
 import {
   cloneForm,
   createForm,
   createFormTemplate,
   createTemplateInstance,
+  deleteForm,
   getForm,
   getFormTemplate,
   listFormTemplates,
   listForms,
   listTemplateInstances,
+  saveContractDeploy,
   updateForm,
   updateFormTemplate,
 } from '../services';
@@ -300,4 +304,76 @@ export function useCloseFormMutation() {
   return useMutation(async ({ id }: { id: number }) => {
     return await cloneForm({ id });
   });
+}
+
+export function useDeleteFormMutation() {
+  return useMutation(async ({ id }: { id: number }) => {
+    return await deleteForm({ id });
+  });
+}
+
+export function useSaveContractDeployed() {
+  return useMutation(
+    async ({
+      contractAddress,
+      name,
+      chainId,
+    }: {
+      contractAddress: string;
+      name?: string;
+      chainId: number;
+    }) => {
+      return await saveContractDeploy({ contractAddress, name, chainId });
+    }
+  );
+}
+
+export const LIST_DEPLOYED_CONTRACTS = 'LIST_DEPLOYED_CONTRACTS';
+
+export function useListDeployedContracts({
+  page = 1,
+  owner,
+  name,
+}: {
+  page?: number;
+  owner: string;
+  name?: string;
+}) {
+  const { instance } = useContext(DexkitApiProvider);
+
+  return useInfiniteQuery<{
+    items: {
+      name: string;
+      contractAddress: string;
+      owner: string;
+      id: number;
+      chainId?: number;
+    }[];
+    nextCursor?: number;
+  }>(
+    [LIST_DEPLOYED_CONTRACTS, page, owner, name],
+    async ({ pageParam }) => {
+      if (instance) {
+        return (
+          await instance.get<{
+            items: {
+              name: string;
+              contractAddress: string;
+              owner: string;
+              id: number;
+              chainId?: number;
+            }[];
+            nextCursor?: number;
+          }>('/forms/deploy/list', {
+            params: { cursor: pageParam, limit: 12, owner, name },
+          })
+        ).data;
+      }
+
+      return { items: [], nextCursor: undefined };
+    },
+    {
+      getNextPageParam: ({ nextCursor }) => nextCursor,
+    }
+  );
 }

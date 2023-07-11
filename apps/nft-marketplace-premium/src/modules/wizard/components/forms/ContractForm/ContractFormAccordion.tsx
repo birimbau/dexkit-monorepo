@@ -18,7 +18,9 @@ import { FastField, Field, FormikConsumer } from 'formik';
 import { Checkbox, Select, Switch, TextField } from 'formik-mui';
 import { memo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
+import ContractFormDefaultValueInput from './ContractFormDefaultValue';
 import ContractFormInputParams from './ContractFormInputParams';
+import ContractFormPayableValueInput from './ContractFormPayableValueInput';
 
 function requiredField(message: string) {
   return (value: string) => {
@@ -81,7 +83,13 @@ function ContractFormAccordion({ func }: Props) {
                 size="small"
               />
             </Grid>
-
+            {func.stateMutability === 'payable' && (
+              <Grid item xs={12}>
+                <ContractFormPayableValueInput
+                  name={`fields.${func.name}.payableAmount`}
+                />
+              </Grid>
+            )}
             <Grid item xs={12}>
               <FastField
                 component={TextField}
@@ -358,35 +366,10 @@ function ContractFormAccordion({ func }: Props) {
                               <Grid item xs={12} sm={8}>
                                 <FormikConsumer>
                                   {({ values }) => (
-                                    <FastField
-                                      component={TextField}
-                                      name={`fields.${func.name}.input.${input.name}.defaultValue`}
-                                      validate={
-                                        (values as ContractFormParams).fields[
-                                          func.name
-                                        ]?.hideInputs
-                                          ? requiredField(
-                                              formatMessage(
-                                                {
-                                                  id: 'field.is.required',
-                                                  defaultMessage:
-                                                    '{field} is required',
-                                                },
-                                                {
-                                                  field: input.name,
-                                                }
-                                              )
-                                            )
-                                          : undefined
-                                      }
-                                      label={
-                                        <FormattedMessage
-                                          id="default.value"
-                                          defaultMessage="Default value"
-                                        />
-                                      }
-                                      fullWidth
-                                      size="small"
+                                    <ContractFormDefaultValueInput
+                                      func={func}
+                                      values={values}
+                                      input={input}
                                     />
                                   )}
                                 </FormikConsumer>

@@ -1,12 +1,16 @@
+import { myAppsApi } from '@/modules/admin/dashboard/dataProvider';
 import {
-  useListFormTemplatesQuery,
+  useListDeployedContracts,
   useListFormsQuery,
 } from '@/modules/forms/hooks';
+import { DexkitApiProvider } from '@dexkit/core/providers';
 import { truncateAddress } from '@dexkit/core/utils';
 import LazyTextField from '@dexkit/ui/components/LazyTextField';
 import { Info } from '@mui/icons-material';
 import Search from '@mui/icons-material/Search';
 
+import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
+import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import {
   Avatar,
   Box,
@@ -15,6 +19,7 @@ import {
   CardContent,
   Container,
   Grid,
+  IconButton,
   InputAdornment,
   NoSsr,
   Paper,
@@ -24,6 +29,7 @@ import {
   TableBody,
   TableCell,
   TableContainer,
+  TableFooter,
   TableHead,
   TableRow,
   Typography,
@@ -34,6 +40,7 @@ import { FormattedMessage } from 'react-intl';
 import Link from 'src/components/Link';
 import { PageHeader } from 'src/components/PageHeader';
 import AuthMainLayout from 'src/components/layouts/authMain';
+import { getChainName } from 'src/utils/blockchain';
 
 export default function FormsAccountPage() {
   const router = useRouter();
@@ -41,25 +48,42 @@ export default function FormsAccountPage() {
   const { address } = router.query;
 
   const [searchForm, setSearchForm] = useState<string>();
-  const [seachTemplate, setSearchTemplate] = useState<string>();
+  const [searchDeployedContract, setSearchDeployedContract] =
+    useState<string>();
 
   const listFormsQuery = useListFormsQuery({
     creatorAddress: address as string,
     query: searchForm,
   });
 
-  const listFormTemplatesQuery = useListFormTemplatesQuery({
-    creatorAddress: address as string,
-    query: seachTemplate,
-  });
-
   const handleChangeSearchForm = (value: string) => {
     setSearchForm(value);
-    console.log('asdasdas');
   };
 
   const handleChangeSearchTemplateForm = (value: string) => {
-    setSearchTemplate(value);
+    setSearchDeployedContract(value);
+  };
+
+  const [page, setPage] = useState(1);
+
+  const listDeployedContractQuery = useListDeployedContracts({
+    page,
+    owner: address as string,
+    name: searchDeployedContract,
+  });
+
+  const handlePrevPage = () => {
+    if (page - 1 >= 1) {
+      setPage((p) => p - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (listDeployedContractQuery.hasNextPage) {
+      listDeployedContractQuery.fetchNextPage();
+    }
+
+    setPage((p) => p + 1);
   };
 
   return (
@@ -89,7 +113,7 @@ export default function FormsAccountPage() {
                       }}
                     />
                   ),
-                  uri: '/forms/deploy/nft',
+                  uri: `/forms/account/${address as string}`,
                   active: true,
                 },
               ]}
@@ -116,21 +140,10 @@ export default function FormsAccountPage() {
             >
               <Typography variant="h5">
                 <FormattedMessage
-                  id="contract.templates"
-                  defaultMessage="Contract Templates"
+                  id="deployed.contracts"
+                  defaultMessage="Deployed contracts"
                 />
               </Typography>
-              <Button
-                LinkComponent={Link}
-                href="/forms/contract-templates/create"
-                size="small"
-                variant="outlined"
-              >
-                <FormattedMessage
-                  id="create.template"
-                  defaultMessage="Create template"
-                />
-              </Button>
             </Stack>
           </Box>
           <Box>
@@ -164,16 +177,25 @@ export default function FormsAccountPage() {
                         </TableCell>
                         <TableCell>
                           <FormattedMessage
-                            id="description"
-                            defaultMessage="Description"
+                            id="network"
+                            defaultMessage="Network"
+                          />
+                        </TableCell>
+                        <TableCell>
+                          <FormattedMessage
+                            id="actions"
+                            defaultMessage="Actions"
                           />
                         </TableCell>
                       </TableRow>
                     </TableHead>
-                    {listFormTemplatesQuery.isLoading ? (
+                    {listDeployedContractQuery.isLoading ? (
                       <TableBody>
                         {new Array(5).fill(null).map((_, key) => (
                           <TableRow key={key}>
+                            <TableCell>
+                              <Skeleton />
+                            </TableCell>
                             <TableCell>
                               <Skeleton />
                             </TableCell>
@@ -188,17 +210,18 @@ export default function FormsAccountPage() {
                       </TableBody>
                     ) : (
                       <TableBody>
-                        {listFormTemplatesQuery.data?.length === 0 && (
+                        {listDeployedContractQuery.data?.pages[page - 1]?.items
+                          ?.length === 0 && (
                           <TableRow>
-                            <TableCell colSpan={3}>
+                            <TableCell colSpan={4}>
                               <Box>
                                 <Stack spacing={2} alignItems="center">
                                   <Info fontSize="large" />
                                   <Box>
                                     <Typography align="center" variant="h5">
                                       <FormattedMessage
-                                        id="no.templates.yet"
-                                        defaultMessage="No templates yet"
+                                        id="no.contracts.yet"
+                                        defaultMessage="No contracts yet"
                                       />
                                     </Typography>
                                     <Typography
@@ -207,8 +230,8 @@ export default function FormsAccountPage() {
                                       variant="body1"
                                     >
                                       <FormattedMessage
-                                        id="Create templates for your forms"
-                                        defaultMessage="Create templates for your forms"
+                                        id="deploy.new.contracts.to.see.it.here"
+                                        defaultMessage="Deploy new contracts to see it here"
                                       />
                                     </Typography>
                                   </Box>
@@ -217,21 +240,61 @@ export default function FormsAccountPage() {
                             </TableCell>
                           </TableRow>
                         )}
-                        {listFormTemplatesQuery.data?.map((template) => (
-                          <TableRow key={template.id}>
-                            <TableCell>{template.id}</TableCell>
+                        {listDeployedContractQuery.data?.pages[
+                          page - 1
+                        ]?.items?.map((contract) => (
+                          <TableRow key={contract.id}>
+                            <TableCell>{contract.id}</TableCell>
+                            <TableCell>{contract.name}</TableCell>
                             <TableCell>
-                              <Link
-                                href={`/forms/contract-templates/${template.id}`}
-                              >
-                                {template.name}
-                              </Link>
+                              {getChainName(contract.chainId)}
                             </TableCell>
-                            <TableCell>{template.description}</TableCell>
+                            <TableCell>
+                              <Button
+                                LinkComponent={Link}
+                                href={`/forms/create?contractAddress=${contract.contractAddress}&chainId=${contract.chainId}`}
+                                target="_blank"
+                                size="small"
+                                variant="outlined"
+                              >
+                                <FormattedMessage
+                                  id="create.form"
+                                  defaultMessage="Create form"
+                                />
+                              </Button>
+                            </TableCell>
                           </TableRow>
                         ))}
                       </TableBody>
                     )}
+                    <TableFooter>
+                      <TableRow>
+                        <TableCell colSpan={4}>
+                          <Stack
+                            direction="row"
+                            alignItems="center"
+                            alignContent="center"
+                            spacing={2}
+                            justifyContent="flex-end"
+                          >
+                            <IconButton
+                              disabled={
+                                !listDeployedContractQuery.hasPreviousPage
+                              }
+                              onClick={handlePrevPage}
+                            >
+                              <KeyboardArrowLeftIcon />
+                            </IconButton>
+                            <IconButton
+                              disabled={!listDeployedContractQuery.hasNextPage}
+                              onClick={handleNextPage}
+                            >
+                              <KeyboardArrowRightIcon />
+                            </IconButton>
+                          </Stack>
+                        </TableCell>
+                      </TableRow>
+                    </TableFooter>
                   </Table>
                 </TableContainer>
               </Grid>
@@ -296,22 +359,12 @@ export default function FormsAccountPage() {
                             defaultMessage="Description"
                           />
                         </TableCell>
-
-                        <TableCell>
-                          <FormattedMessage
-                            id="template"
-                            defaultMessage="Template"
-                          />
-                        </TableCell>
                       </TableRow>
                     </TableHead>
                     {listFormsQuery.isLoading ? (
                       <TableBody>
                         {new Array(5).fill(null).map((_, key) => (
                           <TableRow key={key}>
-                            <TableCell>
-                              <Skeleton />
-                            </TableCell>
                             <TableCell>
                               <Skeleton />
                             </TableCell>
@@ -328,7 +381,7 @@ export default function FormsAccountPage() {
                       <TableBody>
                         {listFormsQuery.data?.length === 0 && (
                           <TableRow>
-                            <TableCell colSpan={4}>
+                            <TableCell colSpan={3}>
                               <Box>
                                 <Stack spacing={2} alignItems="center">
                                   <Info fontSize="large" />
@@ -364,23 +417,6 @@ export default function FormsAccountPage() {
                               </Link>
                             </TableCell>
                             <TableCell>{form.description}</TableCell>
-                            <TableCell>
-                              {form.templateId ? (
-                                <Link
-                                  href={`/forms/contract-templates/${form.templateId}`}
-                                >
-                                  <FormattedMessage
-                                    id="template"
-                                    defaultMessage="Contract Template"
-                                  />
-                                </Link>
-                              ) : (
-                                <FormattedMessage
-                                  id="no.template"
-                                  defaultMessage="No template"
-                                />
-                              )}
-                            </TableCell>
                           </TableRow>
                         ))}
                       </TableBody>
@@ -397,5 +433,11 @@ export default function FormsAccountPage() {
 }
 
 (FormsAccountPage as any).getLayout = function getLayout(page: any) {
-  return <AuthMainLayout>{page}</AuthMainLayout>;
+  return (
+    <AuthMainLayout>
+      <DexkitApiProvider.Provider value={{ instance: myAppsApi }}>
+        {page}
+      </DexkitApiProvider.Provider>
+    </AuthMainLayout>
+  );
 };

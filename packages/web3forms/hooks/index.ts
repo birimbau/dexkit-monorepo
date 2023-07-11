@@ -454,9 +454,11 @@ export default function useThirdwebContractMetadataQuery({
     );
 
     if (contract) {
+      const normalizedUrl = getNormalizedUrl(contract.metadataUri);
+
       const result = (
         await axios.get<ThirdwebMetadata>(
-          getNormalizedUrl(contract.metadataUri)
+          normalizedUrl.replace("gateway.pinata.cloud", "ipfs.io")
         )
       ).data;
 

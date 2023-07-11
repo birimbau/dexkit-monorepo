@@ -15,6 +15,7 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import { getWindowUrl } from 'src/utils/browser';
 import {
   useCloseFormMutation,
+  useDeleteFormMutation,
   useFormQuery,
 } from '../../../../../src/modules/forms/hooks';
 
@@ -88,6 +89,28 @@ export default function FormPage() {
 
   const handleCloseClone = () => {
     setShowConfirmClone(false);
+  };
+
+  const deleteFormMutation = useDeleteFormMutation();
+
+  const handleDeleteForm = async () => {
+    try {
+      await deleteFormMutation.mutateAsync({ id: parseInt(id as string) });
+
+      router.push('/forms');
+
+      enqueueSnackbar(
+        formatMessage({
+          id: 'form.deleted.successfully',
+          defaultMessage: 'Form deleted successfully',
+        }),
+        {
+          variant: 'success',
+        }
+      );
+    } catch (err) {
+      enqueueSnackbar(String(err), { variant: 'error' });
+    }
   };
 
   return (
@@ -165,6 +188,7 @@ export default function FormPage() {
               description={formQuery.data?.description}
               isLoading={formQuery.isLoading}
               templateId={formQuery.data?.templateId}
+              onDelete={handleDeleteForm}
             />
             {/* <Card>
               <CardContent>

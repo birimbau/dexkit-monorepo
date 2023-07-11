@@ -26,6 +26,7 @@ import { ReactNode, useCallback, useEffect, useState } from 'react';
 import { myAppsApi } from '@/modules/admin/dashboard/dataProvider';
 import { DexkitApiProvider } from '@dexkit/core/providers';
 
+import { useSaveContractDeployed } from '@/modules/forms/hooks';
 import { ChainId } from '@dexkit/core';
 import { NETWORKS } from '@dexkit/core/constants/networks';
 import {
@@ -82,6 +83,8 @@ export default function DeployPage() {
     creator: creator as string,
   });
 
+  const saveContractDeployedMutation = useSaveContractDeployed();
+
   const { enqueueSnackbar } = useSnackbar();
   const { formatMessage } = useIntl();
 
@@ -133,6 +136,17 @@ export default function DeployPage() {
 
         if (contract) {
           setContractAddress(contract);
+
+          const name = params['name'];
+
+          if (chainId) {
+            saveContractDeployedMutation.mutateAsync({
+              contractAddress: contract,
+              name,
+              chainId,
+            });
+          }
+
           setShowSuccess(true);
         }
 
