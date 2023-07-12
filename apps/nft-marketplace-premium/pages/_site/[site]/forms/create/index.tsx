@@ -17,12 +17,14 @@ import {
 import { ChangeEvent, useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
+import { myAppsApi } from '@/modules/admin/dashboard/dataProvider';
 import { useCreateFormMutation } from '@/modules/forms/hooks';
 import { getFormTemplate } from '@/modules/forms/services';
 import { FormTemplate } from '@/modules/forms/types';
 import { inputMapping } from '@/modules/wizard/utils';
 import { ChainId } from '@dexkit/core';
 import { NETWORKS } from '@dexkit/core/constants/networks';
+import { DexkitApiProvider } from '@dexkit/core/providers';
 import { parseChainId } from '@dexkit/core/utils';
 import InfoIcon from '@mui/icons-material/Info';
 import { QueryClient, dehydrate } from '@tanstack/react-query';
@@ -308,7 +310,13 @@ export default function FormsCreatePage({
 }
 
 (FormsCreatePage as any).getLayout = function getLayout(page: any) {
-  return <AuthMainLayout>{page}</AuthMainLayout>;
+  return (
+    <AuthMainLayout>
+      <DexkitApiProvider.Provider value={{ instance: myAppsApi }}>
+        {page}
+      </DexkitApiProvider.Provider>
+    </AuthMainLayout>
+  );
 };
 
 type Params = {

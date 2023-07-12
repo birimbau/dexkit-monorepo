@@ -1,5 +1,6 @@
 import { Field } from "formik";
 import { TextField } from "formik-mui";
+import { useIntl } from "react-intl";
 
 function validateDecimal(message: string, decimals: number) {
   return (value: string) => {
@@ -24,6 +25,8 @@ export default function DecimalInput({
   label,
   helperText,
 }: DecimalInputProps) {
+  const { formatMessage } = useIntl();
+
   return (
     <Field
       component={TextField}
@@ -31,7 +34,13 @@ export default function DecimalInput({
       size="small"
       fullWidth
       label={label}
-      validate={validateDecimal("invalid decimal", decimals)}
+      validate={validateDecimal(
+        formatMessage({
+          id: "invalid.decimal",
+          defaultMessage: "Invalid decimal",
+        }),
+        decimals
+      )}
       helperText={helperText}
     />
   );

@@ -45,7 +45,7 @@ export interface ContractFormFieldInputBase {
 export interface ContractFormFieldSwitch {
   inputType: "switch";
   label: string;
-  defaultValue: string;
+  defaultValue: any;
 }
 
 export interface ContractFormFieldNormal {
@@ -95,6 +95,7 @@ export type OutputType = NoOutputType | DecimalOutputType;
 export type ContractFormField = {
   name: string;
   description?: string;
+  payableAmount?: string;
   visible: boolean;
   lockInputs: boolean;
   hideInputs: boolean;

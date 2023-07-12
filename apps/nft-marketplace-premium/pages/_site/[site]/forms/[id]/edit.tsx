@@ -18,7 +18,9 @@ import {
 import { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
+import { myAppsApi } from '@/modules/admin/dashboard/dataProvider';
 import { useFormQuery, useUpdateFormMutation } from '@/modules/forms/hooks';
+import { DexkitApiProvider } from '@dexkit/core/providers';
 import InfoIcon from '@mui/icons-material/Info';
 import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
@@ -288,5 +290,11 @@ export default function FormsEditPage() {
 }
 
 (FormsEditPage as any).getLayout = function getLayout(page: any) {
-  return <AuthMainLayout>{page}</AuthMainLayout>;
+  return (
+    <AuthMainLayout>
+      <DexkitApiProvider.Provider value={{ instance: myAppsApi }}>
+        {page}
+      </DexkitApiProvider.Provider>
+    </AuthMainLayout>
+  );
 };

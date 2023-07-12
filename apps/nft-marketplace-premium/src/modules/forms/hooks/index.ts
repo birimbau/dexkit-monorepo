@@ -334,10 +334,12 @@ export function useListDeployedContracts({
   page = 1,
   owner,
   name,
+  chainId,
 }: {
   page?: number;
   owner: string;
   name?: string;
+  chainId?: ChainId;
 }) {
   const { instance } = useContext(DexkitApiProvider);
 
@@ -351,7 +353,7 @@ export function useListDeployedContracts({
     }[];
     nextCursor?: number;
   }>(
-    [LIST_DEPLOYED_CONTRACTS, page, owner, name],
+    [LIST_DEPLOYED_CONTRACTS, page, owner, name, chainId],
     async ({ pageParam }) => {
       if (instance) {
         return (
@@ -365,7 +367,7 @@ export function useListDeployedContracts({
             }[];
             nextCursor?: number;
           }>('/forms/deploy/list', {
-            params: { cursor: pageParam, limit: 12, owner, name },
+            params: { cursor: pageParam, limit: 12, owner, name, chainId },
           })
         ).data;
       }

@@ -1,3 +1,4 @@
+import { useListDeployedContracts } from '@/modules/forms/hooks';
 import { getContractImplementation } from '@/modules/wizard/services';
 import { inputMapping } from '@/modules/wizard/utils';
 import { ChainId } from '@dexkit/core';
@@ -7,12 +8,14 @@ import { useScanContractAbiMutation } from '@dexkit/web3forms/hooks';
 import { AbiFragment, ContractFormParams } from '@dexkit/web3forms/types';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import { CircularProgress, IconButton, InputAdornment } from '@mui/material';
+import { useWeb3React } from '@web3-react/core';
 import { ethers } from 'ethers';
 import { isAddress } from 'ethers/lib/utils';
 import { useFormikContext } from 'formik';
 import { useSnackbar } from 'notistack';
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
+import CustomAutocomplete from './CustomAutocomplete';
 
 export interface ContractFormAddressInputProps {
   chainId?: ChainId;
@@ -114,35 +117,82 @@ export default function ContractFormAddressInput({
     }
   }, [fetchOnMount]);
 
+  const handleChangeAutoComplete = useCallback(
+    (value: string) => {
+      handleChange(value);
+    },
+    [handleChange]
+  );
+
+  const { account } = useWeb3React();
+
+  const [page, setPage] = useState(1);
+  const [query, setQuery] = useState('');
+
+  const listDeployedContractQuery = useListDeployedContracts({
+    owner: account as string,
+    page,
+    name: query,
+    chainId: values.chainId,
+  });
+
+  const contractList = useMemo(() => {
+    const currPage = listDeployedContractQuery.data?.pages[page - 1];
+
+    if (currPage) {
+      return currPage?.items;
+    }
+
+    return [];
+  }, [listDeployedContractQuery.data, page]);
+
+  const handleChangeQuery = (value: string) => {
+    setQuery(value);
+  };
+
   return (
-    <LazyTextField
-      value={values.contractAddress}
-      onChange={handleChange}
-      TextFieldProps={{
-        label: (
-          <FormattedMessage
-            id="contract.address"
-            defaultMessage="Contract address"
-          />
-        ),
-        fullWidth: true,
-        InputProps: {
-          endAdornment: scanContractAbiMutation.isLoading ? (
-            <InputAdornment position="end">
-              <CircularProgress color="inherit" size="1rem" />
-            </InputAdornment>
-          ) : (
-            <IconButton
-              disabled={values.contractAddress === ''}
-              size="small"
-              color="primary"
-              onClick={handleRefresh}
-            >
-              <RefreshIcon />
-            </IconButton>
-          ),
-        },
-      }}
-    />
+    <CustomAutocomplete
+      isLoading={listDeployedContractQuery.isLoading}
+      onChange={handleChangeAutoComplete}
+      options={contractList.map((item) => ({
+        label: item.name,
+        value: item.contractAddress,
+      }))}
+      onChangeQuery={handleChangeQuery}
+    >
+      {(handleFocus, handleBlur) => (
+        <LazyTextField
+          value={values.contractAddress}
+          onChange={handleChange}
+          TextFieldProps={{
+            label: (
+              <FormattedMessage
+                id="contract.address"
+                defaultMessage="Contract address"
+              />
+            ),
+            fullWidth: true,
+            inputProps: { onFocus: handleFocus, onBlur: handleBlur },
+            InputProps: {
+              autoComplete: 'off',
+              endAdornment: scanContractAbiMutation.isLoading ? (
+                <InputAdornment position="end">
+                  <CircularProgress color="inherit" size="1rem" />
+                </InputAdornment>
+              ) : (
+                <IconButton
+                  disabled={values.contractAddress === ''}
+                  size="small"
+                  color="primary"
+                  onClick={handleRefresh}
+                >
+                  <RefreshIcon />
+                </IconButton>
+              ),
+            },
+          }}
+        />
+      )}
+    </CustomAutocomplete>
   );
 }

@@ -46,7 +46,7 @@ export default function ContractFormDefaultValueInput({
   }, [values, func, input]);
 
   if (inputType === 'switch') {
-    return <Switch onChange={handleChangeValue} />;
+    return <Switch onChange={handleChangeValue} type="checkbox" />;
   }
 
   return (

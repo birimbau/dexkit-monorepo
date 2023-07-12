@@ -140,6 +140,7 @@ export default function ContractFunctionInputs({
                   <Field
                     component={Switch}
                     size="small"
+                    type="checkbox"
                     fullWidth
                     name={input.name}
                     disabled={

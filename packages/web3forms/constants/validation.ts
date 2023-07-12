@@ -26,3 +26,5 @@ export const EvmSchemaTypes: { [key: string]: Yup.Schema } = {
     })
     .required(),
 };
+
+export const PATTERN_TWO_DIGITS_AFTER_COMMA = /^\d+(\.\d{0,18})?$/;

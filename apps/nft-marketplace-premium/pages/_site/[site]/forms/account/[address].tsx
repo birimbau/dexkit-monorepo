@@ -4,7 +4,7 @@ import {
   useListFormsQuery,
 } from '@/modules/forms/hooks';
 import { DexkitApiProvider } from '@dexkit/core/providers';
-import { truncateAddress } from '@dexkit/core/utils';
+import { getBlockExplorerUrl, truncateAddress } from '@dexkit/core/utils';
 import LazyTextField from '@dexkit/ui/components/LazyTextField';
 import { Info } from '@mui/icons-material';
 import Search from '@mui/icons-material/Search';
@@ -183,6 +183,12 @@ export default function FormsAccountPage() {
                         </TableCell>
                         <TableCell>
                           <FormattedMessage
+                            id="address"
+                            defaultMessage="Address"
+                          />
+                        </TableCell>
+                        <TableCell>
+                          <FormattedMessage
                             id="actions"
                             defaultMessage="Actions"
                           />
@@ -205,6 +211,9 @@ export default function FormsAccountPage() {
                             <TableCell>
                               <Skeleton />
                             </TableCell>
+                            <TableCell>
+                              <Skeleton />
+                            </TableCell>
                           </TableRow>
                         ))}
                       </TableBody>
@@ -213,7 +222,7 @@ export default function FormsAccountPage() {
                         {listDeployedContractQuery.data?.pages[page - 1]?.items
                           ?.length === 0 && (
                           <TableRow>
-                            <TableCell colSpan={4}>
+                            <TableCell colSpan={5}>
                               <Box>
                                 <Stack spacing={2} alignItems="center">
                                   <Info fontSize="large" />
@@ -250,6 +259,15 @@ export default function FormsAccountPage() {
                               {getChainName(contract.chainId)}
                             </TableCell>
                             <TableCell>
+                              <Link
+                                href={`${getBlockExplorerUrl(
+                                  contract.chainId
+                                )}/address/${contract.contractAddress}`}
+                              >
+                                {truncateAddress(contract.contractAddress)}
+                              </Link>
+                            </TableCell>
+                            <TableCell>
                               <Button
                                 LinkComponent={Link}
                                 href={`/forms/create?contractAddress=${contract.contractAddress}&chainId=${contract.chainId}`}
@@ -269,7 +287,7 @@ export default function FormsAccountPage() {
                     )}
                     <TableFooter>
                       <TableRow>
-                        <TableCell colSpan={4}>
+                        <TableCell colSpan={5}>
                           <Stack
                             direction="row"
                             alignItems="center"
