@@ -7,13 +7,10 @@ import { useMemo, useState } from 'react';
 import { WHITELABEL_NOTIFICATION_TYPES } from 'src/constants/messages';
 import { useAppConfig, useLocale, useThemeMode } from 'src/hooks/app';
 import {
-  accountAssetsAtom,
   assetsAtom,
   currencyUserAtom,
   notificationsAtom,
   selectedWalletAtom,
-  switchNetworkChainIdAtom,
-  switchNetworkOpenAtom,
   tokensAtom,
   transactionsAtomV2,
 } from 'src/state/atoms';
@@ -141,13 +138,9 @@ export function AppMarketplaceProvider({
       tokensAtom={tokensAtom}
       assetsAtom={assetsAtom}
       defaultLocale={locale}
-      accountAssetsAtom={accountAssetsAtom}
       currencyUserAtom={currencyUserAtom}
-      switchNetworkChainIdAtom={switchNetworkChainIdAtom}
-      switchOpenNetworkAtom={switchNetworkOpenAtom}
       localeMessages={loadLocaleData(locale)}
       theme={theme}
-      themeMode={mode}
       selectedWalletAtom={selectedWalletAtom}
       options={{
         magicRedirectUrl:

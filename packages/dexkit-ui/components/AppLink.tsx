@@ -114,7 +114,7 @@ const AppLink = React.forwardRef<HTMLAnchorElement, LinkProps>(function Link(
 
   return (
     <MuiLink
-      component={NextLinkComposed}
+      component={NextLinkComposed as any}
       className={className}
       ref={ref}
       {...nextjsProps}

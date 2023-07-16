@@ -15,13 +15,11 @@ import {
   SupportedColorScheme,
 } from "@mui/material/styles";
 import React from "react";
-import { ThemeMode } from "../constants/enum";
 import { DexKitContext } from "../context/DexKitContext";
 import { AppNotification, AppNotificationType } from "../types";
 import { MagicStateProvider } from "./MagicStateProvider";
 import TransactionUpdater from "./TransactionUpdater";
 export interface DexkitProviderProps {
-  themeMode: ThemeMode;
   theme: {
     cssVarPrefix?: string | undefined;
     colorSchemes: Record<SupportedColorScheme, Record<string, any>>;
@@ -57,7 +55,6 @@ export interface DexkitProviderProps {
 export function DexkitProvider({
   children,
   theme,
-  themeMode,
   currencyUserAtom,
   selectedWalletAtom,
   transactionsAtom,

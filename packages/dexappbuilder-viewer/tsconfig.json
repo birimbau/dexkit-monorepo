@@ -2,8 +2,6 @@
   "extends": "tsconfig/react-library.json",
   "include": ["."],
   "compilerOptions": {
-    "module": "CommonJS",
-    "moduleResolution": "node",
     "resolveJsonModule": true,
     "target": "es2020"
   },

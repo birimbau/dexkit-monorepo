@@ -2,7 +2,6 @@ import { TokenWhitelabelApp } from "@dexkit/core/types";
 import { Meta, StoryObj } from "@storybook/react";
 import { atom } from "jotai";
 import { DexkitProvider } from "../components";
-import { ThemeMode } from "../constants/enum";
 import theme from "../theme";
 import { AppNotification } from "../types";
 
@@ -11,7 +10,6 @@ function Component() {
     <DexkitProvider
       theme={theme}
       locale="en-US"
-      themeMode={ThemeMode.light}
       assetsAtom={atom({})}
       currencyUserAtom={atom("")}
       tokensAtom={atom<TokenWhitelabelApp[]>([])}

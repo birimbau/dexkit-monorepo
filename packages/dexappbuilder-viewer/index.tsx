@@ -1,5 +1,13 @@
+//export * from './components/Render';
+
+import { TokenWhitelabelApp } from "@dexkit/core/types";
+import { DexkitProvider } from "@dexkit/ui";
+import { AppNotification } from "@dexkit/ui/types";
 import { AppConfig } from "@dexkit/ui/types/config";
+import { experimental_extendTheme as extendTheme } from "@mui/material/styles";
+import { atom } from "jotai";
 import { SectionRender } from "./components/SectionRender";
+import MainLayout from "./components/layout/main";
 import { useWhitelabelConfigQuery } from "./hooks";
 
 interface Props {
@@ -9,7 +17,7 @@ interface Props {
   withLayout?: boolean;
 }
 
-export default function RenderDexAppBuilder({ slug, page }: Props) {
+export default function RenderDexAppBuilder({ slug, page, withLayout }: Props) {
   const configResponse = useWhitelabelConfigQuery({ slug, page });
 
   if (configResponse.data) {
@@ -18,37 +26,43 @@ export default function RenderDexAppBuilder({ slug, page }: Props) {
     ).pages[page || "home"].sections.map((section, k) => (
       <SectionRender key={k} section={section} />
     ));
-    return <>{toRender}</>;
+
+    return (
+      <DexkitProvider
+        theme={extendTheme()}
+        locale="en-US"
+        assetsAtom={atom({})}
+        currencyUserAtom={atom("")}
+        tokensAtom={atom<TokenWhitelabelApp[]>([])}
+        notificationTypes={{}}
+        notificationsAtom={atom<AppNotification[]>([])}
+        onChangeLocale={() => {}}
+        transactionsAtom={atom<{}>({})}
+        selectedWalletAtom={atom<string>("")}
+      >
+        {withLayout ? (
+          <MainLayout>
+            <>{toRender}</>
+          </MainLayout>
+        ) : (
+          <>{toRender}</>
+        )}
+      </DexkitProvider>
+    );
   }
 
   return <></>;
 }
 
-/*export function renderDexAppBuilderFromConfig({
+export function renderDexAppBuilderFromConfig({
   config,
+  page,
 }: {
   config: AppConfig;
+  page?: string;
 }) {
-  const toRender = config.pages["home"].sections.map((section, k) => (
+  const toRender = config.pages[page || "home"].sections.map((section, k) => (
     <SectionRender key={k} section={section} />
   ));
   return <>{toRender}</>;
-}*/
-
-/*export function renderDexAppBuilderWidget({ id }: { id: string }) {
-  const container = document.getElementById(id);
-
-  const root = createRoot(container!);
-
-  root.render(<RenderDexAppBuilder slug="crypto-fans" />);
 }
-
-window.renderDexAppBuilderWidget =
-  function renderDexAppBuilderWidget({ id }: { id: string }) {
-    const container = document.getElementById(id);
-
-    const root = createRoot(container!);
-
-    root.render(<RenderDexAppBuilder slug="crypto-fans" />);
-  };
-  */

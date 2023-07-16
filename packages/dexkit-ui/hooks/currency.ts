@@ -3,14 +3,16 @@ import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "@dexkit/core/constants/zrx";
 import { getCoinPricesByCID, getTokenPrices } from "@dexkit/core/services";
 import { useQuery } from "@tanstack/react-query";
 import { useWeb3React } from "@web3-react/core";
+import { useAtom } from "jotai";
 import { useMemo } from "react";
-import { useAppConfig, useDexKitContext } from ".";
+import { useAppConfig } from ".";
+import { currencyUserAtom } from "../state";
 import { useTokenList } from "./blockchain";
 
-export function useCurrency(): string {
+export function useCurrency(): { currency: string, setCurrency: (currency: string) => void } {
   const appConfig = useAppConfig();
 
-  const currUser = useDexKitContext().currencyUser;
+  const [currUser, setCurrUser] = useAtom(currencyUserAtom);
 
   const currency = useMemo(() => {
     if (currUser) {
@@ -22,7 +24,7 @@ export function useCurrency(): string {
     return 'usd' as string;
   }, [appConfig.locale, currUser])
 
-  return currency || 'usd';
+  return { currency: currency || 'usd', setCurrency: setCurrUser };
 }
 
 
@@ -39,7 +41,7 @@ export const useCoinPricesQuery = ({
   const chain = chainId || walletChainId
 
   const tokens = useTokenList({ chainId: chain });
-  const currency = useCurrency();
+  const { currency } = useCurrency();
   return useQuery(
     [GET_COIN_PRICES, chain, tokens, currency],
     async () => {

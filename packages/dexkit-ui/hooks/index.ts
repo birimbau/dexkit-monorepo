@@ -13,9 +13,11 @@ import { atom, PrimitiveAtom, useAtom, useAtomValue } from "jotai";
 import { useUpdateAtom } from "jotai/utils";
 import { useCallback, useContext, useMemo, useState } from "react";
 
+import useMediaQuery from "@mui/material/useMediaQuery";
+import { ThemeMode } from "../constants/enum";
 import { AppConfigContext, AppWizardConfigContext } from "../context/AppConfigContext";
 import { DexKitContext, DexkitContextState } from "../context/DexKitContext";
-import { localeUserAtom } from "../state";
+import { localeUserAtom, userThemeModeAtom } from "../state";
 import {
   AppNotification,
   AppNotificationType,
@@ -27,6 +29,30 @@ export * from './blockchain';
 // App config context needs to be initialized on widgets
 export function useAppConfig() {
   return useContext(AppConfigContext).appConfig;
+}
+
+export function useAppNFT() {
+  return useContext(AppConfigContext).appNFT;
+}
+
+const DARK_SCHEME_QUERY = '(prefers-color-scheme: dark)';
+
+export function useThemeMode() {
+  const systemPrefersDark = useMediaQuery(DARK_SCHEME_QUERY);
+  const [userMode, setThemeMode] = useAtom(userThemeModeAtom);
+  const appConfig = useAppConfig();
+
+  const mode = useMemo(() => {
+    if (userMode) {
+      return userMode;
+    }
+    if (appConfig.defaultThemeMode) {
+      return appConfig.defaultThemeMode;
+    }
+    return systemPrefersDark ? ThemeMode.dark : ThemeMode.light;
+  }, [userMode, appConfig, systemPrefersDark]);
+
+  return { mode: mode, setThemeMode, userMode };
 }
 
 export function useLocale() {
@@ -394,4 +420,52 @@ export function useSwitchNetwork() {
     networkChainId,
     setNetworkChainId
   };
+}
+
+const showSelectIsOpenAtom = atom(false);
+
+export function useSelectNetworkDialog() {
+  const [isOpen, setIsOpen] = useAtom(showSelectIsOpenAtom);
+
+  return { isOpen, setIsOpen };
+}
+
+const drawerIsOpenAtom = atom(false);
+
+export function useDrawerIsOpen() {
+  const [isOpen, setIsOpen] = useAtom(drawerIsOpenAtom);
+
+  return { isOpen, setIsOpen };
+}
+
+const showSelectCurrency = atom(false);
+
+export function useShowSelectCurrency() {
+  const [isOpen, setIsOpen] = useAtom(showSelectCurrency);
+
+  return { isOpen, setIsOpen };
+}
+
+const showSelectLocaleAtom = atom(false);
+
+export function useShowSelectLocale() {
+  const [isOpen, setIsOpen] = useAtom(showSelectLocaleAtom);
+
+  return { isOpen, setIsOpen };
+}
+
+const showAppTransactionsAtom = atom(false);
+
+export function useShowAppTransactions() {
+  const [isOpen, setIsOpen] = useAtom(showAppTransactionsAtom);
+
+  return { isOpen, setIsOpen };
+}
+
+export const holdsKitDialogoAtom = atom(false);
+
+export function useHoldsKitDialog() {
+  const [isOpen, setIsOpen] = useAtom(holdsKitDialogoAtom);
+
+  return { isOpen, setIsOpen };
 }
