@@ -1,10 +1,5 @@
 import { ChainId } from "@dexkit/core/constants";
 
-export type FunctionInput = {
-  type: string;
-  name: string;
-};
-
 export interface CallParams {
   name: string;
   args: any[];
@@ -17,11 +12,22 @@ export interface ContractDeployParams {
   payable?: boolean;
 }
 
-export type AbiFragmentInput = {
+export type BaseAbiFragmentInput = {
   type: string;
   name: string;
   internalType?: string;
 };
+
+export type TupleAbiFragmentInput = {
+  type: "tuple";
+  name: string;
+  internalType?: string;
+  components: AbiFragmentInput[];
+};
+
+export type AbiFragmentInput = BaseAbiFragmentInput | TupleAbiFragmentInput;
+
+export type FunctionInput = AbiFragmentInput;
 
 export type FragmentOutput = {
   internalType?: string;
@@ -32,7 +38,7 @@ export type FragmentOutput = {
 export interface AbiFragment {
   type: string;
   name: string;
-  inputs: AbiFragmentInput[];
+  inputs: (AbiFragmentInput | TupleAbiFragmentInput)[];
   outputs: FragmentOutput[];
   stateMutability: string;
 }

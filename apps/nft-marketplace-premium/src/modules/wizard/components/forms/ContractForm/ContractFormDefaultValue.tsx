@@ -2,8 +2,9 @@ import {
   AbiFragment,
   AbiFragmentInput,
   ContractFormParams,
+  TupleAbiFragmentInput,
 } from '@dexkit/web3forms/types';
-import { Switch } from '@mui/material';
+import { Grid, InputAdornment, Switch } from '@mui/material';
 import { FastField, useFormikContext } from 'formik';
 import { TextField } from 'formik-mui';
 import { ChangeEvent, useCallback, useMemo } from 'react';
@@ -49,6 +50,50 @@ export default function ContractFormDefaultValueInput({
     return <Switch onChange={handleChangeValue} type="checkbox" />;
   }
 
+  if (input.type === 'tuple') {
+    const tupleInput = input as TupleAbiFragmentInput;
+
+    return (
+      <Grid container spacing={2}>
+        {tupleInput.components.map((component, key) => {
+          return (
+            <Grid xs={12} item key={key}>
+              <FastField
+                component={TextField}
+                name={`fields.${func.name}.input.${input.name}.defaultValue.${component.name}`}
+                validate={
+                  (values as ContractFormParams).fields[func.name]?.hideInputs
+                    ? requiredField(
+                        formatMessage(
+                          {
+                            id: 'field.is.required',
+                            defaultMessage: '{field} is required',
+                          },
+                          {
+                            field: input.name,
+                          }
+                        )
+                      )
+                    : undefined
+                }
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      {component.type.toUpperCase()}
+                    </InputAdornment>
+                  ),
+                }}
+                label={component.name}
+                fullWidth
+                size="small"
+              />
+            </Grid>
+          );
+        })}
+      </Grid>
+    );
+  }
+
   return (
     <FastField
       component={TextField}
@@ -71,6 +116,13 @@ export default function ContractFormDefaultValueInput({
       label={
         <FormattedMessage id="default.value" defaultMessage="Default value" />
       }
+      InputProps={{
+        endAdornment: (
+          <InputAdornment position="end">
+            {input.type.toUpperCase()}
+          </InputAdornment>
+        ),
+      }}
       fullWidth
       size="small"
     />
