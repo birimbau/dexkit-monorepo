@@ -25,9 +25,9 @@ interface Props {
   section: AppPageSection;
 }
 
-function LoadPlugin({ path, data }: { path: string; data: any }) {
+function LoadPlugin({ path, data }: { path: string; data: unknown }) {
   const [pluginRender, setPluginRender] = useState<
-    { render: ({ data }: { data: any }) => JSX.Element } | undefined
+    { render: ({ data }: { data: unknown }) => JSX.Element } | undefined
   >();
   useEffect(() => {
     if (path) {

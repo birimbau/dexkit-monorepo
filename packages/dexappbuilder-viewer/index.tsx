@@ -57,12 +57,20 @@ export default function RenderDexAppBuilder({ slug, page, withLayout }: Props) {
 export function renderDexAppBuilderFromConfig({
   config,
   page,
+  withLayout,
 }: {
   config: AppConfig;
   page?: string;
+  withLayout?: boolean;
 }) {
   const toRender = config.pages[page || "home"].sections.map((section, k) => (
     <SectionRender key={k} section={section} />
   ));
-  return <>{toRender}</>;
+  return withLayout ? (
+    <MainLayout>
+      <>{toRender}</>
+    </MainLayout>
+  ) : (
+    <>{toRender}</>
+  );
 }

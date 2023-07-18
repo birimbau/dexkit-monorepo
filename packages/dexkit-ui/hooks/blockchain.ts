@@ -4,7 +4,7 @@ import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "@dexkit/core/constants/zrx";
 import { EvmCoin, TokenWhitelabelApp } from "@dexkit/core/types";
 import { convertTokenToEvmCoin } from "@dexkit/core/utils";
 import { useWeb3React } from "@web3-react/core";
-import { useCallback, useMemo } from "react";
+import { useMemo } from "react";
 import { useAppConfig, useDexKitContext } from ".";
 
 export function useTokenList({
@@ -98,19 +98,7 @@ export function useTokenList({
 }
 
 
-export function useSwitchNetwork() {
-  const setSwitchOpen = useDexKitContext().setSwitchNetworkOpen
-  const setSwitchChainId = useDexKitContext().setSwitchChainId;
 
-  const openDialog = useCallback((chainId: number) => {
-    setSwitchOpen(true);
-    setSwitchChainId(chainId);
-  }, []);
-
-  return {
-    openDialog,
-  };
-}
 
 export function useEvmCoins({ defaultChainId }: { defaultChainId?: ChainId }): EvmCoin[] {
   const { chainId: walletChainId } = useWeb3React();
