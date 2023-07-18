@@ -1,5 +1,11 @@
+import MarketplacesTableSkeleton from '@/modules/admin/components/tables/MaketplacesTableSkeleton';
+import MarketplacesTable from '@/modules/admin/components/tables/MarketplacesTable';
+import ConfigureDomainDialog from '@/modules/wizard/components/dialogs/ConfigureDomainDialog';
+import { useDebounce } from '@dexkit/core/hooks';
 import { Search } from '@mui/icons-material';
 import Add from '@mui/icons-material/Add';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import Wallet from '@mui/icons-material/Wallet';
 import {
   Alert,
   Box,
@@ -13,33 +19,47 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import { QueryClient, dehydrate } from '@tanstack/react-query';
 import { useWeb3React } from '@web3-react/core';
-import { NextPage } from 'next';
+import {
+  GetStaticPaths,
+  GetStaticPathsContext,
+  GetStaticProps,
+  GetStaticPropsContext,
+  NextPage,
+} from 'next';
 import { ChangeEvent, ReactNode, useCallback, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import AuthMainLayout from '../../../src/components/layouts/authMain';
-import Link from '../../../src/components/Link';
-import { PageHeader } from '../../../src/components/PageHeader';
-import {
-  DEXKIT_DISCORD_SUPPORT_CHANNEL,
-  WIZARD_DOCS_URL,
-} from '../../../src/constants';
-import { useDebounce } from '../../../src/hooks/misc';
-import { usePageTemplatesByOwnerQuery } from '../../../src/hooks/whitelabel';
-import MarketplacesTableSkeleton from '../../../src/modules/admin/components/tables/MaketplacesTableSkeleton';
-import PageTemplatesTable from '../../../src/modules/admin/components/tables/PageTemplatesTable';
-import { PageTemplateResponse } from '../../../src/types/whitelabel';
+import Link from 'src/components/Link';
+import { PageHeader } from 'src/components/PageHeader';
+import AuthMainLayout from 'src/components/layouts/authMain';
+import { DEXKIT_DISCORD_SUPPORT_CHANNEL, WIZARD_DOCS_URL } from 'src/constants';
+import { useConnectWalletDialog } from 'src/hooks/app';
+import { useWhitelabelConfigsByOwnerQuery } from 'src/hooks/whitelabel';
+import { getAppConfig } from 'src/services/app';
+import { ConfigResponse } from 'src/types/whitelabel';
 
-export const PageTemplateIndexPage: NextPage = () => {
-  const { account } = useWeb3React();
+export const AdminIndexPage: NextPage = () => {
+  const { account, isActive } = useWeb3React();
+  const connectWalletDialog = useConnectWalletDialog();
+  const configsQuery = useWhitelabelConfigsByOwnerQuery({ owner: account });
 
-  const configsQuery = usePageTemplatesByOwnerQuery({
-    owner: account?.toLowerCase(),
-  });
+  const [isOpen, setIsOpen] = useState(false);
 
   const [search, setSearch] = useState('');
 
+  const [selectedConfig, setSelectedConfig] = useState<ConfigResponse>();
+
   const lazySearch = useDebounce<string>(search, 500);
+
+  const handleShowConfigureDomain = (config: ConfigResponse) => {
+    setSelectedConfig(config);
+    setIsOpen(true);
+  };
+
+  const handleCloseConfigDomain = () => {
+    setIsOpen(false);
+  };
 
   const handleSearchChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
@@ -71,7 +91,8 @@ export const PageTemplateIndexPage: NextPage = () => {
     if (configsQuery.data && configsQuery.data.length > 0) {
       if (lazySearch) {
         return configsQuery.data.filter(
-          (c) => c.title.toLowerCase().search(lazySearch.toLowerCase()) > -1
+          (c) =>
+            c.appConfig.name.toLowerCase().search(lazySearch.toLowerCase()) > -1
         );
       }
 
@@ -89,12 +110,48 @@ export const PageTemplateIndexPage: NextPage = () => {
     if (configs && configs.length > 0) {
       return (
         <TableContainer>
-          <PageTemplatesTable pageTemplates={configs} />
+          <MarketplacesTable
+            configs={configs}
+            onConfigureDomain={handleShowConfigureDomain}
+          />
         </TableContainer>
       );
     }
 
-    return (
+    return isActive ? (
+      <Box py={4}>
+        <Stack
+          alignItems="center"
+          justifyContent="center"
+          alignContent="center"
+          spacing={2}
+        >
+          <Stack
+            alignItems="center"
+            justifyContent="center"
+            alignContent="center"
+          >
+            <Typography variant="h5">
+              <FormattedMessage id="no.apps" defaultMessage="No Apps" />
+            </Typography>
+            <Typography variant="body1" color="textSecondary">
+              <FormattedMessage
+                id="create.one.to.start.selling.NFTs.or.crypto"
+                defaultMessage="Create one App to start trade NFTs or crypto"
+              />
+            </Typography>
+          </Stack>
+          <Button
+            LinkComponent={Link}
+            href="/admin/setup"
+            startIcon={<Add />}
+            variant="outlined"
+          >
+            <FormattedMessage id="new" defaultMessage="New" />
+          </Button>
+        </Stack>
+      </Box>
+    ) : (
       <Box py={4}>
         <Stack
           alignItems="center"
@@ -109,24 +166,29 @@ export const PageTemplateIndexPage: NextPage = () => {
           >
             <Typography variant="h5">
               <FormattedMessage
-                id="no.page.templates"
-                defaultMessage="No page templates"
+                id="no.wallet.connected"
+                defaultMessage="No Wallet connected"
               />
             </Typography>
             <Typography variant="body1" color="textSecondary">
               <FormattedMessage
-                id="create.template.pages"
-                defaultMessage="Create template pages"
+                id="connect.wallet.to.see.apps.associated.with.your.account"
+                defaultMessage="Connect wallet to see apps associated with your account"
               />
             </Typography>
           </Stack>
           <Button
-            LinkComponent={Link}
-            href="/admin/page-template/create"
-            startIcon={<Add />}
             variant="outlined"
+            color="inherit"
+            onClick={() => connectWalletDialog.setOpen(true)}
+            startIcon={<Wallet />}
+            endIcon={<ChevronRightIcon />}
           >
-            <FormattedMessage id="new" defaultMessage="New" />
+            <FormattedMessage
+              id="connect.wallet"
+              defaultMessage="Connect Wallet"
+              description="Connect wallet button"
+            />
           </Button>
         </Stack>
       </Box>
@@ -135,6 +197,15 @@ export const PageTemplateIndexPage: NextPage = () => {
 
   return (
     <>
+      <ConfigureDomainDialog
+        dialogProps={{
+          open: isOpen,
+          onClose: handleCloseConfigDomain,
+          fullWidth: true,
+          maxWidth: 'sm',
+        }}
+        config={selectedConfig}
+      />
       <Container>
         <Grid container spacing={2}>
           <Grid item xs={12}>
@@ -147,13 +218,8 @@ export const PageTemplateIndexPage: NextPage = () => {
                   uri: '/admin',
                 },
                 {
-                  caption: (
-                    <FormattedMessage
-                      id="page.template"
-                      defaultMessage=" Page Template"
-                    />
-                  ),
-                  uri: '/admin/page-template',
+                  caption: <FormattedMessage id="apps" defaultMessage="Apps" />,
+                  uri: '/admin',
                   active: true,
                 },
               ]}
@@ -163,7 +229,7 @@ export const PageTemplateIndexPage: NextPage = () => {
             <Alert severity="info">
               <FormattedMessage
                 id="wizard.welcome.index.message"
-                defaultMessage="Welcome to DexKit Marketplace wizard! This is a beta product with constant development and at the moment is offered for free. 
+                defaultMessage="Welcome to DexAppBuilder! This is a beta product with constant development and at the moment is offered for free. 
               If you need support please reach us on our <a>dedicated Discord channel</a>. Please check our <d>docs</d> for whitelabels. Reach us at our email <b>info@dexkit.com</b> if you need a custom solution that the wizard not attend."
                 values={{
                   //@ts-ignore
@@ -183,7 +249,7 @@ export const PageTemplateIndexPage: NextPage = () => {
               justifyContent="space-between"
             >
               <Button
-                href="/admin/page-template/create"
+                href="/admin/setup"
                 LinkComponent={Link}
                 variant="contained"
                 color="primary"
@@ -216,8 +282,36 @@ export const PageTemplateIndexPage: NextPage = () => {
   );
 };
 
-(PageTemplateIndexPage as any).getLayout = function getLayout(page: any) {
+(AdminIndexPage as any).getLayout = function getLayout(page: any) {
   return <AuthMainLayout noSsr>{page}</AuthMainLayout>;
 };
 
-export default PageTemplateIndexPage;
+type Params = {
+  site?: string;
+};
+
+export const getStaticProps: GetStaticProps = async ({
+  params,
+}: GetStaticPropsContext<Params>) => {
+  const queryClient = new QueryClient();
+  const configResponse = await getAppConfig(params?.site, 'no-page-defined');
+
+  return {
+    props: {
+      dehydratedState: dehydrate(queryClient),
+      ...configResponse,
+    },
+    revalidate: 300,
+  };
+};
+
+export const getStaticPaths: GetStaticPaths<
+  Params
+> = ({}: GetStaticPathsContext) => {
+  return {
+    paths: [],
+    fallback: 'blocking',
+  };
+};
+
+export default AdminIndexPage;

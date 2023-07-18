@@ -1,4 +1,3 @@
-import { string } from 'yup';
 import { AppWhitelabelType } from '../constants/enum';
 import { AssetAPI } from './nft';
 
@@ -10,6 +9,7 @@ export interface WhitelabelFormData {
   owner?: string;
   slug?: string;
   email?: string;
+  siteId?: number;
 }
 
 export interface PageTemplateFormData {

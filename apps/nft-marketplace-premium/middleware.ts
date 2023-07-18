@@ -8,9 +8,11 @@ export const config = {
     '/order/:path*',
     '/collection/:path*',
     '/forms/:path*',
+    '/contract-wizard/:path*',
     '/wallet/:path*',
     '/404/:path*',
-    '/u/:path*'
+    '/u/:path*',
+    '/admin/:path*'
   ],
 };
 
@@ -23,7 +25,9 @@ const basePaths = [
   '/collections',
   '/wallet',
   '/404',
-  '/u'
+  '/admin',
+  '/contract-wizard',
+  '/u',
 ];
 
 function isBasePath(path: string) {
@@ -46,7 +50,7 @@ export default function middleware(req: NextRequest) {
 
   hostname = hostname.replace(':3001', '');
 
-  if (url.pathname.startsWith('/admin')) {
+  if (url.pathname.startsWith('/super-admin')) {
     return NextResponse.rewrite(url);
   }
 
@@ -60,9 +64,6 @@ export default function middleware(req: NextRequest) {
     return NextResponse.rewrite(url);
   }
 
-  if (url.pathname.startsWith('/contract-wizard')) {
-    return NextResponse.rewrite(url);
-  }
 
   if (
     hostname === 'whitelabel-nft.dexkit.com' ||

@@ -31,11 +31,13 @@ import {
   useAuth,
   useLoginAccountMutation,
 } from './account';
+import { useSiteId } from './app';
 
 export const useSendConfigMutation = ({ slug }: { slug?: string }) => {
   const { account, provider, chainId } = useWeb3React();
   const { isLoggedIn } = useAuth();
   const loginMutation = useLoginAccountMutation();
+  const siteId = useSiteId();
   const configQuery = useWhitelabelConfigQuery({
     slug: slug as string,
   });
@@ -52,6 +54,7 @@ export const useSendConfigMutation = ({ slug }: { slug?: string }) => {
           type,
           slug,
           email,
+          siteId
         });
         configQuery.refetch();
         return response.data;

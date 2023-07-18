@@ -12,10 +12,17 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
+import { dehydrate, QueryClient } from '@tanstack/react-query';
 import { useWeb3React } from '@web3-react/core';
 import { Field, Form, Formik } from 'formik';
 import { TextField } from 'formik-mui';
-import type { NextPage } from 'next';
+import type {
+  GetStaticPaths,
+  GetStaticPathsContext,
+  GetStaticProps,
+  GetStaticPropsContext,
+  NextPage,
+} from 'next';
 import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
 import { useState } from 'react';
@@ -23,6 +30,7 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import AppConfirmDialog from 'src/components/AppConfirmDialog';
 import MainLayout from 'src/components/layouts/main';
 import { PageHeader } from 'src/components/PageHeader';
+import { getAppConfig } from 'src/services/app';
 
 const INITIAL_VALUES: TokenForm = {
   name: '',
@@ -256,6 +264,34 @@ const WizardCreateTokenPage: NextPage = () => {
       </MainLayout>
     </>
   );
+};
+
+type Params = {
+  site?: string;
+};
+
+export const getStaticProps: GetStaticProps = async ({
+  params,
+}: GetStaticPropsContext<Params>) => {
+  const queryClient = new QueryClient();
+  const configResponse = await getAppConfig(params?.site, 'no-page-defined');
+
+  return {
+    props: {
+      dehydratedState: dehydrate(queryClient),
+      ...configResponse,
+    },
+    revalidate: 300,
+  };
+};
+
+export const getStaticPaths: GetStaticPaths<
+  Params
+> = ({}: GetStaticPathsContext) => {
+  return {
+    paths: [],
+    fallback: 'blocking',
+  };
 };
 
 export default WizardCreateTokenPage;
