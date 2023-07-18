@@ -192,6 +192,7 @@ export default function PageEditor(props: Props) {
       components={{
         BottomToolbar: CustomToolbar,
       }}
+      //@ts-ignore
       cellPlugins={plugins}
       value={JSON.parse(value || 'null')}
       onChange={onChangeValue}
