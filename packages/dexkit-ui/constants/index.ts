@@ -42,3 +42,5 @@ export const CURRENCIES: Currency[] = [
 ];
 
 export const MIN_KIT_HOLDING_AI_GENERATION = '1000';
+
+export const MAX_ACCOUNT_FILE_UPLOAD_SIZE = 2048576;

@@ -1,7 +1,27 @@
 import axios from 'axios';
-
+import { DEXKIT_BASE_API_URL } from "../constants/api";
 let access_token: string | undefined;
 let refreshedWasCalled = false;
+
+
+
+const AUTH_ENDPOINT = `${DEXKIT_BASE_API_URL}/auth`;
+
+
+
+/**
+ * send config to server
+ * @param formData
+ * @returns
+ */
+const authApi = axios.create({ baseURL: AUTH_ENDPOINT, headers: { 'content-type': 'application/json' } });
+
+export async function requestSignature({ address }: { address: string }) {
+  return authApi.get<string>(`/message-to-sign/${address}`);
+}
+
+
+
 
 export function getAccessToken() {
   if (access_token) {
@@ -60,4 +80,13 @@ export async function logoutApp({ accessTk }: { accessTk: string }) {
       'Authorization': `Bearer ${accessTk}`
     }
   });
+}
+
+/**
+ * Api route that logins in DexKit backend
+ * @param param0 
+ * @returns 
+ */
+export async function loginApp({ address, signature }: { address: string, signature: string }) {
+  return axios.post<{ access_token: string, refresh_token: string }>('/api/dex-auth/login', { data: { address, signature } });
 }

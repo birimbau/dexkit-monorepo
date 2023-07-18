@@ -4,6 +4,7 @@ import { useState } from "react";
 
 import { connectField } from "uniforms";
 
+import MediaDialog from "@dexkit/ui/components/mediaDialog";
 import ImageIcon from "@mui/icons-material/Image";
 import { FormattedMessage } from "react-intl";
 const CustomImage = styled("img")(({ theme }) => ({

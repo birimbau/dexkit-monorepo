@@ -414,11 +414,17 @@ export function useSwitchNetwork() {
   const [isOpenSwitchNetwork, setOpenSwitchNetwork] = useAtom(switchNetworkOpenAtom);
   const [networkChainId, setNetworkChainId] = useAtom(switchNetworkChainIdAtom);
 
+  const openDialog = function (chainId: number | undefined) {
+    setOpenSwitchNetwork(true)
+    setNetworkChainId(chainId)
+  }
+
   return {
     isOpenSwitchNetwork,
     setOpenSwitchNetwork,
     networkChainId,
-    setNetworkChainId
+    setNetworkChainId,
+    openDialog
   };
 }
 

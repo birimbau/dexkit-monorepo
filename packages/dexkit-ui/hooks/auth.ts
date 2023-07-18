@@ -1,9 +1,11 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useWeb3React } from "@web3-react/core";
 import { useContext } from "react";
+import { useSignMessageDialog } from ".";
 import { AuthContext } from "../context/AuthContext";
 import { getUserByAccount } from "../modules/user/services";
-import { getRefreshAccessToken, logoutApp, setAccessToken } from "../services/auth";
+import { getRefreshAccessToken, loginApp, logoutApp, requestSignature, setAccessToken } from "../services/auth";
+
 
 
 export function useAuth() {
@@ -43,5 +45,37 @@ export function useAuthUserQuery() {
   return useQuery([GET_AUTH_USER, account], async () => {
     const userRequest = await getUserByAccount();
     return userRequest.data;
+  })
+}
+
+export function useLoginAccountMutation() {
+  const { account, provider } = useWeb3React();
+  const signMessageDialog = useSignMessageDialog();
+
+  const { setIsLoggedIn } = useAuth();
+
+  return useMutation(async () => {
+    if (!account || !provider) {
+      return;
+    }
+    signMessageDialog.setOpen(true)
+    const messageToSign = await requestSignature({ address: account });
+
+    const signature = await provider.getSigner().signMessage(messageToSign.data);
+
+    const loginResponse = await loginApp({ signature, address: account });
+    if (setIsLoggedIn) {
+      setIsLoggedIn(true);
+    }
+    setAccessToken(loginResponse.data.access_token)
+    return loginResponse.data;
+  }, {
+    onError(error) {
+      signMessageDialog.setOpen(false)
+      // signMessageDialog.setError(Error('Error signing message'));
+    },
+    onSettled() {
+      signMessageDialog.setOpen(false)
+    }
   })
 }

@@ -27,7 +27,7 @@ export function SwapSection({ section }: Props) {
             configsByChain: section.config?.configByChain
               ? section.config?.configByChain
               : {},
-            currency,
+            currency: currency.currency,
             defaultChainId:
               chainId || section.config?.defaultChainId || ChainId.Ethereum,
             zeroExApiKey: process?.env.NEXT_PUBLIC_ZRX_API_KEY || "",

@@ -24,6 +24,10 @@ const UserContractSection = dynamic(
 interface Props {
   section: AppPageSection;
 }
+async function loadPlugin({ path }: { path: string }) {
+  const plugin = await import(path);
+  return plugin;
+}
 
 function LoadPlugin({ path, data }: { path: string; data: unknown }) {
   const [pluginRender, setPluginRender] = useState<
@@ -31,11 +35,7 @@ function LoadPlugin({ path, data }: { path: string; data: unknown }) {
   >();
   useEffect(() => {
     if (path) {
-      async function loadPlugin() {
-        const plugin = await import(path);
-        setPluginRender(plugin.render);
-      }
-      loadPlugin();
+      loadPlugin({ path }).then((pl) => setPluginRender(pl));
     }
   }, [path]);
   if (pluginRender) {

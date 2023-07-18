@@ -14,12 +14,16 @@ import {
 } from "@dexkit/core/services/balances";
 import { Asset, SwapApiOrder } from "@dexkit/core/types/nft";
 import { isAddressEqual } from "@dexkit/core/utils";
-import { useConnectWalletDialog, useDexKitContext } from "@dexkit/ui";
+import {
+  useConnectWalletDialog,
+  useDexKitContext,
+  useSwitchNetwork,
+} from "@dexkit/ui";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { SwappableAssetV4 } from "@traderxyz/nft-swap-sdk";
 import { ethers } from "ethers";
 import ShareDialog from "../../../components/dialogs/ShareDialog";
-import { useSwitchNetwork, useTokenList } from "../../../hooks/blockchain";
+import { useTokenList } from "../../../hooks/blockchain";
 import { OrderDirection } from "../constants/enum";
 import {
   GET_NFT_ORDERS,

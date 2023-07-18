@@ -34,7 +34,7 @@ function SwapWidget(props: Props) {
         ...swapState.renderOptions,
         configsByChain: configByChain ? configByChain : {},
         defaultChainId: chainId || ChainId.Ethereum,
-        currency,
+        currency: currency.currency,
         zeroExApiKey: process?.env.NEXT_PUBLIC_ZRX_API_KEY || "",
         transakApiKey: process?.env.NEXT_PUBLIC_TRANSAK_API_KEY || "",
       }}

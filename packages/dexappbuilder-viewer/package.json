@@ -40,9 +40,7 @@
     "@dexkit/core": "*",
     "@dexkit/ui": "*",
     "@dexkit/web3forms": "*",
-    "@dexkit/widgets": "*",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "@dexkit/widgets": "*"
   },
   "eslintConfig": {
     "extends": [

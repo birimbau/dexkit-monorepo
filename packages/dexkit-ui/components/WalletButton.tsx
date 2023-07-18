@@ -146,3 +146,5 @@ export function WalletButton(props: Props) {
     </>
   );
 }
+
+export default WalletButton;
