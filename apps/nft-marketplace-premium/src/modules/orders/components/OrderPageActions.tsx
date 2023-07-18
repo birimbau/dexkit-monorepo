@@ -122,7 +122,7 @@ export function OrderPageActions({ address, id, nonce }: Props) {
                         favorites.isFavorite(asset)
                           ? (theme) => ({
                               '& path': {
-                                fill: theme.vars.palette.error.light,
+                                fill: theme.palette.error.light,
                               },
                             })
                           : undefined

@@ -47,12 +47,12 @@ export function CallToActionSection({ section, disabled }: Props) {
       sx={(theme) => ({
         bgcolor:
           section.variant === 'dark'
-            ? theme.vars.palette.text.primary
-            : theme.vars.palette.background.default,
+            ? theme.palette.text.primary
+            : theme.palette.background.default,
         color:
           section.variant === 'dark'
-            ? theme.vars.palette.background.default
-            : theme.vars.palette.text.primary,
+            ? theme.palette.background.default
+            : theme.palette.text.primary,
       })}
     >
       <Container>

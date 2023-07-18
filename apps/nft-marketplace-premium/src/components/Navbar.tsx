@@ -433,7 +433,7 @@ function Navbar({ appConfig, isPreview }: Props) {
                   sx={(theme) => ({
                     px: 2,
                     py: 1,
-                    border: `1px solid ${theme.vars.palette.divider}`,
+                    border: `1px solid ${theme.palette.divider}`,
                     borderRadius: theme.spacing(1),
                   })}
                 >

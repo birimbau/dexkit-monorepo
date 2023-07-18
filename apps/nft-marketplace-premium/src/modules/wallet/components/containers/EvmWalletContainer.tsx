@@ -400,7 +400,7 @@ const EvmWalletContainer = () => {
                   onClick={handleToggleBalances}
                   fullWidth
                   sx={(theme) => ({
-                    backgroundColor: theme.vars.palette.background.paper,
+                    backgroundColor: theme.palette.background.paper,
                     py: 2,
                   })}
                   startIcon={

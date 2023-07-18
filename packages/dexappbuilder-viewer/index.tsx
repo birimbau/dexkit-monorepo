@@ -1,11 +1,6 @@
 //export * from './components/Render';
 
-import { TokenWhitelabelApp } from "@dexkit/core/types";
-import { DexkitProvider } from "@dexkit/ui";
-import { AppNotification } from "@dexkit/ui/types";
 import { AppConfig } from "@dexkit/ui/types/config";
-import { experimental_extendTheme as extendTheme } from "@mui/material/styles";
-import { atom } from "jotai";
 import { SectionRender } from "./components/SectionRender";
 import MainLayout from "./components/layout/main";
 import { useWhitelabelConfigQuery } from "./hooks";
@@ -16,44 +11,42 @@ interface Props {
   page?: string;
   withLayout?: boolean;
 }
-
-export default function RenderDexAppBuilder({ slug, page, withLayout }: Props) {
+/**
+ * Renders DexAppBuilder sections from slug, filtering from section and page
+ * @param param0
+ * @returns
+ */
+export default function RenderDexAppBuilder({
+  slug,
+  page,
+  withLayout,
+  section,
+}: Props) {
   const configResponse = useWhitelabelConfigQuery({ slug, page });
 
   if (configResponse.data) {
     const toRender = (
       JSON.parse(configResponse.data.config) as AppConfig
-    ).pages[page || "home"].sections.map((section, k) => (
-      <SectionRender key={k} section={section} />
-    ));
+    ).pages[page || "home"].sections
+      .filter((s) => (section ? section === s.key : true))
+      .map((section, k) => <SectionRender key={k} section={section} />);
 
-    return (
-      <DexkitProvider
-        theme={extendTheme()}
-        locale="en-US"
-        assetsAtom={atom({})}
-        currencyUserAtom={atom("")}
-        tokensAtom={atom<TokenWhitelabelApp[]>([])}
-        notificationTypes={{}}
-        notificationsAtom={atom<AppNotification[]>([])}
-        onChangeLocale={() => {}}
-        transactionsAtom={atom<{}>({})}
-        selectedWalletAtom={atom<string>("")}
-      >
-        {withLayout ? (
-          <MainLayout>
-            <>{toRender}</>
-          </MainLayout>
-        ) : (
-          <>{toRender}</>
-        )}
-      </DexkitProvider>
+    return withLayout ? (
+      <MainLayout>
+        <>{toRender}</>
+      </MainLayout>
+    ) : (
+      <>{toRender}</>
     );
   }
 
   return <></>;
 }
-
+/**
+ * Renders DexAppBuilder sections from config, filtering from page
+ * @param param0
+ * @returns
+ */
 export function renderDexAppBuilderFromConfig({
   config,
   page,

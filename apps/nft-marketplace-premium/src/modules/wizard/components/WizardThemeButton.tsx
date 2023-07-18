@@ -37,13 +37,11 @@ function WizardThemeButton({ selected, name, id, colors, onClick }: Props) {
         flexDirection: 'column',
         alignItems: 'flex-start',
         borderColor: (theme) =>
-          selected
-            ? theme.vars.palette.primary.main
-            : theme.vars.palette.divider,
+          selected ? theme.palette.primary.main : theme.palette.divider,
         backgroundColor: (theme) =>
           selected
-            ? theme.vars.palette.action.hover
-            : theme.vars.palette.background.paper,
+            ? theme.palette.action.hover
+            : theme.palette.background.paper,
       }}
       onClick={handleClick}
     >

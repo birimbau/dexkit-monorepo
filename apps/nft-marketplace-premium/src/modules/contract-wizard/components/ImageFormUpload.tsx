@@ -54,8 +54,7 @@ export function ImageFormUpload(props: Props) {
             sx={
               error
                 ? {
-                    border: (theme) =>
-                      `1px solid ${theme.vars.palette.error.main}`,
+                    border: (theme) => `1px solid ${theme.palette.error.main}`,
                   }
                 : undefined
             }

@@ -64,6 +64,7 @@ export type SectionType =
   | 'user-contract-form';
 
 export interface PageSection {
+  key?: string;
   type: SectionType;
   title?: string;
   variant?: PageSectionVariant;
