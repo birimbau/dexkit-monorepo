@@ -21,7 +21,6 @@
   "dependencies": {
     "@0x/contract-addresses": "^7.4.1",
     "@date-io/moment": "^2.13.1",
-    "@dexkit/dexappbuilder-viewer": "*",
     "@dexkit/core": "*",
     "@dexkit/ui": "*",
     "@dexkit/widgets": "*",
