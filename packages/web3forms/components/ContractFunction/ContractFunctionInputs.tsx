@@ -9,6 +9,7 @@ import {
 import { useCallback, useState } from "react";
 import SelectAddressDialog from "../SelectAddressDialog";
 import ContractFunctionInput from "./ContractFunctionInput";
+import ContractFunctionInputArray from "./ContractFunctionInputArray";
 import ContractFunctionTupleInput from "./ContractFunctionTupleInput";
 
 const patternTwoDigisAfterComma = /^\d+(\.\d{0,18})?$/;
@@ -89,15 +90,26 @@ export default function ContractFunctionInputs({
           );
         }
 
+        if (input.type.endsWith("[]")) {
+          return (
+            <Grid item xs={12} key={key}>
+              <ContractFunctionInputArray
+                input={input}
+                name={name}
+                onSelectAddress={handleShowSelectAddress}
+                params={params}
+              />
+            </Grid>
+          );
+        }
+
         return (
-          <>
-            <ContractFunctionInput
-              input={input}
-              name={name}
-              onSelectAddress={handleShowSelectAddress}
-              params={params}
-            />
-          </>
+          <ContractFunctionInput
+            input={input}
+            name={name}
+            onSelectAddress={handleShowSelectAddress}
+            params={params}
+          />
         );
       })}
     </>

@@ -8,12 +8,14 @@ export interface ContractFunctionTupleInputProps {
   params: ContractFormParams;
   name?: string;
   onSelectAddress: (name: string, addresses: string[]) => void;
+  index?: number;
 }
 
 export default function ContractFunctionTupleInput({
   input,
   params,
   name,
+  index,
   onSelectAddress,
 }: ContractFunctionTupleInputProps) {
   const inputParams = useMemo(() => {
@@ -39,7 +41,9 @@ export default function ContractFunctionTupleInput({
         {input.components.map((component, key) => (
           <Grid item xs={12} key={key}>
             <ContractFunctionInput
-              objectName={input.name}
+              objectName={
+                index !== undefined ? `${input.name}[${index}]` : input.name
+              }
               input={component}
               name={component.name}
               onSelectAddress={onSelectAddress}

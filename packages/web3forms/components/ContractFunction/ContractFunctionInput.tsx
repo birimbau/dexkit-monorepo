@@ -18,6 +18,7 @@ export interface ContractFunctionProps {
   params: ContractFormParams;
   name?: string;
   objectName?: string;
+  index?: number;
   onSelectAddress: (name: string, addresses: string[]) => void;
 }
 
@@ -26,6 +27,7 @@ export default function ContractFunctionInput({
   input,
   params,
   objectName,
+  index,
   onSelectAddress,
 }: ContractFunctionProps) {
   const { formatMessage } = useIntl();
@@ -44,6 +46,20 @@ export default function ContractFunctionInput({
     return inputParams;
   }, [name, params, input]);
 
+  const inputName = useMemo(() => {
+    let inpName: string = input.name;
+
+    if (objectName) {
+      inpName = `${objectName}.${input.name}`;
+    }
+
+    if (index !== undefined) {
+      inpName = `${inpName}[${index}]`;
+    }
+
+    return inpName;
+  }, [input, index, name, objectName]);
+
   if (inputParams?.inputType === "address") {
     return (
       <Grid item xs={12}>
@@ -52,7 +68,7 @@ export default function ContractFunctionInput({
           size="small"
           fullWidth
           label={inputParams.label ? inputParams.label : input.name}
-          name={objectName ? `${objectName}.${input.name}` : input.name}
+          name={inputName}
           disabled={
             name && params.fields[name]
               ? params.fields[name].lockInputs
@@ -91,7 +107,7 @@ export default function ContractFunctionInput({
               size="small"
               type="checkbox"
               fullWidth
-              name={objectName ? `${objectName}.${input.name}` : input.name}
+              name={inputName}
               disabled={
                 name && params.fields[name]
                   ? params.fields[name].lockInputs
@@ -111,7 +127,7 @@ export default function ContractFunctionInput({
         size="small"
         fullWidth
         label={inputParams?.label ? inputParams.label : input.name}
-        name={objectName ? `${objectName}.${input.name}` : input.name}
+        name={inputName}
         disabled={
           name && params.fields[name]
             ? params.fields[name].lockInputs
