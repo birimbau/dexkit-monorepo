@@ -2,9 +2,9 @@ import axios from 'axios';
 import { AssetAPI } from '../modules/nft/types';
 import { getAccessToken } from '../services/auth';
 
-export const DEXKIT_BASE_API_URL = 'https://nft-api.dexkit.com'
-
-export const DEXKIT_NFT_BASE_URL = `${DEXKIT_BASE_API_URL}`
+export const DEXKIT_UI_BASE_API_URL = 'https://nft-api.dexkit.com'
+//const DEXKIT_UI_BASE_API_URL = 'https://nft-api.dexkit.com'
+export const DEXKIT_NFT_BASE_URL = `${DEXKIT_UI_BASE_API_URL}`
 
 
 
@@ -14,7 +14,7 @@ export const ENS_BASE_URL = 'https://metadata.ens.domains';
 
 export const metadataENSapi = axios.create({ baseURL: ENS_BASE_URL });
 
-const DEXKIT_DASH_ENDPOINT = `${DEXKIT_BASE_API_URL}`;
+const DEXKIT_DASH_ENDPOINT = `${DEXKIT_UI_BASE_API_URL}`;
 
 export const dexkitNFTapi = axios.create({ baseURL: DEXKIT_NFT_BASE_URL, timeout: 2500 });
 

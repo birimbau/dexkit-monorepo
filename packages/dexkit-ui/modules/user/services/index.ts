@@ -1,10 +1,10 @@
 import axios from 'axios';
 
-import { DEXKIT_BASE_API_URL, myAppsApi } from "../../../constants/api";
+import { DEXKIT_UI_BASE_API_URL, myAppsApi } from "../../../constants/api";
 import { UserOptions } from '../types';
 
 
-const USER_ENDPOINT = `${DEXKIT_BASE_API_URL}/user`;
+const USER_ENDPOINT = `${DEXKIT_UI_BASE_API_URL}/user`;
 /**
  * not this endpoint is intended to use without the interceptor, we set the bearear token automatically
  */

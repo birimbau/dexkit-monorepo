@@ -1,11 +1,11 @@
 import axios from 'axios';
-import { DEXKIT_BASE_API_URL } from '../../../constants/api';
+import { DEXKIT_UI_BASE_API_URL } from '../../../constants/api';
 import { getAccessToken } from '../../../services/auth';
 import { AccountFile } from '../types';
 
 
 
-const MY_APPS_ENDPOINT = `${DEXKIT_BASE_API_URL}/account-file`;
+const MY_APPS_ENDPOINT = `${DEXKIT_UI_BASE_API_URL}/account-file`;
 
 /**
  * send config to server

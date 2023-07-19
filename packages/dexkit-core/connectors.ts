@@ -59,7 +59,10 @@ export function GET_CONNECTOR_NAME(connector: any) {
   if (connector instanceof Connector) {
     if (typeof window !== "undefined") {
       const loginType = localStorage.getItem("loginType");
-      return WALLET_CONNECTORS.find(w => w.id === 'magic' && w.loginType === loginType)?.name
+      const name = WALLET_CONNECTORS.find(w => w.id === 'magic' && w.loginType === loginType)?.name;
+      if (name) {
+        return name;
+      }
     }
   }
   return 'Unknown';
@@ -71,7 +74,10 @@ export function GET_WALLET_ICON(connector: any) {
   if (connector instanceof Connector) {
     if (typeof window !== "undefined") {
       const loginType = localStorage.getItem("loginType");
-      return WALLET_CONNECTORS.find(w => w.id === 'magic' && w.loginType === loginType)?.icon
+      const icon = WALLET_CONNECTORS.find(w => w.id === 'magic' && w.loginType === loginType)?.icon;
+      if (icon) {
+        return icon;
+      }
     }
   }
 

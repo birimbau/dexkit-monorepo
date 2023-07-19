@@ -1,11 +1,12 @@
 import axios from 'axios';
-import { DEXKIT_BASE_API_URL } from "../constants/api";
+
+
 let access_token: string | undefined;
 let refreshedWasCalled = false;
 
 
 
-const AUTH_ENDPOINT = `${DEXKIT_BASE_API_URL}/auth`;
+const AUTH_ENDPOINT = `https://nft-api.dexkit.com/auth`;
 
 
 
