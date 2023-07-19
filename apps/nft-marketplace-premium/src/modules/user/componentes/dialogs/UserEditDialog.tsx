@@ -1,7 +1,7 @@
 import { Dialog, DialogContent, DialogProps, Divider } from '@mui/material';
 import { FormattedMessage } from 'react-intl';
 
-import { AppDialogTitle } from '@dexkit/ui';
+import { AppDialogTitle } from '@dexkit/ui/components';
 import { ActiveMenu, UserEditContainer } from '../containers/UserEditContainer';
 
 interface Props {

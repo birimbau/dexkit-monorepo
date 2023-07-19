@@ -1,4 +1,4 @@
-import { useDexKitContext } from '@dexkit/ui';
+import { useDexKitContext } from '@dexkit/ui/hooks';
 import {
   Alert,
   Box,
@@ -79,7 +79,7 @@ function OrderRightSection({ order }: Props) {
     if (order && token) {
       return ethers.utils.formatUnits(
         ethers.BigNumber.from(order?.erc20TokenAmount || '0'),
-        token?.decimals
+        token?.decimals,
       );
     }
   }, [token, order]);
@@ -99,7 +99,7 @@ function OrderRightSection({ order }: Props) {
           return (
             ratio *
             parseFloat(
-              ethers.utils.formatUnits(order?.erc20TokenAmount, token.decimals)
+              ethers.utils.formatUnits(order?.erc20TokenAmount, token.decimals),
             )
           );
         } else {
@@ -111,16 +111,16 @@ function OrderRightSection({ order }: Props) {
 
   const handleCancelSignedOrderError = useCallback(
     (error: any) => watchTransactionDialog.setDialogError(error),
-    [watchTransactionDialog]
+    [watchTransactionDialog],
   );
 
   const handleCancelOrderHash = useCallback(
     (hash: string, order: SwapApiOrder) => {
       if (asset !== undefined) {
         watchTransactionDialog.setRedirectUrl(
-          `/asset/${getNetworkSlugFromChainId(asset?.chainId)}/${
-            asset?.contractAddress
-          }/${asset?.id}`
+          `/asset/${getNetworkSlugFromChainId(
+            asset?.chainId,
+          )}/${asset?.contractAddress}/${asset?.id}`,
         );
 
         const values = {
@@ -141,7 +141,7 @@ function OrderRightSection({ order }: Props) {
         watchTransactionDialog.watch(hash);
       }
     },
-    [watchTransactionDialog, asset, chainId]
+    [watchTransactionDialog, asset, chainId],
   );
 
   const handleCancelSignedOrderMutate = useCallback(
@@ -155,12 +155,12 @@ function OrderRightSection({ order }: Props) {
         watchTransactionDialog.open('cancelOffer', values);
       }
     },
-    [watchTransactionDialog]
+    [watchTransactionDialog],
   );
 
   const handleFillSignedOrderError = useCallback(
     (error: any) => watchTransactionDialog.setDialogError(error),
-    [watchTransactionDialog]
+    [watchTransactionDialog],
   );
 
   const handleMutateSignedOrder = useCallback(
@@ -184,7 +184,7 @@ function OrderRightSection({ order }: Props) {
         watchTransactionDialog.open('buyNft', values);
       }
     },
-    [watchTransactionDialog, asset]
+    [watchTransactionDialog, asset],
   );
 
   const handleBuyOrderSuccess = useCallback(
@@ -202,9 +202,9 @@ function OrderRightSection({ order }: Props) {
       }
 
       watchTransactionDialog.setRedirectUrl(
-        `/asset/${getNetworkSlugFromChainId(asset?.chainId)}/${
-          asset?.contractAddress
-        }/${asset?.id}`
+        `/asset/${getNetworkSlugFromChainId(
+          asset?.chainId,
+        )}/${asset?.contractAddress}/${asset?.id}`,
       );
 
       const decimals = await getERC20Decimals(order.erc20Token, provider);
@@ -242,7 +242,7 @@ function OrderRightSection({ order }: Props) {
 
       watchTransactionDialog.watch(hash);
     },
-    [watchTransactionDialog, provider, asset]
+    [watchTransactionDialog, provider, asset],
   );
 
   const handleApproveAsset = useCallback(
@@ -274,7 +274,7 @@ function OrderRightSection({ order }: Props) {
         watchTransactionDialog.watch(hash);
       }
     },
-    [watchTransactionDialog, provider, asset, chainId]
+    [watchTransactionDialog, provider, asset, chainId],
   );
 
   const approveAsset = useApproveAssetMutation(
@@ -295,11 +295,11 @@ function OrderRightSection({ order }: Props) {
           } else {
             const symbol = await getERC20Symbol(
               variable.asset.tokenAddress,
-              provider
+              provider,
             );
             const name = await getERC20Symbol(
               variable.asset.tokenAddress,
-              provider
+              provider,
             );
 
             const values = { name, symbol };
@@ -308,7 +308,7 @@ function OrderRightSection({ order }: Props) {
           }
         }
       },
-    }
+    },
   );
 
   const fillSignedOrder = useFillSignedOrderMutation(nftSwapSdk, account, {
@@ -324,7 +324,7 @@ function OrderRightSection({ order }: Props) {
     {
       onError: handleCancelSignedOrderError,
       onMutate: handleCancelSignedOrderMutate,
-    }
+    },
   );
 
   const handleCancelOrder = useCallback(async () => {
@@ -570,9 +570,8 @@ function OrderRightSection({ order }: Props) {
           </Typography>
 
           <Link
-            href={`${getBlockExplorerUrl(asset?.chainId)}/address/${
-              order?.order.maker
-            }`}
+            href={`${getBlockExplorerUrl(asset?.chainId)}/address/${order?.order
+              .maker}`}
             variant="body2"
             target="_blank"
           >
@@ -592,9 +591,9 @@ function OrderRightSection({ order }: Props) {
               <FormattedMessage id="visible.for" defaultMessage="Visible for" />
             </Typography>
             <Link
-              href={`${getBlockExplorerUrl(asset?.chainId)}/address/${
-                asset?.owner
-              }`}
+              href={`${getBlockExplorerUrl(
+                asset?.chainId,
+              )}/address/${asset?.owner}`}
               variant="body2"
               target="_blank"
             >

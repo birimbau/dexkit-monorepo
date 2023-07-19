@@ -54,10 +54,10 @@ import Notification from './icons/Notification';
 import Wallet from './icons/Wallet';
 
 import { MagicConnector } from '@dexkit/core/types/magic';
-import { useDexKitContext, useNotifications } from '@dexkit/ui';
 import MagicNetworkSelect from '@dexkit/ui/components/MagicNetworkSelect';
 import NotificationsDialog from '@dexkit/ui/components/dialogs/NotificationsDialog';
 import { ThemeMode } from '@dexkit/ui/constants/enum';
+import { useDexKitContext, useNotifications } from '@dexkit/ui/hooks';
 import { ThemeModeSelector } from './ThemeModeSelector';
 
 interface Props {

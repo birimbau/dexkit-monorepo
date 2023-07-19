@@ -6,7 +6,7 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import Icon from '../../../components/Icon';
 import DollarSquare from '../../../components/icons/DollarSquare';
 
-import { useDexKitContext } from '@dexkit/ui';
+import { useDexKitContext } from '@dexkit/ui/hooks';
 import { useQueryClient } from '@tanstack/react-query';
 import { SwappableAssetV4 } from '@traderxyz/nft-swap-sdk';
 import {
@@ -87,7 +87,7 @@ export function AssetPricePaper({ address, id }: Props) {
         }
       }
     },
-    [watchTransactionDialog, asset]
+    [watchTransactionDialog, asset],
   );
 
   const handleApproveAssetMutate = useCallback(
@@ -106,14 +106,14 @@ export function AssetPricePaper({ address, id }: Props) {
         }
       }
     },
-    [watchTransactionDialog, asset]
+    [watchTransactionDialog, asset],
   );
 
   const handleApproveAssetError = useCallback(
     (error: any) => {
       watchTransactionDialog.setDialogError(error);
     },
-    [watchTransactionDialog]
+    [watchTransactionDialog],
   );
 
   const approveAsset = useApproveAssetMutation(
@@ -123,7 +123,7 @@ export function AssetPricePaper({ address, id }: Props) {
     {
       onMutate: handleApproveAssetMutate,
       onError: handleApproveAssetError,
-    }
+    },
   );
 
   const signMessageDialog = useSignMessageDialog();
@@ -134,7 +134,7 @@ export function AssetPricePaper({ address, id }: Props) {
       formatMessage({
         id: 'creating.a.listing',
         defaultMessage: 'Creating a listing',
-      })
+      }),
     );
   }, [signMessageDialog]);
 
@@ -144,7 +144,7 @@ export function AssetPricePaper({ address, id }: Props) {
       formatMessage({
         id: 'creating.an.offer',
         defaultMessage: 'Creating an offer',
-      })
+      }),
     );
   }, [signMessageDialog]);
 
@@ -156,7 +156,7 @@ export function AssetPricePaper({ address, id }: Props) {
     (err: any) => {
       signMessageDialog.setError(err);
     },
-    [signMessageDialog]
+    [signMessageDialog],
   );
 
   const handleSignMessageSuccess = useCallback(() => {
@@ -183,7 +183,7 @@ export function AssetPricePaper({ address, id }: Props) {
       onSuccess: handleSignMessageSuccess,
       onMutate: handleOpenSignMessageListingDialog,
       onError: handleSignMessageError,
-    }
+    },
   );
 
   const makeOffer = useMakeOfferMutation(nftSwapSdk, account, asset?.chainId, {
@@ -228,7 +228,7 @@ export function AssetPricePaper({ address, id }: Props) {
     amount: ethers.BigNumber,
     tokenAddress: string,
     expiry: Date | null,
-    takerAddress?: string
+    takerAddress?: string,
   ) => {
     setOpenMakeListing(false);
 
@@ -242,7 +242,7 @@ export function AssetPricePaper({ address, id }: Props) {
         tokenId: id as string,
         type: getAssetProtocol(asset),
       },
-      account
+      account,
     );
 
     if (!status?.contractApproved) {
@@ -274,7 +274,7 @@ export function AssetPricePaper({ address, id }: Props) {
   const handleConfirmMakeOffer = async (
     amount: ethers.BigNumber,
     tokenAddress: string,
-    expiry: Date | null
+    expiry: Date | null,
   ) => {
     setOpenMakeOffer(false);
 
@@ -288,7 +288,7 @@ export function AssetPricePaper({ address, id }: Props) {
         type: 'ERC20',
         amount: amount.toString(),
       },
-      account
+      account,
     );
 
     if (!status?.contractApproved) {

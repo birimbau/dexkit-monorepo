@@ -18,7 +18,7 @@ import { isAddressEqual } from '../../../utils/blockchain';
 import { ConfirmBuyDialog } from './dialogs/ConfirmBuyDialog';
 import TableSkeleton from './tables/TableSkeleton';
 
-import { useDexKitContext } from '@dexkit/ui';
+import { useDexKitContext } from '@dexkit/ui/hooks';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { SwappableAssetV4 } from '@traderxyz/nft-swap-sdk';
 import { ethers } from 'ethers';
@@ -79,7 +79,7 @@ export function AssetBuyOrder({ asset, orderBookItem }: Props) {
         }
       }
     },
-    [watchTransactionDialog, provider, asset, createNotification, chainId]
+    [watchTransactionDialog, provider, asset, createNotification, chainId],
   );
 
   const approveAsset = useApproveAssetMutation(
@@ -100,7 +100,7 @@ export function AssetBuyOrder({ asset, orderBookItem }: Props) {
           } else {
             const symbol = await getERC20Symbol(
               asset.contractAddress,
-              provider
+              provider,
             );
 
             const name = await getERC20Name(asset.contractAddress, provider);
@@ -111,7 +111,7 @@ export function AssetBuyOrder({ asset, orderBookItem }: Props) {
           }
         }
       },
-    }
+    },
   );
 
   const handleBuyOrderSuccess = useCallback(
@@ -165,12 +165,12 @@ export function AssetBuyOrder({ asset, orderBookItem }: Props) {
 
       queryClient.invalidateQueries([GET_NFT_ORDERS]);
     },
-    [watchTransactionDialog, provider, asset]
+    [watchTransactionDialog, provider, asset],
   );
 
   const handleFillSignedOrderError = useCallback(
     (error: any) => watchTransactionDialog.setDialogError(error),
-    [watchTransactionDialog]
+    [watchTransactionDialog],
   );
 
   const handleMutateSignedOrder = useCallback(
@@ -194,7 +194,7 @@ export function AssetBuyOrder({ asset, orderBookItem }: Props) {
         watchTransactionDialog.open('buyNft', values);
       }
     },
-    [watchTransactionDialog, asset]
+    [watchTransactionDialog, asset],
   );
 
   const fillSignedOrder = useFillSignedOrderMutation(nftSwapSdk, account, {
@@ -250,12 +250,12 @@ export function AssetBuyOrder({ asset, orderBookItem }: Props) {
         watchTransactionDialog.watch(hash);
       }
     },
-    [watchTransactionDialog, asset]
+    [watchTransactionDialog, asset],
   );
 
   const handleCancelSignedOrderError = useCallback(
     (error: any) => watchTransactionDialog.setDialogError(error),
-    [watchTransactionDialog]
+    [watchTransactionDialog],
   );
 
   const handleCancelSignedOrderMutate = useCallback(
@@ -272,7 +272,7 @@ export function AssetBuyOrder({ asset, orderBookItem }: Props) {
         }
       }
     },
-    [watchTransactionDialog]
+    [watchTransactionDialog],
   );
 
   const cancelSignedOrder = useCancelSignedOrderMutation(
@@ -282,7 +282,7 @@ export function AssetBuyOrder({ asset, orderBookItem }: Props) {
     {
       onError: handleCancelSignedOrderError,
       onMutate: handleCancelSignedOrderMutate,
-    }
+    },
   );
 
   const switchNetwork = useSwitchNetwork();
@@ -351,7 +351,7 @@ export function AssetBuyOrder({ asset, orderBookItem }: Props) {
         }
       }
     },
-    [cancelSignedOrder, switchNetwork, chainId, asset]
+    [cancelSignedOrder, switchNetwork, chainId, asset],
   );
 
   const handleCloseShareDialog = () => {
