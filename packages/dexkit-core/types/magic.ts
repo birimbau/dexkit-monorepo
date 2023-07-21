@@ -102,6 +102,7 @@ export class MagicConnector extends Connector {
     email?: string;
     redirectUrl?: string;
   }) {
+
     const magic: InstanceWithExtensions<SDKBase, OAuthExtension[]> | undefined =
       this.magicInstance;
 
