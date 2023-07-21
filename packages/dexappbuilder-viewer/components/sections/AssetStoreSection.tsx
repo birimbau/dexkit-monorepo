@@ -1,6 +1,6 @@
 import { AssetStoreContainer } from "@dexkit/ui/modules/nft/components/container/AssetStoreContainer";
+import { AssetStorePageSection } from "@dexkit/ui/modules/wizard/types";
 import Box from "@mui/material/Box";
-import { AssetStorePageSection } from "../../types";
 
 interface Props {
   section: AssetStorePageSection;

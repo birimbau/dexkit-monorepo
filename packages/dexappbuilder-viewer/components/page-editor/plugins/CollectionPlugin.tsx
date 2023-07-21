@@ -2,7 +2,7 @@ import Container from "@mui/material/Container";
 import type { CellPlugin } from "@react-page/editor";
 
 import { NETWORKS, NETWORK_FROM_SLUG } from "@dexkit/core/constants/networks";
-import { CollectionFromApiCard } from "@dexkit/ui/modules/nft/components/CollectionFromApi";
+import { CollectionFromApiCard } from "@dexkit/ui/modules/nft/components";
 import { CollectionAutocomplete } from "../components/CollectionAutocomplete";
 import { ImagePicker } from "../components/ImagePicker";
 type Data = {

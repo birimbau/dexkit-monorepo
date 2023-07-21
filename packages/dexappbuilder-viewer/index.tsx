@@ -16,7 +16,7 @@ interface Props {
  * @param param0
  * @returns
  */
-export default function RenderDexAppBuilder({
+export function RenderDexAppBuilder({
   slug,
   page,
   withLayout,
@@ -47,7 +47,7 @@ export default function RenderDexAppBuilder({
  * @param param0
  * @returns
  */
-export function renderDexAppBuilderFromConfig({
+export function RenderDexAppBuilderFromConfig({
   config,
   page,
   withLayout,

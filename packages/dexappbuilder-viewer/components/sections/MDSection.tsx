@@ -1,8 +1,8 @@
+import { MarkdownEditorPageSection } from "@dexkit/ui/modules/wizard/types";
 import { Container, useTheme } from "@mui/material";
 import "@uiw/react-markdown-preview/markdown.css";
 import "@uiw/react-md-editor/markdown-editor.css";
 import dynamic from "next/dynamic";
-import { MarkdownEditorPageSection } from "../../types";
 
 const EditerMarkdown = dynamic(
   () =>

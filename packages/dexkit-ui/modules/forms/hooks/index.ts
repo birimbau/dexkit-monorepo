@@ -1,6 +1,7 @@
-import { ContractFormParams } from '@dexkit/web3forms/types';
+
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { cloneForm, getForm, listForms } from "../services";
+import { ContractFormParams } from "../types";
 
 type ContractFormData = {
   id: number;

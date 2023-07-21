@@ -1,8 +1,8 @@
 import { ChainId } from "@dexkit/core";
-import { useCurrency } from "@dexkit/ui/hooks/currency";
+import { useCurrency } from "@dexkit/ui/hooks";
 import { useSwapState } from "@dexkit/ui/modules/swap/hooks";
 import { SwapConfig } from "@dexkit/ui/types/sections";
-import { SwapWidget as Swap } from "@dexkit/widgets";
+import { SwapWidget as Swap } from "@dexkit/widgets/src/widgets/swap";
 import React, { useEffect, useState } from "react";
 
 interface Props {

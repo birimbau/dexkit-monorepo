@@ -1,6 +1,6 @@
+import { ContractPageSection } from "@dexkit/ui/modules/wizard/types";
 import ContractFormView from "@dexkit/web3forms/components/ContractFormView";
 import { Container } from "@mui/material";
-import { ContractPageSection } from "../../types";
 
 export interface Props {
   section?: ContractPageSection;

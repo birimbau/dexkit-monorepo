@@ -1,12 +1,12 @@
-import { ChainId } from "@dexkit/core";
-import { SwapWidget } from "@dexkit/widgets";
+import { ChainId } from "@dexkit/core/constants";
+import { SwapWidget } from "@dexkit/widgets/src/widgets/swap";
 import { Container } from "@mui/material";
 import Box from "@mui/material/Box";
 import { useWeb3React } from "@web3-react/core";
 
-import { useCurrency } from "@dexkit/ui/hooks/currency";
+import { useCurrency } from "@dexkit/ui/hooks";
 import { useSwapState } from "@dexkit/ui/modules/swap/hooks";
-import { SwapPageSection } from "../../types";
+import { SwapPageSection } from "@dexkit/ui/modules/wizard/types";
 
 interface Props {
   section: SwapPageSection;

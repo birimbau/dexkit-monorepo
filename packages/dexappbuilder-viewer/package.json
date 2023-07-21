@@ -5,13 +5,10 @@
     "lint": "TIMING=1 eslint \"**/*.ts*\"",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "build": "tsup index.tsx --format iife --dts"
+    "release": "changeset publish"
   },
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
   "devDependencies": {
     "@babel/core": "^7.21.0",
-    "@dexkit/core": "*",
     "@storybook/addon-actions": "^7.0.22",
     "@storybook/addon-essentials": "^7.0.22",
     "@storybook/addon-interactions": "^7.0.22",
@@ -40,7 +37,10 @@
     "@dexkit/core": "*",
     "@dexkit/ui": "*",
     "@dexkit/web3forms": "*",
-    "@dexkit/widgets": "*"
+    "@dexkit/widgets": "*",
+    "@uiw/react-md-editor": "^3.23.3",
+    "html-react-parser": "^4.0.0",
+    "react-syntax-highlighter": "^15.5.0"
   },
   "eslintConfig": {
     "extends": [

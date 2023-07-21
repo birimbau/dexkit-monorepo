@@ -24,7 +24,9 @@ import {
   CreateAppNotificationParams,
 } from "../types";
 
+export * from './auth';
 export * from './blockchain';
+export * from './currency';
 
 // App config context needs to be initialized on widgets
 export function useAppConfig() {

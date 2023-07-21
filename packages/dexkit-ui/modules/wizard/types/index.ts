@@ -165,5 +165,6 @@ export interface SectionMetadata {
   type: SectionType;
   title?: string | React.ReactNode;
   subtitle?: string;
-  icon?: string;
+  icon?: string | React.ReactNode;
+  category: 'misc' | 'swap' | 'nft' | 'exchange'
 }

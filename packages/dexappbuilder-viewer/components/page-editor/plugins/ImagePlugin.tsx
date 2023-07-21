@@ -1,9 +1,8 @@
-import ImageIcon from "@mui/icons-material/Landscape";
-import type { CellPlugin } from "@react-page/editor";
-
-import Link from "@dexkit/ui/components/AppLink";
+import { AppLink } from "@dexkit/ui/components";
 import { DEXKIT_BASE_FILES_HOST } from "@dexkit/ui/constants";
+import ImageIcon from "@mui/icons-material/Landscape";
 import { Stack } from "@mui/material";
+import type { CellPlugin } from "@react-page/editor";
 import Image from "next/image";
 import { useMemo } from "react";
 import { PagesPicker } from "../components/ActionsPicker";
@@ -62,14 +61,14 @@ const ImagePlugin: CellPlugin<Data> = {
     return data.src ? (
       data.href ? (
         <Stack alignItems={position} sx={{ p: data.padding }}>
-          <Link
+          <AppLink
             onClick={isEditMode ? (e) => e.preventDefault() : undefined}
             href={data?.href}
             target={openInNewWindow ? "_blank" : undefined}
             rel={openInNewWindow ? "noreferrer noopener" : undefined}
           >
             {image}
-          </Link>
+          </AppLink>
         </Stack>
       ) : !data.href && !data.pageUri ? (
         <Stack alignItems={position} sx={{ p: data.padding }}>
@@ -77,14 +76,14 @@ const ImagePlugin: CellPlugin<Data> = {
         </Stack>
       ) : data.pageUri ? (
         <Stack alignItems={position} sx={{ p: data.padding }}>
-          <Link
+          <AppLink
             href={data.pageUri}
             onClick={isEditMode ? (e) => e.preventDefault() : undefined}
             target={openInNewWindow ? "_blank" : undefined}
             rel={openInNewWindow ? "noreferrer noopener" : undefined}
           >
             {image}
-          </Link>
+          </AppLink>
         </Stack>
       ) : (
         <></>

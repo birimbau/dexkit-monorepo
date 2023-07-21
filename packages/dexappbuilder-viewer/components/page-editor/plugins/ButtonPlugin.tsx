@@ -1,4 +1,4 @@
-import AppLink from "@dexkit/ui/components/AppLink";
+import { AppLink } from "@dexkit/ui/components";
 import { Box, Button } from "@mui/material";
 import type { CellPlugin } from "@react-page/editor";
 import { useMemo } from "react";

@@ -315,3 +315,54 @@ export function getOrderbookOrders(orderFilter?: TraderOrderFilter) {
     .get<OrderbookResponse>(`${TRADER_ORDERBOOK_API}`, { params: orderFilter })
     .then((resp) => resp.data);
 }
+
+export async function getCollectionData(
+  provider?: ethers.providers.JsonRpcProvider,
+  contractAddress?: string,
+  chainNetwork?: number
+): Promise<Collection | undefined> {
+  if (!provider || !contractAddress) {
+    return;
+  }
+
+  const multicall = await getMulticallFromProvider(provider);
+  const iface = new Interface(ERC721Abi);
+  let calls: CallInput[] = [];
+
+  calls.push({
+    interface: iface,
+    target: contractAddress,
+    function: 'name',
+  });
+
+  calls.push({
+    interface: iface,
+    target: contractAddress,
+    function: 'symbol',
+  });
+
+  const response = await multicall?.multiCall(calls);
+  if (response) {
+    const [, results] = response;
+
+    const name = results[0];
+    const symbol = results[1];
+    if (chainNetwork) {
+      return {
+        name,
+        symbol,
+        address: contractAddress,
+        chainId: chainNetwork,
+      };
+    }
+
+    const { chainId } = await provider.getNetwork();
+
+    return {
+      name,
+      symbol,
+      address: contractAddress,
+      chainId,
+    };
+  }
+}

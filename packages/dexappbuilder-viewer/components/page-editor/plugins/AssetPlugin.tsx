@@ -3,7 +3,7 @@ import { Container } from "@mui/material";
 import Box from "@mui/material/Box";
 import type { CellPlugin } from "@react-page/editor";
 
-import AssetFromApi from "@dexkit/ui/modules/nft/components/AssetFromApi";
+import { AssetFromApi } from "@dexkit/ui/modules/nft/components";
 import { SearchNFTAutocomplete } from "../components/SearchNFTAutocomplete";
 import { SingleNFTAutocomplete } from "../components/SingleNFTAutocomplete";
 

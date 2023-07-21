@@ -5,8 +5,8 @@ import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import { FormattedMessage } from "react-intl";
 
-import { CollectionFromApiCard } from "@dexkit/ui/modules/nft/components/CollectionFromApi";
-import { CollectionAppPageSection } from "../../types";
+import { CollectionFromApiCard } from "@dexkit/ui/modules/nft/components";
+import { CollectionAppPageSection } from "@dexkit/ui/modules/wizard/types";
 
 interface Props {
   section: CollectionAppPageSection;

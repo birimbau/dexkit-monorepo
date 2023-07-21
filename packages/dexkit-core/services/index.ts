@@ -5,6 +5,7 @@ import { ERC20Abi } from "../constants/abis";
 import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "../constants/zrx";
 import { Token, TokenPrices } from "../types";
 import { isAddressEqual } from "../utils";
+export * from './balances';
 
 import { ChainId } from "@dexkit/core/constants/enums";
 import axios from "axios";

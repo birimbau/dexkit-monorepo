@@ -1,5 +1,5 @@
 import { NETWORKS, NETWORK_FROM_SLUG } from "@dexkit/core/constants/networks";
-import { AssetList } from "@dexkit/ui/modules/nft/components/AssetListOrderbook";
+import { AssetList } from "@dexkit/ui/modules/nft/components";
 import type { CellPlugin } from "@react-page/editor";
 import { CollectionAutocomplete } from "../components/CollectionAutocomplete";
 

@@ -19,22 +19,9 @@ import { defineConfig } from 'tsup';
 }*/
 
 export default defineConfig({
-  replaceNodeEnv: true,
-  define: {
-    'process.env.NODE_ENV': JSON.stringify('production'),
-  },
   entry: {
-    index: 'index.tsx',
-  },
-  esbuildOptions(options) {
-    options.alias = {
-      'react/jsx-runtime.js': 'react/jsx-runtime'
-    }
-  },
-  format: ['cjs', 'esm'],
-  // shims: true,
-  // minify: true,
-  // esbuildPlugins: [replaceNodeBuiltIns()],
-  // plugins: [replaceNodeBuiltIns()],
-  //platform: 'browser'
+    'index': 'index.ts',
+    'types': 'types/index.ts',
+    'components/ContractFormView': 'components/ContractFormView.tsx'
+  }
 })

@@ -1,8 +1,10 @@
-import Link from "@dexkit/ui/components/AppLink";
+import { AppLink as Link } from "@dexkit/ui/components";
 import { Box, Button, Container, Grid, Typography } from "@mui/material";
 
-import AssetFromApi from "@dexkit/ui/modules/nft/components/AssetFromApi";
-import { CollectionFromApiCard } from "@dexkit/ui/modules/nft/components/CollectionFromApi";
+import {
+  AssetFromApi,
+  CollectionFromApiCard,
+} from "@dexkit/ui/modules/nft/components";
 import { CallToActionAppPageSection } from "../../types";
 
 interface Props {

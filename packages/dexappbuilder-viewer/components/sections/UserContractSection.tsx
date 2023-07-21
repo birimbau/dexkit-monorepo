@@ -6,6 +6,7 @@ import {
   useCloseFormMutation,
   useFormQuery,
 } from "@dexkit/ui/modules/forms/hooks";
+import { UserContractPageSection } from "@dexkit/ui/modules/wizard/types";
 import ContractFormView from "@dexkit/web3forms/components/ContractFormView";
 import { Container, Grid, Typography } from "@mui/material";
 import { useWeb3React } from "@web3-react/core";
@@ -13,7 +14,6 @@ import { useRouter } from "next/router";
 import { useSnackbar } from "notistack";
 import { useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
-import { UserContractPageSection } from "../../types";
 
 export interface Props {
   section?: UserContractPageSection;

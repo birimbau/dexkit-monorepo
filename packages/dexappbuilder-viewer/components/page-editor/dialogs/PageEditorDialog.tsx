@@ -1,7 +1,7 @@
 import { Container, Dialog, DialogProps } from "@mui/material";
 import { FormattedMessage } from "react-intl";
 
-import { AppDialogTitle } from "@dexkit/ui/components/AppDialogTitle";
+import { AppDialogTitle } from "@dexkit/ui/components";
 import PageEditor from "../PageEditor";
 
 interface Props {

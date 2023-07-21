@@ -1,8 +1,7 @@
 import { CoinTypes } from "@dexkit/core/constants";
 import { EvmCoin } from "@dexkit/core/types";
-import EvmReceiveForm from "@dexkit/ui/components/EvmReceiveForm";
-import EvmReceiveQRCode from "@dexkit/ui/components/EvmReceiveQRCode";
-import { useEvmCoins } from "@dexkit/ui/hooks/blockchain";
+import { EvmReceiveForm, EvmReceiveQRCode } from "@dexkit/ui/components";
+import { useEvmCoins } from "@dexkit/ui/hooks";
 import QrCodeIcon from "@mui/icons-material/QrCode";
 import { Container } from "@mui/material";
 import type { CellPlugin } from "@react-page/editor";

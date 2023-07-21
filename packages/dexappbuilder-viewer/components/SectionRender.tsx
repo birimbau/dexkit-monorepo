@@ -25,7 +25,7 @@ interface Props {
   section: AppPageSection;
 }
 async function loadPlugin({ path }: { path: string }) {
-  const plugin = await import(path);
+  const plugin = await import("@dexkit/plugins/" + path);
   return plugin;
 }
 
