@@ -1,6 +1,7 @@
+import { AppPageSection } from "@dexkit/ui/modules/wizard/types";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
-import { AppPageSection } from "../types";
+
 const AssetStoreSection = dynamic(() => import("./sections/AssetStoreSection"));
 const MDSection = dynamic(() => import("./sections/MDSection"));
 
