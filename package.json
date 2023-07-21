@@ -8,6 +8,7 @@
   ],
   "scripts": {
     "build": "turbo run build",
+    "release": "turbo run release",
     "dev": "turbo run dev --parallel",
     "dev:whitelabel": "turbo run dev --parallel --filter=nft-marketplace",
     "storybook": "turbo run storybook",
@@ -18,6 +19,8 @@
     "bundle:widgets": "turbo run bundle:widgets",
     "build:whitelabel": "turbo run build --parallel --filter=nft-marketplace",
     "build:wallet": "turbo run build --parallel --filter=dexkit-wallet",
+    "build:ui": "turbo run build --parallel --filter=@dexkit/ui",
+    "build:dexviewer": "turbo run build --parallel --filter=@dexkit/dexappbuilder-viewer",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
@@ -29,7 +32,7 @@
     "turbo": "latest"
   },
   "engines": {
-    "node": ">=14.0.0"
+    "node": ">=18.0.0"
   },
   "dependencies": {
     "@changesets/cli": "^2.26.0",
@@ -41,17 +44,17 @@
     "@tanstack/react-query": "^4.23.0",
     "@transak/transak-sdk": "^1.3.0",
     "@walletconnect/ethereum-provider": "^1.7.7",
-    "@web3-react/coinbase-wallet": "8.1.2-beta.0",
-    "@web3-react/core": "8.1.2-beta.0",
-    "@web3-react/eip1193": "8.1.2-beta.0",
-    "@web3-react/empty": "8.1.2-beta.0",
-    "@web3-react/gnosis-safe": "8.1.2-beta.0",
-    "@web3-react/metamask": "8.1.2-beta.0",
-    "@web3-react/network": "8.1.2-beta.0",
-    "@web3-react/types": "8.1.2-beta.0",
-    "@web3-react/url": "8.1.2-beta.0",
-    "@web3-react/walletconnect": "8.1.2-beta.0",
-    "@web3-react/walletconnect-v2": "8.1.2-beta.0",
+    "@web3-react/coinbase-wallet": "8.2.0",
+    "@web3-react/core": "8.2.0",
+    "@web3-react/eip1193": "8.2.0",
+    "@web3-react/empty": "8.2.0",
+    "@web3-react/gnosis-safe": "8.2.0",
+    "@web3-react/metamask": "8.2.0",
+    "@web3-react/network": "8.2.0",
+    "@web3-react/types": "8.2.0",
+    "@web3-react/url": "8.2.0",
+    "@web3-react/walletconnect": "8.2.0",
+    "@web3-react/walletconnect-v2": "8.2.0",
     "ethers": "^5.7.2",
     "jotai": "1.6.5",
     "moment": "^2.29.4",

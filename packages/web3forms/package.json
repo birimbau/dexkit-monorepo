@@ -1,15 +1,14 @@
 {
   "name": "@dexkit/web3forms",
   "version": "0.0.0",
-  "license": "MIT",
   "scripts": {
     "lint": "TIMING=1 eslint \"**/*.ts*\"",
     "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook"
+    "build-storybook": "build-storybook",
+    "release": "changeset publish"
   },
   "devDependencies": {
     "@babel/core": "^7.21.0",
-    "@dexkit/core": "*",
     "@storybook/addon-actions": "^6.5.16",
     "@storybook/addon-essentials": "^6.5.16",
     "@storybook/addon-interactions": "^6.5.16",
@@ -32,6 +31,8 @@
     "vite": "^4.2.1"
   },
   "dependencies": {
+    "@dexkit/core": "*",
+    "@dexkit/ui": "*",
     "formik": "^2.2.9",
     "formik-mui": "^5.0.0-alpha.0",
     "formik-mui-x-date-pickers": "^0.0.1",

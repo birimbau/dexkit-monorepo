@@ -16,7 +16,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ZERO_EX_QUOTE_ENDPOINT } from '../constants';
 
 import { ChainId } from '@dexkit/core';
-import { useDexKitContext } from '@dexkit/ui';
+import { useDexKitContext } from '@dexkit/ui/hooks';
 import {
   isAutoSlippageAtom,
   maxSlippageAtom,
@@ -210,14 +210,14 @@ export function useSwapQuote({
             buyAmount:
               buyAmount !== ''
                 ? ethers.utils
-                    .parseUnits(buyAmount, buyToken?.decimals)
-                    .toString()
+                  .parseUnits(buyAmount, buyToken?.decimals)
+                  .toString()
                 : undefined,
             sellAmount:
               sellAmount !== ''
                 ? ethers.utils
-                    .parseUnits(sellAmount, sellToken?.decimals)
-                    .toString()
+                  .parseUnits(sellAmount, sellToken?.decimals)
+                  .toString()
                 : undefined,
             takerAddress,
             skipValidation,

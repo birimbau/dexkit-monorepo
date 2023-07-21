@@ -5,6 +5,7 @@ import { ERC20Abi } from "../constants/abis";
 import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "../constants/zrx";
 import { Token, TokenPrices } from "../types";
 import { isAddressEqual } from "../utils";
+export * from './balances';
 
 import { ChainId } from "@dexkit/core/constants/enums";
 import axios from "axios";
@@ -164,3 +165,19 @@ export async function getPricesByChain(
     currency,
   });
 }
+
+export const getCoinPricesByCID = async ({
+  coingeckoIds,
+  currency = 'usd',
+}: {
+  coingeckoIds: string[];
+  currency: string;
+}): Promise<{ [key: string]: { [key: string]: number } }> => {
+  const priceResponce = await axios.get(
+    `${COINGECKO_ENDPOIT}/simple/price?ids=${coingeckoIds.concat(
+      ','
+    )}&vs_currencies=${currency}`
+  );
+
+  return priceResponce.data as { [key: string]: { [key: string]: number } };
+};

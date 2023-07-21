@@ -73,7 +73,7 @@ export function Footer({ appConfig, isPreview, appNFT }: Props) {
     <Box
       py={2}
       sx={{
-        bgcolor: (theme) => theme.vars.palette.background.paper,
+        bgcolor: (theme) => theme.palette.background.paper,
         minHeight: '50px',
         width: '100%',
       }}

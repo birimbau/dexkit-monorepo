@@ -1,6 +1,6 @@
 import { SwapConfig } from '@/modules/swap/types';
 import { ChainId } from '@dexkit/core';
-import { SwapWidget as Swap } from '@dexkit/widgets';
+import { SwapWidget as Swap } from '@dexkit/widgets/src/widgets/swap';
 import React, { useEffect, useState } from 'react';
 import { useCurrency } from 'src/hooks/currency';
 import { useSwapState } from '../../../../../hooks/swap';

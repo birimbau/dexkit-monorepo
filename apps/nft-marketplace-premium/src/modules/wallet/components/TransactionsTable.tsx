@@ -1,4 +1,4 @@
-import { useDexKitContext } from '@dexkit/ui';
+import { useDexKitContext } from '@dexkit/ui/hooks';
 import {
   Stack,
   Table,

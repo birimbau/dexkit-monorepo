@@ -68,9 +68,6 @@ export function useLogoutAccountMutation() {
       return data.logout;
     }
     throw Error('not able to logout')
-
-
-
   })
 }
 

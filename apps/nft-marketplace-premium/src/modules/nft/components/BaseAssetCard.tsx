@@ -161,7 +161,7 @@ export function BaseAssetCard({
             top: theme.spacing(1),
             right: theme.spacing(2),
             position: 'absolute',
-            backgroundColor: theme.vars.palette.common.white,
+            backgroundColor: theme.palette.common.white,
             boxShadow: theme.shadows[1],
           })}
           onClick={handleClick}

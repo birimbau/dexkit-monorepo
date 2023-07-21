@@ -378,7 +378,7 @@ export default function GeneralSection({
                 </Select>
                 {Boolean(formik.errors.locale) && (
                   <FormHelperText
-                    sx={{ color: (theme) => theme.vars.palette.error.main }}
+                    sx={{ color: (theme) => theme.palette.error.main }}
                   >
                     {formik.errors.locale}
                   </FormHelperText>
@@ -408,7 +408,7 @@ export default function GeneralSection({
                 </Select>
                 {Boolean(formik.errors.currency) && (
                   <FormHelperText
-                    sx={{ color: (theme) => theme.vars.palette.error.main }}
+                    sx={{ color: (theme) => theme.palette.error.main }}
                   >
                     {formik.errors.currency}
                   </FormHelperText>

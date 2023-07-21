@@ -9,7 +9,6 @@ import walletConnectImage from '../../public/assets/images/walletconnect-circle-
 import { WALLET_CONNECTORS } from '@dexkit/core/connectors';
 import { ChainId } from '@dexkit/core/constants';
 import { MagicConnector } from '@dexkit/core/types/magic';
-import { Connector } from '@web3-react/types';
 import { ethers } from 'ethers';
 import { NETWORKS } from '../constants/chain';
 
@@ -178,7 +177,7 @@ export function getChainLogoImage(chainId?: number) {
   }
 }
 
-export async function switchNetwork(connector: Connector, chainId: number) {
+export async function switchNetwork(connector: any, chainId: number) {
   if (connector instanceof MetaMask) {
     if (chainId === ChainId.Arbitrum) {
       return connector.provider?.request({

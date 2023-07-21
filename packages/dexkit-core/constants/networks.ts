@@ -3,6 +3,8 @@ import { providers } from "ethers";
 import { Network } from "../types";
 import { ChainId } from "./enums";
 
+const IS_TESTNET = typeof process !== 'undefined' ? process?.env.NODE_ENV !== "development" : true;
+
 export const NETWORKS: { [key: number]: Network } = {
   [ChainId.Ethereum]: {
     chainId: ChainId.Ethereum,
@@ -110,7 +112,7 @@ export const NETWORKS: { [key: number]: Network } = {
     imageUrl:
       "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/info/logo.png",
     providerRpcUrl: "https://endpoints.omniatech.io/v1/eth/goerli/public",
-    testnet: process.env.NODE_ENV !== "development",
+    testnet: IS_TESTNET,
   },
   [ChainId.Mumbai]: {
     chainId: ChainId.Mumbai,
@@ -122,13 +124,21 @@ export const NETWORKS: { [key: number]: Network } = {
     imageUrl:
       "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/info/logo.png",
     providerRpcUrl: `https://rpc.ankr.com/polygon_mumbai`,
-    testnet: process.env.NODE_ENV !== "development",
+    testnet: IS_TESTNET,
   },
 };
 
 export const NETWORK_NAME = (chainId?: ChainId) =>
   chainId && NETWORKS[chainId] ? NETWORKS[chainId].name : undefined;
 
+export const NETWORK_EXPLORER = (chainId?: ChainId) =>
+  chainId && NETWORKS[chainId] ? NETWORKS[chainId].explorerUrl : undefined;
+
+export const NETWORK_SLUG = (chainId?: ChainId) =>
+  chainId && NETWORKS[chainId] ? NETWORKS[chainId].slug : undefined;
+
+export const NETWORK_IMAGE = (chainId?: ChainId) =>
+  chainId && NETWORKS[chainId] ? NETWORKS[chainId].imageUrl : undefined;
 
 export const NETWORK_SYMBOL = (chainId?: ChainId) =>
   chainId && NETWORKS[chainId] ? NETWORKS[chainId].symbol : undefined;
@@ -136,8 +146,23 @@ export const NETWORK_SYMBOL = (chainId?: ChainId) =>
 export const NETWORK_COIN_SYMBOL = (chainId?: ChainId) =>
   chainId && NETWORKS[chainId] ? NETWORKS[chainId]?.coinSymbol ? NETWORKS[chainId]?.coinSymbol : NETWORKS[chainId].symbol : undefined;
 
+export const NETWORK_COIN_NAME = (chainId?: ChainId) =>
+  chainId && NETWORKS[chainId] ? NETWORKS[chainId]?.coinName ? NETWORKS[chainId]?.coinName : NETWORKS[chainId].name : undefined;
+
+export const NETWORK_COIN_IMAGE = (chainId?: ChainId) =>
+  chainId && NETWORKS[chainId] ? NETWORKS[chainId]?.coinImageUrl ? NETWORKS[chainId]?.coinImageUrl : NETWORKS[chainId].imageUrl : undefined;
+
 export const NETWORK_PROVIDER = (chainId?: ChainId) => {
   return chainId && NETWORKS[chainId] ? new providers.JsonRpcProvider(NETWORKS[chainId].providerRpcUrl
   ) : undefined;
+}
+
+export const NETWORK_FROM_SLUG = (slug?: string) => {
+  if (slug) {
+    const network = Object.values(NETWORKS).find(n => n.slug?.toLowerCase() === slug.toLowerCase());
+    if (network) {
+      return network
+    }
+  }
 }
 

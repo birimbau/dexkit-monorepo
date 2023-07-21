@@ -4,21 +4,80 @@ import {
   TransactionStatus,
   TransactionType,
 } from "@dexkit/core/constants";
-import { AppTransaction, TransactionMetadata } from "@dexkit/core/types";
+import { AppTransaction, Asset, TokenWhitelabelApp, TransactionMetadata } from "@dexkit/core/types";
 import { switchNetwork } from "@dexkit/core/utils";
 import { useMutation } from "@tanstack/react-query";
 import { useWeb3React, Web3ReactHooks } from "@web3-react/core";
 import { Connector } from "@web3-react/types";
-import { PrimitiveAtom, useAtom, useAtomValue } from "jotai";
+import { atom, PrimitiveAtom, useAtom, useAtomValue } from "jotai";
 import { useUpdateAtom } from "jotai/utils";
 import { useCallback, useContext, useMemo, useState } from "react";
 
+import useMediaQuery from "@mui/material/useMediaQuery";
+import { ThemeMode } from "../constants/enum";
+import { AppConfigContext, AppWizardConfigContext } from "../context/AppConfigContext";
 import { DexKitContext, DexkitContextState } from "../context/DexKitContext";
+import { localeUserAtom, userThemeModeAtom } from "../state";
 import {
   AppNotification,
   AppNotificationType,
   CreateAppNotificationParams,
 } from "../types";
+
+export * from './auth';
+export * from './blockchain';
+export * from './currency';
+
+// App config context needs to be initialized on widgets
+export function useAppConfig() {
+  return useContext(AppConfigContext).appConfig;
+}
+
+export function useAppNFT() {
+  return useContext(AppConfigContext).appNFT;
+}
+
+const DARK_SCHEME_QUERY = '(prefers-color-scheme: dark)';
+
+export function useThemeMode() {
+  const systemPrefersDark = useMediaQuery(DARK_SCHEME_QUERY);
+  const [userMode, setThemeMode] = useAtom(userThemeModeAtom);
+  const appConfig = useAppConfig();
+
+  const mode = useMemo(() => {
+    if (userMode) {
+      return userMode;
+    }
+    if (appConfig.defaultThemeMode) {
+      return appConfig.defaultThemeMode;
+    }
+    return systemPrefersDark ? ThemeMode.dark : ThemeMode.light;
+  }, [userMode, appConfig, systemPrefersDark]);
+
+  return { mode: mode, setThemeMode, userMode };
+}
+
+export function useLocale() {
+  const [locUser, setLocUser] = useAtom(localeUserAtom);
+  const appConfig = useAppConfig();
+  const locale = useMemo(() => {
+    if (locUser) {
+      return locUser;
+    }
+    if (appConfig.locale) {
+      return appConfig.locale;
+    }
+    return ('en-US' as string);
+  }, [appConfig.locale, locUser]);
+  return { locale, onChangeLocale: setLocUser };
+}
+
+
+// Wizard App config context needs to be initialized on widgets that needs wizard to customize
+export function useAppWizardConfig() {
+  const { wizardConfig, setWizardConfig } = useContext(AppWizardConfigContext);
+  return { wizardConfig, setWizardConfig };
+}
 
 export function useOrderedConnectors({
   selectedWalletAtom,
@@ -51,15 +110,25 @@ export function useOrderedConnectors({
 export function useDexkitContextState({
   notificationTypes,
   notificationsAtom,
+  tokensAtom,
+  assetsAtom,
   transactionsAtom,
   onChangeLocale,
+  currencyUserAtom,
+
 }: {
   notificationTypes: { [key: string]: AppNotificationType };
   notificationsAtom: PrimitiveAtom<AppNotification[]>;
+  tokensAtom: PrimitiveAtom<TokenWhitelabelApp[]>;
+  assetsAtom: PrimitiveAtom<{ [key: string]: Asset }>;
+  currencyUserAtom: PrimitiveAtom<string>;
   transactionsAtom: PrimitiveAtom<{ [key: string]: AppTransaction }>;
   onChangeLocale: (locale: string) => void;
 }): DexkitContextState {
   const [notifications, setNotifications] = useAtom(notificationsAtom);
+  const tokens = useAtomValue(tokensAtom);
+  const [assets, setAssets] = useAtom(assetsAtom);
+  const currencyUser = useAtomValue(currencyUserAtom);
   const [transactions, setTransactions] = useAtom(transactionsAtom);
   const watchTransactionDialog = useWatchTransactionDialog({
     transactionsAtom,
@@ -114,6 +183,10 @@ export function useDexkitContextState({
   };
 
   return {
+    tokens,
+    assets,
+    currencyUser,
+    setAssets,
     transactions,
     createNotification,
     clearNotifications,
@@ -299,4 +372,108 @@ export function useWatchTransactionDialog({
     addTransaction,
     watch,
   };
+}
+
+const signMessageDialogOpenAtom = atom(false);
+const signMessageDialogErrorAtom = atom<Error | undefined>(undefined);
+const signMessageDialogSuccessAtom = atom<boolean>(false);
+const signMessageDialogMessage = atom<string | undefined>(undefined);
+
+export function useSignMessageDialog() {
+  const [open, setOpen] = useAtom(signMessageDialogOpenAtom);
+  const [error, setError] = useAtom(signMessageDialogErrorAtom);
+  const [isSuccess, setIsSuccess] = useAtom(signMessageDialogSuccessAtom);
+  const [message, setMessage] = useAtom(signMessageDialogMessage);
+
+  return {
+    isSuccess,
+    setIsSuccess,
+    error,
+    setError,
+    open,
+    setOpen,
+    message,
+    setMessage,
+  };
+}
+const isConnectWalletOpenAtom = atom(false);
+
+export function useConnectWalletDialog() {
+  const [isOpen, setOpen] = useAtom(isConnectWalletOpenAtom);
+
+  return {
+    isOpen,
+    setOpen,
+  };
+}
+
+
+export const switchNetworkOpenAtom = atom(false);
+export const switchNetworkChainIdAtom = atom<number | undefined>(undefined);
+
+
+export function useSwitchNetwork() {
+  const [isOpenSwitchNetwork, setOpenSwitchNetwork] = useAtom(switchNetworkOpenAtom);
+  const [networkChainId, setNetworkChainId] = useAtom(switchNetworkChainIdAtom);
+
+  const openDialog = function (chainId: number | undefined) {
+    setOpenSwitchNetwork(true)
+    setNetworkChainId(chainId)
+  }
+
+  return {
+    isOpenSwitchNetwork,
+    setOpenSwitchNetwork,
+    networkChainId,
+    setNetworkChainId,
+    openDialog
+  };
+}
+
+const showSelectIsOpenAtom = atom(false);
+
+export function useSelectNetworkDialog() {
+  const [isOpen, setIsOpen] = useAtom(showSelectIsOpenAtom);
+
+  return { isOpen, setIsOpen };
+}
+
+const drawerIsOpenAtom = atom(false);
+
+export function useDrawerIsOpen() {
+  const [isOpen, setIsOpen] = useAtom(drawerIsOpenAtom);
+
+  return { isOpen, setIsOpen };
+}
+
+const showSelectCurrency = atom(false);
+
+export function useShowSelectCurrency() {
+  const [isOpen, setIsOpen] = useAtom(showSelectCurrency);
+
+  return { isOpen, setIsOpen };
+}
+
+const showSelectLocaleAtom = atom(false);
+
+export function useShowSelectLocale() {
+  const [isOpen, setIsOpen] = useAtom(showSelectLocaleAtom);
+
+  return { isOpen, setIsOpen };
+}
+
+const showAppTransactionsAtom = atom(false);
+
+export function useShowAppTransactions() {
+  const [isOpen, setIsOpen] = useAtom(showAppTransactionsAtom);
+
+  return { isOpen, setIsOpen };
+}
+
+export const holdsKitDialogoAtom = atom(false);
+
+export function useHoldsKitDialog() {
+  const [isOpen, setIsOpen] = useAtom(holdsKitDialogoAtom);
+
+  return { isOpen, setIsOpen };
 }

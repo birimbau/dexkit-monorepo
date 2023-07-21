@@ -1,0 +1,50 @@
+{
+  "name": "@dexkit/dexappbuilder-viewer",
+  "version": "0.0.0",
+  "scripts": {
+    "lint": "TIMING=1 eslint \"**/*.ts*\"",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build",
+    "release": "changeset publish"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.21.0",
+    "@storybook/addon-actions": "^7.0.22",
+    "@storybook/addon-essentials": "^7.0.22",
+    "@storybook/addon-interactions": "^7.0.22",
+    "@storybook/addon-links": "^7.0.22",
+    "@storybook/addon-mdx-gfm": "^7.0.22",
+    "@storybook/blocks": "^7.0.22",
+    "@storybook/nextjs": "^7.0.24",
+    "@storybook/react": "^7.0.22",
+    "@storybook/react-vite": "^7.0.22",
+    "@storybook/testing-library": "^0.2.0",
+    "@vitejs/plugin-react": "^3.1.0",
+    "babel-loader": "^8.3.0",
+    "eslint": "^7.32.0",
+    "eslint-config-custom": "*",
+    "eslint-plugin-storybook": "^0.6.12",
+    "prop-types": "^15.8.1",
+    "react-docgen-typescript-loader": "^3.7.2",
+    "storybook": "^7.0.22",
+    "ts-loader": "^9.4.2",
+    "tsconfig": "*",
+    "tsup": "^6.5.0",
+    "typescript": "^4.5.2",
+    "vite": "^4.2.1"
+  },
+  "dependencies": {
+    "@dexkit/core": "*",
+    "@dexkit/ui": "*",
+    "@dexkit/web3forms": "*",
+    "@dexkit/widgets": "*",
+    "@uiw/react-md-editor": "^3.23.3",
+    "html-react-parser": "^4.0.0",
+    "react-syntax-highlighter": "^15.5.0"
+  },
+  "eslintConfig": {
+    "extends": [
+      "plugin:storybook/recommended"
+    ]
+  }
+}

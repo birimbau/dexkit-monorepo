@@ -1,6 +1,8 @@
 import { ChainId, TransactionType } from "@dexkit/core/constants";
 import {
   AppTransaction,
+  Asset,
+  TokenWhitelabelApp,
   TransactionMetadata,
   WatchTransactionDialogProperties,
 } from "@dexkit/core/types";
@@ -18,6 +20,11 @@ export interface DexkitContextState {
   clearNotifications: () => void;
   checkAllNotifications: () => void;
   notifications: AppNotification[];
+  tokens: TokenWhitelabelApp[];
+  currencyUser?: string;
+  setAssets: (update: SetStateAction<{ [key: string]: Asset }>) => void;
+
+  assets: { [key: string]: Asset };
   transactions: { [key: string]: AppTransaction };
   watchTransactionDialog: WatchTransactionDialogProperties;
 }
@@ -26,6 +33,9 @@ export const DexKitContext = React.createContext<DexkitContextState>({
   notificationTypes: {},
   notifications: [],
   transactions: {},
+  tokens: [],
+  assets: {},
+  setAssets() {},
   onChangeLocale: (locale: string) => {},
   createNotification: (params: CreateAppNotificationParams) => {},
   checkAllNotifications: () => {},

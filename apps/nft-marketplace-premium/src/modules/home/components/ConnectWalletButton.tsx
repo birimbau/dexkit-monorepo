@@ -13,7 +13,7 @@ export const ConnectWalletButton = ({ title, subtitle }: Props) => {
   return (
     <ButtonBase
       sx={{
-        background: (theme) => theme.vars.palette.background.paper,
+        background: (theme) => theme.palette.background.paper,
         borderRadius: (theme) => theme.shape.borderRadius,
         backgroundImage: `url(${img.src})`,
         backgroundRepeat: 'no-repeat',

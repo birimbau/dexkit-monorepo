@@ -7,8 +7,11 @@ import { useMemo, useState } from 'react';
 import { WHITELABEL_NOTIFICATION_TYPES } from 'src/constants/messages';
 import { useAppConfig, useLocale, useThemeMode } from 'src/hooks/app';
 import {
+  assetsAtom,
+  currencyUserAtom,
   notificationsAtom,
   selectedWalletAtom,
+  tokensAtom,
   transactionsAtomV2,
 } from 'src/state/atoms';
 import { getTheme } from 'src/theme';
@@ -132,10 +135,12 @@ export function AppMarketplaceProvider({
   return (
     <DexkitProvider
       locale={locale}
+      tokensAtom={tokensAtom}
+      assetsAtom={assetsAtom}
       defaultLocale={locale}
+      currencyUserAtom={currencyUserAtom}
       localeMessages={loadLocaleData(locale)}
       theme={theme}
-      themeMode={mode}
       selectedWalletAtom={selectedWalletAtom}
       options={{
         magicRedirectUrl:

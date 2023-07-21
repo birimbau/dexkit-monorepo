@@ -5,7 +5,9 @@ import { ComponentMeta, ComponentStory } from "@storybook/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import { ChainId } from "@dexkit/core/constants";
+import { TokenWhitelabelApp } from "@dexkit/core/types";
 import { DexkitProvider } from "@dexkit/ui/components";
+import { ThemeMode } from "@dexkit/ui/constants/enum";
 import { AppNotification } from "@dexkit/ui/types";
 import { useWeb3React } from "@web3-react/core";
 import { atom } from "jotai";
@@ -64,6 +66,10 @@ const Template: ComponentStory<typeof ContractFormView> = (args) => {
           theme={theme}
           locale="en-US"
           notificationTypes={{}}
+          themeMode={ThemeMode.light}
+          assetsAtom={atom({})}
+          currencyUserAtom={atom("")}
+          tokensAtom={atom<TokenWhitelabelApp[]>([])}
           notificationsAtom={atom<AppNotification[]>([])}
           onChangeLocale={() => {}}
           transactionsAtom={atom<{}>({})}

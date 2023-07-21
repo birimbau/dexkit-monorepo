@@ -24,13 +24,16 @@ export const DKAPI_INVALID_ADDRESSES = [
   "0x0000000000000000000000000000000000001010",
 ];
 
+export const MULTICALL_NATIVE_TOKEN_ADDRESS =
+  '0x0000000000000000000000000000000000000000';
+
 export const COINGECKO_ENDPOIT = "https://api.coingecko.com/api/v3";
 
 export const COINGECKO_PLATFORM_ID: { [key: number]: string } = {
   [ChainId.Ethereum]: "ethereum",
   [ChainId.Polygon]: "polygon-pos",
   [ChainId.BSC]: "binance-smart-chain",
-  [ChainId.Avax]: "avalanche",
+  [ChainId.Avax]: "avalanche-2",
   [ChainId.Celo]: "celo",
   [ChainId.Fantom]: "fantom",
   [ChainId.Optimism]: "optimistic-ethereum",
@@ -159,6 +162,17 @@ export const OPTIMISM_TOKEN: Token = {
     "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/optimism/info/logo.png",
 };
 
+export const AVALANCHE_TOKEN: Token = {
+  chainId: ChainId.Avax,
+  contractAddress: ZEROEX_NATIVE_TOKEN_ADDRESS,
+  name: "Avalanche",
+  symbol: "AVAX",
+  coingeckoId: "avalanche-2",
+  decimals: 18,
+  logoURI:
+    "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/avalanchex/info/logo.png",
+};
+
 export const NATIVE_TOKENS: { [key: number]: Token } = {
   [ChainId.Goerli]: GOERLI_ETHEREUM_TOKEN,
   [ChainId.Ethereum]: ETHEREUM_TOKEN,
@@ -167,6 +181,7 @@ export const NATIVE_TOKENS: { [key: number]: Token } = {
   [ChainId.BSC]: BNB_TOKEN,
   [ChainId.Optimism]: ETHEREUM_TOKEN,
   [ChainId.Arbitrum]: ETHEREUM_TOKEN,
+  [ChainId.Avax]: AVALANCHE_TOKEN,
 };
 
 export function GET_NATIVE_TOKEN(chainId: ChainId) {

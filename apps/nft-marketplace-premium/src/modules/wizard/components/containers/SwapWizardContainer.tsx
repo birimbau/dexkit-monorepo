@@ -1,6 +1,6 @@
 import { SwapConfig } from '@/modules/swap/types';
-import { SwapWidget } from '@dexkit/widgets';
 import { Token as WidgetToken } from '@dexkit/widgets/src/types';
+import { SwapWidget } from '@dexkit/widgets/src/widgets/swap';
 
 import { ChainId } from '@dexkit/core/constants';
 import Button from '@mui/material/Button';
@@ -43,9 +43,9 @@ export default function SwapWizardContainer({
   const [swapFormData, setSwapFormData] = useState<SwapConfig | undefined>(
     (
       config.pages['home']?.sections.find(
-        (s) => s.type === 'swap'
+        (s) => s.type === 'swap',
       ) as SwapPageSection
-    )?.config
+    )?.config,
   );
 
   const featuredTokens = useMemo<WidgetToken[]>(() => {
@@ -68,11 +68,11 @@ export default function SwapWizardContainer({
 
   const changeConfig = function (
     configToChange: AppConfig,
-    formData?: SwapConfig
+    formData?: SwapConfig,
   ) {
     const newConfig = { ...configToChange };
     const swapSectionPageIndex = newConfig.pages['home']?.sections.findIndex(
-      (s) => s.type === 'swap'
+      (s) => s.type === 'swap',
     );
     let editSwapSection: SwapPageSection;
     if (formData) {

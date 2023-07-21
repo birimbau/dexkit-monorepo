@@ -1,5 +1,4 @@
-import { ChainId, TransactionStatus } from "@dexkit/core/constants";
-import { ComponentMeta, ComponentStory } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react";
 import { IntlProvider } from "react-intl";
 import NotificationsDialog from "../components/dialogs/NotificationsDialog";
 import { COMMON_NOTIFICATION_TYPES } from "../constants/messages/common";
@@ -14,13 +13,15 @@ function Component() {
         href="https://fonts.googleapis.com/icon?family=Material+Icons"
       />
       <NotificationsDialog
-        transactions={{
-          ["testtx"]: {
+        transactions={
+          {
+            /*  ["testtx"]: {
             chainId: ChainId.Ethereum,
             status: TransactionStatus.Confirmed,
             created: new Date().getTime(),
-          },
-        }}
+          },*/
+          }
+        }
         DialogProps={{ open: true, maxWidth: "sm", fullWidth: true }}
         onClear={handleClear}
         notifications={[
@@ -52,15 +53,18 @@ function Component() {
   );
 }
 
-export default {
+const meta: Meta<typeof Component> = {
   title: "Components/NotificationsDialog",
   component: Component,
-  // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
-  argTypes: {},
-} as ComponentMeta<typeof Component>;
+  // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
+  tags: ["autodocs"],
+  parameters: {
+    // More on Story layout: https://storybook.js.org/docs/react/configure/story-layout
+    layout: "fullscreen",
+  },
+};
 
-// More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
-const Template: ComponentStory<typeof Component> = (args) => <Component />;
+export default meta;
+type Story = StoryObj<typeof Component>;
 
-export const Default = Template.bind({});
-Default.args = {};
+export const Default: Story = {};
