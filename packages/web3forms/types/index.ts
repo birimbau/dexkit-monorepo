@@ -45,36 +45,39 @@ export interface AbiFragment {
 
 export interface ContractFormFieldInputBase {
   label: string;
-  defaultValue: string;
+  defaultValue: any;
 }
 
-export interface ContractFormFieldSwitch {
+export interface ContractFormFieldSwitch extends ContractFormFieldInputBase {
   inputType: "switch";
   label: string;
   defaultValue: any;
 }
 
-export interface ContractFormFieldNormal {
+export interface ContractFormFieldNormal extends ContractFormFieldInputBase {
   inputType: "normal";
   label: string;
   defaultValue: string;
 }
 
-export interface ContractFormFieldInputAddress {
+export interface ContractFormFieldInputAddress
+  extends ContractFormFieldInputBase {
   inputType: "address";
   addresses: string[];
   label: string;
   defaultValue: string;
 }
 
-export interface ContractFormFieldInputDecimal {
+export interface ContractFormFieldInputDecimal
+  extends ContractFormFieldInputBase {
   inputType: "decimal";
   decimals: number;
   label: string;
   defaultValue: string;
 }
 
-export interface ContractFormFieldInputConnectedAccount {
+export interface ContractFormFieldInputConnectedAccount
+  extends ContractFormFieldInputBase {
   inputType: "connectedAccount";
   label: string;
   defaultValue: string;
@@ -86,6 +89,10 @@ export type ContractFormFieldInput =
   | ContractFormFieldInputAddress
   | ContractFormFieldInputDecimal
   | ContractFormFieldInputConnectedAccount;
+
+export type ContractFormFieldInputWithTupleParams = ContractFormFieldInput & {
+  tupleParams?: { [key: string]: ContractFormFieldInput };
+};
 
 export type NoOutputType = {
   type: "";
@@ -111,7 +118,7 @@ export type ContractFormField = {
   callToAction: string;
   output?: OutputType;
   input: {
-    [key: string]: ContractFormFieldInput;
+    [key: string]: ContractFormFieldInputWithTupleParams;
   };
 };
 

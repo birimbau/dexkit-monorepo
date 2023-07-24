@@ -82,10 +82,10 @@ export default function ContractFunction({
           let defaultValue: any = inp ? inp.defaultValue : "";
 
           if (input.type.endsWith("[]")) {
-            defaultValue = inp ? inp.defaultValue : [];
-
-            if (!inp.defaultValue) {
+            if (!inp?.defaultValue) {
               defaultValue = [];
+            } else {
+              defaultValue = inp.defaultValue;
             }
           } else if (
             inp?.inputType === "normal" ||
@@ -106,7 +106,7 @@ export default function ContractFunction({
 
       return obj;
     },
-    [account]
+    [account, name]
   );
 
   const handleSubmit = useCallback(
@@ -116,8 +116,19 @@ export default function ContractFunction({
         args: Object.keys(values).map((key) => {
           let inputParams = name ? params.fields[name].input[key] : undefined;
 
-          if (inputParams && inputParams.inputType === "decimal") {
-            return ethers.utils.parseUnits(values[key], inputParams.decimals);
+          if (
+            inputParams !== undefined &&
+            inputParams.inputType === "decimal"
+          ) {
+            const decimals = inputParams.decimals;
+
+            if (Array.isArray(values[key])) {
+              return values[key].map((val: string) => {
+                return ethers.utils.parseUnits(val, decimals);
+              });
+            }
+
+            return ethers.utils.parseUnits(values[key], decimals);
           }
 
           if (name) {
@@ -220,7 +231,7 @@ export default function ContractFunction({
 
   const key = useMemo(() => {
     return name ? JSON.stringify(params.fields[name]) : undefined;
-  }, [params.fields, name]);
+  }, [params, name]);
 
   if (callOnMount) {
     return (
@@ -271,6 +282,7 @@ export default function ContractFunction({
         >
           {!hideLabel && (
             <>
+              {JSON.stringify(values, null, 2)}
               <AccordionSummary
                 expandIcon={!collapse ? <ExpandMoreIcon /> : undefined}
                 sx={{

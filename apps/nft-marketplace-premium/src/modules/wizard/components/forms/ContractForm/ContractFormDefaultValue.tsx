@@ -2,13 +2,12 @@ import {
   AbiFragment,
   AbiFragmentInput,
   ContractFormParams,
-  TupleAbiFragmentInput,
 } from '@dexkit/web3forms/types';
-import { Grid, InputAdornment, Switch } from '@mui/material';
-import { FastField, useFormikContext } from 'formik';
-import { TextField } from 'formik-mui';
-import { ChangeEvent, useCallback, useMemo } from 'react';
-import { FormattedMessage, useIntl } from 'react-intl';
+import AddIcon from '@mui/icons-material/Add';
+import { Button, Grid, Paper } from '@mui/material';
+import { FieldArray } from 'formik';
+import { FormattedMessage } from 'react-intl';
+import ContractFormDefaultValueInput from './ContractFormDefaultValueInput';
 
 function requiredField(message: string) {
   return (value: string) => {
@@ -16,7 +15,7 @@ function requiredField(message: string) {
   };
 }
 
-export default function ContractFormDefaultValueInput({
+export default function ContractFormDefaultValue({
   values,
   func,
   input,
@@ -25,106 +24,56 @@ export default function ContractFormDefaultValueInput({
   func: AbiFragment;
   input: AbiFragmentInput;
 }) {
-  const { formatMessage } = useIntl();
-  const { setFieldValue } = useFormikContext();
-
-  const handleChangeValue = useCallback(
-    (event: ChangeEvent<HTMLInputElement>, checked: boolean) =>
-      setFieldValue(
-        `fields.${func.name}.input.${input.name}.defaultValue`,
-        checked
-      ),
-    [func, input]
-  );
-
-  const inputType = useMemo(() => {
-    if (
-      values.fields[func.name] &&
-      values.fields[func.name].input[input.name]
-    ) {
-      return values.fields[func.name].input[input.name].inputType;
-    }
-  }, [values, func, input]);
-
-  if (inputType === 'switch') {
-    return <Switch onChange={handleChangeValue} type="checkbox" />;
-  }
-
-  if (input.type === 'tuple') {
-    const tupleInput = input as TupleAbiFragmentInput;
-
+  if (input.type.endsWith('[]')) {
     return (
-      <Grid container spacing={2}>
-        {tupleInput.components.map((component, key) => {
-          return (
-            <Grid xs={12} item key={key}>
-              <FastField
-                component={TextField}
-                name={`fields.${func.name}.input.${input.name}.defaultValue.${component.name}`}
-                validate={
-                  (values as ContractFormParams).fields[func.name]?.hideInputs
-                    ? requiredField(
-                        formatMessage(
-                          {
-                            id: 'field.is.required',
-                            defaultMessage: '{field} is required',
-                          },
-                          {
-                            field: input.name,
-                          }
-                        )
-                      )
-                    : undefined
-                }
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      {component.type.toUpperCase()}
-                    </InputAdornment>
-                  ),
-                }}
-                label={component.name}
-                fullWidth
+      <FieldArray
+        name={`fields.${func.name}.input.${input.name}.defaultValue`}
+        render={(helpers) => (
+          <Grid container spacing={2}>
+            {(
+              values.fields[func.name].input[input.name].defaultValue || []
+            ).map((_: any, index: number) => (
+              <Grid item xs={12} key={index}>
+                {input.type.startsWith('tuple') ? (
+                  <Paper sx={{ p: 2 }}>
+                    <ContractFormDefaultValueInput
+                      func={func}
+                      input={input}
+                      values={values}
+                      index={index}
+                      isTuple
+                    />
+                  </Paper>
+                ) : (
+                  <ContractFormDefaultValueInput
+                    func={func}
+                    input={input}
+                    values={values}
+                    index={index}
+                  />
+                )}
+              </Grid>
+            ))}
+            <Grid item xs={12}>
+              <Button
+                onClick={helpers.handlePush(
+                  input.type.startsWith('tuple') ? {} : ''
+                )}
+                startIcon={<AddIcon />}
+                variant="outlined"
+                color="primary"
                 size="small"
-              />
+              >
+                <FormattedMessage id="add" defaultMessage="Add" />
+              </Button>
             </Grid>
-          );
-        })}
-      </Grid>
+          </Grid>
+        )}
+      />
     );
   }
 
   return (
-    <FastField
-      component={TextField}
-      name={`fields.${func.name}.input.${input.name}.defaultValue`}
-      validate={
-        (values as ContractFormParams).fields[func.name]?.hideInputs
-          ? requiredField(
-              formatMessage(
-                {
-                  id: 'field.is.required',
-                  defaultMessage: '{field} is required',
-                },
-                {
-                  field: input.name,
-                }
-              )
-            )
-          : undefined
-      }
-      label={
-        <FormattedMessage id="default.value" defaultMessage="Default value" />
-      }
-      InputProps={{
-        endAdornment: (
-          <InputAdornment position="end">
-            {input.type.toUpperCase()}
-          </InputAdornment>
-        ),
-      }}
-      fullWidth
-      size="small"
-    />
+    <ContractFormDefaultValueInput func={func} input={input} values={values} />
   );
 }

@@ -48,6 +48,7 @@ export default function ContractFunctionTupleInput({
               name={component.name}
               onSelectAddress={onSelectAddress}
               params={params}
+              tupleParams={inputParams?.tupleParams}
             />
           </Grid>
         ))}

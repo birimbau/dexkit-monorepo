@@ -2,7 +2,7 @@ import { ThemeMode } from '@dexkit/ui/constants/enum';
 import {
   AbiFragment,
   ContractFormField,
-  ContractFormFieldInput,
+  ContractFormFieldInputWithTupleParams,
 } from '@dexkit/web3forms/types';
 import {
   createTheme,
@@ -141,7 +141,7 @@ export function inputMapping(abi: AbiFragment[]) {
   for (let item of abi) {
     if (item.name) {
       let inputs: {
-        [key: string]: ContractFormFieldInput;
+        [key: string]: ContractFormFieldInputWithTupleParams;
       } = {};
       for (let inp of item.inputs) {
         inputs[inp.name] = {
@@ -168,4 +168,10 @@ export function inputMapping(abi: AbiFragment[]) {
   }
 
   return fields;
+}
+
+export function requiredField(message: string) {
+  return (value: string) => {
+    return !value ? message : undefined;
+  };
 }

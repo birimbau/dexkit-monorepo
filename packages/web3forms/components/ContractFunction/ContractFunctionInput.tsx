@@ -6,12 +6,16 @@ import {
 } from "@mui/material";
 import { Field } from "formik";
 import { Switch, TextField } from "formik-mui";
-import { AbiFragmentInput, ContractFormParams } from "../../types";
+import {
+  AbiFragmentInput,
+  ContractFormFieldInput,
+  ContractFormParams,
+} from "../../types";
 
 import ContactsIcon from "@mui/icons-material/Contacts";
 import { useMemo } from "react";
 import { useIntl } from "react-intl";
-import { validateDecimal } from "../../utils/validators";
+import { validateAddress, validateDecimal } from "../../utils/validators";
 
 export interface ContractFunctionProps {
   input: AbiFragmentInput;
@@ -19,6 +23,7 @@ export interface ContractFunctionProps {
   name?: string;
   objectName?: string;
   index?: number;
+  tupleParams?: { [key: string]: ContractFormFieldInput };
   onSelectAddress: (name: string, addresses: string[]) => void;
 }
 
@@ -27,6 +32,7 @@ export default function ContractFunctionInput({
   input,
   params,
   objectName,
+  tupleParams,
   index,
   onSelectAddress,
 }: ContractFunctionProps) {
@@ -60,15 +66,24 @@ export default function ContractFunctionInput({
     return inpName;
   }, [input, index, name, objectName]);
 
-  if (inputParams?.inputType === "address") {
+  if (
+    inputParams?.inputType === "address" ||
+    (tupleParams && tupleParams[input.name]?.inputType === "address")
+  ) {
     return (
       <Grid item xs={12}>
         <Field
           component={TextField}
           size="small"
           fullWidth
-          label={inputParams.label ? inputParams.label : input.name}
+          label={inputParams?.label ? inputParams.label : input.name}
           name={inputName}
+          validate={validateAddress(
+            formatMessage({
+              id: "invalid.address",
+              defaultMessage: "Invalid address",
+            })
+          )}
           disabled={
             name && params.fields[name]
               ? params.fields[name].lockInputs
@@ -96,11 +111,14 @@ export default function ContractFunctionInput({
         />
       </Grid>
     );
-  } else if (inputParams?.inputType === "switch") {
+  } else if (
+    inputParams?.inputType === "switch" ||
+    (tupleParams && tupleParams[input.name]?.inputType === "switch")
+  ) {
     return (
       <Grid item xs={12}>
         <FormControlLabel
-          label={inputParams.label ? inputParams.label : input.name}
+          label={inputParams?.label ? inputParams.label : input.name}
           control={
             <Field
               component={Switch}

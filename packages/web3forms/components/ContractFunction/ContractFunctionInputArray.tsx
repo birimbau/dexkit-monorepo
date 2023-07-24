@@ -9,6 +9,7 @@ import {
 import ContractFunctionInput from "./ContractFunctionInput";
 import ContractFunctionTupleInput from "./ContractFunctionTupleInput";
 
+import AddIcon from "@mui/icons-material/Add";
 export interface Props {
   input: AbiFragmentInput;
   params: ContractFormParams;
@@ -29,7 +30,7 @@ export default function ContractFunctionInputArray({
       name={`${input.name}`}
       render={(helpers) => (
         <Grid container spacing={2}>
-          {values[input.name].map((_: any, index: number) => (
+          {(values[input.name] || []).map((_: any, index: number) => (
             <Grid item xs={12} key={index}>
               {input.type.startsWith("tuple") ? (
                 <ContractFunctionTupleInput
@@ -37,6 +38,7 @@ export default function ContractFunctionInputArray({
                   onSelectAddress={onSelectAddress}
                   params={params}
                   index={index}
+                  name={name}
                 />
               ) : (
                 <ContractFunctionInput
@@ -50,7 +52,9 @@ export default function ContractFunctionInputArray({
           ))}
           <Grid item xs={12}>
             <Button
-              variant="contained"
+              variant="outlined"
+              size="small"
+              startIcon={<AddIcon />}
               onClick={helpers.handlePush(
                 input.type.startsWith("tuple") ? {} : ""
               )}
