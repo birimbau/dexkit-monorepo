@@ -4,18 +4,24 @@ import {
   IconButton,
   InputAdornment,
 } from "@mui/material";
-import { Field } from "formik";
+import { Field, useFormikContext } from "formik";
 import { Switch, TextField } from "formik-mui";
 import {
   AbiFragmentInput,
   ContractFormFieldInput,
+  ContractFormFieldInputAddress,
   ContractFormParams,
 } from "../../types";
 
 import ContactsIcon from "@mui/icons-material/Contacts";
-import { useMemo } from "react";
+import { ChangeEvent, useCallback, useMemo } from "react";
 import { useIntl } from "react-intl";
-import { validateAddress, validateDecimal } from "../../utils/validators";
+import {
+  concactValidators,
+  requiredField,
+  validateAddress,
+  validateDecimal,
+} from "../../utils/validators";
 
 export interface ContractFunctionProps {
   input: AbiFragmentInput;
@@ -37,6 +43,12 @@ export default function ContractFunctionInput({
   onSelectAddress,
 }: ContractFunctionProps) {
   const { formatMessage } = useIntl();
+  const { setFieldValue } = useFormikContext();
+
+  const handleChangeValueInTuple = useCallback((inputName: string) => {
+    return (_: ChangeEvent<HTMLInputElement>, checked: boolean) =>
+      setFieldValue(inputName, checked);
+  }, []);
 
   const inputParams = useMemo(() => {
     const inputParams =
@@ -70,6 +82,11 @@ export default function ContractFunctionInput({
     inputParams?.inputType === "address" ||
     (tupleParams && tupleParams[input.name]?.inputType === "address")
   ) {
+    const inputTupleParams: ContractFormFieldInputAddress | undefined =
+      tupleParams && tupleParams[input.name].inputType === "address"
+        ? (tupleParams[input.name] as ContractFormFieldInputAddress)
+        : undefined;
+
     return (
       <Grid item xs={12}>
         <Field
@@ -78,12 +95,20 @@ export default function ContractFunctionInput({
           fullWidth
           label={inputParams?.label ? inputParams.label : input.name}
           name={inputName}
-          validate={validateAddress(
-            formatMessage({
-              id: "invalid.address",
-              defaultMessage: "Invalid address",
-            })
-          )}
+          validate={concactValidators([
+            requiredField(
+              formatMessage({
+                id: "field.required",
+                defaultMessage: "field required",
+              })
+            ),
+            validateAddress(
+              formatMessage({
+                id: "invalid.address",
+                defaultMessage: "Invalid address",
+              })
+            ),
+          ])}
           disabled={
             name && params.fields[name]
               ? params.fields[name].lockInputs
@@ -95,9 +120,11 @@ export default function ContractFunctionInput({
                 <IconButton
                   onClick={() =>
                     onSelectAddress(
-                      input.name,
+                      inputName,
                       inputParams?.inputType === "address"
                         ? inputParams.addresses
+                        : inputTupleParams
+                        ? inputTupleParams.addresses
                         : []
                     )
                   }
@@ -125,6 +152,15 @@ export default function ContractFunctionInput({
               size="small"
               type="checkbox"
               fullWidth
+              onChange={handleChangeValueInTuple(inputName)}
+              validate={concactValidators([
+                requiredField(
+                  formatMessage({
+                    id: "field.required",
+                    defaultMessage: "field required",
+                  })
+                ),
+              ])}
               name={inputName}
               disabled={
                 name && params.fields[name]
@@ -137,6 +173,30 @@ export default function ContractFunctionInput({
       </Grid>
     );
   }
+
+  const validators = useMemo(() => {
+    const vals = [
+      requiredField(
+        formatMessage({
+          id: "field.required",
+          defaultMessage: "field required",
+        })
+      ),
+    ];
+
+    if (inputParams?.inputType === "decimal") {
+      vals.push(
+        validateDecimal(
+          formatMessage({
+            id: "invalid.decimal",
+            defaultMessage: "Invalid decimal",
+          })
+        )
+      );
+    }
+
+    return concactValidators(vals);
+  }, [inputParams]);
 
   return (
     <Grid item xs={12}>
@@ -151,16 +211,7 @@ export default function ContractFunctionInput({
             ? params.fields[name].lockInputs
             : undefined
         }
-        validate={
-          inputParams?.inputType === "decimal"
-            ? validateDecimal(
-                formatMessage({
-                  id: "invalid.decimal",
-                  defaultMessage: "Invalid decimal",
-                })
-              )
-            : undefined
-        }
+        validate={validators}
         InputProps={{
           endAdornment: (
             <InputAdornment position="end">

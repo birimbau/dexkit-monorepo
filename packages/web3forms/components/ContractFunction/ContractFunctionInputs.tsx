@@ -55,13 +55,16 @@ export default function ContractFunctionInputs({
     setSelectAddresses(undefined);
   };
 
-  const handleSelect = useCallback((address: string) => {
-    if (selectFor) {
-      setFieldValue(selectFor, address);
-      setSelectFor(undefined);
-      setSelectedAddress(false);
-    }
-  }, []);
+  const handleSelect = useCallback(
+    (address: string) => {
+      if (selectFor) {
+        setFieldValue(selectFor, address);
+        setSelectFor(undefined);
+        setSelectedAddress(false);
+      }
+    },
+    [selectFor]
+  );
 
   return (
     <>

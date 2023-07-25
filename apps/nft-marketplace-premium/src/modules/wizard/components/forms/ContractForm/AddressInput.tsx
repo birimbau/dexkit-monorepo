@@ -1,20 +1,25 @@
 import { truncateAddress } from '@dexkit/core/utils';
-import { ContractFormFieldInputAddress } from '@dexkit/web3forms/types';
 import { Grid, TextField as MuiTextField } from '@mui/material';
 import { isAddress } from 'ethers/lib/utils';
 import { Field } from 'formik';
 import { Autocomplete } from 'formik-mui';
 import { FormattedMessage } from 'react-intl';
 
-export function AddressInput({
-  input,
-  funcName,
-  inputName,
-}: {
-  input: ContractFormFieldInputAddress;
+export interface AddressInputProps {
+  addresses: string[];
   funcName?: string;
   inputName?: string;
-}) {
+  isTuple?: boolean;
+  componentName?: string;
+}
+
+export function AddressInput({
+  addresses,
+  funcName,
+  inputName,
+  isTuple,
+  componentName,
+}: AddressInputProps) {
   return (
     <Grid container spacing={2}>
       <Grid item xs={12}>
@@ -24,8 +29,12 @@ export function AddressInput({
           multiple
           size="small"
           autoSelect
-          name={`fields.${funcName}.input.${inputName}.addresses`}
-          options={input.addresses ? input.addresses : []}
+          name={
+            isTuple
+              ? `fields.${funcName}.input.${inputName}.tupleParams.${componentName}.addresses`
+              : `fields.${funcName}.input.${inputName}.addresses`
+          }
+          options={addresses ? addresses : []}
           getOptionLabel={(option: string) => {
             if (isAddress(option)) {
               return truncateAddress(option);

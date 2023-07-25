@@ -270,3 +270,5 @@ export type ThirdwebMetadata = {
   constructorParams: { [key: string]: any };
   publisher: string;
 };
+
+export type ValidatorFunc = (message: string) => void;

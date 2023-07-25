@@ -3,33 +3,18 @@ import {
   AbiFragmentInput,
   ContractFormParams,
   TupleAbiFragmentInput,
+  ValidatorFunc,
 } from '@dexkit/web3forms/types';
-import { validateDecimal } from '@dexkit/web3forms/utils/validators';
+import {
+  concactValidators,
+  requiredField,
+  validateDecimal,
+} from '@dexkit/web3forms/utils/validators';
 import { FormControlLabel, Grid, InputAdornment, Switch } from '@mui/material';
 import { FastField, useFormikContext } from 'formik';
 import { TextField } from 'formik-mui';
 import { ChangeEvent, useCallback, useMemo } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
-
-function requiredField(message: string) {
-  return (value: string) => {
-    return !value ? message : undefined;
-  };
-}
-
-type ValidatorFunc = (message: string) => void;
-
-function concactValidators(validators: ValidatorFunc[]) {
-  return (value: string) => {
-    for (let validator of validators) {
-      const message = validator(value);
-
-      if (message !== undefined) {
-        return message;
-      }
-    }
-  };
-}
 
 export interface ContractFormDefaultValueInputInputProps {
   values: ContractFormParams;
@@ -70,7 +55,7 @@ export default function ContractFormDefaultValueInput({
   const handleChangeValue = useCallback(
     (event: ChangeEvent<HTMLInputElement>, checked: boolean) =>
       setFieldValue(inputName, checked),
-    [func, input]
+    [func, input],
   );
 
   const handleChangeValueInTuple = useCallback((inputName: string) => {
@@ -100,9 +85,9 @@ export default function ContractFormDefaultValueInput({
             },
             {
               field: input.name,
-            }
-          )
-        )
+            },
+          ),
+        ),
       );
     }
 
@@ -116,9 +101,9 @@ export default function ContractFormDefaultValueInput({
             },
             {
               field: input.name,
-            }
-          )
-        )
+            },
+          ),
+        ),
       );
     }
 
@@ -152,9 +137,9 @@ export default function ContractFormDefaultValueInput({
                     },
                     {
                       field: input.name,
-                    }
-                  )
-                )
+                    },
+                  ),
+                ),
               );
             }
 
@@ -165,7 +150,7 @@ export default function ContractFormDefaultValueInput({
                     control={
                       <Switch
                         onChange={handleChangeValueInTuple(
-                          `${inputName}.${component.name}`
+                          `${inputName}.${component.name}`,
                         )}
                         type="checkbox"
                       />

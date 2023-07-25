@@ -3,6 +3,7 @@ import { WEB3FORMS_INPUT_TYPES } from '@dexkit/web3forms/constants';
 import {
   AbiFragment,
   AbiFragmentInput,
+  ContractFormFieldInputAddress,
   ContractFormParams,
   TupleAbiFragmentInput,
 } from '@dexkit/web3forms/types';
@@ -20,6 +21,7 @@ import {
 import { FastField } from 'formik';
 import { Select, TextField } from 'formik-mui';
 import { FormattedMessage, useIntl } from 'react-intl';
+import { AddressInput } from './AddressInput';
 
 export interface Props {
   values: ContractFormParams;
@@ -40,6 +42,15 @@ export default function ContractFormInputType({ values, input, func }: Props) {
             {tupleInput.components.map((component, index) => {
               const tupleParams =
                 values.fields[func.name].input[input.name].tupleParams;
+
+              const comp: ContractFormFieldInputAddress | undefined =
+                tupleParams &&
+                tupleParams[component.name] &&
+                tupleParams[component.name].inputType === 'address'
+                  ? (tupleParams[
+                      component.name
+                    ] as ContractFormFieldInputAddress)
+                  : undefined;
 
               const inputType = tupleParams
                 ? tupleParams[component.name]?.inputType
@@ -81,8 +92,8 @@ export default function ContractFormInputType({ values, input, func }: Props) {
                                   (key) =>
                                     WEB3FORMS_INPUT_TYPES[key].type === '' ||
                                     component.type.startsWith(
-                                      WEB3FORMS_INPUT_TYPES[key].type
-                                    )
+                                      WEB3FORMS_INPUT_TYPES[key].type,
+                                    ),
                                 )
                                 .map((key) => (
                                   <MenuItem key={key} value={key}>
@@ -110,7 +121,7 @@ export default function ContractFormInputType({ values, input, func }: Props) {
                                     formatMessage({
                                       id: 'required.field',
                                       defaultMessage: 'required field',
-                                    })
+                                    }),
                                   )}
                                   label={
                                     <FormattedMessage
@@ -127,10 +138,16 @@ export default function ContractFormInputType({ values, input, func }: Props) {
                             </>
                           )}
 
-                          {inputType === 'address' && (
+                          {inputType === 'address' && comp && (
                             <>
                               <Grid item xs={12}>
-                                {/* <AddressInput input={} /> */}
+                                <AddressInput
+                                  componentName={component.name}
+                                  addresses={comp.addresses}
+                                  inputName={input.name}
+                                  funcName={func.name}
+                                  isTuple
+                                />
                               </Grid>
                               <Grid item xs={12}>
                                 <Divider />
@@ -178,7 +195,7 @@ export default function ContractFormInputType({ values, input, func }: Props) {
               .filter(
                 (key) =>
                   WEB3FORMS_INPUT_TYPES[key].type === '' ||
-                  input.type.startsWith(WEB3FORMS_INPUT_TYPES[key].type)
+                  input.type.startsWith(WEB3FORMS_INPUT_TYPES[key].type),
               )
               .map((key) => (
                 <MenuItem key={key} value={key}>
