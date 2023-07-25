@@ -67,7 +67,11 @@ export default function GatedConditionsFormDialog({
       onClose({}, 'backdropClick');
     }
   };
-  const featuredTokens = useAllTokenList({ includeNative: true });
+  const featuredTokens = useAllTokenList({
+    includeNative: true,
+    isWizardConfig: true,
+  });
+  console.log(featuredTokens);
   const [selectedCoins, setSelectedCoins] = useState<{ [key: number]: Token }>(
     {}
   );
@@ -312,19 +316,19 @@ export default function GatedConditionsFormDialog({
                                   setSelectedCoins({ ...selectedCoins });
                                   setFieldValue(
                                     `conditions[${index}].address`,
-                                    tk.address
+                                    tk?.address
                                   );
                                   setFieldValue(
                                     `conditions[${index}].symbol`,
-                                    tk.symbol
+                                    tk?.symbol
                                   );
                                   setFieldValue(
                                     `conditions[${index}].chainId`,
-                                    tk.chainId
+                                    tk?.chainId
                                   );
                                   setFieldValue(
                                     `conditions[${index}].decimals`,
-                                    tk.decimals
+                                    tk?.decimals
                                   );
                                 }}
                               />

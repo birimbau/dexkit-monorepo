@@ -1,4 +1,4 @@
-import { AppDialogTitle } from '@dexkit/ui';
+import { AppDialogTitle } from '@dexkit/ui/components';
 import {
   Box,
   Button,

@@ -1,7 +1,23 @@
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useWeb3React } from "@web3-react/core";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+
+export function usePositionPaginator(pageSize = 5) {
+  const [position, setPosition] = useState({ offset: 0, limit: pageSize });
+
+  const handleNext = useCallback(() => {
+    setPosition((value) => ({ ...value, offset: value.offset + pageSize }));
+  }, [pageSize]);
+
+  const handlePrevious = useCallback(() => {
+    if (position.offset - pageSize >= 0) {
+      setPosition((value) => ({ ...value, offset: value.offset - pageSize }));
+    }
+  }, [position, pageSize]);
+
+  return { position, handleNext, handlePrevious, pageSize };
+}
 
 export function useBlockNumber() {
   const { provider } = useWeb3React();

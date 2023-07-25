@@ -96,7 +96,8 @@ function MagicNetworkSelect({ SelectProps }: Props) {
             </ListItemIcon>
             <ListItemText primary={NETWORKS[parseChainId(key)].name} />
           </MenuItem>
-        ))}
+        ))}{" "}
+      || <></>
     </Select>
   );
 }

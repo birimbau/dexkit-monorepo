@@ -12,7 +12,7 @@ interface NextLinkComposedProps
   extends Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, "href">,
     Omit<
       NextLinkProps,
-      "href" | "as" | "onClick" | "onMouseEnter" | "onTouchStart"
+      "href" | "as" | "passHref" | "onMouseEnter" | "onClick" | "onTouchStart"
     > {
   to: NextLinkProps["href"];
   linkAs?: NextLinkProps["as"];
@@ -22,8 +22,17 @@ export const NextLinkComposed = React.forwardRef<
   HTMLAnchorElement,
   NextLinkComposedProps
 >(function NextLinkComposed(props, ref) {
-  const { to, linkAs, replace, scroll, shallow, prefetch, locale, ...other } =
-    props;
+  const {
+    to,
+    linkAs,
+    replace,
+    scroll,
+    shallow,
+    prefetch,
+    legacyBehavior = true,
+    locale,
+    ...other
+  } = props;
 
   return (
     <NextLink
@@ -35,6 +44,7 @@ export const NextLinkComposed = React.forwardRef<
       shallow={shallow}
       passHref
       locale={locale}
+      legacyBehavior={legacyBehavior}
     >
       <Anchor ref={ref} {...other} />
     </NextLink>
@@ -52,7 +62,7 @@ export type LinkProps = {
 
 // A styled version of the Next.js Link component:
 // https://nextjs.org/docs/api-reference/next/link
-const AppLink = React.forwardRef<HTMLAnchorElement, LinkProps>(function Link(
+const Link = React.forwardRef<HTMLAnchorElement, LinkProps>(function Link(
   props,
   ref
 ) {
@@ -61,6 +71,7 @@ const AppLink = React.forwardRef<HTMLAnchorElement, LinkProps>(function Link(
     as,
     className: classNameProps,
     href,
+    legacyBehavior,
     linkAs: linkAsProp,
     locale,
     noLinkStyle,
@@ -98,6 +109,7 @@ const AppLink = React.forwardRef<HTMLAnchorElement, LinkProps>(function Link(
     scroll,
     shallow,
     prefetch,
+    legacyBehavior,
     locale,
   };
 
@@ -114,7 +126,7 @@ const AppLink = React.forwardRef<HTMLAnchorElement, LinkProps>(function Link(
 
   return (
     <MuiLink
-      component={NextLinkComposed}
+      component={NextLinkComposed as any}
       className={className}
       ref={ref}
       {...nextjsProps}
@@ -123,4 +135,4 @@ const AppLink = React.forwardRef<HTMLAnchorElement, LinkProps>(function Link(
   );
 });
 
-export default AppLink;
+export default Link;

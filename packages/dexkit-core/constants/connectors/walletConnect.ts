@@ -1,7 +1,7 @@
 import { initializeConnector } from "@web3-react/core";
 import { WalletConnect } from "@web3-react/walletconnect";
-//TODO: Unify networks between both apps
-import { NETWORKS } from "../../../../apps/nft-marketplace-premium/src/constants/chain";
+import { NETWORKS } from "../../constants/networks";
+
 
 const rpcs: { [key: number]: string } = {};
 

@@ -1,6 +1,11 @@
 import { OAuthExtension } from "@magic-ext/oauth";
 import { InstanceWithExtensions, SDKBase } from "@magic-sdk/provider";
-import { Actions, Connector } from "@web3-react/types";
+import type {
+  Actions,
+} from '@web3-react/types';
+
+
+import { Connector } from "@web3-react/types";
 import { EventEmitter } from "events";
 
 import { NETWORKS } from "../constants/networks";
@@ -97,6 +102,7 @@ export class MagicConnector extends Connector {
     email?: string;
     redirectUrl?: string;
   }) {
+
     const magic: InstanceWithExtensions<SDKBase, OAuthExtension[]> | undefined =
       this.magicInstance;
 

@@ -43,6 +43,6 @@ export default styled(Icon, {
 })<Props>(({ theme, color }) => ({
   stroke:
     color === 'primary'
-      ? theme.vars.palette.primary.main
-      : theme.vars.palette.text.primary,
+      ? theme.palette.primary.main
+      : theme.palette.text.primary,
 }));

@@ -451,7 +451,7 @@ export function EditWizardContainer({ site }: Props) {
       styles={{
         popover: (base) => ({
           ...base,
-          background: theme.vars.palette.background.default,
+          background: theme.palette.background.default,
         }),
         maskWrapper: (base) => ({
           ...base,

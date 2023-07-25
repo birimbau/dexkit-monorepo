@@ -1,5 +1,5 @@
-import { useDexKitContext } from '@dexkit/ui';
 import { NotificationMessage } from '@dexkit/ui/components/NotificationMessage';
+import { useDexKitContext } from '@dexkit/ui/hooks';
 import { AppNotification } from '@dexkit/ui/types';
 import { Done, Error } from '@mui/icons-material';
 import { CircularProgress, Icon, TableCell, TableRow } from '@mui/material';

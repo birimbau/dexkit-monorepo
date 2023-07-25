@@ -1,7 +1,5 @@
 import { Network } from '../types/chains';
 
-
-
 import { ChainId } from '@dexkit/core/constants/enums';
 import arbitrumIcon from '../../public/assets/images/icons/arbitrum.png';
 import avaxIcon from '../../public/assets/images/icons/avax.png';

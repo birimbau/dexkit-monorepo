@@ -23,6 +23,7 @@ import { NETWORKS } from '../constants/chain';
 import { EvmCoin } from '@dexkit/core/types';
 import { convertTokenToEvmCoin } from '@dexkit/core/utils';
 
+import { useAppWizardConfig } from '@/modules/wizard/hooks';
 import { ChainId, CoinTypes } from '@dexkit/core/constants';
 import { parse, ParseOutput } from 'eth-url-parser';
 import { ethers } from 'ethers';
@@ -183,24 +184,31 @@ export function useAllTokenList({
   chainId,
   includeNative = false,
   onlyTradable,
-  onlyNative
+  onlyNative,
+  isWizardConfig
 }: {
   chainId?: number;
   includeNative?: boolean;
   onlyNative?: boolean;
   onlyTradable?: boolean;
+  isWizardConfig?: boolean;
 }) {
   const appConfig = useAppConfig();
+  const { wizardConfig } = useAppWizardConfig();
 
   const tokensValues = useAtomValue(tokensAtom) || [];
 
   const tokenListJson = useMemo(() => {
+    if (isWizardConfig && wizardConfig && wizardConfig.tokens?.length === 1) {
+      return wizardConfig.tokens[0].tokens || [];
+    }
+
     if (appConfig.tokens?.length === 1) {
       return appConfig.tokens[0].tokens || [];
     }
 
     return [];
-  }, [appConfig]);
+  }, [appConfig, isWizardConfig, wizardConfig]);
 
   // TODO: do the right logic
   let tokens = [...tokensValues, ...tokenListJson];

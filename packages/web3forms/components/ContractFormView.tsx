@@ -13,7 +13,7 @@ import { useSnackbar } from "notistack";
 import CallConfirmDialog from "./CallConfirmDialog";
 import ContractFormFunctions from "./ContractFormFunctions";
 
-import AppConfirmDialog from "@dexkit/ui/components/AppConfirmDialog";
+import { AppConfirmDialog } from "@dexkit/ui/components";
 import { FormattedMessage } from "react-intl";
 
 export interface Props {

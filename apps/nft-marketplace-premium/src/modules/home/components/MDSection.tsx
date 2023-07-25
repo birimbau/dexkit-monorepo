@@ -16,7 +16,7 @@ interface Props {
   section: MarkdownEditorPageSection;
 }
 
-export function MDSection({ section }: Props) {
+export default function MDSection({ section }: Props) {
   const theme = useTheme();
 
   return (
@@ -24,8 +24,8 @@ export function MDSection({ section }: Props) {
       <EditerMarkdown
         source={section.config?.source}
         style={{
-          backgroundColor: theme.vars.palette.background.paper,
-          color: theme.vars.palette.text.primary,
+          backgroundColor: theme.palette.background.paper,
+          color: theme.palette.text.primary,
         }}
       />
     </Container>

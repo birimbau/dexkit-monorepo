@@ -1,19 +1,26 @@
 import ReceiptIcon from "@mui/icons-material/Receipt";
 import { Dialog, DialogContent, Divider, Typography } from "@mui/material";
 
-import { ComponentMeta, ComponentStory } from "@storybook/react";
 import { AppDialogTitle } from "../components/AppDialogTitle";
 
-// More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
-export default {
+import type { Meta, StoryObj } from "@storybook/react";
+
+const meta: Meta<typeof AppDialogTitle> = {
   title: "Components/AppDialogTitle",
   component: AppDialogTitle,
-  // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
-  argTypes: {},
-} as ComponentMeta<typeof AppDialogTitle>;
+  // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
+  tags: ["autodocs"],
+  parameters: {
+    // More on Story layout: https://storybook.js.org/docs/react/configure/story-layout
+    layout: "fullscreen",
+  },
+};
+
+export default meta;
+type Story = StoryObj<typeof AppDialogTitle>;
 
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
-const Template: ComponentStory<typeof AppDialogTitle> = (args) => (
+const Template = (args: any) => (
   <Dialog open={true} maxWidth="sm" fullWidth>
     <AppDialogTitle {...args} />
     <Divider />
@@ -27,15 +34,17 @@ const Template: ComponentStory<typeof AppDialogTitle> = (args) => (
   </Dialog>
 );
 
-export const Default = Template.bind({});
-// More on args: https://storybook.js.org/docs/react/writing-stories/args
-Default.args = {
-  title: "App dialog",
+export const Default: Story = {
+  args: {
+    title: "App dialog With Icon",
+  },
+  render: (args) => <Template {...args}></Template>,
 };
 
-export const WithIcon = Template.bind({});
-// More on args: https://storybook.js.org/docs/react/writing-stories/args
-WithIcon.args = {
-  title: "App dialog With Icon",
-  icon: <ReceiptIcon />,
+export const WithIcon: Story = {
+  args: {
+    title: "App dialog With Icon",
+    icon: <ReceiptIcon />,
+  },
+  render: (args) => <Template {...args}></Template>,
 };

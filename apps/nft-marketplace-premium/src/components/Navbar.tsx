@@ -54,10 +54,10 @@ import Notification from './icons/Notification';
 import Wallet from './icons/Wallet';
 
 import { MagicConnector } from '@dexkit/core/types/magic';
-import { useDexKitContext, useNotifications } from '@dexkit/ui';
 import MagicNetworkSelect from '@dexkit/ui/components/MagicNetworkSelect';
 import NotificationsDialog from '@dexkit/ui/components/dialogs/NotificationsDialog';
 import { ThemeMode } from '@dexkit/ui/constants/enum';
+import { useDexKitContext, useNotifications } from '@dexkit/ui/hooks';
 import { ThemeModeSelector } from './ThemeModeSelector';
 
 interface Props {
@@ -433,7 +433,7 @@ function Navbar({ appConfig, isPreview }: Props) {
                   sx={(theme) => ({
                     px: 2,
                     py: 1,
-                    border: `1px solid ${theme.vars.palette.divider}`,
+                    border: `1px solid ${theme.palette.divider}`,
                     borderRadius: theme.spacing(1),
                   })}
                 >

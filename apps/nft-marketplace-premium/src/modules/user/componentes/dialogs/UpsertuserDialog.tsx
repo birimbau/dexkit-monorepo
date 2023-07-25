@@ -13,7 +13,7 @@ import {
 import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import { AppDialogTitle } from '@dexkit/ui';
+import { AppDialogTitle } from '@dexkit/ui/components';
 import {
   CheckCircle,
   Error,

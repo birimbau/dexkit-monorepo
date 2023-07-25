@@ -28,7 +28,7 @@ export function AssetAttributePaper({ traitType, value }: Props) {
         </Typography>
         <Box
           sx={(theme) => ({
-            background: theme.vars.palette.action.hover,
+            background: theme.palette.action.hover,
             borderRadius: theme.spacing(1),
             padding: `${theme.spacing(0.5)} ${theme.spacing(1)}`,
           })}

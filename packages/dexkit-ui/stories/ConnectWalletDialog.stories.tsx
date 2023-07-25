@@ -1,24 +1,37 @@
 import { useWalletActivate } from "@dexkit/core/hooks";
-import { WalletActivateParams } from "@dexkit/core/types";
-import { ComponentMeta, ComponentStory } from "@storybook/react";
+import { TokenWhitelabelApp, WalletActivateParams } from "@dexkit/core/types";
+import { Meta, StoryObj } from "@storybook/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useWeb3React } from "@web3-react/core";
-import { atomWithStorage } from "jotai/utils";
-import { ConnectWalletDialog } from "../components/ConnectWalletDialog";
-import { DexkitProvider } from "../components/DexkitProvider";
-import theme from "../theme";
 
-export default {
+import { atom } from "jotai";
+import ConnectWalletDialog from "../components/ConnectWalletDialog";
+import { DexkitProvider } from "../components/DexkitProvider";
+import { ThemeMode } from "../constants/enum";
+import theme from "../theme";
+import { AppNotification } from "../types";
+
+const meta: Meta<typeof ConnectWalletDialog> = {
   title: "Components/ConnectWalletDialog",
   component: ConnectWalletDialog,
-  argTypes: {},
-} as ComponentMeta<typeof ConnectWalletDialog>;
+  // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
+  tags: ["autodocs"],
+  parameters: {
+    // More on Story layout: https://storybook.js.org/docs/react/configure/story-layout
+    layout: "fullscreen",
+  },
+};
 
-const pendingTransactionsAtom = atomWithStorage("storybook-transactions", {});
+export default meta;
+
+const selectedWalletAtom = atom("storybook-selected-wallet");
 const queryClient = new QueryClient();
 
 const WrappedComponent = () => {
-  const walletActivate = useWalletActivate();
+  const walletActivate = useWalletActivate({
+    selectedWalletAtom,
+    magicRedirectUrl: "localhost:3000",
+  });
   const { isActive } = useWeb3React();
 
   return (
@@ -34,18 +47,29 @@ const WrappedComponent = () => {
   );
 };
 
-const Template: ComponentStory<typeof ConnectWalletDialog> = (args) => {
+const Template = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <DexkitProvider
-        pendingTransactionsAtom={pendingTransactionsAtom}
         theme={theme}
+        locale="en-US"
+        themeMode={ThemeMode.light}
+        assetsAtom={atom({})}
+        currencyUserAtom={atom("")}
+        tokensAtom={atom<TokenWhitelabelApp[]>([])}
+        notificationTypes={{}}
+        notificationsAtom={atom<AppNotification[]>([])}
+        onChangeLocale={() => {}}
+        transactionsAtom={atom<{}>({})}
+        selectedWalletAtom={atom<string>("")}
       >
         <WrappedComponent />
       </DexkitProvider>
     </QueryClientProvider>
   );
 };
+type Story = StoryObj<typeof Template>;
 
-export const Default = Template.bind({});
-Default.args = {};
+export const Default: Story = {
+  render: () => <Template></Template>,
+};

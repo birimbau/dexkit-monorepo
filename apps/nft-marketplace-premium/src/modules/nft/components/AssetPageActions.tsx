@@ -5,7 +5,7 @@ import {
   Paper,
   Stack,
   Tooltip,
-  Typography
+  Typography,
 } from '@mui/material';
 import { FormattedMessage } from 'react-intl';
 
@@ -132,7 +132,7 @@ export function AssetPageActions({ address, id }: Props) {
                     sx={
                       favorites.isFavorite(asset)
                         ? (theme) => ({
-                            '& path': { fill: theme.vars.palette.error.light },
+                            '& path': { fill: theme.palette.error.light },
                           })
                         : undefined
                     }

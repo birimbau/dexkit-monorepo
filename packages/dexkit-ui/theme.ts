@@ -1,3 +1,3 @@
-import { createTheme } from "@mui/material";
+import { experimental_extendTheme as extendTheme } from '@mui/material/styles';
 
-export default createTheme({});
+export default extendTheme({})

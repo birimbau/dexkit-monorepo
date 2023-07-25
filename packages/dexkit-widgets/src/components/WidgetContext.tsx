@@ -1,6 +1,6 @@
 import { DexkitProvider } from "@dexkit/ui/components";
 import { COMMON_NOTIFICATION_TYPES } from "@dexkit/ui/constants/messages/common";
-import { useTheme } from "@mui/material/styles";
+import { experimental_extendTheme as extendTheme } from "@mui/material/styles";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState } from "react";
 import {
@@ -13,8 +13,9 @@ export interface AppMarketplaceContextProps {
   children: React.ReactNode | React.ReactNode[];
 }
 
+const theme = extendTheme({});
+
 export function WidgetContext({ children }: AppMarketplaceContextProps) {
-  const theme = useTheme();
   const [locale, setLocale] = useState("en-US");
   const queryClient = new QueryClient();
   return (

@@ -1,4 +1,5 @@
 import dynamic from 'next/dynamic';
+import { AppPageSection } from '../../types/section';
 
 const CallToActionSection = dynamic(
   () => import('@/modules/home/components/CallToActionSection')
@@ -19,12 +20,17 @@ const VideoSection = dynamic(
   () => import('@/modules/home/components/VideoSection')
 );
 
-import AssetStoreSection from '@/modules/home/components/AssetStoreSection';
-import { MDSection } from '@/modules/home/components/MDSection';
-import WalletSection from '@/modules/home/components/WalletSection';
-import { AppPageSection } from '../../types/section';
-import ContractSection from '../sections/ContractSection';
-import UserContractSection from '../sections/UserContractSection';
+const AssetStoreSection = dynamic(
+  () => import('@/modules/home/components/AssetStoreSection')
+);
+const MDSection = dynamic(() => import('@/modules/home/components/MDSection'));
+const WalletSection = dynamic(
+  () => import('@/modules/home/components/WalletSection')
+);
+const ContractSection = dynamic(() => import('../sections/ContractSection'));
+const UserContractSection = dynamic(
+  () => import('../sections/UserContractSection')
+);
 
 interface Props {
   section: AppPageSection;

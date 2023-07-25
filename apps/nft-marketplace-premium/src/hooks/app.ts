@@ -1,5 +1,5 @@
-import { useDexKitContext } from '@dexkit/ui';
 import { ThemeMode } from '@dexkit/ui/constants/enum';
+import { useDexKitContext } from '@dexkit/ui/hooks';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { atom, useAtom, useAtomValue } from 'jotai';
 import { useContext, useMemo } from 'react';

@@ -1,9 +1,9 @@
 import { Button, styled } from '@mui/material';
 
 export const WalletActionButton = styled(Button)(({ theme }) => ({
-  backgroundColor: theme.vars.palette.background.paper,
-  border: `1px solid ${theme.vars.palette.divider}`,
-  color: theme.vars.palette.text.primary,
+  backgroundColor: theme.palette.background.paper,
+  border: `1px solid ${theme.palette.divider}`,
+  color: theme.palette.text.primary,
   textDecoration: 'none',
   textTransform: 'none',
   display: 'flex',
