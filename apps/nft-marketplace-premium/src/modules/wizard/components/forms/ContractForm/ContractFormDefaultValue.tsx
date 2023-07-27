@@ -57,7 +57,7 @@ export default function ContractFormDefaultValue({
             <Grid item xs={12}>
               <Button
                 onClick={helpers.handlePush(
-                  input.type.startsWith('tuple') ? {} : ''
+                  input.type.startsWith('tuple') ? {} : '',
                 )}
                 startIcon={<AddIcon />}
                 variant="outlined"
@@ -74,6 +74,11 @@ export default function ContractFormDefaultValue({
   }
 
   return (
-    <ContractFormDefaultValueInput func={func} input={input} values={values} />
+    <ContractFormDefaultValueInput
+      func={func}
+      input={input}
+      values={values}
+      isTuple={input.type.startsWith('tuple')}
+    />
   );
 }

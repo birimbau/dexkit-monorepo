@@ -6,6 +6,7 @@ import { NETWORKS } from '@dexkit/core/constants/networks';
 import LazyTextField from '@dexkit/ui/components/LazyTextField';
 import { useScanContractAbiMutation } from '@dexkit/web3forms/hooks';
 import { AbiFragment, ContractFormParams } from '@dexkit/web3forms/types';
+import { normalizeAbi } from '@dexkit/web3forms/utils';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import { CircularProgress, IconButton, InputAdornment } from '@mui/material';
 import { useWeb3React } from '@web3-react/core';
@@ -35,7 +36,7 @@ export default function ContractFormAddressInput({
   const jsonProvider = useMemo(() => {
     if (chainId) {
       return new ethers.providers.JsonRpcProvider(
-        NETWORKS[chainId].providerRpcUrl
+        NETWORKS[chainId].providerRpcUrl,
       );
     }
   }, [chainId]);
@@ -66,25 +67,7 @@ export default function ContractFormAddressInput({
             contractAddress: address,
           });
 
-          let newAbi: AbiFragment[] = [...abi];
-
-          // this code is to fix abi fragments that come without input name
-          for (let i = 0; i < newAbi.length; i++) {
-            const fragment = newAbi[i];
-
-            if (
-              fragment.type === 'function' ||
-              fragment.type === 'constructor'
-            ) {
-              for (let j = 0; j < fragment.inputs?.length; j++) {
-                const input = fragment.inputs[j];
-
-                if (input.name === '') {
-                  newAbi[i].inputs[j].name = `input${j}`;
-                }
-              }
-            }
-          }
+          let newAbi: AbiFragment[] = normalizeAbi(abi);
 
           const fields = inputMapping(newAbi);
           setFieldValue('fields', fields);
@@ -94,7 +77,7 @@ export default function ContractFormAddressInput({
         }
       }
     },
-    [values.chainId, values.disableProxy, jsonProvider]
+    [values.chainId, values.disableProxy, jsonProvider],
   );
 
   const handleChange = useCallback(
@@ -102,7 +85,7 @@ export default function ContractFormAddressInput({
       await fetchAbi(value);
       setFieldValue('contractAddress', value);
     },
-    [fetchAbi]
+    [fetchAbi],
   );
 
   const handleRefresh = async () => {
@@ -121,7 +104,7 @@ export default function ContractFormAddressInput({
     (value: string) => {
       handleChange(value);
     },
-    [handleChange]
+    [handleChange],
   );
 
   const { account } = useWeb3React();

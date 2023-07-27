@@ -1,7 +1,16 @@
 import ContractButton from '@/modules/forms/components/ContractButton';
 import { THIRDWEB_ICON_URL } from '@dexkit/web3forms/constants';
+import { TipsAndUpdates } from '@mui/icons-material';
 import WalletIcon from '@mui/icons-material/Wallet';
-import { Box, Button, Container, Grid, Stack, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  Container,
+  Grid,
+  Paper,
+  Stack,
+  Typography,
+} from '@mui/material';
 import { useWeb3React } from '@web3-react/core';
 import { useRouter } from 'next/router';
 import { FormattedMessage } from 'react-intl';
@@ -85,57 +94,74 @@ export default function FormsPage() {
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <Box>
-                  <Stack
+                  <Grid
+                    container
                     spacing={2}
                     direction="row"
                     alignItems="center"
                     justifyContent="space-between"
                   >
-                    <Box>
-                      <Typography variant="h4">
-                        <FormattedMessage
-                          id="web3forms.deplopy"
-                          defaultMessage="DexGenerator"
-                        />
-                      </Typography>
-                      <Typography variant="body1" color="text.secondary">
-                        <FormattedMessage
-                          id="explore.our.new.tool.dexgenerator"
-                          defaultMessage="Explore our new tool: DexGenerator"
-                        />
-                      </Typography>
-                    </Box>
-                    {isActive ? (
-                      <Button
-                        LinkComponent={Link}
-                        href={`/forms/account/${account}`}
-                        variant="outlined"
-                      >
-                        <FormattedMessage
-                          id="my.forms"
-                          defaultMessage="My forms"
-                        />
-                      </Button>
-                    ) : (
-                      <Button
-                        onClick={handleConnectWallet}
-                        variant="outlined"
-                        startIcon={<WalletIcon />}
-                      >
-                        <FormattedMessage
-                          id="connect.wallet"
-                          defaultMessage="Connect wallet"
-                        />
-                      </Button>
-                    )}
-                  </Stack>
+                    <Grid item>
+                      <Box>
+                        <Typography variant="h4">
+                          <FormattedMessage
+                            id="web3forms.deplopy"
+                            defaultMessage="DexGenerator"
+                          />
+                        </Typography>
+                        <Typography variant="body1" color="text.secondary">
+                          <FormattedMessage
+                            id="explore.our.new.tool.dexgenerator"
+                            defaultMessage="Explore our new tool: DexGenerator"
+                          />
+                        </Typography>
+                      </Box>
+                    </Grid>
+                    <Grid item>
+                      <Stack direction="row" spacing={2}>
+                        <Button
+                          LinkComponent={Link}
+                          href="/forms/contracts"
+                          variant="outlined"
+                        >
+                          <FormattedMessage
+                            id="contracts"
+                            defaultMessage="Contracts"
+                          />
+                        </Button>
+                        {isActive ? (
+                          <Button
+                            LinkComponent={Link}
+                            href={`/forms/account/${account}`}
+                            variant="outlined"
+                          >
+                            <FormattedMessage
+                              id="forms"
+                              defaultMessage="Forms"
+                            />
+                          </Button>
+                        ) : (
+                          <Button
+                            onClick={handleConnectWallet}
+                            variant="outlined"
+                            startIcon={<WalletIcon />}
+                          >
+                            <FormattedMessage
+                              id="connect.wallet"
+                              defaultMessage="Connect wallet"
+                            />
+                          </Button>
+                        )}
+                      </Stack>
+                    </Grid>
+                  </Grid>
                 </Box>
               </Grid>
               <Grid item xs={12}>
                 <Typography variant="h5">
                   <FormattedMessage
-                    id="forms.by.dexkit"
-                    defaultMessage="Forms by Dexkit"
+                    id="Create forms"
+                    defaultMessage="Create forms"
                   />
                 </Typography>
               </Grid>
@@ -165,31 +191,39 @@ export default function FormsPage() {
               <Grid item xs={12}>
                 <Typography variant="h5">
                   <FormattedMessage
-                    id="deploy.thirdweb.contracts"
-                    defaultMessage="Deploy ThirdWeb Contracts"
+                    id="forms.by.the.community"
+                    defaultMessage="Forms by the community"
                   />
                 </Typography>
               </Grid>
               <Grid item xs={12}>
-                <Grid container spacing={2}>
-                  {THIRDWEB_CONTRACT_LIST.map((contract, key) => (
-                    <Grid item xs={12} sm={4} key={key}>
-                      <ContractButton
-                        title={contract.name}
-                        description={contract.description}
-                        creator={{
-                          imageUrl: contract.publisherIcon,
-                          name: contract.publisherName,
-                        }}
-                        onClick={() => {
-                          router.push(
-                            `/forms/deploy/thirdweb/${contract.slug}`
-                          );
-                        }}
-                      />
-                    </Grid>
-                  ))}
-                </Grid>
+                <Paper sx={{ p: 2 }}>
+                  <Stack
+                    spacing={2}
+                    alignItems="center"
+                    justifyContent="center"
+                  >
+                    <TipsAndUpdates fontSize="large" />
+                    <Box>
+                      <Typography align="center" variant="h5">
+                        <FormattedMessage
+                          id="coming.soon"
+                          defaultMessage="Coming soon"
+                        />
+                      </Typography>
+                      <Typography
+                        align="center"
+                        variant="body1"
+                        color="text.secondary"
+                      >
+                        <FormattedMessage
+                          id="forms.by.the.community.will.be.available.soon"
+                          defaultMessage="Forms by the community will be available soon"
+                        />
+                      </Typography>
+                    </Box>
+                  </Stack>
+                </Paper>
               </Grid>
             </Grid>
           </Box>

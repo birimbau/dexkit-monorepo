@@ -1,7 +1,7 @@
 import { EvmSchemaTypes } from "../constants/validation";
 
 import * as Yup from "yup";
-import { FunctionInput } from "../types";
+import { AbiFragment, FunctionInput } from "../types";
 
 import { getTrustedForwarders } from "@thirdweb-dev/sdk/evm";
 import { ThirdwebStorage } from "@thirdweb-dev/storage";
@@ -32,4 +32,24 @@ export async function dkGetTrustedForwarders(
   let trustedForwarders = await getTrustedForwarders(provider, storage);
 
   return trustedForwarders;
+}
+
+export function normalizeAbi(abi: AbiFragment[]) {
+  const newAbi = [...abi];
+
+  for (let i = 0; i < abi.length; i++) {
+    const fragment = newAbi[i];
+
+    if (fragment.type === "function" || fragment.type === "constructor") {
+      for (let j = 0; j < fragment.inputs?.length; j++) {
+        const input = fragment.inputs[j];
+
+        if (input.name === "") {
+          newAbi[i].inputs[j].name = `input${j}`;
+        }
+      }
+    }
+  }
+
+  return newAbi;
 }

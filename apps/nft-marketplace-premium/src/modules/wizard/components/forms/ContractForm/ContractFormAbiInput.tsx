@@ -1,6 +1,7 @@
 import { inputMapping } from '@/modules/wizard/utils';
 import PasteIconButton from '@dexkit/ui/components/PasteIconButton';
 import { AbiFragment, ContractFormParams } from '@dexkit/web3forms/types';
+import { normalizeAbi } from '@dexkit/web3forms/utils';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
 import { Box, InputAdornment, TextField, Tooltip } from '@mui/material';
 import { useFormikContext } from 'formik';
@@ -19,7 +20,7 @@ function ContractFormAbiInput({ abiStr }: ContractFormAbiInputProps) {
 
   const handlePaste = (data: string) => {
     try {
-      const abi: AbiFragment[] = JSON.parse(data);
+      const abi: AbiFragment[] = normalizeAbi(JSON.parse(data));
       const fields = inputMapping(abi);
 
       setFieldValue('abi', abi);

@@ -58,7 +58,7 @@ export default function DeployPage() {
   const switchNetworkMutation = useSwitchNetworkMutation();
 
   const [selectedChainId, setSelectedChainId] = useState<ChainId>(
-    ChainId.Ethereum
+    ChainId.Ethereum,
   );
 
   useEffect(() => {
@@ -105,7 +105,7 @@ export default function DeployPage() {
               id: 'network.switched',
               defaultMessage: 'Network changed',
             }),
-            { variant: 'success' }
+            { variant: 'success' },
           );
 
           return;
@@ -115,7 +115,7 @@ export default function DeployPage() {
               id: 'error.while.switching.network',
               defaultMessage: 'Error while switching network',
             }),
-            { variant: 'error' }
+            { variant: 'error' },
           );
         }
       }
@@ -155,7 +155,7 @@ export default function DeployPage() {
             id: 'contract.deployed.successfully',
             defaultMessage: 'Contract deployed successfully',
           }),
-          { variant: 'success' }
+          { variant: 'success' },
         );
       } catch (err) {
         enqueueSnackbar(
@@ -163,7 +163,7 @@ export default function DeployPage() {
             id: 'error.while.deploying.contract',
             defaultMessage: 'Error while deploying contract',
           }),
-          { variant: 'error' }
+          { variant: 'error' },
         );
       }
 
@@ -174,7 +174,7 @@ export default function DeployPage() {
       thirdwebMetadataQuery.data,
       selectedChainId,
       hasChainDiff,
-    ]
+    ],
   );
 
   const [contractAddress, setContractAddress] = useState<string>();
@@ -187,7 +187,7 @@ export default function DeployPage() {
 
   const handleChangeChainId = (
     event: SelectChangeEvent<number>,
-    child: ReactNode
+    child: ReactNode,
   ) => {
     setSelectedChainId(parseChainId(event.target.value));
   };
@@ -272,7 +272,7 @@ export default function DeployPage() {
             </Button>
             <Button
               href={`${getBlockExplorerUrl(
-                selectedChainId
+                selectedChainId,
               )}/address/${contractAddress}`}
               target="_blank"
               variant="outlined"
@@ -302,15 +302,24 @@ export default function DeployPage() {
                 },
                 {
                   caption: (
+                    <FormattedMessage
+                      id="contracts"
+                      defaultMessage="Contracts"
+                    />
+                  ),
+                  uri: '/forms/contracts',
+                },
+                {
+                  caption: (
                     <FormattedMessage id="deploy" defaultMessage="Deploy" />
                   ),
                   uri: `/forms/deploy`,
                 },
                 {
                   caption: thirdwebMetadataQuery.data?.name,
-                  uri: `/forms/deploy/${creator as string}/${
-                    thirdwebMetadataQuery.data?.name
-                  }`,
+                  uri: `/forms/deploy/${
+                    creator as string
+                  }/${thirdwebMetadataQuery.data?.name}`,
                   active: true,
                 },
               ]}
@@ -330,7 +339,7 @@ export default function DeployPage() {
                           {thirdwebMetadataQuery.data?.logo ? (
                             <Avatar
                               src={getNormalizedUrl(
-                                thirdwebMetadataQuery.data?.logo
+                                thirdwebMetadataQuery.data?.logo,
                               )}
                             />
                           ) : (
@@ -370,14 +379,13 @@ export default function DeployPage() {
                                     publisher: (
                                       <Link
                                         href={`${getBlockExplorerUrl(
-                                          chainId
-                                        )}/address/${
-                                          thirdwebMetadataQuery.data?.publisher
-                                        }`}
+                                          chainId,
+                                        )}/address/${thirdwebMetadataQuery.data
+                                          ?.publisher}`}
                                         target="_blank"
                                       >
                                         {truncateAddress(
-                                          thirdwebMetadataQuery.data?.publisher
+                                          thirdwebMetadataQuery.data?.publisher,
                                         )}
                                       </Link>
                                     ),

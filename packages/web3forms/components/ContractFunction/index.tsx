@@ -282,7 +282,6 @@ export default function ContractFunction({
         >
           {!hideLabel && (
             <>
-              {JSON.stringify(values, null, 2)}
               <AccordionSummary
                 expandIcon={!collapse ? <ExpandMoreIcon /> : undefined}
                 sx={{

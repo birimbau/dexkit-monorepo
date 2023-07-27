@@ -8,6 +8,7 @@ import {
 import {
   concactValidators,
   requiredField,
+  validateAddress,
   validateDecimal,
 } from '@dexkit/web3forms/utils/validators';
 import { FormControlLabel, Grid, InputAdornment, Switch } from '@mui/material';
@@ -134,6 +135,20 @@ export default function ContractFormDefaultValueInput({
                     {
                       id: 'field.is.invalid',
                       defaultMessage: '{field} is invalid',
+                    },
+                    {
+                      field: input.name,
+                    },
+                  ),
+                ),
+              );
+            } else if (tupleParams[component.name]?.inputType === 'address') {
+              validators.push(
+                validateAddress(
+                  formatMessage(
+                    {
+                      id: 'field.is.invalid.address',
+                      defaultMessage: '{field} is invalid address',
                     },
                     {
                       field: input.name,
