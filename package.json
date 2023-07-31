@@ -8,7 +8,7 @@
   ],
   "scripts": {
     "build": "turbo run build",
-    "release": "turbo run release",
+    "release": "turbo run release --filter=@dexkit/ui,@dexkit/web3forms,@dexkit/web3forms,@dexkit/widgets,@dexkit/dexappbuilder-viewer,@dexkit/core",
     "dev": "turbo run dev --parallel",
     "dev:whitelabel": "turbo run dev --parallel --filter=nft-marketplace",
     "storybook": "turbo run storybook",
