@@ -3,6 +3,7 @@ import {
   Alert,
   Autocomplete,
   Avatar,
+  Box,
   Button,
   Dialog,
   DialogActions,
@@ -18,7 +19,6 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { Box } from '@mui/system';
 import { useWeb3React } from '@web3-react/core';
 import { FormikHelpers, useFormik } from 'formik';
 import Image from 'next/image';
@@ -85,12 +85,12 @@ export default function ImportAssetDialog({ dialogProps }: Props) {
   const collections = useCollections();
 
   const [selectedOption, setSelectedOption] = useState<AppCollection | null>(
-    null
+    null,
   );
 
   const handleSubmit = async (
     values: Form,
-    formikHelpers: FormikHelpers<Form>
+    formikHelpers: FormikHelpers<Form>,
   ) => {
     try {
       if (!provider) {
@@ -98,14 +98,14 @@ export default function ImportAssetDialog({ dialogProps }: Props) {
           formatMessage({
             id: 'provider.not.found',
             defaultMessage: 'Provider not found',
-          })
+          }),
         );
       }
 
       const assetData = await getAssetData(
         provider,
         values.contractAddress,
-        values.tokenId
+        values.tokenId,
       );
 
       if (!assetData?.tokenURI) {
@@ -113,7 +113,7 @@ export default function ImportAssetDialog({ dialogProps }: Props) {
           formatMessage({
             id: 'the.nft.has.no.metadata',
             defaultMessage: 'The NFT has no metadata',
-          })
+          }),
         );
       }
 
@@ -137,7 +137,7 @@ export default function ImportAssetDialog({ dialogProps }: Props) {
               vertical: 'bottom',
               horizontal: 'right',
             },
-          }
+          },
         );
       } else {
         favorites.add(newObject);
@@ -153,7 +153,7 @@ export default function ImportAssetDialog({ dialogProps }: Props) {
               vertical: 'bottom',
               horizontal: 'right',
             },
-          }
+          },
         );
       }
     } catch (err: any) {
@@ -163,7 +163,7 @@ export default function ImportAssetDialog({ dialogProps }: Props) {
             defaultMessage: 'Error while importing NFT: {error}',
             id: 'error.while.importing.nft',
           },
-          { error: String(err) }
+          { error: String(err) },
         ),
         {
           variant: 'error',
@@ -171,7 +171,7 @@ export default function ImportAssetDialog({ dialogProps }: Props) {
             vertical: 'bottom',
             horizontal: 'right',
           },
-        }
+        },
       );
     }
 
@@ -209,7 +209,7 @@ export default function ImportAssetDialog({ dialogProps }: Props) {
 
   const handleChangeCollection = (
     event: SyntheticEvent,
-    value: AppCollection | null
+    value: AppCollection | null,
   ) => {
     setSelectedOption(value);
     if (
@@ -218,7 +218,7 @@ export default function ImportAssetDialog({ dialogProps }: Props) {
     ) {
       formik.setValues(
         { contractAddress: value?.contractAddress, tokenId: '' },
-        true
+        true,
       );
     }
   };
@@ -245,7 +245,7 @@ export default function ImportAssetDialog({ dialogProps }: Props) {
     assetParams?.tokenId,
     undefined,
     true,
-    selectedOption?.chainId
+    selectedOption?.chainId,
   );
 
   const { data: metadata, isLoading: metadataIsLoading } =
@@ -305,9 +305,9 @@ export default function ImportAssetDialog({ dialogProps }: Props) {
                     <FormattedMessage id="owned.by" defaultMessage="Owned by" />
                   </Typography>
                   <Link
-                    href={`${getBlockExplorerUrl(asset?.chainId)}/address/${
-                      asset?.owner
-                    }`}
+                    href={`${getBlockExplorerUrl(
+                      asset?.chainId,
+                    )}/address/${asset?.owner}`}
                     color="primary"
                     target="_blank"
                   >
