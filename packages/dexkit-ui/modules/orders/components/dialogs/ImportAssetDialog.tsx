@@ -3,6 +3,7 @@ import {
   Alert,
   Autocomplete,
   Avatar,
+  Box,
   Button,
   Dialog,
   DialogActions,
@@ -18,7 +19,6 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { Box } from "@mui/system";
 import { useWeb3React } from "@web3-react/core";
 import { FormikHelpers, useFormik } from "formik";
 import Image from "next/image";
@@ -303,9 +303,9 @@ export default function ImportAssetDialog({ dialogProps }: Props) {
                     <FormattedMessage id="owned.by" defaultMessage="Owned by" />
                   </Typography>
                   <Link
-                    href={`${NETWORK_EXPLORER(asset?.chainId)}/address/${
-                      asset?.owner
-                    }`}
+                    href={`${NETWORK_EXPLORER(
+                      asset?.chainId
+                    )}/address/${asset?.owner}`}
                     color="primary"
                     target="_blank"
                   >
