@@ -34,3 +34,19 @@ export const KIT_TOKEN: Token = {
   coingeckoId: "dexkit",
   chainId: ChainId.Polygon,
 };
+
+export const WMATIC_TOKEN: Token = {
+  chainId: ChainId.Mumbai,
+  name: "Wrapped Matic",
+  symbol: "WMATIC",
+  contractAddress: "0x9c3C9283D3e44854697Cd22D3Faa240Cfb032889",
+  decimals: 18,
+};
+
+export const DUMMY_TOKEN: Token = {
+  chainId: ChainId.Mumbai,
+  contractAddress: "0xfe4f5145f6e09952a5ba9e956ed0c25e3fa4c7f1",
+  name: "DERC20",
+  symbol: "DERC20",
+  decimals: 18,
+};

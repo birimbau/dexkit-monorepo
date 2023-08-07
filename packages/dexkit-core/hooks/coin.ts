@@ -1,13 +1,9 @@
-import {
-  UseMutationOptions,
-  useMutation,
-  useQuery,
-} from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { BigNumber, ethers } from "ethers";
 import { ERC20Abi } from "../constants/abis";
 import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "../constants/zrx";
 import { getERC20TokenAllowance } from "../services";
-import { getERC20Balance } from "../services/balances";
+import { approveToken, getERC20Balance } from "../services/balances";
 import { isAddressEqual } from "../utils";
 
 export const ERC20_BALANCE = "ERC20_BALANCE";
@@ -95,7 +91,7 @@ export function useTokenAllowanceQuery({
     [TOKEN_ALLOWANCE_QUERY, tokenAddress, account, spender],
     async () => {
       if (!provider || !tokenAddress || !account || !spender) {
-        return ethers.BigNumber.from(0);
+        return null;
       }
 
       return await getERC20TokenAllowance(
@@ -104,46 +100,40 @@ export function useTokenAllowanceQuery({
         account,
         spender
       );
-    }
+    },
+    { retry: 2 }
   );
 }
 
-export function useApproveToken({
-  spender,
-  tokenContract,
-  provider,
-  options,
-  onSubmited,
-}: {
-  spender?: string;
-  tokenContract?: string;
-  provider?: ethers.providers.Web3Provider;
-  onSubmited: (hash: string) => void;
-  options?: Omit<
-    UseMutationOptions<
-      ethers.ContractReceipt | undefined,
-      unknown,
-      void,
-      unknown
-    >,
-    "mutationFn"
-  >;
-}) {
-  return useMutation(async () => {
-    if (!tokenContract || !spender) {
-      return;
+export function useApproveToken() {
+  return useMutation(
+    async ({
+      spender,
+      tokenContract,
+      provider,
+      onSubmited,
+      amount,
+    }: {
+      amount?: ethers.BigNumber;
+      spender?: string;
+      tokenContract?: string;
+      provider?: ethers.providers.Web3Provider;
+      onSubmited: (hash: string) => void;
+    }) => {
+      if (!tokenContract || !spender) {
+        return;
+      }
+
+      const tx = await approveToken({
+        tokenContract,
+        spender,
+        amount,
+        provider,
+      });
+
+      onSubmited(tx.hash);
+
+      return await tx.wait();
     }
-
-    // const tx = await approveToken(
-    //   tokenContract,
-    //   spender,
-    //   BigNumber.from("1000000").mul(BigNumber.from("10").pow(18)),
-    //   provider
-    // );
-
-    // onSubmited(tx.hash);
-
-    // return await tx.wait();
-    return undefined;
-  }, options);
+  );
 }

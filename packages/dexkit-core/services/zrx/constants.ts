@@ -36,6 +36,7 @@ export const ZERO_EX_URL = (chainId?: number) =>
 export const ZEROEX_QUOTE_ENDPOINT = "/swap/v1/quote";
 
 export const ZEROEX_TOKENS_ENDPOINT = "/swap/v1/tokens";
+export const ZEROEX_ORDERBOOK_ENDPOINT = "/orderbook/v1/order";
 
 export const ZEROEX_AFFILIATE_ADDRESS =
   "0x5bD68B4d6f90Bcc9F3a9456791c0Db5A43df676d";

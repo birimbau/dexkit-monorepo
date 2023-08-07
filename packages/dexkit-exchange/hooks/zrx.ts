@@ -10,7 +10,10 @@ export function useZrxQuoteMutation({ chainId }: { chainId?: ChainId }) {
       throw new Error("is not connected");
     }
 
-    const zrxClient = new ZeroExApiClient(chainId);
+    const zrxClient = new ZeroExApiClient(
+      chainId,
+      "fbae4da9-8c42-4cb5-b887-9796f05980b9"
+    );
 
     return zrxClient.quote(params, {});
   });

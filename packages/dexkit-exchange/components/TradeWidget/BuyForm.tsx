@@ -1,30 +1,48 @@
-import { Button, Divider, IconButton, Stack, Typography } from "@mui/material";
+import {
+  Button,
+  Divider,
+  IconButton,
+  InputAdornment,
+  Stack,
+  Typography,
+} from "@mui/material";
 import { useMemo, useState } from "react";
-import { FormattedMessage } from "react-intl";
+import { FormattedMessage, useIntl } from "react-intl";
 import DecimalInput from "./DecimalInput";
+
+import { useSnackbar } from "notistack";
 
 import { Token } from "@dexkit/core/types";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import { useWeb3React } from "@web3-react/core";
 import { BigNumber, ethers } from "ethers";
 import { ORDER_LIMIT_DURATIONS } from "../../constants";
+import { useSendLimitOrderMutation } from "../../hooks";
 import { useZrxQuoteMutation } from "../../hooks/zrx";
+import { BigNumberUtils } from "../../utils";
 import DurationSelect from "./DurationSelect";
+import ReviewOrderDialog from "./ReviewOrderDialog";
 
 export interface BuyFormProps {
   makerToken: Token;
   takerToken: Token;
   makerTokenBalance?: ethers.BigNumber;
+  maker?: string;
+  provider?: ethers.providers.Web3Provider;
 }
 
 export default function BuyForm({
   makerToken,
   takerToken,
   makerTokenBalance,
+  maker,
+  provider,
 }: BuyFormProps) {
   const [amount, setAmount] = useState("0.0");
   const [amountPerToken, setAmountPerToken] = useState("0.0");
   const [duration, setDuration] = useState(ORDER_LIMIT_DURATIONS[0].value);
+
+  const [showReview, setShowReview] = useState(false);
 
   const handleChangeAmount = (value: string) => setAmount(value);
 
@@ -34,8 +52,8 @@ export default function BuyForm({
   const handleChangeDuration = (value: number) => setDuration(value);
 
   const parsedAmount = useMemo(() => {
-    return ethers.utils.parseUnits(amount || "0.0", takerToken.decimals);
-  }, [amount, takerToken]);
+    return parseFloat(amount !== "" ? amount : "0.0");
+  }, [amount]);
 
   const parsedAmountPerToken = useMemo(() => {
     return ethers.utils.parseUnits(
@@ -45,15 +63,36 @@ export default function BuyForm({
   }, [amountPerToken, makerToken]);
 
   const cost = useMemo(() => {
-    const am = parseFloat(amount);
-    const amPerToken = parseFloat(amountPerToken);
+    return new BigNumberUtils().multiply(parsedAmountPerToken, parsedAmount);
+  }, [parsedAmountPerToken, parsedAmount]);
 
-    return am * amPerToken;
-  }, [amount, amountPerToken]);
+  const hasSufficientBalance = useMemo(() => {
+    return makerTokenBalance?.gte(cost) && !cost.isZero();
+  }, [cost, makerTokenBalance]);
 
-  const buttomMessage = useMemo(() => {
-    return "Buy KIT";
-  }, [parsedAmount, parsedAmountPerToken]);
+  const formattedCost = useMemo(() => {
+    return ethers.utils.formatUnits(cost, makerToken.decimals);
+  }, [makerToken, cost]);
+
+  const buttonMessage = useMemo(() => {
+    if (!hasSufficientBalance) {
+      return (
+        <FormattedMessage
+          id="insufficient.symbol"
+          defaultMessage="insufficient {symbol}"
+          values={{ symbol: makerToken.symbol }}
+        />
+      );
+    }
+
+    return (
+      <FormattedMessage
+        id="buy.symbol"
+        defaultMessage="buy {symbol}"
+        values={{ symbol: takerToken.symbol }}
+      />
+    );
+  }, [hasSufficientBalance, takerToken, makerToken, cost]);
 
   const { chainId } = useWeb3React();
   const quoteMutation = useZrxQuoteMutation({ chainId });
@@ -77,71 +116,164 @@ export default function BuyForm({
     );
   };
 
-  const handleBuy = () => {};
+  const sendLimitOrderMutation = useSendLimitOrderMutation();
+
+  const handleBuy = () => {
+    setShowReview(true);
+  };
+
+  const { formatMessage } = useIntl();
+
+  const { enqueueSnackbar } = useSnackbar();
+
+  const handleConfirmBuy = async () => {
+    if (!chainId || !maker || !makerToken || !provider) {
+      return;
+    }
+
+    try {
+      await sendLimitOrderMutation.mutateAsync({
+        chainId: chainId as number,
+        expirationTime: duration,
+        maker,
+        makerAmount: cost.toString(),
+        makerToken: makerToken.contractAddress,
+        provider,
+        takerAmount: ethers.utils
+          .parseUnits(parsedAmount.toString(), takerToken.decimals)
+          .toString(),
+        takerToken: takerToken.contractAddress,
+      });
+      enqueueSnackbar(
+        formatMessage({ id: "order.created", defaultMessage: "Order created" }),
+        { variant: "success" }
+      );
+      setShowReview(false);
+    } catch (err) {
+      enqueueSnackbar(
+        formatMessage({
+          id: "order.failed",
+          defaultMessage: "Order failed",
+        }),
+        { variant: "error" }
+      );
+    }
+  };
+
+  const handleCloseReview = () => {
+    setShowReview(false);
+  };
 
   return (
-    <Stack spacing={2}>
-      <DecimalInput
-        TextFieldProps={{
-          label: <FormattedMessage id="amount" defaultMessage="Amount" />,
+    <>
+      <ReviewOrderDialog
+        DialogProps={{
+          open: showReview,
+          maxWidth: "sm",
+          fullWidth: true,
+          onClose: handleCloseReview,
         }}
-        value={amount}
-        onChange={handleChangeAmount}
+        amount={parsedAmount}
+        amountPerToken={parsedAmountPerToken}
+        makerToken={makerToken}
+        takerToken={takerToken}
+        isPlacingOrder={sendLimitOrderMutation.isLoading}
+        onConfirm={handleConfirmBuy}
       />
-      <Stack direction="row" alignItems="center" justifyContent="space-between">
-        <Typography variant="body1">
-          <FormattedMessage
-            id="available.balance"
-            defaultMessage="Available: {amount} {symbol}"
-            values={{
-              amount: makerTokenBalance
-                ? ethers.utils.formatUnits(
-                    makerTokenBalance,
-                    makerToken.decimals
-                  )
-                : "0.0",
-              symbol: makerToken.symbol.toUpperCase(),
-            }}
-          />
-        </Typography>
-        <IconButton onClick={handleQuotePrice} size="small">
-          <RefreshIcon />
-        </IconButton>
-      </Stack>
-      <DecimalInput
-        TextFieldProps={{
-          label: (
+      <Stack spacing={2}>
+        <DecimalInput
+          TextFieldProps={{
+            label: <FormattedMessage id="amount" defaultMessage="Amount" />,
+            InputProps: {
+              endAdornment: (
+                <InputAdornment position="end">
+                  {takerToken.symbol.toUpperCase()}
+                </InputAdornment>
+              ),
+            },
+          }}
+          decimals={takerToken.decimals}
+          value={amount}
+          onChange={handleChangeAmount}
+        />
+        <Stack
+          direction="row"
+          alignItems="center"
+          justifyContent="space-between"
+        >
+          <Typography variant="body1">
             <FormattedMessage
-              id="amount.per.token"
-              defaultMessage="Amount per token"
+              id="available.balance"
+              defaultMessage="Available: {amount} {symbol}"
+              values={{
+                amount: makerTokenBalance
+                  ? ethers.utils.formatUnits(
+                      makerTokenBalance,
+                      makerToken.decimals
+                    )
+                  : "0.0",
+                symbol: makerToken.symbol.toUpperCase(),
+              }}
             />
-          ),
-        }}
-        value={amountPerToken}
-        onChange={handleChangeAmountPerToken}
-      />
-      <DurationSelect
-        SelectProps={{
-          label: (
-            <FormattedMessage id="expires.in" defaultMessage="Expires in" />
-          ),
-        }}
-        value={duration}
-        onChange={handleChangeDuration}
-      />
-      <Divider />
+          </Typography>
+          <IconButton onClick={handleQuotePrice} size="small">
+            <RefreshIcon />
+          </IconButton>
+        </Stack>
+        <DecimalInput
+          TextFieldProps={{
+            label: (
+              <FormattedMessage
+                id="amount.per.token"
+                defaultMessage="Amount per token"
+              />
+            ),
+            InputProps: {
+              endAdornment: (
+                <InputAdornment position="end">
+                  {makerToken.symbol.toUpperCase()}
+                </InputAdornment>
+              ),
+            },
+          }}
+          decimals={makerToken.decimals}
+          value={amountPerToken}
+          onChange={handleChangeAmountPerToken}
+        />
+        <DurationSelect
+          SelectProps={{
+            label: (
+              <FormattedMessage id="expires.in" defaultMessage="Expires in" />
+            ),
+          }}
+          value={duration}
+          onChange={handleChangeDuration}
+        />
+        <Divider />
 
-      <Stack direction="row" alignItems="center" justifyContent="space-between">
-        <Typography variant="body1">
-          <FormattedMessage id="cost" defaultMessage="Cost" />
-        </Typography>
-        <Typography variant="body1">
-          {cost} {makerToken.symbol.toUpperCase()}
-        </Typography>
+        <Stack
+          direction="row"
+          alignItems="center"
+          justifyContent="space-between"
+        >
+          <Typography variant="body1">
+            <FormattedMessage id="cost" defaultMessage="Cost" />
+          </Typography>
+          <Typography variant="body1">
+            {formattedCost} {makerToken.symbol.toUpperCase()}
+          </Typography>
+        </Stack>
+        {!cost.isZero() && (
+          <Button
+            disabled={!hasSufficientBalance}
+            onClick={handleBuy}
+            fullWidth
+            variant="contained"
+          >
+            {buttonMessage}
+          </Button>
+        )}
       </Stack>
-      <Button onClick={handleBuy} fullWidth variant="contained">
-        {buttomMessage}
-      </Button>
-    </Stack>
+    </>
   );
 }

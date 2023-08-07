@@ -12,24 +12,24 @@ import {
 import { SyntheticEvent, useState } from "react";
 
 import { FormattedMessage } from "react-intl";
-import { KIT_TOKEN, USDT_TOKEN } from "../../constants";
 import BuyForm from "./BuyForm";
 import { TradeWidgetTab } from "./TradeWidgetTab";
 import { TradeWidgetTabs } from "./TradeWidgetTabs";
 
 import { useErc20BalanceQuery } from "@dexkit/core/hooks";
+import { Token } from "@dexkit/core/types";
 import { useWeb3React } from "@web3-react/core";
 
 export interface TradeWidgetProps {
-  makerToken: string;
-  takerToken: string;
+  makerToken: Token;
+  takerToken: Token;
 }
 
 export default function TradeWidget({
   makerToken,
   takerToken,
 }: TradeWidgetProps) {
-  const [orderType, setOrderType] = useState<"market" | "limit">("market");
+  const [orderType, setOrderType] = useState<"market" | "limit">("limit");
 
   const [orderSide, setOrderSide] = useState<"buy" | "sell">("buy");
 
@@ -49,7 +49,7 @@ export default function TradeWidget({
   const makerTokenBalanceQuery = useErc20BalanceQuery({
     account,
     provider,
-    contractAddress: USDT_TOKEN.contractAddress,
+    contractAddress: makerToken.contractAddress,
   });
 
   return (
@@ -137,39 +137,17 @@ export default function TradeWidget({
                 />
               </Tabs>
               <Divider />
-              {orderSide === "buy" ? (
+              {orderSide === "buy" && orderType == "limit" ? (
                 <BuyForm
-                  makerToken={USDT_TOKEN}
-                  takerToken={KIT_TOKEN}
+                  makerToken={makerToken}
+                  takerToken={takerToken}
                   makerTokenBalance={makerTokenBalanceQuery.data}
+                  maker={account}
+                  provider={provider}
                 />
               ) : null}
             </Stack>
           </Paper>
-
-          {/* <Paper
-            elevation={0}
-            sx={{
-              p: 2,
-              backgroundColor: (theme) =>
-                lighten(theme.palette.background.default, 0.1),
-            }}
-          >
-            <Stack
-              direction="row"
-              alignItems="center"
-              justifyContent="space-between"
-            >
-              <Typography>
-                <FormattedMessage
-                  id="available.balance"
-                  defaultMessage="Available balance"
-                />
-              </Typography>
-
-              <Typography>3.5 ETH</Typography>
-            </Stack>
-          </Paper> */}
         </Stack>
       </CardContent>
     </Card>

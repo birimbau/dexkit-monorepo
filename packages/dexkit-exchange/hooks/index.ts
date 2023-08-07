@@ -6,27 +6,21 @@ import { BigNumber } from "bignumber.js";
 import { useMutation } from "@tanstack/react-query";
 import { createZrxOrder } from "../utils";
 
-export function useSignLimitOrderMutation() {
-  return useMutation(
-    async (params: {
-      provider: ethers.providers.Web3Provider;
-      chainId: ChainId;
-      maker: string;
-      makerToken: string;
-      takerToken: string;
-      makerAmount: BigNumber;
-      takerAmount: BigNumber;
-      expirationTime: number;
-    }) => createZrxOrder(params)
-  );
+import {
+  ZEROEX_ORDERBOOK_ENDPOINT,
+  ZERO_EX_URL,
+} from "@dexkit/core/services/zrx/constants";
+import axios from "axios";
+import { useContext } from "react";
+import { DexkitExchangeContext } from "../contexts";
+
+export function useExchangeContext() {
+  return useContext(DexkitExchangeContext);
 }
 
-export function useSendLimitOrderMutation({
-  maker,
-}: {
-  maker: string;
-  chainId: ChainId;
-}) {
+export function useSendLimitOrderMutation() {
+  const context = useExchangeContext();
+
   return useMutation(
     async ({
       expirationTime,
@@ -36,6 +30,7 @@ export function useSendLimitOrderMutation({
       takerAmount,
       takerToken,
       chainId,
+      maker,
     }: {
       expirationTime: number;
       makerAmount: string;
@@ -44,8 +39,13 @@ export function useSendLimitOrderMutation({
       takerAmount: string;
       takerToken: string;
       chainId: ChainId;
+      maker: string;
     }) => {
-      const order = await createZrxOrder({
+      if (!maker) {
+        return null;
+      }
+
+      const signedOrder = await createZrxOrder({
         maker,
         chainId,
         expirationTime,
@@ -56,7 +56,15 @@ export function useSendLimitOrderMutation({
         takerToken,
       });
 
-      return;
+      const resp = await axios.post(
+        `${ZERO_EX_URL(chainId)}/${ZEROEX_ORDERBOOK_ENDPOINT}`,
+        signedOrder,
+        context.zrxApiKey
+          ? { headers: { "0x-api-key": context.zrxApiKey } }
+          : undefined
+      );
+
+      return resp.data;
     }
   );
 }
