@@ -19,6 +19,7 @@ export const ETHER_SCAN_API_URL: { [key: number]: string } = {
   [ChainId.Avax]: "api.snowtrace.io",
   [ChainId.Mumbai]: "api-testnet.polygonscan.com",
   [ChainId.Goerli]: "api-goerli.etherscan.io",
+  [ChainId.Base]: "api.basescan.org",
 };
 
 export const WEB3FORMS_INPUT_TYPES: {

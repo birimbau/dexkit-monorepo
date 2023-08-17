@@ -6305,7 +6305,29 @@
   resolved "https://registry.yarnpkg.com/@tootallnate/once/-/once-2.0.0.tgz#f544a148d3ab35801c1f633a7441fd87c2e484bf"
   integrity sha512-XCuKFP5PS55gnMVu3dty8KPatLqUoy/ZYzDzAGCQ8JNFCkLXzmI7vNHCR+XpbZaMWQK/vQubr7PkYq8g470J/A==
 
-"@traderxyz/nft-swap-sdk@0.30.0", "@traderxyz/nft-swap-sdk@^0.30.0":
+"@traderxyz/nft-swap-sdk@0.33.0":
+  version "0.33.0"
+  resolved "https://registry.yarnpkg.com/@traderxyz/nft-swap-sdk/-/nft-swap-sdk-0.33.0.tgz#266350c73d26811b708856d995bcfc70b60bda80"
+  integrity sha512-agD2wRbGriP0oJ0Kle8O9mvMOPOFUakNqpP/UGxapH+30NIyAqobQbmCGPM1Gku7pLArAuTwPWA0h7MiWwrNfQ==
+  dependencies:
+    "@ethersproject/abi" "^5.7.0"
+    "@ethersproject/abstract-signer" "^5.7.0"
+    "@ethersproject/bignumber" "^5.7.0"
+    "@ethersproject/bytes" "^5.7.0"
+    "@ethersproject/hash" "^5.7.0"
+    "@ethersproject/providers" "^5.7.0"
+    "@ethersproject/wallet" "^5.7.0"
+    date-fns "^2.29.2"
+    ethers "^5.7.0"
+    isomorphic-unfetch "^3.1.0"
+    lodash "^4.17.21"
+    lodash-es "^4.17.21"
+    query-string "^7.1.1"
+    tiny-invariant "^1.2.0"
+    tiny-warning "^1.0.3"
+    uuid "^8.3.2"
+
+"@traderxyz/nft-swap-sdk@^0.30.0":
   version "0.30.0"
   resolved "https://registry.yarnpkg.com/@traderxyz/nft-swap-sdk/-/nft-swap-sdk-0.30.0.tgz#e3e769415c907f9d9b3bdd1c627e7d5f5c5a39a7"
   integrity sha512-PKw8JtaEBL2/KypqLyRWuKFiLAGtY1FqpTn4DjEXnlhxBj+cx4ocLNLvD31/w5RYaq2sBC6VqWpmpRuJUP5j+Q==
