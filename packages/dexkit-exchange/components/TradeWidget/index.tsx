@@ -17,21 +17,19 @@ import { TradeWidgetTab } from "./TradeWidgetTab";
 import { TradeWidgetTabs } from "./TradeWidgetTabs";
 
 import { useErc20BalanceQuery } from "@dexkit/core/hooks";
-import { Token } from "@dexkit/core/types";
 import { useWeb3React } from "@web3-react/core";
+import { useExchangeContext } from "../../hooks";
+import SellForm from "./SellForm";
 
-export interface TradeWidgetProps {
-  makerToken: Token;
-  takerToken: Token;
-}
+// FIXME: base/quote KIT/USDT
+export interface TradeWidgetProps {}
 
-export default function TradeWidget({
-  makerToken,
-  takerToken,
-}: TradeWidgetProps) {
+export default function TradeWidget({}: TradeWidgetProps) {
+  const { quoteToken, baseToken } = useExchangeContext();
+
   const [orderType, setOrderType] = useState<"market" | "limit">("limit");
 
-  const [orderSide, setOrderSide] = useState<"buy" | "sell">("buy");
+  const [orderSide, setOrderSide] = useState<"buy" | "sell">("sell");
 
   const handleChangeOrderType = (
     e: SyntheticEvent,
@@ -49,7 +47,13 @@ export default function TradeWidget({
   const makerTokenBalanceQuery = useErc20BalanceQuery({
     account,
     provider,
-    contractAddress: makerToken.contractAddress,
+    contractAddress: quoteToken?.contractAddress,
+  });
+
+  const takerTokenBalanceQuery = useErc20BalanceQuery({
+    account,
+    provider,
+    contractAddress: baseToken?.contractAddress,
   });
 
   return (
@@ -75,29 +79,6 @@ export default function TradeWidget({
               label={<FormattedMessage id="limit" defaultMessage="Limit" />}
             />
           </TradeWidgetTabs>
-          {/* <Paper
-            elevation={0}
-            sx={{
-              p: 2,
-              backgroundColor: (theme) =>
-                lighten(theme.palette.background.default, 0.1),
-            }}
-          >
-            <Stack
-              direction="row"
-              alignItems="center"
-              justifyContent="space-between"
-            >
-              <Typography>
-                <FormattedMessage
-                  id="available.balance"
-                  defaultMessage="Available balance"
-                />
-              </Typography>
-
-              <Typography>3.5 ETH</Typography>
-            </Stack>
-          </Paper> */}
 
           <Paper
             elevation={0}
@@ -137,13 +118,28 @@ export default function TradeWidget({
                 />
               </Tabs>
               <Divider />
-              {orderSide === "buy" && orderType == "limit" ? (
+              {orderSide === "buy" &&
+              orderType == "limit" &&
+              quoteToken &&
+              baseToken ? (
                 <BuyForm
-                  makerToken={makerToken}
-                  takerToken={takerToken}
+                  makerToken={quoteToken}
+                  takerToken={baseToken}
                   makerTokenBalance={makerTokenBalanceQuery.data}
                   maker={account}
                   provider={provider}
+                />
+              ) : null}
+              {orderSide === "sell" &&
+              orderType === "limit" &&
+              quoteToken &&
+              baseToken ? (
+                <SellForm
+                  makerToken={quoteToken}
+                  takerToken={baseToken}
+                  takerTokenBalance={takerTokenBalanceQuery.data}
+                  provider={provider}
+                  maker={account}
                 />
               ) : null}
             </Stack>

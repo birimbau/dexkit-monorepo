@@ -60,3 +60,43 @@ export type ZeroExQuoteResponse = {
   buyTokenToEthRate: any;
   expectedSlippage: any;
 };
+
+
+export type ZrxOrder = {
+  chainId: number;
+  expiry: string;
+  feeRecipient: string;
+  maker: string;
+  makerAmount: string;
+  makerToken: string;
+  pool: string;
+  salt: string;
+  sender: string;
+  signature: {
+    r: string;
+    s: string;
+    signatureType: number;
+    v: number;
+  };
+  taker: string;
+  takerAmount: string;
+  takerToken: string;
+  takerTokenFeeAmount: string;
+  verifyingContract: string;
+};
+
+export type ZrxOrderRecord = {
+  metaData: {
+    createdAt: string;
+    orderHash: string;
+    remainingFillableTakerAmount: string;
+  };
+  order: ZrxOrder;
+};
+
+export type ZrxOrderbookResponse = {
+  total: number;
+  page: number;
+  perPage: number;
+  records: ZrxOrderRecord[];
+};

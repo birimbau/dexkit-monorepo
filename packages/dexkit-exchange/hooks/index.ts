@@ -39,7 +39,7 @@ export function useSendLimitOrderMutation() {
       takerAmount: string;
       takerToken: string;
       chainId: ChainId;
-      maker: string;
+      maker?: string;
     }) => {
       if (!maker) {
         return null;

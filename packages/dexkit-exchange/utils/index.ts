@@ -20,7 +20,7 @@ export const getExpirationTimeFromSeconds = (seconds: BigNumber) => {
 export interface CreateZrxOrderParams {
   provider: ethers.providers.Web3Provider;
   chainId: ChainId;
-  maker: string;
+  maker?: string;
   makerToken: string;
   takerToken: string;
   makerAmount: BigNumber;
@@ -38,20 +38,23 @@ export async function createZrxOrder({
   takerAmount,
   expirationTime,
 }: CreateZrxOrderParams) {
-  let order = new LimitOrder({
+  let params: any = {
     makerToken,
     takerToken,
     makerAmount, // NOTE: This is 1 WEI, 1 ETH would be 1000000000000000000
     takerAmount, // NOTE this is 0.001 ZRX. 1 ZRX would be 1000000000000000000
-    maker: maker,
     salt: new BigNumber(Date.now()),
+    taker: ethers.constants.AddressZero,
     sender: ethers.constants.AddressZero,
     expiry: new BigNumber(
       getExpirationTimeFromSeconds(new BigNumber(expirationTime))
     ),
+    maker,
     chainId,
     verifyingContract: getZrxExchangeAddress(chainId),
-  });
+  };
+
+  let order = new LimitOrder(params);
 
   if (window.ethereum) {
     const signature = await order.getSignatureWithProviderAsync(

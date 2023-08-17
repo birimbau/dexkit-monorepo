@@ -1,60 +1,71 @@
+import { useApproveToken, useTokenAllowanceQuery } from "@dexkit/core";
+import { Token } from "@dexkit/core/types";
+import RefreshIcon from "@mui/icons-material/Refresh";
 import {
+  Box,
   Button,
   Divider,
   IconButton,
   InputAdornment,
+  Slider,
   Stack,
   Typography,
 } from "@mui/material";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { FormattedMessage, useIntl } from "react-intl";
-import DecimalInput from "./DecimalInput";
-
-import { useSnackbar } from "notistack";
-
-import { useApproveToken, useTokenAllowanceQuery } from "@dexkit/core";
-import { Token } from "@dexkit/core/types";
-import RefreshIcon from "@mui/icons-material/Refresh";
 import { useWeb3React } from "@web3-react/core";
 import { BigNumber, ethers } from "ethers";
+import { useSnackbar } from "notistack";
+import { useMemo, useState } from "react";
+import { FormattedMessage, useIntl } from "react-intl";
 import { ORDER_LIMIT_DURATIONS } from "../../constants";
 import { useSendLimitOrderMutation } from "../../hooks";
 import { useZrxQuoteMutation } from "../../hooks/zrx";
 import { BigNumberUtils, getZrxExchangeAddress } from "../../utils";
+import DecimalInput from "./DecimalInput";
 import DurationSelect from "./DurationSelect";
 import ReviewOrderDialog from "./ReviewOrderDialog";
 
-export interface BuyFormProps {
+export interface SellFormProps {
   makerToken: Token;
   takerToken: Token;
-  makerTokenBalance?: ethers.BigNumber;
-  maker?: string;
+  takerTokenBalance?: BigNumber;
   provider?: ethers.providers.Web3Provider;
+  maker?: string;
 }
 
-export default function BuyForm({
+export default function SellForm({
   makerToken,
   takerToken,
-  makerTokenBalance,
-  maker,
+  takerTokenBalance,
   provider,
-}: BuyFormProps) {
+  maker,
+}: SellFormProps) {
+  const [amountPercentage, setAmountPercentage] = useState(0);
   const [amount, setAmount] = useState("0.0");
   const [amountPerToken, setAmountPerToken] = useState("0.0");
   const [duration, setDuration] = useState(ORDER_LIMIT_DURATIONS[0].value);
 
   const [showReview, setShowReview] = useState(false);
 
-  const handleChangeAmount = (value: string) => setAmount(value);
+  const handleChangeAmount = (value: string) => {
+    setAmount(value);
+  };
 
-  const handleChangeAmountPerToken = (value: string) =>
+  const handleChangeAmountPerToken = (value: string) => {
     setAmountPerToken(value);
+  };
 
   const handleChangeDuration = (value: number) => setDuration(value);
 
   const parsedAmount = useMemo(() => {
     return parseFloat(amount !== "" ? amount : "0.0");
   }, [amount]);
+
+  const parsedAmountBN = useMemo(() => {
+    return ethers.utils.parseUnits(
+      parsedAmount.toString(),
+      takerToken.decimals
+    );
+  }, [parsedAmount, takerToken]);
 
   const parsedAmountPerToken = useMemo(() => {
     return ethers.utils.parseUnits(
@@ -63,17 +74,17 @@ export default function BuyForm({
     );
   }, [amountPerToken, makerToken]);
 
-  const cost = useMemo(() => {
+  const total = useMemo(() => {
     return new BigNumberUtils().multiply(parsedAmountPerToken, parsedAmount);
   }, [parsedAmountPerToken, parsedAmount]);
 
   const hasSufficientBalance = useMemo(() => {
-    return makerTokenBalance?.gte(cost) && !cost.isZero();
-  }, [cost, makerTokenBalance]);
+    return takerTokenBalance?.gte(total) && !total.isZero();
+  }, [total, takerTokenBalance]);
 
-  const formattedCost = useMemo(() => {
-    return ethers.utils.formatUnits(cost, makerToken.decimals);
-  }, [makerToken, cost]);
+  const formattedTotal = useMemo(() => {
+    return ethers.utils.formatUnits(total, makerToken.decimals);
+  }, [makerToken, total]);
 
   const buttonMessage = useMemo(() => {
     if (!hasSufficientBalance) {
@@ -88,22 +99,21 @@ export default function BuyForm({
 
     return (
       <FormattedMessage
-        id="buy.symbol"
-        defaultMessage="buy {symbol}"
+        id="sell.symbol"
+        defaultMessage="sell {symbol}"
         values={{ symbol: takerToken.symbol }}
       />
     );
-  }, [hasSufficientBalance, takerToken, makerToken, cost]);
+  }, [hasSufficientBalance, takerToken, makerToken, total]);
 
   const { chainId } = useWeb3React();
   const quoteMutation = useZrxQuoteMutation({ chainId });
 
-  const handleQuotePrice = useCallback(async () => {
+  const handleQuotePrice = async () => {
     const quote = await quoteMutation.mutateAsync({
       buyToken: takerToken.contractAddress,
       sellToken: makerToken.contractAddress,
       affiliateAddress: "0x5bD68B4d6f90Bcc9F3a9456791c0Db5A43df676d",
-      // TODO: add to context
       buyAmount: ethers.utils.parseUnits("1.0", takerToken.decimals).toString(),
       skipValidation: true,
       slippagePercentage: 0.01,
@@ -116,7 +126,7 @@ export default function BuyForm({
     setAmountPerToken(
       ethers.utils.formatUnits(sellAmount, makerToken.decimals)
     );
-  }, [takerToken, makerToken]);
+  };
 
   const sendLimitOrderMutation = useSendLimitOrderMutation();
 
@@ -124,9 +134,27 @@ export default function BuyForm({
     setShowReview(true);
   };
 
+  const handleChangeSliderAmount = (
+    event: Event,
+    value: number | number[],
+    activeThumb: number
+  ) => {
+    const amount = takerTokenBalance?.div(100).mul(value as number);
+
+    setAmount(
+      ethers.utils.formatUnits(amount || BigNumber.from(0), takerToken.decimals)
+    );
+
+    setAmountPercentage(value as number);
+  };
+
   const { formatMessage } = useIntl();
 
   const { enqueueSnackbar } = useSnackbar();
+
+  const handleCloseReview = () => {
+    setShowReview(false);
+  };
 
   const takerAmount = useMemo(() => {
     return ethers.utils.parseUnits(
@@ -135,7 +163,31 @@ export default function BuyForm({
     );
   }, [parsedAmount, takerToken]);
 
-  const handleConfirmBuy = async () => {
+  const { account } = useWeb3React();
+
+  const tokenAllowanceQuery = useTokenAllowanceQuery({
+    account,
+    provider,
+    spender: getZrxExchangeAddress(chainId),
+    tokenAddress: takerToken?.contractAddress,
+  });
+
+  const approveTokenMutation = useApproveToken();
+
+  const handleApprove = async () => {
+    await approveTokenMutation.mutateAsync({
+      onSubmited: (hash: string) => {},
+      spender: getZrxExchangeAddress(chainId),
+      provider,
+      tokenContract: takerToken?.contractAddress,
+      amount: parsedAmountBN,
+    });
+
+    await tokenAllowanceQuery.refetch();
+  };
+
+  const handleConfirmSell = async () => {
+    console.log("entra", maker);
     if (!chainId || !maker || !makerToken || !provider) {
       return;
     }
@@ -145,11 +197,11 @@ export default function BuyForm({
         chainId: chainId as number,
         expirationTime: duration,
         maker,
-        makerAmount: cost.toString(),
-        makerToken: makerToken.contractAddress,
+        makerAmount: parsedAmountBN.toString(),
+        makerToken: takerToken.contractAddress,
         provider,
-        takerAmount: takerAmount.toString(),
-        takerToken: takerToken.contractAddress,
+        takerAmount: total.toString(),
+        takerToken: makerToken.contractAddress,
       });
       enqueueSnackbar(
         formatMessage({ id: "order.created", defaultMessage: "Order created" }),
@@ -167,37 +219,6 @@ export default function BuyForm({
     }
   };
 
-  const handleCloseReview = () => {
-    setShowReview(false);
-  };
-
-  const { account } = useWeb3React();
-
-  const tokenAllowanceQuery = useTokenAllowanceQuery({
-    account,
-    provider,
-    spender: getZrxExchangeAddress(chainId),
-    tokenAddress: makerToken?.contractAddress,
-  });
-
-  const approveTokenMutation = useApproveToken();
-
-  const handleApprove = async () => {
-    await approveTokenMutation.mutateAsync({
-      onSubmited: (hash: string) => {},
-      spender: getZrxExchangeAddress(chainId),
-      provider,
-      tokenContract: makerToken?.contractAddress,
-      amount: cost,
-    });
-
-    await tokenAllowanceQuery.refetch();
-  };
-
-  useEffect(() => {
-    handleQuotePrice();
-  }, [handleQuotePrice]);
-
   return (
     <>
       <ReviewOrderDialog
@@ -207,23 +228,47 @@ export default function BuyForm({
           fullWidth: true,
           onClose: handleCloseReview,
         }}
-        total={cost}
+        total={total}
         isApproving={approveTokenMutation.isLoading}
         isApproval={
           tokenAllowanceQuery.data !== null &&
-          tokenAllowanceQuery.data?.lt(cost)
+          tokenAllowanceQuery.data?.lt(parsedAmountBN)
         }
-        side="buy"
-        baseAmount={takerAmount}
+        expiresIn={duration}
         amountPerToken={parsedAmountPerToken}
         quoteToken={makerToken}
         baseToken={takerToken}
+        baseAmount={takerAmount}
+        side="sell"
         isPlacingOrder={sendLimitOrderMutation.isLoading}
-        onConfirm={handleConfirmBuy}
+        onConfirm={handleConfirmSell}
         onApprove={handleApprove}
-        expiresIn={duration}
       />
       <Stack spacing={2}>
+        <Stack
+          direction="row"
+          alignItems="center"
+          justifyContent="space-between"
+        >
+          <Typography variant="body1">
+            <FormattedMessage
+              id="available.balance"
+              defaultMessage="Available: {amount} {symbol}"
+              values={{
+                amount: takerTokenBalance
+                  ? ethers.utils.formatUnits(
+                      takerTokenBalance,
+                      takerToken.decimals
+                    )
+                  : "0.0",
+                symbol: takerToken.symbol.toUpperCase(),
+              }}
+            />
+          </Typography>
+          <IconButton onClick={handleQuotePrice} size="small">
+            <RefreshIcon />
+          </IconButton>
+        </Stack>
         <DecimalInput
           TextFieldProps={{
             label: <FormattedMessage id="amount" defaultMessage="Amount" />,
@@ -239,30 +284,16 @@ export default function BuyForm({
           value={amount}
           onChange={handleChangeAmount}
         />
-        <Stack
-          direction="row"
-          alignItems="center"
-          justifyContent="space-between"
-        >
-          <Typography variant="body1">
-            <FormattedMessage
-              id="available.balance"
-              defaultMessage="Available: {amount} {symbol}"
-              values={{
-                amount: makerTokenBalance
-                  ? ethers.utils.formatUnits(
-                      makerTokenBalance,
-                      makerToken.decimals
-                    )
-                  : "0.0",
-                symbol: makerToken.symbol.toUpperCase(),
-              }}
-            />
-          </Typography>
-          <IconButton onClick={handleQuotePrice} size="small">
-            <RefreshIcon />
-          </IconButton>
-        </Stack>
+        <Box sx={{ px: 1 }}>
+          <Slider
+            size="small"
+            value={amountPercentage}
+            defaultValue={0}
+            aria-label="Small"
+            valueLabelDisplay="auto"
+            onChange={handleChangeSliderAmount}
+          />
+        </Box>
         <DecimalInput
           TextFieldProps={{
             label: (
@@ -300,19 +331,16 @@ export default function BuyForm({
           justifyContent="space-between"
         >
           <Typography variant="body1">
-            <FormattedMessage id="cost" defaultMessage="Cost" />
+            <FormattedMessage id="total" defaultMessage="Total" />
           </Typography>
-          <Typography variant="body1">
-            {formattedCost} {makerToken.symbol.toUpperCase()}
-          </Typography>
+          <Typography variant="body1">{formattedTotal}</Typography>
         </Stack>
-
         <Button
           disabled={!hasSufficientBalance}
           onClick={handleBuy}
           fullWidth
-          size="large"
           variant="contained"
+          size="large"
         >
           {buttonMessage}
         </Button>
