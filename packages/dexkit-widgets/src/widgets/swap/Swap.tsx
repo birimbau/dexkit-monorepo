@@ -149,6 +149,19 @@ export default function Swap({
   return (
     <Card>
       <Box sx={{ p: 2 }}>
+        {chainId && NETWORKS[chainId] === undefined && (
+          <Alert severity="warning">
+            <FormattedMessage
+              id="network.not.supported.msg"
+              defaultMessage="Network not supported. Please change to a supported network: {networks}"
+              values={{
+                networks: Object.values(NETWORKS).map((n, index, arr) =>
+                  index !== arr.length - 1 ? ` ${n.name},` : ` ${n.name}.`
+                ),
+              }}
+            />
+          </Alert>
+        )}
         <Stack
           direction="row"
           alignItems="center"

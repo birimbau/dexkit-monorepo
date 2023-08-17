@@ -869,7 +869,7 @@ export function useSwapProvider({
   disableWallet?: boolean;
 }) {
   return useMemo(() => {
-    if (defaultChainId) {
+    if (defaultChainId && NETWORKS[defaultChainId]?.providerRpcUrl) {
       return new ethers.providers.JsonRpcProvider(
         NETWORKS[defaultChainId].providerRpcUrl
       );
