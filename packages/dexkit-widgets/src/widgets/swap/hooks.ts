@@ -1,11 +1,11 @@
 import { ChainId } from "@dexkit/core/constants/enums";
-import { NETWORKS } from "@dexkit/core/constants/networks";
+import { NETWORKS, WRAPPED_TOKEN_ADDRESS } from "@dexkit/core/constants/networks";
 import {
-  useMutation,
   UseMutationOptions,
   UseMutationResult,
-  useQuery,
-  UseQueryResult
+  UseQueryResult,
+  useMutation,
+  useQuery
 } from "@tanstack/react-query";
 
 import transakSDK from "@transak/transak-sdk";
@@ -15,7 +15,7 @@ import { BigNumber, ethers, providers } from "ethers";
 import { useSnackbar } from "notistack";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useIntl } from "react-intl";
-import { WRAPED_TOKEN_ADDRESS } from "../../constants";
+
 import { ERC20Abi } from "../../constants/abis";
 
 import {
@@ -607,7 +607,7 @@ export function useSwapState({
         lazyBuyToken &&
         chainId &&
         isAddressEqual(
-          WRAPED_TOKEN_ADDRESS[chainId],
+          WRAPPED_TOKEN_ADDRESS(chainId),
           lazyBuyToken.contractAddress
         );
 
@@ -615,7 +615,7 @@ export function useSwapState({
         lazySellToken &&
         chainId &&
         isAddressEqual(
-          WRAPED_TOKEN_ADDRESS[chainId],
+          WRAPPED_TOKEN_ADDRESS(chainId),
           lazySellToken.contractAddress
         );
 

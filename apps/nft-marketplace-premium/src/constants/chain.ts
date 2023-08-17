@@ -135,4 +135,22 @@ export const NETWORKS: { [key: number]: Network } = {
       symbol: 'ETH',
     },
   },
+  [ChainId.Base]: {
+    chainId: ChainId.Base,
+    symbol: 'BASE',
+    explorerUrl: 'https://basescan.org',
+    name: 'Base',
+    slug: 'base',
+    coingeckoId: 'ethereum',
+    wrappedAddress: '0x4200000000000000000000000000000000000006',
+    nativeCurrencyUrl: ethIcon.src,
+    imageUrl: "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/base/info/logo.png",
+    providerRpcUrl: "https://mainnet.base.org",
+    nativeCurrency: {
+      name: 'Ethereum',
+      decimals: 18,
+      symbol: 'ETH',
+    },
+  }
 };
+
