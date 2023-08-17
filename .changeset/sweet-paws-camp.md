@@ -6,3 +6,4 @@
 ---
 
 Added Base Network
+Enable testnets on wizard collection

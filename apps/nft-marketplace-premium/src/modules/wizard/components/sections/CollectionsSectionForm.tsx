@@ -1,18 +1,17 @@
 import {
-  Grid,
+  Avatar,
+  Box,
+  Button,
   FormControl,
+  Grid,
   InputLabel,
+  ListItemIcon,
+  ListItemText,
+  MenuItem,
   Select,
   Stack,
-  Avatar,
-  Typography,
-  ListItem,
-  ListItemIcon,
-  Box,
-  ListItemText,
   TextField,
-  Button,
-  MenuItem,
+  Typography,
   styled,
 } from '@mui/material';
 
@@ -23,10 +22,10 @@ import { ipfsUriToUrl } from '../../../../utils/ipfs';
 
 import { FormikHelpers, useFormik } from 'formik';
 
-import * as Yup from 'yup';
 import { ethers } from 'ethers';
-import MediaDialog from '../../../../components/mediaDialog';
 import { useState } from 'react';
+import * as Yup from 'yup';
+import MediaDialog from '../../../../components/mediaDialog';
 
 export interface Form {
   chainId: number;
@@ -138,7 +137,7 @@ export default function CollectionsSectionForm({
                 >
                   <Avatar
                     src={ipfsUriToUrl(
-                      NETWORKS[formik.values.chainId].imageUrl || ''
+                      NETWORKS[formik.values.chainId].imageUrl || '',
                     )}
                     style={{ width: 'auto', height: '1rem' }}
                   />
@@ -149,7 +148,7 @@ export default function CollectionsSectionForm({
               )}
             >
               {Object.keys(NETWORKS)
-                .filter((k) => !NETWORKS[parseInt(k)].testnet)
+                //.filter((k) => !NETWORKS[parseInt(k)].testnet)
                 .map((key: any, index: number) => (
                   <MenuItem
                     key={index}
