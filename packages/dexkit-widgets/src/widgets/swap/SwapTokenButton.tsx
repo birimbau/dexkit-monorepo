@@ -8,7 +8,8 @@ import {
 } from "@mui/material";
 import { memo } from "react";
 import { FormattedMessage } from "react-intl";
-import { TOKEN_ICON_URL } from "../../constants";
+
+import { TOKEN_ICON_URL } from "@dexkit/core/constants";
 import { Token } from "../../types";
 
 export interface SwapTokenButtonProps {

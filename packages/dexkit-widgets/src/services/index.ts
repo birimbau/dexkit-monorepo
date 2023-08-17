@@ -1,11 +1,12 @@
 import MultiCall, { TokenBalances } from "@indexed-finance/multicall";
 import { ethers } from "ethers";
-import { COINGECKO_ENDPOIT, COINGECKO_PLATFORM_ID } from "../constants";
+
 import { ERC20Abi } from "../constants/abis";
 import { Token, TokenPrices } from "../types";
 import { isAddressEqual } from "../utils";
 import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "./zeroex/constants";
 
+import { COINGECKO_ENDPOIT, COINGECKO_PLATFORM_ID } from "@dexkit/core/constants";
 import { ChainId } from "@dexkit/core/constants/enums";
 import axios from "axios";
 

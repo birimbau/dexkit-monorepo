@@ -100,6 +100,21 @@ export const NETWORKS: { [key: number]: Network } = {
     imageUrl:
       "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/avalanchec/info/logo.png",
   },
+  [ChainId.Base]: {
+    chainId: ChainId.Base,
+    symbol: "BASE",
+    coinName: "Ethereum",
+    coinSymbol: 'ETH',
+    coinImageUrl: 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/info/logo.png',
+    explorerUrl: "https://basescan.org",
+    name: "Base",
+    slug: "base",
+    coingeckoPlatformId: "base",
+    wrappedAddress: "0x4200000000000000000000000000000000000006",
+    imageUrl:
+      "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/base/info/logo.png",
+    providerRpcUrl: "https://mainnet.base.org",
+  },
 
   [ChainId.Goerli]: {
     chainId: ChainId.Goerli,
@@ -126,6 +141,7 @@ export const NETWORKS: { [key: number]: Network } = {
     providerRpcUrl: `https://rpc.ankr.com/polygon_mumbai`,
     testnet: IS_TESTNET,
   },
+
 };
 
 export const NETWORK_NAME = (chainId?: ChainId) =>
@@ -165,4 +181,6 @@ export const NETWORK_FROM_SLUG = (slug?: string) => {
     }
   }
 }
-
+// We are using 0x API wrapped token feature
+export const WRAPPED_TOKEN_ADDRESS = (chainId?: ChainId) => undefined
+ // chainId && NETWORKS[chainId] ? NETWORKS[chainId].wrappedAddress : undefined;
