@@ -19,6 +19,7 @@ const basePaths = [
   '/collection',
   '/order',
   '/swap',
+  '/test',
   '/forms',
   '/collections',
   '/wallet',
@@ -49,7 +50,6 @@ export default function middleware(req: NextRequest) {
   if (url.pathname.startsWith('/admin')) {
     return NextResponse.rewrite(url);
   }
-
 
   if (url.pathname.startsWith('/site')) {
     return NextResponse.rewrite(url);

@@ -31,7 +31,8 @@ import AppDrawer from '../AppDrawer';
 
 import { useWalletActivate } from '@dexkit/core/hooks';
 import { WalletActivateParams } from '@dexkit/core/types';
-import { useDexKitContext } from '@dexkit/ui';
+import { useDexKitContext, useExecuteTransactionsDialog } from '@dexkit/ui';
+import AppTransactionWatchDialog from '@dexkit/ui/components/AppTransactionWatchDialog';
 import ConnectWalletDialog from '@dexkit/ui/components/ConnectWalletDialog';
 import WatchTransactionDialog from '@dexkit/ui/components/dialogs/WatchTransactionDialog';
 
@@ -177,6 +178,8 @@ const MainLayout: React.FC<Props> = ({
 
   const [isDrawerOpen, setIsDrawerOpen] = useAtom(drawerIsOpenAtom);
 
+  const txDialog = useExecuteTransactionsDialog();
+
   const handleCloseDrawer = () => setIsDrawerOpen(false);
 
   const render = () => (
@@ -263,6 +266,17 @@ const MainLayout: React.FC<Props> = ({
           isActivating={walletActivate.mutation.isLoading || isActivating}
           activeConnectorName={walletActivate.connectorName}
           activate={handleActivateWallet}
+        />
+      )}
+      {txDialog.show && (
+        <AppTransactionWatchDialog
+          DialogProps={{
+            open: true,
+            maxWidth: 'sm',
+            fullWidth: true,
+            onClose: txDialog.handleClose,
+          }}
+          transactions={txDialog.transactions}
         />
       )}
       <Box
