@@ -6,18 +6,25 @@ import {
 } from "@dexkit/core/constants";
 import { AppTransaction, TransactionMetadata } from "@dexkit/core/types";
 import { switchNetwork } from "@dexkit/core/utils";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useWeb3React, Web3ReactHooks } from "@web3-react/core";
 import { Connector } from "@web3-react/types";
 import { PrimitiveAtom, useAtom, useAtomValue } from "jotai";
 import { useUpdateAtom } from "jotai/utils";
 import { useCallback, useContext, useMemo, useState } from "react";
 
+import { ethers } from "ethers";
+import {
+  showTxDialogAtom,
+  txDialogLoading,
+  txDialogTransactionsAtom,
+} from "../atoms";
 import { DexKitContext, DexkitContextState } from "../context/DexKitContext";
 import {
   AppNotification,
   AppNotificationType,
   CreateAppNotificationParams,
+  TxDialogTransaction,
 } from "../types";
 
 export function useOrderedConnectors({
@@ -298,5 +305,65 @@ export function useWatchTransactionDialog({
     setDialogError,
     addTransaction,
     watch,
+  };
+}
+
+export const WAIT_TRANSACTION_QUERY = "WAIT_TRANSACTION_QUERY";
+
+export function useWaitTransactionConfirmation({
+  transactionHash,
+  provider,
+}: {
+  transactionHash?: string;
+  provider?: ethers.providers.Web3Provider;
+}) {
+  return useQuery(
+    [WAIT_TRANSACTION_QUERY, transactionHash],
+    async ({}) => {
+      if (!ethers.utils.isHexString(transactionHash)) {
+        return null;
+      }
+
+      if (transactionHash && provider) {
+        const receipt = await provider.waitForTransaction(transactionHash);
+
+        return receipt?.confirmations > 0;
+      }
+
+      return null;
+    },
+    {
+      enabled: transactionHash !== undefined,
+      refetchOnMount: false,
+      refetchOnReconnect: false,
+      refetchOnWindowFocus: false,
+    }
+  );
+}
+
+export function useExecuteTransactionsDialog() {
+  const [show, setShow] = useAtom(showTxDialogAtom);
+  const [transactions, setTransactions] = useAtom(txDialogTransactionsAtom);
+  const [isLoading, setIsLoading] = useAtom(txDialogLoading);
+
+  const handleClose = useCallback(() => {
+    setShow(false);
+    setTransactions([]);
+  }, []);
+
+  const execute = useCallback((transactions: TxDialogTransaction[]) => {
+    setShow(true);
+    setTransactions(transactions);
+  }, []);
+
+  return {
+    isLoading,
+    setIsLoading,
+    show,
+    setShow,
+    transactions,
+    setTransactions,
+    handleClose,
+    execute,
   };
 }
