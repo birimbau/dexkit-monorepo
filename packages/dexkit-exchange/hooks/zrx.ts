@@ -80,7 +80,7 @@ export function useZrxCancelOrderMutation() {
 
       const tx = await contract.cancelLimitOrder(order);
 
-      return await tx.wait();
+      return tx.hash;
     }
   );
 }

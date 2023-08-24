@@ -20,7 +20,10 @@ import { useExchangeContext } from "../../hooks";
 import { useZrxCancelOrderMutation, useZrxOrderbook } from "../../hooks/zrx";
 import OrdersTableRow from "./OrdersTableRow";
 
-import { useConnectWalletDialog } from "@dexkit/ui/hooks";
+import {
+  useConnectWalletDialog,
+  useExecuteTransactionsDialog,
+} from "@dexkit/ui/hooks";
 import WalletIcon from "@mui/icons-material/Wallet";
 
 export interface OrdersTable {
@@ -41,9 +44,25 @@ export default function OrdersTable({
 
   const cancelOrderMutation = useZrxCancelOrderMutation();
 
+  const transactionDialog = useExecuteTransactionsDialog();
+
   const handleCancelOrder = useCallback(
     async (order: ZrxOrder) => {
-      await cancelOrderMutation.mutateAsync({ order, chainId, provider });
+      transactionDialog.execute([
+        {
+          action: async () => {
+            const result = await cancelOrderMutation.mutateAsync({
+              order,
+              chainId,
+              provider,
+            });
+
+            return result;
+          },
+          icon: "receipt",
+          title: { id: "cancel.order", defaultMessage: "Cancel Order" },
+        },
+      ]);
     },
     [chainId, provider]
   );
