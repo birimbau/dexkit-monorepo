@@ -6,7 +6,7 @@ import { Container, Grid } from "@mui/material";
 import { useWeb3React } from "@web3-react/core";
 
 export default function ExchangePage() {
-  const { provider, account, chainId } = useWeb3React();
+  const { provider, account, chainId, isActive } = useWeb3React();
 
   return (
     <DexkitExchangeContext.Provider
@@ -19,13 +19,14 @@ export default function ExchangePage() {
       <Container>
         <Grid container spacing={2}>
           <Grid item xs={12} sm={4}>
-            <TradeWidget />
+            <TradeWidget isActive={isActive} />
           </Grid>
           <Grid item xs={12} sm={8}>
             <OrdersTable
               account={account}
               chainId={chainId}
               provider={provider}
+              active={isActive}
             />
           </Grid>
         </Grid>

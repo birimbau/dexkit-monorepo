@@ -1,7 +1,10 @@
 import { ChainId } from "@dexkit/core";
 import { ZrxOrder } from "@dexkit/core/services/zrx/types";
 import {
+  Button,
   Paper,
+  Skeleton,
+  Stack,
   Table,
   TableBody,
   TableCell,
@@ -17,16 +20,21 @@ import { useExchangeContext } from "../../hooks";
 import { useZrxCancelOrderMutation, useZrxOrderbook } from "../../hooks/zrx";
 import OrdersTableRow from "./OrdersTableRow";
 
+import { useConnectWalletDialog } from "@dexkit/ui/hooks";
+import WalletIcon from "@mui/icons-material/Wallet";
+
 export interface OrdersTable {
   chainId?: ChainId;
   account?: string;
   provider?: ethers.providers.Web3Provider;
+  active?: boolean;
 }
 
 export default function OrdersTable({
   chainId,
   account,
   provider,
+  active,
 }: OrdersTable) {
   const { baseToken, quoteToken } = useExchangeContext();
   const orderbookQuery = useZrxOrderbook({ chainId, account });
@@ -39,6 +47,8 @@ export default function OrdersTable({
     },
     [chainId, provider]
   );
+
+  const connectWalletDialog = useConnectWalletDialog();
 
   return (
     <TableContainer component={Paper}>
@@ -61,22 +71,43 @@ export default function OrdersTable({
               <FormattedMessage id="expires.in" defaultMessage="Expires in" />
             </TableCell>
             <TableCell>
-              <FormattedMessage id="expires.in" defaultMessage="Status" />
-            </TableCell>
-
-            <TableCell>
               <FormattedMessage id="actions" defaultMessage="Actions" />
             </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
+          {!active && (
+            <TableRow>
+              <TableCell colSpan={7}>
+                <Stack alignItems="center" spacing={2}>
+                  <Typography align="center" variant="body1">
+                    <FormattedMessage
+                      id="your.wallet.is.not.connected"
+                      defaultMessage="Your wallet is not connected"
+                    />
+                  </Typography>
+                  <Button
+                    onClick={connectWalletDialog.handleConnectWallet}
+                    startIcon={<WalletIcon />}
+                    variant="contained"
+                  >
+                    <FormattedMessage
+                      id="connect.wallet"
+                      defaultMessage="Connect wallet"
+                    />
+                  </Button>
+                </Stack>
+              </TableCell>
+            </TableRow>
+          )}
+
           {orderbookQuery.data?.records.length === 0 && (
             <TableRow>
               <TableCell colSpan={7}>
                 <Typography align="center" variant="body1">
                   <FormattedMessage
-                    id="there.is.no.orders.to.show"
-                    defaultMessage="There is no orders to show"
+                    id="there.are.no.orders.to.show"
+                    defaultMessage="There are no orders to show"
                   />
                 </Typography>
               </TableCell>
@@ -92,6 +123,29 @@ export default function OrdersTable({
               quoteToken={quoteToken}
             />
           ))}
+          {orderbookQuery.isLoading &&
+            new Array(2).fill(null).map((_, key) => (
+              <TableRow key={key}>
+                <TableCell>
+                  <Skeleton />
+                </TableCell>
+                <TableCell>
+                  <Skeleton />
+                </TableCell>
+                <TableCell>
+                  <Skeleton />
+                </TableCell>
+                <TableCell>
+                  <Skeleton />
+                </TableCell>
+                <TableCell>
+                  <Skeleton />
+                </TableCell>
+                <TableCell>
+                  <Skeleton />
+                </TableCell>
+              </TableRow>
+            ))}
         </TableBody>
       </Table>
     </TableContainer>

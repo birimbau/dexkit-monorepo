@@ -1,4 +1,7 @@
 import {
+  Backdrop,
+  Box,
+  Button,
   Card,
   CardContent,
   CardHeader,
@@ -7,6 +10,7 @@ import {
   Stack,
   Tab,
   Tabs,
+  Typography,
   lighten,
 } from "@mui/material";
 import { SyntheticEvent, useState } from "react";
@@ -21,10 +25,16 @@ import { useWeb3React } from "@web3-react/core";
 import { useExchangeContext } from "../../hooks";
 import SellForm from "./SellForm";
 
-// FIXME: base/quote KIT/USDT
-export interface TradeWidgetProps {}
+import { useConnectWalletDialog } from "@dexkit/ui/hooks";
 
-export default function TradeWidget({}: TradeWidgetProps) {
+import WalletIcon from "@mui/icons-material/Wallet";
+
+// FIXME: base/quote KIT/USDT
+export interface TradeWidgetProps {
+  isActive: boolean;
+}
+
+export default function TradeWidget({ isActive }: TradeWidgetProps) {
   const { quoteToken, baseToken } = useExchangeContext();
 
   const [orderType, setOrderType] = useState<"market" | "limit">("limit");
@@ -56,6 +66,8 @@ export default function TradeWidget({}: TradeWidgetProps) {
     contractAddress: baseToken?.contractAddress,
   });
 
+  const connectWalletDialog = useConnectWalletDialog();
+
   return (
     <Card>
       <CardHeader
@@ -63,7 +75,35 @@ export default function TradeWidget({}: TradeWidgetProps) {
         titleTypographyProps={{ variant: "body1" }}
       />
       <Divider />
-      <CardContent>
+      <CardContent sx={{ position: "relative" }}>
+        {!isActive && (
+          <Backdrop
+            sx={{ position: "absolute", zIndex: (theme) => theme.zIndex.fab }}
+            open
+          >
+            <Box py={4}>
+              <Stack justifyContent="center" alignItems="center" spacing={2}>
+                <Typography align="center" variant="body1">
+                  <FormattedMessage
+                    id="your.wallet.is.not.connected"
+                    defaultMessage="Your wallet is not connected"
+                  />
+                </Typography>
+                <Button
+                  onClick={connectWalletDialog.handleConnectWallet}
+                  startIcon={<WalletIcon />}
+                  variant="contained"
+                >
+                  <FormattedMessage
+                    id="connect.wallet"
+                    defaultMessage="Connect wallet"
+                  />
+                </Button>
+              </Stack>
+            </Box>
+          </Backdrop>
+        )}
+
         <Stack spacing={2}>
           <TradeWidgetTabs
             onChange={handleChangeOrderType}

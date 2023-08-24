@@ -414,9 +414,14 @@ const isConnectWalletOpenAtom = atom(false);
 export function useConnectWalletDialog() {
   const [isOpen, setOpen] = useAtom(isConnectWalletOpenAtom);
 
+  const handleConnectWallet = useCallback(() => {
+    setOpen(true);
+  }, []);
+
   return {
     isOpen,
     setOpen,
+    handleConnectWallet,
   };
 }
 
@@ -490,6 +495,7 @@ export function useHoldsKitDialog() {
 
   return { isOpen, setIsOpen };
 }
+
 export const WAIT_TRANSACTION_QUERY = "WAIT_TRANSACTION_QUERY";
 
 export function useWaitTransactionConfirmation({

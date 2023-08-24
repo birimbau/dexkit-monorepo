@@ -2,7 +2,7 @@ import { ZrxOrder, ZrxOrderRecord } from "@dexkit/core/services/zrx/types";
 import { Token } from "@dexkit/core/types";
 import { isAddressEqual } from "@dexkit/core/utils";
 import MomentFromSpan from "@dexkit/ui/components/MomentFromSpan";
-import { Button, TableCell, TableRow } from "@mui/material";
+import { Button, TableCell, TableRow, Typography } from "@mui/material";
 import { ethers } from "ethers";
 import moment from "moment";
 import { useMemo } from "react";
@@ -83,11 +83,20 @@ export default function OrdersTableRow({
   return (
     <TableRow>
       <TableCell>
-        {side === "buy" ? (
-          <FormattedMessage id="buy" defaultMessage="Buy" />
-        ) : (
-          <FormattedMessage id="sell" defaultMessage="Sell" />
-        )}
+        <Typography
+          sx={{
+            color: (theme) =>
+              side === "buy"
+                ? theme.palette.success.main
+                : theme.palette.error.main,
+          }}
+        >
+          {side === "buy" ? (
+            <FormattedMessage id="buy" defaultMessage="Buy" />
+          ) : (
+            <FormattedMessage id="sell" defaultMessage="Sell" />
+          )}
+        </Typography>
       </TableCell>
       <TableCell>
         {baseTokenAmount} {baseTokenSymbol}
@@ -102,8 +111,6 @@ export default function OrdersTableRow({
       <TableCell>
         <MomentFromSpan from={moment(parseInt(record.order.expiry) * 1000)} />
       </TableCell>
-
-      <TableCell></TableCell>
       <TableCell>
         <Button
           onClick={handleCancel}
