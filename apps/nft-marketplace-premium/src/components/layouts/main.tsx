@@ -22,7 +22,7 @@ import { Footer } from '../Footer';
 import Navbar from '../Navbar';
 const SignMessageDialog = dynamic(() => import('../dialogs/SignMessageDialog'));
 const SwitchNetworkDialog = dynamic(
-  () => import('../dialogs/SwitchNetworkDialog'),
+  () => import('../dialogs/SwitchNetworkDialog')
 );
 
 import { useRouter } from 'next/router';
@@ -31,17 +31,18 @@ import AppDrawer from '../AppDrawer';
 
 import { useWalletActivate } from '@dexkit/core/hooks';
 import { WalletActivateParams } from '@dexkit/core/types';
+import { useDexKitContext, useExecuteTransactionsDialog } from '@dexkit/ui';
+import AppTransactionWatchDialog from '@dexkit/ui/components/AppTransactionWatchDialog';
 import ConnectWalletDialog from '@dexkit/ui/components/ConnectWalletDialog';
 import WatchTransactionDialog from '@dexkit/ui/components/dialogs/WatchTransactionDialog';
-import { useDexKitContext } from '@dexkit/ui/hooks';
 
 const HoldingKitDialog = dynamic(() => import('../dialogs/HoldingKitDialog'));
 
 const SelectCurrencyDialog = dynamic(
-  () => import('../dialogs/SelectCurrencyDialog'),
+  () => import('../dialogs/SelectCurrencyDialog')
 );
 const SelectLanguageDialog = dynamic(
-  () => import('../dialogs/SelectLanguageDialog'),
+  () => import('../dialogs/SelectLanguageDialog')
 );
 
 interface Props {
@@ -80,7 +81,7 @@ const MainLayout: React.FC<Props> = ({
   const [switchChainId, setSwitchChainId] = useAtom(switchNetworkChainIdAtom);
 
   const [showSelectCurrency, setShowShowSelectCurrency] = useAtom(
-    showSelectCurrencyAtom,
+    showSelectCurrencyAtom
   );
 
   const [showSelectLocale, setShowShowSelectLocale] =
@@ -160,7 +161,7 @@ const MainLayout: React.FC<Props> = ({
         if (connector?.provider?.removeListener) {
           connector?.provider?.removeListener(
             'chainChanged',
-            handleNetworkChange,
+            handleNetworkChange
           );
         }
       };
@@ -176,6 +177,8 @@ const MainLayout: React.FC<Props> = ({
   }, [connector]);
 
   const [isDrawerOpen, setIsDrawerOpen] = useAtom(drawerIsOpenAtom);
+
+  const txDialog = useExecuteTransactionsDialog();
 
   const handleCloseDrawer = () => setIsDrawerOpen(false);
 
@@ -263,6 +266,17 @@ const MainLayout: React.FC<Props> = ({
           isActivating={walletActivate.mutation.isLoading || isActivating}
           activeConnectorName={walletActivate.connectorName}
           activate={handleActivateWallet}
+        />
+      )}
+      {txDialog.show && (
+        <AppTransactionWatchDialog
+          DialogProps={{
+            open: true,
+            maxWidth: 'sm',
+            fullWidth: true,
+            onClose: txDialog.handleClose,
+          }}
+          transactions={txDialog.transactions}
         />
       )}
       <Box

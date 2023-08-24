@@ -27,3 +27,10 @@ export type CreateAppNotificationParams = {
   url?: string;
   metadata?: Record<string, any>;
 };
+
+export type TxDialogTransaction = {
+  icon: string;
+  title: { id: string; defaultMessage: string };
+  action: () => Promise<string>;
+  params?: any;
+};
