@@ -1,6 +1,6 @@
-import { ipfsUriToUrl } from "@dexkit/core/utils/ipfs";
+import { ipfsUriToUrl } from "@dexkit/core/utils";
 import { Box } from "@mui/material";
-import Image from "next/image";
+import Image from "next/future/image";
 import { useIntl } from "react-intl";
 import { isWhitelistedDomain } from "../../../utils/image";
 
@@ -27,6 +27,7 @@ export function AssetImage({ src }: Props) {
             top: 0,
             width: "100%",
           }}
+          fill
           alt={formatMessage({
             id: "nft.image",
             defaultMessage: "NFT Image",
@@ -41,6 +42,7 @@ export function AssetImage({ src }: Props) {
             top: 0,
             width: "100%",
           }}
+          fill
           alt={formatMessage({
             id: "nft.image",
             defaultMessage: "NFT Image",
