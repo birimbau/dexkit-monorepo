@@ -21,6 +21,7 @@ const basePaths = [
   '/collection',
   '/order',
   '/swap',
+  '/test',
   '/forms',
   '/collections',
   '/wallet',

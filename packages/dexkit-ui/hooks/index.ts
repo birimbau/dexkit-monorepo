@@ -4,9 +4,14 @@ import {
   TransactionStatus,
   TransactionType,
 } from "@dexkit/core/constants";
-import { AppTransaction, Asset, TokenWhitelabelApp, TransactionMetadata } from "@dexkit/core/types";
+import {
+  AppTransaction,
+  Asset,
+  TokenWhitelabelApp,
+  TransactionMetadata,
+} from "@dexkit/core/types";
 import { switchNetwork } from "@dexkit/core/utils";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useWeb3React, Web3ReactHooks } from "@web3-react/core";
 import { Connector } from "@web3-react/types";
 import { atom, PrimitiveAtom, useAtom, useAtomValue } from "jotai";
@@ -14,19 +19,29 @@ import { useUpdateAtom } from "jotai/utils";
 import { useCallback, useContext, useMemo, useState } from "react";
 
 import useMediaQuery from "@mui/material/useMediaQuery";
+import { ethers } from "ethers";
+import {
+  showTxDialogAtom,
+  txDialogLoading,
+  txDialogTransactionsAtom,
+} from "../atoms";
 import { ThemeMode } from "../constants/enum";
-import { AppConfigContext, AppWizardConfigContext } from "../context/AppConfigContext";
+import {
+  AppConfigContext,
+  AppWizardConfigContext,
+} from "../context/AppConfigContext";
 import { DexKitContext, DexkitContextState } from "../context/DexKitContext";
 import { localeUserAtom, userThemeModeAtom } from "../state";
 import {
   AppNotification,
   AppNotificationType,
   CreateAppNotificationParams,
+  TxDialogTransaction,
 } from "../types";
 
-export * from './auth';
-export * from './blockchain';
-export * from './currency';
+export * from "./auth";
+export * from "./blockchain";
+export * from "./currency";
 
 // App config context needs to be initialized on widgets
 export function useAppConfig() {
@@ -37,7 +52,7 @@ export function useAppNFT() {
   return useContext(AppConfigContext).appNFT;
 }
 
-const DARK_SCHEME_QUERY = '(prefers-color-scheme: dark)';
+const DARK_SCHEME_QUERY = "(prefers-color-scheme: dark)";
 
 export function useThemeMode() {
   const systemPrefersDark = useMediaQuery(DARK_SCHEME_QUERY);
@@ -67,11 +82,10 @@ export function useLocale() {
     if (appConfig.locale) {
       return appConfig.locale;
     }
-    return ('en-US' as string);
+    return "en-US" as string;
   }, [appConfig.locale, locUser]);
   return { locale, onChangeLocale: setLocUser };
 }
-
 
 // Wizard App config context needs to be initialized on widgets that needs wizard to customize
 export function useAppWizardConfig() {
@@ -115,7 +129,6 @@ export function useDexkitContextState({
   transactionsAtom,
   onChangeLocale,
   currencyUserAtom,
-
 }: {
   notificationTypes: { [key: string]: AppNotificationType };
   notificationsAtom: PrimitiveAtom<AppNotification[]>;
@@ -407,26 +420,26 @@ export function useConnectWalletDialog() {
   };
 }
 
-
 export const switchNetworkOpenAtom = atom(false);
 export const switchNetworkChainIdAtom = atom<number | undefined>(undefined);
 
-
 export function useSwitchNetwork() {
-  const [isOpenSwitchNetwork, setOpenSwitchNetwork] = useAtom(switchNetworkOpenAtom);
+  const [isOpenSwitchNetwork, setOpenSwitchNetwork] = useAtom(
+    switchNetworkOpenAtom
+  );
   const [networkChainId, setNetworkChainId] = useAtom(switchNetworkChainIdAtom);
 
   const openDialog = function (chainId: number | undefined) {
-    setOpenSwitchNetwork(true)
-    setNetworkChainId(chainId)
-  }
+    setOpenSwitchNetwork(true);
+    setNetworkChainId(chainId);
+  };
 
   return {
     isOpenSwitchNetwork,
     setOpenSwitchNetwork,
     networkChainId,
     setNetworkChainId,
-    openDialog
+    openDialog,
   };
 }
 
@@ -476,4 +489,63 @@ export function useHoldsKitDialog() {
   const [isOpen, setIsOpen] = useAtom(holdsKitDialogoAtom);
 
   return { isOpen, setIsOpen };
+}
+export const WAIT_TRANSACTION_QUERY = "WAIT_TRANSACTION_QUERY";
+
+export function useWaitTransactionConfirmation({
+  transactionHash,
+  provider,
+}: {
+  transactionHash?: string;
+  provider?: ethers.providers.Web3Provider;
+}) {
+  return useQuery(
+    [WAIT_TRANSACTION_QUERY, transactionHash],
+    async ({}) => {
+      if (!ethers.utils.isHexString(transactionHash)) {
+        return null;
+      }
+
+      if (transactionHash && provider) {
+        const receipt = await provider.waitForTransaction(transactionHash);
+
+        return receipt?.confirmations > 0;
+      }
+
+      return null;
+    },
+    {
+      enabled: transactionHash !== undefined,
+      refetchOnMount: false,
+      refetchOnReconnect: false,
+      refetchOnWindowFocus: false,
+    }
+  );
+}
+
+export function useExecuteTransactionsDialog() {
+  const [show, setShow] = useAtom(showTxDialogAtom);
+  const [transactions, setTransactions] = useAtom(txDialogTransactionsAtom);
+  const [isLoading, setIsLoading] = useAtom(txDialogLoading);
+
+  const handleClose = useCallback(() => {
+    setShow(false);
+    setTransactions([]);
+  }, []);
+
+  const execute = useCallback((transactions: TxDialogTransaction[]) => {
+    setShow(true);
+    setTransactions(transactions);
+  }, []);
+
+  return {
+    isLoading,
+    setIsLoading,
+    show,
+    setShow,
+    transactions,
+    setTransactions,
+    handleClose,
+    execute,
+  };
 }
