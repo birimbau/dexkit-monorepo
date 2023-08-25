@@ -1,6 +1,6 @@
-import { Field } from "formik";
-import { TextField } from "formik-mui";
-import { useIntl } from "react-intl";
+import { InputAdornment, TextField } from "@mui/material";
+import { getIn, useFormikContext } from "formik";
+import { ChangeEvent, useMemo } from "react";
 
 function validateDecimal(message: string, decimals: number) {
   return (value: string) => {
@@ -17,6 +17,8 @@ export interface DecimalInputProps {
   name: string;
   label: string;
   helperText?: string;
+  isPercentage?: boolean;
+  maxDigits?: number;
 }
 
 export default function DecimalInput({
@@ -24,23 +26,40 @@ export default function DecimalInput({
   name,
   label,
   helperText,
+  isPercentage,
+  maxDigits,
 }: DecimalInputProps) {
-  const { formatMessage } = useIntl();
+  const { values, setFieldValue } = useFormikContext();
+
+  const pattern = useMemo(() => {
+    return new RegExp(
+      `^\\d{0,${maxDigits !== undefined ? maxDigits : 10}}(\\.\\d{0,${
+        decimals !== undefined ? decimals : 18
+      }})?$`
+    );
+  }, [decimals]);
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (pattern.test(e.target.value) || e.target.value === "") {
+      setFieldValue(name, e.target.value);
+    }
+  };
 
   return (
-    <Field
-      component={TextField}
+    <TextField
       name={name}
       size="small"
       fullWidth
+      onChange={handleChange}
       label={label}
-      validate={validateDecimal(
-        formatMessage({
-          id: "invalid.decimal",
-          defaultMessage: "Invalid decimal",
-        }),
-        decimals
-      )}
+      value={getIn(values, name)}
+      InputProps={
+        isPercentage
+          ? {
+              endAdornment: <InputAdornment position="end">%</InputAdornment>,
+            }
+          : undefined
+      }
       helperText={helperText}
     />
   );

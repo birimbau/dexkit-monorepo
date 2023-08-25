@@ -12,6 +12,7 @@ import React from "react";
 import * as Yup from "yup";
 import DecimalInput from "./DecimalInput";
 import { ImageInput } from "./ImageInput";
+import SharesArrayInput from "./SharesArrayInput";
 
 function validateAddress(message: string) {
   return (value: string) => {
@@ -80,6 +81,8 @@ export default function GenericForm({
             )}
           />
         );
+      } else if (el.component?.type === "shares-array") {
+        return <SharesArrayInput reference={el.ref as string[]} />;
       } else if (el.component?.type === "checkbox") {
         return (
           <FormControlLabel
@@ -99,14 +102,14 @@ export default function GenericForm({
           />
         );
       } else if (el.component?.type === "image") {
-        return <ImageInput label={el.label} name={el.ref} />;
+        return <ImageInput label={el.label} name={el.ref as string} />;
       } else if (el.component?.type === "hidden") {
         return false;
       } else if (el.component?.type === "decimal") {
         return (
           <DecimalInput
             label={el.label}
-            name={el.ref}
+            name={el.ref as string}
             decimals={el.component.decimals}
             helperText={el.helperText}
           />
@@ -115,7 +118,7 @@ export default function GenericForm({
         return (
           <Field
             component={TextField}
-            name={el.ref}
+            name={el.ref as string}
             size="small"
             fullWidth
             disabled={el.locked}
@@ -172,41 +175,43 @@ export default function GenericForm({
         if (el.type === "input") {
           if (el.component?.type === "address" && el.ref) {
             if (el.component.subtype === "connected-address") {
-              return { [el.ref]: account };
+              return { [el.ref as string]: account };
             }
             if (el.defaultValue) {
-              return { [el.ref]: el.defaultValue };
+              return { [el.ref as string]: el.defaultValue };
             } else {
-              return { [el.ref]: "" };
+              return { [el.ref as string]: "" };
             }
           } else if (el.component?.type === "checkbox" && el.ref) {
             if (el.defaultValue) {
-              return { [el.ref]: el.defaultValue };
+              return { [el.ref as string]: el.defaultValue };
             } else {
-              return { [el.ref]: false };
+              return { [el.ref as string]: false };
             }
           } else if (el.component?.type === "address-array" && el.ref) {
             if (el.defaultValue) {
-              return { [el.ref]: el.defaultValue };
+              return { [el.ref as string]: el.defaultValue };
             } else {
-              return { [el.ref]: [] };
+              return { [el.ref as string]: [] };
             }
           } else if (
             el.component?.type === "hidden" &&
             el.component.subtype === "connected-address"
           ) {
-            return { [el.ref]: account };
+            return { [el.ref as string]: account };
           } else if (
             el.component?.type === "hidden" &&
             typeof el.defaultValue === "object" &&
             context
           ) {
             if ("ref" in el.defaultValue) {
-              return { [el.ref]: context[el.defaultValue.ref] };
+              return { [el.ref as string]: context[el.defaultValue.ref] };
             }
           }
 
-          return { [el.ref]: el.defaultValue ? el.defaultValue : undefined };
+          return {
+            [el.ref as string]: el.defaultValue ? el.defaultValue : undefined,
+          };
         }
       })
       .reduce((obj, curr) => {
@@ -220,7 +225,7 @@ export default function GenericForm({
         if (el.type === "input") {
           if (el.component?.type === "address" && el.ref) {
             return {
-              [el.ref]: Yup.string()
+              [el.ref as string]: Yup.string()
                 .test("address", (value) => {
                   return value !== undefined
                     ? ethers.utils.isAddress(value)
@@ -229,10 +234,10 @@ export default function GenericForm({
                 .required(),
             };
           } else if (el.component?.type === "checkbox" && el.ref) {
-            return { [el.ref]: Yup.boolean().required() };
+            return { [el.ref as string]: Yup.boolean().required() };
           } else if (el.component?.type === "address-array" && el.ref) {
             return {
-              [el.ref]: Yup.array(
+              [el.ref as string]: Yup.array(
                 Yup.string()
                   .test("address", (value) => {
                     return value !== undefined
@@ -244,7 +249,7 @@ export default function GenericForm({
             };
           } else if (el.component?.type === "image" && el.ref) {
             return {
-              [el.ref]: Yup.string().required(),
+              [el.ref as string]: Yup.string().required(),
             };
           } else if (
             el.component?.type === "hidden" &&
@@ -253,21 +258,36 @@ export default function GenericForm({
             if ("ref" in el.defaultValue) {
               if (el.defaultValue.ref === "trustedForwarders") {
                 return {
-                  [el.ref]: Yup.array(Yup.string()).required(),
+                  [el.ref as string]: Yup.array(Yup.string()).required(),
                 };
               }
             }
 
             return {
-              [el.ref]: Yup.string().required(),
+              [el.ref as string]: Yup.string().required(),
             };
           } else if (el.component?.type === "hidden" && el.ref) {
             return {
-              [el.ref]: Yup.string().required(),
+              [el.ref as string]: Yup.string().required(),
             };
           }
 
-          return { [el.ref]: Yup.string().required() };
+          if (Array.isArray(el.ref)) {
+            if (el.component?.type === "shares-array") {
+              return {
+                [el.ref[0]]: Yup.array(
+                  Yup.string().test("address", (value) => {
+                    return value !== undefined
+                      ? ethers.utils.isAddress(value)
+                      : true;
+                  })
+                ).required(),
+                [el.ref[1]]: Yup.array(Yup.string()).required(),
+              };
+            }
+          }
+
+          return { [el.ref as string]: Yup.string().required() };
         } else if (el.type === "input-group") {
           return mapping(el.inputs).reduce((o: any, curr: any) => {
             return { ...o, ...curr };
@@ -335,6 +355,24 @@ export default function GenericForm({
           [obj.name]: obj.fields
             .map((fieldName: any) => {
               if (!fieldName.fields) {
+                if (fieldName.type === "decimal") {
+                  let vals: any;
+
+                  if (Array.isArray(values[fieldName.name])) {
+                    vals = values[fieldName.name].map((v: string) =>
+                      ethers.utils.parseUnits(v, fieldName.decimals).toString()
+                    );
+                  } else {
+                    vals = ethers.utils
+                      .parseUnits(values[fieldName.name], fieldName.decimals)
+                      .toString();
+                  }
+
+                  return {
+                    [fieldName.name]: vals,
+                  };
+                }
+
                 return { [fieldName.name]: values[fieldName.name] };
               }
 
@@ -380,6 +418,8 @@ export default function GenericForm({
         result[obj][key] = `ipfs://${cid}`;
       }
     }
+
+    console.log("ret", result);
 
     await onSubmit(result);
   };

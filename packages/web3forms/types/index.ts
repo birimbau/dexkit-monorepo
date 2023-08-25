@@ -177,17 +177,23 @@ export type DecimalInput = {
   decimals: number;
 };
 
+export type SharesArray = {
+  type: "shares-array";
+  decimals: number;
+};
+
 export type InputComponent =
   | AddressInput
   | CheckboxInput
   | ImageInput
   | HiddenInput
   | AddressArrayInput
-  | DecimalInput;
+  | DecimalInput
+  | SharesArray;
 
 export type FormInput = {
   type: "input";
-  ref: string;
+  ref: string | string[];
   locked: boolean;
   label: string;
   defaultValue?: any;
@@ -221,6 +227,7 @@ export type ObjectMapping = {
     type?: string;
     name: string;
     fields?: string[];
+    decimals?: number;
   }[];
 };
 
