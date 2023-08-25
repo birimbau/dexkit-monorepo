@@ -1,16 +1,7 @@
 import ContractButton from '@/modules/forms/components/ContractButton';
 import { THIRDWEB_ICON_URL } from '@dexkit/web3forms/constants';
-import { TipsAndUpdates } from '@mui/icons-material';
 import WalletIcon from '@mui/icons-material/Wallet';
-import {
-  Box,
-  Button,
-  Container,
-  Grid,
-  Paper,
-  Stack,
-  Typography,
-} from '@mui/material';
+import { Box, Button, Container, Grid, Stack, Typography } from '@mui/material';
 import { useWeb3React } from '@web3-react/core';
 import { useRouter } from 'next/router';
 import { FormattedMessage } from 'react-intl';
@@ -188,15 +179,15 @@ export default function FormsPage() {
                   </Grid>
                 </Grid>
               </Grid>
-              <Grid item xs={12}>
+              {/*   <Grid item xs={12}>
                 <Typography variant="h5">
                   <FormattedMessage
                     id="forms.by.the.community"
                     defaultMessage="Forms by the community"
                   />
                 </Typography>
-              </Grid>
-              <Grid item xs={12}>
+                    </Grid>*/}
+              {/*   <Grid item xs={12}>
                 <Paper sx={{ p: 2 }}>
                   <Stack
                     spacing={2}
@@ -224,7 +215,7 @@ export default function FormsPage() {
                     </Box>
                   </Stack>
                 </Paper>
-              </Grid>
+                    </Grid>*/}
             </Grid>
           </Box>
         </Stack>

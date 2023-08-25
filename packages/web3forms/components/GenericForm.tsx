@@ -112,6 +112,7 @@ export default function GenericForm({
             name={el.ref as string}
             decimals={el.component.decimals}
             helperText={el.helperText}
+            isPercentage={el?.component?.isPercentage}
           />
         );
       } else {

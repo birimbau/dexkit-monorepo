@@ -309,12 +309,12 @@ export default function DeployPage() {
                   ),
                   uri: '/forms/contracts',
                 },
-                {
+                /*  {
                   caption: (
                     <FormattedMessage id="deploy" defaultMessage="Deploy" />
                   ),
                   uri: `/forms/deploy`,
-                },
+                },*/
                 {
                   caption: thirdwebMetadataQuery.data?.name,
                   uri: `/forms/deploy/${

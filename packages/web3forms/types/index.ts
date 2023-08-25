@@ -174,6 +174,7 @@ export type AddressArrayInput = {
 
 export type DecimalInput = {
   type: "decimal";
+  isPercentage?: boolean;
   decimals: number;
 };
 

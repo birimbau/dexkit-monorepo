@@ -105,12 +105,17 @@
     {
       "type": "Menu",
       "href": "",
-      "name": "Contract Generator",
+      "name": "DexGenerator",
       "children": [
         {
           "type": "Page",
-          "href": "/contract-wizard",
-          "name": "Create collection"
+          "href": "/forms/contracts",
+          "name": "Create contracts"
+        },
+        {
+          "type": "Page",
+          "href": "/forms",
+          "name": "Manage contract forms"
         }
       ]
     },
