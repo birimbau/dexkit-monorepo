@@ -176,6 +176,7 @@ export type DecimalInput = {
   type: "decimal";
   isPercentage?: boolean;
   decimals: number;
+  maxDigits?: number;
 };
 
 export type SharesArray = {

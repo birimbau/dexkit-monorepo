@@ -113,6 +113,7 @@ export default function GenericForm({
             decimals={el.component.decimals}
             helperText={el.helperText}
             isPercentage={el?.component?.isPercentage}
+            maxDigits={el?.component?.maxDigits}
           />
         );
       } else {
