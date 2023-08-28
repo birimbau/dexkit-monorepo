@@ -39,7 +39,9 @@ export default function ContractButton({
       }}
     >
       <Box sx={{ minHeight: '6rem' }}>
-        <Typography variant="body1">{title}</Typography>
+        <Typography gutterBottom variant="body1" sx={{ fontWeight: 600 }}>
+          {title}
+        </Typography>
         <Typography variant="body2" color="text.secondary">
           {description}
         </Typography>

@@ -1,16 +1,27 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { DexkitApiProvider } from "@dexkit/core/providers";
+import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
 import { BigNumber, ethers } from "ethers";
 import { useSnackbar } from "notistack";
 import { useIntl } from "react-intl";
 
+import { ThirdwebSDK } from "@thirdweb-dev/sdk";
+
 import axios from "axios";
 
 import { ChainId } from "@dexkit/core/constants";
+
 import { ETHER_SCAN_API_URL } from "../constants";
+
+import { getNormalizedUrl } from "@dexkit/core/utils";
+import { useWeb3React } from "@web3-react/core";
+import { useContext, useEffect, useState } from "react";
+import { fetchAbi } from "../services";
 import {
   AbiFragment,
   ContractDeployParams,
   ContractFormParams,
+  FormConfigParams,
+  ThirdwebMetadata,
 } from "../types";
 
 export interface UseContractCallMutationOptions {
@@ -265,4 +276,195 @@ export function useScanContractAbiMutation() {
       return JSON.parse(resp.data.result);
     }
   );
+}
+
+export function useIfpsUploadMutation() {
+  const { instance } = useContext(DexkitApiProvider);
+
+  return useMutation(
+    async ({
+      content,
+      isImage,
+    }: {
+      content: Buffer;
+      token?: string;
+      isImage?: boolean;
+    }) => {
+      const formData = new FormData();
+
+      formData.append("file", new Blob([content]));
+
+      if (isImage) {
+      }
+
+      if (instance) {
+        const pinataKey = (await instance.get("/auth/pinata-key")).data.JWT;
+
+        const res = await axios.post<{
+          IpfsHash: string;
+          PinSize: number;
+          Timestamp: string;
+        }>(`https://api.pinata.cloud/pinning/pinFileToIPFS`, formData, {
+          headers: {
+            "Content-Type": `multipart/form-data;`,
+            Authorization: `Bearer ${pinataKey}`,
+          },
+        });
+
+        await instance.post("/account-file/ipfs/add-file", {
+          cid: res.data.IpfsHash,
+          isImage,
+        });
+
+        return res.data.IpfsHash;
+      }
+    }
+  );
+}
+
+export const IPFS_FILE_LIST_QUERY = "IPFS_FILE_LIST_QUERY";
+
+export function useIpfsFileListQuery({
+  page = 1,
+  onlyImages,
+}: {
+  page?: number;
+  onlyImages?: boolean;
+}) {
+  const { instance } = useContext(DexkitApiProvider);
+
+  return useInfiniteQuery<{ items: { cid: string }[]; nextCursor?: number }>(
+    [IPFS_FILE_LIST_QUERY, page],
+    async ({ pageParam }) => {
+      if (instance) {
+        return (
+          await instance.get<{ items: { cid: string }[]; nextCursor?: number }>(
+            "/account-file/ipfs/files",
+            {
+              params: { cursor: pageParam, limit: 12, onlyImages },
+            }
+          )
+        ).data;
+      }
+
+      return { items: [], nextCursor: undefined };
+    },
+    {
+      getNextPageParam: ({ nextCursor }) => nextCursor,
+    }
+  );
+}
+
+export const FORM_CONFIG_PARAMS_QUERY = "FORM_CONFIG_PARAMS_QUERY";
+
+export function useFormConfigParamsQuery({
+  creator,
+  contract,
+}: {
+  contract: string;
+  creator: string;
+}) {
+  return useQuery<FormConfigParams>(
+    [FORM_CONFIG_PARAMS_QUERY, creator, contract],
+    async () => {
+      const result = (
+        await axios.get(
+          `https://raw.githubusercontent.com/DexKit/assets/main/contracts/${creator}/${contract}.json`
+        )
+      ).data;
+
+      return result;
+    },
+    { refetchOnWindowFocus: false }
+  );
+}
+
+export function useDeployThirdWebContractMutation() {
+  const { provider, chainId } = useWeb3React();
+  const [sdk, setSdk] = useState<ThirdwebSDK>();
+
+  useEffect(() => {
+    if (provider) {
+      setSdk(new ThirdwebSDK(provider.getSigner()));
+    }
+  }, [provider, chainId]);
+
+  return useMutation(
+    async ({
+      params,
+      chainId,
+      order,
+      metadata,
+    }: {
+      params: any;
+      chainId: number;
+      order: string[];
+      metadata: ThirdwebMetadata;
+    }) => {
+      if (sdk) {
+        const orderedParams = order.map((key) => {
+          if (params[key]) {
+            return params[key];
+          }
+
+          return null;
+        });
+
+        const factory =
+          metadata.factoryDeploymentData.factoryAddresses[chainId.toString()];
+
+        const implementation =
+          metadata.factoryDeploymentData.implementationAddresses[
+            chainId.toString()
+          ];
+
+        const abi = await fetchAbi({
+          contractAddress: implementation,
+          chainId: chainId,
+        });
+
+        const contractAddress = await sdk.deployer.deployViaFactory(
+          factory,
+          implementation,
+          abi,
+          "initialize",
+          orderedParams
+        );
+
+        return contractAddress;
+      }
+    }
+  );
+}
+
+export const THIRDWEB_CONTRACT_METADATA = "THIRDWEB_CONTRACT_METADATA";
+
+export default function useThirdwebContractMetadataQuery({
+  id,
+}: {
+  id: string;
+}) {
+  return useQuery([THIRDWEB_CONTRACT_METADATA, id], async () => {
+    const contracts = await new ThirdwebSDK("polygon")
+      .getPublisher()
+      .getAll("deployer.thirdweb.eth");
+
+    const contract = contracts.find(
+      (c) => c.id?.toLowerCase() === id?.toLowerCase()
+    );
+
+    if (contract) {
+      const normalizedUrl = getNormalizedUrl(contract.metadataUri);
+
+      const result = (
+        await axios.get<ThirdwebMetadata>(
+          normalizedUrl.replace("gateway.pinata.cloud", "ipfs.io")
+        )
+      ).data;
+
+      return result;
+    }
+
+    return null;
+  });
 }

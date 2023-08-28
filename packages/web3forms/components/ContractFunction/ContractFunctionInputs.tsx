@@ -1,17 +1,16 @@
+import { Grid } from "@mui/material";
+import { useFormikContext } from "formik";
 import {
-  FormControlLabel,
-  Grid,
-  IconButton,
-  InputAdornment,
-} from "@mui/material";
-import { Field, useFormikContext } from "formik";
-import { Switch, TextField } from "formik-mui";
-import { ContractFormParams, FunctionInput } from "../../types";
+  ContractFormParams,
+  FunctionInput,
+  TupleAbiFragmentInput,
+} from "../../types";
 
-import ContactsIcon from "@mui/icons-material/Contacts";
 import { useCallback, useState } from "react";
-import { useIntl } from "react-intl";
 import SelectAddressDialog from "../SelectAddressDialog";
+import ContractFunctionInput from "./ContractFunctionInput";
+import ContractFunctionInputArray from "./ContractFunctionInputArray";
+import ContractFunctionTupleInput from "./ContractFunctionTupleInput";
 
 const patternTwoDigisAfterComma = /^\d+(\.\d{0,18})?$/;
 
@@ -34,21 +33,6 @@ export default function ContractFunctionInputs({
   params,
   inputs,
 }: ContractFunctionInputsProps) {
-  const { formatMessage } = useIntl();
-
-  const getInputParams = (input: FunctionInput) => {
-    const inputParams =
-      name &&
-      input.name &&
-      params.fields[name].input &&
-      params.fields[name].input[input.name] &&
-      params.fields[name].input[input.name]
-        ? params.fields[name].input[input.name]
-        : undefined;
-
-    return inputParams;
-  };
-
   if (name && params.fields[name] && params.fields[name].hideInputs) {
     return null;
   }
@@ -71,13 +55,16 @@ export default function ContractFunctionInputs({
     setSelectAddresses(undefined);
   };
 
-  const handleSelect = useCallback((address: string) => {
-    if (selectFor) {
-      setFieldValue(selectFor, address);
-      setSelectFor(undefined);
-      setSelectedAddress(false);
-    }
-  }, []);
+  const handleSelect = useCallback(
+    (address: string) => {
+      if (selectFor) {
+        setFieldValue(selectFor, address);
+        setSelectFor(undefined);
+        setSelectedAddress(false);
+      }
+    },
+    [selectFor]
+  );
 
   return (
     <>
@@ -93,99 +80,39 @@ export default function ContractFunctionInputs({
       )}
 
       {inputs.map((input, key) => {
-        let inputParams = getInputParams(input);
-
-        if (inputParams?.inputType === "address") {
+        if (input.type === "tuple") {
           return (
             <Grid item xs={12} key={key}>
-              <Field
-                component={TextField}
-                size="small"
-                fullWidth
-                label={inputParams.label ? inputParams.label : input.name}
-                name={input.name}
-                disabled={
-                  name && params.fields[name]
-                    ? params.fields[name].lockInputs
-                    : undefined
-                }
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        onClick={() =>
-                          handleShowSelectAddress(
-                            input.name,
-                            inputParams?.inputType === "address"
-                              ? inputParams.addresses
-                              : []
-                          )
-                        }
-                        size="small"
-                      >
-                        <ContactsIcon fontSize="inherit" />
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
+              <ContractFunctionTupleInput
+                name={name}
+                input={input as TupleAbiFragmentInput}
+                params={params}
+                onSelectAddress={handleShowSelectAddress}
               />
             </Grid>
           );
-        } else if (inputParams?.inputType === "switch") {
+        }
+
+        if (input.type.endsWith("[]")) {
           return (
             <Grid item xs={12} key={key}>
-              <FormControlLabel
-                label={inputParams.label ? inputParams.label : input.name}
-                control={
-                  <Field
-                    component={Switch}
-                    size="small"
-                    fullWidth
-                    name={input.name}
-                    disabled={
-                      name && params.fields[name]
-                        ? params.fields[name].lockInputs
-                        : undefined
-                    }
-                  />
-                }
+              <ContractFunctionInputArray
+                input={input}
+                name={name}
+                onSelectAddress={handleShowSelectAddress}
+                params={params}
               />
             </Grid>
           );
         }
 
         return (
-          <Grid item xs={12} key={key}>
-            <Field
-              component={TextField}
-              size="small"
-              fullWidth
-              label={inputParams?.label ? inputParams.label : input.name}
-              name={input.name}
-              disabled={
-                name && params.fields[name]
-                  ? params.fields[name].lockInputs
-                  : undefined
-              }
-              validate={
-                inputParams?.inputType === "decimal"
-                  ? validateDecimal(
-                      formatMessage({
-                        id: "invalid.decimal",
-                        defaultMessage: "Invalid decimal",
-                      })
-                    )
-                  : undefined
-              }
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    {input.type.toUpperCase()}
-                  </InputAdornment>
-                ),
-              }}
-            />
-          </Grid>
+          <ContractFunctionInput
+            input={input}
+            name={name}
+            onSelectAddress={handleShowSelectAddress}
+            params={params}
+          />
         );
       })}
     </>

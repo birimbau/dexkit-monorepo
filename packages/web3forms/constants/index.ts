@@ -68,4 +68,17 @@ export const WEB3FORMS_INPUT_TYPES: {
       'The "decimal" type serves to insert numbers in decimal format according to the total of decimals defined in the field below.',
     type: "uint256",
   },
+  options: {
+    name: "options",
+    messageId: "options",
+    defaultMessage: "Options",
+    helpDefaultMessage: "Use pre-defined options on the input",
+    helpMessageId: "use.pre.defined.option.on.the.input",
+    type: "bytes32",
+  },
 };
+
+export const THIRDWEB_CONTRACT_LIST_URL = "";
+
+export const THIRDWEB_ICON_URL =
+  "https://ipfs-public.thirdwebcdn.com/ipfs/QmeNn6emc8Z3VMTFBKSSozSHiG3qt36bFi7EuPCiGGpo17/0.png";

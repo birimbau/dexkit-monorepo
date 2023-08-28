@@ -33,3 +33,5 @@ yarn-error.log*
 .turbo
 
 dist/
+
+sitemap-0.xml

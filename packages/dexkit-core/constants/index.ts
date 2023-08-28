@@ -11,7 +11,6 @@ import { isAddressEqual } from "../utils";
 import { magic, magicHooks } from "./connectors/magic";
 import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "./zrx";
 
-
 export const CONNECTORS: { [key: string]: [Connector, Web3ReactHooks] } = {
   metamask: [metaMask, metaMaskHooks],
   walletConnect: [walletConnect, walletConnectHooks],
@@ -190,4 +189,7 @@ export function GET_NATIVE_TOKEN(chainId: ChainId) {
   return NATIVE_TOKENS[chainId];
 }
 
-export const IPFS_GATEWAY = 'https://gateway.pinata.cloud/ipfs/';
+export const IPFS_GATEWAY = "https://gateway.pinata.cloud/ipfs/";
+
+export const MY_APPS_ENDPOINT =
+  process.env.NEXT_PUBLIC_DEXKIT_DASH_ENDPOINT ?? "http://localhost:3005";

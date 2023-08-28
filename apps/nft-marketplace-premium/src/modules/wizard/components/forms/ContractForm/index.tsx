@@ -45,6 +45,7 @@ export interface ContractFormProps {
   ) => void;
   onCancel?: () => void;
   onValid?: (isValid: boolean) => void;
+  fetchOnMount?: boolean;
 }
 
 type TABS = 'write' | 'read';
@@ -52,6 +53,7 @@ type TABS = 'write' | 'read';
 export default function ContractForm({
   params,
   updateOnChange,
+  fetchOnMount,
   onChange,
   onCancel,
   onValid,
@@ -118,7 +120,11 @@ export default function ContractForm({
           )}
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              <ContractInitialForm abi={values.abi} chainId={values.chainId} />
+              <ContractInitialForm
+                abi={values.abi}
+                chainId={values.chainId}
+                fetchOnMount={fetchOnMount}
+              />
             </Grid>
             {values.abi.length > 0 && (
               <Grid item xs={12}>

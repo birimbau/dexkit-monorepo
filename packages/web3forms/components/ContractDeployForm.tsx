@@ -86,6 +86,7 @@ export default function ContractDeployForm({
           isLoading={
             switchNetworkMutation.isLoading || contractDeployMutation.isLoading
           }
+          params={{ inputs: {} }}
         />
       );
     }

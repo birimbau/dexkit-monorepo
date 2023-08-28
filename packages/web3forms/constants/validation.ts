@@ -6,9 +6,25 @@ export const EvmSchemaTypes: { [key: string]: Yup.Schema } = {
   string: Yup.string().required(),
   bytes: Yup.string().required(),
   bool: Yup.bool().required(),
+  bytes32: Yup.string()
+    .test("bytes32", "invalid bytes32", (value) => {
+      return (
+        value !== undefined &&
+        ethers.utils.isBytesLike(value) &&
+        ethers.utils.arrayify(value).length === 32
+      );
+    })
+    .required(),
+  "address[]": Yup.array(
+    Yup.string().test("address", "invalid address", (value) => {
+      return value !== undefined ? ethers.utils.isAddress(value) : true;
+    })
+  ).required(),
   address: Yup.string()
     .test("address", "invalid address", (value) => {
       return value !== undefined ? ethers.utils.isAddress(value) : true;
     })
     .required(),
 };
+
+export const PATTERN_TWO_DIGITS_AFTER_COMMA = /^\d+(\.\d{0,18})?$/;

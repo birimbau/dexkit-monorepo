@@ -25,3 +25,11 @@ export type TemplateInstance = {
   creatorAddress: string;
   address: string;
 };
+
+export type DeployableContract = {
+  name: string;
+  description: string;
+  publisherIcon: string;
+  publisherName: string;
+  slug: string;
+};

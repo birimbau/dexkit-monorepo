@@ -135,18 +135,35 @@ export default function ContractFormView({ params }: Props) {
       ? params.fields[callParams?.name].callToAction
       : callParams?.name;
 
+  const defaultPayableAmount = useMemo(() => {
+    if (
+      callParams?.name &&
+      params.fields[callParams.name] &&
+      params.fields[callParams.name].payableAmount !== undefined
+    ) {
+      return ethers.utils.parseEther(
+        params.fields[callParams.name].payableAmount || "0.0"
+      );
+    }
+  }, [params, callParams]);
+
   return (
     <Box>
-      <CallConfirmDialog
-        DialogProps={{
-          open: showConfirm,
-          onClose: handleClose,
-          fullWidth: true,
-          maxWidth: "sm",
-        }}
-        onConfirm={handleConfirm}
-        execLabel={execLabel}
-      />
+      {showConfirm && (
+        <CallConfirmDialog
+          DialogProps={{
+            open: showConfirm,
+            onClose: handleClose,
+            fullWidth: true,
+            maxWidth: "sm",
+          }}
+          onConfirm={handleConfirm}
+          execLabel={execLabel}
+          payable={callParams?.payable}
+          payableAmount={defaultPayableAmount}
+        />
+      )}
+
       <AppConfirmDialog
         DialogProps={{
           open: showConfirmSwitch,
