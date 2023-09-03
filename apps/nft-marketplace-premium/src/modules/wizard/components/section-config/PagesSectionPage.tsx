@@ -1,15 +1,16 @@
-import AddIcon from '@mui/icons-material/Add';
 import AppsIcon from '@mui/icons-material/Apps';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import CallToAction from '@mui/icons-material/CallToAction';
 import VideocamIcon from '@mui/icons-material/Videocam';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 
 import {
   Button,
   Card,
   CardContent,
   Divider,
+  IconButton,
   Stack,
   Typography,
 } from '@mui/material';
@@ -80,7 +81,7 @@ export default function PagesSectionPage({
   const renderSection = (
     section: AppPageSection,
     index: number,
-    isVisible: boolean
+    isVisible: boolean,
   ) => {
     let title;
     let subtitle;
@@ -151,7 +152,7 @@ export default function PagesSectionPage({
     }
 
     return (
-      <Card key={index}>
+      <Card key={index} sx={{ bgcolor: 'background.default' }}>
         <CardContent>
           <SectionHeader
             title={title}
@@ -312,73 +313,71 @@ export default function PagesSectionPage({
       </AppConfirmDialog>
 
       <Stack spacing={2}>
-        <Stack
-          direction="row"
-          alignItems="center"
-          alignContent="center"
-          justifyContent="space-between"
-        >
-          <PagesMenu
-            currentPage={currentPage}
-            pages={pages}
-            onClickMenu={onViewPage}
-          />
-
-          <Stack direction={'row'} alignItems="center" spacing={2}>
-            {currentPage?.key !== 'home' && (
-              <Button
-                variant="outlined"
-                onClick={handleShowPageDeleteDialog}
-                color={'error'}
-                size="small"
-                startIcon={<DeleteIcon />}
-              >
-                <FormattedMessage
-                  id="remove.page"
-                  defaultMessage="Remove page"
-                />
-              </Button>
-            )}
-            <Button
-              variant="outlined"
-              onClick={handleShowAddPage}
-              size="small"
-              startIcon={<AddIcon />}
+        <Card>
+          <CardContent>
+            <Stack
+              direction="row"
+              alignItems="center"
+              alignContent="center"
+              spacing={6}
             >
-              <FormattedMessage
-                id="create.new.page"
-                defaultMessage="Create new page"
+              <PagesMenu
+                currentPage={currentPage}
+                pages={pages}
+                onClickMenu={onViewPage}
               />
-            </Button>
-            {currentPage?.key !== 'home' && (
-              <Button
-                variant="outlined"
-                onClick={handleShowGatedModalForm}
-                size="small"
-                startIcon={<ShieldIcon />}
-              >
-                <FormattedMessage
-                  id="gated.conditions"
-                  defaultMessage="Gated conditions"
-                />
-              </Button>
-            )}
-            <Button
-              variant="outlined"
-              onClick={handleClonePage}
-              size="small"
-              startIcon={<FileCopyIcon />}
-            >
-              <FormattedMessage id="clone.page" defaultMessage="Clone page" />
-            </Button>
-            <Button variant="outlined" onClick={handleShowPreview} size="small">
-              <FormattedMessage id="preview" defaultMessage="Preview" />
-            </Button>
-          </Stack>
-        </Stack>
+
+              <Stack direction={'row'} alignItems="center" spacing={2}>
+                <Button
+                  onClick={handleShowPreview}
+                  size="small"
+                  startIcon={<VisibilityIcon />}
+                >
+                  <FormattedMessage id="preview" defaultMessage="Preview" />
+                </Button>
+
+                <Button
+                  variant="outlined"
+                  onClick={handleClonePage}
+                  size="small"
+                  startIcon={<FileCopyIcon />}
+                >
+                  <FormattedMessage
+                    id="clone.page"
+                    defaultMessage="Clone page"
+                  />
+                </Button>
+                {currentPage?.key !== 'home' && (
+                  <Button
+                    variant="outlined"
+                    onClick={handleShowGatedModalForm}
+                    size="small"
+                    startIcon={<ShieldIcon />}
+                  >
+                    <FormattedMessage
+                      id="gated.conditions"
+                      defaultMessage="Gated conditions"
+                    />
+                  </Button>
+                )}
+
+                {currentPage?.key !== 'home' && (
+                  <IconButton
+                    aria-label="delete"
+                    color={'error'}
+                    onClick={handleShowPageDeleteDialog}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                )}
+              </Stack>
+            </Stack>
+          </CardContent>
+        </Card>
         <Divider />
+
         {sections.map((section, index) =>
-          renderSection(section, index, isVisibleIndexes.includes(index))
+          renderSection(section, index, isVisibleIndexes.includes(index)),
         )}
       </Stack>
     </>

@@ -15,7 +15,9 @@ import { FormattedMessage } from 'react-intl';
 import { AppDialogTitle } from '../../../../../components/AppDialogTitle';
 import { BuilderKit } from '../../../constants';
 import { AppPageSection, SectionType } from '../../../types/section';
+import PreviewPagePlatform from '../../PreviewPagePlatform';
 import { SectionFormRender } from '../SectionFormRender';
+import { SectionSelector } from '../SectionSelector';
 
 interface Props {
   dialogProps: DialogProps;
@@ -36,8 +38,12 @@ export default function EditSectionDialog({
 }: Props) {
   const { onClose } = dialogProps;
   const [sectionType, setSectionType] = useState<SectionType | undefined>(
-    section ? section.type : 'video'
+    section ? section.type : 'video',
   );
+
+  const [changedSection, setChangedSection] = useState<
+    AppPageSection | undefined
+  >(section);
 
   const handleClose = () => {
     if (onClose) {
@@ -55,12 +61,17 @@ export default function EditSectionDialog({
     handleClose();
   };
 
+  const handleChange = (section: AppPageSection) => {
+    setChangedSection(section);
+  };
+
   const renderSectionType = (sectionType?: SectionType) => {
     return SectionFormRender({
       section,
       sectionType,
       onSave: handleSave,
       onClose: handleClose,
+      onChange: handleChange,
     });
   };
 
@@ -85,7 +96,11 @@ export default function EditSectionDialog({
       <Divider />
       <DialogContent>
         <Grid container spacing={2}>
-          <Grid item xs={12}>
+          <Grid item xs={4}>
+            <SectionSelector></SectionSelector>
+          </Grid>
+
+          <Grid item xs={8}>
             <FormControl fullWidth>
               <InputLabel>
                 <FormattedMessage
@@ -151,13 +166,24 @@ export default function EditSectionDialog({
                   <FormattedMessage id="contract" defaultMessage="Contract" />
                 </MenuItem>
                 <MenuItem value="user-contract-form">
-                  <FormattedMessage id="User contract form" defaultMessage="User contract form" />
+                  <FormattedMessage
+                    id="User contract form"
+                    defaultMessage="User contract form"
+                  />
                 </MenuItem>
               </Select>
             </FormControl>
           </Grid>
-          <Grid item xs={12}>
+          <Grid item xs={6}>
             {renderSectionType(sectionType)}
+          </Grid>
+          <Grid item xs={6}>
+            {changedSection && (
+              <PreviewPagePlatform
+                sections={[changedSection as AppPageSection]}
+                disabled={true}
+              />
+            )}
           </Grid>
         </Grid>
       </DialogContent>

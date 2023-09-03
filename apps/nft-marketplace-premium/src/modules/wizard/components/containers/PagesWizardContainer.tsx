@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   createTheme,
   Divider,
@@ -14,6 +15,8 @@ import { AppConfig, AppPage } from '../../../../types/config';
 import { BuilderKit } from '../../constants';
 import { PagesContainer } from '../PagesContainer';
 
+import AddIcon from '@mui/icons-material/Add';
+
 interface Props {
   config: AppConfig;
   onSave: (config: AppConfig) => void;
@@ -27,6 +30,7 @@ export default function PagesWizardContainer({
 }: Props) {
   const [currentPage, setCurrentPage] = useState<AppPage>(config.pages['home']);
   const [pages, setPages] = useState<{ [key: string]: AppPage }>(config.pages);
+  const [showAddPage, setShowAddPage] = useState(false);
   useEffect(() => {
     if (config && !currentPage) {
       setCurrentPage(currentPage);
@@ -51,23 +55,43 @@ export default function PagesWizardContainer({
     onSave(newConfig);
   };
 
+  const handleShowAddPage = () => {
+    setShowAddPage(true);
+  };
+
   return (
     <Grid container spacing={2}>
       <Grid item xs={12}>
-        <Stack>
-          <Typography variant={'subtitle2'}>
+        <Stack direction={'row'} spacing={2}>
+          <Typography variant={'subtitle1'}>
             <FormattedMessage id="pages" defaultMessage="Pages" />
           </Typography>
-          <Typography variant={'body2'}>
+
+          {/*   <Typography variant={'body2'}>
             <FormattedMessage
               id="edit.page.sections"
               defaultMessage="Edit page sections"
             />
-          </Typography>
+  </Typography>*/}
         </Stack>
       </Grid>
       <Grid item xs={12}>
         <Divider />
+      </Grid>
+      <Grid item xs={12}>
+        <Box sx={{ pt: 2, pb: 2 }}>
+          <Button
+            variant="contained"
+            onClick={handleShowAddPage}
+            size="small"
+            startIcon={<AddIcon />}
+          >
+            <FormattedMessage
+              id="create.new.page"
+              defaultMessage="Create new page"
+            />
+          </Button>
+        </Box>
       </Grid>
       <Grid item xs={12}>
         {currentPage && pages && (
@@ -78,6 +102,8 @@ export default function PagesWizardContainer({
             setPages={setPages}
             setCurrentPage={setCurrentPage}
             theme={selectedTheme}
+            showAddPage={showAddPage}
+            setShowAddPage={setShowAddPage}
           />
         )}
       </Grid>
@@ -92,6 +118,10 @@ export default function PagesWizardContainer({
           </Button>
         </Stack>
       </Grid>
+      <Grid item xs={12}>
+        <Divider />
+      </Grid>
+      <Grid item xs={12}></Grid>
     </Grid>
   );
 }

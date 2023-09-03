@@ -1,11 +1,12 @@
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { Stack, Typography } from '@mui/material';
 import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { AppPage } from '../../../types/config';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { Typography } from '@mui/material';
 
 export default function PagesMenu({
   currentPage,
@@ -31,29 +32,41 @@ export default function PagesMenu({
 
   const pageKeys = Object.keys(pages);
 
-  const items = Object.keys(pages).filter(
-    (page) => pages[page].title !== currentPage?.title
-  );
+  const items = Object.keys(pages); /*.filter(
+    (page) => pages[page].title !== currentPage?.title,
+  )*/
 
   return (
     <div>
       {pageKeys.length > 1 ? (
-        <Button
-          id="pages-show-button"
-          aria-controls={open ? 'pages-show-menu' : undefined}
-          aria-haspopup="true"
-          aria-expanded={open ? 'true' : undefined}
-          onClick={handleClick}
-          startIcon={<ExpandMoreIcon />}
-          sx={{
-            color: 'text.primary',
-          }}
+        <Stack
+          direction="row"
+          justifyContent="center"
+          alignItems={'center'}
+          spacing={2}
         >
-          <FormattedMessage
-            id={currentPage?.key || 'home'}
-            defaultMessage={currentPage?.title || 'Home'}
-          />
-        </Button>
+          <Button
+            id="pages-show-button"
+            aria-controls={open ? 'pages-show-menu' : undefined}
+            aria-haspopup="true"
+            aria-expanded={open ? 'true' : undefined}
+            onClick={handleClick}
+            endIcon={open ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+          >
+            <FormattedMessage
+              id={'select.page'}
+              defaultMessage={'Select page'}
+            />
+          </Button>
+          <Typography>
+            <b>
+              <FormattedMessage
+                id={currentPage?.key || 'home'}
+                defaultMessage={currentPage?.title || 'Home'}
+              />
+            </b>
+          </Typography>
+        </Stack>
       ) : (
         <Typography>
           <FormattedMessage
