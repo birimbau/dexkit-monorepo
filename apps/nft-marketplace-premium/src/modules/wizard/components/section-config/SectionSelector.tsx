@@ -51,7 +51,7 @@ export function SectionSelector() {
               scrollButtons="auto"
               aria-label="scrollable auto tabs example"
             >
-              <Tab label="Item One" />
+              <Tab label="All" />
               <Tab label="Item Two" />
               <Tab label="Item Three" />
               <Tab label="Item Four" />
@@ -111,7 +111,6 @@ export function SectionSelector() {
                 height: '112px',
                 borderRadius: '8px',
                 borderColor: 'text.secondary',
-                backgroundColor: 'primary.light',
               }}
             >
               <Stack
