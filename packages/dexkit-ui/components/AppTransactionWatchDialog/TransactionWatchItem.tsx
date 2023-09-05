@@ -18,22 +18,34 @@ import { TxDialogTransaction } from "../../types";
 
 export interface TransactionWatchItemProps {
   transaction: TxDialogTransaction;
+  enabled?: boolean;
+  enableConditions: (newConditions: string[]) => void;
 }
 
 export default function TransactionWatchItem({
   transaction,
+  enabled,
+  enableConditions,
 }: TransactionWatchItemProps) {
   const { provider, chainId } = useWeb3React();
 
-  const action = useMutation(transaction.action);
+  const action = useMutation(async () => {
+    let result = await transaction.action();
+
+    if (result.conditions) {
+      enableConditions(result.conditions);
+    }
+
+    return result;
+  });
 
   const waitTxQuery = useWaitTransactionConfirmation({
     provider,
-    transactionHash: action.data,
+    transactionHash: action.data?.hash,
   });
 
   const handleExecute = async () => {
-    await action.mutateAsync(transaction.params);
+    await action.mutateAsync();
   };
 
   return (
@@ -43,9 +55,9 @@ export default function TransactionWatchItem({
           {action.isLoading || waitTxQuery.isFetching ? (
             <CircularProgress />
           ) : waitTxQuery.isSuccess ? (
-            <Icon>check</Icon>
+            <Icon color="success">check</Icon>
           ) : (
-            <Icon>{transaction.icon}</Icon>
+            <Icon>{transaction.icon ? transaction.icon : "receipt"}</Icon>
           )}
         </Avatar>
       </ListItemAvatar>
@@ -57,7 +69,7 @@ export default function TransactionWatchItem({
           />
         }
         secondary={
-          action.data ? (
+          action.data?.hash ? (
             waitTxQuery.isError ? (
               <FormattedMessage
                 id="transaction.failed"
@@ -65,7 +77,7 @@ export default function TransactionWatchItem({
               />
             ) : (
               <Link
-                href={`${getBlockExplorerUrl(chainId)}/tx/${action.data}`}
+                href={`${getBlockExplorerUrl(chainId)}/tx/${action.data.hash}`}
                 target="_blank"
               >
                 <FormattedMessage
@@ -81,7 +93,7 @@ export default function TransactionWatchItem({
         <ListItemSecondaryAction>
           <Button
             size="small"
-            disabled={action.isLoading || waitTxQuery.isFetching}
+            disabled={action.isLoading || waitTxQuery.isFetching || !enabled}
             onClick={handleExecute}
             variant="outlined"
           >

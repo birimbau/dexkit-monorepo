@@ -57,13 +57,13 @@ export default function TradeWidget({ isActive }: TradeWidgetProps) {
   const makerTokenBalanceQuery = useErc20BalanceQuery({
     account,
     provider,
-    contractAddress: quoteToken?.contractAddress,
+    contractAddress: baseToken?.contractAddress,
   });
 
   const takerTokenBalanceQuery = useErc20BalanceQuery({
     account,
     provider,
-    contractAddress: baseToken?.contractAddress,
+    contractAddress: quoteToken?.contractAddress,
   });
 
   const connectWalletDialog = useConnectWalletDialog();
@@ -163,8 +163,9 @@ export default function TradeWidget({ isActive }: TradeWidgetProps) {
               quoteToken &&
               baseToken ? (
                 <BuyForm
-                  makerToken={quoteToken}
-                  takerToken={baseToken}
+                  key={`buy-${baseToken.contractAddress}-${quoteToken.contractAddress}`}
+                  makerToken={baseToken}
+                  takerToken={quoteToken}
                   makerTokenBalance={makerTokenBalanceQuery.data}
                   maker={account}
                   provider={provider}
@@ -175,8 +176,9 @@ export default function TradeWidget({ isActive }: TradeWidgetProps) {
               quoteToken &&
               baseToken ? (
                 <SellForm
-                  makerToken={quoteToken}
-                  takerToken={baseToken}
+                  key={`sell-${baseToken.contractAddress}-${quoteToken.contractAddress}`}
+                  makerToken={baseToken}
+                  takerToken={quoteToken}
                   takerTokenBalance={takerTokenBalanceQuery.data}
                   provider={provider}
                   maker={account}

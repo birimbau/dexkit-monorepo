@@ -3,16 +3,19 @@ import { ethers } from "ethers";
 
 import { BigNumber } from "bignumber.js";
 
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { createZrxOrder } from "../utils";
 
 import {
   ZEROEX_ORDERBOOK_ENDPOINT,
   ZERO_EX_URL,
 } from "@dexkit/core/services/zrx/constants";
+import { Token } from "@dexkit/core/types";
 import axios from "axios";
-import { useContext } from "react";
+import { useCallback, useContext, useState } from "react";
 import { DexkitExchangeContext } from "../contexts";
+import { getGeckoTerminalTopPools } from "../services";
+import { DexkitExchangeContextState, GtPool } from "../types";
 
 export function useExchangeContext() {
   return useContext(DexkitExchangeContext);
@@ -67,4 +70,66 @@ export function useSendLimitOrderMutation() {
       return resp.data;
     }
   );
+}
+
+const GETCKO_TERMINAL_TOP_POOLS_QUERY = "GETCKO_TERMINAL_TOP_POOLS_QUERY";
+
+export function useGeckoTerminalTopPools({
+  network,
+  address,
+}: {
+  network?: string;
+  address?: string;
+}) {
+  return useQuery<GtPool[] | null>(
+    [GETCKO_TERMINAL_TOP_POOLS_QUERY, network, address],
+    async () => {
+      if (!address || !network) {
+        return null;
+      }
+
+      const resp = await getGeckoTerminalTopPools({ address, network });
+
+      return resp.data.data;
+    },
+    {
+      refetchOnMount: false,
+      refetchOnReconnect: false,
+      refetchOnWindowFocus: false,
+    }
+  );
+}
+
+export function useExchangeContextState(params: {
+  baseTokens: Token[];
+  quoteTokens: Token[];
+  baseToken?: Token;
+  quoteToken?: Token;
+  buyTokenPercentageFee?: number;
+}): DexkitExchangeContextState {
+  const [quoteToken, setQuoteToken] = useState<Token | undefined>(
+    params?.quoteToken
+  );
+  const [baseToken, setBaseToken] = useState<Token | undefined>(
+    params?.baseToken
+  );
+
+  const [quoteTokens, setQuoteTokens] = useState<Token[]>(params.quoteTokens);
+  const [baseTokens, setBaseTokens] = useState<Token[]>(params.baseTokens);
+
+  const handleSetPair = useCallback((base: Token, quote: Token) => {
+    setQuoteToken(quote);
+    setBaseToken(base);
+  }, []);
+
+  return {
+    setPair: handleSetPair,
+    baseToken,
+    quoteToken,
+    baseTokens,
+    quoteTokens,
+    tokens: {},
+    buyTokenPercentageFee: params.buyTokenPercentageFee,
+    zrxApiKey: process.env.NEXT_PUBLIC_ZRX_API_KEY,
+  };
 }

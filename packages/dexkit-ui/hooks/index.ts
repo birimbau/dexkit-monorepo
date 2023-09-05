@@ -23,6 +23,7 @@ import { ethers } from "ethers";
 import {
   showTxDialogAtom,
   txDialogLoading,
+  txDialogOptions,
   txDialogTransactionsAtom,
 } from "../atoms";
 import { ThemeMode } from "../constants/enum";
@@ -36,6 +37,7 @@ import {
   AppNotification,
   AppNotificationType,
   CreateAppNotificationParams,
+  TxDialogOptions,
   TxDialogTransaction,
 } from "../types";
 
@@ -533,18 +535,25 @@ export function useExecuteTransactionsDialog() {
   const [show, setShow] = useAtom(showTxDialogAtom);
   const [transactions, setTransactions] = useAtom(txDialogTransactionsAtom);
   const [isLoading, setIsLoading] = useAtom(txDialogLoading);
+  const [options, setOptions] = useAtom(txDialogOptions);
 
   const handleClose = useCallback(() => {
     setShow(false);
     setTransactions([]);
+    setOptions(undefined);
   }, []);
 
-  const execute = useCallback((transactions: TxDialogTransaction[]) => {
-    setShow(true);
-    setTransactions(transactions);
-  }, []);
+  const execute = useCallback(
+    (transactions: TxDialogTransaction[], opts?: TxDialogOptions) => {
+      setShow(true);
+      setTransactions(transactions);
+      setOptions(opts);
+    },
+    []
+  );
 
   return {
+    options,
     isLoading,
     setIsLoading,
     show,

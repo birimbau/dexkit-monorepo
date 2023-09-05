@@ -7,14 +7,24 @@ import {
 } from "@dexkit/ui/hooks";
 import { ThemeProvider, createTheme } from "@mui/material";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { IntlProvider } from "react-intl";
 
 import { Web3ReactProvider, useWeb3React } from "@web3-react/core";
 import { atom } from "jotai";
 import { SnackbarProvider } from "notistack";
 
+import { DexkitExchangeContext } from "@dexkit/exchange/contexts";
+import { useExchangeContextState } from "@dexkit/exchange/hooks";
 import AppTransactionWatchDialog from "@dexkit/ui/components/AppTransactionWatchDialog";
+
+import { ChainId } from "@dexkit/core";
+import {
+  DEFAULT_BASE_TOKENS,
+  DEFAULT_QUOTE_TOKENS,
+  KIT_TOKEN,
+  USDT_TOKEN,
+} from "@dexkit/exchange/constants/tokens";
 
 const theme = createTheme({
   typography: {
@@ -62,9 +72,26 @@ const Modals = () => {
             onClose: txDialog.handleClose,
           }}
           transactions={txDialog.transactions}
+          options={txDialog.options}
         />
       )}
     </>
+  );
+};
+
+const Context = ({ children }: { children: React.ReactNode }) => {
+  const exchangeState = useExchangeContextState({
+    baseTokens: DEFAULT_BASE_TOKENS[ChainId.Polygon],
+    quoteTokens: DEFAULT_QUOTE_TOKENS[ChainId.Polygon],
+    quoteToken: KIT_TOKEN,
+    baseToken: USDT_TOKEN,
+    buyTokenPercentageFee: 0.01,
+  });
+
+  return (
+    <DexkitExchangeContext.Provider value={exchangeState}>
+      {children}
+    </DexkitExchangeContext.Provider>
   );
 };
 
@@ -73,6 +100,8 @@ const client = new QueryClient();
 
 export default function App({ Component, pageProps }: AppProps) {
   const connectors = useOrderedConnectors({ selectedWalletAtom });
+
+  const getLayout = (Component as any).getLayout || ((page: any) => page);
 
   const web3ReactKey = useMemo(
     () =>
@@ -88,7 +117,7 @@ export default function App({ Component, pageProps }: AppProps) {
             <ConnectorActivator />
             <ThemeProvider theme={theme}>
               <Modals />
-              <Component {...pageProps} />
+              <Context>{getLayout(<Component {...pageProps} />)}</Context>
             </ThemeProvider>
           </Web3ReactProvider>
         </SnackbarProvider>

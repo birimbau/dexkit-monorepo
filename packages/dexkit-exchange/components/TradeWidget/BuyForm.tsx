@@ -30,12 +30,16 @@ export interface BuyFormProps {
   makerTokenBalance?: ethers.BigNumber;
   maker?: string;
   provider?: ethers.providers.Web3Provider;
+  buyTokenPercentageFee?: number;
+  feeRecipient?: string;
 }
 
 export default function BuyForm({
   makerToken,
   takerToken,
   makerTokenBalance,
+  buyTokenPercentageFee,
+  feeRecipient,
   maker,
   provider,
 }: BuyFormProps) {
@@ -107,8 +111,8 @@ export default function BuyForm({
       buyAmount: ethers.utils.parseUnits("1.0", takerToken.decimals).toString(),
       skipValidation: true,
       slippagePercentage: 0.01,
-      feeRecipient: "0x5bd68b4d6f90bcc9f3a9456791c0db5a43df676d",
-      buyTokenPercentageFee: 0.001,
+      feeRecipient,
+      buyTokenPercentageFee,
     });
 
     const sellAmount = BigNumber.from(quote.sellAmount);

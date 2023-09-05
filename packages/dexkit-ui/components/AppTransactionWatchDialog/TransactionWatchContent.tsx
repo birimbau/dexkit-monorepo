@@ -12,30 +12,38 @@ import { useMutation } from "@tanstack/react-query";
 import { useWeb3React } from "@web3-react/core";
 import { FormattedMessage } from "react-intl";
 import { useWaitTransactionConfirmation } from "../../hooks";
+import { TxDialogTransaction } from "../../types";
 
 export interface TransactionWatchContentProps {
-  transaction: {
-    icon: string;
-    title: { id: string; defaultMessage: string };
-    action: () => Promise<string>;
-    params?: any;
-  };
+  transaction: TxDialogTransaction;
+  enabled?: boolean;
+  enableConditions: (newConditions: string[]) => void;
 }
 
 export default function TransactionWatchContent({
   transaction,
+  enabled,
+  enableConditions,
 }: TransactionWatchContentProps) {
   const { provider, chainId } = useWeb3React();
 
-  const action = useMutation(transaction.action);
+  const action = useMutation(async () => {
+    let result = await transaction.action();
+
+    if (result.conditions) {
+      enableConditions(result.conditions);
+    }
+
+    return result;
+  });
 
   const waitTxQuery = useWaitTransactionConfirmation({
     provider,
-    transactionHash: action.data,
+    transactionHash: action.data?.hash,
   });
 
   const handleExecute = async () => {
-    await action.mutateAsync(transaction.params);
+    await action.mutateAsync();
   };
 
   return (
@@ -46,9 +54,9 @@ export default function TransactionWatchContent({
             {action.isLoading || waitTxQuery.isFetching ? (
               <CircularProgress />
             ) : waitTxQuery.isSuccess ? (
-              <Icon>check</Icon>
+              <Icon color="success">check</Icon>
             ) : (
-              <Icon>{transaction.icon}</Icon>
+              <Icon>{transaction.icon ? transaction.icon : "receipt"}</Icon>
             )}
           </Avatar>
           <Typography variant="h5">
@@ -61,7 +69,7 @@ export default function TransactionWatchContent({
         {!waitTxQuery.isSuccess && (
           <Button
             fullWidth
-            disabled={action.isLoading || waitTxQuery.isFetching}
+            disabled={action.isLoading || waitTxQuery.isFetching || !enabled}
             onClick={handleExecute}
             variant="contained"
           >
@@ -81,10 +89,10 @@ export default function TransactionWatchContent({
           </Typography>
         ) : undefined}
 
-        {action.data && (
+        {action.data?.hash && (
           <Button
             variant="outlined"
-            href={`${getBlockExplorerUrl(chainId)}/tx/${action.data}`}
+            href={`${getBlockExplorerUrl(chainId)}/tx/${action.data.hash}`}
             target="_blank"
           >
             <FormattedMessage

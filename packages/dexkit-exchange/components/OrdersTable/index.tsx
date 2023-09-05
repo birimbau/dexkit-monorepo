@@ -57,7 +57,7 @@ export default function OrdersTable({
               provider,
             });
 
-            return result;
+            return { hash: result };
           },
           icon: "receipt",
           title: { id: "cancel.order", defaultMessage: "Cancel Order" },
