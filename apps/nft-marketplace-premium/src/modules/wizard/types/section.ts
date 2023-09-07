@@ -114,6 +114,8 @@ export type AppPageSection =
 export interface SectionMetadata {
   type: SectionType;
   title?: string | React.ReactNode;
+  titleId?: string;
+  titleDefaultMessage?: string;
   subtitle?: string | React.ReactNode;
   category?: 'all' | 'cryptocurrency' | 'resources' | 'low-code' | 'nft';
   description?: string | React.ReactNode;

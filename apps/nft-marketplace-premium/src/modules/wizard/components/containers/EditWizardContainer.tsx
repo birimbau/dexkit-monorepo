@@ -44,9 +44,9 @@ import { BuilderKit } from '../../constants';
 import { OnboardBuilderSteps } from '../../constants/onboard/steps';
 import { isFirstVisitOnEditWizardAtom } from '../../state';
 import BuilderKitMenu from '../BuilderKitMenu';
-import SignConfigDialog from '../dialogs/SignConfigDialog';
 import { PreviewAppButton } from '../PreviewAppButton';
 import { WelcomeMessage } from '../WelcomeMessage';
+import SignConfigDialog from '../dialogs/SignConfigDialog';
 
 const OwnershipWizardContainer = dynamic(
   () => import('./OwnershipWizardContainer'),
@@ -675,6 +675,22 @@ export function EditWizardContainer({ site }: Props) {
               )}
             </Stack>
           </Grid>
+          {/* <Grid item xs={12} sm={12}>
+            <Stack spacing={2} direction={'row'} alignItems={'center'}>
+              <Typography variant="body2" sx={{ maxWidth: '300px' }}>
+                <FormattedMessage
+                  id={'dexappbuilder.kits.explainer'}
+                  defaultMessage={
+                    'Select the KIT containing the features you wish to preview for creating your app.'
+                  }
+                ></FormattedMessage>
+              </Typography>
+              <BuilderKitMenu
+                menu={activeBuilderKit}
+                onChangeMenu={(menu) => setActiveBuilderKit(menu)}
+              />
+                </Stack>
+          </Grid>*/}
           <Grid item xs={12} sm={2}>
             {!isMobile && renderMenu()}
           </Grid>

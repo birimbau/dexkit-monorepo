@@ -8,87 +8,84 @@ import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
 import TextSnippetIcon from '@mui/icons-material/TextSnippet';
 import VideocamIcon from '@mui/icons-material/Videocam';
 import WalletIcon from '@mui/icons-material/Wallet';
-import { FormattedMessage } from 'react-intl';
 import { SectionMetadata } from '../../types/section';
 export const sections = [
   {
     type: 'video',
-    title: <FormattedMessage id={'video'} defaultMessage={'Video'} />,
+    titleId: 'video',
+    titleDefaultMessage: 'Video',
     category: 'resources',
     description: 'Display an youtube video',
     icon: <VideocamIcon fontSize="large" />,
   },
   {
     type: 'call-to-action',
-    title: (
-      <FormattedMessage
-        id={'call.to.action'}
-        defaultMessage={'Call to action'}
-      />
-    ),
+    titleId: 'call.to.action',
+    titleDefaultMessage: 'Call to action',
     category: 'resources',
     description: 'Call to Action',
     icon: <CallToActionIcon fontSize="large" />,
   },
   {
     type: 'featured',
-    title: <FormattedMessage id={'featured'} defaultMessage={'Featured'} />,
+    titleId: 'featured',
+    titleDefaultMessage: 'Featured',
     category: 'resources',
     description: 'Feature your nfts',
     icon: <FeaturedVideoIcon fontSize="large" />,
   },
   {
     type: 'swap',
-    title: <FormattedMessage id={'swap'} defaultMessage={'Swap'} />,
+    titleId: 'swap',
+    titleDefaultMessage: 'Swap',
     category: 'cryptocurrency',
     description: 'Swap using 0x',
     icon: <SwapHorizIcon fontSize="large" />,
   },
   {
     type: 'asset-store',
-    title: <FormattedMessage id={'nft.store'} defaultMessage={'NFT store'} />,
+    titleId: 'nft.store',
+    titleDefaultMessage: 'NFT store',
     category: 'nft',
     description: 'NFT store like Shopify',
     icon: <StorefrontIcon fontSize="large" />,
   },
   {
     type: 'collections',
-    title: (
-      <FormattedMessage id={'collections'} defaultMessage={'Collections'} />
-    ),
+    titleId: 'collections',
+    titleDefaultMessage: 'Collections',
     category: 'nft',
     description: 'NFT store like Shopify',
     icon: <CollectionsIcon fontSize="large" />,
   },
   {
     type: 'wallet',
-    title: <FormattedMessage id={'wallet'} defaultMessage={'Wallet'} />,
+    titleId: 'wallet',
+    titleDefaultMessage: 'Wallet',
     category: 'cryptocurrency',
     description: 'Wallet',
     icon: <WalletIcon fontSize="large" />,
   },
   {
     type: 'contract',
-    title: <FormattedMessage id={'contract'} defaultMessage={'Contract'} />,
+    titleId: 'contract',
+    titleDefaultMessage: 'Contract',
     category: 'cryptocurrency',
     description: 'Add forms to your contracts deployed on blockchain',
     icon: <GavelIcon fontSize="large" />,
   },
   {
     type: 'user-contract-form',
-    title: (
-      <FormattedMessage
-        id={'user.contract.form'}
-        defaultMessage={'User contract form'}
-      />
-    ),
+    titleId: 'user.contract.form',
+    titleDefaultMessage: 'User contract form',
     category: 'cryptocurrency',
     description: 'Add forms created by you',
     icon: <DynamicFormIcon fontSize="large" />,
   },
   {
     type: 'markdown',
-    title: <FormattedMessage id={'Markdown'} defaultMessage={'Markdown'} />,
+    titleId: 'markdown',
+    titleDefaultMessage: 'Markdown',
     category: 'low-code',
     description: 'Add markdown text',
     icon: <TextSnippetIcon fontSize="large" />,

@@ -12,7 +12,7 @@ import {
 } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import { useEffect, useState } from 'react';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 import { AppDialogTitle } from '../../../../../components/AppDialogTitle';
 import { BuilderKit } from '../../../constants';
 import {
@@ -43,6 +43,7 @@ export default function EditSectionDialog({
   builderKit,
 }: Props) {
   const { onClose } = dialogProps;
+  const { formatMessage } = useIntl();
   const [sectionType, setSectionType] = useState<SectionType | undefined>(
     section ? section.type : 'video',
   );
@@ -155,7 +156,13 @@ export default function EditSectionDialog({
 
                         <Typography variant="subtitle1">
                           {' '}
-                          {sectionMetadata?.title}
+                          {(sectionMetadata?.titleId &&
+                            formatMessage({
+                              id: sectionMetadata?.titleId,
+                              defaultMessage:
+                                sectionMetadata?.titleDefaultMessage,
+                            })) ||
+                            ''}
                         </Typography>
                       </Stack>
                     </Box>

@@ -9,7 +9,7 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import { useState } from 'react';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 import { SectionType } from '../../types/section';
 import { SectionCategory, sections } from './Sections';
 
@@ -19,6 +19,8 @@ interface Props {
 
 export function SectionSelector({ onClickSection }: Props) {
   const [value, setValue] = useState<string>('all');
+  const [search, setSearch] = useState<string>();
+  const { formatMessage } = useIntl();
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
@@ -34,6 +36,7 @@ export function SectionSelector({ onClickSection }: Props) {
             </InputLabel>
             <OutlinedInput
               id="outlined-search"
+              onChange={(s) => setSearch(s.currentTarget.value)}
               label={
                 <FormattedMessage id={'search'} defaultMessage={'Search'} />
               }
@@ -119,8 +122,8 @@ export function SectionSelector({ onClickSection }: Props) {
             return c.value === value;
           }
           return true;
-        }).map((cat) => (
-          <Stack spacing={2}>
+        }).map((cat, key) => (
+          <Stack spacing={2} key={key}>
             <Box pt={2}>
               <Typography variant="subtitle1">{cat.title}</Typography>
             </Box>
@@ -128,8 +131,22 @@ export function SectionSelector({ onClickSection }: Props) {
             <Grid container>
               {sections
                 .filter((s) => s.category === cat.value)
-                .map((sec) => (
-                  <Grid item xs={3}>
+                .filter((s) => {
+                  if (search) {
+                    return (
+                      formatMessage({
+                        id: s.titleId,
+                        defaultMessage: s.titleDefaultMessage,
+                      })
+                        .toLowerCase()
+                        .indexOf(search.toLowerCase()) !== -1
+                    );
+                  } else {
+                    return true;
+                  }
+                })
+                .map((sec, k) => (
+                  <Grid item xs={3} key={k}>
                     <Tooltip title={sec.description}>
                       <ButtonBase
                         sx={{
@@ -150,7 +167,13 @@ export function SectionSelector({ onClickSection }: Props) {
                         >
                           {sec.icon}
 
-                          <Typography variant="body2"> {sec.title}</Typography>
+                          <Typography variant="body2">
+                            {' '}
+                            {formatMessage({
+                              id: sec.titleId,
+                              defaultMessage: sec.titleDefaultMessage,
+                            }) || ''}
+                          </Typography>
                         </Stack>
                       </ButtonBase>
                     </Tooltip>
