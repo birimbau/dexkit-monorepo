@@ -63,8 +63,9 @@ export function SectionSelector({ onClickSection }: Props) {
             label={<FormattedMessage id={'all'} defaultMessage={'All'} />}
             value={'all'}
           />
-          {SectionCategory.map((cat) => (
+          {SectionCategory.map((cat, key) => (
             <Tab
+              key={key}
               label={
                 <FormattedMessage id={cat.value} defaultMessage={cat.title} />
               }
