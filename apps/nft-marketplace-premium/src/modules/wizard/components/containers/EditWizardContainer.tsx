@@ -5,9 +5,7 @@ import {
   Drawer,
   Grid,
   IconButton,
-  ListSubheader,
   Stack,
-  styled,
   Typography,
   useMediaQuery,
   useTheme,
@@ -101,10 +99,6 @@ export enum ActiveMenu {
   Tokens = 'tokens',
   Ownership = 'ownership',
 }
-
-const ListSubheaderCustom = styled(ListSubheader)({
-  fontWeight: 'bold',
-});
 
 function TourButton() {
   const { setIsOpen } = useTour();
@@ -521,7 +515,10 @@ export function EditWizardContainer({ site }: Props) {
 
   return (
     <TourProvider
-      steps={OnboardBuilderSteps({ onChangeMenu: setActiveMenu })}
+      steps={OnboardBuilderSteps({
+        onChangeMenu: setActiveMenu,
+        onChangeSidebar: setOpenMenu,
+      })}
       styles={{
         popover: (base) => ({
           ...base,

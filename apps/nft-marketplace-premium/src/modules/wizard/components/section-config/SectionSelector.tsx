@@ -1,7 +1,5 @@
 import SearchIcon from '@mui/icons-material/Search';
-import { ButtonBase, Stack, Typography } from '@mui/material';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
+import { Box, ButtonBase, Stack, Tooltip, Typography } from '@mui/material';
 import FormControl from '@mui/material/FormControl';
 import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
@@ -12,56 +10,68 @@ import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-export function SectionSelector() {
-  const [value, setValue] = useState(0);
+import { SectionType } from '../../types/section';
+import { SectionCategory, sections } from './Sections';
 
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+interface Props {
+  onClickSection: ({ sectionType }: { sectionType: SectionType }) => void;
+}
+
+export function SectionSelector({ onClickSection }: Props) {
+  const [value, setValue] = useState<string>('all');
+
+  const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
   };
 
   return (
-    <Card>
-      <CardContent>
-        <Grid container spacing={2}>
-          <Grid container item xs={12} justifyContent={'center'}>
-            <FormControl variant="outlined">
-              <InputLabel htmlFor="outlined-search">
+    <Grid container spacing={2}>
+      <Grid item xs={12} justifyContent={'center'}>
+        <Box sx={{ pl: 3, pr: 3 }}>
+          <FormControl variant="outlined" fullWidth>
+            <InputLabel htmlFor="outlined-search">
+              <FormattedMessage id={'search'} defaultMessage={'Search'} />
+            </InputLabel>
+            <OutlinedInput
+              id="outlined-search"
+              label={
                 <FormattedMessage id={'search'} defaultMessage={'Search'} />
-              </InputLabel>
-              <OutlinedInput
-                id="outlined-search"
-                label={
-                  <FormattedMessage id={'search'} defaultMessage={'Search'} />
-                }
-                endAdornment={
-                  <InputAdornment position="end">
-                    <IconButton aria-label="search" edge="end">
-                      <SearchIcon />
-                    </IconButton>
-                  </InputAdornment>
-                }
-              />
-            </FormControl>
-          </Grid>
-          <Grid item xs={12}>
-            <Tabs
-              value={value}
-              onChange={handleChange}
-              variant="scrollable"
-              scrollButtons="auto"
-              aria-label="scrollable auto tabs example"
-            >
-              <Tab label="All" />
-              <Tab label="Item Two" />
-              <Tab label="Item Three" />
-              <Tab label="Item Four" />
-              <Tab label="Item Five" />
-              <Tab label="Item Six" />
-              <Tab label="Item Seven" />
-            </Tabs>
-          </Grid>
-          <Grid item xs={12}>
-            {/*  <Box
+              }
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton aria-label="search" edge="end">
+                    <SearchIcon />
+                  </IconButton>
+                </InputAdornment>
+              }
+            />
+          </FormControl>
+        </Box>
+      </Grid>
+      <Grid item xs={12}>
+        <Tabs
+          value={value}
+          onChange={handleChange}
+          variant="scrollable"
+          scrollButtons="auto"
+          aria-label="scrollable auto tabs example"
+        >
+          <Tab
+            label={<FormattedMessage id={'all'} defaultMessage={'All'} />}
+            value={'all'}
+          />
+          {SectionCategory.map((cat) => (
+            <Tab
+              label={
+                <FormattedMessage id={cat.value} defaultMessage={cat.title} />
+              }
+              value={cat.value}
+            />
+          ))}
+        </Tabs>
+      </Grid>
+      <Grid item xs={12}>
+        {/*  <Box
               sx={{
                 border: '1px solid',
                 width: '121px',
@@ -82,7 +92,7 @@ export function SectionSelector() {
                 <FormattedMessage id={'search'} defaultMessage={'Search'} />
               </Typography>
             </Box>*/}
-            {/* <Button
+        {/* <Button
               sx={{
                 border: '1px solid',
                 width: '121px',
@@ -104,31 +114,52 @@ export function SectionSelector() {
                 </Typography>
               </Stack>
             </Button>*/}
-            <ButtonBase
-              sx={{
-                border: '1px solid',
-                width: '121px',
-                height: '112px',
-                borderRadius: '8px',
-                borderColor: 'text.secondary',
-              }}
-            >
-              <Stack
-                justifyContent={'center'}
-                alignItems={'center'}
-                spacing={1}
-              >
-                <SearchIcon fontSize="large" />
+        {SectionCategory.filter((c) => {
+          if (value !== 'all') {
+            return c.value === value;
+          }
+          return true;
+        }).map((cat) => (
+          <Stack spacing={2}>
+            <Box pt={2}>
+              <Typography variant="subtitle1">{cat.title}</Typography>
+            </Box>
 
-                <Typography variant="body2">
-                  {' '}
-                  <FormattedMessage id={'search'} defaultMessage={'Search'} />
-                </Typography>
-              </Stack>
-            </ButtonBase>
-          </Grid>
-        </Grid>
-      </CardContent>
-    </Card>
+            <Grid container>
+              {sections
+                .filter((s) => s.category === cat.value)
+                .map((sec) => (
+                  <Grid item xs={3}>
+                    <Tooltip title={sec.description}>
+                      <ButtonBase
+                        sx={{
+                          border: '1px solid',
+                          width: '121px',
+                          height: '112px',
+                          borderRadius: '8px',
+                          borderColor: 'text.secondary',
+                        }}
+                        onClick={() =>
+                          onClickSection({ sectionType: sec.type })
+                        }
+                      >
+                        <Stack
+                          justifyContent={'center'}
+                          alignItems={'center'}
+                          spacing={1}
+                        >
+                          {sec.icon}
+
+                          <Typography variant="body2"> {sec.title}</Typography>
+                        </Stack>
+                      </ButtonBase>
+                    </Tooltip>
+                  </Grid>
+                ))}
+            </Grid>
+          </Stack>
+        ))}
+      </Grid>
+    </Grid>
   );
 }
