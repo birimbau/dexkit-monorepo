@@ -51,6 +51,7 @@ export interface SwapProps {
   execType?: ExecType;
   quote?: ZeroExQuoteResponse | null;
   isExecuting: boolean;
+  clickOnMax: boolean;
   sellTokenBalance?: BigNumber;
   buyTokenBalance?: BigNumber;
   insufficientBalance?: boolean;
@@ -62,8 +63,8 @@ export interface SwapProps {
   networkName?: string;
   onSelectToken: (selectFor: SwapSide, token?: Token) => void;
   onSwapTokens: () => void;
-  onChangeSellAmount: (value: BigNumber) => void;
-  onChangeBuyAmount: (value: BigNumber) => void;
+  onChangeSellAmount: (value: BigNumber, clickOnMax?: boolean) => void;
+  onChangeBuyAmount: (value: BigNumber, clickOnMax?: boolean) => void;
   onConnectWallet: () => void;
   onChangeNetwork: (chanId: ChainId) => void;
   onToggleChangeNetwork: () => void;
@@ -90,6 +91,7 @@ export default function Swap({
   isExecuting,
   disableFooter,
   quote,
+  clickOnMax,
   sellTokenBalance,
   buyTokenBalance,
   insufficientBalance,
@@ -242,7 +244,7 @@ export default function Swap({
               value={sellAmount}
               balance={sellTokenBalance}
               showBalance={isActive}
-              isUserInput={quoteFor === "sell"}
+              isUserInput={quoteFor === "sell" && clickOnMax === false}
               disabled={isQuoting && quoteFor === "buy"}
             />
             <Stack alignItems="center">
@@ -265,7 +267,7 @@ export default function Swap({
               value={buyAmount}
               balance={buyTokenBalance}
               showBalance={isActive}
-              isUserInput={quoteFor === "buy"}
+              isUserInput={quoteFor === "buy" && clickOnMax === false}
               disabled={isQuoting && quoteFor === "sell"}
             />
           </Stack>

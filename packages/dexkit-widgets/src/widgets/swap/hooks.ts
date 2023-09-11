@@ -399,6 +399,7 @@ export function useSwapState({
   const [showSelect, setShowSelectToken] = useState(false);
 
   const [quoteFor, setQuoteFor] = useState<SwapSide>();
+  const [clickOnMax, setClickOnMax] = useState<boolean>(false);
 
   const [sellToken, setSellToken] = useState<Token | undefined>();
   const [buyToken, setBuyToken] = useState<Token | undefined>();
@@ -535,20 +536,30 @@ export function useSwapState({
   };
 
   const handleChangeBuyAmount = useCallback(
-    (value: BigNumber) => {
+    (value: BigNumber, clickMax?: boolean) => {
       setQuoteFor("buy");
-
       if (buyToken) {
+        if (clickMax) {
+          setClickOnMax(true)
+        } else {
+          setClickOnMax(false)
+        }
         setBuyAmount(value);
       }
     },
     [buyToken]
   );
 
+
   const handleChangeSellAmount = useCallback(
-    (value: BigNumber) => {
+    (value: BigNumber, clickMax?: boolean) => {
       setQuoteFor("sell");
       if (sellToken) {
+        if (clickMax) {
+          setClickOnMax(true)
+        } else {
+          setClickOnMax(false)
+        }
         setSellAmount(value);
       }
     },
@@ -825,6 +836,7 @@ export function useSwapState({
     insufficientBalance: lazySellAmount?.gt(
       sellTokenBalance.data ?? BigNumber.from(0)
     ),
+    clickOnMax,
     isExecuting:
       wrapMutation.isLoading ||
       unwrapMutation.isLoading ||
