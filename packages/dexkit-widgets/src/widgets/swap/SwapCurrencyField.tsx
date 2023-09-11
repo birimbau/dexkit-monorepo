@@ -16,7 +16,7 @@ import SwapTokenButton from "./SwapTokenButton";
 export interface SwapTokenFieldProps {
   InputBaseProps?: InputBaseProps;
   disabled?: boolean;
-  onChange: (value: BigNumber) => void;
+  onChange: (value: BigNumber, clickOnMax?: boolean) => void;
   token?: Token;
   onSelectToken: (token?: Token) => void;
   value: BigNumber;
@@ -38,7 +38,7 @@ function SwapTokenField({
 }: SwapTokenFieldProps) {
   const handleMax = () => {
     if (balance) {
-      onChange(balance);
+      onChange(balance, true);
     }
   };
 
