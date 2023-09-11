@@ -42,6 +42,7 @@ export const NETWORKS: { [key: number]: Network } = {
     explorerUrl: 'https://mumbai.polygonscan.com',
     name: 'Mumbai',
     slug: 'mumbai',
+    coingeckoId: 'matic-network',
     wrappedAddress: '0x9c3c9283d3e44854697cd22d3faa240cfb032889',
     imageUrl: polygonIcon.src,
     providerRpcUrl: `https://rpc.ankr.com/polygon_mumbai`,
