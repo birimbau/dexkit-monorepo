@@ -108,6 +108,7 @@ export function SwapWidget({
     sellToken,
     showSelect,
     sellAmount,
+    clickOnMax,
     buyAmount,
     execType,
     isExecuting,
@@ -293,6 +294,7 @@ export function SwapWidget({
         disableNotificationsButton={disableNotificationsButton}
         chainId={chainId}
         quoteFor={quoteFor}
+        clickOnMax={clickOnMax}
         isActive={isActive && !disableWallet}
         buyToken={buyToken}
         sellToken={sellToken}
