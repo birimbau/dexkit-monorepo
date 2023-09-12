@@ -10,6 +10,7 @@ import {
   Paper,
   Skeleton,
   Stack,
+  TextField,
   Tooltip,
   Typography,
 } from '@mui/material';
@@ -19,7 +20,7 @@ import { Box } from '@mui/material';
 import { useWeb3React } from '@web3-react/core';
 import { ethers } from 'ethers';
 import Image from 'next/image';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { FormattedMessage, FormattedNumber, useIntl } from 'react-intl';
 import { useCoinPricesQuery, useCurrency } from '../../../../hooks/currency';
 import { useErc20Balance } from '../../../../hooks/nft';
@@ -35,7 +36,7 @@ interface Props {
   account?: string;
   asset?: Asset;
   metadata?: AssetMetadata;
-  onConfirm: () => void;
+  onConfirm: ({ quantity }: { quantity?: number }) => void;
 }
 
 export function ConfirmBuyDialog({
@@ -54,6 +55,8 @@ export function ConfirmBuyDialog({
 
   const { provider, account } = useWeb3React();
 
+  const [quantity, setQuantity] = useState(1);
+
   const erc20Balance = useErc20Balance(provider, order?.erc20Token, account);
 
   const handleClose = () => onClose!({}, 'backdropClick');
@@ -61,7 +64,7 @@ export function ConfirmBuyDialog({
   const token = useMemo(() => {
     if (order) {
       const tokenIndex = tokens.findIndex((t) =>
-        isAddressEqual(t.address, order?.erc20Token)
+        isAddressEqual(t.address, order?.erc20Token),
       );
 
       if (tokenIndex > -1) {
@@ -73,8 +76,13 @@ export function ConfirmBuyDialog({
   const hasSufficientFunds = useMemo(() => {
     if (token !== undefined) {
       const orderTokenAmount: ethers.BigNumber = ethers.BigNumber.from(
-        order?.erc20TokenAmount
+        order?.erc20TokenAmount,
       );
+      if (quantity > 1) {
+        if (erc20Balance.data?.gte(orderTokenAmount.div(quantity))) {
+          return true;
+        }
+      }
 
       if (erc20Balance.data?.gte(orderTokenAmount)) {
         return true;
@@ -93,10 +101,23 @@ export function ConfirmBuyDialog({
           coinPricesQuery.data[token.address.toLowerCase()][currency];
 
         if (ratio) {
+          if (quantity > 1) {
+            return (
+              (ratio *
+                parseFloat(
+                  ethers.utils.formatUnits(
+                    order?.erc20TokenAmount,
+                    token.decimals,
+                  ),
+                )) /
+              quantity
+            );
+          }
+
           return (
             ratio *
             parseFloat(
-              ethers.utils.formatUnits(order?.erc20TokenAmount, token.decimals)
+              ethers.utils.formatUnits(order?.erc20TokenAmount, token.decimals),
             )
           );
         } else {
@@ -161,10 +182,17 @@ export function ConfirmBuyDialog({
                   </Box>
                   <Paper sx={{ p: 1 }}>
                     <Typography variant="caption" color="textSecondary">
-                      <FormattedMessage
-                        id="listing.price"
-                        defaultMessage="Listing price"
-                      />
+                      {asset?.protocol === 'ERC1155' ? (
+                        <FormattedMessage
+                          id="listing.price.per.item"
+                          defaultMessage="Listing price per item"
+                        />
+                      ) : (
+                        <FormattedMessage
+                          id="listing.price"
+                          defaultMessage="Listing price"
+                        />
+                      )}
                     </Typography>
                     <Stack
                       direction="row"
@@ -180,12 +208,22 @@ export function ConfirmBuyDialog({
                         />
                       </Tooltip>
                       <Typography sx={{ fontWeight: 600 }} variant="body1">
-                        {ethers.utils.formatUnits(
-                          ethers.BigNumber.from(order?.erc20TokenAmount || '0'),
-                          token?.decimals
-                        )}{' '}
+                        {asset?.protocol === 'ERC1155'
+                          ? ethers.utils.formatUnits(
+                              ethers.BigNumber.from(
+                                order?.erc20TokenAmount || '0',
+                              ).div(order?.erc1155TokenAmount || '1'),
+                              token?.decimals,
+                            )
+                          : ethers.utils.formatUnits(
+                              ethers.BigNumber.from(
+                                order?.erc20TokenAmount || '0',
+                              ),
+                              token?.decimals,
+                            )}{' '}
                         {token?.symbol}
                       </Typography>
+
                       {totalInCurrency !== undefined && (
                         <Chip
                           size="small"
@@ -208,6 +246,60 @@ export function ConfirmBuyDialog({
                       )}
                     </Stack>
                   </Paper>
+                  {asset?.protocol === 'ERC1155' && (
+                    <Stack spacing={2}>
+                      <Typography variant="body1">
+                        <FormattedMessage
+                          id="max.quantity"
+                          defaultMessage="Max quantity"
+                        />{' '}
+                        : {order?.erc1155TokenAmount || '0'}
+                      </Typography>
+                      <TextField
+                        type={'number'}
+                        inputProps={{
+                          min: 1,
+                          max: Number(order?.erc1155TokenAmount),
+                          step: 1,
+                        }}
+                        value={Number(quantity || 1)}
+                        onChange={(e) => {
+                          const value = Number(e.currentTarget.value);
+                          const maxValue = Number(order?.erc1155TokenAmount);
+                          if (value < maxValue + 1) {
+                            setQuantity(value);
+                          }
+                        }}
+                        name="quantity"
+                        label={
+                          <FormattedMessage
+                            id="quantity"
+                            defaultMessage="Quantity"
+                            description="Price label"
+                          />
+                        }
+                      />
+                      <Typography variant="body1">
+                        <FormattedMessage
+                          id="total.cost"
+                          defaultMessage="Total cost"
+                        />
+                        :{' '}
+                        <b>
+                          {quantity *
+                            Number(
+                              ethers.utils.formatUnits(
+                                ethers.BigNumber.from(
+                                  order?.erc20TokenAmount || '0',
+                                ).div(order?.erc1155TokenAmount || '1'),
+                                token?.decimals,
+                              ),
+                            )}{' '}
+                          {token?.symbol}
+                        </b>
+                      </Typography>
+                    </Stack>
+                  )}
                 </Stack>
               </Grid>
             </Grid>
@@ -246,7 +338,7 @@ export function ConfirmBuyDialog({
                   ) : (
                     ethers.utils.formatUnits(
                       erc20Balance.data || ethers.BigNumber.from(0),
-                      token?.decimals
+                      token?.decimals,
                     )
                   )}{' '}
                   {token?.symbol}
@@ -270,7 +362,7 @@ export function ConfirmBuyDialog({
       <DialogActions>
         <Button
           disabled={!hasSufficientFunds}
-          onClick={onConfirm}
+          onClick={() => onConfirm({ quantity })}
           variant="contained"
           color="primary"
         >

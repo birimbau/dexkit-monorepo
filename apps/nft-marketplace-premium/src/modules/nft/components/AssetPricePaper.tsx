@@ -229,6 +229,7 @@ export function AssetPricePaper({ address, id }: Props) {
     tokenAddress: string,
     expiry: Date | null,
     takerAddress?: string,
+    quantity?: ethers.BigNumber,
   ) => {
     setOpenMakeListing(false);
 
@@ -260,10 +261,11 @@ export function AssetPricePaper({ address, id }: Props) {
         tokenAddress: address as string,
         tokenId: id as string,
         type: getAssetProtocol(asset),
+        amount: quantity ? quantity.toString() : '1',
       },
       another: {
         tokenAddress,
-        amount: amount.toString(),
+        amount: quantity ? amount.mul(quantity).toString() : amount.toString(),
         type: 'ERC20',
       },
       expiry: expiry,
@@ -325,6 +327,7 @@ export function AssetPricePaper({ address, id }: Props) {
           maxWidth: 'sm',
           onClose: handleCloseMakeListingDialog,
         }}
+        assetBalance={assetBalance}
         onConfirm={handleConfirmMakeListing}
         asset={asset}
         metadata={metadata}
