@@ -20,8 +20,12 @@ import TableSkeleton from './tables/TableSkeleton';
 
 import { useDexKitContext } from '@dexkit/ui/hooks';
 import CancelIcon from '@mui/icons-material/Cancel';
-import { SwappableAssetV4 } from '@traderxyz/nft-swap-sdk';
-import { ethers } from 'ethers';
+import {
+  SignedNftOrderV4,
+  SwappableAssetV4,
+  TradeDirection,
+} from '@traderxyz/nft-swap-sdk';
+import { BigNumber, ethers } from 'ethers';
 import { useConnectWalletDialog } from 'src/hooks/app';
 import { OrderDirection } from 'src/types/orderbook';
 import { useSwitchNetwork, useTokenList } from '../../../hooks/blockchain';
@@ -119,10 +123,12 @@ export function AssetBuyOrder({ asset, orderBookItem }: Props) {
       hash,
       accept,
       order,
+      quantity,
     }: {
       hash: string;
       accept: boolean;
-      order: SwapApiOrder;
+      order: SignedNftOrderV4;
+      quantity?: number;
     }) => {
       if (provider === undefined || asset === undefined) {
         return;
@@ -138,6 +144,25 @@ export function AssetBuyOrder({ asset, orderBookItem }: Props) {
         amount: ethers.utils.formatUnits(order.erc20TokenAmount, decimals),
         symbol,
       };
+
+      if (
+        quantity &&
+        quantity > 1 &&
+        'erc1155Token' in order &&
+        order.direction === TradeDirection.SellNFT
+      ) {
+        values.amount = ethers.utils.formatUnits(
+          BigNumber.from(order.erc20TokenAmount)
+            .mul(
+              BigNumber.from(quantity)
+                .mul(100000)
+                .div(order.erc1155TokenAmount),
+            )
+            .div(100000),
+
+          decimals,
+        );
+      }
 
       if (accept) {
         createNotification({
@@ -174,7 +199,15 @@ export function AssetBuyOrder({ asset, orderBookItem }: Props) {
   );
 
   const handleMutateSignedOrder = useCallback(
-    async ({ order, accept }: { order: SwapApiOrder; accept?: boolean }) => {
+    async ({
+      order,
+      accept,
+      quantity,
+    }: {
+      order: SignedNftOrderV4;
+      accept?: boolean;
+      quantity?: number;
+    }) => {
       if (asset && order) {
         const decimals = await getERC20Decimals(order.erc20Token, provider);
 
@@ -189,6 +222,24 @@ export function AssetBuyOrder({ asset, orderBookItem }: Props) {
 
         if (accept) {
           return watchTransactionDialog.open('acceptOffer', values);
+        }
+        if (
+          quantity &&
+          quantity > 1 &&
+          'erc1155Token' in order &&
+          order.direction === TradeDirection.SellNFT
+        ) {
+          values.amount = ethers.utils.formatUnits(
+            BigNumber.from(order.erc20TokenAmount)
+              .mul(
+                BigNumber.from(quantity)
+                  .mul(100000)
+                  .div(order.erc1155TokenAmount),
+              )
+              .div(100000),
+
+            decimals,
+          );
         }
 
         watchTransactionDialog.open('buyNft', values);
@@ -299,42 +350,47 @@ export function AssetBuyOrder({ asset, orderBookItem }: Props) {
     }
   }, [asset, chainId, switchNetwork]);
 
-  const handleConfirmBuy = useCallback(async () => {
-    if (!account || orderBookItem === undefined) {
-      return;
-    }
-
-    setOpenConfirmBuy(false);
-
-    if (
-      !isAddressEqual(orderBookItem.erc20Token, ZEROEX_NATIVE_TOKEN_ADDRESS)
-    ) {
-      const asset: any = {
-        tokenAddress: orderBookItem.erc20Token,
-        tokenAmount: orderBookItem.erc20TokenAmount,
-        type: 'ERC20',
-      };
-
-      const status = await nftSwapSdk?.loadApprovalStatus(asset, account);
-
-      if (!status?.contractApproved) {
-        await approveAsset.mutateAsync({
-          asset,
-        });
+  const handleConfirmBuy = useCallback(
+    async ({ quantity }: { quantity?: number }) => {
+      if (!account || orderBookItem === undefined) {
+        return;
       }
-    }
+      console.log(quantity);
 
-    await fillSignedOrder.mutateAsync({
-      order: orderBookItem.order,
-    });
-  }, [
-    watchTransactionDialog,
-    fillSignedOrder,
-    nftSwapSdk,
-    account,
-    orderBookItem,
-    approveAsset,
-  ]);
+      setOpenConfirmBuy(false);
+
+      if (
+        !isAddressEqual(orderBookItem.erc20Token, ZEROEX_NATIVE_TOKEN_ADDRESS)
+      ) {
+        const asset: any = {
+          tokenAddress: orderBookItem.erc20Token,
+          tokenAmount: orderBookItem.erc20TokenAmount,
+          type: 'ERC20',
+        };
+
+        const status = await nftSwapSdk?.loadApprovalStatus(asset, account);
+
+        if (!status?.contractApproved) {
+          await approveAsset.mutateAsync({
+            asset,
+          });
+        }
+      }
+
+      await fillSignedOrder.mutateAsync({
+        order: orderBookItem.order,
+        quantity,
+      });
+    },
+    [
+      watchTransactionDialog,
+      fillSignedOrder,
+      nftSwapSdk,
+      account,
+      orderBookItem,
+      approveAsset,
+    ],
+  );
 
   const handleCancelOrder = useCallback(
     async (order?: SwapApiOrder) => {
@@ -374,7 +430,11 @@ export function AssetBuyOrder({ asset, orderBookItem }: Props) {
           maxWidth: 'sm',
           onClose: handleCloseConfirmBuy,
         }}
-        onConfirm={() => handleConfirmBuy()}
+        onConfirm={({ quantity }) => {
+          console.log(quantity);
+
+          handleConfirmBuy({ quantity });
+        }}
       />
       <ShareDialog
         dialogProps={{
