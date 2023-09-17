@@ -40,4 +40,9 @@ export const WHITELABEL_NOTIFICATION_TYPES: {
     message: 'Claimed KIT airdrop',
     id: 'claim.airdrop',
   },
+  mintEditionDrop: {
+    type: 'mintEditionDrop',
+    message: 'Minting {quantity} with id {tokenId} from edition {name}',
+    id: 'claim.airdrop',
+  },
 };

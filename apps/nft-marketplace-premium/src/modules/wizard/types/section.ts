@@ -19,7 +19,10 @@ export type SectionType =
   | 'markdown'
   | 'wallet'
   | 'contract'
-  | 'user-contract-form';
+  | 'user-contract-form'
+  | 'edition-drop-section'
+
+  ;
 
 export interface PageSection {
   type: SectionType;
@@ -96,6 +99,15 @@ export interface UserContractPageSection extends PageSection {
   type: 'user-contract-form';
   formId: number;
   hideFormInfo?: boolean;
+}
+
+export interface EditionDropPageSection extends PageSection {
+  type: 'edition-drop-section';
+  config: {
+    address: string,
+    tokenId: string
+  }
+
 }
 
 export type AppPageSection =
