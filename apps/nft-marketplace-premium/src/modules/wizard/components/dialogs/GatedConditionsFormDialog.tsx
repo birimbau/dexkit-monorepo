@@ -45,7 +45,7 @@ const GatedCoditionsSchema = Yup.array(
     protocol: Yup.string(),
     tokenId: Yup.string(),
     amount: Yup.string().required(),
-  })
+  }),
 );
 
 interface Props {
@@ -71,9 +71,9 @@ export default function GatedConditionsFormDialog({
     includeNative: true,
     isWizardConfig: true,
   });
-  console.log(featuredTokens);
+
   const [selectedCoins, setSelectedCoins] = useState<{ [key: number]: Token }>(
-    {}
+    {},
   );
   const [selectedCollections, setSelectedCollections] = useState<{
     [key: number]: any;
@@ -85,7 +85,8 @@ export default function GatedConditionsFormDialog({
         if (condition.type === 'coin') {
           let findToken = featuredTokens.find(
             (t) =>
-              t.address === condition.address && t.chainId === condition.chainId
+              t.address === condition.address &&
+              t.chainId === condition.chainId,
           );
           if (findToken) {
             selectedCoins[index] = findToken;
@@ -280,20 +281,20 @@ export default function GatedConditionsFormDialog({
                                   });
                                   setFieldValue(
                                     `conditions[${index}].address`,
-                                    coll.contractAddress
+                                    coll.contractAddress,
                                   );
                                   setFieldValue(
                                     `conditions[${index}].chainId`,
-                                    coll.chainId
+                                    coll.chainId,
                                   );
                                   setFieldValue(
                                     `conditions[${index}].symbol`,
-                                    coll.name
+                                    coll.name,
                                   );
                                   // We identify protocol to then check if we need to add token Id
                                   getAssetProtocol(
                                     getProviderByChainId(coll.chainId),
-                                    coll.contractAddress
+                                    coll.contractAddress,
                                   ).then((v) => {
                                     selectedCollections[index].protocol = v;
                                     setSelectedCollections({
@@ -316,19 +317,19 @@ export default function GatedConditionsFormDialog({
                                   setSelectedCoins({ ...selectedCoins });
                                   setFieldValue(
                                     `conditions[${index}].address`,
-                                    tk?.address
+                                    tk?.address,
                                   );
                                   setFieldValue(
                                     `conditions[${index}].symbol`,
-                                    tk?.symbol
+                                    tk?.symbol,
                                   );
                                   setFieldValue(
                                     `conditions[${index}].chainId`,
-                                    tk?.chainId
+                                    tk?.chainId,
                                   );
                                   setFieldValue(
                                     `conditions[${index}].decimals`,
-                                    tk?.decimals
+                                    tk?.decimals,
                                   );
                                 }}
                               />
