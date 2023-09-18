@@ -8,7 +8,8 @@ import {
 } from "@mui/material";
 import { BigNumber, ethers } from "ethers";
 import { memo } from "react";
-import { TOKEN_ICON_URL } from "../constants";
+
+import { TOKEN_ICON_URL } from "@dexkit/core/constants";
 import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "../services/zeroex/constants";
 import { Token } from "../types";
 import { formatBigNumber, isAddressEqual } from "../utils";

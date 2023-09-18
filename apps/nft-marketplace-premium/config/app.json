@@ -105,12 +105,17 @@
     {
       "type": "Menu",
       "href": "",
-      "name": "Contract Generator",
+      "name": "DexGenerator",
       "children": [
         {
           "type": "Page",
-          "href": "/contract-wizard",
-          "name": "Create collection"
+          "href": "/forms/contracts",
+          "name": "Create contracts"
+        },
+        {
+          "type": "Page",
+          "href": "/forms",
+          "name": "Manage contract forms"
         }
       ]
     },
@@ -379,6 +384,30 @@
           "logoURI": "https://raw.githubusercontent.com/dexkit/icons/master/token/weth.jpg",
           "name": "Wrapped Ether",
           "symbol": "WETH"
+        },
+        {
+          "address": "0x50c5725949A6F0c72E6C4a641F24049A917DB0Cb",
+          "chainId": 8453,
+          "decimals": 18,
+          "logoURI": "https://raw.githubusercontent.com/dexkit/icons/master/token/dai.jpg",
+          "name": "Dai Stablecoin",
+          "symbol": "DAI"
+        },
+        {
+          "address": "0x4200000000000000000000000000000000000006",
+          "chainId": 8453,
+          "decimals": 18,
+          "logoURI": "https://raw.githubusercontent.com/dexkit/icons/master/token/weth.jpg",
+          "name": "Wrapped Ether",
+          "symbol": "WETH"
+        },
+        {
+          "address": "0xd9aAEc86B65D86f6A7B5B1b0c42FFA531710b6CA",
+          "chainId": 8453,
+          "decimals": 6,
+          "logoURI": "https://raw.githubusercontent.com/dexkit/icons/master/token/usdc.jpg",
+          "name": "USD Coin",
+          "symbol": "USDC"
         }
       ]
     }

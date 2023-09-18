@@ -32,6 +32,7 @@ import { getBlockExplorerUrl } from "@dexkit/core/utils";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useWeb3React } from "@web3-react/core";
 import { ethers } from "ethers";
+import { isAddress } from "ethers/lib/utils";
 import ContractFunctionInputs from "./ContractFunctionInputs";
 
 export function isFunctionCall(stateMutability: string) {
@@ -78,9 +79,18 @@ export default function ContractFunction({
         ) {
           const inp = params.fields[name].input[input.name];
 
-          let defaultValue: any;
+          let defaultValue: any = inp ? inp.defaultValue : "";
 
-          if (inp?.inputType === "normal" || inp?.inputType === "address") {
+          if (input.type.endsWith("[]")) {
+            if (!inp?.defaultValue) {
+              defaultValue = [];
+            } else {
+              defaultValue = inp.defaultValue;
+            }
+          } else if (
+            inp?.inputType === "normal" ||
+            inp?.inputType === "address"
+          ) {
             defaultValue = inp ? inp.defaultValue : "";
           } else if (inp?.inputType === "switch") {
             defaultValue = inp ? Boolean(inp.defaultValue) : false;
@@ -96,7 +106,7 @@ export default function ContractFunction({
 
       return obj;
     },
-    [account]
+    [account, name]
   );
 
   const handleSubmit = useCallback(
@@ -106,8 +116,29 @@ export default function ContractFunction({
         args: Object.keys(values).map((key) => {
           let inputParams = name ? params.fields[name].input[key] : undefined;
 
-          if (inputParams && inputParams.inputType === "decimal") {
-            return ethers.utils.parseUnits(values[key], inputParams.decimals);
+          if (
+            inputParams !== undefined &&
+            inputParams.inputType === "decimal"
+          ) {
+            const decimals = inputParams.decimals;
+
+            if (Array.isArray(values[key])) {
+              return values[key].map((val: string) => {
+                return ethers.utils.parseUnits(val, decimals);
+              });
+            }
+
+            return ethers.utils.parseUnits(values[key], decimals);
+          }
+
+          if (name) {
+            if (ethers.utils.isBytesLike(values[key])) {
+              if (!isAddress(values[key])) {
+                const arr = ethers.utils.arrayify(values[key]);
+
+                return ethers.utils.arrayify(values[key]);
+              }
+            }
           }
 
           return values[key];
@@ -200,7 +231,7 @@ export default function ContractFunction({
 
   const key = useMemo(() => {
     return name ? JSON.stringify(params.fields[name]) : undefined;
-  }, [params.fields, name]);
+  }, [params, name]);
 
   if (callOnMount) {
     return (

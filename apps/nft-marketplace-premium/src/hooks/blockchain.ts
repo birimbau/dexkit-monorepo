@@ -112,6 +112,8 @@ export function useTokenList({
   // TODO: do the right logic
   let tokens = [...tokensValues, ...tokenListJson];
 
+
+
   if (onlyTradable) {
     tokens = tokens.filter((t) => Boolean(t.tradable));
   }

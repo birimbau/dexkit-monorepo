@@ -5,7 +5,8 @@ import { Box, IconButton, Stack, Tooltip, Typography } from "@mui/material";
 import { BigNumber, ethers } from "ethers";
 import { useMemo, useState } from "react";
 import { FormattedMessage, FormattedNumber } from "react-intl";
-import { GET_NATIVE_TOKEN } from "../../constants";
+
+import { GET_NATIVE_TOKEN } from "@dexkit/core/constants";
 import { useCoinPrices, useGasPrice } from "../../hooks";
 import { ZeroExQuoteResponse } from "../../services/zeroex/types";
 import { Token } from "../../types";

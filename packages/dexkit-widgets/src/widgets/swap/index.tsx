@@ -1,9 +1,13 @@
 import Swap from "./Swap";
 
-import { ChainId, DKAPI_INVALID_ADDRESSES } from "@dexkit/core/constants";
+import {
+  ChainId,
+  DKAPI_INVALID_ADDRESSES,
+  GET_NATIVE_TOKEN,
+} from "@dexkit/core/constants";
 import { useWeb3React } from "@web3-react/core";
 import { useEffect, useMemo, useState } from "react";
-import { GET_NATIVE_TOKEN } from "../../constants";
+
 import { usePlatformCoinSearch } from "../../hooks/api";
 import { apiCoinToTokens } from "../../utils/api";
 import SwapConfirmDialog from "./dialogs/SwapConfirmDialog";
@@ -15,13 +19,13 @@ import SwapSettingsDialog from "./dialogs/SwapSettingsDialog";
 
 import { NETWORKS } from "@dexkit/core/constants/networks";
 import SwitchNetworkDialog from "../../components/SwitchNetworkDialog";
+import SwapSelectCoinDialog from "./SwapSelectCoinDialog";
 import {
   useErc20ApproveMutation,
   useSwapExec,
   useSwapProvider,
   useSwapState,
 } from "./hooks";
-import SwapSelectCoinDialog from "./SwapSelectCoinDialog";
 import { NotificationCallbackParams, RenderOptions } from "./types";
 
 export interface SwapWidgetProps {
@@ -104,6 +108,7 @@ export function SwapWidget({
     sellToken,
     showSelect,
     sellAmount,
+    clickOnMax,
     buyAmount,
     execType,
     isExecuting,
@@ -170,12 +175,23 @@ export function SwapWidget({
     network: chainId && NETWORKS[chainId] ? NETWORKS[chainId].slug : undefined,
   });
 
+  const featuredTokensByChain = useMemo(() => {
+    return featuredTokens?.filter((t) => t.chainId === selectedChainId);
+  }, [featuredTokens, selectedChainId]);
+
   const tokens = useMemo(() => {
     if (searchQuery.data && chainId) {
       let tokens = [
         GET_NATIVE_TOKEN(chainId),
         ...apiCoinToTokens(searchQuery.data),
       ];
+      if (featuredTokensByChain) {
+        tokens = [
+          GET_NATIVE_TOKEN(chainId),
+          ...featuredTokensByChain,
+          ...apiCoinToTokens(searchQuery.data),
+        ];
+      }
 
       if (query !== "") {
         tokens = tokens.filter(
@@ -194,6 +210,14 @@ export function SwapWidget({
           }),
       ];
 
+      tokensCopy = tokensCopy.filter((value, index, arr) => {
+        return (
+          arr
+            .map((a) => a.contractAddress.toLowerCase())
+            .indexOf(value.contractAddress.toLowerCase()) === index
+        );
+      });
+
       return tokensCopy;
     }
 
@@ -201,10 +225,6 @@ export function SwapWidget({
   }, [searchQuery.data, chainId, query]);
 
   const handleQueryChange = (value: string) => setQuery(value);
-
-  const featuredTokensByChain = useMemo(() => {
-    return featuredTokens?.filter((t) => t.chainId === selectedChainId);
-  }, [featuredTokens, selectedChainId]);
 
   const [showSwitchNetwork, setShowSwitchNetwork] = useState(false);
 
@@ -274,6 +294,7 @@ export function SwapWidget({
         disableNotificationsButton={disableNotificationsButton}
         chainId={chainId}
         quoteFor={quoteFor}
+        clickOnMax={clickOnMax}
         isActive={isActive && !disableWallet}
         buyToken={buyToken}
         sellToken={sellToken}

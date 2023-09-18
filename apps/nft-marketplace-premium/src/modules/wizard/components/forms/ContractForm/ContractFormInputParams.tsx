@@ -1,8 +1,8 @@
 import { truncateAddress } from '@dexkit/core/utils';
 import {
-  ContractFormFieldInput,
   ContractFormFieldInputAddress,
   ContractFormFieldInputDecimal,
+  ContractFormFieldInputWithTupleParams,
   ContractFormParams,
 } from '@dexkit/web3forms/types';
 import Grid from '@mui/material/Grid';
@@ -89,7 +89,7 @@ function DecimalInput({
 }
 
 export interface ContractFormInputParamsProps {
-  input?: ContractFormFieldInput;
+  input?: ContractFormFieldInputWithTupleParams;
   funcName?: string;
   inputName?: string;
 }

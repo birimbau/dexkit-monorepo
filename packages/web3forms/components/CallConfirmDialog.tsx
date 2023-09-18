@@ -24,6 +24,7 @@ export interface CallConfirmDialogProps {
   DialogProps: DialogProps;
   onConfirm: (value: BigNumber) => void;
   payable?: boolean;
+  payableAmount?: BigNumber;
   execLabel?: string;
 }
 
@@ -32,12 +33,16 @@ export default function CallConfirmDialog({
   onConfirm,
   payable,
   execLabel,
+  payableAmount,
 }: CallConfirmDialogProps) {
   const { onClose } = DialogProps;
 
   const [unit, setUnit] = useState(PARSE_UNITS[0]);
 
-  const [value, setValue] = useState({ value: "", parsed: BigNumber.from(0) });
+  const [value, setValue] = useState({
+    value: payableAmount ? ethers.utils.formatEther(payableAmount) : "",
+    parsed: payableAmount ? payableAmount : BigNumber.from(0),
+  });
 
   const handleChangeUnit = (
     event: SelectChangeEvent<string>,

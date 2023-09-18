@@ -19,6 +19,7 @@ import AssetRightSection from '../../../../../../src/modules/nft/components/Asse
 import AssetHead from '../../../../../../src/modules/nft/components/AssetHead';
 
 import { ChainId } from '@dexkit/core/constants';
+import { truncateAddress } from '@dexkit/core/utils';
 import { NextSeo } from 'next-seo';
 import { FormattedMessage } from 'react-intl';
 import { PageHeader } from '../../../../../../src/components/PageHeader';
@@ -38,7 +39,7 @@ const AssetDetailPage: NextPage = () => {
 
   const { address, id } = router.query;
 
-  const { data: asset } = useAsset(address as string, id as string);
+  const { data: asset, isLoading } = useAsset(address as string, id as string);
 
   const { data: metadata } = useAssetMetadata(asset);
 
@@ -73,21 +74,22 @@ const AssetDetailPage: NextPage = () => {
                   uri: '/',
                 },
                 {
-                  caption: asset?.collectionName ? (
-                    asset?.collectionName
-                  ) : (
+                  caption: isLoading ? (
                     <Skeleton />
+                  ) : (
+                    asset?.collectionName || truncateAddress(address as string)
                   ),
+
                   uri: `/collection/${getNetworkSlugFromChainId(
-                    asset?.chainId
+                    asset?.chainId,
                   )}/${address}`,
                 },
                 {
                   caption: `${asset?.collectionName} #${truncateErc1155TokenId(
-                    asset?.id
+                    asset?.id,
                   )}`,
                   uri: `/asset/${getNetworkSlugFromChainId(
-                    asset?.chainId
+                    asset?.chainId,
                   )}/${address}/${id}`,
                   active: true,
                 },
@@ -132,13 +134,13 @@ export const getStaticProps: GetStaticProps = async ({
     try {
       if (network === NETWORK_ID.Ethereum || network === NETWORK_ID.Polygon) {
         const { data } = await getRariAsset(
-          `${MAP_NETWORK_TO_RARIBLE[network]}:${address}:${id}`
+          `${MAP_NETWORK_TO_RARIBLE[network]}:${address}:${id}`,
         );
         await queryClient.prefetchQuery(
           [BEST_SELL_ORDER_RARIBLE, network, address, id],
           async () => {
             return data;
-          }
+          },
         );
       }
     } catch (e) {

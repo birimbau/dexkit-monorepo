@@ -23,9 +23,10 @@ import ContractFormAddressInput from './ContractFormAddressInput';
 export interface Props {
   abi?: AbiFragment[];
   chainId?: ChainId;
+  fetchOnMount?: boolean;
 }
 
-function ContractInitialForm({ abi, chainId }: Props) {
+function ContractInitialForm({ abi, chainId, fetchOnMount }: Props) {
   const { values } = useFormikContext<ContractFormParams>();
 
   const rpcJsonQuery = useJsonRpcProvider({ chainId: values.chainId });
@@ -88,7 +89,10 @@ function ContractInitialForm({ abi, chainId }: Props) {
         </FormControl>
       </Grid>
       <Grid item xs>
-        <ContractFormAddressInput chainId={chainId} />
+        <ContractFormAddressInput
+          chainId={chainId}
+          fetchOnMount={fetchOnMount}
+        />
       </Grid>
       <Grid item xs={12}>
         <ContractFormAbiInput abiStr={JSON.stringify(abi, null, 2) || ''} />

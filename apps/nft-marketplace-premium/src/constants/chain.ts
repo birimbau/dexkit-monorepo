@@ -42,6 +42,7 @@ export const NETWORKS: { [key: number]: Network } = {
     explorerUrl: 'https://mumbai.polygonscan.com',
     name: 'Mumbai',
     slug: 'mumbai',
+    coingeckoId: 'matic-network',
     wrappedAddress: '0x9c3c9283d3e44854697cd22d3faa240cfb032889',
     imageUrl: polygonIcon.src,
     providerRpcUrl: `https://rpc.ankr.com/polygon_mumbai`,
@@ -135,4 +136,22 @@ export const NETWORKS: { [key: number]: Network } = {
       symbol: 'ETH',
     },
   },
+  [ChainId.Base]: {
+    chainId: ChainId.Base,
+    symbol: 'BASE',
+    explorerUrl: 'https://basescan.org',
+    name: 'Base',
+    slug: 'base',
+    coingeckoId: 'ethereum',
+    wrappedAddress: '0x4200000000000000000000000000000000000006',
+    nativeCurrencyUrl: ethIcon.src,
+    imageUrl: "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/base/info/logo.png",
+    providerRpcUrl: "https://mainnet.base.org",
+    nativeCurrency: {
+      name: 'Ethereum',
+      decimals: 18,
+      symbol: 'ETH',
+    },
+  }
 };
+

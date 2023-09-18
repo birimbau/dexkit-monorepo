@@ -1,7 +1,6 @@
-import {
-  useListFormTemplatesQuery,
-  useListFormsQuery,
-} from '@/modules/forms/hooks';
+import { myAppsApi } from '@/modules/admin/dashboard/dataProvider';
+import { useListFormsQuery } from '@/modules/forms/hooks';
+import { DexkitApiProvider } from '@dexkit/core/providers';
 import { truncateAddress } from '@dexkit/core/utils';
 import LazyTextField from '@dexkit/ui/components/LazyTextField';
 import { Info } from '@mui/icons-material';
@@ -41,25 +40,14 @@ export default function FormsAccountPage() {
   const { address } = router.query;
 
   const [searchForm, setSearchForm] = useState<string>();
-  const [seachTemplate, setSearchTemplate] = useState<string>();
 
   const listFormsQuery = useListFormsQuery({
     creatorAddress: address as string,
     query: searchForm,
   });
 
-  const listFormTemplatesQuery = useListFormTemplatesQuery({
-    creatorAddress: address as string,
-    query: seachTemplate,
-  });
-
   const handleChangeSearchForm = (value: string) => {
     setSearchForm(value);
-    console.log('asdasdas');
-  };
-
-  const handleChangeSearchTemplateForm = (value: string) => {
-    setSearchTemplate(value);
   };
 
   return (
@@ -89,7 +77,7 @@ export default function FormsAccountPage() {
                       }}
                     />
                   ),
-                  uri: '/forms/deploy/nft',
+                  uri: `/forms/account/${address as string}`,
                   active: true,
                 },
               ]}
@@ -107,137 +95,6 @@ export default function FormsAccountPage() {
               </CardContent>
             </Card>
           </Box>
-          <Box>
-            <Stack
-              direction="row"
-              alignItems="center"
-              alignContent="center"
-              justifyContent="space-between"
-            >
-              <Typography variant="h5">
-                <FormattedMessage
-                  id="contract.templates"
-                  defaultMessage="Contract Templates"
-                />
-              </Typography>
-              <Button
-                LinkComponent={Link}
-                href="/forms/contract-templates/create"
-                size="small"
-                variant="outlined"
-              >
-                <FormattedMessage
-                  id="create.template"
-                  defaultMessage="Create template"
-                />
-              </Button>
-            </Stack>
-          </Box>
-          <Box>
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <LazyTextField
-                  TextFieldProps={{
-                    size: 'small',
-                    fullWidth: true,
-                    InputProps: {
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <Search />
-                        </InputAdornment>
-                      ),
-                    },
-                  }}
-                  onChange={handleChangeSearchTemplateForm}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TableContainer component={Paper}>
-                  <Table>
-                    <TableHead>
-                      <TableRow>
-                        <TableCell>
-                          <FormattedMessage id="id" defaultMessage="ID" />
-                        </TableCell>
-                        <TableCell>
-                          <FormattedMessage id="name" defaultMessage="Name" />
-                        </TableCell>
-                        <TableCell>
-                          <FormattedMessage
-                            id="description"
-                            defaultMessage="Description"
-                          />
-                        </TableCell>
-                      </TableRow>
-                    </TableHead>
-                    {listFormTemplatesQuery.isLoading ? (
-                      <TableBody>
-                        {new Array(5).fill(null).map((_, key) => (
-                          <TableRow key={key}>
-                            <TableCell>
-                              <Skeleton />
-                            </TableCell>
-                            <TableCell>
-                              <Skeleton />
-                            </TableCell>
-                            <TableCell>
-                              <Skeleton />
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    ) : (
-                      <TableBody>
-                        {listFormTemplatesQuery.data?.length === 0 && (
-                          <TableRow>
-                            <TableCell colSpan={3}>
-                              <Box>
-                                <Stack spacing={2} alignItems="center">
-                                  <Info fontSize="large" />
-                                  <Box>
-                                    <Typography align="center" variant="h5">
-                                      <FormattedMessage
-                                        id="no.templates.yet"
-                                        defaultMessage="No templates yet"
-                                      />
-                                    </Typography>
-                                    <Typography
-                                      align="center"
-                                      color="text.secondary"
-                                      variant="body1"
-                                    >
-                                      <FormattedMessage
-                                        id="Create templates for your forms"
-                                        defaultMessage="Create templates for your forms"
-                                      />
-                                    </Typography>
-                                  </Box>
-                                </Stack>
-                              </Box>
-                            </TableCell>
-                          </TableRow>
-                        )}
-                        {listFormTemplatesQuery.data?.map((template) => (
-                          <TableRow key={template.id}>
-                            <TableCell>{template.id}</TableCell>
-                            <TableCell>
-                              <Link
-                                href={`/forms/contract-templates/${template.id}`}
-                              >
-                                {template.name}
-                              </Link>
-                            </TableCell>
-                            <TableCell>{template.description}</TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    )}
-                  </Table>
-                </TableContainer>
-              </Grid>
-            </Grid>
-          </Box>
-
           <Box>
             <Stack
               direction="row"
@@ -296,22 +153,12 @@ export default function FormsAccountPage() {
                             defaultMessage="Description"
                           />
                         </TableCell>
-
-                        <TableCell>
-                          <FormattedMessage
-                            id="template"
-                            defaultMessage="Template"
-                          />
-                        </TableCell>
                       </TableRow>
                     </TableHead>
                     {listFormsQuery.isLoading ? (
                       <TableBody>
                         {new Array(5).fill(null).map((_, key) => (
                           <TableRow key={key}>
-                            <TableCell>
-                              <Skeleton />
-                            </TableCell>
                             <TableCell>
                               <Skeleton />
                             </TableCell>
@@ -328,7 +175,7 @@ export default function FormsAccountPage() {
                       <TableBody>
                         {listFormsQuery.data?.length === 0 && (
                           <TableRow>
-                            <TableCell colSpan={4}>
+                            <TableCell colSpan={3}>
                               <Box>
                                 <Stack spacing={2} alignItems="center">
                                   <Info fontSize="large" />
@@ -364,23 +211,6 @@ export default function FormsAccountPage() {
                               </Link>
                             </TableCell>
                             <TableCell>{form.description}</TableCell>
-                            <TableCell>
-                              {form.templateId ? (
-                                <Link
-                                  href={`/forms/contract-templates/${form.templateId}`}
-                                >
-                                  <FormattedMessage
-                                    id="template"
-                                    defaultMessage="Contract Template"
-                                  />
-                                </Link>
-                              ) : (
-                                <FormattedMessage
-                                  id="no.template"
-                                  defaultMessage="No template"
-                                />
-                              )}
-                            </TableCell>
                           </TableRow>
                         ))}
                       </TableBody>
@@ -397,5 +227,11 @@ export default function FormsAccountPage() {
 }
 
 (FormsAccountPage as any).getLayout = function getLayout(page: any) {
-  return <AuthMainLayout>{page}</AuthMainLayout>;
+  return (
+    <AuthMainLayout>
+      <DexkitApiProvider.Provider value={{ instance: myAppsApi }}>
+        {page}
+      </DexkitApiProvider.Provider>
+    </AuthMainLayout>
+  );
 };

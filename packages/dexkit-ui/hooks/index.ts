@@ -497,7 +497,6 @@ export function useHoldsKitDialog() {
 
   return { isOpen, setIsOpen };
 }
-
 export const WAIT_TRANSACTION_QUERY = "WAIT_TRANSACTION_QUERY";
 
 export function useWaitTransactionConfirmation({

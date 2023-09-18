@@ -34,8 +34,7 @@ import '@react-page/plugins-video/lib/index.css';
 import '@react-page/plugins-spacer/lib/index.css';
 import ExtendedSpacer from './plugins/ExtendedSpacerPlugin';
 
-import { Theme } from '@mui/material';
-import { styled } from '@mui/system';
+import { Theme, styled } from '@mui/material';
 import { BuilderKit } from '../../constants';
 import AssetListPlugin from './plugins/AssetListPlugin';
 import AssetPlugin from './plugins/AssetPlugin';

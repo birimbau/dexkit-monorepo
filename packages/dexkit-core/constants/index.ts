@@ -11,7 +11,6 @@ import { isAddressEqual } from "../utils";
 import { magic, magicHooks } from "./connectors/magic";
 import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "./zrx";
 
-
 export const CONNECTORS: { [key: string]: [Connector, Web3ReactHooks] } = {
   metamask: [metaMask, metaMaskHooks],
   walletConnect: [walletConnect, walletConnectHooks],
@@ -37,12 +36,9 @@ export const COINGECKO_PLATFORM_ID: { [key: number]: string } = {
   [ChainId.Celo]: "celo",
   [ChainId.Fantom]: "fantom",
   [ChainId.Optimism]: "optimistic-ethereum",
+  [ChainId.Base]: "base",
 };
 
-export const WRAPED_TOKEN_ADDRESS: { [key: number]: string } = {
-  [ChainId.Goerli]: "0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6",
-  [ChainId.Polygon]: "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270",
-};
 
 export function TOKEN_ICON_URL(addr: string, chainId?: ChainId) {
   if (!isAddress(addr)) {
@@ -69,6 +65,8 @@ export function TOKEN_ICON_URL(addr: string, chainId?: ChainId) {
         return `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/info/logo.png`;
       case ChainId.Arbitrum:
         return `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/info/logo.png`;
+      case ChainId.Base:
+        return `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/info/logo.png`;
       default:
         return "";
     }
@@ -91,6 +89,8 @@ export function TOKEN_ICON_URL(addr: string, chainId?: ChainId) {
       return `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/optimism/assets/${address}/logo.png`;
     case ChainId.Arbitrum:
       return `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/arbitrum/assets/${address}/logo.png`;
+    case ChainId.Base:
+      return `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/base/assets/${address}/logo.png`;
     default:
       return "";
   }
@@ -182,10 +182,14 @@ export const NATIVE_TOKENS: { [key: number]: Token } = {
   [ChainId.Optimism]: ETHEREUM_TOKEN,
   [ChainId.Arbitrum]: ETHEREUM_TOKEN,
   [ChainId.Avax]: AVALANCHE_TOKEN,
+  [ChainId.Base]: ETHEREUM_TOKEN,
 };
 
 export function GET_NATIVE_TOKEN(chainId: ChainId) {
   return NATIVE_TOKENS[chainId];
 }
 
-export const IPFS_GATEWAY = 'https://gateway.pinata.cloud/ipfs/';
+export const IPFS_GATEWAY = "https://gateway.pinata.cloud/ipfs/";
+
+export const MY_APPS_ENDPOINT =
+  process.env.NEXT_PUBLIC_DEXKIT_DASH_ENDPOINT ?? "http://localhost:3005";

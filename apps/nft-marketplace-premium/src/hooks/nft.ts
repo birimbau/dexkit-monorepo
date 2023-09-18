@@ -7,8 +7,10 @@ import {
 } from '@tanstack/react-query';
 import {
   NftSwapV4,
+  SignedNftOrderV4,
   SwappableAssetV4,
   SwappableNftV4,
+  TradeDirection
 } from '@traderxyz/nft-swap-sdk';
 import { useCallback, useMemo } from 'react';
 
@@ -587,13 +589,32 @@ export function useFillSignedOrderMutation(
     async ({
       order,
       accept = false,
+      quantity,
     }: {
       accept?: boolean;
-      order: SwapApiOrder;
+      order: SignedNftOrderV4;
+      quantity?: number;
     }) => {
       if (address === undefined || nftSwapSdk === undefined) {
         return undefined;
       }
+      // this is an ERC1155 order buy order
+      if (quantity && quantity > 1 && order.direction === TradeDirection.SellNFT && 'erc1155Token' in order && quantity !== Number(order.erc1155TokenAmount)) {
+        const canOrderTypeBeFilledWithNativeToken = order.direction === TradeDirection.SellNFT;
+        const isNativeToken = nftSwapSdk.isErc20NativeToken(order);
+        const needsEthAttached =
+          isNativeToken && canOrderTypeBeFilledWithNativeToken;
+        console.log(BigNumber.from(quantity).div(order.erc1155TokenAmount).toString())
+        const erc20TotalAmount = nftSwapSdk.getErc20TotalIncludingFees(order).mul(BigNumber.from(quantity).mul(100000).div(order.erc1155TokenAmount)).div(100000);
+        console.log(erc20TotalAmount.toString())
+
+        const result = await nftSwapSdk.exchangeProxy.buyERC1155(order as any, order.signature, quantity, '0x', {
+          value: needsEthAttached ? erc20TotalAmount : undefined,
+        })
+        return { hash: result?.hash, accept, order, quantity };
+
+      }
+
 
       const result = await nftSwapSdk.fillSignedOrder(order, {});
 
@@ -797,7 +818,7 @@ export function useFavoriteAssets() {
         asset !== undefined &&
         assets !== undefined &&
         assets[
-          `${asset.chainId}-${asset.contractAddress.toLowerCase()}-${asset.id}`
+        `${asset.chainId}-${asset.contractAddress.toLowerCase()}-${asset.id}`
         ] !== undefined
       );
     },
@@ -843,7 +864,7 @@ export function useHiddenAssets() {
         asset !== undefined &&
         assets !== undefined &&
         assets[
-          `${asset.chainId}-${asset.contractAddress.toLowerCase()}-${asset.id}`
+        `${asset.chainId}-${asset.contractAddress.toLowerCase()}-${asset.id}`
         ] === true
       );
     },

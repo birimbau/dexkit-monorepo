@@ -1,10 +1,8 @@
-import { WEB3FORMS_INPUT_TYPES } from '@dexkit/web3forms/constants';
 import { AbiFragment, ContractFormParams } from '@dexkit/web3forms/types';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import {
   Accordion,
   AccordionDetails,
-  Box,
   Card,
   Divider,
   FormControlLabel,
@@ -18,7 +16,10 @@ import { FastField, Field, FormikConsumer } from 'formik';
 import { Checkbox, Select, Switch, TextField } from 'formik-mui';
 import { memo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
+import ContractFormDefaultValue from './ContractFormDefaultValue';
 import ContractFormInputParams from './ContractFormInputParams';
+import ContractFormInputType from './ContractFormInputType';
+import ContractFormPayableValueInput from './ContractFormPayableValueInput';
 
 function requiredField(message: string) {
   return (value: string) => {
@@ -81,7 +82,13 @@ function ContractFormAccordion({ func }: Props) {
                 size="small"
               />
             </Grid>
-
+            {func.stateMutability === 'payable' && (
+              <Grid item xs={12}>
+                <ContractFormPayableValueInput
+                  name={`fields.${func.name}.payableAmount`}
+                />
+              </Grid>
+            )}
             <Grid item xs={12}>
               <FastField
                 component={TextField}
@@ -251,91 +258,11 @@ function ContractFormAccordion({ func }: Props) {
                           <Grid item xs={12}>
                             <FormikConsumer>
                               {({ values }) => (
-                                <Box>
-                                  <Stack spacing={2}>
-                                    <FastField
-                                      component={Select}
-                                      name={`fields.${func.name}.input.${input.name}.inputType`}
-                                      size="small"
-                                      fullWidth
-                                      displayEmpty
-                                      InputLabelProps={{ shrink: true }}
-                                      inputLabel={{ shrink: true }}
-                                      formControl={{ fullWidth: true }}
-                                      label={
-                                        <FormattedMessage
-                                          id="input.type"
-                                          defaultMessage="Input Type"
-                                        />
-                                      }
-                                    >
-                                      <MenuItem value="">
-                                        <FormattedMessage
-                                          id="default"
-                                          defaultMessage="Default"
-                                        />
-                                      </MenuItem>
-                                      {Object.keys(WEB3FORMS_INPUT_TYPES)
-                                        .map((key) => key)
-                                        .filter(
-                                          (key) =>
-                                            WEB3FORMS_INPUT_TYPES[key].type ===
-                                              '' ||
-                                            WEB3FORMS_INPUT_TYPES[key].type ===
-                                              input.type
-                                        )
-                                        .map((key) => (
-                                          <MenuItem key={key} value={key}>
-                                            <FormattedMessage
-                                              id={
-                                                WEB3FORMS_INPUT_TYPES[key]
-                                                  .messageId
-                                              }
-                                              defaultMessage={
-                                                WEB3FORMS_INPUT_TYPES[key]
-                                                  .defaultMessage
-                                              }
-                                            />
-                                          </MenuItem>
-                                        ))}
-                                    </FastField>
-                                    {WEB3FORMS_INPUT_TYPES[
-                                      (values as ContractFormParams).fields[
-                                        func.name
-                                      ].input[input.name].inputType
-                                    ] && (
-                                      <Typography
-                                        variant="body1"
-                                        color="text.secondary"
-                                      >
-                                        <FormattedMessage
-                                          id={
-                                            (values as ContractFormParams)
-                                              .fields[func.name]
-                                              ? WEB3FORMS_INPUT_TYPES[
-                                                  (values as ContractFormParams)
-                                                    .fields[func.name].input[
-                                                    input.name
-                                                  ].inputType
-                                                ]?.helpMessageId
-                                              : undefined
-                                          }
-                                          defaultMessage={
-                                            (values as ContractFormParams)
-                                              .fields[func.name]
-                                              ? WEB3FORMS_INPUT_TYPES[
-                                                  (values as ContractFormParams)
-                                                    .fields[func.name].input[
-                                                    input.name
-                                                  ].inputType
-                                                ]?.helpDefaultMessage
-                                              : undefined
-                                          }
-                                        />
-                                      </Typography>
-                                    )}
-                                  </Stack>
-                                </Box>
+                                <ContractFormInputType
+                                  func={func}
+                                  values={values}
+                                  input={input}
+                                />
                               )}
                             </FormikConsumer>
                           </Grid>
@@ -358,35 +285,10 @@ function ContractFormAccordion({ func }: Props) {
                               <Grid item xs={12} sm={8}>
                                 <FormikConsumer>
                                   {({ values }) => (
-                                    <FastField
-                                      component={TextField}
-                                      name={`fields.${func.name}.input.${input.name}.defaultValue`}
-                                      validate={
-                                        (values as ContractFormParams).fields[
-                                          func.name
-                                        ]?.hideInputs
-                                          ? requiredField(
-                                              formatMessage(
-                                                {
-                                                  id: 'field.is.required',
-                                                  defaultMessage:
-                                                    '{field} is required',
-                                                },
-                                                {
-                                                  field: input.name,
-                                                }
-                                              )
-                                            )
-                                          : undefined
-                                      }
-                                      label={
-                                        <FormattedMessage
-                                          id="default.value"
-                                          defaultMessage="Default value"
-                                        />
-                                      }
-                                      fullWidth
-                                      size="small"
+                                    <ContractFormDefaultValue
+                                      func={func}
+                                      values={values}
+                                      input={input}
                                     />
                                   )}
                                 </FormikConsumer>

@@ -1,4 +1,815 @@
 {
+	"Airdrop": {
+		"defaultMessage": "Airdrop"
+	},
+	"Create.Order": {
+		"defaultMessage": "Create Order"
+	},
+	"Save": {
+		"defaultMessage": "Save"
+	},
+	"User contract form": {
+		"defaultMessage": "User contract form"
+	},
+	"abi": {
+		"defaultMessage": "ABI"
+	},
+	"access.requirements": {
+		"defaultMessage": "Access Requirements"
+	},
+	"access.requirements.description.gated.view.conditions": {
+		"defaultMessage": "To access this private page, please ensure that you meet all the conditions below, as defined by the page owner:"
+	},
+	"account": {
+		"defaultMessage": "Account"
+	},
+	"account.which.you.signed.message.to.authenticate.to.app": {
+		"defaultMessage": "Account which you signed message to authenticate to app"
+	},
+	"accounts": {
+		"defaultMessage": "Accounts"
+	},
+	"add.condition": {
+		"defaultMessage": "Add condition"
+	},
+	"add.custom": {
+		"defaultMessage": "Add Custom"
+	},
+	"add.gated.conditions": {
+		"defaultMessage": "Add gated conditions"
+	},
+	"addresses": {
+		"defaultMessage": "Addresses"
+	},
+	"airdrop.requirements": {
+		"defaultMessage": "Airdrop requirements"
+	},
+	"airdrop.user.info": {
+		"defaultMessage": "Airdrop for users that complete profile and connect to both Discord and Twitter"
+	},
+	"airdrop.user.info.completed": {
+		"defaultMessage": "Airdrop campaign completed"
+	},
+	"airdrop.user.info.web.submmit": {
+		"defaultMessage": "Note: You need to be on Rio de Janeiro to claim this airdrop"
+	},
+	"all": {
+		"defaultMessage": "All"
+	},
+	"amount": {
+		"defaultMessage": "Amount"
+	},
+	"and": {
+		"defaultMessage": "And"
+	},
+	"app.builder.setup": {
+		"defaultMessage": "App Builder Setup"
+	},
+	"apps": {
+		"defaultMessage": "Apps"
+	},
+	"are.you.sure.you.want.to.delete.this.account": {
+		"defaultMessage": "Account to remove: {account}"
+	},
+	"back.to.home": {
+		"defaultMessage": "Back to Home"
+	},
+	"backgroundImage": {
+		"defaultMessage": "Background Image"
+	},
+	"bio": {
+		"defaultMessage": "Bio"
+	},
+	"block.explorer": {
+		"defaultMessage": "Block explorer"
+	},
+	"call.label": {
+		"defaultMessage": "Call label"
+	},
+	"call.on.view": {
+		"defaultMessage": "Call on view"
+	},
+	"choose.default.settings.for.swap.interface": {
+		"defaultMessage": "Choose default settings for swap interface"
+	},
+	"choose.default.tokens.on.wallet.app": {
+		"defaultMessage": "Choose default tokens on your wallet app."
+	},
+	"claim.airdrop": {
+		"defaultMessage": "Claim Airdrop"
+	},
+	"claim.kit.airdrop": {
+		"defaultMessage": "Claim KIT airdrop"
+	},
+	"claim.submitted.wait.for.transaction.confirm.onchain.to.receive.airdropped.kit": {
+		"defaultMessage": "Your claim has been submitted. Please wait for the transaction to be confirmed on the blockchain to receive your airdropped KIT!"
+	},
+	"clone": {
+		"defaultMessage": "Clone"
+	},
+	"coin": {
+		"defaultMessage": "Coin"
+	},
+	"collapse": {
+		"defaultMessage": "Collapse"
+	},
+	"collected": {
+		"defaultMessage": "Collected"
+	},
+	"complete.profile": {
+		"defaultMessage": "Complete Profile"
+	},
+	"complete.profile.info": {
+		"defaultMessage": "Please complete your profile by clicking on complete profile"
+	},
+	"complete.socials info": {
+		"defaultMessage": "Please connect your socials medias"
+	},
+	"complete.user.profile": {
+		"defaultMessage": "Complete user profile"
+	},
+	"condition": {
+		"defaultMessage": "Condition"
+	},
+	"condition.index.value": {
+		"defaultMessage": "Condition {index}"
+	},
+	"congrats.you.claimed.your.kit.airdrop": {
+		"defaultMessage": "Congrats you claimed your KIT airdrop"
+	},
+	"connect.account": {
+		"defaultMessage": "Connect account"
+	},
+	"connect.discord": {
+		"defaultMessage": "Connect Discord"
+	},
+	"connect.social.media": {
+		"defaultMessage": "Connect social media"
+	},
+	"connect.socials": {
+		"defaultMessage": "Connect socials"
+	},
+	"connect.twitter": {
+		"defaultMessage": "Connect Twitter"
+	},
+	"connect.wallet.to.start.create.collections": {
+		"defaultMessage": "Connect wallet to start create collections"
+	},
+	"contract": {
+		"defaultMessage": "Contract"
+	},
+	"contract.deployed": {
+		"defaultMessage": "Contract deployed"
+	},
+	"contract.generator": {
+		"defaultMessage": "Contract generator"
+	},
+	"create.a.form.to.interact.with.your.new.contract": {
+		"defaultMessage": "Create a form to interact with your new contract"
+	},
+	"create.app": {
+		"defaultMessage": "Create app"
+	},
+	"create.form": {
+		"defaultMessage": "Create form"
+	},
+	"create.image": {
+		"defaultMessage": "Generate AI Image"
+	},
+	"create.new.page": {
+		"defaultMessage": "Create new page"
+	},
+	"create.nft.order": {
+		"defaultMessage": "Create NFT order"
+	},
+	"create.nft.store.app": {
+		"defaultMessage": "Create nft store app"
+	},
+	"create.order": {
+		"defaultMessage": "Create Order"
+	},
+	"create.swap.app": {
+		"defaultMessage": "Create swap app"
+	},
+	"create.user.profile": {
+		"defaultMessage": "Create user profile"
+	},
+	"create.wallet.app": {
+		"defaultMessage": "Create wallet app"
+	},
+	"create.your.app": {
+		"defaultMessage": "Create your App"
+	},
+	"creating.nft": {
+		"defaultMessage": "Creating NFT"
+	},
+	"creating.nft.on.server": {
+		"defaultMessage": "Creating NFT on chain and saving metadata"
+	},
+	"creating.user.profile": {
+		"defaultMessage": "Creating user profile"
+	},
+	"crypto.app.setup": {
+		"defaultMessage": "Crypto App Setup"
+	},
+	"default.amount.to.send.to.the.contract": {
+		"defaultMessage": "Default amount to send to the contract"
+	},
+	"default.network": {
+		"defaultMessage": "Default network"
+	},
+	"default.network.info.swap.form": {
+		"defaultMessage": "Default network when wallet is not connected"
+	},
+	"default.slippage.percentage": {
+		"defaultMessage": "Default slippage (0-50%)"
+	},
+	"default.theme.mode": {
+		"defaultMessage": "Default Theme mode"
+	},
+	"default.value": {
+		"defaultMessage": "Default value"
+	},
+	"delete": {
+		"defaultMessage": "Delete"
+	},
+	"delete.account.from.user": {
+		"defaultMessage": "Delete account from user"
+	},
+	"deploy.contract.template": {
+		"defaultMessage": "Deploy Contract Template"
+	},
+	"disable.proxy": {
+		"defaultMessage": "Disable proxy"
+	},
+	"discord.username": {
+		"defaultMessage": "Discord username"
+	},
+	"do.you.really.want.to.clone.this.form": {
+		"defaultMessage": "Do you really want to clone this form?"
+	},
+	"do.you.really.want.to.create.a.nft.info": {
+		"defaultMessage": "Do you really want to create a NFT representing ownership of this marketplace? After you create this NFT you are not able to delete anymore the marketplace! You can sell or transfer this NFT, if you do so, you lose ownership of the marketplace."
+	},
+	"do.you.really.want.to.create.a.nft.store.app": {
+		"defaultMessage": "Do you really want to create a nft store app?"
+	},
+	"do.you.really.want.to.create.a.swap.app": {
+		"defaultMessage": "Do you really want to create a swap app?"
+	},
+	"do.you.really.want.to.create.a.wallet.app": {
+		"defaultMessage": "Do you really want to create a wallet app?"
+	},
+	"do.you.really.want.to.create.your.user.profile": {
+		"defaultMessage": "Do you really want to create your user profile?"
+	},
+	"do.you.really.want.to.edit.this.image": {
+		"defaultMessage": "Do you really want to edit this image?"
+	},
+	"do.you.really.want.to.remove.this.form": {
+		"defaultMessage": "Do you really want to remove this form?"
+	},
+	"do.you.really.want.to.send.this.app.settings": {
+		"defaultMessage": "Do you really want to send it?"
+	},
+	"do.you.really.want.to.update.a.nft.info": {
+		"defaultMessage": "Do you really want to update this NFT representing ownership of this marketplace?"
+	},
+	"edit.app": {
+		"defaultMessage": "Edit App"
+	},
+	"edit.hide.powered.by.dexkit": {
+		"defaultMessage": "Edit powered by DexKit"
+	},
+	"edit.image.name": {
+		"defaultMessage": "Edit image name"
+	},
+	"edit.profile": {
+		"defaultMessage": "Edit profile"
+	},
+	"edit.user.profile": {
+		"defaultMessage": "Edit user profile: {username}"
+	},
+	"empty": {
+		"defaultMessage": "Empty"
+	},
+	"error.generating.image": {
+		"defaultMessage": "Error generating image"
+	},
+	"error.reason": {
+		"defaultMessage": "Error reason: {value}"
+	},
+	"facebook": {
+		"defaultMessage": "Facebook"
+	},
+	"featured.token.in.your.app": {
+		"defaultMessage": "Featured tokens in your app"
+	},
+	"field.is.invalid": {
+		"defaultMessage": "{field} is invalid"
+	},
+	"field.is.invalid.address": {
+		"defaultMessage": "{field} is invalid address"
+	},
+	"field.is.required": {
+		"defaultMessage": "{field} is required"
+	},
+	"filters": {
+		"defaultMessage": "Filters"
+	},
+	"finish": {
+		"defaultMessage": "Finish"
+	},
+	"font": {
+		"defaultMessage": "Font"
+	},
+	"forbidden": {
+		"defaultMessage": "Forbidden"
+	},
+	"form.created.successfully": {
+		"defaultMessage": "Fomr created successfully"
+	},
+	"formatted.decimal": {
+		"defaultMessage": "Formatted decimal"
+	},
+	"function.name": {
+		"defaultMessage": "Function name"
+	},
+	"gated.conditions": {
+		"defaultMessage": "Gated conditions"
+	},
+	"generating.image": {
+		"defaultMessage": "Generating Image..."
+	},
+	"hidden": {
+		"defaultMessage": "Hidden"
+	},
+	"hide.form.info": {
+		"defaultMessage": "Hide form info"
+	},
+	"hide.form.info.tooltip": {
+		"defaultMessage": "Hide form info like: contract address, description and name from the section"
+	},
+	"hide.inputs": {
+		"defaultMessage": "Hide inputs"
+	},
+	"hide.label": {
+		"defaultMessage": "Hide label"
+	},
+	"hide.on.desktop": {
+		"defaultMessage": "Hide on desktop"
+	},
+	"hide.on.mobile": {
+		"defaultMessage": "Hide on mobile"
+	},
+	"hide.powered.by.dexkit": {
+		"defaultMessage": "Hide Powered by DexKit"
+	},
+	"hold.kit": {
+		"defaultMessage": "Hold KIT"
+	},
+	"holding.kit.info": {
+		"defaultMessage": "You need to hold 1000 KIT on one of supported networks (ETH, BSC and Polygon) to use this feature!"
+	},
+	"info.alert.description.gated.form.modal": {
+		"defaultMessage": "As the owner of this private web page, please enter the specific conditions that users must meet to access your page. By defining these conditions, you ensure that only eligible users are granted access."
+	},
+	"info.alert.title.gated.form.modal": {
+		"defaultMessage": "Define access conditions for your private page"
+	},
+	"info.create.collection.page": {
+		"defaultMessage": "Create a collection of NFT's easily using our contract wizard. You now can use our generate AI feature to generate an image for your collection. Please note that you need to hold {holdAmount} KIT in one of our supported networks: BSC, Polygon or Ethereum (Max. 50 images per month). Fill description first and generate image. If you need support or a bigger plan for AI generation please reach us on our <a>dedicated Discord channel</a> or email info@dexkit.com!"
+	},
+	"info.quick.wizard.store.account": {
+		"defaultMessage": "Fill first your store account with the address from where you want to sell your NFTs."
+	},
+	"input.type": {
+		"defaultMessage": "Input Type"
+	},
+	"inputs": {
+		"defaultMessage": "Inputs"
+	},
+	"invalid.address": {
+		"defaultMessage": "Invalid address"
+	},
+	"kit.airdrop": {
+		"defaultMessage": "KIT Airdrop"
+	},
+	"kit.claim.submitted": {
+		"defaultMessage": "KIT claim submitted"
+	},
+	"label": {
+		"defaultMessage": "Label"
+	},
+	"link": {
+		"defaultMessage": "Link"
+	},
+	"linkedin.company": {
+		"defaultMessage": "Linkedin company"
+	},
+	"lock.inputs": {
+		"defaultMessage": "Lock inputs"
+	},
+	"logged": {
+		"defaultMessage": "Logged"
+	},
+	"login": {
+		"defaultMessage": "Login"
+	},
+	"login.app": {
+		"defaultMessage": "Login app"
+	},
+	"login.app.to.edit.your.user.profile.you.just.need.to.sign.a.message.with.your.wallet": {
+		"defaultMessage": "Login to app to edit your user profile. You just need to sign a message with your wallet"
+	},
+	"login.by.connect.wallet": {
+		"defaultMessage": "Login with your wallet. You will need to sign a message."
+	},
+	"logo.for.dark.mode": {
+		"defaultMessage": "Logo for Dark Mode"
+	},
+	"logo.height": {
+		"defaultMessage": "Logo height (px)"
+	},
+	"logo.height.on.mobile": {
+		"defaultMessage": "Logo height on Mobile (px)"
+	},
+	"logo.width": {
+		"defaultMessage": "Logo width (px)"
+	},
+	"logo.width.on.mobile": {
+		"defaultMessage": "Logo width on Mobile (px)"
+	},
+	"markdown": {
+		"defaultMessage": "Markdown"
+	},
+	"must.have": {
+		"defaultMessage": "Must have"
+	},
+	"name.of.your.app": {
+		"defaultMessage": "Name of your app"
+	},
+	"network": {
+		"defaultMessage": "Network"
+	},
+	"network.swap.options.info": {
+		"defaultMessage": "Choose the default tokens and slippage for each network."
+	},
+	"nft.created": {
+		"defaultMessage": "NFT created"
+	},
+	"nft.detail": {
+		"defaultMessage": "NFT detail"
+	},
+	"nft.store": {
+		"defaultMessage": "NFT store"
+	},
+	"nft.store.quick.builder": {
+		"defaultMessage": "NFT store quick builder"
+	},
+	"no.results": {
+		"defaultMessage": "No results"
+	},
+	"no.user.with.this.name": {
+		"defaultMessage": "No user with this name"
+	},
+	"not.enough.kit": {
+		"defaultMessage": "Not enough KIT"
+	},
+	"onboarding.builder.collections": {
+		"defaultMessage": "Add your highlighted collections to appear on your app's collection page and NFT sections. By featuring collections, you can draw attention to specific NFTs and increase the visibility and sales of these items. This can help promote your app and generate revenue for your business."
+	},
+	"onboarding.builder.domain": {
+		"defaultMessage": "Deploy your app on your own domain to make it accessible to a wider audience. To do so, you'll need to configure your domain settings and follow our step-by-step guide to ensure a smooth deployment process. Once complete, your app will be up and running on your very own domain!"
+	},
+	"onboarding.builder.footer.menu": {
+		"defaultMessage": "Customize your app's footer to provide additional information and improve navigation for your users. You can use page links to direct users to specific pages within your app, or external links to connect users to related resources or information outside of your app. By customizing your footer, you can create a more complete and user-friendly experience for your audience."
+	},
+	"onboarding.builder.general": {
+		"defaultMessage": "Customize your app by editing its name and logos, as well as defining your default currency and language. These settings not only help make your app unique, but also ensure a seamless user experience for your audience."
+	},
+	"onboarding.builder.marketplace.fees": {
+		"defaultMessage": "Set your marketplace fees that will be added on top of NFT sales or offers. By setting fees, you can earn a commission on each sale made on your app's marketplace. This can help generate revenue and sustain the growth and development of your app over time."
+	},
+	"onboarding.builder.menu": {
+		"defaultMessage": "Customize your app's navbar menu links to improve navigation and highlight key features of your app. You can use page links to direct users to specific pages within your app, or external links to connect users to related resources or information outside of your app. By customizing your navbar menu links, you can create a more intuitive and user-friendly experience for your audience"
+	},
+	"onboarding.builder.menu.kits": {
+		"defaultMessage": "Use our KITs to filter tools based on your needs. Choose from ALL to see all available tools, NFT to see non-fungible token-related tools, or Swap to see tools related to swapping. With our KITs, you have the flexibility to customize your app-building experience to your preferences."
+	},
+	"onboarding.builder.ownership": {
+		"defaultMessage": "Get ownership of your app content by creating a non-fungible token (NFT) associated with your app. An NFT is a unique digital asset that represents ownership of a specific piece of content, such as your app. By creating an NFT for your app, you can establish its uniqueness and ownership, helping to protect your intellectual property and increase its value."
+	},
+	"onboarding.builder.pages": {
+		"defaultMessage": "Build pages using our Web3 KITs, which provide you with pre-built templates and components for creating swap interfaces, NFT marketplaces, NFT stores, or even generic pages. With our KITs, you can easily customize your pages and create a unique user experience that aligns with your app's goals and objectives."
+	},
+	"onboarding.builder.preview.app.button": {
+		"defaultMessage": "Preview your app in a modal right after saving your changes. This allows you to see your updates in real time and make any necessary adjustments before publishing your app."
+	},
+	"onboarding.builder.preview.app.link": {
+		"defaultMessage": "Preview your app on the associated DexKit domain, which can be used for both testing and production. This provides you with a unique URL where you can view your app in a web browser and share it with others for feedback or to showcase your finished product. It's a great way to see how your app looks and functions in a real-world environment."
+	},
+	"onboarding.builder.seo": {
+		"defaultMessage": "Customize the SEO fields for each page to improve your app's visibility and search engine rankings. By optimizing fields such as page titles, and descriptions, you can help search engines understand the content of your pages and rank them higher in search results. By customizing your SEO fields, you can attract more traffic to your app and increase your chances of success"
+	},
+	"onboarding.builder.social.media": {
+		"defaultMessage": "Set up your social media profiles for your app to increase its visibility and connect with your audience. By creating a strong social media presence, you can promote your app, build a community around it, and receive valuable feedback from your users."
+	},
+	"onboarding.builder.swap.fees": {
+		"defaultMessage": "Set your swap fees that will be added on top of swap trades. By setting fees, you can earn a commission on each swap trade made on your app's interface. This can help generate revenue and sustain the growth and development of your app over time"
+	},
+	"onboarding.builder.theme": {
+		"defaultMessage": "Select your global theme and font for your app to ensure a consistent and visually appealing experience for your users. By choosing a theme and font that aligns with your brand identity, you can create a cohesive look and feel that strengthens your brand recognition and credibility."
+	},
+	"onboarding.builder.tokens": {
+		"defaultMessage": "Add tokens to be featured on your app's swap component. By featuring tokens, you can draw attention to specific tokens and increase their visibility and trading volume. This can help promote your app and generate revenue for your business."
+	},
+	"onboarding.welcome.dexappbuilder": {
+		"defaultMessage": "'Welcome to DexAppBuilder, the powerful tool that makes it easy to build and edit your own app! With our intuitive interface and robust feature set, you'll be up and running in no time. Whether you're a seasoned developer or just starting out, our comprehensive documentation and dedicated support team are here to help you every step of the way. So let's get started and see all that DexAppBuilder has to offer!"
+	},
+	"only.visible": {
+		"defaultMessage": "Only visible"
+	},
+	"orders": {
+		"defaultMessage": "Orders"
+	},
+	"output": {
+		"defaultMessage": "Output"
+	},
+	"output.type": {
+		"defaultMessage": "Output Type"
+	},
+	"ownership": {
+		"defaultMessage": "Ownership"
+	},
+	"ownership.nft.info": {
+		"defaultMessage": "This NFT represents your ownership of this app. Who owns this NFT can edit it. To create or edit this NFT you need to hold 1000 KIT on one of the supported networks: Polygon, BSC or ETH. This NFT allows you to sell or transfer ownership of this app. This NFT resides on Polygon. Apps associated with an NFT are not clonable."
+	},
+	"ownership.settings": {
+		"defaultMessage": "Associate an NFT to your app"
+	},
+	"paste": {
+		"defaultMessage": "Paste"
+	},
+	"please.connect.your.wallet.to.see.balance": {
+		"defaultMessage": "Please, connect your wallet to see your balance"
+	},
+	"please.create.a.form.to.start.using.it.here": {
+		"defaultMessage": "Please, create a form to start using it here"
+	},
+	"powered.by.dexkit": {
+		"defaultMessage": "Powered by DexKit"
+	},
+	"powered.by.dexkit.info": {
+		"defaultMessage": "You need to associate an NFT to your app to use this feature."
+	},
+	"preview.app": {
+		"defaultMessage": "Preview App"
+	},
+	"profile.image": {
+		"defaultMessage": "Profile Image"
+	},
+	"profileImage": {
+		"defaultMessage": "Profile Image"
+	},
+	"quantity": {
+		"defaultMessage": "Quantity"
+	},
+	"quick.nft.store.builder": {
+		"defaultMessage": "Quick NFT store builder"
+	},
+	"quick.swap.builder": {
+		"defaultMessage": "Quick swap builder"
+	},
+	"quick.waççet.builder": {
+		"defaultMessage": "Quick wallet builder"
+	},
+	"quick.wizard.nft.store.welcome.index.message": {
+		"defaultMessage": "Welcome to DexAppBuilder! Here you can quick start your NFT store. If you need support please reach us on our <a>dedicated Discord channel</a>. Please check our <d>docs</d> for whitelabels. Reach us at our email <b>info@dexkit.com</b> if you need a custom solution that the wizard not attend."
+	},
+	"quick.wizard.swap.welcome.index.message": {
+		"defaultMessage": "Welcome to DexAppBuilder! Here you can quick start your crypto aggregator If you need support please reach us on our <a>dedicated Discord channel</a>. Please check our <d>docs</d> for whitelabels. Reach us at our email <b>info@dexkit.com</b> if you need a custom solution that the wizard not attend."
+	},
+	"quick.wizard.wallet.welcome.index.message": {
+		"defaultMessage": "Welcome to DexAppBuilder! Here you can quick start your wallet. If you need support please reach us on our <a>dedicated Discord channel</a>. Please check our <d>docs</d> for whitelabels. Reach us at our email <b>info@dexkit.com</b> if you need a custom solution that the wizard not attend."
+	},
+	"read": {
+		"defaultMessage": "Read"
+	},
+	"receive": {
+		"defaultMessage": "Receive"
+	},
+	"reddit": {
+		"defaultMessage": "Reddit"
+	},
+	"remove.account.from.user": {
+		"defaultMessage": "Remove account from user"
+	},
+	"required.field": {
+		"defaultMessage": "required field"
+	},
+	"reset": {
+		"defaultMessage": "Reset"
+	},
+	"scan": {
+		"defaultMessage": "Scan"
+	},
+	"scan.code": {
+		"defaultMessage": "Scan code",
+		"description": "Select currency"
+	},
+	"scan.using.crypto.mobile.app": {
+		"defaultMessage": "Scan QR code using crypto mobile app like Metamask or Trust"
+	},
+	"search.default.input.token": {
+		"defaultMessage": "Search default input token"
+	},
+	"search.default.output.token": {
+		"defaultMessage": "Search default output token"
+	},
+	"search.for.a.contract": {
+		"defaultMessage": "Search for a contract"
+	},
+	"search.in.store": {
+		"defaultMessage": "Search in store"
+	},
+	"search.not.returned.results": {
+		"defaultMessage": "Search not returned results. Try other search words."
+	},
+	"select.or.import.nft": {
+		"defaultMessage": "Select or import a NFT to create an order"
+	},
+	"send": {
+		"defaultMessage": "Send"
+	},
+	"sending.airdrop.to.your.wallet": {
+		"defaultMessage": "Sending airdrop to your wallet"
+	},
+	"sending.user.profile.data": {
+		"defaultMessage": "Complete profile data"
+	},
+	"settings.to.configure.store": {
+		"defaultMessage": "Settings to configure your NFT Store"
+	},
+	"short.description": {
+		"defaultMessage": "Short description"
+	},
+	"shortbio": {
+		"defaultMessage": "Short Bio"
+	},
+	"socials": {
+		"defaultMessage": "Socials"
+	},
+	"start.by.connect.wallet": {
+		"defaultMessage": "Start by connecting your wallet. If you don't have one, you can create one by clicking on connect wallet button and choosing our Discord, Google, Twitter or email wallet"
+	},
+	"steps.completed.finished.stepper": {
+		"defaultMessage": "All steps completed - you finished swap configuration"
+	},
+	"store.account": {
+		"defaultMessage": "Store account"
+	},
+	"store.without.order": {
+		"defaultMessage": "Store without offers. Came back later!"
+	},
+	"swap.apps": {
+		"defaultMessage": "Swap apps"
+	},
+	"swap.quick.builder": {
+		"defaultMessage": "Swap quick builder"
+	},
+	"swap.step.general.info": {
+		"defaultMessage": "Set general info for your wallet app."
+	},
+	"swap.step.theme.info": {
+		"defaultMessage": "Choose swap app theme and font."
+	},
+	"switch.wallet": {
+		"defaultMessage": "Switch wallet"
+	},
+	"switch.your.wallet.to.another.account.and.click.connect.account": {
+		"defaultMessage": "Switch your wallet to another account and click connect account"
+	},
+	"theme.mode": {
+		"defaultMessage": "Theme mode"
+	},
+	"this.app.is.not.clonable": {
+		"defaultMessage": "This app is not clonable."
+	},
+	"token.import.info": {
+		"defaultMessage": "You can search tokens on our API or import it directly by contract address"
+	},
+	"trades": {
+		"defaultMessage": "Trades"
+	},
+	"transfer": {
+		"defaultMessage": "Transfer"
+	},
+	"transfer.nft": {
+		"defaultMessage": "Transfer NFT"
+	},
+	"try.gain": {
+		"defaultMessage": "Try again"
+	},
+	"twitter.username": {
+		"defaultMessage": "Twitter username"
+	},
+	"update": {
+		"defaultMessage": "Update"
+	},
+	"updating.user.profile": {
+		"defaultMessage": "Updating user profile"
+	},
+	"user.accounts": {
+		"defaultMessage": "User accounts:"
+	},
+	"user.contract.form": {
+		"defaultMessage": "User contract form"
+	},
+	"user.edit": {
+		"defaultMessage": "User Edit"
+	},
+	"user.login": {
+		"defaultMessage": "User login"
+	},
+	"user.name.variable": {
+		"defaultMessage": "User: {username}"
+	},
+	"user.not.found": {
+		"defaultMessage": "User not found"
+	},
+	"user.profile": {
+		"defaultMessage": "User profile"
+	},
+	"user.profile.value": {
+		"defaultMessage": "User Profile: {username}"
+	},
+	"user.verified.social": {
+		"defaultMessage": "Verified in: {discord} {twitter}"
+	},
+	"username": {
+		"defaultMessage": "Username"
+	},
+	"verify.discord": {
+		"defaultMessage": "Verify Twitter"
+	},
+	"view.nft": {
+		"defaultMessage": "View NFT"
+	},
+	"view.profile": {
+		"defaultMessage": "View profile"
+	},
+	"view.public.profile": {
+		"defaultMessage": "View public profile"
+	},
+	"view.template": {
+		"defaultMessage": "View template"
+	},
+	"view.user.profile": {
+		"defaultMessage": "View user profile"
+	},
+	"wait.nft.creation.by.dexkit": {
+		"defaultMessage": "Wait for NFT creation by DexKit"
+	},
+	"wallet.connected.account": {
+		"defaultMessage": "Wallet connected account"
+	},
+	"wallet.quick.builder": {
+		"defaultMessage": "Wallet quick builder"
+	},
+	"wallet.section.form.info": {
+		"defaultMessage": "Wallet section don't accepts configs at the moment. In next updates, you will be able to customize buttons and networks"
+	},
+	"wallet.step.theme.info": {
+		"defaultMessage": "Choose wallet app theme and font."
+	},
+	"write": {
+		"defaultMessage": "Write"
+	},
+	"you.dont.have.any.forms": {
+		"defaultMessage": "You don't have any forms yet"
+	},
+	"you.need.to.hold.kit.value": {
+		"defaultMessage": "You need to hold {value} KIT on one of these networks: BSC, ETH, or Polygon to use this feature"
+	},
+	"your.balance": {
+		"defaultMessage": "Your Balance"
+	},
+	"your.nft.not.created": {
+		"defaultMessage": "Your NFT were not created"
+	},
+	"your.nft.were.created": {
+		"defaultMessage": "Your NFT were created"
+	},
+	"your.user.profile.was.created": {
+		"defaultMessage": "Your user profile was created"
+	},
+	"your.user.profile.was.updated": {
+		"defaultMessage": "Your user profile was updated"
+	},
+	"youtube.channel": {
+		"defaultMessage": "Youtube channel"
+	},
 	"Analytics": {
 		"defaultMessage": "Analytics"
 	},

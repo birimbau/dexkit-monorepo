@@ -169,3 +169,31 @@ export async function listTemplateInstances(
 export async function cloneForm({ id }: { id: number }) {
   return (await myAppsApi.post<{ id: number }>(`/forms/${id}/clone`)).data;
 }
+
+export async function deleteForm({
+  id,
+  signal,
+}: {
+  id: number;
+  signal?: AbortSignal;
+}) {
+  return await myAppsApi.delete(`/forms/${id}`, {
+    signal,
+  });
+}
+
+export async function saveContractDeploy({
+  contractAddress,
+  name,
+  chainId,
+}: {
+  contractAddress: string;
+  name?: string;
+  chainId: number;
+}) {
+  return await myAppsApi.post(`/forms/deploy`, {
+    name,
+    contractAddress,
+    chainId,
+  });
+}

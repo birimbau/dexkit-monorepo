@@ -3,21 +3,17 @@ import { useWeb3React } from "@web3-react/core";
 import { ChainId, TransactionStatus, TransactionType } from "@dexkit/core/constants/enums";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
+import { WRAPPED_TOKEN_ADDRESS } from "@dexkit/core/constants/networks";
+import { TransactionMetadata } from "@dexkit/core/types";
 import { BigNumber, ethers, providers } from "ethers";
 import { useAtom } from "jotai";
 import { useUpdateAtom } from "jotai/utils";
 import { useSnackbar } from "notistack";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useIntl } from "react-intl";
-import { WRAPED_TOKEN_ADDRESS } from "../constants";
 import { ERC20Abi, WETHAbi } from "../constants/abis";
 import { getPricesByChain, getTokensBalance } from "../services";
 import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "../services/zeroex/constants";
-import { Token } from "../types";
-import { isAddressEqual, tokenKey } from "../utils";
-import { NotificationCallbackParams } from "../widgets/swap/types";
-
-import { TransactionMetadata } from "@dexkit/core/types";
 import {
   isConnectWalletOpenAtom,
   recentTokensAtom,
@@ -26,10 +22,13 @@ import {
   transactionDialogMetadataAtom,
   transactionDialogOpenAtom,
   transactionDialogRedirectUrlAtom,
-  transactionsAtom,
   transactionTypeAtom,
-  transactionValuesAtom
+  transactionValuesAtom,
+  transactionsAtom
 } from '../state/atoms';
+import { Token } from "../types";
+import { isAddressEqual, tokenKey } from "../utils";
+import { NotificationCallbackParams } from "../widgets/swap/types";
 
 export function useConnectWalletDialog() {
   const [isOpen, setOpen] = useAtom(isConnectWalletOpenAtom);
@@ -130,7 +129,7 @@ export function useWrapToken({
 
       const chainId = (await provider?.getNetwork()).chainId;
 
-      const contractAddress = WRAPED_TOKEN_ADDRESS[chainId];
+      const contractAddress = WRAPPED_TOKEN_ADDRESS(chainId) || '';
 
       const contract = new ethers.Contract(
         contractAddress,
@@ -165,7 +164,7 @@ export function useWrapToken({
       const chainId = (await provider?.getNetwork()).chainId;
 
       const contract = new ethers.Contract(
-        WRAPED_TOKEN_ADDRESS[chainId],
+        WRAPPED_TOKEN_ADDRESS(chainId) || '',
         ["function withdraw(uint wad) public "],
         provider.getSigner()
       );

@@ -82,6 +82,7 @@ export function useSwapQuote({
       ) {
         return null;
       }
+      console.log(chainId);
 
       return await axios
         .get(ZERO_EX_QUOTE_ENDPOINT(chainId), {
@@ -92,14 +93,14 @@ export function useSwapQuote({
             buyAmount:
               buyAmount !== ''
                 ? ethers.utils
-                    .parseUnits(buyAmount, buyToken?.decimals)
-                    .toString()
+                  .parseUnits(buyAmount, buyToken?.decimals)
+                  .toString()
                 : undefined,
             sellAmount:
               sellAmount !== ''
                 ? ethers.utils
-                    .parseUnits(sellAmount, sellToken?.decimals)
-                    .toString()
+                  .parseUnits(sellAmount, sellToken?.decimals)
+                  .toString()
                 : undefined,
             takerAddress,
             skipValidation,

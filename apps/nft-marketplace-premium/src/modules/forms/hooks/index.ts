@@ -1,21 +1,27 @@
 import { ChainId } from '@dexkit/core';
+import { DexkitApiProvider } from '@dexkit/core/providers';
 import { ContractFormParams } from '@dexkit/web3forms/types';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, useMutation, useQuery } from '@tanstack/react-query';
+import axios from 'axios';
 import { ethers } from 'ethers';
+import { useContext } from 'react';
+import { DEPLOYABLE_CONTRACTS_URL } from '../constants';
 import {
   cloneForm,
   createForm,
   createFormTemplate,
   createTemplateInstance,
+  deleteForm,
   getForm,
   getFormTemplate,
   listFormTemplates,
   listForms,
   listTemplateInstances,
+  saveContractDeploy,
   updateForm,
   updateFormTemplate,
 } from '../services';
-import { FormTemplate } from '../types';
+import { DeployableContract, FormTemplate } from '../types';
 
 export function useCreateFormMutation({ templateId }: { templateId?: number }) {
   return useMutation(
@@ -43,7 +49,7 @@ export function useCreateFormMutation({ templateId }: { templateId?: number }) {
         params: JSON.parse(data.rawData),
         templateId: data.template?.id,
       } as ContractFormData;
-    }
+    },
   );
 }
 
@@ -61,7 +67,7 @@ export function useUpdateFormMutation() {
         description: params.description,
         params: JSON.stringify(params.params),
       });
-    }
+    },
   );
 }
 
@@ -95,7 +101,7 @@ export function useFormQuery({ id }: { id?: number }) {
         templateId: data.template?.id,
       } as ContractFormData;
     },
-    { enabled: id !== undefined }
+    { enabled: id !== undefined },
   );
 }
 
@@ -115,7 +121,7 @@ export function useCreateFormTemplateMutation() {
           name: params.name,
         })
       ).data;
-    }
+    },
   );
 }
 
@@ -137,7 +143,7 @@ export function useUpdateFormTemplateMutation() {
           name: params.name,
         })
       ).data;
-    }
+    },
   );
 }
 
@@ -162,7 +168,7 @@ export function useFormTemplateQuery({ id }: { id?: number }) {
         name: data.name,
       } as FormTemplate;
     },
-    { enabled: id !== undefined, refetchOnWindowFocus: false }
+    { enabled: id !== undefined, refetchOnWindowFocus: false },
   );
 }
 
@@ -195,10 +201,10 @@ export function useListFormsQuery({
             creatorAddress: form.creatorAddress,
             params: JSON.parse(form.rawData),
             templateId: form.template?.id,
-          } as ContractFormData)
+          }) as ContractFormData,
       );
     },
-    { enabled: creatorAddress !== undefined }
+    { enabled: creatorAddress !== undefined },
   );
 }
 
@@ -235,10 +241,10 @@ export function useListFormTemplatesQuery({
             bytecode: template.bytecode,
             description: template.description,
             name: template.name,
-          } as FormTemplate)
+          }) as FormTemplate,
       );
     },
-    { enabled: creatorAddress !== undefined }
+    { enabled: creatorAddress !== undefined },
   );
 }
 
@@ -272,7 +278,7 @@ export function useSaveInstanceMutation() {
       description: string;
     }) => {
       return await createTemplateInstance(params);
-    }
+    },
   );
 }
 
@@ -292,12 +298,95 @@ export function useListTemplateInstances({
 
       return await listTemplateInstances(templateId);
     },
-    { enabled: templateId !== undefined }
+    { enabled: templateId !== undefined },
   );
 }
 
 export function useCloseFormMutation() {
   return useMutation(async ({ id }: { id: number }) => {
     return await cloneForm({ id });
+  });
+}
+
+export function useDeleteFormMutation() {
+  return useMutation(async ({ id }: { id: number }) => {
+    return await deleteForm({ id });
+  });
+}
+
+export function useSaveContractDeployed() {
+  return useMutation(
+    async ({
+      contractAddress,
+      name,
+      chainId,
+    }: {
+      contractAddress: string;
+      name?: string;
+      chainId: number;
+    }) => {
+      return await saveContractDeploy({ contractAddress, name, chainId });
+    },
+  );
+}
+
+export const LIST_DEPLOYED_CONTRACTS = 'LIST_DEPLOYED_CONTRACTS';
+
+export function useListDeployedContracts({
+  page = 1,
+  owner,
+  name,
+  chainId,
+}: {
+  page?: number;
+  owner: string;
+  name?: string;
+  chainId?: ChainId;
+}) {
+  const { instance } = useContext(DexkitApiProvider);
+
+  return useInfiniteQuery<{
+    items: {
+      name: string;
+      contractAddress: string;
+      owner: string;
+      id: number;
+      chainId?: number;
+    }[];
+    nextCursor?: number;
+  }>(
+    [LIST_DEPLOYED_CONTRACTS, page, owner, name, chainId],
+    async ({ pageParam }) => {
+      if (instance) {
+        return (
+          await instance.get<{
+            items: {
+              name: string;
+              contractAddress: string;
+              owner: string;
+              id: number;
+              chainId?: number;
+            }[];
+            nextCursor?: number;
+          }>('/forms/deploy/list', {
+            params: { cursor: pageParam, limit: 12, owner, name, chainId },
+          })
+        ).data;
+      }
+
+      return { items: [], nextCursor: undefined };
+    },
+    {
+      getNextPageParam: ({ nextCursor }) => nextCursor,
+    },
+  );
+}
+
+export const DEPLOYABLE_CONTRACTS_QUERY = 'DEPLOYABLE_CONTRACTS_QUERY';
+
+export function useDeployableContractsQuery() {
+  return useQuery([DEPLOYABLE_CONTRACTS_QUERY], async ({}) => {
+    return (await axios.get<DeployableContract[]>(DEPLOYABLE_CONTRACTS_URL))
+      .data;
   });
 }

@@ -1,12 +1,13 @@
 import { inputMapping } from '@/modules/wizard/utils';
 import PasteIconButton from '@dexkit/ui/components/PasteIconButton';
 import { AbiFragment, ContractFormParams } from '@dexkit/web3forms/types';
+import { normalizeAbi } from '@dexkit/web3forms/utils';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
 import { Box, InputAdornment, TextField, Tooltip } from '@mui/material';
 import { useFormikContext } from 'formik';
 import { useSnackbar } from 'notistack';
 import { memo } from 'react';
-import { FormattedMessage, useIntl } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 
 export interface ContractFormAbiInputProps {
   abiStr: string;
@@ -19,7 +20,7 @@ function ContractFormAbiInput({ abiStr }: ContractFormAbiInputProps) {
 
   const handlePaste = (data: string) => {
     try {
-      const abi: AbiFragment[] = JSON.parse(data);
+      const abi: AbiFragment[] = normalizeAbi(JSON.parse(data));
       const fields = inputMapping(abi);
 
       setFieldValue('abi', abi);
@@ -28,8 +29,6 @@ function ContractFormAbiInput({ abiStr }: ContractFormAbiInputProps) {
       enqueueSnackbar(String(err), { variant: 'error' });
     }
   };
-
-  const { formatMessage } = useIntl();
 
   return (
     <TextField

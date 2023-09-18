@@ -48,6 +48,7 @@ export const COINGECKO_PLATFORM_ID: { [key: number]: string } = {
   [ChainId.Fantom]: 'fantom',
   [ChainId.Optimism]: 'optimistic-ethereum',
   [ChainId.Arbitrum]: 'arbitrum',
+  [ChainId.Base]: 'base',
 };
 
 export const ZERO_EX_CHAIN_PREFIX = (chainId?: number) => {
@@ -70,6 +71,8 @@ export const ZERO_EX_CHAIN_PREFIX = (chainId?: number) => {
       return 'optimism.';
     case ChainId.Arbitrum:
       return 'arbitrum.';
+    case ChainId.Base:
+      return 'base.';
     default:
       return '';
   }

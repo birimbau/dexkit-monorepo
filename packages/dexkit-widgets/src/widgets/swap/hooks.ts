@@ -1,11 +1,11 @@
 import { ChainId } from "@dexkit/core/constants/enums";
-import { NETWORKS } from "@dexkit/core/constants/networks";
+import { NETWORKS, WRAPPED_TOKEN_ADDRESS } from "@dexkit/core/constants/networks";
 import {
-  useMutation,
   UseMutationOptions,
   UseMutationResult,
-  useQuery,
-  UseQueryResult
+  UseQueryResult,
+  useMutation,
+  useQuery
 } from "@tanstack/react-query";
 
 import transakSDK from "@transak/transak-sdk";
@@ -15,7 +15,7 @@ import { BigNumber, ethers, providers } from "ethers";
 import { useSnackbar } from "notistack";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useIntl } from "react-intl";
-import { WRAPED_TOKEN_ADDRESS } from "../../constants";
+
 import { ERC20Abi } from "../../constants/abis";
 
 import {
@@ -399,6 +399,7 @@ export function useSwapState({
   const [showSelect, setShowSelectToken] = useState(false);
 
   const [quoteFor, setQuoteFor] = useState<SwapSide>();
+  const [clickOnMax, setClickOnMax] = useState<boolean>(false);
 
   const [sellToken, setSellToken] = useState<Token | undefined>();
   const [buyToken, setBuyToken] = useState<Token | undefined>();
@@ -535,20 +536,30 @@ export function useSwapState({
   };
 
   const handleChangeBuyAmount = useCallback(
-    (value: BigNumber) => {
+    (value: BigNumber, clickMax?: boolean) => {
       setQuoteFor("buy");
-
       if (buyToken) {
+        if (clickMax) {
+          setClickOnMax(true)
+        } else {
+          setClickOnMax(false)
+        }
         setBuyAmount(value);
       }
     },
     [buyToken]
   );
 
+
   const handleChangeSellAmount = useCallback(
-    (value: BigNumber) => {
+    (value: BigNumber, clickMax?: boolean) => {
       setQuoteFor("sell");
       if (sellToken) {
+        if (clickMax) {
+          setClickOnMax(true)
+        } else {
+          setClickOnMax(false)
+        }
         setSellAmount(value);
       }
     },
@@ -607,7 +618,7 @@ export function useSwapState({
         lazyBuyToken &&
         chainId &&
         isAddressEqual(
-          WRAPED_TOKEN_ADDRESS[chainId],
+          WRAPPED_TOKEN_ADDRESS(chainId),
           lazyBuyToken.contractAddress
         );
 
@@ -615,7 +626,7 @@ export function useSwapState({
         lazySellToken &&
         chainId &&
         isAddressEqual(
-          WRAPED_TOKEN_ADDRESS[chainId],
+          WRAPPED_TOKEN_ADDRESS(chainId),
           lazySellToken.contractAddress
         );
 
@@ -825,6 +836,7 @@ export function useSwapState({
     insufficientBalance: lazySellAmount?.gt(
       sellTokenBalance.data ?? BigNumber.from(0)
     ),
+    clickOnMax,
     isExecuting:
       wrapMutation.isLoading ||
       unwrapMutation.isLoading ||
@@ -869,7 +881,7 @@ export function useSwapProvider({
   disableWallet?: boolean;
 }) {
   return useMemo(() => {
-    if (defaultChainId) {
+    if (defaultChainId && NETWORKS[defaultChainId]?.providerRpcUrl) {
       return new ethers.providers.JsonRpcProvider(
         NETWORKS[defaultChainId].providerRpcUrl
       );
