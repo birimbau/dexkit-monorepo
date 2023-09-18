@@ -10,14 +10,26 @@ import {
 } from '@thirdweb-dev/react';
 
 import { useDexKitContext } from '@dexkit/ui/hooks';
-import { Button, Typography } from '@mui/material';
+import {
+  Alert,
+  Button,
+  Card,
+  CardContent,
+  Grid,
+  Typography,
+} from '@mui/material';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
-import { ClaimEligibility } from '@thirdweb-dev/sdk';
+import { ClaimEligibility, NATIVE_TOKEN_ADDRESS } from '@thirdweb-dev/sdk';
+import { SwappableAssetV4 } from '@traderxyz/nft-swap-sdk';
 import { useWeb3React } from '@web3-react/core';
 import { BigNumber, utils } from 'ethers';
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
+import {
+  useErc20AllowanceMutation,
+  useErc20ApproveMutationV2,
+} from 'src/hooks/balances';
 
 interface Props {
   section: EditionDropPageSection;
@@ -56,21 +68,52 @@ export function EditionDropSection({ section }: Props) {
   const { tokenId, address } = section.config;
   const { createNotification, watchTransactionDialog } = useDexKitContext();
 
-  const { account, chainId } = useWeb3React();
+  const { account, chainId, provider } = useWeb3React();
   const [quantity, setQuantity] = useState(1);
   const { contract: editionDrop } = useContract(address);
 
+  const allowanceMutation = useErc20AllowanceMutation(provider);
+
   const { data: contractMetadata } = useContractMetadata(editionDrop);
 
-  const claimConditions = useClaimConditions(editionDrop);
+  const claimConditions = useClaimConditions(editionDrop, tokenId);
 
   const activeClaimCondition = useActiveClaimConditionForWallet(
     editionDrop,
     account,
     tokenId
   );
+  const handleApproveAssetSuccess = useCallback(
+    async (hash: string, swapAsset: SwappableAssetV4) => {
+      if (swapAsset.type === 'ERC20') {
+        createNotification({
+          type: 'transaction',
+          subtype: 'approve',
+          values: {
+            name: activeClaimCondition.data?.currencyMetadata.symbol || '',
+            symbol: activeClaimCondition.data?.currencyMetadata.symbol || '',
+          },
+          metadata: {
+            chainId,
+            hash,
+          },
+        });
 
-  console.log(activeClaimCondition.data);
+        watchTransactionDialog.watch(hash);
+      }
+    },
+    [
+      watchTransactionDialog,
+      activeClaimCondition.data?.currencyMetadata.symbol,
+      chainId,
+    ]
+  );
+
+  const approveMutation = useErc20ApproveMutationV2(
+    provider,
+    handleApproveAssetSuccess
+  );
+
   const claimerProofs = useClaimerProofs(editionDrop, account || '', tokenId);
   const claimIneligibilityReasons = useClaimIneligibilityReasons(
     editionDrop,
@@ -102,6 +145,13 @@ export function EditionDropSection({ section }: Props) {
     }
     return n.toString();
   }, [totalAvailableSupply, claimedSupply]);
+
+  const totalAmount = useMemo(() => {
+    const bnPrice = BigNumber.from(
+      activeClaimCondition.data?.currencyMetadata.value || 0
+    );
+    return bnPrice.mul(quantity);
+  }, [quantity, activeClaimCondition.data?.currencyMetadata.value]);
 
   const priceToMint = useMemo(() => {
     const bnPrice = BigNumber.from(
@@ -217,6 +267,27 @@ export function EditionDropSection({ section }: Props) {
     () => isLoading || claimIneligibilityReasons.isLoading,
     [claimIneligibilityReasons.isLoading, isLoading]
   );
+  const priceText = useMemo(() => {
+    const pricePerToken = BigNumber.from(
+      activeClaimCondition.data?.currencyMetadata.value || 0
+    );
+    if (pricePerToken.eq(0)) {
+      return <FormattedMessage id={'Free'} defaultMessage={'Free)'} />;
+    }
+    const bnPrice = BigNumber.from(
+      activeClaimCondition.data?.currencyMetadata.value || 0
+    );
+    return `${utils.formatUnits(
+      bnPrice.toString(),
+      activeClaimCondition.data?.currencyMetadata.decimals || 18
+    )} ${activeClaimCondition.data?.currencyMetadata.symbol}`;
+  }, [
+    activeClaimCondition.data?.currencyMetadata.decimals,
+    activeClaimCondition.data?.currencyMetadata.symbol,
+
+    activeClaimCondition.data?.currencyMetadata.value,
+  ]);
+
   const buttonText = useMemo(() => {
     if (isSoldOut) {
       return 'Sold Out';
@@ -272,126 +343,208 @@ export function EditionDropSection({ section }: Props) {
 
   return (
     <Box py={4}>
-      <Stack>
-        <Typography>
-          <FormattedMessage
-            id={'total.minted'}
-            defaultMessage={'Total minted'}
-          />{' '}
-        </Typography>
-        <Typography>
-          {' '}
-          {claimedSupply ? (
-            <>
-              {numberClaimed}
-
-              {numberTotal || '∞'}
-            </>
-          ) : (
-            <>
-              <FormattedMessage id={'loading'} defaultMessage={'Loading'} />
-              {'...'}
-            </>
-          )}
-        </Typography>
-      </Stack>
-
-      {claimConditions.data?.length === 0 ||
-      !claimConditions.data ||
-      claimConditions.data?.every((cc) => cc.maxClaimableSupply === '0') ? (
-        <div>
-          <Typography variant={'h5'}>
+      <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <Typography variant={'h6'}>
             <FormattedMessage
-              id={'drop.not.ready.to.mint.yet'}
-              defaultMessage={
-                'This drop is not ready to be minted yet. (No claim condition set)'
-              }
-            />
+              id={'drop.details'}
+              defaultMessage={'Drop details'}
+            />{' '}
           </Typography>
-        </div>
-      ) : (
-        <>
-          <Typography>
-            {' '}
-            <FormattedMessage id={'quantity'} defaultMessage={'Quantity'} />
-          </Typography>
-          <div>
-            <Button
-              onClick={() => setQuantity(quantity - 1)}
-              disabled={quantity <= 1}
-            >
-              -
-            </Button>
-
-            <Typography variant="h4">{quantity}</Typography>
-
-            <Button
-              onClick={() => setQuantity(quantity + 1)}
-              disabled={quantity >= maxClaimable}
-            >
-              +
-            </Button>
-          </div>
-
-          <div>
-            {isSoldOut ? (
-              <div>
-                <Typography variant={'h2'}>
+        </Grid>
+        <Grid item xs={12}>
+          <Stack spacing={2} direction={'row'}>
+            <Typography>
+              <FormattedMessage
+                id={'total.minted'}
+                defaultMessage={'Total minted'}
+              />{' '}
+              :
+            </Typography>
+            <Typography>
+              {' '}
+              {claimedSupply ? (
+                <>{numberClaimed}</>
+              ) : (
+                <>
+                  <FormattedMessage id={'loading'} defaultMessage={'Loading'} />
+                  {'...'}
+                </>
+              )}
+            </Typography>
+          </Stack>
+          <Stack spacing={2} direction={'row'}>
+            <Typography>
+              <FormattedMessage
+                id={'total.to.mint'}
+                defaultMessage={'Total to mint'}
+              />{' '}
+              :
+            </Typography>
+            <Typography>
+              {' '}
+              {claimedSupply ? (
+                <>{numberTotal || 'unlimited'}</>
+              ) : (
+                <>
+                  <FormattedMessage id={'loading'} defaultMessage={'Loading'} />
+                  {'...'}
+                </>
+              )}
+            </Typography>
+          </Stack>
+        </Grid>
+        <Grid item xs={12}>
+          <Card>
+            <CardContent>
+              {claimConditions.data?.length === 0 ||
+              !claimConditions.data ||
+              claimConditions.data?.every(
+                (cc) => cc.maxClaimableSupply === '0'
+              ) ? (
+                <Alert severity="info">
                   <FormattedMessage
-                    id={'sold.out'}
-                    defaultMessage={'Sold out'}
+                    id={'drop.not.ready.to.mint.yet'}
+                    defaultMessage={
+                      'This drop is not ready to be minted yet. (No claim condition set)'
+                    }
                   />
-                </Typography>
-              </div>
-            ) : (
-              <Button
-                disabled={!canClaim || buttonLoading}
-                onClick={async () => {
-                  if (editionDrop) {
-                    const values = {
-                      tokenId,
-                      quantity: String(quantity),
-                      name: String(contractMetadata?.name || ' '),
-                    };
+                </Alert>
+              ) : (
+                <Stack spacing={1}>
+                  <Typography variant="h6">
+                    {' '}
+                    {activeClaimCondition.data?.metadata?.name || ''}
+                  </Typography>
 
-                    watchTransactionDialog.open('mintEditionDrop', values);
-                    const result = await editionDrop.erc1155.claim(
-                      tokenId,
-                      quantity
-                    );
-
-                    createNotification({
-                      type: 'transaction',
-                      subtype: 'mintEditionDrop',
-                      values,
-                      metadata: {
-                        chainId,
-                        hash: result.receipt.transactionHash,
-                      },
-                    });
-
-                    watchTransactionDialog.watch(
-                      result.receipt.transactionHash
-                    );
-                  }
-                }}
-              >
-                {buttonLoading ? (
-                  <>
+                  <Typography variant="body1">{priceText}</Typography>
+                  <Typography variant="body2">
+                    {activeClaimCondition.data?.maxClaimablePerWallet.toString() ||
+                      'unlimited'}{' '}
                     <FormattedMessage
-                      id={'loading'}
-                      defaultMessage={'Loading'}
-                    />
-                    {'...'}
-                  </>
-                ) : (
-                  buttonText
-                )}
-              </Button>
-            )}
-          </div>
-        </>
-      )}
+                      id={'per.wallet'}
+                      defaultMessage={'per wallet'}
+                    ></FormattedMessage>
+                  </Typography>
+                  <Stack direction={'row'} spacing={2}>
+                    <Button
+                      size={'large'}
+                      onClick={() => setQuantity(quantity - 1)}
+                      disabled={quantity <= 1}
+                    >
+                      -
+                    </Button>
+
+                    <Typography variant="h4">{quantity}</Typography>
+
+                    <Button
+                      size={'large'}
+                      onClick={() => setQuantity(quantity + 1)}
+                      disabled={quantity >= maxClaimable}
+                    >
+                      +
+                    </Button>
+                  </Stack>
+
+                  {isSoldOut ? (
+                    <Typography variant={'h2'}>
+                      <FormattedMessage
+                        id={'sold.out'}
+                        defaultMessage={'Sold out'}
+                      />
+                    </Typography>
+                  ) : (
+                    <Button
+                      disabled={!canClaim || buttonLoading}
+                      sx={{ maxWidth: '300px' }}
+                      variant="outlined"
+                      onClick={async () => {
+                        if (editionDrop) {
+                          // it's an erc 20 we need to check allowance
+                          if (
+                            activeClaimCondition.data?.currencyAddress.toLowerCase() !==
+                            NATIVE_TOKEN_ADDRESS
+                          ) {
+                            const allowance =
+                              await allowanceMutation.mutateAsync({
+                                spender: address,
+                                account,
+                                tokenAddress:
+                                  activeClaimCondition.data?.currencyAddress,
+                              });
+                            // we need to approve token
+                            if (
+                              allowance &&
+                              (allowance as BigNumber).lt(totalAmount)
+                            ) {
+                              const values = {
+                                name: activeClaimCondition.data
+                                  ?.currencyMetadata.symbol,
+                                symbol:
+                                  activeClaimCondition.data?.currencyMetadata
+                                    .symbol,
+                              };
+
+                              watchTransactionDialog.open('approve', values);
+                              await approveMutation.mutateAsync({
+                                spender: address,
+                                amount: totalAmount,
+                                tokenAddress:
+                                  activeClaimCondition.data?.currencyAddress,
+                              });
+                            }
+                          }
+
+                          const values = {
+                            tokenId,
+                            quantity: String(quantity),
+                            name: String(contractMetadata?.name || ' '),
+                          };
+
+                          watchTransactionDialog.open(
+                            'mintEditionDrop',
+                            values
+                          );
+                          const result = await editionDrop.erc1155.claim(
+                            tokenId,
+                            quantity
+                          );
+
+                          createNotification({
+                            type: 'transaction',
+                            subtype: 'mintEditionDrop',
+                            values,
+                            metadata: {
+                              chainId,
+                              hash: result.receipt.transactionHash,
+                            },
+                          });
+
+                          watchTransactionDialog.watch(
+                            result.receipt.transactionHash
+                          );
+                        }
+                      }}
+                    >
+                      {buttonLoading ? (
+                        <>
+                          <FormattedMessage
+                            id={'loading'}
+                            defaultMessage={'Loading'}
+                          />
+                          {'...'}
+                        </>
+                      ) : (
+                        buttonText
+                      )}
+                    </Button>
+                  )}
+                </Stack>
+              )}
+            </CardContent>
+          </Card>
+        </Grid>
+      </Grid>
     </Box>
   );
 }

@@ -6,7 +6,7 @@ import {
 } from '@tanstack/react-query';
 import { SwappableAssetV4 } from '@traderxyz/nft-swap-sdk';
 import { useWeb3React } from '@web3-react/core';
-import { ethers } from 'ethers';
+import { BigNumber, ethers } from 'ethers';
 import { useCallback } from 'react';
 import { ZEROEX_NATIVE_TOKEN_ADDRESS } from '../constants';
 import { ERC20Abi } from '../constants/abis';
@@ -214,8 +214,46 @@ export function useErc20ApproveMutation(
   return mutation;
 }
 
+export function useErc20AllowanceMutation(
+  provider?: ethers.providers.Web3Provider,
+  options?: Omit<UseMutationOptions, any>,
+
+) {
+  const mutation = useMutation(
+    async ({
+      account,
+      spender,
+      tokenAddress,
+    }: {
+      spender: string;
+      account?: string,
+      tokenAddress?: string;
+    }) => {
+      if (!provider || tokenAddress === undefined || !account) {
+        return undefined;
+      }
+
+      const contract = new ethers.Contract(
+        tokenAddress,
+        ERC20Abi,
+        provider
+      );
+
+      const allowance = await contract.allowance(account, spender);
+
+
+
+      return allowance as BigNumber;
+    },
+    options
+  );
+
+  return mutation;
+}
+
 export function useErc20ApproveMutationV2(
-  provider?: ethers.providers.Web3Provider
+  provider?: ethers.providers.Web3Provider,
+  onSuccess?: (hash: string, asset: SwappableAssetV4) => void,
 ) {
   const mutation = useMutation(
     async ({
@@ -238,8 +276,15 @@ export function useErc20ApproveMutationV2(
       );
 
       const tx = await contract.approve(spender, amount);
+      if (onSuccess) {
+        onSuccess(tx.hash, {
+          type: 'ERC20',
+          amount: amount.toString(),
+          tokenAddress,
+        });
+      }
 
-      return tx.hash;
+      return await tx.wait();
     }
   );
 

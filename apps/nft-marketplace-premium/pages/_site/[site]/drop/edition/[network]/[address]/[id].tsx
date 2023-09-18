@@ -16,7 +16,8 @@ import {
 import { ipfsUriToUrl, truncateAddress } from '@dexkit/core/utils';
 import { useAsset, useAssetMetadata } from '@dexkit/ui/modules/nft/hooks';
 import { truncateErc1155TokenId } from '@dexkit/ui/modules/nft/utils';
-import { ThirdwebProvider } from '@thirdweb-dev/react';
+import { ThirdwebSDKProvider } from '@thirdweb-dev/react';
+import { useWeb3React } from '@web3-react/core';
 import { NextSeo } from 'next-seo';
 import { FormattedMessage } from 'react-intl';
 import MainLayout from 'src/components/layouts/main';
@@ -32,6 +33,7 @@ const AssetDetailPage: NextPage = () => {
   const router = useRouter();
 
   const { address, id } = router.query;
+  const { provider } = useWeb3React();
 
   const { data: asset, isLoading } = useAsset(address as string, id as string);
 
@@ -100,9 +102,10 @@ const AssetDetailPage: NextPage = () => {
             <AssetLeftSection address={address as string} id={id as string} />
           </Grid>
           <Grid item xs={12} sm={8}>
-            <ThirdwebProvider
+            <ThirdwebSDKProvider
               clientId="8b875cba6d295240d3b3861a3e8c2260"
               activeChain={asset?.chainId}
+              signer={provider?.getSigner()}
             >
               <EditionDropSection
                 section={{
@@ -113,7 +116,7 @@ const AssetDetailPage: NextPage = () => {
                   },
                 }}
               ></EditionDropSection>
-            </ThirdwebProvider>
+            </ThirdwebSDKProvider>
           </Grid>
         </Grid>
       </Container>
