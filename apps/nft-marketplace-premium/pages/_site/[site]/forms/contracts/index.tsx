@@ -114,7 +114,7 @@ export default function FormsContractsPage() {
                 <Typography variant="h4">
                   <FormattedMessage
                     id="deploy.your.own.contract"
-                    defaultMessage="Deploy you own contract"
+                    defaultMessage="Deploy your own contract"
                   />
                 </Typography>
                 <Typography variant="body1" color="text.secondary">
