@@ -121,7 +121,7 @@ export default function SellForm({
       buyTokenPercentageFee: 0.001,
     });
 
-    const sellAmount = BigNumber.from(quote.sellAmount);
+    const sellAmount = BigNumber.from(quote?.sellAmount || "0");
 
     setAmountPerToken(
       ethers.utils.formatUnits(sellAmount, makerToken.decimals)
@@ -187,7 +187,6 @@ export default function SellForm({
   };
 
   const handleConfirmSell = async () => {
-    console.log("entra", maker);
     if (!chainId || !maker || !makerToken || !provider) {
       return;
     }

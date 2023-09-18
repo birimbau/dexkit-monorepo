@@ -19,7 +19,7 @@ export function useZrxQuoteMutation({ chainId }: { chainId?: ChainId }) {
 
   return useMutation(async (params: ZeroExQuote) => {
     if (!chainId) {
-      throw new Error("is not connected");
+      return null;
     }
 
     const zrxClient = new ZeroExApiClient(chainId, zrxApiKey);

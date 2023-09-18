@@ -28,6 +28,8 @@ import SellForm from "./SellForm";
 import { useConnectWalletDialog } from "@dexkit/ui/hooks";
 
 import WalletIcon from "@mui/icons-material/Wallet";
+import MarketBuyForm from "./MarketBuyForm";
+import MarketSellForm from "./MarketSellForm";
 
 // FIXME: base/quote KIT/USDT
 export interface TradeWidgetProps {
@@ -35,11 +37,11 @@ export interface TradeWidgetProps {
 }
 
 export default function TradeWidget({ isActive }: TradeWidgetProps) {
-  const { quoteToken, baseToken } = useExchangeContext();
+  const { quoteToken, baseToken, feeRecipient } = useExchangeContext();
 
-  const [orderType, setOrderType] = useState<"market" | "limit">("limit");
+  const [orderType, setOrderType] = useState<"market" | "limit">("market");
 
-  const [orderSide, setOrderSide] = useState<"buy" | "sell">("sell");
+  const [orderSide, setOrderSide] = useState<"buy" | "sell">("buy");
 
   const handleChangeOrderType = (
     e: SyntheticEvent,
@@ -52,15 +54,15 @@ export default function TradeWidget({ isActive }: TradeWidgetProps) {
     setOrderSide(value);
   };
 
-  const { account, provider } = useWeb3React();
+  const { account, provider, chainId } = useWeb3React();
 
-  const makerTokenBalanceQuery = useErc20BalanceQuery({
+  const baseTokenBalanceQuery = useErc20BalanceQuery({
     account,
     provider,
     contractAddress: baseToken?.contractAddress,
   });
 
-  const takerTokenBalanceQuery = useErc20BalanceQuery({
+  const quoteTokenBalanceQuery = useErc20BalanceQuery({
     account,
     provider,
     contractAddress: quoteToken?.contractAddress,
@@ -166,7 +168,7 @@ export default function TradeWidget({ isActive }: TradeWidgetProps) {
                   key={`buy-${baseToken.contractAddress}-${quoteToken.contractAddress}`}
                   makerToken={baseToken}
                   takerToken={quoteToken}
-                  makerTokenBalance={makerTokenBalanceQuery.data}
+                  makerTokenBalance={baseTokenBalanceQuery.data}
                   maker={account}
                   provider={provider}
                 />
@@ -179,9 +181,44 @@ export default function TradeWidget({ isActive }: TradeWidgetProps) {
                   key={`sell-${baseToken.contractAddress}-${quoteToken.contractAddress}`}
                   makerToken={baseToken}
                   takerToken={quoteToken}
-                  takerTokenBalance={takerTokenBalanceQuery.data}
+                  takerTokenBalance={quoteTokenBalanceQuery.data}
                   provider={provider}
                   maker={account}
+                />
+              ) : null}
+              {orderType === "market" &&
+              orderSide === "buy" &&
+              quoteToken &&
+              baseToken ? (
+                <MarketBuyForm
+                  key={`market-buy-${baseToken.contractAddress}-${quoteToken.contractAddress}`}
+                  quoteToken={quoteToken}
+                  baseToken={baseToken}
+                  provider={provider}
+                  account={account}
+                  quoteTokenBalance={quoteTokenBalanceQuery.data}
+                  baseTokenBalance={baseTokenBalanceQuery.data}
+                  chainId={chainId}
+                  affiliateAddress={feeRecipient}
+                  isActive={isActive}
+                />
+              ) : null}
+
+              {orderType === "market" &&
+              orderSide === "sell" &&
+              quoteToken &&
+              baseToken ? (
+                <MarketSellForm
+                  key={`market-sell-${baseToken.contractAddress}-${quoteToken.contractAddress}`}
+                  quoteToken={quoteToken}
+                  baseToken={baseToken}
+                  provider={provider}
+                  account={account}
+                  quoteTokenBalance={quoteTokenBalanceQuery.data}
+                  baseTokenBalance={baseTokenBalanceQuery.data}
+                  chainId={chainId}
+                  affiliateAddress={feeRecipient}
+                  isActive={isActive}
                 />
               ) : null}
             </Stack>

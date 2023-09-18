@@ -1,5 +1,5 @@
 import axios from "axios";
-import { GtTopPoolsApiResponse } from "types";
+import { GtTopPoolsApiResponse } from "../types";
 
 const GECKOTERMINAL_API_URL = "https://api.geckoterminal.com/api/v2";
 

@@ -9,8 +9,8 @@ import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "../constants/zrx";
 import { EvmCoin, TokenWhitelabelApp } from "../types";
 import { MagicConnector } from "../types/magic";
 
-export * from './ipfs';
-export * from './numbers';
+export * from "./ipfs";
+export * from "./numbers";
 
 export function getConnectorName(connector?: Connector) {
   if (connector instanceof MagicConnector) {
@@ -247,5 +247,11 @@ export function convertTokenToEvmCoin(token: TokenWhitelabelApp): EvmCoin {
       decimals: token.decimals,
       imageUrl: token.logoURI,
     };
+  }
+}
+
+export function getChainName(chainId?: number) {
+  if (chainId) {
+    return NETWORKS[chainId]?.name || `0x${chainId.toString(16)}`;
   }
 }

@@ -3,6 +3,7 @@ import { AssetStoreSectionForm } from '../forms/AssetStoreSectionForm';
 import CallToActionSectionForm from '../forms/CallToActionSectionForm';
 import CollectionSectionForm from '../forms/CollectionSectionForm';
 import { ContractSectionForm } from '../forms/ContractSectionForm';
+import ExchangeSectionSettingsForm from '../forms/ExchangeSectionSettingsForm';
 import FeaturedSectionForm from '../forms/FeaturedSectionForm';
 import MDSectionForm from '../forms/MDSectionForm';
 import { SwapConfigSectionForm } from '../forms/SwapConfigSectionForm';
@@ -113,6 +114,14 @@ export function SectionFormRender({
         formId={
           section?.type === 'user-contract-form' ? section.formId : undefined
         }
+      />
+    );
+  } else if (sectionType === 'exchange') {
+    return (
+      <ExchangeSectionSettingsForm
+        onCancel={onClose}
+        onSave={onSave}
+        section={section?.type === 'exchange' ? section : undefined}
       />
     );
   }

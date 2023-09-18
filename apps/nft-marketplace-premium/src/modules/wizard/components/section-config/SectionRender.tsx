@@ -1,35 +1,36 @@
 import dynamic from 'next/dynamic';
 import { AppPageSection } from '../../types/section';
+import ExchangeSection from '../sections/ExchangeSection';
 
 const CallToActionSection = dynamic(
-  () => import('@/modules/home/components/CallToActionSection')
+  () => import('@/modules/home/components/CallToActionSection'),
 );
 const CollectionsSection = dynamic(
-  () => import('@/modules/home/components/CollectionsSection')
+  () => import('@/modules/home/components/CollectionsSection'),
 );
 const CustomSection = dynamic(
-  () => import('@/modules/home/components/CustomSection')
+  () => import('@/modules/home/components/CustomSection'),
 );
 const FeaturedSection = dynamic(
-  () => import('@/modules/home/components/FeaturedSection')
+  () => import('@/modules/home/components/FeaturedSection'),
 );
 const SwapSection = dynamic(
-  () => import('@/modules/home/components/SwapSection')
+  () => import('@/modules/home/components/SwapSection'),
 );
 const VideoSection = dynamic(
-  () => import('@/modules/home/components/VideoSection')
+  () => import('@/modules/home/components/VideoSection'),
 );
 
 const AssetStoreSection = dynamic(
-  () => import('@/modules/home/components/AssetStoreSection')
+  () => import('@/modules/home/components/AssetStoreSection'),
 );
 const MDSection = dynamic(() => import('@/modules/home/components/MDSection'));
 const WalletSection = dynamic(
-  () => import('@/modules/home/components/WalletSection')
+  () => import('@/modules/home/components/WalletSection'),
 );
 const ContractSection = dynamic(() => import('../sections/ContractSection'));
 const UserContractSection = dynamic(
-  () => import('../sections/UserContractSection')
+  () => import('../sections/UserContractSection'),
 );
 
 interface Props {
@@ -65,6 +66,8 @@ export function SectionRender({ section }: Props) {
     return <ContractSection section={section} />;
   } else if (section.type === 'user-contract-form') {
     return <UserContractSection section={section} />;
+  } else if (section.type === 'exchange') {
+    return <ExchangeSection section={section} />;
   }
 
   return <></>;

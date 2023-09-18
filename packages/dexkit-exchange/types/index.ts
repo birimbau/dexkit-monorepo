@@ -1,4 +1,19 @@
 import { Token } from "@dexkit/core/types";
+import { ethers } from "ethers";
+
+import * as Yup from "yup";
+
+export type DexkitExchangeSettings = {
+  zrxApiKey?: string;
+  quoteToken?: Token;
+  defaultPairs: { [key: number]: { quoteToken: Token; baseToken: Token } };
+  defaultTokens: {
+    [key: number]: { quoteTokens: Token[]; baseTokens: Token[] };
+  };
+  buyTokenPercentageFee?: number;
+  feeRecipient?: string;
+  affiliateAddress?: string;
+};
 
 export type DexkitExchangeContextState = {
   zrxApiKey?: string;
@@ -8,6 +23,7 @@ export type DexkitExchangeContextState = {
   quoteTokens: Token[];
   buyTokenPercentageFee?: number;
   feeRecipient?: string;
+  affiliateAddress?: string;
   tokens?: { [key: string]: Token };
   setPair: (baseToken: Token, quoteToken: Token) => void;
 };
@@ -50,3 +66,31 @@ export type GtPool = {
 export type GtTopPoolsApiResponse = {
   data: GtPool[];
 };
+
+export const TokenSchema = Yup.object().shape({
+  contractAddress: Yup.string(),
+  chainId: Yup.number(),
+  symbol: Yup.string(),
+  name: Yup.string(),
+});
+
+export const ExchangeSettingsSchema = Yup.object({
+  zrxApiKey: Yup.string().required(),
+  defaultTokens: Yup.object().required(),
+  defaultPairs: Yup.object().required(),
+  buyTokenPercentageFee: Yup.number().required(),
+  feeRecipient: Yup.string()
+    .test("address", (value) => {
+      return value !== undefined ? ethers.utils.isAddress(value) : true;
+    })
+    .optional(),
+  affiliateAddress: Yup.string()
+    .test("address", (value) => {
+      return value !== undefined ? ethers.utils.isAddress(value) : true;
+    })
+    .required(),
+});
+
+export type ExchangeSettingsFormType = Yup.InferType<
+  typeof ExchangeSettingsSchema
+>;

@@ -32,6 +32,7 @@ export interface BuyFormProps {
   provider?: ethers.providers.Web3Provider;
   buyTokenPercentageFee?: number;
   feeRecipient?: string;
+  affiliateAddress?: string;
 }
 
 export default function BuyForm({
@@ -39,6 +40,7 @@ export default function BuyForm({
   takerToken,
   makerTokenBalance,
   buyTokenPercentageFee,
+  affiliateAddress,
   feeRecipient,
   maker,
   provider,
@@ -106,7 +108,7 @@ export default function BuyForm({
     const quote = await quoteMutation.mutateAsync({
       buyToken: takerToken.contractAddress,
       sellToken: makerToken.contractAddress,
-      affiliateAddress: "0x5bD68B4d6f90Bcc9F3a9456791c0Db5A43df676d",
+      affiliateAddress: affiliateAddress ? affiliateAddress : "",
       // TODO: add to context
       buyAmount: ethers.utils.parseUnits("1.0", takerToken.decimals).toString(),
       skipValidation: true,
@@ -115,7 +117,7 @@ export default function BuyForm({
       buyTokenPercentageFee,
     });
 
-    const sellAmount = BigNumber.from(quote.sellAmount);
+    const sellAmount = BigNumber.from(quote?.sellAmount || "0");
 
     setAmountPerToken(
       ethers.utils.formatUnits(sellAmount, makerToken.decimals)

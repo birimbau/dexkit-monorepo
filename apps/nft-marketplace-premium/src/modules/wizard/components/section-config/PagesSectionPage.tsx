@@ -3,8 +3,8 @@ import AppsIcon from '@mui/icons-material/Apps';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import CallToAction from '@mui/icons-material/CallToAction';
+import ShowChartIcon from '@mui/icons-material/ShowChart';
 import VideocamIcon from '@mui/icons-material/Videocam';
-
 import {
   Button,
   Card,
@@ -80,7 +80,7 @@ export default function PagesSectionPage({
   const renderSection = (
     section: AppPageSection,
     index: number,
-    isVisible: boolean
+    isVisible: boolean,
   ) => {
     let title;
     let subtitle;
@@ -145,7 +145,12 @@ export default function PagesSectionPage({
       );
       subtitle = section.title || '';
       icon = <GavelIcon />;
+    } else if (section.type === 'exchange') {
+      title = <FormattedMessage id="exchange" defaultMessage="Exchange" />;
+      subtitle = section.title || '';
+      icon = <ShowChartIcon />;
     }
+
     if (!title) {
       return null;
     }
@@ -378,7 +383,7 @@ export default function PagesSectionPage({
         </Stack>
         <Divider />
         {sections.map((section, index) =>
-          renderSection(section, index, isVisibleIndexes.includes(index))
+          renderSection(section, index, isVisibleIndexes.includes(index)),
         )}
       </Stack>
     </>

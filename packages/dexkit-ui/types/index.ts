@@ -34,8 +34,16 @@ export type TxDialogOptions = {
 
 export type TxDialogTransaction = {
   icon?: string;
-  title: { id: string; defaultMessage: string };
+  title: {
+    id: string;
+    defaultMessage: string;
+    values?: Record<string, string>;
+  };
   action: () => Promise<{ hash?: string; conditions?: string[] }>;
   check?: () => { conditions?: string[]; hidden: boolean };
-  conditions?: { id: string; messageId: string; defaultMessage: string }[];
+  conditions?: {
+    id: string;
+    messageId: string;
+    defaultMessage: string;
+  }[];
 };

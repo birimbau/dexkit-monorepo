@@ -86,6 +86,8 @@ const Context = ({ children }: { children: React.ReactNode }) => {
     quoteToken: KIT_TOKEN,
     baseToken: USDT_TOKEN,
     buyTokenPercentageFee: 0.01,
+    affiliateAddress: "0x5bD68B4d6f90Bcc9F3a9456791c0Db5A43df676d",
+    feeRecipient: "0x5bD68B4d6f90Bcc9F3a9456791c0Db5A43df676d",
   });
 
   return (

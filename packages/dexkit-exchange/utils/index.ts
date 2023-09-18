@@ -1,6 +1,8 @@
 import { getContractAddressesForChainOrThrow } from "@0x/contract-addresses";
 import { LimitOrder, SignatureType } from "@0x/protocol-utils";
 import { ChainId } from "@dexkit/core";
+import { Token } from "@dexkit/core/types";
+import { isAddressEqual } from "@dexkit/core/utils";
 import { BigNumber } from "bignumber.js";
 import { ethers } from "ethers";
 
@@ -10,6 +12,17 @@ export const EIP712_DOMAIN_PARAMETERS = [
   { name: "chainId", type: "uint256" },
   { name: "verifyingContract", type: "address" },
 ];
+
+export const isTokenEqual = (token?: Token, other?: Token) => {
+  if (!token || !other) {
+    return false;
+  }
+
+  return (
+    isAddressEqual(token.contractAddress, other.contractAddress) &&
+    token.chainId === other.chainId
+  );
+};
 
 export const getExpirationTimeFromSeconds = (seconds: BigNumber) => {
   return new BigNumber(

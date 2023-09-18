@@ -34,8 +34,6 @@ export default function TradingGraph({
     onChange(event.target.value);
   };
 
-  console.log("vemvem", selectedPool);
-
   return (
     <Card>
       <CardContent>

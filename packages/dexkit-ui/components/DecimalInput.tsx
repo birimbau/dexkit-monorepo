@@ -8,8 +8,6 @@ export interface DecimalInputProps {
   decimals?: number;
 }
 
-const patternTwoDigisAfterComma = /^\d+(\.\d{0,18})?$/;
-
 export default function DecimalInput({
   value,
   onChange,
@@ -21,7 +19,7 @@ export default function DecimalInput({
   );
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if (pattern.test(e.target.value)) {
+    if (pattern.test(e.target.value) || e.target.value === "") {
       onChange(e.target.value);
     }
   };

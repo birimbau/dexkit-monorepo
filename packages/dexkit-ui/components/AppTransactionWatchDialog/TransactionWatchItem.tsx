@@ -66,6 +66,7 @@ export default function TransactionWatchItem({
           <FormattedMessage
             id={transaction.title.id}
             defaultMessage={transaction.title.defaultMessage}
+            values={transaction.title.values}
           />
         }
         secondary={

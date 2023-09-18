@@ -63,6 +63,7 @@ export default function TransactionWatchContent({
             <FormattedMessage
               id={transaction.title.id}
               defaultMessage={transaction.title.defaultMessage}
+              values={transaction.title.values}
             />
           </Typography>
         </Stack>
