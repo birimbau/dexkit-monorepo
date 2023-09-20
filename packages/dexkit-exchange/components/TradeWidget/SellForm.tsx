@@ -30,6 +30,7 @@ export interface SellFormProps {
   takerTokenBalance?: BigNumber;
   provider?: ethers.providers.Web3Provider;
   maker?: string;
+  buyTokenPercentageFee?: number;
 }
 
 export default function SellForm({
@@ -38,6 +39,7 @@ export default function SellForm({
   takerTokenBalance,
   provider,
   maker,
+  buyTokenPercentageFee,
 }: SellFormProps) {
   const [amountPercentage, setAmountPercentage] = useState(0);
   const [amount, setAmount] = useState("0.0");
@@ -118,7 +120,9 @@ export default function SellForm({
       skipValidation: true,
       slippagePercentage: 0.01,
       feeRecipient: "0x5bd68b4d6f90bcc9f3a9456791c0db5a43df676d",
-      buyTokenPercentageFee: 0.001,
+      buyTokenPercentageFee: buyTokenPercentageFee
+        ? buyTokenPercentageFee / 100
+        : undefined,
     });
 
     const sellAmount = BigNumber.from(quote?.sellAmount || "0");

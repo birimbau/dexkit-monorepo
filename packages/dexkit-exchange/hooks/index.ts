@@ -109,6 +109,7 @@ export function useExchangeContextState(params: {
   affiliateAddress?: string;
   feeRecipient?: string;
   zrxApiKey?: string;
+  availNetworks: ChainId[];
 }): DexkitExchangeContextState {
   const [quoteToken, setQuoteToken] = useState<Token | undefined>(
     params?.quoteToken
@@ -132,6 +133,7 @@ export function useExchangeContextState(params: {
     baseTokens,
     quoteTokens,
     tokens: {},
+    availNetworks: params.availNetworks,
     feeRecipient: params.feeRecipient,
     affiliateAddress: params.affiliateAddress,
     buyTokenPercentageFee: params.buyTokenPercentageFee,

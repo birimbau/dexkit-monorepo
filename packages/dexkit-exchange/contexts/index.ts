@@ -6,4 +6,5 @@ export const DexkitExchangeContext =
     setPair: () => {},
     baseTokens: [],
     quoteTokens: [],
+    availNetworks: [],
   });

@@ -36,7 +36,8 @@ export interface TradeWidgetProps {
 }
 
 export default function TradeWidget({ isActive }: TradeWidgetProps) {
-  const { quoteToken, baseToken, feeRecipient } = useExchangeContext();
+  const { quoteToken, baseToken, feeRecipient, buyTokenPercentageFee } =
+    useExchangeContext();
 
   const [orderType, setOrderType] = useState<"market" | "limit">("market");
 
@@ -182,6 +183,7 @@ export default function TradeWidget({ isActive }: TradeWidgetProps) {
                   takerToken={quoteToken}
                   takerTokenBalance={quoteTokenBalanceQuery.data}
                   provider={provider}
+                  buyTokenPercentageFee={buyTokenPercentageFee}
                   maker={account}
                 />
               ) : null}
@@ -215,6 +217,7 @@ export default function TradeWidget({ isActive }: TradeWidgetProps) {
                   account={account}
                   quoteTokenBalance={quoteTokenBalanceQuery.data}
                   baseTokenBalance={baseTokenBalanceQuery.data}
+                  buyTokenPercentageFee={buyTokenPercentageFee}
                   chainId={chainId}
                   affiliateAddress={feeRecipient}
                   isActive={isActive}

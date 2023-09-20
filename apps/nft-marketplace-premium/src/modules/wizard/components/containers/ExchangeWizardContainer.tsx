@@ -7,7 +7,7 @@ import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { CssVarsTheme, Theme } from '@mui/material/styles';
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { Token } from 'src/types/blockchain';
 import { AppConfig } from '../../../../types/config';
@@ -100,6 +100,12 @@ export default function ExchangeWizardContainer({
     onChange(changeConfig(config, form));
   };
 
+  const [isValid, setIsValid] = useState(false);
+
+  const handleValidate = useCallback((isValid: boolean) => {
+    setIsValid(isValid);
+  }, []);
+
   return (
     <Grid container spacing={2}>
       <Grid item xs={12}>
@@ -124,6 +130,7 @@ export default function ExchangeWizardContainer({
           saveOnChange
           onSave={handleOnChange}
           tokens={tokens}
+          onValidate={handleValidate}
         />
       </Grid>
       <Grid item xs={12}>
@@ -139,7 +146,7 @@ export default function ExchangeWizardContainer({
                 stepperButtonProps.handleNext();
               }
             }}
-            disableContinue={false}
+            disableContinue={!isValid}
           />
         ) : (
           <Stack spacing={1} direction="row" justifyContent="flex-end">

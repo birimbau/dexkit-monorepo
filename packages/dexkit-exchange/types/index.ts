@@ -27,6 +27,7 @@ export type DexkitExchangeContextState = {
   feeRecipient?: string;
   affiliateAddress?: string;
   tokens?: { [key: string]: Token };
+  availNetworks: ChainId[];
   setPair: (baseToken: Token, quoteToken: Token) => void;
 };
 

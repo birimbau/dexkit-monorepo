@@ -8,6 +8,7 @@ import {
   FormHelperText,
   Grid,
   IconButton,
+  InputAdornment,
   InputLabel,
   ListItemIcon,
   ListItemText,
@@ -28,8 +29,8 @@ import { NETWORKS } from "@dexkit/core/constants/networks";
 import { Token } from "@dexkit/core/types";
 import { getChainName, ipfsUriToUrl, parseChainId } from "@dexkit/core/utils";
 import { TextField } from "formik-mui";
-import { useEffect, useState } from "react";
-import { FormattedMessage } from "react-intl";
+import { useCallback, useEffect, useState } from "react";
+import { FormattedMessage, useIntl } from "react-intl";
 import { DexkitExchangeSettings, ExchangeSettingsSchema } from "../../types";
 import FormActions from "./ExchangeSettingsFormActions";
 import ExchangeTokensInput from "./ExchangeTokensInput";
@@ -40,14 +41,22 @@ import SelectNetworksDialog from "./SelectNetworksDialog";
 
 function SaveOnChangeListener({
   onSave,
+  onValidate,
 }: {
   onSave: (settings: DexkitExchangeSettings) => void;
+  onValidate?: (isValid: boolean) => void;
 }) {
-  const { values } = useFormikContext<DexkitExchangeSettings>();
+  const { values, isValid } = useFormikContext<DexkitExchangeSettings>();
 
   useEffect(() => {
     onSave(values);
-  }, [values]);
+  }, [values, isValid]);
+
+  useEffect(() => {
+    if (onValidate) {
+      onValidate(isValid);
+    }
+  }, [isValid, onValidate]);
 
   return null;
 }
@@ -58,6 +67,7 @@ export interface ExchangeSettingsFormProps {
   saveOnChange?: boolean;
   settings?: DexkitExchangeSettings;
   tokens: Token[];
+  onValidate?: (isValid: boolean) => void;
 }
 
 export default function ExchangeSettingsForm({
@@ -66,6 +76,7 @@ export default function ExchangeSettingsForm({
   settings,
   tokens,
   saveOnChange,
+  onValidate,
 }: ExchangeSettingsFormProps) {
   const handleSubmit = async (values: DexkitExchangeSettings) => {
     onSave(values);
@@ -89,6 +100,42 @@ export default function ExchangeSettingsForm({
     setShowSelectNetworks(false);
   };
 
+  const { formatMessage } = useIntl();
+
+  const handleValidate = useCallback((values: DexkitExchangeSettings) => {
+    const errors: any = {};
+
+    let chains = Object.keys(values.defaultTokens).map((key) =>
+      parseChainId(key)
+    );
+
+    for (let chain of chains) {
+      if (!values.defaultPairs[chain]?.baseToken) {
+        if (!errors["defaultPairs"]) {
+          errors["defaultPairs"] = { [chain]: {} };
+        }
+
+        errors["defaultPairs"][chain]["baseToken"] = formatMessage({
+          id: "a.default.base.token.is.required",
+          defaultMessage: "A default base token is required",
+        });
+      }
+
+      if (!values.defaultPairs[chain]?.quoteToken) {
+        if (!errors["defaultPairs"]) {
+          errors["defaultPairs"] = { [chain]: {} };
+        }
+
+        errors["defaultPairs"][chain]["quoteToken"] = formatMessage({
+          id: "a.default.quote.token.is.required",
+          defaultMessage: "A default quote token is required",
+        });
+      }
+    }
+
+    return errors;
+  }, []);
+
   return (
     <Formik
       initialValues={
@@ -106,8 +153,10 @@ export default function ExchangeSettingsForm({
       }
       onSubmit={handleSubmit}
       validationSchema={ExchangeSettingsSchema}
+      validate={handleValidate}
+      validateOnChange
     >
-      {({ submitForm, values }) => (
+      {({ submitForm, values, errors }) => (
         <>
           <SelectNetworksDialog
             DialogProps={{
@@ -117,8 +166,13 @@ export default function ExchangeSettingsForm({
               onClose: handleCloseSelectNetworks,
             }}
           />
-          {saveOnChange && <SaveOnChangeListener onSave={onSave} />}
+          {saveOnChange && (
+            <SaveOnChangeListener onSave={onSave} onValidate={onValidate} />
+          )}
           <Grid container spacing={2}>
+            <Grid item xs={12}>
+              {JSON.stringify(errors, null, 2)}
+            </Grid>
             <Grid item xs={12}>
               <Field
                 component={TextField}
@@ -350,6 +404,8 @@ export default function ExchangeSettingsForm({
             <Grid item xs={12}>
               <FormikDecimalInput
                 name="buyTokenPercentageFee"
+                decimals={2}
+                maxDigits={3}
                 TextFieldProps={{
                   fullWidth: true,
                   label: (
@@ -358,6 +414,11 @@ export default function ExchangeSettingsForm({
                       defaultMessage="Fee amount"
                     />
                   ),
+                  InputProps: {
+                    endAdornment: (
+                      <InputAdornment position="end">%</InputAdornment>
+                    ),
+                  },
                 }}
               />
             </Grid>

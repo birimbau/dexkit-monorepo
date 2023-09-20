@@ -166,7 +166,9 @@ export default function MarketSellForm({
           skipValidation: true,
           slippagePercentage: 0.01,
           feeRecipient,
-          buyTokenPercentageFee,
+          buyTokenPercentageFee: buyTokenPercentageFee
+            ? buyTokenPercentageFee / 100
+            : undefined,
         });
 
         if (newQuote) {

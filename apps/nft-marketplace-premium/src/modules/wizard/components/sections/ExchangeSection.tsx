@@ -161,14 +161,16 @@ function ExchangeSectionWrapper({ section }: ExchangeSectionProps) {
   const { chainId } = useWeb3React();
 
   const defaultPairs =
-    chainId !== undefined
+    chainId !== undefined && settings.defaultTokens[chainId]
       ? settings.defaultPairs[chainId]
       : { baseToken: undefined, quoteToken: undefined };
 
   const defaultTokens =
-    chainId !== undefined
+    chainId !== undefined && settings.defaultTokens[chainId]
       ? settings.defaultTokens[chainId]
       : { baseTokens: [], quoteTokens: [] };
+
+  console.log('default', defaultTokens, defaultPairs, settings);
 
   const exchangeState = useExchangeContextState({
     baseTokens: defaultTokens.baseTokens,
@@ -178,6 +180,7 @@ function ExchangeSectionWrapper({ section }: ExchangeSectionProps) {
     buyTokenPercentageFee: settings.buyTokenPercentageFee,
     affiliateAddress: settings.affiliateAddress,
     feeRecipient: settings.feeRecipient,
+    availNetworks: settings.availNetworks,
   });
 
   return (

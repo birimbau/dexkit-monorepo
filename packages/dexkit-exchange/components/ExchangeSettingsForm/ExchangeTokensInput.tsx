@@ -4,6 +4,7 @@ import Close from "@mui/icons-material/Close";
 import Delete from "@mui/icons-material/Delete";
 import Edit from "@mui/icons-material/Edit";
 import {
+  Box,
   Button,
   Divider,
   IconButton,
@@ -38,7 +39,7 @@ export default function ExchangeTokensInput({
   tokens,
   chainId,
 }: ExchangeTokensInputProps) {
-  const { setFieldValue, values } = useFormikContext<any>();
+  const { setFieldValue, values, errors } = useFormikContext<any>();
 
   const [isEdit, setIsEdit] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -133,6 +134,12 @@ export default function ExchangeTokensInput({
     return tokens.filter((t) => t.chainId === chainId);
   }, [tokens, chainId]);
 
+  const fieldErrors = useMemo(() => {
+    return getIn(errors, `defaultPairs[${chainId}][${tokenName}]`);
+  }, [name, chainId, tokenName, errors]);
+
+  console.log("errors", errors);
+
   return (
     <>
       {isOpen && (
@@ -151,15 +158,27 @@ export default function ExchangeTokensInput({
         />
       )}
 
-      <Paper>
+      <Paper
+        sx={{
+          borderColor: fieldErrors
+            ? (theme) => theme.palette.error.main
+            : undefined,
+        }}
+      >
         <Stack
           sx={{ p: 2 }}
           alignItems="center"
           direction="row"
           justifyContent="space-between"
         >
-          <Typography variant="subtitle2">{label}</Typography>
-
+          <Box>
+            <Typography variant="subtitle2">{label}</Typography>
+            {fieldErrors && (
+              <Typography variant="body2" color="error">
+                {fieldErrors}
+              </Typography>
+            )}
+          </Box>
           {isEdit ? (
             <Stack
               alignItems="center"
