@@ -22,6 +22,7 @@ export interface CollectionOwnershipNFTFormType {
 
 export interface ClaimCondition {
   startTime: number;
+  name: string;
   waitInSeconds: number;
   price: number;
   maxClaimableSupply: number;
@@ -29,8 +30,6 @@ export interface ClaimCondition {
   merkleRoot: string,
   pricePerToken: string;
   currencyAddress: string;
-
-
 }
 
 export interface CollectionSingleItemFormType {
