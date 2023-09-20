@@ -58,6 +58,9 @@ export default function middleware(req: NextRequest) {
   if (url.pathname.startsWith('/site')) {
     return NextResponse.rewrite(url);
   }
+  if (hostname === 'ploobit-swap.dexkit.app') {
+    return null;
+  }
 
 
   if (
