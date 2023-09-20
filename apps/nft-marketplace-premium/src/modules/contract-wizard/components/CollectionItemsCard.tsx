@@ -14,7 +14,15 @@ import AppConfirmDialog from 'src/components/AppConfirmDialog';
 import { CollectionItemsForm } from '../types';
 import CollectionItemForm from './CollectionItemForm';
 
-export default function CollectionItemsCard() {
+interface Props {
+  onlySingleMint?: boolean;
+  allowMultipleQuantity?: boolean;
+}
+
+export default function CollectionItemsCard({
+  onlySingleMint = false,
+  allowMultipleQuantity = false,
+}: Props) {
   const { submitForm, isValid, values } =
     useFormikContext<CollectionItemsForm>();
   const [showConfirm, setShowConfirm] = useState(false);
@@ -60,34 +68,43 @@ export default function CollectionItemsCard() {
                 <Stack spacing={2}>
                   {values.items?.map((_, index: number, arr: any[]) => (
                     <React.Fragment key={index}>
-                      <Stack direction="row" justifyContent="space-between">
-                        <Typography>NFT: {index + 1}</Typography>
-                        <Button
-                          startIcon={<Delete />}
-                          onClick={() => {
-                            setShowConfirm(true);
-                            setConfirmCallback(() => () => {
-                              arrayHelper.remove(index);
-                              setShowConfirm(false);
-                            });
-                          }}
-                        >
-                          <FormattedMessage
-                            id="remove"
-                            defaultMessage="Remove"
-                          />
-                        </Button>
-                      </Stack>
-                      <CollectionItemForm itemIndex={index} />
+                      {onlySingleMint === false && (
+                        <Stack direction="row" justifyContent="space-between">
+                          <Typography>NFT: {index + 1}</Typography>
+
+                          <Button
+                            startIcon={<Delete />}
+                            onClick={() => {
+                              setShowConfirm(true);
+                              setConfirmCallback(() => () => {
+                                arrayHelper.remove(index);
+                                setShowConfirm(false);
+                              });
+                            }}
+                          >
+                            <FormattedMessage
+                              id="remove"
+                              defaultMessage="Remove"
+                            />
+                          </Button>
+                        </Stack>
+                      )}
+                      <CollectionItemForm
+                        itemIndex={index}
+                        onlySingleMint={onlySingleMint}
+                        allowMultipleQuantity={allowMultipleQuantity}
+                      />
                       {index < arr.length - 1 && <Divider />}
                     </React.Fragment>
                   ))}
-                  <Button
-                    variant="outlined"
-                    onClick={() => arrayHelper.push({ quantity: 1 })}
-                  >
-                    <FormattedMessage id="add.nft" defaultMessage="Add nft" />
-                  </Button>
+                  {onlySingleMint === false && (
+                    <Button
+                      variant="outlined"
+                      onClick={() => arrayHelper.push({ quantity: 1 })}
+                    >
+                      <FormattedMessage id="add.nft" defaultMessage="Add nft" />
+                    </Button>
+                  )}
                   <Stack direction="row" justifyContent="space-between">
                     <Button
                       disabled={!isValid || values.items.length === 0}
@@ -95,10 +112,17 @@ export default function CollectionItemsCard() {
                       variant="contained"
                       color="primary"
                     >
-                      <FormattedMessage
-                        id="create.nfts"
-                        defaultMessage="Create NFTs"
-                      />
+                      {onlySingleMint === false ? (
+                        <FormattedMessage
+                          id="create.nfts"
+                          defaultMessage="Create NFTs"
+                        />
+                      ) : (
+                        <FormattedMessage
+                          id="create.nft"
+                          defaultMessage="Create NFT"
+                        />
+                      )}
                     </Button>
                   </Stack>
                 </Stack>

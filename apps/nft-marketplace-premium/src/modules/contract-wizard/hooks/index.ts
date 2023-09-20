@@ -1,11 +1,13 @@
 
 import { useMutation, useQuery } from '@tanstack/react-query';
+import { useContract } from '@thirdweb-dev/react';
 import { useWeb3React } from '@web3-react/core';
 import axios from 'axios';
 import { ethers } from 'ethers';
 import { useAtomValue, useSetAtom } from 'jotai';
 import { useMemo } from 'react';
 import { useAccountHoldDexkitMutation, useAuth, useLoginAccountMutation } from 'src/hooks/account';
+import { getMultipleAssetDexKitApi } from 'src/services/nft';
 import { myAppsApi } from 'src/services/whitelabel';
 import { holdsKitDialogAtom } from 'src/state/atoms';
 import { CollectionAPI } from 'src/types/nft';
@@ -299,6 +301,45 @@ export function useTokensList() {
 
   return { tokens };
 }
+
+export function useLazyMintMutation({ address, isERC1155, onSubmitted }: { address: string, isERC1155?: boolean, onSubmitted?: (hash: string) => void }) {
+  const { contract } = useContract(address);
+
+
+  return useMutation(async ({ metadatas }: any) => {
+    if (!metadatas) {
+      return;
+    }
+    let tx;
+    if (isERC1155) {
+
+      tx = await contract?.erc1155.lazyMint(metadatas);
+    } else {
+      tx = await contract?.erc721.lazyMint(metadatas);
+
+    }
+
+    if (onSubmitted && tx) {
+      onSubmitted(tx[0].receipt.transactionHash);
+    }
+    return tx;
+
+  });
+}
+
+export function useFetchAssetsMutation({ address, network }: { address?: string, network?: string }) {
+
+
+  return useMutation(async ({ tokenIds }: { tokenIds: string[] }) => {
+    if (!address || !network || tokenIds.length === 0) {
+      return
+    }
+    const assets = await getMultipleAssetDexKitApi({ contractAddress: address, networkId: network, tokenIds })
+    return assets
+
+  });
+}
+
 
 export function useCollection(address?: string) {
   const { collections } = useCollectionList();

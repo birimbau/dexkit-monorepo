@@ -20,6 +20,30 @@ export interface CollectionOwnershipNFTFormType {
   image?: string | null;
 }
 
+export interface ClaimCondition {
+  startTime: number;
+  waitInSeconds: number;
+  price: number;
+  maxClaimableSupply: number;
+  maxClaimablePerWallet: number;
+  merkleRoot: string,
+  pricePerToken: string;
+  currencyAddress: string;
+
+
+}
+
+export interface CollectionSingleItemFormType {
+  name?: string;
+  description?: string;
+  attributes?: {
+    trait_type?: string;
+    display_type: string;
+    value: string;
+  }[];
+  file?: string | null;
+}
+
 export interface CollectionItemFormType {
   name?: string;
   description?: string;

@@ -13,7 +13,8 @@ export const config = {
     '/404/:path*',
     '/u/:path*',
     '/admin/:path*',
-    '/drop/:path*'
+    '/drop/:path*',
+    '/contract/:path*'
   ],
 };
 
@@ -30,7 +31,8 @@ const basePaths = [
   '/admin',
   '/contract-wizard',
   '/u',
-  '/drop'
+  '/drop',
+  '/contract'
 ];
 
 function isBasePath(path: string) {

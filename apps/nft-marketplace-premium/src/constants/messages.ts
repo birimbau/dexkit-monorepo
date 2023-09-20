@@ -43,6 +43,11 @@ export const WHITELABEL_NOTIFICATION_TYPES: {
   mintEditionDrop: {
     type: 'mintEditionDrop',
     message: 'Minting {quantity} with id {tokenId} from edition {name}',
-    id: 'claim.airdrop',
+    id: 'mint.edition.drop.notification.message',
+  },
+  mintNFTDrop: {
+    type: 'mintNFTDrop',
+    message: 'Minting {quantity} from collection {name}',
+    id: 'mint.collection.drop.notification.message',
   },
 };
