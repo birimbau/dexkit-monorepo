@@ -30,6 +30,10 @@ export default function PairButton({
         py: 1,
         borderRadius: theme.spacing(0.5),
         backgroundColor: lighten(theme.palette.background.default, 0.2),
+        borderWidth: 1,
+        borderStyle: "solid",
+        borderColor:
+          theme.palette.mode === "light" ? theme.palette.divider : undefined,
       })}
     >
       <Stack

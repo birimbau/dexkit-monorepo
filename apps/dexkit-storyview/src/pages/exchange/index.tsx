@@ -104,12 +104,13 @@ export function ExchangePage() {
                 marketCap={
                   selectedPool?.attributes.market_cap_usd
                     ? selectedPool.attributes.market_cap_usd
-                    : "N/A"
+                    : undefined
                 }
                 volume={selectedPool?.attributes.volume_usd.h24}
                 priceChangeH24={
                   selectedPool?.attributes.price_change_percentage.h24
                 }
+                lastPrice={selectedPool?.attributes.token_price_usd}
               />
             </Grid>
           )}

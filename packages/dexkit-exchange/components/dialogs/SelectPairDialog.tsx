@@ -1,5 +1,6 @@
 import { AppDialogTitle } from "@dexkit/ui/components/AppDialogTitle";
 import {
+  Avatar,
   Box,
   Button,
   Chip,
@@ -20,7 +21,9 @@ import { isAddressEqual } from "@dexkit/core/utils";
 import { useCallback, useMemo, useState } from "react";
 import SelectPairList from "../SelectPairList";
 
+import { TOKEN_ICON_URL } from "@dexkit/core";
 import LazyTextField from "@dexkit/ui/components/LazyTextField";
+import TokenIcon from "@mui/icons-material/Token";
 
 export interface SelectPairDialogProps {
   DialogProps: DialogProps;
@@ -136,6 +139,18 @@ export default function SelectPairDialog({
                 key={index}
                 label={token.symbol.toUpperCase()}
                 clickable
+                icon={
+                  <Avatar
+                    sx={{ width: "1rem", height: "1rem" }}
+                    src={
+                      token.logoURI
+                        ? token.logoURI
+                        : TOKEN_ICON_URL(token.contractAddress, token.chainId)
+                    }
+                  >
+                    <TokenIcon />
+                  </Avatar>
+                }
                 color={
                   baseToken && isSameToken(token, baseToken)
                     ? "primary"

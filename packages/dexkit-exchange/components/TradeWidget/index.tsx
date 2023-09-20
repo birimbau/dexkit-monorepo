@@ -8,7 +8,6 @@ import {
   Divider,
   Paper,
   Stack,
-  Tab,
   Tabs,
   Typography,
   lighten,
@@ -17,7 +16,7 @@ import { SyntheticEvent, useState } from "react";
 
 import { FormattedMessage } from "react-intl";
 import BuyForm from "./BuyForm";
-import { TradeWidgetTab } from "./TradeWidgetTab";
+import TradeWidgetTabAlt, { TradeWidgetTab } from "./TradeWidgetTab";
 import { TradeWidgetTabs } from "./TradeWidgetTabs";
 
 import { useErc20BalanceQuery } from "@dexkit/core/hooks";
@@ -123,7 +122,7 @@ export default function TradeWidget({ isActive }: TradeWidgetProps) {
           </TradeWidgetTabs>
 
           <Paper
-            elevation={0}
+            variant="outlined"
             sx={{
               p: 2,
               backgroundColor: (theme) =>
@@ -139,22 +138,22 @@ export default function TradeWidget({ isActive }: TradeWidgetProps) {
                   "& .MuiTabs-indicator": {
                     backgroundColor: (theme) =>
                       orderSide === "buy"
-                        ? theme.palette.success.main
+                        ? theme.palette.success.light
                         : theme.palette.error.light,
                   },
                   "& .Mui-selected": {
                     color: (theme) =>
                       orderSide === "buy"
-                        ? theme.palette.success.main
+                        ? theme.palette.success.light
                         : theme.palette.error.light,
                   },
                 }}
               >
-                <Tab
+                <TradeWidgetTabAlt
                   value="buy"
                   label={<FormattedMessage id="buy" defaultMessage="Buy" />}
                 />
-                <Tab
+                <TradeWidgetTabAlt
                   value="sell"
                   label={<FormattedMessage id="sell" defaultMessage="Sell" />}
                 />

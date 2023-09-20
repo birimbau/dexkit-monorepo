@@ -7,6 +7,7 @@ import {
   ListItemText,
 } from "@mui/material";
 
+import { TOKEN_ICON_URL } from "@dexkit/core";
 import { isAddressEqual } from "@dexkit/core/utils";
 import TokenIcon from "@mui/icons-material/Token";
 
@@ -35,7 +36,13 @@ export default function SelectPairList({
           onClick={() => onSelect(token)}
         >
           <ListItemAvatar>
-            <Avatar>
+            <Avatar
+              src={
+                token.logoURI
+                  ? token.logoURI
+                  : TOKEN_ICON_URL(token.contractAddress, token.chainId)
+              }
+            >
               <TokenIcon />
             </Avatar>
           </ListItemAvatar>

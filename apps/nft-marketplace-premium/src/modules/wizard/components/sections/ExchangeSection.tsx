@@ -13,7 +13,6 @@ import {
 } from '@dexkit/exchange/hooks';
 import { useEffect, useMemo, useState } from 'react';
 
-import { ChainId } from '@dexkit/core';
 import { Token } from '@dexkit/core/types';
 import { isAddressEqual } from '@dexkit/core/utils';
 import PairInfo from '@dexkit/exchange/components/PairInfo';
@@ -108,12 +107,13 @@ function ExchangeSection() {
                   marketCap={
                     selectedPool?.attributes.market_cap_usd
                       ? selectedPool.attributes.market_cap_usd
-                      : 'N/A'
+                      : undefined
                   }
                   volume={selectedPool?.attributes.volume_usd.h24}
                   priceChangeH24={
                     selectedPool?.attributes.price_change_percentage.h24
                   }
+                  lastPrice={selectedPool?.attributes.token_price_usd}
                 />
               </Grid>
             )}
@@ -161,9 +161,14 @@ function ExchangeSectionWrapper({ section }: ExchangeSectionProps) {
   const { chainId } = useWeb3React();
 
   const defaultPairs =
-    settings.defaultPairs[chainId ? chainId : ChainId.Ethereum];
+    chainId !== undefined
+      ? settings.defaultPairs[chainId]
+      : { baseToken: undefined, quoteToken: undefined };
+
   const defaultTokens =
-    settings.defaultTokens[chainId ? chainId : ChainId.Ethereum];
+    chainId !== undefined
+      ? settings.defaultTokens[chainId]
+      : { baseTokens: [], quoteTokens: [] };
 
   const exchangeState = useExchangeContextState({
     baseTokens: defaultTokens.baseTokens,

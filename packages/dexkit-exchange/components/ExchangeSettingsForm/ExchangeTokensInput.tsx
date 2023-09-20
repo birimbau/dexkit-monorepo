@@ -28,7 +28,7 @@ export interface ExchangeTokensInputProps {
   tokenName: string;
   label: React.ReactNode;
   tokens: Token[];
-  chainId: ChainId;
+  chainId?: ChainId;
 }
 
 export default function ExchangeTokensInput({
@@ -190,7 +190,11 @@ export default function ExchangeTokensInput({
               justifyContent="space-between"
               spacing={1}
             >
-              <IconButton size="small" onClick={handleToggleEdit}>
+              <IconButton
+                disabled={chainId === undefined}
+                size="small"
+                onClick={handleToggleEdit}
+              >
                 <Edit />
               </IconButton>
               <Tooltip
@@ -198,9 +202,15 @@ export default function ExchangeTokensInput({
                   <FormattedMessage id="add.token" defaultMessage="Add token" />
                 }
               >
-                <IconButton onClick={handleAdd} size="small">
-                  <Add />
-                </IconButton>
+                <span>
+                  <IconButton
+                    disabled={chainId === undefined}
+                    onClick={handleAdd}
+                    size="small"
+                  >
+                    <Add />
+                  </IconButton>
+                </span>
               </Tooltip>
             </Stack>
           )}

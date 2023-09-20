@@ -11,18 +11,17 @@ import { PageHeader } from 'src/components/PageHeader';
 import { useSendConfigMutation } from 'src/hooks/whitelabel';
 import { AppConfig } from 'src/types/config';
 import { SiteResponse } from 'src/types/whitelabel';
-import theDefaultConfig from '../../../../../../config/quick.swap.default.app.json';
-import SignConfigDialog from '../../dialogs/SignConfigDialog';
+import theDefaultConfig from '../../../../../../config/quick.exchange.default.app.json';
 import { PreviewAppButton } from '../../PreviewAppButton';
-import SwapStepper from '../SwapStepper/SwapStepper';
-import { WelcomeSwapStepperMessage } from '../Welcome/WelcomeSwapStepperMessage';
+import SignConfigDialog from '../../dialogs/SignConfigDialog';
+import ExchangeStepper from '../ExchangeStepper';
 const defaultConfig = theDefaultConfig as unknown as AppConfig;
 
 interface Props {
   site?: SiteResponse;
 }
 
-export default function SwapStepperContainer({ site }: Props) {
+export default function ExchangeStepperContainer({ site }: Props) {
   const sendConfigMutation = useSendConfigMutation({ slug: site?.slug });
   const [showConfirmSendConfig, setShowConfirmSendConfig] = useState(false);
   const router = useRouter();
@@ -62,11 +61,13 @@ export default function SwapStepperContainer({ site }: Props) {
 
   const handleChange = useCallback(
     (_config: AppConfig) => {
+      console.log('new config', _config);
+
       const newConfig = { ...wizardConfig, ..._config };
       setWizardConfig(newConfig);
     },
 
-    [wizardConfig, setWizardConfig]
+    [wizardConfig, setWizardConfig],
   );
 
   const handleCloseSendingConfig = () => {
@@ -139,11 +140,11 @@ export default function SwapStepperContainer({ site }: Props) {
                 {
                   caption: (
                     <FormattedMessage
-                      id="swap.quick.builder"
-                      defaultMessage="Swap quick builder"
+                      id="exchnage.app.builder"
+                      defaultMessage="Exchange App Builder"
                     />
                   ),
-                  uri: '/admin/quick-builder/swap',
+                  uri: '/admin/quick-builder/exchange',
                   active: true,
                 },
               ]}
@@ -151,15 +152,12 @@ export default function SwapStepperContainer({ site }: Props) {
           </Stack>
         </Grid>
         <Grid item xs={12} sm={12}>
-          <WelcomeSwapStepperMessage />
-        </Grid>
-        <Grid item xs={12} sm={12}>
-          <Stack direction={'row'} justifyContent={'space-between'}>
+          <Stack direction="row" justifyContent="space-between">
             {!isMobile && (
               <Typography variant="h5">
                 <FormattedMessage
-                  id="quick.swap.builder"
-                  defaultMessage="Quick swap builder"
+                  id="quick.exchange.builder"
+                  defaultMessage="Quick Exchange Builder"
                 />
               </Typography>
             )}
@@ -169,7 +167,7 @@ export default function SwapStepperContainer({ site }: Props) {
           </Stack>
         </Grid>
         <Grid item xs={12} sm={12}>
-          <SwapStepper
+          <ExchangeStepper
             onSave={handleSave}
             onChange={handleChange}
             config={wizardConfig}

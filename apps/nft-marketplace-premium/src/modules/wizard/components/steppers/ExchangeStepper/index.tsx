@@ -1,5 +1,4 @@
 import {
-  customThemeAtom,
   customThemeDarkAtom,
   customThemeLightAtom,
 } from '@/modules/wizard/state';
@@ -19,8 +18,8 @@ import * as React from 'react';
 import { useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { AppConfig } from 'src/types/config';
+import ExchangeWizardContainer from '../../containers/ExchangeWizardContainer';
 import GeneralWizardContainer from '../../containers/GeneralWizardContainer';
-import SwapWizardContainer from '../../containers/SwapWizardContainer';
 import ThemeWizardContainer from '../../containers/ThemeWizardContainer';
 import TokenWizardContainer from '../../containers/TokenWizardContainer';
 
@@ -31,7 +30,7 @@ const steps = [
     description: (
       <FormattedMessage
         id="swap.step.general.info"
-        defaultMessage={'Set general info for your swap app.'}
+        defaultMessage="Set general info for your swap app."
       />
     ),
   },
@@ -40,20 +39,20 @@ const steps = [
     id: 'theme',
     description: (
       <FormattedMessage
-        id="swap.step.theme.info"
-        defaultMessage={'Choose swap app theme and font.'}
+        id=".step.theme.info"
+        defaultMessage="Choose swap app theme and font."
       />
     ),
   },
   {
     label: 'Choose Tokens',
     id: 'default-tokens',
-    description: `Choose default tokens on your swap app.`,
+    description: 'Choose default tokens on your app.',
   },
   {
-    label: 'Swap configuration',
-    id: 'swap-configuration',
-    description: `Simple swap configuration.`,
+    label: 'Exchange configuration',
+    id: 'exchange-configuration',
+    description: 'Exchange configuration.',
   },
 ];
 
@@ -66,7 +65,6 @@ interface Props {
 export default function ExchangeStepper({ config, onSave, onChange }: Props) {
   const [activeStep, setActiveStep] = React.useState(0);
 
-  const customTheme = useAtomValue(customThemeAtom);
   const customThemeDark = useAtomValue(customThemeDarkAtom);
   const customThemeLight = useAtomValue(customThemeLightAtom);
 
@@ -102,7 +100,7 @@ export default function ExchangeStepper({ config, onSave, onChange }: Props) {
   const theme = useTheme();
 
   return (
-    <Container maxWidth={'xl'}>
+    <Container maxWidth="xl">
       <Stepper activeStep={activeStep} orientation="vertical">
         {steps.map((step, index) => (
           <Step key={step.id}>
@@ -115,7 +113,6 @@ export default function ExchangeStepper({ config, onSave, onChange }: Props) {
                     onSave={onChange}
                     onChange={onChange}
                     isOnStepper={true}
-                    showSwap={true}
                     stepperButtonProps={{
                       handleNext: handleNext,
                       handleBack: handleBack,
@@ -152,10 +149,10 @@ export default function ExchangeStepper({ config, onSave, onChange }: Props) {
                     }}
                   />
                 )}
-                {step.id === 'swap-configuration' && (
-                  <SwapWizardContainer
+                {step.id === 'exchange-configuration' && (
+                  <ExchangeWizardContainer
                     config={config}
-                    swapTheme={selectedTheme}
+                    theme={selectedTheme}
                     onSave={onChange}
                     onChange={onChange}
                     isOnStepper={true}
@@ -187,10 +184,10 @@ export default function ExchangeStepper({ config, onSave, onChange }: Props) {
             onClick={() => onSave(config)}
             sx={{ mt: 1, mr: 1 }}
           >
-            <FormattedMessage id="create.app" defaultMessage={'Create app'} />
+            <FormattedMessage id="create.app" defaultMessage="Create app" />
           </Button>
           <Button onClick={handleReset} sx={{ mt: 1, mr: 1 }}>
-            <FormattedMessage id="reset" defaultMessage={'Reset'} />
+            <FormattedMessage id="reset" defaultMessage="Reset" />
           </Button>
         </Paper>
       )}

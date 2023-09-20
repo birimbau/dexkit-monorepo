@@ -1,3 +1,4 @@
+import { ChainId } from "@dexkit/core";
 import { Token } from "@dexkit/core/types";
 import { ethers } from "ethers";
 
@@ -13,6 +14,7 @@ export type DexkitExchangeSettings = {
   buyTokenPercentageFee?: number;
   feeRecipient?: string;
   affiliateAddress?: string;
+  availNetworks: ChainId[];
 };
 
 export type DexkitExchangeContextState = {

@@ -1,4 +1,4 @@
-import SwapStepperContainer from '@/modules/wizard/components/steppers/containers/SwapStepperContainer';
+import ExchangeStepperContainer from '@/modules/wizard/components/steppers/containers/ExchangeStepperContainer';
 import { QueryClient, dehydrate } from '@tanstack/react-query';
 import {
   GetStaticPaths,
@@ -54,7 +54,7 @@ export const ExchangeQuickBuilderPage: NextPage = () => {
       <ConfigWizardProvider>
         <AuthProvider>
           <MainLayout noSsr={true}>
-            <SwapStepperContainer site={site} />
+            <ExchangeStepperContainer site={site} />
           </MainLayout>
         </AuthProvider>
       </ConfigWizardProvider>
