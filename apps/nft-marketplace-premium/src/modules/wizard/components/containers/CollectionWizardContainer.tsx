@@ -36,7 +36,7 @@ export default function CollectionWizardContainer({ config, onSave }: Props) {
 
   const { enqueueSnackbar } = useSnackbar();
   const [collections, setCollections] = useState<AppCollection[]>(
-    config.collections || []
+    config.collections || [],
   );
   const [selectedEditCollection, setSelectedEditCollection] = useState<Form>();
 
@@ -61,7 +61,7 @@ export default function CollectionWizardContainer({ config, onSave }: Props) {
       const index = newCollections.findIndex(
         (c) =>
           c.chainId === collection.chainId &&
-          isAddressEqual(c.contractAddress, collection.contractAddress)
+          isAddressEqual(c.contractAddress, collection.contractAddress),
       );
 
       newCollections.splice(index, 1);
@@ -77,7 +77,7 @@ export default function CollectionWizardContainer({ config, onSave }: Props) {
             vertical: 'bottom',
             horizontal: 'right',
           },
-        }
+        },
       );
 
       return newCollections;
@@ -98,8 +98,8 @@ export default function CollectionWizardContainer({ config, onSave }: Props) {
             c.chainId === selectedEditCollection.chainId &&
             isAddressEqual(
               c.contractAddress,
-              selectedEditCollection.contractAddress
-            )
+              selectedEditCollection.contractAddress,
+            ),
         );
 
         if (index > -1) {
@@ -133,7 +133,7 @@ export default function CollectionWizardContainer({ config, onSave }: Props) {
               vertical: 'bottom',
               horizontal: 'right',
             },
-          }
+          },
         );
 
         setSelectedEditCollection(undefined);
@@ -141,7 +141,7 @@ export default function CollectionWizardContainer({ config, onSave }: Props) {
         return newCollections;
       });
     },
-    [selectedEditCollection]
+    [selectedEditCollection],
   );
 
   const handleCloseCollectionPreview = () => {
@@ -161,7 +161,7 @@ export default function CollectionWizardContainer({ config, onSave }: Props) {
     <Grid container spacing={2}>
       <Grid item xs={12}>
         <Stack>
-          <Typography variant={'subtitle2'}>
+          <Typography variant={'h6'}>
             <FormattedMessage id="collections" defaultMessage="Collections" />
           </Typography>
           <Typography variant={'body2'}>

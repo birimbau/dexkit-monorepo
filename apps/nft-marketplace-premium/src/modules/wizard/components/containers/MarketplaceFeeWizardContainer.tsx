@@ -39,7 +39,7 @@ export default function MarketplaceFeeWizardContainer({
         config.fees?.map((f: any) => ({
           amountPercentage: f.amount_percentage,
           recipient: f.recipient,
-        })) || []
+        })) || [],
       );
     }
   }, [config]);
@@ -63,7 +63,7 @@ export default function MarketplaceFeeWizardContainer({
     <Grid container spacing={2}>
       <Grid item xs={12}>
         <Stack>
-          <Typography variant={'subtitle2'}>
+          <Typography variant={'h6'}>
             <FormattedMessage
               id="marketplace.fees"
               defaultMessage="Marketplace fees"

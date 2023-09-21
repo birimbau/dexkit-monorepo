@@ -1,7 +1,15 @@
-import { Dialog, DialogProps } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
+import {
+  Box,
+  Card,
+  CardContent,
+  Dialog,
+  DialogProps,
+  DialogTitle,
+  IconButton,
+} from '@mui/material';
 import dynamic from 'next/dynamic';
 import { FormattedMessage } from 'react-intl';
-import { AppDialogTitle } from '../../../../components/AppDialogTitle';
 import { AppConfig } from '../../../../types/config';
 import { AppPageSection } from '../../types/section';
 const PreviewPagePlatform = dynamic(() => import('../PreviewPagePlatform'));
@@ -32,22 +40,37 @@ export default function PreviewPageDialog({
 
   return (
     <Dialog {...dialogProps}>
-      <AppDialogTitle
-        title={
+      <DialogTitle sx={{ bgcolor: 'background.default' }}>
+        <Box display={'flex'} justifyContent={'center'}>
           <FormattedMessage
             id="page.preview.title"
             defaultMessage="{name} page preview"
             values={{ name }}
           />
-        }
-        onClose={handleClose}
-      />
-      <PreviewPagePlatform
-        sections={sections}
-        disabled={disabled}
-        withLayout={withLayout}
-        appConfig={appConfig}
-      />
+        </Box>
+      </DialogTitle>
+      <IconButton
+        aria-label="close"
+        onClick={handleClose}
+        sx={{
+          position: 'absolute',
+          right: 8,
+          top: 8,
+          color: (theme) => theme.palette.grey[500],
+        }}
+      >
+        <CloseIcon />
+      </IconButton>
+      <Card>
+        <CardContent>
+          <PreviewPagePlatform
+            sections={sections}
+            disabled={disabled}
+            withLayout={withLayout}
+            appConfig={appConfig}
+          />
+        </CardContent>
+      </Card>
     </Dialog>
   );
 }

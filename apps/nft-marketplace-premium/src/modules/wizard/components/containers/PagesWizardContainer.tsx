@@ -63,7 +63,7 @@ export default function PagesWizardContainer({
     <Grid container spacing={2}>
       <Grid item xs={12}>
         <Stack direction={'row'} spacing={2}>
-          <Typography variant={'subtitle1'}>
+          <Typography variant={'h6'}>
             <FormattedMessage id="pages" defaultMessage="Pages" />
           </Typography>
 

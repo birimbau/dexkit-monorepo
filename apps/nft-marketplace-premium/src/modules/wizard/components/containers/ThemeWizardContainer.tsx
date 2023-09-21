@@ -51,7 +51,7 @@ export default function ThemeWizardContainer({
 }: Props) {
   const [selectedThemeId, setSelectedThemeId] = useState<string>(config.theme);
   const [selectedThemeMode, setSelectedThemeMode] = useState<ThemeMode>(
-    config.defaultThemeMode || ThemeMode.light
+    config.defaultThemeMode || ThemeMode.light,
   );
   const [defaultThemeMode, setDefaultThemeMode] = useState<
     ThemeMode | undefined
@@ -72,7 +72,7 @@ export default function ThemeWizardContainer({
     (id: string) => {
       setSelectedThemeId(id);
     },
-    [selectedThemeId]
+    [selectedThemeId],
   );
 
   const selectedTheme = useMemo(() => {
@@ -198,7 +198,7 @@ export default function ThemeWizardContainer({
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <Stack>
-            <Typography variant={'subtitle2'}>
+            <Typography variant={'h6'}>
               <FormattedMessage id="theme" defaultMessage="Theme" />
             </Typography>
             <Typography variant={'body2'}>

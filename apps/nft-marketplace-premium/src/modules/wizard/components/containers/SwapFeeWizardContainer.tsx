@@ -47,7 +47,7 @@ export default function SwapFeeWizardContainer({ config, onSave }: Props) {
     <Grid container spacing={2}>
       <Grid item xs={12}>
         <Stack>
-          <Typography variant={'subtitle2'}>
+          <Typography variant={'h6'}>
             <FormattedMessage id="swap.fees" defaultMessage="Swap fees" />
           </Typography>
           <Typography variant={'body2'}>

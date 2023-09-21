@@ -10,6 +10,7 @@ import {
   Stack,
   styled,
   TextField,
+  Tooltip,
   Typography,
 } from '@mui/material';
 import { FormikHelpers, useFormik } from 'formik';
@@ -21,7 +22,6 @@ import ImageIcon from '@mui/icons-material/Image';
 import * as Yup from 'yup';
 import MediaDialog from '../../../../components/mediaDialog';
 import { StepperButtonProps } from '../../types';
-import InputInfoAdornment from '../InputInfoAdornment';
 import { StepperButtons } from '../steppers/StepperButtons';
 export interface GeneralSectionForm {
   name: string;
@@ -166,7 +166,7 @@ export default function GeneralSection({
             onChange={onChange}
             isValid={formik.isValid}
           />
-          <Grid container spacing={2}>
+          <Grid container spacing={3}>
             <Grid item xs={12}>
               <TextField
                 name="name"
@@ -180,16 +180,13 @@ export default function GeneralSection({
                     ? formik.errors.name
                     : undefined
                 }
-                InputProps={{
-                  endAdornment: <InputInfoAdornment field={'name'} />,
-                }}
               />
             </Grid>
             <Grid item xs={12}>
               <TextField
                 type="email"
                 name="email"
-                label={<FormattedMessage id="email" defaultMessage="E-mail" />}
+                label={<FormattedMessage id="email" defaultMessage="Email" />}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 value={formik.values.email}
@@ -199,9 +196,6 @@ export default function GeneralSection({
                     ? formik.errors.email
                     : undefined
                 }
-                InputProps={{
-                  endAdornment: <InputInfoAdornment field={'email'} />,
-                }}
               />
             </Grid>
             <Grid item xs={12}>
@@ -261,12 +255,13 @@ export default function GeneralSection({
                 <Typography variant="body2" sx={{ width: '130px' }}>
                   <FormattedMessage
                     id="logo.on.desktop"
-                    defaultMessage="Logo on Desktop"
+                    defaultMessage="Logo on desktop"
                   />
                 </Typography>
                 <TextField
                   type="number"
                   name="logoWidth"
+                  sx={{ maxWidth: '150px' }}
                   label={
                     <FormattedMessage
                       id="logo.width"
@@ -290,6 +285,7 @@ export default function GeneralSection({
                 <TextField
                   type="number"
                   name="logoHeight"
+                  sx={{ maxWidth: '150px' }}
                   label={
                     <FormattedMessage
                       id="logo.height"
@@ -327,6 +323,7 @@ export default function GeneralSection({
                   />
                 </Typography>
                 <TextField
+                  sx={{ maxWidth: '150px' }}
                   type="number"
                   name="logoWidthMobile"
                   label={
@@ -353,6 +350,7 @@ export default function GeneralSection({
                 <Typography color={'primary'}>x</Typography>
 
                 <TextField
+                  sx={{ maxWidth: '150px' }}
                   type="number"
                   name="logoHeightMobile"
                   label={
@@ -382,17 +380,20 @@ export default function GeneralSection({
             <Grid item xs={12}>
               <Stack>
                 <Typography>
-                  <b>
-                    <FormattedMessage id="favicon" defaultMessage="Favicon" />
-                  </b>
-                </Typography>
-                <Typography variant="body2">
-                  <FormattedMessage
-                    id="favicon.helper.explainer"
-                    defaultMessage={
-                      'Small icon that represents a website and is displayed in the browser tab'
+                  <Tooltip
+                    title={
+                      <FormattedMessage
+                        id="favicon.helper.explainer"
+                        defaultMessage={
+                          'Small icon that represents a website and is displayed in the browser tab'
+                        }
+                      />
                     }
-                  />
+                  >
+                    <b>
+                      <FormattedMessage id="favicon" defaultMessage="Favicon" />
+                    </b>
+                  </Tooltip>
                 </Typography>
               </Stack>
               <Button
@@ -445,13 +446,16 @@ export default function GeneralSection({
                   value={formik.values.currency}
                   fullWidth
                   label={
-                    <FormattedMessage id="currency" defaultMessage="Currency" />
+                    <FormattedMessage
+                      id="standard.currency"
+                      defaultMessage="Standard currency"
+                    />
                   }
                   error={Boolean(formik.errors.currency)}
                 >
                   {CURRENCIES.map((curr, index) => (
                     <MenuItem key={index} value={curr.symbol}>
-                      {curr.name}
+                      {curr.name} ({curr.symbol.toUpperCase()})
                     </MenuItem>
                   ))}
                 </Select>

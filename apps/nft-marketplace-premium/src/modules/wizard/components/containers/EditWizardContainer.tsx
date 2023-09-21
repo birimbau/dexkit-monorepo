@@ -43,7 +43,6 @@ import { useAtom } from 'jotai';
 import { BuilderKit } from '../../constants';
 import { OnboardBuilderSteps } from '../../constants/onboard/steps';
 import { isFirstVisitOnEditWizardAtom } from '../../state';
-import BuilderKitMenu from '../BuilderKitMenu';
 import { PreviewAppButton } from '../PreviewAppButton';
 import { WelcomeMessage } from '../WelcomeMessage';
 import SignConfigDialog from '../dialogs/SignConfigDialog';
@@ -622,7 +621,10 @@ export function EditWizardContainer({ site }: Props) {
                   },
                   {
                     caption: (
-                      <FormattedMessage id="edit" defaultMessage="Edit" />
+                      <FormattedMessage
+                        id="edit.app"
+                        defaultMessage="Edit App"
+                      />
                     ),
                     uri: '/admin/edit',
                     active: true,
@@ -644,21 +646,19 @@ export function EditWizardContainer({ site }: Props) {
                   <Typography variant="h5">
                     <FormattedMessage id="edit.app" defaultMessage="Edit App" />
                   </Typography>
-                  <BuilderKitMenu
-                    menu={activeBuilderKit}
-                    onChangeMenu={(menu) => setActiveBuilderKit(menu)}
-                  />
-                  <TourButton />
+
+                  {/* <TourButton />*/}
                 </Stack>
               )}
               <Stack direction={'row'} spacing={2} alignItems={'center'}>
+                {/*<BuilderKitMenu
+                  menu={activeBuilderKit}
+                  onChangeMenu={(menu) => setActiveBuilderKit(menu)}
+              />*/}
                 <PreviewAppButton appConfig={wizardConfig} />
                 {site?.previewUrl && (
-                  <Button
-                    startIcon={<LinkIcon />}
-                    href={site?.previewUrl}
-                    target={'_blank'}
-                  >
+                  <Button href={site?.previewUrl} target={'_blank'}>
+                    <LinkIcon />
                     <FormattedMessage id="open.url" defaultMessage="Open url" />
                   </Button>
                 )}
@@ -691,10 +691,12 @@ export function EditWizardContainer({ site }: Props) {
               />
                 </Stack>
           </Grid>*/}
+
           <Grid item xs={12} sm={2}>
             {!isMobile && renderMenu()}
           </Grid>
-          <Grid item xs={12} sm={10}>
+          <Grid item xs={12} sm={0.1}></Grid>
+          <Grid item xs={12} sm={9.8}>
             <Stack spacing={2} className={'builder-forms'}>
               {activeMenu === ActiveMenu.General && config && (
                 <GeneralWizardContainer
@@ -788,6 +790,7 @@ export function EditWizardContainer({ site }: Props) {
               )}
             </Stack>
           </Grid>
+
           {/*false && theme && (
             <Grid item xs={12} sm={6}>
               <ThemeProvider theme={selectedTheme ? selectedTheme : theme}>

@@ -57,7 +57,7 @@ const SocialOptionsSchema: Yup.SchemaOf<SocialOptions> = Yup.object().shape({
       iconUrl: Yup.string().required().url(),
       label: Yup.string().required(),
       link: Yup.string().required().url(),
-    })
+    }),
   ),
 });
 
@@ -178,7 +178,7 @@ export default function SocialWizardContainer({
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <Stack>
-                <Typography variant={'subtitle2'}>
+                <Typography variant={'h6'}>
                   <FormattedMessage id="social" defaultMessage="Social" />
                 </Typography>
                 <Typography variant={'body2'}>
