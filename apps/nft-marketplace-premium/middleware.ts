@@ -47,6 +47,7 @@ function isBasePath(path: string) {
 export default function middleware(req: NextRequest) {
   const url = req.nextUrl;
 
+
   let hostname = req.headers.get('host') || 'marketplace.localhost';
 
   hostname = hostname.replace(':3001', '');
@@ -58,6 +59,12 @@ export default function middleware(req: NextRequest) {
   if (url.pathname.startsWith('/site')) {
     return NextResponse.rewrite(url);
   }
+
+  if (hostname === 'ploobit-swap.dexkit.app') {
+    url.pathname = '/empty';
+    return NextResponse.rewrite(url);
+  }
+
 
 
   if (
