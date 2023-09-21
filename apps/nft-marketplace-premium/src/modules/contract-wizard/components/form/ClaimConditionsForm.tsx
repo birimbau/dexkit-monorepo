@@ -3,19 +3,27 @@ import Delete from '@mui/icons-material/Delete';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
+import CircularProgress from '@mui/material/CircularProgress';
 import Divider from '@mui/material/Divider';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import { ClaimCondition } from '@thirdweb-dev/sdk';
 import { FieldArray, Form, useFormikContext } from 'formik';
 import React, { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
+import { ClaimConditionTypeForm } from '../../types';
 import { ClaimConditionForm } from './ClaimConditionForm';
 
-export function ClaimConditionsForm() {
-  const { submitForm, isValid, values } = useFormikContext<{
-    phases: ClaimCondition[];
+interface Props {
+  network: string;
+
+  isEdit: boolean;
+}
+
+export function ClaimConditionsForm({ network, isEdit }: Props) {
+  const { submitForm, isValid, values, isSubmitting } = useFormikContext<{
+    phases: ClaimConditionTypeForm[];
   }>();
+
   const [showConfirm, setShowConfirm] = useState(false);
   const [confirmCallback, setConfirmCallback] = useState<() => void>();
 
@@ -65,7 +73,13 @@ export function ClaimConditionsForm() {
                   {values.phases?.map((_, index: number, arr: any[]) => (
                     <React.Fragment key={index}>
                       <Stack direction="row" justifyContent="space-between">
-                        <Typography>NFT: {index + 1}</Typography>
+                        <Typography>
+                          <FormattedMessage
+                            id="phases"
+                            defaultMessage={'Phases'}
+                          />
+                          : {index + 1}
+                        </Typography>
 
                         <Button
                           startIcon={<Delete />}
@@ -84,14 +98,14 @@ export function ClaimConditionsForm() {
                         </Button>
                       </Stack>
 
-                      <ClaimConditionForm itemIndex={index} network="" />
+                      <ClaimConditionForm itemIndex={index} network={network} />
                       {index < arr.length - 1 && <Divider />}
                     </React.Fragment>
                   ))}
 
                   <Button
                     variant="outlined"
-                    onClick={() => arrayHelper.push({ quantity: 1 })}
+                    onClick={() => arrayHelper.push({ name: 'new phase' })}
                   >
                     <FormattedMessage
                       id="add.claim.condition"
@@ -101,15 +115,25 @@ export function ClaimConditionsForm() {
 
                   <Stack direction="row" justifyContent="space-between">
                     <Button
-                      disabled={!isValid || values.phases.length === 0}
+                      disabled={
+                        !isValid || values.phases.length === 0 || isSubmitting
+                      }
+                      startIcon={isSubmitting && <CircularProgress />}
                       onClick={submitForm}
                       variant="contained"
                       color="primary"
                     >
-                      <FormattedMessage
-                        id="create.claim.conditions"
-                        defaultMessage="Create claim conditions"
-                      />
+                      {isEdit ? (
+                        <FormattedMessage
+                          id="edit.claim.conditions"
+                          defaultMessage="Edit claim conditions"
+                        />
+                      ) : (
+                        <FormattedMessage
+                          id="create.claim.conditions"
+                          defaultMessage="Create claim conditions"
+                        />
+                      )}
                     </Button>
                   </Stack>
                 </Stack>

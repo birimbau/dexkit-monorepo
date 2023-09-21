@@ -106,7 +106,7 @@ function WizardCreateAssetContainerV2(props: Props) {
 
         let totalItems = 0;
         if (isLazyMint) {
-          const result = await lazyMint({
+          await lazyMint({
             metadatas: collectionItemsFormValues?.items.map((item) => {
               return {
                 attributes: item.attributes || [],
@@ -117,9 +117,13 @@ function WizardCreateAssetContainerV2(props: Props) {
               };
             }),
           });
+          const tokenIds = [];
+          for (let index = 0; index < itemsToMint; index++) {
+            tokenIds.push(String(index + (totalCount?.toNumber() || 0)));
+          }
 
           await fetchAssetsMutation.mutateAsync({
-            tokenIds: result?.map((r) => r.id.toString()) || [],
+            tokenIds: tokenIds,
           });
         } else {
           for (let index = 0; index < itemsToMint; index++) {
@@ -249,6 +253,7 @@ function WizardCreateAssetContainerV2(props: Props) {
             validationSchema={CollectionItemsSchema}
           >
             <CollectionItemsCard
+              network={network}
               onlySingleMint={isLazyMint ? false : true}
               allowMultipleQuantity={isERC1155 === true && isLazyMint === false}
             />

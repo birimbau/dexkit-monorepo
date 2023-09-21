@@ -44,7 +44,7 @@ export function ContractEditionDropContainer({ address, network }: Props) {
         network={network}
         address={address}
         isERC1155={true}
-        isLazyMint={true}
+        isLazyMint={false}
       />
 
       <Grid container spacing={2}>
@@ -103,7 +103,7 @@ export function ContractEditionDropContainer({ address, network }: Props) {
                 contractAddress={address as string}
                 network={network as string}
                 search={search}
-                showClaimConditions={true}
+                showClaimConditions={false}
               />
             </AppErrorBoundary>
           </NoSsr>

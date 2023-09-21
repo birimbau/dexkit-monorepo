@@ -1,14 +1,5 @@
-import Avatar from '@mui/material/Avatar';
-import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
-import Typography from '@mui/material/Typography';
 import {
-  CustomContractMetadata,
-  useContract,
-  useMetadata,
-} from '@thirdweb-dev/react';
-
-import {
+  NETWORK_EXPLORER,
   NETWORK_FROM_SLUG,
   NETWORK_IMAGE,
   NETWORK_NAME,
@@ -19,10 +10,22 @@ import {
   truncateAddress,
 } from '@dexkit/core/utils';
 import CopyIconButton from '@dexkit/ui/components/CopyIconButton';
+import { THIRDWEB_CONTRACT_TYPES } from '@dexkit/web3forms/constants';
 import FileCopy from '@mui/icons-material/FileCopy';
-import { Chip, Stack, styled, useTheme } from '@mui/material';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import { Button, Chip, Stack, styled, useTheme } from '@mui/material';
+import Avatar from '@mui/material/Avatar';
+import Box from '@mui/material/Box';
+import Grid from '@mui/material/Grid';
+import Typography from '@mui/material/Typography';
+import {
+  CustomContractMetadata,
+  useContract,
+  useMetadata,
+} from '@thirdweb-dev/react';
 import Image from 'next/image';
-import { useIntl } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
+import Link from 'src/components/Link';
 const Img = styled(Image)({});
 
 interface Props {
@@ -128,7 +131,12 @@ export function ContractMetadataHeader(props: Props) {
             </Grid>
           )}
           <Grid item xs={12}>
-            <Stack direction={'row'} spacing={2}>
+            <Stack
+              direction={'row'}
+              spacing={2}
+              alignContent={'center'}
+              alignItems={'center'}
+            >
               <Typography color="textSecondary" variant="caption">
                 {truncateAddress(address)}
 
@@ -152,7 +160,22 @@ export function ContractMetadataHeader(props: Props) {
                   <FileCopy fontSize="inherit" color="inherit" />
                 </CopyIconButton>
               </Typography>
-              <Chip label={contractType || 'custom'}></Chip>
+              <Button
+                LinkComponent={Link}
+                href={`${NETWORK_EXPLORER(chainId)}/address/${address}`}
+                target="_blank"
+                endIcon={<OpenInNewIcon />}
+                size="small"
+              >
+                <FormattedMessage id="explorer" defaultMessage="Explorer" />
+              </Button>
+              <Chip
+                label={
+                  contractType
+                    ? THIRDWEB_CONTRACT_TYPES[contractType]
+                    : 'custom'
+                }
+              ></Chip>
             </Stack>
           </Grid>
         </Grid>

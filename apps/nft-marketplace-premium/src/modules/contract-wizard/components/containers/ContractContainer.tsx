@@ -2,6 +2,7 @@ import { Divider } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import { useContractType } from '@thirdweb-dev/react';
 import { ContractMetadataHeader } from '../ContractMetadataHeader';
+import { ContractCollectionDropContainer } from './ContractCollectionDropContainer';
 import { ContractEditionDropContainer } from './ContractEditionDropContainer';
 
 interface Props {
@@ -10,7 +11,7 @@ interface Props {
 }
 
 export function ContractContainer({ address, network }: Props) {
-  const { data, isLoading, error } = useContractType(address);
+  const { data } = useContractType(address);
 
   return (
     <Grid container spacing={2}>
@@ -27,6 +28,12 @@ export function ContractContainer({ address, network }: Props) {
       <Grid item xs={12}>
         {data === 'edition-drop' && (
           <ContractEditionDropContainer address={address} network={network} />
+        )}
+        {false && (
+          <ContractCollectionDropContainer
+            address={address}
+            network={network}
+          />
         )}
       </Grid>
     </Grid>

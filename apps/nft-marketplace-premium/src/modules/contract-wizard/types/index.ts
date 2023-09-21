@@ -20,15 +20,14 @@ export interface CollectionOwnershipNFTFormType {
   image?: string | null;
 }
 
-export interface ClaimCondition {
-  startTime: number;
+export interface ClaimConditionTypeForm {
+  startTime: Date | string;
   name: string;
   waitInSeconds: number;
   price: number;
-  maxClaimableSupply: number;
-  maxClaimablePerWallet: number;
-  merkleRoot: string,
-  pricePerToken: string;
+  maxClaimableSupply: number | string;
+  maxClaimablePerWallet: number | string;
+  merkleRoot?: string,
   currencyAddress: string;
 }
 

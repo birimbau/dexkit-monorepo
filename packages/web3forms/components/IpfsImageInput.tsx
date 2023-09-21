@@ -1,37 +1,56 @@
 import { getNormalizedUrl } from "@dexkit/core/utils";
-import MediaDialog from "@dexkit/ui/components/mediaDialog";
 import ImageIcon from "@mui/icons-material/Image";
 import { Box, ButtonBase, Stack, Typography, useTheme } from "@mui/material";
 import { useFormikContext } from "formik";
 import { useState } from "react";
 import { FormattedMessage } from "react-intl";
+import { useIpfsFileListQuery } from "../hooks";
+import IpfsMediaDialog from "./IpfsMediaDialog";
+
 export interface ImageInputProps {
   name: string;
   label: string;
 }
 
-export function ImageInput({ name, label }: ImageInputProps) {
+export function IpfsImageInput({ name, label }: ImageInputProps) {
   const { setFieldValue, values } = useFormikContext<any>();
 
   const [showDialog, setShowDialog] = useState(false);
 
   const handleToggle = () => {
     setShowDialog((value) => !value);
-    // setFieldValue(name, undefined);
+    setFieldValue(name, undefined);
   };
+
+  const handleSelect = (url: string) => {
+    setFieldValue(name, url);
+    setShowDialog(false);
+  };
+
+  const ipfsFileListQuery = useIpfsFileListQuery({ page: 1, onlyImages: true });
 
   const theme = useTheme();
 
   return (
     <>
-      <MediaDialog
-        dialogProps={{
+      <IpfsMediaDialog
+        DialogProps={{
           open: showDialog,
           fullWidth: true,
-          maxWidth: "lg",
+          maxWidth: "sm",
           onClose: handleToggle,
         }}
-        onConfirmSelectFile={(file) => setFieldValue(name, file.url)}
+        images={
+          ipfsFileListQuery.data
+            ? ipfsFileListQuery.data.pages
+                .map((p) => p.items.map((f) => f))
+                .flat()
+            : []
+        }
+        hasMore={ipfsFileListQuery.hasNextPage}
+        onSelect={handleSelect}
+        isLoading={ipfsFileListQuery.isLoading}
+        onLoadMore={() => ipfsFileListQuery.fetchNextPage()}
       />
 
       <ButtonBase

@@ -313,16 +313,22 @@ export function useLazyMintMutation({ address, isERC1155, onSubmitted }: { addre
     let tx;
     if (isERC1155) {
 
-      tx = await contract?.erc1155.lazyMint(metadatas);
+      tx = await contract?.erc1155.lazyMint.prepare(metadatas);
     } else {
-      tx = await contract?.erc721.lazyMint(metadatas);
+      tx = await contract?.erc721.lazyMint.prepare(metadatas);
 
     }
+    const sentTx = await tx?.send();
 
-    if (onSubmitted && tx) {
-      onSubmitted(tx[0].receipt.transactionHash);
+
+    if (onSubmitted && sentTx?.hash) {
+      onSubmitted(sentTx?.hash);
     }
-    return tx;
+    if (sentTx) {
+      return await sentTx.wait();
+    }
+
+
 
   });
 }

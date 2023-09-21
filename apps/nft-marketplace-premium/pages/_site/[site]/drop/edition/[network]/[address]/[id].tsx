@@ -22,6 +22,7 @@ import { NextSeo } from 'next-seo';
 import { FormattedMessage } from 'react-intl';
 import MainLayout from 'src/components/layouts/main';
 import { PageHeader } from 'src/components/PageHeader';
+import { THIRDWEB_CLIENT_ID } from 'src/constants';
 import { NETWORK_ID } from 'src/constants/enum';
 import { MAP_NETWORK_TO_RARIBLE } from 'src/constants/marketplaces';
 import { BEST_SELL_ORDER_RARIBLE } from 'src/hooks/nft';
@@ -80,18 +81,18 @@ const AssetDetailPage: NextPage = () => {
                 },
                 {
                   caption: `${asset?.collectionName} #${truncateErc1155TokenId(
-                    asset?.id
+                    asset?.id,
                   )}`,
                   uri: `/asset/${NETWORK_SLUG(
-                    asset?.chainId
+                    asset?.chainId,
                   )}/${address}/${id}`,
                 },
                 {
-                  caption: `Drop ${
-                    asset?.collectionName
-                  } #${truncateErc1155TokenId(asset?.id)}`,
-                  uri: `drop/edition//${NETWORK_SLUG(
-                    asset?.chainId
+                  caption: `Drop ${asset?.collectionName} #${truncateErc1155TokenId(
+                    asset?.id,
+                  )}`,
+                  uri: `drop/edition/${NETWORK_SLUG(
+                    asset?.chainId,
                   )}/${address}/${id}`,
                   active: true,
                 },
@@ -103,7 +104,7 @@ const AssetDetailPage: NextPage = () => {
           </Grid>
           <Grid item xs={12} sm={8}>
             <ThirdwebSDKProvider
-              clientId="8b875cba6d295240d3b3861a3e8c2260"
+              clientId={THIRDWEB_CLIENT_ID}
               activeChain={asset?.chainId}
               signer={provider?.getSigner()}
             >
@@ -150,13 +151,13 @@ export const getStaticProps: GetStaticProps = async ({
     try {
       if (network === NETWORK_ID.Ethereum || network === NETWORK_ID.Polygon) {
         const { data } = await getRariAsset(
-          `${MAP_NETWORK_TO_RARIBLE[network]}:${address}:${id}`
+          `${MAP_NETWORK_TO_RARIBLE[network]}:${address}:${id}`,
         );
         await queryClient.prefetchQuery(
           [BEST_SELL_ORDER_RARIBLE, network, address, id],
           async () => {
             return data;
-          }
+          },
         );
       }
     } catch (e) {

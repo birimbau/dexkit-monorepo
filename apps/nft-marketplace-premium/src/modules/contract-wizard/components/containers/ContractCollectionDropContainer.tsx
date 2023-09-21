@@ -11,7 +11,8 @@ import { useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { AppErrorBoundary } from 'src/components/AppErrorBoundary';
 import { useCollection } from 'src/hooks/nft';
-import { AssetListContractEdition } from '../AssetListContractEdition';
+import { AssetListContractCollection } from '../AssetListContractCollection';
+import ClaimConditionsDialog from '../dialogs/ClaimConditionsDialog';
 import CreateAssetFormDialog from '../dialogs/CreateAssetFormDialog';
 
 interface Props {
@@ -19,8 +20,9 @@ interface Props {
   network: string;
 }
 
-export function ContractEditionDropContainer({ address, network }: Props) {
+export function ContractCollectionDropContainer({ address, network }: Props) {
   const [openMintDialog, setOpenMintDialog] = useState(false);
+  const [openClaimDialog, setOpenClaimDialog] = useState(false);
   const { data: collection } = useCollection(
     address as string,
     NETWORK_FROM_SLUG(network)?.chainId,
@@ -43,14 +45,30 @@ export function ContractEditionDropContainer({ address, network }: Props) {
         }}
         network={network}
         address={address}
-        isERC1155={true}
+        isERC1155={false}
         isLazyMint={true}
+      />
+      <ClaimConditionsDialog
+        dialogProps={{
+          open: openClaimDialog,
+          onClose: () => setOpenClaimDialog(false),
+          fullWidth: true,
+          maxWidth: 'xl',
+        }}
+        network={network}
+        address={address}
       />
 
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <Button variant={'outlined'} onClick={() => setOpenMintDialog(true)}>
             <FormattedMessage defaultMessage={'Mint NFT'} id={'mint.nft'} />
+          </Button>
+          <Button variant={'outlined'} onClick={() => setOpenClaimDialog(true)}>
+            <FormattedMessage
+              defaultMessage={'Claim conditions'}
+              id={'claim.conditions'}
+            />
           </Button>
         </Grid>
 
@@ -99,11 +117,12 @@ export function ContractEditionDropContainer({ address, network }: Props) {
                 </Stack>
               )}
             >
-              <AssetListContractEdition
+              <AssetListContractCollection
                 contractAddress={address as string}
                 network={network as string}
                 search={search}
-                showClaimConditions={true}
+                showButtonEmpty={false}
+                showAssetDetailsInDialog={true}
               />
             </AppErrorBoundary>
           </NoSsr>

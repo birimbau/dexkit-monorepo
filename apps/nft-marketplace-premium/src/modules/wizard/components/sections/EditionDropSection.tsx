@@ -16,6 +16,8 @@ import {
   Card,
   CardContent,
   Grid,
+  Skeleton,
+  TextField,
   Typography,
 } from '@mui/material';
 import Box from '@mui/material/Box';
@@ -37,7 +39,7 @@ interface Props {
 
 export function parseIneligibility(
   reasons: ClaimEligibility[],
-  quantity = 0
+  quantity = 0,
 ): string {
   if (!reasons.length) {
     return '';
@@ -81,8 +83,9 @@ export function EditionDropSection({ section }: Props) {
   const activeClaimCondition = useActiveClaimConditionForWallet(
     editionDrop,
     account,
-    tokenId
+    tokenId,
   );
+
   const handleApproveAssetSuccess = useCallback(
     async (hash: string, swapAsset: SwappableAssetV4) => {
       if (swapAsset.type === 'ERC20') {
@@ -106,12 +109,12 @@ export function EditionDropSection({ section }: Props) {
       watchTransactionDialog,
       activeClaimCondition.data?.currencyMetadata.symbol,
       chainId,
-    ]
+    ],
   );
 
   const approveMutation = useErc20ApproveMutationV2(
     provider,
-    handleApproveAssetSuccess
+    handleApproveAssetSuccess,
   );
 
   const claimerProofs = useClaimerProofs(editionDrop, account || '', tokenId);
@@ -121,7 +124,7 @@ export function EditionDropSection({ section }: Props) {
       quantity,
       walletAddress: account || '',
     },
-    tokenId
+    tokenId,
   );
 
   const claimedSupply = useTotalCirculatingSupply(editionDrop, tokenId);
@@ -148,18 +151,18 @@ export function EditionDropSection({ section }: Props) {
 
   const totalAmount = useMemo(() => {
     const bnPrice = BigNumber.from(
-      activeClaimCondition.data?.currencyMetadata.value || 0
+      activeClaimCondition.data?.currencyMetadata.value || 0,
     );
     return bnPrice.mul(quantity);
   }, [quantity, activeClaimCondition.data?.currencyMetadata.value]);
 
   const priceToMint = useMemo(() => {
     const bnPrice = BigNumber.from(
-      activeClaimCondition.data?.currencyMetadata.value || 0
+      activeClaimCondition.data?.currencyMetadata.value || 0,
     );
     return `${utils.formatUnits(
       bnPrice.mul(quantity).toString(),
-      activeClaimCondition.data?.currencyMetadata.decimals || 18
+      activeClaimCondition.data?.currencyMetadata.decimals || 18,
     )} ${activeClaimCondition.data?.currencyMetadata.symbol}`;
   }, [
     activeClaimCondition.data?.currencyMetadata.decimals,
@@ -172,7 +175,7 @@ export function EditionDropSection({ section }: Props) {
     let bnMaxClaimable;
     try {
       bnMaxClaimable = BigNumber.from(
-        activeClaimCondition.data?.maxClaimableSupply || 0
+        activeClaimCondition.data?.maxClaimableSupply || 0,
       );
     } catch (e) {
       bnMaxClaimable = BigNumber.from(1_000_000);
@@ -181,7 +184,7 @@ export function EditionDropSection({ section }: Props) {
     let perTransactionClaimable;
     try {
       perTransactionClaimable = BigNumber.from(
-        activeClaimCondition.data?.maxClaimablePerWallet || 0
+        activeClaimCondition.data?.maxClaimablePerWallet || 0,
       );
     } catch (e) {
       perTransactionClaimable = BigNumber.from(1_000_000);
@@ -229,7 +232,7 @@ export function EditionDropSection({ section }: Props) {
       return (
         (activeClaimCondition.isSuccess &&
           BigNumber.from(activeClaimCondition.data?.availableSupply || 0).lte(
-            0
+            0,
           )) ||
         numberClaimed === numberTotal
       );
@@ -265,21 +268,21 @@ export function EditionDropSection({ section }: Props) {
 
   const buttonLoading = useMemo(
     () => isLoading || claimIneligibilityReasons.isLoading,
-    [claimIneligibilityReasons.isLoading, isLoading]
+    [claimIneligibilityReasons.isLoading, isLoading],
   );
   const priceText = useMemo(() => {
     const pricePerToken = BigNumber.from(
-      activeClaimCondition.data?.currencyMetadata.value || 0
+      activeClaimCondition.data?.currencyMetadata.value || 0,
     );
     if (pricePerToken.eq(0)) {
-      return <FormattedMessage id={'Free'} defaultMessage={'Free)'} />;
+      return <FormattedMessage id={'Free'} defaultMessage={'Free'} />;
     }
     const bnPrice = BigNumber.from(
-      activeClaimCondition.data?.currencyMetadata.value || 0
+      activeClaimCondition.data?.currencyMetadata.value || 0,
     );
     return `${utils.formatUnits(
       bnPrice.toString(),
-      activeClaimCondition.data?.currencyMetadata.decimals || 18
+      activeClaimCondition.data?.currencyMetadata.decimals || 18,
     )} ${activeClaimCondition.data?.currencyMetadata.symbol}`;
   }, [
     activeClaimCondition.data?.currencyMetadata.decimals,
@@ -295,7 +298,7 @@ export function EditionDropSection({ section }: Props) {
 
     if (canClaim) {
       const pricePerToken = BigNumber.from(
-        activeClaimCondition.data?.currencyMetadata.value || 0
+        activeClaimCondition.data?.currencyMetadata.value || 0,
       );
       if (pricePerToken.eq(0)) {
         return (
@@ -340,6 +343,9 @@ export function EditionDropSection({ section }: Props) {
     priceToMint,
     quantity,
   ]);
+
+  const isLoadingConditions =
+    activeClaimCondition.isLoading || claimConditions.isLoading;
 
   return (
     <Box py={4}>
@@ -395,154 +401,198 @@ export function EditionDropSection({ section }: Props) {
           </Stack>
         </Grid>
         <Grid item xs={12}>
-          <Card>
-            <CardContent>
-              {claimConditions.data?.length === 0 ||
-              !claimConditions.data ||
-              claimConditions.data?.every(
-                (cc) => cc.maxClaimableSupply === '0'
-              ) ? (
-                <Alert severity="info">
-                  <FormattedMessage
-                    id={'drop.not.ready.to.mint.yet'}
-                    defaultMessage={
-                      'This drop is not ready to be minted yet. (No claim condition set)'
-                    }
-                  />
-                </Alert>
-              ) : (
-                <Stack spacing={1}>
-                  <Typography variant="h6">
-                    {' '}
-                    {activeClaimCondition.data?.metadata?.name || ''}
-                  </Typography>
-
-                  <Typography variant="body1">{priceText}</Typography>
-                  <Typography variant="body2">
-                    {activeClaimCondition.data?.maxClaimablePerWallet.toString() ||
-                      'unlimited'}{' '}
+          {isLoadingConditions && !activeClaimCondition.data ? (
+            <Card>
+              <CardContent>
+                <Skeleton width={'300px'}></Skeleton>
+                <Skeleton width={'300px'}></Skeleton>
+                <Skeleton width={'300px'}></Skeleton>
+              </CardContent>
+            </Card>
+          ) : (
+            <Card>
+              <CardContent>
+                {claimConditions.data?.length === 0 ||
+                !claimConditions.data ||
+                claimConditions.data?.every(
+                  (cc) => cc.maxClaimableSupply === '0',
+                ) ? (
+                  <Alert severity="info">
                     <FormattedMessage
-                      id={'per.wallet'}
-                      defaultMessage={'per wallet'}
-                    ></FormattedMessage>
-                  </Typography>
-                  <Stack direction={'row'} spacing={2}>
-                    <Button
-                      size={'large'}
-                      onClick={() => setQuantity(quantity - 1)}
-                      disabled={quantity <= 1}
-                    >
-                      -
-                    </Button>
+                      id={'drop.not.ready.to.mint.yet'}
+                      defaultMessage={
+                        'This drop is not ready to be minted yet. (No claim condition set)'
+                      }
+                    />
+                  </Alert>
+                ) : activeClaimCondition.data ? (
+                  <Stack spacing={1}>
+                    <Typography variant="h5">
+                      {' '}
+                      {activeClaimCondition.data?.metadata?.name || ''}
+                    </Typography>
 
-                    <Typography variant="h4">{quantity}</Typography>
-
-                    <Button
-                      size={'large'}
-                      onClick={() => setQuantity(quantity + 1)}
-                      disabled={quantity >= maxClaimable}
-                    >
-                      +
-                    </Button>
-                  </Stack>
-
-                  {isSoldOut ? (
-                    <Typography variant={'h2'}>
+                    <Typography variant="body1">
                       <FormattedMessage
-                        id={'sold.out'}
-                        defaultMessage={'Sold out'}
+                        id={'price'}
+                        defaultMessage={'Price'}
+                      ></FormattedMessage>
+                      : <b>{priceText}</b>
+                    </Typography>
+                    <Typography variant="body2">
+                      {activeClaimCondition.data?.maxClaimablePerWallet.toString() ||
+                        'unlimited'}{' '}
+                      <FormattedMessage
+                        id={'per.wallet'}
+                        defaultMessage={'per wallet'}
                       />
                     </Typography>
-                  ) : (
-                    <Button
-                      disabled={!canClaim || buttonLoading}
-                      sx={{ maxWidth: '300px' }}
-                      variant="outlined"
-                      onClick={async () => {
-                        if (editionDrop) {
-                          // it's an erc 20 we need to check allowance
-                          if (
-                            activeClaimCondition.data?.currencyAddress.toLowerCase() !==
-                            NATIVE_TOKEN_ADDRESS
-                          ) {
-                            const allowance =
-                              await allowanceMutation.mutateAsync({
-                                spender: address,
-                                account,
-                                tokenAddress:
-                                  activeClaimCondition.data?.currencyAddress,
-                              });
-                            // we need to approve token
-                            if (
-                              allowance &&
-                              (allowance as BigNumber).lt(totalAmount)
-                            ) {
-                              const values = {
-                                name: activeClaimCondition.data
-                                  ?.currencyMetadata.symbol,
-                                symbol:
-                                  activeClaimCondition.data?.currencyMetadata
-                                    .symbol,
-                              };
-
-                              watchTransactionDialog.open('approve', values);
-                              await approveMutation.mutateAsync({
-                                spender: address,
-                                amount: totalAmount,
-                                tokenAddress:
-                                  activeClaimCondition.data?.currencyAddress,
-                              });
-                            }
-                          }
-
-                          const values = {
-                            tokenId,
-                            quantity: String(quantity),
-                            name: String(contractMetadata?.name || ' '),
-                          };
-
-                          watchTransactionDialog.open(
-                            'mintEditionDrop',
-                            values
-                          );
-                          const result = await editionDrop.erc1155.claim(
-                            tokenId,
-                            quantity
-                          );
-
-                          createNotification({
-                            type: 'transaction',
-                            subtype: 'mintEditionDrop',
-                            values,
-                            metadata: {
-                              chainId,
-                              hash: result.receipt.transactionHash,
-                            },
-                          });
-
-                          watchTransactionDialog.watch(
-                            result.receipt.transactionHash
-                          );
+                    <Stack direction={'row'} spacing={2}>
+                      {/* <Button
+                        size={'large'}
+                        onClick={() => setQuantity(quantity - 1)}
+                        disabled={quantity <= 1}
+                      >
+                        -
+                      </Button>*/}
+                      <TextField
+                        id="standard-basic"
+                        type={'number'}
+                        value={quantity}
+                        onChange={(ev) =>
+                          setQuantity(Number(ev.currentTarget.value))
                         }
-                      }}
-                    >
-                      {buttonLoading ? (
-                        <>
+                        label={
                           <FormattedMessage
-                            id={'loading'}
-                            defaultMessage={'Loading'}
+                            id={'quantity'}
+                            defaultMessage={'Quantity'}
                           />
-                          {'...'}
-                        </>
-                      ) : (
-                        buttonText
-                      )}
-                    </Button>
-                  )}
-                </Stack>
-              )}
-            </CardContent>
-          </Card>
+                        }
+                        disabled={quantity >= maxClaimable}
+                        variant="standard"
+                        inputProps={{
+                          min: 1,
+                          max: maxClaimable,
+                        }}
+                      />
+                      {/*   <Typography variant="h4">{quantity}</Typography>*/}
+
+                      {/* <Button
+                        size={'large'}
+                        onClick={() => setQuantity(quantity + 1)}
+                        disabled={quantity >= maxClaimable}
+                      >
+                        +
+                      </Button>*/}
+                    </Stack>
+
+                    {isSoldOut ? (
+                      <Typography variant={'h2'}>
+                        <FormattedMessage
+                          id={'sold.out'}
+                          defaultMessage={'Sold out'}
+                        />
+                      </Typography>
+                    ) : (
+                      <Button
+                        disabled={!canClaim || buttonLoading}
+                        sx={{ maxWidth: '300px' }}
+                        variant="outlined"
+                        onClick={async () => {
+                          if (editionDrop) {
+                            // it's an erc 20 we need to check allowance
+                            if (
+                              activeClaimCondition.data?.currencyAddress.toLowerCase() !==
+                              NATIVE_TOKEN_ADDRESS
+                            ) {
+                              const allowance =
+                                await allowanceMutation.mutateAsync({
+                                  spender: address,
+                                  account,
+                                  tokenAddress:
+                                    activeClaimCondition.data?.currencyAddress,
+                                });
+                              // we need to approve token
+                              if (
+                                allowance &&
+                                (allowance as BigNumber).lt(totalAmount)
+                              ) {
+                                const values = {
+                                  name: activeClaimCondition.data
+                                    ?.currencyMetadata.symbol,
+                                  symbol:
+                                    activeClaimCondition.data?.currencyMetadata
+                                      .symbol,
+                                };
+
+                                watchTransactionDialog.open('approve', values);
+                                await approveMutation.mutateAsync({
+                                  spender: address,
+                                  amount: totalAmount,
+                                  tokenAddress:
+                                    activeClaimCondition.data?.currencyAddress,
+                                });
+                              }
+                            }
+
+                            const values = {
+                              tokenId,
+                              quantity: String(quantity),
+                              name: String(contractMetadata?.name || ' '),
+                            };
+
+                            watchTransactionDialog.open(
+                              'mintEditionDrop',
+                              values,
+                            );
+                            const result = await editionDrop.erc1155.claim(
+                              tokenId,
+                              quantity,
+                            );
+
+                            createNotification({
+                              type: 'transaction',
+                              subtype: 'mintEditionDrop',
+                              values,
+                              metadata: {
+                                chainId,
+                                hash: result.receipt.transactionHash,
+                              },
+                            });
+
+                            watchTransactionDialog.watch(
+                              result.receipt.transactionHash,
+                            );
+                          }
+                        }}
+                      >
+                        {buttonLoading ? (
+                          <>
+                            <FormattedMessage
+                              id={'loading'}
+                              defaultMessage={'Loading'}
+                            />
+                            {'...'}
+                          </>
+                        ) : (
+                          buttonText
+                        )}
+                      </Button>
+                    )}
+                  </Stack>
+                ) : (
+                  <Alert severity="info">
+                    <FormattedMessage
+                      id={'drop.not.ready.to.mint.yet'}
+                      defaultMessage={
+                        'This drop is not ready to be minted yet.'
+                      }
+                    />
+                  </Alert>
+                )}
+              </CardContent>
+            </Card>
+          )}
         </Grid>
       </Grid>
     </Box>
