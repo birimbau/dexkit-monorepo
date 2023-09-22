@@ -1,7 +1,7 @@
 {
   "name": "@dexkit/web3forms",
   "version": "0.2.0",
-  "private": "false",
+  "private": false,
   "scripts": {
     "lint": "TIMING=1 eslint \"**/*.ts*\"",
     "storybook": "start-storybook -p 6006",
