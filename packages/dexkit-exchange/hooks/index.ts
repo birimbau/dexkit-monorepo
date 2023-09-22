@@ -11,11 +11,16 @@ import {
   ZERO_EX_URL,
 } from "@dexkit/core/services/zrx/constants";
 import { Token } from "@dexkit/core/types";
+import { useWeb3React } from "@web3-react/core";
 import axios from "axios";
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { DexkitExchangeContext } from "../contexts";
 import { getGeckoTerminalTopPools } from "../services";
-import { DexkitExchangeContextState, GtPool } from "../types";
+import {
+  DexkitExchangeContextState,
+  DexkitExchangeSettings,
+  GtPool,
+} from "../types";
 
 export function useExchangeContext() {
   return useContext(DexkitExchangeContext);
@@ -48,6 +53,8 @@ export function useSendLimitOrderMutation() {
         return null;
       }
 
+      console.log("api", context.zrxApiKey);
+
       const signedOrder = await createZrxOrder({
         maker,
         chainId,
@@ -60,7 +67,7 @@ export function useSendLimitOrderMutation() {
       });
 
       const resp = await axios.post(
-        `${ZERO_EX_URL(chainId)}/${ZEROEX_ORDERBOOK_ENDPOINT}`,
+        `${ZERO_EX_URL(chainId)}${ZEROEX_ORDERBOOK_ENDPOINT}`,
         signedOrder,
         context.zrxApiKey
           ? { headers: { "0x-api-key": context.zrxApiKey } }
@@ -101,41 +108,49 @@ export function useGeckoTerminalTopPools({
 }
 
 export function useExchangeContextState(params: {
-  baseTokens: Token[];
-  quoteTokens: Token[];
-  baseToken?: Token;
-  quoteToken?: Token;
-  buyTokenPercentageFee?: number;
-  affiliateAddress?: string;
-  feeRecipient?: string;
-  zrxApiKey?: string;
-  availNetworks: ChainId[];
-  defaultNetwork: ChainId;
+  settings?: DexkitExchangeSettings;
 }): DexkitExchangeContextState {
+  const { settings } = params;
+
   const [quoteToken, setQuoteToken] = useState<Token | undefined>();
   const [baseToken, setBaseToken] = useState<Token | undefined>();
 
-  const [quoteTokens, setQuoteTokens] = useState<Token[]>(params.quoteTokens);
-  const [baseTokens, setBaseTokens] = useState<Token[]>(params.baseTokens);
+  const { account, provider, chainId } = useWeb3React();
+
+  const [quoteTokens, setQuoteTokens] = useState<Token[]>([]);
+  const [baseTokens, setBaseTokens] = useState<Token[]>([]);
 
   const handleSetPair = useCallback((base: Token, quote: Token) => {
-    console.log(base, quote);
-
     setQuoteToken(quote);
     setBaseToken(base);
   }, []);
 
+  let currChainId = useMemo(() => {
+    if (!chainId && settings) {
+      return settings.defaultNetwork;
+    }
+
+    return chainId;
+  }, [settings, chainId]);
+
   useEffect(() => {
-    setQuoteToken(params.quoteToken);
-    setBaseToken(params.baseToken);
-    setQuoteTokens(params.quoteTokens);
-    setBaseTokens(params.baseTokens);
-  }, [
-    params.quoteToken,
-    params.baseToken,
-    params.baseTokens,
-    params.quoteTokens,
-  ]);
+    if (settings && currChainId) {
+      const defaultPair =
+        settings.defaultPairs && settings.defaultPairs[currChainId]
+          ? settings.defaultPairs[currChainId]
+          : { baseToken: undefined, quoteToken: undefined };
+
+      const defaultTokens =
+        settings.defaultTokens && settings.defaultTokens[currChainId]
+          ? settings.defaultTokens[currChainId]
+          : { baseTokens: [], quoteTokens: [] };
+
+      setQuoteToken(defaultPair.quoteToken);
+      setBaseToken(defaultPair.baseToken);
+      setQuoteTokens(defaultTokens.quoteTokens);
+      setBaseTokens(defaultTokens.baseTokens);
+    }
+  }, [settings, currChainId]);
 
   return {
     setPair: handleSetPair,
@@ -144,12 +159,15 @@ export function useExchangeContextState(params: {
     baseTokens,
     quoteTokens,
     tokens: {},
-    availNetworks: params.availNetworks,
-    feeRecipient: params.feeRecipient,
-    affiliateAddress: params.affiliateAddress,
-    buyTokenPercentageFee: params.buyTokenPercentageFee,
-    zrxApiKey: params.zrxApiKey
-      ? params.zrxApiKey
+    chainId: currChainId,
+    provider,
+    account,
+    availNetworks: settings?.availNetworks || [],
+    feeRecipient: settings?.feeRecipientAddress || "",
+    affiliateAddress: settings?.affiliateAddress,
+    buyTokenPercentageFee: settings?.buyTokenPercentageFee,
+    zrxApiKey: settings?.zrxApiKey
+      ? settings.zrxApiKey
       : process.env.NEXT_PUBLIC_ZRX_API_KEY,
   };
 }

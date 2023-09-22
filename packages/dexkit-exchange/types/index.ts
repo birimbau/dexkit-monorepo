@@ -23,6 +23,9 @@ export type DexkitExchangeContextState = {
   quoteToken?: Token;
   baseToken?: Token;
   baseTokens: Token[];
+  account?: string;
+  chainId?: ChainId;
+  provider?: ethers.providers.Web3Provider;
   quoteTokens: Token[];
   buyTokenPercentageFee?: number;
   feeRecipient?: string;

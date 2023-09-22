@@ -14,6 +14,7 @@ import { FormattedMessage } from "react-intl";
 
 import { ChainId, useApproveToken, useTokenAllowanceQuery } from "@dexkit/core";
 import { ZeroExQuoteResponse } from "@dexkit/core/services/zrx/types";
+import { formatBigNumber } from "@dexkit/core/utils";
 import { useExecuteTransactionsDialog } from "@dexkit/ui/hooks";
 import { useZrxQuoteMutation } from "../../hooks/zrx";
 import { getZrxExchangeAddress } from "../../utils";
@@ -54,7 +55,7 @@ export default function MarketSellForm({
 
   const baseTokenBalanceFormatted = useMemo(() => {
     if (baseTokenBalance) {
-      return ethers.utils.formatUnits(baseTokenBalance, baseToken.decimals);
+      return formatBigNumber(baseTokenBalance, baseToken.decimals);
     }
 
     return "0.0";
@@ -66,8 +67,8 @@ export default function MarketSellForm({
 
   const [receiveAmountFormatted, hasSufficientBalance] = useMemo(() => {
     if (quote && baseTokenBalance) {
-      const total = ethers.utils.formatUnits(
-        quote.buyAmount,
+      const total = formatBigNumber(
+        BigNumber.from(quote.buyAmount),
         quoteToken.decimals
       );
 
@@ -138,7 +139,10 @@ export default function MarketSellForm({
           values: {
             symbol: baseToken.symbol.toUpperCase(),
             amount: quote
-              ? ethers.utils.formatUnits(quote?.sellAmount, baseToken.decimals)
+              ? formatBigNumber(
+                  BigNumber.from(quote?.sellAmount || "0.0"),
+                  baseToken.decimals
+                )
               : "0.0",
           },
         },
@@ -155,28 +159,26 @@ export default function MarketSellForm({
 
   useEffect(() => {
     (async () => {
-      if (isActive) {
-        let theNewQuote = await quoteMutation.mutateAsync({
-          buyToken: quoteToken.contractAddress,
-          sellToken: baseToken.contractAddress,
-          affiliateAddress: affiliateAddress ? affiliateAddress : "",
-          sellAmount: ethers.utils
-            .parseUnits(amount, baseToken.decimals)
-            .toString(),
-          skipValidation: true,
-          slippagePercentage: 0.01,
-          feeRecipient,
-          buyTokenPercentageFee: buyTokenPercentageFee
-            ? buyTokenPercentageFee / 100
-            : undefined,
-        });
+      let theNewQuote = await quoteMutation.mutateAsync({
+        buyToken: quoteToken.contractAddress,
+        sellToken: baseToken.contractAddress,
+        affiliateAddress: affiliateAddress ? affiliateAddress : "",
+        sellAmount: ethers.utils
+          .parseUnits(amount, baseToken.decimals)
+          .toString(),
+        skipValidation: true,
+        slippagePercentage: 0.01,
+        feeRecipient,
+        buyTokenPercentageFee: buyTokenPercentageFee
+          ? buyTokenPercentageFee / 100
+          : undefined,
+      });
 
-        if (theNewQuote) {
-          setQuote(theNewQuote);
-        }
+      if (theNewQuote) {
+        setQuote(theNewQuote);
       }
     })();
-  }, [amount, isActive, quoteToken, baseToken, affiliateAddress, feeRecipient]);
+  }, [amount, quoteToken, baseToken, affiliateAddress, feeRecipient]);
 
   return (
     <Box>

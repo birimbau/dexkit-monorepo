@@ -527,7 +527,7 @@
           "type": "exchange",
           "title": "Exchange",
           "settings": {
-            "defaultNetwork": 1,
+            "defaultNetwork": 137,
             "defaultPairs": {
               "137": {
                 "baseToken": {

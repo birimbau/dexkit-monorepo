@@ -12,8 +12,9 @@ import DecimalInput from "./DecimalInput";
 
 import { useSnackbar } from "notistack";
 
-import { useApproveToken, useTokenAllowanceQuery } from "@dexkit/core";
+import { ChainId, useApproveToken, useTokenAllowanceQuery } from "@dexkit/core";
 import { Token } from "@dexkit/core/types";
+import { formatBigNumber } from "@dexkit/core/utils";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import { useWeb3React } from "@web3-react/core";
 import { BigNumber, ethers } from "ethers";
@@ -25,9 +26,10 @@ import DurationSelect from "./DurationSelect";
 import ReviewOrderDialog from "./ReviewOrderDialog";
 
 export interface BuyFormProps {
-  makerToken: Token;
-  takerToken: Token;
-  makerTokenBalance?: ethers.BigNumber;
+  chainId?: ChainId;
+  quoteToken: Token;
+  baseToken: Token;
+  quoteTokenBalance?: ethers.BigNumber;
   maker?: string;
   provider?: ethers.providers.Web3Provider;
   buyTokenPercentageFee?: number;
@@ -36,14 +38,15 @@ export interface BuyFormProps {
 }
 
 export default function BuyForm({
-  makerToken,
-  takerToken,
-  makerTokenBalance,
+  quoteToken: quoteToken,
+  baseToken: baseToken,
+  quoteTokenBalance,
   buyTokenPercentageFee,
   affiliateAddress,
   feeRecipient,
   maker,
   provider,
+  chainId,
 }: BuyFormProps) {
   const [amount, setAmount] = useState("0.0");
   const [amountPerToken, setAmountPerToken] = useState("0.0");
@@ -65,21 +68,21 @@ export default function BuyForm({
   const parsedAmountPerToken = useMemo(() => {
     return ethers.utils.parseUnits(
       amountPerToken || "0.0",
-      makerToken.decimals
+      quoteToken.decimals
     );
-  }, [amountPerToken, makerToken]);
+  }, [amountPerToken, quoteToken]);
 
   const cost = useMemo(() => {
     return new BigNumberUtils().multiply(parsedAmountPerToken, parsedAmount);
   }, [parsedAmountPerToken, parsedAmount]);
 
   const hasSufficientBalance = useMemo(() => {
-    return makerTokenBalance?.gte(cost) && !cost.isZero();
-  }, [cost, makerTokenBalance]);
+    return quoteTokenBalance?.gte(cost) && !cost.isZero();
+  }, [cost, quoteTokenBalance]);
 
   const formattedCost = useMemo(() => {
-    return ethers.utils.formatUnits(cost, makerToken.decimals);
-  }, [makerToken, cost]);
+    return formatBigNumber(cost, quoteToken.decimals);
+  }, [quoteToken, cost]);
 
   const buttonMessage = useMemo(() => {
     if (!hasSufficientBalance) {
@@ -87,7 +90,7 @@ export default function BuyForm({
         <FormattedMessage
           id="insufficient.symbol"
           defaultMessage="insufficient {symbol}"
-          values={{ symbol: makerToken.symbol }}
+          values={{ symbol: quoteToken.symbol }}
         />
       );
     }
@@ -96,21 +99,19 @@ export default function BuyForm({
       <FormattedMessage
         id="buy.symbol"
         defaultMessage="buy {symbol}"
-        values={{ symbol: takerToken.symbol }}
+        values={{ symbol: baseToken.symbol }}
       />
     );
-  }, [hasSufficientBalance, takerToken, makerToken, cost]);
+  }, [hasSufficientBalance, baseToken, quoteToken, cost]);
 
-  const { chainId } = useWeb3React();
   const quoteMutation = useZrxQuoteMutation({ chainId });
 
   const handleQuotePrice = useCallback(async () => {
     const quote = await quoteMutation.mutateAsync({
-      buyToken: takerToken.contractAddress,
-      sellToken: makerToken.contractAddress,
+      buyToken: baseToken.contractAddress,
+      sellToken: quoteToken.contractAddress,
       affiliateAddress: affiliateAddress ? affiliateAddress : "",
-      // TODO: add to context
-      buyAmount: ethers.utils.parseUnits("1.0", takerToken.decimals).toString(),
+      buyAmount: ethers.utils.parseUnits("1.0", baseToken.decimals).toString(),
       skipValidation: true,
       slippagePercentage: 0.01,
       feeRecipient,
@@ -120,9 +121,9 @@ export default function BuyForm({
     const sellAmount = BigNumber.from(quote?.sellAmount || "0");
 
     setAmountPerToken(
-      ethers.utils.formatUnits(sellAmount, makerToken.decimals)
+      ethers.utils.formatUnits(sellAmount, quoteToken.decimals)
     );
-  }, [takerToken, makerToken]);
+  }, [baseToken, quoteToken]);
 
   const sendLimitOrderMutation = useSendLimitOrderMutation();
 
@@ -135,14 +136,11 @@ export default function BuyForm({
   const { enqueueSnackbar } = useSnackbar();
 
   const takerAmount = useMemo(() => {
-    return ethers.utils.parseUnits(
-      parsedAmount.toString(),
-      takerToken.decimals
-    );
-  }, [parsedAmount, takerToken]);
+    return ethers.utils.parseUnits(parsedAmount.toString(), baseToken.decimals);
+  }, [parsedAmount, baseToken]);
 
   const handleConfirmBuy = async () => {
-    if (!chainId || !maker || !makerToken || !provider) {
+    if (!chainId || !maker || !quoteToken || !provider) {
       return;
     }
 
@@ -152,10 +150,10 @@ export default function BuyForm({
         expirationTime: duration,
         maker,
         makerAmount: cost.toString(),
-        makerToken: makerToken.contractAddress,
+        makerToken: quoteToken.contractAddress,
         provider,
         takerAmount: takerAmount.toString(),
-        takerToken: takerToken.contractAddress,
+        takerToken: baseToken.contractAddress,
       });
       enqueueSnackbar(
         formatMessage({ id: "order.created", defaultMessage: "Order created" }),
@@ -183,7 +181,7 @@ export default function BuyForm({
     account,
     provider,
     spender: getZrxExchangeAddress(chainId),
-    tokenAddress: makerToken?.contractAddress,
+    tokenAddress: quoteToken?.contractAddress,
   });
 
   const approveTokenMutation = useApproveToken();
@@ -193,7 +191,7 @@ export default function BuyForm({
       onSubmited: (hash: string) => {},
       spender: getZrxExchangeAddress(chainId),
       provider,
-      tokenContract: makerToken?.contractAddress,
+      tokenContract: quoteToken?.contractAddress,
       amount: cost,
     });
 
@@ -222,8 +220,8 @@ export default function BuyForm({
         side="buy"
         baseAmount={takerAmount}
         amountPerToken={parsedAmountPerToken}
-        quoteToken={makerToken}
-        baseToken={takerToken}
+        quoteToken={quoteToken}
+        baseToken={baseToken}
         isPlacingOrder={sendLimitOrderMutation.isLoading}
         onConfirm={handleConfirmBuy}
         onApprove={handleApprove}
@@ -236,12 +234,12 @@ export default function BuyForm({
             InputProps: {
               endAdornment: (
                 <InputAdornment position="end">
-                  {takerToken.symbol.toUpperCase()}
+                  {baseToken.symbol.toUpperCase()}
                 </InputAdornment>
               ),
             },
           }}
-          decimals={takerToken.decimals}
+          decimals={baseToken.decimals}
           value={amount}
           onChange={handleChangeAmount}
         />
@@ -252,16 +250,13 @@ export default function BuyForm({
         >
           <Typography variant="body1">
             <FormattedMessage
-              id="available.balance"
+              id="available.balance.amount.symbol"
               defaultMessage="Available: {amount} {symbol}"
               values={{
-                amount: makerTokenBalance
-                  ? ethers.utils.formatUnits(
-                      makerTokenBalance,
-                      makerToken.decimals
-                    )
+                amount: quoteTokenBalance
+                  ? formatBigNumber(quoteTokenBalance, quoteToken.decimals)
                   : "0.0",
-                symbol: makerToken.symbol.toUpperCase(),
+                symbol: quoteToken.symbol.toUpperCase(),
               }}
             />
           </Typography>
@@ -280,12 +275,12 @@ export default function BuyForm({
             InputProps: {
               endAdornment: (
                 <InputAdornment position="end">
-                  {makerToken.symbol.toUpperCase()}
+                  {quoteToken.symbol.toUpperCase()}
                 </InputAdornment>
               ),
             },
           }}
-          decimals={makerToken.decimals}
+          decimals={quoteToken.decimals}
           value={amountPerToken}
           onChange={handleChangeAmountPerToken}
         />
@@ -309,7 +304,7 @@ export default function BuyForm({
             <FormattedMessage id="cost" defaultMessage="Cost" />
           </Typography>
           <Typography variant="body1">
-            {formattedCost} {makerToken.symbol.toUpperCase()}
+            {formattedCost} {quoteToken.symbol.toUpperCase()}
           </Typography>
         </Stack>
 

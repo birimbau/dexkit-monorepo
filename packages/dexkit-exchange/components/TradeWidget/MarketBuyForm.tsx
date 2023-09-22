@@ -14,6 +14,7 @@ import { FormattedMessage } from "react-intl";
 
 import { ChainId, useApproveToken, useTokenAllowanceQuery } from "@dexkit/core";
 import { ZeroExQuoteResponse } from "@dexkit/core/services/zrx/types";
+import { formatBigNumber } from "@dexkit/core/utils";
 import { useExecuteTransactionsDialog } from "@dexkit/ui/hooks";
 import { useZrxQuoteMutation } from "../../hooks/zrx";
 import { getZrxExchangeAddress } from "../../utils";
@@ -35,8 +36,8 @@ export interface MarketBuyFormProps {
 
 export default function MarketBuyForm({
   chainId,
-  quoteToken,
-  baseToken,
+  baseToken: baseToken,
+  quoteToken: quoteToken,
   account,
   provider,
   baseTokenBalance,
@@ -52,26 +53,26 @@ export default function MarketBuyForm({
 
   const [amount, setAmount] = useState("0.0");
 
-  const baseTokenBalanceFormatted = useMemo(() => {
-    if (baseTokenBalance) {
-      return ethers.utils.formatUnits(baseTokenBalance, baseToken.decimals);
+  const quoteTokenBalanceFormatted = useMemo(() => {
+    if (quoteTokenBalance) {
+      return formatBigNumber(quoteTokenBalance, quoteToken.decimals);
     }
 
     return "0.0";
-  }, [baseTokenBalance, baseToken]);
+  }, [quoteTokenBalance, quoteToken]);
 
   const quoteMutation = useZrxQuoteMutation({ chainId });
 
   const [quote, setQuote] = useState<ZeroExQuoteResponse>();
 
   const [formattedCost, hasSufficientBalance] = useMemo(() => {
-    if (quote && baseTokenBalance) {
-      const total = ethers.utils.formatUnits(
-        quote.sellAmount,
-        baseToken.decimals
+    if (quote && quoteTokenBalance) {
+      const total = formatBigNumber(
+        BigNumber.from(quote.sellAmount),
+        quoteToken.decimals
       );
 
-      const hasAmount = baseTokenBalance.gte(
+      const hasAmount = quoteTokenBalance.gte(
         ethers.BigNumber.from(quote.sellAmount)
       );
 
@@ -79,7 +80,7 @@ export default function MarketBuyForm({
     }
 
     return ["0.0", false];
-  }, [quote, baseTokenBalance]);
+  }, [quote, baseTokenBalance, quoteToken]);
 
   const txDialog = useExecuteTransactionsDialog();
 
@@ -119,7 +120,7 @@ export default function MarketBuyForm({
 
           return { hash: await res, conditions: [] };
         },
-        title: { id: "pre-test", defaultMessage: "Pre test" },
+        title: { id: "approve", defaultMessage: "Approve" },
       },
       {
         action: async () => {
@@ -136,9 +137,12 @@ export default function MarketBuyForm({
           id: "buy.symbol.token",
           defaultMessage: "Buy {amount} {symbol}",
           values: {
-            symbol: quoteToken.symbol.toUpperCase(),
+            symbol: baseToken.symbol.toUpperCase(),
             amount: quote
-              ? ethers.utils.formatUnits(quote?.buyAmount, quoteToken.decimals)
+              ? formatBigNumber(
+                  BigNumber.from(quote?.buyAmount),
+                  baseToken.decimals
+                )
               : "0.0",
           },
         },
@@ -155,23 +159,21 @@ export default function MarketBuyForm({
 
   useEffect(() => {
     (async () => {
-      if (isActive) {
-        let newQuote = await quoteMutation.mutateAsync({
-          buyToken: quoteToken.contractAddress,
-          sellToken: baseToken.contractAddress,
-          affiliateAddress: affiliateAddress ? affiliateAddress : "",
-          buyAmount: ethers.utils
-            .parseUnits(amount, quoteToken.decimals)
-            .toString(),
-          skipValidation: true,
-          slippagePercentage: 0.01,
-          feeRecipient,
-          buyTokenPercentageFee,
-        });
+      let newQuote = await quoteMutation.mutateAsync({
+        buyToken: baseToken.contractAddress,
+        sellToken: quoteToken.contractAddress,
+        affiliateAddress: affiliateAddress ? affiliateAddress : "",
+        buyAmount: ethers.utils
+          .parseUnits(amount, baseToken.decimals)
+          .toString(),
+        skipValidation: true,
+        slippagePercentage: 0.01,
+        feeRecipient,
+        buyTokenPercentageFee,
+      });
 
-        if (newQuote) {
-          setQuote(newQuote);
-        }
+      if (newQuote) {
+        setQuote(newQuote);
       }
     })();
   }, [amount, isActive]);
@@ -180,12 +182,12 @@ export default function MarketBuyForm({
     <Box>
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <LazyDecimalInput onChange={handleChangeAmount} token={quoteToken} />
+          <LazyDecimalInput onChange={handleChangeAmount} token={baseToken} />
         </Grid>
         <Grid item xs={12}>
           <Typography variant="body2">
             <FormattedMessage id="available" defaultMessage="Available" />:{" "}
-            {baseTokenBalanceFormatted} {baseToken.symbol.toUpperCase()}
+            {quoteTokenBalanceFormatted} {quoteToken.symbol.toUpperCase()}
           </Typography>
         </Grid>
         <Grid item xs={12}>
@@ -208,7 +210,7 @@ export default function MarketBuyForm({
                     <Skeleton />
                   ) : (
                     <>
-                      {formattedCost} {baseToken.symbol.toUpperCase()}
+                      {formattedCost} {quoteToken.symbol.toUpperCase()}
                     </>
                   )}
                 </Typography>
@@ -228,13 +230,13 @@ export default function MarketBuyForm({
               <FormattedMessage
                 id="insufficient"
                 defaultMessage="Insufficient {symbol}"
-                values={{ symbol: baseToken.symbol.toUpperCase() }}
+                values={{ symbol: quoteToken.symbol.toUpperCase() }}
               />
             ) : (
               <FormattedMessage
                 id="buy.symbol"
                 defaultMessage="Buy {symbol}"
-                values={{ symbol: quoteToken.symbol.toUpperCase() }}
+                values={{ symbol: baseToken.symbol.toUpperCase() }}
               />
             )}
           </Button>

@@ -1,7 +1,4 @@
 import {
-  Backdrop,
-  Box,
-  Button,
   Card,
   CardContent,
   CardHeader,
@@ -20,13 +17,11 @@ import TradeWidgetTabAlt, { TradeWidgetTab } from "./TradeWidgetTab";
 import { TradeWidgetTabs } from "./TradeWidgetTabs";
 
 import { useErc20BalanceQuery } from "@dexkit/core/hooks";
-import { useWeb3React } from "@web3-react/core";
 import { useExchangeContext } from "../../hooks";
 import SellForm from "./SellForm";
 
-import { useConnectWalletDialog } from "@dexkit/ui/hooks";
-
-import WalletIcon from "@mui/icons-material/Wallet";
+import { NETWORKS } from "@dexkit/core/constants/networks";
+import { DEFAULT_ZRX_NETWORKS } from "../../constants";
 import MarketBuyForm from "./MarketBuyForm";
 import MarketSellForm from "./MarketSellForm";
 
@@ -42,6 +37,9 @@ export default function TradeWidget({ isActive }: TradeWidgetProps) {
     feeRecipient,
     buyTokenPercentageFee,
     affiliateAddress,
+    chainId,
+    provider,
+    account,
   } = useExchangeContext();
 
   const [orderType, setOrderType] = useState<"market" | "limit">("market");
@@ -59,8 +57,6 @@ export default function TradeWidget({ isActive }: TradeWidgetProps) {
     setOrderSide(value);
   };
 
-  const { account, provider, chainId } = useWeb3React();
-
   const baseTokenBalanceQuery = useErc20BalanceQuery({
     account,
     provider,
@@ -73,8 +69,6 @@ export default function TradeWidget({ isActive }: TradeWidgetProps) {
     contractAddress: quoteToken?.contractAddress,
   });
 
-  const connectWalletDialog = useConnectWalletDialog();
-
   return (
     <Card>
       <CardHeader
@@ -82,35 +76,7 @@ export default function TradeWidget({ isActive }: TradeWidgetProps) {
         titleTypographyProps={{ variant: "body1" }}
       />
       <Divider />
-      <CardContent sx={{ position: "relative" }}>
-        {!isActive && (
-          <Backdrop
-            sx={{ position: "absolute", zIndex: (theme) => theme.zIndex.fab }}
-            open
-          >
-            <Box py={4}>
-              <Stack justifyContent="center" alignItems="center" spacing={2}>
-                <Typography align="center" variant="body1">
-                  <FormattedMessage
-                    id="your.wallet.is.not.connected"
-                    defaultMessage="Your wallet is not connected"
-                  />
-                </Typography>
-                <Button
-                  onClick={connectWalletDialog.handleConnectWallet}
-                  startIcon={<WalletIcon />}
-                  variant="contained"
-                >
-                  <FormattedMessage
-                    id="connect.wallet"
-                    defaultMessage="Connect wallet"
-                  />
-                </Button>
-              </Stack>
-            </Box>
-          </Backdrop>
-        )}
-
+      <CardContent>
         <Stack spacing={2}>
           <TradeWidgetTabs
             onChange={handleChangeOrderType}
@@ -165,35 +131,67 @@ export default function TradeWidget({ isActive }: TradeWidgetProps) {
                 />
               </Tabs>
               <Divider />
-              {orderSide === "buy" &&
-              orderType == "limit" &&
-              quoteToken &&
-              baseToken ? (
-                <BuyForm
-                  key={`buy-${baseToken.contractAddress}-${quoteToken.contractAddress}`}
-                  makerToken={baseToken}
-                  takerToken={quoteToken}
-                  makerTokenBalance={baseTokenBalanceQuery.data}
-                  feeRecipient={feeRecipient}
-                  maker={account}
-                  provider={provider}
-                />
-              ) : null}
-              {orderSide === "sell" &&
-              orderType === "limit" &&
-              quoteToken &&
-              baseToken ? (
-                <SellForm
-                  key={`sell-${baseToken.contractAddress}-${quoteToken.contractAddress}`}
-                  makerToken={baseToken}
-                  takerToken={quoteToken}
-                  takerTokenBalance={quoteTokenBalanceQuery.data}
-                  provider={provider}
-                  feeRecipient={feeRecipient}
-                  buyTokenPercentageFee={buyTokenPercentageFee}
-                  maker={account}
-                />
-              ) : null}
+
+              {chainId &&
+              !DEFAULT_ZRX_NETWORKS.includes(chainId) &&
+              orderType === "limit" ? (
+                <Stack py={4}>
+                  <Typography align="center" variant="h5">
+                    <FormattedMessage
+                      id="unsupported.network"
+                      defaultMessage="Unsupported Network"
+                    />
+                  </Typography>
+                  <Typography align="center" variant="body1">
+                    <FormattedMessage
+                      id="please.switch.to.networks"
+                      defaultMessage="Please, switch to {networks}"
+                      values={{
+                        networks: DEFAULT_ZRX_NETWORKS.map(
+                          (chain) => NETWORKS[chain].name
+                        ).join(","),
+                      }}
+                    />
+                  </Typography>
+                </Stack>
+              ) : (
+                <>
+                  {orderSide === "buy" &&
+                  orderType == "limit" &&
+                  quoteToken &&
+                  baseToken ? (
+                    <BuyForm
+                      key={`buy-${baseToken.contractAddress}-${quoteToken.contractAddress}`}
+                      baseToken={baseToken}
+                      quoteToken={quoteToken}
+                      quoteTokenBalance={quoteTokenBalanceQuery.data}
+                      feeRecipient={feeRecipient}
+                      maker={account}
+                      provider={provider}
+                      affiliateAddress={affiliateAddress}
+                      chainId={chainId}
+                    />
+                  ) : null}
+                  {orderSide === "sell" &&
+                  orderType === "limit" &&
+                  quoteToken &&
+                  baseToken ? (
+                    <SellForm
+                      key={`sell-${baseToken.contractAddress}-${quoteToken.contractAddress}`}
+                      quoteToken={quoteToken}
+                      baseToken={baseToken}
+                      baseTokenBalance={baseTokenBalanceQuery.data}
+                      provider={provider}
+                      feeRecipient={feeRecipient}
+                      buyTokenPercentageFee={buyTokenPercentageFee}
+                      maker={account}
+                      affiliateAddress={affiliateAddress}
+                      chainId={chainId}
+                    />
+                  ) : null}
+                </>
+              )}
+
               {orderType === "market" &&
               orderSide === "buy" &&
               quoteToken &&
@@ -206,10 +204,10 @@ export default function TradeWidget({ isActive }: TradeWidgetProps) {
                   account={account}
                   quoteTokenBalance={quoteTokenBalanceQuery.data}
                   baseTokenBalance={baseTokenBalanceQuery.data}
-                  chainId={chainId}
                   affiliateAddress={affiliateAddress}
                   feeRecipient={feeRecipient}
                   isActive={isActive}
+                  chainId={chainId}
                 />
               ) : null}
 
@@ -226,10 +224,10 @@ export default function TradeWidget({ isActive }: TradeWidgetProps) {
                   quoteTokenBalance={quoteTokenBalanceQuery.data}
                   baseTokenBalance={baseTokenBalanceQuery.data}
                   buyTokenPercentageFee={buyTokenPercentageFee}
-                  chainId={chainId}
                   affiliateAddress={affiliateAddress}
                   feeRecipient={feeRecipient}
                   isActive={isActive}
+                  chainId={chainId}
                 />
               ) : null}
             </Stack>

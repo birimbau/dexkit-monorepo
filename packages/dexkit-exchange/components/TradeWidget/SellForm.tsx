@@ -1,5 +1,6 @@
-import { useApproveToken, useTokenAllowanceQuery } from "@dexkit/core";
+import { ChainId, useApproveToken, useTokenAllowanceQuery } from "@dexkit/core";
 import { Token } from "@dexkit/core/types";
+import { formatBigNumber } from "@dexkit/core/utils";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import {
   Box,
@@ -25,24 +26,30 @@ import DurationSelect from "./DurationSelect";
 import ReviewOrderDialog from "./ReviewOrderDialog";
 
 export interface SellFormProps {
-  makerToken: Token;
-  takerToken: Token;
-  takerTokenBalance?: BigNumber;
+  baseToken: Token;
+  quoteToken: Token;
+  baseTokenBalance?: BigNumber;
   provider?: ethers.providers.Web3Provider;
   maker?: string;
   buyTokenPercentageFee?: number;
   feeRecipient?: string;
+  affiliateAddress?: string;
+  chainId?: ChainId;
 }
 
 export default function SellForm({
-  makerToken,
-  takerToken,
-  takerTokenBalance,
+  chainId,
+  baseToken,
+  quoteToken,
+  baseTokenBalance,
   provider,
   maker,
   buyTokenPercentageFee,
   feeRecipient,
+  affiliateAddress,
 }: SellFormProps) {
+  console.log("aff", affiliateAddress);
+
   const [amountPercentage, setAmountPercentage] = useState(0);
   const [amount, setAmount] = useState("0.0");
   const [amountPerToken, setAmountPerToken] = useState("0.0");
@@ -65,30 +72,27 @@ export default function SellForm({
   }, [amount]);
 
   const parsedAmountBN = useMemo(() => {
-    return ethers.utils.parseUnits(
-      parsedAmount.toString(),
-      takerToken.decimals
-    );
-  }, [parsedAmount, takerToken]);
+    return ethers.utils.parseUnits(parsedAmount.toString(), baseToken.decimals);
+  }, [parsedAmount, baseToken]);
 
   const parsedAmountPerToken = useMemo(() => {
     return ethers.utils.parseUnits(
       amountPerToken || "0.0",
-      makerToken.decimals
+      quoteToken.decimals
     );
-  }, [amountPerToken, makerToken]);
+  }, [amountPerToken, quoteToken]);
 
   const total = useMemo(() => {
     return new BigNumberUtils().multiply(parsedAmountPerToken, parsedAmount);
   }, [parsedAmountPerToken, parsedAmount]);
 
   const hasSufficientBalance = useMemo(() => {
-    return takerTokenBalance?.gte(total) && !total.isZero();
-  }, [total, takerTokenBalance]);
+    return baseTokenBalance?.gte(total) && !total.isZero();
+  }, [total, baseTokenBalance]);
 
   const formattedTotal = useMemo(() => {
-    return ethers.utils.formatUnits(total, makerToken.decimals);
-  }, [makerToken, total]);
+    return formatBigNumber(total, quoteToken.decimals);
+  }, [quoteToken, total]);
 
   const buttonMessage = useMemo(() => {
     if (!hasSufficientBalance) {
@@ -96,7 +100,7 @@ export default function SellForm({
         <FormattedMessage
           id="insufficient.symbol"
           defaultMessage="insufficient {symbol}"
-          values={{ symbol: makerToken.symbol }}
+          values={{ symbol: quoteToken.symbol }}
         />
       );
     }
@@ -105,23 +109,22 @@ export default function SellForm({
       <FormattedMessage
         id="sell.symbol"
         defaultMessage="sell {symbol}"
-        values={{ symbol: takerToken.symbol }}
+        values={{ symbol: baseToken.symbol }}
       />
     );
-  }, [hasSufficientBalance, takerToken, makerToken, total]);
+  }, [hasSufficientBalance, baseToken, quoteToken, total]);
 
-  const { chainId } = useWeb3React();
   const quoteMutation = useZrxQuoteMutation({ chainId });
 
   const handleQuotePrice = async () => {
     const quote = await quoteMutation.mutateAsync({
-      buyToken: takerToken.contractAddress,
-      sellToken: makerToken.contractAddress,
-      affiliateAddress: "0x5bD68B4d6f90Bcc9F3a9456791c0Db5A43df676d",
-      buyAmount: ethers.utils.parseUnits("1.0", takerToken.decimals).toString(),
+      buyToken: baseToken.contractAddress,
+      sellToken: quoteToken.contractAddress,
+      affiliateAddress: affiliateAddress || "",
+      buyAmount: ethers.utils.parseUnits("1.0", baseToken.decimals).toString(),
       skipValidation: true,
       slippagePercentage: 0.01,
-      feeRecipient: "0x5bd68b4d6f90bcc9f3a9456791c0db5a43df676d",
+      feeRecipient,
       buyTokenPercentageFee: buyTokenPercentageFee
         ? buyTokenPercentageFee / 100
         : undefined,
@@ -130,7 +133,7 @@ export default function SellForm({
     const sellAmount = BigNumber.from(quote?.sellAmount || "0");
 
     setAmountPerToken(
-      ethers.utils.formatUnits(sellAmount, makerToken.decimals)
+      ethers.utils.formatUnits(sellAmount, quoteToken.decimals)
     );
   };
 
@@ -145,10 +148,10 @@ export default function SellForm({
     value: number | number[],
     activeThumb: number
   ) => {
-    const amount = takerTokenBalance?.div(100).mul(value as number);
+    const amount = baseTokenBalance?.div(100).mul(value as number);
 
     setAmount(
-      ethers.utils.formatUnits(amount || BigNumber.from(0), takerToken.decimals)
+      ethers.utils.formatUnits(amount || BigNumber.from(0), baseToken.decimals)
     );
 
     setAmountPercentage(value as number);
@@ -163,11 +166,8 @@ export default function SellForm({
   };
 
   const takerAmount = useMemo(() => {
-    return ethers.utils.parseUnits(
-      parsedAmount.toString(),
-      takerToken.decimals
-    );
-  }, [parsedAmount, takerToken]);
+    return ethers.utils.parseUnits(parsedAmount.toString(), baseToken.decimals);
+  }, [parsedAmount, baseToken]);
 
   const { account } = useWeb3React();
 
@@ -175,7 +175,7 @@ export default function SellForm({
     account,
     provider,
     spender: getZrxExchangeAddress(chainId),
-    tokenAddress: takerToken?.contractAddress,
+    tokenAddress: baseToken?.contractAddress,
   });
 
   const approveTokenMutation = useApproveToken();
@@ -185,7 +185,7 @@ export default function SellForm({
       onSubmited: (hash: string) => {},
       spender: getZrxExchangeAddress(chainId),
       provider,
-      tokenContract: takerToken?.contractAddress,
+      tokenContract: baseToken?.contractAddress,
       amount: parsedAmountBN,
     });
 
@@ -193,7 +193,7 @@ export default function SellForm({
   };
 
   const handleConfirmSell = async () => {
-    if (!chainId || !maker || !makerToken || !provider) {
+    if (!chainId || !maker || !quoteToken || !provider) {
       return;
     }
 
@@ -203,10 +203,10 @@ export default function SellForm({
         expirationTime: duration,
         maker,
         makerAmount: parsedAmountBN.toString(),
-        makerToken: takerToken.contractAddress,
+        makerToken: baseToken.contractAddress,
         provider,
         takerAmount: total.toString(),
-        takerToken: makerToken.contractAddress,
+        takerToken: quoteToken.contractAddress,
       });
       enqueueSnackbar(
         formatMessage({ id: "order.created", defaultMessage: "Order created" }),
@@ -241,8 +241,8 @@ export default function SellForm({
         }
         expiresIn={duration}
         amountPerToken={parsedAmountPerToken}
-        quoteToken={makerToken}
-        baseToken={takerToken}
+        quoteToken={quoteToken}
+        baseToken={baseToken}
         baseAmount={takerAmount}
         side="sell"
         isPlacingOrder={sendLimitOrderMutation.isLoading}
@@ -257,16 +257,13 @@ export default function SellForm({
         >
           <Typography variant="body1">
             <FormattedMessage
-              id="available.balance"
-              defaultMessage="Available: {amount} {symbol}"
+              id="available.balance.amount.symbol"
+              defaultMessage="Available balance: {amount} {symbol}"
               values={{
-                amount: takerTokenBalance
-                  ? ethers.utils.formatUnits(
-                      takerTokenBalance,
-                      takerToken.decimals
-                    )
+                amount: baseTokenBalance
+                  ? formatBigNumber(baseTokenBalance, baseToken.decimals)
                   : "0.0",
-                symbol: takerToken.symbol.toUpperCase(),
+                symbol: baseToken.symbol.toUpperCase(),
               }}
             />
           </Typography>
@@ -280,12 +277,12 @@ export default function SellForm({
             InputProps: {
               endAdornment: (
                 <InputAdornment position="end">
-                  {takerToken.symbol.toUpperCase()}
+                  {baseToken.symbol.toUpperCase()}
                 </InputAdornment>
               ),
             },
           }}
-          decimals={takerToken.decimals}
+          decimals={baseToken.decimals}
           value={amount}
           onChange={handleChangeAmount}
         />
@@ -310,12 +307,12 @@ export default function SellForm({
             InputProps: {
               endAdornment: (
                 <InputAdornment position="end">
-                  {makerToken.symbol.toUpperCase()}
+                  {quoteToken.symbol.toUpperCase()}
                 </InputAdornment>
               ),
             },
           }}
-          decimals={makerToken.decimals}
+          decimals={quoteToken.decimals}
           value={amountPerToken}
           onChange={handleChangeAmountPerToken}
         />
@@ -338,7 +335,9 @@ export default function SellForm({
           <Typography variant="body1">
             <FormattedMessage id="total" defaultMessage="Total" />
           </Typography>
-          <Typography variant="body1">{formattedTotal}</Typography>
+          <Typography variant="body1">
+            {formattedTotal} {quoteToken.symbol.toUpperCase()}
+          </Typography>
         </Stack>
         <Button
           disabled={!hasSufficientBalance}

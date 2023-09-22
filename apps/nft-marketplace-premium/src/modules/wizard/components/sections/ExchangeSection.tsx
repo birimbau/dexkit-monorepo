@@ -20,9 +20,11 @@ import { DexkitExchangeContext } from '@dexkit/exchange/contexts';
 import { ExchangePageSection } from '../../types/section';
 
 function ExchangeSection() {
-  const { provider, account, chainId, isActive } = useWeb3React();
-
   const exchangeState = useExchangeContext();
+
+  const { chainId, provider, account } = exchangeState;
+
+  const { isActive } = useWeb3React();
 
   const [open, setOpen] = useState(false);
 
@@ -118,7 +120,7 @@ function ExchangeSection() {
               </Grid>
             )}
             <Grid item xs={12} sm={4}>
-              <TradeWidget isActive={isActive} />
+              <TradeWidget isActive={true} />
             </Grid>
             <Grid item xs={12} sm={8}>
               <Grid container spacing={2}>
@@ -158,36 +160,8 @@ export interface ExchangeSectionProps {
 function ExchangeSectionWrapper({ section }: ExchangeSectionProps) {
   const { settings } = section;
 
-  const { chainId } = useWeb3React();
-
-  let currChainId = useMemo(() => {
-    if (!chainId) {
-      return settings.defaultNetwork;
-    }
-
-    return chainId;
-  }, [settings.defaultNetwork, chainId]);
-
-  const defaultPairs =
-    settings.defaultPairs && settings.defaultPairs[currChainId]
-      ? settings.defaultPairs[currChainId]
-      : { baseToken: undefined, quoteToken: undefined };
-
-  const defaultTokens =
-    settings.defaultTokens && settings.defaultTokens[currChainId]
-      ? settings.defaultTokens[currChainId]
-      : { baseTokens: [], quoteTokens: [] };
-
   const exchangeState = useExchangeContextState({
-    baseTokens: defaultTokens.baseTokens,
-    quoteTokens: defaultTokens.quoteTokens,
-    quoteToken: defaultPairs.quoteToken,
-    baseToken: defaultPairs.baseToken,
-    buyTokenPercentageFee: settings.buyTokenPercentageFee,
-    affiliateAddress: settings.affiliateAddress,
-    feeRecipient: settings.feeRecipientAddress,
-    availNetworks: settings.availNetworks,
-    defaultNetwork: settings.defaultNetwork,
+    settings,
   });
 
   return (

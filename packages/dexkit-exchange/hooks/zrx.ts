@@ -42,7 +42,7 @@ export function useZrxOrderbook({
   return useQuery<ZrxOrderbookResponse | null>(
     [ZRX_ORDERBOOK_QUERY, account, chainId],
     async () => {
-      if (!chainId) {
+      if (!chainId || !account) {
         return null;
       }
 
