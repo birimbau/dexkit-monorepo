@@ -25,7 +25,11 @@ export default function FormikDecimalInput({
     <DecimalInput
       onChange={handleChange}
       value={field.value}
-      TextFieldProps={TextFieldProps}
+      TextFieldProps={{
+        ...TextFieldProps,
+        error: Boolean(meta.error),
+        helperText: meta.error,
+      }}
       decimals={decimals}
       maxDigits={maxDigits}
     />

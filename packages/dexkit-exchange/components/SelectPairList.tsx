@@ -12,25 +12,26 @@ import { isAddressEqual } from "@dexkit/core/utils";
 import TokenIcon from "@mui/icons-material/Token";
 
 export interface SelectPairListProps {
-  quoteTokens: Token[];
+  baseTokens: Token[];
   baseToken?: Token;
   quoteToken?: Token;
   onSelect: (quoteToken: Token) => void;
 }
 
 export default function SelectPairList({
-  quoteTokens,
+  baseTokens,
   quoteToken,
   baseToken,
   onSelect,
 }: SelectPairListProps) {
   return (
     <List disablePadding>
-      {quoteTokens.map((token, key) => (
+      {baseTokens.map((token, key) => (
         <ListItemButton
+          divider
           selected={
-            quoteToken?.chainId == token.chainId &&
-            isAddressEqual(token.contractAddress, quoteToken.contractAddress)
+            baseToken?.chainId == token.chainId &&
+            isAddressEqual(token.contractAddress, baseToken?.contractAddress)
           }
           key={key}
           onClick={() => onSelect(token)}
@@ -47,7 +48,7 @@ export default function SelectPairList({
             </Avatar>
           </ListItemAvatar>
           <ListItemText
-            primary={`${token.symbol.toUpperCase()}/${baseToken?.symbol.toUpperCase()}`}
+            primary={`${token.symbol.toUpperCase()}/${quoteToken?.symbol.toUpperCase()}`}
           />
         </ListItemButton>
       ))}

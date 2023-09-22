@@ -50,19 +50,19 @@ export default function PairButton({
         >
           <AvatarGroup>
             <Avatar
+              src={TOKEN_ICON_URL(baseToken.contractAddress, baseToken.chainId)}
+              sx={{ height: "1rem", width: "1rem" }}
+            />
+            <Avatar
               src={TOKEN_ICON_URL(
                 quoteToken.contractAddress,
                 quoteToken.chainId
               )}
               sx={{ height: "1rem", width: "1rem" }}
             />
-            <Avatar
-              src={TOKEN_ICON_URL(baseToken.contractAddress, baseToken.chainId)}
-              sx={{ height: "1rem", width: "1rem" }}
-            />
           </AvatarGroup>
           <Typography variant="body2" sx={{ fontWeight: 600 }}>
-            {quoteToken.symbol.toUpperCase()} / {baseToken.symbol.toUpperCase()}
+            {baseToken.symbol.toUpperCase()} / {quoteToken.symbol.toUpperCase()}
           </Typography>
         </Stack>
 

@@ -52,34 +52,34 @@ export default function MarketSellForm({
 
   const [amount, setAmount] = useState("0.0");
 
-  const quoteTokenBalanceFormatted = useMemo(() => {
-    if (quoteTokenBalance) {
-      return ethers.utils.formatUnits(quoteTokenBalance, quoteToken.decimals);
+  const baseTokenBalanceFormatted = useMemo(() => {
+    if (baseTokenBalance) {
+      return ethers.utils.formatUnits(baseTokenBalance, baseToken.decimals);
     }
 
     return "0.0";
-  }, [quoteTokenBalance, quoteToken]);
+  }, [baseTokenBalance, baseToken]);
 
   const quoteMutation = useZrxQuoteMutation({ chainId });
 
   const [quote, setQuote] = useState<ZeroExQuoteResponse>();
 
   const [receiveAmountFormatted, hasSufficientBalance] = useMemo(() => {
-    if (quote && quoteTokenBalance) {
+    if (quote && baseTokenBalance) {
       const total = ethers.utils.formatUnits(
         quote.buyAmount,
-        baseToken.decimals
+        quoteToken.decimals
       );
 
-      const hasAmount = quoteTokenBalance.gte(
+      const hasAmount = baseTokenBalance.gte(
         ethers.BigNumber.from(quote.sellAmount)
       );
 
-      return [total, hasAmount, baseToken];
+      return [total, hasAmount, quoteToken];
     }
 
     return ["0.0", false];
-  }, [quote, quoteTokenBalance]);
+  }, [quote, baseTokenBalance]);
 
   const txDialog = useExecuteTransactionsDialog();
 
@@ -136,9 +136,9 @@ export default function MarketSellForm({
           id: "sell.symbol.token",
           defaultMessage: "Sell {amount} {symbol}",
           values: {
-            symbol: quoteToken.symbol.toUpperCase(),
+            symbol: baseToken.symbol.toUpperCase(),
             amount: quote
-              ? ethers.utils.formatUnits(quote?.sellAmount, quoteToken.decimals)
+              ? ethers.utils.formatUnits(quote?.sellAmount, baseToken.decimals)
               : "0.0",
           },
         },
@@ -156,12 +156,12 @@ export default function MarketSellForm({
   useEffect(() => {
     (async () => {
       if (isActive) {
-        let newQuote = await quoteMutation.mutateAsync({
-          buyToken: baseToken.contractAddress,
-          sellToken: quoteToken.contractAddress,
+        let theNewQuote = await quoteMutation.mutateAsync({
+          buyToken: quoteToken.contractAddress,
+          sellToken: baseToken.contractAddress,
           affiliateAddress: affiliateAddress ? affiliateAddress : "",
           sellAmount: ethers.utils
-            .parseUnits(amount, quoteToken.decimals)
+            .parseUnits(amount, baseToken.decimals)
             .toString(),
           skipValidation: true,
           slippagePercentage: 0.01,
@@ -171,23 +171,23 @@ export default function MarketSellForm({
             : undefined,
         });
 
-        if (newQuote) {
-          setQuote(newQuote);
+        if (theNewQuote) {
+          setQuote(theNewQuote);
         }
       }
     })();
-  }, [amount, isActive, baseToken, quoteToken]);
+  }, [amount, isActive, quoteToken, baseToken, affiliateAddress, feeRecipient]);
 
   return (
     <Box>
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <LazyDecimalInput onChange={handleChangeAmount} token={quoteToken} />
+          <LazyDecimalInput onChange={handleChangeAmount} token={baseToken} />
         </Grid>
         <Grid item xs={12}>
           <Typography variant="body2">
             <FormattedMessage id="available" defaultMessage="Available" />:{" "}
-            {quoteTokenBalanceFormatted} {quoteToken.symbol.toUpperCase()}
+            {baseTokenBalanceFormatted} {baseToken.symbol.toUpperCase()}
           </Typography>
         </Grid>
         <Grid item xs={12}>
@@ -213,7 +213,7 @@ export default function MarketSellForm({
                     <Skeleton />
                   ) : (
                     <>
-                      {receiveAmountFormatted} {baseToken.symbol.toUpperCase()}
+                      {receiveAmountFormatted} {quoteToken.symbol.toUpperCase()}
                     </>
                   )}
                 </Typography>
@@ -233,13 +233,13 @@ export default function MarketSellForm({
               <FormattedMessage
                 id="insufficient"
                 defaultMessage="Insufficient {symbol}"
-                values={{ symbol: quoteToken.symbol.toUpperCase() }}
+                values={{ symbol: baseToken.symbol.toUpperCase() }}
               />
             ) : (
               <FormattedMessage
                 id="sell.symbol"
                 defaultMessage="Sell {symbol}"
-                values={{ symbol: quoteToken.symbol.toUpperCase() }}
+                values={{ symbol: baseToken.symbol.toUpperCase() }}
               />
             )}
           </Button>

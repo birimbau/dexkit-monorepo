@@ -20,7 +20,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { Field, Formik } from "formik";
+import { Field, Formik, getIn } from "formik";
 
 import FormikDecimalInput from "@dexkit/ui/components/FormikDecimalInput";
 
@@ -28,16 +28,21 @@ import { ChainId } from "@dexkit/core";
 import { NETWORKS } from "@dexkit/core/constants/networks";
 import { Token } from "@dexkit/core/types";
 import { getChainName, ipfsUriToUrl, parseChainId } from "@dexkit/core/utils";
-import { TextField } from "formik-mui";
-import { useCallback, useEffect, useState } from "react";
+import { Select as FormikSelect, TextField } from "formik-mui";
+import { useEffect, useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 import { DexkitExchangeSettings, ExchangeSettingsSchema } from "../../types";
 import FormActions from "./ExchangeSettingsFormActions";
-import ExchangeTokensInput from "./ExchangeTokensInput";
 
+import { ZEROEX_AFFILIATE_ADDRESS } from "@dexkit/core/services/zrx/constants";
 import Edit from "@mui/icons-material/Edit";
 import { useFormikContext } from "formik";
+import { KIT_TOKEN, USDT_TOKEN } from "../../constants/tokens";
+import ExchangeQuoteTokensInput from "./ExchangeQuoteTokensInput";
+import ExchangeTokenInput from "./ExchangeTokenInput";
 import SelectNetworksDialog from "./SelectNetworksDialog";
+
+import _ from "lodash";
 
 function SaveOnChangeListener({
   onSave,
@@ -82,7 +87,7 @@ export default function ExchangeSettingsForm({
     onSave(values);
   };
 
-  const [chainId, setChainId] = useState<ChainId>();
+  const [chainId, setChainId] = useState<ChainId>(ChainId.Ethereum);
 
   const handleChange = (event: SelectChangeEvent<ChainId>) => {
     if (typeof event.target.value === "number") {
@@ -102,39 +107,60 @@ export default function ExchangeSettingsForm({
 
   const { formatMessage } = useIntl();
 
-  const handleValidate = useCallback((values: DexkitExchangeSettings) => {
-    const errors: any = {};
+  const handleValidate = async (values: DexkitExchangeSettings) => {
+    let errors: any = {};
 
-    let chains = Object.keys(values.defaultTokens).map((key) =>
-      parseChainId(key)
-    );
+    if (values.buyTokenPercentageFee && values.buyTokenPercentageFee > 10) {
+      errors["buyTokenPercentageFee"] = formatMessage({
+        id: "the.max.fee.is.ten.percent",
+        defaultMessage: "The max fee is 10%",
+      });
+    }
 
-    for (let chain of chains) {
-      if (!values.defaultPairs[chain]?.baseToken) {
-        if (!errors["defaultPairs"]) {
-          errors["defaultPairs"] = { [chain]: {} };
-        }
+    for (let chainId of values.availNetworks) {
+      if (
+        values.defaultPairs[chainId] &&
+        !values.defaultPairs[chainId].baseToken
+      ) {
+        let error = formatMessage(
+          {
+            id: "the.base.token.is.required.on.chain",
+            defaultMessage: "The base token is required on {chainName}",
+          },
+          { chainName: getChainName(chainId) }
+        );
 
-        errors["defaultPairs"][chain]["baseToken"] = formatMessage({
-          id: "a.default.base.token.is.required",
-          defaultMessage: "A default base token is required",
-        });
+        _.setWith(
+          errors,
+          `defaultPairs.${String(chainId)}.baseToken`,
+          error,
+          Object
+        );
       }
 
-      if (!values.defaultPairs[chain]?.quoteToken) {
-        if (!errors["defaultPairs"]) {
-          errors["defaultPairs"] = { [chain]: {} };
-        }
+      if (
+        values.defaultPairs[chainId] &&
+        !values.defaultPairs[chainId].quoteToken
+      ) {
+        let error = formatMessage(
+          {
+            id: "the.base.token.is.required.on.chain",
+            defaultMessage: "The quote token is required on {chainName}",
+          },
+          { chainName: getChainName(chainId) }
+        );
 
-        errors["defaultPairs"][chain]["quoteToken"] = formatMessage({
-          id: "a.default.quote.token.is.required",
-          defaultMessage: "A default quote token is required",
-        });
+        _.setWith(
+          errors,
+          `defaultPairs.${String(chainId)}.quoteToken`,
+          error,
+          Object
+        );
       }
     }
 
     return errors;
-  }, []);
+  };
 
   return (
     <Formik
@@ -142,19 +168,27 @@ export default function ExchangeSettingsForm({
         settings
           ? settings
           : {
+              defaultNetwork: ChainId.Ethereum,
               defaultPairs: {},
               quoteTokens: [],
-              defaultTokens: {},
-              affiliateAddress: "",
-              zrxApiKey: "",
+              defaultTokens: {
+                [ChainId.Polygon]: {
+                  baseTokens: [KIT_TOKEN],
+                  quoteTokens: [USDT_TOKEN],
+                },
+              },
+              affiliateAddress: ZEROEX_AFFILIATE_ADDRESS,
+              zrxApiKey: process.env.NEXT_PUBLIC_ZRX_API_KEY || "",
               buyTokenPercentageFee: 0.0,
-              availNetworks: [],
+              availNetworks: Object.keys(NETWORKS).map((key) =>
+                parseChainId(key)
+              ),
             }
       }
       onSubmit={handleSubmit}
       validationSchema={ExchangeSettingsSchema}
-      validate={handleValidate}
       validateOnChange
+      validate={handleValidate}
     >
       {({ submitForm, values, errors }) => (
         <>
@@ -173,7 +207,7 @@ export default function ExchangeSettingsForm({
             <Grid item xs={12}>
               {JSON.stringify(errors, null, 2)}
             </Grid>
-            <Grid item xs={12}>
+            {/* <Grid item xs={12}>
               <Field
                 component={TextField}
                 label={
@@ -185,10 +219,55 @@ export default function ExchangeSettingsForm({
                 name="zrxApiKey"
                 fullWidth
               />
-            </Grid>
+            </Grid> */}
             <Grid item xs={12}>
               <Paper sx={{ p: 2 }}>
                 <Stack spacing={2}>
+                  <Field
+                    component={FormikSelect}
+                    label={
+                      <FormattedMessage
+                        id="default.network"
+                        defaultMessage="Default network"
+                      />
+                    }
+                    name="defaultNetwork"
+                    fullWidth
+                    renderValue={(value: ChainId) => {
+                      return (
+                        <Stack
+                          direction="row"
+                          alignItems="center"
+                          alignContent="center"
+                          spacing={1}
+                        >
+                          <Avatar
+                            src={ipfsUriToUrl(NETWORKS[value].imageUrl || "")}
+                            style={{ width: "auto", height: "1rem" }}
+                          />
+                          <Typography variant="body1">
+                            {NETWORKS[value].name}
+                          </Typography>
+                        </Stack>
+                      );
+                    }}
+                  >
+                    {Object.keys(NETWORKS).map((key) => (
+                      <MenuItem key={key} value={parseChainId(key)}>
+                        <ListItemIcon>
+                          <Avatar
+                            src={ipfsUriToUrl(
+                              NETWORKS[parseChainId(key)].imageUrl || ""
+                            )}
+                            style={{ width: "1rem", height: "1rem" }}
+                          />
+                        </ListItemIcon>
+                        <ListItemText
+                          primary={getChainName(parseChainId(key))}
+                        />
+                      </MenuItem>
+                    ))}
+                  </Field>
                   <Stack
                     justifyContent="space-between"
                     alignItems="center"
@@ -344,11 +423,9 @@ export default function ExchangeSettingsForm({
                     </FormControl>
                   </Grid>
                   <Grid item xs={12}>
-                    <ExchangeTokensInput
+                    <ExchangeQuoteTokensInput
                       tokens={tokens}
                       chainId={chainId}
-                      name="quoteTokens"
-                      tokenName="quoteToken"
                       label={
                         <FormattedMessage
                           id="quote.tokens"
@@ -358,15 +435,31 @@ export default function ExchangeSettingsForm({
                     />
                   </Grid>
                   <Grid item xs={12}>
-                    <ExchangeTokensInput
-                      tokens={tokens}
-                      chainId={chainId}
-                      name="baseTokens"
-                      tokenName="baseToken"
+                    <ExchangeTokenInput
+                      name={`defaultPairs[${chainId}].baseToken`}
+                      tokens={
+                        getIn(values, `defaultTokens.${chainId}.baseTokens`) ||
+                        []
+                      }
                       label={
                         <FormattedMessage
-                          id="quote.tokens"
-                          defaultMessage="Base tokens"
+                          id="base.token"
+                          defaultMessage="Base token"
+                        />
+                      }
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <ExchangeTokenInput
+                      name={`defaultPairs[${chainId}].quoteToken`}
+                      tokens={
+                        getIn(values, `defaultTokens.${chainId}.quoteTokens`) ||
+                        []
+                      }
+                      label={
+                        <FormattedMessage
+                          id="quote.token"
+                          defaultMessage="Quote token"
                         />
                       }
                     />
@@ -374,20 +467,7 @@ export default function ExchangeSettingsForm({
                 </Grid>
               </Paper>
             </Grid>
-            <Grid item xs={12}>
-              <Field
-                component={TextField}
-                label={
-                  <FormattedMessage
-                    id="affiliate.address"
-                    defaultMessage="Affiliate address"
-                  />
-                }
-                fullWidth
-                name="affiliateAddress"
-              />
-            </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={12} sm={9}>
               <Field
                 component={TextField}
                 label={
@@ -401,7 +481,7 @@ export default function ExchangeSettingsForm({
               />
             </Grid>
 
-            <Grid item xs={12}>
+            <Grid item xs={12} sm={3}>
               <FormikDecimalInput
                 name="buyTokenPercentageFee"
                 decimals={2}

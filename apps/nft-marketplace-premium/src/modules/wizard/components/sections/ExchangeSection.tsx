@@ -160,17 +160,23 @@ function ExchangeSectionWrapper({ section }: ExchangeSectionProps) {
 
   const { chainId } = useWeb3React();
 
+  let currChainId = useMemo(() => {
+    if (!chainId) {
+      return settings.defaultNetwork;
+    }
+
+    return chainId;
+  }, [settings.defaultNetwork, chainId]);
+
   const defaultPairs =
-    chainId !== undefined && settings.defaultTokens[chainId]
-      ? settings.defaultPairs[chainId]
+    settings.defaultPairs && settings.defaultPairs[currChainId]
+      ? settings.defaultPairs[currChainId]
       : { baseToken: undefined, quoteToken: undefined };
 
   const defaultTokens =
-    chainId !== undefined && settings.defaultTokens[chainId]
-      ? settings.defaultTokens[chainId]
+    settings.defaultTokens && settings.defaultTokens[currChainId]
+      ? settings.defaultTokens[currChainId]
       : { baseTokens: [], quoteTokens: [] };
-
-  console.log('default', defaultTokens, defaultPairs, settings);
 
   const exchangeState = useExchangeContextState({
     baseTokens: defaultTokens.baseTokens,
@@ -179,8 +185,9 @@ function ExchangeSectionWrapper({ section }: ExchangeSectionProps) {
     baseToken: defaultPairs.baseToken,
     buyTokenPercentageFee: settings.buyTokenPercentageFee,
     affiliateAddress: settings.affiliateAddress,
-    feeRecipient: settings.feeRecipient,
+    feeRecipient: settings.feeRecipientAddress,
     availNetworks: settings.availNetworks,
+    defaultNetwork: settings.defaultNetwork,
   });
 
   return (

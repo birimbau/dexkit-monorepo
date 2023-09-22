@@ -31,6 +31,7 @@ export interface SellFormProps {
   provider?: ethers.providers.Web3Provider;
   maker?: string;
   buyTokenPercentageFee?: number;
+  feeRecipient?: string;
 }
 
 export default function SellForm({
@@ -40,6 +41,7 @@ export default function SellForm({
   provider,
   maker,
   buyTokenPercentageFee,
+  feeRecipient,
 }: SellFormProps) {
   const [amountPercentage, setAmountPercentage] = useState(0);
   const [amount, setAmount] = useState("0.0");

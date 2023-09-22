@@ -7,12 +7,13 @@ import * as Yup from "yup";
 export type DexkitExchangeSettings = {
   zrxApiKey?: string;
   quoteToken?: Token;
+  defaultNetwork: ChainId;
   defaultPairs: { [key: number]: { quoteToken: Token; baseToken: Token } };
   defaultTokens: {
     [key: number]: { quoteTokens: Token[]; baseTokens: Token[] };
   };
   buyTokenPercentageFee?: number;
-  feeRecipient?: string;
+  feeRecipientAddress?: string;
   affiliateAddress?: string;
   availNetworks: ChainId[];
 };
@@ -82,7 +83,7 @@ export const ExchangeSettingsSchema = Yup.object({
   defaultTokens: Yup.object().required(),
   defaultPairs: Yup.object().required(),
   buyTokenPercentageFee: Yup.number().required(),
-  feeRecipient: Yup.string()
+  feeRecipientAddress: Yup.string()
     .test("address", (value) => {
       return value !== undefined ? ethers.utils.isAddress(value) : true;
     })

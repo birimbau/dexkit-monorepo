@@ -3,7 +3,6 @@ import {
   customThemeLightAtom,
 } from '@/modules/wizard/state';
 import { generateCSSVarsTheme } from '@/modules/wizard/utils';
-import { useTheme } from '@mui/material';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
@@ -97,7 +96,6 @@ export default function ExchangeStepper({ config, onSave, onChange }: Props) {
   const handleReset = () => {
     setActiveStep(0);
   };
-  const theme = useTheme();
 
   return (
     <Container maxWidth="xl">

@@ -61,8 +61,6 @@ export default function ExchangeStepperContainer({ site }: Props) {
 
   const handleChange = useCallback(
     (_config: AppConfig) => {
-      console.log('new config', _config);
-
       const newConfig = { ...wizardConfig, ..._config };
       setWizardConfig(newConfig);
     },

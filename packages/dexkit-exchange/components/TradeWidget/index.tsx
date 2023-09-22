@@ -36,8 +36,13 @@ export interface TradeWidgetProps {
 }
 
 export default function TradeWidget({ isActive }: TradeWidgetProps) {
-  const { quoteToken, baseToken, feeRecipient, buyTokenPercentageFee } =
-    useExchangeContext();
+  const {
+    quoteToken,
+    baseToken,
+    feeRecipient,
+    buyTokenPercentageFee,
+    affiliateAddress,
+  } = useExchangeContext();
 
   const [orderType, setOrderType] = useState<"market" | "limit">("market");
 
@@ -169,6 +174,7 @@ export default function TradeWidget({ isActive }: TradeWidgetProps) {
                   makerToken={baseToken}
                   takerToken={quoteToken}
                   makerTokenBalance={baseTokenBalanceQuery.data}
+                  feeRecipient={feeRecipient}
                   maker={account}
                   provider={provider}
                 />
@@ -183,6 +189,7 @@ export default function TradeWidget({ isActive }: TradeWidgetProps) {
                   takerToken={quoteToken}
                   takerTokenBalance={quoteTokenBalanceQuery.data}
                   provider={provider}
+                  feeRecipient={feeRecipient}
                   buyTokenPercentageFee={buyTokenPercentageFee}
                   maker={account}
                 />
@@ -200,7 +207,8 @@ export default function TradeWidget({ isActive }: TradeWidgetProps) {
                   quoteTokenBalance={quoteTokenBalanceQuery.data}
                   baseTokenBalance={baseTokenBalanceQuery.data}
                   chainId={chainId}
-                  affiliateAddress={feeRecipient}
+                  affiliateAddress={affiliateAddress}
+                  feeRecipient={feeRecipient}
                   isActive={isActive}
                 />
               ) : null}
@@ -219,7 +227,8 @@ export default function TradeWidget({ isActive }: TradeWidgetProps) {
                   baseTokenBalance={baseTokenBalanceQuery.data}
                   buyTokenPercentageFee={buyTokenPercentageFee}
                   chainId={chainId}
-                  affiliateAddress={feeRecipient}
+                  affiliateAddress={affiliateAddress}
+                  feeRecipient={feeRecipient}
                   isActive={isActive}
                 />
               ) : null}

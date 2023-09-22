@@ -30,3 +30,9 @@ export const GET_GECKOTERMINAL_NETWORK = (chainId?: ChainId) => {
 
   return GECKOTERMINAL_NETWORK[chainId];
 };
+
+export const DEFAULT_ZRX_NETWORKS = [
+  ChainId.Ethereum,
+  ChainId.BSC,
+  ChainId.Polygon,
+];

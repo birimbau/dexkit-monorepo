@@ -67,6 +67,11 @@
           "type": "Page",
           "href": "/order/create",
           "name": "Create order"
+        },
+        {
+          "type": "Page",
+          "href": "/exchange",
+          "name": "Exchange"
         }
       ]
     },
@@ -515,6 +520,156 @@
       "title": "Custom Swap",
       "uri": "/custom-swap",
       "key": "custom-swap"
+    },
+    "exchange": {
+      "sections": [
+        {
+          "type": "exchange",
+          "title": "Exchange",
+          "settings": {
+            "defaultNetwork": 1,
+            "defaultPairs": {
+              "137": {
+                "baseToken": {
+                  "chainId": 137,
+                  "contractAddress": "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270",
+                  "name": "Wrapped Matic",
+                  "decimals": 18,
+                  "symbol": "WMATIC",
+                  "logoURI": "https://raw.githubusercontent.com/dexkit/icons/master/token/polygon.jpg"
+                },
+                "quoteToken": {
+                  "chainId": 137,
+                  "contractAddress": "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
+                  "name": "USD Coin",
+                  "decimals": 6,
+                  "symbol": "USDC",
+                  "logoURI": "https://raw.githubusercontent.com/dexkit/icons/master/token/usdc.jpg"
+                }
+              }
+            },
+            "quoteTokens": [],
+            "defaultTokens": {
+              "1": {
+                "quoteTokens": [
+                  {
+                    "chainId": 1,
+                    "contractAddress": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+                    "name": "ETH",
+                    "decimals": 18,
+                    "symbol": "ETH",
+                    "logoURI": "/_next/static/media/eth.1143ea00.png"
+                  }
+                ],
+                "baseTokens": [
+                  {
+                    "chainId": 1,
+                    "contractAddress": "0x6B175474E89094C44Da98b954EedeAC495271d0F",
+                    "name": "Dai Stablecoin",
+                    "decimals": 18,
+                    "symbol": "DAI",
+                    "logoURI": "https://raw.githubusercontent.com/dexkit/icons/master/token/dai.jpg"
+                  },
+                  {
+                    "chainId": 1,
+                    "contractAddress": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                    "name": "USD Coin",
+                    "decimals": 6,
+                    "symbol": "USDC",
+                    "logoURI": "https://raw.githubusercontent.com/dexkit/icons/master/token/usdc.jpg"
+                  },
+                  {
+                    "chainId": 1,
+                    "contractAddress": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+                    "name": "Tether USD",
+                    "decimals": 6,
+                    "symbol": "USDT",
+                    "logoURI": "https://raw.githubusercontent.com/dexkit/icons/master/token/usdt.jpg"
+                  },
+                  {
+                    "chainId": 1,
+                    "contractAddress": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+                    "name": "Wrapped Ether",
+                    "decimals": 18,
+                    "symbol": "WETH",
+                    "logoURI": "https://raw.githubusercontent.com/dexkit/icons/master/token/eth.jpg"
+                  }
+                ]
+              },
+              "137": {
+                "baseTokens": [
+                  {
+                    "chainId": 137,
+                    "contractAddress": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+                    "name": "MATIC",
+                    "decimals": 18,
+                    "symbol": "MATIC",
+                    "logoURI": "/_next/static/media/polygon.b25e4d03.png"
+                  },
+                  {
+                    "chainId": 137,
+                    "contractAddress": "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270",
+                    "name": "Wrapped MATIC",
+                    "decimals": 18,
+                    "symbol": "WMATIC",
+                    "logoURI": "/_next/static/media/polygon.b25e4d03.png"
+                  },
+                  {
+                    "chainId": 137,
+                    "contractAddress": "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619",
+                    "name": "Wrapped Ether",
+                    "decimals": 18,
+                    "symbol": "WETH",
+                    "logoURI": "https://raw.githubusercontent.com/dexkit/icons/master/token/eth.jpg"
+                  },
+                  {
+                    "chainId": 137,
+                    "contractAddress": "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270",
+                    "name": "Wrapped Matic",
+                    "decimals": 18,
+                    "symbol": "WMATIC",
+                    "logoURI": "https://raw.githubusercontent.com/dexkit/icons/master/token/polygon.jpg"
+                  }
+                ],
+                "quoteTokens": [
+                  {
+                    "chainId": 137,
+                    "contractAddress": "0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063",
+                    "name": "Dai Stablecoin",
+                    "decimals": 18,
+                    "symbol": "DAI",
+                    "logoURI": "https://raw.githubusercontent.com/dexkit/icons/master/token/dai.jpg"
+                  },
+                  {
+                    "chainId": 137,
+                    "contractAddress": "0xc2132D05D31c914a87C6611C10748AEb04B58e8F",
+                    "name": "Tether USD",
+                    "decimals": 6,
+                    "symbol": "USDT",
+                    "logoURI": "https://raw.githubusercontent.com/dexkit/icons/master/token/usdt.jpg"
+                  },
+                  {
+                    "chainId": 137,
+                    "contractAddress": "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
+                    "name": "USD Coin",
+                    "decimals": 6,
+                    "symbol": "USDC",
+                    "logoURI": "https://raw.githubusercontent.com/dexkit/icons/master/token/usdc.jpg"
+                  }
+                ]
+              }
+            },
+            "affiliateAddress": "0x5bD68B4d6f90Bcc9F3a9456791c0Db5A43df676d",
+            "zrxApiKey": "334f7b80-0b5d-484a-a08c-ea1b583a797e",
+            "buyTokenPercentageFee": "0.05",
+            "availNetworks": [56, 137, 1],
+            "feeRecipientAddress": "0xD50E4D1E0b49eb64a6bF2f48731c035E8948D219"
+          }
+        }
+      ],
+      "title": "Exchange",
+      "uri": "/exchange",
+      "key": "exchange"
     },
     "blog": {
       "sections": [

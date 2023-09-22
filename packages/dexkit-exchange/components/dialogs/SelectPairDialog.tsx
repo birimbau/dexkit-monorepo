@@ -52,7 +52,7 @@ export default function SelectPairDialog({
   );
 
   const handleSelectToken = useCallback((token: Token) => {
-    setQuoteToken(token);
+    setBaseToken(token);
   }, []);
 
   const handleConfirm = () => {
@@ -70,8 +70,8 @@ export default function SelectPairDialog({
   const isSameToken = useCallback(
     (token: Token, other: Token) => {
       return (
-        token.chainId === baseToken?.chainId &&
-        isAddressEqual(token.contractAddress, baseToken.contractAddress)
+        token.chainId === other?.chainId &&
+        isAddressEqual(token.contractAddress, other.contractAddress)
       );
     },
     [baseToken]
@@ -80,7 +80,7 @@ export default function SelectPairDialog({
   const handleToggleBaseToken = useCallback(
     (token: Token) => {
       return () => {
-        setBaseToken(token);
+        setQuoteToken(token);
       };
     },
     [baseToken]
@@ -93,7 +93,7 @@ export default function SelectPairDialog({
   }, []);
 
   const filteredTokens = useMemo(() => {
-    return quoteTokens.filter((t) => {
+    return baseTokens.filter((t) => {
       const searchByName = t.name.search(query) > -1;
       const searchByAddress = isAddressEqual(t.contractAddress, query);
       const searchBySymbol =
@@ -101,7 +101,7 @@ export default function SelectPairDialog({
 
       return searchByName || searchByAddress || searchBySymbol;
     });
-  }, [query, quoteTokens]);
+  }, [query, baseTokens]);
 
   return (
     <Dialog {...DialogProps}>
@@ -134,7 +134,7 @@ export default function SelectPairDialog({
             }}
           />
           <Stack direction="row" alignItems="center" spacing={1}>
-            {baseTokens.map((token, index) => (
+            {quoteTokens.map((token, index) => (
               <Chip
                 key={index}
                 label={token.symbol.toUpperCase()}
@@ -152,7 +152,7 @@ export default function SelectPairDialog({
                   </Avatar>
                 }
                 color={
-                  baseToken && isSameToken(token, baseToken)
+                  quoteToken && isSameToken(token, quoteToken)
                     ? "primary"
                     : undefined
                 }
@@ -165,9 +165,9 @@ export default function SelectPairDialog({
       <DialogContent sx={{ p: 0 }} dividers>
         <SelectPairList
           onSelect={handleSelectToken}
-          quoteTokens={filteredTokens}
-          baseToken={baseToken}
+          baseTokens={filteredTokens}
           quoteToken={quoteToken}
+          baseToken={baseToken}
         />
       </DialogContent>
       <DialogActions>

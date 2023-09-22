@@ -12,7 +12,7 @@ import {
 } from "@dexkit/core/services/zrx/constants";
 import { Token } from "@dexkit/core/types";
 import axios from "axios";
-import { useCallback, useContext, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { DexkitExchangeContext } from "../contexts";
 import { getGeckoTerminalTopPools } from "../services";
 import { DexkitExchangeContextState, GtPool } from "../types";
@@ -110,21 +110,32 @@ export function useExchangeContextState(params: {
   feeRecipient?: string;
   zrxApiKey?: string;
   availNetworks: ChainId[];
+  defaultNetwork: ChainId;
 }): DexkitExchangeContextState {
-  const [quoteToken, setQuoteToken] = useState<Token | undefined>(
-    params?.quoteToken
-  );
-  const [baseToken, setBaseToken] = useState<Token | undefined>(
-    params?.baseToken
-  );
+  const [quoteToken, setQuoteToken] = useState<Token | undefined>();
+  const [baseToken, setBaseToken] = useState<Token | undefined>();
 
   const [quoteTokens, setQuoteTokens] = useState<Token[]>(params.quoteTokens);
   const [baseTokens, setBaseTokens] = useState<Token[]>(params.baseTokens);
 
   const handleSetPair = useCallback((base: Token, quote: Token) => {
+    console.log(base, quote);
+
     setQuoteToken(quote);
     setBaseToken(base);
   }, []);
+
+  useEffect(() => {
+    setQuoteToken(params.quoteToken);
+    setBaseToken(params.baseToken);
+    setQuoteTokens(params.quoteTokens);
+    setBaseTokens(params.baseTokens);
+  }, [
+    params.quoteToken,
+    params.baseToken,
+    params.baseTokens,
+    params.quoteTokens,
+  ]);
 
   return {
     setPair: handleSetPair,
