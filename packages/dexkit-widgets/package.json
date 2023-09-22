@@ -1,6 +1,7 @@
 {
   "name": "@dexkit/widgets",
   "version": "0.3.0",
+  "private": "false",
   "scripts": {
     "lint": "TIMING=1 eslint \"**/*.ts*\"",
     "storybook": "start-storybook -p 6006 --quiet",
