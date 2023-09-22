@@ -10,6 +10,7 @@
     "build": "turbo run build",
     "release": "turbo run release --filter=@dexkit/ui,@dexkit/web3forms,@dexkit/web3forms,@dexkit/widgets,@dexkit/dexappbuilder-viewer,@dexkit/core",
     "dev": "turbo run dev --parallel",
+    "publish-packages": "changeset publish",
     "dev:whitelabel": "turbo run dev --parallel --filter=nft-marketplace",
     "dev:storyview": "turbo run dev --parallel --filter=dexkit-storyview",
     "storybook": "turbo run storybook",
