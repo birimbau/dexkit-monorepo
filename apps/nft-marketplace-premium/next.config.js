@@ -32,14 +32,5 @@ module.exports = removeImports(
         'dexkit-storage.nyc3.digitaloceanspaces.com',
       ],
     },
-    webpack(config) {
-      config.module.rules.push({
-        test: /\.svg$/i,
-        issuer: /\.[jt]sx?$/,
-        use: ['@svgr/webpack'],
-      });
-
-      return config;
-    },
   }),
 );
