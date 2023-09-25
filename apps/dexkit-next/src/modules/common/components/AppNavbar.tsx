@@ -1,8 +1,11 @@
 import { DRAWER_WIDTH } from '@/modules/common/constants';
-import { AttachMoney, Language, Menu as MuiMenu } from '@mui/icons-material';
+
+import AttachMoney from '@mui/icons-material/AttachMoney';
+import Language from '@mui/icons-material/Language';
+import MuiMenu from '@mui/icons-material/Menu';
+
 import Settings from '@mui/icons-material/Settings';
 import {
-  AppBar as MuiAppBar,
   AppBarProps,
   Avatar,
   Box,
@@ -12,20 +15,21 @@ import {
   ListItemText,
   Menu,
   MenuItem,
+  AppBar as MuiAppBar,
   NoSsr,
   Stack,
-  styled,
   Toolbar,
   Typography,
+  styled,
 } from '@mui/material';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { appStateAtom, showNotificationsAtom } from '../atoms';
+import Link from './Link';
 import { AppNotificationsBadge } from './dialogs/AppNotificationsBadge';
 import SelectCurrencyDialog from './dialogs/SelectCurrencyDialog';
 import SelectLanguageDialog from './dialogs/SelectLanguageDialog';
-import Link from './Link';
 
 interface NavbarProps extends AppBarProps {
   open: boolean;

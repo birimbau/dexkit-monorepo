@@ -10,7 +10,11 @@ import {
   useTheme,
 } from '@mui/material'; // always use @mui/material instead of @mui/system
 
-import { Facebook, LinkedIn, Reddit, YouTube } from '@mui/icons-material';
+import Facebook from '@mui/icons-material/Facebook';
+import LinkedIn from '@mui/icons-material/LinkedIn';
+import Reddit from '@mui/icons-material/Reddit';
+import YouTube from '@mui/icons-material/YouTube';
+
 import TwitterIcon from '@mui/icons-material/Twitter';
 import Image from 'next/image';
 import { useMemo } from 'react';

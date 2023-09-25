@@ -20,7 +20,10 @@ import {
 
 import { MagicConnector } from '@dexkit/core/types/magic';
 import MagicNetworkSelect from '@dexkit/ui/components/MagicNetworkSelect';
-import { AttachMoney, Language } from '@mui/icons-material';
+
+import AttachMoney from '@mui/icons-material/AttachMoney';
+import Language from '@mui/icons-material/Language';
+
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import { useWeb3React } from '@web3-react/core';
 import { useUpdateAtom } from 'jotai/utils';

@@ -7,6 +7,8 @@ const withTM = require('next-transpile-modules')([
   '@dexkit/core',
   '@dexkit/web3forms',
   '@dexkit/dexappbuilder-viewer',
+  '@lifi/widget',
+  '@lifi/wallet-management',
 ]); // pass the modules you would like to see transpiled
 
 module.exports = removeImports(
@@ -30,5 +32,14 @@ module.exports = removeImports(
         'dexkit-storage.nyc3.digitaloceanspaces.com',
       ],
     },
-  })
+    webpack(config) {
+      config.module.rules.push({
+        test: /\.svg$/i,
+        issuer: /\.[jt]sx?$/,
+        use: ['@svgr/webpack'],
+      });
+
+      return config;
+    },
+  }),
 );

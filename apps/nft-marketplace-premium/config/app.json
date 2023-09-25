@@ -97,6 +97,11 @@
         },
         {
           "type": "Page",
+          "href": "/admin/quick-builder/lifi",
+          "name": "Create Lifi Swap"
+        },
+        {
+          "type": "Page",
           "href": "/admin",
           "name": "Manage Apps"
         }
