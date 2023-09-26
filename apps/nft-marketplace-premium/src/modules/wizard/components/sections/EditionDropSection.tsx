@@ -20,6 +20,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import { ClaimEligibility, NATIVE_TOKEN_ADDRESS } from '@thirdweb-dev/sdk';
@@ -32,6 +33,16 @@ import {
   useErc20AllowanceMutation,
   useErc20ApproveMutationV2,
 } from 'src/hooks/balances';
+
+const QuantityField = styled(TextField)(({ theme }) => ({
+  '& .MuiFormLabel-root': {
+    fontSize: '1.5rem',
+    paddingBottom: theme.spacing(1),
+  },
+  '& .MuiInputBase-input': {
+    fontSize: '2.5rem',
+  },
+}));
 
 interface Props {
   section: EditionDropPageSection;
@@ -293,7 +304,7 @@ export function EditionDropSection({ section }: Props) {
 
   const buttonText = useMemo(() => {
     if (isSoldOut) {
-      return 'Sold Out';
+      return <FormattedMessage id={'sold.out'} defaultMessage={'Sold out'} />;
     }
 
     if (canClaim) {
@@ -455,8 +466,8 @@ export function EditionDropSection({ section }: Props) {
                       >
                         -
                       </Button>*/}
-                      <TextField
-                        id="standard-basic"
+                      <QuantityField
+                        id="quantity-field"
                         type={'number'}
                         value={quantity}
                         onChange={(ev) =>
