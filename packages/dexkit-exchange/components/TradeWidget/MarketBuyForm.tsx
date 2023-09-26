@@ -15,10 +15,15 @@ import { FormattedMessage } from "react-intl";
 import { ChainId, useApproveToken, useTokenAllowanceQuery } from "@dexkit/core";
 import { ZeroExQuoteResponse } from "@dexkit/core/services/zrx/types";
 import { formatBigNumber } from "@dexkit/core/utils";
-import { useExecuteTransactionsDialog } from "@dexkit/ui/hooks";
+import {
+  useExecuteTransactionsDialog,
+  useWaitTransactionConfirmation,
+} from "@dexkit/ui/hooks";
+import { useMutation } from "@tanstack/react-query";
 import { useZrxQuoteMutation } from "../../hooks/zrx";
-import { getZrxExchangeAddress } from "../../utils";
+import { BigNumberUtils, getZrxExchangeAddress } from "../../utils";
 import LazyDecimalInput from "./LazyDecimalInput";
+import ReviewMarketOrderDialog from "./ReviewMarketOrderDialog";
 
 export interface MarketBuyFormProps {
   quoteToken: Token;
@@ -47,6 +52,8 @@ export default function MarketBuyForm({
   feeRecipient,
   isActive,
 }: MarketBuyFormProps) {
+  const [showReview, setShowReview] = useState(false);
+
   const handleChangeAmount = (value: string) => {
     setAmount(value);
   };
@@ -93,70 +100,6 @@ export default function MarketBuyForm({
     tokenAddress: quote?.sellTokenAddress,
   });
 
-  const handleExecute = () => {
-    txDialog.execute([
-      {
-        check: () => {
-          if (
-            tokenAllowanceQuery.data?.gte(BigNumber.from(quote?.sellAmount))
-          ) {
-            return { hidden: true, conditions: ["approve"] };
-          }
-
-          return { hidden: false, conditions: [] };
-        },
-        action: async () => {
-          const res = new Promise<string>((resolve, reject) => {
-            approveMutation.mutateAsync({
-              onSubmited: (hash: string) => {
-                resolve(hash);
-              },
-              amount: BigNumber.from(quote?.sellAmount),
-              provider,
-              spender: getZrxExchangeAddress(chainId),
-              tokenContract: quote?.sellTokenAddress,
-            });
-          });
-
-          return { hash: await res, conditions: [] };
-        },
-        title: { id: "approve", defaultMessage: "Approve" },
-      },
-      {
-        action: async () => {
-          let res = provider?.getSigner().sendTransaction({
-            data: quote?.data,
-            to: quote?.to,
-            gasPrice: ethers.BigNumber.from(quote?.gasPrice),
-            value: ethers.BigNumber.from(quote?.value),
-          });
-
-          return { hash: (await res)?.hash };
-        },
-        title: {
-          id: "buy.symbol.token",
-          defaultMessage: "Buy {amount} {symbol}",
-          values: {
-            symbol: baseToken.symbol.toUpperCase(),
-            amount: quote
-              ? formatBigNumber(
-                  BigNumber.from(quote?.buyAmount),
-                  baseToken.decimals
-                )
-              : "0.0",
-          },
-        },
-        conditions: [
-          {
-            id: "approve",
-            messageId: "needs.token.approval",
-            defaultMessage: "Needs token approval",
-          },
-        ],
-      },
-    ]);
-  };
-
   useEffect(() => {
     (async () => {
       let newQuote = await quoteMutation.mutateAsync({
@@ -178,70 +121,179 @@ export default function MarketBuyForm({
     })();
   }, [amount, isActive]);
 
+  const [hash, setHash] = useState<string>();
+
+  const waitTxResult = useWaitTransactionConfirmation({
+    transactionHash: hash,
+    provider,
+  });
+
+  const sendTxMutation = useMutation(async () => {
+    let res = await provider?.getSigner().sendTransaction({
+      data: quote?.data,
+      to: quote?.to,
+      gasPrice: ethers.BigNumber.from(quote?.gasPrice),
+      value: ethers.BigNumber.from(quote?.value),
+    });
+
+    setHash(res?.hash);
+  });
+
+  const handleCloseReview = () => {
+    setShowReview(false);
+  };
+
+  const handleApprove = async () => {
+    await approveMutation.mutateAsync({
+      onSubmited: (hash: string) => {},
+      amount: BigNumber.from(quote?.sellAmount),
+      provider,
+      spender: getZrxExchangeAddress(chainId),
+      tokenContract: quote?.sellTokenAddress,
+    });
+  };
+
+  const [amountPerToken, setAmountPerToken] = useState("0.0");
+
+  const handleQuotePrice = async () => {
+    const quote = await quoteMutation.mutateAsync({
+      buyToken: baseToken.contractAddress,
+      sellToken: quoteToken.contractAddress,
+      affiliateAddress: affiliateAddress || "",
+      buyAmount: ethers.utils.parseUnits("1.0", baseToken.decimals).toString(),
+      skipValidation: true,
+      slippagePercentage: 0.01,
+      feeRecipient,
+      buyTokenPercentageFee: buyTokenPercentageFee
+        ? buyTokenPercentageFee / 100
+        : undefined,
+    });
+
+    const sellAmount = BigNumber.from(quote?.sellAmount || "0");
+
+    setAmountPerToken(
+      ethers.utils.formatUnits(sellAmount, quoteToken.decimals)
+    );
+  };
+
+  const parsedAmount = useMemo(() => {
+    return parseFloat(amount !== "" ? amount : "0.0");
+  }, [amount]);
+
+  const parsedAmountPerToken = useMemo(() => {
+    return ethers.utils.parseUnits(
+      amountPerToken || "0.0",
+      quoteToken.decimals
+    );
+  }, [amountPerToken, quoteToken]);
+
+  const total = useMemo(() => {
+    return new BigNumberUtils().multiply(parsedAmountPerToken, parsedAmount);
+  }, [parsedAmountPerToken, parsedAmount]);
+
+  const handleConfirm = async () => {
+    await sendTxMutation.mutateAsync();
+  };
+
+  const handleExecute = () => {
+    setShowReview(true);
+    handleQuotePrice();
+  };
+
   return (
-    <Box>
-      <Grid container spacing={2}>
-        <Grid item xs={12}>
-          <LazyDecimalInput onChange={handleChangeAmount} token={baseToken} />
-        </Grid>
-        <Grid item xs={12}>
-          <Typography variant="body2">
-            <FormattedMessage id="available" defaultMessage="Available" />:{" "}
-            {quoteTokenBalanceFormatted} {quoteToken.symbol.toUpperCase()}
-          </Typography>
-        </Grid>
-        <Grid item xs={12}>
-          <Divider />
-        </Grid>
-        <Grid item xs={12}>
-          <Box>
-            <Stack>
-              <Stack
-                direction="row"
-                justifyContent="space-between"
-                spacing={2}
-                alignItems="center"
-              >
-                <Typography>
-                  <FormattedMessage id="cost" defaultMessage="Cost" />
-                </Typography>
-                <Typography color="text.secondary">
-                  {quoteMutation.isLoading ? (
-                    <Skeleton />
-                  ) : (
-                    <>
-                      {formattedCost} {quoteToken.symbol.toUpperCase()}
-                    </>
-                  )}
-                </Typography>
+    <>
+      <ReviewMarketOrderDialog
+        DialogProps={{
+          open: showReview,
+          maxWidth: "sm",
+          fullWidth: true,
+          onClose: handleCloseReview,
+        }}
+        total={total}
+        isApproving={approveMutation.isLoading}
+        isApproval={
+          tokenAllowanceQuery.data !== null &&
+          tokenAllowanceQuery.data?.lt(BigNumber.from(quote?.sellAmount || "0"))
+        }
+        chainId={chainId}
+        hash={hash}
+        amountPerToken={parsedAmountPerToken}
+        quoteToken={quoteToken}
+        baseToken={baseToken}
+        baseAmount={
+          quote?.sellAmount
+            ? BigNumber.from(quote?.buyAmount)
+            : BigNumber.from("0")
+        }
+        side="buy"
+        isPlacingOrder={sendTxMutation.isLoading || waitTxResult.isFetching}
+        onConfirm={handleConfirm}
+        onApprove={handleApprove}
+      />
+      <Box>
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <LazyDecimalInput onChange={handleChangeAmount} token={baseToken} />
+          </Grid>
+          <Grid item xs={12}>
+            <Typography variant="body2">
+              <FormattedMessage id="available" defaultMessage="Available" />:{" "}
+              {quoteTokenBalanceFormatted} {quoteToken.symbol.toUpperCase()}
+            </Typography>
+          </Grid>
+          <Grid item xs={12}>
+            <Divider />
+          </Grid>
+          <Grid item xs={12}>
+            <Box>
+              <Stack>
+                <Stack
+                  direction="row"
+                  justifyContent="space-between"
+                  spacing={2}
+                  alignItems="center"
+                >
+                  <Typography>
+                    <FormattedMessage id="cost" defaultMessage="Cost" />
+                  </Typography>
+                  <Typography color="text.secondary">
+                    {quoteMutation.isLoading ? (
+                      <Skeleton />
+                    ) : (
+                      <>
+                        {formattedCost} {quoteToken.symbol.toUpperCase()}
+                      </>
+                    )}
+                  </Typography>
+                </Stack>
               </Stack>
-            </Stack>
-          </Box>
+            </Box>
+          </Grid>
+          <Grid item xs={12}>
+            <Button
+              disabled={quoteMutation.isLoading || !hasSufficientBalance}
+              size="large"
+              fullWidth
+              variant="contained"
+              onClick={handleExecute}
+            >
+              {!hasSufficientBalance ? (
+                <FormattedMessage
+                  id="insufficient"
+                  defaultMessage="Insufficient {symbol}"
+                  values={{ symbol: quoteToken.symbol.toUpperCase() }}
+                />
+              ) : (
+                <FormattedMessage
+                  id="buy.symbol"
+                  defaultMessage="Buy {symbol}"
+                  values={{ symbol: baseToken.symbol.toUpperCase() }}
+                />
+              )}
+            </Button>
+          </Grid>
         </Grid>
-        <Grid item xs={12}>
-          <Button
-            disabled={quoteMutation.isLoading || !hasSufficientBalance}
-            size="large"
-            fullWidth
-            variant="contained"
-            onClick={handleExecute}
-          >
-            {!hasSufficientBalance ? (
-              <FormattedMessage
-                id="insufficient"
-                defaultMessage="Insufficient {symbol}"
-                values={{ symbol: quoteToken.symbol.toUpperCase() }}
-              />
-            ) : (
-              <FormattedMessage
-                id="buy.symbol"
-                defaultMessage="Buy {symbol}"
-                values={{ symbol: baseToken.symbol.toUpperCase() }}
-              />
-            )}
-          </Button>
-        </Grid>
-      </Grid>
-    </Box>
+      </Box>
+    </>
   );
 }

@@ -20,7 +20,11 @@ export const GECKOTERMINAL_NETWORK: { [key: number]: string } = {
   [ChainId.Ethereum]: "eth",
   [ChainId.Polygon]: "polygon_pos",
   [ChainId.Arbitrum]: "arbitrum",
-  // TODO: add more
+  [ChainId.BSC]: "bnb",
+  [ChainId.Avax]: "abax",
+  [ChainId.Celo]: "celo",
+  [ChainId.Fantom]: "ftm",
+  [ChainId.Base]: "base",
 };
 
 export const GET_GECKOTERMINAL_NETWORK = (chainId?: ChainId) => {

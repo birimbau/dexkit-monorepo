@@ -40,6 +40,7 @@ export default function TradeWidget({ isActive }: TradeWidgetProps) {
     chainId,
     provider,
     account,
+    availNetworks,
   } = useExchangeContext();
 
   const [orderType, setOrderType] = useState<"market" | "limit">("market");
@@ -68,6 +69,169 @@ export default function TradeWidget({ isActive }: TradeWidgetProps) {
     provider,
     contractAddress: quoteToken?.contractAddress,
   });
+
+  const renderContent = () => {
+    if (
+      (chainId && !availNetworks.includes(chainId)) ||
+      !baseToken ||
+      !quoteToken
+    ) {
+      return (
+        <Stack>
+          <Typography align="center" variant="h5">
+            <FormattedMessage
+              id="unsupported.network"
+              defaultMessage="Unsupported Network"
+            />
+          </Typography>
+          <Typography align="center" variant="body1">
+            <FormattedMessage
+              id="please.switch.to.networks"
+              defaultMessage="Please, switch to {networks}"
+              values={{
+                networks: DEFAULT_ZRX_NETWORKS.map(
+                  (chain) => NETWORKS[chain].name
+                ).join(", "),
+              }}
+            />
+          </Typography>
+        </Stack>
+      );
+    }
+
+    return (
+      <Stack spacing={2}>
+        <Tabs
+          onChange={handleChangeOrderSide}
+          value={orderSide}
+          variant="fullWidth"
+          sx={{
+            "& .MuiTabs-indicator": {
+              backgroundColor: (theme) =>
+                orderSide === "buy"
+                  ? theme.palette.success.light
+                  : theme.palette.error.light,
+            },
+            "& .Mui-selected": {
+              color: (theme) =>
+                orderSide === "buy"
+                  ? theme.palette.success.light
+                  : theme.palette.error.light,
+            },
+          }}
+        >
+          <TradeWidgetTabAlt
+            value="buy"
+            label={<FormattedMessage id="buy" defaultMessage="Buy" />}
+          />
+          <TradeWidgetTabAlt
+            value="sell"
+            label={<FormattedMessage id="sell" defaultMessage="Sell" />}
+          />
+        </Tabs>
+        <Divider />
+
+        {chainId &&
+        !DEFAULT_ZRX_NETWORKS.includes(chainId) &&
+        orderType === "limit" ? (
+          <Stack py={4}>
+            <Typography align="center" variant="h5">
+              <FormattedMessage
+                id="unsupported.network"
+                defaultMessage="Unsupported Network"
+              />
+            </Typography>
+            <Typography align="center" variant="body1">
+              <FormattedMessage
+                id="please.switch.to.networks"
+                defaultMessage="Please, switch to {networks}"
+                values={{
+                  networks: DEFAULT_ZRX_NETWORKS.map(
+                    (chain) => NETWORKS[chain].name
+                  ).join(", "),
+                }}
+              />
+            </Typography>
+          </Stack>
+        ) : (
+          <>
+            {orderSide === "buy" &&
+            orderType == "limit" &&
+            quoteToken &&
+            baseToken ? (
+              <BuyForm
+                key={`buy-${baseToken.contractAddress}-${quoteToken.contractAddress}`}
+                baseToken={baseToken}
+                quoteToken={quoteToken}
+                quoteTokenBalance={quoteTokenBalanceQuery.data}
+                feeRecipient={feeRecipient}
+                maker={account}
+                provider={provider}
+                affiliateAddress={affiliateAddress}
+                chainId={chainId}
+              />
+            ) : null}
+            {orderSide === "sell" &&
+            orderType === "limit" &&
+            quoteToken &&
+            baseToken ? (
+              <SellForm
+                key={`sell-${baseToken.contractAddress}-${quoteToken.contractAddress}`}
+                quoteToken={quoteToken}
+                baseToken={baseToken}
+                baseTokenBalance={baseTokenBalanceQuery.data}
+                provider={provider}
+                feeRecipient={feeRecipient}
+                buyTokenPercentageFee={buyTokenPercentageFee}
+                maker={account}
+                affiliateAddress={affiliateAddress}
+                chainId={chainId}
+              />
+            ) : null}
+          </>
+        )}
+
+        {orderType === "market" &&
+        orderSide === "buy" &&
+        quoteToken &&
+        baseToken ? (
+          <MarketBuyForm
+            key={`market-buy-${baseToken.contractAddress}-${quoteToken.contractAddress}`}
+            quoteToken={quoteToken}
+            baseToken={baseToken}
+            provider={provider}
+            account={account}
+            quoteTokenBalance={quoteTokenBalanceQuery.data}
+            baseTokenBalance={baseTokenBalanceQuery.data}
+            affiliateAddress={affiliateAddress}
+            feeRecipient={feeRecipient}
+            isActive={isActive}
+            chainId={chainId}
+          />
+        ) : null}
+
+        {orderType === "market" &&
+        orderSide === "sell" &&
+        quoteToken &&
+        baseToken ? (
+          <MarketSellForm
+            key={`market-sell-${baseToken.contractAddress}-${quoteToken.contractAddress}`}
+            quoteToken={quoteToken}
+            baseToken={baseToken}
+            provider={provider}
+            account={account}
+            quoteTokenBalance={quoteTokenBalanceQuery.data}
+            baseTokenBalance={baseTokenBalanceQuery.data}
+            buyTokenPercentageFee={buyTokenPercentageFee}
+            affiliateAddress={affiliateAddress}
+            feeRecipient={feeRecipient}
+            isActive={isActive}
+            chainId={chainId}
+          />
+        ) : null}
+      </Stack>
+    );
+  };
 
   return (
     <Card>
@@ -101,136 +265,7 @@ export default function TradeWidget({ isActive }: TradeWidgetProps) {
                 lighten(theme.palette.background.default, 0.1),
             }}
           >
-            <Stack spacing={2}>
-              <Tabs
-                onChange={handleChangeOrderSide}
-                value={orderSide}
-                variant="fullWidth"
-                sx={{
-                  "& .MuiTabs-indicator": {
-                    backgroundColor: (theme) =>
-                      orderSide === "buy"
-                        ? theme.palette.success.light
-                        : theme.palette.error.light,
-                  },
-                  "& .Mui-selected": {
-                    color: (theme) =>
-                      orderSide === "buy"
-                        ? theme.palette.success.light
-                        : theme.palette.error.light,
-                  },
-                }}
-              >
-                <TradeWidgetTabAlt
-                  value="buy"
-                  label={<FormattedMessage id="buy" defaultMessage="Buy" />}
-                />
-                <TradeWidgetTabAlt
-                  value="sell"
-                  label={<FormattedMessage id="sell" defaultMessage="Sell" />}
-                />
-              </Tabs>
-              <Divider />
-
-              {chainId &&
-              !DEFAULT_ZRX_NETWORKS.includes(chainId) &&
-              orderType === "limit" ? (
-                <Stack py={4}>
-                  <Typography align="center" variant="h5">
-                    <FormattedMessage
-                      id="unsupported.network"
-                      defaultMessage="Unsupported Network"
-                    />
-                  </Typography>
-                  <Typography align="center" variant="body1">
-                    <FormattedMessage
-                      id="please.switch.to.networks"
-                      defaultMessage="Please, switch to {networks}"
-                      values={{
-                        networks: DEFAULT_ZRX_NETWORKS.map(
-                          (chain) => NETWORKS[chain].name
-                        ).join(","),
-                      }}
-                    />
-                  </Typography>
-                </Stack>
-              ) : (
-                <>
-                  {orderSide === "buy" &&
-                  orderType == "limit" &&
-                  quoteToken &&
-                  baseToken ? (
-                    <BuyForm
-                      key={`buy-${baseToken.contractAddress}-${quoteToken.contractAddress}`}
-                      baseToken={baseToken}
-                      quoteToken={quoteToken}
-                      quoteTokenBalance={quoteTokenBalanceQuery.data}
-                      feeRecipient={feeRecipient}
-                      maker={account}
-                      provider={provider}
-                      affiliateAddress={affiliateAddress}
-                      chainId={chainId}
-                    />
-                  ) : null}
-                  {orderSide === "sell" &&
-                  orderType === "limit" &&
-                  quoteToken &&
-                  baseToken ? (
-                    <SellForm
-                      key={`sell-${baseToken.contractAddress}-${quoteToken.contractAddress}`}
-                      quoteToken={quoteToken}
-                      baseToken={baseToken}
-                      baseTokenBalance={baseTokenBalanceQuery.data}
-                      provider={provider}
-                      feeRecipient={feeRecipient}
-                      buyTokenPercentageFee={buyTokenPercentageFee}
-                      maker={account}
-                      affiliateAddress={affiliateAddress}
-                      chainId={chainId}
-                    />
-                  ) : null}
-                </>
-              )}
-
-              {orderType === "market" &&
-              orderSide === "buy" &&
-              quoteToken &&
-              baseToken ? (
-                <MarketBuyForm
-                  key={`market-buy-${baseToken.contractAddress}-${quoteToken.contractAddress}`}
-                  quoteToken={quoteToken}
-                  baseToken={baseToken}
-                  provider={provider}
-                  account={account}
-                  quoteTokenBalance={quoteTokenBalanceQuery.data}
-                  baseTokenBalance={baseTokenBalanceQuery.data}
-                  affiliateAddress={affiliateAddress}
-                  feeRecipient={feeRecipient}
-                  isActive={isActive}
-                  chainId={chainId}
-                />
-              ) : null}
-
-              {orderType === "market" &&
-              orderSide === "sell" &&
-              quoteToken &&
-              baseToken ? (
-                <MarketSellForm
-                  key={`market-sell-${baseToken.contractAddress}-${quoteToken.contractAddress}`}
-                  quoteToken={quoteToken}
-                  baseToken={baseToken}
-                  provider={provider}
-                  account={account}
-                  quoteTokenBalance={quoteTokenBalanceQuery.data}
-                  baseTokenBalance={baseTokenBalanceQuery.data}
-                  buyTokenPercentageFee={buyTokenPercentageFee}
-                  affiliateAddress={affiliateAddress}
-                  feeRecipient={feeRecipient}
-                  isActive={isActive}
-                  chainId={chainId}
-                />
-              ) : null}
-            </Stack>
+            {renderContent()}
           </Paper>
         </Stack>
       </CardContent>

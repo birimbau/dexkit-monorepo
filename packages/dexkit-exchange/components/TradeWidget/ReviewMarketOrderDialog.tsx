@@ -1,11 +1,11 @@
+import { ChainId } from "@dexkit/core";
 import { Token } from "@dexkit/core/types";
+import { getBlockExplorerUrl } from "@dexkit/core/utils";
 import { AppDialogTitle } from "@dexkit/ui/components/AppDialogTitle";
 import CheckIcon from "@mui/icons-material/Check";
 
-import MomentFromSpan from "@dexkit/ui/components/MomentFromSpan";
 import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
 import {
-  Box,
   Button,
   CircularProgress,
   Dialog,
@@ -19,11 +19,10 @@ import {
   lighten,
 } from "@mui/material";
 import { BigNumber, ethers } from "ethers";
-import moment from "moment";
 import { useMemo, useState } from "react";
 import { FormattedMessage } from "react-intl";
 
-export interface ReviewOrderDialogProps {
+export interface ReviewMarketOrderDialogProps {
   DialogProps: DialogProps;
   isPlacingOrder?: boolean;
   quoteAmount?: BigNumber;
@@ -34,13 +33,14 @@ export interface ReviewOrderDialogProps {
   baseToken?: Token;
   isApproval?: boolean;
   isApproving?: boolean;
-  expiresIn?: number;
   side?: "sell" | "buy";
+  hash?: string;
+  chainId?: ChainId;
   onApprove?: () => void;
   onConfirm: () => void;
 }
 
-export default function ReviewOrderDialog({
+export default function ReviewMarketOrderDialog({
   DialogProps,
   quoteToken,
   total,
@@ -52,9 +52,10 @@ export default function ReviewOrderDialog({
   isApproval,
   onConfirm,
   side,
-  baseAmount,
-  expiresIn,
-}: ReviewOrderDialogProps) {
+  baseAmount: amount,
+  chainId,
+  hash,
+}: ReviewMarketOrderDialogProps) {
   const formattedTotal = useMemo(() => {
     if (total) {
       return ethers.utils.formatUnits(total, quoteToken?.decimals);
@@ -78,19 +79,18 @@ export default function ReviewOrderDialog({
     }
   }, [amountPerToken, quoteToken]);
 
-  const baseAmountFormatted = useMemo(() => {
-    if (baseAmount) {
-      return ethers.utils.formatUnits(baseAmount, baseToken?.decimals);
+  const amountFormatted = useMemo(() => {
+    if (amount) {
+      return ethers.utils.formatUnits(amount, baseToken?.decimals);
     }
 
     return "0.00";
-  }, [baseAmount]);
+  }, [amount, baseToken]);
 
   const renderActions = () => {
     if (isApproval) {
       return (
         <Stack spacing={2}>
-          <Box></Box>
           <Button
             size="large"
             onClick={onApprove}
@@ -128,6 +128,20 @@ export default function ReviewOrderDialog({
         >
           <FormattedMessage id="place.order" defaultMessage="Place Order" />
         </Button>
+        {hash && (
+          <Button
+            size="large"
+            href={`${getBlockExplorerUrl(chainId)}/tx/${hash}`}
+            target="_blank"
+            variant="outlined"
+            color="primary"
+          >
+            <FormattedMessage
+              id="view.transaction"
+              defaultMessage="View transaction"
+            />
+          </Button>
+        )}
       </Stack>
     );
   };
@@ -186,7 +200,7 @@ export default function ReviewOrderDialog({
                 align="right"
                 variant="h5"
               >
-                {baseAmountFormatted} {baseToken?.symbol.toUpperCase()}
+                {amountFormatted} 1 {baseToken?.symbol.toUpperCase()}
               </Typography>
             </Stack>
           </Stack>
@@ -241,25 +255,6 @@ export default function ReviewOrderDialog({
                   </Typography>
                   <Typography color="text.secondary" variant="body1">
                     {formattedTotal} {quoteToken?.symbol.toUpperCase()}
-                  </Typography>
-                </Stack>
-                <Stack
-                  direction="row"
-                  alignItems="center"
-                  justifyContent="space-between"
-                >
-                  <Typography variant="body1">
-                    <FormattedMessage
-                      id="expires.in"
-                      defaultMessage="Expires in"
-                    />
-                  </Typography>
-                  <Typography color="text.secondary" variant="body1">
-                    {expiresIn && (
-                      <MomentFromSpan
-                        from={moment().add(expiresIn, "seconds")}
-                      />
-                    )}
                   </Typography>
                 </Stack>
               </Stack>

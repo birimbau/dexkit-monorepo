@@ -68,8 +68,6 @@ export default function ExchangeWizardContainer({
     let exchangeSection: ExchangePageSection;
 
     if (formData) {
-      console.log(formData, sectionIndex);
-
       if (sectionIndex !== -1) {
         exchangeSection = {
           ...(newConfig.pages['home']?.sections[

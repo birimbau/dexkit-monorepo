@@ -27,9 +27,14 @@ import FormikDecimalInput from "@dexkit/ui/components/FormikDecimalInput";
 import { ChainId } from "@dexkit/core";
 import { NETWORKS } from "@dexkit/core/constants/networks";
 import { Token } from "@dexkit/core/types";
-import { getChainName, ipfsUriToUrl, parseChainId } from "@dexkit/core/utils";
+import {
+  getChainName,
+  ipfsUriToUrl,
+  isAddressEqual,
+  parseChainId,
+} from "@dexkit/core/utils";
 import { Select as FormikSelect, TextField } from "formik-mui";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 import { DexkitExchangeSettings, ExchangeSettingsSchema } from "../../types";
 import FormActions from "./ExchangeSettingsFormActions";
@@ -37,7 +42,7 @@ import FormActions from "./ExchangeSettingsFormActions";
 import { ZEROEX_AFFILIATE_ADDRESS } from "@dexkit/core/services/zrx/constants";
 import Edit from "@mui/icons-material/Edit";
 import { useFormikContext } from "formik";
-import { KIT_TOKEN, USDT_TOKEN } from "../../constants/tokens";
+import { QUOTE_TOKENS_SUGGESTION } from "../../constants/tokens";
 import ExchangeQuoteTokensInput from "./ExchangeQuoteTokensInput";
 import ExchangeTokenInput from "./ExchangeTokenInput";
 import SelectNetworksDialog from "./SelectNetworksDialog";
@@ -162,6 +167,35 @@ export default function ExchangeSettingsForm({
     return errors;
   };
 
+  const getIntialTokens = useCallback(() => {
+    const res = QUOTE_TOKENS_SUGGESTION.map((t) => {
+      return { chainId: t.chainId, token: t };
+    }).reduce(
+      (prev, curr) => {
+        let obj = { ...prev };
+
+        if (!obj[curr.chainId]) {
+          obj[curr.chainId] = { baseTokens: [], quoteTokens: [] };
+        }
+
+        let index = tokens.findIndex(
+          (t) =>
+            curr.token.chainId === t.chainId &&
+            isAddressEqual(curr.token.contractAddress, t.contractAddress)
+        );
+
+        if (index > -1) {
+          obj[curr.chainId].quoteTokens.push(curr.token);
+        }
+
+        return obj;
+      },
+      {} as { [key: number]: { quoteTokens: Token[]; baseTokens: [] } }
+    );
+
+    return res;
+  }, [tokens]);
+
   return (
     <Formik
       initialValues={
@@ -171,12 +205,7 @@ export default function ExchangeSettingsForm({
               defaultNetwork: ChainId.Ethereum,
               defaultPairs: {},
               quoteTokens: [],
-              defaultTokens: {
-                [ChainId.Polygon]: {
-                  baseTokens: [KIT_TOKEN],
-                  quoteTokens: [USDT_TOKEN],
-                },
-              },
+              defaultTokens: getIntialTokens(),
               affiliateAddress: ZEROEX_AFFILIATE_ADDRESS,
               zrxApiKey: process.env.NEXT_PUBLIC_ZRX_API_KEY || "",
               buyTokenPercentageFee: 0.0,
@@ -204,9 +233,6 @@ export default function ExchangeSettingsForm({
             <SaveOnChangeListener onSave={onSave} onValidate={onValidate} />
           )}
           <Grid container spacing={2}>
-            <Grid item xs={12}>
-              {JSON.stringify(errors, null, 2)}
-            </Grid>
             {/* <Grid item xs={12}>
               <Field
                 component={TextField}
@@ -424,6 +450,7 @@ export default function ExchangeSettingsForm({
                   </Grid>
                   <Grid item xs={12}>
                     <ExchangeQuoteTokensInput
+                      key={`${chainId}-quote`}
                       tokens={tokens}
                       chainId={chainId}
                       label={
@@ -436,6 +463,7 @@ export default function ExchangeSettingsForm({
                   </Grid>
                   <Grid item xs={12}>
                     <ExchangeTokenInput
+                      key={`${chainId}-base`}
                       name={`defaultPairs[${chainId}].baseToken`}
                       tokens={
                         getIn(values, `defaultTokens.${chainId}.baseTokens`) ||

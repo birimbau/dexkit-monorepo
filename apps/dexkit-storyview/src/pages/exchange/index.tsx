@@ -70,7 +70,6 @@ export function ExchangePage() {
 
   useEffect(() => {
     if (pools.length > 0) {
-      console.log("chama isso");
       setSelectedAddress(pools[0].attributes.address);
     }
   }, [pools]);

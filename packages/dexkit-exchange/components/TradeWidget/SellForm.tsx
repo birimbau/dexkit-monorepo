@@ -48,8 +48,6 @@ export default function SellForm({
   feeRecipient,
   affiliateAddress,
 }: SellFormProps) {
-  console.log("aff", affiliateAddress);
-
   const [amountPercentage, setAmountPercentage] = useState(0);
   const [amount, setAmount] = useState("0.0");
   const [amountPerToken, setAmountPerToken] = useState("0.0");

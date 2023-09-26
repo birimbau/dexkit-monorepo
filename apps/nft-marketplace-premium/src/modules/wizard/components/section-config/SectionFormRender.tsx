@@ -102,7 +102,6 @@ export function SectionFormRender({
         onCancel={onClose}
         onSave={(formId, hideFormInfo) => {
           if (formId) {
-            console.log('TYT', formId, hideFormInfo);
             onSave({ type: 'user-contract-form', formId, hideFormInfo });
           }
         }}

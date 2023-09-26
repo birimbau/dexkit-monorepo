@@ -41,7 +41,8 @@ export default function ExchangeQuoteTokensInput({
       return [];
     }
 
-    return tokens.filter((t) => t.chainId === chainId);
+    const res = tokens.filter((t) => t.chainId === chainId);
+    return res;
   }, [chainId, tokens]);
 
   const handleChange = (
@@ -77,8 +78,12 @@ export default function ExchangeQuoteTokensInput({
       value={field.value}
       options={chainTokens}
       fullWidth
-      multiple
       onChange={handleChange}
+      multiple
+      isOptionEqualToValue={(opt, value) =>
+        opt.chainId === value.chainId &&
+        isAddressEqual(opt.contractAddress, value.contractAddress)
+      }
       renderOption={(props, opt) => (
         <MenuItem {...props}>
           <ListItemAvatar>

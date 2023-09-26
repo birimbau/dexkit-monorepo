@@ -53,8 +53,6 @@ export function useSendLimitOrderMutation() {
         return null;
       }
 
-      console.log("api", context.zrxApiKey);
-
       const signedOrder = await createZrxOrder({
         maker,
         chainId,
