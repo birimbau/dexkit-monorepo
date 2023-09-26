@@ -660,10 +660,9 @@
               }
             },
             "affiliateAddress": "0x5bD68B4d6f90Bcc9F3a9456791c0Db5A43df676d",
-            "zrxApiKey": "334f7b80-0b5d-484a-a08c-ea1b583a797e",
             "buyTokenPercentageFee": "0.05",
             "availNetworks": [56, 137, 1],
-            "feeRecipientAddress": "0xD50E4D1E0b49eb64a6bF2f48731c035E8948D219"
+            "feeRecipientAddress": "0x5bD68B4d6f90Bcc9F3a9456791c0Db5A43df676d"
           }
         }
       ],
