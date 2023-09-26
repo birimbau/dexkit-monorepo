@@ -109,7 +109,7 @@ export function ExchangePage() {
                 priceChangeH24={
                   selectedPool?.attributes.price_change_percentage.h24
                 }
-                lastPrice={selectedPool?.attributes.token_price_usd}
+                lastPrice={selectedPool?.attributes.base_token_price_usd}
               />
             </Grid>
           )}
