@@ -124,32 +124,28 @@ export default function ConnectWalletDialog({
             onClick={() => handleActivateWallet(conn.id, conn.loginType)}
           >
             <ListItemAvatar>
-              <Avatar src={conn.icon}>
-                {isActivating &&
-                connectorName === conn.id &&
-                conn.loginType === loginType ? (
-                  <CircularProgress
-                    color="primary"
-                    sx={{ fontSize: (theme) => theme.spacing(4) }}
-                  />
-                ) : (
-                  <Avatar
-                    sx={(theme) => ({
-                      background: lighten(
-                        theme.palette.background.default,
-                        0.05
-                      ),
-                      padding: theme.spacing(1),
-                      width: "auto",
-                      height: theme.spacing(5),
-                    })}
-                    src={conn.icon}
-                    alt={conn.name}
-                  />
-                )}
+              <Avatar>
+                <Avatar
+                  sx={(theme) => ({
+                    background: lighten(theme.palette.background.default, 0.05),
+                    padding: theme.spacing(1),
+                    width: "auto",
+                    height: theme.spacing(5),
+                  })}
+                  src={conn.icon}
+                  alt={conn.name}
+                />
               </Avatar>
             </ListItemAvatar>
             <ListItemText primary={conn.name} />
+            {isActivating &&
+              connectorName === conn.id &&
+              conn.loginType === loginType && (
+                <CircularProgress
+                  color="primary"
+                  sx={{ fontSize: (theme) => theme.spacing(2) }}
+                />
+              )}
             {isActive &&
               activeConnectorName === conn.id &&
               (activeConnectorName === "magic" ? (
