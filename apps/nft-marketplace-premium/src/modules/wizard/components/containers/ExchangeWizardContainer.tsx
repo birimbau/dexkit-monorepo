@@ -41,10 +41,11 @@ export default function ExchangeWizardContainer({
       ) as ExchangePageSection
     )?.settings,
   );
+
   const tokens = useMemo<AppToken[]>(() => {
     let tokens = config?.tokens?.length ? config?.tokens[0].tokens || [] : [];
 
-    return tokens.map<AppToken>((t: Token) => {
+    let newTokens = tokens.map<AppToken>((t: Token) => {
       return {
         contractAddress: t.address,
         chainId: t.chainId as number,
@@ -53,6 +54,8 @@ export default function ExchangeWizardContainer({
         symbol: t.symbol,
       };
     });
+
+    return newTokens;
   }, [config]);
 
   const changeConfig = function (

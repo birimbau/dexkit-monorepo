@@ -9,6 +9,7 @@ import {
   DialogContent,
   DialogProps,
   Divider,
+  Grid,
   InputAdornment,
   Stack,
 } from "@mui/material";
@@ -18,10 +19,11 @@ import SearchIcon from "@mui/icons-material/Search";
 
 import { Token } from "@dexkit/core/types";
 import { isAddressEqual } from "@dexkit/core/utils";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import SelectPairList from "../SelectPairList";
 
-import { TOKEN_ICON_URL } from "@dexkit/core";
+import { ChainId, TOKEN_ICON_URL } from "@dexkit/core";
+import { NETWORKS } from "@dexkit/core/constants/networks";
 import LazyTextField from "@dexkit/ui/components/LazyTextField";
 import TokenIcon from "@mui/icons-material/Token";
 
@@ -32,6 +34,9 @@ export interface SelectPairDialogProps {
   baseToken?: Token;
   quoteToken?: Token;
   onSelectPair: (baseToken: Token, quoteToken: Token) => void;
+  availNetworks: number[];
+  onSwitchNetwork: (chainId: ChainId) => Promise<void>;
+  chainId?: ChainId;
 }
 
 export default function SelectPairDialog({
@@ -41,15 +46,24 @@ export default function SelectPairDialog({
   baseTokens,
   quoteTokens,
   onSelectPair,
+  availNetworks,
+  onSwitchNetwork,
+  chainId,
 }: SelectPairDialogProps) {
   const { onClose } = DialogProps;
 
   const { formatMessage } = useIntl();
 
-  const [baseToken, setBaseToken] = useState<Token | undefined>(baseTokenParam);
-  const [quoteToken, setQuoteToken] = useState<Token | undefined>(
-    quoteTokenParam
-  );
+  const [baseToken, setBaseToken] = useState<Token | undefined>();
+  const [quoteToken, setQuoteToken] = useState<Token | undefined>();
+
+  useEffect(() => {
+    setQuoteToken(quoteTokenParam);
+  }, [quoteTokenParam]);
+
+  useEffect(() => {
+    setBaseToken(baseTokenParam);
+  }, [baseTokenParam]);
 
   const handleSelectToken = useCallback((token: Token) => {
     setBaseToken(token);
@@ -103,6 +117,10 @@ export default function SelectPairDialog({
     });
   }, [query, baseTokens]);
 
+  const networks = useMemo(() => {
+    return availNetworks.map((n) => NETWORKS[n]);
+  }, []);
+
   return (
     <Dialog {...DialogProps}>
       <AppDialogTitle
@@ -114,6 +132,27 @@ export default function SelectPairDialog({
       <Divider />
       <Box sx={{ p: 2 }}>
         <Stack spacing={2}>
+          <Box>
+            <Grid container spacing={1}>
+              {networks.map((n) => (
+                <Grid item key={n.chainId}>
+                  <Chip
+                    color={chainId === n.chainId ? "primary" : undefined}
+                    clickable
+                    icon={
+                      <Avatar
+                        sx={{ height: "1rem", width: "1rem" }}
+                        src={n.imageUrl}
+                      />
+                    }
+                    label={n.name}
+                    onClick={() => onSwitchNetwork(n.chainId)}
+                  />
+                </Grid>
+              ))}
+            </Grid>
+          </Box>
+
           <LazyTextField
             value={query}
             onChange={handleChange}

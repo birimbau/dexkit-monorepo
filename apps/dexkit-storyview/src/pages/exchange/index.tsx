@@ -89,6 +89,9 @@ export function ExchangePage() {
           baseTokens={exchangeState.baseTokens}
           quoteTokens={exchangeState.quoteTokens}
           onSelectPair={handleSelectPair}
+          availNetworks={exchangeState.availNetworks}
+          onSwitchNetwork={exchangeState.onSwitchNetwork}
+          chainId={exchangeState.chainId}
         />
       )}
 

@@ -13,7 +13,7 @@ import { SyntheticEvent, useState } from "react";
 
 import { FormattedMessage } from "react-intl";
 import BuyForm from "./BuyForm";
-import TradeWidgetTabAlt, { TradeWidgetTab } from "./TradeWidgetTab";
+import TradeWidgetTabAlt from "./TradeWidgetTabAlt";
 import { TradeWidgetTabs } from "./TradeWidgetTabs";
 
 import { useErc20BalanceQuery } from "@dexkit/core/hooks";
@@ -24,6 +24,7 @@ import { NETWORKS } from "@dexkit/core/constants/networks";
 import { DEFAULT_ZRX_NETWORKS } from "../../constants";
 import MarketBuyForm from "./MarketBuyForm";
 import MarketSellForm from "./MarketSellForm";
+import TradeWidgetTab from "./TradeWidgetTab";
 
 // FIXME: base/quote KIT/USDT
 export interface TradeWidgetProps {
@@ -262,7 +263,9 @@ export default function TradeWidget({ isActive }: TradeWidgetProps) {
             sx={{
               p: 2,
               backgroundColor: (theme) =>
-                lighten(theme.palette.background.default, 0.1),
+                theme.palette.mode === "dark"
+                  ? lighten(theme.palette.background.paper, 0.1)
+                  : theme.palette.background.default,
             }}
           >
             {renderContent()}

@@ -1,6 +1,7 @@
 import ExchangeSettingsForm from '@dexkit/exchange/components/ExchangeSettingsForm';
 import { DexkitExchangeSettings } from '@dexkit/exchange/types';
-import { useAllTokenList } from 'src/hooks/blockchain';
+import { useMemo } from 'react';
+import { useAppWizardConfig } from '../../hooks';
 import { ExchangePageSection } from '../../types/section';
 
 interface Props {
@@ -23,10 +24,15 @@ export default function ExchangeSectionSettingsForm({
     }
   };
 
-  const tokens = useAllTokenList({
-    includeNative: true,
-    isWizardConfig: true,
-  });
+  const { wizardConfig } = useAppWizardConfig();
+
+  const tokens = useMemo(() => {
+    if (wizardConfig.tokens && wizardConfig.tokens?.length > 0) {
+      return wizardConfig.tokens[0].tokens;
+    }
+
+    return [];
+  }, [wizardConfig]);
 
   return (
     <ExchangeSettingsForm

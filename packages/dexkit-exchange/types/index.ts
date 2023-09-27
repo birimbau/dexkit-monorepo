@@ -33,6 +33,7 @@ export type DexkitExchangeContextState = {
   tokens?: { [key: string]: Token };
   availNetworks: ChainId[];
   setPair: (baseToken: Token, quoteToken: Token) => void;
+  onSwitchNetwork: (chainId: ChainId) => Promise<void>;
 };
 
 export type GtPool = {

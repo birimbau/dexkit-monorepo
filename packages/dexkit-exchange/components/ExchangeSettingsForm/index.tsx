@@ -42,7 +42,10 @@ import FormActions from "./ExchangeSettingsFormActions";
 import { ZEROEX_AFFILIATE_ADDRESS } from "@dexkit/core/services/zrx/constants";
 import Edit from "@mui/icons-material/Edit";
 import { useFormikContext } from "formik";
-import { QUOTE_TOKENS_SUGGESTION } from "../../constants/tokens";
+import {
+  DEFAULT_TOKENS,
+  QUOTE_TOKENS_SUGGESTION,
+} from "../../constants/tokens";
 import ExchangeQuoteTokensInput from "./ExchangeQuoteTokensInput";
 import ExchangeTokenInput from "./ExchangeTokenInput";
 import SelectNetworksDialog from "./SelectNetworksDialog";
@@ -168,7 +171,7 @@ export default function ExchangeSettingsForm({
   };
 
   const getIntialTokens = useCallback(() => {
-    const res = QUOTE_TOKENS_SUGGESTION.map((t) => {
+    const resQuote = QUOTE_TOKENS_SUGGESTION.map((t) => {
       return { chainId: t.chainId, token: t };
     }).reduce(
       (prev, curr) => {
@@ -190,10 +193,32 @@ export default function ExchangeSettingsForm({
 
         return obj;
       },
-      {} as { [key: number]: { quoteTokens: Token[]; baseTokens: [] } }
+      {} as { [key: number]: { quoteTokens: Token[]; baseTokens: Token[] } }
     );
 
-    return res;
+    for (let chain of Object.keys(NETWORKS)) {
+      let chainId = parseChainId(chain);
+
+      if (resQuote[chainId]) {
+        let chainTokens = tokens.filter((t) => t.chainId === chainId);
+
+        for (let token of chainTokens) {
+          let index = resQuote[chainId].quoteTokens.findIndex(
+            (t) =>
+              t.chainId === token.chainId &&
+              isAddressEqual(t.contractAddress, token.contractAddress)
+          );
+
+          if (index === -1) {
+            resQuote[chainId].baseTokens.push(token);
+          }
+        }
+      } else {
+        resQuote[chainId] = { baseTokens: [], quoteTokens: [] };
+      }
+    }
+
+    return resQuote;
   }, [tokens]);
 
   return (
@@ -203,7 +228,7 @@ export default function ExchangeSettingsForm({
           ? settings
           : {
               defaultNetwork: ChainId.Ethereum,
-              defaultPairs: {},
+              defaultPairs: DEFAULT_TOKENS,
               quoteTokens: [],
               defaultTokens: getIntialTokens(),
               affiliateAddress: ZEROEX_AFFILIATE_ADDRESS,
@@ -450,7 +475,6 @@ export default function ExchangeSettingsForm({
                   </Grid>
                   <Grid item xs={12}>
                     <ExchangeQuoteTokensInput
-                      key={`${chainId}-quote`}
                       tokens={tokens}
                       chainId={chainId}
                       label={
@@ -463,7 +487,6 @@ export default function ExchangeSettingsForm({
                   </Grid>
                   <Grid item xs={12}>
                     <ExchangeTokenInput
-                      key={`${chainId}-base`}
                       name={`defaultPairs[${chainId}].baseToken`}
                       tokens={
                         getIn(values, `defaultTokens.${chainId}.baseTokens`) ||

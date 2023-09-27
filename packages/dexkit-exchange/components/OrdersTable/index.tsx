@@ -1,8 +1,10 @@
 import { ChainId } from "@dexkit/core";
 import { ZrxOrder } from "@dexkit/core/services/zrx/types";
 import {
+  Box,
   Button,
-  Paper,
+  Card,
+  Divider,
   Skeleton,
   Stack,
   Table,
@@ -70,103 +72,111 @@ export default function OrdersTable({
   const connectWalletDialog = useConnectWalletDialog();
 
   return (
-    <TableContainer component={Paper}>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>
-              <FormattedMessage id="side" defaultMessage="Side" />
-            </TableCell>
-            <TableCell>
-              <FormattedMessage id="size" defaultMessage="Size" />
-            </TableCell>
-            <TableCell>
-              <FormattedMessage id="filled" defaultMessage="Filled" />
-            </TableCell>
-            <TableCell>
-              <FormattedMessage id="price" defaultMessage="Price" />
-            </TableCell>
-            <TableCell>
-              <FormattedMessage id="expires.in" defaultMessage="Expires in" />
-            </TableCell>
-            <TableCell>
-              <FormattedMessage id="actions" defaultMessage="Actions" />
-            </TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {!active && (
+    <Card>
+      <Box sx={{ p: 2 }}>
+        <Typography>
+          <FormattedMessage id="my.orders" defaultMessage="My Orders" />
+        </Typography>
+      </Box>
+      <Divider />
+      <TableContainer>
+        <Table>
+          <TableHead>
             <TableRow>
-              <TableCell colSpan={7}>
-                <Stack alignItems="center" spacing={2}>
-                  <Typography align="center" variant="body1">
-                    <FormattedMessage
-                      id="your.wallet.is.not.connected"
-                      defaultMessage="Your wallet is not connected"
-                    />
-                  </Typography>
-                  <Button
-                    onClick={connectWalletDialog.handleConnectWallet}
-                    startIcon={<WalletIcon />}
-                    variant="contained"
-                  >
-                    <FormattedMessage
-                      id="connect.wallet"
-                      defaultMessage="Connect wallet"
-                    />
-                  </Button>
-                </Stack>
+              <TableCell>
+                <FormattedMessage id="side" defaultMessage="Side" />
+              </TableCell>
+              <TableCell>
+                <FormattedMessage id="size" defaultMessage="Size" />
+              </TableCell>
+              <TableCell>
+                <FormattedMessage id="filled" defaultMessage="Filled" />
+              </TableCell>
+              <TableCell>
+                <FormattedMessage id="price" defaultMessage="Price" />
+              </TableCell>
+              <TableCell>
+                <FormattedMessage id="expires.in" defaultMessage="Expires in" />
+              </TableCell>
+              <TableCell>
+                <FormattedMessage id="actions" defaultMessage="Actions" />
               </TableCell>
             </TableRow>
-          )}
-
-          {orderbookQuery.data?.records.length === 0 && (
-            <TableRow>
-              <TableCell colSpan={7}>
-                <Typography align="center" variant="body1">
-                  <FormattedMessage
-                    id="there.are.no.orders.to.show"
-                    defaultMessage="There are no orders to show"
-                  />
-                </Typography>
-              </TableCell>
-            </TableRow>
-          )}
-          {orderbookQuery.data?.records.map((record, index) => (
-            <OrdersTableRow
-              key={index}
-              onCancel={handleCancelOrder}
-              record={record}
-              account={account}
-              baseToken={baseToken}
-              quoteToken={quoteToken}
-            />
-          ))}
-          {orderbookQuery.isLoading &&
-            new Array(2).fill(null).map((_, key) => (
-              <TableRow key={key}>
-                <TableCell>
-                  <Skeleton />
-                </TableCell>
-                <TableCell>
-                  <Skeleton />
-                </TableCell>
-                <TableCell>
-                  <Skeleton />
-                </TableCell>
-                <TableCell>
-                  <Skeleton />
-                </TableCell>
-                <TableCell>
-                  <Skeleton />
-                </TableCell>
-                <TableCell>
-                  <Skeleton />
+          </TableHead>
+          <TableBody>
+            {!active && (
+              <TableRow>
+                <TableCell colSpan={7}>
+                  <Stack alignItems="center" spacing={2}>
+                    <Typography align="center" variant="body1">
+                      <FormattedMessage
+                        id="your.wallet.is.not.connected"
+                        defaultMessage="Your wallet is not connected"
+                      />
+                    </Typography>
+                    <Button
+                      onClick={connectWalletDialog.handleConnectWallet}
+                      startIcon={<WalletIcon />}
+                      variant="contained"
+                    >
+                      <FormattedMessage
+                        id="connect.wallet"
+                        defaultMessage="Connect wallet"
+                      />
+                    </Button>
+                  </Stack>
                 </TableCell>
               </TableRow>
+            )}
+
+            {orderbookQuery.data?.records.length === 0 && (
+              <TableRow>
+                <TableCell colSpan={7}>
+                  <Typography align="center" variant="body1">
+                    <FormattedMessage
+                      id="there.are.no.orders.to.show"
+                      defaultMessage="There are no orders to show"
+                    />
+                  </Typography>
+                </TableCell>
+              </TableRow>
+            )}
+            {orderbookQuery.data?.records.map((record, index) => (
+              <OrdersTableRow
+                key={index}
+                onCancel={handleCancelOrder}
+                record={record}
+                account={account}
+                baseToken={baseToken}
+                quoteToken={quoteToken}
+              />
             ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+            {orderbookQuery.isLoading &&
+              new Array(2).fill(null).map((_, key) => (
+                <TableRow key={key}>
+                  <TableCell>
+                    <Skeleton />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton />
+                  </TableCell>
+                </TableRow>
+              ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </Card>
   );
 }

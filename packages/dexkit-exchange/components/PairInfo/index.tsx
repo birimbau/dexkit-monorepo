@@ -1,6 +1,7 @@
+import { useIsMobile } from "@dexkit/core";
 import { Token } from "@dexkit/core/types";
 import { useCurrency } from "@dexkit/ui/hooks";
-import { Divider, Paper, Stack, Typography, lighten } from "@mui/material";
+import { Box, Divider, Paper, Stack, Typography, lighten } from "@mui/material";
 import { useMemo } from "react";
 import { FormattedMessage, FormattedNumber } from "react-intl";
 import PairButton from "../PairButton";
@@ -62,20 +63,9 @@ export default function PairInfo({
 
   const { currency } = useCurrency();
 
-  return (
-    <Paper sx={{ p: 2 }}>
-      <Stack
-        direction="row"
-        spacing={2}
-        justifyContent="space-between"
-        alignItems="center"
-      >
-        <PairButton
-          quoteToken={quoteToken}
-          baseToken={baseToken}
-          onClick={onSelectPair}
-        />
-
+  const renderHorizontal = () => {
+    return (
+      <Box>
         <Stack
           direction="row"
           spacing={2}
@@ -165,6 +155,96 @@ export default function PairInfo({
             </Typography>
           )}
         </Stack>
+      </Box>
+    );
+  };
+
+  const renderDataList = () => {
+    return (
+      <>
+        <Divider />
+        <Stack spacing={0.5}>
+          <Stack direction="row" justifyContent="space-between">
+            <Typography color="text.secondary" variant="body2">
+              <FormattedMessage
+                id="price.change.24h"
+                defaultMessage="Price Change 24h"
+              />
+            </Typography>
+            <Typography sx={{ color }} component="span">
+              {priceChange}
+            </Typography>
+          </Stack>
+          <Stack direction="row" justifyContent="space-between">
+            <Typography color="text.secondary" variant="body2">
+              <FormattedMessage id="last.price" defaultMessage="Last price" />
+            </Typography>
+            {formattedLastPrice && (
+              <Typography color="text.primary" component="span">
+                <FormattedNumber
+                  value={parseFloat(formattedLastPrice)}
+                  currency={currency}
+                  currencyDisplay="narrowSymbol"
+                  style="currency"
+                />
+              </Typography>
+            )}
+          </Stack>
+          <Stack direction="row" justifyContent="space-between">
+            <Typography color="text.secondary" variant="body2">
+              <FormattedMessage
+                id="24h.volume"
+                defaultMessage="24h volume"
+                values={{}}
+              />
+            </Typography>
+            {formattedVolume && (
+              <Typography color="text.primary" component="span">
+                <FormattedNumber
+                  value={parseFloat(formattedVolume)}
+                  currency={currency}
+                  currencyDisplay="narrowSymbol"
+                  style="currency"
+                />
+              </Typography>
+            )}
+          </Stack>
+          <Stack direction="row" justifyContent="space-between">
+            <Typography color="text.secondary" variant="body2">
+              <FormattedMessage id="market.cap" defaultMessage="Market Cap" />
+            </Typography>
+            {formattedMarketCap && (
+              <Typography color="text.primary" component="span">
+                <FormattedNumber
+                  value={parseFloat(formattedMarketCap)}
+                  currency={currency}
+                  currencyDisplay="narrowSymbol"
+                  style="currency"
+                />
+              </Typography>
+            )}
+          </Stack>
+        </Stack>
+      </>
+    );
+  };
+
+  const isMobile = useIsMobile();
+
+  return (
+    <Paper sx={{ p: 2 }}>
+      <Stack
+        direction={{ sm: "row" }}
+        spacing={{ sm: 2, xs: 2 }}
+        justifyContent={{ sm: "space-between" }}
+        alignItems={{ sm: "center" }}
+      >
+        <PairButton
+          quoteToken={quoteToken}
+          baseToken={baseToken}
+          onClick={onSelectPair}
+        />
+        {isMobile ? renderDataList() : renderHorizontal()}
       </Stack>
     </Paper>
   );

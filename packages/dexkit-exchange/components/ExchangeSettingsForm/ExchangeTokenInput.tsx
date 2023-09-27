@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import React from "react";
 
+import { isAddressEqual } from "@dexkit/core/utils";
 import { useField, useFormikContext } from "formik";
 
 export interface ExchangeTokenInputProps {
@@ -26,7 +27,7 @@ export default function ExchangeTokenInput({
   name,
 }: ExchangeTokenInputProps) {
   const { errors } = useFormikContext<any>();
-  const [field, meta, helpers] = useField(name);
+  const [field, meta, helpers] = useField<Token | undefined>(name);
 
   const handleChange = (
     event: React.SyntheticEvent<Element, Event>,
@@ -42,10 +43,14 @@ export default function ExchangeTokenInput({
   return (
     <Autocomplete
       disablePortal
-      value={field.value}
+      value={field?.value}
       options={tokens}
       fullWidth
       onChange={handleChange}
+      isOptionEqualToValue={(opt, value) =>
+        opt.chainId === value.chainId &&
+        isAddressEqual(opt.contractAddress, value.contractAddress)
+      }
       renderOption={(props, opt) => (
         <MenuItem {...props}>
           <ListItemAvatar>
