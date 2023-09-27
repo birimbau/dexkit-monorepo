@@ -74,6 +74,12 @@ export function ExchangePage() {
     }
   }, [pools]);
 
+  const [showSwaps, setShowSwaps] = useState(false);
+
+  const handleChangeShowSwap = (value: boolean) => {
+    setShowSwaps(value);
+  };
+
   return (
     <>
       {open && (
@@ -124,6 +130,7 @@ export function ExchangePage() {
               <Grid item xs={12}>
                 <TradingGraph
                   key={selectedAddress}
+                  onChangeShowSwaps={handleChangeShowSwap}
                   onChange={handleChangePool}
                   selectedPool={selectedAddress}
                   network={network}
@@ -131,6 +138,7 @@ export function ExchangePage() {
                     name: pool.attributes.name,
                     address: pool.attributes.address,
                   }))}
+                  showSwaps={showSwaps}
                 />
               </Grid>
               <Grid item xs={12}>

@@ -79,6 +79,12 @@ function ExchangeSection() {
     }
   }, [pools]);
 
+  const [showSwaps, setShowSwaps] = useState(false);
+
+  const handleChangeShowSwap = (value: boolean) => {
+    setShowSwaps(value);
+  };
+
   return (
     <>
       {open && (
@@ -131,12 +137,14 @@ function ExchangeSection() {
                   <TradingGraph
                     key={selectedAddress}
                     onChange={handleChangePool}
+                    onChangeShowSwaps={handleChangeShowSwap}
                     selectedPool={selectedAddress}
                     network={network}
                     pools={pools.map((pool) => ({
                       name: pool.attributes.name,
                       address: pool.attributes.address,
                     }))}
+                    showSwaps={showSwaps}
                   />
                 </Grid>
                 <Grid item xs={12}>

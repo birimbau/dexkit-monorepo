@@ -6,8 +6,6 @@ import {
   ZeroExQuote,
   ZrxOrderbookResponse,
 } from "@dexkit/core/services/zrx/types";
-import { useContext } from "react";
-import { DexkitExchangeContext } from "../contexts";
 import { getZrxExchangeAddress } from "../utils";
 
 import { ZrxOrder } from "@dexkit/core/services/zrx/types";
@@ -15,14 +13,15 @@ import { Contract, ethers } from "ethers";
 import { ZRX_EXCHANGE_ABI } from "../constants/zrx";
 
 export function useZrxQuoteMutation({ chainId }: { chainId?: ChainId }) {
-  const { zrxApiKey } = useContext(DexkitExchangeContext);
-
   return useMutation(async (params: ZeroExQuote) => {
     if (!chainId) {
       return null;
     }
 
-    const zrxClient = new ZeroExApiClient(chainId, zrxApiKey);
+    const zrxClient = new ZeroExApiClient(
+      chainId,
+      process.env.NEXT_PUBLIC_ZRX_API_KEY
+    );
 
     return zrxClient.quote(params, {});
   });
@@ -37,8 +36,6 @@ export function useZrxOrderbook({
   chainId?: ChainId;
   account?: string;
 }) {
-  const { zrxApiKey } = useContext(DexkitExchangeContext);
-
   return useQuery<ZrxOrderbookResponse | null>(
     [ZRX_ORDERBOOK_QUERY, account, chainId],
     async () => {
@@ -46,7 +43,10 @@ export function useZrxOrderbook({
         return null;
       }
 
-      const zrxClient = new ZeroExApiClient(chainId, zrxApiKey);
+      const zrxClient = new ZeroExApiClient(
+        chainId,
+        process.env.NEXT_PUBLIC_ZRX_API_KEY
+      );
 
       return await zrxClient.orderbook({ trader: account });
     }
@@ -54,8 +54,6 @@ export function useZrxOrderbook({
 }
 
 export function useZrxCancelOrderMutation() {
-  const { zrxApiKey } = useContext(DexkitExchangeContext);
-
   return useMutation(
     async ({
       chainId,

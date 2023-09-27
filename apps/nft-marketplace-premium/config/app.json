@@ -536,7 +536,8 @@
                   "contractAddress": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
                   "decimals": 18,
                   "symbol": "WETH",
-                  "coingeckoId": "ethereum"
+                  "coingeckoId": "ethereum",
+                  "logoURI": "https://raw.githubusercontent.com/dexkit/icons/master/token/weth.jpg"
                 },
                 "quoteToken": {
                   "contractAddress": "0xdac17f958d2ee523a2206206994597c13d831ec7",
@@ -544,7 +545,8 @@
                   "name": "Tether",
                   "symbol": "USDT",
                   "coingeckoId": "tether",
-                  "chainId": 1
+                  "chainId": 1,
+                  "logoURI": "https://github.com/trustwallet/assets/blob/master/blockchains/binance/assets/USDT-6D8/logo.png?raw=true"
                 }
               },
               "5": {
@@ -571,7 +573,8 @@
                   "decimals": 18,
                   "name": "Wrapped Ether",
                   "symbol": "WETH",
-                  "coingeckoId": "ethereum"
+                  "coingeckoId": "ethereum",
+                  "logoURI": "https://raw.githubusercontent.com/dexkit/icons/master/token/weth.jpg"
                 },
                 "quoteToken": {
                   "contractAddress": "0x04068DA6C83AFCFA0e13ba15A6696662335D5B75",
@@ -579,7 +582,8 @@
                   "name": "USD Coin",
                   "symbol": "USDC",
                   "coingeckoId": "usdc",
-                  "chainId": 250
+                  "chainId": 250,
+                  "logoURI": "https://github.com/trustwallet/assets/blob/master/blockchains/binance/assets/USDC-CD2/logo.png?raw=true"
                 }
               },
               "56": {
@@ -589,15 +593,17 @@
                   "contractAddress": "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c",
                   "decimals": 18,
                   "symbol": "WBNB",
-                  "coingeckoId": "bnb"
+                  "coingeckoId": "bnb",
+                  "logoURI": "https://github.com/trustwallet/assets/blob/master/blockchains/binance/info/logo.png?raw=true"
                 },
                 "quoteToken": {
                   "contractAddress": "0x55d398326f99059ff775485246999027b3197955",
-                  "decimals": 6,
+                  "decimals": 18,
                   "name": "Tether",
                   "symbol": "USDT",
                   "coingeckoId": "tether",
-                  "chainId": 56
+                  "chainId": 56,
+                  "logoURI": "https://github.com/trustwallet/assets/blob/master/blockchains/binance/assets/USDT-6D8/logo.png?raw=true"
                 }
               },
               "137": {
@@ -607,7 +613,8 @@
                   "contractAddress": "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619",
                   "decimals": 18,
                   "symbol": "WETH",
-                  "coingeckoId": "ethereum"
+                  "coingeckoId": "ethereum",
+                  "logoURI": "https://raw.githubusercontent.com/dexkit/icons/master/token/weth.jpg"
                 },
                 "quoteToken": {
                   "contractAddress": "0xc2132d05d31c914a87c6611c10748aeb04b58e8f",
@@ -615,7 +622,8 @@
                   "name": "Tether",
                   "symbol": "USDT",
                   "coingeckoId": "tether",
-                  "chainId": 137
+                  "chainId": 137,
+                  "logoURI": "https://github.com/trustwallet/assets/blob/master/blockchains/binance/assets/USDT-6D8/logo.png?raw=true"
                 }
               },
               "250": {
@@ -625,7 +633,8 @@
                   "contractAddress": "0x74b23882a30290451A17c44f4F05243b6b58C76d",
                   "decimals": 18,
                   "symbol": "WETH",
-                  "coingeckoId": "ethereum"
+                  "coingeckoId": "ethereum",
+                  "logoURI": "https://raw.githubusercontent.com/dexkit/icons/master/token/weth.jpg"
                 },
                 "quoteToken": {
                   "contractAddress": "0x04068DA6C83AFCFA0e13ba15A6696662335D5B75",
@@ -633,15 +642,16 @@
                   "name": "USD Coin",
                   "symbol": "USDC",
                   "coingeckoId": "usdc",
-                  "chainId": 250
+                  "chainId": 250,
+                  "logoURI": "https://github.com/trustwallet/assets/blob/master/blockchains/binance/assets/USDC-CD2/logo.png?raw=true"
                 }
               },
               "8453": {
                 "baseToken": {
                   "chainId": 8453,
-                  "contractAddress": "0x2ae3f1ec7f1f5012cfeab0185bfc7aa3cf0dec22",
-                  "name": "Coinbase Wrapped Staked ETH",
-                  "symbol": "cbETH",
+                  "contractAddress": "0x4200000000000000000000000000000000000006",
+                  "name": "Wrapped Ether",
+                  "symbol": "WETH",
                   "decimals": 18
                 },
                 "quoteToken": {
@@ -650,7 +660,8 @@
                   "name": "USD Coin",
                   "symbol": "USDC",
                   "coingeckoId": "usdc",
-                  "chainId": 8453
+                  "chainId": 8453,
+                  "logoURI": "https://github.com/trustwallet/assets/blob/master/blockchains/binance/assets/USDC-CD2/logo.png?raw=true"
                 }
               },
               "42161": {
@@ -660,7 +671,8 @@
                   "contractAddress": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
                   "decimals": 18,
                   "symbol": "WETH",
-                  "coingeckoId": "ethereum"
+                  "coingeckoId": "ethereum",
+                  "logoURI": "https://raw.githubusercontent.com/dexkit/icons/master/token/weth.jpg"
                 },
                 "quoteToken": {
                   "contractAddress": "0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9",
@@ -668,7 +680,8 @@
                   "name": "Tether",
                   "symbol": "USDT",
                   "coingeckoId": "tether",
-                  "chainId": 42161
+                  "chainId": 42161,
+                  "logoURI": "https://github.com/trustwallet/assets/blob/master/blockchains/binance/assets/USDT-6D8/logo.png?raw=true"
                 }
               },
               "43114": {
@@ -678,15 +691,17 @@
                   "contractAddress": "0x49D5c2BdFfac6CE2BFdB6640F4F80f226bc10bAB",
                   "decimals": 18,
                   "symbol": "WETH",
-                  "coingeckoId": "ethereum"
+                  "coingeckoId": "ethereum",
+                  "logoURI": "https://raw.githubusercontent.com/dexkit/icons/master/token/weth.jpg"
                 },
                 "quoteToken": {
-                  "contractAddress": "0xde3a24028580884448a5397872046a019649b084",
+                  "contractAddress": "0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e",
                   "decimals": 6,
-                  "name": "Tether",
-                  "symbol": "USDT",
-                  "coingeckoId": "tether",
-                  "chainId": 43114
+                  "name": "USD Coin",
+                  "symbol": "USDC",
+                  "coingeckoId": "usdc",
+                  "chainId": 43114,
+                  "logoURI": "https://github.com/trustwallet/assets/blob/master/blockchains/binance/assets/USDC-CD2/logo.png?raw=true"
                 }
               },
               "80001": {
@@ -726,7 +741,8 @@
                     "name": "Tether",
                     "symbol": "USDT",
                     "coingeckoId": "tether",
-                    "chainId": 1
+                    "chainId": 1,
+                    "logoURI": "https://github.com/trustwallet/assets/blob/master/blockchains/binance/assets/USDT-6D8/logo.png?raw=true"
                   },
                   {
                     "contractAddress": "0x6b175474e89094c44da98b954eedeac495271d0f",
@@ -734,7 +750,8 @@
                     "name": "DAI",
                     "symbol": "DAI",
                     "coingeckoId": "dai",
-                    "chainId": 1
+                    "chainId": 1,
+                    "logoURI": "https://github.com/trustwallet/assets/blob/master/blockchains/binance/assets/DAI-D75/logo.png?raw=true"
                   },
                   {
                     "contractAddress": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
@@ -742,7 +759,8 @@
                     "name": "USD Coin",
                     "symbol": "USDC",
                     "coingeckoId": "usdc",
-                    "chainId": 1
+                    "chainId": 1,
+                    "logoURI": "https://github.com/trustwallet/assets/blob/master/blockchains/binance/assets/USDC-CD2/logo.png?raw=true"
                   }
                 ]
               },
@@ -768,7 +786,8 @@
                     "name": "USD Coin",
                     "symbol": "USDC",
                     "coingeckoId": "usdc",
-                    "chainId": 10
+                    "chainId": 10,
+                    "logoURI": "https://github.com/trustwallet/assets/blob/master/blockchains/binance/assets/USDC-CD2/logo.png?raw=true"
                   }
                 ]
               },
@@ -786,11 +805,12 @@
                 "quoteTokens": [
                   {
                     "contractAddress": "0x55d398326f99059ff775485246999027b3197955",
-                    "decimals": 6,
+                    "decimals": 18,
                     "name": "Tether",
                     "symbol": "USDT",
                     "coingeckoId": "tether",
-                    "chainId": 56
+                    "chainId": 56,
+                    "logoURI": "https://github.com/trustwallet/assets/blob/master/blockchains/binance/assets/USDT-6D8/logo.png?raw=true"
                   },
                   {
                     "contractAddress": "0x1af3f329e8be154074d8769d1ffa4ee058b1dbc3",
@@ -798,7 +818,8 @@
                     "name": "DAI",
                     "symbol": "DAI",
                     "coingeckoId": "dai",
-                    "chainId": 56
+                    "chainId": 56,
+                    "logoURI": "https://github.com/trustwallet/assets/blob/master/blockchains/binance/assets/DAI-D75/logo.png?raw=true"
                   },
                   {
                     "contractAddress": "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d",
@@ -806,7 +827,8 @@
                     "name": "USD Coin",
                     "symbol": "USDC",
                     "coingeckoId": "usdc",
-                    "chainId": 56
+                    "chainId": 56,
+                    "logoURI": "https://github.com/trustwallet/assets/blob/master/blockchains/binance/assets/USDC-CD2/logo.png?raw=true"
                   }
                 ]
               },
@@ -836,7 +858,8 @@
                     "name": "Tether",
                     "symbol": "USDT",
                     "coingeckoId": "tether",
-                    "chainId": 137
+                    "chainId": 137,
+                    "logoURI": "https://github.com/trustwallet/assets/blob/master/blockchains/binance/assets/USDT-6D8/logo.png?raw=true"
                   },
                   {
                     "contractAddress": "0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063",
@@ -844,7 +867,8 @@
                     "name": "DAI",
                     "symbol": "DAI",
                     "coingeckoId": "dai",
-                    "chainId": 137
+                    "chainId": 137,
+                    "logoURI": "https://github.com/trustwallet/assets/blob/master/blockchains/binance/assets/DAI-D75/logo.png?raw=true"
                   },
                   {
                     "contractAddress": "0x2791bca1f2de4661ed88a30c99a7a9449aa84174",
@@ -852,7 +876,8 @@
                     "name": "USD Coin",
                     "symbol": "USDC",
                     "coingeckoId": "usdc",
-                    "chainId": 137
+                    "chainId": 137,
+                    "logoURI": "https://github.com/trustwallet/assets/blob/master/blockchains/binance/assets/USDC-CD2/logo.png?raw=true"
                   }
                 ]
               },
@@ -882,7 +907,8 @@
                     "name": "DAI",
                     "symbol": "DAI",
                     "coingeckoId": "dai",
-                    "chainId": 250
+                    "chainId": 250,
+                    "logoURI": "https://github.com/trustwallet/assets/blob/master/blockchains/binance/assets/DAI-D75/logo.png?raw=true"
                   },
                   {
                     "contractAddress": "0x04068DA6C83AFCFA0e13ba15A6696662335D5B75",
@@ -890,7 +916,8 @@
                     "name": "USD Coin",
                     "symbol": "USDC",
                     "coingeckoId": "usdc",
-                    "chainId": 250
+                    "chainId": 250,
+                    "logoURI": "https://github.com/trustwallet/assets/blob/master/blockchains/binance/assets/USDC-CD2/logo.png?raw=true"
                   }
                 ]
               },
@@ -904,14 +931,6 @@
               },
               "43114": {
                 "baseTokens": [
-                  {
-                    "chainId": 43114,
-                    "contractAddress": "0x9702230A8Ea53601f5cD2dc00fDBc13d4dF4A8c7",
-                    "name": "Tether USD",
-                    "decimals": 6,
-                    "symbol": "USDT",
-                    "logoURI": "https://raw.githubusercontent.com/dexkit/icons/master/token/usdt.jpg"
-                  },
                   {
                     "chainId": 43114,
                     "contractAddress": "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
@@ -939,12 +958,22 @@
                 ],
                 "quoteTokens": [
                   {
+                    "contractAddress": "0x9702230a8ea53601f5cd2dc00fdbc13d4df4a8c7",
+                    "decimals": 6,
+                    "name": "Tether",
+                    "symbol": "USDT",
+                    "coingeckoId": "tether",
+                    "chainId": 43114,
+                    "logoURI": "https://github.com/trustwallet/assets/blob/master/blockchains/binance/assets/USDT-6D8/logo.png?raw=true"
+                  },
+                  {
                     "contractAddress": "0xd586E7F844cEa2F87f50152665BCbc2C279D8d70",
                     "decimals": 6,
                     "name": "DAI",
                     "symbol": "DAI",
                     "coingeckoId": "dai",
-                    "chainId": 43114
+                    "chainId": 43114,
+                    "logoURI": "https://github.com/trustwallet/assets/blob/master/blockchains/binance/assets/DAI-D75/logo.png?raw=true"
                   },
                   {
                     "contractAddress": "0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e",
@@ -952,7 +981,8 @@
                     "name": "USD Coin",
                     "symbol": "USDC",
                     "coingeckoId": "usdc",
-                    "chainId": 43114
+                    "chainId": 43114,
+                    "logoURI": "https://github.com/trustwallet/assets/blob/master/blockchains/binance/assets/USDC-CD2/logo.png?raw=true"
                   }
                 ]
               },
@@ -962,9 +992,12 @@
               }
             },
             "affiliateAddress": "0x5bD68B4d6f90Bcc9F3a9456791c0Db5A43df676d",
-            "zrxApiKey": "fbae4da9-8c42-4cb5-b887-9796f05980b9",
-            "buyTokenPercentageFee": 0,
-            "availNetworks": [1, 5, 10, 56, 137, 250, 8453, 42161, 43114, 80001]
+            "zrxApiKey": "",
+            "buyTokenPercentageFee": "0.01",
+            "availNetworks": [
+              1, 5, 10, 56, 137, 250, 8453, 42161, 43114, 80001
+            ],
+            "feeRecipientAddress": "0x5bD68B4d6f90Bcc9F3a9456791c0Db5A43df676d"
           }
         }
       ],

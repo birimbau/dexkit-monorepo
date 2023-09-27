@@ -83,7 +83,7 @@ export const TokenSchema = Yup.object().shape({
 });
 
 export const ExchangeSettingsSchema = Yup.object({
-  zrxApiKey: Yup.string().required(),
+  zrxApiKey: Yup.string().optional(),
   defaultTokens: Yup.object().required(),
   defaultPairs: Yup.object().required(),
   buyTokenPercentageFee: Yup.number().required(),
@@ -91,7 +91,7 @@ export const ExchangeSettingsSchema = Yup.object({
     .test("address", (value) => {
       return value !== undefined ? ethers.utils.isAddress(value) : true;
     })
-    .optional(),
+    .required(),
   affiliateAddress: Yup.string()
     .test("address", (value) => {
       return value !== undefined ? ethers.utils.isAddress(value) : true;

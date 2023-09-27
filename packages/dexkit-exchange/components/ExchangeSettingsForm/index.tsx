@@ -34,7 +34,7 @@ import {
   parseChainId,
 } from "@dexkit/core/utils";
 import { Select as FormikSelect, TextField } from "formik-mui";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 import { DexkitExchangeSettings, ExchangeSettingsSchema } from "../../types";
 import FormActions from "./ExchangeSettingsFormActions";
@@ -92,6 +92,8 @@ export default function ExchangeSettingsForm({
   onValidate,
 }: ExchangeSettingsFormProps) {
   const handleSubmit = async (values: DexkitExchangeSettings) => {
+    console.log("settings", values);
+
     onSave(values);
   };
 
@@ -221,6 +223,16 @@ export default function ExchangeSettingsForm({
     return resQuote;
   }, [tokens]);
 
+  const networks = useMemo(() => {
+    return Object.keys(NETWORKS)
+      .filter((key) => {
+        let chain = parseChainId(key);
+
+        return NETWORKS[chain].testnet === undefined;
+      })
+      .map((key) => NETWORKS[parseChainId(key)]);
+  }, []);
+
   return (
     <Formik
       initialValues={
@@ -232,11 +244,9 @@ export default function ExchangeSettingsForm({
               quoteTokens: [],
               defaultTokens: getIntialTokens(),
               affiliateAddress: ZEROEX_AFFILIATE_ADDRESS,
-              zrxApiKey: process.env.NEXT_PUBLIC_ZRX_API_KEY || "",
+              zrxApiKey: "",
               buyTokenPercentageFee: 0.0,
-              availNetworks: Object.keys(NETWORKS).map((key) =>
-                parseChainId(key)
-              ),
+              availNetworks: networks.map((n) => n.chainId),
             }
       }
       onSubmit={handleSubmit}
@@ -272,6 +282,9 @@ export default function ExchangeSettingsForm({
               />
             </Grid> */}
             <Grid item xs={12}>
+              {JSON.stringify(errors)}
+            </Grid>
+            <Grid item xs={12}>
               <Paper sx={{ p: 2 }}>
                 <Stack spacing={2}>
                   <Field
@@ -303,19 +316,17 @@ export default function ExchangeSettingsForm({
                       );
                     }}
                   >
-                    {Object.keys(NETWORKS).map((key) => (
-                      <MenuItem key={key} value={parseChainId(key)}>
+                    {networks.map((n) => (
+                      <MenuItem key={n.chainId} value={n.chainId}>
                         <ListItemIcon>
                           <Avatar
                             src={ipfsUriToUrl(
-                              NETWORKS[parseChainId(key)].imageUrl || ""
+                              NETWORKS[n.chainId].imageUrl || ""
                             )}
                             style={{ width: "1rem", height: "1rem" }}
                           />
                         </ListItemIcon>
-                        <ListItemText
-                          primary={getChainName(parseChainId(key))}
-                        />
+                        <ListItemText primary={n.name} />
                       </MenuItem>
                     ))}
                   </Field>
@@ -352,22 +363,22 @@ export default function ExchangeSettingsForm({
                   <Box>
                     <Grid container spacing={2}>
                       {values.availNetworks.length > 0 ? (
-                        Object.keys(NETWORKS)
-                          .filter((key) =>
-                            values.availNetworks.includes(parseChainId(key))
+                        networks
+                          .filter((network) =>
+                            values.availNetworks.includes(network.chainId)
                           )
-                          .map((key) => (
-                            <Grid item key={key}>
+                          .map((n) => (
+                            <Grid item key={n.chainId}>
                               <Chip
                                 size="small"
                                 avatar={
                                   <Avatar
                                     src={ipfsUriToUrl(
-                                      NETWORKS[parseChainId(key)].imageUrl || ""
+                                      NETWORKS[n.chainId].imageUrl || ""
                                     )}
                                   />
                                 }
-                                label={getChainName(parseChainId(key))}
+                                label={n.name}
                               />
                             </Grid>
                           ))
@@ -445,23 +456,21 @@ export default function ExchangeSettingsForm({
                           );
                         }}
                       >
-                        {Object.keys(NETWORKS)
-                          .filter((key) =>
-                            values.availNetworks.includes(parseChainId(key))
+                        {networks
+                          .filter((n) =>
+                            values.availNetworks.includes(n.chainId)
                           )
-                          .map((key) => (
-                            <MenuItem key={key} value={parseChainId(key)}>
+                          .map((n) => (
+                            <MenuItem key={n.chainId} value={n.chainId}>
                               <ListItemIcon>
                                 <Avatar
                                   src={ipfsUriToUrl(
-                                    NETWORKS[parseChainId(key)].imageUrl || ""
+                                    NETWORKS[n.chainId].imageUrl || ""
                                   )}
                                   style={{ width: "1rem", height: "1rem" }}
                                 />
                               </ListItemIcon>
-                              <ListItemText
-                                primary={getChainName(parseChainId(key))}
-                              />
+                              <ListItemText primary={n.name} />
                             </MenuItem>
                           ))}
                       </Select>

@@ -5,8 +5,8 @@ export const TradeWidgetTabAlt = styled(Tab)(({ theme }) => ({
   "&.Mui-selected": {
     backgroundColor:
       theme.palette.mode === "dark"
-        ? lighten(theme.palette.background.default, 0.2)
-        : darken(theme.palette.background.default, 0.05),
+        ? lighten(theme.palette.background.paper, 0.2)
+        : darken(theme.palette.background.paper, 0.05),
   },
 }));
 

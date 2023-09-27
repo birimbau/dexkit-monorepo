@@ -15,6 +15,7 @@ export default function OrdersTablePage() {
           zrxApiKey: process.env.NEXT_PUBLIC_ZRX_API_KEY,
           baseToken: KIT_TOKEN,
           quoteToken: USDT_TOKEN,
+          availNetworks: 
         }}
       >
         <OrdersTable chainId={chainId} account={account} provider={provider} />

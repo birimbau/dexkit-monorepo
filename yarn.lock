@@ -36,11 +36,6 @@
   resolved "https://registry.yarnpkg.com/@0x/contract-addresses/-/contract-addresses-7.4.1.tgz#7ff613cc9019747744665b36d351be59481de53b"
   integrity sha512-Wl4zVKLJgWxYWDidYSYYXenAHiRAso3WkXCqDpz2fzSgWTWOMEG/F0s0KxGxzDOmOBVNyFT4dQJpmWv/8mD24Q==
 
-"@0x/contract-addresses@^8.10.0":
-  version "8.10.0"
-  resolved "https://registry.yarnpkg.com/@0x/contract-addresses/-/contract-addresses-8.10.0.tgz#01b6acf5692e2c177328c693dcfb695e4ede312c"
-  integrity sha512-7RmwHx3yHPwE7A0lnocz2crEHMxiS3dkdECnP7sxZhi+eLYbni/Cmu9KE5YIP7nus4Ftv5FjDqrC7qaXK7XCYg==
-
 "@0x/contract-addresses@^8.7.0", "@0x/contract-addresses@^8.9.0":
   version "8.9.0"
   resolved "https://registry.yarnpkg.com/@0x/contract-addresses/-/contract-addresses-8.9.0.tgz#bb3fb6cb1ed24b8a15eb2c3e95df6a67452bbbbb"
@@ -54,21 +49,6 @@
     "@0x/assert" "^3.0.36"
     "@0x/base-contract" "^7.0.0"
     "@0x/contract-addresses" "^8.9.0"
-    "@0x/json-schemas" "^6.4.4"
-    "@0x/types" "^3.3.7"
-    "@0x/utils" "^7.0.0"
-    "@0x/web3-wrapper" "^8.0.1"
-    ethereum-types "^3.7.1"
-    ethers "~4.0.4"
-
-"@0x/contract-wrappers@^13.23.5":
-  version "13.23.5"
-  resolved "https://registry.yarnpkg.com/@0x/contract-wrappers/-/contract-wrappers-13.23.5.tgz#bb69575ce25eacfca4cdcd5b403d11d092f6a19f"
-  integrity sha512-vPcsjbKyzQM6KvMXt5rqWZePya+bMFxTXJsddmJrefzHU4uD4ohex7L5nYt3/WZAK9xF5DXmooinYL3tuBX2kw==
-  dependencies:
-    "@0x/assert" "^3.0.36"
-    "@0x/base-contract" "^7.0.0"
-    "@0x/contract-addresses" "^8.10.0"
     "@0x/json-schemas" "^6.4.4"
     "@0x/types" "^3.3.7"
     "@0x/utils" "^7.0.0"

@@ -1,12 +1,34 @@
 import { ChainId } from "@dexkit/core";
 import { Token } from "@dexkit/core/types";
 
+const USDC_LOGO_URL =
+  "https://github.com/trustwallet/assets/blob/master/blockchains/binance/assets/USDC-CD2/logo.png?raw=true";
+
+const DAI_LOGO_URL =
+  "https://github.com/trustwallet/assets/blob/master/blockchains/binance/assets/DAI-D75/logo.png?raw=true";
+
+const USDT_LOGO_URL =
+  "https://github.com/trustwallet/assets/blob/master/blockchains/binance/assets/USDT-6D8/logo.png?raw=true";
+
+const WRAPPED_ETH_LOGO_URL =
+  "https://raw.githubusercontent.com/dexkit/icons/master/token/weth.jpg";
+
+const WRAPPED_BNB_LOGO_URL =
+  "https://github.com/trustwallet/assets/blob/master/blockchains/binance/info/logo.png?raw=true";
+
+const WRAPPED_BTC_LOGO_URL =
+  "https://raw.githubusercontent.com/dexkit/icons/master/token/wbtc.jpg";
+
+const AVAX_LOGO_URL =
+  "https://raw.githubusercontent.com/dexkit/icons/master/token/avax.jpg";
+
 export const DAI_TOKEN: Token = {
   contractAddress: "0x8f3cf7ad23cd3cadbd9735aff958023239c6a063",
   chainId: ChainId.Polygon,
   decimals: 6,
   name: "DAI",
   symbol: "DAI",
+  logoURI: DAI_LOGO_URL,
 };
 
 export const USDT_TOKEN: Token = {
@@ -16,6 +38,7 @@ export const USDT_TOKEN: Token = {
   symbol: "USDT",
   coingeckoId: "tether",
   chainId: ChainId.Polygon,
+  logoURI: USDT_LOGO_URL,
 };
 
 export const USDT_TOKEN_ETH: Token = {
@@ -25,24 +48,27 @@ export const USDT_TOKEN_ETH: Token = {
   symbol: "USDT",
   coingeckoId: "tether",
   chainId: ChainId.Ethereum,
+  logoURI: USDT_LOGO_URL,
 };
 
 export const USDT_TOKEN_AVAX: Token = {
-  contractAddress: "0xde3a24028580884448a5397872046a019649b084",
+  contractAddress: "0x9702230a8ea53601f5cd2dc00fdbc13d4df4a8c7",
   decimals: 6,
   name: "Tether",
   symbol: "USDT",
   coingeckoId: "tether",
   chainId: ChainId.Avax,
+  logoURI: USDT_LOGO_URL,
 };
 
 export const USDT_TOKEN_BSC: Token = {
   contractAddress: "0x55d398326f99059ff775485246999027b3197955",
-  decimals: 6,
+  decimals: 18,
   name: "Tether",
   symbol: "USDT",
   coingeckoId: "tether",
   chainId: ChainId.BSC,
+  logoURI: USDT_LOGO_URL,
 };
 
 export const USDT_TOKEN_ARB: Token = {
@@ -52,6 +78,7 @@ export const USDT_TOKEN_ARB: Token = {
   symbol: "USDT",
   coingeckoId: "tether",
   chainId: ChainId.Arbitrum,
+  logoURI: USDT_LOGO_URL,
 };
 
 export const USDT_TOKEN_OPT: Token = {
@@ -61,6 +88,7 @@ export const USDT_TOKEN_OPT: Token = {
   symbol: "USDT",
   coingeckoId: "tether",
   chainId: ChainId.Optimism,
+  logoURI: USDT_LOGO_URL,
 };
 
 export const USDT_TOKEN_POLYGON: Token = {
@@ -70,6 +98,7 @@ export const USDT_TOKEN_POLYGON: Token = {
   symbol: "USDT",
   coingeckoId: "tether",
   chainId: ChainId.Polygon,
+  logoURI: USDT_LOGO_URL,
 };
 
 export const DAI_TOKEN_BSC: Token = {
@@ -79,6 +108,7 @@ export const DAI_TOKEN_BSC: Token = {
   symbol: "DAI",
   coingeckoId: "dai",
   chainId: ChainId.BSC,
+  logoURI: DAI_LOGO_URL,
 };
 
 export const DAI_TOKEN_OPT: Token = {
@@ -88,6 +118,7 @@ export const DAI_TOKEN_OPT: Token = {
   symbol: "DAI",
   coingeckoId: "dai",
   chainId: ChainId.Optimism,
+  logoURI: DAI_LOGO_URL,
 };
 
 export const DAI_TOKEN_POLYGON: Token = {
@@ -97,6 +128,7 @@ export const DAI_TOKEN_POLYGON: Token = {
   symbol: "DAI",
   coingeckoId: "dai",
   chainId: ChainId.Polygon,
+  logoURI: DAI_LOGO_URL,
 };
 
 export const DAI_TOKEN_FANTOM: Token = {
@@ -106,6 +138,7 @@ export const DAI_TOKEN_FANTOM: Token = {
   symbol: "DAI",
   coingeckoId: "dai",
   chainId: ChainId.Fantom,
+  logoURI: DAI_LOGO_URL,
 };
 
 export const DAI_TOKEN_AVAX: Token = {
@@ -115,6 +148,7 @@ export const DAI_TOKEN_AVAX: Token = {
   symbol: "DAI",
   coingeckoId: "dai",
   chainId: ChainId.Avax,
+  logoURI: DAI_LOGO_URL,
 };
 
 export const DAI_TOKEN_ETH: Token = {
@@ -124,6 +158,7 @@ export const DAI_TOKEN_ETH: Token = {
   symbol: "DAI",
   coingeckoId: "dai",
   chainId: ChainId.Ethereum,
+  logoURI: DAI_LOGO_URL,
 };
 
 export const DAI_TOKEN_BASE: Token = {
@@ -133,6 +168,7 @@ export const DAI_TOKEN_BASE: Token = {
   symbol: "DAI",
   coingeckoId: "dai",
   chainId: ChainId.Base,
+  logoURI: DAI_LOGO_URL,
 };
 
 export const USDC_TOKEN_ETH: Token = {
@@ -142,6 +178,7 @@ export const USDC_TOKEN_ETH: Token = {
   symbol: "USDC",
   coingeckoId: "usdc",
   chainId: ChainId.Ethereum,
+  logoURI: USDC_LOGO_URL,
 };
 
 export const USDC_TOKEN_OPT: Token = {
@@ -151,6 +188,7 @@ export const USDC_TOKEN_OPT: Token = {
   symbol: "USDC",
   coingeckoId: "usdc",
   chainId: ChainId.Optimism,
+  logoURI: USDC_LOGO_URL,
 };
 
 export const USDC_TOKEN_BSC: Token = {
@@ -160,6 +198,7 @@ export const USDC_TOKEN_BSC: Token = {
   symbol: "USDC",
   coingeckoId: "usdc",
   chainId: ChainId.BSC,
+  logoURI: USDC_LOGO_URL,
 };
 
 export const USDC_TOKEN_FANTOM: Token = {
@@ -169,6 +208,7 @@ export const USDC_TOKEN_FANTOM: Token = {
   symbol: "USDC",
   coingeckoId: "usdc",
   chainId: ChainId.Fantom,
+  logoURI: USDC_LOGO_URL,
 };
 
 export const USDC_TOKEN_POLYGON: Token = {
@@ -178,6 +218,7 @@ export const USDC_TOKEN_POLYGON: Token = {
   symbol: "USDC",
   coingeckoId: "usdc",
   chainId: ChainId.Polygon,
+  logoURI: USDC_LOGO_URL,
 };
 
 export const USDC_TOKEN_AVAX: Token = {
@@ -187,6 +228,7 @@ export const USDC_TOKEN_AVAX: Token = {
   symbol: "USDC",
   coingeckoId: "usdc",
   chainId: ChainId.Avax,
+  logoURI: USDC_LOGO_URL,
 };
 
 export const USDC_TOKEN_BASE: Token = {
@@ -196,6 +238,7 @@ export const USDC_TOKEN_BASE: Token = {
   symbol: "USDC",
   coingeckoId: "usdc",
   chainId: ChainId.Base,
+  logoURI: USDC_LOGO_URL,
 };
 
 export const KIT_TOKEN: Token = {
@@ -262,6 +305,7 @@ export const WRAPPED_ETH_ETH: Token = {
   decimals: 18,
   symbol: "WETH",
   coingeckoId: "ethereum",
+  logoURI: WRAPPED_ETH_LOGO_URL,
 };
 
 export const WRAPPED_ETH_POLYGON: Token = {
@@ -271,6 +315,8 @@ export const WRAPPED_ETH_POLYGON: Token = {
   decimals: 18,
   symbol: "WETH",
   coingeckoId: "ethereum",
+
+  logoURI: WRAPPED_ETH_LOGO_URL,
 };
 
 export const WRAPPED_ETH_FANTOM: Token = {
@@ -280,6 +326,8 @@ export const WRAPPED_ETH_FANTOM: Token = {
   decimals: 18,
   symbol: "WETH",
   coingeckoId: "ethereum",
+
+  logoURI: WRAPPED_ETH_LOGO_URL,
 };
 
 export const WRAPPED_ETH_ARB: Token = {
@@ -289,6 +337,8 @@ export const WRAPPED_ETH_ARB: Token = {
   decimals: 18,
   symbol: "WETH",
   coingeckoId: "ethereum",
+
+  logoURI: WRAPPED_ETH_LOGO_URL,
 };
 
 export const WRAPPED_ETH_AVAX: Token = {
@@ -298,6 +348,7 @@ export const WRAPPED_ETH_AVAX: Token = {
   decimals: 18,
   symbol: "WETH",
   coingeckoId: "ethereum",
+  logoURI: WRAPPED_ETH_LOGO_URL,
 };
 
 export const WRAPPED_ETH_OPT: Token = {
@@ -307,6 +358,8 @@ export const WRAPPED_ETH_OPT: Token = {
   name: "Wrapped Ether",
   symbol: "WETH",
   coingeckoId: "ethereum",
+
+  logoURI: WRAPPED_ETH_LOGO_URL,
 };
 
 export const WRAPPED_BTC_ETH: Token = {
@@ -316,6 +369,7 @@ export const WRAPPED_BTC_ETH: Token = {
   decimals: 18,
   symbol: "WBTC",
   coingeckoId: "btc",
+  logoURI: WRAPPED_BTC_LOGO_URL,
 };
 
 export const WRAPPED_BTC_POLYGON: Token = {
@@ -325,6 +379,8 @@ export const WRAPPED_BTC_POLYGON: Token = {
   decimals: 18,
   symbol: "WBTC",
   coingeckoId: "btc",
+
+  logoURI: WRAPPED_BTC_LOGO_URL,
 };
 
 export const WRAPPED_BTC_OPT: Token = {
@@ -334,6 +390,8 @@ export const WRAPPED_BTC_OPT: Token = {
   decimals: 18,
   symbol: "WBTC",
   coingeckoId: "btc",
+
+  logoURI: WRAPPED_BTC_LOGO_URL,
 };
 
 export const WRAPPED_BTC_ARB: Token = {
@@ -343,6 +401,8 @@ export const WRAPPED_BTC_ARB: Token = {
   decimals: 18,
   symbol: "WBTC",
   coingeckoId: "btc",
+
+  logoURI: WRAPPED_BTC_LOGO_URL,
 };
 
 export const WRAPPED_BTC_FANTOM: Token = {
@@ -352,6 +412,8 @@ export const WRAPPED_BTC_FANTOM: Token = {
   decimals: 18,
   symbol: "WBTC",
   coingeckoId: "btc",
+
+  logoURI: WRAPPED_BTC_LOGO_URL,
 };
 
 export const WRAPPED_BTC_AVAX: Token = {
@@ -361,6 +423,8 @@ export const WRAPPED_BTC_AVAX: Token = {
   decimals: 18,
   symbol: "WBTC",
   coingeckoId: "btc",
+
+  logoURI: WRAPPED_BTC_LOGO_URL,
 };
 
 export const WRAPPED_AVAX: Token = {
@@ -370,6 +434,7 @@ export const WRAPPED_AVAX: Token = {
   decimals: 18,
   symbol: "WAVAX",
   coingeckoId: "avax",
+  logoURI: AVAX_LOGO_URL,
 };
 
 export const WRAPPED_BNB: Token = {
@@ -379,13 +444,14 @@ export const WRAPPED_BNB: Token = {
   decimals: 18,
   symbol: "WBNB",
   coingeckoId: "bnb",
+  logoURI: WRAPPED_BNB_LOGO_URL,
 };
 
-export const COINBASE_WRAPPED_STAKED_ETH: Token = {
+export const COINBASE_WRAPPED_STAKED: Token = {
   chainId: ChainId.Base,
-  contractAddress: "0x2ae3f1ec7f1f5012cfeab0185bfc7aa3cf0dec22",
-  name: "Coinbase Wrapped Staked ETH",
-  symbol: "cbETH",
+  contractAddress: "0x4200000000000000000000000000000000000006",
+  name: "Wrapped Ether",
+  symbol: "WETH",
   decimals: 18,
 };
 
@@ -403,7 +469,7 @@ export const BASE_TOKENS_SUGGESTION = [
   WRAPPED_BTC_FANTOM,
   WRAPPED_BTC_OPT,
   WRAPPED_BTC_POLYGON,
-  COINBASE_WRAPPED_STAKED_ETH,
+  COINBASE_WRAPPED_STAKED,
 ];
 
 export const DEFAULT_TOKENS: {
@@ -418,7 +484,7 @@ export const DEFAULT_TOKENS: {
     quoteToken: USDT_TOKEN_POLYGON,
   },
   [ChainId.BSC]: { baseToken: WRAPPED_BNB, quoteToken: USDT_TOKEN_BSC },
-  [ChainId.Avax]: { baseToken: WRAPPED_ETH_AVAX, quoteToken: USDT_TOKEN_AVAX },
+  [ChainId.Avax]: { baseToken: WRAPPED_ETH_AVAX, quoteToken: USDC_TOKEN_AVAX },
   [ChainId.Fantom]: {
     baseToken: WRAPPED_ETH_FANTOM,
     quoteToken: USDC_TOKEN_FANTOM,
@@ -432,7 +498,7 @@ export const DEFAULT_TOKENS: {
     quoteToken: USDT_TOKEN_ARB,
   },
   [ChainId.Base]: {
-    baseToken: COINBASE_WRAPPED_STAKED_ETH,
+    baseToken: COINBASE_WRAPPED_STAKED,
     quoteToken: USDC_TOKEN_BASE,
   },
   [ChainId.Mumbai]: { baseToken: WMATIC_TOKEN, quoteToken: DUMMY_TOKEN },

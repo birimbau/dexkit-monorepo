@@ -15,6 +15,8 @@ import {
 } from "@mui/material";
 import { FormattedMessage, useIntl } from "react-intl";
 
+import AddIcon from "@mui/icons-material/Add";
+import RemoveIcon from "@mui/icons-material/Remove";
 import SearchIcon from "@mui/icons-material/Search";
 
 import { Token } from "@dexkit/core/types";
@@ -22,10 +24,11 @@ import { isAddressEqual } from "@dexkit/core/utils";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import SelectPairList from "../SelectPairList";
 
-import { ChainId, TOKEN_ICON_URL } from "@dexkit/core";
+import { ChainId, TOKEN_ICON_URL, useIsMobile } from "@dexkit/core";
 import { NETWORKS } from "@dexkit/core/constants/networks";
 import LazyTextField from "@dexkit/ui/components/LazyTextField";
 import TokenIcon from "@mui/icons-material/Token";
+import { DEFAULT_ZRX_NETWORKS } from "../../constants";
 
 export interface SelectPairDialogProps {
   DialogProps: DialogProps;
@@ -121,8 +124,16 @@ export default function SelectPairDialog({
     return availNetworks.map((n) => NETWORKS[n]);
   }, []);
 
+  const isMobile = useIsMobile();
+
+  const [showMoreNetworks, setShowMoreNetworks] = useState(false);
+
+  const toggleNetworks = () => {
+    setShowMoreNetworks((value) => !value);
+  };
+
   return (
-    <Dialog {...DialogProps}>
+    <Dialog {...DialogProps} fullScreen={isMobile}>
       <AppDialogTitle
         title={
           <FormattedMessage id="select.a.pair" defaultMessage="Select a pair" />
@@ -133,23 +144,50 @@ export default function SelectPairDialog({
       <Box sx={{ p: 2 }}>
         <Stack spacing={2}>
           <Box>
-            <Grid container spacing={1}>
-              {networks.map((n) => (
-                <Grid item key={n.chainId}>
-                  <Chip
-                    color={chainId === n.chainId ? "primary" : undefined}
-                    clickable
-                    icon={
-                      <Avatar
-                        sx={{ height: "1rem", width: "1rem" }}
-                        src={n.imageUrl}
-                      />
-                    }
-                    label={n.name}
-                    onClick={() => onSwitchNetwork(n.chainId)}
-                  />
+            <Grid container spacing={1} alignItems="center">
+              {networks
+                .filter((n) => n.testnet === undefined)
+                .filter((n) => {
+                  if (isMobile && !showMoreNetworks) {
+                    return (
+                      DEFAULT_ZRX_NETWORKS.includes(n.chainId) ||
+                      chainId === n.chainId
+                    );
+                  }
+
+                  return true;
+                })
+                .map((n) => (
+                  <Grid item key={n.chainId}>
+                    <Chip
+                      color={chainId === n.chainId ? "primary" : undefined}
+                      clickable
+                      icon={
+                        <Avatar
+                          sx={{ height: "1rem", width: "1rem" }}
+                          src={n.imageUrl}
+                        />
+                      }
+                      label={n.name}
+                      onClick={() => onSwitchNetwork(n.chainId)}
+                    />
+                  </Grid>
+                ))}
+              {isMobile && (
+                <Grid item>
+                  <Button
+                    startIcon={!showMoreNetworks ? <AddIcon /> : <RemoveIcon />}
+                    onClick={toggleNetworks}
+                    size="small"
+                  >
+                    {showMoreNetworks ? (
+                      <FormattedMessage id="Less" defaultMessage="Less" />
+                    ) : (
+                      <FormattedMessage id="more" defaultMessage="More" />
+                    )}
+                  </Button>
                 </Grid>
-              ))}
+              )}
             </Grid>
           </Box>
 

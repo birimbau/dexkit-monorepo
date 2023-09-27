@@ -50,14 +50,22 @@ export default function PairButton({
         >
           <AvatarGroup>
             <Avatar
-              src={TOKEN_ICON_URL(baseToken.contractAddress, baseToken.chainId)}
+              src={
+                baseToken.logoURI
+                  ? baseToken.logoURI
+                  : TOKEN_ICON_URL(baseToken.contractAddress, baseToken.chainId)
+              }
               sx={{ height: "1rem", width: "1rem" }}
             />
             <Avatar
-              src={TOKEN_ICON_URL(
-                quoteToken.contractAddress,
-                quoteToken.chainId
-              )}
+              src={
+                quoteToken.logoURI
+                  ? quoteToken.logoURI
+                  : TOKEN_ICON_URL(
+                      quoteToken.contractAddress,
+                      quoteToken.chainId
+                    )
+              }
               sx={{ height: "1rem", width: "1rem" }}
             />
           </AvatarGroup>

@@ -20,7 +20,7 @@ export const GECKOTERMINAL_NETWORK: { [key: number]: string } = {
   [ChainId.Ethereum]: "eth",
   [ChainId.Polygon]: "polygon_pos",
   [ChainId.Arbitrum]: "arbitrum",
-  [ChainId.BSC]: "bnb",
+  [ChainId.BSC]: "bsc",
   [ChainId.Avax]: "abax",
   [ChainId.Celo]: "celo",
   [ChainId.Fantom]: "ftm",
