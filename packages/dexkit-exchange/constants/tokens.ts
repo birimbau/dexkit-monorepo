@@ -25,7 +25,7 @@ const AVAX_LOGO_URL =
 export const DAI_TOKEN: Token = {
   contractAddress: "0x8f3cf7ad23cd3cadbd9735aff958023239c6a063",
   chainId: ChainId.Polygon,
-  decimals: 6,
+  decimals: 18,
   name: "DAI",
   symbol: "DAI",
   logoURI: DAI_LOGO_URL,
@@ -103,7 +103,7 @@ export const USDT_TOKEN_POLYGON: Token = {
 
 export const DAI_TOKEN_BSC: Token = {
   contractAddress: "0x1af3f329e8be154074d8769d1ffa4ee058b1dbc3",
-  decimals: 6,
+  decimals: 18,
   name: "DAI",
   symbol: "DAI",
   coingeckoId: "dai",
@@ -113,7 +113,7 @@ export const DAI_TOKEN_BSC: Token = {
 
 export const DAI_TOKEN_OPT: Token = {
   contractAddress: "0xda10009cbd5d07dd0cecc66161fc93d7c9000da1",
-  decimals: 6,
+  decimals: 18,
   name: "DAI",
   symbol: "DAI",
   coingeckoId: "dai",
@@ -123,7 +123,7 @@ export const DAI_TOKEN_OPT: Token = {
 
 export const DAI_TOKEN_POLYGON: Token = {
   contractAddress: "0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063",
-  decimals: 6,
+  decimals: 18,
   name: "DAI",
   symbol: "DAI",
   coingeckoId: "dai",
@@ -133,7 +133,7 @@ export const DAI_TOKEN_POLYGON: Token = {
 
 export const DAI_TOKEN_FANTOM: Token = {
   contractAddress: "0x8D11eC38a3EB5E956B052f67Da8Bdc9bef8Abf3E",
-  decimals: 6,
+  decimals: 18,
   name: "DAI",
   symbol: "DAI",
   coingeckoId: "dai",
@@ -143,7 +143,7 @@ export const DAI_TOKEN_FANTOM: Token = {
 
 export const DAI_TOKEN_AVAX: Token = {
   contractAddress: "0xd586E7F844cEa2F87f50152665BCbc2C279D8d70",
-  decimals: 6,
+  decimals: 18,
   name: "DAI",
   symbol: "DAI",
   coingeckoId: "dai",
@@ -153,7 +153,7 @@ export const DAI_TOKEN_AVAX: Token = {
 
 export const DAI_TOKEN_ETH: Token = {
   contractAddress: "0x6b175474e89094c44da98b954eedeac495271d0f",
-  decimals: 6,
+  decimals: 18,
   name: "DAI",
   symbol: "DAI",
   coingeckoId: "dai",
@@ -163,7 +163,7 @@ export const DAI_TOKEN_ETH: Token = {
 
 export const DAI_TOKEN_BASE: Token = {
   contractAddress: "0x50c5725949a6f0c72e6c4a641f24049a917db0cb",
-  decimals: 6,
+  decimals: 18,
   name: "DAI",
   symbol: "DAI",
   coingeckoId: "dai",
@@ -453,6 +453,7 @@ export const COINBASE_WRAPPED_STAKED: Token = {
   name: "Wrapped Ether",
   symbol: "WETH",
   decimals: 18,
+  logoURI: WRAPPED_ETH_LOGO_URL,
 };
 
 export const BASE_TOKENS_SUGGESTION = [

@@ -14,6 +14,7 @@ import { Token } from "@dexkit/core/types";
 import { useWeb3React } from "@web3-react/core";
 import axios from "axios";
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { ZEROEX_AFFILIATE_ADDRESS } from "../constants/zrx";
 import { DexkitExchangeContext } from "../contexts";
 import { getGeckoTerminalTopPools } from "../services";
 import {
@@ -171,8 +172,8 @@ export function useExchangeContextState(params: {
     provider,
     account,
     availNetworks: settings?.availNetworks || [],
-    feeRecipient: settings?.feeRecipientAddress || "",
-    affiliateAddress: settings?.affiliateAddress,
+    feeRecipient: settings?.feeRecipientAddress || ZEROEX_AFFILIATE_ADDRESS,
+    affiliateAddress: settings?.affiliateAddress || ZEROEX_AFFILIATE_ADDRESS,
     buyTokenPercentageFee: settings?.buyTokenPercentageFee,
     zrxApiKey: settings?.zrxApiKey
       ? settings.zrxApiKey

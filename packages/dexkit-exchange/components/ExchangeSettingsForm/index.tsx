@@ -92,8 +92,6 @@ export default function ExchangeSettingsForm({
   onValidate,
 }: ExchangeSettingsFormProps) {
   const handleSubmit = async (values: DexkitExchangeSettings) => {
-    console.log("settings", values);
-
     onSave(values);
   };
 
@@ -281,9 +279,7 @@ export default function ExchangeSettingsForm({
                 fullWidth
               />
             </Grid> */}
-            <Grid item xs={12}>
-              {JSON.stringify(errors)}
-            </Grid>
+
             <Grid item xs={12}>
               <Paper sx={{ p: 2 }}>
                 <Stack spacing={2}>

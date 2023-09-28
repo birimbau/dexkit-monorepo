@@ -302,6 +302,38 @@
           "logoURI": "https://raw.githubusercontent.com/dexkit/icons/master/token/weth.jpg",
           "name": "Wrapped Ether",
           "symbol": "WETH"
+        },
+        {
+          "address": "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913",
+          "chainId": 8453,
+          "decimals": 6,
+          "logoURI": "https://raw.githubusercontent.com/dexkit/icons/master/token/usdc.jpg",
+          "name": "USD Coin",
+          "symbol": "USDC"
+        },
+        {
+          "address": "0xd586E7F844cEa2F87f50152665BCbc2C279D8d70",
+          "chainId": 8453,
+          "decimals": 18,
+          "logoURI": "https://raw.githubusercontent.com/dexkit/icons/master/token/dai.jpg",
+          "name": "Dai Stablecoin",
+          "symbol": "DAI"
+        },
+        {
+          "address": "0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9",
+          "chainId": 42161,
+          "decimals": 6,
+          "logoURI": "https://raw.githubusercontent.com/dexkit/icons/master/token/usdt.jpg",
+          "name": "Tether USD",
+          "symbol": "USDT"
+        },
+        {
+          "address": "0x4200000000000000000000000000000000000006",
+          "chainId": 8453,
+          "decimals": 18,
+          "logoURI": "https://raw.githubusercontent.com/dexkit/icons/master/token/weth.jpg",
+          "name": "Wrapped Ether",
+          "symbol": "WETH"
         }
       ]
     }

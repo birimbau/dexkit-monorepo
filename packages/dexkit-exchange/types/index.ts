@@ -90,8 +90,7 @@ export const ExchangeSettingsSchema = Yup.object({
   feeRecipientAddress: Yup.string()
     .test("address", (value) => {
       return value !== undefined ? ethers.utils.isAddress(value) : true;
-    })
-    .required(),
+    }),
   affiliateAddress: Yup.string()
     .test("address", (value) => {
       return value !== undefined ? ethers.utils.isAddress(value) : true;
