@@ -21,7 +21,7 @@ export type SectionType =
   | 'contract'
   | 'user-contract-form'
   | 'edition-drop-section'
-
+  | 'edition-drop-list-section'
   ;
 
 export interface PageSection {
@@ -107,7 +107,14 @@ export interface EditionDropPageSection extends PageSection {
     address: string,
     tokenId: string
   }
+}
 
+export interface EditionDropListPageSection extends PageSection {
+  type: 'edition-drop-list-section';
+  config: {
+    address: string,
+    network: string
+  }
 }
 
 export type AppPageSection =
@@ -121,7 +128,8 @@ export type AppPageSection =
   | MarkdownEditorPageSection
   | WalletPageSection
   | ContractPageSection
-  | UserContractPageSection;
+  | UserContractPageSection
+  | EditionDropListPageSection;
 
 export interface SectionMetadata {
   type: SectionType;

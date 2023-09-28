@@ -3,10 +3,11 @@ import { dehydrate, QueryClient } from '@tanstack/react-query';
 import type { GetStaticProps, GetStaticPropsContext, NextPage } from 'next';
 import { useRouter } from 'next/router';
 
-import { Grid, Skeleton } from '@mui/material';
+import { Grid, Skeleton, Typography } from '@mui/material';
 
 import AssetHead from '@/modules/nft/components/AssetHead';
 import AssetLeftSection from '@/modules/nft/components/AssetLeftSection';
+import { DropEditionListSection } from '@/modules/wizard/components/sections/DropEditionListSection';
 import EditionDropSection from '@/modules/wizard/components/sections/EditionDropSection';
 import { ChainId } from '@dexkit/core/constants';
 import {
@@ -33,7 +34,7 @@ import { getRariAsset } from 'src/services/rarible';
 const AssetDetailPage: NextPage = () => {
   const router = useRouter();
 
-  const { address, id } = router.query;
+  const { address, id, network } = router.query;
   const { provider } = useWeb3React();
 
   const { data: asset, isLoading } = useAsset(address as string, id as string);
@@ -118,6 +119,25 @@ const AssetDetailPage: NextPage = () => {
                 }}
               ></EditionDropSection>
             </ThirdwebSDKProvider>
+          </Grid>
+          <Grid item xs={12} sm={12}>
+            <Typography variant="h5">
+              <FormattedMessage
+                id="drops.of.same.collection"
+                defaultMessage={'Drops of same collection'}
+              />
+            </Typography>
+          </Grid>
+          <Grid item xs={12} sm={12}>
+            <DropEditionListSection
+              section={{
+                type: 'edition-drop-list-section',
+                config: {
+                  network: network as string,
+                  address: address as string,
+                },
+              }}
+            />
           </Grid>
         </Grid>
       </Container>
