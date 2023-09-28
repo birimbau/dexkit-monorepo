@@ -7,7 +7,6 @@ import {
   Stack,
   Tabs,
   Typography,
-  lighten,
 } from "@mui/material";
 import { SyntheticEvent, useState } from "react";
 
@@ -262,10 +261,6 @@ export default function TradeWidget({ isActive }: TradeWidgetProps) {
             variant="outlined"
             sx={{
               p: 2,
-              backgroundColor: (theme) =>
-                theme.palette.mode === "dark"
-                  ? lighten(theme.palette.background.paper, 0.1)
-                  : theme.palette.background.default,
             }}
           >
             {renderContent()}

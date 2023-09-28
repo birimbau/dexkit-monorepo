@@ -11,7 +11,6 @@ import {
   ZERO_EX_URL,
 } from "@dexkit/core/services/zrx/constants";
 import { Token } from "@dexkit/core/types";
-import { useSwitchNetworkMutation } from "@dexkit/ui/hooks";
 import { useWeb3React } from "@web3-react/core";
 import axios from "axios";
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
@@ -125,23 +124,17 @@ export function useExchangeContextState(params: {
     setBaseToken(base);
   }, []);
 
-  const switchNetworkMutation = useSwitchNetworkMutation();
-
   const handleSwitchNetwork = async (chainId: ChainId) => {
-    if (isActive) {
-      switchNetworkMutation.mutateAsync({ chainId });
-    } else {
-      setDefaultChain(chainId);
-    }
+    setDefaultChain(chainId);
   };
 
   let currChainId = useMemo(() => {
-    if (!chainId && settings) {
+    if (settings) {
       return defaultChain;
     }
 
-    return chainId;
-  }, [settings, chainId, defaultChain]);
+    return ChainId.Ethereum;
+  }, [settings, defaultChain]);
 
   useEffect(() => {
     if (settings && currChainId) {

@@ -45,8 +45,6 @@ export default function TradingGraph({
   const language = useMemo(() => {
     const result = locale.split("-");
 
-    console.log("locale", locale);
-
     if (result.length >= 1) {
       return result[0];
     }

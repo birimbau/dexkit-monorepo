@@ -22,9 +22,7 @@ export default function LazyDecimalInput({
   const lazyAmount = useDebounce<typeof amount>(amount, 400);
 
   useEffect(() => {
-    if (lazyAmount.triggerChange) {
-      onChange(lazyAmount.value);
-    }
+    onChange(lazyAmount.value);
   }, [lazyAmount, onChange]);
 
   return (

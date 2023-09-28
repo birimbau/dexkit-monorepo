@@ -9,14 +9,18 @@ import {
   Typography,
 } from "@mui/material";
 import { BigNumber, ethers } from "ethers";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { FormattedMessage } from "react-intl";
 
 import { ChainId, useApproveToken, useTokenAllowanceQuery } from "@dexkit/core";
 import { ZeroExQuoteResponse } from "@dexkit/core/services/zrx/types";
-import { formatBigNumber } from "@dexkit/core/utils";
-import { useWaitTransactionConfirmation } from "@dexkit/ui/hooks";
+import { formatBigNumber, getChainName } from "@dexkit/core/utils";
+import {
+  useSwitchNetworkMutation,
+  useWaitTransactionConfirmation,
+} from "@dexkit/ui/hooks";
 import { useMutation } from "@tanstack/react-query";
+import { useWeb3React } from "@web3-react/core";
 import { useZrxQuoteMutation } from "../../hooks/zrx";
 import { BigNumberUtils, getZrxExchangeAddress } from "../../utils";
 import LazyDecimalInput from "./LazyDecimalInput";
@@ -195,6 +199,62 @@ export default function MarketSellForm({
     });
   };
 
+  const { chainId: providerChainId, connector } = useWeb3React();
+  const switchNetworkMutation = useSwitchNetworkMutation();
+
+  const renderActionButton = useCallback(() => {
+    if (providerChainId && chainId && providerChainId !== chainId) {
+      return (
+        <Button
+          disabled={switchNetworkMutation.isLoading}
+          size="large"
+          fullWidth
+          variant="contained"
+          onClick={async () => {
+            switchNetworkMutation.mutateAsync({ chainId });
+          }}
+        >
+          <FormattedMessage
+            id="switch.to.network"
+            defaultMessage="Switch to {network}"
+            values={{ network: getChainName(chainId) }}
+          />
+        </Button>
+      );
+    }
+
+    return (
+      <Button
+        disabled={quoteMutation.isLoading || !hasSufficientBalance}
+        size="large"
+        fullWidth
+        variant="contained"
+        onClick={handleExecute}
+      >
+        {!hasSufficientBalance ? (
+          <FormattedMessage
+            id="insufficient"
+            defaultMessage="Insufficient {symbol}"
+            values={{ symbol: baseToken.symbol.toUpperCase() }}
+          />
+        ) : (
+          <FormattedMessage
+            id="sell.symbol"
+            defaultMessage="Sell {symbol}"
+            values={{ symbol: baseToken.symbol.toUpperCase() }}
+          />
+        )}
+      </Button>
+    );
+  }, [
+    chainId,
+    connector,
+    providerChainId,
+    hasSufficientBalance,
+    baseToken,
+    handleExecute,
+  ]);
+
   return (
     <>
       <ReviewMarketOrderDialog
@@ -269,27 +329,7 @@ export default function MarketSellForm({
             </Box>
           </Grid>
           <Grid item xs={12}>
-            <Button
-              disabled={quoteMutation.isLoading || !hasSufficientBalance}
-              size="large"
-              fullWidth
-              variant="contained"
-              onClick={handleExecute}
-            >
-              {!hasSufficientBalance ? (
-                <FormattedMessage
-                  id="insufficient"
-                  defaultMessage="Insufficient {symbol}"
-                  values={{ symbol: baseToken.symbol.toUpperCase() }}
-                />
-              ) : (
-                <FormattedMessage
-                  id="sell.symbol"
-                  defaultMessage="Sell {symbol}"
-                  values={{ symbol: baseToken.symbol.toUpperCase() }}
-                />
-              )}
-            </Button>
+            {renderActionButton()}
           </Grid>
         </Grid>
       </Box>

@@ -1,10 +1,6 @@
-import { Tabs, lighten, styled } from "@mui/material";
+import { Tabs, styled } from "@mui/material";
 
 export const TradeWidgetTabs = styled(Tabs)(({ theme }) => ({
-  backgroundColor:
-    theme.palette.mode === "dark"
-      ? lighten(theme.palette.background.paper, 0.1)
-      : theme.palette.background.default,
   padding: theme.spacing(1),
   "& .MuiTabs-indicator": { display: "none" },
   borderRadius: theme.shape.borderRadius,

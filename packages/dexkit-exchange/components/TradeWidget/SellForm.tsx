@@ -1,6 +1,7 @@
 import { ChainId, useApproveToken, useTokenAllowanceQuery } from "@dexkit/core";
 import { Token } from "@dexkit/core/types";
-import { formatBigNumber } from "@dexkit/core/utils";
+import { formatBigNumber, getChainName } from "@dexkit/core/utils";
+import { useSwitchNetworkMutation } from "@dexkit/ui/hooks";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import {
   Box,
@@ -15,7 +16,7 @@ import {
 import { useWeb3React } from "@web3-react/core";
 import { BigNumber, ethers } from "ethers";
 import { useSnackbar } from "notistack";
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 import { ORDER_LIMIT_DURATIONS } from "../../constants";
 import { useSendLimitOrderMutation } from "../../hooks";
@@ -222,6 +223,52 @@ export default function SellForm({
     }
   };
 
+  const { chainId: providerChainId, connector } = useWeb3React();
+  const switchNetworkMutation = useSwitchNetworkMutation();
+
+  const renderActionButton = useCallback(() => {
+    if (providerChainId && chainId && providerChainId !== chainId) {
+      return (
+        <Button
+          disabled={switchNetworkMutation.isLoading}
+          size="large"
+          fullWidth
+          variant="contained"
+          onClick={async () => {
+            switchNetworkMutation.mutateAsync({ chainId });
+          }}
+        >
+          <FormattedMessage
+            id="switch.to.network"
+            defaultMessage="Switch to {network}"
+            values={{ network: getChainName(chainId) }}
+          />
+        </Button>
+      );
+    }
+
+    return (
+      <Button
+        disabled={!hasSufficientBalance}
+        onClick={handleBuy}
+        fullWidth
+        variant="contained"
+        size="large"
+      >
+        {buttonMessage}
+      </Button>
+    );
+  }, [
+    chainId,
+    buttonMessage,
+    connector,
+    providerChainId,
+    baseToken,
+    quoteToken,
+    handleBuy,
+    hasSufficientBalance,
+  ]);
+
   return (
     <>
       <ReviewOrderDialog
@@ -337,15 +384,7 @@ export default function SellForm({
             {formattedTotal} {quoteToken.symbol.toUpperCase()}
           </Typography>
         </Stack>
-        <Button
-          disabled={!hasSufficientBalance}
-          onClick={handleBuy}
-          fullWidth
-          variant="contained"
-          size="large"
-        >
-          {buttonMessage}
-        </Button>
+        {renderActionButton()}
       </Stack>
     </>
   );
