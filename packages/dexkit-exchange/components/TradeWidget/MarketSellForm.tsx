@@ -99,23 +99,25 @@ export default function MarketSellForm({
 
   useEffect(() => {
     (async () => {
-      let theNewQuote = await quoteMutation.mutateAsync({
-        sellToken: baseToken.contractAddress,
-        buyToken: quoteToken.contractAddress,
-        affiliateAddress: affiliateAddress ? affiliateAddress : "",
-        sellAmount: ethers.utils
-          .parseUnits(amount, baseToken.decimals)
-          .toString(),
-        skipValidation: true,
-        slippagePercentage: 0.01,
-        feeRecipient,
-        buyTokenPercentageFee: buyTokenPercentageFee
-          ? buyTokenPercentageFee / 100
-          : undefined,
-      });
+      if (Number(amount) > 0) {
+        let theNewQuote = await quoteMutation.mutateAsync({
+          sellToken: baseToken.contractAddress,
+          buyToken: quoteToken.contractAddress,
+          affiliateAddress: affiliateAddress ? affiliateAddress : "",
+          sellAmount: ethers.utils
+            .parseUnits(amount, baseToken.decimals)
+            .toString(),
+          skipValidation: true,
+          slippagePercentage: 0.01,
+          feeRecipient,
+          buyTokenPercentageFee: buyTokenPercentageFee
+            ? buyTokenPercentageFee / 100
+            : undefined,
+        });
 
-      if (theNewQuote) {
-        setQuote(theNewQuote);
+        if (theNewQuote) {
+          setQuote(theNewQuote);
+        }
       }
     })();
   }, [amount, quoteToken, baseToken, affiliateAddress, feeRecipient]);

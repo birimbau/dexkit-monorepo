@@ -27,6 +27,8 @@ import SelectPairList from "../SelectPairList";
 import { ChainId, TOKEN_ICON_URL, useIsMobile } from "@dexkit/core";
 import { NETWORKS } from "@dexkit/core/constants/networks";
 import LazyTextField from "@dexkit/ui/components/LazyTextField";
+import { usePlatformCoinSearch } from "@dexkit/ui/hooks/coin";
+import { apiCoinToTokens } from "@dexkit/ui/utils/coin";
 import TokenIcon from "@mui/icons-material/Token";
 import { DEFAULT_ZRX_NETWORKS } from "../../constants";
 
@@ -109,7 +111,24 @@ export default function SelectPairDialog({
     setQuery(value);
   }, []);
 
+  const searchQuery = usePlatformCoinSearch({
+    keyword: query,
+    network: chainId && NETWORKS[chainId] ? NETWORKS[chainId].slug : undefined,
+  });
+
   const filteredTokens = useMemo(() => {
+    if (searchQuery.data) {
+      let tokens = [...baseTokens, ...apiCoinToTokens(searchQuery.data)];
+      return tokens.filter((t) => {
+        const searchByName = t.name.search(query) > -1;
+        const searchByAddress = isAddressEqual(t.contractAddress, query);
+        const searchBySymbol =
+          t.symbol.toLowerCase().search(query.toLowerCase()) > -1;
+
+        return searchByName || searchByAddress || searchBySymbol;
+      });
+    }
+
     return baseTokens.filter((t) => {
       const searchByName = t.name.search(query) > -1;
       const searchByAddress = isAddressEqual(t.contractAddress, query);
@@ -118,7 +137,7 @@ export default function SelectPairDialog({
 
       return searchByName || searchByAddress || searchBySymbol;
     });
-  }, [query, baseTokens]);
+  }, [query, baseTokens, searchQuery.data]);
 
   const networks = useMemo(() => {
     return availNetworks.map((n) => NETWORKS[n]);

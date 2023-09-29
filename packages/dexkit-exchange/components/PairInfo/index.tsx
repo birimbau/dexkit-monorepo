@@ -1,7 +1,15 @@
 import { useIsMobile } from "@dexkit/core";
 import { Token } from "@dexkit/core/types";
 import { useCurrency } from "@dexkit/ui/hooks";
-import { Box, Divider, Paper, Stack, Typography, lighten } from "@mui/material";
+import {
+  Box,
+  Divider,
+  Paper,
+  Skeleton,
+  Stack,
+  Typography,
+  lighten,
+} from "@mui/material";
 import { useMemo } from "react";
 import { FormattedMessage, FormattedNumber } from "react-intl";
 import PairButton from "../PairButton";
@@ -9,6 +17,7 @@ import PairButton from "../PairButton";
 export interface PairInfoProps {
   quoteToken: Token;
   baseToken: Token;
+  isLoading: boolean;
   onSelectPair?: () => void;
   volume?: string;
   marketCap?: string;
@@ -19,6 +28,7 @@ export interface PairInfoProps {
 export default function PairInfo({
   quoteToken,
   baseToken,
+  isLoading,
   onSelectPair,
   volume,
   marketCap,
@@ -80,32 +90,47 @@ export default function PairInfo({
             />
           }
         >
-          {formattedLastPrice && (
-            <Typography color="text.secondary" variant="body2">
-              <FormattedMessage
-                id="last.price.amount"
-                defaultMessage="Last price: {amount}"
-                values={{
-                  amount: (
+          <Typography color="text.secondary" variant="body2">
+            <FormattedMessage
+              id="last.price.amount"
+              defaultMessage="Last price: {amount}"
+              values={{
+                amount: isLoading ? (
+                  <Skeleton>
                     <Typography color="text.primary" component="span">
+                      0.00
+                    </Typography>
+                  </Skeleton>
+                ) : (
+                  <Typography color="text.primary" component="span">
+                    {formattedLastPrice ? (
                       <FormattedNumber
                         value={parseFloat(formattedLastPrice)}
                         currency={currency}
                         currencyDisplay="narrowSymbol"
                         style="currency"
                       />
-                    </Typography>
-                  ),
-                }}
-              />
-            </Typography>
-          )}
+                    ) : (
+                      "--"
+                    )}
+                  </Typography>
+                ),
+              }}
+            />
+          </Typography>
+
           <Typography color="text.secondary" variant="body2">
             <FormattedMessage
-              id="market.cap.amount"
+              id="price.change.24h.amount"
               defaultMessage="Price Change 24h: {amount}"
               values={{
-                amount: (
+                amount: isLoading ? (
+                  <Skeleton>
+                    <Typography sx={{ color }} component="span">
+                      %0.00
+                    </Typography>
+                  </Skeleton>
+                ) : (
                   <Typography sx={{ color }} component="span">
                     {priceChange}
                   </Typography>
@@ -113,47 +138,64 @@ export default function PairInfo({
               }}
             />
           </Typography>
-          {formattedMarketCap && (
-            <Typography color="text.secondary" variant="body2">
-              <FormattedMessage
-                id="market.cap.amount"
-                defaultMessage="Market Cap: {amount}"
-                values={{
-                  amount: (
+
+          <Typography color="text.secondary" variant="body2">
+            <FormattedMessage
+              id="market.cap.amount"
+              defaultMessage="Market Cap: {amount}"
+              values={{
+                amount: isLoading ? (
+                  <Skeleton>
                     <Typography color="text.primary" component="span">
+                      0.00
+                    </Typography>
+                  </Skeleton>
+                ) : (
+                  <Typography color="text.primary" component="span">
+                    {formattedMarketCap ? (
                       <FormattedNumber
                         value={parseFloat(formattedMarketCap)}
                         currency={currency}
                         currencyDisplay="narrowSymbol"
                         style="currency"
                       />
-                    </Typography>
-                  ),
-                }}
-              />
-            </Typography>
-          )}
+                    ) : (
+                      "--"
+                    )}
+                  </Typography>
+                ),
+              }}
+            />
+          </Typography>
 
-          {formattedVolume && (
-            <Typography color="text.secondary" variant="body2">
-              <FormattedMessage
-                id="24h.volume.amount"
-                defaultMessage="24h volume: {amount}"
-                values={{
-                  amount: (
+          <Typography color="text.secondary" variant="body2">
+            <FormattedMessage
+              id="24h.volume.amount"
+              defaultMessage="24h volume: {amount}"
+              values={{
+                amount: isLoading ? (
+                  <Skeleton>
                     <Typography color="text.primary" component="span">
+                      0.00
+                    </Typography>
+                  </Skeleton>
+                ) : (
+                  <Typography color="text.primary" component="span">
+                    {formattedVolume ? (
                       <FormattedNumber
                         value={parseFloat(formattedVolume)}
                         currency={currency}
                         currencyDisplay="narrowSymbol"
                         style="currency"
                       />
-                    </Typography>
-                  ),
-                }}
-              />
-            </Typography>
-          )}
+                    ) : (
+                      "--"
+                    )}
+                  </Typography>
+                ),
+              }}
+            />
+          </Typography>
         </Stack>
       </Box>
     );

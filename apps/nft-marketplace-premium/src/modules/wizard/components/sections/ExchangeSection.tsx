@@ -48,9 +48,10 @@ function ExchangeSection() {
   const [selectedAddress, setSelectedAddress] = useState<string>();
 
   const geckoTerminalTopPoolsQuery = useGeckoTerminalTopPools({
-    address: exchangeState.quoteToken?.contractAddress,
+    address: exchangeState.baseToken?.contractAddress,
     network,
   });
+  const isLoadingPool = geckoTerminalTopPoolsQuery.isLoading;
 
   const pools = useMemo(() => {
     if (
@@ -115,6 +116,7 @@ function ExchangeSection() {
                   quoteToken={exchangeState.quoteToken}
                   baseToken={exchangeState.baseToken}
                   onSelectPair={handleOpenSelectPair}
+                  isLoading={isLoadingPool}
                   marketCap={
                     selectedPool?.attributes.market_cap_usd
                       ? selectedPool.attributes.market_cap_usd
@@ -136,6 +138,7 @@ function ExchangeSection() {
                 <Grid item xs={12}>
                   <TradingGraph
                     key={selectedAddress}
+                    isLoading={isLoadingPool}
                     onChange={handleChangePool}
                     onChangeShowSwaps={handleChangeShowSwap}
                     selectedPool={selectedAddress}
