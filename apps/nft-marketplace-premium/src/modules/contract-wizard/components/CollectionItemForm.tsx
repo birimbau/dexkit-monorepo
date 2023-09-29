@@ -1,7 +1,6 @@
 import { Box, Button, Grid, Stack } from '@mui/material';
 import { Field, FieldArray, useFormikContext } from 'formik';
 import { TextField } from 'formik-mui';
-import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { CollectionItemsForm } from '../types';
 import CollectionItemAttributeForm from './CollectionItemAttributeForm';
@@ -10,9 +9,15 @@ import { ImageFormUpload } from './ImageFormUpload';
 
 interface Props {
   itemIndex: number;
+  onlySingleMint: boolean;
+  allowMultipleQuantity: boolean;
 }
 
-export default function CollectionItemForm({ itemIndex }: Props) {
+export default function CollectionItemForm({
+  itemIndex,
+  onlySingleMint = false,
+  allowMultipleQuantity = true,
+}: Props) {
   const { setFieldValue, values, errors } =
     useFormikContext<CollectionItemsForm>();
 
@@ -26,7 +31,7 @@ export default function CollectionItemForm({ itemIndex }: Props) {
               setFieldValue(`items[${itemIndex}].file`, file)
             }
             error={Boolean(
-              errors.items && (errors.items[itemIndex] as any)?.file
+              errors.items && (errors.items[itemIndex] as any)?.file,
             )}
           />
           <Box pt={2}>
@@ -40,15 +45,17 @@ export default function CollectionItemForm({ itemIndex }: Props) {
         </Grid>
         <Grid item xs>
           <Stack spacing={2}>
-            <Field
-              component={TextField}
-              type={'number'}
-              name={`items[${itemIndex}].quantity`}
-              label={
-                <FormattedMessage id="quantity" defaultMessage="Quantity" />
-              }
-              defaultValue={1}
-            />
+            {allowMultipleQuantity === true && (
+              <Field
+                component={TextField}
+                type={'number'}
+                name={`items[${itemIndex}].quantity`}
+                label={
+                  <FormattedMessage id="quantity" defaultMessage="Quantity" />
+                }
+                defaultValue={1}
+              />
+            )}
             <Field
               component={TextField}
               name={`items[${itemIndex}].name`}
@@ -79,7 +86,7 @@ export default function CollectionItemForm({ itemIndex }: Props) {
                         index={index}
                         itemSelector={`items[${itemIndex}].`}
                       />
-                    )
+                    ),
                   )}
                 </Stack>
               </Box>

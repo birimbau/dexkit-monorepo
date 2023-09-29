@@ -43,7 +43,7 @@ export function useNftTransfer({
         protocol === "ERC1155" ? ERC1155Abi : ERC721Abi,
         provider?.getSigner()
       );
-      console.log(contract);
+
       let toAddress: string | null = to;
       if (to.split(".").length > 1) {
         const networkProvider = NETWORK_PROVIDER(ChainId.Ethereum);

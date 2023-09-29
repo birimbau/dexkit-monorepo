@@ -9,6 +9,22 @@ export const PARSE_UNITS = [
   "wei",
 ];
 
+
+
+export const THIRDWEB_CONTRACT_TYPES: { [key: string]: string } = {
+  ['edition-drop']: "Edition drop",
+  ['split']: 'Split',
+  ['edition']: 'Edition',
+  ['nft-collection']: 'Collection',
+  ['nft-drop']: 'Collection Drop',
+  ['pack']: 'Pack',
+  ['token']: 'Token',
+  ['token-drop']: 'Token Drop',
+  ['vote']: 'Vote',
+
+
+};
+
 export const ETHER_SCAN_API_URL: { [key: number]: string } = {
   [ChainId.Ethereum]: "api.etherscan.io",
   [ChainId.Polygon]: "api.polygonscan.com",

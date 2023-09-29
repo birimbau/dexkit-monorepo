@@ -28,8 +28,9 @@ import {
   useDeployableContractsQuery,
   useListDeployedContracts,
 } from '@/modules/forms/hooks';
+import { NETWORK_SLUG } from '@dexkit/core/constants/networks';
 import { DexkitApiProvider } from '@dexkit/core/providers';
-import { getBlockExplorerUrl, truncateAddress } from '@dexkit/core/utils';
+import { truncateAddress } from '@dexkit/core/utils';
 import LazyTextField from '@dexkit/ui/components/LazyTextField';
 import {
   Info,
@@ -204,6 +205,12 @@ export default function FormsContractsPage() {
                             </TableCell>
                             <TableCell>
                               <FormattedMessage
+                                id="type"
+                                defaultMessage="Type"
+                              />
+                            </TableCell>
+                            <TableCell>
+                              <FormattedMessage
                                 id="network"
                                 defaultMessage="Network"
                               />
@@ -226,6 +233,9 @@ export default function FormsContractsPage() {
                           <TableBody>
                             {new Array(5).fill(null).map((_, key) => (
                               <TableRow key={key}>
+                                <TableCell>
+                                  <Skeleton />
+                                </TableCell>
                                 <TableCell>
                                   <Skeleton />
                                 </TableCell>
@@ -282,15 +292,15 @@ export default function FormsContractsPage() {
                               <TableRow key={contract.id}>
                                 <TableCell>{contract.id}</TableCell>
                                 <TableCell>{contract.name}</TableCell>
+                                <TableCell>{contract?.type || ''}</TableCell>
                                 <TableCell>
                                   {getChainName(contract.chainId)}
                                 </TableCell>
                                 <TableCell>
                                   <Link
-                                    href={`${getBlockExplorerUrl(
+                                    href={`/contract/${NETWORK_SLUG(
                                       contract.chainId,
-                                    )}/address/${contract.contractAddress}`}
-                                    target="_blank"
+                                    )}/${contract.contractAddress}`}
                                   >
                                     {truncateAddress(contract.contractAddress)}
                                   </Link>
