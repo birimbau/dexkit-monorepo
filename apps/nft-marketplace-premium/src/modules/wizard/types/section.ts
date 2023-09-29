@@ -1,4 +1,5 @@
 import { SwapConfig } from '@/modules/swap/types';
+import { DexkitExchangeSettings } from '@dexkit/exchange/types';
 import { ContractFormParams } from '@dexkit/web3forms/types';
 import React from 'react';
 import {
@@ -20,6 +21,7 @@ export type SectionType =
   | 'wallet'
   | 'contract'
   | 'user-contract-form'
+  | 'exchange'
   | 'edition-drop-section'
   | 'edition-drop-list-section'
   ;
@@ -101,6 +103,11 @@ export interface UserContractPageSection extends PageSection {
   hideFormInfo?: boolean;
 }
 
+export interface ExchangePageSection extends PageSection {
+  type: 'exchange';
+  settings: DexkitExchangeSettings;
+}
+
 export interface EditionDropPageSection extends PageSection {
   type: 'edition-drop-section';
   config: {
@@ -129,6 +136,7 @@ export type AppPageSection =
   | WalletPageSection
   | ContractPageSection
   | UserContractPageSection
+  | ExchangePageSection
   | EditionDropListPageSection;
 
 export interface SectionMetadata {

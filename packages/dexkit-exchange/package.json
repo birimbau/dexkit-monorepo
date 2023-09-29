@@ -33,5 +33,10 @@
     "typescript": "^4.5.2",
     "vite": "^4.2.1"
   },
-  "dependencies": {}
+  "dependencies": {
+    "@0x/contract-addresses": "^8.7.0",
+    "@0x/protocol-utils": "^11.22.4",
+    "@dexkit/core": "*",
+    "@dexkit/ui": "*"
+  }
 }

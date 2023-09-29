@@ -15,9 +15,9 @@ const useApprove = () => {
     return new Promise<string>((resolve, reject) =>
       setTimeout(() => {
         resolve(
-          '0x2991f4b19414c2c3405888516c82042efdcc5d85bae11e79df7f51f42462563c'
+          '0x2991f4b19414c2c3405888516c82042efdcc5d85bae11e79df7f51f42462563c',
         );
-      }, 3000)
+      }, 3000),
     );
   });
 };
@@ -33,11 +33,13 @@ export default function TestPage() {
     txDialog.execute([
       {
         action: async () => {
-          return await approveMutation.mutateAsync({
+          const hash = await approveMutation.mutateAsync({
             amount: BigNumber.from('1000000'),
             spender: '0xc06622625A4FeFF0bee250D078e5e27f0B24398B',
             tokenAddress: '0xc2132D05D31c914a87C6611C10748AEb04B58e8F',
           });
+
+          return { hash };
         },
         title: { defaultMessage: 'Approve', id: 'Approve' },
         icon: 'receipt',

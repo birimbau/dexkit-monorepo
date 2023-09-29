@@ -6,6 +6,8 @@ import { useContext, useMemo } from 'react';
 import { AppConfigContext } from '../contexts';
 import { localeAtom, localeUserAtom, userThemeModeAtom } from '../state/atoms';
 
+import { useConnectWalletDialog as useConnectWalletDialogV2 } from '@dexkit/ui/hooks';
+
 const signMessageDialogOpenAtom = atom(false);
 const signMessageDialogErrorAtom = atom<Error | undefined>(undefined);
 const signMessageDialogSuccessAtom = atom<boolean>(false);
@@ -29,15 +31,19 @@ export function useSignMessageDialog() {
   };
 }
 
-const isConnectWalletOpenAtom = atom(false);
+// const isConnectWalletOpenAtom = atom(false);
+
+// export function useConnectWalletDialog() {
+//   const [isOpen, setOpen] = useAtom(isConnectWalletOpenAtom);
+
+//   return {
+//     isOpen,
+//     setOpen,
+//   };
+// }
 
 export function useConnectWalletDialog() {
-  const [isOpen, setOpen] = useAtom(isConnectWalletOpenAtom);
-
-  return {
-    isOpen,
-    setOpen,
-  };
+  return useConnectWalletDialogV2();
 }
 
 // App config context is passed on _app.tsx, in each page we need to pass

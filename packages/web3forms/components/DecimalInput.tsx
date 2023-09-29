@@ -37,7 +37,7 @@ export default function DecimalInput({
         decimals !== undefined ? decimals : 18
       }})?$`
     );
-  }, [decimals]);
+  }, [decimals, maxDigits]);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (pattern.test(e.target.value) || e.target.value === "") {
