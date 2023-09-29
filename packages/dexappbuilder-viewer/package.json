@@ -1,5 +1,6 @@
 {
   "name": "@dexkit/dexappbuilder-viewer",
+  "private": false,
   "version": "0.1.0",
   "scripts": {
     "lint": "TIMING=1 eslint \"**/*.ts*\"",
@@ -41,6 +42,9 @@
     "@uiw/react-md-editor": "^3.23.3",
     "html-react-parser": "^4.0.0",
     "react-syntax-highlighter": "^15.5.0"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "eslintConfig": {
     "extends": [
