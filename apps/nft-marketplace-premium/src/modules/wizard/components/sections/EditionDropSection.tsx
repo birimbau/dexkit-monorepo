@@ -20,9 +20,9 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
+import { styled } from '@mui/material/styles';
 import { ClaimEligibility, NATIVE_TOKEN_ADDRESS } from '@thirdweb-dev/sdk';
 import { SwappableAssetV4 } from '@traderxyz/nft-swap-sdk';
 import { useWeb3React } from '@web3-react/core';
@@ -51,9 +51,9 @@ interface Props {
 export function parseIneligibility(
   reasons: ClaimEligibility[],
   quantity = 0,
-): string {
+): JSX.Element {
   if (!reasons.length) {
-    return '';
+    return <></>;
   }
 
   const reason = reasons[0];
@@ -63,18 +63,38 @@ export function parseIneligibility(
     reason === ClaimEligibility.NoActiveClaimPhase ||
     reason === ClaimEligibility.NoClaimConditionSet
   ) {
-    return 'This drop is not ready to be minted.';
+    return (
+      <FormattedMessage
+        id="this.drop.is.not.ready.to.be.minted"
+        defaultMessage="This drop is not ready to be minted."
+      />
+    );
   } else if (reason === ClaimEligibility.NotEnoughTokens) {
-    return "You don't have enough currency to mint.";
+    return (
+      <FormattedMessage
+        id="you.dont.have.enough.currency.to.mint"
+        defaultMessage="You don't have enough currency to mint."
+      />
+    );
   } else if (reason === ClaimEligibility.AddressNotAllowed) {
     if (quantity > 1) {
-      return `You are not eligible to mint ${quantity} tokens.`;
+      return (
+        <FormattedMessage
+          id="you.are.not.eligible.to.mint.tokens.quantity.value"
+          defaultMessage="You are not eligible to mint {quantity} tokens."
+        />
+      );
     }
 
-    return 'You are not eligible to mint at this time.';
+    return (
+      <FormattedMessage
+        id="you.are.not.eligible.to.mint.at.this.time"
+        defaultMessage="You are not eligible to mint at this time."
+      />
+    );
   }
 
-  return reason;
+  return <>{reason}</>;
 }
 
 export function EditionDropSection({ section }: Props) {
@@ -401,7 +421,14 @@ export function EditionDropSection({ section }: Props) {
             <Typography>
               {' '}
               {claimedSupply ? (
-                <>{numberTotal || 'unlimited'}</>
+                <>
+                  {numberTotal || (
+                    <FormattedMessage
+                      id={'unlimited'}
+                      defaultMessage={'Unlimited'}
+                    />
+                  )}
+                </>
               ) : (
                 <>
                   <FormattedMessage id={'loading'} defaultMessage={'Loading'} />

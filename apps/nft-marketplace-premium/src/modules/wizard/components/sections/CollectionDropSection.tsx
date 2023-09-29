@@ -21,11 +21,7 @@ import {
 } from '@mui/material';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
-import {
-  ClaimEligibility,
-  detectContractFeature,
-  NATIVE_TOKEN_ADDRESS,
-} from '@thirdweb-dev/sdk';
+import { detectContractFeature, NATIVE_TOKEN_ADDRESS } from '@thirdweb-dev/sdk';
 import { ContractWrapper } from '@thirdweb-dev/sdk/dist/declarations/src/evm/core/classes/contract-wrapper';
 import { SwappableAssetV4 } from '@traderxyz/nft-swap-sdk';
 import { useWeb3React } from '@web3-react/core';
@@ -36,41 +32,13 @@ import {
   useErc20AllowanceMutation,
   useErc20ApproveMutationV2,
 } from 'src/hooks/balances';
+import { parseIneligibility } from './EditionDropSection';
 
 interface Props {
   section: EditionDropPageSection;
 }
 
-export function parseIneligibility(
-  reasons: ClaimEligibility[],
-  quantity = 0,
-): string {
-  if (!reasons.length) {
-    return '';
-  }
-
-  const reason = reasons[0];
-
-  if (
-    reason === ClaimEligibility.Unknown ||
-    reason === ClaimEligibility.NoActiveClaimPhase ||
-    reason === ClaimEligibility.NoClaimConditionSet
-  ) {
-    return 'This drop is not ready to be minted.';
-  } else if (reason === ClaimEligibility.NotEnoughTokens) {
-    return "You don't have enough currency to mint.";
-  } else if (reason === ClaimEligibility.AddressNotAllowed) {
-    if (quantity > 1) {
-      return `You are not eligible to mint ${quantity} tokens.`;
-    }
-
-    return 'You are not eligible to mint at this time.';
-  }
-
-  return reason;
-}
-
-export function EditionDropSection({ section }: Props) {
+export function CollectionDropSection({ section }: Props) {
   const { address } = section.config;
   const { createNotification, watchTransactionDialog } = useDexKitContext();
 
@@ -423,7 +391,14 @@ export function EditionDropSection({ section }: Props) {
             <Typography>
               {' '}
               {claimedSupply ? (
-                <>{numberTotal || 'unlimited'}</>
+                <>
+                  {numberTotal || (
+                    <FormattedMessage
+                      id={'unlimited'}
+                      defaultMessage={'Unlimited'}
+                    />
+                  )}
+                </>
               ) : (
                 <>
                   <FormattedMessage id={'loading'} defaultMessage={'Loading'} />
@@ -588,4 +563,4 @@ export function EditionDropSection({ section }: Props) {
   );
 }
 
-export default EditionDropSection;
+export default CollectionDropSection;
