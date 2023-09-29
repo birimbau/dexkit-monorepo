@@ -35,6 +35,9 @@
   "engines": {
     "node": ">=18.0.0"
   },
+  "browser": {
+    "events": false
+  },
   "dependencies": {
     "@changesets/cli": "^2.26.0",
     "@emotion/react": "^11.10.5",

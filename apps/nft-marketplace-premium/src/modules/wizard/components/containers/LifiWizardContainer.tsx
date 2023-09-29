@@ -1,7 +1,4 @@
-import { SwapConfig } from '@/modules/swap/types';
-import { Token as WidgetToken } from '@dexkit/widgets/src/types';
-
-import { ThemeProvider } from '@lifi/widget/providers';
+import { NoSsr } from '@mui/base';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
@@ -14,9 +11,11 @@ import dynamic from 'next/dynamic';
 import { useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { Token } from 'src/types/blockchain';
+import { LifiSettings } from 'src/types/lifi';
 import { AppConfig } from '../../../../types/config';
 import { StepperButtonProps } from '../../types';
-import { SwapPageSection } from '../../types/section';
+import { LifiPageSection } from '../../types/section';
+import LifiSettingsForm from '../forms/LifiSettingsForm';
 import { StepperButtons } from '../steppers/StepperButtons';
 
 const LiFiWidget = dynamic(() =>
@@ -40,27 +39,13 @@ export default function LifiWizardContainer({
   isOnStepper,
   stepperButtonProps,
 }: Props) {
-  const [swapFormData, setSwapFormData] = useState<SwapConfig | undefined>(
+  const [data, setData] = useState<LifiSettings | undefined>(
     (
       config.pages['home']?.sections.find(
-        (s) => s.type === 'swap',
-      ) as SwapPageSection
-    )?.config,
+        (s) => s.type === 'lifi',
+      ) as LifiPageSection
+    )?.settings,
   );
-
-  const featuredTokens = useMemo<WidgetToken[]>(() => {
-    let tokens = config?.tokens?.length ? config?.tokens[0].tokens || [] : [];
-
-    return tokens.map<WidgetToken>((t: Token) => {
-      return {
-        contractAddress: t.address,
-        chainId: t.chainId as number,
-        decimals: t.decimals,
-        name: t.name,
-        symbol: t.symbol,
-      } as WidgetToken;
-    });
-  }, [config]);
 
   const tokens = useMemo<Token[]>(() => {
     return config?.tokens?.length ? config?.tokens[0].tokens || [] : [];
@@ -68,45 +53,54 @@ export default function LifiWizardContainer({
 
   const changeConfig = function (
     configToChange: AppConfig,
-    formData?: SwapConfig,
+    formData?: LifiSettings,
   ) {
     const newConfig = { ...configToChange };
-    const swapSectionPageIndex = newConfig.pages['home']?.sections.findIndex(
-      (s) => s.type === 'swap',
+
+    const sectionIndex = newConfig.pages['home']?.sections.findIndex(
+      (s) => s.type === 'lifi',
     );
-    let editSwapSection: SwapPageSection;
+
+    let lifiSection: LifiPageSection;
+
     if (formData) {
-      if (swapSectionPageIndex !== -1) {
-        editSwapSection = {
+      if (sectionIndex !== -1) {
+        lifiSection = {
           ...(newConfig.pages['home']?.sections[
-            swapSectionPageIndex
-          ] as SwapPageSection),
-          config: formData,
+            sectionIndex
+          ] as LifiPageSection),
+          settings: formData,
         };
-        newConfig.pages['home'].sections[swapSectionPageIndex] =
-          editSwapSection;
+        newConfig.pages['home'].sections[sectionIndex] = lifiSection;
       } else {
-        editSwapSection = {
+        lifiSection = {
           title: 'Swap',
-          type: 'swap',
-          config: formData,
+          type: 'lifi',
+          settings: formData,
         };
-        newConfig.pages['home']?.sections.push(editSwapSection);
+        newConfig.pages['home']?.sections.push(lifiSection);
       }
     }
+
     return newConfig;
   };
 
   const { provider } = useWeb3React();
 
+  const [isValid, setIsValid] = useState(false);
+
+  const handleSave = () => {};
+
+  const handleValidate = (value: boolean) => setIsValid(value);
+
   return (
     <Grid container spacing={2}>
       <Grid item xs={12}>
         <Stack>
-          <Typography variant={'subtitle2'}>
+          <Typography variant="subtitle2">
             <FormattedMessage id="tokens" defaultMessage="Tokens" />
           </Typography>
-          <Typography variant={'body2'}>
+          <Typography variant="body2">
             <FormattedMessage
               id="choose.default.settings.for.swap.interface"
               defaultMessage="Choose default settings for swap interface"
@@ -118,10 +112,21 @@ export default function LifiWizardContainer({
         <Divider />
       </Grid>
       <Grid item xs={6}>
-        {/* TODO: form */}
+        <LifiSettingsForm
+          onSave={handleSave}
+          onValidate={handleValidate}
+          tokens={tokens.map((t) => ({
+            chainId: t.chainId,
+            contractAddress: t.address,
+            decimals: t.decimals,
+            name: t.name,
+            symbol: t.symbol,
+            logoURI: t.logoURI,
+          }))}
+        />
       </Grid>
       <Grid item xs={12} sm={6}>
-        <ThemeProvider>
+        <NoSsr>
           <LiFiWidget
             integrator="dexkit"
             walletManagement={{
@@ -138,11 +143,19 @@ export default function LifiWizardContainer({
               variant: 'default',
               containerStyle: {
                 border: `1px solid rgb(234, 234, 234)`,
-                borderRadius: '16px',
+                borderRadius: '8px',
               },
+              tokens: {
+                featured: [],
+                allow: tokens.map((t) => ({
+                  address: t.address,
+                  chainId: t.chainId as number,
+                })),
+              },
+              disableLanguageDetector: true,
             }}
           />
-        </ThemeProvider>
+        </NoSsr>
       </Grid>
       <Grid item xs={12}>
         <Divider />

@@ -26,7 +26,7 @@
     "net": false,
     "dgram": false,
     "module": false,
-    "events": false
+    "event": false
   },
   "dependencies": {
     "@0x/contract-addresses": "^7.4.1",

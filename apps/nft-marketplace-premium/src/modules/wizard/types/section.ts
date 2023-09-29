@@ -1,6 +1,7 @@
 import { SwapConfig } from '@/modules/swap/types';
 import { ContractFormParams } from '@dexkit/web3forms/types';
 import React from 'react';
+import { LifiSettings } from 'src/types/lifi';
 import {
   PageSectionVariant,
   SectionItem,
@@ -19,7 +20,8 @@ export type SectionType =
   | 'markdown'
   | 'wallet'
   | 'contract'
-  | 'user-contract-form';
+  | 'user-contract-form'
+  | 'lifi';
 
 export interface PageSection {
   type: SectionType;
@@ -98,6 +100,11 @@ export interface UserContractPageSection extends PageSection {
   hideFormInfo?: boolean;
 }
 
+export interface LifiPageSection extends PageSection {
+  type: 'lifi';
+  settings: LifiSettings;
+}
+
 export type AppPageSection =
   | CallToActionAppPageSection
   | VideoEmbedAppPageSection
@@ -109,7 +116,8 @@ export type AppPageSection =
   | MarkdownEditorPageSection
   | WalletPageSection
   | ContractPageSection
-  | UserContractPageSection;
+  | UserContractPageSection
+  | LifiPageSection;
 
 export interface SectionMetadata {
   type: SectionType;
