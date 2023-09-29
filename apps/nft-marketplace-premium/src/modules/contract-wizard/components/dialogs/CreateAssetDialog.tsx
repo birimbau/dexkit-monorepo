@@ -1,4 +1,5 @@
 import CheckCircle from '@mui/icons-material/CheckCircle';
+import ErrorIcon from '@mui/icons-material/Error';
 import {
   Alert,
   Box,
@@ -22,11 +23,11 @@ import {
   getBlockExplorerUrl,
   getNetworkSlugFromChainId,
 } from 'src/utils/blockchain';
-import ErrorIcon from '@mui/icons-material/Error';
 
 interface Props {
   dialogProps: DialogProps;
   isLoadingMeta?: boolean;
+  isLazyMinting?: boolean;
   isDoneMeta?: boolean;
   isErrorMeta?: boolean;
   isLoading?: boolean;
@@ -39,6 +40,7 @@ interface Props {
 
 export default function CreateAssetDialog({
   dialogProps,
+  isLazyMinting = false,
   isError,
   isErrorMeta,
   isLoading,
@@ -76,12 +78,14 @@ export default function CreateAssetDialog({
             alignItems="center"
             alignContent="center"
           >
-            <Alert severity="info">
-              <FormattedMessage
-                defaultMessage="Please don't close modal or reload app till finish data submission!"
-                id="info.create.nfts.dialog"
-              />
-            </Alert>
+            {isLazyMinting === false && (
+              <Alert severity="info">
+                <FormattedMessage
+                  defaultMessage="Please don't close modal or reload app till finish data submission!"
+                  id="info.create.nfts.dialog"
+                />
+              </Alert>
+            )}
             <List disablePadding>
               <ListItem divider>
                 <ListItemAvatar>
@@ -172,87 +176,91 @@ export default function CreateAssetDialog({
                 </ListItemText>
               </ListItem>
 
-              <ListItem divider>
-                <ListItemAvatar>
-                  {!(isLoadingMeta || isDoneMeta || isErrorMeta) && (
-                    <Box>
-                      <Typography align="center" variant="h5">
-                        2.
-                      </Typography>
-                    </Box>
-                  )}
-                  {isLoadingMeta && (
-                    <CircularProgress color="primary" size="2rem" />
-                  )}
-                  {isDoneMeta && (
-                    <CheckCircle color="success" fontSize="large" />
-                  )}
-                  {isErrorMeta && <ErrorIcon color="error" fontSize="large" />}
-                </ListItemAvatar>
-                <ListItemText>
-                  {!(isLoadingMeta || isDoneMeta || isErrorMeta) && (
-                    <Box>
-                      <Typography align="center" variant="h5">
-                        <FormattedMessage
-                          id="save.nfts.metadata"
-                          defaultMessage="Save NFTs metadata"
-                        />
-                      </Typography>
-                    </Box>
-                  )}
+              {isLazyMinting === false && (
+                <ListItem divider>
+                  <ListItemAvatar>
+                    {!(isLoadingMeta || isDoneMeta || isErrorMeta) && (
+                      <Box>
+                        <Typography align="center" variant="h5">
+                          2.
+                        </Typography>
+                      </Box>
+                    )}
+                    {isLoadingMeta && (
+                      <CircularProgress color="primary" size="2rem" />
+                    )}
+                    {isDoneMeta && (
+                      <CheckCircle color="success" fontSize="large" />
+                    )}
+                    {isErrorMeta && (
+                      <ErrorIcon color="error" fontSize="large" />
+                    )}
+                  </ListItemAvatar>
+                  <ListItemText>
+                    {!(isLoadingMeta || isDoneMeta || isErrorMeta) && (
+                      <Box>
+                        <Typography align="center" variant="h5">
+                          <FormattedMessage
+                            id="save.nfts.metadata"
+                            defaultMessage="Save NFTs metadata"
+                          />
+                        </Typography>
+                      </Box>
+                    )}
 
-                  {isLoadingMeta && (
-                    <Box>
-                      <Typography align="center" variant="h5">
-                        <FormattedMessage
-                          id="creating.nfts"
-                          defaultMessage="Saving NFTs metadata"
-                        />
-                      </Typography>
-                    </Box>
-                  )}
-                  {isDoneMeta && (
-                    <Box>
-                      <Typography align="center" variant="h5">
-                        <FormattedMessage
-                          id="nfts.metadata.saved"
-                          defaultMessage="NFTs metadata saved"
-                        />
-                      </Typography>
-                      <Typography
-                        align="center"
-                        variant="body1"
-                        color="textSecondary"
-                      >
-                        <FormattedMessage
-                          id="your.nfts.was.created.successfully"
-                          defaultMessage="Your nfts was created successfully"
-                        />
-                      </Typography>
-                    </Box>
-                  )}
-                  {isErrorMeta && (
-                    <Box>
-                      <Typography align="center" variant="h5">
-                        <FormattedMessage
-                          id="nfts.metadata.error"
-                          defaultMessage="NFTs metadata error"
-                        />
-                      </Typography>
-                      <Typography
-                        align="center"
-                        variant="body1"
-                        color="textSecondary"
-                      >
-                        <FormattedMessage
-                          id="nfts.metadata.not.saved"
-                          defaultMessage="Your nfts metadata were not saved"
-                        />
-                      </Typography>
-                    </Box>
-                  )}
-                </ListItemText>
-              </ListItem>
+                    {isLoadingMeta && (
+                      <Box>
+                        <Typography align="center" variant="h5">
+                          <FormattedMessage
+                            id="creating.nfts"
+                            defaultMessage="Saving NFTs metadata"
+                          />
+                        </Typography>
+                      </Box>
+                    )}
+                    {isDoneMeta && (
+                      <Box>
+                        <Typography align="center" variant="h5">
+                          <FormattedMessage
+                            id="nfts.metadata.saved"
+                            defaultMessage="NFTs metadata saved"
+                          />
+                        </Typography>
+                        <Typography
+                          align="center"
+                          variant="body1"
+                          color="textSecondary"
+                        >
+                          <FormattedMessage
+                            id="your.nfts.was.created.successfully"
+                            defaultMessage="Your nfts was created successfully"
+                          />
+                        </Typography>
+                      </Box>
+                    )}
+                    {isErrorMeta && (
+                      <Box>
+                        <Typography align="center" variant="h5">
+                          <FormattedMessage
+                            id="nfts.metadata.error"
+                            defaultMessage="NFTs metadata error"
+                          />
+                        </Typography>
+                        <Typography
+                          align="center"
+                          variant="body1"
+                          color="textSecondary"
+                        >
+                          <FormattedMessage
+                            id="nfts.metadata.not.saved"
+                            defaultMessage="Your nfts metadata were not saved"
+                          />
+                        </Typography>
+                      </Box>
+                    )}
+                  </ListItemText>
+                </ListItem>
+              )}
             </List>
             {transactionHash && (
               <Button
@@ -274,7 +282,7 @@ export default function CreateAssetDialog({
                 variant="contained"
                 LinkComponent={Link}
                 href={`/contract-wizard/collection/${getNetworkSlugFromChainId(
-                  chainId
+                  chainId,
                 )}/${contractAddress}`}
               >
                 <FormattedMessage id="view.nfts" defaultMessage="View nfts" />

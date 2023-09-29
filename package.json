@@ -41,6 +41,7 @@
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
     "@indexed-finance/multicall": "^2.0.0",
+    "@magic-ext/oauth": "4.0.0",
     "@mui/icons-material": "5.11",
     "@mui/material": "5.11.15",
     "@tanstack/react-query": "^4.23.0",
@@ -57,12 +58,14 @@
     "@web3-react/walletconnect-v2": "8.5.0",
     "ethers": "^5.7.2",
     "jotai": "1.6.5",
+    "magic-sdk": "10.0.0",
     "moment": "^2.29.4",
     "notistack": "^2.0.8",
     "optics-ts": "^2.4.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-intl": "^5.24.8"
+    "react-intl": "^5.24.8",
+    "uint8arrays": "3.1.1"
   },
   "packageManager": "yarn@1.22.18",
   "main": "index.js",

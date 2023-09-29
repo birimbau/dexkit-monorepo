@@ -17,6 +17,8 @@ export const WRAPPED_ETHER_CONTRACT: { [key: number]: string } = {
   3: '0xc778417e063141139fce010982780140aa0cd5ab',
 };
 
+export const THIRDWEB_CLIENT_ID = process.env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID ? process.env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID : '8b875cba6d295240d3b3861a3e8c2260';
+
 export const ETH_COIN: Token = {
   name: 'Ethereum',
   symbol: 'ETH',

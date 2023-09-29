@@ -29,6 +29,24 @@ export const CollectionItemsSchema = Yup.object().shape({
   ),
 });
 
+export const ClaimConditionsSchema = Yup.object().shape({
+  phases: Yup.array().of(
+    Yup.object().shape({
+      name: Yup.string().required(),
+      startTime: Yup.date().optional(),
+      waitInSeconds: Yup.string().required(),
+      price: Yup.number().required(),
+      maxClaimableSupply: Yup.string().test('numberOrUnlimited', 'Value must be number or unlimited', val =>
+        val ? !isNaN(parseFloat(val)) || val === 'unlimited' : false).required(),
+      maxClaimablePerWallet: Yup.string().test('numberOrUnlimited', 'Value must be number or unlimited', val =>
+        val ? !isNaN(parseFloat(val)) || val === 'unlimited' : false).required(),
+      currencyAddress: Yup.string().required()
+    })
+  ),
+});
+
+
+
 export const CollectionItemSchema = Yup.object().shape({
   name: Yup.string().required(),
   description: Yup.string().optional(),

@@ -53,4 +53,16 @@ export const COMMON_NOTIFICATION_TYPES: { [key: string]: AppNotificationType } =
     id: "cancel.token.order",
     icon: "shortcut",
   },
+  nftBurn: {
+    type: "nftBurn",
+    message: "Burn {name} #{id}",
+    id: "burn.name.id",
+    icon: "shortcut",
+  },
+  nftBurnMultiple: {
+    type: "nftBurnMultiple",
+    message: "Burn {quantity} of {name} #{id}",
+    id: "burn.multiple.name.id",
+    icon: "shortcut",
+  },
 };
