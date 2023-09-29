@@ -62,7 +62,10 @@ export default function OrdersTable({
             return { hash: result };
           },
           icon: "receipt",
-          title: { id: "cancel.order", defaultMessage: "Cancel Order" },
+          title: {
+            id: "cancel.token.order",
+            defaultMessage: "Cancel token order",
+          },
         },
       ]);
     },

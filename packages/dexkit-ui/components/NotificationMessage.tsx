@@ -30,8 +30,8 @@ export function NotificationMessage({ types, type, values }: Props) {
 
   return (
     <FormattedMessage
-      id={types[type]?.id}
-      defaultMessage={types[type]?.message}
+      id={types[type]?.id || "id"}
+      defaultMessage={types[type]?.message || "message"}
       values={renderValues(values)}
     />
   );

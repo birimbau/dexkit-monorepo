@@ -43,6 +43,14 @@ export default function OrdersTableRow({
     return ethers.utils.formatUnits(record.order.makerAmount, decimals);
   }, [record, baseToken, side]);
 
+  const price = useMemo(() => {
+    if (baseTokenAmount && quoteTokenAmount) {
+      return side === "buy"
+        ? Number(baseTokenAmount) / Number(quoteTokenAmount)
+        : Number(quoteTokenAmount) / Number(baseTokenAmount);
+    }
+  }, [quoteTokenAmount, baseTokenAmount, side]);
+
   const remainingFillableAmountFormatted = useMemo(() => {
     const decimals =
       side === "buy" ? baseToken?.decimals : quoteToken?.decimals;
@@ -106,7 +114,7 @@ export default function OrdersTableRow({
       </TableCell>
 
       <TableCell>
-        {quoteTokenAmount} {quoteTokenSymbol}
+        {price} {quoteTokenSymbol}
       </TableCell>
       <TableCell>
         <MomentFromSpan from={moment(parseInt(record.order.expiry) * 1000)} />
