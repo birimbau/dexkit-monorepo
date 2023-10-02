@@ -1,6 +1,5 @@
 import dynamic from 'next/dynamic';
 import { AppPageSection } from '../../types/section';
-import ExchangeSection from '../sections/ExchangeSection';
 
 const ExchangeSection = dynamic(() => import('../sections/ExchangeSection'));
 
