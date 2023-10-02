@@ -16,7 +16,7 @@ import React, { useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import LazyTextField from '@dexkit/ui/components/LazyTextField';
-import ClickAwayListener from '@mui/base/ClickAwayListener';
+import { ClickAwayListener } from '@mui/base/ClickAwayListener';
 
 export interface Props {
   options: { label: string; value: string }[];
@@ -25,7 +25,7 @@ export interface Props {
   onChangeQuery: (address: string) => void;
   children: (
     handleFocus: () => void,
-    handleBlur: () => void
+    handleBlur: () => void,
   ) => React.ReactNode;
 }
 
