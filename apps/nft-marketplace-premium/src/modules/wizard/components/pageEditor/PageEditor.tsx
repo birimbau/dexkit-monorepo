@@ -45,7 +45,6 @@ import ContainerPlugin from './plugins/ContainerPlugin';
 import ContractFormPlugin from './plugins/ContractFormPlugin';
 import CustomContentPluginTwitter from './plugins/CustomContentPluginTwitter';
 import { DefaultSlate } from './plugins/DefaultSlate';
-import ExchangePlugin from './plugins/ExchangePlugin';
 import ImagePlugin from './plugins/ImagePlugin';
 import QrCodeReceive from './plugins/QrCodeReceivePayment';
 import SearchNFTPlugin from './plugins/SearchNFTPlugin';
@@ -85,7 +84,7 @@ const cellPlugins = [
   CustomContentPluginTwitter,
   video,
   WidgetPlugin,
-  ExchangePlugin,
+  // ExchangePlugin,
 ];
 
 const nftPlugins = [
@@ -114,7 +113,7 @@ const nftPlugins = [
   CustomContentPluginTwitter,
   video,
   WidgetPlugin,
-  ExchangePlugin,
+  //  ExchangePlugin,
 ];
 
 const swapPlugins = [
@@ -142,7 +141,7 @@ const swapPlugins = [
   CustomContentPluginTwitter,
   video,
   WidgetPlugin,
-  ExchangePlugin,
+  // ExchangePlugin,
 ];
 
 // https://github.com/react-page/react-page/issues/970

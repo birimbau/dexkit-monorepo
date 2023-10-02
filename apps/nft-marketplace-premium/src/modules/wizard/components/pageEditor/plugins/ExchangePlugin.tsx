@@ -4,8 +4,9 @@ import type { CellPlugin } from '@react-page/editor';
 
 import ExchangeSettingsForm from '@dexkit/exchange/components/ExchangeSettingsForm';
 import { DexkitExchangeSettings } from '@dexkit/exchange/types';
+import dynamic from 'next/dynamic';
 import { useMemo } from 'react';
-import ExchangeSection from '../../sections/ExchangeSection';
+const ExchangeSection = dynamic(() => import('../../sections/ExchangeSection'));
 
 // you can pass the shape of the data as the generic type argument
 const ExchangePlugin: CellPlugin<DexkitExchangeSettings> = {
