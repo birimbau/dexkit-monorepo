@@ -163,6 +163,10 @@ export type ImageInput = {
   type: "image";
 };
 
+export type ImageUrlInput = {
+  type: "image-url";
+};
+
 export type HiddenInput = {
   type: "hidden";
   subtype?: "connected-address" | "string";
@@ -191,6 +195,7 @@ export type InputComponent =
   | HiddenInput
   | AddressArrayInput
   | DecimalInput
+  | ImageUrlInput
   | SharesArray;
 
 export type FormInput = {

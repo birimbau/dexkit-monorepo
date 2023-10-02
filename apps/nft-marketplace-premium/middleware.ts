@@ -12,7 +12,9 @@ export const config = {
     '/wallet/:path*',
     '/404/:path*',
     '/u/:path*',
-    '/admin/:path*'
+    '/admin/:path*',
+    '/drop/:path*',
+    '/contract/:path*'
   ],
 };
 
@@ -29,6 +31,8 @@ const basePaths = [
   '/admin',
   '/contract-wizard',
   '/u',
+  '/drop',
+  '/contract'
 ];
 
 function isBasePath(path: string) {

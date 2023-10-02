@@ -323,6 +323,7 @@ export function useSaveContractDeployed() {
     }: {
       contractAddress: string;
       name?: string;
+      type?: string;
       chainId: number;
     }) => {
       return await saveContractDeploy({ contractAddress, name, chainId });
@@ -351,6 +352,7 @@ export function useListDeployedContracts({
       contractAddress: string;
       owner: string;
       id: number;
+      type?: string;
       chainId?: number;
     }[];
     nextCursor?: number;
@@ -365,6 +367,7 @@ export function useListDeployedContracts({
               contractAddress: string;
               owner: string;
               id: number;
+              type?: string;
               chainId?: number;
             }[];
             nextCursor?: number;
@@ -385,7 +388,7 @@ export function useListDeployedContracts({
 export const DEPLOYABLE_CONTRACTS_QUERY = 'DEPLOYABLE_CONTRACTS_QUERY';
 
 export function useDeployableContractsQuery() {
-  return useQuery([DEPLOYABLE_CONTRACTS_QUERY], async ({}) => {
+  return useQuery([DEPLOYABLE_CONTRACTS_QUERY], async ({ }) => {
     return (await axios.get<DeployableContract[]>(DEPLOYABLE_CONTRACTS_URL))
       .data;
   });

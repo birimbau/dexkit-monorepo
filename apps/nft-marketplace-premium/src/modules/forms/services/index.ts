@@ -185,15 +185,18 @@ export async function deleteForm({
 export async function saveContractDeploy({
   contractAddress,
   name,
+  type,
   chainId,
 }: {
   contractAddress: string;
   name?: string;
+  type?: string;
   chainId: number;
 }) {
   return await myAppsApi.post(`/forms/deploy`, {
     name,
     contractAddress,
+    type,
     chainId,
   });
 }

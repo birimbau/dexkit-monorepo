@@ -43,6 +43,9 @@
     "html-react-parser": "^4.0.0",
     "react-syntax-highlighter": "^15.5.0"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "eslintConfig": {
     "extends": [
       "plugin:storybook/recommended"

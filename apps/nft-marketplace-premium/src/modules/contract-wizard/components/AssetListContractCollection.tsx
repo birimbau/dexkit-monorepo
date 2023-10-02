@@ -11,12 +11,16 @@ interface Props {
   contractAddress: string;
   network: string;
   search?: string;
+  showButtonEmpty?: boolean;
+  showAssetDetailsInDialog?: boolean;
 }
 
 export function AssetListContractCollection({
   contractAddress,
   search,
   network,
+  showButtonEmpty = true,
+  showAssetDetailsInDialog = false,
 }: Props) {
   const router = useRouter();
   const [page, setPage] = useState(0);
@@ -36,7 +40,7 @@ export function AssetListContractCollection({
       return assets.filter(
         (a) =>
           a.collectionName.indexOf(search) !== -1 ||
-          a.metadata?.name.indexOf(search) !== -1
+          a.metadata?.name.indexOf(search) !== -1,
       );
     }
 
@@ -47,7 +51,10 @@ export function AssetListContractCollection({
     <Grid container spacing={2}>
       {filteredAssets?.map((asset, index) => (
         <Grid item xs={6} sm={2} key={index}>
-          <BaseAssetCard asset={asset} />
+          <BaseAssetCard
+            asset={asset}
+            showAssetDetailsInDialog={showAssetDetailsInDialog}
+          />
         </Grid>
       ))}
       {filteredAssets?.length === 0 && (
@@ -65,14 +72,19 @@ export function AssetListContractCollection({
                 defaultMessage="Clear filters to see nft's"
               />
             </Typography>
-            <Button
-              LinkComponent={Link}
-              href={`/contract-wizard/collection/${network}/${contractAddress}/create-nfts`}
-              color="primary"
-              variant="contained"
-            >
-              <FormattedMessage id="create.nfts" defaultMessage="Create NFTs" />
-            </Button>
+            {showButtonEmpty && (
+              <Button
+                LinkComponent={Link}
+                href={`/contract-wizard/collection/${network}/${contractAddress}/create-nfts`}
+                color="primary"
+                variant="contained"
+              >
+                <FormattedMessage
+                  id="create.nfts"
+                  defaultMessage="Create NFTs"
+                />
+              </Button>
+            )}
           </Stack>
         </Grid>
       )}

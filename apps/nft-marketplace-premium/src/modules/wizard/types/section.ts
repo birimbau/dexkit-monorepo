@@ -21,7 +21,9 @@ export type SectionType =
   | 'wallet'
   | 'contract'
   | 'user-contract-form'
-  | 'exchange';
+  | 'exchange'
+  | 'edition-drop-section'
+  | 'edition-drop-list-section';
 
 export interface PageSection {
   type: SectionType;
@@ -104,6 +106,22 @@ export interface ExchangePageSection extends PageSection {
   type: 'exchange';
   settings: DexkitExchangeSettings;
 }
+export interface EditionDropPageSection extends PageSection {
+  type: 'edition-drop-section';
+  config: {
+    address: string,
+    tokenId: string
+  }
+}
+
+export interface EditionDropListPageSection extends PageSection {
+  type: 'edition-drop-list-section';
+  config: {
+    address: string,
+    network: string
+  }
+}
+
 
 export type AppPageSection =
   | CallToActionAppPageSection
@@ -117,7 +135,8 @@ export type AppPageSection =
   | WalletPageSection
   | ContractPageSection
   | UserContractPageSection
-  | ExchangePageSection;
+  | ExchangePageSection
+  | EditionDropListPageSection;
 
 export interface SectionMetadata {
   type: SectionType;
