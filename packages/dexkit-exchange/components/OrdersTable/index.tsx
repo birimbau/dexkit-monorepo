@@ -24,9 +24,12 @@ import OrdersTableRow from "./OrdersTableRow";
 
 import {
   useConnectWalletDialog,
+  useDexKitContext,
   useExecuteTransactionsDialog,
 } from "@dexkit/ui/hooks";
+import { AppNotificationType } from "@dexkit/ui/types";
 import WalletIcon from "@mui/icons-material/Wallet";
+import { EXCHANGE_NOTIFICATION_TYPES } from "../../constants/messages";
 
 export interface OrdersTable {
   chainId?: ChainId;
@@ -42,6 +45,7 @@ export default function OrdersTable({
   active,
 }: OrdersTable) {
   const { baseToken, quoteToken } = useExchangeContext();
+  const { createNotification } = useDexKitContext();
   const orderbookQuery = useZrxOrderbook({ chainId, account });
 
   const cancelOrderMutation = useZrxCancelOrderMutation();
@@ -49,7 +53,13 @@ export default function OrdersTable({
   const transactionDialog = useExecuteTransactionsDialog();
 
   const handleCancelOrder = useCallback(
-    async (order: ZrxOrder) => {
+    async (
+      order: ZrxOrder,
+      baseTokenSymbol?: string,
+      quoteTokenSymbol?: string,
+      baseTokenAmount?: string,
+      quoteTokenAmount?: string
+    ) => {
       transactionDialog.execute([
         {
           action: async () => {
@@ -57,6 +67,26 @@ export default function OrdersTable({
               order,
               chainId,
               provider,
+            });
+            const subType = "orderCancelled";
+            const messageType = EXCHANGE_NOTIFICATION_TYPES[
+              subType
+            ] as AppNotificationType;
+
+            createNotification({
+              type: "transaction",
+              icon: messageType.icon,
+              subtype: subType,
+              metadata: {
+                hash: result,
+                chainId: chainId,
+              },
+              values: {
+                sellAmount: baseTokenAmount || " ",
+                sellTokenSymbol: baseTokenSymbol?.toUpperCase() || " ",
+                buyAmount: quoteTokenAmount || " ",
+                buyTokenSymbol: quoteTokenSymbol?.toUpperCase() || " ",
+              },
             });
 
             return { hash: result };

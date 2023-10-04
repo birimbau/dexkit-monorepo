@@ -41,7 +41,7 @@ export default function ExchangeSectionSettingsForm({
       settings={section?.settings}
       tokens={tokens.map((t) => ({
         chainId: t.chainId,
-        contractAddress: t.address,
+        address: t.address,
         name: t.name,
         decimals: t.decimals,
         symbol: t.symbol,

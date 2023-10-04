@@ -13,7 +13,13 @@ export interface OrdersTableRowProps {
   quoteToken?: Token;
   record: ZrxOrderRecord;
   account?: string;
-  onCancel: (order: ZrxOrder) => void;
+  onCancel: (
+    order: ZrxOrder,
+    baseTokenSymbol?: string,
+    quoteTokenSymbol?: string,
+    baseTokenAmount?: string,
+    quoteTokenAmount?: string
+  ) => void;
 }
 
 export default function OrdersTableRow({
@@ -24,7 +30,7 @@ export default function OrdersTableRow({
   onCancel,
 }: OrdersTableRowProps) {
   const side = useMemo(() => {
-    return isAddressEqual(baseToken?.contractAddress, record.order.takerToken)
+    return isAddressEqual(baseToken?.address, record.order.takerToken)
       ? "buy"
       : "sell";
   }, [baseToken, record]);
@@ -85,7 +91,13 @@ export default function OrdersTableRow({
   }, [record, quoteToken]);
 
   const handleCancel = () => {
-    onCancel(record.order);
+    onCancel(
+      record.order,
+      baseTokenSymbol,
+      quoteTokenSymbol,
+      baseTokenAmount,
+      quoteTokenAmount
+    );
   };
 
   return (

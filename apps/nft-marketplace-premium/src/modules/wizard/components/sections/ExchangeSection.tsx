@@ -48,7 +48,7 @@ function ExchangeSection() {
   const [selectedAddress, setSelectedAddress] = useState<string>();
 
   const geckoTerminalTopPoolsQuery = useGeckoTerminalTopPools({
-    address: exchangeState.baseToken?.contractAddress,
+    address: exchangeState.baseToken?.address,
     network,
   });
   const isLoadingPool = geckoTerminalTopPoolsQuery.isLoading;
@@ -172,10 +172,14 @@ export interface ExchangeSectionProps {
 }
 
 function ExchangeSectionWrapper({ section }: ExchangeSectionProps) {
+  const { chainId } = useWeb3React();
   const { settings } = section;
 
   const exchangeState = useExchangeContextState({
-    settings,
+    settings: {
+      ...settings,
+      defaultNetwork: chainId ? chainId : settings?.defaultNetwork,
+    },
   });
 
   return (

@@ -1,3 +1,4 @@
+import { EXCHANGE_NOTIFICATION_TYPES } from '@dexkit/exchange/constants/messages';
 import { DexkitProvider } from '@dexkit/ui/components';
 import { ThemeMode } from '@dexkit/ui/constants/enum';
 import { COMMON_NOTIFICATION_TYPES } from '@dexkit/ui/constants/messages/common';
@@ -150,6 +151,7 @@ export function AppMarketplaceProvider({
       }}
       notificationTypes={{
         ...WHITELABEL_NOTIFICATION_TYPES,
+        ...EXCHANGE_NOTIFICATION_TYPES,
         ...COMMON_NOTIFICATION_TYPES,
       }}
       transactionsAtom={transactionsAtomV2}

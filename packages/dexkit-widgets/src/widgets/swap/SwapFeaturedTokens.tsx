@@ -3,7 +3,7 @@ import { Avatar, Box, Chip, Grid } from "@mui/material";
 import { memo } from "react";
 
 import { TOKEN_ICON_URL } from "@dexkit/core/constants";
-import { Token } from "../../types";
+import { Token } from "@dexkit/core/types";
 
 export interface SwapFeaturedTokensProps {
   chainId?: ChainId;
@@ -35,7 +35,7 @@ function SwapFeaturedTokens({
                   src={
                     token.logoURI
                       ? token.logoURI
-                      : TOKEN_ICON_URL(token.contractAddress, token.chainId)
+                      : TOKEN_ICON_URL(token.address, token.chainId)
                   }
                 />
               }

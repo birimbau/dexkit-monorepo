@@ -27,8 +27,7 @@ export interface ReviewMarketOrderDialogProps {
   isPlacingOrder?: boolean;
   quoteAmount?: BigNumber;
   baseAmount?: BigNumber;
-  total?: ethers.BigNumber;
-  amountPerToken?: ethers.BigNumber;
+  price?: string;
   quoteToken?: Token;
   baseToken?: Token;
   isApproval?: boolean;
@@ -43,9 +42,9 @@ export interface ReviewMarketOrderDialogProps {
 export default function ReviewMarketOrderDialog({
   DialogProps,
   quoteToken,
-  total,
+  quoteAmount,
   isPlacingOrder,
-  amountPerToken,
+  price,
   onApprove,
   baseToken,
   isApproving,
@@ -56,28 +55,13 @@ export default function ReviewMarketOrderDialog({
   chainId,
   hash,
 }: ReviewMarketOrderDialogProps) {
-  const formattedTotal = useMemo(() => {
-    if (total) {
-      return ethers.utils.formatUnits(total, quoteToken?.decimals);
-    }
-
-    return "0.00";
-  }, [total, quoteToken]);
-
-  const pricePerTokenFormatted = useMemo(() => {
-    if (quoteToken && amountPerToken) {
-      return ethers.utils.formatUnits(amountPerToken, quoteToken?.decimals);
-    }
-  }, [amountPerToken, quoteToken]);
-
   const pricePerTokenInverseFormatted = useMemo(() => {
-    if (quoteToken && amountPerToken && amountPerToken.gt(0)) {
-      const num = ethers.utils.parseUnits("1", 18 - quoteToken.decimals);
-      const res = num.div(amountPerToken);
-
-      return ethers.utils.formatUnits(res, 6);
+    if (price && Number(price) > 0) {
+      return new Intl.NumberFormat(undefined, {
+        maximumSignificantDigits: 3,
+      }).format(1 / Number(price) || 0);
     }
-  }, [amountPerToken, quoteToken]);
+  }, [price]);
 
   const amountFormatted = useMemo(() => {
     if (amount) {
@@ -86,6 +70,14 @@ export default function ReviewMarketOrderDialog({
 
     return "0.00";
   }, [amount, baseToken]);
+
+  const total = useMemo(() => {
+    if (quoteAmount) {
+      return ethers.utils.formatUnits(quoteAmount, quoteToken?.decimals);
+    }
+
+    return "0.00";
+  }, [quoteAmount, quoteToken]);
 
   const renderActions = () => {
     if (isApproval) {
@@ -200,7 +192,7 @@ export default function ReviewMarketOrderDialog({
                 align="right"
                 variant="h5"
               >
-                {amountFormatted} 1 {baseToken?.symbol.toUpperCase()}
+                {amountFormatted} {baseToken?.symbol.toUpperCase()}
               </Typography>
             </Stack>
           </Stack>
@@ -225,8 +217,7 @@ export default function ReviewMarketOrderDialog({
                   <Stack direction="row" alignItems="center" spacing={1}>
                     {swapPrices ? (
                       <Typography color="text.secondary" variant="body1">
-                        1 {baseToken?.symbol.toUpperCase()} ={" "}
-                        {pricePerTokenFormatted}{" "}
+                        1 {baseToken?.symbol.toUpperCase()} = {price}{" "}
                         {quoteToken?.symbol.toUpperCase()}
                       </Typography>
                     ) : (
@@ -254,7 +245,7 @@ export default function ReviewMarketOrderDialog({
                     )}
                   </Typography>
                   <Typography color="text.secondary" variant="body1">
-                    {formattedTotal} {quoteToken?.symbol.toUpperCase()}
+                    {total} {quoteToken?.symbol.toUpperCase()}
                   </Typography>
                 </Stack>
               </Stack>

@@ -98,7 +98,7 @@ export function TOKEN_ICON_URL(addr: string, chainId?: ChainId) {
 
 export const GOERLI_ETHEREUM_TOKEN: Token = {
   chainId: ChainId.Goerli,
-  contractAddress: ZEROEX_NATIVE_TOKEN_ADDRESS,
+  address: ZEROEX_NATIVE_TOKEN_ADDRESS,
   name: "Ethereum",
   symbol: "ETH",
   coingeckoId: "",
@@ -109,7 +109,7 @@ export const GOERLI_ETHEREUM_TOKEN: Token = {
 
 export const ETHEREUM_TOKEN: Token = {
   chainId: ChainId.Ethereum,
-  contractAddress: ZEROEX_NATIVE_TOKEN_ADDRESS,
+  address: ZEROEX_NATIVE_TOKEN_ADDRESS,
   name: "Ethereum",
   symbol: "ETH",
   coingeckoId: "ethereum",
@@ -120,7 +120,7 @@ export const ETHEREUM_TOKEN: Token = {
 
 export const BNB_TOKEN: Token = {
   chainId: ChainId.BSC,
-  contractAddress: ZEROEX_NATIVE_TOKEN_ADDRESS,
+  address: ZEROEX_NATIVE_TOKEN_ADDRESS,
   name: "BNB",
   symbol: "BNB",
   coingeckoId: "binance-smart-chain",
@@ -131,7 +131,7 @@ export const BNB_TOKEN: Token = {
 
 export const MATIC_TOKEN: Token = {
   chainId: ChainId.Polygon,
-  contractAddress: ZEROEX_NATIVE_TOKEN_ADDRESS,
+  address: ZEROEX_NATIVE_TOKEN_ADDRESS,
   name: "Matic",
   symbol: "MATIC",
   coingeckoId: "matic-network",
@@ -142,7 +142,7 @@ export const MATIC_TOKEN: Token = {
 
 export const FANTOM_TOKEN: Token = {
   chainId: ChainId.Fantom,
-  contractAddress: ZEROEX_NATIVE_TOKEN_ADDRESS,
+  address: ZEROEX_NATIVE_TOKEN_ADDRESS,
   name: "Fantom",
   symbol: "FTM",
   coingeckoId: "fantom",
@@ -153,7 +153,7 @@ export const FANTOM_TOKEN: Token = {
 
 export const OPTIMISM_TOKEN: Token = {
   chainId: ChainId.Optimism,
-  contractAddress: ZEROEX_NATIVE_TOKEN_ADDRESS,
+  address: ZEROEX_NATIVE_TOKEN_ADDRESS,
   name: "Optimism",
   symbol: "ETH",
   coingeckoId: "optimism",
@@ -164,7 +164,7 @@ export const OPTIMISM_TOKEN: Token = {
 
 export const AVALANCHE_TOKEN: Token = {
   chainId: ChainId.Avax,
-  contractAddress: ZEROEX_NATIVE_TOKEN_ADDRESS,
+  address: ZEROEX_NATIVE_TOKEN_ADDRESS,
   name: "Avalanche",
   symbol: "AVAX",
   coingeckoId: "avalanche-2",

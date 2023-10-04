@@ -1,4 +1,4 @@
-import { Token as AppToken } from '@dexkit/core/types';
+import { Token as AppToken, TokenWhitelabelApp } from '@dexkit/core/types';
 import ExchangeSettingsForm from '@dexkit/exchange/components/ExchangeSettingsForm';
 import { DexkitExchangeSettings } from '@dexkit/exchange/types';
 import Button from '@mui/material/Button';
@@ -9,7 +9,6 @@ import Typography from '@mui/material/Typography';
 import { CssVarsTheme, Theme } from '@mui/material/styles';
 import { useCallback, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { Token } from 'src/types/blockchain';
 import { AppConfig } from '../../../../types/config';
 import { StepperButtonProps } from '../../types';
 import { ExchangePageSection } from '../../types/section';
@@ -45,9 +44,9 @@ export default function ExchangeWizardContainer({
   const tokens = useMemo<AppToken[]>(() => {
     let tokens = config?.tokens?.length ? config?.tokens[0].tokens || [] : [];
 
-    let newTokens = tokens.map<AppToken>((t: Token) => {
+    let newTokens = tokens.map<AppToken>((t: TokenWhitelabelApp) => {
       return {
-        contractAddress: t.address,
+        address: t.address,
         chainId: t.chainId as number,
         decimals: t.decimals,
         name: t.name,

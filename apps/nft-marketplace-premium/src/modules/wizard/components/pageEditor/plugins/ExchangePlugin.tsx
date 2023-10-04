@@ -46,7 +46,7 @@ const ExchangePlugin: CellPlugin<DexkitExchangeSettings> = {
             }}
             tokens={tokens.map((t) => ({
               chainId: t.chainId,
-              contractAddress: t.address,
+              address: t.address,
               decimals: t.decimals,
               symbol: t.symbol,
               name: t.name,

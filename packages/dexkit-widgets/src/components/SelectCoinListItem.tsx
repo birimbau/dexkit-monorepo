@@ -10,8 +10,8 @@ import { BigNumber, ethers } from "ethers";
 import { memo } from "react";
 
 import { TOKEN_ICON_URL } from "@dexkit/core/constants";
+import { Token } from "@dexkit/core/types";
 import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "../services/zeroex/constants";
-import { Token } from "../types";
 import { formatBigNumber, isAddressEqual } from "../utils";
 
 export interface SelectCoinListItemProps {
@@ -27,9 +27,9 @@ function SelectCoinListItem({
 }: SelectCoinListItemProps) {
   const balance = tokenBalances
     ? tokenBalances[
-        isAddressEqual(token.contractAddress, ZEROEX_NATIVE_TOKEN_ADDRESS)
+        isAddressEqual(token.address, ZEROEX_NATIVE_TOKEN_ADDRESS)
           ? ethers.constants.AddressZero
-          : token.contractAddress
+          : token.address
       ]
     : BigNumber.from(0);
 
@@ -40,7 +40,7 @@ function SelectCoinListItem({
           src={
             token.logoURI
               ? token.logoURI
-              : TOKEN_ICON_URL(token.contractAddress, token.chainId)
+              : TOKEN_ICON_URL(token.address, token.chainId)
           }
         />
       </ListItemAvatar>

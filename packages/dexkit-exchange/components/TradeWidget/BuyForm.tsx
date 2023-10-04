@@ -30,6 +30,7 @@ export interface BuyFormProps {
   chainId?: ChainId;
   quoteToken: Token;
   baseToken: Token;
+  slippage?: number;
   quoteTokenBalance?: ethers.BigNumber;
   maker?: string;
   provider?: ethers.providers.Web3Provider;
@@ -43,6 +44,7 @@ export default function BuyForm({
   baseToken: baseToken,
   quoteTokenBalance,
   buyTokenPercentageFee,
+  slippage,
   affiliateAddress,
   feeRecipient,
   maker,
@@ -109,12 +111,12 @@ export default function BuyForm({
 
   const handleQuotePrice = useCallback(async () => {
     const quote = await quoteMutation.mutateAsync({
-      buyToken: baseToken.contractAddress,
-      sellToken: quoteToken.contractAddress,
+      buyToken: baseToken.address,
+      sellToken: quoteToken.address,
       affiliateAddress: affiliateAddress ? affiliateAddress : "",
       buyAmount: ethers.utils.parseUnits("1.0", baseToken.decimals).toString(),
       skipValidation: true,
-      slippagePercentage: 0.01,
+      slippagePercentage: slippage ? slippage / 100 : 0.01,
       feeRecipient,
       buyTokenPercentageFee,
     });
@@ -151,13 +153,16 @@ export default function BuyForm({
         expirationTime: duration,
         maker,
         makerAmount: cost.toString(),
-        makerToken: quoteToken.contractAddress,
+        makerToken: quoteToken.address,
         provider,
         takerAmount: takerAmount.toString(),
-        takerToken: baseToken.contractAddress,
+        takerToken: baseToken.address,
       });
       enqueueSnackbar(
-        formatMessage({ id: "order.created", defaultMessage: "Order created" }),
+        formatMessage({
+          id: "order.created.message",
+          defaultMessage: "Order created",
+        }),
         { variant: "success" }
       );
       setShowReview(false);
@@ -182,7 +187,7 @@ export default function BuyForm({
     account,
     provider,
     spender: getZrxExchangeAddress(chainId),
-    tokenAddress: quoteToken?.contractAddress,
+    tokenAddress: quoteToken?.address,
   });
 
   const approveTokenMutation = useApproveToken();
@@ -192,7 +197,7 @@ export default function BuyForm({
       onSubmited: (hash: string) => {},
       spender: getZrxExchangeAddress(chainId),
       provider,
-      tokenContract: quoteToken?.contractAddress,
+      tokenContract: quoteToken?.address,
       amount: cost,
     });
 

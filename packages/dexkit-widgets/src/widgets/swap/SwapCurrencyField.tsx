@@ -8,7 +8,8 @@ import {
 } from "@mui/material";
 import { BigNumber } from "ethers";
 import { FormattedMessage } from "react-intl";
-import { Token } from "../../types";
+
+import { Token } from "@dexkit/core/types";
 import { formatBigNumber } from "../../utils";
 import { CurrencyField } from "./CurrencyField";
 import SwapTokenButton from "./SwapTokenButton";

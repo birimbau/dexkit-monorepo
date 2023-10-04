@@ -39,7 +39,7 @@ export default function SelectTokensDialog({
   const handleSelectToken = useCallback((token: Token) => {
     setSelectedTokens((value) => {
       let newValue = { ...value };
-      let key = `${token.chainId}-${token.contractAddress.toLocaleLowerCase()}`;
+      let key = `${token.chainId}-${token.address.toLocaleLowerCase()}`;
 
       if (value[key]) {
         delete newValue[key];
@@ -60,7 +60,7 @@ export default function SelectTokensDialog({
       let obj: any = {};
 
       for (let token of defaultSelectedTokens) {
-        obj[`${token.chainId}-${token.contractAddress.toLowerCase()}`] = token;
+        obj[`${token.chainId}-${token.address.toLowerCase()}`] = token;
       }
 
       setSelectedTokens(obj);
