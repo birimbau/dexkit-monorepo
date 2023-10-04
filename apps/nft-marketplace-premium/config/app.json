@@ -102,6 +102,11 @@
         },
         {
           "type": "Page",
+          "href": "/admin/quick-builder/exchange",
+          "name": "Create Exchange App"
+        },
+        {
+          "type": "Page",
           "href": "/admin",
           "name": "Manage Apps"
         }

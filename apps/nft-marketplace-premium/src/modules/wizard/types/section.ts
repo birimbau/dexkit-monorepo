@@ -23,8 +23,7 @@ export type SectionType =
   | 'user-contract-form'
   | 'exchange'
   | 'edition-drop-section'
-  | 'edition-drop-list-section'
-  ;
+  | 'edition-drop-list-section';
 
 export interface PageSection {
   type: SectionType;
@@ -107,7 +106,6 @@ export interface ExchangePageSection extends PageSection {
   type: 'exchange';
   settings: DexkitExchangeSettings;
 }
-
 export interface EditionDropPageSection extends PageSection {
   type: 'edition-drop-section';
   config: {
@@ -123,6 +121,7 @@ export interface EditionDropListPageSection extends PageSection {
     network: string
   }
 }
+
 
 export type AppPageSection =
   | CallToActionAppPageSection
