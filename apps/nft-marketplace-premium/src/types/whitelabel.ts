@@ -40,6 +40,7 @@ export interface SiteResponse {
   domain: string;
   cname?: string;
   domainStatus?: string;
+  emailVerified?: boolean;
   type: AppWhitelabelType;
   active?: boolean;
   previewUrl?: string;
