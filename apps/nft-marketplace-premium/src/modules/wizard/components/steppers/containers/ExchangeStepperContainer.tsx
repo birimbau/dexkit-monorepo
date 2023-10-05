@@ -138,7 +138,7 @@ export default function ExchangeStepperContainer({ site }: Props) {
                 {
                   caption: (
                     <FormattedMessage
-                      id="exchnage.app.builder"
+                      id="exchange.app.builder"
                       defaultMessage="Exchange App Builder"
                     />
                   ),
