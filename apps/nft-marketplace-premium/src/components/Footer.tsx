@@ -73,7 +73,7 @@ export function Footer({ appConfig, isPreview, appNFT }: Props) {
     <Box
       py={2}
       sx={{
-        bgcolor: (theme) => theme.palette.background.paper,
+        bgcolor: 'background.paper',
         minHeight: '50px',
         width: '100%',
       }}
@@ -113,7 +113,7 @@ export function Footer({ appConfig, isPreview, appNFT }: Props) {
                         defaultMessage={m.name}
                       />
                     </Link>
-                  )
+                  ),
                 )}
               </Stack>
             ) : (
