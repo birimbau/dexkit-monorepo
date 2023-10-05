@@ -1,5 +1,4 @@
 import OrdersTable from '@dexkit/exchange/components/OrdersTable';
-import TradeWidget from '@dexkit/exchange/components/TradeWidget';
 import TradingGraph from '@dexkit/exchange/components/TradingGraph';
 import { GET_GECKOTERMINAL_NETWORK } from '@dexkit/exchange/constants';
 import { Box, Container, Grid } from '@mui/material';
@@ -16,6 +15,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Token } from '@dexkit/core/types';
 import { isAddressEqual } from '@dexkit/core/utils';
 import PairInfo from '@dexkit/exchange/components/PairInfo';
+import TradeWidget from '@dexkit/exchange/components/TradeWidget';
 import { DexkitExchangeContext } from '@dexkit/exchange/contexts';
 import { ExchangePageSection } from '../../types/section';
 

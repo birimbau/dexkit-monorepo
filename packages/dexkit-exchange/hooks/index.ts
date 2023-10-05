@@ -111,11 +111,14 @@ export function useExchangeContextState(params: {
 }): DexkitExchangeContextState {
   const { settings } = params;
 
+
+  const { account, provider } = useWeb3React();
+
   const [defaultChain, setDefaultChain] = useState<ChainId>();
   const [quoteToken, setQuoteToken] = useState<Token | undefined>();
   const [baseToken, setBaseToken] = useState<Token | undefined>();
 
-  const { account, provider, chainId, isActive } = useWeb3React();
+
 
   const [quoteTokens, setQuoteTokens] = useState<Token[]>([]);
   const [baseTokens, setBaseTokens] = useState<Token[]>([]);
@@ -139,6 +142,7 @@ export function useExchangeContextState(params: {
 
   useEffect(() => {
     if (settings && currChainId) {
+
       const defaultPair =
         settings.defaultPairs && settings.defaultPairs[currChainId]
           ? settings.defaultPairs[currChainId]
@@ -154,7 +158,7 @@ export function useExchangeContextState(params: {
       setQuoteTokens(defaultTokens.quoteTokens);
       setBaseTokens(defaultTokens.baseTokens);
     }
-  }, [settings, currChainId]);
+  }, [currChainId, settings?.defaultTokens, settings?.defaultPairs]);
 
   useEffect(() => {
     setDefaultChain(settings?.defaultNetwork);
