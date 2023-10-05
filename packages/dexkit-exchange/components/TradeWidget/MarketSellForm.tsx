@@ -270,7 +270,7 @@ export default function MarketSellForm({
         }
         quoteAmount={
           quote?.sellAmount
-            ? BigNumber.from(quote?.sellAmount)
+            ? BigNumber.from(quote?.buyAmount)
             : BigNumber.from("0")
         }
         side="sell"

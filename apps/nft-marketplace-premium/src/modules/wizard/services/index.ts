@@ -153,37 +153,30 @@ export function getGatedConditionsText({
 
       // We check all conditions here now
       if (condition.type === 'coin') {
-        text = `${text} have ${
-          condition.amount
-        } of coin ${condition.symbol?.toUpperCase()} with address ${
-          condition.address
-        } on network ${getNetworkSlugFromChainId(
-          condition.chainId
-        )?.toUpperCase()}`;
+        text = `${text} have ${condition.amount
+          } of coin ${condition.symbol?.toUpperCase()} with address ${condition.address
+          } on network ${getNetworkSlugFromChainId(
+            condition.chainId
+          )?.toUpperCase()}`;
       }
       if (condition.type === 'collection' && condition.protocol !== 'ERC1155') {
-        text = `${text} have ${
-          condition.amount
-        } of collection ${condition.symbol?.toUpperCase()} with address ${
-          condition.address
-        } on network ${getNetworkSlugFromChainId(
-          condition.chainId
-        )?.toUpperCase()}`;
+        text = `${text} have ${condition.amount
+          } of collection ${condition.symbol?.toUpperCase()} with address ${condition.address
+          } on network ${getNetworkSlugFromChainId(
+            condition.chainId
+          )?.toUpperCase()}`;
       }
       if (
         condition.type === 'collection' &&
         condition.protocol === 'ERC1155' &&
         condition.tokenId
       ) {
-        text = `${text} have ${
-          condition.amount
-        } of collection ${condition.symbol?.toUpperCase()} with id ${
-          condition.tokenId
-        } with address ${
-          condition.address
-        } on network ${getNetworkSlugFromChainId(
-          condition.chainId
-        )?.toUpperCase()} `;
+        text = `${text} have ${condition.amount
+          } of collection ${condition.symbol?.toUpperCase()} with id ${condition.tokenId
+          } with address ${condition.address
+          } on network ${getNetworkSlugFromChainId(
+            condition.chainId
+          )?.toUpperCase()} `;
       }
     }
     return text;
@@ -204,4 +197,15 @@ export async function isProxyContract({
   } catch (err) {
     return false;
   }
+}
+
+
+export async function requestEmailConfirmatioForSite({ siteId, accessToken }: { siteId: number, accessToken: string }) {
+
+  return axios.get(`/api/email/site-verification-link?siteId=${siteId}`, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+
 }

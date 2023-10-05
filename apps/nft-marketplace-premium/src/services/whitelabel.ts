@@ -30,6 +30,50 @@ export const myAppsApi = axios.create({
   headers: { 'content-type': 'application/json' },
 });
 
+export const testAppsApi = axios.create({
+  baseURL: 'http://localhost:3001',
+  headers: { 'content-type': 'application/json' },
+});
+
+testAppsApi.interceptors.request.use(
+  async (config) => {
+    const access_token = await getAccessTokenAndRefresh();
+    if (access_token)
+      config.headers = {
+        ...config.headers,
+        authorization: `Bearer ${access_token}`,
+      };
+    return config;
+  },
+  async function (error) {
+    try {
+      const access_token = await getAccessToken();
+      if (error.response.status === 401 && access_token) {
+        return await getAccessTokenAndRefresh();
+      }
+    } catch {
+      return Promise.reject(error);
+    }
+  }
+);
+
+testAppsApi.interceptors.response.use(
+  async (response) => {
+    return response;
+  },
+  async function (error) {
+    try {
+      const access_token = await getAccessToken();
+      if (error.response.status === 401 && access_token) {
+        return await getRefreshAccessToken();
+      }
+    } catch {
+      return Promise.reject(error);
+    }
+    return Promise.reject(error);
+  }
+);
+
 myAppsApi.interceptors.request.use(
   async (config) => {
     const access_token = await getAccessTokenAndRefresh();
