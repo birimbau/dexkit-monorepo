@@ -21,6 +21,7 @@ export function ClaimConditionsContainer({ address, network, tokenId }: Props) {
   const { data, isLoading } = useClaimConditions(contract, tokenId, {
     withAllowList: true,
   });
+
   const { mutateAsync: setClaimConditions, isLoading: isLoadingSet } =
     useSetClaimConditions(contract, tokenId);
 

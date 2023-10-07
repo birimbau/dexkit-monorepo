@@ -1,5 +1,10 @@
 import { ChainId } from "@dexkit/core/constants";
-import { NETWORKS, NETWORK_COIN_IMAGE, NETWORK_COIN_NAME, NETWORK_COIN_SYMBOL } from "@dexkit/core/constants/networks";
+import {
+  NETWORKS,
+  NETWORK_COIN_IMAGE,
+  NETWORK_COIN_NAME,
+  NETWORK_COIN_SYMBOL,
+} from "@dexkit/core/constants/networks";
 import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "@dexkit/core/constants/zrx";
 import { EvmCoin, TokenWhitelabelApp } from "@dexkit/core/types";
 import { convertTokenToEvmCoin } from "@dexkit/core/utils";
@@ -11,7 +16,7 @@ export function useTokenList({
   chainId,
   includeNative = false,
   onlyTradable,
-  onlyNative
+  onlyNative,
 }: {
   chainId?: number;
   includeNative?: boolean;
@@ -20,11 +25,11 @@ export function useTokenList({
 }) {
   const appConfig = useAppConfig();
 
-  const tokensValues = useDexKitContext().tokens;
+  const tokensValues = useDexKitContext().tokens || [];
 
   const tokenListJson = useMemo(() => {
     if (appConfig.tokens?.length === 1) {
-      return appConfig.tokens[0].tokens || [];
+      return appConfig.tokens[0].tokens ? appConfig.tokens[0].tokens : [];
     }
 
     return [];
@@ -50,20 +55,21 @@ export function useTokenList({
           logoURI: NETWORK_COIN_IMAGE(chainId),
           name: NETWORK_COIN_NAME(chainId),
           symbol: NETWORK_COIN_SYMBOL(chainId),
-        }
+        },
       ] as TokenWhitelabelApp[];
     }
 
-
     let tokenList: TokenWhitelabelApp[] = [
-      ...tokens.filter((token: TokenWhitelabelApp) => token.chainId === chainId),
+      ...tokens.filter(
+        (token: TokenWhitelabelApp) => token.chainId === chainId
+      ),
     ];
 
     const wrappedAddress = NETWORKS[chainId]?.wrappedAddress;
     const isNoWrappedTokenInList =
       tokenList &&
       tokenList.findIndex((t) => t.address.toLowerCase() === wrappedAddress) ===
-      -1;
+        -1;
     // Wrapped Token is not on the list, we will add it here
     if (wrappedAddress && isNoWrappedTokenInList) {
       tokenList = [
@@ -97,14 +103,14 @@ export function useTokenList({
   }, [chainId, onlyNative, includeNative]);
 }
 
-
-
-
-export function useEvmCoins({ defaultChainId }: { defaultChainId?: ChainId }): EvmCoin[] {
+export function useEvmCoins({
+  defaultChainId,
+}: {
+  defaultChainId?: ChainId;
+}): EvmCoin[] {
   const { chainId: walletChainId } = useWeb3React();
   const chainId = defaultChainId || walletChainId;
   const tokens = useTokenList({ chainId, includeNative: true });
 
-  return useMemo(() => tokens.map(convertTokenToEvmCoin), [tokens])
-
+  return useMemo(() => tokens.map(convertTokenToEvmCoin), [tokens]);
 }

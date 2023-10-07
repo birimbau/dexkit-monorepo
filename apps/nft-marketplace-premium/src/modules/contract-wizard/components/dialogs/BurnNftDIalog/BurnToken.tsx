@@ -1,12 +1,11 @@
-import { NETWORK_NAME } from "@dexkit/core/constants/networks";
+import { NETWORK_NAME } from '@dexkit/core/constants/networks';
 import {
   getBlockExplorerUrl,
-  getNormalizedUrl,
   isAddressEqual,
   truncateAddress,
-} from "@dexkit/core/utils";
-import { useDexKitContext } from "@dexkit/ui/hooks";
-import WalletIcon from "@mui/icons-material/Wallet";
+} from '@dexkit/core/utils';
+import { useDexKitContext } from '@dexkit/ui/hooks';
+import WalletIcon from '@mui/icons-material/Wallet';
 import {
   Alert,
   Box,
@@ -14,22 +13,19 @@ import {
   Card,
   CardContent,
   CircularProgress,
-  Divider,
   Link,
   Skeleton,
   Stack,
   Typography,
   useTheme,
-} from "@mui/material";
-import { BigNumber } from "ethers";
-import { Field, Form, Formik, FormikHelpers } from "formik";
-import { TextField } from "formik-mui";
-import { useSnackbar } from "notistack";
-import { FormattedMessage, useIntl } from "react-intl";
-import { getTransferNftSchema } from "../constants/schemas";
-import { useNftBurn } from "../hooks";
+} from '@mui/material';
+import { BigNumber } from 'ethers';
+import { Field, Form, Formik, FormikHelpers } from 'formik';
+import { TextField } from 'formik-mui';
+import { useSnackbar } from 'notistack';
+import { FormattedMessage, useIntl } from 'react-intl';
 
-export interface EvmTransferNftProps {
+export interface BurnTokenProps {
   tokenId?: string;
   chainId?: number;
   account?: string;
@@ -41,7 +37,7 @@ export interface EvmTransferNftProps {
     chainId?: number;
     owner?: string;
     tokenId?: string;
-    protocol?: "ERC721" | "ERC1155";
+    protocol?: 'ERC721' | 'ERC1155';
     balance?: BigNumber;
   };
   nftMetadata?: {
@@ -55,7 +51,7 @@ export interface EvmTransferNftProps {
   onOwnershipChange?: (ownerAddress: string) => void;
 }
 
-export default function EvmBurnNft({
+export default function BurnToken({
   tokenId,
   chainId,
   contractAddress,
@@ -68,7 +64,7 @@ export default function EvmBurnNft({
   onSwitchNetwork,
   onCancel,
   onOwnershipChange,
-}: EvmTransferNftProps) {
+}: BurnTokenProps) {
   const { formatMessage } = useIntl();
   const { createNotification, watchTransactionDialog } = useDexKitContext();
 
@@ -91,20 +87,20 @@ export default function EvmBurnNft({
           values.quantity = quantity;
 
           createNotification({
-            type: "transaction",
-            icon: "receipt",
-            subtype: "nftBurnMultiple",
+            type: 'transaction',
+            icon: 'receipt',
+            subtype: 'nftBurnMultiple',
             values,
           });
-          watchTransactionDialog.open("nftBurnMultiple", values);
+          watchTransactionDialog.open('nftBurnMultiple', values);
         } else {
           createNotification({
-            type: "transaction",
-            icon: "receipt",
-            subtype: "nftBurn",
+            type: 'transaction',
+            icon: 'receipt',
+            subtype: 'nftBurn',
             values,
           });
-          watchTransactionDialog.open("nftBurn", values);
+          watchTransactionDialog.open('nftBurn', values);
         }
         watchTransactionDialog.watch(hash);
       }
@@ -123,10 +119,10 @@ export default function EvmBurnNft({
             nftBurn.reset();
             enqueueSnackbar(
               formatMessage({
-                id: "error.while.burning",
-                defaultMessage: "Error while burning",
+                id: 'error.while.burning',
+                defaultMessage: 'Error while burning',
               }),
-              { variant: "error" }
+              { variant: 'error' }
             );
           },
         }
@@ -141,7 +137,7 @@ export default function EvmBurnNft({
   };
 
   const disableNotOwner = ({ addressValue }: { addressValue: string }) => {
-    if (nft?.protocol === "ERC1155" && nft?.balance) {
+    if (nft?.protocol === 'ERC1155' && nft?.balance) {
       return !nft?.balance.gt(0);
     } else {
       return (
@@ -155,7 +151,7 @@ export default function EvmBurnNft({
     return (
       <Card>
         <CardContent>
-          <Box display={"flex"} justifyContent={"center"}>
+          <Box display={'flex'} justifyContent={'center'}>
             <Button
               onClick={onConnectWallet}
               startIcon={<WalletIcon />}
@@ -177,7 +173,7 @@ export default function EvmBurnNft({
   return (
     <Formik
       onSubmit={handleSubmit}
-      initialValues={{ address: "", quantity: "1" }}
+      initialValues={{ address: '', quantity: '1' }}
       validationSchema={getTransferNftSchema({
         protocol: nft?.protocol,
         balance: nft?.balance,
@@ -195,27 +191,6 @@ export default function EvmBurnNft({
           <Stack spacing={2}>
             <Box>
               <Stack spacing={2}>
-                <Box display={"flex"} justifyContent={"center"}>
-                  {isLoadingNftMetadata ? (
-                    <Skeleton
-                      variant="rectangular"
-                      sx={{
-                        height: theme.spacing(30),
-                        width: theme.spacing(30),
-                      }}
-                    />
-                  ) : (
-                    nftMetadata?.image && (
-                      <img
-                        src={getNormalizedUrl(nftMetadata?.image)}
-                        height={theme.spacing(30)}
-                        width={theme.spacing(30)}
-                      />
-                    )
-                  )}
-                </Box>
-
-                <Divider />
                 <Stack direction="row" justifyContent="space-between">
                   <Box>
                     <Link href="/" target="_blank" variant="caption">
@@ -236,16 +211,11 @@ export default function EvmBurnNft({
                       )}
                     </Typography>
                   </Box>
-                  {/* <Box>
-                    <IconButton>
-                      <OpenSea />
-                    </IconButton>
-                      </Box>*/}
                 </Stack>
                 <Typography variant="caption">
                   {isLoadingNft ? (
                     <Skeleton />
-                  ) : nft?.protocol === "ERC1155" ? (
+                  ) : nft?.protocol === 'ERC1155' ? (
                     nft?.balance && (
                       <FormattedMessage
                         id="you.own.nfts"
@@ -287,7 +257,7 @@ export default function EvmBurnNft({
                 </Typography>
               </Stack>
             </Box>
-            {nft?.protocol !== "ERC1155" &&
+            {nft?.protocol !== 'ERC1155' &&
               !isAddressEqual(nft?.owner, account) && (
                 <Alert severity="error">
                   <FormattedMessage
@@ -297,7 +267,7 @@ export default function EvmBurnNft({
                 </Alert>
               )}
             {/*<AddressField />*/}
-            {nft?.protocol === "ERC1155" && (
+            {nft?.protocol === 'ERC1155' && (
               <Field
                 label={
                   <FormattedMessage id="quantity" defaultMessage="Quantity" />
