@@ -1,3 +1,8 @@
+import { CoinTypes } from '@dexkit/core';
+import { NETWORKS } from '@dexkit/core/constants/networks';
+import { EvmCoin } from '@dexkit/core/types';
+import { convertTokenToEvmCoin } from '@dexkit/core/utils';
+import { useTokenList } from '@dexkit/ui';
 import {
   Button,
   Card,
@@ -10,11 +15,19 @@ import {
 import Grid from '@mui/material/Grid';
 import { useContract } from '@thirdweb-dev/react';
 import { CurrencyValue } from '@thirdweb-dev/sdk/evm';
+import { useWeb3React } from '@web3-react/core';
+import dynamic from 'next/dynamic';
 import { SyntheticEvent, useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
+import BurnTokenDialog from '../dialogs/BurnNftDIalog';
 import { ClaimConditionsContainer } from './ClaimConditionsContainer';
 
-import BurnTokenDialog from '../dialogs/BurnNftDIalog';
+const EvmTransferCoinDialog = dynamic(
+  () =>
+    import(
+      '@dexkit/ui/modules/evm-transfer-coin/components/dialogs/EvmSendDialog'
+    )
+);
 
 interface ContractTokenDropContainerProps {
   address: string;
@@ -58,6 +71,48 @@ export function ContractTokenDropContainer({
     setShowBurn(true);
   };
 
+  const { account, provider, chainId, ENSName } = useWeb3React();
+
+  const tokens = useTokenList({ chainId, includeNative: true });
+
+  const [showTransfer, setShowTransfer] = useState(false);
+
+  const handleCloseTransfer = () => {
+    setShowTransfer(false);
+  };
+
+  const handleShowTransfer = () => {
+    setShowTransfer(true);
+  };
+
+  const [token, setToken] = useState<EvmCoin>();
+
+  useEffect(() => {
+    (async () => {
+      if (chainId) {
+        const network = NETWORKS[chainId];
+
+        const meta = await contract?.erc20.get();
+        if (meta) {
+          setToken({
+            coinType: CoinTypes.EVM_ERC20,
+            contractAddress: address,
+            decimals: meta.decimals,
+            symbol: meta.symbol,
+            name: meta.name,
+            network: {
+              id: network.slug || '',
+              name: network.name,
+              chainId: chainId,
+              coingeckoPlatformId: network.coingeckoPlatformId,
+              icon: network.imageUrl,
+            },
+          });
+        }
+      }
+    })();
+  }, [address, chainId]);
+
   return (
     <>
       <BurnTokenDialog
@@ -68,6 +123,24 @@ export function ContractTokenDropContainer({
           fullWidth: true,
         }}
         contractAddress={address}
+      />
+      <EvmTransferCoinDialog
+        dialogProps={{
+          open: showTransfer,
+          onClose: handleCloseTransfer,
+          fullWidth: true,
+          maxWidth: 'sm',
+        }}
+        params={{
+          ENSName,
+          account: account,
+          chainId: chainId,
+          provider: provider,
+          coins: token
+            ? [...tokens.map(convertTokenToEvmCoin), token]
+            : tokens.map(convertTokenToEvmCoin),
+          defaultCoin: token,
+        }}
       />
       <Grid container spacing={2}>
         <Grid item xs={12}>
@@ -92,7 +165,7 @@ export function ContractTokenDropContainer({
                     </Button>
                   </Grid>
                   <Grid item>
-                    <Button variant="contained">
+                    <Button onClick={handleShowTransfer} variant="contained">
                       <FormattedMessage
                         id="transfer"
                         defaultMessage="Transfer"

@@ -1,6 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import { useContract } from '@thirdweb-dev/react';
-
+import { useContract } from "@thirdweb-dev/react";
 
 export function useNftBurn({
   contractAddress,
@@ -9,8 +8,7 @@ export function useNftBurn({
   contractAddress?: string;
   onSubmit?: (hash: string, quantity?: string) => void;
 }) {
-  const { data: contract } = useContract(contractAddress)
-
+  const { data: contract } = useContract(contractAddress);
 
   return useMutation(
     async ({
@@ -48,4 +46,40 @@ export function useNftBurn({
       return sentTx;
     }
   );
+}
+
+export function useBurnToken({
+  contractAddress,
+  onSubmit,
+}: {
+  contractAddress?: string;
+  onSubmit?: (
+    hash: string,
+    quantity: string,
+    name: string,
+    symbol: string
+  ) => void;
+}) {
+  const { data: contract } = useContract(contractAddress, "token");
+
+  return useMutation(async ({ quantity }: { quantity?: string }) => {
+    if (!contractAddress || !quantity) {
+      return false;
+    }
+
+    let tx = await contract?.erc20.burn.prepare(quantity);
+
+    const sentTx = await tx?.send();
+
+    const meta = await contract?.erc20.get();
+
+    if (onSubmit && sentTx && meta) {
+      onSubmit(sentTx.hash, quantity, meta.name, meta.symbol);
+    }
+    if (sentTx) {
+      return await sentTx.wait();
+    }
+
+    return sentTx;
+  });
 }

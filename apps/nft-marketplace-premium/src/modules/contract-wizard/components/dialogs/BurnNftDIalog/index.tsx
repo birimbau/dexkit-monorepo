@@ -1,12 +1,16 @@
+import { useDexKitContext } from '@dexkit/ui';
 import { AppDialogTitle } from '@dexkit/ui/components';
+import { useBurnToken } from '@dexkit/ui/modules/evm-burn-nft/hooks';
 import {
   Button,
+  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
   DialogProps,
 } from '@mui/material';
 import { useContract } from '@thirdweb-dev/react';
+import { useWeb3React } from '@web3-react/core';
 import { Field, Formik } from 'formik';
 import { TextField } from 'formik-mui';
 import { FormattedMessage } from 'react-intl';
@@ -30,8 +34,41 @@ export default function BurnTokenDialog({
     }
   };
 
+  const { chainId } = useWeb3React();
+
+  const { createNotification, watchTransactionDialog } = useDexKitContext();
+
+  const burnToken = useBurnToken({
+    contractAddress,
+    onSubmit: (hash, quantity, name, symbol) => {
+      if (hash && chainId) {
+        const values: {
+          name: string;
+          quantity: string;
+          symbol: string;
+        } = {
+          name,
+          quantity,
+          symbol,
+        };
+
+        if (quantity) {
+          createNotification({
+            type: 'transaction',
+            icon: 'receipt',
+            subtype: 'burnToken',
+            values,
+          });
+        }
+
+        watchTransactionDialog.open('burnToken', values);
+      }
+      watchTransactionDialog.watch(hash);
+    },
+  });
+
   const handleSubmit = async ({ amount }: { amount: string }) => {
-    await contract.data?.erc20.burn(amount);
+    await burnToken.mutateAsync({ quantity: amount });
   };
 
   return (
@@ -53,6 +90,11 @@ export default function BurnTokenDialog({
             </DialogContent>
             <DialogActions>
               <Button
+                startIcon={
+                  burnToken.isLoading ? (
+                    <CircularProgress color="inherit" size="1rem" />
+                  ) : undefined
+                }
                 variant="contained"
                 disabled={isSubmitting}
                 onClick={submitForm}
