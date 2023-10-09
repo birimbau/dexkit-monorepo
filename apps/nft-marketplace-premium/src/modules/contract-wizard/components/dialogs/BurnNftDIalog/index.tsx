@@ -1,57 +1,71 @@
 import { AppDialogTitle } from '@dexkit/ui/components';
 import {
+  Button,
   Dialog,
   DialogActions,
   DialogContent,
   DialogProps,
 } from '@mui/material';
+import { useContract } from '@thirdweb-dev/react';
+import { Field, Formik } from 'formik';
+import { TextField } from 'formik-mui';
 import { FormattedMessage } from 'react-intl';
-import { EvmTransferNftProps } from '../EvmBurnNft';
 
-export interface EvmTransferNftDialogProps {
+export interface BurnTokenDialogProps {
   DialogProps: DialogProps;
-  params: EvmTransferNftProps;
+  contractAddress: string;
 }
 
-export default function EvmBurnNftDialog({
+export default function BurnTokenDialog({
   DialogProps,
-  params,
-}: EvmTransferNftDialogProps) {
+  contractAddress,
+}: BurnTokenDialogProps) {
   const { onClose } = DialogProps;
 
-  const handleClose = (cb?: () => void) => {
-    return () => {
-      if (cb) {
-        cb();
-      }
-      if (onClose) {
-        onClose({}, 'backdropClick');
-      }
-    };
+  const contract = useContract(contractAddress, 'token');
+
+  const handleClose = () => {
+    if (onClose) {
+      onClose({}, 'backdropClick');
+    }
+  };
+
+  const handleSubmit = async ({ amount }: { amount: string }) => {
+    await contract.data?.erc20.burn(amount);
   };
 
   return (
     <Dialog {...DialogProps}>
       <AppDialogTitle
-        title={
-          <>
-            <FormattedMessage
-              id="burn.name.value"
-              defaultMessage="Burn NFT {nftName}"
-              values={{
-                nftName: params?.nftMetadata?.name
-                  ? params?.nftMetadata?.name
-                  : '',
-              }}
-            />
-          </>
-        }
-        onClose={handleClose()}
+        title={<FormattedMessage id="burn.token" defaultMessage="Burn Token" />}
+        onClose={handleClose}
       />
-      <DialogContent dividers>
-        <BurnToken {...params} />
-      </DialogContent>
-      <DialogActions></DialogActions>
+      <Formik initialValues={{ amount: '0.0' }} onSubmit={handleSubmit}>
+        {({ submitForm, isSubmitting }) => (
+          <>
+            <DialogContent dividers>
+              <Field
+                component={TextField}
+                name="amount"
+                fullWidth
+                label={<FormattedMessage id="amount" defaultMessage="amount" />}
+              />
+            </DialogContent>
+            <DialogActions>
+              <Button
+                variant="contained"
+                disabled={isSubmitting}
+                onClick={submitForm}
+              >
+                <FormattedMessage id="burn" defaultMessage="Burn" />
+              </Button>
+              <Button disabled={isSubmitting} onClick={handleClose}>
+                <FormattedMessage id="cancel" defaultMessage="Cancel" />
+              </Button>
+            </DialogActions>
+          </>
+        )}
+      </Formik>
     </Dialog>
   );
 }

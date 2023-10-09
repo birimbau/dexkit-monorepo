@@ -3,7 +3,8 @@ import Add from "@mui/icons-material/Add";
 import Cancel from "@mui/icons-material/Cancel";
 import Delete from "@mui/icons-material/Delete";
 import Edit from "@mui/icons-material/Edit";
-import { Button } from "@mui/material";
+import ImportExport from "@mui/icons-material/ImportExport";
+import { Box, Button } from "@mui/material";
 import {
   DataGrid,
   GridActionsCellItem,
@@ -19,7 +20,8 @@ import {
   GridToolbarContainer,
   GridToolbarExport,
 } from "@mui/x-data-grid";
-import { useState } from "react";
+import Papa from "papaparse";
+import { ChangeEvent, useEffect, useMemo, useRef, useState } from "react";
 import { FormattedMessage } from "react-intl";
 
 interface EditToolbarProps {
@@ -41,42 +43,119 @@ function EditToolbar(props: EditToolbarProps) {
         [id]: { mode: GridRowModes.Edit, fieldToFocus: "name" },
       }));
 
-      return [...oldRows, { id, name: "", age: "", isNew: true }];
+      return [...oldRows, { id, isNew: true }];
     });
   };
 
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
+  const handleImport = () => {
+    inputRef.current?.click();
+  };
+
+  const handleChangeFile = (e: ChangeEvent<HTMLInputElement>) => {
+    let fileReader = new FileReader();
+
+    fileReader.onload = function (ev: ProgressEvent<FileReader>) {
+      const text = ev.target?.result;
+
+      if (typeof text === "string") {
+        let csv = Papa.parse(text, { header: true });
+
+        console.log("entra aqui", csv.data);
+
+        if (
+          csv.meta.fields?.includes("address") &&
+          csv.meta.fields?.includes("quantity")
+        ) {
+          let newRows = csv.data.map((line: any, index: number) => {
+            return {
+              id: index.toString(),
+              address: line.address as string,
+              quantity: line.quantity as string,
+              isNew: false,
+            };
+          });
+
+          setRows((old) => newRows);
+        }
+      }
+    };
+
+    let file = e.target.files ? e.target.files[0] : null;
+
+    if (file) {
+      fileReader.readAsText(file);
+    }
+  };
+
   return (
-    <GridToolbarContainer>
-      <Button color="primary" startIcon={<Add />} onClick={handleClick}>
-        <FormattedMessage id="add.record" defaultMessage="Add record" />
-      </Button>
-      <GridToolbarExport />
-    </GridToolbarContainer>
+    <>
+      <input
+        style={{ display: "none" }}
+        type="file"
+        ref={(ref) => (inputRef.current = ref)}
+        onChange={handleChangeFile}
+        accept=".csv"
+      />
+      <GridToolbarContainer>
+        <Button color="primary" startIcon={<Add />} onClick={handleClick}>
+          <FormattedMessage id="add.record" defaultMessage="Add record" />
+        </Button>
+        <Button
+          color="primary"
+          startIcon={<ImportExport />}
+          onClick={handleImport}
+        >
+          <FormattedMessage id="import" defaultMessage="Import" />
+        </Button>
+        <GridToolbarExport />
+      </GridToolbarContainer>
+    </>
   );
 }
 
-export interface AppDataTableProps<T extends { id: string; isNew: boolean }> {
-  data: T[];
+export interface AppDataTableProps<T extends { id?: string; isNew?: boolean }> {
+  data: any[];
   dataColumns: {
-    validate: (value: unknown) => boolean;
+    isValid?: (value: unknown) => boolean;
     name: string;
     headerName: string;
+    editable?: boolean;
   }[];
+  onChange: (value: any) => void;
 }
 
-export default function AppDataTable<Z extends { id: string; isNew: boolean }>({
-  data,
-  dataColumns,
-}: AppDataTableProps<Z>) {
+export default function AppDataTable<
+  Z extends { id?: string; isNew?: boolean }
+>({ data, dataColumns, onChange }: AppDataTableProps<Z>) {
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
 
-  const [rows, setRows] = useState<Z[]>([]);
+  const [rows, setRows] = useState<Z[]>(
+    data.map((item, index) => {
+      return { ...item, isNew: false, id: index.toString() };
+    })
+  );
+
+  useEffect(() => {
+    onChange(
+      rows.map((row) => {
+        let newRow = { ...row };
+
+        delete newRow.id;
+        delete newRow.isNew;
+
+        return newRow;
+      })
+    );
+  }, [rows]);
 
   const handleEditClick = (id: GridRowId) => () => {
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
   };
 
   const handleSaveClick = (id: GridRowId) => () => {
+    console.log("id", id);
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
   };
 
@@ -110,7 +189,7 @@ export default function AppDataTable<Z extends { id: string; isNew: boolean }>({
     }
   };
 
-  const processRowUpdate = (newRow: GridRowModel) => {
+  const processRowUpdate = (newRow: GridRowModel<Z>) => {
     const updatedRow: Z = { ...newRow, isNew: false };
 
     setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
@@ -118,80 +197,99 @@ export default function AppDataTable<Z extends { id: string; isNew: boolean }>({
     return updatedRow;
   };
 
-  const columns: GridColDef[] = [
-    { field: "name", headerName: "Name", editable: true },
-    {
-      field: "price",
-      type: "number",
-      preProcessEditCellProps: (params: GridPreProcessEditCellProps) => {
-        const hasError = params.props.value.length < 3;
+  const columns: GridColDef[] = useMemo(() => {
+    return [
+      ...dataColumns.map((column) => {
+        return {
+          field: column.name,
+          headerName: column.headerName,
+          editable: column.editable,
+          preProcessEditCellProps: (params: GridPreProcessEditCellProps) => {
+            if (column.isValid && params.props.value !== undefined) {
+              const hasError = !column.isValid(params.props.value);
 
-        return { ...params.props, error: hasError };
-      },
-    },
-    {
-      field: "actions",
-      type: "actions",
-      headerName: "Actions",
-      width: 100,
-      cellClassName: "actions",
-      getActions: ({ id }) => {
-        const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
+              console.log("is error", hasError, column.name);
 
-        if (isInEditMode) {
+              return { ...params.props, error: hasError };
+            }
+
+            return { ...params.props };
+          },
+        };
+      }),
+      {
+        field: "actions",
+        type: "actions",
+        headerName: "Actions",
+        width: 100,
+        cellClassName: "actions",
+        getActions: ({ id }) => {
+          const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
+
+          if (isInEditMode) {
+            return [
+              <GridActionsCellItem
+                icon={<Save />}
+                label="Save"
+                sx={{
+                  color: "primary.main",
+                }}
+                onClick={handleSaveClick(id)}
+              />,
+              <GridActionsCellItem
+                icon={<Cancel />}
+                label="Cancel"
+                className="textPrimary"
+                onClick={handleCancelClick(id)}
+                color="inherit"
+              />,
+            ];
+          }
+
           return [
             <GridActionsCellItem
-              icon={<Save />}
-              label="Save"
-              sx={{
-                color: "primary.main",
-              }}
-              onClick={handleSaveClick(id)}
+              icon={<Edit />}
+              label="Edit"
+              className="textPrimary"
+              onClick={handleEditClick(id)}
+              color="inherit"
             />,
             <GridActionsCellItem
-              icon={<Cancel />}
-              label="Cancel"
-              className="textPrimary"
-              onClick={handleCancelClick(id)}
+              icon={<Delete />}
+              label="Delete"
+              onClick={handleDeleteClick(id)}
               color="inherit"
             />,
           ];
-        }
-
-        return [
-          <GridActionsCellItem
-            icon={<Edit />}
-            label="Edit"
-            className="textPrimary"
-            onClick={handleEditClick(id)}
-            color="inherit"
-          />,
-          <GridActionsCellItem
-            icon={<Delete />}
-            label="Delete"
-            onClick={handleDeleteClick(id)}
-            color="inherit"
-          />,
-        ];
+        },
       },
-    },
-  ];
+    ];
+  }, [
+    dataColumns,
+    handleSaveClick,
+    handleDeleteClick,
+    handleCancelClick,
+    rowModesModel,
+  ]);
 
   return (
-    <DataGrid
-      rows={rows}
-      columns={columns}
-      editMode="row"
-      rowModesModel={rowModesModel}
-      onRowModesModelChange={handleRowModesModelChange}
-      onRowEditStop={handleRowEditStop}
-      processRowUpdate={processRowUpdate}
-      slots={{
-        toolbar: EditToolbar,
-      }}
-      slotProps={{
-        toolbar: { setRows, setRowModesModel },
-      }}
-    />
+    <Box sx={{ minHeight: 100, width: "100%" }}>
+      <DataGrid
+        autoHeight
+        rows={rows}
+        columns={columns}
+        editMode="row"
+        rowModesModel={rowModesModel}
+        onRowModesModelChange={handleRowModesModelChange}
+        onRowEditStop={handleRowEditStop}
+        processRowUpdate={processRowUpdate}
+        slots={{
+          toolbar: EditToolbar,
+        }}
+        slotProps={{
+          toolbar: { setRows, setRowModesModel },
+        }}
+      />
+    </Box>
   );
 }

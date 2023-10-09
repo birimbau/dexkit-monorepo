@@ -4,9 +4,12 @@ import {
   Avatar,
   Box,
   Button,
+  Card,
+  CardContent,
   CircularProgress,
   Container,
   Divider,
+  Grid,
   Skeleton,
   Stack,
   Typography,
@@ -22,16 +25,17 @@ import {
   useContractMetadata,
   useTokenSupply,
 } from '@thirdweb-dev/react';
+import { CurrencyValue } from '@thirdweb-dev/sdk/evm';
 import { useWeb3React } from '@web3-react/core';
 import { BigNumber, utils } from 'ethers';
 import { useSnackbar } from 'notistack';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { TokenDropPageSection } from '../../types/section';
 
 export function parseIneligibility(
   reasons: ClaimEligibility[],
-  quantity = 0,
+  quantity = 0
 ): string {
   if (!reasons.length) {
     return '';
@@ -79,7 +83,7 @@ export default function TokenDropSection({ section }: TokenDropSectionProps) {
 
   const activeClaimCondition = useActiveClaimConditionForWallet(
     contract,
-    account,
+    account
   );
 
   const claimerProofs = useClaimerProofs(contract, account || '');
@@ -130,7 +134,7 @@ export default function TokenDropSection({ section }: TokenDropSectionProps) {
 
       return `${utils.formatUnits(
         bnPrice.mul(lazyQuantity).toString(),
-        activeClaimCondition.data?.currencyMetadata.decimals || 18,
+        activeClaimCondition.data?.currencyMetadata.decimals || 18
       )} ${activeClaimCondition.data?.currencyMetadata.symbol}`;
     }
   }, [
@@ -153,7 +157,7 @@ export default function TokenDropSection({ section }: TokenDropSectionProps) {
     let perTransactionClaimable;
     try {
       perTransactionClaimable = BigNumber.from(
-        activeClaimCondition.data?.maxClaimablePerWallet || 0,
+        activeClaimCondition.data?.maxClaimablePerWallet || 0
       );
     } catch (e) {
       perTransactionClaimable = BigNumber.from(1_000_000_000);
@@ -202,7 +206,7 @@ export default function TokenDropSection({ section }: TokenDropSectionProps) {
       availableSupply,
       numberClaimed,
       numberTotal,
-      activeClaimCondition.data,
+      activeClaimCondition.data
     );
 
     if (
@@ -257,7 +261,7 @@ export default function TokenDropSection({ section }: TokenDropSectionProps) {
 
     if (canClaim) {
       const pricePerToken = BigNumber.from(
-        activeClaimCondition.data?.currencyMetadata.value || 0,
+        activeClaimCondition.data?.currencyMetadata.value || 0
       );
       if (pricePerToken.eq(0)) {
         return <FormattedMessage id="mint.free" defaultMessage="Mint (Free)" />;
@@ -333,15 +337,30 @@ export default function TokenDropSection({ section }: TokenDropSectionProps) {
             id="error.while.minting"
             defaultMessage="Error while minting"
           />,
-          { variant: 'error' },
+          { variant: 'error' }
         );
       }
     }
   };
 
+  const [contractData, setContractData] = useState<CurrencyValue>();
+  const [balance, setBalance] = useState<string>();
+
+  useEffect(() => {
+    (async () => {
+      if (contract) {
+        const data = await contract?.totalSupply();
+
+        setContractData(data);
+
+        setBalance((await contract?.erc20.balance()).displayValue);
+      }
+    })();
+  }, [contract]);
+
   return (
     <Container>
-      <Stack spacing={2} alignItems={{ sm: 'flex-start', xs: 'center' }}>
+      <Stack spacing={2}>
         {(claimConditions.data &&
           claimConditions.data.length > 0 &&
           activeClaimCondition.isError) ||
@@ -357,7 +376,7 @@ export default function TokenDropSection({ section }: TokenDropSectionProps) {
 
         {claimConditions.data?.length === 0 ||
           (claimConditions.data?.every(
-            (cc) => cc.maxClaimableSupply === '0',
+            (cc) => cc.maxClaimableSupply === '0'
           ) && (
             <Alert severity="info">
               <FormattedMessage
@@ -383,15 +402,21 @@ export default function TokenDropSection({ section }: TokenDropSectionProps) {
           </Box>
         ) : (
           <>
-            {contractMetadata?.image && (
-              <Avatar style={{ height: '6rem', width: '6rem' }}>
-                <img
-                  src={contractMetadata?.image}
-                  alt={contractMetadata?.name!}
-                  style={{ objectFit: 'contain', aspectRatio: '1/1' }}
-                />
-              </Avatar>
-            )}
+            <Stack
+              justifyContent={{ xs: 'center', sm: 'flex-start' }}
+              alignItems="center"
+              direction="row"
+            >
+              {contractMetadata?.image && (
+                <Avatar style={{ height: '6rem', width: '6rem' }}>
+                  <img
+                    src={contractMetadata?.image}
+                    alt={contractMetadata?.name!}
+                    style={{ objectFit: 'contain', aspectRatio: '1/1' }}
+                  />
+                </Avatar>
+              )}
+            </Stack>
 
             <Box>
               <Typography
@@ -418,6 +443,64 @@ export default function TokenDropSection({ section }: TokenDropSectionProps) {
         )}
 
         <Divider />
+
+        {section.settings.variant === 'detailed' && (
+          <Box>
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm={3}>
+                <Card>
+                  <CardContent>
+                    <Typography variant="caption" color="text.secondary">
+                      <FormattedMessage
+                        id="total.supply"
+                        defaultMessage="Total Supply"
+                      />
+                    </Typography>
+                    <Typography variant="h5">
+                      {contractData ? contractData?.displayValue : <Skeleton />}{' '}
+                      {contractData?.symbol.toUpperCase()}
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+              <Grid item xs={12} sm={3}>
+                <Card>
+                  <CardContent>
+                    <Typography variant="caption" color="text.secondary">
+                      <FormattedMessage
+                        id="your.balance"
+                        defaultMessage="Your Balance"
+                      />
+                    </Typography>
+                    <Typography variant="h5">
+                      {contractData ? balance : <Skeleton />}{' '}
+                      {contractData?.symbol.toUpperCase()}
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+              <Grid item xs={12} sm={3}>
+                <Card>
+                  <CardContent>
+                    <Typography variant="caption" color="text.secondary">
+                      <FormattedMessage
+                        id="decimals"
+                        defaultMessage="Decimals"
+                      />
+                    </Typography>
+                    <Typography variant="h5">
+                      {contractData?.decimals ? (
+                        contractData?.decimals
+                      ) : (
+                        <Skeleton />
+                      )}
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+            </Grid>
+          </Box>
+        )}
 
         <Stack spacing={2} justifyContent="flex-start" alignItems="flex-start">
           <LazyTextField

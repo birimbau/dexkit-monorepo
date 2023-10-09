@@ -60,6 +60,7 @@ function TokenDrop() {
             settings: {
               address: address as string,
               network: network as string,
+              variant: 'detailed',
             },
           }}
         />

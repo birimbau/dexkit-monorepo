@@ -14,7 +14,7 @@ import { SyntheticEvent, useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { ClaimConditionsContainer } from './ClaimConditionsContainer';
 
-import AppDataTable from '@dexkit/ui/components/AppDataTable';
+import BurnTokenDialog from '../dialogs/BurnNftDIalog';
 
 interface ContractTokenDropContainerProps {
   address: string;
@@ -48,113 +48,114 @@ export function ContractTokenDropContainer({
     setCurrTab(value);
   };
 
+  const [showBurn, setShowBurn] = useState(false);
+
+  const handleCloseBurn = () => {
+    setShowBurn(false);
+  };
+
+  const handleBurn = () => {
+    setShowBurn(true);
+  };
+
   return (
-    <Grid container spacing={2}>
-      <Grid item xs={12}>
-        <AppDataTable
-          dataColumns={[
-            {
-              headerName: 'Address',
-              name: 'address',
-              validate: (value: unknown) => {},
-            },
-            {
-              headerName: 'Quantity',
-              name: 'quantity',
-              validate: (value: unknown) => {},
-            },
-          ]}
-          data={[
-            {
-              address: '0xD70453969798BfF922A75292F323304765791D12',
-              quantity: '0.1',
-            },
-          ]}
-        />
-      </Grid>
-      <Grid item xs={12}>
-        <Tabs value={currTab} onChange={handleChange}>
-          <Tab value="token" label="Token" />
-          <Tab value="claim-conditions" label="Claim Conditions" />
-        </Tabs>
-      </Grid>
-      {currTab === 'claim-conditions' && (
+    <>
+      <BurnTokenDialog
+        DialogProps={{
+          onClose: handleCloseBurn,
+          open: showBurn,
+          maxWidth: 'sm',
+          fullWidth: true,
+        }}
+        contractAddress={address}
+      />
+      <Grid container spacing={2}>
         <Grid item xs={12}>
-          <ClaimConditionsContainer address={address} network={network} />
+          <Tabs value={currTab} onChange={handleChange}>
+            <Tab value="token" label="Token" />
+            <Tab value="claim-conditions" label="Claim Conditions" />
+          </Tabs>
         </Grid>
-      )}
-      {currTab === 'token' && (
-        <Grid item xs={12}>
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <Grid container spacing={2}>
-                <Grid item>
-                  <Button variant="contained">
-                    <FormattedMessage id="burn" defaultMessage="Burn" />
-                  </Button>
-                </Grid>
-                <Grid item>
-                  <Button variant="contained">
-                    <FormattedMessage id="airdrop" defaultMessage="Airdrop" />
-                  </Button>
-                </Grid>
-                <Grid item>
-                  <Button variant="contained">
-                    <FormattedMessage id="transfer" defaultMessage="Transfer" />
-                  </Button>
+        {currTab === 'claim-conditions' && (
+          <Grid item xs={12}>
+            <ClaimConditionsContainer address={address} network={network} />
+          </Grid>
+        )}
+        {currTab === 'token' && (
+          <Grid item xs={12}>
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <Grid container spacing={2}>
+                  <Grid item>
+                    <Button onClick={handleBurn} variant="contained">
+                      <FormattedMessage id="burn" defaultMessage="Burn" />
+                    </Button>
+                  </Grid>
+                  <Grid item>
+                    <Button variant="contained">
+                      <FormattedMessage
+                        id="transfer"
+                        defaultMessage="Transfer"
+                      />
+                    </Button>
+                  </Grid>
                 </Grid>
               </Grid>
-            </Grid>
-            <Grid item xs={12} sm={3}>
-              <Card>
-                <CardContent>
-                  <Typography variant="caption" color="text.secondary">
-                    <FormattedMessage
-                      id="total.supply"
-                      defaultMessage="Total Supply"
-                    />
-                  </Typography>
-                  <Typography variant="h5">
-                    {contractData ? contractData?.displayValue : <Skeleton />}{' '}
-                    {contractData?.symbol.toUpperCase()}
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-            <Grid item xs={12} sm={3}>
-              <Card>
-                <CardContent>
-                  <Typography variant="caption" color="text.secondary">
-                    <FormattedMessage
-                      id="your.balance"
-                      defaultMessage="Your Balance"
-                    />
-                  </Typography>
-                  <Typography variant="h5">
-                    {balance} {contractData?.symbol.toUpperCase()}
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-            <Grid item xs={12} sm={3}>
-              <Card>
-                <CardContent>
-                  <Typography variant="caption" color="text.secondary">
-                    <FormattedMessage id="decimals" defaultMessage="Decimals" />
-                  </Typography>
-                  <Typography variant="h5">
-                    {contractData?.decimals ? (
-                      contractData?.decimals
-                    ) : (
-                      <Skeleton />
-                    )}
-                  </Typography>
-                </CardContent>
-              </Card>
+              <Grid item xs={12} sm={3}>
+                <Card>
+                  <CardContent>
+                    <Typography variant="caption" color="text.secondary">
+                      <FormattedMessage
+                        id="total.supply"
+                        defaultMessage="Total Supply"
+                      />
+                    </Typography>
+                    <Typography variant="h5">
+                      {contractData ? contractData?.displayValue : <Skeleton />}{' '}
+                      {contractData?.symbol.toUpperCase()}
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+              <Grid item xs={12} sm={3}>
+                <Card>
+                  <CardContent>
+                    <Typography variant="caption" color="text.secondary">
+                      <FormattedMessage
+                        id="your.balance"
+                        defaultMessage="Your Balance"
+                      />
+                    </Typography>
+                    <Typography variant="h5">
+                      {contractData ? balance : <Skeleton />}{' '}
+                      {contractData?.symbol.toUpperCase()}
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+              <Grid item xs={12} sm={3}>
+                <Card>
+                  <CardContent>
+                    <Typography variant="caption" color="text.secondary">
+                      <FormattedMessage
+                        id="decimals"
+                        defaultMessage="Decimals"
+                      />
+                    </Typography>
+                    <Typography variant="h5">
+                      {contractData?.decimals ? (
+                        contractData?.decimals
+                      ) : (
+                        <Skeleton />
+                      )}
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
             </Grid>
           </Grid>
-        </Grid>
-      )}
-    </Grid>
+        )}
+      </Grid>
+    </>
   );
 }

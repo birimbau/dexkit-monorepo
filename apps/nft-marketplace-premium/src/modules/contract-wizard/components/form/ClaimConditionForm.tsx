@@ -10,6 +10,7 @@ import { Field, useFormikContext } from 'formik';
 import { TextField } from 'formik-mui';
 import { useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
+import AllowListInput from './AllowListInput';
 
 interface Props {
   itemIndex: number;
@@ -31,14 +32,14 @@ export function ClaimConditionForm({ itemIndex, network }: Props) {
 
     if (currencyAddress) {
       return tokens.find(
-        (t) => t.address.toLowerCase() === currencyAddress.toLowerCase(),
+        (t) => t.address.toLowerCase() === currencyAddress.toLowerCase()
       );
     }
   }, [values.phases[itemIndex].currencyAddress, tokens]);
 
   return (
     <Box>
-      <Grid container spacing={1}>
+      <Grid container spacing={2}>
         <Grid item xs={12}>
           <Field
             component={TextField}
@@ -93,7 +94,7 @@ export function ClaimConditionForm({ itemIndex, network }: Props) {
                     onClick={() =>
                       setFieldValue(
                         `phases[${itemIndex}].maxClaimableSupply`,
-                        'unlimited',
+                        'unlimited'
                       )
                     }
                   >
@@ -127,7 +128,7 @@ export function ClaimConditionForm({ itemIndex, network }: Props) {
                     onClick={() =>
                       setFieldValue(
                         `phases[${itemIndex}].maxClaimablePerWallet`,
-                        'unlimited',
+                        'unlimited'
                       )
                     }
                   >
@@ -157,7 +158,10 @@ export function ClaimConditionForm({ itemIndex, network }: Props) {
             onChange={(tk: any) =>
               setFieldValue(`phases[${itemIndex}].currencyAddress`, tk.address)
             }
-          ></SearchTokenAutocomplete>
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <AllowListInput name={`phases[${itemIndex}].snapshot`} />
         </Grid>
       </Grid>
     </Box>
