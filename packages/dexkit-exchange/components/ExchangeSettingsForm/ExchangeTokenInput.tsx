@@ -48,8 +48,8 @@ export default function ExchangeTokenInput({
       fullWidth
       onChange={handleChange}
       isOptionEqualToValue={(opt, value) =>
-        opt.chainId === value.chainId &&
-        isAddressEqual(opt.address, value.address)
+        opt?.chainId === value?.chainId &&
+        isAddressEqual(opt?.address, value?.address)
       }
       renderOption={(props, opt) => (
         <MenuItem {...props}>
