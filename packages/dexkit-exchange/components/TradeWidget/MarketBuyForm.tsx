@@ -16,14 +16,16 @@ import { ChainId, useApproveToken, useTokenAllowanceQuery } from "@dexkit/core";
 import { ZeroExQuoteResponse } from "@dexkit/core/services/zrx/types";
 import { formatBigNumber, getChainName } from "@dexkit/core/utils";
 import {
-  useExecuteTransactionsDialog,
+  useDexKitContext,
   useSwitchNetworkMutation,
   useWaitTransactionConfirmation,
 } from "@dexkit/ui/hooks";
+import { AppNotificationType } from "@dexkit/ui/types";
 import { useMutation } from "@tanstack/react-query";
 import { useWeb3React } from "@web3-react/core";
+import { EXCHANGE_NOTIFICATION_TYPES } from "../../constants/messages";
 import { useZrxQuoteMutation } from "../../hooks/zrx";
-import { BigNumberUtils, getZrxExchangeAddress } from "../../utils";
+import { getZrxExchangeAddress } from "../../utils";
 import LazyDecimalInput from "./LazyDecimalInput";
 import ReviewMarketOrderDialog from "./ReviewMarketOrderDialog";
 
@@ -54,6 +56,7 @@ export default function MarketBuyForm({
   feeRecipient,
   isActive,
 }: MarketBuyFormProps) {
+  const { createNotification } = useDexKitContext();
   const [showReview, setShowReview] = useState(false);
 
   const handleChangeAmount = useCallback((value: string) => {
@@ -89,9 +92,7 @@ export default function MarketBuyForm({
     }
 
     return ["0.0", false];
-  }, [quote, baseTokenBalance, quoteToken]);
-
-  const txDialog = useExecuteTransactionsDialog();
+  }, [quote, quoteTokenBalance, quoteToken]);
 
   const approveMutation = useApproveToken();
 
@@ -106,13 +107,13 @@ export default function MarketBuyForm({
     (async () => {
       if (Number(amount) > 0) {
         let newQuote = await quoteMutation.mutateAsync({
-          buyToken: baseToken.contractAddress,
-          sellToken: quoteToken.contractAddress,
+          buyToken: baseToken.address,
+          sellToken: quoteToken.address,
           affiliateAddress: affiliateAddress ? affiliateAddress : "",
           buyAmount: ethers.utils
             .parseUnits(amount, baseToken.decimals)
             .toString(),
-          skipValidation: true,
+          skipValidation: showReview ? false : true,
           slippagePercentage: 0.01,
           feeRecipient,
           buyTokenPercentageFee,
@@ -123,7 +124,7 @@ export default function MarketBuyForm({
         }
       }
     })();
-  }, [amount, isActive]);
+  }, [amount, isActive, showReview]);
 
   const [hash, setHash] = useState<string>();
 
@@ -138,6 +139,25 @@ export default function MarketBuyForm({
       to: quote?.to,
       gasPrice: ethers.BigNumber.from(quote?.gasPrice),
       value: ethers.BigNumber.from(quote?.value),
+    });
+    const subType = "marketBuy";
+    const messageType = EXCHANGE_NOTIFICATION_TYPES[
+      subType
+    ] as AppNotificationType;
+    createNotification({
+      type: "transaction",
+      icon: messageType.icon,
+      subtype: subType,
+      metadata: {
+        hash: res?.hash,
+        chainId: chainId,
+      },
+      values: {
+        sellAmount: amount,
+        sellTokenSymbol: baseToken.symbol.toUpperCase(),
+        buyAmount: formattedCost,
+        buyTokenSymbol: quoteToken.symbol.toUpperCase(),
+      },
     });
 
     setHash(res?.hash);
@@ -157,51 +177,12 @@ export default function MarketBuyForm({
     });
   };
 
-  const [amountPerToken, setAmountPerToken] = useState("0.0");
-
-  const handleQuotePrice = async () => {
-    const quote = await quoteMutation.mutateAsync({
-      buyToken: baseToken.contractAddress,
-      sellToken: quoteToken.contractAddress,
-      affiliateAddress: affiliateAddress || "",
-      buyAmount: ethers.utils.parseUnits("1.0", baseToken.decimals).toString(),
-      skipValidation: true,
-      slippagePercentage: 0.01,
-      feeRecipient,
-      buyTokenPercentageFee: buyTokenPercentageFee
-        ? buyTokenPercentageFee / 100
-        : undefined,
-    });
-
-    const sellAmount = BigNumber.from(quote?.sellAmount || "0");
-
-    setAmountPerToken(
-      ethers.utils.formatUnits(sellAmount, quoteToken.decimals)
-    );
-  };
-
-  const parsedAmount = useMemo(() => {
-    return parseFloat(amount !== "" ? amount : "0.0");
-  }, [amount]);
-
-  const parsedAmountPerToken = useMemo(() => {
-    return ethers.utils.parseUnits(
-      amountPerToken || "0.0",
-      quoteToken.decimals
-    );
-  }, [amountPerToken, quoteToken]);
-
-  const total = useMemo(() => {
-    return new BigNumberUtils().multiply(parsedAmountPerToken, parsedAmount);
-  }, [parsedAmountPerToken, parsedAmount]);
-
   const handleConfirm = async () => {
     await sendTxMutation.mutateAsync();
   };
 
   const handleExecute = () => {
     setShowReview(true);
-    handleQuotePrice();
   };
 
   const { chainId: providerChainId, connector } = useWeb3React();
@@ -270,20 +251,24 @@ export default function MarketBuyForm({
           fullWidth: true,
           onClose: handleCloseReview,
         }}
-        total={total}
         isApproving={approveMutation.isLoading}
         isApproval={
           tokenAllowanceQuery.data !== null &&
           tokenAllowanceQuery.data?.lt(BigNumber.from(quote?.sellAmount || "0"))
         }
         chainId={chainId}
+        price={quote?.price}
         hash={hash}
-        amountPerToken={parsedAmountPerToken}
         quoteToken={quoteToken}
         baseToken={baseToken}
         baseAmount={
           quote?.sellAmount
             ? BigNumber.from(quote?.buyAmount)
+            : BigNumber.from("0")
+        }
+        quoteAmount={
+          quote?.sellAmount
+            ? BigNumber.from(quote?.sellAmount)
             : BigNumber.from("0")
         }
         side="buy"

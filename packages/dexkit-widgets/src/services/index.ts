@@ -2,12 +2,13 @@ import MultiCall, { TokenBalances } from "@indexed-finance/multicall";
 import { ethers } from "ethers";
 
 import { ERC20Abi } from "../constants/abis";
-import { Token, TokenPrices } from "../types";
+import { TokenPrices } from "../types";
 import { isAddressEqual } from "../utils";
 import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "./zeroex/constants";
 
 import { COINGECKO_ENDPOIT, COINGECKO_PLATFORM_ID } from "@dexkit/core/constants";
 import { ChainId } from "@dexkit/core/constants/enums";
+import { Token } from "@dexkit/core/types";
 import axios from "axios";
 
 export const getERC20TokenAllowance = async (
@@ -63,11 +64,11 @@ export async function getTokensBalance(
 
   const [, balances] = await multicall.getBalances(
     tokens.map((t) => {
-      if (isAddressEqual(t.contractAddress, ZEROEX_NATIVE_TOKEN_ADDRESS)) {
+      if (isAddressEqual(t.address, ZEROEX_NATIVE_TOKEN_ADDRESS)) {
         return ethers.constants.AddressZero;
       }
 
-      return t.contractAddress;
+      return t.address;
     }),
     account
   );
@@ -122,9 +123,9 @@ export const getCoinPrices = async ({
 
     if (token?.chainId) {
       results[token.chainId] = {
-        [isAddressEqual(token.contractAddress, ZEROEX_NATIVE_TOKEN_ADDRESS)
+        [isAddressEqual(token.address, ZEROEX_NATIVE_TOKEN_ADDRESS)
           ? ethers.constants.AddressZero
-          : token.contractAddress]: { [currency]: amount },
+          : token.address]: { [currency]: amount },
       };
     }
   }

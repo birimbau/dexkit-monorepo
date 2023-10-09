@@ -44,7 +44,7 @@ export default function SelectTokenList({
               src={
                 token.logoURI
                   ? getNormalizedUrl(token.logoURI)
-                  : TOKEN_ICON_URL(token.contractAddress, token.chainId)
+                  : TOKEN_ICON_URL(token.address, token.chainId)
               }
             />
           </ListItemAvatar>
@@ -56,7 +56,7 @@ export default function SelectTokenList({
             <Checkbox
               checked={isTokenEqual(
                 selectedTokens[
-                  `${token.chainId}-${token.contractAddress.toLowerCase()}`
+                  `${token.chainId}-${token.address.toLowerCase()}`
                 ],
                 token
               )}

@@ -49,7 +49,7 @@ export default function ExchangeTokenInput({
       onChange={handleChange}
       isOptionEqualToValue={(opt, value) =>
         opt.chainId === value.chainId &&
-        isAddressEqual(opt.contractAddress, value.contractAddress)
+        isAddressEqual(opt.address, value.address)
       }
       renderOption={(props, opt) => (
         <MenuItem {...props}>
@@ -58,7 +58,7 @@ export default function ExchangeTokenInput({
               src={
                 opt.logoURI
                   ? opt.logoURI
-                  : TOKEN_ICON_URL(opt.contractAddress, opt.chainId)
+                  : TOKEN_ICON_URL(opt.address, opt.chainId)
               }
             >
               <TokenIcon />
@@ -87,7 +87,7 @@ export default function ExchangeTokenInput({
                         ? field.value.logoURI
                         : field.value
                         ? TOKEN_ICON_URL(
-                            field.value.contractAddress,
+                            field.value.address,
                             field.value.chainId
                           )
                         : undefined

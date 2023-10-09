@@ -9,6 +9,7 @@ export type DexkitExchangeSettings = {
   quoteToken?: Token;
   defaultNetwork: ChainId;
   defaultPairs: { [key: number]: { quoteToken: Token; baseToken: Token } };
+  defaultSlippage?: { [key: number]: { slippage: number } };
   defaultTokens: {
     [key: number]: { quoteTokens: Token[]; baseTokens: Token[] };
   };
@@ -31,6 +32,7 @@ export type DexkitExchangeContextState = {
   feeRecipient?: string;
   affiliateAddress?: string;
   tokens?: { [key: string]: Token };
+  defaultSlippage?: { [key: string]: { slippage: number } };
   availNetworks: ChainId[];
   setPair: (baseToken: Token, quoteToken: Token) => void;
   onSwitchNetwork: (chainId: ChainId) => Promise<void>;
@@ -86,6 +88,7 @@ export const ExchangeSettingsSchema = Yup.object({
   zrxApiKey: Yup.string().optional(),
   defaultTokens: Yup.object().required(),
   defaultPairs: Yup.object().required(),
+  defaultSlippage: Yup.object(),
   buyTokenPercentageFee: Yup.number().required(),
   feeRecipientAddress: Yup.string()
     .test("address", (value) => {

@@ -145,9 +145,9 @@ export const getCoinPrices = async ({
 
     if (token?.chainId) {
       results[token.chainId] = {
-        [isAddressEqual(token.contractAddress, ZEROEX_NATIVE_TOKEN_ADDRESS)
+        [isAddressEqual(token.address, ZEROEX_NATIVE_TOKEN_ADDRESS)
           ? ethers.constants.AddressZero
-          : token.contractAddress]: { [currency]: amount },
+          : token.address]: { [currency]: amount },
       };
     }
   }

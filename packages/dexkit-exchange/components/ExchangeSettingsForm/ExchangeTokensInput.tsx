@@ -52,7 +52,7 @@ export default function ExchangeTokensInput({
                       pair.baseToken.logoURI
                         ? pair.baseToken.logoURI
                         : TOKEN_ICON_URL(
-                            pair.baseToken.contractAddress,
+                            pair.baseToken.address,
                             pair.baseToken.chainId
                           )
                     }
@@ -62,7 +62,7 @@ export default function ExchangeTokensInput({
                       pair.quoteToken.logoURI
                         ? pair.baseToken.logoURI
                         : TOKEN_ICON_URL(
-                            pair.quoteToken.contractAddress,
+                            pair.quoteToken.address,
                             pair.quoteToken.chainId
                           )
                     }

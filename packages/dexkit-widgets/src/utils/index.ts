@@ -1,10 +1,11 @@
 import { NETWORKS } from "@dexkit/core/constants/networks";
+import { Token } from "@dexkit/core/types";
 import { MagicConnector } from "@dexkit/core/types/magic";
 
 import { MetaMask } from "@web3-react/metamask";
 import { Connector } from "@web3-react/types";
 import { BigNumber, ethers } from "ethers";
-import { Token } from "../types";
+
 // import { MagicConnector } from "../connectors/magic";
 
 export function getConnectorName(connector?: Connector) {
@@ -79,7 +80,7 @@ export async function switchNetwork(connector: Connector, chainId: number) {
 }
 
 export function tokenKey(token: Token) {
-  return `${token.chainId}-${token.contractAddress.toLowerCase()}`;
+  return `${token.chainId}-${token.address.toLowerCase()}`;
 }
 
 export function getBlockExplorerUrl(chainId?: number) {

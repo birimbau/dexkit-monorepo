@@ -31,23 +31,25 @@ export const ExchangeQuickBuilderPage: NextPage = () => {
     <>
       <NextSeo
         title={formatMessage({
-          id: 'create.an.exchange.with.our.quick.app.builder',
-          defaultMessage: 'Create an exchange with our quick app builder',
+          id: 'create.an.exchange.with.our.quick.app.builder.in.seconds',
+          defaultMessage:
+            'Create an advanced crypto limit order exchange app in seconds using our quick app builder',
         })}
         description={formatMessage({
           id: 'quick.exchange.builder.description',
           defaultMessage:
-            'You can configure it to match the brand of your project and facilitate for yours trading',
+            'Elevate your cryptocurrency trading game with our Quick Builder for exchanges. Effortlessly create your exchange platform, tailor it to your needs, and embark on a journey of financial innovation. Explore the possibilities and redefine the way you build exchanges.',
         })}
         openGraph={{
           title: formatMessage({
-            id: 'create.an.exchange.with.our.quick.app.builder',
-            defaultMessage: 'Create an exchange with our quick app builder',
+            id: 'create.an.exchange.with.our.quick.app.builder.in.seconds',
+            defaultMessage:
+              'Create an advanced crypto limit order exchange app in seconds using our quick app builder',
           }),
           description: formatMessage({
             id: 'quick.exchange.builder.description',
             defaultMessage:
-              'You can configure it to match the brand of your project and facilitate for yours trading',
+              'Elevate your cryptocurrency trading game with our Quick Builder for exchanges. Effortlessly create your exchange platform, tailor it to your needs, and embark on a journey of financial innovation. Explore the possibilities and redefine the way you build exchanges.',
           }),
         }}
       />

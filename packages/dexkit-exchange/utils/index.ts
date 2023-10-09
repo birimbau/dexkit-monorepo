@@ -19,7 +19,7 @@ export const isTokenEqual = (token?: Token, other?: Token) => {
   }
 
   return (
-    isAddressEqual(token.contractAddress, other.contractAddress) &&
+    isAddressEqual(token.address, other.address) &&
     token.chainId === other.chainId
   );
 };
@@ -87,7 +87,7 @@ export function getZrxExchangeAddress(chainId?: ChainId) {
 
 export class BigNumberUtils {
   protected oneBN: ethers.BigNumber = ethers.utils.parseUnits("1", 18);
-  constructor() {}
+  constructor() { }
 
   public multiply(
     bn: ethers.BigNumber | string,

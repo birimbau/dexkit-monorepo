@@ -31,7 +31,7 @@ export default function SelectPairList({
           divider
           selected={
             baseToken?.chainId == token.chainId &&
-            isAddressEqual(token.contractAddress, baseToken?.contractAddress)
+            isAddressEqual(token.address, baseToken?.address)
           }
           key={key}
           onClick={() => onSelect(token)}
@@ -41,7 +41,7 @@ export default function SelectPairList({
               src={
                 token.logoURI
                   ? token.logoURI
-                  : TOKEN_ICON_URL(token.contractAddress, token.chainId)
+                  : TOKEN_ICON_URL(token.address, token.chainId)
               }
             >
               <TokenIcon />

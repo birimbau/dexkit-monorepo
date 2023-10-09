@@ -14,7 +14,6 @@ import {
 import { Stack } from "@mui/system";
 import { BigNumber, providers } from "ethers";
 import { FormattedMessage } from "react-intl";
-import { Token } from "../../types";
 import SwapTokenField from "./SwapCurrencyField";
 import SwapSwitchTokensButton from "./SwapSwitchTokensButton";
 import { ExecType, SwapSide } from "./types";
@@ -22,6 +21,7 @@ import { ExecType, SwapSide } from "./types";
 import { ChainId } from "@dexkit/core/constants/enums";
 import { NETWORKS } from "@dexkit/core/constants/networks";
 import { useIsMobile } from "@dexkit/core/hooks";
+import { Token } from "@dexkit/core/types";
 import { CreditCard } from "@mui/icons-material";
 import SettingsIcon from "@mui/icons-material/Settings";
 import WalletIcon from "@mui/icons-material/Wallet";

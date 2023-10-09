@@ -16,13 +16,16 @@ import { ChainId, useApproveToken, useTokenAllowanceQuery } from "@dexkit/core";
 import { ZeroExQuoteResponse } from "@dexkit/core/services/zrx/types";
 import { formatBigNumber, getChainName } from "@dexkit/core/utils";
 import {
+  useDexKitContext,
   useSwitchNetworkMutation,
   useWaitTransactionConfirmation,
 } from "@dexkit/ui/hooks";
+import { AppNotificationType } from "@dexkit/ui/types";
 import { useMutation } from "@tanstack/react-query";
 import { useWeb3React } from "@web3-react/core";
+import { EXCHANGE_NOTIFICATION_TYPES } from "../../constants/messages";
 import { useZrxQuoteMutation } from "../../hooks/zrx";
-import { BigNumberUtils, getZrxExchangeAddress } from "../../utils";
+import { getZrxExchangeAddress } from "../../utils";
 import LazyDecimalInput from "./LazyDecimalInput";
 import ReviewMarketOrderDialog from "./ReviewMarketOrderDialog";
 
@@ -57,6 +60,7 @@ export default function MarketSellForm({
     setAmount(value);
   };
 
+  const { createNotification } = useDexKitContext();
   const [amount, setAmount] = useState("0.0");
 
   const baseTokenBalanceFormatted = useMemo(() => {
@@ -101,8 +105,8 @@ export default function MarketSellForm({
     (async () => {
       if (Number(amount) > 0) {
         let theNewQuote = await quoteMutation.mutateAsync({
-          sellToken: baseToken.contractAddress,
-          buyToken: quoteToken.contractAddress,
+          sellToken: baseToken.address,
+          buyToken: quoteToken.address,
           affiliateAddress: affiliateAddress ? affiliateAddress : "",
           sellAmount: ethers.utils
             .parseUnits(amount, baseToken.decimals)
@@ -138,6 +142,26 @@ export default function MarketSellForm({
       gasPrice: ethers.BigNumber.from(quote?.gasPrice),
       value: ethers.BigNumber.from(quote?.value),
     });
+    const subType = "marketSell";
+
+    const messageType = EXCHANGE_NOTIFICATION_TYPES[
+      subType
+    ] as AppNotificationType;
+    createNotification({
+      type: "transaction",
+      icon: messageType.icon,
+      subtype: subType,
+      metadata: {
+        hash: res?.hash,
+        chainId: chainId,
+      },
+      values: {
+        sellAmount: amount,
+        sellTokenSymbol: baseToken.symbol.toUpperCase(),
+        buyAmount: receiveAmountFormatted,
+        buyTokenSymbol: quoteToken.symbol.toUpperCase(),
+      },
+    });
 
     setHash(res?.hash);
   });
@@ -146,49 +170,12 @@ export default function MarketSellForm({
     setShowReview(false);
   };
 
-  const [amountPerToken, setAmountPerToken] = useState<string>();
-
-  const handleQuotePrice = async () => {
-    const quote = await quoteMutation.mutateAsync({
-      sellToken: baseToken.contractAddress,
-      buyToken: quoteToken.contractAddress,
-      affiliateAddress: affiliateAddress || "",
-      sellAmount: ethers.utils.parseUnits("1.0", baseToken.decimals).toString(),
-      skipValidation: true,
-      slippagePercentage: 0.01,
-      feeRecipient,
-      buyTokenPercentageFee: buyTokenPercentageFee
-        ? buyTokenPercentageFee / 100
-        : undefined,
-    });
-
-    const buyAmount = BigNumber.from(quote?.buyAmount || "0");
-
-    setAmountPerToken(ethers.utils.formatUnits(buyAmount, quoteToken.decimals));
-  };
-
-  const parsedAmount = useMemo(() => {
-    return parseFloat(amount !== "" ? amount : "0.0");
-  }, [amount]);
-
-  const parsedAmountPerToken = useMemo(() => {
-    return ethers.utils.parseUnits(
-      amountPerToken || "0.0",
-      quoteToken.decimals
-    );
-  }, [amountPerToken, quoteToken]);
-
-  const total = useMemo(() => {
-    return new BigNumberUtils().multiply(parsedAmountPerToken, parsedAmount);
-  }, [parsedAmountPerToken, parsedAmount]);
-
   const handleConfirm = async () => {
     await sendTxMutation.mutateAsync();
   };
 
   const handleExecute = () => {
     setShowReview(true);
-    handleQuotePrice();
   };
 
   const handleApprove = async () => {
@@ -266,7 +253,6 @@ export default function MarketSellForm({
           fullWidth: true,
           onClose: handleCloseReview,
         }}
-        total={total}
         isApproving={approveMutation.isLoading}
         isApproval={
           tokenAllowanceQuery.data !== null &&
@@ -274,12 +260,17 @@ export default function MarketSellForm({
         }
         chainId={chainId}
         hash={hash}
-        amountPerToken={parsedAmountPerToken}
+        price={quote?.price}
         quoteToken={quoteToken}
         baseToken={baseToken}
         baseAmount={
           quote?.sellAmount
             ? BigNumber.from(quote?.sellAmount)
+            : BigNumber.from("0")
+        }
+        quoteAmount={
+          quote?.sellAmount
+            ? BigNumber.from(quote?.buyAmount)
             : BigNumber.from("0")
         }
         side="sell"

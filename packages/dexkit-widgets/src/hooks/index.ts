@@ -4,7 +4,7 @@ import { ChainId, TransactionStatus, TransactionType } from "@dexkit/core/consta
 import { useMutation, useQuery } from "@tanstack/react-query";
 
 import { WRAPPED_TOKEN_ADDRESS } from "@dexkit/core/constants/networks";
-import { TransactionMetadata } from "@dexkit/core/types";
+import { Token, TransactionMetadata } from "@dexkit/core/types";
 import { BigNumber, ethers, providers } from "ethers";
 import { useAtom } from "jotai";
 import { useUpdateAtom } from "jotai/utils";
@@ -26,9 +26,9 @@ import {
   transactionValuesAtom,
   transactionsAtom
 } from '../state/atoms';
-import { Token } from "../types";
 import { isAddressEqual, tokenKey } from "../utils";
 import { NotificationCallbackParams } from "../widgets/swap/types";
+import { convertOldTokenToNew } from "../widgets/swap/utils";
 
 export function useConnectWalletDialog() {
   const [isOpen, setOpen] = useAtom(isConnectWalletOpenAtom);
@@ -417,9 +417,15 @@ export function useRecentTokens() {
   const add = useCallback((token: Token) => {
     setRecentTokens((recentTokens) => {
       let copyRecentTokens = [...recentTokens];
-      let recentToken = recentTokens.find(
-        (r) => tokenKey(r.token) === tokenKey(token)
-      );
+      let recentToken = recentTokens.map(v => {
+        return {
+          count: v.count,
+          token: convertOldTokenToNew(v.token) as Token
+        }
+      })
+        .find(
+          (r) => tokenKey(r.token) === tokenKey(token)
+        );
 
       if (recentToken) {
         recentToken.count = recentToken.count + 1;
@@ -452,7 +458,7 @@ export function useRecentTokens() {
 
         return 0;
       })
-      .map((t) => t.token)
+      .map((t) => convertOldTokenToNew(t.token) as Token)
       .slice(0, 5);
   }, [recentTokens]);
 

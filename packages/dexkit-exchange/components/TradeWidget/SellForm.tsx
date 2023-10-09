@@ -16,7 +16,7 @@ import {
 import { useWeb3React } from "@web3-react/core";
 import { BigNumber, ethers } from "ethers";
 import { useSnackbar } from "notistack";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 import { ORDER_LIMIT_DURATIONS } from "../../constants";
 import { useSendLimitOrderMutation } from "../../hooks";
@@ -29,6 +29,7 @@ import ReviewOrderDialog from "./ReviewOrderDialog";
 export interface SellFormProps {
   baseToken: Token;
   quoteToken: Token;
+  slippage?: number;
   baseTokenBalance?: BigNumber;
   provider?: ethers.providers.Web3Provider;
   maker?: string;
@@ -45,6 +46,7 @@ export default function SellForm({
   baseTokenBalance,
   provider,
   maker,
+  slippage,
   buyTokenPercentageFee,
   feeRecipient,
   affiliateAddress,
@@ -117,12 +119,12 @@ export default function SellForm({
 
   const handleQuotePrice = async () => {
     const quote = await quoteMutation.mutateAsync({
-      buyToken: baseToken.contractAddress,
-      sellToken: quoteToken.contractAddress,
+      buyToken: baseToken.address,
+      sellToken: quoteToken.address,
       affiliateAddress: affiliateAddress || "",
       buyAmount: ethers.utils.parseUnits("1.0", baseToken.decimals).toString(),
       skipValidation: true,
-      slippagePercentage: 0.01,
+      slippagePercentage: slippage ? slippage / 100 : 0.01,
       feeRecipient,
       buyTokenPercentageFee: buyTokenPercentageFee
         ? buyTokenPercentageFee / 100
@@ -135,6 +137,9 @@ export default function SellForm({
       ethers.utils.formatUnits(sellAmount, quoteToken.decimals)
     );
   };
+  useEffect(() => {
+    handleQuotePrice();
+  }, [handleQuotePrice]);
 
   const sendLimitOrderMutation = useSendLimitOrderMutation();
 
@@ -174,7 +179,7 @@ export default function SellForm({
     account,
     provider,
     spender: getZrxExchangeAddress(chainId),
-    tokenAddress: baseToken?.contractAddress,
+    tokenAddress: baseToken?.address,
   });
 
   const approveTokenMutation = useApproveToken();
@@ -184,7 +189,7 @@ export default function SellForm({
       onSubmited: (hash: string) => {},
       spender: getZrxExchangeAddress(chainId),
       provider,
-      tokenContract: baseToken?.contractAddress,
+      tokenContract: baseToken?.address,
       amount: parsedAmountBN,
     });
 
@@ -202,13 +207,16 @@ export default function SellForm({
         expirationTime: duration,
         maker,
         makerAmount: parsedAmountBN.toString(),
-        makerToken: baseToken.contractAddress,
+        makerToken: baseToken.address,
         provider,
         takerAmount: total.toString(),
-        takerToken: quoteToken.contractAddress,
+        takerToken: quoteToken.address,
       });
       enqueueSnackbar(
-        formatMessage({ id: "order.created", defaultMessage: "Order created" }),
+        formatMessage({
+          id: "order.created.message",
+          defaultMessage: "Order created",
+        }),
         { variant: "success" }
       );
       setShowReview(false);

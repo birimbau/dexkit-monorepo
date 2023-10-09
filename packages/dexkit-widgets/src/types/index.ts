@@ -1,16 +1,6 @@
 import { ChainId } from "@dexkit/core/constants/enums";
 import { TransactionStatus } from "../constants/enum";
 
-export type Token = {
-  chainId: ChainId;
-  contractAddress: string;
-  name: string;
-  symbol: string;
-  coingeckoId?: string;
-  decimals: number;
-  isWrapped?: boolean;
-  logoURI?: string;
-};
 
 export type Network = {
   chainId: ChainId;

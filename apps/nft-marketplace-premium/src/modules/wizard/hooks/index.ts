@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { useContext, useMemo } from 'react';
 import { AppWizardConfigContext } from '../../../contexts';
 
@@ -6,8 +6,9 @@ import { ChainId } from '@dexkit/core';
 import { NETWORKS } from '@dexkit/core/constants/networks';
 import { ethers } from 'ethers';
 import { useAtomValue } from 'jotai/utils';
+import { getAccessToken } from 'src/services/auth';
 import { AppConfig } from 'src/types/config';
-import { checkGatedConditions, getTokenList } from '../services';
+import { checkGatedConditions, getTokenList, requestEmailConfirmatioForSite } from '../services';
 import { customThemeDarkAtom, customThemeLightAtom } from '../state';
 import { GatedCondition } from '../types';
 import { generateCSSVarsTheme } from '../utils';
@@ -82,4 +83,22 @@ export function useJsonRpcProvider({ chainId }: { chainId: ChainId }) {
       );
     }
   });
+}
+
+
+
+export function useSendSiteConfirmationLinkMutation() {
+
+  return useMutation(async ({ siteId }: { siteId?: number }) => {
+    const accessToken = getAccessToken();
+    if (!accessToken) {
+      throw new Error('Need access token');
+    }
+    if (!siteId) {
+      throw new Error('Need to pass site id');
+    }
+    return await requestEmailConfirmatioForSite({ siteId, accessToken })
+
+  })
+
 }

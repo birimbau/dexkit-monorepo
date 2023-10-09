@@ -53,7 +53,7 @@ export default function PairButton({
               src={
                 baseToken.logoURI
                   ? baseToken.logoURI
-                  : TOKEN_ICON_URL(baseToken.contractAddress, baseToken.chainId)
+                  : TOKEN_ICON_URL(baseToken.address, baseToken.chainId)
               }
               sx={{ height: "1rem", width: "1rem" }}
             />
@@ -61,10 +61,7 @@ export default function PairButton({
               src={
                 quoteToken.logoURI
                   ? quoteToken.logoURI
-                  : TOKEN_ICON_URL(
-                      quoteToken.contractAddress,
-                      quoteToken.chainId
-                    )
+                  : TOKEN_ICON_URL(quoteToken.address, quoteToken.chainId)
               }
               sx={{ height: "1rem", width: "1rem" }}
             />

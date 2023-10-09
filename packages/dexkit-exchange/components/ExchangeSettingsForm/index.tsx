@@ -41,7 +41,9 @@ import FormActions from "./ExchangeSettingsFormActions";
 
 import { ZEROEX_AFFILIATE_ADDRESS } from "@dexkit/core/services/zrx/constants";
 import Edit from "@mui/icons-material/Edit";
+import TextFieldMui from "@mui/material/TextField";
 import { useFormikContext } from "formik";
+import _ from "lodash";
 import {
   DEFAULT_TOKENS,
   QUOTE_TOKENS_SUGGESTION,
@@ -49,8 +51,6 @@ import {
 import ExchangeQuoteTokensInput from "./ExchangeQuoteTokensInput";
 import ExchangeTokenInput from "./ExchangeTokenInput";
 import SelectNetworksDialog from "./SelectNetworksDialog";
-
-import _ from "lodash";
 
 function SaveOnChangeListener({
   onSave,
@@ -60,7 +60,7 @@ function SaveOnChangeListener({
   onValidate?: (isValid: boolean) => void;
 }) {
   const { values, isValid } = useFormikContext<DexkitExchangeSettings>();
-
+  console.log(values);
   useEffect(() => {
     onSave(values);
   }, [values, isValid]);
@@ -165,12 +165,29 @@ export default function ExchangeSettingsForm({
           Object
         );
       }
+      if (
+        values?.defaultSlippage &&
+        values?.defaultSlippage[chainId] &&
+        values?.defaultSlippage[chainId].slippage > 50
+      ) {
+        let error = formatMessage({
+          id: "max.slippage.is.value.percent",
+          defaultMessage: "Max slippage is 50 percent",
+        });
+
+        _.setWith(
+          errors,
+          `defaultSlippage.${String(chainId)}.slippage`,
+          error,
+          Object
+        );
+      }
     }
 
     return errors;
   };
 
-  const getIntialTokens = useCallback(() => {
+  const getInitialTokens = useCallback(() => {
     const resQuote = QUOTE_TOKENS_SUGGESTION.map((t) => {
       return { chainId: t.chainId, token: t };
     }).reduce(
@@ -184,7 +201,7 @@ export default function ExchangeSettingsForm({
         let index = tokens.findIndex(
           (t) =>
             curr.token.chainId === t.chainId &&
-            isAddressEqual(curr.token.contractAddress, t.contractAddress)
+            isAddressEqual(curr.token.address, t.address)
         );
 
         if (index > -1) {
@@ -206,7 +223,7 @@ export default function ExchangeSettingsForm({
           let index = resQuote[chainId].quoteTokens.findIndex(
             (t) =>
               t.chainId === token.chainId &&
-              isAddressEqual(t.contractAddress, token.contractAddress)
+              isAddressEqual(t.address, token.address)
           );
 
           if (index === -1) {
@@ -240,8 +257,9 @@ export default function ExchangeSettingsForm({
               defaultNetwork: ChainId.Ethereum,
               defaultPairs: DEFAULT_TOKENS,
               quoteTokens: [],
-              defaultTokens: getIntialTokens(),
+              defaultTokens: getInitialTokens(),
               affiliateAddress: ZEROEX_AFFILIATE_ADDRESS,
+              defaultSlippage: {},
               zrxApiKey: "",
               buyTokenPercentageFee: 0.0,
               availNetworks: networks.map((n) => n.chainId),
@@ -252,7 +270,7 @@ export default function ExchangeSettingsForm({
       validateOnChange
       validate={handleValidate}
     >
-      {({ submitForm, values, errors }) => (
+      {({ submitForm, values, errors, setFieldValue }) => (
         <>
           <SelectNetworksDialog
             DialogProps={{
@@ -519,6 +537,61 @@ export default function ExchangeSettingsForm({
                         />
                       }
                     />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <TextFieldMui
+                      inputProps={{
+                        type: "number",
+                        min: 0,
+                        max: 50,
+                        step: 0.01,
+                      }}
+                      InputLabelProps={{ shrink: true }}
+                      label={
+                        <FormattedMessage
+                          id="default.slippage.percentage"
+                          defaultMessage="Default slippage (0-50%)"
+                        />
+                      }
+                      value={
+                        getIn(values, `defaultSlippage.${chainId}.slippage`) ||
+                        1
+                      }
+                      onChange={(event: any) => {
+                        let value = event.target.value;
+                        if (value < 0) {
+                          value = 0;
+                        }
+                        if (value > 50) {
+                          value = 50;
+                        }
+                        setFieldValue(
+                          `defaultSlippage.${chainId}.slippage`,
+                          value
+                        );
+                      }}
+                      fullWidth
+                    />
+
+                    {/*<FormikDecimalInput
+                      name={`defaultSlippage.${String(chainId)}.slippage`}
+                      decimals={2}
+                      maxDigits={3}
+                      TextFieldProps={{
+                        fullWidth: true,
+                        label: (
+                          <FormattedMessage
+                            id="default.slippage"
+                            defaultMessage="Default Slippage"
+                          />
+                        ),
+                        InputProps: {
+                          endAdornment: (
+                            <InputAdornment position="end">%</InputAdornment>
+                          ),
+                        },
+                      }}
+                    />*/}
                   </Grid>
                 </Grid>
               </Paper>

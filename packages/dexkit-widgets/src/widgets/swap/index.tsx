@@ -18,6 +18,7 @@ import SwapSettingsDialog from "./dialogs/SwapSettingsDialog";
 // }
 
 import { NETWORKS } from "@dexkit/core/constants/networks";
+import { Token } from "@dexkit/core/types";
 import SwitchNetworkDialog from "../../components/SwitchNetworkDialog";
 import SwapSelectCoinDialog from "./SwapSelectCoinDialog";
 import {
@@ -27,6 +28,7 @@ import {
   useSwapState,
 } from "./hooks";
 import { NotificationCallbackParams, RenderOptions } from "./types";
+import { convertOldTokenToNew } from "./utils";
 
 export interface SwapWidgetProps {
   renderOptions: RenderOptions;
@@ -160,11 +162,11 @@ export function SwapWidget({
     transakApiKey,
     defaultBuyToken:
       selectedChainId && configsByChain[selectedChainId]
-        ? configsByChain[selectedChainId].buyToken
+        ? convertOldTokenToNew(configsByChain[selectedChainId].buyToken)
         : undefined,
     defaultSellToken:
       selectedChainId && configsByChain[selectedChainId]
-        ? configsByChain[selectedChainId].sellToken
+        ? convertOldTokenToNew(configsByChain[selectedChainId].sellToken)
         : undefined,
   });
 
@@ -176,7 +178,9 @@ export function SwapWidget({
   });
 
   const featuredTokensByChain = useMemo(() => {
-    return featuredTokens?.filter((t) => t.chainId === selectedChainId);
+    return featuredTokens
+      ?.filter((t) => t.chainId === selectedChainId)
+      .map(convertOldTokenToNew) as Token[];
   }, [featuredTokens, selectedChainId]);
 
   const tokens = useMemo(() => {
@@ -198,7 +202,7 @@ export function SwapWidget({
           (c) =>
             c.name.toLowerCase().search(query?.toLowerCase()) > -1 ||
             c.symbol.toLowerCase().search(query?.toLowerCase()) > -1 ||
-            c.contractAddress.toLowerCase().search(query?.toLowerCase()) > -1
+            c.address.toLowerCase().search(query?.toLowerCase()) > -1
         );
       }
 
@@ -206,15 +210,15 @@ export function SwapWidget({
         ...tokens
           .filter((t) => t)
           .filter((t) => {
-            return !DKAPI_INVALID_ADDRESSES.includes(t?.contractAddress);
+            return !DKAPI_INVALID_ADDRESSES.includes(t?.address);
           }),
       ];
 
       tokensCopy = tokensCopy.filter((value, index, arr) => {
         return (
           arr
-            .map((a) => a.contractAddress.toLowerCase())
-            .indexOf(value.contractAddress.toLowerCase()) === index
+            .map((a) => a.address.toLowerCase())
+            .indexOf(value.address.toLowerCase()) === index
         );
       });
 
@@ -237,7 +241,9 @@ export function SwapWidget({
       {chainId && (
         <SwapSelectCoinDialog
           tokens={tokens}
-          recentTokens={recentTokens?.filter((t) => t.chainId === chainId)}
+          recentTokens={recentTokens
+            ?.map((t) => convertOldTokenToNew(t) as Token)
+            .filter((t) => t.chainId === chainId)}
           onQueryChange={handleQueryChange}
           onSelect={handleSelectToken}
           DialogProps={{

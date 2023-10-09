@@ -49,7 +49,7 @@ export function useSwapState() {
       .map((t) => {
         return {
           chainId: t.chainId as number,
-          contractAddress: t.address,
+          address: t.address,
           decimals: t.decimals,
           name: t.name,
           symbol: t.symbol,
