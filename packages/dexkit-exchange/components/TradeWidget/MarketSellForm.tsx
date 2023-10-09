@@ -13,6 +13,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { FormattedMessage } from "react-intl";
 
 import { ChainId, useApproveToken, useTokenAllowanceQuery } from "@dexkit/core";
+import { UserEvents } from "@dexkit/core/constants/userEvents";
 import { ZeroExQuoteResponse } from "@dexkit/core/services/zrx/types";
 import { formatBigNumber, getChainName } from "@dexkit/core/utils";
 import {
@@ -20,6 +21,7 @@ import {
   useSwitchNetworkMutation,
   useWaitTransactionConfirmation,
 } from "@dexkit/ui/hooks";
+import { useTrackUserEventsMutation } from "@dexkit/ui/hooks/userEvents";
 import { AppNotificationType } from "@dexkit/ui/types";
 import { useMutation } from "@tanstack/react-query";
 import { useWeb3React } from "@web3-react/core";
@@ -28,7 +30,6 @@ import { useZrxQuoteMutation } from "../../hooks/zrx";
 import { getZrxExchangeAddress } from "../../utils";
 import LazyDecimalInput from "./LazyDecimalInput";
 import ReviewMarketOrderDialog from "./ReviewMarketOrderDialog";
-
 export interface MarketSellFormProps {
   quoteToken: Token;
   baseToken: Token;
@@ -134,6 +135,7 @@ export default function MarketSellForm({
     transactionHash: hash,
     provider,
   });
+  const trackUserEvent = useTrackUserEventsMutation();
 
   const sendTxMutation = useMutation(async () => {
     let res = await provider?.getSigner().sendTransaction({
@@ -161,6 +163,15 @@ export default function MarketSellForm({
         buyAmount: receiveAmountFormatted,
         buyTokenSymbol: quoteToken.symbol.toUpperCase(),
       },
+    });
+
+    trackUserEvent.mutate({
+      event: UserEvents.marketSell,
+      hash: res?.hash,
+      chainId,
+      metadata: JSON.stringify({
+        quote,
+      }),
     });
 
     setHash(res?.hash);

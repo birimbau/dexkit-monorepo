@@ -1,12 +1,11 @@
+import { useTrackUserEventsMutation } from '@dexkit/ui/hooks/userEvents';
 import { Button, Grid, NoSsr, Paper, Stack, Typography } from '@mui/material';
+import { QueryErrorResetBoundary, useQueryClient } from '@tanstack/react-query';
 import { useWeb3React } from '@web3-react/core';
 import { Suspense, useCallback, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { FormattedMessage } from 'react-intl';
-
-import { QueryErrorResetBoundary, useQueryClient } from '@tanstack/react-query';
 import { ZEROEX_NATIVE_TOKEN_ADDRESS } from '../../../constants';
-
 import {
   GET_NFT_ORDERS,
   useApproveAssetMutation,
@@ -47,7 +46,7 @@ interface Props {
 export function AssetBuyOrder({ asset, orderBookItem }: Props) {
   const { account, provider, chainId } = useWeb3React();
   const connectWalletDialog = useConnectWalletDialog();
-
+  const trackUserEvent = useTrackUserEventsMutation();
   const nftSwapSdk = useSwapSdkV4(provider, asset?.chainId);
 
   const { createNotification, watchTransactionDialog } = useDexKitContext();
@@ -355,7 +354,6 @@ export function AssetBuyOrder({ asset, orderBookItem }: Props) {
       if (!account || orderBookItem === undefined) {
         return;
       }
-      console.log(quantity);
 
       setOpenConfirmBuy(false);
 

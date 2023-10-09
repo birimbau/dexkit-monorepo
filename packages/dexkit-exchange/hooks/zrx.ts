@@ -1,13 +1,14 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
-
 import { ChainId } from "@dexkit/core";
 import { ZeroExApiClient } from "@dexkit/core/services/zrx";
 import {
   ZeroExQuote,
   ZrxOrderbookResponse,
 } from "@dexkit/core/services/zrx/types";
+import { useTrackUserEventsMutation } from '@dexkit/ui/hooks/userEvents';
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { getZrxExchangeAddress } from "../utils";
 
+import { UserEvents } from "@dexkit/core/constants/userEvents";
 import { ZrxOrder } from "@dexkit/core/services/zrx/types";
 import { Contract, ethers } from "ethers";
 import { ZRX_EXCHANGE_ABI } from "../constants/zrx";
@@ -54,6 +55,7 @@ export function useZrxOrderbook({
 }
 
 export function useZrxCancelOrderMutation() {
+  const trackUserEvent = useTrackUserEventsMutation();
   return useMutation(
     async ({
       chainId,
@@ -77,6 +79,12 @@ export function useZrxCancelOrderMutation() {
       );
 
       const tx = await contract.cancelLimitOrder(order);
+
+      trackUserEvent.mutate({
+        event: UserEvents.swap, hash: tx.hash, chainId, metadata: JSON.stringify({
+          order
+        })
+      })
 
       return tx.hash;
     }
