@@ -2,7 +2,7 @@ import axios from 'axios';
 import { DEXKIT_BASE_API_URL } from '../constants';
 
 //const MY_APPS_ENDPOINT = 'https://dexkitapi-8oo4v.ondigitalocean.app';
-//const AUTH_ENDPOINT = 'http://localhost:3000/auth';
+//const AUTH_ENDPOINT = 'http://localhost:3001/auth';
 //const AUTH_ENDPOINT = 'https://goldfish-app-lh5o5.ondigitalocean.app/auth'
 const AUTH_ENDPOINT = `${DEXKIT_BASE_API_URL}/auth`;
 
@@ -43,13 +43,15 @@ export async function login({
 export async function loginApp({
   address,
   signature,
+  siteId
 }: {
   address: string;
   signature: string;
+  siteId?: number;
 }) {
   return axios.post<{ access_token: string; refresh_token: string }>(
     '/api/dex-auth/login',
-    { data: { address, signature } }
+    { data: { address, signature, siteId } }
   );
 }
 

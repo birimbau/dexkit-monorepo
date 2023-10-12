@@ -2,7 +2,6 @@ import NextAuth, { AuthOptions } from "next-auth";
 import DiscordProvider from "next-auth/providers/discord";
 import TwitterProvider from "next-auth/providers/twitter";
 import { myAppsApi } from "src/services/whitelabel";
-
 /*const getOptions = (req: any) => {
 
   return {

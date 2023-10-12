@@ -17,6 +17,7 @@ import { isAddressEqual } from '../../../utils/blockchain';
 import { ConfirmBuyDialog } from './dialogs/ConfirmBuyDialog';
 import TableSkeleton from './tables/TableSkeleton';
 
+import { UserEvents } from '@dexkit/core/constants/userEvents';
 import { useDexKitContext } from '@dexkit/ui/hooks';
 import CancelIcon from '@mui/icons-material/Cancel';
 import {
@@ -164,6 +165,15 @@ export function AssetBuyOrder({ asset, orderBookItem }: Props) {
       }
 
       if (accept) {
+        trackUserEvent.mutate({
+          event:
+            'erc1155Token' in order
+              ? UserEvents.nftAcceptOfferERC1155
+              : UserEvents.nftAcceptOfferERC721,
+          metadata: JSON.stringify(order),
+          hash,
+          chainId,
+        });
         createNotification({
           type: 'transaction',
           subtype: 'acceptOffer',
@@ -174,6 +184,15 @@ export function AssetBuyOrder({ asset, orderBookItem }: Props) {
           },
         });
       } else {
+        trackUserEvent.mutate({
+          event:
+            'erc1155Token' in order
+              ? UserEvents.nftAcceptListERC1155
+              : UserEvents.nftAcceptListERC721,
+          metadata: JSON.stringify(order),
+          hash,
+          chainId,
+        });
         createNotification({
           type: 'transaction',
           subtype: 'buyNft',
@@ -274,6 +293,15 @@ export function AssetBuyOrder({ asset, orderBookItem }: Props) {
           collectionName: asset.collectionName,
           id: asset.id,
         };
+        trackUserEvent.mutate({
+          event:
+            'erc1155Token' in order
+              ? UserEvents.cancelNFTERC1155order
+              : UserEvents.cancelNFTERC721order,
+          metadata: JSON.stringify(order),
+          hash,
+          chainId,
+        });
 
         if (order.direction === OrderDirection.Buy) {
           createNotification({

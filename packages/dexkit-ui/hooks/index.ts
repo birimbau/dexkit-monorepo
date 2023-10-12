@@ -508,7 +508,7 @@ export function useWaitTransactionConfirmation({
 }) {
   return useQuery(
     [WAIT_TRANSACTION_QUERY, transactionHash],
-    async ({}) => {
+    async ({ }) => {
       if (!ethers.utils.isHexString(transactionHash)) {
         return null;
       }
