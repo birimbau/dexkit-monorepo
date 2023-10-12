@@ -13,7 +13,7 @@ export default async function handler(
     const response = await login({ address, signature });
     const data = (await response.data);
     res.setHeader('Set-Cookie', [serialize('refresh_token', data.refresh_token, { httpOnly: true, path: '/', }), serialize('refresh_token_auth', data.refresh_token, { httpOnly: true })]);
-    myAppsApi.post('/user-events', { type: UserEvents.loginSignMessage, account: address, siteId }, {
+    myAppsApi.post('/user-events', { event: UserEvents.loginSignMessage, account: address, siteId }, {
       headers: {
         'DexKit-Api-Key': process.env.MARKETPLACE_API_KEY as string
       }
