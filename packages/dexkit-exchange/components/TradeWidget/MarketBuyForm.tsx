@@ -1,4 +1,15 @@
+import { ChainId, useApproveToken, useTokenAllowanceQuery } from "@dexkit/core";
+import { UserEvents } from "@dexkit/core/constants/userEvents";
+import { ZeroExQuoteResponse } from "@dexkit/core/services/zrx/types";
 import { Token } from "@dexkit/core/types";
+import { formatBigNumber, getChainName } from "@dexkit/core/utils";
+import {
+  useDexKitContext,
+  useSwitchNetworkMutation,
+  useWaitTransactionConfirmation,
+} from "@dexkit/ui/hooks";
+import { useTrackUserEventsMutation } from "@dexkit/ui/hooks/userEvents";
+import { AppNotificationType } from "@dexkit/ui/types";
 import {
   Box,
   Button,
@@ -8,27 +19,16 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
+import { useMutation } from "@tanstack/react-query";
+import { useWeb3React } from "@web3-react/core";
 import { BigNumber, ethers } from "ethers";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { FormattedMessage } from "react-intl";
-
-import { ChainId, useApproveToken, useTokenAllowanceQuery } from "@dexkit/core";
-import { ZeroExQuoteResponse } from "@dexkit/core/services/zrx/types";
-import { formatBigNumber, getChainName } from "@dexkit/core/utils";
-import {
-  useDexKitContext,
-  useSwitchNetworkMutation,
-  useWaitTransactionConfirmation,
-} from "@dexkit/ui/hooks";
-import { AppNotificationType } from "@dexkit/ui/types";
-import { useMutation } from "@tanstack/react-query";
-import { useWeb3React } from "@web3-react/core";
 import { EXCHANGE_NOTIFICATION_TYPES } from "../../constants/messages";
 import { useZrxQuoteMutation } from "../../hooks/zrx";
 import { getZrxExchangeAddress } from "../../utils";
 import LazyDecimalInput from "./LazyDecimalInput";
 import ReviewMarketOrderDialog from "./ReviewMarketOrderDialog";
-
 export interface MarketBuyFormProps {
   quoteToken: Token;
   baseToken: Token;
@@ -127,7 +127,7 @@ export default function MarketBuyForm({
   }, [amount, isActive, showReview]);
 
   const [hash, setHash] = useState<string>();
-
+  const trackUserEvent = useTrackUserEventsMutation();
   const waitTxResult = useWaitTransactionConfirmation({
     transactionHash: hash,
     provider,
@@ -158,6 +158,14 @@ export default function MarketBuyForm({
         buyAmount: formattedCost,
         buyTokenSymbol: quoteToken.symbol.toUpperCase(),
       },
+    });
+    trackUserEvent.mutate({
+      event: UserEvents.marketBuy,
+      hash: res?.hash,
+      chainId,
+      metadata: JSON.stringify({
+        quote,
+      }),
     });
 
     setHash(res?.hash);

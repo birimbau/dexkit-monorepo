@@ -1,3 +1,4 @@
+import { useDexKitContext } from '@dexkit/ui';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useWeb3React } from "@web3-react/core";
 import { useContext } from "react";
@@ -17,6 +18,7 @@ export function useAuth() {
 export function useLoginAccountMutation() {
   const { account, provider } = useWeb3React();
   const signMessageDialog = useSignMessageDialog();
+  const { siteId } = useDexKitContext();
 
   const { setIsLoggedIn } = useAuth();
 
@@ -29,7 +31,7 @@ export function useLoginAccountMutation() {
 
     const signature = await provider.getSigner().signMessage(messageToSign.data);
 
-    const loginResponse = await loginApp({ signature, address: account });
+    const loginResponse = await loginApp({ signature, address: account, siteId });
     if (setIsLoggedIn) {
       setIsLoggedIn(true);
     }

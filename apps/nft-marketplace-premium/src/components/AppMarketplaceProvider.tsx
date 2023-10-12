@@ -6,7 +6,12 @@ import { experimental_extendTheme as extendTheme } from '@mui/material/styles';
 import { DefaultSeo } from 'next-seo';
 import { useMemo, useState } from 'react';
 import { WHITELABEL_NOTIFICATION_TYPES } from 'src/constants/messages';
-import { useAppConfig, useLocale, useThemeMode } from 'src/hooks/app';
+import {
+  useAppConfig,
+  useLocale,
+  useSiteId,
+  useThemeMode,
+} from 'src/hooks/app';
 import {
   assetsAtom,
   currencyUserAtom,
@@ -27,6 +32,7 @@ export function AppMarketplaceProvider({
   children,
 }: AppMarketplaceContextProps) {
   const appConfig = useAppConfig();
+  const siteId = useSiteId();
   const { locale: defaultLocale } = useLocale();
   const [locale, setLocale] = useState(defaultLocale);
   const { mode } = useThemeMode();
@@ -154,8 +160,10 @@ export function AppMarketplaceProvider({
         ...EXCHANGE_NOTIFICATION_TYPES,
         ...COMMON_NOTIFICATION_TYPES,
       }}
+      userEventsURL={'/api/user-events'}
       transactionsAtom={transactionsAtomV2}
       notificationsAtom={notificationsAtom}
+      siteId={siteId}
       onChangeLocale={(loc) => setLocale(loc)}
     >
       <DefaultSeo {...SEO} />
