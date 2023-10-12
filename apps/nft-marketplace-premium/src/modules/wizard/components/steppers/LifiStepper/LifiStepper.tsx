@@ -21,10 +21,14 @@ import { useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { AppConfig } from 'src/types/config';
 
-const LifiWizardContainer = dynamic(() =>
-  import('../../containers/LifiWizardContainer').then(
-    (module) => module.default,
-  ),
+const LifiWizardContainer = dynamic(
+  () =>
+    import('../../containers/LifiWizardContainer').then(
+      (module) => module.default,
+    ),
+  {
+    ssr: false,
+  },
 );
 
 // const ThemeWizardContainer = dynamic(() =>

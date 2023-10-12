@@ -1,5 +1,34 @@
 # @dexkit/ui
 
+## 0.4.0
+
+### Minor Changes
+
+- 25e0bd1: Add feature to track user events done onchain
+- 12eb3a8: Add email confirmation to site admin, added generic action mutation dialog
+- def3b5d: refactor token interface, add slippage for market buy and sell, add in form, add notifications where needed
+
+### Patch Changes
+
+- Updated dependencies [25e0bd1]
+- Updated dependencies [12eb3a8]
+- Updated dependencies [def3b5d]
+  - @dexkit/core@0.8.0
+  - @dexkit/ui@0.8.0
+
+## 0.3.0
+
+### Minor Changes
+
+- 9f8ac92: Update MUI dependency
+
+### Patch Changes
+
+- Updated dependencies [9f8ac92]
+- Updated dependencies [a762215]
+  - @dexkit/core@0.7.0
+  - @dexkit/ui@0.7.0
+
 ## 0.2.0
 
 ### Minor Changes

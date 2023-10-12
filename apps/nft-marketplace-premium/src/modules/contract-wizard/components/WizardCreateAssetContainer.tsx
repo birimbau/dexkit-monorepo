@@ -59,7 +59,7 @@ function WizardCreateAssetContainer(props: Props) {
   >([]);
 
   const handleSubmitCollectionItemsForm = async (
-    values: CollectionItemsForm
+    values: CollectionItemsForm,
   ) => {
     setCollectionItemsFormValues(values);
     setShowConfirm(true);
@@ -271,7 +271,7 @@ function WizardCreateAssetContainer(props: Props) {
             onSubmit={handleSubmitCollectionItemsForm}
             validationSchema={CollectionItemsSchema}
           >
-            <CollectionItemsCard />
+            <CollectionItemsCard network={network} />
           </Formik>
         </Grid>
       </Grid>

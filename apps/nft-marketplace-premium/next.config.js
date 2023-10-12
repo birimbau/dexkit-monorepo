@@ -9,6 +9,7 @@ const withTM = require('next-transpile-modules')([
   '@dexkit/dexappbuilder-viewer',
   '@lifi/widget',
   '@lifi/wallet-management',
+  '@dexkit/exchange',
 ]); // pass the modules you would like to see transpiled
 
 module.exports = removeImports(

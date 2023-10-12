@@ -18,8 +18,11 @@ import { LifiPageSection } from '../../types/section';
 import LifiSettingsForm from '../forms/LifiSettingsForm';
 import { StepperButtons } from '../steppers/StepperButtons';
 
-const LiFiWidget = dynamic(() =>
-  import('@lifi/widget').then((module) => module.LiFiWidget),
+const LiFiWidget = dynamic(
+  () => import('@lifi/widget').then((module) => module.LiFiWidget),
+  {
+    ssr: false,
+  },
 );
 
 interface Props {
@@ -117,7 +120,7 @@ export default function LifiWizardContainer({
           onValidate={handleValidate}
           tokens={tokens.map((t) => ({
             chainId: t.chainId,
-            contractAddress: t.address,
+            address: t.address,
             decimals: t.decimals,
             name: t.name,
             symbol: t.symbol,

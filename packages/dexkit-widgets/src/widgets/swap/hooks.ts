@@ -1,5 +1,6 @@
 import { ChainId } from "@dexkit/core/constants/enums";
 import { NETWORKS, WRAPPED_TOKEN_ADDRESS } from "@dexkit/core/constants/networks";
+import { useTrackUserEventsMutation } from '@dexkit/ui/hooks/userEvents';
 import {
   UseMutationOptions,
   UseMutationResult,
@@ -32,7 +33,9 @@ import {
   ZEROEX_NATIVE_TOKEN_ADDRESS
 } from "../../services/zeroex/constants";
 import { ZeroExQuote, ZeroExQuoteResponse } from "../../services/zeroex/types";
-import { Token } from "../../types";
+
+import { UserEvents } from "@dexkit/core/constants/userEvents";
+import { Token } from "@dexkit/core/types";
 import { isAddressEqual, switchNetwork } from "../../utils";
 import { ExecType, NotificationCallbackParams, SwapSide } from "./types";
 
@@ -180,8 +183,8 @@ export function useSwapQuote({
 
       if (buyToken && sellToken && quoteFor) {
         const quoteParam: ZeroExQuote = {
-          buyToken: buyToken?.contractAddress,
-          sellToken: sellToken?.contractAddress,
+          buyToken: buyToken?.address,
+          sellToken: sellToken?.address,
           affiliateAddress: ZEROEX_AFFILIATE_ADDRESS,
           feeRecipient: swapFees?.recipient,
           buyTokenPercentageFee: swapFees
@@ -243,6 +246,7 @@ export function useSwapExec({
   onNotification: (params: NotificationCallbackParams) => void;
 }) {
   const { formatMessage } = useIntl();
+  const trackUserEvent = useTrackUserEventsMutation()
 
   return useMutation(
     async ({
@@ -281,6 +285,13 @@ export function useSwapExec({
           },
         });
 
+        trackUserEvent.mutate({
+          event: UserEvents.swap, hash: tx.hash, chainId, metadata: JSON.stringify({
+            quote: quote,
+            sellToken,
+            buyToken
+          })
+        })
         onHash(tx.hash);
 
         return await tx.wait();
@@ -426,13 +437,13 @@ export function useSwapState({
   const sellTokenBalance = useTokenBalance({
     provider,
     account,
-    contractAddress: lazySellToken?.contractAddress,
+    contractAddress: lazySellToken?.address,
   });
 
   const buyTokenBalance = useTokenBalance({
     provider,
     account,
-    contractAddress: lazyBuyToken?.contractAddress,
+    contractAddress: lazyBuyToken?.address,
   });
 
   const handleQuoteSuccess = useCallback(
@@ -510,7 +521,7 @@ export function useSwapState({
     if (selectSide === "sell") {
       if (
         token.chainId === buyToken?.chainId &&
-        isAddressEqual(token.contractAddress, buyToken?.contractAddress)
+        isAddressEqual(token.address, buyToken?.address)
       ) {
         handleSwapTokens();
       } else {
@@ -519,7 +530,7 @@ export function useSwapState({
     } else {
       if (
         token.chainId === sellToken?.chainId &&
-        isAddressEqual(token.contractAddress, sellToken?.contractAddress)
+        isAddressEqual(token.address, sellToken?.address)
       ) {
         handleSwapTokens();
       } else {
@@ -619,7 +630,7 @@ export function useSwapState({
         chainId &&
         isAddressEqual(
           WRAPPED_TOKEN_ADDRESS(chainId),
-          lazyBuyToken.contractAddress
+          lazyBuyToken.address
         );
 
       const isSellTokenWrapped =
@@ -627,7 +638,7 @@ export function useSwapState({
         chainId &&
         isAddressEqual(
           WRAPPED_TOKEN_ADDRESS(chainId),
-          lazySellToken.contractAddress
+          lazySellToken.address
         );
 
       if (lazyBuyToken && lazySellToken && quoteQuery.data) {
@@ -656,13 +667,13 @@ export function useSwapState({
       result =
         isBuyTokenWrapped &&
           isAddressEqual(
-            lazySellToken?.contractAddress,
+            lazySellToken?.address,
             ZEROEX_NATIVE_TOKEN_ADDRESS
           )
           ? "wrap"
           : isSellTokenWrapped &&
             isAddressEqual(
-              lazyBuyToken?.contractAddress,
+              lazyBuyToken?.address,
               ZEROEX_NATIVE_TOKEN_ADDRESS
             )
             ? "unwrap"

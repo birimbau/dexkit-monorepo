@@ -144,6 +144,7 @@ export default function DeployPage() {
               contractAddress: contract,
               name,
               chainId,
+              type: thirdwebMetadataQuery?.data?.name,
             });
           }
 

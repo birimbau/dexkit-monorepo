@@ -1,4 +1,5 @@
-import { Token } from "../types";
+
+import { Token } from "@dexkit/core/types";
 import { DkApiPlatformCoin } from "../types/api";
 
 export function apiCoinToTokens(coins?: DkApiPlatformCoin[]): Token[] {
@@ -8,7 +9,7 @@ export function apiCoinToTokens(coins?: DkApiPlatformCoin[]): Token[] {
 
   return coins.map((c) => ({
     chainId: c.chainId,
-    contractAddress: c.address,
+    address: c.address,
     decimals: c.decimals,
     name: c.coin?.name ?? "",
     symbol: c.coin?.symbol ?? "",

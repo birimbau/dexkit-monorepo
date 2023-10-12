@@ -10,7 +10,7 @@ import { memo } from "react";
 import { FormattedMessage } from "react-intl";
 
 import { TOKEN_ICON_URL } from "@dexkit/core/constants";
-import { Token } from "../../types";
+import { Token } from "@dexkit/core/types";
 
 export interface SwapTokenButtonProps {
   token?: Token;
@@ -41,7 +41,7 @@ function SwapTokenButton({ token, ButtonBaseProps }: SwapTokenButtonProps) {
             src={
               token.logoURI
                 ? token.logoURI
-                : TOKEN_ICON_URL(token.contractAddress, token.chainId)
+                : TOKEN_ICON_URL(token.address, token.chainId)
             }
           />
 

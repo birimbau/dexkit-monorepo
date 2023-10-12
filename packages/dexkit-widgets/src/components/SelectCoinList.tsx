@@ -5,8 +5,8 @@ import { Box, List, Stack, Typography } from "@mui/material";
 
 import { memo } from "react";
 import { FormattedMessage } from "react-intl";
-import { Token } from "../types";
 
+import { Token } from "@dexkit/core/types";
 import SelectCoinListItem from "./SelectCoinListItem";
 
 export interface SelectCoinListProps {

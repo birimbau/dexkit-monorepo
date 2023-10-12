@@ -16,7 +16,7 @@ export const GET_API_PREFIX = (chainId: ChainId) => {
 
 export const signUpdate = async (
   provider: ethers.providers.Web3Provider,
-  chainId: ChainId
+  chainId: ChainId,
 ) => {
   const signer = provider.getSigner();
   const domain = {
@@ -39,7 +39,7 @@ export const signUpdate = async (
   const messageSigned = ethers.utils._TypedDataEncoder.getPayload(
     domain,
     types,
-    message
+    message,
   );
 
   const sig = await signer._signTypedData(domain, types, message);
@@ -53,7 +53,7 @@ export const update = (
   room: string,
   id: string,
   account: string,
-  chainId: ChainId = ChainId.Polygon
+  chainId: ChainId = ChainId.Polygon,
 ) => {
   return gameMetadataApi.post(`/api/${id}`, {
     owner: account,
@@ -75,7 +75,7 @@ export const remove = (
   room: string,
   id: string,
   account: string,
-  chainId: ChainId = ChainId.Polygon
+  chainId: ChainId = ChainId.Polygon,
 ) => {
   return gameMetadataApi.delete(`/api/${id}`, {
     data: {
@@ -95,28 +95,28 @@ export const remove = (
 export const getGameMetadata = async (
   id: string,
   room: string,
-  chainId: ChainId = ChainId.Polygon
+  chainId: ChainId = ChainId.Polygon,
 ) => {
   return gameMetadataApi.get<GameMetadata>(
-    `/api/${room}/${GET_API_PREFIX(chainId)}${id}`
+    `/api/${room}/${GET_API_PREFIX(chainId)}${id}`,
   );
 };
 
 export const getGamesMetadata = (
   ids: string,
   room: string,
-  chainId: ChainId = ChainId.Polygon
+  chainId: ChainId = ChainId.Polygon,
 ) => {
   return gameMetadataApi.get<GameMetadata[]>(
-    `/api/${room}/all-games/${GET_API_PREFIX(chainId)}${ids}`
+    `/api/${room}/all-games/${GET_API_PREFIX(chainId)}${ids}`,
   );
 };
 
 export const getAllGamesMetadata = (
   room: string,
-  chainId: ChainId = ChainId.Polygon
+  chainId: ChainId = ChainId.Polygon,
 ) => {
   return gameMetadataApi.get<GameMetadata[]>(
-    `/api/${room}/${GET_API_PREFIX(chainId)}all-games`
+    `/api/${room}/${GET_API_PREFIX(chainId)}all-games`,
   );
 };

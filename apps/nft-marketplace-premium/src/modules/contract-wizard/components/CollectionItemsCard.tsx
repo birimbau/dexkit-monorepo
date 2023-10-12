@@ -1,3 +1,4 @@
+import { NETWORK_FROM_SLUG } from '@dexkit/core/constants/networks';
 import Delete from '@mui/icons-material/Delete';
 import {
   Button,
@@ -7,6 +8,7 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
+import { useWeb3React } from '@web3-react/core';
 import { FieldArray, Form, useFormikContext } from 'formik';
 import React, { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
@@ -14,7 +16,18 @@ import AppConfirmDialog from 'src/components/AppConfirmDialog';
 import { CollectionItemsForm } from '../types';
 import CollectionItemForm from './CollectionItemForm';
 
-export default function CollectionItemsCard() {
+interface Props {
+  network: string;
+  onlySingleMint?: boolean;
+  allowMultipleQuantity?: boolean;
+}
+
+export default function CollectionItemsCard({
+  network,
+  onlySingleMint = false,
+  allowMultipleQuantity = false,
+}: Props) {
+  const { chainId } = useWeb3React();
   const { submitForm, isValid, values } =
     useFormikContext<CollectionItemsForm>();
   const [showConfirm, setShowConfirm] = useState(false);
@@ -60,45 +73,66 @@ export default function CollectionItemsCard() {
                 <Stack spacing={2}>
                   {values.items?.map((_, index: number, arr: any[]) => (
                     <React.Fragment key={index}>
-                      <Stack direction="row" justifyContent="space-between">
-                        <Typography>NFT: {index + 1}</Typography>
-                        <Button
-                          startIcon={<Delete />}
-                          onClick={() => {
-                            setShowConfirm(true);
-                            setConfirmCallback(() => () => {
-                              arrayHelper.remove(index);
-                              setShowConfirm(false);
-                            });
-                          }}
-                        >
-                          <FormattedMessage
-                            id="remove"
-                            defaultMessage="Remove"
-                          />
-                        </Button>
-                      </Stack>
-                      <CollectionItemForm itemIndex={index} />
+                      {onlySingleMint === false && (
+                        <Stack direction="row" justifyContent="space-between">
+                          <Typography>NFT: {index + 1}</Typography>
+
+                          <Button
+                            startIcon={<Delete />}
+                            onClick={() => {
+                              setShowConfirm(true);
+                              setConfirmCallback(() => () => {
+                                arrayHelper.remove(index);
+                                setShowConfirm(false);
+                              });
+                            }}
+                          >
+                            <FormattedMessage
+                              id="remove"
+                              defaultMessage="Remove"
+                            />
+                          </Button>
+                        </Stack>
+                      )}
+                      <CollectionItemForm
+                        itemIndex={index}
+                        onlySingleMint={onlySingleMint}
+                        allowMultipleQuantity={allowMultipleQuantity}
+                      />
                       {index < arr.length - 1 && <Divider />}
                     </React.Fragment>
                   ))}
-                  <Button
-                    variant="outlined"
-                    onClick={() => arrayHelper.push({ quantity: 1 })}
-                  >
-                    <FormattedMessage id="add.nft" defaultMessage="Add nft" />
-                  </Button>
+                  {onlySingleMint === false && (
+                    <Button
+                      variant="outlined"
+                      onClick={() => arrayHelper.push({ quantity: 1 })}
+                    >
+                      <FormattedMessage id="add.nft" defaultMessage="Add nft" />
+                    </Button>
+                  )}
                   <Stack direction="row" justifyContent="space-between">
                     <Button
-                      disabled={!isValid || values.items.length === 0}
+                      disabled={
+                        !isValid ||
+                        values.items.length === 0 ||
+                        !chainId ||
+                        chainId !== NETWORK_FROM_SLUG(network)?.chainId
+                      }
                       onClick={submitForm}
                       variant="contained"
                       color="primary"
                     >
-                      <FormattedMessage
-                        id="create.nfts"
-                        defaultMessage="Create NFTs"
-                      />
+                      {onlySingleMint === false ? (
+                        <FormattedMessage
+                          id="create.nfts"
+                          defaultMessage="Create NFTs"
+                        />
+                      ) : (
+                        <FormattedMessage
+                          id="create.nft"
+                          defaultMessage="Create NFT"
+                        />
+                      )}
                     </Button>
                   </Stack>
                 </Stack>

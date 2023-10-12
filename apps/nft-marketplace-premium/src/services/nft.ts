@@ -66,9 +66,19 @@ export async function getMultipleAssetDexKitApi({
   tokenIds: string[];
 }) {
 
-  const resp = await dexkitNFTapi.get<AssetAPI>(`/asset/${networkId}/${contractAddress.toLowerCase()}/${tokenIds.join(',')}`);
+  const resp = await dexkitNFTapi.get<AssetAPI[]>(`/asset/multiple/${networkId}/${contractAddress.toLowerCase()}/${tokenIds.join(',')}`);
   // We replace it with the cdn image
-  const imageUrl = resp.data.imageUrl?.replace('dexkit-storage.nyc3.digitaloceanspaces.com', 'dexkit-storage.nyc3.cdn.digitaloceanspaces.com');
+  const imageUrl = resp.data.map((a) => {
+    let imageUrl;
+    if (a.imageUrl) {
+      imageUrl = a.imageUrl.replace('dexkit-storage.nyc3.digitaloceanspaces.com', 'dexkit-storage.nyc3.cdn.digitaloceanspaces.com');
+    }
+    if (imageUrl) {
+      return { ...a, imageUrl };
+    } else {
+      return a;
+    }
+  })
 
   if (imageUrl) {
     return { ...resp.data, imageUrl };

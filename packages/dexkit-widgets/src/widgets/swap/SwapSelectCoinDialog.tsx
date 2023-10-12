@@ -19,7 +19,8 @@ import AppDialogTitle from "../../components/AppDialogTitle";
 import SearchTextField from "../../components/SearchTextField";
 import SelectCoinList from "../../components/SelectCoinList";
 import { useAsyncMemo, useMultiTokenBalance } from "../../hooks";
-import { Token } from "../../types";
+
+import { Token } from "@dexkit/core/types";
 import SwapFeaturedTokens from "./SwapFeaturedTokens";
 
 export interface SwapSelectCoinDialogProps {

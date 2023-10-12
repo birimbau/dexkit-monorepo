@@ -31,7 +31,7 @@ import { truncateErc1155TokenId } from '../../../utils/nfts';
 import { AssetBuyOrder } from './AssetBuyOrder';
 import { AssetMedia } from './AssetMedia';
 const AssetDetailsDialog = dynamic(
-  () => import('./dialogs/AssetDetailsDialog')
+  () => import('./dialogs/AssetDetailsDialog'),
 );
 interface Props {
   asset?: Asset;
@@ -46,6 +46,7 @@ interface Props {
   disabled?: boolean;
   orderBookItem?: OrderBookItem;
   onTransfer?: (asset: Asset) => void;
+  onClickCardAction?: (asset: Asset | undefined) => void;
 }
 
 export function BaseAssetCard({
@@ -59,6 +60,7 @@ export function BaseAssetCard({
   assetMetadata,
   orderBookItem,
   onTransfer,
+  onClickCardAction,
   showAssetDetailsInDialog,
 }: Props) {
   const metadata = assetMetadata || asset?.metadata;
@@ -125,7 +127,11 @@ export function BaseAssetCard({
 
   return (
     <Card sx={{ position: 'relative', heigh: '100%', borderRadius: '12px' }}>
-      {showAssetDetailsInDialog ? (
+      {onClickCardAction ? (
+        <CardActionArea onClick={() => onClickCardAction(asset)}>
+          {assetDetails}
+        </CardActionArea>
+      ) : showAssetDetailsInDialog ? (
         <>
           {openDetailsDialog && (
             <AssetDetailsDialog
@@ -145,9 +151,9 @@ export function BaseAssetCard({
         <CardActionArea
           LinkComponent={Link}
           disabled={disabled}
-          href={`/asset/${getNetworkSlugFromChainId(asset?.chainId)}/${
-            asset?.contractAddress
-          }/${asset?.id}`}
+          href={`/asset/${getNetworkSlugFromChainId(
+            asset?.chainId,
+          )}/${asset?.contractAddress}/${asset?.id}`}
         >
           {assetDetails}
         </CardActionArea>

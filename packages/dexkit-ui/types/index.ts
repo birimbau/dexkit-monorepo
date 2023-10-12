@@ -28,9 +28,22 @@ export type CreateAppNotificationParams = {
   metadata?: Record<string, any>;
 };
 
+export type TxDialogOptions = {
+  autoExecute?: boolean;
+};
+
 export type TxDialogTransaction = {
-  icon: string;
-  title: { id: string; defaultMessage: string };
-  action: () => Promise<string>;
-  params?: any;
+  icon?: string;
+  title: {
+    id: string;
+    defaultMessage: string;
+    values?: Record<string, string>;
+  };
+  action: () => Promise<{ hash?: string; conditions?: string[] }>;
+  check?: () => { conditions?: string[]; hidden: boolean };
+  conditions?: {
+    id: string;
+    messageId: string;
+    defaultMessage: string;
+  }[];
 };

@@ -84,6 +84,7 @@ const cellPlugins = [
   CustomContentPluginTwitter,
   video,
   WidgetPlugin,
+  // ExchangePlugin,
 ];
 
 const nftPlugins = [
@@ -112,6 +113,7 @@ const nftPlugins = [
   CustomContentPluginTwitter,
   video,
   WidgetPlugin,
+  //  ExchangePlugin,
 ];
 
 const swapPlugins = [
@@ -139,6 +141,7 @@ const swapPlugins = [
   CustomContentPluginTwitter,
   video,
   WidgetPlugin,
+  // ExchangePlugin,
 ];
 
 // https://github.com/react-page/react-page/issues/970

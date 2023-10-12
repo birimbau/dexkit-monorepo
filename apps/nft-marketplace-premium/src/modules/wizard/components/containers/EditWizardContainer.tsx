@@ -34,43 +34,45 @@ import { useAppWizardConfig } from '../../hooks';
 import TourIcon from '@mui/icons-material/Tour';
 import { TourProvider, useTour } from '@reactour/tour';
 import { useAtom } from 'jotai';
+import { useAuth } from 'src/hooks/account';
 import { BuilderKit } from '../../constants';
 import { OnboardBuilderSteps } from '../../constants/onboard/steps';
 import { isFirstVisitOnEditWizardAtom } from '../../state';
 import BuilderKitMenu from '../BuilderKitMenu';
+import { ConfirmationEmailMessage } from '../ConfirmationEmailMessage';
 import SignConfigDialog from '../dialogs/SignConfigDialog';
 import { PreviewAppButton } from '../PreviewAppButton';
 import { WelcomeMessage } from '../WelcomeMessage';
 
 const OwnershipWizardContainer = dynamic(
-  () => import('./OwnershipWizardContainer')
+  () => import('./OwnershipWizardContainer'),
 );
 const CollectionWizardContainer = dynamic(
-  () => import('./CollectionWizardContainer')
+  () => import('./CollectionWizardContainer'),
 );
 const DomainWizardContainer = dynamic(() => import('./DomainWizardContainer'));
 const FooterMenuWizardContainer = dynamic(
-  () => import('./FooterMenuWizardContainer')
+  () => import('./FooterMenuWizardContainer'),
 );
 const GeneralWizardContainer = dynamic(
-  () => import('./GeneralWizardContainer')
+  () => import('./GeneralWizardContainer'),
 );
 const MarketplaceFeeWizardContainer = dynamic(
-  () => import('./MarketplaceFeeWizardContainer')
+  () => import('./MarketplaceFeeWizardContainer'),
 );
 const PagesMenuWizardContainer = dynamic(
-  () => import('./PagesMenuWizardContainer')
+  () => import('./PagesMenuWizardContainer'),
 );
 const PagesWizardContainer = dynamic(() => import('./PagesWizardContainer'));
 const SeoWizardContainer = dynamic(() => import('./SeoWizardContainer'));
 const SocialWizardContainer = dynamic(() => import('./SocialWizardContainer'));
 const SwapFeeWizardContainer = dynamic(
-  () => import('./SwapFeeWizardContainer')
+  () => import('./SwapFeeWizardContainer'),
 );
 const ThemeWizardContainer = dynamic(() => import('./ThemeWizardContainer'));
 const TokenWizardContainer = dynamic(() => import('./TokenWizardContainer'));
 const AnalyticsWizardContainer = dynamic(
-  () => import('./AnalyticsWizardContainer')
+  () => import('./AnalyticsWizardContainer'),
 );
 
 interface Props {
@@ -125,9 +127,11 @@ export function EditWizardContainer({ site }: Props) {
   }, [site?.config]);
   const { formatMessage } = useIntl();
 
+  const { isLoggedIn } = useAuth();
+
   const [activeMenu, setActiveMenu] = useState<ActiveMenu>(ActiveMenu.General);
   const [activeBuilderKit, setActiveBuilderKit] = useState<BuilderKit>(
-    BuilderKit.ALL
+    BuilderKit.ALL,
   );
 
   const theme = useTheme();
@@ -203,7 +207,7 @@ export function EditWizardContainer({ site }: Props) {
       setWizardConfig(newConfig);
     },
 
-    [wizardConfig, setWizardConfig]
+    [wizardConfig, setWizardConfig],
   );
 
   const renderMenu = () => (
@@ -610,9 +614,15 @@ export function EditWizardContainer({ site }: Props) {
               )}
             </Stack>
           </Grid>
+          {!site?.emailVerified && isLoggedIn && (
+            <Grid item xs={12} sm={12}>
+              <ConfirmationEmailMessage site={site} />
+            </Grid>
+          )}
           <Grid item xs={12} sm={2}>
             {!isMobile && renderMenu()}
           </Grid>
+
           <Grid item xs={12} sm={10}>
             <Stack spacing={2} className={'builder-forms'}>
               {activeMenu === ActiveMenu.General && config && (

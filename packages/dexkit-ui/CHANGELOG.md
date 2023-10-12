@@ -1,5 +1,42 @@
 # @dexkit/ui
 
+## 0.8.0
+
+### Minor Changes
+
+- 25e0bd1: Add feature to track user events done onchain
+- 12eb3a8: Add email confirmation to site admin, added generic action mutation dialog
+- def3b5d: refactor token interface, add slippage for market buy and sell, add in form, add notifications where needed
+
+### Patch Changes
+
+- Updated dependencies [25e0bd1]
+- Updated dependencies [def3b5d]
+  - @dexkit/core@0.8.0
+
+## 0.7.0
+
+### Minor Changes
+
+- 9f8ac92: Update MUI dependency
+
+### Patch Changes
+
+- a762215: Add transaction watcher dialog
+- Updated dependencies [9f8ac92]
+  - @dexkit/core@0.7.0
+
+## 0.6.0
+
+### Minor Changes
+
+- 2e9a359: Added edition drop feature to enable users to create drops and manage them, added image url from server to web3 forms, added pages for edition and collection drops. Added contract page for generic contracts
+
+### Patch Changes
+
+- Updated dependencies [2e9a359]
+  - @dexkit/core@0.6.0
+
 ## 0.5.0
 
 ### Minor Changes

@@ -36,7 +36,7 @@ export default function EditSectionDialog({
 }: Props) {
   const { onClose } = dialogProps;
   const [sectionType, setSectionType] = useState<SectionType | undefined>(
-    section ? section.type : 'video'
+    section ? section.type : 'video',
   );
 
   const handleClose = () => {
@@ -151,7 +151,13 @@ export default function EditSectionDialog({
                   <FormattedMessage id="contract" defaultMessage="Contract" />
                 </MenuItem>
                 <MenuItem value="user-contract-form">
-                  <FormattedMessage id="User contract form" defaultMessage="User contract form" />
+                  <FormattedMessage
+                    id="User contract form"
+                    defaultMessage="User contract form"
+                  />
+                </MenuItem>
+                <MenuItem value="exchange">
+                  <FormattedMessage id="exchange" defaultMessage="Exchange" />
                 </MenuItem>
               </Select>
             </FormControl>

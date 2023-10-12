@@ -12,6 +12,7 @@ import React from "react";
 import * as Yup from "yup";
 import DecimalInput from "./DecimalInput";
 import { ImageInput } from "./ImageInput";
+import { IpfsImageInput } from "./IpfsImageInput";
 import SharesArrayInput from "./SharesArrayInput";
 
 function validateAddress(message: string) {
@@ -102,6 +103,8 @@ export default function GenericForm({
           />
         );
       } else if (el.component?.type === "image") {
+        return <IpfsImageInput label={el.label} name={el.ref as string} />;
+      } else if (el.component?.type === "image-url") {
         return <ImageInput label={el.label} name={el.ref as string} />;
       } else if (el.component?.type === "hidden") {
         return false;
@@ -249,7 +252,11 @@ export default function GenericForm({
                   .required()
               ),
             };
-          } else if (el.component?.type === "image" && el.ref) {
+          } else if (
+            (el.component?.type === "image" ||
+              el.component?.type === "image-url") &&
+            el.ref
+          ) {
             return {
               [el.ref as string]: Yup.string().required(),
             };
@@ -420,8 +427,6 @@ export default function GenericForm({
         result[obj][key] = `ipfs://${cid}`;
       }
     }
-
-    console.log("ret", result);
 
     await onSubmit(result);
   };

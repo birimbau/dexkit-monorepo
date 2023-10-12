@@ -7,9 +7,9 @@ import { useMemo, useState } from "react";
 import { FormattedMessage, FormattedNumber } from "react-intl";
 
 import { GET_NATIVE_TOKEN } from "@dexkit/core/constants";
+import { Token } from "@dexkit/core/types";
 import { useCoinPrices, useGasPrice } from "../../hooks";
 import { ZeroExQuoteResponse } from "../../services/zeroex/types";
-import { Token } from "../../types";
 import { formatBigNumber } from "../../utils";
 
 export interface SwapFeeSummaryProps {

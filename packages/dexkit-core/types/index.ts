@@ -20,7 +20,7 @@ export type TokenWhitelabelApp = {
 
 export type Token = {
   chainId: ChainId;
-  contractAddress: string;
+  address: string;
   name: string;
   symbol: string;
   coingeckoId?: string;
@@ -31,6 +31,8 @@ export type Token = {
   isWrapped?: boolean;
   logoURI?: string;
 };
+
+
 
 export type TokenPrices = {
   [key: number]: { [key: string]: { [key: string]: number } };

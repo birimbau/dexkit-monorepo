@@ -1,4 +1,5 @@
 import { SwapConfig } from '@/modules/swap/types';
+import { DexkitExchangeSettings } from '@dexkit/exchange/types';
 import { ContractFormParams } from '@dexkit/web3forms/types';
 import React from 'react';
 import { LifiSettings } from 'src/types/lifi';
@@ -21,7 +22,10 @@ export type SectionType =
   | 'wallet'
   | 'contract'
   | 'user-contract-form'
-  | 'lifi';
+  | 'lifi'
+  | 'exchange'
+  | 'edition-drop-section'
+  | 'edition-drop-list-section';
 
 export interface PageSection {
   type: SectionType;
@@ -104,6 +108,26 @@ export interface LifiPageSection extends PageSection {
   type: 'lifi';
   settings: LifiSettings;
 }
+export interface ExchangePageSection extends PageSection {
+  type: 'exchange';
+  settings: DexkitExchangeSettings;
+}
+export interface EditionDropPageSection extends PageSection {
+  type: 'edition-drop-section';
+  config: {
+    address: string,
+    tokenId: string
+  }
+}
+
+export interface EditionDropListPageSection extends PageSection {
+  type: 'edition-drop-list-section';
+  config: {
+    address: string,
+    network: string
+  }
+}
+
 
 export type AppPageSection =
   | CallToActionAppPageSection
@@ -117,7 +141,9 @@ export type AppPageSection =
   | WalletPageSection
   | ContractPageSection
   | UserContractPageSection
-  | LifiPageSection;
+  | LifiPageSection
+  | ExchangePageSection
+  | EditionDropListPageSection;
 
 export interface SectionMetadata {
   type: SectionType;

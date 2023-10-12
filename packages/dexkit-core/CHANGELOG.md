@@ -1,5 +1,24 @@
 # @dexkit/core
 
+## 0.8.0
+
+### Minor Changes
+
+- 25e0bd1: Add feature to track user events done onchain
+- def3b5d: refactor token interface, add slippage for market buy and sell, add in form, add notifications where needed
+
+## 0.7.0
+
+### Minor Changes
+
+- 9f8ac92: Update MUI dependency
+
+## 0.6.0
+
+### Minor Changes
+
+- 2e9a359: Added edition drop feature to enable users to create drops and manage them, added image url from server to web3 forms, added pages for edition and collection drops. Added contract page for generic contracts
+
 ## 0.5.0
 
 ### Minor Changes

@@ -15,11 +15,14 @@ export function NotificationMessage({ types, type, values }: Props) {
         .map((key) => {
           return { key, value: values[key] };
         })
-        .reduce((curr: Record<string, ReactNode>, next) => {
-          curr[next.key] = <strong>{next.value}</strong>;
+        .reduce(
+          (curr: Record<string, ReactNode>, next) => {
+            curr[next.key] = <strong>{next.value}</strong>;
 
-          return curr;
-        }, {} as Record<string, ReactNode>);
+            return curr;
+          },
+          {} as Record<string, ReactNode>
+        );
     }
 
     return {};
@@ -27,8 +30,8 @@ export function NotificationMessage({ types, type, values }: Props) {
 
   return (
     <FormattedMessage
-      id={types[type].id}
-      defaultMessage={types[type].message}
+      id={types[type]?.id || "id"}
+      defaultMessage={types[type]?.message || "message"}
       values={renderValues(values)}
     />
   );
