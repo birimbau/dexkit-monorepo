@@ -16,7 +16,8 @@ import { FormattedMessage } from "react-intl";
 import AppDialogTitle from "../../../components/AppDialogTitle";
 
 import { ZeroExQuoteResponse } from "../../../services/zeroex/types";
-import { Token } from "../../../types";
+
+import { Token } from "@dexkit/core/types";
 import { formatBigNumber } from "../../../utils";
 import SwapFeeSummary from "../SwapFeeSummary";
 

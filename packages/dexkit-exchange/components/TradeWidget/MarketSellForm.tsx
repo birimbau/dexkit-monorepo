@@ -1,0 +1,342 @@
+import { Token } from "@dexkit/core/types";
+import {
+  Box,
+  Button,
+  Divider,
+  Grid,
+  Skeleton,
+  Stack,
+  Typography,
+} from "@mui/material";
+import { BigNumber, ethers } from "ethers";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { FormattedMessage } from "react-intl";
+
+import { ChainId, useApproveToken, useTokenAllowanceQuery } from "@dexkit/core";
+import { UserEvents } from "@dexkit/core/constants/userEvents";
+import { ZeroExQuoteResponse } from "@dexkit/core/services/zrx/types";
+import { formatBigNumber, getChainName } from "@dexkit/core/utils";
+import {
+  useDexKitContext,
+  useSwitchNetworkMutation,
+  useWaitTransactionConfirmation,
+} from "@dexkit/ui/hooks";
+import { useTrackUserEventsMutation } from "@dexkit/ui/hooks/userEvents";
+import { AppNotificationType } from "@dexkit/ui/types";
+import { useMutation } from "@tanstack/react-query";
+import { useWeb3React } from "@web3-react/core";
+import { EXCHANGE_NOTIFICATION_TYPES } from "../../constants/messages";
+import { useZrxQuoteMutation } from "../../hooks/zrx";
+import { getZrxExchangeAddress } from "../../utils";
+import LazyDecimalInput from "./LazyDecimalInput";
+import ReviewMarketOrderDialog from "./ReviewMarketOrderDialog";
+export interface MarketSellFormProps {
+  quoteToken: Token;
+  baseToken: Token;
+  provider?: ethers.providers.Web3Provider;
+  account?: string;
+  baseTokenBalance?: ethers.BigNumber;
+  quoteTokenBalance?: ethers.BigNumber;
+  feeRecipient?: string;
+  buyTokenPercentageFee?: number;
+  affiliateAddress?: string;
+  chainId?: ChainId;
+  isActive?: boolean;
+}
+
+export default function MarketSellForm({
+  chainId,
+  quoteToken,
+  baseToken,
+  account,
+  provider,
+  baseTokenBalance,
+  affiliateAddress,
+  quoteTokenBalance,
+  buyTokenPercentageFee,
+  feeRecipient,
+  isActive,
+}: MarketSellFormProps) {
+  const handleChangeAmount = (value: string) => {
+    setAmount(value);
+  };
+
+  const { createNotification } = useDexKitContext();
+  const [amount, setAmount] = useState("0.0");
+
+  const baseTokenBalanceFormatted = useMemo(() => {
+    if (baseTokenBalance) {
+      return formatBigNumber(baseTokenBalance, baseToken.decimals);
+    }
+
+    return "0.0";
+  }, [baseTokenBalance, baseToken]);
+
+  const quoteMutation = useZrxQuoteMutation({ chainId });
+
+  const [quote, setQuote] = useState<ZeroExQuoteResponse>();
+
+  const [receiveAmountFormatted, hasSufficientBalance] = useMemo(() => {
+    if (quote && baseTokenBalance) {
+      const total = formatBigNumber(
+        BigNumber.from(quote.buyAmount),
+        quoteToken.decimals
+      );
+
+      const hasAmount = baseTokenBalance?.gte(
+        ethers.BigNumber.from(quote.sellAmount)
+      );
+
+      return [total, hasAmount, quoteToken];
+    }
+
+    return ["0.0", false];
+  }, [quote, quoteTokenBalance, quoteToken]);
+
+  const approveMutation = useApproveToken();
+
+  const tokenAllowanceQuery = useTokenAllowanceQuery({
+    account,
+    provider,
+    spender: getZrxExchangeAddress(chainId),
+    tokenAddress: quote?.sellTokenAddress,
+  });
+
+  useEffect(() => {
+    (async () => {
+      if (Number(amount) > 0) {
+        let theNewQuote = await quoteMutation.mutateAsync({
+          sellToken: baseToken.address,
+          buyToken: quoteToken.address,
+          affiliateAddress: affiliateAddress ? affiliateAddress : "",
+          sellAmount: ethers.utils
+            .parseUnits(amount, baseToken.decimals)
+            .toString(),
+          skipValidation: true,
+          slippagePercentage: 0.01,
+          feeRecipient,
+          buyTokenPercentageFee: buyTokenPercentageFee
+            ? buyTokenPercentageFee / 100
+            : undefined,
+        });
+
+        if (theNewQuote) {
+          setQuote(theNewQuote);
+        }
+      }
+    })();
+  }, [amount, quoteToken, baseToken, affiliateAddress, feeRecipient]);
+
+  const [showReview, setShowReview] = useState(false);
+
+  const [hash, setHash] = useState<string>();
+
+  const waitTxResult = useWaitTransactionConfirmation({
+    transactionHash: hash,
+    provider,
+  });
+  const trackUserEvent = useTrackUserEventsMutation();
+
+  const sendTxMutation = useMutation(async () => {
+    let res = await provider?.getSigner().sendTransaction({
+      data: quote?.data,
+      to: quote?.to,
+      gasPrice: ethers.BigNumber.from(quote?.gasPrice),
+      value: ethers.BigNumber.from(quote?.value),
+    });
+    const subType = "marketSell";
+
+    const messageType = EXCHANGE_NOTIFICATION_TYPES[
+      subType
+    ] as AppNotificationType;
+    createNotification({
+      type: "transaction",
+      icon: messageType.icon,
+      subtype: subType,
+      metadata: {
+        hash: res?.hash,
+        chainId: chainId,
+      },
+      values: {
+        sellAmount: amount,
+        sellTokenSymbol: baseToken.symbol.toUpperCase(),
+        buyAmount: receiveAmountFormatted,
+        buyTokenSymbol: quoteToken.symbol.toUpperCase(),
+      },
+    });
+
+    trackUserEvent.mutate({
+      event: UserEvents.marketSell,
+      hash: res?.hash,
+      chainId,
+      metadata: JSON.stringify({
+        quote,
+      }),
+    });
+
+    setHash(res?.hash);
+  });
+
+  const handleCloseReview = () => {
+    setShowReview(false);
+  };
+
+  const handleConfirm = async () => {
+    await sendTxMutation.mutateAsync();
+  };
+
+  const handleExecute = () => {
+    setShowReview(true);
+  };
+
+  const handleApprove = async () => {
+    await approveMutation.mutateAsync({
+      onSubmited: (hash: string) => {},
+      amount: BigNumber.from(quote?.sellAmount),
+      provider,
+      spender: getZrxExchangeAddress(chainId),
+      tokenContract: quote?.sellTokenAddress,
+    });
+  };
+
+  const { chainId: providerChainId, connector } = useWeb3React();
+  const switchNetworkMutation = useSwitchNetworkMutation();
+
+  const renderActionButton = useCallback(() => {
+    if (providerChainId && chainId && providerChainId !== chainId) {
+      return (
+        <Button
+          disabled={switchNetworkMutation.isLoading}
+          size="large"
+          fullWidth
+          variant="contained"
+          onClick={async () => {
+            switchNetworkMutation.mutateAsync({ chainId });
+          }}
+        >
+          <FormattedMessage
+            id="switch.to.network"
+            defaultMessage="Switch to {network}"
+            values={{ network: getChainName(chainId) }}
+          />
+        </Button>
+      );
+    }
+
+    return (
+      <Button
+        disabled={quoteMutation.isLoading || !hasSufficientBalance}
+        size="large"
+        fullWidth
+        variant="contained"
+        onClick={handleExecute}
+      >
+        {!hasSufficientBalance ? (
+          <FormattedMessage
+            id="insufficient"
+            defaultMessage="Insufficient {symbol}"
+            values={{ symbol: baseToken.symbol.toUpperCase() }}
+          />
+        ) : (
+          <FormattedMessage
+            id="sell.symbol"
+            defaultMessage="Sell {symbol}"
+            values={{ symbol: baseToken.symbol.toUpperCase() }}
+          />
+        )}
+      </Button>
+    );
+  }, [
+    chainId,
+    connector,
+    providerChainId,
+    hasSufficientBalance,
+    baseToken,
+    handleExecute,
+  ]);
+
+  return (
+    <>
+      <ReviewMarketOrderDialog
+        DialogProps={{
+          open: showReview,
+          maxWidth: "sm",
+          fullWidth: true,
+          onClose: handleCloseReview,
+        }}
+        isApproving={approveMutation.isLoading}
+        isApproval={
+          tokenAllowanceQuery.data !== null &&
+          tokenAllowanceQuery.data?.lt(BigNumber.from(quote?.sellAmount || "0"))
+        }
+        chainId={chainId}
+        hash={hash}
+        price={quote?.price}
+        quoteToken={quoteToken}
+        baseToken={baseToken}
+        baseAmount={
+          quote?.sellAmount
+            ? BigNumber.from(quote?.sellAmount)
+            : BigNumber.from("0")
+        }
+        quoteAmount={
+          quote?.sellAmount
+            ? BigNumber.from(quote?.buyAmount)
+            : BigNumber.from("0")
+        }
+        side="sell"
+        isPlacingOrder={sendTxMutation.isLoading || waitTxResult.isFetching}
+        onConfirm={handleConfirm}
+        onApprove={handleApprove}
+      />
+      <Box>
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <LazyDecimalInput onChange={handleChangeAmount} token={baseToken} />
+          </Grid>
+          <Grid item xs={12}>
+            <Typography variant="body2">
+              <FormattedMessage id="available" defaultMessage="Available" />:{" "}
+              {baseTokenBalanceFormatted} {baseToken.symbol.toUpperCase()}
+            </Typography>
+          </Grid>
+          <Grid item xs={12}>
+            <Divider />
+          </Grid>
+          <Grid item xs={12}>
+            <Box>
+              <Stack>
+                <Stack
+                  direction="row"
+                  justifyContent="space-between"
+                  spacing={2}
+                  alignItems="center"
+                >
+                  <Typography>
+                    <FormattedMessage
+                      id="You will.receive"
+                      defaultMessage="You will receive"
+                    />
+                  </Typography>
+                  <Typography color="text.secondary">
+                    {quoteMutation.isLoading ? (
+                      <Skeleton />
+                    ) : (
+                      <>
+                        {receiveAmountFormatted}{" "}
+                        {quoteToken.symbol.toUpperCase()}
+                      </>
+                    )}
+                  </Typography>
+                </Stack>
+              </Stack>
+            </Box>
+          </Grid>
+          <Grid item xs={12}>
+            {renderActionButton()}
+          </Grid>
+        </Grid>
+      </Box>
+    </>
+  );
+}

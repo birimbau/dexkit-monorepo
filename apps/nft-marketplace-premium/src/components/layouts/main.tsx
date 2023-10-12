@@ -3,12 +3,10 @@ import { useWeb3React } from '@web3-react/core';
 import { useAtom } from 'jotai';
 import dynamic from 'next/dynamic';
 import React, { useEffect, useMemo } from 'react';
-import {
-  useAppConfig,
-  useAppNFT,
-  useConnectWalletDialog,
-  useSignMessageDialog,
-} from '../../hooks/app';
+import { useAppConfig, useAppNFT, useSignMessageDialog } from '../../hooks/app';
+
+import { useConnectWalletDialog } from '@dexkit/ui/hooks';
+
 import {
   drawerIsOpenAtom,
   holdsKitDialogAtom,
@@ -22,7 +20,7 @@ import { Footer } from '../Footer';
 import Navbar from '../Navbar';
 const SignMessageDialog = dynamic(() => import('../dialogs/SignMessageDialog'));
 const SwitchNetworkDialog = dynamic(
-  () => import('../dialogs/SwitchNetworkDialog')
+  () => import('../dialogs/SwitchNetworkDialog'),
 );
 
 import { useRouter } from 'next/router';
@@ -39,10 +37,10 @@ import WatchTransactionDialog from '@dexkit/ui/components/dialogs/WatchTransacti
 const HoldingKitDialog = dynamic(() => import('../dialogs/HoldingKitDialog'));
 
 const SelectCurrencyDialog = dynamic(
-  () => import('../dialogs/SelectCurrencyDialog')
+  () => import('../dialogs/SelectCurrencyDialog'),
 );
 const SelectLanguageDialog = dynamic(
-  () => import('../dialogs/SelectLanguageDialog')
+  () => import('../dialogs/SelectLanguageDialog'),
 );
 
 interface Props {
@@ -81,7 +79,7 @@ const MainLayout: React.FC<Props> = ({
   const [switchChainId, setSwitchChainId] = useAtom(switchNetworkChainIdAtom);
 
   const [showSelectCurrency, setShowShowSelectCurrency] = useAtom(
-    showSelectCurrencyAtom
+    showSelectCurrencyAtom,
   );
 
   const [showSelectLocale, setShowShowSelectLocale] =
@@ -161,7 +159,7 @@ const MainLayout: React.FC<Props> = ({
         if (connector?.provider?.removeListener) {
           connector?.provider?.removeListener(
             'chainChanged',
-            handleNetworkChange
+            handleNetworkChange,
           );
         }
       };

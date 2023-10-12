@@ -23,7 +23,8 @@ export interface DexkitContextState {
   tokens: TokenWhitelabelApp[];
   currencyUser?: string;
   setAssets: (update: SetStateAction<{ [key: string]: Asset }>) => void;
-
+  userEventURL?: string;
+  siteId?: number;
   assets: { [key: string]: Asset };
   transactions: { [key: string]: AppTransaction };
   watchTransactionDialog: WatchTransactionDialogProperties;

@@ -28,23 +28,25 @@ export function ImageFormUpload(props: Props) {
 
   return (
     <>
-      <MediaDialog
-        dialogProps={{
-          open: openMediaDialog,
-          maxWidth: 'lg',
-          fullWidth: true,
-          onClose: () => {
-            setOpenMediaDialog(false);
-          },
-        }}
-        onConfirmSelectFile={(file) => {
-          if (file) {
-            onSelectFile(file.url);
-          }
+      {openMediaDialog && (
+        <MediaDialog
+          dialogProps={{
+            open: openMediaDialog,
+            maxWidth: 'lg',
+            fullWidth: true,
+            onClose: () => {
+              setOpenMediaDialog(false);
+            },
+          }}
+          onConfirmSelectFile={(file) => {
+            if (file) {
+              onSelectFile(file.url);
+            }
 
-          setOpenMediaDialog(false);
-        }}
-      />
+            setOpenMediaDialog(false);
+          }}
+        />
+      )}
       <Box>
         <Stack direction="row" justifyContent="center">
           <Button

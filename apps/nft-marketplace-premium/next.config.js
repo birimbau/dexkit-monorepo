@@ -7,6 +7,7 @@ const withTM = require('next-transpile-modules')([
   '@dexkit/core',
   '@dexkit/web3forms',
   '@dexkit/dexappbuilder-viewer',
+  '@dexkit/exchange',
 ]); // pass the modules you would like to see transpiled
 
 module.exports = removeImports(
@@ -30,5 +31,5 @@ module.exports = removeImports(
         'dexkit-storage.nyc3.digitaloceanspaces.com',
       ],
     },
-  })
+  }),
 );

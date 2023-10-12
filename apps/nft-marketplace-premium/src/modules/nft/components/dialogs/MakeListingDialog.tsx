@@ -23,7 +23,7 @@ import {
 
 import { AppDialogTitle } from '../../../../components/AppDialogTitle';
 
-import { ethers } from 'ethers';
+import { BigNumber, ethers } from 'ethers';
 
 import moment from 'moment';
 import { useMemo } from 'react';
@@ -40,13 +40,14 @@ import * as Yup from 'yup';
 import AppFeePercentageSpan from '../../../../components/AppFeePercentageSpan';
 import { MIN_ORDER_DATE_TIME } from '../../../../constants';
 import { useTokenList } from '../../../../hooks/blockchain';
-import { Asset, AssetMetadata } from '../../../../types/nft';
+import { Asset, AssetBalance, AssetMetadata } from '../../../../types/nft';
 import { isAddressEqual } from '../../../../utils/blockchain';
 import { isValidDecimal } from '../../../../utils/numbers';
 import DurationSelect from '../DurationSelect';
 
 interface Form {
   price: string;
+  quantity?: string;
   tokenAddress: string;
   expiry: Date;
   taker?: string;
@@ -54,6 +55,7 @@ interface Form {
 
 const FormSchema: Yup.SchemaOf<Form> = Yup.object().shape({
   price: Yup.string().required(),
+  quantity: Yup.string(),
   tokenAddress: Yup.string().required(),
   expiry: Yup.date().required(),
   taker: Yup.string()
@@ -68,11 +70,13 @@ interface Props {
   account?: string;
   asset?: Asset;
   metadata?: AssetMetadata;
+  assetBalance?: AssetBalance;
   onConfirm: (
     price: ethers.BigNumber,
     tokenAddress: string,
     expiry: Date | null,
-    takerAddress?: string
+    takerAddress?: string,
+    quantity?: ethers.BigNumber,
   ) => void;
 }
 
@@ -81,6 +85,7 @@ export function MakeListingDialog({
   onConfirm,
   asset,
   metadata,
+  assetBalance,
 }: Props) {
   const { onClose } = dialogProps;
 
@@ -96,9 +101,8 @@ export function MakeListingDialog({
 
   const handleConfirm = (values: Form, formikHelpers: FormikHelpers<Form>) => {
     if (form.isValid) {
-      const decimals = tokenList.find(
-        (t) => t.address === values.tokenAddress
-      )?.decimals;
+      const decimals = tokenList.find((t) => t.address === values.tokenAddress)
+        ?.decimals;
 
       if (!isValidDecimal(values.price, decimals || 0)) {
         formikHelpers.setFieldError(
@@ -106,7 +110,7 @@ export function MakeListingDialog({
           formatMessage({
             id: 'invalid.price',
             defaultMessage: 'Invalid price',
-          })
+          }),
         );
 
         return;
@@ -116,7 +120,10 @@ export function MakeListingDialog({
         ethers.utils.parseUnits(values.price, decimals),
         values.tokenAddress,
         values.expiry || null,
-        values.taker
+        values.taker,
+        asset?.protocol === 'ERC1155'
+          ? BigNumber.from(values.quantity)
+          : BigNumber.from(1),
       );
 
       formikHelpers.resetForm();
@@ -126,6 +133,7 @@ export function MakeListingDialog({
   const form = useFormik<Form>({
     initialValues: {
       price: '0',
+      quantity: '1',
       expiry: moment().add(MIN_ORDER_DATE_TIME).toDate(),
       tokenAddress: tokenList.length > 0 ? tokenList[0].address : '',
     },
@@ -136,7 +144,7 @@ export function MakeListingDialog({
 
   const tokenSelected = useMemo(() => {
     const tokenIndex = tokenList.findIndex((t) =>
-      isAddressEqual(t.address, form.values.tokenAddress)
+      isAddressEqual(t.address, form.values.tokenAddress),
     );
 
     if (tokenIndex > -1) {
@@ -154,6 +162,10 @@ export function MakeListingDialog({
 
   const handleChangePrice = (e: React.ChangeEvent<HTMLInputElement>) => {
     form.setFieldValue('price', e.target.value);
+  };
+
+  const handleChangeQuantity = (e: React.ChangeEvent<HTMLInputElement>) => {
+    form.setFieldValue('quantity', e.target.value);
   };
 
   const handleClose = () => {
@@ -278,11 +290,19 @@ export function MakeListingDialog({
                     onChange={handleChangePrice}
                     name="price"
                     label={
-                      <FormattedMessage
-                        id="price"
-                        defaultMessage="Price"
-                        description="Price label"
-                      />
+                      asset?.protocol === 'ERC1155' ? (
+                        <FormattedMessage
+                          id="price.per.item"
+                          defaultMessage="Price per item"
+                          description="Price label per item"
+                        />
+                      ) : (
+                        <FormattedMessage
+                          id="price"
+                          defaultMessage="Price"
+                          description="Price label"
+                        />
+                      )
                     }
                     fullWidth
                     error={Boolean(form.errors.price)}
@@ -292,6 +312,64 @@ export function MakeListingDialog({
                   />
                 </Grid>
               </Grid>
+            </Grid>
+            {asset?.protocol === 'ERC1155' &&
+              assetBalance &&
+              assetBalance.balance?.gt(0) && (
+                <Grid item xs={12}>
+                  <Stack spacing={1}>
+                    <Typography gutterBottom>
+                      {' '}
+                      <FormattedMessage
+                        id="available.to.sell"
+                        defaultMessage="Available to sell: {quantity}"
+                        values={{
+                          quantity: assetBalance.balance.toNumber(),
+                        }}
+                      />
+                    </Typography>
+                    <TextField
+                      type={'number'}
+                      inputProps={{
+                        min: 1,
+                        max: assetBalance.balance.toNumber(),
+                        step: 1,
+                      }}
+                      value={Number(form.values.quantity || 1)}
+                      onChange={handleChangeQuantity}
+                      name="quantity"
+                      label={
+                        <FormattedMessage
+                          id="quantity"
+                          defaultMessage="Quantity"
+                          description="Price label"
+                        />
+                      }
+                      fullWidth
+                      error={Boolean(form.errors.quantity)}
+                      helperText={
+                        Boolean(form.errors.quantity)
+                          ? form.errors.quantity
+                          : undefined
+                      }
+                    />
+                  </Stack>
+                </Grid>
+              )}
+
+            <Grid item xs={12}>
+              <Stack direction={'row'} spacing={1}>
+                <Typography>
+                  <FormattedMessage
+                    id="total.to.receive"
+                    defaultMessage="Total to receive"
+                  />
+                  :{' '}
+                  {Number(form.values.quantity || 1) *
+                    Number(form.values.price || 0)}
+                </Typography>
+                <Typography>{tokenSelected?.symbol}</Typography>
+              </Stack>
             </Grid>
             <Grid item xs={12}>
               <DurationSelect

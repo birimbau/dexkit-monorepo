@@ -60,7 +60,7 @@ export function PreviewAppButton({ appConfig }: Props) {
           appConfig={appConfig}
           disabled={true}
           sections={appConfig?.pages['home']?.sections}
-          name={'Home'}
+          name="Home"
           withLayout={true}
         />
       </CssVarsProvider>

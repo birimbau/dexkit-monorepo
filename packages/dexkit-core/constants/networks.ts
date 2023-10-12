@@ -135,6 +135,7 @@ export const NETWORKS: { [key: number]: Network } = {
     explorerUrl: "https://mumbai.polygonscan.com",
     name: "Mumbai",
     slug: "mumbai",
+    coingeckoPlatformId: 'matic-network',
     wrappedAddress: "0x9c3c9283d3e44854697cd22d3faa240cfb032889",
     imageUrl:
       "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/info/logo.png",

@@ -25,18 +25,32 @@ export function SwapConfigForm({ onChange, data, featuredTokens }: Props) {
   const [formData, setFormData] = useState<SwapConfig | undefined>(data);
 
   const [selectedChainId, setSelectedChainId] = useState<number | undefined>(
-    data?.defaultChainId
+    data?.defaultChainId,
   );
 
   const sellToken = useMemo(() => {
     if (selectedChainId && formData?.configByChain) {
-      return formData.configByChain[selectedChainId]?.sellToken;
+      const sellToken = formData.configByChain[selectedChainId]?.sellToken;
+      //@dev Remove this on future
+      //@ts-ignore
+      if (sellToken && sellToken?.contractAddress) {
+        //@ts-ignore
+        sellToken.address = sellToken?.contractAddress;
+      }
+      return sellToken;
     }
   }, [selectedChainId, formData]);
 
   const buyToken = useMemo(() => {
     if (selectedChainId && formData?.configByChain) {
-      return formData.configByChain[selectedChainId]?.buyToken;
+      const buyToken = formData.configByChain[selectedChainId]?.buyToken;
+      //@dev Remove this on future
+      //@ts-ignore
+      if (buyToken && buyToken?.contractAddress) {
+        //@ts-ignore
+        buyToken.address = buyToken?.contractAddress;
+      }
+      return buyToken;
     }
   }, [selectedChainId, formData]);
 
@@ -149,7 +163,7 @@ export function SwapConfigForm({ onChange, data, featuredTokens }: Props) {
                       sellToken: tk
                         ? {
                             chainId: tk.chainId as number,
-                            contractAddress: tk.address,
+                            address: tk.address,
                             decimals: tk.decimals,
                             name: tk.name,
                             symbol: tk.symbol,
@@ -198,7 +212,7 @@ export function SwapConfigForm({ onChange, data, featuredTokens }: Props) {
                           buyToken: tk
                             ? {
                                 chainId: tk.chainId as number,
-                                contractAddress: tk.address,
+                                address: tk.address,
                                 decimals: tk.decimals,
                                 name: tk.name,
                                 symbol: tk.symbol,

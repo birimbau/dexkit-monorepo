@@ -1,4 +1,5 @@
 import { useAuthUserQuery } from '@/modules/user/hooks';
+import { GET_WALLET_ICON } from '@dexkit/core/connectors';
 import { Logout } from '@mui/icons-material';
 import EditIcon from '@mui/icons-material/Edit';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -21,7 +22,7 @@ import { FormattedMessage } from 'react-intl';
 import { useLogoutAccountMutation } from 'src/hooks/account';
 import { useConnectWalletDialog } from 'src/hooks/app';
 import { isBalancesVisibleAtom } from '../state/atoms';
-import { getWalletIcon, truncateAddress } from '../utils/blockchain';
+import { truncateAddress } from '../utils/blockchain';
 interface Props {
   align?: 'center' | 'left';
 }
@@ -85,7 +86,7 @@ export function WalletButton(props: Props) {
             />
           )}
           <Avatar
-            src={getWalletIcon(connector)}
+            src={GET_WALLET_ICON(connector)}
             sx={(theme) => ({
               width: theme.spacing(2),
               height: theme.spacing(2),

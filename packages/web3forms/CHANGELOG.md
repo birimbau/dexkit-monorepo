@@ -1,5 +1,44 @@
 # @dexkit/web3forms
 
+## 0.4.0
+
+### Minor Changes
+
+- 9f8ac92: Update MUI dependency
+
+### Patch Changes
+
+- Updated dependencies [9f8ac92]
+- Updated dependencies [a762215]
+  - @dexkit/core@0.7.0
+  - @dexkit/ui@0.7.0
+
+## 0.3.0
+
+### Minor Changes
+
+- 2e9a359: Added edition drop feature to enable users to create drops and manage them, added image url from server to web3 forms, added pages for edition and collection drops. Added contract page for generic contracts
+
+### Patch Changes
+
+- Updated dependencies [2e9a359]
+  - @dexkit/core@0.6.0
+  - @dexkit/ui@0.6.0
+
+## 0.2.0
+
+### Minor Changes
+
+- 7b52be8: Added Base Network
+  Enable testnets on wizard collection
+
+### Patch Changes
+
+- Updated dependencies [b93071c]
+- Updated dependencies [7b52be8]
+  - @dexkit/ui@0.4.1
+  - @dexkit/core@0.4.0
+
 ## 0.1.0
 
 ### Minor Changes

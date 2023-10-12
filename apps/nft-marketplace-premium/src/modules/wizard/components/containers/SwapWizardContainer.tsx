@@ -1,5 +1,4 @@
 import { SwapConfig } from '@/modules/swap/types';
-import { Token as WidgetToken } from '@dexkit/widgets/src/types';
 import { SwapWidget } from '@dexkit/widgets/src/widgets/swap';
 
 import { ChainId } from '@dexkit/core/constants';
@@ -48,17 +47,17 @@ export default function SwapWizardContainer({
     )?.config,
   );
 
-  const featuredTokens = useMemo<WidgetToken[]>(() => {
+  const featuredTokens = useMemo<Token[]>(() => {
     let tokens = config?.tokens?.length ? config?.tokens[0].tokens || [] : [];
 
-    return tokens.map<WidgetToken>((t: Token) => {
+    return tokens.map<Token>((t: Token) => {
       return {
-        contractAddress: t.address,
+        address: t.address,
         chainId: t.chainId as number,
         decimals: t.decimals,
         name: t.name,
         symbol: t.symbol,
-      } as WidgetToken;
+      } as Token;
     });
   }, [config]);
 

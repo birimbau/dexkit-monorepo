@@ -1,5 +1,92 @@
 # nft-marketplace
 
+## 0.10.0
+
+### Minor Changes
+
+- 25e0bd1: Add feature to track user events done onchain
+- 12eb3a8: Add email confirmation to site admin, added generic action mutation dialog
+- def3b5d: refactor token interface, add slippage for market buy and sell, add in form, add notifications where needed
+
+### Patch Changes
+
+- Updated dependencies [25e0bd1]
+- Updated dependencies [12eb3a8]
+- Updated dependencies [def3b5d]
+  - @dexkit/widgets@0.5.0
+  - @dexkit/core@0.8.0
+  - @dexkit/ui@0.8.0
+
+## 0.9.0
+
+### Minor Changes
+
+- 9f8ac92: Update MUI dependency
+
+### Patch Changes
+
+- a762215: Add complete exchange feature
+- Updated dependencies [9f8ac92]
+- Updated dependencies [a762215]
+  - @dexkit/core@0.7.0
+  - @dexkit/ui@0.7.0
+  - @dexkit/web3forms@0.4.0
+
+## 0.8.0
+
+### Minor Changes
+
+- 2e9a359: Added edition drop feature to enable users to create drops and manage them, added image url from server to web3 forms, added pages for edition and collection drops. Added contract page for generic contracts
+
+### Patch Changes
+
+- Updated dependencies [2e9a359]
+  - @dexkit/core@0.6.0
+  - @dexkit/ui@0.6.0
+  - @dexkit/web3forms@0.3.0
+
+## 0.7.0
+
+### Minor Changes
+
+- 6373154: Remove wallet connect v1 and use v2. Fix on loading wallet dialog
+
+### Patch Changes
+
+- Updated dependencies [6373154]
+  - @dexkit/core@0.5.0
+  - @dexkit/ui@0.5.0
+
+## 0.6.0
+
+### Minor Changes
+
+- b7c959a: Add quantity option to ERC1155
+- cd0f21a: Fix slate giving error on react page editor
+
+### Patch Changes
+
+- Updated dependencies [f18d0a1]
+  - @dexkit/widgets@0.4.0
+
+## 0.5.0
+
+### Minor Changes
+
+- 7b52be8: Added Base Network
+  Enable testnets on wizard collection
+- d6fb0d6: Add warning for when swap interface not support network
+
+### Patch Changes
+
+- Updated dependencies [b93071c]
+- Updated dependencies [7b52be8]
+- Updated dependencies [d6fb0d6]
+  - @dexkit/ui@0.4.1
+  - @dexkit/widgets@0.3.0
+  - @dexkit/core@0.4.0
+  - @dexkit/web3forms@0.2.0
+
 ## 0.4.0
 
 ### Minor Changes

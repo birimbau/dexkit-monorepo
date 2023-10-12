@@ -41,13 +41,24 @@ export interface BuyTransactionMetadata {
   symbol: string;
 }
 
+export interface MintEditionDropTransactionMetadata {
+  quantity: string;
+  tokenId: string;
+  name?: string;
+  address?: string;
+}
+
+
 export type TransactionMetadata =
   | SwapTransactionMetadata
   | ApproveTransactionMetadata
   | CancelTransactionMetadata
   | AcceptTransactionMetadata
   | BuyTransactionMetadata
-  | ApproveForAllTransactionMetadata;
+  | ApproveForAllTransactionMetadata
+  | MintEditionDropTransactionMetadata
+
+  ;
 
 export interface Transaction {
   title?: string;

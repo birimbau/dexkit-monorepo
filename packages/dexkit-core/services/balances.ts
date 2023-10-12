@@ -1,11 +1,9 @@
-import { ethers } from 'ethers';
+import { ethers } from "ethers";
 
+import { ERC20Abi } from "../constants/abis";
 
-import { ERC20Abi } from '../constants/abis';
-
-import { NETWORK_COIN_SYMBOL } from '../constants/networks';
-import { ZEROEX_NATIVE_TOKEN_ADDRESS } from '../constants/zrx';
-
+import { NETWORK_COIN_SYMBOL } from "../constants/networks";
+import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "../constants/zrx";
 
 export const getERC20Decimals = async (
   contractAddress?: string,
@@ -76,3 +74,26 @@ export const getERC20Balance = async (
   return await contract.balanceOf(account);
 };
 
+export const approveToken = async ({
+  provider,
+  spender,
+  tokenContract,
+  amount,
+}: {
+  provider?: ethers.providers.Web3Provider;
+  spender?: string;
+  tokenContract?: string;
+  amount?: ethers.BigNumber;
+}) => {
+  if (!tokenContract || !provider || !spender || !amount) {
+    return;
+  }
+
+  const contract = new ethers.Contract(
+    tokenContract,
+    ERC20Abi,
+    provider.getSigner()
+  );
+
+  return await contract.approve(spender, amount);
+};

@@ -6,9 +6,7 @@ export default async function handler(
   res: NextApiResponse
 ) {
   const refreshToken = req.cookies?.refresh_token_auth || req.cookies?.refresh_token;
-  console.log(req.cookies?.refresh_token);
-  console.log(req.cookies?.refresh_token_auth);
-  console.log(req.cookies);
+
   if (!refreshToken) {
     return res.status(401).json({ message: "You must be logged on app." });
   }

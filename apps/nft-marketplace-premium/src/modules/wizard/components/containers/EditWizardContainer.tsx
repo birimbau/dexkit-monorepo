@@ -40,9 +40,11 @@ import SpaceDashboardIcon from '@mui/icons-material/SpaceDashboard';
 import TourIcon from '@mui/icons-material/Tour';
 import { TourProvider, useTour } from '@reactour/tour';
 import { useAtom } from 'jotai';
+import { useAuth } from 'src/hooks/account';
 import { BuilderKit } from '../../constants';
 import { OnboardBuilderSteps } from '../../constants/onboard/steps';
 import { isFirstVisitOnEditWizardAtom } from '../../state';
+import { ConfirmationEmailMessage } from '../ConfirmationEmailMessage';
 import { PreviewAppButton } from '../PreviewAppButton';
 import { WelcomeMessage } from '../WelcomeMessage';
 import SignConfigDialog from '../dialogs/SignConfigDialog';
@@ -146,6 +148,8 @@ export function EditWizardContainer({ site }: Props) {
   const handleClickData = () => {
     setOpenMenu({ ...openMenu, data: !openMenu.data });
   };
+
+  const { isLoggedIn } = useAuth();
 
   const [activeMenu, setActiveMenu] = useState<ActiveMenu>(ActiveMenu.General);
   const [activeBuilderKit, setActiveBuilderKit] = useState<BuilderKit>(
@@ -697,6 +701,14 @@ export function EditWizardContainer({ site }: Props) {
           </Grid>
           <Grid item xs={12} sm={0.1}></Grid>
           <Grid item xs={12} sm={9.8}>
+          {!site?.emailVerified && isLoggedIn && (
+            <Grid item xs={12} sm={12}>
+              <ConfirmationEmailMessage site={site} />
+            </Grid>
+          )}
+       
+
+          <Grid item xs={12} sm={10}>
             <Stack spacing={2} className={'builder-forms'}>
               {activeMenu === ActiveMenu.General && config && (
                 <GeneralWizardContainer

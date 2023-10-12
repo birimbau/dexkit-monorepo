@@ -2,6 +2,7 @@ import AppsIcon from '@mui/icons-material/Apps';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import CallToAction from '@mui/icons-material/CallToAction';
+import ShowChartIcon from '@mui/icons-material/ShowChart';
 import VideocamIcon from '@mui/icons-material/Videocam';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 
@@ -146,7 +147,12 @@ export default function PagesSectionPage({
       );
       subtitle = section.title || '';
       icon = <GavelIcon />;
+    } else if (section.type === 'exchange') {
+      title = <FormattedMessage id="exchange" defaultMessage="Exchange" />;
+      subtitle = section.title || '';
+      icon = <ShowChartIcon />;
     }
+
     if (!title) {
       return null;
     }

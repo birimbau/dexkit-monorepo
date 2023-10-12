@@ -245,6 +245,9 @@ export default function EditSectionDialog({
                     defaultMessage="User contract form"
                   />
                 </MenuItem>
+                <MenuItem value="exchange">
+                  <FormattedMessage id="exchange" defaultMessage="Exchange" />
+                </MenuItem>
               </Select>
             </FormControl>
           </Grid> */}

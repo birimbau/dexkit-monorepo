@@ -3,7 +3,7 @@ import axios from 'axios';
 import { BigNumber, ethers } from 'ethers';
 import { Interface } from 'ethers/lib/utils';
 import { ERC1155Abi, ERC165Abi, ERC721Abi } from '../constants/abis';
-import { Asset, AssetAPI, AssetMetadata, Collection, CollectionAPI, OrderbookAPI, OrderBookItem } from '../types/nft';
+import { Asset, AssetAPI, AssetMetadata, Collection, CollectionAPI, OrderBookItem, OrderbookAPI } from '../types/nft';
 import { ipfsUriToUrl } from '../utils/ipfs';
 import { getMulticallFromProvider } from './multical';
 
@@ -66,9 +66,19 @@ export async function getMultipleAssetDexKitApi({
   tokenIds: string[];
 }) {
 
-  const resp = await dexkitNFTapi.get<AssetAPI>(`/asset/${networkId}/${contractAddress.toLowerCase()}/${tokenIds.join(',')}`);
+  const resp = await dexkitNFTapi.get<AssetAPI[]>(`/asset/multiple/${networkId}/${contractAddress.toLowerCase()}/${tokenIds.join(',')}`);
   // We replace it with the cdn image
-  const imageUrl = resp.data.imageUrl?.replace('dexkit-storage.nyc3.digitaloceanspaces.com', 'dexkit-storage.nyc3.cdn.digitaloceanspaces.com');
+  const imageUrl = resp.data.map((a) => {
+    let imageUrl;
+    if (a.imageUrl) {
+      imageUrl = a.imageUrl.replace('dexkit-storage.nyc3.digitaloceanspaces.com', 'dexkit-storage.nyc3.cdn.digitaloceanspaces.com');
+    }
+    if (imageUrl) {
+      return { ...a, imageUrl };
+    } else {
+      return a;
+    }
+  })
 
   if (imageUrl) {
     return { ...resp.data, imageUrl };
@@ -583,7 +593,6 @@ export async function getAssetsData(
 
 
 
-
 export async function getAssetMetadata(
   tokenURI: string,
   defaultValue?: AssetMetadata,
@@ -592,9 +601,13 @@ export async function getAssetMetadata(
 ) {
   let uri = tokenURI;
 
-  if (isERC1155 && tokenId) {
+  if (isERC1155 && tokenId && tokenURI.search('/0x{id}') !== -1) {
     uri = tokenURI.replace('0x{id}', tokenId);
   }
+  if (isERC1155 && tokenId && tokenURI.search('/{id}') !== -1) {
+    uri = tokenURI.replace('{id}', tokenId.length === 64 ? tokenId : Number(tokenId).toString(16).padStart(64, '0').toLowerCase());
+  }
+
   if (tokenURI?.startsWith('data:application/json;base64')) {
     const jsonURI = Buffer.from(tokenURI.substring(29), "base64").toString();
     return JSON.parse(jsonURI);
@@ -666,7 +679,8 @@ export async function fetchAssetForQueryClient({ item, queryClient }: { item: { 
       ? JSON.parse(assetApi.rawData)
       : undefined;
     let image = assetApi?.imageUrl;
-    if ((rawMetadata?.image as string).endsWith('.gif')) {
+
+    if (rawMetadata && rawMetadata?.image && (rawMetadata?.image as string).endsWith('.gif')) {
       image = rawMetadata?.image;
     }
 
