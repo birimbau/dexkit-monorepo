@@ -1,6 +1,7 @@
 import { Delete } from '@mui/icons-material';
 import EditIcon from '@mui/icons-material/Edit';
 import {
+  Container,
   Divider,
   ListItemIcon,
   ListItemText,
@@ -60,7 +61,7 @@ export default function MarketplacesTable({ configs }: Props) {
       setAnchorEl(e.currentTarget);
       setSelectedConfig(config);
     },
-    []
+    [],
   );
 
   const handleEdit = () => {
@@ -80,7 +81,7 @@ export default function MarketplacesTable({ configs }: Props) {
           vertical: 'bottom',
           horizontal: 'right',
         },
-      }
+      },
     );
   };
 
@@ -96,7 +97,7 @@ export default function MarketplacesTable({ configs }: Props) {
           vertical: 'bottom',
           horizontal: 'right',
         },
-      }
+      },
     );
   };
 
@@ -114,8 +115,8 @@ export default function MarketplacesTable({ configs }: Props) {
       window.open(
         IS_STAGING
           ? `https://test.dev.dexkit.app?mid=${selectedConfig?.slug}`
-          : `https://whitelabel-nft.dexkit.com?mid=${selectedConfig?.slug}`,
-        '_blank'
+          : `https://dexappbuilder.dexkit.com?mid=${selectedConfig?.slug}`,
+        '_blank',
       );
     }
     handleCloseMenu();
@@ -149,7 +150,7 @@ export default function MarketplacesTable({ configs }: Props) {
   const handleExport = () => {
     if (selectedConfig) {
       const jsonString = `data:text/json;chatset=utf-8,${encodeURIComponent(
-        selectedConfig.config
+        selectedConfig.config,
       )}`;
       const link = document.createElement('a');
       link.href = jsonString;
@@ -201,18 +202,7 @@ export default function MarketplacesTable({ configs }: Props) {
         </MenuItem>
 
         <Divider />
-        <MenuItem onClick={handleRemove}>
-          <ListItemIcon>
-            <Delete color="error" />
-          </ListItemIcon>
-          <ListItemText
-            primary={
-              <Typography color="error">
-                <FormattedMessage id="remove" defaultMessage="Remove" />
-              </Typography>
-            }
-          />
-        </MenuItem>
+
         <MenuItem onClick={handleExport}>
           <ListItemIcon>
             <FileDownloadIcon />
@@ -221,32 +211,46 @@ export default function MarketplacesTable({ configs }: Props) {
             primary={<FormattedMessage id="export" defaultMessage="Export" />}
           />
         </MenuItem>
+        <MenuItem onClick={handleRemove}>
+          <ListItemIcon>
+            <Delete color="error" />
+          </ListItemIcon>
+          <ListItemText
+            primary={
+              <Typography color="error">
+                <FormattedMessage id="delete" defaultMessage="Delete" />
+              </Typography>
+            }
+          />
+        </MenuItem>
       </Menu>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>
-              <FormattedMessage id="name" defaultMessage="Name" />
-            </TableCell>
-            <TableCell>
-              <FormattedMessage id="domains" defaultMessage="Domains" />
-            </TableCell>
-            <TableCell>
-              <FormattedMessage id="actions" defaultMessage="Actions" />
-            </TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {configs?.map((config, index) => (
-            <MarketplacesTableRow
-              config={config}
-              key={index}
-              onMenu={handleMenuOpen}
-              handleDeploy={handleDeploy}
-            />
-          ))}
-        </TableBody>
-      </Table>
+      <Container maxWidth="md">
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>
+                <FormattedMessage id="name" defaultMessage="Name" />
+              </TableCell>
+              <TableCell>
+                <FormattedMessage id="domains" defaultMessage="Domains" />
+              </TableCell>
+              <TableCell>
+                <FormattedMessage id="actions" defaultMessage="Actions" />
+              </TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {configs?.map((config, index) => (
+              <MarketplacesTableRow
+                config={config}
+                key={index}
+                onMenu={handleMenuOpen}
+                handleDeploy={handleDeploy}
+              />
+            ))}
+          </TableBody>
+        </Table>
+      </Container>
     </>
   );
 }
