@@ -203,8 +203,8 @@ export default function ThemeWizardContainer({
             </Typography>
             <Typography variant={'body2'}>
               <FormattedMessage
-                id="choose.your.theme"
-                defaultMessage="Choose your theme"
+                id="theme.wizard.description"
+                defaultMessage="Customize your app's theme"
               />
             </Typography>
           </Stack>
@@ -214,23 +214,6 @@ export default function ThemeWizardContainer({
         </Grid>
         <Grid item xs={12} sm={6}>
           <Stack spacing={2}>
-            <Autocomplete
-              disablePortal
-              id="font-selection"
-              value={selectedFont?.family}
-              onChange={handleSelectedFont}
-              options={Fonts.items.map((f) => f.family)}
-              sx={{ width: 300 }}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label={
-                    <FormattedMessage id={'font'} defaultMessage={'Font'} />
-                  }
-                />
-              )}
-            />
-
             <FormControl fullWidth>
               <InputLabel id="theme-mode-label">
                 <FormattedMessage
@@ -260,21 +243,11 @@ export default function ThemeWizardContainer({
                 </MenuItem>
               </Select>
             </FormControl>
-
-            <Box>
-              <ThemeSection
-                mode={selectedThemeMode}
-                selectedId={selectedThemeId}
-                onSelect={handleSelectTheme}
-                onPreview={handleShowPreview}
-                legacyTheme={config?.customTheme}
-              />
-            </Box>
             <Box>
               <Typography variant="body2">
                 <FormattedMessage
                   id="default.theme.mode"
-                  defaultMessage={'Default Theme mode'}
+                  defaultMessage={'Default theme mode'}
                 />
               </Typography>
               <Stack
@@ -302,6 +275,47 @@ export default function ThemeWizardContainer({
                 </Typography>
               </Stack>
             </Box>
+
+            <Stack spacing={1}>
+              <Typography variant="body2">
+                <FormattedMessage
+                  id="Choose app theme color"
+                  defaultMessage={'Choose app theme color'}
+                />
+              </Typography>
+
+              <ThemeSection
+                mode={selectedThemeMode}
+                selectedId={selectedThemeId}
+                onSelect={handleSelectTheme}
+                onPreview={handleShowPreview}
+                legacyTheme={config?.customTheme}
+              />
+            </Stack>
+            <Stack spacing={1}>
+              <Typography variant="body2">
+                <FormattedMessage
+                  id="Choose app font"
+                  defaultMessage={'Choose app font'}
+                />
+              </Typography>
+
+              <Autocomplete
+                disablePortal
+                id="font-selection"
+                value={selectedFont?.family}
+                onChange={handleSelectedFont}
+                options={Fonts.items.map((f) => f.family)}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label={
+                      <FormattedMessage id={'font'} defaultMessage={'Font'} />
+                    }
+                  />
+                )}
+              />
+            </Stack>
           </Stack>
         </Grid>
         <Grid item xs={12} sm={6}>

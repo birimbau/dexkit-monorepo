@@ -302,7 +302,10 @@ export function EditWizardContainer({ site }: Props) {
                 >
                   <ListItemText
                     primary={
-                      <FormattedMessage id="social" defaultMessage={'Social'} />
+                      <FormattedMessage
+                        id="social.media"
+                        defaultMessage={'Social Media'}
+                      />
                     }
                   />
                 </ListItemButton>
@@ -662,7 +665,7 @@ export function EditWizardContainer({ site }: Props) {
                 <PreviewAppButton appConfig={wizardConfig} />
                 {site?.previewUrl && (
                   <Button href={site?.previewUrl} target={'_blank'}>
-                    <LinkIcon />
+                    <LinkIcon />{' '}
                     <FormattedMessage id="open.url" defaultMessage="Open url" />
                   </Button>
                 )}
@@ -701,109 +704,111 @@ export function EditWizardContainer({ site }: Props) {
           </Grid>
           <Grid item xs={12} sm={0.1}></Grid>
           <Grid item xs={12} sm={9.8}>
-          {!site?.emailVerified && isLoggedIn && (
-            <Grid item xs={12} sm={12}>
-              <ConfirmationEmailMessage site={site} />
+            {!site?.emailVerified && isLoggedIn && (
+              <Grid item xs={12} sm={12}>
+                <ConfirmationEmailMessage site={site} />
+              </Grid>
+            )}
+
+            <Grid item xs={12} sm={10}>
+              <Stack spacing={2} className={'builder-forms'}>
+                {activeMenu === ActiveMenu.General && config && (
+                  <GeneralWizardContainer
+                    config={config}
+                    onSave={handleSave}
+                    onChange={handleChange}
+                  />
+                )}
+                {activeMenu === ActiveMenu.Domain && config && (
+                  <DomainWizardContainer
+                    config={config}
+                    onSave={handleSave}
+                    site={site}
+                  />
+                )}
+
+                {activeMenu === ActiveMenu.Ownership && config && (
+                  <OwnershipWizardContainer
+                    config={config}
+                    onSave={handleSave}
+                    site={site}
+                  />
+                )}
+
+                {activeMenu === ActiveMenu.Theme && config && (
+                  <ThemeWizardContainer
+                    config={config}
+                    showSwap={activeBuilderKit === BuilderKit.Swap}
+                    onSave={handleSave}
+                    onChange={handleChange}
+                  />
+                )}
+
+                {activeMenu === ActiveMenu.Pages && config && (
+                  <PagesWizardContainer
+                    config={config}
+                    onSave={handleSave}
+                    builderKit={activeBuilderKit}
+                  />
+                )}
+
+                {activeMenu === ActiveMenu.MarketplaceFees && config && (
+                  <MarketplaceFeeWizardContainer
+                    config={config}
+                    onSave={handleSave}
+                  />
+                )}
+
+                {activeMenu === ActiveMenu.SwapFees && config && (
+                  <SwapFeeWizardContainer config={config} onSave={handleSave} />
+                )}
+                {activeMenu === ActiveMenu.Collections && (
+                  <CollectionWizardContainer
+                    config={config}
+                    onSave={handleSave}
+                  />
+                )}
+
+                {activeMenu === ActiveMenu.Menu && config && (
+                  <PagesMenuWizardContainer
+                    config={config}
+                    onSave={handleSave}
+                    onChange={handleChange}
+                  />
+                )}
+
+                {activeMenu === ActiveMenu.Tokens && config && (
+                  <TokenWizardContainer config={config} onSave={handleSave} />
+                )}
+
+                {activeMenu === ActiveMenu.Seo && config && (
+                  <SeoWizardContainer config={config} onSave={handleSave} />
+                )}
+
+                {activeMenu === ActiveMenu.Analytics && config && (
+                  <AnalyticsWizardContainer
+                    config={config}
+                    onSave={handleSave}
+                  />
+                )}
+                {activeMenu === ActiveMenu.Social && config && (
+                  <SocialWizardContainer
+                    config={config}
+                    onSave={handleSave}
+                    onChange={handleChange}
+                  />
+                )}
+                {activeMenu === ActiveMenu.FooterMenu && config && (
+                  <FooterMenuWizardContainer
+                    config={config}
+                    onSave={handleSave}
+                    onChange={handleChange}
+                  />
+                )}
+              </Stack>
             </Grid>
-          )}
-       
 
-          <Grid item xs={12} sm={10}>
-            <Stack spacing={2} className={'builder-forms'}>
-              {activeMenu === ActiveMenu.General && config && (
-                <GeneralWizardContainer
-                  config={config}
-                  onSave={handleSave}
-                  onChange={handleChange}
-                />
-              )}
-              {activeMenu === ActiveMenu.Domain && config && (
-                <DomainWizardContainer
-                  config={config}
-                  onSave={handleSave}
-                  site={site}
-                />
-              )}
-
-              {activeMenu === ActiveMenu.Ownership && config && (
-                <OwnershipWizardContainer
-                  config={config}
-                  onSave={handleSave}
-                  site={site}
-                />
-              )}
-
-              {activeMenu === ActiveMenu.Theme && config && (
-                <ThemeWizardContainer
-                  config={config}
-                  showSwap={activeBuilderKit === BuilderKit.Swap}
-                  onSave={handleSave}
-                  onChange={handleChange}
-                />
-              )}
-
-              {activeMenu === ActiveMenu.Pages && config && (
-                <PagesWizardContainer
-                  config={config}
-                  onSave={handleSave}
-                  builderKit={activeBuilderKit}
-                />
-              )}
-
-              {activeMenu === ActiveMenu.MarketplaceFees && config && (
-                <MarketplaceFeeWizardContainer
-                  config={config}
-                  onSave={handleSave}
-                />
-              )}
-
-              {activeMenu === ActiveMenu.SwapFees && config && (
-                <SwapFeeWizardContainer config={config} onSave={handleSave} />
-              )}
-              {activeMenu === ActiveMenu.Collections && (
-                <CollectionWizardContainer
-                  config={config}
-                  onSave={handleSave}
-                />
-              )}
-
-              {activeMenu === ActiveMenu.Menu && config && (
-                <PagesMenuWizardContainer
-                  config={config}
-                  onSave={handleSave}
-                  onChange={handleChange}
-                />
-              )}
-
-              {activeMenu === ActiveMenu.Tokens && config && (
-                <TokenWizardContainer config={config} onSave={handleSave} />
-              )}
-
-              {activeMenu === ActiveMenu.Seo && config && (
-                <SeoWizardContainer config={config} onSave={handleSave} />
-              )}
-
-              {activeMenu === ActiveMenu.Analytics && config && (
-                <AnalyticsWizardContainer config={config} onSave={handleSave} />
-              )}
-              {activeMenu === ActiveMenu.Social && config && (
-                <SocialWizardContainer
-                  config={config}
-                  onSave={handleSave}
-                  onChange={handleChange}
-                />
-              )}
-              {activeMenu === ActiveMenu.FooterMenu && config && (
-                <FooterMenuWizardContainer
-                  config={config}
-                  onSave={handleSave}
-                  onChange={handleChange}
-                />
-              )}
-            </Stack>
-          </Grid>
-
-          {/*false && theme && (
+            {/*false && theme && (
             <Grid item xs={12} sm={6}>
               <ThemeProvider theme={selectedTheme ? selectedTheme : theme}>
                 <Container>
@@ -816,6 +821,7 @@ export function EditWizardContainer({ site }: Props) {
               </ThemeProvider>
             </Grid>
           )*/}
+          </Grid>
         </Grid>
       </Container>
     </TourProvider>

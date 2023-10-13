@@ -49,8 +49,8 @@ export default function AnalyticsWizardContainer({ config, onSave }: Props) {
                 </Typography>
                 <Typography variant={'body2'}>
                   <FormattedMessage
-                    id="edit.analytics"
-                    defaultMessage="Edit analytics"
+                    id="analytics.wizard.description"
+                    defaultMessage="Add Google Analytics to your app"
                   />
                 </Typography>
               </Stack>

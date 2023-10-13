@@ -1,8 +1,10 @@
+import AddIcon from '@mui/icons-material/Add';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import ImageIcon from '@mui/icons-material/Image';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import RedditIcon from '@mui/icons-material/Reddit';
+import RemoveIcon from '@mui/icons-material/Remove';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import YouTubeIcon from '@mui/icons-material/YouTube';
 import { Box, styled } from '@mui/material';
@@ -183,8 +185,8 @@ export default function SocialWizardContainer({
                 </Typography>
                 <Typography variant={'body2'}>
                   <FormattedMessage
-                    id="edit.social"
-                    defaultMessage="Edit social"
+                    id="edit.social.description"
+                    defaultMessage="Add app-related social networks"
                   />
                 </Typography>
               </Stack>
@@ -346,20 +348,26 @@ export default function SocialWizardContainer({
                         />
                         <Button
                           type="button"
+                          size={'large'}
                           onClick={() => arrayHelpers.remove(index)} // remove a media from the list
                         >
-                          -
+                          <RemoveIcon />
                         </Button>
                         <Button
+                          size={'large'}
                           type="button"
                           onClick={() => arrayHelpers.insert(index, '')} // insert an media string at a position
                         >
-                          +
+                          <AddIcon />
                         </Button>
                       </Stack>
                     ))
                   ) : (
-                    <Button type="button" onClick={() => arrayHelpers.push('')}>
+                    <Button
+                      type="button"
+                      onClick={() => arrayHelpers.push('')}
+                      startIcon={<AddIcon />}
+                    >
                       {/* show this when user has removed all friends from the list */}
                       <FormattedMessage
                         id={'add.custom'}

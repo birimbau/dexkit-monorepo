@@ -34,11 +34,13 @@ export default function OwnershipNFTForm({}: Props) {
           <Stack spacing={2}>
             <Field
               component={TextField}
+              sx={{ maxWidth: '500px' }}
+              fullWidth
               name={`name`}
               label={<FormattedMessage id="name" defaultMessage="Name" />}
-              fullWidth
             />
             <Field
+              sx={{ maxWidth: '500px' }}
               component={TextField}
               name={`description`}
               label={
@@ -49,7 +51,7 @@ export default function OwnershipNFTForm({}: Props) {
               }
               fullWidth
               multiline
-              rows={3}
+              rows={5}
             />
 
             {(values as any)?.attributes?.length > 0 && (

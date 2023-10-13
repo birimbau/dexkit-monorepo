@@ -62,17 +62,17 @@ export default function PagesWizardContainer({
   return (
     <Grid container spacing={2}>
       <Grid item xs={12}>
-        <Stack direction={'row'} spacing={2}>
+        <Stack direction={'column'}>
           <Typography variant={'h6'}>
             <FormattedMessage id="pages" defaultMessage="Pages" />
           </Typography>
 
-          {/*   <Typography variant={'body2'}>
+          <Typography variant={'body2'}>
             <FormattedMessage
-              id="edit.page.sections"
-              defaultMessage="Edit page sections"
+              id="pages.wizard.description"
+              defaultMessage="Create and manage your app's pages"
             />
-  </Typography>*/}
+          </Typography>
         </Stack>
       </Grid>
       <Grid item xs={12}>
@@ -86,10 +86,7 @@ export default function PagesWizardContainer({
             size="small"
             startIcon={<AddIcon />}
           >
-            <FormattedMessage
-              id="create.new.page"
-              defaultMessage="Create new page"
-            />
+            <FormattedMessage id="New.page" defaultMessage="New page" />
           </Button>
         </Box>
       </Grid>

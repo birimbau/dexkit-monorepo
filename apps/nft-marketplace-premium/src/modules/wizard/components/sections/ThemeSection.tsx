@@ -63,7 +63,7 @@ export default function ThemeSection({
       }
 
       return (
-        <Grid item xs={6} sm={4} key={key}>
+        <Grid item xs={6} sm={5} key={key}>
           <WizardThemeButton
             selected={selectedId === key}
             name={name}

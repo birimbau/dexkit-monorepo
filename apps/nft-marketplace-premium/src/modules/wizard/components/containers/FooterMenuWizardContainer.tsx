@@ -40,8 +40,8 @@ export default function FooterMenuWizardContainer({
           </Typography>
           <Typography variant={'body2'}>
             <FormattedMessage
-              id="edit.footer.menu"
-              defaultMessage="Edit Footer menu"
+              id="footer.wizard.description"
+              defaultMessage="Create and edit your app's footer menu"
             />
           </Typography>
         </Stack>

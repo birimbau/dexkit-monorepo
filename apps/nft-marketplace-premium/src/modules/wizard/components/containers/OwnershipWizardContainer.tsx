@@ -28,8 +28,8 @@ export default function OwnershipWizardContainer({
           </Typography>
           <Typography variant={'body2'}>
             <FormattedMessage
-              id="ownership.settings"
-              defaultMessage="Associate an NFT to your app"
+              id="ownership.settings.description"
+              defaultMessage="Associate an NFT with your app for ownership control"
             />
           </Typography>
         </Stack>

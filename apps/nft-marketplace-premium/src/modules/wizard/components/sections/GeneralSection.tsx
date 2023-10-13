@@ -170,6 +170,8 @@ export default function GeneralSection({
             <Grid item xs={12}>
               <TextField
                 name="name"
+                sx={{ maxWidth: '400px' }}
+                fullWidth
                 label={<FormattedMessage id="name" defaultMessage="Name" />}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
@@ -186,6 +188,8 @@ export default function GeneralSection({
               <TextField
                 type="email"
                 name="email"
+                sx={{ maxWidth: '400px' }}
+                fullWidth
                 label={<FormattedMessage id="email" defaultMessage="Email" />}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
@@ -232,6 +236,7 @@ export default function GeneralSection({
                   />
                 </Typography>
                 <Button
+                  sx={{ backgroundColor: 'black' }}
                   onClick={() => {
                     setOpenMediaDialog(true);
                     setMediaFieldToEdit('logoDarkUrl');
@@ -264,8 +269,8 @@ export default function GeneralSection({
                   sx={{ maxWidth: '150px' }}
                   label={
                     <FormattedMessage
-                      id="logo.width"
-                      defaultMessage="Logo width (px)"
+                      id="width.px"
+                      defaultMessage="Width (px)"
                     />
                   }
                   InputLabelProps={{ shrink: true }}
@@ -288,8 +293,8 @@ export default function GeneralSection({
                   sx={{ maxWidth: '150px' }}
                   label={
                     <FormattedMessage
-                      id="logo.height"
-                      defaultMessage="Logo height (px)"
+                      id="height.px"
+                      defaultMessage="Height (px)"
                     />
                   }
                   onChange={formik.handleChange}
@@ -328,8 +333,8 @@ export default function GeneralSection({
                   name="logoWidthMobile"
                   label={
                     <FormattedMessage
-                      id="logo.width"
-                      defaultMessage="Logo width (px)"
+                      id="width.px"
+                      defaultMessage="Width (px)"
                     />
                   }
                   InputLabelProps={{ shrink: true }}
@@ -355,8 +360,8 @@ export default function GeneralSection({
                   name="logoHeightMobile"
                   label={
                     <FormattedMessage
-                      id="logo.height"
-                      defaultMessage="Logo height (px)"
+                      id="height.px"
+                      defaultMessage="Height (px)"
                     />
                   }
                   onChange={formik.handleChange}

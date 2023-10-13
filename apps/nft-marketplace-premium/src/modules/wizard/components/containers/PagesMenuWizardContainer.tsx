@@ -40,8 +40,8 @@ export default function PagesMenuWizardContainer({
           </Typography>
           <Typography variant={'body2'}>
             <FormattedMessage
-              id="edit.marketplace.menu"
-              defaultMessage="Edit Marketplace menu"
+              id="pages.menu.wizard.description"
+              defaultMessage="Create and organize your app's menus"
             />
           </Typography>
         </Stack>

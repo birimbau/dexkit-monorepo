@@ -224,12 +224,12 @@ export default function DomainWizardContainer({ config, onSave, site }: Props) {
         <Grid item xs={12}>
           <Stack>
             <Typography variant={'h6'}>
-              <FormattedMessage id="domains" defaultMessage="Domains" />
+              <FormattedMessage id="domain" defaultMessage="Domain" />
             </Typography>
             <Typography variant={'body2'}>
               <FormattedMessage
-                id="domains"
-                defaultMessage="Set custom domain"
+                id="set.custom.domain.container.description"
+                defaultMessage="Set a custom domain for your app"
               />
             </Typography>
           </Stack>

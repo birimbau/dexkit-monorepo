@@ -50,7 +50,10 @@ export default function SeoWizardContainer({ config, onSave }: Props) {
             <FormattedMessage id="SEO" defaultMessage="SEO" />
           </Typography>
           <Typography variant={'body2'}>
-            <FormattedMessage id="seo.settings" defaultMessage="SEO Settings" />
+            <FormattedMessage
+              id="seo.wizard.description"
+              defaultMessage="Configure your app's SEO"
+            />
           </Typography>
         </Stack>
       </Grid>
