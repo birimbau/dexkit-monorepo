@@ -45,7 +45,7 @@ export default function EditSectionDialog({
   const { onClose } = dialogProps;
   const { formatMessage } = useIntl();
   const [sectionType, setSectionType] = useState<SectionType | undefined>(
-    section ? section.type : 'video',
+    section?.type,
   );
 
   const [sectionMetadata, setSectionMetadata] = useState<
