@@ -1,5 +1,5 @@
-import { Error } from '@mui/icons-material';
 import CheckCircle from '@mui/icons-material/CheckCircle';
+import Error from '@mui/icons-material/Error';
 import {
   Box,
   CircularProgress,

@@ -32,12 +32,11 @@ import { NETWORK_SLUG } from '@dexkit/core/constants/networks';
 import { DexkitApiProvider } from '@dexkit/core/providers';
 import { truncateAddress } from '@dexkit/core/utils';
 import LazyTextField from '@dexkit/ui/components/LazyTextField';
-import {
-  Info,
-  KeyboardArrowLeft,
-  KeyboardArrowRight,
-  Search,
-} from '@mui/icons-material';
+import Info from '@mui/icons-material/Info';
+import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
+import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
+import Search from '@mui/icons-material/Search';
+
 import { useWeb3React } from '@web3-react/core';
 import { useRouter } from 'next/router';
 import { useState } from 'react';

@@ -10,6 +10,7 @@ import {
 } from '@thirdweb-dev/react';
 
 import { UserEvents } from '@dexkit/core/constants/userEvents';
+import { ConnectWalletButton } from '@dexkit/ui/components/ConnectWalletButton';
 import { useDexKitContext } from '@dexkit/ui/hooks';
 import { useTrackUserEventsMutation } from '@dexkit/ui/hooks/userEvents';
 import {
@@ -25,6 +26,7 @@ import {
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
+import { useNFTBalance } from '@thirdweb-dev/react';
 import { ClaimEligibility, NATIVE_TOKEN_ADDRESS } from '@thirdweb-dev/sdk';
 import { SwappableAssetV4 } from '@traderxyz/nft-swap-sdk';
 import { useWeb3React } from '@web3-react/core';
@@ -35,7 +37,6 @@ import {
   useErc20AllowanceMutation,
   useErc20ApproveMutationV2,
 } from 'src/hooks/balances';
-
 const QuantityField = styled(TextField)(({ theme }) => ({
   '& .MuiFormLabel-root': {
     fontSize: '1.5rem',
@@ -107,6 +108,12 @@ export function EditionDropSection({ section }: Props) {
   const { account, chainId, provider } = useWeb3React();
   const [quantity, setQuantity] = useState(1);
   const { contract: editionDrop } = useContract(address);
+
+  const { data: balance, isLoading: isLoadingBalance } = useNFTBalance(
+    editionDrop,
+    account,
+    tokenId,
+  );
 
   const allowanceMutation = useErc20AllowanceMutation(provider);
 
@@ -440,6 +447,21 @@ export function EditionDropSection({ section }: Props) {
               )}
             </Typography>
           </Stack>
+          <Stack spacing={2} direction={'row'}>
+            <Typography>
+              <FormattedMessage id={'you.own'} defaultMessage={'You own'} /> :
+            </Typography>
+            <Typography>
+              {' '}
+              {isLoadingBalance ? (
+                <Skeleton>
+                  <Typography> --</Typography>
+                </Skeleton>
+              ) : (
+                <Typography>{balance?.toString()}</Typography>
+              )}
+            </Typography>
+          </Stack>
         </Grid>
         <Grid item xs={12}>
           {isLoadingConditions && !activeClaimCondition.data ? (
@@ -534,9 +556,14 @@ export function EditionDropSection({ section }: Props) {
                           defaultMessage={'Sold out'}
                         />
                       </Typography>
-                    ) : (
+                    ) : account ? (
                       <Button
-                        disabled={!canClaim || buttonLoading}
+                        disabled={
+                          !canClaim ||
+                          buttonLoading ||
+                          allowanceMutation.isLoading ||
+                          approveMutation.isLoading
+                        }
                         sx={{ maxWidth: '300px' }}
                         variant="outlined"
                         onClick={async () => {
@@ -637,6 +664,8 @@ export function EditionDropSection({ section }: Props) {
                           buttonText
                         )}
                       </Button>
+                    ) : (
+                      <ConnectWalletButton />
                     )}
                   </Stack>
                 ) : (

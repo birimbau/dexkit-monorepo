@@ -15,7 +15,7 @@ import { NETWORK_FROM_SLUG } from '@dexkit/core/constants/networks';
 import { Asset } from '@dexkit/core/types';
 import { getCollectionData } from '@dexkit/ui/modules/nft/services';
 import { Collection, TraderOrderFilter } from '@dexkit/ui/modules/nft/types';
-import { Search } from '@mui/icons-material';
+import Search from '@mui/icons-material/Search';
 import {
   Divider,
   Drawer,

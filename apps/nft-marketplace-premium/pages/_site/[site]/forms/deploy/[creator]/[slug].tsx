@@ -41,7 +41,7 @@ import useThirdwebContractMetadataQuery, {
   useFormConfigParamsQuery,
 } from '@dexkit/web3forms/hooks';
 import { dkGetTrustedForwarders } from '@dexkit/web3forms/utils';
-import { CheckCircle } from '@mui/icons-material';
+import CheckCircle from '@mui/icons-material/CheckCircle';
 import { useWeb3React } from '@web3-react/core';
 import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
