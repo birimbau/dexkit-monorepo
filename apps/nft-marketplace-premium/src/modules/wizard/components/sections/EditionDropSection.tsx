@@ -9,7 +9,9 @@ import {
   useTotalCirculatingSupply,
 } from '@thirdweb-dev/react';
 
+import { UserEvents } from '@dexkit/core/constants/userEvents';
 import { useDexKitContext } from '@dexkit/ui/hooks';
+import { useTrackUserEventsMutation } from '@dexkit/ui/hooks/userEvents';
 import {
   Alert,
   Button,
@@ -99,6 +101,7 @@ export function parseIneligibility(
 
 export function EditionDropSection({ section }: Props) {
   const { tokenId, address } = section.config;
+  const trackUserEventsMutation = useTrackUserEventsMutation();
   const { createNotification, watchTransactionDialog } = useDexKitContext();
 
   const { account, chainId, provider } = useWeb3React();
@@ -587,6 +590,24 @@ export function EditionDropSection({ section }: Props) {
                               tokenId,
                               quantity,
                             );
+
+                            const metadata = {
+                              tokenId,
+                              quantity: String(quantity),
+                              name: String(contractMetadata?.name || ' '),
+                              price:
+                                activeClaimCondition.data?.price.toString(),
+                              currency:
+                                activeClaimCondition.data?.currencyAddress,
+                              address,
+                            };
+
+                            trackUserEventsMutation.mutate({
+                              event: UserEvents.buyDropEdition,
+                              chainId,
+                              hash: result.receipt.transactionHash,
+                              metadata: JSON.stringify(metadata),
+                            });
 
                             createNotification({
                               type: 'transaction',

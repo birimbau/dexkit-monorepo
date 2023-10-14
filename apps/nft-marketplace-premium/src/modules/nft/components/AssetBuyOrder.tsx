@@ -1,12 +1,11 @@
+import { useTrackUserEventsMutation } from '@dexkit/ui/hooks/userEvents';
 import { Button, Grid, NoSsr, Paper, Stack, Typography } from '@mui/material';
+import { QueryErrorResetBoundary, useQueryClient } from '@tanstack/react-query';
 import { useWeb3React } from '@web3-react/core';
 import { Suspense, useCallback, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { FormattedMessage } from 'react-intl';
-
-import { QueryErrorResetBoundary, useQueryClient } from '@tanstack/react-query';
 import { ZEROEX_NATIVE_TOKEN_ADDRESS } from '../../../constants';
-
 import {
   GET_NFT_ORDERS,
   useApproveAssetMutation,
@@ -18,6 +17,7 @@ import { isAddressEqual } from '../../../utils/blockchain';
 import { ConfirmBuyDialog } from './dialogs/ConfirmBuyDialog';
 import TableSkeleton from './tables/TableSkeleton';
 
+import { UserEvents } from '@dexkit/core/constants/userEvents';
 import { useDexKitContext } from '@dexkit/ui/hooks';
 import CancelIcon from '@mui/icons-material/Cancel';
 import {
@@ -47,7 +47,7 @@ interface Props {
 export function AssetBuyOrder({ asset, orderBookItem }: Props) {
   const { account, provider, chainId } = useWeb3React();
   const connectWalletDialog = useConnectWalletDialog();
-
+  const trackUserEvent = useTrackUserEventsMutation();
   const nftSwapSdk = useSwapSdkV4(provider, asset?.chainId);
 
   const { createNotification, watchTransactionDialog } = useDexKitContext();
@@ -165,6 +165,15 @@ export function AssetBuyOrder({ asset, orderBookItem }: Props) {
       }
 
       if (accept) {
+        trackUserEvent.mutate({
+          event:
+            'erc1155Token' in order
+              ? UserEvents.nftAcceptOfferERC1155
+              : UserEvents.nftAcceptOfferERC721,
+          metadata: JSON.stringify(order),
+          hash,
+          chainId,
+        });
         createNotification({
           type: 'transaction',
           subtype: 'acceptOffer',
@@ -175,6 +184,15 @@ export function AssetBuyOrder({ asset, orderBookItem }: Props) {
           },
         });
       } else {
+        trackUserEvent.mutate({
+          event:
+            'erc1155Token' in order
+              ? UserEvents.nftAcceptListERC1155
+              : UserEvents.nftAcceptListERC721,
+          metadata: JSON.stringify(order),
+          hash,
+          chainId,
+        });
         createNotification({
           type: 'transaction',
           subtype: 'buyNft',
@@ -275,6 +293,15 @@ export function AssetBuyOrder({ asset, orderBookItem }: Props) {
           collectionName: asset.collectionName,
           id: asset.id,
         };
+        trackUserEvent.mutate({
+          event:
+            'erc1155Token' in order
+              ? UserEvents.cancelNFTERC1155order
+              : UserEvents.cancelNFTERC721order,
+          metadata: JSON.stringify(order),
+          hash,
+          chainId,
+        });
 
         if (order.direction === OrderDirection.Buy) {
           createNotification({
@@ -355,7 +382,6 @@ export function AssetBuyOrder({ asset, orderBookItem }: Props) {
       if (!account || orderBookItem === undefined) {
         return;
       }
-      console.log(quantity);
 
       setOpenConfirmBuy(false);
 

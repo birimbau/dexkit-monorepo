@@ -1,18 +1,17 @@
 import { ChainId } from "@dexkit/core";
 import { ethers } from "ethers";
 
-import { BigNumber } from "bignumber.js";
-
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { createZrxOrder } from "../utils";
-
+import { UserEvents } from "@dexkit/core/constants/userEvents";
 import {
   ZEROEX_ORDERBOOK_ENDPOINT,
   ZERO_EX_URL,
 } from "@dexkit/core/services/zrx/constants";
 import { Token } from "@dexkit/core/types";
+import { useTrackUserEventsMutation } from '@dexkit/ui/hooks/userEvents';
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useWeb3React } from "@web3-react/core";
 import axios from "axios";
+import { BigNumber } from "bignumber.js";
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { ZEROEX_AFFILIATE_ADDRESS } from "../constants/zrx";
 import { DexkitExchangeContext } from "../contexts";
@@ -22,6 +21,7 @@ import {
   DexkitExchangeSettings,
   GtPool,
 } from "../types";
+import { createZrxOrder } from "../utils";
 
 export function useExchangeContext() {
   return useContext(DexkitExchangeContext);
@@ -29,7 +29,7 @@ export function useExchangeContext() {
 
 export function useSendLimitOrderMutation() {
   const context = useExchangeContext();
-
+  const trackUserEvent = useTrackUserEventsMutation();
   return useMutation(
     async ({
       expirationTime,
@@ -72,6 +72,12 @@ export function useSendLimitOrderMutation() {
           ? { headers: { "0x-api-key": context.zrxApiKey } }
           : undefined
       );
+
+      trackUserEvent.mutate({
+        event: UserEvents.postLimitOrder, metadata: JSON.stringify({
+          order: signedOrder
+        })
+      })
 
       return resp.data;
     }

@@ -51,6 +51,7 @@ export default function ExchangeWizardContainer({
         decimals: t.decimals,
         name: t.name,
         symbol: t.symbol,
+        logoURI: t?.logoURI,
       };
     });
 

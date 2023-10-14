@@ -36,6 +36,8 @@ export interface DexkitProviderProps {
   options?: {
     magicRedirectUrl: string;
   };
+  userEventsURL?: string;
+  siteId?: number;
   transactionsAtom: WritableAtom<
     {
       [key: string]: AppTransaction;
@@ -65,6 +67,8 @@ export function DexkitProvider({
   localeMessages,
   notificationTypes,
   notificationsAtom,
+  userEventsURL,
+  siteId,
 }: DexkitProviderProps) {
   const connectors = useOrderedConnectors({ selectedWalletAtom });
 
@@ -85,7 +89,9 @@ export function DexkitProvider({
   });
 
   return (
-    <DexKitContext.Provider value={appState}>
+    <DexKitContext.Provider
+      value={{ ...appState, userEventURL: userEventsURL, siteId: siteId }}
+    >
       <IntlProvider
         locale={locale}
         defaultLocale={locale}

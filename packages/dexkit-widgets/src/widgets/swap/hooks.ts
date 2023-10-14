@@ -1,5 +1,6 @@
 import { ChainId } from "@dexkit/core/constants/enums";
 import { NETWORKS, WRAPPED_TOKEN_ADDRESS } from "@dexkit/core/constants/networks";
+import { useTrackUserEventsMutation } from '@dexkit/ui/hooks/userEvents';
 import {
   UseMutationOptions,
   UseMutationResult,
@@ -33,6 +34,7 @@ import {
 } from "../../services/zeroex/constants";
 import { ZeroExQuote, ZeroExQuoteResponse } from "../../services/zeroex/types";
 
+import { UserEvents } from "@dexkit/core/constants/userEvents";
 import { Token } from "@dexkit/core/types";
 import { isAddressEqual, switchNetwork } from "../../utils";
 import { ExecType, NotificationCallbackParams, SwapSide } from "./types";
@@ -244,6 +246,7 @@ export function useSwapExec({
   onNotification: (params: NotificationCallbackParams) => void;
 }) {
   const { formatMessage } = useIntl();
+  const trackUserEvent = useTrackUserEventsMutation()
 
   return useMutation(
     async ({
@@ -282,6 +285,13 @@ export function useSwapExec({
           },
         });
 
+        trackUserEvent.mutate({
+          event: UserEvents.swap, hash: tx.hash, chainId, metadata: JSON.stringify({
+            quote: quote,
+            sellToken,
+            buyToken
+          })
+        })
         onHash(tx.hash);
 
         return await tx.wait();
