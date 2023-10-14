@@ -11,3 +11,12 @@ export const ContractFormSchema = Yup.object().shape({
     .required(),
   fields: Yup.object({}),
 });
+
+export const MintNFTSchema = Yup.object().shape({
+  name: Yup.string().required(),
+  description: Yup.string().optional(),
+  background_color: Yup.string().url().optional(),
+  animation_url: Yup.string().url().optional(),
+  image: Yup.string().url().optional(),
+  external_url: Yup.string().url().optional(),
+});

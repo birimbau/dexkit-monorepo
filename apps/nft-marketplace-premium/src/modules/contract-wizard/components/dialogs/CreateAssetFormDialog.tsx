@@ -36,13 +36,13 @@ export default function CreateAssetFormDialog({
         onClose={handleClose}
       />
       <Divider />
-      <DialogContent sx={{ p: 0 }}>
+      <DialogContent>
         <WizardCreateAssetContainerV2
           network={network as string}
           address={address as string}
           isERC1155={isERC1155}
           isLazyMint={isLazyMint}
-        ></WizardCreateAssetContainerV2>
+        />
       </DialogContent>
     </Dialog>
   );

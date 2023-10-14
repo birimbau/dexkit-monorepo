@@ -4,12 +4,9 @@ import {
   Avatar,
   Box,
   Button,
-  Card,
-  CardContent,
   CircularProgress,
   Container,
   Divider,
-  Grid,
   Skeleton,
   Stack,
   Typography,
@@ -32,10 +29,11 @@ import { useSnackbar } from 'notistack';
 import { useEffect, useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { TokenDropPageSection } from '../../types/section';
+import TokenDropSummary from '../TokenDropSummary';
 
 export function parseIneligibility(
   reasons: ClaimEligibility[],
-  quantity = 0
+  quantity = 0,
 ): string {
   if (!reasons.length) {
     return '';
@@ -83,7 +81,7 @@ export default function TokenDropSection({ section }: TokenDropSectionProps) {
 
   const activeClaimCondition = useActiveClaimConditionForWallet(
     contract,
-    account
+    account,
   );
 
   const claimerProofs = useClaimerProofs(contract, account || '');
@@ -134,7 +132,7 @@ export default function TokenDropSection({ section }: TokenDropSectionProps) {
 
       return `${utils.formatUnits(
         bnPrice.mul(lazyQuantity).toString(),
-        activeClaimCondition.data?.currencyMetadata.decimals || 18
+        activeClaimCondition.data?.currencyMetadata.decimals || 18,
       )} ${activeClaimCondition.data?.currencyMetadata.symbol}`;
     }
   }, [
@@ -157,7 +155,7 @@ export default function TokenDropSection({ section }: TokenDropSectionProps) {
     let perTransactionClaimable;
     try {
       perTransactionClaimable = BigNumber.from(
-        activeClaimCondition.data?.maxClaimablePerWallet || 0
+        activeClaimCondition.data?.maxClaimablePerWallet || 0,
       );
     } catch (e) {
       perTransactionClaimable = BigNumber.from(1_000_000_000);
@@ -202,13 +200,6 @@ export default function TokenDropSection({ section }: TokenDropSectionProps) {
   ]);
 
   const isSoldOut = useMemo(() => {
-    console.log(
-      availableSupply,
-      numberClaimed,
-      numberTotal,
-      activeClaimCondition.data
-    );
-
     if (
       activeClaimCondition.data?.maxClaimablePerWallet === 'unlimited' &&
       activeClaimCondition.data?.maxClaimablePerWallet === 'unlimited'
@@ -222,7 +213,6 @@ export default function TokenDropSection({ section }: TokenDropSectionProps) {
         numberClaimed === numberTotal
       );
     } catch (e) {
-      console.log('e', e);
       return false;
     }
   }, [
@@ -261,7 +251,7 @@ export default function TokenDropSection({ section }: TokenDropSectionProps) {
 
     if (canClaim) {
       const pricePerToken = BigNumber.from(
-        activeClaimCondition.data?.currencyMetadata.value || 0
+        activeClaimCondition.data?.currencyMetadata.value || 0,
       );
       if (pricePerToken.eq(0)) {
         return <FormattedMessage id="mint.free" defaultMessage="Mint (Free)" />;
@@ -337,7 +327,7 @@ export default function TokenDropSection({ section }: TokenDropSectionProps) {
             id="error.while.minting"
             defaultMessage="Error while minting"
           />,
-          { variant: 'error' }
+          { variant: 'error' },
         );
       }
     }
@@ -376,7 +366,7 @@ export default function TokenDropSection({ section }: TokenDropSectionProps) {
 
         {claimConditions.data?.length === 0 ||
           (claimConditions.data?.every(
-            (cc) => cc.maxClaimableSupply === '0'
+            (cc) => cc.maxClaimableSupply === '0',
           ) && (
             <Alert severity="info">
               <FormattedMessage
@@ -408,13 +398,16 @@ export default function TokenDropSection({ section }: TokenDropSectionProps) {
               direction="row"
             >
               {contractMetadata?.image && (
-                <Avatar style={{ height: '6rem', width: '6rem' }}>
-                  <img
-                    src={contractMetadata?.image}
-                    alt={contractMetadata?.name!}
-                    style={{ objectFit: 'contain', aspectRatio: '1/1' }}
-                  />
-                </Avatar>
+                <Avatar
+                  src={contractMetadata?.image}
+                  alt={contractMetadata?.name!}
+                  sx={{
+                    height: '6rem',
+                    width: '6rem',
+                    objectFit: 'contain',
+                    aspectRatio: '1/1',
+                  }}
+                />
               )}
             </Stack>
 
@@ -435,7 +428,9 @@ export default function TokenDropSection({ section }: TokenDropSectionProps) {
                 <FormattedMessage
                   id="claim.erc20.tokens.from.contractName"
                   defaultMessage="Claim ERC20 Tokens from {contractName}"
-                  values={{ contractName: contractMetadata?.name }}
+                  values={{
+                    contractName: <strong>{contractMetadata?.name}</strong>,
+                  }}
                 />
               </Typography>
             </Box>
@@ -446,59 +441,7 @@ export default function TokenDropSection({ section }: TokenDropSectionProps) {
 
         {section.settings.variant === 'detailed' && (
           <Box>
-            <Grid container spacing={2}>
-              <Grid item xs={12} sm={3}>
-                <Card>
-                  <CardContent>
-                    <Typography variant="caption" color="text.secondary">
-                      <FormattedMessage
-                        id="total.supply"
-                        defaultMessage="Total Supply"
-                      />
-                    </Typography>
-                    <Typography variant="h5">
-                      {contractData ? contractData?.displayValue : <Skeleton />}{' '}
-                      {contractData?.symbol.toUpperCase()}
-                    </Typography>
-                  </CardContent>
-                </Card>
-              </Grid>
-              <Grid item xs={12} sm={3}>
-                <Card>
-                  <CardContent>
-                    <Typography variant="caption" color="text.secondary">
-                      <FormattedMessage
-                        id="your.balance"
-                        defaultMessage="Your Balance"
-                      />
-                    </Typography>
-                    <Typography variant="h5">
-                      {contractData ? balance : <Skeleton />}{' '}
-                      {contractData?.symbol.toUpperCase()}
-                    </Typography>
-                  </CardContent>
-                </Card>
-              </Grid>
-              <Grid item xs={12} sm={3}>
-                <Card>
-                  <CardContent>
-                    <Typography variant="caption" color="text.secondary">
-                      <FormattedMessage
-                        id="decimals"
-                        defaultMessage="Decimals"
-                      />
-                    </Typography>
-                    <Typography variant="h5">
-                      {contractData?.decimals ? (
-                        contractData?.decimals
-                      ) : (
-                        <Skeleton />
-                      )}
-                    </Typography>
-                  </CardContent>
-                </Card>
-              </Grid>
-            </Grid>
+            <TokenDropSummary contract={contract} />
           </Box>
         )}
 

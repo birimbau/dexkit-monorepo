@@ -1,17 +1,10 @@
+import TokenDropSummary from '@/modules/wizard/components/TokenDropSummary';
 import { CoinTypes } from '@dexkit/core';
 import { NETWORKS } from '@dexkit/core/constants/networks';
 import { EvmCoin } from '@dexkit/core/types';
 import { convertTokenToEvmCoin } from '@dexkit/core/utils';
 import { useTokenList } from '@dexkit/ui';
-import {
-  Button,
-  Card,
-  CardContent,
-  Skeleton,
-  Tab,
-  Tabs,
-  Typography,
-} from '@mui/material';
+import { Button, Divider, Tab, Tabs } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import { useContract } from '@thirdweb-dev/react';
 import { CurrencyValue } from '@thirdweb-dev/sdk/evm';
@@ -26,7 +19,7 @@ const EvmTransferCoinDialog = dynamic(
   () =>
     import(
       '@dexkit/ui/modules/evm-transfer-coin/components/dialogs/EvmSendDialog'
-    )
+    ),
 );
 
 interface ContractTokenDropContainerProps {
@@ -144,6 +137,13 @@ export function ContractTokenDropContainer({
       />
       <Grid container spacing={2}>
         <Grid item xs={12}>
+          <TokenDropSummary contract={contract} />
+        </Grid>
+        <Grid item xs={12}>
+          <Divider />
+        </Grid>
+
+        <Grid item xs={12}>
           <Tabs value={currTab} onChange={handleChange}>
             <Tab value="token" label="Token" />
             <Tab value="claim-conditions" label="Claim Conditions" />
@@ -157,73 +157,15 @@ export function ContractTokenDropContainer({
         {currTab === 'token' && (
           <Grid item xs={12}>
             <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <Grid container spacing={2}>
-                  <Grid item>
-                    <Button onClick={handleBurn} variant="contained">
-                      <FormattedMessage id="burn" defaultMessage="Burn" />
-                    </Button>
-                  </Grid>
-                  <Grid item>
-                    <Button onClick={handleShowTransfer} variant="contained">
-                      <FormattedMessage
-                        id="transfer"
-                        defaultMessage="Transfer"
-                      />
-                    </Button>
-                  </Grid>
-                </Grid>
+              <Grid item>
+                <Button onClick={handleBurn} variant="contained">
+                  <FormattedMessage id="burn" defaultMessage="Burn" />
+                </Button>
               </Grid>
-              <Grid item xs={12} sm={3}>
-                <Card>
-                  <CardContent>
-                    <Typography variant="caption" color="text.secondary">
-                      <FormattedMessage
-                        id="total.supply"
-                        defaultMessage="Total Supply"
-                      />
-                    </Typography>
-                    <Typography variant="h5">
-                      {contractData ? contractData?.displayValue : <Skeleton />}{' '}
-                      {contractData?.symbol.toUpperCase()}
-                    </Typography>
-                  </CardContent>
-                </Card>
-              </Grid>
-              <Grid item xs={12} sm={3}>
-                <Card>
-                  <CardContent>
-                    <Typography variant="caption" color="text.secondary">
-                      <FormattedMessage
-                        id="your.balance"
-                        defaultMessage="Your Balance"
-                      />
-                    </Typography>
-                    <Typography variant="h5">
-                      {contractData ? balance : <Skeleton />}{' '}
-                      {contractData?.symbol.toUpperCase()}
-                    </Typography>
-                  </CardContent>
-                </Card>
-              </Grid>
-              <Grid item xs={12} sm={3}>
-                <Card>
-                  <CardContent>
-                    <Typography variant="caption" color="text.secondary">
-                      <FormattedMessage
-                        id="decimals"
-                        defaultMessage="Decimals"
-                      />
-                    </Typography>
-                    <Typography variant="h5">
-                      {contractData?.decimals ? (
-                        contractData?.decimals
-                      ) : (
-                        <Skeleton />
-                      )}
-                    </Typography>
-                  </CardContent>
-                </Card>
+              <Grid item>
+                <Button onClick={handleShowTransfer} variant="contained">
+                  <FormattedMessage id="transfer" defaultMessage="Transfer" />
+                </Button>
               </Grid>
             </Grid>
           </Grid>

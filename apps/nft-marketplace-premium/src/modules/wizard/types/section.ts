@@ -24,7 +24,8 @@ export type SectionType =
   | 'exchange'
   | 'edition-drop-section'
   | 'edition-drop-list-section'
-  | 'token-drop';
+  | 'token-drop'
+  | 'nft-drop';
 
 export interface PageSection {
   type: SectionType;
@@ -105,6 +106,15 @@ export interface UserContractPageSection extends PageSection {
 
 export interface TokenDropPageSection extends PageSection {
   type: 'token-drop';
+  settings: {
+    network: string;
+    address: string;
+    variant?: 'simple' | 'detailed';
+  };
+}
+
+export interface NftDropPageSection extends PageSection {
+  type: 'nft-drop';
   settings: {
     network: string;
     address: string;

@@ -278,6 +278,43 @@ export function useScanContractAbiMutation() {
   );
 }
 
+export function useContractCreation() {
+  return useMutation(
+    async ({
+      contractAddress,
+      chainId,
+    }: {
+      contractAddress: string;
+      chainId: ChainId;
+    }) => {
+      if (!ethers.utils.isAddress(contractAddress)) {
+        throw new Error("invalid contract address");
+      }
+
+      if (!chainId) {
+        throw new Error("no chain id");
+      }
+
+      const resp = await axios.get(
+        `https://${ETHER_SCAN_API_URL[chainId] ?? ""}/api`,
+        {
+          params: {
+            action: "getcontractcreation",
+            module: "contract",
+            contractaddresses: contractAddress,
+          },
+        }
+      );
+
+      if (resp.data.message === "NOTOK") {
+        throw new Error("rate limit");
+      }
+
+      return resp.data.result;
+    }
+  );
+}
+
 export function useIfpsUploadMutation() {
   const { instance } = useContext(DexkitApiProvider);
 

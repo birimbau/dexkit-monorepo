@@ -3,6 +3,7 @@ import CreateAssetDialog from '@/modules/contract-wizard/components/dialogs/Crea
 import { CollectionItemsSchema } from '@/modules/contract-wizard/constants/schemas';
 import {
   useCreateAssetsMetadataMutation,
+  useCreateCollectionMetadataMutation,
   useCreateItems,
   useFetchAssetsMutation,
   useLazyMintMutation,
@@ -20,7 +21,15 @@ import {
   MIN_KIT_HOLDING_AI_GENERATION,
 } from 'src/constants';
 
-import { useContract, useMintNFT, useTotalCount } from '@thirdweb-dev/react';
+import { useContractCreation } from '@dexkit/web3forms/hooks';
+import {
+  useContract,
+  useContractMetadata,
+  useMintNFT,
+  useTotalCount,
+} from '@thirdweb-dev/react';
+import { ethers } from 'ethers';
+import { useContractCollection } from 'src/hooks/nft';
 interface Props {
   network: string;
   address: string;
@@ -31,6 +40,7 @@ interface Props {
 function WizardCreateAssetContainerV2(props: Props) {
   const { network, address, isERC1155, isLazyMint } = props;
   const { contract } = useContract(address);
+  const { data: contractMetadata } = useContractMetadata(contract);
 
   const { data: totalCount } = useTotalCount(contract);
   const {
@@ -93,6 +103,10 @@ function WizardCreateAssetContainerV2(props: Props) {
     uploadItemsMetadataMutation.reset();
   };
 
+  const createMetadataMutation = useCreateCollectionMetadataMutation();
+  const contractCollection = useContractCollection(network, address);
+  const contractCreation = useContractCreation();
+
   const handleCreateNFTs = async () => {
     try {
       if (
@@ -126,6 +140,27 @@ function WizardCreateAssetContainerV2(props: Props) {
             tokenIds: tokenIds,
           });
         } else {
+          if (!contractCollection?.data && chainId) {
+            const contract = new ethers.Contract(address, [], provider);
+
+            provider.getLogs({ address, fromBlock: 182 });
+
+            let result: any[] = await contractCreation.mutateAsync({
+              contractAddress: address,
+              chainId,
+            });
+
+            let value = result[0];
+
+            await createMetadataMutation.mutateAsync({
+              tx: value.txHash,
+              description: contractMetadata?.description || '',
+              external_link: contractMetadata?.external_link || '',
+              image: contractMetadata?.image || '',
+              networkId: network,
+            });
+          }
+
           for (let index = 0; index < itemsToMint; index++) {
             const item = collectionItemsFormValues?.items[index];
 
@@ -160,7 +195,7 @@ function WizardCreateAssetContainerV2(props: Props) {
         }
       }
       setItemsMinted([]);
-    } catch {
+    } catch (err) {
       setItemsMinted([]);
     }
   };
