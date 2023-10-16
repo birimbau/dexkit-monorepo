@@ -22,15 +22,13 @@ import { ChangeEvent, useState } from "react";
 
 import { FormattedMessage, useIntl } from "react-intl";
 
-import { WALLET_CONNECTORS } from "@dexkit/core/connectors";
-
 import { useSnackbar } from "notistack";
 
 import { AppDialogTitle } from "./AppDialogTitle";
 
-import { WalletActivateParams } from "@dexkit/core/types";
-
-import { MagicLoginType } from "@dexkit/core/types/magic";
+import { WALLET_CONNECTORS } from "@dexkit/wallet-connectors/connectors";
+import { MagicLoginType } from "@dexkit/wallet-connectors/connectors/magic";
+import { WalletActivateParams } from "@dexkit/wallet-connectors/types";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import Wallet from "@mui/icons-material/Wallet";
 

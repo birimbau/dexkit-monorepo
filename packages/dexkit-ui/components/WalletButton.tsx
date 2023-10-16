@@ -14,8 +14,8 @@ import {
 } from "@mui/material";
 import { useWeb3React } from "@web3-react/core";
 
-import { GET_WALLET_ICON } from "@dexkit/core";
 import { truncateAddress } from "@dexkit/core/utils";
+import { GET_WALLET_ICON } from "@dexkit/wallet-connectors/connectors";
 import { useRouter } from "next/router";
 import { useCallback, useState } from "react";
 import { FormattedMessage } from "react-intl";

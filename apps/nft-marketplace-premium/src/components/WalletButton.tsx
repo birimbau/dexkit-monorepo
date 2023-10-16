@@ -1,5 +1,5 @@
 import { useAuthUserQuery } from '@/modules/user/hooks';
-import { GET_WALLET_ICON } from '@dexkit/core/connectors';
+import { GET_WALLET_ICON } from '@dexkit/wallet-connectors/connectors';
 import { Logout } from '@mui/icons-material';
 import EditIcon from '@mui/icons-material/Edit';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';

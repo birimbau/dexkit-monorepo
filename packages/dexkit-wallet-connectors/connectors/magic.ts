@@ -8,15 +8,18 @@ import type {
 import { Connector } from "@web3-react/types";
 import { EventEmitter } from "events";
 
-import { NETWORKS } from "../constants/networks";
+import { waitForEvent } from "../utils";
 
-import { parseChainId, waitForEvent } from "../utils";
+import { ChainId } from "@dexkit/core/constants";
+import { NETWORKS } from "@dexkit/core/constants/networks";
+import { parseChainId } from "@dexkit/core/utils";
 
-import { ChainId } from "../constants/enums";
 
 export const MAGIC_EVENT_EXECUTE = "execute";
 export const MAGIC_EVENT_REQUEST = "request";
 export const MAGIC_EVENT_CANCEL = "cancel";
+
+
 
 export interface RequestArguments {
   method: string;

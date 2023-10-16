@@ -18,8 +18,8 @@ import {
   Typography,
 } from '@mui/material';
 
-import { MagicConnector } from '@dexkit/core/types/magic';
 import MagicNetworkSelect from '@dexkit/ui/components/MagicNetworkSelect';
+import { MagicConnector } from '@dexkit/wallet-connectors/connectors/magic';
 import { AttachMoney, Language } from '@mui/icons-material';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import { useWeb3React } from '@web3-react/core';

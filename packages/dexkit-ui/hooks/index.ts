@@ -1,6 +1,5 @@
 import {
   ChainId,
-  CONNECTORS,
   TransactionStatus,
   TransactionType,
 } from "@dexkit/core/constants";
@@ -11,10 +10,11 @@ import {
   TransactionMetadata,
 } from "@dexkit/core/types";
 import { switchNetwork } from "@dexkit/core/utils";
+import { CONNECTORS } from '@dexkit/wallet-connectors/constants';
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useWeb3React, Web3ReactHooks } from "@web3-react/core";
+import { Web3ReactHooks, useWeb3React } from "@web3-react/core";
 import { Connector } from "@web3-react/types";
-import { atom, PrimitiveAtom, useAtom, useAtomValue } from "jotai";
+import { PrimitiveAtom, atom, useAtom, useAtomValue } from "jotai";
 import { useUpdateAtom } from "jotai/utils";
 import { useCallback, useContext, useMemo, useState } from "react";
 

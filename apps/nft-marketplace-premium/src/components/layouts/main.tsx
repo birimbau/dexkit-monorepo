@@ -27,12 +27,13 @@ import { useRouter } from 'next/router';
 import { AppConfig } from 'src/types/config';
 import AppDrawer from '../AppDrawer';
 
-import { useWalletActivate } from '@dexkit/core/hooks';
-import { WalletActivateParams } from '@dexkit/core/types';
 import { useDexKitContext, useExecuteTransactionsDialog } from '@dexkit/ui';
 import AppTransactionWatchDialog from '@dexkit/ui/components/AppTransactionWatchDialog';
 import ConnectWalletDialog from '@dexkit/ui/components/ConnectWalletDialog';
 import WatchTransactionDialog from '@dexkit/ui/components/dialogs/WatchTransactionDialog';
+
+import { useWalletActivate } from '@dexkit/wallet-connectors/hooks';
+import { WalletActivateParams } from '@dexkit/wallet-connectors/types';
 
 const HoldingKitDialog = dynamic(() => import('../dialogs/HoldingKitDialog'));
 

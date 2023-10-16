@@ -39,6 +39,8 @@
     "@dexkit/ui": "*",
     "@dexkit/web3forms": "*",
     "@dexkit/widgets": "*",
+    "@dexkit/exchange": "*",
+    "@dexkit/wallet-connectors": "*",
     "@uiw/react-md-editor": "^3.23.3",
     "html-react-parser": "^4.0.0",
     "react-syntax-highlighter": "^15.5.0"

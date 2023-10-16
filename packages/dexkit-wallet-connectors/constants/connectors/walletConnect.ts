@@ -1,6 +1,7 @@
+import { NETWORKS } from "@dexkit/core/constants/networks";
 import { initializeConnector } from "@web3-react/core";
 import { WalletConnect } from "@web3-react/walletconnect-v2";
-import { NETWORKS } from "../../constants/networks";
+
 
 
 const rpcs: { [key: number]: string } = {};

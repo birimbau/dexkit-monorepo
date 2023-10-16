@@ -1,6 +1,6 @@
-import { useWalletActivate } from '@dexkit/core/hooks';
-import { WalletActivateParams } from '@dexkit/core/types';
 import ConnectWalletDialog from '@dexkit/ui/components/ConnectWalletDialog';
+import { useWalletActivate } from '@dexkit/wallet-connectors/hooks';
+import { WalletActivateParams } from '@dexkit/wallet-connectors/types';
 import { Box, Button, Container } from '@mui/material';
 import { useWeb3React } from '@web3-react/core';
 import { useLogin } from 'react-admin';

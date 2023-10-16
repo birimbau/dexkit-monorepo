@@ -32,7 +32,8 @@
   },
   "dependencies": {
     "@transak/transak-sdk": "^1.3.0",
-    "@dexkit/core": "*"
+    "@dexkit/core": "*",
+    "@dexkit/wallet-connectors": "*"
   },
   "publishConfig": {
     "access": "public"
