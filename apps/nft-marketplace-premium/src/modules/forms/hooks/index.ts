@@ -320,13 +320,14 @@ export function useSaveContractDeployed() {
       contractAddress,
       name,
       chainId,
+      type
     }: {
       contractAddress: string;
       name?: string;
       type?: string;
       chainId: number;
     }) => {
-      return await saveContractDeploy({ contractAddress, name, chainId });
+      return await saveContractDeploy({ contractAddress, name, chainId, type });
     },
   );
 }
@@ -372,7 +373,7 @@ export function useListDeployedContracts({
             }[];
             nextCursor?: number;
           }>('/forms/deploy/list', {
-            params: { cursor: pageParam, limit: 12, owner, name, chainId },
+            params: { cursor: pageParam, limit: 20, owner: '0xAf16774D5579bBCbAFb72Df314C17704360BC0fB', name, chainId },
           })
         ).data;
       }
