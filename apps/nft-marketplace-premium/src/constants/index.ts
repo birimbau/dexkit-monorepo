@@ -96,15 +96,15 @@ export const LANGUAGES: Language[] = [
 
 export const CURRENCIES: Currency[] = [
   { symbol: 'usd', name: 'US Dollar' },
-  { symbol: 'eur', name: 'Euro' },
-  { symbol: 'brl', name: 'Brazil Real' },
-  { symbol: 'inr', name: 'Indian Rupee' },
-  { symbol: 'czk', name: 'Czech Koruna' },
   { symbol: 'ars', name: 'Argentine Peso' },
-  { symbol: 'chf', name: 'Swiss Franc' },
+  { symbol: 'brl', name: 'Brazil Real' },
   { symbol: 'clp', name: 'Chilean Peso' },
-  { symbol: 'vef', name: 'Venezuelan bolívar fuerte' },
+  { symbol: 'czk', name: 'Czech Koruna' },
+  { symbol: 'eur', name: 'Euro' },
+  { symbol: 'inr', name: 'Indian Rupee' },
   { symbol: 'ngn', name: 'Nigerian Naira' },
+  { symbol: 'chf', name: 'Swiss Franc' },
+  { symbol: 'vef', name: 'Venezuelan bolívar fuerte' },
 ];
 
 export const WIZARD_DOCS_URL =
