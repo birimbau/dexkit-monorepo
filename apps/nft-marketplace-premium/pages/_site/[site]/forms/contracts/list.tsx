@@ -22,7 +22,7 @@ import {
 import { FormattedMessage } from 'react-intl';
 
 import { myAppsApi } from '@/modules/admin/dashboard/dataProvider';
-import { useListDeployedContracts } from '@/modules/forms/hooks';
+import { useInfiniteListDeployedContracts } from '@/modules/forms/hooks';
 import { NETWORK_SLUG } from '@dexkit/core/constants/networks';
 import { DexkitApiProvider } from '@dexkit/core/providers';
 import { truncateAddress } from '@dexkit/core/utils';
@@ -32,6 +32,7 @@ import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import Search from '@mui/icons-material/Search';
 
+import ContractListDataGrid from '@/modules/forms/components/ContractListDataGrid';
 import { useWeb3React } from '@web3-react/core';
 import { useState } from 'react';
 import { PageHeader } from 'src/components/PageHeader';
@@ -50,7 +51,7 @@ export default function FormsListContractsPage() {
 
   const { account } = useWeb3React();
 
-  const listDeployedContractQuery = useListDeployedContracts({
+  const listDeployedContractQuery = useInfiniteListDeployedContracts({
     page,
     owner: account as string,
     name: searchDeployedContract,
@@ -240,11 +241,11 @@ export default function FormsListContractsPage() {
                                   <TableCell>
                                     <Link
                                       href={`/contract/${NETWORK_SLUG(
-                                        contract.chainId,
+                                        contract.chainId
                                       )}/${contract.contractAddress}`}
                                     >
                                       {truncateAddress(
-                                        contract.contractAddress,
+                                        contract.contractAddress
                                       )}
                                     </Link>
                                   </TableCell>
@@ -263,7 +264,7 @@ export default function FormsListContractsPage() {
                                     </Button>
                                   </TableCell>
                                 </TableRow>
-                              ),
+                              )
                             )}
                           </TableBody>
                         )}
@@ -299,6 +300,9 @@ export default function FormsListContractsPage() {
                         </TableFooter>
                       </Table>
                     </TableContainer>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <ContractListDataGrid />
                   </Grid>
                 </Grid>
               </Grid>

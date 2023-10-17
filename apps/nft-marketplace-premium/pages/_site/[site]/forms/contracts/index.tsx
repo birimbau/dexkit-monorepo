@@ -26,7 +26,7 @@ import { myAppsApi } from '@/modules/admin/dashboard/dataProvider';
 import ContractButton from '@/modules/forms/components/ContractButton';
 import {
   useDeployableContractsQuery,
-  useListDeployedContracts,
+  useInfiniteListDeployedContracts,
 } from '@/modules/forms/hooks';
 import { NETWORK_SLUG } from '@dexkit/core/constants/networks';
 import { DexkitApiProvider } from '@dexkit/core/providers';
@@ -61,7 +61,7 @@ export default function FormsContractsPage() {
 
   const { account } = useWeb3React();
 
-  const listDeployedContractQuery = useListDeployedContracts({
+  const listDeployedContractQuery = useInfiniteListDeployedContracts({
     page,
     owner: account as string,
     name: searchDeployedContract,

@@ -332,9 +332,9 @@ export function useSaveContractDeployed() {
   );
 }
 
-export const LIST_DEPLOYED_CONTRACTS = 'LIST_DEPLOYED_CONTRACTS';
+export const INFINITE_LIST_DEPLOYED_CONTRACTS = 'INFINITE_LIST_DEPLOYED_CONTRACTS';
 
-export function useListDeployedContracts({
+export function useInfiniteListDeployedContracts({
   page = 1,
   owner,
   name,
@@ -358,7 +358,7 @@ export function useListDeployedContracts({
     }[];
     nextCursor?: number;
   }>(
-    [LIST_DEPLOYED_CONTRACTS, page, owner, name, chainId],
+    [INFINITE_LIST_DEPLOYED_CONTRACTS, page, owner, name, chainId],
     async ({ pageParam }) => {
       if (instance) {
         return (
@@ -383,6 +383,69 @@ export function useListDeployedContracts({
     {
       getNextPageParam: ({ nextCursor }) => nextCursor,
     },
+  );
+}
+
+export const LIST_DEPLOYED_CONTRACTS = 'LIST_DEPLOYED_CONTRACTS';
+
+export function useListDeployedContracts({
+  page = 1,
+  skip,
+  take,
+  owner,
+  name,
+  chainId,
+  orderBy,
+  filter,
+}: {
+  page?: number;
+  skip?: number;
+  take?: number;
+  owner?: string;
+  name?: string;
+  chainId?: ChainId;
+  orderBy?: string[];
+  filter?: string;
+}) {
+  const { instance } = useContext(DexkitApiProvider);
+
+  return useQuery<{
+    data: {
+      name: string;
+      contractAddress: string;
+      owner: string;
+      id: number;
+      type?: string;
+      chainId?: number;
+    }[];
+    skip?: number;
+    take?: number;
+    total?: number;
+  }>(
+    [LIST_DEPLOYED_CONTRACTS, page, owner, name, chainId],
+    async () => {
+      if (instance) {
+        return (
+          await instance.get<{
+            data: {
+              name: string;
+              contractAddress: string;
+              owner: string;
+              id: number;
+              type?: string;
+              chainId?: number;
+            }[];
+            skip?: number;
+            take?: number;
+            total?: number;
+          }>('/forms/deploy/contract/list', {
+            params: { limit: 20, owner: '0xAf16774D5579bBCbAFb72Df314C17704360BC0fB', name, chainId },
+          })
+        ).data;
+      }
+
+      return { data: [] };
+    }
   );
 }
 
