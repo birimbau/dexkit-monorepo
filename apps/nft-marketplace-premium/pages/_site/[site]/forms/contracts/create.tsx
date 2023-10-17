@@ -71,9 +71,21 @@ export default function FormsContractsPage() {
                 },
                 {
                   caption: (
-                    <FormattedMessage id="create" defaultMessage="Contracts" />
+                    <FormattedMessage
+                      id="contracts"
+                      defaultMessage="Contracts"
+                    />
                   ),
-                  uri: `/forms/contracts`,
+                  uri: `/forms/contracts/list`,
+                },
+                {
+                  caption: (
+                    <FormattedMessage
+                      id="create"
+                      defaultMessage="Create contracts"
+                    />
+                  ),
+                  uri: `/forms/contracts/create`,
                   active: true,
                 },
               ]}

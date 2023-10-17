@@ -373,7 +373,7 @@ export function useInfiniteListDeployedContracts({
             }[];
             nextCursor?: number;
           }>('/forms/deploy/list', {
-            params: { cursor: pageParam, limit: 20, owner: '0xAf16774D5579bBCbAFb72Df314C17704360BC0fB', name, chainId },
+            params: { cursor: pageParam, limit: 20, owner, name, chainId },
           })
         ).data;
       }
@@ -389,26 +389,23 @@ export function useInfiniteListDeployedContracts({
 export const LIST_DEPLOYED_CONTRACTS = 'LIST_DEPLOYED_CONTRACTS';
 
 export function useListDeployedContracts({
-  page = 1,
-  skip,
-  take,
+  page = 0,
+  pageSize = 10,
   owner,
   name,
   chainId,
-  orderBy,
+  sort,
   filter,
 }: {
   page?: number;
-  skip?: number;
-  take?: number;
+  pageSize?: number;
   owner?: string;
   name?: string;
   chainId?: ChainId;
-  orderBy?: string[];
-  filter?: string;
+  sort?: string[];
+  filter?: any;
 }) {
   const { instance } = useContext(DexkitApiProvider);
-
   return useQuery<{
     data: {
       name: string;
@@ -422,7 +419,7 @@ export function useListDeployedContracts({
     take?: number;
     total?: number;
   }>(
-    [LIST_DEPLOYED_CONTRACTS, page, owner, name, chainId],
+    [LIST_DEPLOYED_CONTRACTS, owner, name, chainId, sort, page, pageSize, filter],
     async () => {
       if (instance) {
         return (
@@ -439,7 +436,7 @@ export function useListDeployedContracts({
             take?: number;
             total?: number;
           }>('/forms/deploy/contract/list', {
-            params: { limit: 20, owner: '0xAf16774D5579bBCbAFb72Df314C17704360BC0fB', name, chainId },
+            params: { owner, name, chainId, skip: page * pageSize, take: pageSize, sort, filter: filter ? JSON.stringify(filter) : undefined },
           })
         ).data;
       }

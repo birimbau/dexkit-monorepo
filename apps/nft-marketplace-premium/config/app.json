@@ -119,8 +119,13 @@
       "children": [
         {
           "type": "Page",
-          "href": "/forms/contracts",
+          "href": "/forms/contracts/create",
           "name": "Create contracts"
+        },
+        {
+          "type": "Page",
+          "href": "/forms/contracts/list",
+          "name": "Manage contracts"
         },
         {
           "type": "Page",

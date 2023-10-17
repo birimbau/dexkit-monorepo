@@ -1,24 +1,87 @@
+import { NETWORK_NAME, NETWORK_SLUG } from '@dexkit/core/constants/networks';
+import { truncateAddress } from '@dexkit/core/utils';
+import Link from '@dexkit/ui/components/AppLink';
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 import {
   DataGrid,
-  GridActionsCellItem,
   GridColDef,
-  GridValueGetterParams,
+  GridFilterModel,
+  GridSortModel,
+  GridToolbar,
 } from '@mui/x-data-grid';
+import { useWeb3React } from '@web3-react/core';
+import { useCallback, useEffect, useState } from 'react';
+import { FormattedMessage } from 'react-intl';
 import { useListDeployedContracts } from '../hooks';
 
 export default function ContractListDataGrid() {
-  const { data } = useListDeployedContracts({});
-  const handleGoToForm = (id: string) => {
-    return undefined;
-  };
+  const { account } = useWeb3React();
+  const [queryOptions, setQueryOptions] = useState<any>({
+    filter: { owner: account?.toLowerCase() },
+  });
+  const [paginationModel, setPaginationModel] = useState({
+    page: 0,
+    pageSize: 10,
+  });
+  const { data, isLoading } = useListDeployedContracts({
+    ...queryOptions,
+    ...paginationModel,
+  });
+
+  useEffect(() => {
+    setQueryOptions({
+      ...queryOptions,
+      filter: { ...queryOptions?.filter, owner: account?.toLowerCase() || '' },
+    });
+  }, [account]);
+
+  const [rowCountState, setRowCountState] = useState((data?.total as any) || 0);
+
+  useEffect(() => {
+    setRowCountState((prevRowCountState: number) =>
+      data?.total !== undefined ? data?.total : prevRowCountState
+    );
+  }, [data?.total, setRowCountState]);
+
+  const handleSortModelChange = useCallback((sortModel: GridSortModel) => {
+    // Here you save the data you need from the sort model
+    setQueryOptions({
+      ...queryOptions,
+      sort:
+        sortModel && sortModel.length
+          ? [sortModel[0].field, sortModel[0].sort]
+          : [],
+    });
+  }, []);
+
+  const onFilterChange = useCallback((filterModel: GridFilterModel) => {
+    // Here you save the data you need from the filter model
+    let filter = { ...queryOptions?.filter };
+    if (filterModel.quickFilterValues?.length) {
+      filter = {
+        ...filter,
+        q: filterModel.quickFilterValues[0],
+      };
+    }
+
+    setQueryOptions({ ...queryOptions, filter });
+  }, []);
 
   const columns: GridColDef[] = [
     { field: 'id', headerName: 'ID', width: 90 },
     {
       field: 'name',
       headerName: 'Name',
-      width: 150,
+      width: 200,
+    },
+    {
+      field: 'createdAt',
+      headerName: 'Created At',
+      width: 200,
+      valueGetter: ({ row }) => {
+        return new Date(row.createdAt).toLocaleString();
+      },
     },
     {
       field: 'type',
@@ -26,52 +89,70 @@ export default function ContractListDataGrid() {
       width: 150,
     },
     {
-      field: 'network',
+      field: 'chainId',
       headerName: 'Network',
       width: 110,
+      valueGetter: ({ row }) => {
+        return NETWORK_NAME(row.chainId);
+      },
     },
     {
-      field: 'address',
+      field: 'contractAddress',
       headerName: 'Address',
       width: 160,
-      valueGetter: (params: GridValueGetterParams) =>
-        `${params.row.firstName || ''} ${params.row.lastName || ''}`,
+      renderCell: (params: any) => (
+        <Link
+          href={`/contract/${NETWORK_SLUG(params.row.chainId)}/${
+            params.row.contractAddress
+          }`}
+        >
+          {truncateAddress(params.row.contractAddress)}
+        </Link>
+      ),
     },
     {
       field: 'actions',
-      type: 'actions',
       headerName: 'Actions',
-      width: 100,
-      cellClassName: 'actions',
-      getActions: ({ id }) => {
-        return [
-          <GridActionsCellItem
-            icon={<></>}
-            label="Create Form"
-            className="textPrimary"
-            onClick={handleGoToForm(id.toString())}
-            color="inherit"
-          />,
-        ];
+      width: 150,
+      renderCell: ({ row }) => {
+        return (
+          <Button
+            LinkComponent={Link}
+            href={`/forms/create?contractAddress=${row.contractAddress}&chainId=${row.chainId}`}
+            target="_blank"
+            size="small"
+            variant="outlined"
+          >
+            <FormattedMessage id="create.form" defaultMessage="Create form" />
+          </Button>
+        );
       },
     },
   ];
 
   return (
-    <Box sx={{ height: 400, width: '100%' }}>
+    <Box sx={{ height: 600, width: '100%' }}>
       <DataGrid
-        rows={data?.data as any}
+        slots={{ toolbar: GridToolbar }}
+        rows={(data?.data as any) || []}
         columns={columns}
-        initialState={{
-          pagination: {
-            paginationModel: {
-              pageSize: 10,
-            },
+        rowCount={rowCountState}
+        paginationModel={paginationModel}
+        paginationMode="server"
+        disableColumnFilter
+        sortingMode="server"
+        slotProps={{
+          toolbar: {
+            showQuickFilter: true,
           },
         }}
+        onPaginationModelChange={setPaginationModel}
+        filterMode="server"
+        onFilterModelChange={onFilterChange}
+        onSortModelChange={handleSortModelChange}
         pageSizeOptions={[5, 10, 25, 50]}
-        checkboxSelection
         disableRowSelectionOnClick
+        loading={isLoading}
       />
     </Box>
   );
