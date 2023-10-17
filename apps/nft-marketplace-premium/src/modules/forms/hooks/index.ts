@@ -373,7 +373,7 @@ export function useListDeployedContracts({
             }[];
             nextCursor?: number;
           }>('/forms/deploy/list', {
-            params: { cursor: pageParam, limit: 20, owner: '0xAf16774D5579bBCbAFb72Df314C17704360BC0fB', name, chainId },
+            params: { cursor: pageParam, limit: 20, owner, name, chainId },
           })
         ).data;
       }
