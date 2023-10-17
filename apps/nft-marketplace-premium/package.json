@@ -41,6 +41,7 @@
     "@indexed-finance/multicall": "^2.0.0",
     "@mui/icons-material": "5.14.11",
     "@mui/material": "5.14.11",
+    "@mui/x-data-grid": "^6.16.2",
     "@mui/x-date-pickers": "^5.0.0-alpha.2",
     "@next/bundle-analyzer": "^13.5.4",
     "@react-hook/intersection-observer": "^3.1.1",
