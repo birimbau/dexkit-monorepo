@@ -1,18 +1,18 @@
-import { Dispatch, SetStateAction, useState } from 'react';
+import DeleteIcon from '@mui/icons-material/Delete';
+import IconButton from '@mui/material/IconButton';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
-import { AppPage, MenuTree } from '../../../../types/config';
-import IconButton from '@mui/material/IconButton';
-import DeleteIcon from '@mui/icons-material/Delete';
+import { Dispatch, SetStateAction, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
+import { AppPage, MenuTree } from '../../../../types/config';
 
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import Stack from '@mui/material/Stack';
 import AddIcon from '@mui/icons-material/Add';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import Button from '@mui/material/Button';
+import Stack from '@mui/material/Stack';
 import AddMenuPageDialog from '../dialogs/AddMenuPageDialog';
 interface Props {
   menu: MenuTree[];
@@ -20,30 +20,144 @@ interface Props {
   onSetMenu: Dispatch<SetStateAction<MenuTree[]>>;
 }
 
+interface ChildrenProps {
+  children: MenuTree[];
+  fatherIndex: number;
+  setIsOpen: (open: boolean) => void;
+  onMoveUp: (key: number, fatherKey: number) => void;
+  onMoveDown: (key: number, fatherKey: number) => void;
+  onRemove: (key: number, fatherKey: number) => void;
+  setFatherIndex: (index: number) => void;
+}
+
+function MenuSectionChildrenList({
+  children,
+  fatherIndex,
+  setFatherIndex,
+  onMoveDown,
+  onMoveUp,
+  onRemove,
+  setIsOpen,
+}: ChildrenProps) {
+  return (
+    <List>
+      {children &&
+        children.map((c, k, arr) => (
+          <ListItem
+            disablePadding
+            key={k}
+            secondaryAction={
+              <>
+                <IconButton
+                  aria-label="up"
+                  onClick={() => onMoveUp(k, fatherIndex)}
+                  disabled={k === 0}
+                >
+                  <KeyboardArrowUpIcon />
+                </IconButton>
+                <IconButton
+                  aria-label="down"
+                  onClick={() => onMoveDown(k, fatherIndex)}
+                  disabled={k === arr.length - 1}
+                >
+                  <KeyboardArrowDownIcon />
+                </IconButton>
+                {c.type === 'Menu' && (
+                  <IconButton
+                    aria-label="add"
+                    onClick={() => {
+                      setFatherIndex(k);
+                      setIsOpen(true);
+                    }}
+                  >
+                    <AddIcon />
+                  </IconButton>
+                )}
+                <IconButton
+                  aria-label="delete"
+                  onClick={() => onRemove(k, fatherIndex)}
+                >
+                  <DeleteIcon />
+                </IconButton>
+              </>
+            }
+          >
+            <ListItemButton sx={{ pl: 4 }}>
+              <ListItemText primary={c.name} />
+            </ListItemButton>
+          </ListItem>
+        ))}
+    </List>
+  );
+}
+
 export default function MenuSection(props: Props) {
   const { menu, onSetMenu, pages } = props;
   const [isOpen, setIsOpen] = useState(false);
   const [fatherIndex, setFatherIndex] = useState<number | undefined>();
 
-  const onRemove = (id: number) => {
+  const onRemove = (id: number, fIndex?: number) => {
     const newMenu = [...menu];
-    newMenu.splice(id, 1);
+    if (fIndex !== undefined) {
+      if (
+        newMenu &&
+        newMenu.length &&
+        newMenu[fIndex] &&
+        newMenu[fIndex]?.children &&
+        newMenu[fIndex]?.children?.length
+      ) {
+        (newMenu[fIndex].children || []).splice(id, 1);
+      }
+    } else {
+      newMenu.splice(id, 1);
+    }
+
     onSetMenu(newMenu || []);
   };
 
-  const onMoveUp = (id: number) => {
+  const onMoveUp = (id: number, fIndex?: number) => {
     const newMenu = [...menu];
-    let before = newMenu[id - 1];
-    newMenu[id - 1] = newMenu[id];
-    newMenu[id] = before;
+    if (fIndex !== undefined) {
+      if (
+        newMenu &&
+        newMenu.length &&
+        newMenu[fIndex] &&
+        newMenu[fIndex]?.children &&
+        newMenu[fIndex]?.children?.length
+      ) {
+        let before = (newMenu[fIndex].children || [])[id - 1];
+        (newMenu[fIndex].children || [])[id - 1] = (newMenu[fIndex].children ||
+          [])[id];
+        (newMenu[fIndex].children || [])[id] = before;
+      }
+    } else {
+      let before = newMenu[id - 1];
+      newMenu[id - 1] = newMenu[id];
+      newMenu[id] = before;
+    }
     onSetMenu(newMenu);
   };
 
-  const onMoveDown = (id: number) => {
+  const onMoveDown = (id: number, fIndex?: number) => {
     const newMenu = [...menu];
-    let before = newMenu[id + 1];
-    newMenu[id + 1] = newMenu[id];
-    newMenu[id] = before;
+    if (fIndex !== undefined) {
+      if (
+        newMenu &&
+        newMenu.length &&
+        newMenu[fIndex] &&
+        newMenu[fIndex]?.children &&
+        newMenu[fIndex]?.children?.length
+      ) {
+        let before = (newMenu[fIndex].children || [])[id + 1];
+        (newMenu[fIndex].children || [])[id + 1] = (newMenu[fIndex].children ||
+          [])[id];
+        (newMenu[fIndex].children || [])[id] = before;
+      }
+    } else {
+      let before = newMenu[id + 1];
+      newMenu[id + 1] = newMenu[id];
+      newMenu[id] = before;
+    }
     onSetMenu(newMenu);
   };
 
@@ -61,11 +175,12 @@ export default function MenuSection(props: Props) {
       }
     } else {
       newMenu.push(item);
-      onSetMenu(newMenu);
     }
+    onSetMenu(newMenu);
   };
 
   const handleAddMenuPage = () => {
+    setFatherIndex(undefined);
     setIsOpen(true);
   };
 
@@ -143,8 +258,46 @@ export default function MenuSection(props: Props) {
               </ListItem>
               <List>
                 {item.children &&
-                  item.children.map((c, k) => (
-                    <ListItem disablePadding key={k}>
+                  item.children.map((c, k, arr) => (
+                    <ListItem
+                      disablePadding
+                      key={k}
+                      secondaryAction={
+                        <>
+                          <IconButton
+                            aria-label="up"
+                            onClick={() => onMoveUp(k, key)}
+                            disabled={k === 0}
+                          >
+                            <KeyboardArrowUpIcon />
+                          </IconButton>
+                          <IconButton
+                            aria-label="down"
+                            onClick={() => onMoveDown(k, key)}
+                            disabled={k === arr.length - 1}
+                          >
+                            <KeyboardArrowDownIcon />
+                          </IconButton>
+                          {c.type === 'Menu' && (
+                            <IconButton
+                              aria-label="add"
+                              onClick={() => {
+                                setFatherIndex(k);
+                                setIsOpen(true);
+                              }}
+                            >
+                              <AddIcon />
+                            </IconButton>
+                          )}
+                          <IconButton
+                            aria-label="delete"
+                            onClick={() => onRemove(k, key)}
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        </>
+                      }
+                    >
                       <ListItemButton sx={{ pl: 4 }}>
                         <ListItemText primary={c.name} />
                       </ListItemButton>
