@@ -12,10 +12,9 @@ const SwitchNetworkDialog = dynamic(
   () => import("@dexkit/ui/components/dialogs/SwitchNetworkDialog")
 );
 
+import { useWalletActivate } from "@dexkit/wallet-connectors/hooks";
 import { useRouter } from "next/router";
 
-import { useWalletActivate } from "@dexkit/core/hooks";
-import { WalletActivateParams } from "@dexkit/core/types";
 import {
   useAppConfig,
   useAppNFT,
@@ -32,6 +31,7 @@ import ConnectWalletDialog from "@dexkit/ui/components/ConnectWalletDialog";
 import WatchTransactionDialog from "@dexkit/ui/components/dialogs/WatchTransactionDialog";
 import { selectedWalletAtom } from "@dexkit/ui/state";
 import { AppConfig } from "@dexkit/ui/types/config";
+import { WalletActivateParams } from "@dexkit/wallet-connectors/types";
 import AppDrawer from "../AppDrawer";
 
 const HoldingKitDialog = dynamic(

@@ -5,6 +5,7 @@ import * as React from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import Tooltip from '@mui/material/Tooltip';
 import { BuilderKit } from '../constants';
 
 interface Props {
@@ -25,23 +26,28 @@ export default function BuilderKitMenu(props: Props) {
 
   return (
     <div className={'kit-builder-menu'}>
-      <Button
-        id="builderkit-menu"
-        aria-controls={open ? 'builderkit-menu' : undefined}
-        aria-haspopup="true"
-        aria-expanded={open ? 'true' : undefined}
-        sx={{
-          fontWeight: 600,
-          textDecoration: 'none',
-          color: 'text.primary',
-          textTransform: 'none',
-          fontSize: 'inherit',
-        }}
-        endIcon={<ExpandMoreIcon />}
-        onClick={handleClick}
+      <Tooltip
+        title={
+          <FormattedMessage
+            id={'builder.kits.description'}
+            defaultMessage={
+              'Select a kit to preview features for building your app'
+            }
+          />
+        }
       >
-        <FormattedMessage id={menu.toLowerCase()} defaultMessage={menu} />
-      </Button>
+        <Button
+          id="builderkit-menu"
+          variant={'contained'}
+          aria-controls={open ? 'builderkit-menu' : undefined}
+          aria-haspopup="true"
+          aria-expanded={open ? 'true' : undefined}
+          endIcon={<ExpandMoreIcon />}
+          onClick={handleClick}
+        >
+          <FormattedMessage id={menu.toLowerCase()} defaultMessage={menu} />
+        </Button>
+      </Tooltip>
       <Menu
         id="builderkit-menu"
         anchorEl={anchorEl}

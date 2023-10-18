@@ -44,6 +44,7 @@ import { useAuth } from 'src/hooks/account';
 import { BuilderKit } from '../../constants';
 import { OnboardBuilderSteps } from '../../constants/onboard/steps';
 import { isFirstVisitOnEditWizardAtom } from '../../state';
+import BuilderKitMenu from '../BuilderKitMenu';
 import { ConfirmationEmailMessage } from '../ConfirmationEmailMessage';
 import { PreviewAppButton } from '../PreviewAppButton';
 import { WelcomeMessage } from '../WelcomeMessage';
@@ -657,19 +658,6 @@ export function EditWizardContainer({ site }: Props) {
                   {/* <TourButton />*/}
                 </Stack>
               )}
-              <Stack direction={'row'} spacing={2} alignItems={'center'}>
-                {/*<BuilderKitMenu
-                  menu={activeBuilderKit}
-                  onChangeMenu={(menu) => setActiveBuilderKit(menu)}
-              />*/}
-                <PreviewAppButton appConfig={wizardConfig} />
-                {site?.previewUrl && (
-                  <Button href={site?.previewUrl} target={'_blank'}>
-                    <LinkIcon />{' '}
-                    <FormattedMessage id="open.url" defaultMessage="Open url" />
-                  </Button>
-                )}
-              </Stack>
 
               {isMobile && (
                 <Button
@@ -680,6 +668,30 @@ export function EditWizardContainer({ site }: Props) {
                   <FormattedMessage id="menu" defaultMessage="Menu" />
                 </Button>
               )}
+            </Stack>
+          </Grid>
+          <Grid item xs={12} sm={12}>
+            <Stack
+              direction={'row'}
+              spacing={1}
+              justifyContent={'space-between'}
+            >
+              <BuilderKitMenu
+                menu={activeBuilderKit}
+                onChangeMenu={(menu) => setActiveBuilderKit(menu)}
+              />
+              <Stack direction={'row'} alignItems={'center'} spacing={2}>
+                <PreviewAppButton appConfig={wizardConfig} />
+                {site?.previewUrl && (
+                  <Button
+                    href={site?.previewUrl}
+                    target={'_blank'}
+                    startIcon={<LinkIcon />}
+                  >
+                    <FormattedMessage id="open.url" defaultMessage="Open url" />
+                  </Button>
+                )}
+              </Stack>
             </Stack>
           </Grid>
           {/* <Grid item xs={12} sm={12}>

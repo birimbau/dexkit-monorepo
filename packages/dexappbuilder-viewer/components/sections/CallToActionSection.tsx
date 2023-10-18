@@ -5,7 +5,7 @@ import {
   AssetFromApi,
   CollectionFromApiCard,
 } from "@dexkit/ui/modules/nft/components";
-import { CallToActionAppPageSection } from "../../types";
+import { CallToActionAppPageSection } from "@dexkit/ui/modules/wizard/types";
 
 interface Props {
   section: CallToActionAppPageSection;
