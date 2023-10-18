@@ -1,4 +1,3 @@
-
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useContract } from '@thirdweb-dev/react';
 import { useWeb3React } from '@web3-react/core';
@@ -6,7 +5,11 @@ import axios from 'axios';
 import { ethers } from 'ethers';
 import { useAtomValue, useSetAtom } from 'jotai';
 import { useMemo } from 'react';
-import { useAccountHoldDexkitMutation, useAuth, useLoginAccountMutation } from 'src/hooks/account';
+import {
+  useAccountHoldDexkitMutation,
+  useAuth,
+  useLoginAccountMutation,
+} from 'src/hooks/account';
 import { getMultipleAssetDexKitApi } from 'src/services/nft';
 import { myAppsApi } from 'src/services/whitelabel';
 import { holdsKitDialogAtom } from 'src/state/atoms';
@@ -15,7 +18,7 @@ import { isIpfsUri } from 'src/utils/ipfs';
 import { collectionsAtom, tokensAtom } from '../atoms';
 import {
   ERC20_BASE_CONTRACT_URL,
-  ERC721_BASE_CONTRACT_URL
+  ERC721_BASE_CONTRACT_URL,
 } from '../constants';
 import { ERC721Abi } from '../constants/contracts/abis/ERC721Abi';
 import { TokenForm, WizardCollection, WizardItem } from '../types';
@@ -24,11 +27,11 @@ const wizardBaseAPI = axios.create({
   baseURL: process.env.NEXT_PUBLIC_WIZARD_API_ENDPOINT,
 });
 
-const dexKitAppApi = myAppsApi
+const dexKitAppApi = myAppsApi;
 
 export function useCreateCollection(
   provider?: ethers.providers.Web3Provider,
-  onSubmitted?: (hash: string) => void
+  onSubmitted?: (hash: string) => void,
 ) {
   return useMutation(
     async ({
@@ -46,14 +49,14 @@ export function useCreateCollection(
 
       const contractCode = (
         await axios.get<{ abi: any; bytecode: string }>(
-          ERC721_BASE_CONTRACT_URL
+          ERC721_BASE_CONTRACT_URL,
         )
       ).data;
 
       const contractFactory = new ethers.ContractFactory(
         contractCode.abi,
         contractCode.bytecode,
-        provider.getSigner()
+        provider.getSigner(),
       );
 
       const contract = await contractFactory.deploy(name, symbol, royalty);
@@ -64,16 +67,19 @@ export function useCreateCollection(
 
       await contract.deployTransaction.wait();
 
-      return { contractAddress: contract.address, tx: contract.deployTransaction.hash };
-    }
+      return {
+        contractAddress: contract.address,
+        tx: contract.deployTransaction.hash,
+      };
+    },
   );
 }
 
 export function useCreateItems(
   provider?: ethers.providers.Web3Provider,
-  onSubmitted?: (hash: string) => void
+  onSubmitted?: (hash: string) => void,
 ) {
-  const { isLoggedIn } = useAuth()
+  const { isLoggedIn } = useAuth();
   const loginMutation = useLoginAccountMutation();
 
   return useMutation(
@@ -88,19 +94,19 @@ export function useCreateItems(
         return;
       }
       if (!isLoggedIn) {
-        await loginMutation.mutateAsync()
+        await loginMutation.mutateAsync();
       }
 
       const contractCode = (
         await axios.get<{ abi: any; bytecode: string }>(
-          ERC721_BASE_CONTRACT_URL
+          ERC721_BASE_CONTRACT_URL,
         )
       ).data;
 
       const contract = new ethers.Contract(
         contractAddress,
         contractCode.abi,
-        provider.getSigner()
+        provider.getSigner(),
       );
 
       const tx = await contract.multiSafeMint(items);
@@ -110,7 +116,7 @@ export function useCreateItems(
       }
 
       return await tx.wait();
-    }
+    },
   );
 }
 
@@ -127,7 +133,7 @@ export function useUploadImagesMutation() {
 
       let resp = await wizardBaseAPI.post<{ hash: string }>(
         '/nft/image/upload',
-        form
+        form,
       );
 
       items.push(resp.data.hash);
@@ -145,7 +151,7 @@ export function useUploadImageMutation() {
 
     let resp = await wizardBaseAPI.post<{ hash: string }>(
       '/nft/image/upload',
-      form
+      form,
     );
 
     return resp.data.hash;
@@ -160,66 +166,74 @@ export function useSendItemsMetadataMutation() {
         {
           metadata_type: 'items',
           data: items,
-        }
+        },
       )
     ).data.hashes;
   });
 }
 
 export function useCreateAssetsMetadataMutation() {
-  const { isLoggedIn } = useAuth()
+  const { isLoggedIn } = useAuth();
   const loginMutation = useLoginAccountMutation();
 
-  return useMutation(async ({ nfts, network, address }: {
-    nfts: WizardItem[], network: string, address: string
-  }) => {
-    if (!isLoggedIn) {
-      await loginMutation.mutateAsync()
-    }
-    return (
-      await dexKitAppApi.post<any>(
-        '/contract/create/collection/assets',
-        {
+  return useMutation(
+    async ({
+      nfts,
+      network,
+      address,
+    }: {
+      nfts: WizardItem[];
+      network: string;
+      address: string;
+    }) => {
+      if (!isLoggedIn) {
+        await loginMutation.mutateAsync();
+      }
+      return (
+        await dexKitAppApi.post<any>('/contract/create/collection/assets', {
           networkId: network,
           address: address,
           nfts,
-        }
-      )
-    ).data;
-  });
+        })
+      ).data;
+    },
+  );
 }
 
 export function useEditAssetMetadataMutation() {
-  const { isLoggedIn } = useAuth()
+  const { isLoggedIn } = useAuth();
   const loginMutation = useLoginAccountMutation();
 
-  return useMutation(async ({ nft, network, address }: {
-    nft: WizardItem, network: string, address: string
-  }) => {
-    if (!isLoggedIn) {
-      await loginMutation.mutateAsync()
-    }
-    return (
-      await dexKitAppApi.post<any>(
-        '/contract/update/collection/asset',
-        {
+  return useMutation(
+    async ({
+      nft,
+      network,
+      address,
+    }: {
+      nft: WizardItem;
+      network: string;
+      address: string;
+    }) => {
+      if (!isLoggedIn) {
+        await loginMutation.mutateAsync();
+      }
+      return (
+        await dexKitAppApi.post<any>('/contract/update/collection/asset', {
           networkId: network,
           address: address,
           nft,
-        }
-      )
-    ).data;
-  });
+        })
+      ).data;
+    },
+  );
 }
 
 export function useCreateAIImageMutation() {
-  const { isLoggedIn } = useAuth()
+  const { isLoggedIn } = useAuth();
   const loginMutation = useLoginAccountMutation();
-  const isHoldingKit = useAccountHoldDexkitMutation()
+  const isHoldingKit = useAccountHoldDexkitMutation();
   const setIsHoldingKitDialog = useSetAtom(holdsKitDialogAtom);
-  return useMutation(async ({ description }: {
-    description: string
-  }) => {
+  return useMutation(async ({ description }: { description: string }) => {
     try {
       await isHoldingKit.mutateAsync();
     } catch {
@@ -227,47 +241,39 @@ export function useCreateAIImageMutation() {
       return;
     }
 
-
     if (!isLoggedIn) {
-      await loginMutation.mutateAsync()
+      await loginMutation.mutateAsync();
     }
 
-
-
     return (
-      await dexKitAppApi.post<any>(
-        '/account-file/create-image-ai',
-        {
-          description
-        }
-      )
+      await dexKitAppApi.post<any>('/account-file/create-image-ai', {
+        description,
+      })
     ).data.url;
   });
 }
 
 export function useCreateCollectionMetadataMutation() {
-  const { isLoggedIn } = useAuth()
+  const { isLoggedIn } = useAuth();
   const loginMutation = useLoginAccountMutation();
 
   return useMutation(async (collection: WizardCollection) => {
     if (!isLoggedIn) {
-      await loginMutation.mutateAsync()
+      await loginMutation.mutateAsync();
     }
 
     return (
-      await dexKitAppApi.post<CollectionAPI>(
-        '/contract/create',
-        {
-          type: 'ERC721',
-          tx: collection.tx,
-          networkId: collection.networkId,
-          metadata: JSON.stringify({
-            description: collection.description,
-            image: collection.image,
-            external_link: collection.external_link
-          })
-        }
-      )
+      await dexKitAppApi.post<CollectionAPI>('/contract/create', {
+        type: 'ERC721',
+        tx: collection.tx,
+        networkId: collection.networkId,
+        address: collection.address,
+        metadata: JSON.stringify({
+          description: collection.description,
+          image: collection.image,
+          external_link: collection.external_link,
+        }),
+      })
     ).data;
   });
 }
@@ -280,15 +286,11 @@ export function useSendCollectionMetadataMutation() {
         {
           metadata_type: 'collection',
           data: collection,
-        }
+        },
       )
     ).data.hash;
   });
 }
-
-
-
-
 
 export function useCollectionList() {
   const collections = useAtomValue(collectionsAtom);
@@ -302,9 +304,16 @@ export function useTokensList() {
   return { tokens };
 }
 
-export function useLazyMintMutation({ address, isERC1155, onSubmitted }: { address: string, isERC1155?: boolean, onSubmitted?: (hash: string) => void }) {
+export function useLazyMintMutation({
+  address,
+  isERC1155,
+  onSubmitted,
+}: {
+  address: string;
+  isERC1155?: boolean;
+  onSubmitted?: (hash: string) => void;
+}) {
   const { contract } = useContract(address);
-
 
   return useMutation(async ({ metadatas }: any) => {
     if (!metadatas) {
@@ -312,14 +321,11 @@ export function useLazyMintMutation({ address, isERC1155, onSubmitted }: { addre
     }
     let tx;
     if (isERC1155) {
-
       tx = await contract?.erc1155.lazyMint.prepare(metadatas);
     } else {
       tx = await contract?.erc721.lazyMint.prepare(metadatas);
-
     }
     const sentTx = await tx?.send();
-
 
     if (onSubmitted && sentTx?.hash) {
       onSubmitted(sentTx?.hash);
@@ -327,32 +333,35 @@ export function useLazyMintMutation({ address, isERC1155, onSubmitted }: { addre
     if (sentTx) {
       return await sentTx.wait();
     }
-
-
-
   });
 }
 
-export function useFetchAssetsMutation({ address, network }: { address?: string, network?: string }) {
-
-
+export function useFetchAssetsMutation({
+  address,
+  network,
+}: {
+  address?: string;
+  network?: string;
+}) {
   return useMutation(async ({ tokenIds }: { tokenIds: string[] }) => {
     if (!address || !network || tokenIds.length === 0) {
-      return
+      return;
     }
-    const assets = await getMultipleAssetDexKitApi({ contractAddress: address, networkId: network, tokenIds })
-    return assets
-
+    const assets = await getMultipleAssetDexKitApi({
+      contractAddress: address,
+      networkId: network,
+      tokenIds,
+    });
+    return assets;
   });
 }
-
 
 export function useCollection(address?: string) {
   const { collections } = useCollectionList();
   const collection = useMemo(() => {
     if (address) {
       let collectionIndex = collections.findIndex(
-        (collection) => collection.address === address
+        (collection) => collection.address === address,
       );
       if (collectionIndex) {
         return collections[collectionIndex];
@@ -374,7 +383,7 @@ export function useCollectionMetadataQuery(address?: string) {
     const contract = new ethers.Contract(
       address,
       ERC721Abi,
-      provider.getSigner()
+      provider.getSigner(),
     );
 
     let contractURI: string = await contract.contractURI();
@@ -478,7 +487,7 @@ export function useTokenContractData() {
 
 export function useCreateToken(
   provider?: ethers.providers.Web3Provider,
-  onSubmitted?: (hash: string, contractAddress: string) => void
+  onSubmitted?: (hash: string, contractAddress: string) => void,
 ) {
   const { data: contractData } = useTokenContractData();
 
@@ -492,7 +501,7 @@ export function useCreateToken(
     const contractFactory = new ethers.ContractFactory(
       abi,
       bytecode,
-      provider.getSigner()
+      provider.getSigner(),
     );
 
     const contract = await contractFactory.deploy(name, symbol, maxSupply);
@@ -504,4 +513,3 @@ export function useCreateToken(
     return await contract.deployTransaction.wait();
   });
 }
-

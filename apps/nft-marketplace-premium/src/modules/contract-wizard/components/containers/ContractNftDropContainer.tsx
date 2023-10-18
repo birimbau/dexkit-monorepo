@@ -10,6 +10,8 @@ import {
 } from '@thirdweb-dev/react';
 import { SyntheticEvent, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
+import ContractAdminTab from '../ContractAdminTab';
+import ContractMetadataTab from '../ContractMetadataTab';
 import CreateAssetFormDialog from '../dialogs/CreateAssetFormDialog';
 import { ClaimConditionsContainer } from './ClaimConditionsContainer';
 
@@ -75,7 +77,25 @@ export function ContractNftDropContainer({
                   value="nfts"
                   label={<FormattedMessage id="nfts" defaultMessage="NFTs" />}
                 />
-                <Tab value="claim-conditions" label="Claim Conditions" />
+                <Tab
+                  value="claim-conditions"
+                  label={
+                    <FormattedMessage
+                      id="claim.conditions"
+                      defaultMessage="Claim Conditions"
+                    />
+                  }
+                />
+                <Tab
+                  value="metadata"
+                  label={
+                    <FormattedMessage id="metadata" defaultMessage="Metadata" />
+                  }
+                />
+                <Tab
+                  value="admin"
+                  label={<FormattedMessage id="admin" defaultMessage="Admin" />}
+                />
               </Tabs>
             </Grid>
             {currTab === 'claim-conditions' && (
@@ -110,6 +130,16 @@ export function ContractNftDropContainer({
                     ) : null}
                   </Grid>
                 </Grid>
+              </Grid>
+            )}
+            {currTab === 'metadata' && (
+              <Grid item xs={12}>
+                <ContractMetadataTab address={address} />
+              </Grid>
+            )}
+            {currTab === 'admin' && (
+              <Grid item xs={12}>
+                <ContractAdminTab address={address} />
               </Grid>
             )}
           </Grid>

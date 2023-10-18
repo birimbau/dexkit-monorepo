@@ -1,10 +1,14 @@
 import NFTGrid from '@/modules/wizard/components/NFTGrid';
+import { Button, Tab, Tabs } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import { useContract, useContractType, useNFTs } from '@thirdweb-dev/react';
-import { useState } from 'react';
-import { Button } from 'react-admin';
+import { SyntheticEvent, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
+import ContractAdminTab from '../ContractAdminTab';
+import ContractMetadataTab from '../ContractMetadataTab';
 import CreateAssetFormDialog from '../dialogs/CreateAssetFormDialog';
+
+type TabValues = 'nft' | 'metadata' | 'admin';
 
 interface Props {
   address: string;
@@ -27,6 +31,12 @@ export function ContractNftContainer({ address, network }: Props) {
     setIsOpen(false);
   };
 
+  const [tab, setTab] = useState<TabValues>('nft');
+
+  const handleChangeTab = (e: SyntheticEvent, value: TabValues) => {
+    setTab(value);
+  };
+
   return (
     <>
       <CreateAssetFormDialog
@@ -41,16 +51,42 @@ export function ContractNftContainer({ address, network }: Props) {
       />
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <Button onClick={handleMint} variant="contained">
-            <FormattedMessage id="mint" defaultMessage="Mint" />
-          </Button>
+          <Tabs value={tab} onChange={handleChangeTab}>
+            <Tab
+              value="nft"
+              label={<FormattedMessage id="nft" defaultMessage="NFT" />}
+            />
+            <Tab
+              value="metadata"
+              label={
+                <FormattedMessage id="metadata" defaultMessage="Metadata" />
+              }
+            />
+            <Tab
+              value="admin"
+              label={<FormattedMessage id="admin" defaultMessage="Admin" />}
+            />
+          </Tabs>
         </Grid>
         <Grid item xs={12}>
-          <NFTGrid
-            network={network}
-            address={address}
-            nfts={nftsQuery.data || []}
-          />
+          {tab === 'nft' && (
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <Button onClick={handleMint} variant="contained">
+                  <FormattedMessage id="mint" defaultMessage="Mint" />
+                </Button>
+              </Grid>
+              <Grid item xs={12}>
+                <NFTGrid
+                  network={network}
+                  address={address}
+                  nfts={nftsQuery.data || []}
+                />
+              </Grid>
+            </Grid>
+          )}
+          {tab === 'metadata' && <ContractMetadataTab address={address} />}
+          {tab === 'admin' && <ContractAdminTab address={address} />}
         </Grid>
       </Grid>
     </>

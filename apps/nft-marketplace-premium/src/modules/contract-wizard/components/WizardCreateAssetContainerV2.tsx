@@ -28,7 +28,6 @@ import {
   useMintNFT,
   useTotalCount,
 } from '@thirdweb-dev/react';
-import { ethers } from 'ethers';
 import { useContractCollection } from 'src/hooks/nft';
 interface Props {
   network: string;
@@ -141,10 +140,6 @@ function WizardCreateAssetContainerV2(props: Props) {
           });
         } else {
           if (!contractCollection?.data && chainId) {
-            const contract = new ethers.Contract(address, [], provider);
-
-            provider.getLogs({ address, fromBlock: 182 });
-
             let result: any[] = await contractCreation.mutateAsync({
               contractAddress: address,
               chainId,
@@ -152,8 +147,16 @@ function WizardCreateAssetContainerV2(props: Props) {
 
             let value = result[0];
 
+            const txReceipt = await provider.getTransactionReceipt(
+              value.txHash,
+            );
+
+            console.log(value);
+            console.log(txReceipt);
+
             await createMetadataMutation.mutateAsync({
               tx: value.txHash,
+              address: address,
               description: contractMetadata?.description || '',
               external_link: contractMetadata?.external_link || '',
               image: contractMetadata?.image || '',
