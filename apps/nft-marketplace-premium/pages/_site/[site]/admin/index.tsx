@@ -2,9 +2,9 @@ import MarketplacesTableSkeleton from '@/modules/admin/components/tables/Maketpl
 import MarketplacesTable from '@/modules/admin/components/tables/MarketplacesTable';
 import ConfigureDomainDialog from '@/modules/wizard/components/dialogs/ConfigureDomainDialog';
 import { useDebounce } from '@dexkit/core/hooks';
-import { Search } from '@mui/icons-material';
 import Add from '@mui/icons-material/Add';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import Search from '@mui/icons-material/Search';
 import Wallet from '@mui/icons-material/Wallet';
 import {
   Alert,

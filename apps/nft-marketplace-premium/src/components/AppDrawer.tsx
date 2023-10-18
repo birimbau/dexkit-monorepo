@@ -20,8 +20,9 @@ import {
 
 import { MagicConnector } from '@dexkit/core/types/magic';
 import MagicNetworkSelect from '@dexkit/ui/components/MagicNetworkSelect';
-import { AttachMoney, Language } from '@mui/icons-material';
+import AttachMoney from '@mui/icons-material/AttachMoney';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
+import Language from '@mui/icons-material/Language';
 import { useWeb3React } from '@web3-react/core';
 import { useUpdateAtom } from 'jotai/utils';
 import { FormattedMessage } from 'react-intl';

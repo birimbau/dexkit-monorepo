@@ -1,4 +1,4 @@
-import { useListDeployedContracts } from '@/modules/forms/hooks';
+import { useInfiniteListDeployedContracts } from '@/modules/forms/hooks';
 import { getContractImplementation } from '@/modules/wizard/services';
 import { inputMapping } from '@/modules/wizard/utils';
 import { ChainId } from '@dexkit/core';
@@ -36,7 +36,7 @@ export default function ContractFormAddressInput({
   const jsonProvider = useMemo(() => {
     if (chainId) {
       return new ethers.providers.JsonRpcProvider(
-        NETWORKS[chainId].providerRpcUrl,
+        NETWORKS[chainId].providerRpcUrl
       );
     }
   }, [chainId]);
@@ -77,7 +77,7 @@ export default function ContractFormAddressInput({
         }
       }
     },
-    [values.chainId, values.disableProxy, jsonProvider],
+    [values.chainId, values.disableProxy, jsonProvider]
   );
 
   const handleChange = useCallback(
@@ -85,7 +85,7 @@ export default function ContractFormAddressInput({
       await fetchAbi(value);
       setFieldValue('contractAddress', value);
     },
-    [fetchAbi],
+    [fetchAbi]
   );
 
   const handleRefresh = async () => {
@@ -104,7 +104,7 @@ export default function ContractFormAddressInput({
     (value: string) => {
       handleChange(value);
     },
-    [handleChange],
+    [handleChange]
   );
 
   const { account } = useWeb3React();
@@ -112,7 +112,7 @@ export default function ContractFormAddressInput({
   const [page, setPage] = useState(1);
   const [query, setQuery] = useState('');
 
-  const listDeployedContractQuery = useListDeployedContracts({
+  const listDeployedContractQuery = useInfiniteListDeployedContracts({
     owner: account as string,
     page,
     name: query,

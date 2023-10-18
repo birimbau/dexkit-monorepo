@@ -1,8 +1,8 @@
 import { useAuthUserQuery } from '@/modules/user/hooks';
 import { GET_WALLET_ICON } from '@dexkit/core/connectors';
-import { Logout } from '@mui/icons-material';
 import EditIcon from '@mui/icons-material/Edit';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import Logout from '@mui/icons-material/Logout';
 import PersonIcon from '@mui/icons-material/Person';
 import SwitchAccountIcon from '@mui/icons-material/SwitchAccount';
 import {

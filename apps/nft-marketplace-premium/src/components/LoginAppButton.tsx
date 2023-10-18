@@ -89,7 +89,7 @@ export function LoginAppButton({ onLogin }: Props) {
           {' '}
           <FormattedMessage
             id="login.by.connect.wallet"
-            defaultMessage="Login with your wallet. You will need to sign a message."
+            defaultMessage="Login with your wallet. You will need to sign a message"
           />
           .
         </Typography>
