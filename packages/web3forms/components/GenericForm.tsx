@@ -2,7 +2,7 @@ import { Button, FormControlLabel, Grid } from "@mui/material";
 import { ethers } from "ethers";
 import { Field, Formik } from "formik";
 import { Autocomplete, Checkbox, TextField } from "formik-mui";
-import { useIfpsUploadMutation } from "../hooks";
+import { useIfpsUploadMutation, useServerUploadMutation } from "../hooks";
 
 import MuiTextField from "@mui/material/TextField";
 import { Form, FormElement, FormOutputFormat } from "../types";
@@ -31,7 +31,7 @@ export interface GenericFormProps {
   form: Form;
   output: FormOutputFormat;
   context?: { [key: string]: any };
-  onSubmit: (values: any[]) => Promise<void>;
+  onSubmit: (values: any[], formValues?: any) => Promise<void>;
   actionLabel: React.ReactNode;
 }
 
@@ -316,8 +316,11 @@ export default function GenericForm({
 
   const ipfsUploadMutation = useIfpsUploadMutation();
 
+  const serverUploadMutation = useServerUploadMutation();
+
   const handleSubmit = async (formValues: any) => {
     const ocurrsKeys: string[] = [];
+    const serverDataKeys: string[] = [];
 
     const mapping = (elements: FormElement[]) => {
       return elements
@@ -402,6 +405,9 @@ export default function GenericForm({
               if (fieldName.type === "ipfs-file") {
                 ocurrsKeys.push(fieldName.name);
               }
+              if (fieldName.type === "server-file") {
+                serverDataKeys.push(fieldName.name);
+              }
 
               return res;
             })
@@ -424,11 +430,18 @@ export default function GenericForm({
           token: "",
         });
 
-        result[obj][key] = `ipfs://${cid}`;
+        result[obj][key] = `ipfs://${cid}s`;
+      }
+      for (let key of serverDataKeys) {
+        const content = JSON.stringify(result[obj][key]);
+        let url = await serverUploadMutation.mutateAsync({
+          content,
+        });
+        result[obj][key] = url;
       }
     }
 
-    await onSubmit(result);
+    await onSubmit(result, formValues);
   };
 
   return (

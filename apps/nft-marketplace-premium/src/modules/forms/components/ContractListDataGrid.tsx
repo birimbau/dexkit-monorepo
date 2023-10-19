@@ -1,8 +1,13 @@
-import { NETWORK_NAME, NETWORK_SLUG } from '@dexkit/core/constants/networks';
+import {
+  NETWORK_EXPLORER,
+  NETWORK_NAME,
+  NETWORK_SLUG,
+} from '@dexkit/core/constants/networks';
 import { truncateAddress } from '@dexkit/core/utils';
 import Link from '@dexkit/ui/components/AppLink';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import Stack from '@mui/material/Stack';
 import {
   DataGrid,
   GridColDef,
@@ -40,7 +45,7 @@ export default function ContractListDataGrid() {
 
   useEffect(() => {
     setRowCountState((prevRowCountState: number) =>
-      data?.total !== undefined ? data?.total : prevRowCountState
+      data?.total !== undefined ? data?.total : prevRowCountState,
     );
   }, [data?.total, setRowCountState]);
 
@@ -102,7 +107,8 @@ export default function ContractListDataGrid() {
       width: 160,
       renderCell: (params: any) => (
         <Link
-          href={`/contract/${NETWORK_SLUG(params.row.chainId)}/${
+          target="_blank"
+          href={`${NETWORK_EXPLORER(params.row.chainId)}/address/${
             params.row.contractAddress
           }`}
         >
@@ -113,18 +119,30 @@ export default function ContractListDataGrid() {
     {
       field: 'actions',
       headerName: 'Actions',
-      width: 150,
+      width: 240,
       renderCell: ({ row }) => {
         return (
-          <Button
-            LinkComponent={Link}
-            href={`/forms/create?contractAddress=${row.contractAddress}&chainId=${row.chainId}`}
-            target="_blank"
-            size="small"
-            variant="outlined"
-          >
-            <FormattedMessage id="create.form" defaultMessage="Create form" />
-          </Button>
+          <Stack direction={'row'} spacing={1}>
+            <Button
+              LinkComponent={Link}
+              href={`/contract/${NETWORK_SLUG(row.chainId)}/${
+                row.contractAddress
+              }`}
+              size="small"
+              variant="outlined"
+            >
+              <FormattedMessage id="manage" defaultMessage="Manage" />
+            </Button>
+            <Button
+              LinkComponent={Link}
+              href={`/forms/create?contractAddress=${row.contractAddress}&chainId=${row.chainId}`}
+              target="_blank"
+              size="small"
+              variant="outlined"
+            >
+              <FormattedMessage id="create.form" defaultMessage="Create form" />
+            </Button>
+          </Stack>
         );
       },
     },
