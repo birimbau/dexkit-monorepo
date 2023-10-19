@@ -15,7 +15,9 @@ export const config = {
     '/u/:path*',
     '/admin/:path*',
     '/drop/:path*',
-    '/contract/:path*'
+    '/contract/:path*',
+
+    '/stake/:path*',
   ],
 };
 
@@ -34,7 +36,8 @@ const basePaths = [
   '/contract-wizard',
   '/u',
   '/drop',
-  '/contract'
+  '/contract',
+  '/stake',
 ];
 
 function isBasePath(path: string) {
@@ -53,7 +56,6 @@ function isBasePath(path: string) {
 export default function middleware(req: NextRequest) {
   const url = req.nextUrl;
 
-
   let hostname = req.headers.get('host') || 'marketplace.localhost';
 
   hostname = hostname.replace(':3001', '');
@@ -70,8 +72,6 @@ export default function middleware(req: NextRequest) {
     url.pathname = '/empty';
     return NextResponse.rewrite(url);
   }
-
-
 
   if (
     hostname === 'whitelabel-nft.dexkit.com' ||

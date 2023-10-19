@@ -124,7 +124,7 @@ export default function ContractAdminTab({ address }: ContractAdminTabProps) {
                           </Typography>
                         </Grid>
                         {values[role].map((_, index) => (
-                          <Grid item xs={12}>
+                          <Grid item xs={12} key={index}>
                             <Grid alignItems="center" container spacing={2}>
                               <Grid item xs>
                                 <Field

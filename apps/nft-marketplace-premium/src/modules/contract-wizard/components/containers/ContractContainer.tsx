@@ -1,11 +1,18 @@
 import Grid from '@mui/material/Grid';
-import { useContractType } from '@thirdweb-dev/react';
+import {
+  useContract,
+  useContractRead,
+  useContractType,
+} from '@thirdweb-dev/react';
 import { ContractMetadataHeader } from '../ContractMetadataHeader';
 import { ContractCollectionDropContainer } from './ContractCollectionDropContainer';
 import { ContractEditionDropContainer } from './ContractEditionDropContainer';
 import { ContractNftContainer } from './ContractNftContainer';
 import { ContractNftDropContainer } from './ContractNftDropContainer';
+import ContractStakeErc20Container from './ContractStakeErc20Container';
 import { ContractTokenDropContainer } from './ContractTokenDropContainer';
+
+import { hexToString } from '@dexkit/ui/utils';
 
 interface Props {
   address: string;
@@ -14,6 +21,11 @@ interface Props {
 
 export function ContractContainer({ address, network }: Props) {
   const { data } = useContractType(address);
+
+  const { data: contract } = useContract(address);
+  const contractRead = useContractRead(contract, 'contractType');
+
+  let contractType = hexToString(contractRead.data);
 
   const renderContract = () => {
     if (data === 'edition-drop') {
@@ -26,6 +38,10 @@ export function ContractContainer({ address, network }: Props) {
       return <ContractNftDropContainer address={address} network={network} />;
     } else if (data === 'nft-collection') {
       return <ContractNftContainer address={address} network={network} />;
+    } else if (data === 'custom' && contractType === 'TokenStake') {
+      return (
+        <ContractStakeErc20Container address={address} network={network} />
+      );
     }
   };
 

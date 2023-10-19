@@ -21,7 +21,7 @@ import Typography from '@mui/material/Typography';
 import {
   CustomContractMetadata,
   useContract,
-  useMetadata,
+  useContractMetadata,
 } from '@thirdweb-dev/react';
 import Image from 'next/image';
 import { FormattedMessage, useIntl } from 'react-intl';
@@ -37,7 +37,7 @@ interface Props {
 export function ContractMetadataHeader(props: Props) {
   const { address, contractType, network } = props;
   const { data: contract } = useContract(address);
-  const { data } = useMetadata(contract);
+  const { data } = useContractMetadata(contract);
   const { formatMessage } = useIntl();
   const metadata = data as CustomContractMetadata;
   const theme = useTheme();
