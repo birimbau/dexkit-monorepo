@@ -214,35 +214,6 @@ export default function ThemeWizardContainer({
         </Grid>
         <Grid item xs={12} sm={6}>
           <Stack spacing={2}>
-            <FormControl fullWidth>
-              <InputLabel id="theme-mode-label">
-                <FormattedMessage
-                  id={'theme.mode'}
-                  defaultMessage={'Theme mode'}
-                />
-              </InputLabel>
-              <Select
-                labelId="theme-mode-label"
-                id="theme-mode"
-                value={selectedThemeMode}
-                label={
-                  <FormattedMessage
-                    id={'theme.mode'}
-                    defaultMessage={'Theme mode'}
-                  />
-                }
-                onChange={(ev) => {
-                  setSelectedThemeMode(ev.target.value as ThemeMode);
-                }}
-              >
-                <MenuItem value={ThemeMode.light}>
-                  <FormattedMessage id={'light'} defaultMessage={'Light'} />
-                </MenuItem>
-                <MenuItem value={ThemeMode.dark}>
-                  <FormattedMessage id={'dark'} defaultMessage={'Dark'} />
-                </MenuItem>
-              </Select>
-            </FormControl>
             <Box>
               <Typography variant="body2">
                 <FormattedMessage
@@ -275,15 +246,46 @@ export default function ThemeWizardContainer({
                 </Typography>
               </Stack>
             </Box>
+            <Typography variant="body2">
+              <FormattedMessage
+                id="choose.app.theme.color.for.each.mode "
+                defaultMessage={'Choose app theme color for each mode'}
+              />
+            </Typography>
+
+            <FormControl fullWidth>
+              <InputLabel id="theme-mode-label">
+                <FormattedMessage
+                  id={'theme.mode'}
+                  defaultMessage={'Theme mode'}
+                />
+              </InputLabel>
+              <Select
+                labelId="theme-mode-label"
+                id="theme-mode"
+                sx={{ maxWidth: '200px' }}
+                fullWidth
+                value={selectedThemeMode}
+                label={
+                  <FormattedMessage
+                    id={'theme.mode'}
+                    defaultMessage={'Theme mode'}
+                  />
+                }
+                onChange={(ev) => {
+                  setSelectedThemeMode(ev.target.value as ThemeMode);
+                }}
+              >
+                <MenuItem value={ThemeMode.light}>
+                  <FormattedMessage id={'light'} defaultMessage={'Light'} />
+                </MenuItem>
+                <MenuItem value={ThemeMode.dark}>
+                  <FormattedMessage id={'dark'} defaultMessage={'Dark'} />
+                </MenuItem>
+              </Select>
+            </FormControl>
 
             <Stack spacing={1}>
-              <Typography variant="body2">
-                <FormattedMessage
-                  id="Choose app theme color"
-                  defaultMessage={'Choose app theme color'}
-                />
-              </Typography>
-
               <ThemeSection
                 mode={selectedThemeMode}
                 selectedId={selectedThemeId}
