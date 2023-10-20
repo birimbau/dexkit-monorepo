@@ -166,8 +166,8 @@ export default function CollectionWizardContainer({ config, onSave }: Props) {
           </Typography>
           <Typography variant={'body2'}>
             <FormattedMessage
-              id="select.collections.to.display.in.your.marketplace"
-              defaultMessage="Select collections to display in your marketplace"
+              id="select.collections.to.display.in.your.app"
+              defaultMessage="Select collections to display in your app"
             />
           </Typography>
         </Stack>
