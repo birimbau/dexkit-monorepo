@@ -97,14 +97,14 @@ export const LANGUAGES: Language[] = [
 export const CURRENCIES: Currency[] = [
   { symbol: 'usd', name: 'US Dollar' },
   { symbol: 'ars', name: 'Argentine Peso' },
-  { symbol: 'brl', name: 'Brazil Real' },
+  { symbol: 'brl', name: 'Brazilian Real' },
   { symbol: 'clp', name: 'Chilean Peso' },
   { symbol: 'czk', name: 'Czech Koruna' },
   { symbol: 'eur', name: 'Euro' },
   { symbol: 'inr', name: 'Indian Rupee' },
   { symbol: 'ngn', name: 'Nigerian Naira' },
   { symbol: 'chf', name: 'Swiss Franc' },
-  { symbol: 'vef', name: 'Venezuelan bolívar fuerte' },
+  { symbol: 'vef', name: 'Venezuelan Bolívar Fuerte' },
 ];
 
 export const WIZARD_DOCS_URL =

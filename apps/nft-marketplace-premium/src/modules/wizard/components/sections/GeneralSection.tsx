@@ -452,7 +452,10 @@ export default function GeneralSection({
             <Grid item xs={12} sm={6}>
               <FormControl fullWidth>
                 <InputLabel>
-                  <FormattedMessage id="currency" defaultMessage="Currency" />
+                  <FormattedMessage
+                    id="standard.currency"
+                    defaultMessage="Standard currency"
+                  />
                 </InputLabel>
                 <Select
                   name="currency"
