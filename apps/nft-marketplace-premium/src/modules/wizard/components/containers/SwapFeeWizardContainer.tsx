@@ -52,8 +52,8 @@ export default function SwapFeeWizardContainer({ config, onSave }: Props) {
           </Typography>
           <Typography variant={'body2'}>
             <FormattedMessage
-              id="adjust.swap.fees"
-              defaultMessage="Adjust swap fees"
+              id="adjust.swap.fees.title"
+              defaultMessage="Adjust Swap fees"
             />
           </Typography>
         </Stack>

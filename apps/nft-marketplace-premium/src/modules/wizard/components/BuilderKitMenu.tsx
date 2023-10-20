@@ -31,10 +31,11 @@ export default function BuilderKitMenu(props: Props) {
           <FormattedMessage
             id={'builder.kits.description'}
             defaultMessage={
-              'Select a kit to preview features for building your app'
+              'Select a kit to preview features for building your app.'
             }
           />
         }
+        placement="right"
       >
         <Button
           id="builderkit-menu"

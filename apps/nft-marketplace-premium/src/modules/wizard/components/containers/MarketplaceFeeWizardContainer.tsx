@@ -71,8 +71,8 @@ export default function MarketplaceFeeWizardContainer({
           </Typography>
           <Typography variant={'body2'}>
             <FormattedMessage
-              id="adjust.marketplace.fees"
-              defaultMessage="Adjust marketplace fees"
+              id="adjust.marketplace.fees.title"
+              defaultMessage="Adjust Marketplace fees"
             />
           </Typography>
         </Stack>
