@@ -99,10 +99,7 @@ export default function ThemeSection({
             justifyContent="space-between"
           >
             <Typography variant="body1" sx={{ fontWeight: 600 }}>
-              <FormattedMessage
-                id="marketplace.theme"
-                defaultMessage="Marketplace Theme"
-              />
+              <FormattedMessage id="app.theme" defaultMessage="App Theme" />
             </Typography>
             {/* <Button
               size="small"

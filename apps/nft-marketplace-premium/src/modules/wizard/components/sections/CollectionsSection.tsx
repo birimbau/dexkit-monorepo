@@ -1,22 +1,22 @@
 import {
+  Alert,
+  Button,
   Grid,
   Paper,
   Stack,
-  Button,
-  Alert,
-  useTheme,
   useMediaQuery,
+  useTheme,
 } from '@mui/material';
 import { FormattedMessage } from 'react-intl';
 
 import AddIcon from '@mui/icons-material/Add';
-import { Key, useCallback, useState } from 'react';
-import CollectionsSectionForm, { Form } from './CollectionsSectionForm';
-import { AppCollection } from '../../../../types/config';
-import CollectionsSectionItem from './CollectionsSectionItem';
-import AppConfirmDialog from '../../../../components/AppConfirmDialog';
 import { useUpdateAtom } from 'jotai/utils';
+import { Key, useCallback, useState } from 'react';
+import AppConfirmDialog from '../../../../components/AppConfirmDialog';
+import { AppCollection } from '../../../../types/config';
 import { collectionAtom } from '../../state';
+import CollectionsSectionForm, { Form } from './CollectionsSectionForm';
+import CollectionsSectionItem from './CollectionsSectionItem';
 
 interface Props {
   collections?: AppCollection[];
@@ -94,7 +94,7 @@ export default function CollectionsSection({
         setPreviewCollection(collection);
       }
     },
-    [onSelectEdit, isMobile]
+    [onSelectEdit, isMobile],
   );
 
   const handlePreview = (collection: AppCollection) => {
@@ -143,14 +143,14 @@ export default function CollectionsSection({
                   onPreview={handlePreview}
                   disabled={showForm}
                 />
-              )
+              ),
             )}
           </Stack>
         ) : (
           <Alert severity="info">
             <FormattedMessage
-              id="add.collection.to.your.marketplace"
-              defaultMessage="Add collection to your marketplace"
+              id="add.collection.to.your.app"
+              defaultMessage="Add collection to your app"
             />
           </Alert>
         )}

@@ -72,8 +72,8 @@ export default function MarketplacesTable({ configs }: Props) {
   const handleDeleteSuccess = () => {
     enqueueSnackbar(
       formatMessage({
-        defaultMessage: 'Marketplace Removed',
-        id: 'marketplace.removed',
+        defaultMessage: 'App Removed',
+        id: 'app.removed',
       }),
       {
         variant: 'success',
@@ -170,8 +170,8 @@ export default function MarketplacesTable({ configs }: Props) {
         onConfirm={handleConfirmRemove}
       >
         <FormattedMessage
-          id="do.you.really.want.to.remove.this.marketplace"
-          defaultMessage="Do you really want to remove this marketplace"
+          id="do.you.really.want.to.remove.this.app"
+          defaultMessage="Do you really want to remove this app"
         />
       </AppConfirmDialog>
       <InfoDialog

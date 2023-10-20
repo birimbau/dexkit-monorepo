@@ -109,8 +109,8 @@ function SignConfigDialog({
                 />
               ) : (
                 <FormattedMessage
-                  id="sending.marketplace.settings"
-                  defaultMessage="Sending marketplace settings"
+                  id="sending.app.settings"
+                  defaultMessage="Sending app settings"
                 />
               )}
             </Typography>
@@ -142,10 +142,7 @@ function SignConfigDialog({
           </Box>
           {isSuccess && !isEdit && (
             <Button onClick={handleGoToMarketplaces} variant="contained">
-              <FormattedMessage
-                id="view.marketplace"
-                defaultMessage="View Marketplace"
-              />
+              <FormattedMessage id="view.app" defaultMessage="View App" />
             </Button>
           )}
 
