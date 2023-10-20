@@ -1,3 +1,4 @@
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import {
   Box,
@@ -105,7 +106,15 @@ export default function EditSectionDialog({
       <AppDialogTitle
         title={
           isEdit ? (
-            <Stack spacing={2} direction={'row'}>
+            <Stack
+              spacing={2}
+              direction={'row'}
+              alignContent={'center'}
+              alignItems={'center'}
+            >
+              <IconButton aria-label="close dialog" onClick={handleClose}>
+                <ArrowBackIcon />
+              </IconButton>
               <Box>
                 <FormattedMessage
                   id="edit.section"
@@ -116,7 +125,17 @@ export default function EditSectionDialog({
               <Box>{section?.title || ''}</Box>
             </Stack>
           ) : (
-            <FormattedMessage id="add.section" defaultMessage="Add Section" />
+            <Stack
+              spacing={2}
+              direction={'row'}
+              alignContent={'center'}
+              alignItems={'center'}
+            >
+              <IconButton aria-label="close dialog" onClick={handleClose}>
+                <ArrowBackIcon />
+              </IconButton>
+              <FormattedMessage id="add.section" defaultMessage="Add Section" />
+            </Stack>
           )
         }
         onClose={handleClose}
