@@ -36,7 +36,7 @@ export default function FooterMenuWizardContainer({
       <Grid item xs={12}>
         <Stack>
           <Typography variant={'h6'}>
-            <FormattedMessage id="footer.menu" defaultMessage="Footer menu" />
+            <FormattedMessage id="footer.menu" defaultMessage="Footer Menu" />
           </Typography>
           <Typography variant={'body2'}>
             <FormattedMessage
