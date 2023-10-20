@@ -172,7 +172,9 @@ export default function GeneralSection({
                 name="name"
                 sx={{ maxWidth: '400px' }}
                 fullWidth
-                label={<FormattedMessage id="app.name" defaultMessage="App name" />}
+                label={
+                  <FormattedMessage id="app.name" defaultMessage="App name" />
+                }
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 value={formik.values.name}
@@ -190,7 +192,12 @@ export default function GeneralSection({
                 name="email"
                 sx={{ maxWidth: '400px' }}
                 fullWidth
-                label={<FormattedMessage id="notification.email" defaultMessage="Notification email" />}
+                label={
+                  <FormattedMessage
+                    id="notification.email"
+                    defaultMessage="Notification email"
+                  />
+                }
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 value={formik.values.email}
@@ -227,6 +234,7 @@ export default function GeneralSection({
                 </Button>
               </Stack>
             </Grid>
+
             <Grid item xs={6}>
               <Stack spacing={2}>
                 <Typography variant="body2">
@@ -256,6 +264,7 @@ export default function GeneralSection({
                 spacing={2}
                 alignContent={'center'}
                 alignItems={'center'}
+                sx={{ pt: 3 }}
               >
                 <Typography variant="body2" sx={{ width: '130px' }}>
                   <FormattedMessage
