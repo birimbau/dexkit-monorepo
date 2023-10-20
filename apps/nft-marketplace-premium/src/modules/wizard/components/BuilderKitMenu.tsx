@@ -43,6 +43,7 @@ export default function BuilderKitMenu(props: Props) {
           aria-haspopup="true"
           aria-expanded={open ? 'true' : undefined}
           endIcon={<ExpandMoreIcon />}
+          size="small"
           onClick={handleClick}
         >
           <FormattedMessage id={menu.toLowerCase()} defaultMessage={menu} />
