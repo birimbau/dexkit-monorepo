@@ -440,8 +440,8 @@ export function EditWizardContainer({ site }: Props) {
                     <ListItemText
                       primary={
                         <FormattedMessage
-                          id="marketplace.fees"
-                          defaultMessage={'Marketplace fees'}
+                          id="marketplace.fees.menu.container"
+                          defaultMessage={'Marketplace Fees'}
                         />
                       }
                     />
@@ -457,8 +457,8 @@ export function EditWizardContainer({ site }: Props) {
                     <ListItemText
                       primary={
                         <FormattedMessage
-                          id="swap.fees"
-                          defaultMessage={'Swap fees'}
+                          id="swap.fees.menu.container"
+                          defaultMessage={'Swap Fees'}
                         />
                       }
                     />
