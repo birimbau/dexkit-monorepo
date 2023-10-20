@@ -419,6 +419,7 @@ export default function GeneralSection({
                 <FaviconImage src={formik.values.faviconUrl} />
               </Button>
             </Grid>
+            <Grid item xs={12} sm={12}></Grid>
             <Grid item xs={12} sm={6}>
               <FormControl fullWidth>
                 <InputLabel>

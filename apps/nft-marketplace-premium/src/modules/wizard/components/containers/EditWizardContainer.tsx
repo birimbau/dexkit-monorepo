@@ -234,7 +234,15 @@ export function EditWizardContainer({ site }: Props) {
   );
 
   const renderMenu = () => (
-    <Box sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+    <Box
+      sx={{
+        width: '100%',
+        maxWidth: 360,
+        bgcolor: 'background.paper',
+        position: 'sticky',
+        top: 0,
+      }}
+    >
       <nav aria-label="settings">
         <List disablePadding>
           <ListItemButton onClick={handleClickSettings}>
@@ -711,7 +719,7 @@ export function EditWizardContainer({ site }: Props) {
                 </Stack>
           </Grid>*/}
 
-          <Grid item xs={12} sm={2}>
+          <Grid item xs={12} sm={2} sx={{}}>
             {!isMobile && renderMenu()}
           </Grid>
           <Grid item xs={12} sm={0.1}></Grid>
