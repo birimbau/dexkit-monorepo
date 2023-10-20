@@ -3,7 +3,7 @@ import { useListFormsQuery } from '@/modules/forms/hooks';
 import { DexkitApiProvider } from '@dexkit/core/providers';
 import { truncateAddress } from '@dexkit/core/utils';
 import LazyTextField from '@dexkit/ui/components/LazyTextField';
-import { Info } from '@mui/icons-material';
+import Info from '@mui/icons-material/Info';
 import Search from '@mui/icons-material/Search';
 
 import {

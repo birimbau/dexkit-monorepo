@@ -28,9 +28,9 @@ import { AppConfig } from 'src/types/config';
 import AppDrawer from '../AppDrawer';
 
 import { useDexKitContext, useExecuteTransactionsDialog } from '@dexkit/ui';
-import AppTransactionWatchDialog from '@dexkit/ui/components/AppTransactionWatchDialog';
-import ConnectWalletDialog from '@dexkit/ui/components/ConnectWalletDialog';
-import WatchTransactionDialog from '@dexkit/ui/components/dialogs/WatchTransactionDialog';
+const ConnectWalletDialog = dynamic(() => import('@dexkit/ui/components/ConnectWalletDialog'));
+const WatchTransactionDialog = dynamic(() => import('@dexkit/ui/components/dialogs/WatchTransactionDialog'));
+const AppTransactionWatchDialog = dynamic(() => import('@dexkit/ui/components/AppTransactionWatchDialog'));
 
 import { useWalletActivate } from '@dexkit/wallet-connectors/hooks';
 import { WalletActivateParams } from '@dexkit/wallet-connectors/types';

@@ -28,7 +28,7 @@ import { DexkitApiProvider } from '@dexkit/core/providers';
 
 import { useSaveContractDeployed } from '@/modules/forms/hooks';
 import { ChainId } from '@dexkit/core';
-import { NETWORKS } from '@dexkit/core/constants/networks';
+import { NETWORKS, NETWORK_SLUG } from '@dexkit/core/constants/networks';
 import {
   getBlockExplorerUrl,
   getNormalizedUrl,
@@ -41,7 +41,7 @@ import useThirdwebContractMetadataQuery, {
   useFormConfigParamsQuery,
 } from '@dexkit/web3forms/hooks';
 import { dkGetTrustedForwarders } from '@dexkit/web3forms/utils';
-import { CheckCircle } from '@mui/icons-material';
+import CheckCircle from '@mui/icons-material/CheckCircle';
 import { useWeb3React } from '@web3-react/core';
 import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
@@ -91,7 +91,7 @@ export default function DeployPage() {
   const [showLoading, setShowLoading] = useState(false);
 
   const handleSubmit = useCallback(
-    async (values: any) => {
+    async (values: any, formValues: any) => {
       const params = values['params'];
 
       if (hasChainDiff) {
@@ -127,24 +127,31 @@ export default function DeployPage() {
       setShowLoading(true);
 
       try {
-        let contract = await thirdWebDeployMutation.mutateAsync({
+        let result = await thirdWebDeployMutation.mutateAsync({
           chainId: selectedChainId,
           order: formConfigParamsQuery.data?.paramsOrder,
           params,
           metadata: thirdwebMetadataQuery.data,
         });
 
-        if (contract) {
-          setContractAddress(contract);
+        if (result) {
+          setContractAddress(result.address);
 
           const name = params['name'];
 
           if (chainId) {
             saveContractDeployedMutation.mutateAsync({
-              contractAddress: contract,
+              contractAddress: result.address,
+              createdAtTx: result.tx,
               name,
               chainId,
-              type: thirdwebMetadataQuery?.data?.name,
+              type: slug as string,
+              metadata: {
+                name: formValues?.name,
+                symbol: formValues.symbol,
+                image: formValues?.image,
+                description: formValues?.description,
+              },
             });
           }
 
@@ -265,12 +272,34 @@ export default function DeployPage() {
                 />
               </Typography>
             </Box>
-            <Button
-              href={`/forms/create?contractAddress=${contractAddress}&chainId=${selectedChainId}`}
-              variant="contained"
-            >
-              <FormattedMessage id="create.form" defaultMessage="Create form" />
-            </Button>
+            <Stack direction={'row'} spacing={1} justifyContent={'center'}>
+              <Button
+                href={`/contract/${NETWORK_SLUG(
+                  selectedChainId,
+                )}/${contractAddress}`}
+                variant="contained"
+              >
+                <FormattedMessage
+                  id="manage.contract"
+                  defaultMessage="Manage Contract"
+                />
+              </Button>
+              <Button
+                href={`/forms/create?contractAddress=${contractAddress}&chainId=${selectedChainId}`}
+                variant="contained"
+              >
+                <FormattedMessage
+                  id="create.form"
+                  defaultMessage="Create form"
+                />
+              </Button>
+              <Button href={`/forms/contracts/list`} variant="contained">
+                <FormattedMessage
+                  id="view.contracts"
+                  defaultMessage="View contracts"
+                />
+              </Button>
+            </Stack>
             <Button
               href={`${getBlockExplorerUrl(
                 selectedChainId,

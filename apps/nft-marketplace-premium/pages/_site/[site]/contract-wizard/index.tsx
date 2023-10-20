@@ -1,5 +1,5 @@
 import ContractCollectionList from '@/modules/contract-wizard/components/CollectionList';
-import { Add } from '@mui/icons-material';
+import Add from '@mui/icons-material/Add';
 import {
   Box,
   Card,

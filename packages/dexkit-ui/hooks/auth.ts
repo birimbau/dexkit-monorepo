@@ -43,8 +43,12 @@ export const GET_AUTH_USER = 'GET_AUTH_USER';
 export function useAuthUserQuery() {
   const { account } = useWeb3React();
   return useQuery([GET_AUTH_USER, account], async () => {
+    if (!account) {
+      return;
+    }
     const userRequest = await getUserByAccount();
     return userRequest.data;
+
   })
 }
 

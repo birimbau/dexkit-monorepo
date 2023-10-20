@@ -2,6 +2,7 @@ import { ChainId } from '@dexkit/core';
 import { DexkitApiProvider } from '@dexkit/core/providers';
 import { ContractFormParams } from '@dexkit/web3forms/types';
 import { useInfiniteQuery, useMutation, useQuery } from '@tanstack/react-query';
+import { useWeb3React } from '@web3-react/core';
 import axios from 'axios';
 import { ethers } from 'ethers';
 import { useContext } from 'react';
@@ -315,25 +316,38 @@ export function useDeleteFormMutation() {
 }
 
 export function useSaveContractDeployed() {
+  const { account } = useWeb3React();
+
+
   return useMutation(
     async ({
       contractAddress,
       name,
       chainId,
+      type,
+      metadata,
+      createdAtTx,
     }: {
       contractAddress: string;
       name?: string;
       type?: string;
       chainId: number;
+      createdAtTx?: string;
+      metadata?: {
+        name?: string,
+        description?: string,
+        symbol?: string,
+        image?: string
+      }
     }) => {
-      return await saveContractDeploy({ contractAddress, name, chainId });
+      return await saveContractDeploy({ contractAddress, name, chainId, type, metadata, owner: account?.toLowerCase(), createdAtTx });
     },
   );
 }
 
-export const LIST_DEPLOYED_CONTRACTS = 'LIST_DEPLOYED_CONTRACTS';
+export const INFINITE_LIST_DEPLOYED_CONTRACTS = 'INFINITE_LIST_DEPLOYED_CONTRACTS';
 
-export function useListDeployedContracts({
+export function useInfiniteListDeployedContracts({
   page = 1,
   owner,
   name,
@@ -357,7 +371,7 @@ export function useListDeployedContracts({
     }[];
     nextCursor?: number;
   }>(
-    [LIST_DEPLOYED_CONTRACTS, page, owner, name, chainId],
+    [INFINITE_LIST_DEPLOYED_CONTRACTS, page, owner, name, chainId],
     async ({ pageParam }) => {
       if (instance) {
         return (
@@ -372,7 +386,7 @@ export function useListDeployedContracts({
             }[];
             nextCursor?: number;
           }>('/forms/deploy/list', {
-            params: { cursor: pageParam, limit: 12, owner, name, chainId },
+            params: { cursor: pageParam, limit: 20, owner, name, chainId },
           })
         ).data;
       }
@@ -382,6 +396,66 @@ export function useListDeployedContracts({
     {
       getNextPageParam: ({ nextCursor }) => nextCursor,
     },
+  );
+}
+
+export const LIST_DEPLOYED_CONTRACTS = 'LIST_DEPLOYED_CONTRACTS';
+
+export function useListDeployedContracts({
+  page = 0,
+  pageSize = 10,
+  owner,
+  name,
+  chainId,
+  sort,
+  filter,
+}: {
+  page?: number;
+  pageSize?: number;
+  owner?: string;
+  name?: string;
+  chainId?: ChainId;
+  sort?: string[];
+  filter?: any;
+}) {
+  const { instance } = useContext(DexkitApiProvider);
+  return useQuery<{
+    data: {
+      name: string;
+      contractAddress: string;
+      owner: string;
+      id: number;
+      type?: string;
+      chainId?: number;
+    }[];
+    skip?: number;
+    take?: number;
+    total?: number;
+  }>(
+    [LIST_DEPLOYED_CONTRACTS, owner, name, chainId, sort, page, pageSize, filter],
+    async () => {
+      if (instance) {
+        return (
+          await instance.get<{
+            data: {
+              name: string;
+              contractAddress: string;
+              owner: string;
+              id: number;
+              type?: string;
+              chainId?: number;
+            }[];
+            skip?: number;
+            take?: number;
+            total?: number;
+          }>('/forms/deploy/contract/list', {
+            params: { owner, name, chainId, skip: page * pageSize, take: pageSize, sort, filter: filter ? JSON.stringify(filter) : undefined },
+          })
+        ).data;
+      }
+
+      return { data: [] };
+    }
   );
 }
 

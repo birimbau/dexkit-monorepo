@@ -172,7 +172,7 @@ export default function GeneralSection({
                 name="name"
                 sx={{ maxWidth: '400px' }}
                 fullWidth
-                label={<FormattedMessage id="name" defaultMessage="Name" />}
+                label={<FormattedMessage id="app.name" defaultMessage="App name" />}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 value={formik.values.name}
@@ -190,7 +190,7 @@ export default function GeneralSection({
                 name="email"
                 sx={{ maxWidth: '400px' }}
                 fullWidth
-                label={<FormattedMessage id="email" defaultMessage="Email" />}
+                label={<FormattedMessage id="notification.email" defaultMessage="Notification email" />}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 value={formik.values.email}

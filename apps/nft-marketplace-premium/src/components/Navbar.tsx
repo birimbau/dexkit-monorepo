@@ -31,7 +31,8 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { getChainLogoImage, getChainName } from '../utils/blockchain';
 import Link from './Link';
 
-import { AttachMoney, Language } from '@mui/icons-material';
+import AttachMoney from '@mui/icons-material/AttachMoney';
+import Language from '@mui/icons-material/Language';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { useAtom } from 'jotai';
 import { useUpdateAtom } from 'jotai/utils';

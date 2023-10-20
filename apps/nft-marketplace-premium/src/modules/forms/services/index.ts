@@ -187,16 +187,30 @@ export async function saveContractDeploy({
   name,
   type,
   chainId,
+  metadata,
+  createdAtTx,
+  owner,
 }: {
   contractAddress: string;
   name?: string;
   type?: string;
   chainId: number;
+  owner?: string;
+  createdAtTx?: string;
+  metadata?: {
+    name?: string,
+    description?: string,
+    symbol?: string,
+    image?: string
+  }
 }) {
   return await myAppsApi.post(`/forms/deploy`, {
     name,
     contractAddress,
     type,
+    createdAtTx,
     chainId,
+    metadata: JSON.stringify(metadata),
+    owner
   });
 }
