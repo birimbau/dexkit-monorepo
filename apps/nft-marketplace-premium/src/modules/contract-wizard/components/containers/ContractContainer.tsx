@@ -13,6 +13,7 @@ import ContractStakeErc20Container from './ContractStakeErc20Container';
 import { ContractTokenDropContainer } from './ContractTokenDropContainer';
 
 import { hexToString } from '@dexkit/ui/utils';
+import ContractStakeErc721Container from './ContractStakeErc721Container';
 
 interface Props {
   address: string;
@@ -41,6 +42,10 @@ export function ContractContainer({ address, network }: Props) {
     } else if (data === 'custom' && contractType === 'TokenStake') {
       return (
         <ContractStakeErc20Container address={address} network={network} />
+      );
+    } else if (data === 'custom' && contractType === 'NFTStake') {
+      return (
+        <ContractStakeErc721Container address={address} network={network} />
       );
     }
   };

@@ -10,7 +10,6 @@ import {
   FormControlLabel,
   Grid,
   InputAdornment,
-  MenuItem,
   Skeleton,
   Stack,
   Tab,
@@ -27,7 +26,7 @@ import {
 import { useWeb3React } from '@web3-react/core';
 import { BigNumber, ethers } from 'ethers';
 import { Field, Formik } from 'formik';
-import { Select, Switch, TextField } from 'formik-mui';
+import { Switch, TextField } from 'formik-mui';
 import moment from 'moment';
 import { SyntheticEvent, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
@@ -43,15 +42,15 @@ const THIRD_WEB_STAKE_TIMEUNITS: {
   { value: (24 * 3600).toString(), id: 'one.day', defaultMessage: '1 day' },
 ];
 
-export interface ContractStakeErc20ContainerProps {
+export interface ContractStakeErc721ContainerProps {
   address: string;
   network: string;
 }
 
-export default function ContractStakeErc20Container({
+export default function ContractStakeErc721Container({
   address,
   network,
-}: ContractStakeErc20ContainerProps) {
+}: ContractStakeErc721ContainerProps) {
   const [tab, setTab] = useState<string>('deposit');
 
   const handleChangeTab = (e: SyntheticEvent, value: string) => {
@@ -92,19 +91,15 @@ export default function ContractStakeErc20Container({
 
   const { data: rewardTokenBalance } = useTokenBalance(rewardToken, account);
 
-  const { data: stakingTokenBalance } = useTokenBalance(stakingToken, account);
-
-  const { data: rewardRatio } = useContractRead(contract, 'getRewardRatio');
+  const { data: rewardsPerUnitTime } = useContractRead(
+    contract,
+    'getRewardsPerUnitTime',
+  );
   const { data: rewardTimeUnit } = useContractRead(contract, 'getTimeUnit');
 
-  const [numerator, denominator] = useMemo(() => {
-    if (rewardRatio) {
-      const [n, d] = rewardRatio;
-      return [n.toNumber(), d.toNumber()];
-    }
-
-    return [0, 0];
-  }, [rewardRatio]);
+  const rewardsPerUnitTimeValue = useMemo(() => {
+    return rewardsPerUnitTime?.toNumber();
+  }, [rewardsPerUnitTime]);
 
   const { data: allowance } = useQuery(
     ['REWARD_TOKEN_ALLOWANCE', rewardTokenAddress],
@@ -157,9 +152,9 @@ export default function ContractStakeErc20Container({
     'setTimeUnit',
   );
 
-  const { mutateAsync: setRewardRatio } = useContractWrite(
+  const { mutateAsync: setRewardsPerUnitTime } = useContractWrite(
     contract,
-    'setRewardRatio',
+    'setRewardsPerUnitTime',
   );
 
   const handleSubmitTimeUnit = async ({ timeUnit }: { timeUnit: string }) => {
@@ -167,13 +162,11 @@ export default function ContractStakeErc20Container({
   };
 
   const handleSubmitRewardRatio = async ({
-    numerator,
-    denominator,
+    rewardsPerUnitTime,
   }: {
-    numerator: string;
-    denominator: string;
+    rewardsPerUnitTime: string;
   }) => {
-    await setRewardRatio({ args: [numerator, denominator] });
+    await setRewardsPerUnitTime({ args: [rewardsPerUnitTime] });
   };
 
   // TODO: add info of reward ratio as a tooltip.
@@ -200,13 +193,11 @@ export default function ContractStakeErc20Container({
           <Stack>
             <Typography variant="caption" color="text.secondary">
               <FormattedMessage
-                id="reward.ratio"
-                defaultMessage="Reward ratio"
+                id="reward.per.time.unit"
+                defaultMessage="Reward per time Unit"
               />
             </Typography>
-            <Typography variant="h5">
-              {numerator}/{denominator}
-            </Typography>
+            <Typography variant="h5">{rewardsPerUnitTimeValue}</Typography>
           </Stack>
           <Stack>
             <Typography variant="caption" color="text.secondary">
@@ -218,24 +209,6 @@ export default function ContractStakeErc20Container({
                   rewardsBalance,
                   rewardTokenBalance?.decimals || 18,
                 )} ${rewardTokenBalance?.symbol}`
-              ) : (
-                <Skeleton />
-              )}
-            </Typography>
-          </Stack>
-          <Stack>
-            <Typography variant="caption" color="text.secondary">
-              <FormattedMessage
-                id="total.staked"
-                defaultMessage="Total staked"
-              />
-            </Typography>
-            <Typography variant="h5">
-              {totalStakedBalance && stakingTokenBalance ? (
-                `${formatBigNumber(
-                  totalStakedBalance,
-                  stakingTokenBalance?.decimals || 18,
-                )} ${stakingTokenBalance.symbol}`
               ) : (
                 <Skeleton />
               )}
@@ -375,16 +348,15 @@ export default function ContractStakeErc20Container({
                     <Typography variant="body1">
                       <strong>
                         <FormattedMessage
-                          id="reward.ratio"
-                          defaultMessage="Reward Ratio"
+                          id="reward.per.unit.time"
+                          defaultMessage="Reward per Unit Time"
                         />
                       </strong>
                     </Typography>
                     <Box>
                       <Formik
                         initialValues={{
-                          denominator: denominator.toString(),
-                          numerator: numerator.toString(),
+                          rewardsPerUnitTime: rewardsPerUnitTimeValue,
                         }}
                         onSubmit={handleSubmitRewardRatio}
                       >
@@ -394,27 +366,12 @@ export default function ContractStakeErc20Container({
                               <Field
                                 fullWidth
                                 component={TextField}
-                                name="numerator"
+                                name="rewardsPerUnitTime"
                                 type="number"
                                 label={
                                   <FormattedMessage
                                     id="numerator"
-                                    defaultMessage="Numerator"
-                                  />
-                                }
-                                inputProps={{ type: 'number' }}
-                              />
-                            </Grid>
-                            <Grid item xs={12}>
-                              <Field
-                                fullWidth
-                                component={TextField}
-                                name="denominator"
-                                type="number"
-                                label={
-                                  <FormattedMessage
-                                    id="denominator"
-                                    defaultMessage="Denominator"
+                                    defaultMessage="Rewards per Unit Time"
                                   />
                                 }
                                 inputProps={{ type: 'number' }}
@@ -474,7 +431,7 @@ export default function ContractStakeErc20Container({
                               <FormControl fullWidth>
                                 <Field
                                   fullWidth
-                                  component={Select}
+                                  component={TextField}
                                   name="timeUnit"
                                   type="number"
                                   label={
@@ -484,18 +441,7 @@ export default function ContractStakeErc20Container({
                                     />
                                   }
                                   inputProps={{ type: 'number' }}
-                                >
-                                  {THIRD_WEB_STAKE_TIMEUNITS.map(
-                                    (unit, key) => (
-                                      <MenuItem value={unit.value} key={key}>
-                                        <FormattedMessage
-                                          id={unit.id}
-                                          defaultMessage={unit.defaultMessage}
-                                        />
-                                      </MenuItem>
-                                    ),
-                                  )}
-                                </Field>
+                                />
                               </FormControl>
                             </Grid>
                             <Grid item xs={12}>

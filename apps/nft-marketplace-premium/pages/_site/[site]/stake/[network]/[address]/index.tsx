@@ -1,6 +1,12 @@
 import StakeErc20Section from '@/modules/wizard/components/sections/StakeErc20Section';
+import StakeErc721Section from '@/modules/wizard/components/sections/StakeErc721Section';
+import { hexToString } from '@dexkit/ui/utils';
 import { QueryClient, dehydrate } from '@tanstack/react-query';
-import { ThirdwebSDKProvider } from '@thirdweb-dev/react';
+import {
+  ThirdwebSDKProvider,
+  useContract,
+  useContractRead,
+} from '@thirdweb-dev/react';
 import { useWeb3React } from '@web3-react/core';
 import { GetStaticPropsContext } from 'next';
 import { useRouter } from 'next/router';
@@ -13,6 +19,22 @@ export function StakeErc20Page() {
   const { query } = useRouter();
 
   const { address, network } = query;
+
+  const { data: contract } = useContract(address as string);
+  const contractRead = useContractRead(contract, 'contractType');
+
+  let contractType = hexToString(contractRead.data);
+
+  if (true) {
+    return (
+      <StakeErc721Section
+        section={{
+          type: 'nft-stake',
+          settings: { address: address as string, network: network as string },
+        }}
+      />
+    );
+  }
 
   return (
     <StakeErc20Section

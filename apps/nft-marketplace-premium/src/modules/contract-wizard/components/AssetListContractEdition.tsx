@@ -283,6 +283,7 @@ export function AssetListContractEdition({
               <BaseAssetCard
                 asset={asset}
                 onClickCardAction={(a) => setAsset(a)}
+                showControls
               />
             </Grid>
           ))}
