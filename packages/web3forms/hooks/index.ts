@@ -359,6 +359,25 @@ export function useIfpsUploadMutation() {
   );
 }
 
+export function useServerUploadMutation() {
+  const { instance } = useContext(DexkitApiProvider);
+
+  return useMutation(
+    async ({
+      content,
+    }: {
+      content: string;
+    }) => {
+      if (instance) {
+        const res = await instance.post("/account-file/upload-json", {
+          metadata: content
+        });
+        return res.data;
+      }
+    }
+  );
+}
+
 export const IPFS_FILE_LIST_QUERY = "IPFS_FILE_LIST_QUERY";
 
 export function useIpfsFileListQuery({
@@ -452,7 +471,7 @@ export function useDeployThirdWebContractMutation() {
 
         const implementation =
           metadata.factoryDeploymentData.implementationAddresses[
-            chainId.toString()
+          chainId.toString()
           ];
 
         const abi = await fetchAbi({
@@ -460,7 +479,7 @@ export function useDeployThirdWebContractMutation() {
           chainId: chainId,
         });
 
-        const contractAddress = await sdk.deployer.deployViaFactory(
+        const tx = await sdk.deployer.deployViaFactory.prepare(
           factory,
           implementation,
           abi,
@@ -468,7 +487,15 @@ export function useDeployThirdWebContractMutation() {
           orderedParams
         );
 
-        return contractAddress;
+        const transaction = await tx.send();
+        const receipt = await transaction.wait();
+        let address;
+        if (receipt.events && receipt.events?.length > 1) {
+          if (receipt.events[0] && receipt.events[0].args && receipt.events[0].args[1]) {
+            address = receipt.events[0].args[1];
+          }
+        }
+        return { tx: transaction.hash, address: address };
       }
     }
   );

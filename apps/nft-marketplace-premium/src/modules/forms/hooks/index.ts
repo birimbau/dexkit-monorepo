@@ -2,6 +2,7 @@ import { ChainId } from '@dexkit/core';
 import { DexkitApiProvider } from '@dexkit/core/providers';
 import { ContractFormParams } from '@dexkit/web3forms/types';
 import { useInfiniteQuery, useMutation, useQuery } from '@tanstack/react-query';
+import { useWeb3React } from '@web3-react/core';
 import axios from 'axios';
 import { ethers } from 'ethers';
 import { useContext } from 'react';
@@ -315,19 +316,31 @@ export function useDeleteFormMutation() {
 }
 
 export function useSaveContractDeployed() {
+  const { account } = useWeb3React();
+
+
   return useMutation(
     async ({
       contractAddress,
       name,
       chainId,
-      type
+      type,
+      metadata,
+      createdAtTx,
     }: {
       contractAddress: string;
       name?: string;
       type?: string;
       chainId: number;
+      createdAtTx?: string;
+      metadata?: {
+        name?: string,
+        description?: string,
+        symbol?: string,
+        image?: string
+      }
     }) => {
-      return await saveContractDeploy({ contractAddress, name, chainId, type });
+      return await saveContractDeploy({ contractAddress, name, chainId, type, metadata, owner: account?.toLowerCase(), createdAtTx });
     },
   );
 }
