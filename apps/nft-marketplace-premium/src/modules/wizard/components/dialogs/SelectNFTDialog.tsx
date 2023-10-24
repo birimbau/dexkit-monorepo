@@ -1,5 +1,6 @@
 import { getNormalizedUrl } from '@dexkit/core/utils';
 import { AppDialogTitle } from '@dexkit/ui';
+import { useAsyncMemo } from '@dexkit/widgets/src/hooks';
 import {
   Box,
   Button,
@@ -18,7 +19,12 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
-import { NFT, useContract, useOwnedNFTs } from '@thirdweb-dev/react';
+import {
+  NFT,
+  useContract,
+  useContractRead,
+  useOwnedNFTs,
+} from '@thirdweb-dev/react';
 import { useWeb3React } from '@web3-react/core';
 import { useCallback, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
@@ -39,17 +45,48 @@ export default function SelectNFTDialog({
   isUnstake?: boolean;
 }) {
   const { onClose } = DialogProps;
-  const { data: nftStakeContract } = useContract(address, 'custom');
+  const { data: stakingNFTContract } = useContract(address, 'nft-collection');
 
   const { account } = useWeb3React();
 
+  const { data: stakingContract } = useContract(
+    stakingContractAddress,
+    'custom',
+  );
+
   const {
-    data: nfts,
+    data: infoNfts,
     refetch,
     isLoading,
-  } = useOwnedNFTs(
-    nftStakeContract,
-    isUnstake ? stakingContractAddress : account,
+  } = useContractRead(stakingContract, 'getStakeInfo', [account]);
+
+  const { data: accountNftsData, isLoading: isLoadingNfts } = useOwnedNFTs(
+    stakingNFTContract,
+    account,
+  );
+
+  const nfts = useAsyncMemo(
+    async () => {
+      if (isUnstake) {
+        const [nfts, rewards] = infoNfts;
+
+        let nftsArr: Promise<NFT>[] = [];
+
+        for (let tokenId of nfts) {
+          let promise = stakingNFTContract?.erc721.get(tokenId);
+
+          if (promise !== undefined) {
+            nftsArr.push(promise);
+          }
+        }
+
+        return await Promise.all(nftsArr);
+      }
+
+      return accountNftsData;
+    },
+    [],
+    [accountNftsData, infoNfts, isUnstake],
   );
 
   const [tokenIds, setTokenIds] = useState<string[]>([]);
@@ -69,13 +106,14 @@ export default function SelectNFTDialog({
       onSelect(tokenIds);
       refetch();
     }
+    setTokenIds([]);
   };
 
   const handleClose = () => {
     if (onClose) {
       onClose({}, 'backdropClick');
-      setTokenIds([]);
     }
+    setTokenIds([]);
   };
 
   const isSelected = useCallback(
@@ -156,7 +194,7 @@ export default function SelectNFTDialog({
               </Box>
             </Grid>
           )}
-          {nfts?.map((nft, key) => (
+          {nfts?.map((nft: NFT, key: number) => (
             <Grid item xs={6} sm={3} key={key}>
               {renderCard(nft)}
             </Grid>

@@ -26,22 +26,60 @@ import {
 import Image from 'next/image';
 import { FormattedMessage, useIntl } from 'react-intl';
 import Link from 'src/components/Link';
+
 const Img = styled(Image)({});
 
 interface Props {
   address: string;
   contractType?: string | null;
+  contractTypeV2?: string;
   network?: string;
 }
 
-export function ContractMetadataHeader(props: Props) {
-  const { address, contractType, network } = props;
+export function ContractMetadataHeader({
+  address,
+  contractType,
+  network,
+  contractTypeV2,
+}: Props) {
   const { data: contract } = useContract(address);
   const { data } = useContractMetadata(contract);
   const { formatMessage } = useIntl();
+
   const metadata = data as CustomContractMetadata;
   const theme = useTheme();
   const chainId = NETWORK_FROM_SLUG(network)?.chainId;
+
+  console.log('contractTypeV2', contractTypeV2);
+
+  const getContractUrl = (contractType?: string) => {
+    let url = '';
+
+    switch (contractType) {
+      case 'NFTStake':
+      case 'TokenStake':
+        url = `/stake/${network}/${address}`;
+        break;
+      case 'TokenERC721':
+        break;
+      case 'TokenERC1155':
+        break;
+      case 'TokenERC20':
+        url = `/token/${network}/${address}`;
+        break;
+      case 'DropERC1155':
+        url = `/drop/nft/${network}/${address}`;
+        break;
+      case 'DropERC721':
+        url = `/drop/nft/${network}/${address}`;
+        break;
+      case 'DropERC20':
+        url = `/drop/token/${network}/${address}`;
+        break;
+    }
+
+    return url;
+  };
 
   return (
     <Grid container spacing={2}>
@@ -175,7 +213,10 @@ export function ContractMetadataHeader(props: Props) {
                     ? THIRDWEB_CONTRACT_TYPES[contractType]
                     : 'custom'
                 }
-              ></Chip>
+              />
+              <Link href={getContractUrl(contractTypeV2)}>
+                <FormattedMessage id="contract" defaultMessage="Contract" />
+              </Link>
             </Stack>
           </Grid>
         </Grid>

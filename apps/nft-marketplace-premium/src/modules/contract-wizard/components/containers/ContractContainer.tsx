@@ -13,6 +13,7 @@ import ContractStakeErc20Container from './ContractStakeErc20Container';
 import { ContractTokenDropContainer } from './ContractTokenDropContainer';
 
 import { hexToString } from '@dexkit/ui/utils';
+import { ContractEditionContainer } from './ContractEditionContainer';
 import ContractStakeErc721Container from './ContractStakeErc721Container';
 
 interface Props {
@@ -35,6 +36,8 @@ export function ContractContainer({ address, network }: Props) {
       );
     } else if (data === 'token-drop') {
       return <ContractTokenDropContainer address={address} network={network} />;
+    } else if (data === 'edition') {
+      return <ContractEditionContainer address={address} network={network} />;
     } else if (data === 'nft-drop') {
       return <ContractNftDropContainer address={address} network={network} />;
     } else if (data === 'nft-collection') {
@@ -57,6 +60,7 @@ export function ContractContainer({ address, network }: Props) {
           address={address}
           network={network}
           contractType={data}
+          contractTypeV2={contractType}
         />
       </Grid>
       <Grid item xs={12}>

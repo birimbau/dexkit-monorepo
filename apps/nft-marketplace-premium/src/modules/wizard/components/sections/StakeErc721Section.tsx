@@ -96,16 +96,13 @@ export default function StakeErc721Section({
     'getRewardTokenBalance',
   );
 
-  const handleSubmit = async ({ amount }: { amount: string }) => {};
-
   const handleClaim = async () => {
     await claimRewards({});
   };
 
-  const handleSubmitUnstake = async ({ amount }: { amount: string }) => {};
-
   const handleChangeTab = (e: SyntheticEvent, value: 'stake' | 'unstake') => {
     setTab(value);
+    setSelectedTokenIds([]);
   };
 
   const { data: stakingAddress } = useContractRead(contract, 'stakingToken');
@@ -226,8 +223,8 @@ export default function StakeErc721Section({
                                   color="text.secondary"
                                 >
                                   <FormattedMessage
-                                    id="tokens.staked"
-                                    defaultMessage="Tokens staked"
+                                    id="nfts.staked"
+                                    defaultMessage="NFTs staked"
                                   />
                                 </Typography>
                               </CardActionArea>
@@ -254,16 +251,16 @@ export default function StakeErc721Section({
                             <Typography color="text.secondary" variant="body1">
                               {selectedTokenIds.length > 1 ? (
                                 <FormattedMessage
-                                  id="amount.tokens.selected.to.stake"
-                                  defaultMessage="Tokens {tokens} are selected to stake"
+                                  id="amount.nfts.selected.to.stake"
+                                  defaultMessage="NFTs {tokens} are selected to stake"
                                   values={{
-                                    tokens: selectedTokenIds.join(','),
+                                    tokens: selectedTokenIds.join(', '),
                                   }}
                                 />
                               ) : (
                                 <FormattedMessage
                                   id="amount.tokens.selected.to.stake"
-                                  defaultMessage='Token "{tokens}" is selected to stake'
+                                  defaultMessage='NFT "{tokens}" is selected to stake'
                                   values={{ tokens: selectedTokenIds[0] }}
                                 />
                               )}
@@ -290,6 +287,28 @@ export default function StakeErc721Section({
                                       rewardsBalance,
                                       rewardTokenBalance?.decimals || 18,
                                     )} ${rewardTokenBalance?.symbol}`
+                                  ) : (
+                                    <Skeleton />
+                                  )}
+                                </Typography>
+                              </Stack>
+                              <Stack
+                                direction="row"
+                                justifyContent="space-between"
+                              >
+                                <Typography>
+                                  <FormattedMessage
+                                    id="rewards.second"
+                                    defaultMessage="Rewards/second"
+                                  />
+                                </Typography>
+                                <Typography color="text.secondary">
+                                  {rewardTokenBalance ? (
+                                    <>
+                                      {rewardPerUnitTime}{' '}
+                                      {rewardTokenBalance?.symbol}/
+                                      {rewardTimeUnit.toNumber()}
+                                    </>
                                   ) : (
                                     <Skeleton />
                                   )}
@@ -380,8 +399,8 @@ export default function StakeErc721Section({
                                   color="text.secondary"
                                 >
                                   <FormattedMessage
-                                    id="tokens.staked"
-                                    defaultMessage="Tokens staked"
+                                    id="nfts.staked"
+                                    defaultMessage="NFTs staked"
                                   />
                                 </Typography>
                               </CardActionArea>
@@ -394,8 +413,8 @@ export default function StakeErc721Section({
                                   <Token />
                                   <Typography color="text.secondary">
                                     <FormattedMessage
-                                      id="select.an.nft"
-                                      defaultMessage="Select an NFT"
+                                      id="select.nfts"
+                                      defaultMessage="Select NFTs"
                                     />
                                   </Typography>
                                 </Stack>
@@ -409,7 +428,7 @@ export default function StakeErc721Section({
                               {selectedTokenIds.length > 1 ? (
                                 <FormattedMessage
                                   id="amount.tokens.selected.to.stake"
-                                  defaultMessage="Tokens {tokens} are selected to unstake"
+                                  defaultMessage="NFTs {tokens} are selected to unstake"
                                   values={{
                                     tokens: selectedTokenIds.join(','),
                                   }}
@@ -417,7 +436,7 @@ export default function StakeErc721Section({
                               ) : (
                                 <FormattedMessage
                                   id="amount.tokens.selected.to.stake"
-                                  defaultMessage='Token "{tokens}" is selected to stake'
+                                  defaultMessage='NFTs "{tokens}" is selected to stake'
                                   values={{ tokens: selectedTokenIds[0] }}
                                 />
                               )}
@@ -449,6 +468,30 @@ export default function StakeErc721Section({
                                   )}
                                 </Typography>
                               </Stack>
+
+                              <Stack
+                                direction="row"
+                                justifyContent="space-between"
+                              >
+                                <Typography>
+                                  <FormattedMessage
+                                    id="rewards.second"
+                                    defaultMessage="Rewards/second"
+                                  />
+                                </Typography>
+                                <Typography color="text.secondary">
+                                  {rewardTokenBalance ? (
+                                    <>
+                                      {rewardPerUnitTime}{' '}
+                                      {rewardTokenBalance?.symbol}/
+                                      {rewardTimeUnit.toNumber()}
+                                    </>
+                                  ) : (
+                                    <Skeleton />
+                                  )}
+                                </Typography>
+                              </Stack>
+
                               <Stack
                                 direction="row"
                                 justifyContent="space-between"

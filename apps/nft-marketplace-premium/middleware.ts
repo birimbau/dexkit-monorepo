@@ -18,6 +18,7 @@ export const config = {
     '/contract/:path*',
 
     '/stake/:path*',
+    '/token/:path*',
   ],
 };
 
@@ -38,6 +39,7 @@ const basePaths = [
   '/drop',
   '/contract',
   '/stake',
+  '/token',
 ];
 
 function isBasePath(path: string) {

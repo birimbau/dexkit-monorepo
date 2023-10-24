@@ -151,9 +151,6 @@ function WizardCreateAssetContainerV2(props: Props) {
               value.txHash,
             );
 
-            console.log(value);
-            console.log(txReceipt);
-
             await createMetadataMutation.mutateAsync({
               tx: value.txHash,
               address: address,

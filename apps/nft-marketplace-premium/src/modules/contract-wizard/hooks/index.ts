@@ -262,6 +262,8 @@ export function useCreateCollectionMetadataMutation() {
       await loginMutation.mutateAsync();
     }
 
+    //TODO: adapt to ERC1155
+
     return (
       await dexKitAppApi.post<CollectionAPI>('/contract/create', {
         type: 'ERC721',

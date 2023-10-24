@@ -1,5 +1,5 @@
 import StakeErc20Section from '@/modules/wizard/components/sections/StakeErc20Section';
-import StakeErc721Section from '@/modules/wizard/components/sections/StakeErc721Section';
+import TokenErc20Section from '@/modules/wizard/components/sections/TokenErc20Section';
 import { hexToString } from '@dexkit/ui/utils';
 import { QueryClient, dehydrate } from '@tanstack/react-query';
 import {
@@ -15,7 +15,7 @@ import { THIRDWEB_CLIENT_ID } from 'src/constants';
 import { getAppConfig } from 'src/services/app';
 import { getChainIdFromSlug } from 'src/utils/blockchain';
 
-export function StakeErc20Page() {
+export function TokensPage() {
   const { query } = useRouter();
 
   const { address, network } = query;
@@ -25,15 +25,11 @@ export function StakeErc20Page() {
 
   let contractType = hexToString(contractRead.data);
 
-  if (!contractType) {
-    return null;
-  }
-
-  if (contractType === 'NFTStake') {
+  if (contractType === 'TokenERC20') {
     return (
-      <StakeErc721Section
+      <TokenErc20Section
         section={{
-          type: 'nft-stake',
+          type: 'token',
           settings: { address: address as string, network: network as string },
         }}
       />
@@ -61,7 +57,7 @@ export default function Wrapper() {
       activeChain={getChainIdFromSlug(network as string)?.chainId}
       signer={provider?.getSigner()}
     >
-      <StakeErc20Page />
+      <TokensPage />
     </ThirdwebSDKProvider>
   );
 }

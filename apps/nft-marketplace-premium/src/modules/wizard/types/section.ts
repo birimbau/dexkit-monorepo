@@ -27,7 +27,8 @@ export type SectionType =
   | 'token-drop'
   | 'nft-drop'
   | 'token-stake'
-  | 'nft-stake';
+  | 'nft-stake'
+  | 'token';
 
 export interface PageSection {
   type: SectionType;
@@ -134,6 +135,14 @@ export interface StakeErc20PageSection extends PageSection {
 
 export interface StakeErc721PageSection extends PageSection {
   type: 'nft-stake';
+  settings: {
+    network: string;
+    address: string;
+  };
+}
+
+export interface TokenErc20PageSection extends PageSection {
+  type: 'token';
   settings: {
     network: string;
     address: string;
