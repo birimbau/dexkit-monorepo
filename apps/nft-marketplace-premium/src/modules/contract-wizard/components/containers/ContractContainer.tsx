@@ -14,6 +14,7 @@ import { ContractTokenDropContainer } from './ContractTokenDropContainer';
 
 import { hexToString } from '@dexkit/ui/utils';
 import { ContractEditionContainer } from './ContractEditionContainer';
+import ContractStakeErc1155Container from './ContractStakeErc1155Container';
 import ContractStakeErc721Container from './ContractStakeErc721Container';
 
 interface Props {
@@ -30,25 +31,29 @@ export function ContractContainer({ address, network }: Props) {
   let contractType = hexToString(contractRead.data);
 
   const renderContract = () => {
-    if (data === 'edition-drop') {
+    if (contractType === 'DropERC1155') {
       return (
         <ContractEditionDropContainer address={address} network={network} />
       );
-    } else if (data === 'token-drop') {
+    } else if (contractType === 'DropERC20') {
       return <ContractTokenDropContainer address={address} network={network} />;
-    } else if (data === 'edition') {
+    } else if (contractType === 'Edition') {
       return <ContractEditionContainer address={address} network={network} />;
-    } else if (data === 'nft-drop') {
+    } else if (contractType === 'DropERC721') {
       return <ContractNftDropContainer address={address} network={network} />;
-    } else if (data === 'nft-collection') {
+    } else if (contractType === 'TokenERC721') {
       return <ContractNftContainer address={address} network={network} />;
-    } else if (data === 'custom' && contractType === 'TokenStake') {
+    } else if (contractType === 'TokenStake') {
       return (
         <ContractStakeErc20Container address={address} network={network} />
       );
-    } else if (data === 'custom' && contractType === 'NFTStake') {
+    } else if (contractType === 'NFTStake') {
       return (
         <ContractStakeErc721Container address={address} network={network} />
+      );
+    } else if (contractType === 'EditionStake') {
+      return (
+        <ContractStakeErc1155Container address={address} network={network} />
       );
     }
   };

@@ -1,3 +1,4 @@
+import StakeErc1155Section from '@/modules/wizard/components/sections/StakeErc1155Section';
 import StakeErc20Section from '@/modules/wizard/components/sections/StakeErc20Section';
 import StakeErc721Section from '@/modules/wizard/components/sections/StakeErc721Section';
 import { hexToString } from '@dexkit/ui/utils';
@@ -15,7 +16,7 @@ import { THIRDWEB_CLIENT_ID } from 'src/constants';
 import { getAppConfig } from 'src/services/app';
 import { getChainIdFromSlug } from 'src/utils/blockchain';
 
-export function StakeErc20Page() {
+export function StakePage() {
   const { query } = useRouter();
 
   const { address, network } = query;
@@ -34,6 +35,17 @@ export function StakeErc20Page() {
       <StakeErc721Section
         section={{
           type: 'nft-stake',
+          settings: { address: address as string, network: network as string },
+        }}
+      />
+    );
+  }
+
+  if (contractType === 'EditionStake') {
+    return (
+      <StakeErc1155Section
+        section={{
+          type: 'edition-stake',
           settings: { address: address as string, network: network as string },
         }}
       />
@@ -61,7 +73,7 @@ export default function Wrapper() {
       activeChain={getChainIdFromSlug(network as string)?.chainId}
       signer={provider?.getSigner()}
     >
-      <StakeErc20Page />
+      <StakePage />
     </ThirdwebSDKProvider>
   );
 }
