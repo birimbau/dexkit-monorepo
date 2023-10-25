@@ -55,6 +55,7 @@ export function ContractMetadataHeader({
 
     switch (contractType) {
       case 'NFTStake':
+      case 'EditionStake':
       case 'TokenStake':
         url = `/stake/${network}/${address}`;
         break;
@@ -65,11 +66,11 @@ export function ContractMetadataHeader({
         url = `/collection/${network}/${address}`;
         break;
       case 'TokenERC20':
-        url = `/token/${network}/${address}`;
+      case 'TokenERC721':
+      case 'TokenERC1155':
+        url = `/token/nft/${network}/${address}`;
         break;
       case 'DropERC1155':
-        url = `/drop/nft/${network}/${address}`;
-        break;
       case 'DropERC721':
         url = `/drop/nft/${network}/${address}`;
         break;
@@ -207,6 +208,12 @@ export function ContractMetadataHeader({
               >
                 <FormattedMessage id="explorer" defaultMessage="Explorer" />
               </Button>
+              <Link href={getContractUrl(contractTypeV2)}>
+                <FormattedMessage
+                  id="view.contract"
+                  defaultMessage="View contract"
+                />
+              </Link>
               <Chip
                 label={
                   contractType
@@ -214,9 +221,6 @@ export function ContractMetadataHeader({
                     : 'custom'
                 }
               />
-              <Link href={getContractUrl(contractTypeV2)}>
-                <FormattedMessage id="contract" defaultMessage="Contract" />
-              </Link>
             </Stack>
           </Grid>
         </Grid>

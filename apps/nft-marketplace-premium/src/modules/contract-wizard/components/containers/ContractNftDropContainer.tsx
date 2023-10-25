@@ -2,12 +2,7 @@ import NFTGrid from '@/modules/wizard/components/NFTGrid';
 import NFTDropSummary from '@/modules/wizard/components/NftDropSummary';
 import { Button, Divider, Tab, Tabs, Typography } from '@mui/material';
 import Grid from '@mui/material/Grid';
-import {
-  useClaimedNFTSupply,
-  useContract,
-  useNFTs,
-  useUnclaimedNFTSupply,
-} from '@thirdweb-dev/react';
+import { useContract, useNFTs } from '@thirdweb-dev/react';
 import { SyntheticEvent, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import ContractAdminTab from '../ContractAdminTab';
@@ -31,10 +26,6 @@ export function ContractNftDropContainer({
   const handleChange = (e: SyntheticEvent, value: string) => {
     setCurrTab(value);
   };
-
-  const unclaimedSupply = useUnclaimedNFTSupply(contract);
-
-  const claimedSupply = useClaimedNFTSupply(contract);
 
   const nftsQuery = useNFTs(contract);
 

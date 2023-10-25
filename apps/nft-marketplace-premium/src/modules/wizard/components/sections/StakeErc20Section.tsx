@@ -1,5 +1,8 @@
+import { useThirdwebApprove } from '@/modules/contract-wizard/hooks/thirdweb';
 import { formatBigNumber } from '@dexkit/core/utils';
+import { useDexKitContext } from '@dexkit/ui';
 import FormikDecimalInput from '@dexkit/ui/components/FormikDecimalInput';
+import { useAsyncMemo } from '@dexkit/widgets/src/hooks';
 import {
   Box,
   Button,
@@ -104,15 +107,10 @@ export default function StakeErc20Section({ section }: StakeErc20SectionProps) {
     return [0, 0];
   }, [rewardRatio]);
 
-  const { mutateAsync: approve } = useMutation(
-    async ({ amount }: { amount: string }) => {
-      let tx = await stakingToken?.erc20.setAllowance(address, amount);
-
-      console.log('tx', tx);
-
-      return tx;
-    },
-  );
+  const { mutateAsync: approve } = useThirdwebApprove({
+    contract: stakingToken,
+    address,
+  });
 
   const { data: allowance } = useQuery(
     ['STAKING_TOKEN_ALLOWANCE', rewardTokenAddress],
@@ -126,6 +124,84 @@ export default function StakeErc20Section({ section }: StakeErc20SectionProps) {
     'getRewardTokenBalance',
   );
 
+  const { chainId } = useWeb3React();
+
+  const { createNotification, watchTransactionDialog } = useDexKitContext();
+
+  const rewardTokenInfo = useAsyncMemo(
+    async () => {
+      return await rewardToken?.get();
+    },
+    undefined,
+    [rewardToken],
+  );
+
+  const stakingTokenInfo = useAsyncMemo(
+    async () => {
+      return await stakingToken?.get();
+    },
+    undefined,
+    [stakingToken],
+  );
+
+  const stakeMutation = useMutation(
+    async ({ amount }: { amount: BigNumber }) => {
+      let call = contract?.prepare('stake', [amount]);
+
+      let tx = await call?.send();
+
+      if (tx?.hash && chainId) {
+        const values = {
+          amount: `${ethers.utils.formatUnits(
+            amount,
+            stakingTokenBalance?.decimals,
+          )} ${stakingTokenBalance?.symbol}`,
+          name: rewardTokenInfo?.name || '',
+        };
+
+        createNotification({
+          subtype: 'stakeToken',
+          values,
+          type: 'transaction',
+          metadata: { hash: tx?.hash, chainId },
+        });
+
+        watchTransactionDialog.watch(tx.hash);
+      }
+
+      await tx?.wait();
+    },
+  );
+
+  const unstakeMutation = useMutation(
+    async ({ amount }: { amount: BigNumber }) => {
+      let call = contract?.prepare('withdraw', [amount]);
+
+      let tx = await call?.send();
+
+      if (tx?.hash && chainId) {
+        const values = {
+          amount: `${ethers.utils.formatUnits(
+            amount,
+            stakingTokenBalance?.decimals,
+          )} ${stakingTokenBalance?.symbol}`,
+          name: rewardTokenInfo?.name || '',
+        };
+
+        createNotification({
+          subtype: 'unstakeToken',
+          values,
+          type: 'transaction',
+          metadata: { hash: tx?.hash, chainId },
+        });
+
+        watchTransactionDialog.watch(tx.hash);
+      }
+
+      await tx?.wait();
+    },
+  );
+
   const handleSubmit = async ({ amount }: { amount: string }) => {
     const amountParsed = ethers.utils.parseUnits(
       amount,
@@ -136,11 +212,51 @@ export default function StakeErc20Section({ section }: StakeErc20SectionProps) {
       await approve({ amount });
     }
 
-    await stake({ args: [amountParsed] });
+    const values = {
+      amount: `${amount} ${stakingTokenBalance?.symbol}`,
+      name: rewardTokenInfo?.name || '',
+    };
+
+    watchTransactionDialog.open('stakeToken', values);
+
+    await stakeMutation.mutateAsync({ amount: amountParsed });
   };
 
+  const claimRewardsMutation = useMutation(async () => {
+    let call = contract?.prepare('claimRewards', []);
+
+    let tx = await call?.send();
+
+    if (tx?.hash && chainId) {
+      const values = {
+        amount: `${rewards} ${rewardTokenInfo?.symbol}`,
+        name: rewardTokenInfo?.name || '',
+      };
+
+      createNotification({
+        subtype: 'claimRewards',
+        values,
+        type: 'transaction',
+        metadata: { hash: tx?.hash, chainId },
+      });
+
+      watchTransactionDialog.watch(tx.hash);
+    }
+
+    await tx?.wait();
+  });
+
   const handleClaim = async () => {
-    await claimRewards({});
+    const values = {
+      amount: `${rewards} ${rewardTokenInfo?.symbol}`,
+      name: rewardTokenInfo?.name || '',
+    };
+
+    watchTransactionDialog.open('claimRewards', values);
+
+    await claimRewardsMutation.mutateAsync();
+
+    // await claimRewards({});
   };
 
   const handleSubmitUnstake = async ({ amount }: { amount: string }) => {
@@ -149,7 +265,16 @@ export default function StakeErc20Section({ section }: StakeErc20SectionProps) {
       stakingTokenBalance?.decimals,
     );
 
-    await withdraw({ args: [amountParsed] });
+    const values = {
+      amount: `${amount} ${stakingTokenBalance?.symbol}`,
+      name: rewardTokenInfo?.name || '',
+    };
+
+    watchTransactionDialog.open('unstakeToken', values);
+
+    await unstakeMutation.mutateAsync({ amount: amountParsed });
+
+    // await withdraw({ args: [amountParsed] });
   };
 
   const handleChangeTab = (e: SyntheticEvent, value: 'stake' | 'unstake') => {
@@ -296,8 +421,8 @@ export default function StakeErc20Section({ section }: StakeErc20SectionProps) {
                                 >
                                   <Typography>
                                     <FormattedMessage
-                                      id="available.rewards"
-                                      defaultMessage="Available rewards"
+                                      id="availclaimableable.rewards"
+                                      defaultMessage="Claimable rewards"
                                     />
                                   </Typography>
                                   <Typography color="text.secondary">
@@ -386,7 +511,9 @@ export default function StakeErc20Section({ section }: StakeErc20SectionProps) {
                           <Grid item xs={12}>
                             <Button
                               onClick={handleClaim}
-                              disabled={isSubmitting || isClaiming}
+                              disabled={
+                                isSubmitting || claimRewardsMutation.isLoading
+                              }
                               startIcon={
                                 isClaiming ? (
                                   <CircularProgress

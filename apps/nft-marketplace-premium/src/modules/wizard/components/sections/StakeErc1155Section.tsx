@@ -1,4 +1,6 @@
 import { formatBigNumber } from '@dexkit/core/utils';
+import { useDexKitContext } from '@dexkit/ui';
+import { useAsyncMemo } from '@dexkit/widgets/src/hooks';
 import Token from '@mui/icons-material/Token';
 import {
   Box,
@@ -16,6 +18,7 @@ import {
   Tabs,
   Typography,
 } from '@mui/material';
+import { useMutation } from '@tanstack/react-query';
 import {
   useContract,
   useContractRead,
@@ -44,16 +47,6 @@ export default function StakeErc1155Section({
   const [amount, setAmount] = useState<number>();
 
   const { data: contract } = useContract(address, 'custom');
-
-  const { mutateAsync: withdraw, isLoading: isClaiming } = useContractWrite(
-    contract,
-    'withdraw',
-  );
-
-  const { mutateAsync: claimRewards } = useContractWrite(
-    contract,
-    'claimRewards',
-  );
 
   const [selectedTokenId, setSelectedTokenId] = useState<string>();
 
@@ -104,10 +97,6 @@ export default function StakeErc1155Section({
     'getRewardTokenBalance',
   );
 
-  const handleClaim = async (tokenId: string) => {
-    await claimRewards({ args: [tokenId] });
-  };
-
   const handleChangeTab = (e: SyntheticEvent, value: 'stake' | 'unstake') => {
     setTab(value);
     setAmount(undefined);
@@ -132,17 +121,105 @@ export default function StakeErc1155Section({
     handleClose();
   };
 
-  const { mutateAsync: stake, isLoading: isStaking } = useContractWrite(
-    contract,
-    'stake',
-  );
-
-  const { mutateAsync: unstake, isLoading: isUnstaking } = useContractWrite(
-    contract,
-    'withdraw',
-  );
-
   const { data: stakingTokenContract } = useContract(stakingAddress, 'custom');
+
+  const contractInfo = useAsyncMemo(
+    async () => {
+      return await contract?.metadata.get();
+    },
+    undefined,
+    [contract],
+  );
+
+  const { watchTransactionDialog, createNotification } = useDexKitContext();
+
+  const stakeNftMutation = useMutation(
+    async ({ tokenId, amount }: { tokenId: string; amount: BigNumber }) => {
+      let values = {
+        nft: tokenId,
+        amount: amount.toNumber().toString(),
+        name: contractInfo?.name || '',
+      };
+
+      watchTransactionDialog.open('stakeEdition', values);
+
+      let call = contract?.prepare('stake', [tokenId, amount]);
+
+      const tx = await call?.send();
+
+      if (tx?.hash && chainId) {
+        createNotification({
+          type: 'transaction',
+          subtype: 'stakeEdition',
+          values: values,
+          metadata: { hash: tx.hash, chainId },
+        });
+
+        watchTransactionDialog.watch(tx.hash);
+      }
+
+      return await tx?.wait();
+    },
+  );
+
+  const unstakeRewardsMutation = useMutation(
+    async ({ tokenId, amount }: { tokenId: string; amount: BigNumber }) => {
+      let call = contract?.prepare('withdraw', [tokenId, amount]);
+
+      let values = {
+        nft: tokenId,
+        amount: amount.toNumber().toString(),
+        name: contractInfo?.name || '',
+      };
+
+      watchTransactionDialog.open('unstakeEdition', values);
+
+      const tx = await call?.send();
+
+      if (tx?.hash && chainId) {
+        createNotification({
+          type: 'transaction',
+          subtype: 'unstakeEdition',
+          values: values,
+          metadata: { hash: tx.hash, chainId },
+        });
+
+        watchTransactionDialog.watch(tx.hash);
+      }
+
+      return await tx?.wait();
+    },
+  );
+
+  const { chainId } = useWeb3React();
+
+  const claimRewardsMutation = useMutation(
+    async ({ tokenId }: { tokenId: string }) => {
+      let call = contract?.prepare('claimRewards', []);
+
+      let values = {
+        nft: tokenId,
+        name: contractInfo?.name || '',
+      };
+
+      watchTransactionDialog.open('claimEditionRewards', values);
+
+      const tx = await call?.send();
+
+      if (tx?.hash && chainId) {
+        createNotification({
+          type: 'transaction',
+          subtype: 'claimEditionRewards',
+          values: values,
+          metadata: { hash: tx.hash, chainId },
+        });
+
+        watchTransactionDialog.watch(tx.hash);
+      }
+
+      return await tx?.wait();
+    },
+  );
 
   const { mutateAsync: setApproveForAll } = useContractWrite(
     stakingTokenContract,
@@ -160,7 +237,14 @@ export default function StakeErc1155Section({
     }
 
     if (amount && selectedTokenId) {
-      await stake({ args: [selectedTokenId, amount] });
+      try {
+        await stakeNftMutation.mutateAsync({
+          tokenId: selectedTokenId,
+          amount: BigNumber.from(amount),
+        });
+      } catch (err) {
+        watchTransactionDialog.setError(err as any);
+      }
     }
 
     setSelectedTokenId(undefined);
@@ -168,7 +252,16 @@ export default function StakeErc1155Section({
   };
 
   const handleUnstake = async () => {
-    await unstake({ args: [selectedTokenId, amount] });
+    if (selectedTokenId && amount) {
+      try {
+        await unstakeRewardsMutation.mutateAsync({
+          tokenId: selectedTokenId,
+          amount: BigNumber.from(amount),
+        });
+      } catch (err) {
+        watchTransactionDialog.setError(err as any);
+      }
+    }
 
     setSelectedTokenId(undefined);
     setAmount(undefined);
@@ -182,6 +275,14 @@ export default function StakeErc1155Section({
 
   const handleOpenClaim = () => {
     setShowClaim(true);
+  };
+
+  const handleClaim = async (tokenId: string) => {
+    try {
+      await claimRewardsMutation.mutateAsync({ tokenId });
+    } catch (err) {
+      watchTransactionDialog.setError(err as any);
+    }
   };
 
   return (
@@ -281,11 +382,11 @@ export default function StakeErc1155Section({
                         </Grid>
                         {selectedTokenId && (
                           <Grid item xs={12}>
-                            <Typography color="text.secondary" variant="body1">
+                            <Typography color="primary" variant="body1">
                               <FormattedMessage
-                                id="nft.tokenId.is.selected.to.stake"
-                                defaultMessage='NFT "{tokenId}" is selected to stake'
-                                values={{ tokenId: selectedTokenId }}
+                                id="nft.amount.of.tokenId.is.selected.to.stake"
+                                defaultMessage='{amount} of "#{tokenId}" is selected to stake'
+                                values={{ tokenId: selectedTokenId, amount }}
                               />
                             </Typography>
                           </Grid>
@@ -343,8 +444,8 @@ export default function StakeErc1155Section({
                               >
                                 <Typography>
                                   <FormattedMessage
-                                    id="available.rewards"
-                                    defaultMessage="Available rewards"
+                                    id="claimable.rewards"
+                                    defaultMessage="Claimable rewards"
                                   />
                                 </Typography>
                                 <Typography color="text.secondary">
@@ -360,13 +461,15 @@ export default function StakeErc1155Section({
                         </Grid>
                         <Grid item xs={12}>
                           <Button
-                            disabled={isStaking || !selectedTokenId}
+                            disabled={
+                              stakeNftMutation.isLoading || !selectedTokenId
+                            }
                             variant="contained"
                             color="primary"
                             fullWidth
                             size="large"
                             startIcon={
-                              isStaking ? (
+                              stakeNftMutation.isLoading ? (
                                 <CircularProgress size="1rem" color="inherit" />
                               ) : undefined
                             }
@@ -439,11 +542,11 @@ export default function StakeErc1155Section({
                         </Grid>
                         {selectedTokenId && (
                           <Grid item xs={12}>
-                            <Typography color="text.secondary" variant="body1">
+                            <Typography color="primary" variant="body1">
                               <FormattedMessage
-                                id="nft.tokenId.is.selected.to.unstake"
-                                defaultMessage='NFT "{tokenId}" is selected to unstake'
-                                values={{ tokenId: selectedTokenId }}
+                                id="amount.of.tokenId.is.selected.to.unstake"
+                                defaultMessage='{amount} of "#{tokenId}" is selected to unstake'
+                                values={{ tokenId: selectedTokenId, amount }}
                               />
                             </Typography>
                           </Grid>
@@ -503,8 +606,8 @@ export default function StakeErc1155Section({
                               >
                                 <Typography>
                                   <FormattedMessage
-                                    id="available.rewards"
-                                    defaultMessage="Available rewards"
+                                    id="claimable.rewards"
+                                    defaultMessage="Claimable rewards"
                                   />
                                 </Typography>
                                 <Typography color="text.secondary">
@@ -520,13 +623,16 @@ export default function StakeErc1155Section({
                         </Grid>
                         <Grid item xs={12}>
                           <Button
-                            disabled={isUnstaking || !selectedTokenId}
+                            disabled={
+                              unstakeRewardsMutation.isLoading ||
+                              !selectedTokenId
+                            }
                             variant="contained"
                             color="primary"
                             fullWidth
                             size="large"
                             startIcon={
-                              isUnstaking ? (
+                              unstakeRewardsMutation.isLoading ? (
                                 <CircularProgress size="1rem" color="inherit" />
                               ) : undefined
                             }

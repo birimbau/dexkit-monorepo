@@ -1,4 +1,3 @@
-import StakeErc20Section from '@/modules/wizard/components/sections/StakeErc20Section';
 import TokenErc20Section from '@/modules/wizard/components/sections/TokenErc20Section';
 import { hexToString } from '@dexkit/ui/utils';
 import { QueryClient, dehydrate } from '@tanstack/react-query';
@@ -25,6 +24,10 @@ export function TokensPage() {
 
   let contractType = hexToString(contractRead.data);
 
+  if (!contractType) {
+    return null;
+  }
+
   if (contractType === 'TokenERC20') {
     return (
       <TokenErc20Section
@@ -36,14 +39,7 @@ export function TokensPage() {
     );
   }
 
-  return (
-    <StakeErc20Section
-      section={{
-        type: 'token-stake',
-        settings: { address: address as string, network: network as string },
-      }}
-    />
-  );
+  return null;
 }
 
 export default function Wrapper() {

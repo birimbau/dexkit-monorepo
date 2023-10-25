@@ -1,4 +1,6 @@
 import { formatBigNumber } from '@dexkit/core/utils';
+import { useDexKitContext } from '@dexkit/ui';
+import { useAsyncMemo } from '@dexkit/widgets/src/hooks';
 import Token from '@mui/icons-material/Token';
 import {
   Box,
@@ -16,6 +18,7 @@ import {
   Tabs,
   Typography,
 } from '@mui/material';
+import { useMutation } from '@tanstack/react-query';
 import {
   useContract,
   useContractRead,
@@ -52,6 +55,8 @@ export default function StakeErc721Section({
     'claimRewards',
   );
 
+  const { watchTransactionDialog, createNotification } = useDexKitContext();
+
   const { account } = useWeb3React();
 
   const { data: rewardTokenAddress } = useContractRead(contract, 'rewardToken');
@@ -77,6 +82,14 @@ export default function StakeErc721Section({
     return [[] as number[], BigNumber.from(0)];
   }, [stakeInfo, rewardTokenBalance]);
 
+  const contractInfo = useAsyncMemo(
+    async () => {
+      return await contract?.metadata.get();
+    },
+    undefined,
+    [contract],
+  );
+
   const { data: rewardRatio } = useContractRead(
     contract,
     'getRewardsPerUnitTime',
@@ -95,10 +108,6 @@ export default function StakeErc721Section({
     contract,
     'getRewardTokenBalance',
   );
-
-  const handleClaim = async () => {
-    await claimRewards({});
-  };
 
   const handleChangeTab = (e: SyntheticEvent, value: 'stake' | 'unstake') => {
     setTab(value);
@@ -124,15 +133,93 @@ export default function StakeErc721Section({
     handleClose();
   };
 
-  const { mutateAsync: stake, isLoading: isStaking } = useContractWrite(
-    contract,
-    'stake',
+  const stakeNftMutation = useMutation(
+    async ({ tokenIds }: { tokenIds: string[] }) => {
+      let values = {
+        nfts: tokenIds.join(', '),
+        name: contractInfo?.name || '',
+      };
+
+      watchTransactionDialog.open('stakeNfts', values);
+
+      let call = contract?.prepare('stake', [tokenIds]);
+
+      const tx = await call?.send();
+
+      if (tx?.hash && chainId) {
+        createNotification({
+          type: 'transaction',
+          subtype: 'stakeNfts',
+          values: values,
+          metadata: { hash: tx.hash, chainId },
+        });
+
+        watchTransactionDialog.watch(tx.hash);
+      }
+
+      return await tx?.wait();
+    },
   );
 
-  const { mutateAsync: unstake, isLoading: isUnstaking } = useContractWrite(
-    contract,
-    'withdraw',
+  const unstakeRewardsMutation = useMutation(
+    async ({ tokenIds }: { tokenIds: string[] }) => {
+      let call = contract?.prepare('withdraw', [tokenIds]);
+
+      let values = {
+        nfts: tokenIds.join(', '),
+        name: contractInfo?.name || '',
+      };
+
+      watchTransactionDialog.open('unstakeNfts', values);
+
+      const tx = await call?.send();
+
+      if (tx?.hash && chainId) {
+        createNotification({
+          type: 'transaction',
+          subtype: 'unstakeNfts',
+          values: values,
+          metadata: { hash: tx.hash, chainId },
+        });
+
+        watchTransactionDialog.watch(tx.hash);
+      }
+
+      return await tx?.wait();
+    },
   );
+
+  const { chainId } = useWeb3React();
+
+  const claimRewardsMutation = useMutation(async () => {
+    let call = contract?.prepare('claimRewards', []);
+
+    let values = {
+      amount: `${rewards} ${rewardTokenBalance?.symbol}`,
+      name: contractInfo?.name || '',
+    };
+
+    watchTransactionDialog.open('claimRewards', values);
+
+    const tx = await call?.send();
+
+    if (tx?.hash && chainId) {
+      createNotification({
+        type: 'transaction',
+        subtype: 'claimRewards',
+        values: values,
+        metadata: { hash: tx.hash, chainId },
+      });
+
+      watchTransactionDialog.watch(tx.hash);
+    }
+
+    return await tx?.wait();
+  });
+
+  const handleClaim = async () => {
+    await claimRewardsMutation.mutateAsync();
+  };
 
   const { data: stakingTokenContract } = useContract(stakingAddress, 'custom');
 
@@ -140,6 +227,7 @@ export default function StakeErc721Section({
     stakingTokenContract,
     'setApprovalForAll',
   );
+
   const { data: isApprovedForAll } = useContractRead(
     stakingTokenContract,
     'isApprovedForAll',
@@ -151,13 +239,13 @@ export default function StakeErc721Section({
       await setApproveForAll({ args: [address, true] });
     }
 
-    await stake({ args: [selectedTokenIds] });
+    await stakeNftMutation.mutateAsync({ tokenIds: selectedTokenIds });
 
     setSelectedTokenIds([]);
   };
 
   const handleUnstake = async () => {
-    await unstake({ args: [selectedTokenIds] });
+    unstakeRewardsMutation.mutateAsync({ tokenIds: selectedTokenIds });
 
     setSelectedTokenIds([]);
   };
@@ -320,8 +408,8 @@ export default function StakeErc721Section({
                               >
                                 <Typography>
                                   <FormattedMessage
-                                    id="available.rewards"
-                                    defaultMessage="Available rewards"
+                                    id="claimable.rewards"
+                                    defaultMessage="Claimable rewards"
                                   />
                                 </Typography>
                                 <Typography color="text.secondary">
@@ -338,14 +426,15 @@ export default function StakeErc721Section({
                         <Grid item xs={12}>
                           <Button
                             disabled={
-                              isStaking || selectedTokenIds.length === 0
+                              stakeNftMutation.isLoading ||
+                              selectedTokenIds.length === 0
                             }
                             variant="contained"
                             color="primary"
                             fullWidth
                             size="large"
                             startIcon={
-                              isStaking ? (
+                              stakeNftMutation.isLoading ? (
                                 <CircularProgress size="1rem" color="inherit" />
                               ) : undefined
                             }
@@ -361,11 +450,11 @@ export default function StakeErc721Section({
                           <Button
                             onClick={handleClaim}
                             startIcon={
-                              isClaiming ? (
+                              claimRewardsMutation.isLoading ? (
                                 <CircularProgress color="inherit" size="1rem" />
                               ) : undefined
                             }
-                            disabled={isClaiming}
+                            disabled={claimRewardsMutation.isLoading}
                             variant="outlined"
                             color="primary"
                             fullWidth
@@ -498,8 +587,8 @@ export default function StakeErc721Section({
                               >
                                 <Typography>
                                   <FormattedMessage
-                                    id="available.rewards"
-                                    defaultMessage="Available rewards"
+                                    id="claimable.rewards"
+                                    defaultMessage="Claimable rewards"
                                   />
                                 </Typography>
                                 <Typography color="text.secondary">
@@ -516,14 +605,15 @@ export default function StakeErc721Section({
                         <Grid item xs={12}>
                           <Button
                             disabled={
-                              isUnstaking || selectedTokenIds.length === 0
+                              unstakeRewardsMutation.isLoading ||
+                              selectedTokenIds.length === 0
                             }
                             variant="contained"
                             color="primary"
                             fullWidth
                             size="large"
                             startIcon={
-                              isUnstaking ? (
+                              unstakeRewardsMutation.isLoading ? (
                                 <CircularProgress size="1rem" color="inherit" />
                               ) : undefined
                             }

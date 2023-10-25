@@ -1,4 +1,5 @@
 import { formatBigNumber } from '@dexkit/core/utils';
+import { useDexKitContext } from '@dexkit/ui';
 import FormikDecimalInput from '@dexkit/ui/components/FormikDecimalInput';
 import {
   Box,
@@ -10,14 +11,13 @@ import {
   FormControlLabel,
   Grid,
   InputAdornment,
-  MenuItem,
   Skeleton,
   Stack,
   Tab,
   Tabs,
   Typography,
 } from '@mui/material';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import {
   useContract,
   useContractRead,
@@ -27,10 +27,17 @@ import {
 import { useWeb3React } from '@web3-react/core';
 import { BigNumber, ethers } from 'ethers';
 import { Field, Formik } from 'formik';
-import { Select, Switch, TextField } from 'formik-mui';
+import { Switch, TextField } from 'formik-mui';
 import moment from 'moment';
 import { SyntheticEvent, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
+import {
+  useDepositRewardTokensMutation,
+  useSetDefaultTimeUnit,
+  useSetRewardRatio,
+  useThirdwebApprove,
+  useWithdrawRewardsMutation,
+} from '../../hooks/thirdweb';
 import ContractAdminTab from '../ContractAdminTab';
 import ContractMetadataTab from '../ContractMetadataTab';
 
@@ -113,19 +120,22 @@ export default function ContractStakeErc20Container({
     },
   );
 
-  const { mutateAsync: approve } = useMutation(
-    async ({ amount }: { amount: string }) => {
-      let call = await rewardToken?.erc20.setAllowance.prepare(address, amount);
-      let tx = await call?.send();
+  const { mutateAsync: approve } = useThirdwebApprove({
+    contract: rewardToken,
+    address,
+  });
 
-      return (await tx)?.wait();
-    },
-  );
+  const { watchTransactionDialog } = useDexKitContext();
 
-  const { mutateAsync: withdrawRewards } = useContractWrite(
+  const withdrawRewardTokensMutation = useWithdrawRewardsMutation({
     contract,
-    'withdrawRewardTokens',
-  );
+    rewardDecimals: rewardTokenBalance?.decimals,
+  });
+
+  const depositRewardTokensMutation = useDepositRewardTokensMutation({
+    contract,
+    rewardDecimals: rewardTokenBalance?.decimals,
+  });
 
   const handleSubmitRewards = async ({
     amount,
@@ -140,22 +150,34 @@ export default function ContractStakeErc20Container({
     );
 
     if (withdraw) {
-      return await withdrawRewards({ args: [amountParsed] });
+      try {
+        await withdrawRewardTokensMutation.mutateAsync({
+          amount: amountParsed,
+        });
+      } catch (err) {
+        watchTransactionDialog.setError(err as any);
+      }
+
+      return;
     }
 
     if (!allowance?.value.gte(amountParsed)) {
       await approve({ amount });
     }
 
-    await depositRewardTokens({
-      args: [ethers.utils.parseUnits(amount, rewardTokenBalance?.decimals)],
-    });
+    try {
+      await depositRewardTokensMutation.mutateAsync({
+        amount: amountParsed,
+      });
+    } catch (err) {
+      watchTransactionDialog.setError(err as any);
+    }
   };
 
-  const { mutateAsync: setTimeUnit } = useContractWrite(
+  const setDefaultTimeUnit = useSetDefaultTimeUnit({
     contract,
-    'setTimeUnit',
-  );
+    isAltVersion: true,
+  });
 
   const { mutateAsync: setRewardRatio } = useContractWrite(
     contract,
@@ -163,8 +185,10 @@ export default function ContractStakeErc20Container({
   );
 
   const handleSubmitTimeUnit = async ({ timeUnit }: { timeUnit: string }) => {
-    await setTimeUnit({ args: [timeUnit] });
+    await setDefaultTimeUnit.mutateAsync({ timeUnit });
   };
+
+  const setRewardRatioMutation = useSetRewardRatio({ contract });
 
   const handleSubmitRewardRatio = async ({
     numerator,
@@ -173,10 +197,8 @@ export default function ContractStakeErc20Container({
     numerator: string;
     denominator: string;
   }) => {
-    await setRewardRatio({ args: [numerator, denominator] });
+    await setRewardRatioMutation.mutateAsync({ numerator, denominator });
   };
-
-  // TODO: add info of reward ratio as a tooltip.
 
   return (
     <Grid container spacing={2}>
@@ -472,30 +494,18 @@ export default function ContractStakeErc20Container({
                           <Grid container spacing={2}>
                             <Grid item xs={12}>
                               <FormControl fullWidth>
-                                <Field
-                                  fullWidth
-                                  component={Select}
+                                <FormikDecimalInput
                                   name="timeUnit"
-                                  type="number"
-                                  label={
-                                    <FormattedMessage
-                                      id="time.unit"
-                                      defaultMessage="Time unit"
-                                    />
-                                  }
-                                  inputProps={{ type: 'number' }}
-                                >
-                                  {THIRD_WEB_STAKE_TIMEUNITS.map(
-                                    (unit, key) => (
-                                      <MenuItem value={unit.value} key={key}>
-                                        <FormattedMessage
-                                          id={unit.id}
-                                          defaultMessage={unit.defaultMessage}
-                                        />
-                                      </MenuItem>
+                                  decimals={0}
+                                  TextFieldProps={{
+                                    label: (
+                                      <FormattedMessage
+                                        id="time.unit"
+                                        defaultMessage="Time unit"
+                                      />
                                     ),
-                                  )}
-                                </Field>
+                                  }}
+                                />
                               </FormControl>
                             </Grid>
                             <Grid item xs={12}>

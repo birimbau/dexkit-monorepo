@@ -155,6 +155,10 @@ export interface TokenErc20PageSection extends PageSection {
   settings: {
     network: string;
     address: string;
+    disableTransfer?: boolean;
+    disableBurn?: boolean;
+    disableMint?: boolean;
+    disableInfo?: boolean;
   };
 }
 

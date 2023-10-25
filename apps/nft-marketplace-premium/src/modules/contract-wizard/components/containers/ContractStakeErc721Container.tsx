@@ -1,4 +1,5 @@
 import { formatBigNumber } from '@dexkit/core/utils';
+import { useDexKitContext } from '@dexkit/ui';
 import FormikDecimalInput from '@dexkit/ui/components/FormikDecimalInput';
 import {
   Box,
@@ -16,7 +17,7 @@ import {
   Tabs,
   Typography,
 } from '@mui/material';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import {
   useContract,
   useContractRead,
@@ -30,6 +31,13 @@ import { Switch, TextField } from 'formik-mui';
 import moment from 'moment';
 import { SyntheticEvent, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
+import {
+  useDepositRewardTokensMutation,
+  useSetDefaultTimeUnit,
+  useSetRewardsPerUnitTime,
+  useThirdwebApprove,
+  useWithdrawRewardsMutation,
+} from '../../hooks/thirdweb';
 import ContractAdminTab from '../ContractAdminTab';
 import ContractMetadataTab from '../ContractMetadataTab';
 
@@ -73,21 +81,11 @@ export default function ContractStakeErc721Container({
     'getRewardTokenBalance',
   );
 
-  const { data: totalStakedBalance } = useContractRead(
-    contract,
-    'stakingTokenBalance',
-  );
-
   const { data: stakingTokenAddress } = useContractRead(
     contract,
     'stakingToken',
   );
   const { data: rewardToken } = useContract(rewardTokenAddress || '', 'token');
-
-  const { data: stakingToken } = useContract(
-    stakingTokenAddress || '',
-    'token',
-  );
 
   const { data: rewardTokenBalance } = useTokenBalance(rewardToken, account);
 
@@ -108,19 +106,22 @@ export default function ContractStakeErc721Container({
     },
   );
 
-  const { mutateAsync: approve } = useMutation(
-    async ({ amount }: { amount: string }) => {
-      let call = await rewardToken?.erc20.setAllowance.prepare(address, amount);
-      let tx = await call?.send();
+  const { mutateAsync: approve } = useThirdwebApprove({
+    contract: rewardToken,
+    address,
+  });
 
-      return (await tx)?.wait();
-    },
-  );
+  const { watchTransactionDialog } = useDexKitContext();
 
-  const { mutateAsync: withdrawRewards } = useContractWrite(
+  const withdrawRewardTokensMutation = useWithdrawRewardsMutation({
     contract,
-    'withdrawRewardTokens',
-  );
+    rewardDecimals: rewardTokenBalance?.decimals,
+  });
+
+  const depositRewardTokensMutation = useDepositRewardTokensMutation({
+    contract,
+    rewardDecimals: rewardTokenBalance?.decimals,
+  });
 
   const handleSubmitRewards = async ({
     amount,
@@ -130,35 +131,40 @@ export default function ContractStakeErc721Container({
     withdraw: boolean;
   }) => {
     const amountParsed = ethers.utils.parseUnits(
-      amount,
+      amount || '0.0',
       rewardTokenBalance?.decimals,
     );
 
     if (withdraw) {
-      return await withdrawRewards({ args: [amountParsed] });
+      try {
+        await withdrawRewardTokensMutation.mutateAsync({
+          amount: amountParsed,
+        });
+      } catch (err) {
+        watchTransactionDialog.setError(err as any);
+      }
+
+      return;
     }
 
     if (!allowance?.value.gte(amountParsed)) {
       await approve({ amount });
     }
 
-    await depositRewardTokens({
-      args: [ethers.utils.parseUnits(amount, rewardTokenBalance?.decimals)],
-    });
+    try {
+      await depositRewardTokensMutation.mutateAsync({
+        amount: amountParsed,
+      });
+    } catch (err) {
+      watchTransactionDialog.setError(err as any);
+    }
   };
 
-  const { mutateAsync: setTimeUnit } = useContractWrite(
-    contract,
-    'setTimeUnit',
-  );
-
-  const { mutateAsync: setRewardsPerUnitTime } = useContractWrite(
-    contract,
-    'setRewardsPerUnitTime',
-  );
+  const setDefaultTimeUnit = useSetDefaultTimeUnit({ contract });
+  const setRewardsPerUnitTimeMutation = useSetRewardsPerUnitTime({ contract });
 
   const handleSubmitTimeUnit = async ({ timeUnit }: { timeUnit: string }) => {
-    await setTimeUnit({ args: [timeUnit] });
+    await setDefaultTimeUnit.mutateAsync({ timeUnit });
   };
 
   const handleSubmitRewardRatio = async ({
@@ -166,10 +172,10 @@ export default function ContractStakeErc721Container({
   }: {
     rewardsPerUnitTime: string;
   }) => {
-    await setRewardsPerUnitTime({ args: [rewardsPerUnitTime] });
+    await setRewardsPerUnitTimeMutation.mutateAsync({
+      unitTime: rewardsPerUnitTime,
+    });
   };
-
-  // TODO: add info of reward ratio as a tooltip.
 
   return (
     <Grid container spacing={2}>

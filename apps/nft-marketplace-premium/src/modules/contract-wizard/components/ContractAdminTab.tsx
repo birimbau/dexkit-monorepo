@@ -1,3 +1,4 @@
+import { useDexKitContext } from '@dexkit/ui';
 import Delete from '@mui/icons-material/Delete';
 import {
   Box,
@@ -9,11 +10,14 @@ import {
   IconButton,
   Typography,
 } from '@mui/material';
+import { useMutation } from '@tanstack/react-query';
 import {
   useAllRoleMembers,
   useContract,
+  useContractMetadata,
   useSetAllRoleMembers,
 } from '@thirdweb-dev/react';
+import { useWeb3React } from '@web3-react/core';
 import { Field, FieldArray, Formik } from 'formik';
 import { TextField } from 'formik-mui';
 import { FormattedMessage } from 'react-intl';
@@ -30,27 +34,59 @@ export interface ContractAdminTabProps {
 }
 
 export default function ContractAdminTab({ address }: ContractAdminTabProps) {
-  const { data: contract } = useContract(address, '');
+  const { data: contract } = useContract(address);
 
   const { data: rolesValues, isSuccess } = useAllRoleMembers(contract);
+  const { data: contractMetadata } = useContractMetadata(contract);
 
   const { mutateAsync: grantRole } = useSetAllRoleMembers(contract);
 
+  const { watchTransactionDialog, createNotification } = useDexKitContext();
+
+  const { chainId } = useWeb3React();
+
+  const setAllRolesMutation = useMutation(
+    async ({ roles }: { roles: Roles }) => {
+      const call = await contract?.roles.setAll.prepare(
+        roles as {
+          [x: string & {}]: string[];
+          admin: string[];
+          transfer: string[];
+          minter: string[];
+          pauser: string[];
+          lister: string[];
+          asset: string[];
+          unwrap: string[];
+          factory: string[];
+          signer: string[];
+        },
+      );
+
+      let params = { contractName: contractMetadata?.name || '' };
+
+      watchTransactionDialog.open('updateContractRoles', params);
+
+      let tx = await call?.send();
+
+      if (tx?.hash && chainId) {
+        createNotification({
+          type: 'transaction',
+          subtype: 'updateContractRoles',
+          values: params,
+          metadata: { hash: tx.hash, chainId },
+        });
+
+        watchTransactionDialog.watch(tx.hash);
+      }
+
+      return await tx?.wait();
+    },
+  );
+
   const handleSubmit = async (values: Roles) => {
-    await grantRole(
-      values as {
-        [x: string & {}]: string[];
-        admin: string[];
-        transfer: string[];
-        minter: string[];
-        pauser: string[];
-        lister: string[];
-        asset: string[];
-        unwrap: string[];
-        factory: string[];
-        signer: string[];
-      },
-    );
+    try {
+      await setAllRolesMutation.mutateAsync({ roles: values });
+    } catch (err) {}
   };
 
   if (!isSuccess && !rolesValues) {
