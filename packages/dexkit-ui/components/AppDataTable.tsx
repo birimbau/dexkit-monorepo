@@ -62,8 +62,6 @@ function EditToolbar(props: EditToolbarProps) {
       if (typeof text === "string") {
         let csv = Papa.parse(text, { header: true });
 
-        console.log("entra aqui", csv.data);
-
         if (
           csv.meta.fields?.includes("address") &&
           csv.meta.fields?.includes("quantity")
@@ -127,7 +125,7 @@ export interface AppDataTableProps<T extends { id?: string; isNew?: boolean }> {
 }
 
 export default function AppDataTable<
-  Z extends { id?: string; isNew?: boolean }
+  Z extends { id?: string; isNew?: boolean },
 >({ data, dataColumns, onChange }: AppDataTableProps<Z>) {
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
 
@@ -155,7 +153,6 @@ export default function AppDataTable<
   };
 
   const handleSaveClick = (id: GridRowId) => () => {
-    console.log("id", id);
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
   };
 
@@ -207,8 +204,6 @@ export default function AppDataTable<
           preProcessEditCellProps: (params: GridPreProcessEditCellProps) => {
             if (column.isValid && params.props.value !== undefined) {
               const hasError = !column.isValid(params.props.value);
-
-              console.log("is error", hasError, column.name);
 
               return { ...params.props, error: hasError };
             }

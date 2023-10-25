@@ -531,7 +531,7 @@ export function EditionDropSection({ section }: Props) {
                             defaultMessage={'Quantity'}
                           />
                         }
-                        disabled={quantity >= maxClaimable}
+                        disabled={quantity > maxClaimable}
                         variant="standard"
                         inputProps={{
                           min: 1,

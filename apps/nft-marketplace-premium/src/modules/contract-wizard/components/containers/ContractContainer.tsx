@@ -37,7 +37,7 @@ export function ContractContainer({ address, network }: Props) {
       );
     } else if (contractType === 'DropERC20') {
       return <ContractTokenDropContainer address={address} network={network} />;
-    } else if (contractType === 'Edition') {
+    } else if (contractType === 'TokenERC1155') {
       return <ContractEditionContainer address={address} network={network} />;
     } else if (contractType === 'DropERC721') {
       return <ContractNftDropContainer address={address} network={network} />;

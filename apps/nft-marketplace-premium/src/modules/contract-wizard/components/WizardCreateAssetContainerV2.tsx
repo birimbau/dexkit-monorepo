@@ -147,10 +147,6 @@ function WizardCreateAssetContainerV2(props: Props) {
 
             let value = result[0];
 
-            const txReceipt = await provider.getTransactionReceipt(
-              value.txHash,
-            );
-
             await createMetadataMutation.mutateAsync({
               tx: value.txHash,
               address: address,
