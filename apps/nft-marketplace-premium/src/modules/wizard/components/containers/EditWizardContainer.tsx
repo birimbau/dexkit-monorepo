@@ -43,6 +43,7 @@ import { ConfirmationEmailMessage } from '../ConfirmationEmailMessage';
 import SignConfigDialog from '../dialogs/SignConfigDialog';
 import { PreviewAppButton } from '../PreviewAppButton';
 import { WelcomeMessage } from '../WelcomeMessage';
+import BillingContainer from './BillingContainer';
 
 const OwnershipWizardContainer = dynamic(
   () => import('./OwnershipWizardContainer'),
@@ -82,6 +83,7 @@ interface Props {
 export enum ActiveMenu {
   General = 'general',
   Domain = 'domain',
+  Billing = 'billing',
   Social = 'social',
   Theme = 'theme',
   Pages = 'pages',
@@ -268,6 +270,18 @@ export function EditWizardContainer({ site }: Props) {
               <ListItemText
                 primary={
                   <FormattedMessage id="social" defaultMessage={'Social'} />
+                }
+              />
+            </ListItemButton>
+          </ListItem>
+          <ListItem disablePadding>
+            <ListItemButton
+              selected={activeMenu === ActiveMenu.Billing}
+              onClick={() => setActiveMenu(ActiveMenu.Billing)}
+            >
+              <ListItemText
+                primary={
+                  <FormattedMessage id="billing" defaultMessage={'Billing'} />
                 }
               />
             </ListItemButton>
@@ -638,6 +652,10 @@ export function EditWizardContainer({ site }: Props) {
                   onSave={handleSave}
                   site={site}
                 />
+              )}
+
+              {activeMenu === ActiveMenu.Billing && config && (
+                <BillingContainer site={site} />
               )}
 
               {activeMenu === ActiveMenu.Ownership && config && (

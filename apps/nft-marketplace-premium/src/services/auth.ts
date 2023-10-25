@@ -95,6 +95,18 @@ export async function requestAccestoken({
   });
 }
 
+export async function getUserByRefreshToken({
+  refreshToken,
+}: {
+  refreshToken: string;
+}) {
+  return axios.get<{ address: string }>(`${DEXKIT_BASE_API_URL}/user/authenticated-refresh/account`, {
+    headers: {
+      Authorization: `Bearer ${refreshToken}`,
+    },
+  });
+}
+
 export async function requestSignature({ address }: { address: string }) {
   return authApi.get<string>(`/message-to-sign/${address}`);
 }

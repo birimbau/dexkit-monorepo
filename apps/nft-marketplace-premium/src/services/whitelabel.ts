@@ -131,6 +131,15 @@ export async function getConfigsByOwner(owner: string) {
 }
 
 /**
+ * Get all configs associated with a wallet
+ * @param owner
+ * @returns
+ */
+export async function getSiteById(siteId: string) {
+  return await myAppsApi.get<{ owner: string }>(`/site/by-id/${siteId}`);
+}
+
+/**
  * Get page template by Id
  * @param id
  * @returns
