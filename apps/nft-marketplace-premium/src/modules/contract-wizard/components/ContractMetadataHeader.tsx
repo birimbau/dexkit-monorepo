@@ -50,8 +50,6 @@ export function ContractMetadataHeader({
   const theme = useTheme();
   const chainId = NETWORK_FROM_SLUG(network)?.chainId;
 
-  console.log('contractTypeV2', contractTypeV2);
-
   const getContractUrl = (contractType?: string) => {
     let url = '';
 
@@ -61,8 +59,10 @@ export function ContractMetadataHeader({
         url = `/stake/${network}/${address}`;
         break;
       case 'TokenERC721':
+        url = `/collection/${network}/${address}`;
         break;
       case 'TokenERC1155':
+        url = `/collection/${network}/${address}`;
         break;
       case 'TokenERC20':
         url = `/token/${network}/${address}`;
