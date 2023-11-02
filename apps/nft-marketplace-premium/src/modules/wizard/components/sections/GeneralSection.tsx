@@ -454,8 +454,8 @@ export default function GeneralSection({
               <FormControl fullWidth>
                 <InputLabel>
                   <FormattedMessage
-                    id="standard.currency"
-                    defaultMessage="Standard currency"
+                    id="default.currency"
+                    defaultMessage="Default currency"
                   />
                 </InputLabel>
                 <Select
@@ -465,8 +465,8 @@ export default function GeneralSection({
                   fullWidth
                   label={
                     <FormattedMessage
-                      id="standard.currency"
-                      defaultMessage="Standard currency"
+                      id="default.currency"
+                      defaultMessage="Default currency"
                     />
                   }
                   error={Boolean(formik.errors.currency)}

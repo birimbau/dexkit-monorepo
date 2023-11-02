@@ -7,7 +7,6 @@ import {
   Divider,
   FormControl,
   Grid,
-  InputLabel,
   MenuItem,
   Select,
   Stack,
@@ -254,24 +253,12 @@ export default function ThemeWizardContainer({
             </Typography>
 
             <FormControl fullWidth>
-              <InputLabel id="theme-mode-label">
-                <FormattedMessage
-                  id={'theme.mode'}
-                  defaultMessage={'Theme mode'}
-                />
-              </InputLabel>
               <Select
                 labelId="theme-mode-label"
                 id="theme-mode"
                 sx={{ maxWidth: '200px' }}
                 fullWidth
                 value={selectedThemeMode}
-                label={
-                  <FormattedMessage
-                    id={'theme.mode'}
-                    defaultMessage={'Theme mode'}
-                  />
-                }
                 onChange={(ev) => {
                   setSelectedThemeMode(ev.target.value as ThemeMode);
                 }}

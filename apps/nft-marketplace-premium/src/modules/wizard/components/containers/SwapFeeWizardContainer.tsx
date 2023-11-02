@@ -48,7 +48,7 @@ export default function SwapFeeWizardContainer({ config, onSave }: Props) {
       <Grid item xs={12}>
         <Stack>
           <Typography variant={'h6'}>
-            <FormattedMessage id="swap.fees" defaultMessage="Swap fees" />
+            <FormattedMessage id="swap.fees.title" defaultMessage="Swap Fees" />
           </Typography>
           <Typography variant={'body2'}>
             <FormattedMessage

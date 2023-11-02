@@ -95,7 +95,6 @@ export const LANGUAGES: Language[] = [
 ];
 
 export const CURRENCIES: Currency[] = [
-  { symbol: 'usd', name: 'US Dollar' },
   { symbol: 'ars', name: 'Argentine Peso' },
   { symbol: 'brl', name: 'Brazilian Real' },
   { symbol: 'clp', name: 'Chilean Peso' },
@@ -104,6 +103,7 @@ export const CURRENCIES: Currency[] = [
   { symbol: 'inr', name: 'Indian Rupee' },
   { symbol: 'ngn', name: 'Nigerian Naira' },
   { symbol: 'chf', name: 'Swiss Franc' },
+  { symbol: 'usd', name: 'US Dollar' },
   { symbol: 'vef', name: 'Venezuelan Bolívar Fuerte' },
 ];
 
