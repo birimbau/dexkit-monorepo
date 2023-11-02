@@ -17,9 +17,9 @@ export const [walletConnect, walletConnectHooks] =
     (actions) =>
       new WalletConnect({
         actions,
-
         options: {
-          chains: chains,
+          chains: [1],
+          optionalChains: chains,
           rpcMap: rpcs,
           showQrModal: true,
           projectId: 'bcd1271357ab9202f271bc908324aff6',
