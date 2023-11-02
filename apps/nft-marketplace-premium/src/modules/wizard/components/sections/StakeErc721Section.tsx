@@ -1,3 +1,4 @@
+import { useApproveForAll } from '@/modules/contract-wizard/hooks/thirdweb';
 import { formatBigNumber } from '@dexkit/core/utils';
 import { useDexKitContext } from '@dexkit/ui';
 import { useAsyncMemo } from '@dexkit/widgets/src/hooks';
@@ -228,6 +229,11 @@ export default function StakeErc721Section({
     'setApprovalForAll',
   );
 
+  const approveForAllMuation = useApproveForAll({
+    contract: stakingTokenContract,
+    address,
+  });
+
   const { data: isApprovedForAll } = useContractRead(
     stakingTokenContract,
     'isApprovedForAll',
@@ -236,7 +242,7 @@ export default function StakeErc721Section({
 
   const handleStake = async () => {
     if (!isApprovedForAll) {
-      await setApproveForAll({ args: [address, true] });
+      await approveForAllMuation.mutateAsync();
     }
 
     await stakeNftMutation.mutateAsync({ tokenIds: selectedTokenIds });

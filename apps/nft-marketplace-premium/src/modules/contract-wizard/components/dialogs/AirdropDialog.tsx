@@ -49,7 +49,7 @@ export default function AirdropDialog({
   return (
     <Dialog {...DialogProps}>
       <AppDialogTitle
-        title={<FormattedMessage id="claimers" defaultMessage="Claimers" />}
+        title={<FormattedMessage id="airdrop" defaultMessage="Airdrop" />}
       />
       <DialogContent sx={{ p: 0 }} dividers>
         <AppDataTable

@@ -54,11 +54,14 @@ import SelectNetworkDialog from './dialogs/SelectNetworkDialog';
 import Notification from './icons/Notification';
 import Wallet from './icons/Wallet';
 
-import { MagicConnector } from '@dexkit/core/types/magic';
-import MagicNetworkSelect from '@dexkit/ui/components/MagicNetworkSelect';
 import NotificationsDialog from '@dexkit/ui/components/dialogs/NotificationsDialog';
 import { ThemeMode } from '@dexkit/ui/constants/enum';
-import { useDexKitContext, useNotifications } from '@dexkit/ui/hooks';
+import {
+  useAuthUserQuery,
+  useDexKitContext,
+  useNotifications,
+} from '@dexkit/ui/hooks';
+import AppProfileMenu from './AppProfileMenu';
 import { ThemeModeSelector } from './ThemeModeSelector';
 
 interface Props {
@@ -75,6 +78,8 @@ function Navbar({ appConfig, isPreview }: Props) {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const [anchorMenuEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
+  const [profileAnchorMenuEl, setProfileMenuAnchorEl] =
+    useState<null | HTMLElement>(null);
 
   const openMenu = Boolean(anchorMenuEl);
 
@@ -103,7 +108,7 @@ function Navbar({ appConfig, isPreview }: Props) {
   const [, setShowShowSelectLocale] = useAtom(showSelectLocaleAtom);
 
   const [showTransactions, setShowTransactions] = useAtom(
-    showAppTransactionsAtom
+    showAppTransactionsAtom,
   );
 
   const handleOpenTransactions = () => setShowTransactions(true);
@@ -116,7 +121,7 @@ function Navbar({ appConfig, isPreview }: Props) {
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const handleSettingsMenuClick = (
-    event: React.MouseEvent<HTMLButtonElement>
+    event: React.MouseEvent<HTMLButtonElement>,
   ) => {
     setMenuAnchorEl(event.currentTarget);
   };
@@ -161,8 +166,30 @@ function Navbar({ appConfig, isPreview }: Props) {
     clearNotifications();
   };
 
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
+
+  const handleShowProfileMenu = (
+    event: React.MouseEvent<HTMLButtonElement>,
+  ) => {
+    setShowProfileMenu(true);
+    setProfileMenuAnchorEl(event.currentTarget);
+  };
+
+  const userQuery = useAuthUserQuery();
+  const user = userQuery.data;
+
+  const handleCloseProfileMenu = () => {
+    setShowProfileMenu(false);
+    setProfileMenuAnchorEl(null);
+  };
+
   return (
     <>
+      <AppProfileMenu
+        open={showProfileMenu}
+        onClose={handleCloseProfileMenu}
+        anchorEl={profileAnchorMenuEl}
+      />
       <Menu
         id="settings-menu"
         anchorEl={anchorMenuEl}
@@ -380,7 +407,7 @@ function Navbar({ appConfig, isPreview }: Props) {
                         defaultMessage={m.name}
                       />
                     </Link>
-                  )
+                  ),
                 )}
               </Stack>
             ) : (
@@ -471,11 +498,13 @@ function Navbar({ appConfig, isPreview }: Props) {
                 </Button>
               ) : (
                 <Stack direction="row" alignItems="center" spacing={2}>
-                  {connector instanceof MagicConnector && (
-                    <MagicNetworkSelect />
-                  )}
+                  <ButtonBase
+                    onClick={handleShowProfileMenu}
+                    sx={{ borderRadius: '50%' }}
+                  >
+                    <Avatar src={user?.profileImageURL} />
+                  </ButtonBase>
                   <WalletButton />
-
                   <NoSsr>
                     <IconButton onClick={handleOpenTransactions}>
                       <Badge
@@ -502,6 +531,7 @@ function Navbar({ appConfig, isPreview }: Props) {
                   </NoSsr>
                 </Stack>
               )}
+
               <IconButton onClick={handleSettingsMenuClick}>
                 <SettingsIcon />
               </IconButton>

@@ -1,3 +1,4 @@
+import { useApproveForAll } from '@/modules/contract-wizard/hooks/thirdweb';
 import { formatBigNumber } from '@dexkit/core/utils';
 import { useDexKitContext } from '@dexkit/ui';
 import { useAsyncMemo } from '@dexkit/widgets/src/hooks';
@@ -22,7 +23,6 @@ import { useMutation } from '@tanstack/react-query';
 import {
   useContract,
   useContractRead,
-  useContractWrite,
   useTokenBalance,
 } from '@thirdweb-dev/react';
 import { useWeb3React } from '@web3-react/core';
@@ -221,10 +221,11 @@ export default function StakeErc1155Section({
     },
   );
 
-  const { mutateAsync: setApproveForAll } = useContractWrite(
-    stakingTokenContract,
-    'setApprovalForAll',
-  );
+  const approveForAllMuation = useApproveForAll({
+    contract: stakingTokenContract,
+    address,
+  });
+
   const { data: isApprovedForAll } = useContractRead(
     stakingTokenContract,
     'isApprovedForAll',
@@ -233,7 +234,7 @@ export default function StakeErc1155Section({
 
   const handleStake = async () => {
     if (!isApprovedForAll) {
-      await setApproveForAll({ args: [address, true] });
+      await approveForAllMuation.mutateAsync();
     }
 
     if (amount && selectedTokenId) {

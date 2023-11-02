@@ -2,6 +2,7 @@ import axios, { AxiosInstance, AxiosRequestHeaders } from "axios";
 import { ChainId } from "../../constants/enums";
 
 import {
+  ZEROEX_ORDERBOOK_ENDPOINT,
   ZEROEX_ORDERBOOK_ORDERS_ENDPOINT,
   ZEROEX_QUOTE_ENDPOINT,
   ZEROEX_TOKENS_ENDPOINT,
@@ -11,6 +12,7 @@ import {
 import {
   ZeroExQuote,
   ZeroExQuoteResponse,
+  ZrxOrderRecord,
   ZrxOrderbookResponse,
 } from "./types";
 
@@ -48,6 +50,14 @@ export class ZeroExApiClient {
 
   async tokens(): Promise<any> {
     return this.axiosInstance.get(ZEROEX_TOKENS_ENDPOINT);
+  }
+
+  async order(hash: string): Promise<ZrxOrderRecord> {
+    const resp = await this.axiosInstance.get(
+      `${ZEROEX_ORDERBOOK_ENDPOINT}/${hash}`
+    );
+
+    return resp.data;
   }
 
   async orderbook({

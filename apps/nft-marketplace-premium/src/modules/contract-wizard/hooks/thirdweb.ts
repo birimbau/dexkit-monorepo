@@ -261,3 +261,45 @@ export function useSetRewardRatio({ contract }: { contract?: SmartContract }) {
     },
   );
 }
+
+export function useApproveForAll({
+  contract,
+  address,
+}: {
+  contract?: SmartContract;
+  address?: string;
+}) {
+  const { watchTransactionDialog, createNotification } = useDexKitContext();
+  const { chainId } = useWeb3React();
+
+  return useMutation(async () => {
+    const metadata = await contract?.metadata.get();
+
+    const values = {
+      name: metadata?.name || '',
+    };
+
+    const call = await contract?.prepare('setApprovalForAll', [address, true]);
+
+    watchTransactionDialog.open('approveContracForAllNfts', values);
+
+    try {
+      const tx = await call?.send();
+
+      if (tx?.hash && chainId) {
+        createNotification({
+          type: 'transaction',
+          subtype: 'approveContracForAllNfts',
+          values,
+          metadata: { hash: tx.hash, chainId },
+        });
+
+        watchTransactionDialog.watch(tx.hash);
+      }
+
+      return await tx?.wait();
+    } catch (err) {
+      watchTransactionDialog.setError(err as any);
+    }
+  });
+}

@@ -162,4 +162,16 @@ export const COMMON_NOTIFICATION_TYPES: { [key: string]: AppNotificationType } =
         "Set reward ratio to {numerator}/{denominator} for {contractName}",
       icon: "shortcut",
     },
+    approveContracForAllNfts: {
+      type: "approveContracForAllNfts",
+      message: "Approve {name} to trade",
+      id: "approve.name.to.trade",
+      icon: "check",
+    },
+    airdropErc20: {
+      type: "airdropErc20",
+      message: "Airdrop {amount} of {name}",
+      id: "airdrop.amount.of.name",
+      icon: "shortcut",
+    },
   };

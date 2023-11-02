@@ -2,9 +2,10 @@ import { ChainId } from "@dexkit/core";
 import { ZeroExApiClient } from "@dexkit/core/services/zrx";
 import {
   ZeroExQuote,
+  ZrxOrderRecord,
   ZrxOrderbookResponse,
 } from "@dexkit/core/services/zrx/types";
-import { useTrackUserEventsMutation } from '@dexkit/ui/hooks/userEvents';
+import { useTrackUserEventsMutation } from "@dexkit/ui/hooks/userEvents";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { getZrxExchangeAddress } from "../utils";
 
@@ -54,6 +55,32 @@ export function useZrxOrderbook({
   );
 }
 
+export const ZRX_ORDERBOOK_ORDER_QUERY = "ZRX_ORDERBOOK_ORDER_QUERY";
+
+export function useZrxOrderbookOrder({
+  hash,
+  chainId,
+}: {
+  hash?: string;
+  chainId?: ChainId;
+}) {
+  return useQuery<ZrxOrderRecord | null>(
+    [ZRX_ORDERBOOK_ORDER_QUERY, hash],
+    async () => {
+      if (!hash || !chainId) {
+        return null;
+      }
+
+      const zrxClient = new ZeroExApiClient(
+        chainId,
+        process.env.NEXT_PUBLIC_ZRX_API_KEY
+      );
+
+      return await zrxClient.order(hash);
+    }
+  );
+}
+
 export function useZrxCancelOrderMutation() {
   const trackUserEvent = useTrackUserEventsMutation();
   return useMutation(
@@ -81,10 +108,13 @@ export function useZrxCancelOrderMutation() {
       const tx = await contract.cancelLimitOrder(order);
 
       trackUserEvent.mutate({
-        event: UserEvents.swap, hash: tx.hash, chainId, metadata: JSON.stringify({
-          order
-        })
-      })
+        event: UserEvents.swap,
+        hash: tx.hash,
+        chainId,
+        metadata: JSON.stringify({
+          order,
+        }),
+      });
 
       return tx.hash;
     }
