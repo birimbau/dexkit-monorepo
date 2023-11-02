@@ -209,6 +209,7 @@ export default function GeneralSection({
                 }
               />
             </Grid>
+            <Grid item xs={12} sm={12}></Grid>
             <Grid item xs={12}>
               <Typography>
                 <b>
@@ -258,6 +259,7 @@ export default function GeneralSection({
                 </Button>
               </Stack>
             </Grid>
+
             <Grid item xs={12}>
               <Stack
                 direction={'row'}
@@ -390,7 +392,7 @@ export default function GeneralSection({
                 />
               </Stack>
             </Grid>
-
+            <Grid item xs={12} sm={12}></Grid>
             <Grid item xs={12}>
               <Stack>
                 <Typography>

@@ -59,7 +59,7 @@ const SocialOptionsSchema: Yup.SchemaOf<SocialOptions> = Yup.object().shape({
       iconUrl: Yup.string().required().url(),
       label: Yup.string().required(),
       link: Yup.string().required().url(),
-    })
+    }),
   ),
 });
 
@@ -189,7 +189,7 @@ export default function SocialWizardContainer({
                 <Typography variant={'body2'}>
                   <FormattedMessage
                     id="edit.social.description"
-                    defaultMessage="Add app-related social networks"
+                    defaultMessage="Add social media related to your app"
                   />
                 </Typography>
               </Stack>

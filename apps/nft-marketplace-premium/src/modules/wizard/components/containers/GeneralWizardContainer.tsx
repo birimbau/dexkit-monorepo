@@ -107,7 +107,7 @@ export default function GeneralWizardContainer({
           <Typography variant={'body2'}>
             <FormattedMessage
               id="general.information.description"
-              defaultMessage="Input general app details"
+              defaultMessage="Input your app's general details"
             />
           </Typography>
         </Stack>
