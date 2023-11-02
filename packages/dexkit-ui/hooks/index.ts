@@ -12,6 +12,7 @@ import {
 import { switchNetwork } from "@dexkit/core/utils";
 import { CONNECTORS } from '@dexkit/wallet-connectors/constants';
 import { useMutation, useQuery } from "@tanstack/react-query";
+
 import { Web3ReactHooks, useWeb3React } from "@web3-react/core";
 import { Connector } from "@web3-react/types";
 import { PrimitiveAtom, atom, useAtom, useAtomValue } from "jotai";
@@ -19,7 +20,7 @@ import { useUpdateAtom } from "jotai/utils";
 import { useCallback, useContext, useMemo, useState } from "react";
 
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { ethers } from "ethers";
+
 import {
   showTxDialogAtom,
   txDialogLoading,
@@ -40,6 +41,8 @@ import {
   TxDialogOptions,
   TxDialogTransaction,
 } from "../types";
+
+import { providers, utils } from "ethers";
 
 export * from "./auth";
 export * from "./blockchain";
@@ -504,12 +507,12 @@ export function useWaitTransactionConfirmation({
   provider,
 }: {
   transactionHash?: string;
-  provider?: ethers.providers.Web3Provider;
+  provider?: providers.Web3Provider;
 }) {
   return useQuery(
     [WAIT_TRANSACTION_QUERY, transactionHash],
     async ({ }) => {
-      if (!ethers.utils.isHexString(transactionHash)) {
+      if (!utils.isHexString(transactionHash)) {
         return null;
       }
 

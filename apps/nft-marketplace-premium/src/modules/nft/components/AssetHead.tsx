@@ -1,4 +1,3 @@
-import Head from 'next/head';
 import { useAsset, useAssetMetadata } from '../../../hooks/nft';
 
 import { NextSeo } from 'next-seo';
@@ -13,9 +12,11 @@ export function AssetHead({ address, id }: Props) {
 
   const { data: metadata } = useAssetMetadata(asset);
 
+  const name = metadata?.name ? `- ${metadata?.name}` : ' ';
+
   return (
     <NextSeo
-      title={`${asset?.collectionName} - ${metadata?.name}`}
+      title={`${asset?.collectionName} ${name}`}
       description={metadata?.description}
     />
   );
