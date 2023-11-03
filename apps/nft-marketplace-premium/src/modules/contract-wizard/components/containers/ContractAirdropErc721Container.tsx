@@ -1,4 +1,3 @@
-import { Token } from '@dexkit/core/types';
 import { useDexKitContext } from '@dexkit/ui';
 import AppDataTableDialog from '@dexkit/ui/components/dialogs/AppDataTableDialog';
 import {
@@ -24,7 +23,6 @@ import { useWeb3React } from '@web3-react/core';
 import { ethers } from 'ethers';
 import { SyntheticEvent, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { AppCollection } from 'src/types/config';
 import { useApproveForAll } from '../../hooks/thirdweb';
 import ContractAdminTab from '../ContractAdminTab';
 import ContractMetadataTab from '../ContractMetadataTab';
@@ -80,7 +78,6 @@ export default function ContractAirdropErc721Container({
 
       const values = {
         name: metadata?.name || '',
-        amount: '',
       };
 
       if (!account || !contractAddress) {
@@ -144,11 +141,6 @@ export default function ContractAirdropErc721Container({
     setShowSelectCollection(false);
   };
 
-  const handleSelect = (token: Token) => {
-    setContractAddress(token.address);
-    handleCloseSelectToken();
-  };
-
   const handleShowSelectToken = () => {
     setShowSelectCollection(true);
   };
@@ -159,8 +151,8 @@ export default function ContractAirdropErc721Container({
     setCurrTab(value);
   };
 
-  const handleSelectCollection = (collection: AppCollection) => {
-    setContractAddress(collection.contractAddress);
+  const handleSelectCollection = (address: string) => {
+    setContractAddress(address);
     setShowSelectCollection(false);
   };
 

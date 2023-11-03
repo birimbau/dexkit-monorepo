@@ -24,6 +24,9 @@ export default function OrderWidget({
   account,
   onCancel,
 }: OrderWidgetProps) {
+  const baseToken: any = {};
+  const quoteToken: any = {};
+
   const side = useMemo(() => {
     return isAddressEqual(baseToken?.address, record.order.takerToken)
       ? "buy"

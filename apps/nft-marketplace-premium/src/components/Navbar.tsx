@@ -502,7 +502,10 @@ function Navbar({ appConfig, isPreview }: Props) {
                     onClick={handleShowProfileMenu}
                     sx={{ borderRadius: '50%' }}
                   >
-                    <Avatar src={user?.profileImageURL} />
+                    <Avatar
+                      sx={{ height: '1.5rem', width: '1.5rem' }}
+                      src={user?.profileImageURL}
+                    />
                   </ButtonBase>
                   <WalletButton />
                   <NoSsr>

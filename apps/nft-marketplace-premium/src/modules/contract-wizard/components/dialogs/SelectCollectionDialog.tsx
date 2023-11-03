@@ -1,8 +1,10 @@
+import { useListDeployedContracts } from '@/modules/forms/hooks';
 import { ChainId } from '@dexkit/core';
 import { isAddressEqual } from '@dexkit/core/utils';
 import { AppDialogTitle } from '@dexkit/ui';
 import {
   Avatar,
+  Box,
   Button,
   Dialog,
   DialogActions,
@@ -14,16 +16,19 @@ import {
   ListItemSecondaryAction,
   ListItemText,
   Radio,
+  Stack,
+  Typography,
 } from '@mui/material';
+import { useWeb3React } from '@web3-react/core';
 import { useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { useCollections } from 'src/hooks/app';
-import { AppCollection } from 'src/types/config';
+import SelectCollectionListItem from './SelectCollectionListItem';
 
 export interface SelectCollectionDialogProps {
   DialogProps: DialogProps;
   chainId?: ChainId;
-  onSelect: (collection: AppCollection) => void;
+  onSelect: (address: string) => void;
 }
 
 export default function SelectCollectionDialog({
@@ -33,7 +38,7 @@ export default function SelectCollectionDialog({
 }: SelectCollectionDialogProps) {
   const { onClose } = DialogProps;
 
-  const [selectedCollection, setSelectedCollection] = useState<AppCollection>();
+  const [selectedContractAddr, setSelectedContractAddr] = useState<string>();
 
   const collectionsList = useCollections();
 
@@ -41,17 +46,44 @@ export default function SelectCollectionDialog({
     if (onClose) {
       onClose({}, 'backdropClick');
     }
-    setSelectedCollection(undefined);
+    setSelectedContractAddr(undefined);
   };
 
   const collections = useMemo(() => {
     return collectionsList?.filter((c) => c.chainId === chainId);
   }, []);
 
-  const handleSelect = () => {
-    if (selectedCollection) {
-      onSelect(selectedCollection);
-      setSelectedCollection(undefined);
+  const { account } = useWeb3React();
+
+  const [queryOptions, setQueryOptions] = useState<any>({
+    filter: { owner: account?.toLowerCase() },
+  });
+
+  const [paginationModel, setPaginationModel] = useState({
+    page: 0,
+    pageSize: 10,
+  });
+
+  const { data: collectionsData, isLoading } = useListDeployedContracts({
+    ...queryOptions,
+    ...paginationModel,
+  });
+
+  const data = useMemo(() => {
+    if (collectionsData) {
+      return collectionsData?.data.filter((c) => c.chainId === chainId);
+    }
+
+    return [];
+  }, [collectionsData]);
+
+  const handleSelect = (address: string) => {
+    setSelectedContractAddr(address);
+  };
+
+  const handleConfirm = () => {
+    if (selectedContractAddr) {
+      onSelect(selectedContractAddr);
     }
   };
 
@@ -67,30 +99,63 @@ export default function SelectCollectionDialog({
         }
       />
       <DialogContent dividers sx={{ p: 0 }}>
-        <List disablePadding>
-          {collections?.map((collection, key) => (
-            <ListItemButton
-              key={key}
-              onClick={() => setSelectedCollection(collection)}
-            >
-              <ListItemAvatar>
-                <Avatar src={collection.image} />
-              </ListItemAvatar>
-              <ListItemText primary={collection.name} />
-              <ListItemSecondaryAction>
-                <Radio
-                  checked={isAddressEqual(
-                    collection.contractAddress,
-                    selectedCollection?.contractAddress,
-                  )}
+        {(data && data.length > 0) ||
+        (collections && collections?.length > 0) ? (
+          <List disablePadding>
+            {data.map((collection) => (
+              <SelectCollectionListItem
+                key={collection.contractAddress}
+                contractAddress={collection.contractAddress}
+                onSelect={handleSelect}
+              />
+            ))}
+            {collections?.map((collection, key) => (
+              <ListItemButton
+                key={key}
+                onClick={() =>
+                  setSelectedContractAddr(collection.contractAddress)
+                }
+              >
+                <ListItemAvatar>
+                  <Avatar src={collection.image} />
+                </ListItemAvatar>
+                <ListItemText primary={collection.name} />
+                <ListItemSecondaryAction>
+                  <Radio
+                    checked={isAddressEqual(
+                      collection.contractAddress,
+                      selectedContractAddr,
+                    )}
+                  />
+                </ListItemSecondaryAction>
+              </ListItemButton>
+            ))}
+          </List>
+        ) : (
+          <Box py={2}>
+            <Stack justifyContent="center">
+              <Typography variant="h5" align="center">
+                <FormattedMessage
+                  id="no.collections"
+                  defaultMessage="No collections"
                 />
-              </ListItemSecondaryAction>
-            </ListItemButton>
-          ))}
-        </List>
+              </Typography>
+              <Typography color="text.secondary" variant="body1" align="center">
+                <FormattedMessage
+                  id="deploy.a.collection.to.see.it.here"
+                  defaultMessage="Deploy a collection to see it here"
+                />
+              </Typography>
+            </Stack>
+          </Box>
+        )}
       </DialogContent>
       <DialogActions>
-        <Button variant="contained" onClick={handleSelect}>
+        <Button
+          disabled={!selectedContractAddr}
+          variant="contained"
+          onClick={handleConfirm}
+        >
           <FormattedMessage id="confirm" defaultMessage="Confirm" />
         </Button>
         <Button onClick={handleClose}>

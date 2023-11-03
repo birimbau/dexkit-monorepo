@@ -1,5 +1,3 @@
-import SelectTokenDialog from '@/modules/swap/dialogs/SelectTokenDialog';
-import { Token } from '@dexkit/core/types';
 import { isValidDecimal } from '@dexkit/core/utils';
 import { useDexKitContext } from '@dexkit/ui';
 import AppDataTableDialog from '@dexkit/ui/components/dialogs/AppDataTableDialog';
@@ -29,6 +27,7 @@ import { FormattedMessage } from 'react-intl';
 import { useApproveForAll } from '../../hooks/thirdweb';
 import ContractAdminTab from '../ContractAdminTab';
 import ContractMetadataTab from '../ContractMetadataTab';
+import SelectCollectionDialog from '../dialogs/SelectCollectionDialog';
 
 export interface ContractAirdropErc1155ContainerProps {
   address: string;
@@ -44,7 +43,7 @@ export default function ContractAirdropErc1155Container({
     { address: string; tokenId: number }[]
   >([]);
 
-  const [contractAddress, setTokenAddress] = useState<string>();
+  const [contractAddress, setContractAddress] = useState<string>();
   const { account } = useWeb3React();
 
   const { data: tokenContract } = useContract(
@@ -80,7 +79,6 @@ export default function ContractAirdropErc1155Container({
 
       const values = {
         name: metadata?.name || '',
-        amount: '',
       };
 
       if (!account || !contractAddress) {
@@ -138,19 +136,19 @@ export default function ContractAirdropErc1155Container({
     await airdropMutation.mutateAsync({ recipients });
   };
 
-  const [showSelectToken, setShowSelectToken] = useState(false);
+  const [showSelectCollection, setShowSelectCollection] = useState(false);
 
-  const handleCloseSelectToken = () => {
-    setShowSelectToken(false);
+  const handleCloseSelectCollection = () => {
+    setShowSelectCollection(false);
   };
 
-  const handleSelect = (token: Token) => {
-    setTokenAddress(token.address);
-    handleCloseSelectToken();
+  const handleSelect = (address: string) => {
+    setContractAddress(address);
+    handleCloseSelectCollection();
   };
 
   const handleShowSelectToken = () => {
-    setShowSelectToken(true);
+    setShowSelectCollection(true);
   };
 
   const [currTab, setCurrTab] = useState('airdrop');
@@ -203,8 +201,13 @@ export default function ContractAirdropErc1155Container({
           />
         }
       />
-      <SelectTokenDialog
-        dialogProps={{ open: showSelectToken, onClose: handleCloseSelectToken }}
+      <SelectCollectionDialog
+        DialogProps={{
+          open: showSelectCollection,
+          onClose: handleCloseSelectCollection,
+          maxWidth: 'sm',
+          fullWidth: true,
+        }}
         onSelect={handleSelect}
         chainId={chainId}
       />

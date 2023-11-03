@@ -174,4 +174,14 @@ export const COMMON_NOTIFICATION_TYPES: { [key: string]: AppNotificationType } =
       id: "airdrop.amount.of.name",
       icon: "shortcut",
     },
+    airdropErc721: {
+      type: "airdropErc721",
+      message: "Airdrop of {name}",
+      id: "airdrop.of.name",
+    },
+    airdropErc1155: {
+      type: "airdropErc1155",
+      message: "Airdrop of {name}",
+      id: "airdrop.of.name",
+    },
   };

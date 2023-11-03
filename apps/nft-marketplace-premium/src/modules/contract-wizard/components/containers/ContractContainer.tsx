@@ -13,6 +13,7 @@ import ContractStakeErc20Container from './ContractStakeErc20Container';
 import { ContractTokenDropContainer } from './ContractTokenDropContainer';
 
 import { hexToString } from '@dexkit/ui/utils';
+import ContractAirdropErc1155Container from './ContractAirdropErc1155Container';
 import ContractAirdropErc20Container from './ContractAirdropErc20Container';
 import ContractAirdropErc721Container from './ContractAirdropErc721Container';
 import { ContractEditionContainer } from './ContractEditionContainer';
@@ -64,6 +65,10 @@ export function ContractContainer({ address, network }: Props) {
     } else if (contractType === 'AirdropERC721') {
       return (
         <ContractAirdropErc721Container address={address} network={network} />
+      );
+    } else if (contractType === 'AirdropERC1155') {
+      return (
+        <ContractAirdropErc1155Container address={address} network={network} />
       );
     }
   };
