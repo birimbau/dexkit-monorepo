@@ -31,11 +31,15 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { getChainLogoImage, getChainName } from '../utils/blockchain';
 import Link from './Link';
 
+import { ThemeMode } from '@dexkit/ui/constants/enum';
+import { useDexKitContext, useNotifications } from '@dexkit/ui/hooks';
+import { MagicConnector } from '@dexkit/wallet-connectors/connectors/magic';
 import AttachMoney from '@mui/icons-material/AttachMoney';
 import Language from '@mui/icons-material/Language';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { useAtom } from 'jotai';
 import { useUpdateAtom } from 'jotai/utils';
+import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import { FormattedMessage } from 'react-intl';
 import { useCurrency } from 'src/hooks/currency';
@@ -49,17 +53,20 @@ import {
   showSelectLocaleAtom,
 } from '../state/atoms';
 import NavbarMenu from './Menu';
+import { ThemeModeSelector } from './ThemeModeSelector';
 import { WalletButton } from './WalletButton';
-import SelectNetworkDialog from './dialogs/SelectNetworkDialog';
 import Notification from './icons/Notification';
 import Wallet from './icons/Wallet';
+const SelectNetworkDialog = dynamic(
+  () => import('./dialogs/SelectNetworkDialog'),
+);
 
-import MagicNetworkSelect from '@dexkit/ui/components/MagicNetworkSelect';
-import NotificationsDialog from '@dexkit/ui/components/dialogs/NotificationsDialog';
-import { ThemeMode } from '@dexkit/ui/constants/enum';
-import { useDexKitContext, useNotifications } from '@dexkit/ui/hooks';
-import { MagicConnector } from '@dexkit/wallet-connectors/connectors/magic';
-import { ThemeModeSelector } from './ThemeModeSelector';
+const MagicNetworkSelect = dynamic(
+  () => import('@dexkit/ui/components/MagicNetworkSelect'),
+);
+const NotificationsDialog = dynamic(
+  () => import('@dexkit/ui/components/dialogs/NotificationsDialog'),
+);
 
 interface Props {
   appConfig: AppConfig;
@@ -103,7 +110,7 @@ function Navbar({ appConfig, isPreview }: Props) {
   const [, setShowShowSelectLocale] = useAtom(showSelectLocaleAtom);
 
   const [showTransactions, setShowTransactions] = useAtom(
-    showAppTransactionsAtom
+    showAppTransactionsAtom,
   );
 
   const handleOpenTransactions = () => setShowTransactions(true);
@@ -116,7 +123,7 @@ function Navbar({ appConfig, isPreview }: Props) {
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const handleSettingsMenuClick = (
-    event: React.MouseEvent<HTMLButtonElement>
+    event: React.MouseEvent<HTMLButtonElement>,
   ) => {
     setMenuAnchorEl(event.currentTarget);
   };
@@ -230,26 +237,30 @@ function Navbar({ appConfig, isPreview }: Props) {
           onClose: handleCloseNotifications,
         }}
       /> */}
-      <NotificationsDialog
-        DialogProps={{
-          maxWidth: 'sm',
-          open: showTransactions,
-          fullWidth: true,
-          onClose: handleCloseNotifications,
-        }}
-        notificationTypes={notificationTypes}
-        transactions={transactions}
-        notifications={notifications}
-        onClear={handleClearNotifications}
-      />
-      <SelectNetworkDialog
-        dialogProps={{
-          maxWidth: 'sm',
-          open: selectNetworkDialog.isOpen,
-          fullWidth: true,
-          onClose: handleCloseSelectNetworkDialog,
-        }}
-      />
+      {showTransactions && (
+        <NotificationsDialog
+          DialogProps={{
+            maxWidth: 'sm',
+            open: showTransactions,
+            fullWidth: true,
+            onClose: handleCloseNotifications,
+          }}
+          notificationTypes={notificationTypes}
+          transactions={transactions}
+          notifications={notifications}
+          onClear={handleClearNotifications}
+        />
+      )}
+      {selectNetworkDialog.isOpen && (
+        <SelectNetworkDialog
+          dialogProps={{
+            maxWidth: 'sm',
+            open: selectNetworkDialog.isOpen,
+            fullWidth: true,
+            onClose: handleCloseSelectNetworkDialog,
+          }}
+        />
+      )}
       <Popover
         open={menuOpen}
         onClose={handleCloseMenu}
@@ -380,7 +391,7 @@ function Navbar({ appConfig, isPreview }: Props) {
                         defaultMessage={m.name}
                       />
                     </Link>
-                  )
+                  ),
                 )}
               </Stack>
             ) : (

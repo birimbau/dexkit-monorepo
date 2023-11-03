@@ -76,6 +76,7 @@ export class MagicConnector extends Connector {
   private options: MagicConnectOptions;
   eventEmitter: EventEmitter;
   loginType?: MagicLoginType;
+  type?: string = 'magic';
   magicInstance?: InstanceWithExtensions<SDKBase, OAuthExtension[]>;
 
   constructor({ actions, options }: MagicConnectConstructorArgs) {

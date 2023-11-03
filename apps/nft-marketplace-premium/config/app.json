@@ -10,12 +10,12 @@
   "logo": {
     "url": "https://dexkit-storage.nyc3.cdn.digitaloceanspaces.com/dexkit/images/logo/dexappbuilder.png",
     "height": 40,
-    "width": 180
+    "width": 280
   },
   "logoDark": {
     "url": "https://dexkit-storage.nyc3.cdn.digitaloceanspaces.com/dexkit/images/logo/dexappbuilder-dark.png",
     "height": 40,
-    "width": 180
+    "width": 280
   },
   "favicon_url": "",
   "social": [
