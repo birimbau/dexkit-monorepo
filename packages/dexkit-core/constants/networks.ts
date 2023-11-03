@@ -54,7 +54,7 @@ export const NETWORKS: { [key: number]: Network } = {
     slug: "polygon",
     coingeckoPlatformId: "matic-network",
     wrappedAddress: `0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270`,
-    providerRpcUrl: `https://poly-rpc.gateway.pokt.network`,
+    providerRpcUrl: `https://polygon-rpc.com`,
     imageUrl:
       "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/info/logo.png",
   },
@@ -184,4 +184,4 @@ export const NETWORK_FROM_SLUG = (slug?: string) => {
 }
 // We are using 0x API wrapped token feature
 export const WRAPPED_TOKEN_ADDRESS = (chainId?: ChainId) => undefined
- // chainId && NETWORKS[chainId] ? NETWORKS[chainId].wrappedAddress : undefined;
+// chainId && NETWORKS[chainId] ? NETWORKS[chainId].wrappedAddress : undefined;
