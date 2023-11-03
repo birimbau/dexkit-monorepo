@@ -73,7 +73,6 @@ export class MagicConnector extends Connector {
   private options: MagicConnectOptions;
   eventEmitter: EventEmitter;
   loginType?: MagicLoginType;
-  //@ts-ignore
   magicInstance?: InstanceWithExtensions<SDKBase, OAuthExtension[]>;
 
   constructor({ actions, options }: MagicConnectConstructorArgs) {
@@ -123,7 +122,7 @@ export class MagicConnector extends Connector {
             await this.initWallet();
           }
         } else if (loginType === "twitter" && redirectUrl) {
-          //@ts-ignore
+
           await magic.oauth.loginWithRedirect({
             provider: "twitter",
             redirectURI: redirectUrl,
@@ -133,14 +132,14 @@ export class MagicConnector extends Connector {
           await this.initProvider();
           await this.initWallet();
         } else if (loginType === "google" && redirectUrl) {
-          //@ts-ignore
+
           await magic.oauth.loginWithRedirect({
             provider: "google",
             redirectURI: redirectUrl,
           })
         }
         else if (loginType === "discord" && redirectUrl) {
-          //@ts-ignore
+
           await magic.oauth.loginWithRedirect({
             provider: "discord",
             redirectURI: redirectUrl,
@@ -200,15 +199,15 @@ export class MagicConnector extends Connector {
               : (network?.providerRpcUrl as string),
           chainId: network?.chainId,
         };
-        //@ts-ignore
+
         this.magicInstance = new m.Magic(this.options.apiKey, {
           network: chainId !== ChainId.Ethereum ? customNode : undefined,
           extensions: [new oauth.OAuthExtension()],
         });
-        //@ts-ignore
+
         if (!(await this.magicInstance.user.isLoggedIn())) {
           try {
-            //@ts-ignore
+
             await this.magicInstance.oauth.getRedirectResult();
           } catch (err) { }
         }
