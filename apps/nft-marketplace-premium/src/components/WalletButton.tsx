@@ -13,9 +13,11 @@ import { useWeb3React } from '@web3-react/core';
 import { useAtomValue } from 'jotai';
 import { useMemo, useState } from 'react';
 import { isBalancesVisibleAtom } from '../state/atoms';
-import { getChainSymbol, truncateAddress } from '../utils/blockchain';
+import { truncateAddress } from '../utils/blockchain';
 
-import WalletContent from './WalletContent';
+import { NETWORK_COIN_SYMBOL } from '@dexkit/core/constants/networks';
+import dynamic from 'next/dynamic';
+const WalletContent = dynamic(() => import('./WalletContent'));
 
 export interface WalletButtonProps {
   align?: 'center' | 'left';
@@ -70,8 +72,8 @@ export function WalletButton({ align }: WalletButtonProps) {
           <Avatar
             src={GET_WALLET_ICON(connector)}
             sx={(theme) => ({
-              width: theme.spacing(4),
-              height: theme.spacing(4),
+              width: theme.spacing(3),
+              height: theme.spacing(3),
               background: theme.palette.action.hover,
             })}
             variant="rounded"
@@ -92,20 +94,22 @@ export function WalletButton({ align }: WalletButtonProps) {
                 component="div"
               >
                 {isBalancesVisible ? formattedBalance : '*.**'}{' '}
-                {getChainSymbol(chainId)}
+                {NETWORK_COIN_SYMBOL(chainId)}
               </Typography>
             </div>
           </Box>
         </Stack>
       </ButtonBase>
-      <Popover
-        open={showContent}
-        anchorEl={anchorEl}
-        anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
-        onClose={handleClose}
-      >
-        <WalletContent />
-      </Popover>
+      {showContent && (
+        <Popover
+          open={showContent}
+          anchorEl={anchorEl}
+          anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
+          onClose={handleClose}
+        >
+          <WalletContent />
+        </Popover>
+      )}
     </>
   );
 }

@@ -2,15 +2,9 @@ import { GET_WALLET_ICON, useEvmNativeBalanceQuery } from '@dexkit/core';
 import {
   copyToClipboard,
   formatBigNumber,
-  getChainName,
   truncateAddress,
 } from '@dexkit/core/utils';
-import {
-  useAuthUserQuery,
-  useConnectWalletDialog,
-  useEvmCoins,
-  useLogoutAccountMutation,
-} from '@dexkit/ui';
+import { useConnectWalletDialog, useEvmCoins } from '@dexkit/ui';
 import CopyIconButton from '@dexkit/ui/components/CopyIconButton';
 import {
   Avatar,
@@ -20,11 +14,11 @@ import {
   Divider,
   IconButton,
   Stack,
+  Tooltip,
   Typography,
 } from '@mui/material';
 import { useWeb3React } from '@web3-react/core';
 import { useAtomValue } from 'jotai';
-import { useRouter } from 'next/router';
 import { useCallback, useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { isBalancesVisibleAtom } from 'src/state/atoms';
@@ -32,12 +26,18 @@ import { isBalancesVisibleAtom } from 'src/state/atoms';
 import VerticalAlignBottomIcon from '@mui/icons-material/VerticalAlignBottom';
 import dynamic from 'next/dynamic';
 
+import {
+  NETWORK_COIN_SYMBOL,
+  NETWORK_IMAGE,
+  NETWORK_NAME,
+} from '@dexkit/core/constants/networks';
+
 import FileCopy from '@mui/icons-material/FileCopy';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import Logout from '@mui/icons-material/Logout';
 import Send from '@mui/icons-material/Send';
 import SwitchAccount from '@mui/icons-material/SwitchAccount';
-import { getChainLogoImage, getChainSymbol } from 'src/utils/blockchain';
+import { useLogoutAccountMutation } from 'src/hooks/account';
 
 const EvmReceiveDialog = dynamic(
   () => import('@dexkit/ui/components/dialogs/EvmReceiveDialog'),
@@ -55,11 +55,9 @@ const SelectNetworkDialog = dynamic(
 );
 
 export default function WalletContent() {
-  const router = useRouter();
   const { connector, account, ENSName, provider, chainId } = useWeb3React();
   const logoutMutation = useLogoutAccountMutation();
-  const userQuery = useAuthUserQuery();
-  const user = userQuery.data;
+
   const connectWalletDialog = useConnectWalletDialog();
   const handleSwitchWallet = () => {
     connectWalletDialog.setOpen(true);
@@ -180,8 +178,8 @@ export default function WalletContent() {
               <Avatar
                 src={GET_WALLET_ICON(connector)}
                 sx={(theme) => ({
-                  width: theme.spacing(4),
-                  height: theme.spacing(4),
+                  width: theme.spacing(3),
+                  height: theme.spacing(3),
                   background: theme.palette.action.hover,
                 })}
                 variant="rounded"
@@ -199,8 +197,8 @@ export default function WalletContent() {
                       size: 'small',
                     }}
                     tooltip={formatMessage({
-                      id: 'copy',
-                      defaultMessage: 'Copy',
+                      id: 'copy.address',
+                      defaultMessage: 'Copy address',
                       description: 'Copy text',
                     })}
                     activeTooltip={formatMessage({
@@ -220,41 +218,59 @@ export default function WalletContent() {
                     component="div"
                   >
                     {isBalancesVisible ? formattedBalance : '*.**'}{' '}
-                    {getChainSymbol(chainId)}
+                    {NETWORK_COIN_SYMBOL(chainId)}
                   </Typography>
                 </div>
               </Box>
             </Stack>
-            <IconButton onClick={handleLogoutWallet}>
-              <Logout fontSize="small" />
-            </IconButton>
-          </Stack>
-          <ButtonBase
-            sx={{
-              display: 'block',
-              px: 1,
-              py: 1,
-              border: (theme) => `1px solid ${theme.palette.divider}`,
-              borderRadius: (theme) => theme.spacing(1),
-            }}
-            onClick={handleSwitchNetwork}
-          >
-            <Stack
-              direction="row"
-              alignItems="center"
-              justifyContent="space-between"
-              spacing={1}
-            >
-              <Stack direction="row" alignItems="center" spacing={1}>
-                <Avatar
-                  src={getChainLogoImage(chainId)}
-                  sx={{ width: '1rem', height: '1rem' }}
+            <Tooltip
+              title={
+                <FormattedMessage
+                  id={'logout.wallet'}
+                  defaultMessage={'Logout wallet'}
                 />
-                <Typography>{getChainName(chainId)}</Typography>
+              }
+            >
+              <IconButton onClick={handleLogoutWallet}>
+                <Logout fontSize="small" />
+              </IconButton>
+            </Tooltip>
+          </Stack>
+          <Tooltip
+            title={
+              <FormattedMessage
+                id={'switch.network'}
+                defaultMessage={'Switch network'}
+              />
+            }
+          >
+            <ButtonBase
+              sx={{
+                display: 'block',
+                px: 1,
+                py: 1,
+                border: (theme) => `1px solid ${theme.palette.divider}`,
+                borderRadius: (theme) => theme.spacing(1),
+              }}
+              onClick={handleSwitchNetwork}
+            >
+              <Stack
+                direction="row"
+                alignItems="center"
+                justifyContent="space-between"
+                spacing={1}
+              >
+                <Stack direction="row" alignItems="center" spacing={1}>
+                  <Avatar
+                    src={NETWORK_IMAGE(chainId)}
+                    sx={{ width: '1rem', height: '1rem' }}
+                  />
+                  <Typography>{NETWORK_NAME(chainId)}</Typography>
+                </Stack>
+                <KeyboardArrowRightIcon />
               </Stack>
-              <KeyboardArrowRightIcon />
-            </Stack>
-          </ButtonBase>
+            </ButtonBase>
+          </Tooltip>
           <Divider />
           <Stack spacing={2} direction="row">
             <Button

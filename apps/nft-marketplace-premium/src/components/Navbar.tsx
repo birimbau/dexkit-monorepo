@@ -54,13 +54,10 @@ import SelectNetworkDialog from './dialogs/SelectNetworkDialog';
 import Notification from './icons/Notification';
 import Wallet from './icons/Wallet';
 
+import { useAuthUserQuery } from '@/modules/user/hooks';
 import NotificationsDialog from '@dexkit/ui/components/dialogs/NotificationsDialog';
 import { ThemeMode } from '@dexkit/ui/constants/enum';
-import {
-  useAuthUserQuery,
-  useDexKitContext,
-  useNotifications,
-} from '@dexkit/ui/hooks';
+import { useDexKitContext, useNotifications } from '@dexkit/ui/hooks';
 import AppProfileMenu from './AppProfileMenu';
 import { ThemeModeSelector } from './ThemeModeSelector';
 
