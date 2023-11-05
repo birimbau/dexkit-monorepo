@@ -51,7 +51,7 @@ export function ContractMetadataHeader({
   const chainId = NETWORK_FROM_SLUG(network)?.chainId;
 
   const getContractUrl = (contractType?: string) => {
-    let url = '';
+    let url: string | null = '';
 
     switch (contractType) {
       case 'NFTStake':
@@ -71,6 +71,8 @@ export function ContractMetadataHeader({
         url = `/token/nft/${network}/${address}`;
         break;
       case 'DropERC1155':
+        url = null;
+        break;
       case 'DropERC721':
         url = `/drop/nft/${network}/${address}`;
         break;
@@ -208,12 +210,14 @@ export function ContractMetadataHeader({
               >
                 <FormattedMessage id="explorer" defaultMessage="Explorer" />
               </Button>
-              <Link href={getContractUrl(contractTypeV2)}>
-                <FormattedMessage
-                  id="view.contract"
-                  defaultMessage="View contract"
-                />
-              </Link>
+              {getContractUrl(contractTypeV2) && (
+                <Link href={getContractUrl(contractTypeV2) as string}>
+                  <FormattedMessage
+                    id="view.public.page"
+                    defaultMessage="View public page"
+                  />
+                </Link>
+              )}
               <Chip
                 label={
                   contractType
