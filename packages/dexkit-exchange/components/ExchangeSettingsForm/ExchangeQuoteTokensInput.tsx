@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import React, { useMemo } from "react";
 
-import _ from "lodash";
+import remove from "lodash/remove";
 
 import { isAddressEqual } from "@dexkit/core/utils";
 import { useField } from "formik";
@@ -52,7 +52,7 @@ export default function ExchangeQuoteTokensInput({
     let newTokens = [...chainTokens];
 
     if (value) {
-      _.remove(newTokens, (token) => {
+      remove(newTokens, (token) => {
         return (
           value.findIndex(
             (t) =>

@@ -118,7 +118,11 @@ export function ClaimConditionsForm({ network, isEdit }: Props) {
                       disabled={
                         !isValid || values.phases.length === 0 || isSubmitting
                       }
-                      startIcon={isSubmitting && <CircularProgress />}
+                      startIcon={
+                        isSubmitting && (
+                          <CircularProgress size="1rem" color="inherit" />
+                        )
+                      }
                       onClick={submitForm}
                       variant="contained"
                       color="primary"

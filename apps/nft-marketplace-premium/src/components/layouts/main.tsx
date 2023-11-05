@@ -20,7 +20,7 @@ import { Footer } from '../Footer';
 import Navbar from '../Navbar';
 const SignMessageDialog = dynamic(() => import('../dialogs/SignMessageDialog'));
 const SwitchNetworkDialog = dynamic(
-  () => import('../dialogs/SwitchNetworkDialog'),
+  () => import('@dexkit/ui/components/dialogs/SwitchNetworkDialog'),
 );
 
 import { useRouter } from 'next/router';
@@ -30,9 +30,15 @@ import AppDrawer from '../AppDrawer';
 import { useWalletActivate } from '@dexkit/core/hooks';
 import { WalletActivateParams } from '@dexkit/core/types';
 import { useDexKitContext, useExecuteTransactionsDialog } from '@dexkit/ui';
-const ConnectWalletDialog = dynamic(() => import('@dexkit/ui/components/ConnectWalletDialog'));
-const WatchTransactionDialog = dynamic(() => import('@dexkit/ui/components/dialogs/WatchTransactionDialog'));
-const AppTransactionWatchDialog = dynamic(() => import('@dexkit/ui/components/AppTransactionWatchDialog'));
+const ConnectWalletDialog = dynamic(
+  () => import('@dexkit/ui/components/ConnectWalletDialog'),
+);
+const WatchTransactionDialog = dynamic(
+  () => import('@dexkit/ui/components/dialogs/WatchTransactionDialog'),
+);
+const AppTransactionWatchDialog = dynamic(
+  () => import('@dexkit/ui/components/AppTransactionWatchDialog'),
+);
 
 const HoldingKitDialog = dynamic(() => import('../dialogs/HoldingKitDialog'));
 

@@ -2,6 +2,7 @@ import { ChainId } from '@dexkit/core/constants';
 import { Close } from '@mui/icons-material';
 import {
   Avatar,
+  Box,
   Dialog,
   DialogContent,
   DialogProps,
@@ -10,7 +11,7 @@ import {
   Grid,
   IconButton,
   List,
-  ListItem,
+  ListItemButton,
   ListItemIcon,
   ListItemText,
   TextField,
@@ -66,18 +67,20 @@ function SelectTokenDialog({
         </IconButton>
       </DialogTitle>
       <Divider />
-      <DialogContent>
+      <DialogContent sx={{ px: 0 }}>
         <Grid container spacing={2}>
           <Grid item xs={12}>
-            <TextField
-              placeholder="Search for a token name"
-              fullWidth
-              value={value}
-              onChange={(e) => setValue(e.target.value)}
-            />
+            <Box sx={{ px: 2 }}>
+              <TextField
+                placeholder="Search for a token name"
+                fullWidth
+                value={value}
+                onChange={(e) => setValue(e.target.value)}
+              />
+            </Box>
           </Grid>
           <Grid item xs={12}>
-            <List>
+            <List disablePadding>
               {tokens
                 ?.filter((token) => {
                   return excludeToken !== token;
@@ -89,7 +92,7 @@ function SelectTokenDialog({
                   );
                 })
                 .map((token: Token, index: number) => (
-                  <ListItem button key={index} onClick={() => onSelect(token)}>
+                  <ListItemButton key={index} onClick={() => onSelect(token)}>
                     <ListItemIcon>
                       <Avatar
                         sx={(theme) => ({
@@ -102,13 +105,12 @@ function SelectTokenDialog({
                             : TOKEN_ICON_URL(token.address, chainId as ChainId)
                         }
                       />
-                      {token.address}
                     </ListItemIcon>
                     <ListItemText
                       primary={token.symbol}
                       secondary={token.name}
                     />
-                  </ListItem>
+                  </ListItemButton>
                 ))}
             </List>
           </Grid>

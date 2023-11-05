@@ -1,4 +1,4 @@
-interface WizardItemAttribute { }
+interface WizardItemAttribute {}
 
 export interface CollectionForm {
   name: string;
@@ -27,7 +27,7 @@ export interface ClaimConditionTypeForm {
   price: number;
   maxClaimableSupply: number | string;
   maxClaimablePerWallet: number | string;
-  merkleRoot?: string,
+  merkleRoot?: string;
   currencyAddress: string;
 }
 
@@ -52,7 +52,6 @@ export interface CollectionItemFormType {
   }[];
   file?: string | null;
   quantity: number;
-
 }
 
 export interface CollectionItemsForm {
@@ -75,6 +74,7 @@ export interface WizardCollection {
   image: string;
   external_link: string;
   tx: string;
+  address?: string;
 }
 
 export interface Erc721Data {
@@ -138,3 +138,10 @@ export interface TokenForm {
   symbol: string;
   maxSupply: number;
 }
+
+export type ContractMetadataFormType = {
+  name: string;
+  description?: string;
+  image?: string;
+  external_link?: string;
+};

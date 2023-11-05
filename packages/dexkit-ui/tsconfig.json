@@ -3,7 +3,8 @@
   "include": ["."],
   "compilerOptions": {
     "resolveJsonModule": true,
-    "target": "es2020"
+    "target": "es2020",
+    "lib": ["es2021"]
   },
   "exclude": ["dist", "build", "node_modules"]
 }

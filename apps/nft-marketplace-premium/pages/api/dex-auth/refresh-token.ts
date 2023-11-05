@@ -8,11 +8,13 @@ export default async function handler(
   try {
 
     const refreshToken = req.cookies?.refresh_token_auth || req.cookies?.refresh_token;
+
     const response = await requestAccestoken({ refreshToken: refreshToken as string })
     const data = (await response.data);
     return res.status(response.status).json({ access_token: data.access_token });
 
   } catch (e) {
+
     return res.status(500).json({ error: e })
   }
 

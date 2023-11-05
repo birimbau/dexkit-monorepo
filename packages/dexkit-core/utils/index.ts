@@ -81,9 +81,14 @@ export function isAddressEqual(address?: string, other?: string) {
   return address.toLowerCase() === other.toLowerCase();
 }
 
-export function formatBigNumber(val: BigNumber, decimals: number) {
+export function formatBigNumber(val?: BigNumber, decimals?: number) {
   // TODO: improve this code in the future
   // pass to a memoized component or something
+
+  if (!val) {
+    return "0";
+  }
+
   const value = ethers.utils.formatUnits(val, decimals);
 
   let index = value.indexOf(".");
@@ -162,6 +167,9 @@ export async function switchNetwork(connector: Connector, chainId: number) {
       method: "wallet_switchEthereumChain",
       params: [{ chainId: `0x${chainId.toString(16)}` }],
     });
+  }
+  if (connector instanceof MagicConnector) {
+    return connector.changeNetwork(parseChainId(chainId));
   }
 }
 
