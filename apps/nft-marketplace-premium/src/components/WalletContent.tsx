@@ -26,12 +26,9 @@ import { isBalancesVisibleAtom } from 'src/state/atoms';
 import VerticalAlignBottomIcon from '@mui/icons-material/VerticalAlignBottom';
 import dynamic from 'next/dynamic';
 
-import {
-  NETWORK_COIN_SYMBOL,
-  NETWORK_IMAGE,
-  NETWORK_NAME,
-} from '@dexkit/core/constants/networks';
+import { NETWORK_IMAGE, NETWORK_NAME } from '@dexkit/core/constants/networks';
 
+import { AccountBalance } from '@dexkit/ui/components/AccountBalance';
 import FileCopy from '@mui/icons-material/FileCopy';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import Logout from '@mui/icons-material/Logout';
@@ -51,7 +48,7 @@ const EvmTransferCoinDialog = dynamic(
 );
 
 const SelectNetworkDialog = dynamic(
-  () => import('./dialogs/SelectNetworkDialog'),
+  () => import('@dexkit/ui/components/dialogs/SelectNetworkDialog'),
 );
 
 export default function WalletContent() {
@@ -178,8 +175,8 @@ export default function WalletContent() {
               <Avatar
                 src={GET_WALLET_ICON(connector)}
                 sx={(theme) => ({
-                  width: theme.spacing(3),
-                  height: theme.spacing(3),
+                  width: theme.spacing(2),
+                  height: theme.spacing(2),
                   background: theme.palette.action.hover,
                 })}
                 variant="rounded"
@@ -211,15 +208,7 @@ export default function WalletContent() {
                   </CopyIconButton>
                 </Typography>
                 <div>
-                  <Typography
-                    color="text.secondary"
-                    variant="caption"
-                    align="left"
-                    component="div"
-                  >
-                    {isBalancesVisible ? formattedBalance : '*.**'}{' '}
-                    {NETWORK_COIN_SYMBOL(chainId)}
-                  </Typography>
+                  <AccountBalance isBalancesVisible={isBalancesVisible} />
                 </div>
               </Box>
             </Stack>

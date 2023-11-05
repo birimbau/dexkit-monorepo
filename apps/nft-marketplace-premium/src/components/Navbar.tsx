@@ -31,6 +31,7 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { getChainLogoImage, getChainName } from '../utils/blockchain';
 import Link from './Link';
 
+import SelectNetworkDialog from '@dexkit/ui/components/dialogs/SelectNetworkDialog';
 import AttachMoney from '@mui/icons-material/AttachMoney';
 import Language from '@mui/icons-material/Language';
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -50,7 +51,6 @@ import {
 } from '../state/atoms';
 import NavbarMenu from './Menu';
 import { WalletButton } from './WalletButton';
-import SelectNetworkDialog from './dialogs/SelectNetworkDialog';
 import Notification from './icons/Notification';
 import Wallet from './icons/Wallet';
 
