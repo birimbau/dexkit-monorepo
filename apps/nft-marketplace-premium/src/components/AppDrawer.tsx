@@ -218,7 +218,7 @@ function AppDrawer({ open, onClose }: Props) {
             <ListItemIcon>
               <AttachMoney />
             </ListItemIcon>
-            <ListItemTexts
+            <ListItemText
               primary={
                 <FormattedMessage id="currency" defaultMessage="Currency" />
               }
