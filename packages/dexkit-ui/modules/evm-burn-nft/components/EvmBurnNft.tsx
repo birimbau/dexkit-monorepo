@@ -75,8 +75,6 @@ export default function EvmBurnNft({
   const { enqueueSnackbar } = useSnackbar();
   const theme = useTheme();
 
-  console.log(contractAddress);
-
   const nftBurn = useNftBurn({
     contractAddress,
     onSubmit: (hash: string, quantity: string | undefined) => {

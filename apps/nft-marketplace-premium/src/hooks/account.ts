@@ -63,7 +63,7 @@ export function useLogoutAccountMutation() {
       const data = logoutResponse.data;
       if (data.logout) {
         if (setIsLoggedIn) {
-          setIsLoggedIn(true);
+          setIsLoggedIn(false);
         }
         setAccessToken(undefined)
       }

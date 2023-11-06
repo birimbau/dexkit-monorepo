@@ -21,8 +21,7 @@ export const THIRDWEB_CONTRACT_TYPES: { [key: string]: string } = {
   ['token']: 'Token',
   ['token-drop']: 'Token Drop',
   ['vote']: 'Vote',
-
-
+  ['custom']: 'Custom',
 };
 
 export const ETHER_SCAN_API_URL: { [key: number]: string } = {

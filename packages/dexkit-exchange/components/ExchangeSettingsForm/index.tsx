@@ -43,7 +43,7 @@ import { ZEROEX_AFFILIATE_ADDRESS } from "@dexkit/core/services/zrx/constants";
 import Edit from "@mui/icons-material/Edit";
 import TextFieldMui from "@mui/material/TextField";
 import { useFormikContext } from "formik";
-import _ from "lodash";
+import setWith from "lodash/setWith";
 import {
   DEFAULT_TOKENS,
   QUOTE_TOKENS_SUGGESTION,
@@ -138,7 +138,7 @@ export default function ExchangeSettingsForm({
           { chainName: getChainName(chainId) }
         );
 
-        _.setWith(
+        setWith(
           errors,
           `defaultPairs.${String(chainId)}.baseToken`,
           error,
@@ -158,7 +158,7 @@ export default function ExchangeSettingsForm({
           { chainName: getChainName(chainId) }
         );
 
-        _.setWith(
+        setWith(
           errors,
           `defaultPairs.${String(chainId)}.quoteToken`,
           error,
@@ -175,7 +175,7 @@ export default function ExchangeSettingsForm({
           defaultMessage: "Max slippage is 50 percent",
         });
 
-        _.setWith(
+        setWith(
           errors,
           `defaultSlippage.${String(chainId)}.slippage`,
           error,

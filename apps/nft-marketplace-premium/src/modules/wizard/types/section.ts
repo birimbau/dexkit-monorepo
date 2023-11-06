@@ -23,7 +23,14 @@ export type SectionType =
   | 'user-contract-form'
   | 'exchange'
   | 'edition-drop-section'
-  | 'edition-drop-list-section';
+  | 'edition-drop-list-section'
+  | 'token-drop'
+  | 'nft-drop'
+  | 'token-stake'
+  | 'nft-stake'
+  | 'edition-stake'
+  | 'token'
+  | 'airdrop-token';
 
 export interface PageSection {
   type: SectionType;
@@ -102,6 +109,68 @@ export interface UserContractPageSection extends PageSection {
   hideFormInfo?: boolean;
 }
 
+export interface TokenDropPageSection extends PageSection {
+  type: 'token-drop';
+  settings: {
+    network: string;
+    address: string;
+    variant?: 'simple' | 'detailed';
+  };
+}
+
+export interface NftDropPageSection extends PageSection {
+  type: 'nft-drop';
+  settings: {
+    network: string;
+    address: string;
+    variant?: 'simple' | 'detailed';
+  };
+}
+
+export interface StakeErc20PageSection extends PageSection {
+  type: 'token-stake';
+  settings: {
+    network: string;
+    address: string;
+  };
+}
+
+export interface StakeErc155PageSection extends PageSection {
+  type: 'edition-stake';
+  settings: {
+    network: string;
+    address: string;
+  };
+}
+
+export interface StakeErc721PageSection extends PageSection {
+  type: 'nft-stake';
+  settings: {
+    network: string;
+    address: string;
+  };
+}
+
+export interface AirdropErc20PageSection extends PageSection {
+  type: 'airdrop-token';
+  settings: {
+    network: string;
+    address: string;
+  };
+}
+
+export interface TokenErc20PageSection extends PageSection {
+  type: 'token';
+  settings: {
+    network: string;
+    address: string;
+    disableTransfer?: boolean;
+    disableBurn?: boolean;
+    disableMint?: boolean;
+    disableInfo?: boolean;
+  };
+}
+
 export interface ExchangePageSection extends PageSection {
   type: 'exchange';
   settings: DexkitExchangeSettings;
@@ -109,19 +178,18 @@ export interface ExchangePageSection extends PageSection {
 export interface EditionDropPageSection extends PageSection {
   type: 'edition-drop-section';
   config: {
-    address: string,
-    tokenId: string
-  }
+    address: string;
+    tokenId: string;
+  };
 }
 
 export interface EditionDropListPageSection extends PageSection {
   type: 'edition-drop-list-section';
   config: {
-    address: string,
-    network: string
-  }
+    address: string;
+    network: string;
+  };
 }
-
 
 export type AppPageSection =
   | CallToActionAppPageSection
@@ -136,7 +204,8 @@ export type AppPageSection =
   | ContractPageSection
   | UserContractPageSection
   | ExchangePageSection
-  | EditionDropListPageSection;
+  | EditionDropListPageSection
+  | TokenDropPageSection;
 
 export interface SectionMetadata {
   type: SectionType;

@@ -27,14 +27,8 @@ import {
 } from '@mui/material';
 import { useWeb3React } from '@web3-react/core';
 
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import { getChainLogoImage, getChainName } from '../utils/blockchain';
-import Link from './Link';
-
-import { ThemeMode } from '@dexkit/ui/constants/enum';
-import { useDexKitContext, useNotifications } from '@dexkit/ui/hooks';
-import { MagicConnector } from '@dexkit/wallet-connectors/connectors/magic';
 import AttachMoney from '@mui/icons-material/AttachMoney';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import Language from '@mui/icons-material/Language';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { useAtom } from 'jotai';
@@ -52,21 +46,26 @@ import {
   showSelectCurrencyAtom,
   showSelectLocaleAtom,
 } from '../state/atoms';
+import { getChainLogoImage, getChainName } from '../utils/blockchain';
+import Link from './Link';
 import NavbarMenu from './Menu';
 import { ThemeModeSelector } from './ThemeModeSelector';
 import { WalletButton } from './WalletButton';
 import Notification from './icons/Notification';
 import Wallet from './icons/Wallet';
+
+const SelectNetworkDialog = dynamic(
+  () => import('@dexkit/ui/components/dialogs/SelectNetworkDialog'),
+);
 const SelectNetworkDialog = dynamic(
   () => import('./dialogs/SelectNetworkDialog'),
 );
 
-const MagicNetworkSelect = dynamic(
-  () => import('@dexkit/ui/components/MagicNetworkSelect'),
-);
-const NotificationsDialog = dynamic(
-  () => import('@dexkit/ui/components/dialogs/NotificationsDialog'),
-);
+import { useAuthUserQuery } from '@/modules/user/hooks';
+import NotificationsDialog from '@dexkit/ui/components/dialogs/NotificationsDialog';
+import { ThemeMode } from '@dexkit/ui/constants/enum';
+import { useDexKitContext, useNotifications } from '@dexkit/ui/hooks';
+import AppProfileMenu from './AppProfileMenu';
 
 interface Props {
   appConfig: AppConfig;
@@ -82,6 +81,8 @@ function Navbar({ appConfig, isPreview }: Props) {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const [anchorMenuEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
+  const [profileAnchorMenuEl, setProfileMenuAnchorEl] =
+    useState<null | HTMLElement>(null);
 
   const openMenu = Boolean(anchorMenuEl);
 
@@ -168,8 +169,30 @@ function Navbar({ appConfig, isPreview }: Props) {
     clearNotifications();
   };
 
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
+
+  const handleShowProfileMenu = (
+    event: React.MouseEvent<HTMLButtonElement>,
+  ) => {
+    setShowProfileMenu(true);
+    setProfileMenuAnchorEl(event.currentTarget);
+  };
+
+  const userQuery = useAuthUserQuery();
+  const user = userQuery.data;
+
+  const handleCloseProfileMenu = () => {
+    setShowProfileMenu(false);
+    setProfileMenuAnchorEl(null);
+  };
+
   return (
     <>
+      <AppProfileMenu
+        open={showProfileMenu}
+        onClose={handleCloseProfileMenu}
+        anchorEl={profileAnchorMenuEl}
+      />
       <Menu
         id="settings-menu"
         anchorEl={anchorMenuEl}
@@ -482,11 +505,16 @@ function Navbar({ appConfig, isPreview }: Props) {
                 </Button>
               ) : (
                 <Stack direction="row" alignItems="center" spacing={2}>
-                  {connector instanceof MagicConnector && (
-                    <MagicNetworkSelect />
-                  )}
+                  <ButtonBase
+                    onClick={handleShowProfileMenu}
+                    sx={{ borderRadius: '50%' }}
+                  >
+                    <Avatar
+                      sx={{ height: '1.5rem', width: '1.5rem' }}
+                      src={user?.profileImageURL}
+                    />
+                  </ButtonBase>
                   <WalletButton />
-
                   <NoSsr>
                     <IconButton onClick={handleOpenTransactions}>
                       <Badge
@@ -513,6 +541,7 @@ function Navbar({ appConfig, isPreview }: Props) {
                   </NoSsr>
                 </Stack>
               )}
+
               <IconButton onClick={handleSettingsMenuClick}>
                 <SettingsIcon />
               </IconButton>
