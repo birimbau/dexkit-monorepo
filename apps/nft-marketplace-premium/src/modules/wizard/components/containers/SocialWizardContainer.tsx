@@ -182,8 +182,8 @@ export default function SocialWizardContainer({
               <Stack>
                 <Typography variant={'h6'}>
                   <FormattedMessage
-                    id="social.media"
-                    defaultMessage="Social media"
+                    id="social.media.title"
+                    defaultMessage="Social Media"
                   />
                 </Typography>
                 <Typography variant={'body2'}>

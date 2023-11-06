@@ -53,10 +53,6 @@ function SignConfigDialog({
   };
 
   const handleClose = () => {
-    if (isSuccess && !isEdit) {
-      return handleGoToMarketplaces();
-    }
-
     if (onClose) {
       onClose({}, 'backdropClick');
     }
@@ -71,11 +67,10 @@ function SignConfigDialog({
       <AppDialogTitle
         title={
           <FormattedMessage
-            id="sending.config"
-            defaultMessage="Sending Config"
+            id="sending.app.config"
+            defaultMessage="Sending app config"
           />
         }
-        disableClose={isSuccess && !isEdit}
         onClose={handleClose}
       />
       <Divider />
