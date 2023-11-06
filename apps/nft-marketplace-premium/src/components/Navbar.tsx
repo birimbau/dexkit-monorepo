@@ -57,9 +57,6 @@ import Wallet from './icons/Wallet';
 const SelectNetworkDialog = dynamic(
   () => import('@dexkit/ui/components/dialogs/SelectNetworkDialog'),
 );
-const SelectNetworkDialog = dynamic(
-  () => import('./dialogs/SelectNetworkDialog'),
-);
 
 import { useAuthUserQuery } from '@/modules/user/hooks';
 import NotificationsDialog from '@dexkit/ui/components/dialogs/NotificationsDialog';

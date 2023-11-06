@@ -28,6 +28,8 @@ import { AppConfig } from 'src/types/config';
 const AppDrawer = dynamic(() => import('../AppDrawer'));
 
 import { useDexKitContext, useExecuteTransactionsDialog } from '@dexkit/ui';
+import { useWalletActivate } from '@dexkit/wallet-connectors/hooks/wallet';
+import { WalletActivateParams } from '@dexkit/wallet-connectors/types';
 const ConnectWalletDialog = dynamic(
   () => import('@dexkit/ui/components/ConnectWalletDialog'),
 );
