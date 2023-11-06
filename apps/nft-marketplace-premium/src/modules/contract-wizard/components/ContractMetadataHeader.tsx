@@ -34,6 +34,7 @@ interface Props {
   contractType?: string | null;
   contractTypeV2?: string;
   network?: string;
+  hidePublicPageUrl?: boolean;
 }
 
 export function ContractMetadataHeader({
@@ -41,6 +42,7 @@ export function ContractMetadataHeader({
   contractType,
   network,
   contractTypeV2,
+  hidePublicPageUrl,
 }: Props) {
   const { data: contract } = useContract(address);
   const { data } = useContractMetadata(contract);
@@ -52,6 +54,9 @@ export function ContractMetadataHeader({
 
   const getContractUrl = (contractType?: string) => {
     let url: string | null = '';
+    if (hidePublicPageUrl) {
+      return null;
+    }
 
     switch (contractType) {
       case 'NFTStake':
@@ -66,9 +71,7 @@ export function ContractMetadataHeader({
         url = `/collection/${network}/${address}`;
         break;
       case 'TokenERC20':
-      case 'TokenERC721':
-      case 'TokenERC1155':
-        url = `/token/nft/${network}/${address}`;
+        url = `/token/${network}/${address}`;
         break;
       case 'DropERC1155':
         url = null;
