@@ -1,5 +1,3 @@
-import { MetaMask } from "@web3-react/metamask";
-import { Connector } from "@web3-react/types";
 import { build, BuildInput } from "eth-url-parser";
 import { BigNumber, ethers } from "ethers";
 import { EventEmitter } from "events";
@@ -151,18 +149,6 @@ export function getNormalizedUrl(url: string) {
   }
 
   return fetchUrl;
-}
-
-export async function switchNetwork(connector: Connector, chainId: number) {
-  if (connector instanceof MetaMask) {
-    return connector.provider?.request({
-      method: "wallet_switchEthereumChain",
-      params: [{ chainId: `0x${chainId.toString(16)}` }],
-    });
-  }
-  if (connector instanceof MagicConnector) {
-    return connector.changeNetwork(parseChainId(chainId));
-  }
 }
 
 export function buildEtherReceiveAddress({

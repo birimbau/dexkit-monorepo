@@ -676,6 +676,9 @@ export function EditWizardContainer({ site }: Props) {
                   <FormattedMessage id="menu" defaultMessage="Menu" />
                 </Button>
               )}
+              {!site?.emailVerified && isLoggedIn && (
+                <ConfirmationEmailMessage site={site} />
+              )}
             </Stack>
           </Grid>
           <Grid item xs={12} sm={12}>
@@ -724,12 +727,6 @@ export function EditWizardContainer({ site }: Props) {
           </Grid>
           <Grid item xs={12} sm={0.1}></Grid>
           <Grid item xs={12} sm={9.8}>
-            {!site?.emailVerified && isLoggedIn && (
-              <Grid item xs={12} sm={12}>
-                <ConfirmationEmailMessage site={site} />
-              </Grid>
-            )}
-
             <Grid item xs={12} sm={10}>
               <Stack spacing={2} className={'builder-forms'}>
                 {activeMenu === ActiveMenu.General && config && (

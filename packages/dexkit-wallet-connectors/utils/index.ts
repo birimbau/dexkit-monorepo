@@ -1,6 +1,8 @@
+import { parseChainId } from "@dexkit/core/utils";
 import { MetaMask } from "@web3-react/metamask";
 import { Connector } from "@web3-react/types";
 import { EventEmitter } from "events";
+import { MagicConnector } from "../connectors/magic";
 
 
 
@@ -24,6 +26,9 @@ export async function switchNetwork(connector: Connector, chainId: number) {
       method: "wallet_switchEthereumChain",
       params: [{ chainId: `0x${chainId.toString(16)}` }],
     });
+  }
+  if (connector instanceof MagicConnector) {
+    return connector.changeNetwork(parseChainId(chainId));
   }
 }
 

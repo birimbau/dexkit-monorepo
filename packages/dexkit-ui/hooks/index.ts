@@ -9,8 +9,8 @@ import {
   TokenWhitelabelApp,
   TransactionMetadata,
 } from "@dexkit/core/types";
-import { switchNetwork } from "@dexkit/core/utils";
 import { CONNECTORS } from '@dexkit/wallet-connectors/constants';
+import { switchNetwork } from "@dexkit/wallet-connectors/utils";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
 import { Web3ReactHooks, useWeb3React } from "@web3-react/core";
