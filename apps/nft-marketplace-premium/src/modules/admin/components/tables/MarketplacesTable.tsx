@@ -72,7 +72,7 @@ export default function MarketplacesTable({ configs }: Props) {
   const handleDeleteSuccess = () => {
     enqueueSnackbar(
       formatMessage({
-        defaultMessage: 'App Removed',
+        defaultMessage: 'App removed',
         id: 'app.removed',
       }),
       {
