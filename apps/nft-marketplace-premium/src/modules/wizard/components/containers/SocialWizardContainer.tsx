@@ -1,10 +1,10 @@
 import AddIcon from '@mui/icons-material/Add';
+import DeleteIcon from '@mui/icons-material/Delete';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import ImageIcon from '@mui/icons-material/Image';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import RedditIcon from '@mui/icons-material/Reddit';
-import RemoveIcon from '@mui/icons-material/Remove';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import YouTubeIcon from '@mui/icons-material/YouTube';
 import { Box, styled } from '@mui/material';
@@ -311,63 +311,58 @@ export default function SocialWizardContainer({
               name="custom"
               render={(arrayHelpers) => (
                 <Box p={2}>
-                  {values.custom && values.custom.length > 0 ? (
-                    values.custom.map((media, index) => (
-                      <Stack key={index} spacing={1} direction={'row'}>
-                        <Button
-                          onClick={() => {
-                            setOpenMediaDialog(true);
-                            setMediaFieldToEdit(`custom.${index}.iconUrl`);
-                          }}
-                        >
-                          {values?.custom[index]?.iconUrl ? (
-                            <BackgroundImage
-                              src={values?.custom[index]?.iconUrl}
-                            />
-                          ) : (
-                            <EmptyImageProfile />
-                          )}
-                        </Button>
-                        <Field
-                          name={`custom.${index}.label`}
-                          component={TextField}
-                          label={
-                            <FormattedMessage
-                              id={'label'}
-                              defaultMessage={'Label'}
-                            />
-                          }
-                        />
+                  <Stack spacing={2}>
+                    {values.custom &&
+                      values.custom.length > 0 &&
+                      values.custom.map((media, index) => (
+                        <Stack key={index} spacing={1} direction={'row'}>
+                          <Button
+                            onClick={() => {
+                              setOpenMediaDialog(true);
+                              setMediaFieldToEdit(`custom.${index}.iconUrl`);
+                            }}
+                          >
+                            {values?.custom[index]?.iconUrl ? (
+                              <BackgroundImage
+                                src={values?.custom[index]?.iconUrl}
+                              />
+                            ) : (
+                              <EmptyImageProfile />
+                            )}
+                          </Button>
+                          <Field
+                            name={`custom.${index}.label`}
+                            component={TextField}
+                            label={
+                              <FormattedMessage
+                                id={'label'}
+                                defaultMessage={'Label'}
+                              />
+                            }
+                          />
 
-                        <Field
-                          name={`custom.${index}.link`}
-                          component={TextField}
-                          label={
-                            <FormattedMessage
-                              id={'link'}
-                              defaultMessage={'Link'}
-                            />
-                          }
-                        />
-                        <Button
-                          type="button"
-                          size={'large'}
-                          onClick={() => arrayHelpers.remove(index)} // remove a media from the list
-                        >
-                          <RemoveIcon />
-                        </Button>
-                        <Button
-                          size={'large'}
-                          type="button"
-                          onClick={() => arrayHelpers.insert(index, '')} // insert an media string at a position
-                        >
-                          <AddIcon />
-                        </Button>
-                      </Stack>
-                    ))
-                  ) : (
+                          <Field
+                            name={`custom.${index}.link`}
+                            component={TextField}
+                            label={
+                              <FormattedMessage
+                                id={'link'}
+                                defaultMessage={'Link'}
+                              />
+                            }
+                          />
+                          <Button
+                            size={'large'}
+                            onClick={() => arrayHelpers.remove(index)} // remove a media from the list
+                          >
+                            <DeleteIcon />
+                          </Button>
+                        </Stack>
+                      ))}
+
                     <Button
-                      type="button"
+                      variant={'outlined'}
+                      sx={{ maxWidth: '200px' }}
                       onClick={() => arrayHelpers.push('')}
                       startIcon={<AddIcon />}
                     >
@@ -377,7 +372,7 @@ export default function SocialWizardContainer({
                         defaultMessage={'Add Custom'}
                       />
                     </Button>
-                  )}
+                  </Stack>
                 </Box>
               )}
             />

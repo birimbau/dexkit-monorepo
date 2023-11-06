@@ -66,10 +66,17 @@ function SignConfigDialog({
     <Dialog {...dialogProps} onClose={handleClose}>
       <AppDialogTitle
         title={
-          <FormattedMessage
-            id="sending.app.config"
-            defaultMessage="Sending app config"
-          />
+          isSuccess ? (
+            <FormattedMessage
+              id="app.config.sent"
+              defaultMessage="App config sent"
+            />
+          ) : (
+            <FormattedMessage
+              id="sending.app.config"
+              defaultMessage="Sending app config"
+            />
+          )
         }
         onClose={handleClose}
       />

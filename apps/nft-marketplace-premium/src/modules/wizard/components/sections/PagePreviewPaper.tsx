@@ -1,4 +1,4 @@
-import { Box, Paper, Stack, Typography } from '@mui/material';
+import { Box, Paper, Typography } from '@mui/material';
 import { FormattedMessage } from 'react-intl';
 import { AppPageSection } from '../../types/section';
 import PreviewPagePlatform from '../PreviewPagePlatform';
@@ -12,24 +12,21 @@ interface Props {
 export function PagePreviewPaper({ sections, name, hideButtons }: Props) {
   return (
     <Paper>
-      <Box sx={{ p: 2 }}>
-        <Stack
-          direction="row"
-          alignItems="center"
-          alignContent="center"
-          justifyContent="space-between"
-        >
-          <Typography variant="body1" sx={{ fontWeight: 600 }}>
-            <FormattedMessage
-              id="page.preview.title"
-              defaultMessage="{name} page preview"
-              values={{ name }}
-            />
-          </Typography>
-        </Stack>
-      </Box>
       <Box>
-        <PreviewPagePlatform sections={sections} disabled={true} />
+        <PreviewPagePlatform
+          sections={sections}
+          disabled={true}
+          enableOverflow={true}
+          title={
+            <Typography variant="body1" sx={{ fontWeight: 600 }}>
+              <FormattedMessage
+                id="page.preview.title"
+                defaultMessage="{name} page preview"
+                values={{ name }}
+              />
+            </Typography>
+          }
+        />
       </Box>
     </Paper>
   );

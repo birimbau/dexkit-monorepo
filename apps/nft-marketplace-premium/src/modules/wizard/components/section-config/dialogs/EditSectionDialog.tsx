@@ -274,7 +274,7 @@ export default function EditSectionDialog({
             {renderSectionType(sectionType)}
           </Grid>*/}
           <Grid item xs={6}>
-            {changedSection && (
+            {changedSection && sectionType && (
               <PreviewPagePlatform
                 sections={[changedSection as AppPageSection]}
                 disabled={true}

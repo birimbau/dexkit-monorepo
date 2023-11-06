@@ -1,8 +1,8 @@
+import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
-import Typography from '@mui/material/Typography';
 import { Field, Form, Formik } from 'formik';
 import { CheckboxWithLabel } from 'formik-mui';
 import { FormattedMessage, useIntl } from 'react-intl';
@@ -39,29 +39,12 @@ export default function HidePoweredContainer({ config, onSave }: Props) {
         <Form>
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              <Stack>
-                <Typography variant={'subtitle2'}>
-                  <FormattedMessage
-                    id="powered.by.dexkit"
-                    defaultMessage="Powered by DexKit"
-                  />
-                </Typography>
-                <Typography variant={'body2'}>
-                  <FormattedMessage
-                    id="edit.hide.powered.by.dexkit"
-                    defaultMessage="Edit powered by DexKit"
-                  />
-                </Typography>
-              </Stack>
-            </Grid>
-            <Grid item xs={12}>
-              <Divider />
-            </Grid>
-            <Grid item xs={12}>
-              <FormattedMessage
-                id="powered.by.dexkit.info"
-                defaultMessage="You need to associate an NFT to your app to use this feature."
-              />
+              <Alert severity={'warning'}>
+                <FormattedMessage
+                  id="powered.by.dexkit.info"
+                  defaultMessage='To remove the "Powered by DexKit" branding, click "Create NFT" to associate an NFT with your app.'
+                />
+              </Alert>
             </Grid>
             <Grid item xs={12}>
               <Field

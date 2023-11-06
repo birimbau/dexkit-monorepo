@@ -1,7 +1,7 @@
 import { CollectionOwnershipNFTFormType } from '@/modules/contract-wizard/types';
 import { Check } from '@mui/icons-material';
 import Visibility from '@mui/icons-material/Visibility';
-import { Alert, Button, Divider, Grid, Stack, Typography } from '@mui/material';
+import { Alert, Button, Grid, Stack, Typography } from '@mui/material';
 import { Formik } from 'formik';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
@@ -125,9 +125,6 @@ export default function OwnershipSection({ id, nft }: Props) {
             <Grid item xs={12}>
               <OwnershipNFTForm />
             </Grid>
-            <Grid item xs={12}>
-              <Divider />
-            </Grid>
 
             <Grid item xs={12}>
               <Stack spacing={1} direction="row" justifyContent="flex-end">
@@ -154,14 +151,20 @@ export default function OwnershipSection({ id, nft }: Props) {
                   color="primary"
                 >
                   {nft ? (
-                    <FormattedMessage id="update" defaultMessage="Update" />
+                    <FormattedMessage
+                      id="update.nft"
+                      defaultMessage="Update NFT"
+                    />
                   ) : (
-                    <FormattedMessage id="create" defaultMessage="Create" />
+                    <FormattedMessage
+                      id="create.nft"
+                      defaultMessage="Create NFT"
+                    />
                   )}
                 </Button>
               </Stack>
             </Grid>
-            {isHoldingKitQuery.data !== true && (
+            {isHoldingKitQuery.data !== true && false && (
               <Grid item xs={12} container justifyContent="flex-end">
                 <Alert severity="info">
                   <FormattedMessage
