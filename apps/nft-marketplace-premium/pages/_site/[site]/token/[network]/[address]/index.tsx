@@ -1,6 +1,7 @@
 import { ContractMetadataHeader } from '@/modules/contract-wizard/components/ContractMetadataHeader';
 import TokenErc20Section from '@/modules/wizard/components/sections/TokenErc20Section';
 import { hexToString } from '@dexkit/ui/utils';
+import Container from '@mui/material/Container';
 import Stack from '@mui/material/Stack';
 import { QueryClient, dehydrate } from '@tanstack/react-query';
 import {
@@ -34,24 +35,26 @@ export function TokensPage() {
 
   if (contractType === 'TokenERC20') {
     return (
-      <Stack spacing={2}>
-        <ContractMetadataHeader
-          address={address as string}
-          network={network as string}
-          contractType={data}
-          contractTypeV2={contractType}
-          hidePublicPageUrl={true}
-        />
-        <TokenErc20Section
-          section={{
-            type: 'token',
-            settings: {
-              address: address as string,
-              network: network as string,
-            },
-          }}
-        />
-      </Stack>
+      <Container maxWidth={'md'}>
+        <Stack spacing={2}>
+          <ContractMetadataHeader
+            address={address as string}
+            network={network as string}
+            contractType={data}
+            contractTypeV2={contractType}
+            hidePublicPageUrl={true}
+          />
+          <TokenErc20Section
+            section={{
+              type: 'token',
+              settings: {
+                address: address as string,
+                network: network as string,
+              },
+            }}
+          />
+        </Stack>
+      </Container>
     );
   }
 
