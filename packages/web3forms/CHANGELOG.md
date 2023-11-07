@@ -1,5 +1,25 @@
 # @dexkit/web3forms
 
+## 0.6.0
+
+### Minor Changes
+
+- 372b27b: Added support for token and collection drops. Added support for staking on token, collection and edition. Added manage admin for token, edition, and collection and respective drops. Added admin for stake
+- 372b27b: Added airdrop contracts and respective admin and public pages. Improve wallet button popover
+
+### Patch Changes
+
+- Updated dependencies [372b27b]
+- Updated dependencies [372b27b]
+  - @dexkit/core@0.9.0
+  - @dexkit/ui@0.9.0
+
+## 0.5.0
+
+### Minor Changes
+
+- 051a75e: Improving way to interact with contracts metadata. Add server file option to web3 forms
+
 ## 0.4.0
 
 ### Minor Changes

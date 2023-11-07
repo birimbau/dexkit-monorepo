@@ -15,6 +15,7 @@ import {
   Button,
   Grid,
   Pagination,
+  Skeleton,
   Stack,
   Typography,
 } from '@mui/material';
@@ -179,16 +180,27 @@ export function AssetListContractEdition({
                 {isLoadingAsset ? ' ' : assetSelected?.balance?.toString() || 0}
               </Typography>
               <Stack spacing={2} direction={'row'}>
-                <Button
-                  href={`/drop/edition/${network}/${assetSelected?.contractAddress}/${assetSelected?.id}`}
-                  target="_blank"
-                  endIcon={<OpenInNewIcon />}
-                >
-                  <FormattedMessage
-                    id="view.drop"
-                    defaultMessage={'View drop'}
-                  />
-                </Button>
+                {isLoadingAsset ? (
+                  <Skeleton>
+                    <Button>
+                      <FormattedMessage
+                        id="view.drop"
+                        defaultMessage={'View drop'}
+                      />
+                    </Button>
+                  </Skeleton>
+                ) : (
+                  <Button
+                    href={`/drop/edition/${network}/${assetSelected?.contractAddress}/${assetSelected?.id}`}
+                    target="_blank"
+                    endIcon={<OpenInNewIcon />}
+                  >
+                    <FormattedMessage
+                      id="view.drop"
+                      defaultMessage={'View drop'}
+                    />
+                  </Button>
+                )}
 
                 <Button
                   startIcon={<SendIcon />}

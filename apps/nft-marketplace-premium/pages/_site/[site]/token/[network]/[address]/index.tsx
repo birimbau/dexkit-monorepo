@@ -1,10 +1,14 @@
+import { ContractMetadataHeader } from '@/modules/contract-wizard/components/ContractMetadataHeader';
 import TokenErc20Section from '@/modules/wizard/components/sections/TokenErc20Section';
 import { hexToString } from '@dexkit/ui/utils';
+import Container from '@mui/material/Container';
+import Stack from '@mui/material/Stack';
 import { QueryClient, dehydrate } from '@tanstack/react-query';
 import {
   ThirdwebSDKProvider,
   useContract,
   useContractRead,
+  useContractType,
 } from '@thirdweb-dev/react';
 import { useWeb3React } from '@web3-react/core';
 import { GetStaticPropsContext } from 'next';
@@ -20,6 +24,7 @@ export function TokensPage() {
   const { address, network } = query;
 
   const { data: contract } = useContract(address as string);
+  const { data } = useContractType(address as string);
   const contractRead = useContractRead(contract, 'contractType');
 
   let contractType = hexToString(contractRead.data);
@@ -30,12 +35,26 @@ export function TokensPage() {
 
   if (contractType === 'TokenERC20') {
     return (
-      <TokenErc20Section
-        section={{
-          type: 'token',
-          settings: { address: address as string, network: network as string },
-        }}
-      />
+      <Container maxWidth={'md'}>
+        <Stack spacing={2}>
+          <ContractMetadataHeader
+            address={address as string}
+            network={network as string}
+            contractType={data}
+            contractTypeV2={contractType}
+            hidePublicPageUrl={true}
+          />
+          <TokenErc20Section
+            section={{
+              type: 'token',
+              settings: {
+                address: address as string,
+                network: network as string,
+              },
+            }}
+          />
+        </Stack>
+      </Container>
     );
   }
 

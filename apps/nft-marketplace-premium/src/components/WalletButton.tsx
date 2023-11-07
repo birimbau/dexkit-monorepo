@@ -1,6 +1,8 @@
 import { useEvmNativeBalanceQuery } from '@dexkit/core';
 import { GET_WALLET_ICON } from '@dexkit/core/connectors';
-import { formatBigNumber } from '@dexkit/core/utils';
+import { AccountBalance } from '@dexkit/ui/components/AccountBalance';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import {
   Avatar,
   Box,
@@ -11,11 +13,12 @@ import {
 } from '@mui/material';
 import { useWeb3React } from '@web3-react/core';
 import { useAtomValue } from 'jotai';
-import { useMemo, useState } from 'react';
+import dynamic from 'next/dynamic';
+import { useState } from 'react';
 import { isBalancesVisibleAtom } from '../state/atoms';
-import { getChainSymbol, truncateAddress } from '../utils/blockchain';
+import { truncateAddress } from '../utils/blockchain';
 
-import WalletContent from './WalletContent';
+const WalletContent = dynamic(() => import('./WalletContent'));
 
 export interface WalletButtonProps {
   align?: 'center' | 'left';
@@ -31,14 +34,6 @@ export function WalletButton({ align }: WalletButtonProps) {
   const justifyContent = align === 'left' ? 'flex-start' : 'center';
 
   const { data: balance } = useEvmNativeBalanceQuery({ provider, account });
-
-  const formattedBalance = useMemo(() => {
-    if (balance) {
-      return formatBigNumber(balance);
-    }
-
-    return '0.00';
-  }, [balance]);
 
   const [showContent, setShowContent] = useState(false);
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
@@ -70,8 +65,8 @@ export function WalletButton({ align }: WalletButtonProps) {
           <Avatar
             src={GET_WALLET_ICON(connector)}
             sx={(theme) => ({
-              width: theme.spacing(4),
-              height: theme.spacing(4),
+              width: theme.spacing(2),
+              height: theme.spacing(2),
               background: theme.palette.action.hover,
             })}
             variant="rounded"
@@ -85,27 +80,24 @@ export function WalletButton({ align }: WalletButtonProps) {
                 : '**********'}
             </Typography>
             <div>
-              <Typography
-                color="text.secondary"
-                variant="caption"
-                align="left"
-                component="div"
-              >
-                {isBalancesVisible ? formattedBalance : '*.**'}{' '}
-                {getChainSymbol(chainId)}
-              </Typography>
+              {false && (
+                <AccountBalance isBalancesVisible={isBalancesVisible} />
+              )}
             </div>
           </Box>
+          {showContent ? <ExpandLessIcon /> : <ExpandMoreIcon />}
         </Stack>
       </ButtonBase>
-      <Popover
-        open={showContent}
-        anchorEl={anchorEl}
-        anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
-        onClose={handleClose}
-      >
-        <WalletContent />
-      </Popover>
+      {showContent && (
+        <Popover
+          open={showContent}
+          anchorEl={anchorEl}
+          anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
+          onClose={handleClose}
+        >
+          <WalletContent />
+        </Popover>
+      )}
     </>
   );
 }

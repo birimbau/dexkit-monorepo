@@ -4,7 +4,7 @@ import Cancel from "@mui/icons-material/Cancel";
 import Delete from "@mui/icons-material/Delete";
 import Edit from "@mui/icons-material/Edit";
 import ImportExport from "@mui/icons-material/ImportExport";
-import { Box, Button } from "@mui/material";
+import { Box, Button, Tooltip } from "@mui/material";
 import {
   DataGrid,
   GridActionsCellItem,
@@ -118,6 +118,7 @@ export interface AppDataTableProps<T extends { id?: string; isNew?: boolean }> {
   dataColumns: {
     isValid?: (value: unknown) => boolean;
     name: string;
+    width?: number;
     headerName: string;
     editable?: boolean;
   }[];
@@ -201,6 +202,7 @@ export default function AppDataTable<
           field: column.name,
           headerName: column.headerName,
           editable: column.editable,
+          width: column.width,
           preProcessEditCellProps: (params: GridPreProcessEditCellProps) => {
             if (column.isValid && params.props.value !== undefined) {
               const hasError = !column.isValid(params.props.value);
@@ -223,14 +225,23 @@ export default function AppDataTable<
 
           if (isInEditMode) {
             return [
-              <GridActionsCellItem
-                icon={<Save />}
-                label="Save"
-                sx={{
-                  color: "primary.main",
-                }}
-                onClick={handleSaveClick(id)}
-              />,
+              <Tooltip
+                title={
+                  <FormattedMessage
+                    id={"save.column"}
+                    defaultMessage={"Save column"}
+                  ></FormattedMessage>
+                }
+              >
+                <GridActionsCellItem
+                  icon={<Save />}
+                  label="Save"
+                  sx={{
+                    color: "primary.main",
+                  }}
+                  onClick={handleSaveClick(id)}
+                />
+              </Tooltip>,
               <GridActionsCellItem
                 icon={<Cancel />}
                 label="Cancel"
@@ -242,19 +253,37 @@ export default function AppDataTable<
           }
 
           return [
-            <GridActionsCellItem
-              icon={<Edit />}
-              label="Edit"
-              className="textPrimary"
-              onClick={handleEditClick(id)}
-              color="inherit"
-            />,
-            <GridActionsCellItem
-              icon={<Delete />}
-              label="Delete"
-              onClick={handleDeleteClick(id)}
-              color="inherit"
-            />,
+            <Tooltip
+              title={
+                <FormattedMessage
+                  id={"edit.column"}
+                  defaultMessage={"Edit column"}
+                ></FormattedMessage>
+              }
+            >
+              <GridActionsCellItem
+                icon={<Edit />}
+                label="Edit"
+                className="textPrimary"
+                onClick={handleEditClick(id)}
+                color="inherit"
+              />
+            </Tooltip>,
+            <Tooltip
+              title={
+                <FormattedMessage
+                  id={"delete.column"}
+                  defaultMessage={"Delete column"}
+                ></FormattedMessage>
+              }
+            >
+              <GridActionsCellItem
+                icon={<Delete />}
+                label="Delete"
+                onClick={handleDeleteClick(id)}
+                color="error"
+              />
+            </Tooltip>,
           ];
         },
       },

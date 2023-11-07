@@ -14,12 +14,14 @@ import { AppDialogTitle } from 'src/components/AppDialogTitle';
 
 export interface AirdropDialogProps {
   DialogProps: DialogProps;
+  DialogTitle?: React.ReactNode;
   onConfirm: (data: { address: string; quantity: string }[]) => void;
   value: { address: string; quantity: string }[];
 }
 
 export default function AirdropDialog({
   DialogProps,
+  DialogTitle,
   onConfirm,
   value,
 }: AirdropDialogProps) {
@@ -49,7 +51,13 @@ export default function AirdropDialog({
   return (
     <Dialog {...DialogProps}>
       <AppDialogTitle
-        title={<FormattedMessage id="airdrop" defaultMessage="Airdrop" />}
+        title={
+          DialogTitle ? (
+            DialogTitle
+          ) : (
+            <FormattedMessage id="airdrop" defaultMessage="Airdrop" />
+          )
+        }
       />
       <DialogContent sx={{ p: 0 }} dividers>
         <AppDataTable
@@ -57,6 +65,7 @@ export default function AirdropDialog({
             {
               headerName: 'Address',
               name: 'address',
+              width: 400,
               isValid: (value: unknown) => {
                 return ethers.utils.isAddress(value as string);
               },
@@ -65,6 +74,7 @@ export default function AirdropDialog({
             {
               headerName: 'Quantity',
               name: 'quantity',
+              width: 120,
               isValid: (value: unknown) => {
                 return isValidDecimal(value as string, 18);
               },

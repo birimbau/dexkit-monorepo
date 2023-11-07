@@ -105,7 +105,8 @@ export class MagicConnector extends Connector {
     //@ts-ignore
     const magic: InstanceWithExtensions<SDKBase, OAuthExtension[]> | undefined =
       this.magicInstance;
-
+    console.log(loginType);
+    console.log(window);
     if (typeof window !== "undefined" && loginType) {
       localStorage.setItem("loginType", loginType);
     }

@@ -34,6 +34,7 @@ interface Props {
   contractType?: string | null;
   contractTypeV2?: string;
   network?: string;
+  hidePublicPageUrl?: boolean;
 }
 
 export function ContractMetadataHeader({
@@ -41,6 +42,7 @@ export function ContractMetadataHeader({
   contractType,
   network,
   contractTypeV2,
+  hidePublicPageUrl,
 }: Props) {
   const { data: contract } = useContract(address);
   const { data } = useContractMetadata(contract);
@@ -51,7 +53,10 @@ export function ContractMetadataHeader({
   const chainId = NETWORK_FROM_SLUG(network)?.chainId;
 
   const getContractUrl = (contractType?: string) => {
-    let url = '';
+    let url: string | null = '';
+    if (hidePublicPageUrl) {
+      return null;
+    }
 
     switch (contractType) {
       case 'NFTStake':
@@ -66,11 +71,11 @@ export function ContractMetadataHeader({
         url = `/collection/${network}/${address}`;
         break;
       case 'TokenERC20':
-      case 'TokenERC721':
-      case 'TokenERC1155':
-        url = `/token/nft/${network}/${address}`;
+        url = `/token/${network}/${address}`;
         break;
       case 'DropERC1155':
+        url = null;
+        break;
       case 'DropERC721':
         url = `/drop/nft/${network}/${address}`;
         break;
@@ -208,12 +213,14 @@ export function ContractMetadataHeader({
               >
                 <FormattedMessage id="explorer" defaultMessage="Explorer" />
               </Button>
-              <Link href={getContractUrl(contractTypeV2)}>
-                <FormattedMessage
-                  id="view.contract"
-                  defaultMessage="View contract"
-                />
-              </Link>
+              {getContractUrl(contractTypeV2) && (
+                <Link href={getContractUrl(contractTypeV2) as string}>
+                  <FormattedMessage
+                    id="view.public.page"
+                    defaultMessage="View public page"
+                  />
+                </Link>
+              )}
               <Chip
                 label={
                   contractType

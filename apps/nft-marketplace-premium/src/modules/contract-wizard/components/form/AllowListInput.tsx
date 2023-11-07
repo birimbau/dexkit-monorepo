@@ -22,12 +22,12 @@ export default function AllowListInput({ name }: AllowListInputProps) {
   const [open, setOpen] = useState(false);
 
   const handleChangeAllowList = (
-    data: { quantity: string; address: string }[]
+    data: { quantity: string; address: string }[],
   ) => {
     helpers.setValue(
       data.map((item) => {
         return { address: item.address, maxClaimable: item.quantity };
-      })
+      }),
     );
   };
 
@@ -49,6 +49,12 @@ export default function AllowListInput({ name }: AllowListInputProps) {
             open,
             onClose: handleClose,
           }}
+          DialogTitle={
+            <FormattedMessage
+              id={'edit.claimers'}
+              defaultMessage={'Edit claimers'}
+            />
+          }
           value={
             input.value?.map((item) => ({
               address: item.address,

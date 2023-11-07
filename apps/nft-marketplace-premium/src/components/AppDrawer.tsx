@@ -18,7 +18,7 @@ import {
   Typography,
 } from '@mui/material';
 
-import { useAuthUserQuery } from '@dexkit/ui';
+import { useAuthUserQuery } from '@/modules/user/hooks';
 import AttachMoney from '@mui/icons-material/AttachMoney';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import Language from '@mui/icons-material/Language';

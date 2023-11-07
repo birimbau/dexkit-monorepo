@@ -168,6 +168,9 @@ export async function switchNetwork(connector: Connector, chainId: number) {
       params: [{ chainId: `0x${chainId.toString(16)}` }],
     });
   }
+  if (connector instanceof MagicConnector) {
+    return connector.changeNetwork(parseChainId(chainId));
+  }
 }
 
 export function buildEtherReceiveAddress({

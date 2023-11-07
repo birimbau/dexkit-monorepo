@@ -31,6 +31,7 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { getChainLogoImage, getChainName } from '../utils/blockchain';
 import Link from './Link';
 
+import SelectNetworkDialog from '@dexkit/ui/components/dialogs/SelectNetworkDialog';
 import AttachMoney from '@mui/icons-material/AttachMoney';
 import Language from '@mui/icons-material/Language';
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -50,17 +51,13 @@ import {
 } from '../state/atoms';
 import NavbarMenu from './Menu';
 import { WalletButton } from './WalletButton';
-import SelectNetworkDialog from './dialogs/SelectNetworkDialog';
 import Notification from './icons/Notification';
 import Wallet from './icons/Wallet';
 
+import { useAuthUserQuery } from '@/modules/user/hooks';
 import NotificationsDialog from '@dexkit/ui/components/dialogs/NotificationsDialog';
 import { ThemeMode } from '@dexkit/ui/constants/enum';
-import {
-  useAuthUserQuery,
-  useDexKitContext,
-  useNotifications,
-} from '@dexkit/ui/hooks';
+import { useDexKitContext, useNotifications } from '@dexkit/ui/hooks';
 import AppProfileMenu from './AppProfileMenu';
 import { ThemeModeSelector } from './ThemeModeSelector';
 

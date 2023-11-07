@@ -32,7 +32,7 @@ export function ClaimConditionForm({ itemIndex, network }: Props) {
 
     if (currencyAddress) {
       return tokens.find(
-        (t) => t.address.toLowerCase() === currencyAddress.toLowerCase()
+        (t) => t.address.toLowerCase() === currencyAddress.toLowerCase(),
       );
     }
   }, [values.phases[itemIndex].currencyAddress, tokens]);
@@ -94,7 +94,7 @@ export function ClaimConditionForm({ itemIndex, network }: Props) {
                     onClick={() =>
                       setFieldValue(
                         `phases[${itemIndex}].maxClaimableSupply`,
-                        'unlimited'
+                        'unlimited',
                       )
                     }
                   >
@@ -128,7 +128,7 @@ export function ClaimConditionForm({ itemIndex, network }: Props) {
                     onClick={() =>
                       setFieldValue(
                         `phases[${itemIndex}].maxClaimablePerWallet`,
-                        'unlimited'
+                        'unlimited',
                       )
                     }
                   >
@@ -160,9 +160,11 @@ export function ClaimConditionForm({ itemIndex, network }: Props) {
             }
           />
         </Grid>
-        <Grid item xs={12}>
-          <AllowListInput name={`phases[${itemIndex}].snapshot`} />
-        </Grid>
+        {false && (
+          <Grid item xs={12}>
+            <AllowListInput name={`phases[${itemIndex}].snapshot`} />
+          </Grid>
+        )}
       </Grid>
     </Box>
   );
