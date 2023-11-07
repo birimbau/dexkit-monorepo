@@ -27,55 +27,56 @@ export function SectionSelector({ onClickSection }: Props) {
   };
 
   return (
-    <Grid container spacing={2}>
-      <Grid item xs={12} justifyContent={'center'}>
-        <Box sx={{ pl: 3, pr: 3 }}>
-          <FormControl variant="outlined" fullWidth>
-            <InputLabel htmlFor="outlined-search">
-              <FormattedMessage id={'search'} defaultMessage={'Search'} />
-            </InputLabel>
-            <OutlinedInput
-              id="outlined-search"
-              onChange={(s) => setSearch(s.currentTarget.value)}
-              label={
+    <Box sx={{ pl: 3, pr: 3 }}>
+      <Grid container spacing={2}>
+        <Grid item xs={12} justifyContent={'center'}>
+          <Box sx={{ pl: 2, pr: 2 }}>
+            <FormControl variant="outlined" fullWidth>
+              <InputLabel htmlFor="outlined-search">
                 <FormattedMessage id={'search'} defaultMessage={'Search'} />
-              }
-              endAdornment={
-                <InputAdornment position="end">
-                  <IconButton aria-label="search" edge="end">
-                    <SearchIcon />
-                  </IconButton>
-                </InputAdornment>
-              }
-            />
-          </FormControl>
-        </Box>
-      </Grid>
-      <Grid item xs={12}>
-        <Tabs
-          value={value}
-          onChange={handleChange}
-          variant="scrollable"
-          scrollButtons="auto"
-          aria-label="scrollable auto tabs example"
-        >
-          <Tab
-            label={<FormattedMessage id={'all'} defaultMessage={'All'} />}
-            value={'all'}
-          />
-          {SectionCategory.map((cat, key) => (
+              </InputLabel>
+              <OutlinedInput
+                id="outlined-search"
+                onChange={(s) => setSearch(s.currentTarget.value)}
+                label={
+                  <FormattedMessage id={'search'} defaultMessage={'Search'} />
+                }
+                endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton aria-label="search" edge="end">
+                      <SearchIcon />
+                    </IconButton>
+                  </InputAdornment>
+                }
+              />
+            </FormControl>
+          </Box>
+        </Grid>
+        <Grid item xs={12}>
+          <Tabs
+            value={value}
+            onChange={handleChange}
+            variant="scrollable"
+            scrollButtons="auto"
+            aria-label="scrollable auto tabs example"
+          >
             <Tab
-              key={key}
-              label={
-                <FormattedMessage id={cat.value} defaultMessage={cat.title} />
-              }
-              value={cat.value}
+              label={<FormattedMessage id={'all'} defaultMessage={'All'} />}
+              value={'all'}
             />
-          ))}
-        </Tabs>
-      </Grid>
-      <Grid item xs={12}>
-        {/*  <Box
+            {SectionCategory.map((cat, key) => (
+              <Tab
+                key={key}
+                label={
+                  <FormattedMessage id={cat.value} defaultMessage={cat.title} />
+                }
+                value={cat.value}
+              />
+            ))}
+          </Tabs>
+        </Grid>
+        <Grid item xs={12}>
+          {/*  <Box
               sx={{
                 border: '1px solid',
                 width: '121px',
@@ -96,7 +97,7 @@ export function SectionSelector({ onClickSection }: Props) {
                 <FormattedMessage id={'search'} defaultMessage={'Search'} />
               </Typography>
             </Box>*/}
-        {/* <Button
+          {/* <Button
               sx={{
                 border: '1px solid',
                 width: '121px',
@@ -118,72 +119,73 @@ export function SectionSelector({ onClickSection }: Props) {
                 </Typography>
               </Stack>
             </Button>*/}
-        {SectionCategory.filter((c) => {
-          if (value !== 'all') {
-            return c.value === value;
-          }
-          return true;
-        }).map((cat, key) => (
-          <Stack spacing={2} key={key}>
-            <Box pt={2}>
-              <Typography variant="subtitle1">{cat.title}</Typography>
-            </Box>
+          {SectionCategory.filter((c) => {
+            if (value !== 'all') {
+              return c.value === value;
+            }
+            return true;
+          }).map((cat, key) => (
+            <Stack spacing={2} key={key}>
+              <Box pt={2}>
+                <Typography variant="subtitle1">{cat.title}</Typography>
+              </Box>
 
-            <Grid container>
-              {sections
-                .filter((s) => s.category === cat.value)
-                .filter((s) => {
-                  if (search) {
-                    return (
-                      formatMessage({
-                        id: s.titleId,
-                        defaultMessage: s.titleDefaultMessage,
-                      })
-                        .toLowerCase()
-                        .indexOf(search.toLowerCase()) !== -1
-                    );
-                  } else {
-                    return true;
-                  }
-                })
-                .map((sec, k) => (
-                  <Grid item xs={3} key={k}>
-                    <Tooltip title={sec.description}>
-                      <ButtonBase
-                        sx={{
-                          border: '1px solid',
-                          width: '121px',
-                          height: '112px',
-                          borderRadius: '8px',
-                          borderColor: 'text.secondary',
-                        }}
-                        onClick={() =>
-                          onClickSection({ sectionType: sec.type })
-                        }
-                      >
-                        <Stack
-                          justifyContent={'center'}
-                          alignItems={'center'}
-                          spacing={1}
+              <Grid container sx={{ overflow: 'auto' }}>
+                {sections
+                  .filter((s) => s.category === cat.value)
+                  .filter((s) => {
+                    if (search) {
+                      return (
+                        formatMessage({
+                          id: s.titleId,
+                          defaultMessage: s.titleDefaultMessage,
+                        })
+                          .toLowerCase()
+                          .indexOf(search.toLowerCase()) !== -1
+                      );
+                    } else {
+                      return true;
+                    }
+                  })
+                  .map((sec, k) => (
+                    <Grid item xs={6} sm={3} key={k}>
+                      <Tooltip title={sec.description}>
+                        <ButtonBase
+                          sx={{
+                            border: '1px solid',
+                            width: '121px',
+                            height: '112px',
+                            borderRadius: '8px',
+                            borderColor: 'text.secondary',
+                          }}
+                          onClick={() =>
+                            onClickSection({ sectionType: sec.type })
+                          }
                         >
-                          {sec.icon}
+                          <Stack
+                            justifyContent={'center'}
+                            alignItems={'center'}
+                            spacing={1}
+                          >
+                            {sec.icon}
 
-                          <Typography variant="body2">
-                            {' '}
-                            {formatMessage({
-                              id: sec.titleId,
-                              defaultMessage: sec.titleDefaultMessage,
-                            }) || ''}
-                          </Typography>
-                        </Stack>
-                      </ButtonBase>
-                    </Tooltip>
-                  </Grid>
-                ))}
-            </Grid>
-          </Stack>
-        ))}
+                            <Typography variant="body2">
+                              {' '}
+                              {formatMessage({
+                                id: sec.titleId,
+                                defaultMessage: sec.titleDefaultMessage,
+                              }) || ''}
+                            </Typography>
+                          </Stack>
+                        </ButtonBase>
+                      </Tooltip>
+                    </Grid>
+                  ))}
+              </Grid>
+            </Stack>
+          ))}
+        </Grid>
       </Grid>
-    </Grid>
+    </Box>
   );
 }

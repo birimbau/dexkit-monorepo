@@ -12,6 +12,7 @@ import {
   Stack,
   Switch,
   TextField,
+  Tooltip,
   Typography,
 } from '@mui/material';
 import { useAtomValue } from 'jotai';
@@ -213,38 +214,6 @@ export default function ThemeWizardContainer({
         </Grid>
         <Grid item xs={12} sm={6}>
           <Stack spacing={2}>
-            <Box>
-              <Typography variant="body2">
-                <FormattedMessage
-                  id="default.theme.mode"
-                  defaultMessage={'Default theme mode'}
-                />
-              </Typography>
-              <Stack
-                direction={'row'}
-                alignContent={'center'}
-                alignItems={'center'}
-              >
-                <Typography variant="body1">
-                  {' '}
-                  <FormattedMessage id="light" defaultMessage={'Light'} />
-                </Typography>
-                <Switch
-                  defaultChecked={defaultThemeMode === ThemeMode.dark}
-                  onChange={() => {
-                    if (defaultThemeMode === 'dark') {
-                      setDefaultThemeMode(ThemeMode.light);
-                    } else {
-                      setDefaultThemeMode(ThemeMode.dark);
-                    }
-                  }}
-                />
-                <Typography variant="body1">
-                  {' '}
-                  <FormattedMessage id="dark" defaultMessage={'Dark'} />
-                </Typography>
-              </Stack>
-            </Box>
             <Typography variant="body2">
               <FormattedMessage
                 id="choose.app.theme.color.for.each.mode "
@@ -256,7 +225,7 @@ export default function ThemeWizardContainer({
               <Select
                 labelId="theme-mode-label"
                 id="theme-mode"
-                sx={{ maxWidth: '200px' }}
+                sx={{ maxWidth: '150px' }}
                 fullWidth
                 value={selectedThemeMode}
                 onChange={(ev) => {
@@ -281,6 +250,51 @@ export default function ThemeWizardContainer({
                 legacyTheme={config?.customTheme}
               />
             </Stack>
+            <Box>
+              <Typography variant="body2">
+                <FormattedMessage
+                  id="default.theme.mode"
+                  defaultMessage={'Default theme mode'}
+                />
+              </Typography>
+              <Stack
+                direction={'row'}
+                alignContent={'center'}
+                alignItems={'center'}
+              >
+                <Typography variant="body1">
+                  {' '}
+                  <FormattedMessage id="light" defaultMessage={'Light'} />
+                </Typography>
+                <Tooltip
+                  title={
+                    <FormattedMessage
+                      id={
+                        'select.the.theme.mode.that.will.be.loaded.when.opened'
+                      }
+                      defaultMessage={
+                        'Select the theme mode that will be loaded when the app is opened.'
+                      }
+                    />
+                  }
+                >
+                  <Switch
+                    defaultChecked={defaultThemeMode === ThemeMode.dark}
+                    onChange={() => {
+                      if (defaultThemeMode === 'dark') {
+                        setDefaultThemeMode(ThemeMode.light);
+                      } else {
+                        setDefaultThemeMode(ThemeMode.dark);
+                      }
+                    }}
+                  />
+                </Tooltip>
+                <Typography variant="body1">
+                  {' '}
+                  <FormattedMessage id="dark" defaultMessage={'Dark'} />
+                </Typography>
+              </Stack>
+            </Box>
             <Stack spacing={1}>
               <Typography variant="body2">
                 <FormattedMessage
@@ -298,6 +312,7 @@ export default function ThemeWizardContainer({
                 renderInput={(params) => (
                   <TextField
                     {...params}
+                    sx={{ maxWidth: '350px' }}
                     label={
                       <FormattedMessage id={'font'} defaultMessage={'Font'} />
                     }

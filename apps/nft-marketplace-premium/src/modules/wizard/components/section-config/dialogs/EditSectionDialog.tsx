@@ -1,5 +1,5 @@
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import CloseIcon from '@mui/icons-material/Close';
 import {
   Box,
   Dialog,
@@ -113,7 +113,7 @@ export default function EditSectionDialog({
               alignItems={'center'}
             >
               <IconButton aria-label="close dialog" onClick={handleClose}>
-                <ArrowBackIcon />
+                <CloseIcon />
               </IconButton>
               <Box>
                 <FormattedMessage
@@ -132,18 +132,19 @@ export default function EditSectionDialog({
               alignItems={'center'}
             >
               <IconButton aria-label="close dialog" onClick={handleClose}>
-                <ArrowBackIcon />
+                <CloseIcon />
               </IconButton>
               <FormattedMessage id="add.section" defaultMessage="Add Section" />
             </Stack>
           )
         }
+        hideCloseButton={true}
         onClose={handleClose}
       />
       <Divider />
       <DialogContent>
         <Grid container spacing={2}>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={6} md={4}>
             {!sectionType && (
               <SectionSelector
                 onClickSection={(s) => setSectionType(s.sectionType)}
@@ -273,13 +274,19 @@ export default function EditSectionDialog({
           {/*<Grid item xs={6}>
             {renderSectionType(sectionType)}
           </Grid>*/}
-          <Grid item xs={6}>
-            {changedSection && sectionType && (
-              <PreviewPagePlatform
-                sections={[changedSection as AppPageSection]}
-                disabled={true}
-              />
-            )}
+          <Grid item xs={12} sm={6} md={8}>
+            <PreviewPagePlatform
+              sections={sectionType ? [changedSection as AppPageSection] : []}
+              title={
+                <b>
+                  <FormattedMessage
+                    id={'preview.section'}
+                    defaultMessage={'Preview section'}
+                  />
+                </b>
+              }
+              disabled={true}
+            />
           </Grid>
         </Grid>
       </DialogContent>
