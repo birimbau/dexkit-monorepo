@@ -9,7 +9,6 @@ import { PageHeader } from 'src/components/PageHeader';
 import MainLayout from 'src/components/layouts/main';
 import { getAppConfig } from 'src/services/app';
 
-import { ChainId } from '@dexkit/core';
 import { ZrxOrder } from '@dexkit/core/services/zrx/types';
 import OrderWidget from '@dexkit/exchange/components/OrderWidget';
 import { EXCHANGE_NOTIFICATION_TYPES } from '@dexkit/exchange/constants/messages';
@@ -31,7 +30,7 @@ export default function ExchangeOrderPage() {
   const { createNotification } = useDexKitContext();
 
   const orderQuery = useZrxOrderbookOrder({
-    chainId: ChainId.Ethereum,
+    chainId: chainId,
     hash: hash as string,
   });
 
@@ -112,13 +111,19 @@ export default function ExchangeOrderPage() {
           />
         </Grid>
         <Grid item xs={12}>
-          {orderQuery.data ? (
-            <OrderWidget
-              onCancel={handleCancelOrder}
-              account={account}
-              record={orderQuery.data}
-            />
-          ) : undefined}
+          <Grid container spacing={2} justifyContent="center">
+            <Grid item xs={12} sm={5}>
+              {orderQuery.data ? (
+                <OrderWidget
+                  onCancel={handleCancelOrder}
+                  account={account}
+                  record={orderQuery.data}
+                  provider={provider}
+                  chainId={chainId}
+                />
+              ) : undefined}
+            </Grid>
+          </Grid>
         </Grid>
       </Grid>
     </Container>
