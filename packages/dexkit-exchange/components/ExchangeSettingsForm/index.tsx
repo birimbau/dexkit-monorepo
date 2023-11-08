@@ -77,7 +77,7 @@ function SaveOnChangeListener({
 export interface ExchangeSettingsFormProps {
   onCancel: () => void;
   onSave: (settings: DexkitExchangeSettings) => void;
-  onChange: (settings: DexkitExchangeSettings) => void;
+  onChange?: (settings: DexkitExchangeSettings) => void;
   saveOnChange?: boolean;
   settings?: DexkitExchangeSettings;
   tokens: Token[];
@@ -282,7 +282,7 @@ export default function ExchangeSettingsForm({
               onClose: handleCloseSelectNetworks,
             }}
           />
-          {saveOnChange && (
+          {saveOnChange && onChange && (
             <SaveOnChangeListener onSave={onChange} onValidate={onValidate} />
           )}
           <Grid container spacing={2}>
