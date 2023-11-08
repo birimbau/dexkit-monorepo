@@ -75,10 +75,14 @@ export function useCheckGatedConditions({
   conditions,
   account,
 }: {
-  conditions: GatedCondition[];
+  conditions?: GatedCondition[];
   account?: string;
 }) {
   return useQuery(['GET_CHECKED_GATED_CONDITIONS', account, conditions], () => {
+    if (!conditions) {
+      return;
+    }
+
     return checkGatedConditions({ account, conditions });
   });
 }

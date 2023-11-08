@@ -24,6 +24,7 @@ import {
 import { getNetworkSlugFromChainId } from '../../../../src/utils/blockchain';
 
 import { getUserByAccountRefresh } from '@/modules/user/services';
+import { GatedConditionRefresher } from '@/modules/wizard/components/GatedConditionRefresher';
 import { GatedConditionView } from '@/modules/wizard/components/GatedConditionView';
 import { SectionsRenderer } from '@/modules/wizard/components/sections/SectionsRenderer';
 import { checkGatedConditions } from '@/modules/wizard/services';
@@ -54,6 +55,7 @@ const CustomPage: NextPage<{
     return (
       <SessionProvider>
         <AuthMainLayout>
+          <GatedConditionRefresher conditions={conditions} account={account} />
           <GatedConditionView
             account={account}
             conditions={conditions}
@@ -189,13 +191,13 @@ export const getServerSideProps: GetServerSideProps = async ({
           const asset = await getAssetData(
             provider,
             item.contractAddress,
-            item.tokenId
+            item.tokenId,
           );
 
           if (asset) {
             await queryClient.prefetchQuery(
               [GET_ASSET_DATA, item.contractAddress, item.tokenId],
-              async () => asset
+              async () => asset,
             );
 
             const metadata = await getAssetMetadata(asset.tokenURI, {
@@ -207,7 +209,7 @@ export const getServerSideProps: GetServerSideProps = async ({
               [GET_ASSET_METADATA, asset.tokenURI],
               async () => {
                 return metadata;
-              }
+              },
             );
           }
         } else if (item.type === 'collection') {
@@ -223,12 +225,12 @@ export const getServerSideProps: GetServerSideProps = async ({
 
           const collection = await getCollectionData(
             provider,
-            item.contractAddress
+            item.contractAddress,
           );
 
           await queryClient.prefetchQuery(
             [GET_COLLECTION_DATA, item.contractAddress, item.chainId],
-            async () => collection
+            async () => collection,
           );
         }
       }
@@ -241,7 +243,7 @@ export const getServerSideProps: GetServerSideProps = async ({
       const assetResponse = await getDKAssetOrderbook({ maker });
       await queryClient.prefetchQuery(
         [GET_ASSETS_ORDERBOOK, { maker }],
-        async () => assetResponse.data
+        async () => assetResponse.data,
       );
     }
   }
