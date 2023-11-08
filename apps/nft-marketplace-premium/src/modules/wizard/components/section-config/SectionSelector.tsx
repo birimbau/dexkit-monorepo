@@ -161,9 +161,10 @@ export function SectionSelector({ onClickSection }: Props) {
                             borderRadius: '8px',
                             borderColor: 'text.secondary',
                           }}
-                          onClick={() =>
-                            onClickSection({ sectionType: sec.type })
-                          }
+                          onClick={() => {
+                            console.log(sec.type);
+                            onClickSection({ sectionType: sec.type });
+                          }}
                         >
                           <Stack
                             justifyContent={'center'}

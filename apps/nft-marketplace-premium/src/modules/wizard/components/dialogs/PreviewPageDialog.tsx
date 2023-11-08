@@ -68,6 +68,7 @@ export default function PreviewPageDialog({
             disabled={disabled}
             withLayout={withLayout}
             appConfig={appConfig}
+            enableOverflow={true}
           />
         </CardContent>
       </Card>

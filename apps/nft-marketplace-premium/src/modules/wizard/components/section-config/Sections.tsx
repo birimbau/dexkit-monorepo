@@ -3,9 +3,9 @@ import CollectionsIcon from '@mui/icons-material/Collections';
 import DynamicFormIcon from '@mui/icons-material/DynamicForm';
 import FeaturedVideoIcon from '@mui/icons-material/FeaturedVideo';
 import GavelIcon from '@mui/icons-material/Gavel';
+import ShowChartIcon from '@mui/icons-material/ShowChart';
 import StorefrontIcon from '@mui/icons-material/Storefront';
 import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
-import SwapHorizontalCircleIcon from '@mui/icons-material/SwapHorizontalCircle';
 import TextSnippetIcon from '@mui/icons-material/TextSnippet';
 import VideocamIcon from '@mui/icons-material/Videocam';
 import WalletIcon from '@mui/icons-material/Wallet';
@@ -49,7 +49,7 @@ export const sections = [
     titleDefaultMessage: 'Exchange',
     category: 'cryptocurrency',
     description: 'Limit order using 0x',
-    icon: <SwapHorizontalCircleIcon fontSize="large" />,
+    icon: <ShowChartIcon fontSize="large" />,
   },
   {
     type: 'asset-store',

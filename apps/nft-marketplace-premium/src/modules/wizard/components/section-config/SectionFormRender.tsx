@@ -129,10 +129,13 @@ export function SectionFormRender({
       />
     );
   } else if (sectionType === 'exchange') {
+    console.log(onChange);
+    console.log('onchange in section form render');
     return (
       <ExchangeSectionSettingsForm
         onCancel={onClose}
         onSave={onSave}
+        onChange={onChange}
         section={section?.type === 'exchange' ? section : undefined}
       />
     );
