@@ -8,9 +8,11 @@ import { Field, FieldArray, Form, useFormikContext } from 'formik';
 import { TextField } from 'formik-mui';
 import { FormattedMessage } from 'react-intl';
 
-interface Props {}
+interface Props {
+  isDisabled: boolean;
+}
 
-export default function OwnershipNFTForm({}: Props) {
+export default function OwnershipNFTForm({ isDisabled }: Props) {
   const { setFieldValue, values, errors } =
     useFormikContext<CollectionOwnershipNFTFormType>();
 
@@ -37,6 +39,7 @@ export default function OwnershipNFTForm({}: Props) {
               alignItems={'center'}
             >
               <ImageFormUpload
+                isDisabled={isDisabled}
                 value={values?.image || ''}
                 onSelectFile={(file) => setFieldValue(`image`, file)}
                 error={Boolean(errors && (errors as any)?.image)}
@@ -70,7 +73,10 @@ export default function OwnershipNFTForm({}: Props) {
               sx={{ maxWidth: '500px' }}
               fullWidth
               name={`name`}
-              label={<FormattedMessage id="name" defaultMessage="Name" />}
+              disabled={isDisabled}
+              label={
+                <FormattedMessage id="nft.name" defaultMessage="NFT name" />
+              }
             />
             <Field
               sx={{ maxWidth: '500px' }}
@@ -83,6 +89,7 @@ export default function OwnershipNFTForm({}: Props) {
                 />
               }
               fullWidth
+              disabled={isDisabled}
               multiline
               rows={5}
             />
@@ -122,6 +129,7 @@ export default function OwnershipNFTForm({}: Props) {
                   <Button
                     startIcon={<AddIcon />}
                     variant="outlined"
+                    disabled={isDisabled}
                     onClick={() => arrayHelper.push({})}
                   >
                     <FormattedMessage

@@ -28,7 +28,7 @@ export function SectionSelector({ onClickSection }: Props) {
 
   return (
     <Box sx={{ pl: 3, pr: 3 }}>
-      <Grid container spacing={2}>
+      <Grid container spacing={1}>
         <Grid item xs={12} justifyContent={'center'}>
           <Box sx={{ pl: 2, pr: 2 }}>
             <FormControl variant="outlined" fullWidth>
@@ -75,8 +75,8 @@ export function SectionSelector({ onClickSection }: Props) {
             ))}
           </Tabs>
         </Grid>
-        <Grid item xs={12}>
-          {/*  <Box
+
+        {/*  <Box
               sx={{
                 border: '1px solid',
                 width: '121px',
@@ -97,7 +97,7 @@ export function SectionSelector({ onClickSection }: Props) {
                 <FormattedMessage id={'search'} defaultMessage={'Search'} />
               </Typography>
             </Box>*/}
-          {/* <Button
+        {/* <Button
               sx={{
                 border: '1px solid',
                 width: '121px',
@@ -119,18 +119,21 @@ export function SectionSelector({ onClickSection }: Props) {
                 </Typography>
               </Stack>
             </Button>*/}
+        <Grid item container spacing={1} xs={12} sx={{ overflow: 'auto' }}>
           {SectionCategory.filter((c) => {
             if (value !== 'all') {
               return c.value === value;
             }
             return true;
           }).map((cat, key) => (
-            <Stack spacing={2} key={key}>
-              <Box pt={2}>
-                <Typography variant="subtitle1">{cat.title}</Typography>
-              </Box>
+            <>
+              <Grid item xs={12} key={key}>
+                <Box pt={2}>
+                  <Typography variant="subtitle1">{cat.title}</Typography>
+                </Box>
+              </Grid>
 
-              <Grid container sx={{ overflow: 'auto' }}>
+              <Grid item container sx={{ overflow: 'auto' }}>
                 {sections
                   .filter((s) => s.category === cat.value)
                   .filter((s) => {
@@ -148,7 +151,7 @@ export function SectionSelector({ onClickSection }: Props) {
                     }
                   })
                   .map((sec, k) => (
-                    <Grid item xs={6} sm={3} key={k}>
+                    <Grid item xs={6} sm={6} md={6} lg={4} xl={3} key={k}>
                       <Tooltip title={sec.description}>
                         <ButtonBase
                           sx={{
@@ -182,7 +185,7 @@ export function SectionSelector({ onClickSection }: Props) {
                     </Grid>
                   ))}
               </Grid>
-            </Stack>
+            </>
           ))}
         </Grid>
       </Grid>

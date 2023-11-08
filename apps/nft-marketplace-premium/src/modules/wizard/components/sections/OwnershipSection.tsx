@@ -123,7 +123,7 @@ export default function OwnershipSection({ id, nft }: Props) {
         {({ submitForm, isValid }) => (
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              <OwnershipNFTForm />
+              <OwnershipNFTForm isDisabled={isHoldingKitQuery.data === false} />
             </Grid>
 
             <Grid item xs={12}>

@@ -67,14 +67,11 @@ function SignConfigDialog({
       <AppDialogTitle
         title={
           isSuccess ? (
-            <FormattedMessage
-              id="app.config.sent"
-              defaultMessage="App config sent"
-            />
+            <FormattedMessage id="config.sent" defaultMessage="Config sent" />
           ) : (
             <FormattedMessage
-              id="sending.app.config"
-              defaultMessage="Sending app config"
+              id="sending.config"
+              defaultMessage="Sending config"
             />
           )
         }
@@ -123,24 +120,26 @@ function SignConfigDialog({
                 error?.response?.data?.message &&
                 `Reason: ${error?.response?.data?.message}`}
             </Typography>
-            <Typography align="center" variant="body1" color="textSecondary">
-              {error !== undefined && !isLoading && !isSuccess ? (
-                <FormattedMessage
-                  id="please.try.again.later"
-                  defaultMessage="Please, try again later"
-                />
-              ) : isSuccess ? (
-                <FormattedMessage
-                  id="your.marketplace.settings.was.sent.successfully"
-                  defaultMessage="Your config was sent successfully"
-                />
-              ) : (
-                <FormattedMessage
-                  id="please.sign.the.settings.with.your.wallet"
-                  defaultMessage="Please, sign the settings with your wallet"
-                />
-              )}
-            </Typography>
+            {false && (
+              <Typography align="center" variant="body1" color="textSecondary">
+                {error !== undefined && !isLoading && !isSuccess ? (
+                  <FormattedMessage
+                    id="please.try.again.later"
+                    defaultMessage="Please, try again later"
+                  />
+                ) : isSuccess ? (
+                  <FormattedMessage
+                    id="your.marketplace.settings.was.sent.successfully"
+                    defaultMessage="Your config was sent successfully"
+                  />
+                ) : (
+                  <FormattedMessage
+                    id="please.sign.the.settings.with.your.wallet"
+                    defaultMessage="Please, sign the settings with your wallet"
+                  />
+                )}
+              </Typography>
+            )}
           </Box>
           {isSuccess && !isEdit && (
             <Button onClick={handleGoToMarketplaces} variant="contained">

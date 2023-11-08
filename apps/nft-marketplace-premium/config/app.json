@@ -10,14 +10,14 @@
   "logo": {
     "url": "https://dexkit-storage.nyc3.cdn.digitaloceanspaces.com/dexkit/images/logo/dexappbuilder.png",
     "height": 48,
-    "width": 150
+    "width": 300
   },
   "logoDark": {
     "url": "https://dexkit-storage.nyc3.cdn.digitaloceanspaces.com/dexkit/images/logo/dexappbuilder-dark.png",
     "height": 48,
-    "width": 150
+    "width": 300
   },
-  "favicon_url": "",
+  "favicon_url": "https://dexkit-storage.nyc3.cdn.digitaloceanspaces.com/dexkit/images/logo/favicon.ico",
   "social": [
     { "type": "instagram", "handle": "dexkit.io" },
     { "type": "twitter", "handle": "dexkit" }

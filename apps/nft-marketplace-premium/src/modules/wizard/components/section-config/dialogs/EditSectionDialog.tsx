@@ -144,7 +144,7 @@ export default function EditSectionDialog({
       <Divider />
       <DialogContent>
         <Grid container spacing={2}>
-          <Grid item xs={12} sm={6} md={4}>
+          <Grid item xs={12} sm={6} md={5} lg={5} xl={4}>
             {!sectionType && (
               <SectionSelector
                 onClickSection={(s) => setSectionType(s.sectionType)}

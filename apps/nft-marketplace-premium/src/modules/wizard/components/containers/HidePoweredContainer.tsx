@@ -12,6 +12,8 @@ import { AppConfig } from '../../../../types/config';
 interface Props {
   config: AppConfig;
   onSave: (config: AppConfig) => void;
+  isDisabled: boolean;
+  hasNFT: boolean;
 }
 
 interface HideOptions {
@@ -22,7 +24,12 @@ const SocialOptionsSchema: Yup.SchemaOf<HideOptions> = Yup.object().shape({
   hide_powered_by: Yup.boolean(),
 });
 
-export default function HidePoweredContainer({ config, onSave }: Props) {
+export default function HidePoweredContainer({
+  config,
+  onSave,
+  isDisabled,
+  hasNFT,
+}: Props) {
   const { formatMessage } = useIntl();
   return (
     <Formik
@@ -39,17 +46,20 @@ export default function HidePoweredContainer({ config, onSave }: Props) {
         <Form>
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              <Alert severity={'warning'}>
-                <FormattedMessage
-                  id="powered.by.dexkit.info"
-                  defaultMessage='To remove the "Powered by DexKit" branding, click "Create NFT" to associate an NFT with your app.'
-                />
-              </Alert>
+              {!hasNFT && isDisabled && (
+                <Alert severity={'warning'}>
+                  <FormattedMessage
+                    id="powered.by.dexkit.info"
+                    defaultMessage='To remove the "Powered by DexKit" branding, click "Create NFT" to associate an NFT with your app.'
+                  />
+                </Alert>
+              )}
             </Grid>
             <Grid item xs={12}>
               <Field
                 component={CheckboxWithLabel}
                 name="hide_powered_by"
+                disabled={isDisabled}
                 type={'checkbox'}
                 Label={{
                   label: formatMessage({

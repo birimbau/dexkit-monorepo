@@ -5,6 +5,7 @@ import FeaturedVideoIcon from '@mui/icons-material/FeaturedVideo';
 import GavelIcon from '@mui/icons-material/Gavel';
 import StorefrontIcon from '@mui/icons-material/Storefront';
 import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
+import SwapHorizontalCircleIcon from '@mui/icons-material/SwapHorizontalCircle';
 import TextSnippetIcon from '@mui/icons-material/TextSnippet';
 import VideocamIcon from '@mui/icons-material/Videocam';
 import WalletIcon from '@mui/icons-material/Wallet';
@@ -43,6 +44,14 @@ export const sections = [
     icon: <SwapHorizIcon fontSize="large" />,
   },
   {
+    type: 'exchange',
+    titleId: 'exchange',
+    titleDefaultMessage: 'Exchange',
+    category: 'cryptocurrency',
+    description: 'Limit order using 0x',
+    icon: <SwapHorizontalCircleIcon fontSize="large" />,
+  },
+  {
     type: 'asset-store',
     titleId: 'nft.store',
     titleDefaultMessage: 'NFT store',
@@ -55,7 +64,7 @@ export const sections = [
     titleId: 'collections',
     titleDefaultMessage: 'Collections',
     category: 'nft',
-    description: 'NFT store like Shopify',
+    description: 'Feature your collections',
     icon: <CollectionsIcon fontSize="large" />,
   },
   {
@@ -70,7 +79,7 @@ export const sections = [
     type: 'contract',
     titleId: 'contract',
     titleDefaultMessage: 'Contract',
-    category: 'cryptocurrency',
+    category: 'web3',
     description: 'Add forms to your contracts deployed on blockchain',
     icon: <GavelIcon fontSize="large" />,
   },
@@ -78,7 +87,7 @@ export const sections = [
     type: 'user-contract-form',
     titleId: 'user.contract.form',
     titleDefaultMessage: 'User contract form',
-    category: 'cryptocurrency',
+    category: 'web3',
     description: 'Add forms created by you',
     icon: <DynamicFormIcon fontSize="large" />,
   },
@@ -100,6 +109,10 @@ export const SectionCategory = [
   {
     value: 'nft',
     title: 'NFT',
+  },
+  {
+    value: 'web3',
+    title: 'Web3',
   },
   {
     value: 'resources',
