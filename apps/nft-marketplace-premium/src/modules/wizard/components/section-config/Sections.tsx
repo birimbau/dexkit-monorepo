@@ -16,7 +16,7 @@ export const sections = [
     titleId: 'video',
     titleDefaultMessage: 'Video',
     category: 'resources',
-    description: 'Display an youtube video',
+    description: 'Display engaging videos to captivate your audience.',
     icon: <VideocamIcon fontSize="large" />,
   },
   {
@@ -24,15 +24,17 @@ export const sections = [
     titleId: 'call.to.action',
     titleDefaultMessage: 'Call to action',
     category: 'resources',
-    description: 'Call to Action',
+    description:
+      'Encourage specific user actions with effective calls to action.',
     icon: <CallToActionIcon fontSize="large" />,
   },
   {
     type: 'featured',
     titleId: 'featured',
-    titleDefaultMessage: 'Featured',
-    category: 'resources',
-    description: 'Feature your nfts',
+    titleDefaultMessage: 'Featured NFTs',
+    category: 'nft',
+    description:
+      'Highlight and promote your NFTs for enhanced visibility and user engagement.',
     icon: <FeaturedVideoIcon fontSize="large" />,
   },
   {
@@ -40,7 +42,8 @@ export const sections = [
     titleId: 'swap',
     titleDefaultMessage: 'Swap',
     category: 'cryptocurrency',
-    description: 'Swap using 0x',
+    description:
+      'Build a cryptocurrency swap tool using the powerful 0x protocol.',
     icon: <SwapHorizIcon fontSize="large" />,
   },
   {
@@ -56,7 +59,7 @@ export const sections = [
     titleId: 'nft.store',
     titleDefaultMessage: 'NFT store',
     category: 'nft',
-    description: 'NFT store like Shopify',
+    description: 'Create a Shopify-style NFT store for your unique collection.',
     icon: <StorefrontIcon fontSize="large" />,
   },
   {
@@ -64,7 +67,7 @@ export const sections = [
     titleId: 'collections',
     titleDefaultMessage: 'Collections',
     category: 'nft',
-    description: 'Feature your collections',
+    description: 'Add new NFT collections to diversify your digital assets.',
     icon: <CollectionsIcon fontSize="large" />,
   },
   {
@@ -72,15 +75,17 @@ export const sections = [
     titleId: 'wallet',
     titleDefaultMessage: 'Wallet',
     category: 'cryptocurrency',
-    description: 'Wallet',
+    description:
+      'Create a digital wallet to securely store and manage your cryptocurrencies.',
     icon: <WalletIcon fontSize="large" />,
   },
   {
     type: 'contract',
     titleId: 'contract',
-    titleDefaultMessage: 'Contract',
+    titleDefaultMessage: 'Contract form',
     category: 'web3',
-    description: 'Add forms to your contracts deployed on blockchain',
+    description:
+      'Interact with blockchain contracts by importing them and using interactive forms.',
     icon: <GavelIcon fontSize="large" />,
   },
   {
@@ -88,7 +93,8 @@ export const sections = [
     titleId: 'user.contract.form',
     titleDefaultMessage: 'User contract form',
     category: 'web3',
-    description: 'Add forms created by you',
+    description:
+      'Customize forms for your interactions with blockchain contracts.',
     icon: <DynamicFormIcon fontSize="large" />,
   },
   {
@@ -96,7 +102,8 @@ export const sections = [
     titleId: 'markdown',
     titleDefaultMessage: 'Markdown',
     category: 'low-code',
-    description: 'Add markdown text',
+    description:
+      'Easily format text using markdown for a clean and structured appearance.',
     icon: <TextSnippetIcon fontSize="large" />,
   },
 ] as SectionMetadata[];
