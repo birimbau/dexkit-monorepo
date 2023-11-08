@@ -1,12 +1,5 @@
 import { Delete } from '@mui/icons-material';
-import {
-  Box,
-  Button,
-  FormControl,
-  Grid,
-  InputLabel,
-  MenuItem,
-} from '@mui/material';
+import { Box, Button, FormControl, Grid, MenuItem } from '@mui/material';
 import { Field, FieldArray } from 'formik';
 import { Select, TextField } from 'formik-mui';
 import { FormattedMessage } from 'react-intl';
@@ -73,11 +66,8 @@ export default function CollectionItemAttributeForm({
           <FieldArray
             name={`${itemSelector}attributes`}
             render={(arrayHelper) => (
-              <Button
-                startIcon={<Delete />}
-                onClick={() => arrayHelper.remove(index)}
-              >
-                <FormattedMessage id="remove" defaultMessage="Remove" />
+              <Button size={'large'} onClick={() => arrayHelper.remove(index)}>
+                <Delete />
               </Button>
             )}
           />

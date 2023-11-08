@@ -6,6 +6,7 @@ import { ExchangePageSection } from '../../types/section';
 
 interface Props {
   onSave: (section: ExchangePageSection) => void;
+  onChange?: (section: ExchangePageSection) => void;
   onCancel: () => void;
   section?: ExchangePageSection;
 }
@@ -13,11 +14,27 @@ interface Props {
 export default function ExchangeSectionSettingsForm({
   onSave,
   onCancel,
+  onChange,
   section,
 }: Props) {
   const handleSave = (settings: DexkitExchangeSettings) => {
     if (onSave) {
       onSave({
+        type: 'exchange',
+        settings,
+      });
+    }
+    if (onChange) {
+      onChange({
+        type: 'exchange',
+        settings,
+      });
+    }
+  };
+
+  const handleChange = (settings: DexkitExchangeSettings) => {
+    if (onChange) {
+      onChange({
         type: 'exchange',
         settings,
       });
@@ -38,6 +55,8 @@ export default function ExchangeSectionSettingsForm({
     <ExchangeSettingsForm
       onCancel={onCancel}
       onSave={handleSave}
+      onChange={handleChange}
+      saveOnChange={onChange ? true : false}
       settings={section?.settings}
       tokens={tokens.map((t) => ({
         chainId: t.chainId,

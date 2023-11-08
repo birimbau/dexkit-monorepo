@@ -101,13 +101,13 @@ export default function GeneralWizardContainer({
     <Grid container spacing={2}>
       <Grid item xs={12}>
         <Stack>
-          <Typography variant={'subtitle2'}>
+          <Typography variant={'h6'}>
             <FormattedMessage id="general" defaultMessage="General" />
           </Typography>
           <Typography variant={'body2'}>
             <FormattedMessage
-              id="general.information"
-              defaultMessage="General information"
+              id="general.information.description"
+              defaultMessage="Input your app's general details"
             />
           </Typography>
         </Stack>

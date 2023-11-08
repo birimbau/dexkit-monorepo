@@ -20,10 +20,10 @@ export default function PreviewPage({
 }: Props) {
   const renderSections = () => {
     return (sections || []).map((section, key) => {
-      if (previewPlatform === 'mobile' && section.hideMobile) {
+      if (previewPlatform === 'mobile' && section?.hideMobile) {
         return null;
       }
-      if (previewPlatform === 'desktop' && section.hideDesktop) {
+      if (previewPlatform === 'desktop' && section?.hideDesktop) {
         return null;
       }
 

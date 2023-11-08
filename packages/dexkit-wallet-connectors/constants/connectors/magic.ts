@@ -1,8 +1,8 @@
 import { initializeConnector } from "@web3-react/core";
 
-import { MagicApiKey } from "../../constants/magic";
+import { MagicApiKey } from "../magic";
 
-import { MagicConnector } from "../../types/magic";
+import { MagicConnector } from "../../connectors/magic";
 
 export const [magic, magicHooks] = initializeConnector<MagicConnector>(
   (actions) => {

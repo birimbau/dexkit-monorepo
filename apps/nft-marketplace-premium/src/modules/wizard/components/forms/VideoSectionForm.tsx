@@ -13,6 +13,7 @@ import { FormattedMessage } from 'react-intl';
 import LazyYoutubeFrame from '../../../../components/LazyYoutubeFrame';
 import { VideoEmbedType } from '../../../../types/config';
 
+import { useEffect } from 'react';
 import * as Yup from 'yup';
 import { useDebounce } from '../../../../hooks/misc';
 import { AppPageSection, VideoEmbedAppPageSection } from '../../types/section';
@@ -31,11 +32,17 @@ const FormSchema: Yup.SchemaOf<Form> = Yup.object().shape({
 
 interface Props {
   onSave: (section: AppPageSection) => void;
+  onChange: (section: AppPageSection) => void;
   onCancel: () => void;
   section?: VideoEmbedAppPageSection;
 }
 
-export default function VideoSectionForm({ onSave, onCancel, section }: Props) {
+export default function VideoSectionForm({
+  onSave,
+  onCancel,
+  section,
+  onChange,
+}: Props) {
   const handleSubmit = (values: Form, helpers: FormikHelpers<Form>) => {
     if (onSave) {
       onSave({
@@ -60,6 +67,15 @@ export default function VideoSectionForm({ onSave, onCancel, section }: Props) {
   });
 
   const videoUrl = useDebounce<string>(formik.values.videoUrl, 500);
+
+  useEffect(() => {
+    onChange({
+      videoUrl: formik.values.videoUrl,
+      type: 'video',
+      embedType: formik.values.videoType as VideoEmbedType,
+      title: formik.values.title,
+    });
+  }, [formik.values]);
 
   return (
     <form onSubmit={formik.handleSubmit}>

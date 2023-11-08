@@ -1,3 +1,4 @@
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import Button from '@mui/material/Button';
 import { Experimental_CssVarsProvider as CssVarsProvider } from '@mui/material/styles';
 import { useAtomValue } from 'jotai';
@@ -65,6 +66,7 @@ export function PreviewAppButton({ appConfig }: Props) {
       </CssVarsProvider>
       <Button
         onClick={handleShowPreview}
+        startIcon={<VisibilityIcon />}
         size="small"
         variant="outlined"
         className={'preview-app-button'}

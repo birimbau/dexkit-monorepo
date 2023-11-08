@@ -129,6 +129,7 @@ export default function ExchangeWizardContainer({
         <ExchangeSettingsForm
           onCancel={() => {}}
           saveOnChange
+          onChange={handleOnChange}
           onSave={handleOnChange}
           tokens={tokens}
           onValidate={handleValidate}

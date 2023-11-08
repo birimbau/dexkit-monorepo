@@ -94,8 +94,8 @@ export function useLocale() {
     if (locUser) {
       return locUser;
     }
-    if (appConfig.locale && appConfig.locale !== loc) {
-      return appConfig.locale;
+    if (appConfig?.locale && appConfig?.locale !== loc) {
+      return appConfig?.locale;
     }
     return loc || ('en-US' as string);
   }, [appConfig.locale, locUser, loc]);

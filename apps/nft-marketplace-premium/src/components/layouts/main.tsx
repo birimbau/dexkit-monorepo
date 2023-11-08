@@ -25,11 +25,11 @@ const SwitchNetworkDialog = dynamic(
 
 import { useRouter } from 'next/router';
 import { AppConfig } from 'src/types/config';
-import AppDrawer from '../AppDrawer';
+const AppDrawer = dynamic(() => import('../AppDrawer'));
 
-import { useWalletActivate } from '@dexkit/core/hooks';
-import { WalletActivateParams } from '@dexkit/core/types';
 import { useDexKitContext, useExecuteTransactionsDialog } from '@dexkit/ui';
+import { useWalletActivate } from '@dexkit/wallet-connectors/hooks/wallet';
+import { WalletActivateParams } from '@dexkit/wallet-connectors/types';
 const ConnectWalletDialog = dynamic(
   () => import('@dexkit/ui/components/ConnectWalletDialog'),
 );
@@ -188,7 +188,9 @@ const MainLayout: React.FC<Props> = ({
 
   const render = () => (
     <>
-      <AppDrawer open={isDrawerOpen} onClose={handleCloseDrawer} />
+      {isDrawerOpen && (
+        <AppDrawer open={isDrawerOpen} onClose={handleCloseDrawer} />
+      )}
       {showSelectCurrency && (
         <SelectCurrencyDialog
           dialogProps={{

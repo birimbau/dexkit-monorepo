@@ -35,13 +35,13 @@ export default function PagesMenuWizardContainer({
     <Grid container spacing={2}>
       <Grid item xs={12}>
         <Stack>
-          <Typography variant={'subtitle2'}>
+          <Typography variant={'h6'}>
             <FormattedMessage id="menu" defaultMessage="Menu" />
           </Typography>
           <Typography variant={'body2'}>
             <FormattedMessage
-              id="edit.marketplace.menu"
-              defaultMessage="Edit Marketplace menu"
+              id="pages.menu.wizard.description"
+              defaultMessage="Create and organize your app's menus"
             />
           </Typography>
         </Stack>

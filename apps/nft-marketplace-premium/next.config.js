@@ -10,6 +10,7 @@ const withTM = require('next-transpile-modules')([
   '@dexkit/ui',
   '@dexkit/core',
   '@dexkit/web3forms',
+  '@dexkit/wallet-connectors',
   '@dexkit/dexappbuilder-viewer',
   '@dexkit/exchange',
 ]); // pass the modules you would like to see transpiled

@@ -1,12 +1,5 @@
 import AddIcon from '@mui/icons-material/Add';
-import {
-  Box,
-  Button,
-  CssVarsTheme,
-  Stack,
-  Theme,
-  Typography,
-} from '@mui/material';
+import { Alert, Box, Button, CssVarsTheme, Stack, Theme } from '@mui/material';
 import dynamic from 'next/dynamic';
 import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
@@ -15,7 +8,7 @@ import { BuilderKit } from '../../constants';
 import { AppPageSection, CustomEditorSection } from '../../types/section';
 import PagesSectionPage from '../section-config/PagesSectionPage';
 const EditSectionDialog = dynamic(
-  () => import('../section-config/dialogs/EditSectionDialog')
+  () => import('../section-config/dialogs/EditSectionDialog'),
 );
 const PageEditorDialog = dynamic(() => import('../dialogs/PageEditorDialog'));
 
@@ -132,7 +125,7 @@ export default function PagesSection({
         <EditSectionDialog
           dialogProps={{
             open: isOpen,
-            maxWidth: 'md',
+            fullScreen: true,
             fullWidth: true,
             onClose: handleClose,
           }}
@@ -175,32 +168,38 @@ export default function PagesSection({
           onSwap={onSwap}
           theme={theme}
         />
-
-        <Button
-          variant="outlined"
-          onClick={handleAddSection}
-          startIcon={<AddIcon />}
-        >
-          <FormattedMessage id="add.section" defaultMessage="Add section" />
-        </Button>
-
-        <Box display={'flex'} justifyContent={'center'}>
-          <Typography>
-            {' '}
-            <FormattedMessage id="or" defaultMessage="Or" />
-          </Typography>
+        <Box maxWidth={'xs'}>
+          <Button
+            variant="outlined"
+            onClick={handleAddSection}
+            startIcon={<AddIcon />}
+          >
+            <FormattedMessage id="add.section" defaultMessage="Add section" />
+          </Button>
         </Box>
 
-        <Button
-          variant="outlined"
-          onClick={handleAddCustomSection}
-          startIcon={<AddIcon />}
-        >
-          <FormattedMessage
-            id="add.custom.section"
-            defaultMessage="Add custom section"
-          />
-        </Button>
+        <Box display={'flex'} maxWidth={'sm'}>
+          <Alert severity="info">
+            <FormattedMessage
+              id={'info.about.custom.section'}
+              defaultMessage={
+                'Instead of using pre-defined sections, you have the freedom to create a personalized section by effortlessly dragging and dropping functional blocks to design your ideal layout.'
+              }
+            />
+          </Alert>
+        </Box>
+        <Box maxWidth={'xs'}>
+          <Button
+            variant="outlined"
+            onClick={handleAddCustomSection}
+            startIcon={<AddIcon />}
+          >
+            <FormattedMessage
+              id="add.custom.section"
+              defaultMessage="Add custom section"
+            />
+          </Button>
+        </Box>
       </Stack>
     </>
   );

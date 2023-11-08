@@ -1,21 +1,12 @@
-import { Web3ReactHooks } from "@web3-react/core";
-import { Connector } from "@web3-react/types";
-import { metaMask, metaMaskHooks } from "./connectors/metamask";
-import { walletConnect, walletConnectHooks } from "./connectors/walletConnect";
 import { ChainId } from "./enums";
 
 import { ethers } from "ethers";
 import { isAddress } from "ethers/lib/utils";
 import { Token } from "../types";
 import { isAddressEqual } from "../utils";
-import { magic, magicHooks } from "./connectors/magic";
 import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "./zrx";
 
-export const CONNECTORS: { [key: string]: [Connector, Web3ReactHooks] } = {
-  metamask: [metaMask, metaMaskHooks],
-  walletConnect: [walletConnect, walletConnectHooks],
-  magic: [magic, magicHooks],
-};
+
 
 export * from "./enums";
 

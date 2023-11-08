@@ -40,7 +40,7 @@ import Notification from "@dexkit/ui/components/icons/Notification";
 import Wallet from "@dexkit/ui/components/icons/Wallet";
 
 import { NETWORK_IMAGE, NETWORK_NAME } from "@dexkit/core/constants/networks";
-import { MagicConnector } from "@dexkit/core/types/magic";
+
 import {
   useConnectWalletDialog,
   useDexKitContext,
@@ -60,6 +60,7 @@ import SelectNetworkDialog from "@dexkit/ui/components/dialogs/SelectNetworkDial
 import { ThemeMode } from "@dexkit/ui/constants/enum";
 import { useCurrency } from "@dexkit/ui/hooks/currency";
 import { AppConfig } from "@dexkit/ui/types/config";
+import { MagicConnector } from "@dexkit/wallet-connectors/connectors/magic";
 import NavbarMenu from "./Menu";
 import { ThemeModeSelector } from "./ThemeModeSelector";
 

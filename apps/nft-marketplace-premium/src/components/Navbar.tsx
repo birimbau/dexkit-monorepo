@@ -27,16 +27,13 @@ import {
 } from '@mui/material';
 import { useWeb3React } from '@web3-react/core';
 
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import { getChainLogoImage, getChainName } from '../utils/blockchain';
-import Link from './Link';
-
-import SelectNetworkDialog from '@dexkit/ui/components/dialogs/SelectNetworkDialog';
 import AttachMoney from '@mui/icons-material/AttachMoney';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import Language from '@mui/icons-material/Language';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { useAtom } from 'jotai';
 import { useUpdateAtom } from 'jotai/utils';
+import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import { FormattedMessage } from 'react-intl';
 import { useCurrency } from 'src/hooks/currency';
@@ -49,17 +46,23 @@ import {
   showSelectCurrencyAtom,
   showSelectLocaleAtom,
 } from '../state/atoms';
+import { getChainLogoImage, getChainName } from '../utils/blockchain';
+import Link from './Link';
 import NavbarMenu from './Menu';
+import { ThemeModeSelector } from './ThemeModeSelector';
 import { WalletButton } from './WalletButton';
 import Notification from './icons/Notification';
 import Wallet from './icons/Wallet';
+
+const SelectNetworkDialog = dynamic(
+  () => import('@dexkit/ui/components/dialogs/SelectNetworkDialog'),
+);
 
 import { useAuthUserQuery } from '@/modules/user/hooks';
 import NotificationsDialog from '@dexkit/ui/components/dialogs/NotificationsDialog';
 import { ThemeMode } from '@dexkit/ui/constants/enum';
 import { useDexKitContext, useNotifications } from '@dexkit/ui/hooks';
 import AppProfileMenu from './AppProfileMenu';
-import { ThemeModeSelector } from './ThemeModeSelector';
 
 interface Props {
   appConfig: AppConfig;
@@ -254,26 +257,30 @@ function Navbar({ appConfig, isPreview }: Props) {
           onClose: handleCloseNotifications,
         }}
       /> */}
-      <NotificationsDialog
-        DialogProps={{
-          maxWidth: 'sm',
-          open: showTransactions,
-          fullWidth: true,
-          onClose: handleCloseNotifications,
-        }}
-        notificationTypes={notificationTypes}
-        transactions={transactions}
-        notifications={notifications}
-        onClear={handleClearNotifications}
-      />
-      <SelectNetworkDialog
-        dialogProps={{
-          maxWidth: 'sm',
-          open: selectNetworkDialog.isOpen,
-          fullWidth: true,
-          onClose: handleCloseSelectNetworkDialog,
-        }}
-      />
+      {showTransactions && (
+        <NotificationsDialog
+          DialogProps={{
+            maxWidth: 'sm',
+            open: showTransactions,
+            fullWidth: true,
+            onClose: handleCloseNotifications,
+          }}
+          notificationTypes={notificationTypes}
+          transactions={transactions}
+          notifications={notifications}
+          onClear={handleClearNotifications}
+        />
+      )}
+      {selectNetworkDialog.isOpen && (
+        <SelectNetworkDialog
+          dialogProps={{
+            maxWidth: 'sm',
+            open: selectNetworkDialog.isOpen,
+            fullWidth: true,
+            onClose: handleCloseSelectNetworkDialog,
+          }}
+        />
+      )}
       <Popover
         open={menuOpen}
         onClose={handleCloseMenu}

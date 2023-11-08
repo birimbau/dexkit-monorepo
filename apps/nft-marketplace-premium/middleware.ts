@@ -20,7 +20,6 @@ export const config = {
     '/stake/:path*',
     '/token/:path*',
     '/airdrop/:path*',
-    '/exchange/:path*',
   ],
 };
 
@@ -43,7 +42,6 @@ const basePaths = [
   '/stake',
   '/token',
   '/airdrop',
-  '/exchange',
 ];
 
 function isBasePath(path: string) {

@@ -20,10 +20,12 @@ interface Props {
   value: string | null;
   imageHeight?: number;
   imageWidth?: number;
+  isDisabled?: boolean;
 }
 
 export function ImageFormUpload(props: Props) {
-  const { onSelectFile, error, value, imageHeight, imageWidth } = props;
+  const { onSelectFile, error, value, imageHeight, imageWidth, isDisabled } =
+    props;
   const [openMediaDialog, setOpenMediaDialog] = useState(false);
 
   return (
@@ -53,6 +55,7 @@ export function ImageFormUpload(props: Props) {
             onClick={() => {
               setOpenMediaDialog(true);
             }}
+            disabled={isDisabled}
             sx={
               error
                 ? {

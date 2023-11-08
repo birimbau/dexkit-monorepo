@@ -7,12 +7,12 @@ import {
   Divider,
   FormControl,
   Grid,
-  InputLabel,
   MenuItem,
   Select,
   Stack,
   Switch,
   TextField,
+  Tooltip,
   Typography,
 } from '@mui/material';
 import { useAtomValue } from 'jotai';
@@ -51,7 +51,7 @@ export default function ThemeWizardContainer({
 }: Props) {
   const [selectedThemeId, setSelectedThemeId] = useState<string>(config.theme);
   const [selectedThemeMode, setSelectedThemeMode] = useState<ThemeMode>(
-    config.defaultThemeMode || ThemeMode.light
+    config.defaultThemeMode || ThemeMode.light,
   );
   const [defaultThemeMode, setDefaultThemeMode] = useState<
     ThemeMode | undefined
@@ -72,7 +72,7 @@ export default function ThemeWizardContainer({
     (id: string) => {
       setSelectedThemeId(id);
     },
-    [selectedThemeId]
+    [selectedThemeId],
   );
 
   const selectedTheme = useMemo(() => {
@@ -198,13 +198,13 @@ export default function ThemeWizardContainer({
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <Stack>
-            <Typography variant={'subtitle2'}>
+            <Typography variant={'h6'}>
               <FormattedMessage id="theme" defaultMessage="Theme" />
             </Typography>
             <Typography variant={'body2'}>
               <FormattedMessage
-                id="choose.your.theme"
-                defaultMessage="Choose your theme"
+                id="theme.wizard.description"
+                defaultMessage="Customize your app's theme"
               />
             </Typography>
           </Stack>
@@ -214,40 +214,20 @@ export default function ThemeWizardContainer({
         </Grid>
         <Grid item xs={12} sm={6}>
           <Stack spacing={2}>
-            <Autocomplete
-              disablePortal
-              id="font-selection"
-              value={selectedFont?.family}
-              onChange={handleSelectedFont}
-              options={Fonts.items.map((f) => f.family)}
-              sx={{ width: 300 }}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label={
-                    <FormattedMessage id={'font'} defaultMessage={'Font'} />
-                  }
-                />
-              )}
-            />
+            <Typography variant="body2">
+              <FormattedMessage
+                id="choose.app.theme.color.for.each.mode "
+                defaultMessage={'Choose app theme color for each mode'}
+              />
+            </Typography>
 
             <FormControl fullWidth>
-              <InputLabel id="theme-mode-label">
-                <FormattedMessage
-                  id={'theme.mode'}
-                  defaultMessage={'Theme mode'}
-                />
-              </InputLabel>
               <Select
                 labelId="theme-mode-label"
                 id="theme-mode"
+                sx={{ maxWidth: '150px' }}
+                fullWidth
                 value={selectedThemeMode}
-                label={
-                  <FormattedMessage
-                    id={'theme.mode'}
-                    defaultMessage={'Theme mode'}
-                  />
-                }
                 onChange={(ev) => {
                   setSelectedThemeMode(ev.target.value as ThemeMode);
                 }}
@@ -261,7 +241,7 @@ export default function ThemeWizardContainer({
               </Select>
             </FormControl>
 
-            <Box>
+            <Stack spacing={1}>
               <ThemeSection
                 mode={selectedThemeMode}
                 selectedId={selectedThemeId}
@@ -269,12 +249,12 @@ export default function ThemeWizardContainer({
                 onPreview={handleShowPreview}
                 legacyTheme={config?.customTheme}
               />
-            </Box>
+            </Stack>
             <Box>
               <Typography variant="body2">
                 <FormattedMessage
                   id="default.theme.mode"
-                  defaultMessage={'Default Theme mode'}
+                  defaultMessage={'Default theme mode'}
                 />
               </Typography>
               <Stack
@@ -286,22 +266,60 @@ export default function ThemeWizardContainer({
                   {' '}
                   <FormattedMessage id="light" defaultMessage={'Light'} />
                 </Typography>
-                <Switch
-                  defaultChecked={defaultThemeMode === ThemeMode.dark}
-                  onChange={() => {
-                    if (defaultThemeMode === 'dark') {
-                      setDefaultThemeMode(ThemeMode.light);
-                    } else {
-                      setDefaultThemeMode(ThemeMode.dark);
-                    }
-                  }}
-                />
+                <Tooltip
+                  title={
+                    <FormattedMessage
+                      id={
+                        'select.the.theme.mode.that.will.be.loaded.when.opened'
+                      }
+                      defaultMessage={
+                        'Select the theme mode that will be loaded when the app is opened.'
+                      }
+                    />
+                  }
+                >
+                  <Switch
+                    defaultChecked={defaultThemeMode === ThemeMode.dark}
+                    onChange={() => {
+                      if (defaultThemeMode === 'dark') {
+                        setDefaultThemeMode(ThemeMode.light);
+                      } else {
+                        setDefaultThemeMode(ThemeMode.dark);
+                      }
+                    }}
+                  />
+                </Tooltip>
                 <Typography variant="body1">
                   {' '}
                   <FormattedMessage id="dark" defaultMessage={'Dark'} />
                 </Typography>
               </Stack>
             </Box>
+            <Stack spacing={1}>
+              <Typography variant="body2">
+                <FormattedMessage
+                  id="Choose app font"
+                  defaultMessage={'Choose app font'}
+                />
+              </Typography>
+
+              <Autocomplete
+                disablePortal
+                id="font-selection"
+                value={selectedFont?.family}
+                onChange={handleSelectedFont}
+                options={Fonts.items.map((f) => f.family)}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    sx={{ maxWidth: '350px' }}
+                    label={
+                      <FormattedMessage id={'font'} defaultMessage={'Font'} />
+                    }
+                  />
+                )}
+              />
+            </Stack>
           </Stack>
         </Grid>
         <Grid item xs={12} sm={6}>

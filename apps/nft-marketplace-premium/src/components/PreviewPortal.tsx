@@ -1,14 +1,14 @@
 import createCache from '@emotion/cache';
 import { CacheProvider } from '@emotion/react';
 import { styled } from '@mui/material';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import ReactDOM from 'react-dom';
 
 import '@react-page/editor/lib/index.css';
 
 const PreviewIframe = styled('iframe')(() => ({
   border: 'none',
-  height: '650px',
+  height: '500px',
   width: '500px',
 }));
 export const PreviewPortal = (props: any) => {

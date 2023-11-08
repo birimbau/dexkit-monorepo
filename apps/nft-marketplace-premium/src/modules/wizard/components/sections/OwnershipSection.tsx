@@ -1,7 +1,7 @@
 import { CollectionOwnershipNFTFormType } from '@/modules/contract-wizard/types';
 import { Check } from '@mui/icons-material';
 import Visibility from '@mui/icons-material/Visibility';
-import { Alert, Button, Divider, Grid, Stack, Typography } from '@mui/material';
+import { Alert, Button, Grid, Stack, Typography } from '@mui/material';
 import { Formik } from 'formik';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
@@ -28,7 +28,7 @@ export const CollectionItemSchema = Yup.object().shape({
       trait_type: Yup.string().required(),
       display_type: Yup.string(),
       value: Yup.string().required(),
-    })
+    }),
   ),
 });
 
@@ -40,7 +40,7 @@ export default function OwnershipSection({ id, nft }: Props) {
   const [values, setValues] = useState<CollectionOwnershipNFTFormType>();
   const upsertWhitelabelNFTmutation = useUpsertWhitelabelAssetMutation();
   const handleSubmitCollectionItemsForm = async (
-    values: CollectionOwnershipNFTFormType
+    values: CollectionOwnershipNFTFormType,
   ) => {
     setShowConfirmSendConfig(true);
     setValues(values);
@@ -79,13 +79,13 @@ export default function OwnershipSection({ id, nft }: Props) {
             {nft ? (
               <FormattedMessage
                 id="do.you.really.want.to.update.a.nft.info"
-                defaultMessage="Do you really want to update this NFT representing ownership of this marketplace?"
+                defaultMessage="Do you really want to update this NFT representing ownership of this app?"
               />
             ) : (
               <FormattedMessage
                 id="do.you.really.want.to.create.a.nft.info"
-                defaultMessage="Do you really want to create a NFT representing ownership of this marketplace? After you create this NFT you are not able to delete anymore the marketplace!
-               You can sell or transfer this NFT, if you do so, you lose ownership of the marketplace."
+                defaultMessage="Do you really want to create a NFT representing ownership of this app? After you create this NFT you are not able to delete anymore the app!
+               You can sell or transfer this NFT, if you do so, you lose ownership of the app."
               />
             )}
           </Typography>
@@ -123,10 +123,7 @@ export default function OwnershipSection({ id, nft }: Props) {
         {({ submitForm, isValid }) => (
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              <OwnershipNFTForm />
-            </Grid>
-            <Grid item xs={12}>
-              <Divider />
+              <OwnershipNFTForm isDisabled={isHoldingKitQuery.data === false} />
             </Grid>
 
             <Grid item xs={12}>
@@ -136,7 +133,7 @@ export default function OwnershipSection({ id, nft }: Props) {
                     startIcon={<Visibility />}
                     onClick={() =>
                       router.push(
-                        `/asset/polygon/${nft.address}/${nft.tokenId}`
+                        `/asset/polygon/${nft.address}/${nft.tokenId}`,
                       )
                     }
                     variant="contained"
@@ -154,14 +151,20 @@ export default function OwnershipSection({ id, nft }: Props) {
                   color="primary"
                 >
                   {nft ? (
-                    <FormattedMessage id="update" defaultMessage="Update" />
+                    <FormattedMessage
+                      id="update.nft"
+                      defaultMessage="Update NFT"
+                    />
                   ) : (
-                    <FormattedMessage id="create" defaultMessage="Create" />
+                    <FormattedMessage
+                      id="create.nft"
+                      defaultMessage="Create NFT"
+                    />
                   )}
                 </Button>
               </Stack>
             </Grid>
-            {isHoldingKitQuery.data !== true && (
+            {isHoldingKitQuery.data !== true && false && (
               <Grid item xs={12} container justifyContent="flex-end">
                 <Alert severity="info">
                   <FormattedMessage

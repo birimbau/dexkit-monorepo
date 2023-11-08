@@ -1,6 +1,6 @@
 import { Button, Grid, Paper, Stack, TextField } from '@mui/material';
 import { FormikHelpers, useFormik } from 'formik';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { SectionItem } from '../../../../types/config';
 
@@ -20,6 +20,7 @@ const FormSchema: Yup.SchemaOf<Form> = Yup.object().shape({
 
 interface Props {
   onSave: (section: AppPageSection) => void;
+  onChange: (section: AppPageSection) => void;
   onCancel: () => void;
   section?: FeaturedAppPageSection;
 }
@@ -27,12 +28,13 @@ interface Props {
 export default function FeaturedSectionForm({
   onSave,
   onCancel,
+  onChange,
   section,
 }: Props) {
   const [showAddItem, setShowAddItem] = useState(false);
 
   const [items, setItems] = useState<SectionItem[]>(
-    section ? section.items : []
+    section ? section.items : [],
   );
 
   const [selectedItemIndex, setSelectedItemIndex] = useState(-1);
@@ -111,6 +113,14 @@ export default function FeaturedSectionForm({
       return newItems;
     });
   };
+
+  useEffect(() => {
+    onChange({
+      type: 'featured',
+      items,
+      title: formik.values.title,
+    });
+  }, [formik.values, items]);
 
   return (
     <form onSubmit={formik.handleSubmit}>

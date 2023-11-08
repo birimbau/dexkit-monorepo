@@ -89,7 +89,7 @@ export default function AddMenuPageDialog({
                 name: allPages[values.name].title || '',
                 href: allPages[values.name].uri || '',
               },
-              fatherIndex
+              fatherIndex,
             );
           } else {
             onSubmit(values as MenuTree, fatherIndex);
@@ -118,11 +118,11 @@ export default function AddMenuPageDialog({
                     <MenuItem value={'Page'}>
                       <FormattedMessage id={'page'} defaultMessage={'Page'} />
                     </MenuItem>
-                    {!isFather && (
-                      <MenuItem value={'Menu'}>
-                        <FormattedMessage id={'menu'} defaultMessage={'Menu'} />
-                      </MenuItem>
-                    )}
+
+                    <MenuItem value={'Menu'}>
+                      <FormattedMessage id={'menu'} defaultMessage={'Menu'} />
+                    </MenuItem>
+
                     <MenuItem value={'External'}>
                       <FormattedMessage
                         id={'external'}

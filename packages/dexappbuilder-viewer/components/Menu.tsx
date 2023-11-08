@@ -1,3 +1,4 @@
+import { MenuTree } from "@dexkit/ui/modules/wizard/types";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
@@ -5,7 +6,6 @@ import MenuItem from "@mui/material/MenuItem";
 import { useRouter } from "next/router";
 import * as React from "react";
 import { FormattedMessage } from "react-intl";
-import { MenuTree } from "../types";
 
 interface Props {
   menu: MenuTree;

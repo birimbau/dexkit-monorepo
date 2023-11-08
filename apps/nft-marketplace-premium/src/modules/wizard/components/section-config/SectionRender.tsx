@@ -39,6 +39,10 @@ interface Props {
 }
 
 export function SectionRender({ section }: Props) {
+  if (!section?.type) {
+    return <></>;
+  }
+
   if (section.type === 'featured') {
     return <FeaturedSection title={section.title} items={section.items} />;
   } else if (section.type === 'video') {

@@ -10,6 +10,7 @@ import {
   Stack,
   styled,
   TextField,
+  Tooltip,
   Typography,
 } from '@mui/material';
 import { FormikHelpers, useFormik } from 'formik';
@@ -21,7 +22,6 @@ import ImageIcon from '@mui/icons-material/Image';
 import * as Yup from 'yup';
 import MediaDialog from '../../../../components/mediaDialog';
 import { StepperButtonProps } from '../../types';
-import InputInfoAdornment from '../InputInfoAdornment';
 import { StepperButtons } from '../steppers/StepperButtons';
 export interface GeneralSectionForm {
   name: string;
@@ -107,13 +107,13 @@ export default function GeneralSection({
   const handleSubmit = useCallback(
     (
       values: GeneralSectionForm,
-      formikHelpers: FormikHelpers<GeneralSectionForm>
+      formikHelpers: FormikHelpers<GeneralSectionForm>,
     ) => {
       if (onSubmit) {
         onSubmit(values);
       }
     },
-    [onSubmit]
+    [onSubmit],
   );
 
   const formik = useFormik<GeneralSectionForm>({
@@ -166,12 +166,15 @@ export default function GeneralSection({
             onChange={onChange}
             isValid={formik.isValid}
           />
-          <Grid container spacing={2}>
+          <Grid container spacing={3}>
             <Grid item xs={12}>
               <TextField
-                fullWidth
                 name="name"
-                label={<FormattedMessage id="name" defaultMessage="Name" />}
+                sx={{ maxWidth: '400px' }}
+                fullWidth
+                label={
+                  <FormattedMessage id="app.name" defaultMessage="App name" />
+                }
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 value={formik.values.name}
@@ -181,17 +184,20 @@ export default function GeneralSection({
                     ? formik.errors.name
                     : undefined
                 }
-                InputProps={{
-                  endAdornment: <InputInfoAdornment field={'name'} />,
-                }}
               />
             </Grid>
             <Grid item xs={12}>
               <TextField
-                fullWidth
                 type="email"
                 name="email"
-                label={<FormattedMessage id="email" defaultMessage="E-mail" />}
+                sx={{ maxWidth: '400px' }}
+                fullWidth
+                label={
+                  <FormattedMessage
+                    id="notification.email"
+                    defaultMessage="Notification email"
+                  />
+                }
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 value={formik.values.email}
@@ -201,15 +207,23 @@ export default function GeneralSection({
                     ? formik.errors.email
                     : undefined
                 }
-                InputProps={{
-                  endAdornment: <InputInfoAdornment field={'email'} />,
-                }}
               />
+            </Grid>
+            <Grid item xs={12} sm={12}></Grid>
+            <Grid item xs={12}>
+              <Typography>
+                <b>
+                  <FormattedMessage id="logo" defaultMessage="Logo" />
+                </b>
+              </Typography>
             </Grid>
             <Grid item xs={6}>
               <Stack spacing={2}>
                 <Typography variant="body2">
-                  <FormattedMessage id="logo" defaultMessage="Logo" />
+                  <FormattedMessage
+                    id="logo.for.light.mode"
+                    defaultMessage="Logo for light mode"
+                  />
                 </Typography>
                 <Button
                   onClick={() => {
@@ -219,15 +233,55 @@ export default function GeneralSection({
                 >
                   <CustomImage src={formik.values.logoUrl} />
                 </Button>
+              </Stack>
+            </Grid>
 
+            <Grid item xs={6}>
+              <Stack spacing={2}>
+                <Typography variant="body2">
+                  <FormattedMessage
+                    id="logo.for.dark.mode"
+                    defaultMessage="Logo for dark mode"
+                  />
+                </Typography>
+                <Button
+                  sx={{ backgroundColor: 'black' }}
+                  onClick={() => {
+                    setOpenMediaDialog(true);
+                    setMediaFieldToEdit('logoDarkUrl');
+                  }}
+                >
+                  {formik.values?.logoDarkUrl ? (
+                    <CustomImage src={formik.values.logoDarkUrl} />
+                  ) : (
+                    <NoImage />
+                  )}
+                </Button>
+              </Stack>
+            </Grid>
+
+            <Grid item xs={12}>
+              <Stack
+                direction={'row'}
+                spacing={2}
+                alignContent={'center'}
+                alignItems={'center'}
+                sx={{ pt: 3 }}
+              >
+                <Typography variant="body2" sx={{ width: '130px' }}>
+                  <FormattedMessage
+                    id="logo.on.desktop"
+                    defaultMessage="Logo on desktop"
+                  />
+                </Typography>
                 <TextField
-                  fullWidth
                   type="number"
                   name="logoWidth"
+                  sx={{ maxWidth: '150px' }}
                   label={
                     <FormattedMessage
-                      id="logo.width"
-                      defaultMessage="Logo width (px)"
+                      id="width.px"
+                      defaultMessage="Width (px)"
                     />
                   }
                   InputLabelProps={{ shrink: true }}
@@ -243,61 +297,15 @@ export default function GeneralSection({
                       : undefined
                   }
                 />
+                <Typography color={'primary'}>x</Typography>
                 <TextField
-                  fullWidth
-                  type="number"
-                  name="logoWidthMobile"
-                  label={
-                    <FormattedMessage
-                      id="logo.width.on.mobile"
-                      defaultMessage="Logo width on Mobile (px)"
-                    />
-                  }
-                  InputLabelProps={{ shrink: true }}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  value={formik.values.logoWidthMobile}
-                  error={
-                    Boolean(formik.errors.logoWidthMobile) &&
-                    formik.touched.logoWidthMobile
-                  }
-                  helperText={
-                    Boolean(formik.errors.logoWidthMobile) &&
-                    formik.touched.logoWidthMobile
-                      ? formik.errors.logoWidthMobile
-                      : undefined
-                  }
-                />
-              </Stack>
-            </Grid>
-            <Grid item xs={6}>
-              <Stack spacing={2}>
-                <Typography variant="body2">
-                  <FormattedMessage
-                    id="logo.for.dark.mode"
-                    defaultMessage="Logo for Dark Mode"
-                  />
-                </Typography>
-                <Button
-                  onClick={() => {
-                    setOpenMediaDialog(true);
-                    setMediaFieldToEdit('logoDarkUrl');
-                  }}
-                >
-                  {formik.values?.logoDarkUrl ? (
-                    <CustomImage src={formik.values.logoDarkUrl} />
-                  ) : (
-                    <NoImage />
-                  )}
-                </Button>
-                <TextField
-                  fullWidth
                   type="number"
                   name="logoHeight"
+                  sx={{ maxWidth: '150px' }}
                   label={
                     <FormattedMessage
-                      id="logo.height"
-                      defaultMessage="Logo height (px)"
+                      id="height.px"
+                      defaultMessage="Height (px)"
                     />
                   }
                   onChange={formik.handleChange}
@@ -315,14 +323,56 @@ export default function GeneralSection({
                       : undefined
                   }
                 />
+              </Stack>
+            </Grid>
+            <Grid item xs={12}>
+              <Stack
+                direction={'row'}
+                spacing={2}
+                alignContent={'center'}
+                alignItems={'center'}
+              >
+                <Typography variant="body2" sx={{ width: '130px' }}>
+                  <FormattedMessage
+                    id="logo.on.mobile"
+                    defaultMessage="Logo on mobile"
+                  />
+                </Typography>
                 <TextField
-                  fullWidth
+                  sx={{ maxWidth: '150px' }}
+                  type="number"
+                  name="logoWidthMobile"
+                  label={
+                    <FormattedMessage
+                      id="width.px"
+                      defaultMessage="Width (px)"
+                    />
+                  }
+                  InputLabelProps={{ shrink: true }}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.logoWidthMobile}
+                  error={
+                    Boolean(formik.errors.logoWidthMobile) &&
+                    formik.touched.logoWidthMobile
+                  }
+                  helperText={
+                    Boolean(formik.errors.logoWidthMobile) &&
+                    formik.touched.logoWidthMobile
+                      ? formik.errors.logoWidthMobile
+                      : undefined
+                  }
+                />
+                <Typography color={'primary'}>x</Typography>
+
+                <TextField
+                  sx={{ maxWidth: '150px' }}
                   type="number"
                   name="logoHeightMobile"
                   label={
                     <FormattedMessage
-                      id="logo.height.on.mobile"
-                      defaultMessage="Logo height on Mobile (px)"
+                      id="height.px"
+                      defaultMessage="Height (px)"
                     />
                   }
                   onChange={formik.handleChange}
@@ -342,10 +392,26 @@ export default function GeneralSection({
                 />
               </Stack>
             </Grid>
-            <Grid item xs={6}>
-              <Typography variant="body2">
-                <FormattedMessage id="favicon" defaultMessage="Favicon" />
-              </Typography>
+            <Grid item xs={12} sm={12}></Grid>
+            <Grid item xs={12}>
+              <Stack>
+                <Typography>
+                  <Tooltip
+                    title={
+                      <FormattedMessage
+                        id="favicon.helper.explainer"
+                        defaultMessage={
+                          'Small icon that represents a website and is displayed in the browser tab'
+                        }
+                      />
+                    }
+                  >
+                    <b>
+                      <FormattedMessage id="favicon" defaultMessage="Favicon" />
+                    </b>
+                  </Tooltip>
+                </Typography>
+              </Stack>
               <Button
                 onClick={() => {
                   setOpenMediaDialog(true);
@@ -355,6 +421,7 @@ export default function GeneralSection({
                 <FaviconImage src={formik.values.faviconUrl} />
               </Button>
             </Grid>
+            <Grid item xs={12} sm={12}></Grid>
             <Grid item xs={12} sm={6}>
               <FormControl fullWidth>
                 <InputLabel>
@@ -388,7 +455,10 @@ export default function GeneralSection({
             <Grid item xs={12} sm={6}>
               <FormControl fullWidth>
                 <InputLabel>
-                  <FormattedMessage id="currency" defaultMessage="Currency" />
+                  <FormattedMessage
+                    id="default.currency"
+                    defaultMessage="Default currency"
+                  />
                 </InputLabel>
                 <Select
                   name="currency"
@@ -396,13 +466,16 @@ export default function GeneralSection({
                   value={formik.values.currency}
                   fullWidth
                   label={
-                    <FormattedMessage id="currency" defaultMessage="Currency" />
+                    <FormattedMessage
+                      id="default.currency"
+                      defaultMessage="Default currency"
+                    />
                   }
                   error={Boolean(formik.errors.currency)}
                 >
                   {CURRENCIES.map((curr, index) => (
                     <MenuItem key={index} value={curr.symbol}>
-                      {curr.name}
+                      {curr.name} ({curr.symbol.toUpperCase()})
                     </MenuItem>
                   ))}
                 </Select>
