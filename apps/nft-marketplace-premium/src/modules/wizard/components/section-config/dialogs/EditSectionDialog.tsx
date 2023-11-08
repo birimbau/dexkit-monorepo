@@ -274,7 +274,7 @@ export default function EditSectionDialog({
           {/*<Grid item xs={6}>
             {renderSectionType(sectionType)}
           </Grid>*/}
-          <Grid item xs={12} sm={6} md={8}>
+          <Grid item xs={12} sm={6} md={7} lg={7} xl={8}>
             <PreviewPagePlatform
               sections={sectionType ? [changedSection as AppPageSection] : []}
               title={
