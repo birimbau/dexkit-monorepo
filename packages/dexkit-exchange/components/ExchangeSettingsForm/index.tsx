@@ -60,7 +60,6 @@ function SaveOnChangeListener({
   onValidate?: (isValid: boolean) => void;
 }) {
   const { values, isValid } = useFormikContext<DexkitExchangeSettings>();
-  console.log(values);
   useEffect(() => {
     onSave(values);
   }, [values, isValid]);
@@ -79,6 +78,7 @@ export interface ExchangeSettingsFormProps {
   onSave: (settings: DexkitExchangeSettings) => void;
   onChange?: (settings: DexkitExchangeSettings) => void;
   saveOnChange?: boolean;
+  showSaveButton?: boolean;
   settings?: DexkitExchangeSettings;
   tokens: Token[];
   onValidate?: (isValid: boolean) => void;
@@ -91,6 +91,7 @@ export default function ExchangeSettingsForm({
   settings,
   tokens,
   saveOnChange,
+  showSaveButton,
   onValidate,
 }: ExchangeSettingsFormProps) {
   const handleSubmit = async (values: DexkitExchangeSettings) => {
@@ -633,7 +634,7 @@ export default function ExchangeSettingsForm({
                 }}
               />
             </Grid>
-            {!saveOnChange && (
+            {(!saveOnChange || showSaveButton) && (
               <Grid item xs={12}>
                 <FormActions onSubmit={submitForm} onCancel={onCancel} />
               </Grid>

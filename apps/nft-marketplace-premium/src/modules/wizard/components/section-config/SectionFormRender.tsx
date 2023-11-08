@@ -129,8 +129,6 @@ export function SectionFormRender({
       />
     );
   } else if (sectionType === 'exchange') {
-    console.log(onChange);
-    console.log('onchange in section form render');
     return (
       <ExchangeSectionSettingsForm
         onCancel={onClose}

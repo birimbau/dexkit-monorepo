@@ -57,6 +57,7 @@ export default function ExchangeSectionSettingsForm({
       onSave={handleSave}
       onChange={handleChange}
       saveOnChange={onChange ? true : false}
+      showSaveButton={true}
       settings={section?.settings}
       tokens={tokens.map((t) => ({
         chainId: t.chainId,
