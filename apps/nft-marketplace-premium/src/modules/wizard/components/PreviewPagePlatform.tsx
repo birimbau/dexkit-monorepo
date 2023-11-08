@@ -44,7 +44,7 @@ export default function PreviewPagePlatform({
         justifyContent={'center'}
         alignContent={'center'}
         spacing={2}
-        sx={{ pb: 2, pt: 2 }}
+        sx={{ pb: 2, pt: 2, backgroundColor: 'background.default' }}
       >
         {title ? title : null}
         <PreviewPlatformType
@@ -52,21 +52,30 @@ export default function PreviewPagePlatform({
           setType={(newType) => setPreviewPlatform(newType)}
         />
       </Stack>
-      {previewPlatform === 'desktop' &&
-        (enableOverflow ? (
-          <Box sx={{ maxHeight: '500px', overflow: 'auto' }}>{pagePreview}</Box>
-        ) : (
-          <>{pagePreview}</>
-        ))}
-      {previewPlatform === 'mobile' && (
-        <Stack
-          justifyContent={'center'}
-          alignItems={'center'}
-          alignContent={'center'}
-        >
-          <PreviewPortal>{pagePreview}</PreviewPortal>
-        </Stack>
-      )}
+      <Box sx={{ p: 2 }}>
+        {previewPlatform === 'desktop' &&
+          (enableOverflow ? (
+            <Box
+              sx={{
+                maxHeight: '500px',
+                overflow: 'auto',
+              }}
+            >
+              {pagePreview}
+            </Box>
+          ) : (
+            <>{pagePreview}</>
+          ))}
+        {previewPlatform === 'mobile' && (
+          <Stack
+            justifyContent={'center'}
+            alignItems={'center'}
+            alignContent={'center'}
+          >
+            <PreviewPortal>{pagePreview}</PreviewPortal>
+          </Stack>
+        )}
+      </Box>
     </>
   );
 }

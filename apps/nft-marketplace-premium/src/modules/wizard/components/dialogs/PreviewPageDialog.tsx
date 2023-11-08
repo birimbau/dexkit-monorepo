@@ -1,13 +1,5 @@
 import CloseIcon from '@mui/icons-material/Close';
-import {
-  Box,
-  Card,
-  CardContent,
-  Dialog,
-  DialogProps,
-  DialogTitle,
-  IconButton,
-} from '@mui/material';
+import { Dialog, DialogProps, IconButton, Typography } from '@mui/material';
 import dynamic from 'next/dynamic';
 import { FormattedMessage } from 'react-intl';
 import { AppConfig } from '../../../../types/config';
@@ -39,16 +31,7 @@ export default function PreviewPageDialog({
   };
 
   return (
-    <Dialog {...dialogProps}>
-      <DialogTitle sx={{ bgcolor: 'background.default' }}>
-        <Box display={'flex'} justifyContent={'center'}>
-          <FormattedMessage
-            id="page.preview.title"
-            defaultMessage="{name} page preview"
-            values={{ name }}
-          />
-        </Box>
-      </DialogTitle>
+    <Dialog {...dialogProps} sx={{ p: 0, m: 0 }}>
       <IconButton
         aria-label="close"
         onClick={handleClose}
@@ -61,17 +44,23 @@ export default function PreviewPageDialog({
       >
         <CloseIcon />
       </IconButton>
-      <Card>
-        <CardContent>
-          <PreviewPagePlatform
-            sections={sections}
-            disabled={disabled}
-            withLayout={withLayout}
-            appConfig={appConfig}
-            enableOverflow={true}
-          />
-        </CardContent>
-      </Card>
+
+      <PreviewPagePlatform
+        sections={sections}
+        disabled={disabled}
+        withLayout={withLayout}
+        appConfig={appConfig}
+        enableOverflow={true}
+        title={
+          <Typography variant="body1">
+            <FormattedMessage
+              id="page.preview.title"
+              defaultMessage="{name} page preview"
+              values={{ name }}
+            />
+          </Typography>
+        }
+      />
     </Dialog>
   );
 }

@@ -18,7 +18,7 @@ export function PagePreviewPaper({ sections, name, hideButtons }: Props) {
           disabled={true}
           enableOverflow={true}
           title={
-            <Typography variant="body1" sx={{ fontWeight: 600 }}>
+            <Typography variant="body1">
               <FormattedMessage
                 id="page.preview.title"
                 defaultMessage="{name} page preview"
