@@ -1,5 +1,5 @@
-import { IconButton, InputAdornment, Tooltip } from '@mui/material';
 import InfoIcon from '@mui/icons-material/Info';
+import { InputAdornment, Tooltip } from '@mui/material';
 import { FormattedMessage } from 'react-intl';
 import { HELP_FIELD_TEXT } from '../constants';
 
@@ -27,11 +27,8 @@ export function TooltipInfo(props: Props) {
           values={{ br: <br /> }}
         />
       }
-      placement="bottom-start"
     >
-      <IconButton aria-label={`info`} edge="end">
-        <InfoIcon />
-      </IconButton>
+      <InfoIcon />
     </Tooltip>
   );
 }

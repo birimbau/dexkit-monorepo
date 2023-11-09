@@ -108,15 +108,23 @@ export function generateCSSVarsTheme({
 
   if (selectedThemeId === 'custom') {
     return fontFamily
-      ? extendTheme({
-          ...customTheme,
-          cssVarPrefix: cssVarPrefix,
-          typography: {
-            fontFamily,
+      ? extendTheme(
+          {
+            cssVarPrefix: cssVarPrefix,
+            typography: {
+              fontFamily,
+            },
           },
-        })
-      : extendTheme({ ...customTheme, cssVarPrefix: cssVarPrefix });
+          { colorSchemes: customTheme?.colorSchemes }
+        )
+      : extendTheme(
+          {
+            cssVarPrefix: cssVarPrefix,
+          },
+          { colorSchemes: customTheme?.colorSchemes }
+        );
   }
+
   const theme = getTheme({ name: selectedThemeId }).theme;
 
   return fontFamily

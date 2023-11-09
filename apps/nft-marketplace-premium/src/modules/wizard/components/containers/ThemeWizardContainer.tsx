@@ -50,9 +50,11 @@ export default function ThemeWizardContainer({
   showSwap,
 }: Props) {
   const [selectedThemeId, setSelectedThemeId] = useState<string>(config.theme);
+
   const [selectedThemeMode, setSelectedThemeMode] = useState<ThemeMode>(
     config.defaultThemeMode || ThemeMode.light
   );
+
   const [defaultThemeMode, setDefaultThemeMode] = useState<
     ThemeMode | undefined
   >(config?.defaultThemeMode);
@@ -81,12 +83,8 @@ export default function ThemeWizardContainer({
       cssVarPrefix: 'theme_preview',
       customTheme: {
         colorSchemes: {
-          dark: {
-            ...customThemeDark,
-          },
-          light: {
-            ...customThemeLight,
-          },
+          dark: { palette: customThemeDark?.palette },
+          light: { palette: customThemeLight?.palette },
         },
       },
 
@@ -117,16 +115,19 @@ export default function ThemeWizardContainer({
       );
     }
   };
+
   const handleSave = () => {
     const newConfig = {
       ...config,
       theme: selectedThemeId,
       themeMode: defaultThemeMode,
     };
+
     // We will not use anymore this configuration so we will just delete it from the config
     if (newConfig.theme === 'custom' && customTheme) {
       delete newConfig.customTheme;
     }
+
     if (newConfig.theme === 'custom' && customThemeDark) {
       newConfig.customThemeDark = JSON.stringify(customThemeDark);
     }
@@ -134,15 +135,18 @@ export default function ThemeWizardContainer({
     if (newConfig.theme === 'custom' && customThemeLightAtom) {
       newConfig.customThemeLight = JSON.stringify(customThemeLightAtom);
     }
+
     if (selectedFont) {
       newConfig.font = selectedFont;
     }
+
     if (defaultThemeMode) {
       config.defaultThemeMode = defaultThemeMode;
     }
 
     onSave(newConfig);
   };
+
   useEffect(() => {
     const newConfig = { ...config, theme: selectedThemeId };
     // We will not use anymore this configuration so we will just delete it from the config
@@ -198,7 +202,7 @@ export default function ThemeWizardContainer({
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <Stack>
-            <Typography variant={'subtitle2'}>
+            <Typography variant="subtitle2">
               <FormattedMessage id="theme" defaultMessage="Theme" />
             </Typography>
             <Typography variant={'body2'}>
@@ -220,23 +224,21 @@ export default function ThemeWizardContainer({
               value={selectedFont?.family}
               onChange={handleSelectedFont}
               options={Fonts.items.map((f) => f.family)}
-              sx={{ width: 300 }}
+              fullWidth
               renderInput={(params) => (
                 <TextField
                   {...params}
                   label={
                     <FormattedMessage id={'font'} defaultMessage={'Font'} />
                   }
+                  fullWidth
                 />
               )}
             />
 
             <FormControl fullWidth>
               <InputLabel id="theme-mode-label">
-                <FormattedMessage
-                  id={'theme.mode'}
-                  defaultMessage={'Theme mode'}
-                />
+                <FormattedMessage id="theme.mode" defaultMessage="Theme mode" />
               </InputLabel>
               <Select
                 labelId="theme-mode-label"
@@ -260,28 +262,14 @@ export default function ThemeWizardContainer({
                 </MenuItem>
               </Select>
             </FormControl>
-
             <Box>
-              <ThemeSection
-                mode={selectedThemeMode}
-                selectedId={selectedThemeId}
-                onSelect={handleSelectTheme}
-                onPreview={handleShowPreview}
-                legacyTheme={config?.customTheme}
-              />
-            </Box>
-            <Box>
-              <Typography variant="body2">
+              <Typography variant="body2" color="text.secondary">
                 <FormattedMessage
                   id="default.theme.mode"
-                  defaultMessage={'Default Theme mode'}
+                  defaultMessage="Default Theme mode"
                 />
               </Typography>
-              <Stack
-                direction={'row'}
-                alignContent={'center'}
-                alignItems={'center'}
-              >
+              <Stack direction="row" alignContent="center" alignItems="center">
                 <Typography variant="body1">
                   {' '}
                   <FormattedMessage id="light" defaultMessage={'Light'} />
@@ -301,6 +289,15 @@ export default function ThemeWizardContainer({
                   <FormattedMessage id="dark" defaultMessage={'Dark'} />
                 </Typography>
               </Stack>
+            </Box>
+            <Box>
+              <ThemeSection
+                mode={selectedThemeMode}
+                selectedId={selectedThemeId}
+                onSelect={handleSelectTheme}
+                onPreview={handleShowPreview}
+                legacyTheme={config?.customTheme}
+              />
             </Box>
           </Stack>
         </Grid>

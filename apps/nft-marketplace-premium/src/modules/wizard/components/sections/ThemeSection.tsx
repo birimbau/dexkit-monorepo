@@ -1,17 +1,25 @@
 import { ThemeMode } from '@dexkit/ui/constants/enum';
 import {
+  Box,
   Grid,
   Stack,
+  SupportedColorScheme,
   Typography,
   useMediaQuery,
   useTheme,
 } from '@mui/material';
-import { useAtomValue } from 'jotai';
+import { useAtom } from 'jotai';
+import { useCallback, useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { getTheme, themes } from '../../../../theme';
-import { customThemeDarkAtom, customThemeLightAtom } from '../../state';
+import {
+  CustomThemeInterface,
+  customThemeDarkAtom,
+  customThemeLightAtom,
+} from '../../state';
+import { ThemeFormType } from '../../types';
+import EditThemeForm from '../EditThemeForm';
 import WizardThemeButton from '../WizardThemeButton';
-import WizardThemeCustom from '../WizardThemeCustom';
 
 interface Props {
   selectedId?: string;
@@ -29,8 +37,10 @@ export default function ThemeSection({
   onPreview,
 }: Props) {
   const theme = useTheme();
-  const customThemeDark = useAtomValue(customThemeDarkAtom);
-  const customThemeLight = useAtomValue(customThemeLightAtom);
+
+  const [customThemeLight, setCustomThemeLight] = useAtom(customThemeLightAtom);
+  const [customThemeDark, setCustomThemeDark] = useAtom(customThemeDarkAtom);
+
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const renderThemes = () => {
@@ -88,23 +98,70 @@ export default function ThemeSection({
     });
   };
 
+  const legacyThemeParsed = useMemo(() => {
+    if (legacyTheme) {
+      return JSON.parse(legacyTheme);
+    }
+  }, [legacyTheme]);
+
+  const handleChange = useCallback(
+    (values: ThemeFormType) => {
+      if (selectedId !== undefined && selectedId !== values.themeId) {
+        onSelect(values.themeId);
+      }
+
+      let data: CustomThemeInterface = {
+        palette: {
+          background: values.background
+            ? { default: values.background }
+            : undefined,
+          primary: values.primary ? { main: values.primary } : undefined,
+          secondary: values.secondary ? { main: values.secondary } : undefined,
+          text: values.text ? { primary: values.text } : undefined,
+        },
+      };
+      if (mode === ThemeMode.dark) {
+        console.log('entra dark');
+        setCustomThemeDark((value) => ({
+          palette: {
+            ...legacyThemeParsed?.palette,
+            ...value?.palette,
+            ...data.palette,
+          },
+        }));
+      } else {
+        console.log('entra light');
+        setCustomThemeLight((value) => ({
+          palette: {
+            ...legacyThemeParsed?.palette,
+            ...value?.palette,
+            ...data.palette,
+          },
+        }));
+      }
+    },
+    [mode, onSelect, legacyThemeParsed]
+  );
+
   return (
-    <Grid container spacing={2}>
-      {isMobile && (
-        <Grid item xs={12}>
-          <Stack
-            direction="row"
-            alignItems="center"
-            alignContent="center"
-            justifyContent="space-between"
-          >
-            <Typography variant="body1" sx={{ fontWeight: 600 }}>
-              <FormattedMessage
-                id="marketplace.theme"
-                defaultMessage="Marketplace Theme"
-              />
-            </Typography>
-            {/* <Button
+    <>
+      <Grid container spacing={2}>
+        {isMobile && (
+          <Grid item xs={12}>
+            <Box>
+              <Stack
+                direction="row"
+                alignItems="center"
+                alignContent="center"
+                justifyContent="space-between"
+              >
+                <Typography variant="body1" sx={{ fontWeight: 600 }}>
+                  <FormattedMessage
+                    id="marketplace.theme"
+                    defaultMessage="Marketplace Theme"
+                  />
+                </Typography>
+                {/* <Button
               size="small"
               variant="outlined"
               startIcon={<Visibility />}
@@ -112,16 +169,23 @@ export default function ThemeSection({
             >
               <FormattedMessage id="preview" defaultMessage="Preview" />
       </Button>*/}
-          </Stack>
-        </Grid>
-      )}
-
-      {renderThemes()}
-      <Grid item xs={12}>
-        {selectedId === 'custom' && (
-          <WizardThemeCustom mode={mode} legacyTheme={legacyTheme} />
+              </Stack>
+            </Box>
+          </Grid>
         )}
+
+        <EditThemeForm
+          mode={mode as SupportedColorScheme}
+          onChange={handleChange}
+        />
+
+        {/* {renderThemes()}
+        <Grid item xs={12}>
+          {selectedId === 'custom' && (
+            <WizardThemeCustom mode={mode} legacyTheme={legacyTheme} />
+          )}
+        </Grid> */}
       </Grid>
-    </Grid>
+    </>
   );
 }
