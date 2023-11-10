@@ -66,16 +66,17 @@ function HiddenAssetsSection({ onOpenFilters, filters, setFilters }: Props) {
       .filter(isHidden)
       .filter((asset) => {
         return (
-          asset.collectionName?.toLowerCase().search(search.toLowerCase()) >
+          asset?.collectionName?.toLowerCase().search(search.toLowerCase()) >
             -1 ||
-          (asset.metadata !== undefined &&
-            asset.metadata.name.toLowerCase().search(search.toLowerCase()) > -1)
+          (asset?.metadata !== undefined &&
+            asset?.metadata?.name?.toLowerCase().search(search.toLowerCase()) >
+              -1)
         );
       })
       .filter((asset) => {
         if (filters?.networks && filters?.networks.length) {
           return filters.networks.includes(
-            getNetworkSlugFromChainId(asset.chainId) || ''
+            getNetworkSlugFromChainId(asset?.chainId) || '',
           );
         }
 

@@ -25,7 +25,6 @@ export function AssetVideo({ src }: Props) {
             width="100%"
             height={theme.spacing(34)}
             controls
-            autoPlay
             loop
             src={ipfsUriToUrl(src)}
           >

@@ -18,8 +18,8 @@ import dynamic from 'next/dynamic';
 import { Suspense, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { FormattedMessage } from 'react-intl';
-import MainLayout from '../../../../src/components/layouts/main';
 import { PageHeader } from '../../../../src/components/PageHeader';
+import MainLayout from '../../../../src/components/layouts/main';
 import FavoriteAssetsSection from '../../../../src/modules/favorites/components/FavoriteAssetsSection';
 import TableSkeleton from '../../../../src/modules/nft/components/tables/TableSkeleton';
 import HiddenAssetsSection from '../../../../src/modules/wallet/components/HiddenAssetsSection';
@@ -29,7 +29,7 @@ const ImportAssetDialog = dynamic(
   () =>
     import(
       '../../../../src/modules/orders/components/dialogs/ImportAssetDialog'
-    )
+    ),
 );
 
 function a11yProps(index: number) {
@@ -214,10 +214,44 @@ const WalletNFTsPage: NextPage = () => {
             </Grid>
             <Grid item xs={12}>
               {activeTab === 2 && (
-                <HiddenAssetsSection
-                  filters={filters}
-                  onOpenFilters={handleOpenDrawer}
-                />
+                <QueryErrorResetBoundary>
+                  {({ reset }) => (
+                    <ErrorBoundary
+                      onReset={reset}
+                      fallbackRender={({ resetErrorBoundary, error }) => (
+                        <Paper sx={{ p: 1 }}>
+                          <Stack justifyContent="center" alignItems="center">
+                            <Typography variant="h6">
+                              <FormattedMessage
+                                id="something.went.wrong"
+                                defaultMessage="Oops, something went wrong"
+                                description="Something went wrong error message"
+                              />
+                            </Typography>
+                            <Typography variant="body1" color="textSecondary">
+                              {String(error)}
+                            </Typography>
+                            <Button
+                              color="primary"
+                              onClick={resetErrorBoundary}
+                            >
+                              <FormattedMessage
+                                id="try.again"
+                                defaultMessage="Try again"
+                                description="Try again"
+                              />
+                            </Button>
+                          </Stack>
+                        </Paper>
+                      )}
+                    >
+                      <HiddenAssetsSection
+                        filters={filters}
+                        onOpenFilters={handleOpenDrawer}
+                      />
+                    </ErrorBoundary>
+                  )}
+                </QueryErrorResetBoundary>
               )}
             </Grid>
           </Grid>
