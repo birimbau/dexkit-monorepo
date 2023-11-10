@@ -10,7 +10,7 @@ import {
   TextField,
 } from '@mui/material';
 import { FormikHelpers, useFormik } from 'formik';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { PageSectionVariant, SectionItem } from '../../../../types/config';
 
@@ -47,6 +47,7 @@ const FormSchema: Yup.SchemaOf<Form> = Yup.object().shape({
 
 interface Props {
   onSave: (section: AppPageSection) => void;
+  onChange: (section: AppPageSection) => void;
   onCancel: () => void;
   section?: CallToActionAppPageSection;
 }
@@ -54,12 +55,13 @@ interface Props {
 export default function CallToActionSectionForm({
   onSave,
   onCancel,
+  onChange,
   section,
 }: Props) {
   const [showAddItem, setShowAddItem] = useState(false);
 
   const [items, setItems] = useState<SectionItem[]>(
-    section ? section.items : []
+    section ? section.items : [],
   );
 
   const handleSubmit = (values: Form, helpers: FormikHelpers<Form>) => {
@@ -92,6 +94,17 @@ export default function CallToActionSectionForm({
     onSubmit: handleSubmit,
     validationSchema: FormSchema,
   });
+
+  useEffect(() => {
+    onChange({
+      button: formik.values.button,
+      type: 'call-to-action',
+      items,
+      subtitle: formik.values.subtitle,
+      title: formik.values.title,
+      variant: formik.values.variant as PageSectionVariant,
+    });
+  }, [formik.values, items]);
 
   const [selectedItemIndex, setSelectedItemIndex] = useState(-1);
 

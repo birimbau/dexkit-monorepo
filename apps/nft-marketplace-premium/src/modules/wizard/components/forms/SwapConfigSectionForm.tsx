@@ -1,5 +1,5 @@
 import { Button, Grid, Stack } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { AppPageSection, SwapPageSection } from '../../types/section';
 
@@ -8,12 +8,24 @@ import { SwapConfigForm } from './SwapConfigForm';
 
 interface Props {
   onSave: (section: AppPageSection) => void;
+  onChange: (section: AppPageSection) => void;
   onCancel: () => void;
   section?: SwapPageSection;
 }
-export function SwapConfigSectionForm({ onSave, onCancel, section }: Props) {
+export function SwapConfigSectionForm({
+  onSave,
+  onCancel,
+  onChange,
+  section,
+}: Props) {
   const [data, setData] = useState(section?.config);
   const { wizardConfig } = useAppWizardConfig();
+  useEffect(() => {
+    onChange({
+      type: 'swap',
+      config: data,
+    });
+  }, [data]);
 
   return (
     <Grid container spacing={2}>

@@ -43,7 +43,7 @@ export function PageSectionItem({
           contractAddress: item.contractAddress,
           tokenId: item.tokenId,
         }
-      : {}
+      : {},
   );
 
   const { data: collection, isLoading: isCollectionLoading } =
@@ -53,7 +53,7 @@ export function PageSectionItem({
             chainId: item.chainId,
             contractAddress: item.contractAddress,
           }
-        : {}
+        : {},
     );
   const renderCollection = () => {
     return (

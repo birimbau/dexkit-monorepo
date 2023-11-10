@@ -46,11 +46,14 @@ export default function SeoWizardContainer({ config, onSave }: Props) {
     <Grid container spacing={2}>
       <Grid item xs={12}>
         <Stack>
-          <Typography variant={'subtitle2'}>
+          <Typography variant={'h6'}>
             <FormattedMessage id="SEO" defaultMessage="SEO" />
           </Typography>
           <Typography variant={'body2'}>
-            <FormattedMessage id="seo.settings" defaultMessage="SEO Settings" />
+            <FormattedMessage
+              id="seo.wizard.description"
+              defaultMessage="Configure your app's SEO"
+            />
           </Typography>
         </Stack>
       </Grid>

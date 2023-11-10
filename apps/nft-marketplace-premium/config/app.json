@@ -8,16 +8,16 @@
   "theme": "kittygotchi",
   "domain": "https://dexappbuilder.dexkit.com",
   "logo": {
-    "url": "https://dexkit-storage.nyc3.cdn.digitaloceanspaces.com/dexkit/images/logo/dexappbuilder.svg",
-    "height": 50,
-    "width": 150
+    "url": "https://dexkit-storage.nyc3.cdn.digitaloceanspaces.com/dexkit/images/logo/dexappbuilder.png",
+    "height": 48,
+    "width": 300
   },
   "logoDark": {
-    "url": "https://dexkit-storage.nyc3.cdn.digitaloceanspaces.com/dexkit/images/logo/dexappbuilder-dark.svg",
-    "height": 50,
-    "width": 150
+    "url": "https://dexkit-storage.nyc3.cdn.digitaloceanspaces.com/dexkit/images/logo/dexappbuilder-dark.png",
+    "height": 48,
+    "width": 300
   },
-  "favicon_url": "",
+  "favicon_url": "https://dexkit-storage.nyc3.cdn.digitaloceanspaces.com/dexkit/images/logo/favicon.ico",
   "social": [
     { "type": "instagram", "handle": "dexkit.io" },
     { "type": "twitter", "handle": "dexkit" }
@@ -42,39 +42,6 @@
     }
   ],
   "menuTree": [
-    { "type": "Page", "href": "/", "name": "Home" },
-    {
-      "type": "Menu",
-      "href": "",
-      "name": "Pages",
-      "children": [
-        {
-          "type": "Page",
-          "href": "/swap",
-          "name": "Swap"
-        },
-        {
-          "type": "Page",
-          "href": "/wallet",
-          "name": "Wallet"
-        },
-        {
-          "type": "Page",
-          "href": "/collections",
-          "name": "Collections"
-        },
-        {
-          "type": "Page",
-          "href": "/order/create",
-          "name": "Create order"
-        },
-        {
-          "type": "Page",
-          "href": "/exchange",
-          "name": "Exchange"
-        }
-      ]
-    },
     {
       "type": "Menu",
       "href": "",
@@ -432,12 +399,12 @@
       "sections": [
         {
           "type": "custom",
-          "data": "{\"id\":\"atybdk\",\"version\":1,\"rows\":[{\"id\":\"e8gic5\",\"cells\":[{\"id\":\"suexnz\",\"size\":12,\"plugin\":{\"id\":\"container\",\"version\":1},\"dataI18n\":{\"default\":null},\"rows\":[{\"id\":\"aiusq5\",\"cells\":[{\"id\":\"mgjbzi\",\"size\":12,\"plugin\":{\"id\":\"ory/editor/core/content/spacer\",\"version\":1},\"dataI18n\":{\"default\":{\"height\":83,\"hideInMobile\":true}},\"rows\":[],\"inline\":null}]},{\"id\":\"g5kbf4\",\"cells\":[{\"id\":\"xqi2b6\",\"size\":12,\"plugin\":{\"id\":\"stack\",\"version\":1},\"dataI18n\":{\"default\":{\"padding\":2}},\"rows\":[{\"id\":\"6mdiim\",\"cells\":[{\"id\":\"swb0va\",\"size\":12,\"plugin\":{\"id\":\"ory/editor/core/content/slate\",\"version\":1},\"dataI18n\":{\"default\":{\"slate\":[{\"type\":\"HEADINGS/HEADING-ONE\",\"children\":[{\"text\":\"Welcome to DexAppBuilder!\",\"EMPHASIZE/STRONG\":true}],\"data\":{\"align\":\"center\"}}]}},\"rows\":[],\"inline\":null}]},{\"id\":\"69lfno\",\"cells\":[{\"id\":\"5ubv5t\",\"size\":12,\"plugin\":{\"id\":\"ory/editor/core/content/slate\",\"version\":1},\"dataI18n\":{\"default\":{\"slate\":[{\"type\":\"PARAGRAPH/PARAGRAPH\",\"children\":[{\"text\":\"Start your crypto app in seconds using our builder.\\nYou will start for free with a\"},{\"text\":\" .dexkit.app\",\"SetColor\":{\"color\":\"rgba(0,0,255,1)\"}},{\"text\":\" domain and you can earn fees selling your nfts or tokens. \\n\\n\"},{\"text\":\"Note: this whole page was done using our builder.\",\"EMPHASIZE/EM\":true}],\"data\":{\"align\":\"center\"}},{\"type\":\"PARAGRAPH/PARAGRAPH\",\"children\":[{\"text\":\"\"}]}]}},\"rows\":[],\"inline\":null}]},{\"id\":\"um7acr\",\"cells\":[{\"id\":\"wnh7zg\",\"size\":12,\"plugin\":{\"id\":\"button-dexkit-plugin\",\"version\":1},\"dataI18n\":{\"default\":{\"text\":\"Open Builder\",\"variant\":\"contained\",\"color\":\"primary\",\"size\":\"large\",\"position\":\"center\",\"action\":\"Open link\",\"href\":\"https://whitelabel-nft.dexkit.com/admin/setup\"}},\"rows\":[],\"inline\":null}]}],\"inline\":null}]},{\"id\":\"iieuco\",\"cells\":[{\"id\":\"hrpsap\",\"size\":12,\"plugin\":{\"id\":\"ory/editor/core/content/spacer\",\"version\":1},\"dataI18n\":{\"default\":{\"height\":100,\"hideInDesktop\":false,\"hideInMobile\":true}},\"rows\":[],\"inline\":null}]}],\"inline\":null}]}]}",
+          "data": "{\"id\":\"atybdk\",\"version\":1,\"rows\":[{\"id\":\"e8gic5\",\"cells\":[{\"id\":\"suexnz\",\"size\":12,\"plugin\":{\"id\":\"container\",\"version\":1},\"dataI18n\":{\"default\":null},\"rows\":[{\"id\":\"aiusq5\",\"cells\":[{\"id\":\"mgjbzi\",\"size\":12,\"plugin\":{\"id\":\"ory/editor/core/content/spacer\",\"version\":1},\"dataI18n\":{\"default\":{\"height\":83,\"hideInMobile\":true}},\"rows\":[],\"inline\":null}]},{\"id\":\"g5kbf4\",\"cells\":[{\"id\":\"xqi2b6\",\"size\":12,\"plugin\":{\"id\":\"stack\",\"version\":1},\"dataI18n\":{\"default\":{\"padding\":2}},\"rows\":[{\"id\":\"6mdiim\",\"cells\":[{\"id\":\"swb0va\",\"size\":12,\"plugin\":{\"id\":\"ory/editor/core/content/slate\",\"version\":1},\"dataI18n\":{\"default\":{\"slate\":[{\"type\":\"HEADINGS/HEADING-ONE\",\"children\":[{\"text\":\"Welcome to DexAppBuilder!\",\"EMPHASIZE/STRONG\":true}],\"data\":{\"align\":\"center\"}}]}},\"rows\":[],\"inline\":null}]},{\"id\":\"69lfno\",\"cells\":[{\"id\":\"5ubv5t\",\"size\":12,\"plugin\":{\"id\":\"ory/editor/core/content/slate\",\"version\":1},\"dataI18n\":{\"default\":{\"slate\":[{\"type\":\"PARAGRAPH/PARAGRAPH\",\"children\":[{\"text\":\"Start your crypto app in seconds using our builder.\\nYou will start for free with a\"},{\"text\":\" .dexkit.app\",\"SetColor\":{\"color\":\"rgba(0,0,255,1)\"}},{\"text\":\" domain and you can earn fees selling your nfts or tokens. \\n\\n\"},{\"text\":\"Note: this whole page was done using our builder.\",\"EMPHASIZE/EM\":true}],\"data\":{\"align\":\"center\"}},{\"type\":\"PARAGRAPH/PARAGRAPH\",\"children\":[{\"text\":\"\"}]}]}},\"rows\":[],\"inline\":null}]},{\"id\":\"um7acr\",\"cells\":[{\"id\":\"wnh7zg\",\"size\":12,\"plugin\":{\"id\":\"button-dexkit-plugin\",\"version\":1},\"dataI18n\":{\"default\":{\"text\":\"Start for Free\",\"variant\":\"contained\",\"color\":\"primary\",\"size\":\"large\",\"position\":\"center\",\"action\":\"Open link\",\"href\":\"https://dexappbuilder.dexkit.com/admin/create\"}},\"rows\":[],\"inline\":null}]}],\"inline\":null}]},{\"id\":\"iieuco\",\"cells\":[{\"id\":\"hrpsap\",\"size\":12,\"plugin\":{\"id\":\"ory/editor/core/content/spacer\",\"version\":1},\"dataI18n\":{\"default\":{\"height\":100,\"hideInDesktop\":false,\"hideInMobile\":true}},\"rows\":[],\"inline\":null}]}],\"inline\":null}]}]}",
           "title": "Welcome"
         },
         {
           "type": "custom",
-          "data": "{\"id\":\"ibe7oy\",\"version\":1,\"rows\":[{\"id\":\"3td31s\",\"cells\":[{\"id\":\"249p91\",\"size\":12,\"plugin\":{\"id\":\"ory/editor/core/layout/background\",\"version\":1},\"dataI18n\":{\"default\":{\"modeFlag\":3,\"backgroundColor\":{\"r\":0,\"g\":0,\"b\":0,\"a\":1},\"hasPadding\":true}},\"rows\":[{\"id\":\"15nu9t\",\"cells\":[{\"id\":\"zllgyg\",\"size\":12,\"plugin\":{\"id\":\"ory/editor/core/content/spacer\",\"version\":1},\"dataI18n\":{\"default\":{\"height\":100,\"hideInMobile\":true}},\"rows\":[],\"inline\":null}]},{\"id\":\"0rhind\",\"cells\":[{\"id\":\"3ksgzw\",\"size\":12,\"plugin\":{\"id\":\"ory/editor/core/content/spacer\",\"version\":1},\"dataI18n\":{\"default\":{\"height\":24}},\"rows\":[],\"inline\":null}]},{\"id\":\"cd8bv7\",\"cells\":[{\"id\":\"n30y4l\",\"size\":12,\"plugin\":{\"id\":\"ory/editor/core/content/slate\",\"version\":1},\"dataI18n\":{\"default\":{\"slate\":[{\"type\":\"HEADINGS/HEADING-ONE\",\"children\":[{\"text\":\"You don't have design skills?\",\"SetColor\":{\"color\":\"rgba(250, 199, 72, 1)\"}}],\"data\":{\"align\":\"center\"}}]}},\"rows\":[],\"inline\":null}]},{\"id\":\"b9eafq\",\"cells\":[{\"id\":\"332rsh\",\"size\":12,\"plugin\":{\"id\":\"ory/editor/core/content/slate\",\"version\":1},\"dataI18n\":{\"default\":{\"slate\":[{\"children\":[{\"text\":\"Just clone right way a marketplace \"}],\"data\":{\"align\":\"center\"}},{\"data\":{\"align\":\"center\"},\"children\":[{\"text\":\"made by community.\"}]}]}},\"rows\":[],\"inline\":null}]},{\"id\":\"eznran\",\"cells\":[{\"id\":\"ijkkb0\",\"size\":12,\"plugin\":{\"id\":\"button-dexkit-plugin\",\"version\":1},\"dataI18n\":{\"default\":{\"text\":\"Clone Marketplace\",\"variant\":\"contained\",\"size\":\"large\",\"position\":\"center\",\"action\":\"Open link\",\"href\":\"https://whitelabel-nft.dexkit.com/site\"}},\"rows\":[],\"inline\":null}]},{\"id\":\"p1j9zf\",\"cells\":[{\"id\":\"ngr0nc\",\"size\":12,\"plugin\":{\"id\":\"ory/editor/core/content/spacer\",\"version\":1},\"dataI18n\":{\"default\":{\"height\":100,\"hideInMobile\":true}},\"rows\":[],\"inline\":null}]}],\"inline\":null}]}]}",
+          "data": "{\"id\":\"ibe7oy\",\"version\":1,\"rows\":[{\"id\":\"3td31s\",\"cells\":[{\"id\":\"249p91\",\"size\":12,\"plugin\":{\"id\":\"ory/editor/core/layout/background\",\"version\":1},\"dataI18n\":{\"default\":{\"modeFlag\":3,\"backgroundColor\":{\"r\":0,\"g\":0,\"b\":0,\"a\":1},\"hasPadding\":true}},\"rows\":[{\"id\":\"15nu9t\",\"cells\":[{\"id\":\"zllgyg\",\"size\":12,\"plugin\":{\"id\":\"ory/editor/core/content/spacer\",\"version\":1},\"dataI18n\":{\"default\":{\"height\":100,\"hideInMobile\":true}},\"rows\":[],\"inline\":null}]},{\"id\":\"0rhind\",\"cells\":[{\"id\":\"3ksgzw\",\"size\":12,\"plugin\":{\"id\":\"ory/editor/core/content/spacer\",\"version\":1},\"dataI18n\":{\"default\":{\"height\":24}},\"rows\":[],\"inline\":null}]},{\"id\":\"cd8bv7\",\"cells\":[{\"id\":\"n30y4l\",\"size\":12,\"plugin\":{\"id\":\"ory/editor/core/content/slate\",\"version\":1},\"dataI18n\":{\"default\":{\"slate\":[{\"type\":\"HEADINGS/HEADING-ONE\",\"children\":[{\"text\":\"You don't have design skills?\",\"SetColor\":{\"color\":\"rgba(250, 199, 72, 1)\"}}],\"data\":{\"align\":\"center\"}}]}},\"rows\":[],\"inline\":null}]},{\"id\":\"b9eafq\",\"cells\":[{\"id\":\"332rsh\",\"size\":12,\"plugin\":{\"id\":\"ory/editor/core/content/slate\",\"version\":1},\"dataI18n\":{\"default\":{\"slate\":[{\"children\":[{\"text\":\"Just clone right way a marketplace \"}],\"data\":{\"align\":\"center\"}},{\"data\":{\"align\":\"center\"},\"children\":[{\"text\":\"made by community.\"}]}]}},\"rows\":[],\"inline\":null}]},{\"id\":\"eznran\",\"cells\":[{\"id\":\"ijkkb0\",\"size\":12,\"plugin\":{\"id\":\"button-dexkit-plugin\",\"version\":1},\"dataI18n\":{\"default\":{\"text\":\"Clone Marketplace\",\"variant\":\"contained\",\"size\":\"large\",\"position\":\"center\",\"action\":\"Open link\",\"href\":\"https://dexappbuilder.dexkit.com/site\"}},\"rows\":[],\"inline\":null}]},{\"id\":\"p1j9zf\",\"cells\":[{\"id\":\"ngr0nc\",\"size\":12,\"plugin\":{\"id\":\"ory/editor/core/content/spacer\",\"version\":1},\"dataI18n\":{\"default\":{\"height\":100,\"hideInMobile\":true}},\"rows\":[],\"inline\":null}]}],\"inline\":null}]}]}",
           "title": "CloneSection"
         },
         {

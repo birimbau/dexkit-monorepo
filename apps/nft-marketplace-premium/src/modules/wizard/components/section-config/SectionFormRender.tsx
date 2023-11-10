@@ -15,6 +15,7 @@ interface Props {
   sectionType: SectionType | undefined;
   section: AppPageSection | undefined;
   onSave: (section: AppPageSection) => void;
+  onChange: (section: AppPageSection) => void;
   onClose: () => void;
 }
 
@@ -22,6 +23,7 @@ export function SectionFormRender({
   section,
   sectionType,
   onSave,
+  onChange,
   onClose,
 }: Props) {
   if (sectionType === 'video') {
@@ -29,6 +31,7 @@ export function SectionFormRender({
       <VideoSectionForm
         onSave={onSave}
         onCancel={onClose}
+        onChange={onChange}
         section={section?.type === sectionType ? section : undefined}
       />
     );
@@ -37,6 +40,7 @@ export function SectionFormRender({
       <CallToActionSectionForm
         onSave={onSave}
         onCancel={onClose}
+        onChange={onChange}
         section={section?.type === sectionType ? section : undefined}
       />
     );
@@ -45,6 +49,7 @@ export function SectionFormRender({
       <FeaturedSectionForm
         onCancel={onClose}
         onSave={onSave}
+        onChange={onChange}
         section={section?.type === sectionType ? section : undefined}
       />
     );
@@ -53,6 +58,7 @@ export function SectionFormRender({
       <CollectionSectionForm
         onCancel={onClose}
         onSave={onSave}
+        onChange={onChange}
         section={section?.type === sectionType ? section : undefined}
       />
     );
@@ -61,6 +67,7 @@ export function SectionFormRender({
       <SwapConfigSectionForm
         onCancel={onClose}
         onSave={onSave}
+        onChange={onChange}
         section={section?.type === sectionType ? section : undefined}
       />
     );
@@ -69,6 +76,7 @@ export function SectionFormRender({
       <AssetStoreSectionForm
         onCancel={onClose}
         onSave={onSave}
+        onChange={onChange}
         section={section?.type === sectionType ? section : undefined}
       />
     );
@@ -77,6 +85,7 @@ export function SectionFormRender({
       <MDSectionForm
         onCancel={onClose}
         onSave={onSave}
+        onChange={onChange}
         section={section?.type === sectionType ? section : undefined}
       />
     );
@@ -85,6 +94,7 @@ export function SectionFormRender({
       <WalletSectionForm
         onCancel={onClose}
         onSave={onSave}
+        onChange={onChange}
         section={section?.type === sectionType ? section : undefined}
       />
     );
@@ -93,6 +103,7 @@ export function SectionFormRender({
       <ContractSectionForm
         onCancel={onClose}
         onSave={onSave}
+        onChange={onChange}
         section={section?.type === sectionType ? section : undefined}
       />
     );
@@ -100,9 +111,11 @@ export function SectionFormRender({
     return (
       <UserContractForm
         onCancel={onClose}
+        saveOnChange={true}
         onSave={(formId, hideFormInfo) => {
           if (formId) {
             onSave({ type: 'user-contract-form', formId, hideFormInfo });
+            onChange({ type: 'user-contract-form', formId, hideFormInfo });
           }
         }}
         hideFormInfo={
@@ -120,6 +133,7 @@ export function SectionFormRender({
       <ExchangeSectionSettingsForm
         onCancel={onClose}
         onSave={onSave}
+        onChange={onChange}
         section={section?.type === 'exchange' ? section : undefined}
       />
     );

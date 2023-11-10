@@ -62,7 +62,7 @@ export function UserContractForm({
         onSave(id, hideInfo);
       }
     },
-    [saveOnChange, hideInfo]
+    [saveOnChange, hideInfo],
   );
 
   const handleSave = useCallback(() => {
@@ -78,7 +78,7 @@ export function UserContractForm({
       }
       setHideInfo(e.target.checked);
     },
-    [saveOnChange]
+    [saveOnChange],
   );
 
   useEffect(() => {

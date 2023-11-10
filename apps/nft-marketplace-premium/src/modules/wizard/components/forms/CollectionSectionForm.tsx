@@ -1,6 +1,6 @@
 import { Button, Grid, Paper, Stack, TextField } from '@mui/material';
 import { FormikHelpers, useFormik } from 'formik';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { SectionItem } from '../../../../types/config';
 
@@ -20,12 +20,14 @@ const FormSchema: Yup.SchemaOf<Form> = Yup.object().shape({
 
 interface Props {
   onSave: (section: AppPageSection) => void;
+  onChange: (section: AppPageSection) => void;
   onCancel: () => void;
   section?: CollectionAppPageSection;
 }
 
 export default function CollectionSectionForm({
   onSave,
+  onChange,
   onCancel,
   section,
 }: Props) {
@@ -34,7 +36,7 @@ export default function CollectionSectionForm({
   const [selectedItemIndex, setSelectedItemIndex] = useState(-1);
 
   const [items, setItems] = useState<SectionItem[]>(
-    section ? section.items : []
+    section ? section.items : [],
   );
 
   const handleSubmit = (values: Form, helpers: FormikHelpers<Form>) => {
@@ -111,6 +113,14 @@ export default function CollectionSectionForm({
   const handleCancelItem = () => {
     setShowAddItem(false);
   };
+
+  useEffect(() => {
+    onChange({
+      type: 'collections',
+      items,
+      title: formik.values.title,
+    });
+  }, [formik.values, items]);
 
   return (
     <form onSubmit={formik.handleSubmit}>

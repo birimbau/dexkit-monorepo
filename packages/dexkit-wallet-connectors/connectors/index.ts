@@ -1,10 +1,13 @@
-import { WalletActivateParams } from "@dexkit/core/types";
+
 import { MetaMask } from "@web3-react/metamask";
 import { Connector } from "@web3-react/types";
 import { WalletConnect } from "@web3-react/walletconnect-v2";
-import { getIsCoinbaseWallet, getIsInjected, getIsMetaMaskWallet } from "./constants/connectors/utils";
-import { MagicLoginType } from "./types/magic";
-import { isMobile } from "./utils/userAgent";
+import { getIsCoinbaseWallet, getIsInjected, getIsMetaMaskWallet } from "../constants/connectors/utils";
+import { WalletActivateParams } from "../types";
+import { isMobile } from "../utils/userAgent";
+import { MagicLoginType } from "./magic";
+
+
 //@dev https://github.com/Uniswap/interface/blob/main/src/connection/index.ts
 const getIsCoinbaseWalletBrowser = () => isMobile && getIsCoinbaseWallet()
 const getIsMetaMaskBrowser = () => isMobile && getIsMetaMaskWallet()

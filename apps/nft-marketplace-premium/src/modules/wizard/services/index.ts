@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { ethers } from 'ethers';
+import { Contract, providers, utils } from 'ethers';
 import { isAddress } from 'ethers/lib/utils';
 import {
   getBalanceOf,
@@ -27,9 +27,9 @@ export async function getContractImplementation({
   contractAddress,
 }: {
   contractAddress: string;
-  provider: ethers.providers.JsonRpcProvider;
+  provider: providers.JsonRpcProvider;
 }): Promise<string> {
-  const contract = new ethers.Contract(
+  const contract = new Contract(
     contractAddress,
     [
       {
@@ -74,11 +74,11 @@ export async function checkGatedConditions({
           account,
           getProviderByChainId(condition.chainId)
         );
-        balances[index] = ethers.utils.formatUnits(balance, condition.decimals);
+        balances[index] = utils.formatUnits(balance, condition.decimals);
         partialResults[index] = false;
         if (
-          balance.gt(
-            ethers.utils.parseUnits(
+          balance.gte(
+            utils.parseUnits(
               String(condition.amount),
               condition.decimals
             )
@@ -94,9 +94,9 @@ export async function checkGatedConditions({
           condition.address as string,
           account
         );
-        balances[index] = ethers.utils.formatUnits(balance, 0);
+        balances[index] = utils.formatUnits(balance, 0);
         partialResults[index] = false;
-        if (balance.gte(ethers.utils.parseUnits(String(condition.amount), 0))) {
+        if (balance.gte(utils.parseUnits(String(condition.amount), 0))) {
           thisCondition = true;
           partialResults[index] = true;
         }
@@ -112,9 +112,9 @@ export async function checkGatedConditions({
           account,
           condition.tokenId as string
         );
-        balances[index] = ethers.utils.formatUnits(balance, 0);
+        balances[index] = utils.formatUnits(balance, 0);
         partialResults[index] = false;
-        if (balance.gte(ethers.utils.parseUnits(String(condition.amount), 0))) {
+        if (balance.gte(utils.parseUnits(String(condition.amount), 0))) {
           thisCondition = true;
           partialResults[index] = true;
         }
@@ -188,7 +188,7 @@ export async function isProxyContract({
   contractAddress,
 }: {
   contractAddress: string;
-  provider: ethers.providers.JsonRpcProvider;
+  provider: providers.JsonRpcProvider;
 }): Promise<boolean> {
   try {
     const addr = await getContractImplementation({ contractAddress, provider });

@@ -13,7 +13,6 @@ import {
 import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import { AppDialogTitle } from '../../../../components/AppDialogTitle';
 import {
   CheckCircle,
   Error,
@@ -21,6 +20,7 @@ import {
   ExpandMore,
 } from '@mui/icons-material';
 import { useRouter } from 'next/router';
+import { AppDialogTitle } from '../../../../components/AppDialogTitle';
 
 interface Props {
   dialogProps: DialogProps;
@@ -112,8 +112,8 @@ function DeployDomainDialog({
                 />
               ) : isSuccess ? (
                 <FormattedMessage
-                  id="your.marketplace.domain.was.verified.to.our.system"
-                  defaultMessage="Your marketplace domain was verified on our system. Wait for domain to propagate and then visit your domain."
+                  id="your.app.domain.was.verified.to.our.system"
+                  defaultMessage="Your app domain was verified on our system. Wait for domain to propagate and then visit your domain."
                 />
               ) : (
                 <FormattedMessage
@@ -125,10 +125,7 @@ function DeployDomainDialog({
           </Box>
           {isSuccess && !isEdit && (
             <Button onClick={handleGoToMarketplaces} variant="contained">
-              <FormattedMessage
-                id="view.marketplaces"
-                defaultMessage="View Marketplaces"
-              />
+              <FormattedMessage id="view.apps" defaultMessage="View Apps" />
             </Button>
           )}
 

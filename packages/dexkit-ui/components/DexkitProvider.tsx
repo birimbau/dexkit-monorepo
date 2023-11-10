@@ -6,10 +6,11 @@ import { useMemo } from "react";
 import { useDexkitContextState, useOrderedConnectors } from "../hooks";
 
 import { AppTransaction, Asset, TokenWhitelabelApp } from "@dexkit/core/types";
-import { getConnectorName } from "@dexkit/core/utils";
+
 import { CssBaseline } from "@mui/material";
 import { PrimitiveAtom, SetStateAction, WritableAtom } from "jotai";
 
+import { GET_CONNECTOR_NAME } from "@dexkit/wallet-connectors/connectors";
 import {
   Experimental_CssVarsProvider as CssVarsProvider,
   SupportedColorScheme,
@@ -74,7 +75,7 @@ export function DexkitProvider({
 
   const web3ReactKey = useMemo(
     () =>
-      connectors.map((connector) => getConnectorName(connector[0])).join("-"),
+      connectors.map((connector) => GET_CONNECTOR_NAME(connector[0])).join("-"),
     [connectors]
   );
 

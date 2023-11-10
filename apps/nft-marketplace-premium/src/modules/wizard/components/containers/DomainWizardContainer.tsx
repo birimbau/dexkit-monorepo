@@ -1,3 +1,4 @@
+import InfoIcon from '@mui/icons-material/Info';
 import {
   Button,
   Divider,
@@ -6,6 +7,7 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
+import { useSnackbar } from 'notistack';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import AppConfirmDialog from '../../../../components/AppConfirmDialog';
@@ -15,12 +17,12 @@ import {
 } from '../../../../hooks/whitelabel';
 import { AppConfig } from '../../../../types/config';
 import { SiteResponse } from '../../../../types/whitelabel';
-import CheckDomainDialog from '../dialogs/CheckDomainDialog';
-import DeployDomainDialog from '../dialogs/CheckDomainDialog';
-import DomainSection, { DomainSectionForm } from '../sections/DomainSection';
-import InfoIcon from '@mui/icons-material/Info';
+import {
+  default as CheckDomainDialog,
+  default as DeployDomainDialog,
+} from '../dialogs/CheckDomainDialog';
 import InfoDialog from '../dialogs/InfoDialog';
-import { useSnackbar } from 'notistack';
+import DomainSection, { DomainSectionForm } from '../sections/DomainSection';
 interface Props {
   config: AppConfig;
   site?: SiteResponse;
@@ -70,7 +72,7 @@ export default function DomainWizardContainer({ config, onSave, site }: Props) {
             setIsDeploySignOpen(false);
           },
           onError: console.log,
-        }
+        },
       );
     }
     setIsDeploySignOpen(true);
@@ -93,7 +95,7 @@ export default function DomainWizardContainer({ config, onSave, site }: Props) {
           vertical: 'bottom',
           horizontal: 'right',
         },
-      }
+      },
     );
   };
 
@@ -109,7 +111,7 @@ export default function DomainWizardContainer({ config, onSave, site }: Props) {
           vertical: 'bottom',
           horizontal: 'right',
         },
-      }
+      },
     );
   };
 
@@ -121,7 +123,7 @@ export default function DomainWizardContainer({ config, onSave, site }: Props) {
         {
           onError: handleDeployCheckError,
           onSuccess: handleDeployCheckSuccess,
-        }
+        },
       );
     }
   };
@@ -149,14 +151,14 @@ export default function DomainWizardContainer({ config, onSave, site }: Props) {
       formatMessage({
         id: 'info.wizard.title.domain.records.setup',
         defaultMessage: 'Domain records setup info',
-      })
+      }),
     );
     setContentInfo(
       formatMessage({
         id: 'info.wizard.content.cname',
         defaultMessage: `Deploy your domain, make sure first your domain is not used with other records. After domain successfully added to our system you will receive a CNAME and A record to be added to your DNS provider. After added the CNAME and A record, press button check deploy status, if status VERIFIED, wait for domain to propagate and you will have your marketplace set on your custom domain. 
           Note, if you are on a subdomain, replace @ with subdomain value. Any issue contact our support channels.`,
-      })
+      }),
     );
   }, []);
 
@@ -221,13 +223,13 @@ export default function DomainWizardContainer({ config, onSave, site }: Props) {
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <Stack>
-            <Typography variant={'subtitle2'}>
-              <FormattedMessage id="domains" defaultMessage="Domains" />
+            <Typography variant={'h6'}>
+              <FormattedMessage id="domain" defaultMessage="Domain" />
             </Typography>
             <Typography variant={'body2'}>
               <FormattedMessage
-                id="domains"
-                defaultMessage="Set custom domain"
+                id="set.custom.domain.container.description"
+                defaultMessage="Set a custom domain for your app"
               />
             </Typography>
           </Stack>

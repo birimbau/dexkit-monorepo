@@ -73,7 +73,7 @@ export default function ThemeSection({
       }
 
       return (
-        <Grid item xs={6} sm={4} key={key}>
+        <Grid item xs={6} sm={5} key={key}>
           <WizardThemeButton
             selected={selectedId === key}
             name={name}
@@ -144,24 +144,19 @@ export default function ThemeSection({
   );
 
   return (
-    <>
-      <Grid container spacing={2}>
-        {isMobile && (
-          <Grid item xs={12}>
-            <Box>
-              <Stack
-                direction="row"
-                alignItems="center"
-                alignContent="center"
-                justifyContent="space-between"
-              >
-                <Typography variant="body1" sx={{ fontWeight: 600 }}>
-                  <FormattedMessage
-                    id="marketplace.theme"
-                    defaultMessage="Marketplace Theme"
-                  />
-                </Typography>
-                {/* <Button
+    <Grid container spacing={2}>
+      {isMobile && (
+        <Grid item xs={12}>
+          <Stack
+            direction="row"
+            alignItems="center"
+            alignContent="center"
+            justifyContent="space-between"
+          >
+            <Typography variant="body1" sx={{ fontWeight: 600 }}>
+              <FormattedMessage id="app.theme" defaultMessage="App Theme" />
+            </Typography>
+            {/* <Button
               size="small"
               variant="outlined"
               startIcon={<Visibility />}

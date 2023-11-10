@@ -1,4 +1,4 @@
-import { GET_WALLET_ICON, useEvmNativeBalanceQuery } from '@dexkit/core';
+import { useEvmNativeBalanceQuery } from '@dexkit/core';
 import {
   copyToClipboard,
   formatBigNumber,
@@ -29,6 +29,7 @@ import dynamic from 'next/dynamic';
 import { NETWORK_IMAGE, NETWORK_NAME } from '@dexkit/core/constants/networks';
 
 import { AccountBalance } from '@dexkit/ui/components/AccountBalance';
+import { GET_WALLET_ICON } from '@dexkit/wallet-connectors/connectors';
 import FileCopy from '@mui/icons-material/FileCopy';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import Logout from '@mui/icons-material/Logout';

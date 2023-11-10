@@ -1,6 +1,6 @@
 import { useEvmNativeBalanceQuery } from '@dexkit/core';
-import { GET_WALLET_ICON } from '@dexkit/core/connectors';
 import { AccountBalance } from '@dexkit/ui/components/AccountBalance';
+import { GET_WALLET_ICON } from '@dexkit/wallet-connectors/connectors';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import {

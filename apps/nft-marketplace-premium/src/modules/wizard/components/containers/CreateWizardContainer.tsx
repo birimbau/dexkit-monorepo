@@ -87,7 +87,7 @@ export function CreateWizardContainer({ slug, isSwapWizard }: Props) {
 
     if (clonedConfigQuery.data && clonedConfigQuery.data.config) {
       const clonedConfig = JSON.parse(
-        clonedConfigQuery.data.config
+        clonedConfigQuery.data.config,
       ) as AppConfig;
       if (clonedConfig.pages['home']) {
         return clonedConfig.pages['home'];
@@ -244,7 +244,10 @@ export function CreateWizardContainer({ slug, isSwapWizard }: Props) {
                   },
                   {
                     caption: (
-                      <FormattedMessage id="create" defaultMessage="Create" />
+                      <FormattedMessage
+                        id="create.app"
+                        defaultMessage="Create App"
+                      />
                     ),
                     uri: isSwapWizard ? '/admin/create-swa´p' : '/admin/create',
                     active: true,

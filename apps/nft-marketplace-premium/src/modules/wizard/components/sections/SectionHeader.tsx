@@ -1,16 +1,16 @@
 import { IconButton, Stack, Tooltip, Typography } from '@mui/material';
 
+import ComputerIcon from '@mui/icons-material/Computer';
+import DeleteIcon from '@mui/icons-material/Delete';
+import DesktopAccessDisabledIcon from '@mui/icons-material/DesktopAccessDisabled';
+import Edit from '@mui/icons-material/Edit';
+import FileCopyIcon from '@mui/icons-material/FileCopy';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import Edit from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
+import MobileOffIcon from '@mui/icons-material/MobileOff';
+import SmartphoneIcon from '@mui/icons-material/Smartphone';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import FileCopyIcon from '@mui/icons-material/FileCopy';
-import SmartphoneIcon from '@mui/icons-material/Smartphone';
-import MobileOffIcon from '@mui/icons-material/MobileOff';
-import DesktopAccessDisabledIcon from '@mui/icons-material/DesktopAccessDisabled';
-import ComputerIcon from '@mui/icons-material/Computer';
 import { FormattedMessage } from 'react-intl';
 
 interface Props {
@@ -129,7 +129,7 @@ export function SectionHeader({
             />
           }
         >
-          <IconButton onClick={() => onRemove(index)}>
+          <IconButton onClick={() => onRemove(index)} color={'error'}>
             <DeleteIcon />
           </IconButton>
         </Tooltip>

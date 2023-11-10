@@ -1,49 +1,9 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useWeb3React } from "@web3-react/core";
-import { metaMask } from "../constants/connectors/metamask";
-import { Token, WalletActivateParams } from "../types";
+import { Token } from "../types";
 
-import { PrimitiveAtom, useAtom } from "jotai";
 import { ChainId } from "../constants";
-import { magic } from "../constants/connectors/magic";
-import { walletConnect } from "../constants/connectors/walletConnect";
 import { NETWORK_PROVIDER } from "../constants/networks";
 import { getPricesByChain } from "../services";
-
-export function useWalletActivate({
-  magicRedirectUrl,
-  selectedWalletAtom,
-}: {
-  magicRedirectUrl: string;
-  selectedWalletAtom: PrimitiveAtom<string>;
-}) {
-  const { connector } = useWeb3React();
-
-  const [walletConnector, setWalletConnector] = useAtom(selectedWalletAtom);
-
-  const mutation = useMutation(async (params: WalletActivateParams) => {
-    if (connector.deactivate) {
-      await connector.deactivate();
-    }
-
-    if (params.connectorName === "metamask") {
-      setWalletConnector("metamask");
-      return await metaMask.activate();
-    } else if (params.connectorName === "magic") {
-      setWalletConnector("magic");
-      return await magic.activate({
-        loginType: params.loginType,
-        email: params.email,
-        redirectUrl: magicRedirectUrl,
-      });
-    } else if (params.connectorName === "walletConnect") {
-      setWalletConnector("walletConnect");
-      return await walletConnect.activate();
-    }
-  });
-
-  return { connectorName: walletConnector, mutation };
-}
 
 
 export const COIN_PRICES_QUERY = "COIN_PRICES_QUERY";
