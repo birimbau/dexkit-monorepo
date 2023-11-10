@@ -77,11 +77,12 @@ export interface PageSection {
 
 export interface CallToActionAppPageSection extends PageSection {
   type: 'call-to-action';
-  title: string;
+  title?: string;
   subtitle: string;
   button: {
     title: string;
     url: string;
+    openInNewPage?: boolean;
   };
   items: SectionItem[];
 }
