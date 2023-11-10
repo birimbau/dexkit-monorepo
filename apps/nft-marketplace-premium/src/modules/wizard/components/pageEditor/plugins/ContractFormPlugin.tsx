@@ -22,7 +22,12 @@ const ContractFormPlugin: CellPlugin<ContractFormParams> = {
     type: 'custom',
     Component: ({ data, onChange }) => (
       <Box p={2}>
-        <ContractForm updateOnChange params={data} onChange={onChange} />
+        <ContractForm
+          updateOnChange
+          params={data}
+          onChange={onChange}
+          onSave={onChange}
+        />
       </Box>
     ),
   },

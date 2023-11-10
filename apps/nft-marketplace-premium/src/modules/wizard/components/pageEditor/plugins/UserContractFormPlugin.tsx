@@ -36,6 +36,11 @@ const UserContractFormPlugin: CellPlugin<{
                 onChange({ formId, hideFormInfo });
               }
             }}
+            onChange={(formId?: number, hideFormInfo?: boolean) => {
+              if (formId) {
+                onChange({ formId, hideFormInfo });
+              }
+            }}
             formId={data.formId}
             hideFormInfo={data.hideFormInfo}
             saveOnChange
