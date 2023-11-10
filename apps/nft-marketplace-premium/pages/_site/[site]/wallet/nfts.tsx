@@ -245,10 +245,12 @@ const WalletNFTsPage: NextPage = () => {
                         </Paper>
                       )}
                     >
-                      <HiddenAssetsSection
-                        filters={filters}
-                        onOpenFilters={handleOpenDrawer}
-                      />
+                      <Suspense fallback={<TableSkeleton rows={4} />}>
+                        <HiddenAssetsSection
+                          filters={filters}
+                          onOpenFilters={handleOpenDrawer}
+                        />
+                      </Suspense>
                     </ErrorBoundary>
                   )}
                 </QueryErrorResetBoundary>
