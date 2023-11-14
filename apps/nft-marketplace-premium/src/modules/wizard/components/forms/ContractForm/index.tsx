@@ -41,7 +41,11 @@ export interface ContractFormProps {
   updateOnChange?: boolean;
   onChange: (
     data: ContractFormParams,
-    options?: CellPluginOnChangeOptions | undefined
+    options?: CellPluginOnChangeOptions | undefined,
+  ) => void;
+  onSave: (
+    data: ContractFormParams,
+    options?: CellPluginOnChangeOptions | undefined,
   ) => void;
   onCancel?: () => void;
   onValid?: (isValid: boolean) => void;
@@ -54,15 +58,16 @@ export default function ContractForm({
   params,
   updateOnChange,
   fetchOnMount,
+  onSave,
   onChange,
   onCancel,
   onValid,
 }: ContractFormProps) {
   const handleSubmit = async (
     values: ContractFormParams,
-    helpers: FormikHelpers<ContractFormParams>
+    helpers: FormikHelpers<ContractFormParams>,
   ) => {
-    onChange({
+    onSave({
       ...values,
       // to solve a bug of formik.
       chainId: parseChainId(values.chainId),
@@ -89,7 +94,7 @@ export default function ContractForm({
 
   const handleChangeVisibility = (
     event: SelectChangeEvent<string>,
-    child: ReactNode
+    child: ReactNode,
   ) => {
     setFieldVisibility(event.target.value);
   };

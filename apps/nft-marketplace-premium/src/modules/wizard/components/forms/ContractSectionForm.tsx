@@ -22,6 +22,9 @@ export function ContractSectionForm({
       type: 'contract',
       config: data,
     });
+  };
+
+  const handleChangeData = (data: ContractFormParams | undefined) => {
     onChange({
       type: 'contract',
       config: data,
@@ -41,7 +44,9 @@ export function ContractSectionForm({
         <ContractForm
           params={section?.config}
           onCancel={onCancel}
-          onChange={handleSaveData}
+          onSave={handleSaveData}
+          onChange={handleChangeData}
+          updateOnChange={true}
         />
       </Grid>
     </Grid>

@@ -27,6 +27,7 @@ import UserContractFormCard from '../UserContractFormCard';
 
 interface Props {
   onSave: (formId?: number, hideFormInfo?: boolean) => void;
+  onChange: (formId?: number, hideFormInfo?: boolean) => void;
   onCancel: () => void;
   formId?: number;
   hideFormInfo?: boolean;
@@ -35,6 +36,7 @@ interface Props {
 
 export function UserContractForm({
   onSave,
+  onChange,
   onCancel,
   formId,
   hideFormInfo,
@@ -59,7 +61,7 @@ export function UserContractForm({
       setSelectedFormId(id);
 
       if (saveOnChange && id) {
-        onSave(id, hideInfo);
+        onChange(id, hideInfo);
       }
     },
     [saveOnChange, hideInfo],
@@ -73,8 +75,8 @@ export function UserContractForm({
 
   const handleChangeHideInfo = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
-      if (saveOnChange) {
-        onSave(selectedFormId, e.target.checked);
+      if (saveOnChange && selectedFormId) {
+        onChange(selectedFormId, e.target.checked);
       }
       setHideInfo(e.target.checked);
     },
@@ -108,6 +110,31 @@ export function UserContractForm({
             }}
             onChange={handleChange}
           />
+        </Grid>
+        <Grid item xs={12}>
+          <Stack direction="row" alignItems="center" alignContent="center">
+            <FormControlLabel
+              control={
+                <Checkbox checked={hideInfo} onChange={handleChangeHideInfo} />
+              }
+              label={
+                <FormattedMessage
+                  id="hide.header.form.info"
+                  defaultMessage="Hide header form info"
+                />
+              }
+            />
+            <Tooltip
+              title={
+                <FormattedMessage
+                  id="hide.form.info.tooltip"
+                  defaultMessage="Hide form info like: contract address, description and name from the section"
+                />
+              }
+            >
+              <InfoIcon />
+            </Tooltip>
+          </Stack>
         </Grid>
         <Grid item xs={12}>
           <Grid container spacing={2}>
@@ -175,31 +202,7 @@ export function UserContractForm({
             )}
           </Grid>
         </Grid>
-        <Grid item xs={12}>
-          <Stack direction="row" alignItems="center" alignContent="center">
-            <FormControlLabel
-              control={
-                <Checkbox checked={hideInfo} onChange={handleChangeHideInfo} />
-              }
-              label={
-                <FormattedMessage
-                  id="hide.form.info"
-                  defaultMessage="Hide form info"
-                />
-              }
-            />
-            <Tooltip
-              title={
-                <FormattedMessage
-                  id="hide.form.info.tooltip"
-                  defaultMessage="Hide form info like: contract address, description and name from the section"
-                />
-              }
-            >
-              <InfoIcon />
-            </Tooltip>
-          </Stack>
-        </Grid>
+
         {!saveOnChange && (
           <Grid item xs={12}>
             <Box>

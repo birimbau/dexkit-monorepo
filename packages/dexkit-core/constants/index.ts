@@ -26,6 +26,7 @@ export const COINGECKO_PLATFORM_ID: { [key: number]: string } = {
   [ChainId.Avax]: "avalanche-2",
   [ChainId.Celo]: "celo",
   [ChainId.Fantom]: "fantom",
+  [ChainId.Arbitrum]: "arbitrum-one",
   [ChainId.Optimism]: "optimistic-ethereum",
   [ChainId.Base]: "base",
 };

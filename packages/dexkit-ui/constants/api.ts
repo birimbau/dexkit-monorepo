@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { AssetAPI } from '../modules/nft/types';
-import { getAccessToken } from '../services/auth';
+import { getAccessToken, getAccessTokenAndRefresh, getRefreshAccessToken } from '../services/auth';
 
 export const DEXKIT_UI_BASE_API_URL = 'https://nft-api.dexkit.com'
 //const DEXKIT_UI_BASE_API_URL = 'https://nft-api.dexkit.com'
@@ -24,15 +24,44 @@ export const myAppsApi = axios.create({
 });
 
 
-myAppsApi.interceptors.request.use(async (config) => {
-  const access_token = await getAccessToken();
-  if (access_token)
-    config.headers = {
-      ...config.headers,
-      authorization: `Bearer ${access_token}`,
-    };
-  return config;
-});
+myAppsApi.interceptors.request.use(
+  async (config) => {
+    const access_token = await getAccessTokenAndRefresh();
+    if (access_token)
+      config.headers = {
+        ...config.headers,
+        authorization: `Bearer ${access_token}`,
+      };
+    return config;
+  },
+  async function (error) {
+    try {
+      const access_token = await getAccessToken();
+      if (error.response.status === 401 && access_token) {
+        return await getAccessTokenAndRefresh();
+      }
+    } catch {
+      return Promise.reject(error);
+    }
+  }
+);
+
+myAppsApi.interceptors.response.use(
+  async (response) => {
+    return response;
+  },
+  async function (error) {
+    try {
+      const access_token = await getAccessToken();
+      if (error.response.status === 401 && access_token) {
+        return await getRefreshAccessToken();
+      }
+    } catch {
+      return Promise.reject(error);
+    }
+    return Promise.reject(error);
+  }
+);
 
 export async function getAssetDexKitApi({
   networkId,

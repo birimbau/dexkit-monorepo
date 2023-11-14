@@ -87,7 +87,7 @@ export default function FormsEditPage() {
         });
         enqueueSnackbar(
           formatMessage({ id: 'form.updated', defaultMessage: 'Form updated' }),
-          { variant: 'success' }
+          { variant: 'success' },
         );
       } catch (err) {
         enqueueSnackbar(String(err), { variant: 'error' });
@@ -219,6 +219,7 @@ export default function FormsEditPage() {
                       <ContractForm
                         updateOnChange
                         params={params}
+                        onSave={handleChange}
                         onChange={handleChange}
                         onValid={handleFormValid}
                       />
