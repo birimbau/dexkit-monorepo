@@ -17,9 +17,11 @@ export type DexkitExchangeSettings = {
   feeRecipientAddress?: string;
   affiliateAddress?: string;
   availNetworks: ChainId[];
+  container?: boolean;
 };
 
 export type DexkitExchangeContextState = {
+  container?: boolean;
   zrxApiKey?: string;
   quoteToken?: Token;
   baseToken?: Token;
@@ -90,10 +92,9 @@ export const ExchangeSettingsSchema = Yup.object({
   defaultPairs: Yup.object().required(),
   defaultSlippage: Yup.object(),
   buyTokenPercentageFee: Yup.number().required(),
-  feeRecipientAddress: Yup.string()
-    .test("address", (value) => {
-      return value !== undefined ? ethers.utils.isAddress(value) : true;
-    }),
+  feeRecipientAddress: Yup.string().test("address", (value) => {
+    return value !== undefined ? ethers.utils.isAddress(value) : true;
+  }),
   affiliateAddress: Yup.string()
     .test("address", (value) => {
       return value !== undefined ? ethers.utils.isAddress(value) : true;

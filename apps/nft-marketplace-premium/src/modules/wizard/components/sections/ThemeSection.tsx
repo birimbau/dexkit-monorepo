@@ -9,17 +9,16 @@ import {
   useTheme,
 } from '@mui/material';
 import { useAtom } from 'jotai';
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { getTheme, themes } from '../../../../theme';
 import {
   CustomThemeInterface,
   customThemeDarkAtom,
   customThemeLightAtom,
 } from '../../state';
 import { ThemeFormType } from '../../types';
+import { mapObject } from '../../utils';
 import EditThemeForm from '../EditThemeForm';
-import WizardThemeButton from '../WizardThemeButton';
 
 interface Props {
   selectedId?: string;
@@ -43,136 +42,108 @@ export default function ThemeSection({
 
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-  const renderThemes = () => {
-    return Object.keys(themes).map((key: string) => {
-      const tempTheme = getTheme({ name: key });
-      if (!tempTheme) {
-        return;
-      }
-      let { theme, name } = tempTheme;
-      if (key === 'custom') {
-        theme = {
-          ...theme,
-          colorSchemes: {
-            //@ts-ignore
-            dark: {
-              palette: {
-                ...theme?.colorSchemes?.dark,
-                ...(customThemeDark?.palette as any),
-              },
-            },
-            //@ts-ignore
-            light: {
-              palette: {
-                ...theme?.colorSchemes.light,
-                ...(customThemeLight?.palette as any),
-              },
-            },
-          },
-        };
-      }
-
-      return (
-        <Grid item xs={6} sm={5} key={key}>
-          <WizardThemeButton
-            selected={selectedId === key}
-            name={name}
-            id={key}
-            onClick={onSelect}
-            colors={{
-              primary:
-                theme.colorSchemes[mode || ThemeMode.light].palette.primary
-                  .main,
-              background:
-                theme.colorSchemes[mode || ThemeMode.light].palette.background
-                  .default,
-              secondary:
-                theme.colorSchemes[mode || ThemeMode.light].palette.secondary
-                  .main,
-              text: theme.colorSchemes[mode || ThemeMode.light].palette.text
-                .primary,
-            }}
-          />
-        </Grid>
-      );
-    });
-  };
-
-  const legacyThemeParsed = useMemo(() => {
-    if (legacyTheme) {
-      return JSON.parse(legacyTheme);
-    }
-  }, [legacyTheme]);
-
   const handleChange = useCallback(
     (values: ThemeFormType) => {
       if (selectedId !== undefined && selectedId !== values.themeId) {
         onSelect(values.themeId);
       }
 
-      let data: CustomThemeInterface = {
-        palette: {
-          background: values.background
-            ? { default: values.background }
-            : undefined,
-          primary: values.primary ? { main: values.primary } : undefined,
-          secondary: values.secondary ? { main: values.secondary } : undefined,
-          text: values.text ? { primary: values.text } : undefined,
-        },
-      };
-      if (mode === ThemeMode.dark) {
-        console.log('entra dark');
-        setCustomThemeDark((value) => ({
-          palette: {
-            ...legacyThemeParsed?.palette,
-            ...value?.palette,
-            ...data.palette,
-          },
-        }));
-      } else {
-        console.log('entra light');
-        setCustomThemeLight((value) => ({
-          palette: {
-            ...legacyThemeParsed?.palette,
-            ...value?.palette,
-            ...data.palette,
-          },
-        }));
+      if (selectedId !== undefined) {
+        let data: CustomThemeInterface = {
+          palette: {},
+          shape: {},
+        };
+
+        mapObject(data.palette, values, {
+          'background.default': 'background',
+          'background.paper': 'paper',
+          'secondary.main': 'secondary',
+          'text.primary': 'text',
+          'primary.main': 'primary',
+          'success.main': 'success',
+          'error.main': 'error',
+          'info.main': 'info',
+          'warning.main': 'warning',
+        });
+
+        mapObject(data.shape, values, {
+          borderRadius: 'borderRadius',
+        });
+
+        if (mode === ThemeMode.dark) {
+          setCustomThemeDark((value) => ({
+            palette: {
+              ...value?.palette,
+              ...data.palette,
+            },
+            shape: {
+              ...value?.shape,
+              ...data.shape,
+            },
+          }));
+        } else {
+          setCustomThemeLight((value) => ({
+            palette: {
+              ...value?.palette,
+              ...data.palette,
+            },
+            shape: {
+              ...value?.shape,
+              ...data.shape,
+            },
+          }));
+        }
       }
     },
-    [mode, onSelect, legacyThemeParsed]
+    [mode, onSelect, selectedId]
   );
 
   return (
-    <Grid container spacing={2}>
-      {isMobile && (
-        <Grid item xs={12}>
-          <Stack
-            direction="row"
-            alignItems="center"
-            alignContent="center"
-            justifyContent="space-between"
-          >
-            <Typography variant="body1" sx={{ fontWeight: 600 }}>
-              <FormattedMessage id="app.theme" defaultMessage="App Theme" />
-            </Typography>
-            {/* <Button
-              size="small"
-              variant="outlined"
-              startIcon={<Visibility />}
-              onClick={onPreview}
-            >
-              <FormattedMessage id="preview" defaultMessage="Preview" />
-      </Button>*/}
+    <>
+      <Grid container spacing={2}>
+        {isMobile && (
+          <Grid item xs={12}>
+            <Box>
+              <Stack
+                direction="row"
+                alignItems="center"
+                alignContent="center"
+                justifyContent="space-between"
+              >
+                <Typography variant="body1" sx={{ fontWeight: 600 }}>
+                  <FormattedMessage
+                    id="marketplace.theme"
+                    defaultMessage="Marketplace Theme"
+                  />
+                </Typography>
               </Stack>
             </Box>
           </Grid>
         )}
 
-        <EditThemeForm
-          mode={mode as SupportedColorScheme}
-          onChange={handleChange}
-        />
+        <Grid item xs={12}>
+          {selectedId && (
+            <EditThemeForm
+              mode={mode as SupportedColorScheme}
+              onChange={handleChange}
+              saveOnChange
+              initialValues={{
+                themeId: selectedId,
+                background: theme.palette.background.default,
+                error: theme.palette.error.main,
+                info: theme.palette.info.main,
+                primary: theme.palette.primary.main,
+                secondary: theme.palette.secondary.main,
+                success: theme.palette.success.main,
+                text: theme.palette.text.primary,
+                warning: theme.palette.warning.main,
+                paper: theme.palette.background.paper,
+                borderRadius: theme.shape.borderRadius,
+              }}
+              onSubmit={async () => {}}
+            />
+          )}
+        </Grid>
 
         {/* {renderThemes()}
         <Grid item xs={12}>

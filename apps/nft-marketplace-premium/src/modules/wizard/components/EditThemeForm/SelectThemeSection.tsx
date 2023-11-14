@@ -31,15 +31,15 @@ export default function SelectThemeSection({ mode }: SelectThemeSectionProps) {
               //@ts-ignore
               dark: {
                 palette: {
-                  ...tempTheme?.theme.colorSchemes.dark,
                   ...(customThemeDark?.palette as any),
+                  ...tempTheme?.theme.colorSchemes.dark,
                 },
               },
               //@ts-ignore
               light: {
                 palette: {
-                  ...tempTheme?.theme.colorSchemes.light,
                   ...(customThemeLight?.palette as any),
+                  ...tempTheme?.theme.colorSchemes.light,
                 },
               },
             },
@@ -51,7 +51,7 @@ export default function SelectThemeSection({ mode }: SelectThemeSectionProps) {
         return { ...tempTheme, key };
       })
       .filter((e) => e !== undefined);
-  }, []);
+  }, [customThemeLight, customThemeDark]);
 
   const [props, meta, helpers] = useField('themeId');
 
@@ -65,7 +65,7 @@ export default function SelectThemeSection({ mode }: SelectThemeSectionProps) {
         {availThemes.map(
           (entry) =>
             entry && (
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={6} key={entry.key}>
                 <WizardThemeButton
                   selected={props.value === entry.key}
                   name={entry.name}

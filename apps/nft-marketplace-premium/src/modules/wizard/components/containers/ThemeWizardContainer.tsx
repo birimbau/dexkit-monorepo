@@ -1,6 +1,8 @@
 import { ThemeMode } from '@dexkit/ui/constants/enum';
 import { Cancel } from '@mui/icons-material';
+import ExpandMore from '@mui/icons-material/ExpandMore';
 import {
+  Autocomplete,
   Box,
   Button,
   Divider,
@@ -10,25 +12,29 @@ import {
   Select,
   Stack,
   Switch,
-  Tooltip,
+  TextField,
   Typography,
 } from '@mui/material';
 import { useAtomValue } from 'jotai';
+import dynamic from 'next/dynamic';
 import Head from 'next/head';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { MouseEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import Fonts from 'src/constants/fonts.json';
 import { AppConfig } from '../../../../types/config';
-import {
-  customThemeAtom,
-  customThemeDarkAtom,
-  customThemeLightAtom,
-} from '../../state';
-import { StepperButtonProps } from '../../types';
+import { customThemeDarkAtom, customThemeLightAtom } from '../../state';
+import { PreviewType, StepperButtonProps } from '../../types';
 import { generateCSSVarsTheme } from '../../utils';
 import ThemePreview from '../ThemePreview';
 import ThemeSection from '../sections/ThemeSection';
 import { StepperButtons } from '../steppers/StepperButtons';
+
+const ExchangeSection = dynamic(() => import('../sections/ExchangeSection'));
+
+import { ChainId } from '@dexkit/core';
+import { useWeb3React } from '@web3-react/core';
+import appConfig from '../../../../../config/app.json';
+import { ExchangePageSection } from '../../types/section';
 
 interface Props {
   config: AppConfig;
@@ -59,9 +65,10 @@ export default function ThemeWizardContainer({
   const [selectedFont, setSelectedFont] = useState<
     { family: string; category?: string } | undefined
   >(config?.font);
-  const customTheme = useAtomValue(customThemeAtom);
+
   const customThemeDark = useAtomValue(customThemeDarkAtom);
   const customThemeLight = useAtomValue(customThemeLightAtom);
+
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
   const handleShowPreview = () => {
@@ -81,8 +88,12 @@ export default function ThemeWizardContainer({
       cssVarPrefix: 'theme_preview',
       customTheme: {
         colorSchemes: {
-          dark: { palette: customThemeDark?.palette },
-          light: { palette: customThemeLight?.palette },
+          dark: {
+            ...customThemeDark,
+          },
+          light: {
+            ...customThemeLight,
+          },
         },
       },
 
@@ -92,7 +103,6 @@ export default function ThemeWizardContainer({
   }, [
     selectedThemeId,
     selectedThemeMode,
-    customTheme,
     customThemeDark,
     customThemeLight,
     selectedFont,
@@ -100,18 +110,6 @@ export default function ThemeWizardContainer({
 
   const handleCancelEdit = () => {
     setSelectedThemeId(config.theme);
-  };
-
-  const renderThemePreview = () => {
-    if (selectedTheme) {
-      return (
-        <ThemePreview
-          selectedTheme={selectedTheme}
-          showSwap={showSwap}
-          selectedThemeMode={selectedThemeMode}
-        />
-      );
-    }
   };
 
   const handleSave = () => {
@@ -122,7 +120,7 @@ export default function ThemeWizardContainer({
     };
 
     // We will not use anymore this configuration so we will just delete it from the config
-    if (newConfig.theme === 'custom' && customTheme) {
+    if (newConfig.theme === 'custom') {
       delete newConfig.customTheme;
     }
 
@@ -148,9 +146,10 @@ export default function ThemeWizardContainer({
   useEffect(() => {
     const newConfig = { ...config, theme: selectedThemeId };
     // We will not use anymore this configuration so we will just delete it from the config
-    if (newConfig.theme === 'custom' && customTheme) {
+    if (newConfig.theme === 'custom') {
       delete newConfig.customTheme;
     }
+
     if (newConfig.theme === 'custom' && customThemeDark) {
       newConfig.customThemeDark = JSON.stringify(customThemeDark);
     }
@@ -167,13 +166,7 @@ export default function ThemeWizardContainer({
     }
 
     onChange(newConfig);
-  }, [
-    selectedThemeId,
-    selectedFont,
-    customTheme,
-    customThemeDark,
-    customThemeLight,
-  ]);
+  }, [selectedThemeId, selectedFont, customThemeDark, customThemeLight]);
 
   const handleSelectedFont = (event: any, value: string | null) => {
     if (value) {
@@ -186,8 +179,81 @@ export default function ThemeWizardContainer({
     }
   };
 
+  const [previewType, setPreviewType] = useState<PreviewType>(PreviewType.NFTs);
+
+  const previewButtonText = useMemo(() => {
+    if (previewType === PreviewType.NFTs) {
+      return <FormattedMessage id="nfts" defaultMessage="NFTs" />;
+    } else if (previewType === PreviewType.Swap) {
+      return <FormattedMessage id="swap" defaultMessage="Swap" />;
+    }
+    return <FormattedMessage id="exchange" defaultMessage="Exchange" />;
+  }, [previewType]);
+
+  const [showPreviewMenu, setShowPreviewMenu] = useState(false);
+
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+
+  const handleOpenMenu = (e: MouseEvent<HTMLButtonElement>) => {
+    setShowPreviewMenu(true);
+    setAnchorEl(e.currentTarget);
+  };
+
+  const handleCloseMenu = () => {
+    setShowPreviewMenu(false);
+  };
+
+  const { chainId } = useWeb3React();
+
+  const renderThemePreview = () => {
+    if (selectedTheme) {
+      if (previewType === PreviewType.NFTs) {
+        return (
+          <ThemePreview
+            selectedTheme={selectedTheme}
+            showSwap={showSwap}
+            selectedThemeMode={selectedThemeMode}
+          />
+        );
+      } else if (previewType === PreviewType.Swap) {
+        return (
+          <ThemePreview
+            selectedTheme={selectedTheme}
+            showSwap
+            selectedThemeMode={selectedThemeMode}
+          />
+        );
+      } else if (previewType === PreviewType.Exchange) {
+        const sections = Object.keys(appConfig.pages)
+          .map((key) => (appConfig as any).pages[key])
+          .map((page) =>
+            page.sections.findIndex((s: any) => s.type === 'exchange')
+          )
+          .filter((c) => c !== -1);
+
+        if (sections.length > 0 && chainId) {
+          let section = sections[0] as ExchangePageSection;
+          return (
+            <Box>
+              <ExchangeSection
+                section={{
+                  ...section,
+                  settings: {
+                    ...section.settings,
+                    defaultNetwork: chainId as ChainId,
+                    container: false,
+                  },
+                }}
+              />
+            </Box>
+          );
+        }
+      }
+    }
+  };
+
   return (
-    <>
+    <Box>
       <Head>
         {selectedFont && (
           <link
@@ -199,113 +265,145 @@ export default function ThemeWizardContainer({
 
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <Stack>
-            <Typography variant={'h6'}>
-              <FormattedMessage id="theme" defaultMessage="Theme" />
-            </Typography>
-            <Typography variant={'body2'}>
-              <FormattedMessage
-                id="theme.wizard.description"
-                defaultMessage="Customize your app's theme"
-              />
-            </Typography>
-          </Stack>
+          <Box>
+            <Stack>
+              <Typography variant="subtitle2">
+                <FormattedMessage id="theme" defaultMessage="Theme" />
+              </Typography>
+              <Typography variant={'body2'}>
+                <FormattedMessage
+                  id="choose.your.theme"
+                  defaultMessage="Choose your theme"
+                />
+              </Typography>
+            </Stack>
+          </Box>
         </Grid>
         <Grid item xs={12}>
           <Divider />
         </Grid>
-        <Grid item xs={12} sm={6}>
-          <Stack spacing={2}>
-            <Typography variant="body2">
-              <FormattedMessage
-                id="choose.app.theme.color.for.each.mode "
-                defaultMessage={'Choose app theme color for each mode'}
-              />
-            </Typography>
-
-            <FormControl fullWidth>
-              <Select
-                labelId="theme-mode-label"
-                id="theme-mode"
-                sx={{ maxWidth: '150px' }}
-                fullWidth
-                value={selectedThemeMode}
-                onChange={(ev) => {
-                  setSelectedThemeMode(ev.target.value as ThemeMode);
-                }}
-              >
-                <MenuItem value={ThemeMode.light}>
-                  <FormattedMessage id={'light'} defaultMessage={'Light'} />
-                </MenuItem>
-                <MenuItem value={ThemeMode.dark}>
-                  <FormattedMessage id={'dark'} defaultMessage={'Dark'} />
-                </MenuItem>
-              </Select>
-            </FormControl>
-
-            <Stack spacing={1}>
-              <ThemeSection
-                mode={selectedThemeMode}
-                selectedId={selectedThemeId}
-                onSelect={handleSelectTheme}
-                onPreview={handleShowPreview}
-                legacyTheme={config?.customTheme}
-              />
-            </Stack>
-            <Box>
-              <Typography variant="body2">
-                <FormattedMessage
-                  id="default.theme.mode"
-                  defaultMessage={'Default theme mode'}
-                />
-              </Typography>
-              <Stack direction="row" alignContent="center" alignItems="center">
-                <Typography variant="body1">
-                  {' '}
-                  <FormattedMessage id="light" defaultMessage={'Light'} />
-                </Typography>
-                <Tooltip
-                  title={
+        <Grid item xs={12} sx={{ height: '100%' }}>
+          <Grid container spacing={2} alignItems="stretch">
+            <Grid item xs={12} sm={6}>
+              <Box>
+                <Stack spacing={2}>
+                  <Typography variant="body2">
                     <FormattedMessage
-                      id={
-                        'select.the.theme.mode.that.will.be.loaded.when.opened'
-                      }
-                      defaultMessage={
-                        'Select the theme mode that will be loaded when the app is opened.'
-                      }
+                      id="choose.app.theme.color.for.each.mode "
+                      defaultMessage={'Choose app theme color for each mode'}
                     />
-                  }
-                >
-                  <Switch
-                    defaultChecked={defaultThemeMode === ThemeMode.dark}
-                    onChange={() => {
-                      if (defaultThemeMode === 'dark') {
-                        setDefaultThemeMode(ThemeMode.light);
-                      } else {
-                        setDefaultThemeMode(ThemeMode.dark);
-                      }
-                    }}
-                  />
-                </Tooltip>
-                <Typography variant="body1">
-                  {' '}
-                  <FormattedMessage id="dark" defaultMessage={'Dark'} />
-                </Typography>
-              </Stack>
-            </Box>
-            <Box>
-              <ThemeSection
-                mode={selectedThemeMode}
-                selectedId={selectedThemeId}
-                onSelect={handleSelectTheme}
-                onPreview={handleShowPreview}
-                legacyTheme={config?.customTheme}
-              />
-            </Box>
-          </Stack>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          {renderThemePreview()}
+                  </Typography>
+
+                  <FormControl fullWidth>
+                    <Select
+                      labelId="theme-mode-label"
+                      id="theme-mode"
+                      sx={{ maxWidth: '150px' }}
+                      fullWidth
+                      value={selectedThemeMode}
+                      onChange={(ev) => {
+                        setSelectedThemeMode(ev.target.value as ThemeMode);
+                      }}
+                    >
+                      <MenuItem value={ThemeMode.light}>
+                        <FormattedMessage
+                          id={'light'}
+                          defaultMessage={'Light'}
+                        />
+                      </MenuItem>
+                      <MenuItem value={ThemeMode.dark}>
+                        <FormattedMessage id={'dark'} defaultMessage={'Dark'} />
+                      </MenuItem>
+                    </Select>
+                  </FormControl>
+
+                  <Box>
+                    <ThemeSection
+                      mode={selectedThemeMode}
+                      selectedId={selectedThemeId}
+                      onSelect={handleSelectTheme}
+                      onPreview={handleShowPreview}
+                      legacyTheme={config?.customTheme}
+                    />
+                  </Box>
+                  <Box>
+                    <Typography variant="body2" color="text.secondary">
+                      <FormattedMessage
+                        id="default.theme.mode"
+                        defaultMessage="Default Theme mode"
+                      />
+                    </Typography>
+                    <Stack
+                      direction="row"
+                      alignContent="center"
+                      alignItems="center"
+                    >
+                      <Typography variant="body1">
+                        {' '}
+                        <FormattedMessage id="light" defaultMessage={'Light'} />
+                      </Typography>
+                      <Switch
+                        defaultChecked={defaultThemeMode === ThemeMode.dark}
+                        onChange={() => {
+                          if (defaultThemeMode === 'dark') {
+                            setDefaultThemeMode(ThemeMode.light);
+                          } else {
+                            setDefaultThemeMode(ThemeMode.dark);
+                          }
+                        }}
+                      />
+                      <Typography variant="body1">
+                        {' '}
+                        <FormattedMessage id="dark" defaultMessage={'Dark'} />
+                      </Typography>
+                    </Stack>
+                  </Box>
+                  <Stack spacing={1}>
+                    <Typography variant="body2">
+                      <FormattedMessage
+                        id="Choose app font"
+                        defaultMessage={'Choose app font'}
+                      />
+                    </Typography>
+
+                    <Autocomplete
+                      disablePortal
+                      id="font-selection"
+                      value={selectedFont?.family}
+                      onChange={handleSelectedFont}
+                      options={Fonts.items.map((f) => f.family)}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          sx={{ maxWidth: '350px' }}
+                          label={
+                            <FormattedMessage
+                              id={'font'}
+                              defaultMessage={'Font'}
+                            />
+                          }
+                        />
+                      )}
+                    />
+                  </Stack>
+                </Stack>
+              </Box>
+            </Grid>
+            <Grid item xs={12} sm={6} sx={{ height: '100%' }}>
+              <Box position="relative" sx={{ height: '100%' }}>
+                <Box mb={2}>
+                  <Button
+                    onClick={handleOpenMenu}
+                    variant="contained"
+                    endIcon={<ExpandMore />}
+                  >
+                    {previewButtonText}
+                  </Button>
+                </Box>
+                <Box position="sticky">{renderThemePreview()}</Box>
+              </Box>
+            </Grid>
+          </Grid>
         </Grid>
         <Grid item xs={12}>
           <Divider />
@@ -334,6 +432,6 @@ export default function ThemeWizardContainer({
           )}
         </Grid>
       </Grid>
-    </>
+    </Box>
   );
 }

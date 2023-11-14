@@ -70,5 +70,13 @@ export type ThemeFormType = {
   error?: string;
   warning?: string;
   info?: string;
+  paper?: string;
   themeId: string;
+  borderRadius?: number;
 };
+
+export enum PreviewType {
+  Swap = 'swap',
+  Exchange = 'exchange',
+  NFTs = 'nfts',
+}

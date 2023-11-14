@@ -51,34 +51,34 @@ import { WelcomeMessage } from '../WelcomeMessage';
 import SignConfigDialog from '../dialogs/SignConfigDialog';
 
 const OwnershipWizardContainer = dynamic(
-  () => import('./OwnershipWizardContainer'),
+  () => import('./OwnershipWizardContainer')
 );
 const CollectionWizardContainer = dynamic(
-  () => import('./CollectionWizardContainer'),
+  () => import('./CollectionWizardContainer')
 );
 const DomainWizardContainer = dynamic(() => import('./DomainWizardContainer'));
 const FooterMenuWizardContainer = dynamic(
-  () => import('./FooterMenuWizardContainer'),
+  () => import('./FooterMenuWizardContainer')
 );
 const GeneralWizardContainer = dynamic(
-  () => import('./GeneralWizardContainer'),
+  () => import('./GeneralWizardContainer')
 );
 const MarketplaceFeeWizardContainer = dynamic(
-  () => import('./MarketplaceFeeWizardContainer'),
+  () => import('./MarketplaceFeeWizardContainer')
 );
 const PagesMenuWizardContainer = dynamic(
-  () => import('./PagesMenuWizardContainer'),
+  () => import('./PagesMenuWizardContainer')
 );
 const PagesWizardContainer = dynamic(() => import('./PagesWizardContainer'));
 const SeoWizardContainer = dynamic(() => import('./SeoWizardContainer'));
 const SocialWizardContainer = dynamic(() => import('./SocialWizardContainer'));
 const SwapFeeWizardContainer = dynamic(
-  () => import('./SwapFeeWizardContainer'),
+  () => import('./SwapFeeWizardContainer')
 );
 const ThemeWizardContainer = dynamic(() => import('./ThemeWizardContainer'));
 const TokenWizardContainer = dynamic(() => import('./TokenWizardContainer'));
 const AnalyticsWizardContainer = dynamic(
-  () => import('./AnalyticsWizardContainer'),
+  () => import('./AnalyticsWizardContainer')
 );
 
 interface Props {
@@ -127,6 +127,7 @@ export function EditWizardContainer({ site }: Props) {
       return JSON.parse(site?.config);
     }
   }, [site?.config]);
+
   const { formatMessage } = useIntl();
   const [openMenu, setOpenMenu] = useState({
     settings: true,
@@ -154,7 +155,7 @@ export function EditWizardContainer({ site }: Props) {
 
   const [activeMenu, setActiveMenu] = useState<ActiveMenu>(ActiveMenu.General);
   const [activeBuilderKit, setActiveBuilderKit] = useState<BuilderKit>(
-    BuilderKit.ALL,
+    BuilderKit.ALL
   );
 
   const theme = useTheme();
@@ -230,7 +231,7 @@ export function EditWizardContainer({ site }: Props) {
       setWizardConfig(newConfig);
     },
 
-    [wizardConfig, setWizardConfig],
+    [wizardConfig, setWizardConfig]
   );
 
   const renderMenu = () => (
@@ -727,7 +728,7 @@ export function EditWizardContainer({ site }: Props) {
           </Grid>
           <Grid item xs={12} sm={0.1}></Grid>
           <Grid item xs={12} sm={9.8}>
-            <Grid item xs={12} sm={10}>
+            <Box>
               <Stack spacing={2} className={'builder-forms'}>
                 {activeMenu === ActiveMenu.General && config && (
                   <GeneralWizardContainer
@@ -823,8 +824,7 @@ export function EditWizardContainer({ site }: Props) {
                   />
                 )}
               </Stack>
-            </Grid>
-
+            </Box>
             {/*false && theme && (
             <Grid item xs={12} sm={6}>
               <ThemeProvider theme={selectedTheme ? selectedTheme : theme}>

@@ -1,5 +1,13 @@
 import { ChainId } from '@dexkit/core/constants';
-import { Box, Button, Grid, Stack, TextField, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  Grid,
+  Paper,
+  Stack,
+  TextField,
+  Typography,
+} from '@mui/material';
 import {
   Experimental_CssVarsProvider as CssVarsProvider,
   CssVarsTheme,
@@ -61,7 +69,11 @@ export default function ThemePreview({
         modeStorageKey="theme-preview-mode"
       >
         <ColorSchemePicker selectedThemeMode={selectedThemeMode} />
-        <Stack spacing={2}>
+        <Stack
+          spacing={2}
+          sx={{ p: 2, backgroundColor: 'background.default' }}
+          component={Paper}
+        >
           <Box>
             {showSwap ? (
               <SwapWidget />
@@ -120,6 +132,25 @@ export default function ThemePreview({
               Lorem ipsum dolor sit amet, consectetur adipiscing elit
             </Typography>
             <Typography variant="body2">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit
+            </Typography>
+            <Typography color="error">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit
+            </Typography>
+
+            <Typography color="success.main">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit
+            </Typography>
+
+            <Typography color="info.main">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit
+            </Typography>
+
+            <Typography color="warning.main">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit
+            </Typography>
+
+            <Typography color="secondary">
               Lorem ipsum dolor sit amet, consectetur adipiscing elit
             </Typography>
           </Stack>

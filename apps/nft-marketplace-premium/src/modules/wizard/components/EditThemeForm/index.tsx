@@ -3,8 +3,11 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
+  Box,
   Divider,
   Grid,
+  IconButton,
+  InputAdornment,
   SupportedColorScheme,
   Typography,
 } from '@mui/material';
@@ -14,6 +17,11 @@ import { FormattedMessage } from 'react-intl';
 import { ThemeFormType } from '../../types';
 import FormikMuiColorInput from '../FormikMuiColorInput';
 import SelectThemeSection from './SelectThemeSection';
+
+import DecimalInput from '@dexkit/ui/components/DecimalInput';
+import Add from '@mui/icons-material/Add';
+import Remove from '@mui/icons-material/Remove';
+import ImportExportSection from './ImportExportSection';
 
 function FormChangeListener({
   values,
@@ -32,29 +40,25 @@ function FormChangeListener({
 export interface EditThemeFormProps {
   mode: SupportedColorScheme;
   onChange: (values: ThemeFormType) => void;
+  initialValues: ThemeFormType;
+  saveOnChange?: boolean;
+  onSubmit: (values: ThemeFormType) => Promise<void>;
 }
 
-export default function EditThemeForm({ mode, onChange }: EditThemeFormProps) {
-  const handleSubmit = async (values: ThemeFormType) => {};
-
+export default function EditThemeForm({
+  mode,
+  onChange,
+  initialValues,
+  saveOnChange,
+  onSubmit,
+}: EditThemeFormProps) {
   return (
-    <Formik
-      initialValues={{
-        primary: '',
-        secondary: '',
-        text: '',
-        background: '',
-        success: '',
-        error: '',
-        warning: '',
-        info: '',
-        themeId: 'default-theme',
-      }}
-      onSubmit={handleSubmit}
-    >
-      {({ values }) => (
+    <Formik initialValues={initialValues} onSubmit={onSubmit}>
+      {({ values, setValues, setFieldValue }) => (
         <>
-          <FormChangeListener values={values} onChange={onChange} />
+          {saveOnChange && (
+            <FormChangeListener values={values} onChange={onChange} />
+          )}
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <Typography variant="body1">
@@ -65,6 +69,14 @@ export default function EditThemeForm({ mode, onChange }: EditThemeFormProps) {
             {values.themeId === 'custom' && (
               <Grid item xs={12}>
                 <Grid container spacing={2}>
+                  <Grid item xs={12}>
+                    <ImportExportSection
+                      theme={values}
+                      onImport={(theme: ThemeFormType) => {
+                        setValues(theme);
+                      }}
+                    />
+                  </Grid>
                   <Grid item xs={12}>
                     <Accordion>
                       <AccordionSummary expandIcon={<ExpandMore />}>
@@ -112,6 +124,18 @@ export default function EditThemeForm({ mode, onChange }: EditThemeFormProps) {
                                 />
                               }
                               name="background"
+                            />
+                          </Grid>
+                          <Grid item xs={12}>
+                            <FormikMuiColorInput
+                              fullWidth
+                              label={
+                                <FormattedMessage
+                                  id="paper.color"
+                                  defaultMessage="Paper Color"
+                                />
+                              }
+                              name="paper"
                             />
                           </Grid>
                           <Grid item xs={12}>
@@ -190,6 +214,67 @@ export default function EditThemeForm({ mode, onChange }: EditThemeFormProps) {
                               }
                               name="warning"
                             />
+                          </Grid>
+                          <Grid item xs={12}>
+                            <Box>
+                              <DecimalInput
+                                value={values.borderRadius?.toString() || '0'}
+                                decimals={1}
+                                onChange={(value) => {
+                                  setFieldValue(
+                                    'borderRadius',
+                                    parseInt(value)
+                                  );
+                                }}
+                                TextFieldProps={{
+                                  label: (
+                                    <FormattedMessage
+                                      id="border.radius"
+                                      defaultMessage="Border Radius"
+                                    />
+                                  ),
+                                  fullWidth: false,
+                                  InputProps: {
+                                    startAdornment: (
+                                      <InputAdornment position="start">
+                                        <IconButton
+                                          onClick={(e) => {
+                                            if (values.borderRadius) {
+                                              setFieldValue(
+                                                'borderRadius',
+                                                values.borderRadius - 1
+                                              );
+                                            } else {
+                                              setFieldValue('borderRadius', 0);
+                                            }
+                                          }}
+                                        >
+                                          <Remove />
+                                        </IconButton>
+                                      </InputAdornment>
+                                    ),
+                                    endAdornment: (
+                                      <InputAdornment position="end">
+                                        <IconButton
+                                          onClick={(e) => {
+                                            if (values.borderRadius) {
+                                              setFieldValue(
+                                                'borderRadius',
+                                                values.borderRadius + 1
+                                              );
+                                            } else {
+                                              setFieldValue('borderRadius', 1);
+                                            }
+                                          }}
+                                        >
+                                          <Add />
+                                        </IconButton>
+                                      </InputAdornment>
+                                    ),
+                                  },
+                                }}
+                              />
+                            </Box>
                           </Grid>
                         </Grid>
                       </AccordionDetails>
