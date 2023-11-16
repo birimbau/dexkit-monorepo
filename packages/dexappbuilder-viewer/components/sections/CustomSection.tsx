@@ -1,5 +1,7 @@
 import { CustomEditorSection } from "@dexkit/ui/modules/wizard/types";
-import PageEditor from "../page-editor/PageEditor";
+import dynamic from "next/dynamic";
+
+const PageEditor = dynamic(() => import("../page-editor/PageEditor"));
 
 interface Props {
   section: CustomEditorSection;

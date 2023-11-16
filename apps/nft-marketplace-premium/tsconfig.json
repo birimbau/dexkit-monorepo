@@ -1,7 +1,12 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "lib": ["dom", "dom.iterable", "esnext", "ES2021.String"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext",
+      "ES2021.String"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -21,7 +26,9 @@
     ],
     "baseUrl": ".",
     "paths": {
-      "@/modules/*": ["src/modules/*"]
+      "@/modules/*": [
+        "src/modules/*"
+      ]
     }
   },
   "include": [
@@ -32,5 +39,7 @@
     "scripts/local-diff.js",
     "../../packages/dexkit-core/constants/connectors/walletConnect.ts"
   ],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules"
+  ]
 }

@@ -1,5 +1,5 @@
 import { Box } from '@mui/material';
-import Image from 'next/future/image';
+import Image from 'next/legacy/image';
 import { useIntl } from 'react-intl';
 import { isWhitelistedDomain } from '../../../utils/image';
 import { ipfsUriToUrl } from '../../../utils/ipfs';

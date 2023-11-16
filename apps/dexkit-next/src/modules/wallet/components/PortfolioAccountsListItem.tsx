@@ -1,17 +1,17 @@
 import { isAddressEqual, truncateAddress } from '@/modules/common/utils';
 import { MoreVert } from '@mui/icons-material';
 import {
-  alpha,
   Box,
   IconButton,
   ListItem,
   ListItemText,
   Stack,
   Typography,
+  alpha,
 } from '@mui/material';
 import { ethers } from 'ethers';
-import Image from 'next/future/image';
-import { memo, MouseEvent, useMemo } from 'react';
+import Image from 'next/legacy/image';
+import { MouseEvent, memo, useMemo } from 'react';
 import { FormattedNumber } from 'react-intl';
 import { CoinTypes, WalletConnectType } from '../constants/enums';
 import { useAccounts, useBalancesVisibility } from '../hooks';
@@ -89,7 +89,7 @@ function PortfolioAccountsListItem({
 
         if (ratio > 0) {
           const amount = parseFloat(
-            ethers.utils.formatUnits(total, coin.decimals)
+            ethers.utils.formatUnits(total, coin.decimals),
           );
 
           return ratio * amount;
