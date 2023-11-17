@@ -23,6 +23,7 @@ import { FormattedMessage } from 'react-intl';
 
 import { AppPage, AppPageOptions } from '../../../../types/config';
 
+import Code from '@mui/icons-material/Code';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
 import FormatColorTextIcon from '@mui/icons-material/FormatColorText';
@@ -82,7 +83,7 @@ export default function PagesSectionPage({
   const renderSection = (
     section: AppPageSection,
     index: number,
-    isVisible: boolean,
+    isVisible: boolean
   ) => {
     let title;
     let subtitle;
@@ -151,6 +152,10 @@ export default function PagesSectionPage({
       title = <FormattedMessage id="exchange" defaultMessage="Exchange" />;
       subtitle = section.title || '';
       icon = <ShowChartIcon />;
+    } else if (section.type === 'code-page-section') {
+      title = <FormattedMessage id="code" defaultMessage="Code" />;
+      subtitle = section.title || '';
+      icon = <Code />;
     }
 
     if (!title) {
@@ -383,7 +388,7 @@ export default function PagesSectionPage({
         <Divider />
 
         {sections.map((section, index) =>
-          renderSection(section, index, isVisibleIndexes.includes(index)),
+          renderSection(section, index, isVisibleIndexes.includes(index))
         )}
       </Stack>
     </>
