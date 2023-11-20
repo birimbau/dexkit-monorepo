@@ -1,4 +1,5 @@
 import CallToActionIcon from '@mui/icons-material/CallToAction';
+import CodeIcon from '@mui/icons-material/Code';
 import CollectionsIcon from '@mui/icons-material/Collections';
 import DynamicFormIcon from '@mui/icons-material/DynamicForm';
 import FeaturedVideoIcon from '@mui/icons-material/FeaturedVideo';
@@ -105,6 +106,15 @@ export const sections = [
     description:
       'Easily format text using markdown for a clean and structured appearance.',
     icon: <TextSnippetIcon fontSize="large" />,
+  },
+  {
+    type: 'code-page-section',
+    titleId: 'code',
+    titleDefaultMessage: 'Code',
+    category: 'low-code',
+    description:
+      'Easily format text using markdown for a clean and structured appearance.',
+    icon: <CodeIcon fontSize="large" />,
   },
 ] as SectionMetadata[];
 
