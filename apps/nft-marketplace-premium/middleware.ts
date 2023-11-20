@@ -110,6 +110,12 @@ export default function middleware(req: NextRequest) {
     }
   }
 
+  /*if (url.pathname.startsWith('/_custom_protected')) {
+    return NextResponse.rewrite(url);
+  }*/
+
+
+
   if (isBasePath(url.pathname)) {
     // rewrite everything else to `/_sites/[site] dynamic route
     url.pathname = `/_site/${hostname}${url.pathname}`;
