@@ -28,6 +28,7 @@ import { AppDialogTitle } from '@dexkit/ui';
 import Fullscreen from '@mui/icons-material/Fullscreen';
 import parse from 'html-react-parser';
 import { SyntheticEvent, useState } from 'react';
+import { ErrorBoundary } from 'react-error-boundary';
 import { FormattedMessage } from 'react-intl';
 import ChangeListener from '../ChangeListener';
 
@@ -44,7 +45,7 @@ export interface CodeSectionFormProps {
   section?: CodePageSection;
 }
 
-export default function CodeSectionForm({
+function CodeSectionForm({
   onCancel,
   onSave,
   onChange,
@@ -79,15 +80,15 @@ export default function CodeSectionForm({
     setFieldValue: (
       name: string,
       value: string,
-      shouldValidate?: boolean
-    ) => void
+      shouldValidate?: boolean,
+    ) => void,
   ) => {
     return (
       <>
         <CodeMirror
           extensions={extensions}
           theme={theme.palette.mode}
-          height="200px"
+          height="500px"
           value={value}
           onChange={(val) => setFieldValue(name, val)}
         />
@@ -100,9 +101,9 @@ export default function CodeSectionForm({
     setFieldValue: (
       name: string,
       value: string,
-      shouldValidate?: boolean
+      shouldValidate?: boolean,
     ) => void,
-    viewAsfullScreen?: string
+    viewAsfullScreen?: string,
   ) => {
     const node = inputs.find((i) => i.name === viewAsfullScreen);
 
@@ -135,8 +136,8 @@ export default function CodeSectionForm({
     setFieldValue: (
       name: string,
       value: string,
-      shouldValidate?: boolean
-    ) => void
+      shouldValidate?: boolean,
+    ) => void,
   ) => {
     return (
       <Grid container spacing={2}>
@@ -174,8 +175,8 @@ export default function CodeSectionForm({
     setFieldValue: (
       name: string,
       value: string,
-      shouldValidate?: boolean
-    ) => void
+      shouldValidate?: boolean,
+    ) => void,
   ) => {
     return (
       <Grid container spacing={2}>
@@ -287,5 +288,35 @@ export default function CodeSectionForm({
         </>
       )}
     </Formik>
+  );
+}
+
+export default function WrappedCodeSectionForm(props: CodeSectionFormProps) {
+  return (
+    <ErrorBoundary
+      fallbackRender={({ error, resetErrorBoundary }) => (
+        <Stack justifyContent="center" alignItems="center">
+          <Typography variant="h6">
+            <FormattedMessage
+              id="something.went.wrong"
+              defaultMessage="Oops, something went wrong"
+              description="Something went wrong error message"
+            />
+          </Typography>
+          <Typography variant="body1" color="textSecondary">
+            {String(error)}
+          </Typography>
+          <Button color="primary" onClick={resetErrorBoundary}>
+            <FormattedMessage
+              id="try.again"
+              defaultMessage="Try again"
+              description="Try again"
+            />
+          </Button>
+        </Stack>
+      )}
+    >
+      <CodeSectionForm {...props} />
+    </ErrorBoundary>
   );
 }

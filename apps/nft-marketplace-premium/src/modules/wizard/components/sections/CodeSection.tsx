@@ -1,5 +1,5 @@
-import { useEffect } from 'react';
 import { CodePageSection } from '../../types/section';
+import { Widget } from '../Widget';
 
 export interface CodeSectionProps {
   section: CodePageSection;
@@ -8,7 +8,7 @@ export interface CodeSectionProps {
 export default function CodeSection({ section }: CodeSectionProps) {
   const { js, css, html } = section.config;
 
-  useEffect(() => {
+  /* useEffect(() => {
     const script = document.createElement('script');
 
     script.innerHTML = js;
@@ -19,12 +19,13 @@ export default function CodeSection({ section }: CodeSectionProps) {
     return () => {
       document.body.removeChild(script);
     };
-  }, [js]);
+  }, [js]);*/
 
   return (
     <>
-      <style>{css}</style>
-      <div dangerouslySetInnerHTML={{ __html: html }} />
+      {css && <Widget htmlString={`<style>${css}</style>`} />}
+      {js && <Widget htmlString={`<script>${js}<script>`} />}
+      {html && <Widget htmlString={html} />}
     </>
   );
 }
