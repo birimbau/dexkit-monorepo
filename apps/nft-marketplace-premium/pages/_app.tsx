@@ -5,6 +5,7 @@ import {
   QueryClient,
   QueryClientProvider,
 } from '@tanstack/react-query';
+import { Analytics } from '@vercel/analytics/react';
 import { AppProps } from 'next/app';
 import Head from 'next/head';
 import * as React from 'react';
@@ -21,7 +22,7 @@ import { useRouter } from 'next/router';
 import { ThemeMode } from '@dexkit/ui/constants/enum';
 import { Backdrop, CircularProgress } from '@mui/material';
 import { experimental_extendTheme as extendTheme } from '@mui/material/styles';
-import type {} from '@mui/material/themeCssVarsAugmentation';
+import type { } from '@mui/material/themeCssVarsAugmentation';
 import { getTheme } from 'src/theme';
 import { AssetAPI } from 'src/types/nft';
 import defaultAppConfig from '../config/app.json';
@@ -225,6 +226,7 @@ export default function MyApp(props: MyAppProps) {
           </Hydrate>
         </QueryClientProvider>
       </AppConfigContext.Provider>
+      <Analytics />
     </CacheProvider>
   );
 }

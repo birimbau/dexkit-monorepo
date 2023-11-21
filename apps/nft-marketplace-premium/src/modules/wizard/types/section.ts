@@ -30,7 +30,8 @@ export type SectionType =
   | 'nft-stake'
   | 'edition-stake'
   | 'token'
-  | 'airdrop-token';
+  | 'airdrop-token'
+  | 'code-page-section';
 
 export interface PageSection {
   type: SectionType;
@@ -192,6 +193,15 @@ export interface EditionDropListPageSection extends PageSection {
   };
 }
 
+export interface CodePageSection extends PageSection {
+  type: 'code-page-section';
+  config: {
+    js: string;
+    css: string;
+    html: string;
+  };
+}
+
 export type AppPageSection =
   | CallToActionAppPageSection
   | VideoEmbedAppPageSection
@@ -206,7 +216,8 @@ export type AppPageSection =
   | UserContractPageSection
   | ExchangePageSection
   | EditionDropListPageSection
-  | TokenDropPageSection;
+  | TokenDropPageSection
+  | CodePageSection;
 
 export interface SectionMetadata {
   type: SectionType;

@@ -1,7 +1,7 @@
 import Container from '@mui/material/Container';
 import type { CellPlugin } from '@react-page/editor';
+import { Widget } from '../../Widget';
 import { TextareaControl } from '../components/TextareaControl';
-import { Widget } from '../components/Widget';
 
 type Data = {
   html?: string;
