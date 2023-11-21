@@ -57,7 +57,7 @@ export default function ThemeWizardContainer({
   const [selectedThemeId, setSelectedThemeId] = useState<string>(config.theme);
 
   const [selectedThemeMode, setSelectedThemeMode] = useState<ThemeMode>(
-    config.defaultThemeMode || ThemeMode.light
+    config.defaultThemeMode || ThemeMode.light,
   );
 
   const [defaultThemeMode, setDefaultThemeMode] = useState<
@@ -80,7 +80,7 @@ export default function ThemeWizardContainer({
     (id: string) => {
       setSelectedThemeId(id);
     },
-    [selectedThemeId]
+    [selectedThemeId],
   );
 
   const selectedTheme = useMemo(() => {
@@ -129,8 +129,8 @@ export default function ThemeWizardContainer({
       newConfig.customThemeDark = JSON.stringify(customThemeDark);
     }
 
-    if (newConfig.theme === 'custom' && customThemeLightAtom) {
-      newConfig.customThemeLight = JSON.stringify(customThemeLightAtom);
+    if (newConfig.theme === 'custom' && customThemeLight) {
+      newConfig.customThemeLight = JSON.stringify(customThemeLight);
     }
 
     if (selectedFont) {
@@ -138,9 +138,8 @@ export default function ThemeWizardContainer({
     }
 
     if (defaultThemeMode) {
-      config.defaultThemeMode = defaultThemeMode;
+      newConfig.defaultThemeMode = defaultThemeMode;
     }
-
     onSave(newConfig);
   };
 
@@ -165,7 +164,6 @@ export default function ThemeWizardContainer({
     if (defaultThemeMode) {
       newConfig.defaultThemeMode = defaultThemeMode;
     }
-
     onChange(newConfig);
   }, [selectedThemeId, selectedFont, customThemeDark, customThemeLight]);
 
@@ -228,7 +226,7 @@ export default function ThemeWizardContainer({
         const sections = Object.keys(appConfig.pages)
           .map((key) => (appConfig as any).pages[key])
           .map((page) =>
-            page.sections.findIndex((s: any) => s.type === 'exchange')
+            page.sections.findIndex((s: any) => s.type === 'exchange'),
           )
           .filter((c) => c !== -1);
 
