@@ -4,7 +4,10 @@ import { AppCollection } from '../../../types/config';
 
 export const collectionAtom = atom<AppCollection | undefined>(undefined);
 
-export const isFirstVisitOnEditWizardAtom = atomWithStorage<boolean>('isFirstVisitOnEditWizard', true);
+export const isFirstVisitOnEditWizardAtom = atomWithStorage<boolean>(
+  'isFirstVisitOnEditWizard',
+  true
+);
 
 export interface CustomThemeColorSchemesInterface {
   typography?: any;
@@ -12,42 +15,57 @@ export interface CustomThemeColorSchemesInterface {
     [key: string]: {
       palette?: {
         background?: {
-          default: string
+          default: string;
         };
         text?: {
-          primary: string
+          primary: string;
         };
         primary?: {
-          main: string
+          main: string;
         };
         secondary?: {
-          main: string
-        }
-      }
-    }
-
-  }
+          main: string;
+        };
+      };
+    };
+  };
 }
 
 export interface CustomThemeInterface {
   palette?: {
     background?: {
-      default: string
+      default: string;
     };
     text?: {
-      primary: string
+      primary: string;
     };
     primary?: {
-      main: string
+      main: string;
     };
     secondary?: {
-      main: string
-    }
-  }
+      main: string;
+    };
+    success?: {
+      main: string;
+    };
+    info?: {
+      main: string;
+    };
+    error?: {
+      main: string;
+    };
+    warning?: {
+      main: string;
+    };
+  };
+  shape?: {
+    borderRadius?: number;
+  };
 }
 
-
-export const customThemeAtom = atom<CustomThemeColorSchemesInterface | undefined>({
+export const customThemeAtom = atom<
+  CustomThemeColorSchemesInterface | undefined
+>({
   typography: {},
   colorSchemes: {
     dark: {
@@ -64,7 +82,7 @@ export const customThemeAtom = atom<CustomThemeColorSchemesInterface | undefined
         secondary: {
           main: '#f44336',
         },
-      }
+      },
     },
     light: {
       palette: {
@@ -80,9 +98,9 @@ export const customThemeAtom = atom<CustomThemeColorSchemesInterface | undefined
         secondary: {
           main: '#f44336',
         },
-      }
-    }
-  }
+      },
+    },
+  },
 });
 
 export const customThemeLightAtom = atom<CustomThemeInterface | undefined>({
@@ -99,8 +117,8 @@ export const customThemeLightAtom = atom<CustomThemeInterface | undefined>({
     secondary: {
       main: '#f44336',
     },
-  }
-})
+  },
+});
 
 export const customThemeDarkAtom = atom<CustomThemeInterface | undefined>({
   palette: {
@@ -116,5 +134,5 @@ export const customThemeDarkAtom = atom<CustomThemeInterface | undefined>({
     secondary: {
       main: '#f44336',
     },
-  }
+  },
 });

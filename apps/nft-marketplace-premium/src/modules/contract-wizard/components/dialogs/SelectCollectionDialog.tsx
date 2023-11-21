@@ -29,12 +29,14 @@ export interface SelectCollectionDialogProps {
   DialogProps: DialogProps;
   chainId?: ChainId;
   onSelect: (address: string) => void;
+  isErc1155?: boolean;
 }
 
 export default function SelectCollectionDialog({
   DialogProps,
   chainId,
   onSelect,
+  isErc1155,
 }: SelectCollectionDialogProps) {
   const { onClose } = DialogProps;
 
@@ -71,7 +73,9 @@ export default function SelectCollectionDialog({
 
   const data = useMemo(() => {
     if (collectionsData) {
-      return collectionsData?.data.filter((c) => c.chainId === chainId);
+      return collectionsData?.data
+        .filter((c) => c.chainId === chainId)
+        .filter((c) => isErc1155);
     }
 
     return [];

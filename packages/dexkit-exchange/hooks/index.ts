@@ -7,7 +7,7 @@ import {
   ZERO_EX_URL,
 } from "@dexkit/core/services/zrx/constants";
 import { Token } from "@dexkit/core/types";
-import { useTrackUserEventsMutation } from '@dexkit/ui/hooks/userEvents';
+import { useTrackUserEventsMutation } from "@dexkit/ui/hooks/userEvents";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useWeb3React } from "@web3-react/core";
 import axios from "axios";
@@ -74,10 +74,11 @@ export function useSendLimitOrderMutation() {
       );
 
       trackUserEvent.mutate({
-        event: UserEvents.postLimitOrder, metadata: JSON.stringify({
-          order: signedOrder
-        })
-      })
+        event: UserEvents.postLimitOrder,
+        metadata: JSON.stringify({
+          order: signedOrder,
+        }),
+      });
 
       return resp.data;
     }
@@ -117,14 +118,11 @@ export function useExchangeContextState(params: {
 }): DexkitExchangeContextState {
   const { settings } = params;
 
-
   const { account, provider } = useWeb3React();
 
   const [defaultChain, setDefaultChain] = useState<ChainId>();
   const [quoteToken, setQuoteToken] = useState<Token | undefined>();
   const [baseToken, setBaseToken] = useState<Token | undefined>();
-
-
 
   const [quoteTokens, setQuoteTokens] = useState<Token[]>([]);
   const [baseTokens, setBaseTokens] = useState<Token[]>([]);
@@ -148,7 +146,6 @@ export function useExchangeContextState(params: {
 
   useEffect(() => {
     if (settings && currChainId) {
-
       const defaultPair =
         settings.defaultPairs && settings.defaultPairs[currChainId]
           ? settings.defaultPairs[currChainId]
@@ -181,6 +178,7 @@ export function useExchangeContextState(params: {
     chainId: currChainId,
     provider,
     account,
+    container: settings?.container,
     availNetworks: settings?.availNetworks || [],
     feeRecipient: settings?.feeRecipientAddress || ZEROEX_AFFILIATE_ADDRESS,
     affiliateAddress: settings?.affiliateAddress || ZEROEX_AFFILIATE_ADDRESS,

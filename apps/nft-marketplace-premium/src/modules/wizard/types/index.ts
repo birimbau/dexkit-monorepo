@@ -60,3 +60,23 @@ export type MintNFTFormType = {
   image?: string;
   external_url?: string;
 };
+
+export type ThemeFormType = {
+  primary?: string;
+  secondary?: string;
+  text?: string;
+  background?: string;
+  success?: string;
+  error?: string;
+  warning?: string;
+  info?: string;
+  paper?: string;
+  themeId: string;
+  borderRadius?: number;
+};
+
+export enum PreviewType {
+  Swap = 'swap',
+  Exchange = 'exchange',
+  NFTs = 'nfts',
+}

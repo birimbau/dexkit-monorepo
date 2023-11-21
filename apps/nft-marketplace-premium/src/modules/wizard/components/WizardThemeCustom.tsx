@@ -1,10 +1,20 @@
 import { ThemeMode } from '@dexkit/ui/constants/enum';
-import { Box, Stack } from '@mui/material';
+import ExpandMore from '@mui/icons-material/ExpandMore';
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Box,
+  Divider,
+  Grid,
+  Stack,
+  Typography,
+} from '@mui/material';
 import { useAtom } from 'jotai';
 import { MuiColorInput } from 'mui-color-input';
 import { useEffect, useMemo } from 'react';
+import { FormattedMessage } from 'react-intl';
 import { customThemeDarkAtom, customThemeLightAtom } from '../state';
-import { TooltipInfo } from './InputInfoAdornment';
 
 interface Props {
   mode?: ThemeMode;
@@ -53,70 +63,219 @@ function WizardThemeCustom({ mode, legacyTheme }: Props) {
   }, [mode, setCustomThemeLight, setCustomThemeDark]);
 
   return (
-    <Stack spacing={0.5} justifyContent="flex-start" alignItems="flex-start">
-      <Box display={'flex'} justifyContent={'center'}>
-        <MuiColorInput
-          value={activeTheme?.palette?.primary?.main || '#000'}
-          onChange={(color) => {
-            setActiveTheme({
-              palette: {
-                ...activeTheme?.palette,
-                primary: {
-                  main: color,
-                },
-              },
-            });
-          }}
-        />
-        <TooltipInfo field={'custom.primary.color'} />
+    <Stack spacing={2}>
+      <Box sx={{ width: '100%' }}>
+        <Accordion defaultExpanded>
+          <AccordionSummary expandIcon={<ExpandMore />}>
+            <Typography fontWeight="bold">
+              <FormattedMessage id="general" defaultMessage="General" />
+            </Typography>
+          </AccordionSummary>
+          <Divider />
+          <AccordionDetails sx={{ py: 2 }}>
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm={6}>
+                <MuiColorInput
+                  format="hex"
+                  fullWidth
+                  label={
+                    <FormattedMessage
+                      id="primary.color"
+                      defaultMessage="Primary color"
+                    />
+                  }
+                  value={activeTheme?.palette?.primary?.main || '#000'}
+                  onChange={(color) => {
+                    setActiveTheme({
+                      palette: {
+                        ...activeTheme?.palette,
+
+                        primary: {
+                          main: color,
+                        },
+                      },
+                    });
+                  }}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <MuiColorInput
+                  fullWidth
+                  format="hex"
+                  label={
+                    <FormattedMessage
+                      id="secondary.color"
+                      defaultMessage="Secondary color"
+                    />
+                  }
+                  value={activeTheme?.palette?.secondary?.main || '#000'}
+                  onChange={(color) =>
+                    setActiveTheme({
+                      palette: {
+                        ...activeTheme?.palette,
+                        secondary: {
+                          main: color,
+                        },
+                      },
+                    })
+                  }
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <MuiColorInput
+                  format="hex"
+                  fullWidth
+                  label={
+                    <FormattedMessage
+                      id="background.color"
+                      defaultMessage="Background color"
+                    />
+                  }
+                  value={activeTheme?.palette?.background?.default || '#000'}
+                  onChange={(color) =>
+                    setActiveTheme({
+                      palette: {
+                        ...activeTheme?.palette,
+                        background: {
+                          default: color,
+                        },
+                      },
+                    })
+                  }
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <MuiColorInput
+                  label={
+                    <FormattedMessage
+                      id="text.color"
+                      defaultMessage="Text color"
+                    />
+                  }
+                  fullWidth
+                  format="hex"
+                  value={activeTheme?.palette?.text?.primary || '#000'}
+                  onChange={(color) =>
+                    setActiveTheme({
+                      palette: {
+                        ...activeTheme?.palette,
+                        text: {
+                          primary: color,
+                        },
+                      },
+                    })
+                  }
+                />
+              </Grid>
+            </Grid>
+          </AccordionDetails>
+        </Accordion>
       </Box>
-      <Box display={'flex'} justifyContent={'center'}>
-        <MuiColorInput
-          value={activeTheme?.palette?.secondary?.main || '#000'}
-          onChange={(color) =>
-            setActiveTheme({
-              palette: {
-                ...activeTheme?.palette,
-                secondary: {
-                  main: color,
-                },
-              },
-            })
-          }
-        />
-        <TooltipInfo field={'custom.secondary.color'} />
-      </Box>
-      <Box display={'flex'} justifyContent={'center'}>
-        <MuiColorInput
-          value={activeTheme?.palette?.background?.default || '#000'}
-          onChange={(color) =>
-            setActiveTheme({
-              palette: {
-                ...activeTheme?.palette,
-                background: {
-                  default: color,
-                },
-              },
-            })
-          }
-        />
-        <TooltipInfo field={'custom.background.default.color'} />
-      </Box>
-      <Box display={'flex'} justifyContent={'center'}>
-        <MuiColorInput
-          value={activeTheme?.palette?.text?.primary || '#000'}
-          onChange={(color) =>
-            setActiveTheme({
-              palette: {
-                ...activeTheme?.palette,
-                text: {
-                  primary: color,
-                },
-              },
-            })
-          }
-        />
-        <TooltipInfo field={'custom.text.primary.color'} />
+      <Box sx={{ width: '100%' }}>
+        <Accordion>
+          <AccordionSummary expandIcon={<ExpandMore />}>
+            <Typography fontWeight="bold">
+              <FormattedMessage id="advanced" defaultMessage="Advanced" />
+            </Typography>
+          </AccordionSummary>
+          <Divider />
+          <AccordionDetails sx={{ py: 2 }}>
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm={6}>
+                <MuiColorInput
+                  format="hex"
+                  fullWidth
+                  label={
+                    <FormattedMessage
+                      id="primary.color"
+                      defaultMessage="Primary color"
+                    />
+                  }
+                  value={activeTheme?.palette?.primary?.main || '#000'}
+                  onChange={(color) => {
+                    setActiveTheme({
+                      palette: {
+                        ...activeTheme?.palette,
+                        primary: {
+                          main: color,
+                        },
+                      },
+                    });
+                  }}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <MuiColorInput
+                  fullWidth
+                  format="hex"
+                  label={
+                    <FormattedMessage
+                      id="secondary.color"
+                      defaultMessage="Secondary color"
+                    />
+                  }
+                  value={activeTheme?.palette?.secondary?.main || '#000'}
+                  onChange={(color) =>
+                    setActiveTheme({
+                      palette: {
+                        ...activeTheme?.palette,
+                        secondary: {
+                          main: color,
+                        },
+                      },
+                    })
+                  }
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <MuiColorInput
+                  format="hex"
+                  fullWidth
+                  label={
+                    <FormattedMessage
+                      id="background.color"
+                      defaultMessage="Background color"
+                    />
+                  }
+                  value={activeTheme?.palette?.background?.default || '#000'}
+                  onChange={(color) =>
+                    setActiveTheme({
+                      palette: {
+                        ...activeTheme?.palette,
+                        background: {
+                          default: color,
+                        },
+                      },
+                    })
+                  }
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <MuiColorInput
+                  label={
+                    <FormattedMessage
+                      id="text.color"
+                      defaultMessage="Text color"
+                    />
+                  }
+                  fullWidth
+                  format="hex"
+                  value={activeTheme?.palette?.text?.primary || '#000'}
+                  onChange={(color) =>
+                    setActiveTheme({
+                      palette: {
+                        ...activeTheme?.palette,
+                        text: {
+                          primary: color,
+                        },
+                      },
+                    })
+                  }
+                />
+              </Grid>
+            </Grid>
+          </AccordionDetails>
+        </Accordion>
       </Box>
     </Stack>
   );

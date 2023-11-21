@@ -1,11 +1,38 @@
+import { ChainId, useApproveToken, useTokenAllowanceQuery } from "@dexkit/core";
+import { ERC20Abi } from "@dexkit/core/constants/abis";
+import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "@dexkit/core/constants/zrx";
 import { ZrxOrder, ZrxOrderRecord } from "@dexkit/core/services/zrx/types";
-import { isAddressEqual } from "@dexkit/core/utils";
+import { Token } from "@dexkit/core/types";
+import {
+  formatBigNumber,
+  getChainName,
+  getNativeTokenSymbol,
+  isAddressEqual,
+} from "@dexkit/core/utils";
 import MomentFromSpan from "@dexkit/ui/components/MomentFromSpan";
-import { Button, Card, CardContent, Grid, Typography } from "@mui/material";
-import { ethers } from "ethers";
+import MultiCall, { CallInput } from "@indexed-finance/multicall";
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  InputAdornment,
+  Stack,
+  Typography,
+  styled,
+} from "@mui/material";
+import { BigNumber, ethers } from "ethers";
+import { Interface } from "ethers/lib/utils";
 import moment from "moment";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { FormattedMessage } from "react-intl";
+import { useZrxFillOrderMutation } from "../hooks/zrx";
+
+import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
+import { BigNumberUtils, getZrxExchangeAddress } from "../utils";
+import DecimalInput from "./TradeWidget/DecimalInput";
+
+const PercentButton = styled(Button)({ flex: 1 });
 
 export interface OrderWidgetProps {
   record: ZrxOrderRecord;
@@ -17,96 +44,232 @@ export interface OrderWidgetProps {
     baseTokenAmount?: string,
     quoteTokenAmount?: string
   ) => void;
+  chainId?: ChainId;
+  provider?: ethers.providers.Web3Provider;
 }
 
 export default function OrderWidget({
   record,
   account,
   onCancel,
+  chainId,
+  provider,
 }: OrderWidgetProps) {
-  const baseToken: any = {};
-  const quoteToken: any = {};
+  const [makerToken, setMakerToken] = useState<Token>();
+  const [takerToken, setTakerToken] = useState<Token>();
+
+  useEffect(() => {
+    (async () => {
+      if (chainId) {
+        if (
+          !isAddressEqual(record.order.takerToken, ZEROEX_NATIVE_TOKEN_ADDRESS)
+        ) {
+          const takerCalls: CallInput[] = [];
+
+          const takerIface = new Interface(ERC20Abi);
+
+          takerCalls.push({
+            interface: takerIface,
+            target: record.order.takerToken,
+            function: "name",
+          });
+
+          takerCalls.push({
+            interface: takerIface,
+            target: record.order.takerToken,
+            function: "symbol",
+          });
+
+          takerCalls.push({
+            interface: takerIface,
+            target: record.order.takerToken,
+            function: "decimals",
+          });
+
+          const multical = new MultiCall(provider);
+          const [, results] = await multical.multiCall(takerCalls);
+
+          const takerToken: Token = {
+            chainId,
+            address: record.order.takerToken,
+            name: results[0],
+            symbol: results[1],
+            decimals: results[2],
+          };
+          setTakerToken(takerToken);
+        } else {
+          setTakerToken({
+            chainId,
+            address: ZEROEX_NATIVE_TOKEN_ADDRESS,
+            decimals: 18,
+            name: getChainName(chainId) || "",
+            symbol: getNativeTokenSymbol(chainId) || "",
+          });
+        }
+
+        if (
+          !isAddressEqual(record.order.makerToken, ZEROEX_NATIVE_TOKEN_ADDRESS)
+        ) {
+          const makerCalls: CallInput[] = [];
+
+          const makerIIface = new Interface(ERC20Abi);
+
+          makerCalls.push({
+            interface: makerIIface,
+            target: record.order.makerToken,
+            function: "name",
+          });
+
+          makerCalls.push({
+            interface: makerIIface,
+            target: record.order.makerToken,
+            function: "symbol",
+          });
+
+          makerCalls.push({
+            interface: makerIIface,
+            target: record.order.makerToken,
+            function: "decimals",
+          });
+
+          const multicalMaker = new MultiCall(provider);
+          const [, makerResults] = await multicalMaker.multiCall(makerCalls);
+
+          const makerToken: Token = {
+            chainId,
+            address: record.order.makerToken,
+            name: makerResults[0],
+            symbol: makerResults[1],
+            decimals: makerResults[2],
+          };
+          setMakerToken(makerToken);
+        } else {
+          setMakerToken({
+            chainId,
+            address: ZEROEX_NATIVE_TOKEN_ADDRESS,
+            decimals: 18,
+            name: getChainName(chainId) || "",
+            symbol: getNativeTokenSymbol(chainId) || "",
+          });
+        }
+      }
+    })();
+  }, [record, provider]);
 
   const side = useMemo(() => {
-    return isAddressEqual(baseToken?.address, record.order.takerToken)
-      ? "buy"
-      : "sell";
-  }, [baseToken, record]);
+    return isAddressEqual(makerToken?.address, record.order.makerToken)
+      ? "sell"
+      : "buy";
+  }, [makerToken, record]);
 
-  const quoteTokenAmount = useMemo(() => {
-    const decimals =
-      side === "sell" ? quoteToken?.decimals : baseToken?.decimals;
+  const makerTokenAmount = useMemo(() => {
+    return formatBigNumber(
+      BigNumber.from(record.order.makerAmount),
+      makerToken?.decimals
+    );
+  }, [record, makerToken]);
 
-    return ethers.utils.formatUnits(record.order.takerAmount, decimals);
-  }, [record, quoteToken]);
-
-  const baseTokenAmount = useMemo(() => {
-    const decimals =
-      side === "buy" ? quoteToken?.decimals : baseToken?.decimals;
-
-    return ethers.utils.formatUnits(record.order.makerAmount, decimals);
-  }, [record, baseToken, side]);
-
-  const price = useMemo(() => {
-    if (baseTokenAmount && quoteTokenAmount) {
-      return side === "buy"
-        ? Number(baseTokenAmount) / Number(quoteTokenAmount)
-        : Number(quoteTokenAmount) / Number(baseTokenAmount);
-    }
-  }, [quoteTokenAmount, baseTokenAmount, side]);
+  const takerTokenAmount = useMemo(() => {
+    return formatBigNumber(
+      BigNumber.from(record.order.takerAmount),
+      takerToken?.decimals
+    );
+  }, [record, takerToken]);
 
   const remainingFillableAmountFormatted = useMemo(() => {
-    const decimals =
-      side === "buy" ? baseToken?.decimals : quoteToken?.decimals;
-
     const amountToBeFilled = ethers.BigNumber.from(record.order.takerAmount);
+
     const remainingFillableAmount = ethers.BigNumber.from(
       record.metaData.remainingFillableTakerAmount
     );
 
-    return ethers.utils.formatUnits(
+    return formatBigNumber(
       amountToBeFilled.sub(remainingFillableAmount),
-      decimals
+      takerToken?.decimals
     );
-  }, [quoteToken, record]);
+  }, [takerToken, record]);
 
-  const quoteTokenSymbol = useMemo(() => {
-    const symbol =
-      side === "sell"
-        ? quoteToken?.symbol.toUpperCase()
-        : baseToken?.symbol.toUpperCase();
+  const remainingFillableAmount = useMemo(() => {
+    const amountToBeFilled = ethers.BigNumber.from(record.order.takerAmount);
 
-    return symbol;
-  }, [record, quoteToken]);
-
-  const baseTokenSymbol = useMemo(() => {
-    const symbol =
-      side === "buy"
-        ? quoteToken?.symbol.toUpperCase()
-        : baseToken?.symbol.toUpperCase();
-
-    return symbol;
-  }, [record, quoteToken]);
-
-  const handleCancel = () => {
-    onCancel(
-      record.order,
-      baseTokenSymbol,
-      quoteTokenSymbol,
-      baseTokenAmount,
-      quoteTokenAmount
+    const remainingFillableAmount = ethers.BigNumber.from(
+      record.metaData.remainingFillableTakerAmount
     );
+
+    return amountToBeFilled.sub(remainingFillableAmount);
+  }, [takerToken, record]);
+
+  const handleCancel = () => {};
+
+  const [value, setValue] = useState("0.0");
+
+  const { data: allowance } = useTokenAllowanceQuery({
+    account,
+    provider,
+    spender: getZrxExchangeAddress(chainId),
+    tokenAddress: takerToken?.address,
+  });
+
+  const fillOrderMutation = useZrxFillOrderMutation();
+
+  const approve = useApproveToken();
+
+  const handleFillOrder = async () => {
+    const amount = ethers.utils.parseUnits(value, takerToken?.decimals);
+
+    if (allowance?.lt(amount)) {
+      await approve.mutateAsync({
+        amount,
+        onSubmited: () => {},
+        provider,
+        spender: getZrxExchangeAddress(chainId),
+        tokenContract: takerToken?.address,
+      });
+    }
+
+    await fillOrderMutation.mutateAsync({
+      order: record.order,
+      chainId,
+      provider,
+      fillAmount: amount,
+    });
+  };
+
+  const price = useMemo(() => {
+    return 0;
+  }, []);
+
+  const handleChangeFillAmount = (value: string) => {
+    setValue(value);
+  };
+
+  const handleFillAmountPercentage = (percentage: number) => {
+    return () => {
+      const result = new BigNumberUtils().multiply(
+        remainingFillableAmount,
+        percentage
+      );
+
+      setValue(ethers.utils.formatUnits(result, takerToken?.decimals));
+    };
   };
 
   return (
     <Card>
       <CardContent>
-        <Grid container spacing={2}>
-          <Grid item>
-            <Typography variant="caption" color="text.secondary">
+        <Stack spacing={2}>
+          <Box>
+            <Typography
+              component="div"
+              align="center"
+              variant="caption"
+              color="text.secondary"
+            >
               <FormattedMessage id="type" defaultMessage="Type" />
             </Typography>
             <Typography
+              align="center"
+              variant="h5"
               sx={{
                 color: (theme) =>
                   side === "buy"
@@ -120,58 +283,116 @@ export default function OrderWidget({
                 <FormattedMessage id="sell" defaultMessage="Sell" />
               )}
             </Typography>
-          </Grid>
-          <Grid item>
-            <Typography variant="caption" color="text.secondary">
-              <FormattedMessage id="amount" defaultMessage="Amount" />
-            </Typography>
+          </Box>
+          <Stack
+            justifyContent="center"
+            direction="row"
+            alignItems="center"
+            spacing={2}
+          >
             <Typography>
-              {baseTokenAmount} {baseTokenSymbol}
+              {makerTokenAmount} {makerToken?.symbol}
             </Typography>
-          </Grid>
-          <Grid item>
-            <Typography variant="caption" color="text.secondary">
-              <FormattedMessage
-                id="fillable.amount"
-                defaultMessage="Fillable amount"
-              />
-            </Typography>
+            <SwapHorizIcon />
             <Typography>
-              {remainingFillableAmountFormatted} {quoteTokenSymbol}
+              {takerTokenAmount} {takerToken?.symbol}
             </Typography>
-          </Grid>
-          <Grid item>
-            <Typography variant="caption" color="text.secondary">
-              <FormattedMessage id="price" defaultMessage="Price" />
-            </Typography>
-            <Typography>
-              {price} {quoteTokenSymbol}
-            </Typography>
-          </Grid>
-          <Grid item>
-            <Typography variant="caption" color="text.secondary">
-              <FormattedMessage id="expire" defaultMessage="Expire" />
-            </Typography>
-            <Typography>
-              <MomentFromSpan
-                from={moment(parseInt(record.order.expiry) * 1000)}
-              />
-            </Typography>
-          </Grid>
-        </Grid>
+          </Stack>
+          <Box>
+            <Stack>
+              <Stack justifyContent="space-between" direction="row">
+                <Typography>
+                  <FormattedMessage
+                    id="fillable.amount"
+                    defaultMessage="Fillable amount"
+                  />
+                </Typography>
+                <Typography color="text.secondary">
+                  {remainingFillableAmountFormatted} {takerToken?.symbol}
+                </Typography>
+              </Stack>
+              <Stack justifyContent="space-between" direction="row">
+                <Typography>
+                  <FormattedMessage id="expire" defaultMessage="Expire" />
+                </Typography>
+                <Typography color="text.secondary">
+                  <MomentFromSpan
+                    from={moment(parseInt(record.order.expiry) * 1000)}
+                  />
+                </Typography>
+              </Stack>
 
-        {isAddressEqual(account, record.order.maker) &&
-          isAddressEqual(account, record.order.taker) && (
-            <Button
-              fullWidth
-              color="error"
+              <Stack justifyContent="space-between" direction="row">
+                <Typography>
+                  <FormattedMessage id="price" defaultMessage="Price" />
+                </Typography>
+                <Typography color="text.secondary">{price}</Typography>
+              </Stack>
+            </Stack>
+          </Box>
+          <Stack direction="row" alignItems="center" spacing={2}>
+            <PercentButton
+              onClick={handleFillAmountPercentage(0.25)}
               variant="outlined"
-              onClick={handleCancel}
+              size="small"
+              sx={{}}
+            >
+              25%
+            </PercentButton>
+            <PercentButton
+              onClick={handleFillAmountPercentage(0.5)}
+              variant="outlined"
               size="small"
             >
-              <FormattedMessage id="cancel" defaultMessage="Cancel" />
-            </Button>
-          )}
+              50%
+            </PercentButton>
+            <PercentButton
+              onClick={handleFillAmountPercentage(0.75)}
+              variant="outlined"
+              size="small"
+            >
+              75%
+            </PercentButton>
+            <PercentButton
+              onClick={handleFillAmountPercentage(1)}
+              variant="outlined"
+              size="small"
+            >
+              100%
+            </PercentButton>
+          </Stack>
+          <DecimalInput
+            value={value}
+            onChange={handleChangeFillAmount}
+            TextFieldProps={{
+              InputProps: {
+                endAdornment: (
+                  <InputAdornment position="end">
+                    {takerToken?.symbol.toUpperCase()}
+                  </InputAdornment>
+                ),
+              },
+            }}
+            decimals={takerToken?.decimals}
+          />
+          <Button fullWidth variant="contained" onClick={handleFillOrder}>
+            <FormattedMessage id="fill.order" defaultMessage="Fill Order" />
+          </Button>
+          {isAddressEqual(account, record.order.maker) &&
+            isAddressEqual(account, record.order.taker) && (
+              <Button
+                fullWidth
+                color="error"
+                variant="outlined"
+                onClick={handleCancel}
+                size="small"
+              >
+                <FormattedMessage id="cancel" defaultMessage="Cancel" />
+              </Button>
+            )}
+        </Stack>
+
+        {JSON.stringify(record, null, 2)}
       </CardContent>
     </Card>
   );
