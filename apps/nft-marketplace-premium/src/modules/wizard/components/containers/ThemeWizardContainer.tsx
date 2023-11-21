@@ -35,6 +35,7 @@ import { ChainId } from '@dexkit/core';
 import { useWeb3React } from '@web3-react/core';
 import appConfig from '../../../../../config/app.json';
 import { ExchangePageSection } from '../../types/section';
+import ThemePreviewMenu from '../ThemePreviewMenu';
 
 interface Props {
   config: AppConfig;
@@ -254,6 +255,12 @@ export default function ThemeWizardContainer({
 
   return (
     <Box>
+      <ThemePreviewMenu
+        anchorEl={anchorEl}
+        onChange={setPreviewType}
+        onClose={handleCloseMenu}
+        open={showPreviewMenu}
+      />
       <Head>
         {selectedFont && (
           <link
