@@ -3,8 +3,10 @@ import { DexkitProvider } from '@dexkit/ui/components';
 import { ThemeMode } from '@dexkit/ui/constants/enum';
 import { COMMON_NOTIFICATION_TYPES } from '@dexkit/ui/constants/messages/common';
 import { experimental_extendTheme as extendTheme } from '@mui/material/styles';
+import { useAtom } from 'jotai';
 import { DefaultSeo } from 'next-seo';
-import { useMemo, useState } from 'react';
+import { useRouter } from 'next/router';
+import { useEffect, useMemo, useState } from 'react';
 import { WHITELABEL_NOTIFICATION_TYPES } from 'src/constants/messages';
 import {
   useAppConfig,
@@ -16,6 +18,7 @@ import {
   assetsAtom,
   currencyUserAtom,
   notificationsAtom,
+  referralAtom,
   selectedWalletAtom,
   tokensAtom,
   transactionsAtomV2,
@@ -33,9 +36,20 @@ export function AppMarketplaceProvider({
 }: AppMarketplaceContextProps) {
   const appConfig = useAppConfig();
   const siteId = useSiteId();
+  const router = useRouter();
+
   const { locale: defaultLocale } = useLocale();
   const [locale, setLocale] = useState(defaultLocale);
+  const [ref, setRef] = useAtom(referralAtom);
   const { mode } = useThemeMode();
+
+
+  useEffect(()=> {
+    if(router.query.ref){
+      setRef(router.query.ref as string);
+    }
+
+  },[router.query.ref])
 
   const theme = useMemo(() => {
     let tempTheme = getTheme({
@@ -139,12 +153,15 @@ export function AppMarketplaceProvider({
       return seoConfig;
     }
   }, [appConfig]);
+
+
   return (
     <DexkitProvider
       locale={locale}
       tokensAtom={tokensAtom}
       assetsAtom={assetsAtom}
       defaultLocale={locale}
+      affiliateReferral={ref}
       currencyUserAtom={currencyUserAtom}
       localeMessages={loadLocaleData(locale)}
       theme={theme}

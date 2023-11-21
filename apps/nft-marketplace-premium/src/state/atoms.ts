@@ -15,6 +15,9 @@ import {
 import { ThemeMode } from '@dexkit/ui/constants/enum';
 import { Asset } from '../types/nft';
 
+
+export const referralAtom = atom<string | undefined>(undefined);
+
 export const appStateAtom = atomWithStorage<AppState>('appState', {
   transactions: {},
   tokens: [],
