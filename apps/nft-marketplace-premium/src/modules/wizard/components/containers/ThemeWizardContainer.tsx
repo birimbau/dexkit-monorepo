@@ -15,7 +15,6 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { useAtomValue } from 'jotai';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import { MouseEvent, useCallback, useEffect, useMemo, useState } from 'react';
@@ -33,6 +32,7 @@ const ExchangeSection = dynamic(() => import('../sections/ExchangeSection'));
 
 import { ChainId } from '@dexkit/core';
 import { useWeb3React } from '@web3-react/core';
+import { useAtom } from 'jotai';
 import appConfig from '../../../../../config/app.json';
 import { ExchangePageSection } from '../../types/section';
 import ThemePreviewMenu from '../ThemePreviewMenu';
@@ -67,14 +67,25 @@ export default function ThemeWizardContainer({
     { family: string; category?: string } | undefined
   >(config?.font);
 
-  const customThemeDark = useAtomValue(customThemeDarkAtom);
-  const customThemeLight = useAtomValue(customThemeLightAtom);
+  const [customThemeDark, setCustomThemeDark] = useAtom(customThemeDarkAtom);
+  const [customThemeLight, setCustomThemeLight] = useAtom(customThemeLightAtom);
 
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
   const handleShowPreview = () => {
     setIsPreviewOpen(true);
   };
+
+  useEffect(() => {
+    if (config.theme === 'custom') {
+      if (config.customThemeDark) {
+        setCustomThemeDark(JSON.parse(config.customThemeDark));
+      }
+      if (config.customThemeLight) {
+        setCustomThemeLight(JSON.parse(config.customThemeLight));
+      }
+    }
+  }, [config]);
 
   const handleSelectTheme = useCallback(
     (id: string) => {

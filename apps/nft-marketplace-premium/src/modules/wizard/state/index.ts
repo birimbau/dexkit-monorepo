@@ -35,6 +35,7 @@ export interface CustomThemeInterface {
   palette?: {
     background?: {
       default: string;
+      paper?: string;
     };
     text?: {
       primary: string;

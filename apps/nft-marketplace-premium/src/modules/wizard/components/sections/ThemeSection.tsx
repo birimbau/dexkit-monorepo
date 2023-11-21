@@ -95,8 +95,34 @@ export default function ThemeSection({
         }
       }
     },
-    [mode, onSelect, selectedId]
+    [mode, onSelect, selectedId],
   );
+
+  const getInitialValues = () => {
+    const defaultTheme =
+      mode === ThemeMode.light ? customThemeLight : customThemeDark;
+    return {
+      background:
+        defaultTheme?.palette?.background?.default ||
+        theme.palette.background.default,
+      error: defaultTheme?.palette?.error?.main || theme.palette.error.main,
+      info: defaultTheme?.palette?.info?.main || theme.palette.info.main,
+      primary:
+        defaultTheme?.palette?.primary?.main || theme.palette.primary.main,
+      secondary:
+        defaultTheme?.palette?.secondary?.main || theme.palette.secondary.main,
+      success:
+        defaultTheme?.palette?.success?.main || theme.palette.success.main,
+      text: defaultTheme?.palette?.text?.primary || theme.palette.text.primary,
+      warning:
+        defaultTheme?.palette?.warning?.main || theme.palette.warning.main,
+      paper:
+        defaultTheme?.palette?.background?.paper ||
+        theme.palette.background.paper,
+      borderRadius:
+        defaultTheme?.shape?.borderRadius || theme.shape.borderRadius,
+    };
+  };
 
   return (
     <>
@@ -129,16 +155,7 @@ export default function ThemeSection({
               saveOnChange
               initialValues={{
                 themeId: selectedId,
-                background: theme.palette.background.default,
-                error: theme.palette.error.main,
-                info: theme.palette.info.main,
-                primary: theme.palette.primary.main,
-                secondary: theme.palette.secondary.main,
-                success: theme.palette.success.main,
-                text: theme.palette.text.primary,
-                warning: theme.palette.warning.main,
-                paper: theme.palette.background.paper,
-                borderRadius: theme.shape.borderRadius,
+                ...getInitialValues(),
               }}
               onSubmit={async () => {}}
             />
