@@ -110,15 +110,14 @@ export function generateCSSVarsTheme({
 
   if (selectedThemeId === 'custom') {
     return fontFamily
-      ? extendTheme(customTheme, {
+      ? extendTheme({
+          ...customTheme,
           cssVarPrefix: cssVarPrefix,
           typography: {
             fontFamily,
           },
         })
-      : extendTheme(customTheme, {
-          cssVarPrefix: cssVarPrefix,
-        });
+      : extendTheme({ ...customTheme, cssVarPrefix });
   }
 
   const theme = getTheme({ name: selectedThemeId }).theme;
