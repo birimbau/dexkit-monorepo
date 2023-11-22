@@ -113,7 +113,7 @@ export function SectionFormRender({
     return (
       <UserContractForm
         onCancel={onClose}
-        saveOnChange={true}
+        saveOnChange
         onSave={(formId, hideFormInfo) => {
           if (formId) {
             onSave({ type: 'user-contract-form', formId, hideFormInfo });
