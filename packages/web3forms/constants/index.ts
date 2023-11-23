@@ -9,19 +9,17 @@ export const PARSE_UNITS = [
   "wei",
 ];
 
-
-
 export const THIRDWEB_CONTRACT_TYPES: { [key: string]: string } = {
-  ['edition-drop']: "Edition drop",
-  ['split']: 'Split',
-  ['edition']: 'Edition',
-  ['nft-collection']: 'Collection',
-  ['nft-drop']: 'Collection Drop',
-  ['pack']: 'Pack',
-  ['token']: 'Token',
-  ['token-drop']: 'Token Drop',
-  ['vote']: 'Vote',
-  ['custom']: 'Custom',
+  ["edition-drop"]: "Edition drop",
+  ["split"]: "Split",
+  ["edition"]: "Edition",
+  ["nft-collection"]: "Collection",
+  ["nft-drop"]: "Collection Drop",
+  ["pack"]: "Pack",
+  ["token"]: "Token",
+  ["token-drop"]: "Token Drop",
+  ["vote"]: "Vote",
+  ["custom"]: "Custom",
 };
 
 export const ETHER_SCAN_API_URL: { [key: number]: string } = {
@@ -97,3 +95,24 @@ export const THIRDWEB_CONTRACT_LIST_URL = "";
 
 export const THIRDWEB_ICON_URL =
   "https://ipfs-public.thirdwebcdn.com/ipfs/QmeNn6emc8Z3VMTFBKSSozSHiG3qt36bFi7EuPCiGGpo17/0.png";
+
+export const THIRD_WEB_CONTRACT_VERSIONS: { [key: string]: string } = {
+  DropERC20: "4.0.3",
+  DropERC721: "4.1.0",
+  DropERC1155: "4.1.0",
+  MarketplaceV3: "2.0.1",
+  Multiwrap: "1.1.8",
+  NFTStake: "1.0.3",
+  TokenStake: "1.0.3",
+  EditionStake: "1.0.3",
+  Pack: "2.0.8",
+  SignatureDrop: "0.0.6",
+  Split: "1.0.3",
+  TokenERC1155: "1.2.0",
+  TokenERC20: "1.0.8",
+  TokenERC721: "1.1.0",
+  VoteERC20: "1.0.8",
+  AirdropERC20: "1.0.7",
+  AirdropERC721: "1.0.7",
+  AirdropERC1155: "1.0.7",
+};
