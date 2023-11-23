@@ -119,6 +119,7 @@ export function SectionFormRender({
             onSave({ type: 'user-contract-form', formId, hideFormInfo });
           }
         }}
+        showSaveButton
         onChange={(formId, hideFormInfo) => {
           if (formId) {
             onChange({ type: 'user-contract-form', formId, hideFormInfo });

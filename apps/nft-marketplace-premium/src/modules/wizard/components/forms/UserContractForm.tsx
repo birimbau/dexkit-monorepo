@@ -32,6 +32,7 @@ interface Props {
   formId?: number;
   hideFormInfo?: boolean;
   saveOnChange?: boolean;
+  showSaveButton?: boolean;
 }
 
 export function UserContractForm({
@@ -41,6 +42,7 @@ export function UserContractForm({
   formId,
   hideFormInfo,
   saveOnChange,
+  showSaveButton,
 }: Props) {
   const { account } = useWeb3React();
 
@@ -203,7 +205,7 @@ export function UserContractForm({
           </Grid>
         </Grid>
 
-        {saveOnChange && (
+        {showSaveButton && (
           <Grid item xs={12}>
             <Box>
               <Stack

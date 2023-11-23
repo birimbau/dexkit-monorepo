@@ -47,6 +47,7 @@ export function ContractSectionForm({
           onSave={handleSaveData}
           onChange={handleChangeData}
           updateOnChange={true}
+          showSaveButton
         />
       </Grid>
     </Grid>
