@@ -83,7 +83,7 @@ export default function PagesSectionPage({
   const renderSection = (
     section: AppPageSection,
     index: number,
-    isVisible: boolean
+    isVisible: boolean,
   ) => {
     let title;
     let subtitle;
@@ -156,6 +156,12 @@ export default function PagesSectionPage({
       title = <FormattedMessage id="code" defaultMessage="Code" />;
       subtitle = section.title || '';
       icon = <Code />;
+    } else if (section.type === 'dex-generator-section') {
+      title = (
+        <FormattedMessage id="dex.generator" defaultMessage="Dex Generator" />
+      );
+      subtitle = section.title || '';
+      icon = <GavelIcon />;
     }
 
     if (!title) {
@@ -388,7 +394,7 @@ export default function PagesSectionPage({
         <Divider />
 
         {sections.map((section, index) =>
-          renderSection(section, index, isVisibleIndexes.includes(index))
+          renderSection(section, index, isVisibleIndexes.includes(index)),
         )}
       </Stack>
     </>

@@ -22,7 +22,7 @@ import {
   updateForm,
   updateFormTemplate,
 } from '../services';
-import { DeployableContract, FormTemplate } from '../types';
+import { DeployableContract, DeployedContract, FormTemplate } from '../types';
 
 export function useCreateFormMutation({ templateId }: { templateId?: number }) {
   return useMutation(
@@ -318,7 +318,6 @@ export function useDeleteFormMutation() {
 export function useSaveContractDeployed() {
   const { account } = useWeb3React();
 
-
   return useMutation(
     async ({
       contractAddress,
@@ -334,18 +333,27 @@ export function useSaveContractDeployed() {
       chainId: number;
       createdAtTx?: string;
       metadata?: {
-        name?: string,
-        description?: string,
-        symbol?: string,
-        image?: string
-      }
+        name?: string;
+        description?: string;
+        symbol?: string;
+        image?: string;
+      };
     }) => {
-      return await saveContractDeploy({ contractAddress, name, chainId, type, metadata, owner: account?.toLowerCase(), createdAtTx });
+      return await saveContractDeploy({
+        contractAddress,
+        name,
+        chainId,
+        type,
+        metadata,
+        owner: account?.toLowerCase(),
+        createdAtTx,
+      });
     },
   );
 }
 
-export const INFINITE_LIST_DEPLOYED_CONTRACTS = 'INFINITE_LIST_DEPLOYED_CONTRACTS';
+export const INFINITE_LIST_DEPLOYED_CONTRACTS =
+  'INFINITE_LIST_DEPLOYED_CONTRACTS';
 
 export function useInfiniteListDeployedContracts({
   page = 1,
@@ -420,19 +428,21 @@ export function useListDeployedContracts({
 }) {
   const { instance } = useContext(DexkitApiProvider);
   return useQuery<{
-    data: {
-      name: string;
-      contractAddress: string;
-      owner: string;
-      id: number;
-      type?: string;
-      chainId?: number;
-    }[];
+    data: DeployedContract[];
     skip?: number;
     take?: number;
     total?: number;
   }>(
-    [LIST_DEPLOYED_CONTRACTS, owner, name, chainId, sort, page, pageSize, filter],
+    [
+      LIST_DEPLOYED_CONTRACTS,
+      owner,
+      name,
+      chainId,
+      sort,
+      page,
+      pageSize,
+      filter,
+    ],
     async () => {
       if (instance) {
         return (
@@ -449,20 +459,28 @@ export function useListDeployedContracts({
             take?: number;
             total?: number;
           }>('/forms/deploy/contract/list', {
-            params: { owner, name, chainId, skip: page * pageSize, take: pageSize, sort, filter: filter ? JSON.stringify(filter) : undefined },
+            params: {
+              owner,
+              name,
+              chainId,
+              skip: page * pageSize,
+              take: pageSize,
+              sort,
+              filter: filter ? JSON.stringify(filter) : undefined,
+            },
           })
         ).data;
       }
 
       return { data: [] };
-    }
+    },
   );
 }
 
 export const DEPLOYABLE_CONTRACTS_QUERY = 'DEPLOYABLE_CONTRACTS_QUERY';
 
 export function useDeployableContractsQuery() {
-  return useQuery([DEPLOYABLE_CONTRACTS_QUERY], async ({ }) => {
+  return useQuery([DEPLOYABLE_CONTRACTS_QUERY], async ({}) => {
     return (await axios.get<DeployableContract[]>(DEPLOYABLE_CONTRACTS_URL))
       .data;
   });

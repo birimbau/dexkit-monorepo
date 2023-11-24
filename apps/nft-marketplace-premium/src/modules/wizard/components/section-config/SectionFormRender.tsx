@@ -1,3 +1,4 @@
+import { DexkitApiProvider } from '@dexkit/core/providers';
 import { Box } from '@mui/material';
 import { AppPageSection, SectionType } from '../../types/section';
 import { AssetStoreSectionForm } from '../forms/AssetStoreSectionForm';
@@ -5,6 +6,7 @@ import CallToActionSectionForm from '../forms/CallToActionSectionForm';
 import CodeSectionForm from '../forms/CodeSectionForm';
 import CollectionSectionForm from '../forms/CollectionSectionForm';
 import { ContractSectionForm } from '../forms/ContractSectionForm';
+import DexGeneratorSectionForm from '../forms/DexGeneratorSectionForm';
 import ExchangeSectionSettingsForm from '../forms/ExchangeSectionSettingsForm';
 import FeaturedSectionForm from '../forms/FeaturedSectionForm';
 import MDSectionForm from '../forms/MDSectionForm';
@@ -12,6 +14,8 @@ import { SwapConfigSectionForm } from '../forms/SwapConfigSectionForm';
 import { UserContractForm } from '../forms/UserContractForm';
 import VideoSectionForm from '../forms/VideoSectionForm';
 import WalletSectionForm from '../forms/WalletSectionForm';
+
+import { myAppsApi } from '@/modules/admin/dashboard/dataProvider';
 
 interface Props {
   sectionType: SectionType | undefined;
@@ -153,6 +157,22 @@ export function SectionFormRender({
           onChange={onChange}
           section={section?.type === 'code-page-section' ? section : undefined}
         />
+      </Box>
+    );
+  } else if (sectionType === 'dex-generator-section') {
+    return (
+      <Box p={2}>
+        <DexkitApiProvider.Provider value={{ instance: myAppsApi }}>
+          <DexGeneratorSectionForm
+            onCancel={onClose}
+            onSave={onSave}
+            onChange={onChange}
+            section={
+              section?.type === 'dex-generator-section' ? section : undefined
+            }
+            showSaveButton
+          />
+        </DexkitApiProvider.Provider>
       </Box>
     );
   }
