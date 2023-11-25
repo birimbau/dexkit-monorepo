@@ -39,6 +39,25 @@ export const truncateAddress = (address: string | undefined) => {
   return "";
 };
 
+
+export const truncateHash = (hash: string | undefined) => {
+  if (hash !== undefined) {
+    return `${hash.slice(0, 7)}...${hash.slice(hash.length - 5)}`;
+  }
+  return "";
+};
+
+export const beautifyCamelCase = (camelCase: string | undefined) => {
+  if (camelCase) {
+    return camelCase.replace(/([A-Z])/g, ' $1')
+      // uppercase the first character
+      .replace(/^./, function (str) { return str.toUpperCase(); })
+  }
+  return
+}
+
+
+
 export function hasLondonHardForkSupport(chainId: ChainId) {
   switch (chainId) {
     case ChainId.Ropsten:
