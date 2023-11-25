@@ -197,12 +197,6 @@ export function EditWizardContainer({ site }: Props) {
     if (config) {
       setWizardConfig(config);
     }
-  }, [config]);
-
-  useEffect(() => {
-    if (config) {
-      setWizardConfig(config);
-    }
   }, [activeMenu, config]);
 
   // Pages forms
@@ -240,6 +234,7 @@ export function EditWizardContainer({ site }: Props) {
 
   const handleSave = (_config: AppConfig) => {
     setShowConfirmSendConfig(true);
+
     const newConfig = { ...wizardConfig, ..._config };
     setWizardConfig(newConfig);
   };
@@ -247,6 +242,7 @@ export function EditWizardContainer({ site }: Props) {
   const handleChange = useCallback(
     (_config: AppConfig) => {
       const newConfig = { ...wizardConfig, ..._config };
+
       setWizardConfig(newConfig);
     },
 
@@ -779,7 +775,7 @@ export function EditWizardContainer({ site }: Props) {
           </Grid>
           <Grid item xs={12} sm={0.1}></Grid>
           <Grid item xs={12} sm={9.8}>
-            <Grid item xs={12} sm={10}>
+            <Box>
               <Stack spacing={2} className={'builder-forms'}>
                 {activeMenu === ActiveMenu.General && config && (
                   <GeneralWizardContainer
@@ -878,8 +874,7 @@ export function EditWizardContainer({ site }: Props) {
                   <UserEventAnalyticsContainer siteId={site?.id} />
                 )}
               </Stack>
-            </Grid>
-
+            </Box>
             {/*false && theme && (
             <Grid item xs={12} sm={6}>
               <ThemeProvider theme={selectedTheme ? selectedTheme : theme}>

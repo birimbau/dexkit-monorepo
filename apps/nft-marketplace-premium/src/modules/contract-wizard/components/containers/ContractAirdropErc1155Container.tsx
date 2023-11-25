@@ -210,6 +210,7 @@ export default function ContractAirdropErc1155Container({
         }}
         onSelect={handleSelect}
         chainId={chainId}
+        isErc1155
       />
       <Grid container spacing={2}>
         <Grid item xs={12}>
