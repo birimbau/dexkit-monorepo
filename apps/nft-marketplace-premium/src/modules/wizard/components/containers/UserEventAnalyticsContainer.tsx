@@ -126,10 +126,11 @@ function OnChainDataGrid({ siteId }: Props) {
       renderCell: (params: any) => (
         <Link
           target="_blank"
-          href={`${NETWORK_EXPLORER(params.row.chainId)}/address/${params.row
-            ?.from}`}
+          href={`${NETWORK_EXPLORER(params.row.chainId)}/address/${
+            params.row?.from || params.row?.account?.address
+          }`}
         >
-          {truncateAddress(params.row?.from)}
+          {truncateAddress(params.row?.from || params.row?.account?.address)}
         </Link>
       ),
     },

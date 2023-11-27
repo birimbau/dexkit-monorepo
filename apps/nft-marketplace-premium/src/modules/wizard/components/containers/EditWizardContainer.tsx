@@ -85,7 +85,7 @@ const AnalyticsWizardContainer = dynamic(
 );
 
 interface Props {
-  site?: SiteResponse;
+  site?: SiteResponse | null;
 }
 
 export enum ActiveMenu {
@@ -171,10 +171,14 @@ export function EditWizardContainer({ site }: Props) {
 
   const handleChangeTab = (mn: ActiveMenu) => {
     setActiveMenu(mn);
-    /*router.replace({
-      pathname: `/admin/edit/${site?.slug}`,
-      query: { tab: mn },
-    });*/
+    /*router.push(
+      {
+        pathname: `/admin/edit/${site?.slug}`,
+        query: { tab: mn, slug: site?.slug },
+      },
+      `/admin/edit/${site?.slug}?tab=${mn}`,
+      { shallow: true },
+    );*/
   };
 
   const theme = useTheme();
@@ -541,38 +545,48 @@ export function EditWizardContainer({ site }: Props) {
           </Collapse>
         </List>
       </nav>
-      <nav aria-label="analytics">
-        <List>
-          <ListItemButton onClick={handleClickAnalytics}>
-            <ListItemIcon>
-              <AnalyticsIcon />
-            </ListItemIcon>
+      {false && (
+        <nav aria-label="analytics">
+          <List>
+            <ListItemButton onClick={handleClickAnalytics}>
+              <ListItemIcon>
+                <AnalyticsIcon />
+              </ListItemIcon>
 
-            <ListItemText
-              primary={
-                <FormattedMessage id="analytics" defaultMessage={'Analytics'} />
-              }
-            />
-            {openMenu.analytics ? <ExpandLess /> : <ExpandMore />}
-          </ListItemButton>
-          <Collapse in={openMenu.analytics} timeout="auto" unmountOnExit>
-            <List component="div" sx={{ pl: 4 }}>
-              <ListItem disablePadding>
-                <ListItemButton
-                  selected={activeMenu === ActiveMenu.UserEventAnalytics}
-                  onClick={() => handleChangeTab(ActiveMenu.UserEventAnalytics)}
-                >
-                  <ListItemText
-                    primary={
-                      <FormattedMessage id="events" defaultMessage={'Events'} />
-                    }
+              <ListItemText
+                primary={
+                  <FormattedMessage
+                    id="analytics"
+                    defaultMessage={'Analytics'}
                   />
-                </ListItemButton>
-              </ListItem>
-            </List>
-          </Collapse>
-        </List>
-      </nav>
+                }
+              />
+              {openMenu.analytics ? <ExpandLess /> : <ExpandMore />}
+            </ListItemButton>
+            <Collapse in={openMenu.analytics} timeout="auto" unmountOnExit>
+              <List component="div" sx={{ pl: 4 }}>
+                <ListItem disablePadding>
+                  <ListItemButton
+                    selected={activeMenu === ActiveMenu.UserEventAnalytics}
+                    onClick={() =>
+                      handleChangeTab(ActiveMenu.UserEventAnalytics)
+                    }
+                  >
+                    <ListItemText
+                      primary={
+                        <FormattedMessage
+                          id="events"
+                          defaultMessage={'Events'}
+                        />
+                      }
+                    />
+                  </ListItemButton>
+                </ListItem>
+              </List>
+            </Collapse>
+          </List>
+        </nav>
+      )}
     </Box>
   );
 

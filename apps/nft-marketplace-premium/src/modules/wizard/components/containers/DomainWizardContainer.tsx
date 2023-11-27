@@ -25,7 +25,7 @@ import InfoDialog from '../dialogs/InfoDialog';
 import DomainSection, { DomainSectionForm } from '../sections/DomainSection';
 interface Props {
   config: AppConfig;
-  site?: SiteResponse;
+  site?: SiteResponse | null;
   onSave: (config: AppConfig) => void;
 }
 
