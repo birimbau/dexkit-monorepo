@@ -20,7 +20,7 @@ import {
   Typography,
 } from '@mui/material';
 import { useWeb3React } from '@web3-react/core';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { getChainSlug } from 'src/utils/blockchain';
 import { DEX_GENERATOR_CONTRACT_TYPES } from '../../../constants';
@@ -81,6 +81,10 @@ export default function DexGeneratorSectionForm({
   const [currSection, setCurrSection] = useState<
     DexGeneratorPageSection | undefined
   >(section);
+
+  useEffect(() => {
+    setCurrSection(section);
+  }, [section]);
 
   const handleChangeSection = useCallback(
     (section: DexGeneratorPageSection) => {
@@ -148,6 +152,7 @@ export default function DexGeneratorSectionForm({
   );
 
   const handleSave = useCallback(() => {
+    console.log('save', currSection);
     if (currSection) {
       onSave(currSection);
     }

@@ -452,6 +452,7 @@ export function useDeployThirdWebContractMutation() {
       metadata: ThirdwebMetadata;
     }) => {
       if (sdk) {
+        console.log("order", order);
         const orderedParams = order.map((key) => {
           if (params[key]) {
             return params[key];
@@ -472,6 +473,8 @@ export function useDeployThirdWebContractMutation() {
           contractAddress: implementation,
           chainId: chainId,
         });
+
+        console.log("orderedParams", orderedParams);
 
         const tx = await sdk.deployer.deployViaFactory.prepare(
           factory,
