@@ -161,7 +161,7 @@ export function EditWizardContainer({ site }: Props) {
   };
 
   const handleClickAnalytics = () => {
-    setOpenMenu({ ...openMenu, analytics: !openMenu.data });
+    setOpenMenu({ ...openMenu, analytics: !openMenu.analytics });
   };
 
   const { isLoggedIn } = useAuth();
