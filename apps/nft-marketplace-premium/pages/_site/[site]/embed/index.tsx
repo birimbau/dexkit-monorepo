@@ -7,23 +7,7 @@ import type {
 import MainLayout from '../../../../src/components/layouts/main';
 
 import { dehydrate, QueryClient } from '@tanstack/react-query';
-import {
-  GET_ASSET_DATA,
-  GET_ASSET_METADATA,
-  GET_ASSETS_ORDERBOOK,
-  GET_COLLECTION_DATA,
-} from '../../../../src/hooks/nft';
 import { getAppConfig } from '../../../../src/services/app';
-import {
-  getAssetData,
-  getAssetMetadata,
-  getCollectionData,
-  getDKAssetOrderbook,
-} from '../../../../src/services/nft';
-
-import { getNetworkSlugFromChainId } from '../../../../src/utils/blockchain';
-
-import { getProviderBySlug } from '../../../../src/services/providers';
 
 import { getUserByAccountRefresh } from '@/modules/user/services';
 import { GatedConditionRefresher } from '@/modules/wizard/components/GatedConditionRefresher';
@@ -32,6 +16,7 @@ import { SectionsRenderer } from '@/modules/wizard/components/sections/SectionsR
 import { checkGatedConditions } from '@/modules/wizard/services';
 import { AppPageSection } from '@/modules/wizard/types/section';
 import { GatedCondition } from '@dexkit/ui/types/config';
+import { NoSsr } from '@mui/material';
 import { SessionProvider } from 'next-auth/react';
 import AuthMainLayout from 'src/components/layouts/authMain';
 
@@ -56,18 +41,23 @@ const EmbedPage: NextPage<{
 }) => {
   if (isProtected) {
     return (
-      <SessionProvider>
-        <AuthMainLayout>
-          <GatedConditionRefresher conditions={conditions} account={account} />
-          <GatedConditionView
-            account={account}
-            conditions={conditions}
-            result={result}
-            partialResults={partialResults}
-            balances={balances}
-          />
-        </AuthMainLayout>
-      </SessionProvider>
+      <NoSsr>
+        <SessionProvider>
+          <AuthMainLayout>
+            <GatedConditionRefresher
+              conditions={conditions}
+              account={account}
+            />
+            <GatedConditionView
+              account={account}
+              conditions={conditions}
+              result={result}
+              partialResults={partialResults}
+              balances={balances}
+            />
+          </AuthMainLayout>
+        </SessionProvider>
+      </NoSsr>
     );
   }
   if (useLayout) {
@@ -77,13 +67,16 @@ const EmbedPage: NextPage<{
       </MainLayout>
     );
   } else {
-    return <SectionsRenderer sections={sections} />;
+    return (
+      <NoSsr>
+        <SectionsRenderer sections={sections} />
+      </NoSsr>
+    );
   }
 };
 
 type Params = {
   site?: string;
-  page?: string;
 };
 
 export const getServerSideProps: GetServerSideProps = async ({
@@ -178,84 +171,6 @@ export const getServerSideProps: GetServerSideProps = async ({
           },
         };
       }
-    }
-  }
-
-  for (let section of homePage.sections) {
-    if (
-      section.type === 'featured' ||
-      section.type === 'call-to-action' ||
-      section.type === 'collections'
-    ) {
-      for (let item of section.items) {
-        if (item.type === 'asset' && item.tokenId !== undefined) {
-          const slug = getNetworkSlugFromChainId(item.chainId);
-
-          if (slug === undefined) {
-            continue;
-          }
-
-          const provider = getProviderBySlug(slug);
-
-          await provider?.ready;
-
-          const asset = await getAssetData(
-            provider,
-            item.contractAddress,
-            item.tokenId,
-          );
-
-          if (asset) {
-            await queryClient.prefetchQuery(
-              [GET_ASSET_DATA, item.contractAddress, item.tokenId],
-              async () => asset,
-            );
-
-            const metadata = await getAssetMetadata(asset.tokenURI, {
-              image: '',
-              name: `${asset.collectionName} #${asset.id}`,
-            });
-
-            await queryClient.prefetchQuery(
-              [GET_ASSET_METADATA, asset.tokenURI],
-              async () => {
-                return metadata;
-              },
-            );
-          }
-        } else if (item.type === 'collection') {
-          const slug = getNetworkSlugFromChainId(item.chainId);
-
-          if (slug === undefined) {
-            continue;
-          }
-
-          const provider = getProviderBySlug(slug);
-
-          await provider?.ready;
-
-          const collection = await getCollectionData(
-            provider,
-            item.contractAddress,
-          );
-
-          await queryClient.prefetchQuery(
-            [GET_COLLECTION_DATA, item.contractAddress, item.chainId],
-            async () => collection,
-          );
-        }
-      }
-    }
-  }
-
-  for (let section of homePage.sections) {
-    if (section.type === 'asset-store') {
-      const maker = section.config?.storeAccount?.toLowerCase();
-      const assetResponse = await getDKAssetOrderbook({ maker });
-      await queryClient.prefetchQuery(
-        [GET_ASSETS_ORDERBOOK, { maker }],
-        async () => assetResponse.data,
-      );
     }
   }
 
