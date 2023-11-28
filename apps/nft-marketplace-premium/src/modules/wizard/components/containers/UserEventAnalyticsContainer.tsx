@@ -12,6 +12,7 @@ import { useUserEventsList } from '@dexkit/ui/hooks/userEvents';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
+import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
@@ -27,7 +28,7 @@ import {
   GridSortModel,
 } from '@mui/x-data-grid/models';
 import { useCallback, useEffect, useState } from 'react';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 import { myAppsApi } from 'src/services/whitelabel';
 
 function OnChainDataGrid({ siteId }: Props) {
@@ -289,6 +290,7 @@ interface Props {
 
 export default function UserEventAnalyticsContainer({ siteId }: Props) {
   const [value, setValue] = useState('1');
+  const { formatMessage } = useIntl();
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
@@ -314,6 +316,16 @@ export default function UserEventAnalyticsContainer({ siteId }: Props) {
       </Grid>
       <Grid item xs={12}>
         <Divider />
+      </Grid>
+      <Grid item xs={12}>
+        <Alert severity="info">
+          <FormattedMessage
+            id={'add.ref.to.track.referrals'}
+            defaultMessage={
+              'Append ref to your url to track referrals on your events. Ex: yourSite.com?ref=your-referral'
+            }
+          />
+        </Alert>
       </Grid>
       <Grid item xs={12}>
         <Box sx={{ width: '100%', typography: 'body1' }}>
