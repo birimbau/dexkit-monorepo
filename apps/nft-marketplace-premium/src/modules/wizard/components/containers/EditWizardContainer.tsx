@@ -51,7 +51,9 @@ import { ConfirmationEmailMessage } from '../ConfirmationEmailMessage';
 import { PreviewAppButton } from '../PreviewAppButton';
 import { WelcomeMessage } from '../WelcomeMessage';
 import SignConfigDialog from '../dialogs/SignConfigDialog';
-import UserEventAnalyticsContainer from './UserEventAnalyticsContainer';
+const UserEventAnalyticsContainer = dynamic(
+  () => import('./UserEventAnalyticsContainer'),
+);
 
 const OwnershipWizardContainer = dynamic(
   () => import('./OwnershipWizardContainer'),
