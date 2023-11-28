@@ -545,7 +545,7 @@ export function EditWizardContainer({ site }: Props) {
           </Collapse>
         </List>
       </nav>
-      {false && (
+      {true && (
         <nav aria-label="analytics">
           <List>
             <ListItemButton onClick={handleClickAnalytics}>
