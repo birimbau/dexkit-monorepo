@@ -12,7 +12,7 @@ import OwnershipSection from '../sections/OwnershipSection';
 import HidePoweredContainer from './HidePoweredContainer';
 
 interface Props {
-  site?: SiteResponse;
+  site?: SiteResponse | null;
   config: AppConfig;
   onSave: (config: AppConfig) => void;
 }

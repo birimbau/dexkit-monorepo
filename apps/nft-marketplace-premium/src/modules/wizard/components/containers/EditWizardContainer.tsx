@@ -34,12 +34,14 @@ import { AppConfig } from '../../../../types/config';
 import { SiteResponse } from '../../../../types/whitelabel';
 import { useAppWizardConfig } from '../../hooks';
 
+import AnalyticsIcon from '@mui/icons-material/Analytics';
 import DatasetIcon from '@mui/icons-material/Dataset';
 import SettingsIcon from '@mui/icons-material/Settings';
 import SpaceDashboardIcon from '@mui/icons-material/SpaceDashboard';
 import TourIcon from '@mui/icons-material/Tour';
 import { TourProvider, useTour } from '@reactour/tour';
 import { useAtom } from 'jotai';
+import { useRouter } from 'next/router';
 import { useAuth } from 'src/hooks/account';
 import { BuilderKit } from '../../constants';
 import { OnboardBuilderSteps } from '../../constants/onboard/steps';
@@ -49,6 +51,9 @@ import { ConfirmationEmailMessage } from '../ConfirmationEmailMessage';
 import { PreviewAppButton } from '../PreviewAppButton';
 import { WelcomeMessage } from '../WelcomeMessage';
 import SignConfigDialog from '../dialogs/SignConfigDialog';
+const UserEventAnalyticsContainer = dynamic(
+  () => import('./UserEventAnalyticsContainer'),
+);
 
 const OwnershipWizardContainer = dynamic(
   () => import('./OwnershipWizardContainer'),
@@ -82,7 +87,7 @@ const AnalyticsWizardContainer = dynamic(
 );
 
 interface Props {
-  site?: SiteResponse;
+  site?: SiteResponse | null;
 }
 
 export enum ActiveMenu {
@@ -95,6 +100,7 @@ export enum ActiveMenu {
   FooterMenu = 'footer-menu',
   Seo = 'seo',
   Analytics = 'analytics',
+  UserEventAnalytics = 'user-event-analytics',
   MarketplaceFees = 'marketplace-fees',
   SwapFees = 'swap-fees',
   Collections = 'collections',
@@ -127,6 +133,8 @@ export function EditWizardContainer({ site }: Props) {
       return JSON.parse(site?.config);
     }
   }, [site?.config]);
+  const router = useRouter();
+  const { tab } = router.query as { tab?: ActiveMenu };
 
   const { formatMessage } = useIntl();
   const [openMenu, setOpenMenu] = useState({
@@ -134,6 +142,7 @@ export function EditWizardContainer({ site }: Props) {
     layout: false,
     fees: false,
     data: false,
+    analytics: false,
   });
   const handleClickSettings = () => {
     setOpenMenu({ ...openMenu, settings: !openMenu.settings });
@@ -151,12 +160,28 @@ export function EditWizardContainer({ site }: Props) {
     setOpenMenu({ ...openMenu, data: !openMenu.data });
   };
 
+  const handleClickAnalytics = () => {
+    setOpenMenu({ ...openMenu, analytics: !openMenu.data });
+  };
+
   const { isLoggedIn } = useAuth();
 
   const [activeMenu, setActiveMenu] = useState<ActiveMenu>(ActiveMenu.General);
   const [activeBuilderKit, setActiveBuilderKit] = useState<BuilderKit>(
     BuilderKit.ALL,
   );
+
+  const handleChangeTab = (mn: ActiveMenu) => {
+    setActiveMenu(mn);
+    /*router.push(
+      {
+        pathname: `/admin/edit/${site?.slug}`,
+        query: { tab: mn, slug: site?.slug },
+      },
+      `/admin/edit/${site?.slug}?tab=${mn}`,
+      { shallow: true },
+    );*/
+  };
 
   const theme = useTheme();
 
@@ -259,7 +284,7 @@ export function EditWizardContainer({ site }: Props) {
               <ListItem disablePadding>
                 <ListItemButton
                   selected={activeMenu === ActiveMenu.General}
-                  onClick={() => setActiveMenu(ActiveMenu.General)}
+                  onClick={() => handleChangeTab(ActiveMenu.General)}
                 >
                   <ListItemText
                     primary={
@@ -274,7 +299,7 @@ export function EditWizardContainer({ site }: Props) {
               <ListItem disablePadding>
                 <ListItemButton
                   selected={activeMenu === ActiveMenu.Domain}
-                  onClick={() => setActiveMenu(ActiveMenu.Domain)}
+                  onClick={() => handleChangeTab(ActiveMenu.Domain)}
                 >
                   <ListItemText
                     primary={
@@ -289,7 +314,7 @@ export function EditWizardContainer({ site }: Props) {
               <ListItem disablePadding>
                 <ListItemButton
                   selected={activeMenu === ActiveMenu.Ownership}
-                  onClick={() => setActiveMenu(ActiveMenu.Ownership)}
+                  onClick={() => handleChangeTab(ActiveMenu.Ownership)}
                 >
                   <ListItemText
                     primary={
@@ -304,7 +329,7 @@ export function EditWizardContainer({ site }: Props) {
               <ListItem disablePadding>
                 <ListItemButton
                   selected={activeMenu === ActiveMenu.Social}
-                  onClick={() => setActiveMenu(ActiveMenu.Social)}
+                  onClick={() => handleChangeTab(ActiveMenu.Social)}
                 >
                   <ListItemText
                     primary={
@@ -340,7 +365,7 @@ export function EditWizardContainer({ site }: Props) {
               <ListItem disablePadding>
                 <ListItemButton
                   selected={activeMenu === ActiveMenu.Theme}
-                  onClick={() => setActiveMenu(ActiveMenu.Theme)}
+                  onClick={() => handleChangeTab(ActiveMenu.Theme)}
                 >
                   <ListItemText
                     primary={
@@ -351,7 +376,7 @@ export function EditWizardContainer({ site }: Props) {
               </ListItem>
               <ListItem disablePadding>
                 <ListItemButton
-                  onClick={() => setActiveMenu(ActiveMenu.Pages)}
+                  onClick={() => handleChangeTab(ActiveMenu.Pages)}
                   selected={activeMenu === ActiveMenu.Pages}
                 >
                   <ListItemText
@@ -363,7 +388,7 @@ export function EditWizardContainer({ site }: Props) {
               </ListItem>
               <ListItem disablePadding>
                 <ListItemButton
-                  onClick={() => setActiveMenu(ActiveMenu.Menu)}
+                  onClick={() => handleChangeTab(ActiveMenu.Menu)}
                   selected={activeMenu === ActiveMenu.Menu}
                 >
                   <ListItemText
@@ -375,7 +400,7 @@ export function EditWizardContainer({ site }: Props) {
               </ListItem>
               <ListItem disablePadding>
                 <ListItemButton
-                  onClick={() => setActiveMenu(ActiveMenu.FooterMenu)}
+                  onClick={() => handleChangeTab(ActiveMenu.FooterMenu)}
                   selected={activeMenu === ActiveMenu.FooterMenu}
                 >
                   <ListItemText
@@ -390,7 +415,7 @@ export function EditWizardContainer({ site }: Props) {
               </ListItem>
               <ListItem
                 disablePadding
-                onClick={() => setActiveMenu(ActiveMenu.Seo)}
+                onClick={() => handleChangeTab(ActiveMenu.Seo)}
                 selected={activeMenu === ActiveMenu.Seo}
               >
                 <ListItemButton>
@@ -403,7 +428,7 @@ export function EditWizardContainer({ site }: Props) {
               </ListItem>
               <ListItem
                 disablePadding
-                onClick={() => setActiveMenu(ActiveMenu.Analytics)}
+                onClick={() => handleChangeTab(ActiveMenu.Analytics)}
                 selected={activeMenu === ActiveMenu.Analytics}
               >
                 <ListItemButton>
@@ -440,7 +465,7 @@ export function EditWizardContainer({ site }: Props) {
                 <ListItem disablePadding>
                   <ListItemButton
                     selected={activeMenu === ActiveMenu.MarketplaceFees}
-                    onClick={() => setActiveMenu(ActiveMenu.MarketplaceFees)}
+                    onClick={() => handleChangeTab(ActiveMenu.MarketplaceFees)}
                   >
                     <ListItemText
                       primary={
@@ -457,7 +482,7 @@ export function EditWizardContainer({ site }: Props) {
                 <ListItem disablePadding>
                   <ListItemButton
                     selected={activeMenu === ActiveMenu.SwapFees}
-                    onClick={() => setActiveMenu(ActiveMenu.SwapFees)}
+                    onClick={() => handleChangeTab(ActiveMenu.SwapFees)}
                   >
                     <ListItemText
                       primary={
@@ -493,7 +518,7 @@ export function EditWizardContainer({ site }: Props) {
                 <ListItem disablePadding>
                   <ListItemButton
                     selected={activeMenu === ActiveMenu.Collections}
-                    onClick={() => setActiveMenu(ActiveMenu.Collections)}
+                    onClick={() => handleChangeTab(ActiveMenu.Collections)}
                   >
                     <ListItemText
                       primary={
@@ -509,7 +534,7 @@ export function EditWizardContainer({ site }: Props) {
               <ListItem disablePadding>
                 <ListItemButton
                   selected={activeMenu === ActiveMenu.Tokens}
-                  onClick={() => setActiveMenu(ActiveMenu.Tokens)}
+                  onClick={() => handleChangeTab(ActiveMenu.Tokens)}
                 >
                   <ListItemText
                     primary={
@@ -522,13 +547,55 @@ export function EditWizardContainer({ site }: Props) {
           </Collapse>
         </List>
       </nav>
+      {true && (
+        <nav aria-label="analytics">
+          <List>
+            <ListItemButton onClick={handleClickAnalytics}>
+              <ListItemIcon>
+                <AnalyticsIcon />
+              </ListItemIcon>
+
+              <ListItemText
+                primary={
+                  <FormattedMessage
+                    id="analytics"
+                    defaultMessage={'Analytics'}
+                  />
+                }
+              />
+              {openMenu.analytics ? <ExpandLess /> : <ExpandMore />}
+            </ListItemButton>
+            <Collapse in={openMenu.analytics} timeout="auto" unmountOnExit>
+              <List component="div" sx={{ pl: 4 }}>
+                <ListItem disablePadding>
+                  <ListItemButton
+                    selected={activeMenu === ActiveMenu.UserEventAnalytics}
+                    onClick={() =>
+                      handleChangeTab(ActiveMenu.UserEventAnalytics)
+                    }
+                  >
+                    <ListItemText
+                      primary={
+                        <FormattedMessage
+                          id="events"
+                          defaultMessage={'Events'}
+                        />
+                      }
+                    />
+                  </ListItemButton>
+                </ListItem>
+              </List>
+            </Collapse>
+          </List>
+        </nav>
+      )}
     </Box>
   );
 
   return (
     <TourProvider
       steps={OnboardBuilderSteps({
-        onChangeMenu: setActiveMenu,
+        onChangeMenu: handleChangeTab,
         onChangeSidebar: setOpenMenu,
       })}
       styles={{
@@ -818,6 +885,9 @@ export function EditWizardContainer({ site }: Props) {
                     onSave={handleSave}
                     onChange={handleChange}
                   />
+                )}
+                {activeMenu === ActiveMenu.UserEventAnalytics && config && (
+                  <UserEventAnalyticsContainer siteId={site?.id} />
                 )}
               </Stack>
             </Box>
