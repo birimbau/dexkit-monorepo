@@ -26,7 +26,7 @@ const EmbedPage: NextPage<{
   isProtected: boolean;
   conditions?: GatedCondition[];
   result: boolean;
-  useLayout: boolean;
+  hideLayout: boolean;
   partialResults: { [key: number]: boolean };
   balances: { [key: number]: string };
 }> = ({
@@ -34,7 +34,7 @@ const EmbedPage: NextPage<{
   isProtected,
   account,
   conditions,
-  useLayout,
+  hideLayout,
   result,
   partialResults,
   balances,
@@ -60,17 +60,18 @@ const EmbedPage: NextPage<{
       </NoSsr>
     );
   }
-  if (useLayout) {
-    return (
-      <MainLayout disablePadding noSsr={true}>
-        <SectionsRenderer sections={sections} />
-      </MainLayout>
-    );
-  } else {
+
+  if (hideLayout) {
     return (
       <NoSsr>
         <SectionsRenderer sections={sections} />
       </NoSsr>
+    );
+  } else {
+    return (
+      <MainLayout disablePadding noSsr={true}>
+        <SectionsRenderer sections={sections} />
+      </MainLayout>
     );
   }
 };
@@ -86,7 +87,10 @@ export const getServerSideProps: GetServerSideProps = async ({
   query,
 }: GetServerSidePropsContext<Params>) => {
   const queryClient = new QueryClient();
-  const { page, useLayout } = query;
+  const { page, hideLayout } = query;
+
+  const hideM = hideLayout || false;
+
   const sitePage = page as string;
 
   const configResponse = await getAppConfig(params?.site, sitePage);
@@ -111,6 +115,7 @@ export const getServerSideProps: GetServerSideProps = async ({
           sections: homePage.sections,
           result: false,
           balances: {},
+          hideLayout: hideM,
           partialResults: {},
           ...configResponse,
         },
@@ -137,6 +142,7 @@ export const getServerSideProps: GetServerSideProps = async ({
                 balances: gatedResults?.balances,
                 partialResults: gatedResults?.partialResults,
                 conditions: homePage.gatedConditions,
+                hideLayout: hideM,
                 ...configResponse,
               },
             };
@@ -149,7 +155,7 @@ export const getServerSideProps: GetServerSideProps = async ({
               sections: homePage.sections,
               result: false,
               balances: {},
-              useLayout,
+              hideLayout: hideM,
               partialResults: {},
               conditions: homePage.gatedConditions,
               ...configResponse,
@@ -164,7 +170,7 @@ export const getServerSideProps: GetServerSideProps = async ({
             account: undefined,
             sections: homePage.sections,
             result: false,
-            useLayout,
+            hideLayout: hideM,
             balances: {},
             partialResults: {},
             ...configResponse,
@@ -178,7 +184,7 @@ export const getServerSideProps: GetServerSideProps = async ({
     props: {
       dehydratedState: dehydrate(queryClient),
       sections: homePage.sections,
-      useLayout,
+      hideLayout: hideM,
       ...configResponse,
     },
   };
