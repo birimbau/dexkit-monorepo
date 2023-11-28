@@ -111,29 +111,33 @@ function OnChainDataGrid({ siteId }: Props) {
       field: 'hash',
       headerName: 'TX',
       width: 160,
-      renderCell: (params: any) => (
-        <Link
-          target="_blank"
-          href={`${NETWORK_EXPLORER(params.row.chainId)}/tx/${params.row.hash}`}
-        >
-          {truncateHash(params.row.hash)}
-        </Link>
-      ),
+      renderCell: (params: any) =>
+        params.row.hash ? (
+          <Link
+            target="_blank"
+            href={`${NETWORK_EXPLORER(params.row.chainId)}/tx/${
+              params.row.hash
+            }`}
+          >
+            {truncateHash(params.row.hash)}
+          </Link>
+        ) : null,
     },
     {
       field: 'from',
       headerName: 'Account',
       width: 200,
-      renderCell: (params: any) => (
-        <Link
-          target="_blank"
-          href={`${NETWORK_EXPLORER(params.row.chainId)}/address/${
-            params.row?.from || params.row?.account?.address
-          }`}
-        >
-          {truncateAddress(params.row?.from || params.row?.account?.address)}
-        </Link>
-      ),
+      renderCell: (params: any) =>
+        params.row?.from || params.row?.account?.address ? (
+          <Link
+            target="_blank"
+            href={`${NETWORK_EXPLORER(params.row.chainId)}/address/${
+              params.row?.from || params.row?.account?.address
+            }`}
+          >
+            {truncateAddress(params.row?.from || params.row?.account?.address)}
+          </Link>
+        ) : null,
     },
     {
       field: 'referral',
@@ -241,15 +245,17 @@ function OffChainDataGrid({ siteId }: Props) {
       field: 'from',
       headerName: 'Account',
       width: 200,
-      renderCell: (params: any) => (
-        <Link
-          target="_blank"
-          href={`${NETWORK_EXPLORER(params.row.chainId)}/tx/${params.row
-            ?.from}`}
-        >
-          {truncateAddress(params.row?.from)}
-        </Link>
-      ),
+      renderCell: (params: any) =>
+        params.row?.from || params.row?.account?.address ? (
+          <Link
+            target="_blank"
+            href={`${NETWORK_EXPLORER(params.row.chainId)}/tx/${
+              params.row?.from || params.row?.account?.address
+            }`}
+          >
+            {truncateAddress(params.row?.from || params.row?.account?.address)}
+          </Link>
+        ) : null,
     },
     {
       field: 'referral',
