@@ -1,5 +1,6 @@
 import dynamic from 'next/dynamic';
 import { AppPageSection } from '../../types/section';
+const CodeSection = dynamic(() => import('../sections/CodeSection'));
 
 const ExchangeSection = dynamic(() => import('../sections/ExchangeSection'));
 
@@ -73,6 +74,8 @@ export function SectionRender({ section }: Props) {
     return <UserContractSection section={section} />;
   } else if (section.type === 'exchange') {
     return <ExchangeSection section={section} />;
+  } else if (section.type === 'code-page-section') {
+    return <CodeSection section={section} />;
   }
 
   return <></>;

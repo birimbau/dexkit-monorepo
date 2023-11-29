@@ -158,10 +158,10 @@ export const useWhitelabelConfigQuery = ({
   slug?: string;
 }) => {
   return useQuery(
-    [QUERY_WHITELABEL_CONFIG_NAME, domain || '', slug || ''],
+    [QUERY_WHITELABEL_CONFIG_NAME, domain || null, slug || null],
     async () => {
       if (domain === undefined && slug === undefined) {
-        return;
+        return null;
       }
 
       return (await getConfig({ domain, slug })).data;

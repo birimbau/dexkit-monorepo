@@ -25,7 +25,7 @@ export interface DexkitProviderProps {
     cssVarPrefix?: string | undefined;
     colorSchemes: Record<SupportedColorScheme, Record<string, any>>;
   };
-
+  affiliateReferral?: string;
   locale: string;
   defaultLocale?: string;
   onChangeLocale: (locale: string) => void;
@@ -58,6 +58,7 @@ export interface DexkitProviderProps {
 export function DexkitProvider({
   children,
   theme,
+  affiliateReferral,
   currencyUserAtom,
   selectedWalletAtom,
   transactionsAtom,
@@ -91,7 +92,7 @@ export function DexkitProvider({
 
   return (
     <DexKitContext.Provider
-      value={{ ...appState, userEventURL: userEventsURL, siteId: siteId }}
+      value={{ ...appState, userEventURL: userEventsURL, siteId: siteId, affiliateReferral }}
     >
       <IntlProvider
         locale={locale}

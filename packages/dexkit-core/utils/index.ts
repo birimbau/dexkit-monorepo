@@ -39,6 +39,25 @@ export const truncateAddress = (address: string | undefined) => {
   return "";
 };
 
+
+export const truncateHash = (hash: string | undefined) => {
+  if (hash !== undefined) {
+    return `${hash.slice(0, 7)}...${hash.slice(hash.length - 5)}`;
+  }
+  return "";
+};
+
+export const beautifyCamelCase = (camelCase: string | undefined) => {
+  if (camelCase) {
+    return camelCase.replace(/([A-Z])/g, ' $1')
+      // uppercase the first character
+      .replace(/^./, function (str) { return str.toUpperCase(); })
+  }
+  return
+}
+
+
+
 export function hasLondonHardForkSupport(chainId: ChainId) {
   switch (chainId) {
     case ChainId.Ropsten:
@@ -205,11 +224,11 @@ export function convertTokenToEvmCoin(token: TokenWhitelabelApp): EvmCoin {
   ) {
     return {
       network: {
-        id: network.slug as string,
-        name: network.name,
-        chainId: token.chainId,
-        icon: network.coinImageUrl,
-        coingeckoPlatformId: network.coingeckoPlatformId,
+        id: network?.slug as string,
+        name: network?.name,
+        chainId: token?.chainId,
+        icon: network?.coinImageUrl,
+        coingeckoPlatformId: network?.coingeckoPlatformId,
       },
       coinType: CoinTypes.EVM_NATIVE,
       name: token.name,
@@ -220,11 +239,11 @@ export function convertTokenToEvmCoin(token: TokenWhitelabelApp): EvmCoin {
   } else {
     return {
       network: {
-        id: network.slug as string,
-        name: network.name,
-        chainId: token.chainId,
-        icon: network.coinImageUrl,
-        coingeckoPlatformId: network.coingeckoPlatformId,
+        id: network?.slug as string,
+        name: network?.name,
+        chainId: token?.chainId,
+        icon: network?.coinImageUrl,
+        coingeckoPlatformId: network?.coingeckoPlatformId,
       },
       coinType: CoinTypes.EVM_ERC20,
       contractAddress: token.address,

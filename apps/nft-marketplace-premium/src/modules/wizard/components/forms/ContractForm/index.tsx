@@ -50,6 +50,7 @@ export interface ContractFormProps {
   onCancel?: () => void;
   onValid?: (isValid: boolean) => void;
   fetchOnMount?: boolean;
+  showSaveButton?: boolean;
 }
 
 type TABS = 'write' | 'read';
@@ -62,6 +63,7 @@ export default function ContractForm({
   onChange,
   onCancel,
   onValid,
+  showSaveButton,
 }: ContractFormProps) {
   const handleSubmit = async (
     values: ContractFormParams,
@@ -220,9 +222,9 @@ export default function ContractForm({
                 </Grid>
               </Grid>
             )}
-            <Grid item xs={12}>
-              <Stack justifyContent="flex-end" direction="row" spacing={2}>
-                {!updateOnChange && (
+            {showSaveButton && (
+              <Grid item xs={12}>
+                <Stack justifyContent="flex-end" direction="row" spacing={2}>
                   <Button
                     onClick={submitForm}
                     variant="contained"
@@ -230,15 +232,15 @@ export default function ContractForm({
                   >
                     <FormattedMessage id="Save" defaultMessage="Save" />
                   </Button>
-                )}
 
-                {onCancel && (
-                  <Button onClick={onCancel}>
-                    <FormattedMessage id="cancel" defaultMessage="Cancel" />
-                  </Button>
-                )}
-              </Stack>
-            </Grid>
+                  {onCancel && (
+                    <Button onClick={onCancel}>
+                      <FormattedMessage id="cancel" defaultMessage="Cancel" />
+                    </Button>
+                  )}
+                </Stack>
+              </Grid>
+            )}
           </Grid>
         </>
       )}

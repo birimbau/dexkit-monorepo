@@ -12,14 +12,14 @@ import { useSendConfigMutation } from 'src/hooks/whitelabel';
 import { AppConfig } from 'src/types/config';
 import { SiteResponse } from 'src/types/whitelabel';
 import theDefaultConfig from '../../../../../../config/quick.swap.default.app.json';
-import SignConfigDialog from '../../dialogs/SignConfigDialog';
 import { PreviewAppButton } from '../../PreviewAppButton';
+import SignConfigDialog from '../../dialogs/SignConfigDialog';
 import SwapStepper from '../SwapStepper/SwapStepper';
 import { WelcomeSwapStepperMessage } from '../Welcome/WelcomeSwapStepperMessage';
 const defaultConfig = theDefaultConfig as unknown as AppConfig;
 
 interface Props {
-  site?: SiteResponse;
+  site?: SiteResponse | null;
 }
 
 export default function SwapStepperContainer({ site }: Props) {
@@ -66,7 +66,7 @@ export default function SwapStepperContainer({ site }: Props) {
       setWizardConfig(newConfig);
     },
 
-    [wizardConfig, setWizardConfig]
+    [wizardConfig, setWizardConfig],
   );
 
   const handleCloseSendingConfig = () => {

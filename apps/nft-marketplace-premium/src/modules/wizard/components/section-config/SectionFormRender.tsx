@@ -1,6 +1,8 @@
+import { Box } from '@mui/material';
 import { AppPageSection, SectionType } from '../../types/section';
 import { AssetStoreSectionForm } from '../forms/AssetStoreSectionForm';
 import CallToActionSectionForm from '../forms/CallToActionSectionForm';
+import CodeSectionForm from '../forms/CodeSectionForm';
 import CollectionSectionForm from '../forms/CollectionSectionForm';
 import { ContractSectionForm } from '../forms/ContractSectionForm';
 import ExchangeSectionSettingsForm from '../forms/ExchangeSectionSettingsForm';
@@ -111,12 +113,13 @@ export function SectionFormRender({
     return (
       <UserContractForm
         onCancel={onClose}
-        saveOnChange={true}
+        saveOnChange
         onSave={(formId, hideFormInfo) => {
           if (formId) {
             onSave({ type: 'user-contract-form', formId, hideFormInfo });
           }
         }}
+        showSaveButton
         onChange={(formId, hideFormInfo) => {
           if (formId) {
             onChange({ type: 'user-contract-form', formId, hideFormInfo });
@@ -140,6 +143,17 @@ export function SectionFormRender({
         onChange={onChange}
         section={section?.type === 'exchange' ? section : undefined}
       />
+    );
+  } else if (sectionType === 'code-page-section') {
+    return (
+      <Box p={2}>
+        <CodeSectionForm
+          onCancel={onClose}
+          onSave={onSave}
+          onChange={onChange}
+          section={section?.type === 'code-page-section' ? section : undefined}
+        />
+      </Box>
     );
   }
 

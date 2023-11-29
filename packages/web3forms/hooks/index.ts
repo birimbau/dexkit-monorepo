@@ -10,7 +10,7 @@ import axios from "axios";
 
 import { ChainId } from "@dexkit/core/constants";
 
-import { ETHER_SCAN_API_URL } from "../constants";
+import { ETHER_SCAN_API_URL, THIRD_WEB_CONTRACT_VERSIONS } from "../constants";
 
 import { getNormalizedUrl } from "@dexkit/core/utils";
 import { useWeb3React } from "@web3-react/core";
@@ -362,20 +362,14 @@ export function useIfpsUploadMutation() {
 export function useServerUploadMutation() {
   const { instance } = useContext(DexkitApiProvider);
 
-  return useMutation(
-    async ({
-      content,
-    }: {
-      content: string;
-    }) => {
-      if (instance) {
-        const res = await instance.post("/account-file/upload-json", {
-          metadata: content
-        });
-        return res.data;
-      }
+  return useMutation(async ({ content }: { content: string }) => {
+    if (instance) {
+      const res = await instance.post("/account-file/upload-json", {
+        metadata: content,
+      });
+      return res.data;
     }
-  );
+  });
 }
 
 export const IPFS_FILE_LIST_QUERY = "IPFS_FILE_LIST_QUERY";
@@ -471,7 +465,7 @@ export function useDeployThirdWebContractMutation() {
 
         const implementation =
           metadata.factoryDeploymentData.implementationAddresses[
-          chainId.toString()
+            chainId.toString()
           ];
 
         const abi = await fetchAbi({
@@ -491,7 +485,11 @@ export function useDeployThirdWebContractMutation() {
         const receipt = await transaction.wait();
         let address;
         if (receipt.events && receipt.events?.length > 1) {
-          if (receipt.events[0] && receipt.events[0].args && receipt.events[0].args[1]) {
+          if (
+            receipt.events[0] &&
+            receipt.events[0].args &&
+            receipt.events[0].args[1]
+          ) {
             address = receipt.events[0].args[1];
           }
         }
@@ -505,17 +503,15 @@ export const THIRDWEB_CONTRACT_METADATA = "THIRDWEB_CONTRACT_METADATA";
 
 export default function useThirdwebContractMetadataQuery({
   id,
+  clientId,
 }: {
   id: string;
+  clientId?: string;
 }) {
   return useQuery([THIRDWEB_CONTRACT_METADATA, id], async () => {
-    const contracts = await new ThirdwebSDK("polygon")
+    const contract = await new ThirdwebSDK("polygon", { clientId })
       .getPublisher()
-      .getAll("deployer.thirdweb.eth");
-
-    const contract = contracts.find(
-      (c) => c.id?.toLowerCase() === id?.toLowerCase()
-    );
+      .getVersion("deployer.thirdweb.eth", id, THIRD_WEB_CONTRACT_VERSIONS[id]);
 
     if (contract) {
       const normalizedUrl = getNormalizedUrl(contract.metadataUri);

@@ -32,6 +32,7 @@ interface Props {
   formId?: number;
   hideFormInfo?: boolean;
   saveOnChange?: boolean;
+  showSaveButton?: boolean;
 }
 
 export function UserContractForm({
@@ -41,6 +42,7 @@ export function UserContractForm({
   formId,
   hideFormInfo,
   saveOnChange,
+  showSaveButton,
 }: Props) {
   const { account } = useWeb3React();
 
@@ -80,7 +82,7 @@ export function UserContractForm({
       }
       setHideInfo(e.target.checked);
     },
-    [saveOnChange],
+    [saveOnChange, selectedFormId],
   );
 
   useEffect(() => {
@@ -203,10 +205,15 @@ export function UserContractForm({
           </Grid>
         </Grid>
 
-        {!saveOnChange && (
+        {showSaveButton && (
           <Grid item xs={12}>
             <Box>
-              <Stack direction="row" alignItems="center" spacing={2}>
+              <Stack
+                direction="row"
+                alignItems="center"
+                justifyContent="flex-end"
+                spacing={2}
+              >
                 <Button
                   onClick={handleSave}
                   disabled={selectedFormId === undefined}
