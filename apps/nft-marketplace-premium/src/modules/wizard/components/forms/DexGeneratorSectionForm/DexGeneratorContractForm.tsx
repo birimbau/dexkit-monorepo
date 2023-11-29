@@ -4,14 +4,7 @@ import {
   DexGeneratorPageSectionType,
 } from '@/modules/wizard/types/section';
 import ArrowBack from '@mui/icons-material/ArrowBack';
-import {
-  Box,
-  Card,
-  Divider,
-  IconButton,
-  Stack,
-  Typography,
-} from '@mui/material';
+import { Box, Divider, IconButton, Stack, Typography } from '@mui/material';
 import { FormattedMessage } from 'react-intl';
 import Link from 'src/components/Link';
 import DexGeneratorEditionDropForm from './DexGeneratorEditionDropForm';
@@ -97,7 +90,7 @@ export default function DexGeneratorContractForm({
   };
 
   return (
-    <Card>
+    <Box>
       <Stack sx={{ p: 2 }} spacing={2}>
         <Stack
           direction="row"
@@ -127,6 +120,6 @@ export default function DexGeneratorContractForm({
         <Divider />
         <Box>{renderForm()}</Box>
       </Stack>
-    </Card>
+    </Box>
   );
 }

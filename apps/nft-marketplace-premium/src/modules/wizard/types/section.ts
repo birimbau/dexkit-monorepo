@@ -217,8 +217,8 @@ export type DexGeneratorPageSectionType =
 
 export interface DexGeneratorPageSection extends PageSection {
   type: 'dex-generator-section';
-  contract: DeployedContract;
-  section: DexGeneratorPageSectionType;
+  contract?: DeployedContract;
+  section?: DexGeneratorPageSectionType;
 }
 
 export type AppPageSection =
