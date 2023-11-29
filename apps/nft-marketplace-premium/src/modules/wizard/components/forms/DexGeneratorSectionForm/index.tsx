@@ -145,6 +145,54 @@ export default function DexGeneratorSectionForm({
             contract: newContract,
             type: 'dex-generator-section',
           });
+        } else if (newContract.type === 'StakeERC721') {
+          onChange({
+            section: {
+              type: 'nft-stake',
+              settings: {
+                address: newContract.contractAddress,
+                network,
+              },
+            },
+            contract: newContract,
+            type: 'dex-generator-section',
+          });
+        } else if (newContract.type === 'StakeERC1155') {
+          onChange({
+            section: {
+              type: 'edition-stake',
+              settings: {
+                address: newContract.contractAddress,
+                network,
+              },
+            },
+            contract: newContract,
+            type: 'dex-generator-section',
+          });
+        } else if (newContract.type === 'StakeERC20') {
+          onChange({
+            section: {
+              type: 'token-stake',
+              settings: {
+                address: newContract.contractAddress,
+                network,
+              },
+            },
+            contract: newContract,
+            type: 'dex-generator-section',
+          });
+        } else if (newContract.type === 'AirdropERC20') {
+          onChange({
+            section: {
+              type: 'airdrop-token',
+              settings: {
+                address: newContract.contractAddress,
+                network,
+              },
+            },
+            contract: newContract,
+            type: 'dex-generator-section',
+          });
         }
       }
     },
@@ -152,7 +200,6 @@ export default function DexGeneratorSectionForm({
   );
 
   const handleSave = useCallback(() => {
-    console.log('save', currSection);
     if (currSection) {
       onSave(currSection);
     }

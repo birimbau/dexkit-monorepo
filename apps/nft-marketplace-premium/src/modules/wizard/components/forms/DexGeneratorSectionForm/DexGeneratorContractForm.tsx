@@ -4,7 +4,14 @@ import {
   DexGeneratorPageSectionType,
 } from '@/modules/wizard/types/section';
 import ArrowBack from '@mui/icons-material/ArrowBack';
-import { Box, Card, IconButton, Stack, Typography } from '@mui/material';
+import {
+  Box,
+  Card,
+  Divider,
+  IconButton,
+  Stack,
+  Typography,
+} from '@mui/material';
 import { FormattedMessage } from 'react-intl';
 import Link from 'src/components/Link';
 import DexGeneratorEditionDropForm from './DexGeneratorEditionDropForm';
@@ -59,7 +66,6 @@ export default function DexGeneratorContractForm({
         />
       );
     } else if (contractType === 'DropERC1155') {
-      console.log('vem aqui', section);
       return (
         <DexGeneratorEditionDropForm
           key={`${network}-${address}-${contractType}-${name}`}
@@ -69,6 +75,23 @@ export default function DexGeneratorContractForm({
             section?.type === 'edition-drop-section' ? section : undefined
           }
         />
+      );
+    } else {
+      return (
+        <Stack>
+          <Typography align="center" variant="h5">
+            <FormattedMessage
+              id="contract.not.supported"
+              defaultMessage="Contract not supported"
+            />
+          </Typography>
+          <Typography align="center" variant="body1" color="text.secondary">
+            <FormattedMessage
+              id="contract.is.not.supported.yet"
+              defaultMessage="Contract not supported yet"
+            />
+          </Typography>
+        </Stack>
       );
     }
   };
@@ -93,11 +116,15 @@ export default function DexGeneratorContractForm({
               />
             </Typography>
           </Stack>
-          <Link target="_blank" href={`/contract/${network}/${address}`}>
-            <FormattedMessage id="admin" defaultMessage="Admin" />{' '}
-            <OpenInNewIcon fontSize="inherit" />
-          </Link>
+
+          <Stack alignItems="center" direction="row">
+            <Link target="_blank" href={`/contract/${network}/${address}`}>
+              <FormattedMessage id="admin" defaultMessage="Admin" />{' '}
+            </Link>
+            <OpenInNewIcon fontSize="inherit" color="primary" />
+          </Stack>
         </Stack>
+        <Divider />
         <Box>{renderForm()}</Box>
       </Stack>
     </Card>

@@ -209,7 +209,11 @@ export type DexGeneratorPageSectionType =
   | TokenDropPageSection
   | NftDropPageSection
   | EditionDropPageSection
-  | TokenErc20PageSection;
+  | TokenErc20PageSection
+  | AirdropErc20PageSection
+  | StakeErc721PageSection
+  | StakeErc20PageSection
+  | StakeErc155PageSection;
 
 export interface DexGeneratorPageSection extends PageSection {
   type: 'dex-generator-section';
