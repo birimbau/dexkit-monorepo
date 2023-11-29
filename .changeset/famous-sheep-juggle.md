@@ -2,4 +2,4 @@
 "nft-marketplace": minor
 ---
 
-Add code section
+add page to enable iframes

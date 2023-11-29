@@ -82,7 +82,13 @@ export default function ThemeWizardContainer({
         setCustomThemeDark(JSON.parse(config.customThemeDark));
       }
       if (config.customThemeLight) {
-        setCustomThemeLight(JSON.parse(config.customThemeLight));
+        const theme = JSON.parse(config.customThemeLight);
+        // TODO: Remove this line after some time, this was bug introduced from saving the atom instead of the result
+        if (theme?.init) {
+          setCustomThemeLight(theme?.init);
+        } else {
+          setCustomThemeLight(theme);
+        }
       }
     }
   }, [config]);

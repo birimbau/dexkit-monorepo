@@ -18,7 +18,7 @@ import ExchangeStepper from '../ExchangeStepper';
 const defaultConfig = theDefaultConfig as unknown as AppConfig;
 
 interface Props {
-  site?: SiteResponse;
+  site?: SiteResponse | null;
 }
 
 export default function ExchangeStepperContainer({ site }: Props) {

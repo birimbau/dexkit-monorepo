@@ -28,14 +28,12 @@ export default function SelectThemeSection({ mode }: SelectThemeSectionProps) {
           let theme = {
             ...tempTheme,
             colorSchemes: {
-              //@ts-ignore
               dark: {
                 palette: {
                   ...(customThemeDark?.palette as any),
                   ...tempTheme?.theme.colorSchemes.dark,
                 },
               },
-              //@ts-ignore
               light: {
                 palette: {
                   ...(customThemeLight?.palette as any),
@@ -74,19 +72,19 @@ export default function SelectThemeSection({ mode }: SelectThemeSectionProps) {
                   colors={{
                     primary:
                       entry.theme.colorSchemes[mode || ThemeMode.light].palette
-                        .primary.main,
+                        .primary?.main,
                     background:
                       entry.theme.colorSchemes[mode || ThemeMode.light].palette
-                        .background.default,
+                        .background?.default,
                     secondary:
                       entry.theme.colorSchemes[mode || ThemeMode.light].palette
-                        .secondary.main,
+                        .secondary?.main,
                     text: entry.theme.colorSchemes[mode || ThemeMode.light]
-                      .palette.text.primary,
+                      .palette.text?.primary,
                   }}
                 />
               </Grid>
-            )
+            ),
         )}
       </Grid>
     </Box>

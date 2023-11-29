@@ -10,6 +10,8 @@ export default async function handler(
     return res.status(500).json({ message: 'only post request supported' });
   }
   const refreshToken = req.cookies?.refresh_token_auth || req.cookies?.refresh_token;
+  body.refreshToken = refreshToken;
+
 
   try {
     await myAppsApi.post('/user-events', body, {
@@ -20,6 +22,6 @@ export default async function handler(
     })
     return res.status(200).json({ message: 'update success' });;
   } catch (e) {
-    return res.status(500).json({ message: 'Requirements not attended' });
+    return res.status(500).json({ message: 'User Events:Requirements not attended' });
   }
 }

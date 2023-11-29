@@ -9,7 +9,11 @@ const ActionMutationDialog = dynamic(
   () => import('@dexkit/ui/components/dialogs/ActionMutationDialog'),
 );
 
-export function ConfirmationEmailMessage({ site }: { site?: SiteResponse }) {
+export function ConfirmationEmailMessage({
+  site,
+}: {
+  site?: SiteResponse | null;
+}) {
   const [open, setOpen] = useState<boolean>(false);
   const siteConfirmationMutation = useSendSiteConfirmationLinkMutation();
 

@@ -15,6 +15,7 @@ import {
 
 export interface DexkitContextState {
   onChangeLocale: (locale: string) => void;
+  affiliateReferral?: string;
   notificationTypes: { [key: string]: AppNotificationType };
   createNotification: (params: CreateAppNotificationParams) => void;
   clearNotifications: () => void;
