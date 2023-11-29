@@ -224,11 +224,11 @@ export function convertTokenToEvmCoin(token: TokenWhitelabelApp): EvmCoin {
   ) {
     return {
       network: {
-        id: network.slug as string,
-        name: network.name,
-        chainId: token.chainId,
-        icon: network.coinImageUrl,
-        coingeckoPlatformId: network.coingeckoPlatformId,
+        id: network?.slug as string,
+        name: network?.name,
+        chainId: token?.chainId,
+        icon: network?.coinImageUrl,
+        coingeckoPlatformId: network?.coingeckoPlatformId,
       },
       coinType: CoinTypes.EVM_NATIVE,
       name: token.name,
@@ -239,11 +239,11 @@ export function convertTokenToEvmCoin(token: TokenWhitelabelApp): EvmCoin {
   } else {
     return {
       network: {
-        id: network.slug as string,
-        name: network.name,
-        chainId: token.chainId,
-        icon: network.coinImageUrl,
-        coingeckoPlatformId: network.coingeckoPlatformId,
+        id: network?.slug as string,
+        name: network?.name,
+        chainId: token?.chainId,
+        icon: network?.coinImageUrl,
+        coingeckoPlatformId: network?.coingeckoPlatformId,
       },
       coinType: CoinTypes.EVM_ERC20,
       contractAddress: token.address,
