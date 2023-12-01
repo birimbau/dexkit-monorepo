@@ -132,6 +132,7 @@ export function PagesContainer({
         newPages[pageOptions.key || ''] = {
           ...newPages[pageOptions.key || ''],
           gatedConditions: pageOptions?.gatedConditions,
+          gatedPageLayout: pageOptions?.gatedPageLayout,
         };
         setCurrentPage(newPages[pageOptions.key || '']);
         return newPages;

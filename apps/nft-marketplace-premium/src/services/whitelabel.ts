@@ -1,6 +1,7 @@
 import { CollectionOwnershipNFTFormType } from '@/modules/contract-wizard/types';
+import { AppPageSection } from '@/modules/wizard/types/section';
 import axios from 'axios';
-import { DEXKIT_BASE_API_URL } from '../constants';
+import { DEXKIT_BASE_API_URL } from 'src/constants';
 import {
   ConfigResponse,
   PageTemplateFormData,
@@ -15,7 +16,7 @@ import {
 } from './auth';
 
 //const MY_APPS_ENDPOINT = 'https://dexkitapi-8oo4v.ondigitalocean.app';
-//const MY_APPS_ENDPOINT = 'http://localhost:3000';
+//const MY_APPS_ENDPOINT = 'http://localhost:3001';
 const MY_APPS_ENDPOINT = `${DEXKIT_BASE_API_URL}`;
 //const MY_APPS_ENDPOINT = 'https://squid-app-xzo63.ondigitalocean.app';
 
@@ -163,6 +164,44 @@ export async function getConfig(queryParameters: {
   appPage?: string;
 }) {
   return await myAppsApi.get<ConfigResponse>(`/site`, {
+    params: {
+      domain: queryParameters.domain,
+      slug: queryParameters.slug,
+      ['app-page']: queryParameters.appPage,
+    },
+  });
+}
+
+/**
+ * Get config by name or domain, at least one of these parameters should be passed
+ * @param queryParameters
+ * @returns
+ */
+export async function getAdminConfig(queryParameters: {
+  domain?: string;
+  slug?: string;
+  appPage?: string;
+}) {
+  return await myAppsApi.get<ConfigResponse>(`/site/admin`, {
+    params: {
+      domain: queryParameters.domain,
+      slug: queryParameters.slug,
+    },
+  });
+}
+
+/**
+ * Get config by name or domain, at least one of these parameters should be passed
+ * @param queryParameters
+ * @returns
+ */
+export async function getProtectedAppConfig(queryParameters: {
+  domain?: string;
+  slug?: string;
+  appPage?: string;
+}) {
+
+  return await myAppsApi.get<{ sections: AppPageSection[], result: boolean, balances: { [key: number]: string }, partialResults: { [key: number]: boolean } }>(`/site/protected`, {
     params: {
       domain: queryParameters.domain,
       slug: queryParameters.slug,

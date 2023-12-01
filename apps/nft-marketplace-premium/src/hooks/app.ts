@@ -7,6 +7,9 @@ import { AppConfigContext } from '../contexts';
 import { localeAtom, localeUserAtom, userThemeModeAtom } from '../state/atoms';
 
 import { useConnectWalletDialog as useConnectWalletDialogV2 } from '@dexkit/ui/hooks';
+import { useQuery } from '@tanstack/react-query';
+import { getProtectedAppConfig } from 'src/services/whitelabel';
+import { useAuth } from './account';
 
 const signMessageDialogOpenAtom = atom(false);
 const signMessageDialogErrorAtom = atom<Error | undefined>(undefined);
@@ -50,6 +53,18 @@ export function useConnectWalletDialog() {
 // app config in static props to context be initialized
 export function useAppConfig() {
   return useContext(AppConfigContext).appConfig;
+}
+
+const PROTECTED_CONFIG_QUERY = 'PROTECTED_CONFIG_QUERY'
+
+export function useProtectedAppConfig({ isProtected, domain, page, slug, result }: { isProtected: boolean, domain?: string, page: string, slug?: string, result?: boolean }) {
+  const { isLoggedIn } = useAuth()
+
+  return useQuery([PROTECTED_CONFIG_QUERY, isProtected, domain, page, isLoggedIn, slug, result], async () => {
+    if (isProtected && isLoggedIn && result) {
+      return await getProtectedAppConfig({ domain, appPage: page, slug })
+    }
+  });
 }
 
 export function useAppNFT() {

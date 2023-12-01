@@ -15,10 +15,9 @@ import {
 
 import { getNetworkSlugFromChainId } from '../../../../src/utils/blockchain';
 
-import { GatedConditionRefresher } from '@/modules/wizard/components/GatedConditionRefresher';
-import { GatedConditionView } from '@/modules/wizard/components/GatedConditionView';
+import ProtectedContent from '@/modules/home/components/ProtectedContent';
 import { SectionsRenderer } from '@/modules/wizard/components/sections/SectionsRenderer';
-import { GatedCondition } from '@/modules/wizard/types';
+import { GatedCondition, GatedPageLayout } from '@/modules/wizard/types';
 import { AppPageSection } from '@/modules/wizard/types/section';
 import { SessionProvider } from 'next-auth/react';
 import AuthMainLayout from 'src/components/layouts/authMain';
@@ -29,29 +28,23 @@ const CustomPage: NextPage<{
   account?: string;
   isProtected: boolean;
   conditions?: GatedCondition[];
+  gatedLayout?: GatedPageLayout;
   result: boolean;
+  site: string;
+  page: string;
   partialResults: { [key: number]: boolean };
   balances: { [key: number]: string };
-}> = ({
-  sections,
-  isProtected,
-  account,
-  conditions,
-  result,
-  partialResults,
-  balances,
-}) => {
+}> = ({ sections, isProtected, conditions, site, page, gatedLayout }) => {
   if (isProtected) {
     return (
       <SessionProvider>
         <AuthMainLayout>
-          <GatedConditionRefresher conditions={conditions} account={account} />
-          <GatedConditionView
-            account={account}
+          <ProtectedContent
+            site={site}
+            page={page}
+            isProtected={isProtected}
             conditions={conditions}
-            result={result}
-            partialResults={partialResults}
-            balances={balances}
+            layout={gatedLayout}
           />
         </AuthMainLayout>
       </SessionProvider>
@@ -86,14 +79,24 @@ export const getStaticProps: GetStaticProps = async ({
       },
     };
   }
-  if (homePage.gatedConditions && homePage.gatedConditions.length > 0) {
+
+  if (homePage?.gatedConditions && homePage.gatedConditions.length > 0) {
     return {
-      redirect: {
-        destination: `/_custom_protected/${params?.site}/${params?.page}`,
-        permanent: false,
+      props: {
+        isProtected: true,
+        sections: [],
+        result: false,
+        conditions: homePage?.gatedConditions,
+        gatedLayout: homePage?.gatedPageLayout,
+        site: params?.site,
+        page: params?.page,
+        balances: {},
+        partialResults: {},
+        ...configResponse,
       },
     };
   }
+
   for (let section of homePage.sections) {
     if (
       section.type === 'featured' ||
@@ -146,7 +149,9 @@ export const getStaticProps: GetStaticProps = async ({
   return {
     props: {
       dehydratedState: dehydrate(queryClient),
+      page: params?.page,
       sections: homePage.sections,
+      site: params?.site,
       ...configResponse,
     },
     revalidate: 60,

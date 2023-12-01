@@ -9,12 +9,13 @@ import {
   Grid,
   Stack,
   Typography,
+  useTheme,
 } from '@mui/material';
+import Image from 'next/image';
 import { FormattedMessage } from 'react-intl';
 import { LoginAppButton } from 'src/components/LoginAppButton';
 import { getNetworkSlugFromChainId } from 'src/utils/blockchain';
-import { GatedCondition } from '../types';
-
+import { GatedCondition, GatedPageLayout } from '../types';
 function ShowBalance({ balance }: { balance: string }) {
   return (
     <Typography>
@@ -32,13 +33,19 @@ export function GatedConditionView({
   partialResults,
   balances,
   account,
+  isLoggedIn,
+  layout,
 }: {
+  layout?: GatedPageLayout;
   conditions?: GatedCondition[];
   account?: string;
-  result: boolean;
-  partialResults: { [key: number]: boolean };
-  balances: { [key: number]: string };
+  result?: boolean;
+  isLoggedIn?: boolean;
+  partialResults?: { [key: number]: boolean };
+  balances?: { [key: number]: string };
 }) {
+  const theme = useTheme();
+
   return (
     <Container>
       <Grid container spacing={2}>
@@ -48,7 +55,24 @@ export function GatedConditionView({
             alignContent={'center'}
             alignItems={'center'}
           >
-            <ShieldIcon sx={{ fontSize: 80 }} />
+            {layout?.frontImage ? (
+              <Image
+                src={layout?.frontImage}
+                alt={'gated page front image'}
+                height={
+                  layout?.frontImageHeight
+                    ? `${layout?.frontImageHeight}px`
+                    : theme.spacing(20)
+                }
+                width={
+                  layout?.frontImageWidth
+                    ? `${layout?.frontImageWidth}px`
+                    : theme.spacing(20)
+                }
+              />
+            ) : (
+              <ShieldIcon sx={{ fontSize: 80 }} />
+            )}
           </Stack>
         </Grid>
         <Grid item xs={12}>
@@ -62,16 +86,20 @@ export function GatedConditionView({
                 defaultMessage={'Access Requirements'}
               />
             </AlertTitle>
-            <FormattedMessage
-              id={'access.requirements.description.gated.view.conditions'}
-              defaultMessage={
-                'To access this private page, please ensure that you meet all the conditions below, as defined by the page owner:'
-              }
-            />
+            {layout?.accessRequirementsMessage ? (
+              layout?.accessRequirementsMessage
+            ) : (
+              <FormattedMessage
+                id={'access.requirements.description.gated.view.conditions'}
+                defaultMessage={
+                  'To access this private page, please ensure that you meet all the conditions below, as defined by the page owner:'
+                }
+              />
+            )}
           </Alert>
         </Grid>
         <Grid item xs={12}>
-          {account ? (
+          {account && isLoggedIn ? (
             (conditions || []).map((condition, index) => (
               <>
                 {condition.condition && (
@@ -86,7 +114,9 @@ export function GatedConditionView({
                 )}
                 <Box py={1}>
                   <Stack key={index} spacing={2} direction={'row'}>
-                    {partialResults[index] && partialResults[index] === true ? (
+                    {partialResults &&
+                    partialResults[index] &&
+                    partialResults[index] === true ? (
                       <CheckCircleOutlineIcon color={'success'} />
                     ) : (
                       <CheckCircleOutlineIcon color={'error'} />
@@ -102,7 +132,7 @@ export function GatedConditionView({
                         :
                         <Typography>
                           {getNetworkSlugFromChainId(
-                            condition.chainId
+                            condition.chainId,
                           )?.toUpperCase()}
                         </Typography>{' '}
                         - {condition.symbol}
@@ -116,7 +146,7 @@ export function GatedConditionView({
                           </b>
                         </Typography>
                         <Typography>|</Typography>
-                        {balances[index] && (
+                        {balances && balances[index] && (
                           <ShowBalance balance={balances[index]} />
                         )}
                       </>
@@ -134,7 +164,7 @@ export function GatedConditionView({
                         </Typography>
                         <Typography>
                           {getNetworkSlugFromChainId(
-                            condition.chainId
+                            condition.chainId,
                           )?.toUpperCase()}{' '}
                           - {condition.symbol}
                         </Typography>
@@ -148,7 +178,7 @@ export function GatedConditionView({
                           </b>
                         </Typography>
                         <Typography>|</Typography>
-                        {balances[index] && (
+                        {balances && balances[index] && (
                           <ShowBalance balance={balances[index]} />
                         )}
                       </>

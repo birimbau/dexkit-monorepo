@@ -1,4 +1,3 @@
-import jwt_decode from 'jwt-decode';
 import type {
   GetServerSideProps,
   GetServerSidePropsContext,
@@ -9,22 +8,24 @@ import MainLayout from '../../../../src/components/layouts/main';
 import { dehydrate, QueryClient } from '@tanstack/react-query';
 import { getAppConfig } from '../../../../src/services/app';
 
-import { getUserByAccountRefresh } from '@/modules/user/services';
-import { GatedConditionRefresher } from '@/modules/wizard/components/GatedConditionRefresher';
-import { GatedConditionView } from '@/modules/wizard/components/GatedConditionView';
+import ProtectedContent from '@/modules/home/components/ProtectedContent';
 import { SectionsRenderer } from '@/modules/wizard/components/sections/SectionsRenderer';
-import { checkGatedConditions } from '@/modules/wizard/services';
+import { GatedPageLayout } from '@/modules/wizard/types';
 import { AppPageSection } from '@/modules/wizard/types/section';
 import { GatedCondition } from '@dexkit/ui/types/config';
 import { NoSsr } from '@mui/material';
 import { SessionProvider } from 'next-auth/react';
 import AuthMainLayout from 'src/components/layouts/authMain';
+import { AuthProvider } from 'src/providers/authProvider';
 
 const EmbedPage: NextPage<{
+  site: string;
+  page: string;
   sections: AppPageSection[];
   account?: string;
   isProtected: boolean;
   conditions?: GatedCondition[];
+  gatedLayout?: GatedPageLayout;
   result: boolean;
   hideLayout: boolean;
   partialResults: { [key: number]: boolean };
@@ -32,32 +33,41 @@ const EmbedPage: NextPage<{
 }> = ({
   sections,
   isProtected,
-  account,
+  site,
+  page,
   conditions,
   hideLayout,
-  result,
-  partialResults,
-  balances,
+  gatedLayout,
 }) => {
   if (isProtected) {
-    return (
-      <NoSsr>
+    if (hideLayout) {
+      return (
         <SessionProvider>
-          <AuthMainLayout>
-            <GatedConditionRefresher
+          <AuthProvider>
+            <ProtectedContent
+              site={site}
+              page={page}
+              isProtected={isProtected}
               conditions={conditions}
-              account={account}
+              layout={gatedLayout}
             />
-            <GatedConditionView
-              account={account}
-              conditions={conditions}
-              result={result}
-              partialResults={partialResults}
-              balances={balances}
-            />
-          </AuthMainLayout>
+          </AuthProvider>
         </SessionProvider>
-      </NoSsr>
+      );
+    }
+
+    return (
+      <SessionProvider>
+        <AuthMainLayout>
+          <ProtectedContent
+            site={site}
+            page={page}
+            isProtected={isProtected}
+            conditions={conditions}
+            layout={gatedLayout}
+          />
+        </AuthMainLayout>
+      </SessionProvider>
     );
   }
 
@@ -89,7 +99,7 @@ export const getServerSideProps: GetServerSideProps = async ({
   const queryClient = new QueryClient();
   const { page, hideLayout } = query;
 
-  const hideM = hideLayout || false;
+  const hideM = hideLayout ? String(hideLayout) === 'true' : false;
 
   const sitePage = page as string;
 
@@ -104,86 +114,38 @@ export const getServerSideProps: GetServerSideProps = async ({
       },
     };
   }
-  if (homePage.gatedConditions && homePage.gatedConditions.length > 0) {
-    const token = req.cookies.refresh_token;
-    // if user not authenticated, we just need to say that is protected page and needs authentication
-    if (!token) {
-      return {
-        props: {
-          isProtected: true,
-          account: undefined,
-          sections: homePage.sections,
-          result: false,
-          balances: {},
-          hideLayout: hideM,
-          partialResults: {},
-          ...configResponse,
-        },
-      };
-    }
-    if (token) {
-      try {
-        await getUserByAccountRefresh({ token });
-        const account = (jwt_decode(token) as { address: string }).address;
-        const conditions = homePage.gatedConditions;
-        try {
-          const gatedResults = await checkGatedConditions({
-            account,
-            conditions,
-          });
 
-          if (!gatedResults?.result) {
-            return {
-              props: {
-                isProtected: true,
-                account: account,
-                sections: homePage.sections,
-                result: gatedResults?.result,
-                balances: gatedResults?.balances,
-                partialResults: gatedResults?.partialResults,
-                conditions: homePage.gatedConditions,
-                hideLayout: hideM,
-                ...configResponse,
-              },
-            };
-          }
-        } catch {
-          return {
-            props: {
-              isProtected: true,
-              account: account,
-              sections: homePage.sections,
-              result: false,
-              balances: {},
-              hideLayout: hideM,
-              partialResults: {},
-              conditions: homePage.gatedConditions,
-              ...configResponse,
-            },
-          };
-        }
-      } catch {
-        // error on getting token needs to authenticate again
-        return {
-          props: {
-            isProtected: true,
-            account: undefined,
-            sections: homePage.sections,
-            result: false,
-            hideLayout: hideM,
-            balances: {},
-            partialResults: {},
-            ...configResponse,
-          },
-        };
-      }
-    }
+  if (!homePage) {
+    return {
+      redirect: {
+        destination: '/404',
+        permanent: true,
+      },
+    };
+  }
+
+  if (homePage?.gatedConditions && homePage.gatedConditions.length > 0) {
+    return {
+      props: {
+        isProtected: true,
+        sections: [],
+        result: false,
+        conditions: homePage?.gatedConditions,
+        gatedLayout: homePage?.gatedPageLayout,
+        site: params?.site,
+        page: sitePage,
+        balances: {},
+        partialResults: {},
+        ...configResponse,
+      },
+    };
   }
 
   return {
     props: {
       dehydratedState: dehydrate(queryClient),
       sections: homePage.sections,
+      page: sitePage,
       hideLayout: hideM,
       ...configResponse,
     },
