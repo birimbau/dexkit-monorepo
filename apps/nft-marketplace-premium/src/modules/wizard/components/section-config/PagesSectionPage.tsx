@@ -83,7 +83,7 @@ export default function PagesSectionPage({
   const renderSection = (
     section: AppPageSection,
     index: number,
-    isVisible: boolean
+    isVisible: boolean,
   ) => {
     let title;
     let subtitle;
@@ -156,6 +156,10 @@ export default function PagesSectionPage({
       title = <FormattedMessage id="code" defaultMessage="Code" />;
       subtitle = section.title || '';
       icon = <Code />;
+    } else if (section.type === 'collection') {
+      title = <FormattedMessage id="collection" defaultMessage="Collection" />;
+      subtitle = section.title || '';
+      icon = <AppsIcon />;
     }
 
     if (!title) {
@@ -388,7 +392,7 @@ export default function PagesSectionPage({
         <Divider />
 
         {sections.map((section, index) =>
-          renderSection(section, index, isVisibleIndexes.includes(index))
+          renderSection(section, index, isVisibleIndexes.includes(index)),
         )}
       </Stack>
     </>

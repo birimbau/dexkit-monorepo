@@ -10,7 +10,7 @@ import {
   SignedNftOrderV4,
   SwappableAssetV4,
   SwappableNftV4,
-  TradeDirection
+  TradeDirection,
 } from '@traderxyz/nft-swap-sdk';
 import { useCallback, useMemo } from 'react';
 
@@ -78,7 +78,7 @@ export function useAsset(
   tokenId?: string,
   options?: Omit<UseQueryOptions<Asset>, any>,
   lazy?: boolean,
-  networkChainId?: ChainId
+  networkChainId?: ChainId,
 ) {
   const queryClient = useQueryClient();
   const networkProvider = useNetworkProvider(networkChainId);
@@ -118,7 +118,7 @@ export function useAsset(
         provider,
         contractAddress,
         tokenId,
-        account
+        account,
       );
 
       let assetApi: AssetAPI | undefined;
@@ -131,8 +131,8 @@ export function useAsset(
       } catch {
         console.log(
           `error fetching token ${tokenId}, address: ${contractAddress} at ${getChainSlug(
-            chainId
-          )} from api`
+            chainId,
+          )} from api`,
         );
       }
       if (assetApi) {
@@ -164,7 +164,7 @@ export function useAsset(
         (Boolean(lazy) &&
           contractAddress !== undefined &&
           tokenId !== undefined),
-    }
+    },
   );
 }
 
@@ -241,7 +241,7 @@ export function useAssetByApi({
       }
 
       return await getAssetByApi({ chainId, contractAddress, tokenId });
-    }
+    },
   );
 }
 
@@ -262,7 +262,7 @@ export function useCollectionByApi({
       }
 
       return await getCollectionByApi({ chainId, contractAddress });
-    }
+    },
   );
 }
 
@@ -271,7 +271,7 @@ export const GET_COLLECTION_DATA = 'GET_COLLECTION_DATA';
 export function useCollection(
   contractAddress?: string,
   chainId?: ChainId,
-  lazy?: boolean
+  lazy?: boolean,
 ) {
   const { provider, chainId: chainProvider } = useWeb3React();
 
@@ -281,9 +281,28 @@ export function useCollection(
       if (!chainId || contractAddress === undefined) {
         return;
       }
+
+      // const appConfig = useAppConfig();
+
+      // const collectionFromConfig = appConfig.collections?.find(
+      //   (c) =>
+      //     isAddressEqual(c.contractAddress, contractAddress) &&
+      //     c.chainId === chainId,
+      // );
+
+      // if (collectionFromConfig) {
+      //   return {
+      //     address: collectionFromConfig.contractAddress,
+      //     name: collectionFromConfig.name,
+      //     chainId: collectionFromConfig.chainId,
+      //     imageUrl: collectionFromConfig.image,
+      //     description: collectionFromConfig.description,
+      //   } as Collection;
+      // }
+
       const collection = await getApiCollectionData(
         getNetworkSlugFromChainId(chainId),
-        contractAddress
+        contractAddress,
       );
       if (collection) {
         return collection;
@@ -305,7 +324,7 @@ export function useCollection(
         (provider !== undefined && chainId === chainProvider) || Boolean(lazy),
       refetchOnMount: Boolean(lazy),
       refetchOnWindowFocus: Boolean(lazy),
-    }
+    },
   );
 }
 
@@ -335,12 +354,12 @@ export function useContractCollection(networkId?: string, address?: string) {
       }
       const contractData = await getApiContractCollectionData(
         networkId,
-        address
+        address,
       );
       if (contractData) {
         return contractData;
       }
-    }
+    },
   );
 }
 
@@ -348,7 +367,7 @@ export const GET_ASSET_METADATA = 'GET_ASSET_METADATA';
 
 export function useAssetMetadata(
   asset?: Asset,
-  options?: Omit<UseQueryOptions, any>
+  options?: Omit<UseQueryOptions, any>,
 ) {
   return useQuery<AssetMetadata | undefined>(
     [GET_ASSET_METADATA, asset?.tokenURI, asset?.protocol, asset?.id],
@@ -368,10 +387,10 @@ export function useAssetMetadata(
           name: `${asset.collectionName} #${asset.id}`,
         },
         asset?.protocol === 'ERC1155',
-        asset?.id
+        asset?.id,
       );
     },
-    { ...options, enabled: asset?.tokenURI !== undefined }
+    { ...options, enabled: asset?.tokenURI !== undefined },
   );
 }
 
@@ -389,7 +408,7 @@ export function useApproveAssetMutation(
   nftSwapSdk?: NftSwapV4,
   address?: string,
   onSuccess?: (hash: string, asset: SwappableAssetV4) => void,
-  options?: Omit<UseMutationOptions, any>
+  options?: Omit<UseMutationOptions, any>,
 ) {
   const mutation = useMutation(
     async ({ asset }: { asset: SwappableAssetV4 }) => {
@@ -407,7 +426,7 @@ export function useApproveAssetMutation(
 
       return receipt.status === 1 && receipt.confirmations >= 1;
     },
-    options
+    options,
   );
 
   return mutation;
@@ -418,7 +437,7 @@ export const GET_ASSET_APPROVAL = 'GET_ASSET_APPROVAL';
 export function useIsAssetApproved(
   nftSwapSdk?: NftSwapV4,
   asset?: SwappableAssetV4,
-  address?: string
+  address?: string,
 ) {
   return useQuery(
     [GET_ASSET_APPROVAL, nftSwapSdk, address, asset],
@@ -432,7 +451,7 @@ export function useIsAssetApproved(
       }
 
       return await nftSwapSdk?.loadApprovalStatus(asset, address);
-    }
+    },
   );
 }
 
@@ -440,7 +459,7 @@ export function useMakeOfferMutation(
   nftSwapSdk?: NftSwapV4,
   address?: string,
   chainId?: number,
-  options?: UseMutationOptions<PostOrderResponsePayload | undefined, any, any>
+  options?: UseMutationOptions<PostOrderResponsePayload | undefined, any, any>,
 ) {
   const appConfig = useAppConfig();
   const tokens = useTokenList({ chainId });
@@ -468,14 +487,14 @@ export function useMakeOfferMutation(
       };
 
       const token = tokens.find((t) =>
-        isAddressEqual(t.address, another.tokenAddress)
+        isAddressEqual(t.address, another.tokenAddress),
       );
 
       if (appConfig.fees && token) {
         options.fees = calculeFees(
           BigNumber.from(another.amount),
           token.decimals,
-          appConfig.fees
+          appConfig.fees,
         );
       }
 
@@ -484,19 +503,19 @@ export function useMakeOfferMutation(
         //@ts-ignore
         assetOffer,
         address,
-        options
+        options,
       );
 
       const signedOrder = await nftSwapSdk.signOrder(order);
 
       const newOrder = await nftSwapSdk.postOrder(
         signedOrder,
-        nftSwapSdk.chainId.toString()
+        nftSwapSdk.chainId.toString(),
       );
 
       return newOrder;
     },
-    options
+    options,
   );
 
   return mutation;
@@ -506,7 +525,7 @@ export function useMakeListingMutation(
   nftSwapSdk?: NftSwapV4,
   address?: string,
   chainId?: number,
-  options?: UseMutationOptions<PostOrderResponsePayload | undefined, any, any>
+  options?: UseMutationOptions<PostOrderResponsePayload | undefined, any, any>,
 ) {
   const tokens = useTokenList({ includeNative: true, chainId });
   const appConfig = useAppConfig();
@@ -523,14 +542,14 @@ export function useMakeListingMutation(
       };
 
       const token = tokens.find((t) =>
-        isAddressEqual(t.address, another.tokenAddress)
+        isAddressEqual(t.address, another.tokenAddress),
       );
 
       if (appConfig.fees && token) {
         options.fees = calculeFees(
           BigNumber.from(another.amount),
           token.decimals,
-          appConfig.fees
+          appConfig.fees,
         );
       }
 
@@ -538,19 +557,19 @@ export function useMakeListingMutation(
         assetOffer,
         another,
         address,
-        options
+        options,
       );
 
       const signedOrder = await nftSwapSdk.signOrder(order);
 
       const newOrder = await nftSwapSdk.postOrder(
         signedOrder,
-        nftSwapSdk.chainId.toString()
+        nftSwapSdk.chainId.toString(),
       );
 
       return newOrder;
     },
-    options
+    options,
   );
 
   return mutation;
@@ -560,7 +579,7 @@ export function useCancelSignedOrderMutation(
   nftSwapSdk?: NftSwapV4,
   orderType?: 'ERC721' | 'ERC1155', // TODO: types
   onHash?: (hash: string, order: SwapApiOrder) => void,
-  options?: Omit<UseMutationOptions, any>
+  options?: Omit<UseMutationOptions, any>,
 ) {
   return useMutation<any, any, any>(
     async ({ order }: { order: SwapApiOrder }) => {
@@ -576,14 +595,14 @@ export function useCancelSignedOrderMutation(
 
       return await tx.wait();
     },
-    options
+    options,
   );
 }
 
 export function useFillSignedOrderMutation(
   nftSwapSdk?: NftSwapV4,
   address?: string,
-  options?: Omit<UseMutationOptions, any>
+  options?: Omit<UseMutationOptions, any>,
 ) {
   return useMutation(
     async ({
@@ -599,28 +618,46 @@ export function useFillSignedOrderMutation(
         return undefined;
       }
       // this is an ERC1155 order buy order
-      if (quantity && quantity > 1 && order.direction === TradeDirection.SellNFT && 'erc1155Token' in order && quantity !== Number(order.erc1155TokenAmount)) {
-        const canOrderTypeBeFilledWithNativeToken = order.direction === TradeDirection.SellNFT;
+      if (
+        quantity &&
+        quantity > 1 &&
+        order.direction === TradeDirection.SellNFT &&
+        'erc1155Token' in order &&
+        quantity !== Number(order.erc1155TokenAmount)
+      ) {
+        const canOrderTypeBeFilledWithNativeToken =
+          order.direction === TradeDirection.SellNFT;
         const isNativeToken = nftSwapSdk.isErc20NativeToken(order);
         const needsEthAttached =
           isNativeToken && canOrderTypeBeFilledWithNativeToken;
-        console.log(BigNumber.from(quantity).div(order.erc1155TokenAmount).toString())
-        const erc20TotalAmount = nftSwapSdk.getErc20TotalIncludingFees(order).mul(BigNumber.from(quantity).mul(100000).div(order.erc1155TokenAmount)).div(100000);
-        console.log(erc20TotalAmount.toString())
+        console.log(
+          BigNumber.from(quantity).div(order.erc1155TokenAmount).toString(),
+        );
+        const erc20TotalAmount = nftSwapSdk
+          .getErc20TotalIncludingFees(order)
+          .mul(
+            BigNumber.from(quantity).mul(100000).div(order.erc1155TokenAmount),
+          )
+          .div(100000);
+        console.log(erc20TotalAmount.toString());
 
-        const result = await nftSwapSdk.exchangeProxy.buyERC1155(order as any, order.signature, quantity, '0x', {
-          value: needsEthAttached ? erc20TotalAmount : undefined,
-        })
+        const result = await nftSwapSdk.exchangeProxy.buyERC1155(
+          order as any,
+          order.signature,
+          quantity,
+          '0x',
+          {
+            value: needsEthAttached ? erc20TotalAmount : undefined,
+          },
+        );
         return { hash: result?.hash, accept, order, quantity };
-
       }
-
 
       const result = await nftSwapSdk.fillSignedOrder(order, {});
 
       return { hash: result?.hash, accept, order };
     },
-    options
+    options,
   );
 }
 
@@ -629,7 +666,7 @@ export const GET_ERC20_BALANCE = 'GET_ERC20_BALANCE';
 export function useErc20Balance(
   provider?: ethers.providers.BaseProvider,
   contractAddress?: string,
-  account?: string
+  account?: string,
 ) {
   return useQuery<ethers.BigNumber | undefined>(
     [GET_ERC20_BALANCE, contractAddress, account],
@@ -642,13 +679,13 @@ export function useErc20Balance(
     },
     {
       enabled: contractAddress !== undefined && account !== undefined,
-    }
+    },
   );
 }
 
 export function useWrapEtherMutation(
   provider?: ethers.providers.BaseProvider,
-  chainId?: number
+  chainId?: number,
 ) {
   return useMutation(async ({ amount }: { amount: ethers.BigNumber }) => {
     if (chainId === undefined) {
@@ -678,7 +715,7 @@ export const useOrderBook = (orderFilter: TraderOrderFilter) => {
 
       return await getOrderbookOrders(orderFilter);
     },
-    { enabled: orderFilter.chainId !== undefined, suspense: true }
+    { enabled: orderFilter.chainId !== undefined, suspense: true },
   );
 };
 
@@ -746,7 +783,7 @@ export const useAssetListFromOrderbook = (orderFilter: TraderOrderFilter) => {
           provider,
           collection,
           itensCollection.map((or) => or.nftTokenId),
-          nftType === NFTType.ERC1155
+          nftType === NFTType.ERC1155,
         );
         if (nfts) {
           assets = assets.concat(nfts);
@@ -754,7 +791,7 @@ export const useAssetListFromOrderbook = (orderFilter: TraderOrderFilter) => {
       }
       return assets;
     },
-    { enabled: provider !== undefined, suspense: true }
+    { enabled: provider !== undefined, suspense: true },
   );
 };
 
@@ -777,7 +814,7 @@ export const useAssetMetadataFromList = (orderFilter: TraderOrderFilter) => {
           asset.tokenURI,
           undefined,
           asset.protocol === 'ERC1155',
-          asset.id
+          asset.id,
         );
         assetMetadata.push({
           ...asset,
@@ -786,7 +823,7 @@ export const useAssetMetadataFromList = (orderFilter: TraderOrderFilter) => {
       }
       return assetMetadata;
     },
-    { suspense: true }
+    { suspense: true },
   );
 };
 
@@ -818,11 +855,11 @@ export function useFavoriteAssets() {
         asset !== undefined &&
         assets !== undefined &&
         assets[
-        `${asset.chainId}-${asset.contractAddress.toLowerCase()}-${asset.id}`
+          `${asset.chainId}-${asset.contractAddress.toLowerCase()}-${asset.id}`
         ] !== undefined
       );
     },
-    [assets]
+    [assets],
   );
   const toggleFavorite = (asset?: Asset) => {
     if (asset !== undefined) {
@@ -864,11 +901,11 @@ export function useHiddenAssets() {
         asset !== undefined &&
         assets !== undefined &&
         assets[
-        `${asset.chainId}-${asset.contractAddress.toLowerCase()}-${asset.id}`
+          `${asset.chainId}-${asset.contractAddress.toLowerCase()}-${asset.id}`
         ] === true
       );
     },
-    [assets]
+    [assets],
   );
   const toggleHidden = (asset?: Asset) => {
     if (asset !== undefined) {
@@ -887,7 +924,7 @@ const GET_ACCOUNTS_ASSETS = 'GET_ACCOUNTS_ASSETS';
 
 export function useAccountAssetsBalance(
   accounts: string[],
-  useSuspense = true
+  useSuspense = true,
 ) {
   const [accountAssets, setAccountAssets] = useAtom(accountAssetsAtom);
 
@@ -943,7 +980,7 @@ export function useAccountAssetsBalance(
       }
       return true;
     },
-    { suspense: useSuspense }
+    { suspense: useSuspense },
   );
   return { accountAssets, accountAssetsQuery };
 }
@@ -956,7 +993,7 @@ export function useTotalAssetsBalance(accounts: string[], networks: string[]) {
       return accountAssets.data
         .filter((a) => accounts.includes(a?.account || ''))
         .filter((a) =>
-          networks.length ? networks.includes(a.network || '') : true
+          networks.length ? networks.includes(a.network || '') : true,
         )
         .map((a) => a.assets?.length)
         .reduce((c, p) => (c || 0) + (p || 0));
@@ -972,7 +1009,7 @@ export const COLLECTION_ASSETS_FROM_ORDERBOOK =
 
 export function useCollectionAssetsFromOrderbook(
   filters: TraderOrderFilter,
-  networkChainId?: ChainId
+  networkChainId?: ChainId,
 ) {
   const { provider, chainId: injectedChainId } = useWeb3React();
   const chainId = networkChainId || injectedChainId;
@@ -991,7 +1028,7 @@ export function useCollectionAssetsFromOrderbook(
 
       return getCollectionAssetsFromOrderbook(provider, filters);
     },
-    { enabled: isProviderEnabled }
+    { enabled: isProviderEnabled },
   );
 }
 
@@ -999,7 +1036,7 @@ const SEARCH_ASSETS = 'SEARCH_ASSETS';
 
 export function useSearchAssets(
   search?: string,
-  collections?: CollectionUniformItem[]
+  collections?: CollectionUniformItem[],
 ) {
   return useQuery([SEARCH_ASSETS, search], () => {
     if (!search) {
@@ -1011,8 +1048,8 @@ export function useSearchAssets(
         .map(
           (c) =>
             `${getNetworkSlugFromChainId(
-              c.chainId
-            )}:${c.contractAddress.toLowerCase()}`
+              c.chainId,
+            )}:${c.contractAddress.toLowerCase()}`,
         )
         .join(',');
     }
@@ -1029,13 +1066,13 @@ export const BEST_SELL_ORDER_RARIBLE = 'BEST_SELL_ORDER_RARIBLE';
 export function useBestSellOrderAssetRari(
   network?: string,
   address?: string,
-  id?: string
+  id?: string,
 ) {
   return useQuery<AssetRari | undefined>(
     [BEST_SELL_ORDER_RARIBLE, network, address, id],
     () => {
       return undefined;
     },
-    { enabled: false }
+    { enabled: false },
   );
 }

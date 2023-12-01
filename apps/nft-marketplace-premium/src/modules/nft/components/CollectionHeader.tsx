@@ -18,20 +18,21 @@ const Img = styled(Image)({});
 interface Props {
   address: string;
   chainId?: ChainId;
+  lazy?: boolean;
 }
 
 export function CollectionHeader(props: Props) {
   const appConfig = useAppConfig();
 
-  const { address, chainId } = props;
-  const { data: collection } = useCollection(address, chainId);
+  const { address, chainId, lazy } = props;
+  const { data: collection } = useCollection(address, chainId, lazy);
 
   const collectionImage = useMemo(() => {
     return (
       appConfig.collections?.find(
         (c) =>
           c.chainId === collection?.chainId &&
-          isAddressEqual(c.contractAddress, collection?.address)
+          isAddressEqual(c.contractAddress, collection?.address),
       )?.backgroundImage || collection?.imageUrl
     );
   }, [collection]);

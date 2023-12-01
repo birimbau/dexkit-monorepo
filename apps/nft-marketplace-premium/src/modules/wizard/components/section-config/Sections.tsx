@@ -116,6 +116,14 @@ export const sections = [
       'Easily format text using markdown for a clean and structured appearance.',
     icon: <CodeIcon fontSize="large" />,
   },
+  {
+    type: 'collection',
+    titleId: 'Collection',
+    titleDefaultMessage: 'Collection',
+    category: 'nft',
+    description: 'Easily add a collection',
+    icon: <CollectionsIcon fontSize="large" />,
+  },
 ] as SectionMetadata[];
 
 export const SectionCategory = [

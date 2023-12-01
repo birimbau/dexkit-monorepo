@@ -4,6 +4,7 @@ import { AssetStoreSectionForm } from '../forms/AssetStoreSectionForm';
 import CallToActionSectionForm from '../forms/CallToActionSectionForm';
 import CodeSectionForm from '../forms/CodeSectionForm';
 import CollectionSectionForm from '../forms/CollectionSectionForm';
+import CollectionSectionFormAlt from '../forms/CollectionSectionFormAlt';
 import { ContractSectionForm } from '../forms/ContractSectionForm';
 import ExchangeSectionSettingsForm from '../forms/ExchangeSectionSettingsForm';
 import FeaturedSectionForm from '../forms/FeaturedSectionForm';
@@ -152,6 +153,18 @@ export function SectionFormRender({
           onSave={onSave}
           onChange={onChange}
           section={section?.type === 'code-page-section' ? section : undefined}
+        />
+      </Box>
+    );
+  } else if (sectionType === 'collection') {
+    return (
+      <Box p={2}>
+        <CollectionSectionFormAlt
+          onCancel={onClose}
+          onSave={onSave}
+          onChange={onChange}
+          section={section?.type === 'collection' ? section : undefined}
+          showSaveButton
         />
       </Box>
     );

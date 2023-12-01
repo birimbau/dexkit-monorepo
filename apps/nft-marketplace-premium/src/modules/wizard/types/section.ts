@@ -31,7 +31,8 @@ export type SectionType =
   | 'edition-stake'
   | 'token'
   | 'airdrop-token'
-  | 'code-page-section';
+  | 'code-page-section'
+  | 'collection';
 
 export interface PageSection {
   type: SectionType;
@@ -202,6 +203,18 @@ export interface CodePageSection extends PageSection {
   };
 }
 
+export interface CollectionPageSection extends PageSection {
+  type: 'collection';
+  config: {
+    address: string;
+    network: string;
+    hideFilters: boolean;
+    hideHeader: boolean;
+    hideDrops: boolean;
+    hideAssets: boolean;
+  };
+}
+
 export type AppPageSection =
   | CallToActionAppPageSection
   | VideoEmbedAppPageSection
@@ -217,7 +230,8 @@ export type AppPageSection =
   | ExchangePageSection
   | EditionDropListPageSection
   | TokenDropPageSection
-  | CodePageSection;
+  | CodePageSection
+  | CollectionPageSection;
 
 export interface SectionMetadata {
   type: SectionType;
