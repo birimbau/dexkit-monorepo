@@ -52,6 +52,13 @@ export interface GatedCondition {
   tokenId?: string;
 }
 
+export interface GatedPageLayout {
+  frontImage?: string;
+  frontImageHeight?: number;
+  frontImageWidth?: number;
+  accessRequirementsMessage?: string;
+}
+
 export type MintNFTFormType = {
   name: string;
   description?: string;

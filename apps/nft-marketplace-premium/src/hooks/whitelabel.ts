@@ -12,6 +12,7 @@ import { AppWhitelabelType } from '../constants/enum';
 import {
   deleteConfig,
   deletePageTemplate,
+  getAdminConfig,
   getConfig,
   getConfigsByOwner,
   getDomainConfigStatus,
@@ -165,6 +166,33 @@ export const useWhitelabelConfigQuery = ({
       }
 
       return (await getConfig({ domain, slug })).data;
+    },
+    { refetchOnWindowFocus: false, refetchOnReconnect: false }
+  );
+};
+
+
+export const QUERY_ADMIN_WHITELABEL_CONFIG_NAME = 'GET_ADMIN_WHITELABEL_CONFIG_QUERY';
+/**
+ * get config by name or query
+ * @param param0
+ * @returns
+ */
+export const useAdminWhitelabelConfigQuery = ({
+  domain,
+  slug,
+}: {
+  domain?: string;
+  slug?: string;
+}) => {
+  return useQuery(
+    [QUERY_ADMIN_WHITELABEL_CONFIG_NAME, domain || null, slug || null],
+    async () => {
+      if (domain === undefined && slug === undefined) {
+        return null;
+      }
+
+      return (await getAdminConfig({ domain, slug })).data;
     },
     { refetchOnWindowFocus: false, refetchOnReconnect: false }
   );

@@ -8,11 +8,18 @@ import { FormattedMessage } from 'react-intl';
 import { useAuth, useLoginAccountMutation } from 'src/hooks/account';
 import { useConnectWalletDialog } from 'src/hooks/app';
 import Wallet from './icons/Wallet';
+
 interface Props {
   onLogin?: () => void;
+  connectWalletMsg?: React.ReactNode | string;
+  signMessageMsg?: React.ReactNode | string;
 }
 
-export function LoginAppButton({ onLogin }: Props) {
+export function LoginAppButton({
+  onLogin,
+  connectWalletMsg,
+  signMessageMsg,
+}: Props) {
   const { account, isActive } = useWeb3React();
   const userQuery = useAuthUserQuery();
   const { user } = useAuth();
@@ -58,11 +65,14 @@ export function LoginAppButton({ onLogin }: Props) {
         <Alert severity={'info'}>
           <Typography variant={'body1'}>
             {' '}
-            <FormattedMessage
-              id="start.by.connect.wallet"
-              defaultMessage="Start by connecting your wallet. If you don't have one, you can create one by clicking on connect wallet button and choosing our Discord, Google, Twitter or email wallet"
-            />
-            .
+            {connectWalletMsg ? (
+              connectWalletMsg
+            ) : (
+              <FormattedMessage
+                id="start.by.connect.wallet"
+                defaultMessage="Start by connecting your wallet. If you don't have one, you can create one by clicking on connect wallet button and choosing our Discord, Google, Twitter or email wallet"
+              />
+            )}
           </Typography>
         </Alert>
         <Button
@@ -87,11 +97,14 @@ export function LoginAppButton({ onLogin }: Props) {
       <Alert severity={'info'}>
         <Typography variant={'body1'}>
           {' '}
-          <FormattedMessage
-            id="login.by.connect.wallet"
-            defaultMessage="Login with your wallet. You will need to sign a message"
-          />
-          .
+          {signMessageMsg ? (
+            signMessageMsg
+          ) : (
+            <FormattedMessage
+              id="login.by.connect.wallet"
+              defaultMessage="Login with your wallet. You will need to sign a message"
+            />
+          )}
         </Typography>
       </Alert>
       <Button
