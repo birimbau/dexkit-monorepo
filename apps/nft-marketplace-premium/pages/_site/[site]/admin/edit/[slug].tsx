@@ -27,7 +27,6 @@ import { LoginButton } from 'src/components/LoginButton';
 import AuthMainLayout from 'src/components/layouts/authMain';
 import { useAuth } from 'src/hooks/account';
 import { useAdminWhitelabelConfigQuery } from 'src/hooks/whitelabel';
-import { getAppConfig } from 'src/services/app';
 
 export const WizardEditPage: NextPage = () => {
   const router = useRouter();
@@ -129,12 +128,12 @@ export const getStaticProps: GetStaticProps = async ({
   params,
 }: GetStaticPropsContext<Params>) => {
   const queryClient = new QueryClient();
-  const configResponse = await getAppConfig(params?.site, 'no-page-defined');
+  //const configResponse = await getAppConfig(params?.site, 'no-page-defined');
 
   return {
     props: {
       dehydratedState: dehydrate(queryClient),
-      ...configResponse,
+      //  ...configResponse,
     },
     revalidate: 300,
   };

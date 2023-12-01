@@ -133,6 +133,7 @@ export function EditWizardContainer({ site }: Props) {
       return JSON.parse(site?.config);
     }
   }, [site?.config]);
+
   const router = useRouter();
   const { tab } = router.query as { tab?: ActiveMenu };
 
