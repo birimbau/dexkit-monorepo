@@ -1,9 +1,14 @@
-import { Box, NoSsr } from '@mui/material';
+import { Box, NoSsr, useColorScheme } from '@mui/material';
 import { useWeb3React } from '@web3-react/core';
 import { useAtom } from 'jotai';
 import dynamic from 'next/dynamic';
 import React, { useEffect, useMemo } from 'react';
-import { useAppConfig, useAppNFT, useSignMessageDialog } from '../../hooks/app';
+import {
+  useAppConfig,
+  useAppNFT,
+  useSignMessageDialog,
+  useThemeMode,
+} from '../../hooks/app';
 
 import { useConnectWalletDialog } from '@dexkit/ui/hooks';
 
@@ -20,19 +25,25 @@ import { Footer } from '../Footer';
 import Navbar from '../Navbar';
 const SignMessageDialog = dynamic(() => import('../dialogs/SignMessageDialog'));
 const SwitchNetworkDialog = dynamic(
-  () => import('../dialogs/SwitchNetworkDialog'),
+  () => import('@dexkit/ui/components/dialogs/SwitchNetworkDialog'),
 );
 
 import { useRouter } from 'next/router';
 import { AppConfig } from 'src/types/config';
-import AppDrawer from '../AppDrawer';
+const AppDrawer = dynamic(() => import('../AppDrawer'));
 
-import { useWalletActivate } from '@dexkit/core/hooks';
-import { WalletActivateParams } from '@dexkit/core/types';
 import { useDexKitContext, useExecuteTransactionsDialog } from '@dexkit/ui';
-import AppTransactionWatchDialog from '@dexkit/ui/components/AppTransactionWatchDialog';
-import ConnectWalletDialog from '@dexkit/ui/components/ConnectWalletDialog';
-import WatchTransactionDialog from '@dexkit/ui/components/dialogs/WatchTransactionDialog';
+import { useWalletActivate } from '@dexkit/wallet-connectors/hooks/wallet';
+import { WalletActivateParams } from '@dexkit/wallet-connectors/types';
+const ConnectWalletDialog = dynamic(
+  () => import('@dexkit/ui/components/ConnectWalletDialog'),
+);
+const WatchTransactionDialog = dynamic(
+  () => import('@dexkit/ui/components/dialogs/WatchTransactionDialog'),
+);
+const AppTransactionWatchDialog = dynamic(
+  () => import('@dexkit/ui/components/AppTransactionWatchDialog'),
+);
 
 const HoldingKitDialog = dynamic(() => import('../dialogs/HoldingKitDialog'));
 
@@ -60,6 +71,8 @@ const MainLayout: React.FC<Props> = ({
 }) => {
   const { connector, isActive, isActivating } = useWeb3React();
   const router = useRouter();
+  const { mode } = useThemeMode();
+  const { setMode } = useColorScheme();
 
   const defaultAppConfig = useAppConfig();
   const appNFT = useAppNFT();
@@ -137,6 +150,11 @@ const MainLayout: React.FC<Props> = ({
     await walletActivate.mutation.mutateAsync(params);
   };
 
+  //NOTE: NOT remove this, this syncs MUI internal theme with APP theme
+  useEffect(() => {
+    setMode(mode);
+  }, [mode]);
+
   useEffect(() => {
     if (typeof window !== 'undefined') {
       // connector.activate();
@@ -182,7 +200,9 @@ const MainLayout: React.FC<Props> = ({
 
   const render = () => (
     <>
-      <AppDrawer open={isDrawerOpen} onClose={handleCloseDrawer} />
+      {isDrawerOpen && (
+        <AppDrawer open={isDrawerOpen} onClose={handleCloseDrawer} />
+      )}
       {showSelectCurrency && (
         <SelectCurrencyDialog
           dialogProps={{

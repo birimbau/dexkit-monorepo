@@ -8,6 +8,7 @@ import { ipfsUriToUrl } from '../utils/ipfs';
 import { getMulticallFromProvider } from './multical';
 
 import { ChainId } from '@dexkit/core/constants';
+import { NETWORK_FROM_SLUG } from '@dexkit/core/constants/networks';
 import { QueryClient } from '@tanstack/react-query';
 import { DEXKIT_AUTHENTICATE_API_KEY, DEXKIT_BASE_API_URL, TRADER_ORDERBOOK_API } from '../constants';
 import { GET_ASSET_DATA, GET_ASSET_METADATA } from '../hooks/nft';
@@ -23,7 +24,7 @@ const DEXKIT_NFT_BASE_URL = `${DEXKIT_BASE_API_URL}`;
 //const DEXKIT_NFT_BASE_URL = 'https://goldfish-app-lh5o5.ondigitalocean.app'
 //const DEXKIT_NFT_BASE_URL = 'http://localhost:3000';
 
-//const DEXKIT_NFT_BASE_URL = 'http://localhost:3000'
+//const DEXKIT_NFT_BASE_URL = 'http://localhost:3001'
 const metadataENSapi = axios.create({ baseURL: ENS_BASE_URL });
 
 const dexkitNFTapi = axios.create({ baseURL: DEXKIT_NFT_BASE_URL, timeout: 2500 });
@@ -198,7 +199,8 @@ export async function getAssetData(
   provider?: ethers.providers.JsonRpcProvider,
   contractAddress?: string,
   id?: string,
-  account?: string
+  account?: string,
+  network?: string
 ): Promise<Asset | undefined> {
   if (!provider || !contractAddress || !id) {
     return;
@@ -281,9 +283,17 @@ export async function getAssetData(
       symbol = results[3];
     }
 
+    let chainId;
+    if (network) {
+      chainId = NETWORK_FROM_SLUG(network)?.chainId;
+    }
+    if (!chainId) {
+      const { chainId: networkChain } = await provider.getNetwork();
+      chainId = networkChain;
+    }
 
 
-    const { chainId } = await provider.getNetwork();
+
 
     return {
       owner,
@@ -670,10 +680,10 @@ export async function fetchAssetForQueryClient({ item, queryClient }: { item: { 
     const asset = await getAssetData(
       provider,
       item.contractAddress,
-      item.tokenId
+      item.tokenId,
+      undefined,
+      slug
     );
-
-
 
     const rawMetadata = assetApi.rawData
       ? JSON.parse(assetApi.rawData)
@@ -719,7 +729,9 @@ export async function fetchAssetForQueryClient({ item, queryClient }: { item: { 
     const asset = await getAssetData(
       provider,
       item.contractAddress,
-      item.tokenId
+      item.tokenId,
+      undefined,
+      slug
     );
 
     if (asset) {
@@ -727,8 +739,6 @@ export async function fetchAssetForQueryClient({ item, queryClient }: { item: { 
         [GET_ASSET_DATA, item.contractAddress, item.tokenId],
         async () => asset
       );
-
-
 
       const metadata = await getAssetMetadata(asset.tokenURI, {
         image: '',

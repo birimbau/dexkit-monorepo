@@ -1,5 +1,45 @@
 # @dexkit/ui
 
+## 0.11.0
+
+### Minor Changes
+
+- e0bf0fd: Added open in new page option on call to action and put subtitle not required
+- 1d1863b: Improve API handling
+- 5adc45b: Added support for token and collection drops. Added support for staking on token, collection and edition. Added manage admin for token, edition, and collection and respective drops. Added admin for stake
+- 5adc45b: Added airdrop contracts and respective admin and public pages. Improve wallet button popover
+
+### Patch Changes
+
+- Updated dependencies [5adc45b]
+- Updated dependencies [5adc45b]
+  - @dexkit/core@0.11.0
+
+## 0.10.0
+
+### Minor Changes
+
+- e793f4f: UX improvement on DexAppBuilder admin section
+
+### Patch Changes
+
+- Updated dependencies [e793f4f]
+  - @dexkit/wallet-connectors@0.1.0
+  - @dexkit/core@0.10.0
+
+## 0.9.0
+
+### Minor Changes
+
+- 372b27b: Added support for token and collection drops. Added support for staking on token, collection and edition. Added manage admin for token, edition, and collection and respective drops. Added admin for stake
+- 372b27b: Added airdrop contracts and respective admin and public pages. Improve wallet button popover
+
+### Patch Changes
+
+- Updated dependencies [372b27b]
+- Updated dependencies [372b27b]
+  - @dexkit/core@0.9.0
+
 ## 0.8.0
 
 ### Minor Changes

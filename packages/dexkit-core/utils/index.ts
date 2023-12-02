@@ -1,5 +1,3 @@
-import { MetaMask } from "@web3-react/metamask";
-import { Connector } from "@web3-react/types";
 import { build, BuildInput } from "eth-url-parser";
 import { BigNumber, ethers } from "ethers";
 import { EventEmitter } from "events";
@@ -7,20 +5,12 @@ import { ChainId, CoinTypes, IPFS_GATEWAY } from "../constants";
 import { NETWORKS } from "../constants/networks";
 import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "../constants/zrx";
 import { EvmCoin, TokenWhitelabelApp } from "../types";
-import { MagicConnector } from "../types/magic";
+
 
 export * from "./ipfs";
 export * from "./numbers";
 
-export function getConnectorName(connector?: Connector) {
-  if (connector instanceof MagicConnector) {
-    return "magic";
-  }
 
-  if (connector instanceof MetaMask) {
-    return "metamask";
-  }
-}
 
 export function parseChainId(chainId: string | number) {
   return typeof chainId === "number"
@@ -48,6 +38,25 @@ export const truncateAddress = (address: string | undefined) => {
   }
   return "";
 };
+
+
+export const truncateHash = (hash: string | undefined) => {
+  if (hash !== undefined) {
+    return `${hash.slice(0, 7)}...${hash.slice(hash.length - 5)}`;
+  }
+  return "";
+};
+
+export const beautifyCamelCase = (camelCase: string | undefined) => {
+  if (camelCase) {
+    return camelCase.replace(/([A-Z])/g, ' $1')
+      // uppercase the first character
+      .replace(/^./, function (str) { return str.toUpperCase(); })
+  }
+  return
+}
+
+
 
 export function hasLondonHardForkSupport(chainId: ChainId) {
   switch (chainId) {
@@ -81,9 +90,14 @@ export function isAddressEqual(address?: string, other?: string) {
   return address.toLowerCase() === other.toLowerCase();
 }
 
-export function formatBigNumber(val: BigNumber, decimals: number) {
+export function formatBigNumber(val?: BigNumber, decimals?: number) {
   // TODO: improve this code in the future
   // pass to a memoized component or something
+
+  if (!val) {
+    return "0";
+  }
+
   const value = ethers.utils.formatUnits(val, decimals);
 
   let index = value.indexOf(".");
@@ -156,15 +170,6 @@ export function getNormalizedUrl(url: string) {
   return fetchUrl;
 }
 
-export async function switchNetwork(connector: Connector, chainId: number) {
-  if (connector instanceof MetaMask) {
-    return connector.provider?.request({
-      method: "wallet_switchEthereumChain",
-      params: [{ chainId: `0x${chainId.toString(16)}` }],
-    });
-  }
-}
-
 export function buildEtherReceiveAddress({
   receiver,
   chainId,
@@ -219,11 +224,11 @@ export function convertTokenToEvmCoin(token: TokenWhitelabelApp): EvmCoin {
   ) {
     return {
       network: {
-        id: network.slug as string,
-        name: network.name,
-        chainId: token.chainId,
-        icon: network.coinImageUrl,
-        coingeckoPlatformId: network.coingeckoPlatformId,
+        id: network?.slug as string,
+        name: network?.name,
+        chainId: token?.chainId,
+        icon: network?.coinImageUrl,
+        coingeckoPlatformId: network?.coingeckoPlatformId,
       },
       coinType: CoinTypes.EVM_NATIVE,
       name: token.name,
@@ -234,11 +239,11 @@ export function convertTokenToEvmCoin(token: TokenWhitelabelApp): EvmCoin {
   } else {
     return {
       network: {
-        id: network.slug as string,
-        name: network.name,
-        chainId: token.chainId,
-        icon: network.coinImageUrl,
-        coingeckoPlatformId: network.coingeckoPlatformId,
+        id: network?.slug as string,
+        name: network?.name,
+        chainId: token?.chainId,
+        icon: network?.coinImageUrl,
+        coingeckoPlatformId: network?.coingeckoPlatformId,
       },
       coinType: CoinTypes.EVM_ERC20,
       contractAddress: token.address,

@@ -1,5 +1,4 @@
 import {
-  customThemeAtom,
   customThemeDarkAtom,
   customThemeLightAtom,
 } from '@/modules/wizard/state';
@@ -66,7 +65,6 @@ interface Props {
 export default function SwapStepper({ config, onSave, onChange }: Props) {
   const [activeStep, setActiveStep] = React.useState(0);
 
-  const customTheme = useAtomValue(customThemeAtom);
   const customThemeDark = useAtomValue(customThemeDarkAtom);
   const customThemeLight = useAtomValue(customThemeLightAtom);
 

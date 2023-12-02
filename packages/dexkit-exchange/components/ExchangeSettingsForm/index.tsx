@@ -43,7 +43,7 @@ import { ZEROEX_AFFILIATE_ADDRESS } from "@dexkit/core/services/zrx/constants";
 import Edit from "@mui/icons-material/Edit";
 import TextFieldMui from "@mui/material/TextField";
 import { useFormikContext } from "formik";
-import _ from "lodash";
+import setWith from "lodash/setWith";
 import {
   DEFAULT_TOKENS,
   QUOTE_TOKENS_SUGGESTION,
@@ -60,7 +60,6 @@ function SaveOnChangeListener({
   onValidate?: (isValid: boolean) => void;
 }) {
   const { values, isValid } = useFormikContext<DexkitExchangeSettings>();
-  console.log(values);
   useEffect(() => {
     onSave(values);
   }, [values, isValid]);
@@ -77,7 +76,9 @@ function SaveOnChangeListener({
 export interface ExchangeSettingsFormProps {
   onCancel: () => void;
   onSave: (settings: DexkitExchangeSettings) => void;
+  onChange?: (settings: DexkitExchangeSettings) => void;
   saveOnChange?: boolean;
+  showSaveButton?: boolean;
   settings?: DexkitExchangeSettings;
   tokens: Token[];
   onValidate?: (isValid: boolean) => void;
@@ -86,9 +87,11 @@ export interface ExchangeSettingsFormProps {
 export default function ExchangeSettingsForm({
   onCancel,
   onSave,
+  onChange,
   settings,
   tokens,
   saveOnChange,
+  showSaveButton,
   onValidate,
 }: ExchangeSettingsFormProps) {
   const handleSubmit = async (values: DexkitExchangeSettings) => {
@@ -138,7 +141,7 @@ export default function ExchangeSettingsForm({
           { chainName: getChainName(chainId) }
         );
 
-        _.setWith(
+        setWith(
           errors,
           `defaultPairs.${String(chainId)}.baseToken`,
           error,
@@ -158,7 +161,7 @@ export default function ExchangeSettingsForm({
           { chainName: getChainName(chainId) }
         );
 
-        _.setWith(
+        setWith(
           errors,
           `defaultPairs.${String(chainId)}.quoteToken`,
           error,
@@ -175,7 +178,7 @@ export default function ExchangeSettingsForm({
           defaultMessage: "Max slippage is 50 percent",
         });
 
-        _.setWith(
+        setWith(
           errors,
           `defaultSlippage.${String(chainId)}.slippage`,
           error,
@@ -280,8 +283,8 @@ export default function ExchangeSettingsForm({
               onClose: handleCloseSelectNetworks,
             }}
           />
-          {saveOnChange && (
-            <SaveOnChangeListener onSave={onSave} onValidate={onValidate} />
+          {saveOnChange && onChange && (
+            <SaveOnChangeListener onSave={onChange} onValidate={onValidate} />
           )}
           <Grid container spacing={2}>
             {/* <Grid item xs={12}>
@@ -631,7 +634,7 @@ export default function ExchangeSettingsForm({
                 }}
               />
             </Grid>
-            {!saveOnChange && (
+            {(!saveOnChange || showSaveButton) && (
               <Grid item xs={12}>
                 <FormActions onSubmit={submitForm} onCancel={onCancel} />
               </Grid>

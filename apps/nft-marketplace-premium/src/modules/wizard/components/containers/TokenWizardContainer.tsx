@@ -33,7 +33,7 @@ export default function TokenWizardContainer({
   }>({});
 
   const [tokens, setTokens] = useState<Token[]>(
-    config?.tokens?.length ? config?.tokens[0].tokens || [] : []
+    config?.tokens?.length ? config?.tokens[0].tokens || [] : [],
   );
 
   const handleMakeTradable = (key: string) => {
@@ -72,7 +72,7 @@ export default function TokenWizardContainer({
         const token = value.find(
           (t) =>
             isAddressEqual(t.address, newToken.address) &&
-            Number(t.chainId) === Number(newToken.chainId)
+            Number(t.chainId) === Number(newToken.chainId),
         );
 
         return !token;
@@ -128,13 +128,13 @@ export default function TokenWizardContainer({
     <Grid container spacing={2}>
       <Grid item xs={12}>
         <Stack>
-          <Typography variant={'subtitle2'}>
+          <Typography variant={'h6'}>
             <FormattedMessage id="tokens" defaultMessage="Tokens" />
           </Typography>
           <Typography variant={'body2'}>
             <FormattedMessage
-              id="featured.token.in.your.app"
-              defaultMessage="Featured tokens in your app"
+              id="select.or.import.tokens.for.your.app"
+              defaultMessage="Select or import tokens for your app"
             />
           </Typography>
         </Stack>

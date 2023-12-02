@@ -17,9 +17,9 @@ export const KITTYGOTCHI_CONTRACT =
   '0xEA88540adb1664999524d1a698cb84F6C922D2A1';
 
 export const HELP_FIELD_TEXT = {
-  name: 'Name of your Marketplace.',
-  email: 'Email used to receive notifications about your Marketplace.',
-  domain: 'Domain used to deploy your Marketplace. Make sure you own this domain and that is not in use. If in use remove all records on it.',
+  name: 'Name of your App.',
+  email: 'Email used to receive notifications about your App.',
+  domain: 'Domain used to deploy your App. Make sure you own this domain and that is not in use. If in use remove all records on it.',
   'favicon.url': 'Image Url for the favicon used by your application. {br} Recomended size: 20x20px',
   'logo.url': 'Image Url for the logo used by your application. {br} Recomended size: 150x150px',
   'custom.primary.color': 'Primary color',
@@ -45,9 +45,9 @@ export const CORE_PAGES: { [key: string]: AppPageOptions } = {
 
 
 export enum BuilderKit {
-  ALL = 'All KITs',
-  NFT = 'NFT KITs',
-  Swap = 'Swap KITs',
+  ALL = 'All Kits',
+  NFT = 'NFT Kit',
+  Swap = 'Swap Kit',
 
 }
 

@@ -1,8 +1,8 @@
 import { AssetStoreOptions } from "@dexkit/ui/modules/nft/types";
 import { ContractFormParams } from "@dexkit/web3forms/types";
 
+import { DexkitExchangeSettings } from '@dexkit/exchange/types';
 import { ChainConfig } from '@dexkit/widgets/src/widgets/swap/types';
-
 
 export type VideoEmbedType = 'youtube' | 'vimeo';
 
@@ -62,7 +62,10 @@ export type SectionType =
   | 'wallet'
   | 'contract'
   | 'user-contract-form'
-  | 'plugin';
+  | 'plugin'
+  | 'exchange'
+
+  ;
 
 export interface PageSection {
   type: SectionType;
@@ -74,11 +77,12 @@ export interface PageSection {
 
 export interface CallToActionAppPageSection extends PageSection {
   type: 'call-to-action';
-  title: string;
+  title?: string;
   subtitle: string;
   button: {
     title: string;
     url: string;
+    openInNewPage?: boolean;
   };
   items: SectionItem[];
 }
@@ -147,6 +151,11 @@ export interface PluginPageSection<T> extends PageSection {
   pluginPath: string;
 }
 
+export interface ExchangePageSection extends PageSection {
+  type: 'exchange';
+  settings: DexkitExchangeSettings;
+}
+
 export type AppPageSection =
   | CallToActionAppPageSection
   | VideoEmbedAppPageSection
@@ -159,7 +168,8 @@ export type AppPageSection =
   | WalletPageSection
   | ContractPageSection
   | UserContractPageSection
-  | PluginPageSection<unknown>;
+  | PluginPageSection<unknown>
+  | ExchangePageSection;
 
 export interface SectionMetadata {
   type: SectionType;

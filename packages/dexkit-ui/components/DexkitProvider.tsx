@@ -6,10 +6,11 @@ import { useMemo } from "react";
 import { useDexkitContextState, useOrderedConnectors } from "../hooks";
 
 import { AppTransaction, Asset, TokenWhitelabelApp } from "@dexkit/core/types";
-import { getConnectorName } from "@dexkit/core/utils";
+
 import { CssBaseline } from "@mui/material";
 import { PrimitiveAtom, SetStateAction, WritableAtom } from "jotai";
 
+import { GET_CONNECTOR_NAME } from "@dexkit/wallet-connectors/connectors";
 import {
   Experimental_CssVarsProvider as CssVarsProvider,
   SupportedColorScheme,
@@ -24,7 +25,7 @@ export interface DexkitProviderProps {
     cssVarPrefix?: string | undefined;
     colorSchemes: Record<SupportedColorScheme, Record<string, any>>;
   };
-
+  affiliateReferral?: string;
   locale: string;
   defaultLocale?: string;
   onChangeLocale: (locale: string) => void;
@@ -57,6 +58,7 @@ export interface DexkitProviderProps {
 export function DexkitProvider({
   children,
   theme,
+  affiliateReferral,
   currencyUserAtom,
   selectedWalletAtom,
   transactionsAtom,
@@ -74,7 +76,7 @@ export function DexkitProvider({
 
   const web3ReactKey = useMemo(
     () =>
-      connectors.map((connector) => getConnectorName(connector[0])).join("-"),
+      connectors.map((connector) => GET_CONNECTOR_NAME(connector[0])).join("-"),
     [connectors]
   );
 
@@ -90,7 +92,7 @@ export function DexkitProvider({
 
   return (
     <DexKitContext.Provider
-      value={{ ...appState, userEventURL: userEventsURL, siteId: siteId }}
+      value={{ ...appState, userEventURL: userEventsURL, siteId: siteId, affiliateReferral }}
     >
       <IntlProvider
         locale={locale}

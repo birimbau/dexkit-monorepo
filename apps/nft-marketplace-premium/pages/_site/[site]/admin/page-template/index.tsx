@@ -1,8 +1,8 @@
 import MarketplacesTableSkeleton from '@/modules/admin/components/tables/MaketplacesTableSkeleton';
 import PageTemplatesTable from '@/modules/admin/components/tables/PageTemplatesTable';
 import { useDebounce } from '@dexkit/core/hooks';
-import { Search } from '@mui/icons-material';
 import Add from '@mui/icons-material/Add';
+import Search from '@mui/icons-material/Search';
 import {
   Alert,
   Box,

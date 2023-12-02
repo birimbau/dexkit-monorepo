@@ -2,6 +2,7 @@ import { AppPageSection } from "@dexkit/ui/modules/wizard/types";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 
+const ExchangeSection = dynamic(() => import("./sections/ExchangeSection"));
 const AssetStoreSection = dynamic(() => import("./sections/AssetStoreSection"));
 const MDSection = dynamic(() => import("./sections/MDSection"));
 
@@ -75,6 +76,8 @@ export function SectionRender({ section }: Props) {
     return <ContractSection section={section} />;
   } else if (section.type === "user-contract-form") {
     return <UserContractSection section={section} />;
+  } else if (section.type === "exchange") {
+    return <ExchangeSection section={section} />;
   } else if (section.type === "plugin") {
     return <LoadPlugin data={section.data} path={section.pluginPath} />;
   }

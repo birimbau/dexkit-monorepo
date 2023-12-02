@@ -49,7 +49,7 @@ export const COINGECKO_PLATFORM_ID: { [key: number]: string } = {
   [ChainId.Celo]: 'celo',
   [ChainId.Fantom]: 'fantom',
   [ChainId.Optimism]: 'optimistic-ethereum',
-  [ChainId.Arbitrum]: 'arbitrum',
+  [ChainId.Arbitrum]: 'arbitrum-one',
   [ChainId.Base]: 'base',
 };
 
@@ -95,16 +95,16 @@ export const LANGUAGES: Language[] = [
 ];
 
 export const CURRENCIES: Currency[] = [
-  { symbol: 'usd', name: 'US Dollar' },
-  { symbol: 'eur', name: 'Euro' },
-  { symbol: 'brl', name: 'Brazil Real' },
-  { symbol: 'inr', name: 'Indian Rupee' },
-  { symbol: 'czk', name: 'Czech Koruna' },
   { symbol: 'ars', name: 'Argentine Peso' },
-  { symbol: 'chf', name: 'Swiss Franc' },
+  { symbol: 'brl', name: 'Brazilian Real' },
   { symbol: 'clp', name: 'Chilean Peso' },
-  { symbol: 'vef', name: 'Venezuelan bolívar fuerte' },
+  { symbol: 'czk', name: 'Czech Koruna' },
+  { symbol: 'eur', name: 'Euro' },
+  { symbol: 'inr', name: 'Indian Rupee' },
   { symbol: 'ngn', name: 'Nigerian Naira' },
+  { symbol: 'chf', name: 'Swiss Franc' },
+  { symbol: 'usd', name: 'US Dollar' },
+  { symbol: 'vef', name: 'Venezuelan Bolívar Fuerte' },
 ];
 
 export const WIZARD_DOCS_URL =

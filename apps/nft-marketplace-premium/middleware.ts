@@ -15,7 +15,12 @@ export const config = {
     '/u/:path*',
     '/admin/:path*',
     '/drop/:path*',
-    '/contract/:path*'
+    '/contract/:path*',
+
+    '/stake/:path*',
+    '/token/:path*',
+    '/airdrop/:path*',
+    '/embed/:path*',
   ],
 };
 
@@ -34,7 +39,11 @@ const basePaths = [
   '/contract-wizard',
   '/u',
   '/drop',
-  '/contract'
+  '/contract',
+  '/stake',
+  '/token',
+  '/airdrop',
+  '/embed',
 ];
 
 function isBasePath(path: string) {
@@ -53,7 +62,6 @@ function isBasePath(path: string) {
 export default function middleware(req: NextRequest) {
   const url = req.nextUrl;
 
-
   let hostname = req.headers.get('host') || 'marketplace.localhost';
 
   hostname = hostname.replace(':3001', '');
@@ -70,8 +78,6 @@ export default function middleware(req: NextRequest) {
     url.pathname = '/empty';
     return NextResponse.rewrite(url);
   }
-
-
 
   if (
     hostname === 'whitelabel-nft.dexkit.com' ||
@@ -105,6 +111,12 @@ export default function middleware(req: NextRequest) {
       hostname = `dexkit.app:${slug}`;
     }
   }
+
+  /*if (url.pathname.startsWith('/_custom_protected')) {
+    return NextResponse.rewrite(url);
+  }*/
+
+
 
   if (isBasePath(url.pathname)) {
     // rewrite everything else to `/_sites/[site] dynamic route

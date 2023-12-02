@@ -1,7 +1,8 @@
 import { ChainId } from "@dexkit/core/constants/enums";
 import { NETWORKS } from "@dexkit/core/constants/networks";
-import { MagicConnector } from "@dexkit/core/types/magic";
+
 import { parseChainId, switchNetwork } from "@dexkit/core/utils";
+import { MagicConnector } from "@dexkit/wallet-connectors/connectors/magic";
 import {
   Avatar,
   CircularProgress,

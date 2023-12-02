@@ -8,6 +8,8 @@ import {
   createTheme,
   experimental_extendTheme as extendTheme,
 } from '@mui/material/styles';
+import get from 'lodash/get';
+import set from 'lodash/set';
 import { getTheme } from 'src/theme';
 import { Token } from '../../../types/blockchain';
 import { AppCollection } from '../../../types/config';
@@ -115,8 +117,9 @@ export function generateCSSVarsTheme({
             fontFamily,
           },
         })
-      : extendTheme({ ...customTheme, cssVarPrefix: cssVarPrefix });
+      : extendTheme({ ...customTheme, cssVarPrefix });
   }
+
   const theme = getTheme({ name: selectedThemeId }).theme;
 
   return fontFamily
@@ -174,4 +177,14 @@ export function requiredField(message: string) {
   return (value: string) => {
     return !value ? message : undefined;
   };
+}
+
+export function mapObject(
+  obj: any,
+  other: any,
+  keys: { [key: string]: string }
+) {
+  for (const key of Object.keys(keys)) {
+    set(obj, key, get(other, keys[key]));
+  }
 }

@@ -1,9 +1,24 @@
-import { Divider } from '@mui/material';
 import Grid from '@mui/material/Grid';
-import { useContractType } from '@thirdweb-dev/react';
+import {
+  useContract,
+  useContractRead,
+  useContractType,
+} from '@thirdweb-dev/react';
 import { ContractMetadataHeader } from '../ContractMetadataHeader';
 import { ContractCollectionDropContainer } from './ContractCollectionDropContainer';
 import { ContractEditionDropContainer } from './ContractEditionDropContainer';
+import { ContractNftContainer } from './ContractNftContainer';
+import { ContractNftDropContainer } from './ContractNftDropContainer';
+import ContractStakeErc20Container from './ContractStakeErc20Container';
+import { ContractTokenDropContainer } from './ContractTokenDropContainer';
+
+import { hexToString } from '@dexkit/ui/utils';
+import ContractAirdropErc1155Container from './ContractAirdropErc1155Container';
+import ContractAirdropErc20Container from './ContractAirdropErc20Container';
+import ContractAirdropErc721Container from './ContractAirdropErc721Container';
+import { ContractEditionContainer } from './ContractEditionContainer';
+import ContractStakeErc1155Container from './ContractStakeErc1155Container';
+import ContractStakeErc721Container from './ContractStakeErc721Container';
 
 interface Props {
   address: string;
@@ -13,6 +28,51 @@ interface Props {
 export function ContractContainer({ address, network }: Props) {
   const { data } = useContractType(address);
 
+  const { data: contract } = useContract(address);
+  const contractRead = useContractRead(contract, 'contractType');
+
+  let contractType = hexToString(contractRead.data);
+
+  const renderContract = () => {
+    if (contractType === 'DropERC1155') {
+      return (
+        <ContractEditionDropContainer address={address} network={network} />
+      );
+    } else if (contractType === 'DropERC20') {
+      return <ContractTokenDropContainer address={address} network={network} />;
+    } else if (contractType === 'TokenERC1155') {
+      return <ContractEditionContainer address={address} network={network} />;
+    } else if (contractType === 'DropERC721') {
+      return <ContractNftDropContainer address={address} network={network} />;
+    } else if (contractType === 'TokenERC721') {
+      return <ContractNftContainer address={address} network={network} />;
+    } else if (contractType === 'TokenStake') {
+      return (
+        <ContractStakeErc20Container address={address} network={network} />
+      );
+    } else if (contractType === 'NFTStake') {
+      return (
+        <ContractStakeErc721Container address={address} network={network} />
+      );
+    } else if (contractType === 'EditionStake') {
+      return (
+        <ContractStakeErc1155Container address={address} network={network} />
+      );
+    } else if (contractType === 'AirdropERC20') {
+      return (
+        <ContractAirdropErc20Container address={address} network={network} />
+      );
+    } else if (contractType === 'AirdropERC721') {
+      return (
+        <ContractAirdropErc721Container address={address} network={network} />
+      );
+    } else if (contractType === 'AirdropERC1155') {
+      return (
+        <ContractAirdropErc1155Container address={address} network={network} />
+      );
+    }
+  };
+
   return (
     <Grid container spacing={2}>
       <Grid item xs={12}>
@@ -20,15 +80,11 @@ export function ContractContainer({ address, network }: Props) {
           address={address}
           network={network}
           contractType={data}
+          contractTypeV2={contractType}
         />
       </Grid>
       <Grid item xs={12}>
-        <Divider />
-      </Grid>
-      <Grid item xs={12}>
-        {data === 'edition-drop' && (
-          <ContractEditionDropContainer address={address} network={network} />
-        )}
+        {renderContract()}
         {false && (
           <ContractCollectionDropContainer
             address={address}

@@ -12,14 +12,14 @@ import { useSendConfigMutation } from 'src/hooks/whitelabel';
 import { AppConfig } from 'src/types/config';
 import { SiteResponse } from 'src/types/whitelabel';
 import theDefaultConfig from '../../../../../../config/quick.store.default.app.json';
-import SignConfigDialog from '../../dialogs/SignConfigDialog';
 import { PreviewAppButton } from '../../PreviewAppButton';
+import SignConfigDialog from '../../dialogs/SignConfigDialog';
 import AssetStoreStepper from '../AssetStoreStepper.tsx';
 import { WelcomeAssetStoreStepperMessage } from '../Welcome/WelcomeAssetStoreStepperMessage';
 const defaultConfig = theDefaultConfig as unknown as AppConfig;
 
 interface Props {
-  site?: SiteResponse;
+  site?: SiteResponse | null;
 }
 
 export default function AssetStoreStepperContainer({ site }: Props) {
@@ -65,7 +65,7 @@ export default function AssetStoreStepperContainer({ site }: Props) {
       setWizardConfig(newConfig);
     },
 
-    [wizardConfig, setWizardConfig]
+    [wizardConfig, setWizardConfig],
   );
 
   const handleCloseSendingConfig = () => {

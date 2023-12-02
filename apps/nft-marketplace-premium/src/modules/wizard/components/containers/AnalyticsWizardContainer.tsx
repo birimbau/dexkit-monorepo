@@ -44,13 +44,13 @@ export default function AnalyticsWizardContainer({ config, onSave }: Props) {
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <Stack>
-                <Typography variant={'subtitle2'}>
+                <Typography variant={'h6'}>
                   <FormattedMessage id="Analytics" defaultMessage="Analytics" />
                 </Typography>
                 <Typography variant={'body2'}>
                   <FormattedMessage
-                    id="edit.analytics"
-                    defaultMessage="Edit analytics"
+                    id="analytics.wizard.description"
+                    defaultMessage="Add Google Analytics to your app"
                   />
                 </Typography>
               </Stack>

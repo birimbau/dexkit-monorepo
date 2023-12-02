@@ -3,10 +3,11 @@ import { Dispatch, SetStateAction, useCallback, useState } from 'react';
 import { AppPage, AppPageOptions } from '../../../types/config';
 import { BuilderKit } from '../constants';
 import { AppPageSection } from '../types/section';
+import AddPageDialog from './dialogs/AddPageDialog';
 import PagesSection from './sections/PagesSection';
 
 const ConfirmRemoveSectionDialog = dynamic(
-  () => import('./dialogs/ConfirmRemoveSectionDialog')
+  () => import('./dialogs/ConfirmRemoveSectionDialog'),
 );
 
 interface Props {
@@ -22,6 +23,8 @@ interface Props {
   currentPage: AppPage;
   setCurrentPage: Dispatch<SetStateAction<AppPage>>;
   builderKit?: BuilderKit;
+  showAddPage: boolean;
+  setShowAddPage: (show: boolean) => void;
 }
 
 export function PagesContainer({
@@ -31,9 +34,15 @@ export function PagesContainer({
   currentPage,
   setCurrentPage,
   builderKit,
+  showAddPage,
+  setShowAddPage,
 }: Props) {
   const [showConfirmRemove, setShowConfirmRemove] = useState(false);
   const [selectedSectionIndex, setSelectedSectionindex] = useState<number>(-1);
+
+  const [pageToClone, setPageToClone] = useState<
+    { key?: string; title?: string } | undefined
+  >();
 
   const handleEditPageSections = (index: number) => {
     setSelectedSectionindex(index);
@@ -123,6 +132,7 @@ export function PagesContainer({
         newPages[pageOptions.key || ''] = {
           ...newPages[pageOptions.key || ''],
           gatedConditions: pageOptions?.gatedConditions,
+          gatedPageLayout: pageOptions?.gatedPageLayout,
         };
         setCurrentPage(newPages[pageOptions.key || '']);
         return newPages;
@@ -204,11 +214,27 @@ export function PagesContainer({
         });
       }
     },
-    [currentPage.sections]
+    [currentPage.sections],
   );
+
+  const handleCloseAddPage = () => {
+    setShowAddPage(false);
+    setPageToClone(undefined);
+  };
 
   return (
     <>
+      <AddPageDialog
+        dialogProps={{
+          open: showAddPage,
+          maxWidth: 'sm',
+          fullWidth: true,
+          onClose: handleCloseAddPage,
+        }}
+        clonedPage={pageToClone}
+        onCancel={handleCloseAddPage}
+        onSubmit={onEditPage}
+      />
       <ConfirmRemoveSectionDialog
         dialogProps={{
           open: showConfirmRemove,

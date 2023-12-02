@@ -1,5 +1,25 @@
 # @dexkit/core
 
+## 0.11.0
+
+### Minor Changes
+
+- 5adc45b: Added support for token and collection drops. Added support for staking on token, collection and edition. Added manage admin for token, edition, and collection and respective drops. Added admin for stake
+- 5adc45b: Added airdrop contracts and respective admin and public pages. Improve wallet button popover
+
+## 0.10.0
+
+### Minor Changes
+
+- e793f4f: UX improvement on DexAppBuilder admin section
+
+## 0.9.0
+
+### Minor Changes
+
+- 372b27b: Added support for token and collection drops. Added support for staking on token, collection and edition. Added manage admin for token, edition, and collection and respective drops. Added admin for stake
+- 372b27b: Added airdrop contracts and respective admin and public pages. Improve wallet button popover
+
 ## 0.8.0
 
 ### Minor Changes

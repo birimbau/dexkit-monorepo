@@ -1,6 +1,8 @@
 import {
   Button,
+  Checkbox,
   FormControl,
+  FormControlLabel,
   Grid,
   InputLabel,
   MenuItem,
@@ -10,11 +12,12 @@ import {
   TextField,
 } from '@mui/material';
 import { FormikHelpers, useFormik } from 'formik';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { PageSectionVariant, SectionItem } from '../../../../types/config';
 
 import AddIcon from '@mui/icons-material/Add';
+
 import * as Yup from 'yup';
 import {
   AppPageSection,
@@ -27,10 +30,11 @@ interface Form {
   variant: string;
   type: string;
   title: string;
-  subtitle: string;
+  subtitle?: string;
   button: {
     title: string;
     url: string;
+    openInNewPage?: boolean;
   };
 }
 
@@ -38,15 +42,17 @@ const FormSchema: Yup.SchemaOf<Form> = Yup.object().shape({
   variant: Yup.string().required(),
   type: Yup.string().required(),
   title: Yup.string().required(),
-  subtitle: Yup.string().required(),
+  subtitle: Yup.string(),
   button: Yup.object().shape({
     title: Yup.string().required(),
     url: Yup.string().required(),
+    openInNewPage: Yup.bool(),
   }),
 });
 
 interface Props {
   onSave: (section: AppPageSection) => void;
+  onChange: (section: AppPageSection) => void;
   onCancel: () => void;
   section?: CallToActionAppPageSection;
 }
@@ -54,12 +60,13 @@ interface Props {
 export default function CallToActionSectionForm({
   onSave,
   onCancel,
+  onChange,
   section,
 }: Props) {
   const [showAddItem, setShowAddItem] = useState(false);
 
   const [items, setItems] = useState<SectionItem[]>(
-    section ? section.items : []
+    section ? section.items : [],
   );
 
   const handleSubmit = (values: Form, helpers: FormikHelpers<Form>) => {
@@ -67,7 +74,7 @@ export default function CallToActionSectionForm({
       button: values.button,
       type: 'call-to-action',
       items,
-      subtitle: values.subtitle,
+      subtitle: values?.subtitle as string,
       title: values.title,
       variant: values.variant as PageSectionVariant,
     });
@@ -76,15 +83,15 @@ export default function CallToActionSectionForm({
   const formik = useFormik({
     initialValues: section
       ? {
-          button: section.button,
-          subtitle: section.subtitle,
-          title: section.title,
+          button: section?.button,
+          subtitle: section?.subtitle as string,
+          title: section?.title as string,
           type: 'call-to-action',
           variant: section.variant || 'light',
         }
       : {
-          subtitle: '',
           title: '',
+          subtitle: '',
           button: { title: '', url: '' },
           type: 'call-to-action',
           variant: 'light',
@@ -92,6 +99,17 @@ export default function CallToActionSectionForm({
     onSubmit: handleSubmit,
     validationSchema: FormSchema,
   });
+
+  useEffect(() => {
+    onChange({
+      button: formik.values.button,
+      type: 'call-to-action',
+      items,
+      subtitle: formik.values?.subtitle as string,
+      title: formik.values.title,
+      variant: formik.values.variant as PageSectionVariant,
+    });
+  }, [formik.values, items]);
 
   const [selectedItemIndex, setSelectedItemIndex] = useState(-1);
 
@@ -149,6 +167,8 @@ export default function CallToActionSectionForm({
       return newItems;
     });
   };
+
+  console.log(formik.errors);
 
   return (
     <form onSubmit={formik.handleSubmit}>
@@ -237,6 +257,27 @@ export default function CallToActionSectionForm({
               Boolean(formik.errors.button?.url)
                 ? formik.errors.button?.url
                 : undefined
+            }
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={formik.values.button?.openInNewPage || false}
+                onChange={(ev) =>
+                  formik.setFieldValue(
+                    'button.openInNewPage',
+                    ev.target.checked,
+                  )
+                }
+              />
+            }
+            label={
+              <FormattedMessage
+                id="open.in.new.page"
+                defaultMessage="Open in new page"
+              />
             }
           />
         </Grid>

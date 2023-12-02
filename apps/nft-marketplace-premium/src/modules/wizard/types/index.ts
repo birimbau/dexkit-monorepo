@@ -35,11 +35,10 @@ export enum WizardSetupSteps {
 export interface StepperButtonProps {
   handleNext?: () => void;
   handleBack?: () => void;
-  disableContinue?: boolean,
+  disableContinue?: boolean;
   isLastStep?: boolean;
   isFirstStep?: boolean;
 }
-
 
 export interface GatedCondition {
   type?: 'collection' | 'coin' | 'multiCollection';
@@ -51,5 +50,40 @@ export interface GatedCondition {
   chainId?: number;
   amount: string;
   tokenId?: string;
+}
+
+export interface GatedPageLayout {
+  frontImage?: string;
+  frontImageHeight?: number;
+  frontImageWidth?: number;
+  accessRequirementsMessage?: string;
+}
+
+export type MintNFTFormType = {
+  name: string;
+  description?: string;
+  background_color?: string;
+  animation_url?: string;
+  image?: string;
+  external_url?: string;
 };
 
+export type ThemeFormType = {
+  primary?: string;
+  secondary?: string;
+  text?: string;
+  background?: string;
+  success?: string;
+  error?: string;
+  warning?: string;
+  info?: string;
+  paper?: string;
+  themeId: string;
+  borderRadius?: number;
+};
+
+export enum PreviewType {
+  Swap = 'swap',
+  Exchange = 'exchange',
+  NFTs = 'nfts',
+}

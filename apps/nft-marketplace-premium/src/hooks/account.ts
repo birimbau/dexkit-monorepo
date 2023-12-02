@@ -1,6 +1,7 @@
 import { useDexKitContext } from '@dexkit/ui';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useWeb3React } from "@web3-react/core";
+import jwt_decode from 'jwt-decode';
 import { useContext } from "react";
 import { MIN_KIT_HOLDING_AI_GENERATION, WHITELISTED_AI_ACCOUNTS } from "src/constants";
 import { getKitBalanceOfThreshold } from "src/services/balances";
@@ -10,7 +11,7 @@ import { useSignMessageDialog } from './app';
 
 export function useAuth() {
   const { setIsLoggedIn, isLoggedIn, user, setUser } = useContext(AuthContext);
-  return { setIsLoggedIn, isLoggedIn, user }
+  return { setIsLoggedIn, isLoggedIn, user, setUser }
 }
 
 
@@ -20,7 +21,7 @@ export function useLoginAccountMutation() {
   const signMessageDialog = useSignMessageDialog();
   const { siteId } = useDexKitContext();
 
-  const { setIsLoggedIn } = useAuth();
+  const { setIsLoggedIn, setUser } = useAuth();
 
   return useMutation(async () => {
     if (!account || !provider) {
@@ -35,7 +36,12 @@ export function useLoginAccountMutation() {
     if (setIsLoggedIn) {
       setIsLoggedIn(true);
     }
+
+    if (setUser && loginResponse.data.access_token) {
+      setUser(jwt_decode(loginResponse.data.access_token))
+    }
     setAccessToken(loginResponse.data.access_token)
+
     return loginResponse.data;
   }, {
     onError(error) {
@@ -63,7 +69,7 @@ export function useLogoutAccountMutation() {
       const data = logoutResponse.data;
       if (data.logout) {
         if (setIsLoggedIn) {
-          setIsLoggedIn(true);
+          setIsLoggedIn(false);
         }
         setAccessToken(undefined)
       }

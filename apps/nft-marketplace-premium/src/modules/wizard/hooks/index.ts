@@ -4,11 +4,16 @@ import { AppWizardConfigContext } from '../../../contexts';
 
 import { ChainId } from '@dexkit/core';
 import { NETWORKS } from '@dexkit/core/constants/networks';
+import { NFTDrop } from '@thirdweb-dev/sdk';
 import { ethers } from 'ethers';
 import { useAtomValue } from 'jotai/utils';
 import { getAccessToken } from 'src/services/auth';
 import { AppConfig } from 'src/types/config';
-import { checkGatedConditions, getTokenList, requestEmailConfirmatioForSite } from '../services';
+import {
+  checkGatedConditions,
+  getTokenList,
+  requestEmailConfirmatioForSite,
+} from '../services';
 import { customThemeDarkAtom, customThemeLightAtom } from '../state';
 import { GatedCondition } from '../types';
 import { generateCSSVarsTheme } from '../utils';
@@ -66,12 +71,20 @@ export function usePreviewThemeFromConfig({
   return selectedTheme;
 }
 
-export function useCheckGatedConditions({ conditions, account }: { conditions: GatedCondition[], account?: string }) {
-
+export function useCheckGatedConditions({
+  conditions,
+  account,
+}: {
+  conditions?: GatedCondition[];
+  account?: string;
+}) {
   return useQuery(['GET_CHECKED_GATED_CONDITIONS', account, conditions], () => {
-    return checkGatedConditions({ account, conditions })
+    if (!conditions) {
+      return;
+    }
 
-  })
+    return checkGatedConditions({ account, conditions });
+  });
 }
 export const JSON_RPC_PROVIDER = 'JSON_RPC_PROVIDER';
 
@@ -79,16 +92,13 @@ export function useJsonRpcProvider({ chainId }: { chainId: ChainId }) {
   return useQuery([JSON_RPC_PROVIDER, chainId], () => {
     if (chainId) {
       return new ethers.providers.JsonRpcProvider(
-        NETWORKS[chainId].providerRpcUrl
+        NETWORKS[chainId].providerRpcUrl,
       );
     }
   });
 }
 
-
-
 export function useSendSiteConfirmationLinkMutation() {
-
   return useMutation(async ({ siteId }: { siteId?: number }) => {
     const accessToken = getAccessToken();
     if (!accessToken) {
@@ -97,8 +107,12 @@ export function useSendSiteConfirmationLinkMutation() {
     if (!siteId) {
       throw new Error('Need to pass site id');
     }
-    return await requestEmailConfirmatioForSite({ siteId, accessToken })
+    return await requestEmailConfirmatioForSite({ siteId, accessToken });
+  });
+}
 
-  })
-
+export function useClaimNft({ contract }: { contract?: NFTDrop }) {
+  return useMutation(async ({ quantity }: { quantity: number }) => {
+    return await contract?.erc721.claim.prepare(quantity);
+  });
 }

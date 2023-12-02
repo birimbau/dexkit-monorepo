@@ -1,7 +1,7 @@
 {
   "name": "@dexkit/dexappbuilder-viewer",
   "private": false,
-  "version": "0.1.0",
+  "version": "0.3.0",
   "scripts": {
     "lint": "TIMING=1 eslint \"**/*.ts*\"",
     "storybook": "storybook dev -p 6006",
@@ -39,6 +39,8 @@
     "@dexkit/ui": "*",
     "@dexkit/web3forms": "*",
     "@dexkit/widgets": "*",
+    "@dexkit/exchange": "*",
+    "@dexkit/wallet-connectors": "*",
     "@uiw/react-md-editor": "^3.23.3",
     "html-react-parser": "^4.0.0",
     "react-syntax-highlighter": "^15.5.0"

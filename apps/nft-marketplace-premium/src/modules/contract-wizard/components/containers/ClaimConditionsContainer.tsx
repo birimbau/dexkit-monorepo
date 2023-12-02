@@ -1,4 +1,4 @@
-import { Skeleton } from '@mui/material';
+import { Box, CircularProgress, Stack } from '@mui/material';
 import {
   useClaimConditions,
   useContract,
@@ -21,6 +21,7 @@ export function ClaimConditionsContainer({ address, network, tokenId }: Props) {
   const { data, isLoading } = useClaimConditions(contract, tokenId, {
     withAllowList: true,
   });
+
   const { mutateAsync: setClaimConditions, isLoading: isLoadingSet } =
     useSetClaimConditions(contract, tokenId);
 
@@ -42,7 +43,16 @@ export function ClaimConditionsContainer({ address, network, tokenId }: Props) {
   }, [data]);
 
   return isLoading ? (
-    <Skeleton width={210} />
+    <Box sx={{ py: 4 }}>
+      <Stack
+        direction="row"
+        alignItems="center"
+        alignContent="center"
+        justifyContent="center"
+      >
+        <CircularProgress color="primary" size="2rem" />
+      </Stack>
+    </Box>
   ) : (
     <Formik
       initialValues={{ phases: phases }}

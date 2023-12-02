@@ -1,6 +1,6 @@
 import { NETWORKS } from "@dexkit/core/constants/networks";
 import { Token } from "@dexkit/core/types";
-import { MagicConnector } from "@dexkit/core/types/magic";
+import { MagicConnector } from "@dexkit/wallet-connectors/connectors/magic";
 
 import { MetaMask } from "@web3-react/metamask";
 import { Connector } from "@web3-react/types";

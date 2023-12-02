@@ -1,10 +1,11 @@
 import MarketplacesTableSkeleton from '@/modules/admin/components/tables/MaketplacesTableSkeleton';
 import MarketplacesTable from '@/modules/admin/components/tables/MarketplacesTable';
+import { MismatchAccount } from '@/modules/wizard/components/MismatchAccount';
 import ConfigureDomainDialog from '@/modules/wizard/components/dialogs/ConfigureDomainDialog';
 import { useDebounce } from '@dexkit/core/hooks';
-import { Search } from '@mui/icons-material';
 import Add from '@mui/icons-material/Add';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import Search from '@mui/icons-material/Search';
 import Wallet from '@mui/icons-material/Wallet';
 import {
   Alert,
@@ -31,18 +32,23 @@ import {
 import { ChangeEvent, ReactNode, useCallback, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import Link from 'src/components/Link';
+import { LoginAppButton } from 'src/components/LoginAppButton';
 import { PageHeader } from 'src/components/PageHeader';
 import AuthMainLayout from 'src/components/layouts/authMain';
 import { DEXKIT_DISCORD_SUPPORT_CHANNEL, WIZARD_DOCS_URL } from 'src/constants';
+import { useAuth } from 'src/hooks/account';
 import { useConnectWalletDialog } from 'src/hooks/app';
 import { useWhitelabelConfigsByOwnerQuery } from 'src/hooks/whitelabel';
 import { getAppConfig } from 'src/services/app';
 import { ConfigResponse } from 'src/types/whitelabel';
 
 export const AdminIndexPage: NextPage = () => {
-  const { account, isActive } = useWeb3React();
+  const { isActive } = useWeb3React();
+  const { isLoggedIn, user } = useAuth();
   const connectWalletDialog = useConnectWalletDialog();
-  const configsQuery = useWhitelabelConfigsByOwnerQuery({ owner: account });
+  const configsQuery = useWhitelabelConfigsByOwnerQuery({
+    owner: user?.address,
+  });
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -92,7 +98,8 @@ export const AdminIndexPage: NextPage = () => {
       if (lazySearch) {
         return configsQuery.data.filter(
           (c) =>
-            c.appConfig.name.toLowerCase().search(lazySearch.toLowerCase()) > -1
+            c.appConfig.name.toLowerCase().search(lazySearch.toLowerCase()) >
+            -1,
         );
       }
 
@@ -103,6 +110,16 @@ export const AdminIndexPage: NextPage = () => {
   }, [configsQuery.data, lazySearch]);
 
   const renderTable = () => {
+    if (isActive && !isLoggedIn) {
+      return (
+        <Box justifyContent={'center'} display={'flex'}>
+          <Box sx={{ maxWidth: '400px' }}>
+            <LoginAppButton />
+          </Box>
+        </Box>
+      );
+    }
+
     if (configsQuery.isLoading) {
       return <MarketplacesTableSkeleton />;
     }
@@ -243,6 +260,9 @@ export const AdminIndexPage: NextPage = () => {
             </Alert>
           </Grid>
           <Grid item xs={12}>
+            <MismatchAccount />
+          </Grid>
+          <Grid item xs={12}>
             <Stack
               direction="row"
               alignItems="center"
@@ -270,6 +290,7 @@ export const AdminIndexPage: NextPage = () => {
               />
             </Stack>
           </Grid>
+
           <Grid item xs={12}>
             <Divider />
           </Grid>

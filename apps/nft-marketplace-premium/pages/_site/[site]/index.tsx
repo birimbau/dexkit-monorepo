@@ -41,12 +41,12 @@ export const getStaticProps: GetStaticProps = async ({
       const assetResponse = await getDKAssetOrderbook({ maker });
       await queryClient.prefetchQuery(
         [GET_ASSETS_ORDERBOOK, { maker: maker || null }],
-        async () => assetResponse.data
+        async () => assetResponse.data,
       );
     }
   }
 
-  /* for (let section of homePage.sections) {
+  /*for (let section of homePage.sections) {
     if (
       section.type === 'featured' ||
       section.type === 'call-to-action' ||
@@ -69,12 +69,12 @@ export const getStaticProps: GetStaticProps = async ({
 
             const collection = await getCollectionData(
               provider,
-              item.contractAddress
+              item.contractAddress,
             );
 
             await queryClient.prefetchQuery(
               [GET_COLLECTION_DATA, item.contractAddress, item.chainId],
-              async () => collection
+              async () => collection,
             );
           }
         } catch (e) {

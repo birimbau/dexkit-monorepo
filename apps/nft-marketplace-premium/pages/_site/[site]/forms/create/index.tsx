@@ -113,7 +113,7 @@ export default function FormsCreatePage({
             id: 'form.created.successfully',
             defaultMessage: 'Form created successfully',
           }),
-          { variant: 'success' }
+          { variant: 'success' },
         );
 
         router.push(`/forms/${result.id}`);
@@ -247,6 +247,7 @@ export default function FormsCreatePage({
                         updateOnChange
                         params={params}
                         onChange={handleChange}
+                        onSave={handleChange}
                         fetchOnMount
                       />
                     ) : (
@@ -254,6 +255,7 @@ export default function FormsCreatePage({
                         key={'another'}
                         updateOnChange
                         params={params}
+                        onSave={handleChange}
                         onChange={handleChange}
                       />
                     )}

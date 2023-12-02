@@ -8,15 +8,18 @@ import type {
 import { Connector } from "@web3-react/types";
 import { EventEmitter } from "events";
 
-import { NETWORKS } from "../constants/networks";
+import { waitForEvent } from "../utils";
 
-import { parseChainId, waitForEvent } from "../utils";
+import { ChainId } from "@dexkit/core/constants";
+import { NETWORKS } from "@dexkit/core/constants/networks";
+import { parseChainId } from "@dexkit/core/utils";
 
-import { ChainId } from "../constants/enums";
 
 export const MAGIC_EVENT_EXECUTE = "execute";
 export const MAGIC_EVENT_REQUEST = "request";
 export const MAGIC_EVENT_CANCEL = "cancel";
+
+
 
 export interface RequestArguments {
   method: string;
@@ -73,7 +76,7 @@ export class MagicConnector extends Connector {
   private options: MagicConnectOptions;
   eventEmitter: EventEmitter;
   loginType?: MagicLoginType;
-  //@ts-ignore
+  type?: string = 'magic';
   magicInstance?: InstanceWithExtensions<SDKBase, OAuthExtension[]>;
 
   constructor({ actions, options }: MagicConnectConstructorArgs) {
@@ -106,7 +109,8 @@ export class MagicConnector extends Connector {
     //@ts-ignore
     const magic: InstanceWithExtensions<SDKBase, OAuthExtension[]> | undefined =
       this.magicInstance;
-
+    console.log(loginType);
+    console.log(window);
     if (typeof window !== "undefined" && loginType) {
       localStorage.setItem("loginType", loginType);
     }
@@ -123,7 +127,7 @@ export class MagicConnector extends Connector {
             await this.initWallet();
           }
         } else if (loginType === "twitter" && redirectUrl) {
-          //@ts-ignore
+
           await magic.oauth.loginWithRedirect({
             provider: "twitter",
             redirectURI: redirectUrl,
@@ -133,14 +137,14 @@ export class MagicConnector extends Connector {
           await this.initProvider();
           await this.initWallet();
         } else if (loginType === "google" && redirectUrl) {
-          //@ts-ignore
+
           await magic.oauth.loginWithRedirect({
             provider: "google",
             redirectURI: redirectUrl,
           })
         }
         else if (loginType === "discord" && redirectUrl) {
-          //@ts-ignore
+
           await magic.oauth.loginWithRedirect({
             provider: "discord",
             redirectURI: redirectUrl,
@@ -200,15 +204,15 @@ export class MagicConnector extends Connector {
               : (network?.providerRpcUrl as string),
           chainId: network?.chainId,
         };
-        //@ts-ignore
+
         this.magicInstance = new m.Magic(this.options.apiKey, {
           network: chainId !== ChainId.Ethereum ? customNode : undefined,
           extensions: [new oauth.OAuthExtension()],
         });
-        //@ts-ignore
+
         if (!(await this.magicInstance.user.isLoggedIn())) {
           try {
-            //@ts-ignore
+
             await this.magicInstance.oauth.getRedirectResult();
           } catch (err) { }
         }

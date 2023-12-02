@@ -5,44 +5,55 @@ import {
   Drawer,
   Grid,
   IconButton,
-  ListSubheader,
   Stack,
-  styled,
   Typography,
   useMediaQuery,
   useTheme,
 } from '@mui/material';
 
 import Close from '@mui/icons-material/Close';
+import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchange';
+import ExpandLess from '@mui/icons-material/ExpandLess';
+import ExpandMore from '@mui/icons-material/ExpandMore';
+import LinkIcon from '@mui/icons-material/Link';
+import Collapse from '@mui/material/Collapse';
 import Divider from '@mui/material/Divider';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import { NextSeo } from 'next-seo';
 import dynamic from 'next/dynamic';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import AppConfirmDialog from '../../../../components/AppConfirmDialog';
-import Link from '../../../../components/Link';
 import { PageHeader } from '../../../../components/PageHeader';
 import { useSendConfigMutation } from '../../../../hooks/whitelabel';
 import { AppConfig } from '../../../../types/config';
 import { SiteResponse } from '../../../../types/whitelabel';
 import { useAppWizardConfig } from '../../hooks';
 
+import AnalyticsIcon from '@mui/icons-material/Analytics';
+import DatasetIcon from '@mui/icons-material/Dataset';
+import SettingsIcon from '@mui/icons-material/Settings';
+import SpaceDashboardIcon from '@mui/icons-material/SpaceDashboard';
 import TourIcon from '@mui/icons-material/Tour';
 import { TourProvider, useTour } from '@reactour/tour';
 import { useAtom } from 'jotai';
+import { useRouter } from 'next/router';
 import { useAuth } from 'src/hooks/account';
 import { BuilderKit } from '../../constants';
 import { OnboardBuilderSteps } from '../../constants/onboard/steps';
 import { isFirstVisitOnEditWizardAtom } from '../../state';
 import BuilderKitMenu from '../BuilderKitMenu';
 import { ConfirmationEmailMessage } from '../ConfirmationEmailMessage';
-import SignConfigDialog from '../dialogs/SignConfigDialog';
 import { PreviewAppButton } from '../PreviewAppButton';
 import { WelcomeMessage } from '../WelcomeMessage';
+import SignConfigDialog from '../dialogs/SignConfigDialog';
+const UserEventAnalyticsContainer = dynamic(
+  () => import('./UserEventAnalyticsContainer'),
+);
 
 const OwnershipWizardContainer = dynamic(
   () => import('./OwnershipWizardContainer'),
@@ -76,7 +87,7 @@ const AnalyticsWizardContainer = dynamic(
 );
 
 interface Props {
-  site?: SiteResponse;
+  site?: SiteResponse | null;
 }
 
 export enum ActiveMenu {
@@ -89,16 +100,13 @@ export enum ActiveMenu {
   FooterMenu = 'footer-menu',
   Seo = 'seo',
   Analytics = 'analytics',
+  UserEventAnalytics = 'user-event-analytics',
   MarketplaceFees = 'marketplace-fees',
   SwapFees = 'swap-fees',
   Collections = 'collections',
   Tokens = 'tokens',
   Ownership = 'ownership',
 }
-
-const ListSubheaderCustom = styled(ListSubheader)({
-  fontWeight: 'bold',
-});
 
 function TourButton() {
   const { setIsOpen } = useTour();
@@ -125,7 +133,37 @@ export function EditWizardContainer({ site }: Props) {
       return JSON.parse(site?.config);
     }
   }, [site?.config]);
+
+  const router = useRouter();
+  const { tab } = router.query as { tab?: ActiveMenu };
+
   const { formatMessage } = useIntl();
+  const [openMenu, setOpenMenu] = useState({
+    settings: true,
+    layout: false,
+    fees: false,
+    data: false,
+    analytics: false,
+  });
+  const handleClickSettings = () => {
+    setOpenMenu({ ...openMenu, settings: !openMenu.settings });
+  };
+
+  const handleClickLayout = () => {
+    setOpenMenu({ ...openMenu, layout: !openMenu.layout });
+  };
+
+  const handleClickFees = () => {
+    setOpenMenu({ ...openMenu, fees: !openMenu.fees });
+  };
+
+  const handleClickData = () => {
+    setOpenMenu({ ...openMenu, data: !openMenu.data });
+  };
+
+  const handleClickAnalytics = () => {
+    setOpenMenu({ ...openMenu, analytics: !openMenu.analytics });
+  };
 
   const { isLoggedIn } = useAuth();
 
@@ -133,6 +171,18 @@ export function EditWizardContainer({ site }: Props) {
   const [activeBuilderKit, setActiveBuilderKit] = useState<BuilderKit>(
     BuilderKit.ALL,
   );
+
+  const handleChangeTab = (mn: ActiveMenu) => {
+    setActiveMenu(mn);
+    /*router.push(
+      {
+        pathname: `/admin/edit/${site?.slug}`,
+        query: { tab: mn, slug: site?.slug },
+      },
+      `/admin/edit/${site?.slug}?tab=${mn}`,
+      { shallow: true },
+    );*/
+  };
 
   const theme = useTheme();
 
@@ -149,12 +199,6 @@ export function EditWizardContainer({ site }: Props) {
   const [showSendingConfig, setShowSendingConfig] = useState(false);
 
   const [showConfirmSendConfig, setShowConfirmSendConfig] = useState(false);
-
-  useEffect(() => {
-    if (config) {
-      setWizardConfig(config);
-    }
-  }, [config]);
 
   useEffect(() => {
     if (config) {
@@ -197,6 +241,7 @@ export function EditWizardContainer({ site }: Props) {
 
   const handleSave = (_config: AppConfig) => {
     setShowConfirmSendConfig(true);
+
     const newConfig = { ...wizardConfig, ..._config };
     setWizardConfig(newConfig);
   };
@@ -204,6 +249,7 @@ export function EditWizardContainer({ site }: Props) {
   const handleChange = useCallback(
     (_config: AppConfig) => {
       const newConfig = { ...wizardConfig, ..._config };
+
       setWizardConfig(newConfig);
     },
 
@@ -211,144 +257,305 @@ export function EditWizardContainer({ site }: Props) {
   );
 
   const renderMenu = () => (
-    <Box sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+    <Box
+      sx={{
+        width: '100%',
+        maxWidth: 360,
+        bgcolor: 'background.paper',
+        position: 'sticky',
+        top: 0,
+      }}
+    >
       <nav aria-label="settings">
-        <List
-          disablePadding
-          subheader={
-            <ListSubheaderCustom>
-              <FormattedMessage id="settings" defaultMessage={'Settings'} />
-            </ListSubheaderCustom>
-          }
-        >
-          <ListItem disablePadding>
-            <ListItemButton
-              selected={activeMenu === ActiveMenu.General}
-              onClick={() => setActiveMenu(ActiveMenu.General)}
-            >
-              <ListItemText
-                primary={
-                  <FormattedMessage id="general" defaultMessage={'General'} />
-                }
-              />
-            </ListItemButton>
-          </ListItem>
-          <ListItem disablePadding>
-            <ListItemButton
-              selected={activeMenu === ActiveMenu.Domain}
-              onClick={() => setActiveMenu(ActiveMenu.Domain)}
-            >
-              <ListItemText
-                primary={
-                  <FormattedMessage id="domains" defaultMessage={'Domain'} />
-                }
-              />
-            </ListItemButton>
-          </ListItem>
-          <ListItem disablePadding>
-            <ListItemButton
-              selected={activeMenu === ActiveMenu.Ownership}
-              onClick={() => setActiveMenu(ActiveMenu.Ownership)}
-            >
-              <ListItemText
-                primary={
-                  <FormattedMessage
-                    id="ownership"
-                    defaultMessage={'Ownership'}
+        <List disablePadding>
+          <ListItemButton onClick={handleClickSettings}>
+            <ListItemIcon>
+              <SettingsIcon />
+            </ListItemIcon>
+
+            <ListItemText
+              primary={
+                <FormattedMessage id="settings" defaultMessage={'Settings'} />
+              }
+            />
+            {openMenu.settings ? <ExpandLess /> : <ExpandMore />}
+          </ListItemButton>
+          <Collapse in={openMenu.settings} timeout="auto" unmountOnExit>
+            <List component="div" sx={{ pl: 4 }}>
+              <ListItem disablePadding>
+                <ListItemButton
+                  selected={activeMenu === ActiveMenu.General}
+                  onClick={() => handleChangeTab(ActiveMenu.General)}
+                >
+                  <ListItemText
+                    primary={
+                      <FormattedMessage
+                        id="general"
+                        defaultMessage={'General'}
+                      />
+                    }
                   />
-                }
-              />
-            </ListItemButton>
-          </ListItem>
-          <ListItem disablePadding>
-            <ListItemButton
-              selected={activeMenu === ActiveMenu.Social}
-              onClick={() => setActiveMenu(ActiveMenu.Social)}
-            >
-              <ListItemText
-                primary={
-                  <FormattedMessage id="social" defaultMessage={'Social'} />
-                }
-              />
-            </ListItemButton>
-          </ListItem>
+                </ListItemButton>
+              </ListItem>
+              <ListItem disablePadding>
+                <ListItemButton
+                  selected={activeMenu === ActiveMenu.Domain}
+                  onClick={() => handleChangeTab(ActiveMenu.Domain)}
+                >
+                  <ListItemText
+                    primary={
+                      <FormattedMessage
+                        id="domains"
+                        defaultMessage={'Domain'}
+                      />
+                    }
+                  />
+                </ListItemButton>
+              </ListItem>
+              <ListItem disablePadding>
+                <ListItemButton
+                  selected={activeMenu === ActiveMenu.Ownership}
+                  onClick={() => handleChangeTab(ActiveMenu.Ownership)}
+                >
+                  <ListItemText
+                    primary={
+                      <FormattedMessage
+                        id="ownership"
+                        defaultMessage={'Ownership'}
+                      />
+                    }
+                  />
+                </ListItemButton>
+              </ListItem>
+              <ListItem disablePadding>
+                <ListItemButton
+                  selected={activeMenu === ActiveMenu.Social}
+                  onClick={() => handleChangeTab(ActiveMenu.Social)}
+                >
+                  <ListItemText
+                    primary={
+                      <FormattedMessage
+                        id="social.media"
+                        defaultMessage={'Social Media'}
+                      />
+                    }
+                  />
+                </ListItemButton>
+              </ListItem>
+            </List>
+          </Collapse>
         </List>
       </nav>
       <Divider />
       <nav aria-label="secondary mailbox folders">
-        <List
-          subheader={
-            <ListSubheaderCustom>
-              <FormattedMessage id="layout" defaultMessage={'Layout'} />
-            </ListSubheaderCustom>
-          }
-        >
-          <ListItem disablePadding>
-            <ListItemButton
-              selected={activeMenu === ActiveMenu.Theme}
-              onClick={() => setActiveMenu(ActiveMenu.Theme)}
-            >
-              <ListItemText
-                primary={
-                  <FormattedMessage id="theme" defaultMessage={'Theme'} />
-                }
-              />
-            </ListItemButton>
-          </ListItem>
-          <ListItem disablePadding>
-            <ListItemButton
-              onClick={() => setActiveMenu(ActiveMenu.Pages)}
-              selected={activeMenu === ActiveMenu.Pages}
-            >
-              <ListItemText
-                primary={
-                  <FormattedMessage id="pages" defaultMessage={'Pages'} />
-                }
-              />
-            </ListItemButton>
-          </ListItem>
-          <ListItem disablePadding>
-            <ListItemButton
-              onClick={() => setActiveMenu(ActiveMenu.Menu)}
-              selected={activeMenu === ActiveMenu.Menu}
-            >
-              <ListItemText
-                primary={<FormattedMessage id="menu" defaultMessage={'Menu'} />}
-              />
-            </ListItemButton>
-          </ListItem>
-          <ListItem disablePadding>
-            <ListItemButton
-              onClick={() => setActiveMenu(ActiveMenu.FooterMenu)}
-              selected={activeMenu === ActiveMenu.FooterMenu}
-            >
-              <ListItemText
-                primary={
-                  <FormattedMessage
-                    id="footer.menu"
-                    defaultMessage={'Footer Menu'}
+        <List>
+          <ListItemButton onClick={handleClickLayout}>
+            <ListItemIcon>
+              <SpaceDashboardIcon />
+            </ListItemIcon>
+
+            <ListItemText
+              primary={
+                <FormattedMessage id="layout" defaultMessage={'Layout'} />
+              }
+            />
+            {openMenu.layout ? <ExpandLess /> : <ExpandMore />}
+          </ListItemButton>
+          <Collapse in={openMenu.layout} timeout="auto" unmountOnExit>
+            <List component="div" sx={{ pl: 4 }}>
+              <ListItem disablePadding>
+                <ListItemButton
+                  selected={activeMenu === ActiveMenu.Theme}
+                  onClick={() => handleChangeTab(ActiveMenu.Theme)}
+                >
+                  <ListItemText
+                    primary={
+                      <FormattedMessage id="theme" defaultMessage={'Theme'} />
+                    }
                   />
-                }
-              />
-            </ListItemButton>
-          </ListItem>
-          <ListItem
-            disablePadding
-            onClick={() => setActiveMenu(ActiveMenu.Seo)}
-            selected={activeMenu === ActiveMenu.Seo}
-          >
-            <ListItemButton>
-              <ListItemText
-                primary={<FormattedMessage id="seo" defaultMessage={'SEO'} />}
-              />
-            </ListItemButton>
-          </ListItem>
-          <ListItem
-            disablePadding
-            onClick={() => setActiveMenu(ActiveMenu.Analytics)}
-            selected={activeMenu === ActiveMenu.Analytics}
-          >
-            <ListItemButton>
+                </ListItemButton>
+              </ListItem>
+              <ListItem disablePadding>
+                <ListItemButton
+                  onClick={() => handleChangeTab(ActiveMenu.Pages)}
+                  selected={activeMenu === ActiveMenu.Pages}
+                >
+                  <ListItemText
+                    primary={
+                      <FormattedMessage id="pages" defaultMessage={'Pages'} />
+                    }
+                  />
+                </ListItemButton>
+              </ListItem>
+              <ListItem disablePadding>
+                <ListItemButton
+                  onClick={() => handleChangeTab(ActiveMenu.Menu)}
+                  selected={activeMenu === ActiveMenu.Menu}
+                >
+                  <ListItemText
+                    primary={
+                      <FormattedMessage id="menu" defaultMessage={'Menu'} />
+                    }
+                  />
+                </ListItemButton>
+              </ListItem>
+              <ListItem disablePadding>
+                <ListItemButton
+                  onClick={() => handleChangeTab(ActiveMenu.FooterMenu)}
+                  selected={activeMenu === ActiveMenu.FooterMenu}
+                >
+                  <ListItemText
+                    primary={
+                      <FormattedMessage
+                        id="footer.menu"
+                        defaultMessage={'Footer Menu'}
+                      />
+                    }
+                  />
+                </ListItemButton>
+              </ListItem>
+              <ListItem
+                disablePadding
+                onClick={() => handleChangeTab(ActiveMenu.Seo)}
+                selected={activeMenu === ActiveMenu.Seo}
+              >
+                <ListItemButton>
+                  <ListItemText
+                    primary={
+                      <FormattedMessage id="seo" defaultMessage={'SEO'} />
+                    }
+                  />
+                </ListItemButton>
+              </ListItem>
+              <ListItem
+                disablePadding
+                onClick={() => handleChangeTab(ActiveMenu.Analytics)}
+                selected={activeMenu === ActiveMenu.Analytics}
+              >
+                <ListItemButton>
+                  <ListItemText
+                    primary={
+                      <FormattedMessage
+                        id="analytics"
+                        defaultMessage={'Analytics'}
+                      />
+                    }
+                  />
+                </ListItemButton>
+              </ListItem>
+            </List>
+          </Collapse>
+        </List>
+      </nav>
+      <Divider />
+      <nav aria-label="fees">
+        <List>
+          <ListItemButton onClick={handleClickFees}>
+            <ListItemIcon>
+              <CurrencyExchangeIcon />
+            </ListItemIcon>
+
+            <ListItemText
+              primary={<FormattedMessage id="fee" defaultMessage={'Fees'} />}
+            />
+            {openMenu.fees ? <ExpandLess /> : <ExpandMore />}
+          </ListItemButton>
+          <Collapse in={openMenu.fees} timeout="auto" unmountOnExit>
+            <List component="div" sx={{ pl: 4 }}>
+              {activeBuilderKit !== BuilderKit.Swap && (
+                <ListItem disablePadding>
+                  <ListItemButton
+                    selected={activeMenu === ActiveMenu.MarketplaceFees}
+                    onClick={() => handleChangeTab(ActiveMenu.MarketplaceFees)}
+                  >
+                    <ListItemText
+                      primary={
+                        <FormattedMessage
+                          id="marketplace.fees.menu.container"
+                          defaultMessage={'Marketplace Fees'}
+                        />
+                      }
+                    />
+                  </ListItemButton>
+                </ListItem>
+              )}
+              {activeBuilderKit !== BuilderKit.NFT && (
+                <ListItem disablePadding>
+                  <ListItemButton
+                    selected={activeMenu === ActiveMenu.SwapFees}
+                    onClick={() => handleChangeTab(ActiveMenu.SwapFees)}
+                  >
+                    <ListItemText
+                      primary={
+                        <FormattedMessage
+                          id="swap.fees.menu.container"
+                          defaultMessage={'Swap Fees'}
+                        />
+                      }
+                    />
+                  </ListItemButton>
+                </ListItem>
+              )}
+            </List>
+          </Collapse>
+        </List>
+      </nav>
+      <Divider />
+      <nav aria-label="data">
+        <List>
+          <ListItemButton onClick={handleClickData}>
+            <ListItemIcon>
+              <DatasetIcon />
+            </ListItemIcon>
+
+            <ListItemText
+              primary={<FormattedMessage id="data" defaultMessage={'Data'} />}
+            />
+            {openMenu.data ? <ExpandLess /> : <ExpandMore />}
+          </ListItemButton>
+          <Collapse in={openMenu.data} timeout="auto" unmountOnExit>
+            <List component="div" sx={{ pl: 4 }}>
+              {activeBuilderKit !== BuilderKit.Swap && (
+                <ListItem disablePadding>
+                  <ListItemButton
+                    selected={activeMenu === ActiveMenu.Collections}
+                    onClick={() => handleChangeTab(ActiveMenu.Collections)}
+                  >
+                    <ListItemText
+                      primary={
+                        <FormattedMessage
+                          id="collections"
+                          defaultMessage={'Collections'}
+                        />
+                      }
+                    />
+                  </ListItemButton>
+                </ListItem>
+              )}
+              <ListItem disablePadding>
+                <ListItemButton
+                  selected={activeMenu === ActiveMenu.Tokens}
+                  onClick={() => handleChangeTab(ActiveMenu.Tokens)}
+                >
+                  <ListItemText
+                    primary={
+                      <FormattedMessage id="tokens" defaultMessage={'Tokens'} />
+                    }
+                  />
+                </ListItemButton>
+              </ListItem>
+            </List>
+          </Collapse>
+        </List>
+      </nav>
+      {true && (
+        <nav aria-label="analytics">
+          <List>
+            <ListItemButton onClick={handleClickAnalytics}>
+              <ListItemIcon>
+                <AnalyticsIcon />
+              </ListItemIcon>
+
               <ListItemText
                 primary={
                   <FormattedMessage
@@ -357,101 +564,41 @@ export function EditWizardContainer({ site }: Props) {
                   />
                 }
               />
+              {openMenu.analytics ? <ExpandLess /> : <ExpandMore />}
             </ListItemButton>
-          </ListItem>
-        </List>
-      </nav>
-      <Divider />
-      <nav aria-label="fees">
-        <List
-          subheader={
-            <ListSubheaderCustom>
-              <FormattedMessage id="fee" defaultMessage={'Fees'} />
-            </ListSubheaderCustom>
-          }
-        >
-          {activeBuilderKit !== BuilderKit.Swap && (
-            <ListItem disablePadding>
-              <ListItemButton
-                selected={activeMenu === ActiveMenu.MarketplaceFees}
-                onClick={() => setActiveMenu(ActiveMenu.MarketplaceFees)}
-              >
-                <ListItemText
-                  primary={
-                    <FormattedMessage
-                      id="marketplace.fees"
-                      defaultMessage={'Marketplace fees'}
+            <Collapse in={openMenu.analytics} timeout="auto" unmountOnExit>
+              <List component="div" sx={{ pl: 4 }}>
+                <ListItem disablePadding>
+                  <ListItemButton
+                    selected={activeMenu === ActiveMenu.UserEventAnalytics}
+                    onClick={() =>
+                      handleChangeTab(ActiveMenu.UserEventAnalytics)
+                    }
+                  >
+                    <ListItemText
+                      primary={
+                        <FormattedMessage
+                          id="events"
+                          defaultMessage={'Events'}
+                        />
+                      }
                     />
-                  }
-                />
-              </ListItemButton>
-            </ListItem>
-          )}
-          {activeBuilderKit !== BuilderKit.NFT && (
-            <ListItem disablePadding>
-              <ListItemButton
-                selected={activeMenu === ActiveMenu.SwapFees}
-                onClick={() => setActiveMenu(ActiveMenu.SwapFees)}
-              >
-                <ListItemText
-                  primary={
-                    <FormattedMessage
-                      id="swap.fees"
-                      defaultMessage={'Swap fees'}
-                    />
-                  }
-                />
-              </ListItemButton>
-            </ListItem>
-          )}
-        </List>
-      </nav>
-      <Divider />
-      <nav aria-label="data">
-        <List
-          subheader={
-            <ListSubheaderCustom>
-              <FormattedMessage id="data" defaultMessage={'Data'} />
-            </ListSubheaderCustom>
-          }
-        >
-          {activeBuilderKit !== BuilderKit.Swap && (
-            <ListItem disablePadding>
-              <ListItemButton
-                selected={activeMenu === ActiveMenu.Collections}
-                onClick={() => setActiveMenu(ActiveMenu.Collections)}
-              >
-                <ListItemText
-                  primary={
-                    <FormattedMessage
-                      id="collections"
-                      defaultMessage={'Collections'}
-                    />
-                  }
-                />
-              </ListItemButton>
-            </ListItem>
-          )}
-          <ListItem disablePadding>
-            <ListItemButton
-              selected={activeMenu === ActiveMenu.Tokens}
-              onClick={() => setActiveMenu(ActiveMenu.Tokens)}
-            >
-              <ListItemText
-                primary={
-                  <FormattedMessage id="tokens" defaultMessage={'Tokens'} />
-                }
-              />
-            </ListItemButton>
-          </ListItem>
-        </List>
-      </nav>
+                  </ListItemButton>
+                </ListItem>
+              </List>
+            </Collapse>
+          </List>
+        </nav>
+      )}
     </Box>
   );
 
   return (
     <TourProvider
-      steps={OnboardBuilderSteps({ onChangeMenu: setActiveMenu })}
+      steps={OnboardBuilderSteps({
+        onChangeMenu: handleChangeTab,
+        onChangeSidebar: setOpenMenu,
+      })}
       styles={{
         popover: (base) => ({
           ...base,
@@ -555,7 +702,10 @@ export function EditWizardContainer({ site }: Props) {
                   },
                   {
                     caption: (
-                      <FormattedMessage id="edit" defaultMessage="Edit" />
+                      <FormattedMessage
+                        id="edit.app"
+                        defaultMessage="Edit App"
+                      />
                     ),
                     uri: '/admin/edit',
                     active: true,
@@ -577,31 +727,10 @@ export function EditWizardContainer({ site }: Props) {
                   <Typography variant="h5">
                     <FormattedMessage id="edit.app" defaultMessage="Edit App" />
                   </Typography>
-                  <BuilderKitMenu
-                    menu={activeBuilderKit}
-                    onChangeMenu={(menu) => setActiveBuilderKit(menu)}
-                  />
-                  <TourButton />
+
+                  {/* <TourButton />*/}
                 </Stack>
               )}
-              <Stack direction={'row'} spacing={2} alignItems={'center'}>
-                <PreviewAppButton appConfig={wizardConfig} />
-                {site?.previewUrl && (
-                  <Box className={'preview-app-link'}>
-                    <Typography variant="body1" className="">
-                      <FormattedMessage
-                        id="preview.url"
-                        defaultMessage="Preview Url"
-                      />
-                      :
-                    </Typography>
-
-                    <Link target={'_blank'} href={site.previewUrl}>
-                      {site.previewUrl}
-                    </Link>
-                  </Box>
-                )}
-              </Stack>
 
               {isMobile && (
                 <Button
@@ -612,112 +741,158 @@ export function EditWizardContainer({ site }: Props) {
                   <FormattedMessage id="menu" defaultMessage="Menu" />
                 </Button>
               )}
+              {!site?.emailVerified && isLoggedIn && (
+                <ConfirmationEmailMessage site={site} />
+              )}
             </Stack>
           </Grid>
-          {!site?.emailVerified && isLoggedIn && (
-            <Grid item xs={12} sm={12}>
-              <ConfirmationEmailMessage site={site} />
-            </Grid>
-          )}
-          <Grid item xs={12} sm={2}>
+          <Grid item xs={12} sm={12}>
+            <Stack
+              direction={'row'}
+              spacing={1}
+              justifyContent={'space-between'}
+            >
+              <BuilderKitMenu
+                menu={activeBuilderKit}
+                onChangeMenu={(menu) => setActiveBuilderKit(menu)}
+              />
+              <Stack direction={'row'} alignItems={'center'} spacing={2}>
+                <PreviewAppButton appConfig={wizardConfig} />
+                {site?.previewUrl && (
+                  <Button
+                    href={site?.previewUrl}
+                    target={'_blank'}
+                    startIcon={<LinkIcon />}
+                  >
+                    <FormattedMessage id="open.url" defaultMessage="Open url" />
+                  </Button>
+                )}
+              </Stack>
+            </Stack>
+          </Grid>
+          {/* <Grid item xs={12} sm={12}>
+            <Stack spacing={2} direction={'row'} alignItems={'center'}>
+              <Typography variant="body2" sx={{ maxWidth: '300px' }}>
+                <FormattedMessage
+                  id={'dexappbuilder.kits.explainer'}
+                  defaultMessage={
+                    'Select the KIT containing the features you wish to preview for creating your app.'
+                  }
+                ></FormattedMessage>
+              </Typography>
+              <BuilderKitMenu
+                menu={activeBuilderKit}
+                onChangeMenu={(menu) => setActiveBuilderKit(menu)}
+              />
+                </Stack>
+          </Grid>*/}
+
+          <Grid item xs={12} sm={2} sx={{}}>
             {!isMobile && renderMenu()}
           </Grid>
+          <Grid item xs={12} sm={0.1}></Grid>
+          <Grid item xs={12} sm={9.8}>
+            <Box>
+              <Stack spacing={2} className={'builder-forms'}>
+                {activeMenu === ActiveMenu.General && config && (
+                  <GeneralWizardContainer
+                    config={config}
+                    onSave={handleSave}
+                    onChange={handleChange}
+                  />
+                )}
+                {activeMenu === ActiveMenu.Domain && config && (
+                  <DomainWizardContainer
+                    config={config}
+                    onSave={handleSave}
+                    site={site}
+                  />
+                )}
 
-          <Grid item xs={12} sm={10}>
-            <Stack spacing={2} className={'builder-forms'}>
-              {activeMenu === ActiveMenu.General && config && (
-                <GeneralWizardContainer
-                  config={config}
-                  onSave={handleSave}
-                  onChange={handleChange}
-                />
-              )}
-              {activeMenu === ActiveMenu.Domain && config && (
-                <DomainWizardContainer
-                  config={config}
-                  onSave={handleSave}
-                  site={site}
-                />
-              )}
+                {activeMenu === ActiveMenu.Ownership && config && (
+                  <OwnershipWizardContainer
+                    config={config}
+                    onSave={handleSave}
+                    site={site}
+                  />
+                )}
 
-              {activeMenu === ActiveMenu.Ownership && config && (
-                <OwnershipWizardContainer
-                  config={config}
-                  onSave={handleSave}
-                  site={site}
-                />
-              )}
+                {activeMenu === ActiveMenu.Theme && config && (
+                  <ThemeWizardContainer
+                    config={config}
+                    showSwap={activeBuilderKit === BuilderKit.Swap}
+                    onSave={handleSave}
+                    onChange={handleChange}
+                  />
+                )}
 
-              {activeMenu === ActiveMenu.Theme && config && (
-                <ThemeWizardContainer
-                  config={config}
-                  showSwap={activeBuilderKit === BuilderKit.Swap}
-                  onSave={handleSave}
-                  onChange={handleChange}
-                />
-              )}
+                {activeMenu === ActiveMenu.Pages && config && (
+                  <PagesWizardContainer
+                    config={config}
+                    onSave={handleSave}
+                    builderKit={activeBuilderKit}
+                  />
+                )}
 
-              {activeMenu === ActiveMenu.Pages && config && (
-                <PagesWizardContainer
-                  config={config}
-                  onSave={handleSave}
-                  builderKit={activeBuilderKit}
-                />
-              )}
+                {activeMenu === ActiveMenu.MarketplaceFees && config && (
+                  <MarketplaceFeeWizardContainer
+                    config={config}
+                    onSave={handleSave}
+                  />
+                )}
 
-              {activeMenu === ActiveMenu.MarketplaceFees && config && (
-                <MarketplaceFeeWizardContainer
-                  config={config}
-                  onSave={handleSave}
-                />
-              )}
+                {activeMenu === ActiveMenu.SwapFees && config && (
+                  <SwapFeeWizardContainer config={config} onSave={handleSave} />
+                )}
+                {activeMenu === ActiveMenu.Collections && (
+                  <CollectionWizardContainer
+                    config={config}
+                    onSave={handleSave}
+                  />
+                )}
 
-              {activeMenu === ActiveMenu.SwapFees && config && (
-                <SwapFeeWizardContainer config={config} onSave={handleSave} />
-              )}
-              {activeMenu === ActiveMenu.Collections && (
-                <CollectionWizardContainer
-                  config={config}
-                  onSave={handleSave}
-                />
-              )}
+                {activeMenu === ActiveMenu.Menu && config && (
+                  <PagesMenuWizardContainer
+                    config={config}
+                    onSave={handleSave}
+                    onChange={handleChange}
+                  />
+                )}
 
-              {activeMenu === ActiveMenu.Menu && config && (
-                <PagesMenuWizardContainer
-                  config={config}
-                  onSave={handleSave}
-                  onChange={handleChange}
-                />
-              )}
+                {activeMenu === ActiveMenu.Tokens && config && (
+                  <TokenWizardContainer config={config} onSave={handleSave} />
+                )}
 
-              {activeMenu === ActiveMenu.Tokens && config && (
-                <TokenWizardContainer config={config} onSave={handleSave} />
-              )}
+                {activeMenu === ActiveMenu.Seo && config && (
+                  <SeoWizardContainer config={config} onSave={handleSave} />
+                )}
 
-              {activeMenu === ActiveMenu.Seo && config && (
-                <SeoWizardContainer config={config} onSave={handleSave} />
-              )}
-
-              {activeMenu === ActiveMenu.Analytics && config && (
-                <AnalyticsWizardContainer config={config} onSave={handleSave} />
-              )}
-              {activeMenu === ActiveMenu.Social && config && (
-                <SocialWizardContainer
-                  config={config}
-                  onSave={handleSave}
-                  onChange={handleChange}
-                />
-              )}
-              {activeMenu === ActiveMenu.FooterMenu && config && (
-                <FooterMenuWizardContainer
-                  config={config}
-                  onSave={handleSave}
-                  onChange={handleChange}
-                />
-              )}
-            </Stack>
-          </Grid>
-          {/*false && theme && (
+                {activeMenu === ActiveMenu.Analytics && config && (
+                  <AnalyticsWizardContainer
+                    config={config}
+                    onSave={handleSave}
+                  />
+                )}
+                {activeMenu === ActiveMenu.Social && config && (
+                  <SocialWizardContainer
+                    config={config}
+                    onSave={handleSave}
+                    onChange={handleChange}
+                  />
+                )}
+                {activeMenu === ActiveMenu.FooterMenu && config && (
+                  <FooterMenuWizardContainer
+                    config={config}
+                    onSave={handleSave}
+                    onChange={handleChange}
+                  />
+                )}
+                {activeMenu === ActiveMenu.UserEventAnalytics && config && (
+                  <UserEventAnalyticsContainer siteId={site?.id} />
+                )}
+              </Stack>
+            </Box>
+            {/*false && theme && (
             <Grid item xs={12} sm={6}>
               <ThemeProvider theme={selectedTheme ? selectedTheme : theme}>
                 <Container>
@@ -730,6 +905,7 @@ export function EditWizardContainer({ site }: Props) {
               </ThemeProvider>
             </Grid>
           )*/}
+          </Grid>
         </Grid>
       </Container>
     </TourProvider>

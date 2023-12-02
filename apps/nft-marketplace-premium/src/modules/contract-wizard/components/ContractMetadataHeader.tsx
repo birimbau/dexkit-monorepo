@@ -21,27 +21,71 @@ import Typography from '@mui/material/Typography';
 import {
   CustomContractMetadata,
   useContract,
-  useMetadata,
+  useContractMetadata,
 } from '@thirdweb-dev/react';
 import Image from 'next/image';
 import { FormattedMessage, useIntl } from 'react-intl';
 import Link from 'src/components/Link';
+
 const Img = styled(Image)({});
 
 interface Props {
   address: string;
   contractType?: string | null;
+  contractTypeV2?: string;
   network?: string;
+  hidePublicPageUrl?: boolean;
 }
 
-export function ContractMetadataHeader(props: Props) {
-  const { address, contractType, network } = props;
+export function ContractMetadataHeader({
+  address,
+  contractType,
+  network,
+  contractTypeV2,
+  hidePublicPageUrl,
+}: Props) {
   const { data: contract } = useContract(address);
-  const { data } = useMetadata(contract);
+  const { data } = useContractMetadata(contract);
   const { formatMessage } = useIntl();
+
   const metadata = data as CustomContractMetadata;
   const theme = useTheme();
   const chainId = NETWORK_FROM_SLUG(network)?.chainId;
+
+  const getContractUrl = (contractType?: string) => {
+    let url: string | null = '';
+    if (hidePublicPageUrl) {
+      return null;
+    }
+
+    switch (contractType) {
+      case 'NFTStake':
+      case 'EditionStake':
+      case 'TokenStake':
+        url = `/stake/${network}/${address}`;
+        break;
+      case 'TokenERC721':
+        url = `/collection/${network}/${address}`;
+        break;
+      case 'TokenERC1155':
+        url = `/collection/${network}/${address}`;
+        break;
+      case 'TokenERC20':
+        url = `/token/${network}/${address}`;
+        break;
+      case 'DropERC1155':
+        url = null;
+        break;
+      case 'DropERC721':
+        url = `/drop/nft/${network}/${address}`;
+        break;
+      case 'DropERC20':
+        url = `/drop/token/${network}/${address}`;
+        break;
+    }
+
+    return url;
+  };
 
   return (
     <Grid container spacing={2}>
@@ -169,13 +213,21 @@ export function ContractMetadataHeader(props: Props) {
               >
                 <FormattedMessage id="explorer" defaultMessage="Explorer" />
               </Button>
+              {getContractUrl(contractTypeV2) && (
+                <Link href={getContractUrl(contractTypeV2) as string}>
+                  <FormattedMessage
+                    id="view.public.page"
+                    defaultMessage="View public page"
+                  />
+                </Link>
+              )}
               <Chip
                 label={
                   contractType
                     ? THIRDWEB_CONTRACT_TYPES[contractType]
                     : 'custom'
                 }
-              ></Chip>
+              />
             </Stack>
           </Grid>
         </Grid>

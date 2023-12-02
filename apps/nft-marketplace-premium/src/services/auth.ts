@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { DEXKIT_BASE_API_URL } from '../constants';
-
 //const MY_APPS_ENDPOINT = 'https://dexkitapi-8oo4v.ondigitalocean.app';
 //const AUTH_ENDPOINT = 'http://localhost:3001/auth';
 //const AUTH_ENDPOINT = 'https://goldfish-app-lh5o5.ondigitalocean.app/auth'

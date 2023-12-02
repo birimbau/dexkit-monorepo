@@ -35,13 +35,13 @@ export default function FooterMenuWizardContainer({
     <Grid container spacing={2}>
       <Grid item xs={12}>
         <Stack>
-          <Typography variant={'subtitle2'}>
-            <FormattedMessage id="footer.menu" defaultMessage="Footer menu" />
+          <Typography variant={'h6'}>
+            <FormattedMessage id="footer.menu" defaultMessage="Footer Menu" />
           </Typography>
           <Typography variant={'body2'}>
             <FormattedMessage
-              id="edit.footer.menu"
-              defaultMessage="Edit Footer menu"
+              id="footer.wizard.description"
+              defaultMessage="Create and edit your app's footer menu"
             />
           </Typography>
         </Stack>

@@ -13,9 +13,8 @@ import {
 import Facebook from '@mui/icons-material/Facebook';
 import LinkedIn from '@mui/icons-material/LinkedIn';
 import Reddit from '@mui/icons-material/Reddit';
-import YouTube from '@mui/icons-material/YouTube';
-
 import TwitterIcon from '@mui/icons-material/Twitter';
+import YouTube from '@mui/icons-material/YouTube';
 import Image from 'next/image';
 import { useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
@@ -141,21 +140,9 @@ export function Footer({ appConfig, isPreview, appNFT }: Props) {
                   {appConfig.name}
                 </Link>{' '}
                 <FormattedMessage
-                  defaultMessage="is powered by"
-                  id="is.powered.by"
-                  description="is powered by"
-                />{' '}
-                <Link
-                  variant="inherit"
-                  href={isPreview ? '#' : 'https://0x.org/'}
-                  color="inherit"
-                >
-                  <strong>0x</strong>
-                </Link>{' '}
-                <FormattedMessage
-                  id="and.made.with.love.by"
-                  defaultMessage="and made with ❤️ by"
-                  description="and made with ❤️ by"
+                  id="made.with.love.by"
+                  defaultMessage="made with ❤️ by"
+                  description="made with ❤️ by"
                 />{' '}
                 <Link
                   variant="inherit"

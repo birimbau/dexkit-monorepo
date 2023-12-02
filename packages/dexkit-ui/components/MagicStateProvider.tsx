@@ -5,9 +5,8 @@ import { ReactNode, useCallback, useEffect, useState } from "react";
 
 import MagicSignDataDialog from "../components/dialogs/MagicSignDataDialog";
 
+import { MagicConnector } from "@dexkit/wallet-connectors/connectors/magic";
 import { MagicStateContext } from "../context/MagicStateContext";
-
-import { MagicConnector } from "@dexkit/core/types/magic";
 
 interface Props {
   children: ReactNode;

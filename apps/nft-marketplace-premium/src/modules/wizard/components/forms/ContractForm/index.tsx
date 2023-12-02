@@ -41,11 +41,16 @@ export interface ContractFormProps {
   updateOnChange?: boolean;
   onChange: (
     data: ContractFormParams,
-    options?: CellPluginOnChangeOptions | undefined
+    options?: CellPluginOnChangeOptions | undefined,
+  ) => void;
+  onSave: (
+    data: ContractFormParams,
+    options?: CellPluginOnChangeOptions | undefined,
   ) => void;
   onCancel?: () => void;
   onValid?: (isValid: boolean) => void;
   fetchOnMount?: boolean;
+  showSaveButton?: boolean;
 }
 
 type TABS = 'write' | 'read';
@@ -54,15 +59,17 @@ export default function ContractForm({
   params,
   updateOnChange,
   fetchOnMount,
+  onSave,
   onChange,
   onCancel,
   onValid,
+  showSaveButton,
 }: ContractFormProps) {
   const handleSubmit = async (
     values: ContractFormParams,
-    helpers: FormikHelpers<ContractFormParams>
+    helpers: FormikHelpers<ContractFormParams>,
   ) => {
-    onChange({
+    onSave({
       ...values,
       // to solve a bug of formik.
       chainId: parseChainId(values.chainId),
@@ -89,7 +96,7 @@ export default function ContractForm({
 
   const handleChangeVisibility = (
     event: SelectChangeEvent<string>,
-    child: ReactNode
+    child: ReactNode,
   ) => {
     setFieldVisibility(event.target.value);
   };
@@ -215,9 +222,9 @@ export default function ContractForm({
                 </Grid>
               </Grid>
             )}
-            <Grid item xs={12}>
-              <Stack justifyContent="flex-end" direction="row" spacing={2}>
-                {!updateOnChange && (
+            {showSaveButton && (
+              <Grid item xs={12}>
+                <Stack justifyContent="flex-end" direction="row" spacing={2}>
                   <Button
                     onClick={submitForm}
                     variant="contained"
@@ -225,15 +232,15 @@ export default function ContractForm({
                   >
                     <FormattedMessage id="Save" defaultMessage="Save" />
                   </Button>
-                )}
 
-                {onCancel && (
-                  <Button onClick={onCancel}>
-                    <FormattedMessage id="cancel" defaultMessage="Cancel" />
-                  </Button>
-                )}
-              </Stack>
-            </Grid>
+                  {onCancel && (
+                    <Button onClick={onCancel}>
+                      <FormattedMessage id="cancel" defaultMessage="Cancel" />
+                    </Button>
+                  )}
+                </Stack>
+              </Grid>
+            )}
           </Grid>
         </>
       )}

@@ -6,13 +6,13 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   switchNetworkChainIdAtom,
   switchNetworkOpenAtom,
-  tokensAtom
+  tokensAtom,
 } from '../state/atoms';
 import {
   getNativeCurrencyImage,
   getNativeCurrencySymbol,
   getProviderByChainId,
-  switchNetwork
+  switchNetwork,
 } from '../utils/blockchain';
 
 import { ZEROEX_NATIVE_TOKEN_ADDRESS } from '../constants';
@@ -29,13 +29,16 @@ import { parse, ParseOutput } from 'eth-url-parser';
 import { ethers } from 'ethers';
 import { getTokenData } from '../services/blockchain';
 import { useAppConfig } from './app';
-export function useEvmCoins({ defaultChainId }: { defaultChainId?: ChainId }): EvmCoin[] {
+export function useEvmCoins({
+  defaultChainId,
+}: {
+  defaultChainId?: ChainId;
+}): EvmCoin[] {
   const { chainId: walletChainId } = useWeb3React();
   const chainId = defaultChainId || walletChainId;
   const tokens = useTokenList({ chainId, includeNative: true });
 
-  return useMemo(() => tokens.map(convertTokenToEvmCoin), [tokens])
-
+  return useMemo(() => tokens.map(convertTokenToEvmCoin), [tokens]);
 }
 
 export function useBlockNumber() {
@@ -82,7 +85,7 @@ export function useSwitchNetworkMutation() {
       if (connector) {
         return switchNetwork(connector, chainId);
       }
-    }
+    },
   );
 }
 
@@ -90,7 +93,7 @@ export function useTokenList({
   chainId,
   includeNative = false,
   onlyTradable,
-  onlyNative
+  onlyNative,
 }: {
   chainId?: number;
   includeNative?: boolean;
@@ -112,8 +115,6 @@ export function useTokenList({
   // TODO: do the right logic
   let tokens = [...tokensValues, ...tokenListJson];
 
-
-
   if (onlyTradable) {
     tokens = tokens.filter((t) => Boolean(t.tradable));
   }
@@ -131,10 +132,9 @@ export function useTokenList({
           logoURI: getNativeCurrencyImage(chainId),
           name: getNativeCurrencySymbol(chainId),
           symbol: getNativeCurrencySymbol(chainId),
-        }
+        },
       ] as Token[];
     }
-
 
     let tokenList: Token[] = [
       ...tokens.filter((token: Token) => token.chainId === chainId),
@@ -144,7 +144,7 @@ export function useTokenList({
     const isNoWrappedTokenInList =
       tokenList &&
       tokenList.findIndex((t) => t.address.toLowerCase() === wrappedAddress) ===
-      -1;
+        -1;
     // Wrapped Token is not on the list, we will add it here
     if (wrappedAddress && isNoWrappedTokenInList) {
       tokenList = [
@@ -179,15 +179,15 @@ export function useTokenList({
 }
 /**
  * If chainId is not passed it returns all tokens from all chains
- * @param param0 
- * @returns 
+ * @param param0
+ * @returns
  */
 export function useAllTokenList({
   chainId,
   includeNative = false,
   onlyTradable,
   onlyNative,
-  isWizardConfig
+  isWizardConfig,
 }: {
   chainId?: number;
   includeNative?: boolean;
@@ -215,14 +215,11 @@ export function useAllTokenList({
   // TODO: do the right logic
   let tokens = [...tokensValues, ...tokenListJson];
 
-
-
   if (onlyTradable) {
     tokens = tokens.filter((t) => Boolean(t.tradable));
   }
 
   return useMemo(() => {
-
     if (onlyNative && chainId) {
       return [
         {
@@ -232,10 +229,10 @@ export function useAllTokenList({
           logoURI: getNativeCurrencyImage(chainId),
           name: getNativeCurrencySymbol(chainId),
           symbol: getNativeCurrencySymbol(chainId),
-        }
+        },
       ] as Token[];
     }
-    let tokenList: Token[] = [...tokens]
+    let tokenList: Token[] = [...tokens];
     if (chainId) {
       tokenList = [
         ...tokens.filter((token: Token) => token.chainId === chainId),
@@ -246,8 +243,9 @@ export function useAllTokenList({
       const wrappedAddress = NETWORKS[chainId]?.wrappedAddress;
       const isNoWrappedTokenInList =
         tokenList &&
-        tokenList.findIndex((t) => t.address.toLowerCase() === wrappedAddress) ===
-        -1;
+        tokenList.findIndex(
+          (t) => t.address.toLowerCase() === wrappedAddress,
+        ) === -1;
       // Wrapped Token is not on the list, we will add it here
       if (wrappedAddress && isNoWrappedTokenInList) {
         tokenList = [
@@ -269,8 +267,9 @@ export function useAllTokenList({
         const wrappedAddress = NETWORKS[chain]?.wrappedAddress;
         const isNoWrappedTokenInList =
           tokenList &&
-          tokenList.findIndex((t) => t.address.toLowerCase() === wrappedAddress) ===
-          -1;
+          tokenList.findIndex(
+            (t) => t.address.toLowerCase() === wrappedAddress,
+          ) === -1;
         // Wrapped Token is not on the list, we will add it here
         if (wrappedAddress && isNoWrappedTokenInList) {
           tokenList = [
@@ -312,7 +311,7 @@ export function useAllTokenList({
             symbol: getNativeCurrencySymbol(chain),
           },
           ...tokenList,
-        ] as Token[];;
+        ] as Token[];
       }
     }
 
@@ -325,7 +324,7 @@ export function useTokenData(options?: Omit<UseMutationOptions, any>) {
     async ({ chainId, address }: { chainId: number; address: string }) => {
       return await getTokenData(chainId, address);
     },
-    options
+    options,
   );
 }
 
@@ -333,18 +332,21 @@ export function useNetworkProvider(chainId?: ChainId) {
   return getProviderByChainId(chainId);
 }
 
-
-export function useParsePaymentRequest({ paymentURL }: { paymentURL?: string }) {
+export function useParsePaymentRequest({
+  paymentURL,
+}: {
+  paymentURL?: string;
+}) {
   const paymentUrlParsed = useMemo(() => {
     if (paymentURL) {
       const parsedPayment = parse(paymentURL);
       let url: {
-        chainId?: ChainId,
-        to?: string,
-        parsedOutput?: ParseOutput
+        chainId?: ChainId;
+        to?: string;
+        parsedOutput?: ParseOutput;
       } = {};
       if (parsedPayment) {
-        url.parsedOutput = parsedPayment
+        url.parsedOutput = parsedPayment;
       }
 
       if (parsedPayment.chain_id) {
@@ -352,7 +354,7 @@ export function useParsePaymentRequest({ paymentURL }: { paymentURL?: string }) 
       }
       if (parsedPayment.function_name === 'transfer') {
         if (parsedPayment.parameters && parsedPayment.parameters['address']) {
-          url.to = parsedPayment.parameters['address']
+          url.to = parsedPayment.parameters['address'];
         }
       } else {
         if (parsedPayment.function_name === undefined) {
@@ -363,8 +365,7 @@ export function useParsePaymentRequest({ paymentURL }: { paymentURL?: string }) 
       }
       return url;
     }
-  }, [paymentURL])
-
+  }, [paymentURL]);
 
   const evmCoins = useEvmCoins({ defaultChainId: paymentUrlParsed?.chainId });
 
@@ -372,46 +373,62 @@ export function useParsePaymentRequest({ paymentURL }: { paymentURL?: string }) 
     if (paymentUrlParsed?.parsedOutput && evmCoins) {
       let defaultCoin;
       if (paymentUrlParsed.parsedOutput.function_name === 'transfer') {
-        if (paymentUrlParsed.chainId && paymentUrlParsed.parsedOutput.target_address) {
-          const contractAddress = paymentUrlParsed.parsedOutput.target_address.toLowerCase();
-          defaultCoin = evmCoins.
-            filter(e => e.coinType === CoinTypes.EVM_ERC20).find(c => {
+        if (
+          paymentUrlParsed.chainId &&
+          paymentUrlParsed.parsedOutput.target_address
+        ) {
+          const contractAddress =
+            paymentUrlParsed.parsedOutput.target_address.toLowerCase();
+          defaultCoin = evmCoins
+            .filter((e) => e.coinType === CoinTypes.EVM_ERC20)
+            .find((c) => {
               if (c.coinType === CoinTypes.EVM_ERC20) {
-                return c.contractAddress.toLowerCase() === contractAddress && paymentUrlParsed.chainId === c.network.chainId
+                return (
+                  c.contractAddress.toLowerCase() === contractAddress &&
+                  paymentUrlParsed.chainId === c.network.chainId
+                );
               }
-            })
+            });
         }
       }
       if (paymentUrlParsed.parsedOutput.function_name === undefined) {
-        defaultCoin = evmCoins.find(c => c.coinType === CoinTypes.EVM_NATIVE && c.network.chainId === paymentUrlParsed.chainId);
+        defaultCoin = evmCoins.find(
+          (c) =>
+            c.coinType === CoinTypes.EVM_NATIVE &&
+            c.network.chainId === paymentUrlParsed.chainId,
+        );
       }
-      return defaultCoin
+      return defaultCoin;
     }
-  }, [paymentUrlParsed, evmCoins])
+  }, [paymentUrlParsed, evmCoins]);
   const amount = useMemo(() => {
     if (defaultCoin && paymentUrlParsed?.parsedOutput) {
       let amount;
       const parsedPayment = paymentUrlParsed?.parsedOutput;
 
       if (parsedPayment.function_name === 'transfer') {
-        if (parsedPayment.parameters && parsedPayment.parameters['uint256'] && defaultCoin.decimals !== undefined) {
-          amount = ethers.utils.formatUnits(parsedPayment.parameters['uint256'], defaultCoin.decimals)
+        if (
+          parsedPayment.parameters &&
+          parsedPayment.parameters['uint256'] &&
+          defaultCoin.decimals !== undefined
+        ) {
+          amount = ethers.utils.formatUnits(
+            parsedPayment.parameters['uint256'],
+            defaultCoin.decimals,
+          );
         }
       }
       if (parsedPayment.function_name === undefined) {
         if (parsedPayment.parameters && parsedPayment.parameters['value']) {
-          amount = ethers.utils.formatEther(parsedPayment.parameters['value'])
-
+          amount = ethers.utils.formatEther(parsedPayment.parameters['value']);
         }
       }
       return amount;
     }
-
-  }, [defaultCoin])
+  }, [defaultCoin]);
   return {
     ...paymentUrlParsed,
     amount,
-    defaultCoin
-  }
+    defaultCoin,
+  };
 }
-

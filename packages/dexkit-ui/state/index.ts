@@ -4,7 +4,6 @@ import { ThemeMode } from "../constants/enum";
 
 
 
-
 export const accountAssetsAtom = atomWithStorage<{
   data?: { network?: string, assets?: Asset[], account?: string, total?: number, page?: number, perPage?: number; }[]
   lastTimeFetched?: {

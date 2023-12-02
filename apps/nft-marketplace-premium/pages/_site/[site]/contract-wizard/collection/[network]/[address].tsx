@@ -8,7 +8,7 @@ import { ContractCollectionHeader } from '@/modules/contract-wizard/components/C
 import ContractCollectionPageHeader from '@/modules/contract-wizard/components/CollectionPageHeader';
 import { ChipFilterTraits } from '@/modules/nft/components/ChipFilterTraits';
 import { CollectionStats } from '@/modules/nft/components/CollectionStats';
-import { Search } from '@mui/icons-material';
+import Search from '@mui/icons-material/Search';
 import {
   Divider,
   Drawer,

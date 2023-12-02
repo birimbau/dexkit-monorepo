@@ -18,25 +18,21 @@ import {
   Typography,
 } from '@mui/material';
 
-import { MagicConnector } from '@dexkit/core/types/magic';
-import MagicNetworkSelect from '@dexkit/ui/components/MagicNetworkSelect';
-
+import { useAuthUserQuery } from '@/modules/user/hooks';
 import AttachMoney from '@mui/icons-material/AttachMoney';
-import Language from '@mui/icons-material/Language';
-
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
+import Language from '@mui/icons-material/Language';
 import { useWeb3React } from '@web3-react/core';
 import { useUpdateAtom } from 'jotai/utils';
 import { FormattedMessage } from 'react-intl';
 import { useCurrency } from 'src/hooks/currency';
 import { useAppConfig, useConnectWalletDialog, useLocale } from '../hooks/app';
 import { showSelectCurrencyAtom, showSelectLocaleAtom } from '../state/atoms';
-import { getChainLogoImage, getChainName } from '../utils/blockchain';
 import DrawerMenu from './DrawerMenu';
 import Wallet from './icons/Wallet';
 import Link from './Link';
 import { ThemeModeSelector } from './ThemeModeSelector';
-import { WalletButton } from './WalletButton';
+import WalletContent from './WalletContent';
 
 const CustomListItemSecondaryAction = styled(ListItemSecondaryAction)({
   display: 'flex',
@@ -76,6 +72,9 @@ function AppDrawer({ open, onClose }: Props) {
     setShowShowSelectLocale(true);
   };
 
+  const userQuery = useAuthUserQuery();
+  const user = userQuery.data;
+
   return (
     <Drawer open={open} onClose={onClose}>
       <Box
@@ -99,37 +98,23 @@ function AppDrawer({ open, onClose }: Props) {
             </Button>
           ) : (
             <Stack spacing={2}>
-              <WalletButton align="left" />
-              {connector instanceof MagicConnector ? (
-                <MagicNetworkSelect />
-              ) : (
-                <Box
-                  sx={(theme) => ({
-                    px: 2,
-                    py: 1,
-                    border: `1px solid ${theme.palette.divider}`,
-                    borderRadius: theme.spacing(1),
-                  })}
-                >
-                  <Stack
-                    direction="row"
-                    spacing={1}
-                    alignItems="center"
-                    alignContent="center"
-                  >
-                    <Avatar
-                      src={getChainLogoImage(chainId)}
-                      sx={(theme) => ({
-                        width: 'auto',
-                        height: theme.spacing(2),
-                      })}
-                    />
-                    <Typography variant="body1">
-                      {getChainName(chainId)}
-                    </Typography>
-                  </Stack>
-                </Box>
+              {user && (
+                <>
+                  <Box>
+                    <Stack direction="row">
+                      <Avatar src={user?.profileImageURL} />
+                      <Box>
+                        <Typography variant="body1">
+                          {user?.username}
+                        </Typography>
+                      </Box>
+                    </Stack>
+                  </Box>
+                  <Divider />
+                </>
               )}
+
+              <WalletContent />
             </Stack>
           )}
         </Box>

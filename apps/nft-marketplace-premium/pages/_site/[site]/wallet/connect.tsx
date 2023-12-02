@@ -19,8 +19,8 @@ import walletConnectIcon from '../../../../public/assets/images/walletconnect-ci
 import { FormattedMessage } from 'react-intl';
 import { PageHeader } from '../../../../src/components/PageHeader';
 
-import { useWalletActivate } from '@dexkit/core/hooks';
-import { WalletActivateParams } from '@dexkit/core/types';
+import { useWalletActivate } from '@dexkit/wallet-connectors/hooks';
+import { WalletActivateParams } from '@dexkit/wallet-connectors/types';
 import { selectedWalletAtom } from 'src/state/atoms';
 import { getAppConfig } from '../../../../src/services/app';
 

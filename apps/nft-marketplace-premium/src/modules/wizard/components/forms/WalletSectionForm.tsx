@@ -8,19 +8,29 @@ import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import '@uiw/react-markdown-preview/markdown.css';
 import '@uiw/react-md-editor/markdown-editor.css';
+import { useEffect } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 interface Props {
   section?: WalletPageSection;
   onSave: (section: AppPageSection) => void;
+  onChange: (section: AppPageSection) => void;
   onCancel: () => void;
 }
 
 export default function WalletSectionForm({
   section,
   onSave,
+  onChange,
   onCancel,
 }: Props) {
+  useEffect(() => {
+    onChange({
+      ...section,
+      type: 'wallet',
+    });
+  }, []);
+
   return (
     <Grid container spacing={2}>
       <Grid item xs={12}>

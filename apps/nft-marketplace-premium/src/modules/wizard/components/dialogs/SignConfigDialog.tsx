@@ -53,10 +53,6 @@ function SignConfigDialog({
   };
 
   const handleClose = () => {
-    if (isSuccess && !isEdit) {
-      return handleGoToMarketplaces();
-    }
-
     if (onClose) {
       onClose({}, 'backdropClick');
     }
@@ -70,12 +66,15 @@ function SignConfigDialog({
     <Dialog {...dialogProps} onClose={handleClose}>
       <AppDialogTitle
         title={
-          <FormattedMessage
-            id="sending.config"
-            defaultMessage="Sending Config"
-          />
+          isSuccess ? (
+            <FormattedMessage id="config.sent" defaultMessage="Config sent" />
+          ) : (
+            <FormattedMessage
+              id="sending.config"
+              defaultMessage="Sending config"
+            />
+          )
         }
-        disableClose={isSuccess && !isEdit}
         onClose={handleClose}
       />
       <Divider />
@@ -109,8 +108,8 @@ function SignConfigDialog({
                 />
               ) : (
                 <FormattedMessage
-                  id="sending.marketplace.settings"
-                  defaultMessage="Sending marketplace settings"
+                  id="sending.app.settings"
+                  defaultMessage="Sending app settings"
                 />
               )}
             </Typography>
@@ -121,31 +120,30 @@ function SignConfigDialog({
                 error?.response?.data?.message &&
                 `Reason: ${error?.response?.data?.message}`}
             </Typography>
-            <Typography align="center" variant="body1" color="textSecondary">
-              {error !== undefined && !isLoading && !isSuccess ? (
-                <FormattedMessage
-                  id="please.try.again.later"
-                  defaultMessage="Please, try again later"
-                />
-              ) : isSuccess ? (
-                <FormattedMessage
-                  id="your.marketplace.settings.was.sent.successfully"
-                  defaultMessage="Your config was sent successfully"
-                />
-              ) : (
-                <FormattedMessage
-                  id="please.sign.the.settings.with.your.wallet"
-                  defaultMessage="Please, sign the settings with your wallet"
-                />
-              )}
-            </Typography>
+            {false && (
+              <Typography align="center" variant="body1" color="textSecondary">
+                {error !== undefined && !isLoading && !isSuccess ? (
+                  <FormattedMessage
+                    id="please.try.again.later"
+                    defaultMessage="Please, try again later"
+                  />
+                ) : isSuccess ? (
+                  <FormattedMessage
+                    id="your.marketplace.settings.was.sent.successfully"
+                    defaultMessage="Your config was sent successfully"
+                  />
+                ) : (
+                  <FormattedMessage
+                    id="please.sign.the.settings.with.your.wallet"
+                    defaultMessage="Please, sign the settings with your wallet"
+                  />
+                )}
+              </Typography>
+            )}
           </Box>
           {isSuccess && !isEdit && (
             <Button onClick={handleGoToMarketplaces} variant="contained">
-              <FormattedMessage
-                id="view.marketplace"
-                defaultMessage="View Marketplace"
-              />
+              <FormattedMessage id="view.app" defaultMessage="View App" />
             </Button>
           )}
 

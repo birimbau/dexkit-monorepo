@@ -26,6 +26,7 @@ export function AssetListContractCollection({
   const [page, setPage] = useState(0);
   const [perPage, setPerPage] = useState(50);
 
+  // TODO: remove this hook to a component above.
   const { data } = useAssetListFromCollection({
     network,
     address: contractAddress,
@@ -33,6 +34,7 @@ export function AssetListContractCollection({
     take: perPage,
     traitsFilter: router.query['traitsFilter'] as string | undefined,
   });
+  
   const assets = data?.assets;
 
   const filteredAssets = useMemo(() => {

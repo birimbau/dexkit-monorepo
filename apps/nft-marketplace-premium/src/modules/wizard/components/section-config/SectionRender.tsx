@@ -1,5 +1,6 @@
 import dynamic from 'next/dynamic';
 import { AppPageSection } from '../../types/section';
+const CodeSection = dynamic(() => import('../sections/CodeSection'));
 
 const ExchangeSection = dynamic(() => import('../sections/ExchangeSection'));
 
@@ -39,6 +40,10 @@ interface Props {
 }
 
 export function SectionRender({ section }: Props) {
+  if (!section?.type) {
+    return <></>;
+  }
+
   if (section.type === 'featured') {
     return <FeaturedSection title={section.title} items={section.items} />;
   } else if (section.type === 'video') {
@@ -69,6 +74,8 @@ export function SectionRender({ section }: Props) {
     return <UserContractSection section={section} />;
   } else if (section.type === 'exchange') {
     return <ExchangeSection section={section} />;
+  } else if (section.type === 'code-page-section') {
+    return <CodeSection section={section} />;
   }
 
   return <></>;

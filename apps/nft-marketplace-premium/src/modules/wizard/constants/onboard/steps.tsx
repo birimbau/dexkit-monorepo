@@ -4,8 +4,10 @@ import { ActiveMenu } from '../../components/containers/EditWizardContainer';
 
 export function OnboardBuilderSteps({
   onChangeMenu,
+  onChangeSidebar,
 }: {
   onChangeMenu: any;
+  onChangeSidebar: any;
 }): StepType[] {
   return [
     {
@@ -125,6 +127,12 @@ export function OnboardBuilderSteps({
       ),
       action: () => {
         if (onChangeMenu) {
+          onChangeSidebar({
+            settings: false,
+            layout: true,
+            fees: false,
+            data: false,
+          });
           onChangeMenu(ActiveMenu.Theme);
         }
       },
@@ -195,6 +203,12 @@ export function OnboardBuilderSteps({
       ),
       action: () => {
         if (onChangeMenu) {
+          onChangeSidebar({
+            settings: false,
+            layout: false,
+            fees: true,
+            data: false,
+          });
           onChangeMenu(ActiveMenu.MarketplaceFees);
         }
       },
@@ -223,6 +237,12 @@ export function OnboardBuilderSteps({
       ),
       action: () => {
         if (onChangeMenu) {
+          onChangeSidebar({
+            settings: false,
+            layout: false,
+            fees: false,
+            data: true,
+          });
           onChangeMenu(ActiveMenu.Collections);
         }
       },
