@@ -25,7 +25,8 @@ export function CollectionHeader(props: Props) {
   const appConfig = useAppConfig();
 
   const { address, chainId, lazy } = props;
-  const { data: collection } = useCollection(address, chainId, lazy);
+
+  const { data: collection } = useCollection(address as string, chainId, lazy);
 
   const collectionImage = useMemo(() => {
     return (

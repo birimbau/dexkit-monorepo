@@ -9,6 +9,8 @@ import {
   InputAdornment,
   NoSsr,
   Stack,
+  Tab,
+  Tabs,
   TextField,
   Typography,
 } from '@mui/material';
@@ -21,7 +23,9 @@ import { TableSkeleton } from '@/modules/nft/components/tables/TableSkeleton';
 import LazyTextField from '@dexkit/ui/components/LazyTextField';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import Search from '@mui/icons-material/Search';
-import { Suspense, useState } from 'react';
+import { ThirdwebSDKProvider, useContractType } from '@thirdweb-dev/react';
+import { useWeb3React } from '@web3-react/core';
+import { Suspense, SyntheticEvent, useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { AppErrorBoundary } from 'src/components/AppErrorBoundary';
 import SidebarFilters from 'src/components/SidebarFilters';
@@ -29,12 +33,14 @@ import SidebarFiltersContent from 'src/components/SidebarFiltersContent';
 import { CollectionSyncStatus } from 'src/constants/enum';
 import { useCollection } from 'src/hooks/nft';
 import { CollectionPageSection } from '../../types/section';
+import { DropEditionListSection } from './DropEditionListSection';
+import NftDropSection from './NftDropSection';
 
 export interface CollectionSectionProps {
   section: CollectionPageSection;
 }
 
-export default function CollectionSection({ section }: CollectionSectionProps) {
+function CollectionSection({ section }: CollectionSectionProps) {
   const chainId = NETWORK_FROM_SLUG(section.config.network as string)?.chainId;
 
   const { hideDrops, hideFilters, hideHeader, hideAssets } = section.config;
@@ -110,7 +116,19 @@ export default function CollectionSection({ section }: CollectionSectionProps) {
     setIsFiltersOpen(true);
   };
 
-  console.log(section.config);
+  const { data: contractType } = useContractType(
+    section.config.address as string,
+  );
+
+  const isDrop = useMemo(() => {
+    return contractType?.endsWith('drop');
+  }, [contractType]);
+
+  const [currTab, setCurrTab] = useState('collection');
+
+  const handleChangeTab = (e: SyntheticEvent, value: string) => {
+    setCurrTab(value);
+  };
 
   return (
     <>
@@ -127,80 +145,151 @@ export default function CollectionSection({ section }: CollectionSectionProps) {
                 />
               </Grid>
             )}
+            {isDrop && !hideDrops && (
+              <Grid item xs={12}>
+                <Tabs value={currTab} onChange={handleChangeTab}>
+                  <Tab
+                    label={
+                      <FormattedMessage
+                        id="collection"
+                        defaultMessage="Collection"
+                      />
+                    }
+                    value="collection"
+                  />
+                  <Tab
+                    label={
+                      contractType === 'nft-drop' ? (
+                        <FormattedMessage id="drop" defaultMessage="Drop" />
+                      ) : (
+                        <FormattedMessage id="drops" defaultMessage="Drops" />
+                      )
+                    }
+                    value="drops"
+                  />
+                </Tabs>
+              </Grid>
+            )}
 
-            <Grid item xs={12}>
-              <Box>
-                <Stack
-                  direction="row"
-                  alignItems="center"
-                  justifyContent="space-between"
+            {currTab === 'drops' && (
+              <Grid item xs={12}>
+                <Typography
+                  gutterBottom
+                  variant="body1"
+                  sx={{ fontWeight: 600 }}
                 >
-                  <LazyTextField
-                    TextFieldProps={{
-                      size: 'small',
-                      InputProps: {
-                        endAdornment: (
-                          <InputAdornment position="end">
-                            <Search color="primary" />
-                          </InputAdornment>
-                        ),
+                  {contractType === 'nft-drop' ? (
+                    <FormattedMessage id="drop" defaultMessage="Drop" />
+                  ) : (
+                    <FormattedMessage id="drops" defaultMessage="Drops" />
+                  )}
+                </Typography>
+                {contractType === 'edition-drop' && (
+                  <DropEditionListSection
+                    section={{
+                      type: 'edition-drop-list-section',
+                      config: {
+                        address: section.config.address as string,
+                        network: section.config.network as string,
                       },
                     }}
-                    onChange={handleChange}
                   />
-                  {!hideFilters && (
-                    <IconButton onClick={handleOpenFilters}>
-                      <FilterAltIcon />
-                    </IconButton>
-                  )}
-                </Stack>
-              </Box>
-            </Grid>
-            {!hideAssets && (
-              <Grid item xs={12}>
-                <NoSsr>
-                  <AppErrorBoundary
-                    fallbackRender={({ resetErrorBoundary, error }) => (
-                      <Stack justifyContent="center" alignItems="center">
-                        <Typography variant="h6">
-                          <FormattedMessage
-                            id="something.went.wrong"
-                            defaultMessage="Oops, something went wrong"
-                            description="Something went wrong error message"
-                          />
-                        </Typography>
-                        <Typography variant="body1" color="textSecondary">
-                          {String(error)}
-                        </Typography>
-                        <Button color="primary" onClick={resetErrorBoundary}>
-                          <FormattedMessage
-                            id="try.again"
-                            defaultMessage="Try again"
-                            description="Try again"
-                          />
-                        </Button>
-                      </Stack>
-                    )}
-                  >
-                    {collection?.syncStatus === CollectionSyncStatus.Synced ||
-                    collection?.syncStatus === CollectionSyncStatus.Syncing ? (
-                      <AssetListCollection
-                        contractAddress={section.config.address}
-                        network={section.config.network}
-                        search={search}
-                      />
-                    ) : (
-                      <Suspense fallback={<TableSkeleton rows={4} />}>
-                        <AssetList
-                          contractAddress={section.config.address as string}
-                          chainId={chainId}
-                          search={search}
-                        />
-                      </Suspense>
-                    )}
-                  </AppErrorBoundary>
-                </NoSsr>
+                )}
+                {contractType === 'nft-drop' && (
+                  <NftDropSection
+                    section={{
+                      type: 'nft-drop',
+                      settings: {
+                        address: section.config.address as string,
+                        network: section.config.network as string,
+                      },
+                    }}
+                  />
+                )}
               </Grid>
+            )}
+            {currTab === 'collection' && (
+              <>
+                <Grid item xs={12}>
+                  <Box>
+                    <Stack
+                      direction="row"
+                      alignItems="center"
+                      justifyContent="space-between"
+                    >
+                      <LazyTextField
+                        TextFieldProps={{
+                          size: 'small',
+                          InputProps: {
+                            endAdornment: (
+                              <InputAdornment position="end">
+                                <Search color="primary" />
+                              </InputAdornment>
+                            ),
+                          },
+                        }}
+                        onChange={handleChange}
+                      />
+                      {!hideFilters && (
+                        <IconButton onClick={handleOpenFilters}>
+                          <FilterAltIcon />
+                        </IconButton>
+                      )}
+                    </Stack>
+                  </Box>
+                </Grid>
+                {!hideAssets && (
+                  <Grid item xs={12}>
+                    <NoSsr>
+                      <AppErrorBoundary
+                        fallbackRender={({ resetErrorBoundary, error }) => (
+                          <Stack justifyContent="center" alignItems="center">
+                            <Typography variant="h6">
+                              <FormattedMessage
+                                id="something.went.wrong"
+                                defaultMessage="Oops, something went wrong"
+                                description="Something went wrong error message"
+                              />
+                            </Typography>
+                            <Typography variant="body1" color="textSecondary">
+                              {String(error)}
+                            </Typography>
+                            <Button
+                              color="primary"
+                              onClick={resetErrorBoundary}
+                            >
+                              <FormattedMessage
+                                id="try.again"
+                                defaultMessage="Try again"
+                                description="Try again"
+                              />
+                            </Button>
+                          </Stack>
+                        )}
+                      >
+                        {collection?.syncStatus ===
+                          CollectionSyncStatus.Synced ||
+                        collection?.syncStatus ===
+                          CollectionSyncStatus.Syncing ? (
+                          <AssetListCollection
+                            contractAddress={section.config.address}
+                            network={section.config.network}
+                            search={search}
+                          />
+                        ) : (
+                          <Suspense fallback={<TableSkeleton rows={4} />}>
+                            <AssetList
+                              contractAddress={section.config.address as string}
+                              chainId={chainId}
+                              search={search}
+                            />
+                          </Suspense>
+                        )}
+                      </AppErrorBoundary>
+                    </NoSsr>
+                  </Grid>
+                )}
+              </>
             )}
           </Grid>
         </Container>
@@ -208,3 +297,18 @@ export default function CollectionSection({ section }: CollectionSectionProps) {
     </>
   );
 }
+
+function Wrapper({ section }: CollectionSectionProps) {
+  const { provider } = useWeb3React();
+
+  return (
+    <ThirdwebSDKProvider
+      activeChain={section.config.network}
+      signer={provider?.getSigner()}
+    >
+      <CollectionSection section={section} />
+    </ThirdwebSDKProvider>
+  );
+}
+
+export default Wrapper;

@@ -26,6 +26,7 @@ export function DropEditionListSection({ section }: Props) {
   const [perPage, setPerPage] = useState(50);
 
   const [search, setSearch] = useState<string>();
+
   const { data } = useAssetListFromCollection({
     network,
     address: address,
@@ -49,12 +50,13 @@ export function DropEditionListSection({ section }: Props) {
   const handleChangeSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
   };
+
   const { formatMessage } = useIntl();
 
   return (
     <>
       <Grid container spacing={2}>
-        <Grid item xs={3}>
+        <Grid item xs={12} sm={3}>
           <TextField
             fullWidth
             size="small"

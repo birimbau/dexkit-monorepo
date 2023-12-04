@@ -18,7 +18,7 @@ import { BigNumber, ethers } from 'ethers';
 import { WETHAbi } from '../constants/abis';
 
 import { useWeb3React } from '@web3-react/core';
-import { WRAPPED_ETHER_CONTRACT } from '../constants';
+import { THIRDWEB_CLIENT_ID, WRAPPED_ETHER_CONTRACT } from '../constants';
 import {
   getApiAccountContractCollectionData,
   getApiCollectionData,
@@ -42,12 +42,15 @@ import {
   AssetAPI,
   AssetBalance,
   AssetMetadata,
+  Collection,
   HiddenAsset,
   OrderBookItem,
   SwapApiOrder,
 } from '../types/nft';
 
 import { ChainId } from '@dexkit/core/constants';
+import { hexToString } from '@dexkit/ui/utils';
+import { ThirdwebSDK } from '@thirdweb-dev/sdk';
 import { PostOrderResponsePayload } from '@traderxyz/nft-swap-sdk/dist/sdk/v4/orderbook';
 import axios from 'axios';
 import { useAtom, useAtomValue } from 'jotai';
@@ -274,6 +277,7 @@ export function useCollection(
   lazy?: boolean,
 ) {
   const { provider, chainId: chainProvider } = useWeb3React();
+  const appConfig = useAppConfig();
 
   return useQuery(
     [GET_COLLECTION_DATA, contractAddress, chainId],
@@ -282,28 +286,58 @@ export function useCollection(
         return;
       }
 
-      // const appConfig = useAppConfig();
+      const sdk = new ThirdwebSDK(chainId, { clientId: THIRDWEB_CLIENT_ID });
 
-      // const collectionFromConfig = appConfig.collections?.find(
-      //   (c) =>
-      //     isAddressEqual(c.contractAddress, contractAddress) &&
-      //     c.chainId === chainId,
-      // );
+      const twContract = await sdk.getContract(contractAddress as string);
 
-      // if (collectionFromConfig) {
-      //   return {
-      //     address: collectionFromConfig.contractAddress,
-      //     name: collectionFromConfig.name,
-      //     chainId: collectionFromConfig.chainId,
-      //     imageUrl: collectionFromConfig.image,
-      //     description: collectionFromConfig.description,
-      //   } as Collection;
-      // }
+      const isTw = twContract.abi.find((m) => m.name === 'contractVersion');
+
+      if (isTw) {
+        let contract = await sdk.getContract(contractAddress);
+        let metadata = await contract.metadata.get();
+
+        const contractType: string = hexToString(
+          await twContract.call('contractType'),
+        );
+
+        let type = contractType?.toLowerCase()?.startsWith('edition')
+          ? NFTType.ERC1155
+          : NFTType.ERC721;
+
+        return {
+          address: contractAddress,
+          chainId,
+          name: metadata.name,
+          symbol: metadata.symbol,
+          description: metadata.description,
+          imageUrl: metadata.image,
+          nftType: type?.toLowerCase()?.startsWith('edition')
+            ? NFTType.ERC1155
+            : NFTType.ERC721,
+        } as Collection;
+      }
+
+      const collectionFromConfig = appConfig.collections?.find(
+        (c) =>
+          isAddressEqual(c.contractAddress, contractAddress) &&
+          c.chainId === chainId,
+      );
+
+      if (collectionFromConfig) {
+        return {
+          address: collectionFromConfig.contractAddress,
+          name: collectionFromConfig.name,
+          chainId: collectionFromConfig.chainId,
+          imageUrl: collectionFromConfig.image,
+          description: collectionFromConfig.description,
+        } as Collection;
+      }
 
       const collection = await getApiCollectionData(
         getNetworkSlugFromChainId(chainId),
         contractAddress,
       );
+
       if (collection) {
         return collection;
       }
