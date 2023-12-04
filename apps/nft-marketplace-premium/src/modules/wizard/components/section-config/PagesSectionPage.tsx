@@ -34,7 +34,7 @@ import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
 import Wallet from '@mui/icons-material/Wallet';
 import { useState } from 'react';
 import AppConfirmDialog from '../../../../components/AppConfirmDialog';
-import { GatedCondition } from '../../types';
+import { GatedCondition, GatedPageLayout } from '../../types';
 import { AppPageSection } from '../../types/section';
 import PagesMenu from '../PagesMenu';
 import PreviewPagePlatform from '../PreviewPagePlatform';
@@ -254,9 +254,14 @@ export default function PagesSectionPage({
     setShowDeleteDialogPage(true);
   };
 
-  const onEditGatedContidions = (gatedConditions: GatedCondition[]) => {
+  const onEditGatedContidions = (
+    gatedConditions: GatedCondition[],
+    gatedLayout: GatedPageLayout,
+  ) => {
+    console.log(gatedLayout);
     onEditPage({
       isEditGatedConditions: true,
+      gatedPageLayout: gatedLayout,
       gatedConditions: gatedConditions,
       title: currentPage?.title,
       key: currentPage?.key,
@@ -297,6 +302,7 @@ export default function PagesSectionPage({
           onClose: handleCloseGatedModalForm,
         }}
         conditions={currentPage?.gatedConditions}
+        gatedPageLayout={currentPage?.gatedPageLayout}
         onCancel={handleCloseGatedModalForm}
         onSubmit={onEditGatedContidions}
       />

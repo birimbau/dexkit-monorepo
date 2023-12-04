@@ -1,9 +1,14 @@
-import { Box, NoSsr } from '@mui/material';
+import { Box, NoSsr, useColorScheme } from '@mui/material';
 import { useWeb3React } from '@web3-react/core';
 import { useAtom } from 'jotai';
 import dynamic from 'next/dynamic';
 import React, { useEffect, useMemo } from 'react';
-import { useAppConfig, useAppNFT, useSignMessageDialog } from '../../hooks/app';
+import {
+  useAppConfig,
+  useAppNFT,
+  useSignMessageDialog,
+  useThemeMode,
+} from '../../hooks/app';
 
 import { useConnectWalletDialog } from '@dexkit/ui/hooks';
 
@@ -66,6 +71,8 @@ const MainLayout: React.FC<Props> = ({
 }) => {
   const { connector, isActive, isActivating } = useWeb3React();
   const router = useRouter();
+  const { mode } = useThemeMode();
+  const { setMode } = useColorScheme();
 
   const defaultAppConfig = useAppConfig();
   const appNFT = useAppNFT();
@@ -142,6 +149,11 @@ const MainLayout: React.FC<Props> = ({
   const handleActivateWallet = async (params: WalletActivateParams) => {
     await walletActivate.mutation.mutateAsync(params);
   };
+
+  //NOTE: NOT remove this, this syncs MUI internal theme with APP theme
+  useEffect(() => {
+    setMode(mode);
+  }, [mode]);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {

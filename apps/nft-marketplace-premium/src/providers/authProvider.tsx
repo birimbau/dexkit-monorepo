@@ -33,6 +33,8 @@ export function AuthProvider(props: Props) {
       if (accessToken) {
         setUser(jwt_decode(accessToken));
       }
+    } else {
+      setUser(undefined);
     }
   }, [isLoggedIn]);
 
@@ -50,7 +52,7 @@ export function AuthProvider(props: Props) {
   }, [account]);
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, setIsLoggedIn, user }}>
+    <AuthContext.Provider value={{ isLoggedIn, setIsLoggedIn, user, setUser }}>
       {children}
     </AuthContext.Provider>
   );
