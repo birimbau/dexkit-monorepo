@@ -1,3 +1,4 @@
+import { DeployedContract } from '@/modules/forms/types';
 import { SwapConfig } from '@/modules/swap/types';
 import { DexkitExchangeSettings } from '@dexkit/exchange/types';
 import { ContractFormParams } from '@dexkit/web3forms/types';
@@ -31,7 +32,8 @@ export type SectionType =
   | 'edition-stake'
   | 'token'
   | 'airdrop-token'
-  | 'code-page-section';
+  | 'code-page-section'
+  | 'dex-generator-section';
 
 export interface PageSection {
   type: SectionType;
@@ -177,6 +179,7 @@ export interface ExchangePageSection extends PageSection {
   type: 'exchange';
   settings: DexkitExchangeSettings;
 }
+
 export interface EditionDropPageSection extends PageSection {
   type: 'edition-drop-section';
   config: {
@@ -202,6 +205,22 @@ export interface CodePageSection extends PageSection {
   };
 }
 
+export type DexGeneratorPageSectionType =
+  | TokenDropPageSection
+  | NftDropPageSection
+  | EditionDropPageSection
+  | TokenErc20PageSection
+  | AirdropErc20PageSection
+  | StakeErc721PageSection
+  | StakeErc20PageSection
+  | StakeErc155PageSection;
+
+export interface DexGeneratorPageSection extends PageSection {
+  type: 'dex-generator-section';
+  contract?: DeployedContract;
+  section?: DexGeneratorPageSectionType;
+}
+
 export type AppPageSection =
   | CallToActionAppPageSection
   | VideoEmbedAppPageSection
@@ -217,7 +236,8 @@ export type AppPageSection =
   | ExchangePageSection
   | EditionDropListPageSection
   | TokenDropPageSection
-  | CodePageSection;
+  | CodePageSection
+  | DexGeneratorPageSection;
 
 export interface SectionMetadata {
   type: SectionType;

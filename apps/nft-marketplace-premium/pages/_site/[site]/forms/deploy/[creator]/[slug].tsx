@@ -128,12 +128,14 @@ export default function DeployPage() {
 
       setShowLoading(true);
 
+      const metadata = thirdwebMetadataQuery.data;
+
       try {
         let result = await thirdWebDeployMutation.mutateAsync({
           chainId: selectedChainId,
           order: formConfigParamsQuery.data?.paramsOrder,
           params,
-          metadata: thirdwebMetadataQuery.data,
+          metadata,
         });
 
         if (result) {

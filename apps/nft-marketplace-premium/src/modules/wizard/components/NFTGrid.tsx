@@ -17,6 +17,7 @@ export interface NFTGridProps {
   address: string;
   network: string;
   onClick?: (tokenId: string) => void;
+  selectedTokenId?: string;
 }
 
 export default function NFTGrid({
@@ -24,11 +25,18 @@ export default function NFTGrid({
   network,
   address,
   onClick,
+  selectedTokenId,
 }: NFTGridProps) {
   const renderCard = (nft: NFT) => {
     if (onClick) {
       return (
-        <Card>
+        <Card
+          sx={
+            selectedTokenId === nft.metadata.id
+              ? { borderColor: (theme) => theme.palette.primary.main }
+              : undefined
+          }
+        >
           <CardActionArea onClick={() => onClick(nft.metadata.id)}>
             {nft.metadata?.image ? (
               <CardMedia

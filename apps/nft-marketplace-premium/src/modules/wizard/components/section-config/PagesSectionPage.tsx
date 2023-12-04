@@ -156,6 +156,12 @@ export default function PagesSectionPage({
       title = <FormattedMessage id="code" defaultMessage="Code" />;
       subtitle = section.title || '';
       icon = <Code />;
+    } else if (section.type === 'dex-generator-section') {
+      title = (
+        <FormattedMessage id="dex.generator" defaultMessage="Dex Generator" />
+      );
+      subtitle = section.title || '';
+      icon = <GavelIcon />;
     }
 
     if (!title) {

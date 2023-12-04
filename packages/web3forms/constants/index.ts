@@ -114,5 +114,5 @@ export const THIRD_WEB_CONTRACT_VERSIONS: { [key: string]: string } = {
   VoteERC20: "1.0.8",
   AirdropERC20: "1.0.7",
   AirdropERC721: "1.0.7",
-  AirdropERC1155: "1.0.7",
+  AirdropERC1155: "1.0.8",
 };
