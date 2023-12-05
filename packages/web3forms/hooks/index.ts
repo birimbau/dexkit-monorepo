@@ -10,7 +10,7 @@ import axios from "axios";
 
 import { ChainId } from "@dexkit/core/constants";
 
-import { ETHER_SCAN_API_URL, THIRD_WEB_CONTRACT_VERSIONS } from "../constants";
+import { ETHER_SCAN_API_URL } from "../constants";
 
 import { getNormalizedUrl } from "@dexkit/core/utils";
 import { useWeb3React } from "@web3-react/core";
@@ -496,7 +496,7 @@ export default function useThirdwebContractMetadataQuery({
   return useQuery([THIRDWEB_CONTRACT_METADATA, id, clientId], async () => {
     const contract = await new ThirdwebSDK("polygon", { clientId })
       .getPublisher()
-      .getVersion("deployer.thirdweb.eth", id, THIRD_WEB_CONTRACT_VERSIONS[id]);
+      .getLatest("deployer.thirdweb.eth", id);
 
     if (contract) {
       const normalizedUrl = getNormalizedUrl(contract.metadataUri);
