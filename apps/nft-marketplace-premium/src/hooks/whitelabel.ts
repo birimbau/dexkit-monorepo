@@ -39,7 +39,7 @@ export const useSendConfigMutation = ({ slug }: { slug?: string }) => {
   const { isLoggedIn } = useAuth();
   const loginMutation = useLoginAccountMutation();
   const siteId = useSiteId();
-  const configQuery = useWhitelabelConfigQuery({
+  const configQuery = useAdminWhitelabelConfigQuery({
     slug: slug as string,
   });
 

@@ -22,8 +22,8 @@ function PageEditorPage() {
         createTheme(
           mode === ThemeMode.light
             ? themes['kittygotchi'].theme.colorSchemes.light
-            : themes['kittygotchi'].theme.colorSchemes.dark
-        )
+            : themes['kittygotchi'].theme.colorSchemes.dark,
+        ),
       )}
     ></PageEditor>
   );

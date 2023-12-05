@@ -1,5 +1,6 @@
 import { Box } from '@mui/material';
 import { AppPageSection, SectionType } from '../../types/section';
+import AssetSectionForm from '../forms/AssetSectionForm';
 import { AssetStoreSectionForm } from '../forms/AssetStoreSectionForm';
 import CallToActionSectionForm from '../forms/CallToActionSectionForm';
 import CodeSectionForm from '../forms/CodeSectionForm';
@@ -164,6 +165,18 @@ export function SectionFormRender({
           onSave={onSave}
           onChange={onChange}
           section={section?.type === 'collection' ? section : undefined}
+          showSaveButton
+        />
+      </Box>
+    );
+  } else if (sectionType === 'asset-section') {
+    return (
+      <Box p={2}>
+        <AssetSectionForm
+          onCancel={onClose}
+          onSave={onSave}
+          onChange={onChange}
+          section={section?.type === 'asset-section' ? section : undefined}
           showSaveButton
         />
       </Box>

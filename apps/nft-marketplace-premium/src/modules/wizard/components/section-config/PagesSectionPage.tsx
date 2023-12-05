@@ -160,6 +160,12 @@ export default function PagesSectionPage({
       title = <FormattedMessage id="collection" defaultMessage="Collection" />;
       subtitle = section.title || '';
       icon = <AppsIcon />;
+    } else if (section.type === 'dex-generator-section') {
+      title = (
+        <FormattedMessage id="dex.generator" defaultMessage="Dex Generator" />
+      );
+      subtitle = section.title || '';
+      icon = <GavelIcon />;
     }
 
     if (!title) {

@@ -112,8 +112,7 @@ export const sections = [
     titleId: 'code',
     titleDefaultMessage: 'Code',
     category: 'low-code',
-    description:
-      'Easily format text using markdown for a clean and structured appearance.',
+    description: 'Easily add code section to your pages',
     icon: <CodeIcon fontSize="large" />,
   },
   {
@@ -123,6 +122,14 @@ export const sections = [
     category: 'nft',
     description: 'Easily add a collection',
     icon: <CollectionsIcon fontSize="large" />,
+  },
+  {
+    type: 'dex-generator-section',
+    titleId: 'dex.app.builder.contract',
+    titleDefaultMessage: 'DexGenerator Contract',
+    category: 'web3',
+    description: 'Create a DexGenerator section from your contracts',
+    icon: <GavelIcon fontSize="large" />,
   },
 ] as SectionMetadata[];
 

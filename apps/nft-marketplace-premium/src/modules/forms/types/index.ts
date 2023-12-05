@@ -33,3 +33,12 @@ export type DeployableContract = {
   publisherName: string;
   slug: string;
 };
+
+export type DeployedContract = {
+  name: string;
+  contractAddress: string;
+  owner: string;
+  id: number;
+  type?: string;
+  chainId?: number;
+};

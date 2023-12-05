@@ -6,6 +6,7 @@ import {
   DialogContent,
   DialogProps,
   Stack,
+  useTheme,
 } from '@mui/material';
 import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
@@ -47,6 +48,8 @@ export default function PageEditorDialog({
     setData(val);
   };
 
+  const theme = useTheme();
+
   return (
     <Dialog {...dialogProps} sx={{ zIndex: 1199 }}>
       <Box sx={{ paddingLeft: 4 }}>
@@ -63,6 +66,7 @@ export default function PageEditorDialog({
             value={data}
             onChange={onChangeEditor}
             builderKit={builderKit}
+            theme={theme}
           />
         </Box>
       </DialogContent>
