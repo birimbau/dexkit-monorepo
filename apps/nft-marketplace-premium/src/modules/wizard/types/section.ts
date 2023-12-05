@@ -34,7 +34,8 @@ export type SectionType =
   | 'airdrop-token'
   | 'code-page-section'
   | 'collection'
-  | 'dex-generator-section';
+  | 'dex-generator-section'
+  | 'asset-section';
 
 export interface PageSection {
   type: SectionType;
@@ -206,6 +207,15 @@ export interface CodePageSection extends PageSection {
   };
 }
 
+export interface AssetPageSection extends PageSection {
+  type: 'asset-section';
+  config: {
+    js: string;
+    css: string;
+    html: string;
+  };
+}
+
 export interface CollectionPageSection extends PageSection {
   type: 'collection';
   config: {
@@ -251,7 +261,8 @@ export type AppPageSection =
   | TokenDropPageSection
   | CodePageSection
   | CollectionPageSection
-  | DexGeneratorPageSection;
+  | DexGeneratorPageSection
+  | AssetPageSection;
 
 export interface SectionMetadata {
   type: SectionType;

@@ -166,6 +166,10 @@ export default function PagesSectionPage({
       );
       subtitle = section.title || '';
       icon = <GavelIcon />;
+    } else if (section.type === 'asset-section') {
+      title = <FormattedMessage id="asset" defaultMessage="Asset" />;
+      subtitle = section.title || '';
+      icon = <AppsIcon />;
     }
 
     if (!title) {

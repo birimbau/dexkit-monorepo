@@ -9,6 +9,8 @@ const DexGeneratorSection = dynamic(
   () => import('../sections/DexGeneratorSection'),
 );
 
+const AssetSection = dynamic(() => import('../sections/AssetSection'));
+
 const CodeSection = dynamic(() => import('../sections/CodeSection'));
 
 const ExchangeSection = dynamic(() => import('../sections/ExchangeSection'));
@@ -89,6 +91,8 @@ export function SectionRender({ section }: Props) {
     return <CollectionSection section={section} />;
   } else if (section.type === 'dex-generator-section') {
     return <DexGeneratorSection section={section} />;
+  } else if (section.type === 'asset-section') {
+    return <AssetSection section={section} />;
   }
 
   return <></>;
