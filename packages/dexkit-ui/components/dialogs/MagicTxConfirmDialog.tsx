@@ -198,7 +198,7 @@ export function MagicTxConfirmDialog(props: TransactionConfirmDialogProps) {
             if (chainId && hasLondonHardForkSupport(chainId)) {
               if (chainId === ChainId.Polygon) {
                 const estimatedFeeResponse = await fetch(
-                  "https://gasstation-mainnet.matic.network/v2"
+                  "https://gasstation.polygon.technology/v2"
                 );
                 const estimatedFee = await estimatedFeeResponse.json();
                 vals.maxFeePerGas = ethers.utils.parseUnits(
