@@ -389,7 +389,7 @@ export function EditionDropSection({ section }: Props) {
     activeClaimCondition.isLoading || claimConditions.isLoading;
 
   return (
-    <Box py={4}>
+    <Box>
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <Typography variant={'h6'}>

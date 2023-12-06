@@ -54,11 +54,21 @@ export default function AssetSectionForm({
     <Formik
       initialValues={
         section
-          ? section.config
+          ? {
+              ...section.config,
+              enableDrops: section.config.enableDrops
+                ? section.config.enableDrops
+                : false,
+              enableFiat: section.config.enableFiat
+                ? section.config.enableFiat
+                : false,
+            }
           : {
               address: '',
               network: '',
               tokenId: '',
+              enableDrops: false,
+              enableFiat: false,
             }
       }
       onSubmit={handleSubmit}
@@ -142,14 +152,14 @@ export default function AssetSectionForm({
                     control={
                       <Field
                         component={Switch}
-                        name="disableFiat"
+                        name="enableFiat"
                         type="checkbox"
                       />
                     }
                     label={
                       <FormattedMessage
-                        id="disable.fiat"
-                        defaultMessage="Disable Fiat"
+                        id="enable.fiat"
+                        defaultMessage="Enable Fiat"
                       />
                     }
                   />
@@ -159,14 +169,14 @@ export default function AssetSectionForm({
                     control={
                       <Field
                         component={Switch}
-                        name="disableFiat"
+                        name="enableDrops"
                         type="checkbox"
                       />
                     }
                     label={
                       <FormattedMessage
-                        id="disable.fiat"
-                        defaultMessage="Disable Fiat"
+                        id="enable.drop"
+                        defaultMessage="Enable Drop"
                       />
                     }
                   />

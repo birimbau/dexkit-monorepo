@@ -36,6 +36,7 @@ import ExtendedSpacer from './plugins/ExtendedSpacerPlugin';
 
 import { Theme, styled } from '@mui/material';
 import { BuilderKit } from '../../constants';
+import AssetAltPlugin from './plugins/AssetAltPlugin';
 import AssetListPlugin from './plugins/AssetListPlugin';
 import AssetPlugin from './plugins/AssetPlugin';
 import ButtonPlugin from './plugins/ButtonPlugin';
@@ -86,6 +87,7 @@ const cellPlugins = [
   video,
   WidgetPlugin,
   ExchangePlugin,
+  AssetAltPlugin,
 ];
 
 const nftPlugins = [
