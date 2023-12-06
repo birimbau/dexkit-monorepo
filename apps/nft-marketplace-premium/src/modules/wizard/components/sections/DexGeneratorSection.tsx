@@ -14,8 +14,6 @@ export interface DabSectionProps {
 export default function DexGeneratorSection({ section }: DabSectionProps) {
   const { provider } = useWeb3React();
 
-  const { chainId } = useWeb3React();
-
   const renderSection = () => {
     if (section?.section) {
       const { type } = section.section;
@@ -36,8 +34,7 @@ export default function DexGeneratorSection({ section }: DabSectionProps) {
     <Container sx={{ py: 2 }}>
       <ThirdwebSDKProvider
         signer={provider?.getSigner()}
-        /* TODO: remove this logic */
-        activeChain={chainId}
+        activeChain={section?.contract?.chainId}
         clientId={THIRDWEB_CLIENT_ID}
       >
         {renderSection()}

@@ -87,8 +87,9 @@ export function MakeOfferDialog({ dialogProps, onConfirm, asset }: Props) {
   const { formatMessage } = useIntl();
 
   const handleConfirm = (values: Form, formikHelpers: FormikHelpers<Form>) => {
-    const decimals = tokenList.find((t) => t.address === values.tokenAddress)
-      ?.decimals;
+    const decimals = tokenList.find((t) =>
+      isAddressEqual(t.address, values.tokenAddress),
+    )?.decimals;
 
     if (!isValidDecimal(values.price, decimals || 1)) {
       formikHelpers.setFieldError(
@@ -126,8 +127,9 @@ export function MakeOfferDialog({ dialogProps, onConfirm, asset }: Props) {
       quantity: isErc1155 ? 0 : undefined,
     },
     validate: async (values) => {
-      const decimals = tokenList.find((t) => t.address === values.tokenAddress)
-        ?.decimals;
+      const decimals = tokenList.find((t) =>
+        isAddressEqual(t.address, values.tokenAddress),
+      )?.decimals;
 
       if (values.price !== '' && isValidDecimal(values.price, decimals || 1)) {
         const priceValue = ethers.utils.parseUnits(values.price, decimals);
