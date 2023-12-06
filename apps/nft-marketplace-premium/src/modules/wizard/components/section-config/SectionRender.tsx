@@ -9,7 +9,7 @@ const DexGeneratorSection = dynamic(
   () => import('../sections/DexGeneratorSection'),
 );
 
-const AssetSection = dynamic(() => import('../sections/AssetSection'));
+const AssetSection = dynamic(() => import('../sections/AssetSection/index'));
 
 const CodeSection = dynamic(() => import('../sections/CodeSection'));
 

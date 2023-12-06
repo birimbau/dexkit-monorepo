@@ -3,6 +3,7 @@ import { SwapConfig } from '@/modules/swap/types';
 import { DexkitExchangeSettings } from '@dexkit/exchange/types';
 import { ContractFormParams } from '@dexkit/web3forms/types';
 import React from 'react';
+import { AssetFormType } from '.';
 import {
   PageSectionVariant,
   SectionItem,
@@ -209,11 +210,7 @@ export interface CodePageSection extends PageSection {
 
 export interface AssetPageSection extends PageSection {
   type: 'asset-section';
-  config: {
-    js: string;
-    css: string;
-    html: string;
-  };
+  config: AssetFormType;
 }
 
 export interface CollectionPageSection extends PageSection {
