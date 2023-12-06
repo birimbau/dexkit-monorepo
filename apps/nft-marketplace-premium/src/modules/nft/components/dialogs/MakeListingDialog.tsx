@@ -39,7 +39,6 @@ import Image from 'next/image';
 import * as Yup from 'yup';
 import AppFeePercentageSpan from '../../../../components/AppFeePercentageSpan';
 import { MIN_ORDER_DATE_TIME } from '../../../../constants';
-import { useTokenList } from '../../../../hooks/blockchain';
 import { Asset, AssetBalance, AssetMetadata } from '../../../../types/nft';
 import { isAddressEqual } from '../../../../utils/blockchain';
 import { isValidDecimal } from '../../../../utils/numbers';
@@ -71,6 +70,7 @@ interface Props {
   asset?: Asset;
   metadata?: AssetMetadata;
   assetBalance?: AssetBalance;
+  tokenList: Token[];
   onConfirm: (
     price: ethers.BigNumber,
     tokenAddress: string,
@@ -86,6 +86,7 @@ export function MakeListingDialog({
   asset,
   metadata,
   assetBalance,
+  tokenList,
 }: Props) {
   const { onClose } = dialogProps;
 
@@ -93,11 +94,11 @@ export function MakeListingDialog({
 
   const { formatMessage } = useIntl();
 
-  const tokenList = useTokenList({
-    chainId,
-    includeNative: true,
-    onlyTradable: true,
-  });
+  // const tokenList = useTokenList({
+  //   chainId,
+  //   includeNative: true,
+  //   onlyTradable: true,
+  // });
 
   const handleConfirm = (values: Form, formikHelpers: FormikHelpers<Form>) => {
     if (form.isValid) {
