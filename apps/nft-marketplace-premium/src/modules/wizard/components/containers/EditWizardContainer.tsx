@@ -82,6 +82,7 @@ const SwapFeeWizardContainer = dynamic(
 );
 const ThemeWizardContainer = dynamic(() => import('./ThemeWizardContainer'));
 const TokenWizardContainer = dynamic(() => import('./TokenWizardContainer'));
+const TeamWizardContainer = dynamic(() => import('./TeamWizardContainer'));
 const AnalyticsWizardContainer = dynamic(
   () => import('./AnalyticsWizardContainer'),
 );
@@ -94,6 +95,7 @@ export enum ActiveMenu {
   General = 'general',
   Domain = 'domain',
   Social = 'social',
+  Team = 'team',
   Theme = 'theme',
   Pages = 'pages',
   Menu = 'menu',
@@ -136,6 +138,8 @@ export function EditWizardContainer({ site }: Props) {
 
   const router = useRouter();
   const { tab } = router.query as { tab?: ActiveMenu };
+  const [hasChanges, setHasChanges] = useState(false);
+  const [openHasChangesConfirm, setOpenHasChangesConfirm] = useState(false);
 
   const { formatMessage } = useIntl();
   const [openMenu, setOpenMenu] = useState({
@@ -165,15 +169,23 @@ export function EditWizardContainer({ site }: Props) {
     setOpenMenu({ ...openMenu, analytics: !openMenu.analytics });
   };
 
-  const { isLoggedIn } = useAuth();
+  const { isLoggedIn, user } = useAuth();
 
   const [activeMenu, setActiveMenu] = useState<ActiveMenu>(ActiveMenu.General);
+  const [activeMenuWithChanges, setActiveMenuWithChanges] =
+    useState<ActiveMenu>(ActiveMenu.General);
   const [activeBuilderKit, setActiveBuilderKit] = useState<BuilderKit>(
     BuilderKit.ALL,
   );
 
   const handleChangeTab = (mn: ActiveMenu) => {
-    setActiveMenu(mn);
+    if (hasChanges) {
+      setActiveMenuWithChanges(mn);
+      setOpenHasChangesConfirm(true);
+    } else {
+      setActiveMenu(mn);
+    }
+
     /*router.push(
       {
         pathname: `/admin/edit/${site?.slug}`,
@@ -312,6 +324,21 @@ export function EditWizardContainer({ site }: Props) {
                   />
                 </ListItemButton>
               </ListItem>
+
+              {site?.owner?.toLowerCase() === user?.address?.toLowerCase() && (
+                <ListItem disablePadding>
+                  <ListItemButton
+                    selected={activeMenu === ActiveMenu.Team}
+                    onClick={() => handleChangeTab(ActiveMenu.Team)}
+                  >
+                    <ListItemText
+                      primary={
+                        <FormattedMessage id="team" defaultMessage={'Team'} />
+                      }
+                    />
+                  </ListItemButton>
+                </ListItem>
+              )}
               <ListItem disablePadding>
                 <ListItemButton
                   selected={activeMenu === ActiveMenu.Ownership}
@@ -643,6 +670,35 @@ export function EditWizardContainer({ site }: Props) {
       />
       <AppConfirmDialog
         dialogProps={{
+          open: openHasChangesConfirm,
+          maxWidth: 'xs',
+          fullWidth: true,
+          onClose: () => setOpenHasChangesConfirm(false),
+        }}
+        onConfirm={() => {
+          setHasChanges(false);
+          setOpenHasChangesConfirm(false);
+          setActiveMenu(activeMenuWithChanges);
+        }}
+      >
+        <Stack>
+          <Typography variant="h5" align="center">
+            <FormattedMessage
+              id="changes.unsaved"
+              defaultMessage="Changes unsaved"
+            />
+          </Typography>
+          <Typography variant="body1" align="center" color="textSecondary">
+            <FormattedMessage
+              id="you.have.changes.unsaved.do.you.want.to.proceed.without.saving"
+              defaultMessage="You have changes unsaved do you want to proceed without saving?"
+            />
+          </Typography>
+        </Stack>
+      </AppConfirmDialog>
+
+      <AppConfirmDialog
+        dialogProps={{
           open: showConfirmSendConfig,
           maxWidth: 'xs',
           fullWidth: true,
@@ -799,20 +855,29 @@ export function EditWizardContainer({ site }: Props) {
                     config={config}
                     onSave={handleSave}
                     onChange={handleChange}
+                    onHasChanges={setHasChanges}
                   />
                 )}
                 {activeMenu === ActiveMenu.Domain && config && (
                   <DomainWizardContainer
                     config={config}
                     onSave={handleSave}
+                    onHasChanges={setHasChanges}
                     site={site}
                   />
                 )}
+
+                {activeMenu === ActiveMenu.Team &&
+                  site?.owner?.toLowerCase() ===
+                    user?.address?.toLowerCase() && (
+                    <TeamWizardContainer site={site} />
+                  )}
 
                 {activeMenu === ActiveMenu.Ownership && config && (
                   <OwnershipWizardContainer
                     config={config}
                     onSave={handleSave}
+                    onHasChanges={setHasChanges}
                     site={site}
                   />
                 )}
@@ -823,6 +888,7 @@ export function EditWizardContainer({ site }: Props) {
                     showSwap={activeBuilderKit === BuilderKit.Swap}
                     onSave={handleSave}
                     onChange={handleChange}
+                    onHasChanges={setHasChanges}
                   />
                 )}
 
@@ -830,6 +896,7 @@ export function EditWizardContainer({ site }: Props) {
                   <PagesWizardContainer
                     config={config}
                     onSave={handleSave}
+                    onHasChanges={setHasChanges}
                     builderKit={activeBuilderKit}
                   />
                 )}
@@ -837,16 +904,22 @@ export function EditWizardContainer({ site }: Props) {
                 {activeMenu === ActiveMenu.MarketplaceFees && config && (
                   <MarketplaceFeeWizardContainer
                     config={config}
+                    onHasChanges={setHasChanges}
                     onSave={handleSave}
                   />
                 )}
 
                 {activeMenu === ActiveMenu.SwapFees && config && (
-                  <SwapFeeWizardContainer config={config} onSave={handleSave} />
+                  <SwapFeeWizardContainer
+                    config={config}
+                    onSave={handleSave}
+                    onHasChanges={setHasChanges}
+                  />
                 )}
                 {activeMenu === ActiveMenu.Collections && (
                   <CollectionWizardContainer
                     config={config}
+                    onHasChanges={setHasChanges}
                     onSave={handleSave}
                   />
                 )}
@@ -854,22 +927,32 @@ export function EditWizardContainer({ site }: Props) {
                 {activeMenu === ActiveMenu.Menu && config && (
                   <PagesMenuWizardContainer
                     config={config}
+                    onHasChanges={setHasChanges}
                     onSave={handleSave}
                     onChange={handleChange}
                   />
                 )}
 
                 {activeMenu === ActiveMenu.Tokens && config && (
-                  <TokenWizardContainer config={config} onSave={handleSave} />
+                  <TokenWizardContainer
+                    config={config}
+                    onSave={handleSave}
+                    onHasChanges={setHasChanges}
+                  />
                 )}
 
                 {activeMenu === ActiveMenu.Seo && config && (
-                  <SeoWizardContainer config={config} onSave={handleSave} />
+                  <SeoWizardContainer
+                    config={config}
+                    onSave={handleSave}
+                    onHasChanges={setHasChanges}
+                  />
                 )}
 
                 {activeMenu === ActiveMenu.Analytics && config && (
                   <AnalyticsWizardContainer
                     config={config}
+                    onHasChanges={setHasChanges}
                     onSave={handleSave}
                   />
                 )}
@@ -878,11 +961,13 @@ export function EditWizardContainer({ site }: Props) {
                     config={config}
                     onSave={handleSave}
                     onChange={handleChange}
+                    onHasChanges={setHasChanges}
                   />
                 )}
                 {activeMenu === ActiveMenu.FooterMenu && config && (
                   <FooterMenuWizardContainer
                     config={config}
+                    onHasChanges={setHasChanges}
                     onSave={handleSave}
                     onChange={handleChange}
                   />

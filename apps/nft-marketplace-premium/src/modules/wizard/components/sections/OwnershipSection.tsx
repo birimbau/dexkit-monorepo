@@ -120,7 +120,7 @@ export default function OwnershipSection({ id, nft }: Props) {
         onSubmit={handleSubmitCollectionItemsForm}
         validationSchema={CollectionItemSchema}
       >
-        {({ submitForm, isValid }) => (
+        {({ submitForm, isValid, dirty }) => (
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <OwnershipNFTForm isDisabled={isHoldingKitQuery.data === false} />
@@ -144,7 +144,7 @@ export default function OwnershipSection({ id, nft }: Props) {
                 )}
                 <Button
                   startIcon={<Check />}
-                  disabled={!isValid || !isHoldingKitQuery.data}
+                  disabled={!isValid || !isHoldingKitQuery.data || !dirty}
                   onClick={submitForm}
                   type="submit"
                   variant="contained"

@@ -39,12 +39,20 @@ export interface SiteResponse {
   config: string;
   domain: string;
   cname?: string;
+  owner?: string;
   domainStatus?: string;
   emailVerified?: boolean;
   type: AppWhitelabelType;
   active?: boolean;
   previewUrl?: string;
   nft?: AssetAPI
+  permissions?: {
+    accountId: string;
+    permissions: {
+      [key: string]: boolean
+    }
+
+  }[]
 }
 
 

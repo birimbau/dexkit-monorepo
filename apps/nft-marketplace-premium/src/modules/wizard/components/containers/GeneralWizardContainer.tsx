@@ -9,6 +9,7 @@ interface Props {
   config: AppConfig;
   onSave: (config: AppConfig) => void;
   onChange: (config: AppConfig) => void;
+  onHasChanges: (changes: boolean) => void;
   isOnStepper?: boolean;
   stepperButtonProps?: StepperButtonProps;
 }
@@ -18,6 +19,7 @@ export default function GeneralWizardContainer({
   onSave,
   onChange,
   isOnStepper,
+  onHasChanges,
   stepperButtonProps,
 }: Props) {
   const [generalData, setGeneralData] = useState<GeneralSectionForm>();
@@ -119,6 +121,7 @@ export default function GeneralWizardContainer({
         <GeneralSection
           initialValues={generalData}
           onChange={onChangeGeneral}
+          onHasChanges={onHasChanges}
           onSubmit={handleSubmitGeneral}
           isOnStepper={isOnStepper}
           stepperButtonProps={stepperButtonProps}

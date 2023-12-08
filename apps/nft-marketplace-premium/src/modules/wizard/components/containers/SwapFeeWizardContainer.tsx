@@ -12,10 +12,22 @@ import SwapFeesSection from '../sections/SwapFeesSection';
 interface Props {
   config: AppConfig;
   onSave: (config: AppConfig) => void;
+  onHasChanges: (hasChanges: boolean) => void;
 }
 
-export default function SwapFeeWizardContainer({ config, onSave }: Props) {
+export default function SwapFeeWizardContainer({
+  config,
+  onSave,
+  onHasChanges,
+}: Props) {
   const [swapFee, setSwapFee] = useState<SwapFeeForm>();
+  const [hasChanged, setHasChanged] = useState(false);
+  useEffect(() => {
+    if (onHasChanges) {
+      onHasChanges(hasChanged);
+    }
+  }, [hasChanged, onHasChanges]);
+
   useEffect(() => {
     if (config.swapFees) {
       setSwapFee({
@@ -26,6 +38,7 @@ export default function SwapFeeWizardContainer({ config, onSave }: Props) {
   }, [config]);
 
   const handleSaveSwapFee = (fee: SwapFeeForm) => {
+    setHasChanged(true);
     setSwapFee(fee);
   };
   const handleSave = () => {
@@ -41,7 +54,10 @@ export default function SwapFeeWizardContainer({ config, onSave }: Props) {
     }
   };
 
-  const handleRemoveSwapFee = () => setSwapFee(undefined);
+  const handleRemoveSwapFee = () => {
+    setHasChanged(true);
+    setSwapFee(undefined);
+  };
 
   return (
     <Grid container spacing={2}>
@@ -74,7 +90,12 @@ export default function SwapFeeWizardContainer({ config, onSave }: Props) {
       </Grid>
       <Grid item xs={12}>
         <Stack spacing={1} direction="row" justifyContent="flex-end">
-          <Button variant="contained" color="primary" onClick={handleSave}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleSave}
+            disabled={!hasChanged}
+          >
             <FormattedMessage id="save" defaultMessage="Save" />
           </Button>
         </Stack>

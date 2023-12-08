@@ -1,6 +1,6 @@
 import { Button, Divider, Grid, Stack, TextField } from '@mui/material';
 import { FormikHelpers, useFormik } from 'formik';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import * as Yup from 'yup';
@@ -18,10 +18,12 @@ interface Props {
   isEdit?: boolean;
   initialValues?: DomainSectionForm;
   onSubmit?: (form: DomainSectionForm) => void;
+  onHasChanges: (hasChanges: boolean) => void;
 }
 
 export default function DomainSection({
   onSubmit,
+  onHasChanges,
   initialValues,
   isEdit,
 }: Props) {
@@ -48,6 +50,12 @@ export default function DomainSection({
     onSubmit: handleSubmit,
     validationSchema: FormSchema,
   });
+
+  useEffect(() => {
+    if (onHasChanges) {
+      onHasChanges(formik.dirty);
+    }
+  }, [formik.dirty, onHasChanges]);
 
   return (
     <>
@@ -81,7 +89,7 @@ export default function DomainSection({
             <Grid item xs={12}>
               <Stack spacing={1} direction="row" justifyContent="flex-end">
                 <Button
-                  disabled={!formik.isValid}
+                  disabled={!formik.isValid || !formik.dirty}
                   type="submit"
                   variant="contained"
                   color="primary"
