@@ -9,7 +9,7 @@ interface Props {
   config: AppConfig;
   onSave: (config: AppConfig) => void;
   onChange: (config: AppConfig) => void;
-  onHasChanges: (changes: boolean) => void;
+  onHasChanges?: (changes: boolean) => void;
   isOnStepper?: boolean;
   stepperButtonProps?: StepperButtonProps;
 }

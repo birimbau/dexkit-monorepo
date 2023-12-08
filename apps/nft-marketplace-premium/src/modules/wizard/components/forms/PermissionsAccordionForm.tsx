@@ -145,8 +145,8 @@ export function PermissionsAccordionForm({ memberPermissions, siteId }: Props) {
         />
       )}
 
-      {memberPermissions?.map((member) => (
-        <Accordion>
+      {memberPermissions?.map((member, key) => (
+        <Accordion key={key}>
           <AccordionSummary
             expandIcon={<ExpandMoreIcon />}
             aria-controls="panel1a-content"

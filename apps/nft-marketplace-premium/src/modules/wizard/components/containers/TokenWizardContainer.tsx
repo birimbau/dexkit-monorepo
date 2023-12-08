@@ -16,7 +16,7 @@ import { StepperButtons } from '../steppers/StepperButtons';
 interface Props {
   config: AppConfig;
   onSave: (config: AppConfig) => void;
-  onHasChanges: (hasChanges: boolean) => void;
+  onHasChanges?: (hasChanges: boolean) => void;
   isOnStepper?: boolean;
   isSwap?: boolean;
   stepperButtonProps?: StepperButtonProps;
