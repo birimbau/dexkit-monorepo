@@ -13,6 +13,9 @@ import DexGeneratorTokenDropForm from './DexGeneratorTokenDropForm';
 
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 
+import DexGeneratorTokenErc20Form from './DexGeneratorTokenErc20Form';
+import DexGeneratorTokenErc721Form from './DexGeneratorTokenErc721Form';
+
 export interface DexGeneratorContractFormProps {
   onChange: (section: DexGeneratorPageSection) => void;
   onCancel: () => void;
@@ -67,6 +70,27 @@ export default function DexGeneratorContractForm({
           section={
             section?.type === 'edition-drop-section' ? section : undefined
           }
+        />
+      );
+    } else if (contractType === 'TokenERC20') {
+      return (
+        <DexGeneratorTokenErc20Form
+          key={`${network}-${address}-${contractType}-${name}`}
+          onChange={handleChange}
+          params={{ network, address }}
+          section={section?.type === 'token' ? section : undefined}
+        />
+      );
+    } else if (
+      contractType === 'TokenERC721' ||
+      contractType === 'TokenERC1155'
+    ) {
+      return (
+        <DexGeneratorTokenErc721Form
+          key={`${network}-${address}-${contractType}-${name}`}
+          onChange={handleChange}
+          params={{ network, address }}
+          section={section?.type === 'collection' ? section : undefined}
         />
       );
     } else {

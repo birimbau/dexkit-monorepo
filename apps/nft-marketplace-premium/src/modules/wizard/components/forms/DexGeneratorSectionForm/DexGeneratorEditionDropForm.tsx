@@ -1,4 +1,5 @@
 import { EditionDropPageSection } from '@/modules/wizard/types/section';
+import { NETWORK_FROM_SLUG } from '@dexkit/core/constants/networks';
 import { Grid } from '@mui/material';
 import { ThirdwebSDKProvider, useContract, useNFTs } from '@thirdweb-dev/react';
 import { useWeb3React } from '@web3-react/core';
@@ -24,14 +25,12 @@ function DexGeneratorEditionDropForm({
   const handleValidate = ({ tokenId }: { tokenId?: string }) => {
     onChange({
       type: 'edition-drop-section',
-      config: { address, tokenId: tokenId || '' },
+      config: { network, address, tokenId: tokenId || '' },
     });
   };
 
   const { data: contract } = useContract(address);
   const nftsQuery = useNFTs(contract);
-
-  console.log(nftsQuery.data, nftsQuery.isError);
 
   return (
     <Formik
@@ -70,11 +69,12 @@ function DexGeneratorEditionDropForm({
 export default function Wrapper(props: DexGeneratorEditionDropFormProps) {
   const { chainId, provider } = useWeb3React();
 
+  const { section } = props;
+
   return (
     <ThirdwebSDKProvider
       signer={provider?.getSigner()}
-      /* TODO: remove this logic */
-      activeChain={chainId}
+      activeChain={NETWORK_FROM_SLUG(section?.config.network)?.chainId}
       clientId={THIRDWEB_CLIENT_ID}
     >
       <DexGeneratorEditionDropForm {...props} />

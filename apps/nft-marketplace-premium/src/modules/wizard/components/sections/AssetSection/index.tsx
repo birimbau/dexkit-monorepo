@@ -17,9 +17,10 @@ import EditionDropSection from '../EditionDropSection';
 interface DropWrapperProps {
   tokenId: string;
   address: string;
+  network: string;
 }
 
-function DropWrapper({ tokenId, address }: DropWrapperProps) {
+function DropWrapper({ tokenId, address, network }: DropWrapperProps) {
   const { data: contract } = useContract(address);
 
   const isDrop = useAsyncMemo(
@@ -45,6 +46,7 @@ function DropWrapper({ tokenId, address }: DropWrapperProps) {
         section={{
           type: 'edition-drop-section',
           config: {
+            network,
             tokenId: tokenId as string,
             address: address as string,
           },
@@ -107,7 +109,11 @@ export default function AssetSection({ section }: AssetSectionProps) {
               activeChain={NETWORK_FROM_SLUG(network)?.chainId}
               signer={provider?.getSigner()}
             >
-              <DropWrapper address={address} tokenId={tokenId} />
+              <DropWrapper
+                address={address}
+                tokenId={tokenId}
+                network={network}
+              />
             </ThirdwebSDKProvider>
           </Grid>
         )}

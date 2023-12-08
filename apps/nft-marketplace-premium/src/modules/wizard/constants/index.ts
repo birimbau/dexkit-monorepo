@@ -65,16 +65,23 @@ export const DEX_GENERATOR_CONTRACT_TYPES: { type: string; name: string }[] = [
   { type: 'DropERC1155', name: 'Edition Drop' },
   { type: 'DropERC20', name: 'Token Drop' },
   { type: 'DropERC721', name: 'NFT Drop' },
-  { type: 'TokenStake', name: 'Token Stake' },
-  { type: 'NFTStake', name: 'NFT Stake' },
-  { type: 'EditionStake', name: 'Edition Stake' },
+  // TODO: make this contracts available
+  // { type: 'TokenStake', name: 'Token Stake' },
+  // { type: 'NFTStake', name: 'NFT Stake' },
+  // { type: 'EditionStake', name: 'Edition Stake' },
+  { type: 'TokenERC20', name: 'Token' },
+  { type: 'TokenERC721', name: 'Collection' },
+  { type: 'TokenERC1155', name: 'Edition' },
 ];
 
 export const DEX_GENERATOR_CONTRACT_TYPES_AVAIL = [
   'DropERC20',
   'DropERC1155',
   'DropERC721',
-  'EditionStake',
-  'NFTStake',
-  'TokenStake',
+  // 'EditionStake',
+  // 'NFTStake',
+  // 'TokenStake',
+  'TokenERC20',
+  'TokenERC721',
+  'TokenERC1155',
 ];

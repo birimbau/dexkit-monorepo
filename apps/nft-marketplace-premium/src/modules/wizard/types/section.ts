@@ -186,6 +186,7 @@ export interface ExchangePageSection extends PageSection {
 export interface EditionDropPageSection extends PageSection {
   type: 'edition-drop-section';
   config: {
+    network: string;
     address: string;
     tokenId: string;
   };
@@ -233,7 +234,8 @@ export type DexGeneratorPageSectionType =
   | AirdropErc20PageSection
   | StakeErc721PageSection
   | StakeErc20PageSection
-  | StakeErc155PageSection;
+  | StakeErc155PageSection
+  | CollectionPageSection;
 
 export interface DexGeneratorPageSection extends PageSection {
   type: 'dex-generator-section';

@@ -2,17 +2,24 @@ import { useListDeployedContracts } from '@/modules/forms/hooks';
 import LazyTextField from '@dexkit/ui/components/LazyTextField';
 
 import { DeployedContract } from '@/modules/forms/types';
+import { ipfsUriToUrl, parseChainId } from '@dexkit/core/utils';
 import Error from '@mui/icons-material/Error';
+import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
+import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import Search from '@mui/icons-material/Search';
 import {
+  Avatar,
   Box,
   Button,
   Card,
   CardContent,
   FormControl,
   Grid,
+  IconButton,
   InputAdornment,
   InputLabel,
+  ListItemIcon,
+  ListItemText,
   MenuItem,
   Select,
   SelectChangeEvent,
@@ -23,6 +30,7 @@ import {
 import { useWeb3React } from '@web3-react/core';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
+import { NETWORKS } from 'src/constants/chain';
 import { getChainSlug } from 'src/utils/blockchain';
 import {
   DEX_GENERATOR_CONTRACT_TYPES,
@@ -49,11 +57,12 @@ export default function DexGeneratorSectionForm({
 }: DexGeneratorSectionFormProps) {
   const { account } = useWeb3React();
 
-  const [type, setType] = useState<string>('');
+  const [type, setType] = useState<string>('all');
   const [contract, setContract] = useState<DeployedContract | undefined>(
     section?.contract,
   );
 
+  const [chainId, setChainId] = useState(-1);
   const [query, setQuery] = useState<string>();
 
   const filter = useMemo(() => {
@@ -66,14 +75,26 @@ export default function DexGeneratorSectionForm({
       f.q = query;
     }
 
-    if (type && type !== '' && type !== undefined) {
+    if (type && type !== '' && type !== undefined && type !== 'all') {
       f.type = type;
     }
 
+    if (chainId > -1) {
+      f.chainId = chainId;
+    }
+
     return f;
-  }, [query, account, type]);
+  }, [query, account, type, chainId]);
 
   const [page, setPage] = useState(0);
+
+  const handleNext = () => {
+    setPage((page) => page + 1);
+  };
+
+  const handlePrev = () => {
+    setPage((page) => page - 1);
+  };
 
   const listContractsQuery = useListDeployedContracts({
     filter,
@@ -90,7 +111,9 @@ export default function DexGeneratorSectionForm({
   >(section);
 
   useEffect(() => {
-    setCurrSection(section);
+    if (section) {
+      setCurrSection(section);
+    }
   }, [section]);
 
   const handleChangeSection = useCallback(
@@ -143,6 +166,7 @@ export default function DexGeneratorSectionForm({
             section: {
               type: 'edition-drop-section',
               config: {
+                network,
                 address: newContract.contractAddress,
                 tokenId: '',
               },
@@ -198,6 +222,41 @@ export default function DexGeneratorSectionForm({
             contract: newContract,
             type: 'dex-generator-section',
           });
+        } else if (newContract.type === 'TokenERC20') {
+          handleChangeSection({
+            section: {
+              type: 'token',
+              settings: {
+                address: newContract.contractAddress,
+                network,
+                disableBurn: false,
+                disableInfo: false,
+                disableMint: false,
+                disableTransfer: false,
+              },
+            },
+            contract: newContract,
+            type: 'dex-generator-section',
+          });
+        } else if (
+          newContract.type === 'TokenERC721' ||
+          newContract.type === 'TokenERC1155'
+        ) {
+          handleChangeSection({
+            section: {
+              type: 'collection',
+              config: {
+                address: newContract.contractAddress,
+                network,
+                hideAssets: false,
+                hideDrops: false,
+                hideFilters: false,
+                hideHeader: false,
+              },
+            },
+            contract: newContract,
+            type: 'dex-generator-section',
+          });
         }
       }
     },
@@ -215,9 +274,86 @@ export default function DexGeneratorSectionForm({
     setContract(undefined);
   };
 
+  const networks = useMemo(() => {
+    return Object.keys(NETWORKS).map(
+      (key: string) => NETWORKS[parseChainId(key)],
+    );
+  }, []);
+
+  const handleChangeChainId = (e: SelectChangeEvent<number>) => {
+    return setChainId(parseChainId(e.target.value));
+  };
+
   return (
     <Box>
       <Grid container spacing={2}>
+        {!contract && (
+          <Grid item xs={12}>
+            <FormControl fullWidth>
+              <InputLabel>
+                <FormattedMessage id="network" defaultMessage="Network" />
+              </InputLabel>
+              <Select
+                label={
+                  <FormattedMessage id="network" defaultMessage="Network" />
+                }
+                name="network"
+                fullWidth
+                value={chainId}
+                onChange={handleChangeChainId}
+                renderValue={(value: number) => {
+                  if (value === -1) {
+                    return <FormattedMessage id="all" defaultMessage="All" />;
+                  }
+
+                  return (
+                    <Stack
+                      direction="row"
+                      alignItems="center"
+                      alignContent="center"
+                      spacing={1}
+                    >
+                      <Avatar
+                        src={ipfsUriToUrl(
+                          networks.find(
+                            (n) => n.chainId === parseChainId(value),
+                          )?.imageUrl || '',
+                        )}
+                        style={{ width: 'auto', height: '1rem' }}
+                      />
+                      <Typography variant="body1">
+                        {
+                          networks.find(
+                            (n) => n.chainId === parseChainId(value),
+                          )?.name
+                        }
+                      </Typography>
+                    </Stack>
+                  );
+                }}
+              >
+                <MenuItem value={-1}>
+                  <ListItemIcon></ListItemIcon>
+                  <ListItemText
+                    primary={<FormattedMessage id="all" defaultMessage="All" />}
+                  />
+                </MenuItem>
+                {networks.map((n) => (
+                  <MenuItem key={n.chainId} value={n.chainId}>
+                    <ListItemIcon>
+                      <Avatar
+                        src={ipfsUriToUrl(n?.imageUrl || '')}
+                        style={{ width: '1rem', height: '1rem' }}
+                      />
+                    </ListItemIcon>
+                    <ListItemText primary={n.name} />
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+        )}
+
         <Grid item xs={12}>
           <Grid container spacing={2}>
             <Grid item xs>
@@ -246,7 +382,6 @@ export default function DexGeneratorSectionForm({
                 </InputLabel>
                 <Select
                   id="contractType"
-                  displayEmpty
                   size="small"
                   label={
                     <FormattedMessage
@@ -258,7 +393,7 @@ export default function DexGeneratorSectionForm({
                   value={type}
                   onChange={handleChangeType}
                 >
-                  <MenuItem value="">
+                  <MenuItem value="all">
                     <FormattedMessage id="all" defaultMessage="All" />
                   </MenuItem>
                   {DEX_GENERATOR_CONTRACT_TYPES.map((type) => (
@@ -298,12 +433,31 @@ export default function DexGeneratorSectionForm({
                         <DexGeneratorSectionCard
                           id={c.id}
                           type={c.type}
+                          chainId={c.chainId}
                           name={c.name}
                           onClick={() => handleClick(c)}
                         />
                       </Grid>
                     ))}
                   </Grid>
+                </Box>
+              </Grid>
+              <Grid item xs={12}>
+                <Box>
+                  <Stack direction="row" spacing={1} justifyContent="flex-end">
+                    <IconButton disabled={page === 0} onClick={handlePrev}>
+                      <KeyboardArrowLeftIcon />
+                    </IconButton>
+                    <IconButton
+                      disabled={
+                        listContractsQuery.data !== undefined &&
+                        listContractsQuery.data.data.length !== 10
+                      }
+                      onClick={handleNext}
+                    >
+                      <KeyboardArrowRightIcon />{' '}
+                    </IconButton>
+                  </Stack>
                 </Box>
               </Grid>
               {listContractsQuery.isLoading &&
@@ -330,13 +484,11 @@ export default function DexGeneratorSectionForm({
               onChange={handleChangeSection}
               onCancel={() => {
                 setContract(undefined);
-                if (currSection) {
-                  handleChangeSection({
-                    ...currSection,
-                    section: undefined,
-                    contract: undefined,
-                  });
-                }
+                handleChangeSection({
+                  type: 'dex-generator-section',
+                  contract: undefined,
+                  section: undefined,
+                });
               }}
               params={{
                 address: contract.contractAddress,
@@ -344,7 +496,7 @@ export default function DexGeneratorSectionForm({
                 network: getChainSlug(contract.chainId) || '',
                 name: contract.name,
               }}
-              section={section?.section}
+              section={currSection?.section}
               contract={contract}
             />
           </Grid>

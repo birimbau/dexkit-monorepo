@@ -114,6 +114,7 @@ const AssetDetailPage: NextPage = () => {
                   section={{
                     type: 'edition-drop-section',
                     config: {
+                      network: NETWORK_SLUG(asset?.chainId) || '',
                       tokenId: id as string,
                       address: address as string,
                     },
