@@ -1,12 +1,15 @@
 import AppDataTable from "@dexkit/ui/components/AppDataTable";
 import {
+  Alert,
+  Box,
   Button,
   Dialog,
   DialogActions,
   DialogContent,
   DialogProps,
 } from "@mui/material";
-import React, { useState } from "react";
+import { GridRowId } from "@mui/x-data-grid";
+import React, { useMemo, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { AppDialogTitle } from "../AppDialogTitle";
 
@@ -32,11 +35,14 @@ export default function AppDataTableDialog({
 }: AppDataTableDialogProps) {
   const { onClose } = DialogProps;
 
+  const [editRows, setEditRow] = useState<{ [key: GridRowId]: boolean }>({});
+
   const handleClose = () => {
     if (onClose) {
       onClose({}, "backdropClick");
     }
     setValues(undefined);
+    setEditRow({});
   };
 
   const [values, setValues] =
@@ -53,6 +59,19 @@ export default function AppDataTableDialog({
     setValues(data);
   };
 
+  const handleEditRow = (id: GridRowId, value: boolean) => {
+    setEditRow((values) => ({ ...values, [id]: value }));
+  };
+
+  const canSave = useMemo(() => {
+    const rowValues = Object.values(editRows);
+    return rowValues.findIndex((c) => c) === -1;
+  }, [editRows]);
+
+  const isEmpty = useMemo(() => {
+    return values && values?.length === 0;
+  }, [values]);
+
   return (
     <Dialog {...DialogProps}>
       <AppDialogTitle title={title} />
@@ -61,10 +80,34 @@ export default function AppDataTableDialog({
           dataColumns={dataColumns}
           data={value}
           onChange={handleChange}
+          onEditRow={handleEditRow}
         />
+
+        <Box p={2}>
+          {isEmpty && (
+            <Alert severity="warning">
+              <FormattedMessage
+                id="add.addresses.to.airdrop"
+                defaultMessage="Add addresses to airdrop"
+              />
+            </Alert>
+          )}
+          {!canSave && (
+            <Alert severity="error">
+              <FormattedMessage
+                id="save.your.row.changes.before.confirm"
+                defaultMessage="Save your row changes before confirm"
+              />
+            </Alert>
+          )}
+        </Box>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleConfirm} variant="contained">
+        <Button
+          disabled={isEmpty || !canSave}
+          onClick={handleConfirm}
+          variant="contained"
+        >
           <FormattedMessage id="confirm" defaultMessage="Confirm" />
         </Button>
         <Button onClick={handleClose}>
