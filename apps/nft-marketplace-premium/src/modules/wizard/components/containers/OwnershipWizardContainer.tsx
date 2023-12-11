@@ -15,10 +15,12 @@ interface Props {
   site?: SiteResponse | null;
   config: AppConfig;
   onSave: (config: AppConfig) => void;
+  onHasChanges: (hasChanges: boolean) => void;
 }
 export default function OwnershipWizardContainer({
   config,
   onSave,
+  onHasChanges,
   site,
 }: Props) {
   const { data } = useAccountHoldDexkitQuery();

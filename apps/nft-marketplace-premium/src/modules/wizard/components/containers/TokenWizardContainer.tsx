@@ -3,7 +3,7 @@ import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { Token } from '../../../../types/blockchain';
 import { AppConfig } from '../../../../types/config';
@@ -16,6 +16,7 @@ import { StepperButtons } from '../steppers/StepperButtons';
 interface Props {
   config: AppConfig;
   onSave: (config: AppConfig) => void;
+  onHasChanges?: (hasChanges: boolean) => void;
   isOnStepper?: boolean;
   isSwap?: boolean;
   stepperButtonProps?: StepperButtonProps;
@@ -25,9 +26,18 @@ export default function TokenWizardContainer({
   config,
   onSave,
   isOnStepper,
+  onHasChanges,
   stepperButtonProps,
   isSwap,
 }: Props) {
+  const [hasChanged, setHasChanged] = useState(false);
+
+  useEffect(() => {
+    if (onHasChanges) {
+      onHasChanges(hasChanged);
+    }
+  }, [hasChanged, onHasChanges]);
+
   const [selectedKeys, setSelectedKeys] = useState<{
     [key: string]: boolean;
   }>({});
@@ -51,10 +61,12 @@ export default function TokenWizardContainer({
 
       newTokens[index] = token;
       setTokens(newTokens);
+      setHasChanged(true);
     }
   };
 
   const handleRemoveTokens = () => {
+    setHasChanged(true);
     return setTokens((value) => {
       let newTokens = value.filter((token) => {
         return !Boolean(selectedKeys[TOKEN_KEY(token)]);
@@ -77,7 +89,7 @@ export default function TokenWizardContainer({
 
         return !token;
       });
-
+      setHasChanged(true);
       return [...value, ...filteredTokens];
     });
   }, []);
@@ -170,7 +182,12 @@ export default function TokenWizardContainer({
           />
         ) : (
           <Stack spacing={1} direction="row" justifyContent="flex-end">
-            <Button variant="contained" color="primary" onClick={handleSave}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleSave}
+              disabled={!hasChanged}
+            >
               <FormattedMessage id="save" defaultMessage="Save" />
             </Button>
           </Stack>

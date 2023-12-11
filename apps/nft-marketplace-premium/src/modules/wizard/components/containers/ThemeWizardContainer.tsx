@@ -41,6 +41,7 @@ interface Props {
   config: AppConfig;
   onSave: (config: AppConfig) => void;
   onChange: (config: AppConfig) => void;
+  onHasChanges?: (hasChanges: boolean) => void;
   isOnStepper?: boolean;
   stepperButtonProps?: StepperButtonProps;
   showSwap?: boolean;
@@ -51,6 +52,7 @@ export default function ThemeWizardContainer({
   onSave,
   onChange,
   isOnStepper,
+  onHasChanges,
   stepperButtonProps,
   showSwap,
 }: Props) {
@@ -184,6 +186,48 @@ export default function ThemeWizardContainer({
     onChange(newConfig);
   }, [selectedThemeId, selectedFont, customThemeDark, customThemeLight]);
 
+  const themeChanged = useMemo(() => {
+    if (config.theme !== selectedThemeId) {
+      return true;
+    }
+    if (config?.font !== selectedFont) {
+      return true;
+    }
+
+    if (config?.defaultThemeMode !== defaultThemeMode) {
+      return true;
+    }
+    if (config.theme === 'custom') {
+      if (
+        config.customThemeDark &&
+        config.customThemeDark !== JSON.stringify(customThemeDark)
+      ) {
+        return true;
+      }
+      if (
+        config.customThemeLight &&
+        JSON.stringify(customThemeLight) !== config.customThemeLight
+      ) {
+        return true;
+      }
+    }
+
+    return false;
+  }, [
+    defaultThemeMode,
+    selectedFont,
+    selectedThemeId,
+    customThemeDark,
+    customThemeLight,
+    config.theme,
+    config?.defaultThemeMode,
+  ]);
+  useEffect(() => {
+    if (onHasChanges) {
+      onHasChanges(themeChanged);
+    }
+  }, [onHasChanges, themeChanged]);
+
   const handleSelectedFont = (event: any, value: string | null) => {
     if (value) {
       const font = Fonts.items.find((f) => f.family === value);
@@ -269,7 +313,7 @@ export default function ThemeWizardContainer({
   };
 
   return (
-    <Box>
+    <>
       <ThemePreviewMenu
         anchorEl={anchorEl}
         onChange={setPreviewType}
@@ -289,7 +333,7 @@ export default function ThemeWizardContainer({
         <Grid item xs={12}>
           <Box>
             <Stack>
-              <Typography variant="subtitle2">
+              <Typography variant="h6">
                 <FormattedMessage id="theme" defaultMessage="Theme" />
               </Typography>
               <Typography variant={'body2'}>
@@ -444,7 +488,12 @@ export default function ThemeWizardContainer({
             />
           ) : (
             <Stack spacing={1} direction="row" justifyContent="flex-end">
-              <Button variant="contained" color="primary" onClick={handleSave}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleSave}
+                disabled={!themeChanged}
+              >
                 <FormattedMessage id="save" defaultMessage="Save" />
               </Button>
               <Button startIcon={<Cancel />} onClick={handleCancelEdit}>
@@ -454,6 +503,6 @@ export default function ThemeWizardContainer({
           )}
         </Grid>
       </Grid>
-    </Box>
+    </>
   );
 }

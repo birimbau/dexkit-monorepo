@@ -26,6 +26,7 @@ interface Props {
   config: AppConfig;
   onSave: (config: AppConfig) => void;
   onChange?: (config: AppConfig) => void;
+  onHasChanges: (hasChanges: boolean) => void;
 }
 
 interface SocialOptions {
@@ -68,11 +69,15 @@ function OnChangeListener({
   onChange,
   config,
   isValid,
+  onHasChanges,
+  dirty,
 }: {
   values: any;
   onChange: any;
   config: any;
   isValid: boolean;
+  dirty: boolean;
+  onHasChanges: any;
 }) {
   useEffect(() => {
     if (onChange && values && config && isValid) {
@@ -99,6 +104,12 @@ function OnChangeListener({
     }
   }, [values, onChange, config, isValid]);
 
+  useEffect(() => {
+    if (dirty && onHasChanges) {
+      onHasChanges(dirty);
+    }
+  }, [dirty, onHasChanges]);
+
   return null;
 }
 
@@ -106,6 +117,7 @@ export default function SocialWizardContainer({
   config,
   onSave,
   onChange,
+  onHasChanges,
 }: Props) {
   const [openMediaDialog, setOpenMediaDialog] = useState(false);
   const [mediaFieldToEdit, setMediaFieldToEdit] = useState<string>();
@@ -147,13 +159,15 @@ export default function SocialWizardContainer({
           onSave(config);
         }}
       >
-        {({ submitForm, values, setFieldValue, isValid }) => (
+        {({ submitForm, values, setFieldValue, isValid, dirty }) => (
           <Form>
             <OnChangeListener
               values={values}
               onChange={onChange}
               config={config}
               isValid={isValid}
+              onHasChanges={onHasChanges}
+              dirty={dirty}
             />
             {openMediaDialog && (
               <MediaDialog
@@ -407,6 +421,7 @@ export default function SocialWizardContainer({
               <Grid item xs={12}>
                 <Stack spacing={1} direction="row" justifyContent="flex-end">
                   <Button
+                    disabled={!dirty}
                     variant="contained"
                     color="primary"
                     onClick={submitForm}

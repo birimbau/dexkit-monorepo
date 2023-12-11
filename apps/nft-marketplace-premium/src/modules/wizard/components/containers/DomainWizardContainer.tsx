@@ -27,9 +27,15 @@ interface Props {
   config: AppConfig;
   site?: SiteResponse | null;
   onSave: (config: AppConfig) => void;
+  onHasChanges: (changes: boolean) => void;
 }
 
-export default function DomainWizardContainer({ config, onSave, site }: Props) {
+export default function DomainWizardContainer({
+  config,
+  onSave,
+  site,
+  onHasChanges,
+}: Props) {
   const { enqueueSnackbar } = useSnackbar();
   const [openInfo, setOpenInfo] = useState(false);
   const [titleInfo, setTitleInfo] = useState('');
@@ -348,6 +354,7 @@ export default function DomainWizardContainer({ config, onSave, site }: Props) {
 
         <Grid item xs={12}>
           <DomainSection
+            onHasChanges={onHasChanges}
             initialValues={domainData}
             onSubmit={handleSubmitGeneral}
           />
