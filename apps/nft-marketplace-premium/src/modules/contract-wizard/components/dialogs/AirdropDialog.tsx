@@ -1,14 +1,17 @@
 import { isValidDecimal } from '@dexkit/core/utils';
 import AppDataTable from '@dexkit/ui/components/AppDataTable';
 import {
+  Alert,
+  Box,
   Button,
   Dialog,
   DialogActions,
   DialogContent,
   DialogProps,
 } from '@mui/material';
+import { GridRowId } from '@mui/x-data-grid';
 import { ethers } from 'ethers';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { AppDialogTitle } from 'src/components/AppDialogTitle';
 
@@ -48,6 +51,21 @@ export default function AirdropDialog({
     setValues(data);
   };
 
+  const [editRows, setEditRow] = useState<{ [key: GridRowId]: boolean }>({});
+
+  const handleEditRow = (id: GridRowId, value: boolean) => {
+    setEditRow((values) => ({ ...values, [id]: value }));
+  };
+
+  const canSave = useMemo(() => {
+    const rowValues = Object.values(editRows);
+    return rowValues.findIndex((c) => c) === -1;
+  }, [editRows, values]);
+
+  const isEmpty = useMemo(() => {
+    return values && values?.length === 0;
+  }, [values]);
+
   return (
     <Dialog {...DialogProps}>
       <AppDialogTitle
@@ -83,10 +101,35 @@ export default function AirdropDialog({
           ]}
           data={value}
           onChange={handleChange}
+          onEditRow={handleEditRow}
         />
+        {isEmpty && (
+          <Box p={2}>
+            <Alert severity="warning">
+              <FormattedMessage
+                id="add.addresses.to.airdrop"
+                defaultMessage="Add addresses to airdrop"
+              />
+            </Alert>
+          </Box>
+        )}
+        {!canSave && (
+          <Box p={2}>
+            <Alert severity="error">
+              <FormattedMessage
+                id="save.your.row.changes.before.confirm"
+                defaultMessage="Save your row changes before confirm"
+              />
+            </Alert>
+          </Box>
+        )}
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleConfirm} variant="contained">
+        <Button
+          disabled={!canSave || isEmpty}
+          onClick={handleConfirm}
+          variant="contained"
+        >
           <FormattedMessage id="confirm" defaultMessage="Confirm" />
         </Button>
         <Button onClick={handleClose}>

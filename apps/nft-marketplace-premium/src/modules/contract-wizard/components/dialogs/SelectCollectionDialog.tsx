@@ -1,9 +1,10 @@
 import { useListDeployedContracts } from '@/modules/forms/hooks';
 import { ChainId } from '@dexkit/core';
+import { NETWORK_SLUG } from '@dexkit/core/constants/networks';
+import { DexkitApiProvider } from '@dexkit/core/providers';
 import { isAddressEqual } from '@dexkit/core/utils';
 import { AppDialogTitle } from '@dexkit/ui';
 import {
-  Avatar,
   Box,
   Button,
   Dialog,
@@ -11,7 +12,6 @@ import {
   DialogContent,
   DialogProps,
   List,
-  ListItemAvatar,
   ListItemButton,
   ListItemSecondaryAction,
   ListItemText,
@@ -23,7 +23,7 @@ import { useWeb3React } from '@web3-react/core';
 import { useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { useCollections } from 'src/hooks/app';
-import SelectCollectionListItem from './SelectCollectionListItem';
+import { myAppsApi } from 'src/services/whitelabel';
 
 export interface SelectCollectionDialogProps {
   DialogProps: DialogProps;
@@ -32,7 +32,7 @@ export interface SelectCollectionDialogProps {
   isErc1155?: boolean;
 }
 
-export default function SelectCollectionDialog({
+function SelectCollectionDialog({
   DialogProps,
   chainId,
   onSelect,
@@ -40,6 +40,7 @@ export default function SelectCollectionDialog({
 }: SelectCollectionDialogProps) {
   const { onClose } = DialogProps;
 
+  const { account } = useWeb3React();
   const [selectedContractAddr, setSelectedContractAddr] = useState<string>();
 
   const collectionsList = useCollections();
@@ -51,39 +52,68 @@ export default function SelectCollectionDialog({
     setSelectedContractAddr(undefined);
   };
 
-  const collections = useMemo(() => {
-    return collectionsList?.filter((c) => c.chainId === chainId);
-  }, []);
+  const [type, setType] = useState<string>('');
 
-  const { account } = useWeb3React();
+  const [query, setQuery] = useState<string>();
 
-  const [queryOptions, setQueryOptions] = useState<any>({
-    filter: { owner: account?.toLowerCase() },
-  });
+  const filter = useMemo(() => {
+    let f: any = {
+      owner: account?.toLowerCase(),
+      type: { in: isErc1155 ? 'TokenERC1155' : 'TokenERC721' },
+    };
 
-  const [paginationModel, setPaginationModel] = useState({
-    page: 0,
+    if (query) {
+      f.q = query;
+    }
+
+    if (type && type !== '' && type !== undefined) {
+      f.type = type;
+    }
+
+    return f;
+  }, [query, account, type]);
+
+  const [page, setPage] = useState(0);
+
+  const listContractsQuery = useListDeployedContracts({
+    filter,
+    page,
     pageSize: 10,
   });
 
-  const { data: collectionsData, isLoading } = useListDeployedContracts({
-    ...queryOptions,
-    ...paginationModel,
-  });
+  const collections = useMemo(() => {
+    const arr =
+      collectionsList && collectionsList?.length > 0
+        ? collectionsList
+            ?.filter((c) => c.chainId === chainId)
+            .map((c) => ({
+              chainId: c.chainId,
+              contractAddress: c.contractAddress,
+              name: c.name,
+            }))
+        : [];
+
+    if (listContractsQuery.data?.data) {
+      return [
+        ...arr,
+        ...listContractsQuery.data?.data.map((c) => ({
+          chainId: c.chainId,
+          contractAddress: c.contractAddress,
+          name: c.name,
+        })),
+      ];
+    }
+
+    return arr;
+  }, [listContractsQuery.data, collectionsList]);
 
   const data = useMemo(() => {
-    if (collectionsData) {
-      return collectionsData?.data
-        .filter((c) => c.chainId === chainId)
-        .filter((c) => isErc1155);
+    if (collections) {
+      return collections.filter((c) => c.chainId === chainId);
     }
 
     return [];
-  }, [collectionsData]);
-
-  const handleSelect = (address: string) => {
-    setSelectedContractAddr(address);
-  };
+  }, [collections]);
 
   const handleConfirm = () => {
     if (selectedContractAddr) {
@@ -106,13 +136,6 @@ export default function SelectCollectionDialog({
         {(data && data.length > 0) ||
         (collections && collections?.length > 0) ? (
           <List disablePadding>
-            {data.map((collection) => (
-              <SelectCollectionListItem
-                key={collection.contractAddress}
-                contractAddress={collection.contractAddress}
-                onSelect={handleSelect}
-              />
-            ))}
             {collections?.map((collection, key) => (
               <ListItemButton
                 key={key}
@@ -120,10 +143,11 @@ export default function SelectCollectionDialog({
                   setSelectedContractAddr(collection.contractAddress)
                 }
               >
-                <ListItemAvatar>
-                  <Avatar src={collection.image} />
-                </ListItemAvatar>
-                <ListItemText primary={collection.name} />
+                <ListItemText
+                  primary={collection.name}
+                  secondary={NETWORK_SLUG(collection.chainId)?.toUpperCase()}
+                />
+
                 <ListItemSecondaryAction>
                   <Radio
                     checked={isAddressEqual(
@@ -167,5 +191,13 @@ export default function SelectCollectionDialog({
         </Button>
       </DialogActions>
     </Dialog>
+  );
+}
+
+export default function Wrapper(props: SelectCollectionDialogProps) {
+  return (
+    <DexkitApiProvider.Provider value={{ instance: myAppsApi }}>
+      <SelectCollectionDialog {...props} />
+    </DexkitApiProvider.Provider>
   );
 }
