@@ -56,7 +56,7 @@ import WalletBalances from '../WalletBalancesTable';
 import { WalletTotalBalanceCointainer } from '../WalletTotalBalanceContainer';
 
 const EvmReceiveDialog = dynamic(
-  () => import('@dexkit/ui/components/dialogs/EvmReceiveDialog')
+  () => import('@dexkit/ui/components/dialogs/EvmReceiveDialog'),
 );
 
 enum WalletTabs {
@@ -88,22 +88,22 @@ const EvmWalletContainer = () => {
   const [search, setSearch] = useState('');
 
   const [isBalancesVisible, setIsBalancesVisible] = useAtom(
-    isBalancesVisibleAtom
+    isBalancesVisibleAtom,
   );
+
+  const handleToggleVisibility = () => {
+    setIsBalancesVisible((value) => !value);
+  };
 
   const handleChangeTab = (
     event: React.SyntheticEvent<Element, Event>,
-    value: WalletTabs
+    value: WalletTabs,
   ) => {
     setSelectedTab(value);
   };
 
   const handleToggleBalances = () => {
     setIsTableOpen((value) => !value);
-  };
-
-  const handleToggleVisibility = () => {
-    setIsBalancesVisible((value) => !value);
   };
 
   const handleOpenReceive = () => {
