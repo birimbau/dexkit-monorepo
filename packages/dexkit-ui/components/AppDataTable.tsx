@@ -123,11 +123,12 @@ export interface AppDataTableProps<T extends { id?: string; isNew?: boolean }> {
     editable?: boolean;
   }[];
   onChange: (value: any) => void;
+  onEditRow?: (id: GridRowId, edit: boolean) => void;
 }
 
 export default function AppDataTable<
   Z extends { id?: string; isNew?: boolean },
->({ data, dataColumns, onChange }: AppDataTableProps<Z>) {
+>({ data, dataColumns, onChange, onEditRow }: AppDataTableProps<Z>) {
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
 
   const [rows, setRows] = useState<Z[]>(
@@ -150,10 +151,16 @@ export default function AppDataTable<
   }, [rows]);
 
   const handleEditClick = (id: GridRowId) => () => {
+    if (onEditRow) {
+      onEditRow(id, true);
+    }
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
   };
 
   const handleSaveClick = (id: GridRowId) => () => {
+    if (onEditRow) {
+      onEditRow(id, false);
+    }
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
   };
 
@@ -197,7 +204,7 @@ export default function AppDataTable<
 
   const columns: GridColDef[] = useMemo(() => {
     return [
-      ...dataColumns.map((column) => {
+      ...dataColumns.map((column): GridColDef => {
         return {
           field: column.name,
           headerName: column.headerName,

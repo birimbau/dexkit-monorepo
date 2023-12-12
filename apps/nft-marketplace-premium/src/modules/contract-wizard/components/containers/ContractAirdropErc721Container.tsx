@@ -39,18 +39,15 @@ export default function ContractAirdropErc721Container({
 }: ContractAirdropErc721ContainerProps) {
   const { data: contract } = useContract(address as string);
   const [recipients, setRecipients] = useState<
-    { address: string; tokenId: number }[]
+    { recipient: string; tokenId: number }[]
   >([]);
 
   const [contractAddress, setContractAddress] = useState<string>();
   const { account } = useWeb3React();
 
-  const { data: tokenContract } = useContract(
-    contractAddress,
-    'nft-collection',
-  );
+  const { data: tokenContract } = useContract(contractAddress);
 
-  const approve = useApproveForAll({ address: contractAddress, contract });
+  const approve = useApproveForAll({ address, contract: tokenContract });
 
   const { chainId } = useWeb3React();
 
@@ -68,7 +65,7 @@ export default function ContractAirdropErc721Container({
     async ({
       recipients,
     }: {
-      recipients: { address: string; tokenId: number }[];
+      recipients: { recipient: string; tokenId: number }[];
     }) => {
       const metadata = await tokenContract?.metadata.get();
 
@@ -90,7 +87,7 @@ export default function ContractAirdropErc721Container({
         contractAddress,
         account,
         recipients.map((r) => ({
-          recipient: r.address,
+          recipient: r.recipient,
           tokenId: r.tokenId,
         })),
       );
@@ -117,7 +114,10 @@ export default function ContractAirdropErc721Container({
 
   const handleConfirm = (data: { [key: string]: string }[]) => {
     setRecipients(
-      data.map((r) => ({ address: r.address, tokenId: parseInt(r.tokenId) })),
+      data.map((r) => ({
+        recipient: r.recipient,
+        tokenId: parseInt(r.tokenId),
+      })),
     );
   };
 
@@ -243,9 +243,26 @@ export default function ContractAirdropErc721Container({
                           </Typography>
                         </Box>
                         {contractAddress ? (
-                          <Typography variant="h5">
-                            {nftBalance?.toNumber()}
-                          </Typography>
+                          <Stack
+                            direction="row"
+                            alignItems="center"
+                            spacing={1}
+                            justifyContent="space-between"
+                          >
+                            <Typography variant="h5">
+                              {nftBalance?.toNumber()}
+                            </Typography>
+                            <Button
+                              variant="outlined"
+                              onClick={handleShowSelectToken}
+                              size="small"
+                            >
+                              <FormattedMessage
+                                id="select"
+                                defaultMessage="Select"
+                              />
+                            </Button>
+                          </Stack>
                         ) : (
                           <Button
                             onClick={handleShowSelectToken}

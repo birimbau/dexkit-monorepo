@@ -10,12 +10,14 @@ interface Props {
   currentPage: AppPage;
   pages: { [key: string]: AppPage };
   onSave: (form: SeoForm, slug: string) => void;
+  onHasChanges: (hasChanges: boolean) => void;
   setCurrentPage: Dispatch<SetStateAction<AppPage>>;
 }
 
 export default function SeoSection({
   seoForm,
   onSave,
+  onHasChanges,
   currentPage,
   pages,
   setCurrentPage,
@@ -39,6 +41,7 @@ export default function SeoSection({
       />
       <SeoSectionForm
         initialValues={seoForm[currentPage.key as string]}
+        onHasChanges={onHasChanges}
         onSubmit={handleSave}
       />
     </Stack>

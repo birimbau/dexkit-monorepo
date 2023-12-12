@@ -28,6 +28,7 @@ interface Props {
   onSelect: (token: Token) => void;
   excludeToken?: Token;
   chainId?: ChainId;
+  includeNative?: boolean;
 }
 
 function SelectTokenDialog({
@@ -35,9 +36,10 @@ function SelectTokenDialog({
   onSelect,
   excludeToken,
   chainId,
+  includeNative = true,
 }: Props) {
   const { onClose } = dialogProps;
-  const tokens = useTokenList({ chainId, includeNative: true });
+  const tokens = useTokenList({ chainId, includeNative });
   const [value, setValue] = useState('');
 
   const handleClose = () => {

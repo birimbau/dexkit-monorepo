@@ -21,12 +21,14 @@ interface Props {
   config: AppConfig;
   onSave: (config: AppConfig) => void;
   builderKit?: BuilderKit;
+  onHasChanges: (hasChanges: boolean) => void;
 }
 
 export default function PagesWizardContainer({
   config,
   onSave,
   builderKit,
+  onHasChanges,
 }: Props) {
   const [currentPage, setCurrentPage] = useState<AppPage>(config.pages['home']);
   const [pages, setPages] = useState<{ [key: string]: AppPage }>(config.pages);
@@ -39,6 +41,20 @@ export default function PagesWizardContainer({
       setPages(config.pages);
     }
   }, [config]);
+
+  const pagesChanged = useMemo(() => {
+    if (config.pages !== pages) {
+      return true;
+    } else {
+      return false;
+    }
+  }, [config.pages, pages]);
+
+  useMemo(() => {
+    if (onHasChanges) {
+      onHasChanges(pagesChanged);
+    }
+  }, [onHasChanges, pagesChanged]);
 
   const selectedTheme = useMemo(() => {
     if (config.theme !== undefined) {
@@ -110,7 +126,12 @@ export default function PagesWizardContainer({
       </Grid>
       <Grid item xs={12}>
         <Stack spacing={1} direction="row" justifyContent="flex-end">
-          <Button variant="contained" color="primary" onClick={handleSave}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleSave}
+            disabled={!pagesChanged}
+          >
             <FormattedMessage id="save" defaultMessage="Save" />
           </Button>
         </Stack>

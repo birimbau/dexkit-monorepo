@@ -6,6 +6,7 @@ import {
   getBalanceOfERC1155,
   getERC20Balance,
 } from 'src/services/balances';
+import { myAppsApi } from 'src/services/whitelabel';
 import {
   getNetworkSlugFromChainId,
   getProviderByChainId,
@@ -207,5 +208,18 @@ export async function requestEmailConfirmatioForSite({ siteId, accessToken }: { 
       Authorization: `Bearer ${accessToken}`,
     },
   });
+
+}
+
+export async function addPermissionsMemberSite({ siteId, permissions, account }: { siteId: number, permissions: string, account: string }) {
+  return myAppsApi.post(`/site/add-permissions/${siteId}`, {
+    permissions,
+    account
+  });
+}
+
+export async function deleteMemberSite({ siteId, account }: { siteId: number, account: string }) {
+
+  return myAppsApi.delete(`/site/remove-permissions/${siteId}/${account}`);
 
 }

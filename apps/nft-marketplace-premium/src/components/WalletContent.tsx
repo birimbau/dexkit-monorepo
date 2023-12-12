@@ -18,7 +18,7 @@ import {
   Typography,
 } from '@mui/material';
 import { useWeb3React } from '@web3-react/core';
-import { useAtomValue } from 'jotai';
+import { useAtom } from 'jotai';
 import { useCallback, useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { isBalancesVisibleAtom } from 'src/state/atoms';
@@ -35,6 +35,8 @@ import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import Logout from '@mui/icons-material/Logout';
 import Send from '@mui/icons-material/Send';
 import SwitchAccount from '@mui/icons-material/SwitchAccount';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { useLogoutAccountMutation } from 'src/hooks/account';
 
 const EvmReceiveDialog = dynamic(
@@ -61,8 +63,6 @@ export default function WalletContent() {
     connectWalletDialog.setOpen(true);
   };
 
-  const isBalancesVisible = useAtomValue(isBalancesVisibleAtom);
-
   const handleLogoutWallet = useCallback(() => {
     logoutMutation.mutate();
     if (connector?.deactivate) {
@@ -75,6 +75,14 @@ export default function WalletContent() {
   }, [connector]);
 
   const { data: balance } = useEvmNativeBalanceQuery({ provider, account });
+
+  const [isBalancesVisible, setIsBalancesVisible] = useAtom(
+    isBalancesVisibleAtom,
+  );
+
+  const handleToggleVisibility = () => {
+    setIsBalancesVisible((value: boolean) => !value);
+  };
 
   const formattedBalance = useMemo(() => {
     if (balance) {
@@ -171,7 +179,12 @@ export default function WalletContent() {
 
       <Box sx={{ px: 1, py: 2 }}>
         <Stack spacing={2}>
-          <Stack direction="row" alignItems="center" spacing={2}>
+          <Stack
+            direction="row"
+            alignItems="center"
+            spacing={2}
+            justifyContent={'space-between'}
+          >
             <Stack direction="row" spacing={1} alignItems="center">
               <Avatar
                 src={GET_WALLET_ICON(connector)}
@@ -207,6 +220,23 @@ export default function WalletContent() {
                   >
                     <FileCopy fontSize="inherit" color="inherit" />
                   </CopyIconButton>
+                  <Tooltip
+                    title={
+                      isBalancesVisible ? (
+                        <FormattedMessage id={'hide'} defaultMessage={'Hide'} />
+                      ) : (
+                        <FormattedMessage id={'show'} defaultMessage={'Show'} />
+                      )
+                    }
+                  >
+                    <IconButton onClick={handleToggleVisibility}>
+                      {isBalancesVisible ? (
+                        <VisibilityIcon fontSize="small" />
+                      ) : (
+                        <VisibilityOffIcon fontSize="small" />
+                      )}
+                    </IconButton>
+                  </Tooltip>
                 </Typography>
                 <div>
                   <AccountBalance isBalancesVisible={isBalancesVisible} />

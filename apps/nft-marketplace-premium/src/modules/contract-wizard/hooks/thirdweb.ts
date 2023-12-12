@@ -122,6 +122,9 @@ export function useThirdwebApprove({
       } catch (err) {
         watchTransactionDialog.setError(err as any);
       }
+
+      watchTransactionDialog.close();
+
       return null;
     }
 
@@ -279,6 +282,7 @@ export function useApproveForAll({
       name: metadata?.name || '',
     };
 
+    // Do not remove this "await". The IDE show this line as a non-async function, but it's not.
     const call = await contract?.prepare('setApprovalForAll', [address, true]);
 
     watchTransactionDialog.open('approveContracForAllNfts', values);

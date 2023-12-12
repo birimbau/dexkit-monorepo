@@ -33,7 +33,11 @@ import { myAppsApi } from 'src/services/whitelabel';
 
 function OnChainDataGrid({ siteId }: Props) {
   const [queryOptions, setQueryOptions] = useState<any>({
-    filter: {},
+    filter: {
+      hash: {
+        not: null,
+      },
+    },
   });
 
   const [paginationModel, setPaginationModel] = useState({
