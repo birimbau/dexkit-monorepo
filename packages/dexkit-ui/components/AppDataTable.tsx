@@ -80,8 +80,9 @@ function EditToolbar(props: EditToolbarProps) {
           if (!csv.meta.fields?.includes(column.name)) {
             enqueueSnackbar(
               <FormattedMessage
-                id="invalid.file"
-                defaultMessage="Invalid file"
+                id="invalid.file.column.column.is.missing"
+                defaultMessage="Invalid file: column {column} is missing"
+                values={{ column: column.name }}
               />,
               { variant: "error" }
             );
@@ -122,8 +123,6 @@ function EditToolbar(props: EditToolbarProps) {
     let csvStr = lines.join("\n");
 
     let csvContent = "data:text/csv;charset=utf-8," + csvStr;
-
-    console.log(csvContent);
 
     let encodedUri = encodeURI(csvContent);
     let link = document.createElement("a");
