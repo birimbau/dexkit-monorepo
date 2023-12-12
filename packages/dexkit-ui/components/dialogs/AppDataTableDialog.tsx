@@ -23,6 +23,7 @@ export interface AppDataTableDialogProps {
     name: string;
     headerName: string;
     editable?: boolean | undefined;
+    width?: number;
   }[];
 }
 
