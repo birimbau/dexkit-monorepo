@@ -128,7 +128,7 @@ function EditToolbar(props: EditToolbarProps) {
     let link = document.createElement("a");
 
     link.setAttribute("href", encodedUri);
-    link.setAttribute("download", "airdrop.csv");
+    link.setAttribute("download", "data.csv");
 
     document.body.appendChild(link); // Required for FF
 
