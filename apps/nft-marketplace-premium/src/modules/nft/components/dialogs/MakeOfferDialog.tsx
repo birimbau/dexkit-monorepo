@@ -35,6 +35,7 @@ import { FormikErrors, FormikHelpers, useFormik } from 'formik';
 
 import { useTheme } from '@mui/material';
 import Image from 'next/image';
+import { getAssetProtocol } from 'src/utils/nfts';
 import * as Yup from 'yup';
 import AppFeePercentageSpan from '../../../../components/AppFeePercentageSpan';
 import { MIN_ORDER_DATE_TIME } from '../../../../constants';
@@ -49,12 +50,14 @@ interface Form {
   price: string;
   tokenAddress: string;
   expiry: Date;
+  quantity?: number;
 }
 
 const FormSchema: Yup.SchemaOf<Form> = Yup.object().shape({
   price: Yup.string().required(),
   tokenAddress: Yup.string().required(),
   expiry: Yup.date().required(),
+  quantity: Yup.number().optional(),
 });
 
 interface Props {
@@ -64,7 +67,8 @@ interface Props {
   onConfirm: (
     price: ethers.BigNumber,
     tokenAddress: string,
-    expiry: Date | null
+    expiry: Date | null,
+    quantity?: ethers.BigNumber,
   ) => void;
 }
 
@@ -83,8 +87,8 @@ export function MakeOfferDialog({ dialogProps, onConfirm, asset }: Props) {
   const { formatMessage } = useIntl();
 
   const handleConfirm = (values: Form, formikHelpers: FormikHelpers<Form>) => {
-    const decimals = tokenList.find(
-      (t) => t.address === values.tokenAddress
+    const decimals = tokenList.find((t) =>
+      isAddressEqual(t.address, values.tokenAddress),
     )?.decimals;
 
     if (!isValidDecimal(values.price, decimals || 1)) {
@@ -93,28 +97,38 @@ export function MakeOfferDialog({ dialogProps, onConfirm, asset }: Props) {
         formatMessage({
           id: 'invalid.price',
           defaultMessage: 'Invalid price',
-        })
+        }),
       );
     }
 
     onConfirm(
       ethers.utils.parseUnits(values.price, decimals),
       values.tokenAddress,
-      values.expiry || null
+      values.expiry || null,
+      asset?.protocol === 'ERC1155'
+        ? BigNumber.from(values.quantity)
+        : BigNumber.from(1),
     );
 
     formikHelpers.resetForm();
   };
+
+  const assetType = useMemo(() => {
+    return getAssetProtocol(asset);
+  }, [asset]);
+
+  const isErc1155 = assetType === 'ERC1155';
 
   const form = useFormik<Form>({
     initialValues: {
       price: '0',
       expiry: moment().add(MIN_ORDER_DATE_TIME).toDate(),
       tokenAddress: tokenList.length > 0 ? tokenList[0].address : '',
+      quantity: isErc1155 ? 0 : undefined,
     },
     validate: async (values) => {
-      const decimals = tokenList.find(
-        (t) => t.address === values.tokenAddress
+      const decimals = tokenList.find((t) =>
+        isAddressEqual(t.address, values.tokenAddress),
       )?.decimals;
 
       if (values.price !== '' && isValidDecimal(values.price, decimals || 1)) {
@@ -140,7 +154,7 @@ export function MakeOfferDialog({ dialogProps, onConfirm, asset }: Props) {
   const erc20Balance = useErc20Balance(
     provider,
     form.values.tokenAddress,
-    account
+    account,
   );
 
   const handleChangeExpiryDuration = (newValue: moment.Duration | null) => {
@@ -159,7 +173,7 @@ export function MakeOfferDialog({ dialogProps, onConfirm, asset }: Props) {
 
   const tokenSelected = useMemo(() => {
     const tokenIndex = tokenList.findIndex((t) =>
-      isAddressEqual(t.address, form.values.tokenAddress)
+      isAddressEqual(t.address, form.values.tokenAddress),
     );
 
     if (tokenIndex > -1) {
@@ -188,7 +202,7 @@ export function MakeOfferDialog({ dialogProps, onConfirm, asset }: Props) {
     } else {
       const imageUrl = TOKEN_ICON_URL(
         token.address.toLowerCase(),
-        token.chainId
+        token.chainId,
       );
 
       if (imageUrl) {
@@ -337,6 +351,33 @@ export function MakeOfferDialog({ dialogProps, onConfirm, asset }: Props) {
                     }
                   />
                 </Grid>
+                {isErc1155 && (
+                  <Grid item xs={12} sm={6}>
+                    <TextField
+                      disabled={
+                        form.values.tokenAddress === undefined ||
+                        form.values.tokenAddress === ''
+                      }
+                      value={form.values.quantity}
+                      onChange={form.handleChange}
+                      name="quantity"
+                      label={
+                        <FormattedMessage
+                          id="quantity"
+                          defaultMessage="Quantity"
+                          description="Quantity"
+                        />
+                      }
+                      fullWidth
+                      error={Boolean(form.errors.quantity)}
+                      helperText={
+                        Boolean(form.errors.quantity)
+                          ? form.errors.quantity
+                          : undefined
+                      }
+                    />
+                  </Grid>
+                )}
               </Grid>
             </Grid>
             {tokenSelected && (
@@ -373,7 +414,7 @@ export function MakeOfferDialog({ dialogProps, onConfirm, asset }: Props) {
                       ) : (
                         ethers.utils.formatUnits(
                           erc20Balance.data || ethers.BigNumber.from(0),
-                          tokenSelected.decimals
+                          tokenSelected.decimals,
                         )
                       )}{' '}
                       {tokenSelected.symbol.toUpperCase()}

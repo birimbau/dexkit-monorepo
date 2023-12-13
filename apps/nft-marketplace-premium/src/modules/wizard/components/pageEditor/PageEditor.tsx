@@ -36,15 +36,18 @@ import ExtendedSpacer from './plugins/ExtendedSpacerPlugin';
 
 import { Theme, styled } from '@mui/material';
 import { BuilderKit } from '../../constants';
+import AssetAltPlugin from './plugins/AssetAltPlugin';
 import AssetListPlugin from './plugins/AssetListPlugin';
 import AssetPlugin from './plugins/AssetPlugin';
 import ButtonPlugin from './plugins/ButtonPlugin';
 import CodeSnippet from './plugins/CodeSnippet';
 import CollectionPlugin from './plugins/CollectionPlugin';
+import CollectionsPlugin from './plugins/CollectionsPlugin';
 import ContainerPlugin from './plugins/ContainerPlugin';
 import ContractFormPlugin from './plugins/ContractFormPlugin';
 import CustomContentPluginTwitter from './plugins/CustomContentPluginTwitter';
 import { DefaultSlate } from './plugins/DefaultSlate';
+import DexGeneratorFormPlugin from './plugins/DexGeneratorFormPlugin';
 import ExchangePlugin from './plugins/ExchangePlugin';
 import ImagePlugin from './plugins/ImagePlugin';
 import QrCodeReceive from './plugins/QrCodeReceivePayment';
@@ -55,6 +58,7 @@ import UserContractFormPlugin from './plugins/UserContractFormPlugin';
 import WidgetPlugin from './plugins/WidgetPlugin';
 // Define which plugins we want to use.
 const cellPlugins = [
+  AssetAltPlugin,
   background({
     enabledModes:
       ModeEnum.COLOR_MODE_FLAG |
@@ -62,13 +66,15 @@ const cellPlugins = [
       ModeEnum.IMAGE_MODE_FLAG,
   }),
   ButtonPlugin,
-
   CodeSnippet,
   CollectionPlugin,
+  CollectionsPlugin,
   ContainerPlugin,
   ContractFormPlugin,
-  UserContractFormPlugin,
+  CustomContentPluginTwitter,
+  DexGeneratorFormPlugin,
   divider,
+  ExchangePlugin,
   html5video,
   ImagePlugin,
   AssetPlugin,
@@ -81,11 +87,10 @@ const cellPlugins = [
   // SwapPlugin,
   Swap2Plugin,
   SearchNFTPlugin,
+  UserContractFormPlugin,
   DefaultSlate,
-  CustomContentPluginTwitter,
   video,
   WidgetPlugin,
-  ExchangePlugin,
 ];
 
 const nftPlugins = [

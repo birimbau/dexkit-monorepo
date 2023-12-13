@@ -68,6 +68,9 @@ export const DEX_GENERATOR_CONTRACT_TYPES: { type: string; name: string }[] = [
   { type: 'TokenStake', name: 'Token Stake' },
   { type: 'NFTStake', name: 'NFT Stake' },
   { type: 'EditionStake', name: 'Edition Stake' },
+  { type: 'TokenERC20', name: 'Token' },
+  { type: 'TokenERC721', name: 'Collection' },
+  { type: 'TokenERC1155', name: 'Edition' },
 ];
 
 export const DEX_GENERATOR_CONTRACT_TYPES_AVAIL = [
@@ -77,4 +80,7 @@ export const DEX_GENERATOR_CONTRACT_TYPES_AVAIL = [
   'EditionStake',
   'NFTStake',
   'TokenStake',
+  'TokenERC20',
+  'TokenERC721',
+  'TokenERC1155',
 ];

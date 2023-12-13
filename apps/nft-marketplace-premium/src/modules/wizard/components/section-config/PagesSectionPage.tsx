@@ -156,12 +156,20 @@ export default function PagesSectionPage({
       title = <FormattedMessage id="code" defaultMessage="Code" />;
       subtitle = section.title || '';
       icon = <Code />;
+    } else if (section.type === 'collection') {
+      title = <FormattedMessage id="collection" defaultMessage="Collection" />;
+      subtitle = section.title || '';
+      icon = <AppsIcon />;
     } else if (section.type === 'dex-generator-section') {
       title = (
         <FormattedMessage id="dex.generator" defaultMessage="Dex Generator" />
       );
       subtitle = section.title || '';
       icon = <GavelIcon />;
+    } else if (section.type === 'asset-section') {
+      title = <FormattedMessage id="asset" defaultMessage="Asset" />;
+      subtitle = section.title || '';
+      icon = <AppsIcon />;
     }
 
     if (!title) {

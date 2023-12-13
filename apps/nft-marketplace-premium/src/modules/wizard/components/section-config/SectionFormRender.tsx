@@ -1,10 +1,13 @@
 import { DexkitApiProvider } from '@dexkit/core/providers';
 import { Box } from '@mui/material';
+import { myAppsApi } from 'src/services/whitelabel';
 import { AppPageSection, SectionType } from '../../types/section';
+import AssetSectionForm from '../forms/AssetSectionForm';
 import { AssetStoreSectionForm } from '../forms/AssetStoreSectionForm';
 import CallToActionSectionForm from '../forms/CallToActionSectionForm';
 import CodeSectionForm from '../forms/CodeSectionForm';
 import CollectionSectionForm from '../forms/CollectionSectionForm';
+import CollectionSectionFormAlt from '../forms/CollectionSectionFormAlt';
 import { ContractSectionForm } from '../forms/ContractSectionForm';
 import DexGeneratorSectionForm from '../forms/DexGeneratorSectionForm';
 import ExchangeSectionSettingsForm from '../forms/ExchangeSectionSettingsForm';
@@ -14,8 +17,6 @@ import { SwapConfigSectionForm } from '../forms/SwapConfigSectionForm';
 import { UserContractForm } from '../forms/UserContractForm';
 import VideoSectionForm from '../forms/VideoSectionForm';
 import WalletSectionForm from '../forms/WalletSectionForm';
-
-import { myAppsApi } from '@/modules/admin/dashboard/dataProvider';
 
 interface Props {
   sectionType: SectionType | undefined;
@@ -173,6 +174,30 @@ export function SectionFormRender({
             showSaveButton
           />
         </DexkitApiProvider.Provider>
+      </Box>
+    );
+  } else if (sectionType === 'collection') {
+    return (
+      <Box p={2}>
+        <CollectionSectionFormAlt
+          onCancel={onClose}
+          onSave={onSave}
+          onChange={onChange}
+          section={section?.type === 'collection' ? section : undefined}
+          showSaveButton
+        />
+      </Box>
+    );
+  } else if (sectionType === 'asset-section') {
+    return (
+      <Box p={2}>
+        <AssetSectionForm
+          onCancel={onClose}
+          onSave={onSave}
+          onChange={onChange}
+          section={section?.type === 'asset-section' ? section : undefined}
+          showSaveButton
+        />
       </Box>
     );
   }

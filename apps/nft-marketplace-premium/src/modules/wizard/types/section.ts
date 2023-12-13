@@ -3,6 +3,7 @@ import { SwapConfig } from '@/modules/swap/types';
 import { DexkitExchangeSettings } from '@dexkit/exchange/types';
 import { ContractFormParams } from '@dexkit/web3forms/types';
 import React from 'react';
+import { AssetFormType } from '.';
 import {
   PageSectionVariant,
   SectionItem,
@@ -33,7 +34,9 @@ export type SectionType =
   | 'token'
   | 'airdrop-token'
   | 'code-page-section'
-  | 'dex-generator-section';
+  | 'collection'
+  | 'dex-generator-section'
+  | 'asset-section';
 
 export interface PageSection {
   type: SectionType;
@@ -183,6 +186,7 @@ export interface ExchangePageSection extends PageSection {
 export interface EditionDropPageSection extends PageSection {
   type: 'edition-drop-section';
   config: {
+    network: string;
     address: string;
     tokenId: string;
   };
@@ -205,6 +209,23 @@ export interface CodePageSection extends PageSection {
   };
 }
 
+export interface AssetPageSection extends PageSection {
+  type: 'asset-section';
+  config: AssetFormType;
+}
+
+export interface CollectionPageSection extends PageSection {
+  type: 'collection';
+  config: {
+    address: string;
+    network: string;
+    hideFilters: boolean;
+    hideHeader: boolean;
+    hideDrops: boolean;
+    hideAssets: boolean;
+  };
+}
+
 export type DexGeneratorPageSectionType =
   | TokenDropPageSection
   | NftDropPageSection
@@ -213,7 +234,8 @@ export type DexGeneratorPageSectionType =
   | AirdropErc20PageSection
   | StakeErc721PageSection
   | StakeErc20PageSection
-  | StakeErc155PageSection;
+  | StakeErc155PageSection
+  | CollectionPageSection;
 
 export interface DexGeneratorPageSection extends PageSection {
   type: 'dex-generator-section';
@@ -237,7 +259,9 @@ export type AppPageSection =
   | EditionDropListPageSection
   | TokenDropPageSection
   | CodePageSection
-  | DexGeneratorPageSection;
+  | CollectionPageSection
+  | DexGeneratorPageSection
+  | AssetPageSection;
 
 export interface SectionMetadata {
   type: SectionType;

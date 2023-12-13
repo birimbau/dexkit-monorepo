@@ -1,4 +1,3 @@
-import { styled } from '@mui/material';
 import Container from '@mui/material/Container';
 import type { CellPlugin } from '@react-page/editor';
 import { NETWORKS } from '../../../../../constants/chain';
@@ -30,8 +29,8 @@ const CollectionPlugin: CellPlugin<Data> = {
     />
   ),
   id: 'collection-plugin',
-  title: 'Collection',
-  description: 'Show a collection',
+  title: 'Collection Banner',
+  description: 'Show a collection banner',
   version: 1,
   controls: [
     {

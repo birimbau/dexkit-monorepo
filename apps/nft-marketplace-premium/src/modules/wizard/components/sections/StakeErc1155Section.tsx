@@ -10,7 +10,6 @@ import {
   CardActionArea,
   CardContent,
   CircularProgress,
-  Container,
   Grid,
   Paper,
   Skeleton,
@@ -312,348 +311,304 @@ export default function StakeErc1155Section({
         address={stakingAddress}
         onClaim={handleClaim}
       />
-      <Container>
-        <Grid container spacing={2}>
-          <Grid item xs={12} sm={4}>
-            <Card>
-              <CardContent>
-                <Stack spacing={2}>
-                  <Tabs
-                    onChange={handleChangeTab}
-                    variant="fullWidth"
-                    value={tab}
-                  >
-                    <Tab
-                      value="stake"
-                      label={
-                        <FormattedMessage id="stake" defaultMessage="Stake" />
-                      }
-                    />
-                    <Tab
-                      value="unstake"
-                      label={
+      <Card>
+        <CardContent>
+          <Stack spacing={2}>
+            <Tabs onChange={handleChangeTab} variant="fullWidth" value={tab}>
+              <Tab
+                value="stake"
+                label={<FormattedMessage id="stake" defaultMessage="Stake" />}
+              />
+              <Tab
+                value="unstake"
+                label={
+                  <FormattedMessage id="unstake" defaultMessage="Unstake" />
+                }
+              />
+            </Tabs>
+            {tab === 'stake' && (
+              <Box>
+                <Grid container spacing={2}>
+                  <Grid item xs={12}>
+                    <Paper variant="outlined">
+                      {stakedTokenIds && stakedTokenIds?.length > 0 ? (
+                        <CardActionArea
+                          sx={{ py: 2 }}
+                          onClick={handleOpenSelectNFT}
+                        >
+                          <Typography align="center" variant="h5">
+                            {stakedTokenIds?.length}
+                          </Typography>
+                          <Typography
+                            align="center"
+                            variant="body1"
+                            color="text.secondary"
+                          >
+                            <FormattedMessage
+                              id="nfts.staked"
+                              defaultMessage="NFTs staked"
+                            />
+                          </Typography>
+                        </CardActionArea>
+                      ) : (
+                        <CardActionArea
+                          onClick={handleOpenSelectNFT}
+                          sx={{ p: 2 }}
+                        >
+                          <Stack spacing={1} alignItems="center">
+                            <Token />
+                            <Typography color="text.secondary">
+                              <FormattedMessage
+                                id="select.an.nft"
+                                defaultMessage="Select an NFT"
+                              />
+                            </Typography>
+                          </Stack>
+                        </CardActionArea>
+                      )}
+                    </Paper>
+                  </Grid>
+                  {selectedTokenId && (
+                    <Grid item xs={12}>
+                      <Typography color="primary" variant="body1">
                         <FormattedMessage
-                          id="unstake"
-                          defaultMessage="Unstake"
+                          id="nft.amount.of.tokenId.is.selected.to.stake"
+                          defaultMessage='{amount} of "#{tokenId}" is selected to stake'
+                          values={{ tokenId: selectedTokenId, amount }}
                         />
+                      </Typography>
+                    </Grid>
+                  )}
+
+                  <Grid item xs={12}>
+                    <Box>
+                      <Stack>
+                        <Stack direction="row" justifyContent="space-between">
+                          <Typography>
+                            <FormattedMessage
+                              id="total.rewards"
+                              defaultMessage="Total Rewards"
+                            />
+                          </Typography>
+                          <Typography color="text.secondary">
+                            {rewardsBalance && rewardTokenBalance ? (
+                              `${formatBigNumber(
+                                rewardsBalance,
+                                rewardTokenBalance?.decimals || 18,
+                              )} ${rewardTokenBalance?.symbol}`
+                            ) : (
+                              <Skeleton />
+                            )}
+                          </Typography>
+                        </Stack>
+                        <Stack direction="row" justifyContent="space-between">
+                          <Typography>
+                            <FormattedMessage
+                              id="rewards.second"
+                              defaultMessage="Rewards/second"
+                            />
+                          </Typography>
+                          <Typography color="text.secondary">
+                            {rewardTimeUnit ? (
+                              <>
+                                {rewardPerUnitTime} {rewardTokenBalance?.symbol}
+                                /{rewardTimeUnit?.toNumber()}
+                              </>
+                            ) : (
+                              <Skeleton />
+                            )}
+                          </Typography>
+                        </Stack>
+                        <Stack direction="row" justifyContent="space-between">
+                          <Typography>
+                            <FormattedMessage
+                              id="claimable.rewards"
+                              defaultMessage="Claimable rewards"
+                            />
+                          </Typography>
+                          <Typography color="text.secondary">
+                            {rewardTokenBalance ? (
+                              `${rewards} ${rewardTokenBalance?.symbol}`
+                            ) : (
+                              <Skeleton />
+                            )}
+                          </Typography>
+                        </Stack>
+                      </Stack>
+                    </Box>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Button
+                      disabled={stakeNftMutation.isLoading || !selectedTokenId}
+                      variant="contained"
+                      color="primary"
+                      fullWidth
+                      size="large"
+                      startIcon={
+                        stakeNftMutation.isLoading ? (
+                          <CircularProgress size="1rem" color="inherit" />
+                        ) : undefined
                       }
-                    />
-                  </Tabs>
-                  {tab === 'stake' && (
-                    <Box>
-                      <Grid container spacing={2}>
-                        <Grid item xs={12}>
-                          <Paper variant="outlined">
-                            {stakedTokenIds && stakedTokenIds?.length > 0 ? (
-                              <CardActionArea
-                                sx={{ py: 2 }}
-                                onClick={handleOpenSelectNFT}
-                              >
-                                <Typography align="center" variant="h5">
-                                  {stakedTokenIds?.length}
-                                </Typography>
-                                <Typography
-                                  align="center"
-                                  variant="body1"
-                                  color="text.secondary"
-                                >
-                                  <FormattedMessage
-                                    id="nfts.staked"
-                                    defaultMessage="NFTs staked"
-                                  />
-                                </Typography>
-                              </CardActionArea>
-                            ) : (
-                              <CardActionArea
-                                onClick={handleOpenSelectNFT}
-                                sx={{ p: 2 }}
-                              >
-                                <Stack spacing={1} alignItems="center">
-                                  <Token />
-                                  <Typography color="text.secondary">
-                                    <FormattedMessage
-                                      id="select.an.nft"
-                                      defaultMessage="Select an NFT"
-                                    />
-                                  </Typography>
-                                </Stack>
-                              </CardActionArea>
-                            )}
-                          </Paper>
-                        </Grid>
-                        {selectedTokenId && (
-                          <Grid item xs={12}>
-                            <Typography color="primary" variant="body1">
+                      onClick={handleStake}
+                    >
+                      <FormattedMessage id="stake" defaultMessage="Stake" />
+                    </Button>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Button
+                      onClick={handleOpenClaim}
+                      variant="outlined"
+                      color="primary"
+                      fullWidth
+                      size="large"
+                    >
+                      <FormattedMessage
+                        id="claim.rewards"
+                        defaultMessage="Claim rewards"
+                      />
+                    </Button>
+                  </Grid>
+                </Grid>
+              </Box>
+            )}
+            {tab === 'unstake' && (
+              <Box>
+                <Grid container spacing={2}>
+                  <Grid item xs={12}>
+                    <Paper variant="outlined">
+                      {stakedTokenIds && stakedTokenIds?.length > 0 ? (
+                        <CardActionArea
+                          sx={{ py: 2 }}
+                          onClick={handleOpenSelectNFT}
+                        >
+                          <Typography align="center" variant="h5">
+                            {stakedTokenIds?.length}
+                          </Typography>
+                          <Typography
+                            align="center"
+                            variant="body1"
+                            color="text.secondary"
+                          >
+                            <FormattedMessage
+                              id="nfts.staked"
+                              defaultMessage="NFTs staked"
+                            />
+                          </Typography>
+                        </CardActionArea>
+                      ) : (
+                        <CardActionArea
+                          onClick={handleOpenSelectNFT}
+                          sx={{ p: 2 }}
+                        >
+                          <Stack spacing={1} alignItems="center">
+                            <Token />
+                            <Typography color="text.secondary">
                               <FormattedMessage
-                                id="nft.amount.of.tokenId.is.selected.to.stake"
-                                defaultMessage='{amount} of "#{tokenId}" is selected to stake'
-                                values={{ tokenId: selectedTokenId, amount }}
+                                id="select.nfts"
+                                defaultMessage="Select NFTs"
                               />
                             </Typography>
-                          </Grid>
-                        )}
-
-                        <Grid item xs={12}>
-                          <Box>
-                            <Stack>
-                              <Stack
-                                direction="row"
-                                justifyContent="space-between"
-                              >
-                                <Typography>
-                                  <FormattedMessage
-                                    id="total.rewards"
-                                    defaultMessage="Total Rewards"
-                                  />
-                                </Typography>
-                                <Typography color="text.secondary">
-                                  {rewardsBalance && rewardTokenBalance ? (
-                                    `${formatBigNumber(
-                                      rewardsBalance,
-                                      rewardTokenBalance?.decimals || 18,
-                                    )} ${rewardTokenBalance?.symbol}`
-                                  ) : (
-                                    <Skeleton />
-                                  )}
-                                </Typography>
-                              </Stack>
-                              <Stack
-                                direction="row"
-                                justifyContent="space-between"
-                              >
-                                <Typography>
-                                  <FormattedMessage
-                                    id="rewards.second"
-                                    defaultMessage="Rewards/second"
-                                  />
-                                </Typography>
-                                <Typography color="text.secondary">
-                                  {rewardTimeUnit ? (
-                                    <>
-                                      {rewardPerUnitTime}{' '}
-                                      {rewardTokenBalance?.symbol}/
-                                      {rewardTimeUnit?.toNumber()}
-                                    </>
-                                  ) : (
-                                    <Skeleton />
-                                  )}
-                                </Typography>
-                              </Stack>
-                              <Stack
-                                direction="row"
-                                justifyContent="space-between"
-                              >
-                                <Typography>
-                                  <FormattedMessage
-                                    id="claimable.rewards"
-                                    defaultMessage="Claimable rewards"
-                                  />
-                                </Typography>
-                                <Typography color="text.secondary">
-                                  {rewardTokenBalance ? (
-                                    `${rewards} ${rewardTokenBalance?.symbol}`
-                                  ) : (
-                                    <Skeleton />
-                                  )}
-                                </Typography>
-                              </Stack>
-                            </Stack>
-                          </Box>
-                        </Grid>
-                        <Grid item xs={12}>
-                          <Button
-                            disabled={
-                              stakeNftMutation.isLoading || !selectedTokenId
-                            }
-                            variant="contained"
-                            color="primary"
-                            fullWidth
-                            size="large"
-                            startIcon={
-                              stakeNftMutation.isLoading ? (
-                                <CircularProgress size="1rem" color="inherit" />
-                              ) : undefined
-                            }
-                            onClick={handleStake}
-                          >
-                            <FormattedMessage
-                              id="stake"
-                              defaultMessage="Stake"
-                            />
-                          </Button>
-                        </Grid>
-                        <Grid item xs={12}>
-                          <Button
-                            onClick={handleOpenClaim}
-                            variant="outlined"
-                            color="primary"
-                            fullWidth
-                            size="large"
-                          >
-                            <FormattedMessage
-                              id="claim.rewards"
-                              defaultMessage="Claim rewards"
-                            />
-                          </Button>
-                        </Grid>
-                      </Grid>
-                    </Box>
+                          </Stack>
+                        </CardActionArea>
+                      )}
+                    </Paper>
+                  </Grid>
+                  {selectedTokenId && (
+                    <Grid item xs={12}>
+                      <Typography color="primary" variant="body1">
+                        <FormattedMessage
+                          id="amount.of.tokenId.is.selected.to.unstake"
+                          defaultMessage='{amount} of "#{tokenId}" is selected to unstake'
+                          values={{ tokenId: selectedTokenId, amount }}
+                        />
+                      </Typography>
+                    </Grid>
                   )}
-                  {tab === 'unstake' && (
+
+                  <Grid item xs={12}>
                     <Box>
-                      <Grid container spacing={2}>
-                        <Grid item xs={12}>
-                          <Paper variant="outlined">
-                            {stakedTokenIds && stakedTokenIds?.length > 0 ? (
-                              <CardActionArea
-                                sx={{ py: 2 }}
-                                onClick={handleOpenSelectNFT}
-                              >
-                                <Typography align="center" variant="h5">
-                                  {stakedTokenIds?.length}
-                                </Typography>
-                                <Typography
-                                  align="center"
-                                  variant="body1"
-                                  color="text.secondary"
-                                >
-                                  <FormattedMessage
-                                    id="nfts.staked"
-                                    defaultMessage="NFTs staked"
-                                  />
-                                </Typography>
-                              </CardActionArea>
-                            ) : (
-                              <CardActionArea
-                                onClick={handleOpenSelectNFT}
-                                sx={{ p: 2 }}
-                              >
-                                <Stack spacing={1} alignItems="center">
-                                  <Token />
-                                  <Typography color="text.secondary">
-                                    <FormattedMessage
-                                      id="select.nfts"
-                                      defaultMessage="Select NFTs"
-                                    />
-                                  </Typography>
-                                </Stack>
-                              </CardActionArea>
-                            )}
-                          </Paper>
-                        </Grid>
-                        {selectedTokenId && (
-                          <Grid item xs={12}>
-                            <Typography color="primary" variant="body1">
-                              <FormattedMessage
-                                id="amount.of.tokenId.is.selected.to.unstake"
-                                defaultMessage='{amount} of "#{tokenId}" is selected to unstake'
-                                values={{ tokenId: selectedTokenId, amount }}
-                              />
-                            </Typography>
-                          </Grid>
-                        )}
-
-                        <Grid item xs={12}>
-                          <Box>
-                            <Stack>
-                              <Stack
-                                direction="row"
-                                justifyContent="space-between"
-                              >
-                                <Typography>
-                                  <FormattedMessage
-                                    id="total.rewards"
-                                    defaultMessage="Total Rewards"
-                                  />
-                                </Typography>
-                                <Typography color="text.secondary">
-                                  {rewardsBalance && rewardTokenBalance ? (
-                                    `${formatBigNumber(
-                                      rewardsBalance,
-                                      rewardTokenBalance?.decimals || 18,
-                                    )} ${rewardTokenBalance?.symbol}`
-                                  ) : (
-                                    <Skeleton />
-                                  )}
-                                </Typography>
-                              </Stack>
-
-                              <Stack
-                                direction="row"
-                                justifyContent="space-between"
-                              >
-                                <Typography>
-                                  <FormattedMessage
-                                    id="rewards.second"
-                                    defaultMessage="Rewards/second"
-                                  />
-                                </Typography>
-                                <Typography color="text.secondary">
-                                  {rewardTimeUnit ? (
-                                    <>
-                                      {rewardPerUnitTime}{' '}
-                                      {rewardTokenBalance?.symbol}/
-                                      {rewardTimeUnit?.toNumber()}
-                                    </>
-                                  ) : (
-                                    <Skeleton />
-                                  )}
-                                </Typography>
-                              </Stack>
-
-                              <Stack
-                                direction="row"
-                                justifyContent="space-between"
-                              >
-                                <Typography>
-                                  <FormattedMessage
-                                    id="claimable.rewards"
-                                    defaultMessage="Claimable rewards"
-                                  />
-                                </Typography>
-                                <Typography color="text.secondary">
-                                  {rewardTokenBalance ? (
-                                    `${rewards} ${rewardTokenBalance?.symbol}`
-                                  ) : (
-                                    <Skeleton />
-                                  )}
-                                </Typography>
-                              </Stack>
-                            </Stack>
-                          </Box>
-                        </Grid>
-                        <Grid item xs={12}>
-                          <Button
-                            disabled={
-                              unstakeRewardsMutation.isLoading ||
-                              !selectedTokenId
-                            }
-                            variant="contained"
-                            color="primary"
-                            fullWidth
-                            size="large"
-                            startIcon={
-                              unstakeRewardsMutation.isLoading ? (
-                                <CircularProgress size="1rem" color="inherit" />
-                              ) : undefined
-                            }
-                            onClick={handleUnstake}
-                          >
+                      <Stack>
+                        <Stack direction="row" justifyContent="space-between">
+                          <Typography>
                             <FormattedMessage
-                              id="unstake"
-                              defaultMessage="Unstake"
+                              id="total.rewards"
+                              defaultMessage="Total Rewards"
                             />
-                          </Button>
-                        </Grid>
-                      </Grid>
+                          </Typography>
+                          <Typography color="text.secondary">
+                            {rewardsBalance && rewardTokenBalance ? (
+                              `${formatBigNumber(
+                                rewardsBalance,
+                                rewardTokenBalance?.decimals || 18,
+                              )} ${rewardTokenBalance?.symbol}`
+                            ) : (
+                              <Skeleton />
+                            )}
+                          </Typography>
+                        </Stack>
+
+                        <Stack direction="row" justifyContent="space-between">
+                          <Typography>
+                            <FormattedMessage
+                              id="rewards.second"
+                              defaultMessage="Rewards/second"
+                            />
+                          </Typography>
+                          <Typography color="text.secondary">
+                            {rewardTimeUnit ? (
+                              <>
+                                {rewardPerUnitTime} {rewardTokenBalance?.symbol}
+                                /{rewardTimeUnit?.toNumber()}
+                              </>
+                            ) : (
+                              <Skeleton />
+                            )}
+                          </Typography>
+                        </Stack>
+
+                        <Stack direction="row" justifyContent="space-between">
+                          <Typography>
+                            <FormattedMessage
+                              id="claimable.rewards"
+                              defaultMessage="Claimable rewards"
+                            />
+                          </Typography>
+                          <Typography color="text.secondary">
+                            {rewardTokenBalance ? (
+                              `${rewards} ${rewardTokenBalance?.symbol}`
+                            ) : (
+                              <Skeleton />
+                            )}
+                          </Typography>
+                        </Stack>
+                      </Stack>
                     </Box>
-                  )}
-                </Stack>
-              </CardContent>
-            </Card>
-          </Grid>
-        </Grid>
-      </Container>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Button
+                      disabled={
+                        unstakeRewardsMutation.isLoading || !selectedTokenId
+                      }
+                      variant="contained"
+                      color="primary"
+                      fullWidth
+                      size="large"
+                      startIcon={
+                        unstakeRewardsMutation.isLoading ? (
+                          <CircularProgress size="1rem" color="inherit" />
+                        ) : undefined
+                      }
+                      onClick={handleUnstake}
+                    >
+                      <FormattedMessage id="unstake" defaultMessage="Unstake" />
+                    </Button>
+                  </Grid>
+                </Grid>
+              </Box>
+            )}
+          </Stack>
+        </CardContent>
+      </Card>
     </>
   );
 }

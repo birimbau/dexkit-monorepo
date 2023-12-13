@@ -39,8 +39,7 @@ const CollectionPlugin: CellPlugin<Data> = {
         type: "custom",
         Component: (data) => (
           <Container sx={{ p: 2 }}>
-            {" "}
-            <CollectionAutocomplete data={data} />{" "}
+            <CollectionAutocomplete data={data} />
           </Container>
         ),
       },

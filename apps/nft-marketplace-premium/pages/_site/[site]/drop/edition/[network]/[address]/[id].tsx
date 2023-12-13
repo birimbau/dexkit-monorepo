@@ -3,7 +3,7 @@ import { dehydrate, QueryClient } from '@tanstack/react-query';
 import type { GetStaticProps, GetStaticPropsContext, NextPage } from 'next';
 import { useRouter } from 'next/router';
 
-import { Grid, Skeleton, Typography } from '@mui/material';
+import { Box, Grid, Skeleton, Typography } from '@mui/material';
 
 import AssetHead from '@/modules/nft/components/AssetHead';
 import AssetLeftSection from '@/modules/nft/components/AssetLeftSection';
@@ -109,15 +109,18 @@ const AssetDetailPage: NextPage = () => {
               activeChain={asset?.chainId}
               signer={provider?.getSigner()}
             >
-              <EditionDropSection
-                section={{
-                  type: 'edition-drop-section',
-                  config: {
-                    tokenId: id as string,
-                    address: address as string,
-                  },
-                }}
-              ></EditionDropSection>
+              <Box py={2}>
+                <EditionDropSection
+                  section={{
+                    type: 'edition-drop-section',
+                    config: {
+                      network: NETWORK_SLUG(asset?.chainId) || '',
+                      tokenId: id as string,
+                      address: address as string,
+                    },
+                  }}
+                ></EditionDropSection>
+              </Box>
             </ThirdwebSDKProvider>
           </Grid>
           <Grid item xs={12} sm={12}>
