@@ -21,6 +21,7 @@ import SelectThemeSection from './SelectThemeSection';
 import DecimalInput from '@dexkit/ui/components/DecimalInput';
 import Add from '@mui/icons-material/Add';
 import Remove from '@mui/icons-material/Remove';
+import { CustomThemeInterface } from '../../state';
 import ImportExportSection from './ImportExportSection';
 
 function FormChangeListener({
@@ -42,6 +43,8 @@ export interface EditThemeFormProps {
   onChange: (values: ThemeFormType) => void;
   initialValues: ThemeFormType;
   saveOnChange?: boolean;
+  customThemeDark?: CustomThemeInterface;
+  customThemeLight?: CustomThemeInterface;
   onSubmit: (values: ThemeFormType) => Promise<void>;
 }
 
@@ -49,6 +52,8 @@ export default function EditThemeForm({
   mode,
   onChange,
   initialValues,
+  customThemeDark,
+  customThemeLight,
   saveOnChange,
   onSubmit,
 }: EditThemeFormProps) {
@@ -64,7 +69,11 @@ export default function EditThemeForm({
               <Typography variant="body1">
                 <FormattedMessage id="themes" defaultMessage="Themes" />
               </Typography>
-              <SelectThemeSection mode={mode} />
+              <SelectThemeSection
+                mode={mode}
+                customThemeDark={customThemeDark}
+                customThemeLight={customThemeLight}
+              />
             </Grid>
             {values.themeId === 'custom' && (
               <Grid item xs={12}>
@@ -223,7 +232,7 @@ export default function EditThemeForm({
                                 onChange={(value) => {
                                   setFieldValue(
                                     'borderRadius',
-                                    parseInt(value)
+                                    parseInt(value),
                                   );
                                 }}
                                 TextFieldProps={{
@@ -242,7 +251,7 @@ export default function EditThemeForm({
                                             if (values.borderRadius) {
                                               setFieldValue(
                                                 'borderRadius',
-                                                values.borderRadius - 1
+                                                values.borderRadius - 1,
                                               );
                                             } else {
                                               setFieldValue('borderRadius', 0);
@@ -260,7 +269,7 @@ export default function EditThemeForm({
                                             if (values.borderRadius) {
                                               setFieldValue(
                                                 'borderRadius',
-                                                values.borderRadius + 1
+                                                values.borderRadius + 1,
                                               );
                                             } else {
                                               setFieldValue('borderRadius', 1);

@@ -6,7 +6,6 @@ import { ChainId } from '@dexkit/core';
 import { NETWORKS } from '@dexkit/core/constants/networks';
 import { NFTDrop } from '@thirdweb-dev/sdk';
 import { ethers } from 'ethers';
-import { useAtomValue } from 'jotai/utils';
 import { QUERY_ADMIN_WHITELABEL_CONFIG_NAME } from 'src/hooks/whitelabel';
 import { getAccessToken } from 'src/services/auth';
 import { AppConfig } from 'src/types/config';
@@ -17,7 +16,6 @@ import {
   getTokenList,
   requestEmailConfirmatioForSite,
 } from '../services';
-import { customThemeDarkAtom, customThemeLightAtom } from '../state';
 import { GatedCondition } from '../types';
 import { generateCSSVarsTheme } from '../utils';
 
@@ -43,8 +41,19 @@ export function usePreviewThemeFromConfig({
 }: {
   appConfig?: AppConfig;
 }) {
-  const customThemeDark = useAtomValue(customThemeDarkAtom);
-  const customThemeLight = useAtomValue(customThemeLightAtom);
+  const customThemeDark = useMemo(() => {
+    if (appConfig?.customThemeDark) {
+      return JSON.parse(appConfig?.customThemeDark);
+    }
+    return {};
+  }, [appConfig?.customThemeDark]);
+
+  const customThemeLight = useMemo(() => {
+    if (appConfig?.customThemeLight) {
+      return JSON.parse(appConfig?.customThemeLight);
+    }
+    return {};
+  }, [appConfig?.customThemeLight]);
   const selectedTheme = useMemo(() => {
     return generateCSSVarsTheme({
       selectedFont: appConfig?.font,
