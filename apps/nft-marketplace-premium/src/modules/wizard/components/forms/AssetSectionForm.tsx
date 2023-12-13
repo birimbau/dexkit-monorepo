@@ -1,6 +1,10 @@
 import { Field, Formik } from 'formik';
 
-import { NETWORKS } from '@dexkit/core/constants/networks';
+import {
+  NETWORKS,
+  NETWORK_FROM_SLUG,
+  NETWORK_SLUG,
+} from '@dexkit/core/constants/networks';
 import { ipfsUriToUrl, parseChainId } from '@dexkit/core/utils';
 import {
   Avatar,
@@ -13,13 +17,16 @@ import {
   ListItemText,
   MenuItem,
   Stack,
+  Tab,
+  Tabs,
   Typography,
 } from '@mui/material';
 import { Select, Switch, TextField } from 'formik-mui';
-import { useMemo } from 'react';
+import { SyntheticEvent, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { AssetFormType } from '../../types';
 import { AssetPageSection } from '../../types/section';
+import { CollectionItemAutocomplete } from './CollectionItemAutocomplete';
 
 export interface AssetSectionFormProps {
   onCancel: () => void;
@@ -50,6 +57,12 @@ export default function AssetSectionForm({
     );
   }, []);
 
+  const [tab, setTab] = useState('import');
+
+  const handleChangeTab = (e: SyntheticEvent, value: string) => {
+    setTab(value);
+  };
+
   return (
     <Formik
       initialValues={
@@ -74,7 +87,7 @@ export default function AssetSectionForm({
       onSubmit={handleSubmit}
       validate={handleValidate}
     >
-      {({ setFieldValue, values, isValid, submitForm }) => (
+      {({ setValues, values, isValid, submitForm }) => (
         <>
           <Grid container spacing={2}>
             <Grid item xs={12}>
@@ -123,28 +136,98 @@ export default function AssetSectionForm({
               </FormControl>
             </Grid>
             <Grid item xs={12}>
-              <Field
-                component={TextField}
-                fullWidth
-                name="address"
-                label={
-                  <FormattedMessage
-                    id="contract.address"
-                    defaultMessage="Contract address"
-                  />
-                }
-              />
+              <Tabs value={tab} onChange={handleChangeTab}>
+                <Tab
+                  value="import"
+                  label={
+                    <FormattedMessage id="import" defaultMessage="Import" />
+                  }
+                />
+                <Tab
+                  value="collections"
+                  label={
+                    <FormattedMessage
+                      id="your.collections"
+                      defaultMessage="Your collections"
+                    />
+                  }
+                />
+              </Tabs>
             </Grid>
-            <Grid item xs={12}>
-              <Field
-                component={TextField}
-                fullWidth
-                name="tokenId"
-                label={
-                  <FormattedMessage id="token.id" defaultMessage="Token ID" />
-                }
-              />
-            </Grid>
+            {tab === 'import' ? (
+              <Grid item xs={12}>
+                <Grid container spacing={2}>
+                  <Grid item xs={12}>
+                    <Field
+                      component={TextField}
+                      fullWidth
+                      name="address"
+                      label={
+                        <FormattedMessage
+                          id="contract.address"
+                          defaultMessage="Contract address"
+                        />
+                      }
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Field
+                      component={TextField}
+                      fullWidth
+                      name="tokenId"
+                      label={
+                        <FormattedMessage
+                          id="token.id"
+                          defaultMessage="Token ID"
+                        />
+                      }
+                    />
+                  </Grid>
+                </Grid>
+              </Grid>
+            ) : (
+              <Grid item xs={12}>
+                <Grid container spacing={2}>
+                  <Grid item xs={12}>
+                    <Box>
+                      <CollectionItemAutocomplete
+                        formValue={{
+                          chainId: NETWORK_FROM_SLUG(values.network)?.chainId,
+                          contractAddress: values.address.toLowerCase(),
+                        }}
+                        onChange={({
+                          contractAddress,
+                          chainId,
+                        }: {
+                          contractAddress: string;
+                          chainId: number;
+                        }) => {
+                          setValues({
+                            ...values,
+                            address: contractAddress.toLowerCase(),
+                            network: NETWORK_SLUG(chainId) || '',
+                          });
+                        }}
+                      />
+                    </Box>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Field
+                      component={TextField}
+                      fullWidth
+                      name="tokenId"
+                      label={
+                        <FormattedMessage
+                          id="token.id"
+                          defaultMessage="Token ID"
+                        />
+                      }
+                    />
+                  </Grid>
+                </Grid>
+              </Grid>
+            )}
+
             <Grid item xs={12}>
               <Grid container spacing={2}>
                 <Grid item>
