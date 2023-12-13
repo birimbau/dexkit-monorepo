@@ -8,6 +8,7 @@ import {
   CircularProgress,
   Divider,
   Grid,
+  Skeleton,
   Stack,
   Tab,
   Tabs,
@@ -53,7 +54,10 @@ export default function ContractAirdropErc721Container({
 
   const { createNotification, watchTransactionDialog } = useDexKitContext();
 
-  const { data: nftBalance } = useNFTBalance(tokenContract, account);
+  const { data: nftBalance, isLoading: isBalanceLoading } = useNFTBalance(
+    tokenContract,
+    account,
+  );
 
   const { data: isApprovedForAll } = useContractRead(
     tokenContract,
@@ -169,6 +173,7 @@ export default function ContractAirdropErc721Container({
         value={recipients as any}
         dataColumns={[
           {
+            width: 250,
             headerName: 'Recipient',
             name: 'recipient',
             isValid: (value: unknown) => {
@@ -250,7 +255,11 @@ export default function ContractAirdropErc721Container({
                             justifyContent="space-between"
                           >
                             <Typography variant="h5">
-                              {nftBalance?.toNumber()}
+                              {isBalanceLoading ? (
+                                <Skeleton />
+                              ) : (
+                                nftBalance?.toNumber()
+                              )}
                             </Typography>
                             <Button
                               variant="outlined"

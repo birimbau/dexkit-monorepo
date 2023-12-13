@@ -5,14 +5,18 @@ import {
   useContractType,
 } from '@thirdweb-dev/react';
 import { ContractMetadataHeader } from '../ContractMetadataHeader';
-import { ContractCollectionDropContainer } from './ContractCollectionDropContainer';
 import { ContractEditionDropContainer } from './ContractEditionDropContainer';
 import { ContractNftContainer } from './ContractNftContainer';
 import { ContractNftDropContainer } from './ContractNftDropContainer';
 import ContractStakeErc20Container from './ContractStakeErc20Container';
 import { ContractTokenDropContainer } from './ContractTokenDropContainer';
 
+import { NETWORK_FROM_SLUG } from '@dexkit/core/constants/networks';
+import { useSwitchNetworkMutation } from '@dexkit/ui';
 import { hexToString } from '@dexkit/ui/utils';
+import { Alert, Button, CircularProgress } from '@mui/material';
+import { useWeb3React } from '@web3-react/core';
+import { FormattedMessage } from 'react-intl';
 import ContractAirdropErc1155Container from './ContractAirdropErc1155Container';
 import ContractAirdropErc20Container from './ContractAirdropErc20Container';
 import ContractAirdropErc721Container from './ContractAirdropErc721Container';
@@ -73,6 +77,17 @@ export function ContractContainer({ address, network }: Props) {
     }
   };
 
+  const { chainId: providerChainId } = useWeb3React();
+  const switchNetwork = useSwitchNetworkMutation();
+
+  const chainId = NETWORK_FROM_SLUG(network)?.chainId;
+
+  const handleSwitchNetwork = async () => {
+    if (chainId && providerChainId !== chainId) {
+      await switchNetwork.mutateAsync({ chainId });
+    }
+  };
+
   return (
     <Grid container spacing={2}>
       <Grid item xs={12}>
@@ -83,15 +98,41 @@ export function ContractContainer({ address, network }: Props) {
           contractTypeV2={contractType}
         />
       </Grid>
-      <Grid item xs={12}>
-        {renderContract()}
-        {false && (
-          <ContractCollectionDropContainer
-            address={address}
-            network={network}
-          />
-        )}
-      </Grid>
+      {chainId !== undefined && providerChainId !== chainId ? (
+        <Grid item xs={12}>
+          <Alert
+            severity="warning"
+            action={
+              <Button
+                onClick={handleSwitchNetwork}
+                color="inherit"
+                variant="outlined"
+                size="small"
+                disabled={switchNetwork.isLoading}
+                startIcon={
+                  switchNetwork.isLoading ? (
+                    <CircularProgress color="inherit" size="1rem" />
+                  ) : undefined
+                }
+              >
+                <FormattedMessage
+                  id="switch.network"
+                  defaultMessage="Switch network"
+                />
+              </Button>
+            }
+          >
+            <FormattedMessage
+              id="you.are.on.a.network.different.of.the.contract"
+              defaultMessage="You are on a network different of the contract"
+            />
+          </Alert>
+        </Grid>
+      ) : (
+        <Grid item xs={12}>
+          {renderContract()}
+        </Grid>
+      )}
     </Grid>
   );
 }
