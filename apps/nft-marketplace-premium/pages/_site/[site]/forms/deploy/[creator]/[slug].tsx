@@ -152,7 +152,7 @@ export default function DeployPage() {
               type: slug as string,
               metadata: {
                 name: formValues?.name,
-                symbol: formValues.symbol,
+                symbol: formValues?.symbol,
                 image: formValues?.image,
                 description: formValues?.description,
               },

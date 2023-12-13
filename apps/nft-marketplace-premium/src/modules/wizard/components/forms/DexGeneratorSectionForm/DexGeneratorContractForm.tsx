@@ -93,12 +93,7 @@ export default function DexGeneratorContractForm({
           section={section?.type === 'collection' ? section : undefined}
         />
       );
-    } else if (
-      contractType === 'TokenStake' ||
-      contractType === 'StakeERC20' ||
-      contractType === 'StakeERC721' ||
-      contractType === 'StakeERC1155'
-    ) {
+    } else if (contractType === 'TokenStake' || contractType === 'NFTStake') {
       return (
         <Stack>
           <Typography align="center" variant="h5">

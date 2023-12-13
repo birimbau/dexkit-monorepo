@@ -12,11 +12,13 @@ import StakeErc721Section from './StakeErc721Section';
 import TokenDropSection from './TokenDropSection';
 import TokenErc20Section from './TokenErc20Section';
 
-export interface DabSectionProps {
+export interface DexGeneratorSectionProps {
   section?: DexGeneratorPageSection;
 }
 
-export default function DexGeneratorSection({ section }: DabSectionProps) {
+export default function DexGeneratorSection({
+  section,
+}: DexGeneratorSectionProps) {
   const { provider } = useWeb3React();
 
   const renderSection = () => {

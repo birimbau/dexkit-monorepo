@@ -269,6 +269,18 @@ export default function DexGeneratorSectionForm({
             contract: newContract,
             type: 'dex-generator-section',
           });
+        } else if (newContract.type === 'NFTStake') {
+          handleChangeSection({
+            section: {
+              type: 'nft-stake',
+              settings: {
+                address: newContract.contractAddress,
+                network,
+              },
+            },
+            contract: newContract,
+            type: 'dex-generator-section',
+          });
         }
       }
     },

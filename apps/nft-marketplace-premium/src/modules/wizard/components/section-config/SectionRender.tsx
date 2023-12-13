@@ -5,9 +5,7 @@ const CollectionSection = dynamic(
   () => import('../sections/CollectionSection'),
 );
 
-const DexGeneratorSection = dynamic(
-  () => import('../sections/DexGeneratorSection'),
-);
+import DexGeneratorSection from '../sections/DexGeneratorSection';
 
 const AssetSection = dynamic(() => import('../sections/AssetSection/index'));
 
