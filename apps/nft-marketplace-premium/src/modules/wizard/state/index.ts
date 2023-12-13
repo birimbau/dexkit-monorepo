@@ -64,7 +64,7 @@ export interface CustomThemeInterface {
   };
 }
 
-export const customThemeAtom = atom<
+/*export const customThemeAtom = atom<
   CustomThemeColorSchemesInterface | undefined
 >({
   typography: {},
@@ -136,4 +136,4 @@ export const customThemeDarkAtom = atom<CustomThemeInterface | undefined>({
       main: '#f44336',
     },
   },
-});
+});*/

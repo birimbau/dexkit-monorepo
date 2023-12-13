@@ -8,14 +8,9 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
-import { useAtom } from 'jotai';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
-import {
-  CustomThemeInterface,
-  customThemeDarkAtom,
-  customThemeLightAtom,
-} from '../../state';
+import { CustomThemeInterface } from '../../state';
 import { ThemeFormType } from '../../types';
 import { mapObject } from '../../utils';
 import EditThemeForm from '../EditThemeForm';
@@ -24,6 +19,10 @@ interface Props {
   selectedId?: string;
   mode?: ThemeMode;
   legacyTheme?: string;
+  onSetCustomThemeDark: (theme: CustomThemeInterface) => void;
+  onSetCustomThemeLight: (theme: CustomThemeInterface) => void;
+  customThemeDark?: CustomThemeInterface;
+  customThemeLight?: CustomThemeInterface;
   onSelect: (id: string) => void;
   onPreview: () => void;
 }
@@ -34,11 +33,12 @@ export default function ThemeSection({
   onSelect,
   legacyTheme,
   onPreview,
+  customThemeDark,
+  customThemeLight,
+  onSetCustomThemeDark,
+  onSetCustomThemeLight,
 }: Props) {
   const theme = useTheme();
-
-  const [customThemeLight, setCustomThemeLight] = useAtom(customThemeLightAtom);
-  const [customThemeDark, setCustomThemeDark] = useAtom(customThemeDarkAtom);
 
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -71,34 +71,34 @@ export default function ThemeSection({
         });
 
         if (mode === ThemeMode.dark) {
-          setCustomThemeDark((value) => ({
+          onSetCustomThemeDark({
             palette: {
-              ...value?.palette,
+              ...customThemeDark?.palette,
               ...data.palette,
             },
             shape: {
-              ...value?.shape,
+              ...customThemeDark?.shape,
               ...data.shape,
             },
-          }));
+          });
         } else {
-          setCustomThemeLight((value) => ({
+          onSetCustomThemeLight({
             palette: {
-              ...value?.palette,
+              ...customThemeLight?.palette,
               ...data.palette,
             },
             shape: {
-              ...value?.shape,
+              ...customThemeLight?.shape,
               ...data.shape,
             },
-          }));
+          });
         }
       }
     },
     [mode, onSelect, selectedId],
   );
 
-  const getInitialValues = () => {
+  const getInitialValues = useMemo(() => {
     const defaultTheme =
       mode === ThemeMode.light ? customThemeLight : customThemeDark;
     return {
@@ -122,7 +122,7 @@ export default function ThemeSection({
       borderRadius:
         defaultTheme?.shape?.borderRadius || theme.shape.borderRadius,
     };
-  };
+  }, [mode, customThemeLight, customThemeDark, theme]);
 
   return (
     <>
@@ -148,14 +148,16 @@ export default function ThemeSection({
         )}
 
         <Grid item xs={12}>
-          {selectedId && (
+          {selectedId && getInitialValues && (
             <EditThemeForm
+              customThemeDark={customThemeDark}
+              customThemeLight={customThemeLight}
               mode={mode as SupportedColorScheme}
               onChange={handleChange}
               saveOnChange
               initialValues={{
                 themeId: selectedId,
-                ...getInitialValues(),
+                ...getInitialValues,
               }}
               onSubmit={async () => {}}
             />
