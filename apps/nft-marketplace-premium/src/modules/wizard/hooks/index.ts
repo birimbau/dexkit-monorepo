@@ -9,13 +9,17 @@ import { ethers } from 'ethers';
 import { useAtomValue } from 'jotai/utils';
 import { QUERY_ADMIN_WHITELABEL_CONFIG_NAME } from 'src/hooks/whitelabel';
 import { getAccessToken } from 'src/services/auth';
+import { myAppsApi } from 'src/services/whitelabel';
 import { AppConfig } from 'src/types/config';
 import {
   addPermissionsMemberSite,
   checkGatedConditions,
+  deleteAppVersion,
   deleteMemberSite,
   getTokenList,
   requestEmailConfirmatioForSite,
+  setAppVersion,
+  upsertAppVersion
 } from '../services';
 import { customThemeDarkAtom, customThemeLightAtom } from '../state';
 import { GatedCondition } from '../types';
@@ -133,9 +137,7 @@ export function useAddPermissionMemberMutation() {
     await addPermissionsMemberSite({ siteId, permissions, account });
     query.refetchQueries([QUERY_ADMIN_WHITELABEL_CONFIG_NAME])
 
-
     return true
-
   });
 }
 
@@ -152,3 +154,105 @@ export function useDeleteMemberMutation() {
     return true
   });
 }
+
+export function useAddAppVersionMutation() {
+
+  const query = useQueryClient()
+
+  return useMutation(async ({ siteId, version, description, versionId }: { siteId?: number, version?: string, description?: string, versionId?: number }) => {
+    if (!siteId || !version) {
+      throw Error('missing data to update')
+    }
+
+    await upsertAppVersion({ siteId, version, description, versionId });
+    query.refetchQueries([GET_APP_VERSIONS_QUERY])
+
+    return true
+  });
+}
+
+export function useDeleteAppVersionMutation() {
+
+  const query = useQueryClient()
+
+  return useMutation(async ({ siteId, siteVersionId }: { siteId?: number, siteVersionId?: number }) => {
+    if (!siteId || !siteVersionId) {
+      throw Error('missing data to update')
+    }
+    await deleteAppVersion({ siteId, siteVersionId });
+    query.refetchQueries([GET_APP_VERSIONS_QUERY])
+    return true
+  });
+}
+
+export function useSetAppVersionMutation() {
+
+  const query = useQueryClient()
+
+  return useMutation(async ({ siteId, siteVersionId }: { siteId?: number, siteVersionId?: number }) => {
+    if (!siteId || !siteVersionId) {
+      throw Error('missing data to update')
+    }
+    await setAppVersion({ siteId, siteVersionId });
+    query.refetchQueries([GET_APP_VERSIONS_QUERY])
+    return true
+  });
+}
+
+
+
+export const GET_APP_VERSIONS_QUERY = 'GET_APP_VERSIONS_QUERY'
+
+export function useAppVersionQuery({
+  siteId,
+  page = 0,
+  pageSize = 10,
+  sort,
+
+  filter,
+}: {
+
+  page?: number;
+  pageSize?: number;
+  siteId?: number;
+  sort?: string[];
+  filter?: any;
+}) {
+
+  return useQuery<{
+    data: {
+      id: number;
+      version: string;
+      description: string;
+    }[];
+    skip?: number;
+    take?: number;
+    total?: number;
+  }>(
+    [GET_APP_VERSIONS_QUERY, sort, page, pageSize, filter, siteId],
+    async () => {
+      if (!siteId) {
+        return { data: [] };
+      }
+
+
+      return (
+        await myAppsApi.get<{
+          data: {
+            id: number;
+            version: string;
+            description: string;
+          }[];
+          skip?: number;
+          take?: number;
+          total?: number;
+        }>(`/site/versions/all/${siteId}`, {
+          params: { skip: page * pageSize, take: pageSize, sort, filter: filter ? JSON.stringify(filter) : undefined },
+        })
+      ).data;
+
+    }
+  );
+}
+
+
