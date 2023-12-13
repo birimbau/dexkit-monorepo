@@ -147,7 +147,10 @@ export default function EditSectionDialog({
           <Grid item xs={12} sm={6} md={5} lg={5} xl={4}>
             {!sectionType && (
               <SectionSelector
-                onClickSection={(s) => setSectionType(s.sectionType)}
+                onClickSection={(s) => {
+                  setSectionType(s.sectionType);
+                  setChangedSection(undefined);
+                }}
               />
             )}
             {sectionType && (
@@ -276,6 +279,7 @@ export default function EditSectionDialog({
           </Grid>*/}
           <Grid item xs={12} sm={6} md={7} lg={7} xl={8}>
             <PreviewPagePlatform
+              key={sectionType}
               sections={sectionType ? [changedSection as AppPageSection] : []}
               title={
                 <b>

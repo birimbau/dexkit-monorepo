@@ -17,13 +17,14 @@ import {
   ListItemText,
   MenuItem,
   Stack,
+  Tab,
+  Tabs,
   Typography,
 } from '@mui/material';
-import { useWeb3React } from '@web3-react/core';
 import { Contract, ethers } from 'ethers';
 import { Field, Formik } from 'formik';
 import { Select, Switch, TextField } from 'formik-mui';
-import { useMemo } from 'react';
+import { SyntheticEvent, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { getProviderBySlug } from 'src/services/providers';
 import { CreateCollectionFormSchema } from '../../constants/schemas';
@@ -122,7 +123,11 @@ export default function CollectionSectionFormAlt({
     );
   }, []);
 
-  const { provider } = useWeb3React();
+  const [tab, setTab] = useState('collections');
+
+  const handleChangeTab = (e: SyntheticEvent, value: string) => {
+    setTab(value);
+  };
 
   return (
     <Formik
@@ -146,62 +151,88 @@ export default function CollectionSectionFormAlt({
       {({ submitForm, isValid, values }) => (
         <Grid container spacing={2}>
           <Grid item xs={12}>
-            <FormControl fullWidth>
-              <Field
-                component={Select}
+            <Tabs sx={{ mb: 2 }} value={tab} onChange={handleChangeTab}>
+              <Tab
+                value="collections"
                 label={
-                  <FormattedMessage id="network" defaultMessage="Network" />
+                  <FormattedMessage
+                    id="your.collections"
+                    defaultMessage="your collections"
+                  />
                 }
-                name="network"
-                fullWidth
-                renderValue={(value: string) => {
-                  return (
-                    <Stack
-                      direction="row"
-                      alignItems="center"
-                      alignContent="center"
-                      spacing={1}
+              />
+              <Tab
+                value="import"
+                label={<FormattedMessage id="import" defaultMessage="Import" />}
+              />
+            </Tabs>
+            {tab === 'import' ? (
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  <FormControl fullWidth>
+                    <Field
+                      component={Select}
+                      label={
+                        <FormattedMessage
+                          id="network"
+                          defaultMessage="Network"
+                        />
+                      }
+                      name="network"
+                      fullWidth
+                      renderValue={(value: string) => {
+                        return (
+                          <Stack
+                            direction="row"
+                            alignItems="center"
+                            alignContent="center"
+                            spacing={1}
+                          >
+                            <Avatar
+                              src={ipfsUriToUrl(
+                                networks.find((n) => n.slug === value)
+                                  ?.imageUrl || '',
+                              )}
+                              style={{ width: 'auto', height: '1rem' }}
+                            />
+                            <Typography variant="body1">
+                              {networks.find((n) => n.slug === value)?.name}
+                            </Typography>
+                          </Stack>
+                        );
+                      }}
                     >
-                      <Avatar
-                        src={ipfsUriToUrl(
-                          networks.find((n) => n.slug === value)?.imageUrl ||
-                            '',
-                        )}
-                        style={{ width: 'auto', height: '1rem' }}
+                      {networks.map((n) => (
+                        <MenuItem key={n.slug} value={n.slug}>
+                          <ListItemIcon>
+                            <Avatar
+                              src={ipfsUriToUrl(n?.imageUrl || '')}
+                              style={{ width: '1rem', height: '1rem' }}
+                            />
+                          </ListItemIcon>
+                          <ListItemText primary={n.name} />
+                        </MenuItem>
+                      ))}
+                    </Field>
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12}>
+                  <Field
+                    component={TextField}
+                    fullWidth
+                    name="address"
+                    label={
+                      <FormattedMessage
+                        id="contract.address"
+                        defaultMessage="Contract address"
                       />
-                      <Typography variant="body1">
-                        {networks.find((n) => n.slug === value)?.name}
-                      </Typography>
-                    </Stack>
-                  );
-                }}
-              >
-                {networks.map((n) => (
-                  <MenuItem key={n.slug} value={n.slug}>
-                    <ListItemIcon>
-                      <Avatar
-                        src={ipfsUriToUrl(n?.imageUrl || '')}
-                        style={{ width: '1rem', height: '1rem' }}
-                      />
-                    </ListItemIcon>
-                    <ListItemText primary={n.name} />
-                  </MenuItem>
-                ))}
-              </Field>
-            </FormControl>
-          </Grid>
-          <Grid item xs={12}>
-            <Field
-              component={TextField}
-              fullWidth
-              name="address"
-              label={
-                <FormattedMessage
-                  id="contract.address"
-                  defaultMessage="Contract address"
-                />
-              }
-            />
+                    }
+                  />
+                </Grid>
+              </Grid>
+            ) : (
+              <Box>{/* TODO: make this autocomplete */}</Box>
+            )}
           </Grid>
           <Grid item xs={12}>
             <Accordion>
