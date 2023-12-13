@@ -257,6 +257,18 @@ export default function DexGeneratorSectionForm({
             contract: newContract,
             type: 'dex-generator-section',
           });
+        } else if (newContract.type === 'TokenStake') {
+          handleChangeSection({
+            section: {
+              type: 'token-stake',
+              settings: {
+                address: newContract.contractAddress,
+                network,
+              },
+            },
+            contract: newContract,
+            type: 'dex-generator-section',
+          });
         }
       }
     },

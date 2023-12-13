@@ -141,7 +141,7 @@ export default function DeployPage() {
         if (result) {
           setContractAddress(result.address);
 
-          const name = params['name'];
+          const name = params['name'] || formValues?.name;
 
           if (chainId) {
             saveContractDeployedMutation.mutateAsync({

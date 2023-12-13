@@ -1,5 +1,7 @@
 import { NETWORKS } from '@dexkit/core/constants/networks';
 import { ipfsUriToUrl, parseChainId } from '@dexkit/core/utils';
+import { hexToString } from '@dexkit/ui/utils';
+import { useAsyncMemo } from '@dexkit/widgets/src/hooks';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import {
   Accordion,
@@ -17,12 +19,70 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
+import { useWeb3React } from '@web3-react/core';
+import { Contract, ethers } from 'ethers';
 import { Field, Formik } from 'formik';
 import { Select, Switch, TextField } from 'formik-mui';
 import { useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
+import { getProviderBySlug } from 'src/services/providers';
 import { CreateCollectionFormSchema } from '../../constants/schemas';
 import { CollectionPageSection } from '../../types/section';
+
+interface DropCheckboxProps {
+  address: string;
+  network: string;
+}
+
+function DropCheckbox({ address, network }: DropCheckboxProps) {
+  const contractType = useAsyncMemo(
+    async () => {
+      if (ethers.utils.isAddress(address)) {
+        const contract = new Contract(
+          address,
+          [
+            {
+              inputs: [],
+
+              name: 'contractType',
+              outputs: [{ internalType: 'bytes32', name: '', type: 'bytes32' }],
+              stateMutability: 'pure',
+              type: 'function',
+            },
+          ],
+          getProviderBySlug(network),
+        );
+
+        try {
+          const call = await contract.contractType();
+
+          return hexToString(call);
+        } catch (err) {
+          return '';
+        }
+      }
+
+      return '';
+    },
+    '',
+    [address, network],
+  );
+
+  const isDrop = useMemo(() => {
+    return contractType?.toLocaleLowerCase()?.search('drop') > -1;
+  }, [contractType]);
+
+  if (!isDrop) {
+    return null;
+  }
+
+  return (
+    <FormControlLabel
+      control={<Field component={Switch} type="checkbox" name="hideDrops" />}
+      label={<FormattedMessage id="hide.drops" defaultMessage="Hide Drops" />}
+    />
+  );
+}
 
 export interface CollectionSectionFormAltProps {
   section?: CollectionPageSection;
@@ -62,6 +122,8 @@ export default function CollectionSectionFormAlt({
     );
   }, []);
 
+  const { provider } = useWeb3React();
+
   return (
     <Formik
       initialValues={
@@ -81,7 +143,7 @@ export default function CollectionSectionFormAlt({
       validationSchema={CreateCollectionFormSchema}
       validateOnChange
     >
-      {({ submitForm, isValid }) => (
+      {({ submitForm, isValid, values }) => (
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <FormControl fullWidth>
@@ -196,20 +258,10 @@ export default function CollectionSectionFormAlt({
                         />
                       }
                     />
-                    <FormControlLabel
-                      control={
-                        <Field
-                          component={Switch}
-                          type="checkbox"
-                          name="hideDrops"
-                        />
-                      }
-                      label={
-                        <FormattedMessage
-                          id="hide.drops"
-                          defaultMessage="Hide Drops"
-                        />
-                      }
+                    <DropCheckbox
+                      key={values.address}
+                      address={values.address}
+                      network={values.network}
                     />
                   </Grid>
                 </Grid>

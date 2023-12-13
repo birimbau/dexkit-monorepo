@@ -148,7 +148,7 @@ export default function EditSectionDialog({
             {!sectionType && (
               <SectionSelector
                 onClickSection={(s) => setSectionType(s.sectionType)}
-              ></SectionSelector>
+              />
             )}
             {sectionType && (
               <Stack spacing={2}>

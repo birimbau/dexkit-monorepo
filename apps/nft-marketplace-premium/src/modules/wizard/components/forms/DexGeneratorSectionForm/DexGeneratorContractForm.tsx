@@ -93,6 +93,28 @@ export default function DexGeneratorContractForm({
           section={section?.type === 'collection' ? section : undefined}
         />
       );
+    } else if (
+      contractType === 'TokenStake' ||
+      contractType === 'StakeERC20' ||
+      contractType === 'StakeERC721' ||
+      contractType === 'StakeERC1155'
+    ) {
+      return (
+        <Stack>
+          <Typography align="center" variant="h5">
+            <FormattedMessage
+              id="stake.contract"
+              defaultMessage="Stake Contract"
+            />
+          </Typography>
+          <Typography align="center" variant="body1" color="text.secondary">
+            <FormattedMessage
+              id="you.are.using.a.stake.contract"
+              defaultMessage="You are using a stake contract"
+            />
+          </Typography>
+        </Stack>
+      );
     } else {
       return (
         <Stack>
