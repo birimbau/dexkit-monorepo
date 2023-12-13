@@ -10,7 +10,6 @@ import {
   truncateAddress,
 } from '@dexkit/core/utils';
 import CopyIconButton from '@dexkit/ui/components/CopyIconButton';
-import { THIRDWEB_CONTRACT_TYPES } from '@dexkit/web3forms/constants';
 import FileCopy from '@mui/icons-material/FileCopy';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import { Button, Chip, Stack, styled, useTheme } from '@mui/material';
@@ -26,6 +25,8 @@ import {
 import Image from 'next/image';
 import { FormattedMessage, useIntl } from 'react-intl';
 import Link from 'src/components/Link';
+
+import { THIRDWEB_CONTRACTTYPE_TO_NAME } from '@dexkit/ui/constants/thirdweb';
 
 const Img = styled(Image)({});
 
@@ -127,7 +128,7 @@ export function ContractMetadataHeader({
             </Box>
           </Grid>
           <Grid item xs>
-            <Stack direction={'row'} spacing={2}>
+            <Stack direction="row" spacing={2}>
               <Typography
                 sx={{
                   display: 'block',
@@ -140,21 +141,19 @@ export function ContractMetadataHeader({
               >
                 {metadata?.name}
               </Typography>
-              <Stack
-                direction={'row'}
-                alignContent={'center'}
-                alignItems={'center'}
-              >
-                <Avatar
-                  src={NETWORK_IMAGE(chainId)}
-                  sx={(theme) => ({
-                    width: theme.spacing(4),
-                    height: theme.spacing(4),
-                  })}
-                  alt={NETWORK_NAME(chainId) || ''}
-                />
-                <Typography>{NETWORK_NAME(chainId)}</Typography>
-              </Stack>
+              <Chip
+                icon={
+                  <Avatar
+                    src={NETWORK_IMAGE(chainId)}
+                    sx={(theme) => ({
+                      width: theme.spacing(2),
+                      height: theme.spacing(2),
+                    })}
+                    alt={NETWORK_NAME(chainId) || ''}
+                  />
+                }
+                label={NETWORK_NAME(chainId)}
+              />
             </Stack>
           </Grid>
 
@@ -223,8 +222,10 @@ export function ContractMetadataHeader({
               )}
               <Chip
                 label={
-                  contractType
-                    ? THIRDWEB_CONTRACT_TYPES[contractType]
+                  contractTypeV2 !== undefined
+                    ? (THIRDWEB_CONTRACTTYPE_TO_NAME[
+                        contractTypeV2 as string
+                      ] as string)
                     : 'custom'
                 }
               />
