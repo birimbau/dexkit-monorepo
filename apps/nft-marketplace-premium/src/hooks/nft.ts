@@ -42,7 +42,6 @@ import {
   AssetAPI,
   AssetBalance,
   AssetMetadata,
-  Collection,
   HiddenAsset,
   OrderBookItem,
   SwapApiOrder,
@@ -292,6 +291,15 @@ export function useCollection(
 
       const isTw = twContract.abi.find((m) => m.name === 'contractVersion');
 
+      let collectionFromConfig: any = {};
+      let collectionObj: any = {};
+
+      collectionFromConfig = appConfig.collections?.find(
+        (c) =>
+          isAddressEqual(c.contractAddress, contractAddress) &&
+          c.chainId === chainId,
+      );
+
       if (isTw) {
         let contract = await sdk.getContract(contractAddress);
         let metadata = await contract.metadata.get();
@@ -304,7 +312,7 @@ export function useCollection(
           ? NFTType.ERC1155
           : NFTType.ERC721;
 
-        return {
+        collectionObj = {
           address: contractAddress,
           chainId,
           name: metadata.name,
@@ -314,23 +322,7 @@ export function useCollection(
           nftType: type?.toLowerCase()?.startsWith('edition')
             ? NFTType.ERC1155
             : NFTType.ERC721,
-        } as Collection;
-      }
-
-      const collectionFromConfig = appConfig.collections?.find(
-        (c) =>
-          isAddressEqual(c.contractAddress, contractAddress) &&
-          c.chainId === chainId,
-      );
-
-      if (collectionFromConfig) {
-        return {
-          address: collectionFromConfig.contractAddress,
-          name: collectionFromConfig.name,
-          chainId: collectionFromConfig.chainId,
-          imageUrl: collectionFromConfig.image,
-          description: collectionFromConfig.description,
-        } as Collection;
+        };
       }
 
       const collection = await getApiCollectionData(
@@ -339,7 +331,11 @@ export function useCollection(
       );
 
       if (collection) {
-        return collection;
+        return {
+          ...collectionObj,
+          ...collection,
+          ...collectionFromConfig,
+        };
       }
 
       if (
@@ -351,7 +347,16 @@ export function useCollection(
         return;
       }
 
-      return await getCollectionData(provider, contractAddress);
+      const onChainCollection = await getCollectionData(
+        provider,
+        contractAddress,
+      );
+
+      return {
+        ...collectionObj,
+        ...onChainCollection,
+        ...collectionFromConfig,
+      };
     },
     {
       enabled:
@@ -664,16 +669,13 @@ export function useFillSignedOrderMutation(
         const isNativeToken = nftSwapSdk.isErc20NativeToken(order);
         const needsEthAttached =
           isNativeToken && canOrderTypeBeFilledWithNativeToken;
-        console.log(
-          BigNumber.from(quantity).div(order.erc1155TokenAmount).toString(),
-        );
+
         const erc20TotalAmount = nftSwapSdk
           .getErc20TotalIncludingFees(order)
           .mul(
             BigNumber.from(quantity).mul(100000).div(order.erc1155TokenAmount),
           )
           .div(100000);
-        console.log(erc20TotalAmount.toString());
 
         const result = await nftSwapSdk.exchangeProxy.buyERC1155(
           order as any,

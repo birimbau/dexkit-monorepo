@@ -30,7 +30,9 @@ const AssetAltPlugin: CellPlugin<AssetFormType> = {
             onChange(section.config);
           }}
           onCancel={() => {}}
-          onSave={() => {}}
+          onSave={(section) => {
+            onChange(section.config);
+          }}
         />
       );
     },

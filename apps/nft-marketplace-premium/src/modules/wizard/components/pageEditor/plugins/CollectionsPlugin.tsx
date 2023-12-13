@@ -12,7 +12,7 @@ const CollectionsPlugin: CellPlugin<{
   Renderer: ({ data, isEditMode }) => {
     return data.section ? <CollectionSection section={data.section} /> : null;
   },
-  id: 'dex-generator-section',
+  id: 'collection-new',
   title: 'Collection',
   description: 'Show a collection',
   version: 1,

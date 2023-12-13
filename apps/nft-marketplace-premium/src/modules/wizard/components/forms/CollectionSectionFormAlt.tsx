@@ -1,4 +1,8 @@
-import { NETWORKS } from '@dexkit/core/constants/networks';
+import {
+  NETWORKS,
+  NETWORK_FROM_SLUG,
+  NETWORK_SLUG,
+} from '@dexkit/core/constants/networks';
 import { ipfsUriToUrl, parseChainId } from '@dexkit/core/utils';
 import { hexToString } from '@dexkit/ui/utils';
 import { useAsyncMemo } from '@dexkit/widgets/src/hooks';
@@ -29,6 +33,7 @@ import { FormattedMessage } from 'react-intl';
 import { getProviderBySlug } from 'src/services/providers';
 import { CreateCollectionFormSchema } from '../../constants/schemas';
 import { CollectionPageSection } from '../../types/section';
+import { CollectionItemAutocomplete } from './CollectionItemAutocomplete';
 
 interface DropCheckboxProps {
   address: string;
@@ -123,7 +128,7 @@ export default function CollectionSectionFormAlt({
     );
   }, []);
 
-  const [tab, setTab] = useState('collections');
+  const [tab, setTab] = useState('import');
 
   const handleChangeTab = (e: SyntheticEvent, value: string) => {
     setTab(value);
@@ -148,10 +153,14 @@ export default function CollectionSectionFormAlt({
       validationSchema={CreateCollectionFormSchema}
       validateOnChange
     >
-      {({ submitForm, isValid, values }) => (
+      {({ submitForm, isValid, values, setFieldValue, errors, setValues }) => (
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <Tabs sx={{ mb: 2 }} value={tab} onChange={handleChangeTab}>
+              <Tab
+                value="import"
+                label={<FormattedMessage id="import" defaultMessage="Import" />}
+              />
               <Tab
                 value="collections"
                 label={
@@ -160,10 +169,6 @@ export default function CollectionSectionFormAlt({
                     defaultMessage="your collections"
                   />
                 }
-              />
-              <Tab
-                value="import"
-                label={<FormattedMessage id="import" defaultMessage="Import" />}
               />
             </Tabs>
             {tab === 'import' ? (
@@ -231,7 +236,25 @@ export default function CollectionSectionFormAlt({
                 </Grid>
               </Grid>
             ) : (
-              <Box>{/* TODO: make this autocomplete */}</Box>
+              <Box>
+                <CollectionItemAutocomplete
+                  formValue={{
+                    chainId: NETWORK_FROM_SLUG(values.network)?.chainId,
+                    contractAddress: values.address.toLowerCase(),
+                  }}
+                  onChange={(params: {
+                    chainId: number;
+                    contractAddress: string;
+                  }) => {
+                    const { chainId, contractAddress } = params;
+                    setValues({
+                      ...values,
+                      address: contractAddress.toLowerCase(),
+                      network: NETWORK_SLUG(chainId) || '',
+                    });
+                  }}
+                />
+              </Box>
             )}
           </Grid>
           <Grid item xs={12}>

@@ -45,7 +45,10 @@ function CollectionSection({ section }: CollectionSectionProps) {
 
   const { hideDrops, hideFilters, hideHeader, hideAssets } = section.config;
 
-  const { data: collection } = useCollection(section.config.address, chainId);
+  const { data: collection, isError } = useCollection(
+    section.config.address,
+    chainId,
+  );
 
   const [search, setSearch] = useState('');
 
