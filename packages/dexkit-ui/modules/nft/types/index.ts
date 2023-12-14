@@ -17,6 +17,14 @@ export interface Collection {
   totalSupply?: number;
 }
 
+export interface ContractURIMetadata {
+  name: string;
+  image?: string;
+  description?: string;
+  banner_image_url?: string;
+  external_link?: string;
+}
+
 
 export type AssetStoreOptions = {
   name?: string;

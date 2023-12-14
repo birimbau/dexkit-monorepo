@@ -30,10 +30,9 @@ import {
   getAssetsData,
   getCollectionAssetsFromOrderbook,
   getCollectionByApi,
-  getCollectionData,
   getDKAssetOrderbook,
   getERC1155Balance,
-  searchAssetsDexKitApi,
+  searchAssetsDexKitApi
 } from '../services/nft';
 
 import { NFTType } from '../constants/enum';
@@ -48,6 +47,7 @@ import {
 } from '../types/nft';
 
 import { ChainId } from '@dexkit/core/constants';
+import { getCollectionData } from '@dexkit/ui/modules/nft/services';
 import { hexToString } from '@dexkit/ui/utils';
 import { ThirdwebSDK } from '@thirdweb-dev/sdk';
 import { PostOrderResponsePayload } from '@traderxyz/nft-swap-sdk/dist/sdk/v4/orderbook';
@@ -290,6 +290,7 @@ export function useCollection(
       const twContract = await sdk.getContract(contractAddress as string);
 
       const isTw = twContract.abi.find((m) => m.name === 'contractVersion');
+
 
       let collectionFromConfig: any = {};
       let collectionObj: any = {};
@@ -891,7 +892,7 @@ export function useFavoriteAssets() {
         asset !== undefined &&
         assets !== undefined &&
         assets[
-          `${asset.chainId}-${asset.contractAddress.toLowerCase()}-${asset.id}`
+        `${asset.chainId}-${asset.contractAddress.toLowerCase()}-${asset.id}`
         ] !== undefined
       );
     },
@@ -937,7 +938,7 @@ export function useHiddenAssets() {
         asset !== undefined &&
         assets !== undefined &&
         assets[
-          `${asset.chainId}-${asset.contractAddress.toLowerCase()}-${asset.id}`
+        `${asset.chainId}-${asset.contractAddress.toLowerCase()}-${asset.id}`
         ] === true
       );
     },

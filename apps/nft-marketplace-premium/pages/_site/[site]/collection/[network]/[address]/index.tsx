@@ -493,6 +493,8 @@ export const getStaticProps: GetStaticProps = async ({
       : NFTType.ERC721;
 
     await queryClient.prefetchQuery(key, async () => {
+      let coll = collection || {};
+
       return {
         address,
         name: metadata.name,
@@ -501,6 +503,7 @@ export const getStaticProps: GetStaticProps = async ({
         description: metadata.description,
         imageUrl: metadata.image,
         nftType: type,
+        ...coll,
       } as Collection;
     });
   } else {
