@@ -1,9 +1,4 @@
-import {
-  customThemeDarkAtom,
-  customThemeLightAtom,
-} from '@/modules/wizard/state';
 import { generateCSSVarsTheme } from '@/modules/wizard/utils';
-import { useTheme } from '@mui/material';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
@@ -13,7 +8,6 @@ import StepContent from '@mui/material/StepContent';
 import StepLabel from '@mui/material/StepLabel';
 import Stepper from '@mui/material/Stepper';
 import Typography from '@mui/material/Typography';
-import { useAtomValue } from 'jotai';
 import * as React from 'react';
 import { useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
@@ -65,8 +59,19 @@ interface Props {
 export default function SwapStepper({ config, onSave, onChange }: Props) {
   const [activeStep, setActiveStep] = React.useState(0);
 
-  const customThemeDark = useAtomValue(customThemeDarkAtom);
-  const customThemeLight = useAtomValue(customThemeLightAtom);
+  const customThemeDark = useMemo(() => {
+    if (config?.customThemeDark) {
+      return JSON.parse(config?.customThemeDark);
+    }
+    return {};
+  }, [config?.customThemeDark]);
+
+  const customThemeLight = useMemo(() => {
+    if (config?.customThemeLight) {
+      return JSON.parse(config?.customThemeLight);
+    }
+    return {};
+  }, [config?.customThemeLight]);
 
   const selectedTheme = useMemo(() => {
     return generateCSSVarsTheme({
@@ -97,7 +102,6 @@ export default function SwapStepper({ config, onSave, onChange }: Props) {
   const handleReset = () => {
     setActiveStep(0);
   };
-  const theme = useTheme();
 
   return (
     <Container maxWidth={'xl'}>

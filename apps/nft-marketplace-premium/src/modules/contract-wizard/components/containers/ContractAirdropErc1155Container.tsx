@@ -9,6 +9,7 @@ import {
   CircularProgress,
   Divider,
   Grid,
+  Skeleton,
   Stack,
   Tab,
   Tabs,
@@ -56,7 +57,8 @@ export default function ContractAirdropErc1155Container({
 
   const { createNotification, watchTransactionDialog } = useDexKitContext();
 
-  const { data: metadata } = useMetadata(tokenContract);
+  const { data: metadata, isLoading: isMetadataLoading } =
+    useMetadata(tokenContract);
 
   const { data: isApprovedForAll } = useContractRead(
     tokenContract,
@@ -184,6 +186,7 @@ export default function ContractAirdropErc1155Container({
         value={recipients as any}
         dataColumns={[
           {
+            width: 250,
             headerName: 'Recipient',
             name: 'recipient',
             isValid: (value: unknown) => {
@@ -294,26 +297,43 @@ export default function ContractAirdropErc1155Container({
                             alignItems="center"
                             sx={{ py: 2 }}
                           >
-                            <Avatar
-                              variant="rounded"
-                              src={
-                                (metadata as CustomContractMetadata)?.image ||
-                                ''
-                              }
-                            />
+                            {isMetadataLoading ? (
+                              <Skeleton
+                                variant="circular"
+                                sx={{ height: '2rem', width: '2rem' }}
+                              />
+                            ) : (
+                              <Avatar
+                                variant="rounded"
+                                src={
+                                  (metadata as CustomContractMetadata)?.image ||
+                                  ''
+                                }
+                              />
+                            )}
                             <Typography variant="body1">
-                              {(metadata as CustomContractMetadata)?.name}
+                              {isMetadataLoading ? (
+                                <Skeleton />
+                              ) : (
+                                (metadata as CustomContractMetadata)?.name
+                              )}
                             </Typography>
                           </Stack>
                         )}
                         <Stack spacing={1} direction="row">
-                          <Button
-                            onClick={handleShowBalance}
-                            size="small"
-                            variant="outlined"
-                          >
-                            <FormattedMessage id="view" defaultMessage="View" />
-                          </Button>
+                          {contractAddress && (
+                            <Button
+                              onClick={handleShowBalance}
+                              size="small"
+                              variant="outlined"
+                            >
+                              <FormattedMessage
+                                id="view"
+                                defaultMessage="View"
+                              />
+                            </Button>
+                          )}
+
                           <Button
                             onClick={handleShowSelectToken}
                             size="small"

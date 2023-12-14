@@ -62,7 +62,7 @@ export function CollectionAutocomplete(props: Props) {
           label="Choose a collection"
           inputProps={{
             ...params.inputProps,
-            autoComplete: 'new-password', // disable autocomplete and autofill
+            autoComplete: 'off', // disable autocomplete and autofill
           }}
         />
       )}

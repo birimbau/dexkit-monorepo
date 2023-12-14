@@ -1,20 +1,25 @@
-import { Container } from '@mui/material';
+import { Container, Grid } from '@mui/material';
 import { ThirdwebSDKProvider } from '@thirdweb-dev/react';
 import { useWeb3React } from '@web3-react/core';
 import { THIRDWEB_CLIENT_ID } from 'src/constants';
 import { DexGeneratorPageSection } from '../../types/section';
+import CollectionSection from './CollectionSection';
 import EditionDropSection from './EditionDropSection';
 import NftDropSection from './NftDropSection';
+import StakeErc1155Section from './StakeErc1155Section';
+import StakeErc20Section from './StakeErc20Section';
+import StakeErc721Section from './StakeErc721Section';
 import TokenDropSection from './TokenDropSection';
+import TokenErc20Section from './TokenErc20Section';
 
-export interface DabSectionProps {
+export interface DexGeneratorSectionProps {
   section?: DexGeneratorPageSection;
 }
 
-export default function DexGeneratorSection({ section }: DabSectionProps) {
+export default function DexGeneratorSection({
+  section,
+}: DexGeneratorSectionProps) {
   const { provider } = useWeb3React();
-
-  const { chainId } = useWeb3React();
 
   const renderSection = () => {
     if (section?.section) {
@@ -26,6 +31,34 @@ export default function DexGeneratorSection({ section }: DabSectionProps) {
         return <NftDropSection section={section.section} />;
       } else if (type === 'edition-drop-section') {
         return <EditionDropSection section={section.section} />;
+      } else if (type === 'token') {
+        return <TokenErc20Section section={section.section} />;
+      } else if (type === 'collection') {
+        return <CollectionSection section={section.section} />;
+      } else if (type === 'nft-stake') {
+        return (
+          <Grid container justifyContent="center">
+            <Grid item xs={12} sm={4}>
+              <StakeErc721Section section={section.section} />
+            </Grid>
+          </Grid>
+        );
+      } else if (type === 'token-stake') {
+        return (
+          <Grid container justifyContent="center">
+            <Grid item xs={12} sm={4}>
+              <StakeErc20Section section={section.section} />
+            </Grid>
+          </Grid>
+        );
+      } else if (type === 'edition-stake') {
+        return (
+          <Grid container justifyContent="center">
+            <Grid item xs={12} sm={4}>
+              <StakeErc1155Section section={section.section} />
+            </Grid>
+          </Grid>
+        );
       }
     }
 
@@ -36,16 +69,11 @@ export default function DexGeneratorSection({ section }: DabSectionProps) {
     <Container sx={{ py: 2 }}>
       <ThirdwebSDKProvider
         signer={provider?.getSigner()}
-        /* TODO: remove this logic */
-        activeChain={chainId}
+        activeChain={section?.contract?.chainId}
         clientId={THIRDWEB_CLIENT_ID}
       >
         {renderSection()}
       </ThirdwebSDKProvider>
     </Container>
   );
-}
-
-function Wrapper() {
-  return;
 }

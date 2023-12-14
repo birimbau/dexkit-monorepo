@@ -20,3 +20,12 @@ export const MintNFTSchema = Yup.object().shape({
   image: Yup.string().url().optional(),
   external_url: Yup.string().url().optional(),
 });
+
+export const CreateCollectionFormSchema = Yup.object().shape({
+  network: Yup.string(),
+  address: Yup.string()
+    .test('address', (value, context) => {
+      return value !== undefined ? ethers.utils.isAddress(value) : true;
+    })
+    .required(),
+});

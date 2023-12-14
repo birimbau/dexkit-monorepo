@@ -8,7 +8,7 @@ import InputLabel from '@mui/material/InputLabel';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { SectionType } from '../../types/section';
 import { SectionCategory, sections } from './Sections';
@@ -119,75 +119,84 @@ export function SectionSelector({ onClickSection }: Props) {
                 </Typography>
               </Stack>
             </Button>*/}
-        <Grid item container spacing={1} xs={12} sx={{ overflow: 'auto' }}>
-          {SectionCategory.filter((c) => {
-            if (value !== 'all') {
-              return c.value === value;
-            }
-            return true;
-          }).map((cat, key) => (
-            <>
-              <Grid item xs={12} key={key}>
-                <Box pt={2}>
-                  <Typography variant="subtitle1">{cat.title}</Typography>
-                </Box>
-              </Grid>
-
-              <Grid item container sx={{ overflow: 'auto' }}>
-                {sections
-                  .filter((s) => s.category === cat.value)
-                  .filter((s) => {
-                    if (search) {
-                      return (
-                        formatMessage({
-                          id: s.titleId,
-                          defaultMessage: s.titleDefaultMessage,
-                        })
-                          .toLowerCase()
-                          .indexOf(search.toLowerCase()) !== -1
-                      );
-                    } else {
-                      return true;
-                    }
-                  })
-                  .map((sec, k) => (
-                    <Grid item xs={6} sm={6} md={6} lg={4} xl={3} key={k}>
-                      <Tooltip title={sec.description}>
-                        <ButtonBase
-                          sx={{
-                            border: '1px solid',
-                            width: '121px',
-                            height: '112px',
-                            borderRadius: '8px',
-                            borderColor: 'text.secondary',
-                          }}
-                          onClick={() => {
-                            console.log(sec.type);
-                            onClickSection({ sectionType: sec.type });
-                          }}
-                        >
-                          <Stack
-                            justifyContent={'center'}
-                            alignItems={'center'}
-                            spacing={1}
-                          >
-                            {sec.icon}
-
-                            <Typography variant="body2">
-                              {' '}
-                              {formatMessage({
-                                id: sec.titleId,
-                                defaultMessage: sec.titleDefaultMessage,
-                              }) || ''}
-                            </Typography>
-                          </Stack>
-                        </ButtonBase>
-                      </Tooltip>
-                    </Grid>
-                  ))}
-              </Grid>
-            </>
-          ))}
+        <Grid item xs={12}>
+          <Grid container spacing={2} sx={{ overflow: 'auto' }}>
+            {SectionCategory.filter((c) => {
+              if (value !== 'all') {
+                return c.value === value;
+              }
+              return true;
+            }).map((cat, key) => (
+              <React.Fragment key={key}>
+                <Grid item xs={12}>
+                  <Typography fontWeight="bold" variant="subtitle1">
+                    {cat.title}
+                  </Typography>
+                </Grid>
+                <Grid item xs={12}>
+                  <Grid container spacing={2} flexWrap="wrap">
+                    {sections
+                      .filter((s) => s.category === cat.value)
+                      .filter((s) => {
+                        if (search) {
+                          return (
+                            formatMessage({
+                              id: s.titleId,
+                              defaultMessage: s.titleDefaultMessage,
+                            })
+                              .toLowerCase()
+                              .indexOf(search.toLowerCase()) !== -1
+                          );
+                        } else {
+                          return true;
+                        }
+                      })
+                      .map((sec, k) => (
+                        <Grid item xs={6} lg={4} xl={3} key={k}>
+                          <Tooltip title={sec.description}>
+                            <ButtonBase
+                              sx={{
+                                display: 'block',
+                                width: '100%',
+                                px: { sm: 4, xs: 1 },
+                                height: (theme) => theme.spacing(16),
+                                border: '1px solid',
+                                borderRadius: (theme) =>
+                                  theme.shape.borderRadius / 2,
+                                borderColor: 'text.secondary',
+                              }}
+                              onClick={() => {
+                                console.log(sec.type);
+                                onClickSection({ sectionType: sec.type });
+                              }}
+                            >
+                              <Stack
+                                justifyContent={'center'}
+                                alignItems={'center'}
+                                spacing={1}
+                              >
+                                {sec.icon}
+                                <Typography
+                                  sx={{
+                                    typography: { sm: 'body2', xs: 'caption' },
+                                  }}
+                                >
+                                  {' '}
+                                  {formatMessage({
+                                    id: sec.titleId,
+                                    defaultMessage: sec.titleDefaultMessage,
+                                  }) || ''}
+                                </Typography>
+                              </Stack>
+                            </ButtonBase>
+                          </Tooltip>
+                        </Grid>
+                      ))}
+                  </Grid>
+                </Grid>
+              </React.Fragment>
+            ))}
+          </Grid>
         </Grid>
       </Grid>
     </Box>

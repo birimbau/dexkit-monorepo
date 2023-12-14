@@ -21,7 +21,6 @@ import { MouseEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import Fonts from 'src/constants/fonts.json';
 import { AppConfig } from '../../../../types/config';
-import { customThemeDarkAtom, customThemeLightAtom } from '../../state';
 import { PreviewType, StepperButtonProps } from '../../types';
 import { generateCSSVarsTheme } from '../../utils';
 import ThemePreview from '../ThemePreview';
@@ -32,7 +31,6 @@ const ExchangeSection = dynamic(() => import('../sections/ExchangeSection'));
 
 import { ChainId } from '@dexkit/core';
 import { useWeb3React } from '@web3-react/core';
-import { useAtom } from 'jotai';
 import appConfig from '../../../../../config/app.json';
 import { ExchangePageSection } from '../../types/section';
 import ThemePreviewMenu from '../ThemePreviewMenu';
@@ -45,6 +43,16 @@ interface Props {
   isOnStepper?: boolean;
   stepperButtonProps?: StepperButtonProps;
   showSwap?: boolean;
+}
+
+function fixBugOnTheme(themeConfig: string) {
+  const theme = JSON.parse(themeConfig);
+  // TODO: Remove this line after some time, this was bug introduced from saving the atom instead of the result
+  if (theme?.init) {
+    return theme?.init;
+  } else {
+    return theme;
+  }
 }
 
 export default function ThemeWizardContainer({
@@ -69,31 +77,22 @@ export default function ThemeWizardContainer({
     { family: string; category?: string } | undefined
   >(config?.font);
 
-  const [customThemeDark, setCustomThemeDark] = useAtom(customThemeDarkAtom);
-  const [customThemeLight, setCustomThemeLight] = useAtom(customThemeLightAtom);
+  const [customThemeDark, setCustomThemeDark] = useState(
+    config.theme === 'custom' && config.customThemeDark
+      ? JSON.parse(config.customThemeDark)
+      : undefined,
+  );
+  const [customThemeLight, setCustomThemeLight] = useState(
+    config.theme === 'custom' && config.customThemeLight
+      ? fixBugOnTheme(config.customThemeLight)
+      : undefined,
+  );
 
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
   const handleShowPreview = () => {
     setIsPreviewOpen(true);
   };
-
-  useEffect(() => {
-    if (config.theme === 'custom') {
-      if (config.customThemeDark) {
-        setCustomThemeDark(JSON.parse(config.customThemeDark));
-      }
-      if (config.customThemeLight) {
-        const theme = JSON.parse(config.customThemeLight);
-        // TODO: Remove this line after some time, this was bug introduced from saving the atom instead of the result
-        if (theme?.init) {
-          setCustomThemeLight(theme?.init);
-        } else {
-          setCustomThemeLight(theme);
-        }
-      }
-    }
-  }, [config]);
 
   const handleSelectTheme = useCallback(
     (id: string) => {
@@ -387,6 +386,10 @@ export default function ThemeWizardContainer({
                     <ThemeSection
                       mode={selectedThemeMode}
                       selectedId={selectedThemeId}
+                      customThemeDark={customThemeDark}
+                      customThemeLight={customThemeLight}
+                      onSetCustomThemeDark={setCustomThemeDark}
+                      onSetCustomThemeLight={setCustomThemeLight}
                       onSelect={handleSelectTheme}
                       onPreview={handleShowPreview}
                       legacyTheme={config?.customTheme}

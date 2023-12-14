@@ -19,7 +19,6 @@ import Close from '@mui/icons-material/Close';
 import { useWeb3React } from '@web3-react/core';
 import { Field, Form, Formik } from 'formik';
 import { TextField } from 'formik-mui';
-import { useAtomValue } from 'jotai';
 import { NextSeo } from 'next-seo';
 import { useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
@@ -37,7 +36,6 @@ import {
 } from '../../../../hooks/whitelabel';
 import { getTheme } from '../../../../theme';
 import { AppConfig } from '../../../../types/config';
-import { customThemeAtom } from '../../state';
 import { PagePreviewPaper } from '../sections/PagePreviewPaper';
 import ThemePreview from '../ThemePreview';
 import { WelcomeMessage } from '../WelcomeMessage';
@@ -62,7 +60,6 @@ const FormSchema: Yup.SchemaOf<CreateMarketplace> = Yup.object().shape({
 
 export function CreateWizardContainer({ slug, isSwapWizard }: Props) {
   const { formatMessage } = useIntl();
-  const customTheme = useAtomValue(customThemeAtom);
   const { isActive } = useWeb3React();
   const connectWalletDialog = useConnectWalletDialog();
 
@@ -135,7 +132,7 @@ export function CreateWizardContainer({ slug, isSwapWizard }: Props) {
 
       return getTheme({ name: selectedThemeId }).theme;
     }
-  }, [selectedThemeId, customTheme]);
+  }, [selectedThemeId]);
 
   const renderThemePreview = () => {
     if (selectedTheme) {

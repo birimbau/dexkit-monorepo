@@ -1,7 +1,3 @@
-import {
-  customThemeDarkAtom,
-  customThemeLightAtom,
-} from '@/modules/wizard/state';
 import { generateCSSVarsTheme } from '@/modules/wizard/utils';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -12,7 +8,6 @@ import StepContent from '@mui/material/StepContent';
 import StepLabel from '@mui/material/StepLabel';
 import Stepper from '@mui/material/Stepper';
 import Typography from '@mui/material/Typography';
-import { useAtomValue } from 'jotai';
 import dynamic from 'next/dynamic';
 import * as React from 'react';
 import { useMemo } from 'react';
@@ -21,7 +16,7 @@ import { AppConfig } from 'src/types/config';
 import GeneralWizardContainer from '../../containers/GeneralWizardContainer';
 import ThemeWizardContainer from '../../containers/ThemeWizardContainer';
 const AssetStoreWizardContainer = dynamic(
-  () => import('../../containers/AssetStoreWizardContainer')
+  () => import('../../containers/AssetStoreWizardContainer'),
 );
 
 const steps = [
@@ -61,8 +56,19 @@ interface Props {
 export default function AssetStoreStepper({ config, onSave, onChange }: Props) {
   const [activeStep, setActiveStep] = React.useState(0);
 
-  const customThemeDark = useAtomValue(customThemeDarkAtom);
-  const customThemeLight = useAtomValue(customThemeLightAtom);
+  const customThemeDark = useMemo(() => {
+    if (config?.customThemeDark) {
+      return JSON.parse(config?.customThemeDark);
+    }
+    return {};
+  }, [config?.customThemeDark]);
+
+  const customThemeLight = useMemo(() => {
+    if (config?.customThemeLight) {
+      return JSON.parse(config?.customThemeLight);
+    }
+    return {};
+  }, [config?.customThemeLight]);
 
   const selectedTheme = useMemo(() => {
     return generateCSSVarsTheme({

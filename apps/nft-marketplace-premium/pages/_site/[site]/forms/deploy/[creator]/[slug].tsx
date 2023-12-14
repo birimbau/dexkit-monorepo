@@ -141,7 +141,7 @@ export default function DeployPage() {
         if (result) {
           setContractAddress(result.address);
 
-          const name = params['name'];
+          const name = params['name'] || formValues?.name;
 
           if (chainId) {
             saveContractDeployedMutation.mutateAsync({
@@ -152,7 +152,7 @@ export default function DeployPage() {
               type: slug as string,
               metadata: {
                 name: formValues?.name,
-                symbol: formValues.symbol,
+                symbol: formValues?.symbol,
                 image: formValues?.image,
                 description: formValues?.description,
               },

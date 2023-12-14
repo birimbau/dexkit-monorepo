@@ -8,6 +8,7 @@ import ShowChartIcon from '@mui/icons-material/ShowChart';
 import StorefrontIcon from '@mui/icons-material/Storefront';
 import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
 import TextSnippetIcon from '@mui/icons-material/TextSnippet';
+import Token from '@mui/icons-material/Token';
 import VideocamIcon from '@mui/icons-material/Videocam';
 import WalletIcon from '@mui/icons-material/Wallet';
 import { SectionMetadata } from '../../types/section';
@@ -116,12 +117,28 @@ export const sections = [
     icon: <CodeIcon fontSize="large" />,
   },
   {
+    type: 'collection',
+    titleId: 'Collection',
+    titleDefaultMessage: 'Collection',
+    category: 'nft',
+    description: 'Easily add a collection',
+    icon: <CollectionsIcon fontSize="large" />,
+  },
+  {
     type: 'dex-generator-section',
     titleId: 'dex.app.builder.contract',
     titleDefaultMessage: 'DexGenerator Contract',
     category: 'web3',
     description: 'Create a DexGenerator section from your contracts',
     icon: <GavelIcon fontSize="large" />,
+  },
+  {
+    type: 'asset-section',
+    titleId: 'asset',
+    titleDefaultMessage: 'Asset',
+    category: 'nft',
+    description: 'Easily add a nft to a page',
+    icon: <Token fontSize="large" />,
   },
 ] as SectionMetadata[];
 
