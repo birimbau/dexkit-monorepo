@@ -275,17 +275,17 @@ export function useAppVersionQuery({
   appVersionId,
 }: {
 
-  siteId: number,
-  appVersionId: number;
+  siteId?: number,
+  appVersionId?: number;
 }) {
 
   return useQuery<{
-    config: string
+    config: string | undefined
   }>(
     [GET_APP_VERSION_QUERY, appVersionId, siteId],
     async () => {
       if (!siteId || !appVersionId) {
-        return { config: '' };
+        return { config: undefined };
       }
       return (
         await myAppsApi.get<{

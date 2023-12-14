@@ -15,6 +15,10 @@ import {
 } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import {
+  Experimental_CssVarsProvider as CssVarsProvider,
+  experimental_extendTheme as extendTheme,
+} from '@mui/material/styles';
+import {
   DataGrid,
   GridColDef,
   GridFilterModel,
@@ -22,17 +26,22 @@ import {
   GridSortModel,
   GridToolbar,
 } from '@mui/x-data-grid';
+import dynamic from 'next/dynamic';
 import { useSnackbar } from 'notistack';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
+import { useThemeMode } from 'src/hooks/app';
 import { SiteResponse } from '../../../../types/whitelabel';
 import {
   useAppVersionListQuery,
+  useAppVersionQuery,
   useDeleteAppVersionMutation,
   useSetAppVersionMutation,
 } from '../../hooks';
+import { generateCSSVarsTheme } from '../../utils';
 import AddAppVersionFormDialog from '../dialogs/AddAppVersionFormDialog';
 import InfoDialog from '../dialogs/InfoDialog';
+const PreviewPageDialog = dynamic(() => import('../dialogs/PreviewPageDialog'));
 
 interface AppVersion {
   id: number;
@@ -52,6 +61,83 @@ interface TableProps {
 
 interface Props {
   site?: SiteResponse | null;
+}
+
+export function PreviewVersionDialog({
+  versionId,
+  siteId,
+  showPreview,
+  setShowPreview,
+}: {
+  versionId?: number;
+  siteId?: number;
+  showPreview: boolean;
+  setShowPreview: any;
+}) {
+  const { mode } = useThemeMode();
+  const handleClosePreview = () => {
+    setShowPreview(false);
+  };
+
+  const { data } = useAppVersionQuery({ appVersionId: versionId, siteId });
+  const appConfig = data?.config ? JSON.parse(data?.config) : undefined;
+
+  const customThemeDark = useMemo(() => {
+    if (appConfig?.customThemeDark) {
+      return JSON.parse(appConfig?.customThemeDark);
+    }
+    return {};
+  }, [appConfig?.customThemeDark]);
+
+  const customThemeLight = useMemo(() => {
+    if (appConfig?.customThemeLight) {
+      return JSON.parse(appConfig?.customThemeLight);
+    }
+    return {};
+  }, [appConfig?.customThemeLight]);
+
+  const selectedTheme = useMemo(() => {
+    if (!appConfig) {
+      return extendTheme({});
+    }
+
+    return generateCSSVarsTheme({
+      cssVarPrefix: 'theme-preview-version',
+      selectedFont: appConfig?.font,
+      customTheme: {
+        colorSchemes: {
+          dark: {
+            ...customThemeDark,
+          },
+          light: {
+            ...customThemeLight,
+          },
+        },
+      },
+      selectedThemeId: appConfig?.theme || '',
+      mode,
+    });
+  }, [appConfig?.theme, appConfig?.font, customThemeLight, customThemeDark]);
+
+  return (
+    <>
+      <CssVarsProvider theme={selectedTheme}>
+        <PreviewPageDialog
+          dialogProps={{
+            open: showPreview,
+            maxWidth: 'xl',
+            fullWidth: true,
+            onClose: handleClosePreview,
+          }}
+          appConfig={appConfig}
+          disabled={true}
+          sections={appConfig?.pages['home']?.sections}
+          name="Home"
+          withLayout={true}
+        />
+      </CssVarsProvider>
+    </>
+  );
 }
 
 function ExpandableCell({ value }: GridRenderCellParams) {
@@ -281,6 +367,7 @@ export default function AppVersionWizardContainer({ site }: Props) {
   const { enqueueSnackbar } = useSnackbar();
   const [openInfo, setOpenInfo] = useState(false);
   const [openAddVersion, setOpenAddVersion] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
   const [titleInfo, setTitleInfo] = useState('');
   const [contentInfo, setContentInfo] = useState('');
 
@@ -315,6 +402,7 @@ export default function AppVersionWizardContainer({ site }: Props) {
 
   const handlePreviewVersion = ({ version }: { version: AppVersion }) => {
     setSelectedVersion(version);
+    setShowPreview(true);
   };
 
   const handleAppVersionRemoved = () => {
@@ -389,6 +477,15 @@ export default function AppVersionWizardContainer({ site }: Props) {
 
   return (
     <>
+      {showPreview && (
+        <PreviewVersionDialog
+          showPreview={showPreview}
+          setShowPreview={setShowPreview}
+          siteId={site?.id}
+          versionId={selectedVersion?.id}
+        />
+      )}
+
       {openConfirmRemove && (
         <AppConfirmDialog
           DialogProps={{

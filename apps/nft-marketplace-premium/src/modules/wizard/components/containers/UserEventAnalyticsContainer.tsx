@@ -152,6 +152,7 @@ function OnChainDataGrid({ siteId }: Props) {
 
   return (
     <DataGrid
+      autoHeight
       slots={{ toolbar: GridToolbar }}
       rows={(data?.data as any) || []}
       columns={columns}
@@ -270,6 +271,7 @@ function OffChainDataGrid({ siteId }: Props) {
 
   return (
     <DataGrid
+      autoHeight
       slots={{ toolbar: GridToolbar }}
       rows={(data?.data as any) || []}
       columns={columns}
