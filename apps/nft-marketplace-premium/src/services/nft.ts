@@ -261,7 +261,7 @@ export async function getAssetData(
     let tokenURI;
     let name;
     let symbol;
-    let balance;
+    let balance = null;
     if (isERC1155) {
 
       if (account) {
@@ -611,10 +611,10 @@ export async function getAssetMetadata(
 ) {
   let uri = tokenURI;
 
-  if (isERC1155 && tokenId && tokenURI.search('/0x{id}') !== -1) {
+  if (isERC1155 && tokenId && tokenURI && tokenURI?.search('/0x{id}') !== -1) {
     uri = tokenURI.replace('0x{id}', tokenId);
   }
-  if (isERC1155 && tokenId && tokenURI.search('/{id}') !== -1) {
+  if (isERC1155 && tokenId && tokenURI && tokenURI?.search('/{id}') !== -1) {
     uri = tokenURI.replace('{id}', tokenId.length === 64 ? tokenId : Number(tokenId).toString(16).padStart(64, '0').toLowerCase());
   }
 
