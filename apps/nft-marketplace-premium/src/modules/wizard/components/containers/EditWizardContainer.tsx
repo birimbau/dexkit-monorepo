@@ -884,9 +884,12 @@ export function EditWizardContainer({ site }: Props) {
                     onHasChanges={setHasChanges}
                   />
                 )}
-                {activeMenu === ActiveMenu.AppVersion && config && (
-                  <AppVersionWizardContainer site={site} />
-                )}
+                {activeMenu === ActiveMenu.AppVersion &&
+                  config &&
+                  site?.owner?.toLowerCase() ===
+                    user?.address?.toLowerCase() && (
+                    <AppVersionWizardContainer site={site} />
+                  )}
 
                 {activeMenu === ActiveMenu.Domain && config && (
                   <DomainWizardContainer
