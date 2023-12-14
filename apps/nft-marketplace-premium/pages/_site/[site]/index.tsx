@@ -10,6 +10,7 @@ import MainLayout from '../../../src/components/layouts/main';
 import { dehydrate, QueryClient } from '@tanstack/react-query';
 import { getAppConfig } from '../../../src/services/app';
 
+import { LIFISection } from '@/modules/wizard/components/sections/LIFISection';
 import { SectionsRenderer } from '@/modules/wizard/components/sections/SectionsRenderer';
 import { AppPageSection } from '@/modules/wizard/types/section';
 import { GET_ASSETS_ORDERBOOK } from 'src/hooks/nft';
@@ -18,6 +19,7 @@ import { getDKAssetOrderbook } from 'src/services/nft';
 const Home: NextPage<{ sections: AppPageSection[] }> = ({ sections }) => {
   return (
     <MainLayout disablePadding>
+      <LIFISection/>
       <SectionsRenderer sections={sections} />
       {/*<ActionButtonsSection />*/}
     </MainLayout>

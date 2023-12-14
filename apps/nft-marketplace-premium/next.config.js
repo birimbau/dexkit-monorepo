@@ -13,6 +13,8 @@ const withTM = require('next-transpile-modules')([
   '@dexkit/wallet-connectors',
   '@dexkit/dexappbuilder-viewer',
   '@dexkit/exchange',
+  '@lifi/widget', 
+  '@lifi/wallet-management'
 ]); // pass the modules you would like to see transpiled
 
 module.exports = withBundleAnalyzer(

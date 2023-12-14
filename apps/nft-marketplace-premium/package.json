@@ -43,6 +43,7 @@
     "@emotion/server": "^11.4.0",
     "@emotion/styled": "^11.8.1",
     "@indexed-finance/multicall": "^2.0.0",
+    "@lifi/widget": "2.9.5",
     "@mui/icons-material": "5.14.11",
     "@mui/material": "5.14.11",
     "@mui/x-data-grid": "^6.16.2",
