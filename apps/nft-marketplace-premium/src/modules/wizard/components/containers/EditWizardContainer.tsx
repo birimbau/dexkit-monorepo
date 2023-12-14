@@ -885,11 +885,7 @@ export function EditWizardContainer({ site }: Props) {
                   />
                 )}
                 {activeMenu === ActiveMenu.AppVersion && config && (
-                  <AppVersionWizardContainer
-                    onSave={handleSave}
-                    onChange={handleChange}
-                    onHasChanges={setHasChanges}
-                  />
+                  <AppVersionWizardContainer site={site} />
                 )}
 
                 {activeMenu === ActiveMenu.Domain && config && (

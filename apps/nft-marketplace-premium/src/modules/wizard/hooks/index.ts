@@ -160,12 +160,16 @@ export function useAddAppVersionMutation() {
   const query = useQueryClient()
 
   return useMutation(async ({ siteId, version, description, versionId }: { siteId?: number, version?: string, description?: string, versionId?: number }) => {
+
     if (!siteId || !version) {
       throw Error('missing data to update')
     }
 
     await upsertAppVersion({ siteId, version, description, versionId });
     query.refetchQueries([GET_APP_VERSIONS_QUERY])
+    if (versionId) {
+      query.refetchQueries([QUERY_ADMIN_WHITELABEL_CONFIG_NAME])
+    }
 
     return true
   });
@@ -194,7 +198,7 @@ export function useSetAppVersionMutation() {
       throw Error('missing data to update')
     }
     await setAppVersion({ siteId, siteVersionId });
-    query.refetchQueries([GET_APP_VERSIONS_QUERY])
+    query.refetchQueries([QUERY_ADMIN_WHITELABEL_CONFIG_NAME])
     return true
   });
 }
@@ -203,7 +207,7 @@ export function useSetAppVersionMutation() {
 
 export const GET_APP_VERSIONS_QUERY = 'GET_APP_VERSIONS_QUERY'
 
-export function useAppVersionQuery({
+export function useAppVersionListQuery({
   siteId,
   page = 0,
   pageSize = 10,
@@ -249,6 +253,35 @@ export function useAppVersionQuery({
         }>(`/site/versions/all/${siteId}`, {
           params: { skip: page * pageSize, take: pageSize, sort, filter: filter ? JSON.stringify(filter) : undefined },
         })
+      ).data;
+
+    }
+  );
+}
+
+export const GET_APP_VERSION_QUERY = 'GET_APP_VERSION_QUERY'
+
+export function useAppVersionQuery({
+  siteId,
+  appVersionId,
+}: {
+
+  siteId: number,
+  appVersionId: number;
+}) {
+
+  return useQuery<{
+    config: string
+  }>(
+    [GET_APP_VERSION_QUERY, appVersionId, siteId],
+    async () => {
+      if (!siteId || !appVersionId) {
+        return { config: '' };
+      }
+      return (
+        await myAppsApi.get<{
+          config: string
+        }>(`/site/single-version/${siteId}/${appVersionId}`)
       ).data;
 
     }

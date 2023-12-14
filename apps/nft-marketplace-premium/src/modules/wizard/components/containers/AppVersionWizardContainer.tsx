@@ -1,4 +1,5 @@
 import AppConfirmDialog from '@dexkit/ui/components/AppConfirmDialog';
+import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import PreviewIcon from '@mui/icons-material/Preview';
 import SettingsBackupRestoreIcon from '@mui/icons-material/SettingsBackupRestore';
@@ -7,6 +8,7 @@ import {
   Button,
   Divider,
   Grid,
+  Link,
   Stack,
   Tooltip,
   Typography,
@@ -16,6 +18,7 @@ import {
   DataGrid,
   GridColDef,
   GridFilterModel,
+  GridRenderCellParams,
   GridSortModel,
   GridToolbar,
 } from '@mui/x-data-grid';
@@ -24,7 +27,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { SiteResponse } from '../../../../types/whitelabel';
 import {
-  useAppVersionQuery,
+  useAppVersionListQuery,
   useDeleteAppVersionMutation,
   useSetAppVersionMutation,
 } from '../../hooks';
@@ -38,7 +41,7 @@ interface AppVersion {
   description: string;
 }
 
-interface Props {
+interface TableProps {
   site?: SiteResponse | null;
   onClickDelete({ version }: { version: AppVersion }): void;
   onClickEdit({ version }: { version: AppVersion }): void;
@@ -47,7 +50,63 @@ interface Props {
   versions?: AppVersion[];
 }
 
-function AppVersions({ site, onClickDelete }: Props) {
+interface Props {
+  site?: SiteResponse | null;
+}
+
+function ExpandableCell({ value }: GridRenderCellParams) {
+  const [expanded, setExpanded] = useState(false);
+
+  return (
+    <div>
+      {expanded ? value : value.slice(0, 100)}&nbsp;
+      {value.length > 100 && (
+        // eslint-disable-next-line jsx-a11y/anchor-is-valid
+        <Link
+          type="button"
+          component="button"
+          sx={{ fontSize: 'inherit' }}
+          onClick={() => setExpanded(!expanded)}
+        >
+          {expanded ? 'view less' : 'view more'}
+        </Link>
+      )}
+    </div>
+  );
+}
+
+function EmptyVersions() {
+  return (
+    <Stack
+      spacing={1}
+      justifyContent={'center'}
+      alignContent={'center'}
+      alignItems={'center'}
+    >
+      <WorkHistoryIcon sx={{ fontSize: '50px' }} />
+      <Typography variant="h6">
+        <FormattedMessage
+          id={'no.app.versions'}
+          defaultMessage={'No app versions'}
+        />
+      </Typography>
+      <Typography variant="subtitle1">
+        <FormattedMessage
+          id={'add.versions.to.your.app'}
+          defaultMessage={'Add versions to your app'}
+        />
+      </Typography>
+    </Stack>
+  );
+}
+
+function AppVersions({
+  site,
+  onClickDelete,
+  onClickEdit,
+  onClickPreview,
+  onClickSetVersion,
+}: TableProps) {
   const [queryOptions, setQueryOptions] = useState<any>({
     filter: {},
   });
@@ -57,7 +116,7 @@ function AppVersions({ site, onClickDelete }: Props) {
     pageSize: 10,
   });
 
-  const { data, isLoading } = useAppVersionQuery({
+  const { data, isLoading } = useAppVersionListQuery({
     ...paginationModel,
     ...queryOptions,
     siteId: site?.id,
@@ -108,13 +167,16 @@ function AppVersions({ site, onClickDelete }: Props) {
     },
     {
       field: 'version',
-      headerName: 'version',
-      width: 50,
+      headerName: 'Version',
+      width: 150,
     },
     {
       field: 'description',
       headerName: 'Description',
-      width: 150,
+      width: 350,
+      renderCell: (params: GridRenderCellParams) => (
+        <ExpandableCell {...params} />
+      ),
     },
     {
       field: 'actions',
@@ -131,7 +193,7 @@ function AppVersions({ site, onClickDelete }: Props) {
                 />
               }
             >
-              <IconButton>
+              <IconButton onClick={() => onClickPreview({ version: row })}>
                 <PreviewIcon />
               </IconButton>
             </Tooltip>
@@ -143,7 +205,7 @@ function AppVersions({ site, onClickDelete }: Props) {
                 />
               }
             >
-              <IconButton>
+              <IconButton onClick={() => onClickEdit({ version: row })}>
                 <EditIcon />
               </IconButton>
             </Tooltip>
@@ -155,8 +217,23 @@ function AppVersions({ site, onClickDelete }: Props) {
                 />
               }
             >
-              <IconButton>
+              <IconButton onClick={() => onClickSetVersion({ version: row })}>
                 <SettingsBackupRestoreIcon />
+              </IconButton>
+            </Tooltip>
+            <Tooltip
+              title={
+                <FormattedMessage
+                  id={'delete.app.version'}
+                  defaultMessage={'Delete app version'}
+                />
+              }
+            >
+              <IconButton
+                color={'error'}
+                onClick={() => onClickDelete({ version: row })}
+              >
+                <DeleteIcon />
               </IconButton>
             </Tooltip>
           </Stack>
@@ -165,33 +242,42 @@ function AppVersions({ site, onClickDelete }: Props) {
     },
   ];
 
+  const rows = (data?.data as any) || [];
+
   return (
-    <DataGrid
-      slots={{ toolbar: GridToolbar }}
-      rows={(data?.data as any) || []}
-      columns={columns}
-      rowCount={rowCountState}
-      paginationModel={paginationModel}
-      paginationMode="server"
-      disableColumnFilter
-      sortingMode="server"
-      slotProps={{
-        toolbar: {
-          showQuickFilter: true,
-        },
-      }}
-      onPaginationModelChange={setPaginationModel}
-      filterMode="server"
-      onFilterModelChange={onFilterChange}
-      onSortModelChange={handleSortModelChange}
-      pageSizeOptions={[5, 10, 25, 50]}
-      disableRowSelectionOnClick
-      loading={isLoading}
-    />
+    <>
+      <DataGrid
+        autoHeight
+        slots={{ toolbar: GridToolbar, noRowsOverlay: EmptyVersions }}
+        rows={rows}
+        columns={columns}
+        rowCount={rowCountState}
+        paginationModel={paginationModel}
+        paginationMode="server"
+        disableColumnFilter
+        sortingMode="server"
+        getRowHeight={() => 'auto'}
+        slotProps={{
+          toolbar: {
+            showQuickFilter: true,
+            printOptions: { disableToolbarButton: true },
+            csvOptions: { disableToolbarButton: true },
+          },
+        }}
+        onPaginationModelChange={setPaginationModel}
+        filterMode="server"
+        onFilterModelChange={onFilterChange}
+        onSortModelChange={handleSortModelChange}
+        pageSizeOptions={[5, 10, 25, 50]}
+        disableRowSelectionOnClick
+        loading={isLoading}
+        sx={{ '--DataGrid-overlayHeight': '150px' }}
+      />
+    </>
   );
 }
 
-export default function AppVersionWizardContainer({ site, versions }: Props) {
+export default function AppVersionWizardContainer({ site }: Props) {
   const { enqueueSnackbar } = useSnackbar();
   const [openInfo, setOpenInfo] = useState(false);
   const [openAddVersion, setOpenAddVersion] = useState(false);
@@ -234,7 +320,7 @@ export default function AppVersionWizardContainer({ site, versions }: Props) {
   const handleAppVersionRemoved = () => {
     enqueueSnackbar(
       formatMessage({
-        defaultMessage: 'app version removed',
+        defaultMessage: 'App version removed',
         id: 'app.version.removed',
       }),
       {
@@ -266,7 +352,7 @@ export default function AppVersionWizardContainer({ site, versions }: Props) {
   const handleAppVersionSet = () => {
     enqueueSnackbar(
       formatMessage({
-        defaultMessage: 'app version set',
+        defaultMessage: 'App version set',
         id: 'app.version.set',
       }),
       {
@@ -357,7 +443,7 @@ export default function AppVersionWizardContainer({ site, versions }: Props) {
         >
           <FormattedMessage
             id="do.you.really.want.to.set.to.this.app.version"
-            defaultMessage="Do you really want to set this app to version {version}. Make sure you backup any changes to your backup."
+            defaultMessage="Do you really want to set this app to version {version}. Make sure you backup any changes in a new version."
             values={{
               version: selectedVersion?.version,
             }}
@@ -395,8 +481,8 @@ export default function AppVersionWizardContainer({ site, versions }: Props) {
             </Typography>
             <Typography variant={'body2'}>
               <FormattedMessage
-                id="add.versions.to.your.app"
-                defaultMessage="Add versions to your app"
+                id="add.versions.to.your.app.for.backup.and.to.enable.rollback"
+                defaultMessage="Add versions to your app for backup and to enable rollback"
               />
             </Typography>
           </Stack>
@@ -405,6 +491,20 @@ export default function AppVersionWizardContainer({ site, versions }: Props) {
         <Grid item xs={12}>
           <Divider />
         </Grid>
+
+        {site?.lastVersionSet && (
+          <Grid item xs={12}>
+            <Stack>
+              <Typography variant={'body2'}>
+                <FormattedMessage
+                  id="last.version.set"
+                  defaultMessage="Last version set"
+                />
+                : <b>{site.lastVersionSet.version || ''}</b>
+              </Typography>
+            </Stack>
+          </Grid>
+        )}
 
         <Grid item xs={12}>
           <Button
@@ -420,37 +520,13 @@ export default function AppVersionWizardContainer({ site, versions }: Props) {
           </Button>
         </Grid>
         <Grid item xs={12}>
-          {versions ? (
-            <AppVersions
-              site={site}
-              versions={versions}
-              onClickDelete={handleClickDelete}
-              onClickEdit={handleClickEdit}
-              onClickSetVersion={handleSetVersion}
-              onClickPreview={handlePreviewVersion}
-            />
-          ) : (
-            <Stack
-              spacing={1}
-              justifyContent={'center'}
-              alignContent={'center'}
-              alignItems={'center'}
-            >
-              <WorkHistoryIcon sx={{ fontSize: '50px' }} />
-              <Typography variant="h6">
-                <FormattedMessage
-                  id={'no.app.versions'}
-                  defaultMessage={'No app versions'}
-                />
-              </Typography>
-              <Typography variant="subtitle1">
-                <FormattedMessage
-                  id={'add.versions.to.your.app'}
-                  defaultMessage={'Add versions to your app'}
-                />
-              </Typography>
-            </Stack>
-          )}
+          <AppVersions
+            site={site}
+            onClickDelete={handleClickDelete}
+            onClickEdit={handleClickEdit}
+            onClickSetVersion={handleSetVersion}
+            onClickPreview={handlePreviewVersion}
+          />
         </Grid>
       </Grid>
     </>

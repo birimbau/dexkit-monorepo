@@ -233,9 +233,9 @@ export async function upsertAppVersion({ siteId, version, description, versionId
 }
 
 export async function deleteAppVersion({ siteId, siteVersionId }: { siteId: number, siteVersionId: number }) {
-  return myAppsApi.delete(`/site/remove-site-version/${siteId}/${siteVersionId}`);
+  return myAppsApi.delete(`/site/version/${siteId}/${siteVersionId}`);
 }
 
 export async function setAppVersion({ siteId, siteVersionId }: { siteId: number, siteVersionId: number }) {
-  return myAppsApi.get(`/site/set-site-version/${siteId}/${siteVersionId}`);
+  return myAppsApi.get(`/site/set-version/${siteId}/${siteVersionId}`);
 }

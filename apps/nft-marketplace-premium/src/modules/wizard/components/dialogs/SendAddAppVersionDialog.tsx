@@ -60,7 +60,7 @@ function SendAddAppVersionDialog({
           ) : isSuccess ? (
             <FormattedMessage
               id="version.added"
-              defaultMessage="version added"
+              defaultMessage="Version added"
             />
           ) : (
             <FormattedMessage
@@ -104,7 +104,7 @@ function SendAddAppVersionDialog({
                 ) : (
                   <FormattedMessage
                     id="version.added"
-                    defaultMessage="version added"
+                    defaultMessage="Version added"
                   />
                 )
               ) : isEdit ? (
