@@ -9,7 +9,7 @@ import {
   TokenWhitelabelApp,
   TransactionMetadata,
 } from "@dexkit/core/types";
-import { CONNECTORS } from '@dexkit/wallet-connectors/constants';
+import { CONNECTORS } from "@dexkit/wallet-connectors/constants";
 import { switchNetwork } from "@dexkit/wallet-connectors/utils";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
@@ -304,6 +304,7 @@ export function useWatchTransactionDialog({
     setDialogIsOpen(true);
     setValues(values);
     setType(type);
+    setHash(undefined);
   }, []);
 
   const close = useCallback(() => {
@@ -312,6 +313,7 @@ export function useWatchTransactionDialog({
     setValues(undefined);
     setMetadata(undefined);
     setError(undefined);
+    setHash(undefined);
   }, []);
 
   const showDialog = useCallback(
@@ -511,7 +513,7 @@ export function useWaitTransactionConfirmation({
 }) {
   return useQuery(
     [WAIT_TRANSACTION_QUERY, transactionHash],
-    async ({ }) => {
+    async ({}) => {
       if (!utils.isHexString(transactionHash)) {
         return null;
       }

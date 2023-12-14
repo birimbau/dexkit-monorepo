@@ -19,7 +19,6 @@ import {
 import { useRouter } from 'next/router';
 import AuthMainLayout from 'src/components/layouts/authMain';
 import { useWhitelabelConfigQuery } from 'src/hooks/whitelabel';
-import { getAppConfig } from 'src/services/app';
 
 export const WizardPage: NextPage = () => {
   const router = useRouter();
@@ -68,12 +67,10 @@ export const getStaticProps: GetStaticProps = async ({
   params,
 }: GetStaticPropsContext<Params>) => {
   const queryClient = new QueryClient();
-  const configResponse = await getAppConfig(params?.site, 'no-page-defined');
 
   return {
     props: {
       dehydratedState: dehydrate(queryClient),
-      ...configResponse,
     },
     revalidate: 300,
   };

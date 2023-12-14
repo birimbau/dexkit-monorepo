@@ -1,5 +1,5 @@
 import { Button, FormControlLabel, Grid } from "@mui/material";
-import { ethers } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import { Field, Formik } from "formik";
 import { Autocomplete, Checkbox, TextField } from "formik-mui";
 import { useIfpsUploadMutation, useServerUploadMutation } from "../hooks";
@@ -342,9 +342,13 @@ export default function GenericForm({
 
         if (field?.component?.type === "decimal") {
           return {
-            [key]: ethers.utils
-              .parseUnits(formValues[key], field.component.decimals)
-              .toString(),
+            [key]:
+              field.component.decimals > 0
+                ? ethers.utils.parseUnits(
+                    formValues[key],
+                    field.component.decimals
+                  )
+                : BigNumber.from(formValues[key]),
           };
         } else if (
           field?.component?.type === "hidden" &&
@@ -372,12 +376,18 @@ export default function GenericForm({
 
                   if (Array.isArray(values[fieldName.name])) {
                     vals = values[fieldName.name].map((v: string) =>
-                      ethers.utils.parseUnits(v, fieldName.decimals).toString()
+                      fieldName.decimals > 0
+                        ? ethers.utils.parseUnits(v, fieldName.decimals)
+                        : BigNumber.from(v)
                     );
                   } else {
-                    vals = ethers.utils
-                      .parseUnits(values[fieldName.name], fieldName.decimals)
-                      .toString();
+                    vals =
+                      fieldName.decimals > 0
+                        ? ethers.utils.parseUnits(
+                            values[fieldName.name],
+                            fieldName.decimals
+                          )
+                        : BigNumber.from(values[fieldName.name]);
                   }
 
                   return {
@@ -441,7 +451,7 @@ export default function GenericForm({
       }
     }
 
-    await onSubmit(result, formValues);
+    await onSubmit(result, values);
   };
 
   return (

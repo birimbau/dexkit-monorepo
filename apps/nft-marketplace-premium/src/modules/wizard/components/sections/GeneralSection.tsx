@@ -56,6 +56,7 @@ interface Props {
   initialValues?: GeneralSectionForm;
   onSubmit?: (form: GeneralSectionForm) => void;
   onChange?: (form: GeneralSectionForm) => void;
+  onHasChanges?: (hasChange: boolean) => void;
   isOnStepper?: boolean;
   stepperButtonProps?: StepperButtonProps;
 }
@@ -79,10 +80,14 @@ function OnChangeListener({
   values,
   isValid,
   onChange,
+  onHasChanges,
+  dirty,
 }: {
   values: any;
   isValid: any;
   onChange: any;
+  onHasChanges: any;
+  dirty: boolean;
 }) {
   useEffect(() => {
     if (onChange) {
@@ -90,12 +95,19 @@ function OnChangeListener({
     }
   }, [values, isValid]);
 
+  useEffect(() => {
+    if (onHasChanges) {
+      onHasChanges(dirty);
+    }
+  }, [dirty, onHasChanges]);
+
   return <></>;
 }
 
 export default function GeneralSection({
   onSubmit,
   onChange,
+  onHasChanges,
   initialValues,
   isOnStepper,
   stepperButtonProps,
@@ -162,9 +174,11 @@ export default function GeneralSection({
       <Stack>
         <form onSubmit={formik.handleSubmit}>
           <OnChangeListener
+            dirty={formik.dirty}
             values={formik.values}
             onChange={onChange}
             isValid={formik.isValid}
+            onHasChanges={onHasChanges}
           />
           <Grid container spacing={3}>
             <Grid item xs={12}>
@@ -510,7 +524,7 @@ export default function GeneralSection({
               ) : (
                 <Stack spacing={1} direction="row" justifyContent="flex-end">
                   <Button
-                    disabled={!formik.isValid}
+                    disabled={!formik.isValid || !formik.dirty}
                     type="submit"
                     variant="contained"
                     color="primary"

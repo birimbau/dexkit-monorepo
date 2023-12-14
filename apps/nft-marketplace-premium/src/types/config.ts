@@ -155,7 +155,7 @@ export interface AppConfig {
   footerMenuTree?: MenuTree[];
   collections?: AppCollection[];
   seo?: {
-    home?: PageSeo;
+    [key: string | 'home']: PageSeo;
   };
   analytics?: {
     gtag?: string;

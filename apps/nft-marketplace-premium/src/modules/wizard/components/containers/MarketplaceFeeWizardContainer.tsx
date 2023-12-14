@@ -12,18 +12,30 @@ import { FeeForm } from '../sections/FeesSectionForm';
 interface Props {
   config: AppConfig;
   onSave: (config: AppConfig) => void;
+  onHasChanges: (hasChanges: boolean) => void;
 }
 
 export default function MarketplaceFeeWizardContainer({
   config,
   onSave,
+  onHasChanges,
 }: Props) {
   const [fees, setFees] = useState<FeeForm[]>([]);
+  const [hasChanged, setHasChanged] = useState(false);
+
+  useEffect(() => {
+    if (onHasChanges) {
+      onHasChanges(hasChanged);
+    }
+  }, [hasChanged, onHasChanges]);
+
   const handleSaveFees = (fee: FeeForm) => {
+    setHasChanged(true);
     setFees((values) => [...values, fee]);
   };
 
   const handleRemoveFees = useCallback((index: number) => {
+    setHasChanged(true);
     setFees((value) => {
       const newArr = [...value];
 
@@ -92,7 +104,12 @@ export default function MarketplaceFeeWizardContainer({
       </Grid>
       <Grid item xs={12}>
         <Stack spacing={1} direction="row" justifyContent="flex-end">
-          <Button variant="contained" color="primary" onClick={handleSave}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleSave}
+            disabled={!hasChanged}
+          >
             <FormattedMessage id="save" defaultMessage="Save" />
           </Button>
         </Stack>

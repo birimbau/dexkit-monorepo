@@ -1,7 +1,7 @@
-import { isValidDecimal } from '@dexkit/core/utils';
 import { useDexKitContext } from '@dexkit/ui';
 import AppDataTableDialog from '@dexkit/ui/components/dialogs/AppDataTableDialog';
 import {
+  Avatar,
   Box,
   Button,
   Card,
@@ -9,6 +9,7 @@ import {
   CircularProgress,
   Divider,
   Grid,
+  Skeleton,
   Stack,
   Tab,
   Tabs,
@@ -16,9 +17,10 @@ import {
 } from '@mui/material';
 import { useMutation } from '@tanstack/react-query';
 import {
+  CustomContractMetadata,
   useContract,
   useContractRead,
-  useNFTBalance,
+  useMetadata,
 } from '@thirdweb-dev/react';
 import { useWeb3React } from '@web3-react/core';
 import { ethers } from 'ethers';
@@ -28,6 +30,7 @@ import { useApproveForAll } from '../../hooks/thirdweb';
 import ContractAdminTab from '../ContractAdminTab';
 import ContractMetadataTab from '../ContractMetadataTab';
 import SelectCollectionDialog from '../dialogs/SelectCollectionDialog';
+import ContractAirdrop1155BalanceDialog from './ContractAirdropErc1155BalanceDialog';
 
 export interface ContractAirdropErc1155ContainerProps {
   address: string;
@@ -40,24 +43,22 @@ export default function ContractAirdropErc1155Container({
 }: ContractAirdropErc1155ContainerProps) {
   const { data: contract } = useContract(address as string);
   const [recipients, setRecipients] = useState<
-    { address: string; tokenId: number }[]
+    { recipient: string; tokenId: number; amount: number }[]
   >([]);
 
   const [contractAddress, setContractAddress] = useState<string>();
   const { account } = useWeb3React();
 
-  const { data: tokenContract } = useContract(
-    contractAddress,
-    'nft-collection',
-  );
+  const { data: tokenContract } = useContract(contractAddress);
 
-  const approve = useApproveForAll({ address: contractAddress, contract });
+  const approve = useApproveForAll({ address, contract: tokenContract });
 
   const { chainId } = useWeb3React();
 
   const { createNotification, watchTransactionDialog } = useDexKitContext();
 
-  const { data: nftBalance } = useNFTBalance(tokenContract, account);
+  const { data: metadata, isLoading: isMetadataLoading } =
+    useMetadata(tokenContract);
 
   const { data: isApprovedForAll } = useContractRead(
     tokenContract,
@@ -69,7 +70,7 @@ export default function ContractAirdropErc1155Container({
     async ({
       recipients,
     }: {
-      recipients: { address: string; tokenId: number }[];
+      recipients: { recipient: string; tokenId: number; amount: number }[];
     }) => {
       const metadata = await tokenContract?.metadata.get();
 
@@ -91,8 +92,9 @@ export default function ContractAirdropErc1155Container({
         contractAddress,
         account,
         recipients.map((r) => ({
-          recipient: r.address,
+          recipient: r.recipient,
           tokenId: r.tokenId,
+          amount: r.amount,
         })),
       );
 
@@ -118,7 +120,11 @@ export default function ContractAirdropErc1155Container({
 
   const handleConfirm = (data: { [key: string]: string }[]) => {
     setRecipients(
-      data.map((r) => ({ address: r.address, tokenId: parseInt(r.tokenId) })),
+      data.map((r) => ({
+        recipient: r.recipient,
+        tokenId: parseInt(r.tokenId),
+        amount: parseInt(r.amount),
+      })),
     );
   };
 
@@ -157,6 +163,16 @@ export default function ContractAirdropErc1155Container({
     setCurrTab(value);
   };
 
+  const [showBalance, setShowBalance] = useState(false);
+
+  const handleCloseBalance = () => {
+    setShowBalance(false);
+  };
+
+  const handleShowBalance = () => {
+    setShowBalance(true);
+  };
+
   return (
     <>
       <AppDataTableDialog
@@ -170,6 +186,7 @@ export default function ContractAirdropErc1155Container({
         value={recipients as any}
         dataColumns={[
           {
+            width: 250,
             headerName: 'Recipient',
             name: 'recipient',
             isValid: (value: unknown) => {
@@ -181,7 +198,12 @@ export default function ContractAirdropErc1155Container({
             headerName: 'TokenId',
             name: 'tokenId',
             isValid: (value: unknown) => {
-              return isValidDecimal(value as string, 0);
+              try {
+                parseInt(value as any);
+                return true;
+              } catch (err) {
+                return false;
+              }
             },
             editable: true,
           },
@@ -189,7 +211,12 @@ export default function ContractAirdropErc1155Container({
             headerName: 'Amount',
             name: 'amount',
             isValid: (value: unknown) => {
-              return isValidDecimal(value as string, 0);
+              try {
+                parseInt(value as any);
+                return true;
+              } catch (err) {
+                return false;
+              }
             },
             editable: true,
           },
@@ -211,6 +238,15 @@ export default function ContractAirdropErc1155Container({
         onSelect={handleSelect}
         chainId={chainId}
         isErc1155
+      />
+      <ContractAirdrop1155BalanceDialog
+        DialogProps={{
+          open: showBalance,
+          onClose: handleCloseBalance,
+          maxWidth: 'sm',
+          fullWidth: true,
+        }}
+        contractAddres={contractAddress}
       />
       <Grid container spacing={2}>
         <Grid item xs={12}>
@@ -242,27 +278,73 @@ export default function ContractAirdropErc1155Container({
                         <Box sx={{ mb: !contractAddress ? 0.5 : 0 }}>
                           <Typography variant="caption" color="text.secondary">
                             <FormattedMessage
-                              id="your.balance"
-                              defaultMessage="Your balance"
+                              id="your.editions"
+                              defaultMessage="Your Editions"
                             />
                           </Typography>
                         </Box>
-                        {contractAddress ? (
-                          <Typography variant="h5">
-                            {nftBalance?.toNumber()}
+                        {!contractAddress ? (
+                          <Typography gutterBottom variant="body1">
+                            <FormattedMessage
+                              id="select.a.edition"
+                              defaultMessage="Select a edition"
+                            />
                           </Typography>
                         ) : (
+                          <Stack
+                            spacing={1}
+                            direction="row"
+                            alignItems="center"
+                            sx={{ py: 2 }}
+                          >
+                            {isMetadataLoading ? (
+                              <Skeleton
+                                variant="circular"
+                                sx={{ height: '2rem', width: '2rem' }}
+                              />
+                            ) : (
+                              <Avatar
+                                variant="rounded"
+                                src={
+                                  (metadata as CustomContractMetadata)?.image ||
+                                  ''
+                                }
+                              />
+                            )}
+                            <Typography variant="body1">
+                              {isMetadataLoading ? (
+                                <Skeleton />
+                              ) : (
+                                (metadata as CustomContractMetadata)?.name
+                              )}
+                            </Typography>
+                          </Stack>
+                        )}
+                        <Stack spacing={1} direction="row">
+                          {contractAddress && (
+                            <Button
+                              onClick={handleShowBalance}
+                              size="small"
+                              variant="outlined"
+                            >
+                              <FormattedMessage
+                                id="view"
+                                defaultMessage="View"
+                              />
+                            </Button>
+                          )}
+
                           <Button
                             onClick={handleShowSelectToken}
                             size="small"
                             variant="outlined"
                           >
                             <FormattedMessage
-                              id="select.collection"
-                              defaultMessage="Select collection"
+                              id="select"
+                              defaultMessage="Select"
                             />
                           </Button>
-                        )}
+                        </Stack>
                       </CardContent>
                     </Card>
                   </Grid>

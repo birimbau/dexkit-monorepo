@@ -2,6 +2,9 @@ export const ERC165Abi = [
   "function supportsInterface(bytes4 interfaceId) public view returns (bool)",
 ];
 
+export const IERC7572 = [
+  'function contractURI() external view returns (string memory);',
+];
 
 export const ERC721Abi: any[] = [
   {

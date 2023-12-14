@@ -1,8 +1,10 @@
 import SelectTokenDialog from '@/modules/swap/dialogs/SelectTokenDialog';
 import { Token } from '@dexkit/core/types';
+import { formatBigNumber, isAddressEqual } from '@dexkit/core/utils';
 import { useDexKitContext } from '@dexkit/ui';
 import { useAsyncMemo } from '@dexkit/widgets/src/hooks';
 import {
+  Alert,
   Box,
   Button,
   Card,
@@ -10,15 +12,21 @@ import {
   CircularProgress,
   Divider,
   Grid,
+  Skeleton,
   Stack,
   Tab,
   Tabs,
   Typography,
 } from '@mui/material';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { useContract, useTokenBalance } from '@thirdweb-dev/react';
+import {
+  NATIVE_TOKEN_ADDRESS,
+  useBalance,
+  useContract,
+} from '@thirdweb-dev/react';
 import { useWeb3React } from '@web3-react/core';
 import { BigNumber, ethers } from 'ethers';
+import { useSnackbar } from 'notistack';
 import { SyntheticEvent, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { useThirdwebApprove } from '../../hooks/thirdweb';
@@ -58,7 +66,12 @@ export default function ContractAirdropErc20Container({
 
   const { createNotification, watchTransactionDialog } = useDexKitContext();
 
-  const { data: tokenBalance } = useTokenBalance(tokenContract, account);
+  const { data: tokenBalance, isLoading } = useBalance(
+    tokenAddress !== NATIVE_TOKEN_ADDRESS &&
+      tokenAddress !== ethers.constants.AddressZero
+      ? tokenAddress
+      : undefined,
+  );
 
   const [totalAmount, totalAmountFormatted] = useAsyncMemo(
     async () => {
@@ -82,6 +95,8 @@ export default function ContractAirdropErc20Container({
     [recipients, tokenContract],
   );
 
+  const { enqueueSnackbar } = useSnackbar();
+
   const airdropMutation = useMutation(
     async ({
       recipients,
@@ -96,10 +111,15 @@ export default function ContractAirdropErc20Container({
           return prev.add(curr);
         }, BigNumber.from(0));
 
-      if (!allowance?.value.gte(amount)) {
-        await approve.mutateAsync({
-          amount: ethers.utils.formatUnits(amount, metadata?.decimals),
-        });
+      if (
+        !isAddressEqual(tokenAddress, NATIVE_TOKEN_ADDRESS) &&
+        !isAddressEqual(tokenAddress, ethers.constants.AddressZero)
+      ) {
+        if (!allowance?.value.gte(amount)) {
+          await approve.mutateAsync({
+            amount: ethers.utils.formatUnits(amount, metadata?.decimals),
+          });
+        }
       }
 
       const values = {
@@ -113,34 +133,47 @@ export default function ContractAirdropErc20Container({
 
       watchTransactionDialog.open('airdropErc20', values);
 
-      let call = await contract?.airdrop20.drop.prepare(
-        tokenAddress,
-        account,
-        recipients.map((r) => ({
-          recipient: r.address,
-          amount: ethers.utils
-            .parseUnits(r.quantity, metadata?.decimals)
-            .toString(),
-        })),
-      );
+      try {
+        let call = await contract?.airdrop20.drop.prepare(
+          isAddressEqual(tokenAddress, NATIVE_TOKEN_ADDRESS) ||
+            isAddressEqual(tokenAddress, ethers.constants.AddressZero)
+            ? NATIVE_TOKEN_ADDRESS
+            : tokenAddress,
+          account,
+          recipients.map((r) => ({
+            recipient: r.address,
+            amount: ethers.utils
+              .parseUnits(r.quantity, metadata?.decimals)
+              .toString(),
+          })),
+        );
 
-      let tx = await call?.send();
+        if (isAddressEqual(tokenAddress, NATIVE_TOKEN_ADDRESS)) {
+          call?.setValue(totalAmount);
+        }
 
-      if (tx?.hash && chainId) {
-        createNotification({
-          type: 'transaction',
-          subtype: 'airdropErc20',
-          metadata: {
-            hash: tx.hash,
-            chainId,
-          },
-          values: values,
-        });
+        const tx = await call?.send();
 
-        watchTransactionDialog.watch(tx?.hash);
+        if (tx?.hash && chainId) {
+          createNotification({
+            type: 'transaction',
+            subtype: 'airdropErc20',
+            metadata: {
+              hash: tx.hash,
+              chainId,
+            },
+            values: values,
+          });
+
+          watchTransactionDialog.watch(tx?.hash);
+        }
+
+        return await tx?.wait();
+      } catch (err) {
+        enqueueSnackbar(String(err), { variant: 'error' });
+        watchTransactionDialog.close();
+        throw err;
       }
-
-      return await tx?.wait();
     },
   );
 
@@ -199,6 +232,7 @@ export default function ContractAirdropErc20Container({
         dialogProps={{ open: showSelectToken, onClose: handleCloseSelectToken }}
         onSelect={handleSelect}
         chainId={chainId}
+        includeNative
       />
       <Grid container spacing={2}>
         <Grid item xs={12}>
@@ -227,30 +261,69 @@ export default function ContractAirdropErc20Container({
                   <Grid item xs={12} sm={4}>
                     <Card>
                       <CardContent>
-                        <Box sx={{ mb: !tokenAddress ? 0.5 : 0 }}>
-                          <Typography variant="caption" color="text.secondary">
-                            <FormattedMessage
-                              id="your.balance"
-                              defaultMessage="Your balance"
-                            />
-                          </Typography>
-                        </Box>
                         {tokenAddress ? (
-                          <Typography variant="h5">
-                            ${tokenBalance?.displayValue} $
-                            {tokenBalance?.symbol}
-                          </Typography>
-                        ) : (
-                          <Button
-                            onClick={handleShowSelectToken}
-                            size="small"
-                            variant="outlined"
+                          <Stack
+                            direction="row"
+                            alignItems="center"
+                            justifyContent="space-between"
+                            spacing={2}
                           >
-                            <FormattedMessage
-                              id="select.token"
-                              defaultMessage="Select token"
-                            />
-                          </Button>
+                            <Box>
+                              <Box sx={{ mb: !tokenAddress ? 0.5 : 0 }}>
+                                <Typography
+                                  variant="caption"
+                                  color="text.secondary"
+                                >
+                                  <FormattedMessage
+                                    id="your.airdrop.balance"
+                                    defaultMessage="Your airdrop balance"
+                                  />
+                                </Typography>
+                              </Box>
+                              <Typography variant="h6">
+                                {isLoading ? (
+                                  <Skeleton />
+                                ) : (
+                                  `${formatBigNumber(
+                                    tokenBalance?.value,
+                                    tokenBalance?.decimals,
+                                  )} ${tokenBalance?.symbol.toUpperCase()}`
+                                )}
+                              </Typography>
+                            </Box>
+                            <Button
+                              onClick={handleShowSelectToken}
+                              size="small"
+                              variant="outlined"
+                            >
+                              <FormattedMessage
+                                id="select"
+                                defaultMessage="Select"
+                              />
+                            </Button>
+                          </Stack>
+                        ) : (
+                          <Stack alignItems="flex-start" spacing={0.5}>
+                            <Typography
+                              variant="caption"
+                              color="text.secondary"
+                            >
+                              <FormattedMessage
+                                id="select.a.token.for.your.airdrop"
+                                defaultMessage="Select a token for your airdrop"
+                              />
+                            </Typography>
+                            <Button
+                              onClick={handleShowSelectToken}
+                              size="small"
+                              variant="outlined"
+                            >
+                              <FormattedMessage
+                                id="select"
+                                defaultMessage="Select"
+                              />
+                            </Button>
+                          </Stack>
                         )}
                       </CardContent>
                     </Card>
@@ -314,6 +387,15 @@ export default function ContractAirdropErc20Container({
             <Grid item xs={12}>
               <Stack spacing={2}>
                 <Divider />
+                {tokenBalance && totalAmount.gt(tokenBalance.value) && (
+                  <Alert severity="error">
+                    <FormattedMessage
+                      id="you.do.not.have.enough.balance.for.your.airdrop"
+                      defaultMessage="You do not have enough balance for your Airdrop"
+                    />
+                  </Alert>
+                )}
+
                 <Stack direction="row">
                   <Button
                     startIcon={
@@ -324,7 +406,8 @@ export default function ContractAirdropErc20Container({
                     disabled={
                       recipients.length === 0 ||
                       airdropMutation.isLoading ||
-                      !tokenAddress
+                      !tokenAddress ||
+                      (tokenBalance && totalAmount.gt(tokenBalance.value))
                     }
                     onClick={handleAirdrop}
                     variant="contained"

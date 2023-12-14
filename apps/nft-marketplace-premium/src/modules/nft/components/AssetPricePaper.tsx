@@ -1,7 +1,7 @@
 import { Button, Grid, Paper, Stack } from '@mui/material';
 import { useWeb3React } from '@web3-react/core';
 import { ethers } from 'ethers';
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import Icon from '../../../components/Icon';
 import DollarSquare from '../../../components/icons/DollarSquare';
@@ -13,7 +13,7 @@ import {
   useConnectWalletDialog,
   useSignMessageDialog,
 } from '../../../hooks/app';
-import { useSwitchNetwork } from '../../../hooks/blockchain';
+import { useSwitchNetwork, useTokenList } from '../../../hooks/blockchain';
 import {
   GET_NFT_ORDERS,
   useApproveAssetMutation,
@@ -277,6 +277,7 @@ export function AssetPricePaper({ address, id }: Props) {
     amount: ethers.BigNumber,
     tokenAddress: string,
     expiry: Date | null,
+    quantity?: ethers.BigNumber,
   ) => {
     setOpenMakeOffer(false);
 
@@ -308,6 +309,8 @@ export function AssetPricePaper({ address, id }: Props) {
         tokenAddress: address as string,
         tokenId: id as string,
         type: getAssetProtocol(asset),
+        quantity,
+        amount: quantity ? quantity.toString() : '1',
       },
       another: {
         tokenAddress,
@@ -318,6 +321,16 @@ export function AssetPricePaper({ address, id }: Props) {
     });
   };
 
+  const tokenList = useTokenList({
+    chainId,
+    includeNative: true,
+    onlyTradable: true,
+  });
+
+  const assetType = useMemo(() => {
+    return getAssetProtocol(asset);
+  }, [asset]);
+
   return (
     <>
       <MakeListingDialog
@@ -327,6 +340,7 @@ export function AssetPricePaper({ address, id }: Props) {
           maxWidth: 'sm',
           onClose: handleCloseMakeListingDialog,
         }}
+        tokenList={tokenList ? tokenList : []}
         assetBalance={assetBalance}
         onConfirm={handleConfirmMakeListing}
         asset={asset}
@@ -345,11 +359,7 @@ export function AssetPricePaper({ address, id }: Props) {
       />
       <Grid item xs={12}>
         <Paper variant="outlined" sx={{ p: 2 }}>
-          <Stack
-            direction="row"
-            justifyContent="space-between"
-            alignItems="center"
-          >
+          <Stack spacing={2} direction="row" alignItems="center">
             {/* <Box>
               <Typography variant="caption" color="textSecondary">
                 <FormattedMessage
@@ -361,23 +371,26 @@ export function AssetPricePaper({ address, id }: Props) {
               <Typography variant="h6">0.0004</Typography>
             </Box> */}
             {isAddressEqual(account, asset?.owner) ||
-            isERC1155Owner(assetBalance) ? (
-              <>
-                <Button
-                  size="large"
-                  onClick={handleOpenMakeListingDialog}
-                  startIcon={<DollarSquare color="primary" />}
-                  variant="outlined"
-                >
-                  <FormattedMessage
-                    defaultMessage="Sell"
-                    description="Sell button"
-                    id="sell"
-                  />
-                </Button>
-                <TransferAssetButton asset={asset} />
-              </>
-            ) : (
+              (isERC1155Owner(assetBalance) && (
+                <>
+                  <Button
+                    size="large"
+                    onClick={handleOpenMakeListingDialog}
+                    startIcon={<DollarSquare color="primary" />}
+                    variant="outlined"
+                  >
+                    <FormattedMessage
+                      defaultMessage="Sell"
+                      description="Sell button"
+                      id="sell"
+                    />
+                  </Button>
+                  <TransferAssetButton asset={asset} />
+                </>
+              ))}
+
+            {(assetType === 'ERC1155' ||
+              !isAddressEqual(account, asset?.owner)) && (
               <Button
                 size="large"
                 onClick={handleOpenMakeOfferDialog}

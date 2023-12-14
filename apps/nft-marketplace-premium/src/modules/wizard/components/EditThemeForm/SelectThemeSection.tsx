@@ -1,20 +1,22 @@
-import { ThemeMode } from '@dexkit/ui/constants/enum';
 import { Box, Grid, SupportedColorScheme } from '@mui/material';
 import { useField } from 'formik';
-import { useAtomValue } from 'jotai';
 import { useMemo } from 'react';
 import { getTheme, themes } from 'src/theme';
-import { customThemeDarkAtom, customThemeLightAtom } from '../../state';
+
+import { CustomThemeInterface } from '../../state';
 import WizardThemeButton from '../WizardThemeButton';
 
 export interface SelectThemeSectionProps {
   mode: SupportedColorScheme;
+  customThemeDark?: CustomThemeInterface;
+  customThemeLight?: CustomThemeInterface;
 }
 
-export default function SelectThemeSection({ mode }: SelectThemeSectionProps) {
-  const customThemeDark = useAtomValue(customThemeDarkAtom);
-  const customThemeLight = useAtomValue(customThemeLightAtom);
-
+export default function SelectThemeSection({
+  mode,
+  customThemeDark,
+  customThemeLight,
+}: SelectThemeSectionProps) {
   const availThemes = useMemo(() => {
     return Object.keys(themes)
       .map((key) => {
@@ -71,16 +73,13 @@ export default function SelectThemeSection({ mode }: SelectThemeSectionProps) {
                   onClick={handleSelect}
                   colors={{
                     primary:
-                      entry.theme.colorSchemes[mode || ThemeMode.light].palette
-                        .primary?.main,
+                      entry.theme.colorSchemes[mode].palette.primary?.main,
                     background:
-                      entry.theme.colorSchemes[mode || ThemeMode.light].palette
-                        .background?.default,
+                      entry.theme.colorSchemes[mode].palette.background
+                        ?.default,
                     secondary:
-                      entry.theme.colorSchemes[mode || ThemeMode.light].palette
-                        .secondary?.main,
-                    text: entry.theme.colorSchemes[mode || ThemeMode.light]
-                      .palette.text?.primary,
+                      entry.theme.colorSchemes[mode].palette.secondary?.main,
+                    text: entry.theme.colorSchemes[mode].palette.text?.primary,
                   }}
                 />
               </Grid>

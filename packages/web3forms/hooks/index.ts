@@ -10,12 +10,11 @@ import axios from "axios";
 
 import { ChainId } from "@dexkit/core/constants";
 
-import { ETHER_SCAN_API_URL, THIRD_WEB_CONTRACT_VERSIONS } from "../constants";
+import { ETHER_SCAN_API_URL } from "../constants";
 
 import { getNormalizedUrl } from "@dexkit/core/utils";
 import { useWeb3React } from "@web3-react/core";
 import { useContext, useEffect, useState } from "react";
-import { fetchAbi } from "../services";
 import {
   AbiFragment,
   ContractDeployParams,
@@ -452,6 +451,7 @@ export function useDeployThirdWebContractMutation() {
       metadata: ThirdwebMetadata;
     }) => {
       if (sdk) {
+        console.log("order", order);
         const orderedParams = order.map((key) => {
           if (params[key]) {
             return params[key];
@@ -460,24 +460,9 @@ export function useDeployThirdWebContractMutation() {
           return null;
         });
 
-        const factory =
-          metadata.factoryDeploymentData.factoryAddresses[chainId.toString()];
-
-        const implementation =
-          metadata.factoryDeploymentData.implementationAddresses[
-            chainId.toString()
-          ];
-
-        const abi = await fetchAbi({
-          contractAddress: implementation,
-          chainId: chainId,
-        });
-
-        const tx = await sdk.deployer.deployViaFactory.prepare(
-          factory,
-          implementation,
-          abi,
-          "initialize",
+        const tx = await sdk.deployer.deployPublishedContract.prepare(
+          metadata.publisher,
+          metadata.name,
           orderedParams
         );
 
@@ -508,10 +493,10 @@ export default function useThirdwebContractMetadataQuery({
   id: string;
   clientId?: string;
 }) {
-  return useQuery([THIRDWEB_CONTRACT_METADATA, id], async () => {
+  return useQuery([THIRDWEB_CONTRACT_METADATA, id, clientId], async () => {
     const contract = await new ThirdwebSDK("polygon", { clientId })
       .getPublisher()
-      .getVersion("deployer.thirdweb.eth", id, THIRD_WEB_CONTRACT_VERSIONS[id]);
+      .getLatest("deployer.thirdweb.eth", id);
 
     if (contract) {
       const normalizedUrl = getNormalizedUrl(contract.metadataUri);

@@ -9,7 +9,6 @@ import {
   Card,
   CardContent,
   CircularProgress,
-  Container,
   Divider,
   Grid,
   InputAdornment,
@@ -95,17 +94,17 @@ export default function StakeErc20Section({ section }: StakeErc20SectionProps) {
       return ['0', '0', '0', BigNumber.from(0)];
     }, [stakeInfo, rewardTokenBalance, stakingTokenBalance]);
 
-  const { data: rewardRatio } = useContractRead(contract, 'getRewardRatio');
-  const { data: rewardTimeUnit } = useContractRead(contract, 'getTimeUnit');
+  // const { data: rewardRatio } = useContractRead(contract, 'getRewardRatio');
+  // const { data: rewardTimeUnit } = useContractRead(contract, 'getTimeUnit');
 
-  const [numerator, denominator] = useMemo(() => {
-    if (rewardRatio) {
-      const [n, d] = rewardRatio;
-      return [n.toNumber(), d.toNumber()];
-    }
+  // const [numerator, denominator] = useMemo(() => {
+  //   if (rewardRatio) {
+  //     const [n, d] = rewardRatio;
+  //     return [n.toNumber(), d.toNumber()];
+  //   }
 
-    return [0, 0];
-  }, [rewardRatio]);
+  //   return [0, 0];
+  // }, [rewardRatio]);
 
   const { mutateAsync: approve } = useThirdwebApprove({
     contract: stakingToken,
@@ -334,305 +333,260 @@ export default function StakeErc20Section({ section }: StakeErc20SectionProps) {
   };
 
   return (
-    <Container>
-      <Grid container spacing={2}>
-        <Grid item xs={12} sm={4}>
-          <Card>
-            <CardContent>
-              <Stack spacing={2}>
-                <Tabs
-                  value={tab}
-                  variant="fullWidth"
-                  onChange={handleChangeTab}
-                >
-                  <Tab
-                    value="stake"
-                    label={
-                      <FormattedMessage id="stake" defaultMessage="Stake" />
-                    }
-                  />
-                  <Tab
-                    value="unstake"
-                    label={
-                      <FormattedMessage id="unstake" defaultMessage="Unstake" />
-                    }
-                  />
-                </Tabs>
-                <Divider />
-                {tab === 'stake' && (
-                  <Box>
-                    <Formik
-                      initialValues={{ amount: '' }}
-                      onSubmit={handleSubmit}
-                      validate={validateStake}
-                    >
-                      {({
-                        submitForm,
-                        isValid,
-                        isSubmitting,
-                        setFieldValue,
-                      }) => (
-                        <Grid container spacing={2}>
-                          <Grid item xs={12}>
-                            <Box>
-                              <Stack>
-                                <Stack
-                                  direction="row"
-                                  justifyContent="space-between"
-                                >
-                                  <Typography>
-                                    <FormattedMessage
-                                      id="total.staked"
-                                      defaultMessage="Total staked"
-                                    />
-                                  </Typography>
-                                  <Typography color="text.secondary">
-                                    {stakingTokenBalance ? (
-                                      `${tokensStaked} ${stakingTokenBalance?.symbol}`
-                                    ) : (
-                                      <Skeleton />
-                                    )}
-                                  </Typography>
-                                </Stack>
-                                <Stack
-                                  direction="row"
-                                  justifyContent="space-between"
-                                >
-                                  <Typography>
-                                    <FormattedMessage
-                                      id="total.rewards"
-                                      defaultMessage="Total Rewards"
-                                    />
-                                  </Typography>
-                                  <Typography color="text.secondary">
-                                    {rewardsBalance && rewardTokenBalance ? (
-                                      `${formatBigNumber(
-                                        rewardsBalance,
-                                        rewardTokenBalance?.decimals || 18,
-                                      )} ${rewardTokenBalance?.symbol}`
-                                    ) : (
-                                      <Skeleton />
-                                    )}
-                                  </Typography>
-                                </Stack>
-                                <Stack
-                                  direction="row"
-                                  justifyContent="space-between"
-                                >
-                                  <Typography>
-                                    <FormattedMessage
-                                      id="availclaimableable.rewards"
-                                      defaultMessage="Claimable rewards"
-                                    />
-                                  </Typography>
-                                  <Typography color="text.secondary">
-                                    {rewardTokenBalance ? (
-                                      `${rewards} ${rewardTokenBalance?.symbol}`
-                                    ) : (
-                                      <Skeleton />
-                                    )}
-                                  </Typography>
-                                </Stack>
-                              </Stack>
-                            </Box>
-                          </Grid>
-                          <Grid item xs={12}>
-                            <FormikDecimalInput
-                              name="amount"
-                              decimals={stakingTokenBalance?.decimals}
-                              TextFieldProps={{
-                                label: (
-                                  <FormattedMessage
-                                    id="amount"
-                                    defaultMessage="Amount"
-                                  />
-                                ),
-                                fullWidth: true,
-                                InputProps: {
-                                  endAdornment: (
-                                    <InputAdornment position="end">
-                                      <Button
-                                        disabled={isSubmitting}
-                                        size="small"
-                                        onClick={() =>
-                                          setFieldValue(
-                                            'amount',
-                                            stakingTokenBalance?.displayValue,
-                                          )
-                                        }
-                                      >
-                                        <FormattedMessage
-                                          id="max"
-                                          defaultMessage="Max"
-                                        />
-                                      </Button>
-                                    </InputAdornment>
-                                  ),
-                                },
-                              }}
-                            />
-                          </Grid>
-                          <Grid item xs={12}>
+    <Card>
+      <CardContent>
+        <Stack spacing={2}>
+          <Tabs value={tab} variant="fullWidth" onChange={handleChangeTab}>
+            <Tab
+              value="stake"
+              label={<FormattedMessage id="stake" defaultMessage="Stake" />}
+            />
+            <Tab
+              value="unstake"
+              label={<FormattedMessage id="unstake" defaultMessage="Unstake" />}
+            />
+          </Tabs>
+          <Divider />
+          {tab === 'stake' && (
+            <Box>
+              <Formik
+                initialValues={{ amount: '' }}
+                onSubmit={handleSubmit}
+                validate={validateStake}
+              >
+                {({ submitForm, isValid, isSubmitting, setFieldValue }) => (
+                  <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                      <Box>
+                        <Stack>
+                          <Stack direction="row" justifyContent="space-between">
+                            <Typography>
+                              <FormattedMessage
+                                id="total.staked"
+                                defaultMessage="Total staked"
+                              />
+                            </Typography>
+                            <Typography color="text.secondary">
+                              {stakingTokenBalance ? (
+                                `${tokensStaked} ${stakingTokenBalance?.symbol}`
+                              ) : (
+                                <Skeleton />
+                              )}
+                            </Typography>
+                          </Stack>
+                          <Stack direction="row" justifyContent="space-between">
+                            <Typography>
+                              <FormattedMessage
+                                id="total.rewards"
+                                defaultMessage="Total Rewards"
+                              />
+                            </Typography>
+                            <Typography color="text.secondary">
+                              {rewardsBalance && rewardTokenBalance ? (
+                                `${formatBigNumber(
+                                  rewardsBalance,
+                                  rewardTokenBalance?.decimals || 18,
+                                )} ${rewardTokenBalance?.symbol}`
+                              ) : (
+                                <Skeleton />
+                              )}
+                            </Typography>
+                          </Stack>
+                          <Stack direction="row" justifyContent="space-between">
+                            <Typography>
+                              <FormattedMessage
+                                id="availclaimableable.rewards"
+                                defaultMessage="Claimable rewards"
+                              />
+                            </Typography>
+                            <Typography color="text.secondary">
+                              {rewardTokenBalance ? (
+                                `${rewards} ${rewardTokenBalance?.symbol}`
+                              ) : (
+                                <Skeleton />
+                              )}
+                            </Typography>
+                          </Stack>
+                        </Stack>
+                      </Box>
+                    </Grid>
+                    <Grid item xs={12}>
+                      <FormikDecimalInput
+                        name="amount"
+                        decimals={stakingTokenBalance?.decimals}
+                        TextFieldProps={{
+                          label: (
                             <FormattedMessage
-                              id="available.balance.amount"
-                              defaultMessage="Available amount: {amount}"
-                              values={{
-                                amount: stakingTokenBalance ? (
-                                  `${stakingTokenBalance?.displayValue} ${stakingTokenBalance?.symbol}`
-                                ) : (
-                                  <Skeleton />
-                                ),
-                              }}
+                              id="amount"
+                              defaultMessage="Amount"
                             />
-                          </Grid>
-                          <Grid item xs={12}>
-                            <Button
-                              onClick={submitForm}
-                              disabled={isSubmitting || !isValid}
-                              startIcon={
-                                isSubmitting ? (
-                                  <CircularProgress
-                                    color="inherit"
-                                    size="1rem"
-                                  />
-                                ) : undefined
-                              }
-                              variant="contained"
-                              color="primary"
-                              fullWidth
-                              size="large"
-                            >
-                              <FormattedMessage
-                                id="stake"
-                                defaultMessage="Stake"
-                              />
-                            </Button>
-                          </Grid>
-                          <Grid item xs={12}>
-                            <Button
-                              onClick={handleClaim}
-                              disabled={
-                                isSubmitting || claimRewardsMutation.isLoading
-                              }
-                              startIcon={
-                                isClaiming ? (
-                                  <CircularProgress
-                                    color="inherit"
-                                    size="1rem"
-                                  />
-                                ) : undefined
-                              }
-                              variant="outlined"
-                              color="primary"
-                              fullWidth
-                              size="large"
-                            >
-                              <FormattedMessage
-                                id="claim.rewards"
-                                defaultMessage="Claim rewards"
-                              />
-                            </Button>
-                          </Grid>
-                        </Grid>
-                      )}
-                    </Formik>
-                  </Box>
-                )}
-                {tab === 'unstake' && (
-                  <Box>
-                    <Formik
-                      initialValues={{ amount: '' }}
-                      onSubmit={handleSubmitUnstake}
-                      validate={validateUnstake}
-                    >
-                      {({
-                        submitForm,
-                        isValid,
-                        isSubmitting,
-                        setFieldValue,
-                      }) => (
-                        <Grid container spacing={2}>
-                          <Grid item xs={12}>
-                            <Box>
-                              <Stack>
-                                <Stack
-                                  direction="row"
-                                  justifyContent="space-between"
+                          ),
+                          fullWidth: true,
+                          InputProps: {
+                            endAdornment: (
+                              <InputAdornment position="end">
+                                <Button
+                                  disabled={isSubmitting}
+                                  size="small"
+                                  onClick={() =>
+                                    setFieldValue(
+                                      'amount',
+                                      stakingTokenBalance?.displayValue,
+                                    )
+                                  }
                                 >
-                                  <Typography>
-                                    <FormattedMessage
-                                      id="total.staked"
-                                      defaultMessage="Total staked"
-                                    />
-                                  </Typography>
-                                  <Typography color="text.secondary">
-                                    {tokensStaked} {stakingTokenBalance?.symbol}
-                                  </Typography>
-                                </Stack>
-                              </Stack>
-                            </Box>
-                          </Grid>
-                          <Grid item xs={12}>
-                            <FormikDecimalInput
-                              name="amount"
-                              decimals={stakingTokenBalance?.decimals}
-                              TextFieldProps={{
-                                label: (
                                   <FormattedMessage
-                                    id="amount"
-                                    defaultMessage="Amount"
+                                    id="max"
+                                    defaultMessage="Max"
                                   />
-                                ),
-                                fullWidth: true,
-                                InputProps: {
-                                  endAdornment: (
-                                    <InputAdornment position="end">
-                                      <Button
-                                        size="small"
-                                        disabled={isSubmitting}
-                                        onClick={() =>
-                                          setFieldValue(
-                                            'amount',
-                                            tokensStakedValueFormatted,
-                                          )
-                                        }
-                                      >
-                                        <FormattedMessage
-                                          id="max"
-                                          defaultMessage="Max"
-                                        />
-                                      </Button>
-                                    </InputAdornment>
-                                  ),
-                                },
-                              }}
-                            />
-                          </Grid>
-                          <Grid item xs={12}>
-                            <Button
-                              onClick={submitForm}
-                              disabled={isSubmitting || !isValid}
-                              variant="contained"
-                              color="primary"
-                              fullWidth
-                              size="large"
-                            >
-                              <FormattedMessage
-                                id="unstake"
-                                defaultMessage="Unstake"
-                              />
-                            </Button>
-                          </Grid>
-                        </Grid>
-                      )}
-                    </Formik>
-                  </Box>
+                                </Button>
+                              </InputAdornment>
+                            ),
+                          },
+                        }}
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <FormattedMessage
+                        id="available.balance.amount"
+                        defaultMessage="Available amount: {amount}"
+                        values={{
+                          amount: stakingTokenBalance ? (
+                            `${stakingTokenBalance?.displayValue} ${stakingTokenBalance?.symbol}`
+                          ) : (
+                            <Skeleton />
+                          ),
+                        }}
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <Button
+                        onClick={submitForm}
+                        disabled={isSubmitting || !isValid}
+                        startIcon={
+                          isSubmitting ? (
+                            <CircularProgress color="inherit" size="1rem" />
+                          ) : undefined
+                        }
+                        variant="contained"
+                        color="primary"
+                        fullWidth
+                        size="large"
+                      >
+                        <FormattedMessage id="stake" defaultMessage="Stake" />
+                      </Button>
+                    </Grid>
+                    <Grid item xs={12}>
+                      <Button
+                        onClick={handleClaim}
+                        disabled={
+                          isSubmitting || claimRewardsMutation.isLoading
+                        }
+                        startIcon={
+                          isClaiming ? (
+                            <CircularProgress color="inherit" size="1rem" />
+                          ) : undefined
+                        }
+                        variant="outlined"
+                        color="primary"
+                        fullWidth
+                        size="large"
+                      >
+                        <FormattedMessage
+                          id="claim.rewards"
+                          defaultMessage="Claim rewards"
+                        />
+                      </Button>
+                    </Grid>
+                  </Grid>
                 )}
-              </Stack>
-            </CardContent>
-          </Card>
-        </Grid>
-      </Grid>
-    </Container>
+              </Formik>
+            </Box>
+          )}
+          {tab === 'unstake' && (
+            <Box>
+              <Formik
+                initialValues={{ amount: '' }}
+                onSubmit={handleSubmitUnstake}
+                validate={validateUnstake}
+              >
+                {({ submitForm, isValid, isSubmitting, setFieldValue }) => (
+                  <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                      <Box>
+                        <Stack>
+                          <Stack direction="row" justifyContent="space-between">
+                            <Typography>
+                              <FormattedMessage
+                                id="total.staked"
+                                defaultMessage="Total staked"
+                              />
+                            </Typography>
+                            <Typography color="text.secondary">
+                              {tokensStaked} {stakingTokenBalance?.symbol}
+                            </Typography>
+                          </Stack>
+                        </Stack>
+                      </Box>
+                    </Grid>
+                    <Grid item xs={12}>
+                      <FormikDecimalInput
+                        name="amount"
+                        decimals={stakingTokenBalance?.decimals}
+                        TextFieldProps={{
+                          label: (
+                            <FormattedMessage
+                              id="amount"
+                              defaultMessage="Amount"
+                            />
+                          ),
+                          fullWidth: true,
+                          InputProps: {
+                            endAdornment: (
+                              <InputAdornment position="end">
+                                <Button
+                                  size="small"
+                                  disabled={isSubmitting}
+                                  onClick={() =>
+                                    setFieldValue(
+                                      'amount',
+                                      tokensStakedValueFormatted,
+                                    )
+                                  }
+                                >
+                                  <FormattedMessage
+                                    id="max"
+                                    defaultMessage="Max"
+                                  />
+                                </Button>
+                              </InputAdornment>
+                            ),
+                          },
+                        }}
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <Button
+                        onClick={submitForm}
+                        disabled={isSubmitting || !isValid}
+                        variant="contained"
+                        color="primary"
+                        fullWidth
+                        size="large"
+                      >
+                        <FormattedMessage
+                          id="unstake"
+                          defaultMessage="Unstake"
+                        />
+                      </Button>
+                    </Grid>
+                  </Grid>
+                )}
+              </Formik>
+            </Box>
+          )}
+        </Stack>
+      </CardContent>
+    </Card>
   );
 }

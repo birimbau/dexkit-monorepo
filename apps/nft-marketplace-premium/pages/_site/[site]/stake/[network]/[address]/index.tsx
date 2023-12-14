@@ -2,15 +2,19 @@ import StakeErc1155Section from '@/modules/wizard/components/sections/StakeErc11
 import StakeErc20Section from '@/modules/wizard/components/sections/StakeErc20Section';
 import StakeErc721Section from '@/modules/wizard/components/sections/StakeErc721Section';
 import { hexToString } from '@dexkit/ui/utils';
+import { Box, Container, Grid, Skeleton } from '@mui/material';
 import { QueryClient, dehydrate } from '@tanstack/react-query';
 import {
   ThirdwebSDKProvider,
   useContract,
+  useContractMetadata,
   useContractRead,
 } from '@thirdweb-dev/react';
 import { useWeb3React } from '@web3-react/core';
 import { GetStaticPropsContext } from 'next';
 import { useRouter } from 'next/router';
+import { FormattedMessage } from 'react-intl';
+import { PageHeader } from 'src/components/PageHeader';
 import MainLayout from 'src/components/layouts/main';
 import { THIRDWEB_CLIENT_ID } from 'src/constants';
 import { getAppConfig } from 'src/services/app';
@@ -23,6 +27,7 @@ export function StakePage() {
 
   const { data: contract } = useContract(address as string);
   const contractRead = useContractRead(contract, 'contractType');
+  const { data: metadata, isLoading } = useContractMetadata(contract);
 
   let contractType = hexToString(contractRead.data);
 
@@ -30,35 +35,74 @@ export function StakePage() {
     return null;
   }
 
-  if (contractType === 'NFTStake') {
-    return (
-      <StakeErc721Section
-        section={{
-          type: 'nft-stake',
-          settings: { address: address as string, network: network as string },
-        }}
-      />
-    );
-  }
+  const renderSection = () => {
+    if (contractType === 'NFTStake') {
+      return (
+        <StakeErc721Section
+          section={{
+            type: 'nft-stake',
+            settings: {
+              address: address as string,
+              network: network as string,
+            },
+          }}
+        />
+      );
+    }
 
-  if (contractType === 'EditionStake') {
+    if (contractType === 'EditionStake') {
+      return (
+        <StakeErc1155Section
+          section={{
+            type: 'edition-stake',
+            settings: {
+              address: address as string,
+              network: network as string,
+            },
+          }}
+        />
+      );
+    }
+
     return (
-      <StakeErc1155Section
+      <StakeErc20Section
         section={{
-          type: 'edition-stake',
+          type: 'token-stake',
           settings: { address: address as string, network: network as string },
         }}
       />
     );
-  }
+  };
 
   return (
-    <StakeErc20Section
-      section={{
-        type: 'token-stake',
-        settings: { address: address as string, network: network as string },
-      }}
-    />
+    <Container>
+      <Grid container spacing={2} justifyContent="center">
+        <Grid item xs={12} sm={3} lg={4}>
+          <Box mb={2}>
+            <PageHeader
+              breadcrumbs={[
+                {
+                  caption: <FormattedMessage id="home" defaultMessage="Home" />,
+                  uri: '/',
+                },
+                {
+                  caption: (
+                    <FormattedMessage id="stake" defaultMessage="Stake" />
+                  ),
+                  uri: '/stake',
+                },
+                {
+                  caption: isLoading ? <Skeleton /> : metadata?.name,
+                  uri: `/stake/${network}/${address}`,
+                  active: true,
+                },
+              ]}
+            />
+          </Box>
+          {renderSection()}
+        </Grid>
+      </Grid>
+    </Container>
   );
 }
 

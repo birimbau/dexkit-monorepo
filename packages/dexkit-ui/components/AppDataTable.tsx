@@ -1,4 +1,6 @@
-import { Save } from "@mui/icons-material";
+import Download from "@mui/icons-material/Download";
+import Save from "@mui/icons-material/Save";
+
 import Add from "@mui/icons-material/Add";
 import Cancel from "@mui/icons-material/Cancel";
 import Delete from "@mui/icons-material/Delete";
@@ -18,21 +20,31 @@ import {
   GridRowModesModel,
   GridRowsProp,
   GridToolbarContainer,
-  GridToolbarExport,
 } from "@mui/x-data-grid";
+import { useSnackbar } from "notistack";
 import Papa from "papaparse";
 import { ChangeEvent, useEffect, useMemo, useRef, useState } from "react";
 import { FormattedMessage } from "react-intl";
+
+type ColumnType = {
+  isValid?: (value: unknown) => boolean;
+  name: string;
+  width?: number;
+  headerName: string;
+  editable?: boolean;
+};
 
 interface EditToolbarProps {
   setRows: (newRows: (oldRows: GridRowsProp) => GridRowsProp) => void;
   setRowModesModel: (
     newModel: (oldModel: GridRowModesModel) => GridRowModesModel
   ) => void;
+  columns: ColumnType[];
+  data: any[];
 }
 
 function EditToolbar(props: EditToolbarProps) {
-  const { setRows, setRowModesModel } = props;
+  const { setRows, setRowModesModel, columns, data } = props;
 
   const handleClick = () => {
     setRows((oldRows) => {
@@ -53,6 +65,8 @@ function EditToolbar(props: EditToolbarProps) {
     inputRef.current?.click();
   };
 
+  const { enqueueSnackbar } = useSnackbar();
+
   const handleChangeFile = (e: ChangeEvent<HTMLInputElement>) => {
     let fileReader = new FileReader();
 
@@ -62,21 +76,29 @@ function EditToolbar(props: EditToolbarProps) {
       if (typeof text === "string") {
         let csv = Papa.parse(text, { header: true });
 
-        if (
-          csv.meta.fields?.includes("address") &&
-          csv.meta.fields?.includes("quantity")
-        ) {
-          let newRows = csv.data.map((line: any, index: number) => {
-            return {
-              id: index.toString(),
-              address: line.address as string,
-              quantity: line.quantity as string,
-              isNew: false,
-            };
-          });
-
-          setRows((old) => newRows);
+        for (let column of columns) {
+          if (!csv.meta.fields?.includes(column.name)) {
+            enqueueSnackbar(
+              <FormattedMessage
+                id="invalid.file.column.column.is.missing"
+                defaultMessage="Invalid file: column {column} is missing"
+                values={{ column: column.name }}
+              />,
+              { variant: "error" }
+            );
+            return;
+          }
         }
+
+        let newRows = csv.data.map((line: any, index: number) => {
+          return {
+            id: index.toString(),
+            ...line,
+            isNew: false,
+          };
+        });
+
+        setRows((old) => newRows);
       }
     };
 
@@ -85,6 +107,32 @@ function EditToolbar(props: EditToolbarProps) {
     if (file) {
       fileReader.readAsText(file);
     }
+  };
+
+  const handleExport = () => {
+    let lines: string[] = [];
+
+    lines.push(columns.map((c) => c.name).join(","));
+
+    for (let line of data) {
+      let csvLine = Object.values(line).join(",");
+
+      lines.push(csvLine);
+    }
+
+    let csvStr = lines.join("\n");
+
+    let csvContent = "data:text/csv;charset=utf-8," + csvStr;
+
+    let encodedUri = encodeURI(csvContent);
+    let link = document.createElement("a");
+
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "data.csv");
+
+    document.body.appendChild(link); // Required for FF
+
+    link.click();
   };
 
   return (
@@ -107,7 +155,9 @@ function EditToolbar(props: EditToolbarProps) {
         >
           <FormattedMessage id="import" defaultMessage="Import" />
         </Button>
-        <GridToolbarExport />
+        <Button onClick={handleExport} startIcon={<Download />}>
+          <FormattedMessage id="export" defaultMessage="Export" />
+        </Button>
       </GridToolbarContainer>
     </>
   );
@@ -115,19 +165,14 @@ function EditToolbar(props: EditToolbarProps) {
 
 export interface AppDataTableProps<T extends { id?: string; isNew?: boolean }> {
   data: any[];
-  dataColumns: {
-    isValid?: (value: unknown) => boolean;
-    name: string;
-    width?: number;
-    headerName: string;
-    editable?: boolean;
-  }[];
+  dataColumns: ColumnType[];
   onChange: (value: any) => void;
+  onEditRow?: (id: GridRowId, edit: boolean) => void;
 }
 
 export default function AppDataTable<
   Z extends { id?: string; isNew?: boolean },
->({ data, dataColumns, onChange }: AppDataTableProps<Z>) {
+>({ data, dataColumns, onChange, onEditRow }: AppDataTableProps<Z>) {
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
 
   const [rows, setRows] = useState<Z[]>(
@@ -150,10 +195,16 @@ export default function AppDataTable<
   }, [rows]);
 
   const handleEditClick = (id: GridRowId) => () => {
+    if (onEditRow) {
+      onEditRow(id, true);
+    }
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
   };
 
   const handleSaveClick = (id: GridRowId) => () => {
+    if (onEditRow) {
+      onEditRow(id, false);
+    }
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
   };
 
@@ -197,7 +248,7 @@ export default function AppDataTable<
 
   const columns: GridColDef[] = useMemo(() => {
     return [
-      ...dataColumns.map((column) => {
+      ...dataColumns.map((column): GridColDef => {
         return {
           field: column.name,
           headerName: column.headerName,
@@ -311,7 +362,19 @@ export default function AppDataTable<
           toolbar: EditToolbar,
         }}
         slotProps={{
-          toolbar: { setRows, setRowModesModel },
+          toolbar: {
+            setRows,
+            setRowModesModel,
+            columns: dataColumns,
+            data: rows.map((row) => {
+              let newRow = { ...row };
+
+              delete newRow.id;
+              delete newRow.isNew;
+
+              return newRow;
+            }),
+          },
         }}
       />
     </Box>

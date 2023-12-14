@@ -11,10 +11,14 @@ import CollectionPageHeader from '@/modules/nft/components/CollectionPageHeader'
 import { CollectionStats } from '@/modules/nft/components/CollectionStats';
 import { CollectionTraits } from '@/modules/nft/components/CollectionTraits';
 import TableSkeleton from '@/modules/nft/components/tables/TableSkeleton';
+import { DropEditionListSection } from '@/modules/wizard/components/sections/DropEditionListSection';
+import NftDropSection from '@/modules/wizard/components/sections/NftDropSection';
 import { NETWORK_FROM_SLUG } from '@dexkit/core/constants/networks';
 import { Asset } from '@dexkit/core/types';
+import { NFTType } from '@dexkit/ui/modules/nft/constants/enum';
 import { getCollectionData } from '@dexkit/ui/modules/nft/services';
 import { Collection, TraderOrderFilter } from '@dexkit/ui/modules/nft/types';
+import { hexToString } from '@dexkit/ui/utils';
 import Search from '@mui/icons-material/Search';
 import {
   Divider,
@@ -24,20 +28,29 @@ import {
   InputAdornment,
   NoSsr,
   Stack,
+  Tab,
+  Tabs,
   TextField,
   useMediaQuery,
   useTheme,
 } from '@mui/material';
 import { QueryClient, dehydrate } from '@tanstack/react-query';
+import {
+  ThirdwebSDK,
+  ThirdwebSDKProvider,
+  useContractType,
+} from '@thirdweb-dev/react';
+import { useWeb3React } from '@web3-react/core';
 import { NextSeo } from 'next-seo';
 import { useRouter } from 'next/router';
-import { Suspense, useState } from 'react';
+import { Suspense, SyntheticEvent, useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { AppErrorBoundary } from 'src/components/AppErrorBoundary';
 import SidebarFilters from 'src/components/SidebarFilters';
 import SidebarFiltersContent from 'src/components/SidebarFiltersContent';
 import Funnel from 'src/components/icons/Filter';
 import MainLayout from 'src/components/layouts/main';
+import { THIRDWEB_CLIENT_ID } from 'src/constants';
 import { CollectionSyncStatus, NETWORK_ID } from 'src/constants/enum';
 import {
   MAP_COIN_TO_RARIBLE,
@@ -68,6 +81,12 @@ const CollectionPage: NextPage = () => {
   const { address, network } = router.query;
   const chainId = NETWORK_FROM_SLUG(network as string)?.chainId;
   const [search, setSearch] = useState<string>();
+
+  const { data: contractType } = useContractType(address as string);
+
+  const isDrop = useMemo(() => {
+    return contractType?.endsWith('drop');
+  }, [contractType]);
 
   const { data: collection } = useCollection(address as string, chainId);
 
@@ -126,6 +145,12 @@ const CollectionPage: NextPage = () => {
     );
   };
 
+  const [currTab, setCurrTab] = useState('collection');
+
+  const handleChangeTab = (e: SyntheticEvent, value: string) => {
+    setCurrTab(value);
+  };
+
   return (
     <>
       <NextSeo title={collection?.name || ''} />
@@ -154,94 +179,184 @@ const CollectionPage: NextPage = () => {
                         chainId={chainId}
                       />
                     </Grid>
+                    {isDrop && (
+                      <Grid item xs={12}>
+                        <Tabs value={currTab} onChange={handleChangeTab}>
+                          <Tab
+                            label={
+                              <FormattedMessage
+                                id="collection"
+                                defaultMessage="Collection"
+                              />
+                            }
+                            value="collection"
+                          />
+                          <Tab
+                            label={
+                              contractType === 'nft-drop' ? (
+                                <FormattedMessage
+                                  id="drop"
+                                  defaultMessage="Drop"
+                                />
+                              ) : (
+                                <FormattedMessage
+                                  id="drops"
+                                  defaultMessage="Drops"
+                                />
+                              )
+                            }
+                            value="drops"
+                          />
+                        </Tabs>
+                      </Grid>
+                    )}
+
                     <Grid item xs={12}>
                       <CollectionStats
                         address={address as string}
                         network={network as string}
                       />
                     </Grid>
+
                     <Grid item xs={12}>
                       <Divider />
                     </Grid>
-                    <Grid item xs={12}>
-                      <Stack
-                        justifyContent="space-between"
-                        direction="row"
-                        alignItems="center"
-                        alignContent="center"
-                      >
-                        <Typography variant="body1" sx={{ fontWeight: 600 }}>
-                          <FormattedMessage
-                            id="collection"
-                            defaultMessage="Collection"
-                            description="collection"
-                          />
-                        </Typography>
-                        <Box>
-                          {!isDesktop && (
-                            <IconButton onClick={handleOpenDrawer}>
-                              <Funnel />
-                            </IconButton>
-                          )}
-                        </Box>
-                      </Stack>
-                      <ChipFilterTraits
-                        address={address as string}
-                        chainId={chainId}
-                      />
-                    </Grid>
-
-                    <Grid item xs={12}>
-                      <NoSsr>
-                        <AppErrorBoundary
-                          fallbackRender={({ resetErrorBoundary, error }) => (
-                            <Stack justifyContent="center" alignItems="center">
-                              <Typography variant="h6">
-                                <FormattedMessage
-                                  id="something.went.wrong"
-                                  defaultMessage="Oops, something went wrong"
-                                  description="Something went wrong error message"
-                                />
-                              </Typography>
-                              <Typography variant="body1" color="textSecondary">
-                                {String(error)}
-                              </Typography>
-                              <Button
-                                color="primary"
-                                onClick={resetErrorBoundary}
-                              >
-                                <FormattedMessage
-                                  id="try.again"
-                                  defaultMessage="Try again"
-                                  description="Try again"
-                                />
-                              </Button>
-                            </Stack>
-                          )}
+                    {currTab === 'drops' && (
+                      <Grid item xs={12}>
+                        <Typography
+                          gutterBottom
+                          variant="body1"
+                          sx={{ fontWeight: 600 }}
                         >
-                          {collection?.syncStatus ===
-                            CollectionSyncStatus.Synced ||
-                          collection?.syncStatus ===
-                            CollectionSyncStatus.Syncing ? (
-                            <AssetListCollection
-                              contractAddress={address as string}
-                              network={network as string}
-                              search={search}
-                            />
+                          {contractType === 'nft-drop' ? (
+                            <FormattedMessage id="drop" defaultMessage="Drop" />
                           ) : (
-                            <Suspense fallback={<TableSkeleton rows={4} />}>
-                              <AssetList
-                                contractAddress={address as string}
-                                chainId={
-                                  NETWORK_FROM_SLUG(network as string)?.chainId
-                                }
-                                search={search}
-                              />
-                            </Suspense>
+                            <FormattedMessage
+                              id="drops"
+                              defaultMessage="Drops"
+                            />
                           )}
-                        </AppErrorBoundary>
-                      </NoSsr>
-                    </Grid>
+                        </Typography>
+                        {contractType === 'edition-drop' && (
+                          <DropEditionListSection
+                            section={{
+                              type: 'edition-drop-list-section',
+                              config: {
+                                network: network as string,
+                                address: address as string,
+                              },
+                            }}
+                          />
+                        )}
+                        {contractType === 'nft-drop' && (
+                          <NftDropSection
+                            section={{
+                              type: 'nft-drop',
+                              settings: {
+                                address: address as string,
+                                network: network as string,
+                              },
+                            }}
+                          />
+                        )}
+                      </Grid>
+                    )}
+                    {currTab === 'collection' && (
+                      <>
+                        <Grid item xs={12}>
+                          <Stack
+                            justifyContent="space-between"
+                            direction="row"
+                            alignItems="center"
+                            alignContent="center"
+                          >
+                            <Typography
+                              variant="body1"
+                              sx={{ fontWeight: 600 }}
+                            >
+                              <FormattedMessage
+                                id="collection"
+                                defaultMessage="Collection"
+                                description="collection"
+                              />
+                            </Typography>
+                            <Box>
+                              {!isDesktop && (
+                                <IconButton onClick={handleOpenDrawer}>
+                                  <Funnel />
+                                </IconButton>
+                              )}
+                            </Box>
+                          </Stack>
+                          <ChipFilterTraits
+                            address={address as string}
+                            chainId={chainId}
+                          />
+                        </Grid>
+
+                        <Grid item xs={12}>
+                          <NoSsr>
+                            <AppErrorBoundary
+                              fallbackRender={({
+                                resetErrorBoundary,
+                                error,
+                              }) => (
+                                <Stack
+                                  justifyContent="center"
+                                  alignItems="center"
+                                >
+                                  <Typography variant="h6">
+                                    <FormattedMessage
+                                      id="something.went.wrong"
+                                      defaultMessage="Oops, something went wrong"
+                                      description="Something went wrong error message"
+                                    />
+                                  </Typography>
+                                  <Typography
+                                    variant="body1"
+                                    color="textSecondary"
+                                  >
+                                    {String(error)}
+                                  </Typography>
+                                  <Button
+                                    color="primary"
+                                    onClick={resetErrorBoundary}
+                                  >
+                                    <FormattedMessage
+                                      id="try.again"
+                                      defaultMessage="Try again"
+                                      description="Try again"
+                                    />
+                                  </Button>
+                                </Stack>
+                              )}
+                            >
+                              {collection?.syncStatus ===
+                                CollectionSyncStatus.Synced ||
+                              collection?.syncStatus ===
+                                CollectionSyncStatus.Syncing ? (
+                                <AssetListCollection
+                                  contractAddress={address as string}
+                                  network={network as string}
+                                  search={search}
+                                />
+                              ) : (
+                                <Suspense fallback={<TableSkeleton rows={4} />}>
+                                  <AssetList
+                                    contractAddress={address as string}
+                                    chainId={
+                                      NETWORK_FROM_SLUG(network as string)
+                                        ?.chainId
+                                    }
+                                    search={search}
+                                  />
+                                </Suspense>
+                              )}
+                            </AppErrorBoundary>
+                          </NoSsr>
+                        </Grid>
+                      </>
+                    )}
                   </Grid>
                 </Grid>
               </Grid>
@@ -252,6 +367,20 @@ const CollectionPage: NextPage = () => {
     </>
   );
 };
+
+function Wrapper() {
+  const { chainId, provider } = useWeb3React();
+
+  return (
+    <ThirdwebSDKProvider
+      activeChain={chainId}
+      clientId={THIRDWEB_CLIENT_ID}
+      signer={provider?.getSigner()}
+    >
+      <CollectionPage />
+    </ThirdwebSDKProvider>
+  );
+}
 
 type Params = {
   site?: string;
@@ -340,16 +469,48 @@ export const getStaticProps: GetStaticProps = async ({
     } catch {}
   }
 
-  await queryClient.prefetchQuery(
-    [
-      GET_COLLECTION_DATA,
-      address as string,
-      NETWORK_FROM_SLUG(network)?.chainId,
-    ],
-    async () => {
+  const sdk = new ThirdwebSDK(network as string);
+
+  const twContract = await sdk.getContract(address as string);
+
+  const isTw = twContract.abi.find((m) => m.name === 'contractVersion');
+
+  let key: any[] = [
+    GET_COLLECTION_DATA,
+    address as string,
+    NETWORK_FROM_SLUG(network)?.chainId,
+  ];
+
+  if (isTw) {
+    const contractType: string = hexToString(
+      await twContract.call('contractType'),
+    );
+
+    const metadata = await twContract.metadata.get();
+
+    let type = contractType?.toLowerCase()?.startsWith('edition')
+      ? NFTType.ERC1155
+      : NFTType.ERC721;
+
+    await queryClient.prefetchQuery(key, async () => {
+      let coll = collection || {};
+
+      return {
+        address,
+        name: metadata.name,
+        chainId: NETWORK_FROM_SLUG(network)?.chainId,
+        symbol: metadata.symbol,
+        description: metadata.description,
+        imageUrl: metadata.image,
+        nftType: type,
+        ...coll,
+      } as Collection;
+    });
+  } else {
+    await queryClient.prefetchQuery(key, async () => {
       return collection;
-    },
-  );
+    });
+  }
 
   const filters: TraderOrderFilter = { nftToken: address };
   try {
@@ -373,4 +534,4 @@ export async function getStaticPaths() {
   };
 }
 
-export default CollectionPage;
+export default Wrapper;

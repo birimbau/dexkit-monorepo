@@ -7,7 +7,7 @@ import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import { useAtom } from 'jotai';
 import { useSnackbar } from 'notistack';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { AppCollection, AppConfig } from '../../../../types/config';
 import { isAddressEqual } from '../../../../utils/blockchain';
@@ -28,11 +28,23 @@ export interface Form {
 interface Props {
   config: AppConfig;
   onSave: (config: AppConfig) => void;
+  onHasChanges: (hasChanges: boolean) => void;
 }
 
-export default function CollectionWizardContainer({ config, onSave }: Props) {
+export default function CollectionWizardContainer({
+  config,
+  onSave,
+  onHasChanges,
+}: Props) {
   const { formatMessage } = useIntl();
   const [previewCollection, setPreviewCollection] = useAtom(collectionAtom);
+  const [hasChanged, setHashChanged] = useState(false);
+
+  useEffect(() => {
+    if (onHasChanges) {
+      onHasChanges(hasChanged);
+    }
+  }, [hasChanged, onHasChanges]);
 
   const { enqueueSnackbar } = useSnackbar();
   const [collections, setCollections] = useState<AppCollection[]>(
@@ -41,6 +53,7 @@ export default function CollectionWizardContainer({ config, onSave }: Props) {
   const [selectedEditCollection, setSelectedEditCollection] = useState<Form>();
 
   const handleSubmitCollection = (form: Form) => {
+    setHashChanged(true);
     setCollections((value) => [
       ...value,
       {
@@ -79,6 +92,7 @@ export default function CollectionWizardContainer({ config, onSave }: Props) {
           },
         },
       );
+      setHashChanged(true);
 
       return newCollections;
     });
@@ -135,6 +149,7 @@ export default function CollectionWizardContainer({ config, onSave }: Props) {
             },
           },
         );
+        setHashChanged(true);
 
         setSelectedEditCollection(undefined);
 
@@ -205,7 +220,12 @@ export default function CollectionWizardContainer({ config, onSave }: Props) {
       </Grid>
       <Grid item xs={12}>
         <Stack spacing={1} direction="row" justifyContent="flex-end">
-          <Button variant="contained" color="primary" onClick={handleSave}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleSave}
+            disabled={!hasChanged}
+          >
             <FormattedMessage id="save" defaultMessage="Save" />
           </Button>
         </Stack>

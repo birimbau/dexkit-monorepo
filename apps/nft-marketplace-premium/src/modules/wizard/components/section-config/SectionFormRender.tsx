@@ -1,10 +1,15 @@
+import { DexkitApiProvider } from '@dexkit/core/providers';
 import { Box } from '@mui/material';
+import { myAppsApi } from 'src/services/whitelabel';
 import { AppPageSection, SectionType } from '../../types/section';
+import AssetSectionForm from '../forms/AssetSectionForm';
 import { AssetStoreSectionForm } from '../forms/AssetStoreSectionForm';
 import CallToActionSectionForm from '../forms/CallToActionSectionForm';
 import CodeSectionForm from '../forms/CodeSectionForm';
 import CollectionSectionForm from '../forms/CollectionSectionForm';
+import CollectionSectionFormAlt from '../forms/CollectionSectionFormAlt';
 import { ContractSectionForm } from '../forms/ContractSectionForm';
+import DexGeneratorSectionForm from '../forms/DexGeneratorSectionForm';
 import ExchangeSectionSettingsForm from '../forms/ExchangeSectionSettingsForm';
 import FeaturedSectionForm from '../forms/FeaturedSectionForm';
 import MDSectionForm from '../forms/MDSectionForm';
@@ -152,6 +157,46 @@ export function SectionFormRender({
           onSave={onSave}
           onChange={onChange}
           section={section?.type === 'code-page-section' ? section : undefined}
+        />
+      </Box>
+    );
+  } else if (sectionType === 'dex-generator-section') {
+    return (
+      <Box p={2}>
+        <DexkitApiProvider.Provider value={{ instance: myAppsApi }}>
+          <DexGeneratorSectionForm
+            onCancel={onClose}
+            onSave={onSave}
+            onChange={onChange}
+            section={
+              section?.type === 'dex-generator-section' ? section : undefined
+            }
+            showSaveButton
+          />
+        </DexkitApiProvider.Provider>
+      </Box>
+    );
+  } else if (sectionType === 'collection') {
+    return (
+      <Box p={2}>
+        <CollectionSectionFormAlt
+          onCancel={onClose}
+          onSave={onSave}
+          onChange={onChange}
+          section={section?.type === 'collection' ? section : undefined}
+          showSaveButton
+        />
+      </Box>
+    );
+  } else if (sectionType === 'asset-section') {
+    return (
+      <Box p={2}>
+        <AssetSectionForm
+          onCancel={onClose}
+          onSave={onSave}
+          onChange={onChange}
+          section={section?.type === 'asset-section' ? section : undefined}
+          showSaveButton
         />
       </Box>
     );

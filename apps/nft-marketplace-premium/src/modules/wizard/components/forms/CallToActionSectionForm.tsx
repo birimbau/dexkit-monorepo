@@ -168,8 +168,6 @@ export default function CallToActionSectionForm({
     });
   };
 
-  console.log(formik.errors);
-
   return (
     <form onSubmit={formik.handleSubmit}>
       <Grid container spacing={2}>

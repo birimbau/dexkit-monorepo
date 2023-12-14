@@ -1,13 +1,13 @@
-import { ERC1155Abi, ERC165Abi, ERC721Abi } from '@dexkit/core/constants/abis';
+import { ERC1155Abi, ERC165Abi, ERC721Abi, IERC7572 } from '@dexkit/core/constants/abis';
 import { Asset, AssetMetadata } from '@dexkit/core/types/nft';
 import { ipfsUriToUrl } from '@dexkit/core/utils/ipfs';
 import { CallInput } from '@indexed-finance/multicall';
 import axios from 'axios';
-import { ethers } from 'ethers';
+import { Contract, ethers } from 'ethers';
 import { Interface } from 'ethers/lib/utils';
 import { DEXKIT_NFT_BASE_URL, ENS_BASE_URL, TRADER_ORDERBOOK_API, dexkitNFTapi, metadataENSapi } from '../../../constants/api';
 import { getMulticallFromProvider } from '../../../services/multical';
-import { AssetAPI, Collection, OrderbookAPI, OrderbookResponse, TraderOrderFilter } from '../types';
+import { AssetAPI, Collection, ContractURIMetadata, OrderbookAPI, OrderbookResponse, TraderOrderFilter } from '../types';
 import { isENSContract } from '../utils';
 
 const orderbookNFTapi = axios.create({ baseURL: DEXKIT_NFT_BASE_URL, timeout: 10000 });
@@ -316,6 +316,36 @@ export function getOrderbookOrders(orderFilter?: TraderOrderFilter) {
     .then((resp) => resp.data);
 }
 
+export async function getContractUriMetadata({ contractURI }: { contractURI?: string }) {
+
+
+  try {
+    const response = await axios.get<ContractURIMetadata>(
+      ipfsUriToUrl(contractURI || ''),
+      {
+        timeout: 5000,
+      }
+    );
+    return response.data;
+  } catch (e) {
+    return undefined;
+  }
+}
+
+export async function getContractURI({ provider, contractAddress }: {
+  provider?: ethers.providers.JsonRpcProvider,
+  contractAddress?: string
+}) {
+  if (!contractAddress) {
+    return;
+  }
+  const iface = new Interface(IERC7572);
+  const contract = new Contract(contractAddress, iface, provider);
+  return await contract.contractURI()
+
+}
+
+
 export async function getCollectionData(
   provider?: ethers.providers.JsonRpcProvider,
   contractAddress?: string,
@@ -340,6 +370,21 @@ export async function getCollectionData(
     target: contractAddress,
     function: 'symbol',
   });
+  let contractURI = await getContractURI({ provider, contractAddress });
+
+  let contractMetadata = {};
+  if (contractURI) {
+    const metadata = await getContractUriMetadata({ contractURI })
+    if (metadata) {
+      contractMetadata = {
+        name: metadata?.name,
+        imageUrl: metadata?.image,
+        description: metadata?.description
+      }
+    }
+  }
+
+
 
   const response = await multicall?.multiCall(calls);
   if (response) {
@@ -353,6 +398,7 @@ export async function getCollectionData(
         symbol,
         address: contractAddress,
         chainId: chainNetwork,
+        ...(contractMetadata)
       };
     }
 
@@ -363,6 +409,7 @@ export async function getCollectionData(
       symbol,
       address: contractAddress,
       chainId,
+      ...(contractMetadata)
     };
   }
 }

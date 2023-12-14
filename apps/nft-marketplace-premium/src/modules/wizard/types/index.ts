@@ -87,3 +87,11 @@ export enum PreviewType {
   Exchange = 'exchange',
   NFTs = 'nfts',
 }
+
+export type AssetFormType = {
+  address: string;
+  network: string;
+  tokenId: string;
+  enableFiat?: boolean;
+  enableDrops?: boolean; // only on edition
+};
