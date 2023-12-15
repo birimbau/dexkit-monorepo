@@ -96,7 +96,7 @@ export function SearchTokenAutocomplete(props: Props) {
             onChange={(ev) => setSearch(ev.currentTarget.value)}
             inputProps={{
               ...params.inputProps,
-              autoComplete: 'new-password', // disable autocomplete and autofill
+              autoComplete: 'off', // disable autocomplete and autofill
               endAdornment: (
                 <React.Fragment>
                   {tokensQuery.isLoading ? (

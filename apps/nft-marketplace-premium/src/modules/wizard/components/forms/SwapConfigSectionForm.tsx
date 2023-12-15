@@ -1,7 +1,11 @@
 import { Button, Grid, Stack } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { AppPageSection, SwapPageSection } from '../../types/section';
+import {
+  AppPageSection,
+  SwapLiFiPageSection,
+  SwapPageSection,
+} from '../../types/section';
 
 import { useAppWizardConfig } from '../../hooks';
 import { SwapConfigForm } from './SwapConfigForm';
@@ -10,19 +14,21 @@ interface Props {
   onSave: (section: AppPageSection) => void;
   onChange: (section: AppPageSection) => void;
   onCancel: () => void;
-  section?: SwapPageSection;
+  type: 'swap' | 'swap-lifi';
+  section?: SwapPageSection | SwapLiFiPageSection;
 }
 export function SwapConfigSectionForm({
   onSave,
   onCancel,
   onChange,
+  type = 'swap',
   section,
 }: Props) {
   const [data, setData] = useState(section?.config);
   const { wizardConfig } = useAppWizardConfig();
   useEffect(() => {
     onChange({
-      type: 'swap',
+      type,
       config: data,
     });
   }, [data]);
@@ -43,7 +49,7 @@ export function SwapConfigSectionForm({
           <Button
             onClick={() =>
               onSave({
-                type: 'swap',
+                type,
                 config: data,
               })
             }

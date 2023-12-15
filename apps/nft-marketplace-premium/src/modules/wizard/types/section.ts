@@ -36,7 +36,10 @@ export type SectionType =
   | 'code-page-section'
   | 'collection'
   | 'dex-generator-section'
-  | 'asset-section';
+  | 'asset-section'
+  | 'swap-lifi'
+
+  ;
 
 export interface PageSection {
   type: SectionType;
@@ -79,6 +82,12 @@ export interface CollectionAppPageSection extends PageSection {
 
 export interface SwapPageSection extends PageSection {
   type: 'swap';
+  title?: string;
+  config?: SwapConfig;
+}
+
+export interface SwapLiFiPageSection extends PageSection {
+  type: 'swap-lifi';
   title?: string;
   config?: SwapConfig;
 }
@@ -261,7 +270,8 @@ export type AppPageSection =
   | CodePageSection
   | CollectionPageSection
   | DexGeneratorPageSection
-  | AssetPageSection;
+  | AssetPageSection
+  | SwapLiFiPageSection;
 
 export interface SectionMetadata {
   type: SectionType;

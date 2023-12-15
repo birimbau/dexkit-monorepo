@@ -69,11 +69,12 @@ export function SectionFormRender({
         section={section?.type === sectionType ? section : undefined}
       />
     );
-  } else if (sectionType === 'swap') {
+  } else if (sectionType === 'swap' || sectionType === 'swap-lifi') {
     return (
       <SwapConfigSectionForm
         onCancel={onClose}
         onSave={onSave}
+        type={sectionType}
         onChange={onChange}
         section={section?.type === sectionType ? section : undefined}
       />

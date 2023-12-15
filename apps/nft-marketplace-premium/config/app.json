@@ -59,6 +59,11 @@
         },
         {
           "type": "Page",
+          "href": "/admin/quick-builder/lifi-swap",
+          "name": "Create LI.FI Swap App"
+        },
+        {
+          "type": "Page",
           "href": "/admin/quick-builder/nft-store",
           "name": "Create NFT Store App"
         },

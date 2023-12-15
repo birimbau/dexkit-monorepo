@@ -25,7 +25,7 @@ export function SwapConfigForm({ onChange, data, featuredTokens }: Props) {
   const [formData, setFormData] = useState<SwapConfig | undefined>(data);
 
   const [selectedChainId, setSelectedChainId] = useState<number | undefined>(
-    data?.defaultChainId,
+    data?.defaultChainId
   );
 
   const sellToken = useMemo(() => {
@@ -137,7 +137,9 @@ export function SwapConfigForm({ onChange, data, featuredTokens }: Props) {
                 defaultMessage="Search default input token"
               />
             }
-            featuredTokens={featuredTokens}
+            featuredTokens={featuredTokens?.filter(
+              (t) => t.chainId === selectedChainId
+            )}
             disabled={selectedChainId === undefined}
             data={sellToken}
             chainId={selectedChainId}
@@ -188,7 +190,9 @@ export function SwapConfigForm({ onChange, data, featuredTokens }: Props) {
                 defaultMessage="Search default output token"
               />
             }
-            featuredTokens={featuredTokens}
+            featuredTokens={featuredTokens?.filter(
+              (t) => t.chainId === selectedChainId
+            )}
             data={buyToken}
             onChange={(tk: any) => {
               if (selectedChainId) {

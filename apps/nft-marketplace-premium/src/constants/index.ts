@@ -19,6 +19,8 @@ export const WRAPPED_ETHER_CONTRACT: { [key: number]: string } = {
 
 export const THIRDWEB_CLIENT_ID = process.env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID ? process.env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID : '8b875cba6d295240d3b3861a3e8c2260';
 
+export const DEFAULT_LIFI_INTEGRATOR = process.env.NEXT_PUBLIC_LIFI_DEFAULT_INTEGRATOR ? process.env.NEXT_PUBLIC_LIFI_DEFAULT_INTEGRATOR : 'dexkit';
+
 export const ETH_COIN: Token = {
   name: 'Ethereum',
   symbol: 'ETH',
