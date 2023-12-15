@@ -20,7 +20,7 @@ export function ContractCollectionHeader(props: Props) {
   const { address, networkId } = props;
   const { data: contract } = useContractCollection(networkId, address);
 
-  const collectionImage = contract?.collection.imageUrl;
+  const collectionImage = contract?.collection?.imageUrl;
   const collection = contract?.collection;
 
   const theme = useTheme();

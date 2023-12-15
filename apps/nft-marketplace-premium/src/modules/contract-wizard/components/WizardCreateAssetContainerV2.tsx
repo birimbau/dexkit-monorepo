@@ -238,6 +238,7 @@ function WizardCreateAssetContainerV2(props: Props) {
         isDoneMeta={uploadItemsMetadataMutation.isSuccess}
         chainId={chainId}
         contractAddress={address}
+        useContractURL={true}
       />
       <AppConfirmDialog
         dialogProps={{

@@ -36,6 +36,7 @@ interface Props {
   transactionHash?: string;
   contractAddress?: string;
   chainId?: number;
+  useContractURL?: boolean;
 }
 
 export default function CreateAssetDialog({
@@ -50,6 +51,7 @@ export default function CreateAssetDialog({
   chainId,
   transactionHash,
   contractAddress,
+  useContractURL,
 }: Props) {
   const { onClose } = dialogProps;
 
@@ -281,9 +283,15 @@ export default function CreateAssetDialog({
                 color="primary"
                 variant="contained"
                 LinkComponent={Link}
-                href={`/contract-wizard/collection/${getNetworkSlugFromChainId(
-                  chainId,
-                )}/${contractAddress}`}
+                href={
+                  useContractURL
+                    ? `/contract/${getNetworkSlugFromChainId(
+                        chainId,
+                      )}/${contractAddress}`
+                    : `/contract-wizard/collection/${getNetworkSlugFromChainId(
+                        chainId,
+                      )}/${contractAddress}`
+                }
               >
                 <FormattedMessage id="view.nfts" defaultMessage="View nfts" />
               </Button>
