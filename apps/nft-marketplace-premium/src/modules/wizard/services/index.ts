@@ -223,3 +223,19 @@ export async function deleteMemberSite({ siteId, account }: { siteId: number, ac
   return myAppsApi.delete(`/site/remove-permissions/${siteId}/${account}`);
 
 }
+
+export async function upsertAppVersion({ siteId, version, description, versionId }: { siteId: number, version: string, description?: string, versionId?: number }) {
+  return myAppsApi.post(`/site/upsert-version/${siteId}`, {
+    version,
+    description,
+    versionId
+  });
+}
+
+export async function deleteAppVersion({ siteId, siteVersionId }: { siteId: number, siteVersionId: number }) {
+  return myAppsApi.delete(`/site/version/${siteId}/${siteVersionId}`);
+}
+
+export async function setAppVersion({ siteId, siteVersionId }: { siteId: number, siteVersionId: number }) {
+  return myAppsApi.get(`/site/set-version/${siteId}/${siteVersionId}`);
+}

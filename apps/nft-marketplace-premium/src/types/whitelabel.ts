@@ -46,6 +46,9 @@ export interface SiteResponse {
   active?: boolean;
   previewUrl?: string;
   nft?: AssetAPI
+  lastVersionSet?: {
+    version: string;
+  }
   permissions?: {
     accountId: string;
     permissions: {

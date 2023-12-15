@@ -83,6 +83,9 @@ const SwapFeeWizardContainer = dynamic(
 const ThemeWizardContainer = dynamic(() => import('./ThemeWizardContainer'));
 const TokenWizardContainer = dynamic(() => import('./TokenWizardContainer'));
 const TeamWizardContainer = dynamic(() => import('./TeamWizardContainer'));
+const AppVersionWizardContainer = dynamic(
+  () => import('./AppVersionWizardContainer'),
+);
 const AnalyticsWizardContainer = dynamic(
   () => import('./AnalyticsWizardContainer'),
 );
@@ -104,6 +107,7 @@ export enum ActiveMenu {
   Analytics = 'analytics',
   UserEventAnalytics = 'user-event-analytics',
   MarketplaceFees = 'marketplace-fees',
+  AppVersion = 'app-version',
   SwapFees = 'swap-fees',
   Collections = 'collections',
   Tokens = 'tokens',
@@ -171,9 +175,11 @@ export function EditWizardContainer({ site }: Props) {
 
   const { isLoggedIn, user } = useAuth();
 
-  const [activeMenu, setActiveMenu] = useState<ActiveMenu>(ActiveMenu.General);
+  const [activeMenu, setActiveMenu] = useState<ActiveMenu>(
+    tab || ActiveMenu.General,
+  );
   const [activeMenuWithChanges, setActiveMenuWithChanges] =
-    useState<ActiveMenu>(ActiveMenu.General);
+    useState<ActiveMenu>(tab || ActiveMenu.General);
   const [activeBuilderKit, setActiveBuilderKit] = useState<BuilderKit>(
     BuilderKit.ALL,
   );
@@ -186,6 +192,9 @@ export function EditWizardContainer({ site }: Props) {
       setActiveMenu(mn);
     }
 
+    /*const url = new URL(location);
+    url.searchParams.set('tab', mn);
+    history.pushState({}, '', url);*/
     /*router.push(
       {
         pathname: `/admin/edit/${site?.slug}`,
@@ -334,6 +343,23 @@ export function EditWizardContainer({ site }: Props) {
                     <ListItemText
                       primary={
                         <FormattedMessage id="team" defaultMessage={'Team'} />
+                      }
+                    />
+                  </ListItemButton>
+                </ListItem>
+              )}
+              {site?.owner?.toLowerCase() === user?.address?.toLowerCase() && (
+                <ListItem disablePadding>
+                  <ListItemButton
+                    selected={activeMenu === ActiveMenu.AppVersion}
+                    onClick={() => handleChangeTab(ActiveMenu.AppVersion)}
+                  >
+                    <ListItemText
+                      primary={
+                        <FormattedMessage
+                          id="version"
+                          defaultMessage={'Version'}
+                        />
                       }
                     />
                   </ListItemButton>
@@ -858,6 +884,13 @@ export function EditWizardContainer({ site }: Props) {
                     onHasChanges={setHasChanges}
                   />
                 )}
+                {activeMenu === ActiveMenu.AppVersion &&
+                  config &&
+                  site?.owner?.toLowerCase() ===
+                    user?.address?.toLowerCase() && (
+                    <AppVersionWizardContainer site={site} />
+                  )}
+
                 {activeMenu === ActiveMenu.Domain && config && (
                   <DomainWizardContainer
                     config={config}
