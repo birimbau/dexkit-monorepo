@@ -1,8 +1,15 @@
+import { MY_APPS_ENDPOINT } from '@dexkit/core/constants';
 import { UserEvents } from '@dexkit/core/constants/userEvents';
+import axios from 'axios';
 import { serialize } from 'cookie';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { login } from 'src/services/auth';
-import { myAppsApi } from 'src/services/whitelabel';
+
+
+const userEventsApi = axios.create({
+  baseURL: MY_APPS_ENDPOINT,
+  headers: { 'content-type': 'application/json' },
+});
 
 export default async function handler(
   req: NextApiRequest,
@@ -13,11 +20,11 @@ export default async function handler(
     const response = await login({ address, signature });
     const data = (await response.data);
     res.setHeader('Set-Cookie', [serialize('refresh_token', data.refresh_token, { httpOnly: true, path: '/', }), serialize('refresh_token_auth', data.refresh_token, { httpOnly: true })]);
-    myAppsApi.post('/user-events', { event: UserEvents.loginSignMessage, account: address, siteId }, {
+    userEventsApi.post('/user-events', { event: UserEvents.loginSignMessage, account: address, siteId, refreshToken: data.refresh_token }, {
       headers: {
         'DexKit-Api-Key': process.env.MARKETPLACE_API_KEY as string
       }
-    })
+    }).catch(console.log)
 
 
     return res.status(response.status).json({ access_token: data.access_token });
