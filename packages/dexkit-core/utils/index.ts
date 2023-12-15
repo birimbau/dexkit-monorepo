@@ -11,6 +11,10 @@ export * from "./ipfs";
 export * from "./numbers";
 
 
+export const omitNull = (obj: any) => {
+  Object.keys(obj).filter(k => obj[k] === null).forEach(k => delete (obj[k]))
+  return obj
+}
 
 export function parseChainId(chainId: string | number) {
   return typeof chainId === "number"

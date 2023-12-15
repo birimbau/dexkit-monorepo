@@ -15,6 +15,7 @@ import { DropEditionListSection } from '@/modules/wizard/components/sections/Dro
 import NftDropSection from '@/modules/wizard/components/sections/NftDropSection';
 import { NETWORK_FROM_SLUG } from '@dexkit/core/constants/networks';
 import { Asset } from '@dexkit/core/types';
+import { omitNull } from '@dexkit/core/utils';
 import { NFTType } from '@dexkit/ui/modules/nft/constants/enum';
 import { getCollectionData } from '@dexkit/ui/modules/nft/services';
 import { Collection, TraderOrderFilter } from '@dexkit/ui/modules/nft/types';
@@ -493,7 +494,7 @@ export const getStaticProps: GetStaticProps = async ({
       : NFTType.ERC721;
 
     await queryClient.prefetchQuery(key, async () => {
-      let coll = collection || {};
+      let coll = collection || ({} as Collection);
 
       return {
         address,
@@ -503,7 +504,7 @@ export const getStaticProps: GetStaticProps = async ({
         description: metadata.description,
         imageUrl: metadata.image,
         nftType: type,
-        ...coll,
+        ...omitNull(coll),
       } as Collection;
     });
   } else {

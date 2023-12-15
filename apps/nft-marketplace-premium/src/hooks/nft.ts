@@ -47,6 +47,7 @@ import {
 } from '../types/nft';
 
 import { ChainId } from '@dexkit/core/constants';
+import { omitNull } from '@dexkit/core/utils';
 import { getCollectionData } from '@dexkit/ui/modules/nft/services';
 import { hexToString } from '@dexkit/ui/utils';
 import { ThirdwebSDK } from '@thirdweb-dev/sdk';
@@ -333,9 +334,9 @@ export function useCollection(
 
       if (collection) {
         return {
-          ...collectionObj,
-          ...collection,
-          ...collectionFromConfig,
+          ...omitNull(collectionObj),
+          ...omitNull(collection),
+          ...omitNull(collectionFromConfig),
         };
       }
 
@@ -354,9 +355,9 @@ export function useCollection(
       );
 
       return {
-        ...collectionObj,
-        ...onChainCollection,
-        ...collectionFromConfig,
+        ...omitNull(collectionObj),
+        ...omitNull(onChainCollection),
+        ...omitNull(collectionFromConfig),
       };
     },
     {

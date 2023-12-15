@@ -1,8 +1,5 @@
-import {
-  getBlockExplorerUrl,
-  getNormalizedUrl,
-  truncateAddress,
-} from '@dexkit/core/utils';
+import { AssetImage } from '@/modules/nft/components/AssetImage';
+import { getBlockExplorerUrl, truncateAddress } from '@dexkit/core/utils';
 import EvmBurnNftDialog from '@dexkit/ui/modules/evm-burn-nft/components/dialogs/EvmBurnNftDialog';
 import EvmTransferNftDialog from '@dexkit/ui/modules/evm-transfer-nft/components/dialogs/EvmTransferNftDialog';
 import {
@@ -20,6 +17,8 @@ import Grid from '@mui/material/Grid';
 import { useContract, useContractMetadata, useNFT } from '@thirdweb-dev/react';
 import { useWeb3React } from '@web3-react/core';
 import { useState } from 'react';
+
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 
 import { FormattedMessage } from 'react-intl';
 import { PageHeader } from 'src/components/PageHeader';
@@ -129,11 +128,11 @@ export default function ContractNftItemContainer({
               },
               {
                 caption: contractMetadata.data?.name,
-                uri: `/contracts/${network}/${address}`,
+                uri: `/contract/${network}/${address}`,
               },
               {
                 caption: `#${nftQuery.data?.metadata.id}`,
-                uri: `/contracts/${network}/${address}/${tokenId}`,
+                uri: `/contract/${network}/${address}/${tokenId}`,
                 active: true,
               },
             ]}
@@ -149,9 +148,18 @@ export default function ContractNftItemContainer({
             )}
             {nftQuery.data && nftQuery.data.metadata.image && (
               <CardMedia
-                src={getNormalizedUrl(nftQuery.data.metadata.image)}
-                sx={{ aspectRatio: '1/1', height: '100%' }}
-              />
+                component="div"
+                sx={{ display: 'block', maxWidth: '100%', height: 'auto' }}
+              >
+                <Box
+                  sx={{
+                    position: 'relative',
+                    width: '100%',
+                  }}
+                >
+                  <AssetImage src={nftQuery.data.metadata.image} />
+                </Box>
+              </CardMedia>
             )}
           </Card>
         </Grid>
@@ -181,6 +189,17 @@ export default function ContractNftItemContainer({
                   </Button>
                   <Button variant="contained" onClick={handleShowBurn}>
                     <FormattedMessage id="burn" defaultMessage="Burn" />
+                  </Button>
+                  <Button
+                    size="small"
+                    href={`/asset/${network}/${address}/${tokenId}`}
+                    endIcon={<OpenInNewIcon />}
+                    target="_blank"
+                  >
+                    <FormattedMessage
+                      id="view.public.page"
+                      defaultMessage="View public page"
+                    />
                   </Button>
                 </Stack>
               </Box>

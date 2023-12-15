@@ -213,12 +213,17 @@ export function ContractMetadataHeader({
                 <FormattedMessage id="explorer" defaultMessage="Explorer" />
               </Button>
               {getContractUrl(contractTypeV2) && (
-                <Link href={getContractUrl(contractTypeV2) as string}>
+                <Button
+                  size="small"
+                  href={getContractUrl(contractTypeV2) as string}
+                  endIcon={<OpenInNewIcon />}
+                  target="_blank"
+                >
                   <FormattedMessage
                     id="view.public.page"
                     defaultMessage="View public page"
                   />
-                </Link>
+                </Button>
               )}
               <Chip
                 label={
