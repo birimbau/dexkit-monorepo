@@ -36,7 +36,9 @@ interface Props {
   transactionHash?: string;
   contractAddress?: string;
   chainId?: number;
-  useContractURL?: boolean;
+  useContractURL: boolean;
+  // if modal is on same page of the url we just close the modal
+  modalOnSamePage?: boolean;
 }
 
 export default function CreateAssetDialog({
@@ -52,6 +54,7 @@ export default function CreateAssetDialog({
   transactionHash,
   contractAddress,
   useContractURL,
+  modalOnSamePage,
 }: Props) {
   const { onClose } = dialogProps;
 
@@ -67,8 +70,8 @@ export default function CreateAssetDialog({
         title={
           <FormattedMessage id="creating.nfts" defaultMessage="Creating NFTs" />
         }
-        disableClose={true}
-        hideCloseButton={true}
+        disableClose={isDoneMeta && modalOnSamePage ? false : true}
+        hideCloseButton={isDoneMeta && modalOnSamePage ? false : true}
         onClose={handleClose}
       />
       <Divider />
@@ -278,24 +281,36 @@ export default function CreateAssetDialog({
                 />
               </Button>
             )}
-            {isDoneMeta && (
-              <Button
-                color="primary"
-                variant="contained"
-                LinkComponent={Link}
-                href={
-                  useContractURL
-                    ? `/contract/${getNetworkSlugFromChainId(
-                        chainId,
-                      )}/${contractAddress}`
-                    : `/contract-wizard/collection/${getNetworkSlugFromChainId(
-                        chainId,
-                      )}/${contractAddress}`
-                }
-              >
-                <FormattedMessage id="view.nfts" defaultMessage="View nfts" />
-              </Button>
-            )}
+            {isDoneMeta &&
+              (modalOnSamePage ? (
+                <Button
+                  color="primary"
+                  variant="contained"
+                  onClick={handleClose}
+                >
+                  <FormattedMessage
+                    id="nfts.created.close.modal"
+                    defaultMessage="NFT created! Close modal"
+                  />
+                </Button>
+              ) : (
+                <Button
+                  color="primary"
+                  variant="contained"
+                  LinkComponent={Link}
+                  href={
+                    useContractURL
+                      ? `/contract/${getNetworkSlugFromChainId(
+                          chainId,
+                        )}/${contractAddress}`
+                      : `/contract-wizard/collection/${getNetworkSlugFromChainId(
+                          chainId,
+                        )}/${contractAddress}`
+                  }
+                >
+                  <FormattedMessage id="view.nfts" defaultMessage="View nfts" />
+                </Button>
+              ))}
             {(isErrorMeta || isError) && (
               <Button color="primary" variant="contained" onClick={handleClose}>
                 <FormattedMessage

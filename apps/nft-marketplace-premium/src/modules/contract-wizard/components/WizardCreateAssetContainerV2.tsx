@@ -239,6 +239,7 @@ function WizardCreateAssetContainerV2(props: Props) {
         chainId={chainId}
         contractAddress={address}
         useContractURL={true}
+        modalOnSamePage={true}
       />
       <AppConfirmDialog
         dialogProps={{

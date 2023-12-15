@@ -17,7 +17,6 @@ import {
   Typography,
 } from '@mui/material';
 import { FormattedMessage } from 'react-intl';
-import { isError } from '@tanstack/react-query';
 import { AppDialogTitle } from 'src/components/AppDialogTitle';
 import Link from 'src/components/Link';
 import { getNetworkSlugFromChainId } from 'src/utils/blockchain';
@@ -155,7 +154,7 @@ export default function CreateAssetDialog({
                 variant="contained"
                 LinkComponent={Link}
                 href={`/contract-wizard/collection/${getNetworkSlugFromChainId(
-                  chainId
+                  chainId,
                 )}/${contractAddress}`}
               >
                 <FormattedMessage id="view.nfts" defaultMessage="View nfts" />
