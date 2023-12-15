@@ -86,8 +86,8 @@ export function PermissionsAccordionForm({ memberPermissions, siteId }: Props) {
   const handleMemberRemovedError = () => {
     enqueueSnackbar(
       formatMessage({
-        defaultMessage: 'error.removing.member',
-        id: 'Error on removing member',
+        defaultMessage: 'Error on removing member',
+        id: 'error.removing.member',
       }),
       {
         variant: 'error',
