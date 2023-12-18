@@ -75,6 +75,9 @@ export default function AssetSectionForm({
               enableFiat: section.config.enableFiat
                 ? section.config.enableFiat
                 : false,
+              enableDarkblock: section.config.enableDarkblock
+                ? section.config.enableDarkblock
+                : false,
             }
           : {
               address: '',
@@ -82,6 +85,7 @@ export default function AssetSectionForm({
               tokenId: '',
               enableDrops: false,
               enableFiat: false,
+              enableDarkblock: false,
             }
       }
       onSubmit={handleSubmit}
@@ -260,6 +264,23 @@ export default function AssetSectionForm({
                       <FormattedMessage
                         id="enable.drop"
                         defaultMessage="Enable Drop"
+                      />
+                    }
+                  />
+                </Grid>
+                <Grid item>
+                  <FormControlLabel
+                    control={
+                      <Field
+                        component={Switch}
+                        name="enableDarkblock"
+                        type="checkbox"
+                      />
+                    }
+                    label={
+                      <FormattedMessage
+                        id="enable.drop"
+                        defaultMessage="Enable Darkblock"
                       />
                     }
                   />

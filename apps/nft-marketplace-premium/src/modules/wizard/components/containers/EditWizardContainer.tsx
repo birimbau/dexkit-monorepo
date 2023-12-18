@@ -11,6 +11,7 @@ import {
   useTheme,
 } from '@mui/material';
 
+import ApiIcon from '@mui/icons-material/Api';
 import Close from '@mui/icons-material/Close';
 import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchange';
 import ExpandLess from '@mui/icons-material/ExpandLess';
@@ -51,6 +52,9 @@ import { ConfirmationEmailMessage } from '../ConfirmationEmailMessage';
 import { PreviewAppButton } from '../PreviewAppButton';
 import { WelcomeMessage } from '../WelcomeMessage';
 import SignConfigDialog from '../dialogs/SignConfigDialog';
+const IntegrationsWizardContainer = dynamic(
+  () => import('./IntegrationsWizardContainer'),
+);
 const UserEventAnalyticsContainer = dynamic(
   () => import('./UserEventAnalyticsContainer'),
 );
@@ -112,6 +116,7 @@ export enum ActiveMenu {
   Collections = 'collections',
   Tokens = 'tokens',
   Ownership = 'ownership',
+  Integrations = 'integrations',
 }
 
 function TourButton() {
@@ -152,6 +157,7 @@ export function EditWizardContainer({ site }: Props) {
     fees: false,
     data: false,
     analytics: false,
+    integrations: false,
   });
   const handleClickSettings = () => {
     setOpenMenu({ ...openMenu, settings: !openMenu.settings });
@@ -171,6 +177,10 @@ export function EditWizardContainer({ site }: Props) {
 
   const handleClickAnalytics = () => {
     setOpenMenu({ ...openMenu, analytics: !openMenu.analytics });
+  };
+
+  const handleClickIntegrations = () => {
+    setOpenMenu({ ...openMenu, integrations: !openMenu.integrations });
   };
 
   const { isLoggedIn, user } = useAuth();
@@ -643,6 +653,46 @@ export function EditWizardContainer({ site }: Props) {
           </List>
         </nav>
       )}
+      {false && (
+        <nav aria-label="integrations">
+          <List>
+            <ListItemButton onClick={handleClickIntegrations}>
+              <ListItemIcon>
+                <ApiIcon />
+              </ListItemIcon>
+
+              <ListItemText
+                primary={
+                  <FormattedMessage
+                    id="integrations"
+                    defaultMessage="Integrations"
+                  />
+                }
+              />
+              {openMenu.integrations ? <ExpandLess /> : <ExpandMore />}
+            </ListItemButton>
+            <Collapse in={openMenu.integrations} timeout="auto" unmountOnExit>
+              <List component="div" sx={{ pl: 4 }}>
+                <ListItem disablePadding>
+                  <ListItemButton
+                    selected={activeMenu === ActiveMenu.Integrations}
+                    onClick={() => handleChangeTab(ActiveMenu.Integrations)}
+                  >
+                    <ListItemText
+                      primary={
+                        <FormattedMessage
+                          id="general"
+                          defaultMessage="General"
+                        />
+                      }
+                    />
+                  </ListItemButton>
+                </ListItem>
+              </List>
+            </Collapse>
+          </List>
+        </nav>
+      )}
     </Box>
   );
 
@@ -1008,6 +1058,10 @@ export function EditWizardContainer({ site }: Props) {
                 {activeMenu === ActiveMenu.UserEventAnalytics && config && (
                   <UserEventAnalyticsContainer siteId={site?.id} />
                 )}
+
+                {/* {activeMenu === ActiveMenu.Integrations && config && (
+                  <IntegrationsWizardContainer siteId={site?.id} />
+                )} */}
               </Stack>
             </Box>
             {/*false && theme && (
