@@ -44,7 +44,7 @@ export function AssetPricePaper({ address, id }: Props) {
   const { data: asset } = useAsset(address, id);
   const { data: metadata } = useAssetMetadata(asset);
   const { data: assetBalance } = useAssetBalance(asset, account);
-
+  console.log(asset);
   const queryClient = useQueryClient();
 
   const [openMakeOffer, setOpenMakeOffer] = useState(false);
@@ -370,24 +370,24 @@ export function AssetPricePaper({ address, id }: Props) {
               </Typography>
               <Typography variant="h6">0.0004</Typography>
             </Box> */}
-            {isAddressEqual(account, asset?.owner) ||
-              (isERC1155Owner(assetBalance) && (
-                <>
-                  <Button
-                    size="large"
-                    onClick={handleOpenMakeListingDialog}
-                    startIcon={<DollarSquare color="primary" />}
-                    variant="outlined"
-                  >
-                    <FormattedMessage
-                      defaultMessage="Sell"
-                      description="Sell button"
-                      id="sell"
-                    />
-                  </Button>
-                  <TransferAssetButton asset={asset} />
-                </>
-              ))}
+            {(isAddressEqual(account, asset?.owner) ||
+              isERC1155Owner(assetBalance)) && (
+              <>
+                <Button
+                  size="large"
+                  onClick={handleOpenMakeListingDialog}
+                  startIcon={<DollarSquare color="primary" />}
+                  variant="outlined"
+                >
+                  <FormattedMessage
+                    defaultMessage="Sell"
+                    description="Sell button"
+                    id="sell"
+                  />
+                </Button>
+                <TransferAssetButton asset={asset} />
+              </>
+            )}
 
             {(assetType === 'ERC1155' ||
               !isAddressEqual(account, asset?.owner)) && (
