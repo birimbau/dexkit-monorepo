@@ -44,7 +44,6 @@ export function AssetPricePaper({ address, id }: Props) {
   const { data: asset } = useAsset(address, id);
   const { data: metadata } = useAssetMetadata(asset);
   const { data: assetBalance } = useAssetBalance(asset, account);
-  console.log(asset);
   const queryClient = useQueryClient();
 
   const [openMakeOffer, setOpenMakeOffer] = useState(false);
