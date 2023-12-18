@@ -4545,7 +4545,7 @@
     events "^3.3.0"
     react "^18.2.0"
 
-"@lifi/widget@^2.9.5":
+"@lifi/widget@2.9.5":
   version "2.9.5"
   resolved "https://registry.yarnpkg.com/@lifi/widget/-/widget-2.9.5.tgz#3a61ebd74a07d05c85eb7888b6b4cec35f6fb66b"
   integrity sha512-Dn2N1Wx8WEOFVAYt/d5JrkzwC1fji/KhlR11dvMEOmzM3L0AkZ1EeBllvVoPu0zku7Ti9ZrfEx08F+NnksvokQ==
