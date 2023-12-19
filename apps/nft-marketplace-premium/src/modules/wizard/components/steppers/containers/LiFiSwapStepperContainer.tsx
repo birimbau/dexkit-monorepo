@@ -11,7 +11,7 @@ import { PageHeader } from 'src/components/PageHeader';
 import { useSendConfigMutation } from 'src/hooks/whitelabel';
 import { AppConfig } from 'src/types/config';
 import { SiteResponse } from 'src/types/whitelabel';
-import theDefaultConfig from '../../../../../../config/quick.swap.default.app.json';
+import theDefaultConfig from '../../../../../../config/quick.lifi-swap.default.app.json';
 import { PreviewAppButton } from '../../PreviewAppButton';
 import SignConfigDialog from '../../dialogs/SignConfigDialog';
 import LiFiStepper from '../LiFiStepper/LiFiStepper';
@@ -66,7 +66,7 @@ export default function LiFiSwapStepperContainer({ site }: Props) {
       setWizardConfig(newConfig);
     },
 
-    [wizardConfig, setWizardConfig]
+    [wizardConfig, setWizardConfig],
   );
 
   const handleCloseSendingConfig = () => {
@@ -92,8 +92,8 @@ export default function LiFiSwapStepperContainer({ site }: Props) {
         <Stack>
           <Typography variant="h5" align="center">
             <FormattedMessage
-              id="create.swap.app"
-              defaultMessage="Create swap app"
+              id="create.lifiswap.app"
+              defaultMessage="Create Li.Fi swap app"
             />
           </Typography>
           <Typography variant="body1" align="center" color="textSecondary">
