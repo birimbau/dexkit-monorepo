@@ -49,6 +49,15 @@ export const sections = [
     icon: <SwapHorizIcon fontSize="large" />,
   },
   {
+    type: 'swap-lifi',
+    titleId: 'lifiswap',
+    titleDefaultMessage: 'Li.Fi Swap',
+    category: 'cryptocurrency',
+    description:
+      'Build a cryptocurrency swap&bridge tool using the powerful Li.Fi protocol.',
+    icon: <SwapHorizIcon fontSize="large" />,
+  },
+  {
     type: 'exchange',
     titleId: 'exchange',
     titleDefaultMessage: 'Exchange',

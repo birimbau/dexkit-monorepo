@@ -5,7 +5,10 @@ const CollectionSection = dynamic(
   () => import('../sections/CollectionSection'),
 );
 
-import DexGeneratorSection from '../sections/DexGeneratorSection';
+const DexGeneratorSection = dynamic(
+  () => import('../sections/DexGeneratorSection'),
+);
+const LiFiSection = dynamic(() => import('../sections/LiFiSection'));
 
 const AssetSection = dynamic(() => import('../sections/AssetSection/index'));
 
@@ -46,9 +49,10 @@ const UserContractSection = dynamic(
 
 interface Props {
   section: AppPageSection;
+  isEdit?: boolean;
 }
 
-export function SectionRender({ section }: Props) {
+export function SectionRender({ section, isEdit }: Props) {
   if (!section?.type) {
     return <></>;
   }
@@ -71,6 +75,8 @@ export function SectionRender({ section }: Props) {
     return <CustomSection section={section} />;
   } else if (section.type === 'swap') {
     return <SwapSection section={section} />;
+  } else if (section.type === 'swap-lifi') {
+    return <LiFiSection section={section} isEdit={isEdit} />;
   } else if (section.type === 'asset-store') {
     return <AssetStoreSection section={section} />;
   } else if (section.type === 'markdown') {

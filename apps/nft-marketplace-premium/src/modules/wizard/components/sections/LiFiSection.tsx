@@ -7,80 +7,43 @@ import { Skeleton, useTheme } from '@mui/material';
 import { useWeb3React } from '@web3-react/core';
 import { Signer } from 'ethers';
 import dynamic from 'next/dynamic';
-import { Suspense, useCallback, useEffect } from 'react';
+import { Suspense, useCallback } from 'react';
 import { DEFAULT_LIFI_INTEGRATOR } from 'src/constants';
-
-import { useTrackUserEventsMutation } from '@dexkit/ui/hooks/userEvents';
-import type { Route } from '@lifi/sdk';
-import type { RouteExecutionUpdate } from '@lifi/widget';
-import { useWidgetEvents, WidgetEvent } from '@lifi/widget';
+import { useAppConfig } from 'src/hooks/app';
+import { SwapLiFiPageSection } from '../../types/section';
 
 const LiFiWidget = dynamic(
   () => import('@lifi/widget').then((module) => module.LiFiWidget),
   {
     ssr: false,
-  }
+  },
 );
+
+const LiFiSectionEvents = dynamic(() => import('./LiFiSectionEvents'), {
+  ssr: false,
+});
 
 interface Props {
   featuredTokens?: Token[];
   defaultChainId?: ChainId;
-  configsByChain?: { [key: number]: ChainConfig };
+  isEdit?: boolean;
+  configByChain?: { [key: number]: ChainConfig };
 }
 
 const LiFiSection = ({
-  configsByChain,
+  configByChain,
   featuredTokens,
+  isEdit,
   defaultChainId,
 }: Props) => {
+  const appConfig = useAppConfig();
+  console.log(appConfig.swapFees);
+
   const theme = useTheme();
-  const userEventsMutation = useTrackUserEventsMutation();
 
-  const widgetEvents = useWidgetEvents();
-
-  useEffect(() => {
-    const onRouteExecutionStarted = (route: Route) => {
-      console.log('start', route);
-      // console.log('onRouteExecutionStarted fired.');
-    };
-    const onRouteExecutionUpdated = (update: RouteExecutionUpdate) => {
-      console.log('update', update);
-      // console.log('onRouteExecutionUpdated fired.');
-    };
-    const onRouteExecutionCompleted = (route: Route) => {
-      console.log('complete', route);
-      if (route.steps) {
-        route.steps.forEach((step) => {
-          if (step.execution) {
-            if (step.execution.process) {
-              step.execution.process.forEach((pr) => {
-                if (pr.type === 'SWAP') {
-                  userEventsMutation.mutate({});
-                }
-              });
-            }
-          }
-        });
-      }
-      // console.log('onRouteExecutionCompleted fired.');
-    };
-    const onRouteExecutionFailed = (update: RouteExecutionUpdate) => {
-      // console.log('onRouteExecutionFailed fired.');
-    };
-
-    widgetEvents.on(WidgetEvent.RouteExecutionStarted, onRouteExecutionStarted);
-    widgetEvents.on(WidgetEvent.RouteExecutionUpdated, onRouteExecutionUpdated);
-    widgetEvents.on(
-      WidgetEvent.RouteExecutionCompleted,
-      onRouteExecutionCompleted
-    );
-    widgetEvents.on(WidgetEvent.RouteExecutionFailed, onRouteExecutionFailed);
-
-    return () => widgetEvents.all.clear();
-  }, [widgetEvents]);
+  const { provider, account, chainId, connector } = useWeb3React();
 
   const connectWalletDialog = useConnectWalletDialog();
-  const { provider, account, chainId, connector } = useWeb3React();
 
   const logoutMutation = useLogoutAccountMutation();
 
@@ -99,7 +62,9 @@ const LiFiSection = ({
     }
   }, [connector]);
 
-  const chosenChainId = chainId || defaultChainId;
+  const chosenChainId = isEdit
+    ? defaultChainId || chainId
+    : chainId || defaultChainId;
 
   return (
     <LiFiWidget
@@ -110,13 +75,13 @@ const LiFiSection = ({
       fromChain={chosenChainId}
       toChain={chosenChainId}
       fromToken={
-        chosenChainId && configsByChain
-          ? configsByChain[chosenChainId]?.sellToken?.address
+        chosenChainId && configByChain
+          ? configByChain[chosenChainId]?.sellToken?.address
           : undefined
       }
       toToken={
-        chosenChainId && configsByChain
-          ? configsByChain[chosenChainId]?.buyToken?.address
+        chosenChainId && configByChain
+          ? configByChain[chosenChainId]?.buyToken?.address
           : undefined
       }
       tokens={{
@@ -131,6 +96,12 @@ const LiFiSection = ({
         },
         typography: theme.typography,
       }}
+      fee={
+        appConfig.swapFees?.amount_percentage !== undefined
+          ? appConfig.swapFees?.amount_percentage / 100
+          : 0
+      }
+      referrer={appConfig.swapFees?.recipient}
       hiddenUI={['poweredBy', 'appearance', 'history', 'language']}
       walletManagement={{
         async connect() {
@@ -148,12 +119,19 @@ const LiFiSection = ({
   );
 };
 
-export default function LiFiWrapper(props: Props) {
+export default function LiFiWrapper({
+  section,
+  isEdit,
+}: {
+  section: SwapLiFiPageSection;
+  isEdit?: boolean;
+}) {
   return (
     <Suspense
       fallback={<Skeleton variant="rectangular" width={210} height={400} />}
     >
-      <LiFiSection {...props} />
+      <LiFiSectionEvents />
+      <LiFiSection {...section.config} isEdit={isEdit} />
     </Suspense>
   );
 }

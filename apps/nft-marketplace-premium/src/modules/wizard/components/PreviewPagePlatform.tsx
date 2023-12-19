@@ -10,6 +10,7 @@ import { PreviewPlatformType } from './PreviewPlatformType';
 interface Props {
   sections?: AppPageSection[];
   disabled?: boolean;
+
   withLayout?: boolean;
   appConfig?: AppConfig;
   title?: React.ReactNode;
@@ -22,6 +23,7 @@ export default function PreviewPagePlatform({
   withLayout,
   appConfig,
   title,
+
   enableOverflow,
 }: Props) {
   const [previewPlatform, setPreviewPlatform] = useState<any>('desktop');

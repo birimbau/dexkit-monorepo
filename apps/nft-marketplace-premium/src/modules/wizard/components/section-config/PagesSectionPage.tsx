@@ -112,6 +112,10 @@ export default function PagesSectionPage({
       title = <FormattedMessage id="swap" defaultMessage="Swap" />;
       subtitle = section.title || '';
       icon = <SwapHorizIcon />;
+    } else if (section.type === 'swap-lifi') {
+      title = <FormattedMessage id="swap.lifi" defaultMessage="Swap Li.Fi" />;
+      subtitle = section.title || '';
+      icon = <SwapHorizIcon />;
     } else if (section.type === 'asset-store') {
       title = <FormattedMessage id="nft.store" defaultMessage="NFT store" />;
       subtitle = section.title || '';

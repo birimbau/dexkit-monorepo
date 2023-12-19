@@ -16,7 +16,7 @@ import { FormattedMessage } from 'react-intl';
 import { Token } from 'src/types/blockchain';
 import { AppConfig } from '../../../../types/config';
 import { StepperButtonProps } from '../../types';
-import { SwapPageSection } from '../../types/section';
+import { SwapLiFiPageSection, SwapPageSection } from '../../types/section';
 import { SwapConfigForm } from '../forms/SwapConfigForm';
 import { StepperButtons } from '../steppers/StepperButtons';
 const LiFiSection = dynamic(() => import('../sections/LiFiSection'));
@@ -40,9 +40,9 @@ export default function LiFiWizardContainer({
   const [swapFormData, setSwapFormData] = useState<SwapConfig | undefined>(
     (
       config.pages['home']?.sections.find(
-        (s) => s.type === 'swap'
+        (s) => s.type === 'swap-lifi',
       ) as SwapPageSection
-    )?.config
+    )?.config,
   );
 
   const featuredTokens = useMemo<Token[]>(() => {
@@ -54,6 +54,7 @@ export default function LiFiWizardContainer({
         chainId: t.chainId as number,
         decimals: t.decimals,
         name: t.name,
+        logoURI: t.logoURI,
         symbol: t.symbol,
       } as Token;
     });
@@ -65,19 +66,19 @@ export default function LiFiWizardContainer({
 
   const changeConfig = function (
     configToChange: AppConfig,
-    formData?: SwapConfig
+    formData?: SwapConfig,
   ) {
     const newConfig = { ...configToChange };
     const swapSectionPageIndex = newConfig.pages['home']?.sections.findIndex(
-      (s) => s.type === 'swap'
+      (s) => s.type === 'swap-lifi',
     );
-    let editSwapSection: SwapPageSection;
+    let editSwapSection: SwapLiFiPageSection;
     if (formData) {
       if (swapSectionPageIndex !== -1) {
         editSwapSection = {
           ...(newConfig.pages['home']?.sections[
             swapSectionPageIndex
-          ] as SwapPageSection),
+          ] as SwapLiFiPageSection),
           config: formData,
         };
         newConfig.pages['home'].sections[swapSectionPageIndex] =
@@ -85,7 +86,7 @@ export default function LiFiWizardContainer({
       } else {
         editSwapSection = {
           title: 'Swap',
-          type: 'swap',
+          type: 'swap-lifi',
           config: formData,
         };
         newConfig.pages['home']?.sections.push(editSwapSection);
@@ -135,12 +136,18 @@ export default function LiFiWizardContainer({
       <Grid item xs={6}>
         <CssVarsProvider theme={swapTheme}>
           <LiFiSection
-            configsByChain={
-              swapFormData?.configByChain ? swapFormData?.configByChain : {}
-            }
-            featuredTokens={featuredTokens}
-            defaultChainId={swapFormData?.defaultEditChainId}
-          ></LiFiSection>
+            section={{
+              type: 'swap-lifi',
+              config: {
+                featuredTokens: featuredTokens,
+                defaultChainId: swapFormData?.defaultEditChainId,
+                configByChain: swapFormData?.configByChain
+                  ? swapFormData?.configByChain
+                  : {},
+              },
+            }}
+            isEdit={true}
+          />
         </CssVarsProvider>
       </Grid>
       <Grid item xs={12}>

@@ -166,7 +166,6 @@ export function SectionSelector({ onClickSection }: Props) {
                                 borderColor: 'text.secondary',
                               }}
                               onClick={() => {
-                                console.log(sec.type);
                                 onClickSection({ sectionType: sec.type });
                               }}
                             >
