@@ -22,6 +22,7 @@ const PolygonDarkblockWidget = dynamic(
   async () =>
     // @ts-ignore
     (await import('@darkblock.io/matic-widget')).PolygonDarkblockWidget,
+  { ssr: false },
 );
 
 interface DarkBlockWrapperProps {

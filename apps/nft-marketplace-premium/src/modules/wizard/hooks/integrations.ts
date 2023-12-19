@@ -1,0 +1,86 @@
+import { DexkitApiProvider } from '@dexkit/core/providers';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { useContext } from 'react';
+
+export function useSaveApiKeyMutation() {
+  const { instance } = useContext(DexkitApiProvider);
+
+  return useMutation(
+    async (params: { siteId: number; type: string; value: string }) => {
+      const result = (await instance?.post('/integrations/apikeys', params))
+        ?.status;
+
+      return result;
+    },
+  );
+}
+
+export const GET_INTEGRATION_API_KEY = 'GET_INTEGRATION_API_KEY';
+
+export function useGetApiKeyQuery({
+  siteId,
+  type,
+}: {
+  siteId?: number;
+  type: string;
+}) {
+  const { instance } = useContext(DexkitApiProvider);
+
+  return useQuery<{ type: string; value: string; siteId: number }>(
+    [GET_INTEGRATION_API_KEY, siteId, type],
+    async () => {
+      if (siteId === undefined) {
+        return null;
+      }
+
+      return (await instance?.get(`/integrations/apikeys/${siteId}/${type}`))
+        ?.data;
+    },
+  );
+}
+
+export const GET_INTEGRATION_DATA_QUERY = 'GET_INTEGRATION_DATA_QUERY';
+
+export function useIntegrationDataQuery({
+  siteId,
+  type,
+}: {
+  siteId?: number;
+  type: string;
+}) {
+  const { instance } = useContext(DexkitApiProvider);
+
+  return useQuery<{
+    id: number;
+    type: string;
+    settings: any;
+    siteId: number;
+    createdAt: string;
+    updatedAt: string;
+  }>([GET_INTEGRATION_DATA_QUERY, siteId, type], async () => {
+    if (siteId === undefined) {
+      return null;
+    }
+
+    return (await instance?.get(`/integrations/${siteId}/${type}`))?.data;
+  });
+}
+
+export function useSaveIntegrationMutation({
+  siteId,
+  type,
+}: {
+  siteId?: number;
+  type: string;
+}) {
+  const { instance } = useContext(DexkitApiProvider);
+
+  return useMutation(async ({ data }: { data: any }) => {
+    if (siteId === undefined) {
+      return null;
+    }
+
+    return (await instance?.post(`/integrations/${siteId}/${type}`, { data }))
+      ?.data;
+  });
+}

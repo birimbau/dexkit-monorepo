@@ -35,6 +35,7 @@ import { AppConfig } from '../../../../types/config';
 import { SiteResponse } from '../../../../types/whitelabel';
 import { useAppWizardConfig } from '../../hooks';
 
+import { DexkitApiProvider } from '@dexkit/core/providers';
 import AnalyticsIcon from '@mui/icons-material/Analytics';
 import DatasetIcon from '@mui/icons-material/Dataset';
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -44,6 +45,7 @@ import { TourProvider, useTour } from '@reactour/tour';
 import { useAtom } from 'jotai';
 import { useRouter } from 'next/router';
 import { useAuth } from 'src/hooks/account';
+import { myAppsApi } from 'src/services/whitelabel';
 import { BuilderKit } from '../../constants';
 import { OnboardBuilderSteps } from '../../constants/onboard/steps';
 import { isFirstVisitOnEditWizardAtom } from '../../state';
@@ -653,7 +655,7 @@ export function EditWizardContainer({ site }: Props) {
           </List>
         </nav>
       )}
-      {false && (
+      {true && (
         <nav aria-label="integrations">
           <List>
             <ListItemButton onClick={handleClickIntegrations}>
@@ -1059,9 +1061,11 @@ export function EditWizardContainer({ site }: Props) {
                   <UserEventAnalyticsContainer siteId={site?.id} />
                 )}
 
-                {/* {activeMenu === ActiveMenu.Integrations && config && (
-                  <IntegrationsWizardContainer siteId={site?.id} />
-                )} */}
+                {activeMenu === ActiveMenu.Integrations && config && (
+                  <DexkitApiProvider.Provider value={{ instance: myAppsApi }}>
+                    <IntegrationsWizardContainer siteId={site?.id} />
+                  </DexkitApiProvider.Provider>
+                )}
               </Stack>
             </Box>
             {/*false && theme && (
