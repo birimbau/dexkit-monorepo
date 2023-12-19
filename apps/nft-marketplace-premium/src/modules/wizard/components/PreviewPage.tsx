@@ -9,7 +9,6 @@ interface Props {
   previewPlatform: 'mobile' | 'desktop';
   withLayout?: boolean;
   appConfig?: AppConfig;
-  isEdit?: boolean;
 }
 
 export default function PreviewPage({
@@ -18,7 +17,6 @@ export default function PreviewPage({
   previewPlatform,
   withLayout,
   appConfig,
-  isEdit,
 }: Props) {
   const renderSections = () => {
     return (sections || []).map((section, key) => {
@@ -29,7 +27,7 @@ export default function PreviewPage({
         return null;
       }
 
-      return <SectionRender section={section} key={key} isEdit={isEdit} />;
+      return <SectionRender section={section} key={key} />;
     });
   };
   if (withLayout) {
