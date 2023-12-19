@@ -43,17 +43,23 @@ export async function getAppConfig(site?: string, appPage?: string): Promise<{ a
     return Promise.resolve({ appConfig: appConfigJson as AppConfig, appNFT: null, });
   }
 
-  //@ts-ignore
   if (site?.startsWith('localhost')) {
+    const slug = site.split(':');
+    if (slug.length > 1) {
+      const configResponse = await (await getConfig({ slug: slug[1], appPage })).data;
+      if (configResponse) {
+        return { appConfig: JSON.parse(configResponse.config) as AppConfig, appNFT: configResponse.nft === undefined ? null : configResponse.nft, siteId: configResponse?.id };
+      }
+    }
     return Promise.resolve({ appConfig: appConfigJson as AppConfig, appNFT: null, });
   }
 
-  //@ts-ignore
+
   if (site?.endsWith('dex-kit.vercel.app')) {
     return Promise.resolve({ appConfig: appConfigJson as AppConfig, appNFT: null, });
   }
 
-  //@ts-ignore
+
   if (site?.endsWith('.vercel.app')) {
     return Promise.resolve({ appConfig: appConfigJson as AppConfig, appNFT: null, });
   }

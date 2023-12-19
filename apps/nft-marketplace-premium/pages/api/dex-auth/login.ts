@@ -20,11 +20,15 @@ export default async function handler(
     const response = await login({ address, signature });
     const data = (await response.data);
     res.setHeader('Set-Cookie', [serialize('refresh_token', data.refresh_token, { httpOnly: true, path: '/', }), serialize('refresh_token_auth', data.refresh_token, { httpOnly: true })]);
-    userEventsApi.post('/user-events', { event: UserEvents.loginSignMessage, account: address, siteId, refreshToken: data.refresh_token }, {
-      headers: {
-        'DexKit-Api-Key': process.env.MARKETPLACE_API_KEY as string
-      }
-    }).catch(console.log)
+    try {
+      await userEventsApi.post('/user-events', { event: UserEvents.loginSignMessage, account: address, siteId, refreshToken: data.refresh_token }, {
+        headers: {
+          'DexKit-Api-Key': process.env.MARKETPLACE_API_KEY as string
+        }
+      })
+    } catch (e) {
+      console.log(e)
+    }
 
 
     return res.status(response.status).json({ access_token: data.access_token });

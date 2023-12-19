@@ -111,9 +111,9 @@ export default function middleware(req: NextRequest) {
       hostname = `dexkit.app:${slug}`;
     }
   }
-
-  /*if (url.pathname.startsWith('/_custom_protected')) {
-    return NextResponse.rewrite(url);
+  // only for testing
+  /*if (hostname.startsWith('localhost')) {
+    hostname = `localhost:arbitrum`;
   }*/
 
 
