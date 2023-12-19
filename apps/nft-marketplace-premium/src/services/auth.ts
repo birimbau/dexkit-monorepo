@@ -42,15 +42,17 @@ export async function login({
 export async function loginApp({
   address,
   signature,
-  siteId
+  siteId,
+  referral
 }: {
   address: string;
   signature: string;
   siteId?: number;
+  referral?: string;
 }) {
   return axios.post<{ access_token: string; refresh_token: string }>(
     '/api/dex-auth/login',
-    { data: { address, signature, siteId } }
+    { data: { address, signature, siteId, referral } }
   );
 }
 

@@ -19,7 +19,7 @@ export function useAuth() {
 export function useLoginAccountMutation() {
   const { account, provider } = useWeb3React();
   const signMessageDialog = useSignMessageDialog();
-  const { siteId } = useDexKitContext();
+  const { siteId, affiliateReferral } = useDexKitContext();
 
   const { setIsLoggedIn, setUser } = useAuth();
 
@@ -32,7 +32,7 @@ export function useLoginAccountMutation() {
 
     const signature = await provider.getSigner().signMessage(messageToSign.data);
 
-    const loginResponse = await loginApp({ signature, address: account, siteId });
+    const loginResponse = await loginApp({ signature, address: account, siteId, referral: affiliateReferral });
     if (setIsLoggedIn) {
       setIsLoggedIn(true);
     }

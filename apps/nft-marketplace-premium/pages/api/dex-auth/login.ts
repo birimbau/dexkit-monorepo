@@ -16,12 +16,12 @@ export default async function handler(
   res: NextApiResponse
 ) {
   if (req.method === 'POST') {
-    const { address, signature, siteId } = req.body.data;
+    const { address, signature, siteId, referral } = req.body.data;
     const response = await login({ address, signature });
     const data = (await response.data);
     res.setHeader('Set-Cookie', [serialize('refresh_token', data.refresh_token, { httpOnly: true, path: '/', }), serialize('refresh_token_auth', data.refresh_token, { httpOnly: true })]);
     try {
-      await userEventsApi.post('/user-events', { event: UserEvents.loginSignMessage, account: address, siteId, refreshToken: data.refresh_token }, {
+      await userEventsApi.post('/user-events', { event: UserEvents.loginSignMessage, account: address, siteId, refreshToken: data.refresh_token, referral }, {
         headers: {
           'DexKit-Api-Key': process.env.MARKETPLACE_API_KEY as string
         }
