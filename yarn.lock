@@ -3097,6 +3097,26 @@
   resolved "https://registry.yarnpkg.com/@ctrl/tinycolor/-/tinycolor-3.6.0.tgz#53fa5fe9c34faee89469e48f91d51a3766108bc8"
   integrity sha512-/Z3l6pXthq0JvMYdUFyX9j0MaCltlIn6mfh9jLyQwg5aPKxkyNa0PTHtU1AlFXLNk55ZuAeJRcpvq+tmLfKmaQ==
 
+"@darkblock.io/avax-widget@^0.2.52":
+  version "0.2.52"
+  resolved "https://registry.yarnpkg.com/@darkblock.io/avax-widget/-/avax-widget-0.2.52.tgz#104fd36662b0e76a51acbd838a23893fe329c69f"
+  integrity sha512-ZLWoYVk5v3k8Lqzbvnicx8Q6w/PPS6uPxeRh1wNUTfLg2AXsUp2999K4H8jcwroMjx0modOihZiWACEEkrrjiw==
+  dependencies:
+    "@xstate/react" "^2.0.0"
+    react "^17.0.2"
+    react-dom "^17.0.2"
+    react-scripts "5.0.0"
+
+"@darkblock.io/eth-widget@^0.2.50":
+  version "0.2.50"
+  resolved "https://registry.yarnpkg.com/@darkblock.io/eth-widget/-/eth-widget-0.2.50.tgz#ca00486642cc5d6867f8ad8a01fc6ad1a5b483e3"
+  integrity sha512-0F39tDTEJwheqd+XBYLyEuzgM3MyoICPsE7tYIzMAs1/zMeERoWxDlYmsWq9yU/Csk/gFV2Wl3g+7ekIH3wJwA==
+  dependencies:
+    "@xstate/react" "2.0.0"
+    react "^17.0.2"
+    react-dom "^17.0.2"
+    react-scripts "5.0.0"
+
 "@darkblock.io/matic-widget@^0.2.49":
   version "0.2.49"
   resolved "https://registry.yarnpkg.com/@darkblock.io/matic-widget/-/matic-widget-0.2.49.tgz#2922e435ace652eba085407c5d2b5d0ff3e2cf41"
@@ -12217,6 +12237,14 @@
   version "1.9.5"
   resolved "https://registry.yarnpkg.com/@xobotyi/scrollbar-width/-/scrollbar-width-1.9.5.tgz#80224a6919272f405b87913ca13b92929bdf3c4d"
   integrity sha512-N8tkAACJx2ww8vFMneJmaAgmjAG1tnVBZJRLRcx061tmsLRZHSEZSLuGWnwPtunsSLvSqXQ2wfp7Mgqg1I+2dQ==
+
+"@xstate/react@2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@xstate/react/-/react-2.0.0.tgz#fa1c950483a7a500d71faaa36e6970b337ba7543"
+  integrity sha512-Pw8uHkamrMxoV8cwnVHv570Zun7o2ktokn5bkUOrv6PufFg5JHL2URiGvbyR9JqmIxfJdXregWvCGa3pqXd7Cg==
+  dependencies:
+    use-isomorphic-layout-effect "^1.0.0"
+    use-subscription "^1.3.0"
 
 "@xstate/react@^2.0.0":
   version "2.0.1"

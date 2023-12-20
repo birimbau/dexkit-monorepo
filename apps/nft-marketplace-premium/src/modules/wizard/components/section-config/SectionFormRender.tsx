@@ -191,13 +191,15 @@ export function SectionFormRender({
   } else if (sectionType === 'asset-section') {
     return (
       <Box p={2}>
-        <AssetSectionForm
-          onCancel={onClose}
-          onSave={onSave}
-          onChange={onChange}
-          section={section?.type === 'asset-section' ? section : undefined}
-          showSaveButton
-        />
+        <DexkitApiProvider.Provider value={{ instance: myAppsApi }}>
+          <AssetSectionForm
+            onCancel={onClose}
+            onSave={onSave}
+            onChange={onChange}
+            section={section?.type === 'asset-section' ? section : undefined}
+            showSaveButton
+          />
+        </DexkitApiProvider.Provider>
       </Box>
     );
   }

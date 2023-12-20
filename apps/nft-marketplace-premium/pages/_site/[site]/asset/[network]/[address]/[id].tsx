@@ -3,7 +3,7 @@ import { dehydrate, QueryClient } from '@tanstack/react-query';
 import type { GetStaticProps, GetStaticPropsContext, NextPage } from 'next';
 import { useRouter } from 'next/router';
 
-import { Grid, Skeleton } from '@mui/material';
+import { Grid, NoSsr, Skeleton } from '@mui/material';
 import MainLayout from '../../../../../../src/components/layouts/main';
 
 import {
@@ -17,10 +17,14 @@ import { fetchAssetForQueryClient } from '../../../../../../src/services/nft';
 
 import AssetHead from '../../../../../../src/modules/nft/components/AssetHead';
 
+import DarkblockWrapper from '@/modules/wizard/components/DarkblockWrapper';
+import { getIntegrationData } from '@/modules/wizard/services/integrations';
 import { ChainId } from '@dexkit/core/constants';
 import { truncateAddress } from '@dexkit/core/utils';
 import { NextSeo } from 'next-seo';
+import { Suspense } from 'react';
 import { FormattedMessage } from 'react-intl';
+import { myAppsApi } from 'src/services/whitelabel';
 import { PageHeader } from '../../../../../../src/components/PageHeader';
 import { NETWORK_ID } from '../../../../../../src/constants/enum';
 import { MAP_NETWORK_TO_RARIBLE } from '../../../../../../src/constants/marketplaces';
@@ -33,7 +37,11 @@ import {
 import { ipfsUriToUrl } from '../../../../../../src/utils/ipfs';
 import { truncateErc1155TokenId } from '../../../../../../src/utils/nfts';
 
-const AssetDetailPage: NextPage = () => {
+const AssetDetailPage: NextPage<any> = ({
+  enableDarkblock,
+}: {
+  enableDarkblock: boolean;
+}) => {
   const router = useRouter();
 
   const { address, id } = router.query;
@@ -100,6 +108,17 @@ const AssetDetailPage: NextPage = () => {
           </Grid>
           <Grid item xs={12} sm={8}>
             <AssetRightSection address={address as string} id={id as string} />
+            {enableDarkblock && (
+              <NoSsr>
+                <Suspense>
+                  <DarkblockWrapper
+                    address={address as string}
+                    tokenId={id as string}
+                    network={getNetworkSlugFromChainId(asset?.chainId) || ''}
+                  />
+                </Suspense>
+              </NoSsr>
+            )}
           </Grid>
         </Grid>
       </Container>
@@ -146,8 +165,20 @@ export const getStaticProps: GetStaticProps = async ({
       console.log(e);
     }
 
+    const darkBlock = await getIntegrationData({
+      siteId: configResponse.siteId, //
+      type: 'darkblock',
+      instance: myAppsApi,
+    });
+
     return {
-      props: { dehydratedState: dehydrate(queryClient), ...configResponse },
+      props: {
+        dehydratedState: dehydrate(queryClient),
+        ...configResponse,
+        enableDarkblock: darkBlock
+          ? darkBlock?.settings?.enableDarkblock
+          : false,
+      },
       revalidate: 5,
     };
   }

@@ -4,6 +4,7 @@ import {
   CardContent,
   Divider,
   Grid,
+  Link,
   Typography,
 } from '@mui/material';
 
@@ -32,11 +33,28 @@ export default function IntegrationsWizardContainer({
                       <Typography variant="subtitle1" fontWeight="bold">
                         <FormattedMessage id="0x.api" defaultMessage="0x API" />
                       </Typography>
-                      <Typography variant="subtitle2" color="text.secondary">
+                      <Typography
+                        gutterBottom
+                        variant="subtitle2"
+                        color="text.secondary"
+                      >
                         <FormattedMessage
                           id="0x.is.a.decentralized.exchange.protocol.description"
                           defaultMessage="0x is a decentralized exchange protocol on Ethereum, enabling peer-to-peer trading of various digital assets through open standards and smart contracts."
                         />
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        <FormattedMessage
+                          id="access.the.0x.dashboard.to.get.your.api.key"
+                          defaultMessage="Access the 0x dashboard to get your API Key"
+                        />
+                        :{' '}
+                        <Link target="_blank" href="https://dashboard.0x.org/">
+                          <FormattedMessage
+                            id="0x.dashboard"
+                            defaultMessage="0x Dashboard"
+                          />
+                        </Link>
                       </Typography>
                     </Grid>
                     <Grid item xs={12}>
@@ -56,11 +74,28 @@ export default function IntegrationsWizardContainer({
                           defaultMessage="Darkblock"
                         />
                       </Typography>
-                      <Typography variant="subtitle2" color="text.secondary">
+                      <Typography
+                        gutterBottom
+                        variant="subtitle2"
+                        color="text.secondary"
+                      >
                         <FormattedMessage
                           id="darkblock.one.line.description"
                           defaultMessage="Darkblock is a decentralized protocol that allows content creators to publish and distribute exclusive content to their fans without the need for centralized token-gating platforms."
                         />
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        <FormattedMessage
+                          id="access.darkblock.to.get.more.information"
+                          defaultMessage="Access darkblock to get more information"
+                        />
+                        :{' '}
+                        <Link target="_blank" href="https://darkblock.io/">
+                          <FormattedMessage
+                            id="darkblock.io"
+                            defaultMessage="Darkblock.io"
+                          />
+                        </Link>
                       </Typography>
                     </Grid>
                     <Grid item xs={12}>

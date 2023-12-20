@@ -22,8 +22,10 @@ import {
   Typography,
 } from '@mui/material';
 import { Select, Switch, TextField } from 'formik-mui';
-import { SyntheticEvent, useMemo, useState } from 'react';
+import { SyntheticEvent, useContext, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
+import { useIntegrationDataQuery } from '../../hooks/integrations';
+import { SiteContext } from '../../providers/SiteWizardProvider';
 import { AssetFormType } from '../../types';
 import { AssetPageSection } from '../../types/section';
 import { CollectionItemAutocomplete } from './CollectionItemAutocomplete';
@@ -53,7 +55,7 @@ export default function AssetSectionForm({
 
   const networks = useMemo(() => {
     return Object.keys(NETWORKS).map(
-      (key: string) => NETWORKS[parseChainId(key)],
+      (key: string) => NETWORKS[parseChainId(key)]
     );
   }, []);
 
@@ -63,7 +65,11 @@ export default function AssetSectionForm({
     setTab(value);
   };
 
-  return (
+  const { siteId } = useContext(SiteContext);
+
+  const darkblockQuery = useIntegrationDataQuery({ type: 'darkblock', siteId });
+
+  return darkblockQuery.isFetched ? (
     <Formik
       initialValues={
         section
@@ -77,6 +83,8 @@ export default function AssetSectionForm({
                 : false,
               enableDarkblock: section.config.enableDarkblock
                 ? section.config.enableDarkblock
+                : darkblockQuery.data
+                ? darkblockQuery.data.settings.enableDarkblock
                 : false,
             }
           : {
@@ -114,7 +122,7 @@ export default function AssetSectionForm({
                         <Avatar
                           src={ipfsUriToUrl(
                             networks.find((n) => n.slug === value)?.imageUrl ||
-                              '',
+                              ''
                           )}
                           style={{ width: 'auto', height: '1rem' }}
                         />
@@ -268,23 +276,26 @@ export default function AssetSectionForm({
                     }
                   />
                 </Grid>
-                <Grid item>
-                  <FormControlLabel
-                    control={
-                      <Field
-                        component={Switch}
-                        name="enableDarkblock"
-                        type="checkbox"
+                {darkblockQuery.data &&
+                  darkblockQuery.data.settings.enableDarkblock && (
+                    <Grid item>
+                      <FormControlLabel
+                        control={
+                          <Field
+                            component={Switch}
+                            name="enableDarkblock"
+                            type="checkbox"
+                          />
+                        }
+                        label={
+                          <FormattedMessage
+                            id="enable.drop"
+                            defaultMessage="Enable Darkblock"
+                          />
+                        }
                       />
-                    }
-                    label={
-                      <FormattedMessage
-                        id="enable.drop"
-                        defaultMessage="Enable Darkblock"
-                      />
-                    }
-                  />
-                </Grid>
+                    </Grid>
+                  )}
               </Grid>
             </Grid>
             {showSaveButton && (
@@ -309,5 +320,5 @@ export default function AssetSectionForm({
         </>
       )}
     </Formik>
-  );
+  ) : null;
 }

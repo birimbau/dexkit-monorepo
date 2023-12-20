@@ -36,64 +36,69 @@ import { SiteResponse } from '../../../../types/whitelabel';
 import { useAppWizardConfig } from '../../hooks';
 
 import { DexkitApiProvider } from '@dexkit/core/providers';
+import { isAddressEqual } from '@dexkit/core/utils';
 import AnalyticsIcon from '@mui/icons-material/Analytics';
 import DatasetIcon from '@mui/icons-material/Dataset';
 import SettingsIcon from '@mui/icons-material/Settings';
 import SpaceDashboardIcon from '@mui/icons-material/SpaceDashboard';
 import TourIcon from '@mui/icons-material/Tour';
 import { TourProvider, useTour } from '@reactour/tour';
+import { useWeb3React } from '@web3-react/core';
 import { useAtom } from 'jotai';
 import { useRouter } from 'next/router';
 import { useAuth } from 'src/hooks/account';
 import { myAppsApi } from 'src/services/whitelabel';
 import { BuilderKit } from '../../constants';
 import { OnboardBuilderSteps } from '../../constants/onboard/steps';
+import SiteWizardProvider from '../../providers/SiteWizardProvider';
 import { isFirstVisitOnEditWizardAtom } from '../../state';
 import BuilderKitMenu from '../BuilderKitMenu';
 import { ConfirmationEmailMessage } from '../ConfirmationEmailMessage';
 import { PreviewAppButton } from '../PreviewAppButton';
 import { WelcomeMessage } from '../WelcomeMessage';
 import SignConfigDialog from '../dialogs/SignConfigDialog';
+
 const IntegrationsWizardContainer = dynamic(
-  () => import('./IntegrationsWizardContainer'),
+  () => import('./IntegrationsWizardContainer')
 );
+
 const UserEventAnalyticsContainer = dynamic(
-  () => import('./UserEventAnalyticsContainer'),
+  () => import('./UserEventAnalyticsContainer')
 );
 
 const OwnershipWizardContainer = dynamic(
-  () => import('./OwnershipWizardContainer'),
+  () => import('./OwnershipWizardContainer')
 );
 const CollectionWizardContainer = dynamic(
-  () => import('./CollectionWizardContainer'),
+  () => import('./CollectionWizardContainer')
 );
 const DomainWizardContainer = dynamic(() => import('./DomainWizardContainer'));
 const FooterMenuWizardContainer = dynamic(
-  () => import('./FooterMenuWizardContainer'),
+  () => import('./FooterMenuWizardContainer')
 );
 const GeneralWizardContainer = dynamic(
-  () => import('./GeneralWizardContainer'),
+  () => import('./GeneralWizardContainer')
 );
 const MarketplaceFeeWizardContainer = dynamic(
-  () => import('./MarketplaceFeeWizardContainer'),
+  () => import('./MarketplaceFeeWizardContainer')
 );
 const PagesMenuWizardContainer = dynamic(
-  () => import('./PagesMenuWizardContainer'),
+  () => import('./PagesMenuWizardContainer')
 );
 const PagesWizardContainer = dynamic(() => import('./PagesWizardContainer'));
 const SeoWizardContainer = dynamic(() => import('./SeoWizardContainer'));
 const SocialWizardContainer = dynamic(() => import('./SocialWizardContainer'));
 const SwapFeeWizardContainer = dynamic(
-  () => import('./SwapFeeWizardContainer'),
+  () => import('./SwapFeeWizardContainer')
 );
 const ThemeWizardContainer = dynamic(() => import('./ThemeWizardContainer'));
 const TokenWizardContainer = dynamic(() => import('./TokenWizardContainer'));
 const TeamWizardContainer = dynamic(() => import('./TeamWizardContainer'));
 const AppVersionWizardContainer = dynamic(
-  () => import('./AppVersionWizardContainer'),
+  () => import('./AppVersionWizardContainer')
 );
 const AnalyticsWizardContainer = dynamic(
-  () => import('./AnalyticsWizardContainer'),
+  () => import('./AnalyticsWizardContainer')
 );
 
 interface Props {
@@ -188,12 +193,12 @@ export function EditWizardContainer({ site }: Props) {
   const { isLoggedIn, user } = useAuth();
 
   const [activeMenu, setActiveMenu] = useState<ActiveMenu>(
-    tab || ActiveMenu.General,
+    tab || ActiveMenu.General
   );
   const [activeMenuWithChanges, setActiveMenuWithChanges] =
     useState<ActiveMenu>(tab || ActiveMenu.General);
   const [activeBuilderKit, setActiveBuilderKit] = useState<BuilderKit>(
-    BuilderKit.ALL,
+    BuilderKit.ALL
   );
 
   const handleChangeTab = (mn: ActiveMenu) => {
@@ -232,6 +237,7 @@ export function EditWizardContainer({ site }: Props) {
   const [showSendingConfig, setShowSendingConfig] = useState(false);
 
   const [showConfirmSendConfig, setShowConfirmSendConfig] = useState(false);
+  const { account } = useWeb3React();
 
   useEffect(() => {
     if (config) {
@@ -286,7 +292,7 @@ export function EditWizardContainer({ site }: Props) {
       setWizardConfig(newConfig);
     },
 
-    [wizardConfig, setWizardConfig],
+    [wizardConfig, setWizardConfig]
   );
 
   const renderMenu = () => (
@@ -655,7 +661,7 @@ export function EditWizardContainer({ site }: Props) {
           </List>
         </nav>
       )}
-      {true && (
+      {isAddressEqual(site?.owner, account) && (
         <nav aria-label="integrations">
           <List>
             <ListItemButton onClick={handleClickIntegrations}>
@@ -927,146 +933,148 @@ export function EditWizardContainer({ site }: Props) {
           <Grid item xs={12} sm={0.1}></Grid>
           <Grid item xs={12} sm={9.8}>
             <Box>
-              <Stack spacing={2} className={'builder-forms'}>
-                {activeMenu === ActiveMenu.General && config && (
-                  <GeneralWizardContainer
-                    config={config}
-                    onSave={handleSave}
-                    onChange={handleChange}
-                    onHasChanges={setHasChanges}
-                  />
-                )}
-                {activeMenu === ActiveMenu.AppVersion &&
-                  config &&
-                  site?.owner?.toLowerCase() ===
-                    user?.address?.toLowerCase() && (
-                    <AppVersionWizardContainer site={site} />
+              <SiteWizardProvider siteId={site?.id}>
+                <Stack spacing={2} className={'builder-forms'}>
+                  {activeMenu === ActiveMenu.General && config && (
+                    <GeneralWizardContainer
+                      config={config}
+                      onSave={handleSave}
+                      onChange={handleChange}
+                      onHasChanges={setHasChanges}
+                    />
+                  )}
+                  {activeMenu === ActiveMenu.AppVersion &&
+                    config &&
+                    site?.owner?.toLowerCase() ===
+                      user?.address?.toLowerCase() && (
+                      <AppVersionWizardContainer site={site} />
+                    )}
+
+                  {activeMenu === ActiveMenu.Domain && config && (
+                    <DomainWizardContainer
+                      config={config}
+                      onSave={handleSave}
+                      onHasChanges={setHasChanges}
+                      site={site}
+                    />
                   )}
 
-                {activeMenu === ActiveMenu.Domain && config && (
-                  <DomainWizardContainer
-                    config={config}
-                    onSave={handleSave}
-                    onHasChanges={setHasChanges}
-                    site={site}
-                  />
-                )}
+                  {activeMenu === ActiveMenu.Team &&
+                    site?.owner?.toLowerCase() ===
+                      user?.address?.toLowerCase() && (
+                      <TeamWizardContainer site={site} />
+                    )}
 
-                {activeMenu === ActiveMenu.Team &&
-                  site?.owner?.toLowerCase() ===
-                    user?.address?.toLowerCase() && (
-                    <TeamWizardContainer site={site} />
+                  {activeMenu === ActiveMenu.Ownership && config && (
+                    <OwnershipWizardContainer
+                      config={config}
+                      onSave={handleSave}
+                      onHasChanges={setHasChanges}
+                      site={site}
+                    />
                   )}
 
-                {activeMenu === ActiveMenu.Ownership && config && (
-                  <OwnershipWizardContainer
-                    config={config}
-                    onSave={handleSave}
-                    onHasChanges={setHasChanges}
-                    site={site}
-                  />
-                )}
+                  {activeMenu === ActiveMenu.Theme && config && (
+                    <ThemeWizardContainer
+                      config={config}
+                      showSwap={activeBuilderKit === BuilderKit.Swap}
+                      onSave={handleSave}
+                      onChange={handleChange}
+                      onHasChanges={setHasChanges}
+                    />
+                  )}
 
-                {activeMenu === ActiveMenu.Theme && config && (
-                  <ThemeWizardContainer
-                    config={config}
-                    showSwap={activeBuilderKit === BuilderKit.Swap}
-                    onSave={handleSave}
-                    onChange={handleChange}
-                    onHasChanges={setHasChanges}
-                  />
-                )}
+                  {activeMenu === ActiveMenu.Pages && config && (
+                    <PagesWizardContainer
+                      config={config}
+                      onSave={handleSave}
+                      onHasChanges={setHasChanges}
+                      builderKit={activeBuilderKit}
+                    />
+                  )}
 
-                {activeMenu === ActiveMenu.Pages && config && (
-                  <PagesWizardContainer
-                    config={config}
-                    onSave={handleSave}
-                    onHasChanges={setHasChanges}
-                    builderKit={activeBuilderKit}
-                  />
-                )}
+                  {activeMenu === ActiveMenu.MarketplaceFees && config && (
+                    <MarketplaceFeeWizardContainer
+                      config={config}
+                      onHasChanges={setHasChanges}
+                      onSave={handleSave}
+                    />
+                  )}
 
-                {activeMenu === ActiveMenu.MarketplaceFees && config && (
-                  <MarketplaceFeeWizardContainer
-                    config={config}
-                    onHasChanges={setHasChanges}
-                    onSave={handleSave}
-                  />
-                )}
+                  {activeMenu === ActiveMenu.SwapFees && config && (
+                    <SwapFeeWizardContainer
+                      config={config}
+                      onSave={handleSave}
+                      onHasChanges={setHasChanges}
+                    />
+                  )}
+                  {activeMenu === ActiveMenu.Collections && (
+                    <CollectionWizardContainer
+                      config={config}
+                      onHasChanges={setHasChanges}
+                      onSave={handleSave}
+                    />
+                  )}
 
-                {activeMenu === ActiveMenu.SwapFees && config && (
-                  <SwapFeeWizardContainer
-                    config={config}
-                    onSave={handleSave}
-                    onHasChanges={setHasChanges}
-                  />
-                )}
-                {activeMenu === ActiveMenu.Collections && (
-                  <CollectionWizardContainer
-                    config={config}
-                    onHasChanges={setHasChanges}
-                    onSave={handleSave}
-                  />
-                )}
+                  {activeMenu === ActiveMenu.Menu && config && (
+                    <PagesMenuWizardContainer
+                      config={config}
+                      onHasChanges={setHasChanges}
+                      onSave={handleSave}
+                      onChange={handleChange}
+                    />
+                  )}
 
-                {activeMenu === ActiveMenu.Menu && config && (
-                  <PagesMenuWizardContainer
-                    config={config}
-                    onHasChanges={setHasChanges}
-                    onSave={handleSave}
-                    onChange={handleChange}
-                  />
-                )}
+                  {activeMenu === ActiveMenu.Tokens && config && (
+                    <TokenWizardContainer
+                      config={config}
+                      onSave={handleSave}
+                      onHasChanges={setHasChanges}
+                    />
+                  )}
 
-                {activeMenu === ActiveMenu.Tokens && config && (
-                  <TokenWizardContainer
-                    config={config}
-                    onSave={handleSave}
-                    onHasChanges={setHasChanges}
-                  />
-                )}
+                  {activeMenu === ActiveMenu.Seo && config && (
+                    <SeoWizardContainer
+                      config={config}
+                      onSave={handleSave}
+                      onHasChanges={setHasChanges}
+                    />
+                  )}
 
-                {activeMenu === ActiveMenu.Seo && config && (
-                  <SeoWizardContainer
-                    config={config}
-                    onSave={handleSave}
-                    onHasChanges={setHasChanges}
-                  />
-                )}
+                  {activeMenu === ActiveMenu.Analytics && config && (
+                    <AnalyticsWizardContainer
+                      config={config}
+                      onHasChanges={setHasChanges}
+                      onSave={handleSave}
+                    />
+                  )}
+                  {activeMenu === ActiveMenu.Social && config && (
+                    <SocialWizardContainer
+                      config={config}
+                      onSave={handleSave}
+                      onChange={handleChange}
+                      onHasChanges={setHasChanges}
+                    />
+                  )}
+                  {activeMenu === ActiveMenu.FooterMenu && config && (
+                    <FooterMenuWizardContainer
+                      config={config}
+                      onHasChanges={setHasChanges}
+                      onSave={handleSave}
+                      onChange={handleChange}
+                    />
+                  )}
+                  {activeMenu === ActiveMenu.UserEventAnalytics && config && (
+                    <UserEventAnalyticsContainer siteId={site?.id} />
+                  )}
 
-                {activeMenu === ActiveMenu.Analytics && config && (
-                  <AnalyticsWizardContainer
-                    config={config}
-                    onHasChanges={setHasChanges}
-                    onSave={handleSave}
-                  />
-                )}
-                {activeMenu === ActiveMenu.Social && config && (
-                  <SocialWizardContainer
-                    config={config}
-                    onSave={handleSave}
-                    onChange={handleChange}
-                    onHasChanges={setHasChanges}
-                  />
-                )}
-                {activeMenu === ActiveMenu.FooterMenu && config && (
-                  <FooterMenuWizardContainer
-                    config={config}
-                    onHasChanges={setHasChanges}
-                    onSave={handleSave}
-                    onChange={handleChange}
-                  />
-                )}
-                {activeMenu === ActiveMenu.UserEventAnalytics && config && (
-                  <UserEventAnalyticsContainer siteId={site?.id} />
-                )}
-
-                {activeMenu === ActiveMenu.Integrations && config && (
-                  <DexkitApiProvider.Provider value={{ instance: myAppsApi }}>
-                    <IntegrationsWizardContainer siteId={site?.id} />
-                  </DexkitApiProvider.Provider>
-                )}
-              </Stack>
+                  {activeMenu === ActiveMenu.Integrations && config && (
+                    <DexkitApiProvider.Provider value={{ instance: myAppsApi }}>
+                      <IntegrationsWizardContainer siteId={site?.id} />
+                    </DexkitApiProvider.Provider>
+                  )}
+                </Stack>
+              </SiteWizardProvider>
             </Box>
             {/*false && theme && (
             <Grid item xs={12} sm={6}>
