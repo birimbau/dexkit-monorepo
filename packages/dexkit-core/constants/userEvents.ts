@@ -4,8 +4,7 @@
 export enum UserOnChainEvents {
   approve = 'approve',
   swap = 'swap',
-  swapLifi = 'swapLifi',
-  lifiWwap = 'lifiSwap',
+  lifiSwap = 'lifiSwap',
   unwrap = 'unwrap',
   wrap = 'wrap',
   transfer = 'transfer',

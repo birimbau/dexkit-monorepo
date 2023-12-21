@@ -21,7 +21,7 @@ const LiFiSectionEvents = () => {
               step.execution.process.forEach((pr) => {
                 if (pr.type === 'SWAP') {
                   userEventsMutation.mutate({
-                    event: UserEvents.swapLifi,
+                    event: UserEvents.lifiSwap,
                     metadata: JSON.stringify(step),
                     hash: pr.txHash,
                     chainId: chainId,

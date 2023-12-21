@@ -50,6 +50,7 @@ import { DefaultSlate } from './plugins/DefaultSlate';
 import DexGeneratorFormPlugin from './plugins/DexGeneratorFormPlugin';
 import ExchangePlugin from './plugins/ExchangePlugin';
 import ImagePlugin from './plugins/ImagePlugin';
+import LifiSwapPlugin from './plugins/LifiSwapPlugin';
 import QrCodeReceive from './plugins/QrCodeReceivePayment';
 import SearchNFTPlugin from './plugins/SearchNFTPlugin';
 import StackPlugin from './plugins/StackPlugin';
@@ -85,6 +86,7 @@ const cellPlugins = [
 
   //  CustomLayoutPlugin,
   // SwapPlugin,
+  LifiSwapPlugin,
   Swap2Plugin,
   SearchNFTPlugin,
   UserContractFormPlugin,
@@ -140,6 +142,7 @@ const swapPlugins = [
   QrCodeReceive,
   ExtendedSpacer,
   StackPlugin,
+  LifiSwapPlugin,
   //  CustomLayoutPlugin,
   // SwapPlugin,
   Swap2Plugin,
