@@ -58,6 +58,8 @@ function SignConfigDialog({
     }
   };
 
+  console.log(error);
+
   const handleToggleDetails = () => {
     setShowDetails((value) => !value);
   };
@@ -89,12 +91,12 @@ function SignConfigDialog({
             <CircularProgress size="4rem" color="primary" />
           ) : !error && isSuccess ? (
             <CheckCircle fontSize="large" color="success" />
-          ) : error !== undefined ? (
+          ) : error !== null ? (
             <Error fontSize="large" color="error" />
           ) : null}
           <Box>
             <Typography align="center" variant="h6">
-              {error !== undefined && !isLoading && !isSuccess ? (
+              {error !== null && !isLoading && !isSuccess ? (
                 <>
                   <FormattedMessage
                     id="oops.something.went.wrong"
@@ -103,8 +105,8 @@ function SignConfigDialog({
                 </>
               ) : isSuccess ? (
                 <FormattedMessage
-                  id="sent.successfully"
-                  defaultMessage="Sent successfully"
+                  id="sent.successfully.be.aware.info"
+                  defaultMessage="Sent successfully. Be aware that it takes several minutes to update and reflect on the live site."
                 />
               ) : (
                 <FormattedMessage
@@ -114,7 +116,7 @@ function SignConfigDialog({
               )}
             </Typography>
             <Typography align="center" variant="body1" color="textSecondary">
-              {error !== undefined &&
+              {error !== null &&
                 !isLoading &&
                 !isSuccess &&
                 error?.response?.data?.message &&
@@ -122,7 +124,7 @@ function SignConfigDialog({
             </Typography>
             {false && (
               <Typography align="center" variant="body1" color="textSecondary">
-                {error !== undefined && !isLoading && !isSuccess ? (
+                {error && !isLoading && !isSuccess ? (
                   <FormattedMessage
                     id="please.try.again.later"
                     defaultMessage="Please, try again later"
