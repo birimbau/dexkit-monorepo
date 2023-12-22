@@ -22,7 +22,7 @@ import { useRouter } from 'next/router';
 import { ThemeMode } from '@dexkit/ui/constants/enum';
 import { Backdrop, CircularProgress } from '@mui/material';
 import { experimental_extendTheme as extendTheme } from '@mui/material/styles';
-import type { } from '@mui/material/themeCssVarsAugmentation';
+import type {} from '@mui/material/themeCssVarsAugmentation';
 import { getTheme } from 'src/theme';
 import { AssetAPI } from 'src/types/nft';
 import defaultAppConfig from '../config/app.json';
@@ -30,6 +30,8 @@ import { AppMarketplaceProvider } from '../src/components/AppMarketplaceProvider
 import { AppConfigContext } from '../src/contexts';
 import { AppConfig } from '../src/types/config';
 import './customCss.css';
+
+import SiteProvider from '@dexkit/ui/providers/SiteProvider';
 
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
@@ -45,11 +47,12 @@ export default function MyApp(props: MyAppProps) {
 
   const [loading, setLoading] = React.useState(false);
 
-  const { appConfig, appNFT, siteId } = pageProps as {
+  const { appConfig, appNFT, siteId, site } = pageProps as {
     appConfig: AppConfig;
     appNFT: AssetAPI;
     siteId: number | undefined;
     dehydratedState: DehydratedState;
+    site?: string;
   };
 
   const [queryClient] = React.useState(
@@ -195,6 +198,8 @@ export default function MyApp(props: MyAppProps) {
   const config = appConfig || defaultAppConfig;
   const favicon = config.favicon_url || '/favicon.ico';
 
+  console.log('site app', siteId);
+
   return (
     <CacheProvider value={emotionCache}>
       <Head>
@@ -205,27 +210,31 @@ export default function MyApp(props: MyAppProps) {
           content={theme?.colorSchemes?.light?.palette?.primary?.main}
         />
       </Head>
-      <AppConfigContext.Provider value={{ appConfig: config, appNFT, siteId }}>
-        <QueryClientProvider client={queryClient}>
-          <Hydrate state={pageProps.dehydratedState}>
-            <DefaultSeo {...SEO} />
-            <LocalizationProvider dateAdapter={AdapterMoment}>
-              <AppMarketplaceProvider>
-                <Backdrop
-                  open={loading}
-                  sx={{
-                    color: theme?.colorSchemes?.light?.palette?.primary?.main,
-                    zIndex: theme.zIndex.drawer + 1,
-                  }}
-                >
-                  <CircularProgress color="inherit" size={80} />
-                </Backdrop>
-                {getLayout(<Component {...pageProps} />)}
-              </AppMarketplaceProvider>
-            </LocalizationProvider>
-          </Hydrate>
-        </QueryClientProvider>
-      </AppConfigContext.Provider>
+      <SiteProvider siteId={siteId} slug={site}>
+        <AppConfigContext.Provider
+          value={{ appConfig: config, appNFT, siteId }}
+        >
+          <QueryClientProvider client={queryClient}>
+            <Hydrate state={pageProps.dehydratedState}>
+              <DefaultSeo {...SEO} />
+              <LocalizationProvider dateAdapter={AdapterMoment}>
+                <AppMarketplaceProvider>
+                  <Backdrop
+                    open={loading}
+                    sx={{
+                      color: theme?.colorSchemes?.light?.palette?.primary?.main,
+                      zIndex: theme.zIndex.drawer + 1,
+                    }}
+                  >
+                    <CircularProgress color="inherit" size={80} />
+                  </Backdrop>
+                  {getLayout(<Component {...pageProps} />)}
+                </AppMarketplaceProvider>
+              </LocalizationProvider>
+            </Hydrate>
+          </QueryClientProvider>
+        </AppConfigContext.Provider>
+      </SiteProvider>
       <Analytics />
     </CacheProvider>
   );

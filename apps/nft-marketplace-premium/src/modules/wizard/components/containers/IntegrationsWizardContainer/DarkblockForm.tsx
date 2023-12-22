@@ -36,7 +36,7 @@ export default function DarkblockForm({ siteId }: DarkblockFormProps) {
             id="saved.successfully"
             defaultMessage="Saved successfully"
           />,
-          { variant: 'success' },
+          { variant: 'success' }
         );
       }
     } catch (err) {
@@ -44,7 +44,7 @@ export default function DarkblockForm({ siteId }: DarkblockFormProps) {
     }
   };
 
-  return darkblockQuery.isFetched ? (
+  return darkblockQuery.isSuccess ? (
     <Formik
       initialValues={
         darkblockQuery.data

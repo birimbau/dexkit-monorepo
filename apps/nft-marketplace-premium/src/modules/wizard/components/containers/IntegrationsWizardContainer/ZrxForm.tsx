@@ -11,9 +11,10 @@ import { useSnackbar } from 'notistack';
 
 export interface ZrxFormProps {
   siteId?: number;
+  dialog?: boolean;
 }
 
-export default function ZrxForm({ siteId }: ZrxFormProps) {
+export default function ZrxForm({ siteId, dialog }: ZrxFormProps) {
   const apiKeyQuery = useGetApiKeyQuery({ type: 'zrx', siteId: siteId });
   const saveApiKeyMutation = useSaveApiKeyMutation();
 
@@ -32,7 +33,7 @@ export default function ZrxForm({ siteId }: ZrxFormProps) {
             id="saved.successfully"
             defaultMessage="Saved successfully"
           />,
-          { variant: 'success' },
+          { variant: 'success' }
         );
       }
     } catch (err) {
@@ -40,18 +41,19 @@ export default function ZrxForm({ siteId }: ZrxFormProps) {
     }
   };
 
-  return apiKeyQuery.isFetched ? (
+  return apiKeyQuery.isSuccess ? (
     <Formik
       initialValues={{ apiKey: apiKeyQuery.data?.value || '' }}
       onSubmit={handleSubmit}
     >
       {({ submitForm, isSubmitting, isValid }) => (
         <Grid container spacing={2}>
-          <Grid item xs={12} sm={4}>
+          <Grid item xs={12} sm={dialog ? 12 : 4}>
             <Field
               component={TextField}
               name="apiKey"
               size="small"
+              fullWidth
               label={<FormattedMessage id="api.key" defaultMessage="API Key" />}
             />
           </Grid>
@@ -60,6 +62,7 @@ export default function ZrxForm({ siteId }: ZrxFormProps) {
               variant="contained"
               disabled={isSubmitting || !isValid}
               onClick={submitForm}
+              fullWidth={dialog}
             >
               <FormattedMessage id="save" defaultMessage="Save" />
             </Button>

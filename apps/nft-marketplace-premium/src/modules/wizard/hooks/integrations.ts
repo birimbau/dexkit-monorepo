@@ -11,7 +11,7 @@ export function useSaveApiKeyMutation() {
         ?.status;
 
       return result;
-    },
+    }
   );
 }
 
@@ -29,13 +29,17 @@ export function useGetApiKeyQuery({
   return useQuery<{ type: string; value: string; siteId: number }>(
     [GET_INTEGRATION_API_KEY, siteId, type],
     async () => {
-      if (siteId === undefined) {
+      if (siteId === undefined || instance === undefined) {
         return null;
       }
 
-      return (await instance?.get(`/integrations/apikeys/${siteId}/${type}`))
-        ?.data;
+      const result = (
+        await instance?.get(`/integrations/apikeys/${siteId}/${type}`)
+      )?.data;
+
+      return result;
     },
+    { enabled: instance !== undefined }
   );
 }
 

@@ -75,12 +75,12 @@ export async function getAppConfig(
     });
   }
 
-  if (site?.startsWith('localhost')) {
-    const slug = site.split(':');
-    if (slug.length > 1) {
-      const configResponse = await (
-        await getConfig({ slug: slug[1], appPage })
-      ).data;
+  const [slug, domain] = site?.split('.') || [];
+
+  if (domain?.startsWith('localhost')) {
+    if (slug) {
+      const configResponse = (await getConfig({ slug, appPage })).data;
+
       if (configResponse) {
         return {
           appConfig: JSON.parse(configResponse.config) as AppConfig,
@@ -89,6 +89,7 @@ export async function getAppConfig(
         };
       }
     }
+
     return Promise.resolve({
       appConfig: appConfigJson as AppConfig,
       appNFT: null,

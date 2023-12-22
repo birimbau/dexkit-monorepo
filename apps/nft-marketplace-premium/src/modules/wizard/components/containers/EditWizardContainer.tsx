@@ -35,7 +35,6 @@ import { AppConfig } from '../../../../types/config';
 import { SiteResponse } from '../../../../types/whitelabel';
 import { useAppWizardConfig } from '../../hooks';
 
-import { DexkitApiProvider } from '@dexkit/core/providers';
 import { isAddressEqual } from '@dexkit/core/utils';
 import AnalyticsIcon from '@mui/icons-material/Analytics';
 import DatasetIcon from '@mui/icons-material/Dataset';
@@ -47,7 +46,6 @@ import { useWeb3React } from '@web3-react/core';
 import { useAtom } from 'jotai';
 import { useRouter } from 'next/router';
 import { useAuth } from 'src/hooks/account';
-import { myAppsApi } from 'src/services/whitelabel';
 import { BuilderKit } from '../../constants';
 import { OnboardBuilderSteps } from '../../constants/onboard/steps';
 import SiteWizardProvider from '../../providers/SiteWizardProvider';
@@ -990,6 +988,7 @@ export function EditWizardContainer({ site }: Props) {
                       onSave={handleSave}
                       onHasChanges={setHasChanges}
                       builderKit={activeBuilderKit}
+                      siteId={site?.id}
                     />
                   )}
 
@@ -1069,9 +1068,7 @@ export function EditWizardContainer({ site }: Props) {
                   )}
 
                   {activeMenu === ActiveMenu.Integrations && config && (
-                    <DexkitApiProvider.Provider value={{ instance: myAppsApi }}>
-                      <IntegrationsWizardContainer siteId={site?.id} />
-                    </DexkitApiProvider.Provider>
+                    <IntegrationsWizardContainer siteId={site?.id} />
                   )}
                 </Stack>
               </SiteWizardProvider>
