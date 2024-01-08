@@ -42,9 +42,9 @@ export default function SwapWizardContainer({
   const [swapFormData, setSwapFormData] = useState<SwapConfig | undefined>(
     (
       config.pages['home']?.sections.find(
-        (s) => s.type === 'swap',
+        (s) => s.type === 'swap'
       ) as SwapPageSection
-    )?.config,
+    )?.config
   );
 
   const featuredTokens = useMemo<Token[]>(() => {
@@ -67,11 +67,11 @@ export default function SwapWizardContainer({
 
   const changeConfig = function (
     configToChange: AppConfig,
-    formData?: SwapConfig,
+    formData?: SwapConfig
   ) {
     const newConfig = { ...configToChange };
     const swapSectionPageIndex = newConfig.pages['home']?.sections.findIndex(
-      (s) => s.type === 'swap',
+      (s) => s.type === 'swap'
     );
     let editSwapSection: SwapPageSection;
     if (formData) {
@@ -136,6 +136,7 @@ export default function SwapWizardContainer({
           onChange={setSwapFormData}
           data={swapFormData}
           featuredTokens={tokens}
+          useDefaultNetworks
         />
       </Grid>
       <Grid item xs={6}>

@@ -1,28 +1,21 @@
 import {
   Alert,
-  Avatar,
-  Box,
   Button,
   CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
   DialogProps,
-  List,
-  ListItemButton,
-  ListItemIcon,
-  ListItemSecondaryAction,
-  ListItemText,
-  Radio,
   Stack,
 } from "@mui/material";
 import { useState } from "react";
 import { FormattedMessage } from "react-intl";
 
-import { NETWORKS } from "@dexkit/core/constants/networks";
-import { Network } from "@dexkit/core/types";
+import { DexkitApiProvider } from "@dexkit/core/providers";
+import { myAppsApi } from "../../constants/api";
 import { useSwitchNetworkMutation } from "../../hooks";
 import { AppDialogTitle } from "../AppDialogTitle";
+import NetworkList from "../NetworkList";
 
 interface Props {
   dialogProps: DialogProps;
@@ -75,52 +68,15 @@ function SwitchNetworkDialog({ dialogProps }: Props) {
               {switchNetworkMutation.error?.message}
             </Alert>
           )}
-          <List disablePadding>
-            {Object.keys(NETWORKS)
-              .filter((k) => !NETWORKS[parseInt(k)].testnet)
-              .map((key: any, index: number) => (
-                <ListItemButton
-                  disabled={switchNetworkMutation.isLoading}
-                  selected={(NETWORKS[key] as Network).chainId === chainId}
-                  key={index}
-                  onClick={() =>
-                    handleSelectNetwork((NETWORKS[key] as Network).chainId)
-                  }
-                >
-                  <ListItemIcon>
-                    <Box
-                      sx={{
-                        width: (theme) => theme.spacing(6),
-                        display: "flex",
-                        alignItems: "center",
-                        alignContent: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <Avatar
-                        src={(NETWORKS[key] as Network).imageUrl}
-                        sx={(theme) => ({
-                          width: "auto",
-                          height: theme.spacing(4),
-                        })}
-                        alt={(NETWORKS[key] as Network).name}
-                      />
-                    </Box>
-                  </ListItemIcon>
+          <DexkitApiProvider.Provider value={{ instance: myAppsApi }}>
+            {/* TODO: remove this in the future */}
 
-                  <ListItemText
-                    primary={(NETWORKS[key] as Network).name}
-                    secondary={(NETWORKS[key] as Network).symbol}
-                  />
-                  <ListItemSecondaryAction>
-                    <Radio
-                      name="chainId"
-                      checked={(NETWORKS[key] as Network).chainId === chainId}
-                    />
-                  </ListItemSecondaryAction>
-                </ListItemButton>
-              ))}
-          </List>
+            <NetworkList
+              chainId={chainId}
+              onSelect={handleSelectNetwork}
+              siteId={7}
+            />
+          </DexkitApiProvider.Provider>
         </Stack>
       </DialogContent>
       <DialogActions>

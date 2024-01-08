@@ -55,7 +55,7 @@ export const useSendConfigMutation = ({ slug }: { slug?: string }) => {
           type,
           slug,
           email,
-          siteId
+          siteId,
         });
         configQuery.refetch();
         return response.data;
@@ -171,8 +171,8 @@ export const useWhitelabelConfigQuery = ({
   );
 };
 
-
-export const QUERY_ADMIN_WHITELABEL_CONFIG_NAME = 'GET_ADMIN_WHITELABEL_CONFIG_QUERY';
+export const QUERY_ADMIN_WHITELABEL_CONFIG_NAME =
+  'GET_ADMIN_WHITELABEL_CONFIG_QUERY';
 /**
  * get config by name or query
  * @param param0
@@ -283,12 +283,11 @@ export const useSetupDomainConfigMutation = () => {
 export const useUpsertWhitelabelAssetMutation = () => {
   const { account, provider, chainId } = useWeb3React();
 
-  const setIsHoldingKit = useSetAtom(holdsKitDialogAtom)
+  const setIsHoldingKit = useSetAtom(holdsKitDialogAtom);
   const isHoldingKit = useAccountHoldDexkitMutation();
   const queryClient = useQueryClient();
   const { isLoggedIn } = useAuth();
   const loginMutation = useLoginAccountMutation();
-
 
   return useMutation<any, any, any>(
     async ({
@@ -305,7 +304,6 @@ export const useUpsertWhitelabelAssetMutation = () => {
           setIsHoldingKit(true);
           return false;
         }
-
 
         if (!isLoggedIn) {
           await loginMutation.mutateAsync();

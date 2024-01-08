@@ -34,6 +34,7 @@ import { AppConfig } from '../../../../types/config';
 import { SiteResponse } from '../../../../types/whitelabel';
 import { useAppWizardConfig } from '../../hooks';
 
+import { DexkitApiProvider } from '@dexkit/core/providers';
 import AnalyticsIcon from '@mui/icons-material/Analytics';
 import DatasetIcon from '@mui/icons-material/Dataset';
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -43,6 +44,7 @@ import { TourProvider, useTour } from '@reactour/tour';
 import { useAtom } from 'jotai';
 import { useRouter } from 'next/router';
 import { useAuth } from 'src/hooks/account';
+import { myAppsApi } from 'src/services/whitelabel';
 import { BuilderKit } from '../../constants';
 import { OnboardBuilderSteps } from '../../constants/onboard/steps';
 import { isFirstVisitOnEditWizardAtom } from '../../state';
@@ -51,43 +53,48 @@ import { ConfirmationEmailMessage } from '../ConfirmationEmailMessage';
 import { PreviewAppButton } from '../PreviewAppButton';
 import { WelcomeMessage } from '../WelcomeMessage';
 import SignConfigDialog from '../dialogs/SignConfigDialog';
+
+const NetworksWizardContainer = dynamic(
+  () => import('./NetworksWizardContainer')
+);
+
 const UserEventAnalyticsContainer = dynamic(
-  () => import('./UserEventAnalyticsContainer'),
+  () => import('./UserEventAnalyticsContainer')
 );
 
 const OwnershipWizardContainer = dynamic(
-  () => import('./OwnershipWizardContainer'),
+  () => import('./OwnershipWizardContainer')
 );
 const CollectionWizardContainer = dynamic(
-  () => import('./CollectionWizardContainer'),
+  () => import('./CollectionWizardContainer')
 );
 const DomainWizardContainer = dynamic(() => import('./DomainWizardContainer'));
 const FooterMenuWizardContainer = dynamic(
-  () => import('./FooterMenuWizardContainer'),
+  () => import('./FooterMenuWizardContainer')
 );
 const GeneralWizardContainer = dynamic(
-  () => import('./GeneralWizardContainer'),
+  () => import('./GeneralWizardContainer')
 );
 const MarketplaceFeeWizardContainer = dynamic(
-  () => import('./MarketplaceFeeWizardContainer'),
+  () => import('./MarketplaceFeeWizardContainer')
 );
 const PagesMenuWizardContainer = dynamic(
-  () => import('./PagesMenuWizardContainer'),
+  () => import('./PagesMenuWizardContainer')
 );
 const PagesWizardContainer = dynamic(() => import('./PagesWizardContainer'));
 const SeoWizardContainer = dynamic(() => import('./SeoWizardContainer'));
 const SocialWizardContainer = dynamic(() => import('./SocialWizardContainer'));
 const SwapFeeWizardContainer = dynamic(
-  () => import('./SwapFeeWizardContainer'),
+  () => import('./SwapFeeWizardContainer')
 );
 const ThemeWizardContainer = dynamic(() => import('./ThemeWizardContainer'));
 const TokenWizardContainer = dynamic(() => import('./TokenWizardContainer'));
 const TeamWizardContainer = dynamic(() => import('./TeamWizardContainer'));
 const AppVersionWizardContainer = dynamic(
-  () => import('./AppVersionWizardContainer'),
+  () => import('./AppVersionWizardContainer')
 );
 const AnalyticsWizardContainer = dynamic(
-  () => import('./AnalyticsWizardContainer'),
+  () => import('./AnalyticsWizardContainer')
 );
 
 interface Props {
@@ -112,6 +119,7 @@ export enum ActiveMenu {
   Collections = 'collections',
   Tokens = 'tokens',
   Ownership = 'ownership',
+  Networks = 'networks',
 }
 
 function TourButton() {
@@ -176,12 +184,12 @@ export function EditWizardContainer({ site }: Props) {
   const { isLoggedIn, user } = useAuth();
 
   const [activeMenu, setActiveMenu] = useState<ActiveMenu>(
-    tab || ActiveMenu.General,
+    tab || ActiveMenu.General
   );
   const [activeMenuWithChanges, setActiveMenuWithChanges] =
     useState<ActiveMenu>(tab || ActiveMenu.General);
   const [activeBuilderKit, setActiveBuilderKit] = useState<BuilderKit>(
-    BuilderKit.ALL,
+    BuilderKit.ALL
   );
 
   const handleChangeTab = (mn: ActiveMenu) => {
@@ -274,7 +282,7 @@ export function EditWizardContainer({ site }: Props) {
       setWizardConfig(newConfig);
     },
 
-    [wizardConfig, setWizardConfig],
+    [wizardConfig, setWizardConfig]
   );
 
   const renderMenu = () => (
@@ -592,7 +600,22 @@ export function EditWizardContainer({ site }: Props) {
                 >
                   <ListItemText
                     primary={
-                      <FormattedMessage id="tokens" defaultMessage={'Tokens'} />
+                      <FormattedMessage id="tokens" defaultMessage="Tokens" />
+                    }
+                  />
+                </ListItemButton>
+              </ListItem>
+              <ListItem disablePadding>
+                <ListItemButton
+                  selected={activeMenu === ActiveMenu.Networks}
+                  onClick={() => handleChangeTab(ActiveMenu.Networks)}
+                >
+                  <ListItemText
+                    primary={
+                      <FormattedMessage
+                        id="networks"
+                        defaultMessage="Networks"
+                      />
                     }
                   />
                 </ListItemButton>
@@ -1004,6 +1027,12 @@ export function EditWizardContainer({ site }: Props) {
                     onSave={handleSave}
                     onChange={handleChange}
                   />
+                )}
+                {activeMenu === ActiveMenu.Networks && config && (
+                  <DexkitApiProvider.Provider value={{ instance: myAppsApi }}>
+                    {/* TODO: Remove this provider after main merge */}
+                    <NetworksWizardContainer />
+                  </DexkitApiProvider.Provider>
                 )}
                 {activeMenu === ActiveMenu.UserEventAnalytics && config && (
                   <UserEventAnalyticsContainer siteId={site?.id} />

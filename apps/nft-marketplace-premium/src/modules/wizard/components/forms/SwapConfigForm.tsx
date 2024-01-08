@@ -15,17 +15,25 @@ import { NetworkSelectDropdown } from 'src/components/NetworkSelectDropdown';
 import { Token } from 'src/types/blockchain';
 import { SearchTokenAutocomplete } from '../pageEditor/components/SearchTokenAutocomplete';
 
+import NetworkSelect from '@dexkit/ui/components/NetworkSelect';
+
 interface Props {
   data?: SwapConfig;
   onChange?: (data: SwapConfig) => void;
   featuredTokens?: Token[];
+  useDefaultNetworks?: boolean;
 }
 
-export function SwapConfigForm({ onChange, data, featuredTokens }: Props) {
+export function SwapConfigForm({
+  onChange,
+  data,
+  featuredTokens,
+  useDefaultNetworks,
+}: Props) {
   const [formData, setFormData] = useState<SwapConfig | undefined>(data);
 
   const [selectedChainId, setSelectedChainId] = useState<number | undefined>(
-    data?.defaultChainId,
+    data?.defaultChainId
   );
 
   const sellToken = useMemo(() => {
@@ -87,16 +95,24 @@ export function SwapConfigForm({ onChange, data, featuredTokens }: Props) {
                 defaultMessage="Default network"
               />
             </Typography>
-            <NetworkSelectDropdown
-              chainId={formData?.defaultChainId}
-              onChange={(chainId) => {
-                setFormData((formData) => ({
-                  ...formData,
-                  defaultChainId: chainId,
-                }));
-              }}
-              labelId="default-network"
-            />
+            {useDefaultNetworks ? (
+              <NetworkSelectDropdown
+                chainId={formData?.defaultChainId}
+                onChange={(chainId) => {
+                  setFormData((formData) => ({
+                    ...formData,
+                    defaultChainId: chainId,
+                  }));
+                }}
+                labelId="default-network"
+              />
+            ) : (
+              <NetworkSelect
+                chainId={selectedChainId}
+                onSelect={(chainId) => setSelectedChainId(chainId)}
+                siteId={7}
+              />
+            )}
           </FormControl>
         </Grid>
         <Grid item xs={12}>
