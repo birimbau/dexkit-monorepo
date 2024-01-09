@@ -23,6 +23,7 @@ import ContractAirdropErc721Container from './ContractAirdropErc721Container';
 import { ContractEditionContainer } from './ContractEditionContainer';
 import ContractStakeErc1155Container from './ContractStakeErc1155Container';
 import ContractStakeErc721Container from './ContractStakeErc721Container';
+import { ContractTokenContainer } from './ContractTokenContainer';
 
 interface Props {
   address: string;
@@ -74,6 +75,8 @@ export function ContractContainer({ address, network }: Props) {
       return (
         <ContractAirdropErc1155Container address={address} network={network} />
       );
+    } else if (contractType === 'TokenERC20') {
+      return <ContractTokenContainer address={address} network={network} />;
     }
   };
 
