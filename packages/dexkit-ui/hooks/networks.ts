@@ -83,13 +83,11 @@ export function useSearchNetworks({
       };
     },
     {
-      getNextPageParam: (lastPage, page) => {
-        return lastPage.page + 1;
+      getNextPageParam: ({ page }) => {
+        return page + 1;
       },
-      getPreviousPageParam: (first, allPages) => {
-        if (first.page > 1) {
-          return first.page - 1;
-        }
+      getPreviousPageParam: ({ page }) => {
+        return page - 1;
       },
     }
   );

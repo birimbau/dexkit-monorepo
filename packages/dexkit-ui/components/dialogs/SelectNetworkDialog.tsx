@@ -12,6 +12,7 @@ import { useState } from "react";
 import { FormattedMessage } from "react-intl";
 
 import { DexkitApiProvider } from "@dexkit/core/providers";
+import { useWeb3React } from "@web3-react/core";
 import { myAppsApi } from "../../constants/api";
 import { useSwitchNetworkMutation } from "../../hooks";
 import { AppDialogTitle } from "../AppDialogTitle";
@@ -24,6 +25,7 @@ interface Props {
 function SwitchNetworkDialog({ dialogProps }: Props) {
   const { onClose } = dialogProps;
 
+  const { chainId: connectorChainId } = useWeb3React();
   const [chainId, setChainId] = useState<number>();
 
   const switchNetworkMutation = useSwitchNetworkMutation();
@@ -75,6 +77,7 @@ function SwitchNetworkDialog({ dialogProps }: Props) {
               chainId={chainId}
               onSelect={handleSelectNetwork}
               siteId={7}
+              connectorChainId={connectorChainId}
             />
           </DexkitApiProvider.Provider>
         </Stack>

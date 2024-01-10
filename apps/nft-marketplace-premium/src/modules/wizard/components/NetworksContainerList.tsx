@@ -1,27 +1,38 @@
 import CheckIcon from '@mui/icons-material/Check';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
+import Info from '@mui/icons-material/Info';
 
 import {
+  Checkbox,
   Chip,
   Grid,
+  IconButton,
   List,
   ListItem,
   ListItemSecondaryAction,
   ListItemText,
   Stack,
-  Switch,
 } from '@mui/material';
 
 export interface NetworksContainerListProps {
   networks: any[];
-  activeNetworks: number[];
   onChange: (active: number[]) => void;
+  isEditing?: boolean;
+  exclude: number[];
+  onShowInfo: (network: {
+    name: string;
+    symbol: string;
+    chainId: number;
+    decimals: number;
+  }) => void;
 }
 
 export default function NetworksContainerList({
   networks,
-  activeNetworks,
+  isEditing,
+  exclude,
   onChange,
+  onShowInfo,
 }: NetworksContainerListProps) {
   return (
     <Grid container spacing={2}>
@@ -34,7 +45,12 @@ export default function NetworksContainerList({
                   primaryTypographyProps={{ marginTop: 0 }}
                   primary={network.name}
                 />
-                <Stack direction="row" alignItems="center" spacing={1}>
+                <Stack
+                  display="none"
+                  direction="row"
+                  alignItems="center"
+                  spacing={1}
+                >
                   <Chip
                     icon={
                       <CheckIcon
@@ -64,22 +80,31 @@ export default function NetworksContainerList({
                 </Stack>
               </Stack>
               <ListItemSecondaryAction>
-                <Switch
-                  edge="end"
-                  checked={activeNetworks?.includes(network.chainId)}
-                  onChange={(e) => {
-                    let newActive;
-
-                    if (!activeNetworks?.includes(network.chainId)) {
-                      newActive = [...activeNetworks, network.chainId];
-                    } else {
-                      newActive = activeNetworks.filter(
-                        (c) => c !== network.chainId
-                      );
+                {isEditing ? (
+                  <Checkbox
+                    checked={exclude.includes(network.chainId)}
+                    onClick={() => {
+                      if (exclude.includes(network.chainId)) {
+                        onChange(exclude.filter((n) => n !== network.chainId));
+                      } else {
+                        onChange([...exclude, network.chainId]);
+                      }
+                    }}
+                  />
+                ) : (
+                  <IconButton
+                    onClick={() =>
+                      onShowInfo({
+                        name: network.name,
+                        symbol: network.nativeSymbol,
+                        chainId: network.chainId,
+                        decimals: network.decimals,
+                      })
                     }
-                    onChange(newActive);
-                  }}
-                />
+                  >
+                    <Info />
+                  </IconButton>
+                )}
               </ListItemSecondaryAction>
             </ListItem>
           ))}

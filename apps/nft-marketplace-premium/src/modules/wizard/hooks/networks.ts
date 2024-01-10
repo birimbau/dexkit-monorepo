@@ -70,16 +70,6 @@ export function useActiveNetworks({
           params: { q: query, page, limit, siteId },
         })
       ).data;
-    },
-    {
-      getNextPageParam: (lastPage, page) => {
-        return lastPage.page + 1;
-      },
-      getPreviousPageParam: (first, allPages) => {
-        if (first.page > 1) {
-          return first.page - 1;
-        }
-      },
     }
   );
 }

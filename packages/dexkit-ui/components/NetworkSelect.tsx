@@ -30,7 +30,9 @@ export default function NetworkSelect({
   });
 
   const selectedNetwork = useMemo(() => {
-    return activeNetworks.data?.pages[0]?.find((n) => n.chainId === chainId);
+    return activeNetworks.data?.pages[0]?.find(
+      (n: any) => n.chainId === chainId
+    );
   }, [chainId, activeNetworks.data]);
 
   console.log(selectedNetwork, activeNetworks.data);
