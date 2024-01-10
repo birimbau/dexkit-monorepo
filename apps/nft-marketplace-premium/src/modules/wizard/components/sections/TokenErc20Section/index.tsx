@@ -32,9 +32,22 @@ const EvmBurnTokenDialog = dynamic(
     ),
 );
 
+const EvmMintTokenDialog = dynamic(
+  () =>
+    import(
+      '@dexkit/ui/modules/evm-mint-token/components/dialogs/EvmMintTokenDialog'
+    ),
+);
+
 export default function TokenErc20Section({ section }: TokenErc20SectionProps) {
-  const { address, network, disableBurn, disableInfo, disableTransfer } =
-    section.settings;
+  const {
+    address,
+    network,
+    disableBurn,
+    disableInfo,
+    disableTransfer,
+    disableMint,
+  } = section.settings;
 
   const { data: contract } = useContract(address, 'token');
 
@@ -44,6 +57,7 @@ export default function TokenErc20Section({ section }: TokenErc20SectionProps) {
 
   const [showTransfer, setShowTransfer] = useState(false);
   const [showBurn, setShowBurn] = useState(false);
+  const [showMint, setShowMint] = useState(false);
 
   const handleOpenTransfer = () => {
     setShowTransfer(true);
@@ -53,12 +67,20 @@ export default function TokenErc20Section({ section }: TokenErc20SectionProps) {
     setShowBurn(true);
   };
 
+  const handleOpenMint = () => {
+    setShowMint(true);
+  };
+
   const handleCloseTransfer = () => {
     setShowTransfer(false);
   };
 
   const handeCloseBurnToken = () => {
     setShowBurn(false);
+  };
+
+  const handeCloseMintToken = () => {
+    setShowMint(false);
   };
 
   const token = useAsyncMemo(
@@ -135,6 +157,26 @@ export default function TokenErc20Section({ section }: TokenErc20SectionProps) {
           }}
         />
       )}
+      {showMint && net && token && (
+        <EvmMintTokenDialog
+          DialogProps={{
+            open: showMint,
+            maxWidth: 'sm',
+            fullWidth: true,
+            onClose: handeCloseMintToken,
+          }}
+          chainId={chainId}
+          account={account}
+          token={{
+            address: address,
+            chainId: net.chainId,
+            decimals: token.decimals,
+            symbol: token.symbol,
+            name: token.name,
+            logoURI: TOKEN_ICON_URL(address, net.chainId),
+          }}
+        />
+      )}
 
       <Container>
         <Paper sx={{ p: 2 }}>
@@ -145,6 +187,11 @@ export default function TokenErc20Section({ section }: TokenErc20SectionProps) {
             <Grid item xs={12}>
               <Box>
                 <Stack spacing={2} direction={{ xs: 'column', sm: 'row' }}>
+                  {false && (
+                    <Button onClick={handleOpenMint} variant="contained">
+                      <FormattedMessage id="mint" defaultMessage="MInt" />
+                    </Button>
+                  )}
                   {!disableTransfer && (
                     <Button variant="contained" onClick={handleOpenTransfer}>
                       <FormattedMessage
