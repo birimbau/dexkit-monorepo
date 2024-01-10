@@ -28,10 +28,10 @@ export function useMintToken({
     let tx;
 
     if (to) {
-      console.log('mint.to')
+
       tx = await contract?.erc20.mintTo.prepare(to, quantity);
     } else {
-      console.log('mint')
+
       tx = await contract?.erc20.mint.prepare(quantity);
     }
 
