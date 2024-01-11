@@ -62,7 +62,7 @@ export default function MyApp(props: MyAppProps) {
           suspense: false,
         },
       },
-    })
+    }),
   );
 
   const getLayout = (Component as any).getLayout || ((page: any) => page);
@@ -197,8 +197,6 @@ export default function MyApp(props: MyAppProps) {
 
   const config = appConfig || defaultAppConfig;
   const favicon = config.favicon_url || '/favicon.ico';
-
-  console.log('site app', siteId);
 
   return (
     <CacheProvider value={emotionCache}>

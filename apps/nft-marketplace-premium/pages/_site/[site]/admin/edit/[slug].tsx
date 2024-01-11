@@ -34,6 +34,7 @@ import { myAppsApi } from 'src/services/whitelabel';
 export const WizardEditPage: NextPage = () => {
   const router = useRouter();
   const { isLoggedIn } = useAuth();
+
   const { slug } = router.query;
   const {
     data: site,
