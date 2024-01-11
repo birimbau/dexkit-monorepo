@@ -16,6 +16,7 @@ import { GatedCondition } from '@dexkit/ui/types/config';
 import { NoSsr } from '@mui/material';
 import { SessionProvider } from 'next-auth/react';
 import AuthMainLayout from 'src/components/layouts/authMain';
+import { GlobalDialogs } from 'src/components/layouts/GlobalDialogs';
 import { AuthProvider } from 'src/providers/authProvider';
 
 const EmbedPage: NextPage<{
@@ -44,6 +45,7 @@ const EmbedPage: NextPage<{
       return (
         <SessionProvider>
           <AuthProvider>
+            <GlobalDialogs />
             <ProtectedContent
               site={site}
               page={page}
@@ -74,6 +76,7 @@ const EmbedPage: NextPage<{
   if (hideLayout) {
     return (
       <NoSsr>
+        <GlobalDialogs />
         <SectionsRenderer sections={sections} />
       </NoSsr>
     );
