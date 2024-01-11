@@ -75,9 +75,12 @@ export async function getAppConfig(
     });
   }
 
-  const [slug, domain] = site?.split('.') || [];
 
-  if (domain?.startsWith('localhost')) {
+
+
+  if (site?.startsWith('localhost')) {
+    const [slug,] = site?.split('.') || [];
+
     if (slug) {
       const configResponse = (await getConfig({ slug, appPage })).data;
 

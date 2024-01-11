@@ -21,7 +21,7 @@ import dynamic from 'next/dynamic';
 import { useGetApiKeyQuery } from '../../hooks/integrations';
 
 const ApiKeyIntegrationDialog = dynamic(
-  () => import('../dialogs/ApiKeyIntegrationDialog')
+  () => import('../dialogs/ApiKeyIntegrationDialog'),
 );
 
 interface Props {
@@ -135,7 +135,7 @@ export default function PagesWizardContainer({
             >
               <FormattedMessage
                 id="configure.0x.text"
-                defaultMessage="Ensure a smooth experience by configuring your 0x API key for access to our services."
+                defaultMessage="Ensure a smooth experience by configuring your 0x API key for access to our swap and exchange services."
               />
             </Alert>
           </Grid>

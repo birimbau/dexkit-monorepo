@@ -18,13 +18,15 @@ import { fetchAssetForQueryClient } from '../../../../../../src/services/nft';
 import AssetHead from '../../../../../../src/modules/nft/components/AssetHead';
 
 import DarkblockWrapper from '@/modules/wizard/components/DarkblockWrapper';
+import { DARKBLOCK_SUPPORTED_CHAIN_IDS } from '@/modules/wizard/constants';
 import { getIntegrationData } from '@/modules/wizard/services/integrations';
-import { ChainId } from '@dexkit/core/constants';
+import { ChainId, MY_APPS_ENDPOINT } from '@dexkit/core/constants';
+import { NETWORK_FROM_SLUG } from '@dexkit/core/constants/networks';
 import { truncateAddress } from '@dexkit/core/utils';
+import axios from 'axios';
 import { NextSeo } from 'next-seo';
 import { Suspense } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { myAppsApi } from 'src/services/whitelabel';
 import { PageHeader } from '../../../../../../src/components/PageHeader';
 import { NETWORK_ID } from '../../../../../../src/constants/enum';
 import { MAP_NETWORK_TO_RARIBLE } from '../../../../../../src/constants/marketplaces';
@@ -88,15 +90,15 @@ const AssetDetailPage: NextPage<any> = ({
                   ),
 
                   uri: `/collection/${getNetworkSlugFromChainId(
-                    asset?.chainId
+                    asset?.chainId,
                   )}/${address}`,
                 },
                 {
                   caption: `${asset?.collectionName} #${truncateErc1155TokenId(
-                    asset?.id
+                    asset?.id,
                   )}`,
                   uri: `/asset/${getNetworkSlugFromChainId(
-                    asset?.chainId
+                    asset?.chainId,
                   )}/${address}/${id}`,
                   active: true,
                 },
@@ -152,32 +154,47 @@ export const getStaticProps: GetStaticProps = async ({
     try {
       if (network === NETWORK_ID.Ethereum || network === NETWORK_ID.Polygon) {
         const { data } = await getRariAsset(
-          `${MAP_NETWORK_TO_RARIBLE[network]}:${address}:${id}`
+          `${MAP_NETWORK_TO_RARIBLE[network]}:${address}:${id}`,
         );
         await queryClient.prefetchQuery(
           [BEST_SELL_ORDER_RARIBLE, network, address, id],
           async () => {
             return data;
-          }
+          },
         );
       }
     } catch (e) {
       console.log(e);
     }
+    let enableDarkblock = false;
 
-    const darkBlock = await getIntegrationData({
-      siteId: configResponse.siteId, //
-      type: 'darkblock',
-      instance: myAppsApi,
-    });
+    try {
+      if (
+        DARKBLOCK_SUPPORTED_CHAIN_IDS.includes(
+          NETWORK_FROM_SLUG(network)?.chainId as ChainId,
+        )
+      ) {
+        const darkBlock = await getIntegrationData({
+          siteId: configResponse.siteId, //
+          type: 'darkblock',
+          instance: axios.create({
+            baseURL: MY_APPS_ENDPOINT,
+            headers: {
+              'DexKit-Api-Key': process.env.MARKETPLACE_API_KEY as string,
+            },
+          }),
+        });
+        if (darkBlock?.settings?.enableDarkblock) {
+          enableDarkblock = true;
+        }
+      }
+    } catch {}
 
     return {
       props: {
         dehydratedState: dehydrate(queryClient),
         ...configResponse,
-        enableDarkblock: darkBlock
-          ? darkBlock?.settings?.enableDarkblock
-          : false,
+        enableDarkblock: enableDarkblock,
       },
       revalidate: 5,
     };

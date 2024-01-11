@@ -1,14 +1,17 @@
 import { DexkitApiProvider } from '@dexkit/core/providers';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useContext } from 'react';
 
 export function useSaveApiKeyMutation() {
   const { instance } = useContext(DexkitApiProvider);
+  const queryClient = useQueryClient();
 
   return useMutation(
     async (params: { siteId: number; type: string; value: string }) => {
       const result = (await instance?.post('/integrations/apikeys', params))
         ?.status;
+
+      queryClient.refetchQueries([GET_INTEGRATION_API_KEY]);
 
       return result;
     }
@@ -78,13 +81,17 @@ export function useSaveIntegrationMutation({
   type: string;
 }) {
   const { instance } = useContext(DexkitApiProvider);
-
+  const queryClient = useQueryClient();
   return useMutation(async ({ data }: { data: any }) => {
     if (siteId === undefined) {
       return null;
     }
 
-    return (await instance?.post(`/integrations/${siteId}/${type}`, { data }))
+    const response = (await instance?.post(`/integrations/${siteId}/${type}`, { data }))
       ?.data;
+
+    queryClient.refetchQueries([GET_INTEGRATION_DATA_QUERY]);
+    return response;
+
   });
 }
