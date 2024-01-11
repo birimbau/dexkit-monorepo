@@ -43,37 +43,6 @@ export function useDefaultNetworks({
   );
 }
 
-const ACTIVE_NETWORKS_QUERY = 'ACTIVE_NETWORKS_QUERY';
-
-export function useActiveNetworks({
-  query,
-  page,
-  siteId,
-  limit,
-}: {
-  page: number;
-  limit: number;
-  query: string;
-  siteId?: number;
-}) {
-  const { instance } = useContext(DexkitApiProvider);
-
-  return useInfiniteQuery(
-    [ACTIVE_NETWORKS_QUERY, query, page, limit],
-    async () => {
-      if (!instance) {
-        return { data: [], page: 1, pageSize: 10, totalPages: 0 };
-      }
-
-      return (
-        await instance.get('/networks/metadata/active', {
-          params: { q: query, page, limit, siteId },
-        })
-      ).data;
-    }
-  );
-}
-
 export function useSetNetworksActive() {
   const { instance } = useContext(DexkitApiProvider);
 

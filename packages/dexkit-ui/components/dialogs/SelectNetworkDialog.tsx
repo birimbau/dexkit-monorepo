@@ -76,7 +76,6 @@ function SwitchNetworkDialog({ dialogProps }: Props) {
             <NetworkList
               chainId={chainId}
               onSelect={handleSelectNetwork}
-              siteId={7}
               connectorChainId={connectorChainId}
             />
           </DexkitApiProvider.Provider>

@@ -110,7 +110,6 @@ export function SwapConfigForm({
               <NetworkSelect
                 chainId={selectedChainId}
                 onSelect={(chainId) => setSelectedChainId(chainId)}
-                siteId={7}
               />
             )}
           </FormControl>

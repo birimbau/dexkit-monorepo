@@ -19,6 +19,7 @@ import {
 import { useRouter } from 'next/router';
 
 import { EditWizardContainer } from '@/modules/wizard/components/containers/EditWizardContainer';
+import { NETWORK_DATA_QUERY } from '@dexkit/ui/hooks/app';
 import SecurityIcon from '@mui/icons-material/Security';
 import { QueryClient, dehydrate } from '@tanstack/react-query';
 import { FormattedMessage } from 'react-intl';
@@ -124,11 +125,31 @@ type Params = {
   site?: string;
 };
 
+import { getActiveNetworks } from '@dexkit/ui/services/app';
+import axios from 'axios';
+
 export const getStaticProps: GetStaticProps = async ({
   params,
 }: GetStaticPropsContext<Params>) => {
   const queryClient = new QueryClient();
   //const configResponse = await getAppConfig(params?.site, 'no-page-defined');
+
+  const activeNetworks = await getActiveNetworks({
+    siteId: 1,
+    limit: 1000,
+    instance: axios.create({ baseURL: 'http://localhost:5000' }),
+    page: 1,
+    query: '',
+  });
+
+  for (let network of activeNetworks) {
+    await queryClient.prefetchQuery(
+      [NETWORK_DATA_QUERY, network.chainId],
+      async () => {
+        return network;
+      }
+    );
+  }
 
   return {
     props: {

@@ -14,19 +14,13 @@ import { useActiveNetworks } from "../hooks/networks";
 export interface NetworkListProps {
   chainId?: number;
   onSelect?: (chainId?: number) => void;
-  siteId?: number;
 }
 
-export default function NetworkSelect({
-  chainId,
-  onSelect,
-  siteId,
-}: NetworkListProps) {
+export default function NetworkSelect({ chainId, onSelect }: NetworkListProps) {
   const activeNetworks = useActiveNetworks({
     limit: 1000,
     page: 1,
     query: "",
-    siteId,
   });
 
   const selectedNetwork = useMemo(() => {
@@ -34,8 +28,6 @@ export default function NetworkSelect({
       (n: any) => n.chainId === chainId
     );
   }, [chainId, activeNetworks.data]);
-
-  console.log(selectedNetwork, activeNetworks.data);
 
   return (
     <Select

@@ -20,9 +20,10 @@ import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { useRouter } from 'next/router';
 
 import { ThemeMode } from '@dexkit/ui/constants/enum';
+import { SiteContext } from '@dexkit/ui/context/SiteContext';
 import { Backdrop, CircularProgress } from '@mui/material';
 import { experimental_extendTheme as extendTheme } from '@mui/material/styles';
-import type { } from '@mui/material/themeCssVarsAugmentation';
+import type {} from '@mui/material/themeCssVarsAugmentation';
 import { getTheme } from 'src/theme';
 import { AssetAPI } from 'src/types/nft';
 import defaultAppConfig from '../config/app.json';
@@ -207,23 +208,25 @@ export default function MyApp(props: MyAppProps) {
       </Head>
       <AppConfigContext.Provider value={{ appConfig: config, appNFT, siteId }}>
         <QueryClientProvider client={queryClient}>
-          <Hydrate state={pageProps.dehydratedState}>
-            <DefaultSeo {...SEO} />
-            <LocalizationProvider dateAdapter={AdapterMoment}>
-              <AppMarketplaceProvider>
-                <Backdrop
-                  open={loading}
-                  sx={{
-                    color: theme?.colorSchemes?.light?.palette?.primary?.main,
-                    zIndex: theme.zIndex.drawer + 1,
-                  }}
-                >
-                  <CircularProgress color="inherit" size={80} />
-                </Backdrop>
-                {getLayout(<Component {...pageProps} />)}
-              </AppMarketplaceProvider>
-            </LocalizationProvider>
-          </Hydrate>
+          <SiteContext.Provider value={{ siteId: 1 }}>
+            <Hydrate state={pageProps.dehydratedState}>
+              <DefaultSeo {...SEO} />
+              <LocalizationProvider dateAdapter={AdapterMoment}>
+                <AppMarketplaceProvider>
+                  <Backdrop
+                    open={loading}
+                    sx={{
+                      color: theme?.colorSchemes?.light?.palette?.primary?.main,
+                      zIndex: theme.zIndex.drawer + 1,
+                    }}
+                  >
+                    <CircularProgress color="inherit" size={80} />
+                  </Backdrop>
+                  {getLayout(<Component {...pageProps} />)}
+                </AppMarketplaceProvider>
+              </LocalizationProvider>
+            </Hydrate>
+          </SiteContext.Provider>
         </QueryClientProvider>
       </AppConfigContext.Provider>
       <Analytics />

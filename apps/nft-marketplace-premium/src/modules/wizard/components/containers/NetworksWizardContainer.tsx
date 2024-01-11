@@ -14,13 +14,15 @@ import {
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { useDebounce } from '@dexkit/core';
+import { useSiteIdV2 } from '@dexkit/ui/hooks/app';
+import { useActiveNetworks } from '@dexkit/ui/hooks/networks';
 import Add from '@mui/icons-material/Add';
 import Close from '@mui/icons-material/Close';
 import Delete from '@mui/icons-material/Delete';
 import Edit from '@mui/icons-material/Edit';
 import { useSnackbar } from 'notistack';
 import { useState } from 'react';
-import { useActiveNetworks, useSetNetworksActive } from '../../hooks/networks';
+import { useSetNetworksActive } from '../../hooks/networks';
 import NetworksContainerList from '../NetworksContainerList';
 import SearchNetworksDialog from '../dialogs/SearchNetworksDialog';
 import ViewNetworkInfoDialog from '../dialogs/ViewNetworkInfoDialog.';
@@ -40,7 +42,6 @@ export default function NetworksWizardContainer({}: NetworksWizardContainerProps
     limit: 10,
     page: 1,
     query: query,
-    siteId: 7,
   });
 
   const setActiveNetworksMutation = useSetNetworksActive();
@@ -53,14 +54,16 @@ export default function NetworksWizardContainer({}: NetworksWizardContainerProps
     setExclude(active);
   };
 
+  const { siteId } = useSiteIdV2();
+
   const handleDelete = async () => {
     try {
-      if (exclude.length > 0) {
+      if (exclude.length > 0 && siteId !== undefined) {
         await setActiveNetworksMutation.mutateAsync({
           networks: activeNetworksQuery.data?.pages[0]
             .filter((n: any) => !exclude.includes(n.chainId))
             .map((n: any) => n.chainId),
-          siteId: 7,
+          siteId: siteId,
         });
         await activeNetworksQuery.refetch();
         setExclude([]);
@@ -81,14 +84,15 @@ export default function NetworksWizardContainer({}: NetworksWizardContainerProps
     setShowNetworks(false);
 
     try {
-      await setActiveNetworksMutation.mutateAsync({
-        networks: [
-          ...activeNetworksQuery.data?.pages[0].map((n: any) => n.chainId),
-          ...ids,
-        ],
-        siteId: 7,
-      });
-
+      if (siteId !== undefined) {
+        await setActiveNetworksMutation.mutateAsync({
+          networks: [
+            ...activeNetworksQuery.data?.pages[0].map((n: any) => n.chainId),
+            ...ids,
+          ],
+          siteId,
+        });
+      }
       await activeNetworksQuery.refetch();
 
       enqueueSnackbar(formatMessage({ id: 'saved', defaultMessage: 'Saved' }), {
@@ -185,6 +189,7 @@ export default function NetworksWizardContainer({}: NetworksWizardContainerProps
                             onClick={handleDelete}
                             variant="outlined"
                             startIcon={<Delete />}
+                            color="error"
                           >
                             <FormattedMessage
                               id="remove"

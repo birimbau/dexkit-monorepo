@@ -1,6 +1,6 @@
 import { useDebounce } from '@dexkit/core';
 import { AppDialogTitle } from '@dexkit/ui';
-import { useSearchNetworks } from '@dexkit/ui/hooks/networks';
+import { useSearchUnactive } from '@dexkit/ui/hooks/networks';
 import {
   Box,
   Button,
@@ -44,7 +44,11 @@ export default function SearchNetworksDialog({
 
   const query = useDebounce<string>(queryText, 500);
 
-  const networksQuery = useSearchNetworks({ page, limit: PAGE_SIZE, query });
+  const networksQuery = useSearchUnactive({
+    page,
+    limit: PAGE_SIZE,
+    query,
+  });
 
   const canNext = useMemo(() => {
     return (

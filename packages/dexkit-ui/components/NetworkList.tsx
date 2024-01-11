@@ -18,21 +18,18 @@ import { useActiveNetworks } from "../hooks/networks";
 export interface NetworkListProps {
   chainId?: number;
   onSelect?: (chainId: number) => void;
-  siteId?: number;
   connectorChainId?: number;
 }
 
 export default function NetworkList({
   chainId,
   onSelect,
-  siteId,
   connectorChainId,
 }: NetworkListProps) {
   const activeNetworks = useActiveNetworks({
     limit: 1000,
     page: 1,
     query: "",
-    siteId,
   });
 
   if (!activeNetworks.data) {
