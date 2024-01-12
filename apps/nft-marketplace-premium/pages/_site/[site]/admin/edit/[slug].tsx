@@ -19,6 +19,7 @@ import {
 import { useRouter } from 'next/router';
 
 import { EditWizardContainer } from '@/modules/wizard/components/containers/EditWizardContainer';
+import { DexkitApiProvider } from '@dexkit/core/providers';
 import { NETWORK_DATA_QUERY } from '@dexkit/ui/hooks/app';
 import SecurityIcon from '@mui/icons-material/Security';
 import { QueryClient, dehydrate } from '@tanstack/react-query';
@@ -28,10 +29,13 @@ import { LoginButton } from 'src/components/LoginButton';
 import AuthMainLayout from 'src/components/layouts/authMain';
 import { useAuth } from 'src/hooks/account';
 import { useAdminWhitelabelConfigQuery } from 'src/hooks/whitelabel';
+import { getAppConfig } from 'src/services/app';
+import { myAppsApi } from 'src/services/whitelabel';
 
 export const WizardEditPage: NextPage = () => {
   const router = useRouter();
   const { isLoggedIn } = useAuth();
+
   const { slug } = router.query;
   const {
     data: site,
@@ -111,7 +115,9 @@ export const WizardEditPage: NextPage = () => {
           </Stack>
         </Box>
       ) : (
-        <EditWizardContainer site={site} />
+        <DexkitApiProvider.Provider value={{ instance: myAppsApi }}>
+          <EditWizardContainer site={site} />
+        </DexkitApiProvider.Provider>
       )}
     </>
   );
@@ -132,7 +138,7 @@ export const getStaticProps: GetStaticProps = async ({
   params,
 }: GetStaticPropsContext<Params>) => {
   const queryClient = new QueryClient();
-  //const configResponse = await getAppConfig(params?.site, 'no-page-defined');
+  const configResponse = await getAppConfig(params?.site, 'no-page-defined');
 
   const activeNetworks = await getActiveNetworks({
     siteId: 1,
@@ -154,7 +160,7 @@ export const getStaticProps: GetStaticProps = async ({
   return {
     props: {
       dehydratedState: dehydrate(queryClient),
-      //  ...configResponse,
+      ...configResponse,
     },
     revalidate: 300,
   };

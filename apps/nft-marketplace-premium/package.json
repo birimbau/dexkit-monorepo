@@ -1,5 +1,5 @@
 {
-  "name": "nft-marketplace",
+  "name": "dexappbuilder",
   "version": "0.14.0",
   "private": true,
   "scripts": {
@@ -32,6 +32,9 @@
     "@codemirror/lang-css": "^6.2.1",
     "@codemirror/lang-html": "^6.4.6",
     "@codemirror/lang-javascript": "^6.2.1",
+    "@darkblock.io/avax-widget": "^0.2.52",
+    "@darkblock.io/eth-widget": "^0.2.50",
+    "@darkblock.io/matic-widget": "^0.2.49",
     "@date-io/moment": "^2.13.1",
     "@dexkit/core": "*",
     "@dexkit/ui": "*",

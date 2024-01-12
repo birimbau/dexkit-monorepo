@@ -20,7 +20,6 @@ import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { useRouter } from 'next/router';
 
 import { ThemeMode } from '@dexkit/ui/constants/enum';
-import { SiteContext } from '@dexkit/ui/context/SiteContext';
 import { Backdrop, CircularProgress } from '@mui/material';
 import { experimental_extendTheme as extendTheme } from '@mui/material/styles';
 import type {} from '@mui/material/themeCssVarsAugmentation';
@@ -31,6 +30,8 @@ import { AppMarketplaceProvider } from '../src/components/AppMarketplaceProvider
 import { AppConfigContext } from '../src/contexts';
 import { AppConfig } from '../src/types/config';
 import './customCss.css';
+
+import SiteProvider from '@dexkit/ui/providers/SiteProvider';
 
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
@@ -46,11 +47,12 @@ export default function MyApp(props: MyAppProps) {
 
   const [loading, setLoading] = React.useState(false);
 
-  const { appConfig, appNFT, siteId } = pageProps as {
+  const { appConfig, appNFT, siteId, site } = pageProps as {
     appConfig: AppConfig;
     appNFT: AssetAPI;
     siteId: number | undefined;
     dehydratedState: DehydratedState;
+    site?: string;
   };
 
   const [queryClient] = React.useState(
@@ -206,9 +208,11 @@ export default function MyApp(props: MyAppProps) {
           content={theme?.colorSchemes?.light?.palette?.primary?.main}
         />
       </Head>
-      <AppConfigContext.Provider value={{ appConfig: config, appNFT, siteId }}>
-        <QueryClientProvider client={queryClient}>
-          <SiteContext.Provider value={{ siteId: 1 }}>
+      <SiteProvider siteId={siteId} slug={site}>
+        <AppConfigContext.Provider
+          value={{ appConfig: config, appNFT, siteId }}
+        >
+          <QueryClientProvider client={queryClient}>
             <Hydrate state={pageProps.dehydratedState}>
               <DefaultSeo {...SEO} />
               <LocalizationProvider dateAdapter={AdapterMoment}>
@@ -226,9 +230,9 @@ export default function MyApp(props: MyAppProps) {
                 </AppMarketplaceProvider>
               </LocalizationProvider>
             </Hydrate>
-          </SiteContext.Provider>
-        </QueryClientProvider>
-      </AppConfigContext.Provider>
+          </QueryClientProvider>
+        </AppConfigContext.Provider>
+      </SiteProvider>
       <Analytics />
     </CacheProvider>
   );
