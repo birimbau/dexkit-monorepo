@@ -39,7 +39,8 @@ export async function getAppConfig(
   if (
     site?.startsWith('whitelabel-nft.dexkit.com') ||
     site?.startsWith('dexappbuilder.dexkit.com') ||
-    site?.startsWith('dexappbuilder-dev.dexkit.com')
+    site?.startsWith('dexappbuilder-dev.dexkit.com') ||
+    site?.startsWith('dexappbuilder.com')
   ) {
     const slug = site.split(':');
     if (slug.length > 1) {
