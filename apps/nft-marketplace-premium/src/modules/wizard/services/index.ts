@@ -239,3 +239,26 @@ export async function deleteAppVersion({ siteId, siteVersionId }: { siteId: numb
 export async function setAppVersion({ siteId, siteVersionId }: { siteId: number, siteVersionId: number }) {
   return myAppsApi.get(`/site/set-version/${siteId}/${siteVersionId}`);
 }
+
+// site rankings
+export async function createSiteRankingVersion({ siteId, title, description, settings }: { siteId: number, title: string, description?: string, settings?: string }) {
+  return myAppsApi.post(`/site-ranking/create`, {
+    title,
+    description,
+    siteId,
+    settings
+  });
+}
+
+export async function updateSiteRankingVersion({ siteId, title, description, rankingId, settings }: { siteId: number, title: string, description?: string, rankingId?: number, settings?: string }) {
+  return myAppsApi.patch(`/site-ranking/${rankingId}`, {
+    title,
+    description,
+    siteId,
+    settings
+  });
+}
+
+export async function deleteAppRanking({ siteId, rankingId }: { siteId: number, rankingId: number }) {
+  return myAppsApi.delete(`/site-ranking/${siteId}/${rankingId}`);
+}

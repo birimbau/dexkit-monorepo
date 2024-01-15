@@ -13,11 +13,14 @@ import { AppConfig } from 'src/types/config';
 import {
   addPermissionsMemberSite,
   checkGatedConditions,
+  createSiteRankingVersion,
+  deleteAppRanking,
   deleteAppVersion,
   deleteMemberSite,
   getTokenList,
   requestEmailConfirmatioForSite,
   setAppVersion,
+  updateSiteRankingVersion,
   upsertAppVersion
 } from '../services';
 import { GatedCondition } from '../types';
@@ -184,6 +187,7 @@ export function useAddAppVersionMutation() {
   });
 }
 
+
 export function useDeleteAppVersionMutation() {
 
   const query = useQueryClient()
@@ -298,3 +302,97 @@ export function useAppVersionQuery({
 }
 
 
+// Site rankings
+
+export function useAddAppRankingMutation() {
+
+  const query = useQueryClient()
+
+  return useMutation(async ({ siteId, title, description, rankingId, settings }: { siteId?: number, title?: string, description?: string, rankingId?: number, settings?: string }) => {
+
+    if (!siteId || !title) {
+      throw Error('missing data to update')
+    }
+    if (rankingId) {
+      await updateSiteRankingVersion({ siteId, title, description, rankingId, settings })
+    } else {
+      await createSiteRankingVersion({ siteId, title, description, settings });
+    }
+
+    query.refetchQueries([GET_APP_RANKINGS_QUERY])
+    if (rankingId) {
+      query.refetchQueries([QUERY_ADMIN_WHITELABEL_CONFIG_NAME])
+    }
+
+    return true
+  });
+}
+
+
+export function useDeleteAppRankingMutation() {
+
+  const query = useQueryClient()
+
+  return useMutation(async ({ siteId, rankingId }: { siteId?: number, rankingId?: number }) => {
+    if (!siteId || !rankingId) {
+      throw Error('missing data to update')
+    }
+    await deleteAppRanking({ siteId, rankingId });
+    query.refetchQueries([GET_APP_RANKINGS_QUERY])
+    return true
+  });
+}
+
+export const GET_APP_RANKINGS_QUERY = 'GET_APP_RANKINGS_QUERY'
+
+export function useAppRankingListQuery({
+  siteId,
+  page = 0,
+  pageSize = 10,
+  sort,
+
+  filter,
+}: {
+
+  page?: number;
+  pageSize?: number;
+  siteId?: number;
+  sort?: string[];
+  filter?: any;
+}) {
+
+  return useQuery<{
+    data: {
+      id: number;
+      version: string;
+      description: string;
+    }[];
+    skip?: number;
+    take?: number;
+    total?: number;
+  }>(
+    [GET_APP_RANKINGS_QUERY, sort, page, pageSize, filter, siteId],
+    async () => {
+      if (!siteId) {
+        return { data: [] };
+      }
+
+
+      return (
+        await myAppsApi.get<{
+          data: {
+            id: number;
+            version: string;
+            description: string;
+          }[];
+          skip?: number;
+          take?: number;
+          total?: number;
+        }>(`/site-ranking/all/${siteId}`, {
+          params: { skip: page * pageSize, take: pageSize, sort, filter: filter ? JSON.stringify(filter) : undefined },
+        })
+      ).data;
+
+    }
+  );
+}
