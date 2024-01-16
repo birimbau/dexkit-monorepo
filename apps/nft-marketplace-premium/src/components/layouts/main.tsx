@@ -21,7 +21,6 @@ const AppDrawer = dynamic(() => import('../AppDrawer'));
 
 import { ErrorBoundary } from 'react-error-boundary';
 import { FormattedMessage } from 'react-intl';
-import { AppBarANN } from '../AppBarANN';
 import { GlobalDialogs } from './GlobalDialogs';
 
 interface Props {
@@ -76,8 +75,6 @@ const MainLayout: React.FC<Props> = ({
           flexDirection: 'column',
         }}
       >
-        <AppBarANN />
-
         <Navbar appConfig={appConfig} isPreview={isPreview} />
         <Box sx={{ flex: 1 }} py={disablePadding ? 0 : 4}>
           <ErrorBoundary

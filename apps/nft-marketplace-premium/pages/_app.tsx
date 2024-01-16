@@ -32,6 +32,7 @@ import { AppConfig } from '../src/types/config';
 import './customCss.css';
 
 import SiteProvider from '@dexkit/ui/providers/SiteProvider';
+import { AppBarANN } from 'src/components/AppBarANN';
 
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
@@ -226,6 +227,7 @@ export default function MyApp(props: MyAppProps) {
                   >
                     <CircularProgress color="inherit" size={80} />
                   </Backdrop>
+                  <AppBarANN />
                   {getLayout(<Component {...pageProps} />)}
                 </AppMarketplaceProvider>
               </LocalizationProvider>
