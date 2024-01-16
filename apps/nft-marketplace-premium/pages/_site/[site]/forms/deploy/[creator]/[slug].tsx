@@ -36,18 +36,23 @@ import {
   truncateAddress,
 } from '@dexkit/core/utils';
 import { AppDialogTitle, useSwitchNetworkMutation } from '@dexkit/ui';
+import { dexkitNFTapi } from '@dexkit/ui/constants/api';
+import { netToQuery } from '@dexkit/ui/utils/networks';
 import useThirdwebContractMetadataQuery, {
   useDeployThirdWebContractMutation,
   useFormConfigParamsQuery,
 } from '@dexkit/web3forms/hooks';
 import { dkGetTrustedForwarders } from '@dexkit/web3forms/utils';
 import CheckCircle from '@mui/icons-material/CheckCircle';
+import { QueryClient, dehydrate } from '@tanstack/react-query';
 import { useWeb3React } from '@web3-react/core';
+import { GetStaticProps, GetStaticPropsContext } from 'next';
 import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { PageHeader } from 'src/components/PageHeader';
 import { THIRDWEB_CLIENT_ID } from 'src/constants';
+import { getAppConfig } from 'src/services/app';
 
 export default function DeployPage() {
   const { chainId } = useWeb3React();
@@ -59,7 +64,7 @@ export default function DeployPage() {
   const switchNetworkMutation = useSwitchNetworkMutation();
 
   const [selectedChainId, setSelectedChainId] = useState<ChainId>(
-    ChainId.Ethereum,
+    ChainId.Ethereum
   );
 
   useEffect(() => {
@@ -107,7 +112,7 @@ export default function DeployPage() {
               id: 'network.switched',
               defaultMessage: 'Network changed',
             }),
-            { variant: 'success' },
+            { variant: 'success' }
           );
 
           return;
@@ -117,7 +122,7 @@ export default function DeployPage() {
               id: 'error.while.switching.network',
               defaultMessage: 'Error while switching network',
             }),
-            { variant: 'error' },
+            { variant: 'error' }
           );
         }
       }
@@ -167,7 +172,7 @@ export default function DeployPage() {
             id: 'contract.deployed.successfully',
             defaultMessage: 'Contract deployed successfully',
           }),
-          { variant: 'success' },
+          { variant: 'success' }
         );
       } catch (err) {
         enqueueSnackbar(
@@ -175,7 +180,7 @@ export default function DeployPage() {
             id: 'error.while.deploying.contract',
             defaultMessage: 'Error while deploying contract',
           }),
-          { variant: 'error' },
+          { variant: 'error' }
         );
       }
 
@@ -186,7 +191,7 @@ export default function DeployPage() {
       thirdwebMetadataQuery.data,
       selectedChainId,
       hasChainDiff,
-    ],
+    ]
   );
 
   const [contractAddress, setContractAddress] = useState<string>();
@@ -199,7 +204,7 @@ export default function DeployPage() {
 
   const handleChangeChainId = (
     event: SelectChangeEvent<number>,
-    child: ReactNode,
+    child: ReactNode
   ) => {
     setSelectedChainId(parseChainId(event.target.value));
   };
@@ -279,7 +284,7 @@ export default function DeployPage() {
             <Stack direction={'row'} spacing={1} justifyContent={'center'}>
               <Button
                 href={`/contract/${NETWORK_SLUG(
-                  selectedChainId,
+                  selectedChainId
                 )}/${contractAddress}`}
                 variant="contained"
               >
@@ -306,7 +311,7 @@ export default function DeployPage() {
             </Stack>
             <Button
               href={`${getBlockExplorerUrl(
-                selectedChainId,
+                selectedChainId
               )}/address/${contractAddress}`}
               target="_blank"
               variant="outlined"
@@ -351,9 +356,9 @@ export default function DeployPage() {
                 },*/
                 {
                   caption: thirdwebMetadataQuery.data?.name,
-                  uri: `/forms/deploy/${
-                    creator as string
-                  }/${thirdwebMetadataQuery.data?.name}`,
+                  uri: `/forms/deploy/${creator as string}/${
+                    thirdwebMetadataQuery.data?.name
+                  }`,
                   active: true,
                 },
               ]}
@@ -373,7 +378,7 @@ export default function DeployPage() {
                           {thirdwebMetadataQuery.data?.logo ? (
                             <Avatar
                               src={getNormalizedUrl(
-                                thirdwebMetadataQuery.data?.logo,
+                                thirdwebMetadataQuery.data?.logo
                               )}
                             />
                           ) : (
@@ -413,13 +418,14 @@ export default function DeployPage() {
                                     publisher: (
                                       <Link
                                         href={`${getBlockExplorerUrl(
-                                          chainId,
-                                        )}/address/${thirdwebMetadataQuery.data
-                                          ?.publisher}`}
+                                          chainId
+                                        )}/address/${
+                                          thirdwebMetadataQuery.data?.publisher
+                                        }`}
                                         target="_blank"
                                       >
                                         {truncateAddress(
-                                          thirdwebMetadataQuery.data?.publisher,
+                                          thirdwebMetadataQuery.data?.publisher
                                         )}
                                       </Link>
                                     ),
@@ -513,4 +519,35 @@ export default function DeployPage() {
 
 (DeployPage as any).getLayout = function getLayout(page: any) {
   return <AuthMainLayout>{page}</AuthMainLayout>;
+};
+
+export async function getStaticPaths() {
+  return {
+    paths: [],
+    fallback: 'blocking', // false or 'blocking'
+  };
+}
+
+type Params = {
+  creator?: string;
+  slug?: string;
+  site?: string;
+};
+
+export const getStaticProps: GetStaticProps = async ({
+  params,
+}: GetStaticPropsContext<Params>) => {
+  const configResponse = await getAppConfig(params?.site, 'home');
+
+  const queryClient = new QueryClient();
+
+  await netToQuery({
+    queryClient,
+    instance: dexkitNFTapi,
+    siteId: configResponse.siteId,
+  });
+
+  return {
+    props: { ...configResponse, dehydratedState: dehydrate(queryClient) },
+  };
 };

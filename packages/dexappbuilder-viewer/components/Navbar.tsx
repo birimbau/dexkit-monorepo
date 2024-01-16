@@ -39,8 +39,6 @@ import Link from "@dexkit/ui/components/AppLink";
 import Notification from "@dexkit/ui/components/icons/Notification";
 import Wallet from "@dexkit/ui/components/icons/Wallet";
 
-import { NETWORK_IMAGE, NETWORK_NAME } from "@dexkit/core/constants/networks";
-
 import {
   useConnectWalletDialog,
   useDexKitContext,
@@ -58,6 +56,7 @@ import WalletButton from "@dexkit/ui/components/WalletButton";
 import NotificationsDialog from "@dexkit/ui/components/dialogs/NotificationsDialog";
 import SelectNetworkDialog from "@dexkit/ui/components/dialogs/SelectNetworkDialog";
 import { ThemeMode } from "@dexkit/ui/constants/enum";
+import { useNetworkMetadata } from "@dexkit/ui/hooks/app";
 import { useCurrency } from "@dexkit/ui/hooks/currency";
 import { AppConfig } from "@dexkit/ui/types/config";
 import { MagicConnector } from "@dexkit/wallet-connectors/connectors/magic";
@@ -158,6 +157,8 @@ function Navbar({ appConfig, isPreview }: Props) {
   const handleClearNotifications = () => {
     clearNotifications();
   };
+
+  const { NETWORK_IMAGE, NETWORK_NAME } = useNetworkMetadata();
 
   return (
     <>
@@ -438,7 +439,7 @@ function Navbar({ appConfig, isPreview }: Props) {
                 >
                   <Stack direction="row" spacing={1} alignItems="center">
                     <Avatar
-                      src={NETWORK_IMAGE(chainId)}
+                      src={NETWORK_IMAGE(chainId) || ""}
                       sx={(theme) => ({
                         width: "auto",
                         height: theme.spacing(2),

@@ -1,6 +1,8 @@
 import { UserContainer } from '@/modules/user/componentes/containers/UserContainer';
 import { GET_USER_BY_USERNAME_QUERY } from '@/modules/user/hooks';
 import { getUserByUsername } from '@/modules/user/services';
+import { dexkitNFTapi } from '@dexkit/ui/constants/api';
+import { netToQuery } from '@dexkit/ui/utils/networks';
 import Box from '@mui/material/Box';
 import { dehydrate, QueryClient } from '@tanstack/react-query';
 import { GetStaticProps, GetStaticPropsContext, NextPage } from 'next';
@@ -33,6 +35,12 @@ export const getStaticProps: GetStaticProps = async ({
     async () => data
   );
   const configResponse = await getAppConfig(params?.site, 'no-page-defined');
+
+  await netToQuery({
+    instance: dexkitNFTapi,
+    queryClient,
+    siteId: configResponse.siteId,
+  });
 
   return {
     props: {

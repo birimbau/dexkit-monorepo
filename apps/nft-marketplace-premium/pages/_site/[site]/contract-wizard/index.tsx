@@ -1,4 +1,6 @@
 import ContractCollectionList from '@/modules/contract-wizard/components/CollectionList';
+import { dexkitNFTapi } from '@dexkit/ui/constants/api';
+import { netToQuery } from '@dexkit/ui/utils/networks';
 import Add from '@mui/icons-material/Add';
 import {
   Box,
@@ -171,6 +173,12 @@ export const getStaticProps: GetStaticProps = async ({
 }: GetStaticPropsContext<Params>) => {
   const queryClient = new QueryClient();
   const configResponse = await getAppConfig(params?.site, 'no-page-defined');
+
+  await netToQuery({
+    instance: dexkitNFTapi,
+    queryClient,
+    siteId: configResponse.siteId,
+  });
 
   return {
     props: {

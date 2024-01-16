@@ -4,9 +4,12 @@ import type { GetStaticProps, GetStaticPropsContext, NextPage } from 'next';
 
 import Image from 'next/image';
 
+import { dexkitNFTapi } from '@dexkit/ui/constants/api';
+import { netToQuery } from '@dexkit/ui/utils/networks';
+import { QueryClient, dehydrate } from '@tanstack/react-query';
 import { FormattedMessage } from 'react-intl';
-import MainLayout from 'src/components/layouts/main';
 import Link from 'src/components/Link';
+import MainLayout from 'src/components/layouts/main';
 import { getAppConfig } from 'src/services/app';
 import catHeroImg from '../../../public/assets/images/cat-hero.svg';
 
@@ -88,9 +91,18 @@ export const getStaticProps: GetStaticProps = async ({
 }: GetStaticPropsContext<Params>) => {
   const configResponse = await getAppConfig(params?.site);
 
+  const queryClient = new QueryClient();
+
+  await netToQuery({
+    instance: dexkitNFTapi,
+    queryClient,
+    siteId: configResponse.siteId,
+  });
+
   return {
     props: {
       ...configResponse,
+      dehydratedState: dehydrate(queryClient),
     },
     revalidate: 300,
   };

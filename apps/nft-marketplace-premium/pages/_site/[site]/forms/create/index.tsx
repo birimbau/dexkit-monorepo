@@ -26,6 +26,8 @@ import { ChainId } from '@dexkit/core';
 import { NETWORKS } from '@dexkit/core/constants/networks';
 import { DexkitApiProvider } from '@dexkit/core/providers';
 import { parseChainId } from '@dexkit/core/utils';
+import { dexkitNFTapi } from '@dexkit/ui/constants/api';
+import { netToQuery } from '@dexkit/ui/utils/networks';
 import InfoIcon from '@mui/icons-material/Info';
 import { QueryClient, dehydrate } from '@tanstack/react-query';
 import { useWeb3React } from '@web3-react/core';
@@ -113,7 +115,7 @@ export default function FormsCreatePage({
             id: 'form.created.successfully',
             defaultMessage: 'Form created successfully',
           }),
-          { variant: 'success' },
+          { variant: 'success' }
         );
 
         router.push(`/forms/${result.id}`);
@@ -333,6 +335,12 @@ export const getServerSideProps: GetServerSideProps = async ({
 }: GetServerSidePropsContext<Params>) => {
   const queryClient = new QueryClient();
   const configResponse = await getAppConfig(params?.site, 'no-page-defined');
+
+  await netToQuery({
+    queryClient,
+    instance: dexkitNFTapi,
+    siteId: configResponse.siteId,
+  });
 
   const templateId = query.templateId
     ? parseInt(query.templateId as string)

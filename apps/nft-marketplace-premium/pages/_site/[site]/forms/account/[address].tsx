@@ -3,6 +3,8 @@ import { useListFormsQuery } from '@/modules/forms/hooks';
 import { DexkitApiProvider } from '@dexkit/core/providers';
 import { truncateAddress } from '@dexkit/core/utils';
 import LazyTextField from '@dexkit/ui/components/LazyTextField';
+import { dexkitNFTapi } from '@dexkit/ui/constants/api';
+import { netToQuery } from '@dexkit/ui/utils/networks';
 import Info from '@mui/icons-material/Info';
 import Search from '@mui/icons-material/Search';
 
@@ -27,12 +29,15 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
+import { QueryClient, dehydrate } from '@tanstack/react-query';
+import { GetStaticProps, GetStaticPropsContext } from 'next';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import Link from 'src/components/Link';
 import { PageHeader } from 'src/components/PageHeader';
 import AuthMainLayout from 'src/components/layouts/authMain';
+import { getAppConfig } from 'src/services/app';
 
 export default function FormsAccountPage() {
   const router = useRouter();
@@ -234,4 +239,34 @@ export default function FormsAccountPage() {
       </DexkitApiProvider.Provider>
     </AuthMainLayout>
   );
+};
+
+export async function getStaticPaths() {
+  return {
+    paths: [],
+    fallback: 'blocking', // false or 'blocking'
+  };
+}
+
+type Params = {
+  site?: string;
+  address?: string;
+};
+
+export const getStaticProps: GetStaticProps = async ({
+  params,
+}: GetStaticPropsContext<Params>) => {
+  const configResponse = await getAppConfig(params?.site, 'home');
+
+  const queryClient = new QueryClient();
+
+  await netToQuery({
+    queryClient,
+    instance: dexkitNFTapi,
+    siteId: configResponse.siteId,
+  });
+
+  return {
+    props: { ...configResponse, dehydratedState: dehydrate(queryClient) },
+  };
 };

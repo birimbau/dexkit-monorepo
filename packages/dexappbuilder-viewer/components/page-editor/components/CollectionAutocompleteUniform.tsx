@@ -2,8 +2,8 @@ import Autocomplete from "@mui/material/Autocomplete";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 
-import { NETWORK_NAME } from "@dexkit/core/constants/networks";
 import { useAppWizardConfig } from "@dexkit/ui/hooks";
+import { useNetworkMetadata } from "@dexkit/ui/hooks/app";
 import Avatar from "@mui/material/Avatar";
 import Chip from "@mui/material/Chip";
 import FormControl from "@mui/material/FormControl";
@@ -25,6 +25,8 @@ export const CollectionAutcompleteUniform = connectField<{
 }>((props) => {
   const { value, onChange } = props;
   const { wizardConfig } = useAppWizardConfig();
+
+  const { NETWORK_NAME } = useNetworkMetadata();
 
   const collections =
     wizardConfig.collections

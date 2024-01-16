@@ -1,6 +1,8 @@
 import { UserEditContainer } from '@/modules/user/componentes/containers/UserEditContainer';
 import { GET_AUTH_USER } from '@/modules/user/hooks';
 import { getUserByAccountRefresh } from '@/modules/user/services';
+import { dexkitNFTapi } from '@dexkit/ui/constants/api';
+import { netToQuery } from '@dexkit/ui/utils/networks';
 import Box from '@mui/material/Box';
 import { dehydrate, QueryClient } from '@tanstack/react-query';
 import { GetServerSideProps, GetServerSidePropsContext, NextPage } from 'next';
@@ -47,6 +49,12 @@ export const getServerSideProps: GetServerSideProps = async ({
   const configResponse = await getAppConfig(params?.site, 'no-page-defined');
 
   await queryClient.prefetchQuery([GET_AUTH_USER], async () => data);
+
+  await netToQuery({
+    instance: dexkitNFTapi,
+    queryClient,
+    siteId: configResponse.siteId,
+  });
 
   return {
     props: {

@@ -1,14 +1,11 @@
-import {
-  NETWORKS,
-  NETWORK_NAME,
-  NETWORK_SLUG,
-} from "@dexkit/core/constants/networks";
+import { NETWORKS } from "@dexkit/core/constants/networks";
 import { TokenWhitelabelApp } from "@dexkit/core/types";
 import { CircularProgress, Stack } from "@mui/material";
 import Autocomplete from "@mui/material/Autocomplete";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import React, { useMemo, useState } from "react";
+import { useNetworkMetadata } from "../../../hooks/app";
 import { useSearchSwapTokens } from "../hooks";
 
 interface Props {
@@ -21,6 +18,8 @@ interface Props {
 }
 
 export function SearchTokenAutocomplete(props: Props) {
+  const { NETWORK_NAME, NETWORK_SLUG } = useNetworkMetadata();
+
   const { data, label, onChange, chainId, disabled, featuredTokens } = props;
   const [search, setSearch] = useState<string>();
   const tokensQuery = useSearchSwapTokens({

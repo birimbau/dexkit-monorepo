@@ -12,7 +12,9 @@ import ProtectedContent from '@/modules/home/components/ProtectedContent';
 import { SectionsRenderer } from '@/modules/wizard/components/sections/SectionsRenderer';
 import { GatedPageLayout } from '@/modules/wizard/types';
 import { AppPageSection } from '@/modules/wizard/types/section';
+import { dexkitNFTapi } from '@dexkit/ui/constants/api';
 import { GatedCondition } from '@dexkit/ui/types/config';
+import { netToQuery } from '@dexkit/ui/utils/networks';
 import { NoSsr } from '@mui/material';
 import { SessionProvider } from 'next-auth/react';
 import AuthMainLayout from 'src/components/layouts/authMain';
@@ -111,6 +113,13 @@ export const getServerSideProps: GetServerSideProps = async ({
   const sitePage = page as string;
 
   const configResponse = await getAppConfig(params?.site, sitePage);
+
+  await netToQuery({
+    instance: dexkitNFTapi,
+    queryClient,
+    siteId: configResponse.siteId,
+  });
+
   const { appConfig } = configResponse;
   const homePage = appConfig.pages[sitePage || ''];
   if (!homePage) {

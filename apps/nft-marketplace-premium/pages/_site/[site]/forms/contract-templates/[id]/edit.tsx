@@ -20,9 +20,14 @@ import {
   useUpdateFormTemplateMutation,
 } from '@/modules/forms/hooks';
 import { CreateTemplateSchemaType } from '@/modules/forms/types';
+import { dexkitNFTapi } from '@dexkit/ui/constants/api';
+import { netToQuery } from '@dexkit/ui/utils/networks';
+import { QueryClient, dehydrate } from '@tanstack/react-query';
 import { Field, Form, Formik, FormikHelpers } from 'formik';
 import { TextField } from 'formik-mui';
+import { GetStaticProps, GetStaticPropsContext } from 'next';
 import { useSnackbar } from 'notistack';
+import { getAppConfig } from 'src/services/app';
 
 export default function EditTemplatePage() {
   const router = useRouter();
@@ -196,4 +201,34 @@ export default function EditTemplatePage() {
 
 (EditTemplatePage as any).getLayout = function getLayout(page: any) {
   return <AuthMainLayout>{page}</AuthMainLayout>;
+};
+
+export async function getStaticPaths() {
+  return {
+    paths: [],
+    fallback: 'blocking', // false or 'blocking'
+  };
+}
+
+type Params = {
+  site?: string;
+  id?: string;
+};
+
+export const getStaticProps: GetStaticProps = async ({
+  params,
+}: GetStaticPropsContext<Params>) => {
+  const configResponse = await getAppConfig(params?.site, 'home');
+
+  const queryClient = new QueryClient();
+
+  await netToQuery({
+    queryClient,
+    instance: dexkitNFTapi,
+    siteId: configResponse.siteId,
+  });
+
+  return {
+    props: { ...configResponse, dehydratedState: dehydrate(queryClient) },
+  };
 };

@@ -25,7 +25,6 @@ import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import { useWeb3React } from "@web3-react/core";
 import { FormattedMessage } from "react-intl";
 
-import { NETWORK_IMAGE, NETWORK_NAME } from "@dexkit/core/constants/networks";
 import Link from "@dexkit/ui/components/AppLink";
 import Wallet from "@dexkit/ui/components/icons/Wallet";
 import { WalletButton } from "@dexkit/ui/components/WalletButton";
@@ -39,6 +38,7 @@ import {
 import { useCurrency } from "@dexkit/ui/hooks/currency";
 import DrawerMenu from "./DrawerMenu";
 
+import { useNetworkMetadata } from "@dexkit/ui/hooks/app";
 import { ThemeModeSelector } from "./ThemeModeSelector";
 
 const CustomListItemSecondaryAction = styled(ListItemSecondaryAction)({
@@ -78,6 +78,8 @@ function AppDrawer({ open, onClose }: Props) {
   const handleShowSelectLocaleDialog = () => {
     showSelectLocale.setIsOpen(true);
   };
+
+  const { NETWORK_NAME, NETWORK_IMAGE } = useNetworkMetadata();
 
   return (
     <Drawer open={open} onClose={onClose}>
@@ -121,7 +123,7 @@ function AppDrawer({ open, onClose }: Props) {
                     alignContent="center"
                   >
                     <Avatar
-                      src={NETWORK_IMAGE(chainId)}
+                      src={NETWORK_IMAGE(chainId) || ""}
                       sx={(theme) => ({
                         width: "auto",
                         height: theme.spacing(2),

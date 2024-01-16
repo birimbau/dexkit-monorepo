@@ -19,6 +19,9 @@ import { copyToClipboard } from '@dexkit/core/utils';
 import dynamic from 'next/dynamic';
 
 import EvmWalletContainer from '@/modules/wallet/components/containers/EvmWalletContainer';
+import { dexkitNFTapi } from '@dexkit/ui/constants/api';
+import { netToQuery } from '@dexkit/ui/utils/networks';
+import { QueryClient, dehydrate } from '@tanstack/react-query';
 import { useEvmCoins } from 'src/hooks/blockchain';
 import {
   useAppConfig,
@@ -188,9 +191,16 @@ export const getStaticProps: GetStaticProps = async ({
     const { site } = params;
 
     const configResponse = await getAppConfig(site, 'home');
+    const queryClient = new QueryClient();
+
+    await netToQuery({
+      instance: dexkitNFTapi,
+      queryClient,
+      siteId: configResponse.siteId,
+    });
 
     return {
-      props: { ...configResponse },
+      props: { ...configResponse, dehydratedState: dehydrate(queryClient) },
     };
   }
 

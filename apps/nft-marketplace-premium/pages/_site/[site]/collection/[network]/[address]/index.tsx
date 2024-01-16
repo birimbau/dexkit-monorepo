@@ -16,10 +16,12 @@ import NftDropSection from '@/modules/wizard/components/sections/NftDropSection'
 import { NETWORK_FROM_SLUG } from '@dexkit/core/constants/networks';
 import { Asset } from '@dexkit/core/types';
 import { omitNull } from '@dexkit/core/utils';
+import { dexkitNFTapi } from '@dexkit/ui/constants/api';
 import { NFTType } from '@dexkit/ui/modules/nft/constants/enum';
 import { getCollectionData } from '@dexkit/ui/modules/nft/services';
 import { Collection, TraderOrderFilter } from '@dexkit/ui/modules/nft/types';
 import { hexToString } from '@dexkit/ui/utils';
+import { netToQuery } from '@dexkit/ui/utils/networks';
 import Search from '@mui/icons-material/Search';
 import {
   Divider,
@@ -441,7 +443,7 @@ export const getStaticProps: GetStaticProps = async ({
       [GET_ASSET_LIST_FROM_COLLECTION, network, address, 0, 50],
       async () => {
         return collectionAssets;
-      },
+      }
     );
   } catch {}
 
@@ -449,14 +451,14 @@ export const getStaticProps: GetStaticProps = async ({
     if (network === NETWORK_ID.Ethereum || network === NETWORK_ID.Polygon) {
       const { data } = await getRariCollectionStats(
         `${MAP_NETWORK_TO_RARIBLE[network]}:${address}`,
-        MAP_COIN_TO_RARIBLE[network],
+        MAP_COIN_TO_RARIBLE[network]
       );
 
       await queryClient.prefetchQuery(
         [GET_COLLECTION_STATS, network, address],
         async () => {
           return data;
-        },
+        }
       );
     }
   } catch (e) {
@@ -484,7 +486,7 @@ export const getStaticProps: GetStaticProps = async ({
 
   if (isTw) {
     const contractType: string = hexToString(
-      await twContract.call('contractType'),
+      await twContract.call('contractType')
     );
 
     const metadata = await twContract.metadata.get();
@@ -519,15 +521,22 @@ export const getStaticProps: GetStaticProps = async ({
 
     await queryClient.prefetchQuery(
       [COLLECTION_ASSETS_FROM_ORDERBOOK, filters],
-      async () => assets,
+      async () => assets
     );
   } catch {}
+
+  await netToQuery({
+    instance: dexkitNFTapi,
+    queryClient,
+    siteId: configResponse.siteId,
+  });
 
   return {
     props: { dehydratedState: dehydrate(queryClient), ...configResponse },
     revalidate: 60,
   };
 };
+
 export async function getStaticPaths() {
   return {
     paths: [],

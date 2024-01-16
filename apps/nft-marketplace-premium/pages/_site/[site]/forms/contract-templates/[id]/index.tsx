@@ -37,10 +37,15 @@ import ShareDialog from '@dexkit/ui/components/dialogs/ShareDialog';
 import { useState } from 'react';
 import { getWindowUrl } from 'src/utils/browser';
 
+import { dexkitNFTapi } from '@dexkit/ui/constants/api';
+import { netToQuery } from '@dexkit/ui/utils/networks';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
+import { QueryClient, dehydrate } from '@tanstack/react-query';
 import { useWeb3React } from '@web3-react/core';
+import { GetStaticProps, GetStaticPropsContext } from 'next';
 import Link from 'src/components/Link';
+import { getAppConfig } from 'src/services/app';
 import { getChainName } from 'src/utils/blockchain';
 
 export default function TemplatePage() {
@@ -301,4 +306,34 @@ export default function TemplatePage() {
 
 (TemplatePage as any).getLayout = function getLayout(page: any) {
   return <AuthMainLayout>{page}</AuthMainLayout>;
+};
+
+export async function getStaticPaths() {
+  return {
+    paths: [],
+    fallback: 'blocking', // false or 'blocking'
+  };
+}
+
+type Params = {
+  site?: string;
+  id?: string;
+};
+
+export const getStaticProps: GetStaticProps = async ({
+  params,
+}: GetStaticPropsContext<Params>) => {
+  const configResponse = await getAppConfig(params?.site, 'home');
+
+  const queryClient = new QueryClient();
+
+  await netToQuery({
+    queryClient,
+    instance: dexkitNFTapi,
+    siteId: configResponse.siteId,
+  });
+
+  return {
+    props: { ...configResponse, dehydratedState: dehydrate(queryClient) },
+  };
 };

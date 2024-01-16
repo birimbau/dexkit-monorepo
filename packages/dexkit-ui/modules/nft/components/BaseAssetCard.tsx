@@ -22,12 +22,8 @@ import { useMemo, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import Link from "../../../components/AppLink";
 
-import {
-  NETWORK_IMAGE,
-  NETWORK_NAME,
-  NETWORK_SLUG,
-} from "@dexkit/core/constants/networks";
 import { Asset, AssetMetadata } from "@dexkit/core/types/nft";
+import { useNetworkMetadata } from "../../../hooks/app";
 import { OrderBookItem } from "../types";
 import { truncateErc1155TokenId } from "../utils";
 import { AssetBuyOrder } from "./AssetBuyOrder";
@@ -125,6 +121,8 @@ export function BaseAssetCard({
     </>
   );
 
+  const { NETWORK_IMAGE, NETWORK_NAME, NETWORK_SLUG } = useNetworkMetadata();
+
   return (
     <Card sx={{ position: "relative", heigh: "100%", borderRadius: "12px" }}>
       {showAssetDetailsInDialog ? (
@@ -175,7 +173,7 @@ export function BaseAssetCard({
       {asset?.chainId && (
         <Tooltip title={NETWORK_NAME(asset.chainId) || ""}>
           <Avatar
-            src={NETWORK_IMAGE(asset.chainId)}
+            src={NETWORK_IMAGE(asset.chainId) || ""}
             sx={(theme) => ({
               top: theme.spacing(2),
               left: theme.spacing(2),

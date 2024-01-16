@@ -1,4 +1,3 @@
-import { NETWORK_NAME } from "@dexkit/core/constants/networks";
 import {
   getBlockExplorerUrl,
   getNormalizedUrl,
@@ -6,6 +5,7 @@ import {
   truncateAddress,
 } from "@dexkit/core/utils";
 import { useDexKitContext } from "@dexkit/ui/hooks";
+import { useNetworkMetadata } from "@dexkit/ui/hooks/app";
 import WalletIcon from "@mui/icons-material/Wallet";
 import {
   Alert,
@@ -157,6 +157,8 @@ export default function EvmTransferNft({
       );
     }
   };
+
+  const { NETWORK_NAME } = useNetworkMetadata();
 
   return (
     <Formik

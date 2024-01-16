@@ -1,4 +1,4 @@
-import { NETWORK_NAME } from '@dexkit/core/constants/networks';
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import {
   Box,
   Card,
@@ -26,6 +26,8 @@ export default function DexGeneratorSectionCard({
   type,
   chainId,
 }: DexGeneratorSectionCardProps) {
+  const { NETWORK_NAME } = useNetworkMetadata();
+
   return (
     <Card>
       <CardActionArea onClick={onClick}>

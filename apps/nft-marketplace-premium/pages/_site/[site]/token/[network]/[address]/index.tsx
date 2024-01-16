@@ -1,6 +1,8 @@
 import { ContractMetadataHeader } from '@/modules/contract-wizard/components/ContractMetadataHeader';
 import TokenErc20Section from '@/modules/wizard/components/sections/TokenErc20Section';
+import { dexkitNFTapi } from '@dexkit/ui/constants/api';
 import { hexToString } from '@dexkit/ui/utils';
+import { netToQuery } from '@dexkit/ui/utils/networks';
 import Container from '@mui/material/Container';
 import Stack from '@mui/material/Stack';
 import { QueryClient, dehydrate } from '@tanstack/react-query';
@@ -96,6 +98,12 @@ export const getStaticProps = async ({
     const configResponse = await getAppConfig(site, 'home');
 
     const queryClient = new QueryClient();
+
+    await netToQuery({
+      instance: dexkitNFTapi,
+      queryClient,
+      siteId: configResponse.siteId,
+    });
 
     return {
       props: { dehydratedState: dehydrate(queryClient), ...configResponse },

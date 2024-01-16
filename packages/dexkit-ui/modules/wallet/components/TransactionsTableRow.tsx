@@ -1,5 +1,4 @@
 import { TransactionStatus } from "@dexkit/core/constants/enums";
-import { NETWORK_EXPLORER } from "@dexkit/core/constants/networks";
 import { useDexKitContext } from "@dexkit/ui";
 import { NotificationMessage } from "@dexkit/ui/components/NotificationMessage";
 import { AppNotification } from "@dexkit/ui/types";
@@ -10,6 +9,7 @@ import { useMemo } from "react";
 import { FormattedMessage } from "react-intl";
 import Link from "../../../components/AppLink";
 import MomentFromNow from "../../../components/MomentFromNow";
+import { useNetworkMetadata } from "../../../hooks/app";
 
 interface Props {
   notification: AppNotification;
@@ -33,6 +33,8 @@ export function TransactionsTableRow({ notification }: Props) {
       return transactions[hash];
     }
   }, [hash]);
+
+  const { NETWORK_EXPLORER } = useNetworkMetadata();
 
   return (
     <TableRow>

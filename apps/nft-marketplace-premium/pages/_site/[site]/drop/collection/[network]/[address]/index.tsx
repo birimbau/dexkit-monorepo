@@ -13,8 +13,10 @@ import { CollectionTraits } from '@/modules/nft/components/CollectionTraits';
 import TableSkeleton from '@/modules/nft/components/tables/TableSkeleton';
 import { NETWORK_FROM_SLUG } from '@dexkit/core/constants/networks';
 import { Asset } from '@dexkit/core/types';
+import { dexkitNFTapi } from '@dexkit/ui/constants/api';
 import { getCollectionData } from '@dexkit/ui/modules/nft/services';
 import { Collection, TraderOrderFilter } from '@dexkit/ui/modules/nft/types';
+import { netToQuery } from '@dexkit/ui/utils/networks';
 import Search from '@mui/icons-material/Search';
 import {
   Divider,
@@ -266,6 +268,13 @@ export const getStaticProps: GetStaticProps = async ({
   const address = params?.address;
   const configResponse = await getAppConfig(params?.site, 'home');
   const queryClient = new QueryClient();
+
+  await netToQuery({
+    instance: dexkitNFTapi,
+    queryClient,
+    siteId: configResponse.siteId,
+  });
+
   let collection: Collection | undefined;
   try {
     collection = await getApiCollectionData(network, address);
@@ -311,7 +320,7 @@ export const getStaticProps: GetStaticProps = async ({
       [GET_ASSET_LIST_FROM_COLLECTION, network, address, 0, 50],
       async () => {
         return collectionAssets;
-      },
+      }
     );
   } catch {}
 
@@ -319,14 +328,14 @@ export const getStaticProps: GetStaticProps = async ({
     if (network === NETWORK_ID.Ethereum || network === NETWORK_ID.Polygon) {
       const { data } = await getRariCollectionStats(
         `${MAP_NETWORK_TO_RARIBLE[network]}:${address}`,
-        MAP_COIN_TO_RARIBLE[network],
+        MAP_COIN_TO_RARIBLE[network]
       );
 
       await queryClient.prefetchQuery(
         [GET_COLLECTION_STATS, network, address],
         async () => {
           return data;
-        },
+        }
       );
     }
   } catch (e) {
@@ -348,7 +357,7 @@ export const getStaticProps: GetStaticProps = async ({
     ],
     async () => {
       return collection;
-    },
+    }
   );
 
   const filters: TraderOrderFilter = { nftToken: address };
@@ -357,7 +366,7 @@ export const getStaticProps: GetStaticProps = async ({
 
     await queryClient.prefetchQuery(
       [COLLECTION_ASSETS_FROM_ORDERBOOK, filters],
-      async () => assets,
+      async () => assets
     );
   } catch {}
 

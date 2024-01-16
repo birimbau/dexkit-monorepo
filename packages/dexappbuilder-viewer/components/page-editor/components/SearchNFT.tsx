@@ -5,7 +5,8 @@ import TextField from "@mui/material/TextField";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 
-import { NETWORKS, NETWORK_NAME } from "@dexkit/core/constants/networks";
+import { NETWORKS } from "@dexkit/core/constants/networks";
+import { useNetworkMetadata } from "@dexkit/ui/hooks/app";
 import { useSearchAssets } from "@dexkit/ui/modules/nft/hooks";
 import { CollectionUniformItem } from "./CollectionAutocompleteUniform";
 
@@ -32,6 +33,8 @@ export function SearchNFT(props: Props) {
         image: value.imageUrl,
       };
     }) || [];
+
+  const { NETWORK_NAME } = useNetworkMetadata();
 
   return (
     <Autocomplete

@@ -19,6 +19,8 @@ import ProtectedContent from '@/modules/home/components/ProtectedContent';
 import { SectionsRenderer } from '@/modules/wizard/components/sections/SectionsRenderer';
 import { GatedCondition, GatedPageLayout } from '@/modules/wizard/types';
 import { AppPageSection } from '@/modules/wizard/types/section';
+import { dexkitNFTapi } from '@dexkit/ui/constants/api';
+import { netToQuery } from '@dexkit/ui/utils/networks';
 import { SessionProvider } from 'next-auth/react';
 import AuthMainLayout from 'src/components/layouts/authMain';
 import { getProviderBySlug } from '../../../../src/services/providers';
@@ -71,6 +73,13 @@ export const getStaticProps: GetStaticProps = async ({
   const queryClient = new QueryClient();
 
   const configResponse = await getAppConfig(params?.site, params?.page);
+
+  await netToQuery({
+    instance: dexkitNFTapi,
+    queryClient,
+    siteId: configResponse.siteId,
+  });
+
   const { appConfig } = configResponse;
   const homePage = appConfig.pages[params?.page || ''];
   if (!homePage) {
@@ -122,12 +131,12 @@ export const getStaticProps: GetStaticProps = async ({
 
             const collection = await getCollectionData(
               provider,
-              item.contractAddress,
+              item.contractAddress
             );
 
             await queryClient.prefetchQuery(
               [GET_COLLECTION_DATA, item.contractAddress, item.chainId],
-              async () => collection,
+              async () => collection
             );
           }
         } catch (e) {
@@ -143,7 +152,7 @@ export const getStaticProps: GetStaticProps = async ({
       const assetResponse = await getDKAssetOrderbook({ maker });
       await queryClient.prefetchQuery(
         [GET_ASSETS_ORDERBOOK, { maker }],
-        async () => assetResponse.data,
+        async () => assetResponse.data
       );
     }
   }

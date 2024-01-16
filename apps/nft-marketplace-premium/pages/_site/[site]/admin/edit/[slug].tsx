@@ -18,9 +18,10 @@ import {
 } from 'next';
 import { useRouter } from 'next/router';
 
+import { netToQuery } from '@dexkit/ui/utils/networks';
+
 import { EditWizardContainer } from '@/modules/wizard/components/containers/EditWizardContainer';
 import { DexkitApiProvider } from '@dexkit/core/providers';
-import { NETWORK_DATA_QUERY } from '@dexkit/ui/hooks/app';
 import SecurityIcon from '@mui/icons-material/Security';
 import { QueryClient, dehydrate } from '@tanstack/react-query';
 import { FormattedMessage } from 'react-intl';
@@ -131,8 +132,7 @@ type Params = {
   site?: string;
 };
 
-import { getActiveNetworks } from '@dexkit/ui/services/app';
-import axios from 'axios';
+import { dexkitNFTapi } from '@dexkit/ui/constants/api';
 
 export const getStaticProps: GetStaticProps = async ({
   params,
@@ -140,22 +140,11 @@ export const getStaticProps: GetStaticProps = async ({
   const queryClient = new QueryClient();
   const configResponse = await getAppConfig(params?.site, 'no-page-defined');
 
-  const activeNetworks = await getActiveNetworks({
-    siteId: 1,
-    limit: 1000,
-    instance: axios.create({ baseURL: 'http://localhost:5000' }),
-    page: 1,
-    query: '',
+  await netToQuery({
+    instance: dexkitNFTapi,
+    queryClient,
+    siteId: configResponse.siteId,
   });
-
-  for (let network of activeNetworks) {
-    await queryClient.prefetchQuery(
-      [NETWORK_DATA_QUERY, network.chainId],
-      async () => {
-        return network;
-      }
-    );
-  }
 
   return {
     props: {

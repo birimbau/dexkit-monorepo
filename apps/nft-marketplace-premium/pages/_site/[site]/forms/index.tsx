@@ -1,14 +1,19 @@
 import ContractButton from '@/modules/forms/components/ContractButton';
+import { dexkitNFTapi } from '@dexkit/ui/constants/api';
+import { netToQuery } from '@dexkit/ui/utils/networks';
 import { THIRDWEB_ICON_URL } from '@dexkit/web3forms/constants';
 import WalletIcon from '@mui/icons-material/Wallet';
 import { Box, Button, Container, Grid, Stack, Typography } from '@mui/material';
+import { QueryClient, dehydrate } from '@tanstack/react-query';
 import { useWeb3React } from '@web3-react/core';
+import { GetStaticProps, GetStaticPropsContext } from 'next';
 import { useRouter } from 'next/router';
 import { FormattedMessage } from 'react-intl';
 import Link from 'src/components/Link';
 import { PageHeader } from 'src/components/PageHeader';
 import AuthMainLayout from 'src/components/layouts/authMain';
 import { useConnectWalletDialog } from 'src/hooks/app';
+import { getAppConfig } from 'src/services/app';
 
 const THIRDWEB_CONTRACT_LIST: {
   name: string;
@@ -226,4 +231,33 @@ export default function FormsPage() {
 
 (FormsPage as any).getLayout = function getLayout(page: any) {
   return <AuthMainLayout>{page}</AuthMainLayout>;
+};
+
+type Params = {
+  site?: string;
+};
+
+export async function getStaticPaths() {
+  return {
+    paths: [],
+    fallback: 'blocking', // false or 'blocking'
+  };
+}
+
+export const getStaticProps: GetStaticProps = async ({
+  params,
+}: GetStaticPropsContext<Params>) => {
+  const configResponse = await getAppConfig(params?.site, 'home');
+
+  const queryClient = new QueryClient();
+
+  await netToQuery({
+    queryClient,
+    instance: dexkitNFTapi,
+    siteId: configResponse.siteId,
+  });
+
+  return {
+    props: { ...configResponse, dehydratedState: dehydrate(queryClient) },
+  };
 };

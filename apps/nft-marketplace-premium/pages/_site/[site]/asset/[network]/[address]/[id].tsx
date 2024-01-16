@@ -23,6 +23,8 @@ import { getIntegrationData } from '@/modules/wizard/services/integrations';
 import { ChainId, MY_APPS_ENDPOINT } from '@dexkit/core/constants';
 import { NETWORK_FROM_SLUG } from '@dexkit/core/constants/networks';
 import { truncateAddress } from '@dexkit/core/utils';
+import { dexkitNFTapi } from '@dexkit/ui/constants/api';
+import { netToQuery } from '@dexkit/ui/utils/networks';
 import axios from 'axios';
 import { NextSeo } from 'next-seo';
 import { Suspense } from 'react';
@@ -90,15 +92,15 @@ const AssetDetailPage: NextPage<any> = ({
                   ),
 
                   uri: `/collection/${getNetworkSlugFromChainId(
-                    asset?.chainId,
+                    asset?.chainId
                   )}/${address}`,
                 },
                 {
                   caption: `${asset?.collectionName} #${truncateErc1155TokenId(
-                    asset?.id,
+                    asset?.id
                   )}`,
                   uri: `/asset/${getNetworkSlugFromChainId(
-                    asset?.chainId,
+                    asset?.chainId
                   )}/${address}/${id}`,
                   active: true,
                 },
@@ -144,6 +146,13 @@ export const getStaticProps: GetStaticProps = async ({
     const configResponse = await getAppConfig(site, 'home');
 
     const queryClient = new QueryClient();
+
+    await netToQuery({
+      instance: dexkitNFTapi,
+      queryClient,
+      siteId: configResponse.siteId,
+    });
+
     const item = {
       contractAddress: address || '',
       tokenId: id || '',
@@ -154,13 +163,13 @@ export const getStaticProps: GetStaticProps = async ({
     try {
       if (network === NETWORK_ID.Ethereum || network === NETWORK_ID.Polygon) {
         const { data } = await getRariAsset(
-          `${MAP_NETWORK_TO_RARIBLE[network]}:${address}:${id}`,
+          `${MAP_NETWORK_TO_RARIBLE[network]}:${address}:${id}`
         );
         await queryClient.prefetchQuery(
           [BEST_SELL_ORDER_RARIBLE, network, address, id],
           async () => {
             return data;
-          },
+          }
         );
       }
     } catch (e) {
@@ -171,7 +180,7 @@ export const getStaticProps: GetStaticProps = async ({
     try {
       if (
         DARKBLOCK_SUPPORTED_CHAIN_IDS.includes(
-          NETWORK_FROM_SLUG(network)?.chainId as ChainId,
+          NETWORK_FROM_SLUG(network)?.chainId as ChainId
         )
       ) {
         const darkBlock = await getIntegrationData({

@@ -1,8 +1,11 @@
 import SwapSection from '@/modules/home/components/SwapSection';
 import { SwapPageSection } from '@/modules/wizard/types/section';
+import { dexkitNFTapi } from '@dexkit/ui/constants/api';
+import { netToQuery } from '@dexkit/ui/utils/networks';
 import { NoSsr } from '@mui/material';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
+import { dehydrate, QueryClient } from '@tanstack/react-query';
 import type { GetStaticProps, GetStaticPropsContext, NextPage } from 'next';
 import { NextSeo } from 'next-seo';
 import { useMemo } from 'react';
@@ -80,8 +83,17 @@ export const getStaticProps: GetStaticProps = async ({
 }: GetStaticPropsContext<Params>) => {
   const configResponse = await getAppConfig(params?.site, 'home');
 
+  const queryClient = new QueryClient();
+
+  await netToQuery({
+    instance: dexkitNFTapi,
+    queryClient,
+    siteId: configResponse.siteId,
+  });
+
   return {
     props: {
+      dehydratedState: dehydrate(queryClient),
       ...configResponse,
     },
   };

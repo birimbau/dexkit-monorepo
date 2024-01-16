@@ -1,10 +1,7 @@
-import {
-  NETWORK_EXPLORER,
-  NETWORK_NAME,
-  NETWORK_SLUG,
-} from '@dexkit/core/constants/networks';
+import { NETWORK_SLUG } from '@dexkit/core/constants/networks';
 import { truncateAddress } from '@dexkit/core/utils';
 import Link from '@dexkit/ui/components/AppLink';
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
@@ -45,7 +42,7 @@ export default function ContractListDataGrid() {
 
   useEffect(() => {
     setRowCountState((prevRowCountState: number) =>
-      data?.total !== undefined ? data?.total : prevRowCountState,
+      data?.total !== undefined ? data?.total : prevRowCountState
     );
   }, [data?.total, setRowCountState]);
 
@@ -72,6 +69,8 @@ export default function ContractListDataGrid() {
 
     setQueryOptions({ ...queryOptions, filter });
   }, []);
+
+  const { NETWORK_NAME, NETWORK_EXPLORER } = useNetworkMetadata();
 
   const columns: GridColDef[] = [
     { field: 'id', headerName: 'ID', width: 90 },

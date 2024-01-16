@@ -19,8 +19,11 @@ import walletConnectIcon from '../../../../public/assets/images/walletconnect-ci
 import { FormattedMessage } from 'react-intl';
 import { PageHeader } from '../../../../src/components/PageHeader';
 
+import { dexkitNFTapi } from '@dexkit/ui/constants/api';
+import { netToQuery } from '@dexkit/ui/utils/networks';
 import { useWalletActivate } from '@dexkit/wallet-connectors/hooks';
 import { WalletActivateParams } from '@dexkit/wallet-connectors/types';
+import { QueryClient, dehydrate } from '@tanstack/react-query';
 import { selectedWalletAtom } from 'src/state/atoms';
 import { getAppConfig } from '../../../../src/services/app';
 
@@ -167,9 +170,16 @@ export const getStaticProps: GetStaticProps = async ({
     const { site } = params;
 
     const configResponse = await getAppConfig(site, 'home');
+    const queryClient = new QueryClient();
+
+    await netToQuery({
+      instance: dexkitNFTapi,
+      queryClient,
+      siteId: configResponse.siteId,
+    });
 
     return {
-      props: { ...configResponse },
+      props: { ...configResponse, dehydratedState: dehydrate(queryClient) },
     };
   }
 

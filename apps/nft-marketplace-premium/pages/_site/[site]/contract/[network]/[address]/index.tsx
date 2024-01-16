@@ -1,6 +1,9 @@
 import { ContractContainer } from '@/modules/contract-wizard/components/containers/ContractContainer';
 import { NETWORK_FROM_SLUG } from '@dexkit/core/constants/networks';
+import { dexkitNFTapi } from '@dexkit/ui/constants/api';
+import { netToQuery } from '@dexkit/ui/utils/networks';
 import Container from '@mui/material/Container';
+import { QueryClient, dehydrate } from '@tanstack/react-query';
 import { ThirdwebSDKProvider } from '@thirdweb-dev/react';
 import { useWeb3React } from '@web3-react/core';
 import { GetStaticProps, GetStaticPropsContext } from 'next';
@@ -46,9 +49,16 @@ export const getStaticProps: GetStaticProps = async ({
     const { site } = params;
 
     const configResponse = await getAppConfig(site, 'home');
+    const queryClient = new QueryClient();
+
+    await netToQuery({
+      instance: dexkitNFTapi,
+      queryClient,
+      siteId: configResponse.siteId,
+    });
 
     return {
-      props: { ...configResponse },
+      props: { ...configResponse, dehydratedState: dehydrate(queryClient) },
     };
   }
 

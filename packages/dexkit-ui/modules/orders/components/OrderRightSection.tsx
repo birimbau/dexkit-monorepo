@@ -1,4 +1,4 @@
-import { useDexKitContext } from "@dexkit/ui";
+import { useDexKitContext, useSwitchNetwork } from "@dexkit/ui";
 import {
   Alert,
   Box,
@@ -32,10 +32,7 @@ import {
   useSwapSdkV4,
 } from "../../nft/hooks";
 
-import {
-  NETWORK_EXPLORER,
-  NETWORK_SLUG,
-} from "@dexkit/core/constants/networks";
+import { NETWORK_SLUG } from "@dexkit/core/constants/networks";
 import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "@dexkit/core/constants/zrx";
 import {
   getERC20Decimals,
@@ -48,7 +45,8 @@ import {
   truncateAddress,
 } from "@dexkit/core/utils";
 import AppFeePercentageSpan from "../../../components/AppFeePercentageSpan";
-import { useSwitchNetwork, useTokenList } from "../../../hooks/blockchain";
+import { useNetworkMetadata } from "../../../hooks/app";
+import { useTokenList } from "../../../hooks/blockchain";
 import { useCoinPricesQuery, useCurrency } from "../../../hooks/currency";
 import { OrderBookItem } from "../../nft/types";
 import { OrderPageActions } from "./OrderPageActions";
@@ -97,7 +95,9 @@ function OrderRightSection({ order }: Props) {
 
         const tokenData = coinPricesQuery.data[token.address.toLowerCase()];
 
+        // @ts-ignore FIX: fix this
         if (tokenData && currency in tokenData) {
+          // @ts-ignore FIX: fix this
           ratio = tokenData[currency];
         }
 
@@ -355,7 +355,7 @@ function OrderRightSection({ order }: Props) {
     const tempAsset: any = {
       tokenAddress: order?.nftToken,
       tokenId: order?.nftTokenId,
-      type: asset?.protocol === 'ERC1155' ? 'ERC1155' : 'ERC721';,
+      type: asset?.protocol === "ERC1155" ? "ERC1155" : "ERC721",
     };
 
     const status = await nftSwapSdk?.loadApprovalStatus(tempAsset, account);
@@ -467,6 +467,8 @@ function OrderRightSection({ order }: Props) {
     return <Chip label="Open" />;
   };
 
+  const { NETWORK_EXPLORER } = useNetworkMetadata();
+
   return (
     <Stack spacing={2}>
       <Box>
@@ -539,6 +541,7 @@ function OrderRightSection({ order }: Props) {
             </Stack>
             <Chip
               size="small"
+              // @ts-ignore
               label={`${totalInCurrency} ${currency.toUpperCase()}`}
             />
           </Stack>

@@ -1,4 +1,3 @@
-import { NETWORK_NAME } from "@dexkit/core/constants/networks";
 import {
   Alert,
   Button,
@@ -13,6 +12,7 @@ import {
 import { FormattedMessage } from "react-intl";
 import { useSwitchNetworkMutation } from "../../hooks";
 
+import { useNetworkMetadata } from "../../hooks/app";
 import { AppDialogTitle } from "../AppDialogTitle";
 
 interface Props {
@@ -24,6 +24,8 @@ export default function SwitchNetworkDialog({ dialogProps, chainId }: Props) {
   const { onClose } = dialogProps;
 
   const switchNetworkMutation = useSwitchNetworkMutation();
+
+  const { NETWORK_NAME } = useNetworkMetadata();
 
   const handleClose = () => onClose!({}, "backdropClick");
 

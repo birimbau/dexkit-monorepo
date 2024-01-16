@@ -8,6 +8,8 @@ import { ContractCollectionHeader } from '@/modules/contract-wizard/components/C
 import ContractCollectionPageHeader from '@/modules/contract-wizard/components/CollectionPageHeader';
 import { ChipFilterTraits } from '@/modules/nft/components/ChipFilterTraits';
 import { CollectionStats } from '@/modules/nft/components/CollectionStats';
+import { dexkitNFTapi } from '@dexkit/ui/constants/api';
+import { netToQuery } from '@dexkit/ui/utils/networks';
 import Search from '@mui/icons-material/Search';
 import {
   Divider,
@@ -265,6 +267,12 @@ export const getStaticProps: GetStaticProps = async ({
   const configResponse = await getAppConfig(params?.site, 'no-page-defined');
   const contract = await getApiContractCollectionData(network, address);
   const collection = contract?.collection;
+
+  await netToQuery({
+    instance: dexkitNFTapi,
+    queryClient,
+    siteId: configResponse.siteId,
+  });
 
   await queryClient.prefetchQuery(
     [GET_COLLECTION_DATA, address as string, network],

@@ -17,7 +17,9 @@ import {
   useZrxOrderbookOrder,
 } from '@dexkit/exchange/hooks/zrx';
 import { useDexKitContext, useExecuteTransactionsDialog } from '@dexkit/ui';
+import { dexkitNFTapi } from '@dexkit/ui/constants/api';
 import { AppNotificationType } from '@dexkit/ui/types';
+import { netToQuery } from '@dexkit/ui/utils/networks';
 import { useCallback } from 'react';
 
 export default function ExchangeOrderPage() {
@@ -44,7 +46,7 @@ export default function ExchangeOrderPage() {
       baseTokenSymbol?: string,
       quoteTokenSymbol?: string,
       baseTokenAmount?: string,
-      quoteTokenAmount?: string,
+      quoteTokenAmount?: string
     ) => {
       transactionDialog.execute([
         {
@@ -85,7 +87,7 @@ export default function ExchangeOrderPage() {
         },
       ]);
     },
-    [chainId, provider],
+    [chainId, provider]
   );
 
   return (
@@ -149,6 +151,12 @@ export const getStaticProps = async ({
     const configResponse = await getAppConfig(site, 'home');
 
     const queryClient = new QueryClient();
+
+    await netToQuery({
+      instance: dexkitNFTapi,
+      queryClient,
+      siteId: configResponse.siteId,
+    });
 
     return {
       props: { dehydratedState: dehydrate(queryClient), ...configResponse },

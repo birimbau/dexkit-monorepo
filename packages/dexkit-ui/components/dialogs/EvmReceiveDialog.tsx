@@ -1,8 +1,8 @@
-import { NETWORK_NAME } from "@dexkit/core/constants/networks";
 import { EvmCoin } from "@dexkit/core/types";
 
 import { Dialog, DialogContent, DialogProps, Divider } from "@mui/material";
 import { FormattedMessage } from "react-intl";
+import { useNetworkMetadata } from "../../hooks/app";
 import { AppDialogTitle } from "../AppDialogTitle";
 import EvmReceive from "../EvmReceive";
 
@@ -30,6 +30,8 @@ export default function EvmReceiveDialog({
       onClose({}, "backdropClick");
     }
   };
+
+  const { NETWORK_NAME } = useNetworkMetadata();
 
   return (
     <Dialog {...dialogProps}>

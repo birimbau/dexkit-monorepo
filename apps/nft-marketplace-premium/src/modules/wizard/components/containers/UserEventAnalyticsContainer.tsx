@@ -1,13 +1,11 @@
-import {
-  NETWORK_EXPLORER,
-  NETWORK_NAME,
-} from '@dexkit/core/constants/networks';
+import { NETWORK_EXPLORER } from '@dexkit/core/constants/networks';
 import {
   beautifyCamelCase,
   truncateAddress,
   truncateHash,
 } from '@dexkit/core/utils';
 import Link from '@dexkit/ui/components/AppLink';
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import { useUserEventsList } from '@dexkit/ui/hooks/userEvents';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
@@ -56,7 +54,7 @@ function OnChainDataGrid({ siteId }: Props) {
 
   useEffect(() => {
     setRowCountState((prevRowCountState: number) =>
-      data?.total !== undefined ? data?.total : prevRowCountState,
+      data?.total !== undefined ? data?.total : prevRowCountState
     );
   }, [data?.total, setRowCountState]);
 
@@ -83,6 +81,8 @@ function OnChainDataGrid({ siteId }: Props) {
 
     setQueryOptions({ ...queryOptions, filter });
   }, []);
+
+  const { NETWORK_EXPLORER, NETWORK_NAME } = useNetworkMetadata();
 
   const columns: GridColDef[] = [
     { field: 'id', headerName: 'ID', width: 90 },
@@ -200,7 +200,7 @@ function OffChainDataGrid({ siteId }: Props) {
 
   useEffect(() => {
     setRowCountState((prevRowCountState: number) =>
-      data?.total !== undefined ? data?.total : prevRowCountState,
+      data?.total !== undefined ? data?.total : prevRowCountState
     );
   }, [data?.total, setRowCountState]);
 

@@ -3,8 +3,8 @@ import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import { CellPluginComponentProps } from "@react-page/editor";
 
-import { NETWORK_NAME } from "@dexkit/core/constants/networks";
 import { useAppWizardConfig } from "@dexkit/ui/hooks";
+import { useNetworkMetadata } from "@dexkit/ui/hooks/app";
 
 interface Props {
   data: CellPluginComponentProps<Partial<any>>;
@@ -13,6 +13,8 @@ interface Props {
 export function CollectionAutocomplete(props: Props) {
   const { data } = props;
   const { wizardConfig } = useAppWizardConfig();
+
+  const { NETWORK_NAME } = useNetworkMetadata();
 
   const formValue = data.data;
   const collections =

@@ -1,4 +1,7 @@
 import SendContainer from '@/modules/wallet/components/containers/SendContainer';
+import { dexkitNFTapi } from '@dexkit/ui/constants/api';
+import { netToQuery } from '@dexkit/ui/utils/networks';
+import { QueryClient, dehydrate } from '@tanstack/react-query';
 import type { GetStaticProps, GetStaticPropsContext, NextPage } from 'next';
 
 import MainLayout from 'src/components/layouts/main';
@@ -20,8 +23,16 @@ export const getStaticProps: GetStaticProps = async ({
 
     const configResponse = await getAppConfig(site, '');
 
+    const queryClient = new QueryClient();
+
+    await netToQuery({
+      instance: dexkitNFTapi,
+      queryClient,
+      siteId: configResponse.siteId,
+    });
+
     return {
-      props: { ...configResponse },
+      props: { ...configResponse, dehydratedState: dehydrate(queryClient) },
     };
   }
 

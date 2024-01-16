@@ -1,10 +1,4 @@
 import {
-  NETWORK_EXPLORER,
-  NETWORK_FROM_SLUG,
-  NETWORK_IMAGE,
-  NETWORK_NAME,
-} from '@dexkit/core/constants/networks';
-import {
   copyToClipboard,
   ipfsUriToUrl,
   truncateAddress,
@@ -27,6 +21,7 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import Link from 'src/components/Link';
 
 import { THIRDWEB_CONTRACTTYPE_TO_NAME } from '@dexkit/ui/constants/thirdweb';
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 
 const Img = styled(Image)({});
 
@@ -51,6 +46,10 @@ export function ContractMetadataHeader({
 
   const metadata = data as CustomContractMetadata;
   const theme = useTheme();
+
+  const { NETWORK_NAME, NETWORK_IMAGE, NETWORK_FROM_SLUG, NETWORK_EXPLORER } =
+    useNetworkMetadata();
+
   const chainId = NETWORK_FROM_SLUG(network)?.chainId;
 
   const getContractUrl = (contractType?: string) => {
@@ -144,7 +143,7 @@ export function ContractMetadataHeader({
               <Chip
                 icon={
                   <Avatar
-                    src={NETWORK_IMAGE(chainId)}
+                    src={NETWORK_IMAGE(chainId) || ''}
                     sx={(theme) => ({
                       width: theme.spacing(2),
                       height: theme.spacing(2),

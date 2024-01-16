@@ -14,6 +14,8 @@ import {
 } from '../../../../../src/services/nft';
 
 import { ChainId } from '@dexkit/core/constants';
+import { dexkitNFTapi } from '@dexkit/ui/constants/api';
+import { netToQuery } from '@dexkit/ui/utils/networks';
 import { Grid, Skeleton } from '@mui/material';
 import { FormattedMessage, useIntl } from 'react-intl';
 import MainLayout from '../../../../../src/components/layouts/main';
@@ -126,6 +128,12 @@ export const getStaticProps: GetStaticProps = async ({
     const orderFilter: TraderOrderFilter = { chainId, nonce: hash };
 
     const queryClient = new QueryClient();
+
+    await netToQuery({
+      instance: dexkitNFTapi,
+      queryClient,
+      siteId: configResponse.siteId,
+    });
 
     const orders = await getOrderbookOrders({
       chainId,

@@ -1,4 +1,3 @@
-import { NETWORK_NAME } from "@dexkit/core/constants/networks";
 import {
   getBlockExplorerUrl,
   getNormalizedUrl,
@@ -26,6 +25,7 @@ import { Field, Form, Formik, FormikHelpers } from "formik";
 import { TextField } from "formik-mui";
 import { useSnackbar } from "notistack";
 import { FormattedMessage, useIntl } from "react-intl";
+import { useNetworkMetadata } from "../../../hooks/app";
 import { getTransferNftSchema } from "../constants/schemas";
 import { useNftBurn } from "../hooks";
 
@@ -173,6 +173,8 @@ export default function EvmBurnNft({
       </Card>
     );
   }
+
+  const { NETWORK_NAME } = useNetworkMetadata();
 
   return (
     <Formik

@@ -48,14 +48,10 @@ import {
   useSwapSdkV4,
 } from "../../hooks";
 
-import {
-  NETWORK_EXPLORER,
-  NETWORK_NAME,
-  NETWORK_SLUG,
-} from "@dexkit/core/constants/networks";
 import { Asset } from "@dexkit/core/types/nft";
 import { isAddressEqual, truncateAddress } from "@dexkit/core/utils";
 import { ipfsUriToUrl } from "@dexkit/core/utils/ipfs";
+import { useNetworkMetadata } from "../../../../hooks/app";
 
 export const CreateAssetOrderContainer = () => {
   const [asset, setAsset] = useState<Asset | null>(null);
@@ -371,6 +367,8 @@ export const CreateAssetOrderContainer = () => {
   const hasChainDiff = useMemo(() => {
     return asset?.chainId !== undefined && asset?.chainId !== chainId;
   }, [asset]);
+
+  const { NETWORK_EXPLORER, NETWORK_NAME, NETWORK_SLUG } = useNetworkMetadata();
 
   return (
     <>

@@ -1,4 +1,6 @@
 import WizardCreateAssetContainer from '@/modules/contract-wizard/components/WizardCreateAssetContainer';
+import { dexkitNFTapi } from '@dexkit/ui/constants/api';
+import { netToQuery } from '@dexkit/ui/utils/networks';
 import { QueryClient, dehydrate } from '@tanstack/react-query';
 
 import type {
@@ -67,6 +69,12 @@ export const getStaticProps: GetStaticProps = async ({
 }: GetStaticPropsContext<Params>) => {
   const queryClient = new QueryClient();
   const configResponse = await getAppConfig(params?.site, 'no-page-defined');
+
+  await netToQuery({
+    instance: dexkitNFTapi,
+    queryClient,
+    siteId: configResponse.siteId,
+  });
 
   return {
     props: {

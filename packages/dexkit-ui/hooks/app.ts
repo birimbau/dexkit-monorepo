@@ -1,9 +1,14 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useContext } from "react";
-import { SiteContext } from "../context/SiteContext";
 
 import { ChainId } from "@dexkit/core";
+import {
+  NETWORK_EXPLORER,
+  NETWORK_FROM_SLUG,
+  NETWORK_SLUG,
+} from "@dexkit/core/constants/networks";
 import { DexkitApiProvider } from "@dexkit/core/providers";
+import { SiteContext } from "../providers/SiteProvider";
 import { NetworkMetadata } from "../types/api";
 
 export function useSiteIdV2() {
@@ -15,15 +20,23 @@ export const NETWORK_DATA_QUERY = "NETWORK_DATA_QUERY";
 export function useNetworkData({ chainId }: { chainId?: number }) {
   const { instance } = useContext(DexkitApiProvider);
 
-  return useQuery([NETWORK_DATA_QUERY, chainId], async () => {
-    if (!instance || !chainId) {
-      return null;
-    }
+  return useQuery(
+    [NETWORK_DATA_QUERY, chainId],
+    async () => {
+      if (!instance || !chainId) {
+        return null;
+      }
 
-    return (
-      await instance.get<NetworkMetadata>("/networks/metadata/${chainId}")
-    ).data;
-  });
+      return (
+        await instance.get<NetworkMetadata>("/networks/metadata/${chainId}")
+      ).data;
+    },
+    {
+      refetchOnMount: false,
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+    }
+  );
 }
 
 export function useNetworkMetadata() {
@@ -41,5 +54,15 @@ export function useNetworkMetadata() {
   const NETWORK_IMAGE = (chainId?: ChainId) =>
     getNetworkMetadata(chainId)?.imageUrl;
 
-  return { NETWORK_IMAGE, NETWORK_NAME };
+  const NETWORK_SYMBOL = (chainId?: ChainId) =>
+    getNetworkMetadata(chainId)?.nativeSymbol;
+
+  return {
+    NETWORK_IMAGE,
+    NETWORK_NAME,
+    NETWORK_SYMBOL,
+    NETWORK_EXPLORER,
+    NETWORK_SLUG,
+    NETWORK_FROM_SLUG,
+  };
 }

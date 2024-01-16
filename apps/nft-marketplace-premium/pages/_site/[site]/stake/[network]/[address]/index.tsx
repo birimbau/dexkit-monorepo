@@ -1,7 +1,9 @@
 import StakeErc1155Section from '@/modules/wizard/components/sections/StakeErc1155Section';
 import StakeErc20Section from '@/modules/wizard/components/sections/StakeErc20Section';
 import StakeErc721Section from '@/modules/wizard/components/sections/StakeErc721Section';
+import { dexkitNFTapi } from '@dexkit/ui/constants/api';
 import { hexToString } from '@dexkit/ui/utils';
+import { netToQuery } from '@dexkit/ui/utils/networks';
 import { Box, Container, Grid, Skeleton } from '@mui/material';
 import { QueryClient, dehydrate } from '@tanstack/react-query';
 import {
@@ -141,6 +143,12 @@ export const getStaticProps = async ({
     const configResponse = await getAppConfig(site, 'home');
 
     const queryClient = new QueryClient();
+
+    await netToQuery({
+      instance: dexkitNFTapi,
+      queryClient,
+      siteId: configResponse.siteId,
+    });
 
     return {
       props: { dehydratedState: dehydrate(queryClient), ...configResponse },

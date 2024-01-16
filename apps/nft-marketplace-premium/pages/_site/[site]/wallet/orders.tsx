@@ -1,3 +1,5 @@
+import { dexkitNFTapi } from '@dexkit/ui/constants/api';
+import { netToQuery } from '@dexkit/ui/utils/networks';
 import {
   Box,
   Button,
@@ -13,18 +15,22 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
-import { QueryErrorResetBoundary } from '@tanstack/react-query';
+import {
+  QueryClient,
+  QueryErrorResetBoundary,
+  dehydrate,
+} from '@tanstack/react-query';
 import { useWeb3React } from '@web3-react/core';
 import type { GetStaticProps, GetStaticPropsContext, NextPage } from 'next';
 import { Suspense, useEffect, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { FormattedMessage } from 'react-intl';
-import Funnel from '../../../../src/components/icons/Filter';
-import MainLayout from '../../../../src/components/layouts/main';
 import { NetworkSelectDropdown } from '../../../../src/components/NetworkSelectDropdown';
 import { PageHeader } from '../../../../src/components/PageHeader';
 import SidebarFilters from '../../../../src/components/SidebarFilters';
 import SidebarFiltersContent from '../../../../src/components/SidebarFiltersContent';
+import Funnel from '../../../../src/components/icons/Filter';
+import MainLayout from '../../../../src/components/layouts/main';
 import { SellOrBuy, TraderOrderStatus } from '../../../../src/constants/enum';
 import TableSkeleton from '../../../../src/modules/nft/components/tables/TableSkeleton';
 import WalletOrders from '../../../../src/modules/wallet/components/WalletOrders';
@@ -257,8 +263,16 @@ export const getStaticProps: GetStaticProps = async ({
 
     const configResponse = await getAppConfig(site, 'home');
 
+    const queryClient = new QueryClient();
+
+    netToQuery({
+      instance: dexkitNFTapi,
+      queryClient: new QueryClient(),
+      siteId: configResponse.siteId,
+    });
+
     return {
-      props: { ...configResponse },
+      props: { ...configResponse, dehydratedState: dehydrate(queryClient) },
     };
   }
 

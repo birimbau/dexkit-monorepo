@@ -1,4 +1,6 @@
 import { UserAirdropWebSummitContainer } from '@/modules/user/componentes/containers/UserAirdropWebSummitContainer';
+import { dexkitNFTapi } from '@dexkit/ui/constants/api';
+import { netToQuery } from '@dexkit/ui/utils/networks';
 import Box from '@mui/material/Box';
 import { dehydrate, QueryClient } from '@tanstack/react-query';
 import { GetStaticProps, GetStaticPropsContext, NextPage } from 'next';
@@ -28,6 +30,12 @@ export const getStaticProps: GetStaticProps = async ({
   const queryClient = new QueryClient();
 
   const configResponse = await getAppConfig(params?.site, 'no-page-defined');
+
+  await netToQuery({
+    instance: dexkitNFTapi,
+    queryClient,
+    siteId: configResponse.siteId,
+  });
 
   return {
     props: {

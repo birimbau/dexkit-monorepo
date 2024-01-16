@@ -4,6 +4,9 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import MainLayout from '../../../../src/components/layouts/main';
 
 import CreateAssetOrderContainer from '@/modules/nft/components/container/CreateAssetOrderContainer';
+import { dexkitNFTapi } from '@dexkit/ui/constants/api';
+import { netToQuery } from '@dexkit/ui/utils/networks';
+import { QueryClient, dehydrate } from '@tanstack/react-query';
 import { NextSeo } from 'next-seo';
 import { PageHeader } from '../../../../src/components/PageHeader';
 import { getAppConfig } from '../../../../src/services/app';
@@ -59,8 +62,16 @@ export const getStaticProps: GetStaticProps = async ({
 }: GetStaticPropsContext<Params>) => {
   const configResponse = await getAppConfig(params?.site, 'home');
 
+  const queryClient = new QueryClient();
+
+  await netToQuery({
+    queryClient,
+    instance: dexkitNFTapi,
+    siteId: configResponse.siteId,
+  });
+
   return {
-    props: { ...configResponse },
+    props: { ...configResponse, dehydratedState: dehydrate(queryClient) },
   };
 };
 

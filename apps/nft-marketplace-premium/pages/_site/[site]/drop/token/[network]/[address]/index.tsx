@@ -6,6 +6,8 @@ import {
 import { useRouter } from 'next/router';
 
 import TokenDropSection from '@/modules/wizard/components/sections/TokenDropSection';
+import { dexkitNFTapi } from '@dexkit/ui/constants/api';
+import { netToQuery } from '@dexkit/ui/utils/networks';
 import { Container, Grid, Skeleton } from '@mui/material';
 import { QueryClient, dehydrate } from '@tanstack/react-query';
 import { useWeb3React } from '@web3-react/core';
@@ -104,6 +106,12 @@ export const getStaticProps = async ({
     const configResponse = await getAppConfig(site, 'home');
 
     const queryClient = new QueryClient();
+
+    await netToQuery({
+      instance: dexkitNFTapi,
+      queryClient,
+      siteId: configResponse.siteId,
+    });
 
     return {
       props: { dehydratedState: dehydrate(queryClient), ...configResponse },

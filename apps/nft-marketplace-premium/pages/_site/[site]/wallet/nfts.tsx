@@ -1,4 +1,6 @@
 import WalletAssetsFilter from '@/modules/wallet/components/WalletAssetsFilter';
+import { dexkitNFTapi } from '@dexkit/ui/constants/api';
+import { netToQuery } from '@dexkit/ui/utils/networks';
 import {
   Box,
   Button,
@@ -11,7 +13,11 @@ import {
   Typography,
 } from '@mui/material';
 import Tab from '@mui/material/Tab';
-import { QueryErrorResetBoundary } from '@tanstack/react-query';
+import {
+  QueryClient,
+  QueryErrorResetBoundary,
+  dehydrate,
+} from '@tanstack/react-query';
 import { useWeb3React } from '@web3-react/core';
 import { GetStaticProps, GetStaticPropsContext, NextPage } from 'next';
 import dynamic from 'next/dynamic';
@@ -29,7 +35,7 @@ const ImportAssetDialog = dynamic(
   () =>
     import(
       '../../../../src/modules/orders/components/dialogs/ImportAssetDialog'
-    ),
+    )
 );
 
 function a11yProps(index: number) {
@@ -275,8 +281,16 @@ export const getStaticProps: GetStaticProps = async ({
 
     const configResponse = await getAppConfig(site, 'home');
 
+    const queryClient = new QueryClient();
+
+    await netToQuery({
+      instance: dexkitNFTapi,
+      queryClient,
+      siteId: configResponse.siteId,
+    });
+
     return {
-      props: { ...configResponse },
+      props: { ...configResponse, dehydratedState: dehydrate(queryClient) },
     };
   }
 

@@ -15,13 +15,10 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
-import {
-  NETWORK_EXPLORER,
-  NETWORK_NAME,
-} from "@dexkit/core/constants/networks";
 import { Asset, AssetMetadata } from "@dexkit/core/types/nft";
 import { truncateAddress } from "@dexkit/core/utils";
 import Link from "../../../components/AppLink";
+import { useNetworkMetadata } from "../../../hooks/app";
 import { truncateErc1155TokenId } from "../utils";
 import AssetAttributePaper from "./AssetAttributePaper";
 
@@ -31,6 +28,8 @@ interface Props {
 }
 
 export function AssetDetailsBase({ asset, metadata }: Props) {
+  const { NETWORK_NAME, NETWORK_EXPLORER } = useNetworkMetadata();
+
   return (
     <Stack spacing={1}>
       <Box>

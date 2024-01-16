@@ -18,13 +18,10 @@ import Link from "../../../components/AppLink";
 import Heart from "../../../components/icons/Heart";
 import { useAsset, useAssetMetadata, useFavoriteAssets } from "../../nft/hooks";
 
-import {
-  NETWORK_EXPLORER,
-  NETWORK_SLUG,
-} from "@dexkit/core/constants/networks";
 import { isAddressEqual, truncateAddress } from "@dexkit/core/utils";
 import { getWindowUrl } from "@dexkit/core/utils/browser";
 import ShareDialog from "../../../components/dialogs/ShareDialog";
+import { useNetworkMetadata } from "../../../hooks/app";
 
 interface Props {
   address: string;
@@ -51,6 +48,8 @@ export function OrderPageActions({ address, id, nonce }: Props) {
   const handleCloseShareDialog = () => setOpenShare(false);
 
   const handleOpenShareDialog = () => setOpenShare(true);
+
+  const { NETWORK_EXPLORER, NETWORK_SLUG } = useNetworkMetadata();
 
   return (
     <>

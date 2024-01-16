@@ -12,6 +12,8 @@ import { getAppConfig } from '../../../src/services/app';
 
 import { SectionsRenderer } from '@/modules/wizard/components/sections/SectionsRenderer';
 import { AppPageSection } from '@/modules/wizard/types/section';
+import { dexkitNFTapi } from '@dexkit/ui/constants/api';
+import { netToQuery } from '@dexkit/ui/utils/networks';
 import { GET_ASSETS_ORDERBOOK } from 'src/hooks/nft';
 import { getDKAssetOrderbook } from 'src/services/nft';
 
@@ -41,7 +43,7 @@ export const getStaticProps: GetStaticProps = async ({
       const assetResponse = await getDKAssetOrderbook({ maker });
       await queryClient.prefetchQuery(
         [GET_ASSETS_ORDERBOOK, { maker: maker || null }],
-        async () => assetResponse.data,
+        async () => assetResponse.data
       );
     }
   }
@@ -83,6 +85,12 @@ export const getStaticProps: GetStaticProps = async ({
       }
     }
   }*/
+
+  await netToQuery({
+    instance: dexkitNFTapi,
+    queryClient,
+    siteId: configResponse.siteId,
+  });
 
   return {
     props: {

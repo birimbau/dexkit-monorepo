@@ -2,6 +2,8 @@ import CreateTokenDialog from '@/modules/contract-wizard/components/dialogs/Crea
 import { TokenFormSchema } from '@/modules/contract-wizard/constants/schemas';
 import { useCreateToken } from '@/modules/contract-wizard/hooks';
 import { TokenForm } from '@/modules/contract-wizard/types';
+import { dexkitNFTapi } from '@dexkit/ui/constants/api';
+import { netToQuery } from '@dexkit/ui/utils/networks';
 import {
   Box,
   Button,
@@ -275,6 +277,12 @@ export const getStaticProps: GetStaticProps = async ({
 }: GetStaticPropsContext<Params>) => {
   const queryClient = new QueryClient();
   const configResponse = await getAppConfig(params?.site, 'no-page-defined');
+
+  await netToQuery({
+    instance: dexkitNFTapi,
+    queryClient,
+    siteId: configResponse.siteId,
+  });
 
   return {
     props: {

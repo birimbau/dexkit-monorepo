@@ -29,7 +29,6 @@ import Link from "../../../../components/AppLink";
 
 import { AppCollection } from "../../../../types/config";
 
-import { NETWORK_EXPLORER } from "@dexkit/core/constants/networks";
 import { useDebounce } from "@dexkit/core/hooks/misc";
 import { Asset } from "@dexkit/core/types/nft";
 import { isAddressEqual, truncateAddress } from "@dexkit/core/utils";
@@ -37,6 +36,7 @@ import { ipfsUriToUrl } from "@dexkit/core/utils/ipfs";
 import { ethers } from "ethers";
 import { useSnackbar } from "notistack";
 import * as Yup from "yup";
+import { useNetworkMetadata } from "../../../../hooks/app";
 import {
   useAsset,
   useAssetMetadata,
@@ -249,6 +249,8 @@ export default function ImportAssetDialog({ dialogProps }: Props) {
   const { data: metadata, isLoading: metadataIsLoading } =
     useAssetMetadata(asset);
 
+  const { NETWORK_EXPLORER } = useNetworkMetadata();
+
   return (
     <Dialog {...dialogProps} onClose={handleClose}>
       <AppDialogTitle
@@ -303,9 +305,9 @@ export default function ImportAssetDialog({ dialogProps }: Props) {
                     <FormattedMessage id="owned.by" defaultMessage="Owned by" />
                   </Typography>
                   <Link
-                    href={`${NETWORK_EXPLORER(
-                      asset?.chainId
-                    )}/address/${asset?.owner}`}
+                    href={`${NETWORK_EXPLORER(asset?.chainId)}/address/${
+                      asset?.owner
+                    }`}
                     color="primary"
                     target="_blank"
                   >
