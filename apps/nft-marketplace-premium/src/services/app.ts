@@ -13,7 +13,8 @@ export async function getAppConfig(
 ): Promise<{
   appConfig: AppConfig;
   appNFT?: AssetAPI | null;
-  siteId?: number;
+  siteId?: number,
+  slug?: string
 }> {
   /**/
   if (site === 'boredapes.dexkit.com') {
@@ -50,6 +51,7 @@ export async function getAppConfig(
           appConfig: JSON.parse(configResponse.config) as AppConfig,
           appNFT: configResponse.nft === undefined ? null : configResponse.nft,
           siteId: configResponse?.id,
+          slug: configResponse?.slug
         };
       }
     }
@@ -67,6 +69,7 @@ export async function getAppConfig(
           appConfig: JSON.parse(configResponse.config) as AppConfig,
           appNFT: configResponse.nft === undefined ? null : configResponse.nft,
           siteId: configResponse?.id,
+          slug: configResponse?.slug
         };
       }
     }
@@ -81,7 +84,7 @@ export async function getAppConfig(
 
   if (site?.startsWith('localhost')) {
     const [slug,] = site?.split('.') || [];
-
+    //const slug = 'arbitrum';
     if (slug) {
       const configResponse = (await getConfig({ slug, appPage })).data;
 
@@ -90,6 +93,7 @@ export async function getAppConfig(
           appConfig: JSON.parse(configResponse.config) as AppConfig,
           appNFT: configResponse.nft === undefined ? null : configResponse.nft,
           siteId: configResponse?.id,
+          slug: configResponse?.slug,
         };
       }
     }
@@ -120,6 +124,7 @@ export async function getAppConfig(
       appConfig: JSON.parse(configResponse.config) as AppConfig,
       appNFT: configResponse.nft === undefined ? configResponse.nft : null,
       siteId: configResponse?.id,
+      slug: configResponse?.slug
     };
   }
 
