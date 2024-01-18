@@ -78,6 +78,8 @@ export const CreateAssetOrderContainer = () => {
 
   const { formatMessage } = useIntl();
 
+  const { NETWORK_SLUG, NETWORK_EXPLORER, NETWORK_NAME } = useNetworkMetadata();
+
   const assets = useMemo(() => {
     const favAssets =
       Object.keys(favorites.assets).map((key) => {
@@ -367,8 +369,6 @@ export const CreateAssetOrderContainer = () => {
   const hasChainDiff = useMemo(() => {
     return asset?.chainId !== undefined && asset?.chainId !== chainId;
   }, [asset]);
-
-  const { NETWORK_EXPLORER, NETWORK_NAME, NETWORK_SLUG } = useNetworkMetadata();
 
   return (
     <>

@@ -1,4 +1,6 @@
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import CheckCircle from '@mui/icons-material/CheckCircle';
+import ErrorIcon from '@mui/icons-material/Error';
 import {
   Alert,
   Box,
@@ -18,12 +20,7 @@ import {
 import { FormattedMessage } from 'react-intl';
 import { AppDialogTitle } from 'src/components/AppDialogTitle';
 import Link from 'src/components/Link';
-import {
-  getBlockExplorerUrl,
-  getNetworkSlugFromChainId,
-} from 'src/utils/blockchain';
-import ErrorIcon from '@mui/icons-material/Error';
-import { isCancelledError } from '@tanstack/react-query';
+import { getBlockExplorerUrl } from 'src/utils/blockchain';
 
 interface Props {
   dialogProps: DialogProps;
@@ -57,6 +54,8 @@ export default function CreateCollectionDialog({
       onClose({}, 'backdropClick');
     }
   };
+
+  const { getNetworkSlugFromChainId } = useNetworkMetadata();
 
   return (
     <Dialog {...dialogProps}>

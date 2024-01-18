@@ -1,7 +1,7 @@
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import Container from '@mui/material/Container';
 import type { CellPlugin } from '@react-page/editor';
 import { NETWORKS } from '../../../../../constants/chain';
-import { getNetworkFromName } from '../../../../../utils/blockchain';
 import { CollectionFromApiCard } from '../../../../nft/components/CollectionFromApi';
 import { CollectionAutocomplete } from '../components/CollectionAutocomplete';
 import { ImagePicker } from '../components/ImagePicker';
@@ -17,17 +17,21 @@ type Data = {
 
 // you can pass the shape of the data as the generic type argument
 const CollectionPlugin: CellPlugin<Data> = {
-  Renderer: ({ data }) => (
-    <CollectionFromApiCard
-      chainId={getNetworkFromName(data.network)?.chainId}
-      contractAddress={data.contractAddress}
-      totalSupply={0}
-      backgroundImageUrl={data.backgroundImage}
-      title={data.name}
-      variant={'simple'}
-      disabled={true}
-    />
-  ),
+  Renderer: ({ data }) => {
+    const { getNetworkFromName } = useNetworkMetadata();
+
+    return (
+      <CollectionFromApiCard
+        chainId={getNetworkFromName(data.network)?.chainId}
+        contractAddress={data.contractAddress}
+        totalSupply={0}
+        backgroundImageUrl={data.backgroundImage}
+        title={data.name}
+        variant={'simple'}
+        disabled={true}
+      />
+    );
+  },
   id: 'collection-plugin',
   title: 'Collection Banner',
   description: 'Show a collection banner',

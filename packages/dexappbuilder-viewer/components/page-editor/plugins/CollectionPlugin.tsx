@@ -1,10 +1,14 @@
 import Container from "@mui/material/Container";
 import type { CellPlugin } from "@react-page/editor";
 
-import { NETWORKS, NETWORK_FROM_SLUG } from "@dexkit/core/constants/networks";
+import { NETWORKS } from "@dexkit/core/constants/networks";
+import { useNetworkMetadata } from "@dexkit/ui/hooks/app";
 import { CollectionFromApiCard } from "@dexkit/ui/modules/nft/components";
 import { CollectionAutocomplete } from "../components/CollectionAutocomplete";
 import { ImagePicker } from "../components/ImagePicker";
+
+// TODO: verify this plugin to change strategy to use new network metadata
+
 type Data = {
   image: string;
   name: string;
@@ -17,17 +21,21 @@ type Data = {
 
 // you can pass the shape of the data as the generic type argument
 const CollectionPlugin: CellPlugin<Data> = {
-  Renderer: ({ data }) => (
-    <CollectionFromApiCard
-      chainId={NETWORK_FROM_SLUG(data.network)?.chainId}
-      contractAddress={data.contractAddress}
-      totalSupply={0}
-      backgroundImageUrl={data.backgroundImage}
-      title={data.name}
-      variant={"simple"}
-      disabled={true}
-    />
-  ),
+  Renderer: ({ data }) => {
+    const { NETWORK_FROM_SLUG } = useNetworkMetadata();
+
+    return (
+      <CollectionFromApiCard
+        chainId={NETWORK_FROM_SLUG(data.network)?.chainId}
+        contractAddress={data.contractAddress}
+        totalSupply={0}
+        backgroundImageUrl={data.backgroundImage}
+        title={data.name}
+        variant={"simple"}
+        disabled={true}
+      />
+    );
+  },
   id: "collection-plugin",
   title: "Collection",
   description: "Show a collection",

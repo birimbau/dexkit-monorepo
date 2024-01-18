@@ -5,7 +5,6 @@ import TextField from "@mui/material/TextField";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 
-import { NETWORKS } from "@dexkit/core/constants/networks";
 import { useNetworkMetadata } from "@dexkit/ui/hooks/app";
 import { useSearchAssets } from "@dexkit/ui/modules/nft/hooks";
 import { CollectionUniformItem } from "./CollectionAutocompleteUniform";
@@ -21,6 +20,8 @@ export function SearchNFT(props: Props) {
   const router = useRouter();
   const [search, setSearch] = useState<string>();
   const searchQuery = useSearchAssets(search, collections);
+
+  const { NETWORKS } = useNetworkMetadata();
   const assets =
     searchQuery?.data?.map((value) => {
       return {

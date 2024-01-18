@@ -1,13 +1,10 @@
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import { useQuery } from '@tanstack/react-query';
 import { useMemo } from 'react';
 import { useTokenList } from 'src/hooks/blockchain';
 import { DkApiPlatformCoin } from 'src/types/api';
 import { Token } from 'src/types/blockchain';
-import {
-  getChainIdFromSlug,
-  getNetworkSlugFromChainId,
-  isAddressEqual
-} from 'src/utils/blockchain';
+import { getChainIdFromSlug, isAddressEqual } from 'src/utils/blockchain';
 import { getApiCoinPlatforms, getApiCoins } from '../services';
 
 export function useSearchSwapTokens({
@@ -21,7 +18,7 @@ export function useSearchSwapTokens({
   network?: string;
   excludeNative?: boolean;
   excludeTokenList?: boolean;
-  featuredTokens?: Token[]
+  featuredTokens?: Token[];
 }) {
   const tokensFromList = useTokenList({
     chainId: getChainIdFromSlug(network)?.chainId,
@@ -34,6 +31,8 @@ export function useSearchSwapTokens({
   });
 
   const coinSearchQuery = usePlatformCoinSearch({ keyword, network });
+
+  const { getNetworkSlugFromChainId } = useNetworkMetadata();
 
   const tokens = useMemo(() => {
     if (coinSearchQuery.data) {
@@ -69,8 +68,11 @@ export function useSearchSwapTokens({
 
       return coins.reduce<Token[]>((acc, current) => {
         const found =
-          acc.find((c) => isAddressEqual(c.address, current.address) && c.chainId === current.chainId) !==
-          undefined;
+          acc.find(
+            (c) =>
+              isAddressEqual(c.address, current.address) &&
+              c.chainId === current.chainId
+          ) !== undefined;
 
         if (!found) {
           acc.push(current);

@@ -1,5 +1,6 @@
 import TableSkeleton from '@/modules/nft/components/tables/TableSkeleton';
 import { ChainId } from '@dexkit/core/constants';
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import { Search } from '@mui/icons-material';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import {
@@ -26,10 +27,7 @@ import {
   useHiddenAssets,
 } from '../../../hooks/nft';
 import { Asset } from '../../../types/nft';
-import {
-  getNetworkSlugFromChainId,
-  isAddressEqual,
-} from '../../../utils/blockchain';
+import { isAddressEqual } from '../../../utils/blockchain';
 import { AssetCard } from '../../nft/components/AssetCard';
 import WalletAssetsFilter from './WalletAssetsFilter';
 const EvmTransferNftDialog = dynamic(
@@ -87,6 +85,8 @@ function WalletAssetsSection({
     }
     return [];
   }, [accountAssets?.data]);
+
+  const { getNetworkSlugFromChainId } = useNetworkMetadata();
 
   const filteredAssetList = useMemo(() => {
     return assets

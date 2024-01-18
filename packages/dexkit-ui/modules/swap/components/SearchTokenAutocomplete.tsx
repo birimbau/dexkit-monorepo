@@ -1,4 +1,3 @@
-import { NETWORKS } from "@dexkit/core/constants/networks";
 import { TokenWhitelabelApp } from "@dexkit/core/types";
 import { CircularProgress, Stack } from "@mui/material";
 import Autocomplete from "@mui/material/Autocomplete";
@@ -28,6 +27,8 @@ export function SearchTokenAutocomplete(props: Props) {
     featuredTokens,
   });
   const formValue = data;
+
+  const { NETWORKS } = useNetworkMetadata();
 
   const assets = useMemo(() => {
     return (

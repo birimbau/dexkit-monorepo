@@ -1,10 +1,10 @@
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import { CircularProgress, Stack } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import { CellPluginComponentProps } from '@react-page/editor';
 import React, { useState } from 'react';
-import { NETWORKS } from '../../../../../constants/chain';
 import { useSearchAssets } from '../../../../../hooks/nft';
 import { getChainName } from '../../../../../utils/blockchain';
 
@@ -17,6 +17,9 @@ export function SearchNFTAutocomplete(props: Props) {
   const [search, setSearch] = useState<string>();
   const searchQuery = useSearchAssets(search);
   const formValue = data.data;
+
+  const { NETWORKS } = useNetworkMetadata();
+
   const assets =
     searchQuery?.data?.map((value) => {
       return {

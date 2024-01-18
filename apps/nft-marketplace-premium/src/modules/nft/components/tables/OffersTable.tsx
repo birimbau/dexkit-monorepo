@@ -8,7 +8,6 @@ import {
   ListItemText,
   Menu,
   MenuItem,
-  Paper,
   Stack,
   Table,
   TableBody,
@@ -27,15 +26,12 @@ import { FormattedMessage } from 'react-intl';
 import { TraderOrderStatus } from '../../../../constants/enum';
 import { useCurrency } from '../../../../hooks/currency';
 import { usePositionPaginator } from '../../../../hooks/misc';
-import { useAsset, useAssetBalance } from '../../../../hooks/nft';
-import { useOrderBook } from '../../../../hooks/nft';
+import { useAsset, useAssetBalance, useOrderBook } from '../../../../hooks/nft';
 import { SwapApiOrder } from '../../../../types/nft';
-import {
-  getNetworkSlugFromChainId,
-  isAddressEqual,
-} from '../../../../utils/blockchain';
+import { isAddressEqual } from '../../../../utils/blockchain';
 import { isERC1155Owner } from '../../../../utils/nfts';
 
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import OffersTableRow from './OffersTableRow';
 
 interface Props {
@@ -96,6 +92,8 @@ export function OffersTable({
       handleCloseMenu();
     }
   };
+
+  const { getNetworkSlugFromChainId } = useNetworkMetadata();
 
   const handleViewOrder = () => {
     router.push(

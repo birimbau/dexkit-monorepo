@@ -1,4 +1,3 @@
-import { NETWORK_FROM_SLUG } from '@dexkit/core/constants/networks';
 import {
   Box,
   Button,
@@ -21,6 +20,7 @@ import { CollectionHeader } from '@/modules/nft/components/CollectionHeader';
 import { CollectionTraits } from '@/modules/nft/components/CollectionTraits';
 import { TableSkeleton } from '@/modules/nft/components/tables/TableSkeleton';
 import LazyTextField from '@dexkit/ui/components/LazyTextField';
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import Search from '@mui/icons-material/Search';
 import { ThirdwebSDKProvider, useContractType } from '@thirdweb-dev/react';
@@ -41,13 +41,15 @@ export interface CollectionSectionProps {
 }
 
 function CollectionSection({ section }: CollectionSectionProps) {
+  const { NETWORK_FROM_SLUG } = useNetworkMetadata();
+
   const chainId = NETWORK_FROM_SLUG(section.config.network as string)?.chainId;
 
   const { hideDrops, hideFilters, hideHeader, hideAssets } = section.config;
 
   const { data: collection, isError } = useCollection(
     section.config.address,
-    chainId,
+    chainId
   );
 
   const [search, setSearch] = useState('');
@@ -120,7 +122,7 @@ function CollectionSection({ section }: CollectionSectionProps) {
   };
 
   const { data: contractType } = useContractType(
-    section.config.address as string,
+    section.config.address as string
   );
 
   const isDrop = useMemo(() => {

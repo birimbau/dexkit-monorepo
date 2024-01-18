@@ -20,8 +20,8 @@ import CloseCircle from '../../../components/icons/CloseCircle';
 import Funnel from '../../../components/icons/Filter';
 import { useAccountAssetsBalance, useHiddenAssets } from '../../../hooks/nft';
 import { Asset } from '../../../types/nft';
-import { getNetworkSlugFromChainId } from '../../../utils/blockchain';
 
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import { AssetCard } from '../../nft/components/AssetCard';
 import WalletAssetsFilter from './WalletAssetsFilter';
 
@@ -61,6 +61,8 @@ function HiddenAssetsSection({ onOpenFilters, filters, setFilters }: Props) {
     return [];
   }, [accountAssets?.data]);
 
+  const { getNetworkSlugFromChainId } = useNetworkMetadata();
+
   const filteredAssetList = useMemo(() => {
     return assetList
       .filter(isHidden)
@@ -76,7 +78,7 @@ function HiddenAssetsSection({ onOpenFilters, filters, setFilters }: Props) {
       .filter((asset) => {
         if (filters?.networks && filters?.networks.length) {
           return filters.networks.includes(
-            getNetworkSlugFromChainId(asset?.chainId) || '',
+            getNetworkSlugFromChainId(asset?.chainId) || ''
           );
         }
 

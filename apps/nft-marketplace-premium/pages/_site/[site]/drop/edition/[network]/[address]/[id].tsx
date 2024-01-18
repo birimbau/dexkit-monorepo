@@ -10,12 +10,10 @@ import AssetLeftSection from '@/modules/nft/components/AssetLeftSection';
 import { DropEditionListSection } from '@/modules/wizard/components/sections/DropEditionListSection';
 import EditionDropSection from '@/modules/wizard/components/sections/EditionDropSection';
 import { ChainId } from '@dexkit/core/constants';
-import {
-  NETWORK_FROM_SLUG,
-  NETWORK_SLUG,
-} from '@dexkit/core/constants/networks';
+import { NETWORK_FROM_SLUG } from '@dexkit/core/constants/networks';
 import { ipfsUriToUrl, truncateAddress } from '@dexkit/core/utils';
 import { dexkitNFTapi } from '@dexkit/ui/constants/api';
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import { useAsset, useAssetMetadata } from '@dexkit/ui/modules/nft/hooks';
 import { truncateErc1155TokenId } from '@dexkit/ui/modules/nft/utils';
 import { netToQuery } from '@dexkit/ui/utils/networks';
@@ -42,6 +40,8 @@ const AssetDetailPage: NextPage = () => {
   const { data: asset, isLoading } = useAsset(address as string, id as string);
 
   const { data: metadata } = useAssetMetadata(asset);
+
+  const { NETWORK_SLUG } = useNetworkMetadata();
 
   return (
     <>

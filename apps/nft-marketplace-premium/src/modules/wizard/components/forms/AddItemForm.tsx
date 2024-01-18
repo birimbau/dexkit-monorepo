@@ -32,8 +32,8 @@ import { ethers } from 'ethers';
 import * as Yup from 'yup';
 
 import { NETWORKS } from '@dexkit/core/constants/networks';
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import ImageIcon from '@mui/icons-material/Image';
-import { getNetworks } from 'src/utils/blockchain';
 import MediaDialog from '../../../../components/mediaDialog';
 import { Network } from '../../../../types/chains';
 import { ipfsUriToUrl } from '../../../../utils/ipfs';
@@ -111,7 +111,7 @@ export default function AddItemForm({ item, onCancel, onSubmit }: Props) {
 
   const handleSubmitAsset = (
     values: AssetItemType,
-    helpers: FormikHelpers<AssetItemType>,
+    helpers: FormikHelpers<AssetItemType>
   ) => {
     onSubmit(values);
   };
@@ -122,7 +122,7 @@ export default function AddItemForm({ item, onCancel, onSubmit }: Props) {
 
   const handleSubmitCollection = (
     values: CollectionItemType,
-    helpers: FormikHelpers<CollectionItemType>,
+    helpers: FormikHelpers<CollectionItemType>
   ) => {
     onSubmit(values);
   };
@@ -198,7 +198,7 @@ export default function AddItemForm({ item, onCancel, onSubmit }: Props) {
 
   const handleChangeFeatured = (
     event: ChangeEvent<HTMLInputElement>,
-    checked: boolean,
+    checked: boolean
   ) => {
     collectionForm.setFieldValue('featured', checked);
   };
@@ -208,6 +208,8 @@ export default function AddItemForm({ item, onCancel, onSubmit }: Props) {
     assetForm.resetForm();
     collectionForm.resetForm();
   };
+
+  const { getNetworks } = useNetworkMetadata();
 
   return (
     <Grid container spacing={2}>
@@ -271,7 +273,7 @@ export default function AddItemForm({ item, onCancel, onSubmit }: Props) {
                       >
                         <Avatar
                           src={ipfsUriToUrl(
-                            NETWORKS[assetForm.values.chainId]?.imageUrl || '',
+                            NETWORKS[assetForm.values.chainId]?.imageUrl || ''
                           )}
                           style={{ width: 'auto', height: '1rem' }}
                         />
@@ -306,7 +308,7 @@ export default function AddItemForm({ item, onCancel, onSubmit }: Props) {
                         </ListItemIcon>
                         <ListItemText primary={network?.name} />
                       </MenuItem>
-                    ),
+                    )
                   )}
                 </Select>
               </FormControl>
@@ -422,7 +424,7 @@ export default function AddItemForm({ item, onCancel, onSubmit }: Props) {
                         <Avatar
                           src={ipfsUriToUrl(
                             NETWORKS[collectionForm.values.chainId]?.imageUrl ||
-                              '',
+                              ''
                           )}
                           style={{ width: 'auto', height: '1rem' }}
                         />
@@ -457,7 +459,7 @@ export default function AddItemForm({ item, onCancel, onSubmit }: Props) {
                         </ListItemIcon>
                         <ListItemText primary={network.name} />
                       </MenuItem>
-                    ),
+                    )
                   )}
                 </Select>
               </FormControl>

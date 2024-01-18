@@ -13,11 +13,11 @@ import moment from 'moment';
 import { FormattedMessage, FormattedNumber } from 'react-intl';
 import {
   getBlockExplorerUrl,
-  getNetworkSlugFromChainId,
   isAddressEqual,
   truncateAddress,
 } from '../../../../utils/blockchain';
 
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import { memo } from 'react';
 import Link from '../../../../components/Link';
 import MomentFromNow from '../../../../components/MomentFromNow';
@@ -35,6 +35,8 @@ interface Props {
 }
 
 export function ListingsTableRowRarible({ asset, account }: Props) {
+  const { getNetworkSlugFromChainId } = useNetworkMetadata();
+
   const network = getNetworkSlugFromChainId(asset?.chainId);
   const { data } = useBestSellOrderAssetRari(
     network,

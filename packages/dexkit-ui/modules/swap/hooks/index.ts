@@ -1,19 +1,26 @@
 import { ChainId } from "@dexkit/core/constants/enums";
-import { NETWORK_FROM_SLUG, NETWORK_SLUG } from "@dexkit/core/constants/networks";
+import { NETWORK_SLUG } from "@dexkit/core/constants/networks";
 import { TokenWhitelabelApp } from "@dexkit/core/types";
 import { isAddressEqual } from "@dexkit/core/utils";
 import { DkApiPlatformCoin } from "@dexkit/widgets/src/types/api";
-import { NotificationCallbackParams, RenderOptions } from "@dexkit/widgets/src/widgets/swap/types";
+import {
+  NotificationCallbackParams,
+  RenderOptions,
+} from "@dexkit/widgets/src/widgets/swap/types";
 import { useQuery } from "@tanstack/react-query";
 import { useWeb3React } from "@web3-react/core";
 import { ethers } from "ethers";
 import { useAtom } from "jotai";
 import { useCallback, useMemo } from "react";
-import { useAppConfig, useConnectWalletDialog, useDexKitContext } from "../../../hooks";
+import {
+  useAppConfig,
+  useConnectWalletDialog,
+  useDexKitContext,
+} from "../../../hooks";
+import { useNetworkMetadata } from "../../../hooks/app";
 import { useTokenList } from "../../../hooks/blockchain";
 import { getApiCoinPlatforms } from "../services";
 import { isAutoSlippageAtom, maxSlippageAtom } from "../state";
-
 
 export function useSwapState() {
   const { chainId } = useWeb3React();
@@ -54,10 +61,10 @@ export function useSwapState() {
       disableNotificationsButton: true,
       configsByChain: {},
       featuredTokens,
-      currency: 'usd',
+      currency: "usd",
       defaultChainId: chainId || ChainId.Ethereum,
-      zeroExApiKey: process.env.NEXT_PUBLIC_ZRX_API_KEY || '',
-      transakApiKey: process.env.NEXT_PUBLIC_TRANSAK_API_KEY || '',
+      zeroExApiKey: process.env.NEXT_PUBLIC_ZRX_API_KEY || "",
+      transakApiKey: process.env.NEXT_PUBLIC_TRANSAK_API_KEY || "",
     } as RenderOptions;
   }, [featuredTokens, chainId]);
 
@@ -65,11 +72,11 @@ export function useSwapState() {
 
   const onNotification = useCallback(
     ({ title, hash, chainId, params }: NotificationCallbackParams) => {
-      if (params.type === 'swap') {
+      if (params.type === "swap") {
         createNotification({
-          type: 'transaction',
-          subtype: 'swap',
-          icon: 'swap_vert',
+          type: "transaction",
+          subtype: "swap",
+          icon: "swap_vert",
           values: {
             sellTokenSymbol: params.sellToken.symbol.toUpperCase(),
             sellAmount: ethers.utils.formatUnits(
@@ -87,11 +94,11 @@ export function useSwapState() {
             chainId,
           },
         });
-      } else if (params.type === 'approve') {
+      } else if (params.type === "approve") {
         createNotification({
-          type: 'transaction',
-          subtype: 'approve',
-          icon: 'check_circle',
+          type: "transaction",
+          subtype: "approve",
+          icon: "check_circle",
           values: {
             symbol: params.token.symbol.toUpperCase(),
             name: params.token.name,
@@ -140,8 +147,10 @@ export function useSearchSwapTokens({
   network?: string;
   excludeNative?: boolean;
   excludeTokenList?: boolean;
-  featuredTokens?: TokenWhitelabelApp[]
+  featuredTokens?: TokenWhitelabelApp[];
 }) {
+  const { NETWORK_FROM_SLUG } = useNetworkMetadata();
+
   const tokensFromList = useTokenList({
     chainId: NETWORK_FROM_SLUG(network)?.chainId,
     includeNative: excludeNative ? false : true,
@@ -188,8 +197,11 @@ export function useSearchSwapTokens({
 
       return coins.reduce<TokenWhitelabelApp[]>((acc, current) => {
         const found =
-          acc.find((c) => isAddressEqual(c.address, current.address) && c.chainId === current.chainId) !==
-          undefined;
+          acc.find(
+            (c) =>
+              isAddressEqual(c.address, current.address) &&
+              c.chainId === current.chainId
+          ) !== undefined;
 
         if (!found) {
           acc.push(current);
@@ -216,8 +228,7 @@ export function useSearchSwapTokens({
   return { tokens, isLoading: coinSearchQuery.isLoading };
 }
 
-
-export const COIN_PLATFORM_SEARCH_QUERY = 'COIN_PLATFORM_SEARCH_QUERY';
+export const COIN_PLATFORM_SEARCH_QUERY = "COIN_PLATFORM_SEARCH_QUERY";
 
 export function usePlatformCoinSearch({
   keyword,

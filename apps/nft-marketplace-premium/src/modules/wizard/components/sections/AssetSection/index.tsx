@@ -1,7 +1,7 @@
 import AssetLeftSection from '@/modules/nft/components/AssetLeftSection';
 import AssetOptionsProvider from '@/modules/nft/components/AssetOptionsProvider';
 import AssetRightSection from '@/modules/nft/components/AssetRightSection';
-import { NETWORK_FROM_SLUG } from '@dexkit/core/constants/networks';
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import { hexToString } from '@dexkit/ui/utils';
 import { useAsyncMemo } from '@dexkit/widgets/src/hooks';
 import { Alert, Box, Grid, NoSsr, Typography } from '@mui/material';
@@ -38,7 +38,7 @@ function DropWrapper({ tokenId, address, network }: DropWrapperProps) {
       }
     },
     false,
-    [contract],
+    [contract]
   );
 
   if (isDrop) {
@@ -79,6 +79,8 @@ export default function AssetSection({ section }: AssetSectionProps) {
     section.config;
 
   const queryClient = useQueryClient();
+
+  const { NETWORK_FROM_SLUG } = useNetworkMetadata();
 
   useEffect(() => {
     const chainId = NETWORK_FROM_SLUG(network)?.chainId;

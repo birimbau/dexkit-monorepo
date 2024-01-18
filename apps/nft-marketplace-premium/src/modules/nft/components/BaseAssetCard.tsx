@@ -1,3 +1,4 @@
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import SendIcon from '@mui/icons-material/Send';
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -22,16 +23,12 @@ import { useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import Link from '../../../components/Link';
 import { Asset, AssetMetadata, OrderBookItem } from '../../../types/nft';
-import {
-  getChainLogoImage,
-  getChainName,
-  getNetworkSlugFromChainId,
-} from '../../../utils/blockchain';
+import { getChainLogoImage, getChainName } from '../../../utils/blockchain';
 import { truncateErc1155TokenId } from '../../../utils/nfts';
 import { AssetBuyOrder } from './AssetBuyOrder';
 import { AssetMedia } from './AssetMedia';
 const AssetDetailsDialog = dynamic(
-  () => import('./dialogs/AssetDetailsDialog'),
+  () => import('./dialogs/AssetDetailsDialog')
 );
 interface Props {
   asset?: Asset;
@@ -125,6 +122,8 @@ export function BaseAssetCard({
     </>
   );
 
+  const { getNetworkSlugFromChainId } = useNetworkMetadata();
+
   return (
     <Card sx={{ position: 'relative', heigh: '100%', borderRadius: '12px' }}>
       {onClickCardAction ? (
@@ -151,9 +150,9 @@ export function BaseAssetCard({
         <CardActionArea
           LinkComponent={Link}
           disabled={disabled}
-          href={`/asset/${getNetworkSlugFromChainId(
-            asset?.chainId,
-          )}/${asset?.contractAddress}/${asset?.id}`}
+          href={`/asset/${getNetworkSlugFromChainId(asset?.chainId)}/${
+            asset?.contractAddress
+          }/${asset?.id}`}
         >
           {assetDetails}
         </CardActionArea>

@@ -89,16 +89,14 @@ function OrderRightSection({ order }: Props) {
   }, [token, order]);
 
   const totalInCurrency = useMemo(() => {
-    if (token && currency && order) {
+    if (token && currency?.currency && order) {
       if (coinPricesQuery?.data) {
         let ratio = 0;
 
         const tokenData = coinPricesQuery.data[token.address.toLowerCase()];
 
-        // @ts-ignore FIX: fix this
-        if (tokenData && currency in tokenData) {
-          // @ts-ignore FIX: fix this
-          ratio = tokenData[currency];
+        if (tokenData && currency?.currency in tokenData) {
+          ratio = tokenData[currency?.currency];
         }
 
         if (ratio) {
@@ -541,8 +539,7 @@ function OrderRightSection({ order }: Props) {
             </Stack>
             <Chip
               size="small"
-              // @ts-ignore
-              label={`${totalInCurrency} ${currency.toUpperCase()}`}
+              label={`${totalInCurrency} ${currency.currency.toUpperCase()}`}
             />
           </Stack>
         </Stack>

@@ -11,8 +11,8 @@ import { ContractNftDropContainer } from './ContractNftDropContainer';
 import ContractStakeErc20Container from './ContractStakeErc20Container';
 import { ContractTokenDropContainer } from './ContractTokenDropContainer';
 
-import { NETWORK_FROM_SLUG } from '@dexkit/core/constants/networks';
 import { useSwitchNetworkMutation } from '@dexkit/ui';
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import { hexToString } from '@dexkit/ui/utils';
 import { Alert, Button, CircularProgress } from '@mui/material';
 import { useWeb3React } from '@web3-react/core';
@@ -82,6 +82,8 @@ export function ContractContainer({ address, network }: Props) {
 
   const { chainId: providerChainId } = useWeb3React();
   const switchNetwork = useSwitchNetworkMutation();
+
+  const { NETWORK_FROM_SLUG } = useNetworkMetadata();
 
   const chainId = NETWORK_FROM_SLUG(network)?.chainId;
 

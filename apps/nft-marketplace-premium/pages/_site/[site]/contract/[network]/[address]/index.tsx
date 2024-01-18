@@ -1,6 +1,6 @@
 import { ContractContainer } from '@/modules/contract-wizard/components/containers/ContractContainer';
-import { NETWORK_FROM_SLUG } from '@dexkit/core/constants/networks';
 import { dexkitNFTapi } from '@dexkit/ui/constants/api';
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import { netToQuery } from '@dexkit/ui/utils/networks';
 import Container from '@mui/material/Container';
 import { QueryClient, dehydrate } from '@tanstack/react-query';
@@ -18,6 +18,9 @@ export default function ContractPage() {
   const { address, network } = query;
 
   const { provider } = useWeb3React();
+
+  const { NETWORK_FROM_SLUG } = useNetworkMetadata();
+
   return (
     <ThirdwebSDKProvider
       clientId={THIRDWEB_CLIENT_ID}

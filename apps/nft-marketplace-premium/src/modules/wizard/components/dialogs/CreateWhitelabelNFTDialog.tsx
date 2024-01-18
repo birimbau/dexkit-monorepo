@@ -1,3 +1,4 @@
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import CheckCircle from '@mui/icons-material/CheckCircle';
 import ErrorIcon from '@mui/icons-material/Error';
 import {
@@ -20,7 +21,6 @@ import { FormattedMessage } from 'react-intl';
 import { AppDialogTitle } from 'src/components/AppDialogTitle';
 import Link from 'src/components/Link';
 import { AssetAPI } from 'src/types/nft';
-import { getNetworkSlugFromChainId } from 'src/utils/blockchain';
 
 interface Props {
   dialogProps: DialogProps;
@@ -44,6 +44,8 @@ export default function CreateWhitelabelDialog({
       onClose({}, 'backdropClick');
     }
   };
+
+  const { getNetworkSlugFromChainId } = useNetworkMetadata();
 
   return (
     <Dialog {...dialogProps}>

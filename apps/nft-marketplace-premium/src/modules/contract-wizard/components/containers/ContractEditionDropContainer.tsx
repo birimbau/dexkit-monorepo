@@ -1,4 +1,4 @@
-import { NETWORK_FROM_SLUG } from '@dexkit/core/constants/networks';
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import Search from '@mui/icons-material/Search';
 import { Tab, Tabs } from '@mui/material';
 import Button from '@mui/material/Button';
@@ -23,9 +23,12 @@ interface Props {
 
 export function ContractEditionDropContainer({ address, network }: Props) {
   const [openMintDialog, setOpenMintDialog] = useState(false);
+
+  const { NETWORK_FROM_SLUG } = useNetworkMetadata();
+
   const { data: collection } = useCollection(
     address as string,
-    NETWORK_FROM_SLUG(network)?.chainId,
+    NETWORK_FROM_SLUG(network)?.chainId
   );
   const [search, setSearch] = useState<string>();
 

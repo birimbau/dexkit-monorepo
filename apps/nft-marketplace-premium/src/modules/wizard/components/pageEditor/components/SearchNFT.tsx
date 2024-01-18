@@ -1,10 +1,10 @@
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import { CircularProgress } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
-import { NETWORKS } from '../../../../../constants/chain';
 import { useSearchAssets } from '../../../../../hooks/nft';
 import { getChainName } from '../../../../../utils/blockchain';
 import { CollectionUniformItem } from './CollectionAutocompleteUniform';
@@ -20,6 +20,9 @@ export function SearchNFT(props: Props) {
   const router = useRouter();
   const [search, setSearch] = useState<string>();
   const searchQuery = useSearchAssets(search, collections);
+
+  const { NETWORKS } = useNetworkMetadata();
+
   const assets =
     searchQuery?.data?.map((value) => {
       return {

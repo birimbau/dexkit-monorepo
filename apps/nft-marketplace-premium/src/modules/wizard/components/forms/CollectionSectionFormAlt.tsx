@@ -1,9 +1,6 @@
-import {
-  NETWORKS,
-  NETWORK_FROM_SLUG,
-  NETWORK_SLUG,
-} from '@dexkit/core/constants/networks';
+import { NETWORKS, NETWORK_SLUG } from '@dexkit/core/constants/networks';
 import { ipfsUriToUrl, parseChainId } from '@dexkit/core/utils';
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import { hexToString } from '@dexkit/ui/utils';
 import { useAsyncMemo } from '@dexkit/widgets/src/hooks';
 import ExpandMore from '@mui/icons-material/ExpandMore';
@@ -56,7 +53,7 @@ function DropCheckbox({ address, network }: DropCheckboxProps) {
               type: 'function',
             },
           ],
-          getProviderBySlug(network),
+          getProviderBySlug(network)
         );
 
         try {
@@ -71,7 +68,7 @@ function DropCheckbox({ address, network }: DropCheckboxProps) {
       return '';
     },
     '',
-    [address, network],
+    [address, network]
   );
 
   const isDrop = useMemo(() => {
@@ -124,7 +121,7 @@ export default function CollectionSectionFormAlt({
 
   const networks = useMemo(() => {
     return Object.keys(NETWORKS).map(
-      (key: string) => NETWORKS[parseChainId(key)],
+      (key: string) => NETWORKS[parseChainId(key)]
     );
   }, []);
 
@@ -133,6 +130,8 @@ export default function CollectionSectionFormAlt({
   const handleChangeTab = (e: SyntheticEvent, value: string) => {
     setTab(value);
   };
+
+  const { NETWORK_FROM_SLUG } = useNetworkMetadata();
 
   return (
     <Formik
@@ -196,7 +195,7 @@ export default function CollectionSectionFormAlt({
                             <Avatar
                               src={ipfsUriToUrl(
                                 networks.find((n) => n.slug === value)
-                                  ?.imageUrl || '',
+                                  ?.imageUrl || ''
                               )}
                               style={{ width: 'auto', height: '1rem' }}
                             />

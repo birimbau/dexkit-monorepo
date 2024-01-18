@@ -1,3 +1,4 @@
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import Launch from '@mui/icons-material/Launch';
 import {
   Box,
@@ -12,9 +13,8 @@ import {
 import { PostOrderResponsePayload } from '@traderxyz/nft-swap-sdk/dist/sdk/v4/orderbook';
 import { FormattedMessage } from 'react-intl';
 import { AppDialogTitle } from '../../../../components/AppDialogTitle';
-import TickCircle from '../../../../components/icons/TickCircle';
 import Link from '../../../../components/Link';
-import { getNetworkSlugFromChainId } from '../../../../utils/blockchain';
+import TickCircle from '../../../../components/icons/TickCircle';
 
 interface Props {
   dialogProps: DialogProps;
@@ -29,6 +29,8 @@ export default function OrderCreatedDialog({ dialogProps, order }: Props) {
       onClose({}, 'backdropClick');
     }
   };
+
+  const { getNetworkSlugFromChainId } = useNetworkMetadata();
 
   return (
     <Dialog {...dialogProps} onClose={handleClose}>

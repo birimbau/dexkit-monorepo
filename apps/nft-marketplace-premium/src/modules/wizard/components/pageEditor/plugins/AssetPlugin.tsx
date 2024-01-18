@@ -1,8 +1,8 @@
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import { Container } from '@mui/material';
 import Box from '@mui/material/Box';
 import type { CellPlugin } from '@react-page/editor';
 import { NETWORKS } from '../../../../../constants/chain';
-import { getNetworkFromName } from '../../../../../utils/blockchain';
 import AssetFromApi from '../../../../nft/components/AssetFromApi';
 import { SearchNFTAutocomplete } from '../components/SearchNFTAutocomplete';
 import { SingleNFTAutocomplete } from '../components/SingleNFTAutocomplete';
@@ -14,19 +14,23 @@ type Data = {
 };
 // you can pass the shape of the data as the generic type argument
 const AssetPlugin: CellPlugin<Data> = {
-  Renderer: ({ data }) => (
-    <Box
-      sx={{
-        maxWidth: 400,
-      }}
-    >
-      <AssetFromApi
-        tokenId={String(data.id)}
-        contractAddress={data.contractAddress}
-        chainId={getNetworkFromName(data.network)?.chainId as number}
-      />
-    </Box>
-  ),
+  Renderer: ({ data }) => {
+    const { getNetworkFromName } = useNetworkMetadata();
+
+    return (
+      <Box
+        sx={{
+          maxWidth: 400,
+        }}
+      >
+        <AssetFromApi
+          tokenId={String(data.id)}
+          contractAddress={data.contractAddress}
+          chainId={getNetworkFromName(data.network)?.chainId as number}
+        />
+      </Box>
+    );
+  },
   id: 'nft-plugin',
   title: 'NFT',
   description: 'Show a single nft',

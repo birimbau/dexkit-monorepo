@@ -1,3 +1,4 @@
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import {
   Avatar,
   Chip,
@@ -16,10 +17,7 @@ import { useTokenList } from '../../../hooks/blockchain';
 import { useCoinPricesQuery, useCurrency } from '../../../hooks/currency';
 import { OrderBookItem } from '../../../types/nft';
 import { OrderDirection } from '../../../types/orderbook';
-import {
-  getNetworkSlugFromChainId,
-  isAddressEqual,
-} from '../../../utils/blockchain';
+import { isAddressEqual } from '../../../utils/blockchain';
 
 interface Props {
   order: OrderBookItem;
@@ -90,6 +88,8 @@ export function WalletOrdersTableRow({ order }: Props) {
       }
     }
   }, [token, coinPricesQuery, currency, order]);
+
+  const { getNetworkSlugFromChainId } = useNetworkMetadata();
 
   return (
     <TableRow>

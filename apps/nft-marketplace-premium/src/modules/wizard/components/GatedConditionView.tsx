@@ -1,3 +1,4 @@
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import ShieldIcon from '@mui/icons-material/Shield';
 import {
@@ -14,7 +15,6 @@ import {
 import Image from 'next/image';
 import { FormattedMessage } from 'react-intl';
 import { LoginAppButton } from 'src/components/LoginAppButton';
-import { getNetworkSlugFromChainId } from 'src/utils/blockchain';
 import { GatedCondition, GatedPageLayout } from '../types';
 function ShowBalance({ balance }: { balance: string }) {
   return (
@@ -45,6 +45,8 @@ export function GatedConditionView({
   balances?: { [key: number]: string };
 }) {
   const theme = useTheme();
+
+  const { getNetworkSlugFromChainId } = useNetworkMetadata();
 
   return (
     <Container>
@@ -132,7 +134,7 @@ export function GatedConditionView({
                         :
                         <Typography>
                           {getNetworkSlugFromChainId(
-                            condition.chainId,
+                            condition.chainId
                           )?.toUpperCase()}
                         </Typography>{' '}
                         - {condition.symbol}
@@ -164,7 +166,7 @@ export function GatedConditionView({
                         </Typography>
                         <Typography>
                           {getNetworkSlugFromChainId(
-                            condition.chainId,
+                            condition.chainId
                           )?.toUpperCase()}{' '}
                           - {condition.symbol}
                         </Typography>

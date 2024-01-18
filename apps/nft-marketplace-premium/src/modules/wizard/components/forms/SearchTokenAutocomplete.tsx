@@ -1,4 +1,4 @@
-import { NETWORKS } from '@dexkit/core/constants/networks';
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import { Stack } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
@@ -18,6 +18,8 @@ interface Props {
 
 export function SearchTokenAutocomplete(props: Props) {
   const { data, label, onChange, chainId, disabled, tokens } = props;
+
+  const { NETWORKS } = useNetworkMetadata();
 
   const [search, setSearch] = useState<string>();
 

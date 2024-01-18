@@ -1,11 +1,8 @@
 import { Field, Formik } from 'formik';
 
-import {
-  NETWORKS,
-  NETWORK_FROM_SLUG,
-  NETWORK_SLUG,
-} from '@dexkit/core/constants/networks';
+import { NETWORKS, NETWORK_SLUG } from '@dexkit/core/constants/networks';
 import { ipfsUriToUrl, parseChainId } from '@dexkit/core/utils';
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import {
   Avatar,
   Box,
@@ -68,6 +65,8 @@ export default function AssetSectionForm({
   const { siteId } = useContext(SiteContext);
 
   const darkblockQuery = useIntegrationDataQuery({ type: 'darkblock', siteId });
+
+  const { NETWORK_FROM_SLUG } = useNetworkMetadata();
 
   return darkblockQuery.isFetched ? (
     <Formik

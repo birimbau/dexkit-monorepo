@@ -1,3 +1,4 @@
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import CheckCircle from '@mui/icons-material/CheckCircle';
 import ErrorIcon from '@mui/icons-material/Error';
 import {
@@ -19,10 +20,7 @@ import {
 import { FormattedMessage } from 'react-intl';
 import { AppDialogTitle } from 'src/components/AppDialogTitle';
 import Link from 'src/components/Link';
-import {
-  getBlockExplorerUrl,
-  getNetworkSlugFromChainId,
-} from 'src/utils/blockchain';
+import { getBlockExplorerUrl } from 'src/utils/blockchain';
 
 interface Props {
   dialogProps: DialogProps;
@@ -63,6 +61,8 @@ export default function CreateAssetDialog({
       onClose({}, 'backdropClick');
     }
   };
+
+  const { getNetworkSlugFromChainId } = useNetworkMetadata();
 
   return (
     <Dialog {...dialogProps}>
@@ -301,10 +301,10 @@ export default function CreateAssetDialog({
                   href={
                     useContractURL
                       ? `/contract/${getNetworkSlugFromChainId(
-                          chainId,
+                          chainId
                         )}/${contractAddress}`
                       : `/contract-wizard/collection/${getNetworkSlugFromChainId(
-                          chainId,
+                          chainId
                         )}/${contractAddress}`
                   }
                 >

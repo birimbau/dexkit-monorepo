@@ -1,3 +1,4 @@
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { Button, MenuItem, Stack, Typography } from '@mui/material';
@@ -17,7 +18,6 @@ import Wallet from 'src/components/icons/Wallet';
 import Link from 'src/components/Link';
 import { useConnectWalletDialog } from 'src/hooks/app';
 import { useAccountContractCollection } from 'src/hooks/nft';
-import { getNetworkFromSlug } from 'src/utils/blockchain';
 import { truncateText } from 'src/utils/text';
 
 interface Props {
@@ -87,6 +87,8 @@ export default function ContractCollectionList() {
   const handleOpenConnectWalletDialog = () => {
     connectWalletDialog.setOpen(true);
   };
+
+  const { getNetworkFromSlug } = useNetworkMetadata();
 
   return (
     <List sx={{ width: '100%' }}>

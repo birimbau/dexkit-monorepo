@@ -1,4 +1,4 @@
-import { NETWORK_FROM_SLUG } from '@dexkit/core/constants/networks';
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import Delete from '@mui/icons-material/Delete';
 import {
   Button,
@@ -43,6 +43,8 @@ export default function CollectionItemsCard({
       confirmCallback();
     }
   };
+
+  const { NETWORK_FROM_SLUG } = useNetworkMetadata();
 
   return (
     <>

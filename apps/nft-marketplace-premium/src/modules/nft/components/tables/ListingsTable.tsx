@@ -14,10 +14,7 @@ import {
   Typography,
 } from '@mui/material';
 import { ethers } from 'ethers';
-import {
-  getNetworkSlugFromChainId,
-  isAddressEqual,
-} from '../../../../utils/blockchain';
+import { isAddressEqual } from '../../../../utils/blockchain';
 
 import { useWeb3React } from '@web3-react/core';
 import { FormattedMessage } from 'react-intl';
@@ -30,6 +27,7 @@ import {
 import { SwapApiOrder } from '../../../../types/nft';
 import ListingsTableRow from './ListingsTableRow';
 
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import { Share, Visibility } from '@mui/icons-material';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
@@ -57,6 +55,8 @@ export function ListingsTable({
   onShare,
 }: Props) {
   const { data: asset } = useAsset(address, id, { suspense: true });
+
+  const { getNetworkSlugFromChainId } = useNetworkMetadata();
 
   const { data: raribleAsset } = useBestSellOrderAssetRari(
     getNetworkSlugFromChainId(asset?.chainId),

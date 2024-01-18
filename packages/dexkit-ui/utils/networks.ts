@@ -21,6 +21,13 @@ export async function netToQuery({
     query: "",
   });
 
+  await queryClient.prefetchQuery(
+    ["PREFETCH_ACTIVE_NETWORKS", siteId],
+    async () => {
+      return activeNetworks;
+    }
+  );
+
   for (let network of activeNetworks) {
     await queryClient.prefetchQuery(
       [NETWORK_DATA_QUERY, network.chainId],

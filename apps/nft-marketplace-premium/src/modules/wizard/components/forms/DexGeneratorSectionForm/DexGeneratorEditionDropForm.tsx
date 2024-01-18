@@ -1,5 +1,5 @@
 import { EditionDropPageSection } from '@/modules/wizard/types/section';
-import { NETWORK_FROM_SLUG } from '@dexkit/core/constants/networks';
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import { Grid } from '@mui/material';
 import { ThirdwebSDKProvider, useContract, useNFTs } from '@thirdweb-dev/react';
 import { useWeb3React } from '@web3-react/core';
@@ -70,6 +70,8 @@ export default function Wrapper(props: DexGeneratorEditionDropFormProps) {
   const { chainId, provider } = useWeb3React();
 
   const { section } = props;
+
+  const { NETWORK_FROM_SLUG } = useNetworkMetadata();
 
   return (
     <ThirdwebSDKProvider

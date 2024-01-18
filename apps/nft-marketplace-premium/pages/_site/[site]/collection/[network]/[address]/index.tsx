@@ -17,6 +17,7 @@ import { NETWORK_FROM_SLUG } from '@dexkit/core/constants/networks';
 import { Asset } from '@dexkit/core/types';
 import { omitNull } from '@dexkit/core/utils';
 import { dexkitNFTapi } from '@dexkit/ui/constants/api';
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import { NFTType } from '@dexkit/ui/modules/nft/constants/enum';
 import { getCollectionData } from '@dexkit/ui/modules/nft/services';
 import { Collection, TraderOrderFilter } from '@dexkit/ui/modules/nft/types';
@@ -82,6 +83,8 @@ const CollectionPage: NextPage = () => {
   const router = useRouter();
   const { formatMessage } = useIntl();
   const { address, network } = router.query;
+  const { NETWORK_FROM_SLUG } = useNetworkMetadata();
+
   const chainId = NETWORK_FROM_SLUG(network as string)?.chainId;
   const [search, setSearch] = useState<string>();
 

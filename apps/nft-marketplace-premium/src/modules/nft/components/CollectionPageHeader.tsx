@@ -1,7 +1,7 @@
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import { FormattedMessage } from 'react-intl';
 import { PageHeader } from '../../../components/PageHeader';
 import { useCollection } from '../../../hooks/nft';
-import { getNetworkSlugFromChainId } from '../../../utils/blockchain';
 
 interface Props {
   chainId?: number;
@@ -10,6 +10,8 @@ interface Props {
 
 function CollectionPageHeader({ chainId, address }: Props) {
   const { data: collection } = useCollection(address, chainId);
+
+  const { getNetworkSlugFromChainId } = useNetworkMetadata();
 
   const network = getNetworkSlugFromChainId(chainId);
 

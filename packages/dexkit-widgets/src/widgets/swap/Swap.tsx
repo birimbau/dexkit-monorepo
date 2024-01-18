@@ -19,9 +19,9 @@ import SwapSwitchTokensButton from "./SwapSwitchTokensButton";
 import { ExecType, SwapSide } from "./types";
 
 import { ChainId } from "@dexkit/core/constants/enums";
-import { NETWORKS } from "@dexkit/core/constants/networks";
 import { useIsMobile } from "@dexkit/core/hooks";
 import { Token } from "@dexkit/core/types";
+import { useNetworkMetadata } from "@dexkit/ui/hooks/app";
 import { CreditCard } from "@mui/icons-material";
 import SettingsIcon from "@mui/icons-material/Settings";
 import WalletIcon from "@mui/icons-material/Wallet";
@@ -147,6 +147,8 @@ export default function Swap({
   };
 
   const isMobile = useIsMobile();
+
+  const { NETWORKS } = useNetworkMetadata();
 
   return (
     <Card>

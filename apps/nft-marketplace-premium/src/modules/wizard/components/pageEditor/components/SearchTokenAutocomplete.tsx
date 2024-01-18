@@ -1,12 +1,12 @@
 import { useSearchSwapTokens } from '@/modules/swap/hooks';
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import { CircularProgress, Stack } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import React, { useMemo, useState } from 'react';
 import { Token } from 'src/types/blockchain';
-import { NETWORKS } from '../../../../../constants/chain';
-import { getChainName, getChainSlug } from '../../../../../utils/blockchain';
+import { getChainName } from '../../../../../utils/blockchain';
 
 interface Props {
   label?: string | React.ReactNode;
@@ -20,6 +20,9 @@ interface Props {
 export function SearchTokenAutocomplete(props: Props) {
   const { data, label, onChange, chainId, disabled, featuredTokens } = props;
   const [search, setSearch] = useState<string>();
+
+  const { NETWORKS, getChainSlug } = useNetworkMetadata();
+
   const tokensQuery = useSearchSwapTokens({
     keyword: search,
     network: getChainSlug(chainId),

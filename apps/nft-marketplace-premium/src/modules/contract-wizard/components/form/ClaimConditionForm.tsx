@@ -1,6 +1,6 @@
 import { SearchTokenAutocomplete } from '@/modules/wizard/components/forms/SearchTokenAutocomplete';
-import { NETWORK_FROM_SLUG } from '@dexkit/core/constants/networks';
 import { useTokenList } from '@dexkit/ui';
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
@@ -18,6 +18,8 @@ interface Props {
 }
 
 export function ClaimConditionForm({ itemIndex, network }: Props) {
+  const { NETWORK_FROM_SLUG } = useNetworkMetadata();
+
   const tokens = useTokenList({
     chainId: NETWORK_FROM_SLUG(network)?.chainId,
     includeNative: true,
@@ -32,7 +34,7 @@ export function ClaimConditionForm({ itemIndex, network }: Props) {
 
     if (currencyAddress) {
       return tokens.find(
-        (t) => t.address.toLowerCase() === currencyAddress.toLowerCase(),
+        (t) => t.address.toLowerCase() === currencyAddress.toLowerCase()
       );
     }
   }, [values.phases[itemIndex].currencyAddress, tokens]);
@@ -94,7 +96,7 @@ export function ClaimConditionForm({ itemIndex, network }: Props) {
                     onClick={() =>
                       setFieldValue(
                         `phases[${itemIndex}].maxClaimableSupply`,
-                        'unlimited',
+                        'unlimited'
                       )
                     }
                   >
@@ -128,7 +130,7 @@ export function ClaimConditionForm({ itemIndex, network }: Props) {
                     onClick={() =>
                       setFieldValue(
                         `phases[${itemIndex}].maxClaimablePerWallet`,
-                        'unlimited',
+                        'unlimited'
                       )
                     }
                   >

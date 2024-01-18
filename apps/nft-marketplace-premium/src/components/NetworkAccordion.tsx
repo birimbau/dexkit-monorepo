@@ -1,3 +1,4 @@
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { List, ListItem, ListItemText, Stack } from '@mui/material';
 import Accordion from '@mui/material/Accordion';
@@ -7,13 +8,14 @@ import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Typography from '@mui/material/Typography';
 import { FormattedMessage } from 'react-intl';
-import { NETWORKS } from '../constants/chain';
 
 interface Props {
   onFilterNetworks?: (network: string) => void;
 }
 
 export function NetworkwAccordion({ onFilterNetworks }: Props) {
+  const { NETWORKS } = useNetworkMetadata();
+
   return (
     <Stack spacing={2} sx={{ pt: 2 }}>
       <Accordion>
@@ -38,7 +40,7 @@ export function NetworkwAccordion({ onFilterNetworks }: Props) {
                       value="start"
                       control={<Checkbox />}
                       onClick={() => {
-                        if (onFilterNetworks) {
+                        if (onFilterNetworks && net.slug) {
                           onFilterNetworks(net.slug);
                         }
                       }}

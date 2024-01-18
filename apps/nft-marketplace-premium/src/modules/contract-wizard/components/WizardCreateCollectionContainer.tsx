@@ -7,6 +7,7 @@ import {
   useCreateCollectionMetadataMutation,
 } from '@/modules/contract-wizard/hooks';
 import { CollectionForm } from '@/modules/contract-wizard/types';
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import { Alert, Box, Container, Grid, Stack, Typography } from '@mui/material';
 import { useWeb3React } from '@web3-react/core';
 import { Formik } from 'formik';
@@ -19,7 +20,6 @@ import {
   MIN_KIT_HOLDING_AI_GENERATION,
 } from 'src/constants';
 import { useAuth, useLoginAccountMutation } from 'src/hooks/account';
-import { getNetworkSlugFromChainId } from 'src/utils/blockchain';
 
 const INITIAL_VALUES: CollectionForm = {
   name: '',
@@ -71,6 +71,8 @@ function WizardCreateCollectionContainer() {
     createCollectionMutation.reset();
     upCollectionMetadataMutation.reset();
   };
+
+  const { getNetworkSlugFromChainId } = useNetworkMetadata();
 
   const handleCreateCollectionOnChain = async (values: CollectionForm) => {
     if (!isLoggedIn) {

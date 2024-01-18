@@ -1,32 +1,48 @@
 import { ChainId } from "@dexkit/core/constants";
-import { NETWORKS, NETWORK_SLUG } from "@dexkit/core/constants/networks";
+import { NETWORK_SLUG } from "@dexkit/core/constants/networks";
 import { useNetworkProvider } from "@dexkit/core/hooks/blockchain";
 import { Asset, AssetMetadata, SwapApiOrder } from "@dexkit/core/types/nft";
 import { isAddressEqual } from "@dexkit/core/utils";
-import { UseMutationOptions, UseQueryOptions, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  UseMutationOptions,
+  UseQueryOptions,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import {
   NftSwapV4,
   SwappableAssetV4,
   SwappableNftV4,
-} from '@traderxyz/nft-swap-sdk';
-import { PostOrderResponsePayload } from '@traderxyz/nft-swap-sdk/dist/sdk/v4/orderbook';
+} from "@traderxyz/nft-swap-sdk";
+import { PostOrderResponsePayload } from "@traderxyz/nft-swap-sdk/dist/sdk/v4/orderbook";
 import { useWeb3React } from "@web3-react/core";
-import axios from 'axios';
+import axios from "axios";
 import { BigNumber } from "ethers";
 import { useAtom } from "jotai";
 import { useCallback, useMemo } from "react";
 import { getAssetDexKitApi } from "../../../constants/api";
 import { useAppConfig, useDexKitContext } from "../../../hooks";
+import { useNetworkMetadata } from "../../../hooks/app";
 import { useTokenList } from "../../../hooks/blockchain";
 import { accountAssetsAtom } from "../../../state";
 import { NFTType } from "../constants/enum";
-import { getAssetByApi, getAssetData, getAssetMetadata, getAssetsData, getCollectionByApi, getDKAssetOrderbook, getOrderbookOrders, searchAssetsDexKitApi } from "../services";
+import {
+  getAssetByApi,
+  getAssetData,
+  getAssetMetadata,
+  getAssetsData,
+  getCollectionByApi,
+  getDKAssetOrderbook,
+  getOrderbookOrders,
+  searchAssetsDexKitApi,
+} from "../services";
 import { AssetAPI, OrderBookItem, TraderOrderFilter } from "../types";
 import { calculeFees, parseAssetApi } from "../utils";
 
-export const GET_NFT_ORDERS = 'GET_NFT_ORDERS';
+export const GET_NFT_ORDERS = "GET_NFT_ORDERS";
 
-export const GET_COLLECTION_BY_API = 'GET_COLLECTION_BY_API';
+export const GET_COLLECTION_BY_API = "GET_COLLECTION_BY_API";
 
 export function useCollectionByApi({
   chainId,
@@ -47,7 +63,7 @@ export function useCollectionByApi({
   );
 }
 
-export const GET_ASSETS_ORDERBOOK = 'GET_ASSETS_ORDERBOOK';
+export const GET_ASSETS_ORDERBOOK = "GET_ASSETS_ORDERBOOK";
 
 export const useAssetsOrderBook = (orderFilter?: TraderOrderFilter) => {
   return useQuery([GET_ASSETS_ORDERBOOK, orderFilter], async () => {
@@ -55,7 +71,7 @@ export const useAssetsOrderBook = (orderFilter?: TraderOrderFilter) => {
   });
 };
 
-export const GET_ASSET_BY_API = 'GET_ASSET_BY_API';
+export const GET_ASSET_BY_API = "GET_ASSET_BY_API";
 
 export function useAssetByApi({
   chainId,
@@ -82,7 +98,7 @@ export function useAssetByApi({
   );
 }
 
-export const GET_ASSET_METADATA = 'GET_ASSET_METADATA';
+export const GET_ASSET_METADATA = "GET_ASSET_METADATA";
 
 export function useAssetMetadata(
   asset?: Asset,
@@ -102,10 +118,10 @@ export function useAssetMetadata(
       return await getAssetMetadata(
         asset?.tokenURI,
         {
-          image: '',
+          image: "",
           name: `${asset.collectionName} #${asset.id}`,
         },
-        asset?.protocol === 'ERC1155',
+        asset?.protocol === "ERC1155",
         asset?.id
       );
     },
@@ -151,7 +167,6 @@ export function useApproveAssetMutation(
   return mutation;
 }
 
-
 export function useMakeOfferMutation(
   nftSwapSdk?: NftSwapV4,
   address?: string,
@@ -175,7 +190,7 @@ export function useMakeOfferMutation(
         return undefined;
       }
 
-      if (another.type !== 'ERC20') {
+      if (another.type !== "ERC20") {
         return;
       }
 
@@ -300,7 +315,7 @@ export function useFavoriteAssets() {
         asset !== undefined &&
         assets !== undefined &&
         assets[
-        `${asset.chainId}-${asset.contractAddress.toLowerCase()}-${asset.id}`
+          `${asset.chainId}-${asset.contractAddress.toLowerCase()}-${asset.id}`
         ] !== undefined
       );
     },
@@ -318,13 +333,14 @@ export function useFavoriteAssets() {
   return { add, remove, assets, isFavorite, toggleFavorite };
 }
 
-const GET_ACCOUNTS_ASSETS = 'GET_ACCOUNTS_ASSETS';
+const GET_ACCOUNTS_ASSETS = "GET_ACCOUNTS_ASSETS";
 
 export function useAccountAssetsBalance(
   accounts: string[],
   useSuspense = true
 ) {
   const [accountAssets, setAccountAssets] = useAtom(accountAssetsAtom);
+  const { NETWORKS } = useNetworkMetadata();
 
   const accountAssetsQuery = useQuery(
     [GET_ACCOUNTS_ASSETS, accounts],
@@ -347,8 +363,8 @@ export function useAccountAssetsBalance(
       const networks = Object.values(NETWORKS)
         .filter((n) => !n.testnet)
         .map((n) => n.slug)
-        .join(',');
-      const accFlat = accounts.join(',');
+        .join(",");
+      const accFlat = accounts.join(",");
       const response = await axios.get<
         {
           total?: number;
@@ -383,7 +399,7 @@ export function useAccountAssetsBalance(
   return { accountAssets, accountAssetsQuery };
 }
 
-export const GET_ASSET_DATA = 'GET_ASSET_DATA';
+export const GET_ASSET_DATA = "GET_ASSET_DATA";
 
 export function useAsset(
   contractAddress?: string,
@@ -394,6 +410,9 @@ export function useAsset(
 ) {
   const queryClient = useQueryClient();
   const networkProvider = useNetworkProvider(networkChainId);
+
+  const { NETWORK_SLUG } = useNetworkMetadata();
+
   const {
     provider: injectedProvider,
     chainId: injectedChainId,
@@ -412,7 +431,7 @@ export function useAsset(
 
   const hasChainDiff =
     provider !== undefined &&
-    typeof window !== 'undefined' &&
+    typeof window !== "undefined" &&
     assetCached?.data?.chainId !== chainId;
 
   return useQuery(
@@ -436,7 +455,7 @@ export function useAsset(
       let assetApi: AssetAPI | undefined;
       try {
         assetApi = await getAssetDexKitApi({
-          networkId: NETWORK_SLUG(chainId) || '',
+          networkId: NETWORK_SLUG(chainId) || "",
           contractAddress: contractAddress,
           tokenId: tokenId,
         });
@@ -455,9 +474,9 @@ export function useAsset(
           id: assetApi.tokenId,
           chainId: chainId as ChainId,
           contractAddress: assetApi.address,
-          tokenURI: assetApi.tokenURI || '',
-          collectionName: assetApi.collectionName || '',
-          symbol: assetApi.symbol || '',
+          tokenURI: assetApi.tokenURI || "",
+          collectionName: assetApi.collectionName || "",
+          symbol: assetApi.symbol || "",
           metadata: { ...rawMetadata, image: assetApi?.imageUrl },
           owner: asset?.owner,
           protocol: asset?.protocol,
@@ -480,10 +499,9 @@ export function useAsset(
   );
 }
 
-
 export function useCancelSignedOrderMutation(
   nftSwapSdk?: NftSwapV4,
-  orderType?: 'ERC721' | 'ERC1155', // TODO: types
+  orderType?: "ERC721" | "ERC1155", // TODO: types
   onHash?: (hash: string, order: SwapApiOrder) => void,
   options?: Omit<UseMutationOptions, any>
 ) {
@@ -506,10 +524,10 @@ export function useCancelSignedOrderMutation(
 }
 /**
  * mutation to fill nft signed orderr
- * @param nftSwapSdk 
- * @param address 
- * @param options 
- * @returns 
+ * @param nftSwapSdk
+ * @param address
+ * @param options
+ * @returns
  */
 export function useFillSignedOrderMutation(
   nftSwapSdk?: NftSwapV4,
@@ -536,9 +554,7 @@ export function useFillSignedOrderMutation(
   );
 }
 
-
-const SEARCH_ASSETS = 'SEARCH_ASSETS';
-
+const SEARCH_ASSETS = "SEARCH_ASSETS";
 
 export type CollectionUniformItem = {
   name: string;
@@ -551,9 +567,9 @@ export type CollectionUniformItem = {
 
 /**
  * Search assets within search word and filtered by collection
- * @param search 
- * @param collections 
- * @returns 
+ * @param search
+ * @param collections
+ * @returns
  */
 export function useSearchAssets(
   search?: string,
@@ -567,12 +583,9 @@ export function useSearchAssets(
     if (collections) {
       collectionsFilter = collections
         .map(
-          (c) =>
-            `${NETWORK_SLUG(
-              c.chainId
-            )}:${c.contractAddress.toLowerCase()}`
+          (c) => `${NETWORK_SLUG(c.chainId)}:${c.contractAddress.toLowerCase()}`
         )
-        .join(',');
+        .join(",");
     }
 
     return searchAssetsDexKitApi({
@@ -582,11 +595,11 @@ export function useSearchAssets(
   });
 }
 
-export const GET_ASSET_LIST_FROM_ORDERBOOK = 'GET_ASSET_LIST_FROM_ORDERBOOK';
+export const GET_ASSET_LIST_FROM_ORDERBOOK = "GET_ASSET_LIST_FROM_ORDERBOOK";
 /**
  * Returns nfts associated with orders
- * @param orderFilter 
- * @returns 
+ * @param orderFilter
+ * @returns
  */
 export const useAssetListFromOrderbook = (orderFilter: TraderOrderFilter) => {
   const ordebookQuery = useOrderBook(orderFilter);
@@ -656,8 +669,8 @@ export const useAssetListFromOrderbook = (orderFilter: TraderOrderFilter) => {
 
 /**
  * Return nft orderbook
- * @param orderFilter 
- * @returns 
+ * @param orderFilter
+ * @returns
  */
 export const useOrderBook = (orderFilter: TraderOrderFilter) => {
   return useQuery(
@@ -673,11 +686,11 @@ export const useOrderBook = (orderFilter: TraderOrderFilter) => {
   );
 };
 
-export const GET_ASSET_METADATA_FROM_LIST = 'GET_ASSET_METADATA_FROM_LIST';
+export const GET_ASSET_METADATA_FROM_LIST = "GET_ASSET_METADATA_FROM_LIST";
 /**
  * Returns assets metadata from orderbook list
- * @param orderFilter 
- * @returns 
+ * @param orderFilter
+ * @returns
  */
 export const useAssetMetadataFromList = (orderFilter: TraderOrderFilter) => {
   const assetListQuery = useAssetListFromOrderbook(orderFilter);
@@ -695,7 +708,7 @@ export const useAssetMetadataFromList = (orderFilter: TraderOrderFilter) => {
         const metadata = await getAssetMetadata(
           asset.tokenURI,
           undefined,
-          asset.protocol === 'ERC1155',
+          asset.protocol === "ERC1155",
           asset.id
         );
         assetMetadata.push({

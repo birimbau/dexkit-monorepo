@@ -1,4 +1,5 @@
-import { NETWORKS, NETWORK_FROM_SLUG } from "@dexkit/core/constants/networks";
+import { NETWORKS } from "@dexkit/core/constants/networks";
+import { useNetworkMetadata } from "@dexkit/ui/hooks/app";
 import { AssetList } from "@dexkit/ui/modules/nft/components";
 import type { CellPlugin } from "@react-page/editor";
 import { CollectionAutocomplete } from "../components/CollectionAutocomplete";
@@ -7,14 +8,19 @@ type Data = {
   network: string;
   contractAddress: string;
 };
+
 // you can pass the shape of the data as the generic type argument
 const AssetListPlugin: CellPlugin<Data> = {
-  Renderer: ({ data }) => (
-    <AssetList
-      contractAddress={data.contractAddress}
-      chainId={NETWORK_FROM_SLUG(data.network)?.chainId}
-    />
-  ),
+  Renderer: ({ data }) => {
+    const { NETWORK_FROM_SLUG } = useNetworkMetadata();
+
+    return (
+      <AssetList
+        contractAddress={data.contractAddress}
+        chainId={NETWORK_FROM_SLUG(data.network)?.chainId}
+      />
+    );
+  },
   id: "nft-list-plugin",
   title: "NFT List",
   description: "Show a list of nfts with orders on orderbook",

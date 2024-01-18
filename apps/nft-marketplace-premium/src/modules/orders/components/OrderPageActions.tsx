@@ -10,6 +10,7 @@ import {
 } from '@mui/material';
 import { FormattedMessage } from 'react-intl';
 
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import { Share } from '@mui/icons-material';
 import LaunchIcon from '@mui/icons-material/Launch';
 import { useWeb3React } from '@web3-react/core';
@@ -23,7 +24,6 @@ import {
 } from '../../../hooks/nft';
 import {
   getBlockExplorerUrl,
-  getNetworkSlugFromChainId,
   isAddressEqual,
   truncateAddress,
 } from '../../../utils/blockchain';
@@ -55,6 +55,8 @@ export function OrderPageActions({ address, id, nonce }: Props) {
   const handleCloseShareDialog = () => setOpenShare(false);
 
   const handleOpenShareDialog = () => setOpenShare(true);
+
+  const { getNetworkSlugFromChainId } = useNetworkMetadata();
 
   return (
     <>

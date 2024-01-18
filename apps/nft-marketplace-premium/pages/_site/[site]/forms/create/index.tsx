@@ -39,6 +39,7 @@ import AppConfirmDialog from 'src/components/AppConfirmDialog';
 import { PageHeader } from 'src/components/PageHeader';
 import AuthMainLayout from 'src/components/layouts/authMain';
 import { getAppConfig } from 'src/services/app';
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 
 export default function FormsCreatePage({
   contractAddress,
@@ -377,6 +378,9 @@ export const getServerSideProps: GetServerSideProps = async ({
   }
 
   const chainId = parseChainId((query.chainId as string) || ChainId.Ethereum);
+
+
+  const {NETWORKS } = useNetworkMetadata();
 
   const isValidChain = Object.keys(NETWORKS)
     .map((key) => parseChainId(key))

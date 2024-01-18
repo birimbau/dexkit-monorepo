@@ -1,4 +1,3 @@
-import { NETWORK_SLUG } from '@dexkit/core/constants/networks';
 import { truncateAddress } from '@dexkit/core/utils';
 import Link from '@dexkit/ui/components/AppLink';
 import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
@@ -70,7 +69,7 @@ export default function ContractListDataGrid() {
     setQueryOptions({ ...queryOptions, filter });
   }, []);
 
-  const { NETWORK_NAME, NETWORK_EXPLORER } = useNetworkMetadata();
+  const { NETWORK_NAME, NETWORK_EXPLORER, NETWORK_SLUG } = useNetworkMetadata();
 
   const columns: GridColDef[] = [
     { field: 'id', headerName: 'ID', width: 90 },

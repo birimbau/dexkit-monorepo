@@ -24,6 +24,7 @@ import { ChainId, MY_APPS_ENDPOINT } from '@dexkit/core/constants';
 import { NETWORK_FROM_SLUG } from '@dexkit/core/constants/networks';
 import { truncateAddress } from '@dexkit/core/utils';
 import { dexkitNFTapi } from '@dexkit/ui/constants/api';
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import { netToQuery } from '@dexkit/ui/utils/networks';
 import axios from 'axios';
 import { NextSeo } from 'next-seo';
@@ -34,10 +35,7 @@ import { NETWORK_ID } from '../../../../../../src/constants/enum';
 import { MAP_NETWORK_TO_RARIBLE } from '../../../../../../src/constants/marketplaces';
 import { getAppConfig } from '../../../../../../src/services/app';
 import { getRariAsset } from '../../../../../../src/services/rarible';
-import {
-  getChainIdFromSlug,
-  getNetworkSlugFromChainId,
-} from '../../../../../../src/utils/blockchain';
+import { getChainIdFromSlug } from '../../../../../../src/utils/blockchain';
 import { ipfsUriToUrl } from '../../../../../../src/utils/ipfs';
 import { truncateErc1155TokenId } from '../../../../../../src/utils/nfts';
 
@@ -53,6 +51,8 @@ const AssetDetailPage: NextPage<any> = ({
   const { data: asset, isLoading } = useAsset(address as string, id as string);
 
   const { data: metadata } = useAssetMetadata(asset);
+
+  const { getNetworkSlugFromChainId } = useNetworkMetadata();
 
   return (
     <>

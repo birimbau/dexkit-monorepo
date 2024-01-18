@@ -1,3 +1,4 @@
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import {
   Box,
   Button,
@@ -10,7 +11,6 @@ import {
 import { FormattedMessage } from 'react-intl';
 import Link from '../../../components/Link';
 import { Collection } from '../../../types/nft';
-import { getNetworkSlugFromChainId } from '../../../utils/blockchain';
 
 interface Props {
   variant?: 'default' | 'simple';
@@ -29,6 +29,8 @@ export function CollectionCard({
   variant,
   disabled,
 }: Props) {
+  const { getNetworkSlugFromChainId } = useNetworkMetadata();
+
   const renderCardContent = () => {
     return (
       <CardContent sx={{ height: '100%' }}>

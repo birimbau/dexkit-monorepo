@@ -3,10 +3,7 @@ import { dehydrate, QueryClient } from '@tanstack/react-query';
 import type { GetStaticProps, GetStaticPropsContext, NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { useMemo } from 'react';
-import {
-  getChainIdFromSlug,
-  getNetworkSlugFromChainId,
-} from '../../../../../src/utils/blockchain';
+import { getChainIdFromSlug } from '../../../../../src/utils/blockchain';
 
 import {
   fetchAssetForQueryClient,
@@ -15,6 +12,7 @@ import {
 
 import { ChainId } from '@dexkit/core/constants';
 import { dexkitNFTapi } from '@dexkit/ui/constants/api';
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import { netToQuery } from '@dexkit/ui/utils/networks';
 import { Grid, Skeleton } from '@mui/material';
 import { FormattedMessage, useIntl } from 'react-intl';
@@ -52,6 +50,8 @@ const OrderDetail: NextPage = () => {
     firstOrder?.nftToken,
     firstOrder?.nftTokenId
   );
+
+  const { getNetworkSlugFromChainId } = useNetworkMetadata();
 
   return (
     <Container>

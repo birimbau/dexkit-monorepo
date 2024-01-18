@@ -1,4 +1,3 @@
-import { NETWORK_SLUG } from "@dexkit/core/constants/networks";
 import {
   Box,
   Button,
@@ -10,6 +9,7 @@ import {
 } from "@mui/material";
 import { FormattedMessage } from "react-intl";
 import Link from "../../../components/AppLink";
+import { useNetworkMetadata } from "../../../hooks/app";
 import { Collection } from "../types";
 
 interface Props {
@@ -29,6 +29,8 @@ export function CollectionCard({
   variant,
   disabled,
 }: Props) {
+  const { NETWORK_SLUG } = useNetworkMetadata();
+
   const renderCardContent = () => {
     return (
       <CardContent sx={{ height: "100%" }}>

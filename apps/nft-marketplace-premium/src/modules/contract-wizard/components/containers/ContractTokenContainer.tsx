@@ -1,9 +1,10 @@
 import TokenDropSummary from '@/modules/wizard/components/TokenDropSummary';
 import { CoinTypes, TOKEN_ICON_URL } from '@dexkit/core';
-import { NETWORKS, NETWORK_SLUG } from '@dexkit/core/constants/networks';
+import { NETWORKS } from '@dexkit/core/constants/networks';
 import { EvmCoin } from '@dexkit/core/types';
 import { convertTokenToEvmCoin } from '@dexkit/core/utils';
 import { useTokenList } from '@dexkit/ui';
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import { Button, Divider, Tab, Tabs } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import { useContract } from '@thirdweb-dev/react';
@@ -20,14 +21,14 @@ const EvmTransferCoinDialog = dynamic(
   () =>
     import(
       '@dexkit/ui/modules/evm-transfer-coin/components/dialogs/EvmSendDialog'
-    ),
+    )
 );
 
 const EvmMintTokenDialog = dynamic(
   () =>
     import(
       '@dexkit/ui/modules/evm-mint-token/components/dialogs/EvmMintTokenDialog'
-    ),
+    )
 );
 
 interface ContractTokenDropContainerProps {
@@ -96,6 +97,8 @@ export function ContractTokenContainer({
   };
 
   const [token, setToken] = useState<EvmCoin>();
+
+  const { NETWORK_SLUG } = useNetworkMetadata();
 
   useEffect(() => {
     (async () => {

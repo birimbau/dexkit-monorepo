@@ -27,6 +27,7 @@ import { Field, FieldArray, Form, Formik } from 'formik';
 import { Select, TextField } from 'formik-mui';
 
 import { ImageFormUpload } from '@/modules/contract-wizard/components/ImageFormUpload';
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import DeleteIcon from '@mui/icons-material/Delete';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
@@ -37,13 +38,12 @@ import { useEffect, useState } from 'react';
 import { useAllTokenList } from 'src/hooks/blockchain';
 import { getAssetProtocol } from 'src/services/nft';
 import { Token } from 'src/types/blockchain';
-import { getProviderByChainId } from 'src/utils/blockchain';
 import { getGatedConditionsText } from '../../services';
 import { GatedCondition, GatedPageLayout } from '../../types';
 import { SearchTokenAutocomplete } from '../forms/SearchTokenAutocomplete';
 
 const PreviewGatedConditionsDialog = dynamic(
-  () => import('./PreviewGatedConditionsDialog'),
+  () => import('./PreviewGatedConditionsDialog')
 );
 const GatedCoditionsSchema = Yup.array(
   Yup.object().shape({
@@ -55,7 +55,7 @@ const GatedCoditionsSchema = Yup.array(
     protocol: Yup.string(),
     tokenId: Yup.string(),
     amount: Yup.string().required(),
-  }),
+  })
 );
 
 const GatedPageScheme = Yup.object().shape({
@@ -83,6 +83,7 @@ export default function GatedConditionsFormDialog({
   conditions,
   gatedPageLayout,
 }: Props) {
+  const { getProviderByChainId } = useNetworkMetadata();
   const { onClose } = dialogProps;
   const handleClose = () => {
     if (onClose) {
@@ -104,11 +105,13 @@ export default function GatedConditionsFormDialog({
   });
 
   const [selectedCoins, setSelectedCoins] = useState<{ [key: number]: Token }>(
-    {},
+    {}
   );
+
   const [selectedCollections, setSelectedCollections] = useState<{
     [key: number]: any;
   }>({});
+
   useEffect(() => {
     if (conditions) {
       for (let index = 0; index < conditions.length; index++) {
@@ -116,8 +119,7 @@ export default function GatedConditionsFormDialog({
         if (condition.type === 'coin') {
           let findToken = featuredTokens.find(
             (t) =>
-              t.address === condition.address &&
-              t.chainId === condition.chainId,
+              t.address === condition.address && t.chainId === condition.chainId
           );
           if (findToken) {
             selectedCoins[index] = findToken;
@@ -356,20 +358,20 @@ export default function GatedConditionsFormDialog({
                                         });
                                         setFieldValue(
                                           `conditions[${index}].address`,
-                                          coll.contractAddress,
+                                          coll.contractAddress
                                         );
                                         setFieldValue(
                                           `conditions[${index}].chainId`,
-                                          coll.chainId,
+                                          coll.chainId
                                         );
                                         setFieldValue(
                                           `conditions[${index}].symbol`,
-                                          coll.name,
+                                          coll.name
                                         );
                                         // We identify protocol to then check if we need to add token Id
                                         getAssetProtocol(
                                           getProviderByChainId(coll.chainId),
-                                          coll.contractAddress,
+                                          coll.contractAddress
                                         ).then((v) => {
                                           selectedCollections[index].protocol =
                                             v;
@@ -393,19 +395,19 @@ export default function GatedConditionsFormDialog({
                                         setSelectedCoins({ ...selectedCoins });
                                         setFieldValue(
                                           `conditions[${index}].address`,
-                                          tk?.address,
+                                          tk?.address
                                         );
                                         setFieldValue(
                                           `conditions[${index}].symbol`,
-                                          tk?.symbol,
+                                          tk?.symbol
                                         );
                                         setFieldValue(
                                           `conditions[${index}].chainId`,
-                                          tk?.chainId,
+                                          tk?.chainId
                                         );
                                         setFieldValue(
                                           `conditions[${index}].decimals`,
-                                          tk?.decimals,
+                                          tk?.decimals
                                         );
                                       }}
                                     />
@@ -502,7 +504,7 @@ export default function GatedConditionsFormDialog({
                               setFieldValue(`layout.frontImage`, file)
                             }
                             error={Boolean(
-                              errors && (errors as any)?.layout?.frontImage,
+                              errors && (errors as any)?.layout?.frontImage
                             )}
                           />
                         </Stack>
