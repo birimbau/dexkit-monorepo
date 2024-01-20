@@ -69,7 +69,7 @@ export function useTokenList({
     const isNoWrappedTokenInList =
       tokenList &&
       tokenList.findIndex((t) => t.address.toLowerCase() === wrappedAddress) ===
-        -1;
+      -1;
     // Wrapped Token is not on the list, we will add it here
     if (wrappedAddress && isNoWrappedTokenInList) {
       tokenList = [
@@ -97,6 +97,7 @@ export function useTokenList({
         },
         ...tokenList,
       ] as TokenWhitelabelApp[];
+
     }
 
     return [...tokenList] as TokenWhitelabelApp[];

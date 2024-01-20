@@ -1,3 +1,5 @@
+import AppConfirmDialog from '@dexkit/ui/components/AppConfirmDialog';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import {
   Box,
   Button,
@@ -10,8 +12,6 @@ import {
   Typography,
 } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
-
-import AppConfirmDialog from '@dexkit/ui/components/AppConfirmDialog';
 
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
@@ -32,6 +32,8 @@ import {
   useDeleteAppRankingMutation,
 } from '../../hooks';
 import AddAppRankingFormDialog from '../dialogs/AddAppRankingFormDialog';
+import GamificationPointForm from '../forms/Gamification/GamificationPointForm';
+import RankingSection from '../sections/RankingSection';
 export interface RankingWizardContainerProps {
   siteId?: number;
 }
@@ -276,6 +278,10 @@ export default function RankingWizardContainer({
     AppRanking | undefined
   >(undefined);
 
+  const [selectedEditRanking, setSelectedEditRanking] = useState<
+    AppRanking | undefined
+  >(undefined);
+
   const deleteAppRankingMutation = useDeleteAppRankingMutation();
 
   const handleClickDelete = ({ ranking }: { ranking: AppRanking }) => {
@@ -288,8 +294,7 @@ export default function RankingWizardContainer({
   };
 
   const handleClickEdit = ({ ranking }: { ranking: AppRanking }) => {
-    setSelectedRanking(ranking);
-    setOpenAddRanking(true);
+    setSelectedEditRanking(ranking);
   };
 
   const handlePreviewRanking = ({ ranking }: { ranking: AppRanking }) => {
@@ -396,27 +401,54 @@ export default function RankingWizardContainer({
             <Divider />
           </Grid>
 
-          <Grid item xs={12}>
-            <Button
-              variant="contained"
-              onClick={() => {
-                setOpenAddRanking(true);
-              }}
-            >
-              <FormattedMessage
-                id={'add.ranking'}
-                defaultMessage={'Add ranking'}
+          {!selectedEditRanking && (
+            <Grid item xs={12}>
+              <Button
+                variant="contained"
+                onClick={() => {
+                  setOpenAddRanking(true);
+                }}
+              >
+                <FormattedMessage
+                  id={'add.ranking'}
+                  defaultMessage={'Add ranking'}
+                />
+              </Button>
+            </Grid>
+          )}
+          {!selectedEditRanking && (
+            <Grid item xs={12}>
+              <AppRankingList
+                siteId={siteId}
+                onClickDelete={handleClickDelete}
+                onClickEdit={handleClickEdit}
+                onClickPreview={handlePreviewRanking}
               />
-            </Button>
-          </Grid>
-          <Grid item xs={12}>
-            <AppRankingList
-              siteId={siteId}
-              onClickDelete={handleClickDelete}
-              onClickEdit={handleClickEdit}
-              onClickPreview={handlePreviewRanking}
-            />
-          </Grid>
+            </Grid>
+          )}
+          {selectedEditRanking && (
+            <Grid item container xs={12}>
+              <Grid item xs={12}>
+                <Button
+                  startIcon={<ArrowBackIcon />}
+                  onClick={() => setSelectedEditRanking(undefined)}
+                >
+                  <FormattedMessage
+                    id={'back.to.ranking.list'}
+                    defaultMessage={'Back to Ranking List'}
+                  />{' '}
+                </Button>
+              </Grid>
+
+              <GamificationPointForm />
+              <RankingSection
+                section={{
+                  type: 'ranking',
+                  settings: { rankingId: selectedEditRanking.id },
+                }}
+              />
+            </Grid>
+          )}
         </Grid>
       </Box>
     </>

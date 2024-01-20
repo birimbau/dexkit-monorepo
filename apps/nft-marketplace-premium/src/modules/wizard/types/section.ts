@@ -36,7 +36,10 @@ export type SectionType =
   | 'code-page-section'
   | 'collection'
   | 'dex-generator-section'
-  | 'asset-section';
+  | 'asset-section'
+  | 'ranking'
+
+  ;
 
 export interface PageSection {
   type: SectionType;
@@ -223,6 +226,13 @@ export interface CollectionPageSection extends PageSection {
     hideHeader: boolean;
     hideDrops: boolean;
     hideAssets: boolean;
+  };
+}
+
+export interface RankingPageSection extends PageSection {
+  type: 'ranking';
+  settings: {
+    rankingId?: number;
   };
 }
 

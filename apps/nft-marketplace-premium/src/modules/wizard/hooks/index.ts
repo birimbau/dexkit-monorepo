@@ -364,7 +364,7 @@ export function useAppRankingListQuery({
   return useQuery<{
     data: {
       id: number;
-      version: string;
+      title: string;
       description: string;
     }[];
     skip?: number;
@@ -382,7 +382,7 @@ export function useAppRankingListQuery({
         await myAppsApi.get<{
           data: {
             id: number;
-            version: string;
+            title: string;
             description: string;
           }[];
           skip?: number;
@@ -390,6 +390,56 @@ export function useAppRankingListQuery({
           total?: number;
         }>(`/site-ranking/all/${siteId}`, {
           params: { skip: page * pageSize, take: pageSize, sort, filter: filter ? JSON.stringify(filter) : undefined },
+        })
+      ).data;
+
+    }
+  );
+}
+
+export const GET_APP_RANKING_QUERY = 'GET_APP_RANKING_QUERY'
+export function useAppRankingQuery({
+  rankingId,
+  filter,
+}: {
+  filter?: any;
+  rankingId?: number;
+
+}) {
+
+  return useQuery<{
+    ranking?: {
+      id: number;
+      title: string;
+      description: string;
+    },
+    data: {
+      account: string;
+      points: number;
+    }[];
+  }>(
+    [GET_APP_RANKING_QUERY, rankingId],
+    async () => {
+      if (!rankingId) {
+        return { data: [] };
+      }
+
+      return (
+        await myAppsApi.get<{
+          ranking: {
+            id: number;
+            title: string;
+            description: string;
+          },
+          data: {
+            account: string;
+            points: number;
+          }[];
+          skip?: number;
+          take?: number;
+          total?: number;
+        }>(`/site-ranking/ranking/${rankingId}`, {
+          params: { filter: filter ? JSON.stringify(filter) : undefined },
         })
       ).data;
 
