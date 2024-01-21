@@ -6,7 +6,7 @@ const PolygonDarkblockWidget = dynamic(
   async () =>
     // @ts-ignore
     (await import('@darkblock.io/matic-widget')).PolygonDarkblockWidget,
-  { ssr: false }
+  { ssr: false },
 );
 
 const EthereumDarkblockWidget = dynamic(
@@ -14,7 +14,7 @@ const EthereumDarkblockWidget = dynamic(
   async () =>
     // @ts-ignore
     (await import('@darkblock.io/eth-widget')).EthereumDarkblockWidget,
-  { ssr: false }
+  { ssr: false },
 );
 
 const AvalancheDarkblockWidget = dynamic(
@@ -22,12 +22,12 @@ const AvalancheDarkblockWidget = dynamic(
   async () =>
     // @ts-ignore
     (await import('@darkblock.io/avax-widget')).AvalancheDarkblockWidget,
-  { ssr: false }
+  { ssr: false },
 );
 
 export interface DarkBlockWrapperProps {
   address: string;
-  tokenId: string;
+  tokenId?: string;
   network: string;
 }
 

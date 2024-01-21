@@ -1,4 +1,11 @@
-import { Box, Button, FormControlLabel, Grid, Switch } from '@mui/material';
+import {
+  Box,
+  Button,
+  FormControlLabel,
+  Grid,
+  Switch,
+  Tooltip,
+} from '@mui/material';
 import { FormattedMessage } from 'react-intl';
 
 import {
@@ -23,20 +30,22 @@ export default function DarkblockForm({ siteId }: DarkblockFormProps) {
 
   const handleSubmit = async ({
     enableDarkblock,
+    enableDarkblockCollection,
   }: {
     enableDarkblock: boolean;
+    enableDarkblockCollection: boolean;
   }) => {
     try {
       if (siteId) {
         await saveApiKeyMutation.mutateAsync({
-          data: { enableDarkblock },
+          data: { enableDarkblock, enableDarkblockCollection },
         });
         enqueueSnackbar(
           <FormattedMessage
             id="saved.successfully"
             defaultMessage="Saved successfully"
           />,
-          { variant: 'success' }
+          { variant: 'success' },
         );
       }
     } catch (err) {
@@ -64,23 +73,65 @@ export default function DarkblockForm({ siteId }: DarkblockFormProps) {
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <Box px={1}>
-              <FormControlLabel
-                control={
-                  <Switch
-                    onChange={(e) =>
-                      setFieldValue('enableDarkblock', e.target.checked)
-                    }
-                    size="small"
-                    checked={values.enableDarkblock}
-                  />
-                }
-                label={
+              <Tooltip
+                title={
                   <FormattedMessage
-                    id="enable.darkblock"
-                    defaultMessage="Enable Darkblock"
+                    id="enable.darkblock.on.asset.page"
+                    defaultMessage="Enable Darkblock on Asset page"
                   />
                 }
-              />
+              >
+                <FormControlLabel
+                  control={
+                    <Switch
+                      onChange={(e) =>
+                        setFieldValue('enableDarkblock', e.target.checked)
+                      }
+                      size="small"
+                      checked={values.enableDarkblock}
+                    />
+                  }
+                  label={
+                    <FormattedMessage
+                      id="enable.darkblock"
+                      defaultMessage="Enable Darkblock Asset"
+                    />
+                  }
+                />
+              </Tooltip>
+            </Box>
+          </Grid>
+          <Grid item xs={12}>
+            <Box px={1}>
+              <Tooltip
+                title={
+                  <FormattedMessage
+                    id="enable.darkblock.on.collection.page"
+                    defaultMessage="Enable Darkblock on Collection page"
+                  />
+                }
+              >
+                <FormControlLabel
+                  control={
+                    <Switch
+                      onChange={(e) =>
+                        setFieldValue(
+                          'enableDarkblockCollection',
+                          e.target.checked,
+                        )
+                      }
+                      size="small"
+                      checked={values.enableDarkblockCollection}
+                    />
+                  }
+                  label={
+                    <FormattedMessage
+                      id="enable.darkblock.collection"
+                      defaultMessage="Enable Darkblock Collection"
+                    />
+                  }
+                />
+              </Tooltip>
             </Box>
           </Grid>
           <Grid item xs={12}>
