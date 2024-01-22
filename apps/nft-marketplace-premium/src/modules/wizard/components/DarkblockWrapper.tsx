@@ -21,7 +21,7 @@ export default function DarkblockWrapper({
 }: DarkBlockWrapperProps) {
   const { provider, account } = useWeb3React();
 
-  if (typeof window !== 'undefined' && provider) {
+  if (typeof window !== 'undefined') {
     if (
       network === 'polygon' ||
       network === 'ethereum' ||
