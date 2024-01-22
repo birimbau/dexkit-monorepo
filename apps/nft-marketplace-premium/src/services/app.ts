@@ -84,7 +84,7 @@ export async function getAppConfig(
 
   if (site?.startsWith('localhost')) {
     const [slug,] = site?.split('.') || [];
-    //const slug = 'arbitrum';
+    // const slug = 'swapkit';
     if (slug) {
       const configResponse = (await getConfig({ slug, appPage })).data;
 
