@@ -1,27 +1,10 @@
 import { useWeb3React } from '@web3-react/core';
 import dynamic from 'next/dynamic';
 
-const PolygonDarkblockWidget = dynamic(
-  // @ts-ignore
-  async () =>
-    // @ts-ignore
-    (await import('@darkblock.io/matic-widget')).PolygonDarkblockWidget,
-  { ssr: false },
-);
+import { NETWORK_FROM_SLUG } from '@dexkit/core/constants/networks';
 
-const EthereumDarkblockWidget = dynamic(
-  // @ts-ignore
-  async () =>
-    // @ts-ignore
-    (await import('@darkblock.io/eth-widget')).EthereumDarkblockWidget,
-  { ssr: false },
-);
-
-const AvalancheDarkblockWidget = dynamic(
-  // @ts-ignore
-  async () =>
-    // @ts-ignore
-    (await import('@darkblock.io/avax-widget')).AvalancheDarkblockWidget,
+const EVMDarkblockWidget = dynamic(
+  async () => (await import('@dexkit/darkblock-evm-widget')).EVMDarkblockWidget,
   { ssr: false },
 );
 
@@ -36,36 +19,22 @@ export default function DarkblockWrapper({
   tokenId,
   network,
 }: DarkBlockWrapperProps) {
-  const { provider } = useWeb3React();
+  const { provider, account } = useWeb3React();
 
   if (typeof window !== 'undefined' && provider) {
-    if (network === 'polygon') {
+    if (
+      network === 'polygon' ||
+      network === 'ethereum' ||
+      network === 'base' ||
+      network === 'avalanche'
+    ) {
       return (
-        <PolygonDarkblockWidget
-          // @ts-ignore
+        <EVMDarkblockWidget
           contractAddress={address as string}
+          chainId={NETWORK_FROM_SLUG(network)?.chainId}
           tokenId={tokenId}
-          w3={provider?.provider}
-          cb={(p: any) => console.log(p)}
-        />
-      );
-    } else if (network === 'ethereum') {
-      return (
-        <EthereumDarkblockWidget
-          // @ts-ignore
-          contractAddress={address as string}
-          tokenId={tokenId}
-          w3={provider?.provider}
-          cb={(p: any) => console.log(p)}
-        />
-      );
-    } else if (network === 'avalanche') {
-      return (
-        <AvalancheDarkblockWidget
-          // @ts-ignore
-          contractAddress={address as string}
-          tokenId={tokenId}
-          w3={provider?.provider}
+          account={account}
+          provider={provider?.provider}
           cb={(p: any) => console.log(p)}
         />
       );
