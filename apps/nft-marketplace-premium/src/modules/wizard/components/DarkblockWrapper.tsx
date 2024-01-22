@@ -26,7 +26,9 @@ export default function DarkblockWrapper({
       network === 'polygon' ||
       network === 'ethereum' ||
       network === 'base' ||
-      network === 'avalanche'
+      network === 'avalanche' ||
+      network === 'mumbai' ||
+      network === 'goerli'
     ) {
       return (
         <EVMDarkblockWidget

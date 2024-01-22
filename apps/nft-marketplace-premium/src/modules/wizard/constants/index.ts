@@ -90,5 +90,7 @@ export const DARKBLOCK_SUPPORTED_CHAIN_IDS = [
   ChainId.Ethereum,
   ChainId.Polygon,
   ChainId.Avax,
-  ChainId.Base
+  ChainId.Base,
+  ChainId.Goerli,
+  ChainId.Mumbai
 ]
