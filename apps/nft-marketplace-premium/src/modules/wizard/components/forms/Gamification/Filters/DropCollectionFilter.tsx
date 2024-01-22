@@ -25,7 +25,7 @@ interface DropCollectionFilter {
   chainId?: number;
   collectionAddress?: string;
   tokenId?: string;
-  conditionNFT?: number;
+  conditionNFT?: string;
   amountNFT?: number;
 }
 
@@ -34,7 +34,7 @@ const DropCollectionFilterSchema: Yup.SchemaOf<DropCollectionFilter> =
     chainId: Yup.number(),
 
     amountNFT: Yup.number(),
-    conditionNFT: Yup.number(),
+    conditionNFT: Yup.string(),
     tokenId: Yup.string(),
 
     collectionAddress: Yup.string(),

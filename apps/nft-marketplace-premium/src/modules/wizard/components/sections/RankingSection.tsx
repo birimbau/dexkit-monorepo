@@ -1,4 +1,4 @@
-import { Box, Paper, TablePagination } from '@mui/material';
+import { Box, Grid, Paper, TablePagination, Typography } from '@mui/material';
 
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -42,7 +42,7 @@ interface EnhancedTableProps {
   onRequestSort: (event: React.MouseEvent<unknown>, property: any) => void;
 
   order: Order;
-  orderBy: string;
+  orderBy?: string;
   rowCount: number;
 }
 
@@ -91,7 +91,7 @@ type Order = 'asc' | 'desc';
 
 export default function RankingSection({ section }: RankingSectionProps) {
   const [order, setOrder] = useState<Order>('asc');
-  const [orderBy, setOrderBy] = useState<string>('points');
+  const [orderBy, setOrderBy] = useState<string | undefined>();
   const [page, setPage] = useState(0);
   const [dense, setDense] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -123,43 +123,78 @@ export default function RankingSection({ section }: RankingSectionProps) {
   const rows = queryRanking.data?.data ? queryRanking.data?.data : [];
 
   return (
-    <>
-      <Box sx={{ width: '100%' }}>
-        <Paper sx={{ mb: 2, mt: 2 }}>
-          <TableContainer>
-            <Table aria-label="ranking table" size={dense ? 'small' : 'medium'}>
-              <EnhancedTableHead
-                order={order}
-                orderBy={orderBy}
-                onRequestSort={handleRequestSort}
-                rowCount={rows.length}
-              />
-              <TableBody>
-                {rows.map((row, id) => (
-                  <TableRow
-                    key={id}
-                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                  >
-                    <TableCell component="th" scope="row">
-                      {row.account}
-                    </TableCell>
-                    <TableCell align="right">{row.points}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-          <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
-            component="div"
-            count={rows.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />
-        </Paper>
-      </Box>
-    </>
+    <Grid container spacing={2}>
+      <Grid item xs={12}>
+        <Typography
+          sx={{
+            display: 'block',
+            textOverflow: 'ellipsis',
+            overflow: 'hidden',
+            textAlign: { xs: 'center', sm: 'left' },
+          }}
+          variant="h5"
+          component="h1"
+        >
+          {queryRanking?.data?.ranking?.title || ''}
+        </Typography>
+        <Typography
+          sx={{
+            display: 'block',
+            textOverflow: 'ellipsis',
+            overflow: 'hidden',
+            textAlign: { xs: 'center', sm: 'left' },
+          }}
+          variant="body2"
+          component="p"
+        >
+          {queryRanking?.data?.ranking?.description || ''}
+        </Typography>
+      </Grid>
+      <Grid item xs={12}>
+        <Box sx={{ width: '100%' }}>
+          <Paper sx={{ mb: 2, mt: 2 }}>
+            <TableContainer>
+              <Table
+                aria-label="ranking table"
+                size={dense ? 'small' : 'medium'}
+              >
+                <EnhancedTableHead
+                  order={order}
+                  orderBy={orderBy}
+                  onRequestSort={handleRequestSort}
+                  rowCount={rows.length}
+                />
+                <TableBody>
+                  {rows.map((row, id) => (
+                    <TableRow
+                      key={id}
+                      sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                    >
+                      <TableCell component="th" scope="row">
+                        {row.account}
+                      </TableCell>
+                      <TableCell>
+                        <Typography sx={{ fontSize: '16px' }}>
+                          {row.points}
+                        </Typography>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+            <TablePagination
+              rowsPerPageOptions={[5, 10, 25]}
+              component="div"
+              count={rows.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+            />
+          </Paper>
+        </Box>
+      </Grid>
+    </Grid>
   );
 }

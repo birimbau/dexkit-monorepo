@@ -33,7 +33,9 @@ import {
 import { ConfirmBuyDialog } from './dialogs/ConfirmBuyDialog';
 import TableSkeleton from './tables/TableSkeleton';
 
+import { UserEvents } from '@dexkit/core/constants/userEvents';
 import { useDexKitContext } from '@dexkit/ui/hooks';
+import { useTrackUserEventsMutation } from '@dexkit/ui/hooks/userEvents';
 import {
   SignedNftOrderV4,
   SwappableAssetV4,
@@ -73,6 +75,7 @@ interface Props {
 }
 
 export function AssetTabs({ address, id }: Props) {
+  const trackUserEvent = useTrackUserEventsMutation();
   const { account, provider, chainId } = useWeb3React();
 
   const { data: asset } = useAsset(address, id);
@@ -183,6 +186,16 @@ export function AssetTabs({ address, id }: Props) {
           id: asset.id,
         };
 
+        trackUserEvent.mutate({
+          event:
+            'erc1155Token' in order
+              ? UserEvents.nftAcceptOfferERC1155
+              : UserEvents.nftAcceptOfferERC721,
+          metadata: JSON.stringify(order),
+          hash,
+          chainId,
+        });
+
         createNotification({
           type: 'transaction',
           subtype: 'acceptOffer',
@@ -204,16 +217,26 @@ export function AssetTabs({ address, id }: Props) {
         ) {
           values.amount = ethers.utils.formatUnits(
             BigNumber.from(order.erc20TokenAmount)
-            .mul(
-              BigNumber.from(quantity)
-                .mul(100000)
-                .div(order.erc1155TokenAmount),
-            )
-            .div(100000),
+              .mul(
+                BigNumber.from(quantity)
+                  .mul(100000)
+                  .div(order.erc1155TokenAmount),
+              )
+              .div(100000),
 
             decimals,
           );
         }
+
+        trackUserEvent.mutate({
+          event:
+            'erc1155Token' in order
+              ? UserEvents.nftAcceptListERC1155
+              : UserEvents.nftAcceptListERC721,
+          metadata: JSON.stringify(order),
+          hash,
+          chainId,
+        });
 
         createNotification({
           type: 'transaction',

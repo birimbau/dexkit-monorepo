@@ -21,7 +21,6 @@ import {
   useClaimerProofs,
   useContract,
   useContractMetadata,
-  useNFT,
   useOwnedNFTs,
   useUnclaimedNFTSupply,
 } from '@thirdweb-dev/react';
@@ -115,8 +114,6 @@ export default function NftDropSection({ section }: NftDropSectionProps) {
 
     return reason.toString();
   };
-
-  const { data: firstNft, isLoading: firstNftLoading } = useNFT(contract, 0);
 
   const numberClaimed = useMemo(() => {
     return BigNumber.from(claimedSupply.data || 0).toString();

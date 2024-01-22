@@ -12,7 +12,7 @@ import {
   getProviderByChainId,
 } from 'src/utils/blockchain';
 import { Token } from '../../../types/blockchain';
-import { GatedCondition } from '../types';
+import { GamificationPoint, GatedCondition } from '../types';
 
 export async function getTokenList(url: string) {
   const response = await axios.get(url);
@@ -241,7 +241,7 @@ export async function setAppVersion({ siteId, siteVersionId }: { siteId: number,
 }
 
 // site rankings
-export async function createSiteRankingVersion({ siteId, title, description, settings }: { siteId: number, title: string, description?: string, settings?: string }) {
+export async function createSiteRankingVersion({ siteId, title, description, settings }: { siteId: number, title?: string, description?: string, settings?: GamificationPoint[] }) {
   return myAppsApi.post(`/site-ranking/create`, {
     title,
     description,
@@ -250,7 +250,7 @@ export async function createSiteRankingVersion({ siteId, title, description, set
   });
 }
 
-export async function updateSiteRankingVersion({ siteId, title, description, rankingId, settings }: { siteId: number, title: string, description?: string, rankingId?: number, settings?: string }) {
+export async function updateSiteRankingVersion({ siteId, title, description, rankingId, settings }: { siteId: number, title?: string, description?: string, rankingId?: number, settings?: GamificationPoint[] }) {
   return myAppsApi.patch(`/site-ranking/${rankingId}`, {
     title,
     description,

@@ -26,7 +26,7 @@ interface CollectionFilter {
   chainId?: number;
   collectionAddress?: string;
   tokenId?: string;
-  conditionNFT?: number;
+  conditionNFT?: string;
   amountNFT?: number;
   tokenAddress?: string;
   amount?: number;
@@ -38,7 +38,7 @@ const CollectionFilterSchema: Yup.SchemaOf<CollectionFilter> =
     chainId: Yup.number(),
     tokenAddress: Yup.string(),
     amountNFT: Yup.number(),
-    conditionNFT: Yup.number(),
+    conditionNFT: Yup.string(),
     tokenId: Yup.string(),
     condition: Yup.string(),
     amount: Yup.number(),

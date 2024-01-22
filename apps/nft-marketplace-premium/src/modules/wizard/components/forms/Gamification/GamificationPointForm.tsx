@@ -26,6 +26,7 @@ import { Field, FieldArray, Form, Formik } from 'formik';
 import { TextField } from 'formik-mui';
 import { useState } from 'react';
 
+import { useAddAppRankingMutation } from '@/modules/wizard/hooks';
 import { UserEvents } from '@dexkit/core/constants/userEvents';
 import { beautifyCamelCase } from '@dexkit/core/utils';
 import { GamificationPoint } from '../../../types';
@@ -72,7 +73,7 @@ const options = userEvents.map((op) => op.value);
 
 const GamificationPointSchema = Yup.array(
   Yup.object().shape({
-    userEventtype: Yup.string().required(),
+    userEventType: Yup.string().required(),
     points: Yup.number().required(),
     filter: Yup.string(),
   }),
@@ -83,30 +84,44 @@ const RankingPointsScheme = Yup.object().shape({
 });
 
 interface Props {
+  siteId?: number;
+  rankingId?: number;
   onCancel?: () => void;
   onSubmit?: (settings: GamificationPoint[]) => void;
-  settings?: GamificationPoint[];
+  settings?: GamificationPoint[] | string;
 }
 
 export default function GamificationPointForm({
+  siteId,
+  rankingId,
   onCancel,
   onSubmit,
   settings,
 }: Props) {
   const [open, setOpen] = useState(false);
+  const mutationAddRanking = useAddAppRankingMutation();
 
   return (
     <>
       <Formik
-        onSubmit={(values) => {
-          if (values && onSubmit) {
-            onSubmit(values.settings);
+        onSubmit={async (values, helper) => {
+          if (values) {
+            await mutationAddRanking.mutateAsync({
+              siteId,
+              rankingId,
+              settings: values.settings,
+            });
+
+            //   onSubmit(values.settings);
           }
+          helper.setSubmitting(false);
         }}
         initialValues={{
-          settings:
-            settings ||
-            ([{ userEventType: UserEvents.swap }] as GamificationPoint[]),
+          settings: settings
+            ? typeof settings === 'string'
+              ? JSON.parse(settings)
+              : settings
+            : ([{ userEventType: UserEvents.swap }] as GamificationPoint[]),
         }}
         validationSchema={RankingPointsScheme}
       >
@@ -144,7 +159,7 @@ export default function GamificationPointForm({
               name="settings"
               render={(arrayHelpers) => (
                 <Box sx={{ p: 2 }}>
-                  {values.settings.map((condition, index) => (
+                  {values.settings.map((_setting, index) => (
                     <Box sx={{ p: 2 }} key={index}>
                       <Grid container spacing={2} key={index}>
                         {index !== 0 && (
@@ -242,7 +257,7 @@ export default function GamificationPointForm({
                             component={TextField}
                             type={'number'}
                             sx={{ maxWidth: '350px' }}
-                            name={`conditions[${index}].points`}
+                            name={`settings[${index}].points`}
                             label={
                               <FormattedMessage
                                 id="points"

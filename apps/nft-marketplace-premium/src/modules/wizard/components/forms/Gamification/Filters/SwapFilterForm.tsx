@@ -195,7 +195,7 @@ export default function SwapFilterForm({ item, onSubmit, onChange }: Props) {
                 <Select
                   labelId="condition-amount-out-select-label"
                   id="select-amount-out-id"
-                  value={values.conditionIn}
+                  value={values.conditionOut}
                   label={
                     <FormattedMessage
                       id="condition.amount.out"

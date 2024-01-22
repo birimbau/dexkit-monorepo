@@ -23,7 +23,7 @@ import {
   updateSiteRankingVersion,
   upsertAppVersion
 } from '../services';
-import { GatedCondition } from '../types';
+import { GamificationPoint, GatedCondition } from '../types';
 import { generateCSSVarsTheme } from '../utils';
 
 export const TOKEN_LIST_URL = 'TOKEN_LIST_URL';
@@ -308,9 +308,9 @@ export function useAddAppRankingMutation() {
 
   const query = useQueryClient()
 
-  return useMutation(async ({ siteId, title, description, rankingId, settings }: { siteId?: number, title?: string, description?: string, rankingId?: number, settings?: string }) => {
+  return useMutation(async ({ siteId, title, description, rankingId, settings }: { siteId?: number, title?: string, description?: string, rankingId?: number, settings?: GamificationPoint[] }) => {
 
-    if (!siteId || !title) {
+    if (!siteId) {
       throw Error('missing data to update')
     }
     if (rankingId) {
@@ -321,7 +321,7 @@ export function useAddAppRankingMutation() {
 
     query.refetchQueries([GET_APP_RANKINGS_QUERY])
     if (rankingId) {
-      query.refetchQueries([QUERY_ADMIN_WHITELABEL_CONFIG_NAME])
+      query.refetchQueries([GET_APP_RANKING_QUERY])
     }
 
     return true

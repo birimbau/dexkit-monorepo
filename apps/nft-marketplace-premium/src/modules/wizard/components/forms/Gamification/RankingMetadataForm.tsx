@@ -27,7 +27,7 @@ const AddRankingSchema: Yup.SchemaOf<AddRanking> = Yup.object().shape({
   description: Yup.string(),
 });
 
-export default function AddRankingFormDialog({
+export default function RankingMetadataForm({
   siteId,
   title,
   description,
@@ -47,6 +47,7 @@ export default function AddRankingFormDialog({
               mutationAddRanking.reset();
             },
           }}
+          isEdit={rankingId !== undefined}
           isLoading={mutationAddRanking.isLoading}
           isSuccess={mutationAddRanking.isSuccess}
           error={mutationAddRanking.error}
@@ -105,25 +106,25 @@ export default function AddRankingFormDialog({
                   </Stack>
                 </Box>
               </Grid>
-            </Grid>
 
-            <Grid item xs={12}>
-              <Stack spacing={1} direction="row" justifyContent="flex-end">
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={submitForm}
-                >
-                  <FormattedMessage id="save" defaultMessage="Save" />
-                </Button>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={() => resetForm()}
-                >
-                  <FormattedMessage id="cancel" defaultMessage="cancel" />
-                </Button>
-              </Stack>
+              <Grid item xs={12}>
+                <Stack spacing={1} direction="row" justifyContent="flex-end">
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={submitForm}
+                  >
+                    <FormattedMessage id="save" defaultMessage="Save" />
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => resetForm()}
+                  >
+                    <FormattedMessage id="cancel" defaultMessage="cancel" />
+                  </Button>
+                </Stack>
+              </Grid>
             </Grid>
           </Form>
         )}

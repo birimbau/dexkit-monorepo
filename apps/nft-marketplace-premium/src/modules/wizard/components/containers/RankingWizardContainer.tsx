@@ -1,5 +1,8 @@
 import AppConfirmDialog from '@dexkit/ui/components/AppConfirmDialog';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import TabContext from '@mui/lab/TabContext';
+import TabList from '@mui/lab/TabList';
+import TabPanel from '@mui/lab/TabPanel';
 import {
   Box,
   Button,
@@ -11,6 +14,7 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
+import Tab from '@mui/material/Tab';
 import { useCallback, useEffect, useState } from 'react';
 
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -31,8 +35,10 @@ import {
   useAppRankingListQuery,
   useDeleteAppRankingMutation,
 } from '../../hooks';
+import { GamificationPoint } from '../../types';
 import AddAppRankingFormDialog from '../dialogs/AddAppRankingFormDialog';
 import GamificationPointForm from '../forms/Gamification/GamificationPointForm';
+import RankingMetadataForm from '../forms/Gamification/RankingMetadataForm';
 import RankingSection from '../sections/RankingSection';
 export interface RankingWizardContainerProps {
   siteId?: number;
@@ -43,6 +49,7 @@ interface AppRanking {
   title: string;
   createdAt: number;
   description: string;
+  settings: GamificationPoint[];
 }
 
 interface TableProps {
@@ -272,6 +279,11 @@ export default function RankingWizardContainer({
 }: RankingWizardContainerProps) {
   const { enqueueSnackbar } = useSnackbar();
   const { formatMessage } = useIntl();
+  const [value, setValue] = useState('1');
+
+  const handleChange = (event: React.SyntheticEvent, newValue: string) => {
+    setValue(newValue);
+  };
   const [openConfirmRemove, setOpenConfirmRemove] = useState(false);
   const [openAddRanking, setOpenAddRanking] = useState(false);
   const [selectedRanking, setSelectedRanking] = useState<
@@ -427,26 +439,74 @@ export default function RankingWizardContainer({
             </Grid>
           )}
           {selectedEditRanking && (
-            <Grid item container xs={12}>
-              <Grid item xs={12}>
-                <Button
-                  startIcon={<ArrowBackIcon />}
-                  onClick={() => setSelectedEditRanking(undefined)}
-                >
-                  <FormattedMessage
-                    id={'back.to.ranking.list'}
-                    defaultMessage={'Back to Ranking List'}
-                  />{' '}
-                </Button>
-              </Grid>
+            <Grid item xs={12}>
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  <Button
+                    startIcon={<ArrowBackIcon />}
+                    onClick={() => setSelectedEditRanking(undefined)}
+                  >
+                    <FormattedMessage
+                      id={'back.to.ranking.list'}
+                      defaultMessage={'Back to Ranking List'}
+                    />{' '}
+                  </Button>
+                </Grid>
+                <Grid item xs={12}>
+                  <TabContext value={value}>
+                    <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                      <TabList
+                        onChange={handleChange}
+                        aria-label="lab API tabs example"
+                      >
+                        <Tab
+                          label={
+                            <FormattedMessage
+                              id={'rules'}
+                              defaultMessage={'Rules'}
+                            />
+                          }
+                          value="1"
+                        />
+                        <Tab
+                          label={
+                            <FormattedMessage
+                              id={'metadata'}
+                              defaultMessage={'Metadata'}
+                            />
+                          }
+                          value="2"
+                        />
+                      </TabList>
+                    </Box>
+                    <TabPanel value="1">
+                      {' '}
+                      <GamificationPointForm
+                        settings={selectedEditRanking.settings}
+                        siteId={siteId}
+                        rankingId={selectedEditRanking.id}
+                      />
+                    </TabPanel>
+                    <TabPanel value="2">
+                      <RankingMetadataForm
+                        siteId={siteId}
+                        rankingId={selectedEditRanking.id}
+                        title={selectedEditRanking.title}
+                        description={selectedEditRanking.description}
+                      />
+                    </TabPanel>
+                  </TabContext>
+                </Grid>
 
-              <GamificationPointForm />
-              <RankingSection
-                section={{
-                  type: 'ranking',
-                  settings: { rankingId: selectedEditRanking.id },
-                }}
-              />
+                <Grid item xs={12}>
+                  <RankingSection
+                    section={{
+                      type: 'ranking',
+                      settings: { rankingId: selectedEditRanking.id },
+                    }}
+                  />
+                </Grid>
+              </Grid>
             </Grid>
           )}
         </Grid>
