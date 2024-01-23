@@ -37,7 +37,7 @@ export default function DarkblockWrapper({
           tokenId={tokenId}
           account={account}
           provider={provider?.provider}
-          cb={(p: any) => console.log(p)}
+          cb={() => {}}
         />
       );
     }
