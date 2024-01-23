@@ -1,6 +1,7 @@
 {
-  "name": "dexappbuilder",
-  "version": "0.14.0",
+
+  "name": "nft-marketplace",
+  "version": "0.15.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
