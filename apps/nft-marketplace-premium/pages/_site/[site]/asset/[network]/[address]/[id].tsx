@@ -110,7 +110,7 @@ const AssetDetailPage: NextPage<any> = ({
           </Grid>
           <Grid item xs={12} sm={8}>
             <AssetRightSection address={address as string} id={id as string} />
-            {true && (
+            {enableDarkblock && (
               <NoSsr>
                 <Suspense>
                   <DarkblockWrapper
