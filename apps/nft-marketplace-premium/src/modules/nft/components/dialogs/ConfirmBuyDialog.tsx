@@ -39,7 +39,7 @@ interface Props {
   onConfirm: ({ quantity }: { quantity?: number }) => void;
 }
 
-export function ConfirmBuyDialog({
+export default function ConfirmBuyDialog({
   tokens,
   dialogProps,
   onConfirm,

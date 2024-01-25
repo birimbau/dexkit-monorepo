@@ -33,6 +33,7 @@ import './customCss.css';
 
 import SiteProvider from '@dexkit/ui/providers/SiteProvider';
 import { AppBarANN } from 'src/components/AppBarANN';
+import { AuthStateProvider } from 'src/providers/authStateProvider';
 
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
@@ -209,32 +210,35 @@ export default function MyApp(props: MyAppProps) {
           content={theme?.colorSchemes?.light?.palette?.primary?.main}
         />
       </Head>
-      <SiteProvider siteId={siteId} slug={site}>
-        <AppConfigContext.Provider
-          value={{ appConfig: config, appNFT, siteId }}
-        >
-          <QueryClientProvider client={queryClient}>
-            <Hydrate state={pageProps.dehydratedState}>
-              <DefaultSeo {...SEO} />
-              <LocalizationProvider dateAdapter={AdapterMoment}>
-                <AppMarketplaceProvider>
-                  <Backdrop
-                    open={loading}
-                    sx={{
-                      color: theme?.colorSchemes?.light?.palette?.primary?.main,
-                      zIndex: theme.zIndex.drawer + 1,
-                    }}
-                  >
-                    <CircularProgress color="inherit" size={80} />
-                  </Backdrop>
-                  <AppBarANN />
-                  {getLayout(<Component {...pageProps} />)}
-                </AppMarketplaceProvider>
-              </LocalizationProvider>
-            </Hydrate>
-          </QueryClientProvider>
-        </AppConfigContext.Provider>
-      </SiteProvider>
+      <AuthStateProvider>
+        <SiteProvider siteId={siteId} slug={site}>
+          <AppConfigContext.Provider
+            value={{ appConfig: config, appNFT, siteId }}
+          >
+            <QueryClientProvider client={queryClient}>
+              <Hydrate state={pageProps.dehydratedState}>
+                <DefaultSeo {...SEO} />
+                <LocalizationProvider dateAdapter={AdapterMoment}>
+                  <AppMarketplaceProvider>
+                    <Backdrop
+                      open={loading}
+                      sx={{
+                        color:
+                          theme?.colorSchemes?.light?.palette?.primary?.main,
+                        zIndex: theme.zIndex.drawer + 1,
+                      }}
+                    >
+                      <CircularProgress color="inherit" size={80} />
+                    </Backdrop>
+                    <AppBarANN />
+                    {getLayout(<Component {...pageProps} />)}
+                  </AppMarketplaceProvider>
+                </LocalizationProvider>
+              </Hydrate>
+            </QueryClientProvider>
+          </AppConfigContext.Provider>
+        </SiteProvider>
+      </AuthStateProvider>
       <Analytics />
     </CacheProvider>
   );

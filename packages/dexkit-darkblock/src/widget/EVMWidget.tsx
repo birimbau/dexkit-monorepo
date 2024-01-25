@@ -71,8 +71,14 @@ const EVMDarkblockWidget = ({
   useEffect(() => {
     callback(state.value)
     if (!account) {
-      setAddress(null)
-      send({ type: "NO_WALLET" })
+      if(state.value === "wallet_connected"){
+        setAddress(null)
+        send({ type: "DISCONNECT_WALLET" });
+      }else{
+        setAddress(null)
+        
+        send({ type: "NO_WALLET" })
+      }  
     } else {
       if (state.value === "idle") {
         send({ type: "FETCH_ARWEAVE" })
@@ -86,10 +92,7 @@ const EVMDarkblockWidget = ({
       }
 
       if (state.value === "wallet_connected") {
-        if(!account){
-          setAddress(null);
-          send({ type: "DISCONNECT_WALLET" });
-        }
+       
         // send({ type: "SIGN" })
       }
 
@@ -98,13 +101,7 @@ const EVMDarkblockWidget = ({
       }
 
       if (state.value === "authenticated") {
-        
-        if(!account){
-          setAddress(null);
-          send({ type: "DISCONNECT_WALLET" });
-        }else{
-          send({ type: "DECRYPT" })
-        }
+          send({ type: "DECRYPT" })  
       }
 
       if (state.value === "decrypting") {

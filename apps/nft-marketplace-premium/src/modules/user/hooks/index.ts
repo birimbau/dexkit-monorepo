@@ -126,8 +126,9 @@ export function useUserConnectDiscordMutation() {
 export const GET_USER_BY_USERNAME_QUERY = 'GET_USER_BY_USERNAME_QUERY';
 
 export function useUserQuery(username?: string) {
-  return useQuery([GET_USER_BY_USERNAME_QUERY, username], async () => {
-    if (username) {
+  const { isLoggedIn } = useAuth();
+  return useQuery([GET_USER_BY_USERNAME_QUERY, username, isLoggedIn], async () => {
+    if (username && isLoggedIn) {
       const userRequest = await getUserByUsername(username);
       return userRequest.data;
     }
@@ -138,8 +139,9 @@ export function useUserQuery(username?: string) {
 export const GET_AUTH_USER = 'GET_AUTH_USER';
 export function useAuthUserQuery() {
   const { account } = useWeb3React();
-  return useQuery([GET_AUTH_USER, account], async () => {
-    if (account) {
+  const { isLoggedIn } = useAuth();
+  return useQuery([GET_AUTH_USER, account, isLoggedIn], async () => {
+    if (account && isLoggedIn) {
       const userRequest = await getUserByAccount();
       return userRequest.data;
     }

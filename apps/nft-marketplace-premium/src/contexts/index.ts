@@ -29,16 +29,20 @@ export interface AuthUser {
 interface IAuthContext {
   isLoggedIn: boolean;
   user?: AuthUser;
-  setIsLoggedIn?: Dispatch<SetStateAction<boolean>>;
-  setUser?: Dispatch<SetStateAction<AuthUser | undefined>>;
+  setIsLoggedIn: Dispatch<SetStateAction<boolean>>;
+  setUser: Dispatch<SetStateAction<AuthUser | undefined>>;
 }
 
 const AUTH_INITIAL_VALUES = {
   isLoggedIn: false,
-  setIsLoggedIn: undefined,
+  setIsLoggedIn: () => { },
   user: undefined,
-  setUser: undefined,
+  setUser: () => { },
 };
 
 export const AuthContext =
+  React.createContext<IAuthContext>(AUTH_INITIAL_VALUES);
+
+
+export const AuthStateContext =
   React.createContext<IAuthContext>(AUTH_INITIAL_VALUES);

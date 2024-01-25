@@ -30,7 +30,6 @@ import {
   getNetworkSlugFromChainId,
   isAddressEqual,
 } from '../../../utils/blockchain';
-import { ConfirmBuyDialog } from './dialogs/ConfirmBuyDialog';
 import TableSkeleton from './tables/TableSkeleton';
 
 import { UserEvents } from '@dexkit/core/constants/userEvents';
@@ -53,6 +52,8 @@ import { SwapApiOrder } from '../../../types/nft';
 import { getWindowUrl } from '../../../utils/browser';
 import { getAssetProtocol } from '../../../utils/nfts';
 import ShareDialog from './dialogs/ShareDialog';
+
+const ConfirmBuyDialog = dynamic(() => import('./dialogs/ConfirmBuyDialog'));
 
 const ListingsTable = dynamic(() => import('./tables/ListingsTable'), {
   ssr: false,
@@ -534,19 +535,21 @@ export function AssetTabs({ address, id }: Props) {
 
   return (
     <NoSsr>
-      <ConfirmBuyDialog
-        tokens={tokens}
-        asset={asset}
-        metadata={metadata}
-        order={selectedOrder}
-        dialogProps={{
-          open: openConfirmBuy,
-          fullWidth: true,
-          maxWidth: 'sm',
-          onClose: handleCloseConfirmBuy,
-        }}
-        onConfirm={({ quantity }) => handleConfirmBuy({ quantity })}
-      />
+      {openConfirmBuy && (
+        <ConfirmBuyDialog
+          tokens={tokens}
+          asset={asset}
+          metadata={metadata}
+          order={selectedOrder}
+          dialogProps={{
+            open: openConfirmBuy,
+            fullWidth: true,
+            maxWidth: 'sm',
+            onClose: handleCloseConfirmBuy,
+          }}
+          onConfirm={({ quantity }) => handleConfirmBuy({ quantity })}
+        />
+      )}
       <ShareDialog
         dialogProps={{
           open: openShare,
