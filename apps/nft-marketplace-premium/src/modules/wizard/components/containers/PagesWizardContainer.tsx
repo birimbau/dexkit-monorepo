@@ -30,6 +30,7 @@ interface Props {
   builderKit?: BuilderKit;
   onHasChanges: (hasChanges: boolean) => void;
   siteId?: number;
+  previewUrl?: string;
 }
 
 export default function PagesWizardContainer({
@@ -38,6 +39,7 @@ export default function PagesWizardContainer({
   onSave,
   builderKit,
   onHasChanges,
+  previewUrl,
 }: Props) {
   const [currentPage, setCurrentPage] = useState<AppPage>(config.pages['home']);
   const [pages, setPages] = useState<{ [key: string]: AppPage }>(config.pages);
@@ -180,6 +182,7 @@ export default function PagesWizardContainer({
               theme={selectedTheme}
               showAddPage={showAddPage}
               setShowAddPage={setShowAddPage}
+              previewUrl={previewUrl}
             />
           )}
         </Grid>

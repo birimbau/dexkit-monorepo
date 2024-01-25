@@ -221,6 +221,7 @@ export default function ThemeWizardContainer({
     config.theme,
     config?.defaultThemeMode,
   ]);
+
   useEffect(() => {
     if (onHasChanges) {
       onHasChanges(themeChanged);

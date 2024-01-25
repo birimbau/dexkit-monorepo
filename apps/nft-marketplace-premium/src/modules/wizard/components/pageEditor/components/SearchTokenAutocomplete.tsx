@@ -23,7 +23,10 @@ export function SearchTokenAutocomplete(props: Props) {
   const tokensQuery = useSearchSwapTokens({
     keyword: search,
     network: getChainSlug(chainId),
-    featuredTokens,
+    featuredTokens:
+      featuredTokens && chainId
+        ? featuredTokens.filter((tk) => tk.chainId === chainId)
+        : featuredTokens,
   });
   const formValue = data;
 
@@ -35,7 +38,7 @@ export function SearchTokenAutocomplete(props: Props) {
           address: value.address.toLowerCase(),
           symbol: value.symbol,
           network: Object.values(NETWORKS).find(
-            (n) => n.chainId === value?.chainId
+            (n) => n.chainId === value?.chainId,
           )?.name,
           chainId: value.chainId as number,
           logoURI: value?.logoURI,
@@ -96,7 +99,7 @@ export function SearchTokenAutocomplete(props: Props) {
             onChange={(ev) => setSearch(ev.currentTarget.value)}
             inputProps={{
               ...params.inputProps,
-              autoComplete: 'new-password', // disable autocomplete and autofill
+              autoComplete: 'off', // disable autocomplete and autofill
               endAdornment: (
                 <React.Fragment>
                   {tokensQuery.isLoading ? (
