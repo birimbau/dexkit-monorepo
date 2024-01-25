@@ -496,44 +496,49 @@ export const getStaticProps: GetStaticProps = async ({
     } catch {}
   }
 
-  const sdk = new ThirdwebSDK(network as string);
-
-  const twContract = await sdk.getContract(address as string);
-
-  const isTw = twContract.abi.find((m) => m.name === 'contractVersion');
-
+  let isTw;
   let key: any[] = [
     GET_COLLECTION_DATA,
     address as string,
     NETWORK_FROM_SLUG(network)?.chainId,
   ];
 
-  if (isTw) {
-    const contractType: string = hexToString(
-      await twContract.call('contractType'),
-    );
+  try {
+    const sdk = new ThirdwebSDK(network as string);
 
-    const metadata = await twContract.metadata.get();
+    const twContract = await sdk.getContract(address as string);
 
-    let type = contractType?.toLowerCase()?.startsWith('edition')
-      ? NFTType.ERC1155
-      : NFTType.ERC721;
+    isTw = twContract.abi.find((m) => m.name === 'contractVersion');
 
-    await queryClient.prefetchQuery(key, async () => {
-      let coll = collection || ({} as Collection);
+    if (isTw) {
+      const contractType: string = hexToString(
+        await twContract.call('contractType'),
+      );
 
-      return {
-        address,
-        name: metadata.name,
-        chainId: NETWORK_FROM_SLUG(network)?.chainId,
-        symbol: metadata.symbol,
-        description: metadata.description,
-        imageUrl: metadata.image,
-        nftType: type,
-        ...omitNull(coll),
-      } as Collection;
-    });
-  } else {
+      const metadata = await twContract.metadata.get();
+
+      let type = contractType?.toLowerCase()?.startsWith('edition')
+        ? NFTType.ERC1155
+        : NFTType.ERC721;
+
+      await queryClient.prefetchQuery(key, async () => {
+        let coll = collection || ({} as Collection);
+
+        return {
+          address,
+          name: metadata.name,
+          chainId: NETWORK_FROM_SLUG(network)?.chainId,
+          symbol: metadata.symbol,
+          description: metadata.description,
+          imageUrl: metadata.image,
+          nftType: type,
+          ...omitNull(coll),
+        } as Collection;
+      });
+    }
+  } catch {}
+
+  if (!isTw) {
     await queryClient.prefetchQuery(key, async () => {
       return collection;
     });
