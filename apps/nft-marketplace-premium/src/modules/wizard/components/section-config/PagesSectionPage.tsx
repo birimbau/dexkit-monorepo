@@ -28,6 +28,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
 import FormatColorTextIcon from '@mui/icons-material/FormatColorText';
 import GavelIcon from '@mui/icons-material/Gavel';
+import LinkIcon from '@mui/icons-material/Link';
 import ShieldIcon from '@mui/icons-material/Shield';
 import StoreIcon from '@mui/icons-material/Store';
 import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
@@ -61,6 +62,7 @@ interface Props {
     cssVarPrefix?: string | undefined;
     colorSchemes: Record<SupportedColorScheme, Record<string, any>>;
   };
+  previewUrl?: string;
 }
 
 export default function PagesSectionPage({
@@ -79,6 +81,7 @@ export default function PagesSectionPage({
   theme,
   currentPage,
   pages,
+  previewUrl,
 }: Props) {
   const renderSection = (
     section: AppPageSection,
@@ -268,7 +271,6 @@ export default function PagesSectionPage({
     gatedConditions: GatedCondition[],
     gatedLayout: GatedPageLayout,
   ) => {
-    console.log(gatedLayout);
     onEditPage({
       isEditGatedConditions: true,
       gatedPageLayout: gatedLayout,
@@ -389,6 +391,15 @@ export default function PagesSectionPage({
                       id="gated.conditions"
                       defaultMessage="Gated conditions"
                     />
+                  </Button>
+                )}
+                {currentPage?.uri && previewUrl && (
+                  <Button
+                    href={`${previewUrl}${currentPage?.uri}`}
+                    target={'_blank'}
+                    startIcon={<LinkIcon />}
+                  >
+                    <FormattedMessage id="open.url" defaultMessage="Open url" />
                   </Button>
                 )}
 

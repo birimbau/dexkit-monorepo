@@ -253,7 +253,11 @@ export function EditWizardContainer({ site }: Props) {
   const handleConfirmSendConfig = async () => {
     setShowConfirmSendConfig(false);
     const newSite = { ...site, config: wizardConfig };
-    sendConfigMutation.mutate(newSite);
+    sendConfigMutation.mutate(newSite, {
+      onSuccess: () => {
+        setHasChanges(false);
+      },
+    });
     setShowSendingConfig(true);
   };
 
@@ -1007,6 +1011,7 @@ export function EditWizardContainer({ site }: Props) {
                       onHasChanges={setHasChanges}
                       builderKit={activeBuilderKit}
                       siteId={site?.id}
+                      previewUrl={site?.previewUrl}
                     />
                   )}
 

@@ -29,6 +29,7 @@ interface Props {
   onSwap: (index: number, direction: 'up' | 'down') => void;
   theme?: Omit<Theme, 'palette'> & CssVarsTheme;
   builderKit?: BuilderKit;
+  previewUrl?: string;
 }
 
 export default function PagesSection({
@@ -48,6 +49,7 @@ export default function PagesSection({
   currentIndex,
   currentPage,
   pages,
+  previewUrl,
 }: Props) {
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenEditor, setIsOpenEditor] = useState(false);
@@ -167,6 +169,7 @@ export default function PagesSection({
           isVisibleIndexes={viewIndexes}
           onSwap={onSwap}
           theme={theme}
+          previewUrl={previewUrl}
         />
         <Box maxWidth={'xs'}>
           <Button

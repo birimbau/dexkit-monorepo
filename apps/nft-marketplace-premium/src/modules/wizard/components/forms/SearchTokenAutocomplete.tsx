@@ -30,13 +30,20 @@ export function SearchTokenAutocomplete(props: Props) {
     if (search) {
       return (
         tokens
+          ?.filter((tk) => {
+            if (chainId) {
+              return tk.chainId === chainId;
+            } else {
+              return true;
+            }
+          })
           ?.filter(
             (v) =>
               v.name.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
               v.symbol.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
               v.address.toLowerCase().indexOf(search.toLowerCase()) !== -1,
           )
-          .map((value) => {
+          ?.map((value) => {
             return {
               name: (value.name as string) || '',
               address: value.address.toLowerCase(),
@@ -53,19 +60,27 @@ export function SearchTokenAutocomplete(props: Props) {
     }
 
     return (
-      tokens?.map((value) => {
-        return {
-          name: (value.name as string) || '',
-          address: value.address.toLowerCase(),
-          symbol: value.symbol,
-          network: Object.values(NETWORKS).find(
-            (n) => n.chainId === value?.chainId,
-          )?.name,
-          chainId: value.chainId as number,
-          logoURI: value?.logoURI,
-          decimals: value.decimals,
-        };
-      }) || []
+      tokens
+        ?.filter((tk) => {
+          if (chainId) {
+            return tk.chainId === chainId;
+          } else {
+            return true;
+          }
+        })
+        .map((value) => {
+          return {
+            name: (value.name as string) || '',
+            address: value.address.toLowerCase(),
+            symbol: value.symbol,
+            network: Object.values(NETWORKS).find(
+              (n) => n.chainId === value?.chainId,
+            )?.name,
+            chainId: value.chainId as number,
+            logoURI: value?.logoURI,
+            decimals: value.decimals,
+          };
+        }) || []
     );
   }, [formValue, chainId, tokens, search]);
 

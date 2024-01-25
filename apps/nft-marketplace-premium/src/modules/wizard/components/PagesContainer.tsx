@@ -25,6 +25,7 @@ interface Props {
   builderKit?: BuilderKit;
   showAddPage: boolean;
   setShowAddPage: (show: boolean) => void;
+  previewUrl?: string;
 }
 
 export function PagesContainer({
@@ -36,6 +37,7 @@ export function PagesContainer({
   builderKit,
   showAddPage,
   setShowAddPage,
+  previewUrl,
 }: Props) {
   const [showConfirmRemove, setShowConfirmRemove] = useState(false);
   const [selectedSectionIndex, setSelectedSectionindex] = useState<number>(-1);
@@ -265,6 +267,7 @@ export function PagesContainer({
             ? currentPage.sections[selectedSectionIndex]
             : undefined
         }
+        previewUrl={previewUrl}
       />
     </>
   );
