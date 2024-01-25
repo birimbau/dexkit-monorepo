@@ -63,46 +63,46 @@ const NetworksWizardContainer = dynamic(
 );
 
 const IntegrationsWizardContainer = dynamic(
-  () => import('./IntegrationsWizardContainer')
+  () => import('./IntegrationsWizardContainer'),
 );
 
 const UserEventAnalyticsContainer = dynamic(
-  () => import('./UserEventAnalyticsContainer')
+  () => import('./UserEventAnalyticsContainer'),
 );
 
 const OwnershipWizardContainer = dynamic(
-  () => import('./OwnershipWizardContainer')
+  () => import('./OwnershipWizardContainer'),
 );
 const CollectionWizardContainer = dynamic(
-  () => import('./CollectionWizardContainer')
+  () => import('./CollectionWizardContainer'),
 );
 const DomainWizardContainer = dynamic(() => import('./DomainWizardContainer'));
 const FooterMenuWizardContainer = dynamic(
-  () => import('./FooterMenuWizardContainer')
+  () => import('./FooterMenuWizardContainer'),
 );
 const GeneralWizardContainer = dynamic(
-  () => import('./GeneralWizardContainer')
+  () => import('./GeneralWizardContainer'),
 );
 const MarketplaceFeeWizardContainer = dynamic(
-  () => import('./MarketplaceFeeWizardContainer')
+  () => import('./MarketplaceFeeWizardContainer'),
 );
 const PagesMenuWizardContainer = dynamic(
-  () => import('./PagesMenuWizardContainer')
+  () => import('./PagesMenuWizardContainer'),
 );
 const PagesWizardContainer = dynamic(() => import('./PagesWizardContainer'));
 const SeoWizardContainer = dynamic(() => import('./SeoWizardContainer'));
 const SocialWizardContainer = dynamic(() => import('./SocialWizardContainer'));
 const SwapFeeWizardContainer = dynamic(
-  () => import('./SwapFeeWizardContainer')
+  () => import('./SwapFeeWizardContainer'),
 );
 const ThemeWizardContainer = dynamic(() => import('./ThemeWizardContainer'));
 const TokenWizardContainer = dynamic(() => import('./TokenWizardContainer'));
 const TeamWizardContainer = dynamic(() => import('./TeamWizardContainer'));
 const AppVersionWizardContainer = dynamic(
-  () => import('./AppVersionWizardContainer')
+  () => import('./AppVersionWizardContainer'),
 );
 const AnalyticsWizardContainer = dynamic(
-  () => import('./AnalyticsWizardContainer')
+  () => import('./AnalyticsWizardContainer'),
 );
 
 interface Props {
@@ -198,12 +198,12 @@ export function EditWizardContainer({ site }: Props) {
   const { isLoggedIn, user } = useAuth();
 
   const [activeMenu, setActiveMenu] = useState<ActiveMenu>(
-    tab || ActiveMenu.General
+    tab || ActiveMenu.General,
   );
   const [activeMenuWithChanges, setActiveMenuWithChanges] =
     useState<ActiveMenu>(tab || ActiveMenu.General);
   const [activeBuilderKit, setActiveBuilderKit] = useState<BuilderKit>(
-    BuilderKit.ALL
+    BuilderKit.ALL,
   );
 
   const handleChangeTab = (mn: ActiveMenu) => {
@@ -258,7 +258,11 @@ export function EditWizardContainer({ site }: Props) {
   const handleConfirmSendConfig = async () => {
     setShowConfirmSendConfig(false);
     const newSite = { ...site, config: wizardConfig };
-    sendConfigMutation.mutate(newSite);
+    sendConfigMutation.mutate(newSite, {
+      onSuccess: () => {
+        setHasChanges(false);
+      },
+    });
     setShowSendingConfig(true);
   };
 
@@ -297,7 +301,7 @@ export function EditWizardContainer({ site }: Props) {
       setWizardConfig(newConfig);
     },
 
-    [wizardConfig, setWizardConfig]
+    [wizardConfig, setWizardConfig],
   );
 
   const renderMenu = () => (
@@ -1011,6 +1015,7 @@ export function EditWizardContainer({ site }: Props) {
                       onHasChanges={setHasChanges}
                       builderKit={activeBuilderKit}
                       siteId={site?.id}
+                      previewUrl={site?.previewUrl}
                     />
                   )}
 
