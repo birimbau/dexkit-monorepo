@@ -1,9 +1,9 @@
 import TokenDropSummary from '@/modules/wizard/components/TokenDropSummary';
 import { CoinTypes } from '@dexkit/core';
-import { NETWORKS } from '@dexkit/core/constants/networks';
 import { EvmCoin } from '@dexkit/core/types';
 import { convertTokenToEvmCoin } from '@dexkit/core/utils';
 import { useTokenList } from '@dexkit/ui';
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import { Button, Divider, Tab, Tabs } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import { useContract } from '@thirdweb-dev/react';
@@ -21,7 +21,7 @@ const EvmTransferCoinDialog = dynamic(
   () =>
     import(
       '@dexkit/ui/modules/evm-transfer-coin/components/dialogs/EvmSendDialog'
-    ),
+    )
 );
 
 interface ContractTokenDropContainerProps {
@@ -33,6 +33,7 @@ export function ContractTokenDropContainer({
   address,
   network,
 }: ContractTokenDropContainerProps) {
+  const { NETWORKS } = useNetworkMetadata();
   const { data: contract } = useContract(address, 'token-drop');
 
   const [contractData, setContractData] = useState<CurrencyValue>();
@@ -132,8 +133,8 @@ export function ContractTokenDropContainer({
           chainId: chainId,
           provider: provider,
           coins: token
-            ? [...tokens.map(convertTokenToEvmCoin), token]
-            : tokens.map(convertTokenToEvmCoin),
+            ? [...tokens.map((t) => convertTokenToEvmCoin(t, NETWORKS)), token]
+            : tokens.map((t) => convertTokenToEvmCoin(t, NETWORKS)),
           defaultCoin: token,
         }}
       />

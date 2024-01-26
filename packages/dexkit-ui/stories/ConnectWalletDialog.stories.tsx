@@ -8,6 +8,7 @@ import { atom } from "jotai";
 import ConnectWalletDialog from "../components/ConnectWalletDialog";
 import { DexkitProvider } from "../components/DexkitProvider";
 import { ThemeMode } from "../constants/enum";
+import { useNetworkMetadata } from "../hooks/app";
 import theme from "../theme";
 import { AppNotification } from "../types";
 
@@ -28,9 +29,12 @@ const selectedWalletAtom = atom("storybook-selected-wallet");
 const queryClient = new QueryClient();
 
 const WrappedComponent = () => {
+  const { NETWORKS } = useNetworkMetadata();
+
   const walletActivate = useWalletActivate({
     selectedWalletAtom,
     magicRedirectUrl: "localhost:3000",
+    NETWORKS,
   });
   const { isActive } = useWeb3React();
 

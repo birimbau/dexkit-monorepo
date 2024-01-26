@@ -1,3 +1,4 @@
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import CheckCircle from '@mui/icons-material/CheckCircle';
 import {
   Box,
@@ -13,7 +14,6 @@ import {
 import { FormattedMessage } from 'react-intl';
 import { AppDialogTitle } from 'src/components/AppDialogTitle';
 import Link from 'src/components/Link';
-import { getBlockExplorerUrl } from 'src/utils/blockchain';
 
 interface Props {
   dialogProps: DialogProps;
@@ -32,6 +32,7 @@ export default function CreateTokenDialog({
   transactionHash,
   contractAddress,
 }: Props) {
+  const { getBlockExplorerUrl } = useNetworkMetadata();
   const { onClose } = dialogProps;
 
   const handleClose = () => {

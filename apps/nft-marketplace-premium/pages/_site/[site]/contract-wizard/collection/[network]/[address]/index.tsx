@@ -9,6 +9,7 @@ import ContractCollectionPageHeader from '@/modules/contract-wizard/components/C
 import { ChipFilterTraits } from '@/modules/nft/components/ChipFilterTraits';
 import { CollectionStats } from '@/modules/nft/components/CollectionStats';
 import { dexkitNFTapi } from '@dexkit/ui/constants/api';
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import { netToQuery } from '@dexkit/ui/utils/networks';
 import Search from '@mui/icons-material/Search';
 import {
@@ -55,12 +56,14 @@ import {
 } from 'src/services/nft';
 import { getRariCollectionStats } from 'src/services/rarible';
 import { Asset } from 'src/types/nft';
-import { getChainIdFromSlug } from 'src/utils/blockchain';
 
 const ContractWizardCollectionPage: NextPage = () => {
   const router = useRouter();
   const { formatMessage } = useIntl();
   const { address, network } = router.query;
+
+  const { getChainIdFromSlug } = useNetworkMetadata();
+
   const chainId = getChainIdFromSlug(network as string)?.chainId;
   const [search, setSearch] = useState<string>();
 

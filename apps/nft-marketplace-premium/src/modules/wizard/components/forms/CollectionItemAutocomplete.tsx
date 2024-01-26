@@ -1,8 +1,8 @@
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import { useEffect, useMemo, useState } from 'react';
-import { getChainName, getChainSymbol } from 'src/utils/blockchain';
 import { useAppWizardConfig } from '../../hooks';
 
 type Data = {
@@ -30,13 +30,15 @@ export function CollectionItemAutocomplete(props: Props) {
   const { wizardConfig } = useAppWizardConfig();
   const [collectionValue, setCollectionValue] = useState<Data | undefined>();
 
+  const { NETWORK_SYMBOL, NETWORK_NAME } = useNetworkMetadata();
+
   const collections =
     wizardConfig.collections?.map((value) => {
       return {
         name: value.name,
         contractAddress: value.contractAddress,
         backgroundImage: value.backgroundImage,
-        network: getChainName(value.chainId) as string,
+        network: NETWORK_NAME(value.chainId) as string,
         chainId: value.chainId,
         image: value.image,
       };
@@ -54,7 +56,7 @@ export function CollectionItemAutocomplete(props: Props) {
         (c) =>
           Number(c.chainId) === Number(formValue.chainId) &&
           c.contractAddress?.toLowerCase() ===
-            formValue.contractAddress?.toLowerCase()
+            formValue.contractAddress?.toLowerCase(),
       );
       if (coll) {
         setCollectionValue({ ...coll });
@@ -92,7 +94,7 @@ export function CollectionItemAutocomplete(props: Props) {
         }
       }}
       getOptionLabel={(option) =>
-        option.name ? `${getChainSymbol(option.chainId)}-${option.name}` : ''
+        option.name ? `${NETWORK_SYMBOL(option.chainId)}-${option.name}` : ''
       }
       renderOption={(props, option) => (
         <Box
@@ -101,7 +103,7 @@ export function CollectionItemAutocomplete(props: Props) {
           {...props}
         >
           <img loading="lazy" width="20" src={`${option.image}`} alt="" />
-          {getChainName(option.chainId)} - {option.name}
+          {NETWORK_NAME(option.chainId)} - {option.name}
         </Box>
       )}
       renderInput={(params) => (

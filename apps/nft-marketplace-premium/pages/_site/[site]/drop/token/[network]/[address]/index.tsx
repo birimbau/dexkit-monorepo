@@ -7,6 +7,7 @@ import { useRouter } from 'next/router';
 
 import TokenDropSection from '@/modules/wizard/components/sections/TokenDropSection';
 import { dexkitNFTapi } from '@dexkit/ui/constants/api';
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import { netToQuery } from '@dexkit/ui/utils/networks';
 import { Container, Grid, Skeleton } from '@mui/material';
 import { QueryClient, dehydrate } from '@tanstack/react-query';
@@ -17,7 +18,6 @@ import { PageHeader } from 'src/components/PageHeader';
 import MainLayout from 'src/components/layouts/main';
 import { THIRDWEB_CLIENT_ID } from 'src/constants';
 import { getAppConfig } from 'src/services/app';
-import { getChainIdFromSlug } from 'src/utils/blockchain';
 
 function TokenDrop() {
   const router = useRouter();
@@ -75,6 +75,8 @@ export default function Wrapper() {
   const { provider } = useWeb3React();
   const router = useRouter();
   const { network } = router.query;
+
+  const { getChainIdFromSlug } = useNetworkMetadata();
 
   return (
     <ThirdwebSDKProvider

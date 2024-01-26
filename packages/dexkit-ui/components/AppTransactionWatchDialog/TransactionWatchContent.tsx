@@ -1,4 +1,3 @@
-import { getBlockExplorerUrl } from "@dexkit/core/utils";
 import {
   Avatar,
   Box,
@@ -12,6 +11,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useWeb3React } from "@web3-react/core";
 import { FormattedMessage } from "react-intl";
 import { useWaitTransactionConfirmation } from "../../hooks";
+import { useNetworkMetadata } from "../../hooks/app";
 import { TxDialogTransaction } from "../../types";
 
 export interface TransactionWatchContentProps {
@@ -26,6 +26,7 @@ export default function TransactionWatchContent({
   enableConditions,
 }: TransactionWatchContentProps) {
   const { provider, chainId } = useWeb3React();
+  const { getBlockExplorerUrl } = useNetworkMetadata();
 
   const action = useMutation(async () => {
     let result = await transaction.action();

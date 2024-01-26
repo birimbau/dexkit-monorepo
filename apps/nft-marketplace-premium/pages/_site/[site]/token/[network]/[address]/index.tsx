@@ -1,6 +1,7 @@
 import { ContractMetadataHeader } from '@/modules/contract-wizard/components/ContractMetadataHeader';
 import TokenErc20Section from '@/modules/wizard/components/sections/TokenErc20Section';
 import { dexkitNFTapi } from '@dexkit/ui/constants/api';
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import { hexToString } from '@dexkit/ui/utils';
 import { netToQuery } from '@dexkit/ui/utils/networks';
 import Container from '@mui/material/Container';
@@ -18,7 +19,6 @@ import { useRouter } from 'next/router';
 import MainLayout from 'src/components/layouts/main';
 import { THIRDWEB_CLIENT_ID } from 'src/constants';
 import { getAppConfig } from 'src/services/app';
-import { getChainIdFromSlug } from 'src/utils/blockchain';
 
 export function TokensPage() {
   const { query } = useRouter();
@@ -67,6 +67,8 @@ export default function Wrapper() {
   const { provider } = useWeb3React();
   const router = useRouter();
   const { network } = router.query;
+
+  const { getChainIdFromSlug } = useNetworkMetadata();
 
   return (
     <ThirdwebSDKProvider

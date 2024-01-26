@@ -15,12 +15,13 @@ import { FormattedMessage } from "react-intl";
 import { ChainId, useApproveToken, useTokenAllowanceQuery } from "@dexkit/core";
 import { UserEvents } from "@dexkit/core/constants/userEvents";
 import { ZeroExQuoteResponse } from "@dexkit/core/services/zrx/types";
-import { formatBigNumber, getChainName } from "@dexkit/core/utils";
+import { formatBigNumber } from "@dexkit/core/utils";
 import {
   useDexKitContext,
   useSwitchNetworkMutation,
   useWaitTransactionConfirmation,
 } from "@dexkit/ui/hooks";
+import { useNetworkMetadata } from "@dexkit/ui/hooks/app";
 import { useTrackUserEventsMutation } from "@dexkit/ui/hooks/userEvents";
 import { AppNotificationType } from "@dexkit/ui/types";
 import { useMutation } from "@tanstack/react-query";
@@ -57,6 +58,8 @@ export default function MarketSellForm({
   feeRecipient,
   isActive,
 }: MarketSellFormProps) {
+  const { NETWORK_NAME } = useNetworkMetadata();
+
   const handleChangeAmount = (value: string) => {
     setAmount(value);
   };
@@ -217,7 +220,7 @@ export default function MarketSellForm({
           <FormattedMessage
             id="switch.to.network"
             defaultMessage="Switch to {network}"
-            values={{ network: getChainName(chainId) }}
+            values={{ network: NETWORK_NAME(chainId) }}
           />
         </Button>
       );

@@ -4,6 +4,7 @@ import { useWeb3React } from "@web3-react/core";
 import dynamic from "next/dynamic";
 import { useState } from "react";
 import { FormattedMessage } from "react-intl";
+import { useNetworkMetadata } from "../../../hooks/app";
 import { useTokenList } from "../../../hooks/blockchain";
 
 const EvmTransferCoinDialog = dynamic(
@@ -17,6 +18,8 @@ export function TransferCoinButton() {
   const [open, setOpen] = useState<boolean>(false);
   const { account, chainId, provider, ENSName } = useWeb3React();
   const tokens = useTokenList({ chainId, includeNative: true });
+
+  const { NETWORKS } = useNetworkMetadata();
 
   return (
     <>
@@ -35,7 +38,7 @@ export function TransferCoinButton() {
             account: account,
             chainId: chainId,
             provider: provider,
-            coins: tokens.map(convertTokenToEvmCoin),
+            coins: tokens.map((t) => convertTokenToEvmCoin(t, NETWORKS)),
           }}
         />
       )}

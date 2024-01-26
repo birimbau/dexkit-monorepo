@@ -2,7 +2,7 @@ import { ethers } from "ethers";
 
 import { ERC20Abi } from "../constants/abis";
 
-import { NETWORK_COIN_SYMBOL } from "../constants/networks";
+import { NETWORK_COIN_SYMBOL_SERVER } from "../constants/networks";
 import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "../constants/zrx";
 
 export const getERC20Decimals = async (
@@ -31,7 +31,7 @@ export const getERC20Symbol = async (
   }
 
   if (contractAddress === ZEROEX_NATIVE_TOKEN_ADDRESS) {
-    return NETWORK_COIN_SYMBOL((await provider.getNetwork()).chainId);
+    return NETWORK_COIN_SYMBOL_SERVER((await provider.getNetwork()).chainId);
   }
 
   const contract = new ethers.Contract(contractAddress, ERC20Abi, provider);

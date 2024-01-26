@@ -1,7 +1,7 @@
 import { ChainId } from "@dexkit/core";
 import { Token } from "@dexkit/core/types";
-import { getBlockExplorerUrl } from "@dexkit/core/utils";
 import { AppDialogTitle } from "@dexkit/ui/components/AppDialogTitle";
+import { useNetworkMetadata } from "@dexkit/ui/hooks/app";
 import CheckIcon from "@mui/icons-material/Check";
 
 import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
@@ -55,6 +55,8 @@ export default function ReviewMarketOrderDialog({
   chainId,
   hash,
 }: ReviewMarketOrderDialogProps) {
+  const { getBlockExplorerUrl } = useNetworkMetadata();
+
   const pricePerTokenInverseFormatted = useMemo(() => {
     if (price && Number(price) > 0) {
       return new Intl.NumberFormat(undefined, {

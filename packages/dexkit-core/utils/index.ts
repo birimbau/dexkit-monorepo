@@ -2,19 +2,18 @@ import { build, BuildInput } from "eth-url-parser";
 import { BigNumber, ethers } from "ethers";
 import { EventEmitter } from "events";
 import { ChainId, CoinTypes, IPFS_GATEWAY } from "../constants";
-import { NETWORKS } from "../constants/networks";
 import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "../constants/zrx";
-import { EvmCoin, TokenWhitelabelApp } from "../types";
-
+import { EvmCoin, Network, TokenWhitelabelApp } from "../types";
 
 export * from "./ipfs";
 export * from "./numbers";
 
-
 export const omitNull = (obj: any) => {
-  Object.keys(obj).filter(k => obj[k] === null).forEach(k => delete (obj[k]))
-  return obj
-}
+  Object.keys(obj)
+    .filter((k) => obj[k] === null)
+    .forEach((k) => delete obj[k]);
+  return obj;
+};
 
 export function parseChainId(chainId: string | number) {
   return typeof chainId === "number"
@@ -43,7 +42,6 @@ export const truncateAddress = (address: string | undefined) => {
   return "";
 };
 
-
 export const truncateHash = (hash: string | undefined) => {
   if (hash !== undefined) {
     return `${hash.slice(0, 7)}...${hash.slice(hash.length - 5)}`;
@@ -53,14 +51,17 @@ export const truncateHash = (hash: string | undefined) => {
 
 export const beautifyCamelCase = (camelCase: string | undefined) => {
   if (camelCase) {
-    return camelCase.replace(/([A-Z])/g, ' $1')
-      // uppercase the first character
-      .replace(/^./, function (str) { return str.toUpperCase(); })
+    return (
+      camelCase
+        .replace(/([A-Z])/g, " $1")
+        // uppercase the first character
+        .replace(/^./, function (str) {
+          return str.toUpperCase();
+        })
+    );
   }
-  return
-}
-
-
+  return;
+};
 
 export function hasLondonHardForkSupport(chainId: ChainId) {
   switch (chainId) {
@@ -73,12 +74,6 @@ export function hasLondonHardForkSupport(chainId: ChainId) {
 
     default:
       return false;
-  }
-}
-
-export function getNativeTokenSymbol(chainId?: number) {
-  if (chainId) {
-    return NETWORKS[chainId]?.symbol;
   }
 }
 
@@ -129,12 +124,6 @@ export function formatBigNumber(val?: BigNumber, decimals?: number) {
   }
 
   return value.substring(0, ending);
-}
-
-export function getBlockExplorerUrl(chainId?: number) {
-  if (chainId) {
-    return NETWORKS[chainId].explorerUrl;
-  }
 }
 
 export function copyToClipboard(textToCopy: string) {
@@ -220,8 +209,11 @@ export function buildEtherReceiveAddress({
   return "";
 }
 
-export function convertTokenToEvmCoin(token: TokenWhitelabelApp): EvmCoin {
-  const network = NETWORKS[token.chainId];
+export function convertTokenToEvmCoin(
+  token: TokenWhitelabelApp,
+  NETWORKS?: { [key: number]: Network }
+): EvmCoin {
+  const network = NETWORKS ? NETWORKS[token.chainId] : undefined;
 
   if (
     token.address.toLowerCase() === ZEROEX_NATIVE_TOKEN_ADDRESS.toLowerCase()
@@ -229,7 +221,7 @@ export function convertTokenToEvmCoin(token: TokenWhitelabelApp): EvmCoin {
     return {
       network: {
         id: network?.slug as string,
-        name: network?.name,
+        name: network?.name || "",
         chainId: token?.chainId,
         icon: network?.coinImageUrl,
         coingeckoPlatformId: network?.coingeckoPlatformId,
@@ -244,7 +236,7 @@ export function convertTokenToEvmCoin(token: TokenWhitelabelApp): EvmCoin {
     return {
       network: {
         id: network?.slug as string,
-        name: network?.name,
+        name: network?.name || "",
         chainId: token?.chainId,
         icon: network?.coinImageUrl,
         coingeckoPlatformId: network?.coingeckoPlatformId,
@@ -256,11 +248,5 @@ export function convertTokenToEvmCoin(token: TokenWhitelabelApp): EvmCoin {
       decimals: token.decimals,
       imageUrl: token.logoURI,
     };
-  }
-}
-
-export function getChainName(chainId?: number) {
-  if (chainId) {
-    return NETWORKS[chainId]?.name || `0x${chainId.toString(16)}`;
   }
 }

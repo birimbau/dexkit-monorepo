@@ -1,5 +1,4 @@
 import {
-  getBlockExplorerUrl,
   getNormalizedUrl,
   isAddressEqual,
   truncateAddress,
@@ -69,6 +68,7 @@ export default function EvmBurnNft({
   onCancel,
   onOwnershipChange,
 }: EvmTransferNftProps) {
+  const { getBlockExplorerUrl } = useNetworkMetadata();
   const { formatMessage } = useIntl();
   const { createNotification, watchTransactionDialog } = useDexKitContext();
 

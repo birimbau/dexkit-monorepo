@@ -1,4 +1,3 @@
-import { NETWORK_EXPLORER } from '@dexkit/core/constants/networks';
 import {
   beautifyCamelCase,
   truncateAddress,
@@ -54,7 +53,7 @@ function OnChainDataGrid({ siteId }: Props) {
 
   useEffect(() => {
     setRowCountState((prevRowCountState: number) =>
-      data?.total !== undefined ? data?.total : prevRowCountState
+      data?.total !== undefined ? data?.total : prevRowCountState,
     );
   }, [data?.total, setRowCountState]);
 
@@ -178,6 +177,8 @@ function OnChainDataGrid({ siteId }: Props) {
 }
 
 function OffChainDataGrid({ siteId }: Props) {
+  const { NETWORK_EXPLORER } = useNetworkMetadata();
+
   const [queryOptions, setQueryOptions] = useState<any>({
     filter: {
       hash: null,
@@ -200,7 +201,7 @@ function OffChainDataGrid({ siteId }: Props) {
 
   useEffect(() => {
     setRowCountState((prevRowCountState: number) =>
-      data?.total !== undefined ? data?.total : prevRowCountState
+      data?.total !== undefined ? data?.total : prevRowCountState,
     );
   }, [data?.total, setRowCountState]);
 

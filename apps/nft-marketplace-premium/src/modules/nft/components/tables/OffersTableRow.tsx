@@ -15,11 +15,7 @@ import {
 
 import { ethers } from 'ethers';
 import Link from '../../../../components/Link';
-import {
-  getBlockExplorerUrl,
-  isAddressEqual,
-  truncateAddress,
-} from '../../../../utils/blockchain';
+import { isAddressEqual, truncateAddress } from '../../../../utils/blockchain';
 
 import CheckIcon from '@mui/icons-material/Check';
 import moment from 'moment';
@@ -32,6 +28,7 @@ import MomentFromNow from '../../../../components/MomentFromNow';
 import { useTokenList } from '../../../../hooks/blockchain';
 import { SwapApiOrder } from '../../../../types/nft';
 
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import LaunchIcon from '@mui/icons-material/Launch';
 import { useCoinPricesQuery, useCurrency } from '../../../../hooks/currency';
 
@@ -54,6 +51,8 @@ function OffersTableRow({
   onCancelOffer,
   onMenu,
 }: Props) {
+  const { getBlockExplorerUrl } = useNetworkMetadata();
+
   const tokens = useTokenList({ chainId: parseInt(chainId || '0') });
 
   const token = tokens.find((t) =>

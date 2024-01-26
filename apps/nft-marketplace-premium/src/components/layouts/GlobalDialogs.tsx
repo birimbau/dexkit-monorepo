@@ -22,6 +22,7 @@ const SwitchNetworkDialog = dynamic(
 );
 
 import { useDexKitContext, useExecuteTransactionsDialog } from '@dexkit/ui';
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import { useWalletActivate } from '@dexkit/wallet-connectors/hooks/wallet';
 import { WalletActivateParams } from '@dexkit/wallet-connectors/types';
 
@@ -45,6 +46,7 @@ const SelectLanguageDialog = dynamic(
 );
 
 export function GlobalDialogs() {
+  const { NETWORKS } = useNetworkMetadata();
   const { connector, isActive, isActivating } = useWeb3React();
   const router = useRouter();
 
@@ -146,6 +148,7 @@ export function GlobalDialogs() {
         ? window.location.href
         : process.env.NEXT_PUBLIC_MAGIC_REDIRECT_URL || '',
     selectedWalletAtom,
+    NETWORKS,
   });
 
   const handleActivateWallet = async (params: WalletActivateParams) => {

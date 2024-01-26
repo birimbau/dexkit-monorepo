@@ -1,7 +1,7 @@
 import { CoinTypes, TOKEN_ICON_URL } from '@dexkit/core';
-import { NETWORKS } from '@dexkit/core/constants/networks';
 import { EvmCoin } from '@dexkit/core/types';
 import { convertTokenToEvmCoin } from '@dexkit/core/utils';
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import { useAsyncMemo } from '@dexkit/widgets/src/hooks';
 import { Box, Button, Container, Grid, Paper, Stack } from '@mui/material';
 import { useContract } from '@thirdweb-dev/react';
@@ -10,7 +10,6 @@ import dynamic from 'next/dynamic';
 import { useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { useTokenList } from 'src/hooks/blockchain';
-import { getChainIdFromSlug } from 'src/utils/blockchain';
 import { TokenErc20PageSection } from '../../../types/section';
 import TokenSummary from './TokenSummary';
 
@@ -22,21 +21,21 @@ const EvmTransferCoinDialog = dynamic(
   () =>
     import(
       '@dexkit/ui/modules/evm-transfer-coin/components/dialogs/EvmSendDialog'
-    ),
+    )
 );
 
 const EvmBurnTokenDialog = dynamic(
   () =>
     import(
       '@dexkit/ui/modules/evm-burn-token/components/dialogs/EvmBurnTokenDialog'
-    ),
+    )
 );
 
 const EvmMintTokenDialog = dynamic(
   () =>
     import(
       '@dexkit/ui/modules/evm-mint-token/components/dialogs/EvmMintTokenDialog'
-    ),
+    )
 );
 
 export default function TokenErc20Section({ section }: TokenErc20SectionProps) {
@@ -48,6 +47,8 @@ export default function TokenErc20Section({ section }: TokenErc20SectionProps) {
     disableTransfer,
     disableMint,
   } = section.settings;
+
+  const { getChainIdFromSlug, NETWORKS } = useNetworkMetadata();
 
   const { data: contract } = useContract(address, 'token');
 
@@ -88,7 +89,7 @@ export default function TokenErc20Section({ section }: TokenErc20SectionProps) {
       return await contract?.get();
     },
     undefined,
-    [contract],
+    [contract]
   );
 
   const net = useMemo(() => {
@@ -131,7 +132,7 @@ export default function TokenErc20Section({ section }: TokenErc20SectionProps) {
             account: account,
             chainId: chainId,
             provider: provider,
-            coins: tokens.map(convertTokenToEvmCoin),
+            coins: tokens.map((t) => convertTokenToEvmCoin(t, NETWORKS)),
             defaultCoin: defaultToken,
           }}
         />

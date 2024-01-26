@@ -14,13 +14,10 @@ import {
 import { ethers } from 'ethers';
 import moment from 'moment';
 import { FormattedMessage, FormattedNumber } from 'react-intl';
-import {
-  getBlockExplorerUrl,
-  isAddressEqual,
-  truncateAddress,
-} from '../../../../utils/blockchain';
+import { isAddressEqual, truncateAddress } from '../../../../utils/blockchain';
 import { ipfsUriToUrl } from '../../../../utils/ipfs';
 
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import CancelIcon from '@mui/icons-material/Cancel';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { memo, useMemo, useRef } from 'react';
@@ -49,6 +46,8 @@ export function ListingsTableRow({
   onCancel,
   onMenu,
 }: Props) {
+  const { getBlockExplorerUrl } = useNetworkMetadata();
+
   const tokens = useTokenList({
     chainId: parseInt(String(asset?.chainId || '0')),
     includeNative: true,

@@ -1,7 +1,7 @@
 import { ChainId } from '@dexkit/core';
 import { useIsMobile } from '@dexkit/core/hooks';
 import { useDexKitContext } from '@dexkit/ui/hooks';
-import { getBlockExplorerUrl } from '@dexkit/widgets/src/utils';
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import CelebrationIcon from '@mui/icons-material/Celebration';
 import CloseIcon from '@mui/icons-material/Close';
 import DoneIcon from '@mui/icons-material/Done';
@@ -29,6 +29,8 @@ import {
 import UserCreateDialog from './dialogs/UserCreateDialog';
 import UserEditDialog from './dialogs/UserEditDialog';
 export function UserAirdrop() {
+  const { getBlockExplorerUrl } = useNetworkMetadata();
+
   const [open, setOpen] = useState<boolean>(false);
   const [openUserDialog, setOpenUserDialog] = useState<boolean>(false);
   const [openUserEditDialog, setOpenUserEditDialog] = useState<boolean>(false);

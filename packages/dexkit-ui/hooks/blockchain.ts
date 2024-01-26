@@ -1,16 +1,11 @@
 import { ChainId } from "@dexkit/core/constants";
-import {
-  NETWORKS,
-  NETWORK_COIN_IMAGE,
-  NETWORK_COIN_NAME,
-  NETWORK_COIN_SYMBOL,
-} from "@dexkit/core/constants/networks";
 import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "@dexkit/core/constants/zrx";
 import { EvmCoin, TokenWhitelabelApp } from "@dexkit/core/types";
 import { convertTokenToEvmCoin } from "@dexkit/core/utils";
 import { useWeb3React } from "@web3-react/core";
 import { useMemo } from "react";
 import { useAppConfig, useDexKitContext } from ".";
+import { useNetworkMetadata } from "./app";
 
 export function useTokenList({
   chainId,
@@ -23,6 +18,9 @@ export function useTokenList({
   onlyNative?: boolean;
   onlyTradable?: boolean;
 }) {
+  const { NETWORKS, NETWORK_IMAGE, NETWORK_NAME, NETWORK_SYMBOL } =
+    useNetworkMetadata();
+
   const appConfig = useAppConfig();
 
   const tokensValues = useDexKitContext().tokens || [];
@@ -52,9 +50,9 @@ export function useTokenList({
           address: ZEROEX_NATIVE_TOKEN_ADDRESS,
           chainId,
           decimals: 18,
-          logoURI: NETWORK_COIN_IMAGE(chainId),
-          name: NETWORK_COIN_NAME(chainId),
-          symbol: NETWORK_COIN_SYMBOL(chainId),
+          logoURI: NETWORK_IMAGE(chainId),
+          name: NETWORK_NAME(chainId),
+          symbol: NETWORK_SYMBOL(chainId),
         },
       ] as TokenWhitelabelApp[];
     }
@@ -77,9 +75,9 @@ export function useTokenList({
           address: wrappedAddress,
           chainId,
           decimals: 18,
-          logoURI: NETWORK_COIN_IMAGE(chainId),
-          name: `Wrapped ${NETWORK_COIN_NAME(chainId)}`,
-          symbol: `W${NETWORK_COIN_SYMBOL(chainId)}`,
+          logoURI: NETWORK_IMAGE(chainId),
+          name: `Wrapped ${NETWORK_NAME(chainId)}`,
+          symbol: `W${NETWORK_SYMBOL(chainId)}`,
         } as TokenWhitelabelApp,
         ...tokenList,
       ];
@@ -91,9 +89,9 @@ export function useTokenList({
           address: ZEROEX_NATIVE_TOKEN_ADDRESS,
           chainId,
           decimals: 18,
-          logoURI: NETWORK_COIN_IMAGE(chainId),
-          name: NETWORK_COIN_NAME(chainId),
-          symbol: NETWORK_COIN_SYMBOL(chainId),
+          logoURI: NETWORK_IMAGE(chainId),
+          name: NETWORK_NAME(chainId),
+          symbol: NETWORK_SYMBOL(chainId),
         },
         ...tokenList,
       ] as TokenWhitelabelApp[];
@@ -111,6 +109,10 @@ export function useEvmCoins({
   const { chainId: walletChainId } = useWeb3React();
   const chainId = defaultChainId || walletChainId;
   const tokens = useTokenList({ chainId, includeNative: true });
+  const { NETWORKS } = useNetworkMetadata();
 
-  return useMemo(() => tokens.map(convertTokenToEvmCoin), [tokens]);
+  return useMemo(
+    () => tokens.map((t) => convertTokenToEvmCoin(t, NETWORKS)),
+    [tokens]
+  );
 }

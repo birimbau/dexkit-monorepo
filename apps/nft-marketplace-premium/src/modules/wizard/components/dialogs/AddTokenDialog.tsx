@@ -23,11 +23,11 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import * as Yup from 'yup';
 
 import { ImageFormUpload } from '@/modules/contract-wizard/components/ImageFormUpload';
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import { AxiosError } from 'axios';
 import { ethers } from 'ethers';
 import { useSnackbar } from 'notistack';
 import { AppDialogTitle } from '../../../../components/AppDialogTitle';
-import { NETWORKS } from '../../../../constants/chain';
 import { useTokenData } from '../../../../hooks/blockchain';
 import { useDebounce } from '../../../../hooks/misc';
 import { Token } from '../../../../types/blockchain';
@@ -66,6 +66,8 @@ const FormSchema: Yup.SchemaOf<Form> = Yup.object().shape({
 });
 
 function AddTokenDialog({ dialogProps, tokens, onSave }: Props) {
+  const { NETWORKS } = useNetworkMetadata();
+
   const { onClose } = dialogProps;
 
   const { formatMessage } = useIntl();

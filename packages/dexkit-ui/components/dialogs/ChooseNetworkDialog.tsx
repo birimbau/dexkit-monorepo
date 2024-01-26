@@ -1,5 +1,4 @@
 import { ChainId } from "@dexkit/core/constants";
-import { NETWORKS } from "@dexkit/core/constants/networks";
 import { Network } from "@dexkit/core/types";
 import {
   Avatar,
@@ -19,6 +18,7 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { FormattedMessage } from "react-intl";
+import { useNetworkMetadata } from "../../hooks/app";
 import { AppDialogTitle } from "../AppDialogTitle";
 
 interface Props {
@@ -37,6 +37,8 @@ function ChooseNetworkDialog({
   const [chainId, setChainId] = useState<number | undefined>(selectedChainId);
 
   const handleClose = () => onClose!({}, "backdropClick");
+
+  const { NETWORKS } = useNetworkMetadata();
 
   const handleSwitchNetwork = async () => {
     if (chainId !== undefined) {

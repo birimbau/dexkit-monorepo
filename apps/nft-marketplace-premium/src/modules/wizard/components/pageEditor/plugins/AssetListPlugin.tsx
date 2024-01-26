@@ -1,6 +1,5 @@
 import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import type { CellPlugin } from '@react-page/editor';
-import { NETWORKS } from '../../../../../constants/chain';
 import { AssetList } from '../../../../nft/components/AssetListOrderbook';
 import { CollectionAutocomplete } from '../components/CollectionAutocomplete';
 
@@ -43,9 +42,9 @@ const AssetListPlugin: CellPlugin<Data> = {
           properties: {
             network: {
               type: 'string',
-              enum: Object.values(NETWORKS)
-                .filter((n) => !n.testnet)
-                .map((n) => String(n.name)),
+
+              // TODO: add logic to list networks
+              enum: [],
             },
             contractAddress: {
               type: 'string',

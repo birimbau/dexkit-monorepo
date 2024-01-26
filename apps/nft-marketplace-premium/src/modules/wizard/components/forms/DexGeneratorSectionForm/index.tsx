@@ -3,6 +3,7 @@ import LazyTextField from '@dexkit/ui/components/LazyTextField';
 
 import { DeployedContract } from '@/modules/forms/types';
 import { ipfsUriToUrl, parseChainId } from '@dexkit/core/utils';
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import Error from '@mui/icons-material/Error';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
@@ -30,8 +31,6 @@ import {
 import { useWeb3React } from '@web3-react/core';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { NETWORKS } from 'src/constants/chain';
-import { getChainSlug } from 'src/utils/blockchain';
 import {
   DEX_GENERATOR_CONTRACT_TYPES,
   DEX_GENERATOR_CONTRACT_TYPES_AVAIL,
@@ -55,6 +54,8 @@ export default function DexGeneratorSectionForm({
   section,
   showSaveButton,
 }: DexGeneratorSectionFormProps) {
+  const { NETWORKS, getChainSlug } = useNetworkMetadata();
+
   const { account } = useWeb3React();
 
   const [type, setType] = useState<string>('all');

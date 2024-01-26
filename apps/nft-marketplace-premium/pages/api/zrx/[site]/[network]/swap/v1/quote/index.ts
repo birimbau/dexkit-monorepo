@@ -1,7 +1,9 @@
 import { getApiKeyData } from '@/modules/wizard/services/integrations';
 import { MY_APPS_ENDPOINT } from '@dexkit/core';
-import { NETWORK_FROM_SLUG } from '@dexkit/core/constants/networks';
+import { NETWORK_FROM_SLUG_SERVER } from '@dexkit/core/constants/networks';
 import { ZEROEX_CHAIN_PREFIX } from '@dexkit/core/services/zrx/constants';
+import { dexkitNFTapi } from '@dexkit/ui/constants/api';
+import { getActiveNetworksObject } from '@dexkit/ui/services/app';
 import axios from 'axios';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
@@ -13,6 +15,11 @@ export default async function handler(
   res: NextApiResponse
 ) {
   const { network, site } = req.query;
+
+  const NETWORKS = await getActiveNetworksObject({
+    instance: dexkitNFTapi,
+    siteId: parseInt(site as string),
+  });
 
   const controller = new AbortController();
   const signal = controller.signal;
@@ -34,8 +41,9 @@ export default async function handler(
     });
 
     const response = await axios.get(
-      GET_ZRX_URL(NETWORK_FROM_SLUG(network as string)?.chainId) +
-        '/swap/v1/quote',
+      GET_ZRX_URL(
+        NETWORK_FROM_SLUG_SERVER(network as string, NETWORKS)?.chainId
+      ) + '/swap/v1/quote',
       {
         params: req.query,
         headers: {

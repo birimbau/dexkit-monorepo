@@ -1,4 +1,5 @@
 import ConnectWalletDialog from '@dexkit/ui/components/ConnectWalletDialog';
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import { useWalletActivate } from '@dexkit/wallet-connectors/hooks';
 import { WalletActivateParams } from '@dexkit/wallet-connectors/types';
 import { Box, Button, Container } from '@mui/material';
@@ -10,6 +11,7 @@ import { useConnectWalletDialog } from 'src/hooks/app';
 import { selectedWalletAtom } from 'src/state/atoms';
 
 const MyLoginPage = () => {
+  const { NETWORKS } = useNetworkMetadata();
   const { account } = useWeb3React();
   const login = useLogin();
   const loginMutation = useLoginAccountMutation();
@@ -20,6 +22,7 @@ const MyLoginPage = () => {
         ? window.location.href
         : process.env.NEXT_PUBLIC_MAGIC_REDIRECT_URL || '',
     selectedWalletAtom,
+    NETWORKS,
   });
   const { isActive } = useWeb3React();
 

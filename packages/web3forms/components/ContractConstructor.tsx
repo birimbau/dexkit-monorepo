@@ -8,8 +8,8 @@ import { FormattedMessage } from "react-intl";
 import { Field, Formik } from "formik";
 
 import { ChainId } from "@dexkit/core/constants";
-import { NETWORKS } from "@dexkit/core/constants/networks";
 import { parseChainId } from "@dexkit/core/utils";
+import { useNetworkMetadata } from "@dexkit/ui/hooks/app";
 import {
   Avatar,
   CircularProgress,
@@ -164,6 +164,8 @@ export default function ContractConstructor({
     },
     [chainId, selectedChainId]
   );
+
+  const { NETWORKS } = useNetworkMetadata();
 
   return (
     <Formik

@@ -11,7 +11,7 @@ import CollectionPageHeader from '@/modules/nft/components/CollectionPageHeader'
 import { CollectionStats } from '@/modules/nft/components/CollectionStats';
 import { CollectionTraits } from '@/modules/nft/components/CollectionTraits';
 import TableSkeleton from '@/modules/nft/components/tables/TableSkeleton';
-import { NETWORK_FROM_SLUG } from '@dexkit/core/constants/networks';
+import { NETWORK_FROM_SLUG_SERVER } from '@dexkit/core/constants/networks';
 import { Asset } from '@dexkit/core/types';
 import { dexkitNFTapi } from '@dexkit/ui/constants/api';
 import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
@@ -271,9 +271,10 @@ export const getStaticProps: GetStaticProps = async ({
   const network = params?.network;
   const address = params?.address;
   const configResponse = await getAppConfig(params?.site, 'home');
+
   const queryClient = new QueryClient();
 
-  await netToQuery({
+  const { NETWORKS } = await netToQuery({
     instance: dexkitNFTapi,
     queryClient,
     siteId: configResponse.siteId,
@@ -346,7 +347,12 @@ export const getStaticProps: GetStaticProps = async ({
     console.log(e);
   }
 
-  const provider = getProviderBySlug(network as string);
+  const provider = getProviderBySlug(
+    queryClient,
+    configResponse.siteId,
+    network as string
+  );
+
   if (!collection) {
     try {
       collection = await getCollectionData(provider, address as string);
@@ -357,7 +363,7 @@ export const getStaticProps: GetStaticProps = async ({
     [
       GET_COLLECTION_DATA,
       address as string,
-      NETWORK_FROM_SLUG(network)?.chainId,
+      NETWORK_FROM_SLUG_SERVER(network, NETWORKS)?.chainId,
     ],
     async () => {
       return collection;

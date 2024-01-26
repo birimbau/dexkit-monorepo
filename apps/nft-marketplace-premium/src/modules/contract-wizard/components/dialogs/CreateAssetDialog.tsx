@@ -20,7 +20,6 @@ import {
 import { FormattedMessage } from 'react-intl';
 import { AppDialogTitle } from 'src/components/AppDialogTitle';
 import Link from 'src/components/Link';
-import { getBlockExplorerUrl } from 'src/utils/blockchain';
 
 interface Props {
   dialogProps: DialogProps;
@@ -62,7 +61,8 @@ export default function CreateAssetDialog({
     }
   };
 
-  const { getNetworkSlugFromChainId } = useNetworkMetadata();
+  const { getNetworkSlugFromChainId, getBlockExplorerUrl } =
+    useNetworkMetadata();
 
   return (
     <Dialog {...dialogProps}>

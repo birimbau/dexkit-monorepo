@@ -5,7 +5,6 @@ import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import React, { useMemo, useState } from 'react';
 import { Token } from 'src/types/blockchain';
-import { getChainName, getChainSymbol } from 'src/utils/blockchain';
 
 interface Props {
   label?: string | React.ReactNode;
@@ -19,7 +18,7 @@ interface Props {
 export function SearchTokenAutocomplete(props: Props) {
   const { data, label, onChange, chainId, disabled, tokens } = props;
 
-  const { NETWORKS } = useNetworkMetadata();
+  const { NETWORKS, NETWORK_SYMBOL, NETWORK_NAME } = useNetworkMetadata();
 
   const [search, setSearch] = useState<string>();
 
@@ -119,7 +118,7 @@ export function SearchTokenAutocomplete(props: Props) {
       }}
       getOptionLabel={(option) => {
         return option.name
-          ? `${getChainSymbol(option.chainId)}-${option.name}`
+          ? `${NETWORK_SYMBOL(option.chainId)}-${option.name}`
           : '';
       }}
       renderOption={(props, option) => (
@@ -129,7 +128,7 @@ export function SearchTokenAutocomplete(props: Props) {
           {...props}
         >
           <img loading="lazy" width="20" src={`${option.logoURI}`} alt="" />
-          {getChainName(option.chainId)} - {option.name} -
+          {NETWORK_NAME(option.chainId)} - {option.name} -
           {option?.symbol.toUpperCase() || ''}
         </Box>
       )}
@@ -160,7 +159,7 @@ export function SearchTokenAutocomplete(props: Props) {
                 />
                 {formValue.chainId && (
                   <Box sx={{ pl: 1 }}>
-                    {getChainName(formValue.chainId)} - {formValue.name} -
+                    {NETWORK_NAME(formValue.chainId)} - {formValue.name} -
                     {formValue?.symbol?.toUpperCase()}
                   </Box>
                 )}

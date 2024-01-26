@@ -1,10 +1,8 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { Token } from "../types";
 
 import { ChainId } from "../constants";
-import { NETWORK_PROVIDER } from "../constants/networks";
 import { getPricesByChain } from "../services";
-
 
 export const COIN_PRICES_QUERY = "COIN_PRICES_QUERY";
 
@@ -23,48 +21,5 @@ export function useCoinPrices({
     }
 
     return await getPricesByChain(chainId, tokens, currency);
-  });
-}
-
-export const ENS_NAME_QUERY = "ENS_NAME_QUERY";
-
-export function useEnsNameQuery({
-  address
-}: {
-  address?: string;
-}) {
-  return useQuery([ENS_NAME_QUERY, address], async () => {
-    if (!address) {
-      return;
-    }
-    if (address.split('.').length < 2) {
-      return
-    }
-
-    const provider = NETWORK_PROVIDER(ChainId.Ethereum);
-    if (!provider) {
-      return;
-    }
-
-    return await provider.resolveName(address);
-  });
-}
-
-export function useEnsNameMutation(
-) {
-  return useMutation(async (address: string) => {
-    if (!address) {
-      return;
-    }
-    if (address.split('.').length < 2) {
-      return
-    }
-
-    const provider = NETWORK_PROVIDER(ChainId.Ethereum);
-    if (!provider) {
-      return;
-    }
-
-    return await provider.resolveName(address);
   });
 }

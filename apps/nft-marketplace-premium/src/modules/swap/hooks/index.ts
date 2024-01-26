@@ -4,7 +4,7 @@ import { useMemo } from 'react';
 import { useTokenList } from 'src/hooks/blockchain';
 import { DkApiPlatformCoin } from 'src/types/api';
 import { Token } from 'src/types/blockchain';
-import { getChainIdFromSlug, isAddressEqual } from 'src/utils/blockchain';
+import { isAddressEqual } from 'src/utils/blockchain';
 import { getApiCoinPlatforms, getApiCoins } from '../services';
 
 export function useSearchSwapTokens({
@@ -20,6 +20,8 @@ export function useSearchSwapTokens({
   excludeTokenList?: boolean;
   featuredTokens?: Token[];
 }) {
+  const { getChainIdFromSlug } = useNetworkMetadata();
+
   const tokensFromList = useTokenList({
     chainId: getChainIdFromSlug(network)?.chainId,
     includeNative: excludeNative ? false : true,

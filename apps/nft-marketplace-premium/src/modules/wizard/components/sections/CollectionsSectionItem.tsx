@@ -2,6 +2,7 @@ import { Delete } from '@mui/icons-material';
 import Edit from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import {
   Box,
   Button,
@@ -14,7 +15,6 @@ import {
 import { FormattedMessage } from 'react-intl';
 import Img from '../../../../components/AppImage';
 import { AppCollection } from '../../../../types/config';
-import { getChainName } from '../../../../utils/blockchain';
 
 interface Props {
   collection: AppCollection;
@@ -31,6 +31,8 @@ export default function CollectionsSectionItem({
   onPreview,
   disabled,
 }: Props) {
+  const { NETWORK_NAME } = useNetworkMetadata();
+
   return (
     <Card>
       <Box sx={{ p: 2, m: 0 }}>
@@ -74,7 +76,7 @@ export default function CollectionsSectionItem({
                 >
                   {collection.description}
                 </Typography>
-                <Chip size="small" label={getChainName(collection.chainId)} />
+                <Chip size="small" label={NETWORK_NAME(collection.chainId)} />
               </Box>
               <Stack
                 sx={{ display: { xs: 'none', sm: 'flex' } }}

@@ -1,4 +1,3 @@
-import { NETWORKS, NETWORK_SLUG } from '@dexkit/core/constants/networks';
 import { ipfsUriToUrl, parseChainId } from '@dexkit/core/utils';
 import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import { hexToString } from '@dexkit/ui/utils';
@@ -27,7 +26,6 @@ import { Field, Formik } from 'formik';
 import { Select, Switch, TextField } from 'formik-mui';
 import { SyntheticEvent, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { getProviderBySlug } from 'src/services/providers';
 import { CreateCollectionFormSchema } from '../../constants/schemas';
 import { CollectionPageSection } from '../../types/section';
 import { CollectionItemAutocomplete } from './CollectionItemAutocomplete';
@@ -38,9 +36,15 @@ interface DropCheckboxProps {
 }
 
 function DropCheckbox({ address, network }: DropCheckboxProps) {
+  const { getProviderBySlug } = useNetworkMetadata();
+
   const contractType = useAsyncMemo(
     async () => {
       if (ethers.utils.isAddress(address)) {
+        const rpcUrl = getProviderBySlug(network);
+
+        const rpc = new ethers.providers.JsonRpcProvider(rpcUrl);
+
         const contract = new Contract(
           address,
           [
@@ -53,7 +57,7 @@ function DropCheckbox({ address, network }: DropCheckboxProps) {
               type: 'function',
             },
           ],
-          getProviderBySlug(network)
+          rpc
         );
 
         try {
@@ -111,6 +115,8 @@ export default function CollectionSectionFormAlt({
   onCancel,
   showSaveButton,
 }: CollectionSectionFormAltProps) {
+  const { NETWORK_FROM_SLUG, NETWORKS, NETWORK_SLUG } = useNetworkMetadata();
+
   const handleSubmit = (config: Form) => {
     onSave({ type: 'collection', config });
   };
@@ -130,8 +136,6 @@ export default function CollectionSectionFormAlt({
   const handleChangeTab = (e: SyntheticEvent, value: string) => {
     setTab(value);
   };
-
-  const { NETWORK_FROM_SLUG } = useNetworkMetadata();
 
   return (
     <Formik

@@ -1,7 +1,7 @@
 import AssetLeftSection from '@/modules/nft/components/AssetLeftSection';
 import AssetOptionsProvider from '@/modules/nft/components/AssetOptionsProvider';
 import AssetRightSection from '@/modules/nft/components/AssetRightSection';
-import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
+import { useNetworkMetadata, useSiteIdV2 } from '@dexkit/ui/hooks/app';
 import { hexToString } from '@dexkit/ui/utils';
 import { useAsyncMemo } from '@dexkit/widgets/src/hooks';
 import { Alert, Box, Grid, NoSsr, Typography } from '@mui/material';
@@ -38,7 +38,7 @@ function DropWrapper({ tokenId, address, network }: DropWrapperProps) {
       }
     },
     false,
-    [contract]
+    [contract],
   );
 
   if (isDrop) {
@@ -80,18 +80,22 @@ export default function AssetSection({ section }: AssetSectionProps) {
 
   const queryClient = useQueryClient();
 
-  const { NETWORK_FROM_SLUG } = useNetworkMetadata();
+  const { NETWORK_FROM_SLUG, NETWORKS } = useNetworkMetadata();
+
+  const { siteId } = useSiteIdV2();
 
   useEffect(() => {
     const chainId = NETWORK_FROM_SLUG(network)?.chainId;
 
-    if (chainId) {
+    if (chainId && siteId) {
       fetchAssetForQueryClient({
         item: { chainId, contractAddress: address, tokenId },
         queryClient,
+        siteId,
+        NETWORKS,
       });
     }
-  }, [address, tokenId, network, queryClient]);
+  }, [address, tokenId, network, queryClient, siteId]);
 
   const { provider } = useWeb3React();
 

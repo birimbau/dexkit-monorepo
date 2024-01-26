@@ -1,3 +1,4 @@
+import { useNetworkMetadata } from "@dexkit/ui/hooks/app";
 import { Error } from "@mui/icons-material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
@@ -16,7 +17,6 @@ import {
 import moment from "moment";
 import { TransactionStatus } from "../constants/enum";
 import { Transaction } from "../types";
-import { getBlockExplorerUrl } from "../utils";
 import MomentSpan from "./MomentSpan";
 
 interface Props {
@@ -24,6 +24,8 @@ interface Props {
 }
 
 export default function AppTransactionListItem({ transaction }: Props) {
+  const { getBlockExplorerUrl } = useNetworkMetadata();
+
   return (
     <ListItemButton
       divider

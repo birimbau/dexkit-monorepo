@@ -15,7 +15,7 @@ import {
 import { FormattedMessage } from 'react-intl';
 
 import { ChainId } from '@dexkit/core';
-import { getBlockExplorerUrl } from '@dexkit/core/utils';
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import ContractDeployForm from '@dexkit/web3forms/components/ContractDeployForm';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { useWeb3React } from '@web3-react/core';
@@ -61,6 +61,8 @@ export default function DeployContractDialog({
   };
 
   const saveInstanceMutation = useSaveInstanceMutation();
+
+  const { getBlockExplorerUrl } = useNetworkMetadata();
 
   return (
     <Dialog {...DialogProps}>

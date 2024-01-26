@@ -1,10 +1,7 @@
 import { ChainId } from '@dexkit/core';
-import {
-  getBlockExplorerUrl,
-  isAddressEqual,
-  truncateAddress,
-} from '@dexkit/core/utils';
+import { isAddressEqual, truncateAddress } from '@dexkit/core/utils';
 import AppConfirmDialog from '@dexkit/ui/components/AppConfirmDialog';
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import { Remove } from '@mui/icons-material';
 
 import AccountTreeIcon from '@mui/icons-material/AccountTree';
@@ -58,6 +55,8 @@ export default function FormInfoCard({
   templateId,
   contractAddress,
 }: FormInfoCardProps) {
+  const { getBlockExplorerUrl } = useNetworkMetadata();
+
   const [showConfirm, setShowConfirm] = useState(false);
 
   const [showConfirming, setShowConfirming] = useState(false);

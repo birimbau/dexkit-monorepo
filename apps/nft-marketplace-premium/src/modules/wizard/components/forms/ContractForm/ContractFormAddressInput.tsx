@@ -2,8 +2,8 @@ import { useInfiniteListDeployedContracts } from '@/modules/forms/hooks';
 import { getContractImplementation } from '@/modules/wizard/services';
 import { inputMapping } from '@/modules/wizard/utils';
 import { ChainId } from '@dexkit/core';
-import { NETWORKS } from '@dexkit/core/constants/networks';
 import LazyTextField from '@dexkit/ui/components/LazyTextField';
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import { useScanContractAbiMutation } from '@dexkit/web3forms/hooks';
 import { AbiFragment, ContractFormParams } from '@dexkit/web3forms/types';
 import { normalizeAbi } from '@dexkit/web3forms/utils';
@@ -32,6 +32,8 @@ export default function ContractFormAddressInput({
   const scanContractAbiMutation = useScanContractAbiMutation();
 
   const { enqueueSnackbar } = useSnackbar();
+
+  const { NETWORKS } = useNetworkMetadata();
 
   const jsonProvider = useMemo(() => {
     if (chainId) {

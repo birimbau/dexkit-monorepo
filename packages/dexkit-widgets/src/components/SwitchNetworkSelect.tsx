@@ -1,5 +1,4 @@
 import { ChainId } from "@dexkit/core/constants/enums";
-import { NETWORKS } from "@dexkit/core/constants/networks";
 import {
   Avatar,
   CircularProgress,
@@ -17,6 +16,7 @@ import { FormattedMessage } from "react-intl";
 
 // import { MagicConnector } from '../connectors/magic';
 
+import { useNetworkMetadata } from "@dexkit/ui/hooks/app";
 import { parseChainId } from "../utils";
 
 interface SwitchNetworkSelectProps {
@@ -37,6 +37,8 @@ function SwitchNetworkSelect({
   const handleChange = async (e: SelectChangeEvent<unknown>) => {
     onChangeNetwork(parseInt(e.target.value as string));
   };
+
+  const { NETWORKS } = useNetworkMetadata();
 
   return (
     <Select

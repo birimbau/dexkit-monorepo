@@ -2,7 +2,6 @@ import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import { Container } from '@mui/material';
 import Box from '@mui/material/Box';
 import type { CellPlugin } from '@react-page/editor';
-import { NETWORKS } from '../../../../../constants/chain';
 import AssetFromApi from '../../../../nft/components/AssetFromApi';
 import { SearchNFTAutocomplete } from '../components/SearchNFTAutocomplete';
 import { SingleNFTAutocomplete } from '../components/SingleNFTAutocomplete';
@@ -69,9 +68,8 @@ const AssetPlugin: CellPlugin<Data> = {
           properties: {
             network: {
               type: 'string',
-              enum: Object.values(NETWORKS)
-                .filter((n) => !n.testnet)
-                .map((n) => String(n.name)),
+              // TODO: add networks
+              enum: [],
             },
             contractAddress: {
               type: 'string',

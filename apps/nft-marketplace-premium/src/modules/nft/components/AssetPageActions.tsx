@@ -22,11 +22,7 @@ import {
   useAssetMetadata,
   useFavoriteAssets,
 } from '../../../hooks/nft';
-import {
-  getBlockExplorerUrl,
-  isAddressEqual,
-  truncateAddress,
-} from '../../../utils/blockchain';
+import { isAddressEqual, truncateAddress } from '../../../utils/blockchain';
 import { getWindowUrl } from '../../../utils/browser';
 import ShareDialog from './dialogs/ShareDialog';
 
@@ -56,7 +52,8 @@ export function AssetPageActions({ address, id }: Props) {
 
   const handleOpenShareDialog = () => setOpenShare(true);
 
-  const { getNetworkSlugFromChainId } = useNetworkMetadata();
+  const { getNetworkSlugFromChainId, getBlockExplorerUrl } =
+    useNetworkMetadata();
 
   return (
     <>

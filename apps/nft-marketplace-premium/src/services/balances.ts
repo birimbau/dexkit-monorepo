@@ -1,20 +1,22 @@
 import { getContractAddressesForChainOrThrow } from '@0x/contract-addresses';
 import { ChainId } from '@dexkit/core/constants';
 import { ERC1155Abi } from '@dexkit/core/constants/abis';
+import { NETWORK_FROM_SLUG_SERVER } from '@dexkit/core/constants/networks';
+import { Network } from '@dexkit/core/types';
+import { QueryClient } from '@tanstack/react-query';
 import { BigNumber, Contract, ethers } from 'ethers';
 import { Interface } from 'ethers/lib/utils';
-import { NETWORKS } from 'src/constants/chain';
 import { DEXKIT } from 'src/constants/dexkit';
 import {
   MULTICALL_NATIVE_TOKEN_ADDRESS,
-  ZEROEX_NATIVE_TOKEN_ADDRESS
+  ZEROEX_NATIVE_TOKEN_ADDRESS,
 } from '../constants';
 import { ERC20Abi } from '../constants/abis';
 import { Token, TokenBalance } from '../types/blockchain';
-import { getChainIdFromSlug, getNativeCurrencySymbol } from '../utils/blockchain';
+import { getNativeCurrencySymbol } from '../utils/blockchain';
 import {
   getMulticallTokenBalances,
-  getMulticallTokenBalancesAndAllowances
+  getMulticallTokenBalancesAndAllowances,
 } from './multical';
 
 export const getERC20Decimals = async (
@@ -136,7 +138,6 @@ export const getERC20WithProxyUnlockedBalances = async (
 ) => {
   const tokensByChainId = tokens.filter((t) => Number(t.chainId) === chainId);
 
-
   const zrxContracts = getContractAddressesForChainOrThrow(chainId as number);
 
   const exchangeProxy = zrxContracts.exchangeProxy;
@@ -195,41 +196,69 @@ export const getERC20TokenAllowance = async (
   return await contract.allowance(account, spender);
 };
 
+// TODO: add networks to this call
+export async function getBalanceOf(
+  { queryClient, siteId }: { queryClient: QueryClient; siteId?: number },
+  networkId: string,
+  address: string,
+  owner: string,
+  NETWORKS?: { [key: string]: Network }
+) {
+  const chainId = NETWORK_FROM_SLUG_SERVER(networkId, NETWORKS) as any;
 
-export async function getBalanceOf(networkId: string, address: string, owner: string) {
-  const network = NETWORKS[getChainIdFromSlug(networkId)?.chainId as any];
+  const network = NETWORKS ? NETWORKS[chainId] : undefined;
+
   if (!network) {
-    throw new Error('network not supported')
+    throw new Error('network not supported');
   }
   const iface = new Interface(ERC20Abi);
-  const provider = new ethers.providers.JsonRpcProvider(network.providerRpcUrl)
+  const provider = new ethers.providers.JsonRpcProvider(network.providerRpcUrl);
   const contract = new Contract(address, iface, provider);
   return (await contract.balanceOf(owner)) as BigNumber;
 }
 
-export async function getBalanceOfERC1155(networkId: string, address: string, owner: string, tokenId: string) {
-  const network = NETWORKS[getChainIdFromSlug(networkId)?.chainId as any];
+export async function getBalanceOfERC1155(
+  networkId: string,
+  address: string,
+  owner: string,
+  tokenId: string,
+  NETWORKS?: { [key: string]: Network }
+) {
+  const chainId = NETWORK_FROM_SLUG_SERVER(networkId, NETWORKS)?.chainId as any;
+
+  const network = NETWORKS ? NETWORKS[chainId] : undefined;
+
   if (!network) {
-    throw new Error('network not supported')
+    throw new Error('network not supported');
   }
   const iface = new Interface(ERC1155Abi);
-  const provider = new ethers.providers.JsonRpcProvider(network.providerRpcUrl)
+  const provider = new ethers.providers.JsonRpcProvider(network.providerRpcUrl);
   const contract = new Contract(address, iface, provider);
   return (await contract.balanceOf(owner, tokenId)) as BigNumber;
 }
 
-export async function getKitBalanceOfThreshold(owner: string, amountUnits: string) {
+export async function getKitBalanceOfThreshold(
+  owner: string,
+  amountUnits: string
+) {
   const networks = Object.keys(DEXKIT);
   let hasKit = 0;
   for (const network of networks) {
     //@ts-ignore
-    const balanceOf = await getBalanceOf(network, DEXKIT[network].address, owner);
+    const balanceOf = await getBalanceOf(
+      network,
+      //@ts-ignore
+      DEXKIT[network].address,
+      owner
+    );
     //@ts-ignore
-    const thresholdUnits = BigNumber.from(amountUnits).mul(BigNumber.from(10).pow(DEXKIT[network].decimals));
+    const thresholdUnits = BigNumber.from(amountUnits).mul(
+      //@ts-ignore
+      BigNumber.from(10).pow(DEXKIT[network as any].decimals)
+    );
     if (balanceOf.gte(thresholdUnits)) {
       hasKit++;
     }
   }
   return hasKit;
-
 }

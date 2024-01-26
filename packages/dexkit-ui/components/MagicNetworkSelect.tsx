@@ -1,8 +1,8 @@
 import { ChainId } from "@dexkit/core/constants/enums";
-import { NETWORKS } from "@dexkit/core/constants/networks";
 
-import { parseChainId, switchNetwork } from "@dexkit/core/utils";
+import { parseChainId } from "@dexkit/core/utils";
 import { MagicConnector } from "@dexkit/wallet-connectors/connectors/magic";
+import { switchNetwork } from "@dexkit/wallet-connectors/utils";
 import {
   Avatar,
   CircularProgress,
@@ -20,6 +20,7 @@ import { MetaMask } from "@web3-react/metamask";
 import { useSnackbar } from "notistack";
 import { memo, useState } from "react";
 import { FormattedMessage } from "react-intl";
+import { useNetworkMetadata } from "../hooks/app";
 
 interface Props {
   SelectProps?: SelectProps;
@@ -30,11 +31,16 @@ function MagicNetworkSelect({ SelectProps }: Props) {
   const [isLoading, setIsLoading] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
 
+  const { NETWORKS } = useNetworkMetadata();
+
   const handleChange = async (e: SelectChangeEvent<unknown>) => {
     if (connector instanceof MagicConnector) {
       setIsLoading(true);
       try {
-        await connector.changeNetwork(parseChainId(e.target.value as string));
+        await connector.changeNetwork(
+          parseChainId(e.target.value as string),
+          NETWORKS
+        );
       } catch (err) {
         enqueueSnackbar(String(err), { variant: "error" });
       }
@@ -45,6 +51,7 @@ function MagicNetworkSelect({ SelectProps }: Props) {
       setIsLoading(false);
     }
   };
+
   return (
     <Select
       {...SelectProps}

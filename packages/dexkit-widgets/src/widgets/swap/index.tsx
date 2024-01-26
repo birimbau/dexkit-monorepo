@@ -17,8 +17,8 @@ import SwapSettingsDialog from "./dialogs/SwapSettingsDialog";
 //   function renderSwapWidget(id: string, options: RenderOptions): void;
 // }
 
-import { NETWORKS } from "@dexkit/core/constants/networks";
 import { Token } from "@dexkit/core/types";
+import { useNetworkMetadata } from "@dexkit/ui/hooks/app";
 import SwitchNetworkDialog from "../../components/SwitchNetworkDialog";
 import SwapSelectCoinDialog from "./SwapSelectCoinDialog";
 import {
@@ -62,6 +62,8 @@ export function SwapWidget({
   onChangeSlippage,
   onAutoSlippage,
 }: SwapWidgetProps) {
+  const { NETWORKS } = useNetworkMetadata();
+
   const {
     provider,
     connector,

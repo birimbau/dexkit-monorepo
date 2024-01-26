@@ -6,7 +6,6 @@ import TextField from '@mui/material/TextField';
 import { CellPluginComponentProps } from '@react-page/editor';
 import React, { useState } from 'react';
 import { useSearchAssets } from '../../../../../hooks/nft';
-import { getChainName } from '../../../../../utils/blockchain';
 
 interface Props {
   data: CellPluginComponentProps<Partial<any>>;
@@ -60,7 +59,7 @@ export function SearchNFTAutocomplete(props: Props) {
           {...props}
         >
           <img loading="lazy" width="20" src={`${option.image}`} alt="" />
-          {getChainName(option.chainId)} - ({option.name}) - #{option.id || ''}
+          {NETWORK_NAME(option.chainId)} - ({option.name}) - #{option.id || ''}
         </Box>
       )}
       renderInput={(params) => (
@@ -98,7 +97,7 @@ export function SearchNFTAutocomplete(props: Props) {
                 />
                 {formValue.chainId && (
                   <Box>
-                    {getChainName(formValue.chainId)} - ({formValue.name}) - #
+                    {NETWORK_NAME(formValue.chainId)} - ({formValue.name}) - #
                     {formValue.id}
                   </Box>
                 )}

@@ -1,5 +1,4 @@
 import { ChainId } from "@dexkit/core/constants/enums";
-import { NETWORKS } from "@dexkit/core/constants/networks";
 import { useIsMobile } from "@dexkit/core/hooks";
 import { AppDialogTitle } from "@dexkit/ui/components";
 import {
@@ -17,6 +16,7 @@ import {
 import { memo } from "react";
 import { FormattedMessage } from "react-intl";
 
+import { useNetworkMetadata } from "@dexkit/ui/hooks/app";
 import { parseChainId } from "../utils";
 
 interface SwitchNetworkDialogProps {
@@ -45,6 +45,8 @@ function SwitchNetworkDialog({
     onChangeNetwork(value);
     handleClose();
   };
+
+  const { NETWORKS } = useNetworkMetadata();
 
   return (
     <Dialog {...DialogProps} fullScreen={isMobile}>

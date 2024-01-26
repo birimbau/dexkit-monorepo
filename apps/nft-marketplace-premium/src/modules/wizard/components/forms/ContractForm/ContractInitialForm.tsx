@@ -1,8 +1,8 @@
 import { useJsonRpcProvider } from '@/modules/wizard/hooks';
 import { getContractImplementation } from '@/modules/wizard/services';
 import { ChainId } from '@dexkit/core';
-import { NETWORKS } from '@dexkit/core/constants/networks';
 import { parseChainId } from '@dexkit/core/utils';
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import { AbiFragment, ContractFormParams } from '@dexkit/web3forms/types';
 import { useAsyncMemo } from '@dexkit/widgets/src/hooks';
 import {
@@ -27,6 +27,8 @@ export interface Props {
 }
 
 function ContractInitialForm({ abi, chainId, fetchOnMount }: Props) {
+  const { NETWORKS } = useNetworkMetadata();
+
   const { values } = useFormikContext<ContractFormParams>();
 
   const rpcJsonQuery = useJsonRpcProvider({ chainId: values.chainId });

@@ -1,6 +1,5 @@
 import { Field, Formik } from 'formik';
 
-import { NETWORKS, NETWORK_SLUG } from '@dexkit/core/constants/networks';
 import { ipfsUriToUrl, parseChainId } from '@dexkit/core/utils';
 import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import {
@@ -42,6 +41,8 @@ export default function AssetSectionForm({
   section,
   showSaveButton,
 }: AssetSectionFormProps) {
+  const { NETWORK_FROM_SLUG, NETWORKS, NETWORK_SLUG } = useNetworkMetadata();
+
   const handleSubmit = async (values: AssetFormType) => {
     onSave({ type: 'asset-section', config: values });
   };
@@ -65,8 +66,6 @@ export default function AssetSectionForm({
   const { siteId } = useContext(SiteContext);
 
   const darkblockQuery = useIntegrationDataQuery({ type: 'darkblock', siteId });
-
-  const { NETWORK_FROM_SLUG } = useNetworkMetadata();
 
   return darkblockQuery.isFetched ? (
     <Formik

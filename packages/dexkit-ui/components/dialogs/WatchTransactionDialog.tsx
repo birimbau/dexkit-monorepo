@@ -1,5 +1,4 @@
 import { TransactionStatus } from "@dexkit/core/constants";
-import { getBlockExplorerUrl } from "@dexkit/core/utils";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CloseIcon from "@mui/icons-material/Close";
 import Receipt from "@mui/icons-material/Receipt";
@@ -17,6 +16,7 @@ import {
 import { useCallback, useMemo } from "react";
 import { FormattedMessage } from "react-intl";
 import { useDexKitContext } from "../../hooks";
+import { useNetworkMetadata } from "../../hooks/app";
 import { AppDialogTitle } from "../AppDialogTitle";
 import { NotificationMessage } from "../NotificationMessage";
 
@@ -36,6 +36,7 @@ function WatchTransactionDialog({
   hash,
 }: WatchTransactionDialogProps) {
   const { transactions, notificationTypes } = useDexKitContext();
+  const { getBlockExplorerUrl } = useNetworkMetadata();
 
   const { onClose } = DialogProps;
 

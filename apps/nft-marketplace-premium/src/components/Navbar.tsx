@@ -46,7 +46,6 @@ import {
   showSelectCurrencyAtom,
   showSelectLocaleAtom,
 } from '../state/atoms';
-import { getChainLogoImage, getChainName } from '../utils/blockchain';
 import Link from './Link';
 import NavbarMenu from './Menu';
 import { ThemeModeSelector } from './ThemeModeSelector';
@@ -62,6 +61,7 @@ import { useAuthUserQuery } from '@/modules/user/hooks';
 import NotificationsDialog from '@dexkit/ui/components/dialogs/NotificationsDialog';
 import { ThemeMode } from '@dexkit/ui/constants/enum';
 import { useDexKitContext, useNotifications } from '@dexkit/ui/hooks';
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import AppProfileMenu from './AppProfileMenu';
 
 interface Props {
@@ -72,6 +72,8 @@ interface Props {
 function Navbar({ appConfig, isPreview }: Props) {
   const { isActive, chainId, connector } = useWeb3React();
   const { mode } = useThemeMode();
+
+  const { NETWORK_NAME, NETWORK_IMAGE } = useNetworkMetadata();
 
   const buttonRef = useRef<HTMLElement | null>(null);
 
@@ -471,15 +473,15 @@ function Navbar({ appConfig, isPreview }: Props) {
                 >
                   <Stack direction="row" spacing={1} alignItems="center">
                     <Avatar
-                      src={getChainLogoImage(chainId)}
+                      src={NETWORK_IMAGE(chainId) || ''}
                       sx={(theme) => ({
                         width: 'auto',
                         height: theme.spacing(2),
                       })}
-                      alt={getChainName(chainId) || ''}
+                      alt={NETWORK_NAME(chainId) || ''}
                     />
                     <Typography variant="body1">
-                      {getChainName(chainId)}
+                      {NETWORK_NAME(chainId)}
                     </Typography>
                     <KeyboardArrowDownIcon />
                   </Stack>

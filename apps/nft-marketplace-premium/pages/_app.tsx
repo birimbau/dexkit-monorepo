@@ -63,7 +63,7 @@ export default function MyApp(props: MyAppProps) {
           suspense: false,
         },
       },
-    })
+    }),
   );
 
   const getLayout = (Component as any).getLayout || ((page: any) => page);

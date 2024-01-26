@@ -1,4 +1,3 @@
-import { NETWORKS } from "@dexkit/core/constants/networks";
 import { ipfsUriToUrl, parseChainId } from "@dexkit/core/utils";
 import { AppDialogTitle } from "@dexkit/ui/components/AppDialogTitle";
 import {
@@ -20,6 +19,8 @@ import { ChainId } from "@dexkit/core";
 import { useFormikContext } from "formik";
 import { useCallback } from "react";
 import { DexkitExchangeSettings } from "../../types";
+
+import { useNetworkMetadata } from "@dexkit/ui/hooks/app";
 
 export interface SelectNetworksDialogProps {
   DialogProps: DialogProps;
@@ -57,6 +58,8 @@ export default function SelectNetworksDialog({
       onClose({}, "backdropClick");
     }
   };
+
+  const { NETWORKS } = useNetworkMetadata();
 
   return (
     <Dialog {...DialogProps}>

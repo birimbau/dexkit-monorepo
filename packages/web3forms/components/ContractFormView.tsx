@@ -1,7 +1,6 @@
 import { Box } from "@mui/material";
 import Grid from "@mui/material/Grid";
 
-import { NETWORKS } from "@dexkit/core/constants/networks";
 import { useSwitchNetworkMutation } from "@dexkit/ui/hooks";
 import { useWeb3React } from "@web3-react/core";
 import { BigNumber, ethers } from "ethers";
@@ -14,6 +13,7 @@ import CallConfirmDialog from "./CallConfirmDialog";
 import ContractFormFunctions from "./ContractFormFunctions";
 
 import { AppConfirmDialog } from "@dexkit/ui/components";
+import { useNetworkMetadata } from "@dexkit/ui/hooks/app";
 import { FormattedMessage } from "react-intl";
 
 export interface Props {
@@ -21,6 +21,8 @@ export interface Props {
 }
 
 export default function ContractFormView({ params }: Props) {
+  const { NETWORKS } = useNetworkMetadata();
+
   const { abi, contractAddress, chainId: contractChainId } = params;
   const { provider, chainId } = useWeb3React();
 

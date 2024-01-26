@@ -9,14 +9,12 @@ import AssetHead from '@/modules/nft/components/AssetHead';
 import AssetLeftSection from '@/modules/nft/components/AssetLeftSection';
 import { DropEditionListSection } from '@/modules/wizard/components/sections/DropEditionListSection';
 import EditionDropSection from '@/modules/wizard/components/sections/EditionDropSection';
-import { ChainId } from '@dexkit/core/constants';
-import { NETWORK_FROM_SLUG } from '@dexkit/core/constants/networks';
 import { ipfsUriToUrl, truncateAddress } from '@dexkit/core/utils';
 import { dexkitNFTapi } from '@dexkit/ui/constants/api';
 import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import { useAsset, useAssetMetadata } from '@dexkit/ui/modules/nft/hooks';
 import { truncateErc1155TokenId } from '@dexkit/ui/modules/nft/utils';
-import { netToQuery } from '@dexkit/ui/utils/networks';
+import { getChainIdFromSlugOld, netToQuery } from '@dexkit/ui/utils/networks';
 import { ThirdwebSDKProvider } from '@thirdweb-dev/react';
 import { useWeb3React } from '@web3-react/core';
 import { NextSeo } from 'next-seo';
@@ -84,18 +82,18 @@ const AssetDetailPage: NextPage = () => {
                 },
                 {
                   caption: `${asset?.collectionName} #${truncateErc1155TokenId(
-                    asset?.id
+                    asset?.id,
                   )}`,
                   uri: `/asset/${NETWORK_SLUG(
-                    asset?.chainId
+                    asset?.chainId,
                   )}/${address}/${id}`,
                 },
                 {
-                  caption: `Drop ${
-                    asset?.collectionName
-                  } #${truncateErc1155TokenId(asset?.id)}`,
+                  caption: `Drop ${asset?.collectionName} #${truncateErc1155TokenId(
+                    asset?.id,
+                  )}`,
                   uri: `drop/edition/${NETWORK_SLUG(
-                    asset?.chainId
+                    asset?.chainId,
                   )}/${address}/${id}`,
                   active: true,
                 },
@@ -166,34 +164,51 @@ export const getStaticProps: GetStaticProps = async ({
     const configResponse = await getAppConfig(site, 'home');
 
     const queryClient = new QueryClient();
+
+    const { NETWORKS } = await netToQuery({
+      instance: dexkitNFTapi,
+      queryClient,
+      siteId: configResponse.siteId,
+    });
+
+    const chainId = getChainIdFromSlugOld(
+      queryClient,
+      configResponse.siteId,
+      network || '',
+    );
+
+    if (!chainId) {
+      throw new Error('no chain');
+    }
+
     const item = {
       contractAddress: address || '',
       tokenId: id || '',
-      chainId: NETWORK_FROM_SLUG(network || '')?.chainId as ChainId,
+      chainId,
     };
-    await fetchAssetForQueryClient({ queryClient, item });
+
+    await fetchAssetForQueryClient({
+      queryClient,
+      item,
+      siteId: configResponse.siteId,
+      NETWORKS,
+    });
 
     try {
       if (network === NETWORK_ID.Ethereum || network === NETWORK_ID.Polygon) {
         const { data } = await getRariAsset(
-          `${MAP_NETWORK_TO_RARIBLE[network]}:${address}:${id}`
+          `${MAP_NETWORK_TO_RARIBLE[network]}:${address}:${id}`,
         );
         await queryClient.prefetchQuery(
           [BEST_SELL_ORDER_RARIBLE, network, address, id],
           async () => {
             return data;
-          }
+          },
         );
       }
     } catch (e) {
       console.log(e);
     }
-
-    await netToQuery({
-      instance: dexkitNFTapi,
-      queryClient,
-      siteId: configResponse.siteId,
-    });
 
     return {
       props: { dehydratedState: dehydrate(queryClient), ...configResponse },

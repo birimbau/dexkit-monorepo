@@ -25,14 +25,8 @@ import { Field, Formik, getIn } from "formik";
 import FormikDecimalInput from "@dexkit/ui/components/FormikDecimalInput";
 
 import { ChainId } from "@dexkit/core";
-import { NETWORKS } from "@dexkit/core/constants/networks";
 import { Token } from "@dexkit/core/types";
-import {
-  getChainName,
-  ipfsUriToUrl,
-  isAddressEqual,
-  parseChainId,
-} from "@dexkit/core/utils";
+import { ipfsUriToUrl, isAddressEqual, parseChainId } from "@dexkit/core/utils";
 import { Select as FormikSelect, TextField } from "formik-mui";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
@@ -40,6 +34,7 @@ import { DexkitExchangeSettings, ExchangeSettingsSchema } from "../../types";
 import FormActions from "./ExchangeSettingsFormActions";
 
 import { ZEROEX_AFFILIATE_ADDRESS } from "@dexkit/core/services/zrx/constants";
+import { useNetworkMetadata } from "@dexkit/ui/hooks/app";
 import Edit from "@mui/icons-material/Edit";
 import TextFieldMui from "@mui/material/TextField";
 import { useFormikContext } from "formik";
@@ -94,6 +89,8 @@ export default function ExchangeSettingsForm({
   showSaveButton,
   onValidate,
 }: ExchangeSettingsFormProps) {
+  const { NETWORKS, NETWORK_NAME } = useNetworkMetadata();
+
   const handleSubmit = async (values: DexkitExchangeSettings) => {
     onSave(values);
   };
@@ -138,7 +135,7 @@ export default function ExchangeSettingsForm({
             id: "the.base.token.is.required.on.chain",
             defaultMessage: "The base token is required on {chainName}",
           },
-          { chainName: getChainName(chainId) }
+          { chainName: NETWORK_NAME(chainId) }
         );
 
         setWith(
@@ -158,7 +155,7 @@ export default function ExchangeSettingsForm({
             id: "the.base.token.is.required.on.chain",
             defaultMessage: "The quote token is required on {chainName}",
           },
-          { chainName: getChainName(chainId) }
+          { chainName: NETWORK_NAME(chainId) }
         );
 
         setWith(
@@ -193,28 +190,25 @@ export default function ExchangeSettingsForm({
   const getInitialTokens = useCallback(() => {
     const resQuote = QUOTE_TOKENS_SUGGESTION.map((t) => {
       return { chainId: t.chainId, token: t };
-    }).reduce(
-      (prev, curr) => {
-        let obj = { ...prev };
+    }).reduce((prev, curr) => {
+      let obj = { ...prev };
 
-        if (!obj[curr.chainId]) {
-          obj[curr.chainId] = { baseTokens: [], quoteTokens: [] };
-        }
+      if (!obj[curr.chainId]) {
+        obj[curr.chainId] = { baseTokens: [], quoteTokens: [] };
+      }
 
-        let index = tokens.findIndex(
-          (t) =>
-            curr.token.chainId === t.chainId &&
-            isAddressEqual(curr.token.address, t.address)
-        );
+      let index = tokens.findIndex(
+        (t) =>
+          curr.token.chainId === t.chainId &&
+          isAddressEqual(curr.token.address, t.address)
+      );
 
-        if (index > -1) {
-          obj[curr.chainId].quoteTokens.push(curr.token);
-        }
+      if (index > -1) {
+        obj[curr.chainId].quoteTokens.push(curr.token);
+      }
 
-        return obj;
-      },
-      {} as { [key: number]: { quoteTokens: Token[]; baseTokens: Token[] } }
-    );
+      return obj;
+    }, {} as { [key: number]: { quoteTokens: Token[]; baseTokens: Token[] } });
 
     for (let chain of Object.keys(NETWORKS)) {
       let chainId = parseChainId(chain);

@@ -17,7 +17,7 @@ import NftDropSection from '@/modules/wizard/components/sections/NftDropSection'
 import { DARKBLOCK_SUPPORTED_CHAIN_IDS } from '@/modules/wizard/constants';
 import { getIntegrationData } from '@/modules/wizard/services/integrations';
 import { ChainId, MY_APPS_ENDPOINT } from '@dexkit/core';
-import { NETWORK_FROM_SLUG } from '@dexkit/core/constants/networks';
+import { NETWORK_FROM_SLUG_SERVER } from '@dexkit/core/constants/networks';
 import { Asset } from '@dexkit/core/types';
 import { omitNull } from '@dexkit/core/utils';
 import { dexkitNFTapi } from '@dexkit/ui/constants/api';
@@ -426,7 +426,15 @@ export const getStaticProps: GetStaticProps = async ({
   const network = params?.network;
   const address = params?.address;
   const configResponse = await getAppConfig(params?.site, 'home');
+
   const queryClient = new QueryClient();
+
+  const { NETWORKS } = await netToQuery({
+    instance: dexkitNFTapi,
+    queryClient,
+    siteId: configResponse.siteId,
+  });
+
   let collection: Collection | undefined;
   try {
     collection = await getApiCollectionData(network, address);
@@ -494,7 +502,11 @@ export const getStaticProps: GetStaticProps = async ({
     console.log(e);
   }
 
-  const provider = getProviderBySlug(network as string);
+  const provider = getProviderBySlug(
+    queryClient,
+    configResponse.siteId,
+    network as string,
+  );
   if (!collection) {
     try {
       collection = await getCollectionData(provider, address as string);
@@ -505,7 +517,7 @@ export const getStaticProps: GetStaticProps = async ({
   let key: any[] = [
     GET_COLLECTION_DATA,
     address as string,
-    NETWORK_FROM_SLUG(network)?.chainId,
+    NETWORK_FROM_SLUG_SERVER(network, NETWORKS)?.chainId,
   ];
 
   try {
@@ -533,7 +545,7 @@ export const getStaticProps: GetStaticProps = async ({
           return {
             address,
             name: metadata.name,
-            chainId: NETWORK_FROM_SLUG(network)?.chainId,
+            chainId: NETWORK_FROM_SLUG_SERVER(network, NETWORKS)?.chainId,
             symbol: metadata.symbol,
             description: metadata.description,
             imageUrl: metadata.image,
@@ -561,17 +573,12 @@ export const getStaticProps: GetStaticProps = async ({
     );
   } catch {}
 
-  await netToQuery({
-    instance: dexkitNFTapi,
-    queryClient,
-    siteId: configResponse.siteId,
-  });
   let enableDarkblock = false;
 
   try {
     if (
       DARKBLOCK_SUPPORTED_CHAIN_IDS.includes(
-        NETWORK_FROM_SLUG(network)?.chainId as ChainId,
+        NETWORK_FROM_SLUG_SERVER(network, NETWORKS)?.chainId as ChainId,
       )
     ) {
       const darkBlock = await getIntegrationData({

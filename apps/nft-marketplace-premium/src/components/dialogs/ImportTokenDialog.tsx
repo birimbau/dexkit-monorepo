@@ -20,12 +20,12 @@ import { FormikHelpers, useFormik } from 'formik';
 import { useAtom } from 'jotai';
 import { useCallback, useEffect } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { NETWORKS } from '../../constants/chain';
 import { useTokenData } from '../../hooks/blockchain';
 import { AppDialogTitle } from '../AppDialogTitle';
 
 import * as Yup from 'yup';
 
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import { useWeb3React } from '@web3-react/core';
 import { AxiosError } from 'axios';
 import { ethers } from 'ethers';
@@ -62,6 +62,7 @@ const FormSchema: Yup.SchemaOf<Form> = Yup.object().shape({
 });
 
 function ImportTokenDialog({ dialogProps }: Props) {
+  const { NETWORKS } = useNetworkMetadata();
   const { onClose } = dialogProps;
   const { chainId } = useWeb3React();
 

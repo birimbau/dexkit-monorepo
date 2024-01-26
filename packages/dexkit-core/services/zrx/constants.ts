@@ -1,5 +1,5 @@
 import { ChainId } from "../../constants/enums";
-import { NETWORK_SLUG } from "../../constants/networks";
+import { NETWORK_SLUG_SERVER } from "../../constants/networks";
 
 export const ZEROEX_NATIVE_TOKEN_ADDRESS =
   "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee";
@@ -31,9 +31,15 @@ export const ZEROEX_CHAIN_PREFIX = (chainId?: number) => {
   }
 };
 
-export const ZERO_EX_URL = (chainId?: number, siteId?: number) => {
+export const ZERO_EX_URL = (
+  chainId?: number,
+  siteId?: number,
+  slug?: (chainId?: ChainId) => string | undefined
+) => {
   if (siteId !== undefined) {
-    return `/api/zrx/${siteId}/${NETWORK_SLUG(chainId)}`;
+    return `/api/zrx/${siteId}/${
+      slug ? slug(chainId) : NETWORK_SLUG_SERVER(chainId)
+    }`;
   }
 
   return `https://${ZEROEX_CHAIN_PREFIX(chainId)}api.0x.org`;

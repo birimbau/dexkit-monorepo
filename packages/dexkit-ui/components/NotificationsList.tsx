@@ -17,10 +17,10 @@ import AppLink from "./AppLink";
 import MomentFromSpan from "./MomentFromSpan";
 import { NotificationMessage } from "./NotificationMessage";
 
-import { getBlockExplorerUrl } from "@dexkit/core/utils";
 import ErrorIcon from "@mui/icons-material/Error";
 import Icon from "@mui/material/Icon";
 import { useCallback } from "react";
+import { useNetworkMetadata } from "../hooks/app";
 
 export interface NotificationsListProps {
   notifications: AppNotification[];
@@ -33,6 +33,8 @@ export default function NotificationsList({
   transactions,
   notificationTypes,
 }: NotificationsListProps) {
+  const { getBlockExplorerUrl } = useNetworkMetadata();
+
   const renderSecondaryAction = (
     transactions: { [key: string]: AppTransaction },
     notification: AppNotification

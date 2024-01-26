@@ -23,12 +23,11 @@ import { useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import Link from '../../../components/Link';
 import { Asset, AssetMetadata, OrderBookItem } from '../../../types/nft';
-import { getChainLogoImage, getChainName } from '../../../utils/blockchain';
 import { truncateErc1155TokenId } from '../../../utils/nfts';
 import { AssetBuyOrder } from './AssetBuyOrder';
 import { AssetMedia } from './AssetMedia';
 const AssetDetailsDialog = dynamic(
-  () => import('./dialogs/AssetDetailsDialog')
+  () => import('./dialogs/AssetDetailsDialog'),
 );
 interface Props {
   asset?: Asset;
@@ -122,7 +121,7 @@ export function BaseAssetCard({
     </>
   );
 
-  const { getNetworkSlugFromChainId } = useNetworkMetadata();
+  const { NETWORK_SLUG, NETWORK_NAME, NETWORK_IMAGE } = useNetworkMetadata();
 
   return (
     <Card sx={{ position: 'relative', heigh: '100%', borderRadius: '12px' }}>
@@ -150,9 +149,9 @@ export function BaseAssetCard({
         <CardActionArea
           LinkComponent={Link}
           disabled={disabled}
-          href={`/asset/${getNetworkSlugFromChainId(asset?.chainId)}/${
-            asset?.contractAddress
-          }/${asset?.id}`}
+          href={`/asset/${NETWORK_SLUG(
+            asset?.chainId,
+          )}/${asset?.contractAddress}/${asset?.id}`}
         >
           {assetDetails}
         </CardActionArea>
@@ -176,9 +175,9 @@ export function BaseAssetCard({
       )}
 
       {asset?.chainId && (
-        <Tooltip title={getChainName(asset.chainId) || ''}>
+        <Tooltip title={NETWORK_NAME(asset.chainId) || ''}>
           <Avatar
-            src={getChainLogoImage(asset.chainId)}
+            src={NETWORK_IMAGE(asset.chainId) || ''}
             sx={(theme) => ({
               top: theme.spacing(2),
               left: theme.spacing(2),
@@ -186,7 +185,7 @@ export function BaseAssetCard({
               width: 'auto',
               height: theme.spacing(3),
             })}
-            alt={getChainName(asset.chainId) || ''}
+            alt={NETWORK_NAME(asset.chainId) || ''}
           />
         </Tooltip>
       )}

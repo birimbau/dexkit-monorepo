@@ -1,6 +1,5 @@
 import TokenDropSummary from '@/modules/wizard/components/TokenDropSummary';
 import { CoinTypes, TOKEN_ICON_URL } from '@dexkit/core';
-import { NETWORKS } from '@dexkit/core/constants/networks';
 import { EvmCoin } from '@dexkit/core/types';
 import { convertTokenToEvmCoin } from '@dexkit/core/utils';
 import { useTokenList } from '@dexkit/ui';
@@ -98,7 +97,7 @@ export function ContractTokenContainer({
 
   const [token, setToken] = useState<EvmCoin>();
 
-  const { NETWORK_SLUG } = useNetworkMetadata();
+  const { NETWORK_SLUG, NETWORKS } = useNetworkMetadata();
 
   useEffect(() => {
     (async () => {
@@ -171,8 +170,8 @@ export function ContractTokenContainer({
           chainId: chainId,
           provider: provider,
           coins: token
-            ? [...tokens.map(convertTokenToEvmCoin), token]
-            : tokens.map(convertTokenToEvmCoin),
+            ? [...tokens.map((t) => convertTokenToEvmCoin(t, NETWORKS)), token]
+            : tokens.map((t) => convertTokenToEvmCoin(t, NETWORKS)),
           defaultCoin: token,
         }}
       />

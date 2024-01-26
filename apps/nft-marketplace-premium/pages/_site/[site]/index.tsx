@@ -43,7 +43,7 @@ export const getStaticProps: GetStaticProps = async ({
       const assetResponse = await getDKAssetOrderbook({ maker });
       await queryClient.prefetchQuery(
         [GET_ASSETS_ORDERBOOK, { maker: maker || null }],
-        async () => assetResponse.data
+        async () => assetResponse.data,
       );
     }
   }
@@ -91,6 +91,8 @@ export const getStaticProps: GetStaticProps = async ({
     queryClient,
     siteId: configResponse.siteId,
   });
+
+  console.log('dehy', dehydrate(queryClient));
 
   return {
     props: {

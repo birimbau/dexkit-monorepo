@@ -1,3 +1,5 @@
+import { dexkitNFTapi } from '@dexkit/ui/constants/api';
+import { getActiveNetworksObject } from '@dexkit/ui/services/app';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import {
   getAssetData,
@@ -7,18 +9,34 @@ import {
 import { Asset } from '../../src/types/nft';
 import { getChainSlug, getProviderByChainId } from '../../src/utils/blockchain';
 
+// TODO: Fix this (add siteId)
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   let asset: Asset | undefined;
-  const { chainId, contractAddress, tokenId } = req.query;
+  const { chainId, contractAddress, tokenId, siteId } = req.query;
+
+  const NETWORKS = await getActiveNetworksObject({
+    instance: dexkitNFTapi,
+    siteId: parseInt(siteId as string),
+  });
+
   try {
-    const provider = getProviderByChainId(parseInt(chainId as string));
+    const provider = getProviderByChainId(
+      parseInt(chainId as string),
+      NETWORKS,
+    );
+
+    await provider?.ready;
+
     asset = await getAssetData(
       provider,
       contractAddress as string,
-      tokenId as string
+      tokenId as string,
+      undefined,
+      undefined,
+      NETWORKS,
     );
   } catch (e) {
     console.log(e);
@@ -29,7 +47,7 @@ export default async function handler(
   }
   try {
     const assetAPI = await getAssetDexKitApi({
-      networkId: getChainSlug(parseInt(chainId as string)) as string,
+      networkId: getChainSlug(parseInt(chainId as string), NETWORKS) as string,
       contractAddress: contractAddress as string,
       tokenId: tokenId as string,
     });

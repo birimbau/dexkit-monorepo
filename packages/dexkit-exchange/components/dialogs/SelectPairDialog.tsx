@@ -30,8 +30,8 @@ import {
   TOKEN_ICON_URL,
   useIsMobile,
 } from "@dexkit/core";
-import { NETWORKS } from "@dexkit/core/constants/networks";
 import LazyTextField from "@dexkit/ui/components/LazyTextField";
+import { useNetworkMetadata } from "@dexkit/ui/hooks/app";
 import { usePlatformCoinSearch } from "@dexkit/ui/hooks/coin";
 import { apiCoinToTokens } from "@dexkit/ui/utils/coin";
 import TokenIcon from "@mui/icons-material/Token";
@@ -60,6 +60,8 @@ export default function SelectPairDialog({
   onSwitchNetwork,
   chainId,
 }: SelectPairDialogProps) {
+  const { NETWORKS } = useNetworkMetadata();
+
   const { onClose } = DialogProps;
 
   const { formatMessage } = useIntl();

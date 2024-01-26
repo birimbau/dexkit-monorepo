@@ -1,3 +1,4 @@
+import { QueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { Contract, providers, utils } from 'ethers';
 import { isAddress } from 'ethers/lib/utils';
@@ -50,9 +51,11 @@ export async function getContractImplementation({
 export async function checkGatedConditions({
   account,
   conditions,
+  queryCtx,
 }: {
   account?: string;
   conditions: GatedCondition[];
+  queryCtx?: { queryClient: QueryClient; siteId?: number };
 }) {
   const balances: { [key: number]: string } = {};
   const partialResults: { [key: number]: boolean } = {};
@@ -79,18 +82,20 @@ export async function checkGatedConditions({
         partialResults[index] = false;
         if (
           balance.gte(
-            utils.parseUnits(
-              String(condition.amount),
-              condition.decimals
-            )
+            utils.parseUnits(String(condition.amount), condition.decimals)
           )
         ) {
           thisCondition = true;
           partialResults[index] = true;
         }
       }
-      if (condition.type === 'collection' && condition.protocol !== 'ERC1155') {
+      if (
+        condition.type === 'collection' &&
+        condition.protocol !== 'ERC1155' &&
+        queryCtx
+      ) {
         const balance = await getBalanceOf(
+          queryCtx,
           getNetworkSlugFromChainId(condition.chainId) as string,
           condition.address as string,
           account
@@ -154,30 +159,37 @@ export function getGatedConditionsText({
 
       // We check all conditions here now
       if (condition.type === 'coin') {
-        text = `${text} have ${condition.amount
-          } of coin ${condition.symbol?.toUpperCase()} with address ${condition.address
-          } on network ${getNetworkSlugFromChainId(
-            condition.chainId
-          )?.toUpperCase()}`;
+        text = `${text} have ${
+          condition.amount
+        } of coin ${condition.symbol?.toUpperCase()} with address ${
+          condition.address
+        } on network ${getNetworkSlugFromChainId(
+          condition.chainId
+        )?.toUpperCase()}`;
       }
       if (condition.type === 'collection' && condition.protocol !== 'ERC1155') {
-        text = `${text} have ${condition.amount
-          } of collection ${condition.symbol?.toUpperCase()} with address ${condition.address
-          } on network ${getNetworkSlugFromChainId(
-            condition.chainId
-          )?.toUpperCase()}`;
+        text = `${text} have ${
+          condition.amount
+        } of collection ${condition.symbol?.toUpperCase()} with address ${
+          condition.address
+        } on network ${getNetworkSlugFromChainId(
+          condition.chainId
+        )?.toUpperCase()}`;
       }
       if (
         condition.type === 'collection' &&
         condition.protocol === 'ERC1155' &&
         condition.tokenId
       ) {
-        text = `${text} have ${condition.amount
-          } of collection ${condition.symbol?.toUpperCase()} with id ${condition.tokenId
-          } with address ${condition.address
-          } on network ${getNetworkSlugFromChainId(
-            condition.chainId
-          )?.toUpperCase()} `;
+        text = `${text} have ${
+          condition.amount
+        } of collection ${condition.symbol?.toUpperCase()} with id ${
+          condition.tokenId
+        } with address ${
+          condition.address
+        } on network ${getNetworkSlugFromChainId(
+          condition.chainId
+        )?.toUpperCase()} `;
       }
     }
     return text;
@@ -200,42 +212,79 @@ export async function isProxyContract({
   }
 }
 
-
-export async function requestEmailConfirmatioForSite({ siteId, accessToken }: { siteId: number, accessToken: string }) {
-
+export async function requestEmailConfirmatioForSite({
+  siteId,
+  accessToken,
+}: {
+  siteId: number;
+  accessToken: string;
+}) {
   return axios.get(`/api/email/site-verification-link?siteId=${siteId}`, {
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
   });
-
 }
 
-export async function addPermissionsMemberSite({ siteId, permissions, account }: { siteId: number, permissions: string, account: string }) {
+export async function addPermissionsMemberSite({
+  siteId,
+  permissions,
+  account,
+}: {
+  siteId: number;
+  permissions: string;
+  account: string;
+}) {
   return myAppsApi.post(`/site/add-permissions/${siteId}`, {
     permissions,
-    account
+    account,
   });
 }
 
-export async function deleteMemberSite({ siteId, account }: { siteId: number, account: string }) {
-
+export async function deleteMemberSite({
+  siteId,
+  account,
+}: {
+  siteId: number;
+  account: string;
+}) {
   return myAppsApi.delete(`/site/remove-permissions/${siteId}/${account}`);
-
 }
 
-export async function upsertAppVersion({ siteId, version, description, versionId }: { siteId: number, version: string, description?: string, versionId?: number }) {
+export async function upsertAppVersion({
+  siteId,
+  version,
+  description,
+  versionId,
+}: {
+  siteId: number;
+  version: string;
+  description?: string;
+  versionId?: number;
+}) {
   return myAppsApi.post(`/site/upsert-version/${siteId}`, {
     version,
     description,
-    versionId
+    versionId,
   });
 }
 
-export async function deleteAppVersion({ siteId, siteVersionId }: { siteId: number, siteVersionId: number }) {
+export async function deleteAppVersion({
+  siteId,
+  siteVersionId,
+}: {
+  siteId: number;
+  siteVersionId: number;
+}) {
   return myAppsApi.delete(`/site/version/${siteId}/${siteVersionId}`);
 }
 
-export async function setAppVersion({ siteId, siteVersionId }: { siteId: number, siteVersionId: number }) {
+export async function setAppVersion({
+  siteId,
+  siteVersionId,
+}: {
+  siteId: number;
+  siteVersionId: number;
+}) {
   return myAppsApi.get(`/site/set-version/${siteId}/${siteVersionId}`);
 }

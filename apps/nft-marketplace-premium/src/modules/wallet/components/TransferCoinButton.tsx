@@ -1,4 +1,5 @@
 import { convertTokenToEvmCoin } from '@dexkit/core/utils';
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import Button from '@mui/material/Button';
 import { useWeb3React } from '@web3-react/core';
 import dynamic from 'next/dynamic';
@@ -17,6 +18,8 @@ export function TransferCoinButton() {
   const { account, chainId, provider, ENSName } = useWeb3React();
   const tokens = useTokenList({ chainId, includeNative: true });
 
+  const { NETWORKS } = useNetworkMetadata();
+
   return (
     <>
       {open && (
@@ -34,7 +37,7 @@ export function TransferCoinButton() {
             account: account,
             chainId: chainId,
             provider: provider,
-            coins: tokens.map(convertTokenToEvmCoin),
+            coins: tokens.map((t) => convertTokenToEvmCoin(t, NETWORKS)),
           }}
         />
       )}

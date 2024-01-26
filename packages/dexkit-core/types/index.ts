@@ -31,8 +31,6 @@ export type Token = {
   logoURI?: string;
 };
 
-
-
 export type TokenPrices = {
   [key: number]: { [key: string]: { [key: string]: number } };
 };
@@ -45,6 +43,7 @@ export type Network = {
   coinSymbol?: string;
   coinImageUrl?: string;
   coingeckoPlatformId?: string;
+  coingeckoId?: string;
   imageUrl?: string;
   testnet?: boolean;
   explorerUrl?: string;
@@ -52,8 +51,6 @@ export type Network = {
   slug?: string;
   providerRpcUrl?: string;
 };
-
-
 
 export interface AppTransaction {
   title?: string;

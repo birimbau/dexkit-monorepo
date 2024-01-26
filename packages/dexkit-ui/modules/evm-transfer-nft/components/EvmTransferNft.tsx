@@ -1,6 +1,4 @@
-import { NETWORK_NAME } from "@dexkit/core/constants/networks";
 import {
-  getBlockExplorerUrl,
   getNormalizedUrl,
   isAddressEqual,
   truncateAddress,
@@ -26,6 +24,7 @@ import { Field, Form, Formik, FormikHelpers } from "formik";
 import { TextField } from "formik-mui";
 import { useSnackbar } from "notistack";
 import { FormattedMessage, useIntl } from "react-intl";
+import { useNetworkMetadata } from "../../../hooks/app";
 import { getTransferNftSchema } from "../constants/schemas";
 import { useNftTransfer } from "../hooks";
 import { AddressField } from "./AddressField";
@@ -72,6 +71,7 @@ export default function EvmTransferNft({
   onCancel,
   onOwnershipChange,
 }: EvmTransferNftProps) {
+  const { getBlockExplorerUrl, NETWORK_NAME } = useNetworkMetadata();
   const { formatMessage } = useIntl();
   const { createNotification, watchTransactionDialog } = useDexKitContext();
 

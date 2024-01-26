@@ -1,8 +1,8 @@
 import { ChainId } from "@dexkit/core/constants";
-import { NETWORK_SLUG } from "@dexkit/core/constants/networks";
-import { useNetworkProvider } from "@dexkit/core/hooks/blockchain";
+
 import { Asset, AssetMetadata, SwapApiOrder } from "@dexkit/core/types/nft";
 import { isAddressEqual } from "@dexkit/core/utils";
+import { useNetworkProvider } from "@dexkit/ui/hooks/networks";
 import {
   UseMutationOptions,
   UseQueryOptions,
@@ -23,7 +23,7 @@ import { useAtom } from "jotai";
 import { useCallback, useMemo } from "react";
 import { getAssetDexKitApi } from "../../../constants/api";
 import { useAppConfig, useDexKitContext } from "../../../hooks";
-import { useNetworkMetadata } from "../../../hooks/app";
+import { useNetworkMetadata, useSiteIdV2 } from "../../../hooks/app";
 import { useTokenList } from "../../../hooks/blockchain";
 import { accountAssetsAtom } from "../../../state";
 import { NFTType } from "../constants/enum";
@@ -408,6 +408,7 @@ export function useAsset(
   lazy?: boolean,
   networkChainId?: ChainId
 ) {
+  const { siteId } = useSiteIdV2();
   const queryClient = useQueryClient();
   const networkProvider = useNetworkProvider(networkChainId);
 
@@ -575,6 +576,8 @@ export function useSearchAssets(
   search?: string,
   collections?: CollectionUniformItem[]
 ) {
+  const { NETWORK_SLUG } = useNetworkMetadata();
+
   return useQuery([SEARCH_ASSETS, search], () => {
     if (!search) {
       return [];
@@ -604,6 +607,7 @@ export const GET_ASSET_LIST_FROM_ORDERBOOK = "GET_ASSET_LIST_FROM_ORDERBOOK";
 export const useAssetListFromOrderbook = (orderFilter: TraderOrderFilter) => {
   const ordebookQuery = useOrderBook(orderFilter);
   const provider = useNetworkProvider(orderFilter.chainId);
+
   return useQuery(
     [GET_ASSET_LIST_FROM_ORDERBOOK, ordebookQuery.data],
     async () => {

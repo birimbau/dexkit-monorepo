@@ -21,7 +21,7 @@ import DarkblockWrapper from '@/modules/wizard/components/DarkblockWrapper';
 import { DARKBLOCK_SUPPORTED_CHAIN_IDS } from '@/modules/wizard/constants';
 import { getIntegrationData } from '@/modules/wizard/services/integrations';
 import { ChainId, MY_APPS_ENDPOINT } from '@dexkit/core/constants';
-import { NETWORK_FROM_SLUG } from '@dexkit/core/constants/networks';
+import { NETWORK_FROM_SLUG_SERVER } from '@dexkit/core/constants/networks';
 import { truncateAddress } from '@dexkit/core/utils';
 import { dexkitNFTapi } from '@dexkit/ui/constants/api';
 import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
@@ -35,7 +35,6 @@ import { NETWORK_ID } from '../../../../../../src/constants/enum';
 import { MAP_NETWORK_TO_RARIBLE } from '../../../../../../src/constants/marketplaces';
 import { getAppConfig } from '../../../../../../src/services/app';
 import { getRariAsset } from '../../../../../../src/services/rarible';
-import { getChainIdFromSlug } from '../../../../../../src/utils/blockchain';
 import { ipfsUriToUrl } from '../../../../../../src/utils/ipfs';
 import { truncateErc1155TokenId } from '../../../../../../src/utils/nfts';
 
@@ -92,15 +91,15 @@ const AssetDetailPage: NextPage<any> = ({
                   ),
 
                   uri: `/collection/${getNetworkSlugFromChainId(
-                    asset?.chainId
+                    asset?.chainId,
                   )}/${address}`,
                 },
                 {
                   caption: `${asset?.collectionName} #${truncateErc1155TokenId(
-                    asset?.id
+                    asset?.id,
                   )}`,
                   uri: `/asset/${getNetworkSlugFromChainId(
-                    asset?.chainId
+                    asset?.chainId,
                   )}/${address}/${id}`,
                   active: true,
                 },
@@ -147,29 +146,41 @@ export const getStaticProps: GetStaticProps = async ({
 
     const queryClient = new QueryClient();
 
-    await netToQuery({
+    const { NETWORKS } = await netToQuery({
       instance: dexkitNFTapi,
       queryClient,
       siteId: configResponse.siteId,
     });
 
+    const chainId = NETWORK_FROM_SLUG_SERVER(network || '', NETWORKS)?.chainId;
+
+    if (!chainId) {
+      throw new Error('no chain');
+    }
+
     const item = {
       contractAddress: address || '',
       tokenId: id || '',
-      chainId: getChainIdFromSlug(network || '')?.chainId as ChainId,
+      chainId,
     };
-    await fetchAssetForQueryClient({ queryClient, item });
+
+    await fetchAssetForQueryClient({
+      queryClient,
+      item,
+      siteId: configResponse.siteId,
+      NETWORKS,
+    });
 
     try {
       if (network === NETWORK_ID.Ethereum || network === NETWORK_ID.Polygon) {
         const { data } = await getRariAsset(
-          `${MAP_NETWORK_TO_RARIBLE[network]}:${address}:${id}`
+          `${MAP_NETWORK_TO_RARIBLE[network]}:${address}:${id}`,
         );
         await queryClient.prefetchQuery(
           [BEST_SELL_ORDER_RARIBLE, network, address, id],
           async () => {
             return data;
-          }
+          },
         );
       }
     } catch (e) {
@@ -179,8 +190,9 @@ export const getStaticProps: GetStaticProps = async ({
 
     try {
       if (
+        NETWORKS &&
         DARKBLOCK_SUPPORTED_CHAIN_IDS.includes(
-          NETWORK_FROM_SLUG(network)?.chainId as ChainId
+          NETWORK_FROM_SLUG_SERVER(network, NETWORKS)?.chainId as ChainId,
         )
       ) {
         const darkBlock = await getIntegrationData({

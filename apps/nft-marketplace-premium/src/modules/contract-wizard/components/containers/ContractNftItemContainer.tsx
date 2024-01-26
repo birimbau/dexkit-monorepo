@@ -1,5 +1,5 @@
 import { AssetImage } from '@/modules/nft/components/AssetImage';
-import { getBlockExplorerUrl, truncateAddress } from '@dexkit/core/utils';
+import { truncateAddress } from '@dexkit/core/utils';
 import EvmBurnNftDialog from '@dexkit/ui/modules/evm-burn-nft/components/dialogs/EvmBurnNftDialog';
 import EvmTransferNftDialog from '@dexkit/ui/modules/evm-transfer-nft/components/dialogs/EvmTransferNftDialog';
 import {
@@ -20,6 +20,7 @@ import { useState } from 'react';
 
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import { FormattedMessage } from 'react-intl';
 import { PageHeader } from 'src/components/PageHeader';
 
@@ -34,6 +35,8 @@ export default function ContractNftItemContainer({
   network,
   tokenId,
 }: ContractNftItemContainerProps) {
+  const { getBlockExplorerUrl } = useNetworkMetadata();
+
   const { data: contract } = useContract(address, 'nft-collection');
   const contractMetadata = useContractMetadata(contract);
   const nftQuery = useNFT(contract, tokenId);
@@ -234,9 +237,9 @@ export default function ContractNftItemContainer({
                           </Typography>
                           <Typography>
                             <Link
-                              href={`${getBlockExplorerUrl(
-                                chainId,
-                              )}/address/${nftQuery.data?.owner}`}
+                              href={`${getBlockExplorerUrl(chainId)}/address/${
+                                nftQuery.data?.owner
+                              }`}
                               target="_blank"
                             >
                               {truncateAddress(nftQuery.data?.owner)}

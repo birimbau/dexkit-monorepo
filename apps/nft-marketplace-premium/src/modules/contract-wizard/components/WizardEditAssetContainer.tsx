@@ -4,6 +4,7 @@ import {
   CollectionItemFormType,
   WizardItem,
 } from '@/modules/contract-wizard/types';
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import { Alert, Container, Grid, Typography } from '@mui/material';
 import { useWeb3React } from '@web3-react/core';
 import { Formik } from 'formik';
@@ -12,7 +13,6 @@ import { FormattedMessage } from 'react-intl';
 import AppConfirmDialog from 'src/components/AppConfirmDialog';
 import { PageHeader } from 'src/components/PageHeader';
 import { useAssetByApi } from 'src/hooks/nft';
-import { getChainIdFromSlug } from 'src/utils/blockchain';
 import CollectionItemCard from './CollectionItemCard';
 import EditAssetDialog from './dialogs/EditAssetDialog';
 
@@ -26,6 +26,8 @@ function WizardEditAssetContainer(props: Props) {
   const { network, address, id } = props;
 
   const uploadItemsMetadataMutation = useEditAssetMetadataMutation();
+
+  const { getChainIdFromSlug } = useNetworkMetadata();
 
   const { data: asset } = useAssetByApi({
     contractAddress: address.toLowerCase(),

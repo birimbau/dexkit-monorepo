@@ -28,16 +28,13 @@ import { FormattedMessage } from 'react-intl';
 import { PageHeader } from 'src/components/PageHeader';
 import AuthMainLayout from 'src/components/layouts/authMain';
 
-import {
-  getBlockExplorerUrl,
-  isAddressEqual,
-  truncateAddress,
-} from '@dexkit/core/utils';
+import { isAddressEqual, truncateAddress } from '@dexkit/core/utils';
 import ShareDialog from '@dexkit/ui/components/dialogs/ShareDialog';
 import { useState } from 'react';
 import { getWindowUrl } from 'src/utils/browser';
 
 import { dexkitNFTapi } from '@dexkit/ui/constants/api';
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import { netToQuery } from '@dexkit/ui/utils/networks';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
@@ -46,9 +43,10 @@ import { useWeb3React } from '@web3-react/core';
 import { GetStaticProps, GetStaticPropsContext } from 'next';
 import Link from 'src/components/Link';
 import { getAppConfig } from 'src/services/app';
-import { getChainName } from 'src/utils/blockchain';
 
 export default function TemplatePage() {
+  const { getBlockExplorerUrl, NETWORK_NAME } = useNetworkMetadata();
+
   const router = useRouter();
 
   const [showShare, setShowShare] = useState(false);
@@ -106,9 +104,8 @@ export default function TemplatePage() {
           maxWidth: 'sm',
           fullWidth: true,
         }}
-        url={`${getWindowUrl()}/forms/contract-templates/${
-          formTemplateQuery.data?.id
-        }`}
+        url={`${getWindowUrl()}/forms/contract-templates/${formTemplateQuery
+          .data?.id}`}
       />
       <Container>
         <Stack spacing={2}>
@@ -176,7 +173,7 @@ export default function TemplatePage() {
                               variant="body2"
                             >
                               {truncateAddress(
-                                formTemplateQuery.data?.creatorAddress
+                                formTemplateQuery.data?.creatorAddress,
                               )}
                             </Link>
                           ),
@@ -210,7 +207,7 @@ export default function TemplatePage() {
 
                     {isAddressEqual(
                       formTemplateQuery.data?.creatorAddress,
-                      account
+                      account,
                     ) && (
                       <Button
                         size="small"
@@ -258,12 +255,12 @@ export default function TemplatePage() {
                 {templateInstancesQuery.data?.map((instance) => (
                   <TableRow key={instance.id}>
                     <TableCell>{instance.name}</TableCell>
-                    <TableCell>{getChainName(instance.chainId)}</TableCell>
+                    <TableCell>{NETWORK_NAME(instance.chainId)}</TableCell>
                     <TableCell>
                       <Link
                         target="_blank"
                         href={`${getBlockExplorerUrl(
-                          instance.chainId
+                          instance.chainId,
                         )}/address/${instance.address}`}
                       >
                         {truncateAddress(instance.address)}
@@ -273,7 +270,7 @@ export default function TemplatePage() {
                       <Link
                         target="_blank"
                         href={`${getBlockExplorerUrl(
-                          instance.chainId
+                          instance.chainId,
                         )}/address/${instance.creatorAddress}`}
                       >
                         {truncateAddress(instance.creatorAddress)}

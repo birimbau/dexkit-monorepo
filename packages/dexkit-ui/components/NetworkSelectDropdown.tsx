@@ -1,5 +1,4 @@
 import { ChainId } from "@dexkit/core/constants";
-import { NETWORKS } from "@dexkit/core/constants/networks";
 import { Network } from "@dexkit/core/types";
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
@@ -9,6 +8,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
+import { useNetworkMetadata } from "../hooks/app";
 
 interface Props {
   chainId?: ChainId;
@@ -18,6 +18,9 @@ interface Props {
 
 export function NetworkSelectDropdown(props: Props) {
   const { chainId, onChange, labelId } = props;
+
+  const { NETWORKS } = useNetworkMetadata();
+
   return (
     <Select
       labelId={labelId}

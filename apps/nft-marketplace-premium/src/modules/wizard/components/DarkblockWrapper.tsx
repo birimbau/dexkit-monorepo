@@ -1,9 +1,10 @@
 import { useWeb3React } from '@web3-react/core';
 import dynamic from 'next/dynamic';
 
-import { NETWORK_FROM_SLUG } from '@dexkit/core/constants/networks';
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 
 const EVMDarkblockWidget = dynamic(
+  // @ts-ignore
   async () => (await import('@dexkit/darkblock-evm-widget')).EVMDarkblockWidget,
   { ssr: false },
 );
@@ -20,6 +21,7 @@ export default function DarkblockWrapper({
   network,
 }: DarkBlockWrapperProps) {
   const { provider, account } = useWeb3React();
+  const { NETWORK_FROM_SLUG } = useNetworkMetadata();
 
   if (typeof window !== 'undefined') {
     if (

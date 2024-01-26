@@ -1,4 +1,4 @@
-import { useEnsNameMutation } from "@dexkit/core/hooks";
+import { useEnsNameMutation } from "@dexkit/ui/hooks/wallet";
 import { Stack, Typography } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
 import { ethers } from "ethers";
@@ -12,6 +12,7 @@ export function AddressField() {
   const [field] = useField("address");
   const [previousValue, setPreviousValue] = useState<string>();
   const [previousValueResult, setPreviousValueResult] = useState<string>();
+
   return (
     <>
       <Field

@@ -31,11 +31,9 @@ import {
 import { ethers } from 'ethers';
 import * as Yup from 'yup';
 
-import { NETWORKS } from '@dexkit/core/constants/networks';
 import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import ImageIcon from '@mui/icons-material/Image';
 import MediaDialog from '../../../../components/mediaDialog';
-import { Network } from '../../../../types/chains';
 import { ipfsUriToUrl } from '../../../../utils/ipfs';
 import { CollectionItemAutocomplete } from './CollectionItemAutocomplete';
 
@@ -209,7 +207,7 @@ export default function AddItemForm({ item, onCancel, onSubmit }: Props) {
     collectionForm.resetForm();
   };
 
-  const { getNetworks } = useNetworkMetadata();
+  const { getNetworks, NETWORKS } = useNetworkMetadata();
 
   return (
     <Grid container spacing={2}>
@@ -285,7 +283,7 @@ export default function AddItemForm({ item, onCancel, onSubmit }: Props) {
                   }}
                 >
                   {getNetworks({ includeTestnet: false }).map(
-                    (network: Network, index: number) => (
+                    (network, index: number) => (
                       <MenuItem key={index} value={network?.chainId}>
                         <ListItemIcon>
                           <Box
@@ -436,7 +434,7 @@ export default function AddItemForm({ item, onCancel, onSubmit }: Props) {
                   }}
                 >
                   {getNetworks({ includeTestnet: false }).map(
-                    (network: Network, index: number) => (
+                    (network, index: number) => (
                       <MenuItem key={index} value={network.chainId}>
                         <ListItemIcon>
                           <Box

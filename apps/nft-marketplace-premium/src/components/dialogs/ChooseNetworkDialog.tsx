@@ -1,4 +1,5 @@
 import { ChainId } from '@dexkit/core/constants';
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import {
   Avatar,
   Box,
@@ -17,7 +18,6 @@ import {
 } from '@mui/material';
 import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { NETWORKS } from '../../constants/chain';
 import { Network } from '../../types/chains';
 import { AppDialogTitle } from '../AppDialogTitle';
 
@@ -32,6 +32,7 @@ function ChooseNetworkDialog({
   onChange,
   selectedChainId,
 }: Props) {
+  const { NETWORKS } = useNetworkMetadata();
   const { onClose } = dialogProps;
 
   const [chainId, setChainId] = useState<number | undefined>(selectedChainId);

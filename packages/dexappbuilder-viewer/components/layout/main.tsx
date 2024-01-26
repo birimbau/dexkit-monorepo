@@ -29,6 +29,7 @@ import {
 } from "@dexkit/ui";
 import ConnectWalletDialog from "@dexkit/ui/components/ConnectWalletDialog";
 import WatchTransactionDialog from "@dexkit/ui/components/dialogs/WatchTransactionDialog";
+import { useNetworkMetadata } from "@dexkit/ui/hooks/app";
 import { selectedWalletAtom } from "@dexkit/ui/state";
 import { AppConfig } from "@dexkit/ui/types/config";
 import { WalletActivateParams } from "@dexkit/wallet-connectors/types";
@@ -123,12 +124,15 @@ const MainLayout: React.FC<Props> = ({
     showSelectLocale.setIsOpen(false);
   };
 
+  const { NETWORKS } = useNetworkMetadata();
+
   const walletActivate = useWalletActivate({
     magicRedirectUrl:
       typeof window !== "undefined"
         ? window.location.href
         : process.env.NEXT_PUBLIC_MAGIC_REDIRECT_URL || "",
     selectedWalletAtom,
+    NETWORKS,
   });
 
   const handleActivateWallet = async (params: WalletActivateParams) => {

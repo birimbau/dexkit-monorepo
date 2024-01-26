@@ -10,12 +10,9 @@ import {
 } from '@mui/material';
 
 import { FormattedMessage } from 'react-intl';
-import {
-  getBlockExplorerUrl,
-  getChainName,
-  truncateAddress,
-} from '../../../utils/blockchain';
+import { truncateAddress } from '../../../utils/blockchain';
 
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -30,6 +27,8 @@ interface Props {
 }
 
 export function AssetDetailsBase({ asset, metadata }: Props) {
+  const { getBlockExplorerUrl, NETWORK_NAME } = useNetworkMetadata();
+
   return (
     <Stack spacing={1}>
       <Box>
@@ -91,7 +90,7 @@ export function AssetDetailsBase({ asset, metadata }: Props) {
                             value={attr.value}
                           />
                         </Grid>
-                      )
+                      ),
                   )}
                 </Grid>
               </AccordionDetails>
@@ -127,9 +126,9 @@ export function AssetDetailsBase({ asset, metadata }: Props) {
                 </Typography>
                 <Typography color="textSecondary">
                   <Link
-                    href={`${getBlockExplorerUrl(asset?.chainId)}/address/${
-                      asset?.contractAddress
-                    }`}
+                    href={`${getBlockExplorerUrl(
+                      asset?.chainId,
+                    )}/address/${asset?.contractAddress}`}
                     target="_blank"
                   >
                     {truncateAddress(asset?.contractAddress)}
@@ -158,7 +157,7 @@ export function AssetDetailsBase({ asset, metadata }: Props) {
                   />
                 </Typography>
                 <Typography color="textSecondary">
-                  {getChainName(asset?.chainId)}
+                  {NETWORK_NAME(asset?.chainId)}
                 </Typography>
               </Stack>
             </Stack>

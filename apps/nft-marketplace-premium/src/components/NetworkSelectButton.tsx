@@ -1,12 +1,8 @@
 import { ChainId } from '@dexkit/core/constants';
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import { useState } from 'react';
-import {
-  getChainLogoImage,
-  getChainName,
-  getChainSymbol,
-} from '../utils/blockchain';
 import ChooseNetworkDialog from './dialogs/ChooseNetworkDialog';
 
 interface Props {
@@ -26,6 +22,8 @@ export function NetworkSelectButton(props: Props) {
   const handleCloseShowNetworkDialog = () => {
     setShowSelectSwapNetwork(false);
   };
+
+  const { NETWORK_SYMBOL, NETWORK_IMAGE, NETWORK_NAME } = useNetworkMetadata();
 
   return (
     <>
@@ -48,16 +46,16 @@ export function NetworkSelectButton(props: Props) {
         onClick={handleOpenSelectNetworkDialog}
         startIcon={
           <Avatar
-            src={getChainLogoImage(chainId)}
+            src={NETWORK_IMAGE(chainId) || ''}
             sx={(theme) => ({
               width: 'auto',
               height: theme.spacing(3),
             })}
-            alt={getChainName(chainId) || ''}
+            alt={NETWORK_NAME(chainId) || ''}
           />
         }
       >
-        {getChainSymbol(chainId) || ''}
+        {NETWORK_SYMBOL(chainId) || ''}
       </Button>
     </>
   );

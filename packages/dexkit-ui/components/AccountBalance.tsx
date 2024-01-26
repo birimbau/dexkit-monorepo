@@ -5,7 +5,7 @@ import { Typography } from "@mui/material";
 import { useWeb3React } from "@web3-react/core";
 import { useMemo } from "react";
 
-import { NETWORK_COIN_SYMBOL } from "@dexkit/core/constants/networks";
+import { useNetworkMetadata } from "../hooks/app";
 
 export interface AccountBalanceProps {
   isBalancesVisible: boolean;
@@ -15,6 +15,8 @@ export function AccountBalance({ isBalancesVisible }: AccountBalanceProps) {
   const { account, provider, chainId } = useWeb3React();
 
   const { data: balance } = useEvmNativeBalanceQuery({ provider, account });
+
+  const { NETWORK_SYMBOL } = useNetworkMetadata();
 
   const formattedBalance = useMemo(() => {
     if (balance) {
@@ -31,8 +33,7 @@ export function AccountBalance({ isBalancesVisible }: AccountBalanceProps) {
       align="left"
       component="div"
     >
-      {isBalancesVisible ? formattedBalance : "*.**"}{" "}
-      {NETWORK_COIN_SYMBOL(chainId)}
+      {isBalancesVisible ? formattedBalance : "*.**"} {NETWORK_SYMBOL(chainId)}
     </Typography>
   );
 }

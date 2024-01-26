@@ -3,12 +3,7 @@ import { ERC20Abi } from "@dexkit/core/constants/abis";
 import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "@dexkit/core/constants/zrx";
 import { ZrxOrder, ZrxOrderRecord } from "@dexkit/core/services/zrx/types";
 import { Token } from "@dexkit/core/types";
-import {
-  formatBigNumber,
-  getChainName,
-  getNativeTokenSymbol,
-  isAddressEqual,
-} from "@dexkit/core/utils";
+import { formatBigNumber, isAddressEqual } from "@dexkit/core/utils";
 import MomentFromSpan from "@dexkit/ui/components/MomentFromSpan";
 import MultiCall, { CallInput } from "@indexed-finance/multicall";
 import {
@@ -28,6 +23,7 @@ import { useEffect, useMemo, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { useZrxFillOrderMutation } from "../hooks/zrx";
 
+import { useNetworkMetadata } from "@dexkit/ui/hooks/app";
 import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
 import { BigNumberUtils, getZrxExchangeAddress } from "../utils";
 import DecimalInput from "./TradeWidget/DecimalInput";
@@ -55,6 +51,8 @@ export default function OrderWidget({
   chainId,
   provider,
 }: OrderWidgetProps) {
+  const { getNativeTokenSymbol, NETWORK_NAME } = useNetworkMetadata();
+
   const [makerToken, setMakerToken] = useState<Token>();
   const [takerToken, setTakerToken] = useState<Token>();
 
@@ -102,7 +100,7 @@ export default function OrderWidget({
             chainId,
             address: ZEROEX_NATIVE_TOKEN_ADDRESS,
             decimals: 18,
-            name: getChainName(chainId) || "",
+            name: NETWORK_NAME(chainId) || "",
             symbol: getNativeTokenSymbol(chainId) || "",
           });
         }
@@ -148,7 +146,7 @@ export default function OrderWidget({
             chainId,
             address: ZEROEX_NATIVE_TOKEN_ADDRESS,
             decimals: 18,
-            name: getChainName(chainId) || "",
+            name: NETWORK_NAME(chainId) || "",
             symbol: getNativeTokenSymbol(chainId) || "",
           });
         }

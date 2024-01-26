@@ -3,7 +3,6 @@ import { dehydrate, QueryClient } from '@tanstack/react-query';
 import type { GetStaticProps, GetStaticPropsContext, NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { useMemo } from 'react';
-import { getChainIdFromSlug } from '../../../../../src/utils/blockchain';
 
 import {
   fetchAssetForQueryClient,
@@ -11,6 +10,7 @@ import {
 } from '../../../../../src/services/nft';
 
 import { ChainId } from '@dexkit/core/constants';
+import { NETWORK_FROM_SLUG_SERVER } from '@dexkit/core/constants/networks';
 import { dexkitNFTapi } from '@dexkit/ui/constants/api';
 import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import { netToQuery } from '@dexkit/ui/utils/networks';
@@ -32,6 +32,8 @@ import { TraderOrderFilter } from '../../../../../src/utils/types';
 const OrderDetail: NextPage = () => {
   const router = useRouter();
   const { hash, network } = router.query;
+  const { getChainIdFromSlug } = useNetworkMetadata();
+
   const chainId = getChainIdFromSlug(network as string)?.chainId;
 
   const { formatMessage } = useIntl();
@@ -48,7 +50,7 @@ const OrderDetail: NextPage = () => {
 
   const { data: asset } = useAsset(
     firstOrder?.nftToken,
-    firstOrder?.nftTokenId
+    firstOrder?.nftTokenId,
   );
 
   const { getNetworkSlugFromChainId } = useNetworkMetadata();
@@ -70,25 +72,25 @@ const OrderDetail: NextPage = () => {
                   <Skeleton />
                 ),
                 uri: `/collection/${getNetworkSlugFromChainId(
-                  asset?.chainId
+                  asset?.chainId,
                 )}/${firstOrder?.nftToken}`,
               },
               {
                 caption: `${asset?.collectionName} #${asset?.id}`,
-                uri: `/asset/${getNetworkSlugFromChainId(asset?.chainId)}/${
-                  firstOrder?.nftToken
-                }/${firstOrder?.nftTokenId}`,
+                uri: `/asset/${getNetworkSlugFromChainId(
+                  asset?.chainId,
+                )}/${firstOrder?.nftToken}/${firstOrder?.nftTokenId}`,
               },
               {
                 caption: `${formatMessage({
                   id: 'order',
                   defaultMessage: 'Order',
                 })} #${firstOrder?.order?.nonce.substring(
-                  firstOrder?.order.nonce.length - 8
+                  firstOrder?.order.nonce.length - 8,
                 )}`,
-                uri: `/order/${getNetworkSlugFromChainId(asset?.chainId)}/${
-                  firstOrder?.order?.nonce
-                }`,
+                uri: `/order/${getNetworkSlugFromChainId(
+                  asset?.chainId,
+                )}/${firstOrder?.order?.nonce}`,
                 active: true,
               },
             ]}
@@ -120,20 +122,24 @@ export const getStaticProps: GetStaticProps = async ({
   params,
 }: GetStaticPropsContext<Params>) => {
   if (params) {
+    const queryClient = new QueryClient();
+
     const { hash, network, site } = params;
     const configResponse = await getAppConfig(site, 'home');
 
-    const chainId = getChainIdFromSlug(network || '')?.chainId;
-
-    const orderFilter: TraderOrderFilter = { chainId, nonce: hash };
-
-    const queryClient = new QueryClient();
-
-    await netToQuery({
+    const { NETWORKS } = await netToQuery({
       instance: dexkitNFTapi,
       queryClient,
       siteId: configResponse.siteId,
     });
+
+    const chainId = NETWORK_FROM_SLUG_SERVER(network || '', NETWORKS)?.chainId;
+
+    if (!chainId) {
+      throw new Error('no chain');
+    }
+
+    const orderFilter: TraderOrderFilter = { chainId, nonce: hash };
 
     const orders = await getOrderbookOrders({
       chainId,
@@ -156,12 +162,17 @@ export const getStaticProps: GetStaticProps = async ({
         tokenId: order.nftTokenId || '',
         chainId: chainId as ChainId,
       };
-      await fetchAssetForQueryClient({ queryClient, item });
+      await fetchAssetForQueryClient({
+        queryClient,
+        item,
+        siteId: configResponse.siteId,
+        NETWORKS,
+      });
     }
 
     await queryClient.prefetchQuery(
       [GET_NFT_ORDERS, orderFilter],
-      async () => orders
+      async () => orders,
     );
 
     return {

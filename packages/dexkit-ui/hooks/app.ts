@@ -1,12 +1,13 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useContext, useMemo } from "react";
+import { useCallback, useContext, useMemo } from "react";
 
 import { ChainId } from "@dexkit/core";
 import { DexkitApiProvider } from "@dexkit/core/providers";
 import { Network } from "@dexkit/core/types";
-import { ethers } from "ethers";
+import { ethers, providers } from "ethers";
 import { SiteContext } from "../providers/SiteProvider";
 import { NetworkMetadata } from "../types/api";
+import { getChainFromSlug } from "../utils/networks";
 
 export function useSiteIdV2() {
   return useContext(SiteContext);
@@ -25,15 +26,18 @@ export function useNetworkMetadata() {
 
   const { siteId } = useSiteIdV2();
 
+  const activeNetworksQuery = useQuery({
+    queryKey: ["PREFETCH_ACTIVE_NETWORKS", siteId],
+    staleTime: 0,
+    cacheTime: 1,
+  });
+
   const NETWORKS: { [key: number]: Network } = useMemo(() => {
-    if (!siteId) {
-      return {};
+    if (!siteId || !activeNetworksQuery.data) {
+      return {}; //TODO: return default networks by now (from api defaults).
     }
 
-    const result: NetworkMetadata[] | undefined = queryClient.getQueryData([
-      "PREFETCH_ACTIVE_NETWORKS",
-      siteId,
-    ]);
+    const result: any[] = activeNetworksQuery.data as any;
 
     if (result) {
       return result.reduce(
@@ -58,10 +62,14 @@ export function useNetworkMetadata() {
     }
 
     return {};
-  }, [queryClient, siteId]);
+  }, [queryClient, siteId, activeNetworksQuery.data]);
 
-  const NETWORK_SLUG = (chainId?: ChainId) =>
-    chainId && NETWORKS[chainId] ? NETWORKS[chainId].slug : undefined;
+  const NETWORK_SLUG = useCallback(
+    (chainId?: ChainId) => {
+      return chainId && NETWORKS[chainId] ? NETWORKS[chainId].slug : "";
+    },
+    [NETWORKS]
+  );
 
   const NETWORK_FROM_SLUG = (slug?: string) => {
     if (slug) {
@@ -173,6 +181,37 @@ export function useNetworkMetadata() {
     }
   };
 
+  const getProviderBySlug = (slug: string) => {
+    let network = getChainFromSlug(queryClient, siteId, slug || "");
+
+    if (
+      network &&
+      network.rpcs &&
+      network.rpcs?.length > 0 &&
+      network.rpcs[0].url
+    ) {
+      return network?.rpcs[0].url;
+    }
+  };
+
+  const NETWORK_PROVIDER = (chainId?: ChainId) => {
+    return chainId && NETWORKS && NETWORKS[chainId]
+      ? new providers.JsonRpcProvider(NETWORKS[chainId].providerRpcUrl)
+      : undefined;
+  };
+
+  const getBlockExplorerUrl = (chainId?: number) => {
+    if (chainId) {
+      return NETWORKS[chainId].explorerUrl;
+    }
+  };
+
+  const getNativeTokenSymbol = (chainId?: number) => {
+    if (chainId) {
+      return NETWORKS[chainId]?.symbol;
+    }
+  };
+
   return {
     NETWORK_IMAGE,
     NETWORK_NAME,
@@ -180,6 +219,7 @@ export function useNetworkMetadata() {
     NETWORK_EXPLORER,
     NETWORK_SLUG,
     NETWORK_FROM_SLUG,
+    NETWORK_PROVIDER,
     getChainIdFromSlug,
     getNetworkSlugFromChainId,
     getProviderByChainId,
@@ -187,6 +227,9 @@ export function useNetworkMetadata() {
     getNetworkFromSlug,
     getNetworks,
     getChainSlug,
-    NETWORKS: NETWORKS,
+    NETWORKS,
+    getNativeTokenSymbol,
+    getProviderBySlug,
+    getBlockExplorerUrl,
   };
 }

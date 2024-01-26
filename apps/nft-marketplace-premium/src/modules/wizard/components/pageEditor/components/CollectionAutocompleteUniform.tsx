@@ -1,12 +1,12 @@
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import Autocomplete from '@mui/material/Autocomplete';
-import Box from '@mui/material/Box';
-import TextField from '@mui/material/TextField';
-import { getChainName } from '../../../../../utils/blockchain';
-import { useAppWizardConfig } from '../../../hooks';
-import { connectField } from 'uniforms';
-import FormControl from '@mui/material/FormControl';
-import Chip from '@mui/material/Chip';
 import Avatar from '@mui/material/Avatar';
+import Box from '@mui/material/Box';
+import Chip from '@mui/material/Chip';
+import FormControl from '@mui/material/FormControl';
+import TextField from '@mui/material/TextField';
+import { connectField } from 'uniforms';
+import { useAppWizardConfig } from '../../../hooks';
 
 export type CollectionUniformItem = {
   name: string;
@@ -25,6 +25,8 @@ export const CollectionAutcompleteUniform = connectField<{
   const { value, onChange } = props;
   const { wizardConfig } = useAppWizardConfig();
 
+  const { NETWORK_NAME } = useNetworkMetadata();
+
   const collections =
     wizardConfig.collections
       ?.map((val) => {
@@ -32,7 +34,7 @@ export const CollectionAutcompleteUniform = connectField<{
           name: val.name,
           contractAddress: val.contractAddress,
           backgroundImage: val.backgroundImage,
-          network: getChainName(val.chainId) || '',
+          network: NETWORK_NAME(val.chainId) || '',
           chainId: val.chainId,
           image: val.image,
         };
@@ -42,7 +44,7 @@ export const CollectionAutcompleteUniform = connectField<{
           !value
             .map((val) => val.contractAddress)
             .includes(v.contractAddress) &&
-          !value.map((val) => val.chainId).includes(v.chainId)
+          !value.map((val) => val.chainId).includes(v.chainId),
       ) || [];
 
   return (
@@ -53,7 +55,7 @@ export const CollectionAutcompleteUniform = connectField<{
         multiple={true}
         defaultValue={value ? value : []}
         options={collections}
-        getOptionLabel={(op) => `${op.name} - ${getChainName(op.chainId)}`}
+        getOptionLabel={(op) => `${op.name} - ${NETWORK_NAME(op.chainId)}`}
         autoHighlight
         onChange={(_change, val) => {
           if (val) {
@@ -67,7 +69,7 @@ export const CollectionAutcompleteUniform = connectField<{
             <Chip
               variant="outlined"
               avatar={<Avatar alt={option} src={option.image} />}
-              label={` ${option.name} - ${getChainName(option.chainId)}`}
+              label={` ${option.name} - ${NETWORK_NAME(option.chainId)}`}
               {...getTagProps({ index })}
               key={index}
             />
@@ -80,7 +82,7 @@ export const CollectionAutcompleteUniform = connectField<{
             {...props}
           >
             <img loading="lazy" width="20" src={`${option.image}`} alt="" />
-            {option.name} - {getChainName(option.chainId)}
+            {option.name} - {NETWORK_NAME(option.chainId)}
           </Box>
         )}
         renderInput={(params) => (

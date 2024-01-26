@@ -16,12 +16,12 @@ import {
 } from '@mui/material';
 
 import { FormattedMessage } from 'react-intl';
-import { NETWORKS } from '../../../../constants/chain';
 import { Network } from '../../../../types/chains';
 import { ipfsUriToUrl } from '../../../../utils/ipfs';
 
 import { FormikHelpers, useFormik } from 'formik';
 
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import { ethers } from 'ethers';
 import { useState } from 'react';
 import * as Yup from 'yup';
@@ -67,6 +67,7 @@ export default function CollectionsSectionForm({
   onCancel,
   initialValues,
 }: Props) {
+  const { NETWORKS } = useNetworkMetadata();
   const [openMediaDialog, setOpenMediaDialog] = useState(false);
   const [mediaFieldToEdit, setMediaFieldToEdit] = useState<string>();
 
@@ -137,7 +138,7 @@ export default function CollectionsSectionForm({
                 >
                   <Avatar
                     src={ipfsUriToUrl(
-                      NETWORKS[formik.values.chainId].imageUrl || '',
+                      NETWORKS[formik.values.chainId].imageUrl || ''
                     )}
                     style={{ width: 'auto', height: '1rem' }}
                   />

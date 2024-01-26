@@ -145,9 +145,9 @@ export function BaseAssetCard({
         <CardActionArea
           LinkComponent={Link}
           disabled={disabled}
-          href={`/asset/${NETWORK_SLUG(asset?.chainId)}/${
-            asset?.contractAddress
-          }/${asset?.id}`}
+          href={`/asset/${NETWORK_SLUG(
+            asset?.chainId
+          )}/${asset?.contractAddress}/${asset?.id}`}
         >
           {assetDetails}
         </CardActionArea>

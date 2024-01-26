@@ -2,12 +2,13 @@ import { ChainId, useApproveToken, useTokenAllowanceQuery } from "@dexkit/core";
 import { UserEvents } from "@dexkit/core/constants/userEvents";
 import { ZeroExQuoteResponse } from "@dexkit/core/services/zrx/types";
 import { Token } from "@dexkit/core/types";
-import { formatBigNumber, getChainName } from "@dexkit/core/utils";
+import { formatBigNumber } from "@dexkit/core/utils";
 import {
   useDexKitContext,
   useSwitchNetworkMutation,
   useWaitTransactionConfirmation,
 } from "@dexkit/ui/hooks";
+import { useNetworkMetadata } from "@dexkit/ui/hooks/app";
 import { useTrackUserEventsMutation } from "@dexkit/ui/hooks/userEvents";
 import { AppNotificationType } from "@dexkit/ui/types";
 import {
@@ -56,6 +57,7 @@ export default function MarketBuyForm({
   feeRecipient,
   isActive,
 }: MarketBuyFormProps) {
+  const { NETWORK_NAME } = useNetworkMetadata();
   const { createNotification } = useDexKitContext();
   const [showReview, setShowReview] = useState(false);
 
@@ -211,7 +213,7 @@ export default function MarketBuyForm({
           <FormattedMessage
             id="switch.to.network"
             defaultMessage="Switch to {network}"
-            values={{ network: getChainName(chainId) }}
+            values={{ network: NETWORK_NAME(chainId) }}
           />
         </Button>
       );

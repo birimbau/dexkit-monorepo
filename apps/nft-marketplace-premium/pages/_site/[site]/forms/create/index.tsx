@@ -23,7 +23,6 @@ import { getFormTemplate } from '@/modules/forms/services';
 import { FormTemplate } from '@/modules/forms/types';
 import { inputMapping } from '@/modules/wizard/utils';
 import { ChainId } from '@dexkit/core';
-import { NETWORKS } from '@dexkit/core/constants/networks';
 import { DexkitApiProvider } from '@dexkit/core/providers';
 import { parseChainId } from '@dexkit/core/utils';
 import { dexkitNFTapi } from '@dexkit/ui/constants/api';
@@ -39,7 +38,6 @@ import AppConfirmDialog from 'src/components/AppConfirmDialog';
 import { PageHeader } from 'src/components/PageHeader';
 import AuthMainLayout from 'src/components/layouts/authMain';
 import { getAppConfig } from 'src/services/app';
-import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 
 export default function FormsCreatePage({
   contractAddress,
@@ -337,7 +335,7 @@ export const getServerSideProps: GetServerSideProps = async ({
   const queryClient = new QueryClient();
   const configResponse = await getAppConfig(params?.site, 'no-page-defined');
 
-  await netToQuery({
+  const { NETWORKS } = await netToQuery({
     queryClient,
     instance: dexkitNFTapi,
     siteId: configResponse.siteId,
@@ -378,9 +376,6 @@ export const getServerSideProps: GetServerSideProps = async ({
   }
 
   const chainId = parseChainId((query.chainId as string) || ChainId.Ethereum);
-
-
-  const {NETWORKS } = useNetworkMetadata();
 
   const isValidChain = Object.keys(NETWORKS)
     .map((key) => parseChainId(key))

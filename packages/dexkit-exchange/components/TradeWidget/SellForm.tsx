@@ -1,7 +1,8 @@
 import { ChainId, useApproveToken, useTokenAllowanceQuery } from "@dexkit/core";
 import { Token } from "@dexkit/core/types";
-import { formatBigNumber, getChainName } from "@dexkit/core/utils";
+import { formatBigNumber } from "@dexkit/core/utils";
 import { useSwitchNetworkMutation } from "@dexkit/ui/hooks";
+import { useNetworkMetadata } from "@dexkit/ui/hooks/app";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import {
   Box,
@@ -51,6 +52,7 @@ export default function SellForm({
   feeRecipient,
   affiliateAddress,
 }: SellFormProps) {
+  const { NETWORK_NAME } = useNetworkMetadata();
   const [amountPercentage, setAmountPercentage] = useState(0);
   const [amount, setAmount] = useState("0.0");
   const [amountPerToken, setAmountPerToken] = useState("0.0");
@@ -249,7 +251,7 @@ export default function SellForm({
           <FormattedMessage
             id="switch.to.network"
             defaultMessage="Switch to {network}"
-            values={{ network: getChainName(chainId) }}
+            values={{ network: NETWORK_NAME(chainId) }}
           />
         </Button>
       );

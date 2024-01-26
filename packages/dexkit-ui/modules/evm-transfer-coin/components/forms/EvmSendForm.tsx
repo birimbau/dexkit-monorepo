@@ -1,5 +1,5 @@
-import { useEnsNameQuery } from "@dexkit/core/hooks";
 import { Coin } from "@dexkit/core/types";
+import { useEnsNameQuery } from "@dexkit/ui/hooks/wallet";
 import SendIcon from "@mui/icons-material/Send";
 import Token from "@mui/icons-material/Token";
 import WalletIcon from "@mui/icons-material/Wallet";

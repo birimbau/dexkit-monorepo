@@ -2,6 +2,7 @@ import StakeErc1155Section from '@/modules/wizard/components/sections/StakeErc11
 import StakeErc20Section from '@/modules/wizard/components/sections/StakeErc20Section';
 import StakeErc721Section from '@/modules/wizard/components/sections/StakeErc721Section';
 import { dexkitNFTapi } from '@dexkit/ui/constants/api';
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import { hexToString } from '@dexkit/ui/utils';
 import { netToQuery } from '@dexkit/ui/utils/networks';
 import { Box, Container, Grid, Skeleton } from '@mui/material';
@@ -20,7 +21,6 @@ import { PageHeader } from 'src/components/PageHeader';
 import MainLayout from 'src/components/layouts/main';
 import { THIRDWEB_CLIENT_ID } from 'src/constants';
 import { getAppConfig } from 'src/services/app';
-import { getChainIdFromSlug } from 'src/utils/blockchain';
 
 export function StakePage() {
   const { query } = useRouter();
@@ -112,6 +112,8 @@ export default function Wrapper() {
   const { provider } = useWeb3React();
   const router = useRouter();
   const { network } = router.query;
+
+  const { getChainIdFromSlug } = useNetworkMetadata();
 
   return (
     <ThirdwebSDKProvider

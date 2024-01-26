@@ -14,8 +14,9 @@ import { useSnackbar } from "notistack";
 
 import { ChainId, useApproveToken, useTokenAllowanceQuery } from "@dexkit/core";
 import { Token } from "@dexkit/core/types";
-import { formatBigNumber, getChainName } from "@dexkit/core/utils";
+import { formatBigNumber } from "@dexkit/core/utils";
 import { useSwitchNetworkMutation } from "@dexkit/ui/hooks";
+import { useNetworkMetadata } from "@dexkit/ui/hooks/app";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import { useWeb3React } from "@web3-react/core";
 import { BigNumber, ethers } from "ethers";
@@ -51,6 +52,7 @@ export default function BuyForm({
   provider,
   chainId,
 }: BuyFormProps) {
+  const { NETWORK_NAME } = useNetworkMetadata();
   const [amount, setAmount] = useState("0.0");
   const [amountPerToken, setAmountPerToken] = useState("0.0");
   const [duration, setDuration] = useState(ORDER_LIMIT_DURATIONS[0].value);
@@ -226,7 +228,7 @@ export default function BuyForm({
           <FormattedMessage
             id="switch.to.network"
             defaultMessage="Switch to {network}"
-            values={{ network: getChainName(chainId) }}
+            values={{ network: NETWORK_NAME(chainId) }}
           />
         </Button>
       );

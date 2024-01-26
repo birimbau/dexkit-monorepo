@@ -1,6 +1,7 @@
 import { TOKEN_ICON_URL } from "@dexkit/core";
 import { Token } from "@dexkit/core/types";
-import { getChainName, getNormalizedUrl } from "@dexkit/core/utils";
+import { getNormalizedUrl } from "@dexkit/core/utils";
+import { useNetworkMetadata } from "@dexkit/ui/hooks/app";
 import {
   Avatar,
   Checkbox,
@@ -26,6 +27,7 @@ export default function SelectTokenList({
   tokens,
   onSelect,
 }: ExchangeTokenListInputProps) {
+  const { NETWORK_NAME } = useNetworkMetadata();
   const handleSelect = useCallback(
     (token: Token) => {
       return () => {
@@ -50,7 +52,7 @@ export default function SelectTokenList({
           </ListItemAvatar>
           <ListItemText
             primary={token.symbol.toUpperCase()}
-            secondary={getChainName(token.chainId)}
+            secondary={NETWORK_NAME(token.chainId)}
           />
           <ListItemSecondaryAction>
             <Checkbox

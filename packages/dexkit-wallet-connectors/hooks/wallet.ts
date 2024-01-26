@@ -3,16 +3,19 @@ import { useWeb3React } from "@web3-react/core";
 import { metaMask } from "../constants/connectors/metamask";
 import { WalletActivateParams } from "../types";
 
+import { Network } from "@dexkit/core/types";
 import { PrimitiveAtom, useAtom } from "jotai";
 import { magic } from "../constants/connectors/magic";
-import { walletConnect } from "../constants/connectors/walletConnect";
+import { initWalletConnector } from "../constants/connectors/walletConnect";
 
 export function useWalletActivate({
   magicRedirectUrl,
   selectedWalletAtom,
+  NETWORKS,
 }: {
   magicRedirectUrl: string;
   selectedWalletAtom: PrimitiveAtom<string>;
+  NETWORKS?: { [key: number]: Network };
 }) {
   const { connector } = useWeb3React();
 
@@ -32,14 +35,16 @@ export function useWalletActivate({
         loginType: params.loginType,
         email: params.email,
         redirectUrl: magicRedirectUrl,
+        NETWORKS,
       });
     } else if (params.connectorName === "walletConnect") {
       setWalletConnector("walletConnect");
-      return await walletConnect.activate();
+
+      const [connector, hooks] = initWalletConnector({ NETWORKS });
+
+      return await connector?.activate();
     }
   });
 
   return { connectorName: walletConnector, mutation };
 }
-
-

@@ -1,9 +1,6 @@
 import { OAuthExtension } from "@magic-ext/oauth";
 import { InstanceWithExtensions, SDKBase } from "@magic-sdk/provider";
-import type {
-  Actions,
-} from '@web3-react/types';
-
+import type { Actions } from "@web3-react/types";
 
 import { Connector } from "@web3-react/types";
 import { EventEmitter } from "events";
@@ -11,15 +8,12 @@ import { EventEmitter } from "events";
 import { waitForEvent } from "../utils";
 
 import { ChainId } from "@dexkit/core/constants";
-import { NETWORKS } from "@dexkit/core/constants/networks";
+import { Network } from "@dexkit/core/types";
 import { parseChainId } from "@dexkit/core/utils";
-
 
 export const MAGIC_EVENT_EXECUTE = "execute";
 export const MAGIC_EVENT_REQUEST = "request";
 export const MAGIC_EVENT_CANCEL = "cancel";
-
-
 
 export interface RequestArguments {
   method: string;
@@ -76,7 +70,7 @@ export class MagicConnector extends Connector {
   private options: MagicConnectOptions;
   eventEmitter: EventEmitter;
   loginType?: MagicLoginType;
-  type?: string = 'magic';
+  type?: string = "magic";
   magicInstance?: InstanceWithExtensions<SDKBase, OAuthExtension[]>;
 
   constructor({ actions, options }: MagicConnectConstructorArgs) {
@@ -127,7 +121,6 @@ export class MagicConnector extends Connector {
             await this.initWallet();
           }
         } else if (loginType === "twitter" && redirectUrl) {
-
           await magic.oauth.loginWithRedirect({
             provider: "twitter",
             redirectURI: redirectUrl,
@@ -137,14 +130,11 @@ export class MagicConnector extends Connector {
           await this.initProvider();
           await this.initWallet();
         } else if (loginType === "google" && redirectUrl) {
-
           await magic.oauth.loginWithRedirect({
             provider: "google",
             redirectURI: redirectUrl,
-          })
-        }
-        else if (loginType === "discord" && redirectUrl) {
-
+          });
+        } else if (loginType === "discord" && redirectUrl) {
           await magic.oauth.loginWithRedirect({
             provider: "discord",
             redirectURI: redirectUrl,
@@ -185,21 +175,29 @@ export class MagicConnector extends Connector {
     this.actions.resetState();
   }
 
-  public async changeNetwork(chainId: number) {
-    await this.initMagicInstances(chainId);
+  public async changeNetwork(
+    chainId: number,
+    NETWORKS?: { [key: number]: Network }
+  ) {
+    await this.initMagicInstances(chainId, NETWORKS);
     await this.initProvider();
     await this.initWallet();
   }
 
-  public async initMagicInstances(chainId?: number): Promise<any> {
+  public async initMagicInstances(
+    chainId?: number,
+    NETWORKS?: { [key: number]: Network }
+  ): Promise<any> {
     return import("magic-sdk").then(async (m) => {
       return import("@magic-ext/oauth").then(async (oauth) => {
-        const network = NETWORKS[chainId || ChainId.Polygon];
+        const network = NETWORKS
+          ? NETWORKS[chainId || ChainId.Polygon]
+          : undefined;
 
         const customNode = {
           // magic not allow the default rpc used
           rpcUrl:
-            network.chainId === ChainId.BSC
+            network?.chainId === ChainId.BSC
               ? "https://bsc-dataseed1.binance.org/"
               : (network?.providerRpcUrl as string),
           chainId: network?.chainId,
@@ -212,9 +210,8 @@ export class MagicConnector extends Connector {
 
         if (!(await this.magicInstance.user.isLoggedIn())) {
           try {
-
             await this.magicInstance.oauth.getRedirectResult();
-          } catch (err) { }
+          } catch (err) {}
         }
       });
     });
@@ -257,11 +254,13 @@ export class MagicConnector extends Connector {
     loginType,
     email,
     redirectUrl,
+    NETWORKS,
   }: {
     desiredNetworkId?: string;
     loginType?: MagicLoginType;
     email?: string;
     redirectUrl?: string;
+    NETWORKS?: { [key: number]: Network };
   }): Promise<void> {
     let cancelActivation: () => void;
     cancelActivation = this.actions.startActivation();
@@ -269,7 +268,7 @@ export class MagicConnector extends Connector {
     // if provider is passed we just use it
 
     if (!(await this.isLoggedIn())) {
-      await this.initMagicInstances();
+      await this.initMagicInstances(undefined, NETWORKS);
       await this.login({ loginType, email, redirectUrl }).catch((err) =>
         cancelActivation()
       );

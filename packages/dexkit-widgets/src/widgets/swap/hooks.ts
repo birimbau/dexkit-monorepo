@@ -1,8 +1,5 @@
 import { ChainId } from "@dexkit/core/constants/enums";
-import {
-  NETWORKS,
-  WRAPPED_TOKEN_ADDRESS,
-} from "@dexkit/core/constants/networks";
+import { WRAPPED_TOKEN_ADDRESS } from "@dexkit/core/constants/networks";
 import { useTrackUserEventsMutation } from "@dexkit/ui/hooks/userEvents";
 import {
   UseMutationOptions,
@@ -30,7 +27,7 @@ import {
   useWrapToken,
 } from "../../hooks";
 import { hasSufficientAllowance } from "../../services";
-import { ZeroExApiClient } from "../../services/zeroex";
+import { ZeroExApiClientCurr } from "../../services/zeroex";
 import {
   ZEROEX_AFFILIATE_ADDRESS,
   ZEROEX_NATIVE_TOKEN_ADDRESS,
@@ -42,6 +39,7 @@ import { Token } from "@dexkit/core/types";
 import { isAddressEqual, switchNetwork } from "../../utils";
 import { ExecType, NotificationCallbackParams, SwapSide } from "./types";
 
+import { useNetworkMetadata } from "@dexkit/ui/hooks/app";
 import { SiteContext } from "@dexkit/ui/providers/SiteProvider";
 
 export function useErc20ApproveMutation({
@@ -186,7 +184,14 @@ export function useSwapQuote({
         quoteFor,
       } = { ...params, skipValidation };
 
-      const client = new ZeroExApiClient(chainId, zeroExApiKey, siteId);
+      const { NETWORKS } = useNetworkMetadata();
+
+      const client = new ZeroExApiClientCurr(
+        chainId,
+        zeroExApiKey,
+        siteId,
+        NETWORKS
+      );
 
       if (buyToken && sellToken && quoteFor) {
         const quoteParam: ZeroExQuote = {
@@ -888,6 +893,8 @@ export function useSwapProvider({
   defaultChainId?: ChainId;
   disableWallet?: boolean;
 }) {
+  const { NETWORKS } = useNetworkMetadata();
+
   return useMemo(() => {
     if (defaultChainId && NETWORKS[defaultChainId]?.providerRpcUrl) {
       return new ethers.providers.JsonRpcProvider(

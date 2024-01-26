@@ -1,8 +1,8 @@
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import { CellPluginComponentProps } from '@react-page/editor';
-import { getChainName } from '../../../../../utils/blockchain';
 import { useAppWizardConfig } from '../../../hooks';
 
 interface Props {
@@ -12,6 +12,7 @@ interface Props {
 export function CollectionAutocomplete(props: Props) {
   const { data } = props;
   const { wizardConfig } = useAppWizardConfig();
+  const { NETWORK_NAME } = useNetworkMetadata();
 
   const formValue = data.data;
   const collections =
@@ -20,7 +21,7 @@ export function CollectionAutocomplete(props: Props) {
         name: value.name,
         contractAddress: value.contractAddress,
         backgroundImage: value.backgroundImage,
-        network: getChainName(value.chainId),
+        network: NETWORK_NAME(value.chainId),
         chainId: value.chainId,
         image: value.image,
       };
@@ -53,7 +54,7 @@ export function CollectionAutocomplete(props: Props) {
           {...props}
         >
           <img loading="lazy" width="20" src={`${option.image}`} alt="" />
-          {getChainName(option.chainId)} - ({option.name})
+          {NETWORK_NAME(option.chainId)} - ({option.name})
         </Box>
       )}
       renderInput={(params) => (

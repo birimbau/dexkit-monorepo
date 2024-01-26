@@ -7,6 +7,7 @@ const OrderCreatedDialog = dynamic(
 import MakeListingForm from '@/modules/orders/components/forms/MakeListingForm';
 import MakeOfferForm from '@/modules/orders/components/forms/MakeOfferForm';
 import { useDexKitContext } from '@dexkit/ui/hooks';
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import ImportExportIcon from '@mui/icons-material/ImportExport';
 import Launch from '@mui/icons-material/Launch';
 import {
@@ -48,16 +49,13 @@ import {
 } from 'src/hooks/nft';
 import { getERC20Name, getERC20Symbol } from 'src/services/balances';
 import { Asset } from 'src/types/nft';
-import {
-  getBlockExplorerUrl,
-  getChainName,
-  getChainSlug,
-  isAddressEqual,
-  truncateAddress,
-} from 'src/utils/blockchain';
+import { isAddressEqual, truncateAddress } from 'src/utils/blockchain';
 import { ipfsUriToUrl } from 'src/utils/ipfs';
 
 export const CreateAssetOrderContainer = () => {
+  const { getBlockExplorerUrl, NETWORK_NAME, getChainSlug } =
+    useNetworkMetadata();
+
   const [asset, setAsset] = useState<Asset | null>(null);
   const [showImportAsset, setShowImportAsset] = useState(false);
 
@@ -464,7 +462,7 @@ export const CreateAssetOrderContainer = () => {
                     defaultMessage="Please, switch to {chainName} network to create listings or offers for this asset"
                     description="Switch network dialog content text"
                     values={{
-                      chainName: <b>{getChainName(asset?.chainId)}</b>,
+                      chainName: <b>{NETWORK_NAME(asset?.chainId)}</b>,
                     }}
                   />
                 </Alert>

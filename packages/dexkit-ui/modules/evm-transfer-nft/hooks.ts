@@ -1,8 +1,8 @@
 import { ChainId } from "@dexkit/core/constants";
 import { ERC1155Abi, ERC721Abi } from "@dexkit/core/constants/abis";
-import { NETWORK_PROVIDER } from "@dexkit/core/constants/networks";
 import { useMutation } from "@tanstack/react-query";
 import { ethers } from "ethers";
+import { useNetworkMetadata } from "../../hooks/app";
 
 export function useNftTransfer({
   contractAddress,
@@ -15,6 +15,8 @@ export function useNftTransfer({
   provider?: ethers.providers.Web3Provider;
   onSubmit?: (hash: string) => void;
 }) {
+  const { NETWORK_PROVIDER } = useNetworkMetadata();
+
   return useMutation(
     async ({
       to,

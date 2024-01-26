@@ -9,7 +9,6 @@ import {
   tokensAtom,
 } from '../state/atoms';
 import {
-  getNativeCurrencyImage,
   getNativeCurrencySymbol,
   getProviderByChainId,
   switchNetwork,
@@ -18,13 +17,12 @@ import {
 import { ZEROEX_NATIVE_TOKEN_ADDRESS } from '../constants';
 import { Token } from '../types/blockchain';
 
-import { NETWORKS } from '../constants/chain';
-
 import { EvmCoin } from '@dexkit/core/types';
 import { convertTokenToEvmCoin } from '@dexkit/core/utils';
 
 import { useAppWizardConfig } from '@/modules/wizard/hooks';
 import { ChainId, CoinTypes } from '@dexkit/core/constants';
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import { parse, ParseOutput } from 'eth-url-parser';
 import { ethers } from 'ethers';
 import { getTokenData } from '../services/blockchain';
@@ -37,8 +35,12 @@ export function useEvmCoins({
   const { chainId: walletChainId } = useWeb3React();
   const chainId = defaultChainId || walletChainId;
   const tokens = useTokenList({ chainId, includeNative: true });
+  const { NETWORKS } = useNetworkMetadata();
 
-  return useMemo(() => tokens.map(convertTokenToEvmCoin), [tokens]);
+  return useMemo(
+    () => tokens.map((t) => convertTokenToEvmCoin(t, NETWORKS)),
+    [tokens],
+  );
 }
 
 export function useBlockNumber() {
@@ -79,11 +81,12 @@ export function useSwitchNetwork() {
 
 export function useSwitchNetworkMutation() {
   const { connector } = useWeb3React();
+  const { NETWORKS } = useNetworkMetadata();
 
   return useMutation<unknown, Error, { chainId: number }>(
     async ({ chainId }) => {
       if (connector) {
-        return switchNetwork(connector, chainId);
+        return switchNetwork(connector, chainId, NETWORKS);
       }
     },
   );
@@ -103,6 +106,8 @@ export function useTokenList({
   const appConfig = useAppConfig();
 
   const tokensValues = useAtomValue(tokensAtom) || [];
+
+  const { NETWORKS, NETWORK_IMAGE } = useNetworkMetadata();
 
   const tokenListJson = useMemo(() => {
     if (appConfig.tokens?.length === 1) {
@@ -129,9 +134,9 @@ export function useTokenList({
           address: ZEROEX_NATIVE_TOKEN_ADDRESS,
           chainId,
           decimals: 18,
-          logoURI: getNativeCurrencyImage(chainId),
-          name: getNativeCurrencySymbol(chainId),
-          symbol: getNativeCurrencySymbol(chainId),
+          logoURI: NETWORK_IMAGE(chainId),
+          name: getNativeCurrencySymbol(chainId, NETWORKS),
+          symbol: getNativeCurrencySymbol(chainId, NETWORKS),
         },
       ] as Token[];
     }
@@ -152,7 +157,7 @@ export function useTokenList({
           address: wrappedAddress,
           chainId,
           decimals: 18,
-          logoURI: getNativeCurrencyImage(chainId),
+          logoURI: NETWORK_IMAGE(chainId),
           name: `Wrapped ${getNativeCurrencySymbol(chainId)}`,
           symbol: `W${getNativeCurrencySymbol(chainId)}`,
         } as Token,
@@ -166,7 +171,7 @@ export function useTokenList({
           address: ZEROEX_NATIVE_TOKEN_ADDRESS,
           chainId,
           decimals: 18,
-          logoURI: getNativeCurrencyImage(chainId),
+          logoURI: NETWORK_IMAGE(chainId),
           name: getNativeCurrencySymbol(chainId),
           symbol: getNativeCurrencySymbol(chainId),
         },
@@ -195,6 +200,7 @@ export function useAllTokenList({
   onlyTradable?: boolean;
   isWizardConfig?: boolean;
 }) {
+  const { NETWORKS, NETWORK_IMAGE } = useNetworkMetadata();
   const appConfig = useAppConfig();
   const { wizardConfig } = useAppWizardConfig();
 
@@ -226,7 +232,7 @@ export function useAllTokenList({
           address: ZEROEX_NATIVE_TOKEN_ADDRESS,
           chainId,
           decimals: 18,
-          logoURI: getNativeCurrencyImage(chainId),
+          logoURI: NETWORK_IMAGE(chainId),
           name: getNativeCurrencySymbol(chainId),
           symbol: getNativeCurrencySymbol(chainId),
         },
@@ -253,7 +259,7 @@ export function useAllTokenList({
             address: wrappedAddress,
             chainId,
             decimals: 18,
-            logoURI: getNativeCurrencyImage(chainId),
+            logoURI: NETWORK_IMAGE(chainId),
             name: `Wrapped ${getNativeCurrencySymbol(chainId)}`,
             symbol: `W${getNativeCurrencySymbol(chainId)}`,
           } as Token,
@@ -277,7 +283,7 @@ export function useAllTokenList({
               address: wrappedAddress,
               chainId: chain,
               decimals: 18,
-              logoURI: getNativeCurrencyImage(chain),
+              logoURI: NETWORK_IMAGE(chain),
               name: `Wrapped ${getNativeCurrencySymbol(chain)}`,
               symbol: `W${getNativeCurrencySymbol(chain)}`,
             } as Token,
@@ -292,7 +298,7 @@ export function useAllTokenList({
           address: ZEROEX_NATIVE_TOKEN_ADDRESS,
           chainId,
           decimals: 18,
-          logoURI: getNativeCurrencyImage(chainId),
+          logoURI: NETWORK_IMAGE(chainId),
           name: getNativeCurrencySymbol(chainId),
           symbol: getNativeCurrencySymbol(chainId),
         },
@@ -306,7 +312,7 @@ export function useAllTokenList({
             address: ZEROEX_NATIVE_TOKEN_ADDRESS,
             chainId: chain,
             decimals: 18,
-            logoURI: getNativeCurrencyImage(chain),
+            logoURI: NETWORK_IMAGE(chain),
             name: getNativeCurrencySymbol(chain),
             symbol: getNativeCurrencySymbol(chain),
           },

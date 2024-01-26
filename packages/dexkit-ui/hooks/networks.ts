@@ -1,7 +1,8 @@
+import { ChainId } from "@dexkit/core";
 import { DexkitApiProvider } from "@dexkit/core/providers";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { useContext } from "react";
-import { useSiteIdV2 } from "./app";
+import { useContext, useMemo } from "react";
+import { useNetworkMetadata, useSiteIdV2 } from "./app";
 
 const ACTIVE_NETWORKS_QUERY = "ACTIVE_NETWORKS_QUERY";
 
@@ -137,4 +138,12 @@ export function useSearchUnactive({
       },
     }
   );
+}
+
+export function useNetworkProvider(chainId?: ChainId) {
+  const { NETWORK_PROVIDER } = useNetworkMetadata();
+
+  return useMemo(() => {
+    return NETWORK_PROVIDER(chainId);
+  }, [NETWORK_PROVIDER]);
 }

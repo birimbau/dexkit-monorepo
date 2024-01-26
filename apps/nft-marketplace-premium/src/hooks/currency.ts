@@ -1,4 +1,5 @@
 import { ChainId } from '@0x/contract-addresses';
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import { useQuery } from '@tanstack/react-query';
 import { useWeb3React } from '@web3-react/core';
 import axios from 'axios';
@@ -7,9 +8,8 @@ import { useMemo } from 'react';
 import {
   COINGECKO_ENDPOIT,
   COINGECKO_PLATFORM_ID,
-  ZEROEX_NATIVE_TOKEN_ADDRESS
+  ZEROEX_NATIVE_TOKEN_ADDRESS,
 } from '../constants';
-import { NETWORKS } from '../constants/chain';
 import { getCoinPrices, getTokenPrices } from '../services/currency';
 import { currencyAtom, currencyUserAtom } from '../state/atoms';
 import { useAppConfig } from './app';
@@ -25,10 +25,10 @@ export function useCurrency(): string {
       return currUser;
     }
     if (appConfig.currency && appConfig.currency !== curr) {
-      return appConfig.currency
+      return appConfig.currency;
     }
-    return curr || 'usd' as string;
-  }, [appConfig.locale, curr, currUser])
+    return curr || ('usd' as string);
+  }, [appConfig.locale, curr, currUser]);
 
   return currency || 'usd';
 }
@@ -40,20 +40,20 @@ export const useCoinPricesQuery = ({
   chainId,
 }: {
   includeNative: boolean;
-  chainId?: number
+  chainId?: number;
 }) => {
   const { chainId: walletChainId } = useWeb3React();
-  const chain = chainId || walletChainId
+  const chain = chainId || walletChainId;
 
   const tokens = useTokenList({ chainId: chain });
   const currency = useCurrency();
+
+  const { NETWORKS } = useNetworkMetadata();
+
   return useQuery(
     [GET_COIN_PRICES, chain, tokens, currency],
     async () => {
-      if (
-        chain === undefined ||
-        (tokens === undefined && !includeNative)
-      ) {
+      if (chain === undefined || (tokens === undefined && !includeNative)) {
         return;
       }
       const prices: { [key: string]: { [key: string]: number } } = {};
@@ -126,6 +126,9 @@ export const useNativeCoinPriceQuery = (defaultChainId?: number) => {
   const { provider, chainId: walletChainId } = useWeb3React();
   const chainId = defaultChainId || walletChainId;
   const currency = useCurrency();
+
+  const { NETWORKS } = useNetworkMetadata();
+
   return useQuery(
     [GET_NATIVE_COIN_PRICE, chainId, currency],
     async () => {

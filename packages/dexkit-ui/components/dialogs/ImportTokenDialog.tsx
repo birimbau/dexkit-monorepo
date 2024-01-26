@@ -24,7 +24,6 @@ import { AppDialogTitle } from "../AppDialogTitle";
 
 import * as Yup from "yup";
 
-import { NETWORKS } from "@dexkit/core/constants/networks";
 import { useDebounce } from "@dexkit/core/hooks/misc";
 import { Network } from "@dexkit/core/types";
 import { ipfsUriToUrl, isAddressEqual } from "@dexkit/core/utils";
@@ -32,6 +31,9 @@ import { useWeb3React } from "@web3-react/core";
 import { AxiosError } from "axios";
 import { ethers } from "ethers";
 import { useSnackbar } from "notistack";
+import { useNetworkMetadata } from "../../hooks/app";
+
+import { useTokenData } from "../../hooks/";
 
 interface Props {
   dialogProps: DialogProps;
@@ -61,6 +63,8 @@ const FormSchema: Yup.SchemaOf<Form> = Yup.object().shape({
 function ImportTokenDialog({ dialogProps }: Props) {
   const { onClose } = dialogProps;
   const { chainId } = useWeb3React();
+
+  const { NETWORKS } = useNetworkMetadata();
 
   const [tokens, setTokens] = useAtom(tokensAtom);
 

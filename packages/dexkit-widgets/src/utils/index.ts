@@ -1,4 +1,3 @@
-import { NETWORKS } from "@dexkit/core/constants/networks";
 import { Token } from "@dexkit/core/types";
 import { MagicConnector } from "@dexkit/wallet-connectors/connectors/magic";
 
@@ -81,10 +80,4 @@ export async function switchNetwork(connector: Connector, chainId: number) {
 
 export function tokenKey(token: Token) {
   return `${token.chainId}-${token.address.toLowerCase()}`;
-}
-
-export function getBlockExplorerUrl(chainId?: number) {
-  if (chainId) {
-    return NETWORKS[chainId].explorerUrl;
-  }
 }

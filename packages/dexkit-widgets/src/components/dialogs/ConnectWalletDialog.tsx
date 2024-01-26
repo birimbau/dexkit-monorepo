@@ -23,9 +23,9 @@ import { useWeb3React } from "@web3-react/core";
 
 import AppDialogTitle from "../AppDialogTitle";
 
-import { MagicLoginType } from "@dexkit/core/constants";
+import { MagicLoginType } from "@dexkit/wallet-connectors/connectors/magic";
+import { useWalletActivate } from "@dexkit/wallet-connectors/hooks";
 import { useSnackbar } from "notistack";
-import { useWalletActivate } from "../../hooks";
 
 interface Props {
   DialogProps: DialogProps;
@@ -37,7 +37,7 @@ export default function ConnectWalletDialog({
   const { onClose } = dialogProps;
 
   const { connector } = useWeb3React();
-  const walletActivate = useWalletActivate();
+  const walletActivate = useWalletActivate({ magicRedirectUrl: "" });
 
   const { formatMessage } = useIntl();
 

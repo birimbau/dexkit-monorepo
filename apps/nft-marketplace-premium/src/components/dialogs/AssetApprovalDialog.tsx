@@ -1,3 +1,4 @@
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import {
   Box,
   Button,
@@ -10,7 +11,6 @@ import {
 import { useWeb3React } from '@web3-react/core';
 import { FormattedMessage } from 'react-intl';
 import { TransactionStatus } from '../../types/blockchain';
-import { getBlockExplorerUrl } from '../../utils/blockchain';
 
 interface Props {
   hash?: string;
@@ -28,6 +28,8 @@ export function AssetApprovalDialog({
   title,
 }: Props) {
   const { onClose } = dialogProps;
+
+  const { getBlockExplorerUrl } = useNetworkMetadata();
 
   const { chainId } = useWeb3React();
 

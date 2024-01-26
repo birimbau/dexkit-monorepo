@@ -28,15 +28,14 @@ import { DexkitApiProvider } from '@dexkit/core/providers';
 
 import { useSaveContractDeployed } from '@/modules/forms/hooks';
 import { ChainId } from '@dexkit/core';
-import { NETWORKS, NETWORK_SLUG } from '@dexkit/core/constants/networks';
 import {
-  getBlockExplorerUrl,
   getNormalizedUrl,
   parseChainId,
   truncateAddress,
 } from '@dexkit/core/utils';
 import { AppDialogTitle, useSwitchNetworkMutation } from '@dexkit/ui';
 import { dexkitNFTapi } from '@dexkit/ui/constants/api';
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import { netToQuery } from '@dexkit/ui/utils/networks';
 import useThirdwebContractMetadataQuery, {
   useDeployThirdWebContractMutation,
@@ -55,6 +54,8 @@ import { THIRDWEB_CLIENT_ID } from 'src/constants';
 import { getAppConfig } from 'src/services/app';
 
 export default function DeployPage() {
+  const { NETWORKS, getBlockExplorerUrl, NETWORK_SLUG } = useNetworkMetadata();
+
   const { chainId } = useWeb3React();
 
   const { query } = useRouter();

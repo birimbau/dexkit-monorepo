@@ -1,3 +1,4 @@
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import Delete from '@mui/icons-material/Delete';
 import Edit from '@mui/icons-material/Edit';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -16,7 +17,6 @@ import {
 import { FormattedMessage } from 'react-intl';
 import { useAssetByApi, useCollectionByApi } from '../../../hooks/nft';
 import { SectionItem } from '../../../types/config';
-import { getChainName } from '../../../utils/blockchain';
 import { truncateErc1155TokenId } from '../../../utils/nfts';
 
 interface Props {
@@ -36,6 +36,8 @@ export function PageSectionItem({
   onSwap,
   length,
 }: Props) {
+  const { NETWORK_NAME } = useNetworkMetadata();
+
   const { data: asset, isLoading: isAssetLoading } = useAssetByApi(
     item.type === 'asset'
       ? {
@@ -75,7 +77,7 @@ export function PageSectionItem({
           {isCollectionLoading ? (
             <Skeleton />
           ) : (
-            <Chip size="small" label={getChainName(collection?.chainId)} />
+            <Chip size="small" label={NETWORK_NAME(collection?.chainId)} />
           )}
         </Box>
       </Stack>
@@ -113,7 +115,7 @@ export function PageSectionItem({
           {isAssetLoading ? (
             <Skeleton />
           ) : (
-            <Chip size="small" label={getChainName(asset?.chainId)} />
+            <Chip size="small" label={NETWORK_NAME(asset?.chainId)} />
           )}
         </Box>
       </Stack>

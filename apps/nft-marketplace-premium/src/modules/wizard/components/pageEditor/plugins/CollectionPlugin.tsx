@@ -1,7 +1,6 @@
 import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import Container from '@mui/material/Container';
 import type { CellPlugin } from '@react-page/editor';
-import { NETWORKS } from '../../../../../constants/chain';
 import { CollectionFromApiCard } from '../../../../nft/components/CollectionFromApi';
 import { CollectionAutocomplete } from '../components/CollectionAutocomplete';
 import { ImagePicker } from '../components/ImagePicker';
@@ -75,9 +74,8 @@ const CollectionPlugin: CellPlugin<Data> = {
             },
             network: {
               type: 'string',
-              enum: Object.values(NETWORKS)
-                .filter((n) => !n.testnet)
-                .map((n) => String(n.name)),
+              // TODO: add networks logic
+              enum: [],
             },
             contractAddress: {
               type: 'string',

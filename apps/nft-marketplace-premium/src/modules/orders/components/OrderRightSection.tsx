@@ -37,11 +37,7 @@ import {
 } from '../../../hooks/nft';
 import { getERC20Decimals, getERC20Symbol } from '../../../services/balances';
 import { OrderBookItem, SwapApiOrder } from '../../../types/nft';
-import {
-  getBlockExplorerUrl,
-  isAddressEqual,
-  truncateAddress,
-} from '../../../utils/blockchain';
+import { isAddressEqual, truncateAddress } from '../../../utils/blockchain';
 import { ipfsUriToUrl } from '../../../utils/ipfs';
 import { getAssetProtocol } from '../../../utils/nfts';
 import { OrderPageActions } from './OrderPageActions';
@@ -114,7 +110,8 @@ function OrderRightSection({ order }: Props) {
     [watchTransactionDialog]
   );
 
-  const { getNetworkSlugFromChainId } = useNetworkMetadata();
+  const { getNetworkSlugFromChainId, getBlockExplorerUrl } =
+    useNetworkMetadata();
 
   const handleCancelOrderHash = useCallback(
     (hash: string, order: SwapApiOrder) => {

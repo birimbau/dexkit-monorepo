@@ -20,6 +20,7 @@ import { FormattedMessage } from 'react-intl';
 import { PageHeader } from '../../../../src/components/PageHeader';
 
 import { dexkitNFTapi } from '@dexkit/ui/constants/api';
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import { netToQuery } from '@dexkit/ui/utils/networks';
 import { useWalletActivate } from '@dexkit/wallet-connectors/hooks';
 import { WalletActivateParams } from '@dexkit/wallet-connectors/types';
@@ -28,12 +29,15 @@ import { selectedWalletAtom } from 'src/state/atoms';
 import { getAppConfig } from '../../../../src/services/app';
 
 const ConnectWallet: NextPage = () => {
+  const { NETWORKS } = useNetworkMetadata();
+
   const walletActivate = useWalletActivate({
     magicRedirectUrl:
       typeof window !== 'undefined'
         ? window.location.href
         : process.env.NEXT_PUBLIC_MAGIC_REDIRECT_URL || '',
     selectedWalletAtom,
+    NETWORKS,
   });
   const [connectorName, setConnectorName] = useState<string>();
 

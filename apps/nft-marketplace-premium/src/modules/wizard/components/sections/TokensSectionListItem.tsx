@@ -14,9 +14,9 @@ import {
 import { Token } from '../../../../types/blockchain';
 import { TOKEN_ICON_URL } from '../../../../utils/token';
 
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import TokenIcon from '@mui/icons-material/Token';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { getChainName } from '../../../../utils/blockchain';
 
 interface Props {
   token: Token;
@@ -38,6 +38,7 @@ export default function TokensSectionListItem({
   disableMakeTradable,
 }: Props) {
   const { formatMessage } = useIntl();
+  const { NETWORK_NAME } = useNetworkMetadata();
 
   return (
     <ListItem divider>
@@ -73,7 +74,7 @@ export default function TokensSectionListItem({
             alignContent="center"
             spacing={1}
           >
-            <Chip size="small" label={getChainName(token.chainId)} />
+            <Chip size="small" label={NETWORK_NAME(token.chainId)} />
 
             {token.tradable && (
               <Tooltip

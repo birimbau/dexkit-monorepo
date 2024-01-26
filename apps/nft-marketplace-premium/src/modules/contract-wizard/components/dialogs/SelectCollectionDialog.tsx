@@ -1,9 +1,9 @@
 import { useListDeployedContracts } from '@/modules/forms/hooks';
 import { ChainId } from '@dexkit/core';
-import { NETWORK_SLUG } from '@dexkit/core/constants/networks';
 import { DexkitApiProvider } from '@dexkit/core/providers';
 import { isAddressEqual } from '@dexkit/core/utils';
 import { AppDialogTitle } from '@dexkit/ui';
+import { useNetworkMetadata } from '@dexkit/ui/hooks/app';
 import {
   Box,
   Button,
@@ -38,6 +38,7 @@ function SelectCollectionDialog({
   onSelect,
   isErc1155,
 }: SelectCollectionDialogProps) {
+  const { NETWORK_SLUG } = useNetworkMetadata();
   const { onClose } = DialogProps;
 
   const { account } = useWeb3React();

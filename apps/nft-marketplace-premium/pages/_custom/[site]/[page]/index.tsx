@@ -74,7 +74,7 @@ export const getStaticProps: GetStaticProps = async ({
 
   const configResponse = await getAppConfig(params?.site, params?.page);
 
-  await netToQuery({
+  const { NETWORKS } = await netToQuery({
     instance: dexkitNFTapi,
     queryClient,
     siteId: configResponse.siteId,
@@ -117,7 +117,12 @@ export const getStaticProps: GetStaticProps = async ({
       for (let item of section.items) {
         try {
           if (item.type === 'asset' && item.tokenId !== undefined) {
-            await fetchAssetForQueryClient({ item, queryClient });
+            await fetchAssetForQueryClient({
+              item,
+              queryClient,
+              siteId: configResponse.siteId,
+              NETWORKS,
+            });
           } else if (item.type === 'collection') {
             const slug = getNetworkSlugFromChainId(item.chainId);
 
@@ -125,18 +130,22 @@ export const getStaticProps: GetStaticProps = async ({
               continue;
             }
 
-            const provider = getProviderBySlug(slug);
+            const provider = getProviderBySlug(
+              queryClient,
+              configResponse.siteId,
+              slug,
+            );
 
             await provider?.ready;
 
             const collection = await getCollectionData(
               provider,
-              item.contractAddress
+              item.contractAddress,
             );
 
             await queryClient.prefetchQuery(
               [GET_COLLECTION_DATA, item.contractAddress, item.chainId],
-              async () => collection
+              async () => collection,
             );
           }
         } catch (e) {
@@ -152,7 +161,7 @@ export const getStaticProps: GetStaticProps = async ({
       const assetResponse = await getDKAssetOrderbook({ maker });
       await queryClient.prefetchQuery(
         [GET_ASSETS_ORDERBOOK, { maker }],
-        async () => assetResponse.data
+        async () => assetResponse.data,
       );
     }
   }

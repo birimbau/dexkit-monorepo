@@ -3,20 +3,33 @@ import axios from 'axios';
 import { BigNumber, ethers } from 'ethers';
 import { Interface } from 'ethers/lib/utils';
 import { ERC1155Abi, ERC165Abi, ERC721Abi } from '../constants/abis';
-import { Asset, AssetAPI, AssetMetadata, Collection, CollectionAPI, OrderBookItem, OrderbookAPI } from '../types/nft';
+import {
+  Asset,
+  AssetAPI,
+  AssetMetadata,
+  Collection,
+  CollectionAPI,
+  OrderBookItem,
+  OrderbookAPI,
+} from '../types/nft';
 import { ipfsUriToUrl } from '../utils/ipfs';
 import { getMulticallFromProvider } from './multical';
 
 import { ChainId } from '@dexkit/core/constants';
-import { NETWORK_FROM_SLUG } from '@dexkit/core/constants/networks';
+import { NETWORK_FROM_SLUG_SERVER } from '@dexkit/core/constants/networks';
+import { Network } from '@dexkit/core/types';
+import { getChainIdFromSlugOld } from '@dexkit/ui/utils/networks';
 import { QueryClient } from '@tanstack/react-query';
-import { DEXKIT_AUTHENTICATE_API_KEY, DEXKIT_BASE_API_URL, TRADER_ORDERBOOK_API } from '../constants';
+import {
+  DEXKIT_AUTHENTICATE_API_KEY,
+  DEXKIT_BASE_API_URL,
+  TRADER_ORDERBOOK_API,
+} from '../constants';
 import { GET_ASSET_DATA, GET_ASSET_METADATA } from '../hooks/nft';
-import { getChainIdFromSlug, getNetworkSlugFromChainId } from '../utils/blockchain';
+import { getNetworkSlugFromChainId } from '../utils/blockchain';
 import { isENSContract } from '../utils/nfts';
 import { TraderOrderFilter } from '../utils/types';
 import { getProviderBySlug } from './providers';
-
 
 const ENS_BASE_URL = 'https://metadata.ens.domains';
 const DEXKIT_NFT_BASE_URL = `${DEXKIT_BASE_API_URL}`;
@@ -27,9 +40,15 @@ const DEXKIT_NFT_BASE_URL = `${DEXKIT_BASE_API_URL}`;
 //const DEXKIT_NFT_BASE_URL = 'http://localhost:3001'
 const metadataENSapi = axios.create({ baseURL: ENS_BASE_URL });
 
-const dexkitNFTapi = axios.create({ baseURL: DEXKIT_NFT_BASE_URL, timeout: 2500 });
+const dexkitNFTapi = axios.create({
+  baseURL: DEXKIT_NFT_BASE_URL,
+  timeout: 2500,
+});
 
-const orderbookNFTapi = axios.create({ baseURL: DEXKIT_NFT_BASE_URL, timeout: 10000 });
+const orderbookNFTapi = axios.create({
+  baseURL: DEXKIT_NFT_BASE_URL,
+  timeout: 10000,
+});
 
 export async function getAssetDexKitApi({
   networkId,
@@ -40,21 +59,32 @@ export async function getAssetDexKitApi({
   contractAddress: string;
   tokenId: string;
 }) {
-
-  const resp = await dexkitNFTapi.get<AssetAPI>(`/asset/${networkId}/${contractAddress.toLowerCase()}/${tokenId}`);
+  const resp = await dexkitNFTapi.get<AssetAPI>(
+    `/asset/${networkId}/${contractAddress.toLowerCase()}/${tokenId}`,
+  );
   // We replace it with the cdn image
-  const imageUrl = resp.data.imageUrl?.replace('dexkit-storage.nyc3.digitaloceanspaces.com', 'dexkit-storage.nyc3.cdn.digitaloceanspaces.com');
+  const imageUrl = resp.data.imageUrl?.replace(
+    'dexkit-storage.nyc3.digitaloceanspaces.com',
+    'dexkit-storage.nyc3.cdn.digitaloceanspaces.com',
+  );
 
   if (imageUrl) {
     return { ...resp.data, imageUrl };
   }
-  return resp.data
+  return resp.data;
 }
 
-export async function searchAssetsDexKitApi({ keyword, collections }: { keyword: string, collections?: string }) {
-  const resp = await dexkitNFTapi.get<AssetAPI[]>(`/asset/search`, { params: { keyword, collections } });
+export async function searchAssetsDexKitApi({
+  keyword,
+  collections,
+}: {
+  keyword: string;
+  collections?: string;
+}) {
+  const resp = await dexkitNFTapi.get<AssetAPI[]>(`/asset/search`, {
+    params: { keyword, collections },
+  });
   return resp.data;
-
 }
 
 export async function getMultipleAssetDexKitApi({
@@ -66,25 +96,31 @@ export async function getMultipleAssetDexKitApi({
   contractAddress: string;
   tokenIds: string[];
 }) {
-
-  const resp = await dexkitNFTapi.get<AssetAPI[]>(`/asset/multiple/${networkId}/${contractAddress.toLowerCase()}/${tokenIds.join(',')}`);
+  const resp = await dexkitNFTapi.get<AssetAPI[]>(
+    `/asset/multiple/${networkId}/${contractAddress.toLowerCase()}/${tokenIds.join(
+      ',',
+    )}`,
+  );
   // We replace it with the cdn image
   const imageUrl = resp.data.map((a) => {
     let imageUrl;
     if (a.imageUrl) {
-      imageUrl = a.imageUrl.replace('dexkit-storage.nyc3.digitaloceanspaces.com', 'dexkit-storage.nyc3.cdn.digitaloceanspaces.com');
+      imageUrl = a.imageUrl.replace(
+        'dexkit-storage.nyc3.digitaloceanspaces.com',
+        'dexkit-storage.nyc3.cdn.digitaloceanspaces.com',
+      );
     }
     if (imageUrl) {
       return { ...a, imageUrl };
     } else {
       return a;
     }
-  })
+  });
 
   if (imageUrl) {
     return { ...resp.data, imageUrl };
   }
-  return resp.data
+  return resp.data;
 }
 
 export async function getCollectionAssetsDexKitApi({
@@ -100,11 +136,16 @@ export async function getCollectionAssetsDexKitApi({
   skip?: number;
   take?: number;
 }) {
-
-  const resp = await dexkitNFTapi.get<{ data: AssetAPI[], skip: number, take: number, total: number }>(`/asset/collection/${networkId}/${contractAddress.toLowerCase()}`, { params: { skip, take, traits: traitsFilter } });
+  const resp = await dexkitNFTapi.get<{
+    data: AssetAPI[];
+    skip: number;
+    take: number;
+    total: number;
+  }>(`/asset/collection/${networkId}/${contractAddress.toLowerCase()}`, {
+    params: { skip, take, traits: traitsFilter },
+  });
   return resp.data;
 }
-
 
 export async function getERC1155Balance({
   provider,
@@ -112,7 +153,7 @@ export async function getERC1155Balance({
   tokenId,
   account,
 }: {
-  provider?: ethers.providers.JsonRpcProvider,
+  provider?: ethers.providers.JsonRpcProvider;
   contractAddress: string;
   tokenId: string;
   account: string;
@@ -141,7 +182,7 @@ export async function getERC721TotalSupply({
   provider,
   contractAddress,
 }: {
-  provider?: ethers.providers.JsonRpcProvider,
+  provider?: ethers.providers.JsonRpcProvider;
   contractAddress: string;
 }) {
   if (!provider || !contractAddress) {
@@ -154,7 +195,7 @@ export async function getERC721TotalSupply({
   calls.push({
     interface: iface,
     target: contractAddress,
-    function: 'totalSupply'
+    function: 'totalSupply',
   });
   const response = await multicall?.multiCall(calls);
   if (response) {
@@ -163,19 +204,19 @@ export async function getERC721TotalSupply({
   }
 }
 
-
-
 export async function getAssetByApi({
   chainId,
   contractAddress,
   tokenId,
+  siteId,
 }: {
   chainId: number;
   contractAddress: string;
   tokenId: string;
+  siteId?: number;
 }) {
   const resp = await axios.get<Asset>('/api/asset', {
-    params: { chainId, contractAddress, tokenId },
+    params: { chainId, contractAddress, tokenId, siteId },
   });
 
   return resp.data;
@@ -200,7 +241,8 @@ export async function getAssetData(
   contractAddress?: string,
   id?: string,
   account?: string,
-  network?: string
+  network?: string,
+  NETWORKS?: { [key: string]: Network },
 ): Promise<Asset | undefined> {
   if (!provider || !contractAddress || !id) {
     return;
@@ -263,9 +305,8 @@ export async function getAssetData(
     let symbol;
     let balance = null;
     if (isERC1155) {
-
       if (account) {
-        balance = results[0]
+        balance = results[0];
         tokenURI = results[1];
         name = results[2];
         symbol = results[3];
@@ -274,8 +315,6 @@ export async function getAssetData(
         name = results[1];
         symbol = results[2];
       }
-
-
     } else {
       owner = results[0];
       tokenURI = results[1];
@@ -284,16 +323,17 @@ export async function getAssetData(
     }
 
     let chainId;
+
     if (network) {
-      chainId = NETWORK_FROM_SLUG(network)?.chainId;
+      chainId = NETWORK_FROM_SLUG_SERVER(network, NETWORKS)?.chainId;
     }
+
     if (!chainId) {
       const { chainId: networkChain } = await provider.getNetwork();
       chainId = networkChain;
     }
 
-
-
+    console.log('PODE VIR');
 
     return {
       owner,
@@ -309,17 +349,18 @@ export async function getAssetData(
   }
 }
 
-
 export async function getENSAssetData(
   provider?: ethers.providers.JsonRpcProvider,
   contractAddress?: string,
-  id?: string
+  id?: string,
 ): Promise<Asset | undefined> {
   if (!provider || !contractAddress || !id) {
     return;
   }
 
-  const response = await metadataENSapi.get(`/mainnet/${contractAddress}/${id}`);
+  const response = await metadataENSapi.get(
+    `/mainnet/${contractAddress}/${id}`,
+  );
   const data = response.data;
   const iface = new Interface(ERC721Abi);
   const contract = new ethers.Contract(contractAddress, iface, provider);
@@ -341,68 +382,67 @@ export async function getENSAssetData(
 
 export async function getApiCollectionData(
   networkId?: string,
-  contractAddress?: string
-
+  contractAddress?: string,
 ): Promise<Collection | undefined> {
   if (!networkId || !contractAddress) {
     return;
   }
 
-  const response = await dexkitNFTapi.get<Collection>(`/collection/${networkId}/${contractAddress.toLowerCase()}`);
-  return response.data
+  const response = await dexkitNFTapi.get<Collection>(
+    `/collection/${networkId}/${contractAddress.toLowerCase()}`,
+  );
+  return response.data;
 }
 
 export async function getApiAccountContractCollectionData(
-  account?: string
-
+  account?: string,
 ): Promise<{ collection: CollectionAPI }[] | undefined> {
   if (!account) {
     return;
   }
 
-  const response = await dexkitNFTapi.get<{ collection: CollectionAPI }[]>(`/contract/collections/account/${account.toLowerCase()}`);
-  return response.data
+  const response = await dexkitNFTapi.get<{ collection: CollectionAPI }[]>(
+    `/contract/collections/account/${account.toLowerCase()}`,
+  );
+  return response.data;
 }
 
 export async function getApiContractCollectionData(
   networkId?: string,
-  address?: string
-
+  address?: string,
 ): Promise<{ collection: CollectionAPI } | undefined> {
   if (!networkId || !address) {
     return;
   }
 
-  const response = await dexkitNFTapi.get<{ collection: CollectionAPI }>(`/contract/collection/${networkId}/${address.toLowerCase()}`);
-  return response.data
+  const response = await dexkitNFTapi.get<{ collection: CollectionAPI }>(
+    `/contract/collection/${networkId}/${address.toLowerCase()}`,
+  );
+  return response.data;
 }
-
-
-
 
 export async function getSyncCollectionData(
   networkId?: string,
-  contractAddress?: string
-
+  contractAddress?: string,
 ): Promise<Collection | undefined> {
   if (!networkId || !contractAddress) {
     return;
   }
 
-  const response = await dexkitNFTapi.get<Collection>(`/collection/sync/${networkId}/${contractAddress.toLowerCase()}`, {
-    headers: {
-      'Dexkit-Api-Key': DEXKIT_AUTHENTICATE_API_KEY
-
-    }
-  });
-  return response.data
+  const response = await dexkitNFTapi.get<Collection>(
+    `/collection/sync/${networkId}/${contractAddress.toLowerCase()}`,
+    {
+      headers: {
+        'Dexkit-Api-Key': DEXKIT_AUTHENTICATE_API_KEY,
+      },
+    },
+  );
+  return response.data;
 }
-
-
 
 export async function getCollectionData(
   provider?: ethers.providers.JsonRpcProvider,
-  contractAddress?: string
+  contractAddress?: string,
 ): Promise<Collection | undefined> {
   if (!provider || !contractAddress) {
     return;
@@ -444,7 +484,7 @@ export async function getCollectionData(
 
 export async function getAssetsFromOrderbook(
   provider?: ethers.providers.JsonRpcProvider,
-  filters?: TraderOrderFilter
+  filters?: TraderOrderFilter,
 ) {
   if (provider === undefined) {
     return;
@@ -453,27 +493,23 @@ export async function getAssetsFromOrderbook(
   const orderbook = await getOrderbookOrders(filters);
 
   const ids = new Set<{
-    id: string, address: string, chainId: string
+    id: string;
+    address: string;
+    chainId: string;
   }>(
     orderbook.orders.map((order) => {
       return {
         id: order.nftTokenId,
         address: order.nftToken,
         chainId: order.chainId,
-
-      }
-    })
+      };
+    }),
   );
-
-
-
-
 }
-
 
 export async function getCollectionAssetsFromOrderbook(
   provider?: ethers.providers.JsonRpcProvider,
-  filters?: TraderOrderFilter
+  filters?: TraderOrderFilter,
 ) {
   if (provider === undefined || filters?.nftToken === undefined) {
     return;
@@ -482,7 +518,7 @@ export async function getCollectionAssetsFromOrderbook(
   const orderbook = await getOrderbookOrders(filters);
 
   const ids = new Set<string>(
-    orderbook.orders.map((order) => order.nftTokenId)
+    orderbook.orders.map((order) => order.nftTokenId),
   );
 
   const protocol = await getAssetProtocol(provider, filters.nftToken);
@@ -493,27 +529,31 @@ export async function getCollectionAssetsFromOrderbook(
   const maxItemsFetch = 25;
   const divider = Math.ceil(tokenIds.length / maxItemsFetch);
   for (let index = 0; index < divider; index++) {
-    const max = (index + 1) * maxItemsFetch > tokenIds.length ? tokenIds.length : (index + 1) * maxItemsFetch;
-    const idsToPick = tokenIds.slice(index * maxItemsFetch, max)
+    const max =
+      (index + 1) * maxItemsFetch > tokenIds.length
+        ? tokenIds.length
+        : (index + 1) * maxItemsFetch;
+    const idsToPick = tokenIds.slice(index * maxItemsFetch, max);
     const ass = await getAssetsData(
       provider,
       filters.nftToken,
       idsToPick,
-      isERC1155
+      isERC1155,
     );
     if (ass) {
       assets = assets.concat(ass);
     }
-
   }
   return assets;
 }
 
-export async function getAssetProtocol(provider?: ethers.providers.JsonRpcProvider, contractAddress?: string): Promise<'ERC721' | 'ERC1155' | 'ERC20' | 'UNKNOWN'> {
+export async function getAssetProtocol(
+  provider?: ethers.providers.JsonRpcProvider,
+  contractAddress?: string,
+): Promise<'ERC721' | 'ERC1155' | 'ERC20' | 'UNKNOWN'> {
   if (!provider || !contractAddress) {
     return 'UNKNOWN';
   }
-
 
   const multicall = await getMulticallFromProvider(provider);
   const iface = new Interface(ERC165Abi);
@@ -532,7 +572,7 @@ export async function getAssetProtocol(provider?: ethers.providers.JsonRpcProvid
       return 'ERC1155';
     }
   }
-  return 'ERC721'
+  return 'ERC721';
 }
 
 //Return multiple assets at once
@@ -540,9 +580,8 @@ export async function getAssetsData(
   provider: ethers.providers.JsonRpcProvider,
   contractAddress: string,
   ids: string[],
-  isERC1155 = false
+  isERC1155 = false,
 ): Promise<Asset[] | undefined> {
-
   if (isENSContract(contractAddress)) {
     const data: Asset[] = [];
     for (const id of ids) {
@@ -576,7 +615,6 @@ export async function getAssetsData(
     });
   }
 
-
   const response = await multicall?.multiCall(calls);
   const assets: Asset[] = [];
   if (response) {
@@ -601,8 +639,6 @@ export async function getAssetsData(
   return assets;
 }
 
-
-
 export async function getAssetMetadata(
   tokenURI: string,
   defaultValue?: AssetMetadata,
@@ -615,22 +651,23 @@ export async function getAssetMetadata(
     uri = tokenURI.replace('0x{id}', tokenId);
   }
   if (isERC1155 && tokenId && tokenURI && tokenURI?.search('/{id}') !== -1) {
-    uri = tokenURI.replace('{id}', tokenId.length === 64 ? tokenId : Number(tokenId).toString(16).padStart(64, '0').toLowerCase());
+    uri = tokenURI.replace(
+      '{id}',
+      tokenId.length === 64
+        ? tokenId
+        : Number(tokenId).toString(16).padStart(64, '0').toLowerCase(),
+    );
   }
 
   if (tokenURI?.startsWith('data:application/json;base64')) {
-    const jsonURI = Buffer.from(tokenURI.substring(29), "base64").toString();
+    const jsonURI = Buffer.from(tokenURI.substring(29), 'base64').toString();
     return JSON.parse(jsonURI);
-
   }
 
   try {
-    const response = await axios.get<AssetMetadata>(
-      ipfsUriToUrl(uri || ''),
-      {
-        timeout: 5000,
-      }
-    );
+    const response = await axios.get<AssetMetadata>(ipfsUriToUrl(uri || ''), {
+      timeout: 5000,
+    });
     return response.data;
   } catch (e) {
     return defaultValue;
@@ -648,14 +685,25 @@ export function getOrderbookOrders(orderFilter?: TraderOrderFilter) {
 }
 
 export async function getDKAssetOrderbook(orderFilter?: TraderOrderFilter) {
-  return await orderbookNFTapi.get<OrderbookAPI>(`/asset/orderbook`, { params: orderFilter });
+  return await orderbookNFTapi.get<OrderbookAPI>(`/asset/orderbook`, {
+    params: orderFilter,
+  });
 }
 
 /**
  * Server side function to refetch query client data
  */
-export async function fetchAssetForQueryClient({ item, queryClient }: { item: { chainId: ChainId, contractAddress: string, tokenId: string }, queryClient: QueryClient }) {
-
+export async function fetchAssetForQueryClient({
+  item,
+  queryClient,
+  siteId,
+  NETWORKS,
+}: {
+  item: { chainId: ChainId; contractAddress: string; tokenId: string };
+  queryClient: QueryClient;
+  siteId?: ChainId;
+  NETWORKS: { [key: number]: Network };
+}) {
   const slug = getNetworkSlugFromChainId(item.chainId);
 
   if (slug === undefined) {
@@ -669,11 +717,13 @@ export async function fetchAssetForQueryClient({ item, queryClient }: { item: { 
       tokenId: item.tokenId,
     });
   } catch (e) {
-    console.log(`fetchAsset: error fetching token ${item.tokenId}, address: ${item.contractAddress} at ${slug} from api`);
+    console.log(
+      `fetchAsset: error fetching token ${item.tokenId}, address: ${item.contractAddress} at ${slug} from api`,
+    );
   }
 
   if (assetApi) {
-    const provider = getProviderBySlug(slug);
+    const provider = getProviderBySlug(queryClient, siteId, slug);
 
     await provider?.ready;
 
@@ -682,7 +732,8 @@ export async function fetchAssetForQueryClient({ item, queryClient }: { item: { 
       item.contractAddress,
       item.tokenId,
       undefined,
-      slug
+      slug,
+      NETWORKS,
     );
 
     const rawMetadata = assetApi.rawData
@@ -690,14 +741,23 @@ export async function fetchAssetForQueryClient({ item, queryClient }: { item: { 
       : undefined;
     let image = assetApi?.imageUrl;
 
-    if (rawMetadata && rawMetadata?.image && (rawMetadata?.image as string).endsWith('.gif')) {
+    if (
+      rawMetadata &&
+      rawMetadata?.image &&
+      (rawMetadata?.image as string).endsWith('.gif')
+    ) {
       image = rawMetadata?.image;
     }
 
+    const chainId = getChainIdFromSlugOld(queryClient, siteId, slug);
+
+    if (!chainId) {
+      throw new Error();
+    }
 
     const newAsset: Asset = {
       id: assetApi.tokenId,
-      chainId: getChainIdFromSlug(slug)?.chainId as ChainId,
+      chainId: chainId,
       contractAddress: assetApi.address,
       tokenURI: assetApi.tokenURI || '',
       collectionName: assetApi.collectionName || '',
@@ -708,18 +768,17 @@ export async function fetchAssetForQueryClient({ item, queryClient }: { item: { 
 
     await queryClient.prefetchQuery(
       [GET_ASSET_DATA, item.contractAddress, item.tokenId],
-      async () => newAsset
+      async () => newAsset,
     );
 
     await queryClient.prefetchQuery(
       [GET_ASSET_METADATA, newAsset.tokenURI],
       async () => {
         return { ...rawMetadata, image: assetApi?.imageUrl };
-      }
+      },
     );
-
   } else {
-    const provider = getProviderBySlug(slug);
+    const provider = getProviderBySlug(queryClient, siteId, slug);
 
     await provider?.ready;
 
@@ -731,27 +790,32 @@ export async function fetchAssetForQueryClient({ item, queryClient }: { item: { 
       item.contractAddress,
       item.tokenId,
       undefined,
-      slug
+      slug,
+      NETWORKS,
     );
 
     if (asset) {
       await queryClient.prefetchQuery(
         [GET_ASSET_DATA, item.contractAddress, item.tokenId],
-        async () => asset
+        async () => asset,
       );
 
-      const metadata = await getAssetMetadata(asset.tokenURI, {
-        image: '',
-        name: `${asset.collectionName} #${asset.id}`,
-      }, isERC1155, item.tokenId);
+      const metadata = await getAssetMetadata(
+        asset.tokenURI,
+        {
+          image: '',
+          name: `${asset.collectionName} #${asset.id}`,
+        },
+        isERC1155,
+        item.tokenId,
+      );
 
       await queryClient.prefetchQuery(
         [GET_ASSET_METADATA, asset.tokenURI, asset.id, asset.protocol],
         async () => {
           return metadata;
-        }
+        },
       );
     }
   }
 }
-

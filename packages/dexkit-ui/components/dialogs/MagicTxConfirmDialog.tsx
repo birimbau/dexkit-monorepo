@@ -25,14 +25,11 @@ import { ChangeEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { FormattedMessage } from "react-intl";
 
 import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "@dexkit/core/constants/zrx";
-import {
-  getNativeTokenSymbol,
-  hasLondonHardForkSupport,
-  truncateAddress,
-} from "@dexkit/core/utils";
+import { hasLondonHardForkSupport, truncateAddress } from "@dexkit/core/utils";
 
 import { ChainId, GET_NATIVE_TOKEN } from "@dexkit/core/constants";
 import { useCoinPrices, useErc20BalanceQuery } from "@dexkit/core/hooks";
+import { useNetworkMetadata } from "../../hooks/app";
 import { AppDialogTitle } from "../AppDialogTitle";
 
 interface TransactionConfirmDialogProps {
@@ -53,6 +50,7 @@ interface ValuesType {
 }
 
 export function MagicTxConfirmDialog(props: TransactionConfirmDialogProps) {
+  const { getNativeTokenSymbol } = useNetworkMetadata();
   const { data, onCancel, onConfirm, currency } = props;
   const { dialogProps } = props;
   const { provider, chainId, account } = useWeb3React();
