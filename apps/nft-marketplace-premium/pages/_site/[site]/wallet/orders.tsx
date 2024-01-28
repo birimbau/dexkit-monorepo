@@ -19,12 +19,13 @@ import type { GetStaticProps, GetStaticPropsContext, NextPage } from 'next';
 import { Suspense, useEffect, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { FormattedMessage } from 'react-intl';
-import Funnel from '../../../../src/components/icons/Filter';
-import MainLayout from '../../../../src/components/layouts/main';
+import { REVALIDATE_PAGE_TIME } from 'src/constants';
 import { NetworkSelectDropdown } from '../../../../src/components/NetworkSelectDropdown';
 import { PageHeader } from '../../../../src/components/PageHeader';
 import SidebarFilters from '../../../../src/components/SidebarFilters';
 import SidebarFiltersContent from '../../../../src/components/SidebarFiltersContent';
+import Funnel from '../../../../src/components/icons/Filter';
+import MainLayout from '../../../../src/components/layouts/main';
 import { SellOrBuy, TraderOrderStatus } from '../../../../src/constants/enum';
 import TableSkeleton from '../../../../src/modules/nft/components/tables/TableSkeleton';
 import WalletOrders from '../../../../src/modules/wallet/components/WalletOrders';
@@ -259,11 +260,13 @@ export const getStaticProps: GetStaticProps = async ({
 
     return {
       props: { ...configResponse },
+      revalidate: REVALIDATE_PAGE_TIME,
     };
   }
 
   return {
     props: {},
+    revalidate: REVALIDATE_PAGE_TIME,
   };
 };
 

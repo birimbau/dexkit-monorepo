@@ -18,6 +18,7 @@ import dynamic from 'next/dynamic';
 import { Suspense, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { FormattedMessage } from 'react-intl';
+import { REVALIDATE_PAGE_TIME } from 'src/constants';
 import { PageHeader } from '../../../../src/components/PageHeader';
 import MainLayout from '../../../../src/components/layouts/main';
 import FavoriteAssetsSection from '../../../../src/modules/favorites/components/FavoriteAssetsSection';
@@ -277,11 +278,13 @@ export const getStaticProps: GetStaticProps = async ({
 
     return {
       props: { ...configResponse },
+      revalidate: REVALIDATE_PAGE_TIME,
     };
   }
 
   return {
     props: {},
+    revalidate: REVALIDATE_PAGE_TIME,
   };
 };
 

@@ -1,10 +1,11 @@
 import { Container, Grid } from '@mui/material';
-import { dehydrate, QueryClient } from '@tanstack/react-query';
+import { QueryClient, dehydrate } from '@tanstack/react-query';
 import type { GetStaticProps, GetStaticPropsContext, NextPage } from 'next';
 import { NextSeo } from 'next-seo';
 import { FormattedMessage, useIntl } from 'react-intl';
-import MainLayout from '../../../src/components/layouts/main';
+import { REVALIDATE_PAGE_TIME } from 'src/constants';
 import { PageHeader } from '../../../src/components/PageHeader';
+import MainLayout from '../../../src/components/layouts/main';
 import CollectionFromConfigCard from '../../../src/modules/nft/components/CollectionFromConfig';
 import { getAppConfig } from '../../../src/services/app';
 import { AppConfig } from '../../../src/types/config';
@@ -109,7 +110,7 @@ export const getStaticProps: GetStaticProps = async ({
       dehydratedState: dehydrate(queryClient),
       ...configResponse,
     },
-    revalidate: 300,
+    revalidate: REVALIDATE_PAGE_TIME,
   };
 };
 

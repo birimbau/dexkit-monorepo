@@ -9,6 +9,7 @@ import { useMemo } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import MainLayout from 'src/components/layouts/main';
 import { PageHeader } from 'src/components/PageHeader';
+import { REVALIDATE_PAGE_TIME } from 'src/constants';
 import { useAppConfig } from 'src/hooks/app';
 import { getAppConfig } from 'src/services/app';
 
@@ -82,6 +83,7 @@ export const getStaticProps: GetStaticProps = async ({
 
   return {
     props: {
+      revalidate: REVALIDATE_PAGE_TIME,
       ...configResponse,
     },
   };

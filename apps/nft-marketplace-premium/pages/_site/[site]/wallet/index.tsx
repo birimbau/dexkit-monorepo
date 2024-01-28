@@ -19,6 +19,7 @@ import { copyToClipboard } from '@dexkit/core/utils';
 import dynamic from 'next/dynamic';
 
 import EvmWalletContainer from '@/modules/wallet/components/containers/EvmWalletContainer';
+import { REVALIDATE_PAGE_TIME } from 'src/constants';
 import { useEvmCoins } from 'src/hooks/blockchain';
 import {
   useAppConfig,
@@ -191,11 +192,13 @@ export const getStaticProps: GetStaticProps = async ({
 
     return {
       props: { ...configResponse },
+      revalidate: REVALIDATE_PAGE_TIME,
     };
   }
 
   return {
     props: {},
+    revalidate: REVALIDATE_PAGE_TIME,
   };
 };
 

@@ -16,6 +16,7 @@ import {
 import { ChainId } from '@dexkit/core/constants';
 import { Grid, Skeleton } from '@mui/material';
 import { FormattedMessage, useIntl } from 'react-intl';
+import { REVALIDATE_PAGE_TIME } from 'src/constants';
 import MainLayout from '../../../../../src/components/layouts/main';
 import { PageHeader } from '../../../../../src/components/PageHeader';
 import {
@@ -161,7 +162,7 @@ export const getStaticProps: GetStaticProps = async ({
         dehydratedState: dehydrate(queryClient),
         ...configResponse,
       },
-      revalidate: 5,
+      revalidate: REVALIDATE_PAGE_TIME,
     };
   } else {
     return {
