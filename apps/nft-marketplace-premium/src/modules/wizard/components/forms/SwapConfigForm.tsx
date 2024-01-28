@@ -1,4 +1,6 @@
 import { SwapConfig } from '@/modules/swap/types';
+import { useActiveChainIds } from '@dexkit/ui/hooks';
+import { SUPPORTED_SWAP_CHAIN_IDS } from '@dexkit/widgets/src/widgets/swap/constants/supportedChainIds';
 import { ChainConfig } from '@dexkit/widgets/src/widgets/swap/types';
 import {
   Alert,
@@ -22,6 +24,7 @@ interface Props {
 }
 
 export function SwapConfigForm({ onChange, data, featuredTokens }: Props) {
+  const { activeChainIds } = useActiveChainIds();
   const [formData, setFormData] = useState<SwapConfig | undefined>(data);
 
   const [selectedChainId, setSelectedChainId] = useState<number | undefined>(
@@ -88,6 +91,7 @@ export function SwapConfigForm({ onChange, data, featuredTokens }: Props) {
               />
             </Typography>
             <NetworkSelectDropdown
+              activeChainIds={activeChainIds}
               chainId={formData?.defaultChainId}
               onChange={(chainId) => {
                 setFormData((formData) => ({
@@ -123,6 +127,11 @@ export function SwapConfigForm({ onChange, data, featuredTokens }: Props) {
                   defaultEditChainId: chainId,
                 }));
               }}
+              activeChainIds={
+                activeChainIds.filter((ch) =>
+                  SUPPORTED_SWAP_CHAIN_IDS.includes(ch),
+                ) || []
+              }
               labelId={'config-per-network'}
               chainId={selectedChainId}
             />

@@ -32,10 +32,10 @@ import { ethers } from 'ethers';
 import * as Yup from 'yup';
 
 import { NETWORKS } from '@dexkit/core/constants/networks';
+import { Network } from '@dexkit/core/types';
 import ImageIcon from '@mui/icons-material/Image';
 import { getNetworks } from 'src/utils/blockchain';
 import MediaDialog from '../../../../components/mediaDialog';
-import { Network } from '../../../../types/chains';
 import { ipfsUriToUrl } from '../../../../utils/ipfs';
 import { CollectionItemAutocomplete } from './CollectionItemAutocomplete';
 

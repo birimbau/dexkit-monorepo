@@ -1,3 +1,5 @@
+import { SUPPORTED_LEGACY_CHAIN_IDS } from '@dexkit/evm-chains';
+import { SUPPORTED_DEXAPPBUILDER_CHAIN_IDS } from '@dexkit/evm-chains/dist/src/constants';
 import { EXCHANGE_NOTIFICATION_TYPES } from '@dexkit/exchange/constants/messages';
 import { DexkitProvider } from '@dexkit/ui/components';
 import { ThemeMode } from '@dexkit/ui/constants/enum';
@@ -43,13 +45,11 @@ export function AppMarketplaceProvider({
   const [ref, setRef] = useAtom(referralAtom);
   const { mode } = useThemeMode();
 
-
-  useEffect(()=> {
-    if(router.query.ref){
+  useEffect(() => {
+    if (router.query.ref) {
       setRef(router.query.ref as string);
     }
-
-  },[router.query.ref])
+  }, [router.query.ref]);
 
   const theme = useMemo(() => {
     let tempTheme = getTheme({
@@ -154,7 +154,6 @@ export function AppMarketplaceProvider({
     }
   }, [appConfig]);
 
-
   return (
     <DexkitProvider
       locale={locale}
@@ -166,6 +165,11 @@ export function AppMarketplaceProvider({
       localeMessages={loadLocaleData(locale)}
       theme={theme}
       selectedWalletAtom={selectedWalletAtom}
+      activeChainIds={
+        siteId
+          ? appConfig.activeChainIds || SUPPORTED_LEGACY_CHAIN_IDS
+          : SUPPORTED_DEXAPPBUILDER_CHAIN_IDS
+      }
       options={{
         magicRedirectUrl:
           typeof window !== 'undefined'

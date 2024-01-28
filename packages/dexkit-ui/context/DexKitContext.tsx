@@ -6,6 +6,7 @@ import {
   TransactionMetadata,
   WatchTransactionDialogProperties,
 } from "@dexkit/core/types";
+import { SUPPORTED_LEGACY_CHAIN_IDS } from "@dexkit/evm-chains";
 import React, { SetStateAction } from "react";
 import {
   AppNotification,
@@ -29,6 +30,7 @@ export interface DexkitContextState {
   assets: { [key: string]: Asset };
   transactions: { [key: string]: AppTransaction };
   watchTransactionDialog: WatchTransactionDialogProperties;
+  activeChainIds: number[];
 }
 
 export const DexKitContext = React.createContext<DexkitContextState>({
@@ -42,6 +44,7 @@ export const DexKitContext = React.createContext<DexkitContextState>({
   createNotification: (params: CreateAppNotificationParams) => {},
   checkAllNotifications: () => {},
   clearNotifications: () => {},
+  activeChainIds: SUPPORTED_LEGACY_CHAIN_IDS,
   watchTransactionDialog: {
     values: undefined,
     open: (type: string, values: Record<string, any>) => {},

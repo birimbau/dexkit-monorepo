@@ -21,7 +21,7 @@ import { FormattedMessage } from "react-intl";
 
 import { NETWORKS } from "@dexkit/core/constants/networks";
 import { Network } from "@dexkit/core/types";
-import { useSwitchNetworkMutation } from "../../hooks";
+import { useActiveChainIds, useSwitchNetworkMutation } from "../../hooks";
 import { AppDialogTitle } from "../AppDialogTitle";
 
 interface Props {
@@ -30,6 +30,7 @@ interface Props {
 
 function SwitchNetworkDialog({ dialogProps }: Props) {
   const { onClose } = dialogProps;
+  const { activeChainIds } = useActiveChainIds();
 
   const [chainId, setChainId] = useState<number>();
 
@@ -77,6 +78,9 @@ function SwitchNetworkDialog({ dialogProps }: Props) {
           )}
           <List disablePadding>
             {Object.keys(NETWORKS)
+              .filter(
+                (k) => activeChainIds && activeChainIds?.includes(Number(k))
+              )
               .filter((k) => !NETWORKS[parseInt(k)].testnet)
               .map((key: any, index: number) => (
                 <ListItemButton

@@ -18,7 +18,9 @@ import {
 import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { NETWORKS } from '../../constants/chain';
-import { Network } from '../../types/chains';
+
+import { Network } from '@dexkit/core/types';
+import { useActiveChainIds } from '@dexkit/ui/hooks';
 import { AppDialogTitle } from '../AppDialogTitle';
 
 interface Props {
@@ -33,7 +35,7 @@ function ChooseNetworkDialog({
   selectedChainId,
 }: Props) {
   const { onClose } = dialogProps;
-
+  const { activeChainIds } = useActiveChainIds();
   const [chainId, setChainId] = useState<number | undefined>(selectedChainId);
 
   const handleClose = () => onClose!({}, 'backdropClick');
@@ -69,6 +71,7 @@ function ChooseNetworkDialog({
         <Stack spacing={2}>
           <List disablePadding>
             {Object.keys(NETWORKS)
+              .filter((k) => activeChainIds.includes(Number(k)))
               .filter((k) => !NETWORKS[parseInt(k)].testnet)
               .map((key: any, index: number) => (
                 <ListItemButton

@@ -17,11 +17,11 @@ import {
 
 import { FormattedMessage } from 'react-intl';
 import { NETWORKS } from '../../../../constants/chain';
-import { Network } from '../../../../types/chains';
 import { ipfsUriToUrl } from '../../../../utils/ipfs';
 
 import { FormikHelpers, useFormik } from 'formik';
 
+import { Network } from '@dexkit/core/types';
 import { ethers } from 'ethers';
 import { useState } from 'react';
 import * as Yup from 'yup';

@@ -9,7 +9,7 @@
   "scripts": {
     "clean-daemon": "turbo daemon clean",
     "build": "turbo run build ",
-    "release": "turbo run release --filter=@dexkit/ui,@dexkit/web3forms,@dexkit/web3forms,@dexkit/widgets,@dexkit/dexappbuilder-viewer,@dexkit/core",
+    "release": "turbo run release --filter=@dexkit/ui,@dexkit/web3forms,@dexkit/widgets,@dexkit/dexappbuilder-viewer,@dexkit/core",
     "dev": "turbo run dev --parallel",
     "publish-packages": "changeset publish",
     "dev:whitelabel": "turbo run dev --parallel --filter=dexappbuilder",

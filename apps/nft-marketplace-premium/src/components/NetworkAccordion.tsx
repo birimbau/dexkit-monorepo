@@ -1,3 +1,4 @@
+import { useActiveChainIds } from '@dexkit/ui/hooks';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { List, ListItem, ListItemText, Stack } from '@mui/material';
 import Accordion from '@mui/material/Accordion';
@@ -14,6 +15,8 @@ interface Props {
 }
 
 export function NetworkwAccordion({ onFilterNetworks }: Props) {
+  const { activeChainIds } = useActiveChainIds();
+
   return (
     <Stack spacing={2} sx={{ pt: 2 }}>
       <Accordion>
@@ -29,6 +32,7 @@ export function NetworkwAccordion({ onFilterNetworks }: Props) {
         <AccordionDetails>
           <List sx={{ maxHeight: '400px', overflow: 'auto' }}>
             {Object.values(NETWORKS)
+              .filter((n) => activeChainIds.includes(Number(n.chainId)))
               .filter((n) => !n.testnet)
               .map((net, key) => (
                 <ListItem
@@ -38,8 +42,8 @@ export function NetworkwAccordion({ onFilterNetworks }: Props) {
                       value="start"
                       control={<Checkbox />}
                       onClick={() => {
-                        if (onFilterNetworks) {
-                          onFilterNetworks(net.slug);
+                        if (onFilterNetworks && net?.slug) {
+                          onFilterNetworks(net?.slug);
                         }
                       }}
                       label={''}

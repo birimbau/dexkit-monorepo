@@ -1,18 +1,11 @@
-import { Network } from '../types/chains';
 
-import { ChainId } from '@dexkit/core/constants/enums';
-import arbitrumIcon from '../../public/assets/images/icons/arbitrum.png';
-import avaxIcon from '../../public/assets/images/icons/avax.png';
-import bscIcon from '../../public/assets/images/icons/bnb.svg';
-import ethIcon from '../../public/assets/images/icons/eth.png';
-import fantomIcon from '../../public/assets/images/icons/fantom.svg';
-import optimismIcon from '../../public/assets/images/icons/optimism.svg';
-import polygonIcon from '../../public/assets/images/icons/polygon.png';
+import { NETWORKS as NETWORKS_CORE } from "@dexkit/core/constants/networks";
 
 const alchemyKey =
   process.env.NEXT_PUBLIC_ALCHEMY_API_KEY || process.env.ALCHEMY_API_KEY;
+export const NETWORKS = NETWORKS_CORE;
 
-export const NETWORKS: { [key: number]: Network } = {
+/*export const NETWORKS: { [key: number]: Network } = {
   [ChainId.Ethereum]: {
     chainId: ChainId.Ethereum,
     symbol: 'ETH',
@@ -153,5 +146,5 @@ export const NETWORKS: { [key: number]: Network } = {
       symbol: 'ETH',
     },
   }
-};
+};*/
 

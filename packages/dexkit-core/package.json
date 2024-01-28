@@ -19,7 +19,8 @@
   },
   "dependencies": {
     "eth-url-parser": "^1.0.4",
-    "ua-parser-js": "^1.0.35"
+    "ua-parser-js": "^1.0.35",
+    "@dexkit/evm-chains": "*"
   },
   "publishConfig": {
     "access": "public"

@@ -70,7 +70,10 @@ export function useProtectedAppConfig({ isProtected, domain, page, slug, result 
 export function useAppNFT() {
   return useContext(AppConfigContext).appNFT;
 }
-
+/**
+ * Site id from active app. If is DexAppBuilder this will return null
+ * @returns 
+ */
 export function useSiteId() {
   return useContext(AppConfigContext).siteId;
 }

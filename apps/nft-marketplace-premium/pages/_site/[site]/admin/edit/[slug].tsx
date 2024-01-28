@@ -22,10 +22,13 @@ import { EditWizardContainer } from '@/modules/wizard/components/containers/Edit
 import { DexkitApiProvider } from '@dexkit/core/providers';
 import SecurityIcon from '@mui/icons-material/Security';
 import { QueryClient, dehydrate } from '@tanstack/react-query';
+import { useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { LoginAppButton } from 'src/components/LoginAppButton';
 import { LoginButton } from 'src/components/LoginButton';
 import AuthMainLayout from 'src/components/layouts/authMain';
+
+import { AdminContext } from '@dexkit/ui/context/AdminContext';
 import { useAuth } from 'src/hooks/account';
 import { useAdminWhitelabelConfigQuery } from 'src/hooks/whitelabel';
 import { getAppConfig } from 'src/services/app';
@@ -47,6 +50,12 @@ export const WizardEditPage: NextPage = () => {
   });
 
   const theme = useTheme();
+
+  const config = useMemo(() => {
+    if (site?.config) {
+      return JSON.parse(site?.config);
+    }
+  }, [site?.config]);
 
   return (
     <>
@@ -114,9 +123,11 @@ export const WizardEditPage: NextPage = () => {
           </Stack>
         </Box>
       ) : (
-        <DexkitApiProvider.Provider value={{ instance: myAppsApi }}>
-          <EditWizardContainer site={site} />
-        </DexkitApiProvider.Provider>
+        <AdminContext.Provider value={{editSiteId: site?.id, editAppConfig: config}}>
+          <DexkitApiProvider.Provider value={{ instance: myAppsApi }}>
+            <EditWizardContainer site={site} />
+          </DexkitApiProvider.Provider>
+        </AdminContext.Provider>
       )}
     </>
   );

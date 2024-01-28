@@ -81,6 +81,7 @@ export interface ExchangeSettingsFormProps {
   showSaveButton?: boolean;
   settings?: DexkitExchangeSettings;
   tokens: Token[];
+  activeChainIds: number[];
   onValidate?: (isValid: boolean) => void;
 }
 
@@ -93,6 +94,7 @@ export default function ExchangeSettingsForm({
   saveOnChange,
   showSaveButton,
   onValidate,
+  activeChainIds,
 }: ExchangeSettingsFormProps) {
   const handleSubmit = async (values: DexkitExchangeSettings) => {
     onSave(values);
@@ -243,6 +245,7 @@ export default function ExchangeSettingsForm({
 
   const networks = useMemo(() => {
     return Object.keys(NETWORKS)
+      .filter((k) => activeChainIds.includes(Number(k)))
       .filter((key) => {
         let chain = parseChainId(key);
 
@@ -282,6 +285,7 @@ export default function ExchangeSettingsForm({
               fullWidth: true,
               onClose: handleCloseSelectNetworks,
             }}
+            activeChainIds={activeChainIds}
           />
           {saveOnChange && onChange && (
             <SaveOnChangeListener onSave={onChange} onValidate={onValidate} />

@@ -1,11 +1,48 @@
 
+
+import { COINGECKO_IDS, EVM_CHAINS, WRAPPED_TOKEN_ADDRESSES } from "@dexkit/evm-chains";
 import { providers } from "ethers";
 import { Network } from "../types";
 import { ChainId } from "./enums";
+import { EVM_CHAIN_IMAGES, UNKNOWN_LOGO_URL } from "./evmChainImages";
 
 const IS_TESTNET = typeof process !== 'undefined' ? process?.env.NODE_ENV !== "development" : true;
 
-export const NETWORKS: { [key: number]: Network } = {
+
+
+const NETS: { [key: number]: Network } = {}
+
+for (let index = 0; index < EVM_CHAINS.length; index++) {
+  const element = EVM_CHAINS[index];
+  if (element.chainId) {
+    NETS[element.chainId] = {
+      chainId: element.chainId,
+      symbol: element.shortName.toUpperCase(),
+      explorerUrl: element.explorers[0].url,
+      name: element.name,
+      slug: element?.slug ? element?.slug : element.shortName,
+      coingeckoPlatformId: COINGECKO_IDS.find(c => c.chain_identifier === element.chainId)?.native_coin_id,
+      wrappedAddress: WRAPPED_TOKEN_ADDRESSES[element.chainId],
+      imageUrl: EVM_CHAIN_IMAGES[element.chainId].imageUrl || UNKNOWN_LOGO_URL,
+      coinImageUrl: EVM_CHAIN_IMAGES[element.chainId].coinImageUrl,
+      coinName: EVM_CHAIN_IMAGES[element.chainId].coinImageUrl ? element.nativeCurrency.name : undefined,
+      coinSymbol: EVM_CHAIN_IMAGES[element.chainId].coinImageUrl ? element.nativeCurrency.symbol : undefined,
+      providerRpcUrl: element.rpc[0],
+      testnet: element?.testnet,
+    }
+  }
+}
+
+export const NETWORKS = NETS;
+
+
+
+
+
+
+
+
+/*export const NETWORKS: { [key: number]: Network } = {
   [ChainId.Ethereum]: {
     chainId: ChainId.Ethereum,
     symbol: "ETH",
@@ -142,8 +179,7 @@ export const NETWORKS: { [key: number]: Network } = {
     providerRpcUrl: `https://rpc.ankr.com/polygon_mumbai`,
     testnet: IS_TESTNET,
   },
-
-};
+};*/
 
 export const NETWORK_NAME = (chainId?: ChainId) =>
   chainId && NETWORKS[chainId] ? NETWORKS[chainId].name : undefined;

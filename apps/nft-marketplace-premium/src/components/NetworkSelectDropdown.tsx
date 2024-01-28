@@ -1,4 +1,5 @@
 import { ChainId } from '@dexkit/core/constants';
+import { Network } from '@dexkit/core/types';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import ListItemIcon from '@mui/material/ListItemIcon';
@@ -8,16 +9,16 @@ import Select from '@mui/material/Select';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { NETWORKS } from '../constants/chain';
-import { Network } from '../types/chains';
 
 interface Props {
   chainId?: ChainId;
+  activeChainIds: number[];
   labelId?: string;
   onChange: (chainId: ChainId) => void;
 }
 
 export function NetworkSelectDropdown(props: Props) {
-  const { chainId, onChange, labelId } = props;
+  const { chainId, onChange, labelId, activeChainIds } = props;
   return (
     <Select
       labelId={labelId}
@@ -43,6 +44,7 @@ export function NetworkSelectDropdown(props: Props) {
       }}
     >
       {Object.keys(NETWORKS)
+        .filter((k) => activeChainIds.includes(Number(k)))
         .filter((key) => !NETWORKS[Number(key)].testnet)
         .map((key: any, index: number) => (
           <MenuItem key={index} value={key}>
