@@ -83,9 +83,10 @@ export const getStaticProps: GetStaticProps = async ({
 
   return {
     props: {
-      revalidate: REVALIDATE_PAGE_TIME,
+      
       ...configResponse,
     },
+    revalidate: REVALIDATE_PAGE_TIME,
   };
 };
 

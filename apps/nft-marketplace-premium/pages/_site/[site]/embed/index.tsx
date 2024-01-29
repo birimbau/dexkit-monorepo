@@ -144,9 +144,9 @@ export const getServerSideProps: GetServerSideProps = async ({
         page: sitePage,
         balances: {},
         partialResults: {},
-        ...configResponse,
-        revalidate: REVALIDATE_PAGE_TIME,
+        ...configResponse,     
       },
+      revalidate: REVALIDATE_PAGE_TIME,
     };
   }
 
@@ -156,9 +156,10 @@ export const getServerSideProps: GetServerSideProps = async ({
       sections: homePage.sections,
       page: sitePage,
       hideLayout: hideM,
-      revalidate: REVALIDATE_PAGE_TIME,
+      
       ...configResponse,
     },
+    revalidate: REVALIDATE_PAGE_TIME,
   };
 };
 
