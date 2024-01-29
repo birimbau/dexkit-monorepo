@@ -16,6 +16,7 @@
     "script:filter-coingecko-ids": "npx node ./scripts/filter-coingecko-ids.js",
     "script:generate-chain-ids": "npx node ./scripts/generate-chain-ids.js",
     "script:fetch-chains": "npx node ./scripts/fetch-chains.js",
+    "script:update-all-chains": "npx node ./scripts/update-all-chains.js",
     "script:add-chain": "npx node ./scripts/add-chain.js"
   },
   "devDependencies": {

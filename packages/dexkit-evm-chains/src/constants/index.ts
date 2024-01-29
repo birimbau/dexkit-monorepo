@@ -33,3 +33,42 @@ export const WRAPPED_TOKEN_ADDRESSES: { [key: number]: string } = {
   [CHAIN_IDS.Mumbai]: "0x9c3c9283d3e44854697cd22d3faa240cfb032889",
   [CHAIN_IDS.Goerli]: "0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6"
 }
+
+
+export const enum NETWORK_ID {
+  Ethereum = 'ethereum',
+  Goerli = 'goerli',
+  Mumbai = 'mumbai',
+  Polygon = 'polygon',
+  BSC = 'bsc',
+  Avalanche = 'avalanche',
+  Fantom = 'fantom',
+  Optimism = 'optimism',
+  Arbitrum = 'arbitrum',
+  Base = 'base'
+}
+
+export const SLUG_OVERLAP: { [key: number]: string } = {
+  [CHAIN_IDS.Ethereum_Mainnet]: 'ethereum',
+  [CHAIN_IDS.Arbitrum_One]: 'arbitrum',
+  [CHAIN_IDS.OP_Mainnet]: 'optimism',
+  [CHAIN_IDS.Avalanche_C_Chain]: 'avalanche',
+  [CHAIN_IDS.BNB_Smart_Chain_Mainnet]: 'bsc',
+  [CHAIN_IDS.Fantom_Opera]: 'fantom',
+  [CHAIN_IDS.Polygon_Mainnet]: 'polygon',
+  [CHAIN_IDS.Base]: 'base',
+  [CHAIN_IDS.Mumbai]: 'mumbai',
+  [CHAIN_IDS.Goerli]: 'goerli'
+}
+export const PROVIDER_OVERLAP: { [key: number]: string } = {
+  [CHAIN_IDS.Ethereum_Mainnet]: 'ethereum',
+  [CHAIN_IDS.Arbitrum_One]: 'arbitrum',
+  [CHAIN_IDS.OP_Mainnet]: 'optimism',
+  [CHAIN_IDS.Avalanche_C_Chain]: 'avalanche',
+  [CHAIN_IDS.BNB_Smart_Chain_Mainnet]: 'bsc',
+  [CHAIN_IDS.Fantom_Opera]: 'fantom',
+  [CHAIN_IDS.Polygon_Mainnet]: 'polygon',
+  [CHAIN_IDS.Base]: 'base',
+  [CHAIN_IDS.Mumbai]: 'mumbai',
+  [CHAIN_IDS.Goerli]: 'goerli'
+}
