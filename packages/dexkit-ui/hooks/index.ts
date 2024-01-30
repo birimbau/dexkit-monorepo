@@ -32,7 +32,7 @@ import {
   AppConfigContext,
   AppWizardConfigContext,
 } from "../context/AppConfigContext";
-import { DexKitContext, DexkitContextState } from "../context/DexKitContext";
+import { DexKitContext } from "../context/DexKitContext";
 import { localeUserAtom, userThemeModeAtom } from "../state";
 import {
   AppNotification,
@@ -142,7 +142,7 @@ export function useDexkitContextState({
   currencyUserAtom: PrimitiveAtom<string>;
   transactionsAtom: PrimitiveAtom<{ [key: string]: AppTransaction }>;
   onChangeLocale: (locale: string) => void;
-}): DexkitContextState {
+}) {
   const [notifications, setNotifications] = useAtom(notificationsAtom);
   const tokens = useAtomValue(tokensAtom);
   const [assets, setAssets] = useAtom(assetsAtom);
@@ -513,7 +513,7 @@ export function useWaitTransactionConfirmation({
 }) {
   return useQuery(
     [WAIT_TRANSACTION_QUERY, transactionHash],
-    async ({}) => {
+    async ({ }) => {
       if (!utils.isHexString(transactionHash)) {
         return null;
       }

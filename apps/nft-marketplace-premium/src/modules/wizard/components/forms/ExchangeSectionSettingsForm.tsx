@@ -1,5 +1,6 @@
 import ExchangeSettingsForm from '@dexkit/exchange/components/ExchangeSettingsForm';
 import { DexkitExchangeSettings } from '@dexkit/exchange/types';
+import { useActiveChainIds } from '@dexkit/ui';
 import { useMemo } from 'react';
 import { useAppWizardConfig } from '../../hooks';
 import { ExchangePageSection } from '../../types/section';
@@ -17,6 +18,8 @@ export default function ExchangeSectionSettingsForm({
   onChange,
   section,
 }: Props) {
+  const { activeChainIds } = useActiveChainIds();
+
   const handleSave = (settings: DexkitExchangeSettings) => {
     if (onSave) {
       onSave({
@@ -53,6 +56,7 @@ export default function ExchangeSectionSettingsForm({
 
   return (
     <ExchangeSettingsForm
+      activeChainIds={activeChainIds}
       onCancel={onCancel}
       onSave={handleSave}
       onChange={handleChange}

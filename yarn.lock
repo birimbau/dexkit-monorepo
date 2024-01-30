@@ -3190,6 +3190,16 @@
     "@devtools-ds/themes" "^1.2.1"
     clsx "1.1.0"
 
+"@dexkit/evm-chains@*":
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/@dexkit/evm-chains/-/evm-chains-1.5.0.tgz#7d7c069c836ed283d1e2f191911c96010aad760b"
+  integrity sha512-SEXaBsGDwP7uNU+nXw16VHtD2Cz8IHW2Tk+OPzAel5rPhxedCWURmCvsLczzAc8d65/jm/xc27MHinKtwwi6nQ==
+
+"@dexkit/evm-chains@^1.6.0":
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/@dexkit/evm-chains/-/evm-chains-1.6.0.tgz#bbf66257a8a12b366ca53fa65969e86a3110561f"
+  integrity sha512-qtt+kMz1xv++6qVG9sMrIMaOah8/8az6/FBXrq9gIfC9KjTUANys6drPxYn1sMKi628eefY06mNwpJX/e4gTGA==
+
 "@discoveryjs/json-ext@^0.5.3":
   version "0.5.7"
   resolved "https://registry.yarnpkg.com/@discoveryjs/json-ext/-/json-ext-0.5.7.tgz#1d572bfbbe14b7704e0ba0f39b74815b84870d70"
@@ -14931,11 +14941,6 @@ commander@8, commander@^8.3.0:
   version "8.3.0"
   resolved "https://registry.yarnpkg.com/commander/-/commander-8.3.0.tgz#4837ea1b2da67b9c616a67afbb0fafee567bca66"
   integrity sha512-OkTL9umf+He2DZkUq8f8J9of7yL6RJKI24dVITBmNfZBmri9zYZQrKkuXiKhyfPSu8tUhnVBB1iKXevvnlR4Ww==
-
-commander@^11.1.0:
-  version "11.1.0"
-  resolved "https://registry.yarnpkg.com/commander/-/commander-11.1.0.tgz#62fdce76006a68e5c1ab3314dc92e800eb83d906"
-  integrity sha512-yPVavfyCcRhmorC7rWlkHn15b4wDVgVmBA7kV4QVBsF7kv/9TKJAbAXVTxvTnwP8HHKjRCJDClKbciiYS7p0DQ==
 
 commander@^2.19.0, commander@^2.20.0, commander@^2.20.3:
   version "2.20.3"
