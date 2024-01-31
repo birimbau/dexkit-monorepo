@@ -21,6 +21,7 @@ import { PageHeader } from '../../../../src/components/PageHeader';
 
 import { useWalletActivate } from '@dexkit/wallet-connectors/hooks';
 import { WalletActivateParams } from '@dexkit/wallet-connectors/types';
+import { REVALIDATE_PAGE_TIME } from 'src/constants';
 import { selectedWalletAtom } from 'src/state/atoms';
 import { getAppConfig } from '../../../../src/services/app';
 
@@ -170,11 +171,13 @@ export const getStaticProps: GetStaticProps = async ({
 
     return {
       props: { ...configResponse },
+      revalidate: REVALIDATE_PAGE_TIME,
     };
   }
 
   return {
     props: {},
+    revalidate: REVALIDATE_PAGE_TIME,
   };
 };
 

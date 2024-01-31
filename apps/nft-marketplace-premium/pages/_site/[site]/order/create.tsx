@@ -5,6 +5,7 @@ import MainLayout from '../../../../src/components/layouts/main';
 
 import CreateAssetOrderContainer from '@/modules/nft/components/container/CreateAssetOrderContainer';
 import { NextSeo } from 'next-seo';
+import { REVALIDATE_PAGE_TIME } from 'src/constants';
 import { PageHeader } from '../../../../src/components/PageHeader';
 import { getAppConfig } from '../../../../src/services/app';
 
@@ -61,6 +62,7 @@ export const getStaticProps: GetStaticProps = async ({
 
   return {
     props: { ...configResponse },
+    revalidate: REVALIDATE_PAGE_TIME,
   };
 };
 

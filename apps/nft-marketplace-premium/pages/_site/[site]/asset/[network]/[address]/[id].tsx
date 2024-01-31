@@ -27,6 +27,7 @@ import axios from 'axios';
 import { NextSeo } from 'next-seo';
 import { Suspense } from 'react';
 import { FormattedMessage } from 'react-intl';
+import { REVALIDATE_PAGE_TIME } from 'src/constants';
 import { PageHeader } from '../../../../../../src/components/PageHeader';
 import { NETWORK_ID } from '../../../../../../src/constants/enum';
 import { MAP_NETWORK_TO_RARIBLE } from '../../../../../../src/constants/marketplaces';
@@ -196,7 +197,7 @@ export const getStaticProps: GetStaticProps = async ({
         ...configResponse,
         enableDarkblock: enableDarkblock,
       },
-      revalidate: 5,
+      revalidate: REVALIDATE_PAGE_TIME,
     };
   }
 

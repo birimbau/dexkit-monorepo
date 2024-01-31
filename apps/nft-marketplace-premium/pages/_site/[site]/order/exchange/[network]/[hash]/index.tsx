@@ -19,6 +19,7 @@ import {
 import { useDexKitContext, useExecuteTransactionsDialog } from '@dexkit/ui';
 import { AppNotificationType } from '@dexkit/ui/types';
 import { useCallback } from 'react';
+import { REVALIDATE_PAGE_TIME } from 'src/constants';
 
 export default function ExchangeOrderPage() {
   const router = useRouter();
@@ -152,7 +153,7 @@ export const getStaticProps = async ({
 
     return {
       props: { dehydratedState: dehydrate(queryClient), ...configResponse },
-      revalidate: 5,
+      revalidate: REVALIDATE_PAGE_TIME,
     };
   }
 };

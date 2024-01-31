@@ -16,7 +16,7 @@ import { useRouter } from 'next/router';
 import { FormattedMessage } from 'react-intl';
 import { PageHeader } from 'src/components/PageHeader';
 import MainLayout from 'src/components/layouts/main';
-import { THIRDWEB_CLIENT_ID } from 'src/constants';
+import { REVALIDATE_PAGE_TIME, THIRDWEB_CLIENT_ID } from 'src/constants';
 import { getAppConfig } from 'src/services/app';
 import { getChainIdFromSlug } from 'src/utils/blockchain';
 
@@ -144,7 +144,7 @@ export const getStaticProps = async ({
 
     return {
       props: { dehydratedState: dehydrate(queryClient), ...configResponse },
-      revalidate: 5,
+      revalidate: REVALIDATE_PAGE_TIME,
     };
   }
 };

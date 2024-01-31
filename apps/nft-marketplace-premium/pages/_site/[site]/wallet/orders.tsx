@@ -20,6 +20,7 @@ import type { GetStaticProps, GetStaticPropsContext, NextPage } from 'next';
 import { Suspense, useEffect, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { FormattedMessage } from 'react-intl';
+import { REVALIDATE_PAGE_TIME } from 'src/constants';
 import { NetworkSelectDropdown } from '../../../../src/components/NetworkSelectDropdown';
 import { PageHeader } from '../../../../src/components/PageHeader';
 import SidebarFilters from '../../../../src/components/SidebarFilters';
@@ -262,11 +263,13 @@ export const getStaticProps: GetStaticProps = async ({
 
     return {
       props: { ...configResponse },
+      revalidate: REVALIDATE_PAGE_TIME,
     };
   }
 
   return {
     props: {},
+    revalidate: REVALIDATE_PAGE_TIME,
   };
 };
 

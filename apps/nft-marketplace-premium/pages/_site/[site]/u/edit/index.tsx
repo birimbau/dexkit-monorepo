@@ -54,7 +54,7 @@ export const getServerSideProps: GetServerSideProps = async ({
       ...configResponse,
       // username: params?.username,
     },
-    //revalidate: 3000,
+    revalidate: 3000,
   };
 };
 
