@@ -33,6 +33,7 @@ import * as Yup from 'yup';
 
 import { NETWORKS } from '@dexkit/core/constants/networks';
 import { Network } from '@dexkit/core/types';
+import { useActiveChainIds } from '@dexkit/ui';
 import ImageIcon from '@mui/icons-material/Image';
 import { getNetworks } from 'src/utils/blockchain';
 import MediaDialog from '../../../../components/mediaDialog';
@@ -105,6 +106,7 @@ interface Props {
 }
 
 export default function AddItemForm({ item, onCancel, onSubmit }: Props) {
+  const { activeChainIds } = useActiveChainIds();
   const [itemType, setItemType] = useState<string>(item ? item.type : 'asset');
   const [openMediaDialog, setOpenMediaDialog] = useState(false);
   const [value, setValue] = useState(0);
@@ -282,8 +284,9 @@ export default function AddItemForm({ item, onCancel, onSubmit }: Props) {
                     );
                   }}
                 >
-                  {getNetworks({ includeTestnet: false }).map(
-                    (network: Network, index: number) => (
+                  {getNetworks({ includeTestnet: true })
+                    .filter((n) => activeChainIds.includes(n.chainId))
+                    .map((network: Network, index: number) => (
                       <MenuItem key={index} value={network?.chainId}>
                         <ListItemIcon>
                           <Box
@@ -306,8 +309,7 @@ export default function AddItemForm({ item, onCancel, onSubmit }: Props) {
                         </ListItemIcon>
                         <ListItemText primary={network?.name} />
                       </MenuItem>
-                    ),
-                  )}
+                    ))}
                 </Select>
               </FormControl>
             </Grid>

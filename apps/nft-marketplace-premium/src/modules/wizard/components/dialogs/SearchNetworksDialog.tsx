@@ -1,9 +1,11 @@
 import { AppDialogTitle } from '@dexkit/ui';
 
 import {
+  Avatar,
   Box,
   Button,
   Checkbox,
+  Chip,
   Dialog,
   DialogActions,
   DialogContent,
@@ -12,7 +14,7 @@ import {
   IconButton,
   List,
   ListItem,
-  ListItemButton,
+  ListItemIcon,
   ListItemSecondaryAction,
   ListItemText,
   Skeleton,
@@ -23,6 +25,7 @@ import {
 import { useCallback, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
+import { GET_EVM_CHAIN_IMAGE } from '@dexkit/core/constants/evmChainImages';
 import { EVM_CHAINS } from '@dexkit/evm-chains';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
@@ -30,6 +33,7 @@ import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 interface SearchNetworksDialogProps {
   DialogProps: DialogProps;
   onSelect: (ids: number[]) => void;
+  excludeChainIds: number[];
 }
 
 const PAGE_SIZE = 5;
@@ -37,44 +41,40 @@ const PAGE_SIZE = 5;
 export default function SearchNetworksDialog({
   DialogProps,
   onSelect,
+  excludeChainIds,
 }: SearchNetworksDialogProps) {
   const { onClose } = DialogProps;
-  const [page, setPage] = useState(1);
   const [queryText, setQueryText] = useState('');
-
-  const canPrev = useMemo(() => {
-    return page - 1 > 0;
-  }, [page]);
-
-  const handleNextPage = async () => {};
-
-  const handlePrevPage = async () => {
-    setPage((page) => {
-      if (canPrev) {
-        return page - 1;
-      }
-
-      return page;
-    });
-  };
 
   const [selectedNetworks, setSelectedNetworks] = useState<any[]>([]);
 
+  const networks = useMemo(() => {
+    if (queryText) {
+      return EVM_CHAINS.filter(
+        (c) => !excludeChainIds.includes(c.chainId),
+      ).filter((c) => {
+        return c.name.toLowerCase().includes(queryText.toLowerCase());
+      });
+    }
+
+    return EVM_CHAINS.filter((c) => !excludeChainIds.includes(c.chainId));
+  }, [excludeChainIds]);
+
   const handleToggleNetwork = (network: any) => {
     return () => {
-      if (selectedNetworks.find((n) => n.id === network.id)) {
+      if (selectedNetworks.find((n) => n.chainId === network.chainId)) {
         setSelectedNetworks(
-          selectedNetworks.filter((n) => n.id !== network.id),
+          selectedNetworks.filter((n) => n.chainId !== network.chainId),
         );
       } else {
-        setSelectedNetworks([...selectedNetworks, network]);
+        setSelectedNetworks(selectedNetworks.concat(network));
       }
     };
   };
 
   const isSelected = useCallback(
     (network: any) => {
-      return selectedNetworks.find((n) => n.id === network.id);
+      return selectedNetworks.find((n) => n.chainId === network.chainId);
     },
     [selectedNetworks],
   );
@@ -110,7 +110,7 @@ export default function SearchNetworksDialog({
             />
           </Box>
           <Divider />
-          {false && (
+          {networks && networks.length === 0 && (
             <Stack sx={{ p: 2 }}>
               <Box>
                 <Typography textAlign="center" variant="h5">
@@ -143,14 +143,33 @@ export default function SearchNetworksDialog({
           )}
 
           <List disablePadding>
-            {EVM_CHAINS.map((network, id) => (
-              <ListItemButton key={id} onClick={handleToggleNetwork(network)}>
-                <ListItemText primary={network.name} />
-                <ListItemSecondaryAction>
-                  <Checkbox checked={isSelected(network)} />
-                </ListItemSecondaryAction>
-              </ListItemButton>
-            ))}
+            {EVM_CHAINS.filter((c) => !excludeChainIds.includes(c.chainId)).map(
+              (network, id) => (
+                <ListItem key={id}>
+                  <Stack direction="row" alignItems={'center'}>
+                    <ListItemIcon>
+                      <Avatar
+                        alt={network.name}
+                        src={GET_EVM_CHAIN_IMAGE({ chainId: network.chainId })}
+                      />
+                    </ListItemIcon>
+                    <ListItemText primary={network.name} />
+                    {network?.testnet && (
+                      <ListItemIcon sx={{ pl: 1 }}>
+                        <Chip label={'testnet'} size="small" />
+                      </ListItemIcon>
+                    )}
+                  </Stack>
+                  <ListItemSecondaryAction>
+                    <Checkbox
+                      onClick={handleToggleNetwork(network)}
+                      checked={isSelected(network)}
+                      value={isSelected(network)}
+                    />
+                  </ListItemSecondaryAction>
+                </ListItem>
+              ),
+            )}
           </List>
           <Divider />
           {false && (
@@ -160,10 +179,10 @@ export default function SearchNetworksDialog({
               spacing={2}
               sx={{ p: 2 }}
             >
-              <IconButton disabled={true} onClick={handlePrevPage}>
+              <IconButton disabled={true} onClick={() => {}}>
                 <KeyboardArrowLeftIcon />
               </IconButton>
-              <IconButton disabled={true} onClick={handleNextPage}>
+              <IconButton disabled={true} onClick={() => {}}>
                 <KeyboardArrowRightIcon />
               </IconButton>
             </Stack>

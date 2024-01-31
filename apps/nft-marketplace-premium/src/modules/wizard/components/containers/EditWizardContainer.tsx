@@ -1097,7 +1097,13 @@ export function EditWizardContainer({ site }: Props) {
                   )}
 
                   {activeMenu === ActiveMenu.Networks && config && (
-                    <NetworksWizardContainer siteId={site?.id} />
+                    <NetworksWizardContainer
+                      siteId={site?.id}
+                      config={config}
+                      onSave={handleSave}
+                      onChange={handleChange}
+                      onHasChanges={setHasChanges}
+                    />
                   )}
                 </Stack>
               </SiteWizardProvider>

@@ -4,6 +4,7 @@ import {
   NETWORK_SLUG,
 } from '@dexkit/core/constants/networks';
 import { ipfsUriToUrl, parseChainId } from '@dexkit/core/utils';
+import { useActiveChainIds } from '@dexkit/ui';
 import { hexToString } from '@dexkit/ui/utils';
 import { useAsyncMemo } from '@dexkit/widgets/src/hooks';
 import ExpandMore from '@mui/icons-material/ExpandMore';
@@ -114,6 +115,7 @@ export default function CollectionSectionFormAlt({
   onCancel,
   showSaveButton,
 }: CollectionSectionFormAltProps) {
+  const { activeChainIds } = useActiveChainIds();
   const handleSubmit = (config: Form) => {
     onSave({ type: 'collection', config });
   };
@@ -207,17 +209,19 @@ export default function CollectionSectionFormAlt({
                         );
                       }}
                     >
-                      {networks.map((n) => (
-                        <MenuItem key={n.slug} value={n.slug}>
-                          <ListItemIcon>
-                            <Avatar
-                              src={ipfsUriToUrl(n?.imageUrl || '')}
-                              style={{ width: '1rem', height: '1rem' }}
-                            />
-                          </ListItemIcon>
-                          <ListItemText primary={n.name} />
-                        </MenuItem>
-                      ))}
+                      {networks
+                        .filter((n) => activeChainIds.includes(n.chainId))
+                        .map((n) => (
+                          <MenuItem key={n.slug} value={n.slug}>
+                            <ListItemIcon>
+                              <Avatar
+                                src={ipfsUriToUrl(n?.imageUrl || '')}
+                                style={{ width: '1rem', height: '1rem' }}
+                              />
+                            </ListItemIcon>
+                            <ListItemText primary={n.name} />
+                          </MenuItem>
+                        ))}
                     </Field>
                   </FormControl>
                 </Grid>

@@ -2,6 +2,15 @@ import { ChainId } from "./enums";
 
 export const UNKNOWN_LOGO_URL = "https://raw.githubusercontent.com/DexKit/assets/main/networks/unknown-logo.png";
 
+
+export function GET_EVM_CHAIN_IMAGE({ chainId }: { chainId: number }) {
+
+  console.log(EVM_CHAIN_IMAGES[chainId]?.imageUrl)
+
+  return EVM_CHAIN_IMAGES[chainId]?.imageUrl
+
+}
+
 export const EVM_CHAIN_IMAGES: { [key: number]: { imageUrl?: string, coinImageUrl?: string } } =
 {
 
