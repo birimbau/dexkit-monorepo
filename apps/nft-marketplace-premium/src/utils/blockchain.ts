@@ -4,8 +4,9 @@ import { MetaMask } from '@web3-react/metamask';
 
 import { ChainId } from '@dexkit/core/constants';
 
+import { NETWORKS } from '@dexkit/core/constants/networks';
 import { ethers } from 'ethers';
-import { NETWORKS } from '../constants/chain';
+
 
 export const getNetworks = ({ includeTestnet }: { includeTestnet: boolean }) => {
 
@@ -108,19 +109,19 @@ export function getBlockExplorerUrl(chainId?: number) {
 
 export function getNativeCurrencySymbol(chainId?: number) {
   if (chainId) {
-    return NETWORKS[chainId]?.nativeCurrency?.symbol || NETWORKS[chainId]?.symbol;
+    return NETWORKS[chainId]?.coinSymbol || NETWORKS[chainId]?.symbol;
   }
 }
 
 export function getNativeCurrencyName(chainId?: number) {
   if (chainId) {
-    return NETWORKS[chainId]?.nativeCurrency?.name || NETWORKS[chainId]?.name;
+    return NETWORKS[chainId]?.coinName || NETWORKS[chainId]?.name;
   }
 }
 
 export function getNativeCurrencyImage(chainId?: number) {
   if (chainId) {
-    return NETWORKS[chainId]?.nativeCurrencyUrl || NETWORKS[chainId]?.imageUrl;
+    return NETWORKS[chainId]?.coinImageUrl || NETWORKS[chainId]?.imageUrl;
   }
 }
 

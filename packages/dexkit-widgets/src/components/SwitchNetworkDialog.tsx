@@ -22,6 +22,7 @@ import { parseChainId } from "../utils";
 interface SwitchNetworkDialogProps {
   ListProps?: ListProps;
   DialogProps: DialogProps;
+  activeChainIds: number[];
   onChangeNetwork: (chainId: ChainId) => void;
   chainId?: ChainId;
 }
@@ -29,6 +30,7 @@ interface SwitchNetworkDialogProps {
 function SwitchNetworkDialog({
   ListProps,
   DialogProps,
+  activeChainIds,
   onChangeNetwork,
   chainId,
 }: SwitchNetworkDialogProps) {
@@ -61,6 +63,7 @@ function SwitchNetworkDialog({
       <DialogContent sx={{ p: 0 }}>
         <List {...ListProps}>
           {Object.keys(NETWORKS)
+            .filter((k) => activeChainIds.includes(Number(k)))
             .filter((key) => {
               return !NETWORKS[parseChainId(key)].testnet;
             })

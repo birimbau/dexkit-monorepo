@@ -4,6 +4,7 @@ import type { CellPlugin } from '@react-page/editor';
 
 import ExchangeSettingsForm from '@dexkit/exchange/components/ExchangeSettingsForm';
 import { DexkitExchangeSettings } from '@dexkit/exchange/types';
+import { useActiveChainIds } from '@dexkit/ui';
 import dynamic from 'next/dynamic';
 import { useMemo } from 'react';
 const ExchangeSection = dynamic(() => import('../../sections/ExchangeSection'));
@@ -25,6 +26,7 @@ const ExchangePlugin: CellPlugin<DexkitExchangeSettings> = {
   controls: {
     type: 'custom',
     Component: ({ data, onChange }) => {
+      const { activeChainIds } = useActiveChainIds();
       const { wizardConfig } = useAppWizardConfig();
 
       const tokens = useMemo(() => {
@@ -38,6 +40,7 @@ const ExchangePlugin: CellPlugin<DexkitExchangeSettings> = {
       return (
         <Container sx={{ p: 2 }}>
           <ExchangeSettingsForm
+            activeChainIds={activeChainIds}
             saveOnChange
             settings={Object.keys(data).length > 0 ? data : undefined}
             onCancel={() => {}}

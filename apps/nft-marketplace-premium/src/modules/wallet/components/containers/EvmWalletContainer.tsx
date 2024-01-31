@@ -38,6 +38,7 @@ import FileCopy from '@mui/icons-material/FileCopy';
 import ImportExportIcon from '@mui/icons-material/ImportExport';
 import dynamic from 'next/dynamic';
 
+import { useActiveChainIds } from '@dexkit/ui';
 import Link from 'src/components/Link';
 import { NetworkSelectButton } from 'src/components/NetworkSelectButton';
 import ImportTokenDialog from 'src/components/dialogs/ImportTokenDialog';
@@ -66,7 +67,7 @@ enum WalletTabs {
 
 const EvmWalletContainer = () => {
   const appConfig = useAppConfig();
-
+  const { activeChainIds } = useActiveChainIds();
   const { account, isActive, chainId: walletChainId, ENSName } = useWeb3React();
   const [chainId, setChainId] = useState(walletChainId);
 

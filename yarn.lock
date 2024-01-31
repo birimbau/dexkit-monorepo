@@ -3190,6 +3190,16 @@
     "@devtools-ds/themes" "^1.2.1"
     clsx "1.1.0"
 
+"@dexkit/evm-chains@*":
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/@dexkit/evm-chains/-/evm-chains-1.5.0.tgz#7d7c069c836ed283d1e2f191911c96010aad760b"
+  integrity sha512-SEXaBsGDwP7uNU+nXw16VHtD2Cz8IHW2Tk+OPzAel5rPhxedCWURmCvsLczzAc8d65/jm/xc27MHinKtwwi6nQ==
+
+"@dexkit/evm-chains@^1.6.0":
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/@dexkit/evm-chains/-/evm-chains-1.6.0.tgz#bbf66257a8a12b366ca53fa65969e86a3110561f"
+  integrity sha512-qtt+kMz1xv++6qVG9sMrIMaOah8/8az6/FBXrq9gIfC9KjTUANys6drPxYn1sMKi628eefY06mNwpJX/e4gTGA==
+
 "@discoveryjs/json-ext@^0.5.3":
   version "0.5.7"
   resolved "https://registry.yarnpkg.com/@discoveryjs/json-ext/-/json-ext-0.5.7.tgz#1d572bfbbe14b7704e0ba0f39b74815b84870d70"

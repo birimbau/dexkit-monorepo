@@ -36,6 +36,7 @@
     "@date-io/moment": "^2.13.1",
     "@dexkit/core": "*",
     "@dexkit/ui": "*",
+    "@dexkit/evm-chains": "^1.6.0",
     "@dexkit/wallet-connectors": "*",
     "@dexkit/web3forms": "*",
     "@dexkit/widgets": "*",

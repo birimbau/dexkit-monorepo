@@ -30,6 +30,7 @@ import SwitchNetworkSelect from "../../components/SwitchNetworkSelect";
 import TransakIcon from "../../components/icons/TransakIcon";
 import { ZeroExQuoteResponse } from "../../services/zeroex/types";
 import SwapFeeSummary from "./SwapFeeSummary";
+import { SUPPORTED_SWAP_CHAIN_IDS } from "./constants/supportedChainIds";
 
 // @ts-ignore
 
@@ -61,6 +62,7 @@ export interface SwapProps {
   enableBuyCryptoButton?: boolean;
   disableFooter?: boolean;
   networkName?: string;
+  activeChainIds: number[];
   onSelectToken: (selectFor: SwapSide, token?: Token) => void;
   onSwapTokens: () => void;
   onChangeSellAmount: (value: BigNumber, clickOnMax?: boolean) => void;
@@ -107,6 +109,7 @@ export default function Swap({
   onShowSettings,
   onShowTransactions,
   onExec,
+  activeChainIds,
   onShowTransak,
   onToggleChangeNetwork,
 }: SwapProps) {
@@ -141,6 +144,11 @@ export default function Swap({
       />
     ) : execType === "approve" ? (
       <FormattedMessage id="approve" defaultMessage="Approve" />
+    ) : execType === "network_not_supported" ? (
+      <FormattedMessage
+        id="network_not_supported"
+        defaultMessage="Network not supported"
+      />
     ) : (
       <FormattedMessage id="swap" defaultMessage="Swap" />
     );
@@ -151,15 +159,17 @@ export default function Swap({
   return (
     <Card>
       <Box sx={{ p: 2 }}>
-        {chainId && NETWORKS[chainId] === undefined && (
+        {chainId && !SUPPORTED_SWAP_CHAIN_IDS.includes(chainId) && (
           <Alert severity="warning">
             <FormattedMessage
               id="network.not.supported.msg"
               defaultMessage="Network not supported. Please change to a supported network: {networks}"
               values={{
-                networks: Object.values(NETWORKS).map((n, index, arr) =>
-                  index !== arr.length - 1 ? ` ${n.name},` : ` ${n.name}.`
-                ),
+                networks: Object.values(NETWORKS)
+                  .filter((n) => SUPPORTED_SWAP_CHAIN_IDS.includes(n.chainId))
+                  .map((n, index, arr) =>
+                    index !== arr.length - 1 ? ` ${n.name},` : ` ${n.name}.`
+                  ),
               }}
             />
           </Alert>
@@ -195,6 +205,7 @@ export default function Swap({
               ) : (
                 <SwitchNetworkSelect
                   chainId={chainId}
+                  activeChainIds={activeChainIds}
                   onChangeNetwork={onChangeNetwork}
                   SelectProps={{ size: "small" }}
                 />

@@ -60,14 +60,14 @@ export const useCoinPricesQuery = ({
 
       if (includeNative) {
         const activeNetwork = NETWORKS[chain];
-        if (activeNetwork && activeNetwork.coingeckoId) {
+        if (activeNetwork && activeNetwork.coingeckoPlatformId) {
           const nativePrice = await getCoinPrices({
-            coingeckoIds: [activeNetwork.coingeckoId],
+            coingeckoIds: [activeNetwork.coingeckoPlatformId],
             currency,
           });
-          if (nativePrice[`${activeNetwork.coingeckoId}`]) {
+          if (nativePrice[`${activeNetwork.coingeckoPlatformId}`]) {
             prices[ZEROEX_NATIVE_TOKEN_ADDRESS] =
-              nativePrice[`${activeNetwork.coingeckoId}`];
+              nativePrice[`${activeNetwork.coingeckoPlatformId}`];
           }
         }
       }
@@ -134,13 +134,13 @@ export const useNativeCoinPriceQuery = (defaultChainId?: number) => {
       }
 
       const activeNetwork = NETWORKS[chainId];
-      if (activeNetwork && activeNetwork.coingeckoId) {
+      if (activeNetwork && activeNetwork.coingeckoPlatformId) {
         const nativePrice = await getCoinPrices({
-          coingeckoIds: [activeNetwork.coingeckoId],
+          coingeckoIds: [activeNetwork.coingeckoPlatformId],
           currency,
         });
-        if (nativePrice[`${activeNetwork.coingeckoId}`]) {
-          return nativePrice[`${activeNetwork.coingeckoId}`][currency];
+        if (nativePrice[`${activeNetwork.coingeckoPlatformId}`]) {
+          return nativePrice[`${activeNetwork.coingeckoPlatformId}`][currency];
         }
       }
     },

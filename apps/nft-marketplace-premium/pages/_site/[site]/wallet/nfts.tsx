@@ -83,14 +83,16 @@ const WalletNFTsPage: NextPage = () => {
 
   return (
     <>
-      <ImportAssetDialog
-        dialogProps={{
-          open: showImportAsset,
-          fullWidth: true,
-          maxWidth: 'xs',
-          onClose: handleToggleImportAsset,
-        }}
-      />
+      {showImportAsset && (
+        <ImportAssetDialog
+          dialogProps={{
+            open: showImportAsset,
+            fullWidth: true,
+            maxWidth: 'xs',
+            onClose: handleToggleImportAsset,
+          }}
+        />
+      )}
       {renderDrawer()}
       <MainLayout noSsr>
         <Container>

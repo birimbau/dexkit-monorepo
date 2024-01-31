@@ -1,5 +1,6 @@
 import { SwapConfig } from '@/modules/swap/types';
 import { ChainId } from '@dexkit/core';
+import { useActiveChainIds } from '@dexkit/ui';
 import { SwapWidget as Swap } from '@dexkit/widgets/src/widgets/swap';
 import React, { useEffect, useState } from 'react';
 import { useCurrency } from 'src/hooks/currency';
@@ -11,6 +12,7 @@ interface Props {
 }
 
 function SwapWidget(props: Props) {
+  const { activeChainIds } = useActiveChainIds();
   const { isEditMode, formData } = props;
   const defaultChainId = formData?.defaultChainId;
   const configByChain = formData?.configByChain;
@@ -30,8 +32,10 @@ function SwapWidget(props: Props) {
   return (
     <Swap
       {...swapState}
+      activeChainIds={activeChainIds}
       renderOptions={{
         ...swapState.renderOptions,
+
         configsByChain: configByChain ? configByChain : {},
         defaultChainId: chainId || ChainId.Ethereum,
         currency,

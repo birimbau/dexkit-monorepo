@@ -1,3 +1,4 @@
+import { useActiveChainIds } from '@dexkit/ui';
 import {
   Box,
   Button,
@@ -33,6 +34,7 @@ import { getAppConfig } from '../../../../src/services/app';
 
 const WalletOrder: NextPage = () => {
   const { chainId: walletChainId } = useWeb3React();
+  const {activeChainIds} = useActiveChainIds();
   const [chainId, setChainId] = useState(walletChainId);
   const [sellOrBuy, setSellOrBuy] = useState<SellOrBuy>(SellOrBuy.All);
   const [orderStatus, setOrderStatus] = useState<TraderOrderStatus>(
@@ -70,6 +72,7 @@ const WalletOrder: NextPage = () => {
             </Typography>
             <NetworkSelectDropdown
               chainId={chainId}
+              activeChainIds={activeChainIds}
               onChange={(newChain) => setChainId(newChain)}
             />
 

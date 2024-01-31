@@ -48,6 +48,7 @@ import {
 
 import { ChainId } from '@dexkit/core/constants';
 import { omitNull } from '@dexkit/core/utils';
+import { useActiveChainIds } from '@dexkit/ui';
 import { getCollectionData } from '@dexkit/ui/modules/nft/services';
 import { hexToString } from '@dexkit/ui/utils';
 import { ThirdwebSDK } from '@thirdweb-dev/sdk';
@@ -965,6 +966,7 @@ export function useAccountAssetsBalance(
   useSuspense = true,
 ) {
   const [accountAssets, setAccountAssets] = useAtom(accountAssetsAtom);
+  const { activeChainIds } = useActiveChainIds();
 
   const accountAssetsQuery = useQuery(
     [GET_ACCOUNTS_ASSETS, accounts],
@@ -985,6 +987,7 @@ export function useAccountAssetsBalance(
         return false;
       }
       const networks = Object.values(NETWORKS)
+        .filter(n => activeChainIds.includes(n.chainId))
         .filter((n) => !n.testnet)
         .map((n) => n.slug)
         .join(',');

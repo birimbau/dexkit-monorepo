@@ -35,7 +35,11 @@ import {
   parseChainId,
   truncateAddress,
 } from '@dexkit/core/utils';
-import { AppDialogTitle, useSwitchNetworkMutation } from '@dexkit/ui';
+import {
+  AppDialogTitle,
+  useActiveChainIds,
+  useSwitchNetworkMutation,
+} from '@dexkit/ui';
 import useThirdwebContractMetadataQuery, {
   useDeployThirdWebContractMutation,
   useFormConfigParamsQuery,
@@ -51,6 +55,7 @@ import { THIRDWEB_CLIENT_ID } from 'src/constants';
 
 export default function DeployPage() {
   const { chainId } = useWeb3React();
+  const { activeChainIds } = useActiveChainIds();
 
   const { query } = useRouter();
 
@@ -459,6 +464,7 @@ export default function DeployPage() {
                       onChange={handleChangeChainId}
                     >
                       {Object.keys(NETWORKS)
+                        .filter((k) => activeChainIds.includes(Number(k)))
                         .map((key) => NETWORKS[parseChainId(key)])
                         .map((network) => (
                           <MenuItem

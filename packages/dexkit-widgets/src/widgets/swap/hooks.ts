@@ -43,6 +43,7 @@ import { isAddressEqual, switchNetwork } from "../../utils";
 import { ExecType, NotificationCallbackParams, SwapSide } from "./types";
 
 import { SiteContext } from "@dexkit/ui/providers/SiteProvider";
+import { SUPPORTED_SWAP_CHAIN_IDS } from "./constants/supportedChainIds";
 
 export function useErc20ApproveMutation({
   options,
@@ -146,15 +147,15 @@ export function useSwapQuote({
   const refetchParams =
     params.quoteFor === "buy"
       ? {
-          sellToken: params.sellToken,
-          buyToken: params.buyToken,
-          buyTokenAmount: params.buyTokenAmount,
-        }
+        sellToken: params.sellToken,
+        buyToken: params.buyToken,
+        buyTokenAmount: params.buyTokenAmount,
+      }
       : {
-          sellToken: params.sellToken,
-          sellTokenAmount: params.sellTokenAmount,
-          buyToken: params.buyToken,
-        };
+        sellToken: params.sellToken,
+        sellTokenAmount: params.sellTokenAmount,
+        buyToken: params.buyToken,
+      };
 
   const { siteId } = useContext(SiteContext);
 
@@ -391,7 +392,7 @@ export function useSwapState({
 
   useEffect(() => {
     if (transak) {
-      let allEventsCallback = transak.on(transak.ALL_EVENTS, (data: any) => {});
+      let allEventsCallback = transak.on(transak.ALL_EVENTS, (data: any) => { });
 
       // This will trigger when the user closed the widget
       let widgetCloseCallback = transak.on(
@@ -634,6 +635,11 @@ export function useSwapState({
         return "switch";
       }
 
+      if (chainId && !SUPPORTED_SWAP_CHAIN_IDS.includes(chainId as unknown as number)) {
+        return 'network_not_supported'
+      }
+
+
       const isBuyTokenWrapped =
         lazyBuyToken &&
         chainId &&
@@ -669,12 +675,12 @@ export function useSwapState({
 
       result =
         isBuyTokenWrapped &&
-        isAddressEqual(lazySellToken?.address, ZEROEX_NATIVE_TOKEN_ADDRESS)
+          isAddressEqual(lazySellToken?.address, ZEROEX_NATIVE_TOKEN_ADDRESS)
           ? "wrap"
           : isSellTokenWrapped &&
             isAddressEqual(lazyBuyToken?.address, ZEROEX_NATIVE_TOKEN_ADDRESS)
-          ? "unwrap"
-          : "swap";
+            ? "unwrap"
+            : "swap";
 
       return result;
     },
@@ -716,17 +722,17 @@ export function useSwapState({
             {
               quote: data,
               provider: connectorProvider as providers.Web3Provider,
-              onHash: (hash: string) => {},
+              onHash: (hash: string) => { },
               sellToken,
               buyToken,
             },
             {
-              onSuccess: (receipt: ethers.providers.TransactionReceipt) => {},
+              onSuccess: (receipt: ethers.providers.TransactionReceipt) => { },
               onError,
             }
           );
         }
-      } catch (err: unknown) {}
+      } catch (err: unknown) { }
     }
   };
 
@@ -748,10 +754,10 @@ export function useSwapState({
         {
           provider: connectorProvider as providers.Web3Provider,
           amount: lazySellAmount,
-          onHash: (hash: string) => {},
+          onHash: (hash: string) => { },
         },
         {
-          onSuccess: (receipt: ethers.providers.TransactionReceipt) => {},
+          onSuccess: (receipt: ethers.providers.TransactionReceipt) => { },
         }
       );
     } else if (execType === "approve" && quoteQuery.data) {
@@ -767,7 +773,7 @@ export function useSwapState({
             token: sellToken,
           },
           {
-            onSuccess: () => {},
+            onSuccess: () => { },
           }
         );
       }
@@ -776,7 +782,7 @@ export function useSwapState({
         {
           provider: connectorProvider as providers.Web3Provider,
           amount: lazySellAmount,
-          onHash: (hash: string) => {},
+          onHash: (hash: string) => { },
         },
         {
           onSuccess: (receipt: ethers.providers.TransactionReceipt) => {

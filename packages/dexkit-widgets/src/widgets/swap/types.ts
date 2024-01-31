@@ -16,7 +16,10 @@ export type ExecType =
   | "unwrap"
   | "approve"
   | "quote"
-  | "switch";
+  | "switch"
+  | "network_not_supported"
+
+  ;
 
 export type SwapState = {
   chainId?: ChainId;

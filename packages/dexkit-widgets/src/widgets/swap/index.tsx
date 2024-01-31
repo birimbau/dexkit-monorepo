@@ -21,6 +21,7 @@ import { NETWORKS } from "@dexkit/core/constants/networks";
 import { Token } from "@dexkit/core/types";
 import SwitchNetworkDialog from "../../components/SwitchNetworkDialog";
 import SwapSelectCoinDialog from "./SwapSelectCoinDialog";
+import { SUPPORTED_SWAP_CHAIN_IDS } from "./constants/supportedChainIds";
 import {
   useErc20ApproveMutation,
   useSwapExec,
@@ -32,6 +33,7 @@ import { convertOldTokenToNew } from "./utils";
 
 export interface SwapWidgetProps {
   renderOptions: RenderOptions;
+  activeChainIds: number[];
   onNotification: ({
     title,
     hash,
@@ -61,6 +63,7 @@ export function SwapWidget({
   isAutoSlippage,
   onChangeSlippage,
   onAutoSlippage,
+  activeChainIds,
 }: SwapWidgetProps) {
   const {
     provider,
@@ -236,6 +239,10 @@ export function SwapWidget({
     setShowSwitchNetwork((value) => !value);
   };
 
+  const filteredChainIds = useMemo(() => {
+    return activeChainIds.filter((k) => SUPPORTED_SWAP_CHAIN_IDS.includes(k));
+  }, [activeChainIds]);
+
   return (
     <>
       {chainId && (
@@ -260,6 +267,7 @@ export function SwapWidget({
       )}
       <SwitchNetworkDialog
         onChangeNetwork={handleChangeNetwork}
+        activeChainIds={filteredChainIds}
         DialogProps={{
           open: showSwitchNetwork,
           maxWidth: "xs",
@@ -299,6 +307,7 @@ export function SwapWidget({
         currency={currency}
         disableNotificationsButton={disableNotificationsButton}
         chainId={chainId}
+        activeChainIds={filteredChainIds}
         quoteFor={quoteFor}
         clickOnMax={clickOnMax}
         isActive={isActive && !disableWallet}

@@ -17,11 +17,12 @@ import {
 
 import { FormattedMessage } from 'react-intl';
 import { NETWORKS } from '../../../../constants/chain';
-import { Network } from '../../../../types/chains';
 import { ipfsUriToUrl } from '../../../../utils/ipfs';
 
 import { FormikHelpers, useFormik } from 'formik';
 
+import { Network } from '@dexkit/core/types';
+import { useActiveChainIds } from '@dexkit/ui';
 import { ethers } from 'ethers';
 import { useState } from 'react';
 import * as Yup from 'yup';
@@ -67,6 +68,8 @@ export default function CollectionsSectionForm({
   onCancel,
   initialValues,
 }: Props) {
+  const { activeChainIds } = useActiveChainIds();
+
   const [openMediaDialog, setOpenMediaDialog] = useState(false);
   const [mediaFieldToEdit, setMediaFieldToEdit] = useState<string>();
 
@@ -148,7 +151,7 @@ export default function CollectionsSectionForm({
               )}
             >
               {Object.keys(NETWORKS)
-                //.filter((k) => !NETWORKS[parseInt(k)].testnet)
+                .filter((k) => activeChainIds.includes(Number(k)))
                 .map((key: any, index: number) => (
                   <MenuItem
                     key={index}

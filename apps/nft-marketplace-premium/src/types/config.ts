@@ -108,6 +108,7 @@ export interface AppConfig {
   name: string;
   locale?: string;
   hide_powered_by?: boolean;
+  activeChainIds?: number[];
   font?: {
     family: string;
     category?: string;
