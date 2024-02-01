@@ -126,6 +126,7 @@ export interface AppConfig {
     family: string;
     category?: string;
   }
+  activeChainIds?: number[];
   defaultThemeMode?: ThemeMode;
   theme: string;
   customTheme?: string;

@@ -2,6 +2,7 @@ import SendContainer from '@/modules/wallet/components/containers/SendContainer'
 import type { GetStaticProps, GetStaticPropsContext, NextPage } from 'next';
 
 import MainLayout from 'src/components/layouts/main';
+import { REVALIDATE_PAGE_TIME } from 'src/constants';
 import { getAppConfig } from 'src/services/app';
 
 const Send: NextPage = () => {
@@ -22,11 +23,13 @@ export const getStaticProps: GetStaticProps = async ({
 
     return {
       props: { ...configResponse },
+      revalidate: REVALIDATE_PAGE_TIME,
     };
   }
 
   return {
     props: {},
+    revalidate: REVALIDATE_PAGE_TIME,
   };
 };
 

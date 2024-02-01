@@ -57,6 +57,10 @@ import { WelcomeMessage } from '../WelcomeMessage';
 import SignConfigDialog from '../dialogs/SignConfigDialog';
 import RankingWizardContainer from './RankingWizardContainer';
 
+const NetworksWizardContainer = dynamic(
+  () => import('./NetworksWizardContainer'),
+);
+
 const IntegrationsWizardContainer = dynamic(
   () => import('./IntegrationsWizardContainer'),
 );
@@ -124,6 +128,7 @@ export enum ActiveMenu {
   Ownership = 'ownership',
   Integrations = 'integrations',
   Rankings = 'rankings',
+  Networks = 'networks',
 }
 
 function TourButton() {
@@ -620,6 +625,21 @@ export function EditWizardContainer({ site }: Props) {
                   />
                 </ListItemButton>
               </ListItem>
+              <ListItem disablePadding>
+                <ListItemButton
+                  selected={activeMenu === ActiveMenu.Networks}
+                  onClick={() => handleChangeTab(ActiveMenu.Networks)}
+                >
+                  <ListItemText
+                    primary={
+                      <FormattedMessage
+                        id="networks"
+                        defaultMessage="Networks"
+                      />
+                    }
+                  />
+                </ListItemButton>
+              </ListItem>
             </List>
           </Collapse>
         </List>
@@ -1099,6 +1119,16 @@ export function EditWizardContainer({ site }: Props) {
 
                   {activeMenu === ActiveMenu.Integrations && config && (
                     <IntegrationsWizardContainer siteId={site?.id} />
+                  )}
+
+                  {activeMenu === ActiveMenu.Networks && config && (
+                    <NetworksWizardContainer
+                      siteId={site?.id}
+                      config={config}
+                      onSave={handleSave}
+                      onChange={handleChange}
+                      onHasChanges={setHasChanges}
+                    />
                   )}
                 </Stack>
               </SiteWizardProvider>

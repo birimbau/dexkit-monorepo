@@ -38,6 +38,7 @@ import SidebarFilters from 'src/components/SidebarFilters';
 import SidebarFiltersContent from 'src/components/SidebarFiltersContent';
 import Funnel from 'src/components/icons/Filter';
 import MainLayout from 'src/components/layouts/main';
+import { REVALIDATE_PAGE_TIME } from 'src/constants';
 import { CollectionSyncStatus, NETWORK_ID } from 'src/constants/enum';
 import {
   MAP_COIN_TO_RARIBLE,
@@ -363,7 +364,7 @@ export const getStaticProps: GetStaticProps = async ({
 
   return {
     props: { dehydratedState: dehydrate(queryClient), ...configResponse },
-    revalidate: 60,
+    revalidate: REVALIDATE_PAGE_TIME,
   };
 };
 export async function getStaticPaths() {

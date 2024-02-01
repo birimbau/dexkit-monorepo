@@ -1,6 +1,7 @@
 import { Token as AppToken, TokenWhitelabelApp } from '@dexkit/core/types';
 import ExchangeSettingsForm from '@dexkit/exchange/components/ExchangeSettingsForm';
 import { DexkitExchangeSettings } from '@dexkit/exchange/types';
+import { useActiveChainIds } from '@dexkit/ui/hooks';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
@@ -31,6 +32,8 @@ export default function ExchangeWizardContainer({
   isOnStepper,
   stepperButtonProps,
 }: Props) {
+  const {activeChainIds} = useActiveChainIds();
+
   const [exchangeFormData, setExchangeFormData] = useState<
     DexkitExchangeSettings | undefined
   >(
@@ -128,6 +131,7 @@ export default function ExchangeWizardContainer({
       <Grid item xs={12}>
         <ExchangeSettingsForm
           onCancel={() => {}}
+          activeChainIds={activeChainIds}
           saveOnChange
           onChange={handleOnChange}
           onSave={handleOnChange}

@@ -23,7 +23,7 @@ import { NextSeo } from 'next-seo';
 import { FormattedMessage } from 'react-intl';
 import MainLayout from 'src/components/layouts/main';
 import { PageHeader } from 'src/components/PageHeader';
-import { THIRDWEB_CLIENT_ID } from 'src/constants';
+import { REVALIDATE_PAGE_TIME, THIRDWEB_CLIENT_ID } from 'src/constants';
 import { NETWORK_ID } from 'src/constants/enum';
 import { MAP_NETWORK_TO_RARIBLE } from 'src/constants/marketplaces';
 import { BEST_SELL_ORDER_RARIBLE } from 'src/hooks/nft';
@@ -189,12 +189,13 @@ export const getStaticProps: GetStaticProps = async ({
 
     return {
       props: { dehydratedState: dehydrate(queryClient), ...configResponse },
-      revalidate: 5,
+      revalidate: REVALIDATE_PAGE_TIME,
     };
   }
 
   return {
     props: {},
+    revalidate: REVALIDATE_PAGE_TIME,
   };
 };
 

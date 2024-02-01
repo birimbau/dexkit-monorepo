@@ -23,10 +23,12 @@ import { DexkitExchangeSettings } from "../../types";
 
 export interface SelectNetworksDialogProps {
   DialogProps: DialogProps;
+  activeChainIds: number[];
 }
 
 export default function SelectNetworksDialog({
   DialogProps,
+  activeChainIds,
 }: SelectNetworksDialogProps) {
   const { onClose } = DialogProps;
   const { values, setFieldValue } = useFormikContext<DexkitExchangeSettings>();
@@ -72,22 +74,26 @@ export default function SelectNetworksDialog({
       <Divider />
       <DialogContent sx={{ p: 0 }}>
         <List disablePadding>
-          {Object.keys(NETWORKS).map((key) => (
-            <ListItem divider key={key}>
-              <ListItemAvatar>
-                <Avatar
-                  src={ipfsUriToUrl(NETWORKS[parseChainId(key)].imageUrl || "")}
-                />
-              </ListItemAvatar>
-              <ListItemText primary={NETWORKS[parseChainId(key)].name} />
-              <ListItemSecondaryAction>
-                <Checkbox
-                  onClick={handleToggleChain(parseChainId(key))}
-                  checked={values.availNetworks.includes(parseChainId(key))}
-                />
-              </ListItemSecondaryAction>
-            </ListItem>
-          ))}
+          {Object.keys(NETWORKS)
+            .filter((k) => activeChainIds.includes(Number(k)))
+            .map((key) => (
+              <ListItem divider key={key}>
+                <ListItemAvatar>
+                  <Avatar
+                    src={ipfsUriToUrl(
+                      NETWORKS[parseChainId(key)].imageUrl || ""
+                    )}
+                  />
+                </ListItemAvatar>
+                <ListItemText primary={NETWORKS[parseChainId(key)].name} />
+                <ListItemSecondaryAction>
+                  <Checkbox
+                    onClick={handleToggleChain(parseChainId(key))}
+                    checked={values.availNetworks.includes(parseChainId(key))}
+                  />
+                </ListItemSecondaryAction>
+              </ListItem>
+            ))}
         </List>
       </DialogContent>
     </Dialog>

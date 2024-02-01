@@ -33,6 +33,7 @@
   },
   "dependencies": {
     "@dexkit/core": "*",
+    "@dexkit/evm-chains": "*",
     "@dexkit/wallet-connectors": "*",
     "@mui/x-data-grid": "^6.16.1",
     "@transak/transak-sdk": "^1.3.0",

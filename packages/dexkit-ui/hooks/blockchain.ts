@@ -9,8 +9,10 @@ import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "@dexkit/core/constants/zrx";
 import { EvmCoin, TokenWhitelabelApp } from "@dexkit/core/types";
 import { convertTokenToEvmCoin } from "@dexkit/core/utils";
 import { useWeb3React } from "@web3-react/core";
-import { useMemo } from "react";
+import { useContext, useMemo } from "react";
 import { useAppConfig, useDexKitContext } from ".";
+import { AdminContext } from "../context/AdminContext";
+import { DexKitContext } from "../context/DexKitContext";
 
 export function useTokenList({
   chainId,
@@ -114,4 +116,19 @@ export function useEvmCoins({
   const tokens = useTokenList({ chainId, includeNative: true });
 
   return useMemo(() => tokens.map(convertTokenToEvmCoin), [tokens]);
+}
+
+
+export function useActiveChainIds() {
+  // If this editAppConfig exists, it means we are inside Edit Wizard, we on this case use the chainIds that the user had activated
+  const { editAppConfig } = useContext(AdminContext);
+  if (editAppConfig && editAppConfig.activeChainIds) {
+    return { activeChainIds: editAppConfig.activeChainIds }
+  }
+
+
+  const activeChainIds = useContext(DexKitContext).activeChainIds;
+  return { activeChainIds };
+
+
 }

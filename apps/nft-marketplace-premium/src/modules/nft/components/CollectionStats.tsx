@@ -1,7 +1,6 @@
 import { Typography, useMediaQuery, useTheme } from '@mui/material';
 import Stack from '@mui/material/Stack';
 import { FormattedMessage } from 'react-intl';
-import { NETWORK_ID } from '../../../constants/enum';
 import { MAP_COIN_TO_RARIBLE } from '../../../constants/marketplaces';
 import { useCollectionStats } from '../../../hooks/collection';
 
@@ -19,7 +18,7 @@ export function CollectionStats(props: Props) {
       <Stack direction={'row'} spacing={4}>
         <Stack>
           <Typography variant="h6">
-            {collectionStats.data?.volume}{' '}
+            {parseFloat((collectionStats.data?.volume || 0).toFixed(3))}{' '}
             {props?.network && MAP_COIN_TO_RARIBLE[props.network]}
           </Typography>
           <Typography variant={'caption'}>
@@ -31,7 +30,7 @@ export function CollectionStats(props: Props) {
         </Stack>
         <Stack>
           <Typography variant="h6">
-            {collectionStats.data?.highestSale}{' '}
+            {parseFloat((collectionStats.data?.highestSale || 0).toFixed(3))}{' '}
             {props?.network && MAP_COIN_TO_RARIBLE[props?.network]}
           </Typography>
           <Typography variant={'caption'}>
@@ -43,7 +42,7 @@ export function CollectionStats(props: Props) {
         </Stack>
         <Stack>
           <Typography variant="h6">
-            {collectionStats.data?.marketCap}{' '}
+            {parseFloat((collectionStats.data?.marketCap || 0).toFixed(3))}{' '}
             {props?.network && MAP_COIN_TO_RARIBLE[props?.network]}
           </Typography>
           <Typography variant={'caption'}>
@@ -64,7 +63,7 @@ export function CollectionStats(props: Props) {
         </Stack>
         <Stack>
           <Typography variant="h6">
-            {collectionStats.data?.floorPrice}{' '}
+            {parseFloat((collectionStats.data?.floorPrice || 0).toFixed(3))}{' '}
             {props?.network && MAP_COIN_TO_RARIBLE[props?.network]}
           </Typography>
           <Typography variant={'caption'}>
@@ -79,7 +78,7 @@ export function CollectionStats(props: Props) {
       <Stack direction={'row'} spacing={4}>
         <Stack>
           <Typography variant="h6">
-            {collectionStats.data?.volume}{' '}
+            {parseFloat((collectionStats.data?.volume || 0).toFixed(3))}{' '}
             {props?.network && MAP_COIN_TO_RARIBLE[props?.network]}
           </Typography>
           <Typography variant={'caption'}>
@@ -91,7 +90,7 @@ export function CollectionStats(props: Props) {
         </Stack>
         <Stack>
           <Typography variant="h6">
-            {collectionStats.data?.marketCap}{' '}
+            {parseFloat((collectionStats.data?.marketCap || 0).toFixed(3))}{' '}
             {props?.network && MAP_COIN_TO_RARIBLE[props?.network]}
           </Typography>
           <Typography variant={'caption'}>
@@ -100,7 +99,7 @@ export function CollectionStats(props: Props) {
         </Stack>
         <Stack>
           <Typography variant="h6">
-            {collectionStats.data?.floorPrice}{' '}
+            {parseFloat((collectionStats.data?.floorPrice || 0).toFixed(3))}{' '}
             {props?.network && MAP_COIN_TO_RARIBLE[props?.network]}
           </Typography>
           <Typography variant={'caption'}>

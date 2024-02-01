@@ -32,7 +32,9 @@ import { ethers } from 'ethers';
 import { useSnackbar } from 'notistack';
 import { useDebounce } from '../../hooks/misc';
 import { tokensAtom } from '../../state/atoms';
-import { Network } from '../../types/chains';
+
+import { Network } from '@dexkit/core/types';
+import { useActiveChainIds } from '@dexkit/ui';
 import { isAddressEqual } from '../../utils/blockchain';
 import { ipfsUriToUrl } from '../../utils/ipfs';
 
@@ -62,6 +64,7 @@ const FormSchema: Yup.SchemaOf<Form> = Yup.object().shape({
 });
 
 function ImportTokenDialog({ dialogProps }: Props) {
+  const { activeChainIds } = useActiveChainIds();
   const { onClose } = dialogProps;
   const { chainId } = useWeb3React();
 
@@ -75,7 +78,7 @@ function ImportTokenDialog({ dialogProps }: Props) {
       const token = tokens.find(
         (t) =>
           t.chainId === values.chainId &&
-          isAddressEqual(values.contractAddress, t.address)
+          isAddressEqual(values.contractAddress, t.address),
       );
 
       if (!token) {
@@ -102,7 +105,7 @@ function ImportTokenDialog({ dialogProps }: Props) {
               vertical: 'bottom',
               horizontal: 'right',
             },
-          }
+          },
         );
       }
 
@@ -112,7 +115,7 @@ function ImportTokenDialog({ dialogProps }: Props) {
         onClose({}, 'escapeKeyDown');
       }
     },
-    [tokens, enqueueSnackbar, onClose]
+    [tokens, enqueueSnackbar, onClose],
   );
 
   const formik = useFormik<Form>({
@@ -173,7 +176,7 @@ function ImportTokenDialog({ dialogProps }: Props) {
       const token = tokens.find(
         (t) =>
           t.chainId === formik.values.chainId &&
-          isAddressEqual(lazyAddress, t.address)
+          isAddressEqual(lazyAddress, t.address),
       );
 
       if (token) {
@@ -182,7 +185,7 @@ function ImportTokenDialog({ dialogProps }: Props) {
           formatMessage({
             id: 'token.already.imported',
             defaultMessage: 'Token already imported',
-          })
+          }),
         );
       } else {
         tokenData.mutate({
@@ -228,7 +231,7 @@ function ImportTokenDialog({ dialogProps }: Props) {
                   >
                     <Avatar
                       src={ipfsUriToUrl(
-                        NETWORKS[formik.values.chainId].imageUrl || ''
+                        NETWORKS[formik.values.chainId].imageUrl || '',
                       )}
                       style={{ width: 'auto', height: '1rem' }}
                     />
@@ -240,6 +243,7 @@ function ImportTokenDialog({ dialogProps }: Props) {
               }}
             >
               {Object.keys(NETWORKS)
+                .filter((k) => activeChainIds.includes(Number(k)))
                 .filter((key) => !NETWORKS[Number(key)].testnet)
                 .map((key: any, index: number) => (
                   <MenuItem key={index} value={key}>
@@ -255,7 +259,7 @@ function ImportTokenDialog({ dialogProps }: Props) {
                       >
                         <Avatar
                           src={ipfsUriToUrl(
-                            (NETWORKS[key] as Network)?.imageUrl || ''
+                            (NETWORKS[key] as Network)?.imageUrl || '',
                           )}
                           sx={{
                             width: 'auto',

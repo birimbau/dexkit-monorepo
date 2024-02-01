@@ -3,6 +3,7 @@ import { getContractImplementation } from '@/modules/wizard/services';
 import { ChainId } from '@dexkit/core';
 import { NETWORKS } from '@dexkit/core/constants/networks';
 import { parseChainId } from '@dexkit/core/utils';
+import { useActiveChainIds } from '@dexkit/ui';
 import { AbiFragment, ContractFormParams } from '@dexkit/web3forms/types';
 import { useAsyncMemo } from '@dexkit/widgets/src/hooks';
 import {
@@ -28,6 +29,7 @@ export interface Props {
 
 function ContractInitialForm({ abi, chainId, fetchOnMount }: Props) {
   const { values } = useFormikContext<ContractFormParams>();
+  const { activeChainIds } = useActiveChainIds();
 
   const rpcJsonQuery = useJsonRpcProvider({ chainId: values.chainId });
 
@@ -46,7 +48,7 @@ function ContractInitialForm({ abi, chainId, fetchOnMount }: Props) {
       return false;
     },
     false,
-    [values.contractAddress, rpcJsonQuery.data]
+    [values.contractAddress, rpcJsonQuery.data],
   );
 
   return (
@@ -80,11 +82,13 @@ function ContractInitialForm({ abi, chainId, fetchOnMount }: Props) {
             label={<FormattedMessage id="network" defaultMessage="Network" />}
             fullWidth
           >
-            {Object.keys(NETWORKS).map((key) => (
-              <MenuItem key={key} value={key}>
-                {NETWORKS[parseChainId(key)].name}
-              </MenuItem>
-            ))}
+            {Object.keys(NETWORKS)
+              .filter((n) => activeChainIds.includes(Number(n)))
+              .map((key) => (
+                <MenuItem key={key} value={key}>
+                  {NETWORKS[parseChainId(key)].name}
+                </MenuItem>
+              ))}
           </Field>
         </FormControl>
       </Grid>

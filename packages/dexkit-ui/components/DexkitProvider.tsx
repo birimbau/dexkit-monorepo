@@ -27,6 +27,7 @@ export interface DexkitProviderProps {
   };
   affiliateReferral?: string;
   locale: string;
+  activeChainIds?: number[];
   defaultLocale?: string;
   onChangeLocale: (locale: string) => void;
   notificationTypes: { [key: string]: AppNotificationType };
@@ -70,6 +71,7 @@ export function DexkitProvider({
   notificationTypes,
   notificationsAtom,
   userEventsURL,
+  activeChainIds,
   siteId,
 }: DexkitProviderProps) {
   const connectors = useOrderedConnectors({ selectedWalletAtom });
@@ -92,7 +94,13 @@ export function DexkitProvider({
 
   return (
     <DexKitContext.Provider
-      value={{ ...appState, userEventURL: userEventsURL, siteId: siteId, affiliateReferral }}
+      value={{
+        ...appState,
+        userEventURL: userEventsURL,
+        siteId: siteId,
+        affiliateReferral,
+        activeChainIds: activeChainIds ? activeChainIds : [1],
+      }}
     >
       <IntlProvider
         locale={locale}

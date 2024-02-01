@@ -22,12 +22,14 @@ import { parseChainId } from "../utils";
 interface SwitchNetworkSelectProps {
   SelectProps?: SelectProps;
   onChangeNetwork: (chainId: ChainId) => void;
+  activeChainIds: number[];
   chainId?: ChainId;
 }
 
 function SwitchNetworkSelect({
   SelectProps,
   onChangeNetwork,
+  activeChainIds,
   chainId,
 }: SwitchNetworkSelectProps) {
   const [isLoading, setIsLoading] = useState(false);
@@ -79,6 +81,7 @@ function SwitchNetworkSelect({
       }
     >
       {Object.keys(NETWORKS)
+        .filter((k) => activeChainIds.includes(Number(k)))
         .filter((key) => {
           return !NETWORKS[parseChainId(key)].testnet;
         })

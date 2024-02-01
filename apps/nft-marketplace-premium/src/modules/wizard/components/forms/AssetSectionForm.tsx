@@ -6,6 +6,7 @@ import {
   NETWORK_SLUG,
 } from '@dexkit/core/constants/networks';
 import { ipfsUriToUrl, parseChainId } from '@dexkit/core/utils';
+import { useActiveChainIds } from '@dexkit/ui';
 import {
   Avatar,
   Box,
@@ -45,6 +46,7 @@ export default function AssetSectionForm({
   section,
   showSaveButton,
 }: AssetSectionFormProps) {
+  const { activeChainIds } = useActiveChainIds();
   const handleSubmit = async (values: AssetFormType) => {
     onSave({ type: 'asset-section', config: values });
   };
@@ -55,7 +57,7 @@ export default function AssetSectionForm({
 
   const networks = useMemo(() => {
     return Object.keys(NETWORKS).map(
-      (key: string) => NETWORKS[parseChainId(key)]
+      (key: string) => NETWORKS[parseChainId(key)],
     );
   }, []);
 
@@ -122,7 +124,7 @@ export default function AssetSectionForm({
                         <Avatar
                           src={ipfsUriToUrl(
                             networks.find((n) => n.slug === value)?.imageUrl ||
-                              ''
+                              '',
                           )}
                           style={{ width: 'auto', height: '1rem' }}
                         />
@@ -133,17 +135,19 @@ export default function AssetSectionForm({
                     );
                   }}
                 >
-                  {networks.map((n) => (
-                    <MenuItem key={n.slug} value={n.slug}>
-                      <ListItemIcon>
-                        <Avatar
-                          src={ipfsUriToUrl(n?.imageUrl || '')}
-                          style={{ width: '1rem', height: '1rem' }}
-                        />
-                      </ListItemIcon>
-                      <ListItemText primary={n.name} />
-                    </MenuItem>
-                  ))}
+                  {networks
+                    .filter((n) => activeChainIds.includes(n.chainId))
+                    .map((n) => (
+                      <MenuItem key={n.slug} value={n.slug}>
+                        <ListItemIcon>
+                          <Avatar
+                            src={ipfsUriToUrl(n?.imageUrl || '')}
+                            style={{ width: '1rem', height: '1rem' }}
+                          />
+                        </ListItemIcon>
+                        <ListItemText primary={n.name} />
+                      </MenuItem>
+                    ))}
                 </Field>
               </FormControl>
             </Grid>
