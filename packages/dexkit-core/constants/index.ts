@@ -32,6 +32,8 @@ export const COINGECKO_PLATFORM_ID: { [key: number]: string } = {
 };
 
 
+
+
 export function TOKEN_ICON_URL(addr: string, chainId?: ChainId) {
   if (!isAddress(addr)) {
     return;
@@ -176,6 +178,8 @@ export const NATIVE_TOKENS: { [key: number]: Token } = {
   [ChainId.Avax]: AVALANCHE_TOKEN,
   [ChainId.Base]: ETHEREUM_TOKEN,
 };
+
+
 
 export function GET_NATIVE_TOKEN(chainId: ChainId) {
   return NATIVE_TOKENS[chainId];

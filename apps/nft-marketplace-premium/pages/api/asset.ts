@@ -15,11 +15,13 @@ export default async function handler(
   const { chainId, contractAddress, tokenId } = req.query;
   try {
     const provider = getProviderByChainId(parseInt(chainId as string));
+
     asset = await getAssetData(
       provider,
       contractAddress as string,
       tokenId as string
     );
+
   } catch (e) {
     console.log(e);
   }

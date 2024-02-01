@@ -8,6 +8,16 @@ import { EVM_CHAIN_IMAGES, UNKNOWN_LOGO_URL } from "./evmChainImages";
 
 const IS_TESTNET = typeof process !== 'undefined' ? process?.env.NODE_ENV !== "development" : true;
 
+export const NETWORK_NAME_OVERLAP: { [key: number]: string } = {
+  [ChainId.Ethereum]: "Ethereum",
+  [ChainId.Polygon]: "Polygon",
+  [ChainId.BSC]: "Smart Chain",
+  [ChainId.Avax]: "Avalanche",
+  [ChainId.Fantom]: "Fantom",
+  [ChainId.Arbitrum]: "Arbitrum",
+  [ChainId.Optimism]: "Optimism",
+  [ChainId.Base]: "Base",
+};
 
 
 const NETS: { [key: number]: Network } = {}
@@ -19,7 +29,7 @@ for (let index = 0; index < EVM_CHAINS.length; index++) {
       chainId: element.chainId,
       symbol: element.shortName.toUpperCase(),
       explorerUrl: element.explorers[0].url,
-      name: element.name,
+      name: NETWORK_NAME_OVERLAP[element.chainId] ? NETWORK_NAME_OVERLAP[element.chainId] : element.name,
       slug: element?.slug ? element?.slug : element.shortName,
       coingeckoPlatformId: COINGECKO_IDS.find(c => c.chain_identifier === element.chainId)?.native_coin_id,
       wrappedAddress: WRAPPED_TOKEN_ADDRESSES[element.chainId],
