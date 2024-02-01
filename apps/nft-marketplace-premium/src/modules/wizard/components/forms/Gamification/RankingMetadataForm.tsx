@@ -95,6 +95,8 @@ export default function RankingMetadataForm({
                   <Stack spacing={2}>
                     <Field
                       component={TextField}
+                      multiline
+                      rows={3}
                       name="description"
                       label={
                         <FormattedMessage

@@ -36,6 +36,7 @@ import {
   useDeleteAppRankingMutation,
 } from '../../hooks';
 import { GamificationPoint } from '../../types';
+import { ExportRanking } from '../ExportRanking';
 import AddAppRankingFormDialog from '../dialogs/AddAppRankingFormDialog';
 import GamificationPointForm from '../forms/Gamification/GamificationPointForm';
 import RankingMetadataForm from '../forms/Gamification/RankingMetadataForm';
@@ -96,14 +97,14 @@ function EmptyRankings() {
       <LeaderboardIcon sx={{ fontSize: '50px' }} />
       <Typography variant="h6">
         <FormattedMessage
-          id={'no.app.rankings'}
-          defaultMessage={'No app rankings'}
+          id={'no.app.leaderboards'}
+          defaultMessage={'No app leaderboards'}
         />
       </Typography>
       <Typography variant="subtitle1">
         <FormattedMessage
-          id={'add.rankings.to.your.app'}
-          defaultMessage={'Add rankings to your app'}
+          id={'add.leaderboards.to.your.app'}
+          defaultMessage={'Add leaderboards to your app'}
         />
       </Typography>
     </Stack>
@@ -197,8 +198,8 @@ function AppRankingList({
             <Tooltip
               title={
                 <FormattedMessage
-                  id={'preview.app.ranking'}
-                  defaultMessage={'Preview app ranking'}
+                  id={'preview.app.leaderboard'}
+                  defaultMessage={'Preview app leaderboard'}
                 />
               }
             >
@@ -209,8 +210,8 @@ function AppRankingList({
             <Tooltip
               title={
                 <FormattedMessage
-                  id={'edit.ranking'}
-                  defaultMessage={'Edit ranking'}
+                  id={'edit.leaderboard'}
+                  defaultMessage={'Edit leaderboard'}
                 />
               }
             >
@@ -218,11 +219,12 @@ function AppRankingList({
                 <EditIcon />
               </IconButton>
             </Tooltip>
+
             <Tooltip
               title={
                 <FormattedMessage
-                  id={'delete.app.ranking'}
-                  defaultMessage={'Delete app ranking'}
+                  id={'delete.app.leaderboard'}
+                  defaultMessage={'Delete app leaderboard'}
                 />
               }
             >
@@ -316,8 +318,8 @@ export default function RankingWizardContainer({
   const handleAppRankingRemoved = () => {
     enqueueSnackbar(
       formatMessage({
-        defaultMessage: 'App ranking removed',
-        id: 'app.ranking.removed',
+        defaultMessage: 'App leaderboard removed',
+        id: 'app.leaderboard.removed',
       }),
       {
         variant: 'success',
@@ -332,8 +334,8 @@ export default function RankingWizardContainer({
   const handleAppRankingRemovedError = () => {
     enqueueSnackbar(
       formatMessage({
-        defaultMessage: 'Error on removing app ranking',
-        id: 'error.removing.app.ranking',
+        defaultMessage: 'Error on removing app leaderboard',
+        id: 'error.removing.app.leaderboard',
       }),
       {
         variant: 'error',
@@ -385,8 +387,8 @@ export default function RankingWizardContainer({
           }}
         >
           <FormattedMessage
-            id="do.you.really.want.to.remove.this.app.ranking"
-            defaultMessage="Do you really want to remove this app ranking {title}"
+            id="do.you.really.want.to.remove.this.app.leaderboard"
+            defaultMessage="Do you really want to remove this app leaderboard {title}"
             values={{
               title: selectedRanking?.title,
             }}
@@ -403,8 +405,8 @@ export default function RankingWizardContainer({
               </Typography>
               <Typography variant={'body2'}>
                 <FormattedMessage
-                  id="create.rankings.and.gamify.your.app"
-                  defaultMessage="Create rankings from your events and gamify your app"
+                  id="create.leaderboards.and.gamify.your.app"
+                  defaultMessage="Create leaderboards from your events and gamify your app"
                 />
               </Typography>
             </Stack>
@@ -422,8 +424,8 @@ export default function RankingWizardContainer({
                 }}
               >
                 <FormattedMessage
-                  id={'add.ranking'}
-                  defaultMessage={'Add ranking'}
+                  id={'add.leaderboard'}
+                  defaultMessage={'Add leaderboard'}
                 />
               </Button>
             </Grid>
@@ -447,8 +449,8 @@ export default function RankingWizardContainer({
                     onClick={() => setSelectedEditRanking(undefined)}
                   >
                     <FormattedMessage
-                      id={'back.to.ranking.list'}
-                      defaultMessage={'Back to Ranking List'}
+                      id={'back.to.leaderboard.list'}
+                      defaultMessage={'Back to leaderboard List'}
                     />{' '}
                   </Button>
                 </Grid>
@@ -477,6 +479,15 @@ export default function RankingWizardContainer({
                           }
                           value="2"
                         />
+                        <Tab
+                          label={
+                            <FormattedMessage
+                              id={'export'}
+                              defaultMessage={'Export'}
+                            />
+                          }
+                          value="3"
+                        />
                       </TabList>
                     </Box>
                     <TabPanel value="1">
@@ -494,6 +505,9 @@ export default function RankingWizardContainer({
                         title={selectedEditRanking.title}
                         description={selectedEditRanking.description}
                       />
+                    </TabPanel>
+                    <TabPanel value="3">
+                      <ExportRanking rankingId={selectedEditRanking.id} />
                     </TabPanel>
                   </TabContext>
                 </Grid>

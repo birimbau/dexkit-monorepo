@@ -462,22 +462,7 @@ export function EditWizardContainer({ site }: Props) {
                   />
                 </ListItemButton>
               </ListItem>
-              <ListItem
-                disablePadding
-                onClick={() => handleChangeTab(ActiveMenu.Rankings)}
-                selected={activeMenu === ActiveMenu.Rankings}
-              >
-                <ListItemButton>
-                  <ListItemText
-                    primary={
-                      <FormattedMessage
-                        id="ranking"
-                        defaultMessage={'Ranking'}
-                      />
-                    }
-                  />
-                </ListItemButton>
-              </ListItem>
+
               <ListItem disablePadding>
                 <ListItemButton
                   onClick={() => handleChangeTab(ActiveMenu.Menu)}
@@ -671,6 +656,22 @@ export function EditWizardContainer({ site }: Props) {
                         <FormattedMessage
                           id="events"
                           defaultMessage={'Events'}
+                        />
+                      }
+                    />
+                  </ListItemButton>
+                </ListItem>
+                <ListItem
+                  disablePadding
+                  onClick={() => handleChangeTab(ActiveMenu.Rankings)}
+                  selected={activeMenu === ActiveMenu.Rankings}
+                >
+                  <ListItemButton>
+                    <ListItemText
+                      primary={
+                        <FormattedMessage
+                          id="leaderboard"
+                          defaultMessage={'Leaderboard'}
                         />
                       }
                     />
