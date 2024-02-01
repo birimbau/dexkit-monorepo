@@ -130,5 +130,4 @@ export function useActiveChainIds() {
   const activeChainIds = useContext(DexKitContext).activeChainIds;
   return { activeChainIds };
 
-
 }

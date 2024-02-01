@@ -28,6 +28,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
 import FormatColorTextIcon from '@mui/icons-material/FormatColorText';
 import GavelIcon from '@mui/icons-material/Gavel';
+import LeaderboardIcon from '@mui/icons-material/Leaderboard';
 import LinkIcon from '@mui/icons-material/Link';
 import ShieldIcon from '@mui/icons-material/Shield';
 import StoreIcon from '@mui/icons-material/Store';
@@ -173,6 +174,12 @@ export default function PagesSectionPage({
       title = <FormattedMessage id="asset" defaultMessage="Asset" />;
       subtitle = section.title || '';
       icon = <AppsIcon />;
+    } else if (section.type === 'ranking') {
+      title = (
+        <FormattedMessage id="leaderboard" defaultMessage="Leaderboard" />
+      );
+      subtitle = section.title || '';
+      icon = <LeaderboardIcon />;
     }
 
     if (!title) {

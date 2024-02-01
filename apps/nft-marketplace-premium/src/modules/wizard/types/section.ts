@@ -271,7 +271,8 @@ export type AppPageSection =
   | CodePageSection
   | CollectionPageSection
   | DexGeneratorPageSection
-  | AssetPageSection;
+  | AssetPageSection
+  | RankingPageSection;
 
 export interface SectionMetadata {
   type: SectionType;

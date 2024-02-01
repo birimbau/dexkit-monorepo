@@ -1,6 +1,7 @@
 import LazyTextField from '@dexkit/ui/components/LazyTextField';
 import TipsAndUpdatesIcon from '@mui/icons-material/TipsAndUpdates';
 
+import { useEditSiteId } from '@dexkit/ui/hooks';
 import AddIcon from '@mui/icons-material/Add';
 import Search from '@mui/icons-material/Search';
 import {
@@ -14,17 +15,19 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
-import { ChangeEvent, useCallback, useEffect, useState } from 'react';
+import Pagination from '@mui/material/Pagination';
+import { useCallback, useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import Link from 'src/components/Link';
 import { useAppRankingListQuery } from '../../hooks';
+import { RankingPageSection } from '../../types/section';
 import RankingFormCard from '../RankingFormCard';
 
 interface Props {
-  onSave: ({ rankingId }: { rankingId?: number }) => void;
-  onChange: ({ rankingId }: { rankingId?: number }) => void;
+  onSave: (section: RankingPageSection) => void;
+  onChange: (section: RankingPageSection) => void;
+  section?: RankingPageSection;
   onCancel: () => void;
-  rankingId?: number;
   hideFormInfo?: boolean;
   saveOnChange?: boolean;
   showSaveButton?: boolean;
@@ -34,11 +37,12 @@ export function RankingSectionForm({
   onSave,
   onChange,
   onCancel,
-  rankingId,
-  hideFormInfo,
+  section,
   saveOnChange,
   showSaveButton,
 }: Props) {
+  const { editSiteId } = useEditSiteId();
+
   const [paginationModel, setPaginationModel] = useState({
     page: 0,
     pageSize: 10,
@@ -51,49 +55,66 @@ export function RankingSectionForm({
   const listRankingQuery = useAppRankingListQuery({
     ...paginationModel,
     ...queryOptions,
-    siteId: siteId,
+    siteId: editSiteId,
   });
 
-  const [selectedRankingId, setSelectedRankingId] = useState<number>();
-
-  const [hideInfo, setHideInfo] = useState<boolean>(false);
+  const [selectedRanking, setSelectedRanking] = useState<{
+    id: number;
+    title?: string;
+  }>();
 
   const handleChange = (value: string) => {
-    setQueryOptions({ ...queryOptions, q: value });
+    let filter = queryOptions.filter;
+    if (value) {
+      filter.q = value;
+    } else {
+      filter.q = undefined;
+    }
+    setQueryOptions({ ...queryOptions, filter });
   };
 
   const handleClick = useCallback(
-    (id: number) => {
-      setSelectedRankingId(id);
+    (id: number, title?: string) => {
+      setSelectedRanking({ title: title, id: id });
 
       if (saveOnChange && id) {
-        onChange({ rankingId: id });
+        onChange({
+          ...section,
+          type: 'ranking',
+          title: title,
+          settings: { rankingId: id },
+        });
       }
     },
-    [saveOnChange, hideInfo],
+    [saveOnChange],
   );
 
   const handleSave = useCallback(() => {
-    if (selectedRankingId) {
-      onSave({ rankingId: selectedRankingId });
+    if (selectedRanking?.id) {
+      onSave({
+        ...section,
+        type: 'ranking',
+        title: selectedRanking.title,
+        settings: { rankingId: selectedRanking.id },
+      });
     }
-  }, [onSave, selectedRankingId]);
+  }, [onSave, selectedRanking]);
 
-  const handleChangeHideInfo = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
-      if (saveOnChange && selectedRankingId) {
-        onChange({ rankingId: selectedRankingId });
-      }
-      setHideInfo(e.target.checked);
-    },
-    [saveOnChange, selectedRankingId],
-  );
+  const handlePageChange = (
+    event: React.ChangeEvent<unknown>,
+    value: number,
+  ) => {
+    setPaginationModel({ ...paginationModel, page: value });
+  };
 
   useEffect(() => {
-    if (!selectedRankingId) {
-      setSelectedRankingId(rankingId);
+    if (!selectedRanking && section?.settings.rankingId) {
+      setSelectedRanking({
+        id: section.settings.rankingId,
+        title: section.title,
+      });
     }
-  }, [rankingId]);
+  }, [section]);
 
   return (
     <Box>
@@ -123,11 +144,25 @@ export function RankingSectionForm({
                   id={ranking.id}
                   description={ranking?.description}
                   title={ranking?.title}
-                  selected={selectedRankingId === ranking.id}
+                  selected={selectedRanking?.id === ranking.id}
                   onClick={handleClick}
                 />
               </Grid>
             ))}
+            {listRankingQuery.data &&
+              listRankingQuery.data?.data.length === 0 && (
+                <Grid item xs={12}>
+                  <Pagination
+                    count={
+                      (listRankingQuery.data.total || 0) /
+                      paginationModel.pageSize
+                    }
+                    page={paginationModel.page}
+                    onChange={handlePageChange}
+                  />
+                </Grid>
+              )}
+
             {listRankingQuery.isLoading &&
               new Array(5).fill(null).map((_, index) => (
                 <Grid item xs={12} key={index}>
@@ -196,7 +231,7 @@ export function RankingSectionForm({
               >
                 <Button
                   onClick={handleSave}
-                  disabled={selectedRankingId === undefined}
+                  disabled={selectedRanking === undefined}
                   variant="contained"
                   color="primary"
                 >

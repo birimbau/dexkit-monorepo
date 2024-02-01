@@ -1,11 +1,14 @@
 import dynamic from 'next/dynamic';
 import { AppPageSection } from '../../types/section';
+import RankingSection from '../sections/RankingSection';
 
 const CollectionSection = dynamic(
   () => import('../sections/CollectionSection'),
 );
 
-import DexGeneratorSection from '../sections/DexGeneratorSection';
+const DexGeneratorSection = dynamic(
+  () => import('../sections/DexGeneratorSection'),
+);
 
 const AssetSection = dynamic(() => import('../sections/AssetSection/index'));
 
@@ -91,6 +94,8 @@ export function SectionRender({ section }: Props) {
     return <DexGeneratorSection section={section} />;
   } else if (section.type === 'asset-section') {
     return <AssetSection section={section} />;
+  } else if (section.type === 'ranking') {
+    return <RankingSection section={section} />;
   }
 
   return <></>;

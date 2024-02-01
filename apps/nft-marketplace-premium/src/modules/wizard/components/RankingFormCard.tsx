@@ -13,7 +13,7 @@ interface RankingFormCardProps {
   title?: string;
   description?: string;
   selected?: boolean;
-  onClick: (id: number) => void;
+  onClick: (id: number, title?: string) => void;
 }
 
 export default function RankingFormCard({
@@ -30,7 +30,7 @@ export default function RankingFormCard({
           selected ? theme.palette.primary.main : undefined,
       }}
     >
-      <CardActionArea onClick={() => onClick(id)}>
+      <CardActionArea onClick={() => onClick(id, title)}>
         <CardContent>
           <Stack
             direction="row"
