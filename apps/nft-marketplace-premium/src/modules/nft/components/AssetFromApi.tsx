@@ -15,6 +15,5 @@ export default function AssetFromApi({
   disabled,
 }: Props) {
   const { data: asset } = useAssetByApi({ chainId, contractAddress, tokenId });
-
   return <AssetCard asset={asset} disabled={disabled} />;
 }

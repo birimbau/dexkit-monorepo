@@ -14,19 +14,21 @@ type Data = {
 };
 // you can pass the shape of the data as the generic type argument
 const AssetPlugin: CellPlugin<Data> = {
-  Renderer: ({ data }) => (
-    <Box
-      sx={{
-        maxWidth: 400,
-      }}
-    >
-      <AssetFromApi
-        tokenId={String(data.id)}
-        contractAddress={data.contractAddress}
-        chainId={getNetworkFromName(data.network)?.chainId as number}
-      />
-    </Box>
-  ),
+  Renderer: ({ data }) => {
+    return (
+      <Box
+        sx={{
+          maxWidth: 400,
+        }}
+      >
+        <AssetFromApi
+          tokenId={String(data.id)}
+          contractAddress={data.contractAddress}
+          chainId={getNetworkFromName(data.network)?.chainId as number}
+        />
+      </Box>
+    );
+  },
   id: 'nft-plugin',
   title: 'NFT',
   description: 'Show a single nft',
