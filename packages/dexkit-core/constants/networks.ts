@@ -35,8 +35,8 @@ for (let index = 0; index < EVM_CHAINS.length; index++) {
       wrappedAddress: WRAPPED_TOKEN_ADDRESSES[element.chainId],
       imageUrl: EVM_CHAIN_IMAGES[element.chainId].imageUrl || UNKNOWN_LOGO_URL,
       coinImageUrl: EVM_CHAIN_IMAGES[element.chainId].coinImageUrl,
-      coinName: EVM_CHAIN_IMAGES[element.chainId].coinImageUrl ? element.nativeCurrency.name : undefined,
-      coinSymbol: EVM_CHAIN_IMAGES[element.chainId].coinImageUrl ? element.nativeCurrency.symbol : undefined,
+      coinName: EVM_CHAIN_IMAGES[element.chainId].coinImageUrl ? element?.nativeCurrency?.name : element?.nativeCurrency?.name,
+      coinSymbol: EVM_CHAIN_IMAGES[element.chainId].coinImageUrl ? element?.nativeCurrency?.symbol : element?.nativeCurrency?.symbol,
       providerRpcUrl: element.rpc[0],
       testnet: element?.testnet,
     }
