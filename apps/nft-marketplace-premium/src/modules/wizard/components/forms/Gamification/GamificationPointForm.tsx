@@ -79,7 +79,13 @@ const GamificationPointSchema = Yup.array(
   }),
 );
 
-const RankingPointsScheme = Yup.object().shape({
+const RankingPointsScheme: Yup.SchemaOf<{
+  from?: Date;
+  to?: Date;
+  settings: GamificationPoint[];
+}> = Yup.object().shape({
+  from: Yup.date(),
+  to: Yup.date(),
   settings: GamificationPointSchema,
 });
 
@@ -89,6 +95,16 @@ interface Props {
   onCancel?: () => void;
   onSubmit?: (settings: GamificationPoint[]) => void;
   settings?: GamificationPoint[] | string;
+  from?: string;
+  to?: string;
+}
+// @see https://stackoverflow.com/a/66558369
+function localDate({ dateString }: { dateString: string }) {
+  const d = new Date(dateString);
+
+  return new Date(d.getTime() - d.getTimezoneOffset() * 60000)
+    .toISOString()
+    .slice(0, -1);
 }
 
 export default function GamificationPointForm({
@@ -97,6 +113,8 @@ export default function GamificationPointForm({
   onCancel,
   onSubmit,
   settings,
+  from,
+  to,
 }: Props) {
   const [open, setOpen] = useState(false);
   const mutationAddRanking = useAddAppRankingMutation();
@@ -105,10 +123,13 @@ export default function GamificationPointForm({
     <>
       <Formik
         onSubmit={async (values, helper) => {
+          console.log(values);
           if (values) {
             await mutationAddRanking.mutateAsync({
               siteId,
               rankingId,
+              from: values.from === '' ? undefined : values.from,
+              to: values.to === '' ? undefined : values.to,
               settings: values.settings,
             });
 
@@ -117,15 +138,18 @@ export default function GamificationPointForm({
           helper.setSubmitting(false);
         }}
         initialValues={{
+          from: from ? localDate({ dateString: from }) : undefined,
+          to: to ? localDate({ dateString: to }) : undefined,
           settings: settings
             ? typeof settings === 'string'
-              ? JSON.parse(settings)
+              ? (JSON.parse(settings) as GamificationPoint[])
               : settings
             : ([{ userEventType: UserEvents.swap }] as GamificationPoint[]),
         }}
         validationSchema={RankingPointsScheme}
       >
         {({
+          handleChange,
           submitForm,
           isSubmitting,
           isValid,
@@ -136,30 +160,69 @@ export default function GamificationPointForm({
           touched,
         }) => (
           <Form>
-            <Alert severity="info">
-              <AlertTitle>
-                <FormattedMessage
-                  id="info.alert.title.filter.ranking.points"
-                  defaultMessage="Define and attribute points to each user event to build a ranking"
-                />
-              </AlertTitle>
-            </Alert>
-            {false && (
-              <Box sx={{ p: 2 }}>
-                <Button variant="contained" onClick={() => setOpen(true)}>
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <Typography sx={{ pb: 2 }} variant="subtitle1">
                   <FormattedMessage
-                    id={'preview'}
-                    defaultMessage={'Preview'}
+                    id={'filter.by.data'}
+                    defaultMessage={'Filter by date'}
                   ></FormattedMessage>
-                </Button>
-              </Box>
-            )}
+                  :
+                </Typography>
+
+                <Stack spacing={2} direction={'row'}>
+                  <Field
+                    component={TextField}
+                    type={'datetime-local'}
+                    sx={{ maxWidth: '350px' }}
+                    name={`from`}
+                    label={<FormattedMessage id="From" defaultMessage="From" />}
+                    fullWidth
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                  />
+                  <Field
+                    component={TextField}
+                    type={'datetime-local'}
+                    sx={{ maxWidth: '350px' }}
+                    name={`to`}
+                    label={<FormattedMessage id="to" defaultMessage="to" />}
+                    fullWidth
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                  />
+                </Stack>
+              </Grid>
+
+              <Grid item xs={12}>
+                <Alert severity="info">
+                  <AlertTitle>
+                    <FormattedMessage
+                      id="info.alert.title.filter.ranking.points"
+                      defaultMessage="Define and attribute points to each user event to build a ranking"
+                    />
+                  </AlertTitle>
+                </Alert>
+                {false && (
+                  <Box sx={{ p: 2 }}>
+                    <Button variant="contained" onClick={() => setOpen(true)}>
+                      <FormattedMessage
+                        id={'preview'}
+                        defaultMessage={'Preview'}
+                      ></FormattedMessage>
+                    </Button>
+                  </Box>
+                )}
+              </Grid>
+            </Grid>
 
             <FieldArray
               name="settings"
               render={(arrayHelpers) => (
                 <Box sx={{ p: 2 }}>
-                  {values.settings.map((_setting, index) => (
+                  {values.settings.map((setting, index) => (
                     <Box sx={{ p: 2 }} key={index}>
                       <Grid container spacing={2} key={index}>
                         {index !== 0 && (
@@ -215,9 +278,9 @@ export default function GamificationPointForm({
                                 return option.value === value;
                               }}
                               getOptionLabel={(option: {
-                                name: string;
-                                value: string;
-                              }) => option.name}
+                                name?: string;
+                                value?: string;
+                              }) => option?.name || ' '}
                               style={{ width: 350 }}
                               renderInput={(
                                 params: AutocompleteRenderInputParams,

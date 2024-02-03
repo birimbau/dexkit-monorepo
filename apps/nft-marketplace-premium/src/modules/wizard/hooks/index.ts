@@ -310,13 +310,13 @@ export function useAddAppRankingMutation() {
 
   const query = useQueryClient()
 
-  return useMutation(async ({ siteId, title, description, rankingId, settings }: { siteId?: number, title?: string, description?: string, rankingId?: number, settings?: GamificationPoint[] }) => {
+  return useMutation(async ({ siteId, title, from, to, description, rankingId, settings }: { siteId?: number, title?: string, description?: string, rankingId?: number, settings?: GamificationPoint[], from?: string, to?: string }) => {
 
     if (!siteId) {
       throw Error('missing data to update')
     }
     if (rankingId) {
-      await updateSiteRankingVersion({ siteId, title, description, rankingId, settings })
+      await updateSiteRankingVersion({ siteId, title, description, rankingId, settings, from, to })
     } else {
       await createSiteRankingVersion({ siteId, title, description, settings });
     }

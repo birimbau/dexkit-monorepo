@@ -1,5 +1,6 @@
-import { Box, Grid, Paper, TablePagination, Typography } from '@mui/material';
+import { Box, Grid, TablePagination, Typography } from '@mui/material';
 
+import LeaderboardIcon from '@mui/icons-material/Leaderboard';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -8,8 +9,10 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import TableSortLabel from '@mui/material/TableSortLabel';
 import { visuallyHidden } from '@mui/utils';
+import { useWeb3React } from '@web3-react/core';
 import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
+import { CopyAddress } from 'src/components/CopyAddress';
 import { useAppRankingQuery } from '../../hooks';
 import { RankingPageSection } from '../../types/section';
 export interface RankingSectionProps {
@@ -96,6 +99,8 @@ export default function RankingSection({ section }: RankingSectionProps) {
   const [dense, setDense] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
+  const { account } = useWeb3React();
+
   const queryRanking = useAppRankingQuery({
     rankingId: section.settings.rankingId,
   });
@@ -121,6 +126,39 @@ export default function RankingSection({ section }: RankingSectionProps) {
   };
 
   const rows = queryRanking.data?.data ? queryRanking.data?.data : [];
+
+  const sortTable = (
+    a: { account: string; points: number },
+    b: { account: string; points: number },
+  ) => {
+    if (orderBy === 'points') {
+      if (order === 'asc') {
+        return a.points - b.points;
+      }
+      if (order === 'desc') {
+        return b.points - a.points;
+      }
+    }
+
+    if (orderBy === 'account') {
+      if (order === 'asc') {
+        if (a.account.toUpperCase() < b.account.toUpperCase()) {
+          return -1;
+        } else {
+          return 1;
+        }
+      }
+      if (order === 'desc') {
+        if (a.account.toUpperCase() > b.account.toUpperCase()) {
+          return -1;
+        } else {
+          return 1;
+        }
+      }
+    }
+
+    return 0;
+  };
 
   return (
     <Grid container spacing={2}>
@@ -151,48 +189,66 @@ export default function RankingSection({ section }: RankingSectionProps) {
         </Typography>
       </Grid>
       <Grid item xs={12}>
-        <Box sx={{ width: '100%' }}>
-          <Paper sx={{ mb: 2, mt: 2 }}>
-            <TableContainer>
-              <Table
-                aria-label="ranking table"
-                size={dense ? 'small' : 'medium'}
-              >
-                <EnhancedTableHead
-                  order={order}
-                  orderBy={orderBy}
-                  onRequestSort={handleRequestSort}
-                  rowCount={rows.length}
-                />
-                <TableBody>
-                  {rows.map((row, id) => (
-                    <TableRow
-                      key={id}
-                      sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                    >
-                      <TableCell component="th" scope="row">
-                        {row.account}
-                      </TableCell>
-                      <TableCell>
-                        <Typography sx={{ fontSize: '16px' }}>
-                          {row.points}
-                        </Typography>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-            <TablePagination
-              rowsPerPageOptions={[5, 10, 25]}
-              component="div"
-              count={rows.length}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              onPageChange={handleChangePage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-            />
-          </Paper>
+        <Box sx={{ width: '100%', mb: 2, mt: 2 }}>
+          <TableContainer>
+            <Table aria-label="ranking table" size={dense ? 'small' : 'medium'}>
+              <EnhancedTableHead
+                order={order}
+                orderBy={orderBy}
+                onRequestSort={handleRequestSort}
+                rowCount={rows.length}
+              />
+              <TableBody>
+                {rows.sort(sortTable).map((row, id) => (
+                  <TableRow
+                    selected={
+                      account && row?.account
+                        ? account?.toLowerCase() === row?.account?.toLowerCase()
+                        : false
+                    }
+                    key={id}
+                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                  >
+                    <TableCell component="th" scope="row">
+                      {row.account} <CopyAddress account={row.account} />
+                    </TableCell>
+                    <TableCell>
+                      <Typography sx={{ fontSize: '16px' }}>
+                        {row.points}
+                      </Typography>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          {rows.length === 0 && (
+            <Box
+              display={'flex'}
+              alignContent={'center'}
+              alignItems={'center'}
+              justifyContent={'center'}
+              flexDirection={'column'}
+              sx={{ pt: 2, pb: 2 }}
+            >
+              <LeaderboardIcon fontSize="large"></LeaderboardIcon>
+              <Typography variant="h5">
+                <FormattedMessage
+                  id={'empty.leaderboard'}
+                  defaultMessage={'Empty leaderboard'}
+                ></FormattedMessage>
+              </Typography>
+            </Box>
+          )}
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 25]}
+            component="div"
+            count={rows.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
         </Box>
       </Grid>
     </Grid>

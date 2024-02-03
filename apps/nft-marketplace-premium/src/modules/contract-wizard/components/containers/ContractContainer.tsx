@@ -4,26 +4,49 @@ import {
   useContractRead,
   useContractType,
 } from '@thirdweb-dev/react';
-import { ContractMetadataHeader } from '../ContractMetadataHeader';
-import { ContractEditionDropContainer } from './ContractEditionDropContainer';
-import { ContractNftContainer } from './ContractNftContainer';
-import { ContractNftDropContainer } from './ContractNftDropContainer';
-import ContractStakeErc20Container from './ContractStakeErc20Container';
-import { ContractTokenDropContainer } from './ContractTokenDropContainer';
+const ContractEditionDropContainer = dynamic(
+  () => import('./ContractEditionDropContainer'),
+);
+const ContractNftContainer = dynamic(() => import('./ContractNftContainer'));
+const ContractStakeErc20Container = dynamic(
+  () => import('./ContractStakeErc20Container'),
+);
+const ContractTokenDropContainer = dynamic(
+  () => import('./ContractTokenDropContainer'),
+);
 
 import { NETWORK_FROM_SLUG } from '@dexkit/core/constants/networks';
 import { useSwitchNetworkMutation } from '@dexkit/ui';
 import { hexToString } from '@dexkit/ui/utils';
 import { Alert, Button, CircularProgress } from '@mui/material';
 import { useWeb3React } from '@web3-react/core';
+import dynamic from 'next/dynamic';
 import { FormattedMessage } from 'react-intl';
-import ContractAirdropErc1155Container from './ContractAirdropErc1155Container';
-import ContractAirdropErc20Container from './ContractAirdropErc20Container';
-import ContractAirdropErc721Container from './ContractAirdropErc721Container';
-import { ContractEditionContainer } from './ContractEditionContainer';
-import ContractStakeErc1155Container from './ContractStakeErc1155Container';
-import ContractStakeErc721Container from './ContractStakeErc721Container';
-import { ContractTokenContainer } from './ContractTokenContainer';
+import { ContractMetadataHeader } from '../ContractMetadataHeader';
+const ContractAirdropErc1155Container = dynamic(
+  () => import('./ContractAirdropErc1155Container'),
+);
+const ContractAirdropErc20Container = dynamic(
+  () => import('./ContractAirdropErc20Container'),
+);
+const ContractAirdropErc721Container = dynamic(
+  () => import('./ContractAirdropErc721Container'),
+);
+const ContractEditionContainer = dynamic(
+  () => import('./ContractEditionContainer'),
+);
+const ContractNftDropContainer = dynamic(
+  () => import('./ContractNftDropContainer'),
+);
+const ContractStakeErc1155Container = dynamic(
+  () => import('./ContractStakeErc1155Container'),
+);
+const ContractStakeErc721Container = dynamic(
+  () => import('./ContractStakeErc721Container'),
+);
+const ContractTokenContainer = dynamic(
+  () => import('./ContractTokenContainer'),
+);
 
 interface Props {
   address: string;

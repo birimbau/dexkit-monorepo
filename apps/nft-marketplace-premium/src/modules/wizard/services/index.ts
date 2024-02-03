@@ -250,12 +250,14 @@ export async function createSiteRankingVersion({ siteId, title, description, set
   });
 }
 
-export async function updateSiteRankingVersion({ siteId, title, description, rankingId, settings }: { siteId: number, title?: string, description?: string, rankingId?: number, settings?: GamificationPoint[] }) {
+export async function updateSiteRankingVersion({ siteId, title, description, rankingId, settings, from, to }: { siteId: number, title?: string, description?: string, rankingId?: number, settings?: GamificationPoint[], from?: string, to?: string }) {
   return myAppsApi.patch(`/site-ranking/${rankingId}`, {
     title,
     description,
     siteId,
-    settings
+    settings,
+    from,
+    to
   });
 }
 

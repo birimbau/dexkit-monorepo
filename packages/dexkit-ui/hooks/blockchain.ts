@@ -37,6 +37,7 @@ export function useTokenList({
     return [];
   }, [appConfig]);
 
+
   // TODO: do the right logic
   let tokens = [...tokensValues, ...tokenListJson];
 

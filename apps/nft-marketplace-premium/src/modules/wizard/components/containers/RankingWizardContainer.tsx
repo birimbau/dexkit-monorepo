@@ -19,6 +19,7 @@ import { useCallback, useEffect, useState } from 'react';
 
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import LeaderboardIcon from '@mui/icons-material/Leaderboard';
 import PreviewIcon from '@mui/icons-material/Preview';
 import {
@@ -29,6 +30,7 @@ import {
   GridSortModel,
   GridToolbar,
 } from '@mui/x-data-grid';
+import dynamic from 'next/dynamic';
 import { useSnackbar } from 'notistack';
 import { FormattedMessage, useIntl } from 'react-intl';
 import {
@@ -37,10 +39,16 @@ import {
 } from '../../hooks';
 import { GamificationPoint } from '../../types';
 import { ExportRanking } from '../ExportRanking';
-import AddAppRankingFormDialog from '../dialogs/AddAppRankingFormDialog';
 import GamificationPointForm from '../forms/Gamification/GamificationPointForm';
 import RankingMetadataForm from '../forms/Gamification/RankingMetadataForm';
 import RankingSection from '../sections/RankingSection';
+const AddAppRankingFormDialog = dynamic(
+  () => import('../dialogs/AddAppRankingFormDialog'),
+);
+const RankingDialog = dynamic(() => import('../dialogs/RankingDialog'));
+const ExportRankingDialog = dynamic(
+  () => import('../dialogs/ExportRankingDialog'),
+);
 export interface RankingWizardContainerProps {
   siteId?: number;
 }
@@ -50,6 +58,8 @@ interface AppRanking {
   title: string;
   createdAt: number;
   description: string;
+  from: string;
+  to: string;
   settings: GamificationPoint[];
 }
 
@@ -58,6 +68,7 @@ interface TableProps {
   onClickDelete({ ranking }: { ranking: AppRanking }): void;
   onClickEdit({ ranking }: { ranking: AppRanking }): void;
   onClickPreview({ ranking }: { ranking: AppRanking }): void;
+  onClickExport({ ranking }: { ranking: AppRanking }): void;
   rankings?: AppRanking[];
 }
 
@@ -116,6 +127,7 @@ function AppRankingList({
   onClickDelete,
   onClickEdit,
   onClickPreview,
+  onClickExport,
 }: TableProps) {
   const [queryOptions, setQueryOptions] = useState<any>({
     filter: {},
@@ -219,6 +231,18 @@ function AppRankingList({
                 <EditIcon />
               </IconButton>
             </Tooltip>
+            <Tooltip
+              title={
+                <FormattedMessage
+                  id={'export.leaderboard'}
+                  defaultMessage={'Export leaderboard'}
+                />
+              }
+            >
+              <IconButton onClick={() => onClickExport({ ranking: row })}>
+                <FileDownloadIcon />
+              </IconButton>
+            </Tooltip>
 
             <Tooltip
               title={
@@ -288,6 +312,8 @@ export default function RankingWizardContainer({
   };
   const [openConfirmRemove, setOpenConfirmRemove] = useState(false);
   const [openAddRanking, setOpenAddRanking] = useState(false);
+  const [openExportRanking, setOpenExportRanking] = useState(false);
+  const [openPreviewRanking, setOpenPreviewRanking] = useState(false);
   const [selectedRanking, setSelectedRanking] = useState<
     AppRanking | undefined
   >(undefined);
@@ -303,16 +329,18 @@ export default function RankingWizardContainer({
     setOpenConfirmRemove(true);
   };
 
-  const handleClickPreview = ({ ranking }: { ranking: AppRanking }) => {
-    setSelectedRanking(ranking);
-  };
-
   const handleClickEdit = ({ ranking }: { ranking: AppRanking }) => {
     setSelectedEditRanking(ranking);
   };
 
+  const handleClickExport = ({ ranking }: { ranking: AppRanking }) => {
+    setSelectedRanking(ranking);
+    setOpenExportRanking(true);
+  };
+
   const handlePreviewRanking = ({ ranking }: { ranking: AppRanking }) => {
     setSelectedRanking(ranking);
+    setOpenPreviewRanking(true);
   };
 
   const handleAppRankingRemoved = () => {
@@ -365,6 +393,34 @@ export default function RankingWizardContainer({
           siteId={siteId}
         />
       )}
+      {openPreviewRanking && (
+        <RankingDialog
+          dialogProps={{
+            open: openPreviewRanking,
+            fullWidth: true,
+            maxWidth: 'md',
+            onClose: () => {
+              setOpenPreviewRanking(false);
+            },
+          }}
+          rankingId={selectedRanking?.id}
+        />
+      )}
+
+      {openExportRanking && (
+        <ExportRankingDialog
+          dialogProps={{
+            open: openExportRanking,
+            fullWidth: true,
+            maxWidth: 'md',
+            onClose: () => {
+              setOpenExportRanking(false);
+            },
+          }}
+          rankingId={selectedRanking?.id}
+        />
+      )}
+
       {openConfirmRemove && (
         <AppConfirmDialog
           DialogProps={{
@@ -401,7 +457,10 @@ export default function RankingWizardContainer({
           <Grid item xs={12}>
             <Stack>
               <Typography variant={'h6'}>
-                <FormattedMessage id="rankings" defaultMessage="Rankings" />
+                <FormattedMessage
+                  id="leaderboard"
+                  defaultMessage="Leaderboard"
+                />
               </Typography>
               <Typography variant={'body2'}>
                 <FormattedMessage
@@ -437,6 +496,7 @@ export default function RankingWizardContainer({
                 onClickDelete={handleClickDelete}
                 onClickEdit={handleClickEdit}
                 onClickPreview={handlePreviewRanking}
+                onClickExport={handleClickExport}
               />
             </Grid>
           )}
@@ -495,6 +555,8 @@ export default function RankingWizardContainer({
                       <GamificationPointForm
                         settings={selectedEditRanking.settings}
                         siteId={siteId}
+                        from={selectedEditRanking.from}
+                        to={selectedEditRanking.to}
                         rankingId={selectedEditRanking.id}
                       />
                     </TabPanel>
@@ -510,6 +572,17 @@ export default function RankingWizardContainer({
                       <ExportRanking rankingId={selectedEditRanking.id} />
                     </TabPanel>
                   </TabContext>
+                </Grid>
+                <Grid item xs={12}>
+                  <Typography variant="h5">
+                    <FormattedMessage
+                      id={'leaderboard.preview'}
+                      defaultMessage={'Leaderboard preview'}
+                    />
+                  </Typography>
+                </Grid>
+                <Grid item xs={12}>
+                  <Divider></Divider>
                 </Grid>
 
                 <Grid item xs={12}>
