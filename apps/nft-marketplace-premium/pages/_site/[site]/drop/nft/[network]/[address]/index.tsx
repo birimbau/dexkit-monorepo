@@ -39,7 +39,7 @@ function TokenDrop() {
                 caption: (
                   <FormattedMessage id="nft.drop" defaultMessage="NFT Drop" />
                 ),
-                uri: '/drop/nft',
+                uri: `/drop/nft/${network}/${address}`,
               },
               {
                 caption: isLoading ? <Skeleton /> : contractMetadata?.name,

@@ -108,52 +108,54 @@ export default function NotificationsList({
 
   return (
     <List sx={{ p: 0 }}>
-      {notifications.map((notification, key) => (
-        <ListItemButton
-          LinkComponent={AppLink}
-          href={getNotificationUrl(transactions, notification)}
-          target="_blank"
-          key={key}
-        >
-          <ListItemAvatar>
-            <Avatar
-              variant="rounded"
-              sx={{
-                backgroundColor: avatarColor(notification),
-              }}
-            >
-              <Icon>{renderIcon(notification)}</Icon>
-            </Avatar>
-          </ListItemAvatar>
-          <ListItemText
-            primary={
-              <NotificationMessage
-                types={notificationTypes}
-                type={notification.subtype}
-                values={notification.values}
-              />
-            }
-            secondaryTypographyProps={{ component: "div" }}
-            secondary={
-              <Stack spacing={0.5} direction="row" alignItems="center">
-                {!notification.checked && (
-                  <FiberManualRecord fontSize="small" color="primary" />
-                )}
-
-                <MomentFromSpan from={notification.date} />
-              </Stack>
-            }
-          />
-          <Stack
-            sx={{ ml: 2 }}
-            spacing={0.5}
-            direction="row"
-            alignItems="center"
+      {notifications
+        .sort((a, b) => b?.date - a?.date)
+        .map((notification, key) => (
+          <ListItemButton
+            LinkComponent={AppLink}
+            href={getNotificationUrl(transactions, notification)}
+            target="_blank"
+            key={key}
           >
-            {renderSecondaryAction(transactions, notification)}
-          </Stack>
-        </ListItemButton>
-      ))}
+            <ListItemAvatar>
+              <Avatar
+                variant="rounded"
+                sx={{
+                  backgroundColor: avatarColor(notification),
+                }}
+              >
+                <Icon>{renderIcon(notification)}</Icon>
+              </Avatar>
+            </ListItemAvatar>
+            <ListItemText
+              primary={
+                <NotificationMessage
+                  types={notificationTypes}
+                  type={notification.subtype}
+                  values={notification.values}
+                />
+              }
+              secondaryTypographyProps={{ component: "div" }}
+              secondary={
+                <Stack spacing={0.5} direction="row" alignItems="center">
+                  {!notification.checked && (
+                    <FiberManualRecord fontSize="small" color="primary" />
+                  )}
+
+                  <MomentFromSpan from={notification.date} />
+                </Stack>
+              }
+            />
+            <Stack
+              sx={{ ml: 2 }}
+              spacing={0.5}
+              direction="row"
+              alignItems="center"
+            >
+              {renderSecondaryAction(transactions, notification)}
+            </Stack>
+          </ListItemButton>
+        ))}
     </List>
   );
 }

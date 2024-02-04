@@ -98,7 +98,7 @@ export function AssetTabs({ address, id }: Props) {
             type: 'transaction',
             subtype: 'approveForAll',
             values: {
-              name: asset.collectionName,
+              name: asset.collectionName || asset?.metadata?.name || ' ',
               tokenId: asset.id,
             },
             metadata: {
@@ -111,7 +111,7 @@ export function AssetTabs({ address, id }: Props) {
             type: 'transaction',
             subtype: 'approve',
             values: {
-              name: asset.collectionName,
+              name: asset.collectionName || asset?.metadata?.name || ' ',
               tokenId: asset.id,
             },
             metadata: {
@@ -139,7 +139,10 @@ export function AssetTabs({ address, id }: Props) {
             variable.asset.type === 'ERC721' ||
             variable.asset.type === 'ERC1155'
           ) {
-            const values = { asset: asset };
+            const values = {
+              name: asset.collectionName || asset?.metadata?.name,
+              tokenId: asset.id,
+            };
 
             watchTransactionDialog.open('approveForAll', values);
           } else {
@@ -175,18 +178,7 @@ export function AssetTabs({ address, id }: Props) {
         return;
       }
 
-      const decimals = await getERC20Decimals(order.erc20Token, provider);
-
-      const symbol = await getERC20Symbol(order.erc20Token, provider);
-
       if (accept) {
-        const values = {
-          amount: ethers.utils.formatUnits(order.erc20TokenAmount, decimals),
-          symbol,
-          collectionName: asset.collectionName,
-          id: asset.id,
-        };
-
         trackUserEvent.mutate({
           event:
             'erc1155Token' in order
@@ -196,6 +188,74 @@ export function AssetTabs({ address, id }: Props) {
           hash,
           chainId,
         });
+      } else {
+        const decimals = await getERC20Decimals(order.erc20Token, provider);
+        const symbol = await getERC20Symbol(order.erc20Token, provider);
+        const values = {
+          amount: ethers.utils.formatUnits(order.erc20TokenAmount, decimals),
+          symbol,
+          collectionName: asset.collectionName,
+          id: asset.id,
+        };
+        if (
+          quantity &&
+          quantity > 1 &&
+          'erc1155Token' in order &&
+          order.direction === TradeDirection.SellNFT
+        ) {
+          values.amount = ethers.utils.formatUnits(
+            BigNumber.from(order.erc20TokenAmount)
+              .mul(
+                BigNumber.from(quantity)
+                  .mul(100000)
+                  .div(order.erc1155TokenAmount),
+              )
+              .div(100000),
+
+            decimals,
+          );
+        }
+        trackUserEvent.mutate({
+          event:
+            'erc1155Token' in order
+              ? UserEvents.nftAcceptListERC1155
+              : UserEvents.nftAcceptListERC721,
+          metadata: JSON.stringify(order),
+          hash,
+          chainId,
+        });
+      }
+
+      queryClient.invalidateQueries([GET_NFT_ORDERS]);
+    },
+    [watchTransactionDialog, provider, asset],
+  );
+
+  const handleHashFillSignedOrder = useCallback(
+    async ({
+      hash,
+      accept,
+      order,
+      quantity,
+    }: {
+      hash: string;
+      accept?: boolean;
+      order: SignedNftOrderV4;
+      quantity?: number;
+    }) => {
+      if (provider === undefined || asset === undefined) {
+        return;
+      }
+      const decimals = await getERC20Decimals(order.erc20Token, provider);
+      const symbol = await getERC20Symbol(order.erc20Token, provider);
+
+      if (accept) {
+        const values = {
+          amount: ethers.utils.formatUnits(order.erc20TokenAmount, decimals),
+          symbol,
+          collectionName: asset.collectionName,
+          id: asset.id,
+        };
 
         createNotification({
           type: 'transaction',
@@ -229,16 +289,6 @@ export function AssetTabs({ address, id }: Props) {
           );
         }
 
-        trackUserEvent.mutate({
-          event:
-            'erc1155Token' in order
-              ? UserEvents.nftAcceptListERC1155
-              : UserEvents.nftAcceptListERC721,
-          metadata: JSON.stringify(order),
-          hash,
-          chainId,
-        });
-
         createNotification({
           type: 'transaction',
           subtype: 'buyNft',
@@ -246,8 +296,7 @@ export function AssetTabs({ address, id }: Props) {
           metadata: { chainId, hash },
         });
       }
-
-      queryClient.invalidateQueries([GET_NFT_ORDERS]);
+      watchTransactionDialog.watch(hash);
     },
     [watchTransactionDialog, provider, asset],
   );
@@ -314,11 +363,16 @@ export function AssetTabs({ address, id }: Props) {
     [watchTransactionDialog, asset],
   );
 
-  const fillSignedOrder = useFillSignedOrderMutation(nftSwapSdk, account, {
-    onSuccess: handleBuyOrderSuccess,
-    onError: handleFillSignedOrderError,
-    onMutate: handleMutateSignedOrder,
-  });
+  const fillSignedOrder = useFillSignedOrderMutation(
+    nftSwapSdk,
+    account,
+    {
+      onSuccess: handleBuyOrderSuccess,
+      onError: handleFillSignedOrderError,
+      onMutate: handleMutateSignedOrder,
+    },
+    handleHashFillSignedOrder,
+  );
 
   const handleChangeTab = (
     event: React.SyntheticEvent,

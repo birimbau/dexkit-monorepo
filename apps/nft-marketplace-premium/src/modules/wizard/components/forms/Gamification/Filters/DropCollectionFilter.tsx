@@ -123,6 +123,7 @@ export default function DropCollectionFilterForm({
                     setFieldValue('collectionAddress', undefined);
                   }}
                   labelId="Choose network"
+                  enableTestnet={true}
                 />
               </FormControl>
             </Grid>

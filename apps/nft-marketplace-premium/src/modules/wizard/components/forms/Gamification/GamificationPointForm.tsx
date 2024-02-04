@@ -17,7 +17,7 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import AccordionSummary from '@mui/material/AccordionSummary';
 
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 import * as Yup from 'yup';
 
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -29,6 +29,7 @@ import { useState } from 'react';
 import { useAddAppRankingMutation } from '@/modules/wizard/hooks';
 import { UserEvents } from '@dexkit/core/constants/userEvents';
 import { beautifyCamelCase } from '@dexkit/core/utils';
+import { useSnackbar } from 'notistack';
 import { GamificationPoint } from '../../../types';
 import CollectionFilterForm from './Filters/CollectionFilterForm';
 import DropCollectionFilterForm from './Filters/DropCollectionFilter';
@@ -116,22 +117,60 @@ export default function GamificationPointForm({
   from,
   to,
 }: Props) {
+  const { enqueueSnackbar } = useSnackbar();
+  const { formatMessage } = useIntl();
   const [open, setOpen] = useState(false);
   const mutationAddRanking = useAddAppRankingMutation();
+  const handleAppRankingUpdatedSuccess = () => {
+    enqueueSnackbar(
+      formatMessage({
+        defaultMessage: 'App leaderboard updated',
+        id: 'app.leaderboard.updated',
+      }),
+      {
+        variant: 'success',
+        anchorOrigin: {
+          vertical: 'bottom',
+          horizontal: 'right',
+        },
+      },
+    );
+  };
 
+  const handleAppRankingUpdatedError = () => {
+    enqueueSnackbar(
+      formatMessage({
+        defaultMessage: 'Error on updating app leaderboard',
+        id: 'error.updating.app.leaderboard',
+      }),
+      {
+        variant: 'error',
+        anchorOrigin: {
+          vertical: 'bottom',
+          horizontal: 'right',
+        },
+      },
+    );
+  };
   return (
     <>
       <Formik
         onSubmit={async (values, helper) => {
           console.log(values);
           if (values) {
-            await mutationAddRanking.mutateAsync({
-              siteId,
-              rankingId,
-              from: values.from === '' ? undefined : values.from,
-              to: values.to === '' ? undefined : values.to,
-              settings: values.settings,
-            });
+            await mutationAddRanking.mutateAsync(
+              {
+                siteId,
+                rankingId,
+                from: values.from === '' ? undefined : values.from,
+                to: values.to === '' ? undefined : values.to,
+                settings: values.settings,
+              },
+              {
+                onSuccess: handleAppRankingUpdatedSuccess,
+                onError: handleAppRankingUpdatedError,
+              },
+            );
 
             //   onSubmit(values.settings);
           }

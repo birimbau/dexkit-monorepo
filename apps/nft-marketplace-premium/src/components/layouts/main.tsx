@@ -19,6 +19,7 @@ const AppDrawer = dynamic(() => import('../AppDrawer'));
 
 import { ErrorBoundary } from 'react-error-boundary';
 import { FormattedMessage } from 'react-intl';
+import { Footer } from '../Footer';
 import Navbar from '../Navbar';
 import { GlobalDialogs } from './GlobalDialogs';
 
@@ -124,7 +125,7 @@ const MainLayout: React.FC<Props> = ({
             {children}
           </ErrorBoundary>
         </Box>
-        {/*   <Footer appConfig={appConfig} isPreview={isPreview} appNFT={appNFT} />*/}
+        <Footer appConfig={appConfig} isPreview={isPreview} appNFT={appNFT} />
       </Box>
     </ErrorBoundary>
   );

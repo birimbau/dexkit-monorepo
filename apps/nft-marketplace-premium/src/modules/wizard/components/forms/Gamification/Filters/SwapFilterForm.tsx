@@ -87,6 +87,7 @@ export default function SwapFilterForm({ item, onSubmit, onChange }: Props) {
                     setFieldValue('tokenInAddress', undefined);
                   }}
                   labelId="Choose network"
+                  enableTestnet={true}
                 />
               </FormControl>
             </Grid>

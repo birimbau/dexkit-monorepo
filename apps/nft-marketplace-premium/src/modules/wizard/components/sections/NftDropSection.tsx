@@ -1,5 +1,6 @@
 import { useIsMobile } from '@dexkit/core';
 import { UserEvents } from '@dexkit/core/constants/userEvents';
+import { useDexKitContext } from '@dexkit/ui/hooks';
 import { useTrackUserEventsMutation } from '@dexkit/ui/hooks/userEvents';
 import {
   Avatar,
@@ -41,7 +42,7 @@ export interface NftDropSectionProps {
 export default function NftDropSection({ section }: NftDropSectionProps) {
   const trackUserEventsMutation = useTrackUserEventsMutation();
   const { address, network } = section.settings;
-
+  const { createNotification, watchTransactionDialog } = useDexKitContext();
   const { contract } = useContract(address as string, 'nft-drop');
 
   const { account, chainId } = useWeb3React();
@@ -319,10 +320,28 @@ export default function NftDropSection({ section }: NftDropSectionProps) {
   const nftDropClaim = useClaimNft({ contract });
 
   const handleClaimNft = async () => {
+    const values = {
+      quantity: String(quantity),
+      name: String(contractMetadataQuery.data?.name || ' '),
+    };
+
+    watchTransactionDialog.open('mintNFTDrop', values);
     const transaction = await nftDropClaim.mutateAsync({ quantity });
+
     if (transaction) {
       const tx = await transaction.send();
 
+      watchTransactionDialog.watch(tx.hash);
+
+      createNotification({
+        type: 'transaction',
+        subtype: 'mintNFTDrop',
+        values,
+        metadata: {
+          chainId,
+          hash: tx.hash,
+        },
+      });
       const metadata = {
         name: contractMetadataQuery.data?.name,
         quantity: String(quantity),
@@ -330,9 +349,10 @@ export default function NftDropSection({ section }: NftDropSectionProps) {
         currency: activeClaimCondition.data?.currencyAddress,
         address,
       };
+      await tx.wait(1);
 
       trackUserEventsMutation.mutate({
-        event: UserEvents.buyDropEdition,
+        event: UserEvents.buyDropCollection,
         chainId,
         hash: tx.hash,
         metadata: JSON.stringify(metadata),

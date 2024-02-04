@@ -184,20 +184,20 @@ export function AssetListContractEdition({
                   <Skeleton>
                     <Button>
                       <FormattedMessage
-                        id="view.drop"
-                        defaultMessage={'View drop'}
+                        id="view.nft"
+                        defaultMessage={'View nft'}
                       />
                     </Button>
                   </Skeleton>
                 ) : (
                   <Button
-                    href={`/drop/edition/${network}/${assetSelected?.contractAddress}/${assetSelected?.id}`}
+                    href={`/asset/${network}/${assetSelected?.contractAddress}/${assetSelected?.id}`}
                     target="_blank"
                     endIcon={<OpenInNewIcon />}
                   >
                     <FormattedMessage
-                      id="view.drop"
-                      defaultMessage={'View drop'}
+                      id="view.nft"
+                      defaultMessage={'View nft'}
                     />
                   </Button>
                 )}
@@ -295,7 +295,7 @@ export function AssetListContractEdition({
               <BaseAssetCard
                 asset={asset}
                 onClickCardAction={(a) => setAsset(a)}
-                showControls
+                showControls={false}
               />
             </Grid>
           ))}

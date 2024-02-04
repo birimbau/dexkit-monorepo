@@ -14,10 +14,11 @@ interface Props {
   chainId?: ChainId;
   labelId?: string;
   onChange: (chainId: ChainId) => void;
+  enableTestnet?: boolean;
 }
 
 export function NetworkSelectDropdown(props: Props) {
-  const { chainId, onChange, labelId } = props;
+  const { chainId, onChange, labelId, enableTestnet } = props;
   return (
     <Select
       labelId={labelId}
@@ -43,7 +44,9 @@ export function NetworkSelectDropdown(props: Props) {
       }}
     >
       {Object.keys(NETWORKS)
-        .filter((key) => !NETWORKS[Number(key)].testnet)
+        .filter((key) =>
+          enableTestnet ? true : !NETWORKS[Number(key)].testnet
+        )
         .map((key: any, index: number) => (
           <MenuItem key={index} value={key}>
             <ListItemIcon>

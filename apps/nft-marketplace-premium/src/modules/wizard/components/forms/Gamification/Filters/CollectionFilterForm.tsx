@@ -128,6 +128,7 @@ export default function CollectionFilterForm({
                     setFieldValue('collectionAddress', undefined);
                   }}
                   labelId="Choose network"
+                  enableTestnet={true}
                 />
               </FormControl>
             </Grid>
