@@ -28,14 +28,15 @@ export default function DarkblockWrapper({
       network === 'base' ||
       network === 'avalanche' ||
       network === 'mumbai' ||
-      network === 'goerli'
+      network === 'goerli' ||
+      network === 'optimism'
     ) {
       return (
         <EVMDarkblockWidget
           contractAddress={address as string}
           chainId={NETWORK_FROM_SLUG(network)?.chainId}
           tokenId={tokenId}
-          account={account}
+          account={account?.toLowerCase()}
           provider={provider?.provider}
           cb={() => {}}
         />
