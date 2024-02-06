@@ -37,6 +37,14 @@ module.exports = withBundleAnalyzer(
           'dexkit-storage.nyc3.digitaloceanspaces.com',
         ],
       },
+      async rewrites() {
+        return [
+          {
+            source: '/robots.txt',
+            destination: '/api/robots',
+          },
+        ];
+      },
     }),
   ),
 );
