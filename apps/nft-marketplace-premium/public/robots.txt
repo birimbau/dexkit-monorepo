@@ -1,9 +1,0 @@
-# *
-User-agent: *
-Allow: /
-
-# Host
-Host: https://dexappbuilder.dexkit.com
-
-# Sitemaps
-Sitemap: https://dexappbuilder.dexkit.com/sitemap.xml
