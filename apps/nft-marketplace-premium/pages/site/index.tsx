@@ -5,13 +5,13 @@ import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
-import { dehydrate, QueryClient } from '@tanstack/react-query';
+import { QueryClient, dehydrate } from '@tanstack/react-query';
 import { GetStaticProps, GetStaticPropsContext, NextPage } from 'next';
 import { NextSeo } from 'next-seo';
 import { FormattedMessage, useIntl } from 'react-intl';
-import MainLayout from '../../src/components/layouts/main';
 import Link from '../../src/components/Link';
 import { PageHeader } from '../../src/components/PageHeader';
+import MainLayout from '../../src/components/layouts/main';
 import { useAppConfig } from '../../src/hooks/app';
 import {
   QUERY_WHITELABEL_SITES_QUERY,
@@ -91,13 +91,24 @@ export const SiteIndexPage: NextPage = () => {
                     alt=""
                   />
                   <CardContent>
-                    <Typography gutterBottom variant="h5" component="div">
-                      {site.appConfig.name}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      {site.appConfig?.seo &&
-                        site.appConfig?.seo['home']?.description}
-                    </Typography>
+                    <Stack spacing={2}>
+                      <Typography gutterBottom variant="h5" component="div">
+                        {site.appConfig.name}
+                      </Typography>
+
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        sx={{
+                          overflow: 'hidden',
+                          height: '100px',
+                          textOverflow: 'ellipsis',
+                        }}
+                      >
+                        {site.appConfig?.seo &&
+                          site.appConfig?.seo['home']?.description}
+                      </Typography>
+                    </Stack>
                   </CardContent>
                   <CardActions>
                     <Stack
@@ -106,7 +117,7 @@ export const SiteIndexPage: NextPage = () => {
                       sx={{ pl: 2 }}
                       alignItems={'center'}
                     >
-                      {site.nft ? (
+                      {site.nft && (
                         <Button
                           variant="contained"
                           href={`/asset/${site.nft.networkId}/${
@@ -118,16 +129,6 @@ export const SiteIndexPage: NextPage = () => {
                             defaultMessage={'Buy App'}
                           />
                         </Button>
-                      ) : (
-                        <Link
-                          href={`/admin/create?clone=${site.slug}`}
-                          underline="none"
-                        >
-                          <FormattedMessage
-                            id={'clone'}
-                            defaultMessage={'Clone'}
-                          />
-                        </Link>
                       )}
                       {site.previewUrl && (
                         <Link
@@ -222,7 +223,7 @@ export const getStaticProps: GetStaticProps = async ({
 
   await queryClient.prefetchQuery(
     [QUERY_WHITELABEL_SITES_QUERY],
-    async () => data
+    async () => data,
   );
 
   return {

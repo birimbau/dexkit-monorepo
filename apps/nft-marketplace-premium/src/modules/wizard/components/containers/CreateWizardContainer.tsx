@@ -67,7 +67,7 @@ export function CreateWizardContainer({ slug, isSwapWizard }: Props) {
 
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-  const clonedConfigQuery = useWhitelabelConfigQuery({ slug });
+  const clonedConfigQuery = useWhitelabelConfigQuery({});
 
   const sendConfigMutation = useSendConfigMutation({});
 
