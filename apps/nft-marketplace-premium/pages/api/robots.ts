@@ -13,10 +13,10 @@ User-agent: *
 Allow: /
   
 # Host
-Host: ${domain}
+Host: https://${domain}
   
 # Sitemaps
-Sitemap: ${domain}/sitemap.xml
+Sitemap: https://${domain}/sitemap.xml
   `;
   res.send(robots);
 }
