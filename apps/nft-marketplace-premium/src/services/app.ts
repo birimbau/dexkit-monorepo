@@ -141,6 +141,7 @@ export async function getAppSitemapConfig(
   siteId?: number,
   slug?: string
 }> {
+
   /**/
   if (site === 'boredapes.dexkit.com') {
     return Promise.resolve({
@@ -183,11 +184,12 @@ export async function getAppSitemapConfig(
     return Promise.resolve({ appConfig: appConfigJson as AppConfig });
   }
 
-  if (site?.startsWith('dexkit.app')) {
-    const slug = site.split(':');
-    if (slug.length > 1) {
+  if (site?.endsWith('.dexkit.app')) {
+    const slug = site.split('.dexkit.app')[0];
+
+    if (slug) {
       const configResponse = await (
-        await getSitemapConfig({ slug: slug[1] })
+        await getSitemapConfig({ slug: slug })
       ).data;
       if (configResponse) {
         return {
