@@ -1,7 +1,7 @@
 import { useWeb3React } from '@web3-react/core';
 import jwt_decode from 'jwt-decode';
-import { ReactNode, useEffect, useState } from 'react';
-import { AuthContext, AuthUser } from '../contexts';
+import { ReactNode, useContext, useEffect, useState } from 'react';
+import { AuthContext, AuthStateContext } from '../contexts';
 import { useLoginAccountMutation } from '../hooks/account';
 import { getAccessToken, getAccessTokenAndRefresh } from '../services/auth';
 interface Props {
@@ -11,13 +11,14 @@ interface Props {
 export function AuthProvider(props: Props) {
   const { account } = useWeb3React();
   const [triedLogin, setTriedLogin] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [user, setUser] = useState<AuthUser | undefined>(undefined);
+  const { isLoggedIn, setIsLoggedIn, user, setUser } =
+    useContext(AuthStateContext);
+
   const loginMutation = useLoginAccountMutation();
   const { children } = props;
 
   useEffect(() => {
-    if (account && !isLoggedIn && triedLogin) {
+    if (account && !isLoggedIn && triedLogin && setIsLoggedIn && setUser) {
       loginMutation.mutateAsync().then((d) => {
         setIsLoggedIn(true);
         if (d?.access_token) {
@@ -25,21 +26,23 @@ export function AuthProvider(props: Props) {
         }
       });
     }
-  }, [account, isLoggedIn, triedLogin]);
+  }, [account, isLoggedIn, triedLogin, setIsLoggedIn, setUser]);
 
   useEffect(() => {
-    if (isLoggedIn) {
-      const accessToken = getAccessToken();
-      if (accessToken) {
-        setUser(jwt_decode(accessToken));
+    if (setUser) {
+      if (isLoggedIn) {
+        const accessToken = getAccessToken();
+        if (accessToken) {
+          setUser(jwt_decode(accessToken));
+        }
+      } else {
+        setUser(undefined);
       }
-    } else {
-      setUser(undefined);
     }
-  }, [isLoggedIn]);
+  }, [isLoggedIn, setUser]);
 
   useEffect(() => {
-    if (account) {
+    if (account && setIsLoggedIn && setUser) {
       getAccessTokenAndRefresh()
         .then((accessToken) => {
           if (accessToken) {

@@ -122,11 +122,11 @@ export interface AppConfig {
   name: string;
   locale?: string;
   hide_powered_by?: boolean;
+  activeChainIds?: number[];
   font?: {
     family: string;
     category?: string;
   }
-  activeChainIds?: number[];
   defaultThemeMode?: ThemeMode;
   theme: string;
   customTheme?: string;
@@ -170,7 +170,7 @@ export interface AppConfig {
   footerMenuTree?: MenuTree[];
   collections?: AppCollection[];
   seo?: {
-    home?: PageSeo;
+    [key: string | 'home']: PageSeo;
   };
   analytics?: {
     gtag?: string;

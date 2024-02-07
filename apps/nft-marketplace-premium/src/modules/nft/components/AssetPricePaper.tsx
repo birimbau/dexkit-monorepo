@@ -9,6 +9,7 @@ import DollarSquare from '../../../components/icons/DollarSquare';
 import { useDexKitContext } from '@dexkit/ui/hooks';
 import { useQueryClient } from '@tanstack/react-query';
 import { SwappableAssetV4 } from '@traderxyz/nft-swap-sdk';
+import dynamic from 'next/dynamic';
 import {
   useConnectWalletDialog,
   useSignMessageDialog,
@@ -28,8 +29,8 @@ import { getERC20Name, getERC20Symbol } from '../../../services/balances';
 import { isAddressEqual } from '../../../utils/blockchain';
 import { getAssetProtocol, isERC1155Owner } from '../../../utils/nfts';
 import { TransferAssetButton } from './TransferAssetButton';
-import { MakeListingDialog } from './dialogs/MakeListingDialog';
-import { MakeOfferDialog } from './dialogs/MakeOfferDialog';
+const MakeListingDialog = dynamic(() => import('./dialogs/MakeListingDialog'));
+const MakeOfferDialog = dynamic(() => import('./dialogs/MakeOfferDialog'));
 
 interface Props {
   address: string;
@@ -332,30 +333,34 @@ export function AssetPricePaper({ address, id }: Props) {
 
   return (
     <>
-      <MakeListingDialog
-        dialogProps={{
-          open: openMakeListing,
-          fullWidth: true,
-          maxWidth: 'sm',
-          onClose: handleCloseMakeListingDialog,
-        }}
-        tokenList={tokenList ? tokenList : []}
-        assetBalance={assetBalance}
-        onConfirm={handleConfirmMakeListing}
-        asset={asset}
-        metadata={metadata}
-      />
-      <MakeOfferDialog
-        dialogProps={{
-          open: openMakeOffer,
-          fullWidth: true,
-          maxWidth: 'sm',
-          onClose: handleCloseMakeOfferDialog,
-        }}
-        onConfirm={handleConfirmMakeOffer}
-        account={account}
-        asset={asset}
-      />
+      {openMakeListing && (
+        <MakeListingDialog
+          dialogProps={{
+            open: openMakeListing,
+            fullWidth: true,
+            maxWidth: 'sm',
+            onClose: handleCloseMakeListingDialog,
+          }}
+          tokenList={tokenList ? tokenList : []}
+          assetBalance={assetBalance}
+          onConfirm={handleConfirmMakeListing}
+          asset={asset}
+          metadata={metadata}
+        />
+      )}
+      {openMakeOffer && (
+        <MakeOfferDialog
+          dialogProps={{
+            open: openMakeOffer,
+            fullWidth: true,
+            maxWidth: 'sm',
+            onClose: handleCloseMakeOfferDialog,
+          }}
+          onConfirm={handleConfirmMakeOffer}
+          account={account}
+          asset={asset}
+        />
+      )}
       <Grid item xs={12}>
         <Paper variant="outlined" sx={{ p: 2 }}>
           <Stack spacing={2} direction="row" alignItems="center">

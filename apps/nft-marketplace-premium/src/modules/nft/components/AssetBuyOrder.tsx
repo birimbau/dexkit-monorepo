@@ -14,7 +14,6 @@ import {
   useSwapSdkV4,
 } from '../../../hooks/nft';
 import { isAddressEqual } from '../../../utils/blockchain';
-import { ConfirmBuyDialog } from './dialogs/ConfirmBuyDialog';
 import TableSkeleton from './tables/TableSkeleton';
 
 import { UserEvents } from '@dexkit/core/constants/userEvents';
@@ -26,6 +25,7 @@ import {
   TradeDirection,
 } from '@traderxyz/nft-swap-sdk';
 import { BigNumber, ethers } from 'ethers';
+import dynamic from 'next/dynamic';
 import { useConnectWalletDialog } from 'src/hooks/app';
 import { OrderDirection } from 'src/types/orderbook';
 import { useSwitchNetwork, useTokenList } from '../../../hooks/blockchain';
@@ -38,6 +38,8 @@ import { Asset, OrderBookItem, SwapApiOrder } from '../../../types/nft';
 import { getAssetProtocol } from '../../../utils/nfts';
 import { AssetBuyOrderPrice } from './AssetBuyOrderPrice';
 import ShareDialog from './dialogs/ShareDialog';
+
+const ConfirmBuyDialog = dynamic(() => import('./dialogs/ConfirmBuyDialog'));
 
 interface Props {
   orderBookItem?: OrderBookItem;
@@ -445,23 +447,23 @@ export function AssetBuyOrder({ asset, orderBookItem }: Props) {
 
   return (
     <NoSsr>
-      <ConfirmBuyDialog
-        tokens={tokens}
-        asset={asset}
-        metadata={asset?.metadata}
-        order={orderBookItem}
-        dialogProps={{
-          open: openConfirmBuy,
-          fullWidth: true,
-          maxWidth: 'sm',
-          onClose: handleCloseConfirmBuy,
-        }}
-        onConfirm={({ quantity }) => {
-          console.log(quantity);
-
-          handleConfirmBuy({ quantity });
-        }}
-      />
+      {openConfirmBuy && (
+        <ConfirmBuyDialog
+          tokens={tokens}
+          asset={asset}
+          metadata={asset?.metadata}
+          order={orderBookItem}
+          dialogProps={{
+            open: openConfirmBuy,
+            fullWidth: true,
+            maxWidth: 'sm',
+            onClose: handleCloseConfirmBuy,
+          }}
+          onConfirm={({ quantity }) => {
+            handleConfirmBuy({ quantity });
+          }}
+        />
+      )}
       <ShareDialog
         dialogProps={{
           open: openShare,

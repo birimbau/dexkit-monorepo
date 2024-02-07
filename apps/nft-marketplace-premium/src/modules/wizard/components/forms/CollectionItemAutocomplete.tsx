@@ -22,25 +22,41 @@ interface Props {
     contractAddress?: string;
     backgroundImageUrl?: string;
   };
+  filterByChainId?: boolean;
+  chainId?: number;
   onChange: (formValue: any) => void;
+  disabled?: boolean;
 }
 
 export function CollectionItemAutocomplete(props: Props) {
-  const { formValue, onChange } = props;
+  const { formValue, onChange, filterByChainId, chainId, disabled } = props;
   const { wizardConfig } = useAppWizardConfig();
   const [collectionValue, setCollectionValue] = useState<Data | undefined>();
 
   const collections =
-    wizardConfig.collections?.map((value) => {
-      return {
-        name: value.name,
-        contractAddress: value.contractAddress,
-        backgroundImage: value.backgroundImage,
-        network: getChainName(value.chainId) as string,
-        chainId: value.chainId,
-        image: value.image,
-      };
-    }) || [];
+    filterByChainId && chainId
+      ? wizardConfig.collections
+          ?.filter((c) => c.chainId === chainId)
+          .map((value) => {
+            return {
+              name: value.name,
+              contractAddress: value.contractAddress,
+              backgroundImage: value.backgroundImage,
+              network: getChainName(value.chainId) as string,
+              chainId: value.chainId,
+              image: value.image,
+            };
+          }) || []
+      : wizardConfig.collections?.map((value) => {
+          return {
+            name: value.name,
+            contractAddress: value.contractAddress,
+            backgroundImage: value.backgroundImage,
+            network: getChainName(value.chainId) as string,
+            chainId: value.chainId,
+            image: value.image,
+          };
+        }) || [];
 
   useEffect(() => {
     if (
@@ -54,7 +70,7 @@ export function CollectionItemAutocomplete(props: Props) {
         (c) =>
           Number(c.chainId) === Number(formValue.chainId) &&
           c.contractAddress?.toLowerCase() ===
-            formValue.contractAddress?.toLowerCase()
+            formValue.contractAddress?.toLowerCase(),
       );
       if (coll) {
         setCollectionValue({ ...coll });
@@ -79,6 +95,7 @@ export function CollectionItemAutocomplete(props: Props) {
         op?.contractAddress?.toLowerCase() ===
           val?.contractAddress?.toLowerCase()
       }
+      disabled={disabled}
       onChange={(_change, value) => {
         if (value) {
           onChange({
@@ -110,7 +127,7 @@ export function CollectionItemAutocomplete(props: Props) {
           label="Choose a collection"
           inputProps={{
             ...params.inputProps,
-            autoComplete: 'new-password', // disable autocomplete and autofill
+            autoComplete: 'off', // disable autocomplete and autofill
           }}
         />
       )}
