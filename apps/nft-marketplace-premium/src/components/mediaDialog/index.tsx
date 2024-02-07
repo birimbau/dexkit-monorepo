@@ -16,11 +16,25 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
 
-import { FormattedMessage } from 'react-intl';
-import { AppDialogTitle } from '../AppDialogTitle';
 import BrowseGalleryIcon from '@mui/icons-material/BrowseGallery';
+import CheckIcon from '@mui/icons-material/Check';
+import ClearIcon from '@mui/icons-material/Clear';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import SearchIcon from '@mui/icons-material/Search';
+import IconButton from '@mui/material/IconButton';
+import Pagination from '@mui/material/Pagination';
+import { useWeb3React } from '@web3-react/core';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { FormattedMessage } from 'react-intl';
+import { truncateText } from 'src/utils/text';
+import { MAX_ACCOUNT_FILE_UPLOAD_SIZE } from '../../constants';
+import { useConnectWalletDialog } from '../../hooks/app';
 import {
   useDeleteAccountFile,
   useEditAccountFile,
@@ -29,18 +43,8 @@ import {
 } from '../../hooks/file';
 import { AccountFile } from '../../types/file';
 import AppConfirmDialog from '../AppConfirmDialog';
+import { AppDialogTitle } from '../AppDialogTitle';
 import DeleteImageDialog from './DeleteImageDialog';
-import DeleteIcon from '@mui/icons-material/Delete';
-import IconButton from '@mui/material/IconButton';
-import Pagination from '@mui/material/Pagination';
-import SearchIcon from '@mui/icons-material/Search';
-import { useWeb3React } from '@web3-react/core';
-import { useConnectWalletDialog } from '../../hooks/app';
-import { MAX_ACCOUNT_FILE_UPLOAD_SIZE } from '../../constants';
-import EditIcon from '@mui/icons-material/Edit';
-import { truncateText } from 'src/utils/text';
-import CheckIcon from '@mui/icons-material/Check';
-import ClearIcon from '@mui/icons-material/Clear';
 
 interface Props {
   dialogProps: DialogProps;
@@ -75,7 +79,16 @@ export default function MediaDialog({
   const { setOpen } = useConnectWalletDialog();
   const [page, setPage] = useState(0);
   const [search, setSearch] = useState<string>();
-  const filesQuery = useGetAccountFiles({ skip: page * 20, search });
+  const [sortCreatedAt, setSortCreatedAt] = useState('desc');
+  const filesQuery = useGetAccountFiles({
+    skip: page * 20,
+    search,
+    sort: ['createdAt', sortCreatedAt],
+  });
+
+  const handleChangeSortBy = (event: SelectChangeEvent) => {
+    setSortCreatedAt(event.target.value);
+  };
 
   const [file, setFile] = useState<File>();
 
@@ -104,6 +117,7 @@ export default function MediaDialog({
     if (onClose) {
       onClose({}, 'backdropClick');
     }
+    setSearch(undefined);
     setSelectedFile(undefined);
   };
 
@@ -157,7 +171,7 @@ export default function MediaDialog({
         { id: selectedFile.id, newFileName: newFileName },
         {
           onSuccess: () => filesQuery.refetch(),
-        }
+        },
       );
       setNewFileName(undefined);
       setEditFileName(undefined);
@@ -241,8 +255,8 @@ export default function MediaDialog({
         />
         <DialogContent dividers>
           <Grid container spacing={2}>
-            <Grid container item xs={12} justifyContent={'flex-end'}>
-              <Box sx={{ pr: 2 }}>
+            <Grid item xs={12}>
+              <Box sx={{ pr: 2 }} justifyContent={'flex-end'} display={'flex'}>
                 <input
                   onChange={handleChange}
                   type="file"
@@ -359,28 +373,68 @@ export default function MediaDialog({
                   {fileUploadMutation.isError && (
                     <Box sx={{ p: 2 }}>
                       <FormattedMessage id="reason" defaultMessage="Reason" />:{' '}
-                      {`${
-                        (fileUploadMutation.error as any)?.response?.data
-                          ?.message
-                      }`}
+                      {`${(fileUploadMutation.error as any)?.response?.data
+                        ?.message}`}
                     </Box>
                   )}
                 </Stack>
               </Grid>
             )}
-            <Grid item xs={12} container justifyContent={'flex-end'}>
-              <TextField
-                label={<FormattedMessage id="search" defaultMessage="Search" />}
-                onChange={(ev) => setSearch(ev.currentTarget.value)}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <SearchIcon />
-                    </InputAdornment>
-                  ),
-                }}
-                variant="standard"
-              />
+            <Grid item xs={12}>
+              <Box
+                display={'flex'}
+                justifyContent={'space-between'}
+                alignItems={'center'}
+              >
+                <FormControl sx={{ m: 1, minWidth: 120 }}>
+                  <InputLabel id="select-order-by-date">
+                    <FormattedMessage
+                      id={'sort.by'}
+                      defaultMessage={'Sort by'}
+                    />
+                  </InputLabel>
+                  <Select
+                    labelId="select-order-by-date"
+                    id="demo-simple-select-helper"
+                    value={sortCreatedAt}
+                    label={
+                      <FormattedMessage
+                        id={'sort.by'}
+                        defaultMessage={'Sort by'}
+                      />
+                    }
+                    onChange={handleChangeSortBy}
+                  >
+                    <MenuItem value={'desc'}>
+                      <FormattedMessage
+                        id={'most.recent'}
+                        defaultMessage={'Most recent'}
+                      />
+                    </MenuItem>
+                    <MenuItem value={'asc'}>
+                      <FormattedMessage
+                        id={'least.recent'}
+                        defaultMessage={'Least recent'}
+                      />
+                    </MenuItem>
+                  </Select>
+                </FormControl>
+
+                <TextField
+                  label={
+                    <FormattedMessage id="search" defaultMessage="Search" />
+                  }
+                  onChange={(ev) => setSearch(ev.currentTarget.value)}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <SearchIcon />
+                      </InputAdornment>
+                    ),
+                  }}
+                  variant="standard"
+                />
+              </Box>
             </Grid>
             {!file && (
               <Grid item xs={12} container justifyContent={'center'}>
@@ -534,7 +588,7 @@ export default function MediaDialog({
                         </Typography>
                       )}
                     </Box>
-                    {selectedFile?.id === f.id && (
+                    {selectedFile?.id === f.id && !editFileName && (
                       <Box>
                         <IconButton
                           aria-label="delete"
@@ -564,7 +618,7 @@ export default function MediaDialog({
                     onChange={(_ev, _page) => setPage(_page - 1)}
                     count={
                       Math.floor(
-                        filesQuery?.data?.total / filesQuery?.data?.take
+                        filesQuery?.data?.total / filesQuery?.data?.take,
                       ) + 1
                     }
                   />
