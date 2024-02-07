@@ -11,6 +11,8 @@ import { isAddressEqual } from '../../../utils/blockchain';
 import { ChainId } from '@dexkit/core/constants';
 import { styled, useTheme } from '@mui/material';
 import Image from 'next/image';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { useAppConfig } from '../../../hooks/app';
 
 const Img = styled(Image)({});
@@ -34,8 +36,16 @@ export function CollectionHeader(props: Props) {
         (c) =>
           c.chainId === collection?.chainId &&
           isAddressEqual(c.contractAddress, collection?.address),
-      )?.backgroundImage || collection?.imageUrl
+      )?.image || collection?.imageUrl
     );
+  }, [collection]);
+
+  const collectionBackgroundImage = useMemo(() => {
+    return appConfig.collections?.find(
+      (c) =>
+        c.chainId === collection?.chainId &&
+        isAddressEqual(c.contractAddress, collection?.address),
+    )?.backgroundImage;
   }, [collection]);
 
   const theme = useTheme();
@@ -44,36 +54,45 @@ export function CollectionHeader(props: Props) {
     <Grid container spacing={2}>
       <Grid item xs={12}>
         <Grid container spacing={2}>
-          <Grid item xs={12}>
+          <Grid
+            item
+            xs={12}
+            sx={{
+              backgroundImage: collectionBackgroundImage
+                ? `url(${collectionBackgroundImage})`
+                : undefined,
+              height: theme.spacing(20),
+              width: theme.spacing(20),
+              display: 'flex',
+              flex: 1,
+              flexDirection: 'column',
+            }}
+          >
             <Box
               sx={{
                 display: 'flex',
                 algnItems: 'center',
                 alignContent: 'center',
                 justifyContent: { xs: 'center', sm: 'left' },
+                marginTop: 'auto',
               }}
             >
               {collectionImage ? (
-                <Box
-                  sx={(theme) => ({
-                    position: 'relative',
-                    height: theme.spacing(14),
-                    width: theme.spacing(14),
-                    borderRadius: '50%',
-                  })}
-                >
-                  <img
-                    src={collectionImage}
-                    alt={collection?.name}
-                    height={theme.spacing(14)}
-                    width={theme.spacing(14)}
-                  />
-                </Box>
-              ) : (
                 <Avatar
                   sx={(theme) => ({
                     height: theme.spacing(14),
-                    width: theme.spacing(14),
+                    width: theme.spacing(20),
+                  })}
+                  variant="square"
+                  src={collectionImage}
+                  alt={collection?.name}
+                />
+              ) : (
+                <Avatar
+                  variant="square"
+                  sx={(theme) => ({
+                    height: theme.spacing(14),
+                    width: theme.spacing(20),
                   })}
                 />
               )}
@@ -105,7 +124,9 @@ export function CollectionHeader(props: Props) {
                 variant="body2"
                 component="p"
               >
-                {collection?.description}
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                  {collection?.description}
+                </ReactMarkdown>
               </Typography>
             </Grid>
           )}

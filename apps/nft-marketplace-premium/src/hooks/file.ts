@@ -1,7 +1,6 @@
-import { useWeb3React } from "@web3-react/core";
-import axios from "axios";
-import { useState } from "react";
 import { useMutation, useQuery } from '@tanstack/react-query';
+import { useWeb3React } from "@web3-react/core";
+import { useState } from "react";
 import { deleteAccountFile, editAccountFile, getFilesByOwner, uploadAccountFile } from "../services/fileUploader";
 import { useAuth, useLoginAccountMutation } from "./account";
 
@@ -57,14 +56,14 @@ export function useEditAccountFile() {
 
 const GET_ACCOUNT_FILES_BY_OWNER = 'GET_ACCOUNT_FILES_BY_OWNER';
 
-export function useGetAccountFiles({ skip, search }: { skip?: number, search?: string }) {
+export function useGetAccountFiles({ skip, search, sort }: { skip?: number, search?: string, sort?: string[] }) {
   const { account } = useWeb3React()
 
-  return useQuery([GET_ACCOUNT_FILES_BY_OWNER, account, search, skip], async () => {
+  return useQuery([GET_ACCOUNT_FILES_BY_OWNER, account, search, skip, sort], async () => {
     if (!account) {
       return;
     }
-    const files = await getFilesByOwner(account, 20, skip, search);
+    const files = await getFilesByOwner(account, 20, skip, search, sort);
     return files.data;
 
   })
