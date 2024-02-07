@@ -1,33 +1,32 @@
 import { Box } from '@mui/material';
-import dynamic from 'next/dynamic';
 import Image from 'next/future/image';
-import { useState } from 'react';
 import { useIntl } from 'react-intl';
+import useLightbox from 'src/components/lightBox/useLightBox';
 import { isWhitelistedDomain } from '../../../utils/image';
 import { ipfsUriToUrl } from '../../../utils/ipfs';
-const LightBoxDialog = dynamic(() => import('src/components/LightBoxDialog'));
 
 interface Props {
   src: string;
+  enableLightBox?: boolean;
 }
 
-export function AssetImage({ src }: Props) {
+export function AssetImage({ src, enableLightBox }: Props) {
   const { formatMessage } = useIntl();
-  const [openLightBox, setOpenLightBox] = useState(false);
+  const { openLightbox, renderLightbox } = useLightbox();
 
   return (
     <>
-      {openLightBox && (
-        <LightBoxDialog
-          imageUrl={ipfsUriToUrl(src)}
-          open={openLightBox}
-          onClose={() => {
-            setOpenLightBox(false);
-          }}
-        />
-      )}
+      {renderLightbox({
+        slides: [
+          {
+            src: ipfsUriToUrl(src),
+            alt: 'Image zoomed',
+          },
+        ],
+        render: { buttonNext: () => null, buttonPrev: () => null },
+      })}
       <Box
-        onClick={() => setOpenLightBox(true)}
+        onClick={enableLightBox ? openLightbox : undefined}
         sx={{
           position: 'relative',
           width: '100%',
