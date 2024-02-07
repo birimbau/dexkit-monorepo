@@ -96,3 +96,9 @@ export type AssetFormType = {
   enableDrops?: boolean; // only on edition
   enableDarkblock?: boolean;
 };
+
+export interface GamificationPoint {
+  userEventType?: string;
+  points?: number;
+  filter?: string;
+}

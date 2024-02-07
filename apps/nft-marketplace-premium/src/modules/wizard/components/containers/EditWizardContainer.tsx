@@ -55,6 +55,7 @@ import { ConfirmationEmailMessage } from '../ConfirmationEmailMessage';
 import { PreviewAppButton } from '../PreviewAppButton';
 import { WelcomeMessage } from '../WelcomeMessage';
 import SignConfigDialog from '../dialogs/SignConfigDialog';
+import RankingWizardContainer from './RankingWizardContainer';
 
 const NetworksWizardContainer = dynamic(
   () => import('./NetworksWizardContainer'),
@@ -126,6 +127,7 @@ export enum ActiveMenu {
   Tokens = 'tokens',
   Ownership = 'ownership',
   Integrations = 'integrations',
+  Rankings = 'rankings',
   Networks = 'networks',
 }
 
@@ -465,6 +467,7 @@ export function EditWizardContainer({ site }: Props) {
                   />
                 </ListItemButton>
               </ListItem>
+
               <ListItem disablePadding>
                 <ListItemButton
                   onClick={() => handleChangeTab(ActiveMenu.Menu)}
@@ -673,6 +676,22 @@ export function EditWizardContainer({ site }: Props) {
                         <FormattedMessage
                           id="events"
                           defaultMessage={'Events'}
+                        />
+                      }
+                    />
+                  </ListItemButton>
+                </ListItem>
+                <ListItem
+                  disablePadding
+                  onClick={() => handleChangeTab(ActiveMenu.Rankings)}
+                  selected={activeMenu === ActiveMenu.Rankings}
+                >
+                  <ListItemButton>
+                    <ListItemText
+                      primary={
+                        <FormattedMessage
+                          id="leaderboard"
+                          defaultMessage={'Leaderboard'}
                         />
                       }
                     />
@@ -1048,6 +1067,12 @@ export function EditWizardContainer({ site }: Props) {
                       onChange={handleChange}
                     />
                   )}
+
+                  {activeMenu === ActiveMenu.Rankings &&
+                    site?.owner?.toLowerCase() ===
+                      user?.address?.toLowerCase() && (
+                      <RankingWizardContainer siteId={site?.id} />
+                    )}
 
                   {activeMenu === ActiveMenu.Tokens && config && (
                     <TokenWizardContainer

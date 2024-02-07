@@ -17,13 +17,14 @@ import DexGeneratorSectionForm from '../forms/DexGeneratorSectionForm';
 import ExchangeSectionSettingsForm from '../forms/ExchangeSectionSettingsForm';
 import FeaturedSectionForm from '../forms/FeaturedSectionForm';
 import MDSectionForm from '../forms/MDSectionForm';
+import { RankingSectionForm } from '../forms/RankingSectionForm';
 import { SwapConfigSectionForm } from '../forms/SwapConfigSectionForm';
 import { UserContractForm } from '../forms/UserContractForm';
 import VideoSectionForm from '../forms/VideoSectionForm';
 import WalletSectionForm from '../forms/WalletSectionForm';
 
 const ApiKeyIntegrationDialog = dynamic(
-  () => import('../dialogs/ApiKeyIntegrationDialog')
+  () => import('../dialogs/ApiKeyIntegrationDialog'),
 );
 
 interface Props {
@@ -261,6 +262,17 @@ export function SectionFormRender({
           />
         </DexkitApiProvider.Provider>
       </Box>
+    );
+  } else if (sectionType === 'ranking') {
+    return (
+      <RankingSectionForm
+        onCancel={onClose}
+        onSave={onSave}
+        onChange={onChange}
+        saveOnChange={true}
+        showSaveButton={true}
+        section={section?.type === sectionType ? section : undefined}
+      />
     );
   }
 

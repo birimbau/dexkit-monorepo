@@ -1,4 +1,5 @@
 import { NETWORKS } from '@dexkit/core/constants/networks';
+import { useTokenList } from '@dexkit/ui';
 import { Stack } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
@@ -168,5 +169,37 @@ export function SearchTokenAutocomplete(props: Props) {
         </>
       )}
     />
+  );
+}
+
+export function SearchTokenAutocompleteWithTokens(props: Props) {
+  const { data, chainId } = props;
+
+  const tokens = useTokenList({ chainId, includeNative: true });
+
+  const formValue = useMemo(() => {
+    const token = tokens.find(
+      (tk) =>
+        tk?.address?.toLowerCase() === data?.address?.toLowerCase() &&
+        tk?.chainId === data?.chainId,
+    );
+
+    if (token) {
+      return {
+        name: (token.name as string) || '',
+        address: token.address.toLowerCase(),
+        symbol: token.symbol,
+        network: Object.values(NETWORKS).find(
+          (n) => n.chainId === token?.chainId,
+        )?.name,
+        chainId: token.chainId as number,
+        logoURI: token?.logoURI,
+        decimals: token.decimals,
+      };
+    }
+  }, [data, tokens]);
+
+  return (
+    <SearchTokenAutocomplete {...props} data={formValue} tokens={tokens} />
   );
 }

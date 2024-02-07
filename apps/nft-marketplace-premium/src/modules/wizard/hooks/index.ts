@@ -13,14 +13,17 @@ import { AppConfig } from 'src/types/config';
 import {
   addPermissionsMemberSite,
   checkGatedConditions,
+  createSiteRankingVersion,
+  deleteAppRanking,
   deleteAppVersion,
   deleteMemberSite,
   getTokenList,
   requestEmailConfirmatioForSite,
   setAppVersion,
+  updateSiteRankingVersion,
   upsertAppVersion
 } from '../services';
-import { GatedCondition } from '../types';
+import { GamificationPoint, GatedCondition } from '../types';
 import { generateCSSVarsTheme } from '../utils';
 
 export const TOKEN_LIST_URL = 'TOKEN_LIST_URL';
@@ -186,6 +189,7 @@ export function useAddAppVersionMutation() {
   });
 }
 
+
 export function useDeleteAppVersionMutation() {
 
   const query = useQueryClient()
@@ -300,3 +304,147 @@ export function useAppVersionQuery({
 }
 
 
+// Site rankings
+
+export function useAddAppRankingMutation() {
+
+  const query = useQueryClient()
+
+  return useMutation(async ({ siteId, title, from, to, description, rankingId, settings }: { siteId?: number, title?: string, description?: string, rankingId?: number, settings?: GamificationPoint[], from?: string, to?: string }) => {
+
+    if (!siteId) {
+      throw Error('missing data to update')
+    }
+    if (rankingId) {
+      await updateSiteRankingVersion({ siteId, title, description, rankingId, settings, from, to })
+    } else {
+      await createSiteRankingVersion({ siteId, title, description, settings });
+    }
+
+    query.refetchQueries([GET_APP_RANKINGS_QUERY])
+    if (rankingId) {
+      query.refetchQueries([GET_APP_RANKING_QUERY])
+    }
+
+    return true
+  });
+}
+
+
+export function useDeleteAppRankingMutation() {
+
+  const query = useQueryClient()
+
+  return useMutation(async ({ siteId, rankingId }: { siteId?: number, rankingId?: number }) => {
+    if (!siteId || !rankingId) {
+      throw Error('missing data to update')
+    }
+    await deleteAppRanking({ siteId, rankingId });
+    query.refetchQueries([GET_APP_RANKINGS_QUERY])
+    return true
+  });
+}
+
+export const GET_APP_RANKINGS_QUERY = 'GET_APP_RANKINGS_QUERY'
+
+export function useAppRankingListQuery({
+  siteId,
+  page = 0,
+  pageSize = 10,
+  sort,
+
+  filter,
+}: {
+
+  page?: number;
+  pageSize?: number;
+  siteId?: number;
+  sort?: string[];
+  filter?: any;
+}) {
+
+  return useQuery<{
+    data: {
+      id: number;
+      title: string;
+      description: string;
+    }[];
+    skip?: number;
+    take?: number;
+    total?: number;
+  }>(
+    [GET_APP_RANKINGS_QUERY, sort, page, pageSize, filter, siteId],
+    async () => {
+      if (!siteId) {
+        return { data: [] };
+      }
+
+
+      return (
+        await myAppsApi.get<{
+          data: {
+            id: number;
+            title: string;
+            description: string;
+          }[];
+          skip?: number;
+          take?: number;
+          total?: number;
+        }>(`/site-ranking/all/${siteId}`, {
+          params: { skip: page * pageSize, take: pageSize, sort, filter: filter ? JSON.stringify(filter) : undefined },
+        })
+      ).data;
+
+    }
+  );
+}
+
+export const GET_APP_RANKING_QUERY = 'GET_APP_RANKING_QUERY'
+export function useAppRankingQuery({
+  rankingId,
+  filter,
+}: {
+  filter?: any;
+  rankingId?: number;
+
+}) {
+
+  return useQuery<{
+    ranking?: {
+      id: number;
+      title: string;
+      description: string;
+    },
+    data: {
+      account: string;
+      points: number;
+    }[];
+  }>(
+    [GET_APP_RANKING_QUERY, rankingId],
+    async () => {
+      if (!rankingId) {
+        return { data: [] };
+      }
+
+      return (
+        await myAppsApi.get<{
+          ranking: {
+            id: number;
+            title: string;
+            description: string;
+          },
+          data: {
+            account: string;
+            points: number;
+          }[];
+          skip?: number;
+          take?: number;
+          total?: number;
+        }>(`/site-ranking/ranking/${rankingId}`, {
+          params: { filter: filter ? JSON.stringify(filter) : undefined },
+        })
+      ).data;
+
+    }
+  );
+}

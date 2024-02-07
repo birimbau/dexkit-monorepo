@@ -43,6 +43,7 @@ import {
 } from "../types";
 
 import { providers, utils } from "ethers";
+import { AdminContext } from "../context/AdminContext";
 
 export * from "./auth";
 export * from "./blockchain";
@@ -567,4 +568,11 @@ export function useExecuteTransactionsDialog() {
     handleClose,
     execute,
   };
+}
+
+
+export function useEditSiteId() {
+  const { editSiteId } = useContext(AdminContext);
+
+  return { editSiteId }
 }

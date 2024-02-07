@@ -46,7 +46,7 @@ export const getStaticProps: GetStaticProps = async ({
     }
   }
 
-  /*for (let section of homePage.sections) {
+  /* for (let section of homePage.sections) {
     if (
       section.type === 'featured' ||
       section.type === 'call-to-action' ||

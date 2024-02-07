@@ -15,7 +15,7 @@ interface ContractNftDropContainerProps {
   network: string;
 }
 
-export function ContractNftDropContainer({
+export default function ContractNftDropContainer({
   address,
   network,
 }: ContractNftDropContainerProps) {

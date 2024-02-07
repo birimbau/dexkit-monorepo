@@ -15,7 +15,7 @@ interface Props {
   network: string;
 }
 
-export function ContractNftContainer({ address, network }: Props) {
+export default function ContractNftContainer({ address, network }: Props) {
   const { data: contract } = useContract(address, 'nft-collection');
   const { data, isLoading, error } = useContractType(address);
 

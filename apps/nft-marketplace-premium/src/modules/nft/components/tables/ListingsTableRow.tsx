@@ -69,7 +69,10 @@ export function ListingsTableRow({
 
   const totalInCurrency = useMemo(() => {
     if (token && currency && order) {
-      if (coinPricesQuery?.data) {
+      if (
+        coinPricesQuery?.data &&
+        `${token.address.toLowerCase()}` in coinPricesQuery.data
+      ) {
         let ratio = 0;
 
         const tokenData = coinPricesQuery.data[token.address.toLowerCase()];
@@ -127,8 +130,10 @@ export function ListingsTableRow({
             <FormattedNumber value={totalInCurrency} currency={currency} />{' '}
             {currency.toUpperCase()}
           </>
-        ) : (
+        ) : coinPricesQuery.isLoading ? (
           <Skeleton />
+        ) : (
+          ''
         )}
       </TableCell>
       <TableCell>

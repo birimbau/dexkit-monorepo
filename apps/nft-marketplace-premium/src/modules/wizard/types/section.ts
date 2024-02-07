@@ -36,7 +36,10 @@ export type SectionType =
   | 'code-page-section'
   | 'collection'
   | 'dex-generator-section'
-  | 'asset-section';
+  | 'asset-section'
+  | 'ranking'
+
+  ;
 
 export interface PageSection {
   type: SectionType;
@@ -226,6 +229,13 @@ export interface CollectionPageSection extends PageSection {
   };
 }
 
+export interface RankingPageSection extends PageSection {
+  type: 'ranking';
+  settings: {
+    rankingId?: number;
+  };
+}
+
 export type DexGeneratorPageSectionType =
   | TokenDropPageSection
   | NftDropPageSection
@@ -261,7 +271,8 @@ export type AppPageSection =
   | CodePageSection
   | CollectionPageSection
   | DexGeneratorPageSection
-  | AssetPageSection;
+  | AssetPageSection
+  | RankingPageSection;
 
 export interface SectionMetadata {
   type: SectionType;

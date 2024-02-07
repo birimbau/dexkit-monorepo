@@ -39,7 +39,7 @@ interface Props {
   onConfirm: ({ quantity }: { quantity?: number }) => void;
 }
 
-export function ConfirmBuyDialog({
+export default function ConfirmBuyDialog({
   tokens,
   dialogProps,
   onConfirm,
@@ -96,7 +96,10 @@ export function ConfirmBuyDialog({
 
   const totalInCurrency = useMemo(() => {
     if (token && currency && order) {
-      if (coinPricesQuery?.data) {
+      if (
+        coinPricesQuery?.data &&
+        `${token.address.toLowerCase()}` in coinPricesQuery.data
+      ) {
         const ratio =
           coinPricesQuery.data[token.address.toLowerCase()][currency];
 
