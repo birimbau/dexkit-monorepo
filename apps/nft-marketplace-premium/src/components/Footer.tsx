@@ -124,7 +124,7 @@ export function Footer({ appConfig, isPreview, appNFT }: Props) {
                         defaultMessage={m.name}
                       />
                     </Link>
-                  ),
+                  )
                 )}
               </Stack>
             ) : (
@@ -178,7 +178,7 @@ export function Footer({ appConfig, isPreview, appNFT }: Props) {
                   </IconButton>
                 ))}
               {appConfig?.social_custom &&
-                appConfig.social_custom.length &&
+                appConfig.social_custom.length > 0 &&
                 appConfig.social_custom
                   .filter((m) => m?.link !== undefined)
                   .map((media, index) => (
