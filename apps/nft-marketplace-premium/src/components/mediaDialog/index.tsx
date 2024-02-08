@@ -246,11 +246,10 @@ export default function MediaDialog({
         isSuccess={deleteFileMutation.isSuccess}
         error={deleteFileMutation.error}
       />
-
       <Dialog {...dialogProps} onClose={handleClose}>
         <AppDialogTitle
           icon={<BrowseGalleryIcon />}
-          title={<FormattedMessage id="gallery" defaultMessage="Gallery" />}
+          title={<FormattedMessage id="gallery" defaultMessage="Gallery 1" />}
           onClose={handleClose}
         />
         <DialogContent dividers>
@@ -279,6 +278,12 @@ export default function MediaDialog({
                     />
                   </Button>
                 )}
+                <Button variant="outlined">
+                  <FormattedMessage
+                    id="ai.generated"
+                    defaultMessage="AI Generated"
+                  />
+                </Button>
               </Box>
             </Grid>
             <Grid item xs={12}>

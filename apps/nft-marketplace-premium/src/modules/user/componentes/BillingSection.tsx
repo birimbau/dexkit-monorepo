@@ -1,5 +1,9 @@
 import {
   Card,
+  CardContent,
+  Grid,
+  Skeleton,
+  Stack,
   Table,
   TableBody,
   TableCell,
@@ -7,53 +11,198 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
+import Decimal from 'decimal.js';
+import moment from 'moment';
 import { FormattedMessage, FormattedNumber } from 'react-intl';
 import Link from 'src/components/Link';
-import { useBillingHistoryQuery } from '../hooks/payments';
+import {
+  useActiveFeatUsage,
+  useBillingHistoryQuery,
+  usePlanCheckoutMutation,
+  useSubscription,
+} from '../hooks/payments';
+import PlanCard from './PlanCard';
 
 export default function BillingSection() {
   const billingHistoryQuery = useBillingHistoryQuery();
 
+  const { mutateAsync: checkoutPlan } = usePlanCheckoutMutation();
+
+  const subscriptionQuery = useSubscription();
+  const activeFeatUsageQuery = useActiveFeatUsage();
+
+  const handleCheckoutStarter = (plan: string) => {
+    return async () => {
+      const result = await checkoutPlan({ plan });
+
+      if (result && result?.url) {
+        window.open(result.url, '_blank');
+      }
+    };
+  };
+
   return (
-    <>
+    <Stack spacing={2}>
       <Card>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>
-                <FormattedMessage id="month" defaultMessage="Month" />
-              </TableCell>
-              <TableCell>
-                <FormattedMessage id="month" defaultMessage="Total" />
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {billingHistoryQuery.data?.map((period: any, index: number) => (
-              <TableRow key={index}>
-                <TableCell>
-                  <Link
-                    variant="body1"
-                    href={`/u/settings/billing/${period.id}`}
-                  >
-                    {period.periodStart}
-                  </Link>
-                </TableCell>
-                <TableCell>
-                  <Typography>
+        <CardContent>
+          {subscriptionQuery.isSuccess && !subscriptionQuery.data && (
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm={4}>
+                <PlanCard
+                  name="Starter"
+                  price={10.0}
+                  description="Better to start"
+                  onClick={handleCheckoutStarter('starter')}
+                />
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <PlanCard
+                  name="Plus"
+                  price={20.0}
+                  description="Better to start"
+                  onClick={handleCheckoutStarter('plus')}
+                />
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <PlanCard
+                  name="Premium"
+                  price={50.0}
+                  description="Better to start"
+                  onClick={handleCheckoutStarter('premium')}
+                />
+              </Grid>
+            </Grid>
+          )}
+          {subscriptionQuery.data && (
+            <Grid container spacing={2}>
+              <Grid item>
+                <Typography variant="caption" color="text.secondary">
+                  <FormattedMessage
+                    id="ref.period"
+                    defaultMessage="Ref. period"
+                  />
+                </Typography>
+                <Typography variant="body1">
+                  {activeFeatUsageQuery.data ? (
+                    <Link
+                      href={`/u/settings/billing/${activeFeatUsageQuery.data.id}`}
+                    >
+                      {moment(activeFeatUsageQuery.data.periodStart).format(
+                        'MM/YYYY',
+                      )}
+                    </Link>
+                  ) : (
+                    <Skeleton />
+                  )}
+                </Typography>
+              </Grid>
+              <Grid item>
+                <Typography variant="caption" color="text.secondary">
+                  <FormattedMessage id="credits" defaultMessage="Credits" />
+                </Typography>
+                <Typography variant="body1">
+                  {activeFeatUsageQuery.data ? (
                     <FormattedNumber
-                      value={period.used}
                       style="currency"
                       currencyDisplay="narrowSymbol"
                       currency="USD"
+                      value={new Decimal(activeFeatUsageQuery.data?.available)
+                        .minus(new Decimal(activeFeatUsageQuery.data?.used))
+                        .toNumber()}
                     />
-                  </Typography>
+                  ) : (
+                    <Skeleton />
+                  )}
+                </Typography>
+              </Grid>
+              <Grid item>
+                <Typography variant="caption" color="text.secondary">
+                  <FormattedMessage id="status" defaultMessage="Status" />
+                </Typography>
+                <Typography variant="body1">
+                  {subscriptionQuery.data ? (
+                    subscriptionQuery.data.status
+                  ) : (
+                    <Skeleton />
+                  )}
+                </Typography>
+              </Grid>
+              <Grid item>
+                <Typography variant="caption" color="text.secondary">
+                  <FormattedMessage id="start" defaultMessage="Start" />
+                </Typography>
+                <Typography variant="body1">
+                  {moment(subscriptionQuery.data.period_start).format(
+                    'DD/MM/YYYY HH:mm:ss',
+                  )}{' '}
+                </Typography>
+              </Grid>
+              <Grid item>
+                <Typography variant="caption" color="text.secondary">
+                  <FormattedMessage id="end" defaultMessage="End" />
+                </Typography>
+                <Typography variant="body1">
+                  {moment(subscriptionQuery.data.period_end).format(
+                    'DD/MM/YYYY HH:mm:ss',
+                  )}
+                </Typography>
+              </Grid>
+            </Grid>
+          )}
+        </CardContent>
+      </Card>
+      <Card>
+        {billingHistoryQuery.data ? (
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>
+                  <FormattedMessage id="month" defaultMessage="Month" />
+                </TableCell>
+                <TableCell>
+                  <FormattedMessage id="total" defaultMessage="Total" />
                 </TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHead>
+            <TableBody>
+              {billingHistoryQuery.data?.map((period: any, index: number) => (
+                <TableRow key={index}>
+                  <TableCell>
+                    <Link
+                      variant="body1"
+                      href={`/u/settings/billing/${period.id}`}
+                    >
+                      {moment(period.periodStart).format('MM/YYYY')}
+                    </Link>
+                  </TableCell>
+                  <TableCell>
+                    <Typography>
+                      <FormattedNumber
+                        value={period.used}
+                        style="currency"
+                        currencyDisplay="narrowSymbol"
+                        currency="USD"
+                      />
+                    </Typography>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        ) : (
+          <CardContent sx={{ py: 2 }}>
+            <Typography align="center" variant="h5">
+              <FormattedMessage id="no.usage" defaultMessage="No usage" />
+            </Typography>
+            <Typography align="center" variant="body1" color="text.secondary">
+              <FormattedMessage
+                id="you.still.dont.have.any.records"
+                defaultMessage="You still don't have any records."
+              />
+            </Typography>
+          </CardContent>
+        )}
       </Card>
-    </>
+    </Stack>
   );
 }

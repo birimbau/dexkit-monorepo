@@ -1,7 +1,6 @@
 import SettingsLayout from '@/modules/user/componentes/SettingsLayout';
-import { useBillingQuery } from '@/modules/user/hooks/payments';
 import { DexkitApiProvider } from '@dexkit/core/providers';
-import { Card, Container, List } from '@mui/material';
+import { Card, Container, Stack } from '@mui/material';
 import { QueryClient, dehydrate } from '@tanstack/react-query';
 import {
   GetStaticPaths,
@@ -14,21 +13,21 @@ import AuthMainLayout from 'src/components/layouts/authMain';
 import { getAppConfig } from 'src/services/app';
 import { myAppsApi } from 'src/services/whitelabel';
 
+import FeatUsageSummary from '@/modules/user/componentes/FeatUsageSummary';
+
 export default function BillingDetail() {
   const router = useRouter();
   const { id } = router.query;
 
-  const billingQuery = useBillingQuery({ id: parseInt(id as string) });
-
-  console.log(billingQuery.data);
-
   return (
     <Container>
-      <SettingsLayout>
+      <SettingsLayout tab="billing">
         {(tab) => (
-          <Card>
-            <List></List>
-          </Card>
+          <Stack spacing={2}>
+            <Card>
+              <FeatUsageSummary id={parseInt(id as string)} />
+            </Card>
+          </Stack>
         )}
       </SettingsLayout>
     </Container>

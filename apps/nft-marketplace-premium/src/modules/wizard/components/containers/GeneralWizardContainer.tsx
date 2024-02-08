@@ -1,6 +1,9 @@
+import { DexkitApiProvider } from '@dexkit/core/providers';
 import { Divider, Grid, Stack, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
+import GenerateImagesDialog from 'src/components/dialogs/GenerateImagesDialog';
+import { myAppsApi } from 'src/services/whitelabel';
 import { AppConfig } from '../../../../types/config';
 import { StepperButtonProps } from '../../types';
 import GeneralSection, { GeneralSectionForm } from '../sections/GeneralSection';
@@ -102,6 +105,16 @@ export default function GeneralWizardContainer({
   return (
     <Grid container spacing={2}>
       <Grid item xs={12}>
+        <DexkitApiProvider.Provider value={{ instance: myAppsApi }}>
+          <GenerateImagesDialog
+            DialogProps={{
+              open: false,
+              onClose: () => {},
+              maxWidth: 'sm',
+              fullWidth: true,
+            }}
+          />
+        </DexkitApiProvider.Provider>
         <Stack>
           <Typography variant={'h6'}>
             <FormattedMessage id="general" defaultMessage="General" />

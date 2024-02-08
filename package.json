@@ -60,6 +60,7 @@
     "@web3-react/types": "8.2.2",
     "@web3-react/url": "8.2.2",
     "@web3-react/walletconnect-v2": "8.5.0",
+    "decimal.js": "^10.4.3",
     "ethers": "^5.7.2",
     "jotai": "1.6.5",
     "magic-sdk": "10.0.0",

@@ -39,7 +39,7 @@ const FormSchema: Yup.SchemaOf<UserForm> = Yup.object().shape({
           return !data;
         }
         return false;
-      }
+      },
     ),
   profileImageURL: Yup.string().url(),
   backgroundImageURL: Yup.string().url(),
