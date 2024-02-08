@@ -19,7 +19,7 @@ interface Props {
   network: string;
 }
 
-export function ContractEditionContainer({ address, network }: Props) {
+export default function ContractEditionContainer({ address, network }: Props) {
   const [openMintDialog, setOpenMintDialog] = useState(false);
   const { data: collection } = useCollection(
     address as string,

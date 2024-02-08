@@ -5,12 +5,15 @@ import jwt_decode from 'jwt-decode';
 import { useContext } from "react";
 import { MIN_KIT_HOLDING_AI_GENERATION, WHITELISTED_AI_ACCOUNTS } from "src/constants";
 import { getKitBalanceOfThreshold } from "src/services/balances";
-import { AuthContext } from "../contexts";
+import { AuthStateContext } from "../contexts";
 import { getRefreshAccessToken, loginApp, logoutApp, requestSignature, setAccessToken } from "../services/auth";
 import { useSignMessageDialog } from './app';
 
 export function useAuth() {
-  const { setIsLoggedIn, isLoggedIn, user, setUser } = useContext(AuthContext);
+  const { setIsLoggedIn, isLoggedIn, user, setUser } = useContext(AuthStateContext);
+
+
+
   return { setIsLoggedIn, isLoggedIn, user, setUser }
 }
 

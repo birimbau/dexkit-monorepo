@@ -47,7 +47,7 @@ export const WHITELABEL_NOTIFICATION_TYPES: {
   },
   mintNFTDrop: {
     type: 'mintNFTDrop',
-    message: 'Minting {quantity} from collection {name}',
+    message: 'Minting {quantity} from collection drop {name}',
     id: 'mint.collection.drop.notification.message',
   },
 };

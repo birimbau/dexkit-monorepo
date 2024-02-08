@@ -21,7 +21,10 @@ interface Props {
   network: string;
 }
 
-export function ContractEditionDropContainer({ address, network }: Props) {
+export default function ContractEditionDropContainer({
+  address,
+  network,
+}: Props) {
   const [openMintDialog, setOpenMintDialog] = useState(false);
   const { data: collection } = useCollection(
     address as string,

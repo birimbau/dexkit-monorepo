@@ -22,21 +22,21 @@ const EvmTransferCoinDialog = dynamic(
   () =>
     import(
       '@dexkit/ui/modules/evm-transfer-coin/components/dialogs/EvmSendDialog'
-    ),
+    )
 );
 
 const EvmBurnTokenDialog = dynamic(
   () =>
     import(
       '@dexkit/ui/modules/evm-burn-token/components/dialogs/EvmBurnTokenDialog'
-    ),
+    )
 );
 
 const EvmMintTokenDialog = dynamic(
   () =>
     import(
       '@dexkit/ui/modules/evm-mint-token/components/dialogs/EvmMintTokenDialog'
-    ),
+    )
 );
 
 export default function TokenErc20Section({ section }: TokenErc20SectionProps) {
@@ -88,7 +88,7 @@ export default function TokenErc20Section({ section }: TokenErc20SectionProps) {
       return await contract?.get();
     },
     undefined,
-    [contract],
+    [contract]
   );
 
   const net = useMemo(() => {
@@ -181,9 +181,11 @@ export default function TokenErc20Section({ section }: TokenErc20SectionProps) {
       <Container>
         <Paper sx={{ p: 2 }}>
           <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <TokenSummary address={address} />
-            </Grid>
+            {!disableInfo && (
+              <Grid item xs={12}>
+                <TokenSummary address={address} />
+              </Grid>
+            )}
             <Grid item xs={12}>
               <Box>
                 <Stack spacing={2} direction={{ xs: 'column', sm: 'row' }}>

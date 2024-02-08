@@ -72,7 +72,11 @@ interface Props {
   ) => void;
 }
 
-export function MakeOfferDialog({ dialogProps, onConfirm, asset }: Props) {
+export default function MakeOfferDialog({
+  dialogProps,
+  onConfirm,
+  asset,
+}: Props) {
   const { provider, account } = useWeb3React();
   const { data: metadata } = useAssetMetadata(asset);
 

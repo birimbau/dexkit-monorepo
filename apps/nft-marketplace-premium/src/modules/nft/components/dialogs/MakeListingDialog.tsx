@@ -80,7 +80,7 @@ interface Props {
   ) => void;
 }
 
-export function MakeListingDialog({
+export default function MakeListingDialog({
   dialogProps,
   onConfirm,
   asset,

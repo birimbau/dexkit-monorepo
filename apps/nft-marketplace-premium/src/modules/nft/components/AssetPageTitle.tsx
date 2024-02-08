@@ -1,4 +1,4 @@
-import { Box, IconButton, Stack, Typography } from '@mui/material';
+import { Box, Stack, Typography } from '@mui/material';
 
 import { useAsset, useAssetMetadata } from '../../../hooks/nft';
 import { truncateErc1155TokenId } from '../../../utils/nfts';

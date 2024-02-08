@@ -645,6 +645,12 @@ export function useFillSignedOrderMutation(
   nftSwapSdk?: NftSwapV4,
   address?: string,
   options?: Omit<UseMutationOptions, any>,
+  onHash?: ({ hash, accept, order, quantity }: {
+    hash: string;
+    accept?: boolean;
+    order: SignedNftOrderV4;
+    quantity?: number
+  }) => void,
 ) {
   return useMutation(
     async ({
@@ -680,7 +686,7 @@ export function useFillSignedOrderMutation(
           )
           .div(100000);
 
-        const result = await nftSwapSdk.exchangeProxy.buyERC1155(
+        const tx = await nftSwapSdk.exchangeProxy.buyERC1155(
           order as any,
           order.signature,
           quantity,
@@ -689,12 +695,20 @@ export function useFillSignedOrderMutation(
             value: needsEthAttached ? erc20TotalAmount : undefined,
           },
         );
-        return { hash: result?.hash, accept, order, quantity };
+        if (onHash) {
+          onHash({ hash: tx?.hash, accept, order, quantity })
+        }
+        await tx.wait();
+        return { hash: tx?.hash, accept, order, quantity };
       }
 
-      const result = await nftSwapSdk.fillSignedOrder(order, {});
+      const tx = await nftSwapSdk.fillSignedOrder(order, {});
+      if (onHash) {
+        onHash({ hash: tx?.hash, accept, order })
+      }
+      await tx.wait();
 
-      return { hash: result?.hash, accept, order };
+      return { hash: tx?.hash, accept, order };
     },
     options,
   );

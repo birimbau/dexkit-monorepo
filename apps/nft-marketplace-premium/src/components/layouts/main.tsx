@@ -13,14 +13,14 @@ import React, { useEffect, useMemo } from 'react';
 import { useAppConfig, useAppNFT, useThemeMode } from '../../hooks/app';
 
 import { drawerIsOpenAtom } from '../../state/atoms';
-import { Footer } from '../Footer';
-import Navbar from '../Navbar';
 
 import { AppConfig } from 'src/types/config';
 const AppDrawer = dynamic(() => import('../AppDrawer'));
 
 import { ErrorBoundary } from 'react-error-boundary';
 import { FormattedMessage } from 'react-intl';
+import { Footer } from '../Footer';
+import Navbar from '../Navbar';
 import { GlobalDialogs } from './GlobalDialogs';
 
 interface Props {
@@ -61,7 +61,29 @@ const MainLayout: React.FC<Props> = ({
   const handleCloseDrawer = () => setIsDrawerOpen(false);
 
   const render = () => (
-    <>
+    <ErrorBoundary
+      fallbackRender={({ error, resetErrorBoundary }) => (
+        <Stack justifyContent="center" alignItems="center">
+          <Typography variant="h6">
+            <FormattedMessage
+              id="something.went.wrong"
+              defaultMessage="Oops, something went wrong"
+              description="Something went wrong error message"
+            />
+          </Typography>
+          <Typography variant="body1" color="textSecondary">
+            {String(error)}
+          </Typography>
+          <Button color="primary" onClick={resetErrorBoundary}>
+            <FormattedMessage
+              id="try.again"
+              defaultMessage="Try again"
+              description="Try again"
+            />
+          </Button>
+        </Stack>
+      )}
+    >
       {isDrawerOpen && (
         <AppDrawer open={isDrawerOpen} onClose={handleCloseDrawer} />
       )}
@@ -105,7 +127,7 @@ const MainLayout: React.FC<Props> = ({
         </Box>
         <Footer appConfig={appConfig} isPreview={isPreview} appNFT={appNFT} />
       </Box>
-    </>
+    </ErrorBoundary>
   );
 
   if (noSsr) {

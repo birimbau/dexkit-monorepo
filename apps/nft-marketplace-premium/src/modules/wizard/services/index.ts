@@ -12,7 +12,7 @@ import {
   getProviderByChainId,
 } from 'src/utils/blockchain';
 import { Token } from '../../../types/blockchain';
-import { GatedCondition } from '../types';
+import { GamificationPoint, GatedCondition } from '../types';
 
 export async function getTokenList(url: string) {
   const response = await axios.get(url);
@@ -238,4 +238,29 @@ export async function deleteAppVersion({ siteId, siteVersionId }: { siteId: numb
 
 export async function setAppVersion({ siteId, siteVersionId }: { siteId: number, siteVersionId: number }) {
   return myAppsApi.get(`/site/set-version/${siteId}/${siteVersionId}`);
+}
+
+// site rankings
+export async function createSiteRankingVersion({ siteId, title, description, settings }: { siteId: number, title?: string, description?: string, settings?: GamificationPoint[] }) {
+  return myAppsApi.post(`/site-ranking/create`, {
+    title,
+    description,
+    siteId,
+    settings
+  });
+}
+
+export async function updateSiteRankingVersion({ siteId, title, description, rankingId, settings, from, to }: { siteId: number, title?: string, description?: string, rankingId?: number, settings?: GamificationPoint[], from?: string, to?: string }) {
+  return myAppsApi.patch(`/site-ranking/${rankingId}`, {
+    title,
+    description,
+    siteId,
+    settings,
+    from,
+    to
+  });
+}
+
+export async function deleteAppRanking({ siteId, rankingId }: { siteId: number, rankingId: number }) {
+  return myAppsApi.delete(`/site-ranking/${siteId}/${rankingId}`);
 }

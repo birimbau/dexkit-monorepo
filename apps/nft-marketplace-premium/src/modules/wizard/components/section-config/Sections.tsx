@@ -4,6 +4,7 @@ import CollectionsIcon from '@mui/icons-material/Collections';
 import DynamicFormIcon from '@mui/icons-material/DynamicForm';
 import FeaturedVideoIcon from '@mui/icons-material/FeaturedVideo';
 import GavelIcon from '@mui/icons-material/Gavel';
+import LeaderboardIcon from '@mui/icons-material/Leaderboard';
 import ShowChartIcon from '@mui/icons-material/ShowChart';
 import StorefrontIcon from '@mui/icons-material/Storefront';
 import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
@@ -139,6 +140,14 @@ export const sections = [
     category: 'nft',
     description: 'Easily add a nft to a page',
     icon: <Token fontSize="large" />,
+  },
+  {
+    type: 'ranking',
+    titleId: 'leaderboard',
+    titleDefaultMessage: 'Leaderboard',
+    category: 'web3',
+    description: 'Create leaderboards from web3 user events on your app',
+    icon: <LeaderboardIcon fontSize="large" />,
   },
 ] as SectionMetadata[];
 

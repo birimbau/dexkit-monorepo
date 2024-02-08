@@ -61,7 +61,7 @@ export function ListingsTable({
   const { data: raribleAsset } = useBestSellOrderAssetRari(
     getNetworkSlugFromChainId(asset?.chainId),
     asset?.contractAddress,
-    asset?.id
+    asset?.id,
   );
 
   const { account } = useWeb3React();
@@ -97,9 +97,9 @@ export function ListingsTable({
 
   const handleViewOrder = () => {
     router.push(
-      `/order/${getNetworkSlugFromChainId(asset?.chainId)}/${
-        selectedOrder?.nonce
-      }`
+      `/order/${getNetworkSlugFromChainId(
+        asset?.chainId,
+      )}/${selectedOrder?.nonce}`,
     );
   };
 
@@ -116,16 +116,15 @@ export function ListingsTable({
   };
 
   const renderOrders = () => {
-    const tempOrders = orders.data?.orders?.filter(
-      ({ order }: { order: SwapApiOrder }) => {
+    const tempOrders =
+      orders.data?.orders?.filter(({ order }: { order: SwapApiOrder }) => {
         return (
           moment.unix(parseInt(order.expiry)).isAfter(moment()) &&
           (isAddressEqual(order.taker, ethers.constants.AddressZero) ||
             isAddressEqual(order.taker, account) ||
             isAddressEqual(order.maker, account))
         );
-      }
-    );
+      }) || [];
 
     if (tempOrders?.length === 0 && !raribleAsset?.bestSellOrder) {
       return (

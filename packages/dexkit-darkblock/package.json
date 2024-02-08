@@ -10,7 +10,8 @@
   },
   "scripts": {
     "lint": "TIMING=1 eslint \"**/*.ts*\"",
-    "build": "yarn tsc -b",
+    "build": "tsc -b",
+    "dev": "tsc -w",
     "release": "yarn build && changeset publish"
   },
   "devDependencies": {

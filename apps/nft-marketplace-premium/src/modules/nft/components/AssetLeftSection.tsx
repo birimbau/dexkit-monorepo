@@ -15,7 +15,7 @@ export function AssetLeftSection({
   return (
     <Grid container spacing={2}>
       <Grid item xs={12}>
-        {asset ? <AssetMedia asset={asset} /> : <Skeleton />}
+        {asset ? <AssetMedia asset={asset}  enableImageLightbox={true}/> : <Skeleton />}
       </Grid>
       <Grid item xs={12}>
         <AssetDetails address={address} id={id} />

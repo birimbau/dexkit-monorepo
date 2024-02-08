@@ -65,6 +65,14 @@ export function Footer({ appConfig, isPreview, appNFT }: Props) {
     return '';
   };
 
+  const renderCustomLink = (media: any) => {
+    if (media?.link) {
+      return media.link;
+    }
+
+    return '';
+  };
+
   const showAppSignature = useMemo(() => {
     if (appConfig?.hide_powered_by === true) {
       return false;
@@ -116,7 +124,7 @@ export function Footer({ appConfig, isPreview, appNFT }: Props) {
                         defaultMessage={m.name}
                       />
                     </Link>
-                  ),
+                  )
                 )}
               </Stack>
             ) : (
@@ -170,21 +178,24 @@ export function Footer({ appConfig, isPreview, appNFT }: Props) {
                   </IconButton>
                 ))}
               {appConfig?.social_custom &&
-                appConfig.social_custom.map((media, index) => (
-                  <IconButton
-                    key={index}
-                    href={media.link}
-                    LinkComponent={Link}
-                    target="_blank"
-                    size="small"
-                  >
-                    <Image
-                      src={media.iconUrl}
-                      height={theme.spacing(3)}
-                      width={theme.spacing(3)}
-                    />
-                  </IconButton>
-                ))}
+                appConfig.social_custom.length > 0 &&
+                appConfig.social_custom
+                  .filter((m) => m?.link !== undefined)
+                  .map((media, index) => (
+                    <IconButton
+                      key={index}
+                      href={renderCustomLink(media?.link)}
+                      LinkComponent={Link}
+                      target="_blank"
+                      size="small"
+                    >
+                      <Image
+                        src={media?.iconUrl}
+                        height={theme.spacing(3)}
+                        width={theme.spacing(3)}
+                      />
+                    </IconButton>
+                  ))}
             </Stack>
           </Grid>
         </Grid>

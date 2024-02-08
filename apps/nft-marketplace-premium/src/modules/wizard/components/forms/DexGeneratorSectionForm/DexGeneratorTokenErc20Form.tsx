@@ -76,7 +76,7 @@ function DexGeneratorTokenErc20Form({
                     <Switch
                       checked={values.disableInfo}
                       onChange={(e) =>
-                        setFieldValue('disableIno', e.target.checked)
+                        setFieldValue('disableInfo', e.target.checked)
                       }
                     />
                   }

@@ -29,7 +29,7 @@ interface ContractTokenDropContainerProps {
   network: string;
 }
 
-export function ContractTokenDropContainer({
+export default function ContractTokenDropContainer({
   address,
   network,
 }: ContractTokenDropContainerProps) {

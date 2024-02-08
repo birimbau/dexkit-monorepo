@@ -1,5 +1,4 @@
 {
-
   "name": "dexappbuilder",
   "version": "0.15.0",
   "private": true,
@@ -35,12 +34,12 @@
     "@codemirror/lang-javascript": "^6.2.1",
     "@date-io/moment": "^2.13.1",
     "@dexkit/core": "*",
-    "@dexkit/ui": "*",
+    "@dexkit/darkblock-evm-widget": "*",
     "@dexkit/evm-chains": "^1.6.0",
+    "@dexkit/ui": "*",
     "@dexkit/wallet-connectors": "*",
     "@dexkit/web3forms": "*",
     "@dexkit/widgets": "*",
-    "@dexkit/darkblock-evm-widget": "*",
     "@emotion/cache": "^11.7.1",
     "@emotion/react": "^11.9.0",
     "@emotion/server": "^11.4.0",
@@ -101,6 +100,7 @@
     "slugify": "^1.6.5",
     "uint8arrays": "3.1.1",
     "yaqrcode": "^0.2.1",
+    "yet-another-react-lightbox": "^3.17.0",
     "yup": "^0.32.11"
   },
   "devDependencies": {

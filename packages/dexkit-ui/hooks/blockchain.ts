@@ -37,6 +37,7 @@ export function useTokenList({
     return [];
   }, [appConfig]);
 
+
   // TODO: do the right logic
   let tokens = [...tokensValues, ...tokenListJson];
 
@@ -99,6 +100,7 @@ export function useTokenList({
         },
         ...tokenList,
       ] as TokenWhitelabelApp[];
+
     }
 
     return [...tokenList] as TokenWhitelabelApp[];
@@ -128,6 +130,5 @@ export function useActiveChainIds() {
 
   const activeChainIds = useContext(DexKitContext).activeChainIds;
   return { activeChainIds };
-
 
 }
