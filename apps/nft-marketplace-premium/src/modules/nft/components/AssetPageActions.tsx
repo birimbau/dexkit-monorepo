@@ -127,7 +127,7 @@ export function AssetPageActions({ address, id }: Props) {
                   <FormattedMessage id="favorite" defaultMessage="Favorite" />
                 }
               >
-                <IconButton onClick={handleToggleFavorite}>
+                <IconButton onClick={handleToggleFavorite} disabled={!account}>
                   <Heart
                     sx={
                       favorites.isFavorite(asset)
