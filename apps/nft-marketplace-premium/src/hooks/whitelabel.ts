@@ -213,7 +213,7 @@ export const useDeleteMyAppMutation = ({
 }: {
   options?: UseMutationOptions;
 }) => {
-  const { provider, chainId } = useWeb3React();
+  const { provider, chainId, account } = useWeb3React();
   const { isLoggedIn, user } = useAuth();
   const { refetch } = useWhitelabelConfigsByOwnerQuery({ owner: user?.address });
 
