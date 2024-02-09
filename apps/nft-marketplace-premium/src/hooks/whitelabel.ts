@@ -213,9 +213,10 @@ export const useDeleteMyAppMutation = ({
 }: {
   options?: UseMutationOptions;
 }) => {
-  const { account, provider, chainId } = useWeb3React();
-  const { refetch } = useWhitelabelConfigsByOwnerQuery({ owner: account });
-  const { isLoggedIn } = useAuth();
+  const { provider, chainId } = useWeb3React();
+  const { isLoggedIn, user } = useAuth();
+  const { refetch } = useWhitelabelConfigsByOwnerQuery({ owner: user?.address });
+
   const loginMutation = useLoginAccountMutation();
 
   return useMutation<any, any, any>(async ({ slug }: { slug: string }) => {
