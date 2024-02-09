@@ -15,9 +15,23 @@ export const NETWORK_NAME_OVERLAP: { [key: number]: string } = {
   [ChainId.Avax]: "Avalanche",
   [ChainId.Fantom]: "Fantom",
   [ChainId.Arbitrum]: "Arbitrum",
+
   [ChainId.Optimism]: "Optimism",
   [ChainId.Base]: "Base",
 };
+
+export const PROVIDER_OVERLAP: { [key: number]: string } = {
+  [ChainId.Ethereum]: 'https://eth.llamarpc.com',
+  [ChainId.Arbitrum]: 'https://arb1.arbitrum.io/rpc',
+  [ChainId.Optimism]: 'https://mainnet.optimism.org',
+  [ChainId.Avax]: 'https://api.avax.network/ext/bc/C/rpc',
+  [ChainId.BSC]: 'https://bscrpc.com',
+  [ChainId.Fantom]: 'https://rpc.ftm.tools',
+  [ChainId.Polygon]: `https://polygon-rpc.com/`,
+  [ChainId.Base]: "https://mainnet.base.org",
+  [ChainId.Mumbai]: `https://rpc.ankr.com/polygon_mumbai`,
+  [ChainId.Goerli]: 'https://rpc.ankr.com/eth_goerli'
+}
 
 
 const NETS: { [key: number]: Network } = {}
@@ -37,11 +51,13 @@ for (let index = 0; index < EVM_CHAINS.length; index++) {
       coinImageUrl: EVM_CHAIN_IMAGES[element.chainId].coinImageUrl,
       coinName: EVM_CHAIN_IMAGES[element.chainId].coinImageUrl ? element?.nativeCurrency?.name : element?.nativeCurrency?.name,
       coinSymbol: EVM_CHAIN_IMAGES[element.chainId].coinImageUrl ? element?.nativeCurrency?.symbol : element?.nativeCurrency?.symbol,
-      providerRpcUrl: element.rpc[0],
+      providerRpcUrl: PROVIDER_OVERLAP[element.chainId] ? PROVIDER_OVERLAP[element.chainId] : element.rpc[0],
       testnet: element?.testnet,
     }
   }
 }
+
+console.log(NETS);
 
 export const NETWORKS = NETS;
 
