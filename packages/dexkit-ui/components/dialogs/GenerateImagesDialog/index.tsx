@@ -1,5 +1,6 @@
-import { useImageGenerate } from '@/modules/user/hooks/ai';
-import { AppDialogTitle } from '@dexkit/ui';
+import { useImageGenerate, useSaveImages } from "../../../hooks/ai";
+
+import { AppDialogTitle } from "@dexkit/ui";
 import {
   Box,
   Button,
@@ -12,10 +13,10 @@ import {
   Skeleton,
   Stack,
   TextField,
-} from '@mui/material';
-import { ChangeEvent, useCallback, useMemo, useState } from 'react';
-import { FormattedMessage, useIntl } from 'react-intl';
-import ImageButton from './ImageButton';
+} from "@mui/material";
+import { ChangeEvent, useCallback, useMemo, useState } from "react";
+import { FormattedMessage, useIntl } from "react-intl";
+import ImageButton from "./ImageButton";
 
 export interface GenerateImagesDialogProps {
   DialogProps: DialogProps;
@@ -32,13 +33,25 @@ export default function GenerateImagesDialog({
     isLoading: isImagesLoading,
   } = useImageGenerate();
 
-  const [prompt, setPrompt] = useState('');
-  const [amount, setAmount] = useState('1');
+  const { isLoading: isSavingImages, mutateAsync: saveImages } =
+    useSaveImages();
+
+  const [prompt, setPrompt] = useState("");
+  const [amount, setAmount] = useState("1");
 
   const [selected, setSelected] = useState<{ [key: string]: boolean }>({});
 
   const handelGenerate = async () => {
-    await generate({ numImages: parseInt(amount), prompt, size: '512x512' });
+    let result = await generate({
+      numImages: parseInt(amount),
+      prompt,
+      size: "512x512",
+    });
+
+    if (result?.length === 1) {
+      const url = result[0];
+      setSelected({ [url]: true });
+    }
   };
 
   const handleChangePrompt = (e: ChangeEvent<HTMLInputElement>) => {
@@ -87,11 +100,25 @@ export default function GenerateImagesDialog({
 
   const handleClose = () => {
     if (onClose) {
-      onClose({}, 'backdropClick');
+      onClose({}, "backdropClick");
     }
   };
 
-  const handleConfirm = () => {};
+  const handleConfirm = async () => {
+    await saveImages({ urls: selectedImages });
+  };
+
+  const gridSize = useMemo(() => {
+    if (data) {
+      if (data.length === 1) {
+        return 6;
+      } else if (data.length === 2) {
+        return 6;
+      }
+    }
+
+    return 4;
+  }, [data]);
 
   return (
     <Dialog {...DialogProps}>
@@ -108,9 +135,9 @@ export default function GenerateImagesDialog({
         <Stack spacing={2}>
           {data ? (
             <Box>
-              <Grid spacing={2} container>
+              <Grid spacing={2} container justifyContent="center">
                 {data.map((img: string, index: number) => (
-                  <Grid key={index} item xs={12} sm={4}>
+                  <Grid key={index} item xs={12} sm={gridSize}>
                     <ImageButton
                       src={img}
                       selected={selected[img]}
@@ -123,14 +150,18 @@ export default function GenerateImagesDialog({
           ) : undefined}
           {isImagesLoading && (
             <Box>
-              <Grid spacing={2} container>
+              <Grid spacing={2} container justifyContent="center">
                 {new Array(parseInt(amount))
                   .fill(null)
                   .map((img: string, index: number) => (
-                    <Grid key={index} item xs={12} sm={4}>
+                    <Grid key={index} item xs={12} sm={gridSize}>
                       <Skeleton
                         variant="rectangular"
-                        sx={{ aspectRatio: '1/1', width: '100%' }}
+                        sx={{
+                          aspectRatio: "1/1",
+                          width: "100%",
+                          minHeight: (theme) => theme.spacing(20),
+                        }}
                       />
                     </Grid>
                   ))}
@@ -140,8 +171,8 @@ export default function GenerateImagesDialog({
 
           <TextField
             placeholder={formatMessage({
-              id: 'ex.an.image.of.a.cat',
-              defaultMessage: 'ex. An image of a cat',
+              id: "ex.an.image.of.a.cat",
+              defaultMessage: "ex. An image of a cat",
             })}
             onChange={handleChangePrompt}
             value={prompt}
@@ -152,8 +183,8 @@ export default function GenerateImagesDialog({
           />
           <TextField
             label={formatMessage({
-              id: 'num.of.images',
-              defaultMessage: 'Num. of Images',
+              id: "num.of.images",
+              defaultMessage: "Num. of Images",
             })}
             disabled={isImagesLoading}
             onChange={handleChangeAmount}
@@ -181,7 +212,12 @@ export default function GenerateImagesDialog({
       </DialogContent>
       <DialogActions>
         <Button
-          disabled={selectedImages.length === 0}
+          disabled={isSavingImages || selectedImages.length === 0}
+          startIcon={
+            isSavingImages ? (
+              <CircularProgress size="1rem" color="inherit" />
+            ) : undefined
+          }
           variant="contained"
           onClick={handleConfirm}
         >

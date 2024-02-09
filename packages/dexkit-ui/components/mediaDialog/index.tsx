@@ -44,7 +44,10 @@ import ClearIcon from "@mui/icons-material/Clear";
 import { useConnectWalletDialog } from "../../hooks";
 import { AccountFile } from "../../modules/file/types";
 
+import { DexkitApiProvider } from "@dexkit/core/providers";
 import { truncateText } from "@dexkit/core/utils/text";
+import { myAppsApi } from "../../constants/api";
+import GenerateImagesDialog from "../dialogs/GenerateImagesDialog";
 
 interface Props {
   dialogProps: DialogProps;
@@ -186,8 +189,24 @@ export default function MediaDialog({
     }
   };
 
+  const [showImageGen, setShowImageGen] = useState(false);
+
+  const handleCloseAiImageDialog = () => {
+    setShowImageGen(false);
+  };
+
   return (
     <>
+      <DexkitApiProvider.Provider value={{ instance: myAppsApi }}>
+        <GenerateImagesDialog
+          DialogProps={{
+            open: showImageGen,
+            onClose: handleCloseAiImageDialog,
+            maxWidth: "sm",
+            fullWidth: true,
+          }}
+        />
+      </DexkitApiProvider.Provider>
       <AppConfirmDialog
         DialogProps={{
           fullWidth: true,
@@ -363,10 +382,8 @@ export default function MediaDialog({
                   {fileUploadMutation.isError && (
                     <Box sx={{ p: 2 }}>
                       <FormattedMessage id="reason" defaultMessage="Reason" />:{" "}
-                      {`${
-                        (fileUploadMutation.error as any)?.response?.data
-                          ?.message
-                      }`}
+                      {`${(fileUploadMutation.error as any)?.response?.data
+                        ?.message}`}
                     </Box>
                   )}
                 </Stack>

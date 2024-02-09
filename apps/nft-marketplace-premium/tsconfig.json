@@ -30,7 +30,9 @@
     "**/*.tsx",
     "next-sitemap.config.js",
     "scripts/local-diff.js",
-    "../../packages/dexkit-core/constants/connectors/walletConnect.ts"
+    "../../packages/dexkit-core/constants/connectors/walletConnect.ts",
+    "../../packages/dexkit-ui/hooks/ai.ts",
+    "../../packages/dexkit-ui/types/ai/index.ts"
   ],
   "exclude": ["node_modules"]
 }

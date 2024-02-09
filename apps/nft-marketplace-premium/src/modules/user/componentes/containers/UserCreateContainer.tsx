@@ -1,10 +1,10 @@
+import { UserOptions } from '@dexkit/ui/types/ai';
 import { Container, Grid, Stack, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import AppConfirmDialog from 'src/components/AppConfirmDialog';
 import { PageHeader } from 'src/components/PageHeader';
 import { useUpsertUserMutation } from '../../hooks';
-import { UserOptions } from '../../types';
 import UpsertUserDialog from '../dialogs/UpsertuserDialog';
 import UserGeneralForm from '../forms/UserGeneralForm';
 

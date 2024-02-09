@@ -21,6 +21,8 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 
+import { DexkitApiProvider } from '@dexkit/core/providers';
+import GenerateImagesDialog from '@dexkit/ui/components/dialogs/GenerateImagesDialog';
 import BrowseGalleryIcon from '@mui/icons-material/BrowseGallery';
 import CheckIcon from '@mui/icons-material/Check';
 import ClearIcon from '@mui/icons-material/Clear';
@@ -32,6 +34,7 @@ import Pagination from '@mui/material/Pagination';
 import { useWeb3React } from '@web3-react/core';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
+import { myAppsApi } from 'src/services/whitelabel';
 import { truncateText } from 'src/utils/text';
 import { MAX_ACCOUNT_FILE_UPLOAD_SIZE } from '../../constants';
 import { useConnectWalletDialog } from '../../hooks/app';
@@ -196,8 +199,28 @@ export default function MediaDialog({
     }
   };
 
+  const [showAiImgGen, setShowAiImgGen] = useState(false);
+
+  const handleShowImageGeneratorDialog = () => {
+    setShowAiImgGen(true);
+  };
+
+  const handleCloseImageGeneratorDialog = () => {
+    setShowAiImgGen(false);
+  };
+
   return (
     <>
+      <DexkitApiProvider.Provider value={{ instance: myAppsApi }}>
+        <GenerateImagesDialog
+          DialogProps={{
+            open: showAiImgGen,
+            maxWidth: 'sm',
+            fullWidth: true,
+            onClose: handleCloseImageGeneratorDialog,
+          }}
+        />
+      </DexkitApiProvider.Provider>
       <AppConfirmDialog
         dialogProps={{
           fullWidth: true,
@@ -263,27 +286,32 @@ export default function MediaDialog({
                   ref={inputRef}
                   accept="image/*, audio/*"
                 />
-                {isActive ? (
-                  <Button variant="contained" onClick={handleClick}>
+                <Stack direction="row" alignItems="center" spacing={1}>
+                  {isActive ? (
+                    <Button variant="contained" onClick={handleClick}>
+                      <FormattedMessage
+                        id="add.image"
+                        defaultMessage="Add Image"
+                      />
+                    </Button>
+                  ) : (
+                    <Button variant="contained" onClick={handleConnectWallet}>
+                      <FormattedMessage
+                        id="connect.wallet"
+                        defaultMessage="Connect wallet"
+                      />
+                    </Button>
+                  )}
+                  <Button
+                    onClick={handleShowImageGeneratorDialog}
+                    variant="outlined"
+                  >
                     <FormattedMessage
-                      id="add.image"
-                      defaultMessage="Add Image"
+                      id="ai.generated"
+                      defaultMessage="AI Generated"
                     />
                   </Button>
-                ) : (
-                  <Button variant="contained" onClick={handleConnectWallet}>
-                    <FormattedMessage
-                      id="connect.wallet"
-                      defaultMessage="Connect wallet"
-                    />
-                  </Button>
-                )}
-                <Button variant="outlined">
-                  <FormattedMessage
-                    id="ai.generated"
-                    defaultMessage="AI Generated"
-                  />
-                </Button>
+                </Stack>
               </Box>
             </Grid>
             <Grid item xs={12}>

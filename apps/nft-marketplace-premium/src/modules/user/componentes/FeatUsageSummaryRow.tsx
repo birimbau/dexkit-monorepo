@@ -1,9 +1,9 @@
+import { FeatureSum } from '@dexkit/ui/types/ai';
 import Info from '@mui/icons-material/Info';
 import { Stack, TableCell, TableRow, Tooltip } from '@mui/material';
 import { FormattedNumber } from 'react-intl';
 import { FEAT_DESCRIPTIONS } from '../constants';
 import { useFeatQuery } from '../hooks/payments';
-import { FeatureSum } from '../types';
 
 export interface FeatUsageSummaryRowProps {
   feat: FeatureSum;

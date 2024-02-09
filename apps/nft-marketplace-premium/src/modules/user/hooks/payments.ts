@@ -1,7 +1,12 @@
 import { DexkitApiProvider } from '@dexkit/core/providers';
+import {
+  FeatUsage,
+  Feature,
+  FeatureSum,
+  Subscription,
+} from '@dexkit/ui/types/ai';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useContext } from 'react';
-import { FeatUsage, Feature, FeatureSum, Subscription } from '../types';
 
 export const USER_PAYMENT_METHODS = 'USER_PAYMENT_METHODS';
 
