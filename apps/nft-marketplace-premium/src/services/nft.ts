@@ -13,7 +13,7 @@ import { NETWORK_FROM_SLUG } from '@dexkit/core/constants/networks';
 import { Value } from '@react-page/editor';
 import { QueryClient } from '@tanstack/react-query';
 import { DEXKIT_AUTHENTICATE_API_KEY, DEXKIT_BASE_API_URL, TRADER_ORDERBOOK_API } from '../constants';
-import { GET_ASSET_DATA, GET_ASSET_METADATA } from '../hooks/nft';
+import { GET_ASSET_BY_API, GET_ASSET_DATA, GET_ASSET_METADATA, GET_COLLECTION_DATA } from '../hooks/nft';
 import { getChainIdFromSlug, getNetworkSlugFromChainId } from '../utils/blockchain';
 import { getWhereNFTQuery, isENSContract, parseNFTPageEditorConfig, returnNFTmap } from '../utils/nfts';
 import { TraderOrderFilter } from '../utils/types';
@@ -782,6 +782,20 @@ export async function fetchMultipleAssetForQueryClient({ sections, queryClient }
               currentMap: assetsToFetch,
             });
           }
+
+          if (item.type === 'collection') {
+            await queryClient.prefetchQuery(
+              [GET_COLLECTION_DATA, item.contractAddress, item.chainId],
+              async () => {
+                return {
+                  name: item.title || ' ',
+                  symbol: ' ',
+                  address: item.contractAddress,
+                  chainId: item.chainId,
+                };
+              }
+            );
+          }
         }
       }
       if (section.type === 'asset-section') {
@@ -823,11 +837,12 @@ export async function fetchMultipleAssetForQueryClient({ sections, queryClient }
         if (rawMetadata && rawMetadata?.image && (rawMetadata?.image as string).endsWith('.gif')) {
           image = rawMetadata?.image;
         }
+        const chainId = getChainIdFromSlug(assetApi.networkId)?.chainId as ChainId;
 
 
         const newAsset: Asset = {
           id: assetApi.tokenId,
-          chainId: getChainIdFromSlug(assetApi.networkId)?.chainId as ChainId,
+          chainId: chainId,
           contractAddress: assetApi.address,
           tokenURI: assetApi.tokenURI || '',
           collectionName: assetApi.collectionName || '',
@@ -837,6 +852,11 @@ export async function fetchMultipleAssetForQueryClient({ sections, queryClient }
 
         await queryClient.prefetchQuery(
           [GET_ASSET_DATA, assetApi.address, assetApi.tokenId],
+          async () => newAsset
+        );
+
+        await queryClient.prefetchQuery(
+          [GET_ASSET_BY_API, chainId, assetApi.address, assetApi.tokenId],
           async () => newAsset
         );
 
