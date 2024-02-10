@@ -27,7 +27,7 @@ const DEXKIT_NFT_BASE_URL = `${DEXKIT_BASE_API_URL}`;
 //const DEXKIT_NFT_BASE_URL = 'http://localhost:3001'
 const metadataENSapi = axios.create({ baseURL: ENS_BASE_URL });
 
-const dexkitNFTapi = axios.create({ baseURL: DEXKIT_NFT_BASE_URL, timeout: 2500 });
+const dexkitNFTapi = axios.create({ baseURL: DEXKIT_NFT_BASE_URL, timeout: 5000 });
 
 const orderbookNFTapi = axios.create({ baseURL: DEXKIT_NFT_BASE_URL, timeout: 10000 });
 
