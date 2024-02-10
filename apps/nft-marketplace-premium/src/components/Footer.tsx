@@ -117,6 +117,7 @@ export function Footer({ appConfig, isPreview, appNFT }: Props) {
                       color="inherit"
                       href={isPreview ? '#' : m.href || '/'}
                       key={key}
+                      aria-label={`social media link ${m.name}`}
                       target={m.type === 'External' ? '_blank' : undefined}
                     >
                       <FormattedMessage
