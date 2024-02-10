@@ -7,13 +7,15 @@ import { Asset, AssetAPI, AssetMetadata, Collection, CollectionAPI, OrderBookIte
 import { ipfsUriToUrl } from '../utils/ipfs';
 import { getMulticallFromProvider } from './multical';
 
+import { AppPageSection } from '@/modules/wizard/types/section';
 import { ChainId } from '@dexkit/core/constants';
 import { NETWORK_FROM_SLUG } from '@dexkit/core/constants/networks';
+import { Value } from '@react-page/editor';
 import { QueryClient } from '@tanstack/react-query';
 import { DEXKIT_AUTHENTICATE_API_KEY, DEXKIT_BASE_API_URL, TRADER_ORDERBOOK_API } from '../constants';
-import { GET_ASSET_DATA, GET_ASSET_METADATA } from '../hooks/nft';
+import { GET_ASSET_BY_API, GET_ASSET_DATA, GET_ASSET_METADATA, GET_COLLECTION_DATA } from '../hooks/nft';
 import { getChainIdFromSlug, getNetworkSlugFromChainId } from '../utils/blockchain';
-import { isENSContract } from '../utils/nfts';
+import { getWhereNFTQuery, isENSContract, parseNFTPageEditorConfig, returnNFTmap } from '../utils/nfts';
 import { TraderOrderFilter } from '../utils/types';
 import { getProviderBySlug } from './providers';
 
@@ -753,5 +755,137 @@ export async function fetchAssetForQueryClient({ item, queryClient }: { item: { 
       );
     }
   }
+}
+
+
+/**
+ * Server side function to refetch query client data
+ */
+export async function fetchMultipleAssetForQueryClient({ sections, queryClient }: { sections: AppPageSection[], queryClient: QueryClient }) {
+  try {
+
+
+    let assetsToFetch = new Map<number, Map<string, Set<string>>>();
+
+    for (let section of sections) {
+      if (
+        section.type === 'featured' ||
+        section.type === 'call-to-action' ||
+        section.type === 'collections'
+      ) {
+        for (let item of section.items) {
+          if (item.type === 'asset' && item.tokenId !== undefined) {
+            assetsToFetch = returnNFTmap({
+              address: item.contractAddress.toLowerCase(),
+              chainId: item.chainId,
+              tokenId: item.tokenId,
+              currentMap: assetsToFetch,
+            });
+          }
+
+          if (item.type === 'collection') {
+            await queryClient.prefetchQuery(
+              [GET_COLLECTION_DATA, item.contractAddress, item.chainId],
+              async () => {
+                return {
+                  name: item.title || ' ',
+                  symbol: ' ',
+                  address: item.contractAddress,
+                  chainId: item.chainId,
+                };
+              }
+            );
+          }
+        }
+      }
+      if (section.type === 'asset-section') {
+        const data = section.config;
+        assetsToFetch = returnNFTmap({
+          address: data.address.toLowerCase(),
+          chainId: NETWORK_FROM_SLUG(data.network)?.chainId,
+          tokenId: data.tokenId,
+          currentMap: assetsToFetch,
+        });
+      }
+      if (section.type === 'custom') {
+        const config = section.data
+          ? (JSON.parse(section.data) as Value)
+          : undefined;
+        if (config) {
+          const editorNfts = parseNFTPageEditorConfig({ config });
+          for (const item of editorNfts) {
+            assetsToFetch = returnNFTmap({
+              address: item.contractAddress.toLowerCase(),
+              chainId: item.chainId,
+              tokenId: item.id,
+              currentMap: assetsToFetch,
+            });
+          }
+        }
+      }
+    }
+    const query = getWhereNFTQuery({ mapData: assetsToFetch });
+    const assets = await getApiMultipleAssets({ query });
+
+    if (assets) {
+      for (const assetApi of assets) {
+        const rawMetadata = assetApi.rawData
+          ? JSON.parse(assetApi.rawData)
+          : undefined;
+        let image = assetApi?.imageUrl;
+
+        if (rawMetadata && rawMetadata?.image && (rawMetadata?.image as string).endsWith('.gif')) {
+          image = rawMetadata?.image;
+        }
+        const chainId = getChainIdFromSlug(assetApi.networkId)?.chainId as ChainId;
+
+
+        const newAsset: Asset = {
+          id: assetApi.tokenId,
+          chainId: chainId,
+          contractAddress: assetApi.address,
+          tokenURI: assetApi.tokenURI || '',
+          collectionName: assetApi.collectionName || '',
+          symbol: assetApi.symbol || '',
+          metadata: { ...rawMetadata, image },
+        };
+
+        await queryClient.prefetchQuery(
+          [GET_ASSET_DATA, assetApi.address, assetApi.tokenId],
+          async () => newAsset
+        );
+
+        await queryClient.prefetchQuery(
+          [GET_ASSET_BY_API, chainId, assetApi.address, assetApi.tokenId],
+          async () => newAsset
+        );
+
+        await queryClient.prefetchQuery(
+          [GET_ASSET_METADATA, newAsset.tokenURI],
+          async () => {
+            return { ...rawMetadata, image: assetApi?.imageUrl };
+          }
+        );
+      }
+    }
+  } catch (e) {
+    console.error('error fetching multiple assets', e)
+  }
+
+
+
+}
+
+
+
+export async function getApiMultipleAssets({ query }: { query: any }
+
+): Promise<AssetAPI[] | undefined> {
+  if (!query) {
+    return;
+  }
+
+  const response = await dexkitNFTapi.post<AssetAPI[]>(`/asset/multiple-assets`, query);
+  return response.data
 }
 

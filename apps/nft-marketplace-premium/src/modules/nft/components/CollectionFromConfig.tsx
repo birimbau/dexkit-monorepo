@@ -1,4 +1,3 @@
-import { useCollectionByApi } from '../../../hooks/nft';
 import { Collection } from '../../../types/nft';
 import CollectionCard from '../../home/components/CollectionCard';
 
