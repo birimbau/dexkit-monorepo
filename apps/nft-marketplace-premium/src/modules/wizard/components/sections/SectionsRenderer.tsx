@@ -19,7 +19,7 @@ export function SectionsRenderer({ sections }: Props) {
     if (!isMobile && section.hideDesktop) {
       return null;
     }
-    return <SectionRender key={key} section={section} useLazy={key > 3} />;
+    return <SectionRender key={key} section={section} useLazy={key > 2} />;
   });
 
   return <>{sectionsToRender}</>;
