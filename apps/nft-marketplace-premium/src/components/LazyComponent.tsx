@@ -1,18 +1,17 @@
 import { Skeleton } from '@mui/material';
-import useIntersectionObserver from '@react-hook/intersection-observer';
 import React from 'react';
+import { useInView } from 'react-intersection-observer';
 
 interface Props {
   children: React.ReactNode;
 }
 
 const LazyComponent = ({ children }: Props) => {
-  const [ref, setRef] = React.useState<HTMLDivElement | null>(null);
-  const { isIntersecting } = useIntersectionObserver(ref);
+  const { ref, inView } = useInView({ triggerOnce: true });
 
   return (
-    <div ref={setRef}>
-      {isIntersecting ? children : <Skeleton height={400}></Skeleton>}
+    <div ref={ref}>
+      {inView ? children : <Skeleton height={400}></Skeleton>}
     </div>
   );
 };
