@@ -13,7 +13,10 @@ import { getAppConfig } from '../../../src/services/app';
 import { SectionsRenderer } from '@/modules/wizard/components/sections/SectionsRenderer';
 import { AppPageSection } from '@/modules/wizard/types/section';
 import { GET_ASSETS_ORDERBOOK } from 'src/hooks/nft';
-import { getDKAssetOrderbook } from 'src/services/nft';
+import {
+  fetchMultipleAssetForQueryClient,
+  getDKAssetOrderbook,
+} from 'src/services/nft';
 
 const Home: NextPage<{ sections: AppPageSection[] }> = ({ sections }) => {
   return (
@@ -41,48 +44,14 @@ export const getStaticProps: GetStaticProps = async ({
       const assetResponse = await getDKAssetOrderbook({ maker });
       await queryClient.prefetchQuery(
         [GET_ASSETS_ORDERBOOK, { maker: maker || null }],
-        async () => assetResponse.data,
+        async () => assetResponse.data
       );
     }
   }
-
-  /* for (let section of homePage.sections) {
-    if (
-      section.type === 'featured' ||
-      section.type === 'call-to-action' ||
-      section.type === 'collections'
-    ) {
-      for (let item of section.items) {
-        try {
-          if (item.type === 'asset' && item.tokenId !== undefined) {
-            await fetchAssetForQueryClient({ item, queryClient });
-          } else if (item.type === 'collection') {
-            const slug = getNetworkSlugFromChainId(item.chainId);
-
-            if (slug === undefined) {
-              continue;
-            }
-
-            const provider = getProviderBySlug(slug);
-
-            await provider?.ready;
-
-            const collection = await getCollectionData(
-              provider,
-              item.contractAddress,
-            );
-
-            await queryClient.prefetchQuery(
-              [GET_COLLECTION_DATA, item.contractAddress, item.chainId],
-              async () => collection,
-            );
-          }
-        } catch (e) {
-          console.log(e);
-        }
-      }
-    }
-  }*/
+  await fetchMultipleAssetForQueryClient({
+    queryClient,
+    sections: homePage.sections,
+  });
 
   return {
     props: {

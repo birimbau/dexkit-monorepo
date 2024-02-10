@@ -57,7 +57,6 @@ for (let index = 0; index < EVM_CHAINS.length; index++) {
   }
 }
 
-console.log(NETS);
 
 export const NETWORKS = NETS;
 
