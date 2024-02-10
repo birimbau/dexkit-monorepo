@@ -221,7 +221,7 @@ export function getWhereNFTQuery({ mapData }: { mapData: Map<number, Map<string,
       whereQuery.where.OR.push({
         chainId,
         address: contractData[0],
-        tokenId: Array.from(contractData[1])
+        tokenId: { in: Array.from(contractData[1]) }
       })
     }
 
