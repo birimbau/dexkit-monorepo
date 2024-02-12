@@ -40,18 +40,18 @@ import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { useLogoutAccountMutation } from 'src/hooks/account';
 
 const EvmReceiveDialog = dynamic(
-  () => import('@dexkit/ui/components/dialogs/EvmReceiveDialog'),
+  () => import('@dexkit/ui/components/dialogs/EvmReceiveDialog')
 );
 
 const EvmTransferCoinDialog = dynamic(
   () =>
     import(
       '@dexkit/ui/modules/evm-transfer-coin/components/dialogs/EvmSendDialog'
-    ),
+    )
 );
 
 const SelectNetworkDialog = dynamic(
-  () => import('@dexkit/ui/components/dialogs/SelectNetworkDialog'),
+  () => import('@dexkit/ui/components/dialogs/SelectNetworkDialog')
 );
 
 export default function WalletContent() {
@@ -77,7 +77,7 @@ export default function WalletContent() {
   const { data: balance } = useEvmNativeBalanceQuery({ provider, account });
 
   const [isBalancesVisible, setIsBalancesVisible] = useAtom(
-    isBalancesVisibleAtom,
+    isBalancesVisibleAtom
   );
 
   const handleToggleVisibility = () => {
@@ -283,6 +283,7 @@ export default function WalletContent() {
                 <Stack direction="row" alignItems="center" spacing={1}>
                   <Avatar
                     src={NETWORK_IMAGE(chainId)}
+                    alt={`network chainId: ${chainId}`}
                     sx={{ width: '1rem', height: '1rem' }}
                   />
                   <Typography>{NETWORK_NAME(chainId)}</Typography>

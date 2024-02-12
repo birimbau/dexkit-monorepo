@@ -55,7 +55,7 @@ import Notification from './icons/Notification';
 import Wallet from './icons/Wallet';
 
 const SelectNetworkDialog = dynamic(
-  () => import('@dexkit/ui/components/dialogs/SelectNetworkDialog'),
+  () => import('@dexkit/ui/components/dialogs/SelectNetworkDialog')
 );
 
 import { useAuthUserQuery } from '@/modules/user/hooks';
@@ -108,7 +108,7 @@ function Navbar({ appConfig, isPreview }: Props) {
   const [, setShowShowSelectLocale] = useAtom(showSelectLocaleAtom);
 
   const [showTransactions, setShowTransactions] = useAtom(
-    showAppTransactionsAtom,
+    showAppTransactionsAtom
   );
 
   const handleOpenTransactions = () => setShowTransactions(true);
@@ -121,7 +121,7 @@ function Navbar({ appConfig, isPreview }: Props) {
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const handleSettingsMenuClick = (
-    event: React.MouseEvent<HTMLButtonElement>,
+    event: React.MouseEvent<HTMLButtonElement>
   ) => {
     setMenuAnchorEl(event.currentTarget);
   };
@@ -169,7 +169,7 @@ function Navbar({ appConfig, isPreview }: Props) {
   const [showProfileMenu, setShowProfileMenu] = useState(false);
 
   const handleShowProfileMenu = (
-    event: React.MouseEvent<HTMLButtonElement>,
+    event: React.MouseEvent<HTMLButtonElement>
   ) => {
     setShowProfileMenu(true);
     setProfileMenuAnchorEl(event.currentTarget);
@@ -411,7 +411,7 @@ function Navbar({ appConfig, isPreview }: Props) {
                         defaultMessage={m.name}
                       />
                     </Link>
-                  ),
+                  )
                 )}
               </Stack>
             ) : (
@@ -513,7 +513,10 @@ function Navbar({ appConfig, isPreview }: Props) {
                   </ButtonBase>
                   <WalletButton />
                   <NoSsr>
-                    <IconButton onClick={handleOpenTransactions}>
+                    <IconButton
+                      onClick={handleOpenTransactions}
+                      aria-label="notifications"
+                    >
                       <Badge
                         variant={
                           hasPendingTransactions &&
@@ -539,7 +542,10 @@ function Navbar({ appConfig, isPreview }: Props) {
                 </Stack>
               )}
 
-              <IconButton onClick={handleSettingsMenuClick}>
+              <IconButton
+                onClick={handleSettingsMenuClick}
+                aria-label="settings"
+              >
                 <SettingsIcon />
               </IconButton>
             </Stack>
@@ -555,7 +561,10 @@ function Navbar({ appConfig, isPreview }: Props) {
             }}
           >
             <NoSsr>
-              <IconButton onClick={handleOpenTransactions}>
+              <IconButton
+                onClick={handleOpenTransactions}
+                aria-label="notifications"
+              >
                 <Badge
                   variant={
                     hasPendingTransactions &&

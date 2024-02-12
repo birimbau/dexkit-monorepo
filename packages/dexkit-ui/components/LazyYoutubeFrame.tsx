@@ -1,5 +1,5 @@
-import useIntersectionObserver from "@react-hook/intersection-observer";
-import { useMemo, useRef } from "react";
+import { useMemo } from "react";
+import { useInView } from "react-intersection-observer";
 import { youTubeUrlToEmbed } from "../utils/youtube";
 
 interface Props {
@@ -8,14 +8,7 @@ interface Props {
 }
 
 const LazyYoutubeFrame = ({ url, title }: Props) => {
-  const containerRef = useRef<HTMLElement | null>(null);
-  const lockRef = useRef(false);
-
-  const { isIntersecting } = useIntersectionObserver(containerRef);
-
-  if (isIntersecting && !lockRef.current) {
-    lockRef.current = true;
-  }
+  const { ref, inView } = useInView({ triggerOnce: true });
 
   const videoUrl = useMemo(() => {
     if (!url) {
@@ -26,14 +19,8 @@ const LazyYoutubeFrame = ({ url, title }: Props) => {
   }, [url]);
 
   return (
-    <div
-      ref={(ref) => {
-        if (ref) {
-          containerRef.current = ref;
-        }
-      }}
-    >
-      {lockRef.current && (
+    <div ref={ref}>
+      {inView && (
         <iframe
           title={title}
           src={videoUrl}
