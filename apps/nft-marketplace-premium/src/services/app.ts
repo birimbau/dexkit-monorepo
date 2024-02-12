@@ -84,7 +84,7 @@ export async function getAppConfig(
 
   if (site?.startsWith('localhost')) {
     const [slug,] = site?.split('.') || [];
-    //const slug = 'protomatic';
+    //const slug = 'optiswap';
     if (slug) {
       const configResponse = (await getConfig({ slug, appPage })).data;
 
