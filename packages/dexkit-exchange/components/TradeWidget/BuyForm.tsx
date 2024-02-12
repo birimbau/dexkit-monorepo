@@ -51,21 +51,25 @@ export default function BuyForm({
   provider,
   chainId,
 }: BuyFormProps) {
-  const [amount, setAmount] = useState("0.0");
-  const [amountPerToken, setAmountPerToken] = useState("0.0");
+  const [amount, setAmount] = useState<string | undefined>("0.0");
+  const [amountPerToken, setAmountPerToken] = useState<string | undefined>(
+    "0.0"
+  );
   const [duration, setDuration] = useState(ORDER_LIMIT_DURATIONS[0].value);
 
   const [showReview, setShowReview] = useState(false);
 
-  const handleChangeAmount = (value: string) => setAmount(value);
+  const handleChangeAmount = (value?: string) => setAmount(value);
 
-  const handleChangeAmountPerToken = (value: string) =>
+  const handleChangeAmountPerToken = (value?: string) =>
     setAmountPerToken(value);
 
   const handleChangeDuration = (value: number) => setDuration(value);
 
   const parsedAmount = useMemo(() => {
-    return parseFloat(amount !== "" ? amount : "0.0");
+    if (amount) {
+      return amount !== "" ? amount : "0.0";
+    }
   }, [amount]);
 
   const parsedAmountPerToken = useMemo(() => {
@@ -76,11 +80,15 @@ export default function BuyForm({
   }, [amountPerToken, quoteToken]);
 
   const cost = useMemo(() => {
-    return new BigNumberUtils().multiply(parsedAmountPerToken, parsedAmount);
+    if (parsedAmount) {
+      return new BigNumberUtils().multiply(parsedAmountPerToken, parsedAmount);
+    }
   }, [parsedAmountPerToken, parsedAmount]);
 
   const hasSufficientBalance = useMemo(() => {
-    return quoteTokenBalance?.gte(cost) && !cost.isZero();
+    if (cost) {
+      return quoteTokenBalance?.gte(cost) && !cost.isZero();
+    }
   }, [cost, quoteTokenBalance]);
 
   const formattedCost = useMemo(() => {
@@ -88,6 +96,19 @@ export default function BuyForm({
   }, [quoteToken, cost]);
 
   const buttonMessage = useMemo(() => {
+    if (!amount || amount === "0.0") {
+      return <FormattedMessage id="fill.amount" defaultMessage="Fill amount" />;
+    }
+
+    if (!amountPerToken || amountPerToken === "0.0") {
+      return (
+        <FormattedMessage
+          id="fill.amount.per.token"
+          defaultMessage="Fill amount per token"
+        />
+      );
+    }
+
     if (!hasSufficientBalance) {
       return (
         <FormattedMessage
@@ -139,11 +160,23 @@ export default function BuyForm({
   const { enqueueSnackbar } = useSnackbar();
 
   const takerAmount = useMemo(() => {
-    return ethers.utils.parseUnits(parsedAmount.toString(), baseToken.decimals);
+    if (parsedAmount) {
+      return ethers.utils.parseUnits(
+        parsedAmount.toString(),
+        baseToken.decimals
+      );
+    }
   }, [parsedAmount, baseToken]);
 
   const handleConfirmBuy = async () => {
-    if (!chainId || !maker || !quoteToken || !provider) {
+    if (
+      !chainId ||
+      !maker ||
+      !quoteToken ||
+      !provider ||
+      !cost ||
+      !takerAmount
+    ) {
       return;
     }
 
@@ -267,6 +300,7 @@ export default function BuyForm({
         isApproving={approveTokenMutation.isLoading}
         isApproval={
           tokenAllowanceQuery.data !== null &&
+          cost &&
           tokenAllowanceQuery.data?.lt(cost)
         }
         side="buy"

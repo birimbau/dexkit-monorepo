@@ -91,7 +91,7 @@ export class BigNumberUtils {
 
   public multiply(
     bn: ethers.BigNumber | string,
-    number: number
+    number: number | string
   ): ethers.BigNumber {
     const bnForSure = ethers.BigNumber.from(bn);
     const numberBN = ethers.utils.parseUnits(number.toString() || "0.0", 18);
@@ -101,7 +101,7 @@ export class BigNumberUtils {
 
   public divide(
     bn: ethers.BigNumber | string,
-    number: number
+    number: number | string
   ): ethers.BigNumber {
     const bnForSure = ethers.BigNumber.from(bn);
     const numberBN = ethers.utils.parseUnits(number.toString() || "0.0", 18);
