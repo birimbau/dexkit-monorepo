@@ -85,8 +85,6 @@ export default function SellForm({
     }
   }, [parsedAmount, baseToken]);
 
-  console.log(parsedAmountBN?.toString());
-
   const parsedAmountPerToken = useMemo(() => {
     return ethers.utils.parseUnits(
       amountPerToken || "0.0",
@@ -101,10 +99,10 @@ export default function SellForm({
   }, [parsedAmountPerToken, parsedAmount]);
 
   const hasSufficientBalance = useMemo(() => {
-    if (total) {
-      return baseTokenBalance?.gte(total) && !total.isZero();
+    if (parsedAmountBN) {
+      return baseTokenBalance?.gte(parsedAmountBN) && !parsedAmountBN.isZero();
     }
-  }, [total, baseTokenBalance]);
+  }, [parsedAmountBN, baseTokenBalance]);
 
   const formattedTotal = useMemo(() => {
     return formatBigNumber(total, quoteToken.decimals);
