@@ -201,7 +201,7 @@ export default function OrderWidget({
 
   const handleCancel = () => {};
 
-  const [value, setValue] = useState("0.0");
+  const [value, setValue] = useState<string | undefined>("0.0");
 
   const { data: allowance } = useTokenAllowanceQuery({
     account,
@@ -215,31 +215,33 @@ export default function OrderWidget({
   const approve = useApproveToken();
 
   const handleFillOrder = async () => {
-    const amount = ethers.utils.parseUnits(value, takerToken?.decimals);
+    if (value) {
+      const amount = ethers.utils.parseUnits(value, takerToken?.decimals);
 
-    if (allowance?.lt(amount)) {
-      await approve.mutateAsync({
-        amount,
-        onSubmited: () => {},
+      if (allowance?.lt(amount)) {
+        await approve.mutateAsync({
+          amount,
+          onSubmited: () => {},
+          provider,
+          spender: getZrxExchangeAddress(chainId),
+          tokenContract: takerToken?.address,
+        });
+      }
+
+      await fillOrderMutation.mutateAsync({
+        order: record.order,
+        chainId,
         provider,
-        spender: getZrxExchangeAddress(chainId),
-        tokenContract: takerToken?.address,
+        fillAmount: amount,
       });
     }
-
-    await fillOrderMutation.mutateAsync({
-      order: record.order,
-      chainId,
-      provider,
-      fillAmount: amount,
-    });
   };
 
   const price = useMemo(() => {
     return 0;
   }, []);
 
-  const handleChangeFillAmount = (value: string) => {
+  const handleChangeFillAmount = (value?: string) => {
     setValue(value);
   };
 

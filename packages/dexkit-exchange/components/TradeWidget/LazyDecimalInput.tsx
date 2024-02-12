@@ -6,18 +6,21 @@ import DecimalInput from "./DecimalInput";
 
 export interface LazyDecimalInputProps {
   token: Token;
-  onChange: (value: string) => void;
+  onChange: (value?: string) => void;
 }
 
 export default function LazyDecimalInput({
   token,
   onChange,
 }: LazyDecimalInputProps) {
-  const handleChangeAmount = (value: string) => {
+  const handleChangeAmount = (value?: string) => {
     setAmount({ value, triggerChange: true });
   };
 
-  const [amount, setAmount] = useState({ value: "0.0", triggerChange: false });
+  const [amount, setAmount] = useState<{
+    value?: string;
+    triggerChange: boolean;
+  }>({ value: "0.0", triggerChange: false });
 
   const lazyAmount = useDebounce<typeof amount>(amount, 400);
 
