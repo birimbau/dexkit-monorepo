@@ -16,7 +16,7 @@ import {
   Typography,
 } from "@mui/material";
 import { ethers } from "ethers";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { FormattedMessage } from "react-intl";
 import { useExchangeContext } from "../../hooks";
 import { useZrxCancelOrderMutation, useZrxOrderbook } from "../../hooks/zrx";
@@ -104,6 +104,23 @@ export default function OrdersTable({
 
   const connectWalletDialog = useConnectWalletDialog();
 
+  const records = useMemo(() => {
+    if (orderbookQuery.data?.records) {
+      return orderbookQuery.data?.records.filter(
+        (r) =>
+          (r.order.makerToken.toLowerCase() ===
+            baseToken?.address.toLowerCase() &&
+            r.order.takerToken.toLowerCase() ===
+              quoteToken?.address.toLowerCase()) ||
+          (r.order.makerToken.toLowerCase() ===
+            quoteToken?.address.toLowerCase() &&
+            r.order.takerToken.toLowerCase() ===
+              baseToken?.address.toLowerCase())
+      );
+    }
+    return [];
+  }, [orderbookQuery.data?.records, baseToken?.address, quoteToken?.address]);
+
   return (
     <Card>
       <Box sx={{ p: 2 }}>
@@ -162,7 +179,7 @@ export default function OrdersTable({
               </TableRow>
             )}
 
-            {orderbookQuery.data?.records.length === 0 && (
+            {records?.length === 0 && (
               <TableRow>
                 <TableCell colSpan={7}>
                   <Typography align="center" variant="body1">
@@ -174,28 +191,16 @@ export default function OrdersTable({
                 </TableCell>
               </TableRow>
             )}
-            {orderbookQuery.data?.records
-              .filter(
-                (r) =>
-                  (r.order.makerToken.toLowerCase() ===
-                    baseToken?.address.toLowerCase() &&
-                    r.order.takerToken.toLowerCase() ===
-                      quoteToken?.address.toLowerCase()) ||
-                  (r.order.makerToken.toLowerCase() ===
-                    quoteToken?.address.toLowerCase() &&
-                    r.order.takerToken.toLowerCase() ===
-                      baseToken?.address.toLowerCase())
-              )
-              .map((record, index) => (
-                <OrdersTableRow
-                  key={index}
-                  onCancel={handleCancelOrder}
-                  record={record}
-                  account={account}
-                  baseToken={baseToken}
-                  quoteToken={quoteToken}
-                />
-              ))}
+            {records.map((record, index) => (
+              <OrdersTableRow
+                key={index}
+                onCancel={handleCancelOrder}
+                record={record}
+                account={account}
+                baseToken={baseToken}
+                quoteToken={quoteToken}
+              />
+            ))}
             {orderbookQuery.isLoading &&
               new Array(2).fill(null).map((_, key) => (
                 <TableRow key={key}>
