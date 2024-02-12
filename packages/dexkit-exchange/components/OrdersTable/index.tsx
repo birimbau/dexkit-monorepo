@@ -174,16 +174,28 @@ export default function OrdersTable({
                 </TableCell>
               </TableRow>
             )}
-            {orderbookQuery.data?.records.map((record, index) => (
-              <OrdersTableRow
-                key={index}
-                onCancel={handleCancelOrder}
-                record={record}
-                account={account}
-                baseToken={baseToken}
-                quoteToken={quoteToken}
-              />
-            ))}
+            {orderbookQuery.data?.records
+              .filter(
+                (r) =>
+                  (r.order.makerToken.toLowerCase() ===
+                    baseToken?.address.toLowerCase() &&
+                    r.order.takerToken.toLowerCase() ===
+                      quoteToken?.address.toLowerCase()) ||
+                  (r.order.makerToken.toLowerCase() ===
+                    quoteToken?.address.toLowerCase() &&
+                    r.order.takerToken.toLowerCase() ===
+                      baseToken?.address.toLowerCase())
+              )
+              .map((record, index) => (
+                <OrdersTableRow
+                  key={index}
+                  onCancel={handleCancelOrder}
+                  record={record}
+                  account={account}
+                  baseToken={baseToken}
+                  quoteToken={quoteToken}
+                />
+              ))}
             {orderbookQuery.isLoading &&
               new Array(2).fill(null).map((_, key) => (
                 <TableRow key={key}>
