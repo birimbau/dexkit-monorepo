@@ -25,7 +25,7 @@ import {
   useContract,
 } from '@thirdweb-dev/react';
 import { useWeb3React } from '@web3-react/core';
-import { BigNumber, ethers } from 'ethers';
+import { BigNumber, constants, utils } from 'ethers';
 import { useSnackbar } from 'notistack';
 import { SyntheticEvent, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
@@ -57,7 +57,7 @@ export default function ContractAirdropErc20Container({
     ['REWARD_TOKEN_ALLOWANCE', tokenAddress],
     async () => {
       return await tokenContract?.erc20.allowance(address);
-    },
+    }
   );
 
   const approve = useThirdwebApprove({ contract: tokenContract, address });
@@ -68,9 +68,9 @@ export default function ContractAirdropErc20Container({
 
   const { data: tokenBalance, isLoading } = useBalance(
     tokenAddress !== NATIVE_TOKEN_ADDRESS &&
-      tokenAddress !== ethers.constants.AddressZero
+      tokenAddress !== constants.AddressZero
       ? tokenAddress
-      : undefined,
+      : undefined
   );
 
   const [totalAmount, totalAmountFormatted] = useAsyncMemo(
@@ -78,21 +78,18 @@ export default function ContractAirdropErc20Container({
       const metadata = await tokenContract?.erc20.get();
 
       const amount = recipients
-        .map((r) => ethers.utils.parseUnits(r.quantity, metadata?.decimals))
+        .map((r) => utils.parseUnits(r.quantity, metadata?.decimals))
         .reduce((prev, curr) => {
           return prev.add(curr);
         }, BigNumber.from(0));
 
       return [
         amount,
-        `${ethers.utils.formatUnits(
-          amount,
-          metadata?.decimals,
-        )} ${metadata?.symbol}`,
+        `${utils.formatUnits(amount, metadata?.decimals)} ${metadata?.symbol}`,
       ];
     },
     [BigNumber.from(0), '0.0'],
-    [recipients, tokenContract],
+    [recipients, tokenContract]
   );
 
   const { enqueueSnackbar } = useSnackbar();
@@ -106,25 +103,25 @@ export default function ContractAirdropErc20Container({
       const metadata = await tokenContract?.erc20.get();
 
       const amount = recipients
-        .map((r) => ethers.utils.parseUnits(r.quantity, metadata?.decimals))
+        .map((r) => utils.parseUnits(r.quantity, metadata?.decimals))
         .reduce((prev, curr) => {
           return prev.add(curr);
         }, BigNumber.from(0));
 
       if (
         !isAddressEqual(tokenAddress, NATIVE_TOKEN_ADDRESS) &&
-        !isAddressEqual(tokenAddress, ethers.constants.AddressZero)
+        !isAddressEqual(tokenAddress, constants.AddressZero)
       ) {
         if (!allowance?.value.gte(amount)) {
           await approve.mutateAsync({
-            amount: ethers.utils.formatUnits(amount, metadata?.decimals),
+            amount: utils.formatUnits(amount, metadata?.decimals),
           });
         }
       }
 
       const values = {
         name: metadata?.name || '',
-        amount: ethers.utils.formatUnits(amount, metadata?.decimals),
+        amount: utils.formatUnits(amount, metadata?.decimals),
       };
 
       if (!account || !tokenAddress) {
@@ -136,16 +133,14 @@ export default function ContractAirdropErc20Container({
       try {
         let call = await contract?.airdrop20.drop.prepare(
           isAddressEqual(tokenAddress, NATIVE_TOKEN_ADDRESS) ||
-            isAddressEqual(tokenAddress, ethers.constants.AddressZero)
+            isAddressEqual(tokenAddress, constants.AddressZero)
             ? NATIVE_TOKEN_ADDRESS
             : tokenAddress,
           account,
           recipients.map((r) => ({
             recipient: r.address,
-            amount: ethers.utils
-              .parseUnits(r.quantity, metadata?.decimals)
-              .toString(),
-          })),
+            amount: utils.parseUnits(r.quantity, metadata?.decimals).toString(),
+          }))
         );
 
         if (isAddressEqual(tokenAddress, NATIVE_TOKEN_ADDRESS)) {
@@ -174,7 +169,7 @@ export default function ContractAirdropErc20Container({
         watchTransactionDialog.close();
         throw err;
       }
-    },
+    }
   );
 
   const handleConfirm = (data: { address: string; quantity: string }[]) => {
@@ -286,7 +281,7 @@ export default function ContractAirdropErc20Container({
                                 ) : (
                                   `${formatBigNumber(
                                     tokenBalance?.value,
-                                    tokenBalance?.decimals,
+                                    tokenBalance?.decimals
                                   )} ${tokenBalance?.symbol.toUpperCase()}`
                                 )}
                               </Typography>

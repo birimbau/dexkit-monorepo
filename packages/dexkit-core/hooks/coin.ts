@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { BigNumber, ethers } from "ethers";
+import { BigNumber, Contract, providers } from "ethers";
 import { ERC20Abi } from "../constants/abis";
 import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "../constants/zrx";
 import { getERC20TokenAllowance } from "../services";
@@ -11,7 +11,7 @@ export const ERC20_BALANCE = "ERC20_BALANCE";
 export interface Erc20BalanceParams {
   account?: string;
   contractAddress?: string;
-  provider?: ethers.providers.BaseProvider;
+  provider?: providers.BaseProvider;
 }
 
 export function useErc20BalanceQuery({
@@ -28,7 +28,7 @@ export function useErc20BalanceQuery({
       return await provider.getBalance(account);
     }
 
-    const contract = new ethers.Contract(contractAddress, ERC20Abi, provider);
+    const contract = new Contract(contractAddress, ERC20Abi, provider);
 
     return (await contract.balanceOf(account)) as BigNumber;
   });
@@ -41,7 +41,7 @@ export function useEvmNativeBalanceQuery({
   account,
 }: {
   account?: string;
-  provider?: ethers.providers.BaseProvider;
+  provider?: providers.BaseProvider;
 }) {
   return useQuery([EVM_NATIVE_BALANCE_QUERY, account], async () => {
     if (!account || !provider) {
@@ -55,11 +55,11 @@ export function useEvmNativeBalanceQuery({
 export const GET_ERC20_BALANCE = "GET_ERC20_BALANCE";
 
 export function useErc20Balance(
-  provider?: ethers.providers.BaseProvider,
+  provider?: providers.BaseProvider,
   contractAddress?: string,
   account?: string
 ) {
-  return useQuery<ethers.BigNumber | undefined>(
+  return useQuery<BigNumber | undefined>(
     [GET_ERC20_BALANCE, contractAddress, account],
     async () => {
       if (!contractAddress || !account || !provider) {
@@ -85,7 +85,7 @@ export function useTokenAllowanceQuery({
   account?: string;
   tokenAddress?: string;
   spender?: string;
-  provider?: ethers.providers.Web3Provider;
+  provider?: providers.Web3Provider;
 }) {
   return useQuery(
     [TOKEN_ALLOWANCE_QUERY, tokenAddress, account, spender],
@@ -114,10 +114,10 @@ export function useApproveToken() {
       onSubmited,
       amount,
     }: {
-      amount?: ethers.BigNumber;
+      amount?: BigNumber;
       spender?: string;
       tokenContract?: string;
-      provider?: ethers.providers.Web3Provider;
+      provider?: providers.Web3Provider;
       onSubmited: (hash: string) => void;
     }) => {
       if (!tokenContract || !spender) {

@@ -1,14 +1,15 @@
 import { ChainId } from '@dexkit/core/constants';
 import { Row, Value } from '@react-page/editor';
 import { UserFacingFeeStruct } from '@traderxyz/nft-swap-sdk';
-import { ethers } from 'ethers';
+
+import { BigNumber } from 'ethers';
 import { NETWORK_ID } from '../constants/enum';
 import { MARKETPLACES, MARKETPLACES_INFO } from '../constants/marketplaces';
 import { Asset, AssetAPI, AssetBalance, AssetMetadata } from '../types/nft';
 import { getNetworkSlugFromChainId } from './blockchain';
 
 export function calculeFees(
-  amount: ethers.BigNumber,
+  amount: BigNumber,
   decimals: number,
   fees: { amount_percentage: number; recipient: string }[]
 ): UserFacingFeeStruct[] {

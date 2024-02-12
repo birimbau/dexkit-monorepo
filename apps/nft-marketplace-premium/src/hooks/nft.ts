@@ -14,7 +14,7 @@ import {
 } from '@traderxyz/nft-swap-sdk';
 import { useCallback, useMemo } from 'react';
 
-import { BigNumber, ethers } from 'ethers';
+import { BigNumber, Contract, providers } from 'ethers';
 import { WETHAbi } from '../constants/abis';
 
 import { useWeb3React } from '@web3-react/core';
@@ -717,11 +717,11 @@ export function useFillSignedOrderMutation(
 export const GET_ERC20_BALANCE = 'GET_ERC20_BALANCE';
 
 export function useErc20Balance(
-  provider?: ethers.providers.BaseProvider,
+  provider?: providers.BaseProvider,
   contractAddress?: string,
   account?: string,
 ) {
-  return useQuery<ethers.BigNumber | undefined>(
+  return useQuery<BigNumber | undefined>(
     [GET_ERC20_BALANCE, contractAddress, account],
     async () => {
       if (!contractAddress || !account || !provider) {
@@ -737,10 +737,10 @@ export function useErc20Balance(
 }
 
 export function useWrapEtherMutation(
-  provider?: ethers.providers.BaseProvider,
+  provider?: providers.BaseProvider,
   chainId?: number,
 ) {
-  return useMutation(async ({ amount }: { amount: ethers.BigNumber }) => {
+  return useMutation(async ({ amount }: { amount: BigNumber }) => {
     if (chainId === undefined) {
       return;
     }
@@ -751,7 +751,7 @@ export function useWrapEtherMutation(
       return;
     }
 
-    const contract = new ethers.Contract(contractAddress, WETHAbi, provider);
+    const contract = new Contract(contractAddress, WETHAbi, provider);
 
     return await contract.deposit({ value: amount });
   });

@@ -29,8 +29,11 @@ import { Collection, TraderOrderFilter } from '@dexkit/ui/modules/nft/types';
 import { hexToString } from '@dexkit/ui/utils';
 import Search from '@mui/icons-material/Search';
 import {
+  Checkbox,
   Divider,
   Drawer,
+  FormControlLabel,
+  FormGroup,
   Grid,
   IconButton,
   InputAdornment,
@@ -115,6 +118,11 @@ const CollectionPage: NextPage<{ enableDarkblock: boolean }> = ({
 
   const theme = useTheme();
   const isDesktop = useMediaQuery(theme.breakpoints.up('sm'));
+  const [buyNowChecked, setBuyNowChecked] = useState(true);
+
+  const handleChangeBuyNow = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setBuyNowChecked(event.target.checked);
+  };
 
   const [isFiltersOpen, setIsFiltersOpen] = useState(false);
 
@@ -146,6 +154,22 @@ const CollectionPage: NextPage<{ enableDarkblock: boolean }> = ({
               ),
             }}
           />
+
+          <FormGroup>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={buyNowChecked}
+                  onChange={handleChangeBuyNow}
+                  inputProps={{ 'aria-label': 'controlled' }}
+                />
+              }
+              label={
+                <FormattedMessage defaultMessage={'Buy now'} id={'buy.now'} />
+              }
+            />
+          </FormGroup>
+
           <CollectionTraits address={address as string} chainId={chainId} />
         </SidebarFiltersContent>
       </SidebarFilters>
@@ -429,7 +453,7 @@ export const getStaticProps: GetStaticProps = async ({
   const slug = params?.uri;
   const configResponse = await getAppConfig(params?.site, 'home');
   const coll = configResponse.appConfig.collections?.find(
-    (c) => c.uri === slug,
+    (c) => c.uri === slug
   );
   if (!coll) {
     return {
@@ -488,7 +512,7 @@ export const getStaticProps: GetStaticProps = async ({
       [GET_ASSET_LIST_FROM_COLLECTION, network, address, 0, 50],
       async () => {
         return collectionAssets;
-      },
+      }
     );
   } catch {}
 
@@ -496,14 +520,14 @@ export const getStaticProps: GetStaticProps = async ({
     if (network === NETWORK_ID.Ethereum || network === NETWORK_ID.Polygon) {
       const { data } = await getRariCollectionStats(
         `${MAP_NETWORK_TO_RARIBLE[network]}:${address}`,
-        MAP_COIN_TO_RARIBLE[network],
+        MAP_COIN_TO_RARIBLE[network]
       );
 
       await queryClient.prefetchQuery(
         [GET_COLLECTION_STATS, network, address],
         async () => {
           return data;
-        },
+        }
       );
     }
   } catch (e) {
@@ -533,7 +557,7 @@ export const getStaticProps: GetStaticProps = async ({
 
     if (isTw) {
       const contractType: string = hexToString(
-        await twContract.call('contractType'),
+        await twContract.call('contractType')
       );
 
       const metadata = await twContract.metadata.get();
@@ -571,7 +595,7 @@ export const getStaticProps: GetStaticProps = async ({
 
     await queryClient.prefetchQuery(
       [COLLECTION_ASSETS_FROM_ORDERBOOK, filters],
-      async () => assets,
+      async () => assets
     );
   } catch {}
 
@@ -580,7 +604,7 @@ export const getStaticProps: GetStaticProps = async ({
   try {
     if (
       DARKBLOCK_SUPPORTED_CHAIN_IDS.includes(
-        NETWORK_FROM_SLUG(network)?.chainId as ChainId,
+        NETWORK_FROM_SLUG(network)?.chainId as ChainId
       )
     ) {
       const darkBlock = await getIntegrationData({

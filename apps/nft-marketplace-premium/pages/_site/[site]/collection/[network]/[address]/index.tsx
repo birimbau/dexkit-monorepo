@@ -10,6 +10,7 @@ import { CollectionHeader } from '@/modules/nft/components/CollectionHeader';
 import CollectionPageHeader from '@/modules/nft/components/CollectionPageHeader';
 import { CollectionStats } from '@/modules/nft/components/CollectionStats';
 import { CollectionTraits } from '@/modules/nft/components/CollectionTraits';
+import { StoreOrdebookContainer } from '@/modules/nft/components/container/StoreOrderbookContainer';
 import TableSkeleton from '@/modules/nft/components/tables/TableSkeleton';
 import DarkblockWrapper from '@/modules/wizard/components/DarkblockWrapper';
 import { DropEditionListSection } from '@/modules/wizard/components/sections/DropEditionListSection';
@@ -26,8 +27,11 @@ import { Collection, TraderOrderFilter } from '@dexkit/ui/modules/nft/types';
 import { hexToString } from '@dexkit/ui/utils';
 import Search from '@mui/icons-material/Search';
 import {
+  Checkbox,
   Divider,
   Drawer,
+  FormControlLabel,
+  FormGroup,
   Grid,
   IconButton,
   InputAdornment,
@@ -104,6 +108,12 @@ const CollectionPage: NextPage<{ enableDarkblock: boolean }> = ({
     setSearch(e.target.value);
   };
 
+  const [buyNowChecked, setBuyNowChecked] = useState(true);
+
+  const handleChangeBuyNow = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setBuyNowChecked(event.target.checked);
+  };
+
   const theme = useTheme();
   const isDesktop = useMediaQuery(theme.breakpoints.up('sm'));
 
@@ -119,25 +129,47 @@ const CollectionPage: NextPage<{ enableDarkblock: boolean }> = ({
         onClose={onClose}
       >
         <SidebarFiltersContent>
-          <TextField
-            fullWidth
-            size="small"
-            type="search"
-            value={search}
-            onChange={handleChangeSearch}
-            placeholder={formatMessage({
-              id: 'search.in.collection',
-              defaultMessage: 'Search in collection',
-            })}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <Search color="primary" />
-                </InputAdornment>
-              ),
-            }}
-          />
-          <CollectionTraits address={address as string} chainId={chainId} />
+          <Stack spacing={1}>
+            <TextField
+              fullWidth
+              size="small"
+              type="search"
+              value={search}
+              onChange={handleChangeSearch}
+              placeholder={formatMessage({
+                id: 'search.in.collection',
+                defaultMessage: 'Search in collection',
+              })}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <Search color="primary" />
+                  </InputAdornment>
+                ),
+              }}
+            />
+            <Typography>
+              <FormattedMessage defaultMessage={'Status'} id={'status'} />
+            </Typography>
+            <FormGroup>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={buyNowChecked}
+                    onChange={handleChangeBuyNow}
+                    inputProps={{ 'aria-label': 'controlled' }}
+                  />
+                }
+                label={
+                  <FormattedMessage defaultMessage={'Buy now'} id={'buy.now'} />
+                }
+              />
+            </FormGroup>
+            <Typography>
+              <FormattedMessage defaultMessage={'Traits'} id={'traits'} />
+            </Typography>
+            <CollectionTraits address={address as string} chainId={chainId} />
+          </Stack>
         </SidebarFiltersContent>
       </SidebarFilters>
     );
@@ -341,26 +373,39 @@ const CollectionPage: NextPage<{ enableDarkblock: boolean }> = ({
                                 </Stack>
                               )}
                             >
-                              {collection?.syncStatus ===
-                                CollectionSyncStatus.Synced ||
-                              collection?.syncStatus ===
-                                CollectionSyncStatus.Syncing ? (
-                                <AssetListCollection
-                                  contractAddress={address as string}
-                                  network={network as string}
+                              {buyNowChecked ? (
+                                <StoreOrdebookContainer
                                   search={search}
-                                />
+                                  collectionAddress={address as string}
+                                  chainId={chainId}
+                                  context={'collection'}
+                                ></StoreOrdebookContainer>
                               ) : (
-                                <Suspense fallback={<TableSkeleton rows={4} />}>
-                                  <AssetList
-                                    contractAddress={address as string}
-                                    chainId={
-                                      NETWORK_FROM_SLUG(network as string)
-                                        ?.chainId
-                                    }
-                                    search={search}
-                                  />
-                                </Suspense>
+                                <>
+                                  {collection?.syncStatus ===
+                                    CollectionSyncStatus.Synced ||
+                                  collection?.syncStatus ===
+                                    CollectionSyncStatus.Syncing ? (
+                                    <AssetListCollection
+                                      contractAddress={address as string}
+                                      network={network as string}
+                                      search={search}
+                                    />
+                                  ) : (
+                                    <Suspense
+                                      fallback={<TableSkeleton rows={4} />}
+                                    >
+                                      <AssetList
+                                        contractAddress={address as string}
+                                        chainId={
+                                          NETWORK_FROM_SLUG(network as string)
+                                            ?.chainId
+                                        }
+                                        search={search}
+                                      />
+                                    </Suspense>
+                                  )}
+                                </>
                               )}
                             </AppErrorBoundary>
                           </NoSsr>
@@ -467,7 +512,7 @@ export const getStaticProps: GetStaticProps = async ({
       [GET_ASSET_LIST_FROM_COLLECTION, network, address, 0, 50],
       async () => {
         return collectionAssets;
-      },
+      }
     );
   } catch {}
 
@@ -475,14 +520,14 @@ export const getStaticProps: GetStaticProps = async ({
     if (network === NETWORK_ID.Ethereum || network === NETWORK_ID.Polygon) {
       const { data } = await getRariCollectionStats(
         `${MAP_NETWORK_TO_RARIBLE[network]}:${address}`,
-        MAP_COIN_TO_RARIBLE[network],
+        MAP_COIN_TO_RARIBLE[network]
       );
 
       await queryClient.prefetchQuery(
         [GET_COLLECTION_STATS, network, address],
         async () => {
           return data;
-        },
+        }
       );
     }
   } catch (e) {
@@ -512,7 +557,7 @@ export const getStaticProps: GetStaticProps = async ({
 
     if (isTw) {
       const contractType: string = hexToString(
-        await twContract.call('contractType'),
+        await twContract.call('contractType')
       );
 
       const metadata = await twContract.metadata.get();
@@ -550,7 +595,7 @@ export const getStaticProps: GetStaticProps = async ({
 
     await queryClient.prefetchQuery(
       [COLLECTION_ASSETS_FROM_ORDERBOOK, filters],
-      async () => assets,
+      async () => assets
     );
   } catch {}
 
@@ -559,7 +604,7 @@ export const getStaticProps: GetStaticProps = async ({
   try {
     if (
       DARKBLOCK_SUPPORTED_CHAIN_IDS.includes(
-        NETWORK_FROM_SLUG(network)?.chainId as ChainId,
+        NETWORK_FROM_SLUG(network)?.chainId as ChainId
       )
     ) {
       const darkBlock = await getIntegrationData({

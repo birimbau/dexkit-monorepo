@@ -13,9 +13,15 @@ interface Props {
   orderbook?: OrderbookAPI;
   isLoading?: boolean;
   search?: string;
+  context?: 'store' | 'collection';
 }
 
-export function StoreOrderbook({ orderbook, search, isLoading }: Props) {
+export function StoreOrderbook({
+  orderbook,
+  search,
+  isLoading,
+  context,
+}: Props) {
   const filteredOrderbook = useMemo(() => {
     let data = orderbook?.data;
     if (data && search) {
@@ -63,7 +69,7 @@ export function StoreOrderbook({ orderbook, search, isLoading }: Props) {
         ))}
 
       {filteredOrderbook?.map((orderBookItem, index) => (
-        <Grid item xs={6} sm={3} key={index}>
+        <Grid item xs={6} sm={context === 'collection' ? 2 : 3} key={index}>
           <BaseAssetCard
             showAssetDetailsInDialog={true}
             asset={parseAssetApi(orderBookItem.asset)}
@@ -84,10 +90,17 @@ export function StoreOrderbook({ orderbook, search, isLoading }: Props) {
               />
             </Typography>
             <Typography variant="body1" color="textSecondary">
-              <FormattedMessage
-                id="store.without.order"
-                defaultMessage="Store without offers. Came back later! "
-              />
+              {context === 'collection' ? (
+                <FormattedMessage
+                  id="store.without.order"
+                  defaultMessage="Store without offers. Came back later!"
+                />
+              ) : (
+                <FormattedMessage
+                  id="collection.without.orders"
+                  defaultMessage="Collection without listings. Came back later!"
+                />
+              )}
             </Typography>
           </Stack>
         </Grid>

@@ -3,7 +3,7 @@ import {
   UseMutationOptions,
   useQuery,
 } from '@tanstack/react-query';
-import { ethers } from 'ethers';
+import { BigNumber, utils } from 'ethers';
 
 import {
   NotificationCallbackParams,
@@ -82,12 +82,12 @@ export function useSwapState() {
           icon: 'swap_vert',
           values: {
             sellTokenSymbol: params.sellToken.symbol.toUpperCase(),
-            sellAmount: ethers.utils.formatUnits(
+            sellAmount: utils.formatUnits(
               params.sellAmount,
               params.sellToken.decimals
             ),
             buyTokenSymbol: params.buyToken.symbol.toUpperCase(),
-            buyAmount: ethers.utils.formatUnits(
+            buyAmount: utils.formatUnits(
               params.buyAmount,
               params.buyToken.decimals
             ),
@@ -209,13 +209,13 @@ export function useSwapQuote({
             sellToken: sellToken?.address.toLowerCase(),
             buyAmount:
               buyAmount !== ''
-                ? ethers.utils
+                ? utils
                   .parseUnits(buyAmount, buyToken?.decimals)
                   .toString()
                 : undefined,
             sellAmount:
               sellAmount !== ''
-                ? ethers.utils
+                ? utils
                   .parseUnits(sellAmount, sellToken?.decimals)
                   .toString()
                 : undefined,
@@ -268,8 +268,8 @@ export function useExecSwap(
 
     const tx = await provider.getSigner().sendTransaction({
       data: quote?.data,
-      gasPrice: ethers.BigNumber.from(quote?.gasPrice),
-      value: ethers.BigNumber.from(quote?.value),
+      gasPrice: BigNumber.from(quote?.gasPrice),
+      value: BigNumber.from(quote?.value),
       to: quote?.to,
     });
     if (onSuccess) {
