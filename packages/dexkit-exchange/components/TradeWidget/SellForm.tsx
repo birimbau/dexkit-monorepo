@@ -16,7 +16,7 @@ import {
 import { useWeb3React } from "@web3-react/core";
 import { BigNumber, ethers } from "ethers";
 import { useSnackbar } from "notistack";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 import { ORDER_LIMIT_DURATIONS } from "../../constants";
 import { useSendLimitOrderMutation } from "../../hooks";
@@ -137,9 +137,9 @@ export default function SellForm({
       ethers.utils.formatUnits(sellAmount, quoteToken.decimals)
     );
   };
-  useEffect(() => {
+  /* useEffect(() => {
     handleQuotePrice();
-  }, [handleQuotePrice]);
+  }, []);*/
 
   const sendLimitOrderMutation = useSendLimitOrderMutation();
 

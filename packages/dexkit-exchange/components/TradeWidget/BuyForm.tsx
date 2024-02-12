@@ -6,7 +6,7 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 import DecimalInput from "./DecimalInput";
 
@@ -204,9 +204,9 @@ export default function BuyForm({
     await tokenAllowanceQuery.refetch();
   };
 
-  useEffect(() => {
+  /*useEffect(() => {
     handleQuotePrice();
-  }, [handleQuotePrice]);
+  }, [handleQuotePrice]);*/
 
   const { chainId: providerChainId, connector } = useWeb3React();
   const switchNetworkMutation = useSwitchNetworkMutation();
