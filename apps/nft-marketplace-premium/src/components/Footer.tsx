@@ -65,9 +65,9 @@ export function Footer({ appConfig, isPreview, appNFT }: Props) {
     return '';
   };
 
-  const renderCustomLink = (media: any) => {
-    if (media?.link) {
-      return media.link;
+  const renderCustomLink = (link?: string) => {
+    if (link) {
+      return link;
     }
 
     return '';
