@@ -108,7 +108,7 @@ const CollectionPage: NextPage<{ enableDarkblock: boolean }> = ({
     setSearch(e.target.value);
   };
 
-  const [buyNowChecked, setBuyNowChecked] = useState(true);
+  const [buyNowChecked, setBuyNowChecked] = useState(false);
 
   const handleChangeBuyNow = (event: React.ChangeEvent<HTMLInputElement>) => {
     setBuyNowChecked(event.target.checked);
