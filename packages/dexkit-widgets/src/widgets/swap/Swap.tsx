@@ -260,10 +260,10 @@ export default function Swap({
             />
             <Stack alignItems="center">
               <Box
-                sx={{
-                  marginTop: (theme) => -2,
-                  marginBottom: (theme) => -2,
-                }}
+                sx={(theme) => ({
+                  marginTop: -2,
+                  marginBottom: -2,
+                })}
               >
                 <SwapSwitchTokensButton
                   IconButtonProps={{ onClick: onSwapTokens }}

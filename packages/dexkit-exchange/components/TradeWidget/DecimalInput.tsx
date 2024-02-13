@@ -2,8 +2,8 @@ import { TextField, TextFieldProps } from "@mui/material";
 import { ChangeEvent } from "react";
 
 export interface DecimalInputProps {
-  value: string;
-  onChange: (value: string) => void;
+  value?: string;
+  onChange: (value?: string) => void;
   TextFieldProps?: TextFieldProps;
   decimals?: number;
 }
@@ -23,6 +23,9 @@ export default function DecimalInput({
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (pattern.test(e.target.value)) {
       onChange(e.target.value);
+    }
+    if (!e.target.value) {
+      onChange(undefined);
     }
   };
 

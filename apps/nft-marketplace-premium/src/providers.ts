@@ -1,36 +1,36 @@
-import { ethers } from 'ethers';
+import { JsonRpcProvider } from '@ethersproject/providers';
 
 // this strategy is deprecated use src/constants/chains.ts file
 
 const infuraKey = process.env.INFURA_API_KEY;
 
-export const mainnetProvider = new ethers.providers.JsonRpcProvider(
+export const mainnetProvider = new JsonRpcProvider(
   `https://mainnet.infura.io/v3/${infuraKey}`
 );
 
-export const ropstenProvider = new ethers.providers.JsonRpcProvider(
+export const ropstenProvider = new JsonRpcProvider(
   `https://ropsten.infura.io/v3/${infuraKey}`
 );
 
-export const rinkebyProvider = new ethers.providers.JsonRpcProvider(
+export const rinkebyProvider = new JsonRpcProvider(
   `https://rinkeby.infura.io/v3/${infuraKey}`
 );
 
-export const mumbaiProvider = new ethers.providers.JsonRpcProvider(
+export const mumbaiProvider = new JsonRpcProvider(
   `https://polygon-mumbai.infura.io/v3/${infuraKey}`
 );
 
-export const polygonProvider = new ethers.providers.JsonRpcProvider(
+export const polygonProvider = new JsonRpcProvider(
   `https://polygon-mainnet.infura.io/v3/${infuraKey}`
 );
 
-export const bscProvider = new ethers.providers.JsonRpcProvider(
+export const bscProvider = new JsonRpcProvider(
   'https://bsc-dataseed.binance.org/'
 );
 
 
 export const JSON_RPC_PROVIDERS: {
-  [key: string]: ethers.providers.JsonRpcProvider;
+  [key: string]: JsonRpcProvider;
 } = {
   ropsten: ropstenProvider,
   rinkeby: rinkebyProvider,

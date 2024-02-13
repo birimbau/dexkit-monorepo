@@ -25,8 +25,8 @@ import { convertTokenToEvmCoin } from '@dexkit/core/utils';
 
 import { useAppWizardConfig } from '@/modules/wizard/hooks';
 import { ChainId, CoinTypes } from '@dexkit/core/constants';
+import { formatEther, formatUnits } from "@ethersproject/units";
 import { parse, ParseOutput } from 'eth-url-parser';
-import { ethers } from 'ethers';
 import { getTokenData } from '../services/blockchain';
 import { useAppConfig } from './app';
 export function useEvmCoins({
@@ -144,7 +144,7 @@ export function useTokenList({
     const isNoWrappedTokenInList =
       tokenList &&
       tokenList.findIndex((t) => t.address.toLowerCase() === wrappedAddress) ===
-        -1;
+      -1;
     // Wrapped Token is not on the list, we will add it here
     if (wrappedAddress && isNoWrappedTokenInList) {
       tokenList = [
@@ -412,7 +412,7 @@ export function useParsePaymentRequest({
           parsedPayment.parameters['uint256'] &&
           defaultCoin.decimals !== undefined
         ) {
-          amount = ethers.utils.formatUnits(
+          amount = formatUnits(
             parsedPayment.parameters['uint256'],
             defaultCoin.decimals,
           );
@@ -420,7 +420,7 @@ export function useParsePaymentRequest({
       }
       if (parsedPayment.function_name === undefined) {
         if (parsedPayment.parameters && parsedPayment.parameters['value']) {
-          amount = ethers.utils.formatEther(parsedPayment.parameters['value']);
+          amount = formatEther(parsedPayment.parameters['value']);
         }
       }
       return amount;

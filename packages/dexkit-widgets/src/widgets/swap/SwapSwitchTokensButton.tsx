@@ -13,7 +13,7 @@ export default function SwapSwitchTokensButton({
       {...IconButtonProps}
       sx={(theme) => ({
         borderRadius: theme.shape.borderRadius / 2,
-        backgroundColor: theme.palette.background.paper,
+        backgroundColor: "background.paper",
         borderWidth: 1,
         borderStyle: "solid",
         borderColor: theme.palette.divider,

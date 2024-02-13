@@ -25,7 +25,7 @@ import {
   useTokenBalance,
 } from '@thirdweb-dev/react';
 import { useWeb3React } from '@web3-react/core';
-import { BigNumber, ethers } from 'ethers';
+import { BigNumber, utils } from 'ethers';
 import { Field, Formik } from 'formik';
 import { Switch, TextField } from 'formik-mui';
 import moment from 'moment';
@@ -144,7 +144,7 @@ export default function ContractStakeErc20Container({
     amount: string;
     withdraw: boolean;
   }) => {
-    const amountParsed = ethers.utils.parseUnits(
+    const amountParsed = utils.parseUnits(
       amount,
       rewardTokenBalance?.decimals,
     );
@@ -333,7 +333,7 @@ export default function ContractStakeErc20Container({
                                 if (values.withdraw) {
                                   return setFieldValue(
                                     'amount',
-                                    ethers.utils.formatUnits(
+                                    utils.formatUnits(
                                       rewardsBalance,
                                       rewardTokenBalance?.decimals,
                                     ),

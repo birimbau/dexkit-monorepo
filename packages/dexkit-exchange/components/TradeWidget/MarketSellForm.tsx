@@ -57,12 +57,12 @@ export default function MarketSellForm({
   feeRecipient,
   isActive,
 }: MarketSellFormProps) {
-  const handleChangeAmount = (value: string) => {
+  const handleChangeAmount = (value?: string) => {
     setAmount(value);
   };
 
   const { createNotification } = useDexKitContext();
-  const [amount, setAmount] = useState("0.0");
+  const [amount, setAmount] = useState<string | undefined>("0.0");
 
   const baseTokenBalanceFormatted = useMemo(() => {
     if (baseTokenBalance) {
@@ -104,7 +104,7 @@ export default function MarketSellForm({
 
   useEffect(() => {
     (async () => {
-      if (Number(amount) > 0) {
+      if (amount && Number(amount) > 0) {
         let theNewQuote = await quoteMutation.mutateAsync({
           sellToken: baseToken.address,
           buyToken: quoteToken.address,
@@ -138,43 +138,45 @@ export default function MarketSellForm({
   const trackUserEvent = useTrackUserEventsMutation();
 
   const sendTxMutation = useMutation(async () => {
-    let res = await provider?.getSigner().sendTransaction({
-      data: quote?.data,
-      to: quote?.to,
-      gasPrice: ethers.BigNumber.from(quote?.gasPrice),
-      value: ethers.BigNumber.from(quote?.value),
-    });
-    const subType = "marketSell";
+    if (amount) {
+      let res = await provider?.getSigner().sendTransaction({
+        data: quote?.data,
+        to: quote?.to,
+        gasPrice: ethers.BigNumber.from(quote?.gasPrice),
+        value: ethers.BigNumber.from(quote?.value),
+      });
+      const subType = "marketSell";
 
-    const messageType = EXCHANGE_NOTIFICATION_TYPES[
-      subType
-    ] as AppNotificationType;
-    createNotification({
-      type: "transaction",
-      icon: messageType.icon,
-      subtype: subType,
-      metadata: {
+      const messageType = EXCHANGE_NOTIFICATION_TYPES[
+        subType
+      ] as AppNotificationType;
+      createNotification({
+        type: "transaction",
+        icon: messageType.icon,
+        subtype: subType,
+        metadata: {
+          hash: res?.hash,
+          chainId: chainId,
+        },
+        values: {
+          sellAmount: amount,
+          sellTokenSymbol: baseToken.symbol.toUpperCase(),
+          buyAmount: receiveAmountFormatted,
+          buyTokenSymbol: quoteToken.symbol.toUpperCase(),
+        },
+      });
+
+      trackUserEvent.mutate({
+        event: UserEvents.marketSell,
         hash: res?.hash,
-        chainId: chainId,
-      },
-      values: {
-        sellAmount: amount,
-        sellTokenSymbol: baseToken.symbol.toUpperCase(),
-        buyAmount: receiveAmountFormatted,
-        buyTokenSymbol: quoteToken.symbol.toUpperCase(),
-      },
-    });
+        chainId,
+        metadata: JSON.stringify({
+          quote,
+        }),
+      });
 
-    trackUserEvent.mutate({
-      event: UserEvents.marketSell,
-      hash: res?.hash,
-      chainId,
-      metadata: JSON.stringify({
-        quote,
-      }),
-    });
-
-    setHash(res?.hash);
+      setHash(res?.hash);
+    }
   });
 
   const handleCloseReview = () => {

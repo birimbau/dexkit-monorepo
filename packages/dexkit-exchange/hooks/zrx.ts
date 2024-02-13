@@ -25,8 +25,6 @@ export function useZrxQuoteMutation({ chainId }: { chainId?: ChainId }) {
       return null;
     }
 
-    console.log("siteId", siteId);
-
     const zrxClient = new ZeroExApiClient(
       chainId,
       process.env.NEXT_PUBLIC_ZRX_API_KEY,

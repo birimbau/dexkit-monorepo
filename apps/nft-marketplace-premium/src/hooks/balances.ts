@@ -6,7 +6,7 @@ import {
 } from '@tanstack/react-query';
 import { SwappableAssetV4 } from '@traderxyz/nft-swap-sdk';
 import { useWeb3React } from '@web3-react/core';
-import { BigNumber, ethers } from 'ethers';
+import { BigNumber, Contract, providers } from 'ethers';
 import { useCallback } from 'react';
 import { ZEROEX_NATIVE_TOKEN_ADDRESS } from '../constants';
 import { ERC20Abi } from '../constants/abis';
@@ -172,7 +172,7 @@ export const useERC20BalanceQuery = (token: Token) => {
 };
 
 export function useErc20ApproveMutation(
-  provider?: ethers.providers.Web3Provider,
+  provider?: providers.Web3Provider,
   onSuccess?: (hash: string, asset: SwappableAssetV4) => void,
   options?: Omit<UseMutationOptions, any>
 ) {
@@ -183,14 +183,14 @@ export function useErc20ApproveMutation(
       tokenAddress,
     }: {
       spender: string;
-      amount: ethers.BigNumber;
+      amount: BigNumber;
       tokenAddress?: string;
     }) => {
       if (!provider || tokenAddress === undefined) {
         return undefined;
       }
 
-      const contract = new ethers.Contract(
+      const contract = new Contract(
         tokenAddress,
         ERC20Abi,
         provider.getSigner()
@@ -215,7 +215,7 @@ export function useErc20ApproveMutation(
 }
 
 export function useErc20AllowanceMutation(
-  provider?: ethers.providers.Web3Provider,
+  provider?: providers.Web3Provider,
   options?: Omit<UseMutationOptions, any>,
 
 ) {
@@ -233,7 +233,7 @@ export function useErc20AllowanceMutation(
         return undefined;
       }
 
-      const contract = new ethers.Contract(
+      const contract = new Contract(
         tokenAddress,
         ERC20Abi,
         provider
@@ -252,7 +252,7 @@ export function useErc20AllowanceMutation(
 }
 
 export function useErc20ApproveMutationV2(
-  provider?: ethers.providers.Web3Provider,
+  provider?: providers.Web3Provider,
   onSuccess?: (hash: string, asset: SwappableAssetV4) => void,
 ) {
   const mutation = useMutation(
@@ -262,14 +262,14 @@ export function useErc20ApproveMutationV2(
       tokenAddress,
     }: {
       spender: string;
-      amount: ethers.BigNumber;
+      amount: BigNumber;
       tokenAddress?: string;
     }) => {
       if (!provider || tokenAddress === undefined) {
         return undefined;
       }
 
-      const contract = new ethers.Contract(
+      const contract = new Contract(
         tokenAddress,
         ERC20Abi,
         provider.getSigner()

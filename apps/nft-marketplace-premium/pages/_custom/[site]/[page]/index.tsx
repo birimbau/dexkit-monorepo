@@ -2,18 +2,12 @@ import type { GetStaticProps, GetStaticPropsContext, NextPage } from 'next';
 import MainLayout from '../../../../src/components/layouts/main';
 
 import { dehydrate, QueryClient } from '@tanstack/react-query';
-import {
-  GET_ASSETS_ORDERBOOK,
-  GET_COLLECTION_DATA,
-} from '../../../../src/hooks/nft';
+import { GET_ASSETS_ORDERBOOK } from '../../../../src/hooks/nft';
 import { getAppConfig } from '../../../../src/services/app';
 import {
-  fetchAssetForQueryClient,
-  getCollectionData,
+  fetchMultipleAssetForQueryClient,
   getDKAssetOrderbook,
 } from '../../../../src/services/nft';
-
-import { getNetworkSlugFromChainId } from '../../../../src/utils/blockchain';
 
 import ProtectedContent from '@/modules/home/components/ProtectedContent';
 import { SectionsRenderer } from '@/modules/wizard/components/sections/SectionsRenderer';
@@ -21,7 +15,6 @@ import { GatedCondition, GatedPageLayout } from '@/modules/wizard/types';
 import { AppPageSection } from '@/modules/wizard/types/section';
 import { SessionProvider } from 'next-auth/react';
 import AuthMainLayout from 'src/components/layouts/authMain';
-import { getProviderBySlug } from '../../../../src/services/providers';
 
 const CustomPage: NextPage<{
   sections: AppPageSection[];
@@ -98,8 +91,12 @@ export const getStaticProps: GetStaticProps = async ({
       },
     };
   }
+  await fetchMultipleAssetForQueryClient({
+    queryClient,
+    sections: homePage.sections,
+  });
 
-  for (let section of homePage.sections) {
+  /*for (let section of homePage.sections) {
     if (
       section.type === 'featured' ||
       section.type === 'call-to-action' ||
@@ -135,7 +132,7 @@ export const getStaticProps: GetStaticProps = async ({
         }
       }
     }
-  }
+  }*/
 
   for (let section of homePage.sections) {
     if (section.type === 'asset-store') {
@@ -143,7 +140,7 @@ export const getStaticProps: GetStaticProps = async ({
       const assetResponse = await getDKAssetOrderbook({ maker });
       await queryClient.prefetchQuery(
         [GET_ASSETS_ORDERBOOK, { maker }],
-        async () => assetResponse.data,
+        async () => assetResponse.data
       );
     }
   }

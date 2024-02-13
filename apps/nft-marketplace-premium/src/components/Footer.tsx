@@ -65,9 +65,9 @@ export function Footer({ appConfig, isPreview, appNFT }: Props) {
     return '';
   };
 
-  const renderCustomLink = (media: any) => {
-    if (media?.link) {
-      return media.link;
+  const renderCustomLink = (link?: string) => {
+    if (link) {
+      return link;
     }
 
     return '';
@@ -117,6 +117,7 @@ export function Footer({ appConfig, isPreview, appNFT }: Props) {
                       color="inherit"
                       href={isPreview ? '#' : m.href || '/'}
                       key={key}
+                      aria-label={`social media link ${m.name}`}
                       target={m.type === 'External' ? '_blank' : undefined}
                     >
                       <FormattedMessage

@@ -23,7 +23,7 @@ export const NETWORK_NAME_OVERLAP: { [key: number]: string } = {
 export const PROVIDER_OVERLAP: { [key: number]: string } = {
   [ChainId.Ethereum]: 'https://eth.llamarpc.com',
   [ChainId.Arbitrum]: 'https://arb1.arbitrum.io/rpc',
-  [ChainId.Optimism]: 'https://mainnet.optimism.org',
+  [ChainId.Optimism]: 'https://mainnet.optimism.io',
   [ChainId.Avax]: 'https://api.avax.network/ext/bc/C/rpc',
   [ChainId.BSC]: 'https://bscrpc.com',
   [ChainId.Fantom]: 'https://rpc.ftm.tools',
@@ -57,7 +57,6 @@ for (let index = 0; index < EVM_CHAINS.length; index++) {
   }
 }
 
-console.log(NETS);
 
 export const NETWORKS = NETS;
 

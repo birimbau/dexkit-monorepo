@@ -16,7 +16,7 @@ import {
 import { useWeb3React } from "@web3-react/core";
 import { BigNumber, ethers } from "ethers";
 import { useSnackbar } from "notistack";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 import { ORDER_LIMIT_DURATIONS } from "../../constants";
 import { useSendLimitOrderMutation } from "../../hooks";
@@ -52,28 +52,37 @@ export default function SellForm({
   affiliateAddress,
 }: SellFormProps) {
   const [amountPercentage, setAmountPercentage] = useState(0);
-  const [amount, setAmount] = useState("0.0");
-  const [amountPerToken, setAmountPerToken] = useState("0.0");
+  const [amount, setAmount] = useState<string | undefined>("0.0");
+  const [amountPerToken, setAmountPerToken] = useState<string | undefined>(
+    "0.0"
+  );
   const [duration, setDuration] = useState(ORDER_LIMIT_DURATIONS[0].value);
 
   const [showReview, setShowReview] = useState(false);
 
-  const handleChangeAmount = (value: string) => {
+  const handleChangeAmount = (value?: string) => {
     setAmount(value);
   };
 
-  const handleChangeAmountPerToken = (value: string) => {
+  const handleChangeAmountPerToken = (value?: string) => {
     setAmountPerToken(value);
   };
 
   const handleChangeDuration = (value: number) => setDuration(value);
 
   const parsedAmount = useMemo(() => {
-    return parseFloat(amount !== "" ? amount : "0.0");
+    if (amount) {
+      return amount !== "" ? amount : "0.0";
+    }
   }, [amount]);
 
   const parsedAmountBN = useMemo(() => {
-    return ethers.utils.parseUnits(parsedAmount.toString(), baseToken.decimals);
+    if (parsedAmount) {
+      return ethers.utils.parseUnits(
+        parsedAmount.toString(),
+        baseToken.decimals
+      );
+    }
   }, [parsedAmount, baseToken]);
 
   const parsedAmountPerToken = useMemo(() => {
@@ -84,24 +93,40 @@ export default function SellForm({
   }, [amountPerToken, quoteToken]);
 
   const total = useMemo(() => {
-    return new BigNumberUtils().multiply(parsedAmountPerToken, parsedAmount);
+    if (parsedAmount) {
+      return new BigNumberUtils().multiply(parsedAmountPerToken, parsedAmount);
+    }
   }, [parsedAmountPerToken, parsedAmount]);
 
   const hasSufficientBalance = useMemo(() => {
-    return baseTokenBalance?.gte(total) && !total.isZero();
-  }, [total, baseTokenBalance]);
+    if (parsedAmountBN) {
+      return baseTokenBalance?.gte(parsedAmountBN) && !parsedAmountBN.isZero();
+    }
+  }, [parsedAmountBN, baseTokenBalance]);
 
   const formattedTotal = useMemo(() => {
     return formatBigNumber(total, quoteToken.decimals);
   }, [quoteToken, total]);
 
   const buttonMessage = useMemo(() => {
+    if (!amount || amount === "0.0") {
+      return <FormattedMessage id="fill.amount" defaultMessage="Fill amount" />;
+    }
+    if (!amountPerToken || amountPerToken === "0.0") {
+      return (
+        <FormattedMessage
+          id="fill.amount.per.token"
+          defaultMessage="Fill amount per token"
+        />
+      );
+    }
+
     if (!hasSufficientBalance) {
       return (
         <FormattedMessage
           id="insufficient.symbol"
           defaultMessage="insufficient {symbol}"
-          values={{ symbol: quoteToken.symbol }}
+          values={{ symbol: baseToken.symbol }}
         />
       );
     }
@@ -137,9 +162,9 @@ export default function SellForm({
       ethers.utils.formatUnits(sellAmount, quoteToken.decimals)
     );
   };
-  useEffect(() => {
+  /* useEffect(() => {
     handleQuotePrice();
-  }, [handleQuotePrice]);
+  }, []);*/
 
   const sendLimitOrderMutation = useSendLimitOrderMutation();
 
@@ -170,7 +195,12 @@ export default function SellForm({
   };
 
   const takerAmount = useMemo(() => {
-    return ethers.utils.parseUnits(parsedAmount.toString(), baseToken.decimals);
+    if (parsedAmount) {
+      return ethers.utils.parseUnits(
+        parsedAmount.toString(),
+        baseToken.decimals
+      );
+    }
   }, [parsedAmount, baseToken]);
 
   const { account } = useWeb3React();
@@ -197,7 +227,14 @@ export default function SellForm({
   };
 
   const handleConfirmSell = async () => {
-    if (!chainId || !maker || !quoteToken || !provider) {
+    if (
+      !chainId ||
+      !maker ||
+      !quoteToken ||
+      !provider ||
+      !parsedAmountBN ||
+      !total
+    ) {
       return;
     }
 
@@ -290,6 +327,7 @@ export default function SellForm({
         isApproving={approveTokenMutation.isLoading}
         isApproval={
           tokenAllowanceQuery.data !== null &&
+          parsedAmountBN &&
           tokenAllowanceQuery.data?.lt(parsedAmountBN)
         }
         expiresIn={duration}
