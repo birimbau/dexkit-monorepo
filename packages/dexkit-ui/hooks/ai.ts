@@ -28,3 +28,15 @@ export function useSaveImages() {
     return (await instance?.post("/ai/image/save", { urls }))?.data;
   });
 }
+
+export function useGenVariants() {
+  const { instance } = useContext(DexkitApiProvider);
+
+  return useMutation(
+    async ({ url, numImages }: { url: string; numImages: number }) => {
+      return (
+        await instance?.post<string[]>("/ai/image/variants", { url, numImages })
+      )?.data;
+    }
+  );
+}

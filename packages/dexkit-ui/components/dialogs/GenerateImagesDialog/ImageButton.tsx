@@ -1,55 +1,82 @@
-import CheckCircle from '@mui/icons-material/CheckCircle';
-import { CardActionArea, Paper } from '@mui/material';
+import CheckCircle from "@mui/icons-material/CheckCircle";
+import MoreVert from "@mui/icons-material/MoreVert";
+import { Box, CardActionArea, IconButton, Paper } from "@mui/material";
 
 export interface ImageButtonProps {
   selected?: boolean;
+  selectable?: boolean;
   src: string;
   onSelect: (url: string) => void;
+  onOpenMenu: (url: string, anchorEl: HTMLElement | null) => void;
 }
 
 export default function ImageButton({
   selected,
   src,
   onSelect,
+  onOpenMenu,
+  selectable,
 }: ImageButtonProps) {
-  return (
-    <Paper
-      sx={{
-        borderWidth: selected ? (theme) => 1 : undefined,
-        borderColor: selected
-          ? (theme) => theme.palette.primary.main
-          : undefined,
-      }}
-    >
-      <CardActionArea
-        onClick={() => onSelect(src)}
-        sx={{
-          position: 'relative',
-        }}
-      >
+  const renderContent = () => {
+    return (
+      <>
         <img
           src={src}
           style={{
-            display: 'block',
-
-            filter: selected ? 'grayscale(50%)' : undefined,
-            width: '100%',
-            aspectRatio: '1/1',
+            display: "block",
+            filter: selected && selectable ? "grayscale(50%)" : undefined,
+            width: "100%",
+            aspectRatio: "1/1",
           }}
         />
 
-        {selected && (
-          <CheckCircle
-            sx={{
-              position: 'absolute',
-              right: (theme) => theme.spacing(1),
-              top: (theme) => theme.spacing(1),
-              color: (theme) => theme.palette.primary.main,
-              filter: 'opacity(80%)',
-            }}
-          />
-        )}
-      </CardActionArea>
+        <Box
+          sx={{
+            position: "absolute",
+            right: (theme) => theme.spacing(1),
+            top: (theme) => theme.spacing(1),
+            color: (theme) => theme.palette.primary.main,
+            filter: "opacity(80%)",
+          }}
+        >
+          {selected && selectable && <CheckCircle />}
+          {!selectable && (
+            <IconButton
+              size="small"
+              onClick={(e) => onOpenMenu(src, e.currentTarget)}
+              sx={{
+                backgroundColor: (theme) => theme.palette.common.white,
+                "&:hover": {
+                  backgroundColor: (theme) => theme.palette.common.white,
+                },
+              }}
+            >
+              <MoreVert color="primary" />
+            </IconButton>
+          )}
+        </Box>
+      </>
+    );
+  };
+
+  return (
+    <Paper
+      sx={{
+        borderWidth: selected && selectable ? (theme) => 1 : undefined,
+        borderColor:
+          selected && selectable
+            ? (theme) => theme.palette.primary.main
+            : undefined,
+        position: "relative",
+      }}
+    >
+      {selectable ? (
+        <CardActionArea onClick={() => onSelect(src)}>
+          {renderContent()}{" "}
+        </CardActionArea>
+      ) : (
+        renderContent()
+      )}
     </Paper>
   );
 }
