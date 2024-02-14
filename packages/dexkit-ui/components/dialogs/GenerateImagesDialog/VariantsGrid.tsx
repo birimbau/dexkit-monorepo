@@ -6,10 +6,11 @@ export interface VariantsGridProps {
   amount: number;
   onOpenMenu: (url: string, anchorEl: HTMLElement | null) => void;
   onSelect: (url: string) => void;
-  selectable: boolean;
+  selectable?: boolean;
   selected: { [key: string]: boolean };
   isLoading?: boolean;
   images: string[];
+  disabled?: boolean;
 }
 
 export default function VariantsGrid({
@@ -21,6 +22,7 @@ export default function VariantsGrid({
   isLoading,
   amount,
   images,
+  disabled,
 }: VariantsGridProps) {
   return (
     <Stack spacing={1}>
@@ -34,6 +36,7 @@ export default function VariantsGrid({
                 selected={selected[img]}
                 onSelect={onSelect}
                 selectable={selectable}
+                disabled={disabled}
               />
             </Grid>
           ))}

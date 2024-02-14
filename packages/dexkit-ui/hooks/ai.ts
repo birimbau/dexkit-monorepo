@@ -1,6 +1,8 @@
 import { DexkitApiProvider } from "@dexkit/core/providers";
 import { useMutation } from "@tanstack/react-query";
+import { useSnackbar } from "notistack";
 import { useContext } from "react";
+import { useIntl } from "react-intl";
 import { ImageGenerate } from "../types/ai";
 
 export function useCompletation() {
@@ -24,14 +26,26 @@ export function useImageGenerate() {
 export function useSaveImages() {
   const { instance } = useContext(DexkitApiProvider);
 
-  return useMutation(async ({ urls }: { urls: string[] }) => {
-    return (await instance?.post("/ai/image/save", { urls }))?.data;
-  });
+  const { enqueueSnackbar } = useSnackbar();
+  const { formatMessage } = useIntl();
+
+  return useMutation(
+    async ({ urls }: { urls: string[] }) => {
+      return (await instance?.post("/ai/image/save", { urls }))?.data;
+    },
+    {
+      onSuccess: () => {
+        enqueueSnackbar(
+          formatMessage({ id: "saved", defaultMessage: "Saved" }),
+          { variant: "success" }
+        );
+      },
+    }
+  );
 }
 
 export function useGenVariants() {
   const { instance } = useContext(DexkitApiProvider);
-
   return useMutation(
     async ({ url, numImages }: { url: string; numImages: number }) => {
       return (

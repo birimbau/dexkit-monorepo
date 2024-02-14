@@ -1,35 +1,39 @@
-import { useImageGenerate, useSaveImages } from "../../../hooks/ai";
+import { useImageGenerate } from "../../../hooks/ai";
 
-import {
-  Button,
-  CircularProgress,
-  Menu,
-  MenuItem,
-  Stack,
-  TextField,
-} from "@mui/material";
-import { ChangeEvent, useCallback, useMemo, useState } from "react";
+import { Button, CircularProgress, Stack, TextField } from "@mui/material";
+import { ChangeEvent, useMemo, useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 import ImageGrid from "./ImageGrid";
 
 export interface GenerateTabProps {
   onSelectForVariant: (imageUrl: string) => void;
+  onOpenMenu: (url: string, anchorEl: HTMLElement | null) => void;
+  onSelect: (url: string) => void;
+  selected: { [key: string]: boolean };
+  selectedImages: string[];
+  selectable?: boolean;
+  isSavingImages?: boolean;
+  disabled?: boolean;
 }
 
-export default function GenerateTab({ onSelectForVariant }: GenerateTabProps) {
+export default function GenerateTab({
+  onSelectForVariant,
+  selected,
+  onSelect,
+  selectable,
+  onOpenMenu,
+  isSavingImages,
+  selectedImages,
+  disabled,
+}: GenerateTabProps) {
   const {
     mutateAsync: generate,
     data,
     isLoading: isImagesLoading,
   } = useImageGenerate();
 
-  const { isLoading: isSavingImages, mutateAsync: saveImages } =
-    useSaveImages();
-
   const [prompt, setPrompt] = useState("");
   const [amount, setAmount] = useState("1");
-
-  const [selected, setSelected] = useState<{ [key: string]: boolean }>({});
 
   const handelGenerate = async () => {
     let result = await generate({
@@ -40,7 +44,7 @@ export default function GenerateTab({ onSelectForVariant }: GenerateTabProps) {
 
     if (result?.length === 1) {
       const url = result[0];
-      setSelected({ [url]: true });
+      onSelect(url);
     }
   };
 
@@ -68,38 +72,6 @@ export default function GenerateTab({ onSelectForVariant }: GenerateTabProps) {
     return true;
   }, [amount, prompt]);
 
-  const selectedImages: string[] = useMemo(() => {
-    return Object.keys(selected)
-      .map((key) => (selected[key] ? key : undefined))
-      .filter((r) => r !== undefined) as string[];
-  }, [selected]);
-
-  const handleSelect = useCallback((img: string) => {
-    setSelected((selected) => {
-      const newSelected = { ...selected };
-
-      if (newSelected[img]) {
-        newSelected[img] = false;
-
-        const selectedImages = Object.keys(newSelected)
-          .map((key) => (newSelected[key] ? key : undefined))
-          .filter((r) => r !== undefined) as string[];
-
-        if (selectedImages.length === 0) {
-          setSelectable(false);
-        }
-      } else {
-        newSelected[img] = true;
-      }
-
-      return newSelected;
-    });
-  }, []);
-
-  const handleConfirm = async () => {
-    await saveImages({ urls: selectedImages });
-  };
-
   const gridSize = useMemo(() => {
     if (data) {
       if (data.length === 1) {
@@ -112,66 +84,16 @@ export default function GenerateTab({ onSelectForVariant }: GenerateTabProps) {
     return 4;
   }, [data]);
 
-  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
-
-  const [selectable, setSelectable] = useState(false);
-
-  const [selectedUrl, setSelectedUrl] = useState<string>();
-
-  const handleOpenMenu = useCallback(
-    (url: string, anchorEl: HTMLElement | null) => {
-      setAnchorEl(anchorEl);
-      setSelectedUrl(url);
-    },
-    []
-  );
-
-  const handleCloseMenu = () => {
-    setSelectedUrl(undefined);
-    setAnchorEl(null);
-  };
-
-  const handleMenuSelect = () => {
-    setSelectable(true);
-    handleCloseMenu();
-    if (selectedUrl) {
-      handleSelect(selectedUrl);
-    }
-    setSelectedUrl(undefined);
-  };
-
-  const handleMenuVariant = () => {
-    if (selectedUrl) {
-      onSelectForVariant(selectedUrl);
-    }
-    handleCloseMenu();
-  };
-
   return (
     <>
-      <Menu
-        onClose={handleCloseMenu}
-        anchorEl={anchorEl}
-        open={Boolean(anchorEl)}
-      >
-        <MenuItem onClick={handleMenuSelect}>
-          <FormattedMessage id="select" defaultMessage="Select" />
-        </MenuItem>
-        <MenuItem onClick={handleMenuVariant}>
-          <FormattedMessage
-            id="generate.variant"
-            defaultMessage="Generate variant"
-          />
-        </MenuItem>
-      </Menu>
       <Stack spacing={2}>
         {data ? (
           <ImageGrid
-            onOpenMenu={handleOpenMenu}
+            onOpenMenu={onOpenMenu}
             amount={parseInt(amount)}
             selected={selected}
             selectable={selectable}
-            onSelect={handleSelect}
+            onSelect={onSelect}
             gridSize={gridSize}
             images={data}
             isLoading={isImagesLoading}
@@ -188,21 +110,21 @@ export default function GenerateTab({ onSelectForVariant }: GenerateTabProps) {
           fullWidth
           rows={6}
           multiline
-          disabled={isImagesLoading}
+          disabled={isImagesLoading || disabled}
         />
         <TextField
           label={formatMessage({
             id: "num.of.images",
             defaultMessage: "Num. of Images",
           })}
-          disabled={isImagesLoading}
+          disabled={isImagesLoading || disabled}
           onChange={handleChangeAmount}
           value={amount}
           fullWidth
           type="number"
         />
         <Button
-          disabled={!isValid || isImagesLoading}
+          disabled={!isValid || isImagesLoading || disabled}
           onClick={handelGenerate}
           variant="outlined"
           startIcon={
@@ -215,27 +137,6 @@ export default function GenerateTab({ onSelectForVariant }: GenerateTabProps) {
             <FormattedMessage id="generating" defaultMessage="Generating" />
           ) : (
             <FormattedMessage id="generate" defaultMessage="Generate" />
-          )}
-        </Button>
-        <Button
-          disabled={
-            !isValid ||
-            isSavingImages ||
-            isImagesLoading ||
-            selectedImages.length === 0
-          }
-          onClick={handelGenerate}
-          variant="contained"
-          startIcon={
-            isSavingImages ? (
-              <CircularProgress size="1rem" color="inherit" />
-            ) : undefined
-          }
-        >
-          {isImagesLoading ? (
-            <FormattedMessage id="saving" defaultMessage="Saving" />
-          ) : (
-            <FormattedMessage id="save" defaultMessage="Save" />
           )}
         </Button>
       </Stack>

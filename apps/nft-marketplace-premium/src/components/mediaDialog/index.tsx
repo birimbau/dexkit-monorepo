@@ -14,12 +14,15 @@ import {
   Stack,
   styled,
   TextField,
+  Tooltip,
   Typography,
 } from '@mui/material';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
+
+import AutoFixHighIcon from '@mui/icons-material/AutoFixHigh';
 
 import { DexkitApiProvider } from '@dexkit/core/providers';
 import GenerateImagesDialog from '@dexkit/ui/components/dialogs/GenerateImagesDialog';
@@ -200,26 +203,39 @@ export default function MediaDialog({
   };
 
   const [showAiImgGen, setShowAiImgGen] = useState(false);
+  const [tab, setTab] = useState<string>('select');
+  const [aiImage, setAiImage] = useState<string>();
 
-  const handleShowImageGeneratorDialog = () => {
+  const handleShowImageGeneratorDialog = (tab: string) => {
     setShowAiImgGen(true);
+    setTab(tab);
   };
 
   const handleCloseImageGeneratorDialog = () => {
     setShowAiImgGen(false);
+    setAiImage(undefined);
+  };
+
+  const handleOpenAI = (url: string) => {
+    setAiImage(url);
+    handleShowImageGeneratorDialog('selected');
   };
 
   return (
     <>
       <DexkitApiProvider.Provider value={{ instance: myAppsApi }}>
-        <GenerateImagesDialog
-          DialogProps={{
-            open: showAiImgGen,
-            maxWidth: 'sm',
-            fullWidth: true,
-            onClose: handleCloseImageGeneratorDialog,
-          }}
-        />
+        {showAiImgGen && (
+          <GenerateImagesDialog
+            DialogProps={{
+              open: showAiImgGen,
+              maxWidth: 'sm',
+              fullWidth: true,
+              onClose: handleCloseImageGeneratorDialog,
+            }}
+            image={aiImage}
+            tab={tab}
+          />
+        )}
       </DexkitApiProvider.Provider>
       <AppConfirmDialog
         dialogProps={{
@@ -303,8 +319,9 @@ export default function MediaDialog({
                     </Button>
                   )}
                   <Button
-                    onClick={handleShowImageGeneratorDialog}
+                    onClick={() => handleShowImageGeneratorDialog('generator')}
                     variant="outlined"
+                    startIcon={<AutoFixHighIcon />}
                   >
                     <FormattedMessage
                       id="ai.generated"
@@ -622,20 +639,49 @@ export default function MediaDialog({
                       )}
                     </Box>
                     {selectedFile?.id === f.id && !editFileName && (
-                      <Box>
-                        <IconButton
-                          aria-label="delete"
-                          onClick={() => setShowConfirmRemove(true)}
+                      <Stack spacing={0.5} direction="row">
+                        <Tooltip
+                          title={
+                            <FormattedMessage
+                              id="delete"
+                              defaultMessage="Delete"
+                            />
+                          }
                         >
-                          <DeleteIcon />
-                        </IconButton>
-                        <IconButton
-                          aria-label="edit"
-                          onClick={() => setEditFileName(f.id)}
+                          <IconButton
+                            aria-label="delete"
+                            onClick={() => setShowConfirmRemove(true)}
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        </Tooltip>
+
+                        <Tooltip
+                          title={
+                            <FormattedMessage id="edit" defaultMessage="Edit" />
+                          }
                         >
-                          <EditIcon />
-                        </IconButton>
-                      </Box>
+                          <IconButton
+                            aria-label="edit"
+                            onClick={() => setEditFileName(f.id)}
+                          >
+                            <EditIcon />
+                          </IconButton>
+                        </Tooltip>
+
+                        <Tooltip
+                          title={
+                            <FormattedMessage id="AI" defaultMessage="AI" />
+                          }
+                        >
+                          <IconButton
+                            onClick={() => handleOpenAI(selectedFile.url)}
+                            aria-label="ai"
+                          >
+                            <AutoFixHighIcon />
+                          </IconButton>
+                        </Tooltip>
+                      </Stack>
                     )}
                   </Stack>
                 </Stack>

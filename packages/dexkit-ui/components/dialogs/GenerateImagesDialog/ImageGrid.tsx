@@ -6,7 +6,7 @@ export interface ImageGridProps {
   amount: number;
   onOpenMenu: (url: string, anchorEl: HTMLElement | null) => void;
   onSelect: (url: string) => void;
-  selectable: boolean;
+  selectable?: boolean;
   selected: { [key: string]: boolean };
   isLoading?: boolean;
   images: string[];

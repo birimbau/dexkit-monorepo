@@ -6,6 +6,7 @@ export interface ImageButtonProps {
   selected?: boolean;
   selectable?: boolean;
   src: string;
+  disabled?: boolean;
   onSelect: (url: string) => void;
   onOpenMenu: (url: string, anchorEl: HTMLElement | null) => void;
 }
@@ -16,6 +17,7 @@ export default function ImageButton({
   onSelect,
   onOpenMenu,
   selectable,
+  disabled,
 }: ImageButtonProps) {
   const renderContent = () => {
     return (
@@ -71,7 +73,7 @@ export default function ImageButton({
       }}
     >
       {selectable ? (
-        <CardActionArea onClick={() => onSelect(src)}>
+        <CardActionArea disabled={disabled} onClick={() => onSelect(src)}>
           {renderContent()}{" "}
         </CardActionArea>
       ) : (

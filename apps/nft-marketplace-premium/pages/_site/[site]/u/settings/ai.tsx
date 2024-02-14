@@ -1,5 +1,5 @@
-import { useCompletation } from '@/modules/user/hooks/ai';
 import { DexkitApiProvider } from '@dexkit/core/providers';
+import { useCompletation } from '@dexkit/ui/hooks/ai';
 import { Button, Container } from '@mui/material';
 import AuthMainLayout from 'src/components/layouts/authMain';
 import { myAppsApi } from 'src/services/whitelabel';
