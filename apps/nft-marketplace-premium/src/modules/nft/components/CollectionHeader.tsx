@@ -10,10 +10,14 @@ import { isAddressEqual } from '../../../utils/blockchain';
 
 import { ChainId } from '@dexkit/core/constants';
 import { styled, useTheme } from '@mui/material';
+import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { useAppConfig } from '../../../hooks/app';
+const BuyLockContainer = dynamic(
+  async () => await import('@dexkit/unlock-widget'),
+);
 
 const Img = styled(Image)({});
 
@@ -21,12 +25,13 @@ interface Props {
   address: string;
   chainId?: ChainId;
   lazy?: boolean;
+  isLock?: boolean;
 }
 
 export function CollectionHeader(props: Props) {
   const appConfig = useAppConfig();
 
-  const { address, chainId, lazy } = props;
+  const { address, chainId, lazy, isLock } = props;
 
   const { data: collection } = useCollection(address as string, chainId, lazy);
 
@@ -98,6 +103,7 @@ export function CollectionHeader(props: Props) {
               )}
             </Box>
           </Grid>
+
           <Grid item xs>
             <Typography
               sx={{
@@ -112,6 +118,17 @@ export function CollectionHeader(props: Props) {
               {collection?.name}
             </Typography>
           </Grid>
+          {isLock && (
+            <Grid item xs={12} sm={12}>
+              <Box sx={{ maxWidth: '300px' }} justifyContent={'center'}>
+                <BuyLockContainer
+                  lockAddress={address.toLowerCase()}
+                  lockChainId={chainId}
+                />
+              </Box>
+            </Grid>
+          )}
+
           {collection?.description && (
             <Grid item xs={12}>
               <Typography
