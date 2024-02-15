@@ -24,6 +24,7 @@ export default function FeatUsageSummaryRow({
               currency="USD"
               value={parseFloat(feat.amount)}
               currencyDisplay="narrowSymbol"
+              minimumFractionDigits={4}
             />
           </span>
           <Tooltip

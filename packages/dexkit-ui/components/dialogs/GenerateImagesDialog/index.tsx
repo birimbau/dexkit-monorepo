@@ -1,5 +1,7 @@
 import { AppDialogTitle } from "@dexkit/ui";
+import AutoFixHighIcon from "@mui/icons-material/AutoFixHigh";
 import {
+  Box,
   Button,
   CircularProgress,
   Dialog,
@@ -8,10 +10,12 @@ import {
   Menu,
   MenuItem,
   Stack,
+  Typography,
 } from "@mui/material";
 import { useCallback, useMemo, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { useGenVariants, useSaveImages } from "../../../hooks/ai";
+import { useSubscription } from "../../../hooks/payments";
 import EditTab from "./EditTab";
 import GenerateTab from "./GenerateTab";
 import SelectTab from "./SelectTab";
@@ -137,6 +141,8 @@ export default function GenerateImagesDialog({
   };
 
   const handleGenVariants = async ({ numImages }: { numImages: number }) => {
+    setSelectable(false);
+    setSelected({});
     if (varImgUrl) {
       await genVariants({ numImages: numImages, url: varImgUrl });
     }
@@ -148,6 +154,99 @@ export default function GenerateImagesDialog({
 
   const handleEdit = () => {
     setTab("edit");
+  };
+
+  const { data: sub } = useSubscription();
+
+  const handleSubscribe = () => {
+    handleClose();
+    window.open("/u/settings?section=billing", "_blank");
+  };
+
+  const renderContent = () => {
+    if (!sub) {
+      return (
+        <Stack sx={{ p: 2 }} spacing={2} alignItems="center">
+          <AutoFixHighIcon fontSize="large" />
+          <Box>
+            <Typography align="center" variant="h5">
+              <FormattedMessage
+                id="subscription"
+                defaultMessage="Subscription"
+              />
+            </Typography>
+            <Typography align="center" variant="body1" color="text.secondary">
+              <FormattedMessage
+                id="unlock.the.power.of.artificial.intelligence.by.subscribing.to.our.plan.today"
+                defaultMessage="Unlock the power of artificial intelligence by subscribing to our plan today!"
+              />
+            </Typography>
+          </Box>
+          <Button onClick={handleSubscribe} variant="contained">
+            <FormattedMessage id="subscribe" defaultMessage="Subscribe" />
+          </Button>
+        </Stack>
+      );
+    }
+
+    return (
+      <Stack sx={{ p: 2 }} spacing={2}>
+        {selectedTab === "select" && varImgUrl && (
+          <SelectTab
+            imageUrl={varImgUrl}
+            onEdit={handleEdit}
+            onGenVariants={handleVariants}
+          />
+        )}
+        {selectedTab === "generator" && (
+          <GenerateTab
+            onSelectForVariant={handleSelectForVariant}
+            onSelect={handleSelect}
+            selected={selected}
+            selectable={selectable}
+            onOpenMenu={handleOpenMenu}
+            selectedImages={selectedImages}
+            isSavingImages={isSavingImages}
+            disabled={isSavingImages}
+          />
+        )}
+        {selectedTab === "variants" && varImgUrl && (
+          <VariantsTab
+            onCancel={handleCancelVariant}
+            onSelect={handleSelect}
+            selected={selected}
+            selectable={selectable}
+            onOpenMenu={handleOpenMenu}
+            selectedImages={selectedImages}
+            isSavingImages={isSavingImages}
+            disabled={isSavingImages}
+            isLoading={isGenVariants}
+            onGenVariants={handleGenVariants}
+            variants={variants || []}
+            imageUrl={varImgUrl}
+          />
+        )}
+        {selectedTab === "edit" && <EditTab />}
+        {selectable && (
+          <Button
+            disabled={isSavingImages || selectedImages.length === 0}
+            variant="contained"
+            onClick={handleConfirm}
+            startIcon={
+              isSavingImages ? (
+                <CircularProgress size="1rem" color="inherit" />
+              ) : undefined
+            }
+          >
+            {isSavingImages ? (
+              <FormattedMessage id="saving" defaultMessage="Saving" />
+            ) : (
+              <FormattedMessage id="save" defaultMessage="Save images" />
+            )}
+          </Button>
+        )}
+      </Stack>
+    );
   };
 
   return (
@@ -178,62 +277,7 @@ export default function GenerateImagesDialog({
           onClose={handleClose}
         />
         <DialogContent dividers sx={{ p: 0 }}>
-          <Stack sx={{ p: 2 }} spacing={2}>
-            {selectedTab === "select" && varImgUrl && (
-              <SelectTab
-                imageUrl={varImgUrl}
-                onEdit={handleEdit}
-                onGenVariants={handleVariants}
-              />
-            )}
-            {selectedTab === "generator" && (
-              <GenerateTab
-                onSelectForVariant={handleSelectForVariant}
-                onSelect={handleSelect}
-                selected={selected}
-                selectable={selectable}
-                onOpenMenu={handleOpenMenu}
-                selectedImages={selectedImages}
-                isSavingImages={isSavingImages}
-                disabled={isSavingImages}
-              />
-            )}
-            {selectedTab === "variants" && varImgUrl && (
-              <VariantsTab
-                onCancel={handleCancelVariant}
-                onSelect={handleSelect}
-                selected={selected}
-                selectable={selectable}
-                onOpenMenu={handleOpenMenu}
-                selectedImages={selectedImages}
-                isSavingImages={isSavingImages}
-                disabled={isSavingImages}
-                isLoading={isGenVariants}
-                onGenVariants={handleGenVariants}
-                variants={variants || []}
-                imageUrl={varImgUrl}
-              />
-            )}
-            {selectedTab === "edit" && <EditTab />}
-            {selectable && (
-              <Button
-                disabled={isSavingImages || selectedImages.length === 0}
-                variant="contained"
-                onClick={handleConfirm}
-                startIcon={
-                  isSavingImages ? (
-                    <CircularProgress size="1rem" color="inherit" />
-                  ) : undefined
-                }
-              >
-                {isSavingImages ? (
-                  <FormattedMessage id="saving" defaultMessage="Saving" />
-                ) : (
-                  <FormattedMessage id="save" defaultMessage="Save images" />
-                )}
-              </Button>
-            )}
-          </Stack>
+          {renderContent()}
         </DialogContent>
       </Dialog>
     </>

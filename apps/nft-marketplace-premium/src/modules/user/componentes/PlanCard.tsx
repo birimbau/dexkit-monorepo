@@ -14,10 +14,12 @@ export interface PlanCardProps {
   description: string;
   name: string;
   price: number;
+  disabled?: boolean;
 }
 
 export default function PlanCard({
   onClick,
+  disabled,
   name,
   description,
   price,
@@ -79,7 +81,12 @@ export default function PlanCard({
               </Typography>
             </Stack>
           </Stack>
-          <Button onClick={onClick} variant="contained" color="primary">
+          <Button
+            disabled={disabled}
+            onClick={onClick}
+            variant="contained"
+            color="primary"
+          >
             <FormattedMessage id="select.plan" defaultMessage="Select Plan" />
           </Button>
         </Stack>

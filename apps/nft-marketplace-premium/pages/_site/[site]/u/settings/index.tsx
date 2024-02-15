@@ -8,7 +8,6 @@ import {
 } from 'next';
 import { getAppConfig } from 'src/services/app';
 
-import AssitantAISection from '@/modules/user/componentes/AssistantAISection';
 import BillingSection from '@/modules/user/componentes/BillingSection';
 import PaymentsSection from '@/modules/user/componentes/PaymentsSection';
 import SettingsLayout from '@/modules/user/componentes/SettingsLayout';
@@ -31,7 +30,7 @@ export default function SettingsPage() {
             {(tab) => (
               <>
                 {tab === 'payments' && <PaymentsSection />}
-                {tab === 'ai' && <AssitantAISection />}
+                {/* {tab === 'ai' && <AssitantAISection />} */}
                 {tab === 'billing' && <BillingSection />}
               </>
             )}

@@ -1,6 +1,14 @@
 import SettingsLayout from '@/modules/user/componentes/SettingsLayout';
 import { DexkitApiProvider } from '@dexkit/core/providers';
-import { Card, Container, Stack } from '@mui/material';
+import {
+  Card,
+  CardContent,
+  Container,
+  Grid,
+  Skeleton,
+  Stack,
+  Typography,
+} from '@mui/material';
 import { QueryClient, dehydrate } from '@tanstack/react-query';
 import {
   GetStaticPaths,
@@ -14,16 +22,100 @@ import { getAppConfig } from 'src/services/app';
 import { myAppsApi } from 'src/services/whitelabel';
 
 import FeatUsageSummary from '@/modules/user/componentes/FeatUsageSummary';
+import { useBillingQuery } from '@/modules/user/hooks/payments';
+import Decimal from 'decimal.js';
+import moment from 'moment';
+import { FormattedMessage, FormattedNumber } from 'react-intl';
+import Link from 'src/components/Link';
 
 export default function BillingDetail() {
   const router = useRouter();
   const { id } = router.query;
 
+  const billingQuery = useBillingQuery({ id: parseInt(id as string) });
+
   return (
     <Container>
-      <SettingsLayout tab="billing">
+      <SettingsLayout
+        tab="billing"
+        title={
+          billingQuery.data ? (
+            moment(billingQuery.data.periodStart).format('MM/YYYY')
+          ) : (
+            <Skeleton />
+          )
+        }
+        uri={`/u/settings/billing/${id as string}`}
+      >
         {(tab) => (
           <Stack spacing={2}>
+            <Card>
+              <CardContent>
+                <Grid container spacing={2}>
+                  <Grid item>
+                    <Typography variant="caption" color="text.secondary">
+                      <FormattedMessage
+                        id="ref.period"
+                        defaultMessage="Ref. period"
+                      />
+                    </Typography>
+                    <Typography variant="body1">
+                      {billingQuery.data ? (
+                        <Link
+                          href={`/u/settings/billing/${billingQuery.data.id}`}
+                        >
+                          {moment(billingQuery.data.periodStart).format(
+                            'MM/YYYY'
+                          )}
+                        </Link>
+                      ) : (
+                        <Skeleton />
+                      )}
+                    </Typography>
+                  </Grid>
+                  <Grid item>
+                    <Typography variant="caption" color="text.secondary">
+                      <FormattedMessage id="credits" defaultMessage="Credits" />
+                    </Typography>
+                    <Typography variant="body1">
+                      {billingQuery.data ? (
+                        <FormattedNumber
+                          style="currency"
+                          currencyDisplay="narrowSymbol"
+                          currency="USD"
+                          value={new Decimal(billingQuery.data?.available)
+                            .minus(new Decimal(billingQuery.data?.used))
+                            .toNumber()}
+                          minimumFractionDigits={4}
+                        />
+                      ) : (
+                        <Skeleton />
+                      )}
+                    </Typography>
+                  </Grid>
+                  <Grid item>
+                    <Typography variant="caption" color="text.secondary">
+                      <FormattedMessage id="start" defaultMessage="Start" />
+                    </Typography>
+                    <Typography variant="body1">
+                      {moment(billingQuery.data?.periodStart).format(
+                        'DD/MM/YYYY HH:mm:ss'
+                      )}{' '}
+                    </Typography>
+                  </Grid>
+                  <Grid item>
+                    <Typography variant="caption" color="text.secondary">
+                      <FormattedMessage id="end" defaultMessage="End" />
+                    </Typography>
+                    <Typography variant="body1">
+                      {moment(billingQuery.data?.periodEnd).format(
+                        'DD/MM/YYYY HH:mm:ss'
+                      )}
+                    </Typography>
+                  </Grid>
+                </Grid>
+              </CardContent>
+            </Card>
             <Card>
               <FeatUsageSummary id={parseInt(id as string)} />
             </Card>

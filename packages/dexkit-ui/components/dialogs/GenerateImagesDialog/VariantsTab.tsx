@@ -8,13 +8,19 @@ import {
   IconButton,
   Paper,
   Stack,
+  TextField,
   Typography,
 } from "@mui/material";
-import { Field, Formik } from "formik";
-import { TextField } from "formik-mui";
+import { Formik } from "formik";
 import { useMemo, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import VariantsGrid from "./VariantsGrid";
+
+import * as Yup from "yup";
+
+const FormSchema = Yup.object({
+  amount: Yup.number().min(1).max(10),
+});
 
 export interface VariantsTabProps {
   onCancel: () => void;
@@ -43,12 +49,13 @@ export default function VariantsTab({
   disabled,
   onGenVariants,
 }: VariantsTabProps) {
-  const [amount, setAmount] = useState(0);
+  const [amount, setAmount] = useState(1);
 
-  const handleSubmit = async (values: { amount: string }) => {
-    setAmount(parseInt(values.amount));
+  const handleSubmit = async (values: { amount: number }) => {
+    setAmount(values.amount);
+
     await onGenVariants({
-      numImages: parseInt(values.amount),
+      numImages: values.amount,
     });
   };
 
@@ -65,8 +72,12 @@ export default function VariantsTab({
   }, [variants]);
 
   return (
-    <Formik onSubmit={handleSubmit} initialValues={{ amount: "0" }}>
-      {({ submitForm }) => (
+    <Formik
+      onSubmit={handleSubmit}
+      initialValues={{ amount: 1 }}
+      validationSchema={FormSchema}
+    >
+      {({ submitForm, setFieldValue, values, errors, isValid }) => (
         <Stack spacing={2}>
           <Stack spacing={0.5} direction="row" alignItems="center">
             <IconButton onClick={onCancel}>
@@ -98,44 +109,50 @@ export default function VariantsTab({
               </Grid>
             </Grid>
           </Box>
+          <Divider />
           {variants.length > 0 && (
             <>
-              <Divider />
               <Typography variant="subtitle1" fontWeight="bold">
                 <FormattedMessage id="variants" defaultMessage="Variants" />
               </Typography>
-              <VariantsGrid
-                gridSize={gridSize}
-                amount={amount}
-                isLoading={isLoading}
-                images={variants}
-                onOpenMenu={onOpenMenu}
-                onSelect={onSelect}
-                selectable={selectable}
-                selected={selected}
-              />
             </>
           )}
+          <VariantsGrid
+            gridSize={gridSize}
+            amount={amount}
+            isLoading={isLoading}
+            images={variants}
+            onOpenMenu={onOpenMenu}
+            onSelect={onSelect}
+            selectable={selectable}
+            selected={selected}
+            disabled={disabled}
+          />
 
-          <Field
-            component={TextField}
+          <TextField
             name="amount"
             type="number"
             disabled={disabled}
+            value={values.amount === 0 ? "" : values.amount}
+            onChange={(e) =>
+              setFieldValue("amount", parseInt(e.target.value || "0"))
+            }
             label={
               <FormattedMessage
                 id="num.of.variant"
                 defaultMessage="Num of variants"
               />
             }
+            error={Boolean(errors.amount)}
+            helperText={errors.amount ? errors.amount : undefined}
           />
           <Button
             startIcon={
               isLoading ? (
-                <CircularProgress color="primary" size="1rem" />
+                <CircularProgress color="inherit" size="1rem" />
               ) : undefined
             }
-            disabled={isLoading || disabled}
+            disabled={isLoading || disabled || !isValid || values.amount === 0}
             onClick={submitForm}
             variant="contained"
           >

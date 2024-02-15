@@ -26,7 +26,7 @@ import PlanCard from './PlanCard';
 export default function BillingSection() {
   const billingHistoryQuery = useBillingHistoryQuery();
 
-  const { mutateAsync: checkoutPlan } = usePlanCheckoutMutation();
+  const { mutateAsync: checkoutPlan, isLoading } = usePlanCheckoutMutation();
 
   const subscriptionQuery = useSubscription();
   const activeFeatUsageQuery = useActiveFeatUsage();
@@ -45,10 +45,11 @@ export default function BillingSection() {
     <Stack spacing={2}>
       <Card>
         <CardContent>
-          {subscriptionQuery.isSuccess && !subscriptionQuery.data && (
+          {subscriptionQuery.isSuccess && !subscriptionQuery.data ? (
             <Grid container spacing={2}>
               <Grid item xs={12} sm={4}>
                 <PlanCard
+                  disabled={isLoading}
                   name="Starter"
                   price={10.0}
                   description="Better to start"
@@ -57,6 +58,7 @@ export default function BillingSection() {
               </Grid>
               <Grid item xs={12} sm={4}>
                 <PlanCard
+                  disabled={isLoading}
                   name="Plus"
                   price={20.0}
                   description="Better to start"
@@ -65,6 +67,7 @@ export default function BillingSection() {
               </Grid>
               <Grid item xs={12} sm={4}>
                 <PlanCard
+                  disabled={isLoading}
                   name="Premium"
                   price={50.0}
                   description="Better to start"
@@ -72,8 +75,7 @@ export default function BillingSection() {
                 />
               </Grid>
             </Grid>
-          )}
-          {subscriptionQuery.data && (
+          ) : (
             <Grid container spacing={2}>
               <Grid item>
                 <Typography variant="caption" color="text.secondary">
@@ -88,7 +90,7 @@ export default function BillingSection() {
                       href={`/u/settings/billing/${activeFeatUsageQuery.data.id}`}
                     >
                       {moment(activeFeatUsageQuery.data.periodStart).format(
-                        'MM/YYYY',
+                        'MM/YYYY'
                       )}
                     </Link>
                   ) : (
@@ -109,6 +111,7 @@ export default function BillingSection() {
                       value={new Decimal(activeFeatUsageQuery.data?.available)
                         .minus(new Decimal(activeFeatUsageQuery.data?.used))
                         .toNumber()}
+                      minimumFractionDigits={4}
                     />
                   ) : (
                     <Skeleton />
@@ -132,8 +135,8 @@ export default function BillingSection() {
                   <FormattedMessage id="start" defaultMessage="Start" />
                 </Typography>
                 <Typography variant="body1">
-                  {moment(subscriptionQuery.data.period_start).format(
-                    'DD/MM/YYYY HH:mm:ss',
+                  {moment(subscriptionQuery.data?.period_start).format(
+                    'DD/MM/YYYY HH:mm:ss'
                   )}{' '}
                 </Typography>
               </Grid>
@@ -142,8 +145,8 @@ export default function BillingSection() {
                   <FormattedMessage id="end" defaultMessage="End" />
                 </Typography>
                 <Typography variant="body1">
-                  {moment(subscriptionQuery.data.period_end).format(
-                    'DD/MM/YYYY HH:mm:ss',
+                  {moment(subscriptionQuery.data?.period_end).format(
+                    'DD/MM/YYYY HH:mm:ss'
                   )}
                 </Typography>
               </Grid>
@@ -178,10 +181,11 @@ export default function BillingSection() {
                   <TableCell>
                     <Typography>
                       <FormattedNumber
-                        value={period.used}
+                        value={new Decimal(period.used).toNumber()}
                         style="currency"
                         currencyDisplay="narrowSymbol"
                         currency="USD"
+                        minimumFractionDigits={4}
                       />
                     </Typography>
                   </TableCell>

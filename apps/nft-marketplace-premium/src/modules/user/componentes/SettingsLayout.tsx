@@ -8,38 +8,42 @@ export interface SettingsLayoutProps {
   children: (tab: string) => React.ReactNode;
   tab: string;
   shallow?: boolean;
+  title?: React.ReactNode;
+  uri?: string;
 }
 
 export default function SettingsLayout({
   children,
   tab,
   shallow,
+  title,
+  uri,
 }: SettingsLayoutProps) {
   const activeOption: any = useMemo(() => {
     if (tab === 'ai') {
       return {
-        uri: '/ai',
-        active: true,
+        uri: '/u/settings?section=ai',
+        active: title ? false : true,
         caption: (
           <FormattedMessage id="ai.assistant" defaultMessage="AI Assistant" />
         ),
       };
     } else if (tab === 'billing') {
       return {
-        uri: '/billing',
-        active: true,
+        uri: '/u/settings?section=billing',
+        active: title ? false : true,
         caption: <FormattedMessage id="billing" defaultMessage="Billing" />,
       };
     } else if (tab === 'payments') {
       return {
-        uri: '/payments',
-        active: true,
+        uri: '/u/settings?section=payments',
+        active: title ? false : true,
         caption: <FormattedMessage id="payments" defaultMessage="Payments" />,
       };
     }
 
     return {};
-  }, [tab]);
+  }, [tab, title]);
 
   const router = useRouter();
 
@@ -59,29 +63,35 @@ export default function SettingsLayout({
     };
   }, []);
 
+  const breadcrumbs = useMemo(() => {
+    let bc = [
+      {
+        caption: <FormattedMessage id="home" defaultMessage="Home" />,
+        uri: '/',
+      },
+      {
+        caption: <FormattedMessage id="settings" defaultMessage="Settings" />,
+        uri: '/u/settings',
+      },
+      activeOption,
+    ];
+
+    if (title && uri) {
+      bc.push({ caption: title, active: true, uri });
+    }
+
+    return bc;
+  }, [title, activeOption, uri]);
+
   return (
     <Grid container spacing={2}>
       <Grid item xs={12}>
-        <PageHeader
-          breadcrumbs={[
-            {
-              caption: <FormattedMessage id="home" defaultMessage="Home" />,
-              uri: '/',
-            },
-            {
-              caption: (
-                <FormattedMessage id="settings" defaultMessage="Settings" />
-              ),
-              uri: '/u/settings',
-            },
-            activeOption,
-          ]}
-        />
+        <PageHeader breadcrumbs={breadcrumbs} />
       </Grid>
       <Grid item xs={12} sm={3}>
         <Card>
           <List disablePadding>
-            <ListItemButton
+            {/* <ListItemButton
               selected={tab === 'ai'}
               divider
               onClick={handleClick('ai')}
@@ -94,7 +104,7 @@ export default function SettingsLayout({
                   />
                 }
               />
-            </ListItemButton>
+            </ListItemButton> */}
             <ListItemButton
               selected={tab === 'billing'}
               divider
