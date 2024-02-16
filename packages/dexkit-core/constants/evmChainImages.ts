@@ -5,8 +5,6 @@ export const UNKNOWN_LOGO_URL = "https://raw.githubusercontent.com/DexKit/assets
 
 export function GET_EVM_CHAIN_IMAGE({ chainId }: { chainId: number }) {
 
-  console.log(EVM_CHAIN_IMAGES[chainId]?.imageUrl)
-
   return EVM_CHAIN_IMAGES[chainId]?.imageUrl
 
 }
@@ -53,8 +51,6 @@ export const EVM_CHAIN_IMAGES: { [key: number]: { imageUrl?: string, coinImageUr
 
   },
 
-
-
   [ChainId.Avax]: {
 
     imageUrl:
@@ -76,6 +72,12 @@ export const EVM_CHAIN_IMAGES: { [key: number]: { imageUrl?: string, coinImageUr
   [ChainId.Mumbai]: {
     imageUrl:
       "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/info/logo.png",
+  },
+
+  [ChainId.BlastSepolia]: {
+    imageUrl:
+      "https://raw.githubusercontent.com/DexKit/dexkit-evm-chains/main/assets/evm-chain-icons/blast.png",
+    coinImageUrl: 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/info/logo.png',
   },
 
 }
