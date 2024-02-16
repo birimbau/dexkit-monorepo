@@ -389,14 +389,14 @@ export default function MarketForm({
             ? BigNumber.from(
                 side === "buy" ? quote?.buyAmount : quote?.sellAmount
               )
-            : BigNumber.from("0")
+            : undefined
         }
         quoteAmount={
           quote?.sellAmount
             ? BigNumber.from(
                 side === "buy" ? quote?.sellAmount : quote?.buyAmount
               )
-            : BigNumber.from("0")
+            : undefined
         }
         side={side}
         isPlacingOrder={sendTxMutation.isLoading || waitTxResult.isFetching}

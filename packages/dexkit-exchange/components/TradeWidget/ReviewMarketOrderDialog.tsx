@@ -14,6 +14,7 @@ import {
   Divider,
   IconButton,
   Paper,
+  Skeleton,
   Stack,
   Typography,
   lighten,
@@ -75,16 +76,12 @@ export default function ReviewMarketOrderDialog({
     if (amount) {
       return formatBigNumber(amount, baseToken?.decimals);
     }
-
-    return "0.00";
   }, [amount, baseToken]);
 
   const total = useMemo(() => {
     if (quoteAmount) {
       return formatBigNumber(quoteAmount, quoteToken?.decimals);
     }
-
-    return "0.00";
   }, [quoteAmount, quoteToken]);
 
   const renderActions = () => {
@@ -198,19 +195,39 @@ export default function ReviewMarketOrderDialog({
               alignItems="center"
               spacing={2}
             >
-              <Typography
-                sx={(theme) => ({
-                  fontWeight: 600,
-                  color:
-                    side === "sell"
-                      ? theme.palette.error.main
-                      : theme.palette.success.main,
-                })}
-                align="right"
-                variant="h5"
-              >
-                {amountFormatted} {baseToken?.symbol.toUpperCase()}
-              </Typography>
+              {amountFormatted ? (
+                <Typography
+                  sx={(theme) => ({
+                    fontWeight: 600,
+                    color:
+                      side === "sell"
+                        ? theme.palette.error.main
+                        : theme.palette.success.main,
+                  })}
+                  align="right"
+                  variant="h5"
+                >
+                  {amountFormatted} {baseToken?.symbol.toUpperCase()}
+                </Typography>
+              ) : (
+                <>
+                  <Skeleton sx={{ minWidth: "50px" }} />
+                  {"  "}
+                  <Typography
+                    sx={(theme) => ({
+                      fontWeight: 600,
+                      color:
+                        side === "sell"
+                          ? theme.palette.error.main
+                          : theme.palette.success.main,
+                    })}
+                    align="right"
+                    variant="h5"
+                  >
+                    {baseToken?.symbol.toUpperCase()}
+                  </Typography>
+                </>
+              )}
             </Stack>
           </Stack>
           <Stack spacing={2}>
