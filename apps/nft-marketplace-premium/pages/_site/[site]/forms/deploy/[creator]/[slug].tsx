@@ -410,7 +410,8 @@ export default function DeployPage() {
                               )}
                             </Typography>
                             <Typography variant="body1">
-                              {thirdwebMetadataQuery.data?.publisher ? (
+                              {thirdwebMetadataQuery.data?.publisher &&
+                              getBlockExplorerUrl(chainId) ? (
                                 <FormattedMessage
                                   id="published.by.publisher"
                                   defaultMessage="Published by: {publisher}"
@@ -450,11 +451,11 @@ export default function DeployPage() {
                             spacing={1}
                           >
                             <Avatar
-                              src={NETWORKS[selectedChainId].imageUrl || ''}
+                              src={NETWORKS[selectedChainId]?.imageUrl || ''}
                               style={{ width: 'auto', height: '1rem' }}
                             />
                             <Typography variant="body1">
-                              {NETWORKS[selectedChainId].name}
+                              {NETWORKS[selectedChainId]?.name}
                             </Typography>
                           </Stack>
                         );

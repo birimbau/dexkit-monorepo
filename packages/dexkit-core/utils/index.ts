@@ -136,7 +136,7 @@ export function formatBigNumber(val?: BigNumber, decimals?: number) {
 
 export function getBlockExplorerUrl(chainId?: number) {
   if (chainId) {
-    return NETWORKS[chainId].explorerUrl;
+    return NETWORKS[chainId]?.explorerUrl;
   }
 }
 

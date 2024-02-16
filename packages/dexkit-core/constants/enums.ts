@@ -11,6 +11,7 @@ export enum ChainId {
   Arbitrum = 42161,
   Celo = 42220,
   Goerli = 5,
+  BlastSepolia = 168587773
 }
 
 export enum TransactionStatus {
