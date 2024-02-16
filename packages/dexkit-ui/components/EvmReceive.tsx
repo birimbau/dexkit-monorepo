@@ -173,6 +173,7 @@ export default function EvmReceive({
         id="select-token"
         options={coins || []}
         value={coin}
+        readOnly={coins && coins.length === 1}
         onChange={handleChangeCoin}
         getOptionLabel={(opt) => opt.name}
         renderOption={(props, opt) => (

@@ -7,6 +7,7 @@ import { Coin, EvmCoin } from "@dexkit/core/types";
 import {
   buildEtherReceiveAddress,
   copyToClipboard,
+  formatBigNumber,
   truncateAddress,
 } from "@dexkit/core/utils";
 import CopyIconButton from "@dexkit/ui/components/CopyIconButton";
@@ -202,12 +203,12 @@ export default function EvmTransferCoin({
   const balance = useMemo(() => {
     if (values.coin) {
       if (values.coin.coinType === CoinTypes.EVM_ERC20 && erc20Balance) {
-        return ethers.utils.formatUnits(erc20Balance, values.coin.decimals);
+        return formatBigNumber(erc20Balance, values.coin.decimals);
       } else if (
         values.coin.coinType === CoinTypes.EVM_NATIVE &&
         nativeBalance
       ) {
-        return ethers.utils.formatUnits(nativeBalance, values.coin.decimals);
+        return formatBigNumber(nativeBalance, values.coin.decimals);
       }
     }
 
