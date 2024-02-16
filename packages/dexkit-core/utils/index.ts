@@ -1,5 +1,8 @@
+import { isAddress } from "@ethersproject/address";
 import { build, BuildInput } from "eth-url-parser";
-import { BigNumber, ethers } from "ethers";
+import { BigNumber } from "ethers";
+
+import { formatUnits } from "@ethersproject/units";
 import { EventEmitter } from "events";
 import { ChainId, CoinTypes, IPFS_GATEWAY } from "../constants";
 import { NETWORKS } from "../constants/networks";
@@ -37,7 +40,7 @@ export function waitForEvent<T>(
 }
 
 export const truncateAddress = (address: string | undefined) => {
-  if (address !== undefined && ethers.utils.isAddress(address)) {
+  if (address !== undefined && isAddress(address)) {
     return `${address.slice(0, 7)}...${address.slice(address.length - 5)}`;
   }
   return "";
@@ -87,7 +90,7 @@ export function isAddressEqual(address?: string, other?: string) {
     return false;
   }
 
-  if (!ethers.utils.isAddress(address) || !ethers.utils.isAddress(other)) {
+  if (!isAddress(address) || !isAddress(other)) {
     return false;
   }
 
@@ -102,7 +105,7 @@ export function formatBigNumber(val?: BigNumber, decimals?: number) {
     return "0";
   }
 
-  const value = ethers.utils.formatUnits(val, decimals);
+  const value = formatUnits(val, decimals);
 
   let index = value.indexOf(".");
 
@@ -123,7 +126,7 @@ export function formatBigNumber(val?: BigNumber, decimals?: number) {
   while (true) {
     ending = ending + 1;
 
-    if (ending === value.length - 1 || ending === index + 4) {
+    if (ending === value.length - 1 || ending === index + 3) {
       break;
     }
   }
@@ -134,6 +137,12 @@ export function formatBigNumber(val?: BigNumber, decimals?: number) {
 export function getBlockExplorerUrl(chainId?: number) {
   if (chainId) {
     return NETWORKS[chainId].explorerUrl;
+  }
+}
+
+export function getTokenBlockExplorerUrl({ chainId, address }: { chainId?: number, address?: string }) {
+  if (chainId && address) {
+    return `${NETWORKS[chainId].explorerUrl}/token/${address}`;
   }
 }
 

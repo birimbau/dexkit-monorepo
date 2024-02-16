@@ -16,8 +16,8 @@ export default function TokensPage() {
     <TokenPageContainer
       address={address as string}
       network={network as string}
-      orderMarketType={OrderMarketType.buyAndSell}
-    />
+      orderMarketType={OrderMarketType.buy}
+    ></TokenPageContainer>
   );
 }
 

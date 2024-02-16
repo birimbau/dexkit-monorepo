@@ -1,5 +1,6 @@
 import { DeployedContract } from '@/modules/forms/types';
 import { SwapConfig } from '@/modules/swap/types';
+import { OrderMarketType } from '@dexkit/exchange/constants';
 import { DexkitExchangeSettings } from '@dexkit/exchange/types';
 import { ContractFormParams } from '@dexkit/web3forms/types';
 import React from 'react';
@@ -38,6 +39,7 @@ export type SectionType =
   | 'dex-generator-section'
   | 'asset-section'
   | 'ranking'
+  | 'market-trade'
 
   ;
 
@@ -209,6 +211,15 @@ export interface CodePageSection extends PageSection {
     js: string;
     css: string;
     html: string;
+  };
+}
+
+export interface MarketTradePageSection extends PageSection {
+  type: 'market-trade';
+  config: {
+    show: OrderMarketType;
+
+    baseTokenConfig: { address: string, chainId: number };
   };
 }
 

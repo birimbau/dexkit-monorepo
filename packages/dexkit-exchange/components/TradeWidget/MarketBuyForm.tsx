@@ -138,7 +138,6 @@ export default function MarketBuyForm({
       let res = await provider?.getSigner().sendTransaction({
         data: quote?.data,
         to: quote?.to,
-        gasPrice: ethers.BigNumber.from(quote?.gasPrice),
         value: ethers.BigNumber.from(quote?.value),
       });
       const subType = "marketBuy";

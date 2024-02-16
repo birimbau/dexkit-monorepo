@@ -1,6 +1,6 @@
 import { ChainId } from "@dexkit/core";
 import { Token } from "@dexkit/core/types";
-import { getBlockExplorerUrl } from "@dexkit/core/utils";
+import { formatBigNumber, getBlockExplorerUrl } from "@dexkit/core/utils";
 import { AppDialogTitle } from "@dexkit/ui/components/AppDialogTitle";
 import CheckIcon from "@mui/icons-material/Check";
 
@@ -18,7 +18,7 @@ import {
   Typography,
   lighten,
 } from "@mui/material";
-import { BigNumber, ethers } from "ethers";
+import { BigNumber } from "ethers";
 import { useMemo, useState } from "react";
 import { FormattedMessage } from "react-intl";
 
@@ -57,15 +57,23 @@ export default function ReviewMarketOrderDialog({
 }: ReviewMarketOrderDialogProps) {
   const pricePerTokenInverseFormatted = useMemo(() => {
     if (price && Number(price) > 0) {
-      return new Intl.NumberFormat(undefined, {
+      return new Intl.NumberFormat("en-US", {
         maximumSignificantDigits: 3,
       }).format(1 / Number(price) || 0);
     }
   }, [price]);
 
+  const pricePerTokenFormatted = useMemo(() => {
+    if (price && Number(price) > 0) {
+      return new Intl.NumberFormat("en-US", {
+        maximumSignificantDigits: 3,
+      }).format(Number(price) || 0);
+    }
+  }, [price]);
+
   const amountFormatted = useMemo(() => {
     if (amount) {
-      return ethers.utils.formatUnits(amount, baseToken?.decimals);
+      return formatBigNumber(amount, baseToken?.decimals);
     }
 
     return "0.00";
@@ -73,7 +81,7 @@ export default function ReviewMarketOrderDialog({
 
   const total = useMemo(() => {
     if (quoteAmount) {
-      return ethers.utils.formatUnits(quoteAmount, quoteToken?.decimals);
+      return formatBigNumber(quoteAmount, quoteToken?.decimals);
     }
 
     return "0.00";
@@ -98,7 +106,16 @@ export default function ReviewMarketOrderDialog({
             variant="contained"
             color="primary"
           >
-            <FormattedMessage id="approve" defaultMessage="Approve" />
+            <FormattedMessage
+              id="approve.token.symbol"
+              defaultMessage="Approve {tokenSymbol} on wallet"
+              values={{
+                tokenSymbol:
+                  side === "buy"
+                    ? quoteToken?.symbol.toUpperCase()
+                    : baseToken?.symbol.toUpperCase(),
+              }}
+            />
           </Button>
         </Stack>
       );
@@ -217,7 +234,8 @@ export default function ReviewMarketOrderDialog({
                   <Stack direction="row" alignItems="center" spacing={1}>
                     {swapPrices ? (
                       <Typography color="text.secondary" variant="body1">
-                        1 {baseToken?.symbol.toUpperCase()} = {price}{" "}
+                        1 {baseToken?.symbol.toUpperCase()} ={" "}
+                        {pricePerTokenFormatted}{" "}
                         {quoteToken?.symbol.toUpperCase()}
                       </Typography>
                     ) : (

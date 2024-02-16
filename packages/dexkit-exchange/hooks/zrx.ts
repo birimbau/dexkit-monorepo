@@ -35,6 +35,25 @@ export function useZrxQuoteMutation({ chainId }: { chainId?: ChainId }) {
   });
 }
 
+
+export function useZrxQuoteQuery({ chainId, params }: { chainId?: ChainId, params: ZeroExQuote }) {
+  const { siteId } = useContext(SiteContext);
+
+  return useQuery([chainId, params], async () => {
+    if (!chainId || !(params.buyAmount || params.sellAmount)) {
+      return null;
+    }
+
+    const zrxClient = new ZeroExApiClient(
+      chainId,
+      process.env.NEXT_PUBLIC_ZRX_API_KEY,
+      siteId
+    );
+
+    return zrxClient.quote(params, {});
+  });
+}
+
 export const ZRX_ORDERBOOK_QUERY = "ZRX_ORDERBOOK_QUERY";
 
 export function useZrxOrderbook({
