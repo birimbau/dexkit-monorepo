@@ -33,6 +33,7 @@ export const ETHER_SCAN_API_URL: { [key: number]: string } = {
   [ChainId.Mumbai]: "api-testnet.polygonscan.com",
   [ChainId.Goerli]: "api-goerli.etherscan.io",
   [ChainId.Base]: "api.basescan.org",
+  [ChainId.BlastSepolia]: "api.routescan.io/v2/network/testnet/evm/168587773/etherscan",
 };
 
 export const WEB3FORMS_INPUT_TYPES: {

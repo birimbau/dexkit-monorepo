@@ -4,7 +4,7 @@ import { COINGECKO_IDS, EVM_CHAINS, WRAPPED_TOKEN_ADDRESSES } from "@dexkit/evm-
 import { providers } from "ethers";
 import { Network } from "../types";
 import { ChainId } from "./enums";
-import { EVM_CHAIN_IMAGES, UNKNOWN_LOGO_URL } from "./evmChainImages";
+import { EVM_CHAIN_IMAGES, GET_EVM_CHAIN_IMAGE, UNKNOWN_LOGO_URL } from "./evmChainImages";
 
 const IS_TESTNET = typeof process !== 'undefined' ? process?.env.NODE_ENV !== "development" : true;
 
@@ -47,7 +47,7 @@ for (let index = 0; index < EVM_CHAINS.length; index++) {
       slug: element?.slug ? element?.slug : element.shortName,
       coingeckoPlatformId: COINGECKO_IDS.find(c => c.chain_identifier === element.chainId)?.native_coin_id,
       wrappedAddress: WRAPPED_TOKEN_ADDRESSES[element.chainId],
-      imageUrl: EVM_CHAIN_IMAGES[element.chainId]?.imageUrl || UNKNOWN_LOGO_URL,
+      imageUrl: GET_EVM_CHAIN_IMAGE({ chainId: element.chainId }) || UNKNOWN_LOGO_URL,
       coinImageUrl: EVM_CHAIN_IMAGES[element.chainId]?.coinImageUrl,
       coinName: EVM_CHAIN_IMAGES[element.chainId]?.coinImageUrl ? element?.nativeCurrency?.name : element?.nativeCurrency?.name,
       coinSymbol: EVM_CHAIN_IMAGES[element.chainId]?.coinImageUrl ? element?.nativeCurrency?.symbol : element?.nativeCurrency?.symbol,
