@@ -160,13 +160,25 @@ function TokenPageContainer({ address, network, orderMarketType }: Props) {
       <NextSeo
         title={formatMessage(
           {
-            id: 'trade.token.seo.message',
+            id: 'trade.token.seo..title.message',
             defaultMessage:
               'The easiest way to {orderMarketType} {tokenSymbol} on {network}',
           },
           {
             orderMarketType: tradeType,
-            network: network as string,
+            network: (network as string)?.toUpperCase(),
+            tokenSymbol: token?.symbol.toUpperCase() || address,
+          },
+        )}
+        description={formatMessage(
+          {
+            id: 'trade.token.seo.description.message',
+            defaultMessage:
+              'Discover the optimal way to {orderMarketType} {tokenSymbol} on the {network}. Our platform ensures swift and secure transactions, making {orderMarketType}ing {tokenSymbol} a breeze. Join now for the ultimate trading experience on the {network}!',
+          },
+          {
+            orderMarketType: tradeType,
+            network: (network as string)?.toUpperCase(),
             tokenSymbol: token?.symbol.toUpperCase() || address,
           },
         )}
