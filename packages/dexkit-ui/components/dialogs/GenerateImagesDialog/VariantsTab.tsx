@@ -99,6 +99,7 @@ export default function VariantsTab({
                 <Paper>
                   <img
                     src={imageUrl}
+                    key={imageUrl}
                     style={{
                       display: "block",
                       aspectRatio: "1/1",

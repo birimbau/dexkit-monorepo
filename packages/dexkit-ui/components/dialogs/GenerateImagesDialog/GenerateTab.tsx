@@ -1,28 +1,33 @@
 import { useImageGenerate } from "../../../hooks/ai";
 
 import { Button, CircularProgress, Stack, TextField } from "@mui/material";
-import { ChangeEvent, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 import ImageGrid from "./ImageGrid";
 
+import * as Yup from "yup";
+
+import { Formik } from "formik";
+
 export interface GenerateTabProps {
-  onSelectForVariant: (imageUrl: string) => void;
   onOpenMenu: (url: string, anchorEl: HTMLElement | null) => void;
   onSelect: (url: string) => void;
   selected: { [key: string]: boolean };
   selectedImages: string[];
   selectable?: boolean;
-  isSavingImages?: boolean;
   disabled?: boolean;
 }
 
+const FormSchema = Yup.object({
+  amount: Yup.number().min(1).max(10).required(),
+  prompt: Yup.string().min(1).max(1000).required(),
+});
+
 export default function GenerateTab({
-  onSelectForVariant,
   selected,
   onSelect,
   selectable,
   onOpenMenu,
-  isSavingImages,
   selectedImages,
   disabled,
 }: GenerateTabProps) {
@@ -32,12 +37,9 @@ export default function GenerateTab({
     isLoading: isImagesLoading,
   } = useImageGenerate();
 
-  const [prompt, setPrompt] = useState("");
-  const [amount, setAmount] = useState("1");
-
-  const handelGenerate = async () => {
+  const handelGenerate = async (amount: number, prompt: string) => {
     let result = await generate({
-      numImages: parseInt(amount),
+      numImages: amount,
       prompt,
       size: "512x512",
     });
@@ -48,29 +50,7 @@ export default function GenerateTab({
     }
   };
 
-  const handleChangePrompt = (e: ChangeEvent<HTMLInputElement>) => {
-    setPrompt(e.target.value);
-  };
-
-  const handleChangeAmount = (e: ChangeEvent<HTMLInputElement>) => {
-    setAmount(e.target.value);
-  };
-
   const { formatMessage } = useIntl();
-
-  const isValid = useMemo(() => {
-    const numAmount = parseInt(amount);
-
-    if (numAmount <= 0 || numAmount > 10) {
-      return false;
-    }
-
-    if (prompt.length > 300 || prompt.length === 0) {
-      return false;
-    }
-
-    return true;
-  }, [amount, prompt]);
 
   const gridSize = useMemo(() => {
     if (data) {
@@ -84,62 +64,87 @@ export default function GenerateTab({
     return 4;
   }, [data]);
 
+  const handleSubmit = async ({
+    amount,
+    prompt,
+  }: {
+    amount: number;
+    prompt: string;
+  }) => {
+    handelGenerate(amount, prompt);
+  };
+
   return (
-    <>
-      <Stack spacing={2}>
-        {data ? (
+    <Formik
+      initialValues={{ amount: 0, prompt: "" }}
+      onSubmit={handleSubmit}
+      validationSchema={FormSchema}
+    >
+      {({
+        setFieldValue,
+        errors,
+        values,
+        submitForm,
+        isSubmitting,
+        isValid,
+      }) => (
+        <Stack spacing={2}>
           <ImageGrid
             onOpenMenu={onOpenMenu}
-            amount={parseInt(amount)}
+            amount={values.amount}
             selected={selected}
             selectable={selectable}
             onSelect={onSelect}
             gridSize={gridSize}
-            images={data}
+            images={data || []}
             isLoading={isImagesLoading}
           />
-        ) : undefined}
 
-        <TextField
-          placeholder={formatMessage({
-            id: "ex.an.image.of.a.cat",
-            defaultMessage: "ex. An image of a cat",
-          })}
-          onChange={handleChangePrompt}
-          value={prompt}
-          fullWidth
-          rows={6}
-          multiline
-          disabled={isImagesLoading || disabled}
-        />
-        <TextField
-          label={formatMessage({
-            id: "num.of.images",
-            defaultMessage: "Num. of Images",
-          })}
-          disabled={isImagesLoading || disabled}
-          onChange={handleChangeAmount}
-          value={amount}
-          fullWidth
-          type="number"
-        />
-        <Button
-          disabled={!isValid || isImagesLoading || disabled}
-          onClick={handelGenerate}
-          variant="outlined"
-          startIcon={
-            isImagesLoading ? (
-              <CircularProgress size="1rem" color="inherit" />
-            ) : undefined
-          }
-        >
-          {isImagesLoading ? (
-            <FormattedMessage id="generating" defaultMessage="Generating" />
-          ) : (
-            <FormattedMessage id="generate" defaultMessage="Generate" />
-          )}
-        </Button>
-      </Stack>
-    </>
+          <TextField
+            placeholder={formatMessage({
+              id: "ex.an.image.of.a.cat",
+              defaultMessage: "ex. An image of a cat",
+            })}
+            onChange={(e) => setFieldValue("prompt", e.target.value)}
+            value={values.prompt}
+            fullWidth
+            error={Boolean(errors.prompt)}
+            helperText={Boolean(errors.prompt) ? errors.prompt : undefined}
+            rows={6}
+            multiline
+            disabled={isImagesLoading || disabled || isSubmitting}
+          />
+          <TextField
+            label={formatMessage({
+              id: "num.of.images",
+              defaultMessage: "Num. of Images",
+            })}
+            disabled={isImagesLoading || disabled || isSubmitting}
+            onChange={(e) => setFieldValue("amount", parseInt(e.target.value))}
+            value={values.amount === 0 ? "" : values.amount}
+            fullWidth
+            error={Boolean(errors.amount)}
+            helperText={Boolean(errors.amount) ? errors.amount : undefined}
+            type="number"
+          />
+          <Button
+            disabled={!isValid || isImagesLoading || disabled || isSubmitting}
+            onClick={submitForm}
+            variant="outlined"
+            startIcon={
+              isImagesLoading ? (
+                <CircularProgress size="1rem" color="inherit" />
+              ) : undefined
+            }
+          >
+            {isImagesLoading ? (
+              <FormattedMessage id="generating" defaultMessage="Generating" />
+            ) : (
+              <FormattedMessage id="generate" defaultMessage="Generate" />
+            )}
+          </Button>
+        </Stack>
+      )}
+    </Formik>
   );
 }

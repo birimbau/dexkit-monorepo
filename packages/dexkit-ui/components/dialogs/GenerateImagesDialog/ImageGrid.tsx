@@ -24,21 +24,24 @@ export default function ImageGrid({
 }: ImageGridProps) {
   return (
     <Stack spacing={1}>
-      <Box>
-        <Grid spacing={2} container justifyContent="center">
-          {images.map((img: string, index: number) => (
-            <Grid key={index} item xs={12} sm={gridSize}>
-              <ImageButton
-                src={img}
-                onOpenMenu={onOpenMenu}
-                selected={selected[img]}
-                onSelect={onSelect}
-                selectable={selectable}
-              />
-            </Grid>
-          ))}
-        </Grid>
-      </Box>
+      {images.length > 0 && (
+        <Box>
+          <Grid spacing={2} container justifyContent="center">
+            {images.map((img: string, index: number) => (
+              <Grid key={index} item xs={12} sm={gridSize}>
+                <ImageButton
+                  src={img}
+                  onOpenMenu={onOpenMenu}
+                  selected={selected[img]}
+                  onSelect={onSelect}
+                  selectable={selectable}
+                />
+              </Grid>
+            ))}
+          </Grid>
+        </Box>
+      )}
+
       {isLoading && (
         <Box>
           <Grid spacing={2} container justifyContent="center">

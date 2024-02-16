@@ -118,21 +118,23 @@ export default function GenerateImagesDialog({
     if (selectedUrl) {
       handleSelect(selectedUrl);
     }
-    setSelectedUrl(undefined);
   };
 
-  const handleSelectForVariant = useCallback((imageUrl: string) => {
+  const handleSelectForVariant = useCallback(() => {
     resetGenVariants();
-    setVarImgUrl(imageUrl);
-    setTab("variants");
-  }, []);
+    console.log("forvariant", selectedUrl);
+
+    setVarImgUrl(selectedUrl);
+
+    if (selectedTab !== "variants") {
+      setTab("variants");
+    }
+  }, [selectedUrl, selectedTab]);
 
   const handleMenuVariant = useCallback(() => {
-    if (selectedUrl) {
-      handleSelectForVariant(selectedUrl);
-    }
+    handleSelectForVariant();
     handleCloseMenu();
-  }, [selectedUrl]);
+  }, [handleCloseMenu, handleSelectForVariant]);
 
   const handleConfirm = async () => {
     await saveImages({ urls: selectedImages });
@@ -140,13 +142,16 @@ export default function GenerateImagesDialog({
     setSelected({});
   };
 
-  const handleGenVariants = async ({ numImages }: { numImages: number }) => {
-    setSelectable(false);
-    setSelected({});
-    if (varImgUrl) {
-      await genVariants({ numImages: numImages, url: varImgUrl });
-    }
-  };
+  const handleGenVariants = useCallback(
+    async ({ numImages }: { numImages: number }) => {
+      setSelectable(false);
+      setSelected({});
+      if (varImgUrl) {
+        await genVariants({ numImages: numImages, url: varImgUrl });
+      }
+    },
+    [varImgUrl]
+  );
 
   const handleVariants = () => {
     setTab("variants");
@@ -200,13 +205,11 @@ export default function GenerateImagesDialog({
         )}
         {selectedTab === "generator" && (
           <GenerateTab
-            onSelectForVariant={handleSelectForVariant}
             onSelect={handleSelect}
             selected={selected}
             selectable={selectable}
             onOpenMenu={handleOpenMenu}
             selectedImages={selectedImages}
-            isSavingImages={isSavingImages}
             disabled={isSavingImages}
           />
         )}
@@ -248,6 +251,9 @@ export default function GenerateImagesDialog({
       </Stack>
     );
   };
+
+  console.log("selectedUrl", selectedUrl);
+  console.log("varImgUrl", varImgUrl);
 
   return (
     <>

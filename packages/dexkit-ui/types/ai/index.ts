@@ -44,6 +44,7 @@ export type Subscription = {
   period_end: string;
   createdAt: string;
   updatedAt: string;
+  planName: string;
 };
 
 export type ImageGenerate = {

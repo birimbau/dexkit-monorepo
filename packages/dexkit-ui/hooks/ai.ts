@@ -18,9 +18,18 @@ export function useCompletation() {
 export function useImageGenerate() {
   const { instance } = useContext(DexkitApiProvider);
 
-  return useMutation(async (body: ImageGenerate) => {
-    return (await instance?.post<string[]>("/ai/image/generate", body))?.data;
-  });
+  const { enqueueSnackbar } = useSnackbar();
+
+  return useMutation(
+    async (body: ImageGenerate) => {
+      return (await instance?.post<string[]>("/ai/image/generate", body))?.data;
+    },
+    {
+      onError: (err) => {
+        enqueueSnackbar(String(err), { variant: "error" });
+      },
+    }
+  );
 }
 
 export function useSaveImages() {
@@ -39,6 +48,9 @@ export function useSaveImages() {
           formatMessage({ id: "saved", defaultMessage: "Saved" }),
           { variant: "success" }
         );
+      },
+      onError: (err) => {
+        enqueueSnackbar(String(err), { variant: "error" });
       },
     }
   );

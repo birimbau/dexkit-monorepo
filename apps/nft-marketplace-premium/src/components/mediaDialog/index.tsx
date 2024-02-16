@@ -327,8 +327,8 @@ export default function MediaDialog({
                     startIcon={<AutoFixHighIcon />}
                   >
                     <FormattedMessage
-                      id="ai.generated"
-                      defaultMessage="AI Generated"
+                      id="ai.generator"
+                      defaultMessage="AI Generator"
                     />
                   </Button>
                 </Stack>

@@ -45,7 +45,7 @@ export default function BillingSection() {
     <Stack spacing={2}>
       <Card>
         <CardContent>
-          {subscriptionQuery.isSuccess && !subscriptionQuery.data ? (
+          {subscriptionQuery.isSuccess && !subscriptionQuery.data && (
             <Grid container spacing={2}>
               <Grid item xs={12} sm={4}>
                 <PlanCard
@@ -75,7 +75,8 @@ export default function BillingSection() {
                 />
               </Grid>
             </Grid>
-          ) : (
+          )}{' '}
+          {!(subscriptionQuery.isSuccess && !subscriptionQuery.data) && (
             <Grid container spacing={2}>
               <Grid item>
                 <Typography variant="caption" color="text.secondary">
@@ -120,6 +121,18 @@ export default function BillingSection() {
               </Grid>
               <Grid item>
                 <Typography variant="caption" color="text.secondary">
+                  <FormattedMessage id="plan" defaultMessage="Plan" />
+                </Typography>
+                <Typography variant="body1">
+                  {subscriptionQuery.data ? (
+                    subscriptionQuery.data.planName
+                  ) : (
+                    <Skeleton />
+                  )}
+                </Typography>
+              </Grid>
+              <Grid item>
+                <Typography variant="caption" color="text.secondary">
                   <FormattedMessage id="status" defaultMessage="Status" />
                 </Typography>
                 <Typography variant="body1">
@@ -155,7 +168,7 @@ export default function BillingSection() {
         </CardContent>
       </Card>
       <Card>
-        {billingHistoryQuery.data ? (
+        {billingHistoryQuery.data && billingHistoryQuery.data.length > 0 ? (
           <Table>
             <TableHead>
               <TableRow>
