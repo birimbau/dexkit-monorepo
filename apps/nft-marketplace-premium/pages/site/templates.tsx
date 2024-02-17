@@ -20,8 +20,8 @@ import {
 import { getSites } from '../../src/services/whitelabel';
 import { AppConfig } from '../../src/types/config';
 
-export const SiteIndexPage: NextPage = () => {
-  const sitesQuery = useWhitelabelSitesListQuery({});
+export const SiteTemplatesPage: NextPage = () => {
+  const sitesQuery = useWhitelabelSitesListQuery({ isTemplate: true });
   const { formatMessage } = useIntl();
   const appConfig = useAppConfig();
 
@@ -33,15 +33,15 @@ export const SiteIndexPage: NextPage = () => {
           defaultMessage: 'Site templates',
         })}
         description={formatMessage({
-          id: 'site.list.description',
+          id: 'site.templates.description',
           defaultMessage:
-            'Start your own site/marketplace in seconds. Here you can view and be inspired by other community dapps. Start now being a crypto enterpreneur',
+            'Start your own site/marketplace in seconds. Here you can view and clone other community marketplaces. Start now being a crypto enterpreneur',
         })}
         openGraph={{
           title:
-            'List of created apps using the DexKit Wizard. Get your inspiration to create yours!',
+            'List of created apps using the DexKit Wizard. Start clone right way and create yours!',
           description:
-            'Start your own site/marketplace in seconds. Here you can view other community dapps. Start now being a crypto enterpreneur',
+            'Start your own site/marketplace in seconds. Here you can view and clone other community marketplaces. Start now being a crypto enterpreneur',
           images: [
             {
               url: `${appConfig.domain}/assets/images/seo_site.jpg`,
@@ -117,19 +117,15 @@ export const SiteIndexPage: NextPage = () => {
                       sx={{ pl: 2 }}
                       alignItems={'center'}
                     >
-                      {site.nft && (
-                        <Button
-                          variant="contained"
-                          href={`/asset/${site.nft.networkId}/${
-                            site.nft.address
-                          }/${Number(site.nft.tokenId)}`}
-                        >
-                          <FormattedMessage
-                            id={'buy.app'}
-                            defaultMessage={'Buy App'}
-                          />
-                        </Button>
-                      )}
+                      <Link
+                        href={`/admin/create?clone=${site.slug}`}
+                        underline="none"
+                      >
+                        <FormattedMessage
+                          id={'clone'}
+                          defaultMessage={'Clone'}
+                        />
+                      </Link>
                       {site.previewUrl && (
                         <Link
                           href={site?.previewUrl || ''}
@@ -215,7 +211,7 @@ export const getStaticProps: GetStaticProps = async ({
 }: GetStaticPropsContext<Params>) => {
   const queryClient = new QueryClient();
 
-  const sitesResponse = await getSites({});
+  const sitesResponse = await getSites({ isTemplate: true });
   const data = sitesResponse.data.map((resp) => ({
     ...resp,
     appConfig: JSON.parse(resp.config) as AppConfig,
@@ -230,8 +226,8 @@ export const getStaticProps: GetStaticProps = async ({
     props: {
       dehydratedState: dehydrate(queryClient),
     },
-    revalidate: 3000,
+    revalidate: 60000,
   };
 };
 
-export default SiteIndexPage;
+export default SiteTemplatesPage;

@@ -19,11 +19,12 @@ import {
   getPageTemplateById,
   getPageTemplatesByOwner,
   getSites,
+  getTemplateConfig,
   getVerifyDomain,
   sendConfig,
   setupDomainConfig,
   upsertPageTemplate,
-  upsertWhitelabelAsset,
+  upsertWhitelabelAsset
 } from '../services/whitelabel';
 import { AppConfig } from '../types/config';
 import { PageTemplateFormData } from '../types/whitelabel';
@@ -108,9 +109,13 @@ export const useWhitelabelConfigsByOwnerQuery = ({
 
 export const QUERY_WHITELABEL_SITES_QUERY = 'GET_WHITELABEL_SITESQUERY';
 
-export const useWhitelabelSitesListQuery = () => {
+export const useWhitelabelSitesListQuery = (queryParameters: {
+  isTemplate?: boolean;
+  skip?: number;
+  take?: number;
+}) => {
   return useQuery([QUERY_WHITELABEL_SITES_QUERY], async () => {
-    return (await getSites({})).data.map((resp) => ({
+    return (await getSites(queryParameters)).data.map((resp) => ({
       ...resp,
       appConfig: JSON.parse(resp.config) as AppConfig,
     }));
@@ -166,6 +171,31 @@ export const useWhitelabelConfigQuery = ({
       }
 
       return (await getConfig({ domain, slug })).data;
+    },
+    { refetchOnWindowFocus: false, refetchOnReconnect: false }
+  );
+};
+
+/**
+ * get config by name or query
+ * @param param0
+ * @returns
+ */
+export const useTemplateWhitelabelConfigQuery = ({
+  domain,
+  slug,
+}: {
+  domain?: string;
+  slug?: string;
+}) => {
+  return useQuery(
+    [QUERY_WHITELABEL_CONFIG_NAME, domain || null, slug || null],
+    async () => {
+      if (domain === undefined && slug === undefined) {
+        return null;
+      }
+
+      return (await getTemplateConfig({ domain, slug })).data;
     },
     { refetchOnWindowFocus: false, refetchOnReconnect: false }
   );
