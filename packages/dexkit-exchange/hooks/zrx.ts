@@ -133,7 +133,7 @@ export function useZrxCancelOrderMutation() {
       const tx = await contract.cancelLimitOrder(order);
 
       trackUserEvent.mutate({
-        event: UserEvents.swap,
+        event: UserEvents.orderCancelled,
         hash: tx.hash,
         chainId,
         metadata: JSON.stringify({
@@ -162,7 +162,6 @@ export function useZrxFillOrderMutation() {
     }) => {
       const contractAddress = getZrxExchangeAddress(chainId);
 
-      console.log(contractAddress);
 
       if (!contractAddress || !provider || !chainId) {
         throw new Error("no provider or contract address");
@@ -191,7 +190,6 @@ export function useZrxFillOrderMutation() {
       //   takerTokenFeeAmount: new BigNumber(order.takerTokenFeeAmount),
       // });
 
-      console.log(fillAmount);
 
       const tx = await contract.fillLimitOrder(
         order,
