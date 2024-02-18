@@ -1,4 +1,10 @@
-import { Edit, NumberInput, SimpleForm, TextInput } from 'react-admin';
+import {
+  BooleanInput,
+  Edit,
+  NumberInput,
+  SimpleForm,
+  TextInput,
+} from 'react-admin';
 
 export const SiteEdit = () => (
   <Edit>
@@ -22,6 +28,7 @@ export const SiteEdit = () => (
       <TextInput source="domainStatus" />
       <TextInput source="previewUrl" />*/}
       <NumberInput source="featuredScore" />
+      <BooleanInput source="isTemplate" />
       {/*   <NumberInput source="nftId" />*/}
     </SimpleForm>
   </Edit>

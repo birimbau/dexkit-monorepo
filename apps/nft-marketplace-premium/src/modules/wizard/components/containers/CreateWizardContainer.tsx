@@ -32,7 +32,7 @@ import { useConnectWalletDialog } from '../../../../hooks/app';
 
 import {
   useSendConfigMutation,
-  useWhitelabelConfigQuery,
+  useTemplateWhitelabelConfigQuery,
 } from '../../../../hooks/whitelabel';
 import { getTheme } from '../../../../theme';
 import { AppConfig } from '../../../../types/config';
@@ -67,13 +67,31 @@ export function CreateWizardContainer({ slug, isSwapWizard }: Props) {
 
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-  const clonedConfigQuery = useWhitelabelConfigQuery({});
+  const clonedConfigQuery = useTemplateWhitelabelConfigQuery({ slug });
 
   const sendConfigMutation = useSendConfigMutation({});
 
   const [selectedThemeId, setSelectedThemeId] = useState<string>();
 
   const currentPage = useMemo(() => {
+    if (!clonedConfigQuery.data?.isTemplate) {
+      return defaultConfig.pages['home'];
+    }
+    if (
+      clonedConfigQuery.data &&
+      clonedConfigQuery.data.config &&
+      clonedConfigQuery.data?.isTemplate
+    ) {
+      const clonedConfig = JSON.parse(
+        clonedConfigQuery.data.config,
+      ) as AppConfig;
+      if (clonedConfig.pages['home']) {
+        return clonedConfig.pages['home'];
+      } else {
+        return defaultConfig.pages['home'];
+      }
+    }
+
     if (
       clonedConfigQuery.data &&
       clonedConfigQuery.data.config &&
@@ -285,7 +303,11 @@ export function CreateWizardContainer({ slug, isSwapWizard }: Props) {
                 validationSchema={FormSchema}
                 onSubmit={(values, { setSubmitting }) => {
                   let clonedConfig = {};
-                  if (clonedConfigQuery.data && !clonedConfigQuery.data.nft) {
+                  if (
+                    clonedConfigQuery.data &&
+                    !clonedConfigQuery.data.nft &&
+                    clonedConfigQuery.data?.isTemplate
+                  ) {
                     clonedConfig = JSON.parse(clonedConfigQuery.data.config);
                   }
                   const submitConfig = {
