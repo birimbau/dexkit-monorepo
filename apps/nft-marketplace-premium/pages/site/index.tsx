@@ -35,13 +35,13 @@ export const SiteIndexPage: NextPage = () => {
         description={formatMessage({
           id: 'site.list.description',
           defaultMessage:
-            'Start your own site/marketplace in seconds. Here you can view and be inspired by other community dapps. Start now being a crypto enterpreneur',
+            'Start your own site/marketplace/app in seconds. Here you can view and be inspired by other community apps. Start now being a crypto enterpreneur',
         })}
         openGraph={{
           title:
             'List of created apps using the DexKit Wizard. Get your inspiration to create yours!',
           description:
-            'Start your own site/marketplace in seconds. Here you can view other community dapps. Start now being a crypto enterpreneur',
+            'Start your own site/marketplace/app in seconds. Here you can view other community apps. Start now being a crypto enterpreneur',
           images: [
             {
               url: `${appConfig.domain}/assets/images/seo_site.jpg`,

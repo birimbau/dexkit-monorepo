@@ -35,13 +35,13 @@ export const SiteTemplatesPage: NextPage = () => {
         description={formatMessage({
           id: 'site.templates.description',
           defaultMessage:
-            'Start your own site/marketplace in seconds. Here you can view and clone other community marketplaces. Start now being a crypto enterpreneur',
+            'Start your own site/marketplace/app in seconds. Here you can view and clone apps with various usecases. Start now being a crypto enterpreneur',
         })}
         openGraph={{
           title:
-            'List of created apps using the DexKit Wizard. Start clone right way and create yours!',
+            'List of app templatea. Start clone right way and create yours app today!',
           description:
-            'Start your own site/marketplace in seconds. Here you can view and clone other community marketplaces. Start now being a crypto enterpreneur',
+            'Start your own site/marketplace/apps in seconds.  Here you can view and clone apps with various usecases. Start now being a crypto enterpreneur',
           images: [
             {
               url: `${appConfig.domain}/assets/images/seo_site.jpg`,
