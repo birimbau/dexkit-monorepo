@@ -122,7 +122,6 @@ export default function GenerateImagesDialog({
 
   const handleSelectForVariant = useCallback(() => {
     resetGenVariants();
-    console.log("forvariant", selectedUrl);
 
     setVarImgUrl(selectedUrl);
 
@@ -131,8 +130,21 @@ export default function GenerateImagesDialog({
     }
   }, [selectedUrl, selectedTab]);
 
+  const handleSelectForEdit = useCallback(() => {
+    setVarImgUrl(selectedUrl);
+
+    if (selectedTab !== "edit") {
+      setTab("edit");
+    }
+  }, [selectedUrl, selectedTab]);
+
   const handleMenuVariant = useCallback(() => {
     handleSelectForVariant();
+    handleCloseMenu();
+  }, [handleCloseMenu, handleSelectForVariant]);
+
+  const handleMenuEdit = useCallback(() => {
+    handleSelectForEdit();
     handleCloseMenu();
   }, [handleCloseMenu, handleSelectForVariant]);
 
@@ -229,7 +241,9 @@ export default function GenerateImagesDialog({
             imageUrl={varImgUrl}
           />
         )}
-        {selectedTab === "edit" && <EditTab />}
+        {selectedTab === "edit" && varImgUrl && (
+          <EditTab imageUrl={varImgUrl} />
+        )}
         {selectable && (
           <Button
             disabled={isSavingImages || selectedImages.length === 0}
@@ -270,6 +284,9 @@ export default function GenerateImagesDialog({
             id="generate.variant"
             defaultMessage="Generate variant"
           />
+        </MenuItem>
+        <MenuItem onClick={handleMenuEdit}>
+          <FormattedMessage id="edit" defaultMessage="Edit" />
         </MenuItem>
       </Menu>
       <Dialog {...DialogProps}>
