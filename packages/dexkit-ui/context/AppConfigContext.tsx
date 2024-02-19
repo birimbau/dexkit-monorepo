@@ -12,7 +12,7 @@ export const AppConfigContext = React.createContext<{
 });
 
 interface IAppWizardConfigContext {
-  wizardConfig: any;
+  wizardConfig: AppConfig;
   setWizardConfig?: any;
 }
 

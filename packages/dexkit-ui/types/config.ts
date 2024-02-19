@@ -2,7 +2,7 @@
 import { TokenWhitelabelApp } from '@dexkit/core/types';
 import { AppWhitelabelType, ThemeMode } from '@dexkit/ui/constants/enum';
 import { AssetAPI } from '../modules/nft/types';
-import { AppPageSection } from '../modules/wizard/types';
+import { AppPageSection } from '../modules/wizard/types/section';
 
 
 
@@ -25,6 +25,12 @@ export interface AssetItemType {
   chainId: number;
   contractAddress: string;
   tokenId: string;
+}
+
+export interface SearchbarConfig {
+  enabled?: boolean;
+  hideCollections?: boolean;
+  hideTokens?: boolean;
 }
 
 export interface CollectionItemType {
@@ -162,6 +168,7 @@ export interface AppConfig {
     recipient: string;
     amount_percentage: number;
   };
+  searchbar?: SearchbarConfig;
   format?: {
     date: string;
     datetime: string;
@@ -177,6 +184,7 @@ export interface AppConfig {
   }
   tokens?: AppToken[];
 }
+
 
 export interface ConfigResponse {
   id: number;

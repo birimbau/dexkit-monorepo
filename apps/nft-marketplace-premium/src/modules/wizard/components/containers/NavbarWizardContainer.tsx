@@ -13,8 +13,9 @@ import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import { useEffect, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { AppConfig, MenuTree, SearchbarConfig } from '../../../../types/config';
+import { AppConfig, MenuTree } from '../../../../types/config';
 
+import { SearchbarConfig } from '@dexkit/ui/types/config';
 import MenuSection from '../sections/MenuSection';
 
 interface Props {

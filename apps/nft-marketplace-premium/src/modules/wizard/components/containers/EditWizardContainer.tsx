@@ -45,7 +45,6 @@ import { TourProvider, useTour } from '@reactour/tour';
 import { useWeb3React } from '@web3-react/core';
 import { useAtom } from 'jotai';
 import { useRouter } from 'next/router';
-import AppVersion from 'src/constants/app-version.json';
 import { useAuth } from 'src/hooks/account';
 import { BuilderKit } from '../../constants';
 import { OnboardBuilderSteps } from '../../constants/onboard/steps';
@@ -743,9 +742,9 @@ export function EditWizardContainer({ site }: Props) {
           </List>
         </nav>
       )}
-      <Box sx={{ display: 'flex', justifyContent: 'flex-end', pr: 2 }}>
+      {/*  <Box sx={{ display: 'flex', justifyContent: 'flex-end', pr: 2 }}>
         <Typography>v{AppVersion.version}</Typography>
-      </Box>
+                    </Box>*/}
     </Box>
   );
 

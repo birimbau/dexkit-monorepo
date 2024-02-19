@@ -1,44 +1,119 @@
-import { AssetStoreOptions } from "@dexkit/ui/modules/nft/types";
-import { ContractFormParams } from "@dexkit/web3forms/types";
-
-import { DexkitExchangeSettings } from '@dexkit/exchange/types';
 import { ChainConfig } from '@dexkit/widgets/src/widgets/swap/types';
 
-export type VideoEmbedType = 'youtube' | 'vimeo';
+export interface SwapFeeForm {
+  recipient: string;
+  amountPercentage: number;
+}
 
-export type SocialMediaTypes = 'instagram' | 'facebook' | 'twitter' | 'youtube' | 'linkedin' | 'pinterest' | 'reddit';
+export interface SeoForm {
+  title: string;
+  description: string;
+  shareImageUrl: string;
+}
 
-export interface MenuTree {
+export enum SetupSteps {
+  Disabled = -1,
+  General,
+  Theme,
+  Collection,
+  Pages,
+  PagesMenu,
+  Tokens,
+  Fees,
+  SwapFees,
+  Seo,
+  Done,
+}
+
+export enum WizardSetupSteps {
+  Disabled = -1,
+  Required,
+  General,
+  CollectionTokens,
+  Layout,
+  Done,
+}
+
+export interface StepperButtonProps {
+  handleNext?: () => void;
+  handleBack?: () => void;
+  disableContinue?: boolean;
+  isLastStep?: boolean;
+  isFirstStep?: boolean;
+}
+
+export interface GatedCondition {
+  type?: 'collection' | 'coin' | 'multiCollection';
+  condition?: 'and' | 'or';
+  protocol?: 'ERC20' | 'ERC711' | 'ERC1155';
+  decimals?: number;
+  address?: string;
+  symbol?: string;
+  chainId?: number;
+  amount: string;
+  tokenId?: string;
+}
+
+export interface GatedPageLayout {
+  frontImage?: string;
+  frontImageHeight?: number;
+  frontImageWidth?: number;
+  accessRequirementsMessage?: string;
+}
+
+export type MintNFTFormType = {
   name: string;
-  type: 'Page' | 'Menu' | 'External';
-  href?: string;
-  data?: any;
-  children?: MenuTree[];
+  description?: string;
+  background_color?: string;
+  animation_url?: string;
+  image?: string;
+  external_url?: string;
+};
+
+export type ThemeFormType = {
+  primary?: string;
+  secondary?: string;
+  text?: string;
+  background?: string;
+  success?: string;
+  error?: string;
+  warning?: string;
+  info?: string;
+  paper?: string;
+  themeId: string;
+  borderRadius?: number;
+};
+
+export enum PreviewType {
+  Swap = 'swap',
+  Exchange = 'exchange',
+  NFTs = 'nfts',
 }
 
-
-export interface AssetItemType {
-  type: 'asset';
-  title: string;
-  chainId: number;
-  contractAddress: string;
+export type AssetFormType = {
+  address: string;
+  network: string;
   tokenId: string;
+  enableFiat?: boolean;
+  enableDrops?: boolean; // only on edition
+  enableDarkblock?: boolean;
+};
+
+export interface GamificationPoint {
+  userEventType?: string;
+  points?: number;
+  filter?: string;
 }
 
-export interface CollectionItemType {
-  type: 'collection';
-  variant: 'default' | 'simple';
-  featured?: boolean;
-  title: string;
-  subtitle: string;
-  backgroundImageUrl: string;
-  chainId: number;
+export type DeployedContract = {
+  name: string;
   contractAddress: string;
-}
+  owner: string;
+  id: number;
+  type?: string;
+  chainId?: number;
+};
 
-export type SectionItem = AssetItemType | CollectionItemType;
-
-export type PageSectionVariant = 'dark' | 'light';
 
 
 export interface SwapConfig {
@@ -47,134 +122,4 @@ export interface SwapConfig {
   configByChain?: {
     [chain: number]: ChainConfig;
   };
-}
-
-
-export type SectionType =
-  | 'video'
-  | 'call-to-action'
-  | 'featured'
-  | 'collections'
-  | 'swap'
-  | 'custom'
-  | 'asset-store'
-  | 'markdown'
-  | 'wallet'
-  | 'contract'
-  | 'user-contract-form'
-  | 'plugin'
-  | 'exchange'
-
-  ;
-
-export interface PageSection {
-  type: SectionType;
-  title?: string;
-  variant?: PageSectionVariant;
-  hideMobile?: boolean;
-  hideDesktop?: boolean;
-}
-
-export interface CallToActionAppPageSection extends PageSection {
-  type: 'call-to-action';
-  title?: string;
-  subtitle: string;
-  button: {
-    title: string;
-    url: string;
-    openInNewPage?: boolean;
-  };
-  items: SectionItem[];
-}
-
-export interface VideoEmbedAppPageSection extends PageSection {
-  type: 'video';
-  title: string;
-  embedType: VideoEmbedType;
-  videoUrl: string;
-}
-
-export interface FeaturedAppPageSection extends PageSection {
-  type: 'featured';
-  title: string;
-  items: SectionItem[];
-}
-
-export interface CollectionAppPageSection extends PageSection {
-  type: 'collections';
-  title: string;
-  items: SectionItem[];
-}
-
-export interface SwapPageSection extends PageSection {
-  type: 'swap';
-  title?: string;
-  config?: SwapConfig;
-}
-
-export interface AssetStorePageSection extends PageSection {
-  type: 'asset-store';
-  title?: string;
-  config?: AssetStoreOptions;
-}
-
-export interface CustomEditorSection extends PageSection {
-  type: 'custom';
-  title?: string;
-  data: string | null | undefined;
-}
-
-export interface MarkdownEditorPageSection extends PageSection {
-  type: 'markdown';
-  title?: string;
-  config?: { source?: string };
-}
-
-export interface WalletPageSection extends PageSection {
-  type: 'wallet';
-}
-
-export interface ContractPageSection extends PageSection {
-  type: 'contract';
-  config?: ContractFormParams;
-}
-
-export interface UserContractPageSection extends PageSection {
-  type: 'user-contract-form';
-  formId: number;
-  hideFormInfo?: boolean;
-}
-
-export interface PluginPageSection<T> extends PageSection {
-  type: 'plugin';
-  data?: T;
-  pluginPath: string;
-}
-
-export interface ExchangePageSection extends PageSection {
-  type: 'exchange';
-  settings: DexkitExchangeSettings;
-}
-
-export type AppPageSection =
-  | CallToActionAppPageSection
-  | VideoEmbedAppPageSection
-  | FeaturedAppPageSection
-  | CollectionAppPageSection
-  | CustomEditorSection
-  | SwapPageSection
-  | AssetStorePageSection
-  | MarkdownEditorPageSection
-  | WalletPageSection
-  | ContractPageSection
-  | UserContractPageSection
-  | PluginPageSection<unknown>
-  | ExchangePageSection;
-
-export interface SectionMetadata {
-  type: SectionType;
-  title?: string | React.ReactNode;
-  subtitle?: string;
-  icon?: string | React.ReactNode;
-  category: 'misc' | 'swap' | 'nft' | 'exchange'
 }
