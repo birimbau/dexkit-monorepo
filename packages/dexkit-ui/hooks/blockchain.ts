@@ -10,9 +10,149 @@ import { EvmCoin, TokenWhitelabelApp } from "@dexkit/core/types";
 import { convertTokenToEvmCoin } from "@dexkit/core/utils";
 import { useWeb3React } from "@web3-react/core";
 import { useContext, useMemo } from "react";
-import { useAppConfig, useDexKitContext } from ".";
+import { useAppConfig, useAppWizardConfig, useDexKitContext } from ".";
 import { AdminContext } from "../context/AdminContext";
 import { DexKitContext } from "../context/DexKitContext";
+
+/**
+ * If chainId is not passed it returns all tokens from all chains
+ * @param param0
+ * @returns
+ */
+export function useAllTokenList({
+  chainId,
+  includeNative = false,
+  onlyTradable,
+  onlyNative,
+  isWizardConfig,
+}: {
+  chainId?: number;
+  includeNative?: boolean;
+  onlyNative?: boolean;
+  onlyTradable?: boolean;
+  isWizardConfig?: boolean;
+}) {
+  const appConfig = useAppConfig();
+  const { wizardConfig } = useAppWizardConfig();
+
+  const tokenListJson = useMemo(() => {
+    if (isWizardConfig && wizardConfig && wizardConfig.tokens?.length === 1) {
+      return wizardConfig.tokens[0].tokens || [];
+    }
+
+    if (appConfig.tokens?.length === 1) {
+      return appConfig.tokens[0].tokens || [];
+    }
+
+    return [];
+  }, [appConfig, isWizardConfig, wizardConfig]);
+
+  let tokens = tokenListJson;
+
+
+  if (onlyTradable) {
+    tokens = tokens.filter((t) => Boolean(t.tradable));
+  }
+
+  return useMemo(() => {
+    if (onlyNative && chainId) {
+      return [
+        {
+          address: ZEROEX_NATIVE_TOKEN_ADDRESS,
+          chainId,
+          decimals: 18,
+          logoURI: NETWORK_COIN_IMAGE(chainId),
+          name: NETWORK_COIN_NAME(chainId),
+          symbol: NETWORK_COIN_SYMBOL(chainId),
+        },
+      ] as TokenWhitelabelApp[];
+    }
+    let tokenList: TokenWhitelabelApp[] = [...tokens];
+    if (chainId) {
+      tokenList = [
+        ...tokens.filter((token: TokenWhitelabelApp) => token.chainId === chainId),
+      ];
+    }
+
+    if (chainId) {
+      const wrappedAddress = NETWORKS[chainId]?.wrappedAddress;
+      const isNoWrappedTokenInList =
+        tokenList &&
+        tokenList.findIndex(
+          (t) => t.address.toLowerCase() === wrappedAddress,
+        ) === -1;
+      // Wrapped Token is not on the list, we will add it here
+      if (wrappedAddress && isNoWrappedTokenInList) {
+        tokenList = [
+          {
+            address: wrappedAddress,
+            chainId,
+            decimals: 18,
+            logoURI: NETWORK_COIN_IMAGE(chainId),
+            name: `Wrapped ${NETWORK_COIN_NAME(chainId)}`,
+            symbol: `W${NETWORK_COIN_SYMBOL(chainId)}`,
+          } as TokenWhitelabelApp,
+          ...tokenList,
+        ];
+      }
+    } else {
+      // if no chainId, we just add all networks
+      for (const ch of Object.keys(NETWORKS)) {
+        const chain = Number(ch);
+        const wrappedAddress = NETWORKS[chain]?.wrappedAddress;
+        const isNoWrappedTokenInList =
+          tokenList &&
+          tokenList.findIndex(
+            (t) => t.address.toLowerCase() === wrappedAddress?.toLowerCase() && t.chainId === chain,
+          ) === -1;
+        // Wrapped Token is not on the list, we will add it here
+        if (wrappedAddress && isNoWrappedTokenInList) {
+          tokenList = [
+            {
+              address: wrappedAddress,
+              chainId: chain,
+              decimals: 18,
+              logoURI: NETWORK_COIN_IMAGE(chain),
+              name: `Wrapped ${NETWORK_COIN_NAME(chain)}`,
+              symbol: `W${NETWORK_COIN_SYMBOL(chain)}`,
+            } as TokenWhitelabelApp,
+            ...tokenList,
+          ];
+        }
+      }
+    }
+    if (includeNative && chainId) {
+      return [
+        {
+          address: ZEROEX_NATIVE_TOKEN_ADDRESS,
+          chainId,
+          decimals: 18,
+          logoURI: NETWORK_COIN_IMAGE(chainId),
+          name: NETWORK_COIN_NAME(chainId),
+          symbol: NETWORK_COIN_SYMBOL(chainId),
+        },
+        ...tokenList,
+      ] as TokenWhitelabelApp[];
+    } else {
+      for (const ch of Object.keys(NETWORKS)) {
+        const chain = Number(ch);
+        tokenList = [
+          {
+            address: ZEROEX_NATIVE_TOKEN_ADDRESS,
+            chainId: chain,
+            decimals: 18,
+            logoURI: NETWORK_COIN_IMAGE(chain),
+            name: NETWORK_COIN_NAME(chain),
+            symbol: NETWORK_COIN_SYMBOL(chain),
+          },
+          ...tokenList,
+        ] as TokenWhitelabelApp[];
+      }
+    }
+
+    return [...tokenList] as TokenWhitelabelApp[];
+  }, [chainId, onlyNative, includeNative]);
+}
 
 export function useTokenList({
   chainId,
@@ -71,7 +211,7 @@ export function useTokenList({
     const wrappedAddress = NETWORKS[chainId]?.wrappedAddress;
     const isNoWrappedTokenInList =
       tokenList &&
-      tokenList.findIndex((t) => t.address.toLowerCase() === wrappedAddress) ===
+      tokenList.findIndex((t) => t.address.toLowerCase() === wrappedAddress?.toLowerCase()) ===
       -1;
     // Wrapped Token is not on the list, we will add it here
     if (wrappedAddress && isNoWrappedTokenInList) {

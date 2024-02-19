@@ -15,6 +15,13 @@ export interface MenuTree {
   children?: MenuTree[];
 }
 
+export interface SearchbarConfig {
+  enabled?: boolean;
+  hideCollections?: boolean;
+  hideTokens?: boolean;
+}
+
+
 
 export interface AssetItemType {
   type: 'asset';
@@ -148,6 +155,7 @@ export interface AppConfig {
     recipient: string;
     amount_percentage: number;
   };
+  searchbar?: SearchbarConfig;
   format?: {
     date: string;
     datetime: string;

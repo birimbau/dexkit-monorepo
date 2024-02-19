@@ -4,7 +4,7 @@ import { AssetAPI } from "../modules/nft/types";
 import { AppConfig } from "../types/config";
 
 export const AppConfigContext = React.createContext<{
-  appConfig: any;
+  appConfig: AppConfig;
   appNFT?: AssetAPI;
   siteId?: number;
 }>({
@@ -12,7 +12,7 @@ export const AppConfigContext = React.createContext<{
 });
 
 interface IAppWizardConfigContext {
-  wizardConfig: AppConfig;
+  wizardConfig: any;
   setWizardConfig?: any;
 }
 

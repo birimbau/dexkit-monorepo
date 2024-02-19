@@ -45,6 +45,7 @@ import { TourProvider, useTour } from '@reactour/tour';
 import { useWeb3React } from '@web3-react/core';
 import { useAtom } from 'jotai';
 import { useRouter } from 'next/router';
+import AppVersion from 'src/constants/app-version.json';
 import { useAuth } from 'src/hooks/account';
 import { BuilderKit } from '../../constants';
 import { OnboardBuilderSteps } from '../../constants/onboard/steps';
@@ -86,7 +87,7 @@ const MarketplaceFeeWizardContainer = dynamic(
   () => import('./MarketplaceFeeWizardContainer'),
 );
 const PagesMenuWizardContainer = dynamic(
-  () => import('./PagesMenuWizardContainer'),
+  () => import('./NavbarWizardContainer'),
 );
 const PagesWizardContainer = dynamic(() => import('./PagesWizardContainer'));
 const SeoWizardContainer = dynamic(() => import('./SeoWizardContainer'));
@@ -475,7 +476,7 @@ export function EditWizardContainer({ site }: Props) {
                 >
                   <ListItemText
                     primary={
-                      <FormattedMessage id="menu" defaultMessage={'Menu'} />
+                      <FormattedMessage id="navbar" defaultMessage={'Navbar'} />
                     }
                   />
                 </ListItemButton>
@@ -742,6 +743,9 @@ export function EditWizardContainer({ site }: Props) {
           </List>
         </nav>
       )}
+      <Box sx={{ display: 'flex', justifyContent: 'flex-end', pr: 2 }}>
+        <Typography>v{AppVersion.version}</Typography>
+      </Box>
     </Box>
   );
 
