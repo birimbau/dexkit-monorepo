@@ -15,6 +15,7 @@ import { useRouter } from 'next/router';
 
 interface Props {
   breadcrumbs: { caption: React.ReactNode; uri: string; active?: boolean }[];
+  showTitleOnDesktop?: boolean;
 }
 
 const CustomLink = styled(Link)({
@@ -22,7 +23,7 @@ const CustomLink = styled(Link)({
   textDecoration: 'none',
 });
 
-export function PageHeader({ breadcrumbs }: Props) {
+export function PageHeader({ breadcrumbs, showTitleOnDesktop }: Props) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const router = useRouter();
@@ -51,7 +52,7 @@ export function PageHeader({ breadcrumbs }: Props) {
   const handleGoBack = () => router.back();
 
   return (
-    <Stack>
+    <Stack spacing={showTitleOnDesktop ? 2 : undefined}>
       {isMobile ? (
         <Stack
           direction="row"
@@ -66,19 +67,35 @@ export function PageHeader({ breadcrumbs }: Props) {
           {renderActiveBreadcrumb()}
         </Stack>
       ) : (
-        <Breadcrumbs
-          separator={<NavigateNextIcon fontSize="small" color="inherit" />}
-        >
-          {breadcrumbs.map((breadcrumb, index) => (
-            <CustomLink
-              key={index}
-              href={breadcrumb.uri}
-              color={breadcrumb?.active ? 'primary' : 'text.primary'}
+        <>
+          <Breadcrumbs
+            separator={<NavigateNextIcon fontSize="small" color="inherit" />}
+          >
+            {breadcrumbs.map((breadcrumb, index) => (
+              <CustomLink
+                key={index}
+                href={breadcrumb.uri}
+                color={breadcrumb?.active ? 'primary' : 'text.primary'}
+              >
+                {breadcrumb.caption}
+              </CustomLink>
+            ))}
+          </Breadcrumbs>
+          {showTitleOnDesktop && (
+            <Stack
+              direction="row"
+              spacing={1}
+              alignItems="center"
+              alignContent="center"
             >
-              {breadcrumb.caption}
-            </CustomLink>
-          ))}
-        </Breadcrumbs>
+              <IconButton onClick={handleGoBack}>
+                <ArrowBackIcon />
+              </IconButton>
+
+              {renderActiveBreadcrumb()}
+            </Stack>
+          )}
+        </>
       )}
     </Stack>
   );

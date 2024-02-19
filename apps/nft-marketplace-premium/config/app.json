@@ -39,6 +39,11 @@
       "type": "External",
       "href": "https://dexkit.com/contact-us",
       "name": "Contact us"
+    },
+    {
+      "type": "page",
+      "href": "/admin/app-version",
+      "name": "App version"
     }
   ],
   "menuTree": [

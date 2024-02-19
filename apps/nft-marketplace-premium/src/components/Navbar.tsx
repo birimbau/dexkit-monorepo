@@ -1,3 +1,5 @@
+import { SearchBar } from '@dexkit/ui/components/SearchBar';
+import SearchBarMobile from '@dexkit/ui/components/SearchBarMobile';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import MenuIcon from '@mui/icons-material/Menu';
 import AppBar from '@mui/material/AppBar';
@@ -55,7 +57,7 @@ import Notification from './icons/Notification';
 import Wallet from './icons/Wallet';
 
 const SelectNetworkDialog = dynamic(
-  () => import('@dexkit/ui/components/dialogs/SelectNetworkDialog')
+  () => import('@dexkit/ui/components/dialogs/SelectNetworkDialog'),
 );
 
 import { useAuthUserQuery } from '@/modules/user/hooks';
@@ -108,7 +110,7 @@ function Navbar({ appConfig, isPreview }: Props) {
   const [, setShowShowSelectLocale] = useAtom(showSelectLocaleAtom);
 
   const [showTransactions, setShowTransactions] = useAtom(
-    showAppTransactionsAtom
+    showAppTransactionsAtom,
   );
 
   const handleOpenTransactions = () => setShowTransactions(true);
@@ -121,7 +123,7 @@ function Navbar({ appConfig, isPreview }: Props) {
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const handleSettingsMenuClick = (
-    event: React.MouseEvent<HTMLButtonElement>
+    event: React.MouseEvent<HTMLButtonElement>,
   ) => {
     setMenuAnchorEl(event.currentTarget);
   };
@@ -169,7 +171,7 @@ function Navbar({ appConfig, isPreview }: Props) {
   const [showProfileMenu, setShowProfileMenu] = useState(false);
 
   const handleShowProfileMenu = (
-    event: React.MouseEvent<HTMLButtonElement>
+    event: React.MouseEvent<HTMLButtonElement>,
   ) => {
     setShowProfileMenu(true);
     setProfileMenuAnchorEl(event.currentTarget);
@@ -373,7 +375,42 @@ function Navbar({ appConfig, isPreview }: Props) {
               {appConfig.name}
             </Link>
           )}
+          {appConfig?.searchbar?.enabled && (
+            <Stack
+              direction="row"
+              alignItems="center"
+              sx={{
+                flexGrow: 3,
+                display: { xs: 'none', md: 'flex' },
+                justifyContent: 'center',
+                px: 2,
+              }}
+            >
+              <SearchBar
+                hideCollections={appConfig?.searchbar?.hideCollections}
+                hideTokens={appConfig?.searchbar?.hideTokens}
+                isPreview={isPreview}
+              />
+            </Stack>
+          )}
 
+          {isMobile && appConfig?.searchbar?.enabled && (
+            <Stack
+              direction="row"
+              alignItems="center"
+              sx={{
+                flexGrow: 3,
+                justifyContent: 'flex-end',
+                px: 2,
+              }}
+            >
+              <SearchBarMobile
+                hideCollections={appConfig?.searchbar?.hideCollections}
+                hideTokens={appConfig?.searchbar?.hideTokens}
+                isPreview={isPreview}
+              />
+            </Stack>
+          )}
           <Stack
             direction="row"
             sx={{
@@ -411,7 +448,7 @@ function Navbar({ appConfig, isPreview }: Props) {
                         defaultMessage={m.name}
                       />
                     </Link>
-                  )
+                  ),
                 )}
               </Stack>
             ) : (
