@@ -38,9 +38,15 @@ export default function MarketTradeSection({
 
   const quoteToken = useMemo(() => {
     if (tokens) {
-      return tokens.find((tk) =>
-        isAddressEqual(ZEROEX_NATIVE_TOKEN_ADDRESS, tk.address),
-      );
+      if (baseTokenConfig?.address !== ZEROEX_NATIVE_TOKEN_ADDRESS) {
+        return tokens.find((tk) =>
+          isAddressEqual(ZEROEX_NATIVE_TOKEN_ADDRESS, tk.address),
+        );
+      } else {
+        return tokens.find(
+          (tk) => !isAddressEqual(ZEROEX_NATIVE_TOKEN_ADDRESS, tk.address),
+        );
+      }
     }
   }, [tokens, baseTokenConfig]);
 
