@@ -24,6 +24,7 @@ export interface ConfigResponse {
   id: number;
   slug: string;
   config: string;
+  isTemplate?: boolean;
   domain: string;
   cname?: string;
   domainStatus?: string;
@@ -40,6 +41,7 @@ export interface SiteResponse {
   domain: string;
   cname?: string;
   owner?: string;
+  clonable?: string;
   domainStatus?: string;
   emailVerified?: boolean;
   type: AppWhitelabelType;

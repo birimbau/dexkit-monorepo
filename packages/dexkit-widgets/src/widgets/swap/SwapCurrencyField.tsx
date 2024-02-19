@@ -84,6 +84,10 @@ function SwapTokenField({
           spacing={0.5}
           justifyContent="flex-end"
           alignItems="center"
+          sx={{
+            pt: 0.5,
+            pb: 0.7,
+          }}
         >
           <Typography variant="body2" align="right">
             <FormattedMessage

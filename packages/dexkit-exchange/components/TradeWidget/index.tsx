@@ -23,9 +23,8 @@ import SwapSettingsDialog from "@dexkit/ui/modules/swap/components/dialogs/SwapS
 import SettingsIcon from "@mui/icons-material/Settings";
 import { DEFAULT_ZRX_NETWORKS } from "../../constants";
 import { useExchangeContext } from "../../hooks";
-import MarketBuyForm from "./MarketBuyForm";
-import MarketSellForm from "./MarketSellForm";
 import SellForm from "./SellForm";
+import MarketForm from "./SimpleVariant/MarketForm";
 import TradeWidgetTab from "./TradeWidgetTab";
 
 // FIXME: base/quote KIT/USDT
@@ -257,38 +256,14 @@ export default function TradeWidget({ isActive }: TradeWidgetProps) {
           </>
         )}
 
-        {orderType === "market" &&
-        orderSide === "buy" &&
-        quoteToken &&
-        baseToken ? (
-          <MarketBuyForm
-            key={`market-buy-${baseToken.address}-${quoteToken.address}`}
+        {orderType === "market" && quoteToken && baseToken ? (
+          <MarketForm
+            key={`market-${orderSide}-${baseToken.address}-${quoteToken.address}`}
             quoteToken={quoteToken}
             baseToken={baseToken}
             provider={provider}
+            side={orderSide}
             account={account}
-            quoteTokenBalance={quoteTokenBalanceQuery.data}
-            baseTokenBalance={baseTokenBalanceQuery.data}
-            affiliateAddress={affiliateAddress}
-            feeRecipient={feeRecipient}
-            isActive={isActive}
-            chainId={chainId}
-          />
-        ) : null}
-
-        {orderType === "market" &&
-        orderSide === "sell" &&
-        quoteToken &&
-        baseToken ? (
-          <MarketSellForm
-            key={`market-sell-${baseToken.address}-${quoteToken.address}`}
-            quoteToken={quoteToken}
-            baseToken={baseToken}
-            provider={provider}
-            account={account}
-            quoteTokenBalance={quoteTokenBalanceQuery.data}
-            baseTokenBalance={baseTokenBalanceQuery.data}
-            buyTokenPercentageFee={buyTokenPercentageFee}
             affiliateAddress={affiliateAddress}
             feeRecipient={feeRecipient}
             isActive={isActive}

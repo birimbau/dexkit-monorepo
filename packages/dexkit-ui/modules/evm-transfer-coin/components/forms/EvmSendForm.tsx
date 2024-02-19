@@ -118,6 +118,7 @@ export function EvmSendForm({
         id="select-token"
         options={coins || []}
         value={values?.coin}
+        readOnly={coins && coins.length === 1}
         onChange={handleChangeCoin}
         getOptionLabel={(opt) => opt.name}
         renderOption={(props, opt) => (

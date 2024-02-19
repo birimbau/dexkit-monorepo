@@ -12,6 +12,7 @@ export async function getAppConfig(
   appPage?: string
 ): Promise<{
   appConfig: AppConfig;
+  appPage?: string;
   appNFT?: AssetAPI | null;
   siteId?: number,
   slug?: string
@@ -51,7 +52,8 @@ export async function getAppConfig(
           appConfig: JSON.parse(configResponse.config) as AppConfig,
           appNFT: configResponse.nft === undefined ? null : configResponse.nft,
           siteId: configResponse?.id,
-          slug: configResponse?.slug
+          slug: configResponse?.slug,
+          appPage,
         };
       }
     }
@@ -69,7 +71,8 @@ export async function getAppConfig(
           appConfig: JSON.parse(configResponse.config) as AppConfig,
           appNFT: configResponse.nft === undefined ? null : configResponse.nft,
           siteId: configResponse?.id,
-          slug: configResponse?.slug
+          slug: configResponse?.slug,
+          appPage,
         };
       }
     }
@@ -124,7 +127,8 @@ export async function getAppConfig(
       appConfig: JSON.parse(configResponse.config) as AppConfig,
       appNFT: configResponse.nft === undefined ? configResponse.nft : null,
       siteId: configResponse?.id,
-      slug: configResponse?.slug
+      slug: configResponse?.slug,
+      appPage,
     };
   }
 

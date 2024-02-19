@@ -35,6 +35,25 @@ export function useZrxQuoteMutation({ chainId }: { chainId?: ChainId }) {
   });
 }
 
+
+export function useZrxQuoteQuery({ chainId, params }: { chainId?: ChainId, params: ZeroExQuote }) {
+  const { siteId } = useContext(SiteContext);
+
+  return useQuery([chainId, params], async () => {
+    if (!chainId || !(params.buyAmount || params.sellAmount)) {
+      return null;
+    }
+
+    const zrxClient = new ZeroExApiClient(
+      chainId,
+      process.env.NEXT_PUBLIC_ZRX_API_KEY,
+      siteId
+    );
+
+    return zrxClient.quote(params, {});
+  });
+}
+
 export const ZRX_ORDERBOOK_QUERY = "ZRX_ORDERBOOK_QUERY";
 
 export function useZrxOrderbook({
@@ -114,7 +133,7 @@ export function useZrxCancelOrderMutation() {
       const tx = await contract.cancelLimitOrder(order);
 
       trackUserEvent.mutate({
-        event: UserEvents.swap,
+        event: UserEvents.orderCancelled,
         hash: tx.hash,
         chainId,
         metadata: JSON.stringify({
@@ -143,7 +162,6 @@ export function useZrxFillOrderMutation() {
     }) => {
       const contractAddress = getZrxExchangeAddress(chainId);
 
-      console.log(contractAddress);
 
       if (!contractAddress || !provider || !chainId) {
         throw new Error("no provider or contract address");
@@ -172,7 +190,6 @@ export function useZrxFillOrderMutation() {
       //   takerTokenFeeAmount: new BigNumber(order.takerTokenFeeAmount),
       // });
 
-      console.log(fillAmount);
 
       const tx = await contract.fillLimitOrder(
         order,

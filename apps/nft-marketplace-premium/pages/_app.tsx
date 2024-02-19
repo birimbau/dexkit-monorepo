@@ -50,12 +50,13 @@ export default function MyApp(props: MyAppProps) {
 
   const [loading, setLoading] = React.useState(false);
 
-  const { appConfig, appNFT, siteId, site } = pageProps as {
+  const { appConfig, appNFT, siteId, site, appPage } = pageProps as {
     appConfig: AppConfig;
     appNFT: AssetAPI;
     siteId: number | undefined;
     dehydratedState: DehydratedState;
     site?: string;
+    appPage?: string;
   };
 
   const [queryClient] = React.useState(
@@ -143,36 +144,69 @@ export default function MyApp(props: MyAppProps) {
     const config = appConfig;
 
     if (config) {
-      const seoConfig: any = {
-        defaultTitle: config.seo?.home?.title || config.name,
-        titleTemplate: `${config.name} | %s`,
-        description: config.seo?.home?.description,
-        canonical: config.domain,
-        openGraph: {
-          type: 'website',
-          description: config.seo?.home?.description || '',
-          locale: config.locale || 'en_US',
-          url: config.domain,
-          site_name: config.name,
-          images: config.seo?.home?.images,
-        },
-      };
+      if (config.seo && appPage && config.seo[appPage]) {
+        const pageSeo = config.seo[appPage];
+        const seoConfig: any = {
+          defaultTitle:
+            pageSeo?.title || config.seo?.home?.title || config.name,
+          titleTemplate: `${config.name} | %s`,
+          description: pageSeo?.description || config.seo?.home?.description,
+          canonical: config.domain,
+          openGraph: {
+            type: 'website',
+            description:
+              pageSeo?.description || config.seo?.home?.description || '',
+            locale: config.locale || 'en_US',
+            url: config.domain,
+            site_name: config.name,
+            images: pageSeo?.images || config.seo?.home?.images,
+          },
+        };
 
-      if (config.social) {
-        for (let social of config.social) {
-          if (social.type === 'twitter') {
-            seoConfig.twitter = {
-              handle: `@${social.handle}`,
-              site: `@${social.handle}`,
-              cardType: 'summary_large_image',
-            };
+        if (config.social) {
+          for (let social of config.social) {
+            if (social.type === 'twitter') {
+              seoConfig.twitter = {
+                handle: `@${social.handle}`,
+                site: `@${social.handle}`,
+                cardType: 'summary_large_image',
+              };
+            }
           }
         }
-      }
+        return seoConfig;
+      } else {
+        const seoConfig: any = {
+          defaultTitle: config.seo?.home?.title || config.name,
+          titleTemplate: `${config.name} | %s`,
+          description: config.seo?.home?.description,
+          canonical: config.domain,
+          openGraph: {
+            type: 'website',
+            description: config.seo?.home?.description || '',
+            locale: config.locale || 'en_US',
+            url: config.domain,
+            site_name: config.name,
+            images: config.seo?.home?.images,
+          },
+        };
 
-      return seoConfig;
+        if (config.social) {
+          for (let social of config.social) {
+            if (social.type === 'twitter') {
+              seoConfig.twitter = {
+                handle: `@${social.handle}`,
+                site: `@${social.handle}`,
+                cardType: 'summary_large_image',
+              };
+            }
+          }
+        }
+
+        return seoConfig;
+      }
     }
-  }, [appConfig]);
+  }, [appConfig, appPage]);
   React.useEffect(() => {
     router.events.on('routeChangeStart', () => {
       setLoading(true);
