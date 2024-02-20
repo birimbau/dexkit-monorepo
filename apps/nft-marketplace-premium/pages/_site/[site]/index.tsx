@@ -37,6 +37,7 @@ export const getStaticProps: GetStaticProps = async ({
   const queryClient = new QueryClient();
   const configResponse = await getAppConfig(params?.site, 'home');
   const { appConfig } = configResponse;
+
   const homePage = appConfig.pages.home;
   for (let section of homePage.sections) {
     if (section.type === 'asset-store') {
@@ -44,7 +45,7 @@ export const getStaticProps: GetStaticProps = async ({
       const assetResponse = await getDKAssetOrderbook({ maker });
       await queryClient.prefetchQuery(
         [GET_ASSETS_ORDERBOOK, { maker: maker || null }],
-        async () => assetResponse.data
+        async () => assetResponse.data,
       );
     }
   }
