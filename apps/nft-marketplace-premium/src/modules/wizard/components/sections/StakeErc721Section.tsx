@@ -74,7 +74,7 @@ export default function StakeErc721Section({
       const [n, d] = stakeInfo;
 
       return [
-        Array.isArray(n) ? (n as BigNumber[])?.map((v) => v.toNumber()) : [],
+        Array.isArray(n) ? (n as BigNumber[])?.map((v) => v?.toNumber()) : [],
         d,
       ];
     }
@@ -98,7 +98,7 @@ export default function StakeErc721Section({
 
   const rewardPerUnitTime = useMemo(() => {
     if (rewardRatio) {
-      return rewardRatio.toNumber();
+      return rewardRatio?.toNumber();
     }
 
     return 0;
@@ -381,7 +381,7 @@ export default function StakeErc721Section({
                             {rewardTokenBalance ? (
                               <>
                                 {rewardPerUnitTime} {rewardTokenBalance?.symbol}
-                                /{rewardTimeUnit.toNumber()}
+                                /{rewardTimeUnit?.toNumber()}
                               </>
                             ) : (
                               <Skeleton />
@@ -434,7 +434,10 @@ export default function StakeErc721Section({
                           <CircularProgress color="inherit" size="1rem" />
                         ) : undefined
                       }
-                      disabled={claimRewardsMutation.isLoading}
+                      disabled={
+                        claimRewardsMutation.isLoading ||
+                        rewards?.toNumber() === 0
+                      }
                       variant="outlined"
                       color="primary"
                       fullWidth
@@ -546,7 +549,7 @@ export default function StakeErc721Section({
                             {rewardTokenBalance ? (
                               <>
                                 {rewardPerUnitTime} {rewardTokenBalance?.symbol}
-                                /{rewardTimeUnit.toNumber()}
+                                /{rewardTimeUnit?.toNumber()}
                               </>
                             ) : (
                               <Skeleton />
