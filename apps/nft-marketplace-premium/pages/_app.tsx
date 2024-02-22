@@ -64,6 +64,7 @@ export default function MyApp(props: MyAppProps) {
       defaultOptions: {
         queries: {
           suspense: false,
+          staleTime: 60 * 1000,
         },
       },
     }),

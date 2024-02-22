@@ -1,6 +1,7 @@
 import { GatedCondition, GatedPageLayout } from '@/modules/wizard/types';
 import { AppPageSection } from '@/modules/wizard/types/section';
 import { ThemeMode } from '@dexkit/ui/constants/enum';
+import { SearchbarConfig } from '@dexkit/ui/types/config';
 import { Token } from './blockchain';
 
 export type VideoEmbedType = 'youtube' | 'vimeo';
@@ -14,6 +15,7 @@ export interface MenuTree {
   data?: any;
   children?: MenuTree[];
 }
+
 
 
 export interface AssetItemType {
@@ -148,6 +150,7 @@ export interface AppConfig {
     recipient: string;
     amount_percentage: number;
   };
+  searchbar?: SearchbarConfig;
   format?: {
     date: string;
     datetime: string;

@@ -113,7 +113,7 @@ export default function TokenInfo({ address, chainId }: TokenSummaryProps) {
       >
         <Grid container spacing={2}>
           <Grid item xs={12}>
-           {/* <Typography variant="caption" color="text.secondary">
+            {/* <Typography variant="caption" color="text.secondary">
               <FormattedMessage id="token" defaultMessage="Token" />
         </Typography>*/}
             <Stack
@@ -142,45 +142,53 @@ export default function TokenInfo({ address, chainId }: TokenSummaryProps) {
               </Box>
             </Stack>
           </Grid>
-
-          <Grid item>
-            <Typography variant="caption" color="text.secondary">
-              <FormattedMessage
-                id="your.balance"
-                defaultMessage="Your balance"
-              />
-            </Typography>
-            <Typography variant="h6">
-              {account
-                ? formatBigNumber(tokenBalance.data, token?.decimals)
-                : '-'}{' '}
-              {token?.symbol}
-            </Typography>
-          </Grid>
-          <Grid item>
-            <Typography variant="caption" color="text.secondary">
-              <FormattedMessage id="actions" defaultMessage="Actions" />
-            </Typography>
-            <Stack spacing={2} direction="row">
-              <Button
-                fullWidth
-                startIcon={<Send />}
-                color="inherit"
-                variant="outlined"
-                onClick={handleOpenSend}
-              >
-                <FormattedMessage id="send" defaultMessage="Send" />
-              </Button>
-              <Button
-                startIcon={<VerticalAlignBottomIcon />}
-                color="inherit"
-                variant="outlined"
-                fullWidth
-                onClick={handleOpenReceive}
-              >
-                <FormattedMessage id="receive" defaultMessage="Receive" />
-              </Button>
-            </Stack>
+          <Grid item xs={12}>
+            <Grid
+              container
+              spacing={2}
+              justifyContent={'center'}
+              justifyItems={'center'}
+            >
+              <Grid item>
+                <Typography variant="caption" color="text.secondary">
+                  <FormattedMessage
+                    id="your.balance"
+                    defaultMessage="Your balance"
+                  />
+                </Typography>
+                <Typography variant="h6">
+                  {account
+                    ? formatBigNumber(tokenBalance.data, token?.decimals)
+                    : '-'}{' '}
+                  {token?.symbol}
+                </Typography>
+              </Grid>
+              <Grid item>
+                <Typography variant="caption" color="text.secondary">
+                  <FormattedMessage id="actions" defaultMessage="Actions" />
+                </Typography>
+                <Stack spacing={2} direction="row">
+                  <Button
+                    fullWidth
+                    startIcon={<Send />}
+                    color="inherit"
+                    variant="outlined"
+                    onClick={handleOpenSend}
+                  >
+                    <FormattedMessage id="send" defaultMessage="Send" />
+                  </Button>
+                  <Button
+                    startIcon={<VerticalAlignBottomIcon />}
+                    color="inherit"
+                    variant="outlined"
+                    fullWidth
+                    onClick={handleOpenReceive}
+                  >
+                    <FormattedMessage id="receive" defaultMessage="Receive" />
+                  </Button>
+                </Stack>
+              </Grid>
+            </Grid>
           </Grid>
         </Grid>
       </Box>

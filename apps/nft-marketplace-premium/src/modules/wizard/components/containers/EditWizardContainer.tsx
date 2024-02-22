@@ -86,7 +86,7 @@ const MarketplaceFeeWizardContainer = dynamic(
   () => import('./MarketplaceFeeWizardContainer'),
 );
 const PagesMenuWizardContainer = dynamic(
-  () => import('./PagesMenuWizardContainer'),
+  () => import('./NavbarWizardContainer'),
 );
 const PagesWizardContainer = dynamic(() => import('./PagesWizardContainer'));
 const SeoWizardContainer = dynamic(() => import('./SeoWizardContainer'));
@@ -475,7 +475,7 @@ export function EditWizardContainer({ site }: Props) {
                 >
                   <ListItemText
                     primary={
-                      <FormattedMessage id="menu" defaultMessage={'Menu'} />
+                      <FormattedMessage id="navbar" defaultMessage={'Navbar'} />
                     }
                   />
                 </ListItemButton>
@@ -742,6 +742,9 @@ export function EditWizardContainer({ site }: Props) {
           </List>
         </nav>
       )}
+      {/*  <Box sx={{ display: 'flex', justifyContent: 'flex-end', pr: 2 }}>
+        <Typography>v{AppVersion.version}</Typography>
+                    </Box>*/}
     </Box>
   );
 

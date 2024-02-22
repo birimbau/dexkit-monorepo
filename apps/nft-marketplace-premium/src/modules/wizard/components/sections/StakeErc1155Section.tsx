@@ -66,7 +66,7 @@ export default function StakeErc1155Section({
       const [n, d, r] = stakeInfo;
 
       return [
-        Array.isArray(n) ? (n as BigNumber[])?.map((v) => v.toNumber()) : [],
+        Array.isArray(n) ? (n as BigNumber[])?.map((v) => v?.toNumber()) : [],
         r,
       ];
     }
@@ -85,7 +85,7 @@ export default function StakeErc1155Section({
 
   const rewardPerUnitTime = useMemo(() => {
     if (rewardRatio) {
-      return rewardRatio.toNumber();
+      return rewardRatio?.toNumber();
     }
 
     return 0;
@@ -136,7 +136,7 @@ export default function StakeErc1155Section({
     async ({ tokenId, amount }: { tokenId: string; amount: BigNumber }) => {
       let values = {
         nft: tokenId,
-        amount: amount.toNumber().toString(),
+        amount: amount?.toNumber().toString(),
         name: contractInfo?.name || '',
       };
 
@@ -167,7 +167,7 @@ export default function StakeErc1155Section({
 
       let values = {
         nft: tokenId,
-        amount: amount.toNumber().toString(),
+        amount: amount?.toNumber().toString(),
         name: contractInfo?.name || '',
       };
 

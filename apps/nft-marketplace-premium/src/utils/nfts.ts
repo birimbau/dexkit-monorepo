@@ -194,7 +194,7 @@ function ParseRow({ rows, acc }: { rows: Row[], acc: any[] }) {
 
 interface NFTItem {
   contractAddress: string,
-  chainId: number,
+  network: string,
   id: string
 }
 

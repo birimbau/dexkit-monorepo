@@ -813,19 +813,27 @@ export async function fetchMultipleAssetForQueryClient({ sections, queryClient }
           : undefined;
         if (config) {
           const editorNfts = parseNFTPageEditorConfig({ config });
+
           for (const item of editorNfts) {
+
             assetsToFetch = returnNFTmap({
               address: item.contractAddress.toLowerCase(),
-              chainId: item.chainId,
+              chainId: NETWORK_FROM_SLUG(item.network)?.chainId,
               tokenId: item.id,
               currentMap: assetsToFetch,
             });
+
           }
         }
       }
     }
+
     const query = getWhereNFTQuery({ mapData: assetsToFetch });
+
+
     const assets = await getApiMultipleAssets({ query });
+
+
 
     if (assets) {
       for (const assetApi of assets) {
