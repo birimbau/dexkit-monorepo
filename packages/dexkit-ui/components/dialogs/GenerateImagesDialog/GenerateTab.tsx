@@ -76,7 +76,7 @@ export default function GenerateTab({
 
   return (
     <Formik
-      initialValues={{ amount: 0, prompt: "" }}
+      initialValues={{ amount: 1, prompt: "" }}
       onSubmit={handleSubmit}
       validationSchema={FormSchema}
     >

@@ -4,6 +4,7 @@ import { useSnackbar } from "notistack";
 import { useContext } from "react";
 import { useIntl } from "react-intl";
 import { ImageGenerate } from "../types/ai";
+import { dataURItoBlob } from "../utils/image";
 
 export function useCompletation() {
   const { instance } = useContext(DexkitApiProvider);
@@ -63,6 +64,41 @@ export function useGenVariants() {
       return (
         await instance?.post<string[]>("/ai/image/variants", { url, numImages })
       )?.data;
+    }
+  );
+}
+
+export function useEditImage() {
+  const { instance } = useContext(DexkitApiProvider);
+
+  return useMutation(
+    async ({
+      prompt,
+      numImages,
+      imageUrl,
+      maskData,
+      model,
+    }: {
+      numImages: number;
+      maskData: string;
+      imageUrl: string;
+      prompt: string;
+      model?: string;
+    }) => {
+      const form = new FormData();
+
+      const blob = dataURItoBlob(maskData);
+
+      form.append("mask", blob);
+      form.append("image", imageUrl);
+      form.append("numImages", numImages.toString());
+      form.append("prompt", prompt);
+
+      if (model) {
+        form.append("model", model);
+      }
+
+      return (await instance?.post<string[]>("/ai/image/edit", form))?.data;
     }
   );
 }

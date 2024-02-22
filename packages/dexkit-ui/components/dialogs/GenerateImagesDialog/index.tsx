@@ -213,6 +213,7 @@ export default function GenerateImagesDialog({
             imageUrl={varImgUrl}
             onEdit={handleEdit}
             onGenVariants={handleVariants}
+            key={varImgUrl}
           />
         )}
         {selectedTab === "generator" && (
@@ -223,6 +224,7 @@ export default function GenerateImagesDialog({
             onOpenMenu={handleOpenMenu}
             selectedImages={selectedImages}
             disabled={isSavingImages}
+            key={varImgUrl}
           />
         )}
         {selectedTab === "variants" && varImgUrl && (
@@ -239,10 +241,18 @@ export default function GenerateImagesDialog({
             onGenVariants={handleGenVariants}
             variants={variants || []}
             imageUrl={varImgUrl}
+            key={varImgUrl}
           />
         )}
         {selectedTab === "edit" && varImgUrl && (
-          <EditTab imageUrl={varImgUrl} />
+          <EditTab
+            key={varImgUrl}
+            imageUrl={varImgUrl}
+            onSelect={handleSelect}
+            selected={selected}
+            selectable={selectable}
+            onOpenMenu={handleOpenMenu}
+          />
         )}
         {selectable && (
           <Button
