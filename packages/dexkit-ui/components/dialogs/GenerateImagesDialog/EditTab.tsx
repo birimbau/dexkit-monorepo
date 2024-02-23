@@ -1,4 +1,10 @@
-import { Button, CircularProgress, Stack, TextField } from "@mui/material";
+import {
+  Button,
+  CircularProgress,
+  Divider,
+  Stack,
+  TextField,
+} from "@mui/material";
 
 import { Formik } from "formik";
 import { useSnackbar } from "notistack";
@@ -11,28 +17,20 @@ import VariantsGrid from "./VariantsGrid";
 
 const FormSchema = Yup.object({
   prompt: Yup.string().max(1000).required(),
-  numImages: Yup.string().min(1).max(10).required(),
+  numImages: Yup.number().min(1).max(10).required(),
   mask: Yup.string().required(),
 });
 
 export interface EditTabProps {
   imageUrl: string;
   size?: { width: number; height: number };
-  onOpenMenu: (url: string, anchorEl: HTMLElement | null) => void;
-  onSelect: (url: string) => void;
-  selected: {
-    [key: string]: boolean;
-  };
-  selectable?: boolean;
+  onMenuOption: (opt: string, { url }: { url: string }) => void;
 }
 
 export default function EditTab({
   imageUrl,
   size,
-  onOpenMenu,
-  onSelect,
-  selected,
-  selectable,
+  onMenuOption,
 }: EditTabProps) {
   const editImage = useEditImage();
 
@@ -81,6 +79,18 @@ export default function EditTab({
     return 4;
   }, [editImage.data]);
 
+  const renderResults = (values: any) => {
+    return (
+      <VariantsGrid
+        amount={values.numImages || 0}
+        gridSize={gridSize}
+        images={editImage.data || []}
+        isLoading={editImage.isLoading}
+        onMenuOption={onMenuOption}
+      />
+    );
+  };
+
   return (
     <Formik
       initialValues={{ prompt: "", numImages: 1, mask: "" }}
@@ -96,13 +106,17 @@ export default function EditTab({
         submitForm,
       }) => (
         <Stack spacing={2}>
-          <Stack direction="row" justifyContent="center">
-            <MaskEditor
-              imageUrl={imageUrl}
-              size={size}
-              onChange={(value: string) => setFieldValue("mask", value)}
-              key={imageUrl}
-            />
+          <Stack spacing={2} justifyContent="center">
+            <Stack alignItems="center">
+              <MaskEditor
+                imageUrl={imageUrl}
+                size={size}
+                onChange={(value: string) => setFieldValue("mask", value)}
+                key={imageUrl}
+              />
+            </Stack>
+            <Divider />
+            {renderResults(values)}
           </Stack>
 
           <TextField
@@ -121,25 +135,23 @@ export default function EditTab({
           />
           <TextField
             type="number"
-            value={values.numImages === 0 ? "" : values.numImages}
-            onChange={(e) =>
-              setFieldValue("numImages", parseInt(e.target.value))
+            label={
+              <FormattedMessage
+                id="num.of.variants"
+                defaultMessage="Num. of variants"
+              />
             }
-            error={Boolean(errors.numImages)}
+            value={values.numImages === 0 ? "" : values.numImages}
+            onChange={(e) => {
+              let value = parseInt(e.target.value);
+
+              setFieldValue("numImages", value);
+            }}
+            error={values.numImages === 0 || Boolean(errors.numImages)}
             helperText={
               Boolean(errors.numImages) ? errors.numImages : undefined
             }
             disabled={isSubmitting}
-          />
-          <VariantsGrid
-            onSelect={onSelect}
-            amount={values.numImages || 0}
-            gridSize={gridSize}
-            images={editImage.data || []}
-            onOpenMenu={onOpenMenu}
-            selected={selected}
-            selectable={selectable}
-            isLoading={editImage.isLoading}
           />
           <Button
             onClick={submitForm}

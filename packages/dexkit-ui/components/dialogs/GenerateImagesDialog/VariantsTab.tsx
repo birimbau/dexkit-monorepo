@@ -25,29 +25,21 @@ const FormSchema = Yup.object({
 export interface VariantsTabProps {
   onCancel: () => void;
   imageUrl: string;
-  onOpenMenu: (url: string, anchorEl: HTMLElement | null) => void;
-  onSelect: (url: string) => void;
-  selected: { [key: string]: boolean };
-  selectedImages: string[];
-  selectable?: boolean;
-  isSavingImages?: boolean;
   isLoading?: boolean;
   disabled?: boolean;
   variants: string[];
   onGenVariants: ({ numImages }: { numImages: number }) => Promise<void>;
+  onMenuOption: (opt: string, { url }: { url: string }) => void;
 }
 
 export default function VariantsTab({
   onCancel,
   imageUrl,
-  onOpenMenu,
-  onSelect,
-  selected,
-  selectable,
   isLoading,
   variants,
   disabled,
   onGenVariants,
+  onMenuOption,
 }: VariantsTabProps) {
   const [amount, setAmount] = useState(1);
 
@@ -123,11 +115,8 @@ export default function VariantsTab({
             amount={amount}
             isLoading={isLoading}
             images={variants}
-            onOpenMenu={onOpenMenu}
-            onSelect={onSelect}
-            selectable={selectable}
-            selected={selected}
             disabled={disabled}
+            onMenuOption={onMenuOption}
           />
 
           <TextField

@@ -1,7 +1,7 @@
 import Check from "@mui/icons-material/Check";
 import Close from "@mui/icons-material/Close";
 import Edit from "@mui/icons-material/Edit";
-import { IconButton, Stack, alpha } from "@mui/material";
+import { Box, IconButton, Paper, Skeleton, Stack, alpha } from "@mui/material";
 import React, { useCallback, useEffect, useState } from "react";
 
 export interface MaskEditorProps {
@@ -27,6 +27,8 @@ export default function MaskEditor({
     size ? size : { width: 512, height: 512 }
   );
 
+  const [isImageLoading, setIsImageLoading] = useState(true);
+
   useEffect(() => {
     if (canvas.current && circleCanvas.current && maskCanvas.current) {
       ctx.current = canvas.current?.getContext("2d");
@@ -42,6 +44,7 @@ export default function MaskEditor({
       }
 
       img.onload = () => {
+        setIsImageLoading(false);
         ctx.current?.drawImage(img, 0, 0);
       };
     }
@@ -177,68 +180,86 @@ export default function MaskEditor({
 
   return (
     <Stack spacing={1}>
-      <div
-        style={{
-          position: "relative",
-          width: canvasSize.width,
-          height: canvasSize.height,
+      <Box
+        sx={{
+          display: isImageLoading ? "block" : "none",
         }}
       >
-        <canvas
-          width={canvasSize.width}
-          height={canvasSize.height}
-          style={{ position: "absolute" }}
-          ref={(ref) => (canvas.current = ref)}
-        />
-
-        <canvas
-          width={canvasSize.width}
-          height={canvasSize.height}
-          style={{
-            position: "absolute",
-            opacity: 0.4,
-            imageRendering: "crisp-edges",
+        <Skeleton
+          variant="rectangular"
+          sx={{
+            aspectRatio: "1/1",
+            width: "100%",
+            height: "100%",
           }}
-          ref={(ref) => (maskCanvas.current = ref)}
         />
-        <canvas
-          width={canvasSize.width}
-          height={canvasSize.height}
-          style={{
-            position: "absolute",
-            display: isEditing ? "block" : "none",
-          }}
-          ref={(ref) => (circleCanvas.current = ref)}
-          onMouseMove={handleDrawCircle}
-          onMouseDown={handleMouseDown}
-          onMouseUp={handleMouseUp}
-        />
+      </Box>
 
-        {!isEditing && (
-          <Stack
-            justifyContent="center"
-            alignItems="center"
-            sx={{
-              width: canvasSize.width,
-              height: canvasSize.height,
+      <Paper>
+        <div
+          style={{
+            position: "relative",
+            width: canvasSize.width,
+            height: canvasSize.height,
+            display: isImageLoading ? "none" : "block",
+          }}
+        >
+          <canvas
+            width={canvasSize.width}
+            height={canvasSize.height}
+            style={{ position: "absolute" }}
+            ref={(ref) => (canvas.current = ref)}
+          />
+
+          <canvas
+            width={canvasSize.width}
+            height={canvasSize.height}
+            style={{
               position: "absolute",
-              "&:hover": {
-                backgroundColor: "rgba(255, 255, 255, 0.2)",
-              },
+              opacity: 0.4,
+              imageRendering: "crisp-edges",
             }}
-          >
-            <IconButton
+            ref={(ref) => (maskCanvas.current = ref)}
+          />
+          <canvas
+            width={canvasSize.width}
+            height={canvasSize.height}
+            style={{
+              position: "absolute",
+              display: isEditing ? "block" : "none",
+            }}
+            ref={(ref) => (circleCanvas.current = ref)}
+            onMouseMove={handleDrawCircle}
+            onMouseDown={handleMouseDown}
+            onMouseUp={handleMouseUp}
+          />
+
+          {!isEditing && (
+            <Stack
+              justifyContent="center"
+              alignItems="center"
               sx={{
-                backgroundColor: (theme) =>
-                  alpha(theme.palette.primary.main, 0.3),
+                width: canvasSize.width,
+                height: canvasSize.height,
+                position: "absolute",
+                "&:hover": {
+                  backgroundColor: "rgba(255, 255, 255, 0.2)",
+                },
               }}
-              onClick={handleEdit}
             >
-              <Edit fontSize="large" />
-            </IconButton>
-          </Stack>
-        )}
-      </div>
+              <IconButton
+                sx={{
+                  backgroundColor: (theme) =>
+                    alpha(theme.palette.primary.main, 0.3),
+                }}
+                onClick={handleEdit}
+              >
+                <Edit fontSize="large" />
+              </IconButton>
+            </Stack>
+          )}
+        </div>
+      </Paper>
       {isEditing && (
         <Stack spacing={0.5} direction="row">
           <IconButton onClick={handleGetMask}>

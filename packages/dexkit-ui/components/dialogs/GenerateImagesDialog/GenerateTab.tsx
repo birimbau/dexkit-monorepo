@@ -3,33 +3,25 @@ import { useImageGenerate } from "../../../hooks/ai";
 import { Button, CircularProgress, Stack, TextField } from "@mui/material";
 import { useMemo } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
-import ImageGrid from "./ImageGrid";
 
 import * as Yup from "yup";
 
 import { Formik } from "formik";
-
-export interface GenerateTabProps {
-  onOpenMenu: (url: string, anchorEl: HTMLElement | null) => void;
-  onSelect: (url: string) => void;
-  selected: { [key: string]: boolean };
-  selectedImages: string[];
-  selectable?: boolean;
-  disabled?: boolean;
-}
+import VariantsGrid from "./VariantsGrid";
 
 const FormSchema = Yup.object({
   amount: Yup.number().min(1).max(10).required(),
   prompt: Yup.string().min(1).max(1000).required(),
 });
 
+export interface GenerateTabProps {
+  onMenuOption: (opt: string, { url }: { url: string }) => void;
+  disabled?: boolean;
+}
+
 export default function GenerateTab({
-  selected,
-  onSelect,
-  selectable,
-  onOpenMenu,
-  selectedImages,
   disabled,
+  onMenuOption,
 }: GenerateTabProps) {
   const {
     mutateAsync: generate,
@@ -37,17 +29,12 @@ export default function GenerateTab({
     isLoading: isImagesLoading,
   } = useImageGenerate();
 
-  const handelGenerate = async (amount: number, prompt: string) => {
+  const handleGenerate = async (amount: number, prompt: string) => {
     let result = await generate({
       numImages: amount,
       prompt,
       size: "512x512",
     });
-
-    if (result?.length === 1) {
-      const url = result[0];
-      onSelect(url);
-    }
   };
 
   const { formatMessage } = useIntl();
@@ -71,7 +58,7 @@ export default function GenerateTab({
     amount: number;
     prompt: string;
   }) => {
-    handelGenerate(amount, prompt);
+    handleGenerate(amount, prompt);
   };
 
   return (
@@ -89,15 +76,13 @@ export default function GenerateTab({
         isValid,
       }) => (
         <Stack spacing={2}>
-          <ImageGrid
-            onOpenMenu={onOpenMenu}
+          <VariantsGrid
             amount={values.amount}
-            selected={selected}
-            selectable={selectable}
-            onSelect={onSelect}
             gridSize={gridSize}
             images={data || []}
             isLoading={isImagesLoading}
+            disabled={isImagesLoading}
+            onMenuOption={onMenuOption}
           />
 
           <TextField

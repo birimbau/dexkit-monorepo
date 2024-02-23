@@ -3,16 +3,13 @@ import AutoFixHighIcon from "@mui/icons-material/AutoFixHigh";
 import {
   Box,
   Button,
-  CircularProgress,
   Dialog,
   DialogContent,
   DialogProps,
-  Menu,
-  MenuItem,
   Stack,
   Typography,
 } from "@mui/material";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { useGenVariants, useSaveImages } from "../../../hooks/ai";
 import { useSubscription } from "../../../hooks/payments";
@@ -58,106 +55,24 @@ export default function GenerateImagesDialog({
 
   const handleCancelVariant = () => {
     setTab("select");
-    setSelectable(false);
-    setSelected({});
     resetGenVariants();
   };
 
-  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
-
-  const [selectable, setSelectable] = useState(false);
-
-  const [selectedUrl, setSelectedUrl] = useState<string>();
-
-  const [selected, setSelected] = useState<{ [key: string]: boolean }>({});
-
-  const selectedImages: string[] = useMemo(() => {
-    return Object.keys(selected)
-      .map((key) => (selected[key] ? key : undefined))
-      .filter((r) => r !== undefined) as string[];
-  }, [selected]);
-
-  const handleSelect = useCallback((img: string) => {
-    setSelected((selected) => {
-      const newSelected = { ...selected };
-
-      if (newSelected[img]) {
-        newSelected[img] = false;
-
-        const selectedImages = Object.keys(newSelected)
-          .map((key) => (newSelected[key] ? key : undefined))
-          .filter((r) => r !== undefined) as string[];
-
-        if (selectedImages.length === 0) {
-          setSelectable(false);
-        }
-      } else {
-        newSelected[img] = true;
-      }
-
-      return newSelected;
-    });
-  }, []);
-
   const handleOpenMenu = useCallback(
-    (url: string, anchorEl: HTMLElement | null) => {
-      setAnchorEl(anchorEl);
-      setSelectedUrl(url);
+    (opt: string, { url }: { url: string }) => {
+      setVarImgUrl(url);
+      if (opt === "variant") {
+        setTab("variants");
+        resetGenVariants();
+      } else if (opt === "edit") {
+        setTab("edit");
+      }
     },
     []
   );
 
-  const handleCloseMenu = () => {
-    setSelectedUrl(undefined);
-    setAnchorEl(null);
-  };
-
-  const handleMenuSelect = () => {
-    setSelectable(true);
-    handleCloseMenu();
-    if (selectedUrl) {
-      handleSelect(selectedUrl);
-    }
-  };
-
-  const handleSelectForVariant = useCallback(() => {
-    resetGenVariants();
-
-    setVarImgUrl(selectedUrl);
-
-    if (selectedTab !== "variants") {
-      setTab("variants");
-    }
-  }, [selectedUrl, selectedTab]);
-
-  const handleSelectForEdit = useCallback(() => {
-    setVarImgUrl(selectedUrl);
-
-    if (selectedTab !== "edit") {
-      setTab("edit");
-    }
-  }, [selectedUrl, selectedTab]);
-
-  const handleMenuVariant = useCallback(() => {
-    handleSelectForVariant();
-    handleCloseMenu();
-  }, [handleCloseMenu, handleSelectForVariant]);
-
-  const handleMenuEdit = useCallback(() => {
-    handleSelectForEdit();
-    handleCloseMenu();
-  }, [handleCloseMenu, handleSelectForVariant]);
-
-  const handleConfirm = async () => {
-    await saveImages({ urls: selectedImages });
-    setSelectable(false);
-    setSelected({});
-  };
-
   const handleGenVariants = useCallback(
     async ({ numImages }: { numImages: number }) => {
-      setSelectable(false);
-      setSelected({});
       if (varImgUrl) {
         await genVariants({ numImages: numImages, url: varImgUrl });
       }
@@ -165,19 +80,19 @@ export default function GenerateImagesDialog({
     [varImgUrl]
   );
 
-  const handleVariants = () => {
-    setTab("variants");
+  const { data: sub } = useSubscription();
+
+  const handleSubscribe = () => {
+    handleClose();
+    window.open("/u/settings?section=billing", "_blank");
   };
 
   const handleEdit = () => {
     setTab("edit");
   };
 
-  const { data: sub } = useSubscription();
-
-  const handleSubscribe = () => {
-    handleClose();
-    window.open("/u/settings?section=billing", "_blank");
+  const handleVariants = () => {
+    setTab("variants");
   };
 
   const renderContent = () => {
@@ -218,11 +133,7 @@ export default function GenerateImagesDialog({
         )}
         {selectedTab === "generator" && (
           <GenerateTab
-            onSelect={handleSelect}
-            selected={selected}
-            selectable={selectable}
-            onOpenMenu={handleOpenMenu}
-            selectedImages={selectedImages}
+            onMenuOption={handleOpenMenu}
             disabled={isSavingImages}
             key={varImgUrl}
           />
@@ -230,12 +141,7 @@ export default function GenerateImagesDialog({
         {selectedTab === "variants" && varImgUrl && (
           <VariantsTab
             onCancel={handleCancelVariant}
-            onSelect={handleSelect}
-            selected={selected}
-            selectable={selectable}
-            onOpenMenu={handleOpenMenu}
-            selectedImages={selectedImages}
-            isSavingImages={isSavingImages}
+            onMenuOption={handleOpenMenu}
             disabled={isSavingImages}
             isLoading={isGenVariants}
             onGenVariants={handleGenVariants}
@@ -248,57 +154,15 @@ export default function GenerateImagesDialog({
           <EditTab
             key={varImgUrl}
             imageUrl={varImgUrl}
-            onSelect={handleSelect}
-            selected={selected}
-            selectable={selectable}
-            onOpenMenu={handleOpenMenu}
+            onMenuOption={handleOpenMenu}
           />
-        )}
-        {selectable && (
-          <Button
-            disabled={isSavingImages || selectedImages.length === 0}
-            variant="contained"
-            onClick={handleConfirm}
-            startIcon={
-              isSavingImages ? (
-                <CircularProgress size="1rem" color="inherit" />
-              ) : undefined
-            }
-          >
-            {isSavingImages ? (
-              <FormattedMessage id="saving" defaultMessage="Saving" />
-            ) : (
-              <FormattedMessage id="save" defaultMessage="Save images" />
-            )}
-          </Button>
         )}
       </Stack>
     );
   };
 
-  console.log("selectedUrl", selectedUrl);
-  console.log("varImgUrl", varImgUrl);
-
   return (
     <>
-      <Menu
-        onClose={handleCloseMenu}
-        anchorEl={anchorEl}
-        open={Boolean(anchorEl)}
-      >
-        <MenuItem onClick={handleMenuSelect}>
-          <FormattedMessage id="select" defaultMessage="Select" />
-        </MenuItem>
-        <MenuItem onClick={handleMenuVariant}>
-          <FormattedMessage
-            id="generate.variant"
-            defaultMessage="Generate variant"
-          />
-        </MenuItem>
-        <MenuItem onClick={handleMenuEdit}>
-          <FormattedMessage id="edit" defaultMessage="Edit" />
-        </MenuItem>
-      </Menu>
       <Dialog {...DialogProps}>
         <AppDialogTitle
           title={

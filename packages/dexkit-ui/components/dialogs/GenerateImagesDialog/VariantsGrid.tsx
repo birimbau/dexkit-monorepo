@@ -1,65 +1,266 @@
-import { Box, Grid, Skeleton, Stack } from "@mui/material";
+import {
+  Box,
+  Divider,
+  Grid,
+  IconButton,
+  LinearProgress,
+  Menu,
+  MenuItem,
+  Skeleton,
+  Stack,
+  Tooltip,
+} from "@mui/material";
+import { useCallback, useMemo, useState } from "react";
+import { FormattedMessage } from "react-intl";
 import ImageButton from "./ImageButton";
 
+import CancelIcon from "@mui/icons-material/Cancel";
+import SelectAllIcon from "@mui/icons-material/SelectAll";
+
+import DeselectIcon from "@mui/icons-material/Deselect";
+
+import SaveIcon from "@mui/icons-material/Save";
+import { useSaveImages } from "../../../hooks/ai";
 export interface VariantsGridProps {
   gridSize: number;
   amount: number;
-  onOpenMenu: (url: string, anchorEl: HTMLElement | null) => void;
-  onSelect: (url: string) => void;
-  selectable?: boolean;
-  selected: { [key: string]: boolean };
   isLoading?: boolean;
   images: string[];
   disabled?: boolean;
+  onMenuOption: (opt: string, { url }: { url: string }) => void;
 }
 
 export default function VariantsGrid({
   gridSize,
-  onSelect,
-  onOpenMenu,
-  selectable,
-  selected,
   isLoading,
   amount,
   images,
   disabled,
+  onMenuOption,
 }: VariantsGridProps) {
+  const [selectable, setSelectable] = useState(false);
+  const [selected, setSelected] = useState<{ [key: string]: boolean }>({});
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+
+  const selectedImages: string[] = useMemo(() => {
+    return Object.keys(selected)
+      .map((key) => (selected[key] ? key : undefined))
+      .filter((r) => r !== undefined) as string[];
+  }, [selected]);
+
+  const { isLoading: isSavingImages, mutateAsync: saveImages } =
+    useSaveImages();
+
+  const [selectedUrl, setSelectedUrl] = useState<string>();
+
+  const handleSelect = useCallback((img: string) => {
+    setSelected((selected) => {
+      const newSelected = { ...selected };
+
+      if (newSelected[img]) {
+        newSelected[img] = false;
+
+        const selectedImages = Object.keys(newSelected)
+          .map((key) => (newSelected[key] ? key : undefined))
+          .filter((r) => r !== undefined) as string[];
+
+        if (selectedImages.length === 0) {
+          setSelectable(false);
+        }
+      } else {
+        newSelected[img] = true;
+      }
+
+      return newSelected;
+    });
+  }, []);
+
+  const handleOpenMenu = useCallback(
+    (url: string, anchorEl: HTMLElement | null) => {
+      setAnchorEl(anchorEl);
+      setSelectedUrl(url);
+    },
+    []
+  );
+
+  const handleCloseMenu = () => {
+    setSelectedUrl(undefined);
+    setAnchorEl(null);
+  };
+
+  const handleMenuSelect = () => {
+    setSelectable(true);
+    handleCloseMenu();
+    if (selectedUrl) {
+      handleSelect(selectedUrl);
+    }
+  };
+
+  const isAllSelected = useMemo(() => {
+    return (
+      Object.keys(selected)
+        .map((k) => Boolean(selected[k]))
+        .filter((k) => k).length === images.length
+    );
+  }, [images.length, selected]);
+
+  const handleSelectAll = useCallback(() => {
+    if (isAllSelected) {
+      setSelected({});
+      return;
+    }
+
+    let result = images.reduce((prev: any, curr) => {
+      prev[curr] = true;
+
+      return prev;
+    }, {});
+
+    setSelected(result);
+  }, [images, isAllSelected]);
+
+  const handleCancel = useCallback(() => {
+    setSelected({});
+    setSelectable(false);
+  }, []);
+
+  const handleSave = useCallback(async () => {
+    await saveImages({ urls: selectedImages });
+
+    setSelectable(false);
+    setSelected({});
+  }, [selectedImages]);
+
+  const handleVariant = () => {
+    if (selectedUrl) {
+      onMenuOption("variant", { url: selectedUrl });
+      handleCloseMenu();
+    }
+  };
+
+  const handleEdit = () => {
+    if (selectedUrl) {
+      onMenuOption("edit", { url: selectedUrl });
+      handleCloseMenu();
+    }
+  };
+
   return (
-    <Stack spacing={1}>
-      <Box>
-        <Grid spacing={2} container justifyContent="center">
-          {images.map((img: string, index: number) => (
-            <Grid key={index} item xs={12} sm={gridSize}>
-              <ImageButton
-                src={img}
-                onOpenMenu={onOpenMenu}
-                selected={selected[img]}
-                onSelect={onSelect}
-                selectable={selectable}
-                disabled={disabled}
-              />
-            </Grid>
-          ))}
-        </Grid>
-      </Box>
-      {isLoading && (
+    <>
+      <Menu
+        onClose={handleCloseMenu}
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+      >
+        <MenuItem onClick={handleMenuSelect}>
+          <FormattedMessage id="select" defaultMessage="Select" />
+        </MenuItem>
+        <MenuItem onClick={handleVariant}>
+          <FormattedMessage
+            id="generate.variant"
+            defaultMessage="Generate variant"
+          />
+        </MenuItem>
+        <MenuItem onClick={handleEdit}>
+          <FormattedMessage id="edit" defaultMessage="Edit" />
+        </MenuItem>
+      </Menu>
+      <Stack spacing={2}>
+        {selectable && (
+          <>
+            <Box>
+              <Stack justifyContent="flex-end" direction="row" spacing={1}>
+                <Tooltip
+                  title={<FormattedMessage id="save" defaultMessage="Save" />}
+                >
+                  <IconButton
+                    disabled={isSavingImages}
+                    onClick={handleSave}
+                    size="small"
+                  >
+                    <SaveIcon />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip
+                  title={
+                    isAllSelected ? (
+                      <FormattedMessage
+                        id="deselect.all"
+                        defaultMessage="Deselect All"
+                      />
+                    ) : (
+                      <FormattedMessage
+                        id="select.all"
+                        defaultMessage="Select All"
+                      />
+                    )
+                  }
+                >
+                  <IconButton
+                    disabled={isSavingImages}
+                    onClick={handleSelectAll}
+                    size="small"
+                  >
+                    {isAllSelected ? <DeselectIcon /> : <SelectAllIcon />}
+                  </IconButton>
+                </Tooltip>
+                <Tooltip
+                  title={
+                    <FormattedMessage id="cancel" defaultMessage="Cancel" />
+                  }
+                >
+                  <IconButton
+                    disabled={isSavingImages}
+                    onClick={handleCancel}
+                    size="small"
+                  >
+                    <CancelIcon />
+                  </IconButton>
+                </Tooltip>
+              </Stack>
+            </Box>
+            {isSavingImages ? (
+              <LinearProgress variant="indeterminate" />
+            ) : (
+              <Divider />
+            )}
+          </>
+        )}
         <Box>
           <Grid spacing={2} container justifyContent="center">
-            {new Array(amount).fill(null).map((_, index: number) => (
+            {images.map((img: string, index: number) => (
               <Grid key={index} item xs={12} sm={gridSize}>
-                <Skeleton
-                  variant="rectangular"
-                  sx={{
-                    aspectRatio: "1/1",
-                    width: "100%",
-                    minHeight: (theme) => theme.spacing(20),
-                  }}
+                <ImageButton
+                  src={img}
+                  onOpenMenu={handleOpenMenu}
+                  selected={selected[img]}
+                  onSelect={handleSelect}
+                  selectable={selectable}
+                  disabled={disabled || isSavingImages}
                 />
               </Grid>
             ))}
           </Grid>
         </Box>
-      )}
-    </Stack>
+        {isLoading && (
+          <Box>
+            <Grid spacing={2} container justifyContent="center">
+              {new Array(amount).fill(null).map((_, index: number) => (
+                <Grid key={index} item xs={12} sm={gridSize}>
+                  <Skeleton
+                    variant="rectangular"
+                    sx={{
+                      aspectRatio: "1/1",
+                      width: "100%",
+                      minHeight: (theme) => theme.spacing(20),
+                    }}
+                  />
+                </Grid>
+              ))}
+            </Grid>
+          </Box>
+        )}
+      </Stack>
+    </>
   );
 }
