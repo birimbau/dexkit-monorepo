@@ -21,6 +21,7 @@ import {
   usePlanCheckoutMutation,
   useSubscription,
 } from '../hooks/payments';
+import CreditSection from './CreditSection';
 import PlanCard from './PlanCard';
 
 export default function BillingSection() {
@@ -91,7 +92,7 @@ export default function BillingSection() {
                       href={`/u/settings/billing/${activeFeatUsageQuery.data.id}`}
                     >
                       {moment(activeFeatUsageQuery.data.periodStart).format(
-                        'MM/YYYY'
+                        'MM/YYYY',
                       )}
                     </Link>
                   ) : (
@@ -149,7 +150,7 @@ export default function BillingSection() {
                 </Typography>
                 <Typography variant="body1">
                   {moment(subscriptionQuery.data?.period_start).format(
-                    'DD/MM/YYYY HH:mm:ss'
+                    'DD/MM/YYYY HH:mm:ss',
                   )}{' '}
                 </Typography>
               </Grid>
@@ -159,7 +160,7 @@ export default function BillingSection() {
                 </Typography>
                 <Typography variant="body1">
                   {moment(subscriptionQuery.data?.period_end).format(
-                    'DD/MM/YYYY HH:mm:ss'
+                    'DD/MM/YYYY HH:mm:ss',
                   )}
                 </Typography>
               </Grid>
@@ -167,6 +168,9 @@ export default function BillingSection() {
           )}
         </CardContent>
       </Card>
+      <Typography variant="subtitle1">
+        <FormattedMessage id="usage.periods" defaultMessage="Usage periods" />
+      </Typography>
       <Card>
         {billingHistoryQuery.data && billingHistoryQuery.data.length > 0 ? (
           <Table>
@@ -220,6 +224,7 @@ export default function BillingSection() {
           </CardContent>
         )}
       </Card>
+      <CreditSection />
     </Stack>
   );
 }

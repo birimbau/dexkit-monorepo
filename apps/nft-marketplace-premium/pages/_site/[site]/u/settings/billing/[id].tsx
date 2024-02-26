@@ -65,7 +65,7 @@ export default function BillingDetail() {
                           href={`/u/settings/billing/${billingQuery.data.id}`}
                         >
                           {moment(billingQuery.data.periodStart).format(
-                            'MM/YYYY'
+                            'MM/YYYY',
                           )}
                         </Link>
                       ) : (
@@ -99,7 +99,7 @@ export default function BillingDetail() {
                     </Typography>
                     <Typography variant="body1">
                       {moment(billingQuery.data?.periodStart).format(
-                        'DD/MM/YYYY HH:mm:ss'
+                        'DD/MM/YYYY HH:mm:ss',
                       )}{' '}
                     </Typography>
                   </Grid>
@@ -109,7 +109,7 @@ export default function BillingDetail() {
                     </Typography>
                     <Typography variant="body1">
                       {moment(billingQuery.data?.periodEnd).format(
-                        'DD/MM/YYYY HH:mm:ss'
+                        'DD/MM/YYYY HH:mm:ss',
                       )}
                     </Typography>
                   </Grid>
