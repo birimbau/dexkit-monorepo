@@ -1,20 +1,17 @@
 import { UserEvents } from '@dexkit/core/constants/userEvents';
 import { useDexKitContext } from '@dexkit/ui/hooks';
 import { useTrackUserEventsMutation } from "@dexkit/ui/hooks/userEvents";
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { WalletService, Web3Service } from "@unlock-protocol/unlock-js";
 import { useWeb3React } from '@web3-react/core';
+import { networks } from '../constants';
 import { Lock } from '../constants/types';
-const networks = {
-  80001: {
-    unlockAddress: "0x1FF7e338d5E582138C46044dc238543Ce555C963", // Smart contracts docs include all addresses on all networks
-    provider: "https://rpc.unlock-protocol.com/80001",
-  },
-};
+
 
 export function usePurchaseLockKeysMutation() {
   const { provider, chainId, account } = useWeb3React();
   const trackUserEvent = useTrackUserEventsMutation()
+  const queryClient = useQueryClient();
   const { watchTransactionDialog, createNotification } = useDexKitContext();
   return useMutation(async ({ lockAddress, lockName, currency, keyPrice }: { lockAddress: string, lockName?: string, currency: string | null, keyPrice: string }) => {
     if (!provider || !account || !chainId) {
@@ -73,8 +70,6 @@ export function usePurchaseLockKeysMutation() {
 
               }),
             })
-
-
           }
           if (error) {
             watchTransactionDialog.setError(error);
@@ -93,15 +88,20 @@ export function usePurchaseLockKeysMutation() {
       } else {
         watchTransactionDialog.setError(e);
       }
-
     }
+
+    queryClient.refetchQueries([GET_LOCK_QUERY, GET_LOCK_BALANCE_QUERY, GET_LOCK_KEY_BY_OWNER_QUERY])
+
+
   })
 }
+
+export const GET_LOCK_QUERY = 'GET_LOCK_QUERY'
 
 export function useLockQuery({ lockAddress, lockChainId }: { lockAddress?: string, lockChainId?: number }) {
 
 
-  return useQuery([lockAddress, lockChainId], async (): Promise<Lock | null> => {
+  return useQuery([GET_LOCK_QUERY, lockAddress, lockChainId], async (): Promise<Lock | null> => {
     if (!lockAddress || !lockChainId) {
       return null;
     }
@@ -111,10 +111,11 @@ export function useLockQuery({ lockAddress, lockChainId }: { lockAddress?: strin
   })
 }
 
+export const GET_LOCK_BALANCE_QUERY = 'GET_LOCK_BALANCE_QUERY';
+
 export function useLockBalanceQuery({ lockAddress, lockChainId, account }: { lockAddress?: string, lockChainId?: number, account?: string }) {
 
-
-  return useQuery([lockAddress], async (): Promise<Lock | null> => {
+  return useQuery([GET_LOCK_BALANCE_QUERY, lockAddress, account, lockChainId], async (): Promise<Lock | null> => {
     if (!lockAddress || !lockChainId || !account) {
       return null;
     }
@@ -124,10 +125,11 @@ export function useLockBalanceQuery({ lockAddress, lockChainId, account }: { loc
   })
 }
 
+export const GET_LOCK_KEY_BY_OWNER_QUERY = 'GET_LOCK_KEY_BY_OWNER_QUERY';
+
 export function useLockKeybyOwnerQuery({ lockAddress, lockChainId, account }: { lockAddress?: string, lockChainId?: number, account?: string }) {
 
-
-  return useQuery([lockAddress], async (): Promise<{
+  return useQuery([GET_LOCK_KEY_BY_OWNER_QUERY, lockAddress, lockChainId, account], async (): Promise<{
     lock: string;
     owner: string;
     expiration: number;

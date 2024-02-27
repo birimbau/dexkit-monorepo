@@ -67,7 +67,7 @@ export default function BuyLock({
               <Typography variant="body1">{lockName || " "}</Typography>
             </Grid>
           )}
-          {tokenId !== undefined && chainId && (
+          {tokenId !== 0 && chainId && (
             <Grid item xs={12}>
               <Stack
                 spacing={1}
@@ -95,7 +95,7 @@ export default function BuyLock({
             </Grid>
           )}
 
-          {tokenId === undefined && (
+          {tokenId === 0 && (
             <>
               <Grid item xs={12}>
                 <Box
