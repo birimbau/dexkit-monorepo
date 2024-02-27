@@ -27,6 +27,8 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import Link from 'src/components/Link';
 
 import { THIRDWEB_CONTRACTTYPE_TO_NAME } from '@dexkit/ui/constants/thirdweb';
+import { useMemo } from 'react';
+import { useContractCollection } from 'src/hooks/nft';
 
 const Img = styled(Image)({});
 
@@ -47,7 +49,14 @@ export function ContractMetadataHeader({
 }: Props) {
   const { data: contract } = useContract(address);
   const { data } = useContractMetadata(contract);
+  const { data: contractData } = useContractCollection(network, address);
   const { formatMessage } = useIntl();
+
+  const serverMetadata = useMemo(() => {
+    if (contractData?.metadata) {
+      return JSON.parse(contractData?.metadata);
+    }
+  }, [contractData]);
 
   const metadata = data as CustomContractMetadata;
   const theme = useTheme();
@@ -83,6 +92,9 @@ export function ContractMetadataHeader({
       case 'DropERC20':
         url = `/drop/token/${network}/${address}`;
         break;
+      case 'AirdropERC20Claimable':
+        url = `/contract/${network}/${address}/airdrop`;
+        break;
     }
 
     return url;
@@ -101,7 +113,7 @@ export function ContractMetadataHeader({
                 justifyContent: { xs: 'center', sm: 'left' },
               }}
             >
-              {metadata?.image ? (
+              {metadata?.image || serverMetadata?.image ? (
                 <Box
                   sx={(theme) => ({
                     position: 'relative',
@@ -111,7 +123,7 @@ export function ContractMetadataHeader({
                   })}
                 >
                   <img
-                    src={ipfsUriToUrl(metadata.image)}
+                    src={ipfsUriToUrl(metadata?.image || serverMetadata?.image)}
                     alt={metadata?.name}
                     height={theme.spacing(14)}
                     width={theme.spacing(14)}
@@ -139,7 +151,10 @@ export function ContractMetadataHeader({
                 variant="h5"
                 component="h1"
               >
-                {metadata?.name}
+                {metadata?.name === 'AirdropERC20Claimable' &&
+                serverMetadata?.name
+                  ? serverMetadata?.name
+                  : metadata?.name || serverMetadata?.name}
               </Typography>
               <Chip
                 icon={
@@ -157,22 +172,23 @@ export function ContractMetadataHeader({
             </Stack>
           </Grid>
 
-          {metadata?.description && (
-            <Grid item xs={12}>
-              <Typography
-                sx={{
-                  display: 'block',
-                  textOverflow: 'ellipsis',
-                  overflow: 'hidden',
-                  textAlign: { xs: 'center', sm: 'left' },
-                }}
-                variant="body2"
-                component="p"
-              >
-                {metadata?.description}
-              </Typography>
-            </Grid>
-          )}
+          {metadata?.description ||
+            (serverMetadata?.description && (
+              <Grid item xs={12}>
+                <Typography
+                  sx={{
+                    display: 'block',
+                    textOverflow: 'ellipsis',
+                    overflow: 'hidden',
+                    textAlign: { xs: 'center', sm: 'left' },
+                  }}
+                  variant="body2"
+                  component="p"
+                >
+                  {metadata?.description || serverMetadata?.description}
+                </Typography>
+              </Grid>
+            ))}
           <Grid item xs={12}>
             <Stack
               direction={'row'}
@@ -212,10 +228,12 @@ export function ContractMetadataHeader({
               >
                 <FormattedMessage id="explorer" defaultMessage="Explorer" />
               </Button>
-              {getContractUrl(contractTypeV2) && (
+              {getContractUrl(contractTypeV2 || metadata?.name) && (
                 <Button
                   size="small"
-                  href={getContractUrl(contractTypeV2) as string}
+                  href={
+                    getContractUrl(contractTypeV2 || metadata?.name) as string
+                  }
                   endIcon={<OpenInNewIcon />}
                   target="_blank"
                 >

@@ -17,4 +17,5 @@ export const THIRDWEB_CONTRACTTYPE_TO_NAME: { [key: string]: string } = {
   AirdropERC20: "Token Airdrop",
   AirdropERC721: "NFT Airdrop",
   AirdropERC1155: "Edition Airdrop",
+  Custom: "Custom"
 };

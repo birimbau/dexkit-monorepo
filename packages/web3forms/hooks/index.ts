@@ -12,6 +12,7 @@ import { ChainId } from "@dexkit/core/constants";
 
 import { ETHER_SCAN_API_URL } from "../constants";
 
+
 import { getNormalizedUrl } from "@dexkit/core/utils";
 import { useWeb3React } from "@web3-react/core";
 import { useContext, useEffect, useState } from "react";
@@ -371,6 +372,24 @@ export function useServerUploadMutation() {
   });
 }
 
+
+
+
+export function useServerUploadMerkleTreeMutation() {
+  const { instance } = useContext(DexkitApiProvider);
+
+  return useMutation(async ({ content, merkleProof }: { content: string, merkleProof: string }) => {
+    if (instance) {
+      const res = await instance.post("/account-file/upload-merkle-tree", {
+        metadata: content,
+        merkleProof,
+      });
+      return res.data;
+    }
+  });
+}
+
+
 export const IPFS_FILE_LIST_QUERY = "IPFS_FILE_LIST_QUERY";
 
 export function useIpfsFileListQuery({
@@ -416,7 +435,11 @@ export function useFormConfigParamsQuery({
   return useQuery<FormConfigParams>(
     [FORM_CONFIG_PARAMS_QUERY, creator, contract],
     async () => {
+
+
       const result = (
+
+
         await axios.get(
           `https://raw.githubusercontent.com/DexKit/assets/main/contracts/${creator}/${contract}.json`
         )
@@ -451,7 +474,6 @@ export function useDeployThirdWebContractMutation() {
       metadata: ThirdwebMetadata;
     }) => {
       if (sdk) {
-        console.log("order", order);
         const orderedParams = order.map((key) => {
           if (params[key]) {
             return params[key];
@@ -459,6 +481,8 @@ export function useDeployThirdWebContractMutation() {
 
           return null;
         });
+
+
 
         const tx = await sdk.deployer.deployPublishedContract.prepare(
           metadata.publisher,

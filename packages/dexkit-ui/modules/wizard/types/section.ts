@@ -41,7 +41,7 @@ export type SectionType =
   | 'asset-section'
   | 'ranking'
   | 'market-trade'
-
+  | 'claim-airdrop-token-erc-20'
   ;
 
 export interface PageSection {
@@ -172,6 +172,14 @@ export interface AirdropErc20PageSection extends PageSection {
   };
 }
 
+export interface ClaimAirdropErc20PageSection extends PageSection {
+  type: 'claim-airdrop-token-erc-20';
+  settings: {
+    network: string;
+    address: string;
+  };
+}
+
 export interface TokenErc20PageSection extends PageSection {
   type: 'token';
   settings: {
@@ -257,7 +265,10 @@ export type DexGeneratorPageSectionType =
   | StakeErc721PageSection
   | StakeErc20PageSection
   | StakeErc155PageSection
-  | CollectionPageSection;
+  | CollectionPageSection
+  | ClaimAirdropErc20PageSection
+
+  ;
 
 export interface DexGeneratorPageSection extends PageSection {
   type: 'dex-generator-section';
@@ -284,7 +295,10 @@ export type AppPageSection =
   | CollectionPageSection
   | DexGeneratorPageSection
   | AssetPageSection
-  | RankingPageSection;
+  | RankingPageSection
+  | ClaimAirdropErc20PageSection
+
+  ;
 
 export interface SectionMetadata {
   type: SectionType;
