@@ -216,7 +216,7 @@ export function getWhereNFTQuery({ mapData }: { mapData: Map<number, Map<string,
   whereQuery.where.OR = [];
 
   for (const networkData of mapData) {
-    const chainId = networkData[0];
+    const chainId = Number(networkData[0]);
     const contractAddressMap = networkData[1];
     for (const contractData of contractAddressMap) {
       whereQuery.where.OR.push({
