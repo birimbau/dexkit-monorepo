@@ -40,7 +40,16 @@ export default {
         })
       ).data;
     } else if (resource === 'feature-prices') {
-      const data = (await myAppsApi.get('/payments/feature-prices')).data;
+      const data = (
+        await myAppsApi.get('/payments/feature-prices', {
+          params: {
+            skip: (page - 1) * perPage,
+            take: perPage,
+            sort: field ? [field, order] : undefined,
+            filter: params.filter,
+          },
+        })
+      ).data;
       return { data: data, total: data.length };
     }
 
