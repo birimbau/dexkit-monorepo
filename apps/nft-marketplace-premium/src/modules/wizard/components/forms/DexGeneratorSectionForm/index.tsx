@@ -282,6 +282,18 @@ export default function DexGeneratorSectionForm({
             contract: newContract,
             type: 'dex-generator-section',
           });
+        } else if (newContract.type === 'AirdropERC20Claimable') {
+          handleChangeSection({
+            section: {
+              type: 'claim-airdrop-token-erc-20',
+              settings: {
+                address: newContract.contractAddress,
+                network,
+              },
+            },
+            contract: newContract,
+            type: 'dex-generator-section',
+          });
         }
       }
     },

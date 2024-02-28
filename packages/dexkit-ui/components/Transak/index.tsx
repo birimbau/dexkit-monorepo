@@ -10,7 +10,7 @@ import { useAppConfig, useCurrency } from "../../hooks";
 interface Props {
   //@ts-ignore
   transakOverride?: TransakConfig;
-  buttonProps?: { color?: any; variant?: any };
+  buttonProps?: { color?: any; variant?: any; fullWidth?: boolean };
 }
 
 const TransakNetworks: { [key: number]: string } = {

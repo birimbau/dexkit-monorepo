@@ -188,7 +188,11 @@ export default function TokenInfo({ address, chainId }: TokenSummaryProps) {
                     <FormattedMessage id="receive" defaultMessage="Receive" />
                   </Button>
                   <TransakWidget
-                    buttonProps={{ color: 'inherit', variant: 'outlined' }}
+                    buttonProps={{
+                      color: 'inherit',
+                      variant: 'outlined',
+                      fullWidth: true,
+                    }}
                   />
                 </Stack>
               </Grid>

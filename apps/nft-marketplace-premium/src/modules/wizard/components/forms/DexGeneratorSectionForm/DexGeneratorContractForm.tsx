@@ -110,6 +110,23 @@ export default function DexGeneratorContractForm({
           </Typography>
         </Stack>
       );
+    } else if (contractType === 'AirdropERC20Claimable') {
+      return (
+        <Stack>
+          <Typography align="center" variant="h5">
+            <FormattedMessage
+              id="airdrop.claimable.contract"
+              defaultMessage="Airdrop Claimable Contract"
+            />
+          </Typography>
+          <Typography align="center" variant="body1" color="text.secondary">
+            <FormattedMessage
+              id="you.are.using.a.airdrop.claimable.contract"
+              defaultMessage="You are using a airdrop claimable contract"
+            />
+          </Typography>
+        </Stack>
+      );
     } else {
       return (
         <Stack>
