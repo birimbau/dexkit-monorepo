@@ -7,6 +7,7 @@ import {
 import { useTokenList } from '@dexkit/ui/hooks';
 
 import { convertTokenToEvmCoin } from '@dexkit/core/utils';
+import TransakWidget from '@dexkit/ui/components/Transak';
 import { useTokenBalance } from '@dexkit/widgets/src/hooks';
 import Send from '@mui/icons-material/Send';
 import VerticalAlignBottomIcon from '@mui/icons-material/VerticalAlignBottom';
@@ -186,6 +187,9 @@ export default function TokenInfo({ address, chainId }: TokenSummaryProps) {
                   >
                     <FormattedMessage id="receive" defaultMessage="Receive" />
                   </Button>
+                  <TransakWidget
+                    buttonProps={{ color: 'inherit', variant: 'outlined' }}
+                  />
                 </Stack>
               </Grid>
             </Grid>
