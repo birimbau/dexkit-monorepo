@@ -8,6 +8,7 @@ import { FormattedMessage } from "react-intl";
 import { useAppConfig, useCurrency } from "../../hooks";
 
 interface Props {
+  //@ts-ignore
   transakOverride?: TransakConfig;
   buttonProps?: { color?: any; variant?: any };
 }
