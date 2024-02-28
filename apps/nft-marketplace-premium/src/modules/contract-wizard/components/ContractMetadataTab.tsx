@@ -19,6 +19,7 @@ export default function ContractMetadataTab({
 }: ContractMetadataTabProps) {
   const { data: contract } = useContract(address);
   const updateMutationOld = useContractMetadataUpdate(contract);
+
   const contractMetadata = useContractMetadata(contract);
 
   const { watchTransactionDialog, createNotification } = useDexKitContext();

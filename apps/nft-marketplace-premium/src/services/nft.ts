@@ -370,12 +370,12 @@ export async function getApiContractCollectionData(
   networkId?: string,
   address?: string
 
-): Promise<{ collection: CollectionAPI } | undefined> {
+): Promise<{ collection: CollectionAPI, metadata: any } | undefined> {
   if (!networkId || !address) {
     return;
   }
 
-  const response = await dexkitNFTapi.get<{ collection: CollectionAPI }>(`/contract/collection/${networkId}/${address.toLowerCase()}`);
+  const response = await dexkitNFTapi.get<{ collection: CollectionAPI, metadata: any }>(`/contract/collection/${networkId}/${address.toLowerCase()}`);
   return response.data
 }
 
