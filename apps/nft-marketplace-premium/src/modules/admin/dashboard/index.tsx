@@ -5,11 +5,13 @@ import { AuthProvider } from './authProvider';
 import dataProvider from './dataProvider';
 import { AssetEdit } from './edits/asset';
 import { CollectionEdit } from './edits/collection';
+import { FeatPriceEdit } from './edits/feat-price-edit';
 import { SiteEdit } from './edits/site';
 import { AssetList } from './lists/asset';
 import { CoinList } from './lists/coin';
 import { CoinPlatformList } from './lists/coinPlatform';
 import { CollectionList } from './lists/collection';
+import FeatPricesList from './lists/feat-prices';
 import { SiteList } from './lists/site';
 import { UserEventList } from './lists/userEvents';
 import MyLoginPage from './pages/loginPage';
@@ -38,6 +40,11 @@ const App = () => (
       name="coin-platform"
       list={CoinPlatformList}
       show={CoinPlatformShow}
+    />
+    <Resource
+      name="feature-prices"
+      list={FeatPricesList}
+      edit={FeatPriceEdit}
     />
   </Admin>
 );

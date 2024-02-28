@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { GetListParams, UpdateParams } from 'react-admin';
 import { DEXKIT_BASE_API_URL } from 'src/constants';
 import { getAccessToken } from 'src/services/auth';
 const DEXKIT_DASH_ENDPOINT = `${DEXKIT_BASE_API_URL}`;
@@ -19,33 +20,49 @@ myAppsApi.interceptors.request.use(async (config) => {
 });
 
 export default {
-  getList: async (resource: any, params: any) => {
+  getList: async (resource: string, params: GetListParams) => {
     const { page, perPage } = params.pagination;
     const { field, order } = params.sort;
+
+    let path = '';
+
     if (resource === 'coin-platform') {
-      resource = '/coin/platforms';
+      path = '/coin/platforms';
+
+      return (
+        await myAppsApi.get(`${resource}/admin/all`, {
+          params: {
+            skip: (page - 1) * perPage,
+            take: perPage,
+            sort: field ? [field, order] : undefined,
+            filter: params.filter,
+          },
+        })
+      ).data;
+    } else if (resource === 'feature-prices') {
+      const data = (await myAppsApi.get('/payments/feature-prices')).data;
+      return { data: data, total: data.length };
     }
-    return (
-      await myAppsApi.get(`${resource}/admin/all`, {
-        params: {
-          skip: (page - 1) * perPage,
-          take: perPage,
-          sort: field ? [field, order] : undefined,
-          filter: params.filter,
-        },
-      })
-    ).data;
+
+    return { data: [], total: 0 };
   },
 
   getOne: async (resource: any, params: any) => {
+    let path = '';
+
     if (resource === 'coin-platform') {
-      resource = '/coin/platforms';
+      path = '/coin/platforms';
+
+      const data = (await myAppsApi.get(`${path}/admin/all/${params.id}`)).data;
+      return {
+        data,
+      };
+    } else if (resource === 'feature-prices') {
+      return {
+        data: (await myAppsApi.get(`/payments/feature-prices/${params.id}`))
+          .data,
+      };
     }
-    const data = (await myAppsApi.get(`${resource}/admin/all/${params.id}`))
-      .data;
-    return {
-      data,
-    };
   },
 
   getMany: (resource: any, params: any) => {},
@@ -61,18 +78,30 @@ export default {
 
   create: (resource: any, params: any) => {},
 
-  update: async (resource: any, params: any) => {
-    if (resource === 'coin-platform') {
-      resource = '/coin/platforms';
+  update: async (resource: any, params: UpdateParams) => {
+    let path = '';
+
+    if (resource === 'feature-prices') {
+      return {
+        data: (
+          await myAppsApi.put(`/payments/feature-prices/${params.id}`, {
+            price: params.data.price.toString(),
+          })
+        ).data,
+      };
+    } else if (resource === 'coin-platform') {
+      path = '/coin/platforms';
+
+      const data = (
+        await myAppsApi.post(`${path}/admin/all/${params.id}`, params.data)
+      ).data;
+
+      return {
+        data,
+      };
     }
 
-    const data = (
-      await myAppsApi.post(`${resource}/admin/all/${params.id}`, params.data)
-    ).data;
-
-    return {
-      data,
-    };
+    return { data: [] };
   },
 
   updateMany: (resource: any, params: any) => {},
