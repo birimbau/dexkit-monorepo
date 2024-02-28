@@ -1,0 +1,30 @@
+{
+  "name": "@dexkit/unlock-widget",
+  "private": false,
+  "version": "0.0.1",
+  "license": "MIT",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "lint": "TIMING=1 eslint \"**/*.ts*\"",
+    "build": "tsc -b",
+    "dev": "tsc -w",
+    "release": "yarn build && changeset publish"
+  },
+  "devDependencies": {
+    "eslint": "^7.32.0",
+    "eslint-config-custom": "*",
+    "tsconfig": "*",
+    "typescript": "^4.5.2"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@unlock-protocol/unlock-js": "^0.43.2",
+    "@dexkit/ui": "*"
+  }
+}

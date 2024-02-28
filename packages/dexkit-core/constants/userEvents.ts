@@ -23,6 +23,7 @@ export enum UserOnChainEvents {
   marketBuy = 'marketBuy',
   marketSell = 'marketSell',
   orderCancelled = 'orderCancelled',
+  purchaseKey = 'purchaseKey',
   cancelNFTERC721order = 'cancelNFTERC721Order',
   cancelNFTERC1155order = 'cancelNFTERC1155Order'
 }
