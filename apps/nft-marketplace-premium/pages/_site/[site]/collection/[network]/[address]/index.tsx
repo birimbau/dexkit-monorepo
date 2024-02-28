@@ -25,6 +25,7 @@ import { NFTType } from '@dexkit/ui/modules/nft/constants/enum';
 import { getCollectionData } from '@dexkit/ui/modules/nft/services';
 import { Collection, TraderOrderFilter } from '@dexkit/ui/modules/nft/types';
 import { hexToString } from '@dexkit/ui/utils';
+import { getIsLockAsync } from '@dexkit/unlock-widget';
 import Search from '@mui/icons-material/Search';
 import {
   Checkbox,
@@ -85,10 +86,15 @@ import {
 import { getProviderBySlug } from 'src/services/providers';
 import { getRariCollectionStats } from 'src/services/rarible';
 
-const CollectionPage: NextPage<{ enableDarkblock: boolean }> = ({
+const CollectionPage: NextPage<{
+  enableDarkblock: boolean;
+  isLock: boolean;
+}> = ({
   enableDarkblock,
+  isLock,
 }: {
   enableDarkblock: boolean;
+  isLock: boolean;
 }) => {
   const router = useRouter();
   const { formatMessage } = useIntl();
@@ -219,6 +225,7 @@ const CollectionPage: NextPage<{ enableDarkblock: boolean }> = ({
                       <CollectionHeader
                         address={address as string}
                         chainId={chainId}
+                        isLock={isLock}
                       />
                     </Grid>
                     {isDrop && (
@@ -512,7 +519,7 @@ export const getStaticProps: GetStaticProps = async ({
       [GET_ASSET_LIST_FROM_COLLECTION, network, address, 0, 50],
       async () => {
         return collectionAssets;
-      }
+      },
     );
   } catch {}
 
@@ -520,14 +527,14 @@ export const getStaticProps: GetStaticProps = async ({
     if (network === NETWORK_ID.Ethereum || network === NETWORK_ID.Polygon) {
       const { data } = await getRariCollectionStats(
         `${MAP_NETWORK_TO_RARIBLE[network]}:${address}`,
-        MAP_COIN_TO_RARIBLE[network]
+        MAP_COIN_TO_RARIBLE[network],
       );
 
       await queryClient.prefetchQuery(
         [GET_COLLECTION_STATS, network, address],
         async () => {
           return data;
-        }
+        },
       );
     }
   } catch (e) {
@@ -540,13 +547,10 @@ export const getStaticProps: GetStaticProps = async ({
       collection = await getCollectionData(provider, address as string);
     } catch {}
   }
+  const chainId = NETWORK_FROM_SLUG(network)?.chainId;
 
   let isTw;
-  let key: any[] = [
-    GET_COLLECTION_DATA,
-    address as string,
-    NETWORK_FROM_SLUG(network)?.chainId,
-  ];
+  let key: any[] = [GET_COLLECTION_DATA, address as string, chainId];
 
   try {
     const sdk = new ThirdwebSDK(network as string);
@@ -557,7 +561,7 @@ export const getStaticProps: GetStaticProps = async ({
 
     if (isTw) {
       const contractType: string = hexToString(
-        await twContract.call('contractType')
+        await twContract.call('contractType'),
       );
 
       const metadata = await twContract.metadata.get();
@@ -595,7 +599,7 @@ export const getStaticProps: GetStaticProps = async ({
 
     await queryClient.prefetchQuery(
       [COLLECTION_ASSETS_FROM_ORDERBOOK, filters],
-      async () => assets
+      async () => assets,
     );
   } catch {}
 
@@ -604,7 +608,7 @@ export const getStaticProps: GetStaticProps = async ({
   try {
     if (
       DARKBLOCK_SUPPORTED_CHAIN_IDS.includes(
-        NETWORK_FROM_SLUG(network)?.chainId as ChainId
+        NETWORK_FROM_SLUG(network)?.chainId as ChainId,
       )
     ) {
       const darkBlock = await getIntegrationData({
@@ -623,11 +627,14 @@ export const getStaticProps: GetStaticProps = async ({
     }
   } catch {}
 
+  const isLock = await getIsLockAsync({ chainId: chainId, provider, address });
+
   return {
     props: {
       dehydratedState: dehydrate(queryClient),
       ...configResponse,
       enableDarkblock,
+      isLock,
     },
     revalidate: REVALIDATE_PAGE_TIME,
   };

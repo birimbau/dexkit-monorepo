@@ -2,6 +2,7 @@ import { DeployedContract } from '@/modules/forms/types';
 import { SwapConfig } from '@/modules/swap/types';
 import { OrderMarketType } from '@dexkit/exchange/constants';
 import { DexkitExchangeSettings } from '@dexkit/exchange/types';
+import { ClaimAirdropErc20PageSection } from '@dexkit/ui/modules/wizard/types/section';
 import { ContractFormParams } from '@dexkit/web3forms/types';
 import React from 'react';
 import { AssetFormType } from '.';
@@ -40,7 +41,7 @@ export type SectionType =
   | 'asset-section'
   | 'ranking'
   | 'market-trade'
-
+  | 'claim-airdrop-token-erc-20'
   ;
 
 export interface PageSection {
@@ -256,7 +257,10 @@ export type DexGeneratorPageSectionType =
   | StakeErc721PageSection
   | StakeErc20PageSection
   | StakeErc155PageSection
-  | CollectionPageSection;
+  | CollectionPageSection
+  | ClaimAirdropErc20PageSection
+
+  ;
 
 export interface DexGeneratorPageSection extends PageSection {
   type: 'dex-generator-section';

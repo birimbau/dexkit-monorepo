@@ -3,6 +3,7 @@ import { ThirdwebSDKProvider } from '@thirdweb-dev/react';
 import { useWeb3React } from '@web3-react/core';
 import { THIRDWEB_CLIENT_ID } from 'src/constants';
 import { DexGeneratorPageSection } from '../../types/section';
+import ClaimAirdropERC20Section from './ClaimAirdropERC20Section';
 import CollectionSection from './CollectionSection';
 import EditionDropSection from './EditionDropSection';
 import NftDropSection from './NftDropSection';
@@ -56,6 +57,14 @@ export default function DexGeneratorSection({
           <Grid container justifyContent="center">
             <Grid item xs={12} sm={4}>
               <StakeErc1155Section section={section.section} />
+            </Grid>
+          </Grid>
+        );
+      } else if (type === 'claim-airdrop-token-erc-20') {
+        return (
+          <Grid container justifyContent="center">
+            <Grid item xs={12} sm={4}>
+              <ClaimAirdropERC20Section section={section.section} />
             </Grid>
           </Grid>
         );
