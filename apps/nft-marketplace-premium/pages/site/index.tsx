@@ -21,7 +21,7 @@ import { getSites } from '../../src/services/whitelabel';
 import { AppConfig } from '../../src/types/config';
 
 export const SiteIndexPage: NextPage = () => {
-  const sitesQuery = useWhitelabelSitesListQuery();
+  const sitesQuery = useWhitelabelSitesListQuery({});
   const { formatMessage } = useIntl();
   const appConfig = useAppConfig();
 
@@ -29,19 +29,19 @@ export const SiteIndexPage: NextPage = () => {
     <>
       <NextSeo
         title={formatMessage({
-          id: 'site.list',
-          defaultMessage: 'Site list',
+          id: 'site.templates',
+          defaultMessage: 'Site templates',
         })}
         description={formatMessage({
           id: 'site.list.description',
           defaultMessage:
-            'Start your own site/marketplace in seconds. Here you can view and clone other community marketplaces. Start now being a crypto enterpreneur',
+            'Start your own site/marketplace/app in seconds. Here you can view and be inspired by other community apps. Start now being a crypto enterpreneur',
         })}
         openGraph={{
           title:
-            'List of created apps using the DexKit Wizard. Start clone right way and create yours!',
+            'List of created apps using the DexKit Wizard. Get your inspiration to create yours!',
           description:
-            'Start your own site/marketplace in seconds. Here you can view and clone other community marketplaces. Start now being a crypto enterpreneur',
+            'Start your own site/marketplace/app in seconds. Here you can view other community apps. Start now being a crypto enterpreneur',
           images: [
             {
               url: `${appConfig.domain}/assets/images/seo_site.jpg`,

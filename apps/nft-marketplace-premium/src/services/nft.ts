@@ -370,12 +370,12 @@ export async function getApiContractCollectionData(
   networkId?: string,
   address?: string
 
-): Promise<{ collection: CollectionAPI } | undefined> {
+): Promise<{ collection: CollectionAPI, metadata: any } | undefined> {
   if (!networkId || !address) {
     return;
   }
 
-  const response = await dexkitNFTapi.get<{ collection: CollectionAPI }>(`/contract/collection/${networkId}/${address.toLowerCase()}`);
+  const response = await dexkitNFTapi.get<{ collection: CollectionAPI, metadata: any }>(`/contract/collection/${networkId}/${address.toLowerCase()}`);
   return response.data
 }
 
@@ -814,19 +814,27 @@ export async function fetchMultipleAssetForQueryClient({ sections, queryClient }
           : undefined;
         if (config) {
           const editorNfts = parseNFTPageEditorConfig({ config });
+
           for (const item of editorNfts) {
+
             assetsToFetch = returnNFTmap({
               address: item.contractAddress.toLowerCase(),
-              chainId: item.chainId,
+              chainId: NETWORK_FROM_SLUG(item.network)?.chainId,
               tokenId: item.id,
               currentMap: assetsToFetch,
             });
+
           }
         }
       }
     }
+
     const query = getWhereNFTQuery({ mapData: assetsToFetch });
+
+
     const assets = await getApiMultipleAssets({ query });
+
+
 
     if (assets) {
       for (const assetApi of assets) {

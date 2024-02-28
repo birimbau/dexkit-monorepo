@@ -1,5 +1,11 @@
 import { ChainId } from "@dexkit/core";
 
+export enum OrderMarketType {
+  'buy' = 'buy',
+  'sell' = 'sell',
+  'buyAndSell' = 'buyAndSell'
+}
+
 export const ORDER_LIMIT_DURATIONS: {
   messageId: string;
   defaultMessage: string;

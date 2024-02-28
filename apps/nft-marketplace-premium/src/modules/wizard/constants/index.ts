@@ -84,6 +84,7 @@ export const DEX_GENERATOR_CONTRACT_TYPES_AVAIL = [
   'TokenERC20',
   'TokenERC721',
   'TokenERC1155',
+  'AirdropERC20Claimable',
 ];
 
 export const DARKBLOCK_SUPPORTED_CHAIN_IDS = [

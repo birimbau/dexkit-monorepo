@@ -177,6 +177,23 @@ export async function getConfig(queryParameters: {
  * @param queryParameters
  * @returns
  */
+export async function getTemplateConfig(queryParameters: {
+  domain?: string;
+  slug?: string;
+}) {
+  return await myAppsApi.get<ConfigResponse>(`/site/template`, {
+    params: {
+      domain: queryParameters.domain,
+      slug: queryParameters.slug,
+    },
+  });
+}
+
+/**
+ * Get config by name or domain, at least one of these parameters should be passed
+ * @param queryParameters
+ * @returns
+ */
 export async function getSitemapConfig(queryParameters: {
   domain?: string;
   slug?: string;
@@ -233,6 +250,7 @@ export async function getProtectedAppConfig(queryParameters: {
  * @returns
  */
 export async function getSites(queryParameters: {
+  isTemplate?: boolean;
   skip?: number;
   take?: number;
 }) {

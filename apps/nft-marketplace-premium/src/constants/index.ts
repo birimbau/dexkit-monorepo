@@ -4,6 +4,8 @@ import { Currency, Language } from '../types/app';
 import { Token } from '../types/blockchain';
 
 export const TRADER_ORDERBOOK_API = 'https://api.trader.xyz/orderbook/orders';
+
+
 // revalidate page time
 export const REVALIDATE_PAGE_TIME = 180;
 

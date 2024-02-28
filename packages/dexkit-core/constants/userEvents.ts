@@ -10,6 +10,7 @@ export enum UserOnChainEvents {
   buyDropEdition = 'buyDropEdition',
   buyDropCollection = 'buyDropCollection',
   buyDropToken = 'buyDropToken',
+  claimAirdropERC20 = 'claimAirdropERC20',
   nftTransferERC721 = 'nftTransferERC721',
   nftAcceptOfferERC721 = 'nftAcceptOfferERC721',
   nftAcceptListERC721 = 'nftAcceptListERC721',

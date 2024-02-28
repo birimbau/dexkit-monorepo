@@ -1,6 +1,7 @@
 import Grid from '@mui/material/Grid';
 import {
   useContract,
+  useContractMetadata,
   useContractRead,
   useContractType,
 } from '@thirdweb-dev/react';
@@ -48,6 +49,10 @@ const ContractTokenContainer = dynamic(
   () => import('./ContractTokenContainer'),
 );
 
+const ContractClaimableAirdropErc20Container = dynamic(
+  () => import('./ContractClaimableAirdropErc20Container'),
+);
+
 interface Props {
   address: string;
   network: string;
@@ -58,6 +63,7 @@ export function ContractContainer({ address, network }: Props) {
 
   const { data: contract } = useContract(address);
   const contractRead = useContractRead(contract, 'contractType');
+  const { data: contractMetadata } = useContractMetadata(contract);
 
   let contractType = hexToString(contractRead.data);
 
@@ -100,6 +106,13 @@ export function ContractContainer({ address, network }: Props) {
       );
     } else if (contractType === 'TokenERC20') {
       return <ContractTokenContainer address={address} network={network} />;
+    } else if (contractMetadata?.name === 'AirdropERC20Claimable') {
+      return (
+        <ContractClaimableAirdropErc20Container
+          address={address}
+          network={network}
+        />
+      );
     }
   };
 

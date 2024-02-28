@@ -167,6 +167,10 @@ export type ImageUrlInput = {
   type: "image-url";
 };
 
+export type MerkleTreeFileInput = {
+  type: "merkle-tree-file";
+};
+
 export type HiddenInput = {
   type: "hidden";
   subtype?: "connected-address" | "string";
@@ -196,7 +200,10 @@ export type InputComponent =
   | AddressArrayInput
   | DecimalInput
   | ImageUrlInput
-  | SharesArray;
+  | SharesArray
+  | MerkleTreeFileInput
+
+  ;
 
 export type FormInput = {
   type: "input";

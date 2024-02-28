@@ -22,7 +22,7 @@ import {
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import { detectContractFeature, NATIVE_TOKEN_ADDRESS } from '@thirdweb-dev/sdk';
-import { ContractWrapper } from '@thirdweb-dev/sdk/dist/declarations/src/evm/core/classes/contract-wrapper';
+
 import { SwappableAssetV4 } from '@traderxyz/nft-swap-sdk';
 import { useWeb3React } from '@web3-react/core';
 import { BigNumber, utils } from 'ethers';
@@ -129,8 +129,7 @@ export function CollectionDropSection({ section }: Props) {
 
   const isOpenEdition = useMemo(() => {
     if (editionDrop) {
-      const contractWrapper = (editionDrop as any)
-        .contractWrapper as ContractWrapper<any>;
+      const contractWrapper = (editionDrop as any).contractWrapper as any;
 
       const featureDetected = detectContractFeature(
         contractWrapper,

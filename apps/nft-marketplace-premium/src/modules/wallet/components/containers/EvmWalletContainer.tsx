@@ -17,8 +17,8 @@ import {
   useTheme,
 } from '@mui/material';
 
-import transakSDK from '@transak/transak-sdk';
-import React, { useEffect, useRef, useState } from 'react';
+import VerticalAlignBottomIcon from '@mui/icons-material/VerticalAlignBottom';
+import React, { useEffect, useState } from 'react';
 
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { FormattedMessage, useIntl } from 'react-intl';
@@ -59,6 +59,8 @@ import { WalletTotalBalanceCointainer } from '../WalletTotalBalanceContainer';
 const EvmReceiveDialog = dynamic(
   () => import('@dexkit/ui/components/dialogs/EvmReceiveDialog'),
 );
+
+import TransakWidget from '@dexkit/ui/components/Transak';
 
 enum WalletTabs {
   Transactions,
@@ -116,31 +118,6 @@ const EvmWalletContainer = () => {
   };
 
   const currency = useCurrency();
-
-  const transak = useRef<any>();
-
-  useEffect(() => {
-    if (appConfig.transak?.enabled) {
-      if (account !== undefined) {
-        transak.current = new transakSDK({
-          apiKey: process.env.NEXT_PUBLIC_TRANSAK_API_KEY, // Your API Key
-          environment:
-            process.env.NODE_ENV === 'production' ? 'PRODUCTION' : 'PRODUCTION', // STAGING/PRODUCTION
-          hostURL: window.location.origin,
-          widgetHeight:
-            window.innerHeight > 840 ? '770px' : `${window.innerHeight - 70}px`,
-          widgetWidth:
-            window.innerWidth > 500 ? '500px' : `${window.innerWidth - 10}px`,
-          walletAddress: account, // Your customer's wallet address
-          fiatCurrency: currency.toUpperCase(), // If you want to limit fiat selection eg 'USD'
-        });
-      }
-    }
-  }, [account, currency]);
-
-  const handleBuy = () => {
-    transak.current?.init();
-  };
 
   const [isImportDialogOpen, setIsImportDialogOpen] = useState(false);
 
@@ -266,14 +243,7 @@ const EvmWalletContainer = () => {
                   <Grid container spacing={2} alignItems="center">
                     {appConfig.transak?.enabled && (
                       <Grid item>
-                        <Button
-                          onClick={handleBuy}
-                          disabled={!isActive}
-                          variant="contained"
-                          color="primary"
-                        >
-                          <FormattedMessage id="buy" defaultMessage="Buy" />
-                        </Button>
+                        <TransakWidget />
                       </Grid>
                     )}
 
@@ -281,6 +251,7 @@ const EvmWalletContainer = () => {
                       <Button
                         onClick={handleOpenReceive}
                         variant="outlined"
+                        startIcon={<VerticalAlignBottomIcon />}
                         disabled={!isActive}
                         color="primary"
                       >

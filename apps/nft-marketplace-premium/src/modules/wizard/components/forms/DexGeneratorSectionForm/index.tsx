@@ -3,6 +3,7 @@ import LazyTextField from '@dexkit/ui/components/LazyTextField';
 
 import { DeployedContract } from '@/modules/forms/types';
 import { ipfsUriToUrl, parseChainId } from '@dexkit/core/utils';
+import { useActiveChainIds } from '@dexkit/ui/hooks';
 import Error from '@mui/icons-material/Error';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
@@ -56,7 +57,7 @@ export default function DexGeneratorSectionForm({
   showSaveButton,
 }: DexGeneratorSectionFormProps) {
   const { account } = useWeb3React();
-
+  const { activeChainIds } = useActiveChainIds();
   const [type, setType] = useState<string>('all');
   const [contract, setContract] = useState<DeployedContract | undefined>(
     section?.contract,
@@ -299,9 +300,9 @@ export default function DexGeneratorSectionForm({
   };
 
   const networks = useMemo(() => {
-    return Object.keys(NETWORKS).map(
-      (key: string) => NETWORKS[parseChainId(key)],
-    );
+    return Object.keys(NETWORKS)
+      .filter((nk) => activeChainIds.includes(Number(nk)))
+      .map((key: string) => NETWORKS[parseChainId(key)]);
   }, []);
 
   const handleChangeChainId = (e: SelectChangeEvent<number>) => {
