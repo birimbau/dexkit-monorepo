@@ -101,6 +101,7 @@ export default function DexGeneratorSectionForm({
     filter,
     page,
     pageSize: 10,
+    sort: ['id', 'desc'],
   });
 
   const handleChange = (value: string) => {
