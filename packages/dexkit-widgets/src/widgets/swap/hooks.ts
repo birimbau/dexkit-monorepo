@@ -12,7 +12,7 @@ import {
   useQuery,
 } from "@tanstack/react-query";
 
-import transakSDK from "@transak/transak-sdk";
+import { Transak } from "@transak/transak-sdk";
 
 import { Connector } from "@web3-react/types";
 import { BigNumber, ethers, providers } from "ethers";
@@ -382,39 +382,13 @@ export function useSwapState({
 }) {
   const transak = useMemo(() => {
     if (transakApiKey) {
-      return new transakSDK({
+      return new Transak({
         apiKey: transakApiKey, // (Required)
-        environment:
-          process.env.NODE_ENV === "production" ? "PRODUCTION" : "STAGING", // (Required)
+        environment: Transak.ENVIRONMENTS.PRODUCTION
       });
     }
   }, [transakApiKey]);
 
-  useEffect(() => {
-    if (transak) {
-      let allEventsCallback = transak.on(transak.ALL_EVENTS, (data: any) => { });
-
-      // This will trigger when the user closed the widget
-      let widgetCloseCallback = transak.on(
-        transak.EVENTS.TRANSAK_WIDGET_CLOSE,
-        (orderData: any) => {
-          transak.close();
-        }
-      );
-
-      // This will trigger when the user marks payment is made
-      let orderSuccessFulCallback = transak.on(
-        transak.EVENTS.TRANSAK_ORDER_SUCCESSFUL,
-        (orderData: any) => {
-          transak.close();
-        }
-      );
-
-      return () => {
-        // TODO: remove callbacks;
-      };
-    }
-  }, [transak]);
 
   const { wrapMutation, unwrapMutation } = useWrapToken({ onNotification });
 
