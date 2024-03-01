@@ -16,6 +16,8 @@ import * as Yup from 'yup';
 import MediaDialog from '../../../../components/mediaDialog';
 import { SeoForm } from '../../types';
 
+import CompletationProvider from '@dexkit/ui/components/CompletationProvider';
+
 const FormSchema: Yup.SchemaOf<SeoForm> = Yup.object().shape({
   title: Yup.string().required(),
   description: Yup.string().required(),
@@ -65,97 +67,125 @@ export default function SeoSectionForm({
   );
 
   return (
-    initialValues && (
-      <Formik
-        onSubmit={handleSubmit}
-        initialValues={initialValues}
-        validationSchema={FormSchema}
-      >
-        {({ submitForm, isValid, values, setFieldValue, dirty }) => (
-          <>
-            <ListenDirty onHasChanges={onHasChanges} dirty={dirty} />
-            <MediaDialog
-              dialogProps={{
-                open: openMediaDialog,
-                maxWidth: 'lg',
-                fullWidth: true,
-                onClose: () => {
-                  setOpenMediaDialog(false);
-                  setMediaFieldToEdit(undefined);
-                },
-              }}
-              onConfirmSelectFile={(file) => {
-                if (mediaFieldToEdit && file) {
-                  setFieldValue(mediaFieldToEdit, file.url);
-                }
-                setMediaFieldToEdit(undefined);
-                setOpenMediaDialog(false);
-              }}
-            />
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <Field
-                  component={TextField}
-                  type="text"
-                  label={<FormattedMessage id="title" defaultMessage="Title" />}
-                  name="title"
-                  fullWidth
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <Field
-                  component={TextField}
-                  type="text"
-                  multiline
-                  rows={5}
-                  label={
-                    <FormattedMessage
-                      id="description"
-                      defaultMessage="Description"
-                    />
+    <>
+      {initialValues && (
+        <Formik
+          onSubmit={handleSubmit}
+          initialValues={initialValues}
+          validationSchema={FormSchema}
+        >
+          {({ submitForm, isValid, values, setFieldValue, dirty }) => (
+            <>
+              <ListenDirty onHasChanges={onHasChanges} dirty={dirty} />
+              <MediaDialog
+                dialogProps={{
+                  open: openMediaDialog,
+                  maxWidth: 'lg',
+                  fullWidth: true,
+                  onClose: () => {
+                    setOpenMediaDialog(false);
+                    setMediaFieldToEdit(undefined);
+                  },
+                }}
+                onConfirmSelectFile={(file) => {
+                  if (mediaFieldToEdit && file) {
+                    setFieldValue(mediaFieldToEdit, file.url);
                   }
-                  name="description"
-                  fullWidth
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <Typography variant="body2">
-                  <FormattedMessage
-                    id="share.image"
-                    defaultMessage="Share image"
-                  />
-                </Typography>
-                <Button
-                  onClick={() => {
-                    setOpenMediaDialog(true);
-                    setMediaFieldToEdit('shareImageUrl');
-                  }}
-                >
-                  <CustomImage src={values.shareImageUrl} />
-                </Button>
-              </Grid>
-              <Grid item xs={12}>
-                <Divider />
-              </Grid>
-
-              <Grid item xs={12}>
-                <Stack spacing={1} direction="row" justifyContent="flex-end">
-                  <Button
-                    startIcon={<Check />}
-                    disabled={!isValid || !dirty}
-                    onClick={submitForm}
-                    type="submit"
-                    variant="contained"
-                    color="primary"
+                  setMediaFieldToEdit(undefined);
+                  setOpenMediaDialog(false);
+                }}
+              />
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  <CompletationProvider
+                    onCompletation={(output) => setFieldValue('title', output)}
+                    initialPrompt={values.title}
                   >
-                    <FormattedMessage id="save" defaultMessage="Save" />
+                    {({ inputAdornment, ref }) => (
+                      <Field
+                        component={TextField}
+                        type="text"
+                        label={
+                          <FormattedMessage id="title" defaultMessage="Title" />
+                        }
+                        inputRef={ref}
+                        name="title"
+                        fullWidth
+                        InputProps={{
+                          endAdornment: inputAdornment('end'),
+                        }}
+                      />
+                    )}
+                  </CompletationProvider>
+                </Grid>
+                <Grid item xs={12}>
+                  <CompletationProvider
+                    onCompletation={(output) =>
+                      setFieldValue('description', output)
+                    }
+                    initialPrompt={values.description}
+                  >
+                    {({ inputAdornment, ref }) => (
+                      <Field
+                        component={TextField}
+                        type="text"
+                        multiline
+                        rows={5}
+                        label={
+                          <FormattedMessage
+                            id="description"
+                            defaultMessage="Description"
+                          />
+                        }
+                        inputRef={ref}
+                        InputProps={{
+                          endAdornment: inputAdornment('end'),
+                        }}
+                        name="description"
+                        fullWidth
+                      />
+                    )}
+                  </CompletationProvider>
+                </Grid>
+                <Grid item xs={12}>
+                  <Typography variant="body2">
+                    <FormattedMessage
+                      id="share.image"
+                      defaultMessage="Share image"
+                    />
+                  </Typography>
+                  <Button
+                    onClick={() => {
+                      setOpenMediaDialog(true);
+                      setMediaFieldToEdit('shareImageUrl');
+                    }}
+                  >
+                    <CustomImage src={values.shareImageUrl} />
                   </Button>
-                </Stack>
+                </Grid>
+                <Grid item xs={12}>
+                  <Divider />
+                </Grid>
+
+                <Grid item xs={12}>
+                  <Stack spacing={1} direction="row" justifyContent="flex-end">
+                    <Button
+                      startIcon={<Check />}
+                      disabled={!isValid || !dirty}
+                      onClick={submitForm}
+                      type="submit"
+                      variant="contained"
+                      color="primary"
+                    >
+                      <FormattedMessage id="save" defaultMessage="Save" />
+                    </Button>
+                  </Stack>
+                </Grid>
               </Grid>
-            </Grid>
-          </>
-        )}
-      </Formik>
-    )
+            </>
+          )}
+        </Formik>
+      )}
+    </>
   );
 }

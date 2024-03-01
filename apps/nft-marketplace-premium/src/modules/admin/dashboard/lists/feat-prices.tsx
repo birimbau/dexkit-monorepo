@@ -1,7 +1,10 @@
-import { Datagrid, List, TextField } from 'react-admin';
+import { Datagrid, List, SearchInput, TextField } from 'react-admin';
 
 const FeatPricesList = () => (
-  <List>
+  <List
+    filters={[<SearchInput source="q" alwaysOn />]}
+    filterDefaultValues={{ q: '' }}
+  >
     <Datagrid rowClick="edit">
       <TextField source="feat" />
       <TextField source="plan" />
