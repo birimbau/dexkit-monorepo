@@ -10,6 +10,7 @@ export enum UserOnChainEvents {
   buyDropEdition = 'buyDropEdition',
   buyDropCollection = 'buyDropCollection',
   buyDropToken = 'buyDropToken',
+  claimAirdropERC20 = 'claimAirdropERC20',
   nftTransferERC721 = 'nftTransferERC721',
   nftAcceptOfferERC721 = 'nftAcceptOfferERC721',
   nftAcceptListERC721 = 'nftAcceptListERC721',
@@ -22,6 +23,7 @@ export enum UserOnChainEvents {
   marketBuy = 'marketBuy',
   marketSell = 'marketSell',
   orderCancelled = 'orderCancelled',
+  purchaseKey = 'purchaseKey',
   cancelNFTERC721order = 'cancelNFTERC721Order',
   cancelNFTERC1155order = 'cancelNFTERC1155Order'
 }

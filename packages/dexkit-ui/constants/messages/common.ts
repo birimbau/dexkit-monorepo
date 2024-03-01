@@ -190,4 +190,15 @@ export const COMMON_NOTIFICATION_TYPES: { [key: string]: AppNotificationType } =
     message: "Airdrop of {name}",
     id: "airdrop.of.name",
   },
+  purchaseKey: {
+    type: "purchaseKey",
+    message: "Purchase key from lock: {name}",
+    id: "purchase.key.name",
+  },
+  claimAirdropERC20: {
+    type: "claimAirdropERC20",
+    message: "Claim airdrop of {name}",
+    id: "claim.airdrop.of.name",
+  },
+
 };

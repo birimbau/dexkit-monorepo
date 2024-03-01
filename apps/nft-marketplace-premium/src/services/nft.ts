@@ -370,12 +370,12 @@ export async function getApiContractCollectionData(
   networkId?: string,
   address?: string
 
-): Promise<{ collection: CollectionAPI } | undefined> {
+): Promise<{ collection: CollectionAPI, metadata: any } | undefined> {
   if (!networkId || !address) {
     return;
   }
 
-  const response = await dexkitNFTapi.get<{ collection: CollectionAPI }>(`/contract/collection/${networkId}/${address.toLowerCase()}`);
+  const response = await dexkitNFTapi.get<{ collection: CollectionAPI, metadata: any }>(`/contract/collection/${networkId}/${address.toLowerCase()}`);
   return response.data
 }
 
@@ -671,6 +671,7 @@ export async function fetchAssetForQueryClient({ item, queryClient }: { item: { 
       tokenId: item.tokenId,
     });
   } catch (e) {
+    console.log(e);
     console.log(`fetchAsset: error fetching token ${item.tokenId}, address: ${item.contractAddress} at ${slug} from api`);
   }
 

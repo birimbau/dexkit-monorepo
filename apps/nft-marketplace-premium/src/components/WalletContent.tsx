@@ -29,6 +29,7 @@ import dynamic from 'next/dynamic';
 import { NETWORK_IMAGE, NETWORK_NAME } from '@dexkit/core/constants/networks';
 
 import { AccountBalance } from '@dexkit/ui/components/AccountBalance';
+import TransakWidget from '@dexkit/ui/components/Transak';
 import { GET_WALLET_ICON } from '@dexkit/wallet-connectors/connectors';
 import FileCopy from '@mui/icons-material/FileCopy';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
@@ -40,18 +41,18 @@ import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { useLogoutAccountMutation } from 'src/hooks/account';
 
 const EvmReceiveDialog = dynamic(
-  () => import('@dexkit/ui/components/dialogs/EvmReceiveDialog')
+  () => import('@dexkit/ui/components/dialogs/EvmReceiveDialog'),
 );
 
 const EvmTransferCoinDialog = dynamic(
   () =>
     import(
       '@dexkit/ui/modules/evm-transfer-coin/components/dialogs/EvmSendDialog'
-    )
+    ),
 );
 
 const SelectNetworkDialog = dynamic(
-  () => import('@dexkit/ui/components/dialogs/SelectNetworkDialog')
+  () => import('@dexkit/ui/components/dialogs/SelectNetworkDialog'),
 );
 
 export default function WalletContent() {
@@ -77,7 +78,7 @@ export default function WalletContent() {
   const { data: balance } = useEvmNativeBalanceQuery({ provider, account });
 
   const [isBalancesVisible, setIsBalancesVisible] = useAtom(
-    isBalancesVisibleAtom
+    isBalancesVisibleAtom,
   );
 
   const handleToggleVisibility = () => {
@@ -313,17 +314,23 @@ export default function WalletContent() {
               <FormattedMessage id="receive" defaultMessage="Receive" />
             </Button>
           </Stack>
-          <Button
-            onClick={handleSwitchWallet}
-            startIcon={<SwitchAccount fontSize="small" />}
-            variant="outlined"
-            color="inherit"
-          >
-            <FormattedMessage
-              id="switch.wallet"
-              defaultMessage="Switch wallet"
-            />
-          </Button>
+          <Stack spacing={2} direction="row">
+            <TransakWidget
+              buttonProps={{ color: 'inherit', variant: 'outlined' }}
+            ></TransakWidget>
+
+            <Button
+              onClick={handleSwitchWallet}
+              startIcon={<SwitchAccount fontSize="small" />}
+              variant="outlined"
+              color="inherit"
+            >
+              <FormattedMessage
+                id="switch.wallet"
+                defaultMessage="Switch wallet"
+              />
+            </Button>
+          </Stack>
         </Stack>
       </Box>
     </>

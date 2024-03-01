@@ -101,6 +101,7 @@ export default function DexGeneratorSectionForm({
     filter,
     page,
     pageSize: 10,
+    sort: ['id', 'desc'],
   });
 
   const handleChange = (value: string) => {
@@ -274,6 +275,18 @@ export default function DexGeneratorSectionForm({
           handleChangeSection({
             section: {
               type: 'nft-stake',
+              settings: {
+                address: newContract.contractAddress,
+                network,
+              },
+            },
+            contract: newContract,
+            type: 'dex-generator-section',
+          });
+        } else if (newContract.type === 'AirdropERC20Claimable') {
+          handleChangeSection({
+            section: {
+              type: 'claim-airdrop-token-erc-20',
               settings: {
                 address: newContract.contractAddress,
                 network,

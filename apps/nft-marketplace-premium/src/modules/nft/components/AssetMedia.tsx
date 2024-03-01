@@ -22,7 +22,7 @@ export function AssetMedia({ asset, enableImageLightbox }: Props) {
     asset.contractAddress,
     asset.chainId,
     asset.id,
-    metadata
+    metadata,
   );
 
   return (
@@ -37,8 +37,11 @@ export function AssetMedia({ asset, enableImageLightbox }: Props) {
             width: '100%',
           }}
         >
-          {nftSrcAndType.type === 'image' && metadata?.image && (
-            <AssetImage src={metadata?.image} enableLightBox={enableImageLightbox} />
+          {nftSrcAndType.type === 'image' && (
+            <AssetImage
+              src={metadata?.image}
+              enableLightBox={enableImageLightbox}
+            />
           )}
           {nftSrcAndType.type === 'iframe' && nftSrcAndType.src && (
             <AssetIframe src={nftSrcAndType.src} />

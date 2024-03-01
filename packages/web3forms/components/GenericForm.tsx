@@ -2,7 +2,11 @@ import { Button, FormControlLabel, Grid } from "@mui/material";
 import { BigNumber, ethers } from "ethers";
 import { Field, Formik } from "formik";
 import { Autocomplete, Checkbox, TextField } from "formik-mui";
-import { useIfpsUploadMutation, useServerUploadMutation } from "../hooks";
+import {
+  useIfpsUploadMutation,
+  useServerUploadMerkleTreeMutation,
+  useServerUploadMutation,
+} from "../hooks";
 
 import MuiTextField from "@mui/material/TextField";
 import { Form, FormElement, FormOutputFormat } from "../types";
@@ -13,6 +17,7 @@ import * as Yup from "yup";
 import DecimalInput from "./DecimalInput";
 import { ImageInput } from "./ImageInput";
 import { IpfsImageInput } from "./IpfsImageInput";
+import { MerkleTreeFileInput } from "./MerkleTreeFileInput";
 import SharesArrayInput from "./SharesArrayInput";
 
 function validateAddress(message: string) {
@@ -108,6 +113,8 @@ export default function GenericForm({
         return <ImageInput label={el.label} name={el.ref as string} />;
       } else if (el.component?.type === "hidden") {
         return false;
+      } else if (el.component?.type === "merkle-tree-file") {
+        return <MerkleTreeFileInput el={el} />;
       } else if (el.component?.type === "decimal") {
         return (
           <DecimalInput
@@ -318,9 +325,12 @@ export default function GenericForm({
 
   const serverUploadMutation = useServerUploadMutation();
 
+  const serverUploadMerkleTreeMutation = useServerUploadMerkleTreeMutation();
+
   const handleSubmit = async (formValues: any) => {
     const ocurrsKeys: string[] = [];
     const serverDataKeys: string[] = [];
+    const merkleTreeKeys: string[] = [];
 
     const mapping = (elements: FormElement[]) => {
       return elements
@@ -394,6 +404,9 @@ export default function GenericForm({
                     [fieldName.name]: vals,
                   };
                 }
+                if (fieldName.type === "merkle-tree-file") {
+                  merkleTreeKeys.push(fieldName.name);
+                }
 
                 return { [fieldName.name]: values[fieldName.name] };
               }
@@ -417,6 +430,10 @@ export default function GenericForm({
               }
               if (fieldName.type === "server-file") {
                 serverDataKeys.push(fieldName.name);
+              }
+
+              if (fieldName.type === "merkle-tree-file") {
+                merkleTreeKeys.push(fieldName.name);
               }
 
               return res;
@@ -448,6 +465,16 @@ export default function GenericForm({
           content,
         });
         result[obj][key] = url;
+      }
+      for (let key of merkleTreeKeys) {
+        const merkleTreeProof = result[obj][key];
+        if (merkleTreeProof !== "0x") {
+          const content = JSON.stringify(values[merkleTreeProof]);
+          await serverUploadMerkleTreeMutation.mutateAsync({
+            content,
+            merkleProof: merkleTreeProof,
+          });
+        }
       }
     }
 

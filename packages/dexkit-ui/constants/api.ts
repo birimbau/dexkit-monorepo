@@ -6,7 +6,7 @@ export const DEXKIT_UI_BASE_API_URL = 'https://nft-api.dexkit.com'
 //const DEXKIT_UI_BASE_API_URL = 'https://nft-api.dexkit.com'
 export const DEXKIT_NFT_BASE_URL = `${DEXKIT_UI_BASE_API_URL}`
 
-
+export const DEXKIT_STORAGE_MERKLE_TREE_URL = 'https://dexkit-storage.nyc3.cdn.digitaloceanspaces.com/dexkit/merkle-tree/';
 
 export const TRADER_ORDERBOOK_API = 'https://api.trader.xyz/orderbook/orders';
 
