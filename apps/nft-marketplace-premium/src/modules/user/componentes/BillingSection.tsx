@@ -51,6 +51,15 @@ export default function BillingSection() {
               <Grid item xs={12} sm={4}>
                 <PlanCard
                   disabled={isLoading}
+                  name="Free"
+                  price={10.0}
+                  description="Better to start"
+                  onClick={handleCheckoutStarter('free')}
+                />
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <PlanCard
+                  disabled={isLoading}
                   name="Starter"
                   price={10.0}
                   description="Better to start"

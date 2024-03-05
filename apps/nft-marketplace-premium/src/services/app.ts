@@ -9,13 +9,13 @@ import { getConfig, getSitemapConfig } from './whitelabel';
 
 export async function getAppConfig(
   site?: string,
-  appPage?: string
+  appPage?: string,
 ): Promise<{
   appConfig: AppConfig;
   appPage?: string;
   appNFT?: AssetAPI | null;
-  siteId?: number,
-  slug?: string
+  siteId?: number;
+  slug?: string;
 }> {
   /**/
   if (site === 'boredapes.dexkit.com') {
@@ -82,29 +82,32 @@ export async function getAppConfig(
     });
   }
 
+  if (site) {
+    const [hostname, port] = site?.split(':');
 
+    if (hostname.endsWith('localhost')) {
+      const [slug] = hostname?.split('.') || [];
 
+      //const slug = 'optiswap';
+      if (slug) {
+        const configResponse = (await getConfig({ slug, appPage })).data;
 
-  if (site?.startsWith('localhost')) {
-    const [slug,] = site?.split('.') || [];
-    //const slug = 'optiswap';
-    if (slug) {
-      const configResponse = (await getConfig({ slug, appPage })).data;
-
-      if (configResponse) {
-        return {
-          appConfig: JSON.parse(configResponse.config) as AppConfig,
-          appNFT: configResponse.nft === undefined ? null : configResponse.nft,
-          siteId: configResponse?.id,
-          slug: configResponse?.slug,
-        };
+        if (configResponse) {
+          return {
+            appConfig: JSON.parse(configResponse.config) as AppConfig,
+            appNFT:
+              configResponse.nft === undefined ? null : configResponse.nft,
+            siteId: configResponse?.id,
+            slug: configResponse?.slug,
+          };
+        }
       }
-    }
 
-    return Promise.resolve({
-      appConfig: appConfigJson as AppConfig,
-      appNFT: null,
-    });
+      return Promise.resolve({
+        appConfig: appConfigJson as AppConfig,
+        appNFT: null,
+      });
+    }
   }
 
   if (site?.endsWith('dex-kit.vercel.app')) {
@@ -137,15 +140,12 @@ export async function getAppConfig(
   // return appConfigJson as Promise<AppConfig>;
 }
 
-export async function getAppSitemapConfig(
-  site?: string,
-): Promise<{
+export async function getAppSitemapConfig(site?: string): Promise<{
   appConfig: AppConfig;
   appNFT?: AssetAPI | null;
-  siteId?: number,
-  slug?: string
+  siteId?: number;
+  slug?: string;
 }> {
-
   /**/
   if (site === 'boredapes.dexkit.com') {
     return Promise.resolve({
@@ -181,7 +181,7 @@ export async function getAppSitemapConfig(
           appConfig: JSON.parse(configResponse.config) as AppConfig,
           appNFT: configResponse.nft === undefined ? null : configResponse.nft,
           siteId: configResponse?.id,
-          slug: configResponse?.slug
+          slug: configResponse?.slug,
         };
       }
     }
@@ -200,7 +200,7 @@ export async function getAppSitemapConfig(
           appConfig: JSON.parse(configResponse.config) as AppConfig,
           appNFT: configResponse.nft === undefined ? null : configResponse.nft,
           siteId: configResponse?.id,
-          slug: configResponse?.slug
+          slug: configResponse?.slug,
         };
       }
     }
@@ -210,11 +210,8 @@ export async function getAppSitemapConfig(
     });
   }
 
-
-
-
   if (site?.startsWith('localhost')) {
-    const [slug,] = site?.split('.') || [];
+    const [slug] = site?.split('.') || [];
     //const slug = 'swapkit';
     if (slug) {
       const configResponse = (await getSitemapConfig({ slug })).data;
@@ -255,7 +252,7 @@ export async function getAppSitemapConfig(
       appConfig: JSON.parse(configResponse.config) as AppConfig,
       appNFT: configResponse.nft === undefined ? configResponse.nft : null,
       siteId: configResponse?.id,
-      slug: configResponse?.slug
+      slug: configResponse?.slug,
     };
   }
 

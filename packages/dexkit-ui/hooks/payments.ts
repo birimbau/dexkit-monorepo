@@ -25,11 +25,70 @@ export function useBuyCreditsCheckout() {
   });
 }
 
+export const CREDIT_HISTORY = "CREDIT_HISTORY";
+
 export function useCreditHistory() {
   const { instance } = useContext(DexkitApiProvider);
 
-  return useQuery([], async () => {
+  return useQuery([CREDIT_HISTORY], async () => {
     return (await instance?.get<CreditGrant[]>("/payments/credit-history"))
+      ?.data;
+  });
+}
+
+export function useCryptoCheckout() {
+  const { instance } = useContext(DexkitApiProvider);
+
+  return useMutation(async (params: { intent: string; amount: string }) => {
+    return (await instance?.post("/payments/crypto-checkout-session", params))
+      ?.data;
+  });
+}
+
+export const CRYPTO_CHECKOUT_ITEMS = "CRYPTO_CHECKOUT_ITEMS";
+
+export function useCheckoutItems({ id }: { id: string }) {
+  const { instance } = useContext(DexkitApiProvider);
+
+  return useQuery([CRYPTO_CHECKOUT_ITEMS, id], async () => {
+    return (
+      await instance?.get<any[]>(`/payments/checkout-session/${id}/items`)
+    )?.data;
+  });
+}
+
+export function useConfirmCheckout() {
+  const { instance } = useContext(DexkitApiProvider);
+
+  return useMutation(
+    async ({
+      txHash,
+      checkoutId,
+      chainId,
+      tokenAddress,
+    }: {
+      txHash: string;
+      checkoutId: string;
+      chainId: number;
+      tokenAddress: string;
+    }) => {
+      return (
+        await instance?.post(
+          `/payments/checkout-session/${checkoutId}/confirm`,
+          { txHash, chainId, tokenAddress }
+        )
+      )?.data;
+    }
+  );
+}
+
+export const CHECKOUT_STATUS = "CHECKOUT_STATUS";
+
+export function useCheckoutStatus({ id }: { id: string }) {
+  const { instance } = useContext(DexkitApiProvider);
+
+  return useQuery([CHECKOUT_STATUS, id], async () => {
+    return (await instance?.get(`/payments/checkout-session/${id}/status`))
       ?.data;
   });
 }

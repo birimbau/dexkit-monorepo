@@ -15,11 +15,13 @@ export const config = {
     '/u/:path*',
     '/admin/:path*',
     '/drop/:path*',
+    '/checkout/:path*',
     '/contract/:path*',
 
     '/stake/:path*',
     '/token/:path*',
     '/airdrop/:path*',
+
     '/embed/:path*',
   ],
 };
@@ -31,6 +33,7 @@ const basePaths = [
   '/swap',
   '/test',
   '/forms',
+  '/checkout',
   '/collections',
   '/wallet',
   '/404',
@@ -116,8 +119,6 @@ export default function middleware(req: NextRequest) {
   /*if (hostname.startsWith('localhost')) {
     hostname = `localhost:arbitrum`;
   }*/
-
-
 
   if (isBasePath(url.pathname)) {
     // rewrite everything else to `/_sites/[site] dynamic route
