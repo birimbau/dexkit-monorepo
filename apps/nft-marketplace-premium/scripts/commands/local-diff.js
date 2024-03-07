@@ -1,4 +1,5 @@
 const fs = require('fs');
+const commander = require('commander');
 
 function addslashes(str = '') {
   console.log(str);
@@ -18,6 +19,7 @@ function jsonDiff(fromLang, toLang) {
   const keys = [];
 
   for (const key of Object.keys(fromLang)) {
+    console.log(key);
     if (!toLang[key]) {
       keys.push(key);
     }
@@ -26,22 +28,21 @@ function jsonDiff(fromLang, toLang) {
   return keys;
 }
 
-const languages = [
-  'de-DE',
-  'en-US',
-  'es-ES',
-  'fr-FR',
-  'it-IT',
-  'nn-NO',
-  'pt-BR',
-];
+const program = new commander.Command();
 
-for (let index = 0; index < languages.length; index++) {
-  to = languages[index];
+program.version('0.0.1').option('-t, --to <string>', 'to language');
 
+program.parse(process.argv);
+
+const options = program.opts();
+console.log(options);
+
+if (options.to) {
   const fromFile = JSON.parse(fs.readFileSync(`lang/main.json`).toString());
 
-  const toFile = JSON.parse(fs.readFileSync(`lang/${to}.json`).toString());
+  const toFile = JSON.parse(
+    fs.readFileSync(`lang/${options.to}.json`).toString()
+  );
 
   const diff = jsonDiff(fromFile, toFile);
 
@@ -65,5 +66,8 @@ for (let index = 0; index < languages.length; index++) {
     finalArr[key] = bufferArr[key];
   }
 
-  fs.writeFileSync(`lang/${to}.json`, JSON.stringify(finalArr, null, '\t'));
+  fs.writeFileSync(
+    `lang/${options.to}.json`,
+    JSON.stringify(finalArr, null, '\t')
+  );
 }

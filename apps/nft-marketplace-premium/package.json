@@ -12,8 +12,11 @@
     "post-update": "echo \"codesandbox preview only, need an update\" && yarn upgrade --latest",
     "extract": "formatjs extract",
     "compile": "formatjs compile",
+    "process-all-translations": "./scripts/bash/process-all-translations.sh",
+    "translate-ai": "node --env-file=.env scripts/translate.js",
+    "sync-language-files": "node scripts/sync-compiled-with-lang.js",
     "lang-diff": "node scripts/local-diff.js",
-    "generate-lang-files": "yarn extract 'src/**/*.ts*' --ignore='**/*.d.ts' --out-file lang/main.json --id-interpolation-pattern '[sha512:contenthash:base64:6]'"
+    "generate-lang-files": "yarn extract '(src||pages||../packages/dexkit-exchange/components)/**/*.ts*' --ignore='**/*.d.ts' --out-file lang/main.json --id-interpolation-pattern '[sha512:contenthash:base64:6]'"
   },
   "pre-push": [
     "build"

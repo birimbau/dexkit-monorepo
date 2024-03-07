@@ -9,10 +9,19 @@ import ContractListDataGrid from '@/modules/forms/components/ContractListDataGri
 
 import { ConnectWalletBox } from '@dexkit/ui/components/ConnectWalletBox';
 import { useWeb3React } from '@web3-react/core';
+import {
+  GetStaticPaths,
+  GetStaticPathsContext,
+  GetStaticProps,
+  GetStaticPropsContext,
+} from 'next';
 import { LoginAppButton } from 'src/components/LoginAppButton';
 import { PageHeader } from 'src/components/PageHeader';
 import AuthMainLayout from 'src/components/layouts/authMain';
 import { useAuth } from 'src/hooks/account';
+
+import { QueryClient, dehydrate } from '@tanstack/react-query';
+import { getAppConfig } from 'src/services/app';
 
 export default function FormsListContractsPage() {
   const { isActive } = useWeb3React();
@@ -100,4 +109,32 @@ export default function FormsListContractsPage() {
       </DexkitApiProvider.Provider>
     </AuthMainLayout>
   );
+};
+
+type Params = {
+  site?: string;
+};
+
+export const getStaticProps: GetStaticProps = async ({
+  params,
+}: GetStaticPropsContext<Params>) => {
+  const queryClient = new QueryClient();
+  const configResponse = await getAppConfig(params?.site, 'no-page-defined');
+
+  return {
+    props: {
+      dehydratedState: dehydrate(queryClient),
+      ...configResponse,
+    },
+    revalidate: 3000,
+  };
+};
+
+export const getStaticPaths: GetStaticPaths<
+  Params
+> = ({}: GetStaticPathsContext) => {
+  return {
+    paths: [],
+    fallback: 'blocking',
+  };
 };

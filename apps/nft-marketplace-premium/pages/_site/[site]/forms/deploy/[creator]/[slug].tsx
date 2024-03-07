@@ -46,12 +46,20 @@ import useThirdwebContractMetadataQuery, {
 } from '@dexkit/web3forms/hooks';
 import { dkGetTrustedForwarders } from '@dexkit/web3forms/utils';
 import CheckCircle from '@mui/icons-material/CheckCircle';
+import { QueryClient, dehydrate } from '@tanstack/react-query';
 import { useWeb3React } from '@web3-react/core';
+import {
+  GetStaticPaths,
+  GetStaticPathsContext,
+  GetStaticProps,
+  GetStaticPropsContext,
+} from 'next';
 import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { PageHeader } from 'src/components/PageHeader';
 import { THIRDWEB_CLIENT_ID } from 'src/constants';
+import { getAppConfig } from 'src/services/app';
 
 export default function DeployPage() {
   const { chainId } = useWeb3React();
@@ -520,4 +528,32 @@ export default function DeployPage() {
 
 (DeployPage as any).getLayout = function getLayout(page: any) {
   return <AuthMainLayout>{page}</AuthMainLayout>;
+};
+
+type Params = {
+  site?: string;
+};
+
+export const getStaticProps: GetStaticProps = async ({
+  params,
+}: GetStaticPropsContext<Params>) => {
+  const queryClient = new QueryClient();
+  const configResponse = await getAppConfig(params?.site, 'no-page-defined');
+
+  return {
+    props: {
+      dehydratedState: dehydrate(queryClient),
+      ...configResponse,
+    },
+    revalidate: 3000,
+  };
+};
+
+export const getStaticPaths: GetStaticPaths<
+  Params
+> = ({}: GetStaticPathsContext) => {
+  return {
+    paths: [],
+    fallback: 'blocking',
+  };
 };
