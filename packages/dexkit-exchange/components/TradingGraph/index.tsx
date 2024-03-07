@@ -26,6 +26,20 @@ export interface TradingGraph {
   onChangeShowSwaps: (value: boolean) => void;
 }
 
+const DEXTOOLS_NETWORKS_MAP: { [key: string]: string } = {
+  eth: "eth",
+  bsc: "bnb",
+  polygon_pos: "polygon",
+  ftm: "fantom",
+  cro: "cronos",
+  arbitrum: "arbitrum",
+  aurora: "aurora",
+  avax: "avalanche",
+  optimism: "optimism",
+  zksync: "zksync",
+  base: "base",
+};
+
 export default function TradingGraph({
   network,
   showInfo,
@@ -102,7 +116,8 @@ export default function TradingGraph({
             <Skeleton width={"100%"} height={100} />
           </Box>
         ) : (
-          selectedPool && (
+          selectedPool &&
+          (network && DEXTOOLS_NETWORKS_MAP[network] ? (
             <iframe
               height="100%"
               width="100%"
@@ -110,9 +125,22 @@ export default function TradingGraph({
               title="DEXTswap Aggregator"
               frameBorder="0"
               allow="clipboard-write"
-              src={`https://www.dextools.io/widget-aggregator/${language}/swap/${network}/${selectedPool}`}
+              src={`https://www.dextools.io/widget-aggregator/${language}/swap/${DEXTOOLS_NETWORKS_MAP[network]}/${selectedPool}`}
             />
-          )
+          ) : (
+            <iframe
+              height="100%"
+              width="100%"
+              id="geckoterminal-embed"
+              title="GeckoTerminal Embed"
+              src={`https://www.geckoterminal.com/${language}/${network}/pools/${selectedPool}?embed=1&info=${
+                showInfo ? "1" : "0"
+              }&swaps=${showSwaps ? "1" : "0"}`}
+              frameBorder="0"
+              allow="clipboard-write"
+              allowFullScreen
+            />
+          ))
         )}
       </Box>
     </Card>
