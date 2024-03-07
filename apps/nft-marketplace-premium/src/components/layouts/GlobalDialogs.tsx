@@ -26,7 +26,7 @@ import { useWalletActivate } from '@dexkit/wallet-connectors/hooks/wallet';
 import { WalletActivateParams } from '@dexkit/wallet-connectors/types';
 
 const ConnectWalletDialog = dynamic(
-  () => import('@dexkit/ui/components/ConnectWalletDialog'),
+  () => import('@dexkit/ui/components/ConnectWallet/ConnectWalletDialog'),
 );
 const WatchTransactionDialog = dynamic(
   () => import('@dexkit/ui/components/dialogs/WatchTransactionDialog'),

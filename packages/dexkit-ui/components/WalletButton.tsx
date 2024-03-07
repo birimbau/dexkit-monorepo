@@ -15,6 +15,7 @@ import {
 import { useWeb3React } from "@web3-react/core";
 
 import { truncateAddress } from "@dexkit/core/utils";
+import { useWalletConnectorMetadata } from "@dexkit/wallet-connectors";
 import { GET_WALLET_ICON } from "@dexkit/wallet-connectors/connectors";
 import { useRouter } from "next/router";
 import { useCallback, useState } from "react";
@@ -29,6 +30,7 @@ interface Props {
 export function WalletButton(props: Props) {
   const { align } = props;
   const router = useRouter();
+  const { walletConnectorMetadata } = useWalletConnectorMetadata();
   const { connector, account, ENSName } = useWeb3React();
   const logoutMutation = useLogoutAccountMutation();
   const userQuery = useAuthUserQuery();
@@ -85,7 +87,7 @@ export function WalletButton(props: Props) {
             />
           )}
           <Avatar
-            src={GET_WALLET_ICON(connector)}
+            src={walletConnectorMetadata?.icon || GET_WALLET_ICON(connector)}
             sx={(theme) => ({
               width: theme.spacing(2),
               height: theme.spacing(2),

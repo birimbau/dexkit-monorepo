@@ -71,6 +71,7 @@ function ChooseNetworkDialog({
         <Stack spacing={2}>
           <List disablePadding>
             {Object.keys(NETWORKS)
+              .filter((k) => Number(k) !== selectedChainId)
               .filter((k) => activeChainIds.includes(Number(k)))
               .filter((k) => !NETWORKS[parseInt(k)].testnet)
               .map((key: any, index: number) => (

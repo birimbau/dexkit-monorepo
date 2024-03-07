@@ -21,6 +21,7 @@ import { FormattedMessage } from "react-intl";
 
 import { NETWORKS } from "@dexkit/core/constants/networks";
 import { Network } from "@dexkit/core/types";
+import { useWeb3React } from "@web3-react/core";
 import { useActiveChainIds, useSwitchNetworkMutation } from "../../hooks";
 import { AppDialogTitle } from "../AppDialogTitle";
 
@@ -31,6 +32,7 @@ interface Props {
 function SwitchNetworkDialog({ dialogProps }: Props) {
   const { onClose } = dialogProps;
   const { activeChainIds } = useActiveChainIds();
+  const { chainId: connectedChainId } = useWeb3React();
 
   const [chainId, setChainId] = useState<number>();
 
@@ -81,6 +83,7 @@ function SwitchNetworkDialog({ dialogProps }: Props) {
               .filter(
                 (k) => activeChainIds && activeChainIds?.includes(Number(k))
               )
+              .filter((k) => Number(k) !== connectedChainId)
               .filter((k) => !NETWORKS[parseInt(k)].testnet)
               .map((key: any, index: number) => (
                 <ListItemButton

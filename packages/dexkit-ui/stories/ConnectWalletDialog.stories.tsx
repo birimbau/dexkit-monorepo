@@ -5,7 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useWeb3React } from "@web3-react/core";
 
 import { atom } from "jotai";
-import ConnectWalletDialog from "../components/ConnectWalletDialog";
+import ConnectWalletDialog from "../components/ConnectWallet/ConnectWalletDialog";
 import { DexkitProvider } from "../components/DexkitProvider";
 import { ThemeMode } from "../constants/enum";
 import theme from "../theme";
