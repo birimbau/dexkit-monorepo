@@ -25,9 +25,9 @@ export interface TradingGraph {
   onChange: (value: string) => void;
   onChangeShowSwaps: (value: boolean) => void;
 }
-
+//https://github.com/dextools-io/chart-widget
 const DEXTOOLS_NETWORKS_MAP: { [key: string]: string } = {
-  eth: "eth",
+  eth: "ether",
   bsc: "bnb",
   polygon_pos: "polygon",
   ftm: "fantom",
@@ -129,13 +129,15 @@ export default function TradingGraph({
             <iframe
               height="100%"
               width="100%"
-              id="dextswap-aggregator-widget"
-              title="DEXTswap Aggregator"
+              id="dextools-widget"
+              title="DEXTools Trading Chart"
               frameBorder="0"
               allow="clipboard-write"
-              src={`https://www.dextools.io/widget-aggregator/${getDexToolsLanguage(
+              src={`https://www.dextools.io/widget-chart/pe-light/${getDexToolsLanguage(
                 language
-              )}/swap/${DEXTOOLS_NETWORKS_MAP[network]}/${selectedPool}`}
+              )}/${
+                DEXTOOLS_NETWORKS_MAP[network]
+              }/${selectedPool}?theme=light&chartType=2&chartResolution=30&drawingToolbars=false`}
             />
           ) : (
             <iframe
@@ -155,19 +157,4 @@ export default function TradingGraph({
       </Box>
     </Card>
   );
-}
-
-{
-  /*  <iframe
-              height="100%"
-              width="100%"
-              id="geckoterminal-embed"
-              title="GeckoTerminal Embed"
-              src={`https://www.geckoterminal.com/${language}/${network}/pools/${selectedPool}?embed=1&info=${
-                showInfo ? "1" : "0"
-              }&swaps=${showSwaps ? "1" : "0"}`}
-              frameBorder="0"
-              allow="clipboard-write"
-              allowFullScreen
-            />*/
 }
