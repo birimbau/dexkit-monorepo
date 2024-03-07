@@ -50,14 +50,16 @@ export default function MyApp(props: MyAppProps) {
 
   const [loading, setLoading] = React.useState(false);
 
-  const { appConfig, appNFT, siteId, site, appPage } = pageProps as {
-    appConfig: AppConfig;
-    appNFT: AssetAPI;
-    siteId: number | undefined;
-    dehydratedState: DehydratedState;
-    site?: string;
-    appPage?: string;
-  };
+  const { appConfig, appNFT, siteId, site, appPage, appLocaleMessages } =
+    pageProps as {
+      appConfig: AppConfig;
+      appNFT: AssetAPI;
+      siteId: number | undefined;
+      dehydratedState: DehydratedState;
+      site?: string;
+      appPage?: string;
+      appLocaleMessages?: Record<string, string> | null;
+    };
 
   const [queryClient] = React.useState(
     new QueryClient({
@@ -258,7 +260,9 @@ export default function MyApp(props: MyAppProps) {
                 <Hydrate state={pageProps.dehydratedState}>
                   <DefaultSeo {...SEO} />
                   <LocalizationProvider dateAdapter={AdapterMoment}>
-                    <AppMarketplaceProvider>
+                    <AppMarketplaceProvider
+                      appLocaleMessages={appLocaleMessages}
+                    >
                       <Backdrop
                         open={loading}
                         sx={{

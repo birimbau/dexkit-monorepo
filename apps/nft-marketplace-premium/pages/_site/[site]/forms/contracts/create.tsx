@@ -9,11 +9,19 @@ import {
 } from '@/modules/forms/hooks';
 import { DexkitApiProvider } from '@dexkit/core/providers';
 
+import { QueryClient, dehydrate } from '@tanstack/react-query';
 import { useWeb3React } from '@web3-react/core';
+import {
+  GetStaticPaths,
+  GetStaticPathsContext,
+  GetStaticProps,
+  GetStaticPropsContext,
+} from 'next';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { PageHeader } from 'src/components/PageHeader';
 import AuthMainLayout from 'src/components/layouts/authMain';
+import { getAppConfig } from 'src/services/app';
 
 export default function FormsContractsPage() {
   const router = useRouter();
@@ -128,7 +136,7 @@ export default function FormsContractsPage() {
                         }}
                         onClick={() => {
                           router.push(
-                            `/forms/deploy/thirdweb/${contract.slug}`
+                            `/forms/deploy/thirdweb/${contract.slug}`,
                           );
                         }}
                       />
@@ -152,4 +160,32 @@ export default function FormsContractsPage() {
       </DexkitApiProvider.Provider>
     </AuthMainLayout>
   );
+};
+
+type Params = {
+  site?: string;
+};
+
+export const getStaticProps: GetStaticProps = async ({
+  params,
+}: GetStaticPropsContext<Params>) => {
+  const queryClient = new QueryClient();
+  const configResponse = await getAppConfig(params?.site, 'no-page-defined');
+
+  return {
+    props: {
+      dehydratedState: dehydrate(queryClient),
+      ...configResponse,
+    },
+    revalidate: 3000,
+  };
+};
+
+export const getStaticPaths: GetStaticPaths<
+  Params
+> = ({}: GetStaticPathsContext) => {
+  return {
+    paths: [],
+    fallback: 'blocking',
+  };
 };

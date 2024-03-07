@@ -103,6 +103,11 @@ export const LANGUAGES: Language[] = [
   { name: 'English (US)', locale: 'en-US' },
   { name: 'Português (BR)', locale: 'pt-BR' },
   { name: 'Español (ES)', locale: 'es-ES' },
+  { name: 'Deutsch (IT)', locale: 'de-DE' },
+  { name: 'Français (FR)', locale: 'fr-FR' },
+  { name: 'Italiano (IT)', locale: 'it-IT' },
+  { name: 'Norsk (NO)', locale: 'nn-NO' },
+
 ];
 
 export const CURRENCIES: Currency[] = [
