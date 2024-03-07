@@ -33,8 +33,10 @@ type Params = {
 
 export const getStaticProps: GetStaticProps = async ({
   params,
+  locale,
 }: GetStaticPropsContext<Params>) => {
   const queryClient = new QueryClient();
+
   const configResponse = await getAppConfig(params?.site, 'home');
   const { appConfig } = configResponse;
 

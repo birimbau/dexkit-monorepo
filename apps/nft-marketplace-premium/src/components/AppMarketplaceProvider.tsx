@@ -34,10 +34,12 @@ import { loadLocaleMessages } from '../utils/intl';
 
 export interface AppMarketplaceContextProps {
   children: React.ReactNode | React.ReactNode[];
+  appLocaleMessages?: Record<string, string> | null;
 }
 
 export function AppMarketplaceProvider({
   children,
+  appLocaleMessages,
 }: AppMarketplaceContextProps) {
   const appConfig = useAppConfig();
   const siteId = useSiteId();
@@ -47,8 +49,9 @@ export function AppMarketplaceProvider({
   const [locale, setLocale] = useState(defaultLocale);
   const [ref, setRef] = useAtom(referralAtom);
   const { mode } = useThemeMode();
+  console.log(appLocaleMessages);
 
-  const [messages, setMessages] = useState<any | null>(null);
+  const [messages, setMessages] = useState<any | null>(appLocaleMessages);
 
   useEffect(() => {
     loadLocaleMessages(locale).then((data) => setMessages(data.default));

@@ -1,5 +1,6 @@
 import { AppConfig } from '../types/config';
 
+import getLocaleMessages from 'src/i18n';
 import { AssetAPI } from 'src/types/nft';
 import appBoredApeJson from '../../config/app.boredape.json';
 import appCryptoPunksJson from '../../config/app.cryptopunks.json';
@@ -16,6 +17,7 @@ export async function getAppConfig(
   appNFT?: AssetAPI | null;
   siteId?: number,
   slug?: string
+  appLocaleMessages?: Record<string, string> | null
 }> {
   /**/
   if (site === 'boredapes.dexkit.com') {
@@ -48,12 +50,17 @@ export async function getAppConfig(
     if (slug.length > 1) {
       const configResponse = (await getConfig({ slug: slug[1], appPage })).data;
       if (configResponse) {
+        const appConfig = JSON.parse(configResponse.config) as AppConfig;
+        const appLocaleMessages = await getLocaleMessages(appConfig.locale);
+
+
         return {
-          appConfig: JSON.parse(configResponse.config) as AppConfig,
+          appConfig,
           appNFT: configResponse.nft === undefined ? null : configResponse.nft,
           siteId: configResponse?.id,
           slug: configResponse?.slug,
           appPage,
+          appLocaleMessages,
         };
       }
     }
@@ -67,8 +74,13 @@ export async function getAppConfig(
         await getConfig({ slug: slug[1], appPage })
       ).data;
       if (configResponse) {
+        const appConfig = JSON.parse(configResponse.config) as AppConfig;
+        const appLocaleMessages = await getLocaleMessages(appConfig.locale);
+
+
         return {
-          appConfig: JSON.parse(configResponse.config) as AppConfig,
+          appConfig,
+          appLocaleMessages,
           appNFT: configResponse.nft === undefined ? null : configResponse.nft,
           siteId: configResponse?.id,
           slug: configResponse?.slug,
@@ -92,17 +104,25 @@ export async function getAppConfig(
       const configResponse = (await getConfig({ slug, appPage })).data;
 
       if (configResponse) {
+        const appConfig = JSON.parse(configResponse.config) as AppConfig;
+        const appLocaleMessages = await getLocaleMessages(appConfig.locale);
+
+
         return {
-          appConfig: JSON.parse(configResponse.config) as AppConfig,
+          appConfig,
+          appLocaleMessages,
           appNFT: configResponse.nft === undefined ? null : configResponse.nft,
           siteId: configResponse?.id,
           slug: configResponse?.slug,
         };
       }
     }
+    const appConfig = appConfigJson as AppConfig;
+    const appLocaleMessages = await getLocaleMessages(appConfig.locale);
 
     return Promise.resolve({
       appConfig: appConfigJson as AppConfig,
+      appLocaleMessages,
       appNFT: null,
     });
   }
@@ -123,8 +143,12 @@ export async function getAppConfig(
 
   const configResponse = (await getConfig({ domain: site, appPage })).data;
   if (configResponse) {
+    const appConfig = JSON.parse(configResponse.config) as AppConfig;
+    const appLocaleMessages = await getLocaleMessages(appConfig.locale);
+
     return {
-      appConfig: JSON.parse(configResponse.config) as AppConfig,
+      appConfig,
+      appLocaleMessages,
       appNFT: configResponse.nft === undefined ? configResponse.nft : null,
       siteId: configResponse?.id,
       slug: configResponse?.slug,
