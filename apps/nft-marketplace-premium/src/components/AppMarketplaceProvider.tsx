@@ -49,7 +49,6 @@ export function AppMarketplaceProvider({
   const [locale, setLocale] = useState(defaultLocale);
   const [ref, setRef] = useAtom(referralAtom);
   const { mode } = useThemeMode();
-  console.log(appLocaleMessages);
 
   const [messages, setMessages] = useState<any | null>(appLocaleMessages);
 
