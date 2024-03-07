@@ -13,7 +13,7 @@ class EIP6963ProviderManager {
   private _list: EIP6963ProviderDetail[] = []
 
   constructor() {
-    if (typeof window !== undefined) {
+    if (typeof window !== "undefined") {
       window.addEventListener(EIP6963Event.ANNOUNCE_PROVIDER, this.onAnnounceProvider.bind(this) as EventListener)
       window.dispatchEvent(new Event(EIP6963Event.REQUEST_PROVIDER))
     }
