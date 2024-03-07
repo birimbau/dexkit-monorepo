@@ -40,6 +40,14 @@ const DEXTOOLS_NETWORKS_MAP: { [key: string]: string } = {
   base: "base",
 };
 
+function getDexToolsLanguage(language: string) {
+  if (["es", "en", "pt", "fr"].includes(language)) {
+    return language;
+  } else {
+    ("en");
+  }
+}
+
 export default function TradingGraph({
   network,
   showInfo,
@@ -125,7 +133,9 @@ export default function TradingGraph({
               title="DEXTswap Aggregator"
               frameBorder="0"
               allow="clipboard-write"
-              src={`https://www.dextools.io/widget-aggregator/${language}/swap/${DEXTOOLS_NETWORKS_MAP[network]}/${selectedPool}`}
+              src={`https://www.dextools.io/widget-aggregator/${getDexToolsLanguage(
+                language
+              )}/swap/${DEXTOOLS_NETWORKS_MAP[network]}/${selectedPool}`}
             />
           ) : (
             <iframe
