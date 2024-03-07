@@ -21,7 +21,7 @@ export class WalletConnectV2 extends WalletConnect {
     onError,
   }: Omit<WalletConnectConstructorArgs, 'options'> & { defaultChainId: number; qrcode?: boolean }) {
     let darkmode = false;
-    if (typeof window !== undefined) {
+    if (typeof window !== "undefined") {
       darkmode = Boolean(window.matchMedia('(prefers-color-scheme: dark)'))
     }
 
