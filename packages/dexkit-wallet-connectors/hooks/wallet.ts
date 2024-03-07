@@ -15,13 +15,13 @@ export function useWalletActivate({
 }) {
   const { connector, chainId } = useWeb3React();
   const { setWalletConnectorMetadata } = useWalletConnectorMetadata()
-
+  // This should be deprecated
   const [walletConnector, setWalletConnector] = useAtom(selectedWalletAtom);
 
   const mutation = useMutation(async (params: WalletActivateParams) => {
-    if (connector.deactivate) {
-      await connector.deactivate();
-    }
+    /* if (connector.deactivate) {
+       await connector.deactivate();
+     }*/
 
     if (params?.overrideActivate && params?.overrideActivate(chainId)) return;
 
@@ -34,6 +34,7 @@ export function useWalletActivate({
           name: params.name
         }
       )
+      // This should be deprecated
       setWalletConnector("magic");
       return await magic.activate({
         loginType: params.loginType,
@@ -48,6 +49,7 @@ export function useWalletActivate({
           name: params.name
         }
       )
+      // This should be deprecated
       setWalletConnector(params.connectorName);
 
 
