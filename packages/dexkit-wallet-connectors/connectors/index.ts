@@ -7,7 +7,7 @@ import { getDeprecatedInjection, getIsCoinbaseWallet, getIsInjected, getIsMetaMa
 import { BROWSER_WALLET_ICON, COINBASE_WALLET_ICON, METAMASK_ICON, WALLET_CONNECT_ICON } from "../constants/icons";
 import { WalletActivateParams } from "../types";
 import { isMobile } from "../utils/userAgent";
-import { coinbaseWalletConnection, deprecatedInjectedConnection, magic, walletConnectV2Connection } from './connections';
+import { deprecatedInjectedConnection, magic, walletConnectV2Connection } from './connections';
 import { MagicLoginType } from "./magic";
 
 
@@ -23,6 +23,7 @@ export const WALLET_CONNECTORS: {
   icon: string;
   connector: Connector,
   loginType?: MagicLoginType;
+  overrideActivate?: (chainId?: number) => boolean;
   shouldDisplay: () => boolean;
 }[] = [
     {
@@ -36,16 +37,17 @@ export const WALLET_CONNECTORS: {
       id: "walletConnect",
       name: "Wallet Connect",
       connector: walletConnectV2Connection.connector,
+      overrideActivate: walletConnectV2Connection.overrideActivate,
       icon: "https://raw.githubusercontent.com/DexKit/assets/main/walletconnect-circle-blue.svg",
       shouldDisplay: () => walletConnectV2Connection.shouldDisplay(),
     },
-    {
-      id: "coinbase",
-      name: "Coinbase",
-      connector: coinbaseWalletConnection.connector,
-      icon: COINBASE_WALLET_ICON,
-      shouldDisplay: () => coinbaseWalletConnection.shouldDisplay(),
-    },
+    /* {
+       id: "coinbase",
+       name: "Coinbase",
+       connector: coinbaseWalletConnection.connector,
+       icon: COINBASE_WALLET_ICON,
+       shouldDisplay: () => coinbaseWalletConnection.shouldDisplay(),
+     },*/
     {
       id: "magic",
       name: "Google",

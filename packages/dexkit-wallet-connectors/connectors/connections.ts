@@ -203,8 +203,7 @@ const magicConnection: Connection = {
   connector: magic,
   hooks: magicHooks,
   type: ConnectionType.MAGIC,
-  shouldDisplay: () =>
-    Boolean((isMobile && !getIsInjectedMobileBrowser()) || !isMobile),
+  shouldDisplay: () => !getIsInjectedMobileBrowser(),
   // If on a mobile browser that isn't the coinbase wallet browser, deeplink to the coinbase wallet app
   overrideActivate: () => {
     return false

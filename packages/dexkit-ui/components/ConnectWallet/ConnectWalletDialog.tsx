@@ -14,7 +14,6 @@ import {
   ListItemText,
   Stack,
   TextField,
-  useTheme,
 } from "@mui/material";
 
 import { ChangeEvent, useState } from "react";
@@ -28,6 +27,7 @@ import { AppDialogTitle } from "../AppDialogTitle";
 import { WALLET_CONNECTORS } from "@dexkit/wallet-connectors/connectors";
 import { magic } from "@dexkit/wallet-connectors/connectors/connections";
 import { MagicLoginType } from "@dexkit/wallet-connectors/connectors/magic";
+import { EMAIL_ICON } from "@dexkit/wallet-connectors/constants/icons";
 import { WalletActivateParams } from "@dexkit/wallet-connectors/types";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import Wallet from "@mui/icons-material/Wallet";
@@ -52,7 +52,6 @@ export default function ConnectWalletDialog({
   const { onClose } = dialogProps;
 
   const { formatMessage } = useIntl();
-  const theme = useTheme();
 
   const [connectorName, setConnectorName] = useState<string>();
   const [loginType, setLoginType] = useState<MagicLoginType | undefined>(
@@ -69,12 +68,18 @@ export default function ConnectWalletDialog({
     connector,
     loginType,
     email,
+    icon,
+    name,
     connectorName,
+    overrideActivate,
   }: {
     connectorName: WalletActivateParams["connectorName"];
+    name?: string;
+    icon?: string;
     loginType?: MagicLoginType;
     email?: string;
     connector: Connector;
+    overrideActivate?: (chainId?: number) => boolean;
   }) => {
     setConnectorName(connectorName);
     setLoginType(loginType);
@@ -86,9 +91,17 @@ export default function ConnectWalletDialog({
           email,
           loginType,
           connector,
+          icon,
+          name,
         });
       } else {
-        await activate({ connectorName, connector });
+        await activate({
+          connectorName,
+          connector,
+          icon,
+          name,
+          overrideActivate,
+        });
       }
     } catch (err: any) {
       enqueueSnackbar(err.message, {
@@ -108,6 +121,8 @@ export default function ConnectWalletDialog({
   const handleConnectWithEmail = () => {
     handleActivateWallet({
       connectorName: "magic",
+      name: "Email",
+      icon: EMAIL_ICON,
       loginType: "email",
       email: email,
       connector: magic,
@@ -136,6 +151,9 @@ export default function ConnectWalletDialog({
                 connectorName: conn.id,
                 loginType: conn.loginType,
                 connector: conn.connector,
+                icon: conn?.icon,
+                name: conn?.name,
+                overrideActivate: conn?.overrideActivate,
               })
             }
           >

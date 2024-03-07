@@ -6,7 +6,10 @@ import { MagicLoginType } from "../connectors/magic";
 
 export type BaseActivateParams = {
   connectorName: "magic" | "metamask" | "walletConnect" | "coinbase";
+  name?: string,
+  icon?: string,
   connector: Connector,
+  overrideActivate?: (chainId?: number) => boolean;
 };
 
 export type ActivateMetamaskParams = BaseActivateParams & {
@@ -28,7 +31,7 @@ export type ActivateMagicParams = BaseActivateParams & {
 };
 
 export type WalletActivateParams =
-  | ActivateMetamaskParams
+  ActivateMetamaskParams
   | ActivateMagicParams
   | ActivateWalletConnectParams
   | ActivateCoinbaseParams;

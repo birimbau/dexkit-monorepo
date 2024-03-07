@@ -31,6 +31,7 @@ import { NETWORK_IMAGE, NETWORK_NAME } from '@dexkit/core/constants/networks';
 import { AccountBalance } from '@dexkit/ui/components/AccountBalance';
 import TransakWidget from '@dexkit/ui/components/Transak';
 import { GET_WALLET_ICON } from '@dexkit/wallet-connectors/connectors';
+import { useWalletConnectorMetadata } from '@dexkit/wallet-connectors/hooks';
 import FileCopy from '@mui/icons-material/FileCopy';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import Logout from '@mui/icons-material/Logout';
@@ -58,7 +59,7 @@ const SelectNetworkDialog = dynamic(
 export default function WalletContent() {
   const { connector, account, ENSName, provider, chainId } = useWeb3React();
   const logoutMutation = useLogoutAccountMutation();
-
+  const { walletConnectorMetadata } = useWalletConnectorMetadata();
   const connectWalletDialog = useConnectWalletDialog();
   const handleSwitchWallet = () => {
     connectWalletDialog.setOpen(true);
@@ -188,7 +189,7 @@ export default function WalletContent() {
           >
             <Stack direction="row" spacing={1} alignItems="center">
               <Avatar
-                src={GET_WALLET_ICON(connector)}
+                src={walletConnectorMetadata.icon || GET_WALLET_ICON(connector)}
                 sx={(theme) => ({
                   width: theme.spacing(2),
                   height: theme.spacing(2),
