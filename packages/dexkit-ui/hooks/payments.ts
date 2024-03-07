@@ -2,7 +2,7 @@ import { DexkitApiProvider } from "@dexkit/core/providers";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useContext } from "react";
 import { Subscription } from "../types/ai";
-import { CreditGrant } from "../types/payments";
+import { CreditGrant, CryptoCheckoutSession } from "../types/payments";
 
 export const SUBSCRIPTION_QUERY = "SUBSCRIPTION_QUERY";
 
@@ -16,13 +16,21 @@ export function useSubscription() {
 export function useBuyCreditsCheckout() {
   const { instance } = useContext(DexkitApiProvider);
 
-  return useMutation(async ({ amount }: { amount: number }) => {
-    return (
-      await instance?.post<{ url: string }>("/payments/buy-credits-session", {
-        amount: amount.toString(),
-      })
-    )?.data;
-  });
+  return useMutation(
+    async ({
+      amount,
+      paymentMethod,
+    }: {
+      amount: number;
+      paymentMethod: string;
+    }) => {
+      return (
+        await instance?.post<{ url: string }>("/payments/buy-credits-session", {
+          amount: amount.toString(),
+        })
+      )?.data;
+    }
+  );
 }
 
 export const CREDIT_HISTORY = "CREDIT_HISTORY";
@@ -40,8 +48,12 @@ export function useCryptoCheckout() {
   const { instance } = useContext(DexkitApiProvider);
 
   return useMutation(async (params: { intent: string; amount: string }) => {
-    return (await instance?.post("/payments/crypto-checkout-session", params))
-      ?.data;
+    return (
+      await instance?.post<CryptoCheckoutSession>(
+        "/payments/crypto-checkout-session",
+        params
+      )
+    )?.data;
   });
 }
 
@@ -84,11 +96,14 @@ export function useConfirmCheckout() {
 
 export const CHECKOUT_STATUS = "CHECKOUT_STATUS";
 
-export function useCheckoutStatus({ id }: { id: string }) {
+export function useCheckoutData({ id }: { id: string }) {
   const { instance } = useContext(DexkitApiProvider);
 
   return useQuery([CHECKOUT_STATUS, id], async () => {
-    return (await instance?.get(`/payments/checkout-session/${id}/status`))
-      ?.data;
+    return (
+      await instance?.get<CryptoCheckoutSession>(
+        `/payments/checkout-session/${id}`
+      )
+    )?.data;
   });
 }

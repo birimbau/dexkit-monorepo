@@ -2,15 +2,18 @@ import CheckoutItemList from '@/modules/checkout/components/CheckoutItemList';
 import CheckoutTokenAutocomplete from '@/modules/checkout/components/CheckoutTokenAutocomplete';
 import CheckoutConfirmDialog from '@/modules/checkout/components/dialogs/CheckoutConfirmDialog';
 import { ChainId, useErc20Balance } from '@dexkit/core';
+import { ERC20Abi } from '@dexkit/core/constants/abis';
 import { DexkitApiProvider } from '@dexkit/core/providers';
 import { Token } from '@dexkit/core/types';
 import { useConnectWalletDialog } from '@dexkit/ui';
 import {
+  useCheckoutData,
   useCheckoutItems,
   useConfirmCheckout,
 } from '@dexkit/ui/hooks/payments';
 import Wallet from '@mui/icons-material/Wallet';
 import {
+  Alert,
   Button,
   Card,
   CardContent,
@@ -30,6 +33,7 @@ import {
   GetStaticProps,
   GetStaticPropsContext,
 } from 'next';
+import { useSnackbar } from 'notistack';
 import { useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { PageHeader } from 'src/components/PageHeader';
@@ -71,13 +75,15 @@ export default function CheckoutPage({ id }: CheckoutPageProps) {
       )
       .reduce((prev, curr) => {
         return prev.add(curr);
-      });
+      }, BigNumber.from(0));
   }, [checkoutItemsQuery.data]);
 
   const { provider, account, isActive } = useWeb3React();
   const balanceQuery = useErc20Balance(provider, token?.address, account);
 
   const confirmCheckoutMutation = useConfirmCheckout();
+
+  const checkoutQuery = useCheckoutData({ id });
 
   const transferMutation = useMutation(
     async ({
@@ -94,7 +100,7 @@ export default function CheckoutPage({ id }: CheckoutPageProps) {
       if (token) {
         const contract = new ethers.Contract(
           token?.address,
-          [],
+          ERC20Abi,
           provider?.getSigner(),
         );
 
@@ -107,25 +113,41 @@ export default function CheckoutPage({ id }: CheckoutPageProps) {
     },
   );
 
-  const handleConfirm = async () => {
-    if (total && token) {
-      await transferMutation.mutateAsync({
-        address: '',
-        amount: total,
-        token,
-        onSubmit: async (hash: string) => {
-          setHash(hash);
+  const { enqueueSnackbar } = useSnackbar();
 
-          if (token) {
-            await confirmCheckoutMutation.mutateAsync({
-              chainId: token?.chainId,
-              checkoutId: id,
-              tokenAddress: token?.address,
-              txHash: hash,
-            });
-          }
-        },
-      });
+  const handleConfirm = async () => {
+    if (total && token && checkoutQuery.data?.receiver) {
+      try {
+        await transferMutation.mutateAsync({
+          address: checkoutQuery.data?.receiver,
+          amount: total,
+          token,
+          onSubmit: async (hash: string) => {
+            setHash(hash);
+
+            if (token) {
+              console.log('chama isso aqui');
+
+              await confirmCheckoutMutation.mutateAsync({
+                chainId: token?.chainId,
+                checkoutId: id,
+                tokenAddress: token?.address,
+                txHash: hash,
+              });
+
+              await checkoutQuery.refetch();
+            }
+          },
+        });
+      } catch (err) {
+        enqueueSnackbar(
+          <FormattedMessage
+            id="error.while.tranfer"
+            defaultMessage="Error while transfer"
+          />,
+          { variant: 'error' },
+        );
+      }
     }
   };
 
@@ -152,6 +174,13 @@ export default function CheckoutPage({ id }: CheckoutPageProps) {
     setOpen(false);
   };
 
+  const disabled = useMemo(() => {
+    return (
+      checkoutQuery.data &&
+      ['confirmed', 'expired'].includes(checkoutQuery.data?.status)
+    );
+  }, [checkoutQuery.data]);
+
   return (
     <>
       <CheckoutConfirmDialog
@@ -162,6 +191,8 @@ export default function CheckoutPage({ id }: CheckoutPageProps) {
           fullWidth: true,
           onClose: handleClose,
         }}
+        id={id}
+        total={total}
         txHash={hash}
         isLoading={transferMutation.isLoading}
         onConfirm={handleConfirm}
@@ -185,6 +216,28 @@ export default function CheckoutPage({ id }: CheckoutPageProps) {
               ]}
             />
           </Grid>
+          {checkoutQuery.data?.status === 'confirmed' && (
+            <Grid item xs={12}>
+              <Alert severity="success">
+                <FormattedMessage
+                  id="payment.confirmed"
+                  defaultMessage="Payment Confirmed"
+                />
+              </Alert>
+            </Grid>
+          )}
+
+          {checkoutQuery.data?.status === 'expired' && (
+            <Grid item xs={12}>
+              <Alert severity="warning">
+                <FormattedMessage
+                  id="payment.confirmed"
+                  defaultMessage="Payment expired"
+                />
+              </Alert>
+            </Grid>
+          )}
+
           <Grid item xs={12} sm={6}>
             <Card>
               <CardContent>
@@ -228,6 +281,7 @@ export default function CheckoutPage({ id }: CheckoutPageProps) {
                     onChange={handleChangeToken}
                     chainId={137}
                     token={token}
+                    disabled={disabled}
                   />
                   <Stack
                     direction="row"
@@ -252,13 +306,18 @@ export default function CheckoutPage({ id }: CheckoutPageProps) {
                   </Stack>
                   {isActive ? (
                     <Button
-                      disabled={!hasSufficientBalance}
+                      disabled={!hasSufficientBalance || disabled}
                       fullWidth
                       onClick={handlePay}
                       variant="contained"
                       size="large"
                     >
-                      {hasSufficientBalance ? (
+                      {disabled ? (
+                        <FormattedMessage
+                          id="not.available"
+                          defaultMessage="Not available"
+                        />
+                      ) : hasSufficientBalance ? (
                         <FormattedMessage
                           id="pay.amount.symbol"
                           defaultMessage="Pay {amount} {tokenSymbol}"

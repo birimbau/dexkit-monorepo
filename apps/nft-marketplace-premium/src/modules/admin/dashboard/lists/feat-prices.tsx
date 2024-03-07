@@ -2,7 +2,7 @@ import { Datagrid, List, SearchInput, TextField } from 'react-admin';
 
 const FeatPricesList = () => (
   <List
-    filters={[<SearchInput source="q" alwaysOn />]}
+    filters={[<SearchInput key={1} source="q" alwaysOn />]}
     filterDefaultValues={{ q: '' }}
   >
     <Datagrid rowClick="edit">

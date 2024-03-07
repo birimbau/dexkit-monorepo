@@ -1,15 +1,21 @@
 import { AppDialogTitle } from '@dexkit/ui';
 import FormikDecimalInput from '@dexkit/ui/components/FormikDecimalInput';
-import { useBuyCreditsCheckout } from '@dexkit/ui/hooks/payments';
+import {
+  useBuyCreditsCheckout,
+  useCryptoCheckout,
+} from '@dexkit/ui/hooks/payments';
 import {
   Button,
   Dialog,
   DialogActions,
   DialogContent,
   DialogProps,
+  MenuItem,
+  Stack,
 } from '@mui/material';
 import Decimal from 'decimal.js';
-import { Formik } from 'formik';
+import { Field, Formik } from 'formik';
+import { Select } from 'formik-mui';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 export interface AddCreditDialogProps {
@@ -27,12 +33,31 @@ export default function AddCreditDialog({ DialogProps }: AddCreditDialogProps) {
 
   const buyCreditsCheckout = useBuyCreditsCheckout();
 
-  const handleSubmit = async ({ amount }: { amount: string }) => {
-    const result = await buyCreditsCheckout.mutateAsync({
-      amount: parseFloat(amount),
-    });
+  const cryptoCheckout = useCryptoCheckout();
 
-    window.open(result?.url, '_blank');
+  const handleSubmit = async ({
+    amount,
+    paymentMethod,
+  }: {
+    amount: string;
+    paymentMethod: string;
+  }) => {
+    console.log('vem aqui', paymentMethod);
+    if (paymentMethod === 'crypto') {
+      const result = await cryptoCheckout.mutateAsync({
+        amount,
+        intent: 'credit-grant',
+      });
+
+      window.open(`/checkout/${result?.id}`);
+    } else {
+      const result = await buyCreditsCheckout.mutateAsync({
+        amount: parseFloat(amount),
+        paymentMethod,
+      });
+
+      window.open(result?.url, '_blank');
+    }
   };
 
   const { formatMessage } = useIntl();
@@ -52,7 +77,7 @@ export default function AddCreditDialog({ DialogProps }: AddCreditDialogProps) {
   return (
     <Dialog {...DialogProps}>
       <Formik
-        initialValues={{ amount: '5' }}
+        initialValues={{ amount: '5', paymentMethod: 'crypto' }}
         onSubmit={handleSubmit}
         validate={handleValitate}
       >
@@ -65,15 +90,41 @@ export default function AddCreditDialog({ DialogProps }: AddCreditDialogProps) {
               }
             />
             <DialogContent dividers>
-              <FormikDecimalInput
-                TextFieldProps={{
-                  label: (
-                    <FormattedMessage id="amount" defaultMessage="Amount" />
-                  ),
-                }}
-                name="amount"
-                decimals={2}
-              />
+              <Stack spacing={2}>
+                <FormikDecimalInput
+                  TextFieldProps={{
+                    label: (
+                      <FormattedMessage id="amount" defaultMessage="Amount" />
+                    ),
+                  }}
+                  name="amount"
+                  decimals={2}
+                />
+                <Field
+                  component={Select}
+                  name="paymentMethod"
+                  fullWidth
+                  label={
+                    <FormattedMessage
+                      id="payment.method"
+                      defaultMessage="Payment method"
+                    />
+                  }
+                >
+                  <MenuItem value="crypto">
+                    <FormattedMessage
+                      id="cryptocurrency"
+                      defaultMessage="Cryptocurrency"
+                    />
+                  </MenuItem>
+                  <MenuItem value="card">
+                    <FormattedMessage
+                      id="credit.card"
+                      defaultMessage="Credit Card"
+                    />
+                  </MenuItem>
+                </Field>
+              </Stack>
             </DialogContent>
             <DialogActions>
               <Button
