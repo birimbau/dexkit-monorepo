@@ -31,6 +31,11 @@ export async function switchNetwork(connector: Connector, chainId: number) {
   if (connector instanceof MagicConnector) {
     return connector.changeNetwork(parseChainId(chainId));
   }
+
+  return connector.provider?.request({
+    method: "wallet_switchEthereumChain",
+    params: [{ chainId: `0x${chainId.toString(16)}` }],
+  });
 }
 
 /**
