@@ -106,6 +106,23 @@ export default function TradingGraph({
             <iframe
               height="100%"
               width="100%"
+              id="dextswap-aggregator-widget"
+              title="DEXTswap Aggregator"
+              frameBorder="0"
+              allow="clipboard-write"
+              src={`https://www.dextools.io/widget-aggregator/${language}/swap/${network}/${selectedPool}`}
+            />
+          )
+        )}
+      </Box>
+    </Card>
+  );
+}
+
+{
+  /*  <iframe
+              height="100%"
+              width="100%"
               id="geckoterminal-embed"
               title="GeckoTerminal Embed"
               src={`https://www.geckoterminal.com/${language}/${network}/pools/${selectedPool}?embed=1&info=${
@@ -114,10 +131,5 @@ export default function TradingGraph({
               frameBorder="0"
               allow="clipboard-write"
               allowFullScreen
-            />
-          )
-        )}
-      </Box>
-    </Card>
-  );
+            />*/
 }
