@@ -1,6 +1,1483 @@
 {
+  "Create forms": {
+    "defaultMessage": "Crear formularios"
+  },
+  "Deploy": {
+    "defaultMessage": "Desplegar"
+  },
+  "Switch Network": {
+    "defaultMessage": "Cambiar redes"
+  },
+  "address": {
+    "defaultMessage": "Dirección"
+  },
+  "admin.setup.description": {
+    "defaultMessage": "Inicia tu propio sitio/mercado de criptomonedas en segundos. Empieza ahora siendo un emprendedor en criptomonedas en dos pasos: crea una billetera, completa el nombre de tu mercado y ¡estarás listo para empezar!"
+  },
+  "buy.app": {
+    "defaultMessage": "Comprar app"
+  },
+  "bytecode": {
+    "defaultMessage": "Código de bytes"
+  },
+  "changelog-dev": {
+    "defaultMessage": "Registro de cambios de desarrollo"
+  },
+  "check.out.our.dev.changelog.for.more.technical.updates": {
+    "defaultMessage": "Consulta el registro de cambios de desarrollo para actualizaciones técnicas"
+  },
+  "check.out.our.video.changelog.from.dexappbuilder.with.last.updates": {
+    "defaultMessage": "Consulta el registro de video con las últimas actualizaciones"
+  },
+  "choose.a.wallet.to.proceed": {
+    "defaultMessage": "Elige una billetera para proceder"
+  },
+  "choose.wallet": {
+    "defaultMessage": "Elegir billetera"
+  },
+  "connect.wallet.to.see.apps.associated.with.your.account": {
+    "defaultMessage": "Conecta la billetera para ver aplicaciones asociadas a tu cuenta"
+  },
+  "connect.wallet.to.see.contracts.associated.with.your.account": {
+    "defaultMessage": "Conecta la billetera para ver contratos asociados a tu cuenta"
+  },
+  "connected.wallet.not.authorized.to.access.this.account.switch.to.account.that.owns.this.account": {
+    "defaultMessage": "La billetera conectada no está autorizada para acceder a esta aplicación. Cambia a la cuenta que posee esta app e inicia sesión"
+  },
+  "contract.deployed.succefully": {
+    "defaultMessage": "Contrato desplegado con éxito"
+  },
+  "contract.deployed.successfully": {
+    "defaultMessage": "Contrato desplegado con éxito"
+  },
+  "contract.instances": {
+    "defaultMessage": "Instancias de contrato"
+  },
+  "contract.templates": {
+    "defaultMessage": "Plantillas de contrato"
+  },
+  "contract.wizard": {
+    "defaultMessage": "Asistente de contratos"
+  },
+  "contract.wizard.description": {
+    "defaultMessage": "Crea fácilmente tus coleccionables digitales (NFTs) utilizando herramientas de generación de imágenes IA y créalos en la cadena de bloques que elijas en un clic."
+  },
+  "contracts": {
+    "defaultMessage": "Contratos"
+  },
+  "contracts.you.deployed": {
+    "defaultMessage": "Contratos que has desplegado"
+  },
+  "create.an.exchange.with.our.quick.app.builder.in.seconds": {
+    "defaultMessage": "Crea una aplicación avanzada de intercambio de órdenes de límite de criptomonedas en segundos utilizando nuestro constructor de aplicaciones rápidas"
+  },
+  "create.and.manage.your.collections": {
+    "defaultMessage": "Crea y administra tus colecciones"
+  },
+  "create.custom.form": {
+    "defaultMessage": "Crear formulario personalizado"
+  },
+  "create.forms.to interact.with.contracts": {
+    "defaultMessage": "Crea formularios para interactuar con contratos"
+  },
+  "create.marketplace.title": {
+    "defaultMessage": "Crea tu sitio/mercado de criptomonedas en segundos."
+  },
+  "create.one.to.start.selling.NFTs.or.crypto": {
+    "defaultMessage": "Crea una aplicación para comenzar a negociar NFTs o criptomonedas"
+  },
+  "create.swap.title": {
+    "defaultMessage": "Crea tu sitio/cambiador de criptomonedas en segundos."
+  },
+  "create.template.pages": {
+    "defaultMessage": "Crea páginas de plantilla"
+  },
+  "created.by.address": {
+    "defaultMessage": "Creado por: {address}"
+  },
+  "creator": {
+    "defaultMessage": "Creador"
+  },
+  "creator.address": {
+    "defaultMessage": "Creador: {address}"
+  },
+  "current.app.version": {
+    "defaultMessage": "Versión actual de la app"
+  },
+  "custom": {
+    "defaultMessage": "Personalizado"
+  },
+  "deploy.your.own.contract": {
+    "defaultMessage": "Despliega tu propio contrato"
+  },
+  "deploying.contract": {
+    "defaultMessage": "Desplegando contrato"
+  },
+  "dev.changelog": {
+    "defaultMessage": "Registro de cambios de desarrollo"
+  },
+  "do.you.really.want.to.create.this.form": {
+    "defaultMessage": "¿Realmente deseas crear este formulario?"
+  },
+  "do.you.really.want.to.create.this.token": {
+    "defaultMessage": "¿Realmente deseas crear este token?"
+  },
+  "do.you.really.want.to.update.this.form": {
+    "defaultMessage": "¿Realmente deseas actualizar este formulario?"
+  },
+  "drops.of.same.collection": {
+    "defaultMessage": "Gotas de la misma colección"
+  },
+  "edit.templateName": {
+    "defaultMessage": "Editar: {templateName}"
+  },
+  "email.verified": {
+    "defaultMessage": "Correo electrónico verificado"
+  },
+  "email.verified.with.success": {
+    "defaultMessage": "Correo electrónico verificado con éxito"
+  },
+  "error.404": {
+    "defaultMessage": "Error 404"
+  },
+  "error.while.deploying.contract": {
+    "defaultMessage": "Error al implementar contrato"
+  },
+  "error.while.switching.network": {
+    "defaultMessage": "Error al cambiar de red"
+  },
+  "explore.our.new.tool.dexgenerator": {
+    "defaultMessage": "Explora nuestra nueva herramienta: DexGenerator"
+  },
+  "favorites": {
+    "defaultMessage": "Favoritos"
+  },
+  "filled": {
+    "defaultMessage": "Lleno"
+  },
+  "form.deleted.successfully": {
+    "defaultMessage": "Formulario eliminado exitosamente"
+  },
+  "form.name": {
+    "defaultMessage": "Formulario: {name}"
+  },
+  "form.preview": {
+    "defaultMessage": "Vista previa del formulario"
+  },
+  "form.updated": {
+    "defaultMessage": "Formulario actualizado"
+  },
+  "forms": {
+    "defaultMessage": "Formularios"
+  },
+  "make.at.least.one.form.field.visible.to.see.a.preview": {
+    "defaultMessage": "Haz visible al menos un campo de formulario para ver una vista previa"
+  },
+  "manage.contract": {
+    "defaultMessage": "Administrar Contrato"
+  },
+  "max.supply": {
+    "defaultMessage": "Suministro Máx"
+  },
+  "my.collections": {
+    "defaultMessage": "Mis Colecciones"
+  },
+  "my.contracts": {
+    "defaultMessage": "Mis contratos"
+  },
+  "network.switched": {
+    "defaultMessage": "Red cambiada"
+  },
+  "nft.drop": {
+    "defaultMessage": "NFT Lanzado"
+  },
+  "no.apps": {
+    "defaultMessage": "Sin Aplicaciones"
+  },
+  "no.forms.yet": {
+    "defaultMessage": "Sin formularios aún"
+  },
+  "no.page.templates": {
+    "defaultMessage": "Sin plantillas de página"
+  },
+  "no.wallet.connected": {
+    "defaultMessage": "Sin conexión de monedero"
+  },
+  "oop.page.not.found": {
+    "defaultMessage": "¡Vaya, página no encontrada!"
+  },
+  "order.type": {
+    "defaultMessage": "Tipo de pedido"
+  },
+  "page.template": {
+    "defaultMessage": "Plantilla de Página"
+  },
+  "please.confirm.the.transaction.in.your.wallet.and.wait.for.confirmation": {
+    "defaultMessage": "Por favor, confirma la transacción en tu monedero y espera la confirmación"
+  },
+  "published.by.publisher": {
+    "defaultMessage": "Publicado por: {publisher}"
+  },
+  "quick.exchange.builder.description": {
+    "defaultMessage": "Eleva tu juego de trading de criptomonedas con nuestro Creador Rápido para Exchanges. Crea tu plataforma de exchange fácilmente, adapta a tus necesidades y embarcate en un viaje de innovación financiera. Explora las posibilidades y redefine la forma en que construyes exchanges."
+  },
+  "quick.store.builder.title": {
+    "defaultMessage": "Crea una app de tienda NFT en segundos usando nuestro creador de app rápido"
+  },
+  "quick.swap.builder.description": {
+    "defaultMessage": "Crea un monedero de criptomonedas para tu token. Puedes configurarlo para que se ajuste a la marca de tu proyecto"
+  },
+  "quick.swap.builder.title": {
+    "defaultMessage": "Crea una app de agregador de criptomonedas en segundos usando nuestro creador de apps rápido"
+  },
+  "quick.swap.wizard.description": {
+    "defaultMessage": "Crea una tienda NFT para tu cuenta. Comparte tu tienda para que los usuarios compren fácilmente las ofertas que publicas. Una tienda dedicada para mostrar tus NFTs"
+  },
+  "quick.wallet.builder.title": {
+    "defaultMessage": "Crea un monedero de criptomonedas en segundos usando nuestro creador de app rápido"
+  },
+  "select.type": {
+    "defaultMessage": "Todos"
+  },
+  "site.list": {
+    "defaultMessage": "Lista de Sitios"
+  },
+  "site.list.description": {
+    "defaultMessage": "Inicia tu propio sitio/mercado/aplicación en segundos. Aquí puedes ver e inspirarte en otras aplicaciones de la comunidad. ¡Empieza ahora siendo un emprendedor cripto"
+  },
+  "site.templates": {
+    "defaultMessage": "Plantillas de sitio"
+  },
+  "site.templates.description": {
+    "defaultMessage": "Inicia tu propio sitio/mercado/aplicación en segundos. Aquí puedes ver y clonar aplicaciones con diversos casos de uso. ¡Empieza ahora siendo un emprendedor cripto"
+  },
+  "template.created": {
+    "defaultMessage": "Plantilla de contrato actualizada"
+  },
+  "thirdweb.contracts": {
+    "defaultMessage": "Contratos de ThirdWeb"
+  },
+  "token.drop": {
+    "defaultMessage": "Entrega de token"
+  },
+  "traits": {
+    "defaultMessage": "Características"
+  },
+  "transaction.submitted": {
+    "defaultMessage": "Transacción enviada"
+  },
+  "update.form": {
+    "defaultMessage": "Guardar formulario"
+  },
+  "video.changelog": {
+    "defaultMessage": "Registro de cambios en video"
+  },
+  "view.contracts": {
+    "defaultMessage": "Ver contratos"
+  },
+  "view.form": {
+    "defaultMessage": "Ver formulario"
+  },
+  "view.on.explorer": {
+    "defaultMessage": "Ver en explorador"
+  },
+  "view.site": {
+    "defaultMessage": "Ver"
+  },
+  "wallets": {
+    "defaultMessage": "Carteras"
+  },
+  "web3forms.deplopy": {
+    "defaultMessage": "DexGenerador"
+  },
+  "you.can.deploy.contracts.fromo.our.list.and.from.the.community.in.the.future": {
+    "defaultMessage": "Puedes implementar contratos de nuestra lista y de la comunidad en el futuro"
+  },
+  ".step.theme.info": {
+    "defaultMessage": "Elige el tema y la fuente de la aplicación de intercambio."
+  },
+  "0x.api": {
+    "defaultMessage": "API de 0x"
+  },
+  "0x.dashboard": {
+    "defaultMessage": "Panel de 0x"
+  },
+  "0x.is.a.decentralized.exchange.protocol.description": {
+    "defaultMessage": "0x es un protocolo de intercambio descentralizado en Ethereum, que permite el comercio entre pares de varios activos digitales a través de estándares abiertos y contratos inteligentes. Esta clave de API se utiliza para las funciones de intercambio y orden limitada."
+  },
+  "Airdrop token": {
+    "defaultMessage": "Token airdrop"
+  },
+  "Airdropped token": {
+    "defaultMessage": "Token recibido por airdrop"
+  },
+  "Allow.list.file": {
+    "defaultMessage": "Permitir lista de archivos"
+  },
+  "Amount": {
+    "defaultMessage": "Cantidad"
+  },
+  "Amount in": {
+    "defaultMessage": "Cantidad Entrante"
+  },
+  "Amount.nft": {
+    "defaultMessage": "Cantidad de NFT"
+  },
+  "Choose app font": {
+    "defaultMessage": "Selecciona la fuente de la aplicación"
+  },
+  "Claiming not available": {
+    "defaultMessage": "Reclamación no disponible"
+  },
+  "Edit claimers": {
+    "defaultMessage": "Editar reclamantes"
+  },
+  "Export": {
+    "defaultMessage": "Exportar"
+  },
+  "Free": {
+    "defaultMessage": "Gratis"
+  },
+  "From": {
+    "defaultMessage": "Desde"
+  },
+  "New.page": {
+    "defaultMessage": "Página nueva"
+  },
+  "Open.claim": {
+    "defaultMessage": "Abrir reclamación"
+  },
+  "Price": {
+    "defaultMessage": "Precio"
+  },
+  "Update": {
+    "defaultMessage": "Actualizar"
+  },
+  "You.are.not.eligible.to.mint.at.this.time.": {
+    "defaultMessage": "No eres elegible para hacer mint en este momento."
+  },
+  "access.darkblock.to.get.more.information": {
+    "defaultMessage": "Accede a darkblock para obtener más información"
+  },
+  "access.requirements.message": {
+    "defaultMessage": "Mensaje de requisitos de acceso"
+  },
+  "access.the.0x.dashboard.to.get.your.api.key": {
+    "defaultMessage": "Accede al panel de 0x para obtener tu clave de API"
+  },
+  "add.accounts.and.manage.their.permissions": {
+    "defaultMessage": "Añadir cuentas y gestionar sus permisos"
+  },
+  "add.addresses.to.airdrop": {
+    "defaultMessage": "Añadir direcciones al airdrop"
+  },
+  "add.app.ranking": {
+    "defaultMessage": "Añadir ranking de la aplicación"
+  },
+  "add.app.version": {
+    "defaultMessage": "Añadir versión de la aplicación"
+  },
+  "add.claim.condition": {
+    "defaultMessage": "Añadir condición de reclamación"
+  },
+  "add.collection.to.your.app": {
+    "defaultMessage": "Añadir colección a tu aplicación"
+  },
+  "add.leaderboard": {
+    "defaultMessage": "Añadir clasificación"
+  },
+  "add.leaderboards.to.your.app": {
+    "defaultMessage": "Añadir clasificaciones a tu aplicación"
+  },
+  "add.member": {
+    "defaultMessage": "Añadir miembro"
+  },
+  "add.network": {
+    "defaultMessage": "Añadir red"
+  },
+  "add.networks": {
+    "defaultMessage": "Añadir redes"
+  },
+  "add.ref.to.track.referrals": {
+    "defaultMessage": "Añadir ref a tu URL para rastrear referencias en tus eventos. Ej: tuSitio.com?ref=tu-referencia"
+  },
+  "add.rule": {
+    "defaultMessage": "Añadir regla"
+  },
+  "add.team.members.to.read.and.do.updates": {
+    "defaultMessage": "Añadir miembros del equipo para actualizar tu aplicación"
+  },
+  "add.versions.to.your.app": {
+    "defaultMessage": "Añadir versiones a tu aplicación"
+  },
+  "add.versions.to.your.app.for.backup.and.to.enable.rollback": {
+    "defaultMessage": "Añadir versiones a tu aplicación para hacer copias de seguridad y permitir rollback"
+  },
+  "adding.app.ranking": {
+    "defaultMessage": "Añadiendo ranking de la aplicación"
+  },
+  "adding.app.version": {
+    "defaultMessage": "Añadiendo versión de la aplicación"
+  },
+  "adding.member": {
+    "defaultMessage": "Añadiendo miembro"
+  },
+  "adding.ranking": {
+    "defaultMessage": "Añadiendo clasificación"
+  },
+  "adding.version": {
+    "defaultMessage": "Añadiendo versión"
+  },
+  "adjust.marketplace.fees.title": {
+    "defaultMessage": "Ajustar las tarifas del mercado de tu aplicación"
+  },
+  "adjust.your.app.swap.fees.title": {
+    "defaultMessage": "Ajustar las tarifas de intercambio de tu aplicación"
+  },
+  "airdrop": {
+    "defaultMessage": "Distribución de tokens"
+  },
+  "airdrop.claim.token.seo.title.message": {
+    "defaultMessage": "Airdrop de {tokenSymbol} en {network}"
+  },
+  "airdrop.claimable.contract": {
+    "defaultMessage": "Contrato reclamable de airdrop"
+  },
+  "airdrop.token.seo.description.message": {
+    "defaultMessage": "Reclamar airdrop de {tokenSymbol} en {network}"
+  },
+  "amount.exceeds.the.amount.staked": {
+    "defaultMessage": "La cantidad supera la cantidad bloqueada"
+  },
+  "amount.exceeds.the.balance": {
+    "defaultMessage": "La cantidad supera el saldo"
+  },
+  "amount.exceeds.the.nft.balance": {
+    "defaultMessage": "La cantidad supera el saldo de NFT"
+  },
+  "amount.nfts.selected.to.stake": {
+    "defaultMessage": "Los NFT {tokens} están seleccionados para bloquear"
+  },
+  "amount.of.tokenId.is.selected.to.unstake": {
+    "defaultMessage": "{amount} de \"#{tokenId}\" está seleccionado para desbloquear"
+  },
+  "amount.tokens.selected.to.stake": {
+    "defaultMessage": "Los NFT \"{tokens}\" están seleccionados para bloquear"
+  },
+  "analytics.wizard.description": {
+    "defaultMessage": "Añadir Google Analytics a tu aplicación"
+  },
+  "animation.url": {
+    "defaultMessage": "URL de animación"
+  },
+  "api.key": {
+    "defaultMessage": "Clave API"
+  },
+  "app.leaderboard.removed": {
+    "defaultMessage": "Tabla de clasificación de la aplicación eliminada"
+  },
+  "app.leaderboard.updated": {
+    "defaultMessage": "Tabla de clasificación de la aplicación actualizada"
+  },
+  "app.name": {
+    "defaultMessage": "Nombre de la aplicación"
+  },
+  "app.ranking": {
+    "defaultMessage": "Ranking de la aplicación"
+  },
+  "app.ranking.updated": {
+    "defaultMessage": "Ranking de la aplicación actualizado"
+  },
+  "app.removed": {
+    "defaultMessage": "Aplicación eliminada"
+  },
+  "app.version": {
+    "defaultMessage": "Versión de la aplicación"
+  },
+  "app.version.removed": {
+    "defaultMessage": "Versión de la aplicación eliminada"
+  },
+  "app.version.set": {
+    "defaultMessage": "Versión de la aplicación establecida"
+  },
+  "app.version.updated": {
+    "defaultMessage": "Versión de la aplicación actualizada"
+  },
+  "app.versions": {
+    "defaultMessage": "Versiones de la aplicación"
+  },
+  "approve": {
+    "defaultMessage": "Aprobar"
+  },
+  "available.amount": {
+    "defaultMessage": "Cantidad Disponible"
+  },
+  "available.balance.amount": {
+    "defaultMessage": "Cantidad disponible: {amount}"
+  },
+  "available.to.sell": {
+    "defaultMessage": "Disponible para vender: {quantity}"
+  },
+  "availclaimableable.rewards": {
+    "defaultMessage": "Recompensas reclamables"
+  },
+  "back.to.leaderboard.list": {
+    "defaultMessage": "Volver a la lista de tabla de clasificación"
+  },
+  "back.to.nft.list": {
+    "defaultMessage": "Volver a la lista de NFT"
+  },
+  "background.color": {
+    "defaultMessage": "Color de fondo"
+  },
+  "border.radius": {
+    "defaultMessage": "Radio de borde"
+  },
+  "builder.kits.description": {
+    "defaultMessage": "Selecciona un kit para previsualizar las funciones para construir tu aplicación."
+  },
+  "burn": {
+    "defaultMessage": "Quemar"
+  },
+  "burn.token": {
+    "defaultMessage": "Quemar Token"
+  },
+  "changes.unsaved": {
+    "defaultMessage": "Cambios sin guardar"
+  },
+  "checking.eligibility": {
+    "defaultMessage": "Comprobando elegibilidad..."
+  },
+  "choose.app.theme.color.for.each.mode ": {
+    "defaultMessage": "Elige el color del tema de la aplicación para cada modo"
+  },
+  "choose.default.settings.for.exchange.interface": {
+    "defaultMessage": "Elige la configuración predeterminada para la interfaz de intercambio"
+  },
+  "choose.network": {
+    "defaultMessage": "Elige red"
+  },
+  "claim.amount": {
+    "defaultMessage": "Cantidad de reclamación"
+  },
+  "claim.conditions": {
+    "defaultMessage": "condiciones.reclamacion"
+  },
+  "claim.erc20.tokens.from.contractName": {
+    "defaultMessage": "Reclamar tokens ERC20 de {contractName}"
+  },
+  "claim.erc721.tokens.from.contractName": {
+    "defaultMessage": "Reclamar tokens ERC721 de {contractName}"
+  },
+  "claim.free": {
+    "defaultMessage": "Reclamar gratis"
+  },
+  "claim.nfts": {
+    "defaultMessage": "Reclamar NFTs"
+  },
+  "claim.rewards": {
+    "defaultMessage": "Reclamar recompensas"
+  },
+  "claim.tokens": {
+    "defaultMessage": "Reclamar tokens"
+  },
+  "claimable.rewards": {
+    "defaultMessage": "Recompensas reclamables"
+  },
+  "claimed": {
+    "defaultMessage": "Reclamado"
+  },
+  "claimed.supply": {
+    "defaultMessage": "Suministro reclamado"
+  },
+  "claiming.not.available": {
+    "defaultMessage": "Reclamación no disponible"
+  },
+  "clain.priceToMint": {
+    "defaultMessage": "Reclamar ({priceToMint})"
+  },
+  "clear.filters.to.see.nft.drops": {
+    "defaultMessage": "Limpiar filtros para ver las gotas de NFT"
+  },
+  "click.on.nft.to.manage.and.set.claim.conditions.": {
+    "defaultMessage": "Haz clic en los NFT para comenzar a gestionar y establecer condiciones de reclamación."
+  },
+  "code": {
+    "defaultMessage": "Código"
+  },
+  "collection.address": {
+    "defaultMessage": "Dirección de colección"
+  },
+  "collection.without.orders": {
+    "defaultMessage": "Colección sin listados. ¡Vuelve más tarde!"
+  },
+  "condition.amount": {
+    "defaultMessage": "Cantidad de condición"
+  },
+  "condition.amount.in": {
+    "defaultMessage": "Cantidad de condición en"
+  },
+  "condition.amount.nft": {
+    "defaultMessage": "Cantidad de condición NFT"
+  },
+  "condition.amount.out": {
+    "defaultMessage": "Cantidad de condición fuera"
+  },
+  "config.sent": {
+    "defaultMessage": "Configuración enviada"
+  },
+  "configure.0x.text": {
+    "defaultMessage": "Asegura una experiencia fluida configurando tu clave de API de 0x para acceder a nuestros servicios de intercambio y cambio."
+  },
+  "contract.is.not.supported.yet": {
+    "defaultMessage": "Contrato aún no soportado"
+  },
+  "contract.not.supported": {
+    "defaultMessage": "Contrato no soportado"
+  },
+  "contract.type": {
+    "defaultMessage": "Tipo de contrato"
+  },
+  "copy.address": {
+    "defaultMessage": "Copiar dirección",
+    "description": "Copy text"
+  },
+  "create.claim.conditions": {
+    "defaultMessage": "Crear condiciones de reclamación"
+  },
+  "create.leaderboards.and.gamify.your.app": {
+    "defaultMessage": "Crea tablas de clasificación a partir de tus eventos y gamifica tu aplicación"
+  },
+  "csv.file.to.import.on.aidrop.contract": {
+    "defaultMessage": "Archivo CSV para ser importado en contratos de airdrop"
+  },
+  "darkblock": {
+    "defaultMessage": "Bloque oscuro"
+  },
+  "darkblock.io": {
+    "defaultMessage": "Darkblock.io"
+  },
+  "darkblock.one.line.description": {
+    "defaultMessage": "Darkblock es un protocolo descentralizado que permite a los creadores de contenido publicar y distribuir contenido exclusivo a sus fans sin la necesidad de plataformas centralizadas de paso de tokens. Esta integración se utiliza en la página de activos para las redes soportadas por Darkblock."
+  },
+  "default.currency": {
+    "defaultMessage": "Divisa predeterminada"
+  },
+  "delete.app.leaderboard": {
+    "defaultMessage": "Eliminar tabla de clasificación de la aplicación"
+  },
+  "delete.app.version": {
+    "defaultMessage": "Eliminar versión de la aplicación"
+  },
+  "denominator": {
+    "defaultMessage": "Denominador"
+  },
+  "deploy.a.collection.to.see.it.here": {
+    "defaultMessage": "Despliega una colección para verla aquí"
+  },
+  "deposit": {
+    "defaultMessage": "Actualizar"
+  },
+  "deposit.reward": {
+    "defaultMessage": "Depositar recompensa"
+  },
+  "detailed": {
+    "defaultMessage": "Detallado"
+  },
+  "dex.generator": {
+    "defaultMessage": "Generador Dex"
+  },
+  "dexappbuilder.ann.app.bar": {
+    "defaultMessage": "Apóyanos en {Giveth} y permite que nuestro servicio sea gratuito para todos. ¡{Gitcoin} puntúa 4 y la donación en Polygon para nosotros tiene donaciones coincidentes!"
+  },
+  "disable.burn": {
+    "defaultMessage": "Desactivar quema"
+  },
+  "disable.info": {
+    "defaultMessage": "Desactivar información"
+  },
+  "disable.transfer": {
+    "defaultMessage": "Desactivar transferencia"
+  },
+  "do.you.really.want.to.remove.this.app": {
+    "defaultMessage": "¿Realmente quieres eliminar esta aplicación?"
+  },
+  "do.you.really.want.to.remove.this.app.leaderboard": {
+    "defaultMessage": "¿Realmente quieres eliminar esta tabla de clasificación de la aplicación {title}?"
+  },
+  "do.you.really.want.to.remove.this.app.version": {
+    "defaultMessage": "¿Realmente quieres eliminar esta versión de la aplicación {version}?"
+  },
+  "do.you.really.want.to.remove.this.condition": {
+    "defaultMessage": "¿Realmente quieres eliminar esta Condición?"
+  },
+  "do.you.really.want.to.remove.this.member": {
+    "defaultMessage": "¿Realmente quieres eliminar a este miembro {member}?"
+  },
+  "do.you.really.want.to.set.to.this.app.version": {
+    "defaultMessage": "¿Realmente quieres establecer esta aplicación en la versión {version}? Asegúrate de hacer copia de seguridad de cualquier cambio en una nueva versión."
+  },
+  "drop": {
+    "defaultMessage": "Gota"
+  },
+  "drop.details": {
+    "defaultMessage": "Detalles de la gota"
+  },
+  "drop.is.starting.soon. Please check back later.": {
+    "defaultMessage": "La gota empezará pronto. Por favor, vuelve más tarde."
+  },
+  "drop.is.starting.soon.please.check.back.later": {
+    "defaultMessage": "La gota empezará pronto. Por favor, vuelve más tarde."
+  },
+  "drop.not.ready.to.mint.yet": {
+    "defaultMessage": "Esta gota aún no está lista para ser acuñada."
+  },
+  "drops": {
+    "defaultMessage": "Gotas"
+  },
+  "drops.are.not.available.for.this.contract": {
+    "defaultMessage": "Las gotas no están disponibles para este contrato"
+  },
+  "drops.not.found": {
+    "defaultMessage": "Gotas no encontradas"
+  },
+  "edit.claim.conditions": {
+    "defaultMessage": "Editar condiciones de reclamación"
+  },
+  "edit.claimers": {
+    "defaultMessage": "Editar reclamantes"
+  },
+  "edit.leaderboard": {
+    "defaultMessage": "Editar tabla de clasificación"
+  },
+  "edit.name": {
+    "defaultMessage": "Editar \"{name}\""
+  },
+  "edit.name.name": {
+    "defaultMessage": "Editar \"{name}\""
+  },
+  "edit.social.description": {
+    "defaultMessage": "Añadir redes sociales relacionadas con tu aplicación"
+  },
+  "edit.version": {
+    "defaultMessage": "Editar versión"
+  },
+  "empty.leaderboard": {
+    "defaultMessage": "Tabla de clasificación vacía"
+  },
+  "enable.darkblock": {
+    "defaultMessage": "Activar Activo de Darkblock"
+  },
+  "enable.darkblock.collection": {
+    "defaultMessage": "Activar Colección de Darkblock"
+  },
+  "enable.darkblock.on.asset.page": {
+    "defaultMessage": "Activar Darkblock en la página de activos"
+  },
+  "enable.darkblock.on.collection.page": {
+    "defaultMessage": "Activar Darkblock en la página de colección"
+  },
+  "enable.drop": {
+    "defaultMessage": "Activar Darkblock"
+  },
+  "enable.fiat": {
+    "defaultMessage": "Activar Fiat"
+  },
+  "enable.searchbar": {
+    "defaultMessage": "Activar barra de búsqueda"
+  },
+  "enter.amount.to.claim": {
+    "defaultMessage": "Introduce la cantidad a reclamar"
+  },
+  "error.color": {
+    "defaultMessage": "Color de error"
+  },
+  "error.removing.app.leaderboard": {
+    "defaultMessage": "Error al eliminar la tabla de clasificación de la aplicación"
+  },
+  "error.removing.app.version": {
+    "defaultMessage": "Error al eliminar la versión de la aplicación"
+  },
+  "error.removing.member": {
+    "defaultMessage": "Error al eliminar el miembro"
+  },
+  "error.set.app.version": {
+    "defaultMessage": "Error al establecer la versión de la aplicación"
+  },
+  "error.updating.app.leaderboard": {
+    "defaultMessage": "Error al actualizar la tabla de clasificación de la aplicación"
+  },
+  "error.while.minting": {
+    "defaultMessage": "Error al acuñar"
+  },
+  "events": {
+    "defaultMessage": "Eventos"
+  },
+  "exchange": {
+    "defaultMessage": "Intercambio"
+  },
+  "exchange.app.builder": {
+    "defaultMessage": "Generador de aplicaciones de intercambio"
+  },
+  "expire.at": {
+    "defaultMessage": "Caduca en"
+  },
+  "explorer": {
+    "defaultMessage": "Explorador"
+  },
+  "export.leaderboard": {
+    "defaultMessage": "Exportar tabla de clasificación"
+  },
+  "export.leaderboard.as.csv": {
+    "defaultMessage": "Exportar tabla de clasificación como CSV"
+  },
+  "export.leaderboard.as.json": {
+    "defaultMessage": "Exportar tabla de clasificación como JSON"
+  },
+  "export.leaderboard.csv ": {
+    "defaultMessage": "Exportar CSV de tabla de clasificación"
+  },
+  "external.url": {
+    "defaultMessage": "URL externa"
+  },
+  "favicon.helper.explainer": {
+    "defaultMessage": "Icono pequeño que representa un sitio web y se muestra en la pestaña del navegador"
+  },
+  "filter": {
+    "defaultMessage": "Filtro"
+  },
+  "filter.by.data": {
+    "defaultMessage": "Filtrar por fecha"
+  },
+  "footer.wizard.description": {
+    "defaultMessage": "Crea y edita el menú de pie de página de tu aplicación"
+  },
+  "front.image": {
+    "defaultMessage": "Imagen frontal"
+  },
+  "front.image.size": {
+    "defaultMessage": "Tamaño de imagen frontal"
+  },
+  "general.information.description": {
+    "defaultMessage": "Ingrese los detalles generales de su aplicación"
+  },
+  "height.px": {
+    "defaultMessage": "Altura (px)"
+  },
+  "hide.assets": {
+    "defaultMessage": "Ocultar activos"
+  },
+  "hide.collections.on.search": {
+    "defaultMessage": "Ocultar colecciones en la búsqueda"
+  },
+  "hide.drops": {
+    "defaultMessage": "Ocultar airdrops"
+  },
+  "hide.filters": {
+    "defaultMessage": "Ocultar filtros"
+  },
+  "hide.header": {
+    "defaultMessage": "Ocultar encabezado"
+  },
+  "hide.header.form.info": {
+    "defaultMessage": "Ocultar información del formulario del encabezado"
+  },
+  "hide.tokens.on.search": {
+    "defaultMessage": "Ocultar tokens en la búsqueda"
+  },
+  "image": {
+    "defaultMessage": "Imagen"
+  },
+  "info.about.custom.section": {
+    "defaultMessage": "En lugar de utilizar secciones predefinidas, tienes la libertad de crear una sección personalizada arrastrando y soltando bloques funcionales para diseñar tu diseño ideal de forma sencilla."
+  },
+  "info.alert.title.filter.ranking.points": {
+    "defaultMessage": "Definir y atribuir puntos a cada evento del usuario para construir un ranking"
+  },
+  "info.color": {
+    "defaultMessage": "Color de información"
+  },
+  "integrations": {
+    "defaultMessage": "Integraciones"
+  },
+  "last.version.set": {
+    "defaultMessage": "Última versión establecida"
+  },
+  "leaderboard": {
+    "defaultMessage": "Tabla de clasificación"
+  },
+  "leaderboard.preview": {
+    "defaultMessage": "Vista previa de la tabla de clasificación"
+  },
+  "least.recent": {
+    "defaultMessage": "Menos reciente"
+  },
+  "listing.price.per.item": {
+    "defaultMessage": "Precio de listado por artículo"
+  },
+  "loading": {
+    "defaultMessage": "Cargando"
+  },
+  "logo.for.light.mode": {
+    "defaultMessage": "Logo para modo claro"
+  },
+  "logo.on.desktop": {
+    "defaultMessage": "Logo en escritorio"
+  },
+  "logo.on.mobile": {
+    "defaultMessage": "Logo en móvil"
+  },
+  "made.with.love.by": {
+    "defaultMessage": "Hecho con ❤️ por",
+    "description": "made with ❤️ by"
+  },
+  "manage": {
+    "defaultMessage": "Administrar"
+  },
+  "manage.networks.for.your.app": {
+    "defaultMessage": "Administrar redes para tu aplicación"
+  },
+  "marketplace.fees.menu.container": {
+    "defaultMessage": "Tarifas del Marketplace"
+  },
+  "marketplace.fees.title": {
+    "defaultMessage": "Tarifas del Marketplace"
+  },
+  "max.quantity": {
+    "defaultMessage": "Cantidad máxima"
+  },
+  "member": {
+    "defaultMessage": "Miembro"
+  },
+  "member.added": {
+    "defaultMessage": "Miembro agregado"
+  },
+  "member.permission": {
+    "defaultMessage": "Permisos de miembro"
+  },
+  "member.permissions.updated": {
+    "defaultMessage": "Permisos de miembro actualizados"
+  },
+  "member.removed": {
+    "defaultMessage": "Miembro eliminado"
+  },
+  "metadata": {
+    "defaultMessage": "Metadatos"
+  },
+  "mint": {
+    "defaultMessage": "Mint"
+  },
+  "mint.free": {
+    "defaultMessage": "Mint (Gratis)"
+  },
+  "mint.nft": {
+    "defaultMessage": "Acuñar NFT"
+  },
+  "mint.price.value": {
+    "defaultMessage": "Acuñar ({priceToMint})"
+  },
+  "mint.priceToMint": {
+    "defaultMessage": "Acuñar {priceToMint}"
+  },
+  "mismatch.account.admin.view": {
+    "defaultMessage": "Estás conectado a {account} pero has iniciado sesión como {loggedAccount}. Si deseas ver aplicaciones asociadas con la cuenta conectada actualmente, haz clic en"
+  },
+  "most.recent": {
+    "defaultMessage": "Más reciente"
+  },
+  "my.nfts": {
+    "defaultMessage": "Mis NFT"
+  },
+  "navbar": {
+    "defaultMessage": "Barra de navegación"
+  },
+  "navbar.wizard.description": {
+    "defaultMessage": "Organiza la barra de navegación de tu aplicación. Puedes editar menús y la barra de búsqueda"
+  },
+  "network.info": {
+    "defaultMessage": "Información de la red"
+  },
+  "nft": {
+    "defaultMessage": "NFT"
+  },
+  "nft.amount.of.tokenId.is.selected.to.stake": {
+    "defaultMessage": "{amount} de \"#{tokenId}\" está seleccionado para apostar"
+  },
+  "nft.attributes": {
+    "defaultMessage": "Atributos de NFT"
+  },
+  "nft.collection.airdrop": {
+    "defaultMessage": "Airdrop de colección de NFT"
+  },
+  "nft.description": {
+    "defaultMessage": "Descripción de NFT"
+  },
+  "nft.edition.airdrop": {
+    "defaultMessage": "Airdrop de edición de NFT"
+  },
+  "nft.metadata": {
+    "defaultMessage": "Metadatos de NFT"
+  },
+  "nft.name": {
+    "defaultMessage": "Nombre de NFT"
+  },
+  "nfts.created.close.modal": {
+    "defaultMessage": "¡NFT creado! Cerrar modal"
+  },
+  "nfts.staked": {
+    "defaultMessage": "NFTs apostados"
+  },
+  "no.app.leaderboards": {
+    "defaultMessage": "Sin tablas de clasificación de aplicaciones"
+  },
+  "no.app.versions": {
+    "defaultMessage": "Sin versiones de aplicación"
+  },
+  "no.collections": {
+    "defaultMessage": "Sin colecciones"
+  },
+  "no.contracts.found": {
+    "defaultMessage": "No se encontraron contratos"
+  },
+  "no.networks": {
+    "defaultMessage": "Sin redes"
+  },
+  "no.networks.are.available": {
+    "defaultMessage": "No hay redes disponibles"
+  },
+  "no.nfts": {
+    "defaultMessage": "Sin NFTs"
+  },
+  "no.selected.networks": {
+    "defaultMessage": "Sin redes seleccionadas"
+  },
+  "no.team.members": {
+    "defaultMessage": "Sin miembros del equipo"
+  },
+  "notification.email": {
+    "defaultMessage": "Correo de notificación"
+  },
+  "numerator": {
+    "defaultMessage": "Recompensas por unidad de tiempo"
+  },
+  "offchain.events": {
+    "defaultMessage": "Eventos fuera de la cadena"
+  },
+  "onchain.events": {
+    "defaultMessage": "Eventos en la cadena"
+  },
+  "open.file": {
+    "defaultMessage": "Abrir archivo"
+  },
+  "open.in.new.page": {
+    "defaultMessage": "Abrir en una nueva página"
+  },
+  "open.url": {
+    "defaultMessage": "Abrir URL"
+  },
+  "owner": {
+    "defaultMessage": "Propietario"
+  },
+  "ownership.explainer": {
+    "defaultMessage": "Este NFT representa la propiedad de la aplicación y los derechos de edición. Puedes vender o transferir la propiedad de tu aplicación a través de este NFT, alojado en Polygon. Quien posea este NFT puede editarlo."
+  },
+  "ownership.settings.description": {
+    "defaultMessage": "Asocia un NFT con tu aplicación para control de propiedad"
+  },
+  "pages.wizard.description": {
+    "defaultMessage": "Crea y administra las páginas de tu aplicación"
+  },
+  "paper.color": {
+    "defaultMessage": "Color del papel"
+  },
+  "per.wallet": {
+    "defaultMessage": "por cartera"
+  },
+  "phases": {
+    "defaultMessage": "Fases"
+  },
+  "please.create.a.leaderboard.to.start.using.it.here": {
+    "defaultMessage": "Por favor, crea una tabla de clasificación para empezar a usarla aquí"
+  },
+  "points": {
+    "defaultMessage": "Puntos"
+  },
+  "preview.app.leaderboard": {
+    "defaultMessage": "Vista previa de la aplicación en la tabla de clasificación"
+  },
+  "preview.app.version": {
+    "defaultMessage": "Vista previa de la versión de la aplicación"
+  },
+  "preview.section": {
+    "defaultMessage": "Sección de vista previa"
+  },
+  "price.per.item": {
+    "defaultMessage": "Precio por artículo",
+    "description": "Price label per item"
+  },
+  "primary.color": {
+    "defaultMessage": "Color primario"
+  },
+  "quick.exchange.builder": {
+    "defaultMessage": "Constructor de Intercambio Rápido"
+  },
+  "ranking.added": {
+    "defaultMessage": "Clasificación agregada"
+  },
+  "ranking.created": {
+    "defaultMessage": "Clasificación creada"
+  },
+  "remove.condition": {
+    "defaultMessage": "Eliminar condición"
+  },
+  "remove.member": {
+    "defaultMessage": "Eliminar miembro"
+  },
+  "reward.per.time.unit": {
+    "defaultMessage": "Recompensa por unidad de tiempo"
+  },
+  "reward.per.unit.time": {
+    "defaultMessage": "Recompensa por unidad de tiempo"
+  },
+  "reward.ratio": {
+    "defaultMessage": "Ratio De Recompensa"
+  },
+  "reward.time": {
+    "defaultMessage": "Tiempo De Recompensa"
+  },
+  "rewards": {
+    "defaultMessage": "Recompensas"
+  },
+  "rewards.second": {
+    "defaultMessage": "Recompensas/segundo"
+  },
+  "rule.index.value": {
+    "defaultMessage": "Regla {Índice}"
+  },
+  "rules": {
+    "defaultMessage": "Reglas"
+  },
+  "save.your.row.changes.before.confirm": {
+    "defaultMessage": "Guarda los cambios de tu fila antes de confirmar"
+  },
+  "saved.successfully": {
+    "defaultMessage": "Guardado con éxito"
+  },
+  "search.in.collection": {
+    "defaultMessage": "Buscar en la colección"
+  },
+  "search.token": {
+    "defaultMessage": "Buscar token"
+  },
+  "search.token.in": {
+    "defaultMessage": "Buscar token en"
+  },
+  "search.token.out": {
+    "defaultMessage": "Buscar token fuera"
+  },
+  "searchbar": {
+    "defaultMessage": "Barra de búsqueda"
+  },
+  "secondary.color": {
+    "defaultMessage": "Color secundario"
+  },
+  "select.a.edition": {
+    "defaultMessage": "Selecciona una edición"
+  },
+  "select.a.token.for.your.airdrop": {
+    "defaultMessage": "Selecciona un token para tu airdrop"
+  },
+  "select.an.nft": {
+    "defaultMessage": "Selecciona un NFT"
+  },
+  "select.collection": {
+    "defaultMessage": "Seleccionar colección"
+  },
+  "select.collections.to.display.in.your.app": {
+    "defaultMessage": "Selecciona colecciones para mostrar en tu aplicación"
+  },
+  "select.nfts": {
+    "defaultMessage": "Seleccionar NFTs"
+  },
+  "select.nfts.to.unstake": {
+    "defaultMessage": "Seleccionar NFTs para desbloquear"
+  },
+  "select.or.import.tokens.for.your.app": {
+    "defaultMessage": "Selecciona o importa tokens para tu aplicación"
+  },
+  "select.page": {
+    "defaultMessage": "Selecciona página"
+  },
+  "select.recipients": {
+    "defaultMessage": "Seleccionar"
+  },
+  "selected.addresses.amount": {
+    "defaultMessage": "Direcciones seleccionadas: {cantidad}"
+  },
+  "sending.app.settings": {
+    "defaultMessage": "Enviando la configuración de la aplicación"
+  },
+  "sent.successfully.be.aware.info": {
+    "defaultMessage": "Enviado con éxito. Ten en cuenta que tarda varios minutos en actualizarse y reflejarse en el sitio en vivo."
+  },
+  "seo.wizard.description": {
+    "defaultMessage": "Configura el SEO de tu aplicación"
+  },
+  "set.api.key": {
+    "defaultMessage": "Establecer clave de API"
+  },
+  "set.app.to.this.version": {
+    "defaultMessage": "Establecer la aplicación en esta versión"
+  },
+  "set.claim.conditions.to.enable.drop.info": {
+    "defaultMessage": "Establecer condiciones de reclamación para habilitar el lanzamiento. Puedes editar las condiciones de reclamación en cualquier momento."
+  },
+  "set.custom.domain.container.description": {
+    "defaultMessage": "Establecer un dominio personalizado para tu aplicación"
+  },
+  "set.integrations.settings.for.your.app": {
+    "defaultMessage": "Configuración de integración para tu aplicación."
+  },
+  "set.up": {
+    "defaultMessage": "Configurar"
+  },
+  "setup.your.zrx.configure.0x.text": {
+    "defaultMessage": "Configura tu clave de API de 0x para acceder a nuestros servicios."
+  },
+  "show": {
+    "defaultMessage": "Mostrar"
+  },
+  "show.all": {
+    "defaultMessage": "Mostrar todo"
+  },
+  "site.email.not.verified.on.admin.message": {
+    "defaultMessage": "Tu correo electrónico de la aplicación no está verificado. Por favor, verifícalo usando el correo de verificación que enviamos. Si no has recibido el correo electrónico o necesitas que se vuelva a enviar, solicita un correo de confirmación <a> aquí </a>"
+  },
+  "social.media": {
+    "defaultMessage": "Redes sociales"
+  },
+  "social.media.title": {
+    "defaultMessage": "Redes sociales"
+  },
+  "sold.out": {
+    "defaultMessage": "Agotado"
+  },
+  "something.went.wrong.with.section.type.contact.support": {
+    "defaultMessage": "Oops, algo salió mal con el tipo de sección {TipoDeSección}. Contacta al soporte",
+    "description": "Something went wrong error message"
+  },
+  "sort.by": {
+    "defaultMessage": "Ordenar por"
+  },
+  "stake": {
+    "defaultMessage": "Apostar"
+  },
+  "stake.contract": {
+    "defaultMessage": "Contrato de apuesta"
+  },
+  "start.time": {
+    "defaultMessage": "Hora de inicio"
+  },
+  "success.color": {
+    "defaultMessage": "Color de éxito"
+  },
+  "swap.fees.menu.container": {
+    "defaultMessage": "Tarifas de intercambio"
+  },
+  "swap.fees.title": {
+    "defaultMessage": "Tarifas de intercambio"
+  },
+  "team": {
+    "defaultMessage": "Equipo"
+  },
+  "team.management": {
+    "defaultMessage": "Gestión de equipo"
+  },
+  "text.color": {
+    "defaultMessage": "Color de texto"
+  },
+  "the.amount.cannot.be.zero": {
+    "defaultMessage": "La cantidad no puede ser cero"
+  },
+  "themes": {
+    "defaultMessage": "Temas"
+  },
+  "this.drop.is.not.ready.to.be.minted": {
+    "defaultMessage": "Este lanzamiento no está listo para ser acuñado."
+  },
+  "this.drop.is.not.ready.to.be.minted.": {
+    "defaultMessage": "Este lanzamiento no está listo para ser acuñado."
+  },
+  "this.drop.is.not.ready.to.be.minted.yet.no.claim.condition.set": {
+    "defaultMessage": "Este lanzamiento aún no está listo para ser acuñado. (No se ha establecido ninguna condición de reclamación)"
+  },
+  "time.unit": {
+    "defaultMessage": "Unidad de tiempo"
+  },
+  "to": {
+    "defaultMessage": "a"
+  },
+  "token.not.supported": {
+    "defaultMessage": "Token no compatible"
+  },
+  "token.standard": {
+    "defaultMessage": "Estándar del token"
+  },
+  "token.symbol.message": {
+    "defaultMessage": "Token {SímboloDelToken}"
+  },
+  "tokenId": {
+    "defaultMessage": "ID de Token"
+  },
+  "total.cost": {
+    "defaultMessage": "Coste total"
+  },
+  "total.for.airdrop": {
+    "defaultMessage": "Total para distribución de tokens"
+  },
+  "total.items.to.claim": {
+    "defaultMessage": "Total de ítems para reclamar"
+  },
+  "total.items.to.claim.per.wallet": {
+    "defaultMessage": "Total de ítems para reclamar por monedero"
+  },
+  "total.minted": {
+    "defaultMessage": "Total acuñado"
+  },
+  "total.recipients": {
+    "defaultMessage": "Total de destinatarios"
+  },
+  "total.rewards": {
+    "defaultMessage": "Recompensas totales"
+  },
+  "total.staked": {
+    "defaultMessage": "Total apostado"
+  },
+  "total.supply": {
+    "defaultMessage": "Oferta total"
+  },
+  "total.to.mint": {
+    "defaultMessage": "Total a acuñar"
+  },
+  "total.to.receive": {
+    "defaultMessage": "Total a recibir"
+  },
+  "trade.token.seo..title.message": {
+    "defaultMessage": "La forma más sencilla de {orderMarketType} {tokenSymbol} en {network}"
+  },
+  "trade.token.seo.description.message": {
+    "defaultMessage": "Descubre la forma óptima de {orderMarketType} {tokenSymbol} en la {network}. Nuestra plataforma garantiza transacciones rápidas y seguras, lo que hace que {orderMarketType} {tokenSymbol} sea pan comido. ¡Únete ahora para la mejor experiencia comercial en la {network}!"
+  },
+  "unclaimed.supply": {
+    "defaultMessage": "Ofertas no reclamadas"
+  },
+  "unlimited": {
+    "defaultMessage": "Ilimitado"
+  },
+  "unstake": {
+    "defaultMessage": "Desapostar"
+  },
+  "updating.app.ranking": {
+    "defaultMessage": "Actualizando la clasificación de la aplicación"
+  },
+  "updating.app.versions": {
+    "defaultMessage": "Actualizando la versión de la aplicación"
+  },
+  "updating.member.permissions": {
+    "defaultMessage": "Actualizando los permisos de los miembros"
+  },
+  "user.event": {
+    "defaultMessage": "Evento de usuario"
+  },
+  "user.events.analytics": {
+    "defaultMessage": "Análisis de eventos de usuario"
+  },
+  "user.events.analytics.wizard.description": {
+    "defaultMessage": "Análisis de eventos de usuario en tu aplicación"
+  },
+  "version": {
+    "defaultMessage": "Versión"
+  },
+  "version.added": {
+    "defaultMessage": "Versión añadida"
+  },
+  "view.app": {
+    "defaultMessage": "Ver App"
+  },
+  "view.apps": {
+    "defaultMessage": "Ver Apps"
+  },
+  "view.public.page": {
+    "defaultMessage": "Ver página pública"
+  },
+  "wait.in.seconds": {
+    "defaultMessage": "Esperar en segundos"
+  },
+  "warning.color": {
+    "defaultMessage": "Color de advertencia"
+  },
+  "width.px": {
+    "defaultMessage": "Ancho (px)"
+  },
+  "withdraw.rewards": {
+    "defaultMessage": "Retirar recompensa"
+  },
+  "you.are.not.eligible.to.mint.at.this.time": {
+    "defaultMessage": "No eres elegible para acuñar en este momento."
+  },
+  "you.are.not.eligible.to.mint.quantity.tokens": {
+    "defaultMessage": "No eres elegible para acuñar {quantity} tokens."
+  },
+  "you.are.not.eligible.to.mint.tokens.quantity.value": {
+    "defaultMessage": "No eres elegible para acuñar {quantity} tokens."
+  },
+  "you.are.on.a.network.different.of.the.contract": {
+    "defaultMessage": "Estás en una red diferente de la del contrato"
+  },
+  "you.are.using.a.airdrop.claimable.contract": {
+    "defaultMessage": "Estás utilizando un contrato reclamable por distribución de tokens"
+  },
+  "you.are.using.a.stake.contract": {
+    "defaultMessage": "Estás utilizando un contrato de participación"
+  },
+  "you.do.not.have.enough.balance.for.your.airdrop": {
+    "defaultMessage": "No tienes suficiente saldo para tu Distribución de tokens"
+  },
+  "you.dont.have.any.leaderboards": {
+    "defaultMessage": "Todavía no tienes clasificaciones"
+  },
+  "you.dont.have.enough.currency.to.mint": {
+    "defaultMessage": "No tienes suficiente divisa para acuñar."
+  },
+  "you.have.changes.unsaved.do.you.want.to.proceed.without.saving": {
+    "defaultMessage": "Tienes cambios sin guardar, ¿deseas continuar sin guardar?"
+  },
+  "you.need.at.least.one.network.selected": {
+    "defaultMessage": "Necesitas al menos una red seleccionada"
+  },
+  "you.need.to.approve.tokens.for.airdrop": {
+    "defaultMessage": "Necesitas aprobar tokens para la distribución de tokens"
+  },
+  "your.airdrop.balance": {
+    "defaultMessage": "Tu saldo de distribución de tokens"
+  },
+  "your.app.domain.was.added.to.our.system": {
+    "defaultMessage": "Tu dominio de aplicación se ha añadido a nuestro sistema. Por favor, agrega CNAME a tu proveedor de DNS y después revisa el estado del dominio con frecuencia hasta que se propague"
+  },
+  "your.app.domain.was.verified.to.our.system": {
+    "defaultMessage": "Tu dominio de la aplicación ha sido verificado en nuestro sistema. Espera a que el dominio se propague y después visita tu dominio"
+  },
+  "your.collections": {
+    "defaultMessage": "Tus colecciones"
+  },
+  "your.editions": {
+    "defaultMessage": "Tus ediciones"
+  },
+  "your.tokens": {
+    "defaultMessage": "Tus tokens"
+  },
   "Airdrop": {
-    "defaultMessage": "Airdrop"
+    "defaultMessage": "Distribución de tokens"
   },
   "Create.Order": {
     "defaultMessage": "Crear orden"
@@ -66,7 +1543,7 @@
     "defaultMessage": "Configuración del creador de aplicaciones"
   },
   "apps": {
-    "defaultMessage": "Apps"
+    "defaultMessage": "Aplicaciones"
   },
   "are.you.sure.you.want.to.delete.this.account": {
     "defaultMessage": "Cuenta para remover: {account}"
@@ -664,7 +2141,7 @@
     "defaultMessage": "Todos los pasos completados: finalizó la configuración de intercambio"
   },
   "store.account": {
-    "defaultMessage": "Store account"
+    "defaultMessage": "Cuenta de almacenamiento"
   },
   "store.without.order": {
     "defaultMessage": "Tienda sin ofertas. ¡Regresa más tarde!"
@@ -1081,7 +2558,7 @@
     "defaultMessage": "Venta más alta"
   },
   "id": {
-    "defaultMessage": "Id"
+    "defaultMessage": "Identificación"
   },
   "image.deleted": {
     "defaultMessage": "Imagen eliminada"
@@ -1114,7 +2591,7 @@
     "defaultMessage": "Disposición"
   },
   "logo": {
-    "defaultMessage": "Logo"
+    "defaultMessage": "Logotipo"
   },
   "market.cap": {
     "defaultMessage": "Capital de mercado"
@@ -1132,7 +2609,7 @@
     "defaultMessage": "El tamaño máximo para las imágenes es de 1 Mb"
   },
   "menu": {
-    "defaultMessage": "Menu"
+    "defaultMessage": "Menú"
   },
   "move.section.down": {
     "defaultMessage": "Mover sección hacia abajo"
@@ -1319,7 +2796,7 @@
     "defaultMessage": "Cargando"
   },
   "uri": {
-    "defaultMessage": "Uri"
+    "defaultMessage": "URI"
   },
   "use.home.as.title.not.allowed": {
     "defaultMessage": "Usar Home como título no está permitido para las páginas"
@@ -1463,7 +2940,7 @@
     "defaultMessage": "Comprobando dominio"
   },
   "cname": {
-    "defaultMessage": "CNAME"
+    "defaultMessage": "CNAM"
   },
   "collection.preview": {
     "defaultMessage": "Vista previa de la colección"
@@ -1732,7 +3209,7 @@
     "defaultMessage": "Verificando dominio"
   },
   "video": {
-    "defaultMessage": "Video"
+    "defaultMessage": "Vídeo"
   },
   "video.type": {
     "defaultMessage": "Tipo de video"
@@ -1771,7 +3248,7 @@
     "defaultMessage": "YouTube"
   },
   "ID": {
-    "defaultMessage": "ID"
+    "defaultMessage": "Identificación"
   },
   "listing": {
     "defaultMessage": "Listado"

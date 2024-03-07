@@ -30,14 +30,16 @@ import {
 } from 'src/state/atoms';
 import { getTheme } from 'src/theme';
 import defaultAppConfig from '../../config/app.json';
-import { loadLocaleData } from '../utils/intl';
+import { loadLocaleMessages } from '../utils/intl';
 
 export interface AppMarketplaceContextProps {
   children: React.ReactNode | React.ReactNode[];
+  appLocaleMessages?: Record<string, string> | null;
 }
 
 export function AppMarketplaceProvider({
   children,
+  appLocaleMessages,
 }: AppMarketplaceContextProps) {
   const appConfig = useAppConfig();
   const siteId = useSiteId();
@@ -47,6 +49,12 @@ export function AppMarketplaceProvider({
   const [locale, setLocale] = useState(defaultLocale);
   const [ref, setRef] = useAtom(referralAtom);
   const { mode } = useThemeMode();
+
+  const [messages, setMessages] = useState<any | null>(appLocaleMessages);
+
+  useEffect(() => {
+    loadLocaleMessages(locale).then((data) => setMessages(data.default));
+  }, [locale]);
 
   useEffect(() => {
     if (router.query.ref) {
@@ -165,7 +173,7 @@ export function AppMarketplaceProvider({
       defaultLocale={locale}
       affiliateReferral={ref}
       currencyUserAtom={currencyUserAtom}
-      localeMessages={loadLocaleData(locale)}
+      localeMessages={messages}
       theme={theme}
       selectedWalletAtom={selectedWalletAtom}
       activeChainIds={
