@@ -121,14 +121,17 @@ export const walletConnectV2Connection: Connection = new (class implements Conne
           // Because our connectors are referentially stable (through proxying), we need a way to trigger React renders
           // from outside of the React lifecycle when our connector is re-initialized. This is done via 'change' events
           // with `useSyncExternalStore`:
-          const hooks = useSyncExternalStore(
-            (onChange) => {
-              this.onActivate = onChange
-              return () => (this.onActivate = undefined)
-            },
-            () => this.activeConnector[1]
-          )
-          return Reflect.get(hooks, p, receiver)()
+          if (typeof window !== "undefined") {
+            const hooks = useSyncExternalStore(
+              (onChange) => {
+                this.onActivate = onChange
+                return () => (this.onActivate = undefined)
+              },
+              () => this.activeConnector[1],
+              () => this.activeConnector[1]
+            )
+            return Reflect.get(hooks, p, receiver)()
+          }
         }
       },
     }
