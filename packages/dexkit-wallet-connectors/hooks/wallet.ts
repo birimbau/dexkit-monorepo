@@ -1,11 +1,9 @@
 import { useMutation } from "@tanstack/react-query";
 import { useWeb3React } from "@web3-react/core";
-import { metaMask } from "../constants/connectors/metamask";
 import { WalletActivateParams } from "../types";
 
 import { PrimitiveAtom, useAtom } from "jotai";
 import { magic } from "../constants/connectors/magic";
-import { walletConnect } from "../constants/connectors/walletConnect";
 
 export function useWalletActivate({
   magicRedirectUrl,
@@ -23,19 +21,16 @@ export function useWalletActivate({
       await connector.deactivate();
     }
 
-    if (params.connectorName === "metamask") {
-      setWalletConnector("metamask");
-      return await metaMask.activate();
-    } else if (params.connectorName === "magic") {
+    if (params.connectorName === "magic") {
       setWalletConnector("magic");
       return await magic.activate({
         loginType: params.loginType,
         email: params.email,
         redirectUrl: magicRedirectUrl,
       });
-    } else if (params.connectorName === "walletConnect") {
-      setWalletConnector("walletConnect");
-      return await walletConnect.activate();
+    } else {
+      setWalletConnector(params.connectorName);
+      return await connector.activate();
     }
   });
 

@@ -14,7 +14,6 @@ import {
   ListItemText,
   Stack,
   TextField,
-  useMediaQuery,
   useTheme,
 } from "@mui/material";
 
@@ -24,13 +23,15 @@ import { FormattedMessage, useIntl } from "react-intl";
 
 import { useSnackbar } from "notistack";
 
-import { AppDialogTitle } from "./AppDialogTitle";
+import { AppDialogTitle } from "../AppDialogTitle";
 
 import { WALLET_CONNECTORS } from "@dexkit/wallet-connectors/connectors";
+import { magic } from "@dexkit/wallet-connectors/connectors/connections";
 import { MagicLoginType } from "@dexkit/wallet-connectors/connectors/magic";
 import { WalletActivateParams } from "@dexkit/wallet-connectors/types";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import Wallet from "@mui/icons-material/Wallet";
+import { Connector } from "@web3-react/types";
 
 export interface ConnectWalletDialogProps {
   DialogProps: DialogProps;
@@ -52,7 +53,6 @@ export default function ConnectWalletDialog({
 
   const { formatMessage } = useIntl();
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const [connectorName, setConnectorName] = useState<string>();
   const [loginType, setLoginType] = useState<MagicLoginType | undefined>(
@@ -65,11 +65,17 @@ export default function ConnectWalletDialog({
 
   const { enqueueSnackbar } = useSnackbar();
 
-  const handleActivateWallet = async (
-    connectorName: WalletActivateParams["connectorName"],
-    loginType?: MagicLoginType,
-    email?: string
-  ) => {
+  const handleActivateWallet = async ({
+    connector,
+    loginType,
+    email,
+    connectorName,
+  }: {
+    connectorName: WalletActivateParams["connectorName"];
+    loginType?: MagicLoginType;
+    email?: string;
+    connector: Connector;
+  }) => {
     setConnectorName(connectorName);
     setLoginType(loginType);
 
@@ -79,9 +85,10 @@ export default function ConnectWalletDialog({
           connectorName,
           email,
           loginType,
+          connector,
         });
       } else {
-        await activate({ connectorName });
+        await activate({ connectorName, connector });
       }
     } catch (err: any) {
       enqueueSnackbar(err.message, {
@@ -99,7 +106,12 @@ export default function ConnectWalletDialog({
   const [email, setEmail] = useState("");
 
   const handleConnectWithEmail = () => {
-    handleActivateWallet("magic", "email", email);
+    handleActivateWallet({
+      connectorName: "magic",
+      loginType: "email",
+      email: email,
+      connector: magic,
+    });
     setEmail("");
   };
 
@@ -119,7 +131,13 @@ export default function ConnectWalletDialog({
               connectorName === conn.id &&
               conn.loginType === loginType
             }
-            onClick={() => handleActivateWallet(conn.id, conn.loginType)}
+            onClick={() =>
+              handleActivateWallet({
+                connectorName: conn.id,
+                loginType: conn.loginType,
+                connector: conn.connector,
+              })
+            }
           >
             <ListItemAvatar>
               <Avatar>
