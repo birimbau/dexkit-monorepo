@@ -90,14 +90,19 @@ export default function TradingGraph({
       <CardContent>
         <Stack direction="row" justifyContent="flex-end">
           <Stack direction="row" justifyContent="flex-end" spacing={2}>
-            <FormControlLabel
-              control={
-                <Checkbox checked={showSwaps} onChange={handleChangeSwap} />
-              }
-              label={
-                <FormattedMessage id="show.swaps" defaultMessage="Show Swaps" />
-              }
-            />
+            {!(network && DEXTOOLS_NETWORKS_MAP[network]) && (
+              <FormControlLabel
+                control={
+                  <Checkbox checked={showSwaps} onChange={handleChangeSwap} />
+                }
+                label={
+                  <FormattedMessage
+                    id="show.swaps"
+                    defaultMessage="Show Swaps"
+                  />
+                }
+              />
+            )}
             <FormControl>
               <Select displayEmpty value={selectedPool} onChange={handleChange}>
                 <MenuItem value="">
@@ -134,9 +139,11 @@ export default function TradingGraph({
               title="DEXTools Trading Chart"
               frameBorder="0"
               allow="clipboard-write"
-              src={`https://www.dextools.io/widget-chart/pe-light/${getDexToolsLanguage(
+              src={`https://www.dextools.io/widget-chart/${getDexToolsLanguage(
                 language
-              )}/${DEXTOOLS_NETWORKS_MAP[network]}/${selectedPool}?theme=${
+              )}/${
+                DEXTOOLS_NETWORKS_MAP[network]
+              }/pe-light/${selectedPool}?theme=${
                 mode || "light"
               }&chartType=1&chartResolution=30&drawingToolbars=false`}
             />
