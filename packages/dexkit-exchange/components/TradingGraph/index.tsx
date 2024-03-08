@@ -1,4 +1,4 @@
-import { useLocale } from "@dexkit/ui/hooks";
+import { useLocale, useThemeMode } from "@dexkit/ui/hooks";
 import {
   Box,
   Card,
@@ -64,6 +64,7 @@ export default function TradingGraph({
   ) => {
     onChange(event.target.value);
   };
+  const { mode } = useThemeMode();
 
   const { locale } = useLocale();
 
@@ -135,9 +136,9 @@ export default function TradingGraph({
               allow="clipboard-write"
               src={`https://www.dextools.io/widget-chart/pe-light/${getDexToolsLanguage(
                 language
-              )}/${
-                DEXTOOLS_NETWORKS_MAP[network]
-              }/${selectedPool}?theme=light&chartType=2&chartResolution=30&drawingToolbars=false`}
+              )}/${DEXTOOLS_NETWORKS_MAP[network]}/${selectedPool}?theme=${
+                mode || "light"
+              }&chartType=1&chartResolution=30&drawingToolbars=false`}
             />
           ) : (
             <iframe

@@ -179,7 +179,7 @@ export default function OrdersTable({
               </TableRow>
             )}
 
-            {records?.length === 0 && (
+            {records?.length === 0 && active && (
               <TableRow>
                 <TableCell colSpan={7}>
                   <Typography align="center" variant="body1">
