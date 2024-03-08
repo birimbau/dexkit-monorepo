@@ -116,7 +116,7 @@ export default function SettingsLayout({
                 }
               />
             </ListItemButton>
-            <ListItemButton
+            {/* <ListItemButton
               selected={tab === 'payments'}
               divider
               onClick={handleClick('payments')}
@@ -129,7 +129,7 @@ export default function SettingsLayout({
                   />
                 }
               />
-            </ListItemButton>
+            </ListItemButton> */}
           </List>
         </Card>
       </Grid>

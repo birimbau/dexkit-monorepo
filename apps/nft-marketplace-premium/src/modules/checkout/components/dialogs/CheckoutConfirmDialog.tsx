@@ -67,12 +67,20 @@ export default function CheckoutConfirmDialog({
         <Stack spacing={2} justifyContent="center" alignItems="center">
           <CircularProgress color="primary" size="2.5rem" />
 
-          <Typography align="center" variant="body1">
-            <FormattedMessage
-              id="waiting.confirmation"
-              defaultMessage="Waiting confirmation"
-            />
-          </Typography>
+          <Box>
+            <Typography align="center" variant="h5">
+              <FormattedMessage
+                id="waiting.confirmation"
+                defaultMessage="Waiting confirmation"
+              />
+            </Typography>
+            <Typography align="center" variant="body1" color="text.secondary">
+              <FormattedMessage
+                id="waiting.confirmation"
+                defaultMessage="Waiting confirmation"
+              />
+            </Typography>
+          </Box>
         </Stack>
       );
     }

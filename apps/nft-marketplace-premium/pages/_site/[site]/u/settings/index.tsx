@@ -12,19 +12,17 @@ import BillingSection from '@/modules/user/componentes/BillingSection';
 import PaymentsSection from '@/modules/user/componentes/PaymentsSection';
 import SettingsLayout from '@/modules/user/componentes/SettingsLayout';
 import { DexkitApiProvider } from '@dexkit/core/providers';
-import { useRouter } from 'next/router';
 import AuthMainLayout from 'src/components/layouts/authMain';
 import { myAppsApi } from 'src/services/whitelabel';
 
 export default function SettingsPage() {
-  const router = useRouter();
+  const searchParams = new URLSearchParams(window.location.search);
 
-  const { section } = router.query;
+  const section = searchParams.get('section');
 
   return (
     <Container>
       <Stack spacing={2}>
-        <Box></Box>
         <Box>
           <SettingsLayout tab={section ? (section as string) : 'ai'} shallow>
             {(tab) => (

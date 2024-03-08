@@ -11,6 +11,8 @@ import { FormattedMessage, FormattedNumber } from 'react-intl';
 
 export interface PlanCardProps {
   onClick: () => Promise<void>;
+  onViewDetails: () => Promise<void>;
+
   description: string;
   name: string;
   price: number;
@@ -19,6 +21,7 @@ export interface PlanCardProps {
 
 export default function PlanCard({
   onClick,
+  onViewDetails,
   disabled,
   name,
   description,
@@ -81,6 +84,14 @@ export default function PlanCard({
               </Typography>
             </Stack>
           </Stack>
+          <Button
+            variant="outlined"
+            size="small"
+            disabled={disabled}
+            onClick={onViewDetails}
+          >
+            <FormattedMessage id="view.details" defaultMessage="View details" />
+          </Button>
           <Button
             disabled={disabled}
             onClick={onClick}

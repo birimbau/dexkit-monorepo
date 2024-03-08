@@ -4,7 +4,9 @@ import {
   useBuyCreditsCheckout,
   useCryptoCheckout,
 } from '@dexkit/ui/hooks/payments';
+import HistoryIcon from '@mui/icons-material/History';
 import {
+  Box,
   Button,
   Dialog,
   DialogActions,
@@ -12,6 +14,7 @@ import {
   DialogProps,
   MenuItem,
   Stack,
+  Typography,
 } from '@mui/material';
 import Decimal from 'decimal.js';
 import { Field, Formik } from 'formik';
@@ -42,7 +45,6 @@ export default function AddCreditDialog({ DialogProps }: AddCreditDialogProps) {
     amount: string;
     paymentMethod: string;
   }) => {
-    console.log('vem aqui', paymentMethod);
     if (paymentMethod === 'crypto') {
       const result = await cryptoCheckout.mutateAsync({
         amount,
@@ -53,7 +55,6 @@ export default function AddCreditDialog({ DialogProps }: AddCreditDialogProps) {
     } else {
       const result = await buyCreditsCheckout.mutateAsync({
         amount: parseFloat(amount),
-        paymentMethod,
       });
 
       window.open(result?.url, '_blank');
@@ -63,15 +64,81 @@ export default function AddCreditDialog({ DialogProps }: AddCreditDialogProps) {
   const { formatMessage } = useIntl();
 
   const handleValitate = ({ amount }: any) => {
-    const value = new Decimal(amount);
+    const value = new Decimal(amount || '0');
 
     if (value.lessThan(5)) {
-      return { amount: formatMessage({ defaultMessage: 'the minimum is 5' }) };
+      return {
+        amount: formatMessage({
+          defaultMessage: 'the minimum is 5',
+          id: 'the.minimum.is.five',
+        }),
+      };
     }
 
     if (value.greaterThan(95)) {
-      return { amount: formatMessage({ defaultMessage: 'the maximum is 95' }) };
+      return {
+        amount: formatMessage({
+          defaultMessage: 'the maximum is 95',
+          id: 'the.maximum.is.95',
+        }),
+      };
     }
+  };
+
+  const renderContent = () => {
+    if (cryptoCheckout.data || buyCreditsCheckout.data) {
+      return (
+        <Stack alignItems="center" justifyContent="center" spacing={2}>
+          <HistoryIcon fontSize="large" color="primary" />
+          <Box>
+            <Typography align="center" variant="h5">
+              <FormattedMessage
+                id="waiting.payment"
+                defaultMessage="Waiting payment"
+              />
+            </Typography>
+            <Typography align="center" variant="body1" color="text.secondary">
+              <FormattedMessage
+                id="payment.confirmation.message"
+                defaultMessage="Please wait for 10 confirmations for payment recognition."
+              />
+            </Typography>
+          </Box>
+        </Stack>
+      );
+    }
+    return (
+      <Stack spacing={2}>
+        <FormikDecimalInput
+          TextFieldProps={{
+            label: <FormattedMessage id="amount" defaultMessage="Amount" />,
+          }}
+          name="amount"
+          decimals={2}
+        />
+        <Field
+          component={Select}
+          name="paymentMethod"
+          fullWidth
+          label={
+            <FormattedMessage
+              id="payment.method"
+              defaultMessage="Payment method"
+            />
+          }
+        >
+          <MenuItem value="crypto">
+            <FormattedMessage
+              id="cryptocurrency"
+              defaultMessage="Cryptocurrency"
+            />
+          </MenuItem>
+          <MenuItem value="card">
+            <FormattedMessage id="credit.card" defaultMessage="Credit Card" />
+          </MenuItem>
+        </Field>
+      </Stack>
+    );
   };
 
   return (
@@ -89,55 +156,21 @@ export default function AddCreditDialog({ DialogProps }: AddCreditDialogProps) {
                 <FormattedMessage id="add.credit" defaultMessage="Add Credit" />
               }
             />
-            <DialogContent dividers>
-              <Stack spacing={2}>
-                <FormikDecimalInput
-                  TextFieldProps={{
-                    label: (
-                      <FormattedMessage id="amount" defaultMessage="Amount" />
-                    ),
-                  }}
-                  name="amount"
-                  decimals={2}
-                />
-                <Field
-                  component={Select}
-                  name="paymentMethod"
-                  fullWidth
-                  label={
-                    <FormattedMessage
-                      id="payment.method"
-                      defaultMessage="Payment method"
-                    />
-                  }
+            <DialogContent dividers>{renderContent()}</DialogContent>
+            {!buyCreditsCheckout.data && !cryptoCheckout.data && (
+              <DialogActions>
+                <Button
+                  variant="contained"
+                  disabled={isSubmitting || !isValid}
+                  onClick={submitForm}
                 >
-                  <MenuItem value="crypto">
-                    <FormattedMessage
-                      id="cryptocurrency"
-                      defaultMessage="Cryptocurrency"
-                    />
-                  </MenuItem>
-                  <MenuItem value="card">
-                    <FormattedMessage
-                      id="credit.card"
-                      defaultMessage="Credit Card"
-                    />
-                  </MenuItem>
-                </Field>
-              </Stack>
-            </DialogContent>
-            <DialogActions>
-              <Button
-                variant="contained"
-                disabled={isSubmitting || !isValid}
-                onClick={submitForm}
-              >
-                <FormattedMessage id="add" defaultMessage="Add" />
-              </Button>
-              <Button onClick={handleClose} disabled={isSubmitting}>
-                <FormattedMessage id="cancel" defaultMessage="Cancel" />
-              </Button>
-            </DialogActions>
+                  <FormattedMessage id="add" defaultMessage="Add" />
+                </Button>
+                <Button onClick={handleClose} disabled={isSubmitting}>
+                  <FormattedMessage id="cancel" defaultMessage="Cancel" />
+                </Button>
+              </DialogActions>
+            )}
           </>
         )}
       </Formik>

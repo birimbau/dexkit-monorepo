@@ -16,21 +16,13 @@ export function useSubscription() {
 export function useBuyCreditsCheckout() {
   const { instance } = useContext(DexkitApiProvider);
 
-  return useMutation(
-    async ({
-      amount,
-      paymentMethod,
-    }: {
-      amount: number;
-      paymentMethod: string;
-    }) => {
-      return (
-        await instance?.post<{ url: string }>("/payments/buy-credits-session", {
-          amount: amount.toString(),
-        })
-      )?.data;
-    }
-  );
+  return useMutation(async ({ amount }: { amount: number }) => {
+    return (
+      await instance?.post<{ url: string }>("/payments/buy-credits-session", {
+        amount: amount.toString(),
+      })
+    )?.data;
+  });
 }
 
 export const CREDIT_HISTORY = "CREDIT_HISTORY";
@@ -103,6 +95,41 @@ export function useCheckoutData({ id }: { id: string }) {
     return (
       await instance?.get<CryptoCheckoutSession>(
         `/payments/checkout-session/${id}`
+      )
+    )?.data;
+  });
+}
+
+export const PLAN_COSTS = "PLAN_COSTS";
+
+export function usePlanCosts(slug?: string) {
+  const { instance } = useContext(DexkitApiProvider);
+  return useQuery([PLAN_COSTS, slug], async () => {
+    if (!slug) {
+      return [];
+    }
+    return (
+      await instance?.get<
+        {
+          id: number;
+          plan: string;
+          feat: string;
+          model?: string;
+          price: string;
+        }[]
+      >(`/payments/plans/${slug}/costs`)
+    )?.data;
+  });
+}
+
+export const PLANS_QUERY = "PLANS_QUERY";
+
+export function usePlanPrices() {
+  const { instance } = useContext(DexkitApiProvider);
+  return useQuery([PLANS_QUERY], async () => {
+    return (
+      await instance?.get<{ amount: string; name: string; slug: string }[]>(
+        `/payments/plans`
       )
     )?.data;
   });

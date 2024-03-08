@@ -45,6 +45,8 @@ export type Subscription = {
   createdAt: string;
   updatedAt: string;
   planName: string;
+  creditsAvailable: string;
+  creditsUsed: string;
 };
 
 export type ImageGenerate = {
