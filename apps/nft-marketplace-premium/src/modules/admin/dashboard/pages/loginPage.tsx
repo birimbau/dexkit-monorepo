@@ -1,4 +1,4 @@
-import ConnectWalletDialog from '@dexkit/ui/components/ConnectWalletDialog';
+import ConnectWalletDialog from '@dexkit/ui/components/ConnectWallet/ConnectWalletDialog';
 import { useWalletActivate } from '@dexkit/wallet-connectors/hooks';
 import { WalletActivateParams } from '@dexkit/wallet-connectors/types';
 import { Box, Button, Container } from '@mui/material';

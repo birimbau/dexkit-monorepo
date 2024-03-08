@@ -182,6 +182,7 @@ export const showAppTransactionsAtom = atom<boolean>(false);
 
 export const selectedWalletAtom = atomWithStorage<string>('connector', '');
 
+
 export const transactionsAtomV2 = atomWithStorage<{
   [key: string]: AppTransaction;
 }>('dexkit.transactions', {});

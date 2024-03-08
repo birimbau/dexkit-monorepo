@@ -1,13 +1,12 @@
 import { Web3ReactHooks } from "@web3-react/core";
 import { Connector } from "@web3-react/types";
-import { metaMask, metaMaskHooks } from "./connectors/metamask";
-import { walletConnect, walletConnectHooks } from "./connectors/walletConnect";
 
 
-import { magic, magicHooks } from "./connectors/magic";
+import { deprecatedInjectedConnection, magic, magicHooks, walletConnectV2Connection } from "../connectors/connections";
 
 export const CONNECTORS: { [key: string]: [Connector, Web3ReactHooks] } = {
-  metamask: [metaMask, metaMaskHooks],
-  walletConnect: [walletConnect, walletConnectHooks],
+  metamask: [deprecatedInjectedConnection.connector, deprecatedInjectedConnection.hooks],
+  walletConnect: [walletConnectV2Connection.connector, walletConnectV2Connection.hooks],
   magic: [magic, magicHooks],
+  // coinbase: [coinbaseWalletConnection.connector, coinbaseWalletConnection.hooks]
 };

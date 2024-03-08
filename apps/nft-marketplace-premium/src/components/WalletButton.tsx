@@ -1,6 +1,7 @@
 import { useEvmNativeBalanceQuery } from '@dexkit/core';
 import { AccountBalance } from '@dexkit/ui/components/AccountBalance';
 import { GET_WALLET_ICON } from '@dexkit/wallet-connectors/connectors';
+import { useWalletConnectorMetadata } from '@dexkit/wallet-connectors/hooks';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import {
@@ -28,7 +29,7 @@ export interface WalletButtonProps {
 
 export function WalletButton({ align }: WalletButtonProps) {
   const { connector, account, ENSName, provider, chainId } = useWeb3React();
-
+  const { walletConnectorMetadata } = useWalletConnectorMetadata();
   const isBalancesVisible = useAtomValue(isBalancesVisibleAtom);
 
   const justifyContent = align === 'left' ? 'flex-start' : 'center';
@@ -63,7 +64,7 @@ export function WalletButton({ align }: WalletButtonProps) {
       >
         <Stack direction="row" spacing={1} alignItems="center">
           <Avatar
-            src={GET_WALLET_ICON(connector)}
+            src={walletConnectorMetadata.icon || GET_WALLET_ICON(connector)}
             sx={(theme) => ({
               width: theme.spacing(2),
               height: theme.spacing(2),

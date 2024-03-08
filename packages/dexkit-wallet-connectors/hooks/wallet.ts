@@ -1,11 +1,10 @@
 import { useMutation } from "@tanstack/react-query";
 import { useWeb3React } from "@web3-react/core";
-import { metaMask } from "../constants/connectors/metamask";
 import { WalletActivateParams } from "../types";
 
 import { PrimitiveAtom, useAtom } from "jotai";
+import { atomWithStorage } from "jotai/utils";
 import { magic } from "../constants/connectors/magic";
-import { walletConnect } from "../constants/connectors/walletConnect";
 
 export function useWalletActivate({
   magicRedirectUrl,
@@ -14,32 +13,64 @@ export function useWalletActivate({
   magicRedirectUrl: string;
   selectedWalletAtom: PrimitiveAtom<string>;
 }) {
-  const { connector } = useWeb3React();
-
+  const { connector, chainId } = useWeb3React();
+  const { setWalletConnectorMetadata } = useWalletConnectorMetadata()
+  // This should be deprecated
   const [walletConnector, setWalletConnector] = useAtom(selectedWalletAtom);
 
   const mutation = useMutation(async (params: WalletActivateParams) => {
-    if (connector.deactivate) {
-      await connector.deactivate();
-    }
+    /* if (connector.deactivate) {
+       await connector.deactivate();
+     }*/
 
-    if (params.connectorName === "metamask") {
-      setWalletConnector("metamask");
-      return await metaMask.activate();
-    } else if (params.connectorName === "magic") {
+    if (params?.overrideActivate && params?.overrideActivate(chainId)) return;
+
+
+    if (params.connectorName === "magic") {
+      setWalletConnectorMetadata(
+        {
+          id: params.connectorName,
+          icon: params.icon,
+          name: params.name
+        }
+      )
+      // This should be deprecated
       setWalletConnector("magic");
       return await magic.activate({
         loginType: params.loginType,
         email: params.email,
         redirectUrl: magicRedirectUrl,
       });
-    } else if (params.connectorName === "walletConnect") {
-      setWalletConnector("walletConnect");
-      return await walletConnect.activate();
+    } else {
+      setWalletConnectorMetadata(
+        {
+          id: params.connectorName,
+          icon: params.icon,
+          name: params.name
+        }
+      )
+      // This should be deprecated
+      setWalletConnector(params.connectorName);
+
+
+      return await connector.activate();
     }
   });
 
   return { connectorName: walletConnector, mutation };
 }
 
+const walletConnectorMetadataAtom = atomWithStorage<{ id?: string, name?: string, icon?: string }>("wallet-connector-metadata", {});
 
+/**
+ * Return current active connector metadata
+ * @returns 
+ */
+export function useWalletConnectorMetadata() {
+  const [walletConnectorMetadata, setWalletConnectorMetadata] = useAtom(walletConnectorMetadataAtom);
+  return {
+    walletConnectorMetadata,
+    setWalletConnectorMetadata
+  }
+
+}
