@@ -17,19 +17,22 @@ import { TextImproveAction } from "../../constants/ai";
 
 export interface ImproveTextActionListProps {
   value?: string;
+  disabled?: boolean;
   onChange: (value: string) => void;
 }
 
 export default function ImproveTextActionList({
   onChange,
   value,
+  disabled,
 }: ImproveTextActionListProps) {
   const handleClick = (action: string) => {
     return () => onChange(action);
   };
   return (
-    <List>
+    <List disablePadding>
       <ListItemButton
+        disabled={disabled}
         selected={value === TextImproveAction.GENERATE}
         onClick={handleClick(TextImproveAction.GENERATE)}
       >
@@ -46,6 +49,7 @@ export default function ImproveTextActionList({
         />
       </ListItemButton>
       <ListItemButton
+        disabled={disabled}
         selected={value === TextImproveAction.IMPROVE_WRITING}
         onClick={handleClick(TextImproveAction.IMPROVE_WRITING)}
       >
@@ -62,6 +66,7 @@ export default function ImproveTextActionList({
         />
       </ListItemButton>
       <ListItemButton
+        disabled={disabled}
         selected={value === TextImproveAction.IMPROVE_SPELLING}
         onClick={handleClick(TextImproveAction.IMPROVE_SPELLING)}
       >
@@ -78,6 +83,7 @@ export default function ImproveTextActionList({
         />
       </ListItemButton>
       <ListItemButton
+        disabled={disabled}
         selected={value === TextImproveAction.MAKE_SHORTER}
         onClick={handleClick(TextImproveAction.MAKE_SHORTER)}
       >
@@ -91,6 +97,7 @@ export default function ImproveTextActionList({
         />
       </ListItemButton>
       <ListItemButton
+        disabled={disabled}
         selected={value === TextImproveAction.MAKE_LONGER}
         onClick={handleClick(TextImproveAction.MAKE_LONGER)}
       >

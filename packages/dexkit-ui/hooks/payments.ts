@@ -1,16 +1,20 @@
 import { DexkitApiProvider } from "@dexkit/core/providers";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useContext } from "react";
-import { Subscription } from "../types/ai";
+import { FeatUsage, Subscription } from "../types/ai";
 import { CreditGrant, CryptoCheckoutSession } from "../types/payments";
 
 export const SUBSCRIPTION_QUERY = "SUBSCRIPTION_QUERY";
 
 export function useSubscription() {
   const { instance } = useContext(DexkitApiProvider);
-  return useQuery<Subscription>([SUBSCRIPTION_QUERY], async () => {
-    return (await instance?.get("/payments/subscription"))?.data;
-  });
+  return useQuery<Subscription>(
+    [SUBSCRIPTION_QUERY],
+    async () => {
+      return (await instance?.get("/payments/subscription"))?.data;
+    },
+    { refetchInterval: 5000 }
+  );
 }
 
 export function useBuyCreditsCheckout() {
@@ -133,4 +137,28 @@ export function usePlanPrices() {
       )
     )?.data;
   });
+}
+
+export function usePlanCheckoutMutation() {
+  const { instance } = useContext(DexkitApiProvider);
+
+  return useMutation(async ({ plan }: { plan: string }) => {
+    return (
+      await instance?.get<{ url: string }>("/payments/checkout-session", {
+        params: { plan },
+      })
+    )?.data;
+  });
+}
+export const ACTIVE_FEAT_USAGE_QUERY = "ACTIVE_FEAT_USAGE_QUERY";
+
+export function useActiveFeatUsage() {
+  const { instance } = useContext(DexkitApiProvider);
+  return useQuery<FeatUsage>(
+    [ACTIVE_FEAT_USAGE_QUERY],
+    async () => {
+      return (await instance?.get(`/payments/active-usage`))?.data;
+    },
+    { refetchInterval: 5000 }
+  );
 }

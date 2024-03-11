@@ -1,3 +1,4 @@
+import AddCreditDialog from '@dexkit/ui/components/dialogs/AddCreditDialog';
 import { useCreditHistory } from '@dexkit/ui/hooks/payments';
 import Add from '@mui/icons-material/Add';
 import {
@@ -16,7 +17,6 @@ import {
 import Decimal from 'decimal.js';
 import { useState } from 'react';
 import { FormattedMessage, FormattedNumber, useIntl } from 'react-intl';
-import AddCreditDialog from './dialogs/AddCreditDialog';
 
 import moment from 'moment';
 

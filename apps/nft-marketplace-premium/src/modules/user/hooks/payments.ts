@@ -1,11 +1,6 @@
 import { DexkitApiProvider } from '@dexkit/core/providers';
-import {
-  FeatUsage,
-  Feature,
-  FeatureSum,
-  Subscription,
-} from '@dexkit/ui/types/ai';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { Feature, FeatureSum, Subscription } from '@dexkit/ui/types/ai';
+import { useQuery } from '@tanstack/react-query';
 import { useContext } from 'react';
 
 export const USER_PAYMENT_METHODS = 'USER_PAYMENT_METHODS';
@@ -19,18 +14,6 @@ export function useUserPaymentMethods() {
 }
 
 export const USER_PLANS_QUERY = 'USER_PLANS_QUERY';
-
-export function usePlanCheckoutMutation() {
-  const { instance } = useContext(DexkitApiProvider);
-
-  return useMutation([USER_PLANS_QUERY], async ({ plan }: { plan: string }) => {
-    return (
-      await instance?.get<{ url: string }>('/payments/checkout-session', {
-        params: { plan },
-      })
-    )?.data;
-  });
-}
 
 export const BILLING_HISTORY_QUERY = 'BILLING_HISTORY_QUERY';
 
@@ -93,14 +76,5 @@ export function useSubscription() {
   const { instance } = useContext(DexkitApiProvider);
   return useQuery<Subscription>([SUBSCRIPTION_QUERY], async () => {
     return (await instance?.get('/payments/subscription'))?.data;
-  });
-}
-
-export const ACTIVE_FEAT_USAGE_QUERY = 'ACTIVE_FEAT_USAGE_QUERY';
-
-export function useActiveFeatUsage() {
-  const { instance } = useContext(DexkitApiProvider);
-  return useQuery<FeatUsage>([ACTIVE_FEAT_USAGE_QUERY], async () => {
-    return (await instance?.get(`/payments/active-usage`))?.data;
   });
 }

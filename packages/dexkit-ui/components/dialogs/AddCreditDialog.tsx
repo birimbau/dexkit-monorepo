@@ -1,10 +1,10 @@
-import { AppDialogTitle } from '@dexkit/ui';
-import FormikDecimalInput from '@dexkit/ui/components/FormikDecimalInput';
+import { AppDialogTitle } from "@dexkit/ui";
+import FormikDecimalInput from "@dexkit/ui/components/FormikDecimalInput";
 import {
   useBuyCreditsCheckout,
   useCryptoCheckout,
-} from '@dexkit/ui/hooks/payments';
-import HistoryIcon from '@mui/icons-material/History';
+} from "@dexkit/ui/hooks/payments";
+import HistoryIcon from "@mui/icons-material/History";
 import {
   Box,
   Button,
@@ -15,11 +15,11 @@ import {
   MenuItem,
   Stack,
   Typography,
-} from '@mui/material';
-import Decimal from 'decimal.js';
-import { Field, Formik } from 'formik';
-import { Select } from 'formik-mui';
-import { FormattedMessage, useIntl } from 'react-intl';
+} from "@mui/material";
+import Decimal from "decimal.js";
+import { Field, Formik, FormikHelpers } from "formik";
+import { Select } from "formik-mui";
+import { FormattedMessage, useIntl } from "react-intl";
 
 export interface AddCreditDialogProps {
   DialogProps: DialogProps;
@@ -28,49 +28,61 @@ export interface AddCreditDialogProps {
 export default function AddCreditDialog({ DialogProps }: AddCreditDialogProps) {
   const { onClose } = DialogProps;
 
-  const handleClose = () => {
-    if (onClose) {
-      onClose({}, 'backdropClick');
-    }
-  };
-
   const buyCreditsCheckout = useBuyCreditsCheckout();
 
   const cryptoCheckout = useCryptoCheckout();
 
-  const handleSubmit = async ({
-    amount,
-    paymentMethod,
-  }: {
-    amount: string;
-    paymentMethod: string;
-  }) => {
-    if (paymentMethod === 'crypto') {
+  const handleClose = async () => {
+    if (onClose) {
+      onClose({}, "backdropClick");
+    }
+
+    cryptoCheckout.reset();
+    buyCreditsCheckout.reset();
+  };
+
+  const handleSubmit = async (
+    {
+      amount,
+      paymentMethod,
+    }: {
+      amount: string;
+      paymentMethod: string;
+    },
+    helpers: FormikHelpers<{
+      amount: string;
+      paymentMethod: string;
+    }>
+  ) => {
+    if (paymentMethod === "crypto") {
       const result = await cryptoCheckout.mutateAsync({
         amount,
-        intent: 'credit-grant',
+        intent: "credit-grant",
       });
 
       window.open(`/checkout/${result?.id}`);
+      helpers.resetForm();
     } else {
       const result = await buyCreditsCheckout.mutateAsync({
         amount: parseFloat(amount),
       });
 
-      window.open(result?.url, '_blank');
+      window.open(result?.url, "_blank");
+
+      helpers.resetForm();
     }
   };
 
   const { formatMessage } = useIntl();
 
   const handleValitate = ({ amount }: any) => {
-    const value = new Decimal(amount || '0');
+    const value = new Decimal(amount || "0");
 
     if (value.lessThan(5)) {
       return {
         amount: formatMessage({
-          defaultMessage: 'the minimum is 5',
-          id: 'the.minimum.is.five',
+          defaultMessage: "the minimum is 5",
+          id: "the.minimum.is.five",
         }),
       };
     }
@@ -78,8 +90,8 @@ export default function AddCreditDialog({ DialogProps }: AddCreditDialogProps) {
     if (value.greaterThan(95)) {
       return {
         amount: formatMessage({
-          defaultMessage: 'the maximum is 95',
-          id: 'the.maximum.is.95',
+          defaultMessage: "the maximum is 95",
+          id: "the.maximum.is.95",
         }),
       };
     }
@@ -133,8 +145,11 @@ export default function AddCreditDialog({ DialogProps }: AddCreditDialogProps) {
               defaultMessage="Cryptocurrency"
             />
           </MenuItem>
-          <MenuItem value="card">
-            <FormattedMessage id="credit.card" defaultMessage="Credit Card" />
+          <MenuItem disabled value="card">
+            <FormattedMessage
+              id="credit.card.soming.soon"
+              defaultMessage="Credit Card (Coming Soon)"
+            />
           </MenuItem>
         </Field>
       </Stack>
@@ -144,7 +159,7 @@ export default function AddCreditDialog({ DialogProps }: AddCreditDialogProps) {
   return (
     <Dialog {...DialogProps}>
       <Formik
-        initialValues={{ amount: '5', paymentMethod: 'crypto' }}
+        initialValues={{ amount: "5", paymentMethod: "crypto" }}
         onSubmit={handleSubmit}
         validate={handleValitate}
       >

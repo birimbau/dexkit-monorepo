@@ -63,7 +63,7 @@ export default function SeoSectionForm({
       onSubmit(values);
       helpers.setSubmitting(false);
     },
-    [onSubmit],
+    [onSubmit]
   );
 
   return (
@@ -124,6 +124,7 @@ export default function SeoSectionForm({
                       setFieldValue('description', output)
                     }
                     initialPrompt={values.description}
+                    multiline
                   >
                     {({ inputAdornment, ref }) => (
                       <Field

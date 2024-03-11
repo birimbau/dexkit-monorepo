@@ -9,10 +9,14 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
+import { useSnackbar } from "notistack";
 import { useCallback, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { useGenVariants, useSaveImages } from "../../../hooks/ai";
-import { useSubscription } from "../../../hooks/payments";
+import {
+  usePlanCheckoutMutation,
+  useSubscription,
+} from "../../../hooks/payments";
 import EditTab from "./EditTab";
 import GenerateTab from "./GenerateTab";
 import SelectTab from "./SelectTab";
@@ -80,11 +84,24 @@ export default function GenerateImagesDialog({
     [varImgUrl]
   );
 
-  const { data: sub } = useSubscription();
+  const { data: sub, refetch: refetchSub } = useSubscription();
 
-  const handleSubscribe = () => {
-    handleClose();
-    window.open("/u/settings?section=billing", "_blank");
+  const { mutateAsync: checkoutPlan, isLoading } = usePlanCheckoutMutation();
+  const { enqueueSnackbar } = useSnackbar();
+
+  const handleSubscribe = async () => {
+    try {
+      await checkoutPlan({ plan: "free" });
+
+      enqueueSnackbar(
+        <FormattedMessage id="ai.activated" defaultMessage="AI Activated" />,
+        { variant: "success" }
+      );
+
+      await refetchSub();
+    } catch (err) {
+      enqueueSnackbar(String(err), { variant: "error" });
+    }
   };
 
   const handleEdit = () => {
@@ -103,19 +120,19 @@ export default function GenerateImagesDialog({
           <Box>
             <Typography align="center" variant="h5">
               <FormattedMessage
-                id="subscription"
-                defaultMessage="Subscription"
+                id="ai.assistant"
+                defaultMessage="AI Assistant"
               />
             </Typography>
             <Typography align="center" variant="body1" color="text.secondary">
               <FormattedMessage
-                id="unlock.the.power.of.artificial.intelligence.by.subscribing.to.our.plan.today"
-                defaultMessage="Unlock the power of artificial intelligence by subscribing to our plan today!"
+                id="unlock.the.power.of.artificial.intelligence.by.activating.it"
+                defaultMessage="Unlock the power of artificial intelligence by activating it"
               />
             </Typography>
           </Box>
           <Button onClick={handleSubscribe} variant="contained">
-            <FormattedMessage id="subscribe" defaultMessage="Subscribe" />
+            <FormattedMessage id="activate.ai" defaultMessage="Activate AI" />
           </Button>
         </Stack>
       );

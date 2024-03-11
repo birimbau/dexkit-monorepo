@@ -20,12 +20,14 @@ export interface CompletationProviderProps {
   }) => React.ReactNode;
   onCompletation: (output: string) => void;
   initialPrompt?: string;
+  multiline?: boolean;
 }
 
 export default function CompletationProvider({
   children,
   onCompletation,
   initialPrompt,
+  multiline,
 }: CompletationProviderProps) {
   const [showAiComp, setShowAiComp] = useState(false);
   const ref = useRef<HTMLInputElement | null>(null);
@@ -119,6 +121,7 @@ export default function CompletationProvider({
           output={completationMutation.data?.output}
           onConfirm={handleConfirmCompletation}
           initialPrompt={initialPrompt}
+          multiline={multiline}
         />
       )}
       {children({ ref, open: handleCompletation, inputAdornment })}

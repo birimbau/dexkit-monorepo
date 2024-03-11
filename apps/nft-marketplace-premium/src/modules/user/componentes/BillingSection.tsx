@@ -1,4 +1,8 @@
-import { usePlanPrices } from '@dexkit/ui/hooks/payments';
+import {
+  useActiveFeatUsage,
+  usePlanCheckoutMutation,
+  usePlanPrices,
+} from '@dexkit/ui/hooks/payments';
 import {
   Card,
   CardContent,
@@ -17,12 +21,7 @@ import moment from 'moment';
 import { useState } from 'react';
 import { FormattedMessage, FormattedNumber } from 'react-intl';
 import Link from 'src/components/Link';
-import {
-  useActiveFeatUsage,
-  useBillingHistoryQuery,
-  usePlanCheckoutMutation,
-  useSubscription,
-} from '../hooks/payments';
+import { useBillingHistoryQuery, useSubscription } from '../hooks/payments';
 import CreditSection from './CreditSection';
 import PlanCard from './PlanCard';
 import PlanDetailsDialog from './dialogs/PlanDetailsDialog';

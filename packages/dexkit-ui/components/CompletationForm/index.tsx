@@ -1,4 +1,5 @@
 import {
+  Backdrop,
   Box,
   Button,
   CircularProgress,
@@ -14,8 +15,13 @@ import { FormattedMessage } from "react-intl";
 
 import { TextField } from "formik-mui";
 
+import { Decimal } from "decimal.js";
+
+import { useMemo, useState } from "react";
 import * as Yup from "yup";
 import { TextImproveAction } from "../../constants/ai";
+import { useActiveFeatUsage, useSubscription } from "../../hooks/payments";
+import AddCreditDialog from "../dialogs/AddCreditDialog";
 import ImproveTextActionList from "./ImproveTextActionList";
 
 const FormScheme = Yup.object({
@@ -30,6 +36,7 @@ export interface CompletationFormProps {
   output?: string;
   initialPrompt?: string;
   onConfirm: () => void;
+  multiline?: boolean;
 }
 
 export default function CompletationForm({
@@ -37,6 +44,7 @@ export default function CompletationForm({
   output,
   initialPrompt,
   onConfirm,
+  multiline,
 }: CompletationFormProps) {
   const handleSubmit = async ({
     prompt,
@@ -48,90 +56,167 @@ export default function CompletationForm({
     await onGenerate(prompt, action);
   };
 
+  const { data: sub, refetch: refetchSub } = useSubscription();
+
+  const { data: featUsage, refetch: refetchFeatUsage } = useActiveFeatUsage();
+
+  const total = useMemo(() => {
+    if (sub && featUsage) {
+      return new Decimal(featUsage?.available)
+        .minus(new Decimal(featUsage?.used))
+        .add(
+          new Decimal(sub?.creditsAvailable).minus(
+            new Decimal(sub?.creditsUsed)
+          )
+        )
+        .toNumber();
+    }
+
+    return 0;
+  }, [featUsage, sub]);
+
+  const [showAddCredits, setShowAddCredits] = useState(false);
+  const handleAddCredits = async () => {
+    setShowAddCredits(true);
+  };
+
+  const handleClose = () => {
+    setShowAddCredits(false);
+    refetchSub();
+    refetchFeatUsage();
+  };
+
   return (
-    <Formik
-      initialValues={{ prompt: initialPrompt ? initialPrompt : "" }}
-      onSubmit={handleSubmit}
-      validationSchema={FormScheme}
-    >
-      {({ submitForm, isSubmitting, values, isValid, setFieldValue }) => (
-        <Stack spacing={1}>
-          <Field
-            component={TextField}
-            variant="outlined"
-            name="prompt"
-            fullWidth
-            label={<FormattedMessage id="prompt" defaultMessage="Prompt" />}
-          />
-          {(output || isSubmitting) && (
+    <>
+      <AddCreditDialog
+        DialogProps={{
+          open: showAddCredits,
+          onClose: handleClose,
+          maxWidth: "sm",
+          fullWidth: true,
+        }}
+      />
+      <Box sx={{ position: "relative", p: 2 }}>
+        <Formik
+          initialValues={{ prompt: initialPrompt ? initialPrompt : "" }}
+          onSubmit={handleSubmit}
+          validationSchema={FormScheme}
+        >
+          {({ submitForm, isSubmitting, values, isValid, setFieldValue }) => (
             <Stack spacing={2}>
-              <Typography variant="body1" color="text.secondary">
-                {isSubmitting ? (
-                  <Skeleton />
-                ) : (
-                  <>
-                    <FormattedMessage id="answer" defaultMessage="Answer:" />{" "}
-                    {output}
-                  </>
-                )}
-              </Typography>
-              {output && (
+              <Field
+                component={TextField}
+                variant="outlined"
+                name="prompt"
+                fullWidth
+                disabled={total === 0 || isSubmitting}
+                label={<FormattedMessage id="prompt" defaultMessage="Prompt" />}
+                multiline={multiline}
+              />
+              {(output || isSubmitting) && (
                 <Stack spacing={2}>
-                  <Stack direction="row" spacing={1}>
-                    <Button
-                      variant="contained"
-                      onClick={onConfirm}
-                      size="small"
-                    >
-                      <FormattedMessage id="use" defaultMessage="use" />
-                    </Button>
-                    <Button
-                      onClick={() => setFieldValue("prompt", output)}
-                      size="small"
-                      variant="outlined"
-                    >
-                      <FormattedMessage
-                        id="use.as.prompt"
-                        defaultMessage="use as prompt"
-                      />
-                    </Button>
-                  </Stack>
-                  <Divider />
+                  <Typography variant="body1" color="text.secondary">
+                    {isSubmitting ? (
+                      <Skeleton />
+                    ) : (
+                      <>
+                        <FormattedMessage
+                          id="answer"
+                          defaultMessage="Answer:"
+                        />{" "}
+                        {output}
+                      </>
+                    )}
+                  </Typography>
+                  {output && (
+                    <Stack spacing={2}>
+                      <Stack direction="row" spacing={1}>
+                        <Button
+                          variant="contained"
+                          onClick={onConfirm}
+                          size="small"
+                        >
+                          <FormattedMessage id="use" defaultMessage="use" />
+                        </Button>
+                        <Button
+                          onClick={() => setFieldValue("prompt", output)}
+                          size="small"
+                          variant="outlined"
+                        >
+                          <FormattedMessage
+                            id="use.as.prompt"
+                            defaultMessage="use as prompt"
+                          />
+                        </Button>
+                      </Stack>
+                      <Divider />
+                    </Stack>
+                  )}
                 </Stack>
               )}
+              <Box>
+                <ImproveTextActionList
+                  value={values.action}
+                  onChange={(value: string) => {
+                    if (value === values.action) {
+                      return setFieldValue("action", undefined);
+                    }
+                    setFieldValue("action", value);
+                  }}
+                  disabled={total === 0}
+                />
+              </Box>
+              <Divider />
+              <Box>
+                <Stack direction="row" justifyContent="flex-end">
+                  <Button
+                    onClick={submitForm}
+                    disabled={
+                      isSubmitting || !values.action || !isValid || total === 0
+                    }
+                    startIcon={
+                      isSubmitting ? (
+                        <CircularProgress size="1rem" color="inherit" />
+                      ) : (
+                        <AutoAwesomeIcon />
+                      )
+                    }
+                    variant="contained"
+                  >
+                    <FormattedMessage id="confirm" defaultMessage="Confirm" />
+                  </Button>
+                </Stack>
+              </Box>
             </Stack>
           )}
-          <Box>
-            <ImproveTextActionList
-              value={values.action}
-              onChange={(value: string) => {
-                if (value === values.action) {
-                  return setFieldValue("action", undefined);
-                }
-                setFieldValue("action", value);
-              }}
-            />
-          </Box>
-          <Box>
-            <Stack direction="row" justifyContent="flex-end">
-              <Button
-                onClick={submitForm}
-                disabled={isSubmitting || !values.action || !isValid}
-                startIcon={
-                  isSubmitting ? (
-                    <CircularProgress size="1rem" color="inherit" />
-                  ) : (
-                    <AutoAwesomeIcon />
-                  )
-                }
-                variant="contained"
-              >
-                <FormattedMessage id="confirm" defaultMessage="Confirm" />
-              </Button>
-            </Stack>
-          </Box>
-        </Stack>
-      )}
-    </Formik>
+        </Formik>
+        <Backdrop
+          sx={(theme) => ({
+            zIndex: theme.zIndex.drawer + 1,
+            position: "absolute",
+            backdropFilter: "blur(10px)",
+          })}
+          open={total === 0}
+        >
+          <Stack alignItems="center" justifyContent="center" spacing={2}>
+            <AutoAwesomeIcon fontSize="large" />
+            <Box>
+              <Typography align="center" variant="body1" fontWeight="bold">
+                <FormattedMessage id="no.credits" defaultMessage="No Credits" />
+              </Typography>
+              <Typography align="center" variant="body2" color="text.secondary">
+                <FormattedMessage
+                  id="you.need.to.add.credits.to.use.ai.features"
+                  defaultMessage="You need to add credits to use AI features"
+                />
+              </Typography>
+            </Box>
+            <Button onClick={handleAddCredits} variant="contained" size="small">
+              <FormattedMessage id="add.credits" defaultMessage="Add credits" />
+            </Button>
+          </Stack>
+        </Backdrop>
+      </Box>
+    </>
   );
 }

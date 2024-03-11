@@ -37,6 +37,7 @@
     "@dexkit/wallet-connectors": "*",
     "@mui/x-data-grid": "^6.16.1",
     "@transak/transak-sdk": "^3.0.1",
+    "decimal.js": "^10.4.3",
     "papaparse": "^5.4.1",
     "react-mask-editor": "^0.0.2",
     "zod": "^3.22.4"
