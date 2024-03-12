@@ -7,7 +7,9 @@
     "lint": "TIMING=1 eslint \"**/*.ts*\"",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "release": "changeset publish"
+    "release": "changeset publish",
+    "extract": "formatjs extract",
+    "generate-lang-files": "yarn extract './**/*.ts*' --ignore='**/*.d.ts' --out-file lang/main.json --id-interpolation-pattern '[sha512:contenthash:base64:6]'"
   },
   "devDependencies": {
     "@babel/core": "^7.21.0",

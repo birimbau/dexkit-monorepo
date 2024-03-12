@@ -26,9 +26,8 @@ const sourceFile = path.join(
 const jsonData = JSON.parse(fs.readFileSync(sourceFile, 'utf-8'));
 const allLangKeys = Object.keys(jsonData);
 async function main() {
-  let reachedEndOfFile = false;
-
   for (let index = 0; index < languages.length; index++) {
+    let reachedEndOfFile = false;
     const targetLanguage = languages[index];
     console.log(`translating ${targetLanguage}`);
     const targetFile = path.join(
