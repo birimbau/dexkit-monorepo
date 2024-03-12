@@ -1,6 +1,6 @@
 import { Token } from '@dexkit/core/types';
+import { Avatar, Box, Stack, Typography } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
-import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
@@ -16,14 +16,14 @@ export interface CheckoutTokenAutocompleteProps {
 }
 
 export default function CheckoutTokenAutocomplete(
-  props: CheckoutTokenAutocompleteProps,
+  props: CheckoutTokenAutocompleteProps
 ) {
   const { data, label, onChange, chainId, disabled, tokens, token } = props;
 
   return (
     <Autocomplete
       disabled={disabled}
-      options={tokens}
+      options={tokens.filter((t) => t.chainId === chainId)}
       autoHighlight
       value={token}
       isOptionEqualToValue={(op, val) =>
@@ -42,13 +42,30 @@ export default function CheckoutTokenAutocomplete(
           : '';
       }}
       renderOption={(props, option) => (
-        <Box
-          component="li"
-          sx={{ '& > img': { mr: 2, flexShrink: 0 } }}
-          {...props}
-        >
-          <img loading="lazy" width="20" src={`${option.logoURI}`} alt="" />
-          {option.name} {option?.symbol.toUpperCase() || ''}
+        <Box {...props} component="li" sx={{ display: 'block', width: '100%' }}>
+          <Stack
+            alignItems="center"
+            spacing={1}
+            direction="row"
+            justifyContent="space-between"
+            sx={{ width: '100%' }}
+          >
+            <Stack
+              alignItems="center"
+              spacing={1}
+              direction="row"
+              justifyContent="space-between"
+            >
+              <Avatar
+                src={option.logoURI}
+                sx={{ width: '1rem', height: '1rem' }}
+              />
+              <div>{option.name}</div>
+            </Stack>
+            <Typography color="text.secondary">
+              {option?.symbol.toUpperCase() || ''}
+            </Typography>
+          </Stack>
         </Box>
       )}
       renderInput={(params) => (

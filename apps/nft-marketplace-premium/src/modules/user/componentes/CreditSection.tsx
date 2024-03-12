@@ -87,18 +87,18 @@ export default function CreditSection() {
                       color="success"
                       variant="outlined"
                       label={formatMessage({
-                        id: 'enabled',
-                        defaultMessage: 'Enabled',
+                        id: 'credited',
+                        defaultMessage: 'Credited',
                       })}
                     />
                   ) : (
                     <Chip
                       size="small"
-                      color="error"
+                      color="warning"
                       variant="outlined"
                       label={formatMessage({
-                        id: 'disabled',
-                        defaultMessage: 'Disabled',
+                        id: 'payment.pending',
+                        defaultMessage: 'Payment Pending',
                       })}
                     />
                   )}

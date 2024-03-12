@@ -1,22 +1,27 @@
-import { AppDialogTitle } from "@dexkit/ui";
 import AutoFixHighIcon from "@mui/icons-material/AutoFixHigh";
+import Close from "@mui/icons-material/Close";
+import ExpandMore from "@mui/icons-material/ExpandMore";
 import {
   Box,
   Button,
   Dialog,
   DialogContent,
   DialogProps,
+  DialogTitle,
+  IconButton,
   Stack,
   Typography,
 } from "@mui/material";
 import { useSnackbar } from "notistack";
-import { useCallback, useState } from "react";
+import { MouseEvent, useCallback, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { useGenVariants, useSaveImages } from "../../../hooks/ai";
 import {
   usePlanCheckoutMutation,
   useSubscription,
 } from "../../../hooks/payments";
+import AIOptionsMenu from "../../AIOptionsMenu";
+import PaywallBackdrop from "../../PaywallBackdrop";
 import EditTab from "./EditTab";
 import GenerateTab from "./GenerateTab";
 import SelectTab from "./SelectTab";
@@ -177,22 +182,72 @@ export default function GenerateImagesDialog({
       </Stack>
     );
   };
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+
+  const handleClick = (e: MouseEvent<HTMLElement>) => {
+    setAnchorEl(e.currentTarget);
+  };
+
+  const handleCloseMenu = () => {
+    setAnchorEl(null);
+  };
 
   return (
     <>
+      <AIOptionsMenu
+        MenuProps={{
+          open: Boolean(anchorEl),
+          anchorEl,
+          onClose: handleCloseMenu,
+        }}
+      />
+
       <Dialog {...DialogProps}>
-        <AppDialogTitle
-          title={
-            <FormattedMessage
-              id="ai.image.generator"
-              defaultMessage="AI Image Generator"
-            />
-          }
-          onClose={handleClose}
-        />
-        <DialogContent dividers sx={{ p: 0 }}>
-          {renderContent()}
-        </DialogContent>
+        <DialogTitle
+          sx={{
+            zIndex: (theme) => theme.zIndex.modal + 1,
+            display: "flex",
+            justifyContent: "space-between",
+            p: 2,
+            alignItems: "center",
+            alignContent: "center",
+          }}
+        >
+          <Stack
+            direction="row"
+            spacing={1}
+            alignItems="center"
+            alignContent="center"
+          >
+            <Typography variant="inherit">
+              <FormattedMessage
+                id="ai.image.generator"
+                defaultMessage="AI Image Generator"
+              />
+            </Typography>
+          </Stack>
+          {onClose && (
+            <Stack spacing={1} direction="row" alignItems="center">
+              <Button
+                startIcon={<ExpandMore fontSize="small" />}
+                onClick={handleClick}
+                size="small"
+                variant="outlined"
+              >
+                <FormattedMessage id="settings" defaultMessage="Settings" />
+              </Button>
+              <IconButton onClick={handleClose}>
+                <Close />
+              </IconButton>
+            </Stack>
+          )}
+        </DialogTitle>
+        <Box sx={{ position: "relative" }}>
+          <DialogContent dividers sx={{ p: 0 }}>
+            {renderContent()}
+          </DialogContent>
+          <PaywallBackdrop />
+        </Box>
       </Dialog>
     </>
   );

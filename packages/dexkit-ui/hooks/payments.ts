@@ -95,13 +95,17 @@ export const CHECKOUT_STATUS = "CHECKOUT_STATUS";
 export function useCheckoutData({ id }: { id: string }) {
   const { instance } = useContext(DexkitApiProvider);
 
-  return useQuery([CHECKOUT_STATUS, id], async () => {
-    return (
-      await instance?.get<CryptoCheckoutSession>(
-        `/payments/checkout-session/${id}`
-      )
-    )?.data;
-  });
+  return useQuery(
+    [CHECKOUT_STATUS, id],
+    async () => {
+      return (
+        await instance?.get<CryptoCheckoutSession>(
+          `/payments/checkout-session/${id}`
+        )
+      )?.data;
+    },
+    { refetchInterval: 3000 }
+  );
 }
 
 export const PLAN_COSTS = "PLAN_COSTS";

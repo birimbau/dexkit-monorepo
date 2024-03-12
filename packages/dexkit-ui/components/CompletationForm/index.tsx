@@ -1,5 +1,4 @@
 import {
-  Backdrop,
   Box,
   Button,
   CircularProgress,
@@ -11,17 +10,19 @@ import {
 import { Field, Formik } from "formik";
 
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { FormattedMessage } from "react-intl";
 
 import { TextField } from "formik-mui";
 
 import { Decimal } from "decimal.js";
 
-import { useMemo, useState } from "react";
+import { MouseEvent, useMemo, useState } from "react";
 import * as Yup from "yup";
 import { TextImproveAction } from "../../constants/ai";
 import { useActiveFeatUsage, useSubscription } from "../../hooks/payments";
-import AddCreditDialog from "../dialogs/AddCreditDialog";
+import AIOptionsMenu from "../AIOptionsMenu";
+import PaywallBackdrop from "../PaywallBackdrop";
 import ImproveTextActionList from "./ImproveTextActionList";
 
 const FormScheme = Yup.object({
@@ -56,9 +57,9 @@ export default function CompletationForm({
     await onGenerate(prompt, action);
   };
 
-  const { data: sub, refetch: refetchSub } = useSubscription();
+  const { data: sub } = useSubscription();
 
-  const { data: featUsage, refetch: refetchFeatUsage } = useActiveFeatUsage();
+  const { data: featUsage } = useActiveFeatUsage();
 
   const total = useMemo(() => {
     if (sub && featUsage) {
@@ -75,26 +76,20 @@ export default function CompletationForm({
     return 0;
   }, [featUsage, sub]);
 
-  const [showAddCredits, setShowAddCredits] = useState(false);
-  const handleAddCredits = async () => {
-    setShowAddCredits(true);
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+
+  const handleClick = (e: MouseEvent<HTMLElement>) => {
+    setAnchorEl(e.currentTarget);
   };
 
   const handleClose = () => {
-    setShowAddCredits(false);
-    refetchSub();
-    refetchFeatUsage();
+    setAnchorEl(null);
   };
 
   return (
     <>
-      <AddCreditDialog
-        DialogProps={{
-          open: showAddCredits,
-          onClose: handleClose,
-          maxWidth: "sm",
-          fullWidth: true,
-        }}
+      <AIOptionsMenu
+        MenuProps={{ open: Boolean(anchorEl), anchorEl, onClose: handleClose }}
       />
       <Box sx={{ position: "relative", p: 2 }}>
         <Formik
@@ -168,7 +163,15 @@ export default function CompletationForm({
               </Box>
               <Divider />
               <Box>
-                <Stack direction="row" justifyContent="flex-end">
+                <Stack direction="row" justifyContent="flex-end" spacing={1}>
+                  <Button
+                    onClick={handleClick}
+                    startIcon={<ExpandMoreIcon />}
+                    disabled={isSubmitting}
+                    variant="outlined"
+                  >
+                    <FormattedMessage id="settings" defaultMessage="Settings" />
+                  </Button>
                   <Button
                     onClick={submitForm}
                     disabled={
@@ -190,32 +193,7 @@ export default function CompletationForm({
             </Stack>
           )}
         </Formik>
-        <Backdrop
-          sx={(theme) => ({
-            zIndex: theme.zIndex.drawer + 1,
-            position: "absolute",
-            backdropFilter: "blur(10px)",
-          })}
-          open={total === 0}
-        >
-          <Stack alignItems="center" justifyContent="center" spacing={2}>
-            <AutoAwesomeIcon fontSize="large" />
-            <Box>
-              <Typography align="center" variant="body1" fontWeight="bold">
-                <FormattedMessage id="no.credits" defaultMessage="No Credits" />
-              </Typography>
-              <Typography align="center" variant="body2" color="text.secondary">
-                <FormattedMessage
-                  id="you.need.to.add.credits.to.use.ai.features"
-                  defaultMessage="You need to add credits to use AI features"
-                />
-              </Typography>
-            </Box>
-            <Button onClick={handleAddCredits} variant="contained" size="small">
-              <FormattedMessage id="add.credits" defaultMessage="Add credits" />
-            </Button>
-          </Stack>
-        </Backdrop>
+        <PaywallBackdrop />
       </Box>
     </>
   );
