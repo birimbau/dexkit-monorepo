@@ -7,8 +7,9 @@ import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import { useAtom } from 'jotai';
 import { useSnackbar } from 'notistack';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
+import { SiteResponse } from 'src/types/whitelabel';
 import { AppCollection, AppConfig } from '../../../../types/config';
 import { isAddressEqual } from '../../../../utils/blockchain';
 import { collectionAtom } from '../../state';
@@ -23,15 +24,18 @@ export interface Form {
   imageUrl: string;
   description?: string;
   uri?: string;
+  disableSecondarySells?: boolean;
 }
 
 interface Props {
+  site?: SiteResponse | null;
   config: AppConfig;
   onSave: (config: AppConfig) => void;
   onHasChanges: (hasChanges: boolean) => void;
 }
 
 export default function CollectionWizardContainer({
+  site,
   config,
   onSave,
   onHasChanges,
@@ -52,6 +56,15 @@ export default function CollectionWizardContainer({
   );
   const [selectedEditCollection, setSelectedEditCollection] = useState<Form>();
 
+  const appUrl = useMemo(() => {
+    if (site?.domain) {
+      return `https://${site?.domain}`;
+    }
+    if (site?.previewUrl) {
+      return site?.previewUrl;
+    }
+  }, [site]);
+
   const handleSubmitCollection = (form: Form) => {
     setHashChanged(true);
     setCollections((value) => [
@@ -63,6 +76,7 @@ export default function CollectionWizardContainer({
         description: form.description,
         image: form.imageUrl,
         name: form.name,
+        disableSecondarySells: form?.disableSecondarySells,
       },
     ]);
   };
@@ -124,6 +138,7 @@ export default function CollectionWizardContainer({
             description: form.description,
             image: form.imageUrl,
             name: form.name,
+            disableSecondarySells: form?.disableSecondarySells,
           };
         } else {
           newCollections.push({
@@ -133,6 +148,7 @@ export default function CollectionWizardContainer({
             description: form.description,
             image: form.imageUrl,
             name: form.name,
+            disableSecondarySells: form?.disableSecondarySells,
           });
         }
 
@@ -200,6 +216,7 @@ export default function CollectionWizardContainer({
       </Grid>
       <Grid item xs={12} sm={6}>
         <CollectionsSection
+          appUrl={appUrl}
           onSubmit={handleSubmitCollection}
           collections={collections}
           onRemove={handleRemoveCollection}
