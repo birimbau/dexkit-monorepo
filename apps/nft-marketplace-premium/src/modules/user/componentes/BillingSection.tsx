@@ -1,9 +1,11 @@
+import AddCreditsButton from '@dexkit/ui/components/AddCreditsButton';
 import {
   useActiveFeatUsage,
   usePlanCheckoutMutation,
   usePlanPrices,
 } from '@dexkit/ui/hooks/payments';
 import {
+  Alert,
   Card,
   CardContent,
   Grid,
@@ -18,12 +20,11 @@ import {
 } from '@mui/material';
 import Decimal from 'decimal.js';
 import moment from 'moment';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { FormattedMessage, FormattedNumber } from 'react-intl';
 import Link from 'src/components/Link';
 import { useBillingHistoryQuery, useSubscription } from '../hooks/payments';
 import CreditSection from './CreditSection';
-import PlanCard from './PlanCard';
 import PlanDetailsDialog from './dialogs/PlanDetailsDialog';
 
 export default function BillingSection() {
@@ -66,6 +67,21 @@ export default function BillingSection() {
 
   const planPricesQuery = usePlanPrices();
 
+  const credits = useMemo(() => {
+    if (activeFeatUsageQuery.data && subscriptionQuery.data) {
+      return new Decimal(activeFeatUsageQuery.data?.available)
+        .minus(new Decimal(activeFeatUsageQuery.data?.used))
+        .add(
+          new Decimal(subscriptionQuery.data?.creditsAvailable).minus(
+            new Decimal(subscriptionQuery.data?.creditsUsed)
+          )
+        )
+        .toNumber();
+    }
+
+    return 0;
+  }, [activeFeatUsageQuery.data, subscriptionQuery.data]);
+
   return (
     <>
       <PlanDetailsDialog
@@ -78,9 +94,17 @@ export default function BillingSection() {
         slug={planSlug}
       />
       <Stack spacing={2}>
+        {credits <= 0.5 && (
+          <Alert severity="warning">
+            <FormattedMessage
+              id="credits.below0.50"
+              defaultMessage="Your credits are now below $0.50. Please consider adding more credits to continue using our services."
+            />
+          </Alert>
+        )}
         <Card>
           <CardContent>
-            {subscriptionQuery.isSuccess && !subscriptionQuery.data && (
+            {/* {subscriptionQuery.isSuccess && !subscriptionQuery.data && (
               <Grid container spacing={2}>
                 {planPricesQuery.data?.map((pp, key) => (
                   <Grid item xs={12} sm={4} key={key}>
@@ -95,8 +119,13 @@ export default function BillingSection() {
                   </Grid>
                 ))}
               </Grid>
-            )}
-            <Grid container spacing={2}>
+            )} */}
+            <Grid
+              container
+              spacing={2}
+              alignItems="center"
+              justifyContent="space-between"
+            >
               <Grid item>
                 <Typography variant="caption" color="text.secondary">
                   <FormattedMessage id="credits" defaultMessage="Credits" />
@@ -107,16 +136,7 @@ export default function BillingSection() {
                       style="currency"
                       currencyDisplay="narrowSymbol"
                       currency="USD"
-                      value={new Decimal(activeFeatUsageQuery.data?.available)
-                        .minus(new Decimal(activeFeatUsageQuery.data?.used))
-                        .add(
-                          new Decimal(
-                            subscriptionQuery.data?.creditsAvailable
-                          ).minus(
-                            new Decimal(subscriptionQuery.data?.creditsUsed)
-                          )
-                        )
-                        .toNumber()}
+                      value={credits}
                       minimumFractionDigits={4}
                     />
                   ) : (
@@ -125,6 +145,9 @@ export default function BillingSection() {
                 </Typography>
               </Grid>
               <Grid item>
+                <AddCreditsButton />
+              </Grid>
+              {/* <Grid item>
                 <Typography variant="caption" color="text.secondary">
                   <FormattedMessage id="plan" defaultMessage="Plan" />
                 </Typography>
@@ -147,7 +170,7 @@ export default function BillingSection() {
                     <Skeleton />
                   )}
                 </Typography>
-              </Grid>
+              </Grid> */}
               {/* <Grid item>
                 <Typography variant="caption" color="text.secondary">
                   <FormattedMessage id="start" defaultMessage="Start" />

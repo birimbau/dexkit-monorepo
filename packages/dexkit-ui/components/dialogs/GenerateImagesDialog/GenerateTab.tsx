@@ -1,6 +1,13 @@
 import { useImageGenerate } from "../../../hooks/ai";
 
-import { Button, CircularProgress, Stack, TextField } from "@mui/material";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Grid,
+  Stack,
+  TextField,
+} from "@mui/material";
 import { useMemo } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 
@@ -75,60 +82,83 @@ export default function GenerateTab({
         isSubmitting,
         isValid,
       }) => (
-        <Stack spacing={2}>
-          <VariantsGrid
-            amount={values.amount}
-            gridSize={gridSize}
-            images={data || []}
-            isLoading={isImagesLoading}
-            disabled={isImagesLoading}
-            onMenuOption={onMenuOption}
-          />
-
-          <TextField
-            placeholder={formatMessage({
-              id: "ex.an.image.of.a.cat",
-              defaultMessage: "ex. An image of a cat",
-            })}
-            onChange={(e) => setFieldValue("prompt", e.target.value)}
-            value={values.prompt}
-            fullWidth
-            error={Boolean(errors.prompt)}
-            helperText={Boolean(errors.prompt) ? errors.prompt : undefined}
-            rows={6}
-            multiline
-            disabled={isImagesLoading || disabled || isSubmitting}
-          />
-          <TextField
-            label={formatMessage({
-              id: "num.of.images",
-              defaultMessage: "Num. of Images",
-            })}
-            disabled={isImagesLoading || disabled || isSubmitting}
-            onChange={(e) => setFieldValue("amount", parseInt(e.target.value))}
-            value={values.amount === 0 ? "" : values.amount}
-            fullWidth
-            error={Boolean(errors.amount)}
-            helperText={Boolean(errors.amount) ? errors.amount : undefined}
-            type="number"
-          />
-          <Button
-            disabled={!isValid || isImagesLoading || disabled || isSubmitting}
-            onClick={submitForm}
-            variant="outlined"
-            startIcon={
-              isImagesLoading ? (
-                <CircularProgress size="1rem" color="inherit" />
-              ) : undefined
-            }
-          >
-            {isImagesLoading ? (
-              <FormattedMessage id="generating" defaultMessage="Generating" />
-            ) : (
-              <FormattedMessage id="generate" defaultMessage="Generate" />
-            )}
-          </Button>
-        </Stack>
+        <Box>
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={6}>
+              <Box>
+                <Stack spacing={2}>
+                  <TextField
+                    placeholder={formatMessage({
+                      id: "ex.an.image.of.a.cat",
+                      defaultMessage: "ex. An image of a cat",
+                    })}
+                    onChange={(e) => setFieldValue("prompt", e.target.value)}
+                    value={values.prompt}
+                    fullWidth
+                    error={Boolean(errors.prompt)}
+                    helperText={
+                      Boolean(errors.prompt) ? errors.prompt : undefined
+                    }
+                    rows={6}
+                    multiline
+                    disabled={isImagesLoading || disabled || isSubmitting}
+                  />
+                  <TextField
+                    label={formatMessage({
+                      id: "num.of.images",
+                      defaultMessage: "Num. of Images",
+                    })}
+                    disabled={isImagesLoading || disabled || isSubmitting}
+                    onChange={(e) =>
+                      setFieldValue("amount", parseInt(e.target.value))
+                    }
+                    value={values.amount === 0 ? "" : values.amount}
+                    fullWidth
+                    error={Boolean(errors.amount)}
+                    helperText={
+                      Boolean(errors.amount) ? errors.amount : undefined
+                    }
+                    type="number"
+                  />
+                  <Button
+                    disabled={
+                      !isValid || isImagesLoading || disabled || isSubmitting
+                    }
+                    onClick={submitForm}
+                    variant="outlined"
+                    startIcon={
+                      isImagesLoading ? (
+                        <CircularProgress size="1rem" color="inherit" />
+                      ) : undefined
+                    }
+                  >
+                    {isImagesLoading ? (
+                      <FormattedMessage
+                        id="generating"
+                        defaultMessage="Generating"
+                      />
+                    ) : (
+                      <FormattedMessage
+                        id="generate"
+                        defaultMessage="Generate"
+                      />
+                    )}
+                  </Button>
+                </Stack>
+              </Box>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <VariantsGrid
+                amount={values.amount}
+                gridSize={gridSize}
+                images={data || []}
+                isLoading={isImagesLoading}
+                disabled={isImagesLoading}
+                onMenuOption={onMenuOption}
+              />
+            </Grid>
+          </Grid>
+        </Box>
       )}
     </Formik>
   );

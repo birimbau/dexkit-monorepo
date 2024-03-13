@@ -2,25 +2,30 @@ import AutoFixHighIcon from "@mui/icons-material/AutoFixHigh";
 import Close from "@mui/icons-material/Close";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import {
+  Alert,
   Box,
   Button,
   Dialog,
   DialogContent,
   DialogProps,
   DialogTitle,
+  Divider,
   IconButton,
   Stack,
   Typography,
 } from "@mui/material";
+import Decimal from "decimal.js";
 import { useSnackbar } from "notistack";
-import { MouseEvent, useCallback, useState } from "react";
+import { MouseEvent, useCallback, useMemo, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { useGenVariants, useSaveImages } from "../../../hooks/ai";
 import {
+  useActiveFeatUsage,
   usePlanCheckoutMutation,
   useSubscription,
 } from "../../../hooks/payments";
 import AIOptionsMenu from "../../AIOptionsMenu";
+import AddCreditsButton from "../../AddCreditsButton";
 import PaywallBackdrop from "../../PaywallBackdrop";
 import EditTab from "./EditTab";
 import GenerateTab from "./GenerateTab";
@@ -192,6 +197,23 @@ export default function GenerateImagesDialog({
     setAnchorEl(null);
   };
 
+  const activeFeatUsageQuery = useActiveFeatUsage();
+
+  const credits = useMemo(() => {
+    if (activeFeatUsageQuery.data && sub) {
+      return new Decimal(activeFeatUsageQuery.data?.available)
+        .minus(new Decimal(activeFeatUsageQuery.data?.used))
+        .add(
+          new Decimal(sub?.creditsAvailable).minus(
+            new Decimal(sub?.creditsUsed)
+          )
+        )
+        .toNumber();
+    }
+
+    return 0;
+  }, [activeFeatUsageQuery.data, sub]);
+
   return (
     <>
       <AIOptionsMenu
@@ -242,8 +264,28 @@ export default function GenerateImagesDialog({
             </Stack>
           )}
         </DialogTitle>
+        <Divider />
         <Box sx={{ position: "relative" }}>
-          <DialogContent dividers sx={{ p: 0 }}>
+          <DialogContent sx={{ p: 0 }}>
+            {credits <= 0.5 && (
+              <>
+                <Box p={2}>
+                  <Alert
+                    severity="warning"
+                    action={
+                      <AddCreditsButton ButtonProps={{ color: "warning" }} />
+                    }
+                  >
+                    <FormattedMessage
+                      id="credits.below0.50"
+                      defaultMessage="Your credits are now below $0.50. Please consider adding more credits to continue using our services."
+                    />
+                  </Alert>
+                </Box>
+
+                <Divider />
+              </>
+            )}
             {renderContent()}
           </DialogContent>
           <PaywallBackdrop />

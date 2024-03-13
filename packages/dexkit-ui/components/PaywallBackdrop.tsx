@@ -7,6 +7,8 @@ import { useActiveFeatUsage, useSubscription } from "../hooks/payments";
 import AddCreditDialog from "./dialogs/AddCreditDialog";
 
 export default function PaywallBackdrop() {
+  const [open, setOpen] = useState(true);
+
   const { data: sub, refetch: refetchSub } = useSubscription();
 
   const { data: featUsage, refetch: refetchFeatUsage } = useActiveFeatUsage();
@@ -37,6 +39,10 @@ export default function PaywallBackdrop() {
     refetchFeatUsage();
   };
 
+  const handleCloseBackdrop = () => {
+    setOpen(false);
+  };
+
   return (
     <>
       <AddCreditDialog
@@ -53,7 +59,7 @@ export default function PaywallBackdrop() {
           position: "absolute",
           backdropFilter: "blur(10px)",
         })}
-        open={total === 0}
+        open={total === 0 && open}
       >
         <Stack alignItems="center" justifyContent="center" spacing={2}>
           <AutoAwesome fontSize="large" />
@@ -68,9 +74,18 @@ export default function PaywallBackdrop() {
               />
             </Typography>
           </Box>
-          <Button onClick={handleAddCredits} variant="contained" size="small">
-            <FormattedMessage id="add.credits" defaultMessage="Add credits" />
-          </Button>
+          <Stack spacing={1} direction="row">
+            <Button
+              onClick={handleCloseBackdrop}
+              variant="outlined"
+              size="small"
+            >
+              <FormattedMessage id="close" defaultMessage="Close" />
+            </Button>
+            <Button onClick={handleAddCredits} variant="contained" size="small">
+              <FormattedMessage id="add.credits" defaultMessage="Add credits" />
+            </Button>
+          </Stack>
         </Stack>
       </Backdrop>
     </>

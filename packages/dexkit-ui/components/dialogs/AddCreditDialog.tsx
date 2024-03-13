@@ -1,10 +1,14 @@
 import { AppDialogTitle } from "@dexkit/ui";
 import FormikDecimalInput from "@dexkit/ui/components/FormikDecimalInput";
 import {
+  useActiveFeatUsage,
   useBuyCreditsCheckout,
   useCryptoCheckout,
+  useSubscription,
 } from "@dexkit/ui/hooks/payments";
 import HistoryIcon from "@mui/icons-material/History";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import {
   Box,
   Button,
@@ -12,6 +16,7 @@ import {
   DialogActions,
   DialogContent,
   DialogProps,
+  IconButton,
   MenuItem,
   Stack,
   Typography,
@@ -19,7 +24,11 @@ import {
 import Decimal from "decimal.js";
 import { Field, Formik, FormikHelpers } from "formik";
 import { Select } from "formik-mui";
-import { FormattedMessage, useIntl } from "react-intl";
+import { useAtom } from "jotai";
+import { useMemo } from "react";
+import { FormattedMessage, FormattedNumber, useIntl } from "react-intl";
+import { useIsBalanceVisible } from "../../modules/wallet/hooks";
+import { isBalancesVisibleAtom } from "../../modules/wallet/state";
 
 export interface AddCreditDialogProps {
   DialogProps: DialogProps;
@@ -97,6 +106,34 @@ export default function AddCreditDialog({ DialogProps }: AddCreditDialogProps) {
     }
   };
 
+  const subscriptionQuery = useSubscription();
+  const activeFeatUsageQuery = useActiveFeatUsage();
+
+  const isVisible = useIsBalanceVisible();
+
+  const [isBalancesVisible, setIsBalancesVisible] = useAtom(
+    isBalancesVisibleAtom
+  );
+
+  const handleToggleVisibility = () => {
+    setIsBalancesVisible((value: boolean) => !value);
+  };
+
+  const credits = useMemo(() => {
+    if (activeFeatUsageQuery.data && subscriptionQuery.data) {
+      return new Decimal(activeFeatUsageQuery.data?.available)
+        .minus(new Decimal(activeFeatUsageQuery.data?.used))
+        .add(
+          new Decimal(subscriptionQuery.data?.creditsAvailable).minus(
+            new Decimal(subscriptionQuery.data?.creditsUsed)
+          )
+        )
+        .toNumber();
+    }
+
+    return 0;
+  }, [activeFeatUsageQuery.data, subscriptionQuery.data]);
+
   const renderContent = () => {
     if (cryptoCheckout.data || buyCreditsCheckout.data) {
       return (
@@ -119,8 +156,34 @@ export default function AddCreditDialog({ DialogProps }: AddCreditDialogProps) {
         </Stack>
       );
     }
+
     return (
       <Stack spacing={2}>
+        <Stack>
+          <Typography variant="body2">
+            <FormattedMessage id="balance" defaultMessage="Balance" />
+          </Typography>
+          <Stack direction="row" alignItems="center" spacing={0.5}>
+            <Typography variant="h5">
+              {isVisible ? (
+                <FormattedNumber
+                  value={credits}
+                  style="currency"
+                  currency="USD"
+                />
+              ) : (
+                `****.**`
+              )}
+            </Typography>
+            <IconButton onClick={handleToggleVisibility}>
+              {isBalancesVisible ? (
+                <Visibility fontSize="small" />
+              ) : (
+                <VisibilityOff fontSize="small" />
+              )}
+            </IconButton>
+          </Stack>
+        </Stack>
         <FormikDecimalInput
           TextFieldProps={{
             label: <FormattedMessage id="amount" defaultMessage="Amount" />,

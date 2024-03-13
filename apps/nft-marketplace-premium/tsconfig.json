@@ -34,7 +34,8 @@
     "../../packages/dexkit-core/constants/connectors/walletConnect.ts",
     "../../packages/dexkit-ui/hooks/ai.ts",
     "../../packages/dexkit-ui/types/ai/index.ts",
-    "../../packages/dexkit-ui/components/dialogs/AddCreditDialog.tsx"
+    "../../packages/dexkit-ui/components/dialogs/AddCreditDialog.tsx",
+    "../../packages/dexkit-ui/components/AddCreditsButton.tsx"
   ],
   "exclude": ["node_modules"]
 }

@@ -1,7 +1,8 @@
 import {
+  Box,
   Button,
   CircularProgress,
-  Divider,
+  Grid,
   Stack,
   TextField,
 } from "@mui/material";
@@ -105,67 +106,78 @@ export default function EditTab({
         errors,
         submitForm,
       }) => (
-        <Stack spacing={2}>
-          <Stack spacing={2} justifyContent="center">
-            <Stack alignItems="center">
-              <MaskEditor
-                imageUrl={imageUrl}
-                size={size}
-                onChange={(value: string) => setFieldValue("mask", value)}
-                key={imageUrl}
-              />
-            </Stack>
-            <Divider />
-            {renderResults(values)}
-          </Stack>
+        <Box>
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={6}>
+              <Stack spacing={2}>
+                <Stack justifyContent="center" alignItems="center">
+                  <Box>
+                    <MaskEditor
+                      imageUrl={imageUrl}
+                      size={size}
+                      onChange={(value: string) => setFieldValue("mask", value)}
+                      key={imageUrl}
+                    />
+                  </Box>
+                </Stack>
 
-          <TextField
-            label={<FormattedMessage id="prompt" defaultMessage="Prompt" />}
-            placeholder={formatMessage({
-              id: "change.cat.head",
-              defaultMessage: "ex. Change cat head",
-            })}
-            rows={3}
-            multiline
-            value={values.prompt}
-            onChange={(e) => setFieldValue("prompt", e.target.value)}
-            error={Boolean(errors.prompt)}
-            helperText={Boolean(errors.prompt) ? errors.prompt : undefined}
-            disabled={isSubmitting}
-          />
-          <TextField
-            type="number"
-            label={
-              <FormattedMessage
-                id="num.of.variants"
-                defaultMessage="Num. of variants"
-              />
-            }
-            value={values.numImages === 0 ? "" : values.numImages}
-            onChange={(e) => {
-              let value = parseInt(e.target.value);
+                <TextField
+                  label={
+                    <FormattedMessage id="prompt" defaultMessage="Prompt" />
+                  }
+                  placeholder={formatMessage({
+                    id: "change.cat.head",
+                    defaultMessage: "ex. Change cat head",
+                  })}
+                  rows={3}
+                  multiline
+                  value={values.prompt}
+                  onChange={(e) => setFieldValue("prompt", e.target.value)}
+                  error={Boolean(errors.prompt)}
+                  helperText={
+                    Boolean(errors.prompt) ? errors.prompt : undefined
+                  }
+                  disabled={isSubmitting}
+                />
+                <TextField
+                  type="number"
+                  label={
+                    <FormattedMessage
+                      id="num.of.variants"
+                      defaultMessage="Num. of variants"
+                    />
+                  }
+                  value={values.numImages === 0 ? "" : values.numImages}
+                  onChange={(e) => {
+                    let value = parseInt(e.target.value);
 
-              setFieldValue("numImages", value);
-            }}
-            error={values.numImages === 0 || Boolean(errors.numImages)}
-            helperText={
-              Boolean(errors.numImages) ? errors.numImages : undefined
-            }
-            disabled={isSubmitting}
-          />
-          <Button
-            onClick={submitForm}
-            startIcon={
-              isSubmitting ? (
-                <CircularProgress size="1rem" color="inherit" />
-              ) : undefined
-            }
-            disabled={!isValid || isSubmitting}
-            variant="contained"
-          >
-            <FormattedMessage id="edit" defaultMessage="Edit" />
-          </Button>
-        </Stack>
+                    setFieldValue("numImages", value);
+                  }}
+                  error={values.numImages === 0 || Boolean(errors.numImages)}
+                  helperText={
+                    Boolean(errors.numImages) ? errors.numImages : undefined
+                  }
+                  disabled={isSubmitting}
+                />
+                <Button
+                  onClick={submitForm}
+                  startIcon={
+                    isSubmitting ? (
+                      <CircularProgress size="1rem" color="inherit" />
+                    ) : undefined
+                  }
+                  disabled={!isValid || isSubmitting}
+                  variant="contained"
+                >
+                  <FormattedMessage id="edit" defaultMessage="Edit" />
+                </Button>
+              </Stack>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              {renderResults(values)}
+            </Grid>
+          </Grid>
+        </Box>
       )}
     </Formik>
   );

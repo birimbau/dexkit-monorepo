@@ -1,3 +1,4 @@
+import ImageNotSupportedIcon from "@mui/icons-material/ImageNotSupported";
 import {
   Box,
   Divider,
@@ -6,9 +7,11 @@ import {
   LinearProgress,
   Menu,
   MenuItem,
+  Paper,
   Skeleton,
   Stack,
   Tooltip,
+  Typography,
 } from "@mui/material";
 import { useCallback, useMemo, useState } from "react";
 import { FormattedMessage } from "react-intl";
@@ -165,102 +168,147 @@ export default function VariantsGrid({
           <FormattedMessage id="edit" defaultMessage="Edit" />
         </MenuItem>
       </Menu>
-      <Stack spacing={2}>
-        {selectable && (
-          <>
-            <Box>
-              <Stack justifyContent="flex-end" direction="row" spacing={1}>
-                <Tooltip
-                  title={<FormattedMessage id="save" defaultMessage="Save" />}
-                >
-                  <IconButton
-                    disabled={isSavingImages}
-                    onClick={handleSave}
-                    size="small"
+      <Box sx={{ height: "100%" }}>
+        <Stack spacing={2} sx={{ height: "100%" }}>
+          {selectable && (
+            <>
+              <Box>
+                <Stack justifyContent="flex-end" direction="row" spacing={1}>
+                  <Tooltip
+                    title={<FormattedMessage id="save" defaultMessage="Save" />}
                   >
-                    <SaveIcon />
-                  </IconButton>
-                </Tooltip>
-                <Tooltip
-                  title={
-                    isAllSelected ? (
-                      <FormattedMessage
-                        id="deselect.all"
-                        defaultMessage="Deselect All"
-                      />
-                    ) : (
-                      <FormattedMessage
-                        id="select.all"
-                        defaultMessage="Select All"
-                      />
-                    )
-                  }
-                >
-                  <IconButton
-                    disabled={isSavingImages}
-                    onClick={handleSelectAll}
-                    size="small"
+                    <IconButton
+                      disabled={isSavingImages}
+                      onClick={handleSave}
+                      size="small"
+                    >
+                      <SaveIcon />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip
+                    title={
+                      isAllSelected ? (
+                        <FormattedMessage
+                          id="deselect.all"
+                          defaultMessage="Deselect All"
+                        />
+                      ) : (
+                        <FormattedMessage
+                          id="select.all"
+                          defaultMessage="Select All"
+                        />
+                      )
+                    }
                   >
-                    {isAllSelected ? <DeselectIcon /> : <SelectAllIcon />}
-                  </IconButton>
-                </Tooltip>
-                <Tooltip
-                  title={
-                    <FormattedMessage id="cancel" defaultMessage="Cancel" />
-                  }
-                >
-                  <IconButton
-                    disabled={isSavingImages}
-                    onClick={handleCancel}
-                    size="small"
+                    <IconButton
+                      disabled={isSavingImages}
+                      onClick={handleSelectAll}
+                      size="small"
+                    >
+                      {isAllSelected ? <DeselectIcon /> : <SelectAllIcon />}
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip
+                    title={
+                      <FormattedMessage id="cancel" defaultMessage="Cancel" />
+                    }
                   >
-                    <CancelIcon />
-                  </IconButton>
-                </Tooltip>
-              </Stack>
-            </Box>
-            {isSavingImages ? (
-              <LinearProgress variant="indeterminate" />
-            ) : (
-              <Divider />
-            )}
-          </>
-        )}
-        <Box>
-          <Grid spacing={2} container justifyContent="center">
-            {images.map((img: string, index: number) => (
-              <Grid key={index} item xs={12} sm={gridSize}>
-                <ImageButton
-                  src={img}
-                  onOpenMenu={handleOpenMenu}
-                  selected={selected[img]}
-                  onSelect={handleSelect}
-                  selectable={selectable}
-                  disabled={disabled || isSavingImages}
-                />
+                    <IconButton
+                      disabled={isSavingImages}
+                      onClick={handleCancel}
+                      size="small"
+                    >
+                      <CancelIcon />
+                    </IconButton>
+                  </Tooltip>
+                </Stack>
+              </Box>
+              {isSavingImages ? (
+                <LinearProgress variant="indeterminate" />
+              ) : (
+                <Divider />
+              )}
+            </>
+          )}
+          <Box sx={{ height: "100%" }}>
+            {images.length > 0 && (
+              <Grid spacing={2} container justifyContent="center">
+                {images.map((img: string, index: number) => (
+                  <Grid key={index} item xs={12} sm={gridSize}>
+                    <ImageButton
+                      src={img}
+                      onOpenMenu={handleOpenMenu}
+                      selected={selected[img]}
+                      onSelect={handleSelect}
+                      selectable={selectable}
+                      disabled={disabled || isSavingImages}
+                    />
+                  </Grid>
+                ))}
               </Grid>
-            ))}
-          </Grid>
-        </Box>
-        {isLoading && (
-          <Box>
-            <Grid spacing={2} container justifyContent="center">
-              {new Array(amount).fill(null).map((_, index: number) => (
-                <Grid key={index} item xs={12} sm={gridSize}>
-                  <Skeleton
-                    variant="rectangular"
-                    sx={{
-                      aspectRatio: "1/1",
-                      width: "100%",
-                      minHeight: (theme) => theme.spacing(20),
-                    }}
-                  />
+            )}
+
+            {images.length === 0 && !isLoading && (
+              <Paper sx={{ p: 2, height: "100%" }}>
+                <Grid
+                  container
+                  spacing={2}
+                  alignItems="center"
+                  justifyContent="center"
+                  sx={{ height: "100%" }}
+                >
+                  <Grid item>
+                    <Box>
+                      <Stack spacing={2} alignItems="center">
+                        <ImageNotSupportedIcon
+                          fontSize="large"
+                          color="primary"
+                        />
+                        <Box>
+                          <Typography variant="h5" align="center">
+                            <FormattedMessage
+                              id="no.images"
+                              defaultMessage="No Images"
+                            />
+                          </Typography>
+                          <Typography
+                            color="text.secondary"
+                            variant="body1"
+                            align="center"
+                          >
+                            <FormattedMessage
+                              id="images.notGenerated"
+                              defaultMessage="You haven't generated any images yet. Start generating images now to make the most out of our service."
+                            />
+                          </Typography>
+                        </Box>
+                      </Stack>
+                    </Box>
+                  </Grid>
                 </Grid>
-              ))}
-            </Grid>
+              </Paper>
+            )}
+            {isLoading && (
+              <Box>
+                <Grid spacing={2} container justifyContent="center">
+                  {new Array(amount).fill(null).map((_, index: number) => (
+                    <Grid key={index} item xs={12} sm={gridSize}>
+                      <Skeleton
+                        variant="rectangular"
+                        sx={{
+                          aspectRatio: "1/1",
+                          width: "100%",
+                          minHeight: (theme) => theme.spacing(20),
+                        }}
+                      />
+                    </Grid>
+                  ))}
+                </Grid>
+              </Box>
+            )}
           </Box>
-        )}
-      </Stack>
+        </Stack>
+      </Box>
     </>
   );
 }

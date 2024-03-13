@@ -382,8 +382,10 @@ export default function MediaDialog({
                   {fileUploadMutation.isError && (
                     <Box sx={{ p: 2 }}>
                       <FormattedMessage id="reason" defaultMessage="Reason" />:{" "}
-                      {`${(fileUploadMutation.error as any)?.response?.data
-                        ?.message}`}
+                      {`${
+                        (fileUploadMutation.error as any)?.response?.data
+                          ?.message
+                      }`}
                     </Box>
                   )}
                 </Stack>

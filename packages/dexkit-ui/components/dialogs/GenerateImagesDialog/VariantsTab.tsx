@@ -70,95 +70,106 @@ export default function VariantsTab({
       validationSchema={FormSchema}
     >
       {({ submitForm, setFieldValue, values, errors, isValid }) => (
-        <Stack spacing={2}>
-          <Stack spacing={0.5} direction="row" alignItems="center">
-            <IconButton onClick={onCancel}>
-              <ArrowBack />
-            </IconButton>
-            <Typography variant="h5" fontWeight="bold">
-              <FormattedMessage id="back" defaultMessage="Back" />
-            </Typography>
-          </Stack>
-          <Typography variant="subtitle1">
-            <FormattedMessage
-              id="original.image"
-              defaultMessage="Original image"
-            />
-          </Typography>
-          <Box>
-            <Grid container spacing={2}>
-              <Grid item xs={12} sm={4}>
-                <Paper>
-                  <img
-                    src={imageUrl}
-                    key={imageUrl}
-                    style={{
-                      display: "block",
-                      aspectRatio: "1/1",
-                      width: "100%",
-                    }}
+        <Box>
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={6}>
+              <Box>
+                <Stack spacing={2}>
+                  <Stack spacing={0.5} direction="row" alignItems="center">
+                    <IconButton onClick={onCancel}>
+                      <ArrowBack />
+                    </IconButton>
+                    <Typography variant="h5" fontWeight="bold">
+                      <FormattedMessage id="back" defaultMessage="Back" />
+                    </Typography>
+                  </Stack>
+                  <Typography variant="subtitle1">
+                    <FormattedMessage
+                      id="original.image"
+                      defaultMessage="Original image"
+                    />
+                  </Typography>
+                  <Box>
+                    <Grid container spacing={2}>
+                      <Grid item xs={12} sm={4}>
+                        <Paper>
+                          <img
+                            src={imageUrl}
+                            key={imageUrl}
+                            style={{
+                              display: "block",
+                              aspectRatio: "1/1",
+                              width: "100%",
+                            }}
+                          />
+                        </Paper>
+                      </Grid>
+                    </Grid>
+                  </Box>
+                  <Divider />
+                  <TextField
+                    name="amount"
+                    type="number"
+                    disabled={disabled}
+                    value={values.amount === 0 ? "" : values.amount}
+                    onChange={(e) =>
+                      setFieldValue("amount", parseInt(e.target.value || "0"))
+                    }
+                    label={
+                      <FormattedMessage
+                        id="num.of.variant"
+                        defaultMessage="Num of variants"
+                      />
+                    }
+                    error={Boolean(errors.amount)}
+                    helperText={errors.amount ? errors.amount : undefined}
                   />
-                </Paper>
-              </Grid>
+                  <Button
+                    startIcon={
+                      isLoading ? (
+                        <CircularProgress color="inherit" size="1rem" />
+                      ) : undefined
+                    }
+                    disabled={
+                      isLoading || disabled || !isValid || values.amount === 0
+                    }
+                    onClick={submitForm}
+                    variant="contained"
+                  >
+                    {isLoading ? (
+                      <FormattedMessage
+                        id="generating.variants"
+                        defaultMessage="Generating Variants"
+                      />
+                    ) : (
+                      <FormattedMessage
+                        id="generate.variants"
+                        defaultMessage="Generate Variants"
+                      />
+                    )}
+                  </Button>
+                </Stack>
+              </Box>
             </Grid>
-          </Box>
-          <Divider />
-          {variants.length > 0 && (
-            <>
-              <Typography variant="subtitle1" fontWeight="bold">
-                <FormattedMessage id="variants" defaultMessage="Variants" />
-              </Typography>
-            </>
-          )}
-          <VariantsGrid
-            gridSize={gridSize}
-            amount={amount}
-            isLoading={isLoading}
-            images={variants}
-            disabled={disabled}
-            onMenuOption={onMenuOption}
-          />
-
-          <TextField
-            name="amount"
-            type="number"
-            disabled={disabled}
-            value={values.amount === 0 ? "" : values.amount}
-            onChange={(e) =>
-              setFieldValue("amount", parseInt(e.target.value || "0"))
-            }
-            label={
-              <FormattedMessage
-                id="num.of.variant"
-                defaultMessage="Num of variants"
+            <Grid item xs={12} sm={6}>
+              {variants.length > 0 && (
+                <>
+                  <Typography variant="subtitle1" fontWeight="bold">
+                    <FormattedMessage id="variants" defaultMessage="Variants" />
+                  </Typography>
+                </>
+              )}
+              <VariantsGrid
+                gridSize={gridSize}
+                amount={amount}
+                isLoading={isLoading}
+                images={variants}
+                disabled={disabled}
+                onMenuOption={onMenuOption}
               />
-            }
-            error={Boolean(errors.amount)}
-            helperText={errors.amount ? errors.amount : undefined}
-          />
-          <Button
-            startIcon={
-              isLoading ? (
-                <CircularProgress color="inherit" size="1rem" />
-              ) : undefined
-            }
-            disabled={isLoading || disabled || !isValid || values.amount === 0}
-            onClick={submitForm}
-            variant="contained"
-          >
-            {isLoading ? (
-              <FormattedMessage
-                id="generating.variants"
-                defaultMessage="Generating Variants"
-              />
-            ) : (
-              <FormattedMessage
-                id="generate.variants"
-                defaultMessage="Generate Variants"
-              />
-            )}
-          </Button>
-        </Stack>
+            </Grid>
+          </Grid>
+        </Box>
       )}
     </Formik>
   );
