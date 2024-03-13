@@ -1,0 +1,254 @@
+{
+  "24h.volume": {
+    "defaultMessage": "24h volume"
+  },
+  "24h.volume.amount": {
+    "defaultMessage": "24h volume: {amount}"
+  },
+  "Less": {
+    "defaultMessage": "Less"
+  },
+  "No.networks.selected": {
+    "defaultMessage": "No networks selected"
+  },
+  "You will.receive": {
+    "defaultMessage": "You will receive"
+  },
+  "actions": {
+    "defaultMessage": "Actions"
+  },
+  "amount": {
+    "defaultMessage": "Amount"
+  },
+  "amount.per.token": {
+    "defaultMessage": "Amount per token"
+  },
+  "approve": {
+    "defaultMessage": "Approve"
+  },
+  "approve.token.symbol": {
+    "defaultMessage": "Approve {tokenSymbol} on wallet"
+  },
+  "available": {
+    "defaultMessage": "Available"
+  },
+  "available.balance.amount.symbol": {
+    "defaultMessage": "Available balance: {amount} {symbol}"
+  },
+  "base.token": {
+    "defaultMessage": "Base token"
+  },
+  "buy": {
+    "defaultMessage": "Buy"
+  },
+  "buy.symbol": {
+    "defaultMessage": "Buy {symbol}"
+  },
+  "buy.token.symbol": {
+    "defaultMessage": "Buy {tokenSymbol}"
+  },
+  "cancel": {
+    "defaultMessage": "Cancel"
+  },
+  "choose.the.networks.that.your.exchange.will.be.enabled": {
+    "defaultMessage": "Choose the networks that your exchange will be enabled"
+  },
+  "confirm": {
+    "defaultMessage": "Confirm"
+  },
+  "connect.wallet": {
+    "defaultMessage": "Connect wallet"
+  },
+  "cost": {
+    "defaultMessage": "Cost"
+  },
+  "default.network": {
+    "defaultMessage": "Default network"
+  },
+  "default.slippage.percentage": {
+    "defaultMessage": "Default slippage (0-50%)"
+  },
+  "define.the.tokens.and.the.default.pair.for.this.network": {
+    "defaultMessage": "Define the tokens and the default pair for this network"
+  },
+  "edit.networks": {
+    "defaultMessage": "Edit Networks"
+  },
+  "expire": {
+    "defaultMessage": "Expire"
+  },
+  "expires.in": {
+    "defaultMessage": "Expires in"
+  },
+  "fee.amount": {
+    "defaultMessage": "Fee amount"
+  },
+  "fee.recipient.address": {
+    "defaultMessage": "Fee recipient address"
+  },
+  "fill.amount": {
+    "defaultMessage": "Fill amount"
+  },
+  "fill.amount.per.token": {
+    "defaultMessage": "Fill amount per token"
+  },
+  "fill.order": {
+    "defaultMessage": "Fill Order"
+  },
+  "fillable.amount": {
+    "defaultMessage": "Fillable amount"
+  },
+  "filled": {
+    "defaultMessage": "Filled"
+  },
+  "insufficient": {
+    "defaultMessage": "Insufficient {symbol}"
+  },
+  "insufficient.symbol": {
+    "defaultMessage": "insufficient {symbol}"
+  },
+  "last.price": {
+    "defaultMessage": "Last price"
+  },
+  "last.price.amount": {
+    "defaultMessage": "Last price: {amount}"
+  },
+  "limit": {
+    "defaultMessage": "Limit"
+  },
+  "loading.quote": {
+    "defaultMessage": "Loading quote..."
+  },
+  "market": {
+    "defaultMessage": "Market"
+  },
+  "market.cap": {
+    "defaultMessage": "Market Cap"
+  },
+  "market.cap.amount": {
+    "defaultMessage": "Market Cap: {amount}"
+  },
+  "market.settings": {
+    "defaultMessage": "Market Settings"
+  },
+  "max.slippage.is.value.percent": {
+    "defaultMessage": "Max slippage is 50 percent"
+  },
+  "more": {
+    "defaultMessage": "More"
+  },
+  "my.orders": {
+    "defaultMessage": "My Orders"
+  },
+  "native.coins.are.not.supported.on.limit.orders": {
+    "defaultMessage": "Native coins are not supported on limited orders"
+  },
+  "network": {
+    "defaultMessage": "Network"
+  },
+  "order.created.message": {
+    "defaultMessage": "Order created"
+  },
+  "order.failed": {
+    "defaultMessage": "Order failed"
+  },
+  "place.order": {
+    "defaultMessage": "Place Order"
+  },
+  "please.switch.to.networks": {
+    "defaultMessage": "Please, switch to {networks}"
+  },
+  "please.use.wrapped.version.of.native.token": {
+    "defaultMessage": "Please use wrapped version of native token"
+  },
+  "price": {
+    "defaultMessage": "Price"
+  },
+  "price.change.24h": {
+    "defaultMessage": "Price Change 24h"
+  },
+  "price.change.24h.amount": {
+    "defaultMessage": "Price Change 24h: {amount}"
+  },
+  "quote.token": {
+    "defaultMessage": "Quote token"
+  },
+  "quote.tokens": {
+    "defaultMessage": "Quote tokens"
+  },
+  "review.order": {
+    "defaultMessage": "Review Order"
+  },
+  "save": {
+    "defaultMessage": "Save"
+  },
+  "search.for.a.token.by.name.symbol.and.address": {
+    "defaultMessage": "Search for a token by name, symbol and address"
+  },
+  "select.a.pair": {
+    "defaultMessage": "Select a pair"
+  },
+  "select.networks": {
+    "defaultMessage": "Select networks"
+  },
+  "select.tokens": {
+    "defaultMessage": "Select tokens"
+  },
+  "selecte.a.pair": {
+    "defaultMessage": "Select a pair"
+  },
+  "sell": {
+    "defaultMessage": "Sell"
+  },
+  "sell.symbol": {
+    "defaultMessage": "Sell {symbol}"
+  },
+  "sell.token.symbol": {
+    "defaultMessage": "Sell {tokenSymbol}"
+  },
+  "show.swaps": {
+    "defaultMessage": "Show Swaps"
+  },
+  "side": {
+    "defaultMessage": "Side"
+  },
+  "size": {
+    "defaultMessage": "Size"
+  },
+  "switch.to.network": {
+    "defaultMessage": "Switch to {network}"
+  },
+  "the.base.token.is.required.on.chain": {
+    "defaultMessage": "The quote token is required on {chainName}"
+  },
+  "the.max.fee.is.ten.percent": {
+    "defaultMessage": "The max fee is 10%"
+  },
+  "there.are.no.orders.to.show": {
+    "defaultMessage": "There are no orders to show"
+  },
+  "total": {
+    "defaultMessage": "Total"
+  },
+  "trade": {
+    "defaultMessage": "Trade"
+  },
+  "type": {
+    "defaultMessage": "Type"
+  },
+  "unsupported.network": {
+    "defaultMessage": "Unsupported Network"
+  },
+  "view.transaction": {
+    "defaultMessage": "View transaction"
+  },
+  "you.are.buying": {
+    "defaultMessage": "You are buying"
+  },
+  "you.are.selling": {
+    "defaultMessage": "You are selling"
+  },
+  "your.wallet.is.not.connected": {
+    "defaultMessage": "Your wallet is not connected"
+  }
+}

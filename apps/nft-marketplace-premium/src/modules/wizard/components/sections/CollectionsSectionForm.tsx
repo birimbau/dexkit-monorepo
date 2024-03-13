@@ -23,6 +23,8 @@ import { FormikHelpers, useFormik } from 'formik';
 
 import { Network } from '@dexkit/core/types';
 import { useActiveChainIds } from '@dexkit/ui';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Switch from '@mui/material/Switch';
 import { ethers } from 'ethers';
 import { useState } from 'react';
 import * as Yup from 'yup';
@@ -36,6 +38,7 @@ export interface Form {
   imageUrl: string;
   description?: string;
   uri?: string;
+  disableSecondarySells?: boolean;
 }
 
 const CustomImage = styled('img')(({ theme }) => ({
@@ -55,6 +58,7 @@ const FormSchema: Yup.SchemaOf<Form> = Yup.object().shape({
   name: Yup.string().required(),
   description: Yup.string().notRequired(),
   uri: Yup.string().notRequired(),
+  disableSecondarySells: Yup.boolean(),
 });
 
 interface Props {
@@ -74,6 +78,7 @@ export default function CollectionsSectionForm({
   const [mediaFieldToEdit, setMediaFieldToEdit] = useState<string>();
 
   const handleSubmit = (values: Form, helpers: FormikHelpers<Form>) => {
+    console.log(values);
     if (onSubmit) {
       onSubmit(values);
     }
@@ -89,6 +94,7 @@ export default function CollectionsSectionForm({
           backgroundUrl: '',
           description: '',
           imageUrl: '',
+          disableSecondarySells: false,
         },
     validationSchema: FormSchema,
     validateOnChange: true,
@@ -273,6 +279,27 @@ export default function CollectionsSectionForm({
               Boolean(formik.errors.description)
                 ? formik.errors.description
                 : undefined
+            }
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={formik.values.disableSecondarySells}
+                onChange={() =>
+                  formik.setFieldValue(
+                    'disableSecondarySells',
+                    !formik.values.disableSecondarySells,
+                  )
+                }
+              />
+            }
+            label={
+              <FormattedMessage
+                id={'disable.secondary.sells'}
+                defaultMessage={'Disable secondary sells'}
+              ></FormattedMessage>
             }
           />
         </Grid>

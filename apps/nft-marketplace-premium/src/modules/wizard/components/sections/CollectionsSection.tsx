@@ -19,6 +19,7 @@ import CollectionsSectionForm, { Form } from './CollectionsSectionForm';
 import CollectionsSectionItem from './CollectionsSectionItem';
 
 interface Props {
+  appUrl?: string;
   collections?: AppCollection[];
   onSubmit: (form: Form) => void;
   onRemove: (collection: AppCollection) => void;
@@ -27,6 +28,7 @@ interface Props {
 }
 
 export default function CollectionsSection({
+  appUrl,
   onSubmit,
   collections,
   onRemove,
@@ -83,6 +85,7 @@ export default function CollectionsSection({
         name: collection.name,
         description: collection.description,
         uri: collection.uri,
+        disableSecondarySells: collection?.disableSecondarySells,
       };
 
       setInitialValues(col);
@@ -136,6 +139,7 @@ export default function CollectionsSection({
             {collections?.map(
               (collection: AppCollection, index: Key | null | undefined) => (
                 <CollectionsSectionItem
+                  appUrl={appUrl}
                   key={index}
                   collection={collection}
                   onRemove={handleRemove}

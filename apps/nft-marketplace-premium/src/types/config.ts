@@ -90,6 +90,7 @@ export interface AppCollection {
   contractAddress: string;
   description?: string;
   uri?: string;
+  disableSecondarySells?: boolean;
 }
 
 interface AppToken {

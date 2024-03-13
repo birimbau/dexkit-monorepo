@@ -7,7 +7,9 @@
     "storybook": "start-storybook -p 6006 --quiet",
     "build-storybook": "build-storybook",
     "bundle:widgets": "rollup -c rollup.config.js",
-    "release": "changeset publish"
+    "release": "changeset publish",
+    "extract": "formatjs extract",
+    "generate-lang-files": "yarn extract 'src/**/*.ts*' --ignore='**/*.d.ts' --out-file lang/main.json --id-interpolation-pattern '[sha512:contenthash:base64:6]'"
   },
   "devDependencies": {
     "@dexkit/core": "*",

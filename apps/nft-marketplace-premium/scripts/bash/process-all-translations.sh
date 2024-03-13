@@ -1,5 +1,4 @@
 #!/bin/bash
-yarn generate-lang-files 
 yarn lang-diff 
 yarn sync-language-files 
 yarn compile lang/de-DE.json --out-file compiled-lang/de-DE.json 

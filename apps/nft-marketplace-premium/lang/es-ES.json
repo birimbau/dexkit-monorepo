@@ -1,4 +1,407 @@
 {
+  "add.record": {
+    "defaultMessage": "Add record"
+  },
+  "address.or.ens": {
+    "defaultMessage": "Address or ENS"
+  },
+  "burn.name.value": {
+    "defaultMessage": "Burn Token \"{tokenName}\""
+  },
+  "burning": {
+    "defaultMessage": "Burning"
+  },
+  "changing.network": {
+    "defaultMessage": "Changing Network"
+  },
+  "clear": {
+    "defaultMessage": "Clear"
+  },
+  "coin.on.network": {
+    "defaultMessage": "{name} on {network}"
+  },
+  "confirm.transaction": {
+    "defaultMessage": "Confirm Transaction"
+  },
+  "confirming": {
+    "defaultMessage": "Confirming"
+  },
+  "connect.with.email": {
+    "defaultMessage": "Connect with e-mail"
+  },
+  "delete.column": {
+    "defaultMessage": "Delete column"
+  },
+  "edit.column": {
+    "defaultMessage": "Edit column"
+  },
+  "error.while.burning": {
+    "defaultMessage": "Error while burning"
+  },
+  "error.while.transferring": {
+    "defaultMessage": "Error while transferring"
+  },
+  "execute": {
+    "defaultMessage": "Execute"
+  },
+  "execute.transaction": {
+    "defaultMessage": "Execute transaction"
+  },
+  "gas.cost": {
+    "defaultMessage": "Gas cost"
+  },
+  "gas.price": {
+    "defaultMessage": "Gas price"
+  },
+  "invalid address": {
+    "defaultMessage": "Invalid address"
+  },
+  "invalid.file.column.column.is.missing": {
+    "defaultMessage": "Invalid file: column {column} is missing"
+  },
+  "max.fee": {
+    "defaultMessage": "Max fee"
+  },
+  "max.priority.fee": {
+    "defaultMessage": "Max priority fee"
+  },
+  "message.you.are.signing": {
+    "defaultMessage": "Message you are signing"
+  },
+  "mint.token.value": {
+    "defaultMessage": "Mint token \"{tokenName}\""
+  },
+  "network.value": {
+    "defaultMessage": "{network}"
+  },
+  "nonce": {
+    "defaultMessage": "Nonce"
+  },
+  "not.enough.balance": {
+    "defaultMessage": "Not enough balance"
+  },
+  "notifications": {
+    "defaultMessage": "Notifications",
+    "description": "Notifications"
+  },
+  "owned.by.owner": {
+    "defaultMessage": "Owned by {owner}"
+  },
+  "receive.on.network.value": {
+    "defaultMessage": "Receive on {network}"
+  },
+  "receiver": {
+    "defaultMessage": "Receiver"
+  },
+  "reject": {
+    "defaultMessage": "Reject"
+  },
+  "request.sent.successfully": {
+    "defaultMessage": "Request sent successfully"
+  },
+  "save.column": {
+    "defaultMessage": "Save column"
+  },
+  "send.amount": {
+    "defaultMessage": "Send amount"
+  },
+  "sending.request": {
+    "defaultMessage": "Sending request"
+  },
+  "sent.to": {
+    "defaultMessage": "Sent to"
+  },
+  "share.receive.request": {
+    "defaultMessage": "Share receive request"
+  },
+  "sign": {
+    "defaultMessage": "Sign"
+  },
+  "switch.to.network.value": {
+    "defaultMessage": "Switch to {networkName} network"
+  },
+  "transaction.failed.reason": {
+    "defaultMessage": "Transaction failed"
+  },
+  "transfer.name.value": {
+    "defaultMessage": "Transfer NFT {nftName}"
+  },
+  "transferring": {
+    "defaultMessage": "Transferring"
+  },
+  "validating": {
+    "defaultMessage": "Validating"
+  },
+  "validating.ens": {
+    "defaultMessage": "Validating ENS name"
+  },
+  "you.are.not.the.owner.of.this.NFT": {
+    "defaultMessage": "You are not the owner of this NFT"
+  },
+  "you.cant.use.the.connected.account.to.burn": {
+    "defaultMessage": "You can't use the connected account to burn"
+  },
+  "you.cant.use.the.connected.account.to.transfer": {
+    "defaultMessage": "You can't use the connected to transfer"
+  },
+  "you.own.nfts": {
+    "defaultMessage": "You own {balance} NFTs"
+  },
+  "your.request.was.sent.successfully": {
+    "defaultMessage": "Your request was sent successfully"
+  },
+  "24h.volume": {
+    "defaultMessage": "24h volume"
+  },
+  "24h.volume.amount": {
+    "defaultMessage": "24h volume: {amount}"
+  },
+  "Less": {
+    "defaultMessage": "Less"
+  },
+  "No.networks.selected": {
+    "defaultMessage": "No networks selected"
+  },
+  "You will.receive": {
+    "defaultMessage": "You will receive"
+  },
+  "amount.per.token": {
+    "defaultMessage": "Amount per token"
+  },
+  "approve.token.symbol": {
+    "defaultMessage": "Approve {tokenSymbol} on wallet"
+  },
+  "available": {
+    "defaultMessage": "Available"
+  },
+  "available.balance.amount.symbol": {
+    "defaultMessage": "Available balance: {amount} {symbol}"
+  },
+  "base.token": {
+    "defaultMessage": "Base token"
+  },
+  "buy.symbol": {
+    "defaultMessage": "Buy {symbol}"
+  },
+  "buy.token.symbol": {
+    "defaultMessage": "Buy {tokenSymbol}"
+  },
+  "choose.the.networks.that.your.exchange.will.be.enabled": {
+    "defaultMessage": "Choose the networks that your exchange will be enabled"
+  },
+  "cost": {
+    "defaultMessage": "Cost"
+  },
+  "define.the.tokens.and.the.default.pair.for.this.network": {
+    "defaultMessage": "Define the tokens and the default pair for this network"
+  },
+  "edit.networks": {
+    "defaultMessage": "Edit Networks"
+  },
+  "expire": {
+    "defaultMessage": "Expire"
+  },
+  "fee.amount": {
+    "defaultMessage": "Fee amount"
+  },
+  "fee.recipient.address": {
+    "defaultMessage": "Fee recipient address"
+  },
+  "fill.amount": {
+    "defaultMessage": "Fill amount"
+  },
+  "fill.amount.per.token": {
+    "defaultMessage": "Fill amount per token"
+  },
+  "fill.order": {
+    "defaultMessage": "Fill Order"
+  },
+  "fillable.amount": {
+    "defaultMessage": "Fillable amount"
+  },
+  "insufficient": {
+    "defaultMessage": "Insufficient {symbol}"
+  },
+  "insufficient.symbol": {
+    "defaultMessage": "insufficient {symbol}"
+  },
+  "last.price": {
+    "defaultMessage": "Last price"
+  },
+  "last.price.amount": {
+    "defaultMessage": "Last price: {amount}"
+  },
+  "limit": {
+    "defaultMessage": "Limit"
+  },
+  "loading.quote": {
+    "defaultMessage": "Loading quote..."
+  },
+  "market": {
+    "defaultMessage": "Market"
+  },
+  "market.cap.amount": {
+    "defaultMessage": "Market Cap: {amount}"
+  },
+  "market.settings": {
+    "defaultMessage": "Market Settings"
+  },
+  "max.slippage.is.value.percent": {
+    "defaultMessage": "Max slippage is 50 percent"
+  },
+  "more": {
+    "defaultMessage": "More"
+  },
+  "my.orders": {
+    "defaultMessage": "My Orders"
+  },
+  "native.coins.are.not.supported.on.limit.orders": {
+    "defaultMessage": "Native coins are not supported on limited orders"
+  },
+  "order.created.message": {
+    "defaultMessage": "Order created"
+  },
+  "order.failed": {
+    "defaultMessage": "Order failed"
+  },
+  "place.order": {
+    "defaultMessage": "Place Order"
+  },
+  "please.switch.to.networks": {
+    "defaultMessage": "Please, switch to {networks}"
+  },
+  "please.use.wrapped.version.of.native.token": {
+    "defaultMessage": "Please use wrapped version of native token"
+  },
+  "price.change.24h": {
+    "defaultMessage": "Price Change 24h"
+  },
+  "price.change.24h.amount": {
+    "defaultMessage": "Price Change 24h: {amount}"
+  },
+  "quote.token": {
+    "defaultMessage": "Quote token"
+  },
+  "quote.tokens": {
+    "defaultMessage": "Quote tokens"
+  },
+  "review.order": {
+    "defaultMessage": "Review Order"
+  },
+  "search.for.a.token.by.name.symbol.and.address": {
+    "defaultMessage": "Search for a token by name, symbol and address"
+  },
+  "select.a.pair": {
+    "defaultMessage": "Select a pair"
+  },
+  "select.networks": {
+    "defaultMessage": "Select networks"
+  },
+  "select.tokens": {
+    "defaultMessage": "Select tokens"
+  },
+  "selecte.a.pair": {
+    "defaultMessage": "Select a pair"
+  },
+  "sell.symbol": {
+    "defaultMessage": "Sell {symbol}"
+  },
+  "sell.token.symbol": {
+    "defaultMessage": "Sell {tokenSymbol}"
+  },
+  "show.swaps": {
+    "defaultMessage": "Show Swaps"
+  },
+  "side": {
+    "defaultMessage": "Side"
+  },
+  "size": {
+    "defaultMessage": "Size"
+  },
+  "the.base.token.is.required.on.chain": {
+    "defaultMessage": "The quote token is required on {chainName}"
+  },
+  "the.max.fee.is.ten.percent": {
+    "defaultMessage": "The max fee is 10%"
+  },
+  "there.are.no.orders.to.show": {
+    "defaultMessage": "There are no orders to show"
+  },
+  "trade": {
+    "defaultMessage": "Trade"
+  },
+  "unsupported.network": {
+    "defaultMessage": "Unsupported Network"
+  },
+  "you.are.buying": {
+    "defaultMessage": "You are buying"
+  },
+  "you.are.selling": {
+    "defaultMessage": "You are selling"
+  },
+  "your.wallet.is.not.connected": {
+    "defaultMessage": "Your wallet is not connected"
+  },
+  "Unwrap": {
+    "defaultMessage": "Unwrap"
+  },
+  "buy.crypto": {
+    "defaultMessage": "Buy Crypto"
+  },
+  "buy.crypto.with.transak": {
+    "defaultMessage": "Buy crypto with Transak"
+  },
+  "gas.gas": {
+    "defaultMessage": "Gas: {gas} Gwei"
+  },
+  "insufficient.symbol.balance": {
+    "defaultMessage": "Insufficient {symbol} balance"
+  },
+  "network.not.supported.msg": {
+    "defaultMessage": "Network not supported. Please change to a supported network: {networks}"
+  },
+  "network_not_supported": {
+    "defaultMessage": "Network not supported"
+  },
+  "no.coins": {
+    "defaultMessage": "No coins"
+  },
+  "no.coins.found": {
+    "defaultMessage": "No coins found"
+  },
+  "price.impact": {
+    "defaultMessage": "Price impact"
+  },
+  "price.impact.swap.message.info": {
+    "defaultMessage": "Price impact refers to the fluctuation in the price of a coin that happens when a trade takes place. When the price impact is high, it can sometimes lead to buying coins at a price lower than what was initially expected."
+  },
+  "recent": {
+    "defaultMessage": "Recent"
+  },
+  "search.for.a.coin.by.name.symbol.and.address": {
+    "defaultMessage": "Search for a coin by name, symbol and address"
+  },
+  "select.token": {
+    "defaultMessage": "Select token"
+  },
+  "swap.tokens": {
+    "defaultMessage": "Swap Tokens"
+  },
+  "switch.wallet.network": {
+    "defaultMessage": "Switch wallet to {networkName}"
+  },
+  "token.balance": {
+    "defaultMessage": "balance: {balance}"
+  },
+  "transaction.rejected": {
+    "defaultMessage": "Transaction rejected"
+  },
+  "wrap": {
+    "defaultMessage": "Wrap"
+  },
+  "you.send": {
+    "defaultMessage": "You send"
+  },
   "Create forms": {
     "defaultMessage": "Crear formularios"
   },

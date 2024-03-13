@@ -1056,6 +1056,7 @@ export function EditWizardContainer({ site }: Props) {
                   )}
                   {activeMenu === ActiveMenu.Collections && (
                     <CollectionWizardContainer
+                      site={site}
                       config={config}
                       onHasChanges={setHasChanges}
                       onSave={handleSave}

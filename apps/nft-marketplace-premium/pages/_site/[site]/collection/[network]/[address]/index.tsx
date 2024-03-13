@@ -20,7 +20,7 @@ import { getIntegrationData } from '@/modules/wizard/services/integrations';
 import { ChainId, MY_APPS_ENDPOINT } from '@dexkit/core';
 import { NETWORK_FROM_SLUG } from '@dexkit/core/constants/networks';
 import { Asset } from '@dexkit/core/types';
-import { omitNull } from '@dexkit/core/utils';
+import { isAddressEqual, omitNull } from '@dexkit/core/utils';
 import { NFTType } from '@dexkit/ui/modules/nft/constants/enum';
 import { getCollectionData } from '@dexkit/ui/modules/nft/services';
 import { Collection, TraderOrderFilter } from '@dexkit/ui/modules/nft/types';
@@ -29,6 +29,7 @@ import { getIsLockAsync } from '@dexkit/unlock-widget';
 import Search from '@mui/icons-material/Search';
 import {
   Checkbox,
+  Container,
   Divider,
   Drawer,
   FormControlLabel,
@@ -89,11 +90,14 @@ import { getRariCollectionStats } from 'src/services/rarible';
 const CollectionPage: NextPage<{
   enableDarkblock: boolean;
   isLock: boolean;
+  disableSecondarySells: boolean;
 }> = ({
   enableDarkblock,
+  disableSecondarySells,
   isLock,
 }: {
   enableDarkblock: boolean;
+  disableSecondarySells: boolean;
   isLock: boolean;
 }) => {
   const router = useRouter();
@@ -193,44 +197,47 @@ const CollectionPage: NextPage<{
     );
   };
 
-  const [currTab, setCurrTab] = useState('collection');
+  const [currTab, setCurrTab] = useState(
+    disableSecondarySells !== true ? 'collection' : 'drops',
+  );
 
   const handleChangeTab = (e: SyntheticEvent, value: string) => {
     setCurrTab(value);
   };
 
-  return (
+  const collectionPage = (
     <>
       <NextSeo title={collection?.name || ''} />
       {renderDrawer()}
-      <MainLayout disablePadding>
-        <Grid container>
-          {isDesktop && (
-            <Grid item xs={12} sm={2}>
-              {renderSidebar()}
-            </Grid>
-          )}
-          <Grid item xs={12} sm={10}>
-            <Box p={2}>
-              <Grid container spacing={2}>
-                <Grid item xs={12}>
-                  <CollectionPageHeader
-                    chainId={chainId}
-                    address={address as string}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <Grid container spacing={2}>
+
+      <Grid container>
+        {isDesktop && disableSecondarySells !== true && (
+          <Grid item xs={12} sm={2}>
+            {renderSidebar()}
+          </Grid>
+        )}
+        <Grid item xs={12} sm={disableSecondarySells !== true ? 10 : 12}>
+          <Box p={2}>
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <CollectionPageHeader
+                  chainId={chainId}
+                  address={address as string}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <Grid container spacing={2}>
+                  <Grid item xs={12}>
+                    <CollectionHeader
+                      address={address as string}
+                      chainId={chainId}
+                      isLock={isLock}
+                    />
+                  </Grid>
+                  {isDrop && (
                     <Grid item xs={12}>
-                      <CollectionHeader
-                        address={address as string}
-                        chainId={chainId}
-                        isLock={isLock}
-                      />
-                    </Grid>
-                    {isDrop && (
-                      <Grid item xs={12}>
-                        <Tabs value={currTab} onChange={handleChangeTab}>
+                      <Tabs value={currTab} onChange={handleChangeTab}>
+                        {disableSecondarySells !== true && (
                           <Tab
                             label={
                               <FormattedMessage
@@ -240,77 +247,76 @@ const CollectionPage: NextPage<{
                             }
                             value="collection"
                           />
-                          <Tab
-                            label={
-                              contractType === 'nft-drop' ? (
-                                <FormattedMessage
-                                  id="drop"
-                                  defaultMessage="Drop"
-                                />
-                              ) : (
-                                <FormattedMessage
-                                  id="drops"
-                                  defaultMessage="Drops"
-                                />
-                              )
-                            }
-                            value="drops"
-                          />
-                        </Tabs>
-                      </Grid>
-                    )}
-
-                    <Grid item xs={12}>
-                      <CollectionStats
-                        address={address as string}
-                        network={network as string}
-                      />
-                    </Grid>
-
-                    <Grid item xs={12}>
-                      <Divider />
-                    </Grid>
-                    {currTab === 'drops' && (
-                      <Grid item xs={12}>
-                        <Typography
-                          gutterBottom
-                          variant="body1"
-                          sx={{ fontWeight: 600 }}
-                        >
-                          {contractType === 'nft-drop' ? (
-                            <FormattedMessage id="drop" defaultMessage="Drop" />
-                          ) : (
-                            <FormattedMessage
-                              id="drops"
-                              defaultMessage="Drops"
-                            />
-                          )}
-                        </Typography>
-                        {contractType === 'edition-drop' && (
-                          <DropEditionListSection
-                            section={{
-                              type: 'edition-drop-list-section',
-                              config: {
-                                network: network as string,
-                                address: address as string,
-                              },
-                            }}
-                          />
                         )}
-                        {contractType === 'nft-drop' && (
-                          <NftDropSection
-                            section={{
-                              type: 'nft-drop',
-                              settings: {
-                                address: address as string,
-                                network: network as string,
-                              },
-                            }}
-                          />
+                        <Tab
+                          label={
+                            contractType === 'nft-drop' ? (
+                              <FormattedMessage
+                                id="drop"
+                                defaultMessage="Drop"
+                              />
+                            ) : (
+                              <FormattedMessage
+                                id="drops"
+                                defaultMessage="Drops"
+                              />
+                            )
+                          }
+                          value="drops"
+                        />
+                      </Tabs>
+                    </Grid>
+                  )}
+
+                  <Grid item xs={12}>
+                    <CollectionStats
+                      address={address as string}
+                      network={network as string}
+                    />
+                  </Grid>
+
+                  <Grid item xs={12}>
+                    <Divider />
+                  </Grid>
+                  {currTab === 'drops' && isDrop && (
+                    <Grid item xs={12}>
+                      <Typography
+                        gutterBottom
+                        variant="body1"
+                        sx={{ fontWeight: 600 }}
+                      >
+                        {contractType === 'nft-drop' ? (
+                          <FormattedMessage id="drop" defaultMessage="Drop" />
+                        ) : (
+                          <FormattedMessage id="drops" defaultMessage="Drops" />
                         )}
-                      </Grid>
-                    )}
-                    {currTab === 'collection' && (
+                      </Typography>
+                      {contractType === 'edition-drop' && (
+                        <DropEditionListSection
+                          section={{
+                            type: 'edition-drop-list-section',
+                            config: {
+                              network: network as string,
+                              address: address as string,
+                            },
+                          }}
+                        />
+                      )}
+                      {contractType === 'nft-drop' && (
+                        <NftDropSection
+                          section={{
+                            type: 'nft-drop',
+                            settings: {
+                              address: address as string,
+                              network: network as string,
+                            },
+                          }}
+                        />
+                      )}
+                    </Grid>
+                  )}
+                  {currTab === 'collection' &&
+                    disableSecondarySells !== true && (
                       <>
                         <Grid item xs={12}>
                           <Stack
@@ -419,32 +425,40 @@ const CollectionPage: NextPage<{
                         </Grid>
                       </>
                     )}
-                    {enableDarkblock && (
-                      <>
-                        <Grid item xs={12}>
-                          <Divider />
-                        </Grid>
-                        <Grid item xs={12}>
-                          <NoSsr>
-                            <Suspense>
-                              <DarkblockWrapper
-                                address={address as string}
-                                network={network as string}
-                              />
-                            </Suspense>
-                          </NoSsr>
-                        </Grid>
-                      </>
-                    )}
-                  </Grid>
+                  {enableDarkblock && (
+                    <>
+                      <Grid item xs={12}>
+                        <Divider />
+                      </Grid>
+                      <Grid item xs={12}>
+                        <NoSsr>
+                          <Suspense>
+                            <DarkblockWrapper
+                              address={address as string}
+                              network={network as string}
+                            />
+                          </Suspense>
+                        </NoSsr>
+                      </Grid>
+                    </>
+                  )}
                 </Grid>
               </Grid>
-            </Box>
-          </Grid>
+            </Grid>
+          </Box>
         </Grid>
-      </MainLayout>
+      </Grid>
     </>
   );
+  if (disableSecondarySells) {
+    return (
+      <MainLayout>
+        <Container>{collectionPage}</Container>
+      </MainLayout>
+    );
+  } else {
+    return <MainLayout disablePadding>{collectionPage}</MainLayout>;
+  }
 };
 
 function Wrapper(props: any) {
@@ -627,6 +641,12 @@ export const getStaticProps: GetStaticProps = async ({
     }
   } catch {}
 
+  const appCollection = configResponse.appConfig.collections?.find(
+    (c) =>
+      c.chainId === collection?.chainId &&
+      isAddressEqual(c.contractAddress, collection?.address),
+  );
+
   const isLock = await getIsLockAsync({ chainId: chainId, provider, address });
 
   return {
@@ -634,6 +654,7 @@ export const getStaticProps: GetStaticProps = async ({
       dehydratedState: dehydrate(queryClient),
       ...configResponse,
       enableDarkblock,
+      disableSecondarySells: appCollection?.disableSecondarySells === true,
       isLock,
     },
     revalidate: REVALIDATE_PAGE_TIME,

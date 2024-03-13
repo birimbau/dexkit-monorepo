@@ -2,6 +2,8 @@ import { Delete } from '@mui/icons-material';
 import Edit from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 
+import { NETWORK_SLUG } from '@dexkit/core/constants/networks';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import {
   Box,
   Button,
@@ -15,8 +17,8 @@ import { FormattedMessage } from 'react-intl';
 import Img from '../../../../components/AppImage';
 import { AppCollection } from '../../../../types/config';
 import { getChainName } from '../../../../utils/blockchain';
-
 interface Props {
+  appUrl?: string;
   collection: AppCollection;
   onRemove: (collection: AppCollection) => void;
   onEdit: (collection: AppCollection) => void;
@@ -25,6 +27,7 @@ interface Props {
 }
 
 export default function CollectionsSectionItem({
+  appUrl,
   collection,
   onRemove,
   onEdit,
@@ -107,6 +110,22 @@ export default function CollectionsSectionItem({
                 >
                   <FormattedMessage id="preview" defaultMessage="Preview" />
                 </Button>
+                {appUrl && (
+                  <Button
+                    size="small"
+                    startIcon={<OpenInNewIcon color="inherit" />}
+                    disabled={disabled}
+                    target="_blank"
+                    href={`${appUrl}/collection/${NETWORK_SLUG(
+                      collection.chainId,
+                    )}/${collection.contractAddress}`}
+                  >
+                    <FormattedMessage
+                      id="preview.url"
+                      defaultMessage="Preview url"
+                    />
+                  </Button>
+                )}
               </Stack>
             </Stack>
           </Grid>
