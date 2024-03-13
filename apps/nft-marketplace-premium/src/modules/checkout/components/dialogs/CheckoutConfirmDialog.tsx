@@ -18,7 +18,7 @@ import { BigNumber, ethers } from 'ethers';
 import { FormattedMessage } from 'react-intl';
 
 export interface CheckoutConfirmDialogProps {
-  token: Token | null;
+  token?: Token | null;
   txHash?: string;
   isLoading?: boolean;
   DialogProps: DialogProps;
@@ -76,8 +76,8 @@ export default function CheckoutConfirmDialog({
             </Typography>
             <Typography align="center" variant="body1" color="text.secondary">
               <FormattedMessage
-                id="waiting.confirmation"
-                defaultMessage="Waiting confirmation"
+                id="your.transaction.requires.10.confirmations.for.full.validation"
+                defaultMessage="Your transaction requires 10 confirmations for full validation"
               />
             </Typography>
           </Box>

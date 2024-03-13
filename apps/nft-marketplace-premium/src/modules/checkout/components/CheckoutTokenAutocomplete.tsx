@@ -12,7 +12,7 @@ export interface CheckoutTokenAutocompleteProps {
   disabled?: boolean;
   onChange?: (token: Token | null) => void;
   tokens: Token[];
-  token: Token | null;
+  token?: Token | null;
 }
 
 export default function CheckoutTokenAutocomplete(
@@ -37,9 +37,7 @@ export default function CheckoutTokenAutocomplete(
         }
       }}
       getOptionLabel={(option) => {
-        return option.name
-          ? `${option.name} ${option.symbol.toUpperCase()}`
-          : '';
+        return option.name ? `${option.name}` : '';
       }}
       renderOption={(props, option) => (
         <Box {...props} component="li" sx={{ display: 'block', width: '100%' }}>

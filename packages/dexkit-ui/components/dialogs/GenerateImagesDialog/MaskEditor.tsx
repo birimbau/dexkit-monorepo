@@ -45,7 +45,7 @@ export default function MaskEditor({
 
       img.onload = () => {
         setIsImageLoading(false);
-        ctx.current?.drawImage(img, 0, 0);
+        ctx.current?.drawImage(img, 0, 0, canvasSize.width, canvasSize.height);
       };
     }
   }, [imageUrl, canvasSize]);

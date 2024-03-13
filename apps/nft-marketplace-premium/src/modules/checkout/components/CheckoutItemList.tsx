@@ -5,7 +5,7 @@ import { BigNumber, ethers } from 'ethers';
 
 export interface CheckoutItemListProps {
   id: string;
-  token: Token | null;
+  token?: Token | null;
 }
 
 export default function CheckoutItemList({ id, token }: CheckoutItemListProps) {
@@ -22,7 +22,7 @@ export default function CheckoutItemList({ id, token }: CheckoutItemListProps) {
           <Typography>
             {ethers.utils.formatUnits(
               BigNumber.from(item.amount).mul(BigNumber.from(item.price)),
-              token?.decimals,
+              token?.decimals
             )}{' '}
             {token?.symbol}
           </Typography>

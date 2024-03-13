@@ -49,7 +49,7 @@ import {
   GetStaticPropsContext,
 } from 'next';
 import { useSnackbar } from 'notistack';
-import { ReactNode, useMemo, useState } from 'react';
+import { ReactNode, useEffect, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { PageHeader } from 'src/components/PageHeader';
 import AuthMainLayout from 'src/components/layouts/authMain';
@@ -140,13 +140,7 @@ export default function CheckoutPage({ id }: CheckoutPageProps) {
   const checkoutItemsQuery = useCheckoutItems({ id: id });
   const { activeChainIds } = useActiveChainIds();
 
-  const [token, setToken] = useState<Token | null>({
-    symbol: 'USDT',
-    name: 'Tether',
-    decimals: 6,
-    address: '0xc2132d05d31c914a87c6611c10748aeb04b58e8f',
-    chainId: ChainId.Polygon,
-  });
+  const [token, setToken] = useState<Token | null>();
 
   const [hash, setHash] = useState<string>();
 
@@ -264,27 +258,42 @@ export default function CheckoutPage({ id }: CheckoutPageProps) {
   }, [checkoutQuery.data]);
 
   const networks = useMemo(() => {
-    return Object.keys(NETWORKS).map(
-      (key: string) => NETWORKS[parseChainId(key)]
-    );
+    return Object.keys(NETWORKS)
+      .map((key: string) => NETWORKS[parseChainId(key)])
+      .filter((n) => {
+        let token = tokens.find((t) => t.chainId === n.chainId);
+
+        return Boolean(token);
+      });
   }, []);
 
   const { chainId: providerChainId } = useWeb3React();
-  const [chainId, setChainId] = useState(
-    providerChainId ? providerChainId : ChainId.Ethereum
-  );
+
+  const [chainId, setChainId] = useState<ChainId>();
+
+  useEffect(() => {
+    console.log('provider', providerChainId);
+    if (providerChainId) {
+      setChainId(providerChainId);
+    }
+  }, [providerChainId]);
 
   const switchNetwork = useSwitchNetworkMutation();
 
   const handleSwitchNetwork = async () => {
-    await switchNetwork.mutateAsync({ chainId });
+    if (chainId) {
+      await switchNetwork.mutateAsync({ chainId });
+    }
   };
 
   const handleChangeNetwork = (
     e: SelectChangeEvent<number>,
     child: ReactNode
   ) => {
-    const newChainId = parseChainId(e.target.value);
+    const newChainId = e.target.value as number;
+
+    console.log(newChainId);
+
     setChainId(newChainId);
 
     let newToken = tokens.filter((t) => t.chainId === newChainId)[0];
@@ -293,7 +302,7 @@ export default function CheckoutPage({ id }: CheckoutPageProps) {
   };
 
   const renderPayButton = () => {
-    if (chainId !== providerChainId) {
+    if (chainId && providerChainId && chainId !== providerChainId) {
       return (
         <Button
           onClick={handleSwitchNetwork}
@@ -460,58 +469,71 @@ export default function CheckoutPage({ id }: CheckoutPageProps) {
             <Card>
               <CardContent>
                 <Stack spacing={2}>
-                  <FormControl fullWidth>
-                    <InputLabel>
-                      <FormattedMessage id="network" defaultMessage="Network" />
-                    </InputLabel>
-                    <Select
-                      label={
+                  {chainId !== undefined && (
+                    <FormControl fullWidth>
+                      <InputLabel>
                         <FormattedMessage
                           id="network"
                           defaultMessage="Network"
                         />
-                      }
-                      onChange={handleChangeNetwork}
-                      value={chainId}
-                      name="network"
-                      fullWidth
-                      renderValue={(value: number) => {
-                        return (
-                          <Stack
-                            direction="row"
-                            alignItems="center"
-                            alignContent="center"
-                            spacing={1}
-                          >
-                            <Avatar
-                              src={ipfsUriToUrl(
-                                networks.find((n) => n.chainId === value)
-                                  ?.imageUrl || ''
-                              )}
-                              style={{ width: '1rem', height: '1rem' }}
-                            />
-                            <Typography variant="body1">
-                              {networks.find((n) => n.chainId === value)?.name}
-                            </Typography>
-                          </Stack>
-                        );
-                      }}
-                    >
-                      {networks
-                        .filter((n) => activeChainIds.includes(n.chainId))
-                        .map((n) => (
-                          <MenuItem key={n.slug} value={n.chainId}>
-                            <ListItemIcon>
+                      </InputLabel>
+                      <Select
+                        label={
+                          <FormattedMessage
+                            id="network"
+                            defaultMessage="Network"
+                          />
+                        }
+                        disabled={
+                          checkoutQuery.data?.status === 'confirmed' ||
+                          checkoutQuery.data?.status === 'expired'
+                        }
+                        onChange={handleChangeNetwork}
+                        value={chainId}
+                        name="network"
+                        fullWidth
+                        renderValue={(value: number) => {
+                          return (
+                            <Stack
+                              direction="row"
+                              alignItems="center"
+                              alignContent="center"
+                              spacing={1}
+                            >
                               <Avatar
-                                src={ipfsUriToUrl(n?.imageUrl || '')}
+                                src={ipfsUriToUrl(
+                                  networks.find((n) => n.chainId === chainId)
+                                    ?.imageUrl || ''
+                                )}
                                 style={{ width: '1rem', height: '1rem' }}
                               />
-                            </ListItemIcon>
-                            <ListItemText primary={n.name} />
-                          </MenuItem>
-                        ))}
-                    </Select>
-                  </FormControl>
+                              <Typography variant="body1">
+                                {
+                                  networks.find((n) => n.chainId === chainId)
+                                    ?.name
+                                }
+                              </Typography>
+                            </Stack>
+                          );
+                        }}
+                      >
+                        {networks
+                          .filter((n) => activeChainIds.includes(n.chainId))
+                          .map((n) => (
+                            <MenuItem key={n.chainId} value={n.chainId}>
+                              <ListItemIcon>
+                                <Avatar
+                                  src={ipfsUriToUrl(n?.imageUrl || '')}
+                                  style={{ width: '1rem', height: '1rem' }}
+                                />
+                              </ListItemIcon>
+                              <ListItemText primary={n.name} />
+                            </MenuItem>
+                          ))}
+                      </Select>
+                    </FormControl>
+                  )}
+
                   <CheckoutTokenAutocomplete
                     key={chainId}
                     tokens={tokens}
@@ -520,27 +542,33 @@ export default function CheckoutPage({ id }: CheckoutPageProps) {
                     token={token}
                     disabled={disabled}
                   />
-                  <Stack
-                    direction="row"
-                    spacing={2}
-                    justifyContent="space-between"
-                    alignItems="center"
-                  >
-                    <Typography variant="body1">
-                      <FormattedMessage id="balance" defaultMessage="Balance" />
-                    </Typography>
-                    <Typography variant="body1" color="text.secondary">
-                      {balanceQuery.data ? (
-                        ethers.utils.formatUnits(
-                          balanceQuery.data,
-                          token?.decimals
-                        )
-                      ) : (
-                        <Skeleton />
-                      )}{' '}
-                      {token?.symbol}
-                    </Typography>
-                  </Stack>
+                  {token && (
+                    <Stack
+                      direction="row"
+                      spacing={2}
+                      justifyContent="space-between"
+                      alignItems="center"
+                    >
+                      <Typography variant="body1">
+                        <FormattedMessage
+                          id="balance"
+                          defaultMessage="Balance"
+                        />
+                      </Typography>
+                      <Typography variant="body1" color="text.secondary">
+                        {balanceQuery.data ? (
+                          ethers.utils.formatUnits(
+                            balanceQuery.data,
+                            token?.decimals
+                          )
+                        ) : (
+                          <Skeleton />
+                        )}{' '}
+                        {token?.symbol}
+                      </Typography>
+                    </Stack>
+                  )}
+
                   {renderPayButton()}
                 </Stack>
               </CardContent>

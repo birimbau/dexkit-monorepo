@@ -111,10 +111,10 @@ export default function BillingSection() {
                         .minus(new Decimal(activeFeatUsageQuery.data?.used))
                         .add(
                           new Decimal(
-                            subscriptionQuery.data?.creditsAvailable,
+                            subscriptionQuery.data?.creditsAvailable
                           ).minus(
-                            new Decimal(subscriptionQuery.data?.creditsUsed),
-                          ),
+                            new Decimal(subscriptionQuery.data?.creditsUsed)
+                          )
                         )
                         .toNumber()}
                       minimumFractionDigits={4}
@@ -148,7 +148,7 @@ export default function BillingSection() {
                   )}
                 </Typography>
               </Grid>
-              <Grid item>
+              {/* <Grid item>
                 <Typography variant="caption" color="text.secondary">
                   <FormattedMessage id="start" defaultMessage="Start" />
                 </Typography>
@@ -167,7 +167,7 @@ export default function BillingSection() {
                     'DD/MM/YYYY HH:mm:ss',
                   )}
                 </Typography>
-              </Grid>
+              </Grid> */}
             </Grid>
           </CardContent>
         </Card>
@@ -183,10 +183,13 @@ export default function BillingSection() {
                     <FormattedMessage id="start" defaultMessage="Start" />
                   </TableCell>
                   <TableCell>
-                    <FormattedMessage id="end" defaultMessage="end" />
+                    <FormattedMessage id="end" defaultMessage="End" />
                   </TableCell>
                   <TableCell>
                     <FormattedMessage id="total" defaultMessage="Total" />
+                  </TableCell>
+                  <TableCell>
+                    <FormattedMessage id="actions" defaultMessage="Actions" />
                   </TableCell>
                 </TableRow>
               </TableHead>
@@ -194,21 +197,11 @@ export default function BillingSection() {
                 {billingHistoryQuery.data?.map((period: any, index: number) => (
                   <TableRow key={index}>
                     <TableCell>
-                      <Link
-                        variant="body1"
-                        href={`/u/settings/billing/${period.id}`}
-                      >
-                        {moment(period.periodStart).format('DD/MM/YYYY')}
-                      </Link>
+                      {moment(period.periodStart).format('DD/MM/YYYY')}
                     </TableCell>
 
                     <TableCell>
-                      <Link
-                        variant="body1"
-                        href={`/u/settings/billing/${period.id}`}
-                      >
-                        {moment(period.periodEnd).format('DD/MM/YYYY')}
-                      </Link>
+                      {moment(period.periodEnd).format('DD/MM/YYYY')}
                     </TableCell>
                     <TableCell>
                       <Typography>
@@ -220,6 +213,14 @@ export default function BillingSection() {
                           minimumFractionDigits={4}
                         />
                       </Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Link
+                        variant="body1"
+                        href={`/u/settings/billing/${period.id}`}
+                      >
+                        <FormattedMessage id="view" defaultMessage="View" />
+                      </Link>
                     </TableCell>
                   </TableRow>
                 ))}
