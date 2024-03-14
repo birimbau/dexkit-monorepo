@@ -1,4 +1,5 @@
 import LazyTextField from '@dexkit/ui/components/LazyTextField';
+import { useInterval } from '@dexkit/ui/hooks/misc';
 import {
   Alert,
   Avatar,
@@ -82,6 +83,60 @@ export default function TokenDropSection({ section }: TokenDropSectionProps) {
   const activeClaimCondition = useActiveClaimConditionForWallet(
     contract,
     account,
+  );
+
+  const [count, setCount] = useState<number>(0);
+
+  const nextPhase = useMemo(() => {
+    const active = activeClaimCondition.data;
+    const data = claimConditions.data;
+    if (active && data) {
+      const total = data?.length;
+      const currentIndex = data.findIndex(
+        (a) => a?.startTime?.getTime() === active?.startTime?.getTime(),
+      );
+
+      if (currentIndex === -1) {
+        return;
+      }
+      if (currentIndex + 1 < total) {
+        const nextPhase = data[currentIndex + 1];
+        return nextPhase;
+      }
+    }
+  }, [activeClaimCondition.data, claimConditions.data]);
+
+  const countDown = useMemo(() => {
+    if (nextPhase) {
+      const countDownDate = nextPhase?.startTime?.getTime() / 1000;
+
+      const now = new Date().getTime() / 1000;
+
+      const distance = countDownDate - now;
+      if (distance < 0) {
+        return 'Expired';
+      }
+
+      const days = Math.floor(distance / (60 * 60 * 24));
+      const hours = Math.floor((distance % (60 * 60 * 24)) / (60 * 60));
+      const minutes = Math.floor((distance % (60 * 60)) / 60);
+      const seconds = Math.floor(distance % 60);
+
+      if (days) {
+        return days + 'd ' + hours + 'h ' + minutes + 'm ' + seconds + 's ';
+      } else {
+        return hours + 'h ' + minutes + 'm ' + seconds + 's ';
+      }
+    }
+  }, [nextPhase, count]);
+
+  useInterval(
+    () => {
+      // Your custom logic here
+      setCount(count + 1);
+    },
+    // Delay in milliseconds or null to stop it
+    countDown === undefined || countDown === 'Expired' ? null : 1000,
   );
 
   const claimerProofs = useClaimerProofs(contract, account || '');
@@ -442,6 +497,53 @@ export default function TokenDropSection({ section }: TokenDropSectionProps) {
         {section.settings.variant === 'detailed' && (
           <Box>
             <TokenDropSummary contract={contract} />
+            {activeClaimCondition.data?.metadata?.name && (
+              <Stack direction="row" justifyContent="flex-start" spacing={2}>
+                <Typography variant="body1">
+                  <b>
+                    <FormattedMessage
+                      id="current.phase"
+                      defaultMessage="Current phase"
+                    />
+                    :
+                  </b>
+                </Typography>
+                <Typography color="text.secondary">
+                  {activeClaimCondition.data?.metadata?.name}
+                </Typography>
+              </Stack>
+            )}
+            {nextPhase && (
+              <Stack direction="row" justifyContent="flex-start" spacing={2}>
+                <Typography variant="body1">
+                  <b>
+                    <FormattedMessage
+                      id="current.phase.ends.in"
+                      defaultMessage="Current phase ends in"
+                    />
+                    :
+                  </b>
+                </Typography>
+                <Typography color="text.secondary">{countDown}</Typography>
+              </Stack>
+            )}
+            {nextPhase && (
+              <Stack direction="row" justifyContent="flex-start" spacing={2}>
+                <Typography variant="body1">
+                  <b>
+                    <FormattedMessage
+                      id="price.in.next.phase"
+                      defaultMessage="Price in next phase"
+                    />
+                    :
+                  </b>
+                </Typography>
+                <Typography color="text.secondary">
+                  {nextPhase?.currencyMetadata?.displayValue}{' '}
+                  {nextPhase?.currencyMetadata?.symbol}
+                </Typography>
+              </Stack>
+            )}
           </Box>
         )}
 

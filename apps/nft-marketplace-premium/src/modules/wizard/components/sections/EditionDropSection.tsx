@@ -12,6 +12,7 @@ import {
 import { UserEvents } from '@dexkit/core/constants/userEvents';
 import { ConnectWalletButton } from '@dexkit/ui/components/ConnectWalletButton';
 import { useDexKitContext } from '@dexkit/ui/hooks';
+import { useInterval } from '@dexkit/ui/hooks/misc';
 import { useTrackUserEventsMutation } from '@dexkit/ui/hooks/userEvents';
 import {
   Alert,
@@ -125,6 +126,60 @@ export function EditionDropSection({ section }: Props) {
     editionDrop,
     account,
     tokenId,
+  );
+
+  const [count, setCount] = useState<number>(0);
+
+  const nextPhase = useMemo(() => {
+    const active = activeClaimCondition.data;
+    const data = claimConditions.data;
+    if (active && data) {
+      const total = data?.length;
+      const currentIndex = data.findIndex(
+        (a) => a?.startTime?.getTime() === active?.startTime?.getTime(),
+      );
+
+      if (currentIndex === -1) {
+        return;
+      }
+      if (currentIndex + 1 < total) {
+        const nextPhase = data[currentIndex + 1];
+        return nextPhase;
+      }
+    }
+  }, [activeClaimCondition.data, claimConditions.data]);
+
+  const countDown = useMemo(() => {
+    if (nextPhase) {
+      const countDownDate = nextPhase?.startTime?.getTime() / 1000;
+
+      const now = new Date().getTime() / 1000;
+
+      const distance = countDownDate - now;
+      if (distance < 0) {
+        return 'Expired';
+      }
+
+      const days = Math.floor(distance / (60 * 60 * 24));
+      const hours = Math.floor((distance % (60 * 60 * 24)) / (60 * 60));
+      const minutes = Math.floor((distance % (60 * 60)) / 60);
+      const seconds = Math.floor(distance % 60);
+
+      if (days) {
+        return days + 'd ' + hours + 'h ' + minutes + 'm ' + seconds + 's ';
+      } else {
+        return hours + 'h ' + minutes + 'm ' + seconds + 's ';
+      }
+    }
+  }, [nextPhase, count]);
+
+  useInterval(
+    () => {
+      // Your custom logic here
+      setCount(count + 1);
+    },
+    // Delay in milliseconds or null to stop it
+    countDown === undefined || countDown === 'Expired' ? null : 1000,
   );
 
   const handleApproveAssetSuccess = useCallback(
@@ -510,6 +565,50 @@ export function EditionDropSection({ section }: Props) {
                         defaultMessage={'per wallet'}
                       />
                     </Typography>
+                    {nextPhase && (
+                      <Grid item xs={12}>
+                        <Stack
+                          direction="row"
+                          justifyContent="flex-start"
+                          spacing={2}
+                        >
+                          <Typography variant="body1">
+                            <FormattedMessage
+                              id="current.phase.ends.in"
+                              defaultMessage="Current phase ends in"
+                            />
+                            :
+                          </Typography>
+                          <Typography variant="body1">
+                            <b>{countDown}</b>
+                          </Typography>
+                        </Stack>
+                      </Grid>
+                    )}
+                    {nextPhase && (
+                      <Grid item xs={12}>
+                        <Stack
+                          direction="row"
+                          justifyContent="flex-start"
+                          spacing={2}
+                        >
+                          <Typography variant="body1">
+                            <FormattedMessage
+                              id="price.in.next.phase"
+                              defaultMessage="Price in next phase"
+                            />
+                            :
+                          </Typography>
+                          <Typography color="body1">
+                            <b>
+                              {nextPhase?.currencyMetadata?.displayValue}{' '}
+                              {nextPhase?.currencyMetadata?.symbol}
+                            </b>
+                          </Typography>
+                        </Stack>
+                      </Grid>
+                    )}
+
                     <Stack direction={'row'} spacing={2}>
                       {/* <Button
                         size={'large'}
