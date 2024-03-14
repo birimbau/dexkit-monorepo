@@ -201,6 +201,27 @@ export function AssetListContractEdition({
                     />
                   </Button>
                 )}
+                {isLoadingAsset ? (
+                  <Skeleton>
+                    <Button>
+                      <FormattedMessage
+                        id="view.nft.drop"
+                        defaultMessage={'View nft drp'}
+                      />
+                    </Button>
+                  </Skeleton>
+                ) : (
+                  <Button
+                    href={`/drop/edition/${network}/${assetSelected?.contractAddress}/${assetSelected?.id}`}
+                    target="_blank"
+                    endIcon={<OpenInNewIcon />}
+                  >
+                    <FormattedMessage
+                      id="view.nft.drop"
+                      defaultMessage={'View nft drop'}
+                    />
+                  </Button>
+                )}
 
                 <Button
                   startIcon={<SendIcon />}

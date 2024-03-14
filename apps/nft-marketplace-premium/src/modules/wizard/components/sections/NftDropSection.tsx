@@ -1,6 +1,7 @@
 import { useIsMobile } from '@dexkit/core';
 import { UserEvents } from '@dexkit/core/constants/userEvents';
 import { useDexKitContext } from '@dexkit/ui/hooks';
+import { useInterval } from '@dexkit/ui/hooks/misc';
 import { useTrackUserEventsMutation } from '@dexkit/ui/hooks/userEvents';
 import {
   Avatar,
@@ -17,6 +18,7 @@ import {
   ClaimEligibility,
   detectContractFeature,
   useActiveClaimConditionForWallet,
+  useClaimConditions,
   useClaimIneligibilityReasons,
   useClaimedNFTSupply,
   useClaimerProofs,
@@ -44,6 +46,8 @@ export default function NftDropSection({ section }: NftDropSectionProps) {
   const { createNotification, watchTransactionDialog } = useDexKitContext();
   const { contract } = useContract(address as string, 'nft-drop');
 
+  const { data } = useClaimConditions(contract);
+
   const { account, chainId } = useWeb3React();
 
   const contractMetadataQuery = useContractMetadata(contract);
@@ -51,6 +55,59 @@ export default function NftDropSection({ section }: NftDropSectionProps) {
   const activeClaimCondition = useActiveClaimConditionForWallet(
     contract,
     account || '',
+  );
+
+  const [count, setCount] = useState<number>(0);
+
+  const nextPhase = useMemo(() => {
+    const active = activeClaimCondition.data;
+    if (active && data) {
+      const total = data?.length;
+      const currentIndex = data.findIndex(
+        (a) => a?.startTime?.getTime() === active?.startTime?.getTime(),
+      );
+
+      if (currentIndex === -1) {
+        return;
+      }
+      if (currentIndex + 1 < total) {
+        const nextPhase = data[currentIndex + 1];
+        return nextPhase;
+      }
+    }
+  }, [activeClaimCondition.data, data]);
+
+  const countDown = useMemo(() => {
+    if (nextPhase) {
+      const countDownDate = nextPhase?.startTime?.getTime() / 1000;
+
+      const now = new Date().getTime() / 1000;
+
+      const distance = countDownDate - now;
+      if (distance < 0) {
+        return 'Expired';
+      }
+
+      const days = Math.floor(distance / (60 * 60 * 24));
+      const hours = Math.floor((distance % (60 * 60 * 24)) / (60 * 60));
+      const minutes = Math.floor((distance % (60 * 60)) / 60);
+      const seconds = Math.floor(distance % 60);
+
+      if (days) {
+        return days + 'd ' + hours + 'h ' + minutes + 'm ' + seconds + 's ';
+      } else {
+        return hours + 'h ' + minutes + 'm ' + seconds + 's ';
+      }
+    }
+  }, [nextPhase, count]);
+
+  useInterval(
+    () => {
+      // Your custom logic here
+      setCount(count + 1);
+    },
+    // Delay in milliseconds or null to stop it
+    countDown === undefined || countDown === 'Expired' ? null : 1000,
   );
 
   const claimerProofs = useClaimerProofs(contract, address || '');
@@ -406,6 +463,7 @@ export default function NftDropSection({ section }: NftDropSectionProps) {
               )}
             </Stack>
           </Grid>
+
           <Grid item xs={12}>
             <Box>
               <Typography
@@ -435,10 +493,78 @@ export default function NftDropSection({ section }: NftDropSectionProps) {
             <Divider />
           </Grid>
           {section.settings.variant === 'detailed' && (
-            <Grid item xs={12}>
-              <NFTDropSummary contract={contract} />
-            </Grid>
+            <>
+              <Grid item xs={12}>
+                <NFTDropSummary contract={contract} />
+              </Grid>
+              {activeClaimCondition.data?.metadata?.name && (
+                <Grid item xs={12}>
+                  <Stack
+                    direction="row"
+                    justifyContent="flex-start"
+                    spacing={2}
+                  >
+                    <Typography variant="body1">
+                      <b>
+                        <FormattedMessage
+                          id="current.phase"
+                          defaultMessage="Current phase"
+                        />
+                        :
+                      </b>
+                    </Typography>
+                    <Typography color="text.secondary">
+                      {activeClaimCondition.data?.metadata?.name}
+                    </Typography>
+                  </Stack>
+                </Grid>
+              )}
+              {nextPhase && (
+                <Grid item xs={12}>
+                  <Stack
+                    direction="row"
+                    justifyContent="flex-start"
+                    spacing={2}
+                  >
+                    <Typography variant="body1">
+                      <b>
+                        <FormattedMessage
+                          id="current.phase.ends.in"
+                          defaultMessage="Current phase ends in"
+                        />
+                        :
+                      </b>
+                    </Typography>
+                    <Typography color="text.secondary">{countDown}</Typography>
+                  </Stack>
+                </Grid>
+              )}
+              {nextPhase && (
+                <Grid item xs={12}>
+                  <Stack
+                    direction="row"
+                    justifyContent="flex-start"
+                    spacing={2}
+                  >
+                    <Typography variant="body1">
+                      <b>
+                        <FormattedMessage
+                          id="price.in.next.phase"
+                          defaultMessage="Price in next phase"
+                        />
+                        :
+                      </b>
+                    </Typography>
+                    <Typography color="text.secondary">
+                      {nextPhase?.currencyMetadata?.displayValue}{' '}
+                      {nextPhase?.currencyMetadata?.symbol}
+                    </Typography>
+                  </Stack>
+                </Grid>
+              )}
+            </>
           )}
+
           <Grid item xs={12}>
             <Button
               onClick={handleClaimNft}
