@@ -18,6 +18,7 @@ import { PageSectionVariant, SectionItem } from '../../../../types/config';
 
 import AddIcon from '@mui/icons-material/Add';
 
+import CompletationProvider from '@dexkit/ui/components/CompletationProvider';
 import * as Yup from 'yup';
 import {
   AppPageSection,
@@ -66,7 +67,7 @@ export default function CallToActionSectionForm({
   const [showAddItem, setShowAddItem] = useState(false);
 
   const [items, setItems] = useState<SectionItem[]>(
-    section ? section.items : [],
+    section ? section.items : []
   );
 
   const handleSubmit = (values: Form, helpers: FormikHelpers<Form>) => {
@@ -194,52 +195,87 @@ export default function CallToActionSectionForm({
           </FormControl>
         </Grid>
         <Grid item xs={12}>
-          <TextField
-            name="title"
-            onChange={formik.handleChange}
-            fullWidth
-            value={formik.values.title}
-            label={<FormattedMessage id="title" defaultMessage="Title" />}
-            error={Boolean(formik.errors.title)}
-            helperText={
-              Boolean(formik.errors.title) ? formik.errors.title : undefined
-            }
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <TextField
-            name="subtitle"
-            onChange={formik.handleChange}
-            fullWidth
-            value={formik.values.subtitle}
-            label={<FormattedMessage id="subtitle" defaultMessage="Subtitle" />}
-            error={Boolean(formik.errors.subtitle)}
-            helperText={
-              Boolean(formik.errors.subtitle)
-                ? formik.errors.subtitle
-                : undefined
-            }
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <TextField
-            name="button.title"
-            onChange={formik.handleChange}
-            fullWidth
-            value={formik.values.button.title}
-            label={
-              <FormattedMessage
-                id="button.title"
-                defaultMessage="Button Title"
+          <CompletationProvider
+            onCompletation={(output: string) => {
+              formik.setFieldValue('title', output);
+            }}
+            initialPrompt={formik.values.title}
+          >
+            {({ ref, inputAdornment }) => (
+              <TextField
+                name="title"
+                onChange={formik.handleChange}
+                fullWidth
+                value={formik.values.title}
+                label={<FormattedMessage id="title" defaultMessage="Title" />}
+                error={Boolean(formik.errors.title)}
+                helperText={
+                  Boolean(formik.errors.title) ? formik.errors.title : undefined
+                }
+                inputRef={ref}
+                InputProps={{ endAdornment: inputAdornment('end') }}
               />
-            }
-            error={Boolean(formik.errors.button?.title)}
-            helperText={
-              Boolean(formik.errors.button?.title)
-                ? formik.errors.button?.title
-                : undefined
-            }
-          />
+            )}
+          </CompletationProvider>
+        </Grid>
+        <Grid item xs={12}>
+          <CompletationProvider
+            onCompletation={(output: string) => {
+              formik.setFieldValue('subtitle', output);
+            }}
+            initialPrompt={formik.values.subtitle}
+          >
+            {({ ref, inputAdornment }) => (
+              <TextField
+                name="subtitle"
+                onChange={formik.handleChange}
+                fullWidth
+                value={formik.values.subtitle}
+                label={
+                  <FormattedMessage id="subtitle" defaultMessage="Subtitle" />
+                }
+                error={Boolean(formik.errors.subtitle)}
+                helperText={
+                  Boolean(formik.errors.subtitle)
+                    ? formik.errors.subtitle
+                    : undefined
+                }
+                inputRef={ref}
+                InputProps={{ endAdornment: inputAdornment('end') }}
+              />
+            )}
+          </CompletationProvider>
+        </Grid>
+        <Grid item xs={12}>
+          <CompletationProvider
+            onCompletation={(output: string) => {
+              formik.setFieldValue('button.title', output);
+            }}
+            initialPrompt={formik.values.button.title}
+          >
+            {({ ref, inputAdornment }) => (
+              <TextField
+                name="button.title"
+                onChange={formik.handleChange}
+                fullWidth
+                value={formik.values.button.title}
+                label={
+                  <FormattedMessage
+                    id="button.title"
+                    defaultMessage="Button Title"
+                  />
+                }
+                error={Boolean(formik.errors.button?.title)}
+                helperText={
+                  Boolean(formik.errors.button?.title)
+                    ? formik.errors.button?.title
+                    : undefined
+                }
+                inputRef={ref}
+                InputProps={{ endAdornment: inputAdornment('end') }}
+              />
+            )}
+          </CompletationProvider>
         </Grid>
         <Grid item xs={12}>
           <TextField
@@ -266,7 +302,7 @@ export default function CallToActionSectionForm({
                 onChange={(ev) =>
                   formik.setFieldValue(
                     'button.openInNewPage',
-                    ev.target.checked,
+                    ev.target.checked
                   )
                 }
               />
@@ -330,7 +366,7 @@ export default function CallToActionSectionForm({
               <FormattedMessage id="save" defaultMessage="Save" />
             </Button>
             <Button onClick={onCancel}>
-              <FormattedMessage id="save" defaultMessage="Cancel" />
+              <FormattedMessage id="cancel" defaultMessage="Cancel" />
             </Button>
           </Stack>
         </Grid>
