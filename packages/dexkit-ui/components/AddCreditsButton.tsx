@@ -1,4 +1,12 @@
-import AddCreditDialog from "@dexkit/ui/components/dialogs/AddCreditDialog";
+import dynamic from "next/dynamic";
+
+const AddCreditDialog = dynamic(
+  () => import("@dexkit/ui/components/dialogs/AddCreditDialog"),
+  {
+    ssr: false,
+  }
+);
+
 import Add from "@mui/icons-material/Add";
 import { Button, ButtonProps } from "@mui/material";
 import { useState } from "react";
@@ -23,14 +31,17 @@ export default function AddCreditsButton({
 
   return (
     <>
-      <AddCreditDialog
-        DialogProps={{
-          open,
-          onClose: handleClose,
-          maxWidth: "sm",
-          fullWidth: true,
-        }}
-      />
+      {open && (
+        <AddCreditDialog
+          DialogProps={{
+            open,
+            onClose: handleClose,
+            maxWidth: "sm",
+            fullWidth: true,
+          }}
+        />
+      )}
+
       <Button
         startIcon={<Add />}
         size="small"

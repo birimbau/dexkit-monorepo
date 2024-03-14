@@ -23,7 +23,8 @@ import SelectAllIcon from "@mui/icons-material/SelectAll";
 import DeselectIcon from "@mui/icons-material/Deselect";
 
 import SaveIcon from "@mui/icons-material/Save";
-import { useSaveImages } from "../../../hooks/ai";
+import { useSnackbar } from "notistack";
+import { useGenerateImageContext, useSaveImages } from "../../../hooks/ai";
 export interface VariantsGridProps {
   gridSize: number;
   amount: number;
@@ -127,8 +128,17 @@ export default function VariantsGrid({
     setSelectable(false);
   }, []);
 
+  const { addSavedImages } = useGenerateImageContext();
+
+  const { enqueueSnackbar } = useSnackbar();
+
   const handleSave = useCallback(async () => {
-    await saveImages({ urls: selectedImages });
+    try {
+      await saveImages({ urls: selectedImages });
+      addSavedImages(selectedImages);
+    } catch (err) {
+      enqueueSnackbar(String(err), { variant: "error" });
+    }
 
     setSelectable(false);
     setSelected({});

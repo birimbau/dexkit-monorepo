@@ -3,6 +3,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useSnackbar } from "notistack";
 import { useContext } from "react";
 import { useIntl } from "react-intl";
+import { GenerateImagesContext } from "../context/GenerateImagesContext";
 import { ImageGenerate } from "../types/ai";
 import { dataURItoBlob } from "../utils/image";
 
@@ -105,4 +106,8 @@ export function useEditImage() {
       return (await instance?.post<string[]>("/ai/image/edit", form))?.data;
     }
   );
+}
+
+export function useGenerateImageContext() {
+  return useContext(GenerateImagesContext);
 }

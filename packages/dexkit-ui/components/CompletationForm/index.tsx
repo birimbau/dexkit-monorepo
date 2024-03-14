@@ -1,4 +1,5 @@
 import {
+  Alert,
   Box,
   Button,
   CircularProgress,
@@ -22,6 +23,7 @@ import * as Yup from "yup";
 import { TextImproveAction } from "../../constants/ai";
 import { useActiveFeatUsage, useSubscription } from "../../hooks/payments";
 import AIOptionsMenu from "../AIOptionsMenu";
+import AddCreditsButton from "../AddCreditsButton";
 import PaywallBackdrop from "../PaywallBackdrop";
 import ImproveTextActionList from "./ImproveTextActionList";
 
@@ -99,6 +101,21 @@ export default function CompletationForm({
         >
           {({ submitForm, isSubmitting, values, isValid, setFieldValue }) => (
             <Stack spacing={2}>
+              {total <= 0.5 && (
+                <>
+                  <Alert
+                    severity="warning"
+                    action={
+                      <AddCreditsButton ButtonProps={{ color: "warning" }} />
+                    }
+                  >
+                    <FormattedMessage
+                      id="credits.below0.50"
+                      defaultMessage="Your credits are now below $0.50. Please consider adding more credits to continue using our services."
+                    />
+                  </Alert>
+                </>
+              )}
               <Field
                 component={TextField}
                 variant="outlined"

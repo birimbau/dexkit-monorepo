@@ -1,4 +1,4 @@
-import { useImageGenerate } from "../../../hooks/ai";
+import { useGenerateImageContext, useImageGenerate } from "../../../hooks/ai";
 
 import {
   Box,
@@ -14,6 +14,7 @@ import { FormattedMessage, useIntl } from "react-intl";
 import * as Yup from "yup";
 
 import { Formik } from "formik";
+import { useSnackbar } from "notistack";
 import VariantsGrid from "./VariantsGrid";
 
 const FormSchema = Yup.object({
@@ -36,12 +37,24 @@ export default function GenerateTab({
     isLoading: isImagesLoading,
   } = useImageGenerate();
 
+  const { addGeneratedImages } = useGenerateImageContext();
+
+  const { enqueueSnackbar } = useSnackbar();
+
   const handleGenerate = async (amount: number, prompt: string) => {
-    let result = await generate({
-      numImages: amount,
-      prompt,
-      size: "512x512",
-    });
+    try {
+      let result = await generate({
+        numImages: amount,
+        prompt,
+        size: "512x512",
+      });
+
+      if (result) {
+        addGeneratedImages(result);
+      }
+    } catch (err) {
+      enqueueSnackbar(String(err), { variant: "error" });
+    }
   };
 
   const { formatMessage } = useIntl();

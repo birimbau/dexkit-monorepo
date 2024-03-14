@@ -18,7 +18,7 @@ import Decimal from "decimal.js";
 import { useSnackbar } from "notistack";
 import { MouseEvent, useCallback, useMemo, useState } from "react";
 import { FormattedMessage } from "react-intl";
-import { useGenVariants, useSaveImages } from "../../../hooks/ai";
+import { useGenVariants, useGenerateImageContext } from "../../../hooks/ai";
 import {
   useActiveFeatUsage,
   usePlanCheckoutMutation,
@@ -27,8 +27,10 @@ import {
 import AIOptionsMenu from "../../AIOptionsMenu";
 import AddCreditsButton from "../../AddCreditsButton";
 import PaywallBackdrop from "../../PaywallBackdrop";
+import ConfirmCloseDialog from "./ConfirmCloseDialog";
 import EditTab from "./EditTab";
 import GenerateTab from "./GenerateTab";
+import ImagesContextProvider from "./ImagesContextProvider";
 import SelectTab from "./SelectTab";
 import VariantsTab from "./VariantsTab";
 
@@ -38,21 +40,28 @@ export interface GenerateImagesDialogProps {
   image?: string;
 }
 
-export default function GenerateImagesDialog({
+function GenerateImagesDialog({
   DialogProps,
   tab,
   image,
 }: GenerateImagesDialogProps) {
   const { onClose } = DialogProps;
 
+  // generated images
+  const { isSavingImages, generatedImages, savedImages, hasUnsavedImages } =
+    useGenerateImageContext();
+
+  const [showConfirm, setShowConfirm] = useState(false);
+
   const handleClose = () => {
     if (onClose) {
-      onClose({}, "backdropClick");
+      if (hasUnsavedImages) {
+        setShowConfirm(true);
+      } else {
+        onClose({}, "backdropClick");
+      }
     }
   };
-
-  const { isLoading: isSavingImages, mutateAsync: saveImages } =
-    useSaveImages();
 
   const [selectedTab, setTab] = useState(tab ? tab : "select");
 
@@ -85,10 +94,23 @@ export default function GenerateImagesDialog({
     []
   );
 
+  const { addGeneratedImages } = useGenerateImageContext();
+
   const handleGenVariants = useCallback(
     async ({ numImages }: { numImages: number }) => {
       if (varImgUrl) {
-        await genVariants({ numImages: numImages, url: varImgUrl });
+        try {
+          let variants = await genVariants({
+            numImages: numImages,
+            url: varImgUrl,
+          });
+
+          if (variants) {
+            addGeneratedImages(variants);
+          }
+        } catch (err) {
+          enqueueSnackbar(String(err), { variant: "error" });
+        }
       }
     },
     [varImgUrl]
@@ -214,8 +236,35 @@ export default function GenerateImagesDialog({
     return 0;
   }, [activeFeatUsageQuery.data, sub]);
 
+  const handleCloseConfirm = (
+    event: {},
+    reason: "backdropClick" | "escapeKeyDown"
+  ) => {
+    if (onClose) {
+      onClose({}, "backdropClick");
+    }
+    setShowConfirm(false);
+  };
+
+  const handleCloseDialog = () => {
+    setShowConfirm(false);
+
+    if (onClose) {
+      onClose({}, "backdropClick");
+    }
+  };
+
   return (
     <>
+      <ConfirmCloseDialog
+        DialogProps={{
+          maxWidth: "sm",
+          fullWidth: true,
+          onClose: handleCloseConfirm,
+          open: showConfirm,
+        }}
+        onClose={handleCloseDialog}
+      />
       <AIOptionsMenu
         MenuProps={{
           open: Boolean(anchorEl),
@@ -292,5 +341,15 @@ export default function GenerateImagesDialog({
         </Box>
       </Dialog>
     </>
+  );
+}
+
+export default function GenerateImagesDialogWrapper(
+  props: GenerateImagesDialogProps
+) {
+  return (
+    <ImagesContextProvider>
+      <GenerateImagesDialog {...props} />
+    </ImagesContextProvider>
   );
 }

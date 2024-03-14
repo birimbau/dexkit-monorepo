@@ -12,7 +12,7 @@ import { useSnackbar } from "notistack";
 import { useMemo } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 import * as Yup from "yup";
-import { useEditImage } from "../../../hooks/ai";
+import { useEditImage, useGenerateImageContext } from "../../../hooks/ai";
 import MaskEditor from "./MaskEditor";
 import VariantsGrid from "./VariantsGrid";
 
@@ -39,18 +39,25 @@ export default function EditTab({
 
   const { enqueueSnackbar } = useSnackbar();
 
+  const { addGeneratedImages } = useGenerateImageContext();
+
   const handleSubmit = async (values: {
     prompt: string;
     numImages: number;
     mask: string;
   }) => {
     try {
-      await editImage.mutateAsync({
+      let result = await editImage.mutateAsync({
         imageUrl,
         maskData: values.mask,
         numImages: values.numImages,
         prompt: values.prompt,
       });
+
+      if (result) {
+        addGeneratedImages(result);
+      }
+
       enqueueSnackbar(
         formatMessage({
           defaultMessage: "Images generated",
