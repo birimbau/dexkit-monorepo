@@ -10,15 +10,14 @@ import { getConfig, getSitemapConfig } from './whitelabel';
 
 export async function getAppConfig(
   site?: string,
-  appPage?: string,
-  // @ts-ignore
+  appPage?: string
 ): Promise<{
   appConfig: AppConfig;
   appPage?: string;
   appNFT?: AssetAPI | null;
-  siteId?: number;
-  slug?: string;
-  appLocaleMessages?: Record<string, string> | null;
+  siteId?: number,
+  slug?: string
+  appLocaleMessages?: Record<string, string> | null
 }> {
   /**/
   if (site === 'boredapes.dexkit.com') {
@@ -54,6 +53,7 @@ export async function getAppConfig(
         const appConfig = JSON.parse(configResponse.config) as AppConfig;
         const appLocaleMessages = await getLocaleMessages(appConfig.locale);
 
+
         return {
           appConfig,
           appNFT: configResponse.nft === undefined ? null : configResponse.nft,
@@ -77,6 +77,7 @@ export async function getAppConfig(
         const appConfig = JSON.parse(configResponse.config) as AppConfig;
         const appLocaleMessages = await getLocaleMessages(appConfig.locale);
 
+
         return {
           appConfig,
           appLocaleMessages,
@@ -93,84 +94,82 @@ export async function getAppConfig(
     });
   }
 
-  if (site) {
-    const [hostname, port] = site?.split(':');
 
-    if (hostname.endsWith('localhost')) {
-      const [slug] = hostname?.split('.') || [];
 
-      if (site?.startsWith('localhost')) {
-        //const slug = 'optiswap';
-        if (slug) {
-          const configResponse = (await getConfig({ slug, appPage })).data;
 
-          if (configResponse) {
-            const appConfig = JSON.parse(configResponse.config) as AppConfig;
-            const appLocaleMessages = await getLocaleMessages(appConfig.locale);
-
-            return {
-              appConfig,
-              appLocaleMessages,
-              appNFT:
-                configResponse.nft === undefined ? null : configResponse.nft,
-              siteId: configResponse?.id,
-              slug: configResponse?.slug,
-            };
-          }
-        }
-        const appConfig = appConfigJson as AppConfig;
-        const appLocaleMessages = await getLocaleMessages(appConfig.locale);
-
-        return Promise.resolve({
-          appConfig: appConfigJson as AppConfig,
-          appLocaleMessages,
-          appNFT: null,
-        });
-      }
-
-      if (site?.endsWith('dex-kit.vercel.app')) {
-        return Promise.resolve({
-          appConfig: appConfigJson as AppConfig,
-          appNFT: null,
-        });
-      }
-
-      if (site?.endsWith('.vercel.app')) {
-        return Promise.resolve({
-          appConfig: appConfigJson as AppConfig,
-          appNFT: null,
-        });
-      }
-
-      const configResponse = (await getConfig({ domain: site, appPage })).data;
+  if (site?.startsWith('localhost')) {
+    const [slug,] = site?.split('.') || [];
+    //const slug = 'optiswap';
+    if (slug) {
+      const configResponse = (await getConfig({ slug, appPage })).data;
 
       if (configResponse) {
         const appConfig = JSON.parse(configResponse.config) as AppConfig;
         const appLocaleMessages = await getLocaleMessages(appConfig.locale);
 
+
         return {
           appConfig,
           appLocaleMessages,
-          appNFT: configResponse.nft === undefined ? configResponse.nft : null,
+          appNFT: configResponse.nft === undefined ? null : configResponse.nft,
           siteId: configResponse?.id,
           slug: configResponse?.slug,
-          appPage,
         };
       }
     }
+    const appConfig = appConfigJson as AppConfig;
+    const appLocaleMessages = await getLocaleMessages(appConfig.locale);
 
-    throw new Error('Oops, something went wrong');
-
-    // return appConfigJson as Promise<AppConfig>;
+    return Promise.resolve({
+      appConfig: appConfigJson as AppConfig,
+      appLocaleMessages,
+      appNFT: null,
+    });
   }
+
+  if (site?.endsWith('dex-kit.vercel.app')) {
+    return Promise.resolve({
+      appConfig: appConfigJson as AppConfig,
+      appNFT: null,
+    });
+  }
+
+  if (site?.endsWith('.vercel.app')) {
+    return Promise.resolve({
+      appConfig: appConfigJson as AppConfig,
+      appNFT: null,
+    });
+  }
+
+  const configResponse = (await getConfig({ domain: site, appPage })).data;
+  if (configResponse) {
+    const appConfig = JSON.parse(configResponse.config) as AppConfig;
+    const appLocaleMessages = await getLocaleMessages(appConfig.locale);
+
+    return {
+      appConfig,
+      appLocaleMessages,
+      appNFT: configResponse.nft === undefined ? configResponse.nft : null,
+      siteId: configResponse?.id,
+      slug: configResponse?.slug,
+      appPage,
+    };
+  }
+
+  throw new Error('Oops, something went wrong');
+
+  // return appConfigJson as Promise<AppConfig>;
 }
 
-export async function getAppSitemapConfig(site?: string): Promise<{
+export async function getAppSitemapConfig(
+  site?: string,
+): Promise<{
   appConfig: AppConfig;
   appNFT?: AssetAPI | null;
-  siteId?: number;
-  slug?: string;
+  siteId?: number,
+  slug?: string
 }> {
+
   /**/
   if (site === 'boredapes.dexkit.com') {
     return Promise.resolve({
@@ -206,7 +205,7 @@ export async function getAppSitemapConfig(site?: string): Promise<{
           appConfig: JSON.parse(configResponse.config) as AppConfig,
           appNFT: configResponse.nft === undefined ? null : configResponse.nft,
           siteId: configResponse?.id,
-          slug: configResponse?.slug,
+          slug: configResponse?.slug
         };
       }
     }
@@ -225,7 +224,7 @@ export async function getAppSitemapConfig(site?: string): Promise<{
           appConfig: JSON.parse(configResponse.config) as AppConfig,
           appNFT: configResponse.nft === undefined ? null : configResponse.nft,
           siteId: configResponse?.id,
-          slug: configResponse?.slug,
+          slug: configResponse?.slug
         };
       }
     }
@@ -235,8 +234,11 @@ export async function getAppSitemapConfig(site?: string): Promise<{
     });
   }
 
+
+
+
   if (site?.startsWith('localhost')) {
-    const [slug] = site?.split('.') || [];
+    const [slug,] = site?.split('.') || [];
     //const slug = 'swapkit';
     if (slug) {
       const configResponse = (await getSitemapConfig({ slug })).data;
@@ -277,7 +279,7 @@ export async function getAppSitemapConfig(site?: string): Promise<{
       appConfig: JSON.parse(configResponse.config) as AppConfig,
       appNFT: configResponse.nft === undefined ? configResponse.nft : null,
       siteId: configResponse?.id,
-      slug: configResponse?.slug,
+      slug: configResponse?.slug
     };
   }
 
