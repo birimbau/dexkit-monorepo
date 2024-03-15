@@ -41,6 +41,7 @@ export type SectionType =
   | 'asset-section'
   | 'ranking'
   | 'market-trade'
+  | 'token-trade'
   | 'claim-airdrop-token-erc-20'
   ;
 
@@ -249,6 +250,16 @@ export interface CollectionPageSection extends PageSection {
   };
 }
 
+export interface TokenTradePageSection extends PageSection {
+  type: 'token-trade';
+  config: {
+    showTokenDetails?: boolean;
+    show?: OrderMarketType;
+    slippage?: number;
+    baseTokenConfig?: { address?: string, chainId?: number };
+  };
+}
+
 export interface RankingPageSection extends PageSection {
   type: 'ranking';
   settings: {
@@ -297,7 +308,7 @@ export type AppPageSection =
   | AssetPageSection
   | RankingPageSection
   | ClaimAirdropErc20PageSection
-
+  | TokenTradePageSection
   ;
 
 export interface SectionMetadata {

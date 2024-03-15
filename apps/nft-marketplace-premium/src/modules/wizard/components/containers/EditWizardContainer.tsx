@@ -1081,6 +1081,7 @@ export function EditWizardContainer({ site }: Props) {
                   {activeMenu === ActiveMenu.Tokens && config && (
                     <TokenWizardContainer
                       config={config}
+                      site={site}
                       onSave={handleSave}
                       onHasChanges={setHasChanges}
                     />

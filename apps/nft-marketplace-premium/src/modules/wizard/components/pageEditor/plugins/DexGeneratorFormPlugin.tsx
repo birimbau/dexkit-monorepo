@@ -12,7 +12,9 @@ const DexGeneratorFormPlugin: CellPlugin<{
   section?: DexGeneratorPageSection;
 }> = {
   Renderer: ({ data, isEditMode }) => {
-    return data.section ? <DexGeneratorSection section={data.section} /> : null;
+    return data.section ? (
+      <DexGeneratorSection section={data.section} hideGrid={true} />
+    ) : null;
   },
   id: 'dex-generator-section',
   title: 'Dex Generator',

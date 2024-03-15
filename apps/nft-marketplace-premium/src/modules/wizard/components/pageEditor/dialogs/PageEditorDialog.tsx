@@ -1,4 +1,4 @@
-import { Box, Container, Dialog, DialogProps } from '@mui/material';
+import { Container, Dialog, DialogProps } from '@mui/material';
 import { FormattedMessage } from 'react-intl';
 import { AppDialogTitle } from '../../../../../components/AppDialogTitle';
 import PageEditor from '../PageEditor';

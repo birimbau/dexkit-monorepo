@@ -61,7 +61,7 @@ export default function PageEditorDialog({
         />
       </Box>
       <DialogContent>
-        <Box sx={{ paddingLeft: 10, paddingRight: 20, paddingTop: 5 }}>
+        <Box sx={{ paddingLeft: 25, paddingRight: 25, paddingTop: 5 }}>
           <PageEditor
             value={data}
             onChange={onChangeEditor}

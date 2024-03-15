@@ -9,7 +9,10 @@ import ShowChartIcon from '@mui/icons-material/ShowChart';
 import StorefrontIcon from '@mui/icons-material/Storefront';
 import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
 import TextSnippetIcon from '@mui/icons-material/TextSnippet';
-import Token from '@mui/icons-material/Token';
+import {
+  default as Token,
+  default as TokenIcon,
+} from '@mui/icons-material/Token';
 import VideocamIcon from '@mui/icons-material/Videocam';
 import WalletIcon from '@mui/icons-material/Wallet';
 import { SectionMetadata } from '../../types/section';
@@ -21,6 +24,14 @@ export const sections = [
     category: 'resources',
     description: 'Display engaging videos to captivate your audience.',
     icon: <VideocamIcon fontSize="large" />,
+  },
+  {
+    type: 'token-trade',
+    titleId: 'token.trade',
+    titleDefaultMessage: 'Token trade',
+    category: 'cryptocurrency',
+    description: 'Easiest way to trade and display actions for your token .',
+    icon: <TokenIcon fontSize="large" />,
   },
   {
     type: 'call-to-action',
