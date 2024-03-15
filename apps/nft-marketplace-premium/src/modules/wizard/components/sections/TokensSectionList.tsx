@@ -8,6 +8,7 @@ import TokensSectionListItem from './TokensSectionListItem';
 interface Props {
   tokens: Token[];
   search: string;
+  appUrl?: string;
   selectable?: boolean;
   selectedKeys: { [key: string]: boolean };
   onSelect: (key: string) => void;
@@ -19,6 +20,7 @@ export default function TokensSectionList({
   selectable,
   selectedKeys,
   onSelect,
+  appUrl,
   onMakeTradable,
   search,
 }: Props) {
@@ -41,6 +43,7 @@ export default function TokensSectionList({
     <List disablePadding>
       {filteredTokens.map((token, index, arr) => (
         <TokensSectionListItem
+          appUrl={appUrl}
           divider={index < arr.length - 1}
           key={index}
           token={token}

@@ -19,6 +19,7 @@ import FeaturedSectionForm from '../forms/FeaturedSectionForm';
 import MDSectionForm from '../forms/MDSectionForm';
 import { RankingSectionForm } from '../forms/RankingSectionForm';
 import { SwapConfigSectionForm } from '../forms/SwapConfigSectionForm';
+import { TokenTradeSectionForm } from '../forms/TokenTradeSectionForm';
 import { UserContractForm } from '../forms/UserContractForm';
 import VideoSectionForm from '../forms/VideoSectionForm';
 import WalletSectionForm from '../forms/WalletSectionForm';
@@ -271,6 +272,15 @@ export function SectionFormRender({
         onChange={onChange}
         saveOnChange={true}
         showSaveButton={true}
+        section={section?.type === sectionType ? section : undefined}
+      />
+    );
+  } else if (sectionType === 'token-trade') {
+    return (
+      <TokenTradeSectionForm
+        onCancel={onClose}
+        onSave={onSave}
+        onChange={onChange}
         section={section?.type === sectionType ? section : undefined}
       />
     );

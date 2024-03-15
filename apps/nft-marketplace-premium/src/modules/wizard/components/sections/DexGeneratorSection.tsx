@@ -15,10 +15,12 @@ import TokenErc20Section from './TokenErc20Section';
 
 export interface DexGeneratorSectionProps {
   section?: DexGeneratorPageSection;
+  hideGrid?: boolean;
 }
 
 export default function DexGeneratorSection({
   section,
+  hideGrid,
 }: DexGeneratorSectionProps) {
   const { provider } = useWeb3React();
 
@@ -39,7 +41,7 @@ export default function DexGeneratorSection({
       } else if (type === 'nft-stake') {
         return (
           <Grid container justifyContent="center">
-            <Grid item xs={12} sm={4}>
+            <Grid item xs={12} sm={hideGrid ? 12 : 4}>
               <StakeErc721Section section={section.section} />
             </Grid>
           </Grid>
@@ -47,7 +49,7 @@ export default function DexGeneratorSection({
       } else if (type === 'token-stake') {
         return (
           <Grid container justifyContent="center">
-            <Grid item xs={12} sm={4}>
+            <Grid item xs={12} sm={hideGrid ? 12 : 4}>
               <StakeErc20Section section={section.section} />
             </Grid>
           </Grid>
@@ -55,7 +57,7 @@ export default function DexGeneratorSection({
       } else if (type === 'edition-stake') {
         return (
           <Grid container justifyContent="center">
-            <Grid item xs={12} sm={4}>
+            <Grid item xs={12} sm={hideGrid ? 12 : 4}>
               <StakeErc1155Section section={section.section} />
             </Grid>
           </Grid>
@@ -63,7 +65,7 @@ export default function DexGeneratorSection({
       } else if (type === 'claim-airdrop-token-erc-20') {
         return (
           <Grid container justifyContent="center">
-            <Grid item xs={12} sm={4}>
+            <Grid item xs={12} sm={hideGrid ? 12 : 4}>
               <ClaimAirdropERC20Section section={section.section} />
             </Grid>
           </Grid>

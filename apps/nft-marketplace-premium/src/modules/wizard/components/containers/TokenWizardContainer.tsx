@@ -3,8 +3,9 @@ import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
+import { SiteResponse } from 'src/types/whitelabel';
 import { Token } from '../../../../types/blockchain';
 import { AppConfig } from '../../../../types/config';
 import { isAddressEqual } from '../../../../utils/blockchain';
@@ -15,6 +16,7 @@ import { StepperButtons } from '../steppers/StepperButtons';
 
 interface Props {
   config: AppConfig;
+  site?: SiteResponse | null;
   onSave: (config: AppConfig) => void;
   onHasChanges?: (hasChanges: boolean) => void;
   isOnStepper?: boolean;
@@ -23,6 +25,7 @@ interface Props {
 }
 
 export default function TokenWizardContainer({
+  site,
   config,
   onSave,
   isOnStepper,
@@ -31,6 +34,15 @@ export default function TokenWizardContainer({
   isSwap,
 }: Props) {
   const [hasChanged, setHasChanged] = useState(false);
+
+  const appUrl = useMemo(() => {
+    if (site?.domain) {
+      return `https://${site?.domain}`;
+    }
+    if (site?.previewUrl) {
+      return site?.previewUrl;
+    }
+  }, [site]);
 
   useEffect(() => {
     if (onHasChanges) {
@@ -162,6 +174,7 @@ export default function TokenWizardContainer({
           selectedKeys={selectedKeys}
           onRemove={handleRemoveTokens}
           tokens={tokens}
+          appUrl={appUrl}
           onMakeTradable={isSwap ? undefined : handleMakeTradable}
         />
       </Grid>

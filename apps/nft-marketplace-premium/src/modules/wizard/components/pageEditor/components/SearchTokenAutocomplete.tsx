@@ -1,4 +1,5 @@
 import { useSearchSwapTokens } from '@/modules/swap/hooks';
+import { isAddressEqual } from '@dexkit/core/utils';
 import { CircularProgress, Stack } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
@@ -28,7 +29,6 @@ export function SearchTokenAutocomplete(props: Props) {
         ? featuredTokens.filter((tk) => tk.chainId === chainId)
         : featuredTokens,
   });
-  const formValue = data;
 
   const assets = useMemo(() => {
     return (
@@ -46,7 +46,17 @@ export function SearchTokenAutocomplete(props: Props) {
         };
       }) || []
     );
-  }, [formValue, tokensQuery.tokens, chainId]);
+  }, [tokensQuery.tokens, chainId]);
+
+  const formValue = useMemo(() => {
+    if (assets && data) {
+      return assets.find(
+        (a) =>
+          isAddressEqual(a.address, data?.address) &&
+          data?.chainId === a.chainId,
+      );
+    }
+  }, [assets]);
 
   return (
     <Autocomplete
@@ -121,12 +131,12 @@ export function SearchTokenAutocomplete(props: Props) {
                 <img
                   loading="lazy"
                   width="25"
-                  src={`${formValue.logoURI}`}
+                  src={`${formValue?.logoURI}`}
                   alt=""
                 />
-                {formValue.chainId && (
+                {formValue?.chainId && (
                   <Box sx={{ pl: 1 }}>
-                    {getChainName(formValue.chainId)} - {formValue.name} -
+                    {getChainName(formValue?.chainId)} - {formValue?.name} -
                     {formValue?.symbol?.toUpperCase()}
                   </Box>
                 )}

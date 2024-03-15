@@ -89,7 +89,14 @@ export default function PagesWizardContainer({
   const hasSwap = useMemo(() => {
     return Object.keys(pages)
       .map((key) => pages[key])
-      .some((page) => page.sections.some((section) => section.type === 'swap'));
+      .some((page) =>
+        page.sections.some(
+          (section) =>
+            section.type === 'swap' ||
+            section.type === 'exchange' ||
+            section.type === 'token-trade',
+        ),
+      );
   }, [JSON.stringify(pages)]);
 
   const { data } = useGetApiKeyQuery({ type: 'zrx', siteId });

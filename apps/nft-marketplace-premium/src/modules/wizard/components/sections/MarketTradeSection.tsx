@@ -18,7 +18,7 @@ export interface MarketTradeSectionProps {
 export default function MarketTradeSection({
   section,
 }: MarketTradeSectionProps) {
-  const { show, baseTokenConfig } = section.config;
+  const { show, baseTokenConfig, slippage } = section.config;
   const { account, provider } = useWeb3React();
   const appConfig = useAppConfig();
 
@@ -63,6 +63,7 @@ export default function MarketTradeSection({
               >
                 <TradeWidgetSimpleVariant
                   isActive={true}
+                  defaultSlippage={slippage}
                   feeRecipient={
                     appConfig.swapFees?.recipient || ZEROEX_AFFILIATE_ADDRESS
                   }

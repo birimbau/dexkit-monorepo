@@ -23,6 +23,8 @@ import { FormattedMessage } from 'react-intl';
 
 import { AppPage, AppPageOptions } from '../../../../types/config';
 
+import TokenIcon from '@mui/icons-material/Token';
+
 import Code from '@mui/icons-material/Code';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
@@ -180,6 +182,12 @@ export default function PagesSectionPage({
       );
       subtitle = section.title || '';
       icon = <LeaderboardIcon />;
+    } else if (section.type === 'token-trade') {
+      title = (
+        <FormattedMessage id="token.trade" defaultMessage="Token Trade" />
+      );
+      subtitle = section.title || '';
+      icon = <TokenIcon />;
     }
 
     if (!title) {

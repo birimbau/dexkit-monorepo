@@ -54,6 +54,7 @@ import QrCodeReceive from './plugins/QrCodeReceivePayment';
 import SearchNFTPlugin from './plugins/SearchNFTPlugin';
 import StackPlugin from './plugins/StackPlugin';
 import Swap2Plugin from './plugins/Swap2Plugin';
+import TokenTradePlugin from './plugins/TokenTradePlugin';
 import UserContractFormPlugin from './plugins/UserContractFormPlugin';
 import WidgetPlugin from './plugins/WidgetPlugin';
 // Define which plugins we want to use.
@@ -89,6 +90,7 @@ const cellPlugins = [
   SearchNFTPlugin,
   UserContractFormPlugin,
   DefaultSlate,
+  TokenTradePlugin,
   video,
   WidgetPlugin,
 ];
@@ -140,6 +142,7 @@ const swapPlugins = [
   QrCodeReceive,
   ExtendedSpacer,
   StackPlugin,
+  TokenTradePlugin,
   //  CustomLayoutPlugin,
   // SwapPlugin,
   Swap2Plugin,

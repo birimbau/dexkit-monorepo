@@ -26,6 +26,7 @@ const AddTokenDialog = dynamic(() => import('../dialogs/AddTokenDialog'));
 
 interface Props {
   tokens: Token[];
+  appUrl?: string;
   selectedKeys: { [key: string]: boolean };
   onSelect: (key: string) => void;
   onMakeTradable?: (key: string) => void;
@@ -37,6 +38,7 @@ interface Props {
 export default function TokensSection({
   selectedKeys,
   tokens,
+  appUrl,
   onSelect,
   onSelectAll,
   onSave,
@@ -247,6 +249,7 @@ export default function TokensSection({
             <Divider />
             <TokensSectionList
               selectable={isSelectEnabled}
+              appUrl={appUrl}
               tokens={tokens}
               search={search}
               selectedKeys={selectedKeys}
