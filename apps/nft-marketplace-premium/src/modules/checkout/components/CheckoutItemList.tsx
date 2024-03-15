@@ -22,9 +22,9 @@ export default function CheckoutItemList({ id, token }: CheckoutItemListProps) {
           <Typography>
             {ethers.utils.formatUnits(
               BigNumber.from(item.amount).mul(BigNumber.from(item.price)),
-              token?.decimals
+              token?.decimals || 6
             )}{' '}
-            {token?.symbol}
+            {token?.symbol ? token?.symbol : 'USD'}
           </Typography>
         </ListItem>
       ))}

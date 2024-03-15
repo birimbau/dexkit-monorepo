@@ -240,10 +240,12 @@ function GenerateImagesDialog({
     event: {},
     reason: "backdropClick" | "escapeKeyDown"
   ) => {
-    if (onClose) {
-      onClose({}, "backdropClick");
+    if (reason !== "backdropClick") {
+      if (onClose) {
+        onClose({}, "backdropClick");
+      }
+      setShowConfirm(false);
     }
-    setShowConfirm(false);
   };
 
   const handleCloseDialog = () => {

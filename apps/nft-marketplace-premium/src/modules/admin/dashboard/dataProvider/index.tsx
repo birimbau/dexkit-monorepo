@@ -51,6 +51,18 @@ export default {
         })
       ).data;
       return { data: data, total: data.length };
+    } else if (resource === 'credit-grants') {
+      const data = (
+        await myAppsApi.get('/payments/credit-grants', {
+          params: {
+            skip: (page - 1) * perPage,
+            take: perPage,
+            sort: field ? [field, order] : undefined,
+            filter: params.filter,
+          },
+        })
+      ).data;
+      return { data: data, total: data.length };
     }
 
     return { data: [], total: 0 };
@@ -69,6 +81,11 @@ export default {
     } else if (resource === 'feature-prices') {
       return {
         data: (await myAppsApi.get(`/payments/feature-prices/${params.id}`))
+          .data,
+      };
+    } else if (resource === 'credit-grants') {
+      return {
+        data: (await myAppsApi.get(`/payments/credit-grants/${params.id}`))
           .data,
       };
     }
@@ -103,6 +120,19 @@ export default {
 
       const data = (
         await myAppsApi.post(`${path}/admin/all/${params.id}`, params.data)
+      ).data;
+
+      return {
+        data,
+      };
+    } else if (resource === 'credit-grants') {
+      path = `/payments/credit-grants/${params.id}`;
+
+      const data = (
+        await myAppsApi.put(path, {
+          ...params.data,
+          amount: params.data.amount.toString(),
+        })
       ).data;
 
       return {

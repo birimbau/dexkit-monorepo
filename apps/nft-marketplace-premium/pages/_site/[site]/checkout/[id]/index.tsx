@@ -125,15 +125,6 @@ const tokens: Token[] = [
     name: 'USD Coin',
     symbol: 'USDC',
   },
-  {
-    address: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
-    chainId: 56,
-    decimals: 18,
-    logoURI:
-      'https://raw.githubusercontent.com/dexkit/icons/master/token/usdc.jpg',
-    name: 'Binance-Peg USD Coin',
-    symbol: 'USDC',
-  },
 ];
 
 export default function CheckoutPage({ id }: CheckoutPageProps) {
@@ -202,8 +193,6 @@ export default function CheckoutPage({ id }: CheckoutPageProps) {
             setHash(hash);
 
             if (token) {
-              console.log('chama isso aqui');
-
               await confirmCheckoutMutation.mutateAsync({
                 chainId: token?.chainId,
                 checkoutId: id,
@@ -272,9 +261,9 @@ export default function CheckoutPage({ id }: CheckoutPageProps) {
   const [chainId, setChainId] = useState<ChainId>();
 
   useEffect(() => {
-    console.log('provider', providerChainId);
     if (providerChainId) {
       setChainId(providerChainId);
+      setToken(tokens.find((t) => t.chainId === providerChainId));
     }
   }, [providerChainId]);
 
@@ -291,8 +280,6 @@ export default function CheckoutPage({ id }: CheckoutPageProps) {
     child: ReactNode
   ) => {
     const newChainId = e.target.value as number;
-
-    console.log(newChainId);
 
     setChainId(newChainId);
 
@@ -330,7 +317,7 @@ export default function CheckoutPage({ id }: CheckoutPageProps) {
     if (isActive) {
       return (
         <Button
-          disabled={!hasSufficientBalance || disabled}
+          disabled={!hasSufficientBalance || disabled || !token}
           fullWidth
           onClick={handlePay}
           variant="contained"
@@ -438,8 +425,9 @@ export default function CheckoutPage({ id }: CheckoutPageProps) {
                   <FormattedMessage id="total" defaultMessage="total" />
                 </Typography>
                 <Typography variant="h5" fontWeight="bold">
-                  {total && ethers.utils.formatUnits(total, token?.decimals)}{' '}
-                  {token?.symbol}
+                  {total &&
+                    ethers.utils.formatUnits(total, token?.decimals || 6)}{' '}
+                  {token ? token?.symbol : 'USD'}
                 </Typography>
               </CardContent>
               <Divider />
@@ -458,7 +446,11 @@ export default function CheckoutPage({ id }: CheckoutPageProps) {
                   </Typography>
 
                   <Typography color="text.secondary" variant="body2">
-                    {total && ethers.utils.formatUnits(total, token?.decimals)}{' '}
+                    {total &&
+                      ethers.utils.formatUnits(
+                        total,
+                        token?.decimals || 6
+                      )}{' '}
                     USD
                   </Typography>
                 </Stack>
@@ -542,6 +534,15 @@ export default function CheckoutPage({ id }: CheckoutPageProps) {
                     token={token}
                     disabled={disabled}
                   />
+                  {!token && (
+                    <Alert severity="error">
+                      <FormattedMessage
+                        id="select.a.token.to.pay"
+                        defaultMessage="Select a token to pay"
+                      />
+                    </Alert>
+                  )}
+
                   {token && (
                     <Stack
                       direction="row"

@@ -5,12 +5,14 @@ import { AuthProvider } from './authProvider';
 import dataProvider from './dataProvider';
 import { AssetEdit } from './edits/asset';
 import { CollectionEdit } from './edits/collection';
+import { CreditGrantEdit } from './edits/credit-grant-edit';
 import { FeatPriceEdit } from './edits/feat-price-edit';
 import { SiteEdit } from './edits/site';
 import { AssetList } from './lists/asset';
 import { CoinList } from './lists/coin';
 import { CoinPlatformList } from './lists/coinPlatform';
 import { CollectionList } from './lists/collection';
+import CreditGrantsList from './lists/credit-grants';
 import FeatPricesList from './lists/feat-prices';
 import { SiteList } from './lists/site';
 import { UserEventList } from './lists/userEvents';
@@ -45,6 +47,11 @@ const App = () => (
       name="feature-prices"
       list={FeatPricesList}
       edit={FeatPriceEdit}
+    />
+    <Resource
+      name="credit-grants"
+      list={CreditGrantsList}
+      edit={CreditGrantEdit}
     />
   </Admin>
 );
