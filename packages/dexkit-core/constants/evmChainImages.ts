@@ -1,5 +1,4 @@
 import { ChainId } from "./enums";
-
 export const UNKNOWN_LOGO_URL = "https://raw.githubusercontent.com/DexKit/assets/main/networks/unknown-logo.png";
 
 
@@ -79,5 +78,25 @@ export const EVM_CHAIN_IMAGES: { [key: number]: { imageUrl?: string, coinImageUr
       "https://raw.githubusercontent.com/DexKit/dexkit-evm-chains/main/assets/evm-chain-icons/blast.png",
     coinImageUrl: 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/info/logo.png',
   },
+  [ChainId.Blast]: {
+    imageUrl:
+      "https://raw.githubusercontent.com/DexKit/dexkit-evm-chains/main/assets/evm-chain-icons/blast.png",
+    coinImageUrl: 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/info/logo.png',
+  },
+  [ChainId.Sepolia]: {
+
+    imageUrl:
+      "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/info/logo.png",
+
+  },
+
+  [ChainId.Pulse]: {
+
+    imageUrl:
+      "https://raw.githubusercontent.com/DexKit/dexkit-evm-chains/main/assets/evm-chain-icons/pulse.svg",
+
+  },
+
+
 
 }

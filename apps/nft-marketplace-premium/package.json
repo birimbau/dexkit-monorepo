@@ -39,7 +39,7 @@
     "@dexkit/core": "*",
     "@dexkit/darkblock-evm-widget": "*",
     "@dexkit/unlock-widget": "*",
-    "@dexkit/evm-chains": "^1.9.0",
+    "@dexkit/evm-chains": "^1.10.0",
     "@dexkit/ui": "*",
     "@dexkit/wallet-connectors": "*",
     "@dexkit/web3forms": "*",
