@@ -269,9 +269,7 @@ export type DexGeneratorPageSectionType =
   | StakeErc20PageSection
   | StakeErc155PageSection
   | CollectionPageSection
-  | ClaimAirdropErc20PageSection
-
-  ;
+  | ClaimAirdropErc20PageSection;
 
 export interface DexGeneratorPageSection extends PageSection {
   type: 'dex-generator-section';
