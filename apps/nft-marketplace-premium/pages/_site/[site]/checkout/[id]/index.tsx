@@ -125,6 +125,24 @@ const tokens: Token[] = [
     name: 'USD Coin',
     symbol: 'USDC',
   },
+  {
+    address: '0x55d398326f99059fF775485246999027B3197955',
+    chainId: 56,
+    decimals: 18,
+    logoURI:
+      'https://raw.githubusercontent.com/dexkit/icons/master/token/usdt.jpg',
+    name: 'USDT',
+    symbol: 'USDT',
+  },
+  {
+    address: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
+    chainId: 56,
+    decimals: 18,
+    logoURI:
+      'https://raw.githubusercontent.com/dexkit/icons/master/token/usdc.jpg',
+    name: 'USDC',
+    symbol: 'USDC',
+  },
 ];
 
 export default function CheckoutPage({ id }: CheckoutPageProps) {
@@ -138,7 +156,7 @@ export default function CheckoutPage({ id }: CheckoutPageProps) {
   const total = useMemo(() => {
     return checkoutItemsQuery.data
       ?.map((item: any) =>
-        BigNumber.from(item.amount).mul(BigNumber.from(item.price))
+        BigNumber.from(item.amount).mul(BigNumber.from(item.price)),
       )
       .reduce((prev, curr) => {
         return prev.add(curr);
@@ -168,7 +186,7 @@ export default function CheckoutPage({ id }: CheckoutPageProps) {
         const contract = new ethers.Contract(
           token?.address,
           ERC20Abi,
-          provider?.getSigner()
+          provider?.getSigner(),
         );
 
         const tx = await contract.transfer(address, amount);
@@ -177,7 +195,7 @@ export default function CheckoutPage({ id }: CheckoutPageProps) {
 
         return await tx.wait();
       }
-    }
+    },
   );
 
   const { enqueueSnackbar } = useSnackbar();
@@ -210,7 +228,7 @@ export default function CheckoutPage({ id }: CheckoutPageProps) {
             id="error.while.tranfer"
             defaultMessage="Error while transfer"
           />,
-          { variant: 'error' }
+          { variant: 'error' },
         );
       }
     }
@@ -277,7 +295,7 @@ export default function CheckoutPage({ id }: CheckoutPageProps) {
 
   const handleChangeNetwork = (
     e: SelectChangeEvent<number>,
-    child: ReactNode
+    child: ReactNode,
   ) => {
     const newChainId = e.target.value as number;
 
@@ -449,7 +467,7 @@ export default function CheckoutPage({ id }: CheckoutPageProps) {
                     {total &&
                       ethers.utils.formatUnits(
                         total,
-                        token?.decimals || 6
+                        token?.decimals || 6,
                       )}{' '}
                     USD
                   </Typography>
@@ -495,7 +513,7 @@ export default function CheckoutPage({ id }: CheckoutPageProps) {
                               <Avatar
                                 src={ipfsUriToUrl(
                                   networks.find((n) => n.chainId === chainId)
-                                    ?.imageUrl || ''
+                                    ?.imageUrl || '',
                                 )}
                                 style={{ width: '1rem', height: '1rem' }}
                               />
@@ -560,7 +578,7 @@ export default function CheckoutPage({ id }: CheckoutPageProps) {
                         {balanceQuery.data ? (
                           ethers.utils.formatUnits(
                             balanceQuery.data,
-                            token?.decimals
+                            token?.decimals,
                           )
                         ) : (
                           <Skeleton />
