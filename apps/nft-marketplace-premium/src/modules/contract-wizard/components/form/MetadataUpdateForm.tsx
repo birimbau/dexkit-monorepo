@@ -1,3 +1,4 @@
+import CompletationProvider from '@dexkit/ui/components/CompletationProvider';
 import Image from '@mui/icons-material/Image';
 import {
   Box,
@@ -106,28 +107,57 @@ export default function MetadataUpdateForm({
             <Grid item xs={12} sm={9}>
               <Grid container spacing={2}>
                 <Grid item xs={12}>
-                  <Field
-                    fullWidth
-                    label={<FormattedMessage id="name" defaultMessage="name" />}
-                    component={TextField}
-                    name="name"
-                  />
+                  <CompletationProvider
+                    onCompletation={(output: string) => {
+                      setFieldValue('name', output);
+                    }}
+                    initialPrompt={values.name}
+                  >
+                    {({ ref, inputAdornment }) => (
+                      <Field
+                        fullWidth
+                        label={
+                          <FormattedMessage id="name" defaultMessage="name" />
+                        }
+                        component={TextField}
+                        name="name"
+                        inputRef={ref}
+                        InputProps={{
+                          endAdornment: inputAdornment('end'),
+                        }}
+                      />
+                    )}
+                  </CompletationProvider>
                 </Grid>
                 <Grid item xs={12}>
-                  <Field
-                    fullWidth
-                    label={
-                      <FormattedMessage
-                        id="description"
-                        defaultMessage="description"
-                      />
-                    }
+                  <CompletationProvider
+                    onCompletation={(output: string) => {
+                      setFieldValue('description', output);
+                    }}
+                    initialPrompt={values.description}
                     multiline
-                    rows={4}
-                    InputProps={{ component: 'textarea' }}
-                    component={TextField}
-                    name="description"
-                  />
+                  >
+                    {({ ref, inputAdornment }) => (
+                      <Field
+                        fullWidth
+                        label={
+                          <FormattedMessage
+                            id="description"
+                            defaultMessage="description"
+                          />
+                        }
+                        multiline
+                        rows={4}
+                        InputProps={{
+                          component: 'textarea',
+                          endAdornment: inputAdornment('end'),
+                        }}
+                        component={TextField}
+                        name="description"
+                        inputRef={ref}
+                      />
+                    )}
+                  </CompletationProvider>
                 </Grid>
               </Grid>
             </Grid>
