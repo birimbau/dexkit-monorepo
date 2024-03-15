@@ -69,10 +69,10 @@ export default function SettingsLayout({
         caption: <FormattedMessage id="home" defaultMessage="Home" />,
         uri: '/',
       },
-      {
+      /* {
         caption: <FormattedMessage id="settings" defaultMessage="Settings" />,
         uri: '/u/settings',
-      },
+      },*/
       activeOption,
     ];
 
