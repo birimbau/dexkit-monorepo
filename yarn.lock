@@ -3156,15 +3156,10 @@
     "@devtools-ds/themes" "^1.2.1"
     clsx "1.1.0"
 
-"@dexkit/evm-chains@*":
-  version "1.5.0"
-  resolved "https://registry.yarnpkg.com/@dexkit/evm-chains/-/evm-chains-1.5.0.tgz#7d7c069c836ed283d1e2f191911c96010aad760b"
-  integrity sha512-SEXaBsGDwP7uNU+nXw16VHtD2Cz8IHW2Tk+OPzAel5rPhxedCWURmCvsLczzAc8d65/jm/xc27MHinKtwwi6nQ==
-
-"@dexkit/evm-chains@^1.9.0":
-  version "1.9.1"
-  resolved "https://registry.yarnpkg.com/@dexkit/evm-chains/-/evm-chains-1.9.1.tgz#693f95a20c0381771aea367e6e1bc4057cfd075f"
-  integrity sha512-P0d15ZX0GWh7qQkDztwIxgcPvkoXgAivhJHtjuSoewqaSn8USB/KDIlm+6tDBmUXKL7VTHwOb6sjsGJAacLKEw==
+"@dexkit/evm-chains@^1.10.0":
+  version "1.10.0"
+  resolved "https://registry.yarnpkg.com/@dexkit/evm-chains/-/evm-chains-1.10.0.tgz#c9f8aeb0f97433daf9a42b16b1f8415f8e2b6f9f"
+  integrity sha512-3iKkuQSBx4U3ILEuCjkHE6aG9iAXzx60sLlDt9dVUPDc7BtVd/5y14B0JVHs2PnLKbdqXOBi5pYhDHVO+MI9sw==
 
 "@discoveryjs/json-ext@^0.5.3":
   version "0.5.7"
