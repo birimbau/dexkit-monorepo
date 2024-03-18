@@ -154,14 +154,20 @@ export default function CheckoutPage({ id }: CheckoutPageProps) {
   const [hash, setHash] = useState<string>();
 
   const total = useMemo(() => {
-    return checkoutItemsQuery.data
-      ?.map((item: any) =>
-        BigNumber.from(item.amount).mul(BigNumber.from(item.price)),
-      )
-      .reduce((prev, curr) => {
-        return prev.add(curr);
-      }, BigNumber.from(0));
-  }, [checkoutItemsQuery.data]);
+    if (token?.decimals) {
+      return checkoutItemsQuery.data
+        ?.map((item: any) =>
+          BigNumber.from(item.amount).mul(
+            BigNumber.from(item.price).mul(
+              BigNumber.from('10').pow(token?.decimals),
+            ),
+          ),
+        )
+        .reduce((prev, curr) => {
+          return prev.add(curr);
+        }, BigNumber.from(0));
+    }
+  }, [checkoutItemsQuery.data, token?.decimals]);
 
   const { provider, account, isActive } = useWeb3React();
   const balanceQuery = useErc20Balance(provider, token?.address, account);

@@ -1,7 +1,7 @@
 import { Token } from '@dexkit/core/types';
 import { useCheckoutItems } from '@dexkit/ui/hooks/payments';
 import { List, ListItem, ListItemText, Typography } from '@mui/material';
-import { BigNumber, ethers } from 'ethers';
+import { BigNumber } from 'ethers';
 
 export interface CheckoutItemListProps {
   id: string;
@@ -20,10 +20,9 @@ export default function CheckoutItemList({ id, token }: CheckoutItemListProps) {
             secondary={`x${item.amount}`}
           />
           <Typography>
-            {ethers.utils.formatUnits(
-              BigNumber.from(item.amount).mul(BigNumber.from(item.price)),
-              token?.decimals || 6
-            )}{' '}
+            {BigNumber.from(item.amount)
+              .mul(BigNumber.from(item.price))
+              .toString()}{' '}
             {token?.symbol ? token?.symbol : 'USD'}
           </Typography>
         </ListItem>
