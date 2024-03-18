@@ -6,11 +6,11 @@ import { convertTokenToEvmCoin } from '@dexkit/core/utils';
 import { useTokenList } from '@dexkit/ui';
 import { Button, Divider, Tab, Tabs } from '@mui/material';
 import Grid from '@mui/material/Grid';
+import { useQuery } from '@tanstack/react-query';
 import { useContract } from '@thirdweb-dev/react';
-import { CurrencyValue } from '@thirdweb-dev/sdk/evm';
 import { useWeb3React } from '@web3-react/core';
 import dynamic from 'next/dynamic';
-import { SyntheticEvent, useEffect, useState } from 'react';
+import { SyntheticEvent, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import ContractAdminTab from '../ContractAdminTab';
 import ContractMetadataTab from '../ContractMetadataTab';
@@ -33,22 +33,7 @@ export default function ContractTokenDropContainer({
   address,
   network,
 }: ContractTokenDropContainerProps) {
-  const { data: contract } = useContract(address, 'token-drop');
-
-  const [contractData, setContractData] = useState<CurrencyValue>();
-  const [balance, setBalance] = useState<string>();
-
-  useEffect(() => {
-    (async () => {
-      if (contract) {
-        const data = await contract?.totalSupply();
-
-        setContractData(data);
-
-        setBalance((await contract?.erc20.balance()).displayValue);
-      }
-    })();
-  }, [contract]);
+  const { data: contract, isLoading } = useContract(address, 'token-drop');
 
   const [currTab, setCurrTab] = useState('token');
 
@@ -80,16 +65,15 @@ export default function ContractTokenDropContainer({
     setShowTransfer(true);
   };
 
-  const [token, setToken] = useState<EvmCoin>();
-
-  useEffect(() => {
-    (async () => {
+  const { data: token } = useQuery(
+    ['GET_TOKEN_METADATA', chainId, isLoading, address],
+    async () => {
       if (chainId) {
         const network = NETWORKS[chainId];
 
         const meta = await contract?.erc20.get();
         if (meta) {
-          setToken({
+          return {
             coinType: CoinTypes.EVM_ERC20,
             contractAddress: address,
             decimals: meta.decimals,
@@ -102,11 +86,11 @@ export default function ContractTokenDropContainer({
               coingeckoPlatformId: network.coingeckoPlatformId,
               icon: network.imageUrl,
             },
-          });
+          } as EvmCoin;
         }
       }
-    })();
-  }, [address, chainId]);
+    },
+  );
 
   return (
     <>
