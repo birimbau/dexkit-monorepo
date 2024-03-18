@@ -25,11 +25,13 @@ const FormSchema = Yup.object({
 export interface GenerateTabProps {
   onMenuOption: (opt: string, { url }: { url: string }) => void;
   disabled?: boolean;
+  defaultPrompt?: string;
 }
 
 export default function GenerateTab({
   disabled,
   onMenuOption,
+  defaultPrompt,
 }: GenerateTabProps) {
   const {
     mutateAsync: generate,
@@ -83,7 +85,7 @@ export default function GenerateTab({
 
   return (
     <Formik
-      initialValues={{ amount: 1, prompt: "" }}
+      initialValues={{ amount: 1, prompt: defaultPrompt || "" }}
       onSubmit={handleSubmit}
       validationSchema={FormSchema}
     >

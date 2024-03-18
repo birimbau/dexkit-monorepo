@@ -38,12 +38,14 @@ export interface GenerateImagesDialogProps {
   DialogProps: DialogProps;
   tab?: string;
   image?: string;
+  defaultPrompt?: string;
 }
 
 function GenerateImagesDialog({
   DialogProps,
   tab,
   image,
+  defaultPrompt,
 }: GenerateImagesDialogProps) {
   const { onClose } = DialogProps;
 
@@ -184,6 +186,7 @@ function GenerateImagesDialog({
           <GenerateTab
             onMenuOption={handleOpenMenu}
             disabled={isSavingImages}
+            defaultPrompt={defaultPrompt}
             key={varImgUrl}
           />
         )}

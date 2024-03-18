@@ -8,6 +8,10 @@ import { FormattedMessage } from "react-intl";
 import { TextImproveAction } from "../constants/ai";
 import { useCompletation } from "../hooks/ai";
 
+const MediaDialog = dynamic(() => import("./mediaDialog"), {
+  ssr: false,
+});
+
 const CompletationPopover = dynamic(() => import("./CompletationPopover"), {
   ssr: false,
 });
@@ -30,6 +34,8 @@ export default function CompletationProvider({
   multiline,
 }: CompletationProviderProps) {
   const [showAiComp, setShowAiComp] = useState(false);
+  const [openMediaDialog, setOpenMediaDialog] = useState(false);
+  const [defaultPrompt, setDefaultPrompt] = useState("");
   const ref = useRef<HTMLInputElement | null>(null);
   const completationMutation = useCompletation();
 
@@ -86,21 +92,26 @@ export default function CompletationProvider({
 
   const handleGenerate = useCallback(
     async (prompt: string, action?: TextImproveAction) => {
-      if (action) {
+      if (action && action === TextImproveAction.GENERATE_IMAGE) {
+        console.log(action);
+        setDefaultPrompt(prompt);
+        setOpenMediaDialog(true);
+      } else if (action) {
         const actionPrompt = getPromptByAction(prompt, action);
-
-        await completationMutation.mutateAsync({
-          messages: [
-            {
-              role: "user",
-              content: "You are an assistant. Do not return text with quotes",
-            },
-            { role: "user", content: actionPrompt },
-          ],
-        });
+        if (actionPrompt) {
+          await completationMutation.mutateAsync({
+            messages: [
+              {
+                role: "user",
+                content: "You are an assistant. Do not return text with quotes",
+              },
+              { role: "user", content: actionPrompt },
+            ],
+          });
+        }
       }
     },
-    [getPromptByAction]
+    [getPromptByAction, setDefaultPrompt, setOpenMediaDialog]
   );
 
   const handleConfirmCompletation = useCallback(async () => {
@@ -112,6 +123,22 @@ export default function CompletationProvider({
 
   return (
     <CompletationContext.Provider value={{}}>
+      {openMediaDialog && (
+        <MediaDialog
+          dialogProps={{
+            open: openMediaDialog,
+            maxWidth: "lg",
+            fullWidth: true,
+            onClose: () => {
+              setOpenMediaDialog(false);
+            },
+          }}
+          defaultAITab="generator"
+          showAIGenerator={true}
+          defaultPrompt={defaultPrompt}
+        />
+      )}
+
       {showAiComp && (
         <CompletationPopover
           open={showAiComp}

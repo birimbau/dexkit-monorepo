@@ -56,7 +56,10 @@ import GenerateImagesDialog from "../dialogs/GenerateImagesDialog";
 
 interface Props {
   dialogProps: DialogProps;
-  onConfirmSelectFile: (file: AccountFile) => void;
+  defaultPrompt?: string;
+  defaultAITab?: string;
+  showAIGenerator?: boolean;
+  onConfirmSelectFile?: (file: AccountFile) => void;
 }
 
 const CustomImage = styled("img")(({ theme }) => ({
@@ -81,6 +84,9 @@ const CustomButton = styled(ButtonBase)(({ theme }) => ({
 export default function MediaDialog({
   dialogProps,
   onConfirmSelectFile,
+  showAIGenerator,
+  defaultPrompt,
+  defaultAITab,
 }: Props) {
   const { onClose } = dialogProps;
   const { isActive } = useWeb3React();
@@ -200,13 +206,14 @@ export default function MediaDialog({
   };
 
   const handleConfirmSelectedFile = () => {
-    if (selectedFile) {
+    if (selectedFile && onConfirmSelectFile) {
       onConfirmSelectFile(selectedFile), handleClose();
     }
   };
 
-  const [showAiImgGen, setShowAiImgGen] = useState(false);
-  const [tab, setTab] = useState<string>("select");
+  const [showAiImgGen, setShowAiImgGen] = useState(showAIGenerator || false);
+
+  const [tab, setTab] = useState<string>(defaultAITab || "select");
   const [aiImage, setAiImage] = useState<string>();
 
   const handleShowImageGeneratorDialog = (tab: string) => {
@@ -230,20 +237,6 @@ export default function MediaDialog({
 
   return (
     <>
-      <DexkitApiProvider.Provider value={{ instance: myAppsApi }}>
-        {showAiImgGen && (
-          <GenerateImagesDialog
-            DialogProps={{
-              open: showAiImgGen,
-              maxWidth: "xl",
-              fullWidth: true,
-              onClose: handleCloseImageGeneratorDialog,
-            }}
-            image={aiImage}
-            tab={tab}
-          />
-        )}
-      </DexkitApiProvider.Provider>
       <AppConfirmDialog
         DialogProps={{
           fullWidth: true,
@@ -747,6 +740,21 @@ export default function MediaDialog({
           </Button>
         </DialogActions>
       </Dialog>
+      <DexkitApiProvider.Provider value={{ instance: myAppsApi }}>
+        {showAiImgGen && (
+          <GenerateImagesDialog
+            DialogProps={{
+              open: showAiImgGen,
+              maxWidth: "xl",
+              fullWidth: true,
+              onClose: handleCloseImageGeneratorDialog,
+            }}
+            image={aiImage}
+            tab={tab}
+            defaultPrompt={defaultPrompt}
+          />
+        )}
+      </DexkitApiProvider.Provider>
     </>
   );
 }

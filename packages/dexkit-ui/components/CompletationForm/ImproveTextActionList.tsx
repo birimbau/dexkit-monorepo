@@ -12,6 +12,7 @@ import NotesIcon from "@mui/icons-material/Notes";
 import ShortTextIcon from "@mui/icons-material/ShortText";
 
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
+import ImageIcon from "@mui/icons-material/Image";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import { TextImproveAction } from "../../constants/ai";
 
@@ -107,6 +108,23 @@ export default function ImproveTextActionList({
         <ListItemText
           primary={
             <FormattedMessage id="make.longer" defaultMessage="Make longer" />
+          }
+        />
+      </ListItemButton>
+      <ListItemButton
+        disabled={disabled}
+        selected={value === TextImproveAction.GENERATE_IMAGE}
+        onClick={handleClick(TextImproveAction.GENERATE_IMAGE)}
+      >
+        <ListItemIcon>
+          <ImageIcon />
+        </ListItemIcon>
+        <ListItemText
+          primary={
+            <FormattedMessage
+              id="generate.image"
+              defaultMessage="Generate image"
+            />
           }
         />
       </ListItemButton>
