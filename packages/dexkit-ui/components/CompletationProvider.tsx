@@ -93,7 +93,6 @@ export default function CompletationProvider({
   const handleGenerate = useCallback(
     async (prompt: string, action?: TextImproveAction) => {
       if (action && action === TextImproveAction.GENERATE_IMAGE) {
-        console.log(action);
         setDefaultPrompt(prompt);
         setOpenMediaDialog(true);
       } else if (action) {
