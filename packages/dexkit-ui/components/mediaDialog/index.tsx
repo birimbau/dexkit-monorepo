@@ -1,3 +1,5 @@
+import AutoFixHighIcon from "@mui/icons-material/AutoFixHigh";
+import BrowseGalleryIcon from "@mui/icons-material/BrowseGallery";
 import {
   Box,
   Button,
@@ -14,10 +16,13 @@ import {
   Stack,
   styled,
   TextField,
+  Tooltip,
   Typography,
 } from "@mui/material";
-
-import BrowseGalleryIcon from "@mui/icons-material/BrowseGallery";
+import FormControl from "@mui/material/FormControl";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import {
@@ -82,7 +87,17 @@ export default function MediaDialog({
   const { setOpen } = useConnectWalletDialog();
   const [page, setPage] = useState(0);
   const [search, setSearch] = useState<string>();
-  const filesQuery = useGetAccountFiles({ skip: page * 20, search });
+  const [sortCreatedAt, setSortCreatedAt] = useState("desc");
+
+  const filesQuery = useGetAccountFiles({
+    skip: page * 20,
+    search,
+    sort: ["createdAt", sortCreatedAt],
+  });
+
+  const handleChangeSortBy = (event: SelectChangeEvent) => {
+    setSortCreatedAt(event.target.value);
+  };
 
   const [file, setFile] = useState<File>();
 
@@ -111,6 +126,7 @@ export default function MediaDialog({
     if (onClose) {
       onClose({}, "backdropClick");
     }
+    setSearch(undefined);
     setSelectedFile(undefined);
   };
 
@@ -189,23 +205,44 @@ export default function MediaDialog({
     }
   };
 
-  const [showImageGen, setShowImageGen] = useState(false);
+  const [showAiImgGen, setShowAiImgGen] = useState(false);
+  const [tab, setTab] = useState<string>("select");
+  const [aiImage, setAiImage] = useState<string>();
 
-  const handleCloseAiImageDialog = () => {
-    setShowImageGen(false);
+  const handleShowImageGeneratorDialog = (tab: string) => {
+    setTab(tab);
+    setShowAiImgGen(true);
   };
+
+  const handleCloseImageGeneratorDialog = () => {
+    setShowAiImgGen(false);
+    setAiImage(undefined);
+    filesQuery.refetch();
+  };
+
+  const handleOpenAI = useCallback(
+    (url: string) => {
+      handleShowImageGeneratorDialog("select");
+      setAiImage(url);
+    },
+    [handleShowImageGeneratorDialog]
+  );
 
   return (
     <>
       <DexkitApiProvider.Provider value={{ instance: myAppsApi }}>
-        <GenerateImagesDialog
-          DialogProps={{
-            open: showImageGen,
-            onClose: handleCloseAiImageDialog,
-            maxWidth: "sm",
-            fullWidth: true,
-          }}
-        />
+        {showAiImgGen && (
+          <GenerateImagesDialog
+            DialogProps={{
+              open: showAiImgGen,
+              maxWidth: "xl",
+              fullWidth: true,
+              onClose: handleCloseImageGeneratorDialog,
+            }}
+            image={aiImage}
+            tab={tab}
+          />
+        )}
       </DexkitApiProvider.Provider>
       <AppConfirmDialog
         DialogProps={{
@@ -255,17 +292,16 @@ export default function MediaDialog({
         isSuccess={deleteFileMutation.isSuccess}
         error={deleteFileMutation.error}
       />
-
       <Dialog {...dialogProps} onClose={handleClose}>
         <AppDialogTitle
           icon={<BrowseGalleryIcon />}
-          title={<FormattedMessage id="gallery" defaultMessage="Gallery" />}
+          title={<FormattedMessage id="gallery" defaultMessage="Gallery 1" />}
           onClose={handleClose}
         />
         <DialogContent dividers>
           <Grid container spacing={2}>
-            <Grid container item xs={12} justifyContent={"flex-end"}>
-              <Box sx={{ pr: 2 }}>
+            <Grid item xs={12}>
+              <Box sx={{ pr: 2 }} justifyContent={"flex-end"} display={"flex"}>
                 <input
                   onChange={handleChange}
                   type="file"
@@ -273,21 +309,33 @@ export default function MediaDialog({
                   ref={inputRef}
                   accept="image/*, audio/*"
                 />
-                {isActive ? (
-                  <Button variant="contained" onClick={handleClick}>
+                <Stack direction="row" alignItems="center" spacing={1}>
+                  {isActive ? (
+                    <Button variant="contained" onClick={handleClick}>
+                      <FormattedMessage
+                        id="add.image"
+                        defaultMessage="Add Image"
+                      />
+                    </Button>
+                  ) : (
+                    <Button variant="contained" onClick={handleConnectWallet}>
+                      <FormattedMessage
+                        id="connect.wallet"
+                        defaultMessage="Connect wallet"
+                      />
+                    </Button>
+                  )}
+                  <Button
+                    onClick={() => handleShowImageGeneratorDialog("generator")}
+                    variant="outlined"
+                    startIcon={<AutoFixHighIcon />}
+                  >
                     <FormattedMessage
-                      id="add.image"
-                      defaultMessage="Add Image"
+                      id="ai.generator"
+                      defaultMessage="AI Generator"
                     />
                   </Button>
-                ) : (
-                  <Button variant="contained" onClick={handleConnectWallet}>
-                    <FormattedMessage
-                      id="connect.wallet"
-                      defaultMessage="Connect wallet"
-                    />
-                  </Button>
-                )}
+                </Stack>
               </Box>
             </Grid>
             <Grid item xs={12}>
@@ -382,28 +430,68 @@ export default function MediaDialog({
                   {fileUploadMutation.isError && (
                     <Box sx={{ p: 2 }}>
                       <FormattedMessage id="reason" defaultMessage="Reason" />:{" "}
-                      {`${
-                        (fileUploadMutation.error as any)?.response?.data
-                          ?.message
-                      }`}
+                      {`${(fileUploadMutation.error as any)?.response?.data
+                        ?.message}`}
                     </Box>
                   )}
                 </Stack>
               </Grid>
             )}
-            <Grid item xs={12} container justifyContent={"flex-end"}>
-              <TextField
-                label={<FormattedMessage id="search" defaultMessage="Search" />}
-                onChange={(ev) => setSearch(ev.currentTarget.value)}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <SearchIcon />
-                    </InputAdornment>
-                  ),
-                }}
-                variant="standard"
-              />
+            <Grid item xs={12}>
+              <Box
+                display={"flex"}
+                justifyContent={"space-between"}
+                alignItems={"center"}
+              >
+                <FormControl sx={{ m: 1, minWidth: 120 }}>
+                  <InputLabel id="select-order-by-date">
+                    <FormattedMessage
+                      id={"sort.by"}
+                      defaultMessage={"Sort by"}
+                    />
+                  </InputLabel>
+                  <Select
+                    labelId="select-order-by-date"
+                    id="demo-simple-select-helper"
+                    value={sortCreatedAt}
+                    label={
+                      <FormattedMessage
+                        id={"sort.by"}
+                        defaultMessage={"Sort by"}
+                      />
+                    }
+                    onChange={handleChangeSortBy}
+                  >
+                    <MenuItem value={"desc"}>
+                      <FormattedMessage
+                        id={"most.recent"}
+                        defaultMessage={"Most recent"}
+                      />
+                    </MenuItem>
+                    <MenuItem value={"asc"}>
+                      <FormattedMessage
+                        id={"least.recent"}
+                        defaultMessage={"Least recent"}
+                      />
+                    </MenuItem>
+                  </Select>
+                </FormControl>
+
+                <TextField
+                  label={
+                    <FormattedMessage id="search" defaultMessage="Search" />
+                  }
+                  onChange={(ev) => setSearch(ev.currentTarget.value)}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <SearchIcon />
+                      </InputAdornment>
+                    ),
+                  }}
+                  variant="standard"
+                />
+              </Box>
             </Grid>
             {!file && (
               <Grid item xs={12} container justifyContent={"center"}>
@@ -557,21 +645,50 @@ export default function MediaDialog({
                         </Typography>
                       )}
                     </Box>
-                    {selectedFile?.id === f.id && (
-                      <Box>
-                        <IconButton
-                          aria-label="delete"
-                          onClick={() => setShowConfirmRemove(true)}
+                    {selectedFile?.id === f.id && !editFileName && (
+                      <Stack spacing={0.5} direction="row">
+                        <Tooltip
+                          title={
+                            <FormattedMessage
+                              id="delete"
+                              defaultMessage="Delete"
+                            />
+                          }
                         >
-                          <DeleteIcon />
-                        </IconButton>
-                        <IconButton
-                          aria-label="edit"
-                          onClick={() => setEditFileName(f.id)}
+                          <IconButton
+                            aria-label="delete"
+                            onClick={() => setShowConfirmRemove(true)}
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        </Tooltip>
+
+                        <Tooltip
+                          title={
+                            <FormattedMessage id="edit" defaultMessage="Edit" />
+                          }
                         >
-                          <EditIcon />
-                        </IconButton>
-                      </Box>
+                          <IconButton
+                            aria-label="edit"
+                            onClick={() => setEditFileName(f.id)}
+                          >
+                            <EditIcon />
+                          </IconButton>
+                        </Tooltip>
+
+                        <Tooltip
+                          title={
+                            <FormattedMessage id="AI" defaultMessage="AI" />
+                          }
+                        >
+                          <IconButton
+                            onClick={() => handleOpenAI(selectedFile.url)}
+                            aria-label="ai"
+                          >
+                            <AutoFixHighIcon />
+                          </IconButton>
+                        </Tooltip>
+                      </Stack>
                     )}
                   </Stack>
                 </Stack>

@@ -1,4 +1,5 @@
 import CompletationProvider from '@dexkit/ui/components/CompletationProvider';
+import MediaDialog from '@dexkit/ui/components/mediaDialog';
 import Image from '@mui/icons-material/Image';
 import {
   Box,
@@ -13,7 +14,6 @@ import { Field, Formik } from 'formik';
 import { TextField } from 'formik-mui';
 import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import MediaDialog from 'src/components/mediaDialog';
 import { ContractMetadataFormType } from '../../types';
 
 const CustomImage = styled('img')(({ theme }) => ({

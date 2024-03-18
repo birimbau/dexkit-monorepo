@@ -35,9 +35,9 @@ import { NETWORKS } from '@dexkit/core/constants/networks';
 import { Network } from '@dexkit/core/types';
 import { useActiveChainIds } from '@dexkit/ui';
 import CompletationProvider from '@dexkit/ui/components/CompletationProvider';
+import MediaDialog from '@dexkit/ui/components/mediaDialog';
 import ImageIcon from '@mui/icons-material/Image';
 import { getNetworks } from 'src/utils/blockchain';
-import MediaDialog from '../../../../components/mediaDialog';
 import { ipfsUriToUrl } from '../../../../utils/ipfs';
 import { CollectionItemAutocomplete } from './CollectionItemAutocomplete';
 
@@ -114,7 +114,7 @@ export default function AddItemForm({ item, onCancel, onSubmit }: Props) {
 
   const handleSubmitAsset = (
     values: AssetItemType,
-    helpers: FormikHelpers<AssetItemType>
+    helpers: FormikHelpers<AssetItemType>,
   ) => {
     onSubmit(values);
   };
@@ -125,7 +125,7 @@ export default function AddItemForm({ item, onCancel, onSubmit }: Props) {
 
   const handleSubmitCollection = (
     values: CollectionItemType,
-    helpers: FormikHelpers<CollectionItemType>
+    helpers: FormikHelpers<CollectionItemType>,
   ) => {
     onSubmit(values);
   };
@@ -201,7 +201,7 @@ export default function AddItemForm({ item, onCancel, onSubmit }: Props) {
 
   const handleChangeFeatured = (
     event: ChangeEvent<HTMLInputElement>,
-    checked: boolean
+    checked: boolean,
   ) => {
     collectionForm.setFieldValue('featured', checked);
   };
@@ -274,7 +274,7 @@ export default function AddItemForm({ item, onCancel, onSubmit }: Props) {
                       >
                         <Avatar
                           src={ipfsUriToUrl(
-                            NETWORKS[assetForm.values.chainId]?.imageUrl || ''
+                            NETWORKS[assetForm.values.chainId]?.imageUrl || '',
                           )}
                           style={{ width: 'auto', height: '1rem' }}
                         />
@@ -436,7 +436,7 @@ export default function AddItemForm({ item, onCancel, onSubmit }: Props) {
                         <Avatar
                           src={ipfsUriToUrl(
                             NETWORKS[collectionForm.values.chainId]?.imageUrl ||
-                              ''
+                              '',
                           )}
                           style={{ width: 'auto', height: '1rem' }}
                         />
@@ -471,7 +471,7 @@ export default function AddItemForm({ item, onCancel, onSubmit }: Props) {
                         </ListItemIcon>
                         <ListItemText primary={network.name} />
                       </MenuItem>
-                    )
+                    ),
                   )}
                 </Select>
               </FormControl>

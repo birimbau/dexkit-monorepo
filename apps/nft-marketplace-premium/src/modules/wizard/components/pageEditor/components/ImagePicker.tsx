@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
 import { Container, Stack, styled, Typography } from '@mui/material';
 import Button from '@mui/material/Button';
+import { useState } from 'react';
 
-import { connectField } from 'uniforms';
-import MediaDialog from '../../../../../components/mediaDialog';
+import MediaDialog from '@dexkit/ui/components/mediaDialog';
 import ImageIcon from '@mui/icons-material/Image';
 import { FormattedMessage } from 'react-intl';
+import { connectField } from 'uniforms';
 const CustomImage = styled('img')(({ theme }) => ({
   height: theme.spacing(20),
   width: theme.spacing(20),

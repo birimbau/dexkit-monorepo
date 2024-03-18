@@ -5,7 +5,6 @@ import { TextField } from 'formik-mui';
 import { FormattedMessage } from 'react-intl';
 import { CollectionItemsForm } from '../types';
 import CollectionItemAttributeForm from './CollectionItemAttributeForm';
-import { GenerateAIImageButton } from './GenerateAIImageButton';
 import { ImageFormUpload } from './ImageFormUpload';
 
 interface Props {
@@ -35,14 +34,14 @@ export default function CollectionItemForm({
               errors.items && (errors.items[itemIndex] as any)?.file,
             )}
           />
-          <Box pt={2}>
+          {/*   <Box pt={2}>
             <GenerateAIImageButton
               description={values.items[itemIndex].description}
               onImageUrl={(imageUrl) =>
                 setFieldValue(`items[${itemIndex}].file`, imageUrl)
               }
             />
-          </Box>
+            </Box>*/}
         </Grid>
         <Grid item xs>
           <Stack spacing={2}>

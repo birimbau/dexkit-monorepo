@@ -18,9 +18,9 @@ import { useCallback, useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { CURRENCIES, LANGUAGES } from 'src/constants';
 
+import MediaDialog from '@dexkit/ui/components/mediaDialog';
 import ImageIcon from '@mui/icons-material/Image';
 import * as Yup from 'yup';
-import MediaDialog from '../../../../components/mediaDialog';
 import { StepperButtonProps } from '../../types';
 import { StepperButtons } from '../steppers/StepperButtons';
 export interface GeneralSectionForm {

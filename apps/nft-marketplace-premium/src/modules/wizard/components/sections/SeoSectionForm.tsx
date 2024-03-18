@@ -12,8 +12,8 @@ import { TextField } from 'formik-mui';
 import { useCallback, useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
+import MediaDialog from '@dexkit/ui/components/mediaDialog';
 import * as Yup from 'yup';
-import MediaDialog from '../../../../components/mediaDialog';
 import { SeoForm } from '../../types';
 
 import CompletationProvider from '@dexkit/ui/components/CompletationProvider';
@@ -63,7 +63,7 @@ export default function SeoSectionForm({
       onSubmit(values);
       helpers.setSubmitting(false);
     },
-    [onSubmit]
+    [onSubmit],
   );
 
   return (

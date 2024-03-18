@@ -15,7 +15,7 @@ import ImageIcon from '@mui/icons-material/Image';
 import dynamic from 'next/dynamic';
 import * as Yup from 'yup';
 import { getUsernameExists } from '../../services';
-const MediaDialog = dynamic(() => import('../../../../components/mediaDialog'));
+const MediaDialog = dynamic(() => import('@dexkit/ui/components/mediaDialog'));
 
 export interface UserForm {
   username?: string;

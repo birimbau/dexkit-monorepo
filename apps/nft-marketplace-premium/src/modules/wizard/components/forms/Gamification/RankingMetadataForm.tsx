@@ -1,4 +1,5 @@
 import { useAddAppRankingMutation } from '@/modules/wizard/hooks';
+import CompletationProvider from '@dexkit/ui/components/CompletationProvider';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
@@ -9,7 +10,6 @@ import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import * as Yup from 'yup';
 import SendAddAppRankingDialog from '../../dialogs/SendAddAppRankingDialog';
-
 interface Props {
   siteId?: number;
   rankingId?: number;
@@ -71,40 +71,67 @@ export default function RankingMetadataForm({
           helper.setSubmitting(false);
         }}
       >
-        {({ submitForm, resetForm }) => (
+        {({ submitForm, resetForm, values, setFieldValue }) => (
           <Form>
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <Box>
                   <Stack spacing={2}>
-                    <Field
-                      component={TextField}
-                      name="title"
-                      label={
-                        <FormattedMessage
-                          id={'title'}
-                          defaultMessage={'Title'}
-                        />
+                    <CompletationProvider
+                      onCompletation={(output) =>
+                        setFieldValue('title', output)
                       }
-                    />
+                      initialPrompt={values.title}
+                    >
+                      {({ inputAdornment, ref }) => (
+                        <Field
+                          component={TextField}
+                          name="title"
+                          inputRef={ref}
+                          InputProps={{
+                            endAdornment: inputAdornment('end'),
+                          }}
+                          label={
+                            <FormattedMessage
+                              id={'title'}
+                              defaultMessage={'Title'}
+                            />
+                          }
+                        />
+                      )}
+                    </CompletationProvider>
                   </Stack>
                 </Box>
               </Grid>
               <Grid item xs={12}>
                 <Box>
                   <Stack spacing={2}>
-                    <Field
-                      component={TextField}
-                      multiline
-                      rows={3}
-                      name="description"
-                      label={
-                        <FormattedMessage
-                          id={'description'}
-                          defaultMessage={'Description'}
-                        />
+                    <CompletationProvider
+                      onCompletation={(output) =>
+                        setFieldValue('description', output)
                       }
-                    />
+                      initialPrompt={values.description}
+                      multiline
+                    >
+                      {({ inputAdornment, ref }) => (
+                        <Field
+                          component={TextField}
+                          multiline
+                          rows={3}
+                          name="description"
+                          label={
+                            <FormattedMessage
+                              id={'description'}
+                              defaultMessage={'Description'}
+                            />
+                          }
+                          InputProps={{
+                            endAdornment: inputAdornment('end'),
+                          }}
+                          inputRef={ref}
+                        />
+                      )}
+                    </CompletationProvider>
                   </Stack>
                 </Box>
               </Grid>

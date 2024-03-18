@@ -37,10 +37,8 @@ export async function uploadAccountFile(formData: FormData, onProgressCalback: a
   });
 };
 
-
-
-export async function getFilesByOwner(owner: string, take = 20, skip = 0, search?: string) {
-  return await myAppsApi.get<{ files: AccountFile[], total: number, skip: number, take: number }>(`/by-owner/${owner}`, { params: { skip, take, search } });
+export async function getFilesByOwner(owner: string, take = 20, skip = 0, search?: string, sort?: string[]) {
+  return await myAppsApi.get<{ files: AccountFile[], total: number, skip: number, take: number }>(`/by-owner/${owner}`, { params: { skip, take, search, sort } });
 };
 
 export async function deleteAccountFile(id: number) {
