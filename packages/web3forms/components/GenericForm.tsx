@@ -1,6 +1,6 @@
 import { Button, FormControlLabel, Grid } from "@mui/material";
 import { BigNumber, ethers } from "ethers";
-import { Field, Formik } from "formik";
+import { Field, Formik, getIn } from "formik";
 import { Autocomplete, Checkbox, TextField } from "formik-mui";
 import {
   useIfpsUploadMutation,
@@ -19,6 +19,17 @@ import { ImageInput } from "./ImageInput";
 import { IpfsImageInput } from "./IpfsImageInput";
 import { MerkleTreeFileInput } from "./MerkleTreeFileInput";
 import SharesArrayInput from "./SharesArrayInput";
+
+import CompletationProvider from "@dexkit/ui/components/CompletationProvider";
+
+type FormParams = {
+  values: any;
+  setFieldValue: (
+    field: string,
+    value: any,
+    shouldValidate?: boolean | undefined
+  ) => void;
+};
 
 function validateAddress(message: string) {
   return (value: string) => {
@@ -49,7 +60,7 @@ export default function GenericForm({
 }: GenericFormProps) {
   const { account } = useWeb3React();
 
-  const renderInput = (el: FormElement) => {
+  const renderInput = (el: FormElement, params?: FormParams) => {
     if (el.type === "input") {
       if (el.component?.type === "address") {
         return (
@@ -127,23 +138,42 @@ export default function GenericForm({
           />
         );
       } else {
-        return (
-          <Field
-            component={TextField}
-            name={el.ref as string}
-            size="small"
-            fullWidth
-            disabled={el.locked}
-            label={el.label}
-            helperText={el.helperText}
-            required
-          />
-        );
+        if (params) {
+          const { values, setFieldValue } = params;
+
+          return (
+            <CompletationProvider
+              onCompletation={(output: string) => {
+                setFieldValue(el.ref as string, output);
+              }}
+              initialPrompt={getIn(values, el.ref as string)}
+            >
+              {({ inputAdornment, ref }) => (
+                <Field
+                  component={TextField}
+                  name={el.ref as string}
+                  size="small"
+                  fullWidth
+                  disabled={el.locked}
+                  label={el.label}
+                  helperText={el.helperText}
+                  required
+                  inputRef={ref}
+                  InputProps={{ endAdornment: inputAdornment("end") }}
+                />
+              )}
+            </CompletationProvider>
+          );
+        }
       }
     }
   };
 
-  const renderElements = (elements: FormElement[], group?: string) => {
+  const renderElements = (
+    elements: FormElement[],
+    group?: string,
+    params?: FormParams
+  ) => {
     return elements
       .map((el, key) => {
         if (el.type === "input" && el.component?.type !== "hidden") {
@@ -154,7 +184,7 @@ export default function GenericForm({
               xs={el.col?.xs ? el.col.xs : 12}
               sm={el.col?.sm}
             >
-              {renderInput(el)}
+              {renderInput(el, params)}
             </Grid>
           );
         } else if (el.type === "input-group") {
@@ -171,7 +201,7 @@ export default function GenericForm({
                 alignItems="center"
                 alignContent="center"
               >
-                {renderElements(el.inputs, `group-${key}`)}
+                {renderElements(el.inputs, `group-${key}`, params)}
               </Grid>
             </Grid>
           );
@@ -487,9 +517,16 @@ export default function GenericForm({
       onSubmit={handleSubmit}
       validationSchema={getValidationSchema(form.elements)}
     >
-      {({ submitForm, isSubmitting, isValid, errors, values }) => (
+      {({
+        submitForm,
+        isSubmitting,
+        isValid,
+        errors,
+        values,
+        setFieldValue,
+      }) => (
         <Grid container spacing={2}>
-          {renderElements(form.elements)}
+          {renderElements(form.elements, undefined, { setFieldValue, values })}
           <Grid item xs={12}>
             <Button
               disabled={isSubmitting || !isValid}

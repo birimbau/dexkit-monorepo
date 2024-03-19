@@ -23,12 +23,13 @@ import { FormikHelpers, useFormik } from 'formik';
 
 import { Network } from '@dexkit/core/types';
 import { useActiveChainIds } from '@dexkit/ui';
+import CompletationProvider from '@dexkit/ui/components/CompletationProvider';
+import MediaDialog from '@dexkit/ui/components/mediaDialog';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
 import { ethers } from 'ethers';
 import { useState } from 'react';
 import * as Yup from 'yup';
-import MediaDialog from '../../../../components/mediaDialog';
 
 export interface Form {
   chainId: number;
@@ -78,7 +79,6 @@ export default function CollectionsSectionForm({
   const [mediaFieldToEdit, setMediaFieldToEdit] = useState<string>();
 
   const handleSubmit = (values: Form, helpers: FormikHelpers<Form>) => {
-    console.log(values);
     if (onSubmit) {
       onSubmit(values);
     }
@@ -263,24 +263,41 @@ export default function CollectionsSectionForm({
         </Grid>
 
         <Grid item xs={12}>
-          <TextField
+          <CompletationProvider
+            onCompletation={(output) =>
+              formik.setFieldValue('description', output)
+            }
+            initialPrompt={formik.values.description}
             multiline
-            rows={3}
-            name="description"
-            onChange={formik.handleChange}
-            value={formik.values.description}
-            fullWidth
-            type="url"
-            label={
-              <FormattedMessage id="description" defaultMessage="Description" />
-            }
-            error={Boolean(formik.errors.description)}
-            helperText={
-              Boolean(formik.errors.description)
-                ? formik.errors.description
-                : undefined
-            }
-          />
+          >
+            {({ inputAdornment, ref }) => (
+              <TextField
+                multiline
+                rows={3}
+                name="description"
+                onChange={formik.handleChange}
+                value={formik.values.description}
+                fullWidth
+                type="url"
+                label={
+                  <FormattedMessage
+                    id="description"
+                    defaultMessage="Description"
+                  />
+                }
+                inputRef={ref}
+                error={Boolean(formik.errors.description)}
+                helperText={
+                  Boolean(formik.errors.description)
+                    ? formik.errors.description
+                    : undefined
+                }
+                InputProps={{
+                  endAdornment: inputAdornment('end'),
+                }}
+              />
+            )}
+          </CompletationProvider>
         </Grid>
         <Grid item xs={12}>
           <FormControlLabel

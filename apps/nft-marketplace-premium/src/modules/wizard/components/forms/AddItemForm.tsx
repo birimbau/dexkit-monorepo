@@ -34,9 +34,10 @@ import * as Yup from 'yup';
 import { NETWORKS } from '@dexkit/core/constants/networks';
 import { Network } from '@dexkit/core/types';
 import { useActiveChainIds } from '@dexkit/ui';
+import CompletationProvider from '@dexkit/ui/components/CompletationProvider';
+import MediaDialog from '@dexkit/ui/components/mediaDialog';
 import ImageIcon from '@mui/icons-material/Image';
 import { getNetworks } from 'src/utils/blockchain';
-import MediaDialog from '../../../../components/mediaDialog';
 import { ipfsUriToUrl } from '../../../../utils/ipfs';
 import { CollectionItemAutocomplete } from './CollectionItemAutocomplete';
 
@@ -354,20 +355,31 @@ export default function AddItemForm({ item, onCancel, onSubmit }: Props) {
             />
           </Grid>
           <Grid item xs={12}>
-            <TextField
-              label={<FormattedMessage id="title" defaultMessage="Title" />}
-              fullWidth
-              required
-              value={assetForm.values.title}
-              name="title"
-              onChange={assetForm.handleChange}
-              error={Boolean(assetForm.errors.title)}
-              helperText={
-                Boolean(assetForm.errors.title)
-                  ? assetForm.errors.title
-                  : undefined
-              }
-            />
+            <CompletationProvider
+              onCompletation={(output: string) => {
+                assetForm.setFieldValue('title', output);
+              }}
+              initialPrompt={assetForm.values.title}
+            >
+              {({ inputAdornment, ref }) => (
+                <TextField
+                  label={<FormattedMessage id="title" defaultMessage="Title" />}
+                  fullWidth
+                  required
+                  value={assetForm.values.title}
+                  name="title"
+                  onChange={assetForm.handleChange}
+                  error={Boolean(assetForm.errors.title)}
+                  helperText={
+                    Boolean(assetForm.errors.title)
+                      ? assetForm.errors.title
+                      : undefined
+                  }
+                  inputRef={ref}
+                  InputProps={{ endAdornment: inputAdornment('end') }}
+                />
+              )}
+            </CompletationProvider>
           </Grid>
         </>
       ) : (
@@ -502,38 +514,60 @@ export default function AddItemForm({ item, onCancel, onSubmit }: Props) {
             </Grid>
           </TabPanel>
           <Grid item xs={12}>
-            <TextField
-              label={<FormattedMessage id="title" defaultMessage="Title" />}
-              fullWidth
-              required
-              value={collectionForm.values.title}
-              name="title"
-              onChange={collectionForm.handleChange}
-              error={Boolean(collectionForm.errors.title)}
-              helperText={
-                Boolean(collectionForm.errors.title)
-                  ? collectionForm.errors.title
-                  : undefined
-              }
-            />
+            <CompletationProvider
+              onCompletation={(output: string) => {
+                collectionForm.setFieldValue('title', output);
+              }}
+              initialPrompt={collectionForm.values.title}
+            >
+              {({ inputAdornment, ref }) => (
+                <TextField
+                  label={<FormattedMessage id="title" defaultMessage="Title" />}
+                  fullWidth
+                  required
+                  value={collectionForm.values.title}
+                  name="title"
+                  onChange={collectionForm.handleChange}
+                  error={Boolean(collectionForm.errors.title)}
+                  helperText={
+                    Boolean(collectionForm.errors.title)
+                      ? collectionForm.errors.title
+                      : undefined
+                  }
+                  inputRef={ref}
+                  InputProps={{ endAdornment: inputAdornment('end') }}
+                />
+              )}
+            </CompletationProvider>
           </Grid>
           <Grid item xs={12}>
-            <TextField
-              label={
-                <FormattedMessage id="subtitle" defaultMessage="Subtitle" />
-              }
-              required
-              fullWidth
-              value={collectionForm.values.subtitle}
-              onChange={collectionForm.handleChange}
-              name="subtitle"
-              error={Boolean(collectionForm.errors.subtitle)}
-              helperText={
-                Boolean(collectionForm.errors.subtitle)
-                  ? collectionForm.errors.subtitle
-                  : undefined
-              }
-            />
+            <CompletationProvider
+              onCompletation={(output: string) => {
+                collectionForm.setFieldValue('subtitle', output);
+              }}
+              initialPrompt={collectionForm.values.subtitle}
+            >
+              {({ inputAdornment, ref }) => (
+                <TextField
+                  label={
+                    <FormattedMessage id="subtitle" defaultMessage="Subtitle" />
+                  }
+                  required
+                  fullWidth
+                  value={collectionForm.values.subtitle}
+                  onChange={collectionForm.handleChange}
+                  name="subtitle"
+                  error={Boolean(collectionForm.errors.subtitle)}
+                  helperText={
+                    Boolean(collectionForm.errors.subtitle)
+                      ? collectionForm.errors.subtitle
+                      : undefined
+                  }
+                  inputRef={ref}
+                  InputProps={{ endAdornment: inputAdornment('end') }}
+                />
+              )}
+            </CompletationProvider>
           </Grid>
           <Grid item xs={12}>
             <FormControl fullWidth>

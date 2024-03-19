@@ -1,13 +1,17 @@
+import { ipfsUriToUrl } from "./ipfs";
+
+import axios from "axios";
+
 export function getWindowUrl() {
-  if (typeof window === 'undefined') {
-    return '';
+  if (typeof window === "undefined") {
+    return "";
   }
 
   let protocol = window.location.protocol;
   let hostname = window.location.hostname;
   let port = window.location.port;
 
-  return `${protocol}//${hostname}${port ? ':' + port : ''}`;
+  return `${protocol}//${hostname}${port ? ":" + port : ""}`;
 }
 
 export function getCurrentUrl() {
@@ -23,23 +27,31 @@ export function copyToClipboard(textToCopy: string) {
     return navigator.clipboard.writeText(textToCopy);
   } else {
     // text area method
-    let textArea = document.createElement('textarea');
+    let textArea = document.createElement("textarea");
     textArea.value = textToCopy;
     // make the textarea out of viewport
-    textArea.style.position = 'fixed';
-    textArea.style.left = '-999999px';
-    textArea.style.top = '-999999px';
+    textArea.style.position = "fixed";
+    textArea.style.left = "-999999px";
+    textArea.style.top = "-999999px";
     document.body.appendChild(textArea);
     textArea.focus();
     textArea.select();
     return new Promise((res, rej) => {
       // here the magic happens
-      document.execCommand('copy') ? res(null) : rej();
+      document.execCommand("copy") ? res(null) : rej();
       textArea.remove();
     });
   }
 }
 
 export function hasWindow() {
-  return typeof window === 'object'
+  return typeof window === "object";
+}
+
+export async function downloadFile(downloadUrl: string): Promise<any> {
+  return (
+    await axios.get(ipfsUriToUrl(downloadUrl), {
+      responseType: "arraybuffer",
+    })
+  ).data;
 }

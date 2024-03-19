@@ -66,6 +66,7 @@ export function MediaInputButton({ name, label }: MediaInputButtonProps) {
         {values[name] ? (
           <img
             src={getNormalizedUrl(values[name])}
+            alt=""
             style={{
               border: `1px solid ${theme.palette.divider}`,
               display: 'block',

@@ -1,7 +1,7 @@
 import CollectionItemAttributeForm from '@/modules/contract-wizard/components/CollectionItemAttributeForm';
-import { GenerateAIImageButton } from '@/modules/contract-wizard/components/GenerateAIImageButton';
 import { ImageFormUpload } from '@/modules/contract-wizard/components/ImageFormUpload';
 import { CollectionOwnershipNFTFormType } from '@/modules/contract-wizard/types';
+import CompletationProvider from '@dexkit/ui/components/CompletationProvider';
 import AddIcon from '@mui/icons-material/Add';
 import { Box, Button, Grid, Stack, Typography } from '@mui/material';
 import { Field, FieldArray, Form, useFormikContext } from 'formik';
@@ -44,15 +44,15 @@ export default function OwnershipNFTForm({ isDisabled }: Props) {
                 onSelectFile={(file) => setFieldValue(`image`, file)}
                 error={Boolean(errors && (errors as any)?.image)}
               />
-              <Typography>
+              {/*  <Typography>
                 <FormattedMessage id={'or'} defaultMessage={'or'} />
               </Typography>
-              <Box>
+             <Box>
                 <GenerateAIImageButton
                   description={values.description}
                   onImageUrl={(imageUrl) => setFieldValue(`image`, imageUrl)}
                 />
-              </Box>
+  </Box>*/}
             </Stack>
           </Stack>
         </Grid>
@@ -68,31 +68,54 @@ export default function OwnershipNFTForm({ isDisabled }: Props) {
                 </b>
               </Typography>
             </Box>
-            <Field
-              component={TextField}
-              sx={{ maxWidth: '500px' }}
-              fullWidth
-              name={`name`}
-              disabled={isDisabled}
-              label={
-                <FormattedMessage id="nft.name" defaultMessage="NFT name" />
-              }
-            />
-            <Field
-              sx={{ maxWidth: '500px' }}
-              component={TextField}
-              name={`description`}
-              label={
-                <FormattedMessage
-                  id="nft.description"
-                  defaultMessage="NFT description"
+            <CompletationProvider
+              onCompletation={(output) => setFieldValue('name', output)}
+              initialPrompt={values?.name || ''}
+            >
+              {({ inputAdornment, ref }) => (
+                <Field
+                  component={TextField}
+                  sx={{ maxWidth: '500px' }}
+                  fullWidth
+                  name={`name`}
+                  disabled={isDisabled}
+                  label={
+                    <FormattedMessage id="nft.name" defaultMessage="NFT name" />
+                  }
+                  inputRef={ref}
+                  InputProps={{
+                    endAdornment: inputAdornment('end'),
+                  }}
                 />
-              }
-              fullWidth
-              disabled={isDisabled}
+              )}
+            </CompletationProvider>
+            <CompletationProvider
+              onCompletation={(output) => setFieldValue('description', output)}
+              initialPrompt={values?.description || ''}
               multiline
-              rows={5}
-            />
+            >
+              {({ inputAdornment, ref }) => (
+                <Field
+                  sx={{ maxWidth: '500px' }}
+                  component={TextField}
+                  name={`description`}
+                  label={
+                    <FormattedMessage
+                      id="nft.description"
+                      defaultMessage="NFT description"
+                    />
+                  }
+                  inputRef={ref}
+                  InputProps={{
+                    endAdornment: inputAdornment('end'),
+                  }}
+                  fullWidth
+                  disabled={isDisabled}
+                  multiline
+                  rows={5}
+                />
+              )}
+            </CompletationProvider>
           </Stack>
         </Grid>
         <Grid item xs={12}>
