@@ -26,6 +26,7 @@ import { ChainId } from '@dexkit/core';
 import { NETWORKS } from '@dexkit/core/constants/networks';
 import { DexkitApiProvider } from '@dexkit/core/providers';
 import { parseChainId } from '@dexkit/core/utils';
+import CompletationProvider from '@dexkit/ui/components/CompletationProvider';
 import InfoIcon from '@mui/icons-material/Info';
 import { QueryClient, dehydrate } from '@tanstack/react-query';
 import { useWeb3React } from '@web3-react/core';
@@ -113,7 +114,7 @@ export default function FormsCreatePage({
             id: 'form.created.successfully',
             defaultMessage: 'Form created successfully',
           }),
-          { variant: 'success' },
+          { variant: 'success' }
         );
 
         router.push(`/forms/${result.id}`);
@@ -223,22 +224,36 @@ export default function FormsCreatePage({
                     />
                   </Grid>
                   <Grid item xs={12}>
-                    <TextField
-                      fullWidth
-                      value={values.description}
-                      disabled={createFormMutation.isLoading}
-                      name="description"
-                      multiline
-                      required
-                      rows={3}
-                      onChange={handleChangeInputs}
-                      label={
-                        <FormattedMessage
-                          id="description"
-                          defaultMessage="Description"
+                    <CompletationProvider
+                      onCompletation={(output: string) => {
+                        setValues((values) => ({
+                          ...values,
+                          description: output,
+                        }));
+                      }}
+                      initialPrompt={values.description}
+                    >
+                      {({ inputAdornment, ref }) => (
+                        <TextField
+                          fullWidth
+                          value={values.description}
+                          disabled={createFormMutation.isLoading}
+                          name="description"
+                          multiline
+                          required
+                          rows={3}
+                          onChange={handleChangeInputs}
+                          label={
+                            <FormattedMessage
+                              id="description"
+                              defaultMessage="Description"
+                            />
+                          }
+                          inputRef={ref}
+                          InputProps={{ endAdornment: inputAdornment('end') }}
                         />
-                      }
-                    />
+                      )}
+                    </CompletationProvider>
                   </Grid>
                   <Grid item xs={12}>
                     {isAddress(params?.contractAddress || '') ? (

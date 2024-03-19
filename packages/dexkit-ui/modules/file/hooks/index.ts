@@ -57,14 +57,14 @@ export function useEditAccountFile() {
 
 const GET_ACCOUNT_FILES_BY_OWNER = 'GET_ACCOUNT_FILES_BY_OWNER';
 
-export function useGetAccountFiles({ skip, search }: { skip?: number, search?: string }) {
+export function useGetAccountFiles({ skip, search, sort }: { skip?: number, search?: string, sort?: string[] }) {
   const { account } = useWeb3React()
 
-  return useQuery([GET_ACCOUNT_FILES_BY_OWNER, account, search, skip], async () => {
+  return useQuery([GET_ACCOUNT_FILES_BY_OWNER, account, search, skip, sort], async () => {
     if (!account) {
       return;
     }
-    const files = await getFilesByOwner(account, 20, skip, search);
+    const files = await getFilesByOwner(account, 20, skip, search, sort);
     return files.data;
 
   })

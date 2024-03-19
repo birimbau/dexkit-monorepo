@@ -11,6 +11,7 @@ import { TextField } from 'formik-mui';
 import * as Yup from 'yup';
 
 import { ImageFormUpload } from '@/modules/contract-wizard/components/ImageFormUpload';
+import CompletationProvider from '@dexkit/ui/components/CompletationProvider';
 import { FormattedMessage } from 'react-intl';
 import ChangeListener from '../ChangeListener';
 
@@ -78,48 +79,81 @@ export default function AssetStoreForm({
                 fullWidth
                 label={
                   <FormattedMessage
-                    id={'store.account'}
-                    defaultMessage={'Store account'}
+                    id="store.account"
+                    defaultMessage="Store account"
                   />
                 }
                 name="storeAccount"
               />
             </Grid>
             <Grid item xs={12}>
-              <Field
-                component={TextField}
-                type="text"
-                fullWidth
-                label={<FormattedMessage id={'name'} defaultMessage={'Name'} />}
-                name="name"
-              />
-            </Grid>
-
-            <Grid item xs={12}>
-              <Field
-                component={TextField}
-                name="title"
-                type="text"
-                fullWidth
-                label={
-                  <FormattedMessage id={'title'} defaultMessage={'Title'} />
-                }
-              />
-            </Grid>
-
-            <Grid item xs={12}>
-              <Field
-                component={TextField}
-                type="text"
-                fullWidth
-                label={
-                  <FormattedMessage
-                    id={'description'}
-                    defaultMessage={'Description'}
+              <CompletationProvider
+                onCompletation={(output: string) => {
+                  setFieldValue('name', output);
+                }}
+                initialPrompt={values.name}
+              >
+                {({ inputAdornment, ref }) => (
+                  <Field
+                    component={TextField}
+                    type="text"
+                    fullWidth
+                    label={<FormattedMessage id="name" defaultMessage="Name" />}
+                    name="name"
+                    inputRef={ref}
+                    InputProps={{ endAdornment: inputAdornment('end') }}
                   />
-                }
-                name="description"
-              />
+                )}
+              </CompletationProvider>
+            </Grid>
+
+            <Grid item xs={12}>
+              <CompletationProvider
+                onCompletation={(output: string) => {
+                  setFieldValue('title', output);
+                }}
+                initialPrompt={values.title}
+              >
+                {({ inputAdornment, ref }) => (
+                  <Field
+                    component={TextField}
+                    name="title"
+                    type="text"
+                    fullWidth
+                    label={
+                      <FormattedMessage id="title" defaultMessage="Title" />
+                    }
+                    inputRef={ref}
+                    InputProps={{ endAdornment: inputAdornment('end') }}
+                  />
+                )}
+              </CompletationProvider>
+            </Grid>
+
+            <Grid item xs={12}>
+              <CompletationProvider
+                onCompletation={(output: string) => {
+                  setFieldValue('description', output);
+                }}
+                initialPrompt={values.description}
+              >
+                {({ inputAdornment, ref }) => (
+                  <Field
+                    component={TextField}
+                    type="text"
+                    fullWidth
+                    label={
+                      <FormattedMessage
+                        id="description"
+                        defaultMessage="Description"
+                      />
+                    }
+                    name="description"
+                    inputRef={ref}
+                    InputProps={{ endAdornment: inputAdornment('end') }}
+                  />
+                )}
+              </CompletationProvider>
             </Grid>
             <Grid item xs={12}>
               <Stack spacing={2}>

@@ -1,3 +1,4 @@
+import MediaDialog from '@dexkit/ui/components/mediaDialog';
 import ImageIcon from '@mui/icons-material/Image';
 import {
   Box,
@@ -12,7 +13,6 @@ import { Field, Form, useFormikContext } from 'formik';
 import { TextField } from 'formik-mui';
 import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import MediaDialog from 'src/components/mediaDialog';
 import { CollectionForm } from '../types';
 import { GenerateAIImageButton } from './GenerateAIImageButton';
 

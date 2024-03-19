@@ -9,17 +9,17 @@ import {
   Divider,
   Stack,
   Typography,
-} from '@mui/material';
-import { useState } from 'react';
-import { FormattedMessage } from 'react-intl';
+} from "@mui/material";
+import { useState } from "react";
+import { FormattedMessage } from "react-intl";
 
 import {
   CheckCircle,
   Error,
   ExpandLess,
   ExpandMore,
-} from '@mui/icons-material';
-import { AppDialogTitle } from '../AppDialogTitle';
+} from "@mui/icons-material";
+import { AppDialogTitle } from "../AppDialogTitle";
 
 interface Props {
   dialogProps: DialogProps;
@@ -40,7 +40,7 @@ function DeleteImageDialog({
 
   const handleClose = () => {
     if (onClose) {
-      onClose({}, 'backdropClick');
+      onClose({}, "backdropClick");
     }
   };
 
@@ -135,7 +135,7 @@ function DeleteImageDialog({
           {error !== null && (
             <>
               <Button onClick={handleToggleDetails}>
-                <FormattedMessage id="details" defaultMessage="Details" />{' '}
+                <FormattedMessage id="details" defaultMessage="Details" />{" "}
                 {showDetails ? <ExpandLess /> : <ExpandMore />}
               </Button>
               <Collapse in={showDetails}>
@@ -148,5 +148,4 @@ function DeleteImageDialog({
     </Dialog>
   );
 }
-
 export default DeleteImageDialog;

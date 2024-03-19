@@ -21,7 +21,7 @@ import { useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import * as Yup from 'yup';
 import { AppConfig, SocialMedia } from '../../../../types/config';
-const MediaDialog = dynamic(() => import('../../../../components/mediaDialog'));
+const MediaDialog = dynamic(() => import('@dexkit/ui/components/mediaDialog'));
 interface Props {
   config: AppConfig;
   onSave: (config: AppConfig) => void;

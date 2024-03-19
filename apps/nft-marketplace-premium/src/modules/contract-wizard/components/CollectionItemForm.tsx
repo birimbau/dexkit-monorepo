@@ -1,10 +1,10 @@
+import CompletationProvider from '@dexkit/ui/components/CompletationProvider';
 import { Box, Button, Grid, Stack } from '@mui/material';
-import { Field, FieldArray, useFormikContext } from 'formik';
+import { Field, FieldArray, getIn, useFormikContext } from 'formik';
 import { TextField } from 'formik-mui';
 import { FormattedMessage } from 'react-intl';
 import { CollectionItemsForm } from '../types';
 import CollectionItemAttributeForm from './CollectionItemAttributeForm';
-import { GenerateAIImageButton } from './GenerateAIImageButton';
 import { ImageFormUpload } from './ImageFormUpload';
 
 interface Props {
@@ -34,14 +34,14 @@ export default function CollectionItemForm({
               errors.items && (errors.items[itemIndex] as any)?.file,
             )}
           />
-          <Box pt={2}>
+          {/*   <Box pt={2}>
             <GenerateAIImageButton
               description={values.items[itemIndex].description}
               onImageUrl={(imageUrl) =>
                 setFieldValue(`items[${itemIndex}].file`, imageUrl)
               }
             />
-          </Box>
+            </Box>*/}
         </Grid>
         <Grid item xs>
           <Stack spacing={2}>
@@ -56,25 +56,51 @@ export default function CollectionItemForm({
                 defaultValue={1}
               />
             )}
-            <Field
-              component={TextField}
-              name={`items[${itemIndex}].name`}
-              label={<FormattedMessage id="name" defaultMessage="Name" />}
-              fullWidth
-            />
-            <Field
-              component={TextField}
-              name={`items[${itemIndex}].description`}
-              label={
-                <FormattedMessage
-                  id="description"
-                  defaultMessage="Description"
+            <CompletationProvider
+              onCompletation={(output: string) => {
+                setFieldValue(`items[${itemIndex}].name`, output);
+              }}
+              initialPrompt={getIn(values, `items[${itemIndex}].name`)}
+            >
+              {({ inputAdornment, ref }) => (
+                <Field
+                  component={TextField}
+                  name={`items[${itemIndex}].name`}
+                  label={<FormattedMessage id="name" defaultMessage="Name" />}
+                  fullWidth
+                  inputRef={ref}
+                  InputProps={{
+                    endAdornment: inputAdornment('end'),
+                  }}
                 />
-              }
-              fullWidth
-              multiline
-              rows={3}
-            />
+              )}
+            </CompletationProvider>
+            <CompletationProvider
+              onCompletation={(output: string) => {
+                setFieldValue(`items[${itemIndex}].description`, output);
+              }}
+              initialPrompt={getIn(values, `items[${itemIndex}].description`)}
+            >
+              {({ inputAdornment, ref }) => (
+                <Field
+                  component={TextField}
+                  name={`items[${itemIndex}].description`}
+                  label={
+                    <FormattedMessage
+                      id="description"
+                      defaultMessage="Description"
+                    />
+                  }
+                  fullWidth
+                  multiline
+                  rows={3}
+                  inputRef={ref}
+                  InputProps={{
+                    endAdornment: inputAdornment('end'),
+                  }}
+                />
+              )}
+            </CompletationProvider>
 
             {(values.items[itemIndex] as any)?.attributes?.length > 0 && (
               <Box>

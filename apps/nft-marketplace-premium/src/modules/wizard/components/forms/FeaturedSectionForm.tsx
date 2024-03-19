@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { SectionItem } from '../../../../types/config';
 
+import CompletationProvider from '@dexkit/ui/components/CompletationProvider';
 import AddIcon from '@mui/icons-material/Add';
 import * as Yup from 'yup';
 import { AppPageSection, FeaturedAppPageSection } from '../../types/section';
@@ -34,7 +35,7 @@ export default function FeaturedSectionForm({
   const [showAddItem, setShowAddItem] = useState(false);
 
   const [items, setItems] = useState<SectionItem[]>(
-    section ? section.items : [],
+    section ? section.items : []
   );
 
   const [selectedItemIndex, setSelectedItemIndex] = useState(-1);
@@ -126,17 +127,28 @@ export default function FeaturedSectionForm({
     <form onSubmit={formik.handleSubmit}>
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <TextField
-            name="title"
-            onChange={formik.handleChange}
-            fullWidth
-            value={formik.values.title}
-            label={<FormattedMessage id="title" defaultMessage="Title" />}
-            error={Boolean(formik.errors.title)}
-            helperText={
-              Boolean(formik.errors.title) ? formik.errors.title : undefined
-            }
-          />
+          <CompletationProvider
+            onCompletation={(output: string) => {
+              formik.setFieldValue('title', output);
+            }}
+            initialPrompt={formik.values.title}
+          >
+            {({ inputAdornment, ref }) => (
+              <TextField
+                name="title"
+                onChange={formik.handleChange}
+                fullWidth
+                value={formik.values.title}
+                label={<FormattedMessage id="title" defaultMessage="Title" />}
+                error={Boolean(formik.errors.title)}
+                helperText={
+                  Boolean(formik.errors.title) ? formik.errors.title : undefined
+                }
+                inputRef={ref}
+                InputProps={{ endAdornment: inputAdornment('end') }}
+              />
+            )}
+          </CompletationProvider>
         </Grid>
         {!showAddItem &&
           items.map((item, index) => (

@@ -2,7 +2,7 @@ import ImageIcon from '@mui/icons-material/Image';
 import { Box, Button, Stack, styled } from '@mui/material';
 import dynamic from 'next/dynamic';
 import { useState } from 'react';
-const MediaDialog = dynamic(() => import('src/components/mediaDialog'));
+const MediaDialog = dynamic(() => import('@dexkit/ui/components/mediaDialog'));
 
 const CustomImage = styled('img')(({ theme, height, width }) => ({
   height: theme.spacing(Number(height || 20)),
