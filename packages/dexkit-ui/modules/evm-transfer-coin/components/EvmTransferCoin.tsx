@@ -14,11 +14,13 @@ import CopyIconButton from "@dexkit/ui/components/CopyIconButton";
 import { useDexKitContext } from "@dexkit/ui/hooks";
 import FileCopy from "@mui/icons-material/FileCopy";
 
+import { UserEvents } from "@dexkit/core/constants/userEvents";
 import { Divider, Skeleton, Stack, Typography } from "@mui/material";
 import { ethers } from "ethers";
 import { useSnackbar } from "notistack";
 import { useMemo, useState } from "react";
 import { useIntl } from "react-intl";
+import { useTrackUserEventsMutation } from "../../../hooks/userEvents";
 import { useEvmTransferMutation } from "../hooks";
 import { EvmSendForm } from "./forms/EvmSendForm";
 
@@ -52,6 +54,8 @@ export default function EvmTransferCoin({
   onChangePaymentUrl,
 }: EvmTransferCoinProps) {
   const { formatMessage } = useIntl();
+
+  const trackUserEventsMutation = useTrackUserEventsMutation();
 
   const [values, setValues] = useState<{
     address?: string;
@@ -117,6 +121,29 @@ export default function EvmTransferCoin({
   const evmTransferMutation = useEvmTransferMutation({
     provider,
     onSubmit: handleSubmitTransaction,
+    onConfirm: (
+      hash: string,
+      params: {
+        address: string;
+        amount: number;
+        coin: Coin;
+      }
+    ) => {
+      if (chainId !== undefined) {
+        const values = {
+          amount: params.amount.toString(),
+          symbol: params.coin.symbol,
+          address: params.address,
+        };
+
+        trackUserEventsMutation.mutate({
+          event: UserEvents.transfer,
+          hash: hash,
+          chainId,
+          metadata: JSON.stringify(values),
+        });
+      }
+    },
   });
 
   const handleCopy = () => {

@@ -10,9 +10,18 @@ import { ethers } from 'ethers';
 export function useEvmTransferMutation({
   provider,
   onSubmit,
+  onConfirm,
 }: {
   provider?: ethers.providers.Web3Provider;
   onSubmit?: (
+    hash: string,
+    params: {
+      address: string;
+      amount: number;
+      coin: Coin;
+    }
+  ) => void;
+  onConfirm?: (
     hash: string,
     params: {
       address: string;
@@ -57,7 +66,11 @@ export function useEvmTransferMutation({
           onSubmit(tx.hash, params);
         }
 
-        return await tx.wait();
+        const txResult = await tx.wait();
+        if (onConfirm) {
+          onConfirm(tx.hash, params);
+        }
+        return txResult;
       }
 
       if (coin.coinType === CoinTypes.EVM_NATIVE) {
@@ -71,7 +84,12 @@ export function useEvmTransferMutation({
           onSubmit(tx.hash, params);
         }
 
-        return await tx.wait();
+        const txResult = await tx.wait();
+        if (onConfirm) {
+          onConfirm(tx.hash, params);
+        }
+
+        return txResult;
       }
     }
   );

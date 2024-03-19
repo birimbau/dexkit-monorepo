@@ -1,4 +1,5 @@
 import { NETWORK_NAME } from "@dexkit/core/constants/networks";
+import { UserEvents } from "@dexkit/core/constants/userEvents";
 import {
   getBlockExplorerUrl,
   getNormalizedUrl,
@@ -26,6 +27,7 @@ import { Field, Form, Formik, FormikHelpers } from "formik";
 import { TextField } from "formik-mui";
 import { useSnackbar } from "notistack";
 import { FormattedMessage, useIntl } from "react-intl";
+import { useTrackUserEventsMutation } from "../../../hooks/userEvents";
 import { getTransferNftSchema } from "../constants/schemas";
 import { useNftTransfer } from "../hooks";
 import { AddressField } from "./AddressField";
@@ -74,6 +76,7 @@ export default function EvmTransferNft({
 }: EvmTransferNftProps) {
   const { formatMessage } = useIntl();
   const { createNotification, watchTransactionDialog } = useDexKitContext();
+  const trackUserEventsMutation = useTrackUserEventsMutation();
 
   const { enqueueSnackbar } = useSnackbar();
   const theme = useTheme();
@@ -81,7 +84,7 @@ export default function EvmTransferNft({
   const nftTransfer = useNftTransfer({
     contractAddress,
     provider,
-    onSubmit: (hash: string) => {
+    onSubmit: ({ hash }) => {
       if (hash && chainId) {
         const values = {
           id: tokenId as string,
@@ -95,6 +98,27 @@ export default function EvmTransferNft({
         });
         watchTransactionDialog.open("nftTransfer", values);
         watchTransactionDialog.watch(hash);
+      }
+    },
+    onConfirm: ({ hash, to, isERC1155, quantity }) => {
+      if (hash && chainId) {
+        const values = {
+          id: tokenId as string,
+          name: nft?.collectionName as string,
+        };
+        trackUserEventsMutation.mutate({
+          event: isERC1155
+            ? UserEvents.nftTransferERC1155
+            : UserEvents.nftTransferERC721,
+          hash: hash,
+          chainId,
+          metadata: JSON.stringify({
+            id: tokenId as string,
+            address: contractAddress,
+            to: to,
+            quantity,
+          }),
+        });
       }
     },
   });

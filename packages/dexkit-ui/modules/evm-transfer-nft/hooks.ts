@@ -8,12 +8,13 @@ export function useNftTransfer({
   contractAddress,
   provider,
   onSubmit,
+  onConfirm,
 }: {
   contractAddress?: string;
   tokenId?: string;
-
   provider?: ethers.providers.Web3Provider;
-  onSubmit?: (hash: string) => void;
+  onSubmit?: ({ hash }: { hash: string, isERC1155: boolean, to: string, quantity?: string }) => void;
+  onConfirm?: ({ hash }: { hash: string, isERC1155: boolean, to: string, quantity?: string }) => void;
 }) {
   return useMutation(
     async ({
@@ -71,10 +72,16 @@ export function useNftTransfer({
       }
 
       if (onSubmit) {
-        onSubmit(tx.hash);
+        onSubmit({ hash: tx.hash, to: toAddress, isERC1155: protocol === "ERC1155", quantity: quantity || '1' });
       }
 
-      return await tx.wait();
+      const txResult = await tx.wait();
+
+      if (onConfirm) {
+        onConfirm({ hash: tx.hash, to: toAddress, isERC1155: protocol === "ERC1155", quantity: quantity || '1' });
+      }
+
+      return txResult;
     }
   );
 }
