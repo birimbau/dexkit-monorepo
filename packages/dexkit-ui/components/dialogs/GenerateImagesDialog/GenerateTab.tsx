@@ -5,6 +5,7 @@ import {
   Button,
   CircularProgress,
   Grid,
+  MenuItem,
   Stack,
   TextField,
 } from "@mui/material";
@@ -13,9 +14,21 @@ import { FormattedMessage, useIntl } from "react-intl";
 
 import * as Yup from "yup";
 
-import { Formik } from "formik";
+import { Field, Formik } from "formik";
+import { Select } from "formik-mui";
 import { useSnackbar } from "notistack";
 import VariantsGrid from "./VariantsGrid";
+
+const MODELS = [
+  {
+    name: "DALL·E 2",
+    value: "dall-e-2",
+  },
+  {
+    name: "DALL·E 3",
+    value: "dall-e-3",
+  },
+];
 
 const FormSchema = Yup.object({
   amount: Yup.number().min(1).max(10).required(),
@@ -43,12 +56,17 @@ export default function GenerateTab({
 
   const { enqueueSnackbar } = useSnackbar();
 
-  const handleGenerate = async (amount: number, prompt: string) => {
+  const handleGenerate = async (
+    amount: number,
+    prompt: string,
+    model: string
+  ) => {
     try {
       let result = await generate({
         numImages: amount,
         prompt,
-        size: "512x512",
+        model,
+        size: model === "dall-e-3" ? "1024x1024" : "512x512",
       });
 
       if (result) {
@@ -76,16 +94,22 @@ export default function GenerateTab({
   const handleSubmit = async ({
     amount,
     prompt,
+    model,
   }: {
     amount: number;
     prompt: string;
+    model: string;
   }) => {
-    handleGenerate(amount, prompt);
+    handleGenerate(amount, prompt, model);
   };
 
   return (
     <Formik
-      initialValues={{ amount: 1, prompt: defaultPrompt || "" }}
+      initialValues={{
+        amount: 1,
+        prompt: defaultPrompt || "",
+        model: "dall-e-2",
+      }}
       onSubmit={handleSubmit}
       validationSchema={FormSchema}
     >
@@ -118,6 +142,13 @@ export default function GenerateTab({
                     multiline
                     disabled={isImagesLoading || disabled || isSubmitting}
                   />
+                  <Field name="model" component={Select}>
+                    {MODELS.map((model, index) => (
+                      <MenuItem value={model.value} key={index}>
+                        {model.name}
+                      </MenuItem>
+                    ))}
+                  </Field>
                   <TextField
                     label={formatMessage({
                       id: "num.of.images",

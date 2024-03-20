@@ -5,6 +5,7 @@ import {
   Alert,
   Box,
   Button,
+  CircularProgress,
   Dialog,
   DialogContent,
   DialogProps,
@@ -118,9 +119,13 @@ function GenerateImagesDialog({
     [varImgUrl]
   );
 
-  const { data: sub, refetch: refetchSub } = useSubscription();
+  const {
+    data: sub,
+    refetch: refetchSub,
+    isLoading: isSubLoading,
+  } = useSubscription();
 
-  const { mutateAsync: checkoutPlan, isLoading } = usePlanCheckoutMutation();
+  const { mutateAsync: checkoutPlan } = usePlanCheckoutMutation();
   const { enqueueSnackbar } = useSnackbar();
 
   const handleSubscribe = async () => {
@@ -147,6 +152,19 @@ function GenerateImagesDialog({
   };
 
   const renderContent = () => {
+    if (isSubLoading) {
+      return (
+        <Stack
+          sx={{ p: 2 }}
+          spacing={2}
+          alignItems="center"
+          justifyContent="center"
+        >
+          <CircularProgress color="primary" size="2.5rem" />
+        </Stack>
+      );
+    }
+
     if (!sub) {
       return (
         <Stack sx={{ p: 2 }} spacing={2} alignItems="center">

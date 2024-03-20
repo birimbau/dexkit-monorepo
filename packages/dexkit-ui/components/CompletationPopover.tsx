@@ -54,6 +54,8 @@ export default function CompletationPopover({
     }
   };
 
+  console.log(subQuery.data);
+
   return (
     <Popover
       onClose={onClose}

@@ -1,5 +1,12 @@
 import AutoAwesome from "@mui/icons-material/AutoAwesome";
-import { Backdrop, Box, Button, Stack, Typography } from "@mui/material";
+import {
+  Backdrop,
+  Box,
+  Button,
+  CircularProgress,
+  Stack,
+  Typography,
+} from "@mui/material";
 import Decimal from "decimal.js";
 import { useMemo, useState } from "react";
 import { FormattedMessage } from "react-intl";
@@ -9,9 +16,17 @@ import AddCreditDialog from "./dialogs/AddCreditDialog";
 export default function PaywallBackdrop() {
   const [open, setOpen] = useState(true);
 
-  const { data: sub, refetch: refetchSub } = useSubscription();
+  const {
+    data: sub,
+    refetch: refetchSub,
+    isLoading: isSubLoading,
+  } = useSubscription();
 
-  const { data: featUsage, refetch: refetchFeatUsage } = useActiveFeatUsage();
+  const {
+    data: featUsage,
+    refetch: refetchFeatUsage,
+    isLoading: isFeatUsageLoading,
+  } = useActiveFeatUsage();
 
   const total = useMemo(() => {
     if (sub && featUsage) {
@@ -43,6 +58,37 @@ export default function PaywallBackdrop() {
     setOpen(false);
   };
 
+  const renderContent = () => {
+    if (isSubLoading || isFeatUsageLoading) {
+      return <CircularProgress color="primary" size="2.5rem" />;
+    }
+
+    return (
+      <Stack alignItems="center" justifyContent="center" spacing={2}>
+        <AutoAwesome fontSize="large" />
+        <Box>
+          <Typography align="center" variant="h5" fontWeight="bold">
+            <FormattedMessage id="no.credits" defaultMessage="No Credits" />
+          </Typography>
+          <Typography align="center" variant="body1" color="text.secondary">
+            <FormattedMessage
+              id="you.need.to.add.credits.to.use.ai.features"
+              defaultMessage="You need to add credits to use AI features"
+            />
+          </Typography>
+        </Box>
+        <Stack spacing={1} direction="row">
+          <Button onClick={handleCloseBackdrop} variant="outlined" size="small">
+            <FormattedMessage id="close" defaultMessage="Close" />
+          </Button>
+          <Button onClick={handleAddCredits} variant="contained" size="small">
+            <FormattedMessage id="add.credits" defaultMessage="Add credits" />
+          </Button>
+        </Stack>
+      </Stack>
+    );
+  };
+
   return (
     <>
       <AddCreditDialog
@@ -61,32 +107,7 @@ export default function PaywallBackdrop() {
         })}
         open={total === 0 && open}
       >
-        <Stack alignItems="center" justifyContent="center" spacing={2}>
-          <AutoAwesome fontSize="large" />
-          <Box>
-            <Typography align="center" variant="h5" fontWeight="bold">
-              <FormattedMessage id="no.credits" defaultMessage="No Credits" />
-            </Typography>
-            <Typography align="center" variant="body1" color="text.secondary">
-              <FormattedMessage
-                id="you.need.to.add.credits.to.use.ai.features"
-                defaultMessage="You need to add credits to use AI features"
-              />
-            </Typography>
-          </Box>
-          <Stack spacing={1} direction="row">
-            <Button
-              onClick={handleCloseBackdrop}
-              variant="outlined"
-              size="small"
-            >
-              <FormattedMessage id="close" defaultMessage="Close" />
-            </Button>
-            <Button onClick={handleAddCredits} variant="contained" size="small">
-              <FormattedMessage id="add.credits" defaultMessage="Add credits" />
-            </Button>
-          </Stack>
-        </Stack>
+        {renderContent()}
       </Backdrop>
     </>
   );
