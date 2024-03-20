@@ -1,6 +1,6 @@
 import { StoreHeader } from '@/modules/nft/components/StoreHeader';
 import { StoreOrderbook } from '@/modules/nft/components/StoreOrderbook';
-import { Search } from '@mui/icons-material';
+import Search from '@mui/icons-material/Search';
 import {
   Button,
   Container,
@@ -19,7 +19,7 @@ import { useAssetsOrderBook } from 'src/hooks/nft';
 import { AssetStoreOptions } from 'src/types/nft';
 
 const CreateAssetOrderDialog = dynamic(
-  () => import('@/modules/nft/components/dialogs/CreateAssetOrderDialog')
+  () => import('@/modules/nft/components/dialogs/CreateAssetOrderDialog'),
 );
 
 export function AssetStoreContainer({

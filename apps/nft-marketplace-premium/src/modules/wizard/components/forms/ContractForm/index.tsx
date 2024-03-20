@@ -13,7 +13,7 @@ import { FormattedMessage } from 'react-intl';
 import LazyTextField from '@dexkit/ui/components/LazyTextField';
 
 import { parseChainId } from '@dexkit/core/utils';
-import { Search } from '@mui/icons-material';
+import Search from '@mui/icons-material/Search';
 import {
   Box,
   Button,

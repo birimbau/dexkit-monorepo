@@ -1,7 +1,7 @@
 import TableSkeleton from '@/modules/nft/components/tables/TableSkeleton';
 import { ChainId } from '@dexkit/core/constants';
-import { Search } from '@mui/icons-material';
 import FilterListIcon from '@mui/icons-material/FilterList';
+import Search from '@mui/icons-material/Search';
 import {
   Box,
   Chip,
@@ -36,7 +36,7 @@ const EvmTransferNftDialog = dynamic(
   () =>
     import(
       '@dexkit/ui/modules/evm-transfer-nft/components/dialogs/EvmTransferNftDialog'
-    )
+    ),
 );
 interface Props {
   onOpenFilters?: () => void;
@@ -63,7 +63,7 @@ function WalletAssetsSection({
 
   const { accountAssets, accountAssetsQuery } = useAccountAssetsBalance(
     filters?.account ? [filters?.account] : [],
-    false
+    false,
   );
   // We are calling this hook, because from api is missing the owner and this is in realtime
   const assetToTransfer = useAsset(
@@ -71,7 +71,7 @@ function WalletAssetsSection({
     assetTransfer?.id,
     undefined,
     true,
-    assetTransfer?.chainId
+    assetTransfer?.chainId,
   );
 
   const { isHidden, toggleHidden, assets: hiddenAssets } = useHiddenAssets();
@@ -110,7 +110,7 @@ function WalletAssetsSection({
         }*/
         if (filters?.networks && filters?.networks.length) {
           return filters.networks.includes(
-            getNetworkSlugFromChainId(asset.chainId) || ''
+            getNetworkSlugFromChainId(asset.chainId) || '',
           );
         }
 

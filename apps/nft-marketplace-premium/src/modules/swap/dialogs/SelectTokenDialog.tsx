@@ -1,5 +1,5 @@
 import { ChainId } from '@dexkit/core/constants';
-import { Close } from '@mui/icons-material';
+import Close from '@mui/icons-material/Close';
 import {
   Avatar,
   Box,

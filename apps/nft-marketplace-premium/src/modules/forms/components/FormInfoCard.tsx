@@ -5,7 +5,7 @@ import {
   truncateAddress,
 } from '@dexkit/core/utils';
 import AppConfirmDialog from '@dexkit/ui/components/AppConfirmDialog';
-import { Remove } from '@mui/icons-material';
+import Remove from '@mui/icons-material/Remove';
 
 import AccountTreeIcon from '@mui/icons-material/AccountTree';
 import EditIcon from '@mui/icons-material/Edit';

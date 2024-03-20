@@ -13,12 +13,13 @@ import {
 import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import {
-  CheckCircle,
-  Error,
-  ExpandLess,
-  ExpandMore,
-} from '@mui/icons-material';
+import CheckCircle from '@mui/icons-material/CheckCircle';
+
+import Error from '@mui/icons-material/Error';
+
+import ExpandLess from '@mui/icons-material/ExpandLess';
+
+import ExpandMore from '@mui/icons-material/ExpandMore';
 import { AppDialogTitle } from '../../../../components/AppDialogTitle';
 
 interface Props {

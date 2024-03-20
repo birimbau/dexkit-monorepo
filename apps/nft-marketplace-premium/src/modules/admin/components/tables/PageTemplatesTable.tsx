@@ -1,4 +1,4 @@
-import { Delete } from '@mui/icons-material';
+import Delete from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import {
   Divider,
@@ -22,9 +22,8 @@ import { PageTemplateResponse } from '../../../../types/whitelabel';
 
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import AppConfirmDialog from '../../../../components/AppConfirmDialog';
-import InfoDialog from '../../../wizard/components/dialogs/InfoDialog';
-import PageTemplatesTableRow from './PageTemplatesTableRow';
 import PageEditorDialog from '../../../wizard/components/pageEditor/dialogs/PageEditorDialog';
+import PageTemplatesTableRow from './PageTemplatesTableRow';
 
 interface Props {
   pageTemplates: PageTemplateResponse[];
@@ -59,7 +58,7 @@ export default function PageTemplatesTable({ pageTemplates }: Props) {
       setAnchorEl(e.currentTarget);
       setSelectedPageTemplate(config);
     },
-    []
+    [],
   );
 
   const handleEdit = () => {
@@ -79,7 +78,7 @@ export default function PageTemplatesTable({ pageTemplates }: Props) {
           vertical: 'bottom',
           horizontal: 'right',
         },
-      }
+      },
     );
   };
 
@@ -95,7 +94,7 @@ export default function PageTemplatesTable({ pageTemplates }: Props) {
           vertical: 'bottom',
           horizontal: 'right',
         },
-      }
+      },
     );
   };
 

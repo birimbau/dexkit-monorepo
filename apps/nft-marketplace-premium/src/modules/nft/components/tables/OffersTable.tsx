@@ -1,6 +1,7 @@
-import { Share, Visibility } from '@mui/icons-material';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import Share from '@mui/icons-material/Share';
+import Visibility from '@mui/icons-material/Visibility';
 
 import {
   IconButton,
@@ -8,7 +9,6 @@ import {
   ListItemText,
   Menu,
   MenuItem,
-  Paper,
   Stack,
   Table,
   TableBody,
@@ -27,8 +27,7 @@ import { FormattedMessage } from 'react-intl';
 import { TraderOrderStatus } from '../../../../constants/enum';
 import { useCurrency } from '../../../../hooks/currency';
 import { usePositionPaginator } from '../../../../hooks/misc';
-import { useAsset, useAssetBalance } from '../../../../hooks/nft';
-import { useOrderBook } from '../../../../hooks/nft';
+import { useAsset, useAssetBalance, useOrderBook } from '../../../../hooks/nft';
 import { SwapApiOrder } from '../../../../types/nft';
 import {
   getNetworkSlugFromChainId,
@@ -99,16 +98,16 @@ export function OffersTable({
 
   const handleViewOrder = () => {
     router.push(
-      `/order/${getNetworkSlugFromChainId(asset?.chainId)}/${
-        selectedOrder?.nonce
-      }`
+      `/order/${getNetworkSlugFromChainId(
+        asset?.chainId,
+      )}/${selectedOrder?.nonce}`,
     );
   };
 
   const renderRows = () => {
     const tempOrders = orders?.orders?.filter(
       ({ order }: { order: SwapApiOrder }) =>
-        moment.unix(parseInt(order.expiry)).isAfter(moment())
+        moment.unix(parseInt(order.expiry)).isAfter(moment()),
     );
 
     if (tempOrders?.length === 0) {
