@@ -16,7 +16,7 @@ import { FormattedMessage } from 'react-intl';
 import { AppConfig, MenuTree } from '../../../../types/config';
 
 import { SearchbarConfig } from '@dexkit/ui/types/config';
-import MenuSection from '../sections/MenuSection';
+import MenuSection from '../sections/MenuSection/index';
 
 interface Props {
   config: AppConfig;
@@ -51,8 +51,6 @@ function PagesMenuContainer({ config, onSave, onChange, onHasChanges }: Props) {
       onHasChanges(hasChanged);
     }
   }, [onHasChanges, hasChanged]);
-
-  console.log('menu changed', hasChanged);
 
   return (
     <Grid container spacing={2}>
@@ -238,10 +236,10 @@ export default function NavbarWizardContainer(props: Props) {
     <Grid container spacing={2}>
       <Grid item xs={12}>
         <Stack>
-          <Typography variant={'h6'}>
+          <Typography variant="h6">
             <FormattedMessage id="navbar" defaultMessage="Navbar" />
           </Typography>
-          <Typography variant={'body2'}>
+          <Typography variant="body2">
             <FormattedMessage
               id="navbar.wizard.description"
               defaultMessage="Organize your app navbar. You can edit menus and searchbar"

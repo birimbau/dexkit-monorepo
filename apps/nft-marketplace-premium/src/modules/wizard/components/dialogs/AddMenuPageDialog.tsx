@@ -4,6 +4,7 @@ import {
   DialogActions,
   DialogContent,
   DialogProps,
+  FormControl,
   Stack,
 } from '@mui/material';
 import { FormattedMessage } from 'react-intl';
@@ -106,46 +107,52 @@ export default function AddMenuPageDialog({
         {({ submitForm, isSubmitting, isValid, values }) => (
           <Form>
             <DialogContent dividers>
-              <Grid container spacing={4}>
+              <Grid container spacing={2}>
                 <Grid item xs={12}>
-                  <Field
-                    component={Select}
-                    name="type"
-                    label={
-                      <FormattedMessage id={'type'} defaultMessage={'Type'} />
-                    }
-                  >
-                    <MenuItem value={'Page'}>
-                      <FormattedMessage id={'page'} defaultMessage={'Page'} />
-                    </MenuItem>
+                  <FormControl fullWidth>
+                    <Field
+                      component={Select}
+                      name="type"
+                      label={
+                        <FormattedMessage id="type" defaultMessage="Type" />
+                      }
+                      fullWidth
+                    >
+                      <MenuItem value="Page">
+                        <FormattedMessage id="page" defaultMessage="Page" />
+                      </MenuItem>
 
-                    <MenuItem value={'Menu'}>
-                      <FormattedMessage id={'menu'} defaultMessage={'Menu'} />
-                    </MenuItem>
+                      <MenuItem value="Menu">
+                        <FormattedMessage id="menu" defaultMessage="Menu" />
+                      </MenuItem>
 
-                    <MenuItem value={'External'}>
-                      <FormattedMessage
-                        id={'external'}
-                        defaultMessage={'External'}
-                      />
-                    </MenuItem>
-                  </Field>
+                      <MenuItem value="External">
+                        <FormattedMessage
+                          id="external"
+                          defaultMessage="External"
+                        />
+                      </MenuItem>
+                    </Field>
+                  </FormControl>
                 </Grid>
                 {values.type === 'Page' && (
                   <Grid item xs={12}>
-                    <Field
-                      component={Select}
-                      name="name"
-                      label={
-                        <FormattedMessage id={'name'} defaultMessage={'Name'} />
-                      }
-                    >
-                      {pageKeys.map((item, key) => (
-                        <MenuItem value={item} key={key}>
-                          {allPages[item].title || ''}
-                        </MenuItem>
-                      ))}
-                    </Field>
+                    <FormControl fullWidth>
+                      <Field
+                        component={Select}
+                        name="name"
+                        label={
+                          <FormattedMessage id="name" defaultMessage="Name" />
+                        }
+                        fullWidth
+                      >
+                        {pageKeys.map((item, key) => (
+                          <MenuItem value={item} key={key}>
+                            {allPages[item].title || ''}
+                          </MenuItem>
+                        ))}
+                      </Field>
+                    </FormControl>
                   </Grid>
                 )}
 
@@ -155,8 +162,9 @@ export default function AddMenuPageDialog({
                       component={TextField}
                       name="name"
                       label={
-                        <FormattedMessage id={'name'} defaultMessage={'Name'} />
+                        <FormattedMessage id="name" defaultMessage="Name" />
                       }
+                      fullWidth
                     />
                   </Grid>
                 )}
@@ -166,8 +174,9 @@ export default function AddMenuPageDialog({
                       component={TextField}
                       name="href"
                       label={
-                        <FormattedMessage id={'url'} defaultMessage={'URL'} />
+                        <FormattedMessage id="an.url" defaultMessage="URL" />
                       }
+                      fullWidth
                     />
                   </Grid>
                 )}
