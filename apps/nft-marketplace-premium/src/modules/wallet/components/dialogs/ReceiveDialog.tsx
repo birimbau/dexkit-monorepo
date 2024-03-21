@@ -1,5 +1,5 @@
-import { FileCopy, Share } from '@mui/icons-material';
-import CloseIcon from '@mui/icons-material/Close';
+import FileCopy from '@mui/icons-material/FileCopy';
+import Share from '@mui/icons-material/Share';
 
 import {
   Dialog,

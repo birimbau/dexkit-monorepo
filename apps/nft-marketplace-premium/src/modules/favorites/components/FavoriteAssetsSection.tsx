@@ -1,7 +1,8 @@
 import WalletAssetsFilter from '@/modules/wallet/components/WalletAssetsFilter';
 import { ChainId } from '@dexkit/core/constants';
-import { ImportExport, Search } from '@mui/icons-material';
 import FilterListIcon from '@mui/icons-material/FilterList';
+import ImportExport from '@mui/icons-material/ImportExport';
+import Search from '@mui/icons-material/Search';
 import {
   Box,
   Button,
@@ -62,7 +63,7 @@ function FavoriteAssetsSection({
       setSelectedAsset(asset);
       setIsOpen(true);
     },
-    [toggleFavorite]
+    [toggleFavorite],
   );
 
   const assetList = useMemo(() => {
@@ -149,7 +150,7 @@ function FavoriteAssetsSection({
           vertical: 'bottom',
           horizontal: 'right',
         },
-      }
+      },
     );
     setIsOpen(false);
     setSelectedAsset(undefined);

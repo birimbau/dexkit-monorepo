@@ -1,7 +1,7 @@
 import { StoreOrderbook } from '@/modules/nft/components/StoreOrderbook';
 import TableSkeleton from '@/modules/nft/components/tables/TableSkeleton';
 import WalletAssetsSection from '@/modules/wallet/components/WalletAssetsSection';
-import { Edit } from '@mui/icons-material';
+import Edit from '@mui/icons-material/Edit';
 import {
   Button,
   Container,
@@ -208,7 +208,7 @@ export function UserContainer({ username }: { username?: string }) {
                           account: filters.account || defaultAccount,
                         }}
                         accounts={user?.accounts?.map((a) =>
-                          a.address.toLowerCase()
+                          a.address.toLowerCase(),
                         )}
                         setFilters={setFilters}
                         onOpenFilters={() => {}}

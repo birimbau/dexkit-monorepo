@@ -26,7 +26,7 @@ import { ipfsUriToUrl } from '../../../../utils/ipfs';
 
 import { FormikHelpers, useFormik } from 'formik';
 
-import { ExpandMore } from '@mui/icons-material';
+import ExpandMore from '@mui/icons-material/ExpandMore';
 import { useWeb3React } from '@web3-react/core';
 import * as Yup from 'yup';
 import AppFeePercentageSpan from '../../../../components/AppFeePercentageSpan';
@@ -60,7 +60,7 @@ interface Props {
     price: ethers.BigNumber,
     tokenAddress: string,
     expiry: Date | null,
-    takerAddress?: string
+    takerAddress?: string,
   ) => void;
 }
 
@@ -77,9 +77,8 @@ export default function MakeListingForm({ onConfirm, disabled }: Props) {
 
   const handleConfirm = (values: Form, formikHelpers: FormikHelpers<Form>) => {
     if (form.isValid) {
-      const decimals = tokenList.find(
-        (t) => t.address === values.tokenAddress
-      )?.decimals;
+      const decimals = tokenList.find((t) => t.address === values.tokenAddress)
+        ?.decimals;
 
       if (!isValidDecimal(values.price, decimals || 0)) {
         formikHelpers.setFieldError(
@@ -87,7 +86,7 @@ export default function MakeListingForm({ onConfirm, disabled }: Props) {
           formatMessage({
             id: 'invalid.price',
             defaultMessage: 'Invalid price',
-          })
+          }),
         );
 
         return;
@@ -97,7 +96,7 @@ export default function MakeListingForm({ onConfirm, disabled }: Props) {
         ethers.utils.parseUnits(values.price, decimals),
         values.tokenAddress,
         values.expiry || null,
-        values.taker
+        values.taker,
       );
 
       // formikHelpers.resetForm();
@@ -117,7 +116,7 @@ export default function MakeListingForm({ onConfirm, disabled }: Props) {
 
   const tokenSelected = useMemo(() => {
     const tokenIndex = tokenList.findIndex((t) =>
-      isAddressEqual(t.address, form.values.tokenAddress)
+      isAddressEqual(t.address, form.values.tokenAddress),
     );
 
     if (tokenIndex > -1) {

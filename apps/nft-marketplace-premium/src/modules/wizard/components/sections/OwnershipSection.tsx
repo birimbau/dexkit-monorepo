@@ -1,5 +1,5 @@
 import { CollectionOwnershipNFTFormType } from '@/modules/contract-wizard/types';
-import { Check } from '@mui/icons-material';
+import Check from '@mui/icons-material/Check';
 import Visibility from '@mui/icons-material/Visibility';
 import { Alert, Button, Grid, Stack, Typography } from '@mui/material';
 import { Formik } from 'formik';

@@ -4,8 +4,8 @@ import Typography from '@mui/material/Typography';
 
 import Box from '@mui/material/Box';
 
-import { Verified } from '@mui/icons-material';
 import TwitterIcon from '@mui/icons-material/Twitter';
+import Verified from '@mui/icons-material/Verified';
 import { IconButton, Stack, Tooltip, useTheme } from '@mui/material';
 import Image from 'next/image';
 import { FormattedMessage } from 'react-intl';

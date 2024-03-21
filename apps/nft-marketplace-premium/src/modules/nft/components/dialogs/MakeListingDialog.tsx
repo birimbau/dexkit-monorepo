@@ -33,7 +33,7 @@ import { ipfsUriToUrl } from '../../../../utils/ipfs';
 
 import { FormikHelpers, useFormik } from 'formik';
 
-import { ExpandMore } from '@mui/icons-material';
+import ExpandMore from '@mui/icons-material/ExpandMore';
 import { useWeb3React } from '@web3-react/core';
 import Image from 'next/image';
 import * as Yup from 'yup';

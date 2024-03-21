@@ -1,4 +1,6 @@
-import { NavigateNext, Search } from '@mui/icons-material';
+import NavigateNext from '@mui/icons-material/NavigateNext';
+import Search from '@mui/icons-material/Search';
+
 import {
   Box,
   Button,

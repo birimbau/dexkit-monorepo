@@ -1,6 +1,6 @@
 import { ChainId } from '@dexkit/core/constants';
-import { Search } from '@mui/icons-material';
 import FilterListIcon from '@mui/icons-material/FilterList';
+import Search from '@mui/icons-material/Search';
 import {
   Box,
   Chip,

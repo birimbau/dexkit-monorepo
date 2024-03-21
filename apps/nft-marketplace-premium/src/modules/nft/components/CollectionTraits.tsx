@@ -1,5 +1,5 @@
-import { Search } from '@mui/icons-material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import Search from '@mui/icons-material/Search';
 import {
   InputAdornment,
   List,

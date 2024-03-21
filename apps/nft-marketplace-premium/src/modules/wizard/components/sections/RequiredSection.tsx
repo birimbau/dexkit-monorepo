@@ -1,4 +1,5 @@
-import { Cancel, Edit } from '@mui/icons-material';
+import Cancel from '@mui/icons-material/Cancel';
+import Edit from '@mui/icons-material/Edit';
 import {
   Button,
   Card,
@@ -12,8 +13,8 @@ import { useCallback, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import * as Yup from 'yup';
-import InfoDialog from '../dialogs/FieldInfoDialog';
 import InputInfoAdornment from '../InputInfoAdornment';
+import InfoDialog from '../dialogs/FieldInfoDialog';
 
 export interface RequiredSectionForm {
   domain?: string;
@@ -45,14 +46,14 @@ export default function GeneralSection({
   const handleSubmit = useCallback(
     (
       values: RequiredSectionForm,
-      formikHelpers: FormikHelpers<RequiredSectionForm>
+      formikHelpers: FormikHelpers<RequiredSectionForm>,
     ) => {
       if (onSubmit) {
         onSubmit(values);
         setIsEditing(false);
       }
     },
-    [onSubmit]
+    [onSubmit],
   );
 
   const handleEdit = () => {
