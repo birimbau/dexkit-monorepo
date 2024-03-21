@@ -30,9 +30,12 @@ import {
 import { SwapApiOrder } from '../../../../types/nft';
 import ListingsTableRow from './ListingsTableRow';
 
-import { Share, Visibility } from '@mui/icons-material';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import {
+  default as Share,
+  default as Visibility,
+} from '@mui/icons-material/Visibility';
 import moment from 'moment';
 import { useRouter } from 'next/router';
 import { useState } from 'react';

@@ -9,8 +9,8 @@ import {
 } from '@mui/material';
 import { FormattedMessage } from 'react-intl';
 
-import { Share } from '@mui/icons-material';
 import LaunchIcon from '@mui/icons-material/Launch';
+import Share from '@mui/icons-material/Share';
 import { useWeb3React } from '@web3-react/core';
 import { useState } from 'react';
 import Link from '../../../components/Link';
@@ -66,7 +66,7 @@ export function AssetPageActions({ address, id }: Props) {
           onClose: handleCloseShareDialog,
         }}
         url={`${getWindowUrl()}/asset/${getNetworkSlugFromChainId(
-          asset?.chainId
+          asset?.chainId,
         )}/${address}/${id}`}
       />
       <Grid container spacing={2} alignItems="stretch" alignContent="center">
@@ -77,9 +77,9 @@ export function AssetPageActions({ address, id }: Props) {
                 <FormattedMessage id="owned.by" defaultMessage="Owned by" />
               </Typography>
               <Link
-                href={`${getBlockExplorerUrl(asset?.chainId)}/address/${
-                  asset?.owner
-                }`}
+                href={`${getBlockExplorerUrl(
+                  asset?.chainId,
+                )}/address/${asset?.owner}`}
                 color="primary"
                 target="_blank"
               >

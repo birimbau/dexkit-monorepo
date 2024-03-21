@@ -1,5 +1,5 @@
 import { ThemeMode } from '@dexkit/ui/constants/enum';
-import { Cancel } from '@mui/icons-material';
+import Cancel from '@mui/icons-material/Cancel';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import {
   Autocomplete,

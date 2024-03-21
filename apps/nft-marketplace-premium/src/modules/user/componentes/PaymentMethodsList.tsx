@@ -1,4 +1,4 @@
-import { CreditCard } from '@mui/icons-material';
+import CreditCard from '@mui/icons-material/CreditCard';
 import {
   Avatar,
   List,

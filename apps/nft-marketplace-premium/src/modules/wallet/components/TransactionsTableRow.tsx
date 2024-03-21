@@ -1,7 +1,8 @@
 import { NotificationMessage } from '@dexkit/ui/components/NotificationMessage';
 import { useDexKitContext } from '@dexkit/ui/hooks';
 import { AppNotification } from '@dexkit/ui/types';
-import { Done, Error } from '@mui/icons-material';
+import Done from '@mui/icons-material/Done';
+import Error from '@mui/icons-material/Error';
 import { CircularProgress, Icon, TableCell, TableRow } from '@mui/material';
 import moment from 'moment';
 import { useMemo } from 'react';

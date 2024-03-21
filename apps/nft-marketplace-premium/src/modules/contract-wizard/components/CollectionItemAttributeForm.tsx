@@ -1,4 +1,4 @@
-import { Delete } from '@mui/icons-material';
+import Delete from '@mui/icons-material/Delete';
 import { Box, Button, FormControl, Grid, MenuItem } from '@mui/material';
 import { Field, FieldArray } from 'formik';
 import { Select, TextField } from 'formik-mui';

@@ -22,15 +22,15 @@ import {
 } from '@mui/material';
 import TokensSectionList from '../sections/TokensSectionList';
 
-import { Search } from '@mui/icons-material';
+import Search from '@mui/icons-material/Search';
 import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { AppDialogTitle } from '../../../../components/AppDialogTitle';
 import { Token } from '../../../../types/blockchain';
 import {
+  DEXKIT_TOKENLIST_URL,
   GEMINI_TOKENLIST_URL,
   UNISWAP_DEFAULT_TOKENLIST_URL,
-  DEXKIT_TOKENLIST_URL,
 } from '../../constants';
 import { useTokenListUrl } from '../../hooks';
 import { TOKEN_KEY } from '../../utils';
@@ -134,7 +134,7 @@ export default function ImportTokenListDialog({
       onSave(
         tokenList.filter((token) => {
           return Boolean(selectedKeys[TOKEN_KEY(token)]);
-        })
+        }),
       );
 
       handleClose();
