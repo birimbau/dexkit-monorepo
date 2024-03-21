@@ -4,20 +4,18 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
-import React, { Dispatch, SetStateAction, useState } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { AppPage, MenuTree } from '../../../../../types/config';
 
 import AddIcon from '@mui/icons-material/Add';
-import DescriptionIcon from '@mui/icons-material/Description';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import LaunchIcon from '@mui/icons-material/Launch';
-import MenuIcon from '@mui/icons-material/Menu';
-import { Box, ListItemIcon, Tooltip } from '@mui/material';
+import { Box } from '@mui/material';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import AddMenuPageDialog from '../../dialogs/AddMenuPageDialog';
+import MenuItem from './MenuItem';
 import Submenu from './Submenu';
 
 interface Props {
@@ -193,49 +191,26 @@ export default function MenuSection(props: Props) {
     setIsOpen(false);
   };
 
-  const renderIcon = (type: 'Page' | 'Menu' | 'External') => {
-    const types: { [key: string]: React.ReactNode } = {
-      Page: (
-        <Tooltip title={<FormattedMessage id="page" defaultMessage="Page" />}>
-          <DescriptionIcon />
-        </Tooltip>
-      ),
-      Menu: (
-        <Tooltip title={<FormattedMessage id="menu" defaultMessage="Menu" />}>
-          <MenuIcon />
-        </Tooltip>
-      ),
-      External: (
-        <Tooltip
-          title={<FormattedMessage id="external" defaultMessage="External" />}
-        >
-          <LaunchIcon />
-        </Tooltip>
-      ),
-    };
-
-    return types[type];
-  };
-
-  const renderItem = (item: MenuTree, key: number) => {
+  const renderItem = (item: MenuTree, index: number) => {
     if (item.type === 'Menu') {
       return (
         <Submenu
-          key={key}
-          label={item.name}
-          children={item.children}
+          key={index}
+          item={item}
           pages={pages}
-          index={key}
+          onUpdateItem={(newItem: MenuTree) => {
+            const newMenu = [...menu];
+
+            newMenu[index] = newItem;
+
+            onSetMenu(newMenu);
+          }}
+          depth={0}
         />
       );
     }
 
-    return (
-      <ListItem key={key}>
-        <ListItemIcon>{renderIcon(item.type)}</ListItemIcon>
-        <ListItemText primary={item.name} />
-      </ListItem>
-    );
+    return <MenuItem item={item} key={index} depth={0} />;
   };
 
   return (
@@ -259,10 +234,7 @@ export default function MenuSection(props: Props) {
       >
         <FormattedMessage id="add.menu" defaultMessage="Add menu" />
       </Button>
-      <List disablePadding>
-        {menu.length > 0 &&
-          menu.map((item, index: number) => renderItem(item, index))}
-      </List>
+      {menu.map((item, index) => renderItem(item, index))}
     </Stack>
   );
 }
