@@ -1,10 +1,12 @@
 import { NETWORKS } from "@dexkit/core/constants/networks";
 import { Token } from "@dexkit/core/types";
+import { formatUnits } from "@dexkit/core/utils/ethers/formatUnits";
+import { isAddress } from "@dexkit/core/utils/ethers/isAddress";
 import { MagicConnector } from "@dexkit/wallet-connectors/connectors/magic";
 
 import { MetaMask } from "@web3-react/metamask";
 import { Connector } from "@web3-react/types";
-import { BigNumber, ethers } from "ethers";
+import { BigNumber } from "ethers";
 
 // import { MagicConnector } from "../connectors/magic";
 
@@ -23,7 +25,7 @@ export function isAddressEqual(address?: string, other?: string) {
     return false;
   }
 
-  if (!ethers.utils.isAddress(address) || !ethers.utils.isAddress(other)) {
+  if (!isAddress(address) || !isAddress(other)) {
     return false;
   }
 
@@ -33,7 +35,7 @@ export function isAddressEqual(address?: string, other?: string) {
 export function formatBigNumber(val: BigNumber, decimals: number) {
   // TODO: improve this code in the future
   // pass to a memoized component or something
-  const value = ethers.utils.formatUnits(val, decimals);
+  const value = formatUnits(val, decimals);
 
   let index = value.indexOf(".");
 

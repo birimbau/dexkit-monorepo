@@ -8,6 +8,7 @@ import {
 import FileCopy from "@mui/icons-material/FileCopy";
 import Token from "@mui/icons-material/Token";
 
+import { parseUnits } from "@dexkit/core/utils/ethers/parseUnits";
 import {
   Autocomplete,
   AutocompleteChangeReason,
@@ -21,7 +22,6 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { ethers } from "ethers";
 import {
   ChangeEvent,
   SyntheticEvent,
@@ -85,7 +85,7 @@ export default function EvmReceive({
       receiver,
       chainId: coin?.network.chainId ? coin?.network.chainId : chainId,
       amount: amount
-        ? ethers.utils.parseUnits(String(amount), coin?.decimals).toString()
+        ? parseUnits(String(amount), coin?.decimals).toString()
         : undefined,
     });
   }, [coin, receiver, chainId, amount]);
@@ -126,9 +126,7 @@ export default function EvmReceive({
           }
           amount={
             amount
-              ? ethers.utils
-                  .parseUnits(String(amount), coin?.decimals)
-                  .toString()
+              ? parseUnits(String(amount), coin?.decimals).toString()
               : undefined
           }
         />
@@ -233,7 +231,7 @@ export default function EvmReceive({
               ? coin.contractAddress
               : undefined,
           amount: amount
-            ? ethers.utils.parseUnits(String(amount), coin?.decimals).toString()
+            ? parseUnits(String(amount), coin?.decimals).toString()
             : undefined,
         })}
         variant="contained"

@@ -8,7 +8,8 @@ import {
 } from '@mui/material';
 
 import { ChainId } from '@dexkit/core/constants';
-import { formatUnits } from 'ethers/lib/utils';
+
+import { formatUnits } from '@dexkit/core/utils/ethers/formatUnits';
 import { Token, TokenBalance } from '../../../types/blockchain';
 import { TOKEN_ICON_URL } from '../../../utils/token';
 

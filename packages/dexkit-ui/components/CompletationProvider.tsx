@@ -25,6 +25,7 @@ export interface CompletationProviderProps {
   onCompletation: (output: string) => void;
   initialPrompt?: string;
   multiline?: boolean;
+  messages?: { role: string; content: string }[];
 }
 
 export default function CompletationProvider({
@@ -32,6 +33,7 @@ export default function CompletationProvider({
   onCompletation,
   initialPrompt,
   multiline,
+  messages,
 }: CompletationProviderProps) {
   const [showAiComp, setShowAiComp] = useState(false);
   const [openMediaDialog, setOpenMediaDialog] = useState(false);
@@ -48,7 +50,9 @@ export default function CompletationProvider({
     completationMutation.reset();
   };
 
-  const handleCompletation = useCallback(async () => {}, []);
+  const handleCompletation = useCallback(async () => {
+    setShowAiComp(true);
+  }, [handleOpenComp]);
 
   const inputAdornment = useCallback(
     (position: "start" | "end") => {
@@ -78,13 +82,13 @@ export default function CompletationProvider({
         case TextImproveAction.GENERATE:
           return `Generate a text based for: "${prompt}".`;
         case TextImproveAction.IMPROVE_WRITING:
-          return `Improve text writing for: "${prompt}"`;
+          return `Improve text writing for: "${prompt}".`;
         case TextImproveAction.IMPROVE_SPELLING:
-          return `Improve text spelling and grammar for: "${prompt}"`;
+          return `Improve text spelling and grammar for: "${prompt}".`;
         case TextImproveAction.MAKE_SHORTER:
-          return `Make this text shorter: "${prompt}"`;
+          return `Make this text shorter: "${prompt}".`;
         case TextImproveAction.MAKE_LONGER:
-          return `Make this text longer: "${prompt}"`;
+          return `Make this text longer: "${prompt}".`;
       }
     },
     []
@@ -98,14 +102,19 @@ export default function CompletationProvider({
       } else if (action) {
         const actionPrompt = getPromptByAction(prompt, action);
         if (actionPrompt) {
+          const promptMessages = messages
+            ? [...messages, { role: "user", content: actionPrompt }]
+            : [
+                {
+                  role: "user",
+                  content:
+                    "You are an assistant. Do not return text with quotes",
+                },
+                { role: "user", content: actionPrompt },
+              ];
+
           await completationMutation.mutateAsync({
-            messages: [
-              {
-                role: "user",
-                content: "You are an assistant. Do not return text with quotes",
-              },
-              { role: "user", content: actionPrompt },
-            ],
+            messages: promptMessages,
           });
         }
       }

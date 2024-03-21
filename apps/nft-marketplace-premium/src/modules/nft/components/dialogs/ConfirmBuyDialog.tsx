@@ -16,9 +16,10 @@ import {
 } from '@mui/material';
 import { AppDialogTitle } from '../../../../components/AppDialogTitle';
 
+import { formatUnits } from '@dexkit/core/utils/ethers/formatUnits';
 import { Box } from '@mui/material';
 import { useWeb3React } from '@web3-react/core';
-import { ethers } from 'ethers';
+import { BigNumber } from 'ethers';
 import Image from 'next/image';
 import { useMemo, useState } from 'react';
 import { FormattedMessage, FormattedNumber, useIntl } from 'react-intl';
@@ -75,7 +76,7 @@ export default function ConfirmBuyDialog({
 
   const hasSufficientFunds = useMemo(() => {
     if (token !== undefined) {
-      const orderTokenAmount: ethers.BigNumber = ethers.BigNumber.from(
+      const orderTokenAmount: BigNumber = BigNumber.from(
         order?.erc20TokenAmount,
       );
       if (quantity > 1) {
@@ -108,10 +109,7 @@ export default function ConfirmBuyDialog({
             return (
               (ratio *
                 parseFloat(
-                  ethers.utils.formatUnits(
-                    order?.erc20TokenAmount,
-                    token.decimals,
-                  ),
+                  formatUnits(order?.erc20TokenAmount, token.decimals),
                 )) /
               quantity
             );
@@ -119,9 +117,7 @@ export default function ConfirmBuyDialog({
 
           return (
             ratio *
-            parseFloat(
-              ethers.utils.formatUnits(order?.erc20TokenAmount, token.decimals),
-            )
+            parseFloat(formatUnits(order?.erc20TokenAmount, token.decimals))
           );
         } else {
           return 0;
@@ -212,16 +208,14 @@ export default function ConfirmBuyDialog({
                       </Tooltip>
                       <Typography sx={{ fontWeight: 600 }} variant="body1">
                         {asset?.protocol === 'ERC1155'
-                          ? ethers.utils.formatUnits(
-                              ethers.BigNumber.from(
+                          ? formatUnits(
+                              BigNumber.from(
                                 order?.erc20TokenAmount || '0',
                               ).div(order?.erc1155TokenAmount || '1'),
                               token?.decimals,
                             )
-                          : ethers.utils.formatUnits(
-                              ethers.BigNumber.from(
-                                order?.erc20TokenAmount || '0',
-                              ),
+                          : formatUnits(
+                              BigNumber.from(order?.erc20TokenAmount || '0'),
                               token?.decimals,
                             )}{' '}
                         {token?.symbol}
@@ -291,8 +285,8 @@ export default function ConfirmBuyDialog({
                         <b>
                           {quantity *
                             Number(
-                              ethers.utils.formatUnits(
-                                ethers.BigNumber.from(
+                              formatUnits(
+                                BigNumber.from(
                                   order?.erc20TokenAmount || '0',
                                 ).div(order?.erc1155TokenAmount || '1'),
                                 token?.decimals,
@@ -339,8 +333,8 @@ export default function ConfirmBuyDialog({
                   {erc20Balance.isLoading ? (
                     <Skeleton />
                   ) : (
-                    ethers.utils.formatUnits(
-                      erc20Balance.data || ethers.BigNumber.from(0),
+                    formatUnits(
+                      erc20Balance.data || BigNumber.from(0),
                       token?.decimals,
                     )
                   )}{' '}

@@ -14,7 +14,7 @@ import {
   Typography,
 } from "@mui/material";
 
-import { BigNumber, ethers } from "ethers";
+import { BigNumber } from "ethers";
 
 import { useWeb3React } from "@web3-react/core";
 import moment from "moment";
@@ -33,6 +33,8 @@ import { TOKEN_ICON_URL } from "@dexkit/core/constants";
 import { TokenWhitelabelApp } from "@dexkit/core/types";
 import { Asset } from "@dexkit/core/types/nft";
 import { ipfsUriToUrl, isAddressEqual } from "@dexkit/core/utils";
+import { formatUnits } from "@dexkit/core/utils/ethers/formatUnits";
+import { parseUnits } from "@dexkit/core/utils/ethers/parseUnits";
 import { isValidDecimal } from "@dexkit/core/utils/numbers";
 import DurationSelect from "../../../nft/components/DurationSelect";
 
@@ -53,7 +55,7 @@ interface Props {
   asset?: Asset;
   disabled?: boolean;
   onConfirm: (
-    price: ethers.BigNumber,
+    price: BigNumber,
     tokenAddress: string,
     expiry: Date | null
   ) => void;
@@ -71,9 +73,8 @@ export default function MakeOfferForm({ onConfirm, asset, disabled }: Props) {
   const { formatMessage } = useIntl();
 
   const handleConfirm = (values: Form, formikHelpers: FormikHelpers<Form>) => {
-    const decimals = tokenList.find(
-      (t) => t.address === values.tokenAddress
-    )?.decimals;
+    const decimals = tokenList.find((t) => t.address === values.tokenAddress)
+      ?.decimals;
 
     if (!isValidDecimal(values.price, decimals || 1)) {
       formikHelpers.setFieldError(
@@ -86,7 +87,7 @@ export default function MakeOfferForm({ onConfirm, asset, disabled }: Props) {
     }
 
     onConfirm(
-      ethers.utils.parseUnits(values.price, decimals),
+      parseUnits(values.price, decimals),
       values.tokenAddress,
       values.expiry || null
     );
@@ -101,12 +102,11 @@ export default function MakeOfferForm({ onConfirm, asset, disabled }: Props) {
       tokenAddress: tokenList.length > 0 ? tokenList[0].address : "",
     },
     validate: async (values) => {
-      const decimals = tokenList.find(
-        (t) => t.address === values.tokenAddress
-      )?.decimals;
+      const decimals = tokenList.find((t) => t.address === values.tokenAddress)
+        ?.decimals;
 
       if (values.price !== "" && isValidDecimal(values.price, decimals || 1)) {
-        const priceValue = ethers.utils.parseUnits(values.price);
+        const priceValue = parseUnits(values.price);
 
         const errors: FormikErrors<Form> = {};
 
@@ -299,8 +299,8 @@ export default function MakeOfferForm({ onConfirm, asset, disabled }: Props) {
                   {erc20Balance.isLoading ? (
                     <Skeleton />
                   ) : (
-                    ethers.utils.formatUnits(
-                      erc20Balance.data || ethers.BigNumber.from(0),
+                    formatUnits(
+                      erc20Balance.data || BigNumber.from(0),
                       tokenSelected.decimals
                     )
                   )}{" "}

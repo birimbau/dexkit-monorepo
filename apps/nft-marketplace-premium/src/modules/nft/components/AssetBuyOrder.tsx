@@ -17,6 +17,7 @@ import { isAddressEqual } from '../../../utils/blockchain';
 import TableSkeleton from './tables/TableSkeleton';
 
 import { UserEvents } from '@dexkit/core/constants/userEvents';
+import { formatUnits } from '@dexkit/core/utils/ethers/formatUnits';
 import { useDexKitContext } from '@dexkit/ui/hooks';
 import CancelIcon from '@mui/icons-material/Cancel';
 import {
@@ -24,7 +25,7 @@ import {
   SwappableAssetV4,
   TradeDirection,
 } from '@traderxyz/nft-swap-sdk';
-import { BigNumber, ethers } from 'ethers';
+import { BigNumber } from 'ethers';
 import dynamic from 'next/dynamic';
 import { useConnectWalletDialog } from 'src/hooks/app';
 import { OrderDirection } from 'src/types/orderbook';
@@ -143,7 +144,7 @@ export function AssetBuyOrder({ asset, orderBookItem }: Props) {
       const values = {
         collectionName: asset.collectionName,
         id: asset.id,
-        amount: ethers.utils.formatUnits(order.erc20TokenAmount, decimals),
+        amount: formatUnits(order.erc20TokenAmount, decimals),
         symbol,
       };
 
@@ -153,7 +154,7 @@ export function AssetBuyOrder({ asset, orderBookItem }: Props) {
         'erc1155Token' in order &&
         order.direction === TradeDirection.SellNFT
       ) {
-        values.amount = ethers.utils.formatUnits(
+        values.amount = formatUnits(
           BigNumber.from(order.erc20TokenAmount)
             .mul(
               BigNumber.from(quantity)
@@ -236,7 +237,7 @@ export function AssetBuyOrder({ asset, orderBookItem }: Props) {
         const values = {
           collectionName: asset.collectionName,
           id: asset.id,
-          amount: ethers.utils.formatUnits(order.erc20TokenAmount, decimals),
+          amount: formatUnits(order.erc20TokenAmount, decimals),
           symbol,
         };
 
@@ -249,7 +250,7 @@ export function AssetBuyOrder({ asset, orderBookItem }: Props) {
           'erc1155Token' in order &&
           order.direction === TradeDirection.SellNFT
         ) {
-          values.amount = ethers.utils.formatUnits(
+          values.amount = formatUnits(
             BigNumber.from(order.erc20TokenAmount)
               .mul(
                 BigNumber.from(quantity)

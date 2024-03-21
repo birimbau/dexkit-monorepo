@@ -2,14 +2,21 @@ import {
   AppPageSection,
   MarkdownEditorPageSection,
 } from '@/modules/wizard/types/section';
+import CompletationProvider from '@dexkit/ui/components/CompletationProvider';
+import AutoAwesome from '@mui/icons-material/AutoAwesome';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import '@uiw/react-markdown-preview/markdown.css';
+import { ExecuteState, TextAreaTextApi } from '@uiw/react-md-editor';
+
+import * as commands from '@uiw/react-md-editor/commands';
+
 import '@uiw/react-md-editor/markdown-editor.css';
 import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
+
 const MDEditor = dynamic(
   () => import('@uiw/react-md-editor').then((mod) => mod.default),
   { ssr: false },
@@ -47,10 +54,85 @@ export default function MDSectionForm({
     });
   }, [value]);
 
+  const { formatMessage } = useIntl();
+  const [initialPrompt, setInitialPrompt] = useState('');
+
+  const [textPos, setTextPos] = useState({ before: '', after: '' });
+
   return (
     <Grid container spacing={2}>
       <Grid item xs={12}>
-        <MDEditor value={value} onChange={setValue} />
+        <CompletationProvider
+          onCompletation={(output: string) => {
+            setValue(`${textPos.before}${output}${textPos.after}`);
+          }}
+          multiline
+          messages={[
+            {
+              role: 'system',
+              content: 'You are a helpful markdown editor assistant.',
+            },
+            {
+              role: 'user',
+              content:
+                'Only return the result of what I ask. Do not return quotes for the results',
+            },
+          ]}
+          initialPrompt={initialPrompt}
+        >
+          {({ open, ref }) => (
+            <MDEditor
+              value={value}
+              onChange={setValue}
+              ref={ref}
+              commands={[
+                ...commands.getCommands(),
+                {
+                  keyCommand: 'ai',
+                  name: formatMessage({
+                    id: 'artificial.inteligence',
+                    defaultMessage: 'Artificial Inteligence',
+                  }),
+
+                  render: (command, disabled, executeCommand) => {
+                    return (
+                      <button
+                        disabled={disabled}
+                        onClick={(evn) => {
+                          // evn.stopPropagation();
+                          executeCommand(command, command.groupName);
+                        }}
+                      >
+                        <AutoAwesome fontSize="inherit" />
+                      </button>
+                    );
+                  },
+                  icon: <AutoAwesome fontSize="inherit" />,
+                  execute: async (
+                    state: ExecuteState,
+                    api: TextAreaTextApi,
+                  ) => {
+                    open();
+
+                    setInitialPrompt(state.selectedText);
+
+                    const before = state.text.substring(
+                      0,
+                      state.selection.start,
+                    );
+
+                    const after = state.text.substring(
+                      state.selection.end,
+                      state.text.length,
+                    );
+
+                    setTextPos({ before, after });
+                  },
+                },
+              ]}
+            />
+          )}
+        </CompletationProvider>
       </Grid>
       <Grid item xs={12}>
         <Stack spacing={2} direction="row" justifyContent="flex-end">

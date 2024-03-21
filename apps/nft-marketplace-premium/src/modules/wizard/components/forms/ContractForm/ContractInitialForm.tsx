@@ -13,7 +13,8 @@ import {
   InputLabel,
   MenuItem,
 } from '@mui/material';
-import { isAddress } from 'ethers/lib/utils';
+
+import { isAddress } from '@dexkit/core/utils/ethers/isAddress';
 import { Field, useFormikContext } from 'formik';
 import { Checkbox, Select } from 'formik-mui';
 import { memo } from 'react';

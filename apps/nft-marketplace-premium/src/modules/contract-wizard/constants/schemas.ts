@@ -1,4 +1,4 @@
-import { ethers } from 'ethers';
+import { isAddress } from '@dexkit/core/utils/ethers/isAddress';
 import { URL_REGEX } from 'src/constants';
 import * as Yup from 'yup';
 
@@ -94,7 +94,7 @@ export const ContractMetadataFormSchema = Yup.object().shape({
 const addressArray = Yup.array().of(
   Yup.string()
     .test('address', (value) => {
-      return value !== undefined ? ethers.utils.isAddress(value) : true;
+      return value !== undefined ? isAddress(value) : true;
     })
     .required(),
 );

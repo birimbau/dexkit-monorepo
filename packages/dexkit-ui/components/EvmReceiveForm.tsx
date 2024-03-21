@@ -13,7 +13,8 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { isAddress } from "ethers/lib/utils";
+
+import { isAddress } from "@dexkit/core/utils/ethers/isAddress";
 import {
   ChangeEvent,
   SyntheticEvent,

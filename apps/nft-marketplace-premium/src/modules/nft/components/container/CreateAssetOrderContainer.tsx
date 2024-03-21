@@ -31,7 +31,7 @@ import {
 import { SwappableAssetV4 } from '@traderxyz/nft-swap-sdk';
 import { PostOrderResponsePayload } from '@traderxyz/nft-swap-sdk/dist/sdk/v4/orderbook';
 import { useWeb3React } from '@web3-react/core';
-import { ethers } from 'ethers';
+import { BigNumber } from 'ethers';
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import { useCallback, useMemo, useState } from 'react';
@@ -272,7 +272,7 @@ export const CreateAssetOrderContainer = () => {
   });
 
   const handleConfirmMakeListing = async (
-    amount: ethers.BigNumber,
+    amount: BigNumber,
     tokenAddress: string,
     expiry: Date | null,
     takerAddress?: string,
@@ -317,7 +317,7 @@ export const CreateAssetOrderContainer = () => {
   };
 
   const handleConfirmMakeOffer = async (
-    amount: ethers.BigNumber,
+    amount: BigNumber,
     tokenAddress: string,
     expiry: Date | null,
   ) => {

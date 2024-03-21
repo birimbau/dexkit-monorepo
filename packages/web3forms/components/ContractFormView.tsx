@@ -2,9 +2,10 @@ import { Box } from "@mui/material";
 import Grid from "@mui/material/Grid";
 
 import { NETWORKS } from "@dexkit/core/constants/networks";
+import { parseEther } from "@dexkit/core/utils/ethers/parseEther";
 import { useSwitchNetworkMutation } from "@dexkit/ui/hooks";
 import { useWeb3React } from "@web3-react/core";
-import { BigNumber, ethers } from "ethers";
+import { BigNumber, providers } from "ethers";
 import { useCallback, useMemo, useState } from "react";
 import { useCallOnMountFields, useContractCallMutation } from "../hooks";
 import { CallParams, ContractFormParams } from "../types";
@@ -30,7 +31,7 @@ export default function ContractFormView({ params }: Props) {
     let network = NETWORKS[contractChainId];
 
     if (network) {
-      return new ethers.providers.JsonRpcProvider(network.providerRpcUrl);
+      return new providers.JsonRpcProvider(network.providerRpcUrl);
     }
   }, [contractChainId]);
 
@@ -141,9 +142,7 @@ export default function ContractFormView({ params }: Props) {
       params.fields[callParams.name] &&
       params.fields[callParams.name].payableAmount !== undefined
     ) {
-      return ethers.utils.parseEther(
-        params.fields[callParams.name].payableAmount || "0.0"
-      );
+      return parseEther(params.fields[callParams.name].payableAmount || "0.0");
     }
   }, [params, callParams]);
 

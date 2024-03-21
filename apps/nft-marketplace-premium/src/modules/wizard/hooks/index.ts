@@ -5,7 +5,7 @@ import { AppWizardConfigContext } from '../../../contexts';
 import { ChainId } from '@dexkit/core';
 import { NETWORKS } from '@dexkit/core/constants/networks';
 import { NFTDrop } from '@thirdweb-dev/sdk';
-import { ethers } from 'ethers';
+import { providers } from 'ethers';
 import { QUERY_ADMIN_WHITELABEL_CONFIG_NAME } from 'src/hooks/whitelabel';
 import { getAccessToken } from 'src/services/auth';
 import { myAppsApi } from 'src/services/whitelabel';
@@ -112,7 +112,7 @@ export const JSON_RPC_PROVIDER = 'JSON_RPC_PROVIDER';
 export function useJsonRpcProvider({ chainId }: { chainId: ChainId }) {
   return useQuery([JSON_RPC_PROVIDER, chainId], () => {
     if (chainId) {
-      return new ethers.providers.JsonRpcProvider(
+      return new providers.JsonRpcProvider(
         NETWORKS[chainId].providerRpcUrl,
       );
     }

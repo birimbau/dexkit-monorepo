@@ -1,7 +1,7 @@
 import { useEnsNameMutation } from "@dexkit/core/hooks";
+import { isAddress } from "@dexkit/core/utils/ethers/isAddress";
 import { Stack, Typography } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
-import { ethers } from "ethers";
 import { Field, useField } from "formik";
 import { TextField } from "formik-mui";
 import { useState } from "react";
@@ -40,7 +40,7 @@ export function AddressField() {
               return "invalid ens";
             }
           }
-          if (value && ethers.utils.isAddress(value)) {
+          if (value && isAddress(value)) {
             return;
           }
           return "invalid address";

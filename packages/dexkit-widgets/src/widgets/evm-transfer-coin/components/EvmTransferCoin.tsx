@@ -9,8 +9,9 @@ import CopyIconButton from "@dexkit/ui/components/CopyIconButton";
 import { useDexKitContext } from "@dexkit/ui/hooks";
 import FileCopy from "@mui/icons-material/FileCopy";
 
+import { formatUnits } from "@dexkit/core/utils/ethers/formatUnits";
 import { Divider, Skeleton, Stack, Typography } from "@mui/material";
-import { ethers } from "ethers";
+import { providers } from "ethers";
 import { useSnackbar } from "notistack";
 import { useMemo, useState } from "react";
 import { useIntl } from "react-intl";
@@ -22,7 +23,7 @@ export interface EvmTransferCoinProps {
   chainId?: number;
   onSwitchNetwork?: ({ chainId }: { chainId?: number }) => void;
   onConnectWallet?: () => void;
-  provider?: ethers.providers.Web3Provider;
+  provider?: providers.Web3Provider;
   coins?: EvmCoin[];
   defaultCoin?: EvmCoin;
   evmAccounts?: { address: string }[];
@@ -156,12 +157,12 @@ export default function EvmTransferCoin({
   const balance = useMemo(() => {
     if (values.coin) {
       if (values.coin.coinType === CoinTypes.EVM_ERC20 && erc20Balance) {
-        return ethers.utils.formatUnits(erc20Balance, values.coin.decimals);
+        return formatUnits(erc20Balance, values.coin.decimals);
       } else if (
         values.coin.coinType === CoinTypes.EVM_NATIVE &&
         nativeBalance
       ) {
-        return ethers.utils.formatUnits(nativeBalance, values.coin.decimals);
+        return formatUnits(nativeBalance, values.coin.decimals);
       }
     }
 

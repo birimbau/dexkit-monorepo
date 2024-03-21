@@ -1,10 +1,10 @@
 import { ERC1155Abi, ERC165Abi, ERC721Abi, IERC7572 } from '@dexkit/core/constants/abis';
 import { Asset, AssetMetadata } from '@dexkit/core/types/nft';
+import { Interface } from '@dexkit/core/utils/ethers/abi/Interface';
 import { ipfsUriToUrl } from '@dexkit/core/utils/ipfs';
 import { CallInput } from '@indexed-finance/multicall';
 import axios from 'axios';
-import { Contract, ethers } from 'ethers';
-import { Interface } from 'ethers/lib/utils';
+import { Contract, providers } from 'ethers';
 import { DEXKIT_NFT_BASE_URL, ENS_BASE_URL, TRADER_ORDERBOOK_API, dexkitNFTapi, metadataENSapi } from '../../../constants/api';
 import { getMulticallFromProvider } from '../../../services/multical';
 import { AssetAPI, Collection, ContractURIMetadata, OrderbookAPI, OrderbookResponse, TraderOrderFilter } from '../types';
@@ -79,7 +79,7 @@ export async function getAssetMetadata(
 
 //Return multiple assets at once
 export async function getAssetsData(
-  provider: ethers.providers.JsonRpcProvider,
+  provider: providers.JsonRpcProvider,
   contractAddress: string,
   ids: string[],
   isERC1155 = false
@@ -144,7 +144,7 @@ export async function getAssetsData(
 }
 
 export async function getENSAssetData(
-  provider?: ethers.providers.JsonRpcProvider,
+  provider?: providers.JsonRpcProvider,
   contractAddress?: string,
   id?: string
 ): Promise<Asset | undefined> {
@@ -155,7 +155,7 @@ export async function getENSAssetData(
   const response = await metadataENSapi.get(`/mainnet/${contractAddress}/${id}`);
   const data = response.data;
   const iface = new Interface(ERC721Abi);
-  const contract = new ethers.Contract(contractAddress, iface, provider);
+  const contract = new Contract(contractAddress, iface, provider);
   const owner = await contract.ownerOf(id);
 
   if (data) {
@@ -172,7 +172,7 @@ export async function getENSAssetData(
   }
 }
 
-export async function getAssetProtocol(provider?: ethers.providers.JsonRpcProvider, contractAddress?: string): Promise<'ERC721' | 'ERC1155' | 'ERC20' | 'UNKNOWN'> {
+export async function getAssetProtocol(provider?: providers.JsonRpcProvider, contractAddress?: string): Promise<'ERC721' | 'ERC1155' | 'ERC20' | 'UNKNOWN'> {
   if (!provider || !contractAddress) {
     return 'UNKNOWN';
   }
@@ -200,7 +200,7 @@ export async function getAssetProtocol(provider?: ethers.providers.JsonRpcProvid
 
 
 export async function getAssetData(
-  provider?: ethers.providers.JsonRpcProvider,
+  provider?: providers.JsonRpcProvider,
   contractAddress?: string,
   id?: string,
   account?: string
@@ -333,7 +333,7 @@ export async function getContractUriMetadata({ contractURI }: { contractURI?: st
 }
 
 export async function getContractURI({ provider, contractAddress }: {
-  provider?: ethers.providers.JsonRpcProvider,
+  provider?: providers.JsonRpcProvider,
   contractAddress?: string
 }) {
   if (!contractAddress) {
@@ -347,7 +347,7 @@ export async function getContractURI({ provider, contractAddress }: {
 
 
 export async function getCollectionData(
-  provider?: ethers.providers.JsonRpcProvider,
+  provider?: providers.JsonRpcProvider,
   contractAddress?: string,
   chainNetwork?: number
 ): Promise<Collection | undefined> {

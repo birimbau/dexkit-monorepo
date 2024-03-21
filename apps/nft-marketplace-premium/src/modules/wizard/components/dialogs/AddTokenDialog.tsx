@@ -23,8 +23,8 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import * as Yup from 'yup';
 
 import { ImageFormUpload } from '@/modules/contract-wizard/components/ImageFormUpload';
+import { isAddress } from '@dexkit/core/utils/ethers/isAddress';
 import { AxiosError } from 'axios';
-import { ethers } from 'ethers';
 import { useSnackbar } from 'notistack';
 import { AppDialogTitle } from '../../../../components/AppDialogTitle';
 import { NETWORKS } from '../../../../constants/chain';
@@ -55,7 +55,7 @@ const FormSchema: Yup.SchemaOf<Form> = Yup.object().shape({
   chainId: Yup.number().required(),
   contractAddress: Yup.string()
     .test('address', (value) => {
-      return value !== undefined ? ethers.utils.isAddress(value) : true;
+      return value !== undefined ? isAddress(value) : true;
     })
     .required(),
 
@@ -77,7 +77,7 @@ function AddTokenDialog({ dialogProps, tokens, onSave }: Props) {
       const token = tokens.find(
         (t) =>
           Number(t.chainId) === Number(values.chainId) &&
-          isAddressEqual(values.contractAddress, t.address)
+          isAddressEqual(values.contractAddress, t.address),
       );
 
       if (!token) {
@@ -101,7 +101,7 @@ function AddTokenDialog({ dialogProps, tokens, onSave }: Props) {
               vertical: 'bottom',
               horizontal: 'right',
             },
-          }
+          },
         );
       }
 
@@ -111,7 +111,7 @@ function AddTokenDialog({ dialogProps, tokens, onSave }: Props) {
         onClose({}, 'escapeKeyDown');
       }
     },
-    [String(tokens), enqueueSnackbar, onClose]
+    [String(tokens), enqueueSnackbar, onClose],
   );
 
   const formik = useFormik<Form>({
@@ -146,7 +146,7 @@ function AddTokenDialog({ dialogProps, tokens, onSave }: Props) {
           decimals: decimals || 0,
           symbol: symbol || '',
         }),
-        true
+        true,
       );
     },
     onError: (err: AxiosError) => {
@@ -173,7 +173,7 @@ function AddTokenDialog({ dialogProps, tokens, onSave }: Props) {
       const token = tokens.find(
         (t) =>
           t.chainId === formik.values.chainId &&
-          isAddressEqual(lazyAddress, t.address)
+          isAddressEqual(lazyAddress, t.address),
       );
 
       if (token) {
@@ -182,7 +182,7 @@ function AddTokenDialog({ dialogProps, tokens, onSave }: Props) {
           formatMessage({
             id: 'token.already.imported',
             defaultMessage: 'Token already imported',
-          })
+          }),
         );
       } else {
         tokenData.mutate({
@@ -234,7 +234,7 @@ function AddTokenDialog({ dialogProps, tokens, onSave }: Props) {
                       chainId: tk?.chainId || 0,
                       logoURI: tk?.logoURI || '',
                     }),
-                    true
+                    true,
                   );
                 }
               }}
@@ -256,7 +256,7 @@ function AddTokenDialog({ dialogProps, tokens, onSave }: Props) {
                   >
                     <Avatar
                       src={ipfsUriToUrl(
-                        NETWORKS[formik.values.chainId].imageUrl || ''
+                        NETWORKS[formik.values.chainId].imageUrl || '',
                       )}
                       style={{ width: 'auto', height: '1rem' }}
                     />
@@ -283,7 +283,7 @@ function AddTokenDialog({ dialogProps, tokens, onSave }: Props) {
                       >
                         <Avatar
                           src={ipfsUriToUrl(
-                            (NETWORKS[key] as Network)?.imageUrl || ''
+                            (NETWORKS[key] as Network)?.imageUrl || '',
                           )}
                           sx={{
                             width: 'auto',

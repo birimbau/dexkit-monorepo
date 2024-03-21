@@ -10,10 +10,10 @@ import {
   DialogProps,
 } from "@mui/material";
 import { GridRowId } from "@mui/x-data-grid";
-import { ethers } from "ethers";
 import { useMemo, useState } from "react";
 import { FormattedMessage } from "react-intl";
 
+import { isAddress } from "@dexkit/core/utils/ethers/isAddress";
 import { createMerkleTreeFromAllowList } from "@thirdweb-dev/react";
 import { AppDialogTitle } from "../../../components/AppDialogTitle";
 
@@ -116,7 +116,7 @@ export default function ClaimAirdropDialog({
               name: "address",
               width: 400,
               isValid: (value: unknown) => {
-                return ethers.utils.isAddress(value as string);
+                return isAddress(value as string);
               },
               editable: true,
             },

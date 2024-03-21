@@ -2,12 +2,13 @@ import { ChainId } from "@dexkit/core/constants/enums";
 import { NETWORK_COIN_SYMBOL } from "@dexkit/core/constants/networks";
 import { Info, Sync } from "@mui/icons-material";
 import { Box, IconButton, Stack, Tooltip, Typography } from "@mui/material";
-import { BigNumber, ethers } from "ethers";
+import { BigNumber, constants, providers } from "ethers";
 import { useMemo, useState } from "react";
 import { FormattedMessage, FormattedNumber } from "react-intl";
 
 import { GET_NATIVE_TOKEN } from "@dexkit/core/constants";
 import { Token } from "@dexkit/core/types";
+import { formatEther } from "@dexkit/core/utils/ethers/formatEther";
 import { useCoinPrices, useGasPrice } from "../../hooks";
 import { ZeroExQuoteResponse } from "../../services/zeroex/types";
 import { formatBigNumber } from "../../utils";
@@ -18,7 +19,7 @@ export interface SwapFeeSummaryProps {
   currency: string;
   sellToken?: Token;
   buyToken?: Token;
-  provider?: ethers.providers.BaseProvider;
+  provider?: providers.BaseProvider;
 }
 
 export default function SwapFeeSummary({
@@ -56,13 +57,13 @@ export default function SwapFeeSummary({
   }, [amount, maxFee]);
 
   const totalFiat = useMemo(() => {
-    const amount = parseFloat(ethers.utils.formatEther(totalFee));
+    const amount = parseFloat(formatEther(totalFee));
 
     if (coinPrices.data && chainId && currency) {
       const t = coinPrices.data[chainId];
 
       if (t) {
-        const price = t[ethers.constants.AddressZero];
+        const price = t[constants.AddressZero];
 
         return amount * price[currency];
       }
@@ -105,7 +106,7 @@ export default function SwapFeeSummary({
     const t = coinPrices.data[chainId];
 
     if (t) {
-      const price = t[ethers.constants.AddressZero];
+      const price = t[constants.AddressZero];
       return price[currency];
     }
   }

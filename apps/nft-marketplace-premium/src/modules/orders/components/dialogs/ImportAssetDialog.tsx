@@ -40,7 +40,7 @@ import {
 } from '../../../../utils/blockchain';
 import { ipfsUriToUrl } from '../../../../utils/ipfs';
 
-import { ethers } from 'ethers';
+import { isAddress } from '@dexkit/core/utils/ethers/isAddress';
 import { useSnackbar } from 'notistack';
 import * as Yup from 'yup';
 import { useDebounce } from '../../../../hooks/misc';
@@ -55,7 +55,7 @@ interface Form {
 const FormSchema: Yup.SchemaOf<Form> = Yup.object().shape({
   contractAddress: Yup.string()
     .test('address', (value) => {
-      return value !== undefined ? ethers.utils.isAddress(value) : true;
+      return value !== undefined ? isAddress(value) : true;
     })
     .required(),
 
@@ -212,10 +212,7 @@ export default function ImportAssetDialog({ dialogProps }: Props) {
     value: AppCollection | null,
   ) => {
     setSelectedOption(value);
-    if (
-      value?.contractAddress &&
-      ethers.utils.isAddress(value?.contractAddress)
-    ) {
+    if (value?.contractAddress && isAddress(value?.contractAddress)) {
       formik.setValues(
         { contractAddress: value?.contractAddress, tokenId: '' },
         true,

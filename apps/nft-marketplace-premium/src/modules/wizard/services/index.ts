@@ -1,6 +1,9 @@
 import axios from 'axios';
-import { Contract, providers, utils } from 'ethers';
-import { isAddress } from 'ethers/lib/utils';
+import { Contract, providers } from 'ethers';
+
+import { formatUnits } from '@dexkit/core/utils/ethers/formatUnits';
+import { isAddress } from '@dexkit/core/utils/ethers/isAddress';
+import { parseUnits } from '@dexkit/core/utils/ethers/parseUnits';
 import {
   getBalanceOf,
   getBalanceOfERC1155,
@@ -75,11 +78,11 @@ export async function checkGatedConditions({
           account,
           getProviderByChainId(condition.chainId)
         );
-        balances[index] = utils.formatUnits(balance, condition.decimals);
+        balances[index] = formatUnits(balance, condition.decimals);
         partialResults[index] = false;
         if (
           balance.gte(
-            utils.parseUnits(
+            parseUnits(
               String(condition.amount),
               condition.decimals
             )
@@ -95,9 +98,9 @@ export async function checkGatedConditions({
           condition.address as string,
           account
         );
-        balances[index] = utils.formatUnits(balance, 0);
+        balances[index] = formatUnits(balance, 0);
         partialResults[index] = false;
-        if (balance.gte(utils.parseUnits(String(condition.amount), 0))) {
+        if (balance.gte(parseUnits(String(condition.amount), 0))) {
           thisCondition = true;
           partialResults[index] = true;
         }
@@ -113,9 +116,9 @@ export async function checkGatedConditions({
           account,
           condition.tokenId as string
         );
-        balances[index] = utils.formatUnits(balance, 0);
+        balances[index] = formatUnits(balance, 0);
         partialResults[index] = false;
-        if (balance.gte(utils.parseUnits(String(condition.amount), 0))) {
+        if (balance.gte(parseUnits(String(condition.amount), 0))) {
           thisCondition = true;
           partialResults[index] = true;
         }

@@ -11,7 +11,7 @@ import { getZrxExchangeAddress } from "../utils";
 
 import { UserEvents } from "@dexkit/core/constants/userEvents";
 import { ZrxOrder } from "@dexkit/core/services/zrx/types";
-import { Contract, ethers } from "ethers";
+import { BigNumber, Contract, providers } from "ethers";
 import { useContext } from "react";
 import { ZRX_EXCHANGE_ABI } from "../constants/zrx";
 
@@ -115,7 +115,7 @@ export function useZrxCancelOrderMutation() {
       order,
     }: {
       chainId?: ChainId;
-      provider?: ethers.providers.Web3Provider;
+      provider?: providers.Web3Provider;
       order: ZrxOrder;
     }) => {
       const contractAddress = getZrxExchangeAddress(chainId);
@@ -156,9 +156,9 @@ export function useZrxFillOrderMutation() {
       fillAmount,
     }: {
       chainId?: ChainId;
-      provider?: ethers.providers.Web3Provider;
+      provider?: providers.Web3Provider;
       order: ZrxOrder;
-      fillAmount?: ethers.BigNumber;
+      fillAmount?: BigNumber;
     }) => {
       const contractAddress = getZrxExchangeAddress(chainId);
 
@@ -179,8 +179,8 @@ export function useZrxFillOrderMutation() {
       //   makerAmount: new BigNumber(order.makerAmount), // NOTE: This is 1 WEI, 1 ETH would be 1000000000000000000
       //   takerAmount: new BigNumber(order.takerAmount), // NOTE this is 0.001 ZRX. 1 ZRX would be 1000000000000000000
       //   salt: new BigNumber(Date.now()),
-      //   taker: ethers.constants.AddressZero,
-      //   sender: ethers.constants.AddressZero,
+      //   taker: constants.AddressZero,
+      //   sender: constants.AddressZero,
       //   expiry: new BigNumber(order.expiry),
       //   maker: order.maker,
       //   chainId: order.chainId,

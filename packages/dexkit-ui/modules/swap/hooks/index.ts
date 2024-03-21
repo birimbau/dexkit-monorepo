@@ -2,11 +2,11 @@ import { ChainId } from "@dexkit/core/constants/enums";
 import { NETWORK_FROM_SLUG, NETWORK_SLUG } from "@dexkit/core/constants/networks";
 import { TokenWhitelabelApp } from "@dexkit/core/types";
 import { isAddressEqual } from "@dexkit/core/utils";
+import { formatUnits } from "@dexkit/core/utils/ethers/formatUnits";
 import { DkApiPlatformCoin } from "@dexkit/widgets/src/types/api";
 import { NotificationCallbackParams, RenderOptions } from "@dexkit/widgets/src/widgets/swap/types";
 import { useQuery } from "@tanstack/react-query";
 import { useWeb3React } from "@web3-react/core";
-import { ethers } from "ethers";
 import { useAtom } from "jotai";
 import { useCallback, useMemo } from "react";
 import { useAppConfig, useConnectWalletDialog, useDexKitContext } from "../../../hooks";
@@ -72,12 +72,12 @@ export function useSwapState() {
           icon: 'swap_vert',
           values: {
             sellTokenSymbol: params.sellToken.symbol.toUpperCase(),
-            sellAmount: ethers.utils.formatUnits(
+            sellAmount: formatUnits(
               params.sellAmount,
               params.sellToken.decimals
             ),
             buyTokenSymbol: params.buyToken.symbol.toUpperCase(),
-            buyAmount: ethers.utils.formatUnits(
+            buyAmount: formatUnits(
               params.buyAmount,
               params.buyToken.decimals
             ),

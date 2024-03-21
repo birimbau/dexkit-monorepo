@@ -15,8 +15,10 @@ import { useDexKitContext } from "@dexkit/ui/hooks";
 import FileCopy from "@mui/icons-material/FileCopy";
 
 import { UserEvents } from "@dexkit/core/constants/userEvents";
+import { parseEther } from "@dexkit/core/utils/ethers/parseEther";
+import { parseUnits } from "@dexkit/core/utils/ethers/parseUnits";
 import { Divider, Skeleton, Stack, Typography } from "@mui/material";
-import { ethers } from "ethers";
+import { providers } from "ethers";
 import { useSnackbar } from "notistack";
 import { useMemo, useState } from "react";
 import { useIntl } from "react-intl";
@@ -30,7 +32,7 @@ export interface EvmTransferCoinProps {
   chainId?: number;
   onSwitchNetwork?: ({ chainId }: { chainId?: number }) => void;
   onConnectWallet?: () => void;
-  provider?: ethers.providers.Web3Provider;
+  provider?: providers.Web3Provider;
   coins?: EvmCoin[];
   defaultCoin?: EvmCoin;
   evmAccounts?: { address: string }[];
@@ -171,15 +173,11 @@ export default function EvmTransferCoin({
             : chainId,
           amount: values?.amount
             ? values?.coin
-              ? ethers.utils
-                  .parseUnits(
-                    values?.amount?.toString() || "0",
-                    values.coin.decimals
-                  )
-                  .toString()
-              : ethers.utils
-                  .parseEther(values?.amount?.toString() || "0")
-                  .toString()
+              ? parseUnits(
+                  values?.amount?.toString() || "0",
+                  values.coin.decimals
+                ).toString()
+              : parseEther(values?.amount?.toString() || "0").toString()
             : undefined,
           contractAddress:
             values?.coin?.coinType === CoinTypes.EVM_ERC20

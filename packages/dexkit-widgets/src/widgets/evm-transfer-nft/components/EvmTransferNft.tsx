@@ -21,7 +21,7 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import { BigNumber, ethers } from "ethers";
+import { BigNumber, providers } from "ethers";
 import { Field, Form, Formik, FormikHelpers } from "formik";
 import { TextField } from "formik-mui";
 import { useSnackbar } from "notistack";
@@ -52,7 +52,7 @@ export interface EvmTransferNftProps {
   onConnectWallet?: () => void;
   onSwitchNetwork?: () => void;
   onCancel?: () => void;
-  provider?: ethers.providers.Web3Provider;
+  provider?: providers.Web3Provider;
   onOwnershipChange?: (ownerAddress: string) => void;
 }
 

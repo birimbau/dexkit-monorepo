@@ -28,9 +28,9 @@ import { NETWORKS } from "@dexkit/core/constants/networks";
 import { useDebounce } from "@dexkit/core/hooks/misc";
 import { Network } from "@dexkit/core/types";
 import { ipfsUriToUrl, isAddressEqual } from "@dexkit/core/utils";
+import { isAddress } from "@dexkit/core/utils/ethers/isAddress";
 import { useWeb3React } from "@web3-react/core";
 import { AxiosError } from "axios";
-import { ethers } from "ethers";
 import { useSnackbar } from "notistack";
 
 interface Props {
@@ -49,7 +49,7 @@ const FormSchema: Yup.SchemaOf<Form> = Yup.object().shape({
   chainId: Yup.number().required(),
   contractAddress: Yup.string()
     .test("address", (value) => {
-      return value !== undefined ? ethers.utils.isAddress(value) : true;
+      return value !== undefined ? isAddress(value) : true;
     })
     .required(),
 

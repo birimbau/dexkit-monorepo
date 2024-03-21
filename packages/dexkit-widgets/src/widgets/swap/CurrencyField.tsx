@@ -1,6 +1,8 @@
 import { InputBase, InputBaseProps } from "@mui/material";
-import { BigNumber, ethers } from "ethers";
+import { BigNumber } from "ethers";
 
+import { formatUnits } from "@dexkit/core/utils/ethers/formatUnits";
+import { parseUnits } from "@dexkit/core/utils/ethers/parseUnits";
 import { ChangeEvent, useCallback, useState } from "react";
 import { useDebounceCallback } from "../../hooks";
 
@@ -31,7 +33,7 @@ export function CurrencyField({
         return;
       }
       try {
-        const val = ethers.utils.formatUnits(value, decimals);
+        const val = formatUnits(value, decimals);
         setInternalValue({
           value: val,
           triggerChange: false,
@@ -55,7 +57,7 @@ export function CurrencyField({
     (value) => {
       try {
         if (internalValue.triggerChange && decimals) {
-          onChange(ethers.utils.parseUnits(internalValue.value, decimals));
+          onChange(parseUnits(internalValue.value, decimals));
         }
       } catch (err) {
         onChange(BigNumber.from(0));

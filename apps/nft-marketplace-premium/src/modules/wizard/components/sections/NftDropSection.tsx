@@ -1,5 +1,6 @@
 import { useIsMobile } from '@dexkit/core';
 import { UserEvents } from '@dexkit/core/constants/userEvents';
+import { formatUnits } from '@dexkit/core/utils/ethers/formatUnits';
 import { useDexKitContext } from '@dexkit/ui/hooks';
 import { useInterval } from '@dexkit/ui/hooks/misc';
 import { useTrackUserEventsMutation } from '@dexkit/ui/hooks/userEvents';
@@ -28,7 +29,7 @@ import {
   useUnclaimedNFTSupply,
 } from '@thirdweb-dev/react';
 import { useWeb3React } from '@web3-react/core';
-import { BigNumber, utils } from 'ethers';
+import { BigNumber } from 'ethers';
 import { useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { useClaimNft } from '../../hooks';
@@ -306,7 +307,7 @@ export default function NftDropSection({ section }: NftDropSectionProps) {
     const bnPrice = BigNumber.from(
       activeClaimCondition.data?.currencyMetadata.value || 0,
     );
-    return `${utils.formatUnits(
+    return `${formatUnits(
       bnPrice.mul(quantity).toString(),
       activeClaimCondition.data?.currencyMetadata.decimals || 18,
     )} ${activeClaimCondition.data?.currencyMetadata.symbol}`;

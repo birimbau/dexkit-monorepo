@@ -10,7 +10,7 @@ import {
   DialogProps,
 } from '@mui/material';
 import { GridRowId } from '@mui/x-data-grid';
-import { ethers } from 'ethers';
+import { utils } from 'ethers';
 import { useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { AppDialogTitle } from 'src/components/AppDialogTitle';
@@ -85,7 +85,7 @@ export default function AirdropDialog({
               name: 'address',
               width: 400,
               isValid: (value: unknown) => {
-                return ethers.utils.isAddress(value as string);
+                return utils.isAddress(value as string);
               },
               editable: true,
             },

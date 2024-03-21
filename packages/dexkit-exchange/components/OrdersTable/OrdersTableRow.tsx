@@ -1,9 +1,10 @@
 import { ZrxOrder, ZrxOrderRecord } from "@dexkit/core/services/zrx/types";
 import { Token } from "@dexkit/core/types";
 import { isAddressEqual } from "@dexkit/core/utils";
+import { formatUnits } from "@dexkit/core/utils/ethers/formatUnits";
 import MomentFromSpan from "@dexkit/ui/components/MomentFromSpan";
 import { Button, TableCell, TableRow, Typography } from "@mui/material";
-import { ethers } from "ethers";
+import { BigNumber } from "ethers";
 import moment from "moment";
 import { useMemo } from "react";
 import { FormattedMessage } from "react-intl";
@@ -39,14 +40,14 @@ export default function OrdersTableRow({
     const decimals =
       side === "sell" ? quoteToken?.decimals : baseToken?.decimals;
 
-    return ethers.utils.formatUnits(record.order.takerAmount, decimals);
+    return formatUnits(record.order.takerAmount, decimals);
   }, [record, quoteToken]);
 
   const baseTokenAmount = useMemo(() => {
     const decimals =
       side === "buy" ? quoteToken?.decimals : baseToken?.decimals;
 
-    return ethers.utils.formatUnits(record.order.makerAmount, decimals);
+    return formatUnits(record.order.makerAmount, decimals);
   }, [record, baseToken, side]);
 
   const price = useMemo(() => {
@@ -61,15 +62,12 @@ export default function OrdersTableRow({
     const decimals =
       side === "buy" ? baseToken?.decimals : quoteToken?.decimals;
 
-    const amountToBeFilled = ethers.BigNumber.from(record.order.takerAmount);
-    const remainingFillableAmount = ethers.BigNumber.from(
+    const amountToBeFilled = BigNumber.from(record.order.takerAmount);
+    const remainingFillableAmount = BigNumber.from(
       record.metaData.remainingFillableTakerAmount
     );
 
-    return ethers.utils.formatUnits(
-      amountToBeFilled.sub(remainingFillableAmount),
-      decimals
-    );
+    return formatUnits(amountToBeFilled.sub(remainingFillableAmount), decimals);
   }, [quoteToken, record]);
 
   const quoteTokenSymbol = useMemo(() => {

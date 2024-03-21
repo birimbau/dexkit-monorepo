@@ -4,6 +4,7 @@ import {
   NETWORK_SLUG,
 } from '@dexkit/core/constants/networks';
 import { ipfsUriToUrl, parseChainId } from '@dexkit/core/utils';
+import { isAddress } from '@dexkit/core/utils/ethers/isAddress';
 import { useActiveChainIds } from '@dexkit/ui';
 import { hexToString } from '@dexkit/ui/utils';
 import { useAsyncMemo } from '@dexkit/widgets/src/hooks';
@@ -26,7 +27,7 @@ import {
   Tabs,
   Typography,
 } from '@mui/material';
-import { Contract, ethers } from 'ethers';
+import { Contract } from 'ethers';
 import { Field, Formik } from 'formik';
 import { Select, Switch, TextField } from 'formik-mui';
 import { SyntheticEvent, useMemo, useState } from 'react';
@@ -44,7 +45,7 @@ interface DropCheckboxProps {
 function DropCheckbox({ address, network }: DropCheckboxProps) {
   const contractType = useAsyncMemo(
     async () => {
-      if (ethers.utils.isAddress(address)) {
+      if (isAddress(address)) {
         const contract = new Contract(
           address,
           [

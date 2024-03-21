@@ -31,8 +31,13 @@ import { ChainId } from "@dexkit/core/constants";
 import { getBlockExplorerUrl } from "@dexkit/core/utils";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useWeb3React } from "@web3-react/core";
-import { ethers } from "ethers";
-import { isAddress } from "ethers/lib/utils";
+import { BigNumber } from "ethers";
+
+import { arrayify } from "@dexkit/core/utils/ethers/arrayify";
+import { formatUnits } from "@dexkit/core/utils/ethers/formatUnits";
+import { isAddress } from "@dexkit/core/utils/ethers/isAddress";
+import { isBytesLike } from "@dexkit/core/utils/ethers/isBytesLike";
+import { parseUnits } from "@dexkit/core/utils/ethers/parseUnits";
 import ContractFunctionInputs from "./ContractFunctionInputs";
 
 export function isFunctionCall(stateMutability: string) {
@@ -124,19 +129,19 @@ export default function ContractFunction({
 
             if (Array.isArray(values[key])) {
               return values[key].map((val: string) => {
-                return ethers.utils.parseUnits(val, decimals);
+                return parseUnits(val, decimals);
               });
             }
 
-            return ethers.utils.parseUnits(values[key], decimals);
+            return parseUnits(values[key], decimals);
           }
 
           if (name) {
-            if (ethers.utils.isBytesLike(values[key])) {
+            if (isBytesLike(values[key])) {
               if (!isAddress(values[key])) {
-                const arr = ethers.utils.arrayify(values[key]);
+                const arr = arrayify(values[key]);
 
-                return ethers.utils.arrayify(values[key]);
+                return arrayify(values[key]);
               }
             }
           }
@@ -175,9 +180,9 @@ export default function ContractFunction({
     if (name && results && results[name]) {
       let value = results[name];
 
-      if (value instanceof ethers.BigNumber) {
+      if (value instanceof BigNumber) {
         if (output?.type === "decimal") {
-          return ethers.utils.formatUnits(value, output?.decimals);
+          return formatUnits(value, output?.decimals);
         }
 
         return value.toString();

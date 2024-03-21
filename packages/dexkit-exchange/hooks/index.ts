@@ -1,5 +1,5 @@
 import { ChainId } from "@dexkit/core";
-import { ethers } from "ethers";
+import { providers } from "ethers";
 
 import { UserEvents } from "@dexkit/core/constants/userEvents";
 import {
@@ -44,7 +44,7 @@ export function useSendLimitOrderMutation() {
       expirationTime: number;
       makerAmount: string;
       makerToken: string;
-      provider: ethers.providers.Web3Provider;
+      provider: providers.Web3Provider;
       takerAmount: string;
       takerToken: string;
       chainId: ChainId;

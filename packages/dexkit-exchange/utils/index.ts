@@ -3,8 +3,9 @@ import { LimitOrder, SignatureType } from "@0x/protocol-utils";
 import { ChainId } from "@dexkit/core";
 import { Token } from "@dexkit/core/types";
 import { isAddressEqual } from "@dexkit/core/utils";
+import { parseUnits } from "@dexkit/core/utils/ethers/parseUnits";
 import { BigNumber } from "bignumber.js";
-import { ethers } from "ethers";
+import { BigNumber as EthersBigNumber, constants, providers } from "ethers";
 
 export const EIP712_DOMAIN_PARAMETERS = [
   { name: "name", type: "string" },
@@ -31,7 +32,7 @@ export const getExpirationTimeFromSeconds = (seconds: BigNumber) => {
 };
 
 export interface CreateZrxOrderParams {
-  provider: ethers.providers.Web3Provider;
+  provider: providers.Web3Provider;
   chainId: ChainId;
   maker?: string;
   makerToken: string;
@@ -57,8 +58,8 @@ export async function createZrxOrder({
     makerAmount, // NOTE: This is 1 WEI, 1 ETH would be 1000000000000000000
     takerAmount, // NOTE this is 0.001 ZRX. 1 ZRX would be 1000000000000000000
     salt: new BigNumber(Date.now()),
-    taker: ethers.constants.AddressZero,
-    sender: ethers.constants.AddressZero,
+    taker: constants.AddressZero,
+    sender: constants.AddressZero,
     expiry: new BigNumber(
       getExpirationTimeFromSeconds(new BigNumber(expirationTime))
     ),
@@ -86,25 +87,25 @@ export function getZrxExchangeAddress(chainId?: ChainId) {
 }
 
 export class BigNumberUtils {
-  protected oneBN: ethers.BigNumber = ethers.utils.parseUnits("1", 18);
+  protected oneBN: EthersBigNumber = parseUnits("1", 18);
   constructor() { }
 
   public multiply(
-    bn: ethers.BigNumber | string,
+    bn: EthersBigNumber | string,
     number: number | string
-  ): ethers.BigNumber {
-    const bnForSure = ethers.BigNumber.from(bn);
-    const numberBN = ethers.utils.parseUnits(number.toString() || "0.0", 18);
+  ): EthersBigNumber {
+    const bnForSure = EthersBigNumber.from(bn);
+    const numberBN = parseUnits(number.toString() || "0.0", 18);
 
     return bnForSure.mul(numberBN).div(this.oneBN);
   }
 
   public divide(
-    bn: ethers.BigNumber | string,
+    bn: EthersBigNumber | string,
     number: number | string
-  ): ethers.BigNumber {
-    const bnForSure = ethers.BigNumber.from(bn);
-    const numberBN = ethers.utils.parseUnits(number.toString() || "0.0", 18);
+  ): EthersBigNumber {
+    const bnForSure = EthersBigNumber.from(bn);
+    const numberBN = parseUnits(number.toString() || "0.0", 18);
 
     return bnForSure.div(numberBN).div(this.oneBN);
   }
