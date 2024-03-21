@@ -1,4 +1,4 @@
-import { isHexString } from 'ethers/lib/utils';
+import { isHexString } from '@dexkit/core/utils/ethers/isHexString';
 import * as Yup from 'yup';
 
 export const CreateTemplateSchema = Yup.object().shape({

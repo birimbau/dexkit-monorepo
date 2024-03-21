@@ -1,4 +1,6 @@
 import { formatBigNumber } from '@dexkit/core/utils';
+import { formatUnits } from '@dexkit/core/utils/ethers/formatUnits';
+import { parseUnits } from '@dexkit/core/utils/ethers/parseUnits';
 import { useDexKitContext } from '@dexkit/ui';
 import FormikDecimalInput from '@dexkit/ui/components/FormikDecimalInput';
 import {
@@ -25,7 +27,7 @@ import {
   useTokenBalance,
 } from '@thirdweb-dev/react';
 import { useWeb3React } from '@web3-react/core';
-import { BigNumber, ethers } from 'ethers';
+import { BigNumber } from 'ethers';
 import { Field, Formik } from 'formik';
 import { Switch, TextField } from 'formik-mui';
 import moment from 'moment';
@@ -134,10 +136,7 @@ export default function ContractStakeErc1155Container({
     amount: string;
     withdraw: boolean;
   }) => {
-    const amountParsed = ethers.utils.parseUnits(
-      amount,
-      rewardTokenBalance?.decimals,
-    );
+    const amountParsed = parseUnits(amount, rewardTokenBalance?.decimals);
 
     if (withdraw) {
       try {
@@ -294,7 +293,7 @@ export default function ContractStakeErc1155Container({
                                 if (values.withdraw) {
                                   return setFieldValue(
                                     'amount',
-                                    ethers.utils.formatUnits(
+                                    formatUnits(
                                       rewardsBalance,
                                       rewardTokenBalance?.decimals,
                                     ),

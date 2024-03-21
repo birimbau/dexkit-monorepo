@@ -5,7 +5,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 
 import { WRAPPED_TOKEN_ADDRESS } from "@dexkit/core/constants/networks";
 import { Token, TransactionMetadata } from "@dexkit/core/types";
-import { BigNumber, ethers, providers } from "ethers";
+import { BigNumber, Contract, providers } from "ethers";
 import { useAtom } from "jotai";
 import { useUpdateAtom } from "jotai/utils";
 import { useSnackbar } from "notistack";
@@ -131,7 +131,7 @@ export function useWrapToken({
 
       const contractAddress = WRAPPED_TOKEN_ADDRESS(chainId) || '';
 
-      const contract = new ethers.Contract(
+      const contract = new Contract(
         contractAddress,
         WETHAbi,
         provider.getSigner()
@@ -142,7 +142,7 @@ export function useWrapToken({
 
       onHash(tx.hash);
 
-      return (await tx.wait()) as ethers.providers.TransactionReceipt;
+      return (await tx.wait()) as providers.TransactionReceipt;
     },
     {
       onError: (err: any) => {
@@ -163,7 +163,7 @@ export function useWrapToken({
 
       const chainId = (await provider?.getNetwork()).chainId;
 
-      const contract = new ethers.Contract(
+      const contract = new Contract(
         WRAPPED_TOKEN_ADDRESS(chainId) || '',
         ["function withdraw(uint wad) public "],
         provider.getSigner()
@@ -172,7 +172,7 @@ export function useWrapToken({
       const tx = await contract.withdraw(amount);
       onHash(tx.hash);
 
-      return (await tx.wait()) as ethers.providers.TransactionReceipt;
+      return (await tx.wait()) as providers.TransactionReceipt;
     },
     {
       onError: (err: any) => {
@@ -219,7 +219,7 @@ export const TOKEN_BALANCE = "TOKEN_BALANCE";
 export interface TokenBalanceParams {
   account?: string;
   contractAddress?: string;
-  provider?: ethers.providers.BaseProvider;
+  provider?: providers.BaseProvider;
 }
 
 export function useTokenBalance({
@@ -236,7 +236,7 @@ export function useTokenBalance({
       return await provider.getBalance(account);
     }
 
-    const contract = new ethers.Contract(contractAddress, ERC20Abi, provider);
+    const contract = new Contract(contractAddress, ERC20Abi, provider);
 
     return (await contract.balanceOf(account)) as BigNumber;
   });
@@ -251,7 +251,7 @@ export function useMultiTokenBalance({
 }: {
   account?: string;
   tokens?: Token[];
-  provider?: ethers.providers.BaseProvider;
+  provider?: providers.BaseProvider;
 }) {
   const enabled = Boolean(tokens && provider && account);
 
@@ -295,7 +295,7 @@ export const GAS_PRICE_QUERY = "";
 export function useGasPrice({
   provider,
 }: {
-  provider?: ethers.providers.BaseProvider;
+  provider?: providers.BaseProvider;
 }) {
   return useQuery(
     [GAS_PRICE_QUERY],

@@ -1,6 +1,8 @@
 import { ChainId, useApproveToken, useTokenAllowanceQuery } from "@dexkit/core";
 import { Token } from "@dexkit/core/types";
 import { formatBigNumber, getChainName } from "@dexkit/core/utils";
+import { formatUnits } from "@dexkit/core/utils/ethers/formatUnits";
+import { parseUnits } from "@dexkit/core/utils/ethers/parseUnits";
 import { useSwitchNetworkMutation } from "@dexkit/ui/hooks";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import {
@@ -14,7 +16,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useWeb3React } from "@web3-react/core";
-import { BigNumber, ethers } from "ethers";
+import { BigNumber, providers } from "ethers";
 import { useSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
@@ -31,7 +33,7 @@ export interface SellFormProps {
   quoteToken: Token;
   slippage?: number;
   baseTokenBalance?: BigNumber;
-  provider?: ethers.providers.Web3Provider;
+  provider?: providers.Web3Provider;
   maker?: string;
   buyTokenPercentageFee?: number;
   feeRecipient?: string;
@@ -78,18 +80,12 @@ export default function SellForm({
 
   const parsedAmountBN = useMemo(() => {
     if (parsedAmount) {
-      return ethers.utils.parseUnits(
-        parsedAmount.toString(),
-        baseToken.decimals
-      );
+      return parseUnits(parsedAmount.toString(), baseToken.decimals);
     }
   }, [parsedAmount, baseToken]);
 
   const parsedAmountPerToken = useMemo(() => {
-    return ethers.utils.parseUnits(
-      amountPerToken || "0.0",
-      quoteToken.decimals
-    );
+    return parseUnits(amountPerToken || "0.0", quoteToken.decimals);
   }, [amountPerToken, quoteToken]);
 
   const total = useMemo(() => {
@@ -147,7 +143,7 @@ export default function SellForm({
       buyToken: baseToken.address,
       sellToken: quoteToken.address,
       affiliateAddress: affiliateAddress || "",
-      buyAmount: ethers.utils.parseUnits("1.0", baseToken.decimals).toString(),
+      buyAmount: parseUnits("1.0", baseToken.decimals).toString(),
       skipValidation: true,
       slippagePercentage: slippage ? slippage / 100 : 0.01,
       feeRecipient,
@@ -158,9 +154,7 @@ export default function SellForm({
 
     const sellAmount = BigNumber.from(quote?.sellAmount || "0");
 
-    setAmountPerToken(
-      ethers.utils.formatUnits(sellAmount, quoteToken.decimals)
-    );
+    setAmountPerToken(formatUnits(sellAmount, quoteToken.decimals));
   };
   /* useEffect(() => {
     handleQuotePrice();
@@ -179,9 +173,7 @@ export default function SellForm({
   ) => {
     const amount = baseTokenBalance?.div(100).mul(value as number);
 
-    setAmount(
-      ethers.utils.formatUnits(amount || BigNumber.from(0), baseToken.decimals)
-    );
+    setAmount(formatUnits(amount || BigNumber.from(0), baseToken.decimals));
 
     setAmountPercentage(value as number);
   };
@@ -196,10 +188,7 @@ export default function SellForm({
 
   const takerAmount = useMemo(() => {
     if (parsedAmount) {
-      return ethers.utils.parseUnits(
-        parsedAmount.toString(),
-        baseToken.decimals
-      );
+      return parseUnits(parsedAmount.toString(), baseToken.decimals);
     }
   }, [parsedAmount, baseToken]);
 

@@ -3,8 +3,9 @@ import { ChainId, CoinTypes } from '@dexkit/core/constants';
 import { ERC20Abi } from '@dexkit/core/constants/abis';
 import { NETWORK_PROVIDER } from '@dexkit/core/constants/networks';
 import { Coin, EvmCoin } from '@dexkit/core/types';
+import { parseUnits } from '@dexkit/core/utils/ethers/parseUnits';
 import { useMutation } from '@tanstack/react-query';
-import { ethers } from 'ethers';
+import { Contract, providers } from 'ethers';
 
 
 export function useEvmTransferMutation({
@@ -12,7 +13,7 @@ export function useEvmTransferMutation({
   onSubmit,
   onConfirm,
 }: {
-  provider?: ethers.providers.Web3Provider;
+  provider?: providers.Web3Provider;
   onSubmit?: (
     hash: string,
     params: {
@@ -51,7 +52,7 @@ export function useEvmTransferMutation({
       }
 
       if (coin.coinType === CoinTypes.EVM_ERC20) {
-        const contract = new ethers.Contract(
+        const contract = new Contract(
           coin.contractAddress,
           ERC20Abi,
           provider.getSigner()
@@ -59,7 +60,7 @@ export function useEvmTransferMutation({
 
         const tx = await contract.transfer(
           toAddress,
-          ethers.utils.parseUnits(amount.toString(), coin.decimals)
+          parseUnits(amount.toString(), coin.decimals)
         );
 
         if (onSubmit) {
@@ -77,7 +78,7 @@ export function useEvmTransferMutation({
         const signer = provider.getSigner();
         const tx = await signer.sendTransaction({
           to: toAddress,
-          value: ethers.utils.parseUnits(amount.toString(), coin.decimals)
+          value: parseUnits(amount.toString(), coin.decimals)
         })
 
         if (onSubmit) {

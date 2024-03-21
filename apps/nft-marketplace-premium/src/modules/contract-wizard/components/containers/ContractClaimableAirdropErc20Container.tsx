@@ -4,6 +4,7 @@ import {
   isAddressEqual,
   truncateAddress,
 } from '@dexkit/core/utils';
+import { formatUnits } from '@dexkit/core/utils/ethers/formatUnits';
 import { useDexKitContext } from '@dexkit/ui';
 import { DEXKIT_STORAGE_MERKLE_TREE_URL } from '@dexkit/ui/constants/api';
 import { useAsyncMemo } from '@dexkit/widgets/src/hooks';
@@ -30,7 +31,7 @@ import {
   useContractRead,
 } from '@thirdweb-dev/react';
 import { useWeb3React } from '@web3-react/core';
-import { BigNumber, constants, utils } from 'ethers';
+import { BigNumber, constants } from 'ethers';
 import { SyntheticEvent, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import Link from 'src/components/Link';
@@ -86,7 +87,7 @@ export default function ContractClaimableAirdropErc20Container({
       openClaimLimitPerWalletQuery?.data &&
       tokenMetadataQuery?.data?.decimals
     ) {
-      return utils.formatUnits(
+      return formatUnits(
         openClaimLimitPerWalletQuery?.data,
         tokenMetadataQuery?.data?.decimals,
       );
@@ -135,10 +136,7 @@ export default function ContractClaimableAirdropErc20Container({
         const amount = availableAmount;
         return [
           amount,
-          `${utils.formatUnits(
-            amount,
-            metadata?.decimals,
-          )} ${metadata?.symbol}`,
+          `${formatUnits(amount, metadata?.decimals)} ${metadata?.symbol}`,
         ];
       }
       return [BigNumber.from(0), '0.0'];
@@ -156,7 +154,7 @@ export default function ContractClaimableAirdropErc20Container({
     ) {
       if (!allowance?.value.gte(availableAmount)) {
         await approve.mutateAsync({
-          amount: utils.formatUnits(availableAmount, metadata?.decimals),
+          amount: formatUnits(availableAmount, metadata?.decimals),
         });
         refetchAllowance();
       }

@@ -23,9 +23,10 @@ import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import { detectContractFeature, NATIVE_TOKEN_ADDRESS } from '@thirdweb-dev/sdk';
 
+import { formatUnits } from '@dexkit/core/utils/ethers/formatUnits';
 import { SwappableAssetV4 } from '@traderxyz/nft-swap-sdk';
 import { useWeb3React } from '@web3-react/core';
-import { BigNumber, utils } from 'ethers';
+import { BigNumber } from 'ethers';
 import { useCallback, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import {
@@ -116,7 +117,7 @@ export function CollectionDropSection({ section }: Props) {
     const bnPrice = BigNumber.from(
       activeClaimCondition.data?.currencyMetadata.value || 0,
     );
-    return `${utils.formatUnits(
+    return `${formatUnits(
       bnPrice.mul(quantity).toString(),
       activeClaimCondition.data?.currencyMetadata.decimals || 18,
     )} ${activeClaimCondition.data?.currencyMetadata.symbol}`;
@@ -283,7 +284,7 @@ export function CollectionDropSection({ section }: Props) {
     const bnPrice = BigNumber.from(
       activeClaimCondition.data?.currencyMetadata.value || 0,
     );
-    return `${utils.formatUnits(
+    return `${formatUnits(
       bnPrice.toString(),
       activeClaimCondition.data?.currencyMetadata.decimals || 18,
     )} ${activeClaimCondition.data?.currencyMetadata.symbol}`;

@@ -2,6 +2,8 @@ import { Token } from "@dexkit/core/types";
 import { AppDialogTitle } from "@dexkit/ui/components/AppDialogTitle";
 import CheckIcon from "@mui/icons-material/Check";
 
+import { formatUnits } from "@dexkit/core/utils/ethers/formatUnits";
+import { parseUnits } from "@dexkit/core/utils/ethers/parseUnits";
 import MomentFromSpan from "@dexkit/ui/components/MomentFromSpan";
 import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
 import {
@@ -18,7 +20,7 @@ import {
   Typography,
   lighten,
 } from "@mui/material";
-import { BigNumber, ethers } from "ethers";
+import { BigNumber } from "ethers";
 import moment from "moment";
 import { useMemo, useState } from "react";
 import { FormattedMessage } from "react-intl";
@@ -28,8 +30,8 @@ export interface ReviewOrderDialogProps {
   isPlacingOrder?: boolean;
   quoteAmount?: BigNumber;
   baseAmount?: BigNumber;
-  total?: ethers.BigNumber;
-  amountPerToken?: ethers.BigNumber;
+  total?: BigNumber;
+  amountPerToken?: BigNumber;
   quoteToken?: Token;
   baseToken?: Token;
   isApproval?: boolean;
@@ -57,7 +59,7 @@ export default function ReviewOrderDialog({
 }: ReviewOrderDialogProps) {
   const formattedTotal = useMemo(() => {
     if (total) {
-      return ethers.utils.formatUnits(total, quoteToken?.decimals);
+      return formatUnits(total, quoteToken?.decimals);
     }
 
     return "0.00";
@@ -65,22 +67,22 @@ export default function ReviewOrderDialog({
 
   const pricePerTokenFormatted = useMemo(() => {
     if (quoteToken && amountPerToken) {
-      return ethers.utils.formatUnits(amountPerToken, quoteToken?.decimals);
+      return formatUnits(amountPerToken, quoteToken?.decimals);
     }
   }, [amountPerToken, quoteToken]);
 
   const pricePerTokenInverseFormatted = useMemo(() => {
     if (quoteToken && amountPerToken && amountPerToken.gt(0)) {
-      const num = ethers.utils.parseUnits("1", 18 - quoteToken.decimals);
+      const num = parseUnits("1", 18 - quoteToken.decimals);
       const res = num.div(amountPerToken);
 
-      return ethers.utils.formatUnits(res, 6);
+      return formatUnits(res, 6);
     }
   }, [amountPerToken, quoteToken]);
 
   const baseAmountFormatted = useMemo(() => {
     if (baseAmount) {
-      return ethers.utils.formatUnits(baseAmount, baseToken?.decimals);
+      return formatUnits(baseAmount, baseToken?.decimals);
     }
 
     return "0.00";

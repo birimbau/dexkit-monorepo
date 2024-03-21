@@ -1,3 +1,5 @@
+import { formatEther } from '@dexkit/core/utils/ethers/formatEther';
+import { formatUnits } from '@dexkit/core/utils/ethers/formatUnits';
 import {
   Alert,
   Button,
@@ -11,7 +13,7 @@ import {
   Typography,
 } from '@mui/material';
 import { useWeb3React } from '@web3-react/core';
-import { BigNumber, ethers } from 'ethers';
+import { BigNumber } from 'ethers';
 import { memo } from 'react';
 import { FormattedMessage, FormattedNumber } from 'react-intl';
 import { AppDialogTitle } from '../../../components/AppDialogTitle';
@@ -81,9 +83,9 @@ function ConfirmSwapTransaction({
                     <FormattedMessage id="you.pay" defaultMessage="You pay" />
                   </Typography>
                   <Typography color="textSecondary">
-                    {ethers.utils.formatUnits(
+                    {formatUnits(
                       BigNumber.from(quote.sellAmount),
-                      sellToken?.decimals || 18
+                      sellToken?.decimals || 18,
                     )}{' '}
                     {sellToken?.symbol}
                   </Typography>
@@ -103,9 +105,9 @@ function ConfirmSwapTransaction({
                     />
                   </Typography>
                   <Typography color="textSecondary">
-                    {ethers.utils.formatUnits(
+                    {formatUnits(
                       BigNumber.from(quote.buyAmount),
-                      buyToken?.decimals || 18
+                      buyToken?.decimals || 18,
                     )}{' '}
                     {buyToken?.symbol}
                   </Typography>
@@ -130,9 +132,9 @@ function ConfirmSwapTransaction({
                         <FormattedNumber
                           value={
                             Number(
-                              ethers.utils.formatEther(
-                                BigNumber.from(quote.gas).mul(quote.gasPrice)
-                              )
+                              formatEther(
+                                BigNumber.from(quote.gas).mul(quote.gasPrice),
+                              ),
                             ) * nativeCurrencyPriceQuery.data
                           }
                           style="currency"
@@ -143,8 +145,8 @@ function ConfirmSwapTransaction({
 
                     <Typography color="textSecondary">
                       (
-                      {ethers.utils.formatEther(
-                        BigNumber.from(quote.gas).mul(quote.gasPrice)
+                      {formatEther(
+                        BigNumber.from(quote.gas).mul(quote.gasPrice),
                       )}{' '}
                       {getNativeCurrencySymbol(chainId)})
                     </Typography>
@@ -166,11 +168,11 @@ function ConfirmSwapTransaction({
                       />
                     </Typography>
                     <Typography color="textSecondary">
-                      {ethers.utils.formatUnits(
+                      {formatUnits(
                         BigNumber.from(quote.buyAmount)
                           .mul(appConfig.swapFees.amount_percentage * 100)
                           .div(10000),
-                        buyToken?.decimals
+                        buyToken?.decimals,
                       )}{' '}
                       {buyToken?.symbol.toUpperCase()}
                     </Typography>

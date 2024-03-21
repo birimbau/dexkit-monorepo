@@ -1,6 +1,6 @@
 import { ChainId } from '@dexkit/core/constants';
 import { NETWORK_PROVIDER } from '@dexkit/core/constants/networks';
-import { ethers } from 'ethers';
+import { isAddress } from '@dexkit/core/utils/ethers/isAddress';
 import * as Yup from 'yup';
 
 
@@ -17,7 +17,7 @@ export const TransferNftSchema = Yup.object().shape({
           return false;
         }
       }
-      return value !== undefined ? ethers.utils.isAddress(value) : true;
+      return value !== undefined ? isAddress(value) : true;
     })
     .required(),
 });

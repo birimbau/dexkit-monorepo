@@ -1,5 +1,6 @@
 import { TOKEN_ICON_URL } from "@dexkit/core/constants";
 import { ipfsUriToUrl } from "@dexkit/core/utils";
+import { formatUnits } from "@dexkit/core/utils/ethers/formatUnits";
 import {
   Avatar,
   Box,
@@ -10,7 +11,6 @@ import {
   Typography,
 } from "@mui/material";
 import { useWeb3React } from "@web3-react/core";
-import { ethers } from "ethers";
 import { FormattedNumber } from "react-intl";
 import { TokenBalance } from "../types";
 
@@ -32,7 +32,7 @@ function WalletTableRow({
   const { chainId } = useWeb3React();
   const { token, balance } = tokenBalance;
 
-  const balanceUnits = ethers.utils.formatUnits(balance || "0", token.decimals);
+  const balanceUnits = formatUnits(balance || "0", token.decimals);
 
   const totalInCurrency = (
     <FormattedNumber

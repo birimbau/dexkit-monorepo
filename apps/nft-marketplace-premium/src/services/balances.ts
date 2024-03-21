@@ -1,8 +1,9 @@
 import { getContractAddressesForChainOrThrow } from '@0x/contract-addresses';
 import { ChainId } from '@dexkit/core/constants';
 import { ERC1155Abi } from '@dexkit/core/constants/abis';
-import { BigNumber, Contract, ethers } from 'ethers';
-import { Interface } from 'ethers/lib/utils';
+import { BigNumber, Contract, providers, utils } from 'ethers';
+
+import { parseEther } from '@dexkit/core/utils/ethers/parseEther';
 import { NETWORKS } from 'src/constants/chain';
 import { DEXKIT } from 'src/constants/dexkit';
 import {
@@ -19,7 +20,7 @@ import {
 
 export const getERC20Decimals = async (
   contractAddress?: string,
-  provider?: ethers.providers.BaseProvider
+  provider?: providers.BaseProvider
 ) => {
   if (contractAddress === undefined || provider === undefined) {
     return;
@@ -29,14 +30,14 @@ export const getERC20Decimals = async (
     return 18;
   }
 
-  const contract = new ethers.Contract(contractAddress, ERC20Abi, provider);
+  const contract = new Contract(contractAddress, ERC20Abi, provider);
 
   return await contract.decimals();
 };
 
 export const getERC20Symbol = async (
   contractAddress?: string,
-  provider?: ethers.providers.BaseProvider
+  provider?: providers.BaseProvider
 ) => {
   if (contractAddress === undefined || provider === undefined) {
     return;
@@ -46,20 +47,20 @@ export const getERC20Symbol = async (
     return getNativeCurrencySymbol((await provider.getNetwork()).chainId);
   }
 
-  const contract = new ethers.Contract(contractAddress, ERC20Abi, provider);
+  const contract = new Contract(contractAddress, ERC20Abi, provider);
 
   return await contract.symbol();
 };
 
 export const getERC20Name = async (
   contractAddress?: string,
-  provider?: ethers.providers.BaseProvider
+  provider?: providers.BaseProvider
 ) => {
   if (contractAddress === undefined || provider === undefined) {
     return;
   }
 
-  const contract = new ethers.Contract(contractAddress, ERC20Abi, provider);
+  const contract = new Contract(contractAddress, ERC20Abi, provider);
 
   return await contract.name();
 };
@@ -67,7 +68,7 @@ export const getERC20Name = async (
 export const getERC20Balance = async (
   contractAddress?: string,
   account?: string,
-  provider?: ethers.providers.BaseProvider
+  provider?: providers.BaseProvider
 ) => {
   if (
     contractAddress === undefined ||
@@ -81,7 +82,7 @@ export const getERC20Balance = async (
     return await provider.getBalance(account);
   }
 
-  const contract = new ethers.Contract(contractAddress, ERC20Abi, provider);
+  const contract = new Contract(contractAddress, ERC20Abi, provider);
 
   return await contract.balanceOf(account);
 };
@@ -90,7 +91,7 @@ export const getERC20Balances = async (
   account: string,
   tokens: Token[],
   chainId: ChainId,
-  provider: ethers.providers.JsonRpcProvider
+  provider: providers.JsonRpcProvider
 ) => {
   const tokensByChainId = tokens.filter((t) => Number(t.chainId) === chainId);
 
@@ -132,7 +133,7 @@ export const getERC20WithProxyUnlockedBalances = async (
   account: string,
   tokens: Token[],
   chainId: ChainId,
-  provider: ethers.providers.JsonRpcProvider
+  provider: providers.JsonRpcProvider
 ) => {
   const tokensByChainId = tokens.filter((t) => Number(t.chainId) === chainId);
 
@@ -174,7 +175,7 @@ export const getERC20WithProxyUnlockedBalances = async (
         isProxyUnlocked:
           addr === MULTICALL_NATIVE_TOKEN_ADDRESS
             ? true
-            : tokenBalances[addr].allowance.gt(ethers.utils.parseEther('10')),
+            : tokenBalances[addr].allowance.gt(parseEther('10')),
       };
     }) as TokenBalance[];
 
@@ -185,12 +186,12 @@ export const getERC20WithProxyUnlockedBalances = async (
 };
 
 export const getERC20TokenAllowance = async (
-  provider: ethers.providers.BaseProvider,
+  provider: providers.BaseProvider,
   tokenAddress: string,
   account: string,
   spender: string
-): Promise<ethers.BigNumber> => {
-  const contract = new ethers.Contract(tokenAddress, ERC20Abi, provider);
+): Promise<BigNumber> => {
+  const contract = new Contract(tokenAddress, ERC20Abi, provider);
 
   return await contract.allowance(account, spender);
 };
@@ -201,8 +202,8 @@ export async function getBalanceOf(networkId: string, address: string, owner: st
   if (!network) {
     throw new Error('network not supported')
   }
-  const iface = new Interface(ERC20Abi);
-  const provider = new ethers.providers.JsonRpcProvider(network.providerRpcUrl)
+  const iface = new utils.Interface(ERC20Abi);
+  const provider = new providers.JsonRpcProvider(network.providerRpcUrl)
   const contract = new Contract(address, iface, provider);
   return (await contract.balanceOf(owner)) as BigNumber;
 }
@@ -212,8 +213,8 @@ export async function getBalanceOfERC1155(networkId: string, address: string, ow
   if (!network) {
     throw new Error('network not supported')
   }
-  const iface = new Interface(ERC1155Abi);
-  const provider = new ethers.providers.JsonRpcProvider(network.providerRpcUrl)
+  const iface = new utils.Interface(ERC1155Abi);
+  const provider = new providers.JsonRpcProvider(network.providerRpcUrl)
   const contract = new Contract(address, iface, provider);
   return (await contract.balanceOf(owner, tokenId)) as BigNumber;
 }

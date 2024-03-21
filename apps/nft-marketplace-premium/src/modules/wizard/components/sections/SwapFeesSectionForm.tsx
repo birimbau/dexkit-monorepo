@@ -1,5 +1,5 @@
+import { isAddress } from '@dexkit/core/utils/ethers/isAddress';
 import { Button, Grid, Paper, Stack, TextField } from '@mui/material';
-import { ethers } from 'ethers';
 import { FormikHelpers, useFormik } from 'formik';
 import { FormattedMessage } from 'react-intl';
 
@@ -10,7 +10,7 @@ const FormSchema: Yup.SchemaOf<SwapFeeForm> = Yup.object().shape({
   amountPercentage: Yup.number().min(0).max(10).required(),
   recipient: Yup.string()
     .test('recipient', (value) => {
-      return value !== undefined ? ethers.utils.isAddress(value) : true;
+      return value !== undefined ? isAddress(value) : true;
     })
     .required(),
 });
@@ -28,7 +28,7 @@ export default function SwapFeesSectionForm({
 }: Props) {
   const handleSubmit = (
     values: SwapFeeForm,
-    helpers: FormikHelpers<SwapFeeForm>
+    helpers: FormikHelpers<SwapFeeForm>,
   ) => {
     onSubmit({ ...values, amountPercentage: values.amountPercentage });
   };

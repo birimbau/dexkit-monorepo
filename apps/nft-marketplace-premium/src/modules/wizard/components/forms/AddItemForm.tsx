@@ -28,7 +28,7 @@ import {
   SectionItem,
 } from '../../../../types/config';
 
-import { ethers } from 'ethers';
+import { isAddress } from '@dexkit/core/utils/ethers/isAddress';
 import * as Yup from 'yup';
 
 import { NETWORKS } from '@dexkit/core/constants/networks';
@@ -68,7 +68,7 @@ const AssetFormSchema: Yup.SchemaOf<Omit<AssetItemType, 'type'>> =
     chainId: Yup.number().required(),
     contractAddress: Yup.string()
       .test('address', (value) => {
-        return value !== undefined ? ethers.utils.isAddress(value) : true;
+        return value !== undefined ? isAddress(value) : true;
       })
       .required(),
     title: Yup.string().required(),
@@ -80,7 +80,7 @@ const CollectionFormSchema: Yup.SchemaOf<Omit<CollectionItemType, 'type'>> =
     chainId: Yup.number().required(),
     contractAddress: Yup.string()
       .test('address', (value) => {
-        return value !== undefined ? ethers.utils.isAddress(value) : true;
+        return value !== undefined ? isAddress(value) : true;
       })
       .required(),
     backgroundImageUrl: Yup.string().required(),

@@ -3,7 +3,7 @@ import { Box, Button } from "@mui/material";
 import { ChainId } from "@dexkit/core/constants";
 import { useSwitchNetworkMutation } from "@dexkit/ui/hooks";
 import { useWeb3React } from "@web3-react/core";
-import { BigNumber, ethers } from "ethers";
+import { BigNumber, Contract } from "ethers";
 import { useSnackbar } from "notistack";
 import { useCallback, useState } from "react";
 import { FormattedMessage } from "react-intl";
@@ -16,7 +16,7 @@ export interface ContractDeployFormProps {
   abi: AbiFragment[];
   contractType: string;
   contractBytecode: string;
-  onContractCreated?: (contract: ethers.Contract) => void;
+  onContractCreated?: (contract: Contract) => void;
 }
 
 export default function ContractDeployForm({

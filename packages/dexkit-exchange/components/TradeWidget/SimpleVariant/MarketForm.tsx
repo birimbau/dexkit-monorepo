@@ -11,6 +11,7 @@ import {
   getChainName,
   isAddressEqual,
 } from "@dexkit/core/utils";
+import { parseUnits } from "@dexkit/core/utils/ethers/parseUnits";
 import {
   useDexKitContext,
   useSwitchNetworkMutation,
@@ -34,7 +35,7 @@ import {
 } from "@mui/material";
 import { useMutation } from "@tanstack/react-query";
 import { useWeb3React } from "@web3-react/core";
-import { BigNumber, ethers, providers } from "ethers";
+import { BigNumber, providers } from "ethers";
 import { useCallback, useMemo, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { EXCHANGE_NOTIFICATION_TYPES } from "../../../constants/messages";
@@ -148,7 +149,7 @@ export default function MarketForm({
   const approveMutation = useApproveToken();
   const amountToTrade =
     amount && Number(amount) > 0
-      ? ethers.utils.parseUnits(amount, baseToken.decimals).toString()
+      ? parseUnits(amount, baseToken.decimals).toString()
       : undefined;
 
   const sideToBuy: any = {};
@@ -188,9 +189,7 @@ export default function MarketForm({
         quoteToken.decimals
       );
 
-      const hasAmount = quoteTokenBalance.gte(
-        ethers.BigNumber.from(quote.sellAmount)
-      );
+      const hasAmount = quoteTokenBalance.gte(BigNumber.from(quote.sellAmount));
 
       return [total, hasAmount];
     }
@@ -207,9 +206,7 @@ export default function MarketForm({
         quoteToken.decimals
       );
 
-      const hasAmount = baseTokenBalance.gte(
-        ethers.BigNumber.from(quote.sellAmount)
-      );
+      const hasAmount = baseTokenBalance.gte(BigNumber.from(quote.sellAmount));
 
       return [total, hasAmount];
     }

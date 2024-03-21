@@ -1,5 +1,5 @@
+import { isAddress } from '@dexkit/core/utils/ethers/isAddress';
 import { Button, Grid, Paper, Stack, TextField } from '@mui/material';
-import { ethers } from 'ethers';
 import { FormikHelpers, useFormik } from 'formik';
 import { FormattedMessage, useIntl } from 'react-intl';
 
@@ -15,7 +15,7 @@ const FormSchema: Yup.SchemaOf<FeeForm> = Yup.object().shape({
   amountPercentage: Yup.number().min(0).max(10).required(),
   recipient: Yup.string()
     .test('recipient', (value) => {
-      return value !== undefined ? ethers.utils.isAddress(value) : true;
+      return value !== undefined ? isAddress(value) : true;
     })
     .required(),
 });
@@ -36,7 +36,7 @@ export default function FeesSectionForm({ onSubmit, onCancel, fees }: Props) {
         formatMessage({
           id: 'recipient.address.already.in.use',
           defaultMessage: 'Recipient address already in use',
-        })
+        }),
       );
     } else if (onSubmit) {
       onSubmit({ ...values, amountPercentage: values.amountPercentage });

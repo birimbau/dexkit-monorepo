@@ -1,5 +1,5 @@
+import { formatUnits } from '@dexkit/core/utils/ethers/formatUnits';
 import { Avatar, Skeleton, Stack, Tooltip, Typography } from '@mui/material';
-import { ethers } from 'ethers';
 import { FormattedNumber } from 'react-intl';
 
 import { memo, useMemo, useRef } from 'react';
@@ -21,7 +21,7 @@ export function AssetBuyOrderPrice({ orderBookItem, asset }: Props) {
   });
 
   const token = tokens.find((t) =>
-    isAddressEqual(t.address, orderBookItem?.erc20Token)
+    isAddressEqual(t.address, orderBookItem?.erc20Token),
   );
 
   const elRef = useRef<HTMLElement | null>(null);
@@ -48,10 +48,7 @@ export function AssetBuyOrderPrice({ orderBookItem, asset }: Props) {
           return (
             ratio *
             parseFloat(
-              ethers.utils.formatUnits(
-                orderBookItem?.erc20TokenAmount,
-                token.decimals
-              )
+              formatUnits(orderBookItem?.erc20TokenAmount, token.decimals),
             )
           );
         } else {
@@ -78,9 +75,9 @@ export function AssetBuyOrderPrice({ orderBookItem, asset }: Props) {
         <Typography variant="body2">
           <b>
             {orderBookItem?.order?.erc20TokenAmount &&
-              ethers.utils.formatUnits(
+              formatUnits(
                 orderBookItem?.order?.erc20TokenAmount,
-                token?.decimals || 18
+                token?.decimals || 18,
               )}{' '}
             {token?.symbol.toUpperCase()}
           </b>

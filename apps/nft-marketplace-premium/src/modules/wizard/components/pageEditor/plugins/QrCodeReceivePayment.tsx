@@ -1,12 +1,12 @@
 import { CoinTypes } from '@dexkit/core/constants';
 import { EvmCoin } from '@dexkit/core/types';
+import { parseUnits } from '@dexkit/core/utils/ethers/parseUnits';
 import EvmReceiveForm from '@dexkit/ui/components/EvmReceiveForm';
 import EvmReceiveQRCode from '@dexkit/ui/components/EvmReceiveQRCode';
 import QrCodeIcon from '@mui/icons-material/QrCode';
 import { Container } from '@mui/material';
 import type { CellPlugin } from '@react-page/editor';
 import { useWeb3React } from '@web3-react/core';
-import { ethers } from 'ethers';
 import { useEvmCoins } from 'src/hooks/blockchain';
 
 type Props = {
@@ -32,9 +32,7 @@ const QrCodeReceive: CellPlugin<Props> = {
       }
       amount={
         data.amount
-          ? ethers.utils
-              .parseUnits(String(data.amount), data.coin?.decimals)
-              .toString()
+          ? parseUnits(String(data.amount), data.coin?.decimals).toString()
           : undefined
       }
     />

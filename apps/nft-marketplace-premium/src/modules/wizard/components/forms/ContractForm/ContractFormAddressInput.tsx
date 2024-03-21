@@ -3,6 +3,7 @@ import { getContractImplementation } from '@/modules/wizard/services';
 import { inputMapping } from '@/modules/wizard/utils';
 import { ChainId } from '@dexkit/core';
 import { NETWORKS } from '@dexkit/core/constants/networks';
+import { isAddress } from '@dexkit/core/utils/ethers/isAddress';
 import LazyTextField from '@dexkit/ui/components/LazyTextField';
 import { useScanContractAbiMutation } from '@dexkit/web3forms/hooks';
 import { AbiFragment, ContractFormParams } from '@dexkit/web3forms/types';
@@ -10,8 +11,7 @@ import { normalizeAbi } from '@dexkit/web3forms/utils';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import { CircularProgress, IconButton, InputAdornment } from '@mui/material';
 import { useWeb3React } from '@web3-react/core';
-import { ethers } from 'ethers';
-import { isAddress } from 'ethers/lib/utils';
+import { providers } from 'ethers';
 import { useFormikContext } from 'formik';
 import { useSnackbar } from 'notistack';
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -35,9 +35,7 @@ export default function ContractFormAddressInput({
 
   const jsonProvider = useMemo(() => {
     if (chainId) {
-      return new ethers.providers.JsonRpcProvider(
-        NETWORKS[chainId].providerRpcUrl
-      );
+      return new providers.JsonRpcProvider(NETWORKS[chainId].providerRpcUrl);
     }
   }, [chainId]);
 
@@ -77,7 +75,7 @@ export default function ContractFormAddressInput({
         }
       }
     },
-    [values.chainId, values.disableProxy, jsonProvider]
+    [values.chainId, values.disableProxy, jsonProvider],
   );
 
   const handleChange = useCallback(
@@ -85,7 +83,7 @@ export default function ContractFormAddressInput({
       await fetchAbi(value);
       setFieldValue('contractAddress', value);
     },
-    [fetchAbi]
+    [fetchAbi],
   );
 
   const handleRefresh = async () => {
@@ -104,7 +102,7 @@ export default function ContractFormAddressInput({
     (value: string) => {
       handleChange(value);
     },
-    [handleChange]
+    [handleChange],
   );
 
   const { account } = useWeb3React();

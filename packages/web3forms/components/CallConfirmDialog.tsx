@@ -5,6 +5,8 @@ import Dialog, { DialogProps } from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import { FormattedMessage } from "react-intl";
 
+import { formatEther } from "@dexkit/core/utils/ethers/formatEther";
+import { parseUnits } from "@dexkit/core/utils/ethers/parseUnits";
 import { AppDialogTitle } from "@dexkit/ui/components/AppDialogTitle";
 import {
   Box,
@@ -16,7 +18,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { BigNumber, ethers } from "ethers";
+import { BigNumber } from "ethers";
 import { ChangeEvent, useState } from "react";
 import { PARSE_UNITS } from "../constants";
 
@@ -40,7 +42,7 @@ export default function CallConfirmDialog({
   const [unit, setUnit] = useState(PARSE_UNITS[0]);
 
   const [value, setValue] = useState({
-    value: payableAmount ? ethers.utils.formatEther(payableAmount) : "",
+    value: payableAmount ? formatEther(payableAmount) : "",
     parsed: payableAmount ? payableAmount : BigNumber.from(0),
   });
 
@@ -57,7 +59,7 @@ export default function CallConfirmDialog({
     const regex = /^\d+\.?(?:\d{1,2})?$/;
 
     try {
-      parsedValue = ethers.utils.parseUnits(e.target.value, unit);
+      parsedValue = parseUnits(e.target.value, unit);
     } catch (err) {}
 
     if (regex.test(e.target.value)) {

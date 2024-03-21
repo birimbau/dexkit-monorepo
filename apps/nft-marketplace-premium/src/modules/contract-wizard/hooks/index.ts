@@ -2,7 +2,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { useContract } from '@thirdweb-dev/react';
 import { useWeb3React } from '@web3-react/core';
 import axios from 'axios';
-import { ethers } from 'ethers';
+import { Contract, ContractFactory, providers } from 'ethers';
 import { useAtomValue, useSetAtom } from 'jotai';
 import { useMemo } from 'react';
 import {
@@ -30,7 +30,7 @@ const wizardBaseAPI = axios.create({
 const dexKitAppApi = myAppsApi;
 
 export function useCreateCollection(
-  provider?: ethers.providers.Web3Provider,
+  provider?: providers.Web3Provider,
   onSubmitted?: (hash: string) => void,
 ) {
   return useMutation(
@@ -53,7 +53,7 @@ export function useCreateCollection(
         )
       ).data;
 
-      const contractFactory = new ethers.ContractFactory(
+      const contractFactory = new ContractFactory(
         contractCode.abi,
         contractCode.bytecode,
         provider.getSigner(),
@@ -76,7 +76,7 @@ export function useCreateCollection(
 }
 
 export function useCreateItems(
-  provider?: ethers.providers.Web3Provider,
+  provider?: providers.Web3Provider,
   onSubmitted?: (hash: string) => void,
 ) {
   const { isLoggedIn } = useAuth();
@@ -103,7 +103,7 @@ export function useCreateItems(
         )
       ).data;
 
-      const contract = new ethers.Contract(
+      const contract = new Contract(
         contractAddress,
         contractCode.abi,
         provider.getSigner(),
@@ -382,7 +382,7 @@ export function useCollectionMetadataQuery(address?: string) {
       return;
     }
 
-    const contract = new ethers.Contract(
+    const contract = new Contract(
       address,
       ERC721Abi,
       provider.getSigner(),
@@ -488,7 +488,7 @@ export function useTokenContractData() {
 }
 
 export function useCreateToken(
-  provider?: ethers.providers.Web3Provider,
+  provider?: providers.Web3Provider,
   onSubmitted?: (hash: string, contractAddress: string) => void,
 ) {
   const { data: contractData } = useTokenContractData();
@@ -500,7 +500,7 @@ export function useCreateToken(
 
     const { bytecode, abi } = contractData;
 
-    const contractFactory = new ethers.ContractFactory(
+    const contractFactory = new ContractFactory(
       abi,
       bytecode,
       provider.getSigner(),

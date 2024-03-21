@@ -1,6 +1,6 @@
 import { DexkitApiProvider } from "@dexkit/core/providers";
 import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
-import { BigNumber, ethers } from "ethers";
+import { BigNumber, Contract, ContractFactory, ContractInterface, providers } from "ethers";
 import { useSnackbar } from "notistack";
 import { useIntl } from "react-intl";
 
@@ -14,6 +14,7 @@ import { ETHER_SCAN_API_URL } from "../constants";
 
 
 import { getNormalizedUrl } from "@dexkit/core/utils";
+import { isAddress } from "@dexkit/core/utils/ethers/isAddress";
 import { useWeb3React } from "@web3-react/core";
 import { useContext, useEffect, useState } from "react";
 import {
@@ -26,8 +27,8 @@ import {
 
 export interface UseContractCallMutationOptions {
   contractAddress?: string;
-  abi: ethers.ContractInterface;
-  provider?: ethers.providers.Web3Provider;
+  abi: ContractInterface;
+  provider?: providers.Web3Provider;
   onSuccess?: (data: { name: string; result: any }) => void;
 }
 
@@ -37,7 +38,7 @@ export interface UseContractCallMutationParams {
   name: string;
   payable?: boolean;
   value?: BigNumber;
-  rpcProvider?: ethers.providers.JsonRpcProvider;
+  rpcProvider?: providers.JsonRpcProvider;
 }
 
 export function useContractCallMutation({
@@ -58,7 +59,7 @@ export function useContractCallMutation({
       value,
       rpcProvider,
     }: UseContractCallMutationParams) => {
-      let contract: ethers.Contract;
+      let contract: Contract;
 
       let currProvider = rpcProvider ? rpcProvider : provider;
 
@@ -69,13 +70,13 @@ export function useContractCallMutation({
       let cb;
 
       if (call) {
-        contract = new ethers.Contract(
+        contract = new Contract(
           contractAddress,
           abi,
           provider?.getSigner()
         );
       } else {
-        contract = new ethers.Contract(contractAddress, abi, currProvider);
+        contract = new Contract(contractAddress, abi, currProvider);
       }
 
       try {
@@ -119,9 +120,9 @@ export function useContractCallMutation({
 
 export interface UseContractDeployMutationOptions {
   contractBytecode?: string;
-  abi: ethers.ContractInterface;
-  provider?: ethers.providers.Web3Provider;
-  onContractCreated?: (contract: ethers.Contract) => void;
+  abi: ContractInterface;
+  provider?: providers.Web3Provider;
+  onContractCreated?: (contract: Contract) => void;
 }
 
 export function useContractDeployMutation({
@@ -147,7 +148,7 @@ export function useContractDeployMutation({
 
       const { payable, args } = params;
 
-      const factory = new ethers.ContractFactory(
+      const factory = new ContractFactory(
         abi,
         contractBytecode,
         provider.getSigner()
@@ -201,7 +202,7 @@ export function useCallOnMountFields({
 }: {
   contractAddress: string;
   abi: AbiFragment[];
-  provider?: ethers.providers.JsonRpcProvider;
+  provider?: providers.JsonRpcProvider;
   params: ContractFormParams;
   onSuccess: (results: { [key: string]: any }) => void;
 }) {
@@ -209,7 +210,7 @@ export function useCallOnMountFields({
     [CALL_ON_MOUNT_QUERY, params],
     async () => {
       if (provider) {
-        let contract = new ethers.Contract(contractAddress, abi, provider);
+        let contract = new Contract(contractAddress, abi, provider);
 
         let results: { [key: string]: any } = {};
 
@@ -250,7 +251,7 @@ export function useScanContractAbiMutation() {
       contractAddress: string;
       chainId: ChainId;
     }) => {
-      if (!ethers.utils.isAddress(contractAddress)) {
+      if (!isAddress(contractAddress)) {
         throw new Error("invalid contract address");
       }
 
@@ -287,7 +288,7 @@ export function useContractCreation() {
       contractAddress: string;
       chainId: ChainId;
     }) => {
-      if (!ethers.utils.isAddress(contractAddress)) {
+      if (!isAddress(contractAddress)) {
         throw new Error("invalid contract address");
       }
 

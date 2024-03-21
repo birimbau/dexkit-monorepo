@@ -6,7 +6,7 @@ import {
   ListItemButton,
   ListItemText,
 } from "@mui/material";
-import { BigNumber, ethers } from "ethers";
+import { BigNumber, constants } from "ethers";
 import { memo } from "react";
 
 import { TOKEN_ICON_URL } from "@dexkit/core/constants";
@@ -28,7 +28,7 @@ function SelectCoinListItem({
   const balance = tokenBalances
     ? tokenBalances[
         isAddressEqual(token.address, ZEROEX_NATIVE_TOKEN_ADDRESS)
-          ? ethers.constants.AddressZero
+          ? constants.AddressZero
           : token.address
       ]
     : BigNumber.from(0);

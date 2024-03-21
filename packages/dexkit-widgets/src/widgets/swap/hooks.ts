@@ -15,7 +15,7 @@ import {
 import { Transak } from "@transak/transak-sdk";
 
 import { Connector } from "@web3-react/types";
-import { BigNumber, ethers, providers } from "ethers";
+import { BigNumber, Contract, constants, providers } from "ethers";
 import { useSnackbar } from "notistack";
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useIntl } from "react-intl";
@@ -62,15 +62,15 @@ export function useErc20ApproveMutation({
     }: {
       spender: string;
       token: Token;
-      amount: ethers.BigNumber;
+      amount: BigNumber;
       tokenAddress?: string;
-      provider?: ethers.providers.Web3Provider;
+      provider?: providers.Web3Provider;
     }) => {
       if (!provider || tokenAddress === undefined) {
         return undefined;
       }
 
-      const contract = new ethers.Contract(
+      const contract = new Contract(
         tokenAddress,
         ERC20Abi,
         provider.getSigner()
@@ -242,7 +242,7 @@ export function useSwapQuote({
 
 export interface SwapExecParams {
   quote: ZeroExQuoteResponse;
-  provider?: ethers.providers.Web3Provider;
+  provider?: providers.Web3Provider;
   onHash: (hash: string) => void;
   sellToken: Token;
   buyToken: Token;
@@ -273,7 +273,7 @@ export function useSwapExec({
       try {
         const tx = await provider.getSigner().sendTransaction({
           data: quote?.data,
-          value: ethers.BigNumber.from(quote?.value),
+          value: BigNumber.from(quote?.value),
           to: quote?.to,
         });
 
@@ -339,7 +339,7 @@ export function useSwapState({
 }: {
   zeroExApiKey?: string;
   execMutation: UseMutationResult<
-    ethers.providers.TransactionReceipt,
+    providers.TransactionReceipt,
     unknown,
     SwapExecParams,
     unknown
@@ -351,7 +351,7 @@ export function useSwapState({
       spender: string;
       amount: BigNumber;
       tokenAddress?: string;
-      provider?: ethers.providers.Web3Provider;
+      provider?: providers.Web3Provider;
       token: Token;
     },
     unknown
@@ -362,8 +362,8 @@ export function useSwapState({
   };
   disableFooter?: boolean;
   enableBuyCryptoButton?: boolean;
-  provider?: ethers.providers.BaseProvider;
-  connectorProvider?: ethers.providers.Web3Provider;
+  provider?: providers.BaseProvider;
+  connectorProvider?: providers.Web3Provider;
   connector?: Connector;
   isActive?: boolean;
   isActivating?: boolean;
@@ -701,7 +701,7 @@ export function useSwapState({
               buyToken,
             },
             {
-              onSuccess: (receipt: ethers.providers.TransactionReceipt) => { },
+              onSuccess: (receipt: providers.TransactionReceipt) => { },
               onError,
             }
           );
@@ -731,7 +731,7 @@ export function useSwapState({
           onHash: (hash: string) => { },
         },
         {
-          onSuccess: (receipt: ethers.providers.TransactionReceipt) => { },
+          onSuccess: (receipt: providers.TransactionReceipt) => { },
         }
       );
     } else if (execType === "approve" && quoteQuery.data) {
@@ -743,7 +743,7 @@ export function useSwapState({
             spender: data.allowanceTarget,
             provider: connectorProvider as providers.Web3Provider,
             tokenAddress: data.sellTokenAddress,
-            amount: ethers.constants.MaxUint256,
+            amount: constants.MaxUint256,
             token: sellToken,
           },
           {
@@ -759,7 +759,7 @@ export function useSwapState({
           onHash: (hash: string) => { },
         },
         {
-          onSuccess: (receipt: ethers.providers.TransactionReceipt) => {
+          onSuccess: (receipt: providers.TransactionReceipt) => {
             quoteQuery.refetch();
           },
         }
@@ -870,7 +870,7 @@ export function useSwapProvider({
 }) {
   return useMemo(() => {
     if (defaultChainId && NETWORKS[defaultChainId]?.providerRpcUrl) {
-      return new ethers.providers.JsonRpcProvider(
+      return new providers.JsonRpcProvider(
         NETWORKS[defaultChainId].providerRpcUrl
       );
     }

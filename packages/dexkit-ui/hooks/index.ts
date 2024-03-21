@@ -42,7 +42,8 @@ import {
   TxDialogTransaction,
 } from "../types";
 
-import { providers, utils } from "ethers";
+import { isHexString } from '@dexkit/core/utils/ethers/isHexString';
+import { providers } from "ethers";
 import { AdminContext } from "../context/AdminContext";
 
 export * from "./auth";
@@ -515,7 +516,7 @@ export function useWaitTransactionConfirmation({
   return useQuery(
     [WAIT_TRANSACTION_QUERY, transactionHash],
     async ({ }) => {
-      if (!utils.isHexString(transactionHash)) {
+      if (!isHexString(transactionHash)) {
         return null;
       }
 

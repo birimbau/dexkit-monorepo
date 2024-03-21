@@ -1,5 +1,7 @@
 import { useThirdwebApprove } from '@/modules/contract-wizard/hooks/thirdweb';
 import { formatBigNumber } from '@dexkit/core/utils';
+import { formatUnits } from '@dexkit/core/utils/ethers/formatUnits';
+import { parseUnits } from '@dexkit/core/utils/ethers/parseUnits';
 import { useDexKitContext } from '@dexkit/ui';
 import FormikDecimalInput from '@dexkit/ui/components/FormikDecimalInput';
 import { useAsyncMemo } from '@dexkit/widgets/src/hooks';
@@ -26,7 +28,7 @@ import {
   useTokenBalance,
 } from '@thirdweb-dev/react';
 import { useWeb3React } from '@web3-react/core';
-import { BigNumber, ethers } from 'ethers';
+import { BigNumber } from 'ethers';
 import { Formik, FormikErrors } from 'formik';
 import { SyntheticEvent, useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
@@ -86,7 +88,7 @@ export default function StakeErc20Section({ section }: StakeErc20SectionProps) {
         return [
           formatBigNumber(n, stakingTokenBalance?.decimals || 18),
           formatBigNumber(d, rewardTokenBalance?.decimals || 18),
-          ethers.utils.formatUnits(n, stakingTokenBalance?.decimals),
+          formatUnits(n, stakingTokenBalance?.decimals),
           n as BigNumber,
         ];
       }
@@ -151,7 +153,7 @@ export default function StakeErc20Section({ section }: StakeErc20SectionProps) {
 
       if (tx?.hash && chainId) {
         const values = {
-          amount: `${ethers.utils.formatUnits(
+          amount: `${formatUnits(
             amount,
             stakingTokenBalance?.decimals,
           )} ${stakingTokenBalance?.symbol}`,
@@ -180,7 +182,7 @@ export default function StakeErc20Section({ section }: StakeErc20SectionProps) {
 
       if (tx?.hash && chainId) {
         const values = {
-          amount: `${ethers.utils.formatUnits(
+          amount: `${formatUnits(
             amount,
             stakingTokenBalance?.decimals,
           )} ${stakingTokenBalance?.symbol}`,
@@ -202,10 +204,7 @@ export default function StakeErc20Section({ section }: StakeErc20SectionProps) {
   );
 
   const handleSubmit = async ({ amount }: { amount: string }) => {
-    const amountParsed = ethers.utils.parseUnits(
-      amount,
-      stakingTokenBalance?.decimals,
-    );
+    const amountParsed = parseUnits(amount, stakingTokenBalance?.decimals);
 
     if (!allowance?.value.gte(amountParsed)) {
       await approve({ amount });
@@ -259,10 +258,7 @@ export default function StakeErc20Section({ section }: StakeErc20SectionProps) {
   };
 
   const handleSubmitUnstake = async ({ amount }: { amount: string }) => {
-    const amountParsed = ethers.utils.parseUnits(
-      amount,
-      stakingTokenBalance?.decimals,
-    );
+    const amountParsed = parseUnits(amount, stakingTokenBalance?.decimals);
 
     const values = {
       amount: `${amount} ${stakingTokenBalance?.symbol}`,
@@ -285,7 +281,7 @@ export default function StakeErc20Section({ section }: StakeErc20SectionProps) {
   const validateStake = async ({ amount }: { amount: string }) => {
     let errors: FormikErrors<{ amount: string }> = {};
 
-    const amountParsed = ethers.utils.parseUnits(
+    const amountParsed = parseUnits(
       amount || '0',
       stakingTokenBalance?.decimals,
     );
@@ -310,7 +306,7 @@ export default function StakeErc20Section({ section }: StakeErc20SectionProps) {
   const validateUnstake = async ({ amount }: { amount: string }) => {
     let errors: FormikErrors<{ amount: string }> = {};
 
-    const amountParsed = ethers.utils.parseUnits(
+    const amountParsed = parseUnits(
       amount || '0',
       stakingTokenBalance?.decimals,
     );

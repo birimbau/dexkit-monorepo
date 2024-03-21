@@ -6,8 +6,8 @@ import {
   ContractFormParams,
 } from '@dexkit/web3forms/types';
 import Grid from '@mui/material/Grid';
-import { isAddress } from 'ethers/lib/utils';
 
+import { isAddress } from '@dexkit/core/utils/ethers/isAddress';
 import { TextField as MuiTextField } from '@mui/material';
 import { Field, useFormikContext } from 'formik';
 import { Autocomplete, TextField } from 'formik-mui';

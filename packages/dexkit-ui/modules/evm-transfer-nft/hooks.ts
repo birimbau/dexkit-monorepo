@@ -2,7 +2,7 @@ import { ChainId } from "@dexkit/core/constants";
 import { ERC1155Abi, ERC721Abi } from "@dexkit/core/constants/abis";
 import { NETWORK_PROVIDER } from "@dexkit/core/constants/networks";
 import { useMutation } from "@tanstack/react-query";
-import { ethers } from "ethers";
+import { Contract, providers } from "ethers";
 
 export function useNftTransfer({
   contractAddress,
@@ -12,7 +12,7 @@ export function useNftTransfer({
 }: {
   contractAddress?: string;
   tokenId?: string;
-  provider?: ethers.providers.Web3Provider;
+  provider?: providers.Web3Provider;
   onSubmit?: ({ hash }: { hash: string, isERC1155: boolean, to: string, quantity?: string }) => void;
   onConfirm?: ({ hash }: { hash: string, isERC1155: boolean, to: string, quantity?: string }) => void;
 }) {
@@ -39,7 +39,7 @@ export function useNftTransfer({
         return false;
       }
 
-      let contract = new ethers.Contract(
+      let contract = new Contract(
         contractAddress,
         protocol === "ERC1155" ? ERC1155Abi : ERC721Abi,
         provider?.getSigner()

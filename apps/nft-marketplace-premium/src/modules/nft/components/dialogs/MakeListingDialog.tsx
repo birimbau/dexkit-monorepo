@@ -21,9 +21,10 @@ import {
   Typography,
 } from '@mui/material';
 
+import { isAddress } from '@dexkit/core/utils/ethers/isAddress';
 import { AppDialogTitle } from '../../../../components/AppDialogTitle';
 
-import { BigNumber, ethers } from 'ethers';
+import { BigNumber, utils } from 'ethers';
 
 import moment from 'moment';
 import { useMemo } from 'react';
@@ -59,7 +60,7 @@ const FormSchema: Yup.SchemaOf<Form> = Yup.object().shape({
   expiry: Yup.date().required(),
   taker: Yup.string()
     .test('address', (value) => {
-      return value !== undefined ? ethers.utils.isAddress(value) : true;
+      return value !== undefined ? isAddress(value) : true;
     })
     .notRequired(),
 });
@@ -72,11 +73,11 @@ interface Props {
   assetBalance?: AssetBalance;
   tokenList: Token[];
   onConfirm: (
-    price: ethers.BigNumber,
+    price: BigNumber,
     tokenAddress: string,
     expiry: Date | null,
     takerAddress?: string,
-    quantity?: ethers.BigNumber,
+    quantity?: BigNumber,
   ) => void;
 }
 
@@ -118,7 +119,7 @@ export default function MakeListingDialog({
       }
 
       onConfirm(
-        ethers.utils.parseUnits(values.price, decimals),
+        utils.parseUnits(values.price, decimals),
         values.tokenAddress,
         values.expiry || null,
         values.taker,

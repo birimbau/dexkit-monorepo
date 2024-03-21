@@ -1,6 +1,6 @@
 import { Button, Grid, Paper, Stack } from '@mui/material';
 import { useWeb3React } from '@web3-react/core';
-import { ethers } from 'ethers';
+import { BigNumber } from 'ethers';
 import { useCallback, useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import Icon from '../../../components/Icon';
@@ -225,11 +225,11 @@ export function AssetPricePaper({ address, id }: Props) {
   const handleCloseMakeOfferDialog = () => setOpenMakeOffer(false);
 
   const handleConfirmMakeListing = async (
-    amount: ethers.BigNumber,
+    amount: BigNumber,
     tokenAddress: string,
     expiry: Date | null,
     takerAddress?: string,
-    quantity?: ethers.BigNumber,
+    quantity?: BigNumber,
   ) => {
     setOpenMakeListing(false);
 
@@ -274,10 +274,10 @@ export function AssetPricePaper({ address, id }: Props) {
   };
 
   const handleConfirmMakeOffer = async (
-    amount: ethers.BigNumber,
+    amount: BigNumber,
     tokenAddress: string,
     expiry: Date | null,
-    quantity?: ethers.BigNumber,
+    quantity?: BigNumber,
   ) => {
     setOpenMakeOffer(false);
 

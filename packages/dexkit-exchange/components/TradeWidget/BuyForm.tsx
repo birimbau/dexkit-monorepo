@@ -15,10 +15,12 @@ import { useSnackbar } from "notistack";
 import { ChainId, useApproveToken, useTokenAllowanceQuery } from "@dexkit/core";
 import { Token } from "@dexkit/core/types";
 import { formatBigNumber, getChainName } from "@dexkit/core/utils";
+import { formatUnits } from "@dexkit/core/utils/ethers/formatUnits";
+import { parseUnits } from "@dexkit/core/utils/ethers/parseUnits";
 import { useSwitchNetworkMutation } from "@dexkit/ui/hooks";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import { useWeb3React } from "@web3-react/core";
-import { BigNumber, ethers } from "ethers";
+import { BigNumber, providers } from "ethers";
 import { ORDER_LIMIT_DURATIONS } from "../../constants";
 import { useSendLimitOrderMutation } from "../../hooks";
 import { useZrxQuoteMutation } from "../../hooks/zrx";
@@ -31,9 +33,9 @@ export interface BuyFormProps {
   quoteToken: Token;
   baseToken: Token;
   slippage?: number;
-  quoteTokenBalance?: ethers.BigNumber;
+  quoteTokenBalance?: BigNumber;
   maker?: string;
-  provider?: ethers.providers.Web3Provider;
+  provider?: providers.Web3Provider;
   buyTokenPercentageFee?: number;
   feeRecipient?: string;
   affiliateAddress?: string;
@@ -73,10 +75,7 @@ export default function BuyForm({
   }, [amount]);
 
   const parsedAmountPerToken = useMemo(() => {
-    return ethers.utils.parseUnits(
-      amountPerToken || "0.0",
-      quoteToken.decimals
-    );
+    return parseUnits(amountPerToken || "0.0", quoteToken.decimals);
   }, [amountPerToken, quoteToken]);
 
   const cost = useMemo(() => {
@@ -135,7 +134,7 @@ export default function BuyForm({
       buyToken: baseToken.address,
       sellToken: quoteToken.address,
       affiliateAddress: affiliateAddress ? affiliateAddress : "",
-      buyAmount: ethers.utils.parseUnits("1.0", baseToken.decimals).toString(),
+      buyAmount: parseUnits("1.0", baseToken.decimals).toString(),
       skipValidation: true,
       slippagePercentage: slippage ? slippage / 100 : 0.01,
       feeRecipient,
@@ -144,9 +143,7 @@ export default function BuyForm({
 
     const sellAmount = BigNumber.from(quote?.sellAmount || "0");
 
-    setAmountPerToken(
-      ethers.utils.formatUnits(sellAmount, quoteToken.decimals)
-    );
+    setAmountPerToken(formatUnits(sellAmount, quoteToken.decimals));
   }, [baseToken, quoteToken]);
 
   const sendLimitOrderMutation = useSendLimitOrderMutation();
@@ -161,10 +158,7 @@ export default function BuyForm({
 
   const takerAmount = useMemo(() => {
     if (parsedAmount) {
-      return ethers.utils.parseUnits(
-        parsedAmount.toString(),
-        baseToken.decimals
-      );
+      return parseUnits(parsedAmount.toString(), baseToken.decimals);
     }
   }, [parsedAmount, baseToken]);
 

@@ -11,7 +11,7 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import { ethers } from 'ethers';
+
 import moment from 'moment';
 import { FormattedMessage, FormattedNumber } from 'react-intl';
 import {
@@ -21,6 +21,7 @@ import {
 } from '../../../../utils/blockchain';
 import { ipfsUriToUrl } from '../../../../utils/ipfs';
 
+import { formatUnits } from '@dexkit/core/utils/ethers/formatUnits';
 import CancelIcon from '@mui/icons-material/Cancel';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { memo, useMemo, useRef } from 'react';
@@ -88,9 +89,7 @@ export function ListingsTableRow({
         ) {
           return (
             ratio *
-            parseFloat(
-              ethers.utils.formatUnits(order?.erc20TokenAmount, token.decimals),
-            )
+            parseFloat(formatUnits(order?.erc20TokenAmount, token.decimals))
           );
         } else {
           return 0;
@@ -116,10 +115,7 @@ export function ListingsTableRow({
           </Tooltip>
           <Typography variant="body1">
             {order.erc20TokenAmount !== undefined &&
-              ethers.utils.formatUnits(
-                order.erc20TokenAmount,
-                token?.decimals || 18,
-              )}{' '}
+              formatUnits(order.erc20TokenAmount, token?.decimals || 18)}{' '}
             {token?.symbol.toUpperCase()}
           </Typography>
         </Stack>

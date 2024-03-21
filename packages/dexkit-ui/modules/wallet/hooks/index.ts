@@ -1,9 +1,10 @@
 import { ChainId, CoinTypes } from "@dexkit/core/constants/enums";
 import { NETWORK_PROVIDER } from "@dexkit/core/constants/networks";
+import { formatEther } from "@dexkit/core/utils/ethers/formatEther";
+import { formatUnits } from "@dexkit/core/utils/ethers/formatUnits";
 import { useQuery } from "@tanstack/react-query";
 import { useWeb3React } from "@web3-react/core";
 import { ParseOutput, parse } from 'eth-url-parser';
-import { ethers } from "ethers";
 import { useAtomValue } from "jotai/utils";
 import { useMemo } from "react";
 import { useEvmCoins, useTokenList } from "../../../hooks/blockchain";
@@ -114,12 +115,12 @@ export function useParsePaymentRequest({ paymentURL }: { paymentURL?: string }) 
 
       if (parsedPayment.function_name === 'transfer') {
         if (parsedPayment.parameters && parsedPayment.parameters['uint256'] && defaultCoin.decimals !== undefined) {
-          amount = ethers.utils.formatUnits(parsedPayment.parameters['uint256'], defaultCoin.decimals)
+          amount = formatUnits(parsedPayment.parameters['uint256'], defaultCoin.decimals)
         }
       }
       if (parsedPayment.function_name === undefined) {
         if (parsedPayment.parameters && parsedPayment.parameters['value']) {
-          amount = ethers.utils.formatEther(parsedPayment.parameters['value'])
+          amount = formatEther(parsedPayment.parameters['value'])
 
         }
       }

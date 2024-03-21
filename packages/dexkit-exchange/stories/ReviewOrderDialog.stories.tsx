@@ -7,7 +7,7 @@ import ThemeProvider from "@mui/material/styles/ThemeProvider";
 import createTheme from "@mui/material/styles/createTheme";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Web3ReactProvider, useWeb3React } from "@web3-react/core";
-import { ethers } from "ethers";
+import { BigNumber } from "ethers";
 import { atom } from "jotai";
 import { useEffect, useMemo } from "react";
 import { IntlProvider } from "react-intl";
@@ -84,7 +84,7 @@ const Template: ComponentStory<typeof ReviewOrderDialog> = (args) => {
                 maxWidth: "sm",
                 onClose: () => {},
               }}
-              makerAmount={ethers.BigNumber.from("100000")}
+              makerAmount={BigNumber.from("100000")}
             />
           </QueryClientProvider>
         </Web3ReactProvider>

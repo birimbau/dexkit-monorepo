@@ -1,7 +1,7 @@
 import { CallInput } from '@indexed-finance/multicall';
 import axios from 'axios';
-import { BigNumber, ethers } from 'ethers';
-import { Interface } from 'ethers/lib/utils';
+import { BigNumber, Contract, providers, utils } from 'ethers';
+
 import { ERC1155Abi, ERC165Abi, ERC721Abi } from '../constants/abis';
 import { Asset, AssetAPI, AssetMetadata, Collection, CollectionAPI, OrderBookItem, OrderbookAPI } from '../types/nft';
 import { ipfsUriToUrl } from '../utils/ipfs';
@@ -114,7 +114,7 @@ export async function getERC1155Balance({
   tokenId,
   account,
 }: {
-  provider?: ethers.providers.JsonRpcProvider,
+  provider?: providers.JsonRpcProvider,
   contractAddress: string;
   tokenId: string;
   account: string;
@@ -124,7 +124,7 @@ export async function getERC1155Balance({
   }
 
   const multicall = await getMulticallFromProvider(provider);
-  const iface = new Interface(ERC1155Abi);
+  const iface = new utils.Interface(ERC1155Abi);
   let calls: CallInput[] = [];
   calls.push({
     interface: iface,
@@ -143,7 +143,7 @@ export async function getERC721TotalSupply({
   provider,
   contractAddress,
 }: {
-  provider?: ethers.providers.JsonRpcProvider,
+  provider?: providers.JsonRpcProvider,
   contractAddress: string;
 }) {
   if (!provider || !contractAddress) {
@@ -151,7 +151,7 @@ export async function getERC721TotalSupply({
   }
 
   const multicall = await getMulticallFromProvider(provider);
-  const iface = new Interface(ERC721Abi);
+  const iface = new utils.Interface(ERC721Abi);
   let calls: CallInput[] = [];
   calls.push({
     interface: iface,
@@ -198,7 +198,7 @@ export async function getCollectionByApi({
 }
 
 export async function getAssetData(
-  provider?: ethers.providers.JsonRpcProvider,
+  provider?: providers.JsonRpcProvider,
   contractAddress?: string,
   id?: string,
   account?: string,
@@ -215,7 +215,7 @@ export async function getAssetData(
   const isERC1155 = protocol === 'ERC1155' ? true : false;
 
   const multicall = await getMulticallFromProvider(provider);
-  const iface = new Interface(isERC1155 ? ERC1155Abi : ERC721Abi);
+  const iface = new utils.Interface(isERC1155 ? ERC1155Abi : ERC721Abi);
   let calls: CallInput[] = [];
   if (!isERC1155) {
     calls.push({
@@ -313,7 +313,7 @@ export async function getAssetData(
 
 
 export async function getENSAssetData(
-  provider?: ethers.providers.JsonRpcProvider,
+  provider?: providers.JsonRpcProvider,
   contractAddress?: string,
   id?: string
 ): Promise<Asset | undefined> {
@@ -323,8 +323,8 @@ export async function getENSAssetData(
 
   const response = await metadataENSapi.get(`/mainnet/${contractAddress}/${id}`);
   const data = response.data;
-  const iface = new Interface(ERC721Abi);
-  const contract = new ethers.Contract(contractAddress, iface, provider);
+  const iface = new utils.Interface(ERC721Abi);
+  const contract = new Contract(contractAddress, iface, provider);
   const owner = await contract.ownerOf(id);
 
   if (data) {
@@ -403,7 +403,7 @@ export async function getSyncCollectionData(
 
 
 export async function getCollectionData(
-  provider?: ethers.providers.JsonRpcProvider,
+  provider?: providers.JsonRpcProvider,
   contractAddress?: string
 ): Promise<Collection | undefined> {
   if (!provider || !contractAddress) {
@@ -411,7 +411,7 @@ export async function getCollectionData(
   }
 
   const multicall = await getMulticallFromProvider(provider);
-  const iface = new Interface(ERC721Abi);
+  const iface = new utils.Interface(ERC721Abi);
   let calls: CallInput[] = [];
 
   calls.push({
@@ -445,7 +445,7 @@ export async function getCollectionData(
 }
 
 export async function getAssetsFromOrderbook(
-  provider?: ethers.providers.JsonRpcProvider,
+  provider?: providers.JsonRpcProvider,
   filters?: TraderOrderFilter
 ) {
   if (provider === undefined) {
@@ -474,7 +474,7 @@ export async function getAssetsFromOrderbook(
 
 
 export async function getCollectionAssetsFromOrderbook(
-  provider?: ethers.providers.JsonRpcProvider,
+  provider?: providers.JsonRpcProvider,
   filters?: TraderOrderFilter
 ) {
   if (provider === undefined || filters?.nftToken === undefined) {
@@ -511,14 +511,14 @@ export async function getCollectionAssetsFromOrderbook(
   return assets;
 }
 
-export async function getAssetProtocol(provider?: ethers.providers.JsonRpcProvider, contractAddress?: string): Promise<'ERC721' | 'ERC1155' | 'ERC20' | 'UNKNOWN'> {
+export async function getAssetProtocol(provider?: providers.JsonRpcProvider, contractAddress?: string): Promise<'ERC721' | 'ERC1155' | 'ERC20' | 'UNKNOWN'> {
   if (!provider || !contractAddress) {
     return 'UNKNOWN';
   }
 
 
   const multicall = await getMulticallFromProvider(provider);
-  const iface = new Interface(ERC165Abi);
+  const iface = new utils.Interface(ERC165Abi);
   let calls: CallInput[] = [];
   calls.push({
     interface: iface,
@@ -539,7 +539,7 @@ export async function getAssetProtocol(provider?: ethers.providers.JsonRpcProvid
 
 //Return multiple assets at once
 export async function getAssetsData(
-  provider: ethers.providers.JsonRpcProvider,
+  provider: providers.JsonRpcProvider,
   contractAddress: string,
   ids: string[],
   isERC1155 = false
@@ -556,7 +556,7 @@ export async function getAssetsData(
     return data;
   }
   const multicall = await getMulticallFromProvider(provider);
-  const iface = new Interface(isERC1155 ? ERC1155Abi : ERC721Abi);
+  const iface = new utils.Interface(isERC1155 ? ERC1155Abi : ERC721Abi);
   let calls: CallInput[] = [];
   calls.push({
     interface: iface,

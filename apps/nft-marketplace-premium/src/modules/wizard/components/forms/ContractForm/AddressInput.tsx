@@ -1,6 +1,7 @@
 import { truncateAddress } from '@dexkit/core/utils';
+import { isAddress } from '@dexkit/core/utils/ethers/isAddress';
 import { Grid, TextField as MuiTextField } from '@mui/material';
-import { isAddress } from 'ethers/lib/utils';
+
 import { Field } from 'formik';
 import { Autocomplete } from 'formik-mui';
 import { FormattedMessage } from 'react-intl';

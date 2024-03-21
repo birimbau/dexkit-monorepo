@@ -13,7 +13,6 @@ import {
   Typography,
 } from '@mui/material';
 
-import { ethers } from 'ethers';
 import Link from '../../../../components/Link';
 import {
   getBlockExplorerUrl,
@@ -32,6 +31,7 @@ import MomentFromNow from '../../../../components/MomentFromNow';
 import { useTokenList } from '../../../../hooks/blockchain';
 import { SwapApiOrder } from '../../../../types/nft';
 
+import { formatUnits } from '@dexkit/core/utils/ethers/formatUnits';
 import LaunchIcon from '@mui/icons-material/Launch';
 import { useCoinPricesQuery, useCurrency } from '../../../../hooks/currency';
 
@@ -57,7 +57,7 @@ function OffersTableRow({
   const tokens = useTokenList({ chainId: parseInt(chainId || '0') });
 
   const token = tokens.find((t) =>
-    isAddressEqual(t.address, order?.erc20Token)
+    isAddressEqual(t.address, order?.erc20Token),
   );
 
   const elRef = useRef<HTMLElement | null>(null);
@@ -83,9 +83,7 @@ function OffersTableRow({
         if (ratio) {
           return (
             ratio *
-            parseFloat(
-              ethers.utils.formatUnits(order?.erc20TokenAmount, token.decimals)
-            )
+            parseFloat(formatUnits(order?.erc20TokenAmount, token.decimals))
           );
         } else {
           return 0;
@@ -110,10 +108,7 @@ function OffersTableRow({
             />
           </Tooltip>
           <Typography variant="body1">
-            {ethers.utils.formatUnits(
-              order?.erc20TokenAmount || '0',
-              token?.decimals || 18
-            )}{' '}
+            {formatUnits(order?.erc20TokenAmount || '0', token?.decimals || 18)}{' '}
             {token?.symbol.toUpperCase()}
           </Typography>
         </Stack>
@@ -136,9 +131,9 @@ function OffersTableRow({
           color="primary"
           href={
             chainId !== undefined
-              ? `${getBlockExplorerUrl(parseInt(chainId))}/address/${
-                  order?.maker
-                }`
+              ? `${getBlockExplorerUrl(
+                  parseInt(chainId),
+                )}/address/${order?.maker}`
               : '/'
           }
           target="_blank"

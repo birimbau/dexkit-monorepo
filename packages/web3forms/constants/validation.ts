@@ -1,4 +1,6 @@
-import { ethers } from "ethers";
+import { arrayify } from "@dexkit/core/utils/ethers/arrayify";
+import { isAddress } from "@dexkit/core/utils/ethers/isAddress";
+import { isBytesLike } from "@dexkit/core/utils/ethers/isBytesLike";
 import * as Yup from "yup";
 
 export const EvmSchemaTypes: { [key: string]: Yup.Schema } = {
@@ -10,19 +12,19 @@ export const EvmSchemaTypes: { [key: string]: Yup.Schema } = {
     .test("bytes32", "invalid bytes32", (value) => {
       return (
         value !== undefined &&
-        ethers.utils.isBytesLike(value) &&
-        ethers.utils.arrayify(value).length === 32
+        isBytesLike(value) &&
+        arrayify(value).length === 32
       );
     })
     .required(),
   "address[]": Yup.array(
     Yup.string().test("address", "invalid address", (value) => {
-      return value !== undefined ? ethers.utils.isAddress(value) : true;
+      return value !== undefined ? isAddress(value) : true;
     })
   ).required(),
   address: Yup.string()
     .test("address", "invalid address", (value) => {
-      return value !== undefined ? ethers.utils.isAddress(value) : true;
+      return value !== undefined ? isAddress(value) : true;
     })
     .required(),
 };

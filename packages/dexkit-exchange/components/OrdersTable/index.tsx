@@ -15,7 +15,7 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import { ethers } from "ethers";
+import { providers } from "ethers";
 import { useCallback, useMemo } from "react";
 import { FormattedMessage } from "react-intl";
 import { useExchangeContext } from "../../hooks";
@@ -34,7 +34,7 @@ import { EXCHANGE_NOTIFICATION_TYPES } from "../../constants/messages";
 export interface OrdersTable {
   chainId?: ChainId;
   account?: string;
-  provider?: ethers.providers.Web3Provider;
+  provider?: providers.Web3Provider;
   active?: boolean;
 }
 

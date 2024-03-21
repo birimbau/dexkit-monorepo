@@ -1,3 +1,4 @@
+import { formatUnits } from '@dexkit/core/utils/ethers/formatUnits';
 import LazyTextField from '@dexkit/ui/components/LazyTextField';
 import { useInterval } from '@dexkit/ui/hooks/misc';
 import {
@@ -25,7 +26,7 @@ import {
 } from '@thirdweb-dev/react';
 import { CurrencyValue } from '@thirdweb-dev/sdk/evm';
 import { useWeb3React } from '@web3-react/core';
-import { BigNumber, utils } from 'ethers';
+import { BigNumber } from 'ethers';
 import { useSnackbar } from 'notistack';
 import { useEffect, useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
@@ -185,7 +186,7 @@ export default function TokenDropSection({ section }: TokenDropSectionProps) {
       const bnPrice =
         activeClaimCondition.data?.currencyMetadata.value || BigNumber.from(0);
 
-      return `${utils.formatUnits(
+      return `${formatUnits(
         bnPrice.mul(lazyQuantity).toString(),
         activeClaimCondition.data?.currencyMetadata.decimals || 18,
       )} ${activeClaimCondition.data?.currencyMetadata.symbol}`;

@@ -6,7 +6,6 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import { ethers } from "ethers";
 import moment from "moment";
 import { useMemo } from "react";
 import { FormattedMessage, FormattedNumber } from "react-intl";
@@ -14,6 +13,7 @@ import Link from "../../../components/AppLink";
 
 import { NETWORK_SLUG } from "@dexkit/core/constants/networks";
 import { isAddressEqual } from "@dexkit/core/utils";
+import { formatUnits } from "@dexkit/core/utils/ethers/formatUnits";
 import MomentFromNow from "../../../components/MomentFromNow";
 import { useTokenList } from "../../../hooks/blockchain";
 import { useCoinPricesQuery, useCurrency } from "../../../hooks/currency";
@@ -48,12 +48,9 @@ export function WalletOrdersTableRow({ order }: Props) {
           <Typography variant="inherit">
             {
               <FormattedNumber
-                currency={currency}
+                currency={currency.currency}
                 value={parseFloat(
-                  ethers.utils.formatUnits(
-                    order.order.erc20TokenAmount,
-                    token.decimals
-                  )
+                  formatUnits(order.order.erc20TokenAmount, token.decimals)
                 )}
               />
             }{" "}
@@ -74,14 +71,12 @@ export function WalletOrdersTableRow({ order }: Props) {
     if (token && currency && order) {
       if (coinPricesQuery?.data) {
         const ratio =
-          coinPricesQuery.data[token.address.toLowerCase()][currency];
+          coinPricesQuery.data[token.address.toLowerCase()][currency.currency];
 
         if (ratio) {
           return (
             ratio *
-            parseFloat(
-              ethers.utils.formatUnits(order?.erc20TokenAmount, token.decimals)
-            )
+            parseFloat(formatUnits(order?.erc20TokenAmount, token.decimals))
           );
         } else {
           return 0;
@@ -94,18 +89,16 @@ export function WalletOrdersTableRow({ order }: Props) {
     <TableRow>
       <TableCell>
         <Link
-          href={`/order/${NETWORK_SLUG(order.asset?.chainId)}/${
-            order?.order.nonce
-          }`}
+          href={`/order/${NETWORK_SLUG(order.asset?.chainId)}/${order?.order
+            .nonce}`}
         >
           {order?.order?.nonce.substring(order?.order?.nonce.length - 8)}
         </Link>
       </TableCell>
       <TableCell>
         <Link
-          href={`/asset/${NETWORK_SLUG(order.asset?.chainId)}/${
-            order.asset?.contractAddress
-          }/${order.asset?.id}`}
+          href={`/asset/${NETWORK_SLUG(order.asset?.chainId)}/${order.asset
+            ?.contractAddress}/${order.asset?.id}`}
         >
           {order.asset?.metadata?.name || (
             <FormattedMessage id="unknown.name" defaultMessage="Unknown name" />
@@ -129,7 +122,7 @@ export function WalletOrdersTableRow({ order }: Props) {
         )}
       </TableCell>
       <TableCell>
-        {totalInCurrency} {currency.toUpperCase()}
+        {totalInCurrency} {currency.currency.toUpperCase()}
       </TableCell>
       <TableCell>{amountRow}</TableCell>
       <TableCell>

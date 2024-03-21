@@ -1,8 +1,8 @@
 import MultiCall, { CallInput } from "@indexed-finance/multicall";
 import { useQuery } from "@tanstack/react-query";
 import axios from 'axios';
-import { providers } from "ethers";
-import { Interface } from "ethers/lib/utils";
+import { providers, utils } from "ethers";
+
 import { ERC721Abi } from "../constants/abis";
 import { Nft, NftMetadata } from "../types/nft";
 
@@ -27,7 +27,7 @@ export function useNftQuery({
       }
 
       const multicall = new MultiCall(provider);
-      const iface = new Interface(ERC721Abi);
+      const iface = new utils.Interface(ERC721Abi);
 
       const calls: CallInput[] = [];
 
