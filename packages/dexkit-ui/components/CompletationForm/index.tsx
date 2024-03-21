@@ -124,6 +124,7 @@ export default function CompletationForm({
                 disabled={total === 0 || isSubmitting}
                 label={<FormattedMessage id="prompt" defaultMessage="Prompt" />}
                 multiline={multiline}
+                rows={3}
               />
               {(output || isSubmitting) && (
                 <Stack spacing={2}>
