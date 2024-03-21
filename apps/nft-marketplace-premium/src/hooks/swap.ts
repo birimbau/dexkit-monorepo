@@ -3,7 +3,7 @@ import {
   UseMutationOptions,
   useQuery,
 } from '@tanstack/react-query';
-import { BigNumber, utils } from 'ethers';
+import { BigNumber } from 'ethers';
 
 import {
   NotificationCallbackParams,
@@ -16,6 +16,8 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ZERO_EX_QUOTE_ENDPOINT } from '../constants';
 
 import { ChainId } from '@dexkit/core';
+import { formatUnits } from '@dexkit/core/utils/ethers/formatUnits';
+import { parseUnits } from '@dexkit/core/utils/ethers/parseUnits';
 import { useDexKitContext } from '@dexkit/ui/hooks';
 import {
   isAutoSlippageAtom,
@@ -82,12 +84,12 @@ export function useSwapState() {
           icon: 'swap_vert',
           values: {
             sellTokenSymbol: params.sellToken.symbol.toUpperCase(),
-            sellAmount: utils.formatUnits(
+            sellAmount: formatUnits(
               params.sellAmount,
               params.sellToken.decimals
             ),
             buyTokenSymbol: params.buyToken.symbol.toUpperCase(),
-            buyAmount: utils.formatUnits(
+            buyAmount: formatUnits(
               params.buyAmount,
               params.buyToken.decimals
             ),
@@ -209,14 +211,12 @@ export function useSwapQuote({
             sellToken: sellToken?.address.toLowerCase(),
             buyAmount:
               buyAmount !== ''
-                ? utils
-                  .parseUnits(buyAmount, buyToken?.decimals)
+                ? parseUnits(buyAmount, buyToken?.decimals)
                   .toString()
                 : undefined,
             sellAmount:
               sellAmount !== ''
-                ? utils
-                  .parseUnits(sellAmount, sellToken?.decimals)
+                ? parseUnits(sellAmount, sellToken?.decimals)
                   .toString()
                 : undefined,
             takerAddress,

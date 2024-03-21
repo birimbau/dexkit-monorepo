@@ -1,6 +1,7 @@
 import { ChainId } from "@dexkit/core";
 import { Token } from "@dexkit/core/types";
-import { ethers } from "ethers";
+import { isAddress } from "@dexkit/core/utils/ethers/isAddress";
+import { providers } from "ethers";
 
 import * as Yup from "yup";
 
@@ -28,7 +29,7 @@ export type DexkitExchangeContextState = {
   baseTokens: Token[];
   account?: string;
   chainId?: ChainId;
-  provider?: ethers.providers.Web3Provider;
+  provider?: providers.Web3Provider;
   quoteTokens: Token[];
   buyTokenPercentageFee?: number;
   feeRecipient?: string;
@@ -93,11 +94,11 @@ export const ExchangeSettingsSchema = Yup.object({
   defaultSlippage: Yup.object(),
   buyTokenPercentageFee: Yup.number().required(),
   feeRecipientAddress: Yup.string().test("address", (value) => {
-    return value !== undefined ? ethers.utils.isAddress(value) : true;
+    return value !== undefined ? isAddress(value) : true;
   }),
   affiliateAddress: Yup.string()
     .test("address", (value) => {
-      return value !== undefined ? ethers.utils.isAddress(value) : true;
+      return value !== undefined ? isAddress(value) : true;
     })
     .required(),
 });

@@ -9,6 +9,9 @@ import {
   getNativeTokenSymbol,
   isAddressEqual,
 } from "@dexkit/core/utils";
+import { Interface } from "@dexkit/core/utils/ethers/abi/Interface";
+import { formatUnits } from "@dexkit/core/utils/ethers/formatUnits";
+import { parseUnits } from "@dexkit/core/utils/ethers/parseUnits";
 import MomentFromSpan from "@dexkit/ui/components/MomentFromSpan";
 import MultiCall, { CallInput } from "@indexed-finance/multicall";
 import {
@@ -21,8 +24,7 @@ import {
   Typography,
   styled,
 } from "@mui/material";
-import { BigNumber, ethers } from "ethers";
-import { Interface } from "ethers/lib/utils";
+import { BigNumber, providers } from "ethers";
 import moment from "moment";
 import { useEffect, useMemo, useState } from "react";
 import { FormattedMessage } from "react-intl";
@@ -45,7 +47,7 @@ export interface OrderWidgetProps {
     quoteTokenAmount?: string
   ) => void;
   chainId?: ChainId;
-  provider?: ethers.providers.Web3Provider;
+  provider?: providers.Web3Provider;
 }
 
 export default function OrderWidget({
@@ -177,9 +179,9 @@ export default function OrderWidget({
   }, [record, takerToken]);
 
   const remainingFillableAmountFormatted = useMemo(() => {
-    const amountToBeFilled = ethers.BigNumber.from(record.order.takerAmount);
+    const amountToBeFilled = BigNumber.from(record.order.takerAmount);
 
-    const remainingFillableAmount = ethers.BigNumber.from(
+    const remainingFillableAmount = BigNumber.from(
       record.metaData.remainingFillableTakerAmount
     );
 
@@ -190,9 +192,9 @@ export default function OrderWidget({
   }, [takerToken, record]);
 
   const remainingFillableAmount = useMemo(() => {
-    const amountToBeFilled = ethers.BigNumber.from(record.order.takerAmount);
+    const amountToBeFilled = BigNumber.from(record.order.takerAmount);
 
-    const remainingFillableAmount = ethers.BigNumber.from(
+    const remainingFillableAmount = BigNumber.from(
       record.metaData.remainingFillableTakerAmount
     );
 
@@ -216,7 +218,7 @@ export default function OrderWidget({
 
   const handleFillOrder = async () => {
     if (value) {
-      const amount = ethers.utils.parseUnits(value, takerToken?.decimals);
+      const amount = parseUnits(value, takerToken?.decimals);
 
       if (allowance?.lt(amount)) {
         await approve.mutateAsync({
@@ -252,7 +254,7 @@ export default function OrderWidget({
         percentage
       );
 
-      setValue(ethers.utils.formatUnits(result, takerToken?.decimals));
+      setValue(formatUnits(result, takerToken?.decimals));
     };
   };
 

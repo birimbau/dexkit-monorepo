@@ -1,5 +1,5 @@
 import MultiCall, { TokenBalances } from "@indexed-finance/multicall";
-import { BigNumber, ethers } from "ethers";
+import { BigNumber, Contract, constants, providers } from "ethers";
 import { COINGECKO_ENDPOIT, COINGECKO_PLATFORM_ID } from "../constants";
 import { ERC20Abi } from "../constants/abis";
 import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "../constants/zrx";
@@ -11,12 +11,12 @@ import { ChainId } from "@dexkit/core/constants/enums";
 import axios from "axios";
 
 export const getERC20TokenAllowance = async (
-  provider: ethers.providers.BaseProvider,
+  provider: providers.BaseProvider,
   tokenAddress: string,
   account: string,
   spender: string
-): Promise<ethers.BigNumber> => {
-  const contract = new ethers.Contract(tokenAddress, ERC20Abi, provider);
+): Promise<BigNumber> => {
+  const contract = new Contract(tokenAddress, ERC20Abi, provider);
 
   return await contract.allowance(account, spender);
 };
@@ -31,14 +31,14 @@ export const hasSufficientAllowance = async ({
   account?: string;
   spender: string;
   tokenAddress: string;
-  amount: ethers.BigNumber;
-  provider?: ethers.providers.BaseProvider;
+  amount: BigNumber;
+  provider?: providers.BaseProvider;
 }) => {
   if (!provider || !account) {
     throw new Error("no provider or account");
   }
 
-  if (isAddressEqual(spender, ethers.constants.AddressZero)) {
+  if (isAddressEqual(spender, constants.AddressZero)) {
     return true;
   }
 
@@ -56,7 +56,7 @@ export const hasSufficientAllowance = async ({
 
 export async function getTokensBalance(
   tokens?: { contractAddress: string }[],
-  provider?: ethers.providers.BaseProvider,
+  provider?: providers.BaseProvider,
   account?: string
 ): Promise<TokenBalances | undefined> {
   if (!provider || !tokens || !account) {
@@ -70,7 +70,7 @@ export async function getTokensBalance(
   const [, balances] = await multicall.getBalances(
     tokens.map((t) => {
       if (isAddressEqual(t.contractAddress, ZEROEX_NATIVE_TOKEN_ADDRESS)) {
-        return ethers.constants.AddressZero;
+        return constants.AddressZero;
       }
 
       return t.contractAddress;
@@ -83,7 +83,7 @@ export async function getTokensBalance(
 
 export async function getTokenBalance(
   token?: { contractAddress: string },
-  provider?: ethers.providers.BaseProvider,
+  provider?: providers.BaseProvider,
   account?: string
 ): Promise<BigNumber | undefined> {
   if (!token || provider || account) {
@@ -146,7 +146,7 @@ export const getCoinPrices = async ({
     if (token?.chainId) {
       results[token.chainId] = {
         [isAddressEqual(token.address, ZEROEX_NATIVE_TOKEN_ADDRESS)
-          ? ethers.constants.AddressZero
+          ? constants.AddressZero
           : token.address]: { [currency]: amount },
       };
     }

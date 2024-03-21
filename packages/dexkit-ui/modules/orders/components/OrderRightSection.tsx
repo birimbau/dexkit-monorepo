@@ -15,7 +15,7 @@ import {
 
 import { SwappableAssetV4 } from "@traderxyz/nft-swap-sdk";
 import { useWeb3React } from "@web3-react/core";
-import { ethers } from "ethers";
+import { BigNumber, constants } from "ethers";
 import moment from "moment";
 import { useCallback, useMemo } from "react";
 import { FormattedMessage } from "react-intl";
@@ -47,6 +47,7 @@ import {
   isAddressEqual,
   truncateAddress,
 } from "@dexkit/core/utils";
+import { formatUnits } from "@dexkit/core/utils/ethers/formatUnits";
 import AppFeePercentageSpan from "../../../components/AppFeePercentageSpan";
 import { useSwitchNetwork, useTokenList } from "../../../hooks/blockchain";
 import { useCoinPricesQuery, useCurrency } from "../../../hooks/currency";
@@ -83,8 +84,8 @@ function OrderRightSection({ order }: Props) {
 
   const amountFormatted = useMemo(() => {
     if (order && token) {
-      return ethers.utils.formatUnits(
-        ethers.BigNumber.from(order?.erc20TokenAmount || "0"),
+      return formatUnits(
+        BigNumber.from(order?.erc20TokenAmount || "0"),
         token?.decimals
       );
     }
@@ -97,15 +98,15 @@ function OrderRightSection({ order }: Props) {
 
         const tokenData = coinPricesQuery.data[token.address.toLowerCase()];
 
-        if (tokenData && currency in tokenData) {
-          ratio = tokenData[currency];
+        if (tokenData && currency.currency in tokenData) {
+          ratio = tokenData[currency.currency];
         }
 
         if (ratio) {
           return (
             ratio *
             parseFloat(
-              ethers.utils.formatUnits(order?.erc20TokenAmount, token.decimals)
+              formatUnits(order?.erc20TokenAmount, token.decimals)
             )
           );
         } else {
@@ -179,7 +180,7 @@ function OrderRightSection({ order }: Props) {
         const values = {
           collectionName: asset.collectionName,
           id: asset.id,
-          amount: ethers.utils.formatUnits(order.erc20TokenAmount, decimals),
+          amount: formatUnits(order.erc20TokenAmount, decimals),
           symbol,
         };
 
@@ -220,7 +221,7 @@ function OrderRightSection({ order }: Props) {
       const values = {
         collectionName: asset.collectionName,
         id: asset.id,
-        amount: ethers.utils.formatUnits(order.erc20TokenAmount, decimals),
+        amount: formatUnits(order.erc20TokenAmount, decimals),
         symbol,
       };
 
@@ -539,7 +540,7 @@ function OrderRightSection({ order }: Props) {
             </Stack>
             <Chip
               size="small"
-              label={`${totalInCurrency} ${currency.toUpperCase()}`}
+              label={`${totalInCurrency} ${currency.currency.toUpperCase()}`}
             />
           </Stack>
         </Stack>
@@ -586,7 +587,7 @@ function OrderRightSection({ order }: Props) {
           </Link>
         </Stack>
       </Paper>
-      {!isAddressEqual(order?.order.taker, ethers.constants.AddressZero) && (
+      {!isAddressEqual(order?.order.taker, constants.AddressZero) && (
         <Paper sx={{ p: 2 }}>
           <Stack
             direction="row"

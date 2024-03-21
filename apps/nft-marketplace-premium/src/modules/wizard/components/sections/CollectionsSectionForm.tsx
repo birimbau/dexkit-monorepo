@@ -22,12 +22,12 @@ import { ipfsUriToUrl } from '../../../../utils/ipfs';
 import { FormikHelpers, useFormik } from 'formik';
 
 import { Network } from '@dexkit/core/types';
+import { isAddress } from '@dexkit/core/utils/ethers/isAddress';
 import { useActiveChainIds } from '@dexkit/ui';
 import CompletationProvider from '@dexkit/ui/components/CompletationProvider';
 import MediaDialog from '@dexkit/ui/components/mediaDialog';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
-import { ethers } from 'ethers';
 import { useState } from 'react';
 import * as Yup from 'yup';
 
@@ -51,7 +51,7 @@ const FormSchema: Yup.SchemaOf<Form> = Yup.object().shape({
   chainId: Yup.number().required(),
   contractAddress: Yup.string()
     .test('address', (value) => {
-      return value !== undefined ? ethers.utils.isAddress(value) : true;
+      return value !== undefined ? isAddress(value) : true;
     })
     .required(),
   backgroundUrl: Yup.string().required(),

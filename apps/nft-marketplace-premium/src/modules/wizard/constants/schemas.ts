@@ -1,4 +1,4 @@
-import { ethers } from 'ethers';
+import { isAddress } from '@dexkit/core/utils/ethers/isAddress';
 import * as Yup from 'yup';
 
 export const ContractFormSchema = Yup.object().shape({
@@ -6,7 +6,7 @@ export const ContractFormSchema = Yup.object().shape({
   abi: Yup.array(),
   contractAddress: Yup.string()
     .test('address', (value, context) => {
-      return value !== undefined ? ethers.utils.isAddress(value) : true;
+      return value !== undefined ? isAddress(value) : true;
     })
     .required(),
   fields: Yup.object({}),
@@ -25,7 +25,7 @@ export const CreateCollectionFormSchema = Yup.object().shape({
   network: Yup.string(),
   address: Yup.string()
     .test('address', (value, context) => {
-      return value !== undefined ? ethers.utils.isAddress(value) : true;
+      return value !== undefined ? isAddress(value) : true;
     })
     .required(),
 });

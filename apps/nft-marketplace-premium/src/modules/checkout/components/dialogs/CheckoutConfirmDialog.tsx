@@ -1,5 +1,6 @@
 import { Token } from '@dexkit/core/types';
 import { getBlockExplorerUrl } from '@dexkit/core/utils';
+import { formatUnits } from '@dexkit/core/utils/ethers/formatUnits';
 import { AppDialogTitle } from '@dexkit/ui';
 import { useCheckoutData } from '@dexkit/ui/hooks/payments';
 import CheckCircle from '@mui/icons-material/CheckCircle';
@@ -14,7 +15,7 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
-import { BigNumber, ethers } from 'ethers';
+import { BigNumber } from 'ethers';
 import { FormattedMessage } from 'react-intl';
 
 export interface CheckoutConfirmDialogProps {
@@ -94,9 +95,7 @@ export default function CheckoutConfirmDialog({
                 id="transfer.amount.symbol"
                 defaultMessage="Transfer {amount} {symbol}"
                 values={{
-                  amount: total
-                    ? ethers.utils.formatUnits(total, token?.decimals)
-                    : '0.0',
+                  amount: total ? formatUnits(total, token?.decimals) : '0.0',
                   symbol: token?.symbol,
                 }}
               />
@@ -106,9 +105,7 @@ export default function CheckoutConfirmDialog({
                 id="transfering.amount.to.pay"
                 defaultMessage="Transfering amount to pay"
                 values={{
-                  amount: total
-                    ? ethers.utils.formatUnits(total, token?.decimals)
-                    : '0.0',
+                  amount: total ? formatUnits(total, token?.decimals) : '0.0',
                   symbol: token?.symbol,
                 }}
               />

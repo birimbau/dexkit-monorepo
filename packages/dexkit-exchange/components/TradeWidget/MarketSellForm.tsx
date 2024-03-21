@@ -8,7 +8,7 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import { BigNumber, ethers } from "ethers";
+import { BigNumber, providers } from "ethers";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { FormattedMessage } from "react-intl";
 
@@ -16,6 +16,7 @@ import { ChainId, useApproveToken, useTokenAllowanceQuery } from "@dexkit/core";
 import { UserEvents } from "@dexkit/core/constants/userEvents";
 import { ZeroExQuoteResponse } from "@dexkit/core/services/zrx/types";
 import { formatBigNumber, getChainName } from "@dexkit/core/utils";
+import { parseUnits } from "@dexkit/core/utils/ethers/parseUnits";
 import {
   useDexKitContext,
   useSwitchNetworkMutation,
@@ -33,10 +34,10 @@ import ReviewMarketOrderDialog from "./ReviewMarketOrderDialog";
 export interface MarketSellFormProps {
   quoteToken: Token;
   baseToken: Token;
-  provider?: ethers.providers.Web3Provider;
+  provider?: providers.Web3Provider;
   account?: string;
-  baseTokenBalance?: ethers.BigNumber;
-  quoteTokenBalance?: ethers.BigNumber;
+  baseTokenBalance?: BigNumber;
+  quoteTokenBalance?: BigNumber;
   feeRecipient?: string;
   buyTokenPercentageFee?: number;
   affiliateAddress?: string;
@@ -83,9 +84,7 @@ export default function MarketSellForm({
         quoteToken.decimals
       );
 
-      const hasAmount = baseTokenBalance?.gte(
-        ethers.BigNumber.from(quote.sellAmount)
-      );
+      const hasAmount = baseTokenBalance?.gte(BigNumber.from(quote.sellAmount));
 
       return [total, hasAmount, quoteToken];
     }
@@ -109,9 +108,7 @@ export default function MarketSellForm({
           sellToken: baseToken.address,
           buyToken: quoteToken.address,
           affiliateAddress: affiliateAddress ? affiliateAddress : "",
-          sellAmount: ethers.utils
-            .parseUnits(amount, baseToken.decimals)
-            .toString(),
+          sellAmount: parseUnits(amount, baseToken.decimals).toString(),
           skipValidation: true,
           slippagePercentage: 0.01,
           feeRecipient,
@@ -142,7 +139,7 @@ export default function MarketSellForm({
       let res = await provider?.getSigner().sendTransaction({
         data: quote?.data,
         to: quote?.to,
-        value: ethers.BigNumber.from(quote?.value),
+        value: BigNumber.from(quote?.value),
       });
       const subType = "marketSell";
 

@@ -1,9 +1,9 @@
 import { ChainId } from "./enums";
 
-import { ethers } from "ethers";
-import { isAddress } from "ethers/lib/utils";
 import { Token } from "../types";
 import { isAddressEqual } from "../utils";
+import { getAddress } from '../utils/ethers/getAddress';
+import { isAddress } from '../utils/ethers/isAddress';
 import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "./zrx";
 
 
@@ -39,7 +39,7 @@ export function TOKEN_ICON_URL(addr: string, chainId?: ChainId) {
     return;
   }
 
-  const address = ethers.utils.getAddress(addr);
+  const address = getAddress(addr);
 
   if (isAddressEqual(address, ZEROEX_NATIVE_TOKEN_ADDRESS)) {
     switch (chainId) {

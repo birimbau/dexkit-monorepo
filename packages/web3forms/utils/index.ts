@@ -5,7 +5,7 @@ import { AbiFragment, FunctionInput } from "../types";
 
 import { getTrustedForwarders } from "@thirdweb-dev/sdk/evm";
 import { ThirdwebStorage } from "@thirdweb-dev/storage";
-import { ethers } from "ethers";
+import { providers } from "ethers";
 
 export function getSchemaForInput(type: string) {
   return EvmSchemaTypes[type];
@@ -21,7 +21,7 @@ export function getSchemaForInputs(inputs: FunctionInput[]) {
   return Yup.object(obj);
 }
 export async function dkGetTrustedForwarders(
-  provider?: ethers.providers.Provider
+  provider?: providers.Provider
 ) {
   if (!provider) {
     return null;

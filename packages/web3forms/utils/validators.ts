@@ -1,4 +1,5 @@
-import { isAddress } from "ethers/lib/utils";
+
+import { isAddress } from "@dexkit/core/utils/ethers/isAddress";
 import { PATTERN_TWO_DIGITS_AFTER_COMMA } from "../constants/validation";
 import { ValidatorFunc } from "../types";
 

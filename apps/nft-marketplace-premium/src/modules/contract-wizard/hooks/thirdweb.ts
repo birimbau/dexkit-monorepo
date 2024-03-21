@@ -1,9 +1,10 @@
+import { formatUnits } from '@dexkit/core/utils/ethers/formatUnits';
 import { useDexKitContext } from '@dexkit/ui';
 import { useMutation } from '@tanstack/react-query';
 import { useContractMetadata } from '@thirdweb-dev/react';
 import { SmartContract, Token } from '@thirdweb-dev/sdk';
 import { useWeb3React } from '@web3-react/core';
-import { BigNumber, ethers } from 'ethers';
+import { BigNumber } from 'ethers';
 
 export function useWithdrawRewardsMutation({
   contract,
@@ -20,7 +21,7 @@ export function useWithdrawRewardsMutation({
 
   return useMutation(async ({ amount }: { amount: BigNumber }) => {
     let values = {
-      amount: ethers.utils.formatUnits(amount, rewardDecimals),
+      amount: formatUnits(amount, rewardDecimals),
       contractName: metadata?.name || '',
     };
 
@@ -58,7 +59,7 @@ export function useDepositRewardTokensMutation({
 
   return useMutation(async ({ amount }: { amount: BigNumber }) => {
     let values = {
-      amount: ethers.utils.formatUnits(amount, rewardDecimals),
+      amount: formatUnits(amount, rewardDecimals),
       contractName: metadata?.name || '',
     };
 

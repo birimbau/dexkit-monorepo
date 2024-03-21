@@ -1,6 +1,7 @@
 import { TOKEN_ICON_URL } from "@dexkit/core";
 import { Token } from "@dexkit/core/types";
-import { arrayify } from "ethers/lib/utils";
+import { arrayify } from "@dexkit/core/utils/ethers/arrayify";
+
 
 export function TOKEN_ICON_URL_V2(token: Token) {
   return token.logoURI

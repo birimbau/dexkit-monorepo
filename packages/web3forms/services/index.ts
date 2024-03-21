@@ -1,6 +1,6 @@
 import { ChainId } from "@dexkit/core/constants";
+import { isAddress } from "@dexkit/core/utils/ethers/isAddress";
 import axios from "axios";
-import { ethers } from "ethers";
 import { ETHER_SCAN_API_URL } from "../constants";
 
 export async function generatePinataKey(secretKey: string) {
@@ -46,7 +46,7 @@ export async function fetchAbi({
   contractAddress: string;
   chainId: ChainId;
 }) {
-  if (!ethers.utils.isAddress(contractAddress)) {
+  if (!isAddress(contractAddress)) {
     throw new Error("invalid contract address");
   }
 

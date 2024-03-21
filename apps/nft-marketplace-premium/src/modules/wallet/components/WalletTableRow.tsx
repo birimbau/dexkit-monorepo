@@ -8,9 +8,9 @@ import {
   Typography,
 } from '@mui/material';
 import { useWeb3React } from '@web3-react/core';
-import { ethers } from 'ethers';
 import { FormattedNumber } from 'react-intl';
 
+import { formatUnits } from '@dexkit/core/utils/ethers/formatUnits';
 import { TokenBalance } from '../../../types/blockchain';
 import { ipfsUriToUrl } from '../../../utils/ipfs';
 import { TOKEN_ICON_URL } from '../../../utils/token';
@@ -33,7 +33,7 @@ function WalletTableRow({
   const { chainId } = useWeb3React();
   const { token, balance } = tokenBalance;
 
-  const balanceUnits = ethers.utils.formatUnits(balance || '0', token.decimals);
+  const balanceUnits = formatUnits(balance || '0', token.decimals);
 
   const totalInCurrency = (
     <FormattedNumber

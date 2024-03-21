@@ -1,4 +1,5 @@
-import { BigNumber, ethers } from 'ethers';
+import { isAddress } from '@dexkit/core/utils/ethers/isAddress';
+import { BigNumber } from 'ethers';
 import * as Yup from 'yup';
 
 
@@ -15,7 +16,7 @@ export const TransferNftERC721Schema = Yup.object().shape({
          }*/
         return true
       }
-      return value !== undefined ? ethers.utils.isAddress(value) : true;
+      return value !== undefined ? isAddress(value) : true;
     })
     .required(),
 });

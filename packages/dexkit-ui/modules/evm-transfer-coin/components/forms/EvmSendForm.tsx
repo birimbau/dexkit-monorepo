@@ -1,5 +1,6 @@
 import { useEnsNameQuery } from "@dexkit/core/hooks";
 import { Coin } from "@dexkit/core/types";
+import { isAddress } from "@dexkit/core/utils/ethers/isAddress";
 import SendIcon from "@mui/icons-material/Send";
 import Token from "@mui/icons-material/Token";
 import WalletIcon from "@mui/icons-material/Wallet";
@@ -16,7 +17,7 @@ import {
   Stack,
   TextField,
 } from "@mui/material";
-import { isAddress } from "ethers/lib/utils";
+
 import { ChangeEvent, SyntheticEvent, useMemo, useState } from "react";
 import { FormattedMessage } from "react-intl";
 

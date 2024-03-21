@@ -26,12 +26,15 @@ import {
 } from '@thirdweb-dev/react';
 
 import { useWeb3React } from '@web3-react/core';
-import { BigNumber, utils } from 'ethers';
+import { BigNumber } from 'ethers';
 import { useMemo, useState } from 'react';
 
 import { FormattedMessage } from 'react-intl';
 import Link from 'src/components/Link';
 
+import { formatUnits } from '@dexkit/core/utils/ethers/formatUnits';
+import { parseEther } from '@dexkit/core/utils/ethers/parseEther';
+import { parseUnits } from '@dexkit/core/utils/ethers/parseUnits';
 import { ClaimAirdropErc20PageSection } from '@dexkit/ui/modules/wizard/types/section';
 
 export interface ClaimAidropERC20SectionProps {
@@ -168,7 +171,7 @@ export default function ClaimAirdropERC20Section({
           (d) => d.address.toLowerCase() === account.toLowerCase(),
         );
         if (claimer && claimer?.maxClaimable) {
-          return utils.parseUnits(
+          return parseUnits(
             claimer?.maxClaimable,
             tokenMetadataQuery?.data?.decimals,
           );
@@ -192,10 +195,7 @@ export default function ClaimAirdropERC20Section({
 
   const amountMaxToClaimFormatted = useMemo(() => {
     if (amountMaxToClaim && tokenMetadataQuery?.data?.decimals) {
-      return utils.formatUnits(
-        amountMaxToClaim,
-        tokenMetadataQuery?.data?.decimals,
-      );
+      return formatUnits(amountMaxToClaim, tokenMetadataQuery?.data?.decimals);
     }
   }, [amountMaxToClaim, tokenMetadataQuery.data]);
 
@@ -229,7 +229,7 @@ export default function ClaimAirdropERC20Section({
       openClaimLimitPerWalletQuery.data &&
       tokenMetadataQuery?.data?.decimals
     ) {
-      return utils.formatUnits(
+      return formatUnits(
         availableAmountQuery.data,
         tokenMetadataQuery?.data?.decimals,
       );
@@ -252,7 +252,7 @@ export default function ClaimAirdropERC20Section({
           [
             '0x0000000000000000000000000000000000000000000000000000000000000000',
           ],
-          utils.parseEther('0'),
+          parseEther('0'),
         ]);
       }
     } else {

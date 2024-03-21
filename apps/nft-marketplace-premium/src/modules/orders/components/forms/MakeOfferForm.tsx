@@ -14,7 +14,7 @@ import {
   Typography,
 } from '@mui/material';
 
-import { BigNumber, ethers } from 'ethers';
+import { BigNumber } from 'ethers';
 
 import { useWeb3React } from '@web3-react/core';
 import moment from 'moment';
@@ -26,6 +26,8 @@ import { ipfsUriToUrl } from '../../../../utils/ipfs';
 
 import { FormikErrors, FormikHelpers, useFormik } from 'formik';
 
+import { formatUnits } from '@dexkit/core/utils/ethers/formatUnits';
+import { parseUnits } from '@dexkit/core/utils/ethers/parseUnits';
 import { useTheme } from '@mui/material';
 import * as Yup from 'yup';
 import AppFeePercentageSpan from '../../../../components/AppFeePercentageSpan';
@@ -54,9 +56,9 @@ interface Props {
   asset?: Asset;
   disabled?: boolean;
   onConfirm: (
-    price: ethers.BigNumber,
+    price: BigNumber,
     tokenAddress: string,
-    expiry: Date | null
+    expiry: Date | null,
   ) => void;
 }
 
@@ -72,9 +74,8 @@ export default function MakeOfferForm({ onConfirm, asset, disabled }: Props) {
   const { formatMessage } = useIntl();
 
   const handleConfirm = (values: Form, formikHelpers: FormikHelpers<Form>) => {
-    const decimals = tokenList.find(
-      (t) => t.address === values.tokenAddress
-    )?.decimals;
+    const decimals = tokenList.find((t) => t.address === values.tokenAddress)
+      ?.decimals;
 
     if (!isValidDecimal(values.price, decimals || 1)) {
       formikHelpers.setFieldError(
@@ -82,14 +83,14 @@ export default function MakeOfferForm({ onConfirm, asset, disabled }: Props) {
         formatMessage({
           id: 'invalid.price',
           defaultMessage: 'Invalid price',
-        })
+        }),
       );
     }
 
     onConfirm(
-      ethers.utils.parseUnits(values.price, decimals),
+      parseUnits(values.price, decimals),
       values.tokenAddress,
-      values.expiry || null
+      values.expiry || null,
     );
 
     //   formikHelpers.resetForm();
@@ -102,12 +103,11 @@ export default function MakeOfferForm({ onConfirm, asset, disabled }: Props) {
       tokenAddress: tokenList.length > 0 ? tokenList[0].address : '',
     },
     validate: async (values) => {
-      const decimals = tokenList.find(
-        (t) => t.address === values.tokenAddress
-      )?.decimals;
+      const decimals = tokenList.find((t) => t.address === values.tokenAddress)
+        ?.decimals;
 
       if (values.price !== '' && isValidDecimal(values.price, decimals || 1)) {
-        const priceValue = ethers.utils.parseUnits(values.price);
+        const priceValue = parseUnits(values.price);
 
         const errors: FormikErrors<Form> = {};
 
@@ -129,7 +129,7 @@ export default function MakeOfferForm({ onConfirm, asset, disabled }: Props) {
   const erc20Balance = useErc20Balance(
     provider,
     form.values.tokenAddress,
-    account
+    account,
   );
 
   const handleChangeExpiryDuration = (newValue: moment.Duration | null) => {
@@ -138,7 +138,7 @@ export default function MakeOfferForm({ onConfirm, asset, disabled }: Props) {
 
   const tokenSelected = useMemo(() => {
     const tokenIndex = tokenList.findIndex((t) =>
-      isAddressEqual(t.address, form.values.tokenAddress)
+      isAddressEqual(t.address, form.values.tokenAddress),
     );
 
     if (tokenIndex > -1) {
@@ -167,7 +167,7 @@ export default function MakeOfferForm({ onConfirm, asset, disabled }: Props) {
     } else {
       const imageUrl = TOKEN_ICON_URL(
         token.address.toLowerCase(),
-        token.chainId
+        token.chainId,
       );
 
       if (imageUrl) {
@@ -298,9 +298,9 @@ export default function MakeOfferForm({ onConfirm, asset, disabled }: Props) {
                   {erc20Balance.isLoading ? (
                     <Skeleton />
                   ) : (
-                    ethers.utils.formatUnits(
-                      erc20Balance.data || ethers.BigNumber.from(0),
-                      tokenSelected.decimals
+                    formatUnits(
+                      erc20Balance.data || BigNumber.from(0),
+                      tokenSelected.decimals,
                     )
                   )}{' '}
                   {tokenSelected.symbol.toUpperCase()}

@@ -4,7 +4,7 @@ import { ContractFormParams } from '@dexkit/web3forms/types';
 import { useInfiniteQuery, useMutation, useQuery } from '@tanstack/react-query';
 import { useWeb3React } from '@web3-react/core';
 import axios from 'axios';
-import { ethers } from 'ethers';
+import { ContractFactory } from 'ethers';
 import { useContext } from 'react';
 import { DEPLOYABLE_CONTRACTS_URL } from '../constants';
 import {
@@ -261,7 +261,7 @@ export function useDeployContractMutation({
   bytecode: string;
 }) {
   return useMutation(async (params: UseDeployContractParam) => {
-    const contractFactory = new ethers.ContractFactory(abi, bytecode);
+    const contractFactory = new ContractFactory(abi, bytecode);
 
     const contract = await contractFactory.deploy(params.args);
 
@@ -480,7 +480,7 @@ export function useListDeployedContracts({
 export const DEPLOYABLE_CONTRACTS_QUERY = 'DEPLOYABLE_CONTRACTS_QUERY';
 
 export function useDeployableContractsQuery() {
-  return useQuery([DEPLOYABLE_CONTRACTS_QUERY], async ({}) => {
+  return useQuery([DEPLOYABLE_CONTRACTS_QUERY], async ({ }) => {
     return (await axios.get<DeployableContract[]>(DEPLOYABLE_CONTRACTS_URL))
       .data;
   });

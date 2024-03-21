@@ -14,6 +14,7 @@ import {
 } from "@dexkit/core/services/balances";
 import { Asset, SwapApiOrder } from "@dexkit/core/types/nft";
 import { isAddressEqual } from "@dexkit/core/utils";
+import { formatUnits } from "@dexkit/core/utils/ethers/formatUnits";
 import {
   useConnectWalletDialog,
   useDexKitContext,
@@ -21,7 +22,6 @@ import {
 } from "@dexkit/ui";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { SwappableAssetV4 } from "@traderxyz/nft-swap-sdk";
-import { ethers } from "ethers";
 import ShareDialog from "../../../components/dialogs/ShareDialog";
 import { useTokenList } from "../../../hooks/blockchain";
 import { OrderDirection } from "../constants/enum";
@@ -137,7 +137,7 @@ export function AssetBuyOrder({ asset, orderBookItem }: Props) {
       const values = {
         collectionName: asset.collectionName,
         id: asset.id,
-        amount: ethers.utils.formatUnits(order.erc20TokenAmount, decimals),
+        amount: formatUnits(order.erc20TokenAmount, decimals),
         symbol,
       };
 
@@ -185,7 +185,7 @@ export function AssetBuyOrder({ asset, orderBookItem }: Props) {
         const values = {
           collectionName: asset.collectionName,
           id: asset.id,
-          amount: ethers.utils.formatUnits(order.erc20TokenAmount, decimals),
+          amount: formatUnits(order.erc20TokenAmount, decimals),
           symbol,
         };
 

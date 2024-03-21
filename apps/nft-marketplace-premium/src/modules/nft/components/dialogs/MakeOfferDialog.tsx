@@ -21,7 +21,7 @@ import {
 
 import { AppDialogTitle } from '../../../../components/AppDialogTitle';
 
-import { BigNumber, ethers } from 'ethers';
+import { BigNumber } from 'ethers';
 
 import { useWeb3React } from '@web3-react/core';
 import moment from 'moment';
@@ -33,6 +33,8 @@ import { ipfsUriToUrl } from '../../../../utils/ipfs';
 
 import { FormikErrors, FormikHelpers, useFormik } from 'formik';
 
+import { formatUnits } from '@dexkit/core/utils/ethers/formatUnits';
+import { parseUnits } from '@dexkit/core/utils/ethers/parseUnits';
 import { useTheme } from '@mui/material';
 import Image from 'next/image';
 import { getAssetProtocol } from 'src/utils/nfts';
@@ -65,10 +67,10 @@ interface Props {
   account?: string;
   asset?: Asset;
   onConfirm: (
-    price: ethers.BigNumber,
+    price: BigNumber,
     tokenAddress: string,
     expiry: Date | null,
-    quantity?: ethers.BigNumber,
+    quantity?: BigNumber,
   ) => void;
 }
 
@@ -106,7 +108,7 @@ export default function MakeOfferDialog({
     }
 
     onConfirm(
-      ethers.utils.parseUnits(values.price, decimals),
+      parseUnits(values.price, decimals),
       values.tokenAddress,
       values.expiry || null,
       asset?.protocol === 'ERC1155'
@@ -136,7 +138,7 @@ export default function MakeOfferDialog({
       )?.decimals;
 
       if (values.price !== '' && isValidDecimal(values.price, decimals || 1)) {
-        const priceValue = ethers.utils.parseUnits(values.price, decimals);
+        const priceValue = parseUnits(values.price, decimals);
 
         const errors: FormikErrors<Form> = {};
 
@@ -416,8 +418,8 @@ export default function MakeOfferDialog({
                       {erc20Balance.isLoading ? (
                         <Skeleton />
                       ) : (
-                        ethers.utils.formatUnits(
-                          erc20Balance.data || ethers.BigNumber.from(0),
+                        formatUnits(
+                          erc20Balance.data || BigNumber.from(0),
                           tokenSelected.decimals,
                         )
                       )}{' '}

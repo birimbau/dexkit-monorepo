@@ -1,5 +1,5 @@
 import MultiCall, { TokenBalances } from "@indexed-finance/multicall";
-import { ethers } from "ethers";
+import { BigNumber, Contract, constants, providers } from "ethers";
 
 import { ERC20Abi } from "../constants/abis";
 import { TokenPrices } from "../types";
@@ -12,12 +12,12 @@ import { Token } from "@dexkit/core/types";
 import axios from "axios";
 
 export const getERC20TokenAllowance = async (
-  provider: ethers.providers.BaseProvider,
+  provider: providers.BaseProvider,
   tokenAddress: string,
   account: string,
   spender: string
-): Promise<ethers.BigNumber> => {
-  const contract = new ethers.Contract(tokenAddress, ERC20Abi, provider);
+): Promise<BigNumber> => {
+  const contract = new Contract(tokenAddress, ERC20Abi, provider);
 
   return await contract.allowance(account, spender);
 };
@@ -32,14 +32,14 @@ export const hasSufficientAllowance = async ({
   account?: string;
   spender: string;
   tokenAddress: string;
-  amount: ethers.BigNumber;
-  provider?: ethers.providers.BaseProvider;
+  amount: BigNumber;
+  provider?: providers.BaseProvider;
 }) => {
   if (!provider || !account) {
     throw new Error("no provider or account");
   }
 
-  if (isAddressEqual(spender, ethers.constants.AddressZero)) {
+  if (isAddressEqual(spender, constants.AddressZero)) {
     return true;
   }
 
@@ -55,7 +55,7 @@ export const hasSufficientAllowance = async ({
 
 export async function getTokensBalance(
   tokens: Token[],
-  provider: ethers.providers.BaseProvider,
+  provider: providers.BaseProvider,
   account: string
 ): Promise<TokenBalances> {
   await provider.ready;
@@ -65,7 +65,7 @@ export async function getTokensBalance(
   const [, balances] = await multicall.getBalances(
     tokens.map((t) => {
       if (isAddressEqual(t.address, ZEROEX_NATIVE_TOKEN_ADDRESS)) {
-        return ethers.constants.AddressZero;
+        return constants.AddressZero;
       }
 
       return t.address;
@@ -124,7 +124,7 @@ export const getCoinPrices = async ({
     if (token?.chainId) {
       results[token.chainId] = {
         [isAddressEqual(token.address, ZEROEX_NATIVE_TOKEN_ADDRESS)
-          ? ethers.constants.AddressZero
+          ? constants.AddressZero
           : token.address]: { [currency]: amount },
       };
     }

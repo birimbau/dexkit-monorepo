@@ -1,11 +1,11 @@
-import { ethers } from 'ethers';
+import { isAddress } from '@dexkit/core/utils/ethers/isAddress';
 import * as Yup from 'yup';
 
 export const AddAccountSchema = Yup.object().shape({
   name: Yup.string(),
   address: Yup.string()
     .test('address', (value) => {
-      return value !== undefined ? ethers.utils.isAddress(value) : true;
+      return value !== undefined ? isAddress(value) : true;
     })
     .required(),
 });
@@ -13,7 +13,7 @@ export const AddAccountSchema = Yup.object().shape({
 export const TransferNftSchema = Yup.object().shape({
   address: Yup.string()
     .test('address', (value) => {
-      return value !== undefined ? ethers.utils.isAddress(value) : true;
+      return value !== undefined ? isAddress(value) : true;
     })
     .required(),
 });

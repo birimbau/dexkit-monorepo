@@ -1,3 +1,4 @@
+import { formatUnits } from '@dexkit/core/utils/ethers/formatUnits';
 import {
   Avatar,
   Chip,
@@ -6,7 +7,6 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
-import { ethers } from 'ethers';
 import moment from 'moment';
 import { useMemo } from 'react';
 import { FormattedMessage, FormattedNumber } from 'react-intl';
@@ -51,10 +51,7 @@ export function WalletOrdersTableRow({ order }: Props) {
               <FormattedNumber
                 currency={currency}
                 value={parseFloat(
-                  ethers.utils.formatUnits(
-                    order.order.erc20TokenAmount,
-                    token.decimals
-                  )
+                  formatUnits(order.order.erc20TokenAmount, token.decimals),
                 )}
               />
             }{' '}
@@ -80,9 +77,7 @@ export function WalletOrdersTableRow({ order }: Props) {
         if (ratio) {
           return (
             ratio *
-            parseFloat(
-              ethers.utils.formatUnits(order?.erc20TokenAmount, token.decimals)
-            )
+            parseFloat(formatUnits(order?.erc20TokenAmount, token.decimals))
           );
         } else {
           return 0;
@@ -95,18 +90,18 @@ export function WalletOrdersTableRow({ order }: Props) {
     <TableRow>
       <TableCell>
         <Link
-          href={`/order/${getNetworkSlugFromChainId(order.asset?.chainId)}/${
-            order?.order.nonce
-          }`}
+          href={`/order/${getNetworkSlugFromChainId(
+            order.asset?.chainId,
+          )}/${order?.order.nonce}`}
         >
           {order?.order?.nonce.substring(order?.order?.nonce.length - 8)}
         </Link>
       </TableCell>
       <TableCell>
         <Link
-          href={`/asset/${getNetworkSlugFromChainId(order.asset?.chainId)}/${
-            order.asset?.contractAddress
-          }/${order.asset?.id}`}
+          href={`/asset/${getNetworkSlugFromChainId(
+            order.asset?.chainId,
+          )}/${order.asset?.contractAddress}/${order.asset?.id}`}
         >
           {order.asset?.metadata?.name || (
             <FormattedMessage id="unknown.name" defaultMessage="Unknown name" />

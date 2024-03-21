@@ -33,6 +33,7 @@ import {
 import TableSkeleton from './tables/TableSkeleton';
 
 import { UserEvents } from '@dexkit/core/constants/userEvents';
+import { formatUnits } from '@dexkit/core/utils/ethers/formatUnits';
 import { useDexKitContext } from '@dexkit/ui/hooks';
 import { useTrackUserEventsMutation } from '@dexkit/ui/hooks/userEvents';
 import {
@@ -40,7 +41,7 @@ import {
   SwappableAssetV4,
   TradeDirection,
 } from '@traderxyz/nft-swap-sdk';
-import { BigNumber, ethers } from 'ethers';
+import { BigNumber } from 'ethers';
 import { OrderDirection } from 'src/types/orderbook';
 import { useSwitchNetwork, useTokenList } from '../../../hooks/blockchain';
 import {
@@ -192,7 +193,7 @@ export function AssetTabs({ address, id }: Props) {
         const decimals = await getERC20Decimals(order.erc20Token, provider);
         const symbol = await getERC20Symbol(order.erc20Token, provider);
         const values = {
-          amount: ethers.utils.formatUnits(order.erc20TokenAmount, decimals),
+          amount: formatUnits(order.erc20TokenAmount, decimals),
           symbol,
           collectionName: asset.collectionName,
           id: asset.id,
@@ -203,7 +204,7 @@ export function AssetTabs({ address, id }: Props) {
           'erc1155Token' in order &&
           order.direction === TradeDirection.SellNFT
         ) {
-          values.amount = ethers.utils.formatUnits(
+          values.amount = formatUnits(
             BigNumber.from(order.erc20TokenAmount)
               .mul(
                 BigNumber.from(quantity)
@@ -251,7 +252,7 @@ export function AssetTabs({ address, id }: Props) {
 
       if (accept) {
         const values = {
-          amount: ethers.utils.formatUnits(order.erc20TokenAmount, decimals),
+          amount: formatUnits(order.erc20TokenAmount, decimals),
           symbol,
           collectionName: asset.collectionName,
           id: asset.id,
@@ -265,7 +266,7 @@ export function AssetTabs({ address, id }: Props) {
         });
       } else {
         const values = {
-          amount: ethers.utils.formatUnits(order.erc20TokenAmount, decimals),
+          amount: formatUnits(order.erc20TokenAmount, decimals),
           symbol,
           collectionName: asset.collectionName,
           id: asset.id,
@@ -276,7 +277,7 @@ export function AssetTabs({ address, id }: Props) {
           'erc1155Token' in order &&
           order.direction === TradeDirection.SellNFT
         ) {
-          values.amount = ethers.utils.formatUnits(
+          values.amount = formatUnits(
             BigNumber.from(order.erc20TokenAmount)
               .mul(
                 BigNumber.from(quantity)
@@ -323,7 +324,7 @@ export function AssetTabs({ address, id }: Props) {
 
         if (accept) {
           const values = {
-            amount: ethers.utils.formatUnits(order.erc20TokenAmount, decimals),
+            amount: formatUnits(order.erc20TokenAmount, decimals),
             symbol,
             collectionName: asset.collectionName,
             id: asset.id,
@@ -333,7 +334,7 @@ export function AssetTabs({ address, id }: Props) {
         }
 
         const values = {
-          amount: ethers.utils.formatUnits(order.erc20TokenAmount, decimals),
+          amount: formatUnits(order.erc20TokenAmount, decimals),
           symbol,
           collectionName: asset.collectionName,
           id: asset.id,
@@ -344,7 +345,7 @@ export function AssetTabs({ address, id }: Props) {
           'erc1155Token' in order &&
           order.direction === TradeDirection.SellNFT
         ) {
-          values.amount = ethers.utils.formatUnits(
+          values.amount = formatUnits(
             BigNumber.from(order.erc20TokenAmount)
               .mul(
                 BigNumber.from(quantity)

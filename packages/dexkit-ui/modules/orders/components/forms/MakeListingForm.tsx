@@ -16,8 +16,7 @@ import {
   Typography,
 } from "@mui/material";
 
-import { ethers } from "ethers";
-
+import { BigNumber } from "ethers";
 import moment from "moment";
 import { useMemo } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
@@ -34,6 +33,8 @@ import {
   isAddressEqual,
   isValidDecimal,
 } from "@dexkit/core/utils";
+import { isAddress } from "@dexkit/core/utils/ethers/isAddress";
+import { parseUnits } from "@dexkit/core/utils/ethers/parseUnits";
 import AppFeePercentageSpan from "../../../../components/AppFeePercentageSpan";
 import { MIN_ORDER_DATE_TIME } from "../../../../constants";
 import { useTokenList } from "../../../../hooks/blockchain";
@@ -52,7 +53,7 @@ const FormSchema: Yup.SchemaOf<Form> = Yup.object().shape({
   expiry: Yup.date().required(),
   taker: Yup.string()
     .test("address", (value) => {
-      return value !== undefined ? ethers.utils.isAddress(value) : true;
+      return value !== undefined ? isAddress(value) : true;
     })
     .notRequired(),
 });
@@ -60,7 +61,7 @@ const FormSchema: Yup.SchemaOf<Form> = Yup.object().shape({
 interface Props {
   disabled?: boolean;
   onConfirm: (
-    price: ethers.BigNumber,
+    price: BigNumber,
     tokenAddress: string,
     expiry: Date | null,
     takerAddress?: string
@@ -80,9 +81,8 @@ export default function MakeListingForm({ onConfirm, disabled }: Props) {
 
   const handleConfirm = (values: Form, formikHelpers: FormikHelpers<Form>) => {
     if (form.isValid) {
-      const decimals = tokenList.find(
-        (t) => t.address === values.tokenAddress
-      )?.decimals;
+      const decimals = tokenList.find((t) => t.address === values.tokenAddress)
+        ?.decimals;
 
       if (!isValidDecimal(values.price, decimals || 0)) {
         formikHelpers.setFieldError(
@@ -97,7 +97,7 @@ export default function MakeListingForm({ onConfirm, disabled }: Props) {
       }
 
       onConfirm(
-        ethers.utils.parseUnits(values.price, decimals),
+        parseUnits(values.price, decimals),
         values.tokenAddress,
         values.expiry || null,
         values.taker

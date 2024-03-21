@@ -19,7 +19,7 @@ import Typography from "@mui/material/Typography";
 
 import { estimateFees } from "@mycrypto/gas-estimation";
 import { useWeb3React } from "@web3-react/core";
-import { BigNumber, ethers } from "ethers";
+import { BigNumber, constants } from "ethers";
 
 import { ChangeEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { FormattedMessage } from "react-intl";
@@ -30,6 +30,10 @@ import {
   hasLondonHardForkSupport,
   truncateAddress,
 } from "@dexkit/core/utils";
+
+import { formatEther } from "@dexkit/core/utils/ethers/formatEther";
+import { formatUnits } from "@dexkit/core/utils/ethers/formatUnits";
+import { parseUnits } from "@dexkit/core/utils/ethers/parseUnits";
 
 import { ChainId, GET_NATIVE_TOKEN } from "@dexkit/core/constants";
 import { useCoinPrices, useErc20BalanceQuery } from "@dexkit/core/hooks";
@@ -44,11 +48,11 @@ interface TransactionConfirmDialogProps {
 }
 
 interface ValuesType {
-  maxPriorityFeePerGas?: ethers.BigNumber | null;
-  maxFeePerGas?: ethers.BigNumber | null;
-  gasPrice?: ethers.BigNumber | null;
-  gasLimit?: ethers.BigNumber | null;
-  value?: ethers.BigNumber | null;
+  maxPriorityFeePerGas?: BigNumber | null;
+  maxFeePerGas?: BigNumber | null;
+  gasPrice?: BigNumber | null;
+  gasLimit?: BigNumber | null;
+  value?: BigNumber | null;
   nonce?: number | null;
 }
 
@@ -96,13 +100,13 @@ export function MagicTxConfirmDialog(props: TransactionConfirmDialogProps) {
   }, [values, isEIP1559]);
 
   const etherPrice = useMemo(() => {
-    const amount = parseFloat(ethers.utils.formatEther(totalFee));
+    const amount = parseFloat(formatEther(totalFee));
 
     if (coinPrices.data && chainId && currency) {
       const t = coinPrices.data[chainId];
 
       if (t) {
-        const price = t[ethers.constants.AddressZero];
+        const price = t[constants.AddressZero];
 
         return amount * price[currency];
       }
@@ -153,7 +157,7 @@ export function MagicTxConfirmDialog(props: TransactionConfirmDialogProps) {
       ) {
         setValues({
           ...values,
-          [e.target.name]: ethers.utils.parseUnits(e.target.value, "gwei"),
+          [e.target.name]: parseUnits(e.target.value, "gwei"),
         });
       } else {
         setValues({
@@ -201,11 +205,11 @@ export function MagicTxConfirmDialog(props: TransactionConfirmDialogProps) {
                   "https://gasstation.polygon.technology/v2"
                 );
                 const estimatedFee = await estimatedFeeResponse.json();
-                vals.maxFeePerGas = ethers.utils.parseUnits(
+                vals.maxFeePerGas = parseUnits(
                   String(estimatedFee["fast"].maxFee.toFixed(6)),
                   "gwei"
                 );
-                vals.maxPriorityFeePerGas = ethers.utils.parseUnits(
+                vals.maxPriorityFeePerGas = parseUnits(
                   String(estimatedFee["fast"].maxPriorityFee.toFixed(6)),
                   "gwei"
                 );
@@ -235,16 +239,15 @@ export function MagicTxConfirmDialog(props: TransactionConfirmDialogProps) {
 
       if (isEIP1559()) {
         cost = parseFloat(
-          ethers.utils.formatEther(
-            values.gasLimit?.mul(
-              values.maxFeePerGas || ethers.BigNumber.from(0)
-            ) || BigNumber.from(0)
+          formatEther(
+            values.gasLimit?.mul(values.maxFeePerGas || BigNumber.from(0)) ||
+              BigNumber.from(0)
           )
         );
       } else {
         cost = parseFloat(
-          ethers.utils.formatEther(
-            values.gasLimit?.mul(values.gasPrice || ethers.BigNumber.from(0)) ||
+          formatEther(
+            values.gasLimit?.mul(values.gasPrice || BigNumber.from(0)) ||
               BigNumber.from(0)
           )
         );
@@ -295,9 +298,7 @@ export function MagicTxConfirmDialog(props: TransactionConfirmDialogProps) {
                 <FormattedMessage id="balance" defaultMessage={"Balance"} />
               </Typography>
               <Typography variant="body1" color="textSecondary">
-                {Number(ethers.utils.formatEther(etherBalance || "0")).toFixed(
-                  4
-                )}{" "}
+                {Number(formatEther(etherBalance || "0")).toFixed(4)}{" "}
                 {getNativeTokenSymbol(chainId)}
               </Typography>
             </Box>
@@ -332,7 +333,7 @@ export function MagicTxConfirmDialog(props: TransactionConfirmDialogProps) {
                   />
                 </Typography>
                 <Typography variant="body1" color="textSecondary">
-                  {values.value ? ethers.utils.formatEther(values.value) : 0}{" "}
+                  {values.value ? formatEther(values.value) : 0}{" "}
                   {getNativeTokenSymbol(chainId)}
                 </Typography>
               </Box>
@@ -394,7 +395,7 @@ export function MagicTxConfirmDialog(props: TransactionConfirmDialogProps) {
                           <Grid item xs={12}>
                             <TextField
                               size="small"
-                              value={ethers.utils.formatUnits(
+                              value={formatUnits(
                                 values.maxPriorityFeePerGas?.toString() || "0",
                                 "gwei"
                               )}
@@ -413,7 +414,7 @@ export function MagicTxConfirmDialog(props: TransactionConfirmDialogProps) {
                           <Grid item xs={12}>
                             <TextField
                               size="small"
-                              value={ethers.utils.formatUnits(
+                              value={formatUnits(
                                 values.maxFeePerGas?.toString() || "0",
                                 "gwei"
                               )}
@@ -435,7 +436,7 @@ export function MagicTxConfirmDialog(props: TransactionConfirmDialogProps) {
                           <Grid item xs={12}>
                             <TextField
                               size="small"
-                              value={ethers.utils.formatUnits(
+                              value={formatUnits(
                                 values.gasPrice?.toString() || "0",
                                 "gwei"
                               )}
@@ -496,11 +497,10 @@ export function MagicTxConfirmDialog(props: TransactionConfirmDialogProps) {
         <Button
           startIcon={<Check />}
           disabled={
-            Number(ethers.utils.formatEther(etherBalance || "0")) <
+            Number(formatEther(etherBalance || "0")) <
               gasCost(values) +
-                parseInt(
-                  values.value ? ethers.utils.formatEther(values.value) : "0"
-                ) || gasCost(values) === 0
+                parseInt(values.value ? formatEther(values.value) : "0") ||
+            gasCost(values) === 0
           }
           onClick={handleConfirm}
           color="primary"

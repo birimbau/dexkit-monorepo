@@ -5,7 +5,8 @@ import { MetaMask } from '@web3-react/metamask';
 import { ChainId } from '@dexkit/core/constants';
 
 import { NETWORKS } from '@dexkit/core/constants/networks';
-import { providers, utils } from 'ethers';
+import { isAddress } from '@dexkit/core/utils/ethers/isAddress';
+import { providers } from 'ethers';
 
 
 export const getNetworks = ({ includeTestnet }: { includeTestnet: boolean }) => {
@@ -80,7 +81,7 @@ export const getProviderByChainId = (chainId?: ChainId) => {
 };
 
 export const truncateAddress = (address: string | undefined) => {
-  if (address !== undefined && utils.isAddress(address)) {
+  if (address !== undefined && isAddress(address)) {
     return `${address.slice(0, 7)}...${address.slice(address.length - 5)}`;
   }
   return '';
@@ -94,7 +95,7 @@ export function isAddressEqual(address?: string, other?: string) {
     return false;
   }
 
-  if (!utils.isAddress(address) || !utils.isAddress(other)) {
+  if (!isAddress(address) || !isAddress(other)) {
     return false;
   }
 

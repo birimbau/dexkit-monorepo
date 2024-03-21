@@ -1,5 +1,5 @@
 import { Button, FormControlLabel, Grid } from "@mui/material";
-import { BigNumber, ethers } from "ethers";
+import { BigNumber } from "ethers";
 import { Field, Formik, getIn } from "formik";
 import { Autocomplete, Checkbox, TextField } from "formik-mui";
 import {
@@ -20,6 +20,8 @@ import { IpfsImageInput } from "./IpfsImageInput";
 import { MerkleTreeFileInput } from "./MerkleTreeFileInput";
 import SharesArrayInput from "./SharesArrayInput";
 
+import { isAddress } from "@dexkit/core/utils/ethers/isAddress";
+import { parseUnits } from "@dexkit/core/utils/ethers/parseUnits";
 import CompletationProvider from "@dexkit/ui/components/CompletationProvider";
 
 type FormParams = {
@@ -33,7 +35,7 @@ type FormParams = {
 
 function validateAddress(message: string) {
   return (value: string) => {
-    return !ethers.utils.isAddress(value) ? message : undefined;
+    return !isAddress(value) ? message : undefined;
   };
 }
 
@@ -269,9 +271,7 @@ export default function GenericForm({
             return {
               [el.ref as string]: Yup.string()
                 .test("address", (value) => {
-                  return value !== undefined
-                    ? ethers.utils.isAddress(value)
-                    : true;
+                  return value !== undefined ? isAddress(value) : true;
                 })
                 .required(),
             };
@@ -282,9 +282,7 @@ export default function GenericForm({
               [el.ref as string]: Yup.array(
                 Yup.string()
                   .test("address", (value) => {
-                    return value !== undefined
-                      ? ethers.utils.isAddress(value)
-                      : true;
+                    return value !== undefined ? isAddress(value) : true;
                   })
                   .required()
               ),
@@ -323,9 +321,7 @@ export default function GenericForm({
               return {
                 [el.ref[0]]: Yup.array(
                   Yup.string().test("address", (value) => {
-                    return value !== undefined
-                      ? ethers.utils.isAddress(value)
-                      : true;
+                    return value !== undefined ? isAddress(value) : true;
                   })
                 ).required(),
                 [el.ref[1]]: Yup.array(Yup.string()).required(),
@@ -384,10 +380,7 @@ export default function GenericForm({
           return {
             [key]:
               field.component.decimals > 0
-                ? ethers.utils.parseUnits(
-                    formValues[key],
-                    field.component.decimals
-                  )
+                ? parseUnits(formValues[key], field.component.decimals)
                 : BigNumber.from(formValues[key]),
           };
         } else if (
@@ -417,16 +410,13 @@ export default function GenericForm({
                   if (Array.isArray(values[fieldName.name])) {
                     vals = values[fieldName.name].map((v: string) =>
                       fieldName.decimals > 0
-                        ? ethers.utils.parseUnits(v, fieldName.decimals)
+                        ? parseUnits(v, fieldName.decimals)
                         : BigNumber.from(v)
                     );
                   } else {
                     vals =
                       fieldName.decimals > 0
-                        ? ethers.utils.parseUnits(
-                            values[fieldName.name],
-                            fieldName.decimals
-                          )
+                        ? parseUnits(values[fieldName.name], fieldName.decimals)
                         : BigNumber.from(values[fieldName.name]);
                   }
 

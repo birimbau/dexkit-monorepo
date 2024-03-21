@@ -1,4 +1,4 @@
-import { ethers } from "ethers";
+import { BigNumber, Contract, providers } from "ethers";
 
 import { ERC20Abi } from "../constants/abis";
 
@@ -7,7 +7,7 @@ import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "../constants/zrx";
 
 export const getERC20Decimals = async (
   contractAddress?: string,
-  provider?: ethers.providers.BaseProvider
+  provider?: providers.BaseProvider
 ) => {
   if (contractAddress === undefined || provider === undefined) {
     return;
@@ -17,14 +17,14 @@ export const getERC20Decimals = async (
     return 18;
   }
 
-  const contract = new ethers.Contract(contractAddress, ERC20Abi, provider);
+  const contract = new Contract(contractAddress, ERC20Abi, provider);
 
   return await contract.decimals();
 };
 
 export const getERC20Symbol = async (
   contractAddress?: string,
-  provider?: ethers.providers.BaseProvider
+  provider?: providers.BaseProvider
 ) => {
   if (contractAddress === undefined || provider === undefined) {
     return;
@@ -34,20 +34,20 @@ export const getERC20Symbol = async (
     return NETWORK_COIN_SYMBOL((await provider.getNetwork()).chainId);
   }
 
-  const contract = new ethers.Contract(contractAddress, ERC20Abi, provider);
+  const contract = new Contract(contractAddress, ERC20Abi, provider);
 
   return await contract.symbol();
 };
 
 export const getERC20Name = async (
   contractAddress?: string,
-  provider?: ethers.providers.BaseProvider
+  provider?: providers.BaseProvider
 ) => {
   if (contractAddress === undefined || provider === undefined) {
     return;
   }
 
-  const contract = new ethers.Contract(contractAddress, ERC20Abi, provider);
+  const contract = new Contract(contractAddress, ERC20Abi, provider);
 
   return await contract.name();
 };
@@ -55,7 +55,7 @@ export const getERC20Name = async (
 export const getERC20Balance = async (
   contractAddress?: string,
   account?: string,
-  provider?: ethers.providers.BaseProvider
+  provider?: providers.BaseProvider
 ) => {
   if (
     contractAddress === undefined ||
@@ -69,7 +69,7 @@ export const getERC20Balance = async (
     return await provider.getBalance(account);
   }
 
-  const contract = new ethers.Contract(contractAddress, ERC20Abi, provider);
+  const contract = new Contract(contractAddress, ERC20Abi, provider);
 
   return await contract.balanceOf(account);
 };
@@ -80,16 +80,16 @@ export const approveToken = async ({
   tokenContract,
   amount,
 }: {
-  provider?: ethers.providers.Web3Provider;
+  provider?: providers.Web3Provider;
   spender?: string;
   tokenContract?: string;
-  amount?: ethers.BigNumber;
+  amount?: BigNumber;
 }) => {
   if (!tokenContract || !provider || !spender || !amount) {
     return;
   }
 
-  const contract = new ethers.Contract(
+  const contract = new Contract(
     tokenContract,
     ERC20Abi,
     provider.getSigner()
