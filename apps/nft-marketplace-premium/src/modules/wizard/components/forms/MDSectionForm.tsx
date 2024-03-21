@@ -9,10 +9,14 @@ import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import '@uiw/react-markdown-preview/markdown.css';
 import { ExecuteState, TextAreaTextApi } from '@uiw/react-md-editor';
+
+import * as commands from '@uiw/react-md-editor/commands';
+
 import '@uiw/react-md-editor/markdown-editor.css';
 import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
+
 const MDEditor = dynamic(
   () => import('@uiw/react-md-editor').then((mod) => mod.default),
   { ssr: false },
@@ -81,7 +85,8 @@ export default function MDSectionForm({
               value={value}
               onChange={setValue}
               ref={ref}
-              extraCommands={[
+              commands={[
+                ...commands.getCommands(),
                 {
                   keyCommand: 'ai',
                   name: formatMessage({
