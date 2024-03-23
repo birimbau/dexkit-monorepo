@@ -9,14 +9,45 @@ import { FormattedMessage } from 'react-intl';
 import { AppPage, MenuTree } from '../../../../../types/config';
 
 import AddIcon from '@mui/icons-material/Add';
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
+import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import { Box } from '@mui/material';
+import { Box, Collapse, ListItemIcon, Tooltip } from '@mui/material';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import AddMenuPageDialog from '../../dialogs/AddMenuPageDialog';
 import MenuItem from './MenuItem';
-import Submenu from './Submenu';
+
+import DescriptionIcon from '@mui/icons-material/Description';
+import ExpandLess from '@mui/icons-material/ExpandLess';
+import ExpandMore from '@mui/icons-material/ExpandMore';
+import LaunchIcon from '@mui/icons-material/Launch';
+import MenuIcon from '@mui/icons-material/Menu';
+
+const renderIcon = (type: 'Page' | 'Menu' | 'External') => {
+  const types: { [key: string]: React.ReactNode } = {
+    Page: (
+      <Tooltip title={<FormattedMessage id="page" defaultMessage="Page" />}>
+        <DescriptionIcon />
+      </Tooltip>
+    ),
+    Menu: (
+      <Tooltip title={<FormattedMessage id="menu" defaultMessage="Menu" />}>
+        <MenuIcon />
+      </Tooltip>
+    ),
+    External: (
+      <Tooltip
+        title={<FormattedMessage id="external" defaultMessage="External" />}
+      >
+        <LaunchIcon />
+      </Tooltip>
+    ),
+  };
+
+  return types[type];
+};
 
 interface Props {
   menu: MenuTree[];
@@ -191,26 +222,108 @@ export default function MenuSection(props: Props) {
     setIsOpen(false);
   };
 
-  const renderItem = (item: MenuTree, index: number) => {
+  const [openMenu, setOpenMenu] = useState<{ [key: string]: boolean }>({});
+
+  const renderItem = (
+    item: MenuTree,
+    index: number,
+    arr: MenuTree[],
+    depth: number,
+  ): any => {
     if (item.type === 'Menu') {
       return (
-        <Submenu
-          key={index}
-          item={item}
-          pages={pages}
-          onUpdateItem={(newItem: MenuTree) => {
-            const newMenu = [...menu];
+        <>
+          <ListItem>
+            <ListItemIcon sx={{ pl: depth * 4 }}>
+              {renderIcon(item.type)}
+            </ListItemIcon>
+            <ListItemText primary={item.name} />
 
-            newMenu[index] = newItem;
+            <Stack direction="row" alignItems="center" spacing={0.5}>
+              <IconButton>
+                <DeleteIcon />
+              </IconButton>
+              <IconButton>
+                <AddIcon />
+              </IconButton>
+              <IconButton>
+                <ArrowUpwardIcon />
+              </IconButton>
+              <IconButton>
+                <ArrowDownwardIcon />
+              </IconButton>
 
-            onSetMenu(newMenu);
-          }}
-          depth={0}
-        />
+              <IconButton
+                onClick={() =>
+                  setOpenMenu((value) => ({
+                    ...value,
+                    [`${depth}-${index}`]: !Boolean(
+                      openMenu[`${depth}-${index}`],
+                    ),
+                  }))
+                }
+              >
+                {Boolean(openMenu[`${depth}-${index}`]) ? (
+                  <ExpandMore />
+                ) : (
+                  <ExpandLess />
+                )}
+              </IconButton>
+            </Stack>
+          </ListItem>
+
+          {item.children && (
+            <Collapse in>
+              {item.children?.map(
+                (i: MenuTree, index: number, arr: MenuTree[]) =>
+                  renderItem(i, index, arr, depth + 1),
+              )}
+            </Collapse>
+          )}
+        </>
       );
     }
 
-    return <MenuItem item={item} key={index} depth={0} />;
+    return (
+      <MenuItem
+        item={item}
+        key={index}
+        depth={depth + 1}
+        onUp={() => {
+          const newMenu = [...menu];
+
+          let upper = newMenu[index - 1];
+          let curr = newMenu[index];
+
+          newMenu[index - 1] = curr;
+          newMenu[index] = upper;
+
+          onSetMenu(newMenu);
+        }}
+        onDown={() => {
+          const newMenu = [...menu];
+
+          let curr = newMenu[index];
+          let lower = newMenu[index + 1];
+
+          newMenu[index + 1] = curr;
+          newMenu[index] = lower;
+
+          onSetMenu(newMenu);
+        }}
+        buttons={{
+          disableUp: index === 0,
+          disableDown: index === arr.length - 1,
+        }}
+        onRemove={() => {
+          let newMenu = [...menu];
+
+          newMenu.splice(index, 1);
+
+          onSetMenu(newMenu);
+        }}
+      />
+    );
   };
 
   return (
@@ -234,7 +347,7 @@ export default function MenuSection(props: Props) {
       >
         <FormattedMessage id="add.menu" defaultMessage="Add menu" />
       </Button>
-      {menu.map((item, index) => renderItem(item, index))}
+      {menu.map((item, index, arr) => renderItem(item, index, arr, -1))}
     </Stack>
   );
 }

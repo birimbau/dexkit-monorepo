@@ -1,8 +1,19 @@
 import MenuIcon from '@mui/icons-material/Menu';
-import { ListItem, ListItemIcon, ListItemText, Tooltip } from '@mui/material';
+import {
+  IconButton,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Stack,
+  Tooltip,
+} from '@mui/material';
 import { MenuTree } from 'src/types/config';
 
+import DeleteIcon from '@mui/icons-material/Delete';
 import LaunchIcon from '@mui/icons-material/Launch';
+
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
+import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 
 import DescriptionIcon from '@mui/icons-material/Description';
 import { FormattedMessage } from 'react-intl';
@@ -34,15 +45,37 @@ const renderIcon = (type: 'Page' | 'Menu' | 'External') => {
 export interface MenuItemProps {
   item: MenuTree;
   depth: number;
+  onUp: () => void;
+  onDown: () => void;
+  onRemove?: () => void;
+  buttons: { disableUp?: boolean; disableDown?: boolean };
 }
 
-export default function MenuItem({ item, depth }: MenuItemProps) {
+export default function MenuItem({
+  item,
+  depth,
+  onUp,
+  onDown,
+  onRemove,
+  buttons,
+}: MenuItemProps) {
   return (
     <ListItem>
       <ListItemIcon sx={{ ml: depth * 4 }}>
         {renderIcon(item.type)}
       </ListItemIcon>
       <ListItemText primary={item.name} />
+      <Stack direction="row" alignItems="center" spacing={0.5}>
+        <IconButton onClick={onRemove}>
+          <DeleteIcon />
+        </IconButton>
+        <IconButton onClick={onUp} disabled={buttons.disableUp}>
+          <ArrowUpwardIcon />
+        </IconButton>
+        <IconButton onClick={onDown} disabled={buttons.disableDown}>
+          <ArrowDownwardIcon />
+        </IconButton>
+      </Stack>
     </ListItem>
   );
 }
