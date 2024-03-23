@@ -18,9 +18,21 @@ import {
   getDKAssetOrderbook,
 } from 'src/services/nft';
 
+import Carousel from '@dexkit/dexappbuilder-viewer/components/sections/Carousel/index';
+
+const imgUrl =
+  'https://c4.wallpaperflare.com/wallpaper/1000/190/378/3-316-16-9-aspect-ratio-s-sfw-wallpaper-preview.jpg';
+
 const Home: NextPage<{ sections: AppPageSection[] }> = ({ sections }) => {
   return (
     <MainLayout disablePadding>
+      <Carousel
+        slides={[
+          { imageUrl: imgUrl, title: 'slide 1', subtitle: 'slide1 subtitle' },
+          { imageUrl: imgUrl, title: 'slide 2', subtitle: 'slide2 subtitle' },
+          { imageUrl: imgUrl, title: 'slide 3', subtitle: 'slide3 subtitle' },
+        ]}
+      />
       <SectionsRenderer sections={sections} />
       {/*<ActionButtonsSection />*/}
     </MainLayout>
@@ -47,7 +59,7 @@ export const getStaticProps: GetStaticProps = async ({
       const assetResponse = await getDKAssetOrderbook({ maker });
       await queryClient.prefetchQuery(
         [GET_ASSETS_ORDERBOOK, { maker: maker || null }],
-        async () => assetResponse.data,
+        async () => assetResponse.data
       );
     }
   }

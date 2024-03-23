@@ -160,6 +160,14 @@ export const sections = [
     description: 'Create leaderboards from web3 user events on your app',
     icon: <LeaderboardIcon fontSize="large" />,
   },
+  {
+    type: 'carousel',
+    titleId: 'carousel',
+    titleDefaultMessage: 'Carousel',
+    category: 'resources',
+    description: 'Create a carousel section',
+    icon: <LeaderboardIcon fontSize="large" />,
+  },
 ] as SectionMetadata[];
 
 export const SectionCategory = [

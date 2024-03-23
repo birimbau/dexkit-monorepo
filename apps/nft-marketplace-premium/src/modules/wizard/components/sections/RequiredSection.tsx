@@ -46,14 +46,14 @@ export default function GeneralSection({
   const handleSubmit = useCallback(
     (
       values: RequiredSectionForm,
-      formikHelpers: FormikHelpers<RequiredSectionForm>,
+      formikHelpers: FormikHelpers<RequiredSectionForm>
     ) => {
       if (onSubmit) {
         onSubmit(values);
         setIsEditing(false);
       }
     },
-    [onSubmit],
+    [onSubmit]
   );
 
   const handleEdit = () => {
@@ -133,7 +133,7 @@ export default function GeneralSection({
                   <TextField
                     disabled={!isEditing || isEdit}
                     label={
-                      <FormattedMessage id="url" defaultMessage="Domain" />
+                      <FormattedMessage id="domain" defaultMessage="Domain" />
                     }
                     fullWidth
                     name="domain"

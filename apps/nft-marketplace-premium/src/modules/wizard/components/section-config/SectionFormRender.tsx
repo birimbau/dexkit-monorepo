@@ -6,6 +6,7 @@ import { FormattedMessage } from 'react-intl';
 import { myAppsApi } from 'src/services/whitelabel';
 import { SiteContext } from '../../providers/SiteWizardProvider';
 import { AppPageSection, SectionType } from '../../types/section';
+import AddCarouselForm from '../forms/AddCarouselForm';
 import AssetSectionForm from '../forms/AssetSectionForm';
 import { AssetStoreSectionForm } from '../forms/AssetStoreSectionForm';
 import CallToActionSectionForm from '../forms/CallToActionSectionForm';
@@ -25,7 +26,7 @@ import VideoSectionForm from '../forms/VideoSectionForm';
 import WalletSectionForm from '../forms/WalletSectionForm';
 
 const ApiKeyIntegrationDialog = dynamic(
-  () => import('../dialogs/ApiKeyIntegrationDialog'),
+  () => import('../dialogs/ApiKeyIntegrationDialog')
 );
 
 interface Props {
@@ -282,6 +283,15 @@ export function SectionFormRender({
         onSave={onSave}
         onChange={onChange}
         section={section?.type === sectionType ? section : undefined}
+      />
+    );
+  } else if (sectionType === 'carousel') {
+    return (
+      <AddCarouselForm
+        onChange={onChange}
+        onSave={onSave}
+        data={section?.type === sectionType ? section : undefined}
+        saveOnChange
       />
     );
   }

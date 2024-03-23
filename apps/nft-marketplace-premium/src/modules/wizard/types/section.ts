@@ -43,7 +43,7 @@ export type SectionType =
   | 'market-trade'
   | 'claim-airdrop-token-erc-20'
   | 'token-trade'
-  ;
+  | 'carousel';
 
 export interface PageSection {
   type: SectionType;
@@ -221,7 +221,7 @@ export interface MarketTradePageSection extends PageSection {
   config: {
     show: OrderMarketType;
     slippage?: number;
-    baseTokenConfig: { address: string, chainId: number };
+    baseTokenConfig: { address: string; chainId: number };
   };
 }
 
@@ -231,7 +231,7 @@ export interface TokenTradePageSection extends PageSection {
     showTokenDetails?: boolean;
     show?: OrderMarketType;
     slippage?: number;
-    baseTokenConfig?: { address?: string, chainId?: number };
+    baseTokenConfig?: { address?: string; chainId?: number };
   };
 }
 
@@ -277,6 +277,23 @@ export interface DexGeneratorPageSection extends PageSection {
   section?: DexGeneratorPageSectionType;
 }
 
+export interface CarouselPageSection extends PageSection {
+  type: 'carousel';
+  settings: {
+    interval?: number;
+    slides: {
+      title: string;
+      subtitle?: string;
+      imageUrl: string;
+      action?: {
+        caption: string;
+        url: string;
+        action: string;
+      };
+    }[];
+  };
+}
+
 export type AppPageSection =
   | CallToActionAppPageSection
   | VideoEmbedAppPageSection
@@ -297,7 +314,8 @@ export type AppPageSection =
   | DexGeneratorPageSection
   | AssetPageSection
   | RankingPageSection
-  | TokenTradePageSection;
+  | TokenTradePageSection
+  | CarouselPageSection;
 
 export interface SectionMetadata {
   type: SectionType;

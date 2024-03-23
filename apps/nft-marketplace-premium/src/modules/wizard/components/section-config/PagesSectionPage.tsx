@@ -89,7 +89,7 @@ export default function PagesSectionPage({
   const renderSection = (
     section: AppPageSection,
     index: number,
-    isVisible: boolean,
+    isVisible: boolean
   ) => {
     let title;
     let subtitle;
@@ -188,6 +188,10 @@ export default function PagesSectionPage({
       );
       subtitle = section.title || '';
       icon = <TokenIcon />;
+    } else if (section.type === 'carousel') {
+      title = <FormattedMessage id="carousel" defaultMessage="Carousel" />;
+      subtitle = section.title || '';
+      icon = <TokenIcon />;
     }
 
     if (!title) {
@@ -284,7 +288,7 @@ export default function PagesSectionPage({
 
   const onEditGatedContidions = (
     gatedConditions: GatedCondition[],
-    gatedLayout: GatedPageLayout,
+    gatedLayout: GatedPageLayout
   ) => {
     onEditPage({
       isEditGatedConditions: true,
@@ -434,7 +438,7 @@ export default function PagesSectionPage({
         <Divider />
 
         {sections.map((section, index) =>
-          renderSection(section, index, isVisibleIndexes.includes(index)),
+          renderSection(section, index, isVisibleIndexes.includes(index))
         )}
       </Stack>
     </>

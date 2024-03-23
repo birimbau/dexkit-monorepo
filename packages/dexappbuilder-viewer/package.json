@@ -20,6 +20,8 @@
     "@storybook/react": "^7.0.22",
     "@storybook/react-vite": "^7.0.22",
     "@storybook/testing-library": "^0.2.0",
+    "@types/react-swipeable-views": "^0.13.5",
+    "@types/react-swipeable-views-utils": "^0.13.7",
     "@vitejs/plugin-react": "^3.1.0",
     "babel-loader": "^8.3.0",
     "eslint": "^7.32.0",
@@ -36,13 +38,15 @@
   },
   "dependencies": {
     "@dexkit/core": "*",
+    "@dexkit/exchange": "*",
     "@dexkit/ui": "*",
+    "@dexkit/wallet-connectors": "*",
     "@dexkit/web3forms": "*",
     "@dexkit/widgets": "*",
-    "@dexkit/exchange": "*",
-    "@dexkit/wallet-connectors": "*",
     "@uiw/react-md-editor": "^3.23.3",
     "html-react-parser": "^4.0.0",
+    "react-swipeable-views": "^0.14.0",
+    "react-swipeable-views-utils": "^0.14.0",
     "react-syntax-highlighter": "^15.5.0"
   },
   "publishConfig": {
