@@ -3,7 +3,7 @@ import LazyComponent from 'src/components/LazyComponent';
 import { AppPageSection } from '../../types/section';
 import RankingSection from '../sections/RankingSection';
 
-import CarouselSection from '@dexkit/dexappbuilder-viewer/components/sections/CarouselSection';
+const CarouselSection = dynamic(() => import('../sections/CarouselSection'));
 
 const CollectionSection = dynamic(
   () => import('../sections/CollectionSection')
@@ -107,12 +107,7 @@ export function SectionRender({ section, useLazy }: Props) {
     } else if (section.type === 'token-trade') {
       return <TokenTradeSection section={section} />;
     } else if (section.type === 'carousel') {
-      return (
-        <CarouselSection
-          slides={section.settings.slides}
-          interval={section.settings.interval}
-        />
-      );
+      return <CarouselSection section={section} />;
     }
   };
   const getSection = sectionToRender();

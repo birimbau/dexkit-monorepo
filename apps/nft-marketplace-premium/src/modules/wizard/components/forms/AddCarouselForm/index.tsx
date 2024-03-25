@@ -4,9 +4,10 @@ import { TextField } from 'formik-mui';
 import { FormattedMessage } from 'react-intl';
 import SlideItem from './SlideItem';
 
-import { CarouselPageSection } from '@/modules/wizard/types/section';
+import { DexkitApiProvider } from '@dexkit/core/providers';
 import dynamic from 'next/dynamic';
 import { useState } from 'react';
+import { myAppsApi } from 'src/services/whitelabel';
 import * as Yup from 'yup';
 
 const MediaDialog = dynamic(() => import('@dexkit/ui/components/mediaDialog'), {
@@ -45,9 +46,9 @@ interface CarouselFormType {
 }
 
 export interface AddCarouselFormProps {
-  data?: CarouselPageSection;
-  onChange: (data: CarouselPageSection) => void;
-  onSave: (data: CarouselPageSection) => void;
+  data?: CarouselFormType;
+  onChange: (data: CarouselFormType) => void;
+  onSave: (data: CarouselFormType) => void;
   saveOnChange?: boolean;
   disableButtons?: boolean;
 }
@@ -60,7 +61,7 @@ export default function AddCarouselForm({
   disableButtons,
 }: AddCarouselFormProps) {
   const handleSubmit = (values: CarouselFormType) => {
-    onSave({ settings: values, type: 'carousel' });
+    onSave(values);
   };
 
   const [openDialog, setOpenDialog] = useState(false);
@@ -81,29 +82,31 @@ export default function AddCarouselForm({
   return (
     <>
       <Formik
-        initialValues={data ? data.settings : { interval: 5000, slides: [] }}
+        initialValues={data ? data : { interval: 5000, slides: [] }}
         onSubmit={handleSubmit}
         validationSchema={FormSchema}
         validate={(values: CarouselFormType) => {
           if (saveOnChange) {
-            onChange({ settings: values, type: 'carousel' });
+            onChange(values);
           }
         }}
         validateOnChange
       >
         {({ submitForm, isValid, values, isSubmitting, setFieldValue }) => (
           <>
-            <MediaDialog
-              dialogProps={{
-                open: openDialog,
-                maxWidth: 'lg',
-                fullWidth: true,
-                onClose: handleClose,
-              }}
-              onConfirmSelectFile={(file) =>
-                setFieldValue(`slides[${index}].imageUrl`, file.url)
-              }
-            />
+            <DexkitApiProvider.Provider value={{ instance: myAppsApi }}>
+              <MediaDialog
+                dialogProps={{
+                  open: openDialog,
+                  maxWidth: 'lg',
+                  fullWidth: true,
+                  onClose: handleClose,
+                }}
+                onConfirmSelectFile={(file) =>
+                  setFieldValue(`slides[${index}].imageUrl`, file.url)
+                }
+              />
+            </DexkitApiProvider.Provider>
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <Field
@@ -122,7 +125,7 @@ export default function AddCarouselForm({
                   render={(arrayHelpers) => (
                     <Grid container spacing={2}>
                       {values.slides.map((_, index, arr) => (
-                        <Grid item xs={12}>
+                        <Grid item xs={12} key={index}>
                           <Paper sx={{ p: 2 }}>
                             <SlideItem
                               index={index}

@@ -321,7 +321,8 @@ export type AppPageSection =
   | AssetPageSection
   | RankingPageSection
   | ClaimAirdropErc20PageSection
-  | TokenTradePageSection;
+  | TokenTradePageSection
+  | CarouselPageSection;
 
 export interface SectionMetadata {
   type: SectionType;

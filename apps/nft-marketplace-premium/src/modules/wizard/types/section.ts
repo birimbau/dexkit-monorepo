@@ -252,6 +252,23 @@ export interface CollectionPageSection extends PageSection {
   };
 }
 
+export interface CarouselPageSection extends PageSection {
+  type: 'carousel';
+  settings: {
+    interval?: number;
+    slides: {
+      title: string;
+      subtitle?: string;
+      imageUrl: string;
+      action?: {
+        caption: string;
+        url: string;
+        action: string;
+      };
+    }[];
+  };
+}
+
 export interface RankingPageSection extends PageSection {
   type: 'ranking';
   settings: {
@@ -275,23 +292,6 @@ export interface DexGeneratorPageSection extends PageSection {
   type: 'dex-generator-section';
   contract?: DeployedContract;
   section?: DexGeneratorPageSectionType;
-}
-
-export interface CarouselPageSection extends PageSection {
-  type: 'carousel';
-  settings: {
-    interval?: number;
-    slides: {
-      title: string;
-      subtitle?: string;
-      imageUrl: string;
-      action?: {
-        caption: string;
-        url: string;
-        action: string;
-      };
-    }[];
-  };
 }
 
 export type AppPageSection =

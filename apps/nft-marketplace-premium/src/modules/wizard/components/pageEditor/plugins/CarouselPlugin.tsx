@@ -2,20 +2,34 @@ import { Container } from '@mui/material';
 import type { CellPlugin } from '@react-page/editor';
 
 import AddCarouselForm from '@/modules/wizard/components/forms/AddCarouselForm';
-import CarouselSection from '@dexkit/dexappbuilder-viewer/components/sections/CarouselSection';
-import { CarouselPageSection } from '@dexkit/ui/modules/wizard/types/section';
+
+import CarouselSection from '@/modules/wizard/components/sections/CarouselSection';
 
 // you can pass the shape of the data as the generic type argument
-const CarouselPlugin: CellPlugin<{ section: CarouselPageSection }> = {
+const CarouselPlugin: CellPlugin<{
+  interval?: number;
+  slides: {
+    title: string;
+    subtitle?: string;
+    imageUrl: string;
+    action?: {
+      caption: string;
+      url: string;
+      action: string;
+    };
+  }[];
+}> = {
   Renderer: ({ data, isEditMode }) => {
-    if (!data.section) {
+    if (!data) {
       return <></>;
     }
 
     return (
       <CarouselSection
-        slides={data.section.settings.slides}
-        interval={data.section.settings.interval}
+        section={{
+          type: 'carousel',
+          settings: { slides: data.slides, interval: data.interval },
+        }}
       />
     );
   },
@@ -25,13 +39,17 @@ const CarouselPlugin: CellPlugin<{ section: CarouselPageSection }> = {
   version: 1,
   controls: {
     type: 'custom',
-    Component: ({ data: { section }, onChange }) => {
+    Component: ({ data, onChange }) => {
       return (
         <Container sx={{ p: 2 }}>
           <AddCarouselForm
-            data={section}
-            onChange={(data) => onChange({ section: data })}
-            onSave={(data) => onChange({ section: data })}
+            data={data}
+            onChange={(data) =>
+              onChange({ interval: data.interval, slides: data.slides })
+            }
+            onSave={(data) =>
+              onChange({ interval: data.interval, slides: data.slides })
+            }
             saveOnChange
             disableButtons
           />

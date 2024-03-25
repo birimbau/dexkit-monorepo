@@ -1,30 +1,23 @@
-import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
-import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
-import { Box, IconButton, Stack } from "@mui/material";
-import { useState } from "react";
-import SwipeableViews from "react-swipeable-views";
-import { autoPlay } from "react-swipeable-views-utils";
-import Pagination from "./Pagination";
-import Slide from "./Slide";
+import { CarouselPageSection } from '@/modules/wizard/types/section';
+import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
+import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
+import { Box, IconButton, Stack } from '@mui/material';
+import { useState } from 'react';
+import SwipeableViews from 'react-swipeable-views';
+import { autoPlay } from 'react-swipeable-views-utils';
+import Pagination from './Pagination';
+import Slide from './Slide';
 
 const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
 
 export interface CarouselProps {
-  interval?: number;
-  slides: {
-    title: string;
-    subtitle?: string;
-    imageUrl: string;
-    action?: {
-      caption: string;
-      url: string;
-      action: string;
-    };
-  }[];
+  section: CarouselPageSection;
 }
 
-export default function CarouselSection({ slides, interval }: CarouselProps) {
+export default function CarouselSection({ section }: CarouselProps) {
   const [index, setIndex] = useState(0);
+
+  const { interval, slides } = section.settings;
 
   const handleChangeIndex = (index: number, indexLatest: number) => {
     setIndex(index);
@@ -47,7 +40,7 @@ export default function CarouselSection({ slides, interval }: CarouselProps) {
   };
 
   return (
-    <Box sx={{ position: "relative" }}>
+    <Box sx={{ position: 'relative' }}>
       <AutoPlaySwipeableViews
         index={index}
         onChangeIndex={handleChangeIndex}
@@ -63,7 +56,7 @@ export default function CarouselSection({ slides, interval }: CarouselProps) {
               slide.action
                 ? slide.action.url
                   ? {
-                      type: "link",
+                      type: 'link',
                       caption: slide.action?.caption,
                       url: slide.action.url,
                     }
@@ -75,10 +68,10 @@ export default function CarouselSection({ slides, interval }: CarouselProps) {
       </AutoPlaySwipeableViews>
       <Box
         sx={{
-          position: "absolute",
+          position: 'absolute',
           top: 0,
           bottom: 0,
-          width: "100%",
+          width: '100%',
           p: 4,
         }}
       >
@@ -86,7 +79,7 @@ export default function CarouselSection({ slides, interval }: CarouselProps) {
           justifyContent="space-between"
           alignItems="center"
           direction="row"
-          sx={{ height: "100%", width: "100%" }}
+          sx={{ height: '100%', width: '100%' }}
         >
           <IconButton onClick={handlePrev} size="large">
             <KeyboardArrowLeftIcon fontSize="large" />

@@ -1,9 +1,10 @@
-import Link from "@dexkit/ui/components/AppLink";
-import { Stack, Typography } from "@mui/material";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import React from "react";
-import { SlideActionType } from "../../../types";
+import Link from '@dexkit/ui/components/AppLink';
+import { Stack, Typography } from '@mui/material';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import React from 'react';
+
+import { SlideActionType } from '@dexkit/dexappbuilder-viewer/types/index';
 
 export interface SlideProps {
   title: React.ReactNode;
@@ -21,31 +22,31 @@ export default function Slide({
   return (
     <Box
       sx={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
       }}
     >
-      <Box sx={{ position: "relative", height: "500px", width: "100%" }}>
+      <Box sx={{ position: 'relative', height: '500px', width: '100%' }}>
         <Box
           sx={{
             backgroundImage: `linear-gradient(
               rgba(0, 0, 0, 0.0), 
               rgba(0, 0, 0, 0.90)
             ), url(${imageUrl})`,
-            aspectRation: "16/9",
-            backgroundSize: "cover",
-            backgroundRepeat: "no-repeat",
-            position: "absolute",
-            width: "100%",
-            height: "100%",
-            display: "block",
+            aspectRation: '16/9',
+            backgroundSize: 'cover',
+            backgroundRepeat: 'no-repeat',
+            position: 'absolute',
+            width: '100%',
+            height: '100%',
+            display: 'block',
           }}
         />
         <Stack
           sx={{
-            position: "absolute",
-            display: "block",
+            position: 'absolute',
+            display: 'block',
             bottom: (theme) => theme.spacing(4),
             left: (theme) => theme.spacing(4),
             right: (theme) => theme.spacing(4),
@@ -67,7 +68,7 @@ export default function Slide({
           </Box>
           {action && (
             <Box>
-              {action.type === "link" && (
+              {action.type === 'link' && (
                 <Button
                   variant="contained"
                   LinkComponent={Link}

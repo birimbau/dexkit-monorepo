@@ -288,9 +288,9 @@ export function SectionFormRender({
   } else if (sectionType === 'carousel') {
     return (
       <AddCarouselForm
-        onChange={onChange}
-        onSave={onSave}
-        data={section?.type === sectionType ? section : undefined}
+        onChange={(data) => onChange({ type: 'carousel', settings: data })}
+        onSave={(data) => onSave({ type: 'carousel', settings: data })}
+        data={section?.type === sectionType ? section.settings : undefined}
         saveOnChange
       />
     );
