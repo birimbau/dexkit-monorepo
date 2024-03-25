@@ -57,6 +57,9 @@ import Swap2Plugin from './plugins/Swap2Plugin';
 import TokenTradePlugin from './plugins/TokenTradePlugin';
 import UserContractFormPlugin from './plugins/UserContractFormPlugin';
 import WidgetPlugin from './plugins/WidgetPlugin';
+
+import CarouselPlugin from './plugins/CarouselPlugin';
+
 // Define which plugins we want to use.
 const cellPlugins = [
   AssetAltPlugin,
@@ -83,7 +86,7 @@ const cellPlugins = [
   QrCodeReceive,
   ExtendedSpacer,
   StackPlugin,
-
+  CarouselPlugin,
   //  CustomLayoutPlugin,
   // SwapPlugin,
   Swap2Plugin,
@@ -122,6 +125,7 @@ const nftPlugins = [
   video,
   WidgetPlugin,
   //  ExchangePlugin,
+  CarouselPlugin,
 ];
 
 const swapPlugins = [
@@ -150,6 +154,7 @@ const swapPlugins = [
   CustomContentPluginTwitter,
   video,
   WidgetPlugin,
+  CarouselPlugin,
   // ExchangePlugin,
 ];
 
