@@ -95,27 +95,38 @@ export const SiteTemplatePage: NextPage<{
                   </Button>
                 </Stack>
 
-                <Stack spacing={2} direction={'row'}>
+                <Stack
+                  spacing={2}
+                  direction={'row'}
+                  alignItems={'center'}
+                  alignContent={'center'}
+                >
                   <Typography variant="body1">
                     <FormattedMessage id="networks" defaultMessage="Networks" />
                   </Typography>
 
-                  <Stack spacing={1} direction={'row'}>
+                  <Grid container spacing={1}>
                     {metadata?.chainIds?.map((cid, key) => (
-                      <Chip
-                        key={`net-${key}`}
-                        avatar={
-                          <Avatar
-                            alt={NETWORK_NAME(cid)}
-                            src={NETWORK_IMAGE(cid)}
-                          />
-                        }
-                        label={NETWORK_NAME(cid)}
-                      ></Chip>
+                      <Grid item key={`net-${key}`}>
+                        <Chip
+                          avatar={
+                            <Avatar
+                              alt={NETWORK_NAME(cid)}
+                              src={NETWORK_IMAGE(cid)}
+                            />
+                          }
+                          label={NETWORK_NAME(cid)}
+                        />
+                      </Grid>
                     ))}
-                  </Stack>
+                  </Grid>
                 </Stack>
-                <Stack spacing={2} direction={'row'}>
+                <Stack
+                  spacing={2}
+                  direction={'row'}
+                  alignItems={'center'}
+                  alignContent={'center'}
+                >
                   <Typography variant="body1">
                     <FormattedMessage
                       id="usecases"
@@ -123,11 +134,13 @@ export const SiteTemplatePage: NextPage<{
                     />
                   </Typography>
 
-                  <Stack spacing={1} direction={'row'}>
+                  <Grid container spacing={1}>
                     {metadata?.usecases?.map((cid, key) => (
-                      <Chip label={cid} key={`use-${key}`} />
+                      <Grid item key={`use-${key}`}>
+                        <Chip label={cid} />
+                      </Grid>
                     ))}
-                  </Stack>
+                  </Grid>
                 </Stack>
               </Stack>
             </Grid>

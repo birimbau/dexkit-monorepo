@@ -59,7 +59,7 @@ export default function OwnershipWizardContainer({
           <Typography variant={'body2'}>
             <FormattedMessage
               id="ownership.settings.description"
-              defaultMessage="Associate an NFT with your app for ownership control"
+              defaultMessage="Associate an NFT with your app for ownership control and update site metadata for marketing"
             />
           </Typography>
         </Stack>
@@ -125,6 +125,7 @@ export default function OwnershipWizardContainer({
           <TabPanel value="2">
             <SiteMetadataSection
               id={site?.id}
+              slug={site?.slug}
               siteMetadata={site?.metadata ? site?.metadata : undefined}
             />
           </TabPanel>

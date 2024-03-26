@@ -181,15 +181,13 @@ export const SiteTemplatesPage: NextPage = () => {
                               >
                                 {site?.metadata?.subtitle}
                               </Typography>
-                              <Stack spacing={1} direction={'row'}>
+                              <Grid container spacing={1}>
                                 {site?.metadata?.usecases?.map((cid, key) => (
-                                  <Chip
-                                    size="small"
-                                    label={cid}
-                                    key={`use-${key}`}
-                                  />
+                                  <Grid item key={`use-${key}`}>
+                                    <Chip label={cid} size={'small'} />
+                                  </Grid>
                                 ))}
-                              </Stack>
+                              </Grid>
                             </Stack>
                           </Box>
                         </CardContent>

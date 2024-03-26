@@ -14,6 +14,7 @@ import SiteMetadataForm from '../forms/SiteMetadataForm';
 
 interface Props {
   id?: number;
+  slug?: string;
   siteMetadata?: SiteMetadata;
 }
 
@@ -26,9 +27,7 @@ export const SiteMedatadataSchema = Yup.object().shape({
   usecases: Yup.array().of(Yup.string()),
 });
 
-export default function OwnershipSection({ id, siteMetadata }: Props) {
-  console.log(siteMetadata);
-
+export default function SiteMetadataSection({ id, slug, siteMetadata }: Props) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [showConfirmSendConfig, setShowConfirmSendConfig] = useState(false);
@@ -83,6 +82,7 @@ export default function OwnershipSection({ id, siteMetadata }: Props) {
             upsertSiteMetadataMutation.reset();
           },
         }}
+        isEdit={slug !== undefined}
         isDone={upsertSiteMetadataMutation.isSuccess}
         isLoading={upsertSiteMetadataMutation.isLoading}
         isError={upsertSiteMetadataMutation.isError}
@@ -111,14 +111,18 @@ export default function OwnershipSection({ id, siteMetadata }: Props) {
 
             <Grid item xs={12}>
               <Stack spacing={1} direction="row" justifyContent="flex-end">
-                {siteMetadata?.id && (
+                {slug && (
                   <Button
                     startIcon={<Visibility />}
-                    onClick={() => router.push(`/templates/${siteMetadata.id}`)}
+                    href={`/site/template/${slug}`}
+                    target={'_blank'}
                     variant="contained"
                     color="primary"
                   >
-                    <FormattedMessage id="view.nft" defaultMessage="View NFT" />
+                    <FormattedMessage
+                      id="view.site.metadata"
+                      defaultMessage="View site metadata"
+                    />
                   </Button>
                 )}
                 <Button
@@ -129,7 +133,7 @@ export default function OwnershipSection({ id, siteMetadata }: Props) {
                   variant="contained"
                   color="primary"
                 >
-                  {siteMetadata?.id ? (
+                  {slug ? (
                     <FormattedMessage
                       id="update.metadata"
                       defaultMessage="Update metadata"
