@@ -70,6 +70,7 @@ const cellPlugins = [
       ModeEnum.IMAGE_MODE_FLAG,
   }),
   ButtonPlugin,
+  CarouselPlugin,
   CodeSnippet,
   CollectionPlugin,
   CollectionsPlugin,
@@ -86,7 +87,6 @@ const cellPlugins = [
   QrCodeReceive,
   ExtendedSpacer,
   StackPlugin,
-  CarouselPlugin,
   //  CustomLayoutPlugin,
   // SwapPlugin,
   Swap2Plugin,
@@ -106,6 +106,7 @@ const nftPlugins = [
       ModeEnum.IMAGE_MODE_FLAG,
   }),
   ButtonPlugin,
+  CarouselPlugin,
   CodeSnippet,
   CollectionPlugin,
   ContainerPlugin,
@@ -125,7 +126,6 @@ const nftPlugins = [
   video,
   WidgetPlugin,
   //  ExchangePlugin,
-  CarouselPlugin,
 ];
 
 const swapPlugins = [
@@ -136,6 +136,7 @@ const swapPlugins = [
       ModeEnum.IMAGE_MODE_FLAG,
   }),
   ButtonPlugin,
+  CarouselPlugin,
   CodeSnippet,
   ContainerPlugin,
   ContractFormPlugin,
@@ -154,7 +155,6 @@ const swapPlugins = [
   CustomContentPluginTwitter,
   video,
   WidgetPlugin,
-  CarouselPlugin,
   // ExchangePlugin,
 ];
 

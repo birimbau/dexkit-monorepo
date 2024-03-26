@@ -9,6 +9,7 @@ import dynamic from 'next/dynamic';
 import { useState } from 'react';
 import { myAppsApi } from 'src/services/whitelabel';
 import * as Yup from 'yup';
+import FormikMuiColorInput from '../../FormikMuiColorInput';
 
 const MediaDialog = dynamic(() => import('@dexkit/ui/components/mediaDialog'), {
   ssr: false,
@@ -16,6 +17,13 @@ const MediaDialog = dynamic(() => import('@dexkit/ui/components/mediaDialog'), {
 
 const FormSchema = Yup.object({
   interval: Yup.number().min(1).max(10000).required(),
+  textColor: Yup.string()
+    .matches(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/, 'Invalid hex color')
+    .optional(),
+  height: Yup.object({
+    mobile: Yup.number().min(100).max(250),
+    desktop: Yup.number().min(250).max(500),
+  }),
   slides: Yup.array()
     .min(1)
     .of(
@@ -33,6 +41,7 @@ const FormSchema = Yup.object({
 
 interface CarouselFormType {
   interval?: number;
+  textColor?: string;
   slides: {
     title: string;
     subtitle?: string;
@@ -82,7 +91,15 @@ export default function AddCarouselForm({
   return (
     <>
       <Formik
-        initialValues={data ? data : { interval: 5000, slides: [] }}
+        initialValues={
+          data
+            ? {
+                ...data,
+                interval: data.interval || 5000,
+                slides: data.slides || [],
+              }
+            : { interval: 5000, slides: [] }
+        }
         onSubmit={handleSubmit}
         validationSchema={FormSchema}
         validate={(values: CarouselFormType) => {
@@ -118,6 +135,50 @@ export default function AddCarouselForm({
                   type="number"
                   name="interval"
                 />
+              </Grid>
+              <Grid item xs={12}>
+                <Grid container spacing={2}>
+                  <Grid item xs={12} sm={6}>
+                    <Field
+                      label={
+                        <FormattedMessage
+                          id="height.for.mobile"
+                          defaultMessage="Height for mobile"
+                        />
+                      }
+                      fullWidth
+                      component={TextField}
+                      type="number"
+                      name="height.mobile"
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <Field
+                      label={
+                        <FormattedMessage
+                          id="height.for.desktop"
+                          defaultMessage="Height for desktop"
+                        />
+                      }
+                      fullWidth
+                      component={TextField}
+                      type="number"
+                      name="height.desktop"
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <FormikMuiColorInput
+                      fullWidth
+                      label={
+                        <FormattedMessage
+                          id="text.color"
+                          defaultMessage="Text color"
+                        />
+                      }
+                      name="textColor"
+                    />
+                  </Grid>
+                </Grid>
               </Grid>
               <Grid item xs={12}>
                 <FieldArray

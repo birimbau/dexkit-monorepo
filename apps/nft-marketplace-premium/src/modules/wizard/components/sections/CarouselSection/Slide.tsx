@@ -11,6 +11,8 @@ export interface SlideProps {
   subtitle?: React.ReactNode;
   imageUrl: string;
   action?: SlideActionType;
+  height?: { desktop: number; mobile: number };
+  textColor?: string;
 }
 
 export default function Slide({
@@ -18,6 +20,8 @@ export default function Slide({
   subtitle,
   action,
   imageUrl,
+  height,
+  textColor,
 }: SlideProps) {
   return (
     <Box
@@ -27,7 +31,16 @@ export default function Slide({
         alignItems: 'center',
       }}
     >
-      <Box sx={{ position: 'relative', height: '500px', width: '100%' }}>
+      <Box
+        sx={(theme) => ({
+          position: 'relative',
+          height: height?.mobile !== undefined ? height?.mobile : 250,
+          [theme.breakpoints.up('sm')]: {
+            height: height?.desktop !== undefined ? height?.desktop : 500,
+          },
+          width: '100%',
+        })}
+      >
         <Box
           sx={{
             backgroundImage: `linear-gradient(
@@ -59,9 +72,18 @@ export default function Slide({
               zIndex: 5,
             }}
           >
-            <Typography variant="h5">{title}</Typography>
+            <Typography
+              sx={{ color: textColor ? textColor : undefined }}
+              variant="h5"
+            >
+              {title}
+            </Typography>
             {subtitle && (
-              <Typography variant="h6" fontWeight="400">
+              <Typography
+                sx={{ color: textColor ? textColor : undefined }}
+                variant="h6"
+                fontWeight="400"
+              >
                 {subtitle}
               </Typography>
             )}

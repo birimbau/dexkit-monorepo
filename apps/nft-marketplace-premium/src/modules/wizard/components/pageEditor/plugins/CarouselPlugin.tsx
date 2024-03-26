@@ -28,7 +28,7 @@ const CarouselPlugin: CellPlugin<{
       <CarouselSection
         section={{
           type: 'carousel',
-          settings: { slides: data.slides, interval: data.interval },
+          settings: { slides: data.slides || [], interval: data.interval },
         }}
       />
     );
@@ -43,7 +43,7 @@ const CarouselPlugin: CellPlugin<{
       return (
         <Container sx={{ p: 2 }}>
           <AddCarouselForm
-            data={data}
+            data={data ? data : { slides: [], interval: 5000 }}
             onChange={(data) =>
               onChange({ interval: data.interval, slides: data.slides })
             }

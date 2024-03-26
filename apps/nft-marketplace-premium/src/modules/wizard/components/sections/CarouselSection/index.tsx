@@ -17,14 +17,14 @@ export interface CarouselProps {
 export default function CarouselSection({ section }: CarouselProps) {
   const [index, setIndex] = useState(0);
 
-  const { interval, slides } = section.settings;
+  const { interval, slides, height, textColor } = section.settings;
 
   const handleChangeIndex = (index: number, indexLatest: number) => {
     setIndex(index);
   };
 
   const handleNext = () => {
-    if (index + 1 === slides.length) {
+    if (index + 1 === slides?.length) {
       return setIndex(0);
     }
 
@@ -33,7 +33,7 @@ export default function CarouselSection({ section }: CarouselProps) {
 
   const handlePrev = () => {
     if (index - 1 === -1) {
-      return setIndex(slides.length - 1);
+      return setIndex(slides?.length - 1);
     }
 
     setIndex((index) => index - 1);
@@ -46,12 +46,14 @@ export default function CarouselSection({ section }: CarouselProps) {
         onChangeIndex={handleChangeIndex}
         interval={interval ? interval : 5000}
       >
-        {slides.map((slide, index: number) => (
+        {slides?.map((slide, index: number) => (
           <Slide
             key={index}
             title={slide.title}
             subtitle={slide.subtitle}
             imageUrl={slide.imageUrl}
+            textColor={textColor}
+            height={height}
             action={
               slide.action
                 ? slide.action.url
@@ -90,7 +92,7 @@ export default function CarouselSection({ section }: CarouselProps) {
         </Stack>
       </Box>
       <Pagination
-        dots={slides.length}
+        dots={slides?.length}
         index={index}
         onChangeIndex={(index: number) => {
           setIndex(index);

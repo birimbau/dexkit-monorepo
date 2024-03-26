@@ -3,6 +3,7 @@ import Delete from '@mui/icons-material/Delete';
 import Edit from '@mui/icons-material/Edit';
 import Image from '@mui/icons-material/Image';
 import {
+  Alert,
   Avatar,
   Box,
   Button,
@@ -65,20 +66,12 @@ export default function SlideItem({
     return (
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <Field
-            component={TextField}
-            fullWidth
-            name={`slides[${index}].title`}
-            label={<FormattedMessage id="title" defaultMessage="Title" />}
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <Field
-            component={TextField}
-            fullWidth
-            name={`slides[${index}].subtitle`}
-            label={<FormattedMessage id="subtitle" defaultMessage="subtitle" />}
-          />
+          <Alert severity="info">
+            <FormattedMessage
+              id="carousel.image.aspectRatio"
+              defaultMessage="The image must have a 16/9 aspect ratio to be displayed correctly in the carousel."
+            />
+          </Alert>
         </Grid>
         <Grid item xs={12}>
           <Field
@@ -97,6 +90,22 @@ export default function SlideItem({
                 </InputAdornment>
               ),
             }}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <Field
+            component={TextField}
+            fullWidth
+            name={`slides[${index}].title`}
+            label={<FormattedMessage id="title" defaultMessage="Title" />}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <Field
+            component={TextField}
+            fullWidth
+            name={`slides[${index}].subtitle`}
+            label={<FormattedMessage id="subtitle" defaultMessage="subtitle" />}
           />
         </Grid>
         <Grid item xs={12}>
