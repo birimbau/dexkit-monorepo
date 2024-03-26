@@ -13,10 +13,10 @@
     "eslint": "^7.32.0",
     "eslint-config-custom": "*",
     "tsconfig": "*",
-    "typescript": "^4.5.2"
+    "typescript": "^5.4.3"
   },
   "dependencies": {
-    "@magic-ext/oauth": "15.2.0",
+    "@magic-ext/oauth": "22.0.2",
     "magic-sdk": "21.2.0"
   },
   "publishConfig": {

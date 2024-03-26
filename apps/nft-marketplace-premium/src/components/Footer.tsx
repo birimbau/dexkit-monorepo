@@ -15,7 +15,7 @@ import LinkedIn from '@mui/icons-material/LinkedIn';
 import Reddit from '@mui/icons-material/Reddit';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import YouTube from '@mui/icons-material/YouTube';
-import Image from 'next/image';
+import Image from 'next/legacy/image';
 import { useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { AssetAPI } from 'src/types/nft';
@@ -125,7 +125,7 @@ export function Footer({ appConfig, isPreview, appNFT }: Props) {
                         defaultMessage={m.name}
                       />
                     </Link>
-                  )
+                  ),
                 )}
               </Stack>
             ) : (
@@ -192,8 +192,8 @@ export function Footer({ appConfig, isPreview, appNFT }: Props) {
                     >
                       <Image
                         src={media?.iconUrl}
-                        height={theme.spacing(3)}
-                        width={theme.spacing(3)}
+                        height={Number(theme.spacing(3))}
+                        width={Number(theme.spacing(3))}
                       />
                     </IconButton>
                   ))}

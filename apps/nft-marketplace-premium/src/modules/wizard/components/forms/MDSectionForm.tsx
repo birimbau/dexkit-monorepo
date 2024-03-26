@@ -17,18 +17,7 @@ import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
-const MDEditor = dynamic(
-  () => import('@uiw/react-md-editor').then((mod) => mod.default),
-  { ssr: false },
-);
-
-const EditerMarkdown = dynamic(
-  () =>
-    import('@uiw/react-md-editor').then((mod) => {
-      return mod.default.Markdown;
-    }),
-  { ssr: false },
-);
+const MDEditor = dynamic(() => import('@uiw/react-md-editor'), { ssr: false });
 
 interface Props {
   section?: MarkdownEditorPageSection;

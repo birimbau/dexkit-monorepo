@@ -36,7 +36,7 @@ import { FormikErrors, FormikHelpers, useFormik } from 'formik';
 import { formatUnits } from '@dexkit/core/utils/ethers/formatUnits';
 import { parseUnits } from '@dexkit/core/utils/ethers/parseUnits';
 import { useTheme } from '@mui/material';
-import Image from 'next/image';
+import Image from 'next/legacy/image';
 import { getAssetProtocol } from 'src/utils/nfts';
 import * as Yup from 'yup';
 import AppFeePercentageSpan from '../../../../components/AppFeePercentageSpan';
@@ -262,8 +262,8 @@ export default function MakeOfferDialog({
                       <Image
                         alt={metadata?.name}
                         src={ipfsUriToUrl(metadata?.image || '')}
-                        height="100%"
-                        width="100%"
+                        height="100"
+                        width="100"
                         objectFit="contain"
                       />
                     </Box>

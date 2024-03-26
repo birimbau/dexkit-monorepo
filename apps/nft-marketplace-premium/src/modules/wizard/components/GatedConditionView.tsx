@@ -11,7 +11,7 @@ import {
   Typography,
   useTheme,
 } from '@mui/material';
-import Image from 'next/image';
+import Image from 'next/legacy/image';
 import { FormattedMessage } from 'react-intl';
 import { LoginAppButton } from 'src/components/LoginAppButton';
 import { getNetworkSlugFromChainId } from 'src/utils/blockchain';
@@ -61,13 +61,13 @@ export function GatedConditionView({
                 alt={'gated page front image'}
                 height={
                   layout?.frontImageHeight
-                    ? `${layout?.frontImageHeight}px`
-                    : theme.spacing(20)
+                    ? `${layout?.frontImageHeight}`
+                    : Number(theme.spacing(20))
                 }
                 width={
                   layout?.frontImageWidth
-                    ? `${layout?.frontImageWidth}px`
-                    : theme.spacing(20)
+                    ? `${layout?.frontImageWidth}`
+                    : Number(theme.spacing(20))
                 }
               />
             ) : (

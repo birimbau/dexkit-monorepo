@@ -1,5 +1,5 @@
 import { Avatar, Box } from '@mui/material';
-import Image from 'next/future/image';
+import Image from 'next/image';
 import { useIntl } from 'react-intl';
 import useLightbox from 'src/components/lightBox/useLightBox';
 import { isWhitelistedDomain } from '../../../utils/image';

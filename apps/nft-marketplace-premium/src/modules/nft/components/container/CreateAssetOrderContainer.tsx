@@ -33,7 +33,7 @@ import { PostOrderResponsePayload } from '@traderxyz/nft-swap-sdk/dist/sdk/v4/or
 import { useWeb3React } from '@web3-react/core';
 import { BigNumber } from 'ethers';
 import dynamic from 'next/dynamic';
-import Image from 'next/image';
+import Image from 'next/legacy/image';
 import { useCallback, useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import Link from 'src/components/Link';
@@ -491,8 +491,8 @@ export const CreateAssetOrderContainer = () => {
                           <Image
                             alt={asset?.metadata?.name}
                             src={ipfsUriToUrl(asset?.metadata?.image || '')}
-                            height="100%"
-                            width="100%"
+                            height="100"
+                            width="100"
                             objectFit="contain"
                           />
                         </Box>

@@ -36,7 +36,7 @@ import { FormikHelpers, useFormik } from 'formik';
 
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import { useWeb3React } from '@web3-react/core';
-import Image from 'next/image';
+import Image from 'next/legacy/image';
 import * as Yup from 'yup';
 import AppFeePercentageSpan from '../../../../components/AppFeePercentageSpan';
 import { MIN_ORDER_DATE_TIME } from '../../../../constants';
@@ -210,8 +210,8 @@ export default function MakeListingDialog({
                       <Image
                         alt={metadata?.name}
                         src={ipfsUriToUrl(metadata?.image || '')}
-                        height="100%"
-                        width="100%"
+                        height="100"
+                        width="100"
                         objectFit="contain"
                       />
                     </Box>

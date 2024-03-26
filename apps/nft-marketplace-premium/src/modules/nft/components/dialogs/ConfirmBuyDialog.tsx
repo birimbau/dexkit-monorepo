@@ -20,7 +20,7 @@ import { formatUnits } from '@dexkit/core/utils/ethers/formatUnits';
 import { Box } from '@mui/material';
 import { useWeb3React } from '@web3-react/core';
 import { BigNumber } from 'ethers';
-import Image from 'next/image';
+import Image from 'next/legacy/image';
 import { useMemo, useState } from 'react';
 import { FormattedMessage, FormattedNumber, useIntl } from 'react-intl';
 import { useCoinPricesQuery, useCurrency } from '../../../../hooks/currency';
@@ -151,8 +151,8 @@ export default function ConfirmBuyDialog({
                   />
                 ) : (
                   <Image
-                    width="100%"
-                    height="100%"
+                    width="100"
+                    height="100"
                     alt={formatMessage({
                       id: 'nft.image',
                       defaultMessage: 'NFT Image',

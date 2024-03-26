@@ -5,7 +5,7 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 
 import { useTheme } from '@mui/material';
-import Image from 'next/image';
+import Image from 'next/legacy/image';
 
 interface Props {
   name?: string;
@@ -45,8 +45,8 @@ export function StoreHeader(props: Props) {
               <Image
                 src={profileImageURL}
                 alt={description}
-                height={theme.spacing(14)}
-                width={theme.spacing(14)}
+                height={Number(theme.spacing(14))}
+                width={Number(theme.spacing(14))}
               />
             </Box>
           ) : (

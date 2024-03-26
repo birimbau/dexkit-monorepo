@@ -7,7 +7,7 @@ import Box from '@mui/material/Box';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import Verified from '@mui/icons-material/Verified';
 import { IconButton, Stack, Tooltip, useTheme } from '@mui/material';
-import Image from 'next/image';
+import Image from 'next/legacy/image';
 import { FormattedMessage } from 'react-intl';
 import { ShareButton } from 'src/components/ShareButton';
 
@@ -58,8 +58,8 @@ export function UserHeader(props: Props) {
             <Image
               src={profileImageURL}
               alt={bio}
-              height={theme.spacing(14)}
-              width={theme.spacing(14)}
+              height={Number(theme.spacing(14))}
+              width={Number(theme.spacing(14))}
             />
           </Box>
         ) : (

@@ -21,7 +21,7 @@ import {
 } from '@mui/material';
 import { useWeb3React } from '@web3-react/core';
 import { FormikHelpers, useFormik } from 'formik';
-import Image from 'next/image';
+import Image from 'next/legacy/image';
 import { SyntheticEvent, useEffect, useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { AppDialogTitle } from '../../../../components/AppDialogTitle';
@@ -276,8 +276,8 @@ export default function ImportAssetDialog({ dialogProps }: Props) {
                       <Image
                         alt={metadata?.name}
                         src={ipfsUriToUrl(metadata?.image || '')}
-                        height="100%"
-                        width="100%"
+                        height="100"
+                        width="100"
                         objectFit="contain"
                       />
                     </Box>
