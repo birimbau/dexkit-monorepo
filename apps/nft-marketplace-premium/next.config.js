@@ -1,19 +1,6 @@
 /** @type {import('next').NextConfig} */
-const removeImports = require('next-remove-imports')();
 
-const withBundleAnalyzer = require('@next/bundle-analyzer')({
-  enabled: process.env.ANALYZE === 'true',
-});
-
-const withTM = require('next-transpile-modules')([
-  '@dexkit/widgets',
-  '@dexkit/ui',
-  '@dexkit/core',
-  '@dexkit/web3forms',
-  '@dexkit/wallet-connectors',
-  '@dexkit/dexappbuilder-viewer',
-  '@dexkit/exchange',
-]); // pass the modules you would like to see transpiled
+// pass the modules you would like to see transpiled
 
 module.exports = {
   transpilePackages: [
