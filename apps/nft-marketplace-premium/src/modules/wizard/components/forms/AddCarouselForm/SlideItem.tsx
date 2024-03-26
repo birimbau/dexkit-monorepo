@@ -82,6 +82,7 @@ export default function SlideItem({
               <FormattedMessage id="image.url" defaultMessage="Image URL" />
             }
             name={`slides[${index}].imageUrl`}
+            InputLabel={{ shrink: true }}
             InputProps={{
               shrink: true,
               endAdornment: (

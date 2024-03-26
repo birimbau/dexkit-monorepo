@@ -142,6 +142,12 @@ export default function AddCarouselForm({
                   component={TextField}
                   type="number"
                   name="interval"
+                  helperText={
+                    <FormattedMessage
+                      id="in.milliseconds"
+                      defaultMessage="In milliseconds"
+                    />
+                  }
                 />
               </Grid>
               <Grid item xs={12}>
