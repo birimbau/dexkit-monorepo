@@ -12480,13 +12480,6 @@
     "@walletconnect/window-getters" "^1.0.1"
     tslib "1.14.1"
 
-"@web3-react/coinbase-wallet@8.2.2":
-  version "8.2.2"
-  resolved "https://registry.yarnpkg.com/@web3-react/coinbase-wallet/-/coinbase-wallet-8.2.2.tgz#de01d981846cb517288ff6a1c113f9d2f9c1276e"
-  integrity sha512-+gCTgXODWNgXQpWSfmZluv5dxg2X6Uh1hhHxY/qsxemCJHYzboT+3ugATlrmEuHym8apDicVnGZ3jyWpHBw9dg==
-  dependencies:
-    "@web3-react/types" "^8.2.2"
-
 "@web3-react/core@8.2.2":
   version "8.2.2"
   resolved "https://registry.yarnpkg.com/@web3-react/core/-/core-8.2.2.tgz#f1a76e42f30a8c36bc0cc3b6e59f5cc89b357398"

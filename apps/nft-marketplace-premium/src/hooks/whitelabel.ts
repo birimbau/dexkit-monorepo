@@ -1,4 +1,5 @@
 import { CollectionOwnershipNFTFormType } from '@/modules/contract-wizard/types';
+import { SiteMetadata } from '@/modules/wizard/types';
 import {
   useMutation,
   UseMutationOptions,
@@ -18,12 +19,15 @@ import {
   getDomainConfigStatus,
   getPageTemplateById,
   getPageTemplatesByOwner,
+  getSiteMetadata,
   getSites,
   getTemplateConfig,
+  getTemplateSites,
   getVerifyDomain,
   sendConfig,
   setupDomainConfig,
   upsertPageTemplate,
+  upsertSiteMetadata,
   upsertWhitelabelAsset
 } from '../services/whitelabel';
 import { AppConfig } from '../types/config';
@@ -120,6 +124,29 @@ export const useWhitelabelSitesListQuery = (queryParameters: {
       appConfig: JSON.parse(resp.config) as AppConfig,
     }));
   });
+};
+
+export const QUERY_WHITELABEL_TEMPLATE_SITES_QUERY = 'GET_WHITELABEL_TEMPLATES_SITES_QUERY';
+
+export const useWhitelabelTemplateSitesListQuery = (queryParameters: {
+  usecases?: string[];
+  isTemplate?: boolean;
+  skip?: number;
+  take?: number;
+}) => {
+  return useQuery([QUERY_WHITELABEL_TEMPLATE_SITES_QUERY, queryParameters.usecases], async () => {
+    return (await getTemplateSites(queryParameters)).data
+  })
+
+};
+
+export const GET_SITE_METADATA_QUERY = 'GET_SITE_METADATA_QUERY';
+
+export const useSiteMetadataQuery = ({ slug }: { slug: string }) => {
+  return useQuery([GET_SITE_METADATA_QUERY], async () => {
+    return (await getSiteMetadata({ slug })).data
+  })
+
 };
 
 export const QUERY_PAGE_TEMPLATES_CONFIGS_BY_OWNER_NAME =
@@ -353,6 +380,28 @@ export const useUpsertWhitelabelAssetMutation = () => {
         }
         await upsertWhitelabelAsset(siteId, nft);
         queryClient.invalidateQueries([QUERY_WHITELABEL_CONFIG_NAME]);
+      }
+    }
+  );
+};
+
+export const useUpsertSiteMetadataMutation = () => {
+  const { account, provider, chainId } = useWeb3React();
+
+  const queryClient = useQueryClient();
+
+
+  return useMutation<any, any, any>(
+    async ({
+      siteId,
+      siteMetadata,
+    }: {
+      siteId: number;
+      siteMetadata: SiteMetadata;
+    }) => {
+      if (account) {
+        await upsertSiteMetadata(siteId, siteMetadata);
+        queryClient.invalidateQueries([GET_SITE_METADATA_QUERY]);
       }
     }
   );

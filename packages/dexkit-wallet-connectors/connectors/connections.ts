@@ -1,7 +1,7 @@
 
 
 import { NETWORKS } from '@dexkit/core/constants/networks'
-import { CoinbaseWallet } from '@web3-react/coinbase-wallet'
+//import { CoinbaseWallet } from '@web3-react/coinbase-wallet'
 import { initializeConnector } from '@web3-react/core'
 import { MetaMask } from '@web3-react/metamask'
 import { Actions, Connector } from '@web3-react/types'
@@ -155,7 +155,7 @@ export const walletConnectV2Connection: Connection = new (class implements Conne
 })()
 
 
-const [web3CoinbaseWallet, web3CoinbaseWalletHooks] = initializeConnector<CoinbaseWallet>(
+/*const [web3CoinbaseWallet, web3CoinbaseWalletHooks] = initializeConnector<CoinbaseWallet>(
   (actions) =>
     new CoinbaseWallet({
       actions,
@@ -182,7 +182,7 @@ export const coinbaseWalletConnection: Connection = {
     }
     return false
   },
-}
+}*/
 
 
 export const [magic, magicHooks] = initializeConnector<MagicConnector>(
@@ -235,7 +235,7 @@ const discordConnection: Connection = {
 export const connections = [
   deprecatedInjectedConnection,
   walletConnectV2Connection,
-  coinbaseWalletConnection,
+  // coinbaseWalletConnection,
   eip6963Connection,
   emailConnection,
   googleConnection,
@@ -254,8 +254,8 @@ export function getConnection(c: Connector | ConnectionType) {
     switch (c) {
       case ConnectionType.INJECTED:
         return deprecatedInjectedConnection
-      case ConnectionType.COINBASE_WALLET:
-        return coinbaseWalletConnection
+      /*   case ConnectionType.COINBASE_WALLET:
+           return coinbaseWalletConnection*/
       case ConnectionType.WALLET_CONNECT_V2:
         return walletConnectV2Connection
       case ConnectionType.EIP_6963_INJECTED:

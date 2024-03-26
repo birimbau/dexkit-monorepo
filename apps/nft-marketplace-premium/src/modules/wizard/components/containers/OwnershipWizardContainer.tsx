@@ -1,14 +1,19 @@
-import { Tooltip } from '@mui/material';
+import TabContext from '@mui/lab/TabContext';
+import TabList from '@mui/lab/TabList';
+import TabPanel from '@mui/lab/TabPanel';
+import { Box, Tab, Tooltip } from '@mui/material';
 import Alert from '@mui/material/Alert';
 import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
+import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { useAccountHoldDexkitQuery } from 'src/hooks/account';
 import { SiteResponse } from 'src/types/whitelabel';
 import { AppConfig } from '../../../../types/config';
 import OwnershipSection from '../sections/OwnershipSection';
+import SiteMetadataSection from '../sections/SiteMetadataSection';
 import HidePoweredContainer from './HidePoweredContainer';
 
 interface Props {
@@ -24,6 +29,12 @@ export default function OwnershipWizardContainer({
   site,
 }: Props) {
   const { data } = useAccountHoldDexkitQuery();
+
+  const [value, setValue] = useState('1');
+
+  const handleChange = (event: React.SyntheticEvent, newValue: string) => {
+    setValue(newValue);
+  };
 
   return (
     <Grid container spacing={2}>
@@ -56,33 +67,70 @@ export default function OwnershipWizardContainer({
       <Grid item xs={12}>
         <Divider />
       </Grid>
-      <Grid item xs={12}>
-        {data === false && (
-          <Alert severity="warning">
-            <FormattedMessage
-              id="ownership.nft.info"
-              defaultMessage="To access this feature, simply hold 1000 KIT tokens on one of our supported networks: ETH, BSC, or Polygon.
-              Note: NFT-associated apps are not clonable.
-              "
-            />
-          </Alert>
-        )}
-      </Grid>
 
       <Grid item xs={12}>
-        {site?.id !== undefined && (
-          <OwnershipSection id={site.id} nft={site.nft} />
-        )}
-      </Grid>
-      <Grid item xs={12}>
-        {site?.id !== undefined && (
-          <HidePoweredContainer
-            config={config}
-            onSave={onSave}
-            isDisabled={data === false}
-            hasNFT={site?.nft !== undefined}
-          />
-        )}
+        <TabContext value={value}>
+          <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+            <TabList onChange={handleChange} aria-label="lab API tabs example">
+              <Tab
+                label={
+                  <FormattedMessage
+                    id="ownership"
+                    defaultMessage={'Ownership'}
+                  />
+                }
+                value="1"
+              />
+              <Tab
+                label={
+                  <FormattedMessage
+                    id="site.metadata"
+                    defaultMessage={'Site metadata'}
+                  />
+                }
+                value="2"
+              />
+            </TabList>
+          </Box>
+          <TabPanel value="1">
+            <Grid item xs={12}>
+              {data === false && (
+                <Alert severity="warning">
+                  <FormattedMessage
+                    id="ownership.nft.info"
+                    defaultMessage="To access this feature, simply hold 1000 KIT tokens on one of our supported networks: ETH, BSC, or Polygon.
+              Note: NFT-associated apps are not clonable.
+              "
+                  />
+                </Alert>
+              )}
+            </Grid>
+
+            <Grid item xs={12}>
+              {site?.id !== undefined && (
+                <OwnershipSection id={site.id} nft={site.nft} />
+              )}
+            </Grid>
+            <Grid item xs={12}>
+              {site?.id !== undefined && (
+                <HidePoweredContainer
+                  config={config}
+                  onSave={onSave}
+                  isDisabled={data === false}
+                  hasNFT={site?.nft !== undefined}
+                />
+              )}
+            </Grid>
+          </TabPanel>
+          <TabPanel value="2">
+            <SiteMetadataSection
+              id={site?.id}
+              siteMetadata={
+                site?.metadata ? JSON.parse(site?.metadata) : undefined
+              }
+            />
+          </TabPanel>
+        </TabContext>
       </Grid>
     </Grid>
   );

@@ -1,5 +1,7 @@
 import MultiCall, { CallInput } from '@indexed-finance/multicall';
-import { Interface, isAddress } from 'ethers/lib/utils';
+
+import { Interface } from '@dexkit/core/utils/ethers/abi/Interface';
+import { isAddress } from '@dexkit/core/utils/ethers/isAddress';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { ERC20Abi } from '../../src/constants/abis';
 import { getProviderByChainId } from '../../src/utils/blockchain';
