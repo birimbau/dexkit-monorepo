@@ -26,6 +26,7 @@ import { useCallback, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { GET_EVM_CHAIN_IMAGE } from '@dexkit/core/constants/evmChainImages';
+
 import { EVM_CHAINS } from '@dexkit/evm-chains';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
