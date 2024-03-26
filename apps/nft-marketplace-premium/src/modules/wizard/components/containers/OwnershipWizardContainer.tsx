@@ -125,9 +125,7 @@ export default function OwnershipWizardContainer({
           <TabPanel value="2">
             <SiteMetadataSection
               id={site?.id}
-              siteMetadata={
-                site?.metadata ? JSON.parse(site?.metadata) : undefined
-              }
+              siteMetadata={site?.metadata ? site?.metadata : undefined}
             />
           </TabPanel>
         </TabContext>
