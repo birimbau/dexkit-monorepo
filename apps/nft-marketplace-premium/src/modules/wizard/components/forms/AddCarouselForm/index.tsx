@@ -9,7 +9,6 @@ import dynamic from 'next/dynamic';
 import { useState } from 'react';
 import { myAppsApi } from 'src/services/whitelabel';
 import * as Yup from 'yup';
-import FormikMuiColorInput from '../../FormikMuiColorInput';
 
 const MediaDialog = dynamic(() => import('@dexkit/ui/components/mediaDialog'), {
   ssr: false,
@@ -41,11 +40,15 @@ const FormSchema = Yup.object({
 
 interface CarouselFormType {
   interval?: number;
-  textColor?: string;
+  height?: {
+    mobile?: number;
+    desktop?: number;
+  };
   slides: {
     title: string;
     subtitle?: string;
     imageUrl: string;
+    textColor?: string;
     action?: {
       caption: string;
       url: string;
@@ -97,8 +100,13 @@ export default function AddCarouselForm({
                 ...data,
                 interval: data.interval || 5000,
                 slides: data.slides || [],
+                height: data.height,
               }
-            : { interval: 5000, slides: [] }
+            : {
+                interval: 5000,
+                slides: [],
+                height: { desktop: 500, mobile: 250 },
+              }
         }
         onSubmit={handleSubmit}
         validationSchema={FormSchema}
@@ -164,18 +172,6 @@ export default function AddCarouselForm({
                       component={TextField}
                       type="number"
                       name="height.desktop"
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <FormikMuiColorInput
-                      fullWidth
-                      label={
-                        <FormattedMessage
-                          id="text.color"
-                          defaultMessage="Text color"
-                        />
-                      }
-                      name="textColor"
                     />
                   </Grid>
                 </Grid>

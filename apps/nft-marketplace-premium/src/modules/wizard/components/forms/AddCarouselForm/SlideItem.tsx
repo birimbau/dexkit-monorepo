@@ -20,6 +20,7 @@ import { FormattedMessage } from 'react-intl';
 
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
+import FormikMuiColorInput from '../../FormikMuiColorInput';
 
 export interface SlideItemProps {
   index: number;
@@ -82,6 +83,7 @@ export default function SlideItem({
             }
             name={`slides[${index}].imageUrl`}
             InputProps={{
+              shrink: true,
               endAdornment: (
                 <InputAdornment position="end">
                   <IconButton onClick={onSelectImage}>
@@ -90,6 +92,15 @@ export default function SlideItem({
                 </InputAdornment>
               ),
             }}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <FormikMuiColorInput
+            fullWidth
+            label={
+              <FormattedMessage id="text.color" defaultMessage="Text color" />
+            }
+            name={`slides[${index}].textColor`}
           />
         </Grid>
         <Grid item xs={12}>

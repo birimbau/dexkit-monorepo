@@ -17,7 +17,7 @@ export interface CarouselProps {
 export default function CarouselSection({ section }: CarouselProps) {
   const [index, setIndex] = useState(0);
 
-  const { interval, slides, height, textColor } = section.settings;
+  const { interval, slides, height } = section.settings;
 
   const handleChangeIndex = (index: number, indexLatest: number) => {
     setIndex(index);
@@ -52,7 +52,7 @@ export default function CarouselSection({ section }: CarouselProps) {
             title={slide.title}
             subtitle={slide.subtitle}
             imageUrl={slide.imageUrl}
-            textColor={textColor}
+            textColor={slide.textColor}
             height={height}
             action={
               slide.action

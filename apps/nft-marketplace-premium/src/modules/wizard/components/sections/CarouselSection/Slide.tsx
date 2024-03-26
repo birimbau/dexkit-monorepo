@@ -11,7 +11,7 @@ export interface SlideProps {
   subtitle?: React.ReactNode;
   imageUrl: string;
   action?: SlideActionType;
-  height?: { desktop: number; mobile: number };
+  height?: { desktop?: number; mobile?: number };
   textColor?: string;
 }
 

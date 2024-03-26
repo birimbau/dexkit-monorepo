@@ -269,9 +269,9 @@ export interface CarouselPageSection extends PageSection {
   type: "carousel";
   settings: {
     interval?: number;
-    textColor?: string;
-    height?: { mobile: number; desktop: number };
+    height?: { mobile?: number; desktop?: number };
     slides: {
+      textColor?: string;
       title: string;
       subtitle?: string;
       imageUrl: string;
