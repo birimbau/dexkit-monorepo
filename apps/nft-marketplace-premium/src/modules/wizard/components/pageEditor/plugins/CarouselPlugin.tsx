@@ -49,15 +49,7 @@ const CarouselPlugin: CellPlugin<{
       return (
         <Container sx={{ p: 2 }}>
           <AddCarouselForm
-            data={
-              data
-                ? data
-                : {
-                    slides: [],
-                    interval: 5000,
-                    height: { mobile: 250, desktop: 500 },
-                  }
-            }
+            data={data}
             onChange={(data) => onChange({ ...data })}
             onSave={(data) => onChange({ ...data })}
             saveOnChange

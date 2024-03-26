@@ -100,7 +100,9 @@ export default function AddCarouselForm({
                 ...data,
                 interval: data.interval || 5000,
                 slides: data.slides || [],
-                height: data.height,
+                height: data.height
+                  ? data.height
+                  : { desktop: 500, mobile: 250 },
               }
             : {
                 interval: 5000,
