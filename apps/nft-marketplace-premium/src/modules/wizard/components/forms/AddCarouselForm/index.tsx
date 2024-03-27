@@ -105,7 +105,6 @@ export default function AddCarouselForm({
       >
         {({ submitForm, isValid, values, isSubmitting, setFieldValue }) => (
           <>
-            {JSON.stringify(values, null, 2)}
             <DexkitApiProvider.Provider value={{ instance: myAppsApi }}>
               <MediaDialog
                 dialogProps={{
