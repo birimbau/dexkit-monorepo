@@ -43,7 +43,8 @@ export type SectionType =
   | 'market-trade'
   | 'claim-airdrop-token-erc-20'
   | 'token-trade'
-  | 'carousel';
+  | 'carousel'
+  | 'showcase';
 
 export interface PageSection {
   type: SectionType;
@@ -271,6 +272,37 @@ export interface CarouselPageSection extends PageSection {
   };
 }
 
+export type ShowCaseItemAsset = {
+  type: 'asset';
+  contractAddress: string;
+  tokenId: string;
+  chainId: number;
+};
+
+export type ShowCaseItemImage = {
+  type: 'image';
+  textColor?: string;
+  title: string;
+  subtitle?: string;
+  imageUrl: string;
+  action?: {
+    caption: string;
+    url: string;
+    action: string;
+  };
+};
+
+export type ShowCaseItem = ShowCaseItemImage | ShowCaseItemAsset;
+
+export type ShowCaseParams = {
+  items: ShowCaseItem[];
+};
+
+export interface ShowCasePageSection extends PageSection {
+  type: 'showcase';
+  settings: ShowCaseParams;
+}
+
 export interface RankingPageSection extends PageSection {
   type: 'ranking';
   settings: {
@@ -317,7 +349,8 @@ export type AppPageSection =
   | AssetPageSection
   | RankingPageSection
   | TokenTradePageSection
-  | CarouselPageSection;
+  | CarouselPageSection
+  | ShowCasePageSection;
 
 export interface SectionMetadata {
   type: SectionType;

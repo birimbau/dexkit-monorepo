@@ -2,6 +2,7 @@ import dynamic from 'next/dynamic';
 import LazyComponent from 'src/components/LazyComponent';
 import { AppPageSection } from '../../types/section';
 import RankingSection from '../sections/RankingSection';
+import ShowCaseSection from '../sections/ShowCaseSection';
 
 const CarouselSection = dynamic(() => import('../sections/CarouselSection'));
 
@@ -108,6 +109,8 @@ export function SectionRender({ section, useLazy }: Props) {
       return <TokenTradeSection section={section} />;
     } else if (section.type === 'carousel') {
       return <CarouselSection section={section} />;
+    } else if (section.type === 'showcase') {
+      return <ShowCaseSection section={section} />;
     }
   };
   const getSection = sectionToRender();
