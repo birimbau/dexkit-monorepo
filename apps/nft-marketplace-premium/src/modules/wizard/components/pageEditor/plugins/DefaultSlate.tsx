@@ -3,9 +3,10 @@ import slate from '@react-page/plugins-slate';
 // see https://github.com/vercel/next.js/issues/19717
 // import '@react-page/plugins-slate/lib/index.css';
 
+import ColorLensIcon from '@mui/icons-material/ColorLens';
+import TextFieldsIcon from '@mui/icons-material/TextFields';
 import { ColorPickerField } from '@react-page/editor';
 import { pluginFactories } from '@react-page/plugins-slate';
-
 const colorSlate = pluginFactories.createComponentPlugin<{
   color: string;
 }>({
@@ -13,7 +14,7 @@ const colorSlate = pluginFactories.createComponentPlugin<{
   addToolbarButton: true, // whether to show it in the bottom toolbar
   type: 'SetColor', // a well defined string, this is kind of the id of the plugin
   object: 'mark', // mark is like a span, other options are inline and block
-  icon: <span>Color</span>, // an icon to show
+  icon: <ColorLensIcon/>, // an icon to show
   label: 'Set Color',
   Component: 'span', // the component to render
   getStyle: ({ color }) => ({ color }),
@@ -36,6 +37,32 @@ const colorSlate = pluginFactories.createComponentPlugin<{
   },
 });
 
+const fontSlate = pluginFactories.createComponentPlugin<{
+  fontSize: number;
+}>({
+  addHoverButton: true, // whether to show it above the text when selected
+  addToolbarButton: true, // whether to show it in the bottom toolbar
+  type: 'SetFontSize', // a well defined string, this is kind of the id of the plugin
+  object: 'mark', // mark is like a span, other options are inline and block
+  icon: <TextFieldsIcon/>, // an icon to show
+  label: 'Set Font size',
+  Component: 'span', // the component to render
+  getStyle: ({ fontSize }) => ({ fontSize }),
+  controls: {
+    // identical to custom cell plugins123
+    type: 'autoform',
+    schema: {
+      type: 'object',
+      required: ['fontSize'],
+      properties: {
+        fontSize: {
+          type: 'number',
+        },
+      },
+    },
+  },
+});
+
 export const DefaultSlate = slate((def) => ({
   ...def,
   plugins: {
@@ -44,6 +71,7 @@ export const DefaultSlate = slate((def) => ({
     // you can also add custom plugins. The namespace `custom` is just for organizing plugins
     custom: {
       color: colorSlate,
+      fontSize: fontSlate
     },
   },
 }));
