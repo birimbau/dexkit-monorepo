@@ -1,13 +1,4 @@
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Box,
-  Divider,
-  Typography,
-} from '@mui/material';
-
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { Box } from '@mui/material';
 
 interface Props {
   children?: React.ReactNode | React.ReactNode[];

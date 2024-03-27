@@ -549,7 +549,7 @@ export const getStaticProps: GetStaticProps = async ({
   ];
 
   try {
-    const sdk = new ThirdwebSDK(network as string);
+    const sdk = new ThirdwebSDK(network as string, { secretKey: process.env.THIRDWEB_API_KEY_SECRET});
 
     const twContract = await sdk.getContract(address as string);
 

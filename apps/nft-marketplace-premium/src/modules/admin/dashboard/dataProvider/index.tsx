@@ -30,7 +30,7 @@ export default {
       path = '/coin/platforms';
 
       return (
-        await myAppsApi.get(`${resource}/admin/all`, {
+        await myAppsApi.get(`${path}/admin/all`, {
           params: {
             skip: (page - 1) * perPage,
             take: perPage,
@@ -65,6 +65,17 @@ export default {
       return { data: data, total: data.length };
     }
 
+    return (
+      await myAppsApi.get(`${resource}/admin/all`, {
+        params: {
+          skip: (page - 1) * perPage,
+          take: perPage,
+          sort: field ? [field, order] : undefined,
+          filter: params.filter,
+        },
+      })
+    ).data;
+
     return { data: [], total: 0 };
   },
 
@@ -89,6 +100,12 @@ export default {
           .data,
       };
     }
+    const data = (await myAppsApi.get(`${resource}/admin/all/${params.id}`)).data;
+      return {
+        data,
+      };
+
+
   },
 
   getMany: (resource: any, params: any) => {},
@@ -139,6 +156,18 @@ export default {
         data,
       };
     }
+
+
+
+    const data = (
+      await myAppsApi.post(`${resource}/admin/all/${params.id}`, params.data)
+    ).data;
+
+    return {
+      data,
+    };
+
+
 
     return { data: [] };
   },

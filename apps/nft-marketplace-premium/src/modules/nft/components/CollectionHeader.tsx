@@ -9,6 +9,7 @@ import { useCollection } from '../../../hooks/nft';
 import { isAddressEqual } from '../../../utils/blockchain';
 
 import { ChainId } from '@dexkit/core/constants';
+import BuyLockContainer from '@dexkit/unlock-widget';
 import { styled, useTheme } from '@mui/material';
 import Image from 'next/image';
 import ReactMarkdown from 'react-markdown';
@@ -29,6 +30,7 @@ interface Props {
 
 export function CollectionHeader(props: Props) {
   const appConfig = useAppConfig();
+
 
   const { address, chainId, lazy, isLock } = props;
 
@@ -119,10 +121,10 @@ export function CollectionHeader(props: Props) {
           {isLock && (
             <Grid item xs={12} sm={12}>
               <Box sx={{ maxWidth: '300px' }} justifyContent={'center'}>
-                {/* <BuyLockContainer
+                <BuyLockContainer
                   lockAddress={address.toLowerCase()}
                   lockChainId={chainId}
-                /> */}
+                /> 
               </Box>
             </Grid>
           )}

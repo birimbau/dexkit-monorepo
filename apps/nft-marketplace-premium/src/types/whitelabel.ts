@@ -1,3 +1,4 @@
+import { SiteMetadata } from '@/modules/wizard/types';
 import { AppWhitelabelType } from '../constants/enum';
 import { AssetAPI } from './nft';
 
@@ -42,6 +43,7 @@ export interface SiteResponse {
   cname?: string;
   owner?: string;
   clonable?: string;
+  metadata: SiteMetadata,
   domainStatus?: string;
   emailVerified?: boolean;
   type: AppWhitelabelType;

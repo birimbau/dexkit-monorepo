@@ -52,8 +52,6 @@ function PagesMenuContainer({ config, onSave, onChange, onHasChanges }: Props) {
     }
   }, [onHasChanges, hasChanged]);
 
-  console.log('menu changed', hasChanged);
-
   return (
     <Grid container spacing={2}>
       <Grid item xs={12}>

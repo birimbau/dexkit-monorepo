@@ -1,11 +1,10 @@
 const fs = require('fs');
-console.log(__dirname);
 
-const package = JSON.parse(
+const pkg = JSON.parse(
   fs.readFileSync(`${__dirname}/../package.json`).toString(),
 );
 
 fs.writeFileSync(
   `${__dirname}/../src/constants/app-version.json`,
-  JSON.stringify({ version: package.version }, null, '\t'),
+  JSON.stringify({ version: pkg.version }, null, '\t'),
 );
