@@ -252,23 +252,30 @@ export interface CollectionPageSection extends PageSection {
   };
 }
 
+export interface CarouselFormType {
+  interval?: number;
+  height?: {
+    mobile?: number;
+    desktop?: number;
+  };
+  slides: {
+    title: string;
+    subtitle?: string;
+    imageUrl: string;
+    textColor?: string;
+    overlayColor?: string;
+    overlayPercentage?: number;
+    action?: {
+      caption: string;
+      url: string;
+      action: string;
+    };
+  }[];
+}
+
 export interface CarouselPageSection extends PageSection {
   type: 'carousel';
-  settings: {
-    interval?: number;
-    height?: { mobile?: number; desktop?: number };
-    slides: {
-      textColor?: string;
-      title: string;
-      subtitle?: string;
-      imageUrl: string;
-      action?: {
-        caption: string;
-        url: string;
-        action: string;
-      };
-    }[];
-  };
+  settings: CarouselFormType;
 }
 
 export interface RankingPageSection extends PageSection {

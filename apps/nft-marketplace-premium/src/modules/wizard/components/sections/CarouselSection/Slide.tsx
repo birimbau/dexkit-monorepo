@@ -13,6 +13,8 @@ export interface SlideProps {
   action?: SlideActionType;
   height?: { desktop?: number; mobile?: number };
   textColor?: string;
+  overlayPercentage?: number;
+  overlayColor?: string;
 }
 
 export default function Slide({
@@ -22,6 +24,8 @@ export default function Slide({
   imageUrl,
   height,
   textColor,
+  overlayPercentage,
+  overlayColor,
 }: SlideProps) {
   return (
     <Box
@@ -43,10 +47,7 @@ export default function Slide({
       >
         <Box
           sx={{
-            backgroundImage: `linear-gradient(
-              rgba(0, 0, 0, 0.0), 
-              rgba(0, 0, 0, 0.90)
-            ), url(${imageUrl})`,
+            backgroundImage: `linear-gradient(0deg, ${overlayColor} 0%, rgba(0,0,0,0) ${overlayPercentage}%), url("${imageUrl}")`,
             aspectRation: '16/9',
             backgroundSize: 'cover',
             backgroundRepeat: 'no-repeat',

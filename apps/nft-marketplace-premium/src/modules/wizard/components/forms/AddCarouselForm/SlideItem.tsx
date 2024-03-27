@@ -9,6 +9,7 @@ import {
   Button,
   IconButton,
   InputAdornment,
+  Slider,
   Stack,
   Typography,
 } from '@mui/material';
@@ -63,6 +64,10 @@ export default function SlideItem({
     };
   }>(`slides[${index}].imageUrl`);
 
+  const [perProps, perMeta, perImgHelpers] = useField<number>(
+    `slides[${index}].overlayPercentage`
+  );
+
   if (isEditing) {
     return (
       <Grid container spacing={2}>
@@ -94,13 +99,28 @@ export default function SlideItem({
             }}
           />
         </Grid>
+
         <Grid item xs={12}>
           <FormikMuiColorInput
             fullWidth
             label={
-              <FormattedMessage id="text.color" defaultMessage="Text color" />
+              <FormattedMessage
+                id="overlay.color"
+                defaultMessage="Overlay color"
+              />
             }
-            name={`slides[${index}].textColor`}
+            format="rgb"
+            name={`slides[${index}].overlayColor`}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <Slider
+            value={perProps.value || 0}
+            onChange={(e, value) => {
+              if (!Array.isArray(value)) {
+                perImgHelpers.setValue(value);
+              }
+            }}
           />
         </Grid>
         <Grid item xs={12}>
@@ -117,6 +137,15 @@ export default function SlideItem({
             fullWidth
             name={`slides[${index}].subtitle`}
             label={<FormattedMessage id="subtitle" defaultMessage="subtitle" />}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <FormikMuiColorInput
+            fullWidth
+            label={
+              <FormattedMessage id="text.color" defaultMessage="Text color" />
+            }
+            name={`slides[${index}].textColor`}
           />
         </Grid>
         <Grid item xs={12}>

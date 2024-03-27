@@ -4,6 +4,7 @@ import { TextField } from 'formik-mui';
 import { FormattedMessage } from 'react-intl';
 import SlideItem from './SlideItem';
 
+import { CarouselFormType } from '@/modules/wizard/types/section';
 import { DexkitApiProvider } from '@dexkit/core/providers';
 import dynamic from 'next/dynamic';
 import { useState } from 'react';
@@ -28,6 +29,8 @@ const FormSchema = Yup.object({
     .of(
       Yup.object({
         title: Yup.string().optional(),
+        overlayColor: Yup.string().optional(),
+        overlayPercentage: Yup.string().optional(),
         imageUrl: Yup.string().required(),
         subtitle: Yup.string().optional(),
         action: Yup.object({
@@ -37,25 +40,6 @@ const FormSchema = Yup.object({
       })
     ),
 });
-
-interface CarouselFormType {
-  interval?: number;
-  height?: {
-    mobile?: number;
-    desktop?: number;
-  };
-  slides: {
-    title: string;
-    subtitle?: string;
-    imageUrl: string;
-    textColor?: string;
-    action?: {
-      caption: string;
-      url: string;
-      action: string;
-    };
-  }[];
-}
 
 export interface AddCarouselFormProps {
   data?: CarouselFormType;
@@ -119,6 +103,7 @@ export default function AddCarouselForm({
       >
         {({ submitForm, isValid, values, isSubmitting, setFieldValue }) => (
           <>
+            {JSON.stringify(values, null, 2)}
             <DexkitApiProvider.Provider value={{ instance: myAppsApi }}>
               <MediaDialog
                 dialogProps={{

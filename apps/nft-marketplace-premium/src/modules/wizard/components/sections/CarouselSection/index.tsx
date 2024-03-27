@@ -54,6 +54,8 @@ export default function CarouselSection({ section }: CarouselProps) {
             imageUrl={slide.imageUrl}
             textColor={slide.textColor}
             height={height}
+            overlayColor={slide.overlayColor}
+            overlayPercentage={slide.overlayPercentage}
             action={
               slide.action
                 ? slide.action.url
