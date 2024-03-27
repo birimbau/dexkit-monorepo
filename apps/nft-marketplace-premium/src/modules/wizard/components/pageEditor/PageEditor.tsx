@@ -72,7 +72,8 @@ const cellPlugins = [
   CollectionsPlugin,
   ContainerPlugin,
   ContractFormPlugin,
-  CustomContentPluginTwitter,
+  UserContractFormPlugin,
+
   DexGeneratorFormPlugin,
   divider,
   ExchangePlugin,
@@ -82,15 +83,17 @@ const cellPlugins = [
   AssetListPlugin,
   QrCodeReceive,
   ExtendedSpacer,
+  SearchNFTPlugin,
   StackPlugin,
 
   //  CustomLayoutPlugin,
   // SwapPlugin,
   Swap2Plugin,
-  SearchNFTPlugin,
-  UserContractFormPlugin,
+
+
   DefaultSlate,
   TokenTradePlugin,
+  CustomContentPluginTwitter,
   video,
   WidgetPlugin,
 ];

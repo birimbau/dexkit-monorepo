@@ -1,19 +1,20 @@
-import type { CellPlugin } from '@react-page/editor';
 import ImageIcon from '@mui/icons-material/Landscape';
+import type { CellPlugin } from '@react-page/editor';
 
-import { ImagePicker } from '../components/ImagePicker';
 import { Stack } from '@mui/material';
-import { PagesPicker } from '../components/ActionsPicker';
-import Link from '../../../../../components/Link';
-import { useMemo } from 'react';
 import Image from 'next/image';
+import { useMemo } from 'react';
+import Link from '../../../../../components/Link';
 import { DEXKIT_BASE_FILES_HOST } from '../../../../../constants';
+import { PagesPicker } from '../components/ActionsPicker';
+import { ImagePicker } from '../components/ImagePicker';
 type Data = {
   src: string;
   alt: string;
   width: number;
   height: number;
   position: string;
+  borderRadius: number;
   href: string;
   pageUri: string;
   action: string;
@@ -41,6 +42,9 @@ const ImagePlugin: CellPlugin<Data> = {
       image = (
         <img
           alt={alt || 'Image'}
+          style={{
+            borderRadius: ''
+          }}
           src={src}
           height={data.height ? data.height : 250}
           width={data.width ? data.width : 250}
@@ -135,6 +139,7 @@ const ImagePlugin: CellPlugin<Data> = {
               default: 250,
               title: 'Image height in px',
             },
+          
             position: {
               type: 'string',
               title: 'Position',
@@ -144,6 +149,13 @@ const ImagePlugin: CellPlugin<Data> = {
               type: 'number',
               default: 0,
               minimum: 0,
+            },
+            borderRadius: {
+              type: 'number',
+              default: 0,
+              minimum: 0,
+              maximum: 50,
+              title: 'Border radius (%)',
             },
             action: {
               type: 'string',
@@ -218,6 +230,13 @@ const ImagePlugin: CellPlugin<Data> = {
               type: 'number',
               default: 2,
               minimum: 0,
+            },
+            borderRadius: {
+              type: 'number',
+              default: 0,
+              minimum: 0,
+              maximum: 50,
+              title: 'Border radius (%)',
             },
             action: {
               type: 'string',
