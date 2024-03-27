@@ -84,7 +84,9 @@ export default function AddCarouselForm({
                 ...data,
                 interval: data.interval || 5000,
                 slides: data.slides || [],
-                height: data.height,
+                height: data.height
+                  ? data.height
+                  : { desktop: 500, mobile: 250 },
               }
             : {
                 interval: 5000,
@@ -127,6 +129,12 @@ export default function AddCarouselForm({
                   component={TextField}
                   type="number"
                   name="interval"
+                  helperText={
+                    <FormattedMessage
+                      id="in.milliseconds"
+                      defaultMessage="In milliseconds"
+                    />
+                  }
                 />
               </Grid>
               <Grid item xs={12}>
