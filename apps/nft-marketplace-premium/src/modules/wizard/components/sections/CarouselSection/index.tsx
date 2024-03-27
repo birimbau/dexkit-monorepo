@@ -93,13 +93,25 @@ export default function CarouselSection({ section }: CarouselProps) {
           </IconButton>
         </Stack>
       </Box>
-      <Pagination
-        dots={slides?.length}
-        index={index}
-        onChangeIndex={(index: number) => {
-          setIndex(index);
+      <Box
+        sx={{
+          position: 'absolute',
+          width: '100%',
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'center',
+          bottom: (theme) => theme.spacing(4),
         }}
-      />
+      >
+        <Pagination
+          dots={slides?.length}
+          index={index}
+          onChangeIndex={(index: number) => {
+            setIndex(index);
+          }}
+        />
+      </Box>
     </Box>
   );
 }

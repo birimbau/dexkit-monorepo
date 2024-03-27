@@ -41,7 +41,8 @@ export type SectionType =
   | "market-trade"
   | "token-trade"
   | "claim-airdrop-token-erc-20"
-  | "carousel";
+  | "carousel"
+  | "showcase";
 
 export interface PageSection {
   type: SectionType;
@@ -284,6 +285,37 @@ export interface CarouselPageSection extends PageSection {
   };
 }
 
+export type ShowCaseItemAsset = {
+  type: "asset";
+  contractAddress: string;
+  tokenId: string;
+  chainId: number;
+};
+
+export type ShowCaseItemImage = {
+  type: "image";
+  textColor?: string;
+  title: string;
+  subtitle?: string;
+  imageUrl: string;
+  action?: {
+    caption: string;
+    url: string;
+    action: string;
+  };
+};
+
+export type ShowCaseItem = ShowCaseItemImage | ShowCaseItemAsset;
+
+export type ShowCaseParams = {
+  items: ShowCaseItem[];
+};
+
+export interface ShowCasePageSection extends PageSection {
+  type: "showcase";
+  settings: ShowCaseParams;
+}
+
 export type DexGeneratorPageSectionType =
   | TokenDropPageSection
   | NftDropPageSection
@@ -324,7 +356,8 @@ export type AppPageSection =
   | RankingPageSection
   | ClaimAirdropErc20PageSection
   | TokenTradePageSection
-  | CarouselPageSection;
+  | CarouselPageSection
+  | ShowCasePageSection;
 
 export interface SectionMetadata {
   type: SectionType;

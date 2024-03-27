@@ -14,6 +14,7 @@ import {
   default as TokenIcon,
 } from '@mui/icons-material/Token';
 import VideocamIcon from '@mui/icons-material/Videocam';
+import ViewCarousel from '@mui/icons-material/ViewCarousel';
 import WalletIcon from '@mui/icons-material/Wallet';
 import { SectionMetadata } from '../../types/section';
 export const sections = [
@@ -166,7 +167,15 @@ export const sections = [
     titleDefaultMessage: 'Carousel',
     category: 'resources',
     description: 'Create a carousel section',
-    icon: <LeaderboardIcon fontSize="large" />,
+    icon: <ViewCarousel fontSize="large" />,
+  },
+  {
+    type: 'showcase',
+    titleId: 'showcase.gallery',
+    titleDefaultMessage: 'Showcase Gallery',
+    category: 'resources',
+    description: 'Create a showcase section',
+    icon: <CollectionsIcon fontSize="large" />,
   },
 ] as SectionMetadata[];
 

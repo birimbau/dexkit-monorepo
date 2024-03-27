@@ -1,4 +1,4 @@
-import { IconButton } from "@mui/material";
+import { IconButton } from '@mui/material';
 
 export interface PaginationDotProps {
   active?: boolean;
@@ -10,11 +10,16 @@ export default function PaginationDot({ active, onClick }: PaginationDotProps) {
     <IconButton
       onClick={onClick}
       sx={{
-        borderRadius: "50%",
-        borderWidth: 2,
+        '&:focus': {
+          backgroundColor: (theme) =>
+            active ? theme.palette.primary.main : undefined,
+        },
+        borderRadius: '50%',
+        borderWidth: active ? 1 : undefined,
+        borderStyle: active ? 'solid' : undefined,
         width: (theme) => theme.spacing(2),
         height: (theme) => theme.spacing(2),
-        borderColor: (theme) => theme.palette.common.white,
+        borderColor: active ? (theme) => theme.palette.common.white : undefined,
         backgroundColor: (theme) =>
           active ? theme.palette.primary.main : theme.palette.primary.light,
       }}

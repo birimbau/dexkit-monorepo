@@ -1,6 +1,5 @@
-import { Button, Grid, Paper } from '@mui/material';
-import { Field, FieldArray, Formik } from 'formik';
-import { TextField } from 'formik-mui';
+import { Box, Button, Grid, Paper, Stack, Typography } from '@mui/material';
+import { FieldArray, Formik } from 'formik';
 import { FormattedMessage } from 'react-intl';
 
 import { DexkitApiProvider } from '@dexkit/core/providers';
@@ -10,6 +9,8 @@ import { myAppsApi } from 'src/services/whitelabel';
 import * as Yup from 'yup';
 import { ShowCaseParams } from '../../../types/section';
 import ShowCaseFormItem from './ShowCaseFormItem';
+
+import ViewStreamIcon from '@mui/icons-material/ViewStream';
 
 const MediaDialog = dynamic(() => import('@dexkit/ui/components/mediaDialog'), {
   ssr: false,
@@ -111,55 +112,56 @@ export default function AddShowCaseSectionForm({
               />
             </DexkitApiProvider.Provider>
             <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <Field
-                  label={
-                    <FormattedMessage id="interval" defaultMessage="Interval" />
-                  }
-                  fullWidth
-                  component={TextField}
-                  type="number"
-                  name="interval"
-                  helperText={
-                    <FormattedMessage
-                      id="in.milliseconds"
-                      defaultMessage="In milliseconds"
-                    />
-                  }
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <Grid container spacing={2}>
-                  <Grid item xs={12} sm={6}>
-                    <Field
-                      label={
-                        <FormattedMessage
-                          id="height.for.mobile"
-                          defaultMessage="Height for mobile"
-                        />
-                      }
-                      fullWidth
-                      component={TextField}
-                      type="number"
-                      name="height.mobile"
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <Field
-                      label={
-                        <FormattedMessage
-                          id="height.for.desktop"
-                          defaultMessage="Height for desktop"
-                        />
-                      }
-                      fullWidth
-                      component={TextField}
-                      type="number"
-                      name="height.desktop"
-                    />
-                  </Grid>
+              {values.items.length === 0 && (
+                <Grid item xs={12}>
+                  <Paper>
+                    <Stack
+                      sx={{ p: 2 }}
+                      alignItems="center"
+                      justifyContent="center"
+                      spacing={2}
+                    >
+                      <ViewStreamIcon fontSize="large" />
+                      <Box>
+                        <Typography align="center" variant="h5">
+                          <FormattedMessage
+                            id="add.items"
+                            defaultMessage="Add items"
+                          />
+                        </Typography>
+                        <Typography
+                          color="text.secondary"
+                          align="center"
+                          variant="body1"
+                        >
+                          <FormattedMessage
+                            id="section.addItemsPrompt"
+                            defaultMessage="Please add items to the section below."
+                          />
+                        </Typography>
+                      </Box>
+                      <FieldArray
+                        name="items"
+                        render={(arrayHelpers) => (
+                          <Button
+                            onClick={arrayHelpers.handlePush({
+                              type: 'image',
+                              url: '',
+                            })}
+                            variant="outlined"
+                          >
+                            <FormattedMessage
+                              id="add.item"
+                              defaultMessage="Add item"
+                            />
+                          </Button>
+                        )}
+                      />
+                    </Stack>
+                  </Paper>
                 </Grid>
-              </Grid>
+              )}
+
               <Grid item xs={12}>
                 <FieldArray
                   name="items"
@@ -173,22 +175,26 @@ export default function AddShowCaseSectionForm({
                               onUp={arrayHelpers.handleSwap(index, index - 1)}
                               onDown={arrayHelpers.handleSwap(index, index + 1)}
                               onRemove={arrayHelpers.handleRemove(index)}
+                              disableDown={index === arr.length - 1}
+                              disableUp={index === 0}
                               onSelectImage={handleSelectImage(index)}
                             />
                           </Paper>
                         </Grid>
                       ))}
-                      <Grid item xs={12}>
-                        <Button
-                          onClick={arrayHelpers.handlePush({
-                            type: 'link',
-                            url: '',
-                          })}
-                          variant="outlined"
-                        >
-                          <FormattedMessage id="add" defaultMessage="Add" />
-                        </Button>
-                      </Grid>
+                      {values.items.length > 0 && (
+                        <Grid item xs={12}>
+                          <Button
+                            onClick={arrayHelpers.handlePush({
+                              type: 'image',
+                              url: '',
+                            })}
+                            variant="outlined"
+                          >
+                            <FormattedMessage id="add" defaultMessage="Add" />
+                          </Button>
+                        </Grid>
+                      )}
                     </Grid>
                   )}
                 />

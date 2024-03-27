@@ -193,6 +193,8 @@ export default function AddCarouselForm({
                           onClick={arrayHelpers.handlePush({
                             type: 'link',
                             url: '',
+                            overlayColor: 'rgba(0, 0, 0, 0.5)',
+                            overlayPercentage: 30,
                           })}
                           variant="outlined"
                         >
