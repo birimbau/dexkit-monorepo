@@ -33,6 +33,9 @@ const ImagePlugin: CellPlugin<Data> = {
       image = (
         <Image
           alt={alt || 'Image'}
+          style={{
+            borderRadius: data.borderRadius ? `${data.borderRadius}%` : undefined
+          }}
           src={src}
           height={data.height ? data.height : 250}
           width={data.width ? data.width : 250}
@@ -43,7 +46,7 @@ const ImagePlugin: CellPlugin<Data> = {
         <img
           alt={alt || 'Image'}
           style={{
-            borderRadius: ''
+            borderRadius: data.borderRadius ? `${data.borderRadius}%` : undefined
           }}
           src={src}
           height={data.height ? data.height : 250}

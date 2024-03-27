@@ -250,8 +250,9 @@ export const SiteTemplatesPage: NextPage = () => {
               </Grid>
             )}
 
-            {sitesQuery?.isLoading &&
-              [1, 2, 3].map((id, key) => (
+            {sitesQuery?.isLoading && (
+             <Grid item xs={12} sm={9}>
+              {[1, 2, 3].map((id, key) => (
                 <Grid item xs={12} sm={6} lg={3} key={key}>
                   <Card sx={{ maxWidth: 345 }} key={key}>
                     <Skeleton>
@@ -301,7 +302,7 @@ export const SiteTemplatesPage: NextPage = () => {
                     </CardActions>
                   </Card>
                 </Grid>
-              ))}
+              ))} </Grid>)}
           </Grid>
         </Box>
       </MainLayout>
