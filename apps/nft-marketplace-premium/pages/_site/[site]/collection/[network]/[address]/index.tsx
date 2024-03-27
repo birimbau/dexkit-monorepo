@@ -649,6 +649,7 @@ export const getStaticProps: GetStaticProps = async ({
 
   const isLock = await getIsLockAsync({ chainId: chainId, provider, address });
 
+
   return {
     props: {
       dehydratedState: dehydrate(queryClient),
