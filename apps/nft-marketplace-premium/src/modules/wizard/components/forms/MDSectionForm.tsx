@@ -22,14 +22,6 @@ const MDEditor = dynamic(
   { ssr: false },
 );
 
-const EditerMarkdown = dynamic(
-  () =>
-    import('@uiw/react-md-editor').then((mod) => {
-      return mod.default.Markdown;
-    }),
-  { ssr: false },
-);
-
 interface Props {
   section?: MarkdownEditorPageSection;
   onSave: (section: AppPageSection) => void;

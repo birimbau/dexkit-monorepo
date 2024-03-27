@@ -56,7 +56,7 @@ export function SearchTokenAutocomplete(props: Props) {
           data?.chainId === a.chainId,
       );
     }
-  }, [assets]);
+  }, [assets, data]);
 
   return (
     <Autocomplete

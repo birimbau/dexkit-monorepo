@@ -102,3 +102,14 @@ export interface GamificationPoint {
   points?: number;
   filter?: string;
 }
+
+export interface SiteMetadata {
+  id?: number,
+  slug?: string,
+  title: string,
+  subtitle: string,
+  description: string,
+  imageURL: string,
+  chainIds?: number[],
+  usecases?: string[]
+}

@@ -1,4 +1,5 @@
 import { CollectionOwnershipNFTFormType } from '@/modules/contract-wizard/types';
+import { SiteMetadata } from '@/modules/wizard/types';
 import { AppPageSection } from '@/modules/wizard/types/section';
 import axios from 'axios';
 import { DEXKIT_BASE_API_URL } from 'src/constants';
@@ -163,7 +164,7 @@ export async function getConfig(queryParameters: {
   slug?: string;
   appPage?: string;
 }) {
-  return await myAppsApi.get<ConfigResponse>(`/site`, {
+  return await myAppsApi.get<SiteResponse>(`/site`, {
     params: {
       domain: queryParameters.domain,
       slug: queryParameters.slug,
@@ -216,7 +217,7 @@ export async function getAdminConfig(queryParameters: {
   slug?: string;
   appPage?: string;
 }) {
-  return await myAppsApi.get<ConfigResponse>(`/site/admin`, {
+  return await myAppsApi.get<SiteResponse>(`/site/admin`, {
     params: {
       domain: queryParameters.domain,
       slug: queryParameters.slug,
@@ -257,6 +258,31 @@ export async function getSites(queryParameters: {
   return await myAppsApi.get<SiteResponse[]>(`/site/all-open`, {
     params: queryParameters,
   });
+}
+
+/**
+ * Get config by name or domain, at least one of these parameters should be passed
+ * @param queryParameters
+ * @returns
+ */
+export async function getTemplateSites(queryParameters: {
+  usecases?: string[];
+  skip?: number;
+  take?: number;
+}) {
+  return await myAppsApi.get<SiteResponse[]>(`/site/all-open-templates`, {
+    params: queryParameters,
+  });
+}
+
+/**
+ * Get config by name or domain, at least one of these parameters should be passed
+ * @param queryParameters
+ * @returns
+ */
+export async function getSiteMetadata({ slug }: { slug: string }) {
+  return await myAppsApi.get<SiteResponse>(`/site/metadata/${slug}`
+  );
 }
 
 export async function deleteConfig(slug: string) {
@@ -301,5 +327,15 @@ export async function upsertWhitelabelAsset(
   return await myAppsApi.post<ConfigResponse[]>(
     `/contract/upsert/whitelabel/asset`,
     { siteId, nft }
+  );
+}
+
+export async function upsertSiteMetadata(
+  siteId: number,
+  siteMedata: SiteMetadata
+) {
+  return await myAppsApi.post<SiteResponse[]>(
+    `/site/upsert/metadata/${siteId}`,
+    { ...siteMedata }
   );
 }

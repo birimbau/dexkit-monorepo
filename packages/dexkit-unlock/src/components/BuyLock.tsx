@@ -115,7 +115,7 @@ export default function BuyLock({
                       src={token?.imageUrl || " "}
                       alt={token?.name || " "}
                     ></Avatar>
-                    <Typography variant="body2">{price || "0"}</Typography>
+                    <Typography variant="body2" sx={{ pl: 1 }}>{price || "0"}</Typography>
                     <Typography sx={{ pl: 1 }} variant="body2">
                       {token?.symbol}
                     </Typography>

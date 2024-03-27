@@ -1,4 +1,12 @@
-import { Container, Grid, Skeleton, Stack } from '@mui/material';
+import SearchOffIcon from '@mui/icons-material/SearchOff';
+import {
+  Box,
+  CardActionArea,
+  Chip,
+  Grid,
+  Skeleton,
+  Stack,
+} from '@mui/material';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
@@ -8,22 +16,81 @@ import Typography from '@mui/material/Typography';
 import { QueryClient, dehydrate } from '@tanstack/react-query';
 import { GetStaticProps, GetStaticPropsContext, NextPage } from 'next';
 import { NextSeo } from 'next-seo';
+import { useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
-import Link from '../../src/components/Link';
+import SidebarFilters from 'src/components/SidebarFilters';
+import SidebarFiltersContent from 'src/components/SidebarFiltersContent';
+import { UsecasesAccordion } from 'src/components/UsecasesAccordion';
 import { PageHeader } from '../../src/components/PageHeader';
 import MainLayout from '../../src/components/layouts/main';
 import { useAppConfig } from '../../src/hooks/app';
 import {
-  QUERY_WHITELABEL_SITES_QUERY,
-  useWhitelabelSitesListQuery,
+  QUERY_WHITELABEL_TEMPLATE_SITES_QUERY,
+  useWhitelabelTemplateSitesListQuery,
 } from '../../src/hooks/whitelabel';
-import { getSites } from '../../src/services/whitelabel';
-import { AppConfig } from '../../src/types/config';
+import { getTemplateSites } from '../../src/services/whitelabel';
 
 export const SiteTemplatesPage: NextPage = () => {
-  const sitesQuery = useWhitelabelSitesListQuery({ isTemplate: true });
+  //const router = useRouter();
+  const [usecases, setUsecases] = useState<string[]>([]);
+
+  /* const usecases = useMemo(() => {
+    const use = router?.query?.usecases;
+    if (use) {
+      if (use instanceof Array) {
+        return use;
+      } else {
+        return [use];
+      }
+    }
+    return [];
+  }, [router?.query?.usecases]);*/
+
+  const sitesQuery = useWhitelabelTemplateSitesListQuery({
+    usecases: usecases,
+  });
+
   const { formatMessage } = useIntl();
   const appConfig = useAppConfig();
+
+  const onFilterUsecase = (use?: string) => {
+    let newUsecases = [...usecases];
+    if (use) {
+      if (usecases.includes(use)) {
+        newUsecases = usecases.filter((u) => u !== use);
+      } else {
+        newUsecases.push(use);
+      }
+      setUsecases(newUsecases);
+      /*router.push({
+        pathname: '/site/templates',
+        query: { usecases: newUsecases },
+      });*/
+    } else {
+      setUsecases([]);
+      //router.push({ pathname: '/site/templates' });
+    }
+  };
+
+  const renderSidebar = (onClose?: () => void) => {
+    return (
+      <SidebarFilters
+        title={<FormattedMessage id="filters" defaultMessage="Filters" />}
+        onClose={onClose}
+      >
+        <SidebarFiltersContent>
+          <Stack spacing={1}>
+            {/* <NetworkwAccordion onFilterNetworks={onFilterNetworkChanged} />*/}
+
+            <UsecasesAccordion
+              onFilterUsecase={onFilterUsecase}
+              selectedUsecases={usecases}
+            />
+          </Stack>
+        </SidebarFiltersContent>
+      </SidebarFilters>
+    );
+  };
 
   return (
     <>
@@ -39,7 +106,7 @@ export const SiteTemplatesPage: NextPage = () => {
         })}
         openGraph={{
           title:
-            'List of app templatea. Start clone right way and create yours app today!',
+            'List of app templates. Start clone right way and create yours app today!',
           description:
             'Start your own site/marketplace/apps in seconds.  Here you can view and clone apps with various usecases. Start now being a crypto enterpreneur',
           images: [
@@ -54,7 +121,7 @@ export const SiteTemplatesPage: NextPage = () => {
         }}
       />
       <MainLayout>
-        <Container>
+        <Box pl={8} pr={8}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <PageHeader
@@ -68,8 +135,8 @@ export const SiteTemplatesPage: NextPage = () => {
                   {
                     caption: (
                       <FormattedMessage
-                        id="site.list"
-                        defaultMessage="Site list"
+                        id="site.templates"
+                        defaultMessage="Site templates"
                       />
                     ),
                     uri: '/site',
@@ -78,73 +145,114 @@ export const SiteTemplatesPage: NextPage = () => {
                 ]}
               />
             </Grid>
-            {sitesQuery?.data?.map((site, key) => (
-              <Grid item xs={12} sm={6} lg={3} key={key}>
-                <Card sx={{ maxWidth: 345 }}>
-                  <CardMedia
-                    component="img"
-                    height="140"
-                    image={
-                      site.appConfig?.seo &&
-                      site.appConfig?.seo['home']?.images[0].url
-                    }
-                    alt=""
-                  />
-                  <CardContent>
-                    <Stack spacing={2}>
-                      <Typography gutterBottom variant="h5" component="div">
-                        {site.appConfig.name}
-                      </Typography>
+            <Grid item xs={12} sm={3}>
+              {renderSidebar()}
+            </Grid>
 
-                      <Typography
-                        variant="body2"
-                        color="text.secondary"
-                        sx={{
-                          overflow: 'hidden',
-                          height: '100px',
-                          textOverflow: 'ellipsis',
-                        }}
+            {sitesQuery?.data?.length !== 0 && (
+              <Grid item xs={12} sm={9}>
+                {sitesQuery?.data?.map((site, key) => (
+                  <Grid item xs={12} sm={6} lg={3} key={key}>
+                    <Card sx={{ maxWidth: 300 }}>
+                      <CardActionArea
+                        href={`/site/template/${site.slug}`}
+                        target={'_blank'}
                       >
-                        {site.appConfig?.seo &&
-                          site.appConfig?.seo['home']?.description}
-                      </Typography>
-                    </Stack>
-                  </CardContent>
-                  <CardActions>
-                    <Stack
-                      spacing={2}
-                      direction={'row'}
-                      sx={{ pl: 2 }}
-                      alignItems={'center'}
-                    >
-                      <Link
-                        href={`/admin/create?clone=${site.slug}`}
-                        underline="none"
-                      >
-                        <FormattedMessage
-                          id={'clone'}
-                          defaultMessage={'Clone'}
+                        <CardMedia
+                          component="img"
+                          height="160"
+                          image={site?.metadata?.imageURL}
+                          alt=""
                         />
-                      </Link>
-                      {site.previewUrl && (
-                        <Link
-                          href={site?.previewUrl || ''}
-                          target={'_blank'}
-                          underline="none"
+                        <CardContent>
+                          <Box>
+                            <Stack spacing={2}>
+                              <Typography
+                                gutterBottom
+                                variant="h5"
+                                component="div"
+                              >
+                                {site?.metadata?.title}
+                              </Typography>
+
+                              <Typography
+                                variant="body2"
+                                color="text.secondary"
+                              >
+                                {site?.metadata?.subtitle}
+                              </Typography>
+                              <Grid container spacing={1}>
+                                {site?.metadata?.usecases?.map((cid, key) => (
+                                  <Grid item key={`use-${key}`}>
+                                    <Chip label={cid} size={'small'} />
+                                  </Grid>
+                                ))}
+                              </Grid>
+                            </Stack>
+                          </Box>
+                        </CardContent>
+                      </CardActionArea>
+                      <CardActions>
+                        <Stack
+                          spacing={2}
+                          direction={'row'}
+                          sx={{ pl: 2 }}
+                          alignItems={'center'}
                         >
-                          <FormattedMessage
-                            id={'view.site'}
-                            defaultMessage={'View'}
-                          />
-                        </Link>
-                      )}
-                    </Stack>
-                  </CardActions>
-                </Card>
+                          <Button
+                            variant={'contained'}
+                            href={`/admin/create?clone=${site.slug}`}
+                            target={'_blank'}
+                          >
+                            <FormattedMessage
+                              id={'clone'}
+                              defaultMessage={'Clone'}
+                            />
+                          </Button>
+                          {site.previewUrl && (
+                            <Button
+                              variant="outlined"
+                              href={site?.previewUrl || ''}
+                              target={'_blank'}
+                            >
+                              <FormattedMessage
+                                id={'view.site'}
+                                defaultMessage={'View'}
+                              />
+                            </Button>
+                          )}
+                        </Stack>
+                      </CardActions>
+                    </Card>
+                  </Grid>
+                ))}
               </Grid>
-            ))}
-            {sitesQuery?.isLoading &&
-              [1, 2, 3].map((id, key) => (
+            )}
+
+            {sitesQuery?.data?.length === 0 && !sitesQuery?.isLoading && (
+              <Grid item xs={12} sm={9}>
+                <Box sx={{ py: 4 }}>
+                  <Stack
+                    justifyContent="center"
+                    alignItems="center"
+                    alignContent="center"
+                    spacing={2}
+                  >
+                    <SearchOffIcon sx={{ fontSize: '70px' }} />
+                    <Typography variant="body1" color="textSecondary">
+                      <FormattedMessage
+                        id="no.templates.found.for.this.usecase"
+                        defaultMessage="No templates found for this usecase"
+                      />
+                    </Typography>
+                  </Stack>
+                </Box>
+              </Grid>
+            )}
+
+            {sitesQuery?.isLoading && (
+             <Grid item xs={12} sm={9}>
+              {[1, 2, 3].map((id, key) => (
                 <Grid item xs={12} sm={6} lg={3} key={key}>
                   <Card sx={{ maxWidth: 345 }} key={key}>
                     <Skeleton>
@@ -194,9 +302,9 @@ export const SiteTemplatesPage: NextPage = () => {
                     </CardActions>
                   </Card>
                 </Grid>
-              ))}
+              ))} </Grid>)}
           </Grid>
-        </Container>
+        </Box>
       </MainLayout>
     </>
   );
@@ -211,14 +319,11 @@ export const getStaticProps: GetStaticProps = async ({
 }: GetStaticPropsContext<Params>) => {
   const queryClient = new QueryClient();
 
-  const sitesResponse = await getSites({ isTemplate: true });
-  const data = sitesResponse.data.map((resp) => ({
-    ...resp,
-    appConfig: JSON.parse(resp.config) as AppConfig,
-  }));
+  const sitesResponse = await getTemplateSites({});
+  const data = sitesResponse.data;
 
   await queryClient.prefetchQuery(
-    [QUERY_WHITELABEL_SITES_QUERY],
+    [QUERY_WHITELABEL_TEMPLATE_SITES_QUERY],
     async () => data,
   );
 
