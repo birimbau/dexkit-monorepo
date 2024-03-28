@@ -151,7 +151,6 @@ export default function AddShowCaseSectionForm({
           errors,
         }) => (
           <>
-            {JSON.stringify(errors, null, 2)}
             <DexkitApiProvider.Provider value={{ instance: myAppsApi }}>
               <MediaDialog
                 dialogProps={{
