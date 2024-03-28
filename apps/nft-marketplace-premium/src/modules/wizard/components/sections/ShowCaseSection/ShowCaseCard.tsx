@@ -37,7 +37,7 @@ export default function ShowCaseCard({ item }: ShowCaseCardProps) {
           provider: providerQuery.data,
           tokenId: item.tokenId,
         }
-      : {}
+      : {},
   );
 
   const metadataQuery = useNftMetadataQuery({
@@ -53,7 +53,7 @@ export default function ShowCaseCard({ item }: ShowCaseCardProps) {
           contractAddress: item.contractAddress,
           provider: providerQuery.data,
         }
-      : undefined
+      : undefined,
   );
 
   if (item.type === 'image') {
@@ -83,7 +83,7 @@ export default function ShowCaseCard({ item }: ShowCaseCardProps) {
             />
           )}
           <Divider />
-          <CardContent sx={{ minHeight: (theme) => theme.spacing(16) }}>
+          <CardContent sx={{ minHeight: (theme) => theme.spacing(12) }}>
             <Stack spacing={1}>
               <Box>
                 {item.title && (
