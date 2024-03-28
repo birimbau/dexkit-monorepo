@@ -17,6 +17,8 @@ const ShowCasePlugin: CellPlugin<ShowCaseParams> = {
           type: 'showcase',
           settings: {
             items: data.items || [],
+            alignItems: 'left',
+            itemsSpacing: 2,
           },
         }}
       />
