@@ -41,58 +41,62 @@ export default function CarouselSection({ section }: CarouselProps) {
 
   return (
     <Box sx={{ position: 'relative' }}>
-      <AutoPlaySwipeableViews
-        index={index}
-        onChangeIndex={handleChangeIndex}
-        interval={interval ? interval : 5000}
+      <Stack
+        justifyContent="space-between"
+        alignItems="center"
+        direction="row"
+        sx={{ height: '100%', width: '100%' }}
       >
-        {slides?.map((slide, index: number) => (
-          <Slide
-            key={index}
-            title={slide.title}
-            subtitle={slide.subtitle}
-            imageUrl={slide.imageUrl}
-            textColor={slide.textColor}
-            height={height}
-            overlayColor={slide.overlayColor}
-            overlayPercentage={slide.overlayPercentage}
-            action={
-              slide.action
-                ? slide.action.url
-                  ? {
-                      type: 'link',
-                      caption: slide.action?.caption,
-                      url: slide.action.url,
-                    }
-                  : undefined
-                : undefined
-            }
-          />
-        ))}
-      </AutoPlaySwipeableViews>
-      <Box
-        sx={{
-          position: 'absolute',
-          top: 0,
-          bottom: 0,
-          width: '100%',
-          p: 4,
-        }}
-      >
-        <Stack
-          justifyContent="space-between"
-          alignItems="center"
-          direction="row"
-          sx={{ height: '100%', width: '100%' }}
+        <Box
+          sx={{
+            position: 'absolute',
+            top: '50%',
+            left: 0,
+            transform: 'translateY(-50%)',
+            width: 'auto',
+            zIndex: 100,
+          }}
         >
           <IconButton onClick={handlePrev} size="large">
             <KeyboardArrowLeftIcon fontSize="large" />
           </IconButton>
+        </Box>
+        <Box sx={{ flex: 1, marginRight: (theme) => -theme.spacing(16) }}>
+          <AutoPlaySwipeableViews
+            index={index}
+            onChangeIndex={handleChangeIndex}
+            interval={interval ? interval : 5000}
+          >
+            {slides?.map((slide, index: number) => (
+              <Slide
+                key={index}
+                title={slide.title}
+                subtitle={slide.subtitle}
+                imageUrl={slide.imageUrl}
+                textColor={slide.textColor}
+                height={height}
+                overlayColor={slide.overlayColor}
+                overlayPercentage={slide.overlayPercentage}
+                action={slide.action}
+              />
+            ))}
+          </AutoPlaySwipeableViews>
+        </Box>
+        <Box
+          sx={{
+            position: 'absolute',
+            top: '50%',
+            right: 0,
+            transform: 'translateY(-50%)',
+            width: 'auto',
+            zIndex: 100,
+          }}
+        >
           <IconButton onClick={handleNext} size="large">
             <KeyboardArrowRightIcon fontSize="large" />
           </IconButton>
-        </Stack>
-      </Box>
+        </Box>
+      </Stack>
       <Box
         sx={{
           position: 'absolute',

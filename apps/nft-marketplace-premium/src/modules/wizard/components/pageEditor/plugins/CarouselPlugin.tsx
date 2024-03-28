@@ -6,21 +6,7 @@ import AddCarouselForm from '@/modules/wizard/components/forms/AddCarouselForm';
 import CarouselSection from '@/modules/wizard/components/sections/CarouselSection';
 
 // you can pass the shape of the data as the generic type argument
-const CarouselPlugin: CellPlugin<{
-  interval?: number;
-  height?: { desktop?: number; mobile?: number };
-  slides: {
-    title: string;
-    subtitle?: string;
-    imageUrl: string;
-    action?: {
-      textColor?: string;
-      caption: string;
-      url: string;
-      action: string;
-    };
-  }[];
-}> = {
+const CarouselPlugin: CellPlugin<any> = {
   Renderer: ({ data, isEditMode }) => {
     if (!data) {
       return <></>;

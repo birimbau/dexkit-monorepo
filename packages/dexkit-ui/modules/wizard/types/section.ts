@@ -266,23 +266,42 @@ export interface RankingPageSection extends PageSection {
   };
 }
 
+export type SlideActionLink = {
+  type: "link";
+  caption?: string;
+  url?: string;
+};
+
+export type SlideActionPage = {
+  type: "page";
+  page?: string;
+  caption?: string;
+};
+
+export type SlideAction = SlideActionLink | SlideActionPage;
+
+export interface CarouselSlide {
+  title: string;
+  subtitle?: string;
+  imageUrl: string;
+  textColor?: string;
+  overlayColor?: string;
+  overlayPercentage?: number;
+  action?: SlideAction;
+}
+
+export interface CarouselFormType {
+  interval?: number;
+  height?: {
+    mobile?: number;
+    desktop?: number;
+  };
+  slides: CarouselSlide[];
+}
+
 export interface CarouselPageSection extends PageSection {
   type: "carousel";
-  settings: {
-    interval?: number;
-    height?: { mobile?: number; desktop?: number };
-    slides: {
-      textColor?: string;
-      title: string;
-      subtitle?: string;
-      imageUrl: string;
-      action?: {
-        caption: string;
-        url: string;
-        action: string;
-      };
-    }[];
-  };
+  settings: CarouselFormType;
 }
 
 export type ShowCaseItemAsset = {

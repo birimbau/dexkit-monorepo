@@ -7,18 +7,22 @@ import {
   Avatar,
   Box,
   Button,
+  FormControl,
   IconButton,
   InputAdornment,
+  MenuItem,
   Slider,
   Stack,
   Typography,
 } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import { Field, useField } from 'formik';
-import { TextField } from 'formik-mui';
-import { useState } from 'react';
+import { Select, TextField } from 'formik-mui';
+import { useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
+import { CORE_PAGES } from '@/modules/wizard/constants';
+import { CarouselSlide } from '@/modules/wizard/types/section';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import FormikMuiColorInput from '../../FormikMuiColorInput';
@@ -44,29 +48,22 @@ export default function SlideItem({
 }: SlideItemProps) {
   const [isEditing, setIsEditing] = useState(false);
 
-  const [props, meta, helpers] = useField<{
-    title?: string;
-    subtitle?: string;
-    imageUrl: string;
-    action: {
-      type: string;
-      url: string;
-    };
-  }>(`slides[${index}]`);
+  const [props, meta, helpers] = useField<CarouselSlide>(`slides[${index}]`);
 
-  const [imgProps, imgMeta, imgHelpers] = useField<{
-    title?: string;
-    subtitle?: string;
-    imageUrl: string;
-    action: {
-      type: string;
-      url: string;
-    };
-  }>(`slides[${index}].imageUrl`);
+  const [imgProps, imgMeta, imgHelpers] = useField<string>(
+    `slides[${index}].imageUrl`
+  );
 
   const [perProps, perMeta, perImgHelpers] = useField<number>(
     `slides[${index}].overlayPercentage`
   );
+
+  const allPages = useMemo(() => {
+    return Object.keys(CORE_PAGES).map((key) => ({
+      page: key,
+      uri: CORE_PAGES[key].uri,
+    }));
+  }, []);
 
   if (isEditing) {
     return (
@@ -151,6 +148,29 @@ export default function SlideItem({
           />
         </Grid>
         <Grid item xs={12}>
+          <FormControl fullWidth>
+            <Field
+              fullWidth
+              component={Select}
+              name={`slides[${index}].action.type`}
+              label={
+                <FormattedMessage
+                  id="action.type"
+                  defaultMessage="Action type"
+                />
+              }
+            >
+              <MenuItem value="link">
+                <FormattedMessage id="link" defaultMessage="Link" />
+              </MenuItem>
+              <MenuItem value="page">
+                <FormattedMessage id="page" defaultMessage="Page" />
+              </MenuItem>
+            </Field>
+          </FormControl>
+        </Grid>
+
+        <Grid item xs={12}>
           <Field
             component={TextField}
             fullWidth
@@ -163,14 +183,33 @@ export default function SlideItem({
             name={`slides[${index}].action.caption`}
           />
         </Grid>
-        <Grid item xs={12}>
-          <Field
-            component={TextField}
-            fullWidth
-            label={<FormattedMessage id="url" defaultMessage="URL" />}
-            name={`slides[${index}].action.url`}
-          />
-        </Grid>
+        {meta.value?.action?.type === 'page' ? (
+          <Grid item xs={12}>
+            <FormControl fullWidth>
+              <Field
+                fullWidth
+                component={Select}
+                name={`slides[${index}].action.page`}
+                label={<FormattedMessage id="page" defaultMessage="Page" />}
+              >
+                {allPages.map((page, key) => (
+                  <MenuItem key={key} value={page.uri}>
+                    {page.page}
+                  </MenuItem>
+                ))}
+              </Field>
+            </FormControl>
+          </Grid>
+        ) : (
+          <Grid item xs={12}>
+            <Field
+              component={TextField}
+              fullWidth
+              label={<FormattedMessage id="url" defaultMessage="URL" />}
+              name={`slides[${index}].action.url`}
+            />
+          </Grid>
+        )}
         <Grid item xs={12}>
           <Box>
             <Stack spacing={1} alignItems="center" direction="row">

@@ -13,38 +13,55 @@ import { DexkitApiProvider } from '@dexkit/core/providers';
 import dynamic from 'next/dynamic';
 import { useState } from 'react';
 import { myAppsApi } from 'src/services/whitelabel';
-import * as Yup from 'yup';
-
+import z from 'zod';
+import { toFormikValidationSchema } from 'zod-formik-adapter';
 const MediaDialog = dynamic(() => import('@dexkit/ui/components/mediaDialog'), {
   ssr: false,
 });
 
-const FormSchema = Yup.object({
-  interval: Yup.number().min(1).max(10000).required(),
-  textColor: Yup.string()
-    .matches(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/, 'Invalid hex color')
-    .optional(),
-  height: Yup.object({
-    mobile: Yup.number().min(100).max(250),
-    desktop: Yup.number().min(250).max(500),
-  }),
-  slides: Yup.array()
-    .min(1)
-    .of(
-      Yup.object({
-        title: Yup.string().optional(),
-        overlayColor: Yup.string().optional(),
-        overlayPercentage: Yup.string().optional(),
-        imageUrl: Yup.string().required(),
-        subtitle: Yup.string().optional(),
-        action: Yup.object({
-          type: Yup.string(),
-          url: Yup.string().url(),
-        }).optional(),
-      })
-    ),
+// Define the SlideActionLink type
+const SlideActionLink = z.object({
+  type: z.literal('link'),
+  caption: z.string().optional(),
+  url: z.string().url().optional(),
 });
 
+// Define the SlideActionPage type
+const SlideActionPage = z.object({
+  type: z.literal('page'),
+  caption: z.string().optional(),
+  page: z.string().optional(),
+});
+
+// Define the union of SlideActionLink and SlideActionPage
+const SlideAction = z.union([SlideActionLink, SlideActionPage]);
+
+// Define the main schema
+const FormSchema = z.object({
+  interval: z.number().min(1).max(10000),
+  textColor: z
+    .string()
+    .regex(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/, 'Invalid hex color')
+    .optional(),
+  height: z
+    .object({
+      mobile: z.number().min(100).max(250).optional(),
+      desktop: z.number().min(250).max(500).optional(),
+    })
+    .optional(),
+  slides: z
+    .array(
+      z.object({
+        title: z.string().optional(),
+        overlayColor: z.string().optional(),
+        overlayPercentage: z.number().optional(),
+        imageUrl: z.string().min(1),
+        subtitle: z.string().optional(),
+        action: SlideAction.optional(), // Use the SlideAction union here
+      })
+    )
+    .optional(),
+});
 export interface AddCarouselFormProps {
   data?: CarouselFormType;
   onChange: (data: CarouselFormType) => void;
@@ -99,7 +116,7 @@ export default function AddCarouselForm({
               }
         }
         onSubmit={handleSubmit}
-        validationSchema={FormSchema}
+        validationSchema={toFormikValidationSchema(FormSchema)}
         validate={(values: CarouselFormType) => {
           if (saveOnChange) {
             onChange(values);
@@ -107,7 +124,14 @@ export default function AddCarouselForm({
         }}
         validateOnChange
       >
-        {({ submitForm, isValid, values, isSubmitting, setFieldValue }) => (
+        {({
+          submitForm,
+          isValid,
+          values,
+          isSubmitting,
+          setFieldValue,
+          errors,
+        }) => (
           <>
             <DexkitApiProvider.Provider value={{ instance: myAppsApi }}>
               <MediaDialog
@@ -211,6 +235,9 @@ export default function AddCarouselForm({
                               overlayColor: 'rgba(0, 0, 0, 0.5)',
                               overlayPercentage: 30,
                               textColor: 'rgba(255, 255, 255, 1)',
+                              action: {
+                                type: 'link',
+                              },
                             } as CarouselSlide)}
                             variant="outlined"
                           >
@@ -254,6 +281,9 @@ export default function AddCarouselForm({
                             overlayColor: 'rgba(0, 0, 0, 0.5)',
                             overlayPercentage: 30,
                             textColor: 'rgba(255, 255, 255, 1)',
+                            action: {
+                              type: 'link',
+                            },
                           } as CarouselSlide)}
                           variant="outlined"
                         >

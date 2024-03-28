@@ -253,6 +253,20 @@ export interface CollectionPageSection extends PageSection {
   };
 }
 
+export type SlideActionLink = {
+  type: 'link';
+  caption?: string;
+  url?: string;
+};
+
+export type SlideActionPage = {
+  type: 'page';
+  page?: string;
+  caption?: string;
+};
+
+export type SlideAction = SlideActionLink | SlideActionPage;
+
 export interface CarouselSlide {
   title: string;
   subtitle?: string;
@@ -260,11 +274,7 @@ export interface CarouselSlide {
   textColor?: string;
   overlayColor?: string;
   overlayPercentage?: number;
-  action?: {
-    caption: string;
-    url: string;
-    action: string;
-  };
+  action?: SlideAction;
 }
 
 export interface CarouselFormType {

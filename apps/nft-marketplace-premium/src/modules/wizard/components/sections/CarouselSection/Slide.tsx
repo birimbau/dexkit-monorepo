@@ -4,13 +4,13 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import React from 'react';
 
-import { SlideActionType } from '@dexkit/dexappbuilder-viewer/types/index';
+import { SlideAction } from '@/modules/wizard/types/section';
 
 export interface SlideProps {
   title: React.ReactNode;
   subtitle?: React.ReactNode;
   imageUrl: string;
-  action?: SlideActionType;
+  action?: SlideAction;
   height?: { desktop?: number; mobile?: number };
   textColor?: string;
   overlayPercentage?: number;
@@ -96,6 +96,15 @@ export default function Slide({
                   variant="contained"
                   LinkComponent={Link}
                   href={action.url}
+                >
+                  {action.caption}
+                </Button>
+              )}
+              {action.type === 'page' && (
+                <Button
+                  variant="contained"
+                  LinkComponent={Link}
+                  href={action.page}
                 >
                   {action.caption}
                 </Button>
