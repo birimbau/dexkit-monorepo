@@ -1,12 +1,12 @@
 import MultiCall, { CallInput } from "@indexed-finance/multicall";
 import { useQuery } from "@tanstack/react-query";
-import axios from 'axios';
+import axios from "axios";
 import { providers, utils } from "ethers";
 
 import { ERC721Abi } from "../constants/abis";
 import { Nft, NftMetadata } from "../types/nft";
 
-export const NFT_QUERY = 'NFT_QUERY';
+export const NFT_QUERY = "NFT_QUERY";
 
 export function useNftQuery({
   chainId,
@@ -17,7 +17,7 @@ export function useNftQuery({
   chainId?: number;
   contractAddress?: string;
   tokenId?: string;
-  provider?: providers.Web3Provider;
+  provider?: providers.Web3Provider | providers.JsonRpcProvider;
 }) {
   return useQuery<Nft>(
     [NFT_QUERY, chainId, contractAddress, tokenId],
@@ -34,24 +34,24 @@ export function useNftQuery({
       calls.push({
         interface: iface,
         target: contractAddress,
-        function: 'symbol',
+        function: "symbol",
       });
       calls.push({
         interface: iface,
         target: contractAddress,
         args: [tokenId],
-        function: 'ownerOf',
+        function: "ownerOf",
       });
       calls.push({
         interface: iface,
         target: contractAddress,
-        function: 'name',
+        function: "name",
       });
       calls.push({
         interface: iface,
         target: contractAddress,
         args: [tokenId],
-        function: 'tokenURI',
+        function: "tokenURI",
       });
 
       const [, results] = await multicall.multiCall(calls);
@@ -70,14 +70,14 @@ export function useNftQuery({
   );
 }
 
-export const NFT_METADATA_QUERY = 'NFT_METADATA_QUERY';
+export const NFT_METADATA_QUERY = "NFT_METADATA_QUERY";
 
 export function useNftMetadataQuery({ tokenURI }: { tokenURI?: string }) {
   return useQuery(
     [NFT_METADATA_QUERY, tokenURI],
     async () => {
       if (!tokenURI) {
-        throw new Error('empty uri');
+        throw new Error("empty uri");
       }
 
       return (await axios.get<NftMetadata>(tokenURI)).data;

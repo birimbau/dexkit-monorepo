@@ -18,6 +18,9 @@ import {
   getDKAssetOrderbook,
 } from 'src/services/nft';
 
+const imgUrl =
+  'https://c4.wallpaperflare.com/wallpaper/1000/190/378/3-316-16-9-aspect-ratio-s-sfw-wallpaper-preview.jpg';
+
 const Home: NextPage<{ sections: AppPageSection[] }> = ({ sections }) => {
   return (
     <MainLayout disablePadding>
@@ -47,7 +50,7 @@ export const getStaticProps: GetStaticProps = async ({
       const assetResponse = await getDKAssetOrderbook({ maker });
       await queryClient.prefetchQuery(
         [GET_ASSETS_ORDERBOOK, { maker: maker || null }],
-        async () => assetResponse.data,
+        async () => assetResponse.data
       );
     }
   }

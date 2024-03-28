@@ -32,14 +32,14 @@ export default function DomainSection({
   const handleSubmit = useCallback(
     (
       values: DomainSectionForm,
-      formikHelpers: FormikHelpers<DomainSectionForm>,
+      formikHelpers: FormikHelpers<DomainSectionForm>
     ) => {
       if (onSubmit) {
         onSubmit(values);
         setIsEditing(false);
       }
     },
-    [onSubmit],
+    [onSubmit]
   );
 
   const formik = useFormik<DomainSectionForm>({
@@ -67,7 +67,7 @@ export default function DomainSection({
                 sx={{ maxWidth: '400px' }}
                 fullWidth
                 disabled={!isEditing || isEdit}
-                label={<FormattedMessage id="url" defaultMessage="Domain" />}
+                label={<FormattedMessage id="domain" defaultMessage="Domain" />}
                 name="domain"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}

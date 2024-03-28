@@ -2,10 +2,12 @@ import AppsIcon from '@mui/icons-material/Apps';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import CallToAction from '@mui/icons-material/CallToAction';
+import CollectionsIcon from '@mui/icons-material/Collections';
 import ShowChartIcon from '@mui/icons-material/ShowChart';
 import VideocamIcon from '@mui/icons-material/Videocam';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 
+import ViewCarouselIcon from '@mui/icons-material/ViewCarousel';
 import {
   Button,
   Card,
@@ -89,7 +91,7 @@ export default function PagesSectionPage({
   const renderSection = (
     section: AppPageSection,
     index: number,
-    isVisible: boolean,
+    isVisible: boolean
   ) => {
     let title;
     let subtitle;
@@ -188,6 +190,16 @@ export default function PagesSectionPage({
       );
       subtitle = section.title || '';
       icon = <TokenIcon />;
+    } else if (section.type === 'carousel') {
+      title = <FormattedMessage id="carousel" defaultMessage="Carousel" />;
+      subtitle = section.title || '';
+      icon = <ViewCarouselIcon />;
+    } else if (section.type === 'showcase') {
+      title = (
+        <FormattedMessage id="showcase" defaultMessage="Showcase Gallery" />
+      );
+      subtitle = section.title || '';
+      icon = <CollectionsIcon />;
     }
 
     if (!title) {
@@ -284,7 +296,7 @@ export default function PagesSectionPage({
 
   const onEditGatedContidions = (
     gatedConditions: GatedCondition[],
-    gatedLayout: GatedPageLayout,
+    gatedLayout: GatedPageLayout
   ) => {
     onEditPage({
       isEditGatedConditions: true,
@@ -434,7 +446,7 @@ export default function PagesSectionPage({
         <Divider />
 
         {sections.map((section, index) =>
-          renderSection(section, index, isVisibleIndexes.includes(index)),
+          renderSection(section, index, isVisibleIndexes.includes(index))
         )}
       </Stack>
     </>

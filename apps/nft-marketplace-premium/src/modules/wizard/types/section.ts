@@ -43,7 +43,8 @@ export type SectionType =
   | 'market-trade'
   | 'claim-airdrop-token-erc-20'
   | 'token-trade'
-  ;
+  | 'carousel'
+  | 'showcase';
 
 export interface PageSection {
   type: SectionType;
@@ -221,7 +222,7 @@ export interface MarketTradePageSection extends PageSection {
   config: {
     show: OrderMarketType;
     slippage?: number;
-    baseTokenConfig: { address: string, chainId: number };
+    baseTokenConfig: { address: string; chainId: number };
   };
 }
 
@@ -231,7 +232,7 @@ export interface TokenTradePageSection extends PageSection {
     showTokenDetails?: boolean;
     show?: OrderMarketType;
     slippage?: number;
-    baseTokenConfig?: { address?: string, chainId?: number };
+    baseTokenConfig?: { address?: string; chainId?: number };
   };
 }
 
@@ -250,6 +251,100 @@ export interface CollectionPageSection extends PageSection {
     hideDrops: boolean;
     hideAssets: boolean;
   };
+}
+
+export type SlideActionLink = {
+  type: 'link';
+  caption?: string;
+  url?: string;
+};
+
+export type SlideActionPage = {
+  type: 'page';
+  page?: string;
+  caption?: string;
+};
+
+export type SlideAction = SlideActionLink | SlideActionPage;
+
+export interface CarouselSlide {
+  title: string;
+  subtitle?: string;
+  imageUrl: string;
+  textColor?: string;
+  overlayColor?: string;
+  overlayPercentage?: number;
+  action?: SlideAction;
+}
+
+export interface CarouselFormType {
+  interval?: number;
+  height?: {
+    mobile?: number;
+    desktop?: number;
+  };
+  slides: CarouselSlide[];
+}
+
+export interface CarouselPageSection extends PageSection {
+  type: 'carousel';
+  settings: CarouselFormType;
+}
+
+export type ShowCaseActionLink = {
+  type: 'link';
+  url: string;
+};
+
+export type ShowCaseActionPage = {
+  type: 'page';
+  page: string;
+};
+
+export type ShowCaseAction = ShowCaseActionLink | ShowCaseActionPage;
+
+export type ShowCaseItemAsset = {
+  type: 'asset';
+  contractAddress: string;
+  tokenId: string;
+  chainId: number;
+};
+
+export type ShowCaseItemCollection = {
+  type: 'collection';
+  title?: string;
+  subtitle: string;
+  imageUrl: string;
+  contractAddress: string;
+  tokenId: string;
+  chainId: number;
+};
+
+export type ShowCaseItemImage = {
+  type: 'image';
+  textColor?: string;
+  title: string;
+  subtitle?: string;
+  imageUrl: string;
+  url?: string;
+  page?: string;
+  actionType?: 'link' | 'page';
+};
+
+export type ShowCaseItem =
+  | ShowCaseItemImage
+  | ShowCaseItemAsset
+  | ShowCaseItemCollection;
+
+export type ShowCaseParams = {
+  alignItems: 'center' | 'left' | 'right';
+  itemsSpacing: number;
+  items: ShowCaseItem[];
+};
+
+export interface ShowCasePageSection extends PageSection {
+  type: 'showcase';
+  settings: ShowCaseParams;
 }
 
 export interface RankingPageSection extends PageSection {
@@ -297,7 +392,9 @@ export type AppPageSection =
   | DexGeneratorPageSection
   | AssetPageSection
   | RankingPageSection
-  | TokenTradePageSection;
+  | TokenTradePageSection
+  | CarouselPageSection
+  | ShowCasePageSection;
 
 export interface SectionMetadata {
   type: SectionType;
