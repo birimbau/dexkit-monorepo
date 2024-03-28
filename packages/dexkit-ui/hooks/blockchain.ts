@@ -7,12 +7,16 @@ import {
 } from "@dexkit/core/constants/networks";
 import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "@dexkit/core/constants/zrx";
 import { EvmCoin, TokenWhitelabelApp } from "@dexkit/core/types";
-import { convertTokenToEvmCoin } from "@dexkit/core/utils";
+import { convertTokenToEvmCoin, ipfsUriToUrl } from "@dexkit/core/utils";
+import { useQuery } from "@tanstack/react-query";
 import { useWeb3React } from "@web3-react/core";
+import { ethers } from "ethers";
 import { useContext, useMemo } from "react";
 import { useAppConfig, useAppWizardConfig, useDexKitContext } from ".";
 import { AdminContext } from "../context/AdminContext";
 import { DexKitContext } from "../context/DexKitContext";
+
+import axios from "axios";
 
 /**
  * If chainId is not passed it returns all tokens from all chains
@@ -49,7 +53,6 @@ export function useAllTokenList({
 
   let tokens = tokenListJson;
 
-
   if (onlyTradable) {
     tokens = tokens.filter((t) => Boolean(t.tradable));
   }
@@ -70,7 +73,9 @@ export function useAllTokenList({
     let tokenList: TokenWhitelabelApp[] = [...tokens];
     if (chainId) {
       tokenList = [
-        ...tokens.filter((token: TokenWhitelabelApp) => token.chainId === chainId),
+        ...tokens.filter(
+          (token: TokenWhitelabelApp) => token.chainId === chainId
+        ),
       ];
     }
 
@@ -79,7 +84,7 @@ export function useAllTokenList({
       const isNoWrappedTokenInList =
         tokenList &&
         tokenList.findIndex(
-          (t) => t.address.toLowerCase() === wrappedAddress,
+          (t) => t.address.toLowerCase() === wrappedAddress
         ) === -1;
       // Wrapped Token is not on the list, we will add it here
       if (wrappedAddress && isNoWrappedTokenInList) {
@@ -103,7 +108,9 @@ export function useAllTokenList({
         const isNoWrappedTokenInList =
           tokenList &&
           tokenList.findIndex(
-            (t) => t.address.toLowerCase() === wrappedAddress?.toLowerCase() && t.chainId === chain,
+            (t) =>
+              t.address.toLowerCase() === wrappedAddress?.toLowerCase() &&
+              t.chainId === chain
           ) === -1;
         // Wrapped Token is not on the list, we will add it here
         if (wrappedAddress && isNoWrappedTokenInList) {
@@ -177,7 +184,6 @@ export function useTokenList({
     return [];
   }, [appConfig]);
 
-
   // TODO: do the right logic
   let tokens = [...tokensValues, ...tokenListJson];
 
@@ -211,8 +217,9 @@ export function useTokenList({
     const wrappedAddress = NETWORKS[chainId]?.wrappedAddress;
     const isNoWrappedTokenInList =
       tokenList &&
-      tokenList.findIndex((t) => t.address.toLowerCase() === wrappedAddress?.toLowerCase()) ===
-      -1;
+      tokenList.findIndex(
+        (t) => t.address.toLowerCase() === wrappedAddress?.toLowerCase()
+      ) === -1;
     // Wrapped Token is not on the list, we will add it here
     if (wrappedAddress && isNoWrappedTokenInList) {
       tokenList = [
@@ -240,7 +247,6 @@ export function useTokenList({
         },
         ...tokenList,
       ] as TokenWhitelabelApp[];
-
     }
 
     return [...tokenList] as TokenWhitelabelApp[];
@@ -259,16 +265,57 @@ export function useEvmCoins({
   return useMemo(() => tokens.map(convertTokenToEvmCoin), [tokens]);
 }
 
-
 export function useActiveChainIds() {
   // If this editAppConfig exists, it means we are inside Edit Wizard, we on this case use the chainIds that the user had activated
   const { editAppConfig } = useContext(AdminContext);
   if (editAppConfig && editAppConfig.activeChainIds) {
-    return { activeChainIds: editAppConfig.activeChainIds }
+    return { activeChainIds: editAppConfig.activeChainIds };
   }
-
 
   const activeChainIds = useContext(DexKitContext).activeChainIds;
   return { activeChainIds };
+}
 
+export const CONTRACT_METADATA = "CONTRACT_METADATA";
+
+export type ContractMetadata = {
+  name: string;
+  description: string;
+  image: string;
+  external_link: string;
+  collaborators: string[];
+};
+
+export default function useContractMetadata(params?: {
+  chainId?: number;
+  contractAddress?: string;
+  provider?: ethers.providers.Provider;
+}) {
+  return useQuery<ContractMetadata | null>(
+    [CONTRACT_METADATA, params?.contractAddress, params?.chainId],
+    async () => {
+      if (!params?.contractAddress || !params?.chainId || !params?.provider) {
+        return null;
+      }
+
+      const abi = [
+        "function contractURI() public view returns (string memory)",
+      ];
+      const contract = new ethers.Contract(
+        params.contractAddress,
+        abi,
+        params.provider
+      );
+
+      const result: string = await contract.contractURI();
+
+      if (result) {
+        const url = ipfsUriToUrl(result);
+
+        return (await axios.get<ContractMetadata>(url)).data;
+      }
+
+      return null;
+    }
+  );
 }

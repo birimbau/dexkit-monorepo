@@ -304,8 +304,30 @@ export interface CarouselPageSection extends PageSection {
   settings: CarouselFormType;
 }
 
+export type ShowCaseActionLink = {
+  type: "link";
+  url: string;
+};
+
+export type ShowCaseActionPage = {
+  type: "page";
+  page: string;
+};
+
+export type ShowCaseAction = ShowCaseActionLink | ShowCaseActionPage;
+
 export type ShowCaseItemAsset = {
   type: "asset";
+  contractAddress: string;
+  tokenId: string;
+  chainId: number;
+};
+
+export type ShowCaseItemCollection = {
+  type: "collection";
+  title?: string;
+  subtitle: string;
+  imageUrl: string;
   contractAddress: string;
   tokenId: string;
   chainId: number;
@@ -317,17 +339,17 @@ export type ShowCaseItemImage = {
   title: string;
   subtitle?: string;
   imageUrl: string;
-  action?: {
-    caption: string;
-    url: string;
-    action: string;
-  };
+  action?: ShowCaseAction;
 };
 
-export type ShowCaseItem = ShowCaseItemImage | ShowCaseItemAsset;
+export type ShowCaseItem =
+  | ShowCaseItemImage
+  | ShowCaseItemAsset
+  | ShowCaseItemCollection;
 
 export type ShowCaseParams = {
   alignItems: "center" | "left" | "right";
+  itemsSpacing: number;
   items: ShowCaseItem[];
 };
 

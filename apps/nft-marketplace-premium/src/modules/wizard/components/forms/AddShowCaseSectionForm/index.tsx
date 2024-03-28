@@ -15,7 +15,7 @@ import { DexkitApiProvider } from '@dexkit/core/providers';
 import dynamic from 'next/dynamic';
 import { useState } from 'react';
 import { myAppsApi } from 'src/services/whitelabel';
-import { ShowCaseParams } from '../../../types/section';
+import { ShowCaseItem, ShowCaseParams } from '../../../types/section';
 import ShowCaseFormItem from './ShowCaseFormItem';
 
 import ViewStreamIcon from '@mui/icons-material/ViewStream';
@@ -27,6 +27,26 @@ import { toFormikValidationSchema } from 'zod-formik-adapter';
 const MediaDialog = dynamic(() => import('@dexkit/ui/components/mediaDialog'), {
   ssr: false,
 });
+
+const ShowCaseActionLink = z.object({
+  type: z.literal('link', {
+    errorMap: () => ({ message: 'Test' }),
+  }),
+  url: z
+    .string({ required_error: 'Required' })
+    .url({ message: 'invalid' })
+    .min(1),
+});
+
+// Define the SlideActionPage type
+const ShowCaseActionPage = z.object({
+  type: z.literal('page', {
+    errorMap: () => ({ message: 'Test' }),
+  }),
+  page: z.string().min(1),
+});
+
+const ShowCaseActionSchema = z.union([ShowCaseActionLink, ShowCaseActionPage]);
 
 // Define the schema for ShowCaseItemAsset
 const ShowCaseItemAssetSchema = z.object({
@@ -40,24 +60,33 @@ const ShowCaseItemAssetSchema = z.object({
   tokenId: z.string({ required_error: 'required' }).min(1),
 });
 
+const ShowCaseItemCollectionSchema = z.object({
+  type: z.literal('collection'),
+  title: z.string().optional(),
+  subtitle: z.string().optional(),
+  chainId: z.number().int().positive().min(1), // Assuming positive integer values are required
+  contractAddress: z
+    .string({ required_error: 'contract address is required' })
+    .min(1, { message: 'contract address is required' }),
+});
+
 // Define the schema for ShowCaseItemImage
 const ShowCaseItemImageSchema = z.object({
   type: z.literal('image'),
   title: z.string().optional(),
-  imageUrl: z.string({ required_error: 'imageUrl' }).min(1).url(),
+  imageUrl: z
+    .string({ required_error: 'imageUrl' })
+    .min(1)
+    .url({ message: 'invalid' }),
   subtitle: z.string().optional(),
-  action: z
-    .object({
-      type: z.string().optional(),
-      url: z.string().url().optional(),
-    })
-    .optional(),
+  action: ShowCaseActionSchema,
 });
 
 // Define the combined schema using zod.union
 const ShowCaseItemSchema = z.union([
   ShowCaseItemAssetSchema,
   ShowCaseItemImageSchema,
+  ShowCaseItemCollectionSchema,
 ]);
 
 // Schema for the items array
@@ -119,7 +148,6 @@ export default function AddShowCaseSectionForm({
               }
         }
         onSubmit={handleSubmit}
-        validationSchema={toFormikValidationSchema(FormSchema)}
         validate={(values: ShowCaseParams) => {
           if (saveOnChange) {
             onChange(values);
@@ -127,6 +155,7 @@ export default function AddShowCaseSectionForm({
         }}
         validateOnBlur
         validateOnChange
+        validationSchema={toFormikValidationSchema(FormSchema)}
       >
         {({
           submitForm,
@@ -137,6 +166,7 @@ export default function AddShowCaseSectionForm({
           errors,
         }) => (
           <>
+            {JSON.stringify(errors, null, 2)}
             <DexkitApiProvider.Provider value={{ instance: myAppsApi }}>
               <MediaDialog
                 dialogProps={{
@@ -225,7 +255,13 @@ export default function AddShowCaseSectionForm({
                             onClick={arrayHelpers.handlePush({
                               type: 'image',
                               url: '',
-                            })}
+                              imageUrl: '',
+                              title: '',
+                              action: {
+                                type: 'link',
+                                url: '',
+                              },
+                            } as ShowCaseItem)}
                             variant="outlined"
                           >
                             <FormattedMessage
@@ -264,7 +300,13 @@ export default function AddShowCaseSectionForm({
                             onClick={arrayHelpers.handlePush({
                               type: 'image',
                               url: '',
-                            })}
+                              imageUrl: '',
+                              title: '',
+                              action: {
+                                type: 'link',
+                                url: '',
+                              },
+                            } as ShowCaseItem)}
                             variant="outlined"
                           >
                             <FormattedMessage id="add" defaultMessage="Add" />

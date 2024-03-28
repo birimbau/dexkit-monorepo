@@ -91,7 +91,7 @@ export default function Slide({
           </Box>
           {action && (
             <Box>
-              {action.type === 'link' && (
+              {action.type === 'link' && action.caption && (
                 <Button
                   variant="contained"
                   LinkComponent={Link}
@@ -100,7 +100,7 @@ export default function Slide({
                   {action.caption}
                 </Button>
               )}
-              {action.type === 'page' && (
+              {action.type === 'page' && action.caption && (
                 <Button
                   variant="contained"
                   LinkComponent={Link}
