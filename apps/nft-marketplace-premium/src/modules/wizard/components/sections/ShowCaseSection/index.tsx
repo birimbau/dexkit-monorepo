@@ -91,7 +91,7 @@ export default function ShowCaseSection({ section }: ShowCaseSectionProps) {
                 <Grid
                   container
                   justifyContent={alignItemsValue}
-                  spacing={itemsSpacing * 1}
+                  spacing={itemsSpacing}
                 >
                   {page.map((item, itemIndex) => (
                     <Grid item xs={6} sm={3} key={`${pageIndex}-${itemIndex}`}>

@@ -1,15 +1,15 @@
 import { useJsonRpcProvider } from '@/modules/wizard/hooks';
-import { ShowCaseItemAsset } from '@/modules/wizard/types/section';
+import { ShowCaseItemCollection } from '@/modules/wizard/types/section';
 import { useNftMetadataQuery, useNftQuery } from '@dexkit/core';
 import { ipfsUriToUrl } from '@dexkit/core/utils';
 import { Avatar, Box, Skeleton, Typography } from '@mui/material';
 import { FormattedMessage } from 'react-intl';
 
-export interface AssetItemProps {
-  item: ShowCaseItemAsset;
+export interface CollectionItemProps {
+  item: ShowCaseItemCollection;
 }
 
-export default function AssetItem({ item }: AssetItemProps) {
+export default function CollectionItem({ item }: CollectionItemProps) {
   const providerQuery = useJsonRpcProvider({ chainId: item.chainId });
 
   const nftQuery = useNftQuery({

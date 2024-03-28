@@ -28,26 +28,6 @@ const MediaDialog = dynamic(() => import('@dexkit/ui/components/mediaDialog'), {
   ssr: false,
 });
 
-const ShowCaseActionLink = z.object({
-  type: z.literal('link', {
-    errorMap: () => ({ message: 'Test' }),
-  }),
-  url: z
-    .string({ required_error: 'Required' })
-    .url({ message: 'invalid' })
-    .min(1),
-});
-
-// Define the SlideActionPage type
-const ShowCaseActionPage = z.object({
-  type: z.literal('page', {
-    errorMap: () => ({ message: 'Test' }),
-  }),
-  page: z.string().min(1),
-});
-
-const ShowCaseActionSchema = z.union([ShowCaseActionLink, ShowCaseActionPage]);
-
 // Define the schema for ShowCaseItemAsset
 const ShowCaseItemAssetSchema = z.object({
   type: z.literal('asset'),
@@ -79,7 +59,12 @@ const ShowCaseItemImageSchema = z.object({
     .min(1)
     .url({ message: 'invalid' }),
   subtitle: z.string().optional(),
-  action: ShowCaseActionSchema,
+  actionType: z.string(),
+  page: z.string().optional(),
+  url: z
+    .string({ required_error: 'Required' })
+    .url({ message: 'invalid' })
+    .optional(),
 });
 
 // Define the combined schema using zod.union
@@ -257,10 +242,8 @@ export default function AddShowCaseSectionForm({
                               url: '',
                               imageUrl: '',
                               title: '',
-                              action: {
-                                type: 'link',
-                                url: '',
-                              },
+                              actionType: 'link',
+                              page: '',
                             } as ShowCaseItem)}
                             variant="outlined"
                           >
@@ -302,10 +285,8 @@ export default function AddShowCaseSectionForm({
                               url: '',
                               imageUrl: '',
                               title: '',
-                              action: {
-                                type: 'link',
-                                url: '',
-                              },
+                              actionType: 'link',
+                              page: '',
                             } as ShowCaseItem)}
                             variant="outlined"
                           >

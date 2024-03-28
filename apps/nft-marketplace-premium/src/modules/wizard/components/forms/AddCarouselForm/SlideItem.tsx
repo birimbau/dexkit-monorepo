@@ -148,6 +148,19 @@ export default function SlideItem({
           />
         </Grid>
         <Grid item xs={12}>
+          <Field
+            component={TextField}
+            fullWidth
+            label={
+              <FormattedMessage
+                id="button.cation"
+                defaultMessage="Button caption"
+              />
+            }
+            name={`slides[${index}].action.caption`}
+          />
+        </Grid>
+        <Grid item xs={12}>
           <FormControl fullWidth>
             <Field
               fullWidth
@@ -170,19 +183,6 @@ export default function SlideItem({
           </FormControl>
         </Grid>
 
-        <Grid item xs={12}>
-          <Field
-            component={TextField}
-            fullWidth
-            label={
-              <FormattedMessage
-                id="button.cation"
-                defaultMessage="Button caption"
-              />
-            }
-            name={`slides[${index}].action.caption`}
-          />
-        </Grid>
         {meta.value?.action?.type === 'page' ? (
           <Grid item xs={12}>
             <FormControl fullWidth>

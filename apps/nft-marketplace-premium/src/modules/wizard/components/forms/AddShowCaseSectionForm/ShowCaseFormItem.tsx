@@ -33,6 +33,7 @@ import { useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { getNetworks } from 'src/utils/blockchain';
 import AssetItem from './AssetItem';
+import CollectionItem from './CollectionItem';
 
 export interface ShowCaseFormItemProps {
   index: number;
@@ -162,7 +163,7 @@ export default function ShowCaseFormItem({
                     <Field
                       fullWidth
                       component={Select}
-                      name={`items[${index}].action.type`}
+                      name={`items[${index}].actionType`}
                       label={
                         <FormattedMessage
                           id="action.type"
@@ -179,13 +180,13 @@ export default function ShowCaseFormItem({
                     </Field>
                   </FormControl>
                 </Grid>
-                {itemMeta.value?.action?.type === 'page' ? (
+                {itemMeta.value?.actionType === 'page' ? (
                   <Grid item xs={12}>
                     <FormControl fullWidth>
                       <Field
                         fullWidth
                         component={Select}
-                        name={`slides[${index}].action.page`}
+                        name={`items[${index}].page`}
                         label={
                           <FormattedMessage id="page" defaultMessage="Page" />
                         }
@@ -204,7 +205,7 @@ export default function ShowCaseFormItem({
                       component={TextField}
                       fullWidth
                       label={<FormattedMessage id="url" defaultMessage="URL" />}
-                      name={`slides[${index}].action.url`}
+                      name={`items[${index}].url`}
                     />
                   </Grid>
                 )}
@@ -491,6 +492,9 @@ export default function ShowCaseFormItem({
           )}
           {itemMeta.value.type === 'asset' && (
             <AssetItem item={itemMeta.value} />
+          )}
+          {itemMeta.value.type === 'collection' && (
+            <CollectionItem item={itemMeta.value} />
           )}
         </Stack>
 

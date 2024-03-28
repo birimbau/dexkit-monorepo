@@ -62,10 +62,10 @@ export default function ShowCaseCard({ item }: ShowCaseCardProps) {
         <CardActionArea
           LinkComponent={Link}
           href={
-            item.action && item.action?.type === 'link'
-              ? item.action?.url
-              : item.action && item.action.type === 'page'
-              ? item.action?.page
+            item.actionType && item?.actionType === 'link' && item?.url
+              ? item.url
+              : item.actionType && item.actionType === 'page' && item?.page
+              ? item?.page
               : ''
           }
         >

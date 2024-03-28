@@ -326,7 +326,9 @@ export type ShowCaseItemImage = {
   title: string;
   subtitle?: string;
   imageUrl: string;
-  action?: ShowCaseAction;
+  url?: string;
+  page?: string;
+  actionType?: 'link' | 'page';
 };
 
 export type ShowCaseItem =
