@@ -1,9 +1,9 @@
+import { getProviderByChainId } from '@dexkit/core/utils/blockchain';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import {
   getCollectionData
 } from '../../src/services/nft';
 import { Collection } from '../../src/types/nft';
-import { getProviderByChainId } from '../../src/utils/blockchain';
 
 export default async function handler(
   req: NextApiRequest,

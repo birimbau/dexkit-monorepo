@@ -6,6 +6,7 @@ import { FormattedMessage } from "react-intl";
 
 import { QueryErrorResetBoundary, useQueryClient } from "@tanstack/react-query";
 
+import { UserEvents } from "@dexkit/core/constants/userEvents";
 import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "@dexkit/core/constants/zrx";
 import {
   getERC20Decimals,
@@ -16,14 +17,21 @@ import { Asset, SwapApiOrder } from "@dexkit/core/types/nft";
 import { isAddressEqual } from "@dexkit/core/utils";
 import { formatUnits } from "@dexkit/core/utils/ethers/formatUnits";
 import {
+  getAssetProtocol,
   useConnectWalletDialog,
   useDexKitContext,
   useSwitchNetwork,
 } from "@dexkit/ui";
 import CancelIcon from "@mui/icons-material/Cancel";
-import { SwappableAssetV4 } from "@traderxyz/nft-swap-sdk";
+import {
+  SignedNftOrderV4,
+  SwappableAssetV4,
+  TradeDirection,
+} from "@traderxyz/nft-swap-sdk";
+import { BigNumber } from "ethers";
 import ShareDialog from "../../../components/dialogs/ShareDialog";
 import { useTokenList } from "../../../hooks/blockchain";
+import { useTrackUserEventsMutation } from "../../../hooks/userEvents";
 import { OrderDirection } from "../constants/enum";
 import {
   GET_NFT_ORDERS,
@@ -34,8 +42,8 @@ import {
 } from "../hooks";
 import { OrderBookItem } from "../types";
 import AssetBuyOrderPrice from "./AssetBuyOrderPrice";
-import { ConfirmBuyDialog } from "./dialogs/ConfirmBuyDialog";
 import TableSkeleton from "./tables/TableSkeleton";
+const ConfirmBuyDialog = dynamic(() => import("./dialogs/ConfirmBuyDialog"));
 
 interface Props {
   orderBookItem?: OrderBookItem;
@@ -45,7 +53,7 @@ interface Props {
 export function AssetBuyOrder({ asset, orderBookItem }: Props) {
   const { account, provider, chainId } = useWeb3React();
   const connectWalletDialog = useConnectWalletDialog();
-
+  const trackUserEvent = useTrackUserEventsMutation();
   const nftSwapSdk = useSwapSdkV4(provider, asset?.chainId);
 
   const { createNotification, watchTransactionDialog } = useDexKitContext();
@@ -121,10 +129,12 @@ export function AssetBuyOrder({ asset, orderBookItem }: Props) {
       hash,
       accept,
       order,
+      quantity,
     }: {
       hash: string;
       accept: boolean;
-      order: SwapApiOrder;
+      order: SignedNftOrderV4;
+      quantity?: number;
     }) => {
       if (provider === undefined || asset === undefined) {
         return;
@@ -141,7 +151,33 @@ export function AssetBuyOrder({ asset, orderBookItem }: Props) {
         symbol,
       };
 
+      if (
+        quantity &&
+        quantity > 1 &&
+        "erc1155Token" in order &&
+        order.direction === TradeDirection.SellNFT
+      ) {
+        values.amount = formatUnits(
+          BigNumber.from(order.erc20TokenAmount)
+            .mul(
+              BigNumber.from(quantity).mul(100000).div(order.erc1155TokenAmount)
+            )
+            .div(100000),
+
+          decimals
+        );
+      }
+
       if (accept) {
+        trackUserEvent.mutate({
+          event:
+            "erc1155Token" in order
+              ? UserEvents.nftAcceptOfferERC1155
+              : UserEvents.nftAcceptOfferERC721,
+          metadata: JSON.stringify(order),
+          hash,
+          chainId,
+        });
         createNotification({
           type: "transaction",
           subtype: "acceptOffer",
@@ -152,6 +188,15 @@ export function AssetBuyOrder({ asset, orderBookItem }: Props) {
           },
         });
       } else {
+        trackUserEvent.mutate({
+          event:
+            "erc1155Token" in order
+              ? UserEvents.nftAcceptListERC1155
+              : UserEvents.nftAcceptListERC721,
+          metadata: JSON.stringify(order),
+          hash,
+          chainId,
+        });
         createNotification({
           type: "transaction",
           subtype: "buyNft",
@@ -176,7 +221,15 @@ export function AssetBuyOrder({ asset, orderBookItem }: Props) {
   );
 
   const handleMutateSignedOrder = useCallback(
-    async ({ order, accept }: { order: SwapApiOrder; accept?: boolean }) => {
+    async ({
+      order,
+      accept,
+      quantity,
+    }: {
+      order: SignedNftOrderV4;
+      accept?: boolean;
+      quantity?: number;
+    }) => {
       if (asset && order) {
         const decimals = await getERC20Decimals(order.erc20Token, provider);
 
@@ -191,6 +244,24 @@ export function AssetBuyOrder({ asset, orderBookItem }: Props) {
 
         if (accept) {
           return watchTransactionDialog.open("acceptOffer", values);
+        }
+        if (
+          quantity &&
+          quantity > 1 &&
+          "erc1155Token" in order &&
+          order.direction === TradeDirection.SellNFT
+        ) {
+          values.amount = formatUnits(
+            BigNumber.from(order.erc20TokenAmount)
+              .mul(
+                BigNumber.from(quantity)
+                  .mul(100000)
+                  .div(order.erc1155TokenAmount)
+              )
+              .div(100000),
+
+            decimals
+          );
         }
 
         watchTransactionDialog.open("buyNft", values);
@@ -226,6 +297,15 @@ export function AssetBuyOrder({ asset, orderBookItem }: Props) {
           collectionName: asset.collectionName,
           id: asset.id,
         };
+        trackUserEvent.mutate({
+          event:
+            "erc1155Token" in order
+              ? UserEvents.cancelNFTERC1155order
+              : UserEvents.cancelNFTERC721order,
+          metadata: JSON.stringify(order),
+          hash,
+          chainId,
+        });
 
         if (order.direction === OrderDirection.Buy) {
           createNotification({
@@ -279,7 +359,7 @@ export function AssetBuyOrder({ asset, orderBookItem }: Props) {
 
   const cancelSignedOrder = useCancelSignedOrderMutation(
     nftSwapSdk,
-    asset?.protocol,
+    getAssetProtocol(asset),
     handleCancelOrderHash,
     {
       onError: handleCancelSignedOrderError,
@@ -301,42 +381,46 @@ export function AssetBuyOrder({ asset, orderBookItem }: Props) {
     }
   }, [asset, chainId, switchNetwork]);
 
-  const handleConfirmBuy = useCallback(async () => {
-    if (!account || orderBookItem === undefined) {
-      return;
-    }
-
-    setOpenConfirmBuy(false);
-
-    if (
-      !isAddressEqual(orderBookItem.erc20Token, ZEROEX_NATIVE_TOKEN_ADDRESS)
-    ) {
-      const asset: any = {
-        tokenAddress: orderBookItem.erc20Token,
-        tokenAmount: orderBookItem.erc20TokenAmount,
-        type: "ERC20",
-      };
-
-      const status = await nftSwapSdk?.loadApprovalStatus(asset, account);
-
-      if (!status?.contractApproved) {
-        await approveAsset.mutateAsync({
-          asset,
-        });
+  const handleConfirmBuy = useCallback(
+    async ({ quantity }: { quantity?: number }) => {
+      if (!account || orderBookItem === undefined) {
+        return;
       }
-    }
 
-    await fillSignedOrder.mutateAsync({
-      order: orderBookItem.order,
-    });
-  }, [
-    watchTransactionDialog,
-    fillSignedOrder,
-    nftSwapSdk,
-    account,
-    orderBookItem,
-    approveAsset,
-  ]);
+      setOpenConfirmBuy(false);
+
+      if (
+        !isAddressEqual(orderBookItem.erc20Token, ZEROEX_NATIVE_TOKEN_ADDRESS)
+      ) {
+        const asset: any = {
+          tokenAddress: orderBookItem.erc20Token,
+          tokenAmount: orderBookItem.erc20TokenAmount,
+          type: "ERC20",
+        };
+
+        const status = await nftSwapSdk?.loadApprovalStatus(asset, account);
+
+        if (!status?.contractApproved) {
+          await approveAsset.mutateAsync({
+            asset,
+          });
+        }
+      }
+
+      await fillSignedOrder.mutateAsync({
+        order: orderBookItem.order,
+        quantity,
+      });
+    },
+    [
+      watchTransactionDialog,
+      fillSignedOrder,
+      nftSwapSdk,
+      account,
+      orderBookItem,
+      approveAsset,
+    ]
+  );
 
   const handleCancelOrder = useCallback(
     async (order?: SwapApiOrder) => {
@@ -365,19 +449,23 @@ export function AssetBuyOrder({ asset, orderBookItem }: Props) {
 
   return (
     <NoSsr>
-      <ConfirmBuyDialog
-        tokens={tokens}
-        asset={asset}
-        metadata={asset?.metadata}
-        order={orderBookItem}
-        dialogProps={{
-          open: openConfirmBuy,
-          fullWidth: true,
-          maxWidth: "sm",
-          onClose: handleCloseConfirmBuy,
-        }}
-        onConfirm={() => handleConfirmBuy()}
-      />
+      {openConfirmBuy && (
+        <ConfirmBuyDialog
+          tokens={tokens}
+          asset={asset}
+          metadata={asset?.metadata}
+          order={orderBookItem}
+          dialogProps={{
+            open: openConfirmBuy,
+            fullWidth: true,
+            maxWidth: "sm",
+            onClose: handleCloseConfirmBuy,
+          }}
+          onConfirm={({ quantity }) => {
+            handleConfirmBuy({ quantity });
+          }}
+        />
+      )}
       <ShareDialog
         dialogProps={{
           open: openShare,

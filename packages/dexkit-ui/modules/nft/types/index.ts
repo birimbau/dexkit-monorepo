@@ -106,3 +106,10 @@ export interface OrderBookItem {
 export interface OrderbookResponse {
   orders: OrderBookItem[];
 }
+
+
+export interface HiddenAsset {
+  id: string;
+  chainId: number;
+  contractAddress: string;
+}

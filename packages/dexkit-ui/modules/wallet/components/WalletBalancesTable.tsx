@@ -38,7 +38,7 @@ function WalletBalancesTable({ isBalancesVisible, chainId, filter }: Props) {
         ...tb,
         price:
           prices && prices[tb.token.address.toLowerCase()]
-            ? prices[tb.token.address.toLowerCase()][currency]
+            ? prices[tb.token.address.toLowerCase()][currency.currency]
             : undefined,
       };
     });
@@ -82,7 +82,7 @@ function WalletBalancesTable({ isBalancesVisible, chainId, filter }: Props) {
               tokenBalance={token}
               price={token.price}
               isBalancesVisible={isBalancesVisible}
-              currency={currency}
+              currency={currency.currency}
             />
           ))}
           {tokenBalancesQuery.isLoading &&

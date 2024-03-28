@@ -6,6 +6,7 @@ import {
 import { ipfsUriToUrl, parseChainId } from '@dexkit/core/utils';
 import { isAddress } from '@dexkit/core/utils/ethers/isAddress';
 import { useActiveChainIds } from '@dexkit/ui';
+import { CollectionPageSection } from '@dexkit/ui/modules/wizard/types/section';
 import { hexToString } from '@dexkit/ui/utils';
 import { useAsyncMemo } from '@dexkit/widgets/src/hooks';
 import ExpandMore from '@mui/icons-material/ExpandMore';
@@ -34,9 +35,7 @@ import { SyntheticEvent, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { getProviderBySlug } from 'src/services/providers';
 import { CreateCollectionFormSchema } from '../../constants/schemas';
-import { CollectionPageSection } from '../../types/section';
 import { CollectionItemAutocomplete } from './CollectionItemAutocomplete';
-
 interface DropCheckboxProps {
   address: string;
   network: string;

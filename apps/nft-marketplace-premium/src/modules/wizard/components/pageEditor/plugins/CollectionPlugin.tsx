@@ -1,7 +1,7 @@
+import { getNetworkFromName } from '@dexkit/core/utils/blockchain';
 import Container from '@mui/material/Container';
 import type { CellPlugin } from '@react-page/editor';
 import { NETWORKS } from '../../../../../constants/chain';
-import { getNetworkFromName } from '../../../../../utils/blockchain';
 import { CollectionFromApiCard } from '../../../../nft/components/CollectionFromApi';
 import { CollectionAutocomplete } from '../components/CollectionAutocomplete';
 import { ImagePicker } from '../components/ImagePicker';

@@ -1,10 +1,9 @@
 import ExchangeSettingsForm from '@dexkit/exchange/components/ExchangeSettingsForm';
 import { DexkitExchangeSettings } from '@dexkit/exchange/types';
 import { useActiveChainIds } from '@dexkit/ui';
+import { ExchangePageSection } from '@dexkit/ui/modules/wizard/types/section';
 import { useMemo } from 'react';
 import { useAppWizardConfig } from '../../hooks';
-import { ExchangePageSection } from '../../types/section';
-
 interface Props {
   onSave: (section: ExchangePageSection) => void;
   onChange?: (section: ExchangePageSection) => void;

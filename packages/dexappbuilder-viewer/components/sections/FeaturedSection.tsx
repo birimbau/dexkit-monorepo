@@ -5,7 +5,7 @@ import Typography from "@mui/material/Typography";
 
 import AssetFromApi from "@dexkit/ui/modules/nft/components/AssetFromApi";
 import { CollectionFromApiCard } from "@dexkit/ui/modules/nft/components/CollectionFromApi";
-import { SectionItem } from "@dexkit/ui/modules/wizard/types";
+import { SectionItem } from "@dexkit/ui/modules/wizard/types/section";
 
 interface Props {
   title: React.ReactNode | React.ReactNode[];

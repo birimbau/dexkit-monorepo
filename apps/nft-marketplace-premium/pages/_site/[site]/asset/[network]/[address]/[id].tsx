@@ -6,13 +6,13 @@ import { useRouter } from 'next/router';
 import { Grid, NoSsr, Skeleton } from '@mui/material';
 import MainLayout from '../../../../../../src/components/layouts/main';
 
+import AssetLeftSection from '@dexkit/ui/modules/nft/components/AssetLeftSection';
+import AssetRightSection from '@dexkit/ui/modules/nft/components/AssetRightSection';
 import {
   BEST_SELL_ORDER_RARIBLE,
   useAsset,
   useAssetMetadata,
 } from '../../../../../../src/hooks/nft';
-import AssetLeftSection from '../../../../../../src/modules/nft/components/AssetLeftSection';
-import AssetRightSection from '../../../../../../src/modules/nft/components/AssetRightSection';
 import { fetchAssetForQueryClient } from '../../../../../../src/services/nft';
 
 import AssetHead from '../../../../../../src/modules/nft/components/AssetHead';
@@ -23,6 +23,10 @@ import { getIntegrationData } from '@/modules/wizard/services/integrations';
 import { ChainId, MY_APPS_ENDPOINT } from '@dexkit/core/constants';
 import { NETWORK_FROM_SLUG } from '@dexkit/core/constants/networks';
 import { truncateAddress } from '@dexkit/core/utils';
+import {
+  getChainIdFromSlug,
+  getNetworkSlugFromChainId,
+} from '@dexkit/core/utils/blockchain';
 import axios from 'axios';
 import { NextSeo } from 'next-seo';
 import { Suspense } from 'react';
@@ -33,10 +37,6 @@ import { NETWORK_ID } from '../../../../../../src/constants/enum';
 import { MAP_NETWORK_TO_RARIBLE } from '../../../../../../src/constants/marketplaces';
 import { getAppConfig } from '../../../../../../src/services/app';
 import { getRariAsset } from '../../../../../../src/services/rarible';
-import {
-  getChainIdFromSlug,
-  getNetworkSlugFromChainId,
-} from '../../../../../../src/utils/blockchain';
 import { ipfsUriToUrl } from '../../../../../../src/utils/ipfs';
 import { truncateErc1155TokenId } from '../../../../../../src/utils/nfts';
 

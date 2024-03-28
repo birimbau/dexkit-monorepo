@@ -1,3 +1,4 @@
+import { getChainName } from '@dexkit/core/utils/blockchain';
 import Delete from '@mui/icons-material/Delete';
 import Edit from '@mui/icons-material/Edit';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -16,7 +17,6 @@ import {
 import { FormattedMessage } from 'react-intl';
 import { useAssetByApi, useCollectionByApi } from '../../../hooks/nft';
 import { SectionItem } from '../../../types/config';
-import { getChainName } from '../../../utils/blockchain';
 import { truncateErc1155TokenId } from '../../../utils/nfts';
 
 interface Props {

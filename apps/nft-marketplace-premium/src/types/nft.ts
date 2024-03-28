@@ -72,11 +72,7 @@ export interface AssetBalance {
   asset: Asset;
 }
 
-export interface HiddenAsset {
-  id: string;
-  chainId: number;
-  contractAddress: string;
-}
+
 
 
 export interface Asset {

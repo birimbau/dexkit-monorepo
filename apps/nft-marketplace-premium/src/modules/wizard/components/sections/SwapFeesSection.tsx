@@ -1,9 +1,9 @@
+import { truncateAddress } from '@dexkit/core/utils/blockchain';
 import Close from '@mui/icons-material/Close';
 import Edit from '@mui/icons-material/Edit';
 import { Button, IconButton, Paper, Stack, Typography } from '@mui/material';
 import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { truncateAddress } from '../../../../utils/blockchain';
 import { SwapFeeForm } from '../../types';
 import SwapFeesSectionForm from './SwapFeesSectionForm';
 

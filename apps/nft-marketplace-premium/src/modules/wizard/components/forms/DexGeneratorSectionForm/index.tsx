@@ -4,6 +4,7 @@ import LazyTextField from '@dexkit/ui/components/LazyTextField';
 import { DeployedContract } from '@/modules/forms/types';
 import { ipfsUriToUrl, parseChainId } from '@dexkit/core/utils';
 import { useActiveChainIds } from '@dexkit/ui/hooks';
+import { DexGeneratorPageSection } from '@dexkit/ui/modules/wizard/types/section';
 import Error from '@mui/icons-material/Error';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
@@ -37,7 +38,6 @@ import {
   DEX_GENERATOR_CONTRACT_TYPES,
   DEX_GENERATOR_CONTRACT_TYPES_AVAIL,
 } from '../../../constants';
-import { DexGeneratorPageSection } from '../../../types/section';
 import DexGeneratorSectionCard from '../../DexGeneratorSectionCard';
 import DexGeneratorContractForm from './DexGeneratorContractForm';
 

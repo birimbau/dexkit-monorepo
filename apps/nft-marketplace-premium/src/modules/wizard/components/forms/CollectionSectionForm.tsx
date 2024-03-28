@@ -4,12 +4,14 @@ import { useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { SectionItem } from '../../../../types/config';
 
+import {
+  AppPageSection,
+  CollectionAppPageSection,
+} from '@dexkit/ui/modules/wizard/types/section';
 import AddIcon from '@mui/icons-material/Add';
 import * as Yup from 'yup';
-import { AppPageSection, CollectionAppPageSection } from '../../types/section';
 import { PageSectionItem } from '../PageSectionItem';
 import AddItemForm from './AddItemForm';
-
 interface Form {
   title: string;
 }

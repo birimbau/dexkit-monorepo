@@ -30,7 +30,8 @@ import { useAppConfig, useConnectWalletDialog, useLocale } from '../hooks/app';
 import { showSelectCurrencyAtom, showSelectLocaleAtom } from '../state/atoms';
 import DrawerMenu from './DrawerMenu';
 import Wallet from './icons/Wallet';
-import Link from './Link';
+
+import Link from '@dexkit/ui/components/AppLink';
 import { ThemeModeSelector } from './ThemeModeSelector';
 import WalletContent from './WalletContent';
 

@@ -1,3 +1,4 @@
+import Link from '@dexkit/ui/components/AppLink';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { ListItemButton, ListItemSecondaryAction, styled } from '@mui/material';
@@ -6,7 +7,6 @@ import ListItemText from '@mui/material/ListItemText';
 import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { MenuTree } from '../types/config';
-import Link from './Link';
 
 interface Props {
   menu: MenuTree[];
@@ -97,7 +97,7 @@ export default function DrawerMenu(props: Props) {
               <ChevronRightIcon color="primary" />
             </CustomListItemSecondaryAction>
           </ListItemButton>
-        )
+        ),
       )}
     </List>
   );

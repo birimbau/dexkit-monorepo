@@ -10,6 +10,13 @@ import {
 } from '@mui/material';
 import { FormattedMessage } from 'react-intl';
 
+import {
+  getBlockExplorerUrl,
+  getNetworkSlugFromChainId,
+  isAddressEqual,
+  truncateAddress,
+} from '@dexkit/core/utils/blockchain';
+import ShareDialog from '@dexkit/ui/modules/nft/components/dialogs/ShareDialog';
 import LaunchIcon from '@mui/icons-material/Launch';
 import Share from '@mui/icons-material/Share';
 import { useWeb3React } from '@web3-react/core';
@@ -21,14 +28,7 @@ import {
   useAssetMetadata,
   useFavoriteAssets,
 } from '../../../hooks/nft';
-import {
-  getBlockExplorerUrl,
-  getNetworkSlugFromChainId,
-  isAddressEqual,
-  truncateAddress,
-} from '../../../utils/blockchain';
 import { getWindowUrl } from '../../../utils/browser';
-import ShareDialog from '../../nft/components/dialogs/ShareDialog';
 
 interface Props {
   address: string;

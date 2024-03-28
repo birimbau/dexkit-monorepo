@@ -25,6 +25,11 @@ import { AppPage, AppPageOptions } from '../../../../types/config';
 
 import TokenIcon from '@mui/icons-material/Token';
 
+import {
+  GatedCondition,
+  GatedPageLayout,
+} from '@dexkit/ui/modules/wizard/types';
+import { AppPageSection } from '@dexkit/ui/modules/wizard/types/section';
 import Code from '@mui/icons-material/Code';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
@@ -38,8 +43,6 @@ import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
 import Wallet from '@mui/icons-material/Wallet';
 import { useState } from 'react';
 import AppConfirmDialog from '../../../../components/AppConfirmDialog';
-import { GatedCondition, GatedPageLayout } from '../../types';
-import { AppPageSection } from '../../types/section';
 import PagesMenu from '../PagesMenu';
 import PreviewPagePlatform from '../PreviewPagePlatform';
 import AddPageDialog from '../dialogs/AddPageDialog';

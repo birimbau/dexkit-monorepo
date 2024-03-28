@@ -27,6 +27,7 @@ import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import { useWeb3React } from "@web3-react/core";
 import { useAtom } from "jotai";
 
+import VerticalAlignBottomIcon from "@mui/icons-material/VerticalAlignBottom";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import Link from "../../../../components/AppLink";
@@ -39,7 +40,8 @@ import dynamic from "next/dynamic";
 
 import Wallet from "@mui/icons-material/Wallet";
 import { NetworkSelectButton } from "../../../../components/NetworkSelectButton";
-import { TransakButton } from "../../../../components/TransakButton";
+const TransakWidget = dynamic(() => import("@dexkit/ui/components/Transak"));
+
 import ImportTokenDialog from "../../../../components/dialogs/ImportTokenDialog";
 import CloseCircle from "../../../../components/icons/CloseCircle";
 import {
@@ -240,7 +242,7 @@ const EvmWalletContainer = () => {
                   <Grid container spacing={2} alignItems="center">
                     {appConfig.transak?.enabled && (
                       <Grid item>
-                        <TransakButton />
+                        <TransakWidget />
                       </Grid>
                     )}
 
@@ -248,6 +250,7 @@ const EvmWalletContainer = () => {
                       <Button
                         onClick={handleOpenReceive}
                         variant="outlined"
+                        startIcon={<VerticalAlignBottomIcon />}
                         disabled={!isActive}
                         color="primary"
                       >

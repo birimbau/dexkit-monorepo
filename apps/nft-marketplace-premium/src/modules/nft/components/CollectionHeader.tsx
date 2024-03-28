@@ -4,9 +4,9 @@ import Typography from '@mui/material/Typography';
 
 import Box from '@mui/material/Box';
 
+import { isAddressEqual } from '@dexkit/core/utils/blockchain';
 import { useMemo } from 'react';
 import { useCollection } from '../../../hooks/nft';
-import { isAddressEqual } from '../../../utils/blockchain';
 
 import { ChainId } from '@dexkit/core/constants';
 import BuyLockContainer from '@dexkit/unlock-widget';
@@ -30,7 +30,6 @@ interface Props {
 
 export function CollectionHeader(props: Props) {
   const appConfig = useAppConfig();
-
 
   const { address, chainId, lazy, isLock } = props;
 
@@ -124,7 +123,7 @@ export function CollectionHeader(props: Props) {
                 <BuyLockContainer
                   lockAddress={address.toLowerCase()}
                   lockChainId={chainId}
-                /> 
+                />
               </Box>
             </Grid>
           )}

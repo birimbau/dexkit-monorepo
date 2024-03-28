@@ -1,8 +1,8 @@
+import { getChainName } from '@dexkit/core/utils/blockchain';
 import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import { CellPluginComponentProps } from '@react-page/editor';
-import { getChainName } from '../../../../../utils/blockchain';
 import { useAppWizardConfig } from '../../../hooks';
 
 interface Props {

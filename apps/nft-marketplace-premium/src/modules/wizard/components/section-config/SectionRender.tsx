@@ -1,55 +1,97 @@
+import { AppPageSection } from '@dexkit/ui/modules/wizard/types/section';
 import dynamic from 'next/dynamic';
 import LazyComponent from 'src/components/LazyComponent';
-import { AppPageSection } from '../../types/section';
-import RankingSection from '../sections/RankingSection';
+const RankingSection = dynamic(
+  () =>
+    import('@dexkit/dexappbuilder-viewer/components/sections/RankingSection'),
+);
 
 const CollectionSection = dynamic(
-  () => import('../sections/CollectionSection'),
+  () =>
+    import(
+      '@dexkit/dexappbuilder-viewer/components/sections/CollectionSection'
+    ),
 );
 
 const DexGeneratorSection = dynamic(
-  () => import('../sections/DexGeneratorSection'),
+  () =>
+    import(
+      '@dexkit/dexappbuilder-viewer/components/sections/DexGeneratorSection'
+    ),
 );
 
-const AssetSection = dynamic(() => import('../sections/AssetSection/index'));
+const AssetSection = dynamic(
+  () =>
+    import(
+      '@dexkit/dexappbuilder-viewer/components/sections/AssetSection/index'
+    ),
+);
 
 const TokenTradeSection = dynamic(
-  () => import('../sections/TokenTradeSection'),
+  () =>
+    import(
+      '@dexkit/dexappbuilder-viewer/components/sections/TokenTradeSection'
+    ),
 );
 
-const CodeSection = dynamic(() => import('../sections/CodeSection'));
+const CodeSection = dynamic(
+  () => import('@dexkit/dexappbuilder-viewer/components/sections/CodeSection'),
+);
 
-const ExchangeSection = dynamic(() => import('../sections/ExchangeSection'));
+const ExchangeSection = dynamic(
+  () =>
+    import('@dexkit/dexappbuilder-viewer/components/sections/ExchangeSection'),
+);
 
 const CallToActionSection = dynamic(
-  () => import('@/modules/home/components/CallToActionSection'),
+  () =>
+    import(
+      '@dexkit/dexappbuilder-viewer/components/sections/CallToActionSection'
+    ),
 );
 const CollectionsSection = dynamic(
-  () => import('@/modules/home/components/CollectionsSection'),
+  () =>
+    import(
+      '@dexkit/dexappbuilder-viewer/components/sections/CollectionsSection'
+    ),
 );
 const CustomSection = dynamic(
-  () => import('@/modules/home/components/CustomSection'),
+  () =>
+    import('@dexkit/dexappbuilder-viewer/components/sections/CustomSection'),
 );
 const FeaturedSection = dynamic(
-  () => import('@/modules/home/components/FeaturedSection'),
+  () =>
+    import('@dexkit/dexappbuilder-viewer/components/sections/FeaturedSection'),
 );
 const SwapSection = dynamic(
-  () => import('@/modules/home/components/SwapSection'),
+  () => import('@dexkit/dexappbuilder-viewer/components/sections/SwapSection'),
 );
 const VideoSection = dynamic(
-  () => import('@/modules/home/components/VideoSection'),
+  () => import('@dexkit/dexappbuilder-viewer/components/sections/VideoSection'),
 );
 
 const AssetStoreSection = dynamic(
-  () => import('@/modules/home/components/AssetStoreSection'),
+  () =>
+    import(
+      '@dexkit/dexappbuilder-viewer/components/sections/AssetStoreSection'
+    ),
 );
-const MDSection = dynamic(() => import('@/modules/home/components/MDSection'));
+const MDSection = dynamic(
+  () => import('@dexkit/dexappbuilder-viewer/components/sections/MDSection'),
+);
 const WalletSection = dynamic(
-  () => import('@/modules/home/components/WalletSection'),
+  () =>
+    import('@dexkit/dexappbuilder-viewer/components/sections/WalletSection'),
 );
-const ContractSection = dynamic(() => import('../sections/ContractSection'));
+const ContractSection = dynamic(
+  () =>
+    import('@dexkit/dexappbuilder-viewer/components/sections/ContractSection'),
+);
 const UserContractSection = dynamic(
-  () => import('../sections/UserContractSection'),
+  () =>
+    import(
+      '@dexkit/dexappbuilder-viewer/components/sections/UserContractSection'
+    ),
 );
 
 interface Props {

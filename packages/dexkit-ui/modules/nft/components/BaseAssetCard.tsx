@@ -22,12 +22,12 @@ import { useMemo, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import Link from "../../../components/AppLink";
 
-import {
-  NETWORK_IMAGE,
-  NETWORK_NAME,
-  NETWORK_SLUG,
-} from "@dexkit/core/constants/networks";
 import { Asset, AssetMetadata } from "@dexkit/core/types/nft";
+import {
+  getChainLogoImage,
+  getChainName,
+  getNetworkSlugFromChainId,
+} from "@dexkit/core/utils/blockchain";
 import { OrderBookItem } from "../types";
 import { truncateErc1155TokenId } from "../utils";
 import { AssetBuyOrder } from "./AssetBuyOrder";
@@ -48,6 +48,7 @@ interface Props {
   disabled?: boolean;
   orderBookItem?: OrderBookItem;
   onTransfer?: (asset: Asset) => void;
+  onClickCardAction?: (asset: Asset | undefined) => void;
 }
 
 export function BaseAssetCard({
@@ -61,6 +62,7 @@ export function BaseAssetCard({
   assetMetadata,
   orderBookItem,
   onTransfer,
+  onClickCardAction,
   showAssetDetailsInDialog,
 }: Props) {
   const metadata = assetMetadata || asset?.metadata;
@@ -127,7 +129,11 @@ export function BaseAssetCard({
 
   return (
     <Card sx={{ position: "relative", heigh: "100%", borderRadius: "12px" }}>
-      {showAssetDetailsInDialog ? (
+      {onClickCardAction ? (
+        <CardActionArea onClick={() => onClickCardAction(asset)}>
+          {assetDetails}
+        </CardActionArea>
+      ) : showAssetDetailsInDialog ? (
         <>
           {openDetailsDialog && (
             <AssetDetailsDialog
@@ -147,9 +153,9 @@ export function BaseAssetCard({
         <CardActionArea
           LinkComponent={Link}
           disabled={disabled}
-          href={`/asset/${NETWORK_SLUG(asset?.chainId)}/${
-            asset?.contractAddress
-          }/${asset?.id}`}
+          href={`/asset/${getNetworkSlugFromChainId(
+            asset?.chainId
+          )}/${asset?.contractAddress}/${asset?.id}`}
         >
           {assetDetails}
         </CardActionArea>
@@ -173,9 +179,9 @@ export function BaseAssetCard({
       )}
 
       {asset?.chainId && (
-        <Tooltip title={NETWORK_NAME(asset.chainId) || ""}>
+        <Tooltip title={getChainName(asset.chainId) || ""}>
           <Avatar
-            src={NETWORK_IMAGE(asset.chainId)}
+            src={getChainLogoImage(asset.chainId)}
             sx={(theme) => ({
               top: theme.spacing(2),
               left: theme.spacing(2),
@@ -183,7 +189,7 @@ export function BaseAssetCard({
               width: "auto",
               height: theme.spacing(3),
             })}
-            alt={NETWORK_NAME(asset.chainId) || ""}
+            alt={getChainName(asset.chainId) || ""}
           />
         </Tooltip>
       )}

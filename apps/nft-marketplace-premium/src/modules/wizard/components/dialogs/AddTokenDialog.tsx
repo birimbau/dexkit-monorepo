@@ -23,6 +23,7 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import * as Yup from 'yup';
 
 import { ImageFormUpload } from '@/modules/contract-wizard/components/ImageFormUpload';
+import { isAddressEqual } from '@dexkit/core/utils/blockchain';
 import { isAddress } from '@dexkit/core/utils/ethers/isAddress';
 import { AxiosError } from 'axios';
 import { useSnackbar } from 'notistack';
@@ -32,7 +33,6 @@ import { useTokenData } from '../../../../hooks/blockchain';
 import { useDebounce } from '../../../../hooks/misc';
 import { Token } from '../../../../types/blockchain';
 import { Network } from '../../../../types/chains';
-import { isAddressEqual } from '../../../../utils/blockchain';
 import { ipfsUriToUrl } from '../../../../utils/ipfs';
 import { SearchTokenAutocomplete } from '../pageEditor/components/SearchTokenAutocomplete';
 

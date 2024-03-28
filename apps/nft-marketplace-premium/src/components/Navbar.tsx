@@ -29,6 +29,7 @@ import {
 } from '@mui/material';
 import { useWeb3React } from '@web3-react/core';
 
+import { getChainLogoImage, getChainName } from '@dexkit/core/utils/blockchain';
 import AttachMoney from '@mui/icons-material/AttachMoney';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import Language from '@mui/icons-material/Language';
@@ -48,8 +49,7 @@ import {
   showSelectCurrencyAtom,
   showSelectLocaleAtom,
 } from '../state/atoms';
-import { getChainLogoImage, getChainName } from '../utils/blockchain';
-import Link from './Link';
+
 import NavbarMenu from './Menu';
 import { ThemeModeSelector } from './ThemeModeSelector';
 import { WalletButton } from './WalletButton';
@@ -61,6 +61,7 @@ const SelectNetworkDialog = dynamic(
 );
 
 import { useAuthUserQuery } from '@/modules/user/hooks';
+import Link from '@dexkit/ui/components/AppLink';
 import NotificationsDialog from '@dexkit/ui/components/dialogs/NotificationsDialog';
 import { ThemeMode } from '@dexkit/ui/constants/enum';
 import { useDexKitContext, useNotifications } from '@dexkit/ui/hooks';

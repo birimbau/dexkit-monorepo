@@ -1,3 +1,4 @@
+import { getBlockExplorerUrl } from '@dexkit/core/utils/blockchain';
 import {
   Box,
   Button,
@@ -10,7 +11,6 @@ import {
 import { useWeb3React } from '@web3-react/core';
 import { FormattedMessage } from 'react-intl';
 import { TransactionStatus } from '../../types/blockchain';
-import { getBlockExplorerUrl } from '../../utils/blockchain';
 
 interface Props {
   hash?: string;

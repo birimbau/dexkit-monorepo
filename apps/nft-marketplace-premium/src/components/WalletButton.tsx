@@ -1,4 +1,5 @@
 import { useEvmNativeBalanceQuery } from '@dexkit/core';
+import { truncateAddress } from '@dexkit/core/utils/blockchain';
 import { AccountBalance } from '@dexkit/ui/components/AccountBalance';
 import { GET_WALLET_ICON } from '@dexkit/wallet-connectors/connectors';
 import { useWalletConnectorMetadata } from '@dexkit/wallet-connectors/hooks';
@@ -17,7 +18,6 @@ import { useAtomValue } from 'jotai';
 import dynamic from 'next/dynamic';
 import { useState } from 'react';
 import { isBalancesVisibleAtom } from '../state/atoms';
-import { truncateAddress } from '../utils/blockchain';
 
 const WalletContent = dynamic(() => import('./WalletContent'));
 

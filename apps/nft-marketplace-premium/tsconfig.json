@@ -35,7 +35,23 @@
     "../../packages/dexkit-ui/hooks/ai.ts",
     "../../packages/dexkit-ui/types/ai/index.ts",
     "../../packages/dexkit-ui/components/dialogs/AddCreditDialog.tsx",
-    "../../packages/dexkit-ui/components/AddCreditsButton.tsx"
-  ],
+    "../../packages/dexkit-ui/components/AddCreditsButton.tsx",
+    "../../packages/dexkit-core/utils/blockchain.ts",
+    "../../packages/dexappbuilder-viewer/components/sections/TokenDropSection.tsx",
+    "../../packages/dexappbuilder-viewer/components/sections/EditionDropSection.tsx",
+    "../../packages/dexappbuilder-viewer/components/sections/MarketTradeSection.tsx",
+    "../../packages/dexappbuilder-viewer/components/sections/RankingSection.tsx",
+    "../../packages/dexkit-ui/components/SidebarFilters.tsx",
+    "../../packages/dexkit-ui/modules/nft/components/AssetLeftSection.tsx",
+    "../../packages/dexkit-ui/modules/wizard/components/DarkblockWrapper.tsx",
+    "../../packages/dexkit-ui/modules/nft/components/AssetRightSection.tsx",
+    "../../packages/dexkit-ui/modules/nft/components/AssetPricePaper.tsx",
+    "../../packages/dexkit-ui/modules/nft/components/AssetPageTitle.tsx",
+    "../../packages/dexkit-ui/modules/nft/components/AssetPageActions.tsx",
+    "../../packages/dexkit-ui/modules/nft/components/AssetTabs.tsx",
+    "../../packages/dexkit-ui/modules/nft/components/dialogs/ShareDialog.tsx",
+, "../../packages/dexkit-ui/modules/nft/components/tables/OffersTable.tsx", "../../packages/dexkit-ui/modules/nft/components/tables/ListingsTableRow.tsx", "../../packages/dexkit-ui/modules/nft/components/tables/OffersTableRow.tsx", "../../packages/dexkit-ui/modules/nft/components/tables/ListingsTableRaribleRow.tsx"    "../../packages/dexkit-ui/modules/nft/components/dialogs/MakeListingDialog.tsx",
+    "../../packages/dexkit-ui/modules/nft/components/dialogs/MakeOfferDialog.tsx"
+, "../../packages/dexkit-ui/modules/nft/components/tables/ListingsTable.tsx"  ],
   "exclude": ["node_modules"]
 }

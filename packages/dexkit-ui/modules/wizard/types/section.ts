@@ -41,9 +41,8 @@ export type SectionType =
   | 'asset-section'
   | 'ranking'
   | 'market-trade'
-  | 'token-trade'
   | 'claim-airdrop-token-erc-20'
-  ;
+  | 'token-trade';
 
 export interface PageSection {
   type: SectionType;
@@ -228,8 +227,18 @@ export interface MarketTradePageSection extends PageSection {
   type: 'market-trade';
   config: {
     show: OrderMarketType;
-
+    slippage?: number;
     baseTokenConfig: { address: string, chainId: number };
+  };
+}
+
+export interface TokenTradePageSection extends PageSection {
+  type: 'token-trade';
+  config: {
+    showTokenDetails?: boolean;
+    show?: OrderMarketType;
+    slippage?: number;
+    baseTokenConfig?: { address?: string, chainId?: number };
   };
 }
 
@@ -250,16 +259,6 @@ export interface CollectionPageSection extends PageSection {
   };
 }
 
-export interface TokenTradePageSection extends PageSection {
-  type: 'token-trade';
-  config: {
-    showTokenDetails?: boolean;
-    show?: OrderMarketType;
-    slippage?: number;
-    baseTokenConfig?: { address?: string, chainId?: number };
-  };
-}
-
 export interface RankingPageSection extends PageSection {
   type: 'ranking';
   settings: {
@@ -277,9 +276,7 @@ export type DexGeneratorPageSectionType =
   | StakeErc20PageSection
   | StakeErc155PageSection
   | CollectionPageSection
-  | ClaimAirdropErc20PageSection
-
-  ;
+  | ClaimAirdropErc20PageSection;
 
 export interface DexGeneratorPageSection extends PageSection {
   type: 'dex-generator-section';
@@ -307,9 +304,7 @@ export type AppPageSection =
   | DexGeneratorPageSection
   | AssetPageSection
   | RankingPageSection
-  | ClaimAirdropErc20PageSection
-  | TokenTradePageSection
-  ;
+  | TokenTradePageSection;
 
 export interface SectionMetadata {
   type: SectionType;

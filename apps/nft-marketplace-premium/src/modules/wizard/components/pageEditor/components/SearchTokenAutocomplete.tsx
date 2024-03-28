@@ -1,5 +1,6 @@
 import { useSearchSwapTokens } from '@/modules/swap/hooks';
 import { isAddressEqual } from '@dexkit/core/utils';
+import { getChainName, getChainSlug } from '@dexkit/core/utils/blockchain';
 import { CircularProgress, Stack } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
@@ -7,7 +8,6 @@ import TextField from '@mui/material/TextField';
 import React, { useMemo, useState } from 'react';
 import { Token } from 'src/types/blockchain';
 import { NETWORKS } from '../../../../../constants/chain';
-import { getChainName, getChainSlug } from '../../../../../utils/blockchain';
 
 interface Props {
   label?: string | React.ReactNode;

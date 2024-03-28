@@ -1,6 +1,6 @@
+import { AppPageSection } from '@dexkit/ui/modules/wizard/types/section';
 import { Button, Stack, Typography, useTheme } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import { AppPageSection } from '../../types/section';
 
 import { ErrorBoundary } from 'react-error-boundary';
 import { FormattedMessage } from 'react-intl';

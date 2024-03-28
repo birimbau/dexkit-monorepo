@@ -1,3 +1,4 @@
+import { getChainName } from '@dexkit/core/utils/blockchain';
 import { CircularProgress, Stack } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
@@ -6,7 +7,6 @@ import { CellPluginComponentProps } from '@react-page/editor';
 import React, { useState } from 'react';
 import { NETWORKS } from '../../../../../constants/chain';
 import { useSearchAssets } from '../../../../../hooks/nft';
-import { getChainName } from '../../../../../utils/blockchain';
 
 interface Props {
   data: CellPluginComponentProps<Partial<any>>;

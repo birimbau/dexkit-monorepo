@@ -1,10 +1,10 @@
 import MultiCall, { CallInput } from '@indexed-finance/multicall';
 
+import { getProviderByChainId } from '@dexkit/core/utils/blockchain';
 import { Interface } from '@dexkit/core/utils/ethers/abi/Interface';
 import { isAddress } from '@dexkit/core/utils/ethers/isAddress';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { ERC20Abi } from '../../src/constants/abis';
-import { getProviderByChainId } from '../../src/utils/blockchain';
 
 export default async function handler(
   req: NextApiRequest,

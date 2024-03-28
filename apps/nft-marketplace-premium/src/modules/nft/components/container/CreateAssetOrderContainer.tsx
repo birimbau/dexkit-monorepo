@@ -36,25 +36,28 @@ import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import { useCallback, useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
-import Link from 'src/components/Link';
-import { useSignMessageDialog } from 'src/hooks/app';
-import {
-  useAccountAssetsBalance,
-  useApproveAssetMutation,
-  useFavoriteAssets,
-  useMakeListingMutation,
-  useMakeOfferMutation,
-  useSwapSdkV4,
-} from 'src/hooks/nft';
-import { getERC20Name, getERC20Symbol } from 'src/services/balances';
-import { Asset } from 'src/types/nft';
+
 import {
   getBlockExplorerUrl,
   getChainName,
   getChainSlug,
   isAddressEqual,
   truncateAddress,
-} from 'src/utils/blockchain';
+} from '@dexkit/core/utils/blockchain';
+import Link from '@dexkit/ui/components/AppLink';
+import {
+  useApproveAssetMutation,
+  useMakeListingMutation,
+  useMakeOfferMutation,
+} from '@dexkit/ui/modules/nft/hooks';
+import { useSignMessageDialog } from 'src/hooks/app';
+import {
+  useAccountAssetsBalance,
+  useFavoriteAssets,
+  useSwapSdkV4,
+} from 'src/hooks/nft';
+import { getERC20Name, getERC20Symbol } from 'src/services/balances';
+import { Asset } from 'src/types/nft';
 import { ipfsUriToUrl } from 'src/utils/ipfs';
 
 export const CreateAssetOrderContainer = () => {

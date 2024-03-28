@@ -1,12 +1,12 @@
 import { ChainId } from '@dexkit/core/constants';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import { useState } from 'react';
 import {
   getChainLogoImage,
   getChainName,
   getChainSymbol,
-} from '../utils/blockchain';
+} from '@dexkit/core/utils/blockchain';
+import Avatar from '@mui/material/Avatar';
+import Button from '@mui/material/Button';
+import { useState } from 'react';
 import ChooseNetworkDialog from './dialogs/ChooseNetworkDialog';
 
 interface Props {

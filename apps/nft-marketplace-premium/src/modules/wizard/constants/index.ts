@@ -1,6 +1,6 @@
 import { ChainId } from '@dexkit/core';
+import { SectionMetadata } from '@dexkit/ui/modules/wizard/types/section';
 import { AppPageOptions } from '../../../types/config';
-import { SectionMetadata } from '../types/section';
 
 export const MAX_FEES = 10;
 

@@ -4,7 +4,12 @@ import { AssetFormType } from '@/modules/wizard/types';
 import dynamic from 'next/dynamic';
 import AssetSectionForm from '../../forms/AssetSectionForm';
 
-const AssetSection = dynamic(() => import('../../sections/AssetSection/index'));
+const AssetSection = dynamic(
+  () =>
+    import(
+      '../../../../../../../../packages/dexappbuilder-viewer/components/sections/AssetSection/index'
+    ),
+);
 
 // you can pass the shape of the data as the generic type argument
 const AssetAltPlugin: CellPlugin<AssetFormType> = {

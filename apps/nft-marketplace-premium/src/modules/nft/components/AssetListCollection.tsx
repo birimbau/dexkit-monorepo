@@ -1,9 +1,8 @@
+import Link from '@dexkit/ui/components/AppLink';
 import { Button, Grid, Pagination, Stack, Typography } from '@mui/material';
 import { useRouter } from 'next/router';
 import { useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import Link from '../../../components/Link';
-
 import { useAssetListFromCollection } from '../../../hooks/collection';
 import { BaseAssetCard } from './BaseAssetCard';
 
@@ -36,7 +35,7 @@ export function AssetListCollection({
       return assets.filter(
         (a) =>
           a.collectionName.indexOf(search) !== -1 ||
-          a.metadata?.name.indexOf(search) !== -1
+          a.metadata?.name.indexOf(search) !== -1,
       );
     }
 

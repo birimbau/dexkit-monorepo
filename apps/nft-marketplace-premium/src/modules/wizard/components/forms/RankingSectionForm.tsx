@@ -2,6 +2,7 @@ import LazyTextField from '@dexkit/ui/components/LazyTextField';
 import TipsAndUpdatesIcon from '@mui/icons-material/TipsAndUpdates';
 
 import { useEditSiteId } from '@dexkit/ui/hooks';
+import { RankingPageSection } from '@dexkit/ui/modules/wizard/types/section';
 import AddIcon from '@mui/icons-material/Add';
 import Search from '@mui/icons-material/Search';
 import {
@@ -20,9 +21,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import Link from 'src/components/Link';
 import { useAppRankingListQuery } from '../../hooks';
-import { RankingPageSection } from '../../types/section';
 import RankingFormCard from '../RankingFormCard';
-
 interface Props {
   onSave: (section: RankingPageSection) => void;
   onChange: (section: RankingPageSection) => void;

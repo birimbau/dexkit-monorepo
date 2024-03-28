@@ -133,6 +133,7 @@ export function useDexkitContextState({
   notificationsAtom,
   tokensAtom,
   assetsAtom,
+  hiddenAssetsAtom,
   transactionsAtom,
   onChangeLocale,
   currencyUserAtom,
@@ -141,6 +142,7 @@ export function useDexkitContextState({
   notificationsAtom: PrimitiveAtom<AppNotification[]>;
   tokensAtom: PrimitiveAtom<TokenWhitelabelApp[]>;
   assetsAtom: PrimitiveAtom<{ [key: string]: Asset }>;
+  hiddenAssetsAtom: PrimitiveAtom<{ [key: string]: boolean }>;
   currencyUserAtom: PrimitiveAtom<string>;
   transactionsAtom: PrimitiveAtom<{ [key: string]: AppTransaction }>;
   onChangeLocale: (locale: string) => void;
@@ -148,6 +150,7 @@ export function useDexkitContextState({
   const [notifications, setNotifications] = useAtom(notificationsAtom);
   const tokens = useAtomValue(tokensAtom);
   const [assets, setAssets] = useAtom(assetsAtom);
+  const [hiddenAssets, setHiddenAssets] = useAtom(hiddenAssetsAtom);
   const currencyUser = useAtomValue(currencyUserAtom);
   const [transactions, setTransactions] = useAtom(transactionsAtom);
   const watchTransactionDialog = useWatchTransactionDialog({
@@ -207,6 +210,8 @@ export function useDexkitContextState({
     assets,
     currencyUser,
     setAssets,
+    hiddenAssets,
+    setHiddenAssets,
     transactions,
     createNotification,
     clearNotifications,

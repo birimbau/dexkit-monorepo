@@ -33,7 +33,7 @@ import {
   useErc20AllowanceMutation,
   useErc20ApproveMutationV2,
 } from 'src/hooks/balances';
-import { parseIneligibility } from './EditionDropSection';
+import { parseIneligibility } from '../../../../../../../packages/dexappbuilder-viewer/components/sections/EditionDropSection';
 
 interface Props {
   section: EditionDropPageSection;

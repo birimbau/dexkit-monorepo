@@ -1,4 +1,5 @@
 import { ChainId } from '@dexkit/core/constants';
+import { getProviderByChainId } from '@dexkit/core/utils/blockchain';
 import {
   useMutation,
   UseMutationOptions,
@@ -15,8 +16,6 @@ import {
   getERC20WithProxyUnlockedBalances,
 } from '../services/balances';
 import { Token, TokenBalance } from '../types/blockchain';
-import { getProviderByChainId } from '../utils/blockchain';
-import { useTokenList } from './blockchain';
 
 export const GET_ERC20_BALANCES = 'GET_ERC20_BALANCES';
 export const GET_ERC20_BALANCE = 'GET_ERC20_BALANCE';
@@ -27,46 +26,7 @@ type SelectCalback = (data?: TokenBalance[]) => TokenBalance[] | undefined;
 export const selectNativeCurrency: SelectCalback = (data?: TokenBalance[]) =>
   data?.filter((t) => t.token.address === ZEROEX_NATIVE_TOKEN_ADDRESS);
 
-export const useERC20BalancesQuery = (
-  select?: SelectCalback,
-  defaultChainId?: ChainId,
-  enableSuspense = true
-) => {
-  const {
-    provider: walletProvider,
-    account,
-    chainId: walletChainId,
-  } = useWeb3React();
-  const chainId = defaultChainId || walletChainId;
-  const tokens = useTokenList({ chainId, includeNative: true });
 
-  return useQuery(
-    [GET_ERC20_BALANCES, account, chainId, tokens],
-    () => {
-      if (
-        account === undefined ||
-        chainId === undefined ||
-        tokens === undefined
-      ) {
-        return;
-      }
-      if (tokens.length === 0) {
-        return [];
-      }
-
-      const provider =
-        defaultChainId === walletChainId
-          ? walletProvider
-          : getProviderByChainId(chainId);
-      if (!provider) {
-        return;
-      }
-
-      return getERC20Balances(account, tokens, chainId, provider);
-    },
-    { enabled: chainId !== undefined, select, suspense: enableSuspense }
-  );
-};
 
 export const useERC20BalancesProxyAllowancesQuery = (
   tokens?: Token[],

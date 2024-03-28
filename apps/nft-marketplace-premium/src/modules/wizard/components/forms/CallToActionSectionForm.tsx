@@ -19,14 +19,13 @@ import { PageSectionVariant, SectionItem } from '../../../../types/config';
 import AddIcon from '@mui/icons-material/Add';
 
 import CompletationProvider from '@dexkit/ui/components/CompletationProvider';
-import * as Yup from 'yup';
 import {
   AppPageSection,
   CallToActionAppPageSection,
-} from '../../types/section';
+} from '@dexkit/ui/modules/wizard/types/section';
+import * as Yup from 'yup';
 import { PageSectionItem } from '../PageSectionItem';
 import AddItemForm from './AddItemForm';
-
 interface Form {
   variant: string;
   type: string;
@@ -67,7 +66,7 @@ export default function CallToActionSectionForm({
   const [showAddItem, setShowAddItem] = useState(false);
 
   const [items, setItems] = useState<SectionItem[]>(
-    section ? section.items : []
+    section ? section.items : [],
   );
 
   const handleSubmit = (values: Form, helpers: FormikHelpers<Form>) => {
@@ -302,7 +301,7 @@ export default function CallToActionSectionForm({
                 onChange={(ev) =>
                   formik.setFieldValue(
                     'button.openInNewPage',
-                    ev.target.checked
+                    ev.target.checked,
                   )
                 }
               />

@@ -10,13 +10,14 @@ import {
   Paper,
   Skeleton,
   Stack,
+  TextField,
   Tooltip,
   Typography,
 } from "@mui/material";
 import { AppDialogTitle } from "../../../../components/AppDialogTitle";
 
 import { useErc20Balance } from "@dexkit/core/hooks";
-import { Asset, AssetMetadata, TokenWhitelabelApp } from "@dexkit/core/types";
+import { Asset, AssetMetadata, Token } from "@dexkit/core/types";
 import { isAddressEqual } from "@dexkit/core/utils";
 import { formatUnits } from "@dexkit/core/utils/ethers/formatUnits";
 import { ipfsUriToUrl } from "@dexkit/core/utils/ipfs";
@@ -24,21 +25,20 @@ import { Box } from "@mui/material";
 import { useWeb3React } from "@web3-react/core";
 import { BigNumber } from "ethers";
 import Image from "next/image";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { FormattedMessage, FormattedNumber, useIntl } from "react-intl";
 import { useCoinPricesQuery, useCurrency } from "../../../../hooks/currency";
-
 interface Props {
-  tokens: TokenWhitelabelApp[];
+  tokens: Token[];
   order?: any;
   dialogProps: DialogProps;
   account?: string;
   asset?: Asset;
   metadata?: AssetMetadata;
-  onConfirm: () => void;
+  onConfirm: ({ quantity }: { quantity?: number }) => void;
 }
 
-export function ConfirmBuyDialog({
+export default function ConfirmBuyDialog({
   tokens,
   dialogProps,
   onConfirm,
@@ -53,6 +53,8 @@ export function ConfirmBuyDialog({
   const currency = useCurrency();
 
   const { provider, account } = useWeb3React();
+
+  const [quantity, setQuantity] = useState(1);
 
   const erc20Balance = useErc20Balance(provider, order?.erc20Token, account);
 
@@ -75,6 +77,11 @@ export function ConfirmBuyDialog({
       const orderTokenAmount: BigNumber = BigNumber.from(
         order?.erc20TokenAmount
       );
+      if (quantity > 1) {
+        if (erc20Balance.data?.gte(orderTokenAmount.div(quantity))) {
+          return true;
+        }
+      }
 
       if (erc20Balance.data?.gte(orderTokenAmount)) {
         return true;
@@ -88,11 +95,24 @@ export function ConfirmBuyDialog({
 
   const totalInCurrency = useMemo(() => {
     if (token && currency && order) {
-      if (coinPricesQuery?.data) {
+      if (
+        coinPricesQuery?.data &&
+        `${token.address.toLowerCase()}` in coinPricesQuery.data
+      ) {
         const ratio =
           coinPricesQuery.data[token.address.toLowerCase()][currency.currency];
 
         if (ratio) {
+          if (quantity > 1) {
+            return (
+              (ratio *
+                parseFloat(
+                  formatUnits(order?.erc20TokenAmount, token.decimals)
+                )) /
+              quantity
+            );
+          }
+
           return (
             ratio *
             parseFloat(formatUnits(order?.erc20TokenAmount, token.decimals))
@@ -159,10 +179,17 @@ export function ConfirmBuyDialog({
                   </Box>
                   <Paper sx={{ p: 1 }}>
                     <Typography variant="caption" color="textSecondary">
-                      <FormattedMessage
-                        id="listing.price"
-                        defaultMessage="Listing price"
-                      />
+                      {asset?.protocol === "ERC1155" ? (
+                        <FormattedMessage
+                          id="listing.price.per.item"
+                          defaultMessage="Listing price per item"
+                        />
+                      ) : (
+                        <FormattedMessage
+                          id="listing.price"
+                          defaultMessage="Listing price"
+                        />
+                      )}
                     </Typography>
                     <Stack
                       direction="row"
@@ -178,12 +205,20 @@ export function ConfirmBuyDialog({
                         />
                       </Tooltip>
                       <Typography sx={{ fontWeight: 600 }} variant="body1">
-                        {formatUnits(
-                          BigNumber.from(order?.erc20TokenAmount || "0"),
-                          token?.decimals
-                        )}{" "}
+                        {asset?.protocol === "ERC1155"
+                          ? formatUnits(
+                              BigNumber.from(
+                                order?.erc20TokenAmount || "0"
+                              ).div(order?.erc1155TokenAmount || "1"),
+                              token?.decimals
+                            )
+                          : formatUnits(
+                              BigNumber.from(order?.erc20TokenAmount || "0"),
+                              token?.decimals
+                            )}{" "}
                         {token?.symbol}
                       </Typography>
+
                       {totalInCurrency !== undefined && (
                         <Chip
                           size="small"
@@ -193,9 +228,9 @@ export function ConfirmBuyDialog({
                                 <>
                                   <FormattedNumber
                                     value={totalInCurrency}
-                                    currency={currency.currency}
+                                    currency={currency?.currency}
                                   />{" "}
-                                  {currency.currency.toUpperCase()}
+                                  {currency?.currency.toUpperCase()}
                                 </>
                               ) : (
                                 <Skeleton />
@@ -206,6 +241,60 @@ export function ConfirmBuyDialog({
                       )}
                     </Stack>
                   </Paper>
+                  {asset?.protocol === "ERC1155" && (
+                    <Stack spacing={2}>
+                      <Typography variant="body1">
+                        <FormattedMessage
+                          id="max.quantity"
+                          defaultMessage="Max quantity"
+                        />{" "}
+                        : {order?.erc1155TokenAmount || "0"}
+                      </Typography>
+                      <TextField
+                        type={"number"}
+                        inputProps={{
+                          min: 1,
+                          max: Number(order?.erc1155TokenAmount),
+                          step: 1,
+                        }}
+                        value={Number(quantity || 1)}
+                        onChange={(e) => {
+                          const value = Number(e.currentTarget.value);
+                          const maxValue = Number(order?.erc1155TokenAmount);
+                          if (value < maxValue + 1) {
+                            setQuantity(value);
+                          }
+                        }}
+                        name="quantity"
+                        label={
+                          <FormattedMessage
+                            id="quantity"
+                            defaultMessage="Quantity"
+                            description="Price label"
+                          />
+                        }
+                      />
+                      <Typography variant="body1">
+                        <FormattedMessage
+                          id="total.cost"
+                          defaultMessage="Total cost"
+                        />
+                        :{" "}
+                        <b>
+                          {quantity *
+                            Number(
+                              formatUnits(
+                                BigNumber.from(
+                                  order?.erc20TokenAmount || "0"
+                                ).div(order?.erc1155TokenAmount || "1"),
+                                token?.decimals
+                              )
+                            )}{" "}
+                          {token?.symbol}
+                        </b>
+                      </Typography>
+                    </Stack>
+                  )}
                 </Stack>
               </Grid>
             </Grid>
@@ -268,7 +357,7 @@ export function ConfirmBuyDialog({
       <DialogActions>
         <Button
           disabled={!hasSufficientFunds}
-          onClick={onConfirm}
+          onClick={() => onConfirm({ quantity })}
           variant="contained"
           color="primary"
         >

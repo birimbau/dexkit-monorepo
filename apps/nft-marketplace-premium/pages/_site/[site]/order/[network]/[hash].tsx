@@ -1,12 +1,12 @@
+import {
+  getChainIdFromSlug,
+  getNetworkSlugFromChainId,
+} from '@dexkit/core/utils/blockchain';
 import Container from '@mui/material/Container';
 import { dehydrate, QueryClient } from '@tanstack/react-query';
 import type { GetStaticProps, GetStaticPropsContext, NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { useMemo } from 'react';
-import {
-  getChainIdFromSlug,
-  getNetworkSlugFromChainId,
-} from '../../../../../src/utils/blockchain';
 
 import {
   fetchAssetForQueryClient,
@@ -49,7 +49,7 @@ const OrderDetail: NextPage = () => {
 
   const { data: asset } = useAsset(
     firstOrder?.nftToken,
-    firstOrder?.nftTokenId
+    firstOrder?.nftTokenId,
   );
 
   return (
@@ -69,25 +69,25 @@ const OrderDetail: NextPage = () => {
                   <Skeleton />
                 ),
                 uri: `/collection/${getNetworkSlugFromChainId(
-                  asset?.chainId
+                  asset?.chainId,
                 )}/${firstOrder?.nftToken}`,
               },
               {
                 caption: `${asset?.collectionName} #${asset?.id}`,
-                uri: `/asset/${getNetworkSlugFromChainId(asset?.chainId)}/${
-                  firstOrder?.nftToken
-                }/${firstOrder?.nftTokenId}`,
+                uri: `/asset/${getNetworkSlugFromChainId(
+                  asset?.chainId,
+                )}/${firstOrder?.nftToken}/${firstOrder?.nftTokenId}`,
               },
               {
                 caption: `${formatMessage({
                   id: 'order',
                   defaultMessage: 'Order',
                 })} #${firstOrder?.order?.nonce.substring(
-                  firstOrder?.order.nonce.length - 8
+                  firstOrder?.order.nonce.length - 8,
                 )}`,
-                uri: `/order/${getNetworkSlugFromChainId(asset?.chainId)}/${
-                  firstOrder?.order?.nonce
-                }`,
+                uri: `/order/${getNetworkSlugFromChainId(
+                  asset?.chainId,
+                )}/${firstOrder?.order?.nonce}`,
                 active: true,
               },
             ]}
@@ -154,7 +154,7 @@ export const getStaticProps: GetStaticProps = async ({
 
     await queryClient.prefetchQuery(
       [GET_NFT_ORDERS, orderFilter],
-      async () => orders
+      async () => orders,
     );
 
     return {

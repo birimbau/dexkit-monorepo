@@ -3,6 +3,7 @@ import { SwapWidget } from '@dexkit/widgets/src/widgets/swap';
 
 import { ChainId } from '@dexkit/core/constants';
 import { useActiveChainIds } from '@dexkit/ui';
+import { SwapPageSection } from '@dexkit/ui/modules/wizard/types/section';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
@@ -20,7 +21,6 @@ import { Token } from 'src/types/blockchain';
 import { useSwapState } from '../../../../hooks/swap';
 import { AppConfig } from '../../../../types/config';
 import { StepperButtonProps } from '../../types';
-import { SwapPageSection } from '../../types/section';
 import { SwapConfigForm } from '../forms/SwapConfigForm';
 import { StepperButtons } from '../steppers/StepperButtons';
 interface Props {
@@ -40,7 +40,7 @@ export default function SwapWizardContainer({
   isOnStepper,
   stepperButtonProps,
 }: Props) {
-  const {activeChainIds} = useActiveChainIds();
+  const { activeChainIds } = useActiveChainIds();
   const [swapFormData, setSwapFormData] = useState<SwapConfig | undefined>(
     (
       config.pages['home']?.sections.find(

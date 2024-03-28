@@ -1,4 +1,4 @@
-import { StoreOrderbook } from '@/modules/nft/components/StoreOrderbook';
+import { StoreOrderbook } from '@dexkit/ui/modules/nft/components/StoreOrderbook';
 import { useAssetsOrderBook } from 'src/hooks/nft';
 
 type StoreOrdebookOptions = {

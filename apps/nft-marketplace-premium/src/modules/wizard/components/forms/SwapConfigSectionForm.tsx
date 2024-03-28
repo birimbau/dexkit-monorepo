@@ -1,7 +1,10 @@
+import {
+  AppPageSection,
+  SwapPageSection,
+} from '@dexkit/ui/modules/wizard/types/section';
 import { Button, Grid, Stack } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { AppPageSection, SwapPageSection } from '../../types/section';
 
 import { useAppWizardConfig } from '../../hooks';
 import { SwapConfigForm } from './SwapConfigForm';

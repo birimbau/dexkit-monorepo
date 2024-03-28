@@ -1,3 +1,7 @@
+import {
+  AppPageSection,
+  CustomEditorSection,
+} from '@dexkit/ui/modules/wizard/types/section';
 import AddIcon from '@mui/icons-material/Add';
 import { Alert, Box, Button, CssVarsTheme, Stack, Theme } from '@mui/material';
 import dynamic from 'next/dynamic';
@@ -5,7 +9,6 @@ import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { AppPage, AppPageOptions } from '../../../../types/config';
 import { BuilderKit } from '../../constants';
-import { AppPageSection, CustomEditorSection } from '../../types/section';
 import PagesSectionPage from '../section-config/PagesSectionPage';
 const EditSectionDialog = dynamic(
   () => import('../section-config/dialogs/EditSectionDialog'),

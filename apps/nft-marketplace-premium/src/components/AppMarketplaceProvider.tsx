@@ -22,6 +22,7 @@ import {
 import {
   assetsAtom,
   currencyUserAtom,
+  hiddenAssetsAtom,
   notificationsAtom,
   referralAtom,
   selectedWalletAtom,
@@ -170,6 +171,7 @@ export function AppMarketplaceProvider({
       locale={locale}
       tokensAtom={tokensAtom}
       assetsAtom={assetsAtom}
+      hiddenAssetsAtom={hiddenAssetsAtom}
       defaultLocale={locale}
       affiliateReferral={ref}
       currencyUserAtom={currencyUserAtom}

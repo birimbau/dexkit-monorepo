@@ -17,6 +17,7 @@ import {
 import Tab from '@mui/material/Tab';
 import { useCallback, useEffect, useState } from 'react';
 
+import RankingSection from '@dexkit/dexappbuilder-viewer/components/sections/RankingSection';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
@@ -41,7 +42,6 @@ import { GamificationPoint } from '../../types';
 import { ExportRanking } from '../ExportRanking';
 import GamificationPointForm from '../forms/Gamification/GamificationPointForm';
 import RankingMetadataForm from '../forms/Gamification/RankingMetadataForm';
-import RankingSection from '../sections/RankingSection';
 const AddAppRankingFormDialog = dynamic(
   () => import('../dialogs/AddAppRankingFormDialog'),
 );

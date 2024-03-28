@@ -4,9 +4,13 @@ import { Container } from "@mui/material";
 import Box from "@mui/material/Box";
 import { useWeb3React } from "@web3-react/core";
 
-import { useCurrency } from "@dexkit/ui/hooks";
+import { useActiveChainIds, useCurrency } from "@dexkit/ui/hooks";
 import { useSwapState } from "@dexkit/ui/modules/swap/hooks";
-import { SwapPageSection } from "@dexkit/ui/modules/wizard/types";
+import { SwapPageSection } from "@dexkit/ui/modules/wizard/types/section";
+
+interface Props {
+  section: SwapPageSection;
+}
 
 interface Props {
   section: SwapPageSection;
@@ -15,6 +19,7 @@ interface Props {
 export function SwapSection({ section }: Props) {
   const currency = useCurrency();
   const { chainId } = useWeb3React();
+  const { activeChainIds } = useActiveChainIds();
   const swapState = useSwapState();
 
   return (
@@ -22,6 +27,7 @@ export function SwapSection({ section }: Props) {
       <Container maxWidth={"xs"} disableGutters>
         <SwapWidget
           {...swapState}
+          activeChainIds={activeChainIds}
           renderOptions={{
             ...swapState.renderOptions,
             configsByChain: section.config?.configByChain

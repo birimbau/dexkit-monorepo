@@ -1,3 +1,8 @@
+import {
+  getBlockExplorerUrl,
+  isAddressEqual,
+  truncateAddress,
+} from '@dexkit/core/utils/blockchain';
 import Launch from '@mui/icons-material/Launch';
 import {
   Alert,
@@ -33,11 +38,6 @@ import {
   useFavoriteAssets,
 } from '../../../../hooks/nft';
 import { AppCollection } from '../../../../types/config';
-import {
-  getBlockExplorerUrl,
-  isAddressEqual,
-  truncateAddress,
-} from '../../../../utils/blockchain';
 import { ipfsUriToUrl } from '../../../../utils/ipfs';
 
 import { isAddress } from '@dexkit/core/utils/ethers/isAddress';

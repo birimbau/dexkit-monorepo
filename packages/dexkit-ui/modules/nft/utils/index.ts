@@ -76,3 +76,7 @@ export function isENSContract(address: string) {
   }
 
 }
+
+export function getAssetProtocol(asset?: Asset) {
+  return asset?.protocol === 'ERC1155' ? 'ERC1155' : 'ERC721';
+}

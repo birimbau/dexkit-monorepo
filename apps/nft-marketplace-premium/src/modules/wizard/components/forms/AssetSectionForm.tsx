@@ -7,6 +7,7 @@ import {
 } from '@dexkit/core/constants/networks';
 import { ipfsUriToUrl, parseChainId } from '@dexkit/core/utils';
 import { useActiveChainIds } from '@dexkit/ui';
+import { AssetPageSection } from '@dexkit/ui/modules/wizard/types/section';
 import {
   Avatar,
   Box,
@@ -28,9 +29,7 @@ import { FormattedMessage } from 'react-intl';
 import { useIntegrationDataQuery } from '../../hooks/integrations';
 import { SiteContext } from '../../providers/SiteWizardProvider';
 import { AssetFormType } from '../../types';
-import { AssetPageSection } from '../../types/section';
 import { CollectionItemAutocomplete } from './CollectionItemAutocomplete';
-
 export interface AssetSectionFormProps {
   onCancel: () => void;
   onSave: (section: AssetPageSection) => void;

@@ -1,3 +1,4 @@
+import { getNativeCurrencySymbol } from '@dexkit/core/utils/blockchain';
 import { formatEther } from '@dexkit/core/utils/ethers/formatEther';
 import { formatUnits } from '@dexkit/core/utils/ethers/formatUnits';
 import {
@@ -20,7 +21,6 @@ import { AppDialogTitle } from '../../../components/AppDialogTitle';
 import { useAppConfig } from '../../../hooks/app';
 import { useCurrency, useNativeCoinPriceQuery } from '../../../hooks/currency';
 import { Quote, Token } from '../../../types/blockchain';
-import { getNativeCurrencySymbol } from '../../../utils/blockchain';
 
 interface Props {
   dialogProps: DialogProps;

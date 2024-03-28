@@ -27,13 +27,13 @@ import { ipfsUriToUrl } from '../../../../utils/ipfs';
 
 import { FormikHelpers, useFormik } from 'formik';
 
+import { isAddressEqual } from '@dexkit/core/utils/blockchain';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import { useWeb3React } from '@web3-react/core';
 import * as Yup from 'yup';
 import AppFeePercentageSpan from '../../../../components/AppFeePercentageSpan';
 import { MIN_ORDER_DATE_TIME } from '../../../../constants';
 import { useTokenList } from '../../../../hooks/blockchain';
-import { isAddressEqual } from '../../../../utils/blockchain';
 import { isValidDecimal } from '../../../../utils/numbers';
 import DurationSelect from '../../../nft/components/DurationSelect';
 

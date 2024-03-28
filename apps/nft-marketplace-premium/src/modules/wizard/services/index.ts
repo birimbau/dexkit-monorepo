@@ -1,21 +1,21 @@
 import axios from 'axios';
 import { Contract, providers } from 'ethers';
 
+import {
+  getNetworkSlugFromChainId,
+  getProviderByChainId,
+} from '@dexkit/core/utils/blockchain';
 import { formatUnits } from '@dexkit/core/utils/ethers/formatUnits';
 import { isAddress } from '@dexkit/core/utils/ethers/isAddress';
 import { parseUnits } from '@dexkit/core/utils/ethers/parseUnits';
+import { GamificationPoint, GatedCondition } from '@dexkit/ui/modules/wizard/types';
 import {
   getBalanceOf,
   getBalanceOfERC1155,
   getERC20Balance,
 } from 'src/services/balances';
 import { myAppsApi } from 'src/services/whitelabel';
-import {
-  getNetworkSlugFromChainId,
-  getProviderByChainId,
-} from 'src/utils/blockchain';
 import { Token } from '../../../types/blockchain';
-import { GamificationPoint, GatedCondition } from '../types';
 
 export async function getTokenList(url: string) {
   const response = await axios.get(url);

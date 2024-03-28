@@ -30,11 +30,10 @@ import { StepperButtons } from '../steppers/StepperButtons';
 const ExchangeSection = dynamic(() => import('../sections/ExchangeSection'));
 
 import { ChainId } from '@dexkit/core';
+import { ExchangePageSection } from '@dexkit/ui/modules/wizard/types/section';
 import { useWeb3React } from '@web3-react/core';
 import appConfig from '../../../../../config/app.json';
-import { ExchangePageSection } from '../../types/section';
 import ThemePreviewMenu from '../ThemePreviewMenu';
-
 interface Props {
   config: AppConfig;
   onSave: (config: AppConfig) => void;

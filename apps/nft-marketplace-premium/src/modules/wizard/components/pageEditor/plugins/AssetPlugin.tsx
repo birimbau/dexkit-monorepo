@@ -1,8 +1,8 @@
+import { getNetworkFromName } from '@dexkit/core/utils/blockchain';
 import { Container } from '@mui/material';
 import Box from '@mui/material/Box';
 import type { CellPlugin } from '@react-page/editor';
 import { NETWORKS } from '../../../../../constants/chain';
-import { getNetworkFromName } from '../../../../../utils/blockchain';
 import AssetFromApi from '../../../../nft/components/AssetFromApi';
 import { SearchNFTAutocomplete } from '../components/SearchNFTAutocomplete';
 import { SingleNFTAutocomplete } from '../components/SingleNFTAutocomplete';

@@ -13,6 +13,12 @@ import {
   useTheme,
 } from '@mui/material';
 
+import {
+  getBlockExplorerUrl,
+  getNetworkSlugFromChainId,
+  isAddressEqual,
+  truncateAddress,
+} from '@dexkit/core/utils/blockchain';
 import { formatUnits } from '@dexkit/core/utils/ethers/formatUnits';
 import { SwappableAssetV4 } from '@traderxyz/nft-swap-sdk';
 import { useWeb3React } from '@web3-react/core';
@@ -37,12 +43,6 @@ import {
 } from '../../../hooks/nft';
 import { getERC20Decimals, getERC20Symbol } from '../../../services/balances';
 import { OrderBookItem, SwapApiOrder } from '../../../types/nft';
-import {
-  getBlockExplorerUrl,
-  getNetworkSlugFromChainId,
-  isAddressEqual,
-  truncateAddress,
-} from '../../../utils/blockchain';
 import { ipfsUriToUrl } from '../../../utils/ipfs';
 import { getAssetProtocol } from '../../../utils/nfts';
 import { OrderPageActions } from './OrderPageActions';

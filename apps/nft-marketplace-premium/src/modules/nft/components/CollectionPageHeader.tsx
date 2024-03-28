@@ -1,7 +1,7 @@
+import { getNetworkSlugFromChainId } from '@dexkit/core/utils/blockchain';
 import { FormattedMessage } from 'react-intl';
 import { PageHeader } from '../../../components/PageHeader';
 import { useCollection } from '../../../hooks/nft';
-import { getNetworkSlugFromChainId } from '../../../utils/blockchain';
 
 interface Props {
   chainId?: number;

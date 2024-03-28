@@ -17,12 +17,19 @@ import { useAtom } from "jotai";
 import { useCallback, useMemo } from "react";
 import { getAssetDexKitApi } from "../../../constants/api";
 import { useAppConfig, useDexKitContext } from "../../../hooks";
-import { useTokenList } from "../../../hooks/blockchain";
+import { useActiveChainIds, useTokenList } from "../../../hooks/blockchain";
 import { accountAssetsAtom } from "../../../state";
 import { NFTType } from "../constants/enum";
 import { getAssetByApi, getAssetData, getAssetMetadata, getAssetsData, getCollectionByApi, getDKAssetOrderbook, getOrderbookOrders, searchAssetsDexKitApi } from "../services";
-import { AssetAPI, OrderBookItem, TraderOrderFilter } from "../types";
+import { AssetAPI, HiddenAsset, OrderBookItem, TraderOrderFilter } from "../types";
 import { calculeFees, parseAssetApi } from "../utils";
+
+import { getChainSlug } from "@dexkit/core/utils/blockchain";
+import {
+  SignedNftOrderV4,
+
+  TradeDirection,
+} from "@traderxyz/nft-swap-sdk";
 
 export const GET_NFT_ORDERS = 'GET_NFT_ORDERS';
 
@@ -43,7 +50,7 @@ export function useCollectionByApi({
       }
 
       return await getCollectionByApi({ chainId, contractAddress });
-    }
+    },
   );
 }
 
@@ -80,6 +87,25 @@ export function useAssetByApi({
       return await getAssetByApi({ chainId, contractAddress, tokenId });
     }
   );
+}
+
+export function useFullAsset({
+  address,
+  id,
+  chainId,
+  lazy,
+}: {
+  address?: string;
+  id?: string;
+  chainId?: ChainId;
+  lazy?: boolean;
+}) {
+  const { data: asset } = useAsset(address, id, undefined, lazy, chainId);
+  const { data: metadata } = useAssetMetadata(asset);
+
+  if (asset && metadata) {
+    return { ...asset, metadata } as Asset;
+  }
 }
 
 export const GET_ASSET_METADATA = 'GET_ASSET_METADATA';
@@ -156,7 +182,7 @@ export function useMakeOfferMutation(
   nftSwapSdk?: NftSwapV4,
   address?: string,
   chainId?: number,
-  options?: UseMutationOptions<PostOrderResponsePayload | undefined, any, any>
+  options?: UseMutationOptions<PostOrderResponsePayload | undefined, any, any>,
 ) {
   const appConfig = useAppConfig();
   const tokens = useTokenList({ chainId });
@@ -184,14 +210,14 @@ export function useMakeOfferMutation(
       };
 
       const token = tokens.find((t) =>
-        isAddressEqual(t.address, another.tokenAddress)
+        isAddressEqual(t.address, another.tokenAddress),
       );
 
       if (appConfig.fees && token) {
         options.fees = calculeFees(
           BigNumber.from(another.amount),
           token.decimals,
-          appConfig.fees
+          appConfig.fees,
         );
       }
 
@@ -200,19 +226,19 @@ export function useMakeOfferMutation(
         //@ts-ignore
         assetOffer,
         address,
-        options
+        options,
       );
 
       const signedOrder = await nftSwapSdk.signOrder(order);
 
       const newOrder = await nftSwapSdk.postOrder(
         signedOrder,
-        nftSwapSdk.chainId.toString()
+        nftSwapSdk.chainId.toString(),
       );
 
       return newOrder;
     },
-    options
+    options,
   );
 
   return mutation;
@@ -222,7 +248,7 @@ export function useMakeListingMutation(
   nftSwapSdk?: NftSwapV4,
   address?: string,
   chainId?: number,
-  options?: UseMutationOptions<PostOrderResponsePayload | undefined, any, any>
+  options?: UseMutationOptions<PostOrderResponsePayload | undefined, any, any>,
 ) {
   const tokens = useTokenList({ includeNative: true, chainId });
   const appConfig = useAppConfig();
@@ -239,14 +265,14 @@ export function useMakeListingMutation(
       };
 
       const token = tokens.find((t) =>
-        isAddressEqual(t.address, another.tokenAddress)
+        isAddressEqual(t.address, another.tokenAddress),
       );
 
       if (appConfig.fees && token) {
         options.fees = calculeFees(
           BigNumber.from(another.amount),
           token.decimals,
-          appConfig.fees
+          appConfig.fees,
         );
       }
 
@@ -254,19 +280,19 @@ export function useMakeListingMutation(
         assetOffer,
         another,
         address,
-        options
+        options,
       );
 
       const signedOrder = await nftSwapSdk.signOrder(order);
 
       const newOrder = await nftSwapSdk.postOrder(
         signedOrder,
-        nftSwapSdk.chainId.toString()
+        nftSwapSdk.chainId.toString(),
       );
 
       return newOrder;
     },
-    options
+    options,
   );
 
   return mutation;
@@ -322,9 +348,10 @@ const GET_ACCOUNTS_ASSETS = 'GET_ACCOUNTS_ASSETS';
 
 export function useAccountAssetsBalance(
   accounts: string[],
-  useSuspense = true
+  useSuspense = true,
 ) {
   const [accountAssets, setAccountAssets] = useAtom(accountAssetsAtom);
+  const { activeChainIds } = useActiveChainIds();
 
   const accountAssetsQuery = useQuery(
     [GET_ACCOUNTS_ASSETS, accounts],
@@ -345,6 +372,7 @@ export function useAccountAssetsBalance(
         return false;
       }
       const networks = Object.values(NETWORKS)
+        .filter(n => activeChainIds.includes(n.chainId))
         .filter((n) => !n.testnet)
         .map((n) => n.slug)
         .join(',');
@@ -378,7 +406,7 @@ export function useAccountAssetsBalance(
       }
       return true;
     },
-    { suspense: useSuspense }
+    { suspense: useSuspense },
   );
   return { accountAssets, accountAssetsQuery };
 }
@@ -390,7 +418,7 @@ export function useAsset(
   tokenId?: string,
   options?: Omit<UseQueryOptions<Asset>, any>,
   lazy?: boolean,
-  networkChainId?: ChainId
+  networkChainId?: ChainId,
 ) {
   const queryClient = useQueryClient();
   const networkProvider = useNetworkProvider(networkChainId);
@@ -430,21 +458,21 @@ export function useAsset(
         provider,
         contractAddress,
         tokenId,
-        account
+        account,
       );
 
       let assetApi: AssetAPI | undefined;
       try {
         assetApi = await getAssetDexKitApi({
-          networkId: NETWORK_SLUG(chainId) || '',
+          networkId: getChainSlug(chainId) || '',
           contractAddress: contractAddress,
           tokenId: tokenId,
         });
       } catch {
         console.log(
-          `error fetching token ${tokenId}, address: ${contractAddress} at ${NETWORK_SLUG(
-            chainId
-          )} from api`
+          `error fetching token ${tokenId}, address: ${contractAddress} at ${getChainSlug(
+            chainId,
+          )} from api`,
         );
       }
       if (assetApi) {
@@ -476,7 +504,7 @@ export function useAsset(
         (Boolean(lazy) &&
           contractAddress !== undefined &&
           tokenId !== undefined),
-    }
+    },
   );
 }
 
@@ -485,7 +513,7 @@ export function useCancelSignedOrderMutation(
   nftSwapSdk?: NftSwapV4,
   orderType?: 'ERC721' | 'ERC1155', // TODO: types
   onHash?: (hash: string, order: SwapApiOrder) => void,
-  options?: Omit<UseMutationOptions, any>
+  options?: Omit<UseMutationOptions, any>,
 ) {
   return useMutation<any, any, any>(
     async ({ order }: { order: SwapApiOrder }) => {
@@ -501,7 +529,7 @@ export function useCancelSignedOrderMutation(
 
       return await tx.wait();
     },
-    options
+    options,
   );
 }
 /**
@@ -514,25 +542,73 @@ export function useCancelSignedOrderMutation(
 export function useFillSignedOrderMutation(
   nftSwapSdk?: NftSwapV4,
   address?: string,
-  options?: Omit<UseMutationOptions, any>
+  options?: Omit<UseMutationOptions, any>,
+  onHash?: ({ hash, accept, order, quantity }: {
+    hash: string;
+    accept?: boolean;
+    order: SignedNftOrderV4;
+    quantity?: number
+  }) => void,
 ) {
   return useMutation(
     async ({
       order,
       accept = false,
+      quantity,
     }: {
       accept?: boolean;
-      order: SwapApiOrder;
+      order: SignedNftOrderV4;
+      quantity?: number;
     }) => {
       if (address === undefined || nftSwapSdk === undefined) {
         return undefined;
       }
+      // this is an ERC1155 order buy order
+      if (
+        quantity &&
+        quantity > 1 &&
+        order.direction === TradeDirection.SellNFT &&
+        'erc1155Token' in order &&
+        quantity !== Number(order.erc1155TokenAmount)
+      ) {
+        const canOrderTypeBeFilledWithNativeToken =
+          order.direction === TradeDirection.SellNFT;
+        const isNativeToken = nftSwapSdk.isErc20NativeToken(order);
+        const needsEthAttached =
+          isNativeToken && canOrderTypeBeFilledWithNativeToken;
 
-      const result = await nftSwapSdk.fillSignedOrder(order, {});
+        const erc20TotalAmount = nftSwapSdk
+          .getErc20TotalIncludingFees(order)
+          .mul(
+            BigNumber.from(quantity).mul(100000).div(order.erc1155TokenAmount),
+          )
+          .div(100000);
 
-      return { hash: result?.hash, accept, order };
+        const tx = await nftSwapSdk.exchangeProxy.buyERC1155(
+          order as any,
+          order.signature,
+          quantity,
+          '0x',
+          {
+            value: needsEthAttached ? erc20TotalAmount : undefined,
+          },
+        );
+        if (onHash) {
+          onHash({ hash: tx?.hash, accept, order, quantity })
+        }
+        await tx.wait();
+        return { hash: tx?.hash, accept, order, quantity };
+      }
+
+      const tx = await nftSwapSdk.fillSignedOrder(order, {});
+      if (onHash) {
+        onHash({ hash: tx?.hash, accept, order })
+      }
+      await tx.wait();
+
+      return { hash: tx?.hash, accept, order };
     },
-    options
+    options,
   );
 }
 
@@ -642,7 +718,7 @@ export const useAssetListFromOrderbook = (orderFilter: TraderOrderFilter) => {
           provider,
           collection,
           itensCollection.map((or) => or.nftTokenId),
-          nftType === NFTType.ERC1155
+          nftType === NFTType.ERC1155,
         );
         if (nfts) {
           assets = assets.concat(nfts);
@@ -650,7 +726,7 @@ export const useAssetListFromOrderbook = (orderFilter: TraderOrderFilter) => {
       }
       return assets;
     },
-    { enabled: provider !== undefined, suspense: true }
+    { enabled: provider !== undefined, suspense: true },
   );
 };
 
@@ -669,7 +745,7 @@ export const useOrderBook = (orderFilter: TraderOrderFilter) => {
 
       return await getOrderbookOrders(orderFilter);
     },
-    { enabled: orderFilter.chainId !== undefined, suspense: true }
+    { enabled: orderFilter.chainId !== undefined, suspense: true },
   );
 };
 
@@ -696,7 +772,7 @@ export const useAssetMetadataFromList = (orderFilter: TraderOrderFilter) => {
           asset.tokenURI,
           undefined,
           asset.protocol === 'ERC1155',
-          asset.id
+          asset.id,
         );
         assetMetadata.push({
           ...asset,
@@ -705,6 +781,57 @@ export const useAssetMetadataFromList = (orderFilter: TraderOrderFilter) => {
       }
       return assetMetadata;
     },
-    { suspense: true }
+    { suspense: true },
   );
 };
+
+
+export function useHiddenAssets() {
+  const { hiddenAssets: assets, setHiddenAssets: setAssets } = useDexKitContext();
+
+  const add = (asset: HiddenAsset) => {
+    setAssets((value) => ({
+      ...value,
+      [`${asset.chainId}-${asset.contractAddress?.toLowerCase()}-${asset.id}`]:
+        true,
+    }));
+  };
+
+  const remove = (asset: HiddenAsset) => {
+    setAssets((value) => {
+      let tempValue = { ...value };
+
+      tempValue[
+        `${asset.chainId}-${asset.contractAddress?.toLowerCase()}-${asset.id}`
+      ] = false;
+
+      return tempValue;
+    });
+  };
+  const isHidden = useCallback(
+    (asset?: Asset) => {
+      return (
+        asset !== undefined &&
+        assets !== undefined &&
+        assets[
+        `${asset.chainId}-${asset.contractAddress.toLowerCase()}-${asset.id}`
+        ] === true
+      );
+    },
+    [assets],
+  );
+  const toggleHidden = (asset?: Asset) => {
+    if (asset !== undefined) {
+      if (isHidden(asset)) {
+        remove(asset);
+      } else {
+        add(asset);
+      }
+    }
+  };
+
+  return { add, remove, assets, isHidden, toggleHidden };
+}
+
+
+

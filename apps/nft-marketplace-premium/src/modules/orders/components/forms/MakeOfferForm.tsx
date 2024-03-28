@@ -26,6 +26,7 @@ import { ipfsUriToUrl } from '../../../../utils/ipfs';
 
 import { FormikErrors, FormikHelpers, useFormik } from 'formik';
 
+import { isAddressEqual } from '@dexkit/core/utils/blockchain';
 import { formatUnits } from '@dexkit/core/utils/ethers/formatUnits';
 import { parseUnits } from '@dexkit/core/utils/ethers/parseUnits';
 import { useTheme } from '@mui/material';
@@ -34,7 +35,6 @@ import AppFeePercentageSpan from '../../../../components/AppFeePercentageSpan';
 import { MIN_ORDER_DATE_TIME } from '../../../../constants';
 import { useTokenList } from '../../../../hooks/blockchain';
 import { Asset } from '../../../../types/nft';
-import { isAddressEqual } from '../../../../utils/blockchain';
 import { isValidDecimal } from '../../../../utils/numbers';
 import { TOKEN_ICON_URL } from '../../../../utils/token';
 import DurationSelect from '../../../nft/components/DurationSelect';

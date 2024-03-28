@@ -5,12 +5,14 @@ import { FormattedMessage } from 'react-intl';
 import { SectionItem } from '../../../../types/config';
 
 import CompletationProvider from '@dexkit/ui/components/CompletationProvider';
+import {
+  AppPageSection,
+  FeaturedAppPageSection,
+} from '@dexkit/ui/modules/wizard/types/section';
 import AddIcon from '@mui/icons-material/Add';
 import * as Yup from 'yup';
-import { AppPageSection, FeaturedAppPageSection } from '../../types/section';
 import { PageSectionItem } from '../PageSectionItem';
 import AddItemForm from './AddItemForm';
-
 interface Form {
   title: string;
 }
@@ -35,7 +37,7 @@ export default function FeaturedSectionForm({
   const [showAddItem, setShowAddItem] = useState(false);
 
   const [items, setItems] = useState<SectionItem[]>(
-    section ? section.items : []
+    section ? section.items : [],
   );
 
   const [selectedItemIndex, setSelectedItemIndex] = useState(-1);

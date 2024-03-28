@@ -9,10 +9,9 @@ import {
   Typography,
 } from '@mui/material';
 
+import { CustomEditorSection } from '@dexkit/ui/modules/wizard/types/section';
 import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { CustomEditorSection } from '../../types/section';
-
 interface Props {
   section?: CustomEditorSection;
   onSave?: (section: CustomEditorSection, index: number) => void;
@@ -69,7 +68,7 @@ export function AppDialogPageEditorTitle({
                 if (onSave && index !== undefined) {
                   onSave(
                     { ...section, title, type: 'custom', data: section?.data },
-                    index
+                    index,
                   );
                 }
               }}

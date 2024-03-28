@@ -1,5 +1,6 @@
 import { Typography } from '@mui/material';
 
+import { isAddressEqual } from '@dexkit/core/utils/blockchain';
 import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
@@ -11,7 +12,6 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { SiteResponse } from 'src/types/whitelabel';
 import { AppCollection, AppConfig } from '../../../../types/config';
-import { isAddressEqual } from '../../../../utils/blockchain';
 import { collectionAtom } from '../../state';
 import { CollectionPreviewPaper } from '../sections/CollectionPreviewPaper';
 import CollectionsSection from '../sections/CollectionsSection';

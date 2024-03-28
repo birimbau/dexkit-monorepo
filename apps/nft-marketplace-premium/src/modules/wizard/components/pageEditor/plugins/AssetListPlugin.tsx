@@ -1,6 +1,6 @@
+import { getNetworkFromName } from '@dexkit/core/utils/blockchain';
 import type { CellPlugin } from '@react-page/editor';
 import { NETWORKS } from '../../../../../constants/chain';
-import { getNetworkFromName } from '../../../../../utils/blockchain';
 import { AssetList } from '../../../../nft/components/AssetListOrderbook';
 import { CollectionAutocomplete } from '../components/CollectionAutocomplete';
 

@@ -23,9 +23,9 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import CloseCircle from '../../../components/icons/CloseCircle';
 import Funnel from '../../../components/icons/Filter';
 
+import { isAddressEqual } from '@dexkit/core/utils/blockchain';
 import { useFavoriteAssets } from '../../../hooks/nft';
 import { Asset } from '../../../types/nft';
-import { isAddressEqual } from '../../../utils/blockchain';
 import { AssetCard } from '../../nft/components/AssetCard';
 import RemoveFavoriteDialog from './RemoveFavoriteDialog';
 

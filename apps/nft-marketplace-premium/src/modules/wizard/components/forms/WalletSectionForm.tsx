@@ -1,7 +1,7 @@
 import {
   AppPageSection,
   WalletPageSection,
-} from '@/modules/wizard/types/section';
+} from '@dexkit/ui/modules/wizard/types/section';
 import { Alert, Box } from '@mui/material';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';

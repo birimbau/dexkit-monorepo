@@ -3,6 +3,7 @@ import { ChainId } from '@dexkit/core/constants';
 import { ERC1155Abi } from '@dexkit/core/constants/abis';
 import { BigNumber, Contract, providers, utils } from 'ethers';
 
+import { getChainIdFromSlug, getNativeCurrencySymbol } from '@dexkit/core/utils/blockchain';
 import { parseEther } from '@dexkit/core/utils/ethers/parseEther';
 import { NETWORKS } from 'src/constants/chain';
 import { DEXKIT } from 'src/constants/dexkit';
@@ -12,7 +13,6 @@ import {
 } from '../constants';
 import { ERC20Abi } from '../constants/abis';
 import { Token, TokenBalance } from '../types/blockchain';
-import { getChainIdFromSlug, getNativeCurrencySymbol } from '../utils/blockchain';
 import {
   getMulticallTokenBalances,
   getMulticallTokenBalancesAndAllowances

@@ -1,4 +1,5 @@
 import { ERC1155Abi, ERC165Abi, ERC721Abi, IERC7572 } from '@dexkit/core/constants/abis';
+import { NETWORK_FROM_SLUG } from '@dexkit/core/constants/networks';
 import { Asset, AssetMetadata } from '@dexkit/core/types/nft';
 import { Interface } from '@dexkit/core/utils/ethers/abi/Interface';
 import { ipfsUriToUrl } from '@dexkit/core/utils/ipfs';
@@ -55,9 +56,13 @@ export async function getAssetMetadata(
 ) {
   let uri = tokenURI;
 
-  if (isERC1155 && tokenId) {
+  if (isERC1155 && tokenId && tokenURI && tokenURI?.search('/0x{id}') !== -1) {
     uri = tokenURI.replace('0x{id}', tokenId);
   }
+  if (isERC1155 && tokenId && tokenURI && tokenURI?.search('/{id}') !== -1) {
+    uri = tokenURI.replace('{id}', tokenId.length === 64 ? tokenId : Number(tokenId).toString(16).padStart(64, '0').toLowerCase());
+  }
+
   if (tokenURI?.startsWith('data:application/json;base64')) {
     const jsonURI = Buffer.from(tokenURI.substring(29), "base64").toString();
     return JSON.parse(jsonURI);
@@ -171,7 +176,6 @@ export async function getENSAssetData(
     };
   }
 }
-
 export async function getAssetProtocol(provider?: providers.JsonRpcProvider, contractAddress?: string): Promise<'ERC721' | 'ERC1155' | 'ERC20' | 'UNKNOWN'> {
   if (!provider || !contractAddress) {
     return 'UNKNOWN';
@@ -203,7 +207,8 @@ export async function getAssetData(
   provider?: providers.JsonRpcProvider,
   contractAddress?: string,
   id?: string,
-  account?: string
+  account?: string,
+  network?: string
 ): Promise<Asset | undefined> {
   if (!provider || !contractAddress || !id) {
     return;
@@ -264,7 +269,7 @@ export async function getAssetData(
     let tokenURI;
     let name;
     let symbol;
-    let balance;
+    let balance = null;
     if (isERC1155) {
 
       if (account) {
@@ -286,9 +291,14 @@ export async function getAssetData(
       symbol = results[3];
     }
 
-
-
-    const { chainId } = await provider.getNetwork();
+    let chainId;
+    if (network) {
+      chainId = NETWORK_FROM_SLUG(network)?.chainId;
+    }
+    if (!chainId) {
+      const { chainId: networkChain } = await provider.getNetwork();
+      chainId = networkChain;
+    }
 
     return {
       owner,
@@ -348,8 +358,7 @@ export async function getContractURI({ provider, contractAddress }: {
 
 export async function getCollectionData(
   provider?: providers.JsonRpcProvider,
-  contractAddress?: string,
-  chainNetwork?: number
+  contractAddress?: string
 ): Promise<Collection | undefined> {
   if (!provider || !contractAddress) {
     return;
@@ -370,21 +379,6 @@ export async function getCollectionData(
     target: contractAddress,
     function: 'symbol',
   });
-  let contractURI = await getContractURI({ provider, contractAddress });
-
-  let contractMetadata = {};
-  if (contractURI) {
-    const metadata = await getContractUriMetadata({ contractURI })
-    if (metadata) {
-      contractMetadata = {
-        name: metadata?.name,
-        imageUrl: metadata?.image,
-        description: metadata?.description
-      }
-    }
-  }
-
-
 
   const response = await multicall?.multiCall(calls);
   if (response) {
@@ -392,15 +386,6 @@ export async function getCollectionData(
 
     const name = results[0];
     const symbol = results[1];
-    if (chainNetwork) {
-      return {
-        name,
-        symbol,
-        address: contractAddress,
-        chainId: chainNetwork,
-        ...(contractMetadata)
-      };
-    }
 
     const { chainId } = await provider.getNetwork();
 
@@ -409,7 +394,6 @@ export async function getCollectionData(
       symbol,
       address: contractAddress,
       chainId,
-      ...(contractMetadata)
     };
   }
 }
