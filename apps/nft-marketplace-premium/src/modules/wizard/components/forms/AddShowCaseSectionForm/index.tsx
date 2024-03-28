@@ -1,46 +1,70 @@
-import { Box, Button, Grid, Paper, Stack, Typography } from '@mui/material';
-import { FieldArray, Formik } from 'formik';
+import {
+  Box,
+  Button,
+  FormControl,
+  Grid,
+  MenuItem,
+  Paper,
+  Stack,
+  Typography,
+} from '@mui/material';
+import { Field, FieldArray, Formik } from 'formik';
 import { FormattedMessage } from 'react-intl';
 
 import { DexkitApiProvider } from '@dexkit/core/providers';
 import dynamic from 'next/dynamic';
 import { useState } from 'react';
 import { myAppsApi } from 'src/services/whitelabel';
-import * as Yup from 'yup';
 import { ShowCaseParams } from '../../../types/section';
 import ShowCaseFormItem from './ShowCaseFormItem';
 
 import ViewStreamIcon from '@mui/icons-material/ViewStream';
 
+import { Select, TextField } from 'formik-mui';
+import { z } from 'zod';
+import { toFormikValidationSchema } from 'zod-formik-adapter';
+
 const MediaDialog = dynamic(() => import('@dexkit/ui/components/mediaDialog'), {
   ssr: false,
 });
 
-const FormSchema = Yup.object({
-  interval: Yup.number().min(1).max(10000).required(),
-  textColor: Yup.string()
-    .matches(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/, 'Invalid hex color')
+// Define the schema for ShowCaseItemAsset
+const ShowCaseItemAssetSchema = z.object({
+  type: z.literal('asset'),
+  title: z.string().optional(),
+  subtitle: z.string().optional(),
+  chainId: z.number().int().positive().min(1), // Assuming positive integer values are required
+  contractAddress: z
+    .string({ required_error: 'contract address is required' })
+    .min(1, { message: 'contract address is required' }),
+  tokenId: z.string({ required_error: 'required' }).min(1),
+});
+
+// Define the schema for ShowCaseItemImage
+const ShowCaseItemImageSchema = z.object({
+  type: z.literal('image'),
+  title: z.string().optional(),
+  imageUrl: z.string({ required_error: 'imageUrl' }).min(1).url(),
+  subtitle: z.string().optional(),
+  action: z
+    .object({
+      type: z.string().optional(),
+      url: z.string().url().optional(),
+    })
     .optional(),
-  height: Yup.object({
-    mobile: Yup.number().min(100).max(250),
-    desktop: Yup.number().min(250).max(500),
-  }),
-  slides: Yup.array()
-    .min(1)
-    .of(
-      Yup.object({
-        textColor: Yup.string()
-          .matches(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/, 'Invalid hex color')
-          .optional(),
-        title: Yup.string().optional(),
-        imageUrl: Yup.string().required(),
-        subtitle: Yup.string().optional(),
-        action: Yup.object({
-          type: Yup.string(),
-          url: Yup.string().url(),
-        }).optional(),
-      })
-    ),
+});
+
+// Define the combined schema using zod.union
+const ShowCaseItemSchema = z.union([
+  ShowCaseItemAssetSchema,
+  ShowCaseItemImageSchema,
+]);
+
+// Schema for the items array
+const FormSchema = z.object({
+  alignItems: z.enum(['center', 'left', 'right']),
+  itemsSpacing: z.number().min(1).max(8),
+  items: z.array(ShowCaseItemSchema).min(1),
 });
 
 export interface AddShowCaseSectionFormProps {
@@ -82,21 +106,36 @@ export default function AddShowCaseSectionForm({
       <Formik
         initialValues={
           data
-            ? data
+            ? {
+                ...data,
+                items: data.items || [],
+                alignItems: data.alignItems || 'left',
+                itemsSpacing: data.itemsSpacing || 2,
+              }
             : {
+                alignItems: 'left',
+                itemsSpacing: 2,
                 items: [],
               }
         }
         onSubmit={handleSubmit}
-        validationSchema={FormSchema}
+        validationSchema={toFormikValidationSchema(FormSchema)}
         validate={(values: ShowCaseParams) => {
           if (saveOnChange) {
             onChange(values);
           }
         }}
+        validateOnBlur
         validateOnChange
       >
-        {({ submitForm, isValid, values, isSubmitting, setFieldValue }) => (
+        {({
+          submitForm,
+          isValid,
+          values,
+          isSubmitting,
+          setFieldValue,
+          errors,
+        }) => (
           <>
             <DexkitApiProvider.Provider value={{ instance: myAppsApi }}>
               <MediaDialog
@@ -112,9 +151,48 @@ export default function AddShowCaseSectionForm({
               />
             </DexkitApiProvider.Provider>
             <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <FormControl fullWidth>
+                  <Field
+                    component={Select}
+                    name="alignItems"
+                    fullWidth
+                    label={
+                      <FormattedMessage
+                        id="align.items"
+                        defaultMessage="Align Items"
+                      />
+                    }
+                  >
+                    <MenuItem value="left">
+                      <FormattedMessage id="left" defaultMessage="Left" />
+                    </MenuItem>
+                    <MenuItem value="center">
+                      <FormattedMessage id="center" defaultMessage="Center" />
+                    </MenuItem>
+                    <MenuItem value="right">
+                      <FormattedMessage id="right" defaultMessage="Right" />
+                    </MenuItem>
+                  </Field>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12}>
+                <Field
+                  component={TextField}
+                  fullWidth
+                  name="itemsSpacing"
+                  type="number"
+                  label={
+                    <FormattedMessage
+                      id="items.spacing"
+                      defaultMessage="Items spacing"
+                    />
+                  }
+                />
+              </Grid>
               {values.items.length === 0 && (
                 <Grid item xs={12}>
-                  <Paper>
+                  <Paper sx={{ p: 2 }}>
                     <Stack
                       sx={{ p: 2 }}
                       alignItems="center"
@@ -169,17 +247,15 @@ export default function AddShowCaseSectionForm({
                     <Grid container spacing={2}>
                       {values.items.map((_, index, arr) => (
                         <Grid item xs={12} key={index}>
-                          <Paper sx={{ p: 2 }}>
-                            <ShowCaseFormItem
-                              index={index}
-                              onUp={arrayHelpers.handleSwap(index, index - 1)}
-                              onDown={arrayHelpers.handleSwap(index, index + 1)}
-                              onRemove={arrayHelpers.handleRemove(index)}
-                              disableDown={index === arr.length - 1}
-                              disableUp={index === 0}
-                              onSelectImage={handleSelectImage(index)}
-                            />
-                          </Paper>
+                          <ShowCaseFormItem
+                            index={index}
+                            onUp={arrayHelpers.handleSwap(index, index - 1)}
+                            onDown={arrayHelpers.handleSwap(index, index + 1)}
+                            onRemove={arrayHelpers.handleRemove(index)}
+                            disableDown={index === arr.length - 1}
+                            disableUp={index === 0}
+                            onSelectImage={handleSelectImage(index)}
+                          />
                         </Grid>
                       ))}
                       {values.items.length > 0 && (

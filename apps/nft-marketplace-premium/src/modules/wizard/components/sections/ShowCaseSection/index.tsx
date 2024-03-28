@@ -30,7 +30,7 @@ export interface ShowCaseSectionProps {
 export default function ShowCaseSection({ section }: ShowCaseSectionProps) {
   const [index, setIndex] = useState(0);
 
-  const { items } = section.settings;
+  const { items, alignItems, itemsSpacing } = section.settings;
 
   const isMobile = useIsMobile();
 
@@ -58,22 +58,41 @@ export default function ShowCaseSection({ section }: ShowCaseSectionProps) {
     setIndex((index) => index - 1);
   };
 
+  const alignItemsValue = useMemo(() => {
+    const results = {
+      left: 'flex-start',
+      center: 'center',
+      right: 'flex-end',
+    };
+
+    return results[alignItems];
+  }, [alignItems]);
+
   return (
     <Box>
       <Stack direction="row" spacing={{ sm: 2, xs: 1 }} alignItems="center">
-        <Box>
-          <IconButton
-            sx={{ bgcolor: (theme) => alpha(theme.palette.action.focus, 0.25) }}
-            onClick={handlePrev}
-          >
-            <KeyboardArrowLeftIcon />
-          </IconButton>
-        </Box>
+        {pages.length > 1 && (
+          <Box>
+            <IconButton
+              sx={{
+                bgcolor: (theme) => alpha(theme.palette.action.focus, 0.25),
+              }}
+              onClick={handlePrev}
+            >
+              <KeyboardArrowLeftIcon />
+            </IconButton>
+          </Box>
+        )}
+
         <Box sx={{ flex: 1 }}>
           <SwipeableViews index={index} onChangeIndex={handleChangeIndex}>
             {pages.map((page, pageIndex) => (
               <Box sx={{ position: 'aboslute' }} key={pageIndex}>
-                <Grid container spacing={{ sm: 2, xs: 1 }}>
+                <Grid
+                  container
+                  justifyContent={alignItemsValue}
+                  spacing={itemsSpacing * 1}
+                >
                   {page.map((item, itemIndex) => (
                     <Grid item xs={6} sm={3} key={`${pageIndex}-${itemIndex}`}>
                       <ShowCaseCard item={item} />
@@ -84,24 +103,30 @@ export default function ShowCaseSection({ section }: ShowCaseSectionProps) {
             ))}
           </SwipeableViews>
         </Box>
-        <Box>
-          <IconButton
-            sx={{ bgcolor: (theme) => alpha(theme.palette.action.focus, 0.25) }}
-            onClick={handleNext}
-          >
-            <KeyboardArrowRightIcon />
-          </IconButton>
-        </Box>
+        {pages.length > 1 && (
+          <Box>
+            <IconButton
+              sx={{
+                bgcolor: (theme) => alpha(theme.palette.action.focus, 0.25),
+              }}
+              onClick={handleNext}
+            >
+              <KeyboardArrowRightIcon />
+            </IconButton>
+          </Box>
+        )}
       </Stack>
-      <Box sx={{ position: 'relative', py: 2 }}>
-        <Pagination
-          dots={pages?.length}
-          index={index}
-          onChangeIndex={(index: number) => {
-            setIndex(index);
-          }}
-        />
-      </Box>
+      {pages.length > 1 && (
+        <Box sx={{ position: 'relative', py: 2 }}>
+          <Pagination
+            dots={pages?.length}
+            index={index}
+            onChangeIndex={(index: number) => {
+              setIndex(index);
+            }}
+          />
+        </Box>
+      )}
     </Box>
   );
 }

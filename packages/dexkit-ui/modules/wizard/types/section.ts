@@ -308,6 +308,7 @@ export type ShowCaseItemImage = {
 export type ShowCaseItem = ShowCaseItemImage | ShowCaseItemAsset;
 
 export type ShowCaseParams = {
+  alignItems: "center" | "left" | "right";
   items: ShowCaseItem[];
 };
 

@@ -87,7 +87,7 @@ export default function SlideItem({
               <FormattedMessage id="image.url" defaultMessage="Image URL" />
             }
             name={`slides[${index}].imageUrl`}
-            InputLabel={{ shrink: true }}
+            InputLabelProps={{ shrink: true }}
             InputProps={{
               shrink: true,
               endAdornment: (
@@ -146,6 +146,7 @@ export default function SlideItem({
             label={
               <FormattedMessage id="text.color" defaultMessage="Text color" />
             }
+            format="rgb"
             name={`slides[${index}].textColor`}
           />
         </Grid>

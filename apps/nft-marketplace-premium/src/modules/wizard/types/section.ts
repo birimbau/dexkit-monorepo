@@ -253,25 +253,27 @@ export interface CollectionPageSection extends PageSection {
   };
 }
 
+export interface CarouselSlide {
+  title: string;
+  subtitle?: string;
+  imageUrl: string;
+  textColor?: string;
+  overlayColor?: string;
+  overlayPercentage?: number;
+  action?: {
+    caption: string;
+    url: string;
+    action: string;
+  };
+}
+
 export interface CarouselFormType {
   interval?: number;
   height?: {
     mobile?: number;
     desktop?: number;
   };
-  slides: {
-    title: string;
-    subtitle?: string;
-    imageUrl: string;
-    textColor?: string;
-    overlayColor?: string;
-    overlayPercentage?: number;
-    action?: {
-      caption: string;
-      url: string;
-      action: string;
-    };
-  }[];
+  slides: CarouselSlide[];
 }
 
 export interface CarouselPageSection extends PageSection {
@@ -302,6 +304,8 @@ export type ShowCaseItemImage = {
 export type ShowCaseItem = ShowCaseItemImage | ShowCaseItemAsset;
 
 export type ShowCaseParams = {
+  alignItems: 'center' | 'left' | 'right';
+  itemsSpacing: number;
   items: ShowCaseItem[];
 };
 

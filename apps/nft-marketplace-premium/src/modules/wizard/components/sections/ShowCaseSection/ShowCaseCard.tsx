@@ -6,6 +6,7 @@ import {
   Box,
   Button,
   Card,
+  CardActionArea,
   CardContent,
   CardMedia,
   Divider,
@@ -14,6 +15,7 @@ import {
   Typography,
 } from '@mui/material';
 import Link from 'src/components/Link';
+import { getNetworkSlugFromChainId } from 'src/utils/blockchain';
 
 export interface ShowCaseCardProps {
   item: ShowCaseItem;
@@ -99,52 +101,71 @@ export default function ShowCaseCard({ item }: ShowCaseCardProps) {
 
   return (
     <Card>
-      {metadataQuery.data?.image ? (
-        <CardMedia
-          image={
-            metadataQuery.data?.image
-              ? ipfsUriToUrl(metadataQuery.data?.image)
-              : undefined
-          }
-          sx={{ aspectRatio: '1/1' }}
-        />
-      ) : (
-        <Skeleton
-          variant="rectangular"
-          sx={{
-            aspectRatio: '1/1',
-            display: 'block',
-            width: '100%',
-            height: '100%',
-          }}
-        />
-      )}
+      <CardActionArea
+        LinkComponent={Link}
+        href={`/asset/${getNetworkSlugFromChainId(item.chainId)}/${
+          item.contractAddress
+        }/${item.tokenId}`}
+      >
+        {metadataQuery.data?.image ? (
+          <CardMedia
+            image={
+              metadataQuery.data?.image
+                ? ipfsUriToUrl(metadataQuery.data?.image)
+                : undefined
+            }
+            sx={{ aspectRatio: '1/1' }}
+          />
+        ) : (
+          <Skeleton
+            variant="rectangular"
+            sx={{
+              aspectRatio: '1/1',
+              display: 'block',
+              width: '100%',
+              height: '100%',
+            }}
+          />
+        )}
 
-      <Divider />
-      <CardContent sx={{ minHeight: (theme) => theme.spacing(16) }}>
-        <Stack spacing={1}>
-          <Box>
-            <Typography
-              sx={{ textOverflow: 'ellipsis', overflow: 'hidden' }}
-              variant="body1"
-              fontWeight="bold"
-            >
-              {metadataQuery.data?.name
-                ? metadataQuery.data?.name
-                : `${nftQuery.data?.collectionName} #${nftQuery.data?.tokenId}`}
-            </Typography>
-            <Typography
-              sx={{ textOverflow: 'ellipsis', overflow: 'hidden' }}
-              variant="body2"
-              color="text.secondary"
-            >
-              {metadataQuery.data?.description
-                ? metadataQuery.data?.description
-                : `${nftQuery.data?.collectionName} #${nftQuery.data?.tokenId}`}
-            </Typography>
-          </Box>
-        </Stack>
-      </CardContent>
+        <Divider />
+        <CardContent sx={{ minHeight: (theme) => theme.spacing(16) }}>
+          <Stack spacing={1}>
+            <Box>
+              <Typography
+                sx={{ textOverflow: 'ellipsis', overflow: 'hidden' }}
+                variant="body1"
+                fontWeight="bold"
+              >
+                {metadataQuery.isLoading ? (
+                  <Skeleton />
+                ) : (
+                  <>
+                    {metadataQuery.data?.name
+                      ? metadataQuery.data?.name
+                      : `${nftQuery.data?.collectionName} #${nftQuery.data?.tokenId}`}
+                  </>
+                )}
+              </Typography>
+              <Typography
+                sx={{ textOverflow: 'ellipsis', overflow: 'hidden' }}
+                variant="body2"
+                color="text.secondary"
+              >
+                {metadataQuery.isLoading ? (
+                  <Skeleton />
+                ) : (
+                  <>
+                    {metadataQuery.data?.description
+                      ? metadataQuery.data?.description
+                      : `${nftQuery.data?.collectionName} #${nftQuery.data?.tokenId}`}
+                  </>
+                )}
+              </Typography>
+            </Box>
+          </Stack>
+        </CardContent>
+      </CardActionArea>
     </Card>
   );
 }

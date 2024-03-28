@@ -1,10 +1,14 @@
-import { Button, Grid, Paper } from '@mui/material';
+import ViewStreamIcon from '@mui/icons-material/ViewStream';
+import { Box, Button, Grid, Paper, Stack, Typography } from '@mui/material';
 import { Field, FieldArray, Formik } from 'formik';
 import { TextField } from 'formik-mui';
 import { FormattedMessage } from 'react-intl';
 import SlideItem from './SlideItem';
 
-import { CarouselFormType } from '@/modules/wizard/types/section';
+import {
+  CarouselFormType,
+  CarouselSlide,
+} from '@/modules/wizard/types/section';
 import { DexkitApiProvider } from '@dexkit/core/providers';
 import dynamic from 'next/dynamic';
 import { useState } from 'react';
@@ -168,6 +172,59 @@ export default function AddCarouselForm({
                   </Grid>
                 </Grid>
               </Grid>
+              {values.slides.length === 0 && (
+                <Grid item xs={12}>
+                  <Paper sx={{ p: 2 }}>
+                    <Stack
+                      sx={{ p: 2 }}
+                      alignItems="center"
+                      justifyContent="center"
+                      spacing={2}
+                    >
+                      <ViewStreamIcon fontSize="large" />
+                      <Box>
+                        <Typography align="center" variant="h5">
+                          <FormattedMessage
+                            id="add.items"
+                            defaultMessage="Add items"
+                          />
+                        </Typography>
+                        <Typography
+                          color="text.secondary"
+                          align="center"
+                          variant="body1"
+                        >
+                          <FormattedMessage
+                            id="section.addItemsPrompt"
+                            defaultMessage="Please add items to the section below."
+                          />
+                        </Typography>
+                      </Box>
+                      <FieldArray
+                        name="slides"
+                        render={(arrayHelpers) => (
+                          <Button
+                            onClick={arrayHelpers.handlePush({
+                              type: 'link',
+                              title: '',
+                              imageUrl: '',
+                              overlayColor: 'rgba(0, 0, 0, 0.5)',
+                              overlayPercentage: 30,
+                              textColor: 'rgba(255, 255, 255, 1)',
+                            } as CarouselSlide)}
+                            variant="outlined"
+                          >
+                            <FormattedMessage
+                              id="add.item"
+                              defaultMessage="Add item"
+                            />
+                          </Button>
+                        )}
+                      />
+                    </Stack>
+                  </Paper>
+                </Grid>
+              )}
               <Grid item xs={12}>
                 <FieldArray
                   name="slides"
@@ -192,10 +249,12 @@ export default function AddCarouselForm({
                         <Button
                           onClick={arrayHelpers.handlePush({
                             type: 'link',
-                            url: '',
+                            title: '',
+                            imageUrl: '',
                             overlayColor: 'rgba(0, 0, 0, 0.5)',
                             overlayPercentage: 30,
-                          })}
+                            textColor: 'rgba(255, 255, 255, 1)',
+                          } as CarouselSlide)}
                           variant="outlined"
                         >
                           <FormattedMessage id="add" defaultMessage="Add" />

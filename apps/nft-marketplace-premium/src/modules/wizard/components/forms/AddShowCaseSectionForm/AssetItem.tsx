@@ -2,7 +2,7 @@ import { useJsonRpcProvider } from '@/modules/wizard/hooks';
 import { ShowCaseItemAsset } from '@/modules/wizard/types/section';
 import { useNftMetadataQuery, useNftQuery } from '@dexkit/core';
 import { ipfsUriToUrl } from '@dexkit/core/utils';
-import { Avatar, Box, Typography } from '@mui/material';
+import { Avatar, Box, Skeleton, Typography } from '@mui/material';
 import { FormattedMessage } from 'react-intl';
 
 export interface AssetItemProps {
@@ -27,14 +27,24 @@ export default function AssetItem({ item }: AssetItemProps) {
 
   return (
     <>
-      <Avatar
-        variant="rounded"
-        src={
-          metadataQuery.data?.image
-            ? ipfsUriToUrl(metadataQuery.data?.image)
-            : undefined
-        }
-      />
+      {metadataQuery.isLoading ? (
+        <Skeleton
+          variant="circular"
+          sx={(theme) => ({
+            width: theme.spacing(5),
+            height: theme.spacing(5),
+          })}
+        />
+      ) : (
+        <Avatar
+          variant="rounded"
+          src={
+            metadataQuery.data?.image
+              ? ipfsUriToUrl(metadataQuery.data?.image)
+              : undefined
+          }
+        />
+      )}
 
       <Box>
         <Typography
@@ -42,9 +52,15 @@ export default function AssetItem({ item }: AssetItemProps) {
           variant="body1"
           fontWeight="bold"
         >
-          {metadataQuery.data?.name
-            ? metadataQuery.data?.name
-            : `${nftQuery.data?.collectionName} #${nftQuery.data?.tokenId}`}
+          {metadataQuery.isLoading ? (
+            <Skeleton sx={{ flex: 1 }} />
+          ) : (
+            <>
+              {metadataQuery.data?.name
+                ? metadataQuery.data?.name
+                : `${nftQuery.data?.collectionName} #${nftQuery.data?.tokenId}`}
+            </>
+          )}
         </Typography>
         {metadataQuery.data?.description && (
           <Typography
@@ -52,13 +68,19 @@ export default function AssetItem({ item }: AssetItemProps) {
             variant="body2"
             color="text.secondary"
           >
-            {metadataQuery.data?.description ? (
-              metadataQuery.data?.description
+            {metadataQuery.isLoading ? (
+              <Skeleton />
             ) : (
-              <FormattedMessage
-                id="no.description"
-                defaultMessage="no description"
-              />
+              <>
+                {metadataQuery.data?.description ? (
+                  metadataQuery.data?.description
+                ) : (
+                  <FormattedMessage
+                    id="no.description"
+                    defaultMessage="no description"
+                  />
+                )}
+              </>
             )}
           </Typography>
         )}

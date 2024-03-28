@@ -59,6 +59,7 @@ import UserContractFormPlugin from './plugins/UserContractFormPlugin';
 import WidgetPlugin from './plugins/WidgetPlugin';
 
 import CarouselPlugin from './plugins/CarouselPlugin';
+import ShowCasePlugin from './plugins/ShowCasePlugin';
 
 // Define which plugins we want to use.
 const cellPlugins = [
@@ -88,11 +89,11 @@ const cellPlugins = [
   QrCodeReceive,
   ExtendedSpacer,
   SearchNFTPlugin,
+  ShowCasePlugin,
   StackPlugin,
   //  CustomLayoutPlugin,
   // SwapPlugin,
   Swap2Plugin,
-
 
   DefaultSlate,
   TokenTradePlugin,
@@ -124,6 +125,7 @@ const nftPlugins = [
   ExtendedSpacer,
   StackPlugin,
   SearchNFTPlugin,
+  ShowCasePlugin,
   DefaultSlate,
   CustomContentPluginTwitter,
   video,
@@ -149,6 +151,7 @@ const swapPlugins = [
   ImagePlugin,
   QrCodeReceive,
   ExtendedSpacer,
+  ShowCasePlugin,
   StackPlugin,
   TokenTradePlugin,
   //  CustomLayoutPlugin,
