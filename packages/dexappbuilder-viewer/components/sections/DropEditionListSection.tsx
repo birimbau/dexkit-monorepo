@@ -13,7 +13,6 @@ import { useMemo, useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 import { AppErrorBoundary } from "src/components/AppErrorBoundary";
 import { useAssetListFromCollection } from "src/hooks/collection";
-import { EditionDropListPageSection } from "../../../../apps/nft-marketplace-premium/src/modules/wizard/types/section";
 
 interface Props {
   section: EditionDropListPageSection;

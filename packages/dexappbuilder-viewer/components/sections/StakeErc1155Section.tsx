@@ -28,9 +28,9 @@ import { useWeb3React } from "@web3-react/core";
 import { BigNumber } from "ethers";
 import { SyntheticEvent, useMemo, useState } from "react";
 import { FormattedMessage } from "react-intl";
-import SelectNFTEditionClaimDialog from "../../../../apps/nft-marketplace-premium/src/modules/wizard/components/dialogs/SelectNFTEditionClaimDialog";
-import SelectNFTEditionDialog from "../../../../apps/nft-marketplace-premium/src/modules/wizard/components/dialogs/SelectNFTEditionDialog";
 import { StakeErc155PageSection } from "../../../../apps/nft-marketplace-premium/src/modules/wizard/types/section";
+import SelectNFTEditionClaimDialog from "../dialogs/SelectNFTEditionClaimDialog";
+import SelectNFTEditionDialog from "../dialogs/SelectNFTEditionDialog";
 
 export interface StakeErc1155SectionProps {
   section: StakeErc155PageSection;

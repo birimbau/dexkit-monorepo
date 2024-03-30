@@ -32,10 +32,9 @@ import { useWeb3React } from "@web3-react/core";
 import { BigNumber } from "ethers";
 import { useMemo, useState } from "react";
 import { FormattedMessage } from "react-intl";
-import NFTGrid from "../../../../apps/nft-marketplace-premium/src/modules/wizard/components/NFTGrid";
-import NFTDropSummary from "../../../../apps/nft-marketplace-premium/src/modules/wizard/components/NftDropSummary";
 import { useClaimNft } from "../../../../apps/nft-marketplace-premium/src/modules/wizard/hooks";
-import { NftDropPageSection } from "../../../../apps/nft-marketplace-premium/src/modules/wizard/types/section";
+import NFTGrid from "../NFTGrid";
+import NFTDropSummary from "../NftDropSummary";
 
 export interface NftDropSectionProps {
   section: NftDropPageSection;

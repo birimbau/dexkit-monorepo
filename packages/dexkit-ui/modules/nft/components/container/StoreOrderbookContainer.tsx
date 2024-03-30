@@ -1,12 +1,11 @@
-import { StoreOrderbook } from '@dexkit/ui/modules/nft/components/StoreOrderbook';
-import { useAssetsOrderBook } from 'src/hooks/nft';
+import { StoreOrderbook } from "@dexkit/ui/modules/nft/components/StoreOrderbook";
 
 type StoreOrdebookOptions = {
   search?: string;
   chainId?: number;
   collectionAddress?: string;
   storeAccount?: string;
-  context?: 'collection' | 'store';
+  context?: "collection" | "store";
 };
 
 export function StoreOrdebookContainer({

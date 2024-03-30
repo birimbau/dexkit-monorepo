@@ -253,9 +253,13 @@ export interface CollectionPageSection extends PageSection {
     address: string;
     network: string;
     hideFilters: boolean;
+    showPageHeader: boolean;
     hideHeader: boolean;
     hideDrops: boolean;
     hideAssets: boolean;
+    enableDarkblock?: boolean;
+    disableSecondarySells?: boolean;
+    isLock?: boolean;
   };
 }
 

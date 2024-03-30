@@ -1,5 +1,5 @@
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import Search from '@mui/icons-material/Search';
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import Search from "@mui/icons-material/Search";
 import {
   InputAdornment,
   List,
@@ -7,17 +7,17 @@ import {
   ListItemText,
   Stack,
   TextField,
-} from '@mui/material';
-import Accordion from '@mui/material/Accordion';
-import AccordionDetails from '@mui/material/AccordionDetails';
-import AccordionSummary from '@mui/material/AccordionSummary';
-import Checkbox from '@mui/material/Checkbox';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Typography from '@mui/material/Typography';
-import { useRouter } from 'next/router';
-import { useEffect, useMemo, useState } from 'react';
-import { useIntl } from 'react-intl';
-import { useCollection } from '../../../hooks/nft';
+} from "@mui/material";
+import Accordion from "@mui/material/Accordion";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import Checkbox from "@mui/material/Checkbox";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Typography from "@mui/material/Typography";
+import { useRouter } from "next/router";
+import { useEffect, useMemo, useState } from "react";
+import { useIntl } from "react-intl";
+import { useCollection } from "../../../../../apps/nft-marketplace-premium/src/hooks/nft";
 
 interface Props {
   address?: string;
@@ -63,8 +63,8 @@ function TraitDetails({
         value={search}
         onChange={handleChangeSearch}
         placeholder={formatMessage({
-          id: 'search',
-          defaultMessage: 'Search',
+          id: "search",
+          defaultMessage: "Search",
         })}
         InputProps={{
           endAdornment: (
@@ -74,7 +74,7 @@ function TraitDetails({
           ),
         }}
       />
-      <List sx={{ maxHeight: '400px', overflow: 'auto' }}>
+      <List sx={{ maxHeight: "400px", overflow: "auto" }}>
         {filteredProperties.map((value, key) => {
           const isChecked =
             filterTraits.findIndex(
@@ -107,12 +107,12 @@ function TraitDetails({
                         ...router.query,
                         traitsFilter: newTraits
                           .map((f) => `${f.property}.${f.value}`)
-                          .join(','),
+                          .join(","),
                       },
                     });
                   }}
                   label={
-                    <Typography variant={'caption'}>
+                    <Typography variant={"caption"}>
                       {traits[property][value]}
                     </Typography>
                   }
@@ -140,10 +140,10 @@ export function CollectionTraits({ address, chainId }: Props) {
 
   useEffect(() => {
     if (queryFilterTraits) {
-      const properties = queryFilterTraits.split(',');
+      const properties = queryFilterTraits.split(",");
       setFilterTraits(
         properties.map((p) => {
-          return { property: p.split('.')[0], value: p.split('.')[1] };
+          return { property: p.split(".")[0], value: p.split(".")[1] };
         })
       );
     } else {
@@ -169,8 +169,8 @@ export function CollectionTraits({ address, chainId }: Props) {
             >
               <Typography>{p}</Typography>
               <Typography
-                variant={'caption'}
-                sx={{ color: 'text.secondary', pl: 1 }}
+                variant={"caption"}
+                sx={{ color: "text.secondary", pl: 1 }}
               >
                 {Object.keys(traits[p]).length || 0}
               </Typography>

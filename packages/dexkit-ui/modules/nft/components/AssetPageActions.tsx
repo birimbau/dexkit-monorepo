@@ -20,14 +20,15 @@ import LaunchIcon from "@mui/icons-material/Launch";
 import Share from "@mui/icons-material/Share";
 import { useWeb3React } from "@web3-react/core";
 import { useState } from "react";
-import Heart from "../../../../../apps/nft-marketplace-premium/src/components/icons/Heart";
+import Heart from "../../../components/icons/Heart";
 import {
   useAsset,
   useAssetBalance,
   useAssetMetadata,
   useFavoriteAssets,
-} from "../../../../../apps/nft-marketplace-premium/src/hooks/nft";
-import { getWindowUrl } from "../../../../../apps/nft-marketplace-premium/src/utils/browser";
+} from "../hooks";
+
+import { getWindowUrl } from "@dexkit/core/utils/browser";
 import ShareDialog from "./dialogs/ShareDialog";
 
 interface Props {

@@ -2,8 +2,12 @@ import { NETWORK_FROM_SLUG } from "@dexkit/core/constants/networks";
 import {
   Box,
   Button,
+  Checkbox,
   Container,
+  Divider,
   Drawer,
+  FormControlLabel,
+  FormGroup,
   Grid,
   IconButton,
   InputAdornment,
@@ -15,24 +19,28 @@ import {
   Typography,
 } from "@mui/material";
 
-import { AssetListCollection } from "@/modules/nft/components/AssetListCollection";
-import { AssetList } from "@/modules/nft/components/AssetListOrderbook";
-import { CollectionHeader } from "@/modules/nft/components/CollectionHeader";
-import { CollectionTraits } from "@/modules/nft/components/CollectionTraits";
-import { TableSkeleton } from "@/modules/nft/components/tables/TableSkeleton";
+import { AppErrorBoundary } from "@dexkit/ui/components/AppErrorBoundary";
 import LazyTextField from "@dexkit/ui/components/LazyTextField";
+import SidebarFilters from "@dexkit/ui/components/SidebarFilters";
+import SidebarFiltersContent from "@dexkit/ui/components/SidebarFiltersContent";
+import { AssetListCollection } from "@dexkit/ui/modules/nft/components/AssetListCollection";
+import { AssetList } from "@dexkit/ui/modules/nft/components/AssetListOrderbook";
+import { CollectionHeader } from "@dexkit/ui/modules/nft/components/CollectionHeader";
+import CollectionPageHeader from "@dexkit/ui/modules/nft/components/CollectionPageHeader";
+import { CollectionTraits } from "@dexkit/ui/modules/nft/components/CollectionTraits";
+import StoreOrdebookContainer from "@dexkit/ui/modules/nft/components/container/StoreOrdebookContainer";
+import { TableSkeleton } from "@dexkit/ui/modules/nft/components/tables/TableSkeleton";
+import { CollectionPageSection } from "@dexkit/ui/modules/wizard/types/section";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import Search from "@mui/icons-material/Search";
 import { ThirdwebSDKProvider, useContractType } from "@thirdweb-dev/react";
 import { useWeb3React } from "@web3-react/core";
 import { Suspense, SyntheticEvent, useMemo, useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
-import { AppErrorBoundary } from "src/components/AppErrorBoundary";
-import SidebarFilters from "src/components/SidebarFilters";
-import SidebarFiltersContent from "src/components/SidebarFiltersContent";
-import { CollectionSyncStatus } from "src/constants/enum";
-import { useCollection } from "src/hooks/nft";
-import { CollectionPageSection } from "../../../../apps/nft-marketplace-premium/src/modules/wizard/types/section";
+
+import { CollectionSyncStatus } from "@dexkit/ui/modules/nft/constants/enum";
+import { useCollection } from "@dexkit/ui/modules/nft/hooks/collection";
+import DarkblockWrapper from "@dexkit/ui/modules/wizard/components/DarkblockWrapper";
 import { DropEditionListSection } from "./DropEditionListSection";
 import NftDropSection from "./NftDropSection";
 
@@ -43,7 +51,18 @@ export interface CollectionSectionProps {
 function CollectionSection({ section }: CollectionSectionProps) {
   const chainId = NETWORK_FROM_SLUG(section.config.network as string)?.chainId;
 
-  const { hideDrops, hideFilters, hideHeader, hideAssets } = section.config;
+  const {
+    hideDrops,
+    hideFilters,
+    hideHeader,
+    showPageHeader,
+    hideAssets,
+    disableSecondarySells,
+    enableDarkblock,
+    isLock,
+  } = section.config;
+  const address = section.config.address;
+  const network = section.config.network;
 
   const { data: collection, isError } = useCollection(
     section.config.address,
@@ -51,6 +70,12 @@ function CollectionSection({ section }: CollectionSectionProps) {
   );
 
   const [search, setSearch] = useState("");
+
+  const [buyNowChecked, setBuyNowChecked] = useState(false);
+
+  const handleChangeBuyNow = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setBuyNowChecked(event.target.checked);
+  };
 
   const handleChange = (value: string) => {
     setSearch(value);
@@ -67,28 +92,47 @@ function CollectionSection({ section }: CollectionSectionProps) {
         onClose={onClose}
       >
         <SidebarFiltersContent>
-          <TextField
-            fullWidth
-            size="small"
-            type="search"
-            value={search}
-            onChange={(e) => handleChange(e.target.value)}
-            placeholder={formatMessage({
-              id: "search.in.collection",
-              defaultMessage: "Search in collection",
-            })}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <Search color="primary" />
-                </InputAdornment>
-              ),
-            }}
-          />
-          <CollectionTraits
-            address={section.config.address as string}
-            chainId={chainId}
-          />
+          <Stack spacing={1}>
+            <TextField
+              fullWidth
+              size="small"
+              type="search"
+              value={search}
+              onChange={(e) => handleChange(e.target.value)}
+              placeholder={formatMessage({
+                id: "search.in.collection",
+                defaultMessage: "Search in collection",
+              })}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <Search color="primary" />
+                  </InputAdornment>
+                ),
+              }}
+            />
+            <Typography>
+              <FormattedMessage defaultMessage={"Status"} id={"status"} />
+            </Typography>
+            <FormGroup>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={buyNowChecked}
+                    onChange={handleChangeBuyNow}
+                    inputProps={{ "aria-label": "controlled" }}
+                  />
+                }
+                label={
+                  <FormattedMessage defaultMessage={"Buy now"} id={"buy.now"} />
+                }
+              />
+            </FormGroup>
+            <Typography>
+              <FormattedMessage defaultMessage={"Traits"} id={"traits"} />
+            </Typography>
+            <CollectionTraits address={address} chainId={chainId} />
+          </Stack>
         </SidebarFiltersContent>
       </SidebarFilters>
     );
@@ -139,27 +183,38 @@ function CollectionSection({ section }: CollectionSectionProps) {
       <Box>
         <Container>
           <Grid container spacing={2}>
+            {showPageHeader && (
+              <Grid item xs={12}>
+                <CollectionPageHeader
+                  chainId={chainId}
+                  address={address as string}
+                />
+              </Grid>
+            )}
             {!hideHeader && (
               <Grid item xs={12}>
                 <CollectionHeader
                   address={section.config.address}
                   chainId={chainId}
                   lazy
+                  isLock={isLock}
                 />
               </Grid>
             )}
             {isDrop && !hideDrops && (
               <Grid item xs={12}>
                 <Tabs value={currTab} onChange={handleChangeTab}>
-                  <Tab
-                    label={
-                      <FormattedMessage
-                        id="collection"
-                        defaultMessage="Collection"
-                      />
-                    }
-                    value="collection"
-                  />
+                  {disableSecondarySells !== true && (
+                    <Tab
+                      label={
+                        <FormattedMessage
+                          id="collection"
+                          defaultMessage="Collection"
+                        />
+                      }
+                      value="collection"
+                    />
+                  )}
                   <Tab
                     label={
                       contractType === "nft-drop" ? (
@@ -174,7 +229,7 @@ function CollectionSection({ section }: CollectionSectionProps) {
               </Grid>
             )}
 
-            {currTab === "drops" && (
+            {currTab === "drops" && isDrop && (
               <Grid item xs={12}>
                 <Typography
                   gutterBottom
@@ -211,7 +266,7 @@ function CollectionSection({ section }: CollectionSectionProps) {
                 )}
               </Grid>
             )}
-            {currTab === "collection" && (
+            {currTab === "collection" && disableSecondarySells !== true && (
               <>
                 <Grid item xs={12}>
                   <Box>
@@ -270,28 +325,59 @@ function CollectionSection({ section }: CollectionSectionProps) {
                           </Stack>
                         )}
                       >
-                        {collection?.syncStatus ===
-                          CollectionSyncStatus.Synced ||
-                        collection?.syncStatus ===
-                          CollectionSyncStatus.Syncing ? (
-                          <AssetListCollection
-                            contractAddress={section.config.address}
-                            network={section.config.network}
+                        {buyNowChecked ? (
+                          <StoreOrdebookContainer
                             search={search}
+                            collectionAddress={address as string}
+                            chainId={chainId}
+                            context={"collection"}
                           />
                         ) : (
-                          <Suspense fallback={<TableSkeleton rows={4} />}>
-                            <AssetList
-                              contractAddress={section.config.address as string}
-                              chainId={chainId}
-                              search={search}
-                            />
-                          </Suspense>
+                          <>
+                            {collection?.syncStatus ===
+                              CollectionSyncStatus.Synced ||
+                            collection?.syncStatus ===
+                              CollectionSyncStatus.Syncing ? (
+                              <AssetListCollection
+                                contractAddress={address as string}
+                                network={network as string}
+                                search={search}
+                              />
+                            ) : (
+                              <Suspense fallback={<TableSkeleton rows={4} />}>
+                                <AssetList
+                                  contractAddress={address as string}
+                                  chainId={
+                                    NETWORK_FROM_SLUG(network as string)
+                                      ?.chainId
+                                  }
+                                  search={search}
+                                />
+                              </Suspense>
+                            )}
+                          </>
                         )}
                       </AppErrorBoundary>
                     </NoSsr>
                   </Grid>
                 )}
+              </>
+            )}
+            {enableDarkblock && (
+              <>
+                <Grid item xs={12}>
+                  <Divider />
+                </Grid>
+                <Grid item xs={12}>
+                  <NoSsr>
+                    <Suspense>
+                      <DarkblockWrapper
+                        address={address as string}
+                        network={network as string}
+                      />
+                    </Suspense>
+                  </NoSsr>
+                </Grid>
               </>
             )}
           </Grid>

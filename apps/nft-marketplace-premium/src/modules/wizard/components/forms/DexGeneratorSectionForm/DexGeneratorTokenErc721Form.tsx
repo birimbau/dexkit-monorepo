@@ -1,4 +1,4 @@
-import { CollectionPageSection } from '@/modules/wizard/types/section';
+import { CollectionPageSection } from '@dexkit/ui/modules/wizard/types/section';
 import { FormControlLabel, Grid, Switch } from '@mui/material';
 import { ThirdwebSDKProvider } from '@thirdweb-dev/react';
 import { useWeb3React } from '@web3-react/core';

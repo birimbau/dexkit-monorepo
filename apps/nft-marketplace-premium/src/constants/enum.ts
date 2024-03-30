@@ -47,10 +47,7 @@ export const enum NETWORK_ID {
   Arbitrum = 'arbitrum'
 }
 
-export enum NFTType {
-  ERC1155 = 'ERC1155',
-  ERC721 = 'ERC721',
-}
+
 
 export enum SellOrBuy {
   All = 'all',
@@ -64,9 +61,3 @@ export enum AppWhitelabelType {
   AGGREGATOR = 'AGGREGATOR',
 }
 
-export enum CollectionSyncStatus {
-  NotSynced = 'NotSynced',
-  Syncing = 'Syncing',
-  Synced = 'Synced',
-  NotSyncable = 'NotSyncable'
-}

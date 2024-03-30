@@ -20,8 +20,8 @@ import { useAppConfig, useDexKitContext } from "../../../hooks";
 import { useActiveChainIds, useTokenList } from "../../../hooks/blockchain";
 import { accountAssetsAtom } from "../../../state";
 import { NFTType } from "../constants/enum";
-import { getAssetByApi, getAssetData, getAssetMetadata, getAssetsData, getCollectionByApi, getDKAssetOrderbook, getOrderbookOrders, searchAssetsDexKitApi } from "../services";
-import { AssetAPI, HiddenAsset, OrderBookItem, TraderOrderFilter } from "../types";
+import { getAssetByApi, getAssetData, getAssetMetadata, getAssetsData, getCollectionByApi, getDKAssetOrderbook, getERC1155Balance, getOrderbookOrders, searchAssetsDexKitApi } from "../services";
+import { AssetAPI, AssetBalance, HiddenAsset, OrderBookItem, TraderOrderFilter } from "../types";
 import { calculeFees, parseAssetApi } from "../utils";
 
 import { getChainSlug } from "@dexkit/core/utils/blockchain";
@@ -30,6 +30,38 @@ import {
 
   TradeDirection,
 } from "@traderxyz/nft-swap-sdk";
+import { AssetRari } from "../types/rarible";
+
+export const GET_ASSET_BALANCE = 'GET_ASSET_BALANCE';
+
+export function useAssetBalance(asset?: Asset, account?: string) {
+  const { provider, chainId } = useWeb3React();
+  return useQuery([GET_ASSET_BALANCE, asset, account, chainId], async () => {
+    if (
+      chainId === undefined ||
+      provider === undefined ||
+      asset === undefined ||
+      account === undefined
+    ) {
+      return;
+    }
+    let balance: BigNumber | undefined;
+
+    if (asset?.protocol === 'ERC1155') {
+      balance = await getERC1155Balance({
+        provider,
+        account,
+        contractAddress: asset.contractAddress,
+        tokenId: asset.id,
+      });
+    }
+
+    return {
+      asset,
+      balance,
+    } as AssetBalance;
+  });
+}
 
 export const GET_NFT_ORDERS = 'GET_NFT_ORDERS';
 
@@ -832,6 +864,23 @@ export function useHiddenAssets() {
 
   return { add, remove, assets, isHidden, toggleHidden };
 }
+
+export const BEST_SELL_ORDER_RARIBLE = 'BEST_SELL_ORDER_RARIBLE';
+
+export function useBestSellOrderAssetRari(
+  network?: string,
+  address?: string,
+  id?: string,
+) {
+  return useQuery<AssetRari | undefined>(
+    [BEST_SELL_ORDER_RARIBLE, network, address, id],
+    () => {
+      return undefined;
+    },
+    { enabled: false },
+  );
+}
+
 
 
 

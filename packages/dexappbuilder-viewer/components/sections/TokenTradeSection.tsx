@@ -1,10 +1,12 @@
 import { isAddressEqual } from "@dexkit/core/utils";
 import { OrderMarketType } from "@dexkit/exchange/constants";
-import TokenInfo from "@dexkit/ui/modules/token/components/container/TokenInfo";
+
 import { Container, Grid } from "@mui/material";
 import { useMemo } from "react";
 
-import { TokenTradePageSection } from "../../../../apps/nft-marketplace-premium/src/modules/wizard/types/section";
+import { useTokenList } from "@dexkit/ui/hooks/blockchain";
+import TokenInfo from "@dexkit/ui/modules/token/components/TokenInfo";
+import { TokenTradePageSection } from "@dexkit/ui/modules/wizard/types/section";
 import MarketTradeSection from "./MarketTradeSection";
 
 export interface TokenTradeSectionProps {

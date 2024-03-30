@@ -1,7 +1,8 @@
-import { getNetworkSlugFromChainId } from '@dexkit/core/utils/blockchain';
-import { FormattedMessage } from 'react-intl';
-import { PageHeader } from '../../../components/PageHeader';
-import { useCollection } from '../../../hooks/nft';
+import { getNetworkSlugFromChainId } from "@dexkit/core/utils/blockchain";
+import { FormattedMessage } from "react-intl";
+
+import { PageHeader } from "../../../components/PageHeader";
+import { useCollection } from "../hooks/collection";
 
 interface Props {
   chainId?: number;
@@ -18,13 +19,13 @@ function CollectionPageHeader({ chainId, address }: Props) {
       breadcrumbs={[
         {
           caption: <FormattedMessage id="home" defaultMessage="Home" />,
-          uri: '/',
+          uri: "/",
         },
         {
           caption: (
             <FormattedMessage id="collections" defaultMessage="Collections" />
           ),
-          uri: '/collections',
+          uri: "/collections",
         },
         {
           caption: collection?.name,

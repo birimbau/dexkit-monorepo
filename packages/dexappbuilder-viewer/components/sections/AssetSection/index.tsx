@@ -1,8 +1,10 @@
-import AssetLeftSection from "@/modules/nft/components/AssetLeftSection";
-import AssetOptionsProvider from "@/modules/nft/components/AssetOptionsProvider";
-import AssetRightSection from "@/modules/nft/components/AssetRightSection";
 import { NETWORK_FROM_SLUG } from "@dexkit/core/constants/networks";
+import AssetLeftSection from "@dexkit/ui/modules/nft/components/AssetLeftSection";
+import AssetOptionsProvider from "@dexkit/ui/modules/nft/components/AssetOptionsProvider";
+import AssetRightSection from "@dexkit/ui/modules/nft/components/AssetRightSection";
+import { fetchAssetForQueryClient } from "@dexkit/ui/modules/nft/services/query";
 import DarkblockWrapper from "@dexkit/ui/modules/wizard/components/DarkblockWrapper";
+import { AssetPageSection } from "@dexkit/ui/modules/wizard/types/section";
 import { hexToString } from "@dexkit/ui/utils";
 import { useAsyncMemo } from "@dexkit/widgets/src/hooks";
 import { Alert, Box, Grid, NoSsr, Typography } from "@mui/material";
@@ -11,8 +13,6 @@ import { ThirdwebSDKProvider, useContract } from "@thirdweb-dev/react";
 import { useWeb3React } from "@web3-react/core";
 import { Suspense, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
-import { fetchAssetForQueryClient } from "src/services/nft";
-import { AssetPageSection } from "../../../types/section";
 import EditionDropSection from "../EditionDropSection";
 
 interface DropWrapperProps {

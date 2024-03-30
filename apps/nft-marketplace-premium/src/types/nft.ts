@@ -1,3 +1,4 @@
+import { AssetAPI } from '@dexkit/ui/modules/nft/types';
 import { DkApiPlatformCoin } from '@dexkit/widgets/src/types/api';
 import { BigNumber } from 'ethers';
 import { NFTType, SellOrBuy } from '../constants/enum';
@@ -67,10 +68,6 @@ export interface CollectionAPI {
   totalSupply?: number;
 }
 
-export interface AssetBalance {
-  balance?: BigNumber;
-  asset: Asset;
-}
 
 
 
@@ -100,24 +97,7 @@ export interface AssetMetadata {
     value: string;
   }[];
 }
-export type AssetAPI = {
-  id: number
-  createdAt: Date
-  updatedAt: Date
-  tokenId: string
-  name: string | null
-  collectionName: string | null
-  symbol: string | null
-  address: string
-  networkId: string
-  chainId: number | null
-  imageUrl: string | null
-  tokenURI: string | null
-  rawData: string | null
-  description: string | null
-  protocol?: 'ERC1155' | 'ERC721';
-  spamInfo?: any
-}
+
 
 export type OrderbookAPI = {
   data: {

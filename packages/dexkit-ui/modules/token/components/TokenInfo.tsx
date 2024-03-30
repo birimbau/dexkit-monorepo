@@ -3,30 +3,30 @@ import {
   getBlockExplorerUrl,
   getTokenBlockExplorerUrl,
   isAddressEqual,
-} from '@dexkit/core/utils';
-import { useTokenList } from '@dexkit/ui/hooks';
+} from "@dexkit/core/utils";
+import { useTokenList } from "@dexkit/ui/hooks";
 
-import { convertTokenToEvmCoin } from '@dexkit/core/utils';
-import TransakWidget from '@dexkit/ui/components/Transak';
-import { useTokenBalance } from '@dexkit/widgets/src/hooks';
-import Send from '@mui/icons-material/Send';
-import VerticalAlignBottomIcon from '@mui/icons-material/VerticalAlignBottom';
-import { Avatar, Box, Button, Grid, Stack, Typography } from '@mui/material';
-import { useWeb3React } from '@web3-react/core';
-import dynamic from 'next/dynamic';
-import { useMemo, useState } from 'react';
-import { FormattedMessage } from 'react-intl';
-import Link from 'src/components/Link';
+import { convertTokenToEvmCoin } from "@dexkit/core/utils";
+import TransakWidget from "@dexkit/ui/components/Transak";
+import { useTokenBalance } from "@dexkit/widgets/src/hooks";
+import Send from "@mui/icons-material/Send";
+import VerticalAlignBottomIcon from "@mui/icons-material/VerticalAlignBottom";
+import { Avatar, Box, Button, Grid, Stack, Typography } from "@mui/material";
+import { useWeb3React } from "@web3-react/core";
+import dynamic from "next/dynamic";
+import { useMemo, useState } from "react";
+import { FormattedMessage } from "react-intl";
+import Link from "../../../components/AppLink";
 
 const EvmReceiveDialog = dynamic(
-  () => import('@dexkit/ui/components/dialogs/EvmReceiveDialog'),
+  () => import("@dexkit/ui/components/dialogs/EvmReceiveDialog")
 );
 
 const EvmTransferCoinDialog = dynamic(
   () =>
     import(
-      '@dexkit/ui/modules/evm-transfer-coin/components/dialogs/EvmSendDialog'
-    ),
+      "@dexkit/ui/modules/evm-transfer-coin/components/dialogs/EvmSendDialog"
+    )
 );
 
 export interface TokenSummaryProps {
@@ -51,7 +51,7 @@ export default function TokenInfo({ address, chainId }: TokenSummaryProps) {
   const token = useMemo(() => {
     if (chainId && address) {
       return tokens.find(
-        (tk) => isAddressEqual(address, tk.address) && chainId === tk.chainId,
+        (tk) => isAddressEqual(address, tk.address) && chainId === tk.chainId
       );
     }
   }, [chainId, address]);
@@ -76,7 +76,7 @@ export default function TokenInfo({ address, chainId }: TokenSummaryProps) {
         <EvmTransferCoinDialog
           dialogProps={{
             open: isSendOpen,
-            maxWidth: 'sm',
+            maxWidth: "sm",
             fullWidth: true,
 
             onClose: handleCloseSend,
@@ -96,7 +96,7 @@ export default function TokenInfo({ address, chainId }: TokenSummaryProps) {
           dialogProps={{
             open: isReceiveOpen,
             onClose: handleCloseReceive,
-            maxWidth: 'sm',
+            maxWidth: "sm",
             fullWidth: true,
           }}
           receiver={account}
@@ -107,10 +107,10 @@ export default function TokenInfo({ address, chainId }: TokenSummaryProps) {
       )}
 
       <Box
-        display={'flex'}
-        justifyContent={'center'}
-        alignItems={'center'}
-        alignContent={'center'}
+        display={"flex"}
+        justifyContent={"center"}
+        alignItems={"center"}
+        alignContent={"center"}
       >
         <Grid container spacing={2}>
           <Grid item xs={12}>
@@ -118,21 +118,21 @@ export default function TokenInfo({ address, chainId }: TokenSummaryProps) {
               <FormattedMessage id="token" defaultMessage="Token" />
         </Typography>*/}
             <Stack
-              flexDirection={'row'}
-              justifyContent={'center'}
-              alignItems={'center'}
+              flexDirection={"row"}
+              justifyContent={"center"}
+              alignItems={"center"}
             >
               <Avatar src={token?.logoURI} />
               <Box
                 sx={{ pl: 1 }}
-                display={'flex'}
-                justifyContent={'center'}
-                flexDirection={'column'}
+                display={"flex"}
+                justifyContent={"center"}
+                flexDirection={"column"}
               >
                 <Typography variant="h6">{token?.symbol}</Typography>
                 {getBlockExplorerUrl(chainId) && (
                   <Link
-                    href={getTokenBlockExplorerUrl({ chainId, address }) || ' '}
+                    href={getTokenBlockExplorerUrl({ chainId, address }) || " "}
                     target="_blank"
                     underline="hover"
                     variant="caption"
@@ -147,8 +147,8 @@ export default function TokenInfo({ address, chainId }: TokenSummaryProps) {
             <Grid
               container
               spacing={2}
-              justifyContent={'center'}
-              justifyItems={'center'}
+              justifyContent={"center"}
+              justifyItems={"center"}
             >
               <Grid item>
                 <Typography variant="caption" color="text.secondary">
@@ -160,7 +160,7 @@ export default function TokenInfo({ address, chainId }: TokenSummaryProps) {
                 <Typography variant="h6">
                   {account
                     ? formatBigNumber(tokenBalance.data, token?.decimals)
-                    : '-'}{' '}
+                    : "-"}{" "}
                   {token?.symbol}
                 </Typography>
               </Grid>
@@ -189,8 +189,8 @@ export default function TokenInfo({ address, chainId }: TokenSummaryProps) {
                   </Button>
                   <TransakWidget
                     buttonProps={{
-                      color: 'inherit',
-                      variant: 'outlined',
+                      color: "inherit",
+                      variant: "outlined",
                       fullWidth: true,
                     }}
                   />

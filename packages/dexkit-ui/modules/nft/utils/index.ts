@@ -2,7 +2,7 @@ import { ChainId } from "@dexkit/core/constants";
 import { Asset, AssetMetadata } from "@dexkit/core/types/nft";
 import { UserFacingFeeStruct } from '@traderxyz/nft-swap-sdk';
 import { BigNumber } from "ethers";
-import { AssetAPI } from "../types";
+import { AssetAPI, AssetBalance } from "../types";
 
 export function truncateErc1155TokenId(id?: string) {
   if (id === undefined) {
@@ -79,4 +79,9 @@ export function isENSContract(address: string) {
 
 export function getAssetProtocol(asset?: Asset) {
   return asset?.protocol === 'ERC1155' ? 'ERC1155' : 'ERC721';
+}
+
+
+export function isERC1155Owner(assetBalance?: AssetBalance) {
+  return assetBalance?.balance?.gt(0) && assetBalance.asset.protocol === 'ERC1155'
 }

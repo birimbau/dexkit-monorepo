@@ -5,7 +5,7 @@ import { Interface } from '@dexkit/core/utils/ethers/abi/Interface';
 import { ipfsUriToUrl } from '@dexkit/core/utils/ipfs';
 import { CallInput } from '@indexed-finance/multicall';
 import axios from 'axios';
-import { Contract, providers } from 'ethers';
+import { BigNumber, Contract, providers } from 'ethers';
 import { DEXKIT_NFT_BASE_URL, ENS_BASE_URL, TRADER_ORDERBOOK_API, dexkitNFTapi, metadataENSapi } from '../../../constants/api';
 import { getMulticallFromProvider } from '../../../services/multical';
 import { AssetAPI, Collection, ContractURIMetadata, OrderbookAPI, OrderbookResponse, TraderOrderFilter } from '../types';
@@ -396,4 +396,46 @@ export async function getCollectionData(
       chainId,
     };
   }
+}
+
+export async function getERC1155Balance({
+  provider,
+  contractAddress,
+  tokenId,
+  account,
+}: {
+  provider?: providers.JsonRpcProvider,
+  contractAddress: string;
+  tokenId: string;
+  account: string;
+}) {
+  if (!provider || !contractAddress || !tokenId || !account) {
+    return;
+  }
+
+  const multicall = await getMulticallFromProvider(provider);
+  const iface = new Interface(ERC1155Abi);
+  let calls: CallInput[] = [];
+  calls.push({
+    interface: iface,
+    target: contractAddress,
+    function: 'balanceOf',
+    args: [account, tokenId],
+  });
+  const response = await multicall?.multiCall(calls);
+  if (response) {
+    const [, results] = response;
+    return results[0] as BigNumber;
+  }
+}
+
+export async function getApiMultipleAssets({ query }: { query: any }
+
+): Promise<AssetAPI[] | undefined> {
+  if (!query) {
+    return;
+  }
+
+  const response = await dexkitNFTapi.post<AssetAPI[]>(`/asset/multiple-assets`, query);
+  return response.data
 }

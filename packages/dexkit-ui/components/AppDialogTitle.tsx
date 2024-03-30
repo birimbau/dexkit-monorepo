@@ -5,11 +5,12 @@ import Typography from "@mui/material/Typography";
 
 import CloseIcon from "@mui/icons-material/Close";
 
-export interface AppDialogTitleProps {
+interface Props {
   title?: string | React.ReactNode | React.ReactNode[];
   icon?: React.ReactNode | React.ReactNode[];
   onClose?: () => void;
   disableClose?: boolean;
+  hideCloseButton?: boolean;
 }
 
 export function AppDialogTitle({
@@ -17,7 +18,8 @@ export function AppDialogTitle({
   icon,
   onClose,
   disableClose,
-}: AppDialogTitleProps) {
+  hideCloseButton,
+}: Props) {
   return (
     <DialogTitle
       sx={{
@@ -38,7 +40,7 @@ export function AppDialogTitle({
         {icon}
         <Typography variant="inherit">{title}</Typography>
       </Stack>
-      {onClose && (
+      {onClose && !hideCloseButton && (
         <IconButton disabled={disableClose} onClick={onClose}>
           <CloseIcon />
         </IconButton>

@@ -1,9 +1,6 @@
 {
   "extends": "tsconfig/react-library.json",
-  "include": [
-    ".",
-    "../../apps/nft-marketplace-premium/src/modules/token/components/AirdropTokenPageContainer.tsx"
-  ],
+  "include": ["."],
   "compilerOptions": {
     "resolveJsonModule": true,
     "target": "es2020",

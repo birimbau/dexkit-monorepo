@@ -1,10 +1,10 @@
-import Link from '@dexkit/ui/components/AppLink';
-import { Button, Grid, Pagination, Stack, Typography } from '@mui/material';
-import { useRouter } from 'next/router';
-import { useMemo, useState } from 'react';
-import { FormattedMessage } from 'react-intl';
-import { useAssetListFromCollection } from '../../../hooks/collection';
-import { BaseAssetCard } from './BaseAssetCard';
+import Link from "@dexkit/ui/components/AppLink";
+import { Button, Grid, Pagination, Stack, Typography } from "@mui/material";
+import { useRouter } from "next/router";
+import { useMemo, useState } from "react";
+import { FormattedMessage } from "react-intl";
+import { useAssetListFromCollection } from "../../../../../apps/nft-marketplace-premium/src/hooks/collection";
+import { BaseAssetCard } from "./BaseAssetCard";
 
 interface Props {
   contractAddress: string;
@@ -26,7 +26,7 @@ export function AssetListCollection({
     address: contractAddress,
     skip: page * perPage,
     take: perPage,
-    traitsFilter: router.query['traitsFilter'] as string | undefined,
+    traitsFilter: router.query["traitsFilter"] as string | undefined,
   });
   const assets = data?.assets;
 
@@ -35,7 +35,7 @@ export function AssetListCollection({
       return assets.filter(
         (a) =>
           a.collectionName.indexOf(search) !== -1 ||
-          a.metadata?.name.indexOf(search) !== -1,
+          a.metadata?.name.indexOf(search) !== -1
       );
     }
 
@@ -79,7 +79,7 @@ export function AssetListCollection({
           </Stack>
         </Grid>
       )}
-      <Grid item xs={12} sm={12} container justifyContent={'flex-end'}>
+      <Grid item xs={12} sm={12} container justifyContent={"flex-end"}>
         <Pagination
           page={page + 1}
           onChange={(_ev, _page) => setPage(_page - 1)}

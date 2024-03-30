@@ -1,24 +1,24 @@
+import DollarSquare from "@dexkit/ui/components/icons/DollarSquare";
 import { Button, Grid, Paper, Stack } from "@mui/material";
 import { useWeb3React } from "@web3-react/core";
 import { BigNumber } from "ethers";
 import { useCallback, useMemo, useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
-import Icon from "../../../../../apps/nft-marketplace-premium/src/components/Icon";
-import DollarSquare from "../../../../../apps/nft-marketplace-premium/src/components/icons/DollarSquare";
 
 import { isAddressEqual } from "@dexkit/core/utils/blockchain";
-import { useDexKitContext } from "@dexkit/ui/hooks";
+import {
+  useConnectWalletDialog,
+  useDexKitContext,
+  useSignMessageDialog,
+  useSwitchNetwork,
+  useTokenList,
+} from "@dexkit/ui/hooks";
 import { useQueryClient } from "@tanstack/react-query";
 import { SwappableAssetV4 } from "@traderxyz/nft-swap-sdk";
 import dynamic from "next/dynamic";
-import {
-  useConnectWalletDialog,
-  useSignMessageDialog,
-} from "../../../../../apps/nft-marketplace-premium/src/hooks/app";
-import {
-  useSwitchNetwork,
-  useTokenList,
-} from "../../../../../apps/nft-marketplace-premium/src/hooks/blockchain";
+
+import { getERC20Name, getERC20Symbol } from "@dexkit/core/services/balances";
+import Icon from "../../../components/Icon";
 import {
   GET_NFT_ORDERS,
   useApproveAssetMutation,
@@ -28,16 +28,10 @@ import {
   useMakeListingMutation,
   useMakeOfferMutation,
   useSwapSdkV4,
-} from "../../../../../apps/nft-marketplace-premium/src/hooks/nft";
-import { TransferAssetButton } from "../../../../../apps/nft-marketplace-premium/src/modules/nft/components/TransferAssetButton";
-import {
-  getERC20Name,
-  getERC20Symbol,
-} from "../../../../../apps/nft-marketplace-premium/src/services/balances";
-import {
-  getAssetProtocol,
-  isERC1155Owner,
-} from "../../../../../apps/nft-marketplace-premium/src/utils/nfts";
+} from "../hooks";
+import { getAssetProtocol, isERC1155Owner } from "../utils";
+import { TransferAssetButton } from "./TransferAssetButton";
+
 const MakeListingDialog = dynamic(() => import("./dialogs/MakeListingDialog"));
 const MakeOfferDialog = dynamic(() => import("./dialogs/MakeOfferDialog"));
 

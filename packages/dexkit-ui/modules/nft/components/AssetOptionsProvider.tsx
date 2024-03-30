@@ -1,5 +1,5 @@
-import React from 'react';
-import { AssetOptions } from '../types';
+import React from "react";
+import { AssetOptions } from "../types";
 
 export const AssetOptionsContext = React.createContext<AssetOptions>({});
 

@@ -1,15 +1,15 @@
-import { styled } from '@mui/material/styles';
-import Ethereum from './icons/Ethereum';
-import Export from './icons/Export';
-import RotateRight from './icons/RotateRight';
-import Setting from './icons/Setting';
-import Share from './icons/Share';
-import Tag from './icons/Tag';
+import { styled } from "@mui/material/styles";
+import Ethereum from "./icons/Ethereum";
+import Export from "./icons/Export";
+import RotateRight from "./icons/RotateRight";
+import Setting from "./icons/Setting";
+import Share from "./icons/Share";
+import Tag from "./icons/Tag";
 
 interface Props {
   icon: string;
-  color?: 'primary';
-  size: 'small' | 'medium' | 'large';
+  color?: "primary";
+  size: "small" | "medium" | "large";
 }
 
 const sizes = {
@@ -20,17 +20,17 @@ const sizes = {
 
 export const Icon = ({ icon, ...otherProps }: Props) => {
   switch (icon) {
-    case 'ethereum':
+    case "ethereum":
       return <Ethereum {...otherProps} />;
-    case 'settings':
+    case "settings":
       return <Setting {...otherProps} />;
-    case 'share':
+    case "share":
       return <Share {...otherProps} />;
-    case 'tag':
+    case "tag":
       return <Tag {...otherProps} />;
-    case 'rotate-right':
+    case "rotate-right":
       return <RotateRight {...otherProps} />;
-    case 'export':
+    case "export":
       return <Export {...otherProps} />;
   }
 
@@ -39,10 +39,10 @@ export const Icon = ({ icon, ...otherProps }: Props) => {
 
 export default styled(Icon, {
   shouldForwardProp: (prop) =>
-    prop !== 'color' && prop !== 'variant' && prop !== 'sx',
+    prop !== "color" && prop !== "variant" && prop !== "sx",
 })<Props>(({ theme, color }) => ({
   stroke:
-    color === 'primary'
+    color === "primary"
       ? theme.palette.primary.main
       : theme.palette.text.primary,
 }));

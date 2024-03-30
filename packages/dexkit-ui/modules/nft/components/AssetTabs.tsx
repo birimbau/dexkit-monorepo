@@ -33,7 +33,11 @@ import TableSkeleton from "./tables/TableSkeleton";
 
 import { UserEvents } from "@dexkit/core/constants/userEvents";
 import { formatUnits } from "@dexkit/core/utils/ethers/formatUnits";
-import { useDexKitContext } from "@dexkit/ui/hooks";
+import {
+  useDexKitContext,
+  useSwitchNetwork,
+  useTokenList,
+} from "@dexkit/ui/hooks";
 import { useTrackUserEventsMutation } from "@dexkit/ui/hooks/userEvents";
 import {
   SignedNftOrderV4,
@@ -42,16 +46,16 @@ import {
 } from "@traderxyz/nft-swap-sdk";
 import { BigNumber } from "ethers";
 
-import { useSwitchNetwork } from "../../../../../apps/nft-marketplace-premium/src/hooks/blockchain";
+import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "@dexkit/core/constants/zrx";
 import {
   getERC20Decimals,
   getERC20Name,
   getERC20Symbol,
-} from "../../../../../apps/nft-marketplace-premium/src/services/balances";
-import { SwapApiOrder } from "../../../../../apps/nft-marketplace-premium/src/types/nft";
-import { getWindowUrl } from "../../../../../apps/nft-marketplace-premium/src/utils/browser";
-
+} from "@dexkit/core/services";
+import { SwapApiOrder } from "@dexkit/core/types/nft";
+import { getWindowUrl } from "@dexkit/core/utils/browser";
 import { OrderDirection } from "../constants/enum";
+import { getAssetProtocol } from "../utils";
 import ShareDialog from "./dialogs/ShareDialog";
 const ConfirmBuyDialog = dynamic(() => import("./dialogs/ConfirmBuyDialog"));
 

@@ -1,10 +1,6 @@
 import { Box, Stack, Typography } from "@mui/material";
-
-import {
-  useAsset,
-  useAssetMetadata,
-} from "../../../../../apps/nft-marketplace-premium/src/hooks/nft";
-import { truncateErc1155TokenId } from "../../../../../apps/nft-marketplace-premium/src/utils/nfts";
+import { useAsset, useAssetMetadata } from "../hooks";
+import { truncateErc1155TokenId } from "../utils";
 
 interface Props {
   address: string;

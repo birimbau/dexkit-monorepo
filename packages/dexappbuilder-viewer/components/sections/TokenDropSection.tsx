@@ -1,6 +1,7 @@
 import { formatUnits } from "@dexkit/core/utils/ethers/formatUnits";
 import LazyTextField from "@dexkit/ui/components/LazyTextField";
 import { useInterval } from "@dexkit/ui/hooks/misc";
+import TokenDropSummary from "@dexkit/ui/modules/token/components/TokenDropSummary";
 import { TokenDropPageSection } from "@dexkit/ui/modules/wizard/types/section";
 import {
   Alert,
@@ -31,7 +32,6 @@ import { BigNumber } from "ethers";
 import { useSnackbar } from "notistack";
 import { useEffect, useMemo, useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
-import TokenDropSummary from "../../../../apps/nft-marketplace-premium/src/modules/wizard/components/TokenDropSummary";
 
 export function parseIneligibility(
   reasons: ClaimEligibility[],

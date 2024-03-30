@@ -17,7 +17,6 @@ import { Asset, SwapApiOrder } from "@dexkit/core/types/nft";
 import { isAddressEqual } from "@dexkit/core/utils";
 import { formatUnits } from "@dexkit/core/utils/ethers/formatUnits";
 import {
-  getAssetProtocol,
   useConnectWalletDialog,
   useDexKitContext,
   useSwitchNetwork,
@@ -29,6 +28,7 @@ import {
   TradeDirection,
 } from "@traderxyz/nft-swap-sdk";
 import { BigNumber } from "ethers";
+import dynamic from "next/dynamic";
 import ShareDialog from "../../../components/dialogs/ShareDialog";
 import { useTokenList } from "../../../hooks/blockchain";
 import { useTrackUserEventsMutation } from "../../../hooks/userEvents";
@@ -41,6 +41,7 @@ import {
   useSwapSdkV4,
 } from "../hooks";
 import { OrderBookItem } from "../types";
+import { getAssetProtocol } from "../utils";
 import AssetBuyOrderPrice from "./AssetBuyOrderPrice";
 import TableSkeleton from "./tables/TableSkeleton";
 const ConfirmBuyDialog = dynamic(() => import("./dialogs/ConfirmBuyDialog"));

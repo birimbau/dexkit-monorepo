@@ -29,8 +29,8 @@ import { useWeb3React } from "@web3-react/core";
 import { BigNumber } from "ethers";
 import { SyntheticEvent, useMemo, useState } from "react";
 import { FormattedMessage } from "react-intl";
-import SelectNFTDialog from "../../../../apps/nft-marketplace-premium/src/modules/wizard/components/dialogs/SelectNFTDialog";
 import { StakeErc721PageSection } from "../../../../apps/nft-marketplace-premium/src/modules/wizard/types/section";
+import SelectNFTDialog from "../dialogs/SelectNFTDialog";
 
 export interface StakeErc721SectionProps {
   section: StakeErc721PageSection;

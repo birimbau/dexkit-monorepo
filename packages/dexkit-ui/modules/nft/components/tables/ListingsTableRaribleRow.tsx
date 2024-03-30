@@ -20,14 +20,14 @@ import { FormattedMessage, FormattedNumber } from "react-intl";
 
 import { memo } from "react";
 import MomentFromNow from "../../../../../../apps/nft-marketplace-premium/src/components/MomentFromNow";
-import {
-  MAP_COIN_TO_RARIBLE,
-  MARKETPLACES_INFO,
-} from "../../../../../../apps/nft-marketplace-premium/src/constants/marketplaces";
 import { useBestSellOrderAssetRari } from "../../../../../../apps/nft-marketplace-premium/src/hooks/nft";
 import { Asset } from "../../../../../../apps/nft-marketplace-premium/src/types/nft";
 import { getMarketplaceForAssetURL } from "../../../../../../apps/nft-marketplace-premium/src/utils/nfts";
 import Link from "../../../../components/Link";
+import {
+  MAP_COIN_TO_RARIBLE,
+  MARKETPLACES_INFO,
+} from "../../constants/marketplaces";
 
 interface Props {
   asset?: Asset;

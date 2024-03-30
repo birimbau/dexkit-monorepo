@@ -1,3 +1,6 @@
+import { PageHeader } from '@dexkit/ui/components/PageHeader';
+import SidebarFilters from '@dexkit/ui/components/SidebarFilters';
+import SidebarFiltersContent from '@dexkit/ui/components/SidebarFiltersContent';
 import SearchOffIcon from '@mui/icons-material/SearchOff';
 import {
   Box,
@@ -18,10 +21,7 @@ import { GetStaticProps, GetStaticPropsContext, NextPage } from 'next';
 import { NextSeo } from 'next-seo';
 import { useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
-import SidebarFilters from 'src/components/SidebarFilters';
-import SidebarFiltersContent from 'src/components/SidebarFiltersContent';
 import { UsecasesAccordion } from 'src/components/UsecasesAccordion';
-import { PageHeader } from '../../src/components/PageHeader';
 import MainLayout from '../../src/components/layouts/main';
 import { useAppConfig } from '../../src/hooks/app';
 import {
@@ -251,58 +251,60 @@ export const SiteTemplatesPage: NextPage = () => {
             )}
 
             {sitesQuery?.isLoading && (
-             <Grid item xs={12} sm={9}>
-              {[1, 2, 3].map((id, key) => (
-                <Grid item xs={12} sm={6} lg={3} key={key}>
-                  <Card sx={{ maxWidth: 345 }} key={key}>
-                    <Skeleton>
-                      <CardMedia
-                        component="img"
-                        height="140"
-                        image={''}
-                        alt=""
-                      />
-                    </Skeleton>
-                    <CardContent>
+              <Grid item xs={12} sm={9}>
+                {[1, 2, 3].map((id, key) => (
+                  <Grid item xs={12} sm={6} lg={3} key={key}>
+                    <Card sx={{ maxWidth: 345 }} key={key}>
                       <Skeleton>
-                        <Typography gutterBottom variant="h5" component="div">
-                          <FormattedMessage
-                            id={'title'}
-                            defaultMessage={'title'}
-                          />
-                        </Typography>
+                        <CardMedia
+                          component="img"
+                          height="140"
+                          image={''}
+                          alt=""
+                        />
                       </Skeleton>
-                      <Skeleton>
-                        <Typography variant="body2" color="text.secondary">
-                          <FormattedMessage
-                            id={'description'}
-                            defaultMessage={'description'}
-                          />
-                        </Typography>
-                      </Skeleton>
-                    </CardContent>
-                    <CardActions>
-                      <Button size="small">
+                      <CardContent>
                         <Skeleton>
-                          <FormattedMessage
-                            id={'clone'}
-                            defaultMessage={'clone'}
-                          />
+                          <Typography gutterBottom variant="h5" component="div">
+                            <FormattedMessage
+                              id={'title'}
+                              defaultMessage={'title'}
+                            />
+                          </Typography>
                         </Skeleton>
-                      </Button>
+                        <Skeleton>
+                          <Typography variant="body2" color="text.secondary">
+                            <FormattedMessage
+                              id={'description'}
+                              defaultMessage={'description'}
+                            />
+                          </Typography>
+                        </Skeleton>
+                      </CardContent>
+                      <CardActions>
+                        <Button size="small">
+                          <Skeleton>
+                            <FormattedMessage
+                              id={'clone'}
+                              defaultMessage={'clone'}
+                            />
+                          </Skeleton>
+                        </Button>
 
-                      <Button size="small">
-                        <Skeleton>
-                          <FormattedMessage
-                            id={'view'}
-                            defaultMessage={'View'}
-                          />
-                        </Skeleton>
-                      </Button>
-                    </CardActions>
-                  </Card>
-                </Grid>
-              ))} </Grid>)}
+                        <Button size="small">
+                          <Skeleton>
+                            <FormattedMessage
+                              id={'view'}
+                              defaultMessage={'View'}
+                            />
+                          </Skeleton>
+                        </Button>
+                      </CardActions>
+                    </Card>
+                  </Grid>
+                ))}{' '}
+              </Grid>
+            )}
           </Grid>
         </Box>
       </MainLayout>

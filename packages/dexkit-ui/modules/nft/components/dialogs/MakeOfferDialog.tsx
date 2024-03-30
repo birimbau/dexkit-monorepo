@@ -19,17 +19,12 @@ import {
   Typography,
 } from "@mui/material";
 
-import { AppDialogTitle } from "../../../../../../apps/nft-marketplace-premium/src/components/AppDialogTitle";
-
 import { BigNumber } from "ethers";
 
 import { useWeb3React } from "@web3-react/core";
 import moment from "moment";
 import { useMemo } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
-
-import { Token } from "../../../../../../apps/nft-marketplace-premium/src/types/blockchain";
-import { ipfsUriToUrl } from "../../../../../../apps/nft-marketplace-premium/src/utils/ipfs";
 
 import { FormikErrors, FormikHelpers, useFormik } from "formik";
 
@@ -39,14 +34,16 @@ import { parseUnits } from "@dexkit/core/utils/ethers/parseUnits";
 import { useTheme } from "@mui/material";
 import Image from "next/image";
 
+import { TOKEN_ICON_URL } from "@dexkit/core/constants";
+import { Asset } from "@dexkit/core/types/nft";
+import { ipfsUriToUrl } from "@dexkit/core/utils/ipfs";
+import { isValidDecimal } from "@dexkit/core/utils/numbers";
 import * as Yup from "yup";
-import AppFeePercentageSpan from "../../../../../../apps/nft-marketplace-premium/src/components/AppFeePercentageSpan";
-import { MIN_ORDER_DATE_TIME } from "../../../../../../apps/nft-marketplace-premium/src/constants";
-
-import DurationSelect from "../../../../../../apps/nft-marketplace-premium/src/modules/nft/components/DurationSelect";
-import { Asset } from "../../../../../../apps/nft-marketplace-premium/src/types/nft";
-import { isValidDecimal } from "../../../../../../apps/nft-marketplace-premium/src/utils/numbers";
-import { TOKEN_ICON_URL } from "../../../../../../apps/nft-marketplace-premium/src/utils/token";
+import { AppDialogTitle } from "../../../../components/AppDialogTitle";
+import { MIN_ORDER_DATE_TIME } from "../../../../constants";
+import { useAssetMetadata } from "../../hooks";
+import { getAssetProtocol } from "../../utils";
+import DurationSelect from "../DurationSelect";
 
 interface Form {
   price: string;

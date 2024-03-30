@@ -1,6 +1,8 @@
 import { Token } from '@dexkit/core/types';
 import { Asset, SwapApiOrder } from '@dexkit/core/types/nft';
 import { DkApiPlatformCoin } from '@dexkit/widgets/src/types/api';
+import { UseQueryOptions } from '@tanstack/react-query';
+import { BigNumber } from 'ethers';
 import { NFTType, SellOrBuy, TraderOrderStatus } from "../constants/enum";
 
 export interface Collection {
@@ -113,3 +115,15 @@ export interface HiddenAsset {
   chainId: number;
   contractAddress: string;
 }
+
+export interface AssetBalance {
+  balance?: BigNumber;
+  asset: Asset;
+}
+
+
+
+
+export type AssetOptions = {
+  options?: Omit<UseQueryOptions<Asset>, any>;
+};

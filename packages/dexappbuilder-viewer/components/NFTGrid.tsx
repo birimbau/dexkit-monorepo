@@ -1,4 +1,4 @@
-import { getNormalizedUrl } from '@dexkit/core/utils';
+import { getNormalizedUrl } from "@dexkit/core/utils";
 import {
   Card,
   CardActionArea,
@@ -8,9 +8,8 @@ import {
   Grid,
   Skeleton,
   Typography,
-} from '@mui/material';
-import { NFT } from '@thirdweb-dev/sdk';
-import Link from 'src/components/Link';
+} from "@mui/material";
+import { NFT } from "@thirdweb-dev/sdk";
 
 export interface NFTGridProps {
   nfts: NFT[];
@@ -41,12 +40,12 @@ export default function NFTGrid({
             {nft.metadata?.image ? (
               <CardMedia
                 image={getNormalizedUrl(nft.metadata?.image)}
-                sx={{ aspectRatio: '1/1', height: '100%' }}
+                sx={{ aspectRatio: "1/1", height: "100%" }}
               />
             ) : (
               <Skeleton
                 variant="rectangular"
-                sx={{ aspectRatio: '16/9', height: '100%' }}
+                sx={{ aspectRatio: "16/9", height: "100%" }}
               />
             )}
             <Divider />
@@ -70,12 +69,12 @@ export default function NFTGrid({
           {nft.metadata?.image ? (
             <CardMedia
               image={getNormalizedUrl(nft.metadata?.image)}
-              sx={{ aspectRatio: '1/1', height: '100%' }}
+              sx={{ aspectRatio: "1/1", height: "100%" }}
             />
           ) : (
             <Skeleton
               variant="rectangular"
-              sx={{ aspectRatio: '16/9', height: '100%' }}
+              sx={{ aspectRatio: "16/9", height: "100%" }}
             />
           )}
         </CardActionArea>

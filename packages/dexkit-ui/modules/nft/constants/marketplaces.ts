@@ -1,4 +1,4 @@
-import { NETWORK_ID } from "./enum";
+import { NETWORK_ID } from "../../../../../apps/nft-marketplace-premium/src/constants/enum";
 
 export enum MARKETPLACES {
   OPEN_SEA = 'OPEN_SEA',

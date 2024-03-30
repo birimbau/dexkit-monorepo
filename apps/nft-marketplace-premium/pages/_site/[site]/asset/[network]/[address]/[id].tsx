@@ -3,42 +3,39 @@ import { dehydrate, QueryClient } from '@tanstack/react-query';
 import type { GetStaticProps, GetStaticPropsContext, NextPage } from 'next';
 import { useRouter } from 'next/router';
 
-import { Grid, NoSsr, Skeleton } from '@mui/material';
+import { Grid, Skeleton } from '@mui/material';
 import MainLayout from '../../../../../../src/components/layouts/main';
 
-import AssetLeftSection from '@dexkit/ui/modules/nft/components/AssetLeftSection';
-import AssetRightSection from '@dexkit/ui/modules/nft/components/AssetRightSection';
-import {
-  BEST_SELL_ORDER_RARIBLE,
-  useAsset,
-  useAssetMetadata,
-} from '../../../../../../src/hooks/nft';
-import { fetchAssetForQueryClient } from '../../../../../../src/services/nft';
+import { fetchAssetForQueryClient } from '@dexkit/ui/modules/nft/services/query';
 
-import AssetHead from '../../../../../../src/modules/nft/components/AssetHead';
+import AssetHead from '@dexkit/ui/modules/nft/components/AssetHead';
 
-import DarkblockWrapper from '@/modules/wizard/components/DarkblockWrapper';
 import { DARKBLOCK_SUPPORTED_CHAIN_IDS } from '@/modules/wizard/constants';
 import { getIntegrationData } from '@/modules/wizard/services/integrations';
 import { ChainId, MY_APPS_ENDPOINT } from '@dexkit/core/constants';
 import { NETWORK_FROM_SLUG } from '@dexkit/core/constants/networks';
-import { truncateAddress } from '@dexkit/core/utils';
+import { ipfsUriToUrl, truncateAddress } from '@dexkit/core/utils';
 import {
   getChainIdFromSlug,
   getNetworkSlugFromChainId,
 } from '@dexkit/core/utils/blockchain';
 import axios from 'axios';
 import { NextSeo } from 'next-seo';
-import { Suspense } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { REVALIDATE_PAGE_TIME } from 'src/constants';
-import { PageHeader } from '../../../../../../src/components/PageHeader';
+
+import AssetSection from '@dexkit/dexappbuilder-viewer/components/sections/AssetSection';
+import { PageHeader } from '@dexkit/ui/components/PageHeader';
+import { MAP_NETWORK_TO_RARIBLE } from '@dexkit/ui/modules/nft/constants/marketplaces';
+import {
+  BEST_SELL_ORDER_RARIBLE,
+  useAsset,
+  useAssetMetadata,
+} from '@dexkit/ui/modules/nft/hooks';
+import { truncateErc1155TokenId } from '@dexkit/ui/modules/nft/utils';
 import { NETWORK_ID } from '../../../../../../src/constants/enum';
-import { MAP_NETWORK_TO_RARIBLE } from '../../../../../../src/constants/marketplaces';
 import { getAppConfig } from '../../../../../../src/services/app';
 import { getRariAsset } from '../../../../../../src/services/rarible';
-import { ipfsUriToUrl } from '../../../../../../src/utils/ipfs';
-import { truncateErc1155TokenId } from '../../../../../../src/utils/nfts';
 
 const AssetDetailPage: NextPage<any> = ({
   enableDarkblock,
@@ -106,23 +103,17 @@ const AssetDetailPage: NextPage<any> = ({
               ]}
             />
           </Grid>
-          <Grid item xs={12} sm={4}>
-            <AssetLeftSection address={address as string} id={id as string} />
-          </Grid>
-          <Grid item xs={12} sm={8}>
-            <AssetRightSection address={address as string} id={id as string} />
-            {enableDarkblock && (
-              <NoSsr>
-                <Suspense>
-                  <DarkblockWrapper
-                    address={address as string}
-                    tokenId={id as string}
-                    network={getNetworkSlugFromChainId(asset?.chainId) || ''}
-                  />
-                </Suspense>
-              </NoSsr>
-            )}
-          </Grid>
+          <AssetSection
+            section={{
+              type: 'asset-section',
+              config: {
+                address: address as string,
+                network: getNetworkSlugFromChainId(asset?.chainId) || '',
+                tokenId: id as string,
+                enableDarkblock: enableDarkblock,
+              },
+            }}
+          />
         </Grid>
       </Container>
     </>

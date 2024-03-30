@@ -44,3 +44,7 @@ export const CURRENCIES: Currency[] = [
 export const MIN_KIT_HOLDING_AI_GENERATION = '1000';
 
 export const MAX_ACCOUNT_FILE_UPLOAD_SIZE = 2048576;
+
+export const DEXKIT_AUTHENTICATE_API_KEY = process?.env?.MARKETPLACE_API_KEY
+  ? process?.env?.MARKETPLACE_API_KEY
+  : '';
