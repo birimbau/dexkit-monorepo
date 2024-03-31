@@ -32,10 +32,10 @@ import {
   useAsset,
   useAssetMetadata,
 } from '@dexkit/ui/modules/nft/hooks';
+import { getRariAsset } from '@dexkit/ui/modules/nft/services/rarible';
 import { truncateErc1155TokenId } from '@dexkit/ui/modules/nft/utils';
 import { NETWORK_ID } from '../../../../../../src/constants/enum';
 import { getAppConfig } from '../../../../../../src/services/app';
-import { getRariAsset } from '../../../../../../src/services/rarible';
 
 const AssetDetailPage: NextPage<any> = ({
   enableDarkblock,

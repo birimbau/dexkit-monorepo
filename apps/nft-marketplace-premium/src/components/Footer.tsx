@@ -18,10 +18,10 @@ import YouTube from '@mui/icons-material/YouTube';
 import Image from 'next/image';
 import { useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { AssetAPI } from 'src/types/nft';
-import { AppConfig, SocialMedia } from '../types/config';
 
 import Link from '@dexkit/ui/components/AppLink';
+import { AssetAPI } from '@dexkit/ui/modules/nft/types';
+import { AppConfig, SocialMedia } from '@dexkit/ui/modules/wizard/types/config';
 import NavbarMenu from './Menu';
 
 interface Props {

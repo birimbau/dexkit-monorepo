@@ -148,7 +148,7 @@ export function useDexkitContextState({
   onChangeLocale: (locale: string) => void;
 }) {
   const [notifications, setNotifications] = useAtom(notificationsAtom);
-  const tokens = useAtomValue(tokensAtom);
+  const [tokens, setTokens] = useAtom(tokensAtom);
   const [assets, setAssets] = useAtom(assetsAtom);
   const [hiddenAssets, setHiddenAssets] = useAtom(hiddenAssetsAtom);
   const currencyUser = useAtomValue(currencyUserAtom);
@@ -207,6 +207,7 @@ export function useDexkitContextState({
 
   return {
     tokens,
+    setTokens,
     assets,
     currencyUser,
     setAssets,

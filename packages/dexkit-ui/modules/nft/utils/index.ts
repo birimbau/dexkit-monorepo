@@ -85,3 +85,5 @@ export function getAssetProtocol(asset?: Asset) {
 export function isERC1155Owner(assetBalance?: AssetBalance) {
   return assetBalance?.balance?.gt(0) && assetBalance.asset.protocol === 'ERC1155'
 }
+
+

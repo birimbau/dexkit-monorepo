@@ -32,8 +32,8 @@ import DrawerMenu from './DrawerMenu';
 import Wallet from './icons/Wallet';
 
 import Link from '@dexkit/ui/components/AppLink';
+import WalletContent from '@dexkit/ui/components/WalletContent';
 import { ThemeModeSelector } from './ThemeModeSelector';
-import WalletContent from './WalletContent';
 
 const CustomListItemSecondaryAction = styled(ListItemSecondaryAction)({
   display: 'flex',

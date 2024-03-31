@@ -24,11 +24,10 @@ import {
 } from '@thirdweb-dev/react';
 import Image from 'next/image';
 import { FormattedMessage, useIntl } from 'react-intl';
-import Link from 'src/components/Link';
 
 import { THIRDWEB_CONTRACTTYPE_TO_NAME } from '@dexkit/ui/constants/thirdweb';
+import { useContractCollection } from '@dexkit/ui/modules/nft/hooks/collection';
 import { useMemo } from 'react';
-import { useContractCollection } from 'src/hooks/nft';
 
 const Img = styled(Image)({});
 

@@ -1,12 +1,9 @@
 import { CoinTypes } from "@dexkit/core/constants";
 import { EvmCoin } from "@dexkit/core/types";
 import { parseUnits } from "@dexkit/core/utils/ethers/parseUnits";
-import { EvmReceiveForm, EvmReceiveQRCode } from "@dexkit/ui/components";
-import { useEvmCoins } from "@dexkit/ui/hooks";
+import EvmReceiveQRCode from "@dexkit/ui/components/EvmReceiveQRCode";
 import QrCodeIcon from "@mui/icons-material/QrCode";
-import { Container } from "@mui/material";
 import type { CellPlugin } from "@react-page/editor";
-import { useWeb3React } from "@web3-react/core";
 
 type Props = {
   receiver?: string | null;
@@ -41,28 +38,6 @@ const QrCodeReceive: CellPlugin<Props> = {
   description: "Receive coin payment by people that scan your QR code",
   icon: <QrCodeIcon />,
   version: 1,
-  controls: {
-    type: "custom",
-    Component: (data) => {
-      const { account, chainId } = useWeb3React();
-      const evmCoins = useEvmCoins({
-        defaultChainId: data.data.chainId || chainId,
-      });
-      return (
-        <Container sx={{ p: 2 }}>
-          <EvmReceiveForm
-            onChange={data.onChange}
-            defaultCoin={data.data.coin}
-            defaultENSName={data.data.ENSName}
-            defaultReceiver={data.data.receiver || account}
-            defaultChainId={data.data.chainId || chainId}
-            defaultAmount={data.data.amount}
-            coins={evmCoins}
-          />
-        </Container>
-      );
-    },
-  },
 };
 
 export default QrCodeReceive;

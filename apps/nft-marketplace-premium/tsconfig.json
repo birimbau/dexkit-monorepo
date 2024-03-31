@@ -31,8 +31,9 @@
     "**/*.tsx",
     "next-sitemap.config.js",
     "scripts/local-diff.js",
-    "../../packages/dexappbuilder-viewer/components/NftDropSummary.tsx",
-    "../../packages/dexappbuilder-viewer/components/NFTGrid.tsx"
+    "../../packages/dexkit-ui/components/WalletContent.tsx",
+    "../../packages/dexkit-ui/services/currency.ts",
+    "../../packages/dexkit-ui/modules/nft/services/rarible.ts"
   ],
   "exclude": ["node_modules"]
 }

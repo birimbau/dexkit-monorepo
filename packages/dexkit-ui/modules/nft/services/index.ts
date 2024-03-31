@@ -8,25 +8,13 @@ import axios from 'axios';
 import { BigNumber, Contract, providers } from 'ethers';
 import { DEXKIT_NFT_BASE_URL, ENS_BASE_URL, TRADER_ORDERBOOK_API, dexkitNFTapi, metadataENSapi } from '../../../constants/api';
 import { getMulticallFromProvider } from '../../../services/multical';
-import { AssetAPI, Collection, ContractURIMetadata, OrderbookAPI, OrderbookResponse, TraderOrderFilter } from '../types';
+import { AssetAPI, ContractURIMetadata, OrderbookAPI, OrderbookResponse, TraderOrderFilter } from '../types';
 import { isENSContract } from '../utils';
 
 const orderbookNFTapi = axios.create({ baseURL: DEXKIT_NFT_BASE_URL, timeout: 10000 });
 
 
-export async function getCollectionByApi({
-  chainId,
-  contractAddress,
-}: {
-  chainId: number;
-  contractAddress: string;
-}) {
-  const resp = await axios.get<Collection>('/api/collection', {
-    params: { chainId, contractAddress },
-  });
 
-  return resp.data;
-}
 
 export async function getDKAssetOrderbook(orderFilter?: TraderOrderFilter) {
   return await orderbookNFTapi.get<OrderbookAPI>(`/asset/orderbook`, { params: orderFilter });
@@ -203,6 +191,7 @@ export async function getAssetProtocol(provider?: providers.JsonRpcProvider, con
 }
 
 
+
 export async function getAssetData(
   provider?: providers.JsonRpcProvider,
   contractAddress?: string,
@@ -356,47 +345,7 @@ export async function getContractURI({ provider, contractAddress }: {
 }
 
 
-export async function getCollectionData(
-  provider?: providers.JsonRpcProvider,
-  contractAddress?: string
-): Promise<Collection | undefined> {
-  if (!provider || !contractAddress) {
-    return;
-  }
 
-  const multicall = await getMulticallFromProvider(provider);
-  const iface = new Interface(ERC721Abi);
-  let calls: CallInput[] = [];
-
-  calls.push({
-    interface: iface,
-    target: contractAddress,
-    function: 'name',
-  });
-
-  calls.push({
-    interface: iface,
-    target: contractAddress,
-    function: 'symbol',
-  });
-
-  const response = await multicall?.multiCall(calls);
-  if (response) {
-    const [, results] = response;
-
-    const name = results[0];
-    const symbol = results[1];
-
-    const { chainId } = await provider.getNetwork();
-
-    return {
-      name,
-      symbol,
-      address: contractAddress,
-      chainId,
-    };
-  }
-}
 
 export async function getERC1155Balance({
   provider,
@@ -438,4 +387,106 @@ export async function getApiMultipleAssets({ query }: { query: any }
 
   const response = await dexkitNFTapi.post<AssetAPI[]>(`/asset/multiple-assets`, query);
   return response.data
+}
+
+export async function getAssetDexKitApi({
+  networkId,
+  contractAddress,
+  tokenId,
+}: {
+  networkId: string;
+  contractAddress: string;
+  tokenId: string;
+}) {
+
+  const resp = await dexkitNFTapi.get<AssetAPI>(`/asset/${networkId}/${contractAddress.toLowerCase()}/${tokenId}`);
+  // We replace it with the cdn image
+  const imageUrl = resp.data.imageUrl?.replace('dexkit-storage.nyc3.digitaloceanspaces.com', 'dexkit-storage.nyc3.cdn.digitaloceanspaces.com');
+
+  if (imageUrl) {
+    return { ...resp.data, imageUrl };
+  }
+  return resp.data
+}
+
+export async function getMultipleAssetDexKitApi({
+  networkId,
+  contractAddress,
+  tokenIds,
+}: {
+  networkId: string;
+  contractAddress: string;
+  tokenIds: string[];
+}) {
+
+  const resp = await dexkitNFTapi.get<AssetAPI[]>(`/asset/multiple/${networkId}/${contractAddress.toLowerCase()}/${tokenIds.join(',')}`);
+  // We replace it with the cdn image
+  const imageUrl = resp.data.map((a) => {
+    let imageUrl;
+    if (a.imageUrl) {
+      imageUrl = a.imageUrl.replace('dexkit-storage.nyc3.digitaloceanspaces.com', 'dexkit-storage.nyc3.cdn.digitaloceanspaces.com');
+    }
+    if (imageUrl) {
+      return { ...a, imageUrl };
+    } else {
+      return a;
+    }
+  })
+
+  if (imageUrl) {
+    return { ...resp.data, imageUrl };
+  }
+  return resp.data
+}
+
+
+export async function getERC721TotalSupply({
+  provider,
+  contractAddress,
+}: {
+  provider?: providers.JsonRpcProvider,
+  contractAddress: string;
+}) {
+  if (!provider || !contractAddress) {
+    return;
+  }
+
+  const multicall = await getMulticallFromProvider(provider);
+  const iface = new Interface(ERC721Abi);
+  let calls: CallInput[] = [];
+  calls.push({
+    interface: iface,
+    target: contractAddress,
+    function: 'totalSupply'
+  });
+  const response = await multicall?.multiCall(calls);
+  if (response) {
+    const [, results] = response;
+    return results[0] as BigNumber;
+  }
+}
+
+
+export async function getAssetsFromOrderbook(
+  provider?: providers.JsonRpcProvider,
+  filters?: TraderOrderFilter
+) {
+  if (provider === undefined) {
+    return;
+  }
+
+  const orderbook = await getOrderbookOrders(filters);
+
+  const ids = new Set<{
+    id: string, address: string, chainId: string
+  }>(
+    orderbook.orders.map((order) => {
+      return {
+        id: order.nftTokenId,
+        address: order.nftToken,
+        chainId: order.chainId,
+
+      }
+    })
+  );
 }

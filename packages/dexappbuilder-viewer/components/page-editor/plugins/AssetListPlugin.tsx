@@ -1,7 +1,6 @@
-import { NETWORKS, NETWORK_FROM_SLUG } from "@dexkit/core/constants/networks";
-import { AssetList } from "@dexkit/ui/modules/nft/components";
+import { getNetworkFromName } from "@dexkit/core/utils/blockchain";
+import { AssetList } from "@dexkit/ui/modules/nft/components/AssetListOrderbook";
 import type { CellPlugin } from "@react-page/editor";
-import { CollectionAutocomplete } from "../components/CollectionAutocomplete";
 
 type Data = {
   network: string;
@@ -12,45 +11,13 @@ const AssetListPlugin: CellPlugin<Data> = {
   Renderer: ({ data }) => (
     <AssetList
       contractAddress={data.contractAddress}
-      chainId={NETWORK_FROM_SLUG(data.network)?.chainId}
+      chainId={getNetworkFromName(data.network)?.chainId}
     />
   ),
   id: "nft-list-plugin",
   title: "NFT List",
   description: "Show a list of nfts with orders on orderbook",
   version: 1,
-  controls: [
-    {
-      title: "From Collections",
-      controls: {
-        type: "custom",
-        Component: (data) => <CollectionAutocomplete data={data} />,
-      },
-    },
-
-    {
-      title: "Import",
-      controls: {
-        type: "autoform",
-        schema: {
-          // this JSONschema is type checked against the generic type argument
-          // the autocompletion of your IDE helps to create this schema
-          properties: {
-            network: {
-              type: "string",
-              enum: Object.values(NETWORKS)
-                .filter((n) => !n.testnet)
-                .map((n) => String(n.name)),
-            },
-            contractAddress: {
-              type: "string",
-            },
-          },
-          required: ["network", "contractAddress"],
-        },
-      },
-    },
-  ],
 };
 
 export default AssetListPlugin;

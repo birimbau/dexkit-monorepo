@@ -1,6 +1,7 @@
 import { useApproveForAll } from "@/modules/contract-wizard/hooks/thirdweb";
 import { formatBigNumber } from "@dexkit/core/utils";
 import { useDexKitContext } from "@dexkit/ui";
+import { StakeErc155PageSection } from "@dexkit/ui/modules/wizard/types/section";
 import { useAsyncMemo } from "@dexkit/widgets/src/hooks";
 import Token from "@mui/icons-material/Token";
 import {
@@ -28,7 +29,6 @@ import { useWeb3React } from "@web3-react/core";
 import { BigNumber } from "ethers";
 import { SyntheticEvent, useMemo, useState } from "react";
 import { FormattedMessage } from "react-intl";
-import { StakeErc155PageSection } from "../../../../apps/nft-marketplace-premium/src/modules/wizard/types/section";
 import SelectNFTEditionClaimDialog from "../dialogs/SelectNFTEditionClaimDialog";
 import SelectNFTEditionDialog from "../dialogs/SelectNFTEditionDialog";
 

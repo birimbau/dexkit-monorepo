@@ -27,6 +27,9 @@ export interface DexkitContextState {
   tokens: TokenWhitelabelApp[];
   currencyUser?: string;
   setAssets: (update: SetStateAction<{ [key: string]: Asset }>) => void;
+  setTokens: (
+    update: SetStateAction<{ [key: string]: TokenWhitelabelApp }>
+  ) => void;
   userEventURL?: string;
   siteId?: number;
   assets: { [key: string]: Asset };
@@ -44,6 +47,7 @@ export const DexKitContext = React.createContext<DexkitContextState>({
   setHiddenAssets() {},
   assets: {},
   setAssets() {},
+  setTokens() {},
   onChangeLocale: (locale: string) => {},
   createNotification: (params: CreateAppNotificationParams) => {},
   checkAllNotifications: () => {},

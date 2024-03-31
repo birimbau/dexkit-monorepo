@@ -4,10 +4,12 @@ import { AppWizardConfigContext } from '../../../contexts';
 
 import { ChainId } from '@dexkit/core';
 import { NETWORKS } from '@dexkit/core/constants/networks';
-import { NFTDrop } from '@thirdweb-dev/sdk';
+
 import { providers } from 'ethers';
 import { QUERY_ADMIN_WHITELABEL_CONFIG_NAME } from 'src/hooks/whitelabel';
-import { getAccessToken } from 'src/services/auth';
+
+import { GatedCondition } from '@dexkit/ui/modules/wizard/types';
+import { getAccessToken } from '@dexkit/ui/services/auth';
 import { myAppsApi } from 'src/services/whitelabel';
 import { AppConfig } from 'src/types/config';
 import {
@@ -23,7 +25,7 @@ import {
   updateSiteRankingVersion,
   upsertAppVersion
 } from '../services';
-import { GamificationPoint, GatedCondition } from '../types';
+import { GamificationPoint } from '../types';
 import { generateCSSVarsTheme } from '../utils';
 
 export const TOKEN_LIST_URL = 'TOKEN_LIST_URL';
@@ -132,11 +134,7 @@ export function useSendSiteConfirmationLinkMutation() {
   });
 }
 
-export function useClaimNft({ contract }: { contract?: NFTDrop }) {
-  return useMutation(async ({ quantity }: { quantity: number }) => {
-    return await contract?.erc721.claim.prepare(quantity);
-  });
-}
+
 
 
 export function useAddPermissionMemberMutation() {

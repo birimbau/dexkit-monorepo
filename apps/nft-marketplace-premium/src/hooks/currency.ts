@@ -1,4 +1,5 @@
 import { ChainId } from '@0x/contract-addresses';
+import { getCoinPrices, getTokenPrices } from '@dexkit/ui/services/currency';
 import { useQuery } from '@tanstack/react-query';
 import { useWeb3React } from '@web3-react/core';
 import axios from 'axios';
@@ -10,7 +11,6 @@ import {
   ZEROEX_NATIVE_TOKEN_ADDRESS
 } from '../constants';
 import { NETWORKS } from '../constants/chain';
-import { getCoinPrices, getTokenPrices } from '../services/currency';
 import { currencyAtom, currencyUserAtom } from '../state/atoms';
 import { useAppConfig } from './app';
 import { useTokenList } from './blockchain';

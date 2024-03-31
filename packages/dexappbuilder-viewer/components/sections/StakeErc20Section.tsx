@@ -4,6 +4,7 @@ import { formatUnits } from "@dexkit/core/utils/ethers/formatUnits";
 import { parseUnits } from "@dexkit/core/utils/ethers/parseUnits";
 import { useDexKitContext } from "@dexkit/ui";
 import FormikDecimalInput from "@dexkit/ui/components/FormikDecimalInput";
+import { StakeErc20PageSection } from "@dexkit/ui/modules/wizard/types/section";
 import { useAsyncMemo } from "@dexkit/widgets/src/hooks";
 import {
   Box,
@@ -32,7 +33,6 @@ import { BigNumber } from "ethers";
 import { Formik, FormikErrors } from "formik";
 import { SyntheticEvent, useMemo, useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
-import { StakeErc20PageSection } from "../../../../apps/nft-marketplace-premium/src/modules/wizard/types/section";
 
 export interface StakeErc20SectionProps {
   section: StakeErc20PageSection;

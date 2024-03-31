@@ -1,5 +1,5 @@
 import { LazyYoutubeFrame } from "@dexkit/ui/components";
-import { VideoEmbedType } from "@dexkit/ui/modules/wizard/types";
+import { VideoEmbedType } from "@dexkit/ui/modules/wizard/types/config";
 import { Box, Container, Grid, Typography } from "@mui/material";
 
 interface Props {

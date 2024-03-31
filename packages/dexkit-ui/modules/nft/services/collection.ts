@@ -1,9 +1,14 @@
+import { ERC721Abi } from "@dexkit/core/constants/abis";
+import { Asset } from "@dexkit/core/types/nft";
+import { Interface } from '@dexkit/core/utils/ethers/abi/Interface';
+import { CallInput } from '@indexed-finance/multicall';
+import axios from 'axios';
 import { providers } from "ethers";
-import { getOrderbookOrders } from ".";
+import { getAssetProtocol, getAssetsData, getOrderbookOrders } from ".";
 import { DEXKIT_AUTHENTICATE_API_KEY } from "../../../constants";
 import { dexkitNFTapi } from "../../../constants/api";
-import { AssetAPI, Collection, TraderOrderFilter } from "../types";
-
+import { getMulticallFromProvider } from "../../../services/multical";
+import { AssetAPI, Collection, CollectionAPI, TraderOrderFilter } from "../types";
 
 export async function getApiCollectionData(
   networkId?: string,
@@ -92,3 +97,83 @@ export async function getSyncCollectionData(
   return response.data
 }
 
+export async function getApiAccountContractCollectionData(
+  account?: string
+
+): Promise<{ collection: CollectionAPI }[] | undefined> {
+  if (!account) {
+    return;
+  }
+
+  const response = await dexkitNFTapi.get<{ collection: CollectionAPI }[]>(`/contract/collections/account/${account.toLowerCase()}`);
+  return response.data
+}
+
+export async function getApiContractCollectionData(
+  networkId?: string,
+  address?: string
+
+): Promise<{ collection: CollectionAPI, metadata: any } | undefined> {
+  if (!networkId || !address) {
+    return;
+  }
+
+  const response = await dexkitNFTapi.get<{ collection: CollectionAPI, metadata: any }>(`/contract/collection/${networkId}/${address.toLowerCase()}`);
+  return response.data
+}
+
+export async function getCollectionData(
+  provider?: providers.JsonRpcProvider,
+  contractAddress?: string
+): Promise<Collection | undefined> {
+  if (!provider || !contractAddress) {
+    return;
+  }
+
+  const multicall = await getMulticallFromProvider(provider);
+  const iface = new Interface(ERC721Abi);
+  let calls: CallInput[] = [];
+
+  calls.push({
+    interface: iface,
+    target: contractAddress,
+    function: 'name',
+  });
+
+  calls.push({
+    interface: iface,
+    target: contractAddress,
+    function: 'symbol',
+  });
+
+  const response = await multicall?.multiCall(calls);
+  if (response) {
+    const [, results] = response;
+
+    const name = results[0];
+    const symbol = results[1];
+
+    const { chainId } = await provider.getNetwork();
+
+    return {
+      name,
+      symbol,
+      address: contractAddress,
+      chainId,
+    };
+  }
+}
+
+export async function getCollectionByApi({
+  chainId,
+  contractAddress,
+}: {
+  chainId: number;
+  contractAddress: string;
+}) {
+  const resp = await axios.get<Collection>('/api/collection', {
+    params: { chainId, contractAddress },
+  });
+
+  return resp.data;
+}

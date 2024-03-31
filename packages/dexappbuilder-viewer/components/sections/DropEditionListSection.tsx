@@ -1,4 +1,7 @@
-import { BaseAssetCard } from "@/modules/nft/components/BaseAssetCard";
+import { AppErrorBoundary } from "@dexkit/ui/components/AppErrorBoundary";
+import { BaseAssetCard } from "@dexkit/ui/modules/nft/components/BaseAssetCard";
+import { useAssetListFromCollection } from "@dexkit/ui/modules/nft/hooks/collection";
+import { EditionDropListPageSection } from "@dexkit/ui/modules/wizard/types/section";
 import Search from "@mui/icons-material/Search";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
@@ -8,11 +11,10 @@ import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
+
 import { useRouter } from "next/router";
 import { useMemo, useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
-import { AppErrorBoundary } from "src/components/AppErrorBoundary";
-import { useAssetListFromCollection } from "src/hooks/collection";
 
 interface Props {
   section: EditionDropListPageSection;

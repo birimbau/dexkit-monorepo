@@ -40,8 +40,8 @@ import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import { FormattedMessage } from 'react-intl';
 import { useCurrency } from 'src/hooks/currency';
-import { AppConfig } from 'src/types/config';
-import { useConnectWalletDialog, useLocale, useThemeMode } from '../hooks/app';
+
+import { useConnectWalletDialog, useThemeMode } from '../hooks/app';
 import { useSelectNetworkDialog } from '../hooks/misc';
 import {
   drawerIsOpenAtom,
@@ -50,9 +50,9 @@ import {
   showSelectLocaleAtom,
 } from '../state/atoms';
 
+import { WalletButton } from '@dexkit/ui/components/WalletButton';
 import NavbarMenu from './Menu';
 import { ThemeModeSelector } from './ThemeModeSelector';
-import { WalletButton } from './WalletButton';
 import Notification from './icons/Notification';
 import Wallet from './icons/Wallet';
 
@@ -64,7 +64,12 @@ import { useAuthUserQuery } from '@/modules/user/hooks';
 import Link from '@dexkit/ui/components/AppLink';
 import NotificationsDialog from '@dexkit/ui/components/dialogs/NotificationsDialog';
 import { ThemeMode } from '@dexkit/ui/constants/enum';
-import { useDexKitContext, useNotifications } from '@dexkit/ui/hooks';
+import {
+  useDexKitContext,
+  useLocale,
+  useNotifications,
+} from '@dexkit/ui/hooks';
+import { AppConfig } from '@dexkit/ui/modules/wizard/types/config';
 import AppProfileMenu from './AppProfileMenu';
 
 interface Props {
@@ -73,7 +78,7 @@ interface Props {
 }
 
 function Navbar({ appConfig, isPreview }: Props) {
-  const { isActive, chainId, connector } = useWeb3React();
+  const { isActive, chainId } = useWeb3React();
   const { mode } = useThemeMode();
 
   const buttonRef = useRef<HTMLElement | null>(null);

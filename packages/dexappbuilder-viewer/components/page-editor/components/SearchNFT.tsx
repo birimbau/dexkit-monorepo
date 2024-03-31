@@ -1,13 +1,13 @@
-import { CircularProgress } from "@mui/material";
-import Autocomplete from "@mui/material/Autocomplete";
-import Box from "@mui/material/Box";
-import TextField from "@mui/material/TextField";
-import { useRouter } from "next/router";
-import React, { useState } from "react";
-
-import { NETWORKS, NETWORK_NAME } from "@dexkit/core/constants/networks";
-import { useSearchAssets } from "@dexkit/ui/modules/nft/hooks";
-import { CollectionUniformItem } from "./CollectionAutocompleteUniform";
+import { getChainName } from '@dexkit/core/utils/blockchain';
+import { CircularProgress } from '@mui/material';
+import Autocomplete from '@mui/material/Autocomplete';
+import Box from '@mui/material/Box';
+import TextField from '@mui/material/TextField';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
+import { NETWORKS } from '../../../../../constants/chain';
+import { useSearchAssets } from '../../../../../hooks/nft';
+import { CollectionUniformItem } from './CollectionAutocompleteUniform';
 
 interface Props {
   disabled: boolean;
@@ -23,7 +23,7 @@ export function SearchNFT(props: Props) {
   const assets =
     searchQuery?.data?.map((value) => {
       return {
-        name: (value.name as string) || "",
+        name: (value.name as string) || '',
         contractAddress: value.address,
         id: value.tokenId,
         network: Object.values(NETWORKS).find((n) => n.slug === value.networkId)
@@ -43,7 +43,7 @@ export function SearchNFT(props: Props) {
       onChange={(_change, value) => {
         if (value && !disabled) {
           const slug = Object.values(NETWORKS).find(
-            (n) => Number(n.chainId) === Number(value.chainId)
+            (n) => Number(n.chainId) === Number(value.chainId),
           )?.slug;
 
           router.push(`/asset/${slug}/${value.contractAddress}/${value.id}`);
@@ -53,22 +53,22 @@ export function SearchNFT(props: Props) {
       renderOption={(props, option) => (
         <Box
           component="li"
-          sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
+          sx={{ '& > img': { mr: 2, flexShrink: 0 } }}
           {...props}
         >
           <img loading="lazy" width="20" src={`${option.image}`} alt="" />
-          {NETWORK_NAME(option.chainId)} - ({option.name}) - #{option.id || ""}
+          {getChainName(option.chainId)} - ({option.name}) - #{option.id || ''}
         </Box>
       )}
       renderInput={(params) => (
         <>
           <TextField
             {...params}
-            label={textSearch || "Search a NFT"}
+            label={textSearch || 'Search a NFT'}
             onChange={(ev) => setSearch(ev.currentTarget.value)}
             inputProps={{
               ...params.inputProps,
-              autoComplete: "new-password", // disable autocomplete and autofill
+              autoComplete: 'new-password', // disable autocomplete and autofill
               endAdornment: (
                 <React.Fragment>
                   {searchQuery.isLoading ? (

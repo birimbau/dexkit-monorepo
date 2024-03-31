@@ -1,11 +1,15 @@
-import { useEvmNativeBalanceQuery } from '@dexkit/core';
+import { useEvmNativeBalanceQuery } from "@dexkit/core";
 import {
   copyToClipboard,
   formatBigNumber,
   truncateAddress,
-} from '@dexkit/core/utils';
-import { useConnectWalletDialog, useEvmCoins } from '@dexkit/ui';
-import CopyIconButton from '@dexkit/ui/components/CopyIconButton';
+} from "@dexkit/core/utils";
+import {
+  useConnectWalletDialog,
+  useEvmCoins,
+  useLogoutAccountMutation,
+} from "@dexkit/ui";
+import CopyIconButton from "@dexkit/ui/components/CopyIconButton";
 import {
   Avatar,
   Box,
@@ -16,44 +20,42 @@ import {
   Stack,
   Tooltip,
   Typography,
-} from '@mui/material';
-import { useWeb3React } from '@web3-react/core';
-import { useAtom } from 'jotai';
-import { useCallback, useMemo, useState } from 'react';
-import { FormattedMessage, useIntl } from 'react-intl';
-import { isBalancesVisibleAtom } from 'src/state/atoms';
+} from "@mui/material";
+import { useWeb3React } from "@web3-react/core";
+import { useCallback, useMemo, useState } from "react";
+import { FormattedMessage, useIntl } from "react-intl";
 
-import VerticalAlignBottomIcon from '@mui/icons-material/VerticalAlignBottom';
-import dynamic from 'next/dynamic';
+import VerticalAlignBottomIcon from "@mui/icons-material/VerticalAlignBottom";
+import dynamic from "next/dynamic";
 
-import { NETWORK_IMAGE, NETWORK_NAME } from '@dexkit/core/constants/networks';
+import { NETWORK_IMAGE, NETWORK_NAME } from "@dexkit/core/constants/networks";
 
-import { AccountBalance } from '@dexkit/ui/components/AccountBalance';
-import TransakWidget from '@dexkit/ui/components/Transak';
-import { GET_WALLET_ICON } from '@dexkit/wallet-connectors/connectors';
-import { useWalletConnectorMetadata } from '@dexkit/wallet-connectors/hooks';
-import FileCopy from '@mui/icons-material/FileCopy';
-import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
-import Logout from '@mui/icons-material/Logout';
-import Send from '@mui/icons-material/Send';
-import SwitchAccount from '@mui/icons-material/SwitchAccount';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import { useLogoutAccountMutation } from 'src/hooks/account';
+import { AccountBalance } from "@dexkit/ui/components/AccountBalance";
+import TransakWidget from "@dexkit/ui/components/Transak";
+import { GET_WALLET_ICON } from "@dexkit/wallet-connectors/connectors";
+import { useWalletConnectorMetadata } from "@dexkit/wallet-connectors/hooks";
+import FileCopy from "@mui/icons-material/FileCopy";
+import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
+import Logout from "@mui/icons-material/Logout";
+import Send from "@mui/icons-material/Send";
+import SwitchAccount from "@mui/icons-material/SwitchAccount";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import { useBalanceVisible } from "../modules/wallet/hooks";
 
 const EvmReceiveDialog = dynamic(
-  () => import('@dexkit/ui/components/dialogs/EvmReceiveDialog'),
+  () => import("@dexkit/ui/components/dialogs/EvmReceiveDialog")
 );
 
 const EvmTransferCoinDialog = dynamic(
   () =>
     import(
-      '@dexkit/ui/modules/evm-transfer-coin/components/dialogs/EvmSendDialog'
-    ),
+      "@dexkit/ui/modules/evm-transfer-coin/components/dialogs/EvmSendDialog"
+    )
 );
 
 const SelectNetworkDialog = dynamic(
-  () => import('@dexkit/ui/components/dialogs/SelectNetworkDialog'),
+  () => import("@dexkit/ui/components/dialogs/SelectNetworkDialog")
 );
 
 export default function WalletContent() {
@@ -78,9 +80,7 @@ export default function WalletContent() {
 
   const { data: balance } = useEvmNativeBalanceQuery({ provider, account });
 
-  const [isBalancesVisible, setIsBalancesVisible] = useAtom(
-    isBalancesVisibleAtom,
-  );
+  const [isBalancesVisible, setIsBalancesVisible] = useBalanceVisible();
 
   const handleToggleVisibility = () => {
     setIsBalancesVisible((value: boolean) => !value);
@@ -91,7 +91,7 @@ export default function WalletContent() {
       return formatBigNumber(balance);
     }
 
-    return '0.00';
+    return "0.00";
   }, [balance]);
 
   const handleCopy = () => {
@@ -139,7 +139,7 @@ export default function WalletContent() {
       {isOpen && (
         <SelectNetworkDialog
           dialogProps={{
-            maxWidth: 'sm',
+            maxWidth: "sm",
             open: isOpen,
             fullWidth: true,
             onClose: handleSwitchNetworkClose,
@@ -153,7 +153,7 @@ export default function WalletContent() {
             open: isSendOpen,
             onClose: handleCloseSend,
             fullWidth: true,
-            maxWidth: 'sm',
+            maxWidth: "sm",
           }}
           params={{
             ENSName,
@@ -170,7 +170,7 @@ export default function WalletContent() {
           dialogProps={{
             open: isReceiveOpen,
             onClose: handleCloseReceive,
-            maxWidth: 'sm',
+            maxWidth: "sm",
             fullWidth: true,
           }}
           receiver={account}
@@ -185,7 +185,7 @@ export default function WalletContent() {
             direction="row"
             alignItems="center"
             spacing={2}
-            justifyContent={'space-between'}
+            justifyContent={"space-between"}
           >
             <Stack direction="row" spacing={1} alignItems="center">
               <Avatar
@@ -203,21 +203,21 @@ export default function WalletContent() {
                     ? ENSName
                       ? ENSName
                       : truncateAddress(account)
-                    : '**********'}{' '}
+                    : "**********"}{" "}
                   <CopyIconButton
                     iconButtonProps={{
                       onClick: handleCopy,
-                      size: 'small',
+                      size: "small",
                     }}
                     tooltip={formatMessage({
-                      id: 'copy.address',
-                      defaultMessage: 'Copy address',
-                      description: 'Copy text',
+                      id: "copy.address",
+                      defaultMessage: "Copy address",
+                      description: "Copy text",
                     })}
                     activeTooltip={formatMessage({
-                      id: 'copied',
-                      defaultMessage: 'Copied!',
-                      description: 'Copied text',
+                      id: "copied",
+                      defaultMessage: "Copied!",
+                      description: "Copied text",
                     })}
                   >
                     <FileCopy fontSize="inherit" color="inherit" />
@@ -225,9 +225,9 @@ export default function WalletContent() {
                   <Tooltip
                     title={
                       isBalancesVisible ? (
-                        <FormattedMessage id={'hide'} defaultMessage={'Hide'} />
+                        <FormattedMessage id={"hide"} defaultMessage={"Hide"} />
                       ) : (
-                        <FormattedMessage id={'show'} defaultMessage={'Show'} />
+                        <FormattedMessage id={"show"} defaultMessage={"Show"} />
                       )
                     }
                   >
@@ -248,8 +248,8 @@ export default function WalletContent() {
             <Tooltip
               title={
                 <FormattedMessage
-                  id={'logout.wallet'}
-                  defaultMessage={'Logout wallet'}
+                  id={"logout.wallet"}
+                  defaultMessage={"Logout wallet"}
                 />
               }
             >
@@ -261,14 +261,14 @@ export default function WalletContent() {
           <Tooltip
             title={
               <FormattedMessage
-                id={'switch.network'}
-                defaultMessage={'Switch network'}
+                id={"switch.network"}
+                defaultMessage={"Switch network"}
               />
             }
           >
             <ButtonBase
               sx={{
-                display: 'block',
+                display: "block",
                 px: 1,
                 py: 1,
                 border: (theme) => `1px solid ${theme.palette.divider}`,
@@ -286,7 +286,7 @@ export default function WalletContent() {
                   <Avatar
                     src={NETWORK_IMAGE(chainId)}
                     alt={`network chainId: ${chainId}`}
-                    sx={{ width: '1rem', height: '1rem' }}
+                    sx={{ width: "1rem", height: "1rem" }}
                   />
                   <Typography>{NETWORK_NAME(chainId)}</Typography>
                 </Stack>
@@ -317,7 +317,7 @@ export default function WalletContent() {
           </Stack>
           <Stack spacing={2} direction="row">
             <TransakWidget
-              buttonProps={{ color: 'inherit', variant: 'outlined' }}
+              buttonProps={{ color: "inherit", variant: "outlined" }}
             ></TransakWidget>
 
             <Button

@@ -1,5 +1,6 @@
 import { StoreHeader } from '@dexkit/ui/modules/nft/components/StoreHeader';
 import { StoreOrderbook } from '@dexkit/ui/modules/nft/components/StoreOrderbook';
+import { useAssetsOrderBook } from '@dexkit/ui/modules/nft/hooks';
 import Search from '@mui/icons-material/Search';
 import {
   Button,
@@ -15,7 +16,7 @@ import { useWeb3React } from '@web3-react/core';
 import dynamic from 'next/dynamic';
 import { useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { useAssetsOrderBook } from 'src/hooks/nft';
+
 import { AssetStoreOptions } from 'src/types/nft';
 
 const CreateAssetOrderDialog = dynamic(

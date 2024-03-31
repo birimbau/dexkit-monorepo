@@ -14,6 +14,7 @@ import { getWhereNFTQuery, parseNFTPageEditorConfig, returnNFTmap } from "../uti
 import {
   Value
 } from '@react-page/editor';
+import { QueryClient } from "@tanstack/react-query";
 
 /**
  * Server side function to refetch query client data

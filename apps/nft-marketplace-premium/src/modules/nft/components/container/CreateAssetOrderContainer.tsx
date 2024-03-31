@@ -6,7 +6,7 @@ const OrderCreatedDialog = dynamic(
 );
 import MakeListingForm from '@/modules/orders/components/forms/MakeListingForm';
 import MakeOfferForm from '@/modules/orders/components/forms/MakeOfferForm';
-import { useDexKitContext } from '@dexkit/ui/hooks';
+import { useDexKitContext, useSignMessageDialog } from '@dexkit/ui/hooks';
 import ImportExportIcon from '@mui/icons-material/ImportExport';
 import Launch from '@mui/icons-material/Launch';
 import {
@@ -46,19 +46,16 @@ import {
 } from '@dexkit/core/utils/blockchain';
 import Link from '@dexkit/ui/components/AppLink';
 import {
+  useAccountAssetsBalance,
   useApproveAssetMutation,
+  useFavoriteAssets,
   useMakeListingMutation,
   useMakeOfferMutation,
-} from '@dexkit/ui/modules/nft/hooks';
-import { useSignMessageDialog } from 'src/hooks/app';
-import {
-  useAccountAssetsBalance,
-  useFavoriteAssets,
   useSwapSdkV4,
-} from 'src/hooks/nft';
-import { getERC20Name, getERC20Symbol } from 'src/services/balances';
+} from '@dexkit/ui/modules/nft/hooks';
+
+import { getERC20Name, getERC20Symbol } from '@dexkit/core/services/balances';
 import { Asset } from 'src/types/nft';
-import { ipfsUriToUrl } from 'src/utils/ipfs';
 
 export const CreateAssetOrderContainer = () => {
   const [asset, setAsset] = useState<Asset | null>(null);

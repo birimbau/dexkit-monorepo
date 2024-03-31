@@ -1,5 +1,5 @@
 import { ChainId } from "@dexkit/core/constants";
-import { NETWORKS, NETWORK_SLUG } from "@dexkit/core/constants/networks";
+import { NETWORKS } from "@dexkit/core/constants/networks";
 import { useNetworkProvider } from "@dexkit/core/hooks/blockchain";
 import { Asset, AssetMetadata, SwapApiOrder } from "@dexkit/core/types/nft";
 import { isAddressEqual } from "@dexkit/core/utils";
@@ -21,10 +21,10 @@ import { useActiveChainIds, useTokenList } from "../../../hooks/blockchain";
 import { accountAssetsAtom } from "../../../state";
 import { NFTType } from "../constants/enum";
 import { getAssetByApi, getAssetData, getAssetMetadata, getAssetsData, getCollectionByApi, getDKAssetOrderbook, getERC1155Balance, getOrderbookOrders, searchAssetsDexKitApi } from "../services";
-import { AssetAPI, AssetBalance, HiddenAsset, OrderBookItem, TraderOrderFilter } from "../types";
+import { AssetAPI, AssetBalance, CollectionUniformItem, HiddenAsset, OrderBookItem, TraderOrderFilter } from "../types";
 import { calculeFees, parseAssetApi } from "../utils";
 
-import { getChainSlug } from "@dexkit/core/utils/blockchain";
+import { getChainSlug, getNetworkSlugFromChainId } from "@dexkit/core/utils/blockchain";
 import {
   SignedNftOrderV4,
 
@@ -647,25 +647,9 @@ export function useFillSignedOrderMutation(
 
 const SEARCH_ASSETS = 'SEARCH_ASSETS';
 
-
-export type CollectionUniformItem = {
-  name: string;
-  contractAddress: string;
-  backgroundImage: string;
-  network: string;
-  chainId: number;
-  image: string;
-};
-
-/**
- * Search assets within search word and filtered by collection
- * @param search 
- * @param collections 
- * @returns 
- */
 export function useSearchAssets(
   search?: string,
-  collections?: CollectionUniformItem[]
+  collections?: CollectionUniformItem[],
 ) {
   return useQuery([SEARCH_ASSETS, search], () => {
     if (!search) {
@@ -676,9 +660,9 @@ export function useSearchAssets(
       collectionsFilter = collections
         .map(
           (c) =>
-            `${NETWORK_SLUG(
-              c.chainId
-            )}:${c.contractAddress.toLowerCase()}`
+            `${getNetworkSlugFromChainId(
+              c.chainId,
+            )}:${c.contractAddress.toLowerCase()}`,
         )
         .join(',');
     }
@@ -880,6 +864,30 @@ export function useBestSellOrderAssetRari(
     { enabled: false },
   );
 }
+
+export const GET_ASSET_APPROVAL = 'GET_ASSET_APPROVAL';
+
+export function useIsAssetApproved(
+  nftSwapSdk?: NftSwapV4,
+  asset?: SwappableAssetV4,
+  address?: string,
+) {
+  return useQuery(
+    [GET_ASSET_APPROVAL, nftSwapSdk, address, asset],
+    async () => {
+      if (
+        address === undefined ||
+        nftSwapSdk === undefined ||
+        asset === undefined
+      ) {
+        return undefined;
+      }
+
+      return await nftSwapSdk?.loadApprovalStatus(asset, address);
+    },
+  );
+}
+
 
 
 

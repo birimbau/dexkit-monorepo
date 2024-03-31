@@ -1,7 +1,7 @@
 import React, { Dispatch, SetStateAction } from 'react';
 import { AppConfig } from '../types/config';
 
-import { AssetAPI } from 'src/types/nft';
+import { AssetAPI } from '@dexkit/ui/modules/nft/types';
 import defaultAppConfig from '../../config/app.json';
 
 export const AppConfigContext = React.createContext<{

@@ -1,4 +1,4 @@
-import { getBlockExplorerUrl } from '@dexkit/core/utils/blockchain';
+import { getBlockExplorerUrl } from "@dexkit/core/utils/blockchain";
 import {
   Box,
   Button,
@@ -7,10 +7,10 @@ import {
   DialogProps,
   Stack,
   Typography,
-} from '@mui/material';
-import { useWeb3React } from '@web3-react/core';
-import { FormattedMessage } from 'react-intl';
-import { TransactionStatus } from '../../types/blockchain';
+} from "@mui/material";
+import { useWeb3React } from "@web3-react/core";
+import { FormattedMessage } from "react-intl";
+import { TransactionStatus } from "../../../../apps/nft-marketplace-premium/src/types/blockchain";
 
 interface Props {
   hash?: string;

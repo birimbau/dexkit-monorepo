@@ -1,3 +1,4 @@
+import { AppDialogTitle } from '@dexkit/ui/components/AppDialogTitle';
 import {
   Button,
   Dialog,
@@ -8,7 +9,6 @@ import {
 import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { QrReader } from 'react-qr-reader';
-import { AppDialogTitle } from '../AppDialogTitle';
 
 interface Props {
   dialogProps: DialogProps;

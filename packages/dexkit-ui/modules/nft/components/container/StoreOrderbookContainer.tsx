@@ -1,4 +1,5 @@
 import { StoreOrderbook } from "@dexkit/ui/modules/nft/components/StoreOrderbook";
+import { useAssetsOrderBook } from "../../hooks";
 
 type StoreOrdebookOptions = {
   search?: string;

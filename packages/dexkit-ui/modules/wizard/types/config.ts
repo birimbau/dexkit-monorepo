@@ -1,10 +1,7 @@
 
 import { TokenWhitelabelApp } from '@dexkit/core/types';
 import { AppWhitelabelType, ThemeMode } from '@dexkit/ui/constants/enum';
-import { AssetAPI } from '../modules/nft/types';
-import { AppPageSection } from '../modules/wizard/types/section';
-
-
+import { AppPageSection } from './section';
 
 export type VideoEmbedType = 'youtube' | 'vimeo';
 

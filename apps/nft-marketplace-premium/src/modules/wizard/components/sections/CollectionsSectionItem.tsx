@@ -4,6 +4,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 
 import { NETWORK_SLUG } from '@dexkit/core/constants/networks';
 import { getChainName } from '@dexkit/core/utils/blockchain';
+import Img from '@dexkit/ui/components/AppImage';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import {
   Box,
@@ -15,7 +16,6 @@ import {
   Typography,
 } from '@mui/material';
 import { FormattedMessage } from 'react-intl';
-import Img from '../../../../components/AppImage';
 import { AppCollection } from '../../../../types/config';
 interface Props {
   appUrl?: string;

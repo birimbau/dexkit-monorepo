@@ -4,6 +4,8 @@ import { formatUnits } from "@dexkit/core/utils/ethers/formatUnits";
 import { useDexKitContext } from "@dexkit/ui/hooks";
 import { useInterval } from "@dexkit/ui/hooks/misc";
 import { useTrackUserEventsMutation } from "@dexkit/ui/hooks/userEvents";
+import { useClaimNft } from "@dexkit/ui/modules/nft/hooks/thirdweb";
+import { NftDropPageSection } from "@dexkit/ui/modules/wizard/types/section";
 import {
   Avatar,
   Box,
@@ -32,7 +34,6 @@ import { useWeb3React } from "@web3-react/core";
 import { BigNumber } from "ethers";
 import { useMemo, useState } from "react";
 import { FormattedMessage } from "react-intl";
-import { useClaimNft } from "../../../../apps/nft-marketplace-premium/src/modules/wizard/hooks";
 import NFTGrid from "../NFTGrid";
 import NFTDropSummary from "../NftDropSummary";
 

@@ -1,4 +1,4 @@
-import { CustomEditorSection } from "@dexkit/ui/modules/wizard/types";
+import { CustomEditorSection } from "@dexkit/ui/modules/wizard/types/section";
 import PageEditor from "../page-editor/PageEditor";
 
 interface Props {

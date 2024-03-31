@@ -5,12 +5,12 @@ import { ContractFormParams } from '@dexkit/web3forms/types';
 import React from 'react';
 
 import { AssetFormType, DeployedContract, SwapConfig } from '.';
+import { AssetStoreOptions } from '../../nft/types';
 import {
   PageSectionVariant,
   SectionItem,
   VideoEmbedType,
-} from '../../../types/config';
-import { AssetStoreOptions } from '../../nft/types';
+} from './config';
 
 
 export type SectionType =

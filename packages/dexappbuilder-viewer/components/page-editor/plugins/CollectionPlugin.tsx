@@ -1,10 +1,7 @@
-import Container from "@mui/material/Container";
+import { getNetworkFromName } from "@dexkit/core/utils/blockchain";
+import CollectionFromApiCard from "@dexkit/ui/modules/nft/components/CollectionFromApi";
 import type { CellPlugin } from "@react-page/editor";
 
-import { NETWORKS, NETWORK_FROM_SLUG } from "@dexkit/core/constants/networks";
-import { CollectionFromApiCard } from "@dexkit/ui/modules/nft/components";
-import { CollectionAutocomplete } from "../components/CollectionAutocomplete";
-import { ImagePicker } from "../components/ImagePicker";
 type Data = {
   image: string;
   name: string;
@@ -19,7 +16,7 @@ type Data = {
 const CollectionPlugin: CellPlugin<Data> = {
   Renderer: ({ data }) => (
     <CollectionFromApiCard
-      chainId={NETWORK_FROM_SLUG(data.network)?.chainId}
+      chainId={getNetworkFromName(data.network)?.chainId}
       contractAddress={data.contractAddress}
       totalSupply={0}
       backgroundImageUrl={data.backgroundImage}
@@ -29,70 +26,9 @@ const CollectionPlugin: CellPlugin<Data> = {
     />
   ),
   id: "collection-plugin",
-  title: "Collection",
-  description: "Show a collection",
+  title: "Collection Banner",
+  description: "Show a collection banner",
   version: 1,
-  controls: [
-    {
-      title: "Your collections",
-      controls: {
-        type: "custom",
-        Component: (data) => (
-          <Container sx={{ p: 2 }}>
-            <CollectionAutocomplete data={data} />
-          </Container>
-        ),
-      },
-    },
-    {
-      title: "Import",
-      controls: {
-        type: "autoform",
-        schema: {
-          // this JSONschema is type checked against the generic type argument
-          // the autocompletion of your IDE helps to create this schema
-          properties: {
-            image: {
-              type: "string",
-              uniforms: {
-                component: ImagePicker,
-              },
-            },
-            backgroundImage: {
-              type: "string",
-              uniforms: {
-                component: ImagePicker,
-              },
-              // pattern: '(https?://.*.(?:png|jpg|jpeg|gif|svg))',
-            },
-            name: {
-              type: "string",
-            },
-            network: {
-              type: "string",
-              enum: Object.values(NETWORKS)
-                .filter((n) => !n.testnet)
-                .map((n) => String(n.name)),
-            },
-            contractAddress: {
-              type: "string",
-              pattern: "^0x[a-fA-F0-9]{40}$",
-            },
-            description: {
-              type: "string",
-            },
-          },
-          required: [
-            "network",
-            "contractAddress",
-            "name",
-            "image",
-            "backgroundImage",
-          ],
-        },
-      },
-    },
-  ],
 };
 
 export default CollectionPlugin;

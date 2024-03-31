@@ -1,74 +1,56 @@
-import { Logout } from "@mui/icons-material";
-import EditIcon from "@mui/icons-material/Edit";
+import { truncateAddress } from "@dexkit/core/utils/blockchain";
+import { AccountBalance } from "@dexkit/ui/components/AccountBalance";
+import { GET_WALLET_ICON } from "@dexkit/wallet-connectors/connectors";
+import { useWalletConnectorMetadata } from "@dexkit/wallet-connectors/hooks";
+import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import PersonIcon from "@mui/icons-material/Person";
-import SwitchAccountIcon from "@mui/icons-material/SwitchAccount";
 import {
   Avatar,
+  Box,
   ButtonBase,
-  ListItemIcon,
-  Menu,
-  MenuItem,
+  Popover,
   Stack,
   Typography,
 } from "@mui/material";
 import { useWeb3React } from "@web3-react/core";
-
-import { truncateAddress } from "@dexkit/core/utils";
-import { useWalletConnectorMetadata } from "@dexkit/wallet-connectors";
-import { GET_WALLET_ICON } from "@dexkit/wallet-connectors/connectors";
-import { useRouter } from "next/router";
-import { useCallback, useState } from "react";
-import { FormattedMessage } from "react-intl";
-import { useConnectWalletDialog } from "../hooks";
-import { useAuthUserQuery, useLogoutAccountMutation } from "../hooks/auth";
+import dynamic from "next/dynamic";
+import { useState } from "react";
 import { useIsBalanceVisible } from "../modules/wallet/hooks";
-interface Props {
+
+const WalletContent = dynamic(() => import("./WalletContent"));
+
+export interface WalletButtonProps {
   align?: "center" | "left";
+  onSend?: () => void;
+  onReceive?: () => void;
 }
 
-export function WalletButton(props: Props) {
-  const { align } = props;
-  const router = useRouter();
-  const { walletConnectorMetadata } = useWalletConnectorMetadata();
+export function WalletButton({ align }: WalletButtonProps) {
   const { connector, account, ENSName } = useWeb3React();
-  const logoutMutation = useLogoutAccountMutation();
-  const userQuery = useAuthUserQuery();
-  const user = userQuery.data;
-  const connectWalletDialog = useConnectWalletDialog();
-  const handleSwitchWallet = () => {
-    connectWalletDialog.setOpen(true);
-  };
-  const [anchorEl, setAnchorEl] = useState(null);
-  const open = Boolean(anchorEl);
-  const handleClick = (event: any) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
+  const { walletConnectorMetadata } = useWalletConnectorMetadata();
   const isBalancesVisible = useIsBalanceVisible();
 
   const justifyContent = align === "left" ? "flex-start" : "center";
 
-  const handleLogoutWallet = useCallback(() => {
-    logoutMutation.mutate();
-    if (connector?.deactivate) {
-      connector.deactivate();
-    } else {
-      if (connector?.resetState) {
-        connector?.resetState();
-      }
-    }
-  }, [connector]);
+  const [showContent, setShowContent] = useState(false);
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(e.currentTarget);
+    setShowContent(true);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+    setShowContent(false);
+  };
 
   return (
     <>
       <ButtonBase
         id="wallet-button"
         sx={(theme) => ({
-          px: 2,
+          px: 1,
           py: 1,
           border: `1px solid ${theme.palette.divider}`,
           borderRadius: theme.spacing(1),
@@ -77,76 +59,42 @@ export function WalletButton(props: Props) {
         onClick={handleClick}
       >
         <Stack direction="row" spacing={1} alignItems="center">
-          {user?.profileImageURL && (
-            <Avatar
-              src={user?.profileImageURL}
-              sx={(theme) => ({
-                width: theme.spacing(2),
-                height: theme.spacing(2),
-              })}
-            />
-          )}
           <Avatar
-            src={walletConnectorMetadata?.icon || GET_WALLET_ICON(connector)}
+            src={walletConnectorMetadata.icon || GET_WALLET_ICON(connector)}
             sx={(theme) => ({
               width: theme.spacing(2),
               height: theme.spacing(2),
+              background: theme.palette.action.hover,
             })}
+            variant="rounded"
           />
-          <Typography variant="body1">
-            {isBalancesVisible
-              ? ENSName
+          <Box>
+            <Typography variant="caption" align="left" component="div">
+              {isBalancesVisible
                 ? ENSName
-                : truncateAddress(account)
-              : "**********"}
-          </Typography>
-          <ExpandMoreIcon />
+                  ? ENSName
+                  : truncateAddress(account)
+                : "**********"}
+            </Typography>
+            <div>
+              {false && (
+                <AccountBalance isBalancesVisible={isBalancesVisible} />
+              )}
+            </div>
+          </Box>
+          {showContent ? <ExpandLessIcon /> : <ExpandMoreIcon />}
         </Stack>
       </ButtonBase>
-      <Menu
-        id="wallet-menuu"
-        anchorEl={anchorEl}
-        open={open}
-        onClose={handleClose}
-        MenuListProps={{
-          "aria-labelledby": "wallet-button",
-        }}
-        transformOrigin={{ horizontal: "right", vertical: "top" }}
-        anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
-      >
-        <MenuItem
-          onClick={() =>
-            user ? router.push(`/u/${user.username}`) : router.push(`/u/login`)
-          }
+      {showContent && (
+        <Popover
+          open={showContent}
+          anchorEl={anchorEl}
+          anchorOrigin={{ horizontal: "left", vertical: "bottom" }}
+          onClose={handleClose}
         >
-          <ListItemIcon>
-            <PersonIcon fontSize="small" />
-          </ListItemIcon>
-          <FormattedMessage id="view.profile" defaultMessage="View profile" />
-        </MenuItem>
-        {user && (
-          <MenuItem onClick={() => router.push(`/u/edit`)}>
-            <ListItemIcon>
-              <EditIcon fontSize="small" />
-            </ListItemIcon>
-            <FormattedMessage id="edit.profile" defaultMessage="Edit profile" />
-          </MenuItem>
-        )}
-        <MenuItem onClick={handleSwitchWallet}>
-          <ListItemIcon>
-            <SwitchAccountIcon fontSize="small" />
-          </ListItemIcon>
-          <FormattedMessage id="switch.wallet" defaultMessage="Switch wallet" />
-        </MenuItem>
-        <MenuItem onClick={handleLogoutWallet}>
-          <ListItemIcon>
-            <Logout fontSize="small" />
-          </ListItemIcon>
-          <FormattedMessage id="logout.wallet" defaultMessage="Logout wallet" />
-        </MenuItem>
-      </Menu>
+          <WalletContent />
+        </Popover>
+      )}
     </>
   );
 }
-
-export default WalletButton;

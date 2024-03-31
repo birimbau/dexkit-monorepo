@@ -5,16 +5,14 @@ import axios from 'axios';
 import { Contract, ContractFactory, providers } from 'ethers';
 import { useAtomValue, useSetAtom } from 'jotai';
 import { useMemo } from 'react';
-import {
-  useAccountHoldDexkitMutation,
-  useAuth,
-  useLoginAccountMutation,
-} from 'src/hooks/account';
-import { getMultipleAssetDexKitApi } from 'src/services/nft';
+
 import { myAppsApi } from 'src/services/whitelabel';
 import { holdsKitDialogAtom } from 'src/state/atoms';
-import { CollectionAPI } from 'src/types/nft';
-import { isIpfsUri } from 'src/utils/ipfs';
+
+
+import { isIpfsUri } from '@dexkit/core/utils/ipfs';
+import { useAuth, useLoginAccountMutation } from '@dexkit/ui/hooks/auth';
+import { getMultipleAssetDexKitApi } from '@dexkit/ui/modules/nft/services';
 import { collectionsAtom, tokensAtom } from '../atoms';
 import {
   ERC20_BASE_CONTRACT_URL,
@@ -227,15 +225,16 @@ export function useEditAssetMetadataMutation() {
     },
   );
 }
-
+//@deprecated
 export function useCreateAIImageMutation() {
   const { isLoggedIn } = useAuth();
   const loginMutation = useLoginAccountMutation();
-  const isHoldingKit = useAccountHoldDexkitMutation();
+  // const isHoldingKit = useAccountHoldDexkitMutation();
   const setIsHoldingKitDialog = useSetAtom(holdsKitDialogAtom);
   return useMutation(async ({ description }: { description: string }) => {
+    return
     try {
-      await isHoldingKit.mutateAsync();
+      //   await isHoldingKit.mutateAsync();
     } catch {
       setIsHoldingKitDialog(true);
       return;

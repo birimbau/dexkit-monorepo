@@ -3,9 +3,8 @@ import { useEffect } from 'react';
 import { useWeb3React } from '@web3-react/core';
 import { useAtom } from 'jotai';
 import { useRouter } from 'next/router';
-import { useSignMessageDialog } from '../../hooks/app';
 
-import { useConnectWalletDialog } from '@dexkit/ui/hooks';
+import { useConnectWalletDialog, useSignMessageDialog } from '@dexkit/ui/hooks';
 import dynamic from 'next/dynamic';
 import {
   holdsKitDialogAtom,
@@ -16,7 +15,9 @@ import {
   switchNetworkOpenAtom,
 } from '../../state/atoms';
 
-const SignMessageDialog = dynamic(() => import('../dialogs/SignMessageDialog'));
+const SignMessageDialog = dynamic(
+  () => import('@dexkit/ui/components/dialogs/SignMessageDialog'),
+);
 const SwitchNetworkDialog = dynamic(
   () => import('@dexkit/ui/components/dialogs/SwitchNetworkDialog'),
 );
@@ -35,13 +36,15 @@ const AppTransactionWatchDialog = dynamic(
   () => import('@dexkit/ui/components/AppTransactionWatchDialog'),
 );
 
-const HoldingKitDialog = dynamic(() => import('../dialogs/HoldingKitDialog'));
+const HoldingKitDialog = dynamic(
+  () => import('@dexkit/ui/components/dialogs/HoldingKitDialog'),
+);
 
 const SelectCurrencyDialog = dynamic(
-  () => import('../dialogs/SelectCurrencyDialog'),
+  () => import('@dexkit/ui/components/dialogs/SelectCurrencyDialog'),
 );
 const SelectLanguageDialog = dynamic(
-  () => import('../dialogs/SelectLanguageDialog'),
+  () => import('@dexkit/ui/components/dialogs/SelectLanguageDialog'),
 );
 
 export function GlobalDialogs() {

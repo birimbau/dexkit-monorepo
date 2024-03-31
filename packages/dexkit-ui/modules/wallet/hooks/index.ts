@@ -5,6 +5,7 @@ import { formatUnits } from "@dexkit/core/utils/ethers/formatUnits";
 import { useQuery } from "@tanstack/react-query";
 import { useWeb3React } from "@web3-react/core";
 import { ParseOutput, parse } from 'eth-url-parser';
+import { useAtom } from "jotai";
 import { useAtomValue } from "jotai/utils";
 import { useMemo } from "react";
 import { useEvmCoins, useTokenList } from "../../../hooks/blockchain";
@@ -20,6 +21,10 @@ type SelectCalback = (data?: TokenBalance[]) => TokenBalance[] | undefined;
 
 export function useIsBalanceVisible() {
   return useAtomValue(isBalancesVisibleAtom);
+}
+
+export function useBalanceVisible() {
+  return useAtom(isBalancesVisibleAtom);
 }
 
 export const useERC20BalancesQuery = (

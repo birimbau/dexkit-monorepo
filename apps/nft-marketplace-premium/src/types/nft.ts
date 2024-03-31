@@ -1,7 +1,8 @@
+import { NFTType } from '@dexkit/ui/modules/nft/constants/enum';
 import { AssetAPI } from '@dexkit/ui/modules/nft/types';
 import { DkApiPlatformCoin } from '@dexkit/widgets/src/types/api';
 import { BigNumber } from 'ethers';
-import { NFTType, SellOrBuy } from '../constants/enum';
+import { SellOrBuy } from '../constants/enum';
 import { Token } from './blockchain';
 
 export interface SwapApiOrder {
@@ -38,39 +39,6 @@ export interface OrderBookItem {
   asset?: Asset;
   token?: Token;
 }
-
-export interface Collection {
-  chainId: number;
-  address: string;
-  name: string;
-  symbol: string;
-  imageUrl?: string;
-  nftType?: NFTType;
-  description?: string;
-  syncStatus?: string;
-  syncedAssets?: number;
-  traitCounts?: string;
-  totalSupply?: number;
-}
-
-export interface CollectionAPI {
-  chainId: number;
-  networkId: string;
-  name: string;
-  imageUrl?: string;
-  address: string;
-  protocol: string;
-  description?: string;
-  syncStatus?: string;
-  syncedAssets?: number;
-  symbol: string;
-  traitCounts?: string;
-  totalSupply?: number;
-}
-
-
-
-
 
 export interface Asset {
   id: string;

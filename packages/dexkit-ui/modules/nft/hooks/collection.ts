@@ -3,7 +3,7 @@ import { useAppConfig } from "../../../hooks";
 
 
 import { useQuery } from '@tanstack/react-query';
-import { getCollectionAssetsDexKitApi, getCollectionAssetsFromOrderbook } from "../services/collection";
+import { getApiAccountContractCollectionData, getApiContractCollectionData, getCollectionAssetsDexKitApi, getCollectionAssetsFromOrderbook } from "../services/collection";
 
 import { ChainId } from "@dexkit/core/constants/enums";
 import { Asset } from "@dexkit/core/types/nft";
@@ -16,8 +16,8 @@ import { useWeb3React } from "@web3-react/core";
 import { THIRDWEB_CLIENT_ID } from "../../../constants/thirdweb";
 import { hexToString } from "../../../utils";
 import { NFTType } from "../constants/enum";
-import { getCollectionData } from "../services";
-import { getApiCollectionData } from "../services/collection";
+
+import { getApiCollectionData, getCollectionData } from "../services/collection";
 import { TraderOrderFilter } from "../types";
 import { CollectionStatsRari } from "../types/rarible";
 
@@ -224,5 +224,40 @@ export function useCollectionAssetsFromOrderbook(
       return getCollectionAssetsFromOrderbook(provider, filters);
     },
     { enabled: isProviderEnabled },
+  );
+}
+
+export const GET_ACCOUNT_CONTRACT_COLLECTION_DATA =
+  'GET_ACCOUNT_CONTRACT_COLLECTION_DATA';
+
+export function useAccountContractCollection(account?: string) {
+  return useQuery([GET_COLLECTION_DATA, account], async () => {
+    if (account === undefined) {
+      return;
+    }
+    const contractData = await getApiAccountContractCollectionData(account);
+    if (contractData) {
+      return contractData;
+    }
+  });
+}
+
+export const GET_CONTRACT_COLLECTION_DATA = 'GET_CONTRACT_COLLECTION_DATA';
+
+export function useContractCollection(networkId?: string, address?: string) {
+  return useQuery(
+    [GET_CONTRACT_COLLECTION_DATA, address?.toLowerCase(), networkId],
+    async () => {
+      if (!networkId || address === undefined) {
+        return;
+      }
+      const contractData = await getApiContractCollectionData(
+        networkId,
+        address,
+      );
+      if (contractData) {
+        return contractData;
+      }
+    },
   );
 }

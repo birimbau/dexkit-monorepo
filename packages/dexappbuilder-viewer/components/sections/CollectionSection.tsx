@@ -28,7 +28,7 @@ import { AssetList } from "@dexkit/ui/modules/nft/components/AssetListOrderbook"
 import { CollectionHeader } from "@dexkit/ui/modules/nft/components/CollectionHeader";
 import CollectionPageHeader from "@dexkit/ui/modules/nft/components/CollectionPageHeader";
 import { CollectionTraits } from "@dexkit/ui/modules/nft/components/CollectionTraits";
-import StoreOrdebookContainer from "@dexkit/ui/modules/nft/components/container/StoreOrdebookContainer";
+import { StoreOrdebookContainer } from "@dexkit/ui/modules/nft/components/container/StoreOrderbookContainer";
 import { TableSkeleton } from "@dexkit/ui/modules/nft/components/tables/TableSkeleton";
 import { CollectionPageSection } from "@dexkit/ui/modules/wizard/types/section";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";

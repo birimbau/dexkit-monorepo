@@ -1,7 +1,7 @@
 import React from "react";
 import defaultAppConfig from "../config/app.json";
 import { AssetAPI } from "../modules/nft/types";
-import { AppConfig } from "../types/config";
+import { AppConfig } from "../modules/wizard/types/config";
 
 export const AppConfigContext = React.createContext<{
   appConfig: AppConfig;

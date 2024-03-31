@@ -1,4 +1,4 @@
-import { AppPageOptions } from "../../../types/config";
+import { AppPageOptions } from "../types/config";
 
 export const CORE_PAGES: { [key: string]: AppPageOptions } = {
   ['swap']: {

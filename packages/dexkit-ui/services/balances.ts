@@ -1,24 +1,22 @@
 import { getContractAddressesForChainOrThrow } from '@0x/contract-addresses';
-import { ChainId } from '@dexkit/core/constants';
-import { ERC1155Abi } from '@dexkit/core/constants/abis';
+import { ChainId, MULTICALL_NATIVE_TOKEN_ADDRESS } from '@dexkit/core/constants';
+import { ERC1155Abi, ERC20Abi } from '@dexkit/core/constants/abis';
 import { BigNumber, Contract, providers, utils } from 'ethers';
+import { DEXKIT } from "../constants";
 
 import { getChainIdFromSlug } from '@dexkit/core/utils/blockchain';
 import { parseEther } from '@dexkit/core/utils/ethers/parseEther';
-import { NETWORKS } from 'src/constants/chain';
-import { DEXKIT } from 'src/constants/dexkit';
-import {
-  MULTICALL_NATIVE_TOKEN_ADDRESS,
-  ZEROEX_NATIVE_TOKEN_ADDRESS
-} from '../constants';
-import { ERC20Abi } from '../constants/abis';
-import { Token, TokenBalance } from '../types/blockchain';
+
+
+
+import { NETWORKS } from "@dexkit/core/constants/networks";
+import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "@dexkit/core/constants/zrx";
+import { Token } from "@dexkit/core/types";
+import { TokenBalance } from "../modules/wallet/types";
 import {
   getMulticallTokenBalances,
   getMulticallTokenBalancesAndAllowances
 } from './multical';
-
-
 
 
 
@@ -130,6 +128,10 @@ export const getERC20TokenAllowance = async (
 
   return await contract.allowance(account, spender);
 };
+
+
+
+
 
 
 export async function getBalanceOf(networkId: string, address: string, owner: string) {

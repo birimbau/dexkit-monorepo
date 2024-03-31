@@ -19,6 +19,7 @@ export interface Collection {
   totalSupply?: number;
 }
 
+
 export interface ContractURIMetadata {
   name: string;
   image?: string;
@@ -85,11 +86,6 @@ export type OrderbookAPI = {
 }
 
 
-
-
-
-
-
 export interface OrderBookItem {
   erc20Token: string;
   erc20TokenAmount: string;
@@ -121,9 +117,32 @@ export interface AssetBalance {
   asset: Asset;
 }
 
-
-
-
 export type AssetOptions = {
   options?: Omit<UseQueryOptions<Asset>, any>;
+};
+
+
+export interface CollectionAPI {
+  chainId: number;
+  networkId: string;
+  name: string;
+  imageUrl?: string;
+  address: string;
+  protocol: string;
+  description?: string;
+  syncStatus?: string;
+  syncedAssets?: number;
+  symbol: string;
+  traitCounts?: string;
+  totalSupply?: number;
+}
+
+
+export type CollectionUniformItem = {
+  name: string;
+  contractAddress: string;
+  backgroundImage: string;
+  network: string;
+  chainId: number;
+  image: string;
 };
