@@ -149,88 +149,68 @@ export const SiteTemplatesPage: NextPage = () => {
               {renderSidebar()}
             </Grid>
 
-            {sitesQuery?.data?.length !== 0 && (
-              <Grid item xs={12} sm={9}>
-                {sitesQuery?.data?.map((site, key) => (
-                  <Grid item xs={12} sm={6} lg={3} key={key}>
-                    <Card sx={{ maxWidth: 300 }}>
-                      <CardActionArea
-                        href={`/site/template/${site.slug}`}
-                        target={'_blank'}
-                      >
-                        <CardMedia
-                          component="img"
-                          height="160"
-                          image={site?.metadata?.imageURL}
-                          alt=""
-                        />
+            <Grid item xs={12} sm={9}>
+              {sitesQuery?.isLoading && (
+                <Grid container spacing={2}>
+                  {[1, 2, 3, 4, 5, 6].map((id, key) => (
+                    <Grid item xs={12} sm={6} lg={3} key={key}>
+                      <Card sx={{ maxWidth: 345 }} key={key}>
+                        <Skeleton>
+                          <CardMedia
+                            component="img"
+                            height="140"
+                            image={''}
+                            alt=""
+                          />
+                        </Skeleton>
                         <CardContent>
-                          <Box>
-                            <Stack spacing={2}>
-                              <Typography
-                                gutterBottom
-                                variant="h5"
-                                component="div"
-                              >
-                                {site?.metadata?.title}
-                              </Typography>
-
-                              <Typography
-                                variant="body2"
-                                color="text.secondary"
-                              >
-                                {site?.metadata?.subtitle}
-                              </Typography>
-                              <Grid container spacing={1}>
-                                {site?.metadata?.usecases?.map((cid, key) => (
-                                  <Grid item key={`use-${key}`}>
-                                    <Chip label={cid} size={'small'} />
-                                  </Grid>
-                                ))}
-                              </Grid>
-                            </Stack>
-                          </Box>
-                        </CardContent>
-                      </CardActionArea>
-                      <CardActions>
-                        <Stack
-                          spacing={2}
-                          direction={'row'}
-                          sx={{ pl: 2 }}
-                          alignItems={'center'}
-                        >
-                          <Button
-                            variant={'contained'}
-                            href={`/admin/create?clone=${site.slug}`}
-                            target={'_blank'}
-                          >
-                            <FormattedMessage
-                              id={'clone'}
-                              defaultMessage={'Clone'}
-                            />
-                          </Button>
-                          {site.previewUrl && (
-                            <Button
-                              variant="outlined"
-                              href={site?.previewUrl || ''}
-                              target={'_blank'}
+                          <Skeleton>
+                            <Typography
+                              gutterBottom
+                              variant="h5"
+                              component="div"
                             >
                               <FormattedMessage
-                                id={'view.site'}
+                                id={'title'}
+                                defaultMessage={'title'}
+                              />
+                            </Typography>
+                          </Skeleton>
+                          <Skeleton>
+                            <Typography variant="body2" color="text.secondary">
+                              <FormattedMessage
+                                id={'description'}
+                                defaultMessage={'description'}
+                              />
+                            </Typography>
+                          </Skeleton>
+                        </CardContent>
+                        <CardActions>
+                          <Button size="small">
+                            <Skeleton>
+                              <FormattedMessage
+                                id={'clone'}
+                                defaultMessage={'clone'}
+                              />
+                            </Skeleton>
+                          </Button>
+
+                          <Button size="small">
+                            <Skeleton>
+                              <FormattedMessage
+                                id={'view'}
                                 defaultMessage={'View'}
                               />
-                            </Button>
-                          )}
-                        </Stack>
-                      </CardActions>
-                    </Card>
-                  </Grid>
-                ))}
-              </Grid>
-            )}
+                            </Skeleton>
+                          </Button>
+                        </CardActions>
+                      </Card>
+                    </Grid>
+                  ))}{' '}
+                </Grid>
+              )}
 
-            {sitesQuery?.data?.length === 0 && !sitesQuery?.isLoading && (
-              <Grid item xs={12} sm={9}>
+              {sitesQuery?.data?.length === 0 && !sitesQuery?.isLoading && (
                 <Box sx={{ py: 4 }}>
                   <Stack
                     justifyContent="center"
@@ -247,62 +227,88 @@ export const SiteTemplatesPage: NextPage = () => {
                     </Typography>
                   </Stack>
                 </Box>
-              </Grid>
-            )}
+              )}
 
-            {sitesQuery?.isLoading && (
-             <Grid item xs={12} sm={9}>
-              {[1, 2, 3].map((id, key) => (
-                <Grid item xs={12} sm={6} lg={3} key={key}>
-                  <Card sx={{ maxWidth: 345 }} key={key}>
-                    <Skeleton>
-                      <CardMedia
-                        component="img"
-                        height="140"
-                        image={''}
-                        alt=""
-                      />
-                    </Skeleton>
-                    <CardContent>
-                      <Skeleton>
-                        <Typography gutterBottom variant="h5" component="div">
-                          <FormattedMessage
-                            id={'title'}
-                            defaultMessage={'title'}
+              {sitesQuery?.data?.length !== 0 && (
+                <Grid container spacing={2}>
+                  {sitesQuery?.data?.map((site, key) => (
+                    <Grid item xs={12} sm={6} lg={3} key={key}>
+                      <Card sx={{ maxWidth: 300 }}>
+                        <CardActionArea
+                          href={`/site/template/${site.slug}`}
+                          target={'_blank'}
+                        >
+                          <CardMedia
+                            component="img"
+                            height="160"
+                            image={site?.metadata?.imageURL}
+                            alt=""
                           />
-                        </Typography>
-                      </Skeleton>
-                      <Skeleton>
-                        <Typography variant="body2" color="text.secondary">
-                          <FormattedMessage
-                            id={'description'}
-                            defaultMessage={'description'}
-                          />
-                        </Typography>
-                      </Skeleton>
-                    </CardContent>
-                    <CardActions>
-                      <Button size="small">
-                        <Skeleton>
-                          <FormattedMessage
-                            id={'clone'}
-                            defaultMessage={'clone'}
-                          />
-                        </Skeleton>
-                      </Button>
+                          <CardContent>
+                            <Box>
+                              <Stack spacing={2}>
+                                <Typography
+                                  gutterBottom
+                                  variant="h5"
+                                  component="div"
+                                >
+                                  {site?.metadata?.title}
+                                </Typography>
 
-                      <Button size="small">
-                        <Skeleton>
-                          <FormattedMessage
-                            id={'view'}
-                            defaultMessage={'View'}
-                          />
-                        </Skeleton>
-                      </Button>
-                    </CardActions>
-                  </Card>
+                                <Typography
+                                  variant="body2"
+                                  color="text.secondary"
+                                >
+                                  {site?.metadata?.subtitle}
+                                </Typography>
+                                <Grid container spacing={1}>
+                                  {site?.metadata?.usecases?.map((cid, key) => (
+                                    <Grid item key={`use-${key}`}>
+                                      <Chip label={cid} size={'small'} />
+                                    </Grid>
+                                  ))}
+                                </Grid>
+                              </Stack>
+                            </Box>
+                          </CardContent>
+                        </CardActionArea>
+                        <CardActions>
+                          <Stack
+                            spacing={2}
+                            direction={'row'}
+                            sx={{ pl: 2 }}
+                            alignItems={'center'}
+                          >
+                            <Button
+                              variant={'contained'}
+                              href={`/admin/create?clone=${site.slug}`}
+                              target={'_blank'}
+                            >
+                              <FormattedMessage
+                                id={'clone'}
+                                defaultMessage={'Clone'}
+                              />
+                            </Button>
+                            {site.previewUrl && (
+                              <Button
+                                variant="outlined"
+                                href={site?.previewUrl || ''}
+                                target={'_blank'}
+                              >
+                                <FormattedMessage
+                                  id={'view.site'}
+                                  defaultMessage={'View'}
+                                />
+                              </Button>
+                            )}
+                          </Stack>
+                        </CardActions>
+                      </Card>
+                    </Grid>
+                  ))}
                 </Grid>
-              ))} </Grid>)}
+              )}
+            </Grid>
           </Grid>
         </Box>
       </MainLayout>

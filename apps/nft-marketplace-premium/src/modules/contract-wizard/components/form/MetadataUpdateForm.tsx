@@ -63,7 +63,6 @@ export default function MetadataUpdateForm({
             }}
             onConfirmSelectFile={(file) => {
               if (file) {
-                console.log('select file', file);
                 setFieldValue('image', file.url);
               }
 
