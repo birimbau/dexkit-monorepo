@@ -1,6 +1,6 @@
 import { useJsonRpcProvider } from '@/modules/wizard/hooks';
 import { ShowCaseItem } from '@/modules/wizard/types/section';
-import { ChainId, useNftMetadataQuery, useNftQuery } from '@dexkit/core';
+import { ChainId } from '@dexkit/core';
 import { ipfsUriToUrl } from '@dexkit/core/utils';
 import useContractMetadata from '@dexkit/ui/hooks/blockchain';
 import {
@@ -14,7 +14,10 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
+import { useMemo } from 'react';
+import { AppExpandableTypography } from 'src/components/AppExpandableTypography';
 import Link from 'src/components/Link';
+import { useAsset } from 'src/hooks/nft';
 import { getNetworkSlugFromChainId } from 'src/utils/blockchain';
 
 export interface ShowCaseCardProps {
@@ -29,22 +32,15 @@ export default function ShowCaseCard({ item }: ShowCaseCardProps) {
         : ChainId.Ethereum,
   });
 
-  const nftQuery = useNftQuery(
-    item.type === 'asset'
-      ? {
-          chainId: item.chainId,
-          contractAddress: item.contractAddress,
-          provider: providerQuery.data,
-          tokenId: item.tokenId,
-        }
-      : {}
-  );
+  const assetArgs = useMemo(() => {
+    if (item.type === 'asset') {
+      return [item.contractAddress, item.tokenId, {}, true] as any;
+    }
 
-  const metadataQuery = useNftMetadataQuery({
-    tokenURI: nftQuery.data?.tokenURI
-      ? ipfsUriToUrl(nftQuery.data?.tokenURI)
-      : undefined,
-  });
+    return [];
+  }, [item]);
+
+  const nftQuery = useAsset(...assetArgs);
 
   const contractMetadata = useContractMetadata(
     item.type === 'collection'
@@ -82,32 +78,33 @@ export default function ShowCaseCard({ item }: ShowCaseCardProps) {
               }}
             />
           )}
-          <Divider />
-          <CardContent sx={{ minHeight: (theme) => theme.spacing(12) }}>
-            <Stack spacing={1}>
-              <Box>
-                {item.title && (
-                  <Typography
-                    sx={{ textOverflow: 'ellipsis', overflow: 'hidden' }}
-                    variant="body1"
-                    fontWeight="bold"
-                  >
-                    {item.title}
-                  </Typography>
-                )}
-                {item.subtitle && (
-                  <Typography
-                    sx={{ textOverflow: 'ellipsis', overflow: 'hidden' }}
-                    variant="body2"
-                    color="text.secondary"
-                  >
-                    {item.subtitle}
-                  </Typography>
-                )}
-              </Box>
-            </Stack>
-          </CardContent>
         </CardActionArea>
+        <Divider />
+        <CardContent sx={{ minHeight: (theme) => theme.spacing(12) }}>
+          <Stack spacing={1}>
+            <Box>
+              {item.title && (
+                <Typography
+                  sx={{ textOverflow: 'ellipsis', overflow: 'hidden' }}
+                  variant="body1"
+                  fontWeight="bold"
+                >
+                  {item.title}
+                </Typography>
+              )}
+              {item.subtitle && (
+                <AppExpandableTypography
+                  TypographyProps={{
+                    sx: { textOverflow: 'ellipsis', overflow: 'hidden' },
+                    variant: 'body2',
+                    color: 'text.secondary',
+                  }}
+                  value={item.subtitle || ''}
+                />
+              )}
+            </Box>
+          </Stack>
+        </CardContent>
       </Card>
     );
   }
@@ -143,41 +140,50 @@ export default function ShowCaseCard({ item }: ShowCaseCardProps) {
               }}
             />
           )}
-
-          <Divider />
-          <CardContent sx={{ minHeight: (theme) => theme.spacing(16) }}>
-            <Stack spacing={1}>
-              <Box>
-                <Typography
-                  sx={{ textOverflow: 'ellipsis', overflow: 'hidden' }}
-                  variant="body1"
-                  fontWeight="bold"
-                >
-                  {item.title ? (
-                    item.title
-                  ) : contractMetadata.data?.name ? (
-                    contractMetadata.data?.name
-                  ) : (
-                    <Skeleton />
-                  )}
-                </Typography>
-                <Typography
-                  sx={{ textOverflow: 'ellipsis', overflow: 'hidden' }}
-                  variant="body2"
-                  color="text.secondary"
-                >
-                  {item.subtitle ? (
-                    item.subtitle
-                  ) : contractMetadata.data?.name ? (
-                    contractMetadata.data?.description
-                  ) : (
-                    <Skeleton />
-                  )}
-                </Typography>
-              </Box>
-            </Stack>
-          </CardContent>
         </CardActionArea>
+
+        <Divider />
+        <CardContent sx={{ minHeight: (theme) => theme.spacing(16) }}>
+          <Stack spacing={1}>
+            <Box>
+              <Typography
+                sx={{ textOverflow: 'ellipsis', overflow: 'hidden' }}
+                variant="body1"
+                fontWeight="bold"
+              >
+                {item.title ? (
+                  item.title
+                ) : contractMetadata.data?.name ? (
+                  contractMetadata.data?.name
+                ) : (
+                  <Skeleton />
+                )}
+              </Typography>
+
+              {item.subtitle ? (
+                item.subtitle
+              ) : <AppExpandableTypography
+                  TypographyProps={{
+                    sx: { textOverflow: 'ellipsis', overflow: 'hidden' },
+                    variant: 'body2',
+                    color: 'text.secondary',
+                  }}
+                  value={contractMetadata.data?.name || ''}
+                /> ? (
+                <AppExpandableTypography
+                  TypographyProps={{
+                    sx: { textOverflow: 'ellipsis', overflow: 'hidden' },
+                    variant: 'body2',
+                    color: 'text.secondary',
+                  }}
+                  value={contractMetadata.data?.description || ''}
+                />
+              ) : (
+                <Skeleton />
+              )}
+            </Box>
+          </Stack>
+        </CardContent>
       </Card>
     );
   }
@@ -190,11 +196,11 @@ export default function ShowCaseCard({ item }: ShowCaseCardProps) {
           item.contractAddress
         }/${item.tokenId}`}
       >
-        {metadataQuery.data?.image ? (
+        {nftQuery.data?.metadata?.image ? (
           <CardMedia
             image={
-              metadataQuery.data?.image
-                ? ipfsUriToUrl(metadataQuery.data?.image)
+              nftQuery.data?.metadata?.image
+                ? ipfsUriToUrl(nftQuery.data?.metadata?.image)
                 : undefined
             }
             sx={{ aspectRatio: '1/1' }}
@@ -210,45 +216,51 @@ export default function ShowCaseCard({ item }: ShowCaseCardProps) {
             }}
           />
         )}
-
-        <Divider />
-        <CardContent sx={{ minHeight: (theme) => theme.spacing(16) }}>
-          <Stack spacing={1}>
-            <Box>
-              <Typography
-                sx={{ textOverflow: 'ellipsis', overflow: 'hidden' }}
-                variant="body1"
-                fontWeight="bold"
-              >
-                {metadataQuery.isLoading ? (
-                  <Skeleton />
-                ) : (
-                  <>
-                    {metadataQuery.data?.name
-                      ? metadataQuery.data?.name
-                      : `${nftQuery.data?.collectionName} #${nftQuery.data?.tokenId}`}
-                  </>
-                )}
-              </Typography>
-              <Typography
-                sx={{ textOverflow: 'ellipsis', overflow: 'hidden' }}
-                variant="body2"
-                color="text.secondary"
-              >
-                {metadataQuery.isLoading ? (
-                  <Skeleton />
-                ) : (
-                  <>
-                    {metadataQuery.data?.description
-                      ? metadataQuery.data?.description
-                      : `${nftQuery.data?.collectionName} #${nftQuery.data?.tokenId}`}
-                  </>
-                )}
-              </Typography>
-            </Box>
-          </Stack>
-        </CardContent>
       </CardActionArea>
+      <Divider />
+      <CardContent sx={{ minHeight: (theme) => theme.spacing(16) }}>
+        <Stack spacing={1}>
+          <Box>
+            <Typography
+              sx={{ textOverflow: 'ellipsis', overflow: 'hidden' }}
+              variant="body1"
+              fontWeight="bold"
+            >
+              {nftQuery.isLoading ? (
+                <Skeleton />
+              ) : (
+                <>
+                  {nftQuery.data?.metadata?.name
+                    ? nftQuery.data?.metadata?.name
+                    : `${nftQuery.data?.collectionName} #${nftQuery.data?.id}`}
+                </>
+              )}
+            </Typography>
+            <Typography
+              sx={{ textOverflow: 'ellipsis', overflow: 'hidden' }}
+              variant="body2"
+              color="text.secondary"
+            >
+              {nftQuery.isLoading ? (
+                <Skeleton />
+              ) : (
+                <AppExpandableTypography
+                  value={
+                    nftQuery.data?.metadata?.description
+                      ? nftQuery.data?.metadata?.description || ''
+                      : `${nftQuery.data?.collectionName} #${nftQuery.data?.id}`
+                  }
+                  TypographyProps={{
+                    sx: { textOverflow: 'ellipsis', overflow: 'hidden' },
+                    variant: 'body2',
+                    color: 'text.secondary',
+                  }}
+                />
+              )}
+            </Typography>
+          </Box>
+        </Stack>
+      </CardContent>
     </Card>
   );
 }

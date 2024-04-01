@@ -125,10 +125,12 @@ export default function AddShowCaseSectionForm({
                 items: data.items || [],
                 alignItems: data.alignItems || 'left',
                 itemsSpacing: data.itemsSpacing || 2,
+                padding: data.padding || 0,
               }
             : {
                 alignItems: 'left',
                 itemsSpacing: 2,
+                padding: 0,
                 items: [],
               }
         }
@@ -201,6 +203,17 @@ export default function AddShowCaseSectionForm({
                       id="items.spacing"
                       defaultMessage="Items spacing"
                     />
+                  }
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <Field
+                  component={TextField}
+                  fullWidth
+                  name="padding"
+                  type="number"
+                  label={
+                    <FormattedMessage id="padding" defaultMessage="Padding" />
                   }
                 />
               </Grid>
