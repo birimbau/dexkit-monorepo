@@ -14,6 +14,7 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import AddMenuPageDialog from '../dialogs/AddMenuPageDialog';
+
 interface Props {
   menu: MenuTree[];
   pages: { [key: string]: AppPage };
