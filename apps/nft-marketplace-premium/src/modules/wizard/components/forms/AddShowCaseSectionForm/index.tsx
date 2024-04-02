@@ -78,6 +78,8 @@ const ShowCaseItemSchema = z.union([
 const FormSchema = z.object({
   alignItems: z.enum(['center', 'left', 'right']),
   itemsSpacing: z.number().min(1).max(8),
+  paddingTop: z.number().min(0).max(8),
+  paddingBottom: z.number().min(0).max(8),
   items: z.array(ShowCaseItemSchema).min(1),
 });
 
@@ -125,10 +127,14 @@ export default function AddShowCaseSectionForm({
                 items: data.items || [],
                 alignItems: data.alignItems || 'left',
                 itemsSpacing: data.itemsSpacing || 2,
+                paddingTop: data.paddingTop || 0,
+                paddingBottom: data.paddingBottom || 0,
               }
             : {
                 alignItems: 'left',
                 itemsSpacing: 2,
+                paddingTop: 0,
+                paddingBottom: 0,
                 items: [],
               }
         }
@@ -200,6 +206,34 @@ export default function AddShowCaseSectionForm({
                     <FormattedMessage
                       id="items.spacing"
                       defaultMessage="Items spacing"
+                    />
+                  }
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <Field
+                  component={TextField}
+                  fullWidth
+                  name="paddingTop"
+                  type="number"
+                  label={
+                    <FormattedMessage
+                      id="padding.top"
+                      defaultMessage="Padding top"
+                    />
+                  }
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <Field
+                  component={TextField}
+                  fullWidth
+                  name="paddingBottom"
+                  type="number"
+                  label={
+                    <FormattedMessage
+                      id="padding.bottom"
+                      defaultMessage="Padding bottom"
                     />
                   }
                 />

@@ -69,7 +69,12 @@ export default function ShowCaseSection({ section }: ShowCaseSectionProps) {
   }, [alignItems]);
 
   return (
-    <Box>
+    <Box
+      sx={{
+        pt: section.settings.paddingTop,
+        pb: section.settings.paddingBottom,
+      }}
+    >
       <Stack direction="row" spacing={{ sm: 2, xs: 1 }} alignItems="center">
         {pages.length > 1 && (
           <Box>
