@@ -40,6 +40,7 @@ interface Props {
     [key: string]: AppPage;
   };
   fatherIndex?: number;
+  disableMenu?: boolean;
 }
 
 export default function AddMenuPageDialog({
@@ -48,6 +49,7 @@ export default function AddMenuPageDialog({
   dialogProps,
   pages,
   fatherIndex,
+  disableMenu,
 }: Props) {
   const { onClose } = dialogProps;
   const handleClose = () => {
@@ -89,7 +91,7 @@ export default function AddMenuPageDialog({
                 name: allPages[values.name].title || '',
                 href: allPages[values.name].uri || '',
               },
-              fatherIndex,
+              fatherIndex
             );
           } else {
             onSubmit(values as MenuTree, fatherIndex);
@@ -119,9 +121,11 @@ export default function AddMenuPageDialog({
                       <FormattedMessage id={'page'} defaultMessage={'Page'} />
                     </MenuItem>
 
-                    <MenuItem value={'Menu'}>
-                      <FormattedMessage id={'menu'} defaultMessage={'Menu'} />
-                    </MenuItem>
+                    {!disableMenu && (
+                      <MenuItem value={'Menu'}>
+                        <FormattedMessage id={'menu'} defaultMessage={'Menu'} />
+                      </MenuItem>
+                    )}
 
                     <MenuItem value={'External'}>
                       <FormattedMessage

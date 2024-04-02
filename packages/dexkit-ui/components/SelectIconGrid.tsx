@@ -79,8 +79,6 @@ export default function SelectIconGrid({
     [value, theme]
   );
 
-  console.log("icons", icons);
-
   return (
     <Box
       sx={{
