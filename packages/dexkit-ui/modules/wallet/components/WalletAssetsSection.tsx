@@ -1,4 +1,3 @@
-import TableSkeleton from "@/modules/nft/components/tables/TableSkeleton";
 import { ChainId } from "@dexkit/core/constants";
 import { Search } from "@mui/icons-material";
 import FilterListIcon from "@mui/icons-material/FilterList";
@@ -27,6 +26,7 @@ import {
 } from "@dexkit/core/utils/blockchain";
 import Funnel from "../../../components/icons/Filter";
 import { AssetCard } from "../../nft/components/AssetCard";
+import TableSkeleton from "../../nft/components/tables/TableSkeleton";
 import {
   useAccountAssetsBalance,
   useAsset,

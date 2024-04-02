@@ -6,7 +6,8 @@ import { TokenWhitelabelApp } from "@dexkit/core/types";
 import { DexkitProvider } from "@dexkit/ui/components";
 import { ThemeMode } from "@dexkit/ui/constants/enum";
 import { AppNotification } from "@dexkit/ui/types";
-import { AppConfig } from "@dexkit/ui/types/config";
+
+import { AppConfig } from "@dexkit/ui/modules/wizard/types/config";
 import { useWeb3React } from "@web3-react/core";
 import { atom } from "jotai";
 import { useEffect } from "react";

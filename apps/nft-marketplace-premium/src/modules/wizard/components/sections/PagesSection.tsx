@@ -7,7 +7,11 @@ import { Alert, Box, Button, CssVarsTheme, Stack, Theme } from '@mui/material';
 import dynamic from 'next/dynamic';
 import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { AppPage, AppPageOptions } from '../../../../types/config';
+
+import {
+  AppPage,
+  AppPageOptions,
+} from '@dexkit/ui/modules/wizard/types/config';
 import { BuilderKit } from '../../constants';
 import PagesSectionPage from '../section-config/PagesSectionPage';
 const EditSectionDialog = dynamic(

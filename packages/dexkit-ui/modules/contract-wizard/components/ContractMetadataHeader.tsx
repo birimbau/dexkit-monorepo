@@ -28,6 +28,7 @@ import { FormattedMessage, useIntl } from "react-intl";
 import { THIRDWEB_CONTRACTTYPE_TO_NAME } from "@dexkit/ui/constants/thirdweb";
 import { useContractCollection } from "@dexkit/ui/modules/nft/hooks/collection";
 import { useMemo } from "react";
+import Link from "../../../components/AppLink";
 
 const Img = styled(Image)({});
 

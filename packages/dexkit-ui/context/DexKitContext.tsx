@@ -27,9 +27,7 @@ export interface DexkitContextState {
   tokens: TokenWhitelabelApp[];
   currencyUser?: string;
   setAssets: (update: SetStateAction<{ [key: string]: Asset }>) => void;
-  setTokens: (
-    update: SetStateAction<{ [key: string]: TokenWhitelabelApp }>
-  ) => void;
+  setTokens: (update: SetStateAction<TokenWhitelabelApp[]>) => void;
   userEventURL?: string;
   siteId?: number;
   assets: { [key: string]: Asset };

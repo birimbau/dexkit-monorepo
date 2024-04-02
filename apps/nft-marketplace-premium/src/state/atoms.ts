@@ -13,7 +13,8 @@ import {
 } from '../types/blockchain';
 
 import { ThemeMode } from '@dexkit/ui/constants/enum';
-import { Asset } from '../types/nft';
+import { Asset } from '@dexkit/ui/modules/nft/types';
+
 
 
 export const referralAtom = atom<string | undefined>(undefined);

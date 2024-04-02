@@ -1,6 +1,7 @@
 import { ThemeMode } from '@dexkit/ui/constants/enum';
+import { Asset } from '@dexkit/ui/modules/nft/types';
 import { Token, Transaction } from './blockchain';
-import { Asset } from './nft';
+
 
 export interface AppState {
   transactions: { [hash: string]: Transaction };

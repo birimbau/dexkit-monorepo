@@ -1,6 +1,7 @@
 import { Box, Grid, TablePagination, Typography } from "@mui/material";
 
 import { CopyAddress } from "@dexkit/ui/components/CopyAddress";
+import { useAppRankingQuery } from "@dexkit/ui/modules/wizard/hooks/ranking";
 import { RankingPageSection } from "@dexkit/ui/modules/wizard/types/section";
 import LeaderboardIcon from "@mui/icons-material/Leaderboard";
 import Table from "@mui/material/Table";
@@ -14,7 +15,6 @@ import { visuallyHidden } from "@mui/utils";
 import { useWeb3React } from "@web3-react/core";
 import { useState } from "react";
 import { FormattedMessage } from "react-intl";
-import { useAppRankingQuery } from "../../../../apps/nft-marketplace-premium/src/modules/wizard/hooks";
 export interface RankingSectionProps {
   section: RankingPageSection;
 }

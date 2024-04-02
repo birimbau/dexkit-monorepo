@@ -1,6 +1,6 @@
 import EvmWalletContainer from "@dexkit/ui/modules/wallet/components/containers/EvmWalletContainer";
 
-import { WalletPageSection } from "@dexkit/ui/modules/wizard/types";
+import { WalletPageSection } from "@dexkit/ui/modules/wizard/types/section";
 import { Container } from "@mui/material";
 import Box from "@mui/material/Box";
 

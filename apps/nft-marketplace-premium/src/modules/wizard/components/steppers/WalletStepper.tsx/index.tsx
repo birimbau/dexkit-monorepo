@@ -9,7 +9,8 @@ import Stepper from '@mui/material/Stepper';
 import Typography from '@mui/material/Typography';
 import * as React from 'react';
 import { FormattedMessage } from 'react-intl';
-import { AppConfig } from 'src/types/config';
+
+import { AppConfig } from '@dexkit/ui/modules/wizard/types/config';
 import GeneralWizardContainer from '../../containers/GeneralWizardContainer';
 import ThemeWizardContainer from '../../containers/ThemeWizardContainer';
 import TokenWizardContainer from '../../containers/TokenWizardContainer';

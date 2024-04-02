@@ -30,6 +30,8 @@ import { isAddress } from "@dexkit/core/utils/ethers/isAddress";
 import { useWeb3React } from "@web3-react/core";
 import { AxiosError } from "axios";
 import { useSnackbar } from "notistack";
+import { useDexKitContext } from "../../hooks";
+import { useActiveChainIds, useTokenData } from "../../hooks/blockchain";
 
 interface Props {
   dialogProps: DialogProps;
@@ -60,7 +62,7 @@ function ImportTokenDialog({ dialogProps }: Props) {
   const { activeChainIds } = useActiveChainIds();
   const { onClose } = dialogProps;
   const { chainId } = useWeb3React();
-  const { tokens, setTokens } = useDexkitContext();
+  const { tokens, setTokens } = useDexKitContext();
 
   const { formatMessage } = useIntl();
   const { enqueueSnackbar } = useSnackbar();

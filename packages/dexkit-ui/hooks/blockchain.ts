@@ -8,11 +8,13 @@ import {
 import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "@dexkit/core/constants/zrx";
 import { EvmCoin, TokenWhitelabelApp } from "@dexkit/core/types";
 import { convertTokenToEvmCoin } from "@dexkit/core/utils";
+import { UseMutationOptions, useMutation } from "@tanstack/react-query";
 import { useWeb3React } from "@web3-react/core";
 import { useContext, useMemo } from "react";
 import { useAppConfig, useAppWizardConfig, useDexKitContext } from ".";
 import { AdminContext } from "../context/AdminContext";
 import { DexKitContext } from "../context/DexKitContext";
+import { getTokenData } from "../services/token";
 
 /**
  * If chainId is not passed it returns all tokens from all chains
@@ -271,4 +273,13 @@ export function useActiveChainIds() {
   const activeChainIds = useContext(DexKitContext).activeChainIds;
   return { activeChainIds };
 
+}
+
+export function useTokenData(options?: Omit<UseMutationOptions, any>) {
+  return useMutation(
+    async ({ chainId, address }: { chainId: number; address: string }) => {
+      return await getTokenData(chainId, address);
+    },
+    options,
+  );
 }

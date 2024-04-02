@@ -10,6 +10,7 @@ import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { useUpsertWhitelabelAssetMutation } from 'src/hooks/whitelabel';
 
+import { AssetAPI } from '@dexkit/ui/modules/nft/types';
 import * as Yup from 'yup';
 import CreateWhitelabelDialog from '../dialogs/CreateWhitelabelNFTDialog';
 import OwnershipNFTForm from '../forms/OwnershipNFTForm';

@@ -29,13 +29,14 @@ import { AxiosError } from 'axios';
 import { useSnackbar } from 'notistack';
 
 import { NETWORKS } from '../../../../constants/chain';
-import { useTokenData } from '../../../../hooks/blockchain';
+
 import { useDebounce } from '../../../../hooks/misc';
 import { Token } from '../../../../types/blockchain';
 import { Network } from '../../../../types/chains';
 
 import { ipfsUriToUrl } from '@dexkit/core/utils/ipfs';
 import { AppDialogTitle } from '@dexkit/ui/components/AppDialogTitle';
+import { useTokenData } from '@dexkit/ui/hooks/blockchain';
 import { SearchTokenAutocomplete } from '../pageEditor/components/SearchTokenAutocomplete';
 
 interface Props {

@@ -11,7 +11,8 @@ import Typography from '@mui/material/Typography';
 import * as React from 'react';
 import { useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { AppConfig } from 'src/types/config';
+
+import { AppConfig } from '@dexkit/ui/modules/wizard/types/config';
 import ExchangeWizardContainer from '../../containers/ExchangeWizardContainer';
 import GeneralWizardContainer from '../../containers/GeneralWizardContainer';
 import ThemeWizardContainer from '../../containers/ThemeWizardContainer';

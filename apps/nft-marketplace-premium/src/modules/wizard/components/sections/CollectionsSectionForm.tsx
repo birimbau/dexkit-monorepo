@@ -17,12 +17,12 @@ import {
 
 import { FormattedMessage } from 'react-intl';
 import { NETWORKS } from '../../../../constants/chain';
-import { ipfsUriToUrl } from '../../../../utils/ipfs';
 
 import { FormikHelpers, useFormik } from 'formik';
 
 import { Network } from '@dexkit/core/types';
 import { isAddress } from '@dexkit/core/utils/ethers/isAddress';
+import { ipfsUriToUrl } from '@dexkit/core/utils/ipfs';
 import { useActiveChainIds } from '@dexkit/ui';
 import CompletationProvider from '@dexkit/ui/components/CompletationProvider';
 import MediaDialog from '@dexkit/ui/components/mediaDialog';

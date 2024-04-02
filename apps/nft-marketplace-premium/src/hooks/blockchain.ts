@@ -4,7 +4,7 @@ import {
   getProviderByChainId,
   switchNetwork,
 } from '@dexkit/core/utils/blockchain';
-import { UseMutationOptions, useMutation } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { useWeb3React } from '@web3-react/core';
 import { useAtomValue } from 'jotai';
 import { useUpdateAtom } from 'jotai/utils';
@@ -24,7 +24,6 @@ import { NETWORKS } from '../constants/chain';
 import { useAppWizardConfig } from '@/modules/wizard/hooks';
 import { ChainId } from '@dexkit/core/constants';
 import { ZEROEX_NATIVE_TOKEN_ADDRESS } from '@dexkit/core/constants/zrx';
-import { getTokenData } from '../services/blockchain';
 import { useAppConfig } from './app';
 
 
@@ -219,14 +218,7 @@ export function useAllTokenList({
   }, [chainId, onlyNative, includeNative]);
 }
 
-export function useTokenData(options?: Omit<UseMutationOptions, any>) {
-  return useMutation(
-    async ({ chainId, address }: { chainId: number; address: string }) => {
-      return await getTokenData(chainId, address);
-    },
-    options,
-  );
-}
+
 
 export function useNetworkProvider(chainId?: ChainId) {
   return getProviderByChainId(chainId);

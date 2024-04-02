@@ -7,6 +7,9 @@ import {
   Stack,
 } from "@mui/material";
 import { FormattedMessage } from "react-intl";
+import { NetworkwAccordion } from "../../../components/NetworkAccordion";
+import SidebarFilters from "../../../components/SidebarFilters";
+import SidebarFiltersContent from "../../../components/SidebarFiltersContent";
 
 interface Props {
   filters?: {

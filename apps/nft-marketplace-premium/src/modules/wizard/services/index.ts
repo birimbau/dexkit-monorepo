@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { Contract, providers } from 'ethers';
 
+import { getERC20Balance } from '@dexkit/core/services/balances';
 import {
   getNetworkSlugFromChainId,
   getProviderByChainId,

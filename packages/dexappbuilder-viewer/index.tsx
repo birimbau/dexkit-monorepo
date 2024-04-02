@@ -1,6 +1,6 @@
 //export * from './components/Render';
 
-import { AppConfig } from "@dexkit/ui/types/config";
+import { AppConfig } from "@dexkit/ui/modules/wizard/types/config";
 import { SectionRender } from "./components/SectionRender";
 import MainLayout from "./components/layout/main";
 import { useWhitelabelConfigQuery } from "./hooks";

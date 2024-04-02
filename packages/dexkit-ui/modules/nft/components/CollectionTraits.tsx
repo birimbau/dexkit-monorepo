@@ -17,7 +17,7 @@ import Typography from "@mui/material/Typography";
 import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
 import { useIntl } from "react-intl";
-import { useCollection } from "../../../../../apps/nft-marketplace-premium/src/hooks/nft";
+import { useCollection } from "../hooks/collection";
 
 interface Props {
   address?: string;

@@ -12,6 +12,7 @@ import { GatedCondition } from '@dexkit/ui/modules/wizard/types';
 import { getAccessToken } from '@dexkit/ui/services/auth';
 import { myAppsApi } from 'src/services/whitelabel';
 
+import { GET_APP_RANKINGS_QUERY, GET_APP_RANKING_QUERY } from '@dexkit/ui/modules/wizard/hooks/ranking';
 import { AppConfig } from '@dexkit/ui/modules/wizard/types/config';
 import {
   addPermissionsMemberSite,

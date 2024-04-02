@@ -8,6 +8,7 @@ import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Typography from "@mui/material/Typography";
 import { FormattedMessage } from "react-intl";
+import { useActiveChainIds } from "../hooks/blockchain";
 
 interface Props {
   onFilterNetworks?: (network: string) => void;

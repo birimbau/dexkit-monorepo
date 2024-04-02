@@ -33,7 +33,7 @@ import LaunchIcon from "@mui/icons-material/Launch";
 import Link from "../../../../components/AppLink";
 import MomentFromNow from "../../../../components/MomentFromNow";
 import { useTokenList } from "../../../../hooks/blockchain";
-import { useCurrency } from "../../../../hooks/currency";
+import { useCoinPricesQuery, useCurrency } from "../../../../hooks/currency";
 
 interface Props {
   order?: SwapApiOrder;

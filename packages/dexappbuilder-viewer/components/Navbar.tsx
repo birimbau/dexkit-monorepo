@@ -54,12 +54,14 @@ import {
   useThemeMode,
 } from "@dexkit/ui";
 import MagicNetworkSelect from "@dexkit/ui/components/MagicNetworkSelect";
-import WalletButton from "@dexkit/ui/components/WalletButton";
+
 import NotificationsDialog from "@dexkit/ui/components/dialogs/NotificationsDialog";
 import SelectNetworkDialog from "@dexkit/ui/components/dialogs/SelectNetworkDialog";
 import { ThemeMode } from "@dexkit/ui/constants/enum";
 import { useCurrency } from "@dexkit/ui/hooks/currency";
-import { AppConfig } from "@dexkit/ui/types/config";
+
+import { WalletButton } from "@dexkit/ui/components/WalletButton";
+import { AppConfig } from "@dexkit/ui/modules/wizard/types/config";
 import { MagicConnector } from "@dexkit/wallet-connectors/connectors/magic";
 import NavbarMenu from "./Menu";
 import { ThemeModeSelector } from "./ThemeModeSelector";

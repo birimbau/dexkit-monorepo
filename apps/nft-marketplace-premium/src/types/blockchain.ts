@@ -1,6 +1,7 @@
 import { ChainId } from '@dexkit/core/constants';
+import { Asset, SwapApiOrder } from '@dexkit/ui/modules/nft/types';
 import { BigNumber } from 'ethers';
-import { Asset, SwapApiOrder } from './nft';
+
 
 export enum TransactionStatus {
   Pending,

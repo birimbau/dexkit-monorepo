@@ -1,3 +1,5 @@
+import CollectionFromApiCard from '@dexkit/ui/modules/nft/components/CollectionFromApi';
+import { AppCollection } from '@dexkit/ui/modules/wizard/types/config';
 import Close from '@mui/icons-material/Close';
 import {
   Box,
@@ -8,8 +10,6 @@ import {
   Typography,
 } from '@mui/material';
 import { FormattedMessage } from 'react-intl';
-import { AppCollection } from '../../../../types/config';
-import CollectionFromApiCard from '../../../nft/components/CollectionFromApi';
 
 interface Props {
   previewCollection: AppCollection;

@@ -10,9 +10,15 @@ import { useWeb3React } from '@web3-react/core';
 import { BigNumber, Contract, providers } from 'ethers';
 import { useCallback } from 'react';
 
-import { ERC20Abi } from '../../../apps/nft-marketplace-premium/src/constants/abis';
 
-import { Token, TokenBalance } from '../../../apps/nft-marketplace-premium/src/types/blockchain';
+
+import { ZEROEX_NATIVE_TOKEN_ADDRESS } from '@dexkit/core/constants/zrx';
+
+import { ERC20Abi } from '@dexkit/core/constants/abis';
+import { Token } from '@dexkit/core/types';
+import { useERC20BalancesQuery } from '../modules/wallet/hooks';
+import { TokenBalance } from '../modules/wallet/types';
+import { getERC20Balances, getERC20WithProxyUnlockedBalances } from '../services/balances';
 
 export const GET_ERC20_BALANCES = 'GET_ERC20_BALANCES';
 export const GET_ERC20_BALANCE = 'GET_ERC20_BALANCE';

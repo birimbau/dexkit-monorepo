@@ -35,12 +35,16 @@ import { useTheme } from "@mui/material";
 import Image from "next/image";
 
 import { TOKEN_ICON_URL } from "@dexkit/core/constants";
+import { useErc20Balance } from "@dexkit/core/hooks/coin";
+import { Token } from "@dexkit/core/types";
 import { Asset } from "@dexkit/core/types/nft";
 import { ipfsUriToUrl } from "@dexkit/core/utils/ipfs";
 import { isValidDecimal } from "@dexkit/core/utils/numbers";
 import * as Yup from "yup";
 import { AppDialogTitle } from "../../../../components/AppDialogTitle";
+import AppFeePercentageSpan from "../../../../components/AppFeePercentageSpan";
 import { MIN_ORDER_DATE_TIME } from "../../../../constants";
+import { useTokenList } from "../../../../hooks/blockchain";
 import { useAssetMetadata } from "../../hooks";
 import { getAssetProtocol } from "../../utils";
 import DurationSelect from "../DurationSelect";
