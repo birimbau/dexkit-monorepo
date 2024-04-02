@@ -3,7 +3,8 @@ import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import { useState } from 'react';
 import { PreviewPortal } from 'src/components/PreviewPortal';
-import { AppConfig } from '../../../types/config';
+
+import { AppConfig } from '@dexkit/ui/modules/wizard/types/config';
 import PreviewPage from './PreviewPage';
 import { PreviewPlatformType } from './PreviewPlatformType';
 interface Props {

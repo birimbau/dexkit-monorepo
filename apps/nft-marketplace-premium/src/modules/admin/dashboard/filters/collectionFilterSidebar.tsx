@@ -1,13 +1,14 @@
+import CategoryIcon from '@mui/icons-material/LocalOffer';
+import MailIcon from '@mui/icons-material/MailOutline';
+import { Card, CardContent } from '@mui/material';
 import {
-  SavedQueriesList,
-  FilterLiveSearch,
   FilterList,
   FilterListItem,
+  FilterLiveSearch,
+  SavedQueriesList,
 } from 'react-admin';
-import { Card, CardContent } from '@mui/material';
-import MailIcon from '@mui/icons-material/MailOutline';
-import CategoryIcon from '@mui/icons-material/LocalOffer';
-import { CollectionSyncStatus } from 'src/constants/enum';
+
+import { CollectionSyncStatus } from '@dexkit/ui/modules/nft/constants/enum';
 import { NETWORKS } from 'src/constants/chain';
 
 export const CollectionFilterSidebar = () => (

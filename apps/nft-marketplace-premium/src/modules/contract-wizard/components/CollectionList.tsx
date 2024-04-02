@@ -1,3 +1,6 @@
+import { getNetworkFromSlug } from '@dexkit/core/utils/blockchain';
+import Link from '@dexkit/ui/components/AppLink';
+import { useAccountContractCollection } from '@dexkit/ui/modules/nft/hooks/collection';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { Button, MenuItem, Stack, Typography } from '@mui/material';
@@ -14,10 +17,9 @@ import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import Wallet from 'src/components/icons/Wallet';
-import Link from 'src/components/Link';
+
 import { useConnectWalletDialog } from 'src/hooks/app';
-import { useAccountContractCollection } from 'src/hooks/nft';
-import { getNetworkFromSlug } from 'src/utils/blockchain';
+
 import { truncateText } from 'src/utils/text';
 
 interface Props {
@@ -67,7 +69,7 @@ function ContractMenu({ network, address }: Props) {
         <MenuItem
           onClick={() =>
             router.push(
-              `/contract-wizard/collection/${network}/${address}/create-nfts`
+              `/contract-wizard/collection/${network}/${address}/create-nfts`,
             )
           }
         >

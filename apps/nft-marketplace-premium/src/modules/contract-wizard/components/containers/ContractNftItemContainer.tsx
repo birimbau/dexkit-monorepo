@@ -1,7 +1,7 @@
-import { AssetImage } from '@/modules/nft/components/AssetImage';
 import { getBlockExplorerUrl, truncateAddress } from '@dexkit/core/utils';
 import EvmBurnNftDialog from '@dexkit/ui/modules/evm-burn-nft/components/dialogs/EvmBurnNftDialog';
 import EvmTransferNftDialog from '@dexkit/ui/modules/evm-transfer-nft/components/dialogs/EvmTransferNftDialog';
+import { AssetImage } from '@dexkit/ui/modules/nft/components/AssetImage';
 import {
   Box,
   Button,
@@ -20,8 +20,8 @@ import { useState } from 'react';
 
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 
+import { PageHeader } from '@dexkit/ui/components/PageHeader';
 import { FormattedMessage } from 'react-intl';
-import { PageHeader } from 'src/components/PageHeader';
 
 export interface ContractNftItemContainerProps {
   address: string;

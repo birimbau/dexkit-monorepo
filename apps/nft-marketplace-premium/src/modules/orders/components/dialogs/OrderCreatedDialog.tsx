@@ -12,8 +12,9 @@ import {
 } from '@mui/material';
 import { PostOrderResponsePayload } from '@traderxyz/nft-swap-sdk/dist/sdk/v4/orderbook';
 import { FormattedMessage } from 'react-intl';
-import { AppDialogTitle } from '../../../../components/AppDialogTitle';
-import Link from '../../../../components/Link';
+
+import { AppDialogTitle } from '@dexkit/ui/components/AppDialogTitle';
+import Link from '@dexkit/ui/components/AppLink';
 import TickCircle from '../../../../components/icons/TickCircle';
 
 interface Props {

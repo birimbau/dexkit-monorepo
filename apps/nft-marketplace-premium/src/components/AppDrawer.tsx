@@ -26,13 +26,14 @@ import { useWeb3React } from '@web3-react/core';
 import { useUpdateAtom } from 'jotai/utils';
 import { FormattedMessage } from 'react-intl';
 import { useCurrency } from 'src/hooks/currency';
-import { useAppConfig, useConnectWalletDialog, useLocale } from '../hooks/app';
+import { useAppConfig, useConnectWalletDialog } from '../hooks/app';
 import { showSelectCurrencyAtom, showSelectLocaleAtom } from '../state/atoms';
 import DrawerMenu from './DrawerMenu';
 import Wallet from './icons/Wallet';
 
 import Link from '@dexkit/ui/components/AppLink';
 import WalletContent from '@dexkit/ui/components/WalletContent';
+import { useLocale } from '@dexkit/ui/hooks';
 import { ThemeModeSelector } from './ThemeModeSelector';
 
 const CustomListItemSecondaryAction = styled(ListItemSecondaryAction)({

@@ -18,7 +18,9 @@ import { useWeb3React } from '@web3-react/core';
 import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { useCheckGatedConditions } from '../../hooks';
-import { GatedCondition, GatedPageLayout } from '../../types';
+
+import { GatedPageLayout } from '@dexkit/ui/modules/wizard/types';
+import { GatedCondition } from '@dexkit/ui/modules/wizard/types/config';
 import { GatedConditionView } from '../GatedConditionView';
 
 interface Props {

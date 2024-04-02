@@ -25,16 +25,18 @@ import { Backdrop, CircularProgress } from '@mui/material';
 import { experimental_extendTheme as extendTheme } from '@mui/material/styles';
 import type {} from '@mui/material/themeCssVarsAugmentation';
 import { getTheme } from 'src/theme';
-import { AssetAPI } from 'src/types/nft';
+
 import defaultAppConfig from '../config/app.json';
 import { AppMarketplaceProvider } from '../src/components/AppMarketplaceProvider';
 import { AppConfigContext } from '../src/contexts';
-import { AppConfig } from '../src/types/config';
+
 import './customCss.css';
 
+import { AssetAPI } from '@dexkit/ui/modules/nft/types';
+import { AppConfig } from '@dexkit/ui/modules/wizard/types/config';
 import SiteProvider from '@dexkit/ui/providers/SiteProvider';
+import { AuthStateProvider } from '@dexkit/ui/providers/authStateProvider';
 import { AppBarANN } from 'src/components/AppBarANN';
-import { AuthStateProvider } from 'src/providers/authStateProvider';
 
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();

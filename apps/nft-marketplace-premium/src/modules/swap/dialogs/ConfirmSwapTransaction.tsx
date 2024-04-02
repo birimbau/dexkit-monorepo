@@ -17,7 +17,8 @@ import { useWeb3React } from '@web3-react/core';
 import { BigNumber } from 'ethers';
 import { memo } from 'react';
 import { FormattedMessage, FormattedNumber } from 'react-intl';
-import { AppDialogTitle } from '../../../components/AppDialogTitle';
+
+import { AppDialogTitle } from '@dexkit/ui/components/AppDialogTitle';
 import { useAppConfig } from '../../../hooks/app';
 import { useCurrency, useNativeCoinPriceQuery } from '../../../hooks/currency';
 import { Quote, Token } from '../../../types/blockchain';

@@ -1,25 +1,19 @@
-import {
-  Button,
-  IconButton,
-  Stack,
-  TableCell,
-  TableRow,
-  Typography,
-} from '@mui/material';
+import { IconButton, Stack, TableCell, TableRow } from '@mui/material';
 import { memo, useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { AppConfig } from '../../../../types/config';
+
 import { ConfigResponse } from '../../../../types/whitelabel';
 
+import Link from '@dexkit/ui/components/AppLink';
+import { AppConfig } from '@dexkit/ui/modules/wizard/types/config';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import PublishIcon from '@mui/icons-material/Publish';
-import Link from '../../../../components/Link';
+
 interface Props {
   config: ConfigResponse;
   handleDeploy: (config: ConfigResponse) => void;
   onMenu: (
     event: React.MouseEvent<HTMLElement>,
-    config: ConfigResponse
+    config: ConfigResponse,
   ) => void;
 }
 

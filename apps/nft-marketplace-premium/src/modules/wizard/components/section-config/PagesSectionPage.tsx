@@ -21,14 +21,17 @@ import {
 } from '@mui/material/styles';
 import { FormattedMessage } from 'react-intl';
 
-import { AppPage, AppPageOptions } from '../../../../types/config';
-
 import TokenIcon from '@mui/icons-material/Token';
 
+import AppConfirmDialog from '@dexkit/ui/components/AppConfirmDialog';
 import {
   GatedCondition,
   GatedPageLayout,
 } from '@dexkit/ui/modules/wizard/types';
+import {
+  AppPage,
+  AppPageOptions,
+} from '@dexkit/ui/modules/wizard/types/config';
 import { AppPageSection } from '@dexkit/ui/modules/wizard/types/section';
 import Code from '@mui/icons-material/Code';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -42,7 +45,6 @@ import StoreIcon from '@mui/icons-material/Store';
 import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
 import Wallet from '@mui/icons-material/Wallet';
 import { useState } from 'react';
-import AppConfirmDialog from '../../../../components/AppConfirmDialog';
 import PagesMenu from '../PagesMenu';
 import PreviewPagePlatform from '../PreviewPagePlatform';
 import AddPageDialog from '../dialogs/AddPageDialog';
@@ -337,7 +339,7 @@ export default function PagesSectionPage({
         onSubmit={onEditGatedContidions}
       />
       <AppConfirmDialog
-        dialogProps={{
+        DialogProps={{
           open: showDeletePageDialog,
           maxWidth: 'xs',
           fullWidth: true,

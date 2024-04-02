@@ -3,31 +3,31 @@ import {
   NETWORK_FROM_SLUG,
   NETWORK_IMAGE,
   NETWORK_NAME,
-} from '@dexkit/core/constants/networks';
+} from "@dexkit/core/constants/networks";
 import {
   copyToClipboard,
   ipfsUriToUrl,
   truncateAddress,
-} from '@dexkit/core/utils';
-import CopyIconButton from '@dexkit/ui/components/CopyIconButton';
-import FileCopy from '@mui/icons-material/FileCopy';
-import OpenInNewIcon from '@mui/icons-material/OpenInNew';
-import { Button, Chip, Stack, styled, useTheme } from '@mui/material';
-import Avatar from '@mui/material/Avatar';
-import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
-import Typography from '@mui/material/Typography';
+} from "@dexkit/core/utils";
+import CopyIconButton from "@dexkit/ui/components/CopyIconButton";
+import FileCopy from "@mui/icons-material/FileCopy";
+import OpenInNewIcon from "@mui/icons-material/OpenInNew";
+import { Button, Chip, Stack, styled, useTheme } from "@mui/material";
+import Avatar from "@mui/material/Avatar";
+import Box from "@mui/material/Box";
+import Grid from "@mui/material/Grid";
+import Typography from "@mui/material/Typography";
 import {
   CustomContractMetadata,
   useContract,
   useContractMetadata,
-} from '@thirdweb-dev/react';
-import Image from 'next/image';
-import { FormattedMessage, useIntl } from 'react-intl';
+} from "@thirdweb-dev/react";
+import Image from "next/image";
+import { FormattedMessage, useIntl } from "react-intl";
 
-import { THIRDWEB_CONTRACTTYPE_TO_NAME } from '@dexkit/ui/constants/thirdweb';
-import { useContractCollection } from '@dexkit/ui/modules/nft/hooks/collection';
-import { useMemo } from 'react';
+import { THIRDWEB_CONTRACTTYPE_TO_NAME } from "@dexkit/ui/constants/thirdweb";
+import { useContractCollection } from "@dexkit/ui/modules/nft/hooks/collection";
+import { useMemo } from "react";
 
 const Img = styled(Image)({});
 
@@ -62,36 +62,36 @@ export function ContractMetadataHeader({
   const chainId = NETWORK_FROM_SLUG(network)?.chainId;
 
   const getContractUrl = (contractType?: string) => {
-    let url: string | null = '';
+    let url: string | null = "";
     if (hidePublicPageUrl) {
       return null;
     }
 
     switch (contractType) {
-      case 'NFTStake':
-      case 'EditionStake':
-      case 'TokenStake':
+      case "NFTStake":
+      case "EditionStake":
+      case "TokenStake":
         url = `/stake/${network}/${address}`;
         break;
-      case 'TokenERC721':
+      case "TokenERC721":
         url = `/collection/${network}/${address}`;
         break;
-      case 'TokenERC1155':
+      case "TokenERC1155":
         url = `/collection/${network}/${address}`;
         break;
-      case 'TokenERC20':
+      case "TokenERC20":
         url = `/token/${network}/${address}`;
         break;
-      case 'DropERC1155':
+      case "DropERC1155":
         url = null;
         break;
-      case 'DropERC721':
+      case "DropERC721":
         url = `/drop/nft/${network}/${address}`;
         break;
-      case 'DropERC20':
+      case "DropERC20":
         url = `/drop/token/${network}/${address}`;
         break;
-      case 'AirdropERC20Claimable':
+      case "AirdropERC20Claimable":
         url = `/contract/${network}/${address}/airdrop`;
         break;
     }
@@ -106,19 +106,19 @@ export function ContractMetadataHeader({
           <Grid item xs={12}>
             <Box
               sx={{
-                display: 'flex',
-                algnItems: 'center',
-                alignContent: 'center',
-                justifyContent: { xs: 'center', sm: 'left' },
+                display: "flex",
+                algnItems: "center",
+                alignContent: "center",
+                justifyContent: { xs: "center", sm: "left" },
               }}
             >
               {metadata?.image || serverMetadata?.image ? (
                 <Box
                   sx={(theme) => ({
-                    position: 'relative',
+                    position: "relative",
                     height: theme.spacing(14),
                     width: theme.spacing(14),
-                    borderRadius: '50%',
+                    borderRadius: "50%",
                   })}
                 >
                   <img
@@ -142,15 +142,15 @@ export function ContractMetadataHeader({
             <Stack direction="row" spacing={2}>
               <Typography
                 sx={{
-                  display: 'block',
-                  textOverflow: 'ellipsis',
-                  overflow: 'hidden',
-                  textAlign: { xs: 'center', sm: 'left' },
+                  display: "block",
+                  textOverflow: "ellipsis",
+                  overflow: "hidden",
+                  textAlign: { xs: "center", sm: "left" },
                 }}
                 variant="h5"
                 component="h1"
               >
-                {metadata?.name === 'AirdropERC20Claimable' &&
+                {metadata?.name === "AirdropERC20Claimable" &&
                 serverMetadata?.name
                   ? serverMetadata?.name
                   : metadata?.name || serverMetadata?.name}
@@ -163,7 +163,7 @@ export function ContractMetadataHeader({
                       width: theme.spacing(2),
                       height: theme.spacing(2),
                     })}
-                    alt={NETWORK_NAME(chainId) || ''}
+                    alt={NETWORK_NAME(chainId) || ""}
                   />
                 }
                 label={NETWORK_NAME(chainId)}
@@ -176,10 +176,10 @@ export function ContractMetadataHeader({
               <Grid item xs={12}>
                 <Typography
                   sx={{
-                    display: 'block',
-                    textOverflow: 'ellipsis',
-                    overflow: 'hidden',
-                    textAlign: { xs: 'center', sm: 'left' },
+                    display: "block",
+                    textOverflow: "ellipsis",
+                    overflow: "hidden",
+                    textAlign: { xs: "center", sm: "left" },
                   }}
                   variant="body2"
                   component="p"
@@ -190,10 +190,10 @@ export function ContractMetadataHeader({
             ))}
           <Grid item xs={12}>
             <Stack
-              direction={'row'}
+              direction={"row"}
               spacing={2}
-              alignContent={'center'}
-              alignItems={'center'}
+              alignContent={"center"}
+              alignItems={"center"}
             >
               <Typography color="textSecondary" variant="caption">
                 {truncateAddress(address)}
@@ -201,18 +201,18 @@ export function ContractMetadataHeader({
                 <CopyIconButton
                   iconButtonProps={{
                     onClick: () => copyToClipboard(address),
-                    size: 'small',
-                    color: 'inherit',
+                    size: "small",
+                    color: "inherit",
                   }}
                   tooltip={formatMessage({
-                    id: 'copy',
-                    defaultMessage: 'Copy',
-                    description: 'Copy text',
+                    id: "copy",
+                    defaultMessage: "Copy",
+                    description: "Copy text",
                   })}
                   activeTooltip={formatMessage({
-                    id: 'copied',
-                    defaultMessage: 'Copied!',
-                    description: 'Copied text',
+                    id: "copied",
+                    defaultMessage: "Copied!",
+                    description: "Copied text",
                   })}
                 >
                   <FileCopy fontSize="inherit" color="inherit" />
@@ -248,7 +248,7 @@ export function ContractMetadataHeader({
                     ? (THIRDWEB_CONTRACTTYPE_TO_NAME[
                         contractTypeV2 as string
                       ] as string)
-                    : 'custom'
+                    : "custom"
                 }
               />
             </Stack>

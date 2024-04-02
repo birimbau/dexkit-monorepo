@@ -1,4 +1,4 @@
-import SendContainer from '@/modules/wallet/components/containers/SendContainer';
+import SendContainer from '@dexkit/ui/modules/wallet/components/containers/SendContainer';
 import type { GetStaticProps, GetStaticPropsContext, NextPage } from 'next';
 
 import MainLayout from 'src/components/layouts/main';

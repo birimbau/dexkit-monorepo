@@ -1,8 +1,9 @@
 import { Typography, useMediaQuery, useTheme } from "@mui/material";
 import Stack from "@mui/material/Stack";
 import { FormattedMessage } from "react-intl";
-import { useCollectionStats } from "../../../../../apps/nft-marketplace-premium/src/hooks/collection";
+
 import { MAP_COIN_TO_RARIBLE } from "../constants/marketplaces";
+import { useCollectionStats } from "../hooks/collection";
 
 interface Props {
   network?: string;

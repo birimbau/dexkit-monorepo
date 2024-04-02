@@ -1,4 +1,4 @@
-import { ChainId } from '@dexkit/core/constants';
+import { ChainId, TOKEN_ICON_URL } from '@dexkit/core/constants';
 import Close from '@mui/icons-material/Close';
 import {
   Avatar,
@@ -19,9 +19,9 @@ import {
 } from '@mui/material';
 import { memo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { useTokenList } from '../../../hooks/blockchain';
+
+import { useTokenList } from '@dexkit/ui/hooks/blockchain';
 import { Token } from '../../../types/blockchain';
-import { TOKEN_ICON_URL } from '../../../utils/token';
 
 interface Props {
   dialogProps: DialogProps;

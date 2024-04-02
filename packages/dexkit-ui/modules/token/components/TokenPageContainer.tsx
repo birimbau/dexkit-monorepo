@@ -1,4 +1,3 @@
-import { ContractMetadataHeader } from "@/modules/contract-wizard/components/ContractMetadataHeader";
 import { NETWORK_FROM_SLUG } from "@dexkit/core/constants/networks";
 import { isAddressEqual } from "@dexkit/core/utils";
 import MarketTradeSection from "@dexkit/dexappbuilder-viewer/components/sections/MarketTradeSection";
@@ -21,9 +20,11 @@ import { useWeb3React } from "@web3-react/core";
 import { NextSeo } from "next-seo";
 import { useMemo } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
+import { ContractMetadataHeader } from "../../contract-wizard/components/ContractMetadataHeader";
 
 import { getChainIdFromSlug } from "@dexkit/core/utils/blockchain";
 import { PageHeader } from "../../../components/PageHeader";
+import { THIRDWEB_CLIENT_ID } from "../../../constants/thirdweb";
 import TokenInfo from "./TokenInfo";
 interface Props {
   address?: string;

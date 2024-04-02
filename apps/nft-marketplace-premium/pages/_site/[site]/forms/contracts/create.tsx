@@ -9,6 +9,7 @@ import {
 } from '@/modules/forms/hooks';
 import { DexkitApiProvider } from '@dexkit/core/providers';
 
+import { PageHeader } from '@dexkit/ui/components/PageHeader';
 import { QueryClient, dehydrate } from '@tanstack/react-query';
 import { useWeb3React } from '@web3-react/core';
 import {
@@ -19,7 +20,6 @@ import {
 } from 'next';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
-import { PageHeader } from 'src/components/PageHeader';
 import AuthMainLayout from 'src/components/layouts/authMain';
 import { getAppConfig } from 'src/services/app';
 

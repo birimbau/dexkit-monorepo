@@ -1,3 +1,4 @@
+import AppConfirmDialog from '@dexkit/ui/components/AppConfirmDialog';
 import Add from '@mui/icons-material/Add';
 import Delete from '@mui/icons-material/Delete';
 import DoneAllIcon from '@mui/icons-material/DoneAll';
@@ -18,7 +19,6 @@ import {
 import dynamic from 'next/dynamic';
 import { ChangeEvent, useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
-import AppConfirmDialog from '../../../../components/AppConfirmDialog';
 import { Token } from '../../../../types/blockchain';
 import { WIZARD_MAX_TOKENS } from '../../constants';
 import TokensSectionList from './TokensSectionList';
@@ -115,7 +115,7 @@ export default function TokensSection({
         }}
       />
       <AppConfirmDialog
-        dialogProps={{
+        DialogProps={{
           maxWidth: 'xs',
           fullWidth: true,
           open: showRemoveTokens,

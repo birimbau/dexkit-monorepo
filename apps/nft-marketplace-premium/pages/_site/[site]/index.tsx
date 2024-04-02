@@ -11,12 +11,10 @@ import { dehydrate, QueryClient } from '@tanstack/react-query';
 import { getAppConfig } from '../../../src/services/app';
 
 import { SectionsRenderer } from '@/modules/wizard/components/sections/SectionsRenderer';
-import { AppPageSection } from '@/modules/wizard/types/section';
-import { GET_ASSETS_ORDERBOOK } from 'src/hooks/nft';
-import {
-  fetchMultipleAssetForQueryClient,
-  getDKAssetOrderbook,
-} from 'src/services/nft';
+import { GET_ASSETS_ORDERBOOK } from '@dexkit/ui/modules/nft/hooks';
+import { getDKAssetOrderbook } from '@dexkit/ui/modules/nft/services';
+import { fetchMultipleAssetForQueryClient } from '@dexkit/ui/modules/nft/services/query';
+import { AppPageSection } from '@dexkit/ui/modules/wizard/types/section';
 
 const Home: NextPage<{ sections: AppPageSection[] }> = ({ sections }) => {
   return (

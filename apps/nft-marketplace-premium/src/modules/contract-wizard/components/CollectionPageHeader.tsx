@@ -1,6 +1,6 @@
+import { PageHeader } from '@dexkit/ui/components/PageHeader';
+import { useContractCollection } from '@dexkit/ui/modules/nft/hooks/collection';
 import { FormattedMessage } from 'react-intl';
-import { PageHeader } from '../../../components/PageHeader';
-import { useContractCollection } from '../../../hooks/nft';
 
 interface Props {
   networkId: string;

@@ -1,3 +1,4 @@
+import { AppConfig, SocialMedia } from '@dexkit/ui/modules/wizard/types/config';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FacebookIcon from '@mui/icons-material/Facebook';
@@ -20,7 +21,6 @@ import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import * as Yup from 'yup';
-import { AppConfig, SocialMedia } from '../../../../types/config';
 const MediaDialog = dynamic(() => import('@dexkit/ui/components/mediaDialog'));
 interface Props {
   config: AppConfig;

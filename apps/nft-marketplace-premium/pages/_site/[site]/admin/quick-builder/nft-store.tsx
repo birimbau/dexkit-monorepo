@@ -1,4 +1,5 @@
 import AssetStoreStepperContainer from '@/modules/wizard/components/steppers/containers/AssetStoreStepperContainer';
+import { AuthProvider } from '@dexkit/ui/providers/authProvider';
 import { QueryClient, dehydrate } from '@tanstack/react-query';
 import {
   GetStaticPaths,
@@ -12,7 +13,6 @@ import { useRouter } from 'next/router';
 import { useIntl } from 'react-intl';
 import MainLayout from 'src/components/layouts/main';
 import { useWhitelabelConfigQuery } from 'src/hooks/whitelabel';
-import { AuthProvider } from 'src/providers/authProvider';
 import { ConfigWizardProvider } from 'src/providers/configWizardProvider';
 import { getAppConfig } from 'src/services/app';
 

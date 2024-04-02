@@ -6,6 +6,8 @@ import LazyTextField from '@dexkit/ui/components/LazyTextField';
 import Info from '@mui/icons-material/Info';
 import Search from '@mui/icons-material/Search';
 
+import Link from '@dexkit/ui/components/AppLink';
+import { PageHeader } from '@dexkit/ui/components/PageHeader';
 import {
   Avatar,
   Box,
@@ -30,8 +32,6 @@ import {
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import Link from 'src/components/Link';
-import { PageHeader } from 'src/components/PageHeader';
 import AuthMainLayout from 'src/components/layouts/authMain';
 
 export default function FormsAccountPage() {

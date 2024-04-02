@@ -1,7 +1,8 @@
-import React, { Dispatch, SetStateAction } from 'react';
-import { AppConfig } from '../types/config';
+import React from 'react';
+
 
 import { AssetAPI } from '@dexkit/ui/modules/nft/types';
+import { AppConfig } from '@dexkit/ui/modules/wizard/types/config';
 import defaultAppConfig from '../../config/app.json';
 
 export const AppConfigContext = React.createContext<{
@@ -22,29 +23,8 @@ export const AppWizardConfigContext =
     wizardConfig: defaultAppConfig as AppConfig,
   });
 
-export interface AuthUser {
-  address?: string;
-}
 
-interface IAuthContext {
-  isLoggedIn: boolean;
-  user?: AuthUser;
-  setIsLoggedIn: Dispatch<SetStateAction<boolean>>;
-  setUser: Dispatch<SetStateAction<AuthUser | undefined>>;
-}
 
-const AUTH_INITIAL_VALUES = {
-  isLoggedIn: false,
-  setIsLoggedIn: () => { },
-  user: undefined,
-  setUser: () => { },
-};
-
-export const AuthContext =
-  React.createContext<IAuthContext>(AUTH_INITIAL_VALUES);
-
-export const AuthStateContext =
-  React.createContext<IAuthContext>(AUTH_INITIAL_VALUES);
 
 
 

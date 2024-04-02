@@ -14,11 +14,14 @@ import {
 import { FormikHelpers, useFormik } from 'formik';
 import { useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { PageSectionVariant, SectionItem } from '../../../../types/config';
 
 import AddIcon from '@mui/icons-material/Add';
 
 import CompletationProvider from '@dexkit/ui/components/CompletationProvider';
+import {
+  PageSectionVariant,
+  SectionItem,
+} from '@dexkit/ui/modules/wizard/types/config';
 import {
   AppPageSection,
   CallToActionAppPageSection,

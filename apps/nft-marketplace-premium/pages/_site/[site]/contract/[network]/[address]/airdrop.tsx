@@ -1,4 +1,4 @@
-import AirdropTokenPageContainer from '@/modules/token/components/container/AirdropTokenPageContainer';
+import AirdropTokenPageContainer from '@/modules/token/components/AirdropTokenPageContainer';
 import { NETWORK_FROM_SLUG } from '@dexkit/core/constants/networks';
 import Container from '@mui/material/Container';
 import { ThirdwebSDKProvider } from '@thirdweb-dev/react';

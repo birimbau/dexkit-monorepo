@@ -4,7 +4,8 @@ import MenuItem from '@mui/material/MenuItem';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import { FormattedMessage } from 'react-intl';
-import { MenuTree } from '../types/config';
+
+import { MenuTree } from '@dexkit/ui/modules/wizard/types/config';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 interface Props {

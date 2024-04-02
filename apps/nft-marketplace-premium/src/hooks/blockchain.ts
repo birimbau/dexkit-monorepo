@@ -15,7 +15,7 @@ import {
   tokensAtom,
 } from '../state/atoms';
 
-import { ZEROEX_NATIVE_TOKEN_ADDRESS } from '../constants';
+
 import { Token } from '../types/blockchain';
 
 import { NETWORKS } from '../constants/chain';
@@ -23,6 +23,7 @@ import { NETWORKS } from '../constants/chain';
 
 import { useAppWizardConfig } from '@/modules/wizard/hooks';
 import { ChainId } from '@dexkit/core/constants';
+import { ZEROEX_NATIVE_TOKEN_ADDRESS } from '@dexkit/core/constants/zrx';
 import { getTokenData } from '../services/blockchain';
 import { useAppConfig } from './app';
 

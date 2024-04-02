@@ -1,10 +1,11 @@
+import { PageHeader } from '@dexkit/ui/components/PageHeader';
 import { Box, Button, Container, Grid, Stack, Typography } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { PageHeader } from 'src/components/PageHeader';
-import { useAuth, useLoginAccountMutation } from 'src/hooks/account';
+
+import { useAuth, useLoginAccountMutation } from '@dexkit/ui/hooks/auth';
 import { useAuthUserQuery } from '../../hooks';
 export function UserLoginContainer() {
   const router = useRouter();

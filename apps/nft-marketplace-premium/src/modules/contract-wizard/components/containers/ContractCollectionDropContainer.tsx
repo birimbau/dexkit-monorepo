@@ -9,8 +9,9 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { AppErrorBoundary } from 'src/components/AppErrorBoundary';
-import { useCollection } from 'src/hooks/nft';
+
+import { AppErrorBoundary } from '@dexkit/ui/components/AppErrorBoundary';
+import { useCollection } from '@dexkit/ui/modules/nft/hooks/collection';
 import { AssetListContractCollection } from '../AssetListContractCollection';
 import ClaimConditionsDialog from '../dialogs/ClaimConditionsDialog';
 import CreateAssetFormDialog from '../dialogs/CreateAssetFormDialog';

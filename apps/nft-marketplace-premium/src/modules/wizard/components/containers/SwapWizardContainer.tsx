@@ -3,6 +3,7 @@ import { SwapWidget } from '@dexkit/widgets/src/widgets/swap';
 
 import { ChainId } from '@dexkit/core/constants';
 import { useActiveChainIds } from '@dexkit/ui';
+import { AppConfig } from '@dexkit/ui/modules/wizard/types/config';
 import { SwapPageSection } from '@dexkit/ui/modules/wizard/types/section';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
@@ -19,7 +20,6 @@ import { FormattedMessage } from 'react-intl';
 import { useCurrency } from 'src/hooks/currency';
 import { Token } from 'src/types/blockchain';
 import { useSwapState } from '../../../../hooks/swap';
-import { AppConfig } from '../../../../types/config';
 import { StepperButtonProps } from '../../types';
 import { SwapConfigForm } from '../forms/SwapConfigForm';
 import { StepperButtons } from '../steppers/StepperButtons';

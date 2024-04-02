@@ -1,8 +1,8 @@
 import { AppWizardConfigContext as AppUIWizardConfigContext } from '@dexkit/ui/context/AppConfigContext';
+import { AppConfig } from '@dexkit/ui/modules/wizard/types/config';
 import { ReactNode, useState } from 'react';
 import defaultAppConfig from '../../config/app.json';
 import { AppWizardConfigContext } from '../contexts';
-import { AppConfig } from '../types/config';
 
 interface Props {
   children: ReactNode;

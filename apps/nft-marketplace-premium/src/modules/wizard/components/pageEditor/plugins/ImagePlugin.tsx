@@ -4,8 +4,9 @@ import type { CellPlugin } from '@react-page/editor';
 import { Stack } from '@mui/material';
 import Image from 'next/image';
 import { useMemo } from 'react';
-import Link from '../../../../../components/Link';
-import { DEXKIT_BASE_FILES_HOST } from '../../../../../constants';
+
+import Link from '@dexkit/ui/components/AppLink';
+import { DEXKIT_BASE_FILES_HOST } from '@dexkit/ui/constants';
 import { PagesPicker } from '../components/ActionsPicker';
 import { ImagePicker } from '../components/ImagePicker';
 type Data = {
@@ -34,7 +35,9 @@ const ImagePlugin: CellPlugin<Data> = {
         <Image
           alt={alt || 'Image'}
           style={{
-            borderRadius: data.borderRadius ? `${data.borderRadius}%` : undefined
+            borderRadius: data.borderRadius
+              ? `${data.borderRadius}%`
+              : undefined,
           }}
           src={src}
           height={data.height ? data.height : 250}
@@ -46,7 +49,9 @@ const ImagePlugin: CellPlugin<Data> = {
         <img
           alt={alt || 'Image'}
           style={{
-            borderRadius: data.borderRadius ? `${data.borderRadius}%` : undefined
+            borderRadius: data.borderRadius
+              ? `${data.borderRadius}%`
+              : undefined,
           }}
           src={src}
           height={data.height ? data.height : 250}
@@ -142,7 +147,7 @@ const ImagePlugin: CellPlugin<Data> = {
               default: 250,
               title: 'Image height in px',
             },
-          
+
             position: {
               type: 'string',
               title: 'Position',

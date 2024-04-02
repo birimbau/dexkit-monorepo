@@ -27,13 +27,15 @@ import { isAddressEqual } from '@dexkit/core/utils/blockchain';
 import { isAddress } from '@dexkit/core/utils/ethers/isAddress';
 import { AxiosError } from 'axios';
 import { useSnackbar } from 'notistack';
-import { AppDialogTitle } from '../../../../components/AppDialogTitle';
+
 import { NETWORKS } from '../../../../constants/chain';
 import { useTokenData } from '../../../../hooks/blockchain';
 import { useDebounce } from '../../../../hooks/misc';
 import { Token } from '../../../../types/blockchain';
 import { Network } from '../../../../types/chains';
-import { ipfsUriToUrl } from '../../../../utils/ipfs';
+
+import { ipfsUriToUrl } from '@dexkit/core/utils/ipfs';
+import { AppDialogTitle } from '@dexkit/ui/components/AppDialogTitle';
 import { SearchTokenAutocomplete } from '../pageEditor/components/SearchTokenAutocomplete';
 
 interface Props {

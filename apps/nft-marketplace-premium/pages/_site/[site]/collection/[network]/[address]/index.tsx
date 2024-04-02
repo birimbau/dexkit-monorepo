@@ -15,7 +15,7 @@ import {
   CollectionSyncStatus,
   NFTType,
 } from '@dexkit/ui/modules/nft/constants/enum';
-import { getCollectionData } from '@dexkit/ui/modules/nft/services';
+
 import { Collection, TraderOrderFilter } from '@dexkit/ui/modules/nft/types';
 import { hexToString } from '@dexkit/ui/utils';
 import { getIsLockAsync } from '@dexkit/unlock-widget';
@@ -47,10 +47,11 @@ import { useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import MainLayout from 'src/components/layouts/main';
 import { REVALIDATE_PAGE_TIME, THIRDWEB_CLIENT_ID } from 'src/constants';
-import { NETWORK_ID } from 'src/constants/enum';
+
 import { getAppConfig } from 'src/services/app';
 
 import CollectionSection from '@dexkit/dexappbuilder-viewer/components/sections/CollectionSection';
+import { NETWORK_ID } from '@dexkit/ui/constants/enum';
 import {
   MAP_COIN_TO_RARIBLE,
   MAP_NETWORK_TO_RARIBLE,
@@ -66,10 +67,11 @@ import {
   getApiCollectionData,
   getCollectionAssetsDexKitApi,
   getCollectionAssetsFromOrderbook,
+  getCollectionData,
   getSyncCollectionData,
 } from '@dexkit/ui/modules/nft/services/collection';
+import { getRariCollectionStats } from '@dexkit/ui/modules/nft/services/rarible';
 import { getProviderBySlug } from '@dexkit/ui/services/providers';
-import { getRariCollectionStats } from 'src/services/rarible';
 
 const CollectionPage: NextPage<{
   enableDarkblock: boolean;

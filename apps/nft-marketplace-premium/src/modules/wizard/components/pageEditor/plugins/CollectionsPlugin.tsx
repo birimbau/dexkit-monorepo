@@ -1,9 +1,9 @@
 import type { CellPlugin } from '@react-page/editor';
 
-import { CollectionPageSection } from '@/modules/wizard/types/section';
+import CollectionSection from '@dexkit/dexappbuilder-viewer/components/sections/CollectionSection';
+import { CollectionPageSection } from '@dexkit/ui/modules/wizard/types/section';
 import { Box } from '@mui/material';
 import CollectionSectionFormAlt from '../../forms/CollectionSectionFormAlt';
-import CollectionSection from '../../sections/CollectionSection';
 
 // you can pass the shape of the data as the generic type argument
 const CollectionsPlugin: CellPlugin<{

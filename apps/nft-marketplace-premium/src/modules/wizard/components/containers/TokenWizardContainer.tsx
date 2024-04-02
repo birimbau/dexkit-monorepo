@@ -1,4 +1,5 @@
 import { isAddressEqual } from '@dexkit/core/utils/blockchain';
+import { AppConfig } from '@dexkit/ui/modules/wizard/types/config';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
@@ -8,7 +9,6 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { SiteResponse } from 'src/types/whitelabel';
 import { Token } from '../../../../types/blockchain';
-import { AppConfig } from '../../../../types/config';
 import { StepperButtonProps } from '../../types';
 import { TOKEN_KEY } from '../../utils';
 import TokensSection from '../sections/TokensSection';

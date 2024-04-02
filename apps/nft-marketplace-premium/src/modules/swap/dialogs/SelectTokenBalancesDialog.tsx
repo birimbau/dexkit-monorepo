@@ -1,4 +1,4 @@
-import { ChainId } from '@dexkit/core/constants';
+import { ChainId, TOKEN_ICON_URL } from '@dexkit/core/constants';
 import {
   Avatar,
   Dialog,
@@ -18,12 +18,13 @@ import {
 import { useWeb3React } from '@web3-react/core';
 import { memo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { AppDialogTitle } from '../../../components/AppDialogTitle';
 
-import { useERC20BalancesProxyAllowancesQuery } from '../../../hooks/balances';
-import { useTokenList } from '../../../hooks/blockchain';
+import { useERC20BalancesProxyAllowancesQuery } from '@dexkit/ui/hooks/balances';
+
 import { Token, TokenBalance } from '../../../types/blockchain';
-import { TOKEN_ICON_URL } from '../../../utils/token';
+
+import { AppDialogTitle } from '@dexkit/ui/components/AppDialogTitle';
+import { useTokenList } from '@dexkit/ui/hooks/blockchain';
 import SelectTokenDialogListItem from './SelectTokenDialogListItem';
 
 interface Props {
@@ -50,7 +51,7 @@ function SelectTokenBalanceDialog({
     tokens,
     undefined,
     selectedChainId || chainId,
-    false
+    false,
   );
 
   const [value, setValue] = useState('');
@@ -177,7 +178,7 @@ function SelectTokenBalanceDialog({
                               ? token.logoURI
                               : TOKEN_ICON_URL(
                                   token.address,
-                                  selectedChainId as ChainId
+                                  selectedChainId as ChainId,
                                 )
                           }
                         />

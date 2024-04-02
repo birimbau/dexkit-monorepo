@@ -1,5 +1,5 @@
-import { ContractMetadataHeader } from '@/modules/contract-wizard/components/ContractMetadataHeader';
 import ClaimAirdropERC20Section from '@dexkit/dexappbuilder-viewer/components/sections/ClaimAirdropERC20Section';
+import { ContractMetadataHeader } from '@dexkit/ui/modules/contract-wizard/components/ContractMetadataHeader';
 import { hexToString } from '@dexkit/ui/utils';
 import Container from '@mui/material/Container';
 import Stack from '@mui/material/Stack';

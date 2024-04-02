@@ -4,10 +4,10 @@ import MainLayout from '../../../../src/components/layouts/main';
 
 import { FormattedMessage, useIntl } from 'react-intl';
 
+import { PageHeader } from '@dexkit/ui/components/PageHeader';
 import { NextSeo } from 'next-seo';
-import { PageHeader } from '../../../../src/components/PageHeader';
 
-import EvmWalletContainer from '@/modules/wallet/components/containers/EvmWalletContainer';
+import EvmWalletContainer from '@dexkit/ui/modules/wallet/components/containers/EvmWalletContainer';
 import { REVALIDATE_PAGE_TIME } from 'src/constants';
 
 import { getAppConfig } from '../../../../src/services/app';

@@ -4,10 +4,10 @@ import {
   getChainName,
   getChainSymbol,
 } from '@dexkit/core/utils/blockchain';
+import ChooseNetworkDialog from '@dexkit/ui/components/dialogs/ChooseNetworkDialog';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import { useState } from 'react';
-import ChooseNetworkDialog from './dialogs/ChooseNetworkDialog';
 
 interface Props {
   chainId?: ChainId;

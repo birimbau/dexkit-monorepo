@@ -101,8 +101,7 @@ export const DEXKIT_BASE_API_URL =
 //export const DEXKIT_BASE_API_URL = 'https://dexkit-main-api-9vzhs.ondigitalocean.app'
 // export const DEXKIT_BASE_API_URL = 'https://nft-api.dexkit.com';
 
-export const DEXKIT_BASE_FILES_HOST =
-  'https://dexkit-storage.nyc3.digitaloceanspaces.com';
+
 
 export const DEXKIT_AUTHENTICATE_API_KEY = process.env.MARKETPLACE_API_KEY
   ? process.env.MARKETPLACE_API_KEY

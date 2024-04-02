@@ -10,14 +10,14 @@ import { FormattedMessage } from 'react-intl';
 
 import * as Yup from 'yup';
 
-import { AppDialogTitle } from '../../../../components/AppDialogTitle';
-
 import { Grid, LinearProgress } from '@mui/material';
 import MenuItem from '@mui/material/MenuItem';
 import { Field, Form, Formik } from 'formik';
 import { Select, TextField } from 'formik-mui';
 import { useMemo } from 'react';
-import { AppPage, MenuTree } from '../../../../types/config';
+
+import { AppDialogTitle } from '@dexkit/ui/components/AppDialogTitle';
+import { AppPage, MenuTree } from '@dexkit/ui/modules/wizard/types/config';
 import { CORE_PAGES } from '../../constants';
 
 const MenuOptionsSchema = Yup.object().shape({

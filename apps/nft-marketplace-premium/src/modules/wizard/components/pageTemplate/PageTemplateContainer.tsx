@@ -2,7 +2,8 @@ import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import { FormattedMessage } from 'react-intl';
-import { PageHeader } from '../../../../components/PageHeader';
+
+import { PageHeader } from '@dexkit/ui/components/PageHeader';
 import { PageTemplateResponse } from '../../../../types/whitelabel';
 import PageTemplateForm from './forms/PageTemplateForm';
 

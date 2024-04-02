@@ -6,7 +6,8 @@ import TextField from '@mui/material/TextField';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import { NETWORKS } from '../../../../../constants/chain';
-import { useSearchAssets } from '../../../../../hooks/nft';
+
+import { useSearchAssets } from '@dexkit/ui/modules/nft/hooks';
 import { CollectionUniformItem } from './CollectionAutocompleteUniform';
 
 interface Props {

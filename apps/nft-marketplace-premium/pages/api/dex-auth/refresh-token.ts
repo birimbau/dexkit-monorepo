@@ -1,5 +1,6 @@
+import { requestAccestoken } from '@dexkit/ui/services/auth';
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { requestAccestoken } from 'src/services/auth';
+
 
 export default async function handler(
   req: NextApiRequest,

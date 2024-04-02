@@ -5,7 +5,8 @@ import type { NextPage } from 'next';
 import Image from 'next/image';
 
 import { FormattedMessage } from 'react-intl';
-import Link from 'src/components/Link';
+
+import Link from '@dexkit/ui/components/AppLink';
 import catHeroImg from '../../../../public/assets/images/cat-hero.svg';
 
 const UserNotFound: NextPage = (props: any) => {

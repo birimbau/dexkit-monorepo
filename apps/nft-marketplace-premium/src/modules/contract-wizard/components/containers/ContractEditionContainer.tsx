@@ -1,4 +1,3 @@
-import { NETWORK_FROM_SLUG } from '@dexkit/core/constants/networks';
 import Search from '@mui/icons-material/Search';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
@@ -9,8 +8,8 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { AppErrorBoundary } from 'src/components/AppErrorBoundary';
-import { useCollection } from 'src/hooks/nft';
+
+import { AppErrorBoundary } from '@dexkit/ui/components/AppErrorBoundary';
 import { AssetListContractEdition } from '../AssetListContractEdition';
 import CreateAssetFormDialog from '../dialogs/CreateAssetFormDialog';
 
@@ -21,10 +20,7 @@ interface Props {
 
 export default function ContractEditionContainer({ address, network }: Props) {
   const [openMintDialog, setOpenMintDialog] = useState(false);
-  const { data: collection } = useCollection(
-    address as string,
-    NETWORK_FROM_SLUG(network)?.chainId,
-  );
+
   const [search, setSearch] = useState<string>();
 
   const handleChangeSearch = (e: React.ChangeEvent<HTMLInputElement>) => {

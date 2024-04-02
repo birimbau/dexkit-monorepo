@@ -4,7 +4,6 @@ import { useWeb3React } from '@web3-react/core';
 import axios from 'axios';
 import { Contract, ContractFactory, providers } from 'ethers';
 import { useAtomValue, useSetAtom } from 'jotai';
-import { useMemo } from 'react';
 
 import { myAppsApi } from 'src/services/whitelabel';
 import { holdsKitDialogAtom } from 'src/state/atoms';
@@ -13,6 +12,7 @@ import { holdsKitDialogAtom } from 'src/state/atoms';
 import { isIpfsUri } from '@dexkit/core/utils/ipfs';
 import { useAuth, useLoginAccountMutation } from '@dexkit/ui/hooks/auth';
 import { getMultipleAssetDexKitApi } from '@dexkit/ui/modules/nft/services';
+import { CollectionAPI } from '@dexkit/ui/modules/nft/types';
 import { collectionsAtom, tokensAtom } from '../atoms';
 import {
   ERC20_BASE_CONTRACT_URL,
@@ -357,7 +357,7 @@ export function useFetchAssetsMutation({
   });
 }
 
-export function useCollection(address?: string) {
+/*export function useCollection(address?: string) {
   const { collections } = useCollectionList();
   const collection = useMemo(() => {
     if (address) {
@@ -371,7 +371,7 @@ export function useCollection(address?: string) {
   }, [collections, address]);
 
   return { collection };
-}
+}*/
 
 export function useCollectionMetadataQuery(address?: string) {
   const { provider } = useWeb3React();

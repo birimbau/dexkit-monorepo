@@ -22,7 +22,8 @@ import Decimal from 'decimal.js';
 import moment from 'moment';
 import { useMemo, useState } from 'react';
 import { FormattedMessage, FormattedNumber } from 'react-intl';
-import Link from 'src/components/Link';
+
+import Link from '@dexkit/ui/components/AppLink';
 import { useBillingHistoryQuery, useSubscription } from '../hooks/payments';
 import CreditSection from './CreditSection';
 import PlanDetailsDialog from './dialogs/PlanDetailsDialog';
@@ -73,8 +74,8 @@ export default function BillingSection() {
         .minus(new Decimal(activeFeatUsageQuery.data?.used))
         .add(
           new Decimal(subscriptionQuery.data?.creditsAvailable).minus(
-            new Decimal(subscriptionQuery.data?.creditsUsed)
-          )
+            new Decimal(subscriptionQuery.data?.creditsUsed),
+          ),
         )
         .toNumber();
     }

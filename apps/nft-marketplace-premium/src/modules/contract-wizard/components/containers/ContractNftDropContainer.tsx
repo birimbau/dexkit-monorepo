@@ -1,5 +1,5 @@
-import NFTGrid from '@/modules/wizard/components/NFTGrid';
-import NFTDropSummary from '@/modules/wizard/components/NftDropSummary';
+import NFTGrid from '@dexkit/dexappbuilder-viewer/components/NFTGrid';
+import NFTDropSummary from '@dexkit/dexappbuilder-viewer/components/NftDropSummary';
 import { Button, Divider, Tab, Tabs, Typography } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import { useContract, useNFTs } from '@thirdweb-dev/react';

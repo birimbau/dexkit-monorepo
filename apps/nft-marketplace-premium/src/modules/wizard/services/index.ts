@@ -12,8 +12,7 @@ import { GamificationPoint, GatedCondition } from '@dexkit/ui/modules/wizard/typ
 import {
   getBalanceOf,
   getBalanceOfERC1155,
-  getERC20Balance,
-} from 'src/services/balances';
+} from '@dexkit/ui/services/balances';
 import { myAppsApi } from 'src/services/whitelabel';
 import { Token } from '../../../types/blockchain';
 

@@ -1,10 +1,9 @@
-import { SwapConfig } from '@/modules/swap/types';
-import { ChainId } from '@dexkit/core';
-import { useActiveChainIds } from '@dexkit/ui';
-import { SwapWidget as Swap } from '@dexkit/widgets/src/widgets/swap';
-import React, { useEffect, useState } from 'react';
-import { useCurrency } from 'src/hooks/currency';
-import { useSwapState } from '../../../../../hooks/swap';
+import { ChainId } from "@dexkit/core";
+import { useActiveChainIds, useCurrency } from "@dexkit/ui";
+import { useSwapState } from "@dexkit/ui/modules/swap/hooks";
+import { SwapConfig } from "@dexkit/ui/modules/wizard/types";
+import { SwapWidget as Swap } from "@dexkit/widgets/src/widgets/swap";
+import React, { useEffect, useState } from "react";
 
 interface Props {
   formData?: SwapConfig;
@@ -38,9 +37,9 @@ function SwapWidget(props: Props) {
 
         configsByChain: configByChain ? configByChain : {},
         defaultChainId: chainId || ChainId.Ethereum,
-        currency,
-        zeroExApiKey: process.env.NEXT_PUBLIC_ZRX_API_KEY || '',
-        transakApiKey: process.env.NEXT_PUBLIC_TRANSAK_API_KEY || '',
+        currency: currency.currency,
+        zeroExApiKey: process.env.NEXT_PUBLIC_ZRX_API_KEY || "",
+        transakApiKey: process.env.NEXT_PUBLIC_TRANSAK_API_KEY || "",
       }}
     />
   );

@@ -19,8 +19,9 @@ import {
 import Pagination from '@mui/material/Pagination';
 import { useCallback, useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import Link from 'src/components/Link';
-import { useAppRankingListQuery } from '../../hooks';
+
+import Link from '@dexkit/ui/components/AppLink';
+import { useAppRankingListQuery } from '@dexkit/ui/modules/wizard/hooks/ranking';
 import RankingFormCard from '../RankingFormCard';
 interface Props {
   onSave: (section: RankingPageSection) => void;

@@ -1,8 +1,8 @@
 import type { CellPlugin } from '@react-page/editor';
 
+import UserContractSection from '@dexkit/dexappbuilder-viewer/components/sections/UserContractSection';
 import { Box } from '@mui/material';
 import { UserContractForm } from '../../forms/UserContractForm';
-import UserContractSection from '../../sections/UserContractSection';
 
 // you can pass the shape of the data as the generic type argument
 const UserContractFormPlugin: CellPlugin<{

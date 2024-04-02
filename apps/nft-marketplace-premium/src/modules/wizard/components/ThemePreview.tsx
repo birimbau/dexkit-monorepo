@@ -18,7 +18,8 @@ import { useIntl } from 'react-intl';
 
 import { ThemeMode } from '@dexkit/ui/constants/enum';
 import React, { useEffect } from 'react';
-import AssetFromApi from '../../nft/components/AssetFromApi';
+
+import AssetFromApi from '@dexkit/ui/modules/nft/components/AssetFromApi';
 import { KITTYGOTCHI_CONTRACT } from '../constants';
 import SwapWidget from './pageEditor/components/SwapWidget';
 
@@ -54,7 +55,7 @@ export default function ThemePreview({
   const [node, setNode] = React.useState<null | HTMLElement>(null);
   useEnhancedEffect(() => {
     setNode(
-      document.getElementById('theme-preview-container') as null | HTMLElement
+      document.getElementById('theme-preview-container') as null | HTMLElement,
     );
   }, []);
 

@@ -1,7 +1,7 @@
+import { AssetDetails } from '@dexkit/ui/modules/nft/components/AssetDetails';
+import { AssetMedia } from '@dexkit/ui/modules/nft/components/AssetMedia';
+import { useAsset } from '@dexkit/ui/modules/nft/hooks';
 import { Grid, Skeleton } from '@mui/material';
-import { useAsset } from '../../../hooks/nft';
-import { AssetDetails } from '../../nft/components/AssetDetails';
-import { AssetMedia } from '../../nft/components/AssetMedia';
 
 export function OrderLeftSection({
   address,

@@ -1,3 +1,4 @@
+import Link from '@dexkit/ui/components/AppLink';
 import { Container, Grid, Skeleton, Stack } from '@mui/material';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
@@ -9,8 +10,9 @@ import { QueryClient, dehydrate } from '@tanstack/react-query';
 import { GetStaticProps, GetStaticPropsContext, NextPage } from 'next';
 import { NextSeo } from 'next-seo';
 import { FormattedMessage, useIntl } from 'react-intl';
-import Link from '../../src/components/Link';
-import { PageHeader } from '../../src/components/PageHeader';
+
+import { PageHeader } from '@dexkit/ui/components/PageHeader';
+import { AppConfig } from '@dexkit/ui/modules/wizard/types/config';
 import MainLayout from '../../src/components/layouts/main';
 import { useAppConfig } from '../../src/hooks/app';
 import {
@@ -18,7 +20,6 @@ import {
   useWhitelabelSitesListQuery,
 } from '../../src/hooks/whitelabel';
 import { getSites } from '../../src/services/whitelabel';
-import { AppConfig } from '../../src/types/config';
 
 export const SiteIndexPage: NextPage = () => {
   const sitesQuery = useWhitelabelSitesListQuery({});

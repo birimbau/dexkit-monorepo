@@ -1,3 +1,8 @@
+import { getNetworkSlugFromChainId } from '@dexkit/core/utils/blockchain';
+import {
+  GatedCondition,
+  GatedPageLayout,
+} from '@dexkit/ui/modules/wizard/types';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import ShieldIcon from '@mui/icons-material/Shield';
 import {
@@ -14,8 +19,7 @@ import {
 import Image from 'next/image';
 import { FormattedMessage } from 'react-intl';
 import { LoginAppButton } from 'src/components/LoginAppButton';
-import { getNetworkSlugFromChainId } from 'src/utils/blockchain';
-import { GatedCondition, GatedPageLayout } from '../types';
+
 function ShowBalance({ balance }: { balance: string }) {
   return (
     <Typography>

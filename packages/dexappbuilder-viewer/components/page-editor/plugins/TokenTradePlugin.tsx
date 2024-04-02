@@ -1,6 +1,6 @@
 import type { CellPlugin } from "@react-page/editor";
 
-import { TokenTradePageSection } from "@/modules/wizard/types/section";
+import { TokenTradePageSection } from "@dexkit/ui/modules/wizard/types/section";
 import TokenTradeSection from "../../sections/TokenTradeSection";
 
 // you can pass the shape of the data as the generic type argument

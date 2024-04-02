@@ -1,13 +1,11 @@
 import { useQuery } from '@tanstack/react-query';
 import { useMemo } from 'react';
-import { useTokenList } from 'src/hooks/blockchain';
+
 import { DkApiPlatformCoin } from 'src/types/api';
 import { Token } from 'src/types/blockchain';
-import {
-  getChainIdFromSlug,
-  getNetworkSlugFromChainId,
-  isAddressEqual
-} from 'src/utils/blockchain';
+
+import { getChainIdFromSlug, getNetworkSlugFromChainId, isAddressEqual } from '@dexkit/core/utils/blockchain';
+import { useTokenList } from '@dexkit/ui/hooks/blockchain';
 import { getApiCoinPlatforms, getApiCoins } from '../services';
 
 export function useSearchSwapTokens({

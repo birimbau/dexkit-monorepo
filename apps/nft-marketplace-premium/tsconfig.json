@@ -33,7 +33,11 @@
     "scripts/local-diff.js",
     "../../packages/dexkit-ui/components/WalletContent.tsx",
     "../../packages/dexkit-ui/services/currency.ts",
-    "../../packages/dexkit-ui/modules/nft/services/rarible.ts"
+    "../../packages/dexkit-ui/modules/nft/services/rarible.ts",
+    "../../packages/dexkit-ui/modules/contract-wizard/components/ContractMetadataHeader.tsx",
+    "../../packages/dexkit-ui/hooks/balances.ts",
+    "../../packages/dexkit-ui/providers/authStateProvider.tsx",
+    "../../packages/dexkit-ui/providers/authProvider.tsx"
   ],
   "exclude": ["node_modules"]
 }

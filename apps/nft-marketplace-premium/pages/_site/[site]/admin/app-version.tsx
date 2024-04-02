@@ -1,3 +1,4 @@
+import { PageHeader } from '@dexkit/ui/components/PageHeader';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import { Button, Stack, Typography } from '@mui/material';
 import Container from '@mui/material/Container';
@@ -11,7 +12,6 @@ import {
 } from 'next';
 import { FormattedMessage } from 'react-intl';
 import { QueryClient, dehydrate } from 'react-query';
-import { PageHeader } from 'src/components/PageHeader';
 import AuthMainLayout from 'src/components/layouts/authMain';
 import AppVersion from 'src/constants/app-version.json';
 import { getAppConfig } from 'src/services/app';

@@ -1,10 +1,10 @@
 import type { CellPlugin } from '@react-page/editor';
 
-import { TokenTradePageSection } from '@/modules/wizard/types/section';
+import TokenTradeSection from '@dexkit/dexappbuilder-viewer/components/sections/TokenTradeSection';
 import { useAppWizardConfig } from '@dexkit/ui/hooks';
+import { TokenTradePageSection } from '@dexkit/ui/modules/wizard/types/section';
 import { Box } from '@mui/material';
 import { TokenTradeConfigForm } from '../../forms/TokenTradeConfigForm';
-import TokenTradeSection from '../../sections/TokenTradeSection';
 
 // you can pass the shape of the data as the generic type argument
 const TokenTradePlugin: CellPlugin<{

@@ -1,3 +1,4 @@
+import { PageHeader } from '@dexkit/ui/components/PageHeader';
 import {
   Box,
   Button,
@@ -10,7 +11,6 @@ import {
 } from '@mui/material';
 import { useRouter } from 'next/router';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { PageHeader } from 'src/components/PageHeader';
 import AuthMainLayout from 'src/components/layouts/authMain';
 
 import AbiInput from '@/modules/forms/components/AbiInput';
@@ -40,7 +40,7 @@ export default function EditTemplatePage() {
 
   const handleSubmit = async (
     values: CreateTemplateSchemaType,
-    helpers: FormikHelpers<CreateTemplateSchemaType>
+    helpers: FormikHelpers<CreateTemplateSchemaType>,
   ) => {
     try {
       const result = await updateFormTemplateMutation.mutateAsync({
@@ -56,7 +56,7 @@ export default function EditTemplatePage() {
           id: 'template.created',
           defaultMessage: 'Contract template updated',
         }),
-        { variant: 'success' }
+        { variant: 'success' },
       );
 
       router.push(`/forms/contract-templates/${result.id}`);

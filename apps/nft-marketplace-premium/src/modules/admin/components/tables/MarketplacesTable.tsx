@@ -22,9 +22,9 @@ import { useDeleteMyAppMutation } from '../../../../hooks/whitelabel';
 import { ConfigResponse } from '../../../../types/whitelabel';
 import MarketplacesTableRow from './MarketplacesTableRow';
 
+import AppConfirmDialog from '@dexkit/ui/components/AppConfirmDialog';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import AppConfirmDialog from '../../../../components/AppConfirmDialog';
 import { IS_STAGING } from '../../../../constants';
 import InfoDialog from '../../../wizard/components/dialogs/InfoDialog';
 
@@ -163,7 +163,7 @@ export default function MarketplacesTable({ configs }: Props) {
   return (
     <>
       <AppConfirmDialog
-        dialogProps={{
+        DialogProps={{
           open: isOpen,
           onClose: handleClose,
         }}

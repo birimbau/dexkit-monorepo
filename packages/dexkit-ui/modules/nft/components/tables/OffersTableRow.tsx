@@ -18,25 +18,22 @@ import {
   isAddressEqual,
   truncateAddress,
 } from "@dexkit/core/utils/blockchain";
-import Link from "../../../../components/Link";
 
 import CheckIcon from "@mui/icons-material/Check";
 import moment from "moment";
 import { FormattedMessage, FormattedNumber } from "react-intl";
-import { ipfsUriToUrl } from "../../../../../../apps/nft-marketplace-premium/src/utils/ipfs";
 
 import CancelIcon from "@mui/icons-material/Cancel";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import MomentFromNow from "../../../../../../apps/nft-marketplace-premium/src/components/MomentFromNow";
-import { useTokenList } from "../../../../../../apps/nft-marketplace-premium/src/hooks/blockchain";
-import { SwapApiOrder } from "../../../../../../apps/nft-marketplace-premium/src/types/nft";
 
+import { SwapApiOrder } from "@dexkit/core/types";
 import { formatUnits } from "@dexkit/core/utils/ethers/formatUnits";
+import { ipfsUriToUrl } from "@dexkit/core/utils/ipfs";
 import LaunchIcon from "@mui/icons-material/Launch";
-import {
-  useCoinPricesQuery,
-  useCurrency,
-} from "../../../../../../apps/nft-marketplace-premium/src/hooks/currency";
+import Link from "../../../../components/AppLink";
+import MomentFromNow from "../../../../components/MomentFromNow";
+import { useTokenList } from "../../../../hooks/blockchain";
+import { useCurrency } from "../../../../hooks/currency";
 
 interface Props {
   order?: SwapApiOrder;
@@ -65,7 +62,7 @@ function OffersTableRow({
 
   const elRef = useRef<HTMLElement | null>(null);
 
-  const currency = useCurrency();
+  const { currency } = useCurrency();
 
   const coinPricesQuery = useCoinPricesQuery({
     includeNative: true,

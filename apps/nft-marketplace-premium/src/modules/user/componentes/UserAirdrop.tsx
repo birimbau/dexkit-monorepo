@@ -1,6 +1,6 @@
 import { ChainId } from '@dexkit/core';
 import { useIsMobile } from '@dexkit/core/hooks';
-import { useDexKitContext } from '@dexkit/ui/hooks';
+import { useAuth, useDexKitContext } from '@dexkit/ui/hooks';
 import { getBlockExplorerUrl } from '@dexkit/widgets/src/utils';
 import CelebrationIcon from '@mui/icons-material/Celebration';
 import CloseIcon from '@mui/icons-material/Close';
@@ -15,12 +15,11 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import ListSubheader from '@mui/material/ListSubheader';
 import Typography from '@mui/material/Typography';
-import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { LoginAppButton } from 'src/components/LoginAppButton';
-import AppMutationDialog from 'src/components/dialogs/AppMutationDialog';
-import { useAuth } from 'src/hooks/account';
+
+import AppMutationDialog from '@dexkit/ui/components/dialogs/AppMutationDialog';
 import {
   useAuthUserQuery,
   useClaimCampaignMutation,
@@ -32,7 +31,7 @@ export function UserAirdrop() {
   const [open, setOpen] = useState<boolean>(false);
   const [openUserDialog, setOpenUserDialog] = useState<boolean>(false);
   const [openUserEditDialog, setOpenUserEditDialog] = useState<boolean>(false);
-  const router = useRouter();
+
   const isMobile = useIsMobile();
   const authUserQuery = useAuthUserQuery();
   const authUser = authUserQuery.data;

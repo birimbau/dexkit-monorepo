@@ -10,9 +10,9 @@ import {
 } from '@mui/material';
 import { FormikHelpers, useFormik } from 'formik';
 import { FormattedMessage } from 'react-intl';
-import LazyYoutubeFrame from '../../../../components/LazyYoutubeFrame';
-import { VideoEmbedType } from '../../../../types/config';
 
+import LazyYoutubeFrame from '@dexkit/ui/components/LazyYoutubeFrame';
+import { VideoEmbedType } from '@dexkit/ui/modules/wizard/types/config';
 import {
   AppPageSection,
   VideoEmbedAppPageSection,

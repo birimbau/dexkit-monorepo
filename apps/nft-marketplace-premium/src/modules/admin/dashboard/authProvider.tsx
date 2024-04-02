@@ -1,4 +1,4 @@
-import { getAccessToken, setAccessToken } from 'src/services/auth';
+import { getAccessToken, setAccessToken } from '@dexkit/ui/services/auth';
 
 export const AuthProvider = {
   // send username and password to the auth server and get back credentials

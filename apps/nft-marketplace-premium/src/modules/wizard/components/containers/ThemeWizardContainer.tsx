@@ -1,4 +1,5 @@
 import { ThemeMode } from '@dexkit/ui/constants/enum';
+import { AppConfig } from '@dexkit/ui/modules/wizard/types/config';
 import Cancel from '@mui/icons-material/Cancel';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import {
@@ -20,14 +21,16 @@ import Head from 'next/head';
 import { MouseEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import Fonts from 'src/constants/fonts.json';
-import { AppConfig } from '../../../../types/config';
 import { PreviewType, StepperButtonProps } from '../../types';
 import { generateCSSVarsTheme } from '../../utils';
 import ThemePreview from '../ThemePreview';
 import ThemeSection from '../sections/ThemeSection';
 import { StepperButtons } from '../steppers/StepperButtons';
 
-const ExchangeSection = dynamic(() => import('../sections/ExchangeSection'));
+const ExchangeSection = dynamic(
+  () =>
+    import('@dexkit/dexappbuilder-viewer/components/sections/ExchangeSection'),
+);
 
 import { ChainId } from '@dexkit/core';
 import { ExchangePageSection } from '@dexkit/ui/modules/wizard/types/section';

@@ -28,17 +28,13 @@ import moment from "moment";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { FormattedMessage } from "react-intl";
-import { TraderOrderStatus } from "../../../../../../apps/nft-marketplace-premium/src/constants/enum";
-import { useCurrency } from "../../../../../../apps/nft-marketplace-premium/src/hooks/currency";
-import { usePositionPaginator } from "../../../../../../apps/nft-marketplace-premium/src/hooks/misc";
-import {
-  useAsset,
-  useAssetBalance,
-  useOrderBook,
-} from "../../../../../../apps/nft-marketplace-premium/src/hooks/nft";
-import { SwapApiOrder } from "../../../../../../apps/nft-marketplace-premium/src/types/nft";
-import { isERC1155Owner } from "../../../../../../apps/nft-marketplace-premium/src/utils/nfts";
 
+import { usePositionPaginator } from "@dexkit/core/hooks/misc";
+import { SwapApiOrder } from "@dexkit/core/types";
+import { useCurrency } from "../../../../hooks/currency";
+import { TraderOrderStatus } from "../../constants/enum";
+import { useAsset, useAssetBalance, useOrderBook } from "../../hooks";
+import { isERC1155Owner } from "../../utils";
 import OffersTableRow from "./OffersTableRow";
 
 interface Props {
@@ -59,7 +55,7 @@ export function OffersTable({
   const { account } = useWeb3React();
 
   const router = useRouter();
-  const currency = useCurrency();
+  const { currency } = useCurrency();
 
   const { data: asset } = useAsset(address, id);
   const { data: assetBalance } = useAssetBalance(asset, account);

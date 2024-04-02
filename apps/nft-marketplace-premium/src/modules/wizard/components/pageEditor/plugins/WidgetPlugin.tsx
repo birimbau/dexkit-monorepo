@@ -1,6 +1,6 @@
+import { Widget } from '@dexkit/dexappbuilder-viewer/components/Widget';
 import Container from '@mui/material/Container';
 import type { CellPlugin } from '@react-page/editor';
-import { Widget } from '../../Widget';
 import { TextareaControl } from '../components/TextareaControl';
 
 type Data = {

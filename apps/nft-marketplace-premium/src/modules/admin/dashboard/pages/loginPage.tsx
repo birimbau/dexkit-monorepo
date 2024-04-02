@@ -1,11 +1,12 @@
 import ConnectWalletDialog from '@dexkit/ui/components/ConnectWallet/ConnectWalletDialog';
+import { useLoginAccountMutation } from '@dexkit/ui/hooks/auth';
 import { useWalletActivate } from '@dexkit/wallet-connectors/hooks';
 import { WalletActivateParams } from '@dexkit/wallet-connectors/types';
 import { Box, Button, Container } from '@mui/material';
 import { useWeb3React } from '@web3-react/core';
 import { useLogin } from 'react-admin';
 import { FormattedMessage } from 'react-intl';
-import { useLoginAccountMutation } from 'src/hooks/account';
+
 import { useConnectWalletDialog } from 'src/hooks/app';
 import { selectedWalletAtom } from 'src/state/atoms';
 

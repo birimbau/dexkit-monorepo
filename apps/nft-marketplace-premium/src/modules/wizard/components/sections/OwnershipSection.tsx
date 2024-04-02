@@ -1,4 +1,6 @@
 import { CollectionOwnershipNFTFormType } from '@/modules/contract-wizard/types';
+import AppConfirmDialog from '@dexkit/ui/components/AppConfirmDialog';
+import { useAccountHoldDexkitQuery } from '@dexkit/ui/hooks/account';
 import Check from '@mui/icons-material/Check';
 import Visibility from '@mui/icons-material/Visibility';
 import { Alert, Button, Grid, Stack, Typography } from '@mui/material';
@@ -6,10 +8,8 @@ import { Formik } from 'formik';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import AppConfirmDialog from 'src/components/AppConfirmDialog';
-import { useAccountHoldDexkitQuery } from 'src/hooks/account';
 import { useUpsertWhitelabelAssetMutation } from 'src/hooks/whitelabel';
-import { AssetAPI } from 'src/types/nft';
+
 import * as Yup from 'yup';
 import CreateWhitelabelDialog from '../dialogs/CreateWhitelabelNFTDialog';
 import OwnershipNFTForm from '../forms/OwnershipNFTForm';
@@ -49,7 +49,7 @@ export default function OwnershipSection({ id, nft }: Props) {
   return (
     <>
       <AppConfirmDialog
-        dialogProps={{
+        DialogProps={{
           open: showConfirmSendConfig,
           maxWidth: 'md',
           fullWidth: true,

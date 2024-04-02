@@ -2,7 +2,8 @@ import type { CellPlugin } from '@react-page/editor';
 
 import { Box, Button } from '@mui/material';
 import { useMemo } from 'react';
-import Link from '../../../../../components/Link';
+
+import Link from '@dexkit/ui/components/AppLink';
 import { PagesPicker } from '../components/ActionsPicker';
 type Data = {
   variant: 'text' | 'contained' | 'outlined';

@@ -10,6 +10,11 @@ import DexGeneratorTokenDropForm from './DexGeneratorTokenDropForm';
 
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 
+import Link from '@dexkit/ui/components/AppLink';
+import {
+  DexGeneratorPageSection,
+  DexGeneratorPageSectionType,
+} from '@dexkit/ui/modules/wizard/types/section';
 import DexGeneratorTokenErc20Form from './DexGeneratorTokenErc20Form';
 import DexGeneratorTokenErc721Form from './DexGeneratorTokenErc721Form';
 

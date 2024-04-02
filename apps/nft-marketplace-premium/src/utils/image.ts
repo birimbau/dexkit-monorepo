@@ -1,5 +1,6 @@
+import { isIpfsUri } from "@dexkit/core/utils/ipfs";
 import { WHITELISTED_IMAGE_DOMAINS } from "../constants";
-import { isIpfsUri } from "./ipfs";
+
 
 
 export function isWhitelistedDomain(src: string) {

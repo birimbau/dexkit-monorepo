@@ -7,7 +7,7 @@ const ShareDialog = dynamic(() => import("./dialogs/ShareDialog"));
 interface Props {
   url?: string;
   shareButtonText?: string | React.ReactNode;
-  shareButtonProps: any;
+  shareButtonProps?: any;
 }
 
 export function ShareButton({ url, shareButtonProps, shareButtonText }: Props) {

@@ -1,4 +1,10 @@
-import { useDexKitContext } from '@dexkit/ui/hooks';
+import {
+  useCoinPricesQuery,
+  useCurrency,
+  useDexKitContext,
+  useSwitchNetwork,
+  useTokenList,
+} from '@dexkit/ui/hooks';
 import {
   Alert,
   Box,
@@ -26,13 +32,17 @@ import { BigNumber, constants } from 'ethers';
 import moment from 'moment';
 import { useCallback, useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
-import AppFeePercentageSpan from '../../../components/AppFeePercentageSpan';
-import Link from '../../../components/Link';
+
 import Calendar from '../../../components/icons/Calendar';
-import { ZEROEX_NATIVE_TOKEN_ADDRESS } from '../../../constants';
-import { useAppConfig } from '../../../hooks/app';
-import { useSwitchNetwork, useTokenList } from '../../../hooks/blockchain';
-import { useCoinPricesQuery, useCurrency } from '../../../hooks/currency';
+
+import { ZEROEX_NATIVE_TOKEN_ADDRESS } from '@dexkit/core/constants/zrx';
+import {
+  getERC20Decimals,
+  getERC20Symbol,
+} from '@dexkit/core/services/balances';
+import { ipfsUriToUrl } from '@dexkit/core/utils/ipfs';
+import AppFeePercentageSpan from '@dexkit/ui/components/AppFeePercentageSpan';
+import Link from '@dexkit/ui/components/AppLink';
 import {
   useApproveAssetMutation,
   useAsset,
@@ -40,11 +50,9 @@ import {
   useCancelSignedOrderMutation,
   useFillSignedOrderMutation,
   useSwapSdkV4,
-} from '../../../hooks/nft';
-import { getERC20Decimals, getERC20Symbol } from '../../../services/balances';
-import { OrderBookItem, SwapApiOrder } from '../../../types/nft';
-import { ipfsUriToUrl } from '../../../utils/ipfs';
-import { getAssetProtocol } from '../../../utils/nfts';
+} from '@dexkit/ui/modules/nft/hooks';
+import { OrderBookItem, SwapApiOrder } from '@dexkit/ui/modules/nft/types';
+import { getAssetProtocol } from '@dexkit/ui/modules/nft/utils';
 import { OrderPageActions } from './OrderPageActions';
 
 interface Props {
@@ -52,14 +60,13 @@ interface Props {
 }
 
 function OrderRightSection({ order }: Props) {
-  const appConfig = useAppConfig();
   const { account, provider, chainId } = useWeb3React();
   const { data: asset } = useAsset(order?.nftToken, order?.nftTokenId);
   const { data: metadata } = useAssetMetadata(asset);
 
   const tokens = useTokenList({ includeNative: true, chainId: asset?.chainId });
 
-  const currency = useCurrency();
+  const { currency } = useCurrency();
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));

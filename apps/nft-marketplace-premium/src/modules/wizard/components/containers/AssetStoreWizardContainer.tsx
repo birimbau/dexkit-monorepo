@@ -15,7 +15,8 @@ import {
 import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { AssetStoreOptions } from 'src/types/nft';
-import { AppConfig } from '../../../../types/config';
+
+import { AppConfig } from '@dexkit/ui/modules/wizard/types/config';
 import AssetStoreForm from '../forms/AssetStoreForm';
 import { StepperButtons } from '../steppers/StepperButtons';
 interface Props {

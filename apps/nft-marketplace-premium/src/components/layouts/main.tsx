@@ -14,9 +14,9 @@ import { useAppConfig, useAppNFT, useThemeMode } from '../../hooks/app';
 
 import { drawerIsOpenAtom } from '../../state/atoms';
 
-import { AppConfig } from 'src/types/config';
 const AppDrawer = dynamic(() => import('../AppDrawer'));
 
+import { AppConfig } from '@dexkit/ui/modules/wizard/types/config';
 import { ErrorBoundary } from 'react-error-boundary';
 import { FormattedMessage } from 'react-intl';
 import { Footer } from '../Footer';

@@ -1,3 +1,5 @@
+import { AppDialogTitle } from '@dexkit/ui/components/AppDialogTitle';
+import { AssetAPI } from '@dexkit/ui/modules/nft/types';
 import CheckCircle from '@mui/icons-material/CheckCircle';
 import ErrorIcon from '@mui/icons-material/Error';
 import {
@@ -15,8 +17,6 @@ import {
   Typography,
 } from '@mui/material';
 import { FormattedMessage } from 'react-intl';
-import { AppDialogTitle } from 'src/components/AppDialogTitle';
-import { AssetAPI } from 'src/types/nft';
 
 interface Props {
   dialogProps: DialogProps;

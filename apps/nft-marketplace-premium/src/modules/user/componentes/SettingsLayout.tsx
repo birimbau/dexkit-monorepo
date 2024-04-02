@@ -1,8 +1,8 @@
+import { PageHeader } from '@dexkit/ui/components/PageHeader';
 import { Card, Grid, List, ListItemButton, ListItemText } from '@mui/material';
 import { useRouter } from 'next/router';
 import React, { useCallback, useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { PageHeader } from 'src/components/PageHeader';
 
 export interface SettingsLayoutProps {
   children: (tab: string) => React.ReactNode;

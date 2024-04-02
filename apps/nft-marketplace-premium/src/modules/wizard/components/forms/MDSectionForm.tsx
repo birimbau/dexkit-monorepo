@@ -1,8 +1,8 @@
+import CompletationProvider from '@dexkit/ui/components/CompletationProvider';
 import {
   AppPageSection,
   MarkdownEditorPageSection,
-} from '@/modules/wizard/types/section';
-import CompletationProvider from '@dexkit/ui/components/CompletationProvider';
+} from '@dexkit/ui/modules/wizard/types/section';
 import AutoAwesome from '@mui/icons-material/AutoAwesome';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';

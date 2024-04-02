@@ -1,6 +1,8 @@
 
 import { TokenWhitelabelApp } from '@dexkit/core/types';
 import { AppWhitelabelType, ThemeMode } from '@dexkit/ui/constants/enum';
+import { GatedPageLayout } from '.';
+import { AssetAPI } from '../../nft/types';
 import { AppPageSection } from './section';
 
 export type VideoEmbedType = 'youtube' | 'vimeo';
@@ -66,6 +68,7 @@ export interface AppPageOptions {
   uri?: string;
   isEditGatedConditions?: boolean;
   gatedConditions?: GatedCondition[];
+  gatedPageLayout?: GatedPageLayout
 }
 
 export type AppPage = {
@@ -105,6 +108,7 @@ export interface AppCollection {
   contractAddress: string;
   description?: string;
   uri?: string;
+  disableSecondarySells?: boolean;
 }
 
 interface AppToken {

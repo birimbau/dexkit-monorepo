@@ -1,6 +1,7 @@
+import { logout } from '@dexkit/ui/services/auth';
 import { serialize } from 'cookie';
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { logout } from 'src/services/auth';
+
 
 export default async function handler(
   req: NextApiRequest,

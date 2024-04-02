@@ -1,6 +1,4 @@
-import { StoreOrderbook } from '@/modules/nft/components/StoreOrderbook';
-import TableSkeleton from '@/modules/nft/components/tables/TableSkeleton';
-import WalletAssetsSection from '@/modules/wallet/components/WalletAssetsSection';
+import { PageHeader } from '@dexkit/ui/components/PageHeader';
 import Edit from '@mui/icons-material/Edit';
 import {
   Button,
@@ -22,8 +20,11 @@ import { useRouter } from 'next/router';
 import { Suspense, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { FormattedMessage } from 'react-intl';
-import { PageHeader } from 'src/components/PageHeader';
-import { useAssetsOrderBook } from 'src/hooks/nft';
+
+import { StoreOrderbook } from '@dexkit/ui/modules/nft/components/StoreOrderbook';
+import TableSkeleton from '@dexkit/ui/modules/nft/components/tables/TableSkeleton';
+import { useAssetsOrderBook } from '@dexkit/ui/modules/nft/hooks';
+import WalletAssetsSection from '@dexkit/ui/modules/wallet/components/WalletAssetsSection';
 import { useUserQuery } from '../../hooks';
 import { UserHeader } from '../UserHeader';
 import UserNotFound from '../UserNotFound';

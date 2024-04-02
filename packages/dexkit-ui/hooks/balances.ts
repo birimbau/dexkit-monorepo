@@ -9,13 +9,10 @@ import { SwappableAssetV4 } from '@traderxyz/nft-swap-sdk';
 import { useWeb3React } from '@web3-react/core';
 import { BigNumber, Contract, providers } from 'ethers';
 import { useCallback } from 'react';
-import { ZEROEX_NATIVE_TOKEN_ADDRESS } from '../constants';
-import { ERC20Abi } from '../constants/abis';
-import {
-  getERC20Balances,
-  getERC20WithProxyUnlockedBalances,
-} from '../services/balances';
-import { Token, TokenBalance } from '../types/blockchain';
+
+import { ERC20Abi } from '../../../apps/nft-marketplace-premium/src/constants/abis';
+
+import { Token, TokenBalance } from '../../../apps/nft-marketplace-premium/src/types/blockchain';
 
 export const GET_ERC20_BALANCES = 'GET_ERC20_BALANCES';
 export const GET_ERC20_BALANCE = 'GET_ERC20_BALANCE';

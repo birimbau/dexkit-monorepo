@@ -1,5 +1,5 @@
 import { CollectionOwnershipNFTFormType } from '@/modules/contract-wizard/types';
-import { SiteMetadata } from '@/modules/wizard/types';
+import { SiteMetadata } from '@dexkit/ui/modules/wizard/types';
 import {
   useMutation,
   UseMutationOptions,
@@ -30,13 +30,12 @@ import {
   upsertSiteMetadata,
   upsertWhitelabelAsset
 } from '../services/whitelabel';
-import { AppConfig } from '../types/config';
+
 import { PageTemplateFormData } from '../types/whitelabel';
-import {
-  useAccountHoldDexkitMutation,
-  useAuth,
-  useLoginAccountMutation,
-} from './account';
+
+import { useAccountHoldDexkitMutation } from '@dexkit/ui/hooks/account';
+import { useAuth, useLoginAccountMutation } from '@dexkit/ui/hooks/auth';
+import { AppConfig } from '@dexkit/ui/modules/wizard/types/config';
 import { useSiteId } from './app';
 
 export const useSendConfigMutation = ({ slug }: { slug?: string }) => {

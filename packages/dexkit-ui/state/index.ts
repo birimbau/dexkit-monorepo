@@ -22,7 +22,7 @@ export const accountAssetsAtom = atomWithStorage<{
 
 export const userThemeModeAtom = atomWithStorage<ThemeMode | undefined>('dexkit-ui.user-theme-mode', undefined);
 
-export const localeUserAtom = atomWithStorage<string>('dexkit-ui.user-app-locale', 'en-usd');
+export const localeUserAtom = atomWithStorage<string>('dexkit-ui.user-app-locale', 'en-us');
 
 export const currencyUserAtom = atomWithStorage<string>('dexkit-ui.user-currency', 'usd');
 

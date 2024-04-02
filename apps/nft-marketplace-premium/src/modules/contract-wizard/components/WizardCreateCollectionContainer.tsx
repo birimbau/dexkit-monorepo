@@ -7,19 +7,20 @@ import {
   useCreateCollectionMetadataMutation,
 } from '@/modules/contract-wizard/hooks';
 import { CollectionForm } from '@/modules/contract-wizard/types';
+import { getNetworkSlugFromChainId } from '@dexkit/core/utils/blockchain';
+import AppConfirmDialog from '@dexkit/ui/components/AppConfirmDialog';
+import { PageHeader } from '@dexkit/ui/components/PageHeader';
+import { useAuth, useLoginAccountMutation } from '@dexkit/ui/hooks/auth';
 import { Alert, Box, Container, Grid, Stack, Typography } from '@mui/material';
 import { useWeb3React } from '@web3-react/core';
 import { Formik } from 'formik';
 import { ReactNode, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import AppConfirmDialog from 'src/components/AppConfirmDialog';
-import { PageHeader } from 'src/components/PageHeader';
+
 import {
   DEXKIT_DISCORD_SUPPORT_CHANNEL,
   MIN_KIT_HOLDING_AI_GENERATION,
 } from 'src/constants';
-import { useAuth, useLoginAccountMutation } from 'src/hooks/account';
-import { getNetworkSlugFromChainId } from 'src/utils/blockchain';
 
 const INITIAL_VALUES: CollectionForm = {
   name: '',
@@ -52,7 +53,7 @@ function WizardCreateCollectionContainer() {
 
   const createCollectionMutation = useCreateCollection(
     provider,
-    handleDeployHash
+    handleDeployHash,
   );
 
   const [showCreateDialog, setShowCreateDialog] = useState(false);
@@ -135,7 +136,7 @@ function WizardCreateCollectionContainer() {
         //onReset={handleReset}
       />
       <AppConfirmDialog
-        dialogProps={{
+        DialogProps={{
           open: showConfirm,
           onClose: handleCloseConfirm,
           fullWidth: true,

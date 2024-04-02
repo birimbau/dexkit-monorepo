@@ -1,4 +1,4 @@
-import { EditionDropPageSection } from '@/modules/wizard/types/section';
+import { EditionDropPageSection } from "@dexkit/ui/modules/wizard/types/section";
 import {
   useActiveClaimConditionForWallet,
   useClaimConditions,
@@ -7,14 +7,18 @@ import {
   useContract,
   useContractMetadata,
   useTotalCirculatingSupply,
-} from '@thirdweb-dev/react';
+} from "@thirdweb-dev/react";
 
-import { UserEvents } from '@dexkit/core/constants/userEvents';
-import { formatUnits } from '@dexkit/core/utils/ethers/formatUnits';
-import { ConnectWalletButton } from '@dexkit/ui/components/ConnectWalletButton';
-import { useDexKitContext } from '@dexkit/ui/hooks';
-import { useInterval } from '@dexkit/ui/hooks/misc';
-import { useTrackUserEventsMutation } from '@dexkit/ui/hooks/userEvents';
+import { UserEvents } from "@dexkit/core/constants/userEvents";
+import { formatUnits } from "@dexkit/core/utils/ethers/formatUnits";
+import { ConnectWalletButton } from "@dexkit/ui/components/ConnectWalletButton";
+import { useDexKitContext } from "@dexkit/ui/hooks";
+import {
+  useErc20AllowanceMutation,
+  useErc20ApproveMutationV2,
+} from "@dexkit/ui/hooks/balances";
+import { useInterval } from "@dexkit/ui/hooks/misc";
+import { useTrackUserEventsMutation } from "@dexkit/ui/hooks/userEvents";
 import {
   Alert,
   Button,
@@ -24,28 +28,25 @@ import {
   Skeleton,
   TextField,
   Typography,
-} from '@mui/material';
-import Box from '@mui/material/Box';
-import Stack from '@mui/material/Stack';
-import { styled } from '@mui/material/styles';
-import { useNFTBalance } from '@thirdweb-dev/react';
-import { ClaimEligibility, NATIVE_TOKEN_ADDRESS } from '@thirdweb-dev/sdk';
-import { SwappableAssetV4 } from '@traderxyz/nft-swap-sdk';
-import { useWeb3React } from '@web3-react/core';
-import { BigNumber } from 'ethers';
-import { useCallback, useMemo, useState } from 'react';
-import { FormattedMessage } from 'react-intl';
-import {
-  useErc20AllowanceMutation,
-  useErc20ApproveMutationV2,
-} from 'src/hooks/balances';
+} from "@mui/material";
+import Box from "@mui/material/Box";
+import Stack from "@mui/material/Stack";
+import { styled } from "@mui/material/styles";
+import { useNFTBalance } from "@thirdweb-dev/react";
+import { ClaimEligibility, NATIVE_TOKEN_ADDRESS } from "@thirdweb-dev/sdk";
+import { SwappableAssetV4 } from "@traderxyz/nft-swap-sdk";
+import { useWeb3React } from "@web3-react/core";
+import { BigNumber } from "ethers";
+import { useCallback, useMemo, useState } from "react";
+import { FormattedMessage } from "react-intl";
+
 const QuantityField = styled(TextField)(({ theme }) => ({
-  '& .MuiFormLabel-root': {
-    fontSize: '1.5rem',
+  "& .MuiFormLabel-root": {
+    fontSize: "1.5rem",
     paddingBottom: theme.spacing(1),
   },
-  '& .MuiInputBase-input': {
-    fontSize: '2.5rem',
+  "& .MuiInputBase-input": {
+    fontSize: "2.5rem",
   },
 }));
 
@@ -55,7 +56,7 @@ interface Props {
 
 export function parseIneligibility(
   reasons: ClaimEligibility[],
-  quantity = 0,
+  quantity = 0
 ): JSX.Element {
   if (!reasons.length) {
     return <></>;
@@ -114,7 +115,7 @@ export function EditionDropSection({ section }: Props) {
   const { data: balance, isLoading: isLoadingBalance } = useNFTBalance(
     editionDrop,
     account,
-    tokenId,
+    tokenId
   );
 
   const allowanceMutation = useErc20AllowanceMutation(provider);
@@ -126,7 +127,7 @@ export function EditionDropSection({ section }: Props) {
   const activeClaimCondition = useActiveClaimConditionForWallet(
     editionDrop,
     account,
-    tokenId,
+    tokenId
   );
 
   const [count, setCount] = useState<number>(0);
@@ -137,7 +138,7 @@ export function EditionDropSection({ section }: Props) {
     if (active && data) {
       const total = data?.length;
       const currentIndex = data.findIndex(
-        (a) => a?.startTime?.getTime() === active?.startTime?.getTime(),
+        (a) => a?.startTime?.getTime() === active?.startTime?.getTime()
       );
 
       if (currentIndex === -1) {
@@ -158,7 +159,7 @@ export function EditionDropSection({ section }: Props) {
 
       const distance = countDownDate - now;
       if (distance < 0) {
-        return 'Expired';
+        return "Expired";
       }
 
       const days = Math.floor(distance / (60 * 60 * 24));
@@ -167,9 +168,9 @@ export function EditionDropSection({ section }: Props) {
       const seconds = Math.floor(distance % 60);
 
       if (days) {
-        return days + 'd ' + hours + 'h ' + minutes + 'm ' + seconds + 's ';
+        return days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
       } else {
-        return hours + 'h ' + minutes + 'm ' + seconds + 's ';
+        return hours + "h " + minutes + "m " + seconds + "s ";
       }
     }
   }, [nextPhase, count]);
@@ -180,18 +181,18 @@ export function EditionDropSection({ section }: Props) {
       setCount(count + 1);
     },
     // Delay in milliseconds or null to stop it
-    countDown === undefined || countDown === 'Expired' ? null : 1000,
+    countDown === undefined || countDown === "Expired" ? null : 1000
   );
 
   const handleApproveAssetSuccess = useCallback(
     async (hash: string, swapAsset: SwappableAssetV4) => {
-      if (swapAsset.type === 'ERC20') {
+      if (swapAsset.type === "ERC20") {
         createNotification({
-          type: 'transaction',
-          subtype: 'approve',
+          type: "transaction",
+          subtype: "approve",
           values: {
-            name: activeClaimCondition.data?.currencyMetadata.symbol || '',
-            symbol: activeClaimCondition.data?.currencyMetadata.symbol || '',
+            name: activeClaimCondition.data?.currencyMetadata.symbol || "",
+            symbol: activeClaimCondition.data?.currencyMetadata.symbol || "",
           },
           metadata: {
             chainId,
@@ -206,22 +207,22 @@ export function EditionDropSection({ section }: Props) {
       watchTransactionDialog,
       activeClaimCondition.data?.currencyMetadata.symbol,
       chainId,
-    ],
+    ]
   );
 
   const approveMutation = useErc20ApproveMutationV2(
     provider,
-    handleApproveAssetSuccess,
+    handleApproveAssetSuccess
   );
 
-  const claimerProofs = useClaimerProofs(editionDrop, account || '', tokenId);
+  const claimerProofs = useClaimerProofs(editionDrop, account || "", tokenId);
   const claimIneligibilityReasons = useClaimIneligibilityReasons(
     editionDrop,
     {
       quantity,
-      walletAddress: account || '',
+      walletAddress: account || "",
     },
-    tokenId,
+    tokenId
   );
 
   const claimedSupply = useTotalCirculatingSupply(editionDrop, tokenId);
@@ -241,25 +242,25 @@ export function EditionDropSection({ section }: Props) {
   const numberTotal = useMemo(() => {
     const n = totalAvailableSupply.add(BigNumber.from(claimedSupply.data || 0));
     if (n.gte(1_000_000)) {
-      return '';
+      return "";
     }
     return n.toString();
   }, [totalAvailableSupply, claimedSupply]);
 
   const totalAmount = useMemo(() => {
     const bnPrice = BigNumber.from(
-      activeClaimCondition.data?.currencyMetadata.value || 0,
+      activeClaimCondition.data?.currencyMetadata.value || 0
     );
     return bnPrice.mul(quantity);
   }, [quantity, activeClaimCondition.data?.currencyMetadata.value]);
 
   const priceToMint = useMemo(() => {
     const bnPrice = BigNumber.from(
-      activeClaimCondition.data?.currencyMetadata.value || 0,
+      activeClaimCondition.data?.currencyMetadata.value || 0
     );
     return `${formatUnits(
       bnPrice.mul(quantity).toString(),
-      activeClaimCondition.data?.currencyMetadata.decimals || 18,
+      activeClaimCondition.data?.currencyMetadata.decimals || 18
     )} ${activeClaimCondition.data?.currencyMetadata.symbol}`;
   }, [
     activeClaimCondition.data?.currencyMetadata.decimals,
@@ -272,7 +273,7 @@ export function EditionDropSection({ section }: Props) {
     let bnMaxClaimable;
     try {
       bnMaxClaimable = BigNumber.from(
-        activeClaimCondition.data?.maxClaimableSupply || 0,
+        activeClaimCondition.data?.maxClaimableSupply || 0
       );
     } catch (e) {
       bnMaxClaimable = BigNumber.from(1_000_000);
@@ -281,7 +282,7 @@ export function EditionDropSection({ section }: Props) {
     let perTransactionClaimable;
     try {
       perTransactionClaimable = BigNumber.from(
-        activeClaimCondition.data?.maxClaimablePerWallet || 0,
+        activeClaimCondition.data?.maxClaimablePerWallet || 0
       );
     } catch (e) {
       perTransactionClaimable = BigNumber.from(1_000_000);
@@ -294,7 +295,7 @@ export function EditionDropSection({ section }: Props) {
     const snapshotClaimable = claimerProofs.data?.maxClaimable;
 
     if (snapshotClaimable) {
-      if (snapshotClaimable === '0') {
+      if (snapshotClaimable === "0") {
         // allowed unlimited for the snapshot
         bnMaxClaimable = BigNumber.from(1_000_000);
       } else {
@@ -329,7 +330,7 @@ export function EditionDropSection({ section }: Props) {
       return (
         (activeClaimCondition.isSuccess &&
           BigNumber.from(activeClaimCondition.data?.availableSupply || 0).lte(
-            0,
+            0
           )) ||
         numberClaimed === numberTotal
       );
@@ -365,21 +366,21 @@ export function EditionDropSection({ section }: Props) {
 
   const buttonLoading = useMemo(
     () => isLoading || claimIneligibilityReasons.isLoading,
-    [claimIneligibilityReasons.isLoading, isLoading],
+    [claimIneligibilityReasons.isLoading, isLoading]
   );
   const priceText = useMemo(() => {
     const pricePerToken = BigNumber.from(
-      activeClaimCondition.data?.currencyMetadata.value || 0,
+      activeClaimCondition.data?.currencyMetadata.value || 0
     );
     if (pricePerToken.eq(0)) {
-      return <FormattedMessage id={'Free'} defaultMessage={'Free'} />;
+      return <FormattedMessage id={"Free"} defaultMessage={"Free"} />;
     }
     const bnPrice = BigNumber.from(
-      activeClaimCondition.data?.currencyMetadata.value || 0,
+      activeClaimCondition.data?.currencyMetadata.value || 0
     );
     return `${formatUnits(
       bnPrice.toString(),
-      activeClaimCondition.data?.currencyMetadata.decimals || 18,
+      activeClaimCondition.data?.currencyMetadata.decimals || 18
     )} ${activeClaimCondition.data?.currencyMetadata.symbol}`;
   }, [
     activeClaimCondition.data?.currencyMetadata.decimals,
@@ -390,21 +391,21 @@ export function EditionDropSection({ section }: Props) {
 
   const buttonText = useMemo(() => {
     if (isSoldOut) {
-      return <FormattedMessage id={'sold.out'} defaultMessage={'Sold out'} />;
+      return <FormattedMessage id={"sold.out"} defaultMessage={"Sold out"} />;
     }
 
     if (canClaim) {
       const pricePerToken = BigNumber.from(
-        activeClaimCondition.data?.currencyMetadata.value || 0,
+        activeClaimCondition.data?.currencyMetadata.value || 0
       );
       if (pricePerToken.eq(0)) {
         return (
-          <FormattedMessage id={'mint.free'} defaultMessage={'Mint (free)'} />
+          <FormattedMessage id={"mint.free"} defaultMessage={"Mint (free)"} />
         );
       }
       return (
         <FormattedMessage
-          id={'mint.price.value'}
+          id={"mint.price.value"}
           defaultMessage={`Mint ({priceToMint})`}
           values={{ priceToMint: priceToMint }}
         />
@@ -417,18 +418,18 @@ export function EditionDropSection({ section }: Props) {
       return (
         <>
           <FormattedMessage
-            id={'checking.eligibility'}
+            id={"checking.eligibility"}
             defaultMessage={`Checking eligibility`}
           />
-          {'...'}
+          {"..."}
         </>
       );
     }
 
     return (
       <FormattedMessage
-        id={'claiming.not.available'}
-        defaultMessage={'Claiming not available'}
+        id={"claiming.not.available"}
+        defaultMessage={"Claiming not available"}
       />
     );
   }, [
@@ -448,67 +449,67 @@ export function EditionDropSection({ section }: Props) {
     <Box>
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <Typography variant={'h6'}>
+          <Typography variant={"h6"}>
             <FormattedMessage
-              id={'drop.details'}
-              defaultMessage={'Drop details'}
-            />{' '}
+              id={"drop.details"}
+              defaultMessage={"Drop details"}
+            />{" "}
           </Typography>
         </Grid>
         <Grid item xs={12}>
-          <Stack spacing={2} direction={'row'}>
+          <Stack spacing={2} direction={"row"}>
             <Typography>
               <FormattedMessage
-                id={'total.minted'}
-                defaultMessage={'Total minted'}
-              />{' '}
+                id={"total.minted"}
+                defaultMessage={"Total minted"}
+              />{" "}
               :
             </Typography>
             <Typography>
-              {' '}
+              {" "}
               {claimedSupply ? (
                 <>{numberClaimed}</>
               ) : (
                 <>
-                  <FormattedMessage id={'loading'} defaultMessage={'Loading'} />
-                  {'...'}
+                  <FormattedMessage id={"loading"} defaultMessage={"Loading"} />
+                  {"..."}
                 </>
               )}
             </Typography>
           </Stack>
-          <Stack spacing={2} direction={'row'}>
+          <Stack spacing={2} direction={"row"}>
             <Typography>
               <FormattedMessage
-                id={'total.to.mint'}
-                defaultMessage={'Total to mint'}
-              />{' '}
+                id={"total.to.mint"}
+                defaultMessage={"Total to mint"}
+              />{" "}
               :
             </Typography>
             <Typography>
-              {' '}
+              {" "}
               {claimedSupply ? (
                 <>
                   {numberTotal || (
                     <FormattedMessage
-                      id={'unlimited'}
-                      defaultMessage={'Unlimited'}
+                      id={"unlimited"}
+                      defaultMessage={"Unlimited"}
                     />
                   )}
                 </>
               ) : (
                 <>
-                  <FormattedMessage id={'loading'} defaultMessage={'Loading'} />
-                  {'...'}
+                  <FormattedMessage id={"loading"} defaultMessage={"Loading"} />
+                  {"..."}
                 </>
               )}
             </Typography>
           </Stack>
-          <Stack spacing={2} direction={'row'}>
+          <Stack spacing={2} direction={"row"}>
             <Typography>
-              <FormattedMessage id={'you.own'} defaultMessage={'You own'} /> :
+              <FormattedMessage id={"you.own"} defaultMessage={"You own"} /> :
             </Typography>
             <Typography>
-              {' '}
+              {" "}
               {isLoadingBalance ? (
                 <Skeleton>
                   <Typography> --</Typography>
@@ -523,9 +524,9 @@ export function EditionDropSection({ section }: Props) {
           {isLoadingConditions && !activeClaimCondition.data ? (
             <Card>
               <CardContent>
-                <Skeleton width={'300px'}></Skeleton>
-                <Skeleton width={'300px'}></Skeleton>
-                <Skeleton width={'300px'}></Skeleton>
+                <Skeleton width={"300px"}></Skeleton>
+                <Skeleton width={"300px"}></Skeleton>
+                <Skeleton width={"300px"}></Skeleton>
               </CardContent>
             </Card>
           ) : (
@@ -534,36 +535,36 @@ export function EditionDropSection({ section }: Props) {
                 {claimConditions.data?.length === 0 ||
                 !claimConditions.data ||
                 claimConditions.data?.every(
-                  (cc) => cc.maxClaimableSupply === '0',
+                  (cc) => cc.maxClaimableSupply === "0"
                 ) ? (
                   <Alert severity="info">
                     <FormattedMessage
-                      id={'drop.not.ready.to.mint.yet'}
+                      id={"drop.not.ready.to.mint.yet"}
                       defaultMessage={
-                        'This drop is not ready to be minted yet. (No claim condition set)'
+                        "This drop is not ready to be minted yet. (No claim condition set)"
                       }
                     />
                   </Alert>
                 ) : activeClaimCondition.data ? (
                   <Stack spacing={1}>
                     <Typography variant="h5">
-                      {' '}
-                      {activeClaimCondition.data?.metadata?.name || ''}
+                      {" "}
+                      {activeClaimCondition.data?.metadata?.name || ""}
                     </Typography>
 
                     <Typography variant="body1">
                       <FormattedMessage
-                        id={'price'}
-                        defaultMessage={'Price'}
+                        id={"price"}
+                        defaultMessage={"Price"}
                       ></FormattedMessage>
                       : <b>{priceText}</b>
                     </Typography>
                     <Typography variant="body2">
                       {activeClaimCondition.data?.maxClaimablePerWallet.toString() ||
-                        'unlimited'}{' '}
+                        "unlimited"}{" "}
                       <FormattedMessage
-                        id={'per.wallet'}
-                        defaultMessage={'per wallet'}
+                        id={"per.wallet"}
+                        defaultMessage={"per wallet"}
                       />
                     </Typography>
                     {nextPhase && (
@@ -602,7 +603,7 @@ export function EditionDropSection({ section }: Props) {
                           </Typography>
                           <Typography color="body1">
                             <b>
-                              {nextPhase?.currencyMetadata?.displayValue}{' '}
+                              {nextPhase?.currencyMetadata?.displayValue}{" "}
                               {nextPhase?.currencyMetadata?.symbol}
                             </b>
                           </Typography>
@@ -610,7 +611,7 @@ export function EditionDropSection({ section }: Props) {
                       </Grid>
                     )}
 
-                    <Stack direction={'row'} spacing={2}>
+                    <Stack direction={"row"} spacing={2}>
                       {/* <Button
                         size={'large'}
                         onClick={() => setQuantity(quantity - 1)}
@@ -620,15 +621,15 @@ export function EditionDropSection({ section }: Props) {
                       </Button>*/}
                       <QuantityField
                         id="quantity-field"
-                        type={'number'}
+                        type={"number"}
                         value={quantity}
                         onChange={(ev) =>
                           setQuantity(Number(ev.currentTarget.value))
                         }
                         label={
                           <FormattedMessage
-                            id={'quantity'}
-                            defaultMessage={'Quantity'}
+                            id={"quantity"}
+                            defaultMessage={"Quantity"}
                           />
                         }
                         disabled={quantity > maxClaimable}
@@ -650,10 +651,10 @@ export function EditionDropSection({ section }: Props) {
                     </Stack>
 
                     {isSoldOut ? (
-                      <Typography variant={'h2'}>
+                      <Typography variant={"h2"}>
                         <FormattedMessage
-                          id={'sold.out'}
-                          defaultMessage={'Sold out'}
+                          id={"sold.out"}
+                          defaultMessage={"Sold out"}
                         />
                       </Typography>
                     ) : account ? (
@@ -664,7 +665,7 @@ export function EditionDropSection({ section }: Props) {
                           allowanceMutation.isLoading ||
                           approveMutation.isLoading
                         }
-                        sx={{ maxWidth: '300px' }}
+                        sx={{ maxWidth: "300px" }}
                         variant="outlined"
                         onClick={async () => {
                           if (editionDrop) {
@@ -693,7 +694,7 @@ export function EditionDropSection({ section }: Props) {
                                       .symbol,
                                 };
 
-                                watchTransactionDialog.open('approve', values);
+                                watchTransactionDialog.open("approve", values);
                                 await approveMutation.mutateAsync({
                                   spender: address,
                                   amount: totalAmount,
@@ -706,22 +707,22 @@ export function EditionDropSection({ section }: Props) {
                             const values = {
                               tokenId,
                               quantity: String(quantity),
-                              name: String(contractMetadata?.name || ' '),
+                              name: String(contractMetadata?.name || " "),
                             };
 
                             watchTransactionDialog.open(
-                              'mintEditionDrop',
-                              values,
+                              "mintEditionDrop",
+                              values
                             );
                             const result = await editionDrop.erc1155.claim(
                               tokenId,
-                              quantity,
+                              quantity
                             );
 
                             const metadata = {
                               tokenId,
                               quantity: String(quantity),
-                              name: String(contractMetadata?.name || ' '),
+                              name: String(contractMetadata?.name || " "),
                               price:
                                 activeClaimCondition.data?.price.toString(),
                               currency:
@@ -737,8 +738,8 @@ export function EditionDropSection({ section }: Props) {
                             });
 
                             createNotification({
-                              type: 'transaction',
-                              subtype: 'mintEditionDrop',
+                              type: "transaction",
+                              subtype: "mintEditionDrop",
                               values,
                               metadata: {
                                 chainId,
@@ -747,7 +748,7 @@ export function EditionDropSection({ section }: Props) {
                             });
 
                             watchTransactionDialog.watch(
-                              result.receipt.transactionHash,
+                              result.receipt.transactionHash
                             );
                           }
                         }}
@@ -755,10 +756,10 @@ export function EditionDropSection({ section }: Props) {
                         {buttonLoading ? (
                           <>
                             <FormattedMessage
-                              id={'loading'}
-                              defaultMessage={'Loading'}
+                              id={"loading"}
+                              defaultMessage={"Loading"}
                             />
-                            {'...'}
+                            {"..."}
                           </>
                         ) : (
                           buttonText
@@ -771,9 +772,9 @@ export function EditionDropSection({ section }: Props) {
                 ) : (
                   <Alert severity="info">
                     <FormattedMessage
-                      id={'drop.not.ready.to.mint.yet'}
+                      id={"drop.not.ready.to.mint.yet"}
                       defaultMessage={
-                        'This drop is not ready to be minted yet.'
+                        "This drop is not ready to be minted yet."
                       }
                     />
                   </Alert>

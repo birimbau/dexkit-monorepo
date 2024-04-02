@@ -20,8 +20,6 @@ import { CollectionItemAutocomplete } from '../forms/CollectionItemAutocomplete'
 
 import * as Yup from 'yup';
 
-import { AppDialogTitle } from '../../../../components/AppDialogTitle';
-
 import { Grid, LinearProgress } from '@mui/material';
 import { Field, FieldArray, Form, Formik } from 'formik';
 import { Select, TextField } from 'formik-mui';
@@ -35,11 +33,16 @@ import Tab from '@mui/material/Tab';
 import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
 import { useAllTokenList } from 'src/hooks/blockchain';
-import { getAssetProtocol } from 'src/services/nft';
+
 import { Token } from 'src/types/blockchain';
-import { getProviderByChainId } from 'src/utils/blockchain';
+
 import { getGatedConditionsText } from '../../services';
-import { GatedCondition, GatedPageLayout } from '../../types';
+
+import { getProviderByChainId } from '@dexkit/core/utils/blockchain';
+import { AppDialogTitle } from '@dexkit/ui/components/AppDialogTitle';
+import { getAssetProtocol } from '@dexkit/ui/modules/nft/services';
+import { GatedPageLayout } from '@dexkit/ui/modules/wizard/types';
+import { GatedCondition } from '@dexkit/ui/modules/wizard/types/config';
 import { SearchTokenAutocomplete } from '../forms/SearchTokenAutocomplete';
 
 const PreviewGatedConditionsDialog = dynamic(

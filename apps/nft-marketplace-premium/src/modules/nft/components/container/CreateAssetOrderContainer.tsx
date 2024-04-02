@@ -55,7 +55,8 @@ import {
 } from '@dexkit/ui/modules/nft/hooks';
 
 import { getERC20Name, getERC20Symbol } from '@dexkit/core/services/balances';
-import { Asset } from 'src/types/nft';
+import { Asset } from '@dexkit/core/types/nft';
+import { ipfsUriToUrl } from '@dexkit/core/utils/ipfs';
 
 export const CreateAssetOrderContainer = () => {
   const [asset, setAsset] = useState<Asset | null>(null);

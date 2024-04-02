@@ -21,11 +21,12 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import { myAppsApi } from '@/modules/admin/dashboard/dataProvider';
 import { useFormQuery, useUpdateFormMutation } from '@/modules/forms/hooks';
 import { DexkitApiProvider } from '@dexkit/core/providers';
+import { PageHeader } from '@dexkit/ui/components/PageHeader';
 import InfoIcon from '@mui/icons-material/Info';
 import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
-import AppConfirmDialog from 'src/components/AppConfirmDialog';
-import { PageHeader } from 'src/components/PageHeader';
+
+import AppConfirmDialog from '@dexkit/ui/components/AppConfirmDialog';
 import AuthMainLayout from 'src/components/layouts/authMain';
 
 export default function FormsEditPage() {
@@ -112,7 +113,7 @@ export default function FormsEditPage() {
   return (
     <>
       <AppConfirmDialog
-        dialogProps={{
+        DialogProps={{
           open: showConfirm,
           onClose: handleCloseConfirm,
           fullWidth: true,

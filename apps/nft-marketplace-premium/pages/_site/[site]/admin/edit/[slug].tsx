@@ -29,7 +29,8 @@ import { LoginButton } from 'src/components/LoginButton';
 import AuthMainLayout from 'src/components/layouts/authMain';
 
 import { AdminContext } from '@dexkit/ui/context/AdminContext';
-import { useAuth } from 'src/hooks/account';
+
+import { useAuth } from '@dexkit/ui/hooks/auth';
 import { useAdminWhitelabelConfigQuery } from 'src/hooks/whitelabel';
 import { getAppConfig } from 'src/services/app';
 import { myAppsApi } from 'src/services/whitelabel';
@@ -123,7 +124,9 @@ export const WizardEditPage: NextPage = () => {
           </Stack>
         </Box>
       ) : (
-        <AdminContext.Provider value={{editSiteId: site?.id, editAppConfig: config}}>
+        <AdminContext.Provider
+          value={{ editSiteId: site?.id, editAppConfig: config }}
+        >
           <DexkitApiProvider.Provider value={{ instance: myAppsApi }}>
             <EditWizardContainer site={site} />
           </DexkitApiProvider.Provider>

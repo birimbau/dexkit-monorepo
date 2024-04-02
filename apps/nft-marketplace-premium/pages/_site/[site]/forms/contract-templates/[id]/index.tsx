@@ -25,7 +25,7 @@ import {
 } from '@mui/material';
 import { useRouter } from 'next/router';
 import { FormattedMessage } from 'react-intl';
-import { PageHeader } from 'src/components/PageHeader';
+
 import AuthMainLayout from 'src/components/layouts/authMain';
 
 import {
@@ -35,13 +35,14 @@ import {
 } from '@dexkit/core/utils';
 import ShareDialog from '@dexkit/ui/components/dialogs/ShareDialog';
 import { useState } from 'react';
-import { getWindowUrl } from 'src/utils/browser';
 
+import { getChainName } from '@dexkit/core/utils/blockchain';
+import { getWindowUrl } from '@dexkit/core/utils/browser';
+import Link from '@dexkit/ui/components/AppLink';
+import { PageHeader } from '@dexkit/ui/components/PageHeader';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import { useWeb3React } from '@web3-react/core';
-import Link from 'src/components/Link';
-import { getChainName } from 'src/utils/blockchain';
 
 export default function TemplatePage() {
   const router = useRouter();
@@ -101,9 +102,8 @@ export default function TemplatePage() {
           maxWidth: 'sm',
           fullWidth: true,
         }}
-        url={`${getWindowUrl()}/forms/contract-templates/${
-          formTemplateQuery.data?.id
-        }`}
+        url={`${getWindowUrl()}/forms/contract-templates/${formTemplateQuery
+          .data?.id}`}
       />
       <Container>
         <Stack spacing={2}>
@@ -171,7 +171,7 @@ export default function TemplatePage() {
                               variant="body2"
                             >
                               {truncateAddress(
-                                formTemplateQuery.data?.creatorAddress
+                                formTemplateQuery.data?.creatorAddress,
                               )}
                             </Link>
                           ),
@@ -205,7 +205,7 @@ export default function TemplatePage() {
 
                     {isAddressEqual(
                       formTemplateQuery.data?.creatorAddress,
-                      account
+                      account,
                     ) && (
                       <Button
                         size="small"
@@ -258,7 +258,7 @@ export default function TemplatePage() {
                       <Link
                         target="_blank"
                         href={`${getBlockExplorerUrl(
-                          instance.chainId
+                          instance.chainId,
                         )}/address/${instance.address}`}
                       >
                         {truncateAddress(instance.address)}
@@ -268,7 +268,7 @@ export default function TemplatePage() {
                       <Link
                         target="_blank"
                         href={`${getBlockExplorerUrl(
-                          instance.chainId
+                          instance.chainId,
                         )}/address/${instance.creatorAddress}`}
                       >
                         {truncateAddress(instance.creatorAddress)}

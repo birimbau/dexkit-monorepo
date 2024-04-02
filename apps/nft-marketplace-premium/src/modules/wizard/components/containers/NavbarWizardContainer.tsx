@@ -1,3 +1,4 @@
+import { AppConfig, MenuTree } from '@dexkit/ui/modules/wizard/types/config';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
@@ -13,9 +14,8 @@ import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import { useEffect, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { AppConfig, MenuTree } from '../../../../types/config';
 
-import { SearchbarConfig } from '@dexkit/ui/types/config';
+import { SearchbarConfig } from '@dexkit/ui/modules/wizard/types/config';
 import MenuSection from '../sections/MenuSection';
 
 interface Props {

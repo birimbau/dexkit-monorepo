@@ -1,12 +1,11 @@
+import { CollectionSyncStatus } from '@dexkit/ui/modules/nft/constants/enum';
 import {
-  DateInput,
   Edit,
   NumberInput,
   SelectInput,
   SimpleForm,
   TextInput,
 } from 'react-admin';
-import { CollectionSyncStatus } from 'src/constants/enum';
 
 export const CollectionEdit = () => (
   <Edit>

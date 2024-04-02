@@ -1,6 +1,8 @@
 import MarketplacesTableSkeleton from '@/modules/admin/components/tables/MaketplacesTableSkeleton';
 import PageTemplatesTable from '@/modules/admin/components/tables/PageTemplatesTable';
 import { useDebounce } from '@dexkit/core/hooks';
+import Link from '@dexkit/ui/components/AppLink';
+import { PageHeader } from '@dexkit/ui/components/PageHeader';
 import Add from '@mui/icons-material/Add';
 import Search from '@mui/icons-material/Search';
 import {
@@ -27,8 +29,6 @@ import {
 } from 'next';
 import { ChangeEvent, ReactNode, useCallback, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import Link from 'src/components/Link';
-import { PageHeader } from 'src/components/PageHeader';
 import AuthMainLayout from 'src/components/layouts/authMain';
 import { DEXKIT_DISCORD_SUPPORT_CHANNEL, WIZARD_DOCS_URL } from 'src/constants';
 import { usePageTemplatesByOwnerQuery } from 'src/hooks/whitelabel';
@@ -76,7 +76,7 @@ export const PageTemplateIndexPage: NextPage = () => {
     if (configsQuery.data && configsQuery.data.length > 0) {
       if (lazySearch) {
         return configsQuery.data.filter(
-          (c) => c.title.toLowerCase().search(lazySearch.toLowerCase()) > -1
+          (c) => c.title.toLowerCase().search(lazySearch.toLowerCase()) > -1,
         );
       }
 

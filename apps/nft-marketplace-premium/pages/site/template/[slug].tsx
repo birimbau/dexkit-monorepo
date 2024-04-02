@@ -1,3 +1,4 @@
+import { PageHeader } from '@dexkit/ui/components/PageHeader';
 import { Avatar, Box, Chip, Container, Grid, Stack } from '@mui/material';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
@@ -7,11 +8,10 @@ import { NextSeo } from 'next-seo';
 import Image from 'next/future/image';
 import { FormattedMessage, useIntl } from 'react-intl';
 import remarkGfm from 'remark-gfm';
-import { PageHeader } from '../../../src/components/PageHeader';
 import MainLayout from '../../../src/components/layouts/main';
 
-import { SiteMetadata } from '@/modules/wizard/types';
 import { NETWORK_IMAGE, NETWORK_NAME } from '@dexkit/core/constants/networks';
+import { SiteMetadata } from '@dexkit/ui/modules/wizard/types';
 import ReactMarkdown from 'react-markdown';
 import { getSiteMetadata } from 'src/services/whitelabel';
 

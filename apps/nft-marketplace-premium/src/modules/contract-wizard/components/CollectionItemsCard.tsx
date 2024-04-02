@@ -1,4 +1,5 @@
 import { NETWORK_FROM_SLUG } from '@dexkit/core/constants/networks';
+import AppConfirmDialog from '@dexkit/ui/components/AppConfirmDialog';
 import Delete from '@mui/icons-material/Delete';
 import {
   Button,
@@ -12,7 +13,6 @@ import { useWeb3React } from '@web3-react/core';
 import { FieldArray, Form, useFormikContext } from 'formik';
 import React, { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import AppConfirmDialog from 'src/components/AppConfirmDialog';
 import { CollectionItemsForm } from '../types';
 import CollectionItemForm from './CollectionItemForm';
 
@@ -47,7 +47,7 @@ export default function CollectionItemsCard({
   return (
     <>
       <AppConfirmDialog
-        dialogProps={{
+        DialogProps={{
           open: showConfirm,
           onClose: handleCloseConfirm,
           fullWidth: true,

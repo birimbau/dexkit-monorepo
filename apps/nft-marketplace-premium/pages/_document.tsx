@@ -2,10 +2,10 @@ import createEmotionServer from '@emotion/server/create-instance';
 
 import Document, { Head, Html, Main, NextScript } from 'next/document';
 
+import { AppConfig } from '@dexkit/ui/modules/wizard/types/config';
 import { getInitColorSchemeScript } from '@mui/material/styles';
 import Script from 'next/script';
 import createEmotionCache from '../src/createEmotionCache';
-import { AppConfig } from '../src/types/config';
 
 export default class MyDocument extends Document {
   render() {

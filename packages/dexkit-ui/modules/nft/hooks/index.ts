@@ -20,7 +20,7 @@ import { useAppConfig, useDexKitContext } from "../../../hooks";
 import { useActiveChainIds, useTokenList } from "../../../hooks/blockchain";
 import { accountAssetsAtom } from "../../../state";
 import { NFTType } from "../constants/enum";
-import { getAssetByApi, getAssetData, getAssetMetadata, getAssetsData, getCollectionByApi, getDKAssetOrderbook, getERC1155Balance, getOrderbookOrders, searchAssetsDexKitApi } from "../services";
+import { getAssetByApi, getAssetData, getAssetMetadata, getAssetsData, getDKAssetOrderbook, getERC1155Balance, getOrderbookOrders, searchAssetsDexKitApi } from "../services";
 import { AssetAPI, AssetBalance, CollectionUniformItem, HiddenAsset, OrderBookItem, TraderOrderFilter } from "../types";
 import { calculeFees, parseAssetApi } from "../utils";
 
@@ -30,6 +30,7 @@ import {
 
   TradeDirection,
 } from "@traderxyz/nft-swap-sdk";
+import { getCollectionByApi } from "../services/collection";
 import { AssetRari } from "../types/rarible";
 
 export const GET_ASSET_BALANCE = 'GET_ASSET_BALANCE';

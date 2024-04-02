@@ -18,6 +18,7 @@ import Tab from '@mui/material/Tab';
 import { useCallback, useEffect, useState } from 'react';
 
 import RankingSection from '@dexkit/dexappbuilder-viewer/components/sections/RankingSection';
+import { useAppRankingListQuery } from '@dexkit/ui/modules/wizard/hooks/ranking';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
@@ -34,10 +35,7 @@ import {
 import dynamic from 'next/dynamic';
 import { useSnackbar } from 'notistack';
 import { FormattedMessage, useIntl } from 'react-intl';
-import {
-  useAppRankingListQuery,
-  useDeleteAppRankingMutation,
-} from '../../hooks';
+import { useDeleteAppRankingMutation } from '../../hooks';
 import { GamificationPoint } from '../../types';
 import { ExportRanking } from '../ExportRanking';
 import GamificationPointForm from '../forms/Gamification/GamificationPointForm';

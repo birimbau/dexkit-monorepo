@@ -19,7 +19,8 @@ import {
 import IconButton from '@mui/material/IconButton';
 import { useEffect, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { AppDialogTitle } from '../../../../../components/AppDialogTitle';
+
+import { AppDialogTitle } from '@dexkit/ui/components/AppDialogTitle';
 import { BuilderKit } from '../../../constants';
 import PreviewPagePlatform from '../../PreviewPagePlatform';
 import { SectionFormRender } from '../SectionFormRender';

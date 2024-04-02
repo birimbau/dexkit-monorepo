@@ -21,13 +21,7 @@ import { constants } from "ethers";
 
 import { useWeb3React } from "@web3-react/core";
 import { FormattedMessage } from "react-intl";
-import { usePositionPaginator } from "../../../../../../apps/nft-marketplace-premium/src/hooks/misc";
-import {
-  useAsset,
-  useBestSellOrderAssetRari,
-  useOrderBook,
-} from "../../../../../../apps/nft-marketplace-premium/src/hooks/nft";
-import { SwapApiOrder } from "../../../../../../apps/nft-marketplace-premium/src/types/nft";
+
 import ListingsTableRow from "./ListingsTableRow";
 
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
@@ -39,8 +33,12 @@ import {
 import moment from "moment";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import { TraderOrderStatus } from "../../../../../../apps/nft-marketplace-premium/src/constants/enum";
-import { useCurrency } from "../../../../../../apps/nft-marketplace-premium/src/hooks/currency";
+
+import { usePositionPaginator } from "@dexkit/core/hooks/misc";
+import { SwapApiOrder } from "@dexkit/core/types";
+import { useCurrency } from "../../../../hooks/currency";
+import { TraderOrderStatus } from "../../constants/enum";
+import { useAsset, useBestSellOrderAssetRari, useOrderBook } from "../../hooks";
 import ListingsTableRaribleRow from "./ListingsTableRaribleRow";
 
 interface Props {
@@ -69,7 +67,7 @@ export function ListingsTable({
 
   const { account } = useWeb3React();
 
-  const currency = useCurrency();
+  const { currency } = useCurrency();
 
   const router = useRouter();
 

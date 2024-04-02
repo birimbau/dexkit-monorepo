@@ -22,7 +22,6 @@ import { useMemo } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useErc20Balance } from '../../../../hooks/nft';
 import { Token } from '../../../../types/blockchain';
-import { ipfsUriToUrl } from '../../../../utils/ipfs';
 
 import { FormikErrors, FormikHelpers, useFormik } from 'formik';
 
@@ -31,13 +30,15 @@ import { formatUnits } from '@dexkit/core/utils/ethers/formatUnits';
 import { parseUnits } from '@dexkit/core/utils/ethers/parseUnits';
 import { useTheme } from '@mui/material';
 import * as Yup from 'yup';
-import AppFeePercentageSpan from '../../../../components/AppFeePercentageSpan';
+
+import { TOKEN_ICON_URL } from '@dexkit/core/constants';
+import { Asset } from '@dexkit/core/types/nft';
+import { ipfsUriToUrl } from '@dexkit/core/utils/ipfs';
+import { isValidDecimal } from '@dexkit/core/utils/numbers';
+import AppFeePercentageSpan from '@dexkit/ui/components/AppFeePercentageSpan';
+import { useTokenList } from '@dexkit/ui/hooks/blockchain';
+import DurationSelect from '@dexkit/ui/modules/nft/components/DurationSelect';
 import { MIN_ORDER_DATE_TIME } from '../../../../constants';
-import { useTokenList } from '../../../../hooks/blockchain';
-import { Asset } from '../../../../types/nft';
-import { isValidDecimal } from '../../../../utils/numbers';
-import { TOKEN_ICON_URL } from '../../../../utils/token';
-import DurationSelect from '../../../nft/components/DurationSelect';
 
 interface Form {
   price: string;

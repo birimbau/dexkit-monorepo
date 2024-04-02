@@ -1,3 +1,4 @@
+import { AppConfig } from '@dexkit/ui/modules/wizard/types/config';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
@@ -5,7 +6,6 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { useCallback, useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { AppConfig } from '../../../../types/config';
 import FeesSection from '../sections/FeesSection';
 import { FeeForm } from '../sections/FeesSectionForm';
 

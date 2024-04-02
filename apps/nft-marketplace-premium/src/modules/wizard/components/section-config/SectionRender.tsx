@@ -1,6 +1,6 @@
+import LazyComponent from '@dexkit/ui/components/LazyComponent';
 import { AppPageSection } from '@dexkit/ui/modules/wizard/types/section';
 import dynamic from 'next/dynamic';
-import LazyComponent from 'src/components/LazyComponent';
 const RankingSection = dynamic(
   () =>
     import('@dexkit/dexappbuilder-viewer/components/sections/RankingSection'),

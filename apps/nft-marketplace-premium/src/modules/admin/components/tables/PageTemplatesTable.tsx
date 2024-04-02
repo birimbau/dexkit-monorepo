@@ -20,8 +20,8 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import { useDeletePageTemplateMutation } from '../../../../hooks/whitelabel';
 import { PageTemplateResponse } from '../../../../types/whitelabel';
 
+import AppConfirmDialog from '@dexkit/ui/components/AppConfirmDialog';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import AppConfirmDialog from '../../../../components/AppConfirmDialog';
 import PageEditorDialog from '../../../wizard/components/pageEditor/dialogs/PageEditorDialog';
 import PageTemplatesTableRow from './PageTemplatesTableRow';
 
@@ -130,7 +130,7 @@ export default function PageTemplatesTable({ pageTemplates }: Props) {
   return (
     <>
       <AppConfirmDialog
-        dialogProps={{
+        DialogProps={{
           open: isOpen,
           onClose: handleClose,
         }}

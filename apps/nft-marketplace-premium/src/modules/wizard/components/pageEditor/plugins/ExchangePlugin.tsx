@@ -7,7 +7,10 @@ import { DexkitExchangeSettings } from '@dexkit/exchange/types';
 import { useActiveChainIds } from '@dexkit/ui';
 import dynamic from 'next/dynamic';
 import { useMemo } from 'react';
-const ExchangeSection = dynamic(() => import('../../sections/ExchangeSection'));
+const ExchangeSection = dynamic(
+  () =>
+    import('@dexkit/dexappbuilder-viewer/components/sections/ExchangeSection'),
+);
 
 // you can pass the shape of the data as the generic type argument
 const ExchangePlugin: CellPlugin<DexkitExchangeSettings> = {

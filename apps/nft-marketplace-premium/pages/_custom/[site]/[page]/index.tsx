@@ -2,17 +2,18 @@ import type { GetStaticProps, GetStaticPropsContext, NextPage } from 'next';
 import MainLayout from '../../../../src/components/layouts/main';
 
 import { dehydrate, QueryClient } from '@tanstack/react-query';
-import { GET_ASSETS_ORDERBOOK } from '../../../../src/hooks/nft';
+
 import { getAppConfig } from '../../../../src/services/app';
-import {
-  fetchMultipleAssetForQueryClient,
-  getDKAssetOrderbook,
-} from '../../../../src/services/nft';
 
 import ProtectedContent from '@/modules/home/components/ProtectedContent';
 import { SectionsRenderer } from '@/modules/wizard/components/sections/SectionsRenderer';
-import { GatedCondition, GatedPageLayout } from '@/modules/wizard/types';
-import { AppPageSection } from '@/modules/wizard/types/section';
+
+import { GET_ASSETS_ORDERBOOK } from '@dexkit/ui/modules/nft/hooks';
+import { getDKAssetOrderbook } from '@dexkit/ui/modules/nft/services';
+import { fetchMultipleAssetForQueryClient } from '@dexkit/ui/modules/nft/services/query';
+import { GatedPageLayout } from '@dexkit/ui/modules/wizard/types';
+import { GatedCondition } from '@dexkit/ui/modules/wizard/types/config';
+import { AppPageSection } from '@dexkit/ui/modules/wizard/types/section';
 import { SessionProvider } from 'next-auth/react';
 import AuthMainLayout from 'src/components/layouts/authMain';
 

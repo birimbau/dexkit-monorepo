@@ -19,8 +19,8 @@ import Error from '@mui/icons-material/Error';
 
 import ExpandLess from '@mui/icons-material/ExpandLess';
 
+import { AppDialogTitle } from '@dexkit/ui/components/AppDialogTitle';
 import ExpandMore from '@mui/icons-material/ExpandMore';
-import { AppDialogTitle } from '../../../../components/AppDialogTitle';
 
 interface Props {
   dialogProps: DialogProps;

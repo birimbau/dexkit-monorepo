@@ -1,11 +1,11 @@
 import type { CellPlugin } from '@react-page/editor';
 
-import { DexGeneratorPageSection } from '@/modules/wizard/types/section';
 import { DexkitApiProvider } from '@dexkit/core/providers';
+import DexGeneratorSection from '@dexkit/dexappbuilder-viewer/components/sections/DexGeneratorSection';
+import { DexGeneratorPageSection } from '@dexkit/ui/modules/wizard/types/section';
 import { Box } from '@mui/material';
 import { myAppsApi } from 'src/services/whitelabel';
 import DexGeneratorSectionForm from '../../forms/DexGeneratorSectionForm';
-import DexGeneratorSection from '../../sections/DexGeneratorSection';
 
 // you can pass the shape of the data as the generic type argument
 const DexGeneratorFormPlugin: CellPlugin<{

@@ -2,7 +2,8 @@ import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import { useEffect, useMemo, useState } from 'react';
-import { getChainName, getChainSymbol } from 'src/utils/blockchain';
+
+import { getChainName, getChainSymbol } from '@dexkit/core/utils/blockchain';
 import { useAppWizardConfig } from '../../hooks';
 
 type Data = {

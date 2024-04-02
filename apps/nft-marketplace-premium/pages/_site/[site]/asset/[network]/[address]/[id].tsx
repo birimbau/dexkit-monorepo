@@ -34,7 +34,8 @@ import {
 } from '@dexkit/ui/modules/nft/hooks';
 import { getRariAsset } from '@dexkit/ui/modules/nft/services/rarible';
 import { truncateErc1155TokenId } from '@dexkit/ui/modules/nft/utils';
-import { NETWORK_ID } from '../../../../../../src/constants/enum';
+
+import { NETWORK_ID } from '@dexkit/ui/constants/enum';
 import { getAppConfig } from '../../../../../../src/services/app';
 
 const AssetDetailPage: NextPage<any> = ({

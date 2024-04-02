@@ -33,7 +33,8 @@ import { Field, Formik } from 'formik';
 import { Select, Switch, TextField } from 'formik-mui';
 import { SyntheticEvent, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { getProviderBySlug } from 'src/services/providers';
+
+import { getProviderBySlug } from '@dexkit/ui/services/providers';
 import { CreateCollectionFormSchema } from '../../constants/schemas';
 import { CollectionItemAutocomplete } from './CollectionItemAutocomplete';
 interface DropCheckboxProps {
@@ -106,6 +107,7 @@ export interface Form {
   hideHeader: boolean;
   hideDrops: boolean;
   hideAssets: boolean;
+  showPageHeader: boolean;
 }
 
 export default function CollectionSectionFormAlt({
@@ -148,6 +150,7 @@ export default function CollectionSectionFormAlt({
               hideDrops: false,
               hideFilters: false,
               hideHeader: false,
+              showPageHeader: false,
             }
       }
       onSubmit={handleSubmit}

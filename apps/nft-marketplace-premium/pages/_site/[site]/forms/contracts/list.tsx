@@ -8,6 +8,7 @@ import { DexkitApiProvider } from '@dexkit/core/providers';
 import ContractListDataGrid from '@/modules/forms/components/ContractListDataGrid';
 
 import { ConnectWalletBox } from '@dexkit/ui/components/ConnectWalletBox';
+import { PageHeader } from '@dexkit/ui/components/PageHeader';
 import { useWeb3React } from '@web3-react/core';
 import {
   GetStaticPaths,
@@ -16,10 +17,9 @@ import {
   GetStaticPropsContext,
 } from 'next';
 import { LoginAppButton } from 'src/components/LoginAppButton';
-import { PageHeader } from 'src/components/PageHeader';
 import AuthMainLayout from 'src/components/layouts/authMain';
-import { useAuth } from 'src/hooks/account';
 
+import { useAuth } from '@dexkit/ui/hooks/auth';
 import { QueryClient, dehydrate } from '@tanstack/react-query';
 import { getAppConfig } from 'src/services/app';
 

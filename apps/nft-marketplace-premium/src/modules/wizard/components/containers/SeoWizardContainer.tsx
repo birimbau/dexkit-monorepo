@@ -1,10 +1,14 @@
+import {
+  AppConfig,
+  AppPage,
+  PageSeo,
+} from '@dexkit/ui/modules/wizard/types/config';
 import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { AppConfig, AppPage, PageSeo } from '../../../../types/config';
 import { SeoForm } from '../../types';
 import SeoSection from '../sections/SeoSection';
 

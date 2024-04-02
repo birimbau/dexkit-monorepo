@@ -2,8 +2,8 @@ import { Button, Grid, Paper, Stack, TextField } from '@mui/material';
 import { FormikHelpers, useFormik } from 'formik';
 import { useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { SectionItem } from '../../../../types/config';
 
+import { SectionItem } from '@dexkit/ui/modules/wizard/types/config';
 import {
   AppPageSection,
   CollectionAppPageSection,

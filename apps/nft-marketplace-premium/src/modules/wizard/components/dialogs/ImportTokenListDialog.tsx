@@ -25,7 +25,8 @@ import TokensSectionList from '../sections/TokensSectionList';
 import Search from '@mui/icons-material/Search';
 import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { AppDialogTitle } from '../../../../components/AppDialogTitle';
+
+import { AppDialogTitle } from '@dexkit/ui/components/AppDialogTitle';
 import { Token } from '../../../../types/blockchain';
 import {
   DEXKIT_TOKENLIST_URL,

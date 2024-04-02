@@ -1,9 +1,13 @@
-import { useWeb3React } from '@web3-react/core';
-import jwt_decode from 'jwt-decode';
-import { ReactNode, useContext, useEffect, useState } from 'react';
-import { AuthContext, AuthStateContext } from '../contexts';
-import { useLoginAccountMutation } from '../hooks/account';
-import { getAccessToken, getAccessTokenAndRefresh } from '../services/auth';
+import { useLoginAccountMutation } from "@dexkit/ui/hooks/auth";
+import {
+  getAccessToken,
+  getAccessTokenAndRefresh,
+} from "@dexkit/ui/services/auth";
+import { useWeb3React } from "@web3-react/core";
+import jwt_decode from "jwt-decode";
+import { ReactNode, useContext, useEffect, useState } from "react";
+import { AuthContext, AuthStateContext } from "../context/AuthContext";
+
 interface Props {
   children: ReactNode;
 }

@@ -5,7 +5,8 @@ import dynamic from 'next/dynamic';
 import { useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { useThemeMode } from 'src/hooks/app';
-import { AppConfig } from 'src/types/config';
+
+import { AppConfig } from '@dexkit/ui/modules/wizard/types/config';
 import { generateCSSVarsTheme } from '../utils';
 const PreviewPageDialog = dynamic(() => import('./dialogs/PreviewPageDialog'));
 

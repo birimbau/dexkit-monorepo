@@ -1,5 +1,5 @@
-import { ReactNode, useState } from 'react';
-import { AuthStateContext, AuthUser } from '../contexts';
+import { ReactNode, useState } from "react";
+import { AuthStateContext, AuthUser } from "../context/AuthContext";
 
 interface Props {
   children: ReactNode;

@@ -5,7 +5,8 @@ import Typography from '@mui/material/Typography';
 import { signIn, useSession } from 'next-auth/react';
 import { useEffect, useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { useAuth } from 'src/hooks/account';
+
+import { useAuth } from '@dexkit/ui/hooks/auth';
 import { useAuthUserQuery } from '../hooks';
 
 interface Props {

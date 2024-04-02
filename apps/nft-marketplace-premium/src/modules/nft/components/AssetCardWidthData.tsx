@@ -1,6 +1,6 @@
 import { ChainId } from '@dexkit/core/constants';
-import { useFullAsset } from '../../../hooks/nft';
-import { AssetCard } from './AssetCard';
+import { AssetCard } from '@dexkit/ui/modules/nft/components/AssetCard';
+import { useFullAsset } from '@dexkit/ui/modules/nft/hooks';
 
 interface Props {
   address: string;

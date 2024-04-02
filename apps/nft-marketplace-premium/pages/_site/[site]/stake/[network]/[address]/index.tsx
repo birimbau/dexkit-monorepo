@@ -1,6 +1,8 @@
-import StakeErc1155Section from '@/modules/wizard/components/sections/StakeErc1155Section';
-import StakeErc20Section from '@/modules/wizard/components/sections/StakeErc20Section';
-import StakeErc721Section from '@/modules/wizard/components/sections/StakeErc721Section';
+import { getChainIdFromSlug } from '@dexkit/core/utils/blockchain';
+import StakeErc1155Section from '@dexkit/dexappbuilder-viewer/components/sections/StakeErc1155Section';
+import StakeErc20Section from '@dexkit/dexappbuilder-viewer/components/sections/StakeErc20Section';
+import StakeErc721Section from '@dexkit/dexappbuilder-viewer/components/sections/StakeErc721Section';
+import { PageHeader } from '@dexkit/ui/components/PageHeader';
 import { hexToString } from '@dexkit/ui/utils';
 import { Box, Container, Grid, Skeleton } from '@mui/material';
 import { QueryClient, dehydrate } from '@tanstack/react-query';
@@ -14,11 +16,9 @@ import { useWeb3React } from '@web3-react/core';
 import { GetStaticPropsContext } from 'next';
 import { useRouter } from 'next/router';
 import { FormattedMessage } from 'react-intl';
-import { PageHeader } from 'src/components/PageHeader';
 import MainLayout from 'src/components/layouts/main';
 import { REVALIDATE_PAGE_TIME, THIRDWEB_CLIENT_ID } from 'src/constants';
 import { getAppConfig } from 'src/services/app';
-import { getChainIdFromSlug } from 'src/utils/blockchain';
 
 export function StakePage() {
   const { query } = useRouter();

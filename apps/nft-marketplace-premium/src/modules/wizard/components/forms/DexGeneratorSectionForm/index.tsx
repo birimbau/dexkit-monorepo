@@ -33,7 +33,8 @@ import { useWeb3React } from '@web3-react/core';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { NETWORKS } from 'src/constants/chain';
-import { getChainSlug } from 'src/utils/blockchain';
+
+import { getChainSlug } from '@dexkit/core/utils/blockchain';
 import {
   DEX_GENERATOR_CONTRACT_TYPES,
   DEX_GENERATOR_CONTRACT_TYPES_AVAIL,
@@ -254,6 +255,7 @@ export default function DexGeneratorSectionForm({
                 hideDrops: false,
                 hideFilters: false,
                 hideHeader: false,
+                showPageHeader: true,
               },
             },
             contract: newContract,

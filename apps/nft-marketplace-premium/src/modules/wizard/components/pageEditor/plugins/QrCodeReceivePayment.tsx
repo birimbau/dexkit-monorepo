@@ -3,11 +3,11 @@ import { EvmCoin } from '@dexkit/core/types';
 import { parseUnits } from '@dexkit/core/utils/ethers/parseUnits';
 import EvmReceiveForm from '@dexkit/ui/components/EvmReceiveForm';
 import EvmReceiveQRCode from '@dexkit/ui/components/EvmReceiveQRCode';
+import { useEvmCoins } from '@dexkit/ui/hooks/blockchain';
 import QrCodeIcon from '@mui/icons-material/QrCode';
 import { Container } from '@mui/material';
 import type { CellPlugin } from '@react-page/editor';
 import { useWeb3React } from '@web3-react/core';
-import { useEvmCoins } from 'src/hooks/blockchain';
 
 type Props = {
   receiver?: string | null;

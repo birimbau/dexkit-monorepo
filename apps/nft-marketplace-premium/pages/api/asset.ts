@@ -1,11 +1,9 @@
 import { getChainSlug, getProviderByChainId } from '@dexkit/core/utils/blockchain';
 import type { NextApiRequest, NextApiResponse } from 'next';
-import {
-  getAssetData,
-  getAssetDexKitApi,
-  getAssetMetadata,
-} from '../../src/services/nft';
-import { Asset } from '../../src/types/nft';
+
+import { Asset } from '@dexkit/core/types/nft';
+import { getAssetData, getAssetDexKitApi, getAssetMetadata } from '@dexkit/ui/modules/nft/services';
+
 
 export default async function handler(
   req: NextApiRequest,

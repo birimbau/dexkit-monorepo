@@ -22,7 +22,8 @@ import {
 import { useWeb3React } from '@web3-react/core';
 import { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import Link from 'src/components/Link';
+
+import Link from '@dexkit/ui/components/AppLink';
 import UserContractFormCard from '../UserContractFormCard';
 
 interface Props {

@@ -1,7 +1,10 @@
 import { ChainId } from "@dexkit/core/constants";
 import { Asset, AssetMetadata } from "@dexkit/core/types/nft";
+import { getNetworkSlugFromChainId } from "@dexkit/core/utils/blockchain";
 import { UserFacingFeeStruct } from '@traderxyz/nft-swap-sdk';
 import { BigNumber } from "ethers";
+import { NETWORK_ID } from "../../../constants/enum";
+import { MARKETPLACES, MARKETPLACES_INFO } from "../constants/marketplaces";
 import { AssetAPI, AssetBalance } from "../types";
 
 export function truncateErc1155TokenId(id?: string) {
@@ -84,6 +87,39 @@ export function getAssetProtocol(asset?: Asset) {
 
 export function isERC1155Owner(assetBalance?: AssetBalance) {
   return assetBalance?.balance?.gt(0) && assetBalance.asset.protocol === 'ERC1155'
+}
+
+
+export function getMarketplaceForAssetURL(platform: MARKETPLACES, asset?: Asset) {
+  if (platform === MARKETPLACES.OPEN_SEA && asset?.chainId !== ChainId.Fantom) {
+    const openSeaInfo = MARKETPLACES_INFO[MARKETPLACES.OPEN_SEA];
+    const networkSlug = getNetworkSlugFromChainId(asset?.chainId) as NETWORK_ID;
+    //@ts-ignore
+    const net = networkSlug ? openSeaInfo.networkMapping[networkSlug] : ''
+
+    return `${openSeaInfo.baseAssetUrl}${net}/${asset?.contractAddress}/${asset?.id}`
+  }
+  if (platform === MARKETPLACES.LOOKS_RARE && asset?.chainId !== ChainId.Ethereum) {
+    const marketplaceInfo = MARKETPLACES_INFO[MARKETPLACES.LOOKS_RARE];
+    return `${marketplaceInfo.baseAssetUrl}${asset?.contractAddress}/${asset?.id}`
+  }
+
+  if (platform === MARKETPLACES.SUDOSWAP && asset?.chainId !== ChainId.Ethereum) {
+    const marketplaceInfo = MARKETPLACES_INFO[MARKETPLACES.SUDOSWAP];
+    return `${marketplaceInfo.baseAssetUrl}${asset?.contractAddress}/${asset?.id}`
+  }
+
+  if (platform === MARKETPLACES.RARIBLE && (asset?.chainId === ChainId.Ethereum || asset?.chainId === ChainId.Polygon)) {
+    const marketplaceInfo = MARKETPLACES_INFO[MARKETPLACES.RARIBLE];
+    const networkSlug = getNetworkSlugFromChainId(asset?.chainId) as any;
+    //@ts-ignore
+    const net = networkSlug ? marketplaceInfo.networkMapping[networkSlug] : ''
+    return `${marketplaceInfo.baseAssetUrl}${net}/${asset?.contractAddress}:${asset?.id}`
+  }
+
+
+
+
 }
 
 

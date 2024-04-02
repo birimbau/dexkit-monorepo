@@ -5,17 +5,17 @@ import {
 } from '@thirdweb-dev/react';
 import { useRouter } from 'next/router';
 
-import NftDropSection from '@/modules/wizard/components/sections/NftDropSection';
+import { getChainIdFromSlug } from '@dexkit/core/utils/blockchain';
+import NftDropSection from '@dexkit/dexappbuilder-viewer/components/sections/NftDropSection';
+import { PageHeader } from '@dexkit/ui/components/PageHeader';
 import { Container, Grid, Skeleton } from '@mui/material';
 import { QueryClient, dehydrate } from '@tanstack/react-query';
 import { useWeb3React } from '@web3-react/core';
 import { GetStaticPropsContext } from 'next';
 import { FormattedMessage } from 'react-intl';
-import { PageHeader } from 'src/components/PageHeader';
 import MainLayout from 'src/components/layouts/main';
 import { REVALIDATE_PAGE_TIME, THIRDWEB_CLIENT_ID } from 'src/constants';
 import { getAppConfig } from 'src/services/app';
-import { getChainIdFromSlug } from 'src/utils/blockchain';
 
 function TokenDrop() {
   const router = useRouter();

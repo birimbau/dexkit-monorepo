@@ -5,10 +5,10 @@ import { useContext, useMemo } from 'react';
 import { AppConfigContext } from '../contexts';
 import { userThemeModeAtom } from '../state/atoms';
 
-import { useConnectWalletDialog as useConnectWalletDialogV2 } from '@dexkit/ui/hooks';
+import { useAuth, useConnectWalletDialog as useConnectWalletDialogV2 } from '@dexkit/ui/hooks';
 import { useQuery } from '@tanstack/react-query';
 import { getProtectedAppConfig } from 'src/services/whitelabel';
-import { useAuth } from './account';
+
 
 
 

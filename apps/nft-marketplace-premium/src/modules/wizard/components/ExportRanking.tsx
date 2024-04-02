@@ -1,6 +1,6 @@
+import { useAppRankingQuery } from '@dexkit/ui/modules/wizard/hooks/ranking';
 import { Alert, Button, Grid, Stack } from '@mui/material';
 import { FormattedMessage } from 'react-intl';
-import { useAppRankingQuery } from '../hooks';
 
 interface Props {
   rankingId?: number;
@@ -28,7 +28,7 @@ export function ExportRanking({ rankingId }: Props) {
     if (typeof window !== 'undefined' && data) {
       const csvData = [
         ['address', 'quantity'],
-        ...data.data.map((item) => [item.account, item.points]),
+        ...data.data.map((item: any) => [item.account, item.points]),
       ]
         .map((e) => e.join(','))
         .join('\n');

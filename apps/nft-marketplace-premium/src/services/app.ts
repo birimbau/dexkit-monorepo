@@ -1,8 +1,9 @@
-import { AppConfig } from '../types/config';
+
 
 import getLocaleMessages from 'src/i18n';
 
 import { AssetAPI } from '@dexkit/ui/modules/nft/types';
+import { AppConfig } from '@dexkit/ui/modules/wizard/types/config';
 import appBoredApeJson from '../../config/app.boredape.json';
 import appCryptoPunksJson from '../../config/app.cryptopunks.json';
 import appConfigJson from '../../config/app.json';
