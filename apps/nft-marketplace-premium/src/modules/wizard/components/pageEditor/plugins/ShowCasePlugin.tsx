@@ -16,7 +16,8 @@ const ShowCasePlugin: CellPlugin<ShowCaseParams> = {
         section={{
           type: 'showcase',
           settings: {
-            padding: data.padding || 0,
+            paddingTop: data.paddingTop || 0,
+            paddingBottom: data.paddingBottom || 0,
             items: data.items || [],
             alignItems: data.alignItems || 'left',
             itemsSpacing: data.itemsSpacing || 2,

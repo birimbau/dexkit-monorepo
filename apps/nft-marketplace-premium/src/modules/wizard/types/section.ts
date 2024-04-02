@@ -339,7 +339,8 @@ export type ShowCaseItem =
 export type ShowCaseParams = {
   alignItems: 'center' | 'left' | 'right';
   itemsSpacing: number;
-  padding: number;
+  paddingTop: number;
+  paddingBottom: number;
   items: ShowCaseItem[];
 };
 
