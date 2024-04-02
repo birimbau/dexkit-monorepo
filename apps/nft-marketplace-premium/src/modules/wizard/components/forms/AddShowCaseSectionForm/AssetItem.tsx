@@ -1,33 +1,27 @@
-import { useJsonRpcProvider } from '@/modules/wizard/hooks';
 import { ShowCaseItemAsset } from '@/modules/wizard/types/section';
-import { useNftMetadataQuery, useNftQuery } from '@dexkit/core';
 import { ipfsUriToUrl } from '@dexkit/core/utils';
+import { useAsset } from '@dexkit/ui/modules/nft/hooks';
 import { Avatar, Box, Skeleton, Typography } from '@mui/material';
+import { useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
+import { AppExpandableTypography } from 'src/components/AppExpandableTypography';
 
 export interface AssetItemProps {
   item: ShowCaseItemAsset;
 }
 
 export default function AssetItem({ item }: AssetItemProps) {
-  const providerQuery = useJsonRpcProvider({ chainId: item.chainId });
+  const assetArgs = useMemo(() => {
+    return [item.contractAddress, item.tokenId, {}, true, item.chainId] as any;
 
-  const nftQuery = useNftQuery({
-    chainId: item.chainId,
-    contractAddress: item.contractAddress,
-    provider: providerQuery.data,
-    tokenId: item.tokenId,
-  });
+    return [];
+  }, [item]);
 
-  const metadataQuery = useNftMetadataQuery({
-    tokenURI: nftQuery.data?.tokenURI
-      ? ipfsUriToUrl(nftQuery.data?.tokenURI)
-      : undefined,
-  });
+  const nftQuery = useAsset(...assetArgs);
 
   return (
     <>
-      {metadataQuery.isLoading ? (
+      {nftQuery.isLoading ? (
         <Skeleton
           variant="circular"
           sx={(theme) => ({
@@ -39,8 +33,8 @@ export default function AssetItem({ item }: AssetItemProps) {
         <Avatar
           variant="rounded"
           src={
-            metadataQuery.data?.image
-              ? ipfsUriToUrl(metadataQuery.data?.image)
+            nftQuery.data?.metadata?.image
+              ? ipfsUriToUrl(nftQuery.data?.metadata?.image)
               : undefined
           }
         />
@@ -52,28 +46,35 @@ export default function AssetItem({ item }: AssetItemProps) {
           variant="body1"
           fontWeight="bold"
         >
-          {metadataQuery.isLoading ? (
+          {nftQuery.isLoading ? (
             <Skeleton sx={{ flex: 1 }} />
           ) : (
             <>
-              {metadataQuery.data?.name
-                ? metadataQuery.data?.name
-                : `${nftQuery.data?.collectionName} #${nftQuery.data?.tokenId}`}
+              {nftQuery.data?.metadata?.name
+                ? nftQuery.data?.metadata?.name
+                : `${nftQuery.data?.collectionName} #${nftQuery.data?.id}`}
             </>
           )}
         </Typography>
-        {metadataQuery.data?.description && (
+        {nftQuery.data?.metadata?.description && (
           <Typography
             sx={{ textOverflow: 'ellipsis', overflow: 'hidden' }}
             variant="body2"
             color="text.secondary"
           >
-            {metadataQuery.isLoading ? (
+            {nftQuery.isLoading ? (
               <Skeleton />
             ) : (
               <>
-                {metadataQuery.data?.description ? (
-                  metadataQuery.data?.description
+                {nftQuery.data?.metadata?.description ? (
+                  <AppExpandableTypography
+                    TypographyProps={{
+                      sx: { textOverflow: 'ellipsis', overflow: 'hidden' },
+                      variant: 'body2',
+                      color: 'text.secondary',
+                    }}
+                    value={nftQuery.data?.metadata?.description}
+                  />
                 ) : (
                   <FormattedMessage
                     id="no.description"

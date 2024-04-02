@@ -3,6 +3,7 @@ import { ShowCaseItem } from '@/modules/wizard/types/section';
 import { ChainId } from '@dexkit/core';
 import { ipfsUriToUrl } from '@dexkit/core/utils';
 import useContractMetadata from '@dexkit/ui/hooks/blockchain';
+import { useAsset } from '@dexkit/ui/modules/nft/hooks';
 import {
   Box,
   Card,
@@ -17,7 +18,7 @@ import {
 import { useMemo } from 'react';
 import { AppExpandableTypography } from 'src/components/AppExpandableTypography';
 import Link from 'src/components/Link';
-import { useAsset } from 'src/hooks/nft';
+
 import { getNetworkSlugFromChainId } from 'src/utils/blockchain';
 
 export interface ShowCaseCardProps {
@@ -34,7 +35,13 @@ export default function ShowCaseCard({ item }: ShowCaseCardProps) {
 
   const assetArgs = useMemo(() => {
     if (item.type === 'asset') {
-      return [item.contractAddress, item.tokenId, {}, true] as any;
+      return [
+        item.contractAddress,
+        item.tokenId,
+        {},
+        true,
+        item.chainId,
+      ] as any;
     }
 
     return [];
@@ -49,7 +56,7 @@ export default function ShowCaseCard({ item }: ShowCaseCardProps) {
           contractAddress: item.contractAddress,
           provider: providerQuery.data,
         }
-      : undefined
+      : undefined,
   );
 
   if (item.type === 'image') {
