@@ -1,4 +1,5 @@
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { ListItemButton, ListItemSecondaryAction, styled } from '@mui/material';
 import List from '@mui/material/List';
@@ -41,14 +42,22 @@ export default function DrawerMenu(props: Props) {
     <List disablePadding>
       {menu.map((m, key) =>
         m.children ? (
-          <List key={key}>
+          <List key={key} disablePadding>
             <ListItemButton divider onClick={() => onShowKey(key)}>
-              <FormattedMessage
-                id={m.name.toLowerCase()}
-                defaultMessage={m.name}
+              <ListItemText
+                primary={
+                  <FormattedMessage
+                    id={m.name.toLowerCase()}
+                    defaultMessage={m.name}
+                  />
+                }
               />
               <CustomListItemSecondaryAction>
-                <ExpandMoreIcon color="primary" />
+                {showKeys.includes(key) ? (
+                  <ExpandLess color="primary" />
+                ) : (
+                  <ExpandMoreIcon color="primary" />
+                )}
               </CustomListItemSecondaryAction>
             </ListItemButton>
             {showKeys.includes(key) &&
@@ -71,7 +80,7 @@ export default function DrawerMenu(props: Props) {
                     }
                   />
                   <CustomListItemSecondaryAction>
-                    <ChevronRightIcon color="primary" />
+                    <ChevronRightIcon color="disabled" />
                   </CustomListItemSecondaryAction>
                 </ListItemButton>
               ))}

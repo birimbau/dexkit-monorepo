@@ -57,7 +57,7 @@ import Notification from './icons/Notification';
 import Wallet from './icons/Wallet';
 
 const SelectNetworkDialog = dynamic(
-  () => import('@dexkit/ui/components/dialogs/SelectNetworkDialog'),
+  () => import('@dexkit/ui/components/dialogs/SelectNetworkDialog')
 );
 
 import { useAuthUserQuery } from '@/modules/user/hooks';
@@ -110,7 +110,7 @@ function Navbar({ appConfig, isPreview }: Props) {
   const [, setShowShowSelectLocale] = useAtom(showSelectLocaleAtom);
 
   const [showTransactions, setShowTransactions] = useAtom(
-    showAppTransactionsAtom,
+    showAppTransactionsAtom
   );
 
   const handleOpenTransactions = () => setShowTransactions(true);
@@ -123,7 +123,7 @@ function Navbar({ appConfig, isPreview }: Props) {
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const handleSettingsMenuClick = (
-    event: React.MouseEvent<HTMLButtonElement>,
+    event: React.MouseEvent<HTMLButtonElement>
   ) => {
     setMenuAnchorEl(event.currentTarget);
   };
@@ -171,7 +171,7 @@ function Navbar({ appConfig, isPreview }: Props) {
   const [showProfileMenu, setShowProfileMenu] = useState(false);
 
   const handleShowProfileMenu = (
-    event: React.MouseEvent<HTMLButtonElement>,
+    event: React.MouseEvent<HTMLButtonElement>
   ) => {
     setShowProfileMenu(true);
     setProfileMenuAnchorEl(event.currentTarget);
@@ -423,7 +423,9 @@ function Navbar({ appConfig, isPreview }: Props) {
             alignItems="center"
             spacing={2}
           >
-            {appConfig.menuTree ? (
+            {(appConfig.menuSettings?.layout?.type === undefined ||
+              appConfig.menuSettings?.layout?.type === 'navbar') &&
+            appConfig.menuTree ? (
               <Stack
                 direction="row"
                 sx={{
@@ -448,7 +450,7 @@ function Navbar({ appConfig, isPreview }: Props) {
                         defaultMessage={m.name}
                       />
                     </Link>
-                  ),
+                  )
                 )}
               </Stack>
             ) : (

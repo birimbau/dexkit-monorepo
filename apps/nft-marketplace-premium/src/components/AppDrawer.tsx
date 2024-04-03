@@ -1,5 +1,4 @@
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import SwapVertOutlinedIcon from '@mui/icons-material/SwapVertOutlined';
 
 import {
   Avatar,
@@ -8,19 +7,20 @@ import {
   Divider,
   Drawer,
   List,
-  ListItem,
+  ListItemButton,
   ListItemIcon,
   ListItemSecondaryAction,
   ListItemText,
   ListSubheader,
+  Paper,
   Stack,
   styled,
   Typography,
 } from '@mui/material';
 
 import { useAuthUserQuery } from '@/modules/user/hooks';
+import { useIsMobile } from '@dexkit/core';
 import AttachMoney from '@mui/icons-material/AttachMoney';
-import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import Language from '@mui/icons-material/Language';
 import { useWeb3React } from '@web3-react/core';
 import { useUpdateAtom } from 'jotai/utils';
@@ -28,9 +28,9 @@ import { FormattedMessage } from 'react-intl';
 import { useCurrency } from 'src/hooks/currency';
 import { useAppConfig, useConnectWalletDialog, useLocale } from '../hooks/app';
 import { showSelectCurrencyAtom, showSelectLocaleAtom } from '../state/atoms';
+import AppDefaultMenuList from './AppDefaultMenuList';
 import DrawerMenu from './DrawerMenu';
 import Wallet from './icons/Wallet';
-import Link from './Link';
 import { ThemeModeSelector } from './ThemeModeSelector';
 import WalletContent from './WalletContent';
 
@@ -75,8 +75,8 @@ function AppDrawer({ open, onClose }: Props) {
   const userQuery = useAuthUserQuery();
   const user = userQuery.data;
 
-  return (
-    <Drawer open={open} onClose={onClose}>
+  const renderContent = () => {
+    return (
       <Box
         sx={(theme) => ({ minWidth: `${theme.breakpoints.values.sm / 2}px` })}
       >
@@ -122,64 +122,7 @@ function AppDrawer({ open, onClose }: Props) {
         {appConfig.menuTree ? (
           <DrawerMenu menu={appConfig.menuTree} onClose={onClose} />
         ) : (
-          <List disablePadding>
-            <ListItem
-              divider
-              onClick={onClose}
-              component={Link}
-              href="/"
-              button
-            >
-              <ListItemIcon>
-                <HomeOutlinedIcon />
-              </ListItemIcon>
-              <ListItemText
-                sx={{ fontWeight: 600 }}
-                primary={<FormattedMessage id="home" defaultMessage="Home" />}
-              />
-              <CustomListItemSecondaryAction>
-                <ChevronRightIcon color="primary" />
-              </CustomListItemSecondaryAction>
-            </ListItem>
-            <ListItem
-              divider
-              onClick={onClose}
-              component={Link}
-              href="/swap"
-              button
-            >
-              <ListItemIcon>
-                <SwapVertOutlinedIcon />
-              </ListItemIcon>
-              <ListItemText
-                sx={{ fontWeight: 600 }}
-                primary={<FormattedMessage id="swap" defaultMessage="Swap" />}
-              />
-              <CustomListItemSecondaryAction>
-                <ChevronRightIcon color="primary" />
-              </CustomListItemSecondaryAction>
-            </ListItem>
-            <ListItem
-              divider
-              onClick={onClose}
-              component={Link}
-              href="/wallet"
-              button
-            >
-              <ListItemIcon>
-                <Wallet />
-              </ListItemIcon>
-              <ListItemText
-                sx={{ fontWeight: 600 }}
-                primary={
-                  <FormattedMessage id="wallet" defaultMessage="Wallet" />
-                }
-              />
-              <CustomListItemSecondaryAction>
-                <ChevronRightIcon color="primary" />
-              </CustomListItemSecondaryAction>
-            </ListItem>
-          </List>
+          <AppDefaultMenuList onClose={onClose} />
         )}
         <List
           disablePadding
@@ -192,7 +135,7 @@ function AppDrawer({ open, onClose }: Props) {
             </>
           }
         >
-          <ListItem divider onClick={handleShowSelectLocaleDialog}>
+          <ListItemButton divider onClick={handleShowSelectLocaleDialog}>
             <ListItemIcon>
               <Language />
             </ListItemIcon>
@@ -213,8 +156,8 @@ function AppDrawer({ open, onClose }: Props) {
             <CustomListItemSecondaryAction>
               <ChevronRightIcon color="primary" />
             </CustomListItemSecondaryAction>
-          </ListItem>
-          <ListItem divider onClick={handleShowSelectCurrencyDialog}>
+          </ListItemButton>
+          <ListItemButton divider onClick={handleShowSelectCurrencyDialog}>
             <ListItemIcon>
               <AttachMoney />
             </ListItemIcon>
@@ -235,14 +178,34 @@ function AppDrawer({ open, onClose }: Props) {
             <CustomListItemSecondaryAction>
               <ChevronRightIcon color="primary" />
             </CustomListItemSecondaryAction>
-          </ListItem>
-          <ListItem divider>
+          </ListItemButton>
+          <ListItemButton divider>
             <ListItemIcon />
 
             <ListItemText primary={<ThemeModeSelector />} />
-          </ListItem>
+          </ListItemButton>
         </List>
       </Box>
+    );
+  };
+
+  const isMobile = useIsMobile();
+
+  if (!isMobile && appConfig.menuSettings?.layout?.type === 'sidebar') {
+    return (
+      <Paper
+        square
+        variant="elevation"
+        sx={{ height: '100vh', overflowY: 'scroll' }}
+      >
+        {renderContent()}
+      </Paper>
+    );
+  }
+
+  return (
+    <Drawer open={open} onClose={onClose}>
+      {renderContent()}
     </Drawer>
   );
 }

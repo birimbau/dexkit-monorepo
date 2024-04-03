@@ -84,48 +84,51 @@ const MainLayout: React.FC<Props> = ({
         </Stack>
       )}
     >
-      {isDrawerOpen && (
-        <AppDrawer open={isDrawerOpen} onClose={handleCloseDrawer} />
-      )}
       <GlobalDialogs />
 
-      <Box
-        style={{
-          minHeight: '100vh',
-          margin: 0,
-          display: 'flex',
-          flexDirection: 'column',
-        }}
-      >
-        <Navbar appConfig={appConfig} isPreview={isPreview} />
-        <Box sx={{ flex: 1 }} py={disablePadding ? 0 : 4}>
-          <ErrorBoundary
-            fallbackRender={({ error, resetErrorBoundary }) => (
-              <Stack justifyContent="center" alignItems="center">
-                <Typography variant="h6">
-                  <FormattedMessage
-                    id="something.went.wrong"
-                    defaultMessage="Oops, something went wrong"
-                    description="Something went wrong error message"
-                  />
-                </Typography>
-                <Typography variant="body1" color="textSecondary">
-                  {String(error)}
-                </Typography>
-                <Button color="primary" onClick={resetErrorBoundary}>
-                  <FormattedMessage
-                    id="try.again"
-                    defaultMessage="Try again"
-                    description="Try again"
-                  />
-                </Button>
-              </Stack>
-            )}
-          >
-            {children}
-          </ErrorBoundary>
+      <Box sx={{ display: 'flex' }}>
+        {true && <AppDrawer open={isDrawerOpen} onClose={handleCloseDrawer} />}
+        <Box
+          style={{
+            flex: 1,
+            maxHeight: '100vh',
+            minHeight: '100vh',
+            margin: 0,
+            display: 'flex',
+            flexDirection: 'column',
+            overflowY: 'scroll',
+          }}
+        >
+          <Navbar appConfig={appConfig} isPreview={isPreview} />
+          <Box sx={{ flex: 1 }} py={disablePadding ? 0 : 4}>
+            <ErrorBoundary
+              fallbackRender={({ error, resetErrorBoundary }) => (
+                <Stack justifyContent="center" alignItems="center">
+                  <Typography variant="h6">
+                    <FormattedMessage
+                      id="something.went.wrong"
+                      defaultMessage="Oops, something went wrong"
+                      description="Something went wrong error message"
+                    />
+                  </Typography>
+                  <Typography variant="body1" color="textSecondary">
+                    {String(error)}
+                  </Typography>
+                  <Button color="primary" onClick={resetErrorBoundary}>
+                    <FormattedMessage
+                      id="try.again"
+                      defaultMessage="Try again"
+                      description="Try again"
+                    />
+                  </Button>
+                </Stack>
+              )}
+            >
+              {children}
+            </ErrorBoundary>
+          </Box>
+          <Footer appConfig={appConfig} isPreview={isPreview} appNFT={appNFT} />
         </Box>
-        <Footer appConfig={appConfig} isPreview={isPreview} appNFT={appNFT} />
       </Box>
     </ErrorBoundary>
   );

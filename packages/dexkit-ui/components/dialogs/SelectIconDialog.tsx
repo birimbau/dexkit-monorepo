@@ -22,7 +22,9 @@ import { FormattedMessage, useIntl } from "react-intl";
 import { AppDialogTitle } from "../AppDialogTitle";
 import LazyTextField from "../LazyTextField";
 
-const SelectIconGrid = dynamic(() => import("../SelectIconGrid"));
+const SelectIconGrid = dynamic(() => import("../SelectIconGrid"), {
+  ssr: false,
+});
 
 export interface SelectIconDialogProps {
   DialogProps: DialogProps;

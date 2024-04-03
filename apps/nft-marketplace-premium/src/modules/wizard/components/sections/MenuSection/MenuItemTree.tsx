@@ -1,21 +1,38 @@
-import { ArrowDownward } from '@mui/icons-material';
 import Add from '@mui/icons-material/Add';
+import ArrowDownward from '@mui/icons-material/ArrowDownward';
 import ArrowUpward from '@mui/icons-material/ArrowUpward';
 import Delete from '@mui/icons-material/Delete';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
+import Image from '@mui/icons-material/Image';
 import {
   Box,
   Collapse,
   IconButton,
   List,
   ListItem,
+  ListItemIcon,
   ListItemText,
   Stack,
+  SvgIcon,
 } from '@mui/material';
+import dynamic from 'next/dynamic';
 import { useState } from 'react';
 import { AppPage, MenuTree } from 'src/types/config';
-import AddMenuPageDialog from '../../dialogs/AddMenuPageDialog';
+
+const AddMenuPageDialog = dynamic(
+  () => import('../../dialogs/AddMenuPageDialog'),
+  { ssr: false }
+);
+
+const SelectIconDialog = dynamic(
+  () => import('@dexkit/ui/components/dialogs/SelectIconDialog'),
+  { ssr: false }
+);
+
+const DynamicIcon = ({ iconName }: { iconName: string }) => {
+  return <SvgIcon />;
+};
 
 export interface MenuItemTreeProps {
   item: MenuTree;
@@ -46,6 +63,25 @@ export default function MenuItemTree({
   const [expanded, setExpanded] = useState(false);
 
   const [openAdd, setOpenAdd] = useState(false);
+  const [showSelectIcons, setShowSelectIcons] = useState(false);
+
+  const handleShowSelectIcon = () => {
+    setShowSelectIcons(true);
+  };
+
+  const handleCloseSelectIcon = () => {
+    setShowSelectIcons(false);
+  };
+
+  const handleConfirmSelectIcon = (iconName: string) => {
+    const newItem = { ...item };
+
+    if (newItem) {
+      newItem.data = { iconName };
+
+      onUpdateItem(newItem);
+    }
+  };
 
   const handleUp = (index: number) => {
     return () => {
@@ -115,8 +151,6 @@ export default function MenuItemTree({
     onUpdateItem(updatedItem);
   };
 
-  console.log('depth', depth);
-
   if (item.type === 'Page') {
     return (
       <ListItem>
@@ -144,6 +178,15 @@ export default function MenuItemTree({
   if (item.type === 'External') {
     return (
       <ListItem>
+        <ListItemIcon>
+          <IconButton onClick={handleShowSelectIcon}>
+            {item.data?.iconName ? (
+              '<DynamicIcon iconName={item.data.iconName} />'
+            ) : (
+              <Image />
+            )}
+          </IconButton>
+        </ListItemIcon>
         <ListItemText primary={item.name} />
         <Stack
           spacing={0.5}
@@ -167,20 +210,32 @@ export default function MenuItemTree({
 
   if (item.type === 'Menu') {
     return (
-      <Box sx={{ pl: depth * 4 }}>
-        <AddMenuPageDialog
-          dialogProps={{
-            open: openAdd,
-            maxWidth: 'sm',
-            fullWidth: true,
-            onClose: () => setOpenAdd(false),
-          }}
-          pages={pages}
-          onCancel={() => {}}
-          onSubmit={handleAdd}
-          fatherIndex={0}
-          disableMenu={depth === 1}
-        />
+      <Box sx={{ pl: depth * 2 }}>
+        {openAdd && (
+          <AddMenuPageDialog
+            key={`${depth}-dialog`}
+            dialogProps={{
+              open: openAdd,
+              maxWidth: 'sm',
+              fullWidth: true,
+              onClose: () => setOpenAdd(false),
+            }}
+            pages={pages}
+            onCancel={() => {}}
+            onSubmit={handleAdd}
+            fatherIndex={0}
+            disableMenu={depth === 2}
+          />
+        )}
+        {showSelectIcons && (
+          <SelectIconDialog
+            DialogProps={{
+              open: showSelectIcons,
+              onClose: handleCloseSelectIcon,
+            }}
+            onConfirm={handleConfirmSelectIcon}
+          />
+        )}
         <ListItem>
           <ListItemText primary={item.name} />
           <Stack
@@ -206,7 +261,7 @@ export default function MenuItemTree({
             </IconButton>
           </Stack>
         </ListItem>
-        <Collapse in={expanded}>
+        <Collapse in={expanded} sx={{ pl: depth * 2 }}>
           <List>
             {item.children?.map((child, key, arr) => (
               <MenuItemTree

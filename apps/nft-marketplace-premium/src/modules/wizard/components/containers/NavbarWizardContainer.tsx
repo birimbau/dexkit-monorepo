@@ -13,9 +13,14 @@ import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import { useEffect, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { AppConfig, MenuTree } from '../../../../types/config';
+import { AppConfig, MenuSettings, MenuTree } from '../../../../types/config';
 
 import { SearchbarConfig } from '@dexkit/ui/types/config';
+import { FormControl, MenuItem } from '@mui/material';
+import { Field, Formik } from 'formik';
+import { Select } from 'formik-mui';
+import { z } from 'zod';
+import { toFormikValidationSchema } from 'zod-formik-adapter';
 import MenuSection from '../sections/MenuSection';
 
 interface Props {
@@ -87,7 +92,7 @@ function NavbarSearchContainer({
       enabled: false,
       hideCollections: false,
       hideTokens: false,
-    },
+    }
   );
 
   const handleSave = () => {
@@ -139,7 +144,7 @@ function NavbarSearchContainer({
   };
 
   const handleHideCollectionChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
+    event: React.ChangeEvent<HTMLInputElement>
   ) => {
     setSearchConfig({
       ...searchConfig,
@@ -148,7 +153,7 @@ function NavbarSearchContainer({
   };
 
   const handleHideTokenChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
+    event: React.ChangeEvent<HTMLInputElement>
   ) => {
     setSearchConfig({
       ...searchConfig,
@@ -225,6 +230,112 @@ function NavbarSearchContainer({
   );
 }
 
+const formSchema = z.object({
+  layout: z
+    .object({
+      type: z.string(),
+      variant: z.string().optional(),
+    })
+    .optional(),
+});
+
+export function NavbarLayoutContainer({
+  config,
+  onSave,
+  onChange,
+  onHasChanges,
+}: Props) {
+  const handleSubmit = (values: MenuSettings) => {
+    console.log('save');
+
+    onSave({ ...config, menuSettings: values });
+  };
+
+  return (
+    <Formik
+      onSubmit={handleSubmit}
+      initialValues={
+        config.menuSettings
+          ? config.menuSettings
+          : {
+              layout: {
+                type: 'navbar',
+                variant: 'default',
+              },
+            }
+      }
+      validate={(values: MenuSettings) => {
+        onHasChanges(true);
+        onChange({ ...config, menuSettings: values });
+      }}
+      validationSchema={toFormikValidationSchema(formSchema)}
+    >
+      {({ submitForm, values, isValid, isSubmitting, errors }) => (
+        <Grid container spacing={2}>
+          {JSON.stringify(errors)}
+          <Grid item xs={12} sm={4}>
+            <FormControl fullWidth>
+              <Field
+                component={Select}
+                name="layout.type"
+                label={
+                  <FormattedMessage id="menu.type" defaultMessage="Menu Type" />
+                }
+                fullWidth
+              >
+                <MenuItem value="navbar">
+                  <FormattedMessage id="navbar" defaultMessage="Navbar" />
+                </MenuItem>
+                <MenuItem value="sidebar">
+                  <FormattedMessage id="sideBar" defaultMessage="Sidebar" />
+                </MenuItem>
+              </Field>
+            </FormControl>
+          </Grid>
+          {values.layout?.type === 'sidebar' && (
+            <Grid item xs={12} sm={4}>
+              <FormControl fullWidth>
+                <Field
+                  fullWidth
+                  component={Select}
+                  name="layout.variant"
+                  label={
+                    <FormattedMessage id="variant" defaultMessage="Variant" />
+                  }
+                >
+                  <MenuItem value="default">
+                    <FormattedMessage id="default" defaultMessage="Default" />
+                  </MenuItem>
+                  <MenuItem value="mini">
+                    <FormattedMessage id="mini" defaultMessage="Mini" />
+                  </MenuItem>
+                </Field>
+              </FormControl>
+            </Grid>
+          )}
+
+          <Grid item xs={12}>
+            <Divider />
+          </Grid>
+          <Grid item xs={12}>
+            <Box>
+              <Stack direction="row" justifyContent="flex-end">
+                <Button
+                  disabled={!isValid || isSubmitting}
+                  onClick={submitForm}
+                  variant="contained"
+                >
+                  <FormattedMessage id="save" defaultMessage="Save" />
+                </Button>
+              </Stack>
+            </Box>
+          </Grid>
+        </Grid>
+      )}
+    </Formik>
+  );
+}
+
 export default function NavbarWizardContainer(props: Props) {
   const [value, setValue] = useState('1');
 
@@ -267,6 +378,10 @@ export default function NavbarWizardContainer(props: Props) {
                 }
                 value="2"
               />
+              <Tab
+                label={<FormattedMessage id="layout" defaultMessage="Layout" />}
+                value="3"
+              />
             </TabList>
           </Box>
           <TabPanel value="1">
@@ -274,6 +389,9 @@ export default function NavbarWizardContainer(props: Props) {
           </TabPanel>
           <TabPanel value="2">
             <NavbarSearchContainer {...props} />
+          </TabPanel>
+          <TabPanel value="3">
+            <NavbarLayoutContainer {...props} />
           </TabPanel>
         </TabContext>
       </Grid>
