@@ -18,27 +18,26 @@ import {
   Typography,
 } from "@mui/material";
 
-import MagicNetworkSelect from "@dexkit/ui/components/MagicNetworkSelect";
-import { MagicConnector } from "@dexkit/wallet-connectors/connectors/magic";
-import { AttachMoney, Language } from "@mui/icons-material";
+import AttachMoney from "@mui/icons-material/AttachMoney";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
+import Language from "@mui/icons-material/Language";
 import { useWeb3React } from "@web3-react/core";
 import { FormattedMessage } from "react-intl";
 
-import { NETWORK_IMAGE, NETWORK_NAME } from "@dexkit/core/constants/networks";
+import DrawerMenu from "./DrawerMenu";
+import Wallet from "./icons/Wallet";
+
 import Link from "@dexkit/ui/components/AppLink";
-import Wallet from "@dexkit/ui/components/icons/Wallet";
-import { WalletButton } from "@dexkit/ui/components/WalletButton";
+import WalletContent from "@dexkit/ui/components/WalletContent";
 import {
   useAppConfig,
+  useAuthUserQuery,
   useConnectWalletDialog,
+  useCurrency,
   useLocale,
   useShowSelectCurrency,
   useShowSelectLocale,
 } from "@dexkit/ui/hooks";
-import { useCurrency } from "@dexkit/ui/hooks/currency";
-import DrawerMenu from "./DrawerMenu";
-
 import { ThemeModeSelector } from "./ThemeModeSelector";
 
 const CustomListItemSecondaryAction = styled(ListItemSecondaryAction)({
@@ -79,6 +78,9 @@ function AppDrawer({ open, onClose }: Props) {
     showSelectLocale.setIsOpen(true);
   };
 
+  const userQuery = useAuthUserQuery();
+  const user = userQuery.data;
+
   return (
     <Drawer open={open} onClose={onClose}>
       <Box
@@ -102,37 +104,23 @@ function AppDrawer({ open, onClose }: Props) {
             </Button>
           ) : (
             <Stack spacing={2}>
-              <WalletButton align="left" />
-              {connector instanceof MagicConnector ? (
-                <MagicNetworkSelect />
-              ) : (
-                <Box
-                  sx={(theme) => ({
-                    px: 2,
-                    py: 1,
-                    border: `1px solid ${theme.palette.divider}`,
-                    borderRadius: theme.spacing(1),
-                  })}
-                >
-                  <Stack
-                    direction="row"
-                    spacing={1}
-                    alignItems="center"
-                    alignContent="center"
-                  >
-                    <Avatar
-                      src={NETWORK_IMAGE(chainId)}
-                      sx={(theme) => ({
-                        width: "auto",
-                        height: theme.spacing(2),
-                      })}
-                    />
-                    <Typography variant="body1">
-                      {NETWORK_NAME(chainId)}
-                    </Typography>
-                  </Stack>
-                </Box>
+              {user && (
+                <>
+                  <Box>
+                    <Stack direction="row">
+                      <Avatar src={user?.profileImageURL} />
+                      <Box>
+                        <Typography variant="body1">
+                          {user?.username}
+                        </Typography>
+                      </Box>
+                    </Stack>
+                  </Box>
+                  <Divider />
+                </>
               )}
+
+              <WalletContent />
             </Stack>
           )}
         </Box>
@@ -141,7 +129,13 @@ function AppDrawer({ open, onClose }: Props) {
           <DrawerMenu menu={appConfig.menuTree} onClose={onClose} />
         ) : (
           <List disablePadding>
-            <ListItem divider onClick={onClose} component={Link} href="/">
+            <ListItem
+              divider
+              onClick={onClose}
+              component={Link}
+              href="/"
+              button
+            >
               <ListItemIcon>
                 <HomeOutlinedIcon />
               </ListItemIcon>
@@ -153,7 +147,13 @@ function AppDrawer({ open, onClose }: Props) {
                 <ChevronRightIcon color="primary" />
               </CustomListItemSecondaryAction>
             </ListItem>
-            <ListItem divider onClick={onClose} component={Link} href="/swap">
+            <ListItem
+              divider
+              onClick={onClose}
+              component={Link}
+              href="/swap"
+              button
+            >
               <ListItemIcon>
                 <SwapVertOutlinedIcon />
               </ListItemIcon>
@@ -165,7 +165,13 @@ function AppDrawer({ open, onClose }: Props) {
                 <ChevronRightIcon color="primary" />
               </CustomListItemSecondaryAction>
             </ListItem>
-            <ListItem divider onClick={onClose} component={Link} href="/wallet">
+            <ListItem
+              divider
+              onClick={onClose}
+              component={Link}
+              href="/wallet"
+              button
+            >
               <ListItemIcon>
                 <Wallet />
               </ListItemIcon>

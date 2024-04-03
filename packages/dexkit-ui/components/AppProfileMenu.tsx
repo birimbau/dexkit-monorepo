@@ -1,9 +1,9 @@
-import { useAuthUserQuery } from '@/modules/user/hooks';
-import Edit from '@mui/icons-material/Edit';
-import Person from '@mui/icons-material/Person';
-import { ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material';
-import { useRouter } from 'next/router';
-import { FormattedMessage } from 'react-intl';
+import Edit from "@mui/icons-material/Edit";
+import Person from "@mui/icons-material/Person";
+import { ListItemIcon, ListItemText, Menu, MenuItem } from "@mui/material";
+import { useRouter } from "next/router";
+import { FormattedMessage } from "react-intl";
+import { useAuthUserQuery } from "../hooks/auth";
 
 export interface AppProfileMenuProps {
   open: boolean;
@@ -30,8 +30,8 @@ export default function AppProfileMenu({
       anchorEl={anchorEl}
       open={open}
       onClose={handleClose}
-      transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-      anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+      transformOrigin={{ horizontal: "right", vertical: "top" }}
+      anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
     >
       <MenuItem
         onClick={() =>

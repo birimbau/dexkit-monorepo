@@ -1,4 +1,4 @@
-import { AppPageSection } from "@dexkit/ui/modules/wizard/types";
+import { AppPageSection } from "@dexkit/ui/modules/wizard/types/section";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 

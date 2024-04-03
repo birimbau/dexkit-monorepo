@@ -1,10 +1,19 @@
-import { Box, NoSsr } from "@mui/material";
-import { useWeb3React } from "@web3-react/core";
-import dynamic from "next/dynamic";
-import React, { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 
-import { Footer } from "../Footer";
-import Navbar from "../Navbar";
+import { useWeb3React } from "@web3-react/core";
+import { useRouter } from "next/router";
+
+import {
+  useConnectWalletDialog,
+  useHoldsKitDialog,
+  useShowSelectCurrency,
+  useShowSelectLocale,
+  useSignMessageDialog,
+  useSwitchNetwork,
+} from "@dexkit/ui/hooks";
+import dynamic from "next/dynamic";
+
+import { selectedWalletAtom } from "@dexkit/ui/state";
 const SignMessageDialog = dynamic(
   () => import("@dexkit/ui/components/dialogs/SignMessageDialog")
 );
@@ -12,27 +21,19 @@ const SwitchNetworkDialog = dynamic(
   () => import("@dexkit/ui/components/dialogs/SwitchNetworkDialog")
 );
 
-import { useWalletActivate } from "@dexkit/wallet-connectors/hooks";
-import { useRouter } from "next/router";
-
-import {
-  useAppConfig,
-  useAppNFT,
-  useConnectWalletDialog,
-  useDexKitContext,
-  useDrawerIsOpen,
-  useHoldsKitDialog,
-  useShowSelectCurrency,
-  useShowSelectLocale,
-  useSignMessageDialog,
-  useSwitchNetwork,
-} from "@dexkit/ui";
-import ConnectWalletDialog from "@dexkit/ui/components/ConnectWalletDialog";
-import WatchTransactionDialog from "@dexkit/ui/components/dialogs/WatchTransactionDialog";
-import { selectedWalletAtom } from "@dexkit/ui/state";
-import { AppConfig } from "@dexkit/ui/types/config";
+import { useDexKitContext, useExecuteTransactionsDialog } from "@dexkit/ui";
+import { useWalletActivate } from "@dexkit/wallet-connectors/hooks/wallet";
 import { WalletActivateParams } from "@dexkit/wallet-connectors/types";
-import AppDrawer from "../AppDrawer";
+
+const ConnectWalletDialog = dynamic(
+  () => import("@dexkit/ui/components/ConnectWallet/ConnectWalletDialog")
+);
+const WatchTransactionDialog = dynamic(
+  () => import("@dexkit/ui/components/dialogs/WatchTransactionDialog")
+);
+const AppTransactionWatchDialog = dynamic(
+  () => import("@dexkit/ui/components/AppTransactionWatchDialog")
+);
 
 const HoldingKitDialog = dynamic(
   () => import("@dexkit/ui/components/dialogs/HoldingKitDialog")
@@ -45,33 +46,46 @@ const SelectLanguageDialog = dynamic(
   () => import("@dexkit/ui/components/dialogs/SelectLanguageDialog")
 );
 
-interface Props {
-  children?: JSX.Element;
-  noSsr?: boolean;
-  disablePadding?: boolean;
-  appConfigProps?: AppConfig;
-  isPreview?: boolean;
-}
-
-const MainLayout: React.FC<Props> = ({
-  children,
-  noSsr,
-  disablePadding,
-  appConfigProps,
-  isPreview,
-}) => {
+export function GlobalDialogs() {
   const { connector, isActive, isActivating } = useWeb3React();
   const router = useRouter();
 
-  const defaultAppConfig = useAppConfig();
-  const appNFT = useAppNFT();
-  const appConfig = useMemo(() => {
-    if (appConfigProps) {
-      return appConfigProps;
-    } else {
-      return defaultAppConfig;
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      // connector.activate();
+      const handleNetworkChange = (newNetwork: any, oldNetwork: any) => {
+        if (connector && connector.connectEagerly) {
+          connector.connectEagerly();
+        }
+
+        // When a Provider makes its initial connection, it emits a "network"
+        // event with a null oldNetwork along with the newNetwork. So, if the
+        // oldNetwork exists, it represents a changing network
+        //window.location.reload();
+      };
+
+      if (connector?.provider?.on) {
+        connector?.provider?.on("chainChanged", handleNetworkChange);
+      }
+
+      return () => {
+        if (connector?.provider?.removeListener) {
+          connector?.provider?.removeListener(
+            "chainChanged",
+            handleNetworkChange
+          );
+        }
+      };
     }
-  }, [defaultAppConfig, appConfigProps]);
+  }, [connector, connector?.provider]);
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && connector) {
+      if (connector.connectEagerly) {
+        connector.connectEagerly();
+      }
+    }
+  }, [connector]);
 
   const { watchTransactionDialog } = useDexKitContext();
 
@@ -123,6 +137,7 @@ const MainLayout: React.FC<Props> = ({
     showSelectLocale.setIsOpen(false);
   };
 
+  const txDialog = useExecuteTransactionsDialog();
   const walletActivate = useWalletActivate({
     magicRedirectUrl:
       typeof window !== "undefined"
@@ -135,50 +150,8 @@ const MainLayout: React.FC<Props> = ({
     await walletActivate.mutation.mutateAsync(params);
   };
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      // connector.activate();
-      const handleNetworkChange = (newNetwork: any, oldNetwork: any) => {
-        if (connector && connector.connectEagerly) {
-          connector.connectEagerly();
-        }
-
-        // When a Provider makes its initial connection, it emits a "network"
-        // event with a null oldNetwork along with the newNetwork. So, if the
-        // oldNetwork exists, it represents a changing network
-        //window.location.reload();
-      };
-
-      if (connector?.provider?.on) {
-        connector?.provider?.on("chainChanged", handleNetworkChange);
-      }
-
-      return () => {
-        if (connector?.provider?.removeListener) {
-          connector?.provider?.removeListener(
-            "chainChanged",
-            handleNetworkChange
-          );
-        }
-      };
-    }
-  }, [connector, connector?.provider]);
-
-  useEffect(() => {
-    if (typeof window !== "undefined" && connector) {
-      if (connector.connectEagerly) {
-        connector.connectEagerly();
-      }
-    }
-  }, [connector]);
-
-  const isDrawerOpen = useDrawerIsOpen();
-
-  const handleCloseDrawer = () => isDrawerOpen.setIsOpen(false);
-
-  const render = () => (
+  return (
     <>
-      <AppDrawer open={isDrawerOpen.isOpen} onClose={handleCloseDrawer} />
       {showSelectCurrency && (
         <SelectCurrencyDialog
           dialogProps={{
@@ -189,7 +162,7 @@ const MainLayout: React.FC<Props> = ({
           }}
         />
       )}
-      {holdsKitDialog.isOpen && (
+      {holdsKitDialog && (
         <HoldingKitDialog
           dialogProps={{
             open: holdsKitDialog.isOpen,
@@ -200,7 +173,7 @@ const MainLayout: React.FC<Props> = ({
         />
       )}
 
-      {showSelectLocale.isOpen && (
+      {showSelectLocale && (
         <SelectLanguageDialog
           dialogProps={{
             open: showSelectLocale.isOpen,
@@ -262,28 +235,17 @@ const MainLayout: React.FC<Props> = ({
           activate={handleActivateWallet}
         />
       )}
-      <Box
-        style={{
-          minHeight: "100vh",
-          margin: 0,
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
-        <Navbar appConfig={appConfig} isPreview={isPreview} />
-        <Box sx={{ flex: 1 }} py={disablePadding ? 0 : 4}>
-          {children}
-        </Box>
-        <Footer appConfig={appConfig} isPreview={isPreview} appNFT={appNFT} />
-      </Box>
+      {txDialog.show && (
+        <AppTransactionWatchDialog
+          DialogProps={{
+            open: true,
+            maxWidth: "sm",
+            fullWidth: true,
+            onClose: txDialog.handleClose,
+          }}
+          transactions={txDialog.transactions}
+        />
+      )}
     </>
   );
-
-  if (noSsr) {
-    return <NoSsr>{render()}</NoSsr>;
-  }
-
-  return render();
-};
-
-export default MainLayout;
+}

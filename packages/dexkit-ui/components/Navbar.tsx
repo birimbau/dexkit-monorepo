@@ -1,12 +1,12 @@
-import { SearchBar } from '@dexkit/ui/components/SearchBar';
-import SearchBarMobile from '@dexkit/ui/components/SearchBarMobile';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import MenuIcon from '@mui/icons-material/Menu';
-import AppBar from '@mui/material/AppBar';
-import IconButton from '@mui/material/IconButton';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import { useRef, useState } from 'react';
+import { SearchBar } from "@dexkit/ui/components/SearchBar";
+import SearchBarMobile from "@dexkit/ui/components/SearchBarMobile";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import MenuIcon from "@mui/icons-material/Menu";
+import AppBar from "@mui/material/AppBar";
+import IconButton from "@mui/material/IconButton";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import { useRef, useState } from "react";
 
 import {
   Avatar,
@@ -26,51 +26,48 @@ import {
   Stack,
   useMediaQuery,
   useTheme,
-} from '@mui/material';
-import { useWeb3React } from '@web3-react/core';
+} from "@mui/material";
+import { useWeb3React } from "@web3-react/core";
 
-import { getChainLogoImage, getChainName } from '@dexkit/core/utils/blockchain';
-import AttachMoney from '@mui/icons-material/AttachMoney';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import Language from '@mui/icons-material/Language';
-import SettingsIcon from '@mui/icons-material/Settings';
-import { useAtom } from 'jotai';
-import { useUpdateAtom } from 'jotai/utils';
-import dynamic from 'next/dynamic';
-import Image from 'next/image';
-import { FormattedMessage } from 'react-intl';
-import { useCurrency } from 'src/hooks/currency';
+import { getChainLogoImage, getChainName } from "@dexkit/core/utils/blockchain";
+import AttachMoney from "@mui/icons-material/AttachMoney";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import Language from "@mui/icons-material/Language";
+import SettingsIcon from "@mui/icons-material/Settings";
+import dynamic from "next/dynamic";
+import Image from "next/image";
+import { FormattedMessage } from "react-intl";
 
-import { useConnectWalletDialog, useThemeMode } from '../hooks/app';
-import { useSelectNetworkDialog } from '../hooks/misc';
-import {
-  drawerIsOpenAtom,
-  showAppTransactionsAtom,
-  showSelectCurrencyAtom,
-  showSelectLocaleAtom,
-} from '../state/atoms';
+import { WalletButton } from "@dexkit/ui/components/WalletButton";
 
-import { WalletButton } from '@dexkit/ui/components/WalletButton';
-import NavbarMenu from './Menu';
-import { ThemeModeSelector } from './ThemeModeSelector';
-import Notification from './icons/Notification';
-import Wallet from './icons/Wallet';
+import Notification from "./icons/Notification";
+import Wallet from "./icons/Wallet";
 
 const SelectNetworkDialog = dynamic(
-  () => import('@dexkit/ui/components/dialogs/SelectNetworkDialog'),
+  () => import("@dexkit/ui/components/dialogs/SelectNetworkDialog")
 );
 
-import { useAuthUserQuery } from '@/modules/user/hooks';
-import Link from '@dexkit/ui/components/AppLink';
-import NotificationsDialog from '@dexkit/ui/components/dialogs/NotificationsDialog';
-import { ThemeMode } from '@dexkit/ui/constants/enum';
+import Link from "@dexkit/ui/components/AppLink";
+import NotificationsDialog from "@dexkit/ui/components/dialogs/NotificationsDialog";
+import { ThemeMode } from "@dexkit/ui/constants/enum";
 import {
+  useAuthUserQuery,
+  useConnectWalletDialog,
+  useCurrency,
   useDexKitContext,
+  useDrawerIsOpen,
   useLocale,
   useNotifications,
-} from '@dexkit/ui/hooks';
-import { AppConfig } from '@dexkit/ui/modules/wizard/types/config';
-import AppProfileMenu from './AppProfileMenu';
+  useSelectNetworkDialog,
+  useShowAppTransactions,
+  useShowSelectCurrency,
+  useShowSelectLocale,
+  useThemeMode,
+} from "@dexkit/ui/hooks";
+import { AppConfig } from "@dexkit/ui/modules/wizard/types/config";
+import AppProfileMenu from "./AppProfileMenu";
+import NavbarMenu from "./Menu";
+import { ThemeModeSelector } from "./ThemeModeSelector";
 
 interface Props {
   appConfig: AppConfig;
@@ -111,25 +108,23 @@ function Navbar({ appConfig, isPreview }: Props) {
     setMenuOpen(false);
   };
 
-  const [, setShowShowSelectCurrency] = useAtom(showSelectCurrencyAtom);
+  const showSelectCurrency = useShowSelectCurrency();
 
-  const [, setShowShowSelectLocale] = useAtom(showSelectLocaleAtom);
+  const showSelectLocale = useShowSelectLocale();
 
-  const [showTransactions, setShowTransactions] = useAtom(
-    showAppTransactionsAtom,
-  );
+  const showAppTransactions = useShowAppTransactions();
 
-  const handleOpenTransactions = () => setShowTransactions(true);
+  const handleOpenTransactions = () => showAppTransactions.setIsOpen(true);
 
-  const setIsDrawerOpen = useUpdateAtom(drawerIsOpenAtom);
+  const isDrawerOpen = useDrawerIsOpen();
 
-  const handleToggleDrawer = () => setIsDrawerOpen((value) => !value);
+  const handleToggleDrawer = () => isDrawerOpen.setIsOpen(!isDrawerOpen.isOpen);
 
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const handleSettingsMenuClick = (
-    event: React.MouseEvent<HTMLButtonElement>,
+    event: React.MouseEvent<HTMLButtonElement>
   ) => {
     setMenuAnchorEl(event.currentTarget);
   };
@@ -138,16 +133,16 @@ function Navbar({ appConfig, isPreview }: Props) {
   };
 
   const handleShowSelectCurrencyDialog = () => {
-    setShowShowSelectCurrency(true);
+    showSelectCurrency.setIsOpen(true);
     handleSettingsMenuClose();
   };
 
   const handleShowSelectLocaleDialog = () => {
-    setShowShowSelectLocale(true);
+    showSelectLocale.setIsOpen(true);
     handleSettingsMenuClose();
   };
 
-  const currency = useCurrency();
+  const { currency } = useCurrency();
 
   const { locale } = useLocale();
 
@@ -167,7 +162,7 @@ function Navbar({ appConfig, isPreview }: Props) {
 
   const handleCloseNotifications = () => {
     checkAllNotifications();
-    setShowTransactions(false);
+    showAppTransactions.setIsOpen(false);
   };
 
   const handleClearNotifications = () => {
@@ -177,7 +172,7 @@ function Navbar({ appConfig, isPreview }: Props) {
   const [showProfileMenu, setShowProfileMenu] = useState(false);
 
   const handleShowProfileMenu = (
-    event: React.MouseEvent<HTMLButtonElement>,
+    event: React.MouseEvent<HTMLButtonElement>
   ) => {
     setShowProfileMenu(true);
     setProfileMenuAnchorEl(event.currentTarget);
@@ -204,15 +199,15 @@ function Navbar({ appConfig, isPreview }: Props) {
         open={openMenu}
         onClose={handleSettingsMenuClose}
         MenuListProps={{
-          'aria-labelledby': 'basic-button',
+          "aria-labelledby": "basic-button",
         }}
         anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'left',
+          vertical: "bottom",
+          horizontal: "left",
         }}
         transformOrigin={{
-          vertical: 'bottom',
-          horizontal: 'left',
+          vertical: "bottom",
+          horizontal: "left",
         }}
       >
         <MenuItem onClick={handleShowSelectLocaleDialog}>
@@ -265,11 +260,11 @@ function Navbar({ appConfig, isPreview }: Props) {
           onClose: handleCloseNotifications,
         }}
       /> */}
-      {showTransactions && (
+      {showAppTransactions.isOpen && (
         <NotificationsDialog
           DialogProps={{
-            maxWidth: 'sm',
-            open: showTransactions,
+            maxWidth: "sm",
+            open: showAppTransactions.isOpen,
             fullWidth: true,
             onClose: handleCloseNotifications,
           }}
@@ -282,7 +277,7 @@ function Navbar({ appConfig, isPreview }: Props) {
       {selectNetworkDialog.isOpen && (
         <SelectNetworkDialog
           dialogProps={{
-            maxWidth: 'sm',
+            maxWidth: "sm",
             open: selectNetworkDialog.isOpen,
             fullWidth: true,
             onClose: handleCloseSelectNetworkDialog,
@@ -293,11 +288,11 @@ function Navbar({ appConfig, isPreview }: Props) {
         open={menuOpen}
         onClose={handleCloseMenu}
         anchorEl={buttonRef.current}
-        anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
+        anchorOrigin={{ horizontal: "left", vertical: "bottom" }}
       >
         <Divider />
         <List disablePadding>
-          <ListItem button component={Link} href={isPreview ? '#' : '/wallet'}>
+          <ListItem button component={Link} href={isPreview ? "#" : "/wallet"}>
             <ListItemIcon>
               <Wallet />
             </ListItemIcon>
@@ -332,9 +327,9 @@ function Navbar({ appConfig, isPreview }: Props) {
           {appConfig.logoDark &&
           appConfig.logoDark?.url &&
           mode === ThemeMode.dark ? (
-            <Link href={isPreview ? '#' : '/'}>
+            <Link href={isPreview ? "#" : "/"}>
               <Image
-                src={appConfig?.logoDark?.url || ''}
+                src={appConfig?.logoDark?.url || ""}
                 alt={appConfig.name}
                 title={appConfig.name}
                 width={
@@ -354,7 +349,7 @@ function Navbar({ appConfig, isPreview }: Props) {
               />
             </Link>
           ) : appConfig?.logo ? (
-            <Link href={isPreview ? '#' : '/'}>
+            <Link href={isPreview ? "#" : "/"}>
               <Image
                 src={appConfig?.logo.url}
                 alt={appConfig.name}
@@ -373,10 +368,10 @@ function Navbar({ appConfig, isPreview }: Props) {
             </Link>
           ) : (
             <Link
-              sx={{ textDecoration: 'none' }}
+              sx={{ textDecoration: "none" }}
               variant="h6"
               color="primary"
-              href={isPreview ? '#' : '/'}
+              href={isPreview ? "#" : "/"}
             >
               {appConfig.name}
             </Link>
@@ -387,8 +382,8 @@ function Navbar({ appConfig, isPreview }: Props) {
               alignItems="center"
               sx={{
                 flexGrow: 3,
-                display: { xs: 'none', md: 'flex' },
-                justifyContent: 'center',
+                display: { xs: "none", md: "flex" },
+                justifyContent: "center",
                 px: 2,
               }}
             >
@@ -406,7 +401,7 @@ function Navbar({ appConfig, isPreview }: Props) {
               alignItems="center"
               sx={{
                 flexGrow: 3,
-                justifyContent: 'flex-end',
+                justifyContent: "flex-end",
                 px: 2,
               }}
             >
@@ -421,9 +416,9 @@ function Navbar({ appConfig, isPreview }: Props) {
             direction="row"
             sx={{
               flexGrow: 1,
-              display: { xs: 'none', md: 'flex' },
-              center: 'right',
-              justifyContent: 'flex-end',
+              display: { xs: "none", md: "flex" },
+              center: "right",
+              justifyContent: "flex-end",
               px: 2,
             }}
             alignItems="center"
@@ -433,8 +428,8 @@ function Navbar({ appConfig, isPreview }: Props) {
               <Stack
                 direction="row"
                 sx={{
-                  center: 'right',
-                  justifyContent: 'flex-end',
+                  center: "right",
+                  justifyContent: "flex-end",
                 }}
                 alignItems="center"
                 spacing={2}
@@ -445,8 +440,8 @@ function Navbar({ appConfig, isPreview }: Props) {
                   ) : (
                     <Link
                       color="inherit"
-                      href={isPreview ? '#' : m.href || '/'}
-                      sx={{ fontWeight: 600, textDecoration: 'none' }}
+                      href={isPreview ? "#" : m.href || "/"}
+                      sx={{ fontWeight: 600, textDecoration: "none" }}
                       key={key}
                     >
                       <FormattedMessage
@@ -454,38 +449,38 @@ function Navbar({ appConfig, isPreview }: Props) {
                         defaultMessage={m.name}
                       />
                     </Link>
-                  ),
+                  )
                 )}
               </Stack>
             ) : (
               <Stack
                 direction="row"
                 sx={{
-                  center: 'right',
-                  justifyContent: 'flex-end',
+                  center: "right",
+                  justifyContent: "flex-end",
                 }}
                 alignItems="center"
                 spacing={2}
               >
                 <Link
                   color="inherit"
-                  href={isPreview ? '#' : '/'}
-                  sx={{ fontWeight: 600, textDecoration: 'none' }}
+                  href={isPreview ? "#" : "/"}
+                  sx={{ fontWeight: 600, textDecoration: "none" }}
                 >
                   <FormattedMessage id="home" defaultMessage="Home" />
                 </Link>
                 <Link
                   color="inherit"
-                  href={isPreview ? '#' : '/swap'}
-                  sx={{ fontWeight: 600, textDecoration: 'none' }}
+                  href={isPreview ? "#" : "/swap"}
+                  sx={{ fontWeight: 600, textDecoration: "none" }}
                 >
                   <FormattedMessage id="swap" defaultMessage="Swap" />
                 </Link>
                 {isActive && (
                   <Link
                     color="inherit"
-                    href={isPreview ? '#' : '/wallet'}
-                    sx={{ fontWeight: 600, textDecoration: 'none' }}
+                    href={isPreview ? "#" : "/wallet"}
+                    sx={{ fontWeight: 600, textDecoration: "none" }}
                   >
                     <FormattedMessage id="wallet" defaultMessage="Wallet" />
                   </Link>
@@ -516,10 +511,10 @@ function Navbar({ appConfig, isPreview }: Props) {
                     <Avatar
                       src={getChainLogoImage(chainId)}
                       sx={(theme) => ({
-                        width: 'auto',
+                        width: "auto",
                         height: theme.spacing(2),
                       })}
-                      alt={getChainName(chainId) || ''}
+                      alt={getChainName(chainId) || ""}
                     />
                     <Typography variant="body1">
                       {getChainName(chainId)}
@@ -547,10 +542,10 @@ function Navbar({ appConfig, isPreview }: Props) {
                 <Stack direction="row" alignItems="center" spacing={2}>
                   <ButtonBase
                     onClick={handleShowProfileMenu}
-                    sx={{ borderRadius: '50%' }}
+                    sx={{ borderRadius: "50%" }}
                   >
                     <Avatar
-                      sx={{ height: '1.5rem', width: '1.5rem' }}
+                      sx={{ height: "1.5rem", width: "1.5rem" }}
                       src={user?.profileImageURL}
                     />
                   </ButtonBase>
@@ -564,8 +559,8 @@ function Navbar({ appConfig, isPreview }: Props) {
                         variant={
                           hasPendingTransactions &&
                           filteredUncheckedTransactions.length === 0
-                            ? 'dot'
-                            : 'standard'
+                            ? "dot"
+                            : "standard"
                         }
                         color="primary"
                         badgeContent={
@@ -596,10 +591,10 @@ function Navbar({ appConfig, isPreview }: Props) {
           <Box
             sx={{
               display: {
-                sm: 'none',
-                xs: 'flex',
+                sm: "none",
+                xs: "flex",
                 flexGrow: 1,
-                justifyContent: 'flex-end',
+                justifyContent: "flex-end",
               },
             }}
           >
@@ -612,8 +607,8 @@ function Navbar({ appConfig, isPreview }: Props) {
                   variant={
                     hasPendingTransactions &&
                     filteredUncheckedTransactions.length === 0
-                      ? 'dot'
-                      : 'standard'
+                      ? "dot"
+                      : "standard"
                   }
                   color="primary"
                   badgeContent={
