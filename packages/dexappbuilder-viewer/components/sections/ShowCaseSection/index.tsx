@@ -1,8 +1,8 @@
+import { useIsMobile } from '@dexkit/core';
 import {
   ShowCaseItem,
   ShowCasePageSection,
-} from '@/modules/wizard/types/section';
-import { useIsMobile } from '@dexkit/core';
+} from '@dexkit/ui/modules/wizard/types/section';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import { Box, Grid, IconButton, Stack, alpha } from '@mui/material';

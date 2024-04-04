@@ -1,14 +1,10 @@
-import ImageIcon from '@mui/icons-material/Landscape';
 import type { CellPlugin } from '@react-page/editor';
 
-import { Stack } from '@mui/material';
-import Image from 'next/image';
-import { useMemo } from 'react';
-
-import Link from '@dexkit/ui/components/AppLink';
-import { DEXKIT_BASE_FILES_HOST } from '@dexkit/ui/constants';
 import { PagesPicker } from '../components/ActionsPicker';
 import { ImagePicker } from '../components/ImagePicker';
+
+import ImagePluginViewer from '@dexkit/dexappbuilder-viewer/components/page-editor/plugins/ImagePlugin';
+
 type Data = {
   src: string;
   alt: string;
@@ -25,97 +21,7 @@ type Data = {
 
 // you can pass the shape of the data as the generic type argument
 const ImagePlugin: CellPlugin<Data> = {
-  Renderer: ({ data, isEditMode }) => {
-    const src = data?.src;
-    const alt = data?.alt;
-    const openInNewWindow = data?.targetBlank;
-    let image;
-    if (src && src.startsWith(DEXKIT_BASE_FILES_HOST)) {
-      image = (
-        <Image
-          alt={alt || 'Image'}
-          style={{
-            borderRadius: data.borderRadius
-              ? `${data.borderRadius}%`
-              : undefined,
-          }}
-          src={src}
-          height={data.height ? data.height : 250}
-          width={data.width ? data.width : 250}
-        />
-      );
-    } else {
-      image = (
-        <img
-          alt={alt || 'Image'}
-          style={{
-            borderRadius: data.borderRadius
-              ? `${data.borderRadius}%`
-              : undefined,
-          }}
-          src={src}
-          height={data.height ? data.height : 250}
-          width={data.width ? data.width : 250}
-        />
-      );
-    }
-
-    const position = useMemo(() => {
-      if (data.position === 'center') {
-        return 'center';
-      }
-      if (data.position === 'start') {
-        return 'flex-start';
-      }
-      if (data.position === 'end') {
-        return 'flex-end';
-      }
-    }, [data.position]);
-
-    return data.src ? (
-      data.href ? (
-        <Stack alignItems={position} sx={{ p: data.padding }}>
-          <Link
-            onClick={isEditMode ? (e) => e.preventDefault() : undefined}
-            href={data?.href}
-            target={openInNewWindow ? '_blank' : undefined}
-            rel={openInNewWindow ? 'noreferrer noopener' : undefined}
-          >
-            {image}
-          </Link>
-        </Stack>
-      ) : !data.href && !data.pageUri ? (
-        <Stack alignItems={position} sx={{ p: data.padding }}>
-          {image}
-        </Stack>
-      ) : data.pageUri ? (
-        <Stack alignItems={position} sx={{ p: data.padding }}>
-          <Link
-            href={data.pageUri}
-            onClick={isEditMode ? (e) => e.preventDefault() : undefined}
-            target={openInNewWindow ? '_blank' : undefined}
-            rel={openInNewWindow ? 'noreferrer noopener' : undefined}
-          >
-            {image}
-          </Link>
-        </Stack>
-      ) : (
-        <></>
-      )
-    ) : (
-      <Stack
-        justifyContent={'center'}
-        alignItems={'center'}
-        alignContent={'center'}
-      >
-        <ImageIcon sx={{ width: 250, height: 250 }} />
-      </Stack>
-    );
-  },
-  id: 'image-dexkit-plugin',
-  title: 'Image',
-  description: 'Add Image from url or gallery',
-  version: 1,
+  ...ImagePluginViewer,
   controls: [
     {
       title: 'From Gallery',

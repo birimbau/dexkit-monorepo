@@ -1,10 +1,10 @@
-import { ShowCaseItemAsset } from '@/modules/wizard/types/section';
 import { ipfsUriToUrl } from '@dexkit/core/utils';
+import { AppExpandableTypography } from '@dexkit/ui/components/AppExpandableTypography';
 import { useAsset } from '@dexkit/ui/modules/nft/hooks';
+import { ShowCaseItemAsset } from '@dexkit/ui/modules/wizard/types/section';
 import { Avatar, Box, Skeleton, Typography } from '@mui/material';
 import { useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { AppExpandableTypography } from 'src/components/AppExpandableTypography';
 
 export interface AssetItemProps {
   item: ShowCaseItemAsset;

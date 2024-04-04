@@ -12,10 +12,13 @@ import { Field, FieldArray, Formik } from 'formik';
 import { FormattedMessage } from 'react-intl';
 
 import { DexkitApiProvider } from '@dexkit/core/providers';
+import {
+  ShowCaseItem,
+  ShowCaseParams,
+} from '@dexkit/ui/modules/wizard/types/section';
 import dynamic from 'next/dynamic';
 import { useState } from 'react';
 import { myAppsApi } from 'src/services/whitelabel';
-import { ShowCaseItem, ShowCaseParams } from '../../../types/section';
 import ShowCaseFormItem from './ShowCaseFormItem';
 
 import ViewStreamIcon from '@mui/icons-material/ViewStream';

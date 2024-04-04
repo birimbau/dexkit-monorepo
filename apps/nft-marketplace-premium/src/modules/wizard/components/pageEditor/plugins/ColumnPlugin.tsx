@@ -1,4 +1,4 @@
-import { Grid } from '@mui/material';
+import ColumnPluginViewer from '@dexkit/dexappbuilder-viewer/components/page-editor/plugins/ColumnPlugin';
 import type { CellPlugin } from '@react-page/editor';
 
 type Data = {
@@ -7,15 +7,7 @@ type Data = {
 
 // you can pass the shape of the data as the generic type argument
 const ColumnPlugin: CellPlugin<Data> = {
-  Renderer: ({ data, children }) => (
-    <Grid item xs={data.width}>
-      {children}
-    </Grid>
-  ),
-  id: 'column',
-  title: 'Column',
-  description: 'Build your columns inside the grid container',
-  version: 1,
+  ...ColumnPluginViewer,
   controls: {
     type: 'autoform',
     schema: {

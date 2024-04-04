@@ -1,12 +1,12 @@
-import { CarouselPageSection } from '@/modules/wizard/types/section';
-import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
-import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
-import { Box, IconButton, Stack } from '@mui/material';
-import { useState } from 'react';
-import SwipeableViews from 'react-swipeable-views';
-import { autoPlay } from 'react-swipeable-views-utils';
-import Pagination from './Pagination';
-import Slide from './Slide';
+import { CarouselPageSection } from "@dexkit/ui/modules/wizard/types/section";
+import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
+import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
+import { Box, IconButton, Stack } from "@mui/material";
+import { useState } from "react";
+import SwipeableViews from "react-swipeable-views";
+import { autoPlay } from "react-swipeable-views-utils";
+import Pagination from "./Pagination";
+import Slide from "./Slide";
 
 const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
 
@@ -40,20 +40,20 @@ export default function CarouselSection({ section }: CarouselProps) {
   };
 
   return (
-    <Box sx={{ position: 'relative' }}>
+    <Box sx={{ position: "relative" }}>
       <Stack
         justifyContent="space-between"
         alignItems="center"
         direction="row"
-        sx={{ height: '100%', width: '100%' }}
+        sx={{ height: "100%", width: "100%" }}
       >
         <Box
           sx={{
-            position: 'absolute',
-            top: '50%',
+            position: "absolute",
+            top: "50%",
             left: 0,
-            transform: 'translateY(-50%)',
-            width: 'auto',
+            transform: "translateY(-50%)",
+            width: "auto",
             zIndex: 100,
           }}
         >
@@ -84,11 +84,11 @@ export default function CarouselSection({ section }: CarouselProps) {
         </Box>
         <Box
           sx={{
-            position: 'absolute',
-            top: '50%',
+            position: "absolute",
+            top: "50%",
             right: 0,
-            transform: 'translateY(-50%)',
-            width: 'auto',
+            transform: "translateY(-50%)",
+            width: "auto",
             zIndex: 100,
           }}
         >
@@ -99,12 +99,12 @@ export default function CarouselSection({ section }: CarouselProps) {
       </Stack>
       <Box
         sx={{
-          position: 'absolute',
-          width: '100%',
-          display: 'flex',
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'center',
+          position: "absolute",
+          width: "100%",
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "center",
           bottom: (theme) => theme.spacing(4),
         }}
       >

@@ -5,27 +5,13 @@ import type { CellPlugin } from '@react-page/editor';
 import ExchangeSettingsForm from '@dexkit/exchange/components/ExchangeSettingsForm';
 import { DexkitExchangeSettings } from '@dexkit/exchange/types';
 import { useActiveChainIds } from '@dexkit/ui';
-import dynamic from 'next/dynamic';
 import { useMemo } from 'react';
-const ExchangeSection = dynamic(
-  () =>
-    import('@dexkit/dexappbuilder-viewer/components/sections/ExchangeSection'),
-);
+
+import ExchangePluginViewer from '@dexkit/dexappbuilder-viewer/components/page-editor/plugins/ExchangePlugin';
 
 // you can pass the shape of the data as the generic type argument
 const ExchangePlugin: CellPlugin<DexkitExchangeSettings> = {
-  Renderer: ({ data, isEditMode, onChange }) => {
-    return (
-      <ExchangeSection
-        section={{ settings: data, type: 'exchange', title: 'exchange' }}
-        key={JSON.stringify(data)}
-      />
-    );
-  },
-  id: 'exchange-settings-plugin',
-  title: 'Exchange plugin',
-  description: 'Exchange',
-  version: 1,
+  ...ExchangePluginViewer,
   controls: {
     type: 'custom',
     Component: ({ data, onChange }) => {

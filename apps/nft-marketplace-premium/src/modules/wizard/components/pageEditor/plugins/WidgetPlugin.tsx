@@ -1,18 +1,15 @@
-import { Widget } from '@dexkit/dexappbuilder-viewer/components/Widget';
 import Container from '@mui/material/Container';
 import type { CellPlugin } from '@react-page/editor';
 import { TextareaControl } from '../components/TextareaControl';
+
+import WidgetPluginViewer from '@dexkit/dexappbuilder-viewer/components/page-editor/plugins/WidgetPlugin';
 
 type Data = {
   html?: string;
 };
 // you can pass the shape of the data as the generic type argument
 const WidgetPlugin: CellPlugin<Data> = {
-  Renderer: ({ data }) => <Widget htmlString={data?.html || '<></>'} />,
-  id: 'dexkit-widget-plugin',
-  title: 'Widget',
-  description: 'Insert custom html and scripts',
-  version: 1,
+  ...WidgetPluginViewer,
   controls: {
     type: 'custom',
     Component: (data) => (

@@ -22,6 +22,8 @@ export default defineConfig({
   entry: {
     'index': 'index.ts',
     'types': 'types/index.ts',
-    'components/ContractFormView': 'components/ContractFormView.tsx'
+    'components/ContractFormView': 'components/ContractFormView.tsx',
+    'hooks': 'hooks/index.ts',
+    'services': 'services/index.ts'
   }
 })

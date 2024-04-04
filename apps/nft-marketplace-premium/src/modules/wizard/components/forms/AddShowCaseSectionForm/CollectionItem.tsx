@@ -1,12 +1,12 @@
-import { useJsonRpcProvider } from '@/modules/wizard/hooks';
-import { ShowCaseItemCollection } from '@/modules/wizard/types/section';
 import { ipfsUriToUrl } from '@dexkit/core/utils';
+import { AppExpandableTypography } from '@dexkit/ui/components/AppExpandableTypography';
 import useContractMetadata from '@dexkit/ui/hooks/blockchain';
 import { useAsset } from '@dexkit/ui/modules/nft/hooks';
+import { useJsonRpcProvider } from '@dexkit/ui/modules/wizard/hooks';
+import { ShowCaseItemCollection } from '@dexkit/ui/modules/wizard/types/section';
 import { Avatar, Box, Skeleton, Typography } from '@mui/material';
 import { useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { AppExpandableTypography } from 'src/components/AppExpandableTypography';
 
 export interface CollectionItemProps {
   item: ShowCaseItemCollection;

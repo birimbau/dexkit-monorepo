@@ -1,9 +1,12 @@
-import { useJsonRpcProvider } from '@/modules/wizard/hooks';
-import { ShowCaseItem } from '@/modules/wizard/types/section';
-import { ChainId } from '@dexkit/core';
-import { ipfsUriToUrl } from '@dexkit/core/utils';
-import useContractMetadata from '@dexkit/ui/hooks/blockchain';
-import { useAsset } from '@dexkit/ui/modules/nft/hooks';
+import { ChainId } from "@dexkit/core";
+import { ipfsUriToUrl } from "@dexkit/core/utils";
+import { getNetworkSlugFromChainId } from "@dexkit/core/utils/blockchain";
+import { AppExpandableTypography } from "@dexkit/ui/components/AppExpandableTypography";
+import Link from "@dexkit/ui/components/AppLink";
+import useContractMetadata from "@dexkit/ui/hooks/blockchain";
+import { useAsset } from "@dexkit/ui/modules/nft/hooks";
+import { useJsonRpcProvider } from "@dexkit/ui/modules/wizard/hooks";
+import { ShowCaseItem } from "@dexkit/ui/modules/wizard/types/section";
 import {
   Box,
   Card,
@@ -14,12 +17,8 @@ import {
   Skeleton,
   Stack,
   Typography,
-} from '@mui/material';
-import { useMemo } from 'react';
-import { AppExpandableTypography } from 'src/components/AppExpandableTypography';
-import Link from 'src/components/Link';
-
-import { getNetworkSlugFromChainId } from 'src/utils/blockchain';
+} from "@mui/material";
+import { useMemo } from "react";
 
 export interface ShowCaseCardProps {
   item: ShowCaseItem;
@@ -28,13 +27,13 @@ export interface ShowCaseCardProps {
 export default function ShowCaseCard({ item }: ShowCaseCardProps) {
   const providerQuery = useJsonRpcProvider({
     chainId:
-      item.type === 'asset' || item.type === 'collection'
+      item.type === "asset" || item.type === "collection"
         ? item.chainId
         : ChainId.Ethereum,
   });
 
   const assetArgs = useMemo(() => {
-    if (item.type === 'asset') {
+    if (item.type === "asset") {
       return [
         item.contractAddress,
         item.tokenId,
@@ -50,38 +49,38 @@ export default function ShowCaseCard({ item }: ShowCaseCardProps) {
   const nftQuery = useAsset(...assetArgs);
 
   const contractMetadata = useContractMetadata(
-    item.type === 'collection'
+    item.type === "collection"
       ? {
           chainId: item.chainId,
           contractAddress: item.contractAddress,
           provider: providerQuery.data,
         }
-      : undefined,
+      : undefined
   );
 
-  if (item.type === 'image') {
+  if (item.type === "image") {
     return (
       <Card>
         <CardActionArea
           LinkComponent={Link}
           href={
-            item.actionType && item?.actionType === 'link' && item?.url
+            item.actionType && item?.actionType === "link" && item?.url
               ? item.url
-              : item.actionType && item.actionType === 'page' && item?.page
+              : item.actionType && item.actionType === "page" && item?.page
               ? item?.page
-              : ''
+              : ""
           }
         >
           {item.imageUrl ? (
-            <CardMedia image={item.imageUrl} sx={{ aspectRatio: '1/1' }} />
+            <CardMedia image={item.imageUrl} sx={{ aspectRatio: "1/1" }} />
           ) : (
             <Skeleton
               variant="rectangular"
               sx={{
-                aspectRatio: '1/1',
-                display: 'block',
-                width: '100%',
-                height: '100%',
+                aspectRatio: "1/1",
+                display: "block",
+                width: "100%",
+                height: "100%",
               }}
             />
           )}
@@ -92,7 +91,7 @@ export default function ShowCaseCard({ item }: ShowCaseCardProps) {
             <Box>
               {item.title && (
                 <Typography
-                  sx={{ textOverflow: 'ellipsis', overflow: 'hidden' }}
+                  sx={{ textOverflow: "ellipsis", overflow: "hidden" }}
                   variant="body1"
                   fontWeight="bold"
                 >
@@ -102,11 +101,11 @@ export default function ShowCaseCard({ item }: ShowCaseCardProps) {
               {item.subtitle && (
                 <AppExpandableTypography
                   TypographyProps={{
-                    sx: { textOverflow: 'ellipsis', overflow: 'hidden' },
-                    variant: 'body2',
-                    color: 'text.secondary',
+                    sx: { textOverflow: "ellipsis", overflow: "hidden" },
+                    variant: "body2",
+                    color: "text.secondary",
                   }}
-                  value={item.subtitle || ''}
+                  value={item.subtitle || ""}
                 />
               )}
             </Box>
@@ -116,7 +115,7 @@ export default function ShowCaseCard({ item }: ShowCaseCardProps) {
     );
   }
 
-  if (item.type === 'collection') {
+  if (item.type === "collection") {
     return (
       <Card>
         <CardActionArea
@@ -126,7 +125,7 @@ export default function ShowCaseCard({ item }: ShowCaseCardProps) {
           }`}
         >
           {item.imageUrl ? (
-            <CardMedia image={item.imageUrl} sx={{ aspectRatio: '1/1' }} />
+            <CardMedia image={item.imageUrl} sx={{ aspectRatio: "1/1" }} />
           ) : contractMetadata.data?.image ? (
             <CardMedia
               image={
@@ -134,16 +133,16 @@ export default function ShowCaseCard({ item }: ShowCaseCardProps) {
                   ? ipfsUriToUrl(contractMetadata.data?.image)
                   : undefined
               }
-              sx={{ aspectRatio: '1/1' }}
+              sx={{ aspectRatio: "1/1" }}
             />
           ) : (
             <Skeleton
               variant="rectangular"
               sx={{
-                aspectRatio: '1/1',
-                display: 'block',
-                width: '100%',
-                height: '100%',
+                aspectRatio: "1/1",
+                display: "block",
+                width: "100%",
+                height: "100%",
               }}
             />
           )}
@@ -154,7 +153,7 @@ export default function ShowCaseCard({ item }: ShowCaseCardProps) {
           <Stack spacing={1}>
             <Box>
               <Typography
-                sx={{ textOverflow: 'ellipsis', overflow: 'hidden' }}
+                sx={{ textOverflow: "ellipsis", overflow: "hidden" }}
                 variant="body1"
                 fontWeight="bold"
               >
@@ -171,19 +170,19 @@ export default function ShowCaseCard({ item }: ShowCaseCardProps) {
                 item.subtitle
               ) : <AppExpandableTypography
                   TypographyProps={{
-                    sx: { textOverflow: 'ellipsis', overflow: 'hidden' },
-                    variant: 'body2',
-                    color: 'text.secondary',
+                    sx: { textOverflow: "ellipsis", overflow: "hidden" },
+                    variant: "body2",
+                    color: "text.secondary",
                   }}
-                  value={contractMetadata.data?.name || ''}
+                  value={contractMetadata.data?.name || ""}
                 /> ? (
                 <AppExpandableTypography
                   TypographyProps={{
-                    sx: { textOverflow: 'ellipsis', overflow: 'hidden' },
-                    variant: 'body2',
-                    color: 'text.secondary',
+                    sx: { textOverflow: "ellipsis", overflow: "hidden" },
+                    variant: "body2",
+                    color: "text.secondary",
                   }}
-                  value={contractMetadata.data?.description || ''}
+                  value={contractMetadata.data?.description || ""}
                 />
               ) : (
                 <Skeleton />
@@ -210,16 +209,16 @@ export default function ShowCaseCard({ item }: ShowCaseCardProps) {
                 ? ipfsUriToUrl(nftQuery.data?.metadata?.image)
                 : undefined
             }
-            sx={{ aspectRatio: '1/1' }}
+            sx={{ aspectRatio: "1/1" }}
           />
         ) : (
           <Skeleton
             variant="rectangular"
             sx={{
-              aspectRatio: '1/1',
-              display: 'block',
-              width: '100%',
-              height: '100%',
+              aspectRatio: "1/1",
+              display: "block",
+              width: "100%",
+              height: "100%",
             }}
           />
         )}
@@ -229,7 +228,7 @@ export default function ShowCaseCard({ item }: ShowCaseCardProps) {
         <Stack spacing={1}>
           <Box>
             <Typography
-              sx={{ textOverflow: 'ellipsis', overflow: 'hidden' }}
+              sx={{ textOverflow: "ellipsis", overflow: "hidden" }}
               variant="body1"
               fontWeight="bold"
             >
@@ -244,7 +243,7 @@ export default function ShowCaseCard({ item }: ShowCaseCardProps) {
               )}
             </Typography>
             <Typography
-              sx={{ textOverflow: 'ellipsis', overflow: 'hidden' }}
+              sx={{ textOverflow: "ellipsis", overflow: "hidden" }}
               variant="body2"
               color="text.secondary"
             >
@@ -254,13 +253,13 @@ export default function ShowCaseCard({ item }: ShowCaseCardProps) {
                 <AppExpandableTypography
                   value={
                     nftQuery.data?.metadata?.description
-                      ? nftQuery.data?.metadata?.description || ''
+                      ? nftQuery.data?.metadata?.description || ""
                       : `${nftQuery.data?.collectionName} #${nftQuery.data?.id}`
                   }
                   TypographyProps={{
-                    sx: { textOverflow: 'ellipsis', overflow: 'hidden' },
-                    variant: 'body2',
-                    color: 'text.secondary',
+                    sx: { textOverflow: "ellipsis", overflow: "hidden" },
+                    variant: "body2",
+                    color: "text.secondary",
                   }}
                 />
               )}

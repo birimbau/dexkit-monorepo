@@ -4,7 +4,7 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import React from 'react';
 
-import { SlideAction } from '@/modules/wizard/types/section';
+import { SlideAction } from '@dexkit/ui/modules/wizard/types/section';
 
 export interface SlideProps {
   title: React.ReactNode;

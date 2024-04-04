@@ -1,6 +1,5 @@
-import { Box, Container, Stack } from '@mui/material';
+import StackPluginViewer from '@dexkit/dexappbuilder-viewer/components/page-editor/plugins/StackPlugin';
 import type { CellPlugin } from '@react-page/editor';
-import { useMemo } from 'react';
 
 type Data = {
   padding: number;
@@ -10,35 +9,7 @@ type Data = {
 };
 
 const StackPlugin: CellPlugin<Data> = {
-  Renderer: ({ children, data }) => {
-    const position = useMemo(() => {
-      if (data.position === 'center') {
-        return 'center';
-      }
-      if (data.position === 'start') {
-        return 'flex-start';
-      }
-      if (data.position === 'end') {
-        return 'flex-end';
-      }
-    }, [data.position]);
-
-    return (
-      <Stack
-        sx={{ p: data.padding }}
-        justifyContent={position}
-        alignItems={position}
-        direction={data.direction}
-      >
-        {children}
-      </Stack>
-    );
-  },
-  id: 'stack',
-  title: 'Stack',
-  description:
-    'Manages layout of children components along vertical and horizontal axis',
-  version: 1,
+  ...StackPluginViewer,
   controls: {
     type: 'autoform',
     schema: {

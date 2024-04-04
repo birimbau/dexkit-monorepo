@@ -20,9 +20,15 @@ const DexGeneratorSection = dynamic(
     ),
 );
 
-import ShowCaseSection from '../sections/ShowCaseSection';
+const ShowCaseSection = dynamic(
+  () =>
+    import('@dexkit/dexappbuilder-viewer/components/sections/ShowCaseSection'),
+);
 
-const CarouselSection = dynamic(() => import('../sections/CarouselSection'));
+const CarouselSection = dynamic(
+  () =>
+    import('@dexkit/dexappbuilder-viewer/components/sections/CarouselSection'),
+);
 
 const AssetSection = dynamic(
   () =>

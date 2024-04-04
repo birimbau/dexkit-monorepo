@@ -2,10 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useContext, useMemo } from 'react';
 import { AppWizardConfigContext } from '../../../contexts';
 
-import { ChainId } from '@dexkit/core';
-import { NETWORKS } from '@dexkit/core/constants/networks';
 
-import { providers } from 'ethers';
 import { QUERY_ADMIN_WHITELABEL_CONFIG_NAME } from 'src/hooks/whitelabel';
 
 import { GatedCondition } from '@dexkit/ui/modules/wizard/types';
@@ -111,17 +108,7 @@ export function useCheckGatedConditions({
     return checkGatedConditions({ account, conditions });
   });
 }
-export const JSON_RPC_PROVIDER = 'JSON_RPC_PROVIDER';
 
-export function useJsonRpcProvider({ chainId }: { chainId: ChainId }) {
-  return useQuery([JSON_RPC_PROVIDER, chainId], () => {
-    if (chainId) {
-      return new providers.JsonRpcProvider(
-        NETWORKS[chainId].providerRpcUrl,
-      );
-    }
-  });
-}
 
 export function useSendSiteConfirmationLinkMutation() {
   return useMutation(async ({ siteId }: { siteId?: number }) => {

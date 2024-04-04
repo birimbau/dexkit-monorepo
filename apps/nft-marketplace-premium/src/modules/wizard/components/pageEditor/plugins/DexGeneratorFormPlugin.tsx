@@ -1,7 +1,7 @@
 import type { CellPlugin } from '@react-page/editor';
 
 import { DexkitApiProvider } from '@dexkit/core/providers';
-import DexGeneratorSection from '@dexkit/dexappbuilder-viewer/components/sections/DexGeneratorSection';
+import DexGeneratorFormPluginViewer from '@dexkit/dexappbuilder-viewer/components/page-editor/plugins/DexGeneratorFormPlugin';
 import { DexGeneratorPageSection } from '@dexkit/ui/modules/wizard/types/section';
 import { Box } from '@mui/material';
 import { myAppsApi } from 'src/services/whitelabel';
@@ -11,15 +11,7 @@ import DexGeneratorSectionForm from '../../forms/DexGeneratorSectionForm';
 const DexGeneratorFormPlugin: CellPlugin<{
   section?: DexGeneratorPageSection;
 }> = {
-  Renderer: ({ data, isEditMode }) => {
-    return data.section ? (
-      <DexGeneratorSection section={data.section} hideGrid={true} />
-    ) : null;
-  },
-  id: 'dex-generator-section',
-  title: 'Dex Generator',
-  description: 'Dex Generator form',
-  version: 1,
+  ...DexGeneratorFormPluginViewer,
   controls: {
     type: 'custom',
     Component: ({ data, onChange }) => {
