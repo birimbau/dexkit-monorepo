@@ -27,11 +27,13 @@ export function useAllTokenList({
   chainId,
   includeNative = false,
   onlyTradable,
+  hideTestnetTokens,
   onlyNative,
   isWizardConfig,
 }: {
   chainId?: number;
   includeNative?: boolean;
+  hideTestnetTokens?: boolean;
   onlyNative?: boolean;
   onlyTradable?: boolean;
   isWizardConfig?: boolean;
@@ -155,6 +157,9 @@ export function useAllTokenList({
           ...tokenList,
         ] as TokenWhitelabelApp[];
       }
+    }
+    if (hideTestnetTokens) {
+      tokenList = tokenList.filter(tk => !NETWORKS[tk.chainId]?.testnet)
     }
 
     return [...tokenList] as TokenWhitelabelApp[];
