@@ -75,10 +75,14 @@ function AppDrawer({ open, onClose }: Props) {
   const userQuery = useAuthUserQuery();
   const user = userQuery.data;
 
+  const isMobile = useIsMobile();
+
   const renderContent = () => {
     return (
       <Box
-        sx={(theme) => ({ minWidth: `${theme.breakpoints.values.sm / 2}px` })}
+        sx={(theme) => ({
+          minWidth: `${theme.breakpoints.values.sm / 2}px`,
+        })}
       >
         <Box sx={{ p: 2 }}>
           {!isActive ? (
@@ -114,97 +118,92 @@ function AppDrawer({ open, onClose }: Props) {
                 </>
               )}
 
-              <WalletContent />
+              {isMobile && <WalletContent />}
             </Stack>
           )}
         </Box>
-        <Divider />
         {appConfig.menuTree ? (
           <DrawerMenu menu={appConfig.menuTree} onClose={onClose} />
         ) : (
           <AppDefaultMenuList onClose={onClose} />
         )}
-        <List
-          disablePadding
-          subheader={
-            <>
-              <ListSubheader disableSticky component="div">
-                <FormattedMessage id="settings" defaultMessage="Settings" />
-              </ListSubheader>
-              <Divider />
-            </>
-          }
-        >
-          <ListItemButton divider onClick={handleShowSelectLocaleDialog}>
-            <ListItemIcon>
-              <Language />
-            </ListItemIcon>
-            <ListItemText
-              primary={
-                <FormattedMessage id="language" defaultMessage="Language" />
-              }
-              secondary={
-                <Typography
-                  variant="body2"
-                  color="textSecondary"
-                  sx={{ fontWeight: 600 }}
-                >
-                  {locale}
-                </Typography>
-              }
-            />
-            <CustomListItemSecondaryAction>
-              <ChevronRightIcon color="primary" />
-            </CustomListItemSecondaryAction>
-          </ListItemButton>
-          <ListItemButton divider onClick={handleShowSelectCurrencyDialog}>
-            <ListItemIcon>
-              <AttachMoney />
-            </ListItemIcon>
-            <ListItemText
-              primary={
-                <FormattedMessage id="currency" defaultMessage="Currency" />
-              }
-              secondary={
-                <Typography
-                  variant="body2"
-                  color="textSecondary"
-                  sx={{ fontWeight: 600 }}
-                >
-                  {currency.toUpperCase()}
-                </Typography>
-              }
-            />
-            <CustomListItemSecondaryAction>
-              <ChevronRightIcon color="primary" />
-            </CustomListItemSecondaryAction>
-          </ListItemButton>
-          <ListItemButton divider>
-            <ListItemIcon />
+        {isMobile && (
+          <List
+            disablePadding
+            subheader={
+              <>
+                <ListSubheader disableSticky component="div">
+                  <FormattedMessage id="settings" defaultMessage="Settings" />
+                </ListSubheader>
+                <Divider />
+              </>
+            }
+          >
+            <ListItemButton divider onClick={handleShowSelectLocaleDialog}>
+              <ListItemIcon>
+                <Language />
+              </ListItemIcon>
+              <ListItemText
+                primary={
+                  <FormattedMessage id="language" defaultMessage="Language" />
+                }
+                secondary={
+                  <Typography
+                    variant="body2"
+                    color="textSecondary"
+                    sx={{ fontWeight: 600 }}
+                  >
+                    {locale}
+                  </Typography>
+                }
+              />
+              <CustomListItemSecondaryAction>
+                <ChevronRightIcon color="primary" />
+              </CustomListItemSecondaryAction>
+            </ListItemButton>
+            <ListItemButton divider onClick={handleShowSelectCurrencyDialog}>
+              <ListItemIcon>
+                <AttachMoney />
+              </ListItemIcon>
+              <ListItemText
+                primary={
+                  <FormattedMessage id="currency" defaultMessage="Currency" />
+                }
+                secondary={
+                  <Typography
+                    variant="body2"
+                    color="textSecondary"
+                    sx={{ fontWeight: 600 }}
+                  >
+                    {currency.toUpperCase()}
+                  </Typography>
+                }
+              />
+              <CustomListItemSecondaryAction>
+                <ChevronRightIcon color="primary" />
+              </CustomListItemSecondaryAction>
+            </ListItemButton>
+            <ListItemButton divider>
+              <ListItemIcon />
 
-            <ListItemText primary={<ThemeModeSelector />} />
-          </ListItemButton>
-        </List>
+              <ListItemText primary={<ThemeModeSelector />} />
+            </ListItemButton>
+          </List>
+        )}
       </Box>
     );
   };
 
-  const isMobile = useIsMobile();
-
   if (!isMobile && appConfig.menuSettings?.layout?.type === 'sidebar') {
     return (
-      <Paper
-        square
-        variant="elevation"
-        sx={{ height: '100vh', overflowY: 'scroll' }}
-      >
+      <Paper square variant="elevation">
         {renderContent()}
       </Paper>
     );
   }
 
   return (
-    <Drawer open={open} onClose={onClose}>
+    <Drawer PaperProps={{ variant: 'elevation' }} open={open} onClose={onClose}>
       {renderContent()}
     </Drawer>
   );

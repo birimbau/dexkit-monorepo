@@ -23,8 +23,6 @@ export default function MenuSection(props: Props) {
   const onAddMenu = (item: MenuTree, fIndex?: number) => {
     const newMenu = [...menu, item];
 
-    console.log('here');
-
     onSetMenu(newMenu);
   };
 
@@ -45,8 +43,6 @@ export default function MenuSection(props: Props) {
 
       newItem[index] = beforeItem;
       newItem[index - 1] = currItem;
-
-      console.log(newItem);
 
       onSetMenu(newItem);
     };

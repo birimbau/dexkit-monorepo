@@ -1,7 +1,9 @@
 import {
   Box,
   Button,
+  Container,
   NoSsr,
+  Paper,
   Stack,
   Typography,
   useColorScheme,
@@ -21,6 +23,7 @@ import { ErrorBoundary } from 'react-error-boundary';
 import { FormattedMessage } from 'react-intl';
 import { Footer } from '../Footer';
 import Navbar from '../Navbar';
+import NavbarMenuAlt from '../NavbarMenuAlt';
 import { GlobalDialogs } from './GlobalDialogs';
 
 interface Props {
@@ -86,20 +89,46 @@ const MainLayout: React.FC<Props> = ({
     >
       <GlobalDialogs />
 
-      <Box sx={{ display: 'flex' }}>
-        {true && <AppDrawer open={isDrawerOpen} onClose={handleCloseDrawer} />}
+      <Navbar appConfig={appConfig} isPreview={isPreview} />
+
+      {appConfig.menuSettings?.layout?.type === 'navbar' &&
+        appConfig.menuSettings?.layout.variant === 'alt' && (
+          <Paper square variant="elevation" sx={{ py: 2 }}>
+            <Container>
+              <Stack
+                direction="row"
+                alignItems="center"
+                justifyContent="center"
+                spacing={1}
+              >
+                {appConfig.menuTree?.map((menu, index) => (
+                  <NavbarMenuAlt menu={menu} key={index} />
+                ))}
+              </Stack>
+            </Container>
+          </Paper>
+        )}
+
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'stretch',
+        }}
+      >
+        <Paper sx={{ position: 'relative' }} square variant="elevation">
+          <Box sx={{ position: 'sticky', top: 40 }}>
+            <AppDrawer open={isDrawerOpen} onClose={handleCloseDrawer} />
+          </Box>
+        </Paper>
         <Box
           style={{
             flex: 1,
-            maxHeight: '100vh',
-            minHeight: '100vh',
             margin: 0,
             display: 'flex',
             flexDirection: 'column',
-            overflowY: 'scroll',
           }}
         >
-          <Navbar appConfig={appConfig} isPreview={isPreview} />
           <Box sx={{ flex: 1 }} py={disablePadding ? 0 : 4}>
             <ErrorBoundary
               fallbackRender={({ error, resetErrorBoundary }) => (
@@ -127,7 +156,14 @@ const MainLayout: React.FC<Props> = ({
               {children}
             </ErrorBoundary>
           </Box>
-          <Footer appConfig={appConfig} isPreview={isPreview} appNFT={appNFT} />
+
+          <Box>
+            <Footer
+              appConfig={appConfig}
+              isPreview={isPreview}
+              appNFT={appNFT}
+            />
+          </Box>
         </Box>
       </Box>
     </ErrorBoundary>

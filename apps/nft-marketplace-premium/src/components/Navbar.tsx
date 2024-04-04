@@ -50,7 +50,7 @@ import {
 } from '../state/atoms';
 import { getChainLogoImage, getChainName } from '../utils/blockchain';
 import Link from './Link';
-import NavbarMenu from './Menu';
+import NavbarMenu from './NavbarMenu';
 import { ThemeModeSelector } from './ThemeModeSelector';
 import { WalletButton } from './WalletButton';
 import Notification from './icons/Notification';
@@ -424,7 +424,8 @@ function Navbar({ appConfig, isPreview }: Props) {
             spacing={2}
           >
             {(appConfig.menuSettings?.layout?.type === undefined ||
-              appConfig.menuSettings?.layout?.type === 'navbar') &&
+              (appConfig.menuSettings?.layout?.type === 'navbar' &&
+                appConfig.menuSettings?.layout?.variant === 'default')) &&
             appConfig.menuTree ? (
               <Stack
                 direction="row"
@@ -454,39 +455,41 @@ function Navbar({ appConfig, isPreview }: Props) {
                 )}
               </Stack>
             ) : (
-              <Stack
-                direction="row"
-                sx={{
-                  center: 'right',
-                  justifyContent: 'flex-end',
-                }}
-                alignItems="center"
-                spacing={2}
-              >
-                <Link
-                  color="inherit"
-                  href={isPreview ? '#' : '/'}
-                  sx={{ fontWeight: 600, textDecoration: 'none' }}
+              false && (
+                <Stack
+                  direction="row"
+                  sx={{
+                    center: 'right',
+                    justifyContent: 'flex-end',
+                  }}
+                  alignItems="center"
+                  spacing={2}
                 >
-                  <FormattedMessage id="home" defaultMessage="Home" />
-                </Link>
-                <Link
-                  color="inherit"
-                  href={isPreview ? '#' : '/swap'}
-                  sx={{ fontWeight: 600, textDecoration: 'none' }}
-                >
-                  <FormattedMessage id="swap" defaultMessage="Swap" />
-                </Link>
-                {isActive && (
                   <Link
                     color="inherit"
-                    href={isPreview ? '#' : '/wallet'}
+                    href={isPreview ? '#' : '/'}
                     sx={{ fontWeight: 600, textDecoration: 'none' }}
                   >
-                    <FormattedMessage id="wallet" defaultMessage="Wallet" />
+                    <FormattedMessage id="home" defaultMessage="Home" />
                   </Link>
-                )}
-              </Stack>
+                  <Link
+                    color="inherit"
+                    href={isPreview ? '#' : '/swap'}
+                    sx={{ fontWeight: 600, textDecoration: 'none' }}
+                  >
+                    <FormattedMessage id="swap" defaultMessage="Swap" />
+                  </Link>
+                  {isActive && (
+                    <Link
+                      color="inherit"
+                      href={isPreview ? '#' : '/wallet'}
+                      sx={{ fontWeight: 600, textDecoration: 'none' }}
+                    >
+                      <FormattedMessage id="wallet" defaultMessage="Wallet" />
+                    </Link>
+                  )}
+                </Stack>
+              )
             )}
             <Stack
               direction="row"

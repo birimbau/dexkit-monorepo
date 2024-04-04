@@ -1,3 +1,4 @@
+import Home from "@mui/icons-material/Home";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import MenuIcon from "@mui/icons-material/Menu";
 import AppBar from "@mui/material/AppBar";
@@ -391,13 +392,15 @@ function Navbar({ appConfig, isPreview }: Props) {
                 alignItems="center"
                 spacing={2}
               >
-                <Link
+                <Button
+                  startIcon={<Home />}
                   color="inherit"
                   href={isPreview ? "#" : "/"}
                   sx={{ fontWeight: 600, textDecoration: "none" }}
                 >
                   <FormattedMessage id="home" defaultMessage="Home" />
-                </Link>
+                </Button>
+
                 <Link
                   color="inherit"
                   href={isPreview ? "#" : "/swap"}
