@@ -9,6 +9,8 @@ import { useContext, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { myAppsApi } from 'src/services/whitelabel';
 import { SiteContext } from '../../providers/SiteWizardProvider';
+import AddCarouselForm from '../forms/AddCarouselForm';
+import AddShowCaseSectionForm from '../forms/AddShowCaseSectionForm';
 import AssetSectionForm from '../forms/AssetSectionForm';
 import { AssetStoreSectionForm } from '../forms/AssetStoreSectionForm';
 import CallToActionSectionForm from '../forms/CallToActionSectionForm';
@@ -285,6 +287,24 @@ export function SectionFormRender({
         onSave={onSave}
         onChange={onChange}
         section={section?.type === sectionType ? section : undefined}
+      />
+    );
+  } else if (sectionType === 'carousel') {
+    return (
+      <AddCarouselForm
+        onChange={(data) => onChange({ type: 'carousel', settings: data })}
+        onSave={(data) => onSave({ type: 'carousel', settings: data })}
+        data={section?.type === sectionType ? section.settings : undefined}
+        saveOnChange
+      />
+    );
+  } else if (sectionType === 'showcase') {
+    return (
+      <AddShowCaseSectionForm
+        onChange={(data) => onChange({ type: 'showcase', settings: data })}
+        onSave={(data) => onSave({ type: 'showcase', settings: data })}
+        data={section?.type === sectionType ? section.settings : undefined}
+        saveOnChange
       />
     );
   }

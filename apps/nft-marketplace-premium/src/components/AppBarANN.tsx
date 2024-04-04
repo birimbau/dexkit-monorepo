@@ -19,9 +19,9 @@ export function AppBarANN() {
             <Typography sx={{ pr: 1 }}>😉👉</Typography>
             <Typography>
               <FormattedMessage
-                id={'dexappbuilder.ann.app.bar'}
+                id={'dexappbuilder.ann.app.bar2'}
                 defaultMessage={
-                  'Support us on {Giveth} and allow our service to be free for all. {Gitcoin} score 4 and donation on Polygon to us have matching donations!'
+                  'Support us on {Giveth} and allow our service to be free for all. Each donation is matched by ENS builders round.'
                 }
                 values={{
                   Giveth: (

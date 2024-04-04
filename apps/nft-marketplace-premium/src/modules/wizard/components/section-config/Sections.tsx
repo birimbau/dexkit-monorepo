@@ -15,6 +15,7 @@ import {
   default as TokenIcon,
 } from '@mui/icons-material/Token';
 import VideocamIcon from '@mui/icons-material/Videocam';
+import ViewCarousel from '@mui/icons-material/ViewCarousel';
 import WalletIcon from '@mui/icons-material/Wallet';
 export const sections = [
   {
@@ -159,6 +160,22 @@ export const sections = [
     category: 'web3',
     description: 'Create leaderboards from web3 user events on your app',
     icon: <LeaderboardIcon fontSize="large" />,
+  },
+  {
+    type: 'carousel',
+    titleId: 'carousel',
+    titleDefaultMessage: 'Carousel',
+    category: 'resources',
+    description: 'Create a carousel section',
+    icon: <ViewCarousel fontSize="large" />,
+  },
+  {
+    type: 'showcase',
+    titleId: 'showcase.gallery',
+    titleDefaultMessage: 'Showcase Gallery',
+    category: 'resources',
+    description: 'Create a showcase section',
+    icon: <CollectionsIcon fontSize="large" />,
   },
 ] as SectionMetadata[];
 

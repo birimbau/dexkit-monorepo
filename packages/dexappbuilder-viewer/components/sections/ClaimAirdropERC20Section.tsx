@@ -149,7 +149,7 @@ export default function ClaimAirdropERC20Section({
 
     const proof = await getProofsForAllowListEntry(merkleTree, leaf);
     const proofHash = "0x" + proof[0].data.toString("hex");
-    console.log(proofHash);
+
     return proofHash;
   };
 

@@ -25,6 +25,7 @@ export function SearchBar(props: Props) {
   const router = useRouter();
   const tokens = useAllTokenList({
     includeNative: true,
+    hideTestnetTokens: true,
     chainId,
     isWizardConfig: isPreview,
   });

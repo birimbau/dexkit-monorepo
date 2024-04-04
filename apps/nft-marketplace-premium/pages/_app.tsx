@@ -275,7 +275,7 @@ export default function MyApp(props: MyAppProps) {
                       >
                         <CircularProgress color="inherit" size={80} />
                       </Backdrop>
-                      {false && <AppBarANN />}
+                      <AppBarANN />
                       {getLayout(<Component {...pageProps} />)}
                     </AppMarketplaceProvider>
                   </LocalizationProvider>

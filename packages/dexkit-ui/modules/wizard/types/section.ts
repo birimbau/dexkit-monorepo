@@ -1,8 +1,8 @@
+import { OrderMarketType } from "@dexkit/exchange/constants";
+import { DexkitExchangeSettings } from "@dexkit/exchange/types";
+import { ContractFormParams } from "@dexkit/web3forms/types";
+import React from "react";
 
-import { OrderMarketType } from '@dexkit/exchange/constants';
-import { DexkitExchangeSettings } from '@dexkit/exchange/types';
-import { ContractFormParams } from '@dexkit/web3forms/types';
-import React from 'react';
 
 import { AssetFormType, DeployedContract, SwapConfig } from '.';
 import { AssetStoreOptions } from '../../nft/types';
@@ -13,36 +13,39 @@ import {
 } from './config';
 
 
+
 export type SectionType =
-  | 'video'
-  | 'call-to-action'
-  | 'featured'
-  | 'collections'
-  | 'swap'
-  | 'custom'
-  | 'asset-store'
-  | 'markdown'
-  | 'wallet'
-  | 'contract'
-  | 'user-contract-form'
-  | 'exchange'
-  | 'edition-drop-section'
-  | 'edition-drop-list-section'
-  | 'token-drop'
-  | 'nft-drop'
-  | 'token-stake'
-  | 'nft-stake'
-  | 'edition-stake'
-  | 'token'
-  | 'airdrop-token'
-  | 'code-page-section'
-  | 'collection'
-  | 'dex-generator-section'
-  | 'asset-section'
-  | 'ranking'
-  | 'market-trade'
-  | 'claim-airdrop-token-erc-20'
-  | 'token-trade';
+  | "video"
+  | "call-to-action"
+  | "featured"
+  | "collections"
+  | "swap"
+  | "custom"
+  | "asset-store"
+  | "markdown"
+  | "wallet"
+  | "contract"
+  | "user-contract-form"
+  | "exchange"
+  | "edition-drop-section"
+  | "edition-drop-list-section"
+  | "token-drop"
+  | "nft-drop"
+  | "token-stake"
+  | "nft-stake"
+  | "edition-stake"
+  | "token"
+  | "airdrop-token"
+  | "code-page-section"
+  | "collection"
+  | "dex-generator-section"
+  | "asset-section"
+  | "ranking"
+  | "market-trade"
+  | "token-trade"
+  | "claim-airdrop-token-erc-20"
+  | "carousel"
+  | "showcase";
 
 export interface PageSection {
   type: SectionType;
@@ -53,7 +56,7 @@ export interface PageSection {
 }
 
 export interface CallToActionAppPageSection extends PageSection {
-  type: 'call-to-action';
+  type: "call-to-action";
   title?: string;
   subtitle: string;
   button: {
@@ -65,83 +68,83 @@ export interface CallToActionAppPageSection extends PageSection {
 }
 
 export interface VideoEmbedAppPageSection extends PageSection {
-  type: 'video';
+  type: "video";
   title: string;
   embedType: VideoEmbedType;
   videoUrl: string;
 }
 
 export interface FeaturedAppPageSection extends PageSection {
-  type: 'featured';
+  type: "featured";
   title: string;
   items: SectionItem[];
 }
 
 export interface CollectionAppPageSection extends PageSection {
-  type: 'collections';
+  type: "collections";
   title: string;
   items: SectionItem[];
 }
 
 export interface SwapPageSection extends PageSection {
-  type: 'swap';
+  type: "swap";
   title?: string;
   config?: SwapConfig;
 }
 
 export interface AssetStorePageSection extends PageSection {
-  type: 'asset-store';
+  type: "asset-store";
   title?: string;
   config?: AssetStoreOptions;
 }
 
 export interface CustomEditorSection extends PageSection {
-  type: 'custom';
+  type: "custom";
   title?: string;
   data: string | null | undefined;
 }
 
 export interface MarkdownEditorPageSection extends PageSection {
-  type: 'markdown';
+  type: "markdown";
   title?: string;
   config?: { source?: string };
 }
 
 export interface WalletPageSection extends PageSection {
-  type: 'wallet';
+  type: "wallet";
 }
 
 export interface ContractPageSection extends PageSection {
-  type: 'contract';
+  type: "contract";
   config?: ContractFormParams;
 }
 
 export interface UserContractPageSection extends PageSection {
-  type: 'user-contract-form';
+  type: "user-contract-form";
   formId: number;
   hideFormInfo?: boolean;
 }
 
 export interface TokenDropPageSection extends PageSection {
-  type: 'token-drop';
+  type: "token-drop";
   settings: {
     network: string;
     address: string;
-    variant?: 'simple' | 'detailed';
+    variant?: "simple" | "detailed";
   };
 }
 
 export interface NftDropPageSection extends PageSection {
-  type: 'nft-drop';
+  type: "nft-drop";
   settings: {
     network: string;
     address: string;
-    variant?: 'simple' | 'detailed';
+    variant?: "simple" | "detailed";
   };
 }
 
 export interface StakeErc20PageSection extends PageSection {
-  type: 'token-stake';
+  type: "token-stake";
   settings: {
     network: string;
     address: string;
@@ -149,7 +152,7 @@ export interface StakeErc20PageSection extends PageSection {
 }
 
 export interface StakeErc155PageSection extends PageSection {
-  type: 'edition-stake';
+  type: "edition-stake";
   settings: {
     network: string;
     address: string;
@@ -157,7 +160,7 @@ export interface StakeErc155PageSection extends PageSection {
 }
 
 export interface StakeErc721PageSection extends PageSection {
-  type: 'nft-stake';
+  type: "nft-stake";
   settings: {
     network: string;
     address: string;
@@ -165,7 +168,7 @@ export interface StakeErc721PageSection extends PageSection {
 }
 
 export interface AirdropErc20PageSection extends PageSection {
-  type: 'airdrop-token';
+  type: "airdrop-token";
   settings: {
     network: string;
     address: string;
@@ -173,7 +176,7 @@ export interface AirdropErc20PageSection extends PageSection {
 }
 
 export interface ClaimAirdropErc20PageSection extends PageSection {
-  type: 'claim-airdrop-token-erc-20';
+  type: "claim-airdrop-token-erc-20";
   settings: {
     network: string;
     address: string;
@@ -181,7 +184,7 @@ export interface ClaimAirdropErc20PageSection extends PageSection {
 }
 
 export interface TokenErc20PageSection extends PageSection {
-  type: 'token';
+  type: "token";
   settings: {
     network: string;
     address: string;
@@ -193,12 +196,12 @@ export interface TokenErc20PageSection extends PageSection {
 }
 
 export interface ExchangePageSection extends PageSection {
-  type: 'exchange';
+  type: "exchange";
   settings: DexkitExchangeSettings;
 }
 
 export interface EditionDropPageSection extends PageSection {
-  type: 'edition-drop-section';
+  type: "edition-drop-section";
   config: {
     network: string;
     address: string;
@@ -207,7 +210,7 @@ export interface EditionDropPageSection extends PageSection {
 }
 
 export interface EditionDropListPageSection extends PageSection {
-  type: 'edition-drop-list-section';
+  type: "edition-drop-list-section";
   config: {
     address: string;
     network: string;
@@ -215,7 +218,7 @@ export interface EditionDropListPageSection extends PageSection {
 }
 
 export interface CodePageSection extends PageSection {
-  type: 'code-page-section';
+  type: "code-page-section";
   config: {
     js: string;
     css: string;
@@ -224,7 +227,7 @@ export interface CodePageSection extends PageSection {
 }
 
 export interface MarketTradePageSection extends PageSection {
-  type: 'market-trade';
+  type: "market-trade";
   config: {
     show: OrderMarketType;
     slippage?: number;
@@ -243,12 +246,12 @@ export interface TokenTradePageSection extends PageSection {
 }
 
 export interface AssetPageSection extends PageSection {
-  type: 'asset-section';
+  type: "asset-section";
   config: AssetFormType;
 }
 
 export interface CollectionPageSection extends PageSection {
-  type: 'collection';
+  type: "collection";
   config: {
     address: string;
     network: string;
@@ -263,11 +266,117 @@ export interface CollectionPageSection extends PageSection {
   };
 }
 
+export interface TokenTradePageSection extends PageSection {
+  type: "token-trade";
+  config: {
+    showTokenDetails?: boolean;
+    show?: OrderMarketType;
+    slippage?: number;
+    baseTokenConfig?: { address?: string; chainId?: number };
+  };
+}
+
 export interface RankingPageSection extends PageSection {
-  type: 'ranking';
+  type: "ranking";
   settings: {
     rankingId?: number;
   };
+}
+
+export type SlideActionLink = {
+  type: 'link';
+  caption?: string;
+  url?: string;
+};
+
+export type SlideActionPage = {
+  type: 'page';
+  page?: string;
+  caption?: string;
+};
+
+export type SlideAction = SlideActionLink | SlideActionPage;
+
+export interface CarouselSlide {
+  title: string;
+  subtitle?: string;
+  imageUrl: string;
+  textColor?: string;
+  overlayColor?: string;
+  overlayPercentage?: number;
+  action?: SlideAction;
+}
+
+export interface CarouselFormType {
+  interval?: number;
+  height?: {
+    mobile?: number;
+    desktop?: number;
+  };
+  slides: CarouselSlide[];
+}
+
+export interface CarouselPageSection extends PageSection {
+  type: 'carousel';
+  settings: CarouselFormType;
+}
+
+export type ShowCaseActionLink = {
+  type: 'link';
+  url: string;
+};
+
+export type ShowCaseActionPage = {
+  type: 'page';
+  page: string;
+};
+
+export type ShowCaseAction = ShowCaseActionLink | ShowCaseActionPage;
+
+export type ShowCaseItemAsset = {
+  type: 'asset';
+  contractAddress: string;
+  tokenId: string;
+  chainId: number;
+};
+
+export type ShowCaseItemCollection = {
+  type: 'collection';
+  title?: string;
+  subtitle: string;
+  imageUrl: string;
+  contractAddress: string;
+  tokenId: string;
+  chainId: number;
+};
+
+export type ShowCaseItemImage = {
+  type: 'image';
+  textColor?: string;
+  title: string;
+  subtitle?: string;
+  imageUrl: string;
+  url?: string;
+  page?: string;
+  actionType?: 'link' | 'page';
+};
+
+export type ShowCaseItem =
+  | ShowCaseItemImage
+  | ShowCaseItemAsset
+  | ShowCaseItemCollection;
+
+export type ShowCaseParams = {
+  alignItems: 'center' | 'left' | 'right';
+  itemsSpacing: number;
+  paddingTop: number;
+  paddingBottom: number;
+  items: ShowCaseItem[];
+};
+
+export interface ShowCasePageSection extends PageSection {
+  type: 'showcase';
+  settings: ShowCaseParams;
 }
 
 export type DexGeneratorPageSectionType =
@@ -283,7 +392,7 @@ export type DexGeneratorPageSectionType =
   | ClaimAirdropErc20PageSection;
 
 export interface DexGeneratorPageSection extends PageSection {
-  type: 'dex-generator-section';
+  type: "dex-generator-section";
   contract?: DeployedContract;
   section?: DexGeneratorPageSectionType;
 }
@@ -308,7 +417,11 @@ export type AppPageSection =
   | DexGeneratorPageSection
   | AssetPageSection
   | RankingPageSection
-  | TokenTradePageSection;
+  | TokenTradePageSection
+  | ClaimAirdropErc20PageSection
+  | TokenTradePageSection
+  | CarouselPageSection
+  | ShowCasePageSection;
 
 export interface SectionMetadata {
   type: SectionType;
@@ -316,7 +429,7 @@ export interface SectionMetadata {
   titleId?: string;
   titleDefaultMessage?: string;
   subtitle?: string | React.ReactNode;
-  category?: 'all' | 'cryptocurrency' | 'resources' | 'low-code' | 'nft';
+  category?: "all" | "cryptocurrency" | "resources" | "low-code" | "nft";
   description?: string | React.ReactNode;
   icon?: string | React.ReactNode;
 }

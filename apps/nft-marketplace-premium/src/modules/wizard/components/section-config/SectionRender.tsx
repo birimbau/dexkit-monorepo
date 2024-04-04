@@ -20,6 +20,10 @@ const DexGeneratorSection = dynamic(
     ),
 );
 
+import ShowCaseSection from '../sections/ShowCaseSection';
+
+const CarouselSection = dynamic(() => import('../sections/CarouselSection'));
+
 const AssetSection = dynamic(
   () =>
     import(
@@ -146,6 +150,10 @@ export function SectionRender({ section, useLazy }: Props) {
       return <RankingSection section={section} />;
     } else if (section.type === 'token-trade') {
       return <TokenTradeSection section={section} />;
+    } else if (section.type === 'carousel') {
+      return <CarouselSection section={section} />;
+    } else if (section.type === 'showcase') {
+      return <ShowCaseSection section={section} />;
     }
   };
   const getSection = sectionToRender();
