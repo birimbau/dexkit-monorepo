@@ -37,7 +37,10 @@ export default function SelectIconDialog({
 }: SelectIconDialogProps) {
   const { onClose } = DialogProps;
   const [selectedIcon, setSelectedIcon] = useState<string>();
-  const [filters, setFilters] = useState({ query: "", theme: "Outlined" });
+  const [filters, setFilters] = useState({
+    query: "",
+    theme: "material-icons",
+  });
 
   const handleClose = () => {
     if (onClose) {
@@ -114,17 +117,17 @@ export default function SelectIconDialog({
                   value={filters.theme}
                 >
                   <FormControlLabel
-                    value="Outlined"
+                    value="material-icons"
                     control={<Radio />}
                     label="Outlined"
                   />
                   <FormControlLabel
-                    value="TwoTone"
+                    value="material-icons-two-tone"
                     control={<Radio />}
                     label="TwoTone"
                   />
                   <FormControlLabel
-                    value="Sharp"
+                    value="material-icons-sharp"
                     control={<Radio />}
                     label="Sharp"
                   />
@@ -138,6 +141,7 @@ export default function SelectIconDialog({
               onSelect={handleSelect}
               value={selectedIcon}
               filters={filters}
+              key={filters.theme}
             />
           </Grid>
         </Grid>

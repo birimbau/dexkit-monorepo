@@ -114,11 +114,20 @@ const MainLayout: React.FC<Props> = ({
           display: 'flex',
           flexDirection: 'row',
           alignItems: 'stretch',
+          minHeight: '100vh',
         }}
       >
-        <Paper sx={{ position: 'relative' }} square variant="elevation">
-          <Box sx={{ position: 'sticky', top: 40 }}>
-            <AppDrawer open={isDrawerOpen} onClose={handleCloseDrawer} />
+        <Paper
+          sx={{ position: 'relative', minHeight: '100vh' }}
+          square
+          variant="elevation"
+        >
+          <Box sx={{ position: 'sticky', top: 72 }}>
+            <AppDrawer
+              appConfig={appConfig}
+              open={isDrawerOpen}
+              onClose={handleCloseDrawer}
+            />
           </Box>
         </Paper>
         <Box

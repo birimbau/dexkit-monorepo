@@ -15,6 +15,7 @@ import {
   Button,
   ButtonBase,
   Divider,
+  Icon,
   List,
   ListItem,
   ListItemIcon,
@@ -425,7 +426,8 @@ function Navbar({ appConfig, isPreview }: Props) {
           >
             {(appConfig.menuSettings?.layout?.type === undefined ||
               (appConfig.menuSettings?.layout?.type === 'navbar' &&
-                appConfig.menuSettings?.layout?.variant === 'default')) &&
+                (appConfig.menuSettings?.layout?.variant === 'default' ||
+                  appConfig.menuSettings?.layout?.variant === undefined))) &&
             appConfig.menuTree ? (
               <Stack
                 direction="row"
@@ -440,17 +442,20 @@ function Navbar({ appConfig, isPreview }: Props) {
                   m.children ? (
                     <NavbarMenu menu={m} key={key} isPreview={isPreview} />
                   ) : (
-                    <Link
+                    <Button
                       color="inherit"
                       href={isPreview ? '#' : m.href || '/'}
                       sx={{ fontWeight: 600, textDecoration: 'none' }}
                       key={key}
+                      LinkComponent={Link}
+                      startIcon={
+                        m.data?.iconName ? (
+                          <Icon>{m.data?.iconName}</Icon>
+                        ) : undefined
+                      }
                     >
-                      <FormattedMessage
-                        id={m.name.toLowerCase()}
-                        defaultMessage={m.name}
-                      />
-                    </Link>
+                      {m.name}
+                    </Button>
                   )
                 )}
               </Stack>

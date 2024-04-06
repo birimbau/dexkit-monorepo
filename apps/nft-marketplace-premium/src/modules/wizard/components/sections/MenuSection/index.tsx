@@ -82,22 +82,13 @@ export default function MenuSection(props: Props) {
     };
   };
 
-  const [showSelectIcons, setShowSelectIcons] = useState(false);
+  const [showSelectIcons, setShowSelectIcons] = useState(true);
 
   const handleCloseSelectIcon = () => {
     setShowSelectIcons(false);
   };
 
   const [selectedIndex, setSelectetIndex] = useState(-1);
-
-  const handleConfirmSelectIcon = (iconName: string) => {
-    const items = [...menu];
-
-    items[selectedIndex].data = { iconName };
-
-    onSetMenu(items);
-    setSelectetIndex(-1);
-  };
 
   return (
     <Stack spacing={2}>
@@ -114,16 +105,6 @@ export default function MenuSection(props: Props) {
           onSubmit={onAddMenu}
         />
       )}
-      {showSelectIcons && (
-        <SelectIconDialog
-          DialogProps={{
-            open: showSelectIcons,
-            onClose: handleCloseSelectIcon,
-          }}
-          onConfirm={handleConfirmSelectIcon}
-        />
-      )}
-
       <Button
         variant="outlined"
         onClick={handleAddMenuPage}
@@ -143,6 +124,17 @@ export default function MenuSection(props: Props) {
           onUpdateItem={handleUpdateItem(index)}
           disableUp={index === 0}
           disableDown={index === arr.length - 1}
+          renderSelectIcon={(onConfirm, onClose, open) => (
+            <SelectIconDialog
+              DialogProps={{
+                open,
+                onClose: onClose,
+                fullWidth: true,
+                maxWidth: 'sm',
+              }}
+              onConfirm={onConfirm}
+            />
+          )}
         />
       ))}
     </Stack>

@@ -245,9 +245,7 @@ export function NavbarLayoutContainer({
   onChange,
   onHasChanges,
 }: Props) {
-  const handleSubmit = (values: MenuSettings) => {
-    console.log('save');
-
+  const handleSubmit = async (values: MenuSettings) => {
     onSave({ ...config, menuSettings: values });
   };
 
@@ -270,9 +268,8 @@ export function NavbarLayoutContainer({
       }}
       validationSchema={toFormikValidationSchema(formSchema)}
     >
-      {({ submitForm, values, isValid, isSubmitting, errors }) => (
+      {({ submitForm, values, isValid, isSubmitting }) => (
         <Grid container spacing={2}>
-          {JSON.stringify(errors)}
           <Grid item xs={12} sm={4}>
             <FormControl fullWidth>
               <Field
@@ -292,27 +289,32 @@ export function NavbarLayoutContainer({
               </Field>
             </FormControl>
           </Grid>
-          {values.layout?.type === 'sidebar' && (
-            <Grid item xs={12} sm={4}>
-              <FormControl fullWidth>
-                <Field
-                  fullWidth
-                  component={Select}
-                  name="layout.variant"
-                  label={
-                    <FormattedMessage id="variant" defaultMessage="Variant" />
-                  }
-                >
-                  <MenuItem value="default">
-                    <FormattedMessage id="default" defaultMessage="Default" />
-                  </MenuItem>
+          <Grid item xs={12} sm={4}>
+            <FormControl fullWidth>
+              <Field
+                fullWidth
+                component={Select}
+                name="layout.variant"
+                label={
+                  <FormattedMessage id="variant" defaultMessage="Variant" />
+                }
+              >
+                <MenuItem value="default">
+                  <FormattedMessage id="default" defaultMessage="Default" />
+                </MenuItem>
+                {values.layout?.type === 'sidebar' && (
                   <MenuItem value="mini">
                     <FormattedMessage id="mini" defaultMessage="Mini" />
                   </MenuItem>
-                </Field>
-              </FormControl>
-            </Grid>
-          )}
+                )}
+                {values.layout?.type === 'navbar' && (
+                  <MenuItem value="alt">
+                    <FormattedMessage id="alt" defaultMessage="Alt" />
+                  </MenuItem>
+                )}
+              </Field>
+            </FormControl>
+          </Grid>
 
           <Grid item xs={12}>
             <Divider />

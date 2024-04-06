@@ -8,6 +8,7 @@ import Image from '@mui/icons-material/Image';
 import {
   Box,
   Collapse,
+  Icon,
   IconButton,
   List,
   ListItem,
@@ -17,7 +18,7 @@ import {
   SvgIcon,
 } from '@mui/material';
 import dynamic from 'next/dynamic';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { AppPage, MenuTree } from 'src/types/config';
 
 const AddMenuPageDialog = dynamic(
@@ -47,6 +48,11 @@ export interface MenuItemTreeProps {
   disableUp: boolean;
   disableDown: boolean;
   disableMenu?: boolean;
+  renderSelectIcon: (
+    onSelect: (iconName: string) => void,
+    onClose: () => void,
+    open: boolean
+  ) => React.ReactNode;
 }
 
 export default function MenuItemTree({
@@ -59,11 +65,17 @@ export default function MenuItemTree({
   disableUp,
   disableDown,
   pages,
+  renderSelectIcon,
 }: MenuItemTreeProps) {
   const [expanded, setExpanded] = useState(false);
 
   const [openAdd, setOpenAdd] = useState(false);
   const [showSelectIcons, setShowSelectIcons] = useState(false);
+
+  const handleConfirmSelectIcon = (iconName: string) => {
+    onUpdateItem({ ...item, data: { iconName } });
+    setShowSelectIcons(false);
+  };
 
   const handleShowSelectIcon = () => {
     setShowSelectIcons(true);
@@ -71,16 +83,6 @@ export default function MenuItemTree({
 
   const handleCloseSelectIcon = () => {
     setShowSelectIcons(false);
-  };
-
-  const handleConfirmSelectIcon = (iconName: string) => {
-    const newItem = { ...item };
-
-    if (newItem) {
-      newItem.data = { iconName };
-
-      onUpdateItem(newItem);
-    }
   };
 
   const handleUp = (index: number) => {
@@ -153,64 +155,95 @@ export default function MenuItemTree({
 
   if (item.type === 'Page') {
     return (
-      <ListItem>
-        <ListItemText primary={item.name} />
-        <Stack
-          spacing={0.5}
-          alignItems="center"
-          alignContent="center"
-          direction="row"
-        >
-          <IconButton disabled={disableUp} onClick={onUp}>
-            <ArrowUpward />
-          </IconButton>
-          <IconButton disabled={disableDown} onClick={onDown}>
-            <ArrowDownward />
-          </IconButton>
-          <IconButton onClick={onRemove}>
-            <Delete />
-          </IconButton>
-        </Stack>
-      </ListItem>
+      <>
+        {showSelectIcons &&
+          renderSelectIcon(
+            handleConfirmSelectIcon,
+            handleCloseSelectIcon,
+            showSelectIcons
+          )}
+        <ListItem sx={{ pl: depth * 2 }}>
+          <ListItemIcon>
+            <IconButton onClick={handleShowSelectIcon}>
+              {item.data?.iconName ? (
+                <Icon>{item.data?.iconName}</Icon>
+              ) : (
+                <Image />
+              )}
+            </IconButton>
+          </ListItemIcon>
+          <ListItemText primary={item.name} />
+          <Stack
+            spacing={0.5}
+            alignItems="center"
+            alignContent="center"
+            direction="row"
+          >
+            <IconButton disabled={disableUp} onClick={onUp}>
+              <ArrowUpward />
+            </IconButton>
+            <IconButton disabled={disableDown} onClick={onDown}>
+              <ArrowDownward />
+            </IconButton>
+            <IconButton onClick={onRemove}>
+              <Delete />
+            </IconButton>
+          </Stack>
+        </ListItem>
+      </>
     );
   }
 
   if (item.type === 'External') {
     return (
-      <ListItem>
-        <ListItemIcon>
-          <IconButton onClick={handleShowSelectIcon}>
-            {item.data?.iconName ? (
-              '<DynamicIcon iconName={item.data.iconName} />'
-            ) : (
-              <Image />
-            )}
-          </IconButton>
-        </ListItemIcon>
-        <ListItemText primary={item.name} />
-        <Stack
-          spacing={0.5}
-          alignItems="center"
-          alignContent="center"
-          direction="row"
-        >
-          <IconButton disabled={disableUp} onClick={onUp}>
-            <ArrowUpward />
-          </IconButton>
-          <IconButton disabled={disableDown} onClick={onDown}>
-            <ArrowDownward />
-          </IconButton>
-          <IconButton onClick={onRemove}>
-            <Delete />
-          </IconButton>
-        </Stack>
-      </ListItem>
+      <>
+        {showSelectIcons &&
+          renderSelectIcon(
+            handleConfirmSelectIcon,
+            handleCloseSelectIcon,
+            showSelectIcons
+          )}
+        <ListItem sx={{ pl: depth * 2 }}>
+          <ListItemIcon>
+            <IconButton onClick={handleShowSelectIcon}>
+              {item.data?.iconName ? (
+                <Icon>{item.data?.iconName}</Icon>
+              ) : (
+                <Image />
+              )}
+            </IconButton>
+          </ListItemIcon>
+          <ListItemText primary={item.name} />
+          <Stack
+            spacing={0.5}
+            alignItems="center"
+            alignContent="center"
+            direction="row"
+          >
+            <IconButton disabled={disableUp} onClick={onUp}>
+              <ArrowUpward />
+            </IconButton>
+            <IconButton disabled={disableDown} onClick={onDown}>
+              <ArrowDownward />
+            </IconButton>
+            <IconButton onClick={onRemove}>
+              <Delete />
+            </IconButton>
+          </Stack>
+        </ListItem>
+      </>
     );
   }
 
   if (item.type === 'Menu') {
     return (
-      <Box sx={{ pl: depth * 2 }}>
+      <Box>
+        {showSelectIcons &&
+          renderSelectIcon(
+            handleConfirmSelectIcon,
+            handleCloseSelectIcon,
+            showSelectIcons
+          )}
         {openAdd && (
           <AddMenuPageDialog
             key={`${depth}-dialog`}
@@ -221,22 +254,22 @@ export default function MenuItemTree({
               onClose: () => setOpenAdd(false),
             }}
             pages={pages}
-            onCancel={() => {}}
+            onCancel={() => setOpenAdd(false)}
             onSubmit={handleAdd}
             fatherIndex={0}
             disableMenu={depth === 2}
           />
         )}
-        {showSelectIcons && (
-          <SelectIconDialog
-            DialogProps={{
-              open: showSelectIcons,
-              onClose: handleCloseSelectIcon,
-            }}
-            onConfirm={handleConfirmSelectIcon}
-          />
-        )}
-        <ListItem>
+        <ListItem sx={{ pl: depth * 2 }}>
+          <ListItemIcon>
+            <IconButton onClick={handleShowSelectIcon}>
+              {item.data?.iconName ? (
+                <Icon>{item.data?.iconName}</Icon>
+              ) : (
+                <Image />
+              )}
+            </IconButton>
+          </ListItemIcon>
           <ListItemText primary={item.name} />
           <Stack
             spacing={0.5}
@@ -275,6 +308,7 @@ export default function MenuItemTree({
                 depth={depth + 1}
                 disableUp={key === 0}
                 disableDown={key === arr.length - 1}
+                renderSelectIcon={renderSelectIcon}
               />
             ))}
           </List>

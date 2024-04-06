@@ -1,7 +1,6 @@
-import { Box, Grid, IconButton, SvgIcon, useTheme } from "@mui/material";
+import { Box, Grid, Icon, IconButton, useTheme } from "@mui/material";
 
 import { chunk } from "@dexkit/core/utils";
-import * as mui from "@mui/icons-material";
 import { useCallback, useMemo } from "react";
 import { FixedSizeList, ListChildComponentProps } from "react-window";
 
@@ -11,28 +10,23 @@ export interface SelectIconGridProps {
   filters?: { query?: string; theme?: string };
 }
 
+import { MUI_ICONS } from "@dexkit/ui/constants/icons";
+
 export default function SelectIconGrid({
   onSelect,
   value,
   filters,
 }: SelectIconGridProps) {
   const icons = useMemo(() => {
-    return Object.keys(mui)
-      .sort()
-      .filter((key) => {
-        if (filters?.theme) {
-          return key.indexOf(filters?.theme) > -1;
-        }
-
-        return true;
-      })
-      .filter((key) => {
-        if (filters?.query) {
-          return key.toLowerCase().indexOf(filters.query.toLowerCase()) > -1;
-        }
-        return true;
-      });
+    return MUI_ICONS.sort().filter((key) => {
+      if (filters?.query) {
+        return key.toLowerCase().indexOf(filters.query.toLowerCase()) > -1;
+      }
+      return true;
+    });
   }, [filters]);
+
+  console.log(filters?.theme, "theme");
 
   const theme = useTheme();
 
@@ -67,7 +61,7 @@ export default function SelectIconGrid({
                     }
                     onClick={() => onSelect(iconName)}
                   >
-                    <SvgIcon component={mui[iconName as keyof typeof mui]} />
+                    <Icon baseClassName={filters?.theme}>{iconName}</Icon>
                   </IconButton>
                 </Box>
               </Grid>
