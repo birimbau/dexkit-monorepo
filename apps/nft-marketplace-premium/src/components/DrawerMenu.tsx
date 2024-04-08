@@ -6,6 +6,7 @@ import ExpandMore from '@mui/icons-material/ExpandMore';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import {
+  Avatar,
   Collapse,
   Divider,
   Icon,
@@ -13,6 +14,7 @@ import {
   ListItemSecondaryAction,
   ListItemText,
   Menu,
+  NoSsr,
   Stack,
   alpha,
   styled,
@@ -166,7 +168,13 @@ export function DrawerMenuItem({
               p: 0.5,
             }}
           >
-            <Icon>{menu.data?.iconName ? menu.data?.iconName : ''}</Icon>
+            {menu.data?.iconName && <Icon>{menu.data?.iconName}</Icon>}
+
+            {isMini && !menu.data?.iconName && depth === 1 && (
+              <Avatar sx={{ width: '1.5rem', height: '1.5rem' }}>
+                {menu.name.substring(0, 1)}
+              </Avatar>
+            )}
           </Stack>
           {!isMini && <ListItemText primary={menu.name} />}
           {!onlyIcon && (
@@ -231,19 +239,21 @@ export function DrawerMenuItem({
 
 export default function DrawerMenu({ menu, onClose, isMini }: DrawerMenuProps) {
   return (
-    <List disablePadding sx={{ display: 'block' }}>
-      {menu.map((m, key) => (
-        <DrawerMenuItem
-          menu={m}
-          onClose={onClose}
-          key={key}
-          depth={1}
-          isMini={isMini}
-          useMenu={isMini}
-          onlyIcon={isMini}
-          disablePadding={isMini}
-        />
-      ))}
-    </List>
+    <NoSsr>
+      <List disablePadding sx={{ display: 'block' }}>
+        {menu.map((m, key) => (
+          <DrawerMenuItem
+            menu={m}
+            onClose={onClose}
+            key={key}
+            depth={1}
+            isMini={isMini}
+            useMenu={isMini}
+            onlyIcon={isMini}
+            disablePadding={isMini}
+          />
+        ))}
+      </List>
+    </NoSsr>
   );
 }

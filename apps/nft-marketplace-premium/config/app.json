@@ -46,20 +46,11 @@
       "name": "App version"
     }
   ],
-  "menuSettings": {
-    "layout": {
-      "type": "navbar",
-      "variant": "default"
-    }
-  },
   "menuTree": [
     {
       "type": "Menu",
       "href": "",
       "name": "App Builder",
-      "data": {
-        "iconName": "abc"
-      },
       "children": [
         {
           "type": "Page",
@@ -118,7 +109,6 @@
     {
       "type": "Menu",
       "href": "",
-      "data": { "iconName": "check" },
       "name": "DexGenerator",
       "children": [
         {
@@ -141,7 +131,6 @@
     {
       "type": "Menu",
       "href": "",
-      "data": { "iconName": "home" },
       "name": "Support",
       "children": [
         {

@@ -1,5 +1,6 @@
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import {
+  Avatar,
   Icon,
   ListItemButton,
   ListItemIcon,
@@ -62,11 +63,13 @@ export default function NavbarMenu(props: Props) {
           LinkComponent={Link}
           href={item.href || ''}
         >
-          {item.data?.iconName && (
-            <ListItemIcon>
+          <ListItemIcon>
+            {item.data?.iconName ? (
               <Icon>{item.data?.iconName}</Icon>
-            </ListItemIcon>
-          )}
+            ) : (
+              <Avatar>{item.data?.iconName}</Avatar>
+            )}
+          </ListItemIcon>
 
           <ListItemText primary={item.name} />
         </ListItemButton>

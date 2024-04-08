@@ -112,7 +112,7 @@ function AppDrawer({ open, onClose, appConfig }: Props) {
       >
         <Stack
           direction="row"
-          justifyContent={isMiniSidebar || isMini ? 'center' : 'flex-start'}
+          justifyContent={isMiniSidebar || isMini ? 'center' : 'flex-end'}
           px={1}
           py={1}
         >

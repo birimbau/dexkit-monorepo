@@ -254,7 +254,13 @@ export function NavbarLayoutContainer({
       onSubmit={handleSubmit}
       initialValues={
         config.menuSettings
-          ? config.menuSettings
+          ? {
+              ...config.menuSettings,
+              layout: {
+                type: config.menuSettings.layout?.type || 'navbar',
+                variant: config.menuSettings.layout?.variant || 'default',
+              },
+            }
           : {
               layout: {
                 type: 'navbar',

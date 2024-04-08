@@ -67,7 +67,7 @@ export default function MenuItemTree({
   pages,
   renderSelectIcon,
 }: MenuItemTreeProps) {
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(true);
 
   const [openAdd, setOpenAdd] = useState(false);
   const [showSelectIcons, setShowSelectIcons] = useState(false);
