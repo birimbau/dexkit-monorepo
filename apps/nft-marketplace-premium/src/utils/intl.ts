@@ -38,6 +38,8 @@ export function loadLocaleMessages(locale: string) {
       return import('../../compiled-lang/fr-FR.json');
     case "it-IT":
       return import('../../compiled-lang/it-IT.json');
+    case "cs-CZ":
+        return import('../../compiled-lang/cs-CZ.json');
     default:
       return import('../../compiled-lang/en-US.json');
   }

@@ -1,4 +1,7 @@
 {
+  "AI": {
+    "defaultMessage": "AI"
+  },
   "Create.Order": {
     "defaultMessage": "Create Order"
   },
@@ -22,8 +25,23 @@
   "accounts": {
     "defaultMessage": "Accounts"
   },
+  "activate": {
+    "defaultMessage": "Activate AI"
+  },
+  "activate.ai": {
+    "defaultMessage": "Activate AI"
+  },
+  "add": {
+    "defaultMessage": "Add"
+  },
   "add.addresses.to.airdrop": {
     "defaultMessage": "Add addresses to airdrop"
+  },
+  "add.credit": {
+    "defaultMessage": "Add Credit"
+  },
+  "add.credits": {
+    "defaultMessage": "Add credits"
   },
   "add.image": {
     "defaultMessage": "Add image"
@@ -41,11 +59,35 @@
   "advanced.info": {
     "defaultMessage": "Only the address entered below can buy this listing. If empty, any account can buy this listing."
   },
+  "ai.activated": {
+    "defaultMessage": "AI Activated"
+  },
+  "ai.assistant": {
+    "defaultMessage": "AI Assistant"
+  },
+  "ai.completation": {
+    "defaultMessage": "AI Completation"
+  },
+  "ai.edit": {
+    "defaultMessage": "AI Edit"
+  },
+  "ai.generator": {
+    "defaultMessage": "AI Generator"
+  },
+  "ai.image.generator": {
+    "defaultMessage": "AI Image Generator"
+  },
   "airdrop": {
     "defaultMessage": "Airdrop"
   },
   "amount": {
     "defaultMessage": "Amount"
+  },
+  "answer": {
+    "defaultMessage": "Answer:"
+  },
+  "artificial.inteligence": {
+    "defaultMessage": "Artificial Inteligence"
   },
   "asset.will.be.added.to.favorites": {
     "defaultMessage": "This asset will be added to your favorites"
@@ -60,8 +102,14 @@
   "available.balance": {
     "defaultMessage": "Available Balance"
   },
+  "back": {
+    "defaultMessage": "Back"
+  },
   "balance": {
     "defaultMessage": "Balance"
+  },
+  "billing.and.usage": {
+    "defaultMessage": "Billing & Usage"
   },
   "block.explorer": {
     "defaultMessage": "Block explorer"
@@ -93,6 +141,9 @@
   "cancel": {
     "defaultMessage": "Cancel"
   },
+  "change.cat.head": {
+    "defaultMessage": "ex. Change cat head"
+  },
   "changing.network": {
     "defaultMessage": "Changing Network"
   },
@@ -107,6 +158,9 @@
   },
   "close": {
     "defaultMessage": "Close"
+  },
+  "close.anyway": {
+    "defaultMessage": "Close anyway"
   },
   "coin": {
     "defaultMessage": "Coin"
@@ -183,6 +237,15 @@
   "creating.an.offer": {
     "defaultMessage": "Creating an offer"
   },
+  "credit.card.soming.soon": {
+    "defaultMessage": "Credit Card (Coming Soon)"
+  },
+  "credits.below0.50": {
+    "defaultMessage": "Your credits are now below $0.50. Please consider adding more credits to continue using our services."
+  },
+  "cryptocurrency": {
+    "defaultMessage": "Cryptocurrency"
+  },
   "date": {
     "defaultMessage": "Date"
   },
@@ -198,6 +261,9 @@
   "default.slippage.percentage": {
     "defaultMessage": "Default slippage (0-50%)"
   },
+  "delete": {
+    "defaultMessage": "Delete"
+  },
   "delete.column": {
     "defaultMessage": "Delete column"
   },
@@ -207,6 +273,9 @@
   "description": {
     "defaultMessage": "Description",
     "description": "Description Accordion"
+  },
+  "deselect.all": {
+    "defaultMessage": "Deselect All"
   },
   "details": {
     "defaultMessage": "Details"
@@ -244,11 +313,17 @@
   "error.while.burning": {
     "defaultMessage": "Error while burning"
   },
+  "error.while.generating.images": {
+    "defaultMessage": "Error while generating images"
+  },
   "error.while.importing.nft": {
     "defaultMessage": "Error while importing NFT: {error}"
   },
   "error.while.transferring": {
     "defaultMessage": "Error while transferring"
+  },
+  "ex.an.image.of.a.cat": {
+    "defaultMessage": "ex. An image of a cat"
   },
   "execute": {
     "defaultMessage": "Execute"
@@ -275,14 +350,38 @@
   "filters": {
     "defaultMessage": "Filters"
   },
+  "fix.spelling.and.grammar": {
+    "defaultMessage": "Fix spelling and grammar"
+  },
   "gallery": {
-    "defaultMessage": "Gallery"
+    "defaultMessage": "Gallery 1"
   },
   "gas.cost": {
     "defaultMessage": "Gas cost"
   },
   "gas.price": {
     "defaultMessage": "Gas price"
+  },
+  "generate": {
+    "defaultMessage": "Generate"
+  },
+  "generate.image": {
+    "defaultMessage": "Generate image"
+  },
+  "generate.new.text": {
+    "defaultMessage": "Generate new text"
+  },
+  "generate.variant": {
+    "defaultMessage": "Generate variant"
+  },
+  "generate.variants": {
+    "defaultMessage": "Generate Variants"
+  },
+  "generating": {
+    "defaultMessage": "Generating"
+  },
+  "generating.variants": {
+    "defaultMessage": "Generating Variants"
   },
   "hide": {
     "defaultMessage": "Hide"
@@ -302,6 +401,12 @@
   "image.deleted": {
     "defaultMessage": "Image deleted"
   },
+  "images.generated": {
+    "defaultMessage": "Images generated"
+  },
+  "images.notGenerated": {
+    "defaultMessage": "You haven't generated any images yet. Start generating images now to make the most out of our service."
+  },
   "import": {
     "defaultMessage": "Import"
   },
@@ -313,6 +418,9 @@
   },
   "import.token": {
     "defaultMessage": "Import token"
+  },
+  "improve.writing": {
+    "defaultMessage": "Improve writing"
   },
   "insufficient.funds": {
     "defaultMessage": "insufficient funds"
@@ -326,11 +434,20 @@
   "invalid.price": {
     "defaultMessage": "Invalid price"
   },
+  "least.recent": {
+    "defaultMessage": "Least recent"
+  },
   "listing.price": {
     "defaultMessage": "Listing price"
   },
   "logout.wallet": {
     "defaultMessage": "Logout wallet"
+  },
+  "make.longer": {
+    "defaultMessage": "Make longer"
+  },
+  "make.shorter": {
+    "defaultMessage": "Make shorter"
   },
   "max.fee": {
     "defaultMessage": "Max fee"
@@ -349,6 +466,9 @@
   },
   "mint.token.value": {
     "defaultMessage": "Mint token \"{tokenName}\""
+  },
+  "most.recent": {
+    "defaultMessage": "Most recent"
   },
   "name": {
     "defaultMessage": "Name"
@@ -384,8 +504,14 @@
     "defaultMessage": "No Available offers",
     "description": "No Available offers message"
   },
+  "no.credits": {
+    "defaultMessage": "No Credits"
+  },
   "no.hidden.nfts.found": {
     "defaultMessage": "No hidden NFTs Found"
+  },
+  "no.images": {
+    "defaultMessage": "No Images"
   },
   "no.images.found.with.that.name": {
     "defaultMessage": "No images found with that name."
@@ -418,6 +544,15 @@
   "notifications": {
     "defaultMessage": "Notifications"
   },
+  "num.of.images": {
+    "defaultMessage": "Num. of Images"
+  },
+  "num.of.variant": {
+    "defaultMessage": "Num of variants"
+  },
+  "num.of.variants": {
+    "defaultMessage": "Num. of variants"
+  },
   "offer": {
     "defaultMessage": "Offer"
   },
@@ -433,11 +568,20 @@
   "orders": {
     "defaultMessage": "Orders"
   },
+  "original.image": {
+    "defaultMessage": "Original image"
+  },
   "owned.by": {
     "defaultMessage": "Owned by"
   },
   "owned.by.owner": {
     "defaultMessage": "Owned by {owner}"
+  },
+  "payment.confirmation.message": {
+    "defaultMessage": "Please wait for 10 confirmations for payment recognition."
+  },
+  "payment.method": {
+    "defaultMessage": "Payment method"
   },
   "please.connect.your.wallet": {
     "defaultMessage": "Please, connect your wallet to see orders"
@@ -468,6 +612,9 @@
   },
   "price.fiat": {
     "defaultMessage": "Price {currency}"
+  },
+  "prompt": {
+    "defaultMessage": "Prompt"
   },
   "provider.not.found": {
     "defaultMessage": "Provider not found"
@@ -502,8 +649,14 @@
   "save.column": {
     "defaultMessage": "Save column"
   },
+  "save.generated.images": {
+    "defaultMessage": "Save generated images?"
+  },
   "save.your.row.changes.before.confirm": {
     "defaultMessage": "Save your row changes before confirm"
+  },
+  "saved": {
+    "defaultMessage": "Saved"
   },
   "scan.using.crypto.mobile.app": {
     "defaultMessage": "Scan QR code using crypto mobile app like Metamask or Trust"
@@ -527,8 +680,10 @@
     "defaultMessage": "Search not returned results. Try other search words."
   },
   "select": {
-    "defaultMessage": "Select",
-    "description": "select"
+    "defaultMessage": "Select"
+  },
+  "select.all": {
+    "defaultMessage": "Select All"
   },
   "select.currency": {
     "defaultMessage": "Select currency",
@@ -560,6 +715,9 @@
   "sent.to": {
     "defaultMessage": "Sent to"
   },
+  "settings": {
+    "defaultMessage": "Settings"
+  },
   "share": {
     "defaultMessage": "Share"
   },
@@ -585,6 +743,9 @@
   "something.went.wrong": {
     "defaultMessage": "Oops, something went wrong",
     "description": "Something went wrong error message"
+  },
+  "sort.by": {
+    "defaultMessage": "Sort by"
   },
   "start.posting.offers.collection": {
     "defaultMessage": "Start posting offers for this collection",
@@ -621,6 +782,12 @@
   },
   "the.buyer.will.pay.percentage.in.fees": {
     "defaultMessage": "The buyer will pay {price} {symbol} +{percentage} in fees"
+  },
+  "the.maximum.is.95": {
+    "defaultMessage": "the maximum is 95"
+  },
+  "the.minimum.is.five": {
+    "defaultMessage": "the minimum is 5"
   },
   "the.nft.has.no.metadata": {
     "defaultMessage": "The NFT has no metadata"
@@ -701,6 +868,9 @@
   "unknown.token": {
     "defaultMessage": "Unknown token"
   },
+  "unlock.the.power.of.artificial.intelligence.by.activating.it": {
+    "defaultMessage": "Unlock the power of artificial intelligence by activating it"
+  },
   "upload": {
     "defaultMessage": "Upload"
   },
@@ -710,11 +880,20 @@
   "uploading": {
     "defaultMessage": "Uploading"
   },
+  "use": {
+    "defaultMessage": "use"
+  },
+  "use.as.prompt": {
+    "defaultMessage": "use as prompt"
+  },
   "validating": {
     "defaultMessage": "Validating"
   },
   "validating.ens": {
     "defaultMessage": "Validating ENS name"
+  },
+  "variants": {
+    "defaultMessage": "Variants"
   },
   "view": {
     "defaultMessage": "view"
@@ -734,6 +913,9 @@
   "view.transaction": {
     "defaultMessage": "View Transaction",
     "description": "View transaction"
+  },
+  "waiting.payment": {
+    "defaultMessage": "Waiting payment"
   },
   "wallet": {
     "defaultMessage": "Wallet"
@@ -758,6 +940,9 @@
   },
   "you.dont.have.any.forms": {
     "defaultMessage": "You don't have any forms yet"
+  },
+  "you.need.to.add.credits.to.use.ai.features": {
+    "defaultMessage": "You need to add credits to use AI features"
   },
   "you.need.to.hold.kit.value": {
     "defaultMessage": "You need to hold {value} KIT on one of these networks: BSC, ETH, or Polygon to use this feature"
