@@ -9,15 +9,15 @@ import { NETWORKS } from "../constants/networks";
 import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "../constants/zrx";
 import { EvmCoin, TokenWhitelabelApp } from "../types";
 
-
 export * from "./ipfs";
 export * from "./numbers";
 
-
 export const omitNull = (obj: any) => {
-  Object.keys(obj).filter(k => obj[k] === null).forEach(k => delete (obj[k]))
-  return obj
-}
+  Object.keys(obj)
+    .filter((k) => obj[k] === null)
+    .forEach((k) => delete obj[k]);
+  return obj;
+};
 
 export function parseChainId(chainId: string | number) {
   return typeof chainId === "number"
@@ -46,7 +46,6 @@ export const truncateAddress = (address: string | undefined) => {
   return "";
 };
 
-
 export const truncateHash = (hash: string | undefined) => {
   if (hash !== undefined) {
     return `${hash.slice(0, 7)}...${hash.slice(hash.length - 5)}`;
@@ -56,14 +55,17 @@ export const truncateHash = (hash: string | undefined) => {
 
 export const beautifyCamelCase = (camelCase: string | undefined) => {
   if (camelCase) {
-    return camelCase.replace(/([A-Z])/g, ' $1')
-      // uppercase the first character
-      .replace(/^./, function (str) { return str.toUpperCase(); })
+    return (
+      camelCase
+        .replace(/([A-Z])/g, " $1")
+        // uppercase the first character
+        .replace(/^./, function (str) {
+          return str.toUpperCase();
+        })
+    );
   }
-  return
-}
-
-
+  return;
+};
 
 export function hasLondonHardForkSupport(chainId: ChainId) {
   switch (chainId) {
@@ -140,7 +142,13 @@ export function getBlockExplorerUrl(chainId?: number) {
   }
 }
 
-export function getTokenBlockExplorerUrl({ chainId, address }: { chainId?: number, address?: string }) {
+export function getTokenBlockExplorerUrl({
+  chainId,
+  address,
+}: {
+  chainId?: number;
+  address?: string;
+}) {
   if (chainId && address) {
     return `${NETWORKS[chainId].explorerUrl}/token/${address}`;
   }
@@ -272,4 +280,16 @@ export function getChainName(chainId?: number) {
   if (chainId) {
     return NETWORKS[chainId]?.name || `0x${chainId.toString(16)}`;
   }
+}
+
+export function chunk<T>(arr: T[], size: number) {
+  const chunkSize = size;
+  const chunks = [];
+
+  for (let i = 0; i < arr.length; i += chunkSize) {
+    const chunk = arr.slice(i, i + chunkSize);
+    chunks.push(chunk);
+  }
+
+  return chunks;
 }

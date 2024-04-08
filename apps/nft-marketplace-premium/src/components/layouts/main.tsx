@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   NoSsr,
+  Paper,
   Stack,
   Typography,
   useColorScheme,
@@ -21,6 +22,7 @@ import { ErrorBoundary } from 'react-error-boundary';
 import { FormattedMessage } from 'react-intl';
 import { Footer } from '../Footer';
 import Navbar from '../Navbar';
+import NavbarAlt from '../NavbarAlt';
 import { GlobalDialogs } from './GlobalDialogs';
 
 interface Props {
@@ -43,6 +45,7 @@ const MainLayout: React.FC<Props> = ({
 
   const defaultAppConfig = useAppConfig();
   const appNFT = useAppNFT();
+
   const appConfig = useMemo(() => {
     if (appConfigProps) {
       return appConfigProps;
@@ -84,48 +87,76 @@ const MainLayout: React.FC<Props> = ({
         </Stack>
       )}
     >
-      {isDrawerOpen && (
-        <AppDrawer open={isDrawerOpen} onClose={handleCloseDrawer} />
-      )}
       <GlobalDialogs />
 
+      <Navbar appConfig={appConfig} isPreview={isPreview} />
+      <NavbarAlt appConfig={appConfig} isPreview={isPreview} />
+
       <Box
-        style={{
-          minHeight: '100vh',
-          margin: 0,
+        sx={{
           display: 'flex',
-          flexDirection: 'column',
+          flexDirection: 'row',
+          alignItems: 'stretch',
+          minHeight: '100vh',
         }}
       >
-        <Navbar appConfig={appConfig} isPreview={isPreview} />
-        <Box sx={{ flex: 1 }} py={disablePadding ? 0 : 4}>
-          <ErrorBoundary
-            fallbackRender={({ error, resetErrorBoundary }) => (
-              <Stack justifyContent="center" alignItems="center">
-                <Typography variant="h6">
-                  <FormattedMessage
-                    id="something.went.wrong"
-                    defaultMessage="Oops, something went wrong"
-                    description="Something went wrong error message"
-                  />
-                </Typography>
-                <Typography variant="body1" color="textSecondary">
-                  {String(error)}
-                </Typography>
-                <Button color="primary" onClick={resetErrorBoundary}>
-                  <FormattedMessage
-                    id="try.again"
-                    defaultMessage="Try again"
-                    description="Try again"
-                  />
-                </Button>
-              </Stack>
-            )}
-          >
-            {children}
-          </ErrorBoundary>
+        <Paper
+          sx={{ position: 'relative', minHeight: '100vh' }}
+          square
+          variant="elevation"
+        >
+          <Box sx={{ position: 'sticky', top: 72 }}>
+            <AppDrawer
+              appConfig={appConfig}
+              open={isDrawerOpen}
+              onClose={handleCloseDrawer}
+            />
+          </Box>
+        </Paper>
+        <Box
+          style={{
+            flex: 1,
+            margin: 0,
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+        >
+          <Box sx={{ flex: 1 }} py={disablePadding ? 0 : 4}>
+            <ErrorBoundary
+              fallbackRender={({ error, resetErrorBoundary }) => (
+                <Stack justifyContent="center" alignItems="center">
+                  <Typography variant="h6">
+                    <FormattedMessage
+                      id="something.went.wrong"
+                      defaultMessage="Oops, something went wrong"
+                      description="Something went wrong error message"
+                    />
+                  </Typography>
+                  <Typography variant="body1" color="textSecondary">
+                    {String(error)}
+                  </Typography>
+                  <Button color="primary" onClick={resetErrorBoundary}>
+                    <FormattedMessage
+                      id="try.again"
+                      defaultMessage="Try again"
+                      description="Try again"
+                    />
+                  </Button>
+                </Stack>
+              )}
+            >
+              {children}
+            </ErrorBoundary>
+          </Box>
+
+          <Box>
+            <Footer
+              appConfig={appConfig}
+              isPreview={isPreview}
+              appNFT={appNFT}
+            />
+          </Box>
         </Box>
-        <Footer appConfig={appConfig} isPreview={isPreview} appNFT={appNFT} />
       </Box>
     </ErrorBoundary>
   );

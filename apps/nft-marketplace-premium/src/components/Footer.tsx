@@ -21,7 +21,7 @@ import { FormattedMessage } from 'react-intl';
 import { AssetAPI } from 'src/types/nft';
 import { AppConfig, SocialMedia } from '../types/config';
 import Link from './Link';
-import NavbarMenu from './Menu';
+import NavbarMenu from './NavbarMenu';
 
 interface Props {
   appNFT?: AssetAPI;

@@ -18,7 +18,6 @@ import {
 import { useMemo } from 'react';
 import { AppExpandableTypography } from 'src/components/AppExpandableTypography';
 import Link from 'src/components/Link';
-
 import { getNetworkSlugFromChainId } from 'src/utils/blockchain';
 
 export interface ShowCaseCardProps {
@@ -56,7 +55,7 @@ export default function ShowCaseCard({ item }: ShowCaseCardProps) {
           contractAddress: item.contractAddress,
           provider: providerQuery.data,
         }
-      : undefined,
+      : undefined
   );
 
   if (item.type === 'image') {

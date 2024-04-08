@@ -6,7 +6,14 @@ import { Token } from './blockchain';
 
 export type VideoEmbedType = 'youtube' | 'vimeo';
 
-export type SocialMediaTypes = 'instagram' | 'facebook' | 'twitter' | 'youtube' | 'linkedin' | 'pinterest' | 'reddit';
+export type SocialMediaTypes =
+  | 'instagram'
+  | 'facebook'
+  | 'twitter'
+  | 'youtube'
+  | 'linkedin'
+  | 'pinterest'
+  | 'reddit';
 
 export interface MenuTree {
   name: string;
@@ -16,7 +23,12 @@ export interface MenuTree {
   children?: MenuTree[];
 }
 
-
+export interface MenuSettings {
+  layout?: {
+    type?: string;
+    variant?: string;
+  };
+}
 
 export interface AssetItemType {
   type: 'asset';
@@ -41,8 +53,6 @@ export type SectionItem = AssetItemType | CollectionItemType;
 
 export type PageSectionVariant = 'dark' | 'light';
 
-
-
 export interface AppPageOptions {
   key?: string;
   title?: string;
@@ -56,8 +66,7 @@ export interface AppPageOptions {
 export type AppPage = {
   gatedConditions?: GatedCondition[];
   sections: AppPageSection[];
-} & AppPageOptions
-
+} & AppPageOptions;
 
 export interface SocialMedia {
   type: SocialMediaTypes;
@@ -65,7 +74,9 @@ export interface SocialMedia {
 }
 
 export interface SocialMediaCustom {
-  link: string, iconUrl: string, label: string;
+  link: string;
+  iconUrl: string;
+  label: string;
 }
 
 interface SeoImage {
@@ -115,7 +126,7 @@ export interface AppConfig {
   font?: {
     family: string;
     category?: string;
-  }
+  };
   defaultThemeMode?: ThemeMode;
   theme: string;
   customTheme?: string;
@@ -157,6 +168,7 @@ export interface AppConfig {
     datetime: string;
   };
   menuTree?: MenuTree[];
+  menuSettings?: MenuSettings;
   footerMenuTree?: MenuTree[];
   collections?: AppCollection[];
   seo?: {
@@ -164,6 +176,6 @@ export interface AppConfig {
   };
   analytics?: {
     gtag?: string;
-  }
+  };
   tokens?: AppToken[];
 }

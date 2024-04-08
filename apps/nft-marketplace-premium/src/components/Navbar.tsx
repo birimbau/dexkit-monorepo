@@ -15,6 +15,7 @@ import {
   Button,
   ButtonBase,
   Divider,
+  Icon,
   List,
   ListItem,
   ListItemIcon,
@@ -50,14 +51,14 @@ import {
 } from '../state/atoms';
 import { getChainLogoImage, getChainName } from '../utils/blockchain';
 import Link from './Link';
-import NavbarMenu from './Menu';
+import NavbarMenu from './NavbarMenu';
 import { ThemeModeSelector } from './ThemeModeSelector';
 import { WalletButton } from './WalletButton';
 import Notification from './icons/Notification';
 import Wallet from './icons/Wallet';
 
 const SelectNetworkDialog = dynamic(
-  () => import('@dexkit/ui/components/dialogs/SelectNetworkDialog'),
+  () => import('@dexkit/ui/components/dialogs/SelectNetworkDialog')
 );
 
 import { useAuthUserQuery } from '@/modules/user/hooks';
@@ -110,7 +111,7 @@ function Navbar({ appConfig, isPreview }: Props) {
   const [, setShowShowSelectLocale] = useAtom(showSelectLocaleAtom);
 
   const [showTransactions, setShowTransactions] = useAtom(
-    showAppTransactionsAtom,
+    showAppTransactionsAtom
   );
 
   const handleOpenTransactions = () => setShowTransactions(true);
@@ -123,7 +124,7 @@ function Navbar({ appConfig, isPreview }: Props) {
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const handleSettingsMenuClick = (
-    event: React.MouseEvent<HTMLButtonElement>,
+    event: React.MouseEvent<HTMLButtonElement>
   ) => {
     setMenuAnchorEl(event.currentTarget);
   };
@@ -171,7 +172,7 @@ function Navbar({ appConfig, isPreview }: Props) {
   const [showProfileMenu, setShowProfileMenu] = useState(false);
 
   const handleShowProfileMenu = (
-    event: React.MouseEvent<HTMLButtonElement>,
+    event: React.MouseEvent<HTMLButtonElement>
   ) => {
     setShowProfileMenu(true);
     setProfileMenuAnchorEl(event.currentTarget);
@@ -423,7 +424,11 @@ function Navbar({ appConfig, isPreview }: Props) {
             alignItems="center"
             spacing={2}
           >
-            {appConfig.menuTree ? (
+            {(appConfig.menuSettings?.layout?.type === undefined ||
+              (appConfig.menuSettings?.layout?.type === 'navbar' &&
+                (appConfig.menuSettings?.layout?.variant === 'default' ||
+                  appConfig.menuSettings?.layout?.variant === undefined))) &&
+            appConfig.menuTree ? (
               <Stack
                 direction="row"
                 sx={{
@@ -437,54 +442,59 @@ function Navbar({ appConfig, isPreview }: Props) {
                   m.children ? (
                     <NavbarMenu menu={m} key={key} isPreview={isPreview} />
                   ) : (
-                    <Link
+                    <Button
                       color="inherit"
                       href={isPreview ? '#' : m.href || '/'}
                       sx={{ fontWeight: 600, textDecoration: 'none' }}
                       key={key}
+                      LinkComponent={Link}
+                      startIcon={
+                        m.data?.iconName ? (
+                          <Icon>{m.data?.iconName}</Icon>
+                        ) : undefined
+                      }
                     >
-                      <FormattedMessage
-                        id={m.name.toLowerCase()}
-                        defaultMessage={m.name}
-                      />
-                    </Link>
-                  ),
+                      {m.name}
+                    </Button>
+                  )
                 )}
               </Stack>
             ) : (
-              <Stack
-                direction="row"
-                sx={{
-                  center: 'right',
-                  justifyContent: 'flex-end',
-                }}
-                alignItems="center"
-                spacing={2}
-              >
-                <Link
-                  color="inherit"
-                  href={isPreview ? '#' : '/'}
-                  sx={{ fontWeight: 600, textDecoration: 'none' }}
+              false && (
+                <Stack
+                  direction="row"
+                  sx={{
+                    center: 'right',
+                    justifyContent: 'flex-end',
+                  }}
+                  alignItems="center"
+                  spacing={2}
                 >
-                  <FormattedMessage id="home" defaultMessage="Home" />
-                </Link>
-                <Link
-                  color="inherit"
-                  href={isPreview ? '#' : '/swap'}
-                  sx={{ fontWeight: 600, textDecoration: 'none' }}
-                >
-                  <FormattedMessage id="swap" defaultMessage="Swap" />
-                </Link>
-                {isActive && (
                   <Link
                     color="inherit"
-                    href={isPreview ? '#' : '/wallet'}
+                    href={isPreview ? '#' : '/'}
                     sx={{ fontWeight: 600, textDecoration: 'none' }}
                   >
-                    <FormattedMessage id="wallet" defaultMessage="Wallet" />
+                    <FormattedMessage id="home" defaultMessage="Home" />
                   </Link>
-                )}
-              </Stack>
+                  <Link
+                    color="inherit"
+                    href={isPreview ? '#' : '/swap'}
+                    sx={{ fontWeight: 600, textDecoration: 'none' }}
+                  >
+                    <FormattedMessage id="swap" defaultMessage="Swap" />
+                  </Link>
+                  {isActive && (
+                    <Link
+                      color="inherit"
+                      href={isPreview ? '#' : '/wallet'}
+                      sx={{ fontWeight: 600, textDecoration: 'none' }}
+                    >
+                      <FormattedMessage id="wallet" defaultMessage="Wallet" />
+                    </Link>
+                  )}
+                </Stack>
+              )
             )}
             <Stack
               direction="row"
