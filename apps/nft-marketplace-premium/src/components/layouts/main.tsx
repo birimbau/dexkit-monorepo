@@ -46,10 +46,13 @@ const MainLayout: React.FC<Props> = ({
 
   const defaultAppConfig = useAppConfig();
   const appNFT = useAppNFT();
+
   const appConfig = useMemo(() => {
     if (appConfigProps) {
+      console.log('entra aqui');
       return appConfigProps;
     } else {
+      console.log('entra aqui 2, default', defaultAppConfig.menuSettings);
       return defaultAppConfig;
     }
   }, [defaultAppConfig, appConfigProps]);

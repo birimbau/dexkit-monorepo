@@ -83,7 +83,7 @@ export function DrawerMenuItem({
               p: 0.5,
             }}
           >
-            <Icon>{menu.data?.iconName ? menu.data?.iconName : ''}</Icon>
+            {menu.data?.iconName ? <Icon> {menu.data?.iconName}</Icon> : ''}
           </Stack>
           {!onlyIcon && (
             <ListItemText sx={{ fontWeight: 600 }} primary={menu.name} />
@@ -98,12 +98,6 @@ export function DrawerMenuItem({
             <ChevronRight color="primary" />
           </CustomListItemSecondaryAction>
         </ListItemButton>
-        <Divider
-          sx={{
-            display: 'block',
-            borderColor: (theme) => alpha(theme.palette.text.disabled, 0.1),
-          }}
-        />
       </React.Fragment>
     );
   }
@@ -140,12 +134,6 @@ export function DrawerMenuItem({
             <ChevronRight color="primary" />
           </CustomListItemSecondaryAction>
         </ListItemButton>
-        <Divider
-          sx={{
-            display: 'block',
-            borderColor: (theme) => alpha(theme.palette.text.disabled, 0.1),
-          }}
-        />
       </React.Fragment>
     );
   }
@@ -193,40 +181,55 @@ export function DrawerMenuItem({
             </CustomListItemSecondaryAction>
           )}
         </ListItemButton>
-        <Divider
-          sx={{
-            display: 'block',
-            borderColor: (theme) => alpha(theme.palette.text.disabled, 0.1),
-          }}
-        />
         {useMenu ? (
           <Menu
             open={open}
             anchorEl={ref.current}
             anchorOrigin={{ horizontal: 'right', vertical: 'center' }}
             onClose={handleClose}
+            MenuListProps={{ disablePadding: true }}
           >
-            {menu.children?.map((child, key) => (
-              <DrawerMenuItem
-                key={key}
-                menu={child}
-                onClose={onClose}
-                depth={depth + 1}
-                disablePadding={disablePadding}
-                useMenu={useMenu}
-              />
+            {menu.children?.map((child, key, arr) => (
+              <React.Fragment key={key}>
+                <DrawerMenuItem
+                  menu={child}
+                  onClose={onClose}
+                  depth={depth + 1}
+                  disablePadding={disablePadding}
+                  useMenu={useMenu}
+                />
+                {key < arr.length - 1 && (
+                  <Divider
+                    sx={{
+                      display: 'block',
+                      borderColor: (theme) =>
+                        alpha(theme.palette.text.disabled, 0.1),
+                    }}
+                  />
+                )}
+              </React.Fragment>
             ))}
           </Menu>
         ) : (
           <Collapse in={open}>
-            {menu.children?.map((child, key) => (
-              <DrawerMenuItem
-                key={key}
-                menu={child}
-                onClose={onClose}
-                depth={depth + 1}
-                disablePadding={disablePadding}
-              />
+            {menu.children?.map((child, key, arr) => (
+              <React.Fragment key={key}>
+                <DrawerMenuItem
+                  menu={child}
+                  onClose={onClose}
+                  depth={depth + 1}
+                  disablePadding={disablePadding}
+                />
+                {key < arr.length - 1 && (
+                  <Divider
+                    sx={{
+                      display: 'block',
+                      borderColor: (theme) =>
+                        alpha(theme.palette.text.disabled, 0.1),
+                    }}
+                  />
+                )}
+              </React.Fragment>
             ))}
           </Collapse>
         )}
@@ -241,17 +244,27 @@ export default function DrawerMenu({ menu, onClose, isMini }: DrawerMenuProps) {
   return (
     <NoSsr>
       <List disablePadding sx={{ display: 'block' }}>
-        {menu.map((m, key) => (
-          <DrawerMenuItem
-            menu={m}
-            onClose={onClose}
-            key={key}
-            depth={1}
-            isMini={isMini}
-            useMenu={isMini}
-            onlyIcon={isMini}
-            disablePadding={isMini}
-          />
+        {menu.map((m, key, arr) => (
+          <React.Fragment key={key}>
+            <DrawerMenuItem
+              menu={m}
+              onClose={onClose}
+              depth={1}
+              isMini={isMini}
+              useMenu={isMini}
+              onlyIcon={isMini}
+              disablePadding={isMini}
+            />
+            {key < arr.length - 1 && (
+              <Divider
+                sx={{
+                  display: 'block',
+                  borderColor: (theme) =>
+                    alpha(theme.palette.text.disabled, 0.1),
+                }}
+              />
+            )}
+          </React.Fragment>
         ))}
       </List>
     </NoSsr>

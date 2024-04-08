@@ -34,6 +34,7 @@ import { useConnectWalletDialog, useLocale } from '../hooks/app';
 import MenuIcon from '@mui/icons-material/Menu';
 
 import MenuOpenIcon from '@mui/icons-material/MenuOpen';
+import { useMemo } from 'react';
 import {
   isMiniSidebarAtom,
   showSelectCurrencyAtom,
@@ -89,11 +90,19 @@ function AppDrawer({ open, onClose, appConfig }: Props) {
 
   const isMobile = useIsMobile();
 
+  const [isMiniSidebar, setIsMiniSidebar] = useAtom(isMiniSidebarAtom);
+
   const isSidebar = appConfig?.menuSettings?.layout?.type === 'sidebar';
   const isMini =
     isSidebar && appConfig?.menuSettings?.layout?.variant === 'mini';
 
-  const [isMiniSidebar, setIsMiniSidebar] = useAtom(isMiniSidebarAtom);
+  const isMiniOpen = useMemo(() => {
+    if (isMini) {
+      return isMiniSidebar;
+    }
+
+    return false;
+  }, [isMiniSidebar, isMini, isSidebar]);
 
   const handleToggleMini = () => {
     setIsMiniSidebar((value) => !value);
@@ -105,21 +114,24 @@ function AppDrawer({ open, onClose, appConfig }: Props) {
         sx={(theme) => ({
           display: 'block',
           width:
-            !isMobile && (isMini || isMiniSidebar)
+            !isMobile && isSidebar && isMiniOpen
               ? 'auto'
               : `${theme.breakpoints.values.sm / 2}px`,
         })}
       >
-        <Stack
-          direction="row"
-          justifyContent={isMiniSidebar || isMini ? 'center' : 'flex-end'}
-          px={1}
-          py={1}
-        >
-          <IconButton onClick={handleToggleMini}>
-            {isMiniSidebar ? <MenuIcon /> : <MenuOpenIcon />}
-          </IconButton>
-        </Stack>
+        {isMini && (
+          <Stack
+            direction="row"
+            justifyContent={isMiniSidebar ? 'center' : 'flex-end'}
+            px={1}
+            py={1}
+          >
+            <IconButton onClick={handleToggleMini}>
+              {isMiniSidebar ? <MenuIcon /> : <MenuOpenIcon />}
+            </IconButton>
+          </Stack>
+        )}
+
         {isMobile && (
           <Box>
             {!isActive ? (
@@ -165,7 +177,7 @@ function AppDrawer({ open, onClose, appConfig }: Props) {
           <DrawerMenu
             menu={appConfig?.menuTree}
             onClose={onClose}
-            isMini={!isMobile && (isMini || isMiniSidebar)}
+            isMini={!isMobile && isMiniOpen}
           />
         ) : (
           <AppDefaultMenuList onClose={onClose} />

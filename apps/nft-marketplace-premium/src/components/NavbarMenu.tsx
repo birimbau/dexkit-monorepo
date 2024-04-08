@@ -1,10 +1,11 @@
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import {
-  Avatar,
+  Divider,
   Icon,
   ListItemButton,
   ListItemIcon,
   ListItemText,
+  alpha,
 } from '@mui/material';
 import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
@@ -63,13 +64,11 @@ export default function NavbarMenu(props: Props) {
           LinkComponent={Link}
           href={item.href || ''}
         >
-          <ListItemIcon>
-            {item.data?.iconName ? (
+          {item.data?.iconName && (
+            <ListItemIcon>
               <Icon>{item.data?.iconName}</Icon>
-            ) : (
-              <Avatar>{item.data?.iconName}</Avatar>
-            )}
-          </ListItemIcon>
+            </ListItemIcon>
+          )}
 
           <ListItemText primary={item.name} />
         </ListItemButton>
@@ -154,9 +153,23 @@ export default function NavbarMenu(props: Props) {
         }
         MenuListProps={{
           'aria-labelledby': 'navbar-menu',
+          disablePadding: true,
         }}
       >
-        {menu.children?.map((m, k) => renderMenu(m, k))}
+        {menu.children?.map((m, k, arr) => (
+          <>
+            {renderMenu(m, k)}
+            {k < arr.length - 1 && (
+              <Divider
+                sx={{
+                  display: 'block',
+                  borderColor: (theme) =>
+                    alpha(theme.palette.text.disabled, 0.1),
+                }}
+              />
+            )}
+          </>
+        ))}
       </Menu>
     </>
   );

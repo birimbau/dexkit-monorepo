@@ -46,6 +46,12 @@
       "name": "App version"
     }
   ],
+  "menuSettings": {
+    "layout": {
+      "type": "navbar",
+      "variant": "default"
+    }
+  },
   "menuTree": [
     {
       "type": "Menu",
