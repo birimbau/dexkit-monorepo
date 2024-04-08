@@ -1,4 +1,445 @@
 {
+  "Created": {
+    "defaultMessage": "Created"
+  },
+  "action.type": {
+    "defaultMessage": "Action type"
+  },
+  "add.items": {
+    "defaultMessage": "Add items"
+  },
+  "add.payment.method": {
+    "defaultMessage": "Add Payment Method"
+  },
+  "ai.assistant": {
+    "defaultMessage": "AI Assistant"
+  },
+  "align.items": {
+    "defaultMessage": "Align Items"
+  },
+  "artificial.inteligence": {
+    "defaultMessage": "Artificial Inteligence"
+  },
+  "billing": {
+    "defaultMessage": "Billing"
+  },
+  "button.cation": {
+    "defaultMessage": "Button caption"
+  },
+  "buy.and.sell": {
+    "defaultMessage": "Buy and sell"
+  },
+  "buy.token.page": {
+    "defaultMessage": "Buy token page"
+  },
+  "carousel": {
+    "defaultMessage": "Carousel"
+  },
+  "carousel.image.aspectRatio": {
+    "defaultMessage": "The image must have a 16/9 aspect ratio to be displayed correctly in the carousel."
+  },
+  "center": {
+    "defaultMessage": "Center"
+  },
+  "checkout": {
+    "defaultMessage": "Checkout"
+  },
+  "coming.soon": {
+    "defaultMessage": "Coming soon"
+  },
+  "create.metadata": {
+    "defaultMessage": "Create metadata"
+  },
+  "creating.site.metadata": {
+    "defaultMessage": "Creating site metadata"
+  },
+  "credit.history": {
+    "defaultMessage": "Credit History"
+  },
+  "credited": {
+    "defaultMessage": "Credited"
+  },
+  "credits": {
+    "defaultMessage": "Credits"
+  },
+  "credits.below0.50": {
+    "defaultMessage": "Your credits are now below $0.50. Please consider adding more credits to continue using our services."
+  },
+  "credits.expire.oneYear": {
+    "defaultMessage": "Your added credits will expire one year from the date of addition. Please utilize them before expiry."
+  },
+  "current.phase": {
+    "defaultMessage": "Current phase"
+  },
+  "current.phase.ends.in": {
+    "defaultMessage": "Current phase ends in"
+  },
+  "dexappbuilder.ann.app.bar2": {
+    "defaultMessage": "Support us on {Giveth} and allow our service to be free for all. Each donation is matched by ENS builders round."
+  },
+  "disable.secondary.sells": {
+    "defaultMessage": "Disable secondary sells"
+  },
+  "editing.site.metadata": {
+    "defaultMessage": "Editing site metadata"
+  },
+  "end": {
+    "defaultMessage": "End"
+  },
+  "error.while.tranfer": {
+    "defaultMessage": "Error while transfer"
+  },
+  "feature": {
+    "defaultMessage": "Feature"
+  },
+  "height.for.desktop": {
+    "defaultMessage": "Height for desktop"
+  },
+  "height.for.mobile": {
+    "defaultMessage": "Height for mobile"
+  },
+  "in.milliseconds": {
+    "defaultMessage": "In milliseconds"
+  },
+  "insufficient.balance": {
+    "defaultMessage": "Insufficient balance"
+  },
+  "interval": {
+    "defaultMessage": "Interval"
+  },
+  "items.spacing": {
+    "defaultMessage": "Items spacing"
+  },
+  "left": {
+    "defaultMessage": "Left"
+  },
+  "new.ai.features": {
+    "defaultMessage": "New AI Features"
+  },
+  "no.description": {
+    "defaultMessage": "no description"
+  },
+  "no.templates.found.for.this.usecase": {
+    "defaultMessage": "No templates found for this usecase"
+  },
+  "no.usage": {
+    "defaultMessage": "No usage"
+  },
+  "not.available": {
+    "defaultMessage": "Not available"
+  },
+  "overlay.color": {
+    "defaultMessage": "Overlay color"
+  },
+  "padding.bottom": {
+    "defaultMessage": "Padding bottom"
+  },
+  "padding.top": {
+    "defaultMessage": "Padding top"
+  },
+  "pay.amount.symbol": {
+    "defaultMessage": "Pay {amount} {tokenSymbol}"
+  },
+  "payment.confirmed": {
+    "defaultMessage": "Payment expired"
+  },
+  "payment.pending": {
+    "defaultMessage": "Payment Pending"
+  },
+  "payments": {
+    "defaultMessage": "Payments"
+  },
+  "plan.details": {
+    "defaultMessage": "Plan details"
+  },
+  "price.in.next.phase": {
+    "defaultMessage": "Price in next phase"
+  },
+  "ref.period": {
+    "defaultMessage": "Ref. period"
+  },
+  "right": {
+    "defaultMessage": "Right"
+  },
+  "save.payment": {
+    "defaultMessage": "Save payment"
+  },
+  "search.default.base.token": {
+    "defaultMessage": "Search default base token"
+  },
+  "section.addItemsPrompt": {
+    "defaultMessage": "Please add items to the section below."
+  },
+  "select.a.token.to.pay": {
+    "defaultMessage": "Select a token to pay"
+  },
+  "select.plan": {
+    "defaultMessage": "Select Plan"
+  },
+  "sell.token.page": {
+    "defaultMessage": "Sell token page"
+  },
+  "show.token.details": {
+    "defaultMessage": "Show token details"
+  },
+  "showcase": {
+    "defaultMessage": "Showcase Gallery"
+  },
+  "site.metada.image": {
+    "defaultMessage": "Site metadata image"
+  },
+  "site.metadata": {
+    "defaultMessage": "Site metadata"
+  },
+  "site.metadata.created": {
+    "defaultMessage": "Site metadata created"
+  },
+  "site.metadata.created.error": {
+    "defaultMessage": "Site metadata created error"
+  },
+  "site.metadata.edited": {
+    "defaultMessage": "Site metadata edited"
+  },
+  "site.metadata.edited.error": {
+    "defaultMessage": "Site metadata edited error"
+  },
+  "site.subtitle": {
+    "defaultMessage": "Site subtitle"
+  },
+  "site.title": {
+    "defaultMessage": "Site title"
+  },
+  "start": {
+    "defaultMessage": "Start"
+  },
+  "switch.to.network.network": {
+    "defaultMessage": "Switch to {network} network"
+  },
+  "templates": {
+    "defaultMessage": "Templates"
+  },
+  "token.trade": {
+    "defaultMessage": "Token Trade"
+  },
+  "total.usd": {
+    "defaultMessage": "Total in USD"
+  },
+  "trade.token.page": {
+    "defaultMessage": "Trade token page"
+  },
+  "trade.type": {
+    "defaultMessage": "Trade type"
+  },
+  "transfer.amount.symbol": {
+    "defaultMessage": "Transfer {amount} {symbol}"
+  },
+  "transfering.amount.to.pay": {
+    "defaultMessage": "Transfering amount to pay"
+  },
+  "update.metadata": {
+    "defaultMessage": "Update metadata"
+  },
+  "update.site.metadata": {
+    "defaultMessage": "Update site metadata?"
+  },
+  "usage.periods": {
+    "defaultMessage": "Usage periods"
+  },
+  "usecases": {
+    "defaultMessage": "Use cases"
+  },
+  "view.details": {
+    "defaultMessage": "View details"
+  },
+  "view.less": {
+    "defaultMessage": "view less"
+  },
+  "view.more": {
+    "defaultMessage": "view more"
+  },
+  "view.nft.drop": {
+    "defaultMessage": "View nft drop"
+  },
+  "view.site.metadata": {
+    "defaultMessage": "View site metadata"
+  },
+  "waiting.confirmation": {
+    "defaultMessage": "Waiting confirmation"
+  },
+  "you.still.dont.have.any.records": {
+    "defaultMessage": "You still don't have any records."
+  },
+  "your.payment.is.confirmed": {
+    "defaultMessage": "Your payment is confirmed"
+  },
+  "your.site.metadata.was.created": {
+    "defaultMessage": "Your site metadata was created"
+  },
+  "your.site.metadata.was.edited": {
+    "defaultMessage": "Your site metadata was edited"
+  },
+  "your.site.metadata.was.not.created": {
+    "defaultMessage": "Your site metadata was not created"
+  },
+  "your.site.metadata.was.not.edited": {
+    "defaultMessage": "Your site metadata was not edited"
+  },
+  "your.transaction.requires.10.confirmations.for.full.validation": {
+    "defaultMessage": "Your transaction requires 10 confirmations for full validation"
+  },
+  "AI": {
+    "defaultMessage": "AI"
+  },
+  "activate": {
+    "defaultMessage": "Activate AI"
+  },
+  "activate.ai": {
+    "defaultMessage": "Activate AI"
+  },
+  "add.credit": {
+    "defaultMessage": "Add Credit"
+  },
+  "add.credits": {
+    "defaultMessage": "Add credits"
+  },
+  "ai.activated": {
+    "defaultMessage": "AI Activated"
+  },
+  "ai.completation": {
+    "defaultMessage": "AI Completation"
+  },
+  "ai.edit": {
+    "defaultMessage": "AI Edit"
+  },
+  "ai.generator": {
+    "defaultMessage": "AI Generator"
+  },
+  "ai.image.generator": {
+    "defaultMessage": "AI Image Generator"
+  },
+  "answer": {
+    "defaultMessage": "Answer:"
+  },
+  "billing.and.usage": {
+    "defaultMessage": "Billing & Usage"
+  },
+  "change.cat.head": {
+    "defaultMessage": "ex. Change cat head"
+  },
+  "close.anyway": {
+    "defaultMessage": "Close anyway"
+  },
+  "credit.card.soming.soon": {
+    "defaultMessage": "Credit Card (Coming Soon)"
+  },
+  "cryptocurrency": {
+    "defaultMessage": "Cryptocurrency"
+  },
+  "deselect.all": {
+    "defaultMessage": "Deselect All"
+  },
+  "error.while.generating.images": {
+    "defaultMessage": "Error while generating images"
+  },
+  "ex.an.image.of.a.cat": {
+    "defaultMessage": "ex. An image of a cat"
+  },
+  "fix.spelling.and.grammar": {
+    "defaultMessage": "Fix spelling and grammar"
+  },
+  "generate": {
+    "defaultMessage": "Generate"
+  },
+  "generate.image": {
+    "defaultMessage": "Generate image"
+  },
+  "generate.new.text": {
+    "defaultMessage": "Generate new text"
+  },
+  "generate.variant": {
+    "defaultMessage": "Generate variant"
+  },
+  "generate.variants": {
+    "defaultMessage": "Generate Variants"
+  },
+  "generating": {
+    "defaultMessage": "Generating"
+  },
+  "generating.variants": {
+    "defaultMessage": "Generating Variants"
+  },
+  "images.generated": {
+    "defaultMessage": "Images generated"
+  },
+  "images.notGenerated": {
+    "defaultMessage": "You haven't generated any images yet. Start generating images now to make the most out of our service."
+  },
+  "improve.writing": {
+    "defaultMessage": "Improve writing"
+  },
+  "make.longer": {
+    "defaultMessage": "Make longer"
+  },
+  "make.shorter": {
+    "defaultMessage": "Make shorter"
+  },
+  "no.credits": {
+    "defaultMessage": "No Credits"
+  },
+  "no.images": {
+    "defaultMessage": "No Images"
+  },
+  "num.of.images": {
+    "defaultMessage": "Num. of Images"
+  },
+  "num.of.variant": {
+    "defaultMessage": "Num of variants"
+  },
+  "num.of.variants": {
+    "defaultMessage": "Num. of variants"
+  },
+  "original.image": {
+    "defaultMessage": "Original image"
+  },
+  "payment.confirmation.message": {
+    "defaultMessage": "Please wait for 10 confirmations for payment recognition."
+  },
+  "payment.method": {
+    "defaultMessage": "Payment method"
+  },
+  "prompt": {
+    "defaultMessage": "Prompt"
+  },
+  "save.generated.images": {
+    "defaultMessage": "Save generated images?"
+  },
+  "saved": {
+    "defaultMessage": "Saved"
+  },
+  "the.maximum.is.95": {
+    "defaultMessage": "the maximum is 95"
+  },
+  "the.minimum.is.five": {
+    "defaultMessage": "the minimum is 5"
+  },
+  "unlock.the.power.of.artificial.intelligence.by.activating.it": {
+    "defaultMessage": "Unlock the power of artificial intelligence by activating it"
+  },
+  "use": {
+    "defaultMessage": "use"
+  },
+  "use.as.prompt": {
+    "defaultMessage": "use as prompt"
+  },
+  "variants": {
+    "defaultMessage": "Variants"
+  },
+  "waiting.payment": {
+    "defaultMessage": "Waiting payment"
+  },
+  "you.need.to.add.credits.to.use.ai.features": {
+    "defaultMessage": "You need to add credits to use AI features"
+  },
   "add.record": {
     "defaultMessage": "Add record"
   },
@@ -3503,7 +3944,7 @@
     "defaultMessage": "Uri"
   },
   "url": {
-    "defaultMessage": "Domain"
+    "defaultMessage": "URL"
   },
   "use.home.as.title.not.allowed": {
     "defaultMessage": "Use Home as title is not allowed for pages"

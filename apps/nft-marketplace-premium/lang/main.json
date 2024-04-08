@@ -47,6 +47,9 @@
   "Create.Order": {
     "defaultMessage": "Create Order"
   },
+  "Created": {
+    "defaultMessage": "Created"
+  },
   "Deploy": {
     "defaultMessage": "Deploy"
   },
@@ -137,6 +140,9 @@
   "accounts": {
     "defaultMessage": "Accounts"
   },
+  "action.type": {
+    "defaultMessage": "Action type"
+  },
   "actions": {
     "defaultMessage": "Actions"
   },
@@ -185,11 +191,11 @@
   "add.gated.conditions": {
     "defaultMessage": "Add gated conditions"
   },
-  "add.image": {
-    "defaultMessage": "Add image"
-  },
   "add.item": {
     "defaultMessage": "Add item"
+  },
+  "add.items": {
+    "defaultMessage": "Add items"
   },
   "add.leaderboard": {
     "defaultMessage": "Add leaderboard"
@@ -211,6 +217,9 @@
   },
   "add.nft": {
     "defaultMessage": "Add nft"
+  },
+  "add.payment.method": {
+    "defaultMessage": "Add Payment Method"
   },
   "add.ref.to.track.referrals": {
     "defaultMessage": "Append ref to your url to track referrals on your events. Ex: yourSite.com?ref=your-referral"
@@ -270,6 +279,9 @@
   "advanced.info": {
     "defaultMessage": "Only the address entered below can buy this listing. If empty, any account can buy this listing."
   },
+  "ai.assistant": {
+    "defaultMessage": "AI Assistant"
+  },
   "airdrop": {
     "defaultMessage": "Airdrop"
   },
@@ -293,6 +305,9 @@
   },
   "airdrop.user.info.web.submmit": {
     "defaultMessage": "Note: You need to be on Rio de Janeiro to claim this airdrop"
+  },
+  "align.items": {
+    "defaultMessage": "Align Items"
   },
   "all": {
     "defaultMessage": "All"
@@ -384,6 +399,9 @@
   "are.you.sure.you.want.to.delete.this.account": {
     "defaultMessage": "Account to remove: {account}"
   },
+  "artificial.inteligence": {
+    "defaultMessage": "Artificial Inteligence"
+  },
   "asset": {
     "defaultMessage": "Asset"
   },
@@ -436,6 +454,9 @@
   "balance": {
     "defaultMessage": "Balance"
   },
+  "billing": {
+    "defaultMessage": "Billing"
+  },
   "bio": {
     "defaultMessage": "Bio"
   },
@@ -463,6 +484,9 @@
   "burn.token": {
     "defaultMessage": "Burn Token"
   },
+  "button.cation": {
+    "defaultMessage": "Button caption"
+  },
   "button.title": {
     "defaultMessage": "Button Title"
   },
@@ -471,6 +495,9 @@
   },
   "buy": {
     "defaultMessage": "Buy"
+  },
+  "buy.and.sell": {
+    "defaultMessage": "Buy and sell"
   },
   "buy.app": {
     "defaultMessage": "Buy App"
@@ -485,6 +512,9 @@
   "buy.on.platform": {
     "defaultMessage": "Buy on {platform}",
     "description": "Buy asset button text"
+  },
+  "buy.token.page": {
+    "defaultMessage": "Buy token page"
   },
   "buyer.address": {
     "defaultMessage": "Buyer address",
@@ -514,6 +544,15 @@
   "careful.with.scripts": {
     "defaultMessage": "Be careful with scripts and html that you use here"
   },
+  "carousel": {
+    "defaultMessage": "Carousel"
+  },
+  "carousel.image.aspectRatio": {
+    "defaultMessage": "The image must have a 16/9 aspect ratio to be displayed correctly in the carousel."
+  },
+  "center": {
+    "defaultMessage": "Center"
+  },
   "chainId": {
     "defaultMessage": "Chain ID"
   },
@@ -540,6 +579,9 @@
   },
   "checking.eligibility": {
     "defaultMessage": "Checking eligibility..."
+  },
+  "checkout": {
+    "defaultMessage": "Checkout"
   },
   "choose.app.theme.color.for.each.mode ": {
     "defaultMessage": "Choose app theme color for each mode"
@@ -691,6 +733,9 @@
   "collections": {
     "defaultMessage": "Collections"
   },
+  "coming.soon": {
+    "defaultMessage": "Coming soon"
+  },
   "complete.profile": {
     "defaultMessage": "Complete Profile"
   },
@@ -739,6 +784,9 @@
   "confirm.swap": {
     "defaultMessage": "Confirm swap"
   },
+  "confirm.transaction": {
+    "defaultMessage": "Confirm Transaction"
+  },
   "congrats.you.claimed.your.kit.airdrop": {
     "defaultMessage": "Congrats you claimed your KIT airdrop"
   },
@@ -768,9 +816,6 @@
   },
   "connect.wallet.to.see.contracts.associated.with.your.account": {
     "defaultMessage": "Connect wallet to see contracts associated with your account"
-  },
-  "connect.wallet.to.see.or.upload.images": {
-    "defaultMessage": "Connect wallet to see or upload images."
   },
   "connect.wallet.to.start.create.collections": {
     "defaultMessage": "Connect wallet to start create collections"
@@ -887,6 +932,9 @@
   "create.menu": {
     "defaultMessage": "Create menu"
   },
+  "create.metadata": {
+    "defaultMessage": "Create metadata"
+  },
   "create.nft": {
     "defaultMessage": "Create NFT"
   },
@@ -962,6 +1010,9 @@
   "creating.nfts.check.wallet": {
     "defaultMessage": "Creating NFTs on chain. Check wallet and accept transaction!"
   },
+  "creating.site.metadata": {
+    "defaultMessage": "Creating site metadata"
+  },
   "creating.token": {
     "defaultMessage": "Creating Token"
   },
@@ -974,6 +1025,21 @@
   "creator.address": {
     "defaultMessage": "Creator: {address}"
   },
+  "credit.history": {
+    "defaultMessage": "Credit History"
+  },
+  "credited": {
+    "defaultMessage": "Credited"
+  },
+  "credits": {
+    "defaultMessage": "Credits"
+  },
+  "credits.below0.50": {
+    "defaultMessage": "Your credits are now below $0.50. Please consider adding more credits to continue using our services."
+  },
+  "credits.expire.oneYear": {
+    "defaultMessage": "Your added credits will expire one year from the date of addition. Please utilize them before expiry."
+  },
   "crypto.app.setup": {
     "defaultMessage": "Crypto App Setup"
   },
@@ -985,6 +1051,12 @@
   },
   "current.app.version": {
     "defaultMessage": "Current app version"
+  },
+  "current.phase": {
+    "defaultMessage": "Current phase"
+  },
+  "current.phase.ends.in": {
+    "defaultMessage": "Current phase ends in"
   },
   "custom": {
     "defaultMessage": "Custom"
@@ -1052,9 +1124,6 @@
   "delete.page": {
     "defaultMessage": "Delete page {page}"
   },
-  "deleting.image": {
-    "defaultMessage": "Deleting image"
-  },
   "denominator": {
     "defaultMessage": "Denominator"
   },
@@ -1098,8 +1167,8 @@
   "dex.generator": {
     "defaultMessage": "Dex Generator"
   },
-  "dexappbuilder.ann.app.bar": {
-    "defaultMessage": "Support us on {Giveth} and allow our service to be free for all. {Gitcoin} score 4 and donation on Polygon to us have matching donations!"
+  "dexappbuilder.ann.app.bar2": {
+    "defaultMessage": "Support us on {Giveth} and allow our service to be free for all. Each donation is matched by ENS builders round."
   },
   "disable.burn": {
     "defaultMessage": "Disable Burn"
@@ -1109,6 +1178,9 @@
   },
   "disable.proxy": {
     "defaultMessage": "Disable proxy"
+  },
+  "disable.secondary.sells": {
+    "defaultMessage": "Disable secondary sells"
   },
   "disable.transfer": {
     "defaultMessage": "Disable Transfer"
@@ -1146,17 +1218,11 @@
   "do.you.really.want.to.create.your.user.profile": {
     "defaultMessage": "Do you really want to create your user profile?"
   },
-  "do.you.really.want.to.delete.this.image": {
-    "defaultMessage": "Do you really want to delete this image?"
-  },
   "do.you.really.want.to.delete.this.page": {
     "defaultMessage": "Do you really want to delete {page} page?"
   },
   "do.you.really.want.to.deploy.this.domain": {
     "defaultMessage": "Do you really want to deploy this domain: {domain}"
-  },
-  "do.you.really.want.to.edit.this.image": {
-    "defaultMessage": "Do you really want to edit this image?"
   },
   "do.you.really.want.to.edit.this.nfts": {
     "defaultMessage": "Do you really want to edit this NFT?"
@@ -1266,9 +1332,6 @@
   "edit.claimers": {
     "defaultMessage": "Edit claimers"
   },
-  "edit.image.name": {
-    "defaultMessage": "Edit image name"
-  },
   "edit.leaderboard": {
     "defaultMessage": "Edit leaderboard"
   },
@@ -1305,6 +1368,9 @@
   "editing.nft": {
     "defaultMessage": "Editing NFT metadata"
   },
+  "editing.site.metadata": {
+    "defaultMessage": "Editing site metadata"
+  },
   "email": {
     "defaultMessage": "Email"
   },
@@ -1319,9 +1385,6 @@
   },
   "empty": {
     "defaultMessage": "Empty"
-  },
-  "empty.gallery.start.adding.images": {
-    "defaultMessage": "Empty gallery. Start adding images."
   },
   "empty.leaderboard": {
     "defaultMessage": "Empty leaderboard"
@@ -1346,6 +1409,9 @@
   },
   "enable.searchbar": {
     "defaultMessage": "Enable searchbar"
+  },
+  "end": {
+    "defaultMessage": "End"
   },
   "enter.amount.to.claim": {
     "defaultMessage": "Enter amount to claim"
@@ -1377,9 +1443,6 @@
   "error.set.app.version": {
     "defaultMessage": "Error on set app version"
   },
-  "error.try.again": {
-    "defaultMessage": "Error. Try again?"
-  },
   "error.updating.app.leaderboard": {
     "defaultMessage": "Error on updating app leaderboard"
   },
@@ -1394,6 +1457,9 @@
   },
   "error.while.switching.network": {
     "defaultMessage": "Error while switching network"
+  },
+  "error.while.tranfer": {
+    "defaultMessage": "Error while transfer"
   },
   "events": {
     "defaultMessage": "Events"
@@ -1468,6 +1534,9 @@
   },
   "favorites": {
     "defaultMessage": "Favorites"
+  },
+  "feature": {
+    "defaultMessage": "Feature"
   },
   "featured": {
     "defaultMessage": "Featured"
@@ -1555,9 +1624,6 @@
   "function.name": {
     "defaultMessage": "Function name"
   },
-  "gallery": {
-    "defaultMessage": "Gallery"
-  },
   "gated.conditions": {
     "defaultMessage": "Gated conditions"
   },
@@ -1578,6 +1644,12 @@
   },
   "google.analytics.tag": {
     "defaultMessage": "Google analytics tag"
+  },
+  "height.for.desktop": {
+    "defaultMessage": "Height for desktop"
+  },
+  "height.for.mobile": {
+    "defaultMessage": "Height for mobile"
   },
   "height.px": {
     "defaultMessage": "Height (px)"
@@ -1645,9 +1717,6 @@
   "image": {
     "defaultMessage": "Image"
   },
-  "image.deleted": {
-    "defaultMessage": "Image deleted"
-  },
   "image.url": {
     "defaultMessage": "Image Url"
   },
@@ -1665,6 +1734,9 @@
   },
   "import.token.lists": {
     "defaultMessage": "Import Token lists"
+  },
+  "in.milliseconds": {
+    "defaultMessage": "In milliseconds"
   },
   "info.about.custom.section": {
     "defaultMessage": "Instead of using pre-defined sections, you have the freedom to create a personalized section by effortlessly dragging and dropping functional blocks to design your ideal layout."
@@ -1717,11 +1789,17 @@
   "instagram": {
     "defaultMessage": "Instagram"
   },
+  "insufficient.balance": {
+    "defaultMessage": "Insufficient balance"
+  },
   "insufficient.funds": {
     "defaultMessage": "insufficient funds"
   },
   "integrations": {
     "defaultMessage": "Integrations"
+  },
+  "interval": {
+    "defaultMessage": "Interval"
   },
   "invalid.address": {
     "defaultMessage": "Invalid address"
@@ -1730,10 +1808,13 @@
     "defaultMessage": "Invalid price"
   },
   "item.type": {
-    "defaultMessage": "Item Type"
+    "defaultMessage": "Item type"
   },
   "items": {
     "defaultMessage": "Items"
+  },
+  "items.spacing": {
+    "defaultMessage": "Items spacing"
   },
   "kit.airdrop": {
     "defaultMessage": "KIT Airdrop"
@@ -1759,8 +1840,8 @@
   "leaderboard.preview": {
     "defaultMessage": "Leaderboard preview"
   },
-  "least.recent": {
-    "defaultMessage": "Least recent"
+  "left": {
+    "defaultMessage": "Left"
   },
   "light": {
     "defaultMessage": "Light"
@@ -1869,9 +1950,6 @@
   "max": {
     "defaultMessage": "Max"
   },
-  "max.image.size": {
-    "defaultMessage": "Max image size: 1 Mb"
-  },
   "max.quantity": {
     "defaultMessage": "Max quantity"
   },
@@ -1916,9 +1994,6 @@
   },
   "mismatch.account.admin.view": {
     "defaultMessage": "You are connected to {account} but logged as {loggedAccount}. If you want to see apps associated with current connected account, click on"
-  },
-  "most.recent": {
-    "defaultMessage": "Most recent"
   },
   "move.section.down": {
     "defaultMessage": "Move section down"
@@ -1970,6 +2045,9 @@
   },
   "new": {
     "defaultMessage": "New"
+  },
+  "new.ai.features": {
+    "defaultMessage": "New AI Features"
   },
   "nft": {
     "defaultMessage": "NFT"
@@ -2077,14 +2155,14 @@
   "no.contracts.found": {
     "defaultMessage": "No contracts found"
   },
+  "no.description": {
+    "defaultMessage": "no description"
+  },
   "no.forms.yet": {
     "defaultMessage": "No forms yet"
   },
   "no.hidden.nfts.found": {
     "defaultMessage": "No hidden NFTs Found"
-  },
-  "no.images.found.with.that.name": {
-    "defaultMessage": "No images found with that name."
   },
   "no.listings.yet": {
     "defaultMessage": "No listings yet"
@@ -2120,14 +2198,23 @@
   "no.team.members": {
     "defaultMessage": "No team members"
   },
+  "no.templates.found.for.this.usecase": {
+    "defaultMessage": "No templates found for this usecase"
+  },
   "no.tokens": {
     "defaultMessage": "No Tokens"
+  },
+  "no.usage": {
+    "defaultMessage": "No usage"
   },
   "no.user.with.this.name": {
     "defaultMessage": "No user with this name"
   },
   "no.wallet.connected": {
     "defaultMessage": "No Wallet connected"
+  },
+  "not.available": {
+    "defaultMessage": "Not available"
   },
   "not.deployed": {
     "defaultMessage": "Not deployed"
@@ -2238,7 +2325,7 @@
     "defaultMessage": "Open url"
   },
   "or": {
-    "defaultMessage": "or"
+    "defaultMessage": "Or"
   },
   "order": {
     "defaultMessage": "Order"
@@ -2257,6 +2344,9 @@
   },
   "output.type": {
     "defaultMessage": "Output Type"
+  },
+  "overlay.color": {
+    "defaultMessage": "Overlay color"
   },
   "owned.by": {
     "defaultMessage": "Owned by"
@@ -2277,7 +2367,13 @@
     "defaultMessage": "To access this feature, simply hold 1000 KIT tokens on one of our supported networks: ETH, BSC, or Polygon. Note: NFT-associated apps are not clonable."
   },
   "ownership.settings.description": {
-    "defaultMessage": "Associate an NFT with your app for ownership control"
+    "defaultMessage": "Associate an NFT with your app for ownership control and update site metadata for marketing"
+  },
+  "padding.bottom": {
+    "defaultMessage": "Padding bottom"
+  },
+  "padding.top": {
+    "defaultMessage": "Padding top"
   },
   "page": {
     "defaultMessage": "Page"
@@ -2309,11 +2405,26 @@
   "paste": {
     "defaultMessage": "Paste"
   },
+  "pay.amount.symbol": {
+    "defaultMessage": "Pay {amount} {tokenSymbol}"
+  },
+  "payment.confirmed": {
+    "defaultMessage": "Payment expired"
+  },
+  "payment.pending": {
+    "defaultMessage": "Payment Pending"
+  },
+  "payments": {
+    "defaultMessage": "Payments"
+  },
   "per.wallet": {
     "defaultMessage": "per wallet"
   },
   "phases": {
     "defaultMessage": "Phases"
+  },
+  "plan.details": {
+    "defaultMessage": "Plan details"
   },
   "please.confirm.the.transaction.in.your.wallet.and.wait.for.confirmation": {
     "defaultMessage": "Please, confirm the transaction in your wallet and wait for confirmation"
@@ -2329,9 +2440,6 @@
   },
   "please.create.a.leaderboard.to.start.using.it.here": {
     "defaultMessage": "Please, create a leaderboard to start using it here"
-  },
-  "please.login.with.your.wallet.to.delete.your.image": {
-    "defaultMessage": "Please, login with your wallet to delete your image"
   },
   "please.sign.the.settings.with.your.wallet": {
     "defaultMessage": "Please, sign the settings with your wallet"
@@ -2367,11 +2475,17 @@
   "preview.section": {
     "defaultMessage": "Preview section"
   },
+  "preview.url": {
+    "defaultMessage": "Preview url"
+  },
   "price": {
     "defaultMessage": "Price"
   },
   "price.fiat": {
     "defaultMessage": "Price {currency}"
+  },
+  "price.in.next.phase": {
+    "defaultMessage": "Price in next phase"
   },
   "price.per.item": {
     "defaultMessage": "Price per item",
@@ -2443,9 +2557,6 @@
   "read": {
     "defaultMessage": "Read"
   },
-  "reason": {
-    "defaultMessage": "Reason"
-  },
   "receive": {
     "defaultMessage": "Receive"
   },
@@ -2458,6 +2569,9 @@
   "reddit": {
     "defaultMessage": "Reddit"
   },
+  "ref.period": {
+    "defaultMessage": "Ref. period"
+  },
   "remove": {
     "defaultMessage": "Remove"
   },
@@ -2466,9 +2580,6 @@
   },
   "remove.condition": {
     "defaultMessage": "Remove condition"
-  },
-  "remove.image": {
-    "defaultMessage": "Remove Image"
   },
   "remove.member": {
     "defaultMessage": "Remove member"
@@ -2504,6 +2615,9 @@
   "rewards.second": {
     "defaultMessage": "Rewards/second"
   },
+  "right": {
+    "defaultMessage": "Right"
+  },
   "royalty.percentage": {
     "defaultMessage": "Royalty (%)"
   },
@@ -2521,6 +2635,9 @@
   },
   "save.nfts.metadata": {
     "defaultMessage": "Save NFTs metadata"
+  },
+  "save.payment": {
+    "defaultMessage": "Save payment"
   },
   "save.section": {
     "defaultMessage": "Save section"
@@ -2543,6 +2660,9 @@
   },
   "search": {
     "defaultMessage": "Search"
+  },
+  "search.default.base.token": {
+    "defaultMessage": "Search default base token"
   },
   "search.default.input.token": {
     "defaultMessage": "Search default input token"
@@ -2583,6 +2703,9 @@
   "secondary.color": {
     "defaultMessage": "Secondary color"
   },
+  "section.addItemsPrompt": {
+    "defaultMessage": "Please add items to the section below."
+  },
   "section.editor": {
     "defaultMessage": "Section editor"
   },
@@ -2590,8 +2713,7 @@
     "defaultMessage": "See all"
   },
   "select": {
-    "defaultMessage": "Select",
-    "description": "select"
+    "defaultMessage": "Select"
   },
   "select.a.edition": {
     "defaultMessage": "Select a edition"
@@ -2603,8 +2725,11 @@
   "select.a.token.for.your.airdrop": {
     "defaultMessage": "Select a token for your airdrop"
   },
+  "select.a.token.to.pay": {
+    "defaultMessage": "Select a token to pay"
+  },
   "select.all": {
-    "defaultMessage": "Select all"
+    "defaultMessage": "Select All"
   },
   "select.an.nft": {
     "defaultMessage": "Select an NFT"
@@ -2618,9 +2743,6 @@
   "select.currency": {
     "defaultMessage": "Select currency",
     "description": "Select currency"
-  },
-  "select.image": {
-    "defaultMessage": "Select Image"
   },
   "select.items": {
     "defaultMessage": "Select items"
@@ -2648,6 +2770,9 @@
   "select.page": {
     "defaultMessage": "Select page"
   },
+  "select.plan": {
+    "defaultMessage": "Select Plan"
+  },
   "select.recipients": {
     "defaultMessage": "Select"
   },
@@ -2663,6 +2788,9 @@
   "sell.asset": {
     "defaultMessage": "Sell asset",
     "description": "Sell asset dialog title"
+  },
+  "sell.token.page": {
+    "defaultMessage": "Sell token page"
   },
   "send": {
     "defaultMessage": "Send"
@@ -2748,6 +2876,12 @@
   "show.all": {
     "defaultMessage": "Show all"
   },
+  "show.token.details": {
+    "defaultMessage": "Show token details"
+  },
+  "showcase": {
+    "defaultMessage": "Showcase Gallery"
+  },
   "sign.message": {
     "defaultMessage": "Sign Message",
     "description": "Sign message dialog title"
@@ -2764,11 +2898,35 @@
   "site.list.description": {
     "defaultMessage": "Start your own site/marketplace/app in seconds. Here you can view and be inspired by other community apps. Start now being a crypto enterpreneur"
   },
+  "site.metada.image": {
+    "defaultMessage": "Site metadata image"
+  },
+  "site.metadata": {
+    "defaultMessage": "Site metadata"
+  },
+  "site.metadata.created": {
+    "defaultMessage": "Site metadata created"
+  },
+  "site.metadata.created.error": {
+    "defaultMessage": "Site metadata created error"
+  },
+  "site.metadata.edited": {
+    "defaultMessage": "Site metadata edited"
+  },
+  "site.metadata.edited.error": {
+    "defaultMessage": "Site metadata edited error"
+  },
+  "site.subtitle": {
+    "defaultMessage": "Site subtitle"
+  },
   "site.templates": {
     "defaultMessage": "Site templates"
   },
   "site.templates.description": {
     "defaultMessage": "Start your own site/marketplace/app in seconds. Here you can view and clone apps with various usecases. Start now being a crypto enterpreneur"
+  },
+  "site.title": {
+    "defaultMessage": "Site title"
   },
   "slippage.is.above.one.hundred.percent": {
     "defaultMessage": "Slippage is above 100%"
@@ -2796,14 +2954,14 @@
     "defaultMessage": "Oops, something went wrong with section type {sectionType}. Contact support",
     "description": "Something went wrong error message"
   },
-  "sort.by": {
-    "defaultMessage": "Sort by"
-  },
   "stake": {
     "defaultMessage": "Stake"
   },
   "stake.contract": {
     "defaultMessage": "Stake Contract"
+  },
+  "start": {
+    "defaultMessage": "Start"
   },
   "start.by.connect.wallet": {
     "defaultMessage": "Connect wallet to account that owns this app: {slug}"
@@ -2870,6 +3028,9 @@
     "defaultMessage": "Please, switch to {chainName} network to create listings or offers for this asset",
     "description": "Switch network dialog content text"
   },
+  "switch.to.network.network": {
+    "defaultMessage": "Switch to {network} network"
+  },
   "switch.wallet": {
     "defaultMessage": "Switch wallet"
   },
@@ -2888,8 +3049,11 @@
   "template.created": {
     "defaultMessage": "Contract template updated"
   },
+  "templates": {
+    "defaultMessage": "Templates"
+  },
   "text.color": {
-    "defaultMessage": "Text Color"
+    "defaultMessage": "Text color"
   },
   "text.field": {
     "defaultMessage": "Text field"
@@ -2969,6 +3133,9 @@
   "token.symbol.message": {
     "defaultMessage": "Token {tokenSymbol}"
   },
+  "token.trade": {
+    "defaultMessage": "Token Trade"
+  },
   "tokenId": {
     "defaultMessage": "Token Id"
   },
@@ -3011,17 +3178,26 @@
   "total.to.receive": {
     "defaultMessage": "Total to receive"
   },
+  "total.usd": {
+    "defaultMessage": "Total in USD"
+  },
   "total.volume": {
     "defaultMessage": "Total volume"
   },
   "tradable": {
     "defaultMessage": "Tradable"
   },
+  "trade.token.page": {
+    "defaultMessage": "Trade token page"
+  },
   "trade.token.seo..title.message": {
     "defaultMessage": "The easiest way to {orderMarketType} {tokenSymbol} on {network}"
   },
   "trade.token.seo.description.message": {
     "defaultMessage": "Discover the optimal way to {orderMarketType} {tokenSymbol} on the {network}. Our platform ensures swift and secure transactions, making {orderMarketType}ing {tokenSymbol} a breeze. Join now for the ultimate trading experience on the {network}!"
+  },
+  "trade.type": {
+    "defaultMessage": "Trade type"
   },
   "trades": {
     "defaultMessage": "Trades"
@@ -3050,8 +3226,14 @@
   "transfer": {
     "defaultMessage": "Transfer"
   },
+  "transfer.amount.symbol": {
+    "defaultMessage": "Transfer {amount} {symbol}"
+  },
   "transfer.nft": {
     "defaultMessage": "Transfer NFT"
+  },
+  "transfering.amount.to.pay": {
+    "defaultMessage": "Transfering amount to pay"
   },
   "try.again": {
     "defaultMessage": "Try again",
@@ -3099,8 +3281,14 @@
   "update.form": {
     "defaultMessage": "Save form"
   },
+  "update.metadata": {
+    "defaultMessage": "Update metadata"
+  },
   "update.nft": {
     "defaultMessage": "Update NFT"
+  },
+  "update.site.metadata": {
+    "defaultMessage": "Update site metadata?"
   },
   "updating.app.ranking": {
     "defaultMessage": "Updating app ranking"
@@ -3114,23 +3302,20 @@
   "updating.user.profile": {
     "defaultMessage": "Updating user profile"
   },
-  "upload": {
-    "defaultMessage": "Upload"
-  },
-  "uploaded": {
-    "defaultMessage": "Uploaded"
-  },
-  "uploading": {
-    "defaultMessage": "Uploading"
-  },
   "uri": {
     "defaultMessage": "Uri"
   },
   "url": {
-    "defaultMessage": "Domain"
+    "defaultMessage": "URL"
+  },
+  "usage.periods": {
+    "defaultMessage": "Usage periods"
   },
   "use.home.as.title.not.allowed": {
     "defaultMessage": "Use Home as title is not allowed for pages"
+  },
+  "usecases": {
+    "defaultMessage": "Use cases"
   },
   "user.accounts": {
     "defaultMessage": "User accounts:"
@@ -3219,11 +3404,23 @@
   "view.contracts": {
     "defaultMessage": "View contracts"
   },
+  "view.details": {
+    "defaultMessage": "View details"
+  },
   "view.form": {
     "defaultMessage": "View form"
   },
+  "view.less": {
+    "defaultMessage": "view less"
+  },
+  "view.more": {
+    "defaultMessage": "view more"
+  },
   "view.nft": {
     "defaultMessage": "View NFT"
+  },
+  "view.nft.drop": {
+    "defaultMessage": "View nft drop"
   },
   "view.nfts": {
     "defaultMessage": "View nfts"
@@ -3252,6 +3449,9 @@
   "view.site": {
     "defaultMessage": "View"
   },
+  "view.site.metadata": {
+    "defaultMessage": "View site metadata"
+  },
   "view.template": {
     "defaultMessage": "View template"
   },
@@ -3275,6 +3475,9 @@
   },
   "wait.transaction.to.complete": {
     "defaultMessage": "Wait transaction to complete"
+  },
+  "waiting.confirmation": {
+    "defaultMessage": "Waiting confirmation"
   },
   "wallet": {
     "defaultMessage": "Wallet"
@@ -3390,6 +3593,9 @@
   "you.selected.more.than.amoount": {
     "defaultMessage": "You selected {amount} tokens. The limit is {tokenLimit}"
   },
+  "you.still.dont.have.any.records": {
+    "defaultMessage": "You still don't have any records."
+  },
   "your.airdrop.balance": {
     "defaultMessage": "Your airdrop balance"
   },
@@ -3420,9 +3626,6 @@
   "your.fees.are.above.the.limit": {
     "defaultMessage": "Your fees ({total}%) are above the limit ({maxFee}%)"
   },
-  "your.image.was.deleted.successfully": {
-    "defaultMessage": "Your image was deleted successfully"
-  },
   "your.marketplace.settings.was.sent.successfully": {
     "defaultMessage": "Your config was sent successfully"
   },
@@ -3447,8 +3650,26 @@
   "your.order.was.created.successfully": {
     "defaultMessage": "Your order was created successfully"
   },
+  "your.payment.is.confirmed": {
+    "defaultMessage": "Your payment is confirmed"
+  },
+  "your.site.metadata.was.created": {
+    "defaultMessage": "Your site metadata was created"
+  },
+  "your.site.metadata.was.edited": {
+    "defaultMessage": "Your site metadata was edited"
+  },
+  "your.site.metadata.was.not.created": {
+    "defaultMessage": "Your site metadata was not created"
+  },
+  "your.site.metadata.was.not.edited": {
+    "defaultMessage": "Your site metadata was not edited"
+  },
   "your.tokens": {
     "defaultMessage": "Your tokens"
+  },
+  "your.transaction.requires.10.confirmations.for.full.validation": {
+    "defaultMessage": "Your transaction requires 10 confirmations for full validation"
   },
   "your.user.profile.was.created": {
     "defaultMessage": "Your user profile was created"
@@ -3462,11 +3683,50 @@
   "youtube.channel": {
     "defaultMessage": "Youtube channel"
   },
+  "AI": {
+    "defaultMessage": "AI"
+  },
+  "activate": {
+    "defaultMessage": "Activate AI"
+  },
+  "activate.ai": {
+    "defaultMessage": "Activate AI"
+  },
+  "add.credit": {
+    "defaultMessage": "Add Credit"
+  },
+  "add.credits": {
+    "defaultMessage": "Add credits"
+  },
+  "add.image": {
+    "defaultMessage": "Add image"
+  },
   "add.record": {
     "defaultMessage": "Add record"
   },
   "address.or.ens": {
     "defaultMessage": "Address or ENS"
+  },
+  "ai.activated": {
+    "defaultMessage": "AI Activated"
+  },
+  "ai.completation": {
+    "defaultMessage": "AI Completation"
+  },
+  "ai.edit": {
+    "defaultMessage": "AI Edit"
+  },
+  "ai.generator": {
+    "defaultMessage": "AI Generator"
+  },
+  "ai.image.generator": {
+    "defaultMessage": "AI Image Generator"
+  },
+  "answer": {
+    "defaultMessage": "Answer:"
+  },
+  "billing.and.usage": {
+    "defaultMessage": "Billing & Usage"
   },
   "burn.name.value": {
     "defaultMessage": "Burn Token \"{tokenName}\""
@@ -3474,11 +3734,17 @@
   "burning": {
     "defaultMessage": "Burning"
   },
+  "change.cat.head": {
+    "defaultMessage": "ex. Change cat head"
+  },
   "changing.network": {
     "defaultMessage": "Changing Network"
   },
   "clear": {
     "defaultMessage": "Clear"
+  },
+  "close.anyway": {
+    "defaultMessage": "Close anyway"
   },
   "coin.on.network": {
     "defaultMessage": "{name} on {network}"
@@ -3487,11 +3753,11 @@
     "defaultMessage": "Please, confirm the transaction on your wallet",
     "description": "Transaction dialog message before transaction be confirmed in the wallet"
   },
-  "confirm.transaction": {
-    "defaultMessage": "Confirm Transaction"
-  },
   "confirming": {
     "defaultMessage": "Confirming"
+  },
+  "connect.wallet.to.see.or.upload.images": {
+    "defaultMessage": "Connect wallet to see or upload images."
   },
   "connect.with.email": {
     "defaultMessage": "Connect with e-mail"
@@ -3499,17 +3765,50 @@
   "connect.your.wallet": {
     "defaultMessage": "Connect Your Wallet"
   },
+  "credit.card.soming.soon": {
+    "defaultMessage": "Credit Card (Coming Soon)"
+  },
+  "cryptocurrency": {
+    "defaultMessage": "Cryptocurrency"
+  },
   "delete.column": {
     "defaultMessage": "Delete column"
+  },
+  "deleting.image": {
+    "defaultMessage": "Deleting image"
+  },
+  "deselect.all": {
+    "defaultMessage": "Deselect All"
+  },
+  "do.you.really.want.to.delete.this.image": {
+    "defaultMessage": "Do you really want to delete this image?"
+  },
+  "do.you.really.want.to.edit.this.image": {
+    "defaultMessage": "Do you really want to edit this image?"
   },
   "edit.column": {
     "defaultMessage": "Edit column"
   },
+  "edit.image.name": {
+    "defaultMessage": "Edit image name"
+  },
+  "empty.gallery.start.adding.images": {
+    "defaultMessage": "Empty gallery. Start adding images."
+  },
+  "error.try.again": {
+    "defaultMessage": "Error. Try again?"
+  },
   "error.while.burning": {
     "defaultMessage": "Error while burning"
   },
+  "error.while.generating.images": {
+    "defaultMessage": "Error while generating images"
+  },
   "error.while.transferring": {
     "defaultMessage": "Error while transferring"
+  },
+  "ex.an.image.of.a.cat": {
+    "defaultMessage": "ex. An image of a cat"
   },
   "execute": {
     "defaultMessage": "Execute"
@@ -3517,14 +3816,53 @@
   "execute.transaction": {
     "defaultMessage": "Execute transaction"
   },
+  "fix.spelling.and.grammar": {
+    "defaultMessage": "Fix spelling and grammar"
+  },
+  "gallery": {
+    "defaultMessage": "Gallery 1"
+  },
   "gas.cost": {
     "defaultMessage": "Gas cost"
   },
   "gas.price": {
     "defaultMessage": "Gas price"
   },
+  "generate": {
+    "defaultMessage": "Generate"
+  },
+  "generate.image": {
+    "defaultMessage": "Generate image"
+  },
+  "generate.new.text": {
+    "defaultMessage": "Generate new text"
+  },
+  "generate.variant": {
+    "defaultMessage": "Generate variant"
+  },
+  "generate.variants": {
+    "defaultMessage": "Generate Variants"
+  },
+  "generating": {
+    "defaultMessage": "Generating"
+  },
+  "generating.variants": {
+    "defaultMessage": "Generating Variants"
+  },
   "hide.form.info": {
     "defaultMessage": "Hide form info"
+  },
+  "image.deleted": {
+    "defaultMessage": "Image deleted"
+  },
+  "images.generated": {
+    "defaultMessage": "Images generated"
+  },
+  "images.notGenerated": {
+    "defaultMessage": "You haven't generated any images yet. Start generating images now to make the most out of our service."
+  },
+  "improve.writing": {
+    "defaultMessage": "Improve writing"
   },
   "invalid address": {
     "defaultMessage": "Invalid address"
@@ -3532,8 +3870,20 @@
   "invalid.file.column.column.is.missing": {
     "defaultMessage": "Invalid file: column {column} is missing"
   },
+  "least.recent": {
+    "defaultMessage": "Least recent"
+  },
+  "make.longer": {
+    "defaultMessage": "Make longer"
+  },
+  "make.shorter": {
+    "defaultMessage": "Make shorter"
+  },
   "max.fee": {
     "defaultMessage": "Max fee"
+  },
+  "max.image.size": {
+    "defaultMessage": "Max image size: 1 Mb"
   },
   "max.priority.fee": {
     "defaultMessage": "Max priority fee"
@@ -3544,8 +3894,20 @@
   "mint.token.value": {
     "defaultMessage": "Mint token \"{tokenName}\""
   },
+  "most.recent": {
+    "defaultMessage": "Most recent"
+  },
   "network.value": {
     "defaultMessage": "{network}"
+  },
+  "no.credits": {
+    "defaultMessage": "No Credits"
+  },
+  "no.images": {
+    "defaultMessage": "No Images"
+  },
+  "no.images.found.with.that.name": {
+    "defaultMessage": "No images found with that name."
   },
   "nonce": {
     "defaultMessage": "Nonce"
@@ -3557,12 +3919,39 @@
     "defaultMessage": "Notifications",
     "description": "Notifications"
   },
+  "num.of.images": {
+    "defaultMessage": "Num. of Images"
+  },
+  "num.of.variant": {
+    "defaultMessage": "Num of variants"
+  },
+  "num.of.variants": {
+    "defaultMessage": "Num. of variants"
+  },
+  "original.image": {
+    "defaultMessage": "Original image"
+  },
   "owned.by.owner": {
     "defaultMessage": "Owned by {owner}"
+  },
+  "payment.confirmation.message": {
+    "defaultMessage": "Please wait for 10 confirmations for payment recognition."
+  },
+  "payment.method": {
+    "defaultMessage": "Payment method"
+  },
+  "please.login.with.your.wallet.to.delete.your.image": {
+    "defaultMessage": "Please, login with your wallet to delete your image"
   },
   "please.wait.for.the.block.confirmation": {
     "defaultMessage": "Wait for the block confirmation",
     "description": "Transaction dialog message after transaction confirmation in the wallet"
+  },
+  "prompt": {
+    "defaultMessage": "Prompt"
+  },
+  "reason": {
+    "defaultMessage": "Reason"
   },
   "receive.on.network.value": {
     "defaultMessage": "Receive on {network}"
@@ -3573,11 +3962,23 @@
   "reject": {
     "defaultMessage": "Reject"
   },
+  "remove.image": {
+    "defaultMessage": "Remove Image"
+  },
   "request.sent.successfully": {
     "defaultMessage": "Request sent successfully"
   },
   "save.column": {
     "defaultMessage": "Save column"
+  },
+  "save.generated.images": {
+    "defaultMessage": "Save generated images?"
+  },
+  "saved": {
+    "defaultMessage": "Saved"
+  },
+  "select.image": {
+    "defaultMessage": "Select Image"
   },
   "send.amount": {
     "defaultMessage": "Send amount"
@@ -3594,12 +3995,21 @@
   "sign": {
     "defaultMessage": "Sign"
   },
+  "sort.by": {
+    "defaultMessage": "Sort by"
+  },
   "switch": {
     "defaultMessage": "Switch",
     "description": "switch"
   },
   "switch.to.network.value": {
     "defaultMessage": "Switch to {networkName} network"
+  },
+  "the.maximum.is.95": {
+    "defaultMessage": "the maximum is 95"
+  },
+  "the.minimum.is.five": {
+    "defaultMessage": "the minimum is 5"
   },
   "transaction.confirm.transaction": {
     "defaultMessage": "Confirm transaction"
@@ -3616,14 +4026,38 @@
   "transferring": {
     "defaultMessage": "Transferring"
   },
+  "unlock.the.power.of.artificial.intelligence.by.activating.it": {
+    "defaultMessage": "Unlock the power of artificial intelligence by activating it"
+  },
+  "upload": {
+    "defaultMessage": "Upload"
+  },
+  "uploaded": {
+    "defaultMessage": "Uploaded"
+  },
+  "uploading": {
+    "defaultMessage": "Uploading"
+  },
+  "use": {
+    "defaultMessage": "use"
+  },
+  "use.as.prompt": {
+    "defaultMessage": "use as prompt"
+  },
   "validating": {
     "defaultMessage": "Validating"
   },
   "validating.ens": {
     "defaultMessage": "Validating ENS name"
   },
+  "variants": {
+    "defaultMessage": "Variants"
+  },
   "view.marketplace": {
     "defaultMessage": "View Marketplace"
+  },
+  "waiting.payment": {
+    "defaultMessage": "Waiting payment"
   },
   "you.are.not.the.owner.of.this.NFT": {
     "defaultMessage": "You are not the owner of this NFT"
@@ -3634,8 +4068,14 @@
   "you.cant.use.the.connected.account.to.transfer": {
     "defaultMessage": "You can't use the connected to transfer"
   },
+  "you.need.to.add.credits.to.use.ai.features": {
+    "defaultMessage": "You need to add credits to use AI features"
+  },
   "you.own.nfts": {
     "defaultMessage": "You own {balance} NFTs"
+  },
+  "your.image.was.deleted.successfully": {
+    "defaultMessage": "Your image was deleted successfully"
   },
   "your.request.was.sent.successfully": {
     "defaultMessage": "Your request was sent successfully"

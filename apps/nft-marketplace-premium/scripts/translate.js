@@ -11,6 +11,7 @@ const languages = [
   'it-IT',
   'nn-NO',
   'pt-BR',
+  'cs-CZ',
 ];
 
 const sourceLanguage = 'en-US';
