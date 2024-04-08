@@ -96,12 +96,9 @@ export default function EditMenuPageDialog({
       <AppDialogTitle
         title={
           fatherIndex !== undefined ? (
-            <FormattedMessage
-              id="create.submenu"
-              defaultMessage="Create submenu"
-            />
+            <FormattedMessage id="edit.submenu" defaultMessage="Edit submenu" />
           ) : (
-            <FormattedMessage id="create.menu" defaultMessage="Create menu" />
+            <FormattedMessage id="edit.menu" defaultMessage="Edit menu" />
           )
         }
         onClose={handleClose}
@@ -116,7 +113,7 @@ export default function EditMenuPageDialog({
                 name: allPages[values.name].title || '',
                 href: allPages[values.name].uri || '',
               },
-              fatherIndex
+              fatherIndex,
             );
           } else {
             onSubmit(values as MenuTree, fatherIndex);
@@ -134,7 +131,9 @@ export default function EditMenuPageDialog({
                   <Field
                     component={Select}
                     name="type"
-                    disabled={values.type === 'Menu'}
+                    disabled={
+                      values.type === 'Menu' && getInitials()?.type === 'Menu'
+                    }
                     label={<FormattedMessage id="type" defaultMessage="Type" />}
                   >
                     <MenuItem value="Page">

@@ -46,12 +46,6 @@
       "name": "App version"
     }
   ],
-  "menuSettings": {
-    "layout": {
-      "type": "navbar",
-      "variant": "default"
-    }
-  },
   "menuTree": [
     {
       "type": "Menu",
@@ -87,28 +81,6 @@
           "type": "Page",
           "href": "/admin",
           "name": "Manage Apps"
-        },
-        {
-          "type": "Menu",
-          "href": "",
-          "name": "DexGenerator",
-          "children": [
-            {
-              "type": "Page",
-              "href": "/forms/contracts/create",
-              "name": "Create contracts"
-            },
-            {
-              "type": "Page",
-              "href": "/forms/contracts/list",
-              "name": "Manage contracts"
-            },
-            {
-              "type": "Page",
-              "href": "/forms",
-              "name": "Manage contract forms"
-            }
-          ]
         }
       ]
     },

@@ -1,7 +1,6 @@
 import {
   Box,
   Button,
-  Container,
   NoSsr,
   Paper,
   Stack,
@@ -23,7 +22,7 @@ import { ErrorBoundary } from 'react-error-boundary';
 import { FormattedMessage } from 'react-intl';
 import { Footer } from '../Footer';
 import Navbar from '../Navbar';
-import NavbarMenuAlt from '../NavbarMenuAlt';
+import NavbarAlt from '../NavbarAlt';
 import { GlobalDialogs } from './GlobalDialogs';
 
 interface Props {
@@ -49,10 +48,8 @@ const MainLayout: React.FC<Props> = ({
 
   const appConfig = useMemo(() => {
     if (appConfigProps) {
-      console.log('entra aqui');
       return appConfigProps;
     } else {
-      console.log('entra aqui 2, default', defaultAppConfig.menuSettings);
       return defaultAppConfig;
     }
   }, [defaultAppConfig, appConfigProps]);
@@ -93,24 +90,7 @@ const MainLayout: React.FC<Props> = ({
       <GlobalDialogs />
 
       <Navbar appConfig={appConfig} isPreview={isPreview} />
-
-      {appConfig.menuSettings?.layout?.type === 'navbar' &&
-        appConfig.menuSettings?.layout.variant === 'alt' && (
-          <Paper square variant="elevation" sx={{ py: 2 }}>
-            <Container>
-              <Stack
-                direction="row"
-                alignItems="center"
-                justifyContent="center"
-                spacing={1}
-              >
-                {appConfig.menuTree?.map((menu, index) => (
-                  <NavbarMenuAlt menu={menu} key={index} />
-                ))}
-              </Stack>
-            </Container>
-          </Paper>
-        )}
+      <NavbarAlt appConfig={appConfig} isPreview={isPreview} />
 
       <Box
         sx={{

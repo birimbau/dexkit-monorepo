@@ -1,5 +1,10 @@
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { ListItemButton, ListItemText } from '@mui/material';
+import {
+  Icon,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+} from '@mui/material';
 import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import * as React from 'react';
@@ -57,6 +62,11 @@ export default function NavbarMenuAlt(props: NavbarMenuAltProps) {
           LinkComponent={Link}
           href={item.href || ''}
         >
+          {item.data?.iconName && (
+            <ListItemIcon>
+              <Icon>{item.data?.iconName}</Icon>
+            </ListItemIcon>
+          )}
           <ListItemText primary={item.name} />
         </ListItemButton>
       );
@@ -83,14 +93,6 @@ export default function NavbarMenuAlt(props: NavbarMenuAltProps) {
     }
   };
 
-  if (menu.type === 'Page') {
-    return <Button LinkComponent={Link}>{menu.name}</Button>;
-  }
-
-  if (menu.type === 'External') {
-    return <Button LinkComponent={Link}>{menu.name}</Button>;
-  }
-
   return (
     <>
       {child ? (
@@ -101,6 +103,11 @@ export default function NavbarMenuAlt(props: NavbarMenuAltProps) {
           aria-expanded={open ? 'true' : undefined}
           onClick={handleClick}
         >
+          {menu.data?.iconName && (
+            <ListItemIcon>
+              <Icon>{menu.data?.iconName}</Icon>
+            </ListItemIcon>
+          )}
           <ListItemText primary={menu.name} />
           <ExpandMoreIcon />
         </ListItemButton>
@@ -117,6 +124,9 @@ export default function NavbarMenuAlt(props: NavbarMenuAltProps) {
             textTransform: 'none',
             fontSize: 'inherit',
           }}
+          startIcon={
+            menu.data?.iconName ? <Icon>{menu.data?.iconName}</Icon> : undefined
+          }
           endIcon={<ExpandMoreIcon />}
           onClick={handleClick}
         >
