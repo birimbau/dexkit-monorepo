@@ -9,6 +9,7 @@ import AddMenuPageDialog from '../../dialogs/AddMenuPageDialog';
 import MenuItemTree from './MenuItemTree';
 
 import SelectIconDialog from '@dexkit/ui/components/dialogs/SelectIconDialog';
+import EditMenuPageDialog from '../../dialogs/EditMenuPageDialog';
 
 interface Props {
   menu: MenuTree[];
@@ -18,7 +19,8 @@ interface Props {
 
 export default function MenuSection(props: Props) {
   const { menu, onSetMenu, pages } = props;
-  const [isOpen, setIsOpen] = useState(false);
+  const [isAddOpen, setIsAddOpen] = useState(false);
+  const [isEditOpen, setIsEditOpen] = useState(false);
 
   const onAddMenu = (item: MenuTree, fIndex?: number) => {
     const newMenu = [...menu, item];
@@ -27,11 +29,19 @@ export default function MenuSection(props: Props) {
   };
 
   const handleAddMenuPage = () => {
-    setIsOpen(true);
+    setIsAddOpen(true);
   };
 
   const handleClose = () => {
-    setIsOpen(false);
+    setIsAddOpen(false);
+  };
+
+  const handleEditMenuPage = () => {
+    setIsAddOpen(true);
+  };
+
+  const handleEditClose = () => {
+    setIsAddOpen(false);
   };
 
   const handleUp = (index: number) => {
@@ -92,10 +102,23 @@ export default function MenuSection(props: Props) {
 
   return (
     <Stack spacing={2}>
-      {isOpen && (
+      {isAddOpen && (
         <AddMenuPageDialog
           dialogProps={{
-            open: isOpen,
+            open: isAddOpen,
+            maxWidth: 'sm',
+            fullWidth: true,
+            onClose: handleClose,
+          }}
+          pages={pages}
+          onCancel={handleClose}
+          onSubmit={onAddMenu}
+        />
+      )}
+      {isAddOpen && (
+        <AddMenuPageDialog
+          dialogProps={{
+            open: isAddOpen,
             maxWidth: 'sm',
             fullWidth: true,
             onClose: handleClose,
@@ -133,6 +156,20 @@ export default function MenuSection(props: Props) {
                 maxWidth: 'sm',
               }}
               onConfirm={onConfirm}
+            />
+          )}
+          renderEdit={(onConfirm, onClose, open, item: MenuTree) => (
+            <EditMenuPageDialog
+              dialogProps={{
+                open,
+                onClose: onClose,
+                fullWidth: true,
+                maxWidth: 'sm',
+              }}
+              onSubmit={onConfirm}
+              onCancel={onClose}
+              value={item}
+              pages={pages}
             />
           )}
         />

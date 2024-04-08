@@ -2,6 +2,7 @@ import Add from '@mui/icons-material/Add';
 import ArrowDownward from '@mui/icons-material/ArrowDownward';
 import ArrowUpward from '@mui/icons-material/ArrowUpward';
 import Delete from '@mui/icons-material/Delete';
+import Edit from '@mui/icons-material/Edit';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import Image from '@mui/icons-material/Image';
@@ -53,6 +54,12 @@ export interface MenuItemTreeProps {
     onClose: () => void,
     open: boolean
   ) => React.ReactNode;
+  renderEdit: (
+    onSave: (item: MenuTree) => void,
+    onClose: () => void,
+    open: boolean,
+    item: MenuTree
+  ) => React.ReactNode;
 }
 
 export default function MenuItemTree({
@@ -65,9 +72,12 @@ export default function MenuItemTree({
   disableUp,
   disableDown,
   pages,
+  renderEdit,
   renderSelectIcon,
 }: MenuItemTreeProps) {
   const [expanded, setExpanded] = useState(true);
+
+  const [isOpenEdit, setIsOpenEdit] = useState(false);
 
   const [openAdd, setOpenAdd] = useState(false);
   const [showSelectIcons, setShowSelectIcons] = useState(false);
@@ -76,6 +86,13 @@ export default function MenuItemTree({
     onUpdateItem({ ...item, data: { iconName } });
     setShowSelectIcons(false);
   };
+
+  const handleConfirmEdit = (menuItem: MenuTree) => {
+    onUpdateItem({ ...menuItem });
+    setIsOpenEdit(false);
+  };
+
+  const handleCloseEdit = () => setIsOpenEdit(false);
 
   const handleShowSelectIcon = () => {
     setShowSelectIcons(true);
@@ -153,6 +170,30 @@ export default function MenuItemTree({
     onUpdateItem(updatedItem);
   };
 
+  const renderOptions = () => {
+    return (
+      <Stack
+        spacing={0.5}
+        alignItems="center"
+        alignContent="center"
+        direction="row"
+      >
+        <IconButton onClick={() => setIsOpenEdit(true)}>
+          <Edit />
+        </IconButton>
+        <IconButton disabled={disableUp} onClick={onUp}>
+          <ArrowUpward />
+        </IconButton>
+        <IconButton disabled={disableDown} onClick={onDown}>
+          <ArrowDownward />
+        </IconButton>
+        <IconButton onClick={onRemove}>
+          <Delete />
+        </IconButton>
+      </Stack>
+    );
+  };
+
   if (item.type === 'Page') {
     return (
       <>
@@ -162,6 +203,8 @@ export default function MenuItemTree({
             handleCloseSelectIcon,
             showSelectIcons
           )}
+        {isOpenEdit &&
+          renderEdit(handleConfirmEdit, handleCloseEdit, isOpenEdit, item)}
         <ListItem sx={{ pl: depth * 2 }}>
           <ListItemIcon>
             <IconButton onClick={handleShowSelectIcon}>
@@ -173,22 +216,7 @@ export default function MenuItemTree({
             </IconButton>
           </ListItemIcon>
           <ListItemText primary={item.name} />
-          <Stack
-            spacing={0.5}
-            alignItems="center"
-            alignContent="center"
-            direction="row"
-          >
-            <IconButton disabled={disableUp} onClick={onUp}>
-              <ArrowUpward />
-            </IconButton>
-            <IconButton disabled={disableDown} onClick={onDown}>
-              <ArrowDownward />
-            </IconButton>
-            <IconButton onClick={onRemove}>
-              <Delete />
-            </IconButton>
-          </Stack>
+          {renderOptions()}
         </ListItem>
       </>
     );
@@ -203,6 +231,8 @@ export default function MenuItemTree({
             handleCloseSelectIcon,
             showSelectIcons
           )}
+        {isOpenEdit &&
+          renderEdit(handleConfirmEdit, handleCloseEdit, isOpenEdit, item)}
         <ListItem sx={{ pl: depth * 2 }}>
           <ListItemIcon>
             <IconButton onClick={handleShowSelectIcon}>
@@ -214,22 +244,7 @@ export default function MenuItemTree({
             </IconButton>
           </ListItemIcon>
           <ListItemText primary={item.name} />
-          <Stack
-            spacing={0.5}
-            alignItems="center"
-            alignContent="center"
-            direction="row"
-          >
-            <IconButton disabled={disableUp} onClick={onUp}>
-              <ArrowUpward />
-            </IconButton>
-            <IconButton disabled={disableDown} onClick={onDown}>
-              <ArrowDownward />
-            </IconButton>
-            <IconButton onClick={onRemove}>
-              <Delete />
-            </IconButton>
-          </Stack>
+          {renderOptions()}
         </ListItem>
       </>
     );
@@ -244,6 +259,8 @@ export default function MenuItemTree({
             handleCloseSelectIcon,
             showSelectIcons
           )}
+        {isOpenEdit &&
+          renderEdit(handleConfirmEdit, handleCloseEdit, isOpenEdit, item)}
         {openAdd && (
           <AddMenuPageDialog
             key={`${depth}-dialog`}
@@ -277,6 +294,9 @@ export default function MenuItemTree({
             alignContent="center"
             direction="row"
           >
+            <IconButton onClick={() => setIsOpenEdit(true)}>
+              <Edit />
+            </IconButton>
             <IconButton disabled={disableUp} onClick={onUp}>
               <ArrowUpward />
             </IconButton>
@@ -298,6 +318,7 @@ export default function MenuItemTree({
           <List>
             {item.children?.map((child, key, arr) => (
               <MenuItemTree
+                renderEdit={renderEdit}
                 pages={pages}
                 item={child}
                 key={`${depth}-${key}`}

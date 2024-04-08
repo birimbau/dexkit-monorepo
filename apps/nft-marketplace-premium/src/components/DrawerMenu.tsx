@@ -68,73 +68,69 @@ export function DrawerMenuItem({
 
   if (menu.type === 'Page') {
     return (
-      <React.Fragment>
-        <ListItemButton
-          sx={disablePadding ? undefined : { pl: depth * 2 }}
-          onClick={onClose}
-          component={Link}
-          href={menu.href || '/'}
+      <ListItemButton
+        sx={disablePadding ? undefined : { pl: depth * 2 }}
+        onClick={onClose}
+        component={Link}
+        href={menu.href || '/'}
+      >
+        <Stack
+          sx={{
+            alignItem: 'center',
+            justifyContent: 'center',
+            mr: isMini ? 0 : 2,
+            p: 0.5,
+          }}
         >
-          <Stack
-            sx={{
-              alignItem: 'center',
-              justifyContent: 'center',
-              mr: isMini ? 0 : 2,
-              p: 0.5,
-            }}
-          >
-            {menu.data?.iconName ? <Icon> {menu.data?.iconName}</Icon> : ''}
-          </Stack>
-          {!onlyIcon && (
-            <ListItemText sx={{ fontWeight: 600 }} primary={menu.name} />
-          )}
-          <CustomListItemSecondaryAction
-            sx={(theme) => ({
-              [theme.breakpoints.up('sm')]: {
-                display: 'none',
-              },
-            })}
-          >
-            <ChevronRight color="primary" />
-          </CustomListItemSecondaryAction>
-        </ListItemButton>
-      </React.Fragment>
+          {menu.data?.iconName ? <Icon> {menu.data?.iconName}</Icon> : ''}
+        </Stack>
+        {!onlyIcon && (
+          <ListItemText sx={{ fontWeight: 600 }} primary={menu.name} />
+        )}
+        <CustomListItemSecondaryAction
+          sx={(theme) => ({
+            [theme.breakpoints.up('sm')]: {
+              display: 'none',
+            },
+          })}
+        >
+          <ChevronRight color="primary" />
+        </CustomListItemSecondaryAction>
+      </ListItemButton>
     );
   }
 
   if (menu.type === 'External') {
     return (
-      <React.Fragment>
-        <ListItemButton
-          sx={disablePadding ? undefined : { pl: depth * 2 }}
-          onClick={onClose}
-          component={Link}
-          href={menu.href || '/'}
+      <ListItemButton
+        sx={disablePadding ? undefined : { pl: depth * 2 }}
+        onClick={onClose}
+        component={Link}
+        href={menu.href || '/'}
+      >
+        <Stack
+          sx={{
+            alignItem: 'center',
+            justifyContent: 'center',
+            mr: isMini ? 0 : 2,
+            p: 0.5,
+          }}
         >
-          <Stack
-            sx={{
-              alignItem: 'center',
-              justifyContent: 'center',
-              mr: isMini ? 0 : 2,
-              p: 0.5,
-            }}
-          >
-            <Icon>{menu.data?.iconName ? menu.data?.iconName : ''}</Icon>
-          </Stack>
-          {!isMini && (
-            <ListItemText sx={{ fontWeight: 600 }} primary={menu.name} />
-          )}
-          <CustomListItemSecondaryAction
-            sx={(theme) => ({
-              [theme.breakpoints.up('sm')]: {
-                display: 'none',
-              },
-            })}
-          >
-            <ChevronRight color="primary" />
-          </CustomListItemSecondaryAction>
-        </ListItemButton>
-      </React.Fragment>
+          <Icon>{menu.data?.iconName ? menu.data?.iconName : ''}</Icon>
+        </Stack>
+        {!isMini && (
+          <ListItemText sx={{ fontWeight: 600 }} primary={menu.name} />
+        )}
+        <CustomListItemSecondaryAction
+          sx={(theme) => ({
+            [theme.breakpoints.up('sm')]: {
+              display: 'none',
+            },
+          })}
+        >
+          <ChevronRight color="primary" />
+        </CustomListItemSecondaryAction>
+      </ListItemButton>
     );
   }
 
@@ -190,7 +186,7 @@ export function DrawerMenuItem({
             MenuListProps={{ disablePadding: true }}
           >
             {menu.children?.map((child, key, arr) => (
-              <React.Fragment key={key}>
+              <div key={key}>
                 <DrawerMenuItem
                   menu={child}
                   onClose={onClose}
@@ -207,7 +203,7 @@ export function DrawerMenuItem({
                     }}
                   />
                 )}
-              </React.Fragment>
+              </div>
             ))}
           </Menu>
         ) : (
