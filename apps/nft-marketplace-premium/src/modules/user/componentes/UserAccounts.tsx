@@ -1,4 +1,6 @@
 import { isAddressEqual, truncateAddress } from '@dexkit/core/utils';
+import AppConfirmDialog from '@dexkit/ui/components/AppConfirmDialog';
+import { useAuth } from '@dexkit/ui/hooks/auth';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import DeleteIcon from '@mui/icons-material/Delete';
 import {
@@ -21,8 +23,6 @@ import Typography from '@mui/material/Typography';
 import { useWeb3React } from '@web3-react/core';
 import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import AppConfirmDialog from 'src/components/AppConfirmDialog';
-import { useAuth } from 'src/hooks/account';
 import {
   useAddAccountUserMutation,
   useRemoveAccountUserMutation,
@@ -49,7 +49,7 @@ export function UserAccounts(props: Props) {
     <>
       {openAccountToDeleteDialog && (
         <AppConfirmDialog
-          dialogProps={{
+          DialogProps={{
             open: openAccountToDeleteDialog,
             onClose: () => {
               setAccountToDelete(undefined);

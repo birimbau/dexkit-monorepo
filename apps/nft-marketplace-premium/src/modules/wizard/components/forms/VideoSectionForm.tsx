@@ -10,13 +10,16 @@ import {
 } from '@mui/material';
 import { FormikHelpers, useFormik } from 'formik';
 import { FormattedMessage } from 'react-intl';
-import LazyYoutubeFrame from '../../../../components/LazyYoutubeFrame';
-import { VideoEmbedType } from '../../../../types/config';
 
+import LazyYoutubeFrame from '@dexkit/ui/components/LazyYoutubeFrame';
+import { VideoEmbedType } from '@dexkit/ui/modules/wizard/types/config';
+import {
+  AppPageSection,
+  VideoEmbedAppPageSection,
+} from '@dexkit/ui/modules/wizard/types/section';
 import { useEffect } from 'react';
 import * as Yup from 'yup';
 import { useDebounce } from '../../../../hooks/misc';
-import { AppPageSection, VideoEmbedAppPageSection } from '../../types/section';
 
 interface Form {
   videoType: string;

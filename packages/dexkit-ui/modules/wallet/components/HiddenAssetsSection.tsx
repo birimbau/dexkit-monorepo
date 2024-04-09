@@ -1,6 +1,6 @@
-import { ChainId } from '@dexkit/core/constants';
-import { Search } from '@mui/icons-material';
-import FilterListIcon from '@mui/icons-material/FilterList';
+import { ChainId } from "@dexkit/core/constants";
+import { Search } from "@mui/icons-material";
+import FilterListIcon from "@mui/icons-material/FilterList";
 import {
   Box,
   Chip,
@@ -12,18 +12,18 @@ import {
   Typography,
   useMediaQuery,
   useTheme,
-} from '@mui/material';
-import { useWeb3React } from '@web3-react/core';
-import { ChangeEvent, useMemo, useState } from 'react';
-import { FormattedMessage, useIntl } from 'react-intl';
-import CloseCircle from '../../../components/icons/CloseCircle';
-import Funnel from '../../../components/icons/Filter';
-import { useAccountAssetsBalance, useHiddenAssets } from '../../../hooks/nft';
-import { Asset } from '../../../types/nft';
-import { getNetworkSlugFromChainId } from '../../../utils/blockchain';
+} from "@mui/material";
+import { useWeb3React } from "@web3-react/core";
+import { ChangeEvent, useMemo, useState } from "react";
+import { FormattedMessage, useIntl } from "react-intl";
+import CloseCircle from "../../../components/icons/CloseCircle";
 
-import { AssetCard } from '../../nft/components/AssetCard';
-import WalletAssetsFilter from './WalletAssetsFilter';
+import { Asset } from "@dexkit/core/types/nft";
+import { getNetworkSlugFromChainId } from "@dexkit/core/utils/blockchain";
+import Funnel from "../../../components/icons/Filter";
+import { AssetCard } from "../../nft/components/AssetCard";
+import { useAccountAssetsBalance, useHiddenAssets } from "../../nft/hooks";
+import WalletAssetsFilter from "./WalletAssetsFilter";
 
 interface Props {
   onOpenFilters?: () => void;
@@ -39,7 +39,7 @@ interface Props {
 function HiddenAssetsSection({ onOpenFilters, filters, setFilters }: Props) {
   const [openFilter, setOpenFilter] = useState(false);
   const { account } = useWeb3React();
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
   const { accountAssets } = useAccountAssetsBalance(account ? [account] : []);
 
   const { formatMessage } = useIntl();
@@ -66,16 +66,17 @@ function HiddenAssetsSection({ onOpenFilters, filters, setFilters }: Props) {
       .filter(isHidden)
       .filter((asset) => {
         return (
-          asset.collectionName?.toLowerCase().search(search.toLowerCase()) >
+          asset?.collectionName?.toLowerCase().search(search.toLowerCase()) >
             -1 ||
-          (asset.metadata !== undefined &&
-            asset.metadata.name.toLowerCase().search(search.toLowerCase()) > -1)
+          (asset?.metadata !== undefined &&
+            asset?.metadata?.name?.toLowerCase().search(search.toLowerCase()) >
+              -1)
         );
       })
       .filter((asset) => {
         if (filters?.networks && filters?.networks.length) {
           return filters.networks.includes(
-            getNetworkSlugFromChainId(asset.chainId) || ''
+            getNetworkSlugFromChainId(asset?.chainId) || ""
           );
         }
 
@@ -120,7 +121,7 @@ function HiddenAssetsSection({ onOpenFilters, filters, setFilters }: Props) {
     ));
   };
   const theme = useTheme();
-  const isDesktop = useMediaQuery(theme.breakpoints.up('sm'));
+  const isDesktop = useMediaQuery(theme.breakpoints.up("sm"));
 
   return (
     <>
@@ -147,8 +148,8 @@ function HiddenAssetsSection({ onOpenFilters, filters, setFilters }: Props) {
                 value={search}
                 onChange={handleChange}
                 placeholder={formatMessage({
-                  id: 'search.for.a.nft',
-                  defaultMessage: 'Search for a NFT',
+                  id: "search.for.a.nft",
+                  defaultMessage: "Search for a NFT",
                 })}
                 InputProps={{
                   endAdornment: (
@@ -162,7 +163,7 @@ function HiddenAssetsSection({ onOpenFilters, filters, setFilters }: Props) {
               <Chip
                 label={
                   <>
-                    {filteredAssetList.length}{' '}
+                    {filteredAssetList.length}{" "}
                     <FormattedMessage id="nfts" defaultMessage="NFTs" />
                   </>
                 }
@@ -186,7 +187,7 @@ function HiddenAssetsSection({ onOpenFilters, filters, setFilters }: Props) {
                   <Chip
                     label={
                       <>
-                        {assetList.length}{' '}
+                        {assetList.length}{" "}
                         <FormattedMessage id="nfts" defaultMessage="NFTs" />
                       </>
                     }
@@ -203,8 +204,8 @@ function HiddenAssetsSection({ onOpenFilters, filters, setFilters }: Props) {
                 value={search}
                 onChange={handleChange}
                 placeholder={formatMessage({
-                  id: 'search.for.a.nft',
-                  defaultMessage: 'Search for a NFT',
+                  id: "search.for.a.nft",
+                  defaultMessage: "Search for a NFT",
                 })}
                 InputProps={{
                   endAdornment: (

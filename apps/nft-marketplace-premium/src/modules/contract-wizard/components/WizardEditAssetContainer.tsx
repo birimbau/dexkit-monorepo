@@ -4,15 +4,16 @@ import {
   CollectionItemFormType,
   WizardItem,
 } from '@/modules/contract-wizard/types';
+import AppConfirmDialog from '@dexkit/ui/components/AppConfirmDialog';
 import { Alert, Container, Grid, Typography } from '@mui/material';
 import { useWeb3React } from '@web3-react/core';
 import { Formik } from 'formik';
 import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import AppConfirmDialog from 'src/components/AppConfirmDialog';
-import { PageHeader } from 'src/components/PageHeader';
-import { useAssetByApi } from 'src/hooks/nft';
-import { getChainIdFromSlug } from 'src/utils/blockchain';
+
+import { getChainIdFromSlug } from '@dexkit/core/utils/blockchain';
+import { PageHeader } from '@dexkit/ui/components/PageHeader';
+import { useAssetByApi } from '@dexkit/ui/modules/nft/hooks';
 import CollectionItemCard from './CollectionItemCard';
 import EditAssetDialog from './dialogs/EditAssetDialog';
 
@@ -42,7 +43,7 @@ function WizardEditAssetContainer(props: Props) {
   const [showConfirm, setShowConfirm] = useState(false);
 
   const handleSubmitCollectionItemForm = async (
-    values: CollectionItemFormType
+    values: CollectionItemFormType,
   ) => {
     setShowConfirm(true);
     setCollectionItemFormValue(values);
@@ -103,7 +104,7 @@ function WizardEditAssetContainer(props: Props) {
         contractAddress={address}
       />
       <AppConfirmDialog
-        dialogProps={{
+        DialogProps={{
           open: showConfirm,
           onClose: handleCloseConfirm,
           fullWidth: true,

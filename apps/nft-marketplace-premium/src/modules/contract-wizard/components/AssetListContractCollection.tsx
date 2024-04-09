@@ -2,10 +2,10 @@ import { Button, Grid, Pagination, Stack, Typography } from '@mui/material';
 import { useRouter } from 'next/router';
 import { useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import Link from '../../../components/Link';
 
+import Link from '@dexkit/ui/components/AppLink';
+import { BaseAssetCard } from '@dexkit/ui/modules/nft/components/BaseAssetCard';
 import { useAssetListFromCollection } from '../../../hooks/collection';
-import { BaseAssetCard } from '../../nft/components/BaseAssetCard';
 
 interface Props {
   contractAddress: string;
@@ -34,7 +34,7 @@ export function AssetListContractCollection({
     take: perPage,
     traitsFilter: router.query['traitsFilter'] as string | undefined,
   });
-  
+
   const assets = data?.assets;
 
   const filteredAssets = useMemo(() => {

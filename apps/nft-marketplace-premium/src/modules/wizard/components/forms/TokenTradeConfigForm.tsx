@@ -1,6 +1,6 @@
-import { MarketTradeConfig } from '@/modules/token/types';
 import { OrderMarketType } from '@dexkit/exchange/constants';
 import { useActiveChainIds } from '@dexkit/ui/hooks';
+import { MarketTradeConfig } from '@dexkit/ui/modules/token/types';
 import { SUPPORTED_SWAP_CHAIN_IDS } from '@dexkit/widgets/src/widgets/swap/constants/supportedChainIds';
 import {
   Alert,

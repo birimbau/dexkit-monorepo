@@ -14,6 +14,7 @@ import {
 import { Experimental_CssVarsProvider as CssVarsProvider } from '@mui/material/styles';
 import dynamic from 'next/dynamic';
 
+import AppConfirmDialog from '@dexkit/ui/components/AppConfirmDialog';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import Close from '@mui/icons-material/Close';
 import { useWeb3React } from '@web3-react/core';
@@ -24,9 +25,8 @@ import { useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import * as Yup from 'yup';
 import theDefaultConfig from '../../../../../config/wizard.default.app.json';
-import AppConfirmDialog from '../../../../components/AppConfirmDialog';
 import Wallet from '../../../../components/icons/Wallet';
-import { PageHeader } from '../../../../components/PageHeader';
+
 import { IS_STAGING } from '../../../../constants';
 import { useConnectWalletDialog } from '../../../../hooks/app';
 
@@ -35,10 +35,12 @@ import {
   useTemplateWhitelabelConfigQuery,
 } from '../../../../hooks/whitelabel';
 import { getTheme } from '../../../../theme';
-import { AppConfig } from '../../../../types/config';
-import { PagePreviewPaper } from '../sections/PagePreviewPaper';
+
+import { PageHeader } from '@dexkit/ui/components/PageHeader';
+import { AppConfig } from '@dexkit/ui/modules/wizard/types/config';
 import ThemePreview from '../ThemePreview';
 import { WelcomeMessage } from '../WelcomeMessage';
+import { PagePreviewPaper } from '../sections/PagePreviewPaper';
 const SignConfigDialog = dynamic(() => import('../dialogs/SignConfigDialog'));
 
 const defaultConfig = theDefaultConfig as AppConfig;
@@ -194,7 +196,7 @@ export function CreateWizardContainer({ slug, isSwapWizard }: Props) {
         })}
       />
       <AppConfirmDialog
-        dialogProps={{
+        DialogProps={{
           open: showConfirmSendConfig,
           maxWidth: 'xs',
           fullWidth: true,

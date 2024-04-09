@@ -1,7 +1,8 @@
-import { AssetMedia } from '@/modules/nft/components/AssetMedia';
 import { Asset } from '@dexkit/core/types/nft';
 import EvmBurnNftDialog from '@dexkit/ui/modules/evm-burn-nft/components/dialogs/EvmBurnNftDialog';
 import EvmTransferNftDialog from '@dexkit/ui/modules/evm-transfer-nft/components/dialogs/EvmTransferNftDialog';
+import { AssetMedia } from '@dexkit/ui/modules/nft/components/AssetMedia';
+import { BaseAssetCard } from '@dexkit/ui/modules/nft/components/BaseAssetCard';
 import { useAsset } from '@dexkit/ui/modules/nft/hooks';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
@@ -25,7 +26,6 @@ import { useRouter } from 'next/router';
 import { useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { useAssetListFromCollection } from '../../../hooks/collection';
-import { BaseAssetCard } from '../../nft/components/BaseAssetCard';
 import { ClaimConditionsContainer } from './containers/ClaimConditionsContainer';
 
 interface Props {

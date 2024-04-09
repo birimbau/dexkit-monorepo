@@ -2,6 +2,8 @@ import CreateTokenDialog from '@/modules/contract-wizard/components/dialogs/Crea
 import { TokenFormSchema } from '@/modules/contract-wizard/constants/schemas';
 import { useCreateToken } from '@/modules/contract-wizard/hooks';
 import { TokenForm } from '@/modules/contract-wizard/types';
+import AppConfirmDialog from '@dexkit/ui/components/AppConfirmDialog';
+import { PageHeader } from '@dexkit/ui/components/PageHeader';
 import {
   Box,
   Button,
@@ -12,7 +14,7 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
-import { dehydrate, QueryClient } from '@tanstack/react-query';
+import { QueryClient, dehydrate } from '@tanstack/react-query';
 import { useWeb3React } from '@web3-react/core';
 import { Field, Form, Formik } from 'formik';
 import { TextField } from 'formik-mui';
@@ -27,9 +29,8 @@ import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
 import { useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
-import AppConfirmDialog from 'src/components/AppConfirmDialog';
+
 import MainLayout from 'src/components/layouts/main';
-import { PageHeader } from 'src/components/PageHeader';
 import { getAppConfig } from 'src/services/app';
 
 const INITIAL_VALUES: TokenForm = {
@@ -66,7 +67,7 @@ const WizardCreateTokenPage: NextPage = () => {
       }),
       {
         variant: 'info',
-      }
+      },
     );
 
     if (chainId !== undefined) {
@@ -91,7 +92,7 @@ const WizardCreateTokenPage: NextPage = () => {
           }),
           {
             variant: 'error',
-          }
+          },
         );
       }
     }
@@ -129,7 +130,7 @@ const WizardCreateTokenPage: NextPage = () => {
         transactionHash={transactionHash}
       />
       <AppConfirmDialog
-        dialogProps={{
+        DialogProps={{
           open: showConfirm,
           onClose: handleCloseConfirm,
           fullWidth: true,

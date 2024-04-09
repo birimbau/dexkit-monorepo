@@ -1,3 +1,10 @@
+import { getChainName } from '@dexkit/core/utils/blockchain';
+import {
+  useAssetByApi,
+  useCollectionByApi,
+} from '@dexkit/ui/modules/nft/hooks';
+import { truncateErc1155TokenId } from '@dexkit/ui/modules/nft/utils';
+import { SectionItem } from '@dexkit/ui/modules/wizard/types/config';
 import Delete from '@mui/icons-material/Delete';
 import Edit from '@mui/icons-material/Edit';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -14,10 +21,6 @@ import {
   Typography,
 } from '@mui/material';
 import { FormattedMessage } from 'react-intl';
-import { useAssetByApi, useCollectionByApi } from '../../../hooks/nft';
-import { SectionItem } from '../../../types/config';
-import { getChainName } from '../../../utils/blockchain';
-import { truncateErc1155TokenId } from '../../../utils/nfts';
 
 interface Props {
   item: SectionItem;

@@ -1,12 +1,12 @@
+import { getChainName } from '@dexkit/core/utils/blockchain';
 import Autocomplete from '@mui/material/Autocomplete';
-import Box from '@mui/material/Box';
-import TextField from '@mui/material/TextField';
-import { getChainName } from '../../../../../utils/blockchain';
-import { useAppWizardConfig } from '../../../hooks';
-import { connectField } from 'uniforms';
-import FormControl from '@mui/material/FormControl';
-import Chip from '@mui/material/Chip';
 import Avatar from '@mui/material/Avatar';
+import Box from '@mui/material/Box';
+import Chip from '@mui/material/Chip';
+import FormControl from '@mui/material/FormControl';
+import TextField from '@mui/material/TextField';
+import { connectField } from 'uniforms';
+import { useAppWizardConfig } from '../../../hooks';
 
 export type CollectionUniformItem = {
   name: string;
@@ -42,7 +42,7 @@ export const CollectionAutcompleteUniform = connectField<{
           !value
             .map((val) => val.contractAddress)
             .includes(v.contractAddress) &&
-          !value.map((val) => val.chainId).includes(v.chainId)
+          !value.map((val) => val.chainId).includes(v.chainId),
       ) || [];
 
   return (

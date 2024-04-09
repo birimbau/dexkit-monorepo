@@ -1,5 +1,5 @@
-import { ShowCaseItem } from '@/modules/wizard/types/section';
 import { ipfsUriToUrl } from '@dexkit/core/utils';
+import { ShowCaseItem } from '@dexkit/ui/modules/wizard/types/section';
 import ArrowDownward from '@mui/icons-material/ArrowDownward';
 import ArrowUpward from '@mui/icons-material/ArrowUpward';
 import Check from '@mui/icons-material/Check';
@@ -11,6 +11,7 @@ import { CORE_PAGES } from '@/modules/wizard/constants';
 import { ChainId } from '@dexkit/core';
 import { NETWORKS } from '@dexkit/core/constants/networks';
 import { Network } from '@dexkit/core/types';
+import { getNetworks } from '@dexkit/core/utils/blockchain';
 import { useActiveChainIds } from '@dexkit/ui';
 import {
   Avatar,
@@ -31,7 +32,6 @@ import { Field, useField } from 'formik';
 import { Select, TextField } from 'formik-mui';
 import { useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { getNetworks } from 'src/utils/blockchain';
 import AssetItem from './AssetItem';
 import CollectionItem from './CollectionItem';
 
@@ -57,13 +57,13 @@ export default function ShowCaseFormItem({
   const { activeChainIds } = useActiveChainIds();
 
   const [itemProps, itemMeta, itemHelpers] = useField<ShowCaseItem>(
-    `items[${index}]`
+    `items[${index}]`,
   );
 
   const [isEditing, setIsEditing] = useState(false);
 
   const [imgProps, imgMeta, imgHelpers] = useField<string>(
-    `items[${index}].image`
+    `items[${index}].image`,
   );
 
   const allPages = useMemo(() => {
@@ -231,7 +231,7 @@ export default function ShowCaseFormItem({
                           >
                             <Avatar
                               src={ipfsUriToUrl(
-                                NETWORKS[value]?.imageUrl || ''
+                                NETWORKS[value]?.imageUrl || '',
                               )}
                               style={{ width: 'auto', height: '1rem' }}
                             />
@@ -366,7 +366,7 @@ export default function ShowCaseFormItem({
                           >
                             <Avatar
                               src={ipfsUriToUrl(
-                                NETWORKS[value]?.imageUrl || ''
+                                NETWORKS[value]?.imageUrl || '',
                               )}
                               style={{ width: 'auto', height: '1rem' }}
                             />

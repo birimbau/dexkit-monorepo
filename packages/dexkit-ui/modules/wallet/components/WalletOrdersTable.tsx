@@ -25,7 +25,7 @@ interface Props {
 }
 
 export function WalletOrdersTable({ orders }: Props) {
-  const currency = useCurrency();
+  const { currency } = useCurrency();
   const { isActive } = useWeb3React();
 
   const connectWalletDialog = useConnectWalletDialog();

@@ -1,5 +1,7 @@
 import { ChainConfig } from '@dexkit/widgets/src/widgets/swap/types';
 
+
+
 export interface SwapFeeForm {
   recipient: string;
   amountPercentage: number;
@@ -122,4 +124,16 @@ export interface SwapConfig {
   configByChain?: {
     [chain: number]: ChainConfig;
   };
+}
+
+
+export interface SiteMetadata {
+  id?: number,
+  slug?: string,
+  title: string,
+  subtitle: string,
+  description: string,
+  imageURL: string,
+  chainIds?: number[],
+  usecases?: string[]
 }

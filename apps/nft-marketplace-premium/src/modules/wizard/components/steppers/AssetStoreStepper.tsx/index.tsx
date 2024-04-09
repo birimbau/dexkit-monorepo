@@ -12,7 +12,8 @@ import dynamic from 'next/dynamic';
 import * as React from 'react';
 import { useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { AppConfig } from 'src/types/config';
+
+import { AppConfig } from '@dexkit/ui/modules/wizard/types/config';
 import GeneralWizardContainer from '../../containers/GeneralWizardContainer';
 import ThemeWizardContainer from '../../containers/ThemeWizardContainer';
 const AssetStoreWizardContainer = dynamic(

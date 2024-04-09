@@ -1,6 +1,8 @@
+import {
+  AppPageSection,
+  ContractPageSection,
+} from '@dexkit/ui/modules/wizard/types/section';
 import { Grid } from '@mui/material';
-import { AppPageSection, ContractPageSection } from '../../types/section';
-
 import { ContractFormParams } from '@dexkit/web3forms/types';
 import { useEffect } from 'react';
 import ContractForm from './ContractForm';

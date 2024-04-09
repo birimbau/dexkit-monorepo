@@ -1,7 +1,8 @@
+import { getAccessToken } from '@dexkit/ui/services/auth';
 import axios from 'axios';
 import { GetListParams, UpdateParams } from 'react-admin';
 import { DEXKIT_BASE_API_URL } from 'src/constants';
-import { getAccessToken } from 'src/services/auth';
+
 const DEXKIT_DASH_ENDPOINT = `${DEXKIT_BASE_API_URL}`;
 //const DEXKIT_DASH_ENDPOINT = `http://localhost:3001`;
 export const myAppsApi = axios.create({
@@ -100,12 +101,11 @@ export default {
           .data,
       };
     }
-    const data = (await myAppsApi.get(`${resource}/admin/all/${params.id}`)).data;
-      return {
-        data,
-      };
-
-
+    const data = (await myAppsApi.get(`${resource}/admin/all/${params.id}`))
+      .data;
+    return {
+      data,
+    };
   },
 
   getMany: (resource: any, params: any) => {},
@@ -157,8 +157,6 @@ export default {
       };
     }
 
-
-
     const data = (
       await myAppsApi.post(`${resource}/admin/all/${params.id}`, params.data)
     ).data;
@@ -166,8 +164,6 @@ export default {
     return {
       data,
     };
-
-
 
     return { data: [] };
   },

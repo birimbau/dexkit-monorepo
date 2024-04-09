@@ -4,8 +4,7 @@ import Typography from '@mui/material/Typography';
 
 import Box from '@mui/material/Box';
 
-import { useContractCollection } from '../../../hooks/nft';
-
+import { useContractCollection } from '@dexkit/ui/modules/nft/hooks/collection';
 import { styled, useTheme } from '@mui/material';
 import Image from 'next/image';
 

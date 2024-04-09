@@ -8,3 +8,15 @@ export enum AppWhitelabelType {
   MARKETPLACE = 'MARKETPLACE',
   AGGREGATOR = 'AGGREGATOR',
 }
+
+export const enum NETWORK_ID {
+  Ethereum = 'ethereum',
+  Goerli = 'goerli',
+  Mumbai = 'mumbai',
+  Polygon = 'polygon',
+  BSC = 'bsc',
+  Avalanche = 'avalanche',
+  Fantom = 'fantom',
+  Optimism = 'optimism',
+  Arbitrum = 'arbitrum'
+}

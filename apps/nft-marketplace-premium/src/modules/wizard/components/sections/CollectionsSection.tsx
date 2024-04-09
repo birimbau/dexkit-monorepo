@@ -9,11 +9,12 @@ import {
 } from '@mui/material';
 import { FormattedMessage } from 'react-intl';
 
+import AppConfirmDialog from '@dexkit/ui/components/AppConfirmDialog';
 import AddIcon from '@mui/icons-material/Add';
 import { useUpdateAtom } from 'jotai/utils';
 import { Key, useCallback, useState } from 'react';
-import AppConfirmDialog from '../../../../components/AppConfirmDialog';
-import { AppCollection } from '../../../../types/config';
+
+import { AppCollection } from '@dexkit/ui/modules/wizard/types/config';
 import { collectionAtom } from '../../state';
 import CollectionsSectionForm, { Form } from './CollectionsSectionForm';
 import CollectionsSectionItem from './CollectionsSectionItem';
@@ -120,7 +121,7 @@ export default function CollectionsSection({
   return (
     <>
       <AppConfirmDialog
-        dialogProps={{
+        DialogProps={{
           maxWidth: 'xs',
           fullWidth: true,
           open: showRemoveCollection,

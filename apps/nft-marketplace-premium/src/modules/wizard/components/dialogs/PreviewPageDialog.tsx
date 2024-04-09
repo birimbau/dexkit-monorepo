@@ -1,9 +1,10 @@
+import { AppConfig } from '@dexkit/ui/modules/wizard/types/config';
+import { AppPageSection } from '@dexkit/ui/modules/wizard/types/section';
 import CloseIcon from '@mui/icons-material/Close';
 import { Dialog, DialogProps, IconButton, Typography } from '@mui/material';
 import dynamic from 'next/dynamic';
 import { FormattedMessage } from 'react-intl';
-import { AppConfig } from '../../../../types/config';
-import { AppPageSection } from '../../types/section';
+
 const PreviewPagePlatform = dynamic(() => import('../PreviewPagePlatform'));
 interface Props {
   dialogProps: DialogProps;

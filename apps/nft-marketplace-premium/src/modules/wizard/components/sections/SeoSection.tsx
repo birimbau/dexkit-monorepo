@@ -1,6 +1,7 @@
 import { Stack } from '@mui/material';
 import { Dispatch, SetStateAction } from 'react';
-import { AppPage } from '../../../../types/config';
+
+import { AppPage } from '@dexkit/ui/modules/wizard/types/config';
 import { SeoForm } from '../../types';
 import PagesMenu from '../PagesMenu';
 import SeoSectionForm from './SeoSectionForm';

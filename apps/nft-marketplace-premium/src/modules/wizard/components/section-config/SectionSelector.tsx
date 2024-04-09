@@ -1,3 +1,4 @@
+import { SectionType } from '@dexkit/ui/modules/wizard/types/section';
 import SearchIcon from '@mui/icons-material/Search';
 import { Box, ButtonBase, Stack, Tooltip, Typography } from '@mui/material';
 import FormControl from '@mui/material/FormControl';
@@ -10,7 +11,6 @@ import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import React, { useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { SectionType } from '../../types/section';
 import { SectionCategory, sections } from './Sections';
 
 interface Props {

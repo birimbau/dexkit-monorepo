@@ -7,7 +7,7 @@ import { AssetListContractCollection } from '@/modules/contract-wizard/component
 import { ContractCollectionHeader } from '@/modules/contract-wizard/components/CollectionHeader';
 import ContractCollectionPageHeader from '@/modules/contract-wizard/components/CollectionPageHeader';
 import { ChipFilterTraits } from '@/modules/nft/components/ChipFilterTraits';
-import { CollectionStats } from '@/modules/nft/components/CollectionStats';
+
 import Search from '@mui/icons-material/Search';
 import {
   Divider,
@@ -26,34 +26,38 @@ import { NextSeo } from 'next-seo';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { AppErrorBoundary } from 'src/components/AppErrorBoundary';
-import SidebarFilters from 'src/components/SidebarFilters';
-import SidebarFiltersContent from 'src/components/SidebarFiltersContent';
-import Funnel from 'src/components/icons/Filter';
+
 import MainLayout from 'src/components/layouts/main';
-import { CollectionSyncStatus, NETWORK_ID } from 'src/constants/enum';
+
+import { GET_ASSET_LIST_FROM_COLLECTION } from 'src/hooks/collection';
+
+import { getAppConfig } from 'src/services/app';
+
+import { Asset } from '@dexkit/core/types/nft';
+import { getChainIdFromSlug } from '@dexkit/core/utils/blockchain';
+import { AppErrorBoundary } from '@dexkit/ui/components/AppErrorBoundary';
+import SidebarFilters from '@dexkit/ui/components/SidebarFilters';
+import SidebarFiltersContent from '@dexkit/ui/components/SidebarFiltersContent';
+import Funnel from '@dexkit/ui/components/icons/Filter';
+import { NETWORK_ID } from '@dexkit/ui/constants/enum';
+import { CollectionStats } from '@dexkit/ui/modules/nft/components/CollectionStats';
+import { CollectionSyncStatus } from '@dexkit/ui/modules/nft/constants/enum';
 import {
   MAP_COIN_TO_RARIBLE,
   MAP_NETWORK_TO_RARIBLE,
-} from 'src/constants/marketplaces';
-import {
-  GET_ASSET_LIST_FROM_COLLECTION,
-  GET_COLLECTION_STATS,
-} from 'src/hooks/collection';
+} from '@dexkit/ui/modules/nft/constants/marketplaces';
 import {
   GET_COLLECTION_DATA,
+  GET_COLLECTION_STATS,
   GET_CONTRACT_COLLECTION_DATA,
   useCollection,
-} from 'src/hooks/nft';
-import { getAppConfig } from 'src/services/app';
+} from '@dexkit/ui/modules/nft/hooks/collection';
 import {
   getApiContractCollectionData,
   getCollectionAssetsDexKitApi,
   getSyncCollectionData,
-} from 'src/services/nft';
-import { getRariCollectionStats } from 'src/services/rarible';
-import { Asset } from 'src/types/nft';
-import { getChainIdFromSlug } from 'src/utils/blockchain';
+} from '@dexkit/ui/modules/nft/services/collection';
+import { getRariCollectionStats } from '@dexkit/ui/modules/nft/services/rarible';
 
 const ContractWizardCollectionPage: NextPage = () => {
   const router = useRouter();
@@ -156,7 +160,7 @@ const ContractWizardCollectionPage: NextPage = () => {
                         variant="contained"
                         onClick={() =>
                           router.push(
-                            `/contract-wizard/collection/${network}/${address}/create-nfts`
+                            `/contract-wizard/collection/${network}/${address}/create-nfts`,
                           )
                         }
                       >
@@ -270,14 +274,14 @@ export const getStaticProps: GetStaticProps = async ({
     [GET_COLLECTION_DATA, address as string, network],
     async () => {
       return collection;
-    }
+    },
   );
 
   await queryClient.prefetchQuery(
     [GET_CONTRACT_COLLECTION_DATA, address as string, network],
     async () => {
       return contract;
-    }
+    },
   );
 
   let collectionAssets: Asset[] = [];
@@ -323,20 +327,20 @@ export const getStaticProps: GetStaticProps = async ({
     [GET_ASSET_LIST_FROM_COLLECTION, network, address, 0, 50],
     async () => {
       return collectionAssets;
-    }
+    },
   );
   try {
     if (network === NETWORK_ID.Ethereum || network === NETWORK_ID.Polygon) {
       const { data } = await getRariCollectionStats(
         `${MAP_NETWORK_TO_RARIBLE[network]}:${address}`,
-        MAP_COIN_TO_RARIBLE[network]
+        MAP_COIN_TO_RARIBLE[network],
       );
 
       await queryClient.prefetchQuery(
         [GET_COLLECTION_STATS, network, address],
         async () => {
           return data;
-        }
+        },
       );
     }
   } catch (e) {

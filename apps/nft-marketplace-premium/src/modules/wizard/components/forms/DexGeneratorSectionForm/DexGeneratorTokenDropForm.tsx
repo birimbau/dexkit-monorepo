@@ -1,4 +1,4 @@
-import { TokenDropPageSection } from '@/modules/wizard/types/section';
+import { TokenDropPageSection } from '@dexkit/ui/modules/wizard/types/section';
 import { FormControl, Grid, InputLabel, MenuItem } from '@mui/material';
 import { Field, Formik } from 'formik';
 import { Select } from 'formik-mui';

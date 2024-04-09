@@ -1,31 +1,20 @@
 import { ERC1155Abi, ERC165Abi, ERC721Abi, IERC7572 } from '@dexkit/core/constants/abis';
+import { NETWORK_FROM_SLUG } from '@dexkit/core/constants/networks';
 import { Asset, AssetMetadata } from '@dexkit/core/types/nft';
 import { Interface } from '@dexkit/core/utils/ethers/abi/Interface';
 import { ipfsUriToUrl } from '@dexkit/core/utils/ipfs';
 import { CallInput } from '@indexed-finance/multicall';
 import axios from 'axios';
-import { Contract, providers } from 'ethers';
+import { BigNumber, Contract, providers } from 'ethers';
 import { DEXKIT_NFT_BASE_URL, ENS_BASE_URL, TRADER_ORDERBOOK_API, dexkitNFTapi, metadataENSapi } from '../../../constants/api';
 import { getMulticallFromProvider } from '../../../services/multical';
-import { AssetAPI, Collection, ContractURIMetadata, OrderbookAPI, OrderbookResponse, TraderOrderFilter } from '../types';
+import { AssetAPI, ContractURIMetadata, OrderbookAPI, OrderbookResponse, TraderOrderFilter } from '../types';
 import { isENSContract } from '../utils';
 
 const orderbookNFTapi = axios.create({ baseURL: DEXKIT_NFT_BASE_URL, timeout: 10000 });
 
 
-export async function getCollectionByApi({
-  chainId,
-  contractAddress,
-}: {
-  chainId: number;
-  contractAddress: string;
-}) {
-  const resp = await axios.get<Collection>('/api/collection', {
-    params: { chainId, contractAddress },
-  });
 
-  return resp.data;
-}
 
 export async function getDKAssetOrderbook(orderFilter?: TraderOrderFilter) {
   return await orderbookNFTapi.get<OrderbookAPI>(`/asset/orderbook`, { params: orderFilter });
@@ -55,9 +44,13 @@ export async function getAssetMetadata(
 ) {
   let uri = tokenURI;
 
-  if (isERC1155 && tokenId) {
+  if (isERC1155 && tokenId && tokenURI && tokenURI?.search('/0x{id}') !== -1) {
     uri = tokenURI.replace('0x{id}', tokenId);
   }
+  if (isERC1155 && tokenId && tokenURI && tokenURI?.search('/{id}') !== -1) {
+    uri = tokenURI.replace('{id}', tokenId.length === 64 ? tokenId : Number(tokenId).toString(16).padStart(64, '0').toLowerCase());
+  }
+
   if (tokenURI?.startsWith('data:application/json;base64')) {
     const jsonURI = Buffer.from(tokenURI.substring(29), "base64").toString();
     return JSON.parse(jsonURI);
@@ -171,7 +164,6 @@ export async function getENSAssetData(
     };
   }
 }
-
 export async function getAssetProtocol(provider?: providers.JsonRpcProvider, contractAddress?: string): Promise<'ERC721' | 'ERC1155' | 'ERC20' | 'UNKNOWN'> {
   if (!provider || !contractAddress) {
     return 'UNKNOWN';
@@ -199,11 +191,13 @@ export async function getAssetProtocol(provider?: providers.JsonRpcProvider, con
 }
 
 
+
 export async function getAssetData(
   provider?: providers.JsonRpcProvider,
   contractAddress?: string,
   id?: string,
-  account?: string
+  account?: string,
+  network?: string
 ): Promise<Asset | undefined> {
   if (!provider || !contractAddress || !id) {
     return;
@@ -264,7 +258,7 @@ export async function getAssetData(
     let tokenURI;
     let name;
     let symbol;
-    let balance;
+    let balance = null;
     if (isERC1155) {
 
       if (account) {
@@ -286,9 +280,14 @@ export async function getAssetData(
       symbol = results[3];
     }
 
-
-
-    const { chainId } = await provider.getNetwork();
+    let chainId;
+    if (network) {
+      chainId = NETWORK_FROM_SLUG(network)?.chainId;
+    }
+    if (!chainId) {
+      const { chainId: networkChain } = await provider.getNetwork();
+      chainId = networkChain;
+    }
 
     return {
       owner,
@@ -346,11 +345,108 @@ export async function getContractURI({ provider, contractAddress }: {
 }
 
 
-export async function getCollectionData(
+
+
+export async function getERC1155Balance({
+  provider,
+  contractAddress,
+  tokenId,
+  account,
+}: {
   provider?: providers.JsonRpcProvider,
-  contractAddress?: string,
-  chainNetwork?: number
-): Promise<Collection | undefined> {
+  contractAddress: string;
+  tokenId: string;
+  account: string;
+}) {
+  if (!provider || !contractAddress || !tokenId || !account) {
+    return;
+  }
+
+  const multicall = await getMulticallFromProvider(provider);
+  const iface = new Interface(ERC1155Abi);
+  let calls: CallInput[] = [];
+  calls.push({
+    interface: iface,
+    target: contractAddress,
+    function: 'balanceOf',
+    args: [account, tokenId],
+  });
+  const response = await multicall?.multiCall(calls);
+  if (response) {
+    const [, results] = response;
+    return results[0] as BigNumber;
+  }
+}
+
+export async function getApiMultipleAssets({ query }: { query: any }
+
+): Promise<AssetAPI[] | undefined> {
+  if (!query) {
+    return;
+  }
+
+  const response = await dexkitNFTapi.post<AssetAPI[]>(`/asset/multiple-assets`, query);
+  return response.data
+}
+
+export async function getAssetDexKitApi({
+  networkId,
+  contractAddress,
+  tokenId,
+}: {
+  networkId: string;
+  contractAddress: string;
+  tokenId: string;
+}) {
+
+  const resp = await dexkitNFTapi.get<AssetAPI>(`/asset/${networkId}/${contractAddress.toLowerCase()}/${tokenId}`);
+  // We replace it with the cdn image
+  const imageUrl = resp.data.imageUrl?.replace('dexkit-storage.nyc3.digitaloceanspaces.com', 'dexkit-storage.nyc3.cdn.digitaloceanspaces.com');
+
+  if (imageUrl) {
+    return { ...resp.data, imageUrl };
+  }
+  return resp.data
+}
+
+export async function getMultipleAssetDexKitApi({
+  networkId,
+  contractAddress,
+  tokenIds,
+}: {
+  networkId: string;
+  contractAddress: string;
+  tokenIds: string[];
+}) {
+
+  const resp = await dexkitNFTapi.get<AssetAPI[]>(`/asset/multiple/${networkId}/${contractAddress.toLowerCase()}/${tokenIds.join(',')}`);
+  // We replace it with the cdn image
+  const imageUrl = resp.data.map((a) => {
+    let imageUrl;
+    if (a.imageUrl) {
+      imageUrl = a.imageUrl.replace('dexkit-storage.nyc3.digitaloceanspaces.com', 'dexkit-storage.nyc3.cdn.digitaloceanspaces.com');
+    }
+    if (imageUrl) {
+      return { ...a, imageUrl };
+    } else {
+      return a;
+    }
+  })
+
+  if (imageUrl) {
+    return { ...resp.data, imageUrl };
+  }
+  return resp.data
+}
+
+
+export async function getERC721TotalSupply({
+  provider,
+  contractAddress,
+}: {
+  provider?: providers.JsonRpcProvider,
+  contractAddress: string;
+}) {
   if (!provider || !contractAddress) {
     return;
   }
@@ -358,58 +454,39 @@ export async function getCollectionData(
   const multicall = await getMulticallFromProvider(provider);
   const iface = new Interface(ERC721Abi);
   let calls: CallInput[] = [];
-
   calls.push({
     interface: iface,
     target: contractAddress,
-    function: 'name',
+    function: 'totalSupply'
   });
-
-  calls.push({
-    interface: iface,
-    target: contractAddress,
-    function: 'symbol',
-  });
-  let contractURI = await getContractURI({ provider, contractAddress });
-
-  let contractMetadata = {};
-  if (contractURI) {
-    const metadata = await getContractUriMetadata({ contractURI })
-    if (metadata) {
-      contractMetadata = {
-        name: metadata?.name,
-        imageUrl: metadata?.image,
-        description: metadata?.description
-      }
-    }
-  }
-
-
-
   const response = await multicall?.multiCall(calls);
   if (response) {
     const [, results] = response;
-
-    const name = results[0];
-    const symbol = results[1];
-    if (chainNetwork) {
-      return {
-        name,
-        symbol,
-        address: contractAddress,
-        chainId: chainNetwork,
-        ...(contractMetadata)
-      };
-    }
-
-    const { chainId } = await provider.getNetwork();
-
-    return {
-      name,
-      symbol,
-      address: contractAddress,
-      chainId,
-      ...(contractMetadata)
-    };
+    return results[0] as BigNumber;
   }
+}
+
+
+export async function getAssetsFromOrderbook(
+  provider?: providers.JsonRpcProvider,
+  filters?: TraderOrderFilter
+) {
+  if (provider === undefined) {
+    return;
+  }
+
+  const orderbook = await getOrderbookOrders(filters);
+
+  const ids = new Set<{
+    id: string, address: string, chainId: string
+  }>(
+    orderbook.orders.map((order) => {
+      return {
+        id: order.nftTokenId,
+        address: order.nftToken,
+        chainId: order.chainId,
+
+      }
+    })
+  );
 }

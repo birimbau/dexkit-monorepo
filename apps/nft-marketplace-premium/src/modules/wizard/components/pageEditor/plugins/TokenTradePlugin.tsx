@@ -1,22 +1,17 @@
 import type { CellPlugin } from '@react-page/editor';
 
-import { TokenTradePageSection } from '@/modules/wizard/types/section';
 import { useAppWizardConfig } from '@dexkit/ui/hooks';
+import { TokenTradePageSection } from '@dexkit/ui/modules/wizard/types/section';
 import { Box } from '@mui/material';
 import { TokenTradeConfigForm } from '../../forms/TokenTradeConfigForm';
-import TokenTradeSection from '../../sections/TokenTradeSection';
+
+import TokenTradePluginViewer from '@dexkit/dexappbuilder-viewer/components/page-editor/plugins/TokenTradePlugin';
 
 // you can pass the shape of the data as the generic type argument
 const TokenTradePlugin: CellPlugin<{
   section?: TokenTradePageSection;
 }> = {
-  Renderer: ({ data, isEditMode }) => {
-    return data.section ? <TokenTradeSection section={data.section} /> : null;
-  },
-  id: 'token-trade-section',
-  title: 'Token Trade',
-  description: 'Dex Generator form',
-  version: 1,
+  ...TokenTradePluginViewer,
   controls: {
     type: 'custom',
     Component: ({ data, onChange }) => {

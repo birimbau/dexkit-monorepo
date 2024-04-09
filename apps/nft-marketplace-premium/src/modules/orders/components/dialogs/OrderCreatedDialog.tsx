@@ -1,3 +1,4 @@
+import { getNetworkSlugFromChainId } from '@dexkit/core/utils/blockchain';
 import Launch from '@mui/icons-material/Launch';
 import {
   Box,
@@ -11,10 +12,10 @@ import {
 } from '@mui/material';
 import { PostOrderResponsePayload } from '@traderxyz/nft-swap-sdk/dist/sdk/v4/orderbook';
 import { FormattedMessage } from 'react-intl';
-import { AppDialogTitle } from '../../../../components/AppDialogTitle';
+
+import { AppDialogTitle } from '@dexkit/ui/components/AppDialogTitle';
+import Link from '@dexkit/ui/components/AppLink';
 import TickCircle from '../../../../components/icons/TickCircle';
-import Link from '../../../../components/Link';
-import { getNetworkSlugFromChainId } from '../../../../utils/blockchain';
 
 interface Props {
   dialogProps: DialogProps;
@@ -53,7 +54,7 @@ export default function OrderCreatedDialog({ dialogProps, order }: Props) {
                 defaultMessage="Order #{id} Created"
                 values={{
                   id: order?.order?.nonce.substring(
-                    order?.order?.nonce.length - 8
+                    order?.order?.nonce.length - 8,
                   ),
                 }}
               />
@@ -69,7 +70,7 @@ export default function OrderCreatedDialog({ dialogProps, order }: Props) {
             LinkComponent={Link}
             target="_blank"
             href={`/order/${getNetworkSlugFromChainId(
-              parseInt(order?.chainId || '0')
+              parseInt(order?.chainId || '0'),
             )}/${order?.order.nonce}`}
             variant="contained"
             color="primary"

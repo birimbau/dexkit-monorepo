@@ -7,21 +7,18 @@ import { EXCHANGE_NOTIFICATION_TYPES } from '@dexkit/exchange/constants/messages
 import { DexkitProvider } from '@dexkit/ui/components';
 import { ThemeMode } from '@dexkit/ui/constants/enum';
 import { COMMON_NOTIFICATION_TYPES } from '@dexkit/ui/constants/messages/common';
+import { useLocale } from '@dexkit/ui/hooks';
 import { experimental_extendTheme as extendTheme } from '@mui/material/styles';
 import { useAtom } from 'jotai';
 import { DefaultSeo } from 'next-seo';
 import { useRouter } from 'next/router';
 import { useEffect, useMemo, useState } from 'react';
 import { WHITELABEL_NOTIFICATION_TYPES } from 'src/constants/messages';
-import {
-  useAppConfig,
-  useLocale,
-  useSiteId,
-  useThemeMode,
-} from 'src/hooks/app';
+import { useAppConfig, useSiteId, useThemeMode } from 'src/hooks/app';
 import {
   assetsAtom,
   currencyUserAtom,
+  hiddenAssetsAtom,
   notificationsAtom,
   referralAtom,
   selectedWalletAtom,
@@ -170,6 +167,7 @@ export function AppMarketplaceProvider({
       locale={locale}
       tokensAtom={tokensAtom}
       assetsAtom={assetsAtom}
+      hiddenAssetsAtom={hiddenAssetsAtom}
       defaultLocale={locale}
       affiliateReferral={ref}
       currencyUserAtom={currencyUserAtom}

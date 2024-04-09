@@ -11,6 +11,7 @@ import {
   useTheme,
 } from '@mui/material';
 
+import AppConfirmDialog from '@dexkit/ui/components/AppConfirmDialog';
 import ApiIcon from '@mui/icons-material/Api';
 import Close from '@mui/icons-material/Close';
 import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchange';
@@ -28,14 +29,16 @@ import { NextSeo } from 'next-seo';
 import dynamic from 'next/dynamic';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
-import AppConfirmDialog from '../../../../components/AppConfirmDialog';
-import { PageHeader } from '../../../../components/PageHeader';
+
 import { useSendConfigMutation } from '../../../../hooks/whitelabel';
-import { AppConfig } from '../../../../types/config';
+
 import { SiteResponse } from '../../../../types/whitelabel';
 import { useAppWizardConfig } from '../../hooks';
 
 import { isAddressEqual } from '@dexkit/core/utils';
+import { PageHeader } from '@dexkit/ui/components/PageHeader';
+import { useAuth } from '@dexkit/ui/hooks/auth';
+import { AppConfig } from '@dexkit/ui/modules/wizard/types/config';
 import AnalyticsIcon from '@mui/icons-material/Analytics';
 import DatasetIcon from '@mui/icons-material/Dataset';
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -45,7 +48,6 @@ import { TourProvider, useTour } from '@reactour/tour';
 import { useWeb3React } from '@web3-react/core';
 import { useAtom } from 'jotai';
 import { useRouter } from 'next/router';
-import { useAuth } from 'src/hooks/account';
 import { BuilderKit } from '../../constants';
 import { OnboardBuilderSteps } from '../../constants/onboard/steps';
 import SiteWizardProvider from '../../providers/SiteWizardProvider';
@@ -797,7 +799,7 @@ export function EditWizardContainer({ site }: Props) {
         })}
       />
       <AppConfirmDialog
-        dialogProps={{
+        DialogProps={{
           open: openHasChangesConfirm,
           maxWidth: 'xs',
           fullWidth: true,
@@ -826,7 +828,7 @@ export function EditWizardContainer({ site }: Props) {
       </AppConfirmDialog>
 
       <AppConfirmDialog
-        dialogProps={{
+        DialogProps={{
           open: showConfirmSendConfig,
           maxWidth: 'xs',
           fullWidth: true,

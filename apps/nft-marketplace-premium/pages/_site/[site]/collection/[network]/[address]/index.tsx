@@ -1,28 +1,21 @@
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import type { GetStaticProps, GetStaticPropsContext, NextPage } from 'next';
 
-import { AssetListCollection } from '@/modules/nft/components/AssetListCollection';
-import { AssetList } from '@/modules/nft/components/AssetListOrderbook';
-import { ChipFilterTraits } from '@/modules/nft/components/ChipFilterTraits';
-import { CollectionHeader } from '@/modules/nft/components/CollectionHeader';
-import CollectionPageHeader from '@/modules/nft/components/CollectionPageHeader';
-import { CollectionStats } from '@/modules/nft/components/CollectionStats';
-import { CollectionTraits } from '@/modules/nft/components/CollectionTraits';
-import { StoreOrdebookContainer } from '@/modules/nft/components/container/StoreOrderbookContainer';
-import TableSkeleton from '@/modules/nft/components/tables/TableSkeleton';
-import DarkblockWrapper from '@/modules/wizard/components/DarkblockWrapper';
-import { DropEditionListSection } from '@/modules/wizard/components/sections/DropEditionListSection';
-import NftDropSection from '@/modules/wizard/components/sections/NftDropSection';
 import { DARKBLOCK_SUPPORTED_CHAIN_IDS } from '@/modules/wizard/constants';
 import { getIntegrationData } from '@/modules/wizard/services/integrations';
 import { ChainId, MY_APPS_ENDPOINT } from '@dexkit/core';
 import { NETWORK_FROM_SLUG } from '@dexkit/core/constants/networks';
 import { Asset } from '@dexkit/core/types';
 import { isAddressEqual, omitNull } from '@dexkit/core/utils';
-import { NFTType } from '@dexkit/ui/modules/nft/constants/enum';
-import { getCollectionData } from '@dexkit/ui/modules/nft/services';
+import SidebarFilters from '@dexkit/ui/components/SidebarFilters';
+import SidebarFiltersContent from '@dexkit/ui/components/SidebarFiltersContent';
+import { CollectionTraits } from '@dexkit/ui/modules/nft/components/CollectionTraits';
+import {
+  CollectionSyncStatus,
+  NFTType,
+} from '@dexkit/ui/modules/nft/constants/enum';
+
 import { Collection, TraderOrderFilter } from '@dexkit/ui/modules/nft/types';
 import { hexToString } from '@dexkit/ui/utils';
 import { getIsLockAsync } from '@dexkit/unlock-widget';
@@ -30,17 +23,11 @@ import Search from '@mui/icons-material/Search';
 import {
   Checkbox,
   Container,
-  Divider,
   Drawer,
   FormControlLabel,
   FormGroup,
-  Grid,
-  IconButton,
   InputAdornment,
-  NoSsr,
   Stack,
-  Tab,
-  Tabs,
   TextField,
   useMediaQuery,
   useTheme,
@@ -55,37 +42,35 @@ import { useWeb3React } from '@web3-react/core';
 import axios from 'axios';
 import { NextSeo } from 'next-seo';
 import { useRouter } from 'next/router';
-import { Suspense, SyntheticEvent, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { AppErrorBoundary } from 'src/components/AppErrorBoundary';
-import SidebarFilters from 'src/components/SidebarFilters';
-import SidebarFiltersContent from 'src/components/SidebarFiltersContent';
-import Funnel from 'src/components/icons/Filter';
 import MainLayout from 'src/components/layouts/main';
 import { REVALIDATE_PAGE_TIME, THIRDWEB_CLIENT_ID } from 'src/constants';
-import { CollectionSyncStatus, NETWORK_ID } from 'src/constants/enum';
+
+import { getAppConfig } from 'src/services/app';
+
+import CollectionSection from '@dexkit/dexappbuilder-viewer/components/sections/CollectionSection';
+import { NETWORK_ID } from '@dexkit/ui/constants/enum';
 import {
   MAP_COIN_TO_RARIBLE,
   MAP_NETWORK_TO_RARIBLE,
-} from 'src/constants/marketplaces';
-import {
-  GET_ASSET_LIST_FROM_COLLECTION,
-  GET_COLLECTION_STATS,
-} from 'src/hooks/collection';
+} from '@dexkit/ui/modules/nft/constants/marketplaces';
 import {
   COLLECTION_ASSETS_FROM_ORDERBOOK,
+  GET_ASSET_LIST_FROM_COLLECTION,
   GET_COLLECTION_DATA,
+  GET_COLLECTION_STATS,
   useCollection,
-} from 'src/hooks/nft';
-import { getAppConfig } from 'src/services/app';
+} from '@dexkit/ui/modules/nft/hooks/collection';
 import {
   getApiCollectionData,
   getCollectionAssetsDexKitApi,
   getCollectionAssetsFromOrderbook,
+  getCollectionData,
   getSyncCollectionData,
-} from 'src/services/nft';
-import { getProviderBySlug } from 'src/services/providers';
-import { getRariCollectionStats } from 'src/services/rarible';
+} from '@dexkit/ui/modules/nft/services/collection';
+import { getRariCollectionStats } from '@dexkit/ui/modules/nft/services/rarible';
+import { getProviderBySlug } from '@dexkit/ui/services/providers';
 
 const CollectionPage: NextPage<{
   enableDarkblock: boolean;
@@ -130,7 +115,6 @@ const CollectionPage: NextPage<{
   const [isFiltersOpen, setIsFiltersOpen] = useState(false);
 
   const handleCloseDrawer = () => setIsFiltersOpen(false);
-  const handleOpenDrawer = () => setIsFiltersOpen(true);
 
   const renderSidebar = (onClose?: () => void) => {
     return (
@@ -197,257 +181,30 @@ const CollectionPage: NextPage<{
     );
   };
 
-  const [currTab, setCurrTab] = useState(
-    disableSecondarySells !== true ? 'collection' : 'drops',
-  );
-
-  const handleChangeTab = (e: SyntheticEvent, value: string) => {
-    setCurrTab(value);
-  };
-
   const collectionPage = (
     <>
       <NextSeo title={collection?.name || ''} />
       {renderDrawer()}
 
-      <Grid container>
-        {isDesktop && disableSecondarySells !== true && (
-          <Grid item xs={12} sm={2}>
-            {renderSidebar()}
-          </Grid>
-        )}
-        <Grid item xs={12} sm={disableSecondarySells !== true ? 10 : 12}>
-          <Box p={2}>
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <CollectionPageHeader
-                  chainId={chainId}
-                  address={address as string}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <Grid container spacing={2}>
-                  <Grid item xs={12}>
-                    <CollectionHeader
-                      address={address as string}
-                      chainId={chainId}
-                      isLock={isLock}
-                    />
-                  </Grid>
-                  {isDrop && (
-                    <Grid item xs={12}>
-                      <Tabs value={currTab} onChange={handleChangeTab}>
-                        {disableSecondarySells !== true && (
-                          <Tab
-                            label={
-                              <FormattedMessage
-                                id="collection"
-                                defaultMessage="Collection"
-                              />
-                            }
-                            value="collection"
-                          />
-                        )}
-                        <Tab
-                          label={
-                            contractType === 'nft-drop' ? (
-                              <FormattedMessage
-                                id="drop"
-                                defaultMessage="Drop"
-                              />
-                            ) : (
-                              <FormattedMessage
-                                id="drops"
-                                defaultMessage="Drops"
-                              />
-                            )
-                          }
-                          value="drops"
-                        />
-                      </Tabs>
-                    </Grid>
-                  )}
-
-                  <Grid item xs={12}>
-                    <CollectionStats
-                      address={address as string}
-                      network={network as string}
-                    />
-                  </Grid>
-
-                  <Grid item xs={12}>
-                    <Divider />
-                  </Grid>
-                  {currTab === 'drops' && isDrop && (
-                    <Grid item xs={12}>
-                      <Typography
-                        gutterBottom
-                        variant="body1"
-                        sx={{ fontWeight: 600 }}
-                      >
-                        {contractType === 'nft-drop' ? (
-                          <FormattedMessage id="drop" defaultMessage="Drop" />
-                        ) : (
-                          <FormattedMessage id="drops" defaultMessage="Drops" />
-                        )}
-                      </Typography>
-                      {contractType === 'edition-drop' && (
-                        <DropEditionListSection
-                          section={{
-                            type: 'edition-drop-list-section',
-                            config: {
-                              network: network as string,
-                              address: address as string,
-                            },
-                          }}
-                        />
-                      )}
-                      {contractType === 'nft-drop' && (
-                        <NftDropSection
-                          section={{
-                            type: 'nft-drop',
-                            settings: {
-                              address: address as string,
-                              network: network as string,
-                            },
-                          }}
-                        />
-                      )}
-                    </Grid>
-                  )}
-                  {currTab === 'collection' &&
-                    disableSecondarySells !== true && (
-                      <>
-                        <Grid item xs={12}>
-                          <Stack
-                            justifyContent="space-between"
-                            direction="row"
-                            alignItems="center"
-                            alignContent="center"
-                          >
-                            <Typography
-                              variant="body1"
-                              sx={{ fontWeight: 600 }}
-                            >
-                              <FormattedMessage
-                                id="collection"
-                                defaultMessage="Collection"
-                                description="collection"
-                              />
-                            </Typography>
-                            <Box>
-                              {!isDesktop && (
-                                <IconButton onClick={handleOpenDrawer}>
-                                  <Funnel />
-                                </IconButton>
-                              )}
-                            </Box>
-                          </Stack>
-                          <ChipFilterTraits
-                            address={address as string}
-                            chainId={chainId}
-                          />
-                        </Grid>
-
-                        <Grid item xs={12}>
-                          <NoSsr>
-                            <AppErrorBoundary
-                              fallbackRender={({
-                                resetErrorBoundary,
-                                error,
-                              }) => (
-                                <Stack
-                                  justifyContent="center"
-                                  alignItems="center"
-                                >
-                                  <Typography variant="h6">
-                                    <FormattedMessage
-                                      id="something.went.wrong"
-                                      defaultMessage="Oops, something went wrong"
-                                      description="Something went wrong error message"
-                                    />
-                                  </Typography>
-                                  <Typography
-                                    variant="body1"
-                                    color="textSecondary"
-                                  >
-                                    {String(error)}
-                                  </Typography>
-                                  <Button
-                                    color="primary"
-                                    onClick={resetErrorBoundary}
-                                  >
-                                    <FormattedMessage
-                                      id="try.again"
-                                      defaultMessage="Try again"
-                                      description="Try again"
-                                    />
-                                  </Button>
-                                </Stack>
-                              )}
-                            >
-                              {buyNowChecked ? (
-                                <StoreOrdebookContainer
-                                  search={search}
-                                  collectionAddress={address as string}
-                                  chainId={chainId}
-                                  context={'collection'}
-                                ></StoreOrdebookContainer>
-                              ) : (
-                                <>
-                                  {collection?.syncStatus ===
-                                    CollectionSyncStatus.Synced ||
-                                  collection?.syncStatus ===
-                                    CollectionSyncStatus.Syncing ? (
-                                    <AssetListCollection
-                                      contractAddress={address as string}
-                                      network={network as string}
-                                      search={search}
-                                    />
-                                  ) : (
-                                    <Suspense
-                                      fallback={<TableSkeleton rows={4} />}
-                                    >
-                                      <AssetList
-                                        contractAddress={address as string}
-                                        chainId={
-                                          NETWORK_FROM_SLUG(network as string)
-                                            ?.chainId
-                                        }
-                                        search={search}
-                                      />
-                                    </Suspense>
-                                  )}
-                                </>
-                              )}
-                            </AppErrorBoundary>
-                          </NoSsr>
-                        </Grid>
-                      </>
-                    )}
-                  {enableDarkblock && (
-                    <>
-                      <Grid item xs={12}>
-                        <Divider />
-                      </Grid>
-                      <Grid item xs={12}>
-                        <NoSsr>
-                          <Suspense>
-                            <DarkblockWrapper
-                              address={address as string}
-                              network={network as string}
-                            />
-                          </Suspense>
-                        </NoSsr>
-                      </Grid>
-                    </>
-                  )}
-                </Grid>
-              </Grid>
-            </Grid>
-          </Box>
-        </Grid>
-      </Grid>
+      <CollectionSection
+        section={{
+          type: 'collection',
+          config: {
+            address: address as string,
+            network: network as string,
+            hideFilters: isDesktop,
+            hideAssets: false,
+            hideDrops: !isDrop,
+            hideHeader: false,
+            showPageHeader: true,
+            isLock,
+            enableDarkblock,
+            disableSecondarySells,
+            showCollectionStats: true,
+            showSidebarOnDesktop: true,
+          },
+        }}
+      />
     </>
   );
   if (disableSecondarySells) {
@@ -567,7 +324,9 @@ export const getStaticProps: GetStaticProps = async ({
   let key: any[] = [GET_COLLECTION_DATA, address as string, chainId];
 
   try {
-    const sdk = new ThirdwebSDK(network as string, { secretKey: process.env.THIRDWEB_API_KEY_SECRET});
+    const sdk = new ThirdwebSDK(network as string, {
+      secretKey: process.env.THIRDWEB_API_KEY_SECRET,
+    });
 
     const twContract = await sdk.getContract(address as string);
 
@@ -648,7 +407,6 @@ export const getStaticProps: GetStaticProps = async ({
   );
 
   const isLock = await getIsLockAsync({ chainId: chainId, provider, address });
-
 
   return {
     props: {

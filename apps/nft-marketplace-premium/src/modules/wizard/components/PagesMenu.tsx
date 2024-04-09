@@ -1,3 +1,4 @@
+import { AppPage } from '@dexkit/ui/modules/wizard/types/config';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { Stack, Typography } from '@mui/material';
@@ -6,7 +7,6 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { AppPage } from '../../../types/config';
 
 export default function PagesMenu({
   currentPage,

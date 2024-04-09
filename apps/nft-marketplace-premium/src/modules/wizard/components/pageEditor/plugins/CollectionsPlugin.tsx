@@ -1,21 +1,16 @@
 import type { CellPlugin } from '@react-page/editor';
 
-import { CollectionPageSection } from '@/modules/wizard/types/section';
+import { CollectionPageSection } from '@dexkit/ui/modules/wizard/types/section';
 import { Box } from '@mui/material';
 import CollectionSectionFormAlt from '../../forms/CollectionSectionFormAlt';
-import CollectionSection from '../../sections/CollectionSection';
+
+import CollectionsPluginViewer from '@dexkit/dexappbuilder-viewer/components/page-editor/plugins/CollectionsPlugin';
 
 // you can pass the shape of the data as the generic type argument
 const CollectionsPlugin: CellPlugin<{
   section?: CollectionPageSection;
 }> = {
-  Renderer: ({ data, isEditMode }) => {
-    return data.section ? <CollectionSection section={data.section} /> : null;
-  },
-  id: 'collection-new',
-  title: 'Collection',
-  description: 'Show a collection',
-  version: 1,
+  ...CollectionsPluginViewer,
   controls: {
     type: 'custom',
     Component: ({ data, onChange }) => {

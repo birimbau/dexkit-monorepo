@@ -1,6 +1,6 @@
+import { AppPage, MenuTree } from '@dexkit/ui/modules/wizard/types/config';
 import { Dispatch, SetStateAction, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { AppPage, MenuTree } from '../../../../../types/config';
 
 import AddIcon from '@mui/icons-material/Add';
 import Button from '@mui/material/Button';

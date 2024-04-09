@@ -4,9 +4,9 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import MainLayout from '../../../../src/components/layouts/main';
 
 import CreateAssetOrderContainer from '@/modules/nft/components/container/CreateAssetOrderContainer';
+import { PageHeader } from '@dexkit/ui/components/PageHeader';
 import { NextSeo } from 'next-seo';
 import { REVALIDATE_PAGE_TIME } from 'src/constants';
-import { PageHeader } from '../../../../src/components/PageHeader';
 import { getAppConfig } from '../../../../src/services/app';
 
 export const OrdersIndex: NextPage = () => {

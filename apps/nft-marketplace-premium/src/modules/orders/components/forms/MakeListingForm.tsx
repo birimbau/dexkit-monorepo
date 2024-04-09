@@ -23,19 +23,20 @@ import moment from 'moment';
 import { useMemo } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { Token } from '../../../../types/blockchain';
-import { ipfsUriToUrl } from '../../../../utils/ipfs';
 
 import { FormikHelpers, useFormik } from 'formik';
 
+import { isAddressEqual } from '@dexkit/core/utils/blockchain';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import { useWeb3React } from '@web3-react/core';
 import * as Yup from 'yup';
-import AppFeePercentageSpan from '../../../../components/AppFeePercentageSpan';
+
+import { ipfsUriToUrl } from '@dexkit/core/utils/ipfs';
+import { isValidDecimal } from '@dexkit/core/utils/numbers';
+import AppFeePercentageSpan from '@dexkit/ui/components/AppFeePercentageSpan';
+import { useTokenList } from '@dexkit/ui/hooks/blockchain';
+import { DurationSelect } from '@dexkit/ui/modules/nft/components/DurationSelect';
 import { MIN_ORDER_DATE_TIME } from '../../../../constants';
-import { useTokenList } from '../../../../hooks/blockchain';
-import { isAddressEqual } from '../../../../utils/blockchain';
-import { isValidDecimal } from '../../../../utils/numbers';
-import DurationSelect from '../../../nft/components/DurationSelect';
 
 interface Form {
   price: string;

@@ -8,12 +8,15 @@ import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Typography from "@mui/material/Typography";
 import { FormattedMessage } from "react-intl";
+import { useActiveChainIds } from "../hooks/blockchain";
 
 interface Props {
   onFilterNetworks?: (network: string) => void;
 }
 
 export function NetworkwAccordion({ onFilterNetworks }: Props) {
+  const { activeChainIds } = useActiveChainIds();
+
   return (
     <Stack spacing={2} sx={{ pt: 2 }}>
       <Accordion>
@@ -29,6 +32,7 @@ export function NetworkwAccordion({ onFilterNetworks }: Props) {
         <AccordionDetails>
           <List sx={{ maxHeight: "400px", overflow: "auto" }}>
             {Object.values(NETWORKS)
+              .filter((n) => activeChainIds.includes(Number(n.chainId)))
               .filter((n) => !n.testnet)
               .map((net, key) => (
                 <ListItem
@@ -38,8 +42,8 @@ export function NetworkwAccordion({ onFilterNetworks }: Props) {
                       value="start"
                       control={<Checkbox />}
                       onClick={() => {
-                        if (onFilterNetworks && net.slug) {
-                          onFilterNetworks(net.slug);
+                        if (onFilterNetworks && net?.slug) {
+                          onFilterNetworks(net?.slug);
                         }
                       }}
                       label={""}

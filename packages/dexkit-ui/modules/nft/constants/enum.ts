@@ -21,3 +21,10 @@ export enum OrderDirection {
   Sell = 0,
   Buy = 1,
 }
+
+export enum CollectionSyncStatus {
+  NotSynced = 'NotSynced',
+  Syncing = 'Syncing',
+  Synced = 'Synced',
+  NotSyncable = 'NotSyncable'
+}

@@ -1,11 +1,14 @@
+import { AppPageSection } from '@dexkit/ui/modules/wizard/types/section';
 import dynamic from 'next/dynamic';
 import { Dispatch, SetStateAction, useCallback, useState } from 'react';
-import { AppPage, AppPageOptions } from '../../../types/config';
+
+import {
+  AppPage,
+  AppPageOptions,
+} from '@dexkit/ui/modules/wizard/types/config';
 import { BuilderKit } from '../constants';
-import { AppPageSection } from '../types/section';
 import AddPageDialog from './dialogs/AddPageDialog';
 import PagesSection from './sections/PagesSection';
-
 const ConfirmRemoveSectionDialog = dynamic(
   () => import('./dialogs/ConfirmRemoveSectionDialog'),
 );

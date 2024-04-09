@@ -21,10 +21,13 @@ export interface DexkitContextState {
   createNotification: (params: CreateAppNotificationParams) => void;
   clearNotifications: () => void;
   checkAllNotifications: () => void;
+  hiddenAssets: { [key: string]: boolean };
+  setHiddenAssets: (update: SetStateAction<{ [key: string]: boolean }>) => void;
   notifications: AppNotification[];
   tokens: TokenWhitelabelApp[];
   currencyUser?: string;
   setAssets: (update: SetStateAction<{ [key: string]: Asset }>) => void;
+  setTokens: (update: SetStateAction<TokenWhitelabelApp[]>) => void;
   userEventURL?: string;
   siteId?: number;
   assets: { [key: string]: Asset };
@@ -38,8 +41,11 @@ export const DexKitContext = React.createContext<DexkitContextState>({
   notifications: [],
   transactions: {},
   tokens: [],
+  hiddenAssets: {},
+  setHiddenAssets() {},
   assets: {},
   setAssets() {},
+  setTokens() {},
   onChangeLocale: (locale: string) => {},
   createNotification: (params: CreateAppNotificationParams) => {},
   checkAllNotifications: () => {},

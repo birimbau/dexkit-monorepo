@@ -1,12 +1,12 @@
+import { AppPageSection } from '@dexkit/ui/modules/wizard/types/section';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import { useState } from 'react';
 import { PreviewPortal } from 'src/components/PreviewPortal';
-import { AppConfig } from '../../../types/config';
-import { AppPageSection } from '../types/section';
+
+import { AppConfig } from '@dexkit/ui/modules/wizard/types/config';
 import PreviewPage from './PreviewPage';
 import { PreviewPlatformType } from './PreviewPlatformType';
-
 interface Props {
   sections?: AppPageSection[];
   disabled?: boolean;

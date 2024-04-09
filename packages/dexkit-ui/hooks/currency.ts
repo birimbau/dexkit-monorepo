@@ -1,11 +1,12 @@
 import { NETWORKS } from "@dexkit/core/constants/networks";
 import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "@dexkit/core/constants/zrx";
-import { getCoinPricesByCID, getTokenPrices } from "@dexkit/core/services";
+import { getTokenPrices } from "@dexkit/core/services";
 import { useQuery } from "@tanstack/react-query";
 import { useWeb3React } from "@web3-react/core";
 import { useAtom } from "jotai";
 import { useMemo } from "react";
 import { useAppConfig } from ".";
+import { getCoinPrices } from "../services/currency";
 import { currencyUserAtom } from "../state";
 import { useTokenList } from "./blockchain";
 
@@ -56,7 +57,7 @@ export const useCoinPricesQuery = ({
       if (includeNative) {
         const activeNetwork = NETWORKS[chain];
         if (activeNetwork && activeNetwork.coingeckoPlatformId) {
-          const nativePrice = await getCoinPricesByCID({
+          const nativePrice = await getCoinPrices({
             coingeckoIds: [activeNetwork.coingeckoPlatformId],
             currency,
           });

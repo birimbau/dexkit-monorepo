@@ -22,8 +22,7 @@ import CodeMirror, { Extension } from '@uiw/react-codemirror';
 import { css } from '@codemirror/lang-css';
 import { html } from '@codemirror/lang-html';
 import { javascript } from '@codemirror/lang-javascript';
-import { CodePageSection } from '../../types/section';
-
+import { CodePageSection } from '@dexkit/ui/modules/wizard/types/section';
 import { AppDialogTitle } from '@dexkit/ui';
 import Fullscreen from '@mui/icons-material/Fullscreen';
 import parse from 'html-react-parser';

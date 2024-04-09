@@ -1,10 +1,11 @@
 import { ChainId, CoinTypes } from "@dexkit/core/constants/enums";
-import { NETWORK_PROVIDER } from "@dexkit/core/constants/networks";
+import { getProviderByChainId } from "@dexkit/core/utils/blockchain";
 import { formatEther } from "@dexkit/core/utils/ethers/formatEther";
 import { formatUnits } from "@dexkit/core/utils/ethers/formatUnits";
 import { useQuery } from "@tanstack/react-query";
 import { useWeb3React } from "@web3-react/core";
 import { ParseOutput, parse } from 'eth-url-parser';
+import { useAtom } from "jotai";
 import { useAtomValue } from "jotai/utils";
 import { useMemo } from "react";
 import { useEvmCoins, useTokenList } from "../../../hooks/blockchain";
@@ -22,8 +23,20 @@ export function useIsBalanceVisible() {
   return useAtomValue(isBalancesVisibleAtom);
 }
 
-export const useERC20BalancesQuery = (select?: SelectCalback, defaultChainId?: ChainId, enableSuspense = true) => {
-  const { provider: walletProvider, account, chainId: walletChainId } = useWeb3React();
+export function useBalanceVisible() {
+  return useAtom(isBalancesVisibleAtom);
+}
+
+export const useERC20BalancesQuery = (
+  select?: SelectCalback,
+  defaultChainId?: ChainId,
+  enableSuspense = true
+) => {
+  const {
+    provider: walletProvider,
+    account,
+    chainId: walletChainId,
+  } = useWeb3React();
   const chainId = defaultChainId || walletChainId;
   const tokens = useTokenList({ chainId, includeNative: true });
 
@@ -41,7 +54,10 @@ export const useERC20BalancesQuery = (select?: SelectCalback, defaultChainId?: C
         return [];
       }
 
-      const provider = defaultChainId === walletChainId ? walletProvider : NETWORK_PROVIDER(chainId);
+      const provider =
+        defaultChainId === walletChainId
+          ? walletProvider
+          : getProviderByChainId(chainId);
       if (!provider) {
         return;
       }
@@ -54,17 +70,21 @@ export const useERC20BalancesQuery = (select?: SelectCalback, defaultChainId?: C
 
 
 
-export function useParsePaymentRequest({ paymentURL }: { paymentURL?: string }) {
+export function useParsePaymentRequest({
+  paymentURL,
+}: {
+  paymentURL?: string;
+}) {
   const paymentUrlParsed = useMemo(() => {
     if (paymentURL) {
       const parsedPayment = parse(paymentURL);
       let url: {
-        chainId?: ChainId,
-        to?: string,
-        parsedOutput?: ParseOutput
+        chainId?: ChainId;
+        to?: string;
+        parsedOutput?: ParseOutput;
       } = {};
       if (parsedPayment) {
-        url.parsedOutput = parsedPayment
+        url.parsedOutput = parsedPayment;
       }
 
       if (parsedPayment.chain_id) {
@@ -72,7 +92,7 @@ export function useParsePaymentRequest({ paymentURL }: { paymentURL?: string }) 
       }
       if (parsedPayment.function_name === 'transfer') {
         if (parsedPayment.parameters && parsedPayment.parameters['address']) {
-          url.to = parsedPayment.parameters['address']
+          url.to = parsedPayment.parameters['address'];
         }
       } else {
         if (parsedPayment.function_name === undefined) {
@@ -83,8 +103,7 @@ export function useParsePaymentRequest({ paymentURL }: { paymentURL?: string }) 
       }
       return url;
     }
-  }, [paymentURL])
-
+  }, [paymentURL]);
 
   const evmCoins = useEvmCoins({ defaultChainId: paymentUrlParsed?.chainId });
 
@@ -92,45 +111,62 @@ export function useParsePaymentRequest({ paymentURL }: { paymentURL?: string }) 
     if (paymentUrlParsed?.parsedOutput && evmCoins) {
       let defaultCoin;
       if (paymentUrlParsed.parsedOutput.function_name === 'transfer') {
-        if (paymentUrlParsed.chainId && paymentUrlParsed.parsedOutput.target_address) {
-          const contractAddress = paymentUrlParsed.parsedOutput.target_address.toLowerCase();
-          defaultCoin = evmCoins.
-            filter(e => e.coinType === CoinTypes.EVM_ERC20).find(c => {
+        if (
+          paymentUrlParsed.chainId &&
+          paymentUrlParsed.parsedOutput.target_address
+        ) {
+          const contractAddress =
+            paymentUrlParsed.parsedOutput.target_address.toLowerCase();
+          defaultCoin = evmCoins
+            .filter((e) => e.coinType === CoinTypes.EVM_ERC20)
+            .find((c) => {
               if (c.coinType === CoinTypes.EVM_ERC20) {
-                return c.contractAddress.toLowerCase() === contractAddress && paymentUrlParsed.chainId === c.network.chainId
+                return (
+                  c.contractAddress.toLowerCase() === contractAddress &&
+                  paymentUrlParsed.chainId === c.network.chainId
+                );
               }
-            })
+            });
         }
       }
       if (paymentUrlParsed.parsedOutput.function_name === undefined) {
-        defaultCoin = evmCoins.find(c => c.coinType === CoinTypes.EVM_NATIVE && c.network.chainId === paymentUrlParsed.chainId);
+        defaultCoin = evmCoins.find(
+          (c) =>
+            c.coinType === CoinTypes.EVM_NATIVE &&
+            c.network.chainId === paymentUrlParsed.chainId,
+        );
       }
-      return defaultCoin
+      return defaultCoin;
     }
-  }, [paymentUrlParsed, evmCoins])
+  }, [paymentUrlParsed, evmCoins]);
   const amount = useMemo(() => {
     if (defaultCoin && paymentUrlParsed?.parsedOutput) {
       let amount;
       const parsedPayment = paymentUrlParsed?.parsedOutput;
 
       if (parsedPayment.function_name === 'transfer') {
-        if (parsedPayment.parameters && parsedPayment.parameters['uint256'] && defaultCoin.decimals !== undefined) {
-          amount = formatUnits(parsedPayment.parameters['uint256'], defaultCoin.decimals)
+        if (
+          parsedPayment.parameters &&
+          parsedPayment.parameters['uint256'] &&
+          defaultCoin.decimals !== undefined
+        ) {
+          amount = formatUnits(
+            parsedPayment.parameters['uint256'],
+            defaultCoin.decimals,
+          );
         }
       }
       if (parsedPayment.function_name === undefined) {
         if (parsedPayment.parameters && parsedPayment.parameters['value']) {
-          amount = formatEther(parsedPayment.parameters['value'])
-
+          amount = formatEther(parsedPayment.parameters['value']);
         }
       }
       return amount;
     }
-
-  }, [defaultCoin])
+  }, [defaultCoin]);
   return {
     ...paymentUrlParsed,
     amount,
-    defaultCoin
-  }
+    defaultCoin,
+  };
 }

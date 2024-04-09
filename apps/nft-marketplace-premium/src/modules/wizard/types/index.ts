@@ -40,24 +40,7 @@ export interface StepperButtonProps {
   isFirstStep?: boolean;
 }
 
-export interface GatedCondition {
-  type?: 'collection' | 'coin' | 'multiCollection';
-  condition?: 'and' | 'or';
-  protocol?: 'ERC20' | 'ERC711' | 'ERC1155';
-  decimals?: number;
-  address?: string;
-  symbol?: string;
-  chainId?: number;
-  amount: string;
-  tokenId?: string;
-}
 
-export interface GatedPageLayout {
-  frontImage?: string;
-  frontImageHeight?: number;
-  frontImageWidth?: number;
-  accessRequirementsMessage?: string;
-}
 
 export type MintNFTFormType = {
   name: string;
@@ -101,15 +84,4 @@ export interface GamificationPoint {
   userEventType?: string;
   points?: number;
   filter?: string;
-}
-
-export interface SiteMetadata {
-  id?: number,
-  slug?: string,
-  title: string,
-  subtitle: string,
-  description: string,
-  imageURL: string,
-  chainIds?: number[],
-  usecases?: string[]
 }

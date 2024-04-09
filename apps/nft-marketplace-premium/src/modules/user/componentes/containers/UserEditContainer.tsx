@@ -1,5 +1,6 @@
 import Box from '@mui/material/Box';
 
+import AppConfirmDialog from '@dexkit/ui/components/AppConfirmDialog';
 import { UserOptions } from '@dexkit/ui/types/ai';
 import Close from '@mui/icons-material/Close';
 import Visibility from '@mui/icons-material/Visibility';
@@ -25,8 +26,8 @@ import {
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import AppConfirmDialog from 'src/components/AppConfirmDialog';
-import { PageHeader } from 'src/components/PageHeader';
+
+import { PageHeader } from '@dexkit/ui/components/PageHeader';
 import { useAuthUserQuery, useUpsertUserMutation } from '../../hooks';
 import UpsertUserDialog from '../dialogs/UpsertuserDialog';
 import UserGeneralForm from '../forms/UserGeneralForm';
@@ -166,7 +167,7 @@ export function UserEditContainer({
         </Box>
       </Drawer>
       <AppConfirmDialog
-        dialogProps={{
+        DialogProps={{
           open: showConfirmUpsertUser,
           maxWidth: 'xs',
           fullWidth: true,

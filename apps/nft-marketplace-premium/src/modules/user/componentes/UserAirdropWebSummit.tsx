@@ -1,6 +1,7 @@
 import { ChainId } from '@dexkit/core';
 import { useIsMobile } from '@dexkit/core/hooks';
-import { useDexKitContext } from '@dexkit/ui/hooks';
+import AppMutationDialog from '@dexkit/ui/components/dialogs/AppMutationDialog';
+import { useAuth, useDexKitContext } from '@dexkit/ui/hooks';
 import { getBlockExplorerUrl } from '@dexkit/widgets/src/utils';
 import CelebrationIcon from '@mui/icons-material/Celebration';
 import { Stack } from '@mui/material';
@@ -11,8 +12,7 @@ import Typography from '@mui/material/Typography';
 import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { LoginAppButton } from 'src/components/LoginAppButton';
-import AppMutationDialog from 'src/components/dialogs/AppMutationDialog';
-import { useAuth } from 'src/hooks/account';
+
 import { useClaimCampaignMutation, useUserClaimCampaignQuery } from '../hooks';
 import UserCreateDialog from './dialogs/UserCreateDialog';
 import UserEditDialog from './dialogs/UserEditDialog';

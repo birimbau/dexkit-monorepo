@@ -1,3 +1,4 @@
+import AppConfirmDialog from '@dexkit/ui/components/AppConfirmDialog';
 import Check from '@mui/icons-material/Check';
 import Visibility from '@mui/icons-material/Visibility';
 import { Button, Grid, Stack, Typography } from '@mui/material';
@@ -5,10 +6,10 @@ import { Formik } from 'formik';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import AppConfirmDialog from 'src/components/AppConfirmDialog';
 import { useUpsertSiteMetadataMutation } from 'src/hooks/whitelabel';
 import * as Yup from 'yup';
-import { SiteMetadata } from '../../types';
+
+import { SiteMetadata } from '@dexkit/ui/modules/wizard/types';
 import CreateSiteMetadataDialog from '../dialogs/CreateSiteMetadataDialog';
 import SiteMetadataForm from '../forms/SiteMetadataForm';
 
@@ -41,7 +42,7 @@ export default function SiteMetadataSection({ id, slug, siteMetadata }: Props) {
   return (
     <>
       <AppConfirmDialog
-        dialogProps={{
+        DialogProps={{
           open: showConfirmSendConfig,
           maxWidth: 'md',
           fullWidth: true,

@@ -52,6 +52,7 @@ export interface DexkitProviderProps {
   notificationsAtom: PrimitiveAtom<AppNotification[]>;
   tokensAtom: PrimitiveAtom<TokenWhitelabelApp[]>;
   assetsAtom: PrimitiveAtom<{ [key: string]: Asset }>;
+  hiddenAssetsAtom: PrimitiveAtom<{ [key: string]: boolean }>;
   currencyUserAtom: PrimitiveAtom<string>;
   selectedWalletAtom: PrimitiveAtom<string>;
 }
@@ -66,6 +67,7 @@ export function DexkitProvider({
   locale,
   tokensAtom,
   assetsAtom,
+  hiddenAssetsAtom,
   onChangeLocale,
   localeMessages,
   notificationTypes,
@@ -87,6 +89,7 @@ export function DexkitProvider({
     notificationsAtom,
     tokensAtom,
     assetsAtom,
+    hiddenAssetsAtom,
     transactionsAtom,
     currencyUserAtom,
     onChangeLocale,

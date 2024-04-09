@@ -1,4 +1,6 @@
 import { AssetStoreContainer } from '@/modules/nft/components/container/AssetStoreContainer';
+import { StepperButtonProps } from '@dexkit/ui/modules/wizard/types';
+import { AssetStorePageSection } from '@dexkit/ui/modules/wizard/types/section';
 import { Alert } from '@mui/material';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
@@ -13,12 +15,10 @@ import {
 import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { AssetStoreOptions } from 'src/types/nft';
-import { AppConfig } from '../../../../types/config';
-import { StepperButtonProps } from '../../types';
-import { AssetStorePageSection } from '../../types/section';
+
+import { AppConfig } from '@dexkit/ui/modules/wizard/types/config';
 import AssetStoreForm from '../forms/AssetStoreForm';
 import { StepperButtons } from '../steppers/StepperButtons';
-
 interface Props {
   config: AppConfig;
   configTheme: Omit<Theme, 'palette'> & CssVarsTheme;
@@ -40,17 +40,17 @@ export default function AssetStoreWizardContainer({
   const [formData, setFormData] = useState<AssetStoreOptions | undefined>(
     (
       config.pages['home']?.sections.find(
-        (s) => s.type === 'asset-store'
+        (s) => s.type === 'asset-store',
       ) as AssetStorePageSection
-    )?.config
+    )?.config,
   );
   const changeConfig = function (
     configToChange: AppConfig,
-    data?: AssetStoreOptions
+    data?: AssetStoreOptions,
   ) {
     const newConfig = { ...configToChange };
     const sectionPageIndex = newConfig.pages['home']?.sections.findIndex(
-      (s) => s.type === 'asset-store'
+      (s) => s.type === 'asset-store',
     );
     let editSection: AssetStorePageSection;
     if (data) {

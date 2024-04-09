@@ -1,3 +1,7 @@
+import { getNetworkSlugFromChainId } from '@dexkit/core/utils/blockchain';
+import { AppDialogTitle } from '@dexkit/ui/components/AppDialogTitle';
+import Link from '@dexkit/ui/components/AppLink';
+import { AssetAPI } from '@dexkit/ui/modules/nft/types';
 import CheckCircle from '@mui/icons-material/CheckCircle';
 import ErrorIcon from '@mui/icons-material/Error';
 import {
@@ -17,10 +21,6 @@ import {
   Typography,
 } from '@mui/material';
 import { FormattedMessage } from 'react-intl';
-import { AppDialogTitle } from 'src/components/AppDialogTitle';
-import Link from 'src/components/Link';
-import { AssetAPI } from 'src/types/nft';
-import { getNetworkSlugFromChainId } from 'src/utils/blockchain';
 
 interface Props {
   dialogProps: DialogProps;
@@ -159,7 +159,7 @@ export default function CreateWhitelabelDialog({
                 variant="contained"
                 LinkComponent={Link}
                 href={`/asset/${getNetworkSlugFromChainId(
-                  asset?.chainId as any
+                  asset?.chainId as any,
                 )}/${asset.address}/${asset.tokenId}`}
               >
                 <FormattedMessage id="view.nft" defaultMessage="View NFT" />

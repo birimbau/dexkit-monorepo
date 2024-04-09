@@ -1,25 +1,12 @@
 import type { CellPlugin } from '@react-page/editor';
 
 import { AssetFormType } from '@/modules/wizard/types';
-import dynamic from 'next/dynamic';
+import AssetAltPluginViewer from '@dexkit/dexappbuilder-viewer/components/page-editor/plugins/AssetAltPlugin';
 import AssetSectionForm from '../../forms/AssetSectionForm';
-
-const AssetSection = dynamic(() => import('../../sections/AssetSection/index'));
 
 // you can pass the shape of the data as the generic type argument
 const AssetAltPlugin: CellPlugin<AssetFormType> = {
-  Renderer: ({ data, isEditMode, onChange }) => {
-    return (
-      <AssetSection
-        section={{ config: data, type: 'asset-section' }}
-        key={JSON.stringify(data)}
-      />
-    );
-  },
-  id: 'asset-alt-plugin',
-  title: 'Asset Section',
-  description: 'Asset Section',
-  version: 1,
+  ...AssetAltPluginViewer,
   controls: {
     type: 'custom',
     Component: ({ data, onChange }) => {

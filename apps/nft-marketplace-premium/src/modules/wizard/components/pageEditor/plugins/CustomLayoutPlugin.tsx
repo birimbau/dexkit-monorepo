@@ -1,5 +1,5 @@
+import CustomLayoutPluginViewer from '@dexkit/dexappbuilder-viewer/components/page-editor/plugins/CustomLayoutPlugin';
 import type { CellPlugin } from '@react-page/editor';
-import React from 'react';
 
 const CustomLayoutPlugin: CellPlugin<{
   backgroundColor: string;
@@ -9,37 +9,7 @@ const CustomLayoutPlugin: CellPlugin<{
   cellSpacingX: number;
   cellSpacingY: number;
 }> = {
-  Renderer: ({ children, data }) => (
-    <div
-      style={{
-        height: '100%',
-        boxSizing: 'border-box',
-        backgroundColor: data.backgroundColor,
-        padding: `${data.paddingY}px ${data.paddingX}px`,
-      }}
-    >
-      {children}
-    </div>
-  ),
-
-  cellSpacing: (data) =>
-    data.cellSpacingOverride
-      ? { x: data.cellSpacingX, y: data.cellSpacingY }
-      : null,
-
-  createInitialData: () => ({
-    backgroundColor: '#ffeeaa',
-    paddingX: 12,
-    paddingY: 12,
-    cellSpacingOverride: false,
-    cellSpacingX: 10,
-    cellSpacingY: 10,
-  }),
-
-  id: 'custom-layout-plugin-with-cell-spacing',
-  title: 'Background with Cell Spacing',
-  description: 'Custom layout plugin with cell spacing support',
-  version: 1,
+  ...CustomLayoutPluginViewer,
 
   controls: {
     type: 'autoform',

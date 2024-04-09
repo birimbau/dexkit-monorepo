@@ -1,3 +1,6 @@
+import { getBlockExplorerUrl } from '@dexkit/core/utils/blockchain';
+import { AppDialogTitle } from '@dexkit/ui/components/AppDialogTitle';
+import Link from '@dexkit/ui/components/AppLink';
 import CheckCircle from '@mui/icons-material/CheckCircle';
 import {
   Box,
@@ -11,9 +14,6 @@ import {
   Typography,
 } from '@mui/material';
 import { FormattedMessage } from 'react-intl';
-import { AppDialogTitle } from 'src/components/AppDialogTitle';
-import Link from 'src/components/Link';
-import { getBlockExplorerUrl } from 'src/utils/blockchain';
 
 interface Props {
   dialogProps: DialogProps;

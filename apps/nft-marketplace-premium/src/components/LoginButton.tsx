@@ -1,10 +1,10 @@
 import { useAuthUserQuery } from '@/modules/user/hooks';
+import { useAuth, useLoginAccountMutation } from '@dexkit/ui/hooks/auth';
 import { Button } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useWeb3React } from '@web3-react/core';
 import { useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { useAuth, useLoginAccountMutation } from 'src/hooks/account';
 
 interface Props {
   onLogin?: () => void;

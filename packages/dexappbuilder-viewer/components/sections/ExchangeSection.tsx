@@ -17,7 +17,7 @@ import { isAddressEqual } from "@dexkit/core/utils";
 import PairInfo from "@dexkit/exchange/components/PairInfo";
 import TradeWidget from "@dexkit/exchange/components/TradeWidget";
 import { DexkitExchangeContext } from "@dexkit/exchange/contexts";
-import { ExchangePageSection } from "@dexkit/ui/modules/wizard/types";
+import { ExchangePageSection } from "@dexkit/ui/modules/wizard/types/section";
 
 function ExchangeSection() {
   const exchangeState = useExchangeContext();
@@ -86,28 +86,9 @@ function ExchangeSection() {
     setShowSwaps(value);
   };
 
-  return (
-    <>
-      {open && (
-        <SelectPairDialog
-          DialogProps={{
-            open,
-            maxWidth: "sm",
-            fullWidth: true,
-            onClose: handleClose,
-          }}
-          baseToken={exchangeState.baseToken}
-          quoteToken={exchangeState.quoteToken}
-          baseTokens={exchangeState.baseTokens}
-          quoteTokens={exchangeState.quoteTokens}
-          onSelectPair={handleSelectPair}
-          availNetworks={exchangeState.availNetworks}
-          onSwitchNetwork={exchangeState.onSwitchNetwork}
-          chainId={exchangeState.chainId}
-        />
-      )}
-
-      <Box py={2}>
+  const renderContent = () => {
+    if (exchangeState.container) {
+      return (
         <Container maxWidth="xl">
           <Grid container spacing={2}>
             {exchangeState.quoteToken && exchangeState.baseToken && (
@@ -162,7 +143,87 @@ function ExchangeSection() {
             </Grid>
           </Grid>
         </Container>
-      </Box>
+      );
+    }
+
+    return (
+      <Grid container spacing={2}>
+        {exchangeState.quoteToken && exchangeState.baseToken && (
+          <Grid item xs={12}>
+            <PairInfo
+              quoteToken={exchangeState.quoteToken}
+              baseToken={exchangeState.baseToken}
+              onSelectPair={handleOpenSelectPair}
+              isLoading={isLoadingPool}
+              marketCap={
+                selectedPool?.attributes.market_cap_usd
+                  ? selectedPool.attributes.market_cap_usd
+                  : undefined
+              }
+              volume={selectedPool?.attributes.volume_usd.h24}
+              priceChangeH24={
+                selectedPool?.attributes.price_change_percentage.h24
+              }
+              lastPrice={selectedPool?.attributes.base_token_price_usd}
+            />
+          </Grid>
+        )}
+        <Grid item xs={12} sm={4}>
+          <TradeWidget isActive={true} />
+        </Grid>
+        <Grid item xs={12} sm={8}>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <TradingGraph
+                key={selectedAddress}
+                isLoading={isLoadingPool}
+                onChange={handleChangePool}
+                onChangeShowSwaps={handleChangeShowSwap}
+                selectedPool={selectedAddress}
+                network={network}
+                pools={pools.map((pool) => ({
+                  name: pool.attributes.name,
+                  address: pool.attributes.address,
+                }))}
+                showSwaps={showSwaps}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <OrdersTable
+                account={account}
+                chainId={chainId}
+                provider={provider}
+                active={isActive}
+              />
+            </Grid>
+          </Grid>
+        </Grid>
+      </Grid>
+    );
+  };
+
+  return (
+    <>
+      {open && (
+        <SelectPairDialog
+          DialogProps={{
+            open,
+            maxWidth: "sm",
+            fullWidth: true,
+            onClose: handleClose,
+          }}
+          baseToken={exchangeState.baseToken}
+          quoteToken={exchangeState.quoteToken}
+          baseTokens={exchangeState.baseTokens}
+          quoteTokens={exchangeState.quoteTokens}
+          onSelectPair={handleSelectPair}
+          availNetworks={exchangeState.availNetworks}
+          onSwitchNetwork={exchangeState.onSwitchNetwork}
+          chainId={exchangeState.chainId}
+        />
+      )}
+
+      <Box py={2}>{renderContent()}</Box>
     </>
   );
 }

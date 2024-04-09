@@ -1,19 +1,15 @@
 import { ChainId } from '@0x/contract-addresses';
+import { getCoinPrices } from '@dexkit/ui/services/currency';
 import { useQuery } from '@tanstack/react-query';
 import { useWeb3React } from '@web3-react/core';
 import axios from 'axios';
 import { useAtomValue } from 'jotai';
 import { useMemo } from 'react';
-import {
-  COINGECKO_ENDPOIT,
-  COINGECKO_PLATFORM_ID,
-  ZEROEX_NATIVE_TOKEN_ADDRESS
-} from '../constants';
+
+import { COINGECKO_ENDPOIT, COINGECKO_PLATFORM_ID } from '@dexkit/core/constants';
 import { NETWORKS } from '../constants/chain';
-import { getCoinPrices, getTokenPrices } from '../services/currency';
 import { currencyAtom, currencyUserAtom } from '../state/atoms';
 import { useAppConfig } from './app';
-import { useTokenList } from './blockchain';
 
 export function useCurrency(): string {
   const appConfig = useAppConfig();
@@ -33,59 +29,7 @@ export function useCurrency(): string {
   return currency || 'usd';
 }
 
-export const GET_COIN_PRICES = 'GET_COIN_PRICES';
 
-export const useCoinPricesQuery = ({
-  includeNative,
-  chainId,
-}: {
-  includeNative: boolean;
-  chainId?: number
-}) => {
-  const { chainId: walletChainId } = useWeb3React();
-  const chain = chainId || walletChainId
-
-  const tokens = useTokenList({ chainId: chain });
-  const currency = useCurrency();
-  return useQuery(
-    [GET_COIN_PRICES, chain, tokens, currency],
-    async () => {
-      if (
-        chain === undefined ||
-        (tokens === undefined && !includeNative)
-      ) {
-        return;
-      }
-      const prices: { [key: string]: { [key: string]: number } } = {};
-
-      if (includeNative) {
-        const activeNetwork = NETWORKS[chain];
-        if (activeNetwork && activeNetwork.coingeckoPlatformId) {
-          const nativePrice = await getCoinPrices({
-            coingeckoIds: [activeNetwork.coingeckoPlatformId],
-            currency,
-          });
-          if (nativePrice[`${activeNetwork.coingeckoPlatformId}`]) {
-            prices[ZEROEX_NATIVE_TOKEN_ADDRESS] =
-              nativePrice[`${activeNetwork.coingeckoPlatformId}`];
-          }
-        }
-      }
-
-      if (tokens.length === 0) {
-        return prices;
-      }
-      const addresses = tokens.map((t) => t.address);
-      const tokenPrices = await getTokenPrices({
-        addresses,
-        currency,
-        chainId: chain,
-      });
-      return { ...prices, ...tokenPrices };
-    },
-    { enabled: chain !== undefined, suspense: false }
-  );
-};
 
 export const GET_FIAT_RATION = 'GET_FIAT_RATION';
 

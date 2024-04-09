@@ -9,19 +9,20 @@ import {
   CollectionItemsForm,
   WizardItem,
 } from '@/modules/contract-wizard/types';
+import AppConfirmDialog from '@dexkit/ui/components/AppConfirmDialog';
 import { Alert, Container, Grid, Typography } from '@mui/material';
 import { useWeb3React } from '@web3-react/core';
 import { Formik } from 'formik';
 import { ReactNode, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import AppConfirmDialog from 'src/components/AppConfirmDialog';
-import { PageHeader } from 'src/components/PageHeader';
+
+import { PageHeader } from '@dexkit/ui/components/PageHeader';
+import { getERC721TotalSupply } from '@dexkit/ui/modules/nft/services';
 import {
   DEXKIT_DISCORD_SUPPORT_CHANNEL,
   DEXKIT_NFT_METADATA_URI,
   MIN_KIT_HOLDING_AI_GENERATION,
 } from 'src/constants';
-import { getERC721TotalSupply } from 'src/services/nft';
 
 interface Props {
   network: string;
@@ -186,7 +187,7 @@ function WizardCreateAssetContainer(props: Props) {
         useContractURL={false}
       />
       <AppConfirmDialog
-        dialogProps={{
+        DialogProps={{
           open: showConfirm,
           onClose: handleCloseConfirm,
           fullWidth: true,

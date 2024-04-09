@@ -1,6 +1,7 @@
 import { CollectionOwnershipNFTFormType } from '@/modules/contract-wizard/types';
-import { SiteMetadata } from '@/modules/wizard/types';
-import { AppPageSection } from '@/modules/wizard/types/section';
+import { SiteMetadata } from '@dexkit/ui/modules/wizard/types';
+import { AppPageSection } from '@dexkit/ui/modules/wizard/types/section';
+import { getAccessToken, getAccessTokenAndRefresh, getRefreshAccessToken } from '@dexkit/ui/services/auth';
 import axios from 'axios';
 import { DEXKIT_BASE_API_URL } from 'src/constants';
 import {
@@ -10,11 +11,7 @@ import {
   SiteResponse,
   WhitelabelFormData,
 } from '../types/whitelabel';
-import {
-  getAccessToken,
-  getAccessTokenAndRefresh,
-  getRefreshAccessToken,
-} from './auth';
+
 
 //const MY_APPS_ENDPOINT = 'https://dexkitapi-8oo4v.ondigitalocean.app';
 //const MY_APPS_ENDPOINT = 'http://localhost:3001';

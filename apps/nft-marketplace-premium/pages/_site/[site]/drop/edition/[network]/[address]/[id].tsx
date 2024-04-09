@@ -5,31 +5,36 @@ import { useRouter } from 'next/router';
 
 import { Box, Grid, Skeleton, Typography } from '@mui/material';
 
-import AssetHead from '@/modules/nft/components/AssetHead';
-import AssetLeftSection from '@/modules/nft/components/AssetLeftSection';
-import { DropEditionListSection } from '@/modules/wizard/components/sections/DropEditionListSection';
-import EditionDropSection from '@/modules/wizard/components/sections/EditionDropSection';
+import AssetHead from '@dexkit/ui/modules/nft/components/AssetHead';
+import AssetLeftSection from '@dexkit/ui/modules/nft/components/AssetLeftSection';
+
 import { ChainId } from '@dexkit/core/constants';
 import {
   NETWORK_FROM_SLUG,
   NETWORK_SLUG,
 } from '@dexkit/core/constants/networks';
 import { ipfsUriToUrl, truncateAddress } from '@dexkit/core/utils';
-import { useAsset, useAssetMetadata } from '@dexkit/ui/modules/nft/hooks';
+import { PageHeader } from '@dexkit/ui/components/PageHeader';
+import {
+  BEST_SELL_ORDER_RARIBLE,
+  useAsset,
+  useAssetMetadata,
+} from '@dexkit/ui/modules/nft/hooks';
 import { truncateErc1155TokenId } from '@dexkit/ui/modules/nft/utils';
 import { ThirdwebSDKProvider } from '@thirdweb-dev/react';
 import { useWeb3React } from '@web3-react/core';
 import { NextSeo } from 'next-seo';
 import { FormattedMessage } from 'react-intl';
 import MainLayout from 'src/components/layouts/main';
-import { PageHeader } from 'src/components/PageHeader';
 import { REVALIDATE_PAGE_TIME, THIRDWEB_CLIENT_ID } from 'src/constants';
-import { NETWORK_ID } from 'src/constants/enum';
-import { MAP_NETWORK_TO_RARIBLE } from 'src/constants/marketplaces';
-import { BEST_SELL_ORDER_RARIBLE } from 'src/hooks/nft';
+
+import { DropEditionListSection } from '@dexkit/dexappbuilder-viewer/components/sections/DropEditionListSection';
+import EditionDropSection from '@dexkit/dexappbuilder-viewer/components/sections/EditionDropSection';
+import { NETWORK_ID } from '@dexkit/ui/constants/enum';
+import { MAP_NETWORK_TO_RARIBLE } from '@dexkit/ui/modules/nft/constants/marketplaces';
+import { fetchAssetForQueryClient } from '@dexkit/ui/modules/nft/services/query';
+import { getRariAsset } from '@dexkit/ui/modules/nft/services/rarible';
 import { getAppConfig } from 'src/services/app';
-import { fetchAssetForQueryClient } from 'src/services/nft';
-import { getRariAsset } from 'src/services/rarible';
 
 const AssetDetailPage: NextPage = () => {
   const router = useRouter();

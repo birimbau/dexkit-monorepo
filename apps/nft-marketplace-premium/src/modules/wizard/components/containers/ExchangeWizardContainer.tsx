@@ -2,6 +2,8 @@ import { Token as AppToken, TokenWhitelabelApp } from '@dexkit/core/types';
 import ExchangeSettingsForm from '@dexkit/exchange/components/ExchangeSettingsForm';
 import { DexkitExchangeSettings } from '@dexkit/exchange/types';
 import { useActiveChainIds } from '@dexkit/ui/hooks';
+import { AppConfig } from '@dexkit/ui/modules/wizard/types/config';
+import { ExchangePageSection } from '@dexkit/ui/modules/wizard/types/section';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
@@ -10,11 +12,8 @@ import Typography from '@mui/material/Typography';
 import { CssVarsTheme, Theme } from '@mui/material/styles';
 import { useCallback, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { AppConfig } from '../../../../types/config';
 import { StepperButtonProps } from '../../types';
-import { ExchangePageSection } from '../../types/section';
 import { StepperButtons } from '../steppers/StepperButtons';
-
 interface Props {
   config: AppConfig;
   theme: Omit<Theme, 'palette'> & CssVarsTheme;
@@ -32,7 +31,7 @@ export default function ExchangeWizardContainer({
   isOnStepper,
   stepperButtonProps,
 }: Props) {
-  const {activeChainIds} = useActiveChainIds();
+  const { activeChainIds } = useActiveChainIds();
 
   const [exchangeFormData, setExchangeFormData] = useState<
     DexkitExchangeSettings | undefined

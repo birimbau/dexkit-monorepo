@@ -1,9 +1,9 @@
-import { useJsonRpcProvider } from '@/modules/wizard/hooks';
 import { getContractImplementation } from '@/modules/wizard/services';
 import { ChainId } from '@dexkit/core';
 import { NETWORKS } from '@dexkit/core/constants/networks';
 import { parseChainId } from '@dexkit/core/utils';
 import { useActiveChainIds } from '@dexkit/ui';
+import { useJsonRpcProvider } from '@dexkit/ui/modules/wizard/hooks';
 import { AbiFragment, ContractFormParams } from '@dexkit/web3forms/types';
 import { useAsyncMemo } from '@dexkit/widgets/src/hooks';
 import {

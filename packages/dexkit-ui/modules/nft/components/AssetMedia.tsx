@@ -9,9 +9,10 @@ import { AssetVideo } from "./AssetVideo";
 
 interface Props {
   asset: Asset;
+  enableImageLightbox?: boolean;
 }
 
-export function AssetMedia({ asset }: Props) {
+export function AssetMedia({ asset, enableImageLightbox }: Props) {
   const { data: metadata, isLoading } = useAssetMetadata(asset);
 
   if (isLoading) {
@@ -37,8 +38,11 @@ export function AssetMedia({ asset }: Props) {
             width: "100%",
           }}
         >
-          {nftSrcAndType.type === "image" && metadata?.image && (
-            <AssetImage src={metadata?.image} />
+          {nftSrcAndType.type === "image" && (
+            <AssetImage
+              src={metadata?.image}
+              enableLightBox={enableImageLightbox}
+            />
           )}
           {nftSrcAndType.type === "iframe" && nftSrcAndType.src && (
             <AssetIframe src={nftSrcAndType.src} />

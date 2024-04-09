@@ -3,13 +3,16 @@ import { DexkitExchangeSettings } from "@dexkit/exchange/types";
 import { ContractFormParams } from "@dexkit/web3forms/types";
 import React from "react";
 
-import { AssetFormType, DeployedContract, SwapConfig } from ".";
+
+import { AssetFormType, DeployedContract, SwapConfig } from '.';
+import { AssetStoreOptions } from '../../nft/types';
 import {
   PageSectionVariant,
   SectionItem,
   VideoEmbedType,
-} from "../../../types/config";
-import { AssetStoreOptions } from "../../nft/types";
+} from './config';
+
+
 
 export type SectionType =
   | "video"
@@ -227,8 +230,18 @@ export interface MarketTradePageSection extends PageSection {
   type: "market-trade";
   config: {
     show: OrderMarketType;
+    slippage?: number;
+    baseTokenConfig: { address: string, chainId: number };
+  };
+}
 
-    baseTokenConfig: { address: string; chainId: number };
+export interface TokenTradePageSection extends PageSection {
+  type: 'token-trade';
+  config: {
+    showTokenDetails?: boolean;
+    show?: OrderMarketType;
+    slippage?: number;
+    baseTokenConfig?: { address?: string, chainId?: number };
   };
 }
 
@@ -243,9 +256,15 @@ export interface CollectionPageSection extends PageSection {
     address: string;
     network: string;
     hideFilters: boolean;
+    showPageHeader: boolean;
+    showCollectionStats?: boolean;
     hideHeader: boolean;
     hideDrops: boolean;
     hideAssets: boolean;
+    enableDarkblock?: boolean;
+    disableSecondarySells?: boolean;
+    showSidebarOnDesktop?: boolean;
+    isLock?: boolean;
   };
 }
 
@@ -267,13 +286,13 @@ export interface RankingPageSection extends PageSection {
 }
 
 export type SlideActionLink = {
-  type: "link";
+  type: 'link';
   caption?: string;
   url?: string;
 };
 
 export type SlideActionPage = {
-  type: "page";
+  type: 'page';
   page?: string;
   caption?: string;
 };
@@ -300,31 +319,31 @@ export interface CarouselFormType {
 }
 
 export interface CarouselPageSection extends PageSection {
-  type: "carousel";
+  type: 'carousel';
   settings: CarouselFormType;
 }
 
 export type ShowCaseActionLink = {
-  type: "link";
+  type: 'link';
   url: string;
 };
 
 export type ShowCaseActionPage = {
-  type: "page";
+  type: 'page';
   page: string;
 };
 
 export type ShowCaseAction = ShowCaseActionLink | ShowCaseActionPage;
 
 export type ShowCaseItemAsset = {
-  type: "asset";
+  type: 'asset';
   contractAddress: string;
   tokenId: string;
   chainId: number;
 };
 
 export type ShowCaseItemCollection = {
-  type: "collection";
+  type: 'collection';
   title?: string;
   subtitle: string;
   imageUrl: string;
@@ -334,14 +353,14 @@ export type ShowCaseItemCollection = {
 };
 
 export type ShowCaseItemImage = {
-  type: "image";
+  type: 'image';
   textColor?: string;
   title: string;
   subtitle?: string;
   imageUrl: string;
   url?: string;
   page?: string;
-  actionType?: "link" | "page";
+  actionType?: 'link' | 'page';
 };
 
 export type ShowCaseItem =
@@ -350,7 +369,7 @@ export type ShowCaseItem =
   | ShowCaseItemCollection;
 
 export type ShowCaseParams = {
-  alignItems: "center" | "left" | "right";
+  alignItems: 'center' | 'left' | 'right';
   itemsSpacing: number;
   paddingTop: number;
   paddingBottom: number;
@@ -358,7 +377,7 @@ export type ShowCaseParams = {
 };
 
 export interface ShowCasePageSection extends PageSection {
-  type: "showcase";
+  type: 'showcase';
   settings: ShowCaseParams;
 }
 
@@ -400,6 +419,7 @@ export type AppPageSection =
   | DexGeneratorPageSection
   | AssetPageSection
   | RankingPageSection
+  | TokenTradePageSection
   | ClaimAirdropErc20PageSection
   | TokenTradePageSection
   | CarouselPageSection

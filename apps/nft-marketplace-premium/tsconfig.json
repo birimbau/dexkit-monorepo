@@ -31,11 +31,9 @@
     "**/*.tsx",
     "next-sitemap.config.js",
     "scripts/local-diff.js",
-    "../../packages/dexkit-core/constants/connectors/walletConnect.ts",
-    "../../packages/dexkit-ui/hooks/ai.ts",
-    "../../packages/dexkit-ui/types/ai/index.ts",
-    "../../packages/dexkit-ui/components/dialogs/AddCreditDialog.tsx",
-    "../../packages/dexkit-ui/components/AddCreditsButton.tsx"
+    "../../packages/dexkit-ui/components/NavbarMenuAlt.tsx",
+    "../../packages/dexkit-ui/components/NavbarAlt.tsx",
+    "../../packages/dexkit-ui/components/AppDefaultMenuList.tsx"
   ],
   "exclude": ["node_modules"]
 }

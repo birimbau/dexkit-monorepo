@@ -17,12 +17,10 @@ import {
   Typography,
 } from "@mui/material";
 import { FormikHelpers, useFormik } from "formik";
-import { useAtom } from "jotai";
 import { useCallback, useEffect } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
-import { AppDialogTitle } from "../AppDialogTitle";
-
 import * as Yup from "yup";
+import { AppDialogTitle } from "../AppDialogTitle";
 
 import { NETWORKS } from "@dexkit/core/constants/networks";
 import { useDebounce } from "@dexkit/core/hooks/misc";
@@ -32,6 +30,8 @@ import { isAddress } from "@dexkit/core/utils/ethers/isAddress";
 import { useWeb3React } from "@web3-react/core";
 import { AxiosError } from "axios";
 import { useSnackbar } from "notistack";
+import { useDexKitContext } from "../../hooks";
+import { useActiveChainIds, useTokenData } from "../../hooks/blockchain";
 
 interface Props {
   dialogProps: DialogProps;
@@ -59,10 +59,10 @@ const FormSchema: Yup.SchemaOf<Form> = Yup.object().shape({
 });
 
 function ImportTokenDialog({ dialogProps }: Props) {
+  const { activeChainIds } = useActiveChainIds();
   const { onClose } = dialogProps;
   const { chainId } = useWeb3React();
-
-  const [tokens, setTokens] = useAtom(tokensAtom);
+  const { tokens, setTokens } = useDexKitContext();
 
   const { formatMessage } = useIntl();
   const { enqueueSnackbar } = useSnackbar();
@@ -237,6 +237,7 @@ function ImportTokenDialog({ dialogProps }: Props) {
               }}
             >
               {Object.keys(NETWORKS)
+                .filter((k) => activeChainIds.includes(Number(k)))
                 .filter((key) => !NETWORKS[Number(key)].testnet)
                 .map((key: any, index: number) => (
                   <MenuItem key={index} value={key}>

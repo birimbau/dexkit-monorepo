@@ -18,12 +18,12 @@ const ContractTokenDropContainer = dynamic(
 
 import { NETWORK_FROM_SLUG } from '@dexkit/core/constants/networks';
 import { useSwitchNetworkMutation } from '@dexkit/ui';
+import { ContractMetadataHeader } from '@dexkit/ui/modules/contract-wizard/components/ContractMetadataHeader';
 import { hexToString } from '@dexkit/ui/utils';
 import { Alert, Button, CircularProgress } from '@mui/material';
 import { useWeb3React } from '@web3-react/core';
 import dynamic from 'next/dynamic';
 import { FormattedMessage } from 'react-intl';
-import { ContractMetadataHeader } from '../ContractMetadataHeader';
 const ContractAirdropErc1155Container = dynamic(
   () => import('./ContractAirdropErc1155Container'),
 );

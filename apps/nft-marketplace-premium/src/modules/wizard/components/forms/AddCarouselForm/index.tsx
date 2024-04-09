@@ -5,11 +5,11 @@ import { TextField } from 'formik-mui';
 import { FormattedMessage } from 'react-intl';
 import SlideItem from './SlideItem';
 
+import { DexkitApiProvider } from '@dexkit/core/providers';
 import {
   CarouselFormType,
   CarouselSlide,
-} from '@/modules/wizard/types/section';
-import { DexkitApiProvider } from '@dexkit/core/providers';
+} from '@dexkit/ui/modules/wizard/types/section';
 import dynamic from 'next/dynamic';
 import { useState } from 'react';
 import { myAppsApi } from 'src/services/whitelabel';
@@ -58,7 +58,7 @@ const FormSchema = z.object({
         imageUrl: z.string().min(1),
         subtitle: z.string().optional(),
         action: SlideAction.optional(), // Use the SlideAction union here
-      })
+      }),
     )
     .optional(),
 });

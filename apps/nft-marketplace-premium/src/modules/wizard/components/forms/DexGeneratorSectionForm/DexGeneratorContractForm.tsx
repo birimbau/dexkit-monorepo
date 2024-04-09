@@ -1,18 +1,20 @@
 import { DeployedContract } from '@/modules/forms/types';
-import {
-  DexGeneratorPageSection,
-  DexGeneratorPageSectionType,
-} from '@/modules/wizard/types/section';
+
 import ArrowBack from '@mui/icons-material/ArrowBack';
 import { Box, Divider, IconButton, Stack, Typography } from '@mui/material';
 import { FormattedMessage } from 'react-intl';
-import Link from 'src/components/Link';
+
 import DexGeneratorEditionDropForm from './DexGeneratorEditionDropForm';
 import DexGeneratorNFTDropForm from './DexGeneratorNFTDropForm';
 import DexGeneratorTokenDropForm from './DexGeneratorTokenDropForm';
 
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 
+import Link from '@dexkit/ui/components/AppLink';
+import {
+  DexGeneratorPageSection,
+  DexGeneratorPageSectionType,
+} from '@dexkit/ui/modules/wizard/types/section';
 import DexGeneratorTokenErc20Form from './DexGeneratorTokenErc20Form';
 import DexGeneratorTokenErc721Form from './DexGeneratorTokenErc721Form';
 

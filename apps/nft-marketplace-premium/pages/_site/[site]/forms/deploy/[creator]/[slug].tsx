@@ -40,6 +40,7 @@ import {
   useActiveChainIds,
   useSwitchNetworkMutation,
 } from '@dexkit/ui';
+import { PageHeader } from '@dexkit/ui/components/PageHeader';
 import useThirdwebContractMetadataQuery, {
   useDeployThirdWebContractMutation,
   useFormConfigParamsQuery,
@@ -57,7 +58,6 @@ import {
 import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { PageHeader } from 'src/components/PageHeader';
 import { THIRDWEB_CLIENT_ID } from 'src/constants';
 import { getAppConfig } from 'src/services/app';
 

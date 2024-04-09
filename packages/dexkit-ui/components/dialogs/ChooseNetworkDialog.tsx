@@ -19,6 +19,7 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { FormattedMessage } from "react-intl";
+import { useActiveChainIds } from "../../hooks/blockchain";
 import { AppDialogTitle } from "../AppDialogTitle";
 
 interface Props {
@@ -33,6 +34,7 @@ function ChooseNetworkDialog({
   selectedChainId,
 }: Props) {
   const { onClose } = dialogProps;
+  const { activeChainIds } = useActiveChainIds();
 
   const [chainId, setChainId] = useState<number | undefined>(selectedChainId);
 
@@ -69,6 +71,8 @@ function ChooseNetworkDialog({
         <Stack spacing={2}>
           <List disablePadding>
             {Object.keys(NETWORKS)
+              .filter((k) => Number(k) !== selectedChainId)
+              .filter((k) => activeChainIds.includes(Number(k)))
               .filter((k) => !NETWORKS[parseInt(k)].testnet)
               .map((key: any, index: number) => (
                 <ListItemButton

@@ -3,6 +3,9 @@ import MarketplacesTable from '@/modules/admin/components/tables/MarketplacesTab
 import { MismatchAccount } from '@/modules/wizard/components/MismatchAccount';
 import ConfigureDomainDialog from '@/modules/wizard/components/dialogs/ConfigureDomainDialog';
 import { useDebounce } from '@dexkit/core/hooks';
+import Link from '@dexkit/ui/components/AppLink';
+import { PageHeader } from '@dexkit/ui/components/PageHeader';
+import { useAuth } from '@dexkit/ui/hooks/auth';
 import Add from '@mui/icons-material/Add';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import Search from '@mui/icons-material/Search';
@@ -31,12 +34,10 @@ import {
 } from 'next';
 import { ChangeEvent, ReactNode, useCallback, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import Link from 'src/components/Link';
 import { LoginAppButton } from 'src/components/LoginAppButton';
-import { PageHeader } from 'src/components/PageHeader';
 import AuthMainLayout from 'src/components/layouts/authMain';
 import { DEXKIT_DISCORD_SUPPORT_CHANNEL, WIZARD_DOCS_URL } from 'src/constants';
-import { useAuth } from 'src/hooks/account';
+
 import { useConnectWalletDialog } from 'src/hooks/app';
 import { useWhitelabelConfigsByOwnerQuery } from 'src/hooks/whitelabel';
 import { getAppConfig } from 'src/services/app';

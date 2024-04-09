@@ -1,3 +1,5 @@
+import { getChainName } from '@dexkit/core/utils/blockchain';
+import { useSearchAssets } from '@dexkit/ui/modules/nft/hooks';
 import { CircularProgress, Stack } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
@@ -5,8 +7,6 @@ import TextField from '@mui/material/TextField';
 import { CellPluginComponentProps } from '@react-page/editor';
 import React, { useState } from 'react';
 import { NETWORKS } from '../../../../../constants/chain';
-import { useSearchAssets } from '../../../../../hooks/nft';
-import { getChainName } from '../../../../../utils/blockchain';
 
 interface Props {
   data: CellPluginComponentProps<Partial<any>>;

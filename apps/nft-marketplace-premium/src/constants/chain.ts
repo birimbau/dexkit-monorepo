@@ -1,8 +1,6 @@
 
 import { NETWORKS as NETWORKS_CORE } from "@dexkit/core/constants/networks";
 
-const alchemyKey =
-  process.env.NEXT_PUBLIC_ALCHEMY_API_KEY || process.env.ALCHEMY_API_KEY;
 export const NETWORKS = NETWORKS_CORE;
 
 /*export const NETWORKS: { [key: number]: Network } = {

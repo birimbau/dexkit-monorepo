@@ -1,3 +1,4 @@
+import AppConfirmDialog from '@dexkit/ui/components/AppConfirmDialog';
 import InfoIcon from '@mui/icons-material/Info';
 import {
   Button,
@@ -10,12 +11,12 @@ import {
 import { useSnackbar } from 'notistack';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
-import AppConfirmDialog from '../../../../components/AppConfirmDialog';
 import {
   useSetupDomainConfigMutation,
   useVerifyDomainMutation,
 } from '../../../../hooks/whitelabel';
-import { AppConfig } from '../../../../types/config';
+
+import { AppConfig } from '@dexkit/ui/modules/wizard/types/config';
 import { SiteResponse } from '../../../../types/whitelabel';
 import {
   default as CheckDomainDialog,
@@ -192,7 +193,7 @@ export default function DomainWizardContainer({
         content={contentInfo}
       />
       <AppConfirmDialog
-        dialogProps={{
+        DialogProps={{
           open: isDeployConfirmOpen,
           onClose: handleClose,
         }}

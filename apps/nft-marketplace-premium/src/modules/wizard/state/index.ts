@@ -1,6 +1,7 @@
+import { AppCollection } from '@dexkit/ui/modules/wizard/types/config';
 import { atom } from 'jotai';
 import { atomWithStorage } from 'jotai/utils';
-import { AppCollection } from '../../../types/config';
+
 
 export const collectionAtom = atom<AppCollection | undefined>(undefined);
 

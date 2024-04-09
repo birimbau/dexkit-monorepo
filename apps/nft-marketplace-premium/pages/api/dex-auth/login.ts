@@ -1,9 +1,10 @@
 import { MY_APPS_ENDPOINT } from '@dexkit/core/constants';
 import { UserEvents } from '@dexkit/core/constants/userEvents';
+import { login } from '@dexkit/ui/services/auth';
 import axios from 'axios';
 import { serialize } from 'cookie';
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { login } from 'src/services/auth';
+
 
 
 const userEventsApi = axios.create({

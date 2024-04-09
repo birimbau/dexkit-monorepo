@@ -1,7 +1,7 @@
+import { truncateAddress } from '@dexkit/core/utils/blockchain';
 import CloseIcon from '@mui/icons-material/Close';
-import { Chip, IconButton, Paper, Stack, Typography } from '@mui/material';
+import { IconButton, Paper, Stack, Typography } from '@mui/material';
 import { memo } from 'react';
-import { truncateAddress } from '../../../../utils/blockchain';
 
 interface Props {
   recipient: string;

@@ -8,11 +8,12 @@ import {
   TextField,
 } from '@mui/material';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { AppDialogTitle } from '../../../../components/AppDialogTitle';
+
+import { copyToClipboard } from '@dexkit/core/utils/browser';
+import { AppDialogTitle } from '@dexkit/ui/components/AppDialogTitle';
+import FileCopyIcon from '@mui/icons-material/FileCopy';
 import { CopyIconButton } from '../../../../components/CopyIconButton';
 import { ConfigResponse } from '../../../../types/whitelabel';
-import FileCopyIcon from '@mui/icons-material/FileCopy';
-import { copyToClipboard } from '../../../../utils/browser';
 
 interface Props {
   dialogProps: DialogProps;

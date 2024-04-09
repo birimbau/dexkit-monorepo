@@ -1,4 +1,5 @@
 import ContractCollectionList from '@/modules/contract-wizard/components/CollectionList';
+import Link from '@dexkit/ui/components/AppLink';
 import Add from '@mui/icons-material/Add';
 import {
   Box,
@@ -11,7 +12,7 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
-import { dehydrate, QueryClient } from '@tanstack/react-query';
+import { QueryClient, dehydrate } from '@tanstack/react-query';
 import type {
   GetStaticPaths,
   GetStaticPathsContext,
@@ -22,8 +23,8 @@ import type {
 import { NextSeo } from 'next-seo';
 import { FormattedMessage, useIntl } from 'react-intl';
 import MainLayout from 'src/components/layouts/main';
-import Link from 'src/components/Link';
-import { PageHeader } from 'src/components/PageHeader';
+
+import { PageHeader } from '@dexkit/ui/components/PageHeader';
 import { useAppConfig } from 'src/hooks/app';
 import { getAppConfig } from 'src/services/app';
 

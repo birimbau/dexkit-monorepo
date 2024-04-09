@@ -1,9 +1,9 @@
 import { truncateAddress } from '@dexkit/core/utils';
+import { useAuth } from '@dexkit/ui/hooks/auth';
 import { Alert, Box, Stack } from '@mui/material';
 import { useWeb3React } from '@web3-react/core';
 import { FormattedMessage } from 'react-intl';
 import { LoginButton } from 'src/components/LoginButton';
-import { useAuth } from 'src/hooks/account';
 
 export function MismatchAccount() {
   const { account } = useWeb3React();

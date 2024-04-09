@@ -1,8 +1,8 @@
 //export * from './components/Render';
 
-import { AppConfig } from "@dexkit/ui/types/config";
+import MainLayout from "@dexkit/ui/components/layouts/main";
+import { AppConfig } from "@dexkit/ui/modules/wizard/types/config";
 import { SectionRender } from "./components/SectionRender";
-import MainLayout from "./components/layout/main";
 import { useWhitelabelConfigQuery } from "./hooks";
 
 interface Props {
@@ -28,7 +28,7 @@ export function RenderDexAppBuilder({
     const toRender = (
       JSON.parse(configResponse.data.config) as AppConfig
     ).pages[page || "home"].sections
-      .filter((s) => (section ? section === s.key : true))
+      .filter((s) => (section ? section === s.type : true))
       .map((section, k) => <SectionRender key={k} section={section} />);
 
     return withLayout ? (

@@ -1,7 +1,7 @@
-import NFTGrid from '@/modules/wizard/components/NFTGrid';
+import NFTGrid from '@dexkit/dexappbuilder-viewer/components/NFTGrid';
 import { Button, Tab, Tabs } from '@mui/material';
 import Grid from '@mui/material/Grid';
-import { useContract, useContractType, useNFTs } from '@thirdweb-dev/react';
+import { useContract, useNFTs } from '@thirdweb-dev/react';
 import { SyntheticEvent, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import ContractAdminTab from '../ContractAdminTab';
@@ -17,7 +17,6 @@ interface Props {
 
 export default function ContractNftContainer({ address, network }: Props) {
   const { data: contract } = useContract(address, 'nft-collection');
-  const { data, isLoading, error } = useContractType(address);
 
   const nftsQuery = useNFTs(contract);
 

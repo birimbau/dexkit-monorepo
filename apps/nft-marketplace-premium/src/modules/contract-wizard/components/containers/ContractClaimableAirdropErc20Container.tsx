@@ -34,7 +34,8 @@ import { useWeb3React } from '@web3-react/core';
 import { BigNumber, constants } from 'ethers';
 import { SyntheticEvent, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import Link from 'src/components/Link';
+
+import Link from '@dexkit/ui/components/AppLink';
 import { useThirdwebApprove } from '../../hooks/thirdweb';
 import AirdropDialog from '../dialogs/AirdropDialog';
 

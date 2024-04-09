@@ -1,3 +1,4 @@
+import { AppConfig, MenuTree } from '@dexkit/ui/modules/wizard/types/config';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
@@ -13,9 +14,12 @@ import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import { useEffect, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { AppConfig, MenuSettings, MenuTree } from '../../../../types/config';
 
-import { SearchbarConfig } from '@dexkit/ui/types/config';
+import {
+  MenuSettings,
+  SearchbarConfig,
+} from '@dexkit/ui/modules/wizard/types/config';
+
 import { FormControl, MenuItem } from '@mui/material';
 import { Field, Formik } from 'formik';
 import { Select } from 'formik-mui';
@@ -92,7 +96,7 @@ function NavbarSearchContainer({
       enabled: false,
       hideCollections: false,
       hideTokens: false,
-    }
+    },
   );
 
   const handleSave = () => {
@@ -144,7 +148,7 @@ function NavbarSearchContainer({
   };
 
   const handleHideCollectionChange = (
-    event: React.ChangeEvent<HTMLInputElement>
+    event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     setSearchConfig({
       ...searchConfig,
@@ -153,7 +157,7 @@ function NavbarSearchContainer({
   };
 
   const handleHideTokenChange = (
-    event: React.ChangeEvent<HTMLInputElement>
+    event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     setSearchConfig({
       ...searchConfig,

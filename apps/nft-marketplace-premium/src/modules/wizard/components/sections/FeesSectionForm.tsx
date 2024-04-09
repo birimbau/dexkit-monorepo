@@ -3,8 +3,8 @@ import { Button, Grid, Paper, Stack, TextField } from '@mui/material';
 import { FormikHelpers, useFormik } from 'formik';
 import { FormattedMessage, useIntl } from 'react-intl';
 
+import { isAddressEqual } from '@dexkit/core/utils/blockchain';
 import * as Yup from 'yup';
-import { isAddressEqual } from '../../../../utils/blockchain';
 
 export interface FeeForm {
   recipient: string;

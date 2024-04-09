@@ -6,7 +6,7 @@ import {
   useCloseFormMutation,
   useFormQuery,
 } from "@dexkit/ui/modules/forms/hooks";
-import { UserContractPageSection } from "@dexkit/ui/modules/wizard/types";
+import { UserContractPageSection } from "@dexkit/ui/modules/wizard/types/section";
 import ContractFormView from "@dexkit/web3forms/components/ContractFormView";
 import { Container, Grid, Typography } from "@mui/material";
 import { useWeb3React } from "@web3-react/core";

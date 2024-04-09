@@ -1,3 +1,6 @@
+import { PageHeader } from '@dexkit/ui/components/PageHeader';
+import SidebarFilters from '@dexkit/ui/components/SidebarFilters';
+import SidebarFiltersContent from '@dexkit/ui/components/SidebarFiltersContent';
 import SearchOffIcon from '@mui/icons-material/SearchOff';
 import {
   Box,
@@ -18,10 +21,7 @@ import { GetStaticProps, GetStaticPropsContext, NextPage } from 'next';
 import { NextSeo } from 'next-seo';
 import { useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
-import SidebarFilters from 'src/components/SidebarFilters';
-import SidebarFiltersContent from 'src/components/SidebarFiltersContent';
 import { UsecasesAccordion } from 'src/components/UsecasesAccordion';
-import { PageHeader } from '../../src/components/PageHeader';
 import MainLayout from '../../src/components/layouts/main';
 import { useAppConfig } from '../../src/hooks/app';
 import {

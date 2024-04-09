@@ -1,5 +1,5 @@
-import WalletAssetsFilter from '@/modules/wallet/components/WalletAssetsFilter';
 import { ChainId } from '@dexkit/core/constants';
+import WalletAssetsFilter from '@dexkit/ui/modules/wallet/components/WalletAssetsFilter';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import ImportExport from '@mui/icons-material/ImportExport';
 import Search from '@mui/icons-material/Search';
@@ -21,12 +21,13 @@ import { useSnackbar } from 'notistack';
 import { ChangeEvent, useCallback, useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import CloseCircle from '../../../components/icons/CloseCircle';
-import Funnel from '../../../components/icons/Filter';
 
-import { useFavoriteAssets } from '../../../hooks/nft';
-import { Asset } from '../../../types/nft';
-import { isAddressEqual } from '../../../utils/blockchain';
-import { AssetCard } from '../../nft/components/AssetCard';
+import { isAddressEqual } from '@dexkit/core/utils/blockchain';
+
+import { Asset } from '@dexkit/core/types/nft';
+import Funnel from '@dexkit/ui/components/icons/Filter';
+import { AssetCard } from '@dexkit/ui/modules/nft/components/AssetCard';
+import { useFavoriteAssets } from '@dexkit/ui/modules/nft/hooks';
 import RemoveFavoriteDialog from './RemoveFavoriteDialog';
 
 interface Props {

@@ -1,5 +1,8 @@
+import {
+  AppPageSection,
+  AssetStorePageSection,
+} from '@dexkit/ui/modules/wizard/types/section';
 import { useEffect, useState } from 'react';
-import { AppPageSection, AssetStorePageSection } from '../../types/section';
 import AssetStoreForm from './AssetStoreForm';
 
 interface Props {

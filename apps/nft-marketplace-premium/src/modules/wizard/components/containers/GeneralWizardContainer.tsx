@@ -1,7 +1,7 @@
+import { AppConfig } from '@dexkit/ui/modules/wizard/types/config';
 import { Divider, Grid, Stack, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { AppConfig } from '../../../../types/config';
 import { StepperButtonProps } from '../../types';
 import GeneralSection, { GeneralSectionForm } from '../sections/GeneralSection';
 

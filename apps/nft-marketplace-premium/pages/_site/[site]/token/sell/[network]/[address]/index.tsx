@@ -1,5 +1,5 @@
-import TokenPageContainer from '@/modules/token/components/container/TokenPageContainer';
 import { OrderMarketType } from '@dexkit/exchange/constants';
+import TokenPageContainer from '@dexkit/ui/modules/token/components/TokenPageContainer';
 import { QueryClient, dehydrate } from '@tanstack/react-query';
 import { GetStaticPropsContext } from 'next';
 import { useRouter } from 'next/router';

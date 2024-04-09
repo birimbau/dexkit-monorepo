@@ -1,4 +1,6 @@
 import { useActiveChainIds } from '@dexkit/ui';
+import { PageHeader } from '@dexkit/ui/components/PageHeader';
+import SidebarFilters from '@dexkit/ui/components/SidebarFilters';
 import {
   Box,
   Button,
@@ -22,23 +24,23 @@ import { ErrorBoundary } from 'react-error-boundary';
 import { FormattedMessage } from 'react-intl';
 import { REVALIDATE_PAGE_TIME } from 'src/constants';
 import { NetworkSelectDropdown } from '../../../../src/components/NetworkSelectDropdown';
-import { PageHeader } from '../../../../src/components/PageHeader';
-import SidebarFilters from '../../../../src/components/SidebarFilters';
-import SidebarFiltersContent from '../../../../src/components/SidebarFiltersContent';
-import Funnel from '../../../../src/components/icons/Filter';
+
 import MainLayout from '../../../../src/components/layouts/main';
 import { SellOrBuy, TraderOrderStatus } from '../../../../src/constants/enum';
-import TableSkeleton from '../../../../src/modules/nft/components/tables/TableSkeleton';
-import WalletOrders from '../../../../src/modules/wallet/components/WalletOrders';
+
+import SidebarFiltersContent from '@dexkit/ui/components/SidebarFiltersContent';
+import Funnel from '@dexkit/ui/components/icons/Filter';
+import TableSkeleton from '@dexkit/ui/modules/nft/components/tables/TableSkeleton';
+import WalletOrders from '@dexkit/ui/modules/wallet/components/WalletOrders';
 import { getAppConfig } from '../../../../src/services/app';
 
 const WalletOrder: NextPage = () => {
   const { chainId: walletChainId } = useWeb3React();
-  const {activeChainIds} = useActiveChainIds();
+  const { activeChainIds } = useActiveChainIds();
   const [chainId, setChainId] = useState(walletChainId);
   const [sellOrBuy, setSellOrBuy] = useState<SellOrBuy>(SellOrBuy.All);
   const [orderStatus, setOrderStatus] = useState<TraderOrderStatus>(
-    TraderOrderStatus.All
+    TraderOrderStatus.All,
   );
   useEffect(() => {
     if (walletChainId) {

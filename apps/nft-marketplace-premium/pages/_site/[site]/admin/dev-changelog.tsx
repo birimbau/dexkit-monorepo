@@ -1,3 +1,4 @@
+import { PageHeader } from '@dexkit/ui/components/PageHeader';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import fs from 'fs';
@@ -11,7 +12,6 @@ import { FormattedMessage } from 'react-intl';
 import ReactMarkdown from 'react-markdown';
 import { QueryClient, dehydrate } from 'react-query';
 import remarkGfm from 'remark-gfm';
-import { PageHeader } from 'src/components/PageHeader';
 import AuthMainLayout from 'src/components/layouts/authMain';
 import { getAppConfig } from 'src/services/app';
 

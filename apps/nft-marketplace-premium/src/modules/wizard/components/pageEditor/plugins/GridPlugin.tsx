@@ -1,5 +1,6 @@
-import { Grid } from '@mui/material';
 import type { CellPlugin } from '@react-page/editor';
+
+import GridPluginViewer from '@dexkit/dexappbuilder-viewer/components/page-editor/plugins/GridPlugin';
 
 type Data = {
   spacing: number;
@@ -7,15 +8,7 @@ type Data = {
 
 // you can pass the shape of the data as the generic type argument
 const GridPlugin: CellPlugin<Data> = {
-  Renderer: ({ children, data }) => (
-    <Grid container spacing={data.spacing}>
-      {children}
-    </Grid>
-  ),
-  id: 'grid',
-  title: 'Grid',
-  description: 'Grid container, insert columns inside container',
-  version: 1,
+  ...GridPluginViewer,
   controls: {
     type: 'autoform',
     schema: {

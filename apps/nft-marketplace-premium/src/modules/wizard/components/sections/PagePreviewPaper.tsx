@@ -1,6 +1,6 @@
+import { AppPageSection } from '@dexkit/ui/modules/wizard/types/section';
 import { Box, Paper, Typography } from '@mui/material';
 import { FormattedMessage } from 'react-intl';
-import { AppPageSection } from '../../types/section';
 import PreviewPagePlatform from '../PreviewPagePlatform';
 
 interface Props {

@@ -1,3 +1,8 @@
+import {
+  getBlockExplorerUrl,
+  isAddressEqual,
+  truncateAddress,
+} from '@dexkit/core/utils/blockchain';
 import Launch from '@mui/icons-material/Launch';
 import {
   Alert,
@@ -24,28 +29,28 @@ import { FormikHelpers, useFormik } from 'formik';
 import Image from 'next/image';
 import { SyntheticEvent, useEffect, useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { AppDialogTitle } from '../../../../components/AppDialogTitle';
-import Link from '../../../../components/Link';
+
 import { useCollections } from '../../../../hooks/app';
-import {
-  useAsset,
-  useAssetMetadata,
-  useFavoriteAssets,
-} from '../../../../hooks/nft';
-import { AppCollection } from '../../../../types/config';
-import {
-  getBlockExplorerUrl,
-  isAddressEqual,
-  truncateAddress,
-} from '../../../../utils/blockchain';
-import { ipfsUriToUrl } from '../../../../utils/ipfs';
 
 import { isAddress } from '@dexkit/core/utils/ethers/isAddress';
 import { useSnackbar } from 'notistack';
 import * as Yup from 'yup';
 import { useDebounce } from '../../../../hooks/misc';
-import { getAssetData, getAssetMetadata } from '../../../../services/nft';
-import { Asset } from '../../../../types/nft';
+
+import { Asset } from '@dexkit/core/types/nft';
+import { ipfsUriToUrl } from '@dexkit/core/utils/ipfs';
+import { AppDialogTitle } from '@dexkit/ui/components/AppDialogTitle';
+import Link from '@dexkit/ui/components/AppLink';
+import {
+  useAsset,
+  useAssetMetadata,
+  useFavoriteAssets,
+} from '@dexkit/ui/modules/nft/hooks';
+import {
+  getAssetData,
+  getAssetMetadata,
+} from '@dexkit/ui/modules/nft/services';
+import { AppCollection } from '@dexkit/ui/modules/wizard/types/config';
 
 interface Form {
   contractAddress: string;

@@ -22,7 +22,7 @@ import { useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { CORE_PAGES } from '@/modules/wizard/constants';
-import { CarouselSlide } from '@/modules/wizard/types/section';
+import { CarouselSlide } from '@dexkit/ui/modules/wizard/types/section';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import FormikMuiColorInput from '../../FormikMuiColorInput';
@@ -51,11 +51,11 @@ export default function SlideItem({
   const [props, meta, helpers] = useField<CarouselSlide>(`slides[${index}]`);
 
   const [imgProps, imgMeta, imgHelpers] = useField<string>(
-    `slides[${index}].imageUrl`
+    `slides[${index}].imageUrl`,
   );
 
   const [perProps, perMeta, perImgHelpers] = useField<number>(
-    `slides[${index}].overlayPercentage`
+    `slides[${index}].overlayPercentage`,
   );
 
   const allPages = useMemo(() => {

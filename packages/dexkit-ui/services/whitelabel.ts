@@ -1,5 +1,5 @@
 import { myAppsApi } from "../constants/api";
-import { ConfigResponse } from "../types/config";
+import { ConfigResponse } from "../modules/wizard/types/config";
 
 /**
  * Get config by name or domain, at least one of these parameters should be passed

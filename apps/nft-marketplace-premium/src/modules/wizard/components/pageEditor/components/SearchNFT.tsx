@@ -1,3 +1,4 @@
+import { getChainName } from '@dexkit/core/utils/blockchain';
 import { CircularProgress } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
@@ -5,8 +6,8 @@ import TextField from '@mui/material/TextField';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import { NETWORKS } from '../../../../../constants/chain';
-import { useSearchAssets } from '../../../../../hooks/nft';
-import { getChainName } from '../../../../../utils/blockchain';
+
+import { useSearchAssets } from '@dexkit/ui/modules/nft/hooks';
 import { CollectionUniformItem } from './CollectionAutocompleteUniform';
 
 interface Props {
@@ -43,7 +44,7 @@ export function SearchNFT(props: Props) {
       onChange={(_change, value) => {
         if (value && !disabled) {
           const slug = Object.values(NETWORKS).find(
-            (n) => Number(n.chainId) === Number(value.chainId)
+            (n) => Number(n.chainId) === Number(value.chainId),
           )?.slug;
 
           router.push(`/asset/${slug}/${value.contractAddress}/${value.id}`);

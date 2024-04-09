@@ -1,5 +1,6 @@
-import SwapSection from '@/modules/home/components/SwapSection';
-import { SwapPageSection } from '@/modules/wizard/types/section';
+import SwapSection from '@dexkit/dexappbuilder-viewer/components/sections/SwapSection';
+import { PageHeader } from '@dexkit/ui/components/PageHeader';
+import { SwapPageSection } from '@dexkit/ui/modules/wizard/types/section';
 import { NoSsr } from '@mui/material';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
@@ -8,7 +9,6 @@ import { NextSeo } from 'next-seo';
 import { useMemo } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import MainLayout from 'src/components/layouts/main';
-import { PageHeader } from 'src/components/PageHeader';
 import { REVALIDATE_PAGE_TIME } from 'src/constants';
 import { useAppConfig } from 'src/hooks/app';
 import { getAppConfig } from 'src/services/app';
@@ -18,7 +18,7 @@ const SwapPage: NextPage = () => {
   const appConfig = useAppConfig();
   const swapSection = useMemo(() => {
     const swapSectionPageIndex = appConfig.pages['home']?.sections.findIndex(
-      (s) => s.type === 'swap'
+      (s) => s.type === 'swap',
     );
     if (swapSectionPageIndex !== -1) {
       return (
@@ -83,7 +83,6 @@ export const getStaticProps: GetStaticProps = async ({
 
   return {
     props: {
-      
       ...configResponse,
     },
     revalidate: REVALIDATE_PAGE_TIME,

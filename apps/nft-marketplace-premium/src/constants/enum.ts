@@ -35,22 +35,9 @@ export enum NetworkName {
   CELO = 'celo',
 }
 
-export const enum NETWORK_ID {
-  Ethereum = 'ethereum',
-  Goerli = 'goerli',
-  Mumbai = 'mumbai',
-  Polygon = 'polygon',
-  BSC = 'bsc',
-  Avalanche = 'avalanche',
-  Fantom = 'fantom',
-  Optimism = 'optimism',
-  Arbitrum = 'arbitrum'
-}
 
-export enum NFTType {
-  ERC1155 = 'ERC1155',
-  ERC721 = 'ERC721',
-}
+
+
 
 export enum SellOrBuy {
   All = 'all',
@@ -64,9 +51,3 @@ export enum AppWhitelabelType {
   AGGREGATOR = 'AGGREGATOR',
 }
 
-export enum CollectionSyncStatus {
-  NotSynced = 'NotSynced',
-  Syncing = 'Syncing',
-  Synced = 'Synced',
-  NotSyncable = 'NotSyncable'
-}

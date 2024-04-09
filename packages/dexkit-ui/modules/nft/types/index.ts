@@ -1,7 +1,36 @@
 import { Token } from '@dexkit/core/types';
-import { Asset, SwapApiOrder } from '@dexkit/core/types/nft';
+
 import { DkApiPlatformCoin } from '@dexkit/widgets/src/types/api';
+import { UseQueryOptions } from '@tanstack/react-query';
+import { BigNumber } from 'ethers';
 import { NFTType, SellOrBuy, TraderOrderStatus } from "../constants/enum";
+
+export interface AssetMetadata {
+  name: string;
+  image?: string;
+  description?: string;
+  animation_url?: string;
+  attributes?: {
+    display_type?: string;
+    trait_type: string;
+    value: string;
+  }[];
+}
+
+
+export interface Asset {
+  id: string;
+  chainId: number;
+  contractAddress: string;
+  owner?: string;
+  tokenURI: string;
+  collectionName: string;
+  symbol: string;
+  type?: string;
+  metadata?: AssetMetadata;
+  balance?: BigNumber;
+  protocol?: 'ERC1155' | 'ERC721';
+}
 
 export interface Collection {
   chainId: number;
@@ -16,6 +45,7 @@ export interface Collection {
   traitCounts?: string;
   totalSupply?: number;
 }
+
 
 export interface ContractURIMetadata {
   name: string;
@@ -83,11 +113,6 @@ export type OrderbookAPI = {
 }
 
 
-
-
-
-
-
 export interface OrderBookItem {
   erc20Token: string;
   erc20TokenAmount: string;
@@ -105,4 +130,66 @@ export interface OrderBookItem {
 
 export interface OrderbookResponse {
   orders: OrderBookItem[];
+}
+
+
+export interface HiddenAsset {
+  id: string;
+  chainId: number;
+  contractAddress: string;
+}
+
+export interface AssetBalance {
+  balance?: BigNumber;
+  asset: Asset;
+}
+
+export type AssetOptions = {
+  options?: Omit<UseQueryOptions<Asset>, any>;
+};
+
+
+export interface CollectionAPI {
+  chainId: number;
+  networkId: string;
+  name: string;
+  imageUrl?: string;
+  address: string;
+  protocol: string;
+  description?: string;
+  syncStatus?: string;
+  syncedAssets?: number;
+  symbol: string;
+  traitCounts?: string;
+  totalSupply?: number;
+}
+
+
+export type CollectionUniformItem = {
+  name: string;
+  contractAddress: string;
+  backgroundImage: string;
+  network: string;
+  chainId: number;
+  image: string;
+};
+
+export interface SwapApiOrder {
+  direction: number;
+  erc20Token: string;
+  erc20TokenAmount: string;
+  erc721Token: string;
+  erc721TokenId: string;
+  erc721TokenProperties: any[];
+  expiry: string;
+  fees: any[];
+  maker: string;
+  nonce: string;
+  signature: {
+    r: string;
+    s: string;
+    signatureType: number;
+    v: number;
+  };
+  taker: string;
 }

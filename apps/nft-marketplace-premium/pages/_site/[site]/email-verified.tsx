@@ -2,9 +2,9 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Box, Button, Container, Grid, Typography } from '@mui/material';
 import type { NextPage } from 'next';
 
+import Link from '@dexkit/ui/components/AppLink';
 import Image from 'next/image';
 import { FormattedMessage } from 'react-intl';
-import Link from 'src/components/Link';
 import MainLayout from 'src/components/layouts/main';
 import catHeroImg from '../../../public/assets/images/cat-hero.svg';
 

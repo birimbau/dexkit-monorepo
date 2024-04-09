@@ -9,15 +9,14 @@ import {
 } from '@mui/material';
 import { FormattedMessage, useIntl } from 'react-intl';
 
-import * as Yup from 'yup';
 import slugify from 'slugify';
+import * as Yup from 'yup';
 
-import { AppDialogTitle } from '../../../../components/AppDialogTitle';
-
+import { AppDialogTitle } from '@dexkit/ui/components/AppDialogTitle';
+import { AppPageOptions } from '@dexkit/ui/modules/wizard/types/config';
 import { Grid, LinearProgress } from '@mui/material';
 import { Field, Form, Formik } from 'formik';
 import { TextField } from 'formik-mui';
-import { AppPageOptions } from '../../../../types/config';
 
 interface PageOptions {
   title: string;
@@ -72,7 +71,7 @@ export default function AddPageDialog({
               formatMessage({
                 id: 'use.home.as.title.not.allowed',
                 defaultMessage: 'Use Home as title is not allowed for pages',
-              })
+              }),
             );
             return;
           }

@@ -22,11 +22,6 @@ import {
 import { FormikHelpers, useFormik } from 'formik';
 import { ChangeEvent, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import {
-  AssetItemType,
-  CollectionItemType,
-  SectionItem,
-} from '../../../../types/config';
 
 import { isAddress } from '@dexkit/core/utils/ethers/isAddress';
 import * as Yup from 'yup';
@@ -37,8 +32,14 @@ import { useActiveChainIds } from '@dexkit/ui';
 import CompletationProvider from '@dexkit/ui/components/CompletationProvider';
 import MediaDialog from '@dexkit/ui/components/mediaDialog';
 import ImageIcon from '@mui/icons-material/Image';
-import { getNetworks } from 'src/utils/blockchain';
-import { ipfsUriToUrl } from '../../../../utils/ipfs';
+
+import { getNetworks } from '@dexkit/core/utils/blockchain';
+import { ipfsUriToUrl } from '@dexkit/core/utils/ipfs';
+import {
+  AssetItemType,
+  CollectionItemType,
+  SectionItem,
+} from '@dexkit/ui/modules/wizard/types/config';
 import { CollectionItemAutocomplete } from './CollectionItemAutocomplete';
 
 function a11yProps(index: number) {

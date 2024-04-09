@@ -1,3 +1,4 @@
+import { AppDialogTitle } from '@dexkit/ui/components/AppDialogTitle';
 import {
   Button,
   Dialog,
@@ -7,7 +8,6 @@ import {
 } from '@mui/material';
 
 import { FormattedMessage } from 'react-intl';
-import { AppDialogTitle } from '../../../../components/AppDialogTitle';
 
 interface Props {
   dialogProps: DialogProps;

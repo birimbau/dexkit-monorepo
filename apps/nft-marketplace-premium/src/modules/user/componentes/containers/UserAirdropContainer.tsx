@@ -1,3 +1,4 @@
+import { PageHeader } from '@dexkit/ui/components/PageHeader';
 import {
   Container,
   Grid,
@@ -7,7 +8,6 @@ import {
   useTheme,
 } from '@mui/material';
 import { FormattedMessage } from 'react-intl';
-import { PageHeader } from 'src/components/PageHeader';
 import { UserAirdrop } from '../UserAirdrop';
 
 export function UserAirdropContainer() {

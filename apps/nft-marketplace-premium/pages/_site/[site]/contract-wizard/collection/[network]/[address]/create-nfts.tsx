@@ -1,6 +1,7 @@
 import WizardCreateAssetContainer from '@/modules/contract-wizard/components/WizardCreateAssetContainer';
 import { QueryClient, dehydrate } from '@tanstack/react-query';
 
+import { AuthProvider } from '@dexkit/ui/providers/authProvider';
 import type {
   GetStaticPaths,
   GetStaticPathsContext,
@@ -13,7 +14,6 @@ import { useRouter } from 'next/router';
 import { useIntl } from 'react-intl';
 import MainLayout from 'src/components/layouts/main';
 import { useAppConfig } from 'src/hooks/app';
-import { AuthProvider } from 'src/providers/authProvider';
 import { getAppConfig } from 'src/services/app';
 
 const WizardCreateAssetPage: NextPage = () => {

@@ -1,4 +1,8 @@
-import WalletAssetsFilter from '@/modules/wallet/components/WalletAssetsFilter';
+import { PageHeader } from '@dexkit/ui/components/PageHeader';
+import TableSkeleton from '@dexkit/ui/modules/nft/components/tables/TableSkeleton';
+import HiddenAssetsSection from '@dexkit/ui/modules/wallet/components/HiddenAssetsSection';
+import WalletAssetsFilter from '@dexkit/ui/modules/wallet/components/WalletAssetsFilter';
+import WalletAssetsSection from '@dexkit/ui/modules/wallet/components/WalletAssetsSection';
 import {
   Box,
   Button,
@@ -19,12 +23,8 @@ import { Suspense, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { FormattedMessage } from 'react-intl';
 import { REVALIDATE_PAGE_TIME } from 'src/constants';
-import { PageHeader } from '../../../../src/components/PageHeader';
 import MainLayout from '../../../../src/components/layouts/main';
 import FavoriteAssetsSection from '../../../../src/modules/favorites/components/FavoriteAssetsSection';
-import TableSkeleton from '../../../../src/modules/nft/components/tables/TableSkeleton';
-import HiddenAssetsSection from '../../../../src/modules/wallet/components/HiddenAssetsSection';
-import WalletAssetsSection from '../../../../src/modules/wallet/components/WalletAssetsSection';
 import { getAppConfig } from '../../../../src/services/app';
 const ImportAssetDialog = dynamic(
   () =>

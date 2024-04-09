@@ -5,10 +5,9 @@ import MainLayout from '../src/components/layouts/main';
 
 import Image from 'next/image';
 
+import Link from '@dexkit/ui/components/AppLink';
 import { FormattedMessage } from 'react-intl';
 import catHeroImg from '../public/assets/images/cat-hero.svg';
-import Link from '../src/components/Link';
-
 const EmailVerifiedPage: NextPage = (props: any) => {
   return (
     <MainLayout>

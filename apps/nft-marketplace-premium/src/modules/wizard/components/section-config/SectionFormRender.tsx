@@ -1,11 +1,14 @@
 import { DexkitApiProvider } from '@dexkit/core/providers';
+import {
+  AppPageSection,
+  SectionType,
+} from '@dexkit/ui/modules/wizard/types/section';
 import { Alert, Box, Button, Container, Grid } from '@mui/material';
 import dynamic from 'next/dynamic';
 import { useContext, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { myAppsApi } from 'src/services/whitelabel';
 import { SiteContext } from '../../providers/SiteWizardProvider';
-import { AppPageSection, SectionType } from '../../types/section';
 import AddCarouselForm from '../forms/AddCarouselForm';
 import AddShowCaseSectionForm from '../forms/AddShowCaseSectionForm';
 import AssetSectionForm from '../forms/AssetSectionForm';
@@ -27,7 +30,7 @@ import VideoSectionForm from '../forms/VideoSectionForm';
 import WalletSectionForm from '../forms/WalletSectionForm';
 
 const ApiKeyIntegrationDialog = dynamic(
-  () => import('../dialogs/ApiKeyIntegrationDialog')
+  () => import('../dialogs/ApiKeyIntegrationDialog'),
 );
 
 interface Props {

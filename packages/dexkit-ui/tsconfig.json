@@ -1,6 +1,9 @@
 {
   "extends": "tsconfig/react-library.json",
-  "include": ["."],
+  "include": [
+    ".",
+    "modules/contract-wizard/components/ContractMetadataHeader.tsx"
+  ],
   "compilerOptions": {
     "resolveJsonModule": true,
     "target": "es2020",

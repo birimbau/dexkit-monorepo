@@ -16,14 +16,14 @@ import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { Token } from '../../../../types/blockchain';
-import { TOKEN_ICON_URL } from '../../../../utils/token';
 
+import { TOKEN_ICON_URL } from '@dexkit/core/constants';
 import { NETWORK_SLUG } from '@dexkit/core/constants/networks';
+import { getChainName } from '@dexkit/core/utils/blockchain';
 import Link from '@dexkit/ui/components/AppLink';
 import TokenIcon from '@mui/icons-material/Token';
 import { useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { getChainName } from '../../../../utils/blockchain';
 
 interface Props {
   token: Token;

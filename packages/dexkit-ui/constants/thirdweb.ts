@@ -19,3 +19,8 @@ export const THIRDWEB_CONTRACTTYPE_TO_NAME: { [key: string]: string } = {
   AirdropERC1155: "Edition Airdrop",
   Custom: "Custom"
 };
+
+export const THIRDWEB_CLIENT_ID = process.env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID
+  ? process.env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID
+  : '8b875cba6d295240d3b3861a3e8c2260';
+

@@ -2,7 +2,8 @@ import { Alert, Box, CircularProgress, useTheme } from '@mui/material';
 import Button from '@mui/material/Button';
 import { useSetAtom } from 'jotai';
 import { FormattedMessage } from 'react-intl';
-import { useAccountHoldDexkitQuery } from 'src/hooks/account';
+
+import { useAccountHoldDexkitQuery } from '@dexkit/ui/hooks/account';
 import { holdsKitDialogAtom } from 'src/state/atoms';
 import { useCreateAIImageMutation } from '../hooks';
 

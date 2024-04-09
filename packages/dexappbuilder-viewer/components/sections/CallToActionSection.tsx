@@ -5,7 +5,12 @@ import {
   AssetFromApi,
   CollectionFromApiCard,
 } from "@dexkit/ui/modules/nft/components";
-import { CallToActionAppPageSection } from "@dexkit/ui/modules/wizard/types";
+import { CallToActionAppPageSection } from "@dexkit/ui/modules/wizard/types/section";
+
+interface Props {
+  section: CallToActionAppPageSection;
+  disabled?: boolean;
+}
 
 interface Props {
   section: CallToActionAppPageSection;
@@ -66,7 +71,7 @@ export function CallToActionSection({ section, disabled }: Props) {
                   variant="body1"
                   color={section.variant === "dark" ? "secondary" : "primary"}
                 >
-                  {section?.subtitle || ""}
+                  {section?.subtitle}
                 </Typography>
                 <Typography color="inherit" variant="h2">
                   {section?.title}

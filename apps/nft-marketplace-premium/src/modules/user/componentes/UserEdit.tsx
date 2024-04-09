@@ -1,5 +1,6 @@
 import Box from '@mui/material/Box';
 
+import { PageHeader } from '@dexkit/ui/components/PageHeader';
 import Close from '@mui/icons-material/Close';
 import {
   Button,
@@ -21,7 +22,6 @@ import {
 } from '@mui/material';
 import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { PageHeader } from 'src/components/PageHeader';
 import UserGeneralForm from './forms/UserGeneralForm';
 
 interface Props {

@@ -4,6 +4,7 @@ import LazyTextField from '@dexkit/ui/components/LazyTextField';
 import { DeployedContract } from '@/modules/forms/types';
 import { ipfsUriToUrl, parseChainId } from '@dexkit/core/utils';
 import { useActiveChainIds } from '@dexkit/ui/hooks';
+import { DexGeneratorPageSection } from '@dexkit/ui/modules/wizard/types/section';
 import Error from '@mui/icons-material/Error';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
@@ -32,12 +33,12 @@ import { useWeb3React } from '@web3-react/core';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { NETWORKS } from 'src/constants/chain';
-import { getChainSlug } from 'src/utils/blockchain';
+
+import { getChainSlug } from '@dexkit/core/utils/blockchain';
 import {
   DEX_GENERATOR_CONTRACT_TYPES,
   DEX_GENERATOR_CONTRACT_TYPES_AVAIL,
 } from '../../../constants';
-import { DexGeneratorPageSection } from '../../../types/section';
 import DexGeneratorSectionCard from '../../DexGeneratorSectionCard';
 import DexGeneratorContractForm from './DexGeneratorContractForm';
 
@@ -254,6 +255,7 @@ export default function DexGeneratorSectionForm({
                 hideDrops: false,
                 hideFilters: false,
                 hideHeader: false,
+                showPageHeader: true,
               },
             },
             contract: newContract,

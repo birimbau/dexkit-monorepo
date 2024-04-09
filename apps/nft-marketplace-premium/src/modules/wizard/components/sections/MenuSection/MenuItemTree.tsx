@@ -1,3 +1,4 @@
+import { AppPage, MenuTree } from '@dexkit/ui/modules/wizard/types/config';
 import Add from '@mui/icons-material/Add';
 import ArrowDownward from '@mui/icons-material/ArrowDownward';
 import ArrowUpward from '@mui/icons-material/ArrowUpward';
@@ -20,16 +21,15 @@ import {
 } from '@mui/material';
 import dynamic from 'next/dynamic';
 import React, { useState } from 'react';
-import { AppPage, MenuTree } from 'src/types/config';
 
 const AddMenuPageDialog = dynamic(
   () => import('../../dialogs/AddMenuPageDialog'),
-  { ssr: false }
+  { ssr: false },
 );
 
 const SelectIconDialog = dynamic(
   () => import('@dexkit/ui/components/dialogs/SelectIconDialog'),
-  { ssr: false }
+  { ssr: false },
 );
 
 const DynamicIcon = ({ iconName }: { iconName: string }) => {
@@ -52,13 +52,13 @@ export interface MenuItemTreeProps {
   renderSelectIcon: (
     onSelect: (iconName: string) => void,
     onClose: () => void,
-    open: boolean
+    open: boolean,
   ) => React.ReactNode;
   renderEdit: (
     onSave: (item: MenuTree) => void,
     onClose: () => void,
     open: boolean,
-    item: MenuTree
+    item: MenuTree,
   ) => React.ReactNode;
 }
 
@@ -201,7 +201,7 @@ export default function MenuItemTree({
           renderSelectIcon(
             handleConfirmSelectIcon,
             handleCloseSelectIcon,
-            showSelectIcons
+            showSelectIcons,
           )}
         {isOpenEdit &&
           renderEdit(handleConfirmEdit, handleCloseEdit, isOpenEdit, item)}
@@ -229,7 +229,7 @@ export default function MenuItemTree({
           renderSelectIcon(
             handleConfirmSelectIcon,
             handleCloseSelectIcon,
-            showSelectIcons
+            showSelectIcons,
           )}
         {isOpenEdit &&
           renderEdit(handleConfirmEdit, handleCloseEdit, isOpenEdit, item)}
@@ -257,7 +257,7 @@ export default function MenuItemTree({
           renderSelectIcon(
             handleConfirmSelectIcon,
             handleCloseSelectIcon,
-            showSelectIcons
+            showSelectIcons,
           )}
         {isOpenEdit &&
           renderEdit(handleConfirmEdit, handleCloseEdit, isOpenEdit, item)}

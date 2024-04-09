@@ -1,3 +1,4 @@
+import { AppConfig, AppPage } from '@dexkit/ui/modules/wizard/types/config';
 import {
   Alert,
   Box,
@@ -12,7 +13,6 @@ import {
 import { useEffect, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { getTheme } from '../../../../theme';
-import { AppConfig, AppPage } from '../../../../types/config';
 import { BuilderKit } from '../../constants';
 import { PagesContainer } from '../PagesContainer';
 

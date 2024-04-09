@@ -23,10 +23,10 @@ import { myAppsApi } from 'src/services/whitelabel';
 
 import FeatUsageSummary from '@/modules/user/componentes/FeatUsageSummary';
 import { useBillingQuery } from '@/modules/user/hooks/payments';
+import Link from '@dexkit/ui/components/AppLink';
 import Decimal from 'decimal.js';
 import moment from 'moment';
 import { FormattedMessage, FormattedNumber } from 'react-intl';
-import Link from 'src/components/Link';
 
 export default function BillingDetail() {
   const router = useRouter();

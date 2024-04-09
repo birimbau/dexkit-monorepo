@@ -31,11 +31,12 @@ import { useWeb3React } from '@web3-react/core';
 import { ChangeEvent, useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
+import { PageHeader } from '@dexkit/ui/components/PageHeader';
 import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
-import AppConfirmDialog from 'src/components/AppConfirmDialog';
-import { PageHeader } from 'src/components/PageHeader';
+
+import AppConfirmDialog from '@dexkit/ui/components/AppConfirmDialog';
 import AuthMainLayout from 'src/components/layouts/authMain';
 import { getAppConfig } from 'src/services/app';
 
@@ -145,7 +146,7 @@ export default function FormsCreatePage({
   return (
     <>
       <AppConfirmDialog
-        dialogProps={{
+        DialogProps={{
           open: showConfirm,
           onClose: handleCloseConfirm,
           fullWidth: true,

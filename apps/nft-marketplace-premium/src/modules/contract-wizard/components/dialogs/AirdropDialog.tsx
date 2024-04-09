@@ -1,5 +1,6 @@
 import { isValidDecimal } from '@dexkit/core/utils';
 import AppDataTable from '@dexkit/ui/components/AppDataTable';
+import { AppDialogTitle } from '@dexkit/ui/components/AppDialogTitle';
 import {
   Alert,
   Box,
@@ -13,7 +14,6 @@ import { GridRowId } from '@mui/x-data-grid';
 import { utils } from 'ethers';
 import { useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { AppDialogTitle } from 'src/components/AppDialogTitle';
 
 export interface AirdropDialogProps {
   DialogProps: DialogProps;

@@ -2,14 +2,15 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useContext, useMemo } from 'react';
 import { AppWizardConfigContext } from '../../../contexts';
 
-import { ChainId } from '@dexkit/core';
-import { NETWORKS } from '@dexkit/core/constants/networks';
-import { NFTDrop } from '@thirdweb-dev/sdk';
-import { providers } from 'ethers';
+
 import { QUERY_ADMIN_WHITELABEL_CONFIG_NAME } from 'src/hooks/whitelabel';
-import { getAccessToken } from 'src/services/auth';
+
+import { GatedCondition } from '@dexkit/ui/modules/wizard/types';
+import { getAccessToken } from '@dexkit/ui/services/auth';
 import { myAppsApi } from 'src/services/whitelabel';
-import { AppConfig } from 'src/types/config';
+
+import { GET_APP_RANKINGS_QUERY, GET_APP_RANKING_QUERY } from '@dexkit/ui/modules/wizard/hooks/ranking';
+import { AppConfig } from '@dexkit/ui/modules/wizard/types/config';
 import {
   addPermissionsMemberSite,
   checkGatedConditions,
@@ -23,7 +24,7 @@ import {
   updateSiteRankingVersion,
   upsertAppVersion
 } from '../services';
-import { GamificationPoint, GatedCondition } from '../types';
+import { GamificationPoint } from '../types';
 import { generateCSSVarsTheme } from '../utils';
 
 export const TOKEN_LIST_URL = 'TOKEN_LIST_URL';
@@ -107,17 +108,7 @@ export function useCheckGatedConditions({
     return checkGatedConditions({ account, conditions });
   });
 }
-export const JSON_RPC_PROVIDER = 'JSON_RPC_PROVIDER';
 
-export function useJsonRpcProvider({ chainId }: { chainId: ChainId }) {
-  return useQuery([JSON_RPC_PROVIDER, chainId], () => {
-    if (chainId) {
-      return new providers.JsonRpcProvider(
-        NETWORKS[chainId].providerRpcUrl,
-      );
-    }
-  });
-}
 
 export function useSendSiteConfirmationLinkMutation() {
   return useMutation(async ({ siteId }: { siteId?: number }) => {
@@ -132,11 +123,7 @@ export function useSendSiteConfirmationLinkMutation() {
   });
 }
 
-export function useClaimNft({ contract }: { contract?: NFTDrop }) {
-  return useMutation(async ({ quantity }: { quantity: number }) => {
-    return await contract?.erc721.claim.prepare(quantity);
-  });
-}
+
 
 
 export function useAddPermissionMemberMutation() {
@@ -345,106 +332,3 @@ export function useDeleteAppRankingMutation() {
   });
 }
 
-export const GET_APP_RANKINGS_QUERY = 'GET_APP_RANKINGS_QUERY'
-
-export function useAppRankingListQuery({
-  siteId,
-  page = 0,
-  pageSize = 10,
-  sort,
-
-  filter,
-}: {
-
-  page?: number;
-  pageSize?: number;
-  siteId?: number;
-  sort?: string[];
-  filter?: any;
-}) {
-
-  return useQuery<{
-    data: {
-      id: number;
-      title: string;
-      description: string;
-    }[];
-    skip?: number;
-    take?: number;
-    total?: number;
-  }>(
-    [GET_APP_RANKINGS_QUERY, sort, page, pageSize, filter, siteId],
-    async () => {
-      if (!siteId) {
-        return { data: [] };
-      }
-
-
-      return (
-        await myAppsApi.get<{
-          data: {
-            id: number;
-            title: string;
-            description: string;
-          }[];
-          skip?: number;
-          take?: number;
-          total?: number;
-        }>(`/site-ranking/all/${siteId}`, {
-          params: { skip: page * pageSize, take: pageSize, sort, filter: filter ? JSON.stringify(filter) : undefined },
-        })
-      ).data;
-
-    }
-  );
-}
-
-export const GET_APP_RANKING_QUERY = 'GET_APP_RANKING_QUERY'
-export function useAppRankingQuery({
-  rankingId,
-  filter,
-}: {
-  filter?: any;
-  rankingId?: number;
-
-}) {
-
-  return useQuery<{
-    ranking?: {
-      id: number;
-      title: string;
-      description: string;
-    },
-    data: {
-      account: string;
-      points: number;
-    }[];
-  }>(
-    [GET_APP_RANKING_QUERY, rankingId],
-    async () => {
-      if (!rankingId) {
-        return { data: [] };
-      }
-
-      return (
-        await myAppsApi.get<{
-          ranking: {
-            id: number;
-            title: string;
-            description: string;
-          },
-          data: {
-            account: string;
-            points: number;
-          }[];
-          skip?: number;
-          take?: number;
-          total?: number;
-        }>(`/site-ranking/ranking/${rankingId}`, {
-          params: { filter: filter ? JSON.stringify(filter) : undefined },
-        })
-      ).data;
-
-    }
-  );
-}

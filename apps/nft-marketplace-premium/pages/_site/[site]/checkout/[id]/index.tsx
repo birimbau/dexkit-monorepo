@@ -12,6 +12,7 @@ import {
   useConnectWalletDialog,
   useSwitchNetworkMutation,
 } from '@dexkit/ui';
+import { PageHeader } from '@dexkit/ui/components/PageHeader';
 import {
   useCheckoutData,
   useCheckoutItems,
@@ -51,7 +52,6 @@ import {
 import { useSnackbar } from 'notistack';
 import { ReactNode, useEffect, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { PageHeader } from 'src/components/PageHeader';
 import AuthMainLayout from 'src/components/layouts/authMain';
 import { getAppConfig } from 'src/services/app';
 import { myAppsApi } from 'src/services/whitelabel';

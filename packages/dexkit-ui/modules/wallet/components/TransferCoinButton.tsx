@@ -1,4 +1,5 @@
 import { convertTokenToEvmCoin } from "@dexkit/core/utils";
+import Send from "@mui/icons-material/Send";
 import Button from "@mui/material/Button";
 import { useWeb3React } from "@web3-react/core";
 import dynamic from "next/dynamic";
@@ -42,6 +43,7 @@ export function TransferCoinButton() {
 
       <Button
         onClick={() => setOpen(true)}
+        startIcon={<Send />}
         variant="outlined"
         color="primary"
         disabled={!account}

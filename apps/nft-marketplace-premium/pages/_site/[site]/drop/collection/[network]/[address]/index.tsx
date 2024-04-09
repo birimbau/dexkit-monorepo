@@ -3,17 +3,23 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import type { GetStaticProps, GetStaticPropsContext, NextPage } from 'next';
 
-import { AssetListCollection } from '@/modules/nft/components/AssetListCollection';
-import { AssetList } from '@/modules/nft/components/AssetListOrderbook';
-import { ChipFilterTraits } from '@/modules/nft/components/ChipFilterTraits';
-import { CollectionHeader } from '@/modules/nft/components/CollectionHeader';
-import CollectionPageHeader from '@/modules/nft/components/CollectionPageHeader';
-import { CollectionStats } from '@/modules/nft/components/CollectionStats';
-import { CollectionTraits } from '@/modules/nft/components/CollectionTraits';
-import TableSkeleton from '@/modules/nft/components/tables/TableSkeleton';
 import { NETWORK_FROM_SLUG } from '@dexkit/core/constants/networks';
 import { Asset } from '@dexkit/core/types';
-import { getCollectionData } from '@dexkit/ui/modules/nft/services';
+import { AssetListCollection } from '@dexkit/ui/modules/nft/components/AssetListCollection';
+import { AssetList } from '@dexkit/ui/modules/nft/components/AssetListOrderbook';
+
+import { CollectionHeader } from '@dexkit/ui/modules/nft/components/CollectionHeader';
+import CollectionPageHeader from '@dexkit/ui/modules/nft/components/CollectionPageHeader';
+import { CollectionStats } from '@dexkit/ui/modules/nft/components/CollectionStats';
+import { CollectionTraits } from '@dexkit/ui/modules/nft/components/CollectionTraits';
+import TableSkeleton from '@dexkit/ui/modules/nft/components/tables/TableSkeleton';
+import {
+  getApiCollectionData,
+  getCollectionAssetsDexKitApi,
+  getCollectionAssetsFromOrderbook,
+  getCollectionData,
+  getSyncCollectionData,
+} from '@dexkit/ui/modules/nft/services/collection';
 import { Collection, TraderOrderFilter } from '@dexkit/ui/modules/nft/types';
 import Search from '@mui/icons-material/Search';
 import {
@@ -33,35 +39,32 @@ import { NextSeo } from 'next-seo';
 import { useRouter } from 'next/router';
 import { Suspense, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { AppErrorBoundary } from 'src/components/AppErrorBoundary';
-import SidebarFilters from 'src/components/SidebarFilters';
-import SidebarFiltersContent from 'src/components/SidebarFiltersContent';
-import Funnel from 'src/components/icons/Filter';
+
 import MainLayout from 'src/components/layouts/main';
 import { REVALIDATE_PAGE_TIME } from 'src/constants';
-import { CollectionSyncStatus, NETWORK_ID } from 'src/constants/enum';
+
+import { GET_ASSET_LIST_FROM_COLLECTION } from 'src/hooks/collection';
+
+import { ChipFilterTraits } from '@/modules/nft/components/ChipFilterTraits';
+import { AppErrorBoundary } from '@dexkit/ui/components/AppErrorBoundary';
+import SidebarFilters from '@dexkit/ui/components/SidebarFilters';
+import SidebarFiltersContent from '@dexkit/ui/components/SidebarFiltersContent';
+import Funnel from '@dexkit/ui/components/icons/Filter';
+import { NETWORK_ID } from '@dexkit/ui/constants/enum';
+import { CollectionSyncStatus } from '@dexkit/ui/modules/nft/constants/enum';
 import {
   MAP_COIN_TO_RARIBLE,
   MAP_NETWORK_TO_RARIBLE,
-} from 'src/constants/marketplaces';
-import {
-  GET_ASSET_LIST_FROM_COLLECTION,
-  GET_COLLECTION_STATS,
-} from 'src/hooks/collection';
+} from '@dexkit/ui/modules/nft/constants/marketplaces';
 import {
   COLLECTION_ASSETS_FROM_ORDERBOOK,
   GET_COLLECTION_DATA,
+  GET_COLLECTION_STATS,
   useCollection,
-} from 'src/hooks/nft';
+} from '@dexkit/ui/modules/nft/hooks/collection';
+import { getRariCollectionStats } from '@dexkit/ui/modules/nft/services/rarible';
+import { getProviderBySlug } from '@dexkit/ui/services/providers';
 import { getAppConfig } from 'src/services/app';
-import {
-  getApiCollectionData,
-  getCollectionAssetsDexKitApi,
-  getCollectionAssetsFromOrderbook,
-  getSyncCollectionData,
-} from 'src/services/nft';
-import { getProviderBySlug } from 'src/services/providers';
-import { getRariCollectionStats } from 'src/services/rarible';
 
 const CollectionPage: NextPage = () => {
   const router = useRouter();

@@ -10,7 +10,7 @@ import Edit from '@mui/icons-material/Edit';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 
-import { AppConfig } from 'src/types/config';
+import { AppConfig } from '@dexkit/ui/modules/wizard/types/config';
 import NetworksContainerList from '../NetworksContainerList';
 import SearchNetworksDialog from '../dialogs/SearchNetworksDialog';
 import ViewNetworkInfoDialog from '../dialogs/ViewNetworkInfoDialog';

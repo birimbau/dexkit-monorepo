@@ -10,25 +10,25 @@ import {
 } from '@mui/material';
 import { FormattedMessage } from 'react-intl';
 
-import LaunchIcon from '@mui/icons-material/Launch';
-import Share from '@mui/icons-material/Share';
-import { useWeb3React } from '@web3-react/core';
-import { useState } from 'react';
-import Link from '../../../components/Link';
-import Heart from '../../../components/icons/Heart';
-import {
-  useAsset,
-  useAssetMetadata,
-  useFavoriteAssets,
-} from '../../../hooks/nft';
 import {
   getBlockExplorerUrl,
   getNetworkSlugFromChainId,
   isAddressEqual,
   truncateAddress,
-} from '../../../utils/blockchain';
-import { getWindowUrl } from '../../../utils/browser';
-import ShareDialog from '../../nft/components/dialogs/ShareDialog';
+} from '@dexkit/core/utils/blockchain';
+import { getWindowUrl } from '@dexkit/core/utils/browser';
+import Link from '@dexkit/ui/components/AppLink';
+import Heart from '@dexkit/ui/components/icons/Heart';
+import ShareDialog from '@dexkit/ui/modules/nft/components/dialogs/ShareDialog';
+import {
+  useAsset,
+  useAssetMetadata,
+  useFavoriteAssets,
+} from '@dexkit/ui/modules/nft/hooks';
+import LaunchIcon from '@mui/icons-material/Launch';
+import Share from '@mui/icons-material/Share';
+import { useWeb3React } from '@web3-react/core';
+import { useState } from 'react';
 
 interface Props {
   address: string;

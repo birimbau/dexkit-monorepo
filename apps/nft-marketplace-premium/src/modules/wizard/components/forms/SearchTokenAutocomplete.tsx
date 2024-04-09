@@ -1,4 +1,5 @@
 import { NETWORKS } from '@dexkit/core/constants/networks';
+import { getChainName, getChainSymbol } from '@dexkit/core/utils/blockchain';
 import { useTokenList } from '@dexkit/ui';
 import { Stack } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
@@ -6,7 +7,6 @@ import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import React, { useMemo, useState } from 'react';
 import { Token } from 'src/types/blockchain';
-import { getChainName, getChainSymbol } from 'src/utils/blockchain';
 
 interface Props {
   label?: string | React.ReactNode;

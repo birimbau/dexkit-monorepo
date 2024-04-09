@@ -1,17 +1,13 @@
+import { Asset } from '@dexkit/core/types/nft';
+import { AppDialogTitle } from '@dexkit/ui/components/AppDialogTitle';
 import {
-  Alert,
   Button,
-  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
   DialogProps,
-  Stack,
-  Typography,
 } from '@mui/material';
 import { FormattedMessage } from 'react-intl';
-import { AppDialogTitle } from '../../../components/AppDialogTitle';
-import { Asset } from '../../../types/nft';
 
 interface Props {
   dialogProps: DialogProps;

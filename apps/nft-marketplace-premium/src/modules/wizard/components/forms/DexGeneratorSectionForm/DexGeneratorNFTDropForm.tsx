@@ -1,6 +1,4 @@
-import {
-  NftDropPageSection
-} from '@/modules/wizard/types/section';
+import { NftDropPageSection } from '@dexkit/ui/modules/wizard/types/section';
 import { FormControl, Grid, InputLabel, MenuItem } from '@mui/material';
 import { Field, Formik } from 'formik';
 import { Select } from 'formik-mui';

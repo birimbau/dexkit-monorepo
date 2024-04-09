@@ -1,6 +1,7 @@
 import { ImageFormUpload } from '@/modules/contract-wizard/components/ImageFormUpload';
 import { EVM_CHAINS } from '@dexkit/evm-chains';
 import CompletationProvider from '@dexkit/ui/components/CompletationProvider';
+import { SiteMetadata } from '@dexkit/ui/modules/wizard/types';
 import {
   Box,
   FormControl,
@@ -20,7 +21,7 @@ import { TextField } from 'formik-mui';
 import dynamic from 'next/dynamic';
 import { useCallback } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { SiteMetadata } from '../../types';
+
 const DKMDEditor = dynamic(() => import('@dexkit/ui/components/DKMDEditor'));
 
 const ITEM_HEIGHT = 48;

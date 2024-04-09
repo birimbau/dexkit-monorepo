@@ -9,18 +9,19 @@ import {
   useLazyMintMutation,
 } from '@/modules/contract-wizard/hooks';
 import { CollectionItemsForm } from '@/modules/contract-wizard/types';
+import AppConfirmDialog from '@dexkit/ui/components/AppConfirmDialog';
 import { Alert, Container, Grid, Typography } from '@mui/material';
 import { useWeb3React } from '@web3-react/core';
 import { Formik } from 'formik';
 import { ReactNode, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import AppConfirmDialog from 'src/components/AppConfirmDialog';
 import {
   DEXKIT_DISCORD_SUPPORT_CHANNEL,
   DEXKIT_NFT_METADATA_URI,
   MIN_KIT_HOLDING_AI_GENERATION,
 } from 'src/constants';
 
+import { useContractCollection } from '@dexkit/ui/modules/nft/hooks/collection';
 import { useContractCreation } from '@dexkit/web3forms/hooks';
 import {
   useContract,
@@ -28,7 +29,7 @@ import {
   useMintNFT,
   useTotalCount,
 } from '@thirdweb-dev/react';
-import { useContractCollection } from 'src/hooks/nft';
+
 interface Props {
   network: string;
   address: string;
@@ -242,7 +243,7 @@ function WizardCreateAssetContainerV2(props: Props) {
         modalOnSamePage={true}
       />
       <AppConfirmDialog
-        dialogProps={{
+        DialogProps={{
           open: showConfirm,
           onClose: handleCloseConfirm,
           fullWidth: true,

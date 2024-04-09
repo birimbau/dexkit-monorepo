@@ -1,5 +1,5 @@
-import { Collection } from '../../../types/nft';
-import CollectionCard from '../../home/components/CollectionCard';
+import CollectionCard from '@dexkit/ui/modules/nft/components/CollectionCard';
+import { Collection } from '@dexkit/ui/modules/nft/types';
 
 interface Props {
   collection: Collection;

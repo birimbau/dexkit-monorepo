@@ -1,3 +1,4 @@
+import { AppConfig } from '@dexkit/ui/modules/wizard/types/config';
 import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
@@ -7,7 +8,6 @@ import { Field, Form, Formik } from 'formik';
 import { CheckboxWithLabel } from 'formik-mui';
 import { FormattedMessage, useIntl } from 'react-intl';
 import * as Yup from 'yup';
-import { AppConfig } from '../../../../types/config';
 
 interface Props {
   config: AppConfig;

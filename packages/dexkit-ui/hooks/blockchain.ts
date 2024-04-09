@@ -7,14 +7,16 @@ import {
 } from "@dexkit/core/constants/networks";
 import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "@dexkit/core/constants/zrx";
 import { EvmCoin, TokenWhitelabelApp } from "@dexkit/core/types";
+
 import { convertTokenToEvmCoin, ipfsUriToUrl } from "@dexkit/core/utils";
-import { useQuery } from "@tanstack/react-query";
+import { UseMutationOptions, useMutation, useQuery } from "@tanstack/react-query";
 import { useWeb3React } from "@web3-react/core";
 import { ethers } from "ethers";
 import { useContext, useMemo } from "react";
 import { useAppConfig, useAppWizardConfig, useDexKitContext } from ".";
 import { AdminContext } from "../context/AdminContext";
 import { DexKitContext } from "../context/DexKitContext";
+import { getTokenData } from "../services/token";
 
 import axios from "axios";
 
@@ -313,7 +315,6 @@ export default function useContractMetadata(params?: {
       );
 
       const result: string = await contract.contractURI();
-
       if (result) {
         const url = ipfsUriToUrl(result);
 
@@ -321,6 +322,16 @@ export default function useContractMetadata(params?: {
       }
 
       return null;
-    }
+    })
+
+}
+
+export function useTokenData(options?: Omit<UseMutationOptions, any>) {
+  return useMutation(
+    async ({ chainId, address }: { chainId: number; address: string }) => {
+      return await getTokenData(chainId, address);
+    },
+    options,
   );
 }
+

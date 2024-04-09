@@ -1,15 +1,15 @@
+import { PageHeader } from '@dexkit/ui/components/PageHeader';
+import { Collection } from '@dexkit/ui/modules/nft/types';
+import { AppConfig } from '@dexkit/ui/modules/wizard/types/config';
 import { Container, Grid } from '@mui/material';
 import { QueryClient, dehydrate } from '@tanstack/react-query';
 import type { GetStaticProps, GetStaticPropsContext, NextPage } from 'next';
 import { NextSeo } from 'next-seo';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { REVALIDATE_PAGE_TIME } from 'src/constants';
-import { PageHeader } from '../../../src/components/PageHeader';
 import MainLayout from '../../../src/components/layouts/main';
 import CollectionFromConfigCard from '../../../src/modules/nft/components/CollectionFromConfig';
 import { getAppConfig } from '../../../src/services/app';
-import { AppConfig } from '../../../src/types/config';
-import { Collection } from '../../../src/types/nft';
 
 interface Props {
   appConfig: AppConfig;

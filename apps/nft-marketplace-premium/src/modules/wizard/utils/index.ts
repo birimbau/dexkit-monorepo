@@ -12,7 +12,8 @@ import get from 'lodash/get';
 import set from 'lodash/set';
 import { getTheme } from 'src/theme';
 import { Token } from '../../../types/blockchain';
-import { AppCollection } from '../../../types/config';
+
+import { AppCollection } from '@dexkit/ui/modules/wizard/types/config';
 import { FeeForm } from '../components/sections/FeesSectionForm';
 import { MAX_FEES } from '../constants';
 import { CustomThemeColorSchemesInterface } from '../state';
@@ -62,14 +63,14 @@ export function generateTheme({
         : customTheme?.colorSchemes?.light;
     return fontFamily
       ? createTheme({
-          typography: {
-            fontFamily,
-          },
-          ...paletteTheme,
-        })
+        typography: {
+          fontFamily,
+        },
+        ...paletteTheme,
+      })
       : createTheme({
-          ...paletteTheme,
-        });
+        ...paletteTheme,
+      });
   }
   const theme = getTheme({ name: selectedThemeId }).theme;
   let paletteTheme =
@@ -78,17 +79,17 @@ export function generateTheme({
       : theme.colorSchemes.light;
   return fontFamily
     ? createTheme({
-        typography: {
-          fontFamily,
-        },
-        ...paletteTheme,
-      })
+      typography: {
+        fontFamily,
+      },
+      ...paletteTheme,
+    })
     : createTheme({
-        typography: {
-          fontFamily,
-        },
-        ...paletteTheme,
-      });
+      typography: {
+        fontFamily,
+      },
+      ...paletteTheme,
+    });
 }
 
 export function generateCSSVarsTheme({
@@ -111,12 +112,12 @@ export function generateCSSVarsTheme({
   if (selectedThemeId === 'custom') {
     return fontFamily
       ? extendTheme({
-          ...customTheme,
-          cssVarPrefix: cssVarPrefix,
-          typography: {
-            fontFamily,
-          },
-        })
+        ...customTheme,
+        cssVarPrefix: cssVarPrefix,
+        typography: {
+          fontFamily,
+        },
+      })
       : extendTheme({ ...customTheme, cssVarPrefix });
   }
 
@@ -124,16 +125,16 @@ export function generateCSSVarsTheme({
 
   return fontFamily
     ? extendTheme({
-        cssVarPrefix: cssVarPrefix,
-        typography: {
-          fontFamily,
-        },
-        colorSchemes: theme.colorSchemes,
-      })
+      cssVarPrefix: cssVarPrefix,
+      typography: {
+        fontFamily,
+      },
+      colorSchemes: theme.colorSchemes,
+    })
     : extendTheme({
-        cssVarPrefix: cssVarPrefix,
-        colorSchemes: theme.colorSchemes,
-      });
+      cssVarPrefix: cssVarPrefix,
+      colorSchemes: theme.colorSchemes,
+    });
 }
 
 export function inputMapping(abi: AbiFragment[]) {

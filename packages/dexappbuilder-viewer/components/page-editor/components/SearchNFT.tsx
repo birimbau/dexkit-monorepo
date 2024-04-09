@@ -1,3 +1,4 @@
+import { getChainName } from "@dexkit/core/utils/blockchain";
 import { CircularProgress } from "@mui/material";
 import Autocomplete from "@mui/material/Autocomplete";
 import Box from "@mui/material/Box";
@@ -5,9 +6,9 @@ import TextField from "@mui/material/TextField";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 
-import { NETWORKS, NETWORK_NAME } from "@dexkit/core/constants/networks";
+import { NETWORKS } from "@dexkit/core/constants/networks";
 import { useSearchAssets } from "@dexkit/ui/modules/nft/hooks";
-import { CollectionUniformItem } from "./CollectionAutocompleteUniform";
+import { CollectionUniformItem } from "@dexkit/ui/modules/nft/types";
 
 interface Props {
   disabled: boolean;
@@ -57,7 +58,7 @@ export function SearchNFT(props: Props) {
           {...props}
         >
           <img loading="lazy" width="20" src={`${option.image}`} alt="" />
-          {NETWORK_NAME(option.chainId)} - ({option.name}) - #{option.id || ""}
+          {getChainName(option.chainId)} - ({option.name}) - #{option.id || ""}
         </Box>
       )}
       renderInput={(params) => (

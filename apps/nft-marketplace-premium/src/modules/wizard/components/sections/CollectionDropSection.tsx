@@ -1,4 +1,3 @@
-import { EditionDropPageSection } from '@/modules/wizard/types/section';
 import {
   useActiveClaimConditionForWallet,
   useClaimConditions,
@@ -29,11 +28,13 @@ import { useWeb3React } from '@web3-react/core';
 import { BigNumber } from 'ethers';
 import { useCallback, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
+
+import { parseIneligibility } from '@dexkit/dexappbuilder-viewer/components/sections/EditionDropSection';
 import {
   useErc20AllowanceMutation,
   useErc20ApproveMutationV2,
-} from 'src/hooks/balances';
-import { parseIneligibility } from './EditionDropSection';
+} from '@dexkit/ui/hooks/balances';
+import { EditionDropPageSection } from '@dexkit/ui/modules/wizard/types/section';
 
 interface Props {
   section: EditionDropPageSection;

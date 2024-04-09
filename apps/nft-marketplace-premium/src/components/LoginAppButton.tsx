@@ -5,7 +5,8 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { useWeb3React } from '@web3-react/core';
 import { useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { useAuth, useLoginAccountMutation } from 'src/hooks/account';
+
+import { useAuth, useLoginAccountMutation } from '@dexkit/ui/hooks/auth';
 import { useConnectWalletDialog } from 'src/hooks/app';
 import Wallet from './icons/Wallet';
 

@@ -1,4 +1,3 @@
-import TableSkeleton from "@/modules/nft/components/tables/TableSkeleton";
 import { ChainId } from "@dexkit/core/constants";
 import { Search } from "@mui/icons-material";
 import FilterListIcon from "@mui/icons-material/FilterList";
@@ -20,7 +19,19 @@ import { ChangeEvent, useMemo, useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 import CloseCircle from "../../../components/icons/CloseCircle";
 
+import { Asset } from "@dexkit/core/types/nft";
+import {
+  getNetworkSlugFromChainId,
+  isAddressEqual,
+} from "@dexkit/core/utils/blockchain";
+import Funnel from "../../../components/icons/Filter";
 import { AssetCard } from "../../nft/components/AssetCard";
+import TableSkeleton from "../../nft/components/tables/TableSkeleton";
+import {
+  useAccountAssetsBalance,
+  useAsset,
+  useHiddenAssets,
+} from "../../nft/hooks";
 import WalletAssetsFilter from "./WalletAssetsFilter";
 const EvmTransferNftDialog = dynamic(
   () =>

@@ -85,9 +85,67 @@ export async function logoutApp({ accessTk }: { accessTk: string }) {
 
 /**
  * Api route that logins in DexKit backend
- * @param param0 
- * @returns 
+ * @param param0
+ * @returns
  */
-export async function loginApp({ address, signature }: { address: string, signature: string }) {
-  return axios.post<{ access_token: string, refresh_token: string }>('/api/dex-auth/login', { data: { address, signature } });
+export async function loginApp({
+  address,
+  signature,
+  siteId,
+  referral
+}: {
+  address: string;
+  signature: string;
+  siteId?: number;
+  referral?: string;
+}) {
+  return axios.post<{ access_token: string; refresh_token: string }>(
+    '/api/dex-auth/login',
+    { data: { address, signature, siteId, referral } }
+  );
+}
+
+/**
+ * Logout in DexKit backend
+ * @param param0
+ * @returns
+ */
+
+export async function logout({ accessTk }: { accessTk: string }) {
+  return authApi.get<{ logout: boolean }>('/logout', {
+    headers: {
+      Authorization: `Bearer ${accessTk}`,
+    },
+  });
+}
+
+
+export async function requestAccestoken({
+  refreshToken,
+}: {
+  refreshToken: string;
+}) {
+  return authApi.get<{ access_token: string }>('refresh-token', {
+    headers: {
+      Authorization: `Bearer ${refreshToken}`,
+    },
+  });
+}
+
+/**
+ * Login in DexKit backend
+ * @param param0
+ * @returns
+ */
+export async function login({
+  address,
+  signature,
+}: {
+  address: string;
+  signature: string;
+}) {
+  return authApi.post<{ access_token: string; refresh_token: string }>(
+    '/login',
+    { data: { address, signature } }
+  );
 }

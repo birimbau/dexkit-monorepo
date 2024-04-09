@@ -1,54 +1,95 @@
 import { ipfsUriToUrl } from "@dexkit/core/utils";
-import { Box } from "@mui/material";
+import { Avatar, Box } from "@mui/material";
 import Image from "next/future/image";
 import { useIntl } from "react-intl";
+import useLightbox from "../../../components/lightBox/useLightBox";
 import { isWhitelistedDomain } from "../../../utils/image";
 
 interface Props {
-  src: string;
+  src?: string;
+  enableLightBox?: boolean;
 }
 
-export function AssetImage({ src }: Props) {
+export function AssetImage({ src, enableLightBox }: Props) {
   const { formatMessage } = useIntl();
+  const { openLightbox, renderLightbox } = useLightbox();
 
   return (
-    <Box
-      sx={{
-        position: "relative",
-        width: "100%",
-        paddingTop: "100%",
-      }}
-    >
-      {isWhitelistedDomain(src) ? (
-        <Image
-          src={ipfsUriToUrl(src)}
-          style={{
-            position: "absolute",
-            top: 0,
+    <>
+      {src &&
+        renderLightbox({
+          slides: [
+            {
+              src: ipfsUriToUrl(src),
+              alt: "Image zoomed",
+            },
+          ],
+          render: { buttonNext: () => null, buttonPrev: () => null },
+        })}
+      {src && (
+        <Box
+          onClick={enableLightBox ? openLightbox : undefined}
+          sx={{
+            position: "relative",
             width: "100%",
+            paddingTop: "100%",
+            cursor: "pointer",
           }}
-          fill
-          alt={formatMessage({
-            id: "nft.image",
-            defaultMessage: "NFT Image",
-          })}
-        />
-      ) : (
-        <Image
-          src={ipfsUriToUrl(src)}
-          unoptimized={true}
-          style={{
-            position: "absolute",
-            top: 0,
-            width: "100%",
-          }}
-          fill
-          alt={formatMessage({
-            id: "nft.image",
-            defaultMessage: "NFT Image",
-          })}
-        />
+        >
+          {isWhitelistedDomain(src) ? (
+            <Image
+              src={ipfsUriToUrl(src)}
+              style={{
+                position: "absolute",
+                top: 0,
+                width: "100%",
+              }}
+              fill
+              alt={formatMessage({
+                id: "nft.image",
+                defaultMessage: "NFT Image",
+              })}
+            />
+          ) : (
+            <Image
+              src={ipfsUriToUrl(src)}
+              unoptimized={true}
+              style={{
+                position: "absolute",
+                top: 0,
+                width: "100%",
+              }}
+              fill
+              alt={formatMessage({
+                id: "nft.image",
+                defaultMessage: "NFT Image",
+              })}
+            />
+          )}
+        </Box>
       )}
-    </Box>
+      {!src && (
+        <Box
+          sx={{
+            position: "relative",
+            width: "100%",
+            paddingTop: "100%",
+          }}
+        >
+          <Avatar
+            alt={"No image"}
+            style={{
+              position: "absolute",
+              top: 0,
+              width: "100%",
+              height: "100%",
+            }}
+          >
+            {" "}
+            No image available
+          </Avatar>
+        </Box>
+      )}
+    </>
   );
 }

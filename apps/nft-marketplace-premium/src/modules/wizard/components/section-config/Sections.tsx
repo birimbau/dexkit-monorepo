@@ -1,3 +1,4 @@
+import { SectionMetadata } from '@dexkit/ui/modules/wizard/types/section';
 import CallToActionIcon from '@mui/icons-material/CallToAction';
 import CodeIcon from '@mui/icons-material/Code';
 import CollectionsIcon from '@mui/icons-material/Collections';
@@ -16,7 +17,6 @@ import {
 import VideocamIcon from '@mui/icons-material/Videocam';
 import ViewCarousel from '@mui/icons-material/ViewCarousel';
 import WalletIcon from '@mui/icons-material/Wallet';
-import { SectionMetadata } from '../../types/section';
 export const sections = [
   {
     type: 'video',

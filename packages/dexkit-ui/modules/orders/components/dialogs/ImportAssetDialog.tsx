@@ -27,7 +27,7 @@ import { FormattedMessage, useIntl } from "react-intl";
 import { AppDialogTitle } from "../../../../components/AppDialogTitle";
 import Link from "../../../../components/AppLink";
 
-import { AppCollection } from "../../../../types/config";
+import { AppCollection } from "../../../wizard/types/config";
 
 import { NETWORK_EXPLORER } from "@dexkit/core/constants/networks";
 import { useDebounce } from "@dexkit/core/hooks/misc";

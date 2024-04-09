@@ -1,8 +1,8 @@
 import { Dialog, DialogContent, DialogProps, Divider } from '@mui/material';
 import { FormattedMessage } from 'react-intl';
 
-import { AppDialogTitle } from '../../../../components/AppDialogTitle';
-import RankingSection from '../sections/RankingSection';
+import RankingSection from '@dexkit/dexappbuilder-viewer/components/sections/RankingSection';
+import { AppDialogTitle } from '@dexkit/ui/components/AppDialogTitle';
 
 interface Props {
   dialogProps: DialogProps;

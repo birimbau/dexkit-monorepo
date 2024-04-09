@@ -1,14 +1,13 @@
-import { Container, Stack } from '@mui/material';
 import { useMemo } from 'react';
 
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
+import { FormattedMessage } from 'react-intl';
 import { connectField } from 'uniforms';
 import { CORE_PAGES } from '../../../constants';
 import { useAppWizardConfig } from '../../../hooks';
-import { FormattedMessage } from 'react-intl';
 // @dev check here how to connect uniforms and custom form components: https://github.com/react-page/react-page/blob/master/packages/editor/src/ui/ColorPicker/ColorPickerField.tsx
 export const PagesPicker = connectField<{
   value: string;

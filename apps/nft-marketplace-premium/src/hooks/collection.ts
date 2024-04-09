@@ -1,7 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
-import { getCollectionAssetsDexKitApi } from "../services/nft";
-import { Asset } from "../types/nft";
-import { CollectionStatsRari } from "../types/rarible";
+
+import { Asset } from '@dexkit/core/types/nft';
+import { getCollectionAssetsDexKitApi } from '@dexkit/ui/modules/nft/services/collection';
+
+
 
 
 
@@ -57,24 +59,5 @@ export const useAssetListFromCollection = (params: Props) => {
       };
 
     }
-  );
-};
-
-export const GET_COLLECTION_STATS = 'GET_COLLECTION_STATS';
-
-interface CollectionStatsProps {
-  network?: string,
-  address?: string,
-}
-
-export const useCollectionStats = (params: CollectionStatsProps) => {
-  const { network, address } = params
-
-  return useQuery<CollectionStatsRari | undefined>(
-    [GET_COLLECTION_STATS, network, address],
-    async () => {
-      return undefined
-    }, { enabled: false }
-
   );
 };

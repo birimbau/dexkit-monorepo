@@ -1,3 +1,4 @@
+import { AppConfig } from '@dexkit/ui/modules/wizard/types/config';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
@@ -9,7 +10,6 @@ import { TextField } from 'formik-mui';
 import { useEffect } from 'react';
 import { FormattedMessage } from 'react-intl';
 import * as Yup from 'yup';
-import { AppConfig } from '../../../../types/config';
 
 interface Props {
   config: AppConfig;

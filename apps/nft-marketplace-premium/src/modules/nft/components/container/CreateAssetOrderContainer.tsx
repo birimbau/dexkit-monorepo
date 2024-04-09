@@ -6,7 +6,7 @@ const OrderCreatedDialog = dynamic(
 );
 import MakeListingForm from '@/modules/orders/components/forms/MakeListingForm';
 import MakeOfferForm from '@/modules/orders/components/forms/MakeOfferForm';
-import { useDexKitContext } from '@dexkit/ui/hooks';
+import { useDexKitContext, useSignMessageDialog } from '@dexkit/ui/hooks';
 import ImportExportIcon from '@mui/icons-material/ImportExport';
 import Launch from '@mui/icons-material/Launch';
 import {
@@ -36,8 +36,15 @@ import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import { useCallback, useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
-import Link from 'src/components/Link';
-import { useSignMessageDialog } from 'src/hooks/app';
+
+import {
+  getBlockExplorerUrl,
+  getChainName,
+  getChainSlug,
+  isAddressEqual,
+  truncateAddress,
+} from '@dexkit/core/utils/blockchain';
+import Link from '@dexkit/ui/components/AppLink';
 import {
   useAccountAssetsBalance,
   useApproveAssetMutation,
@@ -45,17 +52,11 @@ import {
   useMakeListingMutation,
   useMakeOfferMutation,
   useSwapSdkV4,
-} from 'src/hooks/nft';
-import { getERC20Name, getERC20Symbol } from 'src/services/balances';
-import { Asset } from 'src/types/nft';
-import {
-  getBlockExplorerUrl,
-  getChainName,
-  getChainSlug,
-  isAddressEqual,
-  truncateAddress,
-} from 'src/utils/blockchain';
-import { ipfsUriToUrl } from 'src/utils/ipfs';
+} from '@dexkit/ui/modules/nft/hooks';
+
+import { getERC20Name, getERC20Symbol } from '@dexkit/core/services/balances';
+import { Asset } from '@dexkit/core/types/nft';
+import { ipfsUriToUrl } from '@dexkit/core/utils/ipfs';
 
 export const CreateAssetOrderContainer = () => {
   const [asset, setAsset] = useState<Asset | null>(null);

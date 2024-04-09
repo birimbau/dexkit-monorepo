@@ -1,3 +1,8 @@
+import {
+  AppPageSection,
+  SectionMetadata,
+  SectionType,
+} from '@dexkit/ui/modules/wizard/types/section';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import CloseIcon from '@mui/icons-material/Close';
 import {
@@ -14,13 +19,9 @@ import {
 import IconButton from '@mui/material/IconButton';
 import { useEffect, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { AppDialogTitle } from '../../../../../components/AppDialogTitle';
+
+import { AppDialogTitle } from '@dexkit/ui/components/AppDialogTitle';
 import { BuilderKit } from '../../../constants';
-import {
-  AppPageSection,
-  SectionMetadata,
-  SectionType,
-} from '../../../types/section';
 import PreviewPagePlatform from '../../PreviewPagePlatform';
 import { SectionFormRender } from '../SectionFormRender';
 import { SectionSelector } from '../SectionSelector';
@@ -46,7 +47,7 @@ export default function EditSectionDialog({
   const { onClose } = dialogProps;
   const { formatMessage } = useIntl();
   const [sectionType, setSectionType] = useState<SectionType | undefined>(
-    section?.type
+    section?.type,
   );
 
   const [sectionMetadata, setSectionMetadata] = useState<

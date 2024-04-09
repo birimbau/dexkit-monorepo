@@ -1,4 +1,3 @@
-import ShareDialog from '@/modules/nft/components/dialogs/ShareDialog';
 import ContractFormView from '@dexkit/web3forms/components/ContractFormView';
 import {
   Box,
@@ -12,20 +11,22 @@ import {
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { getWindowUrl } from 'src/utils/browser';
+
 import {
   useCloseFormMutation,
   useDeleteFormMutation,
   useFormQuery,
 } from '../../../../../src/modules/forms/hooks';
 
+import { PageHeader } from '@dexkit/ui/components/PageHeader';
 import { useWeb3React } from '@web3-react/core';
-import { PageHeader } from 'src/components/PageHeader';
 import AuthMainLayout from 'src/components/layouts/authMain';
 
 import FormInfoCard from '@/modules/forms/components/FormInfoCard';
+import { getWindowUrl } from '@dexkit/core/utils/browser';
+import AppConfirmDialog from '@dexkit/ui/components/AppConfirmDialog';
+import ShareDialog from '@dexkit/ui/modules/nft/components/dialogs/ShareDialog';
 import { useSnackbar } from 'notistack';
-import AppConfirmDialog from 'src/components/AppConfirmDialog';
 
 export default function FormPage() {
   const router = useRouter();
@@ -77,7 +78,7 @@ export default function FormPage() {
           }),
           {
             variant: 'success',
-          }
+          },
         );
 
         router.push(`/forms/${result.id}`);
@@ -106,7 +107,7 @@ export default function FormPage() {
         }),
         {
           variant: 'success',
-        }
+        },
       );
     } catch (err) {
       enqueueSnackbar(String(err), { variant: 'error' });
@@ -126,7 +127,7 @@ export default function FormPage() {
       />
       <AppConfirmDialog
         onConfirm={handleConfirmClone}
-        dialogProps={{
+        DialogProps={{
           maxWidth: 'sm',
           fullWidth: true,
           open: showConfirmClone,

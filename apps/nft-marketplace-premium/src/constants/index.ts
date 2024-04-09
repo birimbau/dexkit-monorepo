@@ -1,6 +1,6 @@
 import { ChainId } from '@dexkit/core/constants';
+import { ZEROEX_NATIVE_TOKEN_ADDRESS } from '@dexkit/core/constants/zrx';
 import moment from 'moment';
-import { Currency, Language } from '../types/app';
 import { Token } from '../types/blockchain';
 
 export const TRADER_ORDERBOOK_API = 'https://api.trader.xyz/orderbook/orders';
@@ -9,11 +9,7 @@ export const TRADER_ORDERBOOK_API = 'https://api.trader.xyz/orderbook/orders';
 // revalidate page time
 export const REVALIDATE_PAGE_TIME = 180;
 
-export const ZEROEX_NATIVE_TOKEN_ADDRESS =
-  '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee';
 
-export const MULTICALL_NATIVE_TOKEN_ADDRESS =
-  '0x0000000000000000000000000000000000000000';
 
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 
@@ -45,19 +41,7 @@ export const MATIC_COIN: Token = {
 
 export const MIN_ORDER_DATE_TIME = moment.duration(1, 'hour');
 
-export const COINGECKO_ENDPOIT = 'https://api.coingecko.com/api/v3';
 
-export const COINGECKO_PLATFORM_ID: { [key: number]: string } = {
-  [ChainId.Ethereum]: 'ethereum',
-  [ChainId.Polygon]: 'polygon-pos',
-  [ChainId.BSC]: 'binance-smart-chain',
-  [ChainId.Avax]: 'avalanche',
-  [ChainId.Celo]: 'celo',
-  [ChainId.Fantom]: 'fantom',
-  [ChainId.Optimism]: 'optimistic-ethereum',
-  [ChainId.Arbitrum]: 'arbitrum-one',
-  [ChainId.Base]: 'base',
-};
 
 export const ZERO_EX_CHAIN_PREFIX = (chainId?: number) => {
   switch (chainId) {
@@ -99,30 +83,7 @@ export const ZERO_EX_TOKENS_ENDPOINT = (chainId?: number) =>
 
 export const NUMBER_REGEX = new RegExp('^([0-9]+([.][0-9]*)?|[.][0-9]+)$');
 
-export const LANGUAGES: Language[] = [
-  { name: 'English (US)', locale: 'en-US' },
-  { name: 'Português (BR)', locale: 'pt-BR' },
-  { name: 'Español (ES)', locale: 'es-ES' },
-  { name: 'Deutsch (IT)', locale: 'de-DE' },
-  { name: 'Français (FR)', locale: 'fr-FR' },
-  { name: 'Italiano (IT)', locale: 'it-IT' },
-  { name: 'Norsk (NO)', locale: 'nn-NO' },
-  { name: 'Čeština (CZ)', locale: 'cs-CZ' },
 
-];
-
-export const CURRENCIES: Currency[] = [
-  { symbol: 'ars', name: 'Argentine Peso' },
-  { symbol: 'brl', name: 'Brazilian Real' },
-  { symbol: 'clp', name: 'Chilean Peso' },
-  { symbol: 'czk', name: 'Czech Koruna' },
-  { symbol: 'eur', name: 'Euro' },
-  { symbol: 'inr', name: 'Indian Rupee' },
-  { symbol: 'ngn', name: 'Nigerian Naira' },
-  { symbol: 'chf', name: 'Swiss Franc' },
-  { symbol: 'usd', name: 'US Dollar' },
-  { symbol: 'vef', name: 'Venezuelan Bolívar Fuerte' },
-];
 
 export const WIZARD_DOCS_URL =
   'https://docs.dexkit.com/defi-products/nft-marketplace/overview';
@@ -140,8 +101,7 @@ export const DEXKIT_BASE_API_URL =
 //export const DEXKIT_BASE_API_URL = 'https://dexkit-main-api-9vzhs.ondigitalocean.app'
 // export const DEXKIT_BASE_API_URL = 'https://nft-api.dexkit.com';
 
-export const DEXKIT_BASE_FILES_HOST =
-  'https://dexkit-storage.nyc3.digitaloceanspaces.com';
+
 
 export const DEXKIT_AUTHENTICATE_API_KEY = process.env.MARKETPLACE_API_KEY
   ? process.env.MARKETPLACE_API_KEY
@@ -175,7 +135,4 @@ export const DEXKIT_NFT_METADATA_URI = `${DEXKIT_NFT_BASE_URI}/asset/metadata`;
 
 export const MIN_KIT_HOLDING_AI_GENERATION = '1000';
 
-export const WHITELISTED_AI_ACCOUNTS = [
-  '0xAf16774D5579bBCbAFb72Df314C17704360BC0fB',
-  '0x5265Bde27F57E738bE6c1F6AB3544e82cdc92a8f',
-];
+

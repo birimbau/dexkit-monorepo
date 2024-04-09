@@ -1,6 +1,5 @@
+import CustomContentPluginTwitterViewer from '@dexkit/dexappbuilder-viewer/components/page-editor/plugins/CustomContentPluginTwitter';
 import type { CellPlugin } from '@react-page/editor';
-import React from 'react';
-import { Timeline } from 'react-twitter-widgets';
 
 type Data = {
   screenName: string;
@@ -9,25 +8,7 @@ type Data = {
 };
 // you can pass the shape of the data as the generic type argument
 const CustomContentPluginTwitter: CellPlugin<Data> = {
-  Renderer: ({ data }) => (
-    <div>
-      <h4>{data.title}</h4>
-      <Timeline
-        dataSource={{
-          sourceType: 'profile',
-          // data has already the right type!
-          screenName: data.screenName,
-        }}
-        options={{
-          height: data.height || 600,
-        }}
-      />
-    </div>
-  ),
-  id: 'twitter-timeline',
-  title: 'Twitter timeline',
-  description: 'A twitter timeline',
-  version: 1,
+  ...CustomContentPluginTwitterViewer,
   controls: {
     type: 'autoform',
     schema: {

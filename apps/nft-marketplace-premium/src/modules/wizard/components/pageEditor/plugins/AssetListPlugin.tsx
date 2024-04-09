@@ -1,7 +1,6 @@
+import AssetListPluginViewer from '@dexkit/dexappbuilder-viewer/components/page-editor/plugins/AssetListPlugin';
 import type { CellPlugin } from '@react-page/editor';
 import { NETWORKS } from '../../../../../constants/chain';
-import { getNetworkFromName } from '../../../../../utils/blockchain';
-import { AssetList } from '../../../../nft/components/AssetListOrderbook';
 import { CollectionAutocomplete } from '../components/CollectionAutocomplete';
 
 type Data = {
@@ -10,16 +9,7 @@ type Data = {
 };
 // you can pass the shape of the data as the generic type argument
 const AssetListPlugin: CellPlugin<Data> = {
-  Renderer: ({ data }) => (
-    <AssetList
-      contractAddress={data.contractAddress}
-      chainId={getNetworkFromName(data.network)?.chainId}
-    />
-  ),
-  id: 'nft-list-plugin',
-  title: 'NFT List',
-  description: 'Show a list of nfts with orders on orderbook',
-  version: 1,
+  ...AssetListPluginViewer,
   controls: [
     {
       title: 'From Collections',

@@ -1,8 +1,8 @@
+import { useCollection } from '@dexkit/ui/modules/nft/hooks/collection';
 import { Chip, Stack } from '@mui/material';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { useCollection } from '../../../hooks/nft';
 
 interface Props {
   address?: string;
@@ -23,7 +23,7 @@ export function ChipFilterTraits({ address, chainId }: Props) {
       setFilterTraits(
         properties.map((p) => {
           return { property: p.split('.')[0], value: p.split('.')[1] };
-        })
+        }),
       );
     }
     if (!queryFilterTraits) {

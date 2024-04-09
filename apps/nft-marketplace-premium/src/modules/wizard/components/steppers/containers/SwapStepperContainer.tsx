@@ -1,3 +1,4 @@
+import AppConfirmDialog from '@dexkit/ui/components/AppConfirmDialog';
 import { useMediaQuery, useTheme } from '@mui/material';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
@@ -6,10 +7,11 @@ import Typography from '@mui/material/Typography';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import AppConfirmDialog from 'src/components/AppConfirmDialog';
-import { PageHeader } from 'src/components/PageHeader';
+
 import { useSendConfigMutation } from 'src/hooks/whitelabel';
-import { AppConfig } from 'src/types/config';
+
+import { PageHeader } from '@dexkit/ui/components/PageHeader';
+import { AppConfig } from '@dexkit/ui/modules/wizard/types/config';
 import { SiteResponse } from 'src/types/whitelabel';
 import theDefaultConfig from '../../../../../../config/quick.swap.default.app.json';
 import { PreviewAppButton } from '../../PreviewAppButton';
@@ -81,7 +83,7 @@ export default function SwapStepperContainer({ site }: Props) {
   return (
     <Container maxWidth={'xl'}>
       <AppConfirmDialog
-        dialogProps={{
+        DialogProps={{
           open: showConfirmSendConfig,
           maxWidth: 'xs',
           fullWidth: true,

@@ -1,9 +1,9 @@
-import TokenDropSummary from '@/modules/wizard/components/TokenDropSummary';
 import { CoinTypes } from '@dexkit/core';
 import { NETWORKS } from '@dexkit/core/constants/networks';
 import { EvmCoin } from '@dexkit/core/types';
 import { convertTokenToEvmCoin } from '@dexkit/core/utils';
 import { useTokenList } from '@dexkit/ui';
+import TokenDropSummary from '@dexkit/ui/modules/token/components/TokenDropSummary';
 import { Button, Divider, Tab, Tabs } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import { useQuery } from '@tanstack/react-query';

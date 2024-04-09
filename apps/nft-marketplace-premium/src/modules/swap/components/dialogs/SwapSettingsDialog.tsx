@@ -13,7 +13,8 @@ import {
 import { useAtom } from 'jotai';
 import { ChangeEvent, memo, useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { AppDialogTitle } from '../../../../components/AppDialogTitle';
+
+import { AppDialogTitle } from '@dexkit/ui/components/AppDialogTitle';
 import { isAutoSlippageAtom, maxSlippageAtom } from '../../../../state/atoms';
 
 interface Props {
@@ -29,7 +30,7 @@ function SwapSettingsDialog({ dialogProps }: Props) {
 
   const [isAutoSlippage, setIsAutoSlippage] = useState(isAutoSlippageStore);
   const [slippage, setSlippage] = useState<string>(
-    (maxSlippage * 100).toString()
+    (maxSlippage * 100).toString(),
   );
 
   const handleClose = () => {
@@ -38,7 +39,7 @@ function SwapSettingsDialog({ dialogProps }: Props) {
 
   const handleToggleAutoSlippage = (
     event: ChangeEvent<HTMLInputElement>,
-    checked: boolean
+    checked: boolean,
   ) => {
     return setIsAutoSlippage(checked);
   };

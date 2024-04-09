@@ -4,12 +4,12 @@ import Typography from '@mui/material/Typography';
 
 import Box from '@mui/material/Box';
 
+import { ShareButton } from '@dexkit/ui/components/ShareButton';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import Verified from '@mui/icons-material/Verified';
 import { IconButton, Stack, Tooltip, useTheme } from '@mui/material';
 import Image from 'next/image';
 import { FormattedMessage } from 'react-intl';
-import { ShareButton } from 'src/components/ShareButton';
 
 interface Props {
   username?: string;

@@ -6,7 +6,8 @@ import Image from 'next/image';
 
 import { FormattedMessage } from 'react-intl';
 import MainLayout from 'src/components/layouts/main';
-import Link from 'src/components/Link';
+
+import Link from '@dexkit/ui/components/AppLink';
 import { getAppConfig } from 'src/services/app';
 import catHeroImg from '../../../public/assets/images/cat-hero.svg';
 
