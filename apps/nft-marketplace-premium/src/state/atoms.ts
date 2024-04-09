@@ -16,7 +16,6 @@ import { ThemeMode } from '@dexkit/ui/constants/enum';
 import { Asset } from '@dexkit/ui/modules/nft/types';
 
 
-
 export const referralAtom = atom<string | undefined>(undefined);
 
 export const appStateAtom = atomWithStorage<AppState>('appState', {
@@ -92,10 +91,11 @@ export const currencyAtom = focusAtom<AppState, string, void>(
   (o) => o.prop('currency')
 );
 
-export const userThemeModeAtom = focusAtom<AppState, ThemeMode | undefined, void>(
-  appStateAtom,
-  (o) => o.prop('themeMode')
-);
+export const userThemeModeAtom = focusAtom<
+  AppState,
+  ThemeMode | undefined,
+  void
+>(appStateAtom, (o) => o.prop('themeMode'));
 
 export const localeAtom = focusAtom<AppState, string, void>(appStateAtom, (o) =>
   o.prop('locale')
@@ -174,6 +174,11 @@ export const isAutoSlippageAtom = atomWithStorage<boolean>(
   true
 );
 
+export const isMiniSidebarAtom = atomWithStorage<boolean>(
+  'isMiniSidebar',
+  false
+);
+
 export const maxSlippageAtom = atomWithStorage<number>('maxSlippage', 0.0);
 
 export const showSelectCurrencyAtom = atom<boolean>(false);
@@ -182,7 +187,6 @@ export const showSelectLocaleAtom = atom<boolean>(false);
 export const showAppTransactionsAtom = atom<boolean>(false);
 
 export const selectedWalletAtom = atomWithStorage<string>('connector', '');
-
 
 export const transactionsAtomV2 = atomWithStorage<{
   [key: string]: AppTransaction;

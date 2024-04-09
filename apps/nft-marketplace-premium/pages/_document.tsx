@@ -17,7 +17,6 @@ export default class MyDocument extends Document {
       <Html lang="en">
         <Head>
           {/* PWA primary color */}
-
           <link rel="preconnect" href="https://fonts.googleapis.com" />
           <link rel="preconnect" href="https://fonts.gstatic.com" />
           <link
@@ -32,7 +31,15 @@ export default class MyDocument extends Document {
           )}
           <link
             rel="stylesheet"
-            href="https://fonts.googleapis.com/icon?family=Material+Icons"
+            href="https://fonts.googleapis.com/css?family=Material+Icons"
+          />
+          <link
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/css?family=Material+Icons+Two+Tone"
+          />
+          <link
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/css?family=Material+Icons+Sharp"
           />
           {(this.props as any).emotionStyleTags}
           <Script

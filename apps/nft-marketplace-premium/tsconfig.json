@@ -30,7 +30,10 @@
     "**/*.ts",
     "**/*.tsx",
     "next-sitemap.config.js",
-    "scripts/local-diff.js"
+    "scripts/local-diff.js",
+    "../../packages/dexkit-ui/components/NavbarMenuAlt.tsx",
+    "../../packages/dexkit-ui/components/NavbarAlt.tsx",
+    "../../packages/dexkit-ui/components/AppDefaultMenuList.tsx"
   ],
   "exclude": ["node_modules"]
 }

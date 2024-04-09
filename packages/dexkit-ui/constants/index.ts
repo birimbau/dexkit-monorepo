@@ -31,6 +31,7 @@ export const LANGUAGES: Language[] = [
   { name: 'Français (FR)', locale: 'fr-FR' },
   { name: 'Italiano (IT)', locale: 'it-IT' },
   { name: 'Norsk (NO)', locale: 'nn-NO' },
+  { name: 'Čeština (CZ)', locale: 'cs-CZ' },
 
 ];
 

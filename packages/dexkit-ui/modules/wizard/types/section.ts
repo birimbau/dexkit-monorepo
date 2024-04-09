@@ -256,12 +256,14 @@ export interface CollectionPageSection extends PageSection {
     address: string;
     network: string;
     hideFilters: boolean;
-    showPageHeader: boolean;
+    showPageHeader?: boolean;
+    showCollectionStats?: boolean;
     hideHeader: boolean;
     hideDrops: boolean;
     hideAssets: boolean;
     enableDarkblock?: boolean;
     disableSecondarySells?: boolean;
+    showSidebarOnDesktop?: boolean;
     isLock?: boolean;
   };
 }

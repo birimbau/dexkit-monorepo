@@ -42,6 +42,7 @@
     "decimal.js": "^10.4.3",
     "papaparse": "^5.4.1",
     "react-mask-editor": "^0.0.2",
+    "react-window": "^1.8.10",
     "zod": "^3.22.4"
   },
   "publishConfig": {

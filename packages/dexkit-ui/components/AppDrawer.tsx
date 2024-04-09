@@ -1,5 +1,4 @@
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import SwapVertOutlinedIcon from "@mui/icons-material/SwapVertOutlined";
 
 import {
   Avatar,
@@ -7,30 +6,32 @@ import {
   Button,
   Divider,
   Drawer,
+  IconButton,
   List,
-  ListItem,
+  ListItemButton,
   ListItemIcon,
   ListItemSecondaryAction,
   ListItemText,
   ListSubheader,
+  Paper,
   Stack,
   styled,
   Typography,
 } from "@mui/material";
 
 import AttachMoney from "@mui/icons-material/AttachMoney";
-import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import Language from "@mui/icons-material/Language";
+import MenuIcon from "@mui/icons-material/Menu";
+import MenuOpenIcon from "@mui/icons-material/MenuOpen";
 import { useWeb3React } from "@web3-react/core";
 import { FormattedMessage } from "react-intl";
 
 import DrawerMenu from "./DrawerMenu";
 import Wallet from "./icons/Wallet";
 
-import Link from "@dexkit/ui/components/AppLink";
+import { useIsMobile } from "@dexkit/core/hooks";
 import WalletContent from "@dexkit/ui/components/WalletContent";
 import {
-  useAppConfig,
   useAuthUserQuery,
   useConnectWalletDialog,
   useCurrency,
@@ -38,6 +39,11 @@ import {
   useShowSelectCurrency,
   useShowSelectLocale,
 } from "@dexkit/ui/hooks";
+import { useAtom } from "jotai";
+import { useMemo } from "react";
+import { AppConfig } from "../modules/wizard/types/config";
+import { isMiniSidebarAtom } from "../state";
+import AppDefaultMenuList from "./AppDefaultMenuList";
 import { ThemeModeSelector } from "./ThemeModeSelector";
 
 const CustomListItemSecondaryAction = styled(ListItemSecondaryAction)({
@@ -51,11 +57,12 @@ const CustomListItemSecondaryAction = styled(ListItemSecondaryAction)({
 interface Props {
   open: boolean;
   onClose: () => void;
+  appConfig?: AppConfig;
 }
 
-function AppDrawer({ open, onClose }: Props) {
+function AppDrawer({ open, onClose, appConfig }: Props) {
   const { isActive, chainId, connector } = useWeb3React();
-  const appConfig = useAppConfig();
+
   const connectWalletDialog = useConnectWalletDialog();
 
   const handleConnectWallet = () => {
@@ -81,174 +88,177 @@ function AppDrawer({ open, onClose }: Props) {
   const userQuery = useAuthUserQuery();
   const user = userQuery.data;
 
-  return (
-    <Drawer open={open} onClose={onClose}>
-      <Box
-        sx={(theme) => ({ minWidth: `${theme.breakpoints.values.sm / 2}px` })}
-      >
-        <Box sx={{ p: 2 }}>
-          {!isActive ? (
-            <Button
-              variant="outlined"
-              color="inherit"
-              onClick={handleConnectWallet}
-              startIcon={<Wallet />}
-              endIcon={<ChevronRightIcon />}
-              fullWidth
-            >
-              <FormattedMessage
-                id="connect.wallet"
-                defaultMessage="Connect Wallet"
-                description="Connect wallet button"
-              />
-            </Button>
-          ) : (
-            <Stack spacing={2}>
-              {user && (
-                <>
-                  <Box>
-                    <Stack direction="row">
-                      <Avatar src={user?.profileImageURL} />
-                      <Box>
-                        <Typography variant="body1">
-                          {user?.username}
-                        </Typography>
-                      </Box>
-                    </Stack>
-                  </Box>
-                  <Divider />
-                </>
-              )}
+  const isMobile = useIsMobile();
 
-              <WalletContent />
-            </Stack>
-          )}
-        </Box>
-        <Divider />
-        {appConfig.menuTree ? (
-          <DrawerMenu menu={appConfig.menuTree} onClose={onClose} />
+  const [isMiniSidebar, setIsMiniSidebar] = useAtom(isMiniSidebarAtom);
+
+  const isSidebar = appConfig?.menuSettings?.layout?.type === "sidebar";
+  const isMini =
+    isSidebar && appConfig?.menuSettings?.layout?.variant === "mini";
+
+  const isMiniOpen = useMemo(() => {
+    if (isMini) {
+      return isMiniSidebar;
+    }
+
+    return false;
+  }, [isMiniSidebar, isMini, isSidebar]);
+
+  const handleToggleMini = () => {
+    setIsMiniSidebar((value) => !value);
+  };
+
+  const renderContent = () => {
+    return (
+      <Box
+        sx={(theme) => ({
+          display: "block",
+          width:
+            !isMobile && isSidebar && isMiniOpen
+              ? "auto"
+              : `${theme.breakpoints.values.sm / 2}px`,
+        })}
+      >
+        {isMini && (
+          <Stack
+            direction="row"
+            justifyContent={isMiniSidebar ? "center" : "flex-end"}
+            px={1}
+            py={1}
+          >
+            <IconButton onClick={handleToggleMini}>
+              {isMiniSidebar ? <MenuIcon /> : <MenuOpenIcon />}
+            </IconButton>
+          </Stack>
+        )}
+
+        {isMobile && (
+          <Box>
+            {!isActive ? (
+              <Button
+                variant="outlined"
+                color="inherit"
+                onClick={handleConnectWallet}
+                startIcon={<Wallet />}
+                endIcon={<ChevronRightIcon />}
+                fullWidth
+              >
+                <FormattedMessage
+                  id="connect.wallet"
+                  defaultMessage="Connect Wallet"
+                  description="Connect wallet button"
+                />
+              </Button>
+            ) : (
+              <Stack spacing={2}>
+                {user && (
+                  <>
+                    <Box>
+                      <Stack direction="row">
+                        <Avatar src={user?.profileImageURL} />
+                        <Box>
+                          <Typography variant="body1">
+                            {user?.username}
+                          </Typography>
+                        </Box>
+                      </Stack>
+                    </Box>
+                    <Divider />
+                  </>
+                )}
+
+                {isMobile && <WalletContent />}
+              </Stack>
+            )}
+          </Box>
+        )}
+
+        {appConfig?.menuTree ? (
+          <DrawerMenu
+            menu={appConfig?.menuTree}
+            onClose={onClose}
+            isMini={!isMobile && isMiniOpen}
+          />
         ) : (
-          <List disablePadding>
-            <ListItem
-              divider
-              onClick={onClose}
-              component={Link}
-              href="/"
-              button
-            >
+          <AppDefaultMenuList onClose={onClose} />
+        )}
+        {isMobile && (
+          <List
+            disablePadding
+            subheader={
+              <>
+                <ListSubheader disableSticky component="div">
+                  <FormattedMessage id="settings" defaultMessage="Settings" />
+                </ListSubheader>
+                <Divider />
+              </>
+            }
+          >
+            <ListItemButton divider onClick={handleShowSelectLocaleDialog}>
               <ListItemIcon>
-                <HomeOutlinedIcon />
+                <Language />
               </ListItemIcon>
               <ListItemText
-                sx={{ fontWeight: 600 }}
-                primary={<FormattedMessage id="home" defaultMessage="Home" />}
-              />
-              <CustomListItemSecondaryAction>
-                <ChevronRightIcon color="primary" />
-              </CustomListItemSecondaryAction>
-            </ListItem>
-            <ListItem
-              divider
-              onClick={onClose}
-              component={Link}
-              href="/swap"
-              button
-            >
-              <ListItemIcon>
-                <SwapVertOutlinedIcon />
-              </ListItemIcon>
-              <ListItemText
-                sx={{ fontWeight: 600 }}
-                primary={<FormattedMessage id="swap" defaultMessage="Swap" />}
-              />
-              <CustomListItemSecondaryAction>
-                <ChevronRightIcon color="primary" />
-              </CustomListItemSecondaryAction>
-            </ListItem>
-            <ListItem
-              divider
-              onClick={onClose}
-              component={Link}
-              href="/wallet"
-              button
-            >
-              <ListItemIcon>
-                <Wallet />
-              </ListItemIcon>
-              <ListItemText
-                sx={{ fontWeight: 600 }}
                 primary={
-                  <FormattedMessage id="wallet" defaultMessage="Wallet" />
+                  <FormattedMessage id="language" defaultMessage="Language" />
+                }
+                secondary={
+                  <Typography
+                    variant="body2"
+                    color="textSecondary"
+                    sx={{ fontWeight: 600 }}
+                  >
+                    {locale}
+                  </Typography>
                 }
               />
               <CustomListItemSecondaryAction>
                 <ChevronRightIcon color="primary" />
               </CustomListItemSecondaryAction>
-            </ListItem>
+            </ListItemButton>
+            <ListItemButton divider onClick={handleShowSelectCurrencyDialog}>
+              <ListItemIcon>
+                <AttachMoney />
+              </ListItemIcon>
+              <ListItemText
+                primary={
+                  <FormattedMessage id="currency" defaultMessage="Currency" />
+                }
+                secondary={
+                  <Typography
+                    variant="body2"
+                    color="textSecondary"
+                    sx={{ fontWeight: 600 }}
+                  >
+                    {currency.toUpperCase()}
+                  </Typography>
+                }
+              />
+              <CustomListItemSecondaryAction>
+                <ChevronRightIcon color="primary" />
+              </CustomListItemSecondaryAction>
+            </ListItemButton>
+            <ListItemButton divider>
+              <ListItemIcon />
+              <ListItemText primary={<ThemeModeSelector />} />
+            </ListItemButton>
           </List>
         )}
-        <List
-          disablePadding
-          subheader={
-            <>
-              <ListSubheader disableSticky component="div">
-                <FormattedMessage id="settings" defaultMessage="Settings" />
-              </ListSubheader>
-              <Divider />
-            </>
-          }
-        >
-          <ListItem divider onClick={handleShowSelectLocaleDialog}>
-            <ListItemIcon>
-              <Language />
-            </ListItemIcon>
-            <ListItemText
-              primary={
-                <FormattedMessage id="language" defaultMessage="Language" />
-              }
-              secondary={
-                <Typography
-                  variant="body2"
-                  color="textSecondary"
-                  sx={{ fontWeight: 600 }}
-                >
-                  {locale}
-                </Typography>
-              }
-            />
-            <CustomListItemSecondaryAction>
-              <ChevronRightIcon color="primary" />
-            </CustomListItemSecondaryAction>
-          </ListItem>
-          <ListItem divider onClick={handleShowSelectCurrencyDialog}>
-            <ListItemIcon>
-              <AttachMoney />
-            </ListItemIcon>
-            <ListItemText
-              primary={
-                <FormattedMessage id="currency" defaultMessage="Currency" />
-              }
-              secondary={
-                <Typography
-                  variant="body2"
-                  color="textSecondary"
-                  sx={{ fontWeight: 600 }}
-                >
-                  {currency.toUpperCase()}
-                </Typography>
-              }
-            />
-            <CustomListItemSecondaryAction>
-              <ChevronRightIcon color="primary" />
-            </CustomListItemSecondaryAction>
-          </ListItem>
-          <ListItem divider>
-            <ListItemIcon />
-
-            <ListItemText primary={<ThemeModeSelector />} />
-          </ListItem>
-        </List>
       </Box>
+    );
+  };
+
+  if (!isMobile && appConfig?.menuSettings?.layout?.type === "sidebar") {
+    return (
+      <Paper sx={{ display: "block" }} square variant="elevation">
+        {renderContent()}
+      </Paper>
+    );
+  }
+
+  return (
+    <Drawer PaperProps={{ variant: "elevation" }} open={open} onClose={onClose}>
+      {renderContent()}
     </Drawer>
   );
 }

@@ -34,6 +34,7 @@ const languages = [
   'it-IT',
   'nn-NO',
   'pt-BR',
+  'cs-CZ',
 ];
 
 for (let index = 0; index < languages.length; index++) {

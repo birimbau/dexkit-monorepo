@@ -20,6 +20,11 @@ export const accountAssetsAtom = atomWithStorage<{
 
 );
 
+export const isMiniSidebarAtom = atomWithStorage<boolean>(
+  'dexkit-ui.isMiniSidebar',
+  false
+);
+
 export const userThemeModeAtom = atomWithStorage<ThemeMode | undefined>('dexkit-ui.user-theme-mode', undefined);
 
 export const localeUserAtom = atomWithStorage<string>('dexkit-ui.user-app-locale', 'en-us');

@@ -18,6 +18,13 @@ export interface MenuTree {
 }
 
 
+export interface MenuSettings {
+  layout?: {
+    type?: string;
+    variant?: string;
+  };
+}
+
 export interface AssetItemType {
   type: 'asset';
   title: string;
@@ -174,6 +181,7 @@ export interface AppConfig {
     date: string;
     datetime: string;
   };
+  menuSettings?: MenuSettings,
   menuTree?: MenuTree[];
   footerMenuTree?: MenuTree[];
   collections?: AppCollection[];

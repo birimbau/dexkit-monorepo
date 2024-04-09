@@ -26,7 +26,6 @@ import {
   Drawer,
   FormControlLabel,
   FormGroup,
-  Grid,
   InputAdornment,
   Stack,
   TextField,
@@ -187,32 +186,25 @@ const CollectionPage: NextPage<{
       <NextSeo title={collection?.name || ''} />
       {renderDrawer()}
 
-      <Grid container>
-        {isDesktop && disableSecondarySells !== true && (
-          <Grid item xs={12} sm={2}>
-            {renderSidebar()}
-          </Grid>
-        )}
-        <Grid item xs={12} sm={disableSecondarySells !== true ? 10 : 12}>
-          <CollectionSection
-            section={{
-              type: 'collection',
-              config: {
-                address: address as string,
-                network: network as string,
-                hideFilters: isDesktop,
-                hideAssets: false,
-                hideDrops: !isDrop,
-                hideHeader: false,
-                showPageHeader: true,
-                isLock,
-                enableDarkblock,
-                disableSecondarySells,
-              },
-            }}
-          ></CollectionSection>
-        </Grid>
-      </Grid>
+      <CollectionSection
+        section={{
+          type: 'collection',
+          config: {
+            address: address as string,
+            network: network as string,
+            hideFilters: isDesktop,
+            hideAssets: false,
+            hideDrops: !isDrop,
+            hideHeader: false,
+            showPageHeader: true,
+            isLock,
+            enableDarkblock,
+            disableSecondarySells,
+            showCollectionStats: true,
+            showSidebarOnDesktop: true,
+          },
+        }}
+      />
     </>
   );
   if (disableSecondarySells) {
