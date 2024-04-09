@@ -71,7 +71,13 @@ const EmailVerifiedPage: NextPage = (props: any) => {
                 order: { xs: 1, sm: 2 },
               }}
             >
-              <Image src={catHeroImg} alt="Cat Hero" />
+              <Image
+                src={catHeroImg}
+                alt="Cat Hero"
+                style={{
+                  width: '100%',
+                }}
+              />
             </Grid>
           </Grid>
         </Container>

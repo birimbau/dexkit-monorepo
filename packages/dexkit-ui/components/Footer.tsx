@@ -192,12 +192,11 @@ export function Footer({ appConfig, isPreview, appNFT }: Props) {
                       size="small"
                     >
                       <Image
+                        fill
                         src={media?.iconUrl}
                         alt={media?.label || ""}
-                        style={{
-                          height: theme.spacing(3),
-                          width: theme.spacing(3),
-                        }}
+                        height={Number(theme.spacing(3))}
+                        width={Number(theme.spacing(3))}
                       />
                     </IconButton>
                   ))}

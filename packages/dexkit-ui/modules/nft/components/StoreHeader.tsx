@@ -43,12 +43,11 @@ export function StoreHeader(props: Props) {
               })}
             >
               <Image
+                fill
                 src={profileImageURL}
                 alt={description || " "}
-                style={{
-                  height: theme.spacing(14),
-                  width: theme.spacing(14),
-                }}
+                height={Number(theme.spacing(14))}
+                width={Number(theme.spacing(14))}
               />
             </Box>
           ) : (

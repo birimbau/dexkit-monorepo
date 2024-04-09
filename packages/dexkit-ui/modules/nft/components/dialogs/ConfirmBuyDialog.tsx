@@ -149,10 +149,7 @@ export default function ConfirmBuyDialog({
                   />
                 ) : (
                   <Image
-                    style={{
-                      height: "100%",
-                      width: "100%",
-                    }}
+                    fill
                     alt={formatMessage({
                       id: "nft.image",
                       defaultMessage: "NFT Image",

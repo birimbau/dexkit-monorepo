@@ -209,12 +209,9 @@ export default function MakeListingDialog({
                       }}
                     >
                       <Image
+                        fill
                         alt={metadata?.name}
                         src={ipfsUriToUrl(metadata?.image || "")}
-                        style={{
-                          height: "100%",
-                          width: "100%",
-                        }}
                         objectFit="contain"
                       />
                     </Box>
