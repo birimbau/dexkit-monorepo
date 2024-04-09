@@ -5,7 +5,7 @@ import Typography from '@mui/material/Typography';
 import { QueryClient, dehydrate } from '@tanstack/react-query';
 import { GetStaticProps, GetStaticPropsContext, NextPage } from 'next';
 import { NextSeo } from 'next-seo';
-import Image from 'next/future/image';
+import Image from 'next/image';
 import { FormattedMessage, useIntl } from 'react-intl';
 import remarkGfm from 'remark-gfm';
 import MainLayout from '../../../src/components/layouts/main';

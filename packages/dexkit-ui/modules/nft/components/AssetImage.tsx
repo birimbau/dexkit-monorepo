@@ -1,6 +1,6 @@
 import { ipfsUriToUrl } from "@dexkit/core/utils";
 import { Avatar, Box } from "@mui/material";
-import Image from "next/future/image";
+import Image from "next/image";
 import { useIntl } from "react-intl";
 import useLightbox from "../../../components/lightBox/useLightBox";
 import { isWhitelistedDomain } from "../../../utils/image";

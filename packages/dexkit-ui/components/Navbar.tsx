@@ -333,20 +333,20 @@ function Navbar({ appConfig, isPreview }: Props) {
                 src={appConfig?.logoDark?.url || ""}
                 alt={appConfig.name}
                 title={appConfig.name}
-                width={
-                  isMobile && appConfig?.logoDark?.widthMobile
-                    ? appConfig?.logoDark?.widthMobile
-                    : appConfig?.logoDark?.width ||
-                      appConfig?.logo?.width ||
-                      theme.spacing(6)
-                }
-                height={
-                  isMobile && appConfig?.logoDark?.heightMobile
-                    ? appConfig?.logoDark?.heightMobile
-                    : appConfig?.logoDark?.height ||
-                      appConfig?.logo?.height ||
-                      theme.spacing(6)
-                }
+                style={{
+                  height:
+                    isMobile && appConfig?.logoDark?.heightMobile
+                      ? appConfig?.logoDark?.heightMobile
+                      : appConfig?.logoDark?.height ||
+                        appConfig?.logo?.height ||
+                        theme.spacing(6),
+                  width:
+                    isMobile && appConfig?.logoDark?.widthMobile
+                      ? appConfig?.logoDark?.widthMobile
+                      : appConfig?.logoDark?.width ||
+                        appConfig?.logo?.width ||
+                        theme.spacing(6),
+                }}
               />
             </Link>
           ) : appConfig?.logo ? (
@@ -355,16 +355,17 @@ function Navbar({ appConfig, isPreview }: Props) {
                 src={appConfig?.logo.url}
                 alt={appConfig.name}
                 title={appConfig.name}
-                width={
-                  isMobile && appConfig?.logo?.widthMobile
-                    ? appConfig?.logo?.widthMobile
-                    : appConfig?.logo?.width || theme.spacing(6)
-                }
-                height={
-                  isMobile && appConfig?.logo?.heightMobile
-                    ? appConfig?.logo?.heightMobile
-                    : appConfig?.logo?.height || theme.spacing(6)
-                }
+                style={{
+                  width:
+                    isMobile && appConfig?.logo?.widthMobile
+                      ? appConfig?.logo?.widthMobile
+                      : appConfig?.logo?.width || theme.spacing(6),
+
+                  height:
+                    isMobile && appConfig?.logo?.heightMobile
+                      ? appConfig?.logo?.heightMobile
+                      : appConfig?.logo?.height || theme.spacing(6),
+                }}
               />
             </Link>
           ) : (

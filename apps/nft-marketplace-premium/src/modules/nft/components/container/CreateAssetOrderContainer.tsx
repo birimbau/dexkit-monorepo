@@ -492,8 +492,10 @@ export const CreateAssetOrderContainer = () => {
                           <Image
                             alt={asset?.metadata?.name}
                             src={ipfsUriToUrl(asset?.metadata?.image || '')}
-                            height="100%"
-                            width="100%"
+                            style={{
+                              height: '100%',
+                              width: '100%',
+                            }}
                             objectFit="contain"
                           />
                         </Box>
