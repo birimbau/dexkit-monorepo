@@ -1,11 +1,11 @@
-import Link from '@dexkit/ui/components/AppLink';
-import Button from '@mui/material/Button';
-import Container from '@mui/material/Container';
-import Icon from '@mui/material/Icon';
-import Paper from '@mui/material/Paper';
-import Stack from '@mui/material/Stack';
-import { AppConfig } from 'src/types/config';
-import NavbarMenuAlt from './NavbarMenuAlt';
+import Link from "@dexkit/ui/components/AppLink";
+import { AppConfig } from "@dexkit/ui/modules/wizard/types/config";
+import Button from "@mui/material/Button";
+import Container from "@mui/material/Container";
+import Icon from "@mui/material/Icon";
+import Paper from "@mui/material/Paper";
+import Stack from "@mui/material/Stack";
+import NavbarMenuAlt from "./NavbarMenuAlt";
 
 interface Props {
   appConfig: AppConfig;
@@ -15,8 +15,8 @@ interface Props {
 export default function NavbarAlt({ appConfig, isPreview }: Props) {
   return (
     <>
-      {(appConfig.menuSettings?.layout?.type === 'navbar' &&
-        appConfig.menuSettings?.layout.variant === 'alt' && (
+      {(appConfig.menuSettings?.layout?.type === "navbar" &&
+        appConfig.menuSettings?.layout.variant === "alt" && (
           <Paper square variant="elevation" sx={{ py: 2 }}>
             <Container>
               <Stack
@@ -31,8 +31,8 @@ export default function NavbarAlt({ appConfig, isPreview }: Props) {
                   ) : (
                     <Button
                       color="inherit"
-                      href={isPreview ? '#' : menu.href || '/'}
-                      sx={{ fontWeight: 600, textDecoration: 'none' }}
+                      href={isPreview ? "#" : menu.href || "/"}
+                      sx={{ fontWeight: 600, textDecoration: "none" }}
                       key={index}
                       LinkComponent={Link}
                       startIcon={
@@ -43,7 +43,7 @@ export default function NavbarAlt({ appConfig, isPreview }: Props) {
                     >
                       {menu.name}
                     </Button>
-                  ),
+                  )
                 )}
               </Stack>
             </Container>

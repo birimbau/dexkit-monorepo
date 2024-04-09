@@ -13,6 +13,7 @@ import { FormattedMessage } from "react-intl";
 import Link from "./AppLink";
 
 import LaunchIcon from "@mui/icons-material/Launch";
+import { MenuTree } from "../modules/wizard/types/config";
 
 export interface NavbarMenuAltProps {
   menu: MenuTree;
