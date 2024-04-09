@@ -8,7 +8,7 @@ import {
   truncateHash,
 } from '@dexkit/core/utils';
 import Link from '@dexkit/ui/components/AppLink';
-import { useUserEventsList } from '@dexkit/ui/hooks/userEvents';
+import { UserEvent, useUserEventsList } from '@dexkit/ui/hooks/userEvents';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
@@ -22,16 +22,26 @@ import Typography from '@mui/material/Typography';
 import { DataGrid } from '@mui/x-data-grid/DataGrid';
 import { GridToolbar } from '@mui/x-data-grid/components';
 
+import { Button, FormControl, MenuItem } from '@mui/material';
 import {
   GridColDef,
   GridFilterModel,
   GridSortModel,
 } from '@mui/x-data-grid/models';
+import { Field, Formik } from 'formik';
+import { Select } from 'formik-mui';
 import { useCallback, useEffect, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { myAppsApi } from 'src/services/whitelabel';
+import SwapUserEventsData from './SwapUserEventsData';
+import EventDetailDialog from './dialogs/EventDetailDialog';
 
-function OnChainDataGrid({ siteId }: Props) {
+export interface OnChainDataGridProps {
+  siteId?: number;
+  onViewDetails: (event: UserEvent) => void;
+}
+
+function OnChainDataGrid({ siteId, onViewDetails }: OnChainDataGridProps) {
   const [queryOptions, setQueryOptions] = useState<any>({
     filter: {
       hash: {
@@ -147,6 +157,16 @@ function OnChainDataGrid({ siteId }: Props) {
       field: 'referral',
       headerName: 'Referral',
       width: 200,
+    },
+    {
+      field: 'action',
+      headerName: 'Action',
+      width: 200,
+      renderCell: (params: any) => (
+        <Button onClick={() => onViewDetails(params.row)}>
+          <FormattedMessage id="details" defaultMessage="Details" />
+        </Button>
+      ),
     },
   ];
 
@@ -308,71 +328,140 @@ export default function UserEventAnalyticsContainer({ siteId }: Props) {
     setValue(newValue);
   };
 
+  const [showDetails, setShowDetails] = useState(false);
+  const [event, setEvent] = useState<UserEvent>();
+
+  const handleClose = () => {
+    setShowDetails(false);
+    setEvent(undefined);
+  };
+
+  const handleViewDetails = (event: UserEvent) => {
+    setShowDetails(true);
+    setEvent(event);
+  };
+
+  const handleSubmit = () => {};
+
   return (
-    <Grid container spacing={2}>
-      <Grid item xs={12}>
-        <Stack>
-          <Typography variant={'h6'}>
+    <>
+      <EventDetailDialog
+        DialogProps={{
+          open: showDetails,
+          maxWidth: 'sm',
+          fullWidth: true,
+          onClose: handleClose,
+        }}
+        event={event}
+      />
+      <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <Stack>
+            <Typography variant={'h6'}>
+              <FormattedMessage
+                id="user.events.analytics"
+                defaultMessage="User events analytics"
+              />
+            </Typography>
+            <Typography variant={'body2'}>
+              <FormattedMessage
+                id="user.events.analytics.wizard.description"
+                defaultMessage="User events analytics on your app"
+              />
+            </Typography>
+          </Stack>
+        </Grid>
+        <Grid item xs={12}>
+          <Divider />
+        </Grid>
+        <Grid item xs={12}>
+          <Alert severity="info">
             <FormattedMessage
-              id="user.events.analytics"
-              defaultMessage="User events analytics"
+              id={'add.ref.to.track.referrals'}
+              defaultMessage={
+                'Append ref to your url to track referrals on your events. Ex: yourSite.com?ref=your-referral'
+              }
             />
-          </Typography>
-          <Typography variant={'body2'}>
-            <FormattedMessage
-              id="user.events.analytics.wizard.description"
-              defaultMessage="User events analytics on your app"
-            />
-          </Typography>
-        </Stack>
+          </Alert>
+        </Grid>
+        <Grid item xs={12}>
+          <Box sx={{ width: '100%', typography: 'body1' }}>
+            <TabContext value={value}>
+              <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                <TabList onChange={handleChange} aria-label="events types">
+                  <Tab
+                    label={
+                      <FormattedMessage
+                        id={'onchain.events'}
+                        defaultMessage={'Onchain events'}
+                      />
+                    }
+                    value="1"
+                  />
+                  <Tab
+                    label={
+                      <FormattedMessage
+                        id={'offchain.events'}
+                        defaultMessage={'Offchain events'}
+                      />
+                    }
+                    value="2"
+                  />
+                </TabList>
+              </Box>
+              <TabPanel value="1">
+                <Formik
+                  initialValues={{ txType: 'all' }}
+                  onSubmit={handleSubmit}
+                >
+                  {({ values }) => (
+                    <Grid container spacing={2}>
+                      <Grid item xs={12}>
+                        <FormControl>
+                          <Field
+                            component={Select}
+                            name="txType"
+                            label={
+                              <FormattedMessage
+                                id="transaction.type"
+                                defaultMessage="Transaction type"
+                              />
+                            }
+                          >
+                            <MenuItem value="all">
+                              <FormattedMessage id="all" defaultMessage="All" />
+                            </MenuItem>
+                            <MenuItem value="swap">
+                              <FormattedMessage
+                                id="swap"
+                                defaultMessage="Swap"
+                              />
+                            </MenuItem>
+                          </Field>
+                        </FormControl>
+                      </Grid>
+                      <Grid item xs={12}>
+                        {values.txType === 'all' && (
+                          <OnChainDataGrid
+                            siteId={siteId}
+                            onViewDetails={handleViewDetails}
+                          />
+                        )}
+                        {values.txType === 'swap' && (
+                          <SwapUserEventsData siteId={siteId} />
+                        )}
+                      </Grid>
+                    </Grid>
+                  )}
+                </Formik>
+              </TabPanel>
+              <TabPanel value="2">
+                <OffChainDataGrid siteId={siteId} />
+              </TabPanel>
+            </TabContext>
+          </Box>
+        </Grid>
       </Grid>
-      <Grid item xs={12}>
-        <Divider />
-      </Grid>
-      <Grid item xs={12}>
-        <Alert severity="info">
-          <FormattedMessage
-            id={'add.ref.to.track.referrals'}
-            defaultMessage={
-              'Append ref to your url to track referrals on your events. Ex: yourSite.com?ref=your-referral'
-            }
-          />
-        </Alert>
-      </Grid>
-      <Grid item xs={12}>
-        <Box sx={{ width: '100%', typography: 'body1' }}>
-          <TabContext value={value}>
-            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-              <TabList onChange={handleChange} aria-label="events types">
-                <Tab
-                  label={
-                    <FormattedMessage
-                      id={'onchain.events'}
-                      defaultMessage={'Onchain events'}
-                    />
-                  }
-                  value="1"
-                />
-                <Tab
-                  label={
-                    <FormattedMessage
-                      id={'offchain.events'}
-                      defaultMessage={'Offchain events'}
-                    />
-                  }
-                  value="2"
-                />
-              </TabList>
-            </Box>
-            <TabPanel value="1">
-              <OnChainDataGrid siteId={siteId} />
-            </TabPanel>
-            <TabPanel value="2">
-              <OffChainDataGrid siteId={siteId} />
-            </TabPanel>
-          </TabContext>
-        </Box>
-      </Grid>
-    </Grid>
+    </>
   );
 }
