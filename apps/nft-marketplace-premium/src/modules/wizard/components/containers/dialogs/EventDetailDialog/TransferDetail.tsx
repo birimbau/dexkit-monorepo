@@ -1,4 +1,4 @@
-import { SwapUserEvent } from '@/modules/wizard/types/events';
+import { TransferUserEvent } from '@/modules/wizard/types/events';
 import {
   getBlockExplorerUrl,
   getChainName,
@@ -9,13 +9,13 @@ import { UserEvent } from '@dexkit/ui/hooks/userEvents';
 import { Link, Stack, Typography } from '@mui/material';
 import { FormattedMessage } from 'react-intl';
 
-export interface SwapDetailProps {
-  event: UserEvent<SwapUserEvent>;
+export interface TranserDetailProps {
+  event: UserEvent<TransferUserEvent>;
 }
 
-export default function SwapDetail({ event }: SwapDetailProps) {
-  const { tokenInAmount, tokenOutAmount, tokenIn, tokenOut } =
-    event.processedMetadata;
+export default function TransferDetail({ event }: TranserDetailProps) {
+  const { to, token, amount } = event.processedMetadata;
+
   return (
     <Stack spacing={1}>
       <Stack justifyContent="space-between" alignItems="center" direction="row">
@@ -46,6 +46,15 @@ export default function SwapDetail({ event }: SwapDetailProps) {
           {event.chainId ? getChainName(event.chainId) : null}
         </Typography>
       </Stack>
+
+      <Stack justifyContent="space-between" alignItems="center" direction="row">
+        <Typography>
+          <FormattedMessage id="amount" defaultMessage="Amount" />
+        </Typography>
+        <Typography color="text.secondary">
+          {amount} {token.symbol.toUpperCase()}
+        </Typography>
+      </Stack>
       <Stack justifyContent="space-between" alignItems="center" direction="row">
         <Typography>
           <FormattedMessage id="from" defaultMessage="from" />
@@ -65,18 +74,19 @@ export default function SwapDetail({ event }: SwapDetailProps) {
       </Stack>
       <Stack justifyContent="space-between" alignItems="center" direction="row">
         <Typography>
-          <FormattedMessage id="amount.in" defaultMessage="Amount in" />
+          <FormattedMessage id="to" defaultMessage="to" />
         </Typography>
         <Typography color="text.secondary">
-          {tokenInAmount} {tokenIn.symbol.toUpperCase()}
-        </Typography>
-      </Stack>
-      <Stack justifyContent="space-between" alignItems="center" direction="row">
-        <Typography>
-          <FormattedMessage id="amount.out" defaultMessage="Amount out" />
-        </Typography>
-        <Typography color="text.secondary">
-          {tokenOutAmount} {tokenOut.symbol.toUpperCase()}
+          <Link
+            href={
+              event.chainId
+                ? `${getBlockExplorerUrl(event.chainId)}/address/${to}`
+                : undefined
+            }
+            target="_blank"
+          >
+            {truncateAddress(to)}
+          </Link>
         </Typography>
       </Stack>
     </Stack>

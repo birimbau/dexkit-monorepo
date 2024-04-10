@@ -1,22 +1,38 @@
-import { SwapUserEvent } from '@/modules/wizard/types/events';
-import { getBlockExplorerUrl } from '@dexkit/core/utils';
+import { TransferUserEvent } from '@/modules/wizard/types/events';
+import {
+  getBlockExplorerUrl,
+  getChainName,
+  truncateAddress,
+} from '@dexkit/core/utils';
 import { Link, TableCell, TableRow } from '@mui/material';
 import { FormattedMessage } from 'react-intl';
 
 export interface TransferEventRowProps {
-  event: SwapUserEvent;
+  event: TransferUserEvent;
 }
 
 export default function TransferEventRow({ event }: TransferEventRowProps) {
   return (
     <TableRow>
-      <TableCell>{event.chainId}</TableCell>
-      <TableCell>{event.from}</TableCell>
+      <TableCell>{getChainName(event.chainId)}</TableCell>
       <TableCell>
-        {event.tokenInAmount} {event.tokenIn.symbol.toUpperCase()}
+        <Link
+          target="_blank"
+          href={`${getBlockExplorerUrl(event.chainId)}/address/${event.from}`}
+        >
+          {truncateAddress(event.from)}
+        </Link>
       </TableCell>
       <TableCell>
-        {event.tokenOutAmount} {event.tokenOut.symbol.toUpperCase()}
+        {event.amount} {event.token.symbol.toUpperCase()}
+      </TableCell>
+      <TableCell>
+        <Link
+          target="_blank"
+          href={`${getBlockExplorerUrl(event.chainId)}/address/${event.to}`}
+        >
+          {truncateAddress(event.to)}
+        </Link>
       </TableCell>
       <TableCell>
         <Link

@@ -34,6 +34,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { myAppsApi } from 'src/services/whitelabel';
 import SwapUserEventsData from './SwapUserEventsData';
+import TransferUserEventsData from './TransferUserEventsData';
 import EventDetailDialog from './dialogs/EventDetailDialog';
 
 export interface OnChainDataGridProps {
@@ -437,6 +438,12 @@ export default function UserEventAnalyticsContainer({ siteId }: Props) {
                                 defaultMessage="Swap"
                               />
                             </MenuItem>
+                            <MenuItem value="transfer">
+                              <FormattedMessage
+                                id="transfer"
+                                defaultMessage="Transfer"
+                              />
+                            </MenuItem>
                           </Field>
                         </FormControl>
                       </Grid>
@@ -449,6 +456,9 @@ export default function UserEventAnalyticsContainer({ siteId }: Props) {
                         )}
                         {values.txType === 'swap' && (
                           <SwapUserEventsData siteId={siteId} />
+                        )}
+                        {values.txType === 'transfer' && (
+                          <TransferUserEventsData siteId={siteId} />
                         )}
                       </Grid>
                     </Grid>

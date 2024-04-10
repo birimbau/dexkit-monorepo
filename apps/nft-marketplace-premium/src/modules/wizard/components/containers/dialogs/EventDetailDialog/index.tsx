@@ -3,6 +3,7 @@ import { UserEvent } from '@dexkit/ui/hooks/userEvents';
 import { Dialog, DialogContent, DialogProps, Divider } from '@mui/material';
 import { FormattedMessage } from 'react-intl';
 import SwapDetail from './SwapDetail';
+import TransferDetail from './TransferDetail';
 
 export interface EventDetailDialogProps {
   DialogProps: DialogProps;
@@ -32,6 +33,7 @@ export default function EventDetailDialog({
       <Divider />
       <DialogContent>
         {event?.type === 'swap' && <SwapDetail event={event} />}
+        {event?.type === 'transfer' && <TransferDetail event={event} />}
       </DialogContent>
     </Dialog>
   );

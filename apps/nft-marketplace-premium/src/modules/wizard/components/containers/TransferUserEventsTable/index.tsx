@@ -1,4 +1,4 @@
-import { SwapUserEvent } from '@/modules/wizard/types/events';
+import { TransferUserEvent } from '@/modules/wizard/types/events';
 import {
   Table,
   TableBody,
@@ -11,7 +11,7 @@ import { FormattedMessage } from 'react-intl';
 import TransferEventRow from './TransferEventRow';
 
 export interface TransferUserEventsTableProps {
-  events: SwapUserEvent[];
+  events: TransferUserEvent[];
 }
 
 export default function TransferUserEventsTable({
@@ -28,10 +28,10 @@ export default function TransferUserEventsTable({
             <FormattedMessage id="from" defaultMessage="From" />
           </TableCell>
           <TableCell>
-            <FormattedMessage id="amount.in" defaultMessage="Amount in" />
+            <FormattedMessage id="amount" defaultMessage="Amount" />
           </TableCell>
           <TableCell>
-            <FormattedMessage id="amount.out" defaultMessage="Amount out" />
+            <FormattedMessage id="to" defaultMessage="to" />
           </TableCell>
           <TableCell>
             <FormattedMessage id="actions" defaultMessage="Actions" />

@@ -19,3 +19,12 @@ export type SwapUserEvent = {
   };
   tokenOutAmount: string;
 };
+
+export type TransferUserEvent = {
+  amount: string;
+  chainId: number;
+  txHash: string;
+  to: string;
+  from: string;
+  token: { symbol: string };
+};
