@@ -36,7 +36,7 @@ import { SyntheticEvent, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import Link from '@dexkit/ui/components/AppLink';
-import { useThirdwebApprove } from '../../hooks/thirdweb';
+import { useThirdwebApprove } from '@dexkit/ui/modules/contract-wizard/hooks/thirdweb';
 import AirdropDialog from '../dialogs/AirdropDialog';
 
 export interface ContractAirdropErc20ContainerProps {

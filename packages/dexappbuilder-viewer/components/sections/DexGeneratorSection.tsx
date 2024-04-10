@@ -1,8 +1,8 @@
 import { Container, Grid } from "@mui/material";
 import { ThirdwebSDKProvider } from "@thirdweb-dev/react";
 import { useWeb3React } from "@web3-react/core";
-import { THIRDWEB_CLIENT_ID } from "src/constants";
 
+import { THIRDWEB_CLIENT_ID } from "@dexkit/ui/constants/thirdweb";
 import { DexGeneratorPageSection } from "@dexkit/ui/modules/wizard/types/section";
 import ClaimAirdropERC20Section from "./ClaimAirdropERC20Section";
 import CollectionSection from "./CollectionSection";
