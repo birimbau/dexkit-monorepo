@@ -39,6 +39,7 @@ const WrapperLayout: React.FC<{
   appConfig: AppConfig;
   children?: React.ReactNode | React.ReactNode[];
 }> = ({ children, appConfig }) => {
+  
   const isDrawerOpen = useDrawerIsOpen();
 
   const handleCloseDrawer = () => isDrawerOpen.setIsOpen(false);
@@ -148,7 +149,11 @@ const MainLayout: React.FC<Props> = ({
       )}
     >
       {isDrawerOpen.isOpen && (
-        <AppDrawer open={isDrawerOpen.isOpen} onClose={handleCloseDrawer} />
+        <AppDrawer
+          open={isDrawerOpen.isOpen}
+          onClose={handleCloseDrawer}
+          appConfig={appConfig}
+        />
       )}
       <GlobalDialogs />
       <Navbar appConfig={appConfig} isPreview={isPreview} />
