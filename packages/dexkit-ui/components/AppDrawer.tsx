@@ -61,7 +61,7 @@ interface Props {
 }
 
 function AppDrawer({ open, onClose, appConfig }: Props) {
-  const { isActive, chainId, connector } = useWeb3React();
+  const { isActive } = useWeb3React();
 
   const connectWalletDialog = useConnectWalletDialog();
 

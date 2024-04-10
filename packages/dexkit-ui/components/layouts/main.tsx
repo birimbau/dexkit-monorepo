@@ -35,6 +35,66 @@ interface Props {
   isPreview?: boolean;
 }
 
+const WrapperLayout: React.FC<{
+  appConfig: AppConfig;
+  children?: React.ReactNode | React.ReactNode[];
+}> = ({ children, appConfig }) => {
+  
+  const isDrawerOpen = useDrawerIsOpen();
+
+  const handleCloseDrawer = () => isDrawerOpen.setIsOpen(false);
+
+  if (appConfig.menuSettings?.layout?.type === "sidebar") {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "stretch",
+          minHeight: "100vh",
+        }}
+      >
+        <Paper
+          sx={{ position: "relative", minHeight: "100vh" }}
+          square
+          variant="elevation"
+        >
+          <Box sx={{ position: "sticky", top: 72 }}>
+            <AppDrawer
+              appConfig={appConfig}
+              open={isDrawerOpen.isOpen}
+              onClose={handleCloseDrawer}
+            />
+          </Box>
+        </Paper>
+        <Box
+          style={{
+            flex: 1,
+            margin: 0,
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
+          {children}
+        </Box>
+      </Box>
+    );
+  } else {
+    return (
+      <Box
+        style={{
+          minHeight: "100vh",
+          margin: 0,
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
+        {children}
+      </Box>
+    );
+  }
+};
+
 const MainLayout: React.FC<Props> = ({
   children,
   noSsr,
@@ -89,78 +149,49 @@ const MainLayout: React.FC<Props> = ({
       )}
     >
       {isDrawerOpen.isOpen && (
-        <AppDrawer open={isDrawerOpen.isOpen} onClose={handleCloseDrawer} />
+        <AppDrawer
+          open={isDrawerOpen.isOpen}
+          onClose={handleCloseDrawer}
+          appConfig={appConfig}
+        />
       )}
       <GlobalDialogs />
       <Navbar appConfig={appConfig} isPreview={isPreview} />
       <NavbarAlt appConfig={appConfig} isPreview={isPreview} />
 
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "stretch",
-          minHeight: "100vh",
-        }}
-      >
-        <Paper
-          sx={{ position: "relative", minHeight: "100vh" }}
-          square
-          variant="elevation"
-        >
-          <Box sx={{ position: "sticky", top: 72 }}>
-            <AppDrawer
-              appConfig={appConfig}
-              open={isDrawerOpen.isOpen}
-              onClose={handleCloseDrawer}
-            />
-          </Box>
-        </Paper>
-        <Box
-          style={{
-            flex: 1,
-            margin: 0,
-            display: "flex",
-            flexDirection: "column",
-          }}
-        >
-          <Box sx={{ flex: 1 }} py={disablePadding ? 0 : 4}>
-            <ErrorBoundary
-              fallbackRender={({ error, resetErrorBoundary }) => (
-                <Stack justifyContent="center" alignItems="center">
-                  <Typography variant="h6">
-                    <FormattedMessage
-                      id="something.went.wrong"
-                      defaultMessage="Oops, something went wrong"
-                      description="Something went wrong error message"
-                    />
-                  </Typography>
-                  <Typography variant="body1" color="textSecondary">
-                    {String(error)}
-                  </Typography>
-                  <Button color="primary" onClick={resetErrorBoundary}>
-                    <FormattedMessage
-                      id="try.again"
-                      defaultMessage="Try again"
-                      description="Try again"
-                    />
-                  </Button>
-                </Stack>
-              )}
-            >
-              {children}
-            </ErrorBoundary>
-          </Box>
-
-          <Box>
-            <Footer
-              appConfig={appConfig}
-              isPreview={isPreview}
-              appNFT={appNFT}
-            />
-          </Box>
+      <WrapperLayout appConfig={appConfig}>
+        <Box sx={{ flex: 1 }} py={disablePadding ? 0 : 4}>
+          <ErrorBoundary
+            fallbackRender={({ error, resetErrorBoundary }) => (
+              <Stack justifyContent="center" alignItems="center">
+                <Typography variant="h6">
+                  <FormattedMessage
+                    id="something.went.wrong"
+                    defaultMessage="Oops, something went wrong"
+                    description="Something went wrong error message"
+                  />
+                </Typography>
+                <Typography variant="body1" color="textSecondary">
+                  {String(error)}
+                </Typography>
+                <Button color="primary" onClick={resetErrorBoundary}>
+                  <FormattedMessage
+                    id="try.again"
+                    defaultMessage="Try again"
+                    description="Try again"
+                  />
+                </Button>
+              </Stack>
+            )}
+          >
+            {children}
+          </ErrorBoundary>
         </Box>
-      </Box>
+
+        <Box>
+          <Footer appConfig={appConfig} isPreview={isPreview} appNFT={appNFT} />
+        </Box>
+      </WrapperLayout>
     </ErrorBoundary>
   );
 

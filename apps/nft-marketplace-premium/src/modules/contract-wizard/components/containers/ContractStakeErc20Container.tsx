@@ -4,6 +4,13 @@ import { parseUnits } from '@dexkit/core/utils/ethers/parseUnits';
 import { useDexKitContext } from '@dexkit/ui';
 import FormikDecimalInput from '@dexkit/ui/components/FormikDecimalInput';
 import {
+  useDepositRewardTokensMutation,
+  useSetDefaultTimeUnit,
+  useSetRewardRatio,
+  useThirdwebApprove,
+  useWithdrawRewardsMutation,
+} from '@dexkit/ui/modules/contract-wizard/hooks/thirdweb';
+import {
   Box,
   Button,
   Card,
@@ -33,13 +40,6 @@ import { Switch, TextField } from 'formik-mui';
 import moment from 'moment';
 import { SyntheticEvent, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import {
-  useDepositRewardTokensMutation,
-  useSetDefaultTimeUnit,
-  useSetRewardRatio,
-  useThirdwebApprove,
-  useWithdrawRewardsMutation,
-} from '../../hooks/thirdweb';
 import ContractAdminTab from '../ContractAdminTab';
 import ContractMetadataTab from '../ContractMetadataTab';
 

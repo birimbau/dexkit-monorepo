@@ -1,5 +1,6 @@
 import { useDexKitContext } from '@dexkit/ui';
 import AppDataTableDialog from '@dexkit/ui/components/dialogs/AppDataTableDialog';
+import { useApproveForAll } from '@dexkit/ui/modules/contract-wizard/hooks/thirdweb';
 import {
   Avatar,
   Box,
@@ -26,7 +27,6 @@ import { useWeb3React } from '@web3-react/core';
 import { utils } from 'ethers';
 import { SyntheticEvent, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { useApproveForAll } from '../../hooks/thirdweb';
 import ContractAdminTab from '../ContractAdminTab';
 import ContractMetadataTab from '../ContractMetadataTab';
 import SelectCollectionDialog from '../dialogs/SelectCollectionDialog';
@@ -63,7 +63,7 @@ export default function ContractAirdropErc1155Container({
   const { data: isApprovedForAll } = useContractRead(
     tokenContract,
     'isApprovedForAll',
-    [account, address]
+    [account, address],
   );
 
   const airdropMutation = useMutation(
@@ -95,7 +95,7 @@ export default function ContractAirdropErc1155Container({
           recipient: r.recipient,
           tokenId: r.tokenId,
           amount: r.amount,
-        }))
+        })),
       );
 
       let tx = await call?.send();
@@ -115,7 +115,7 @@ export default function ContractAirdropErc1155Container({
       }
 
       return await tx?.wait();
-    }
+    },
   );
 
   const handleConfirm = (data: { [key: string]: string }[]) => {
@@ -124,7 +124,7 @@ export default function ContractAirdropErc1155Container({
         recipient: r.recipient,
         tokenId: parseInt(r.tokenId),
         amount: parseInt(r.amount),
-      }))
+      })),
     );
   };
 

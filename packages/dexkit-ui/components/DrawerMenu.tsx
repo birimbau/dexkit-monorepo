@@ -72,7 +72,11 @@ export function DrawerMenuItem({
   if (menu.type === "Page") {
     renderMenu = (
       <ListItemButton
-        sx={disablePadding ? undefined : { pl: depth * 2 }}
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          pl: disablePadding ? depth * 2 : undefined,
+        }}
         onClick={onClose}
         component={Link}
         href={menu.href || "/"}
@@ -111,7 +115,11 @@ export function DrawerMenuItem({
   if (menu.type === "External") {
     renderMenu = (
       <ListItemButton
-        sx={disablePadding ? undefined : { pl: depth * 2 }}
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          pl: disablePadding ? depth * 2 : undefined,
+        }}
         onClick={onClose}
         component={Link}
         href={menu.href || "/"}
@@ -131,9 +139,11 @@ export function DrawerMenuItem({
             </Avatar>
           )}
         </Stack>
+
         {!isMini && (
           <ListItemText sx={{ fontWeight: 600 }} primary={menu.name} />
         )}
+
         <CustomListItemSecondaryAction
           sx={(theme) => ({
             [theme.breakpoints.up("sm")]: {
@@ -151,7 +161,11 @@ export function DrawerMenuItem({
     renderMenu = (
       <>
         <ListItemButton
-          sx={disablePadding ? undefined : { pl: depth * 2 }}
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            pl: disablePadding ? depth * 2 : undefined,
+          }}
           onClick={() => setOpen((value) => !value)}
           ref={(btnRef: HTMLElement | null) => {
             ref.current = btnRef;

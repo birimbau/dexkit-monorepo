@@ -1,5 +1,4 @@
 import { ShowCaseParams } from "@dexkit/ui/modules/wizard/types/section";
-import { Container } from "@mui/material";
 import type { CellPlugin } from "@react-page/editor";
 import ShowCaseSection from "../../sections/ShowCaseSection";
 

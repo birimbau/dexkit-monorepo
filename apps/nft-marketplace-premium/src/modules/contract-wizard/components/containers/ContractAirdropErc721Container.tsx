@@ -1,5 +1,6 @@
 import { useDexKitContext } from '@dexkit/ui';
 import AppDataTableDialog from '@dexkit/ui/components/dialogs/AppDataTableDialog';
+import { useApproveForAll } from '@dexkit/ui/modules/contract-wizard/hooks/thirdweb';
 import {
   Box,
   Button,
@@ -24,7 +25,6 @@ import { useWeb3React } from '@web3-react/core';
 import { utils } from 'ethers';
 import { SyntheticEvent, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { useApproveForAll } from '../../hooks/thirdweb';
 import ContractAdminTab from '../ContractAdminTab';
 import ContractMetadataTab from '../ContractMetadataTab';
 import SelectCollectionDialog from '../dialogs/SelectCollectionDialog';
@@ -56,13 +56,13 @@ export default function ContractAirdropErc721Container({
 
   const { data: nftBalance, isLoading: isBalanceLoading } = useNFTBalance(
     tokenContract,
-    account
+    account,
   );
 
   const { data: isApprovedForAll } = useContractRead(
     tokenContract,
     'isApprovedForAll',
-    [account, address]
+    [account, address],
   );
 
   const airdropMutation = useMutation(
@@ -93,7 +93,7 @@ export default function ContractAirdropErc721Container({
         recipients.map((r) => ({
           recipient: r.recipient,
           tokenId: r.tokenId,
-        }))
+        })),
       );
 
       let tx = await call?.send();
@@ -113,7 +113,7 @@ export default function ContractAirdropErc721Container({
       }
 
       return await tx?.wait();
-    }
+    },
   );
 
   const handleConfirm = (data: { [key: string]: string }[]) => {
@@ -121,7 +121,7 @@ export default function ContractAirdropErc721Container({
       data.map((r) => ({
         recipient: r.recipient,
         tokenId: parseInt(r.tokenId),
-      }))
+      })),
     );
   };
 
