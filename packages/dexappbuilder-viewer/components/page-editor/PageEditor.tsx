@@ -57,6 +57,10 @@ import Swap2Plugin from "./plugins/Swap2Plugin";
 import TokenTradePlugin from "./plugins/TokenTradePlugin";
 import UserContractFormPlugin from "./plugins/UserContractFormPlugin";
 import WidgetPlugin from "./plugins/WidgetPlugin";
+
+import CarouselPlugin from "./plugins/CarouselPlugin";
+import ShowCasePlugin from "./plugins/ShowCasePlugin";
+
 // Define which plugins we want to use.
 const cellPlugins = [
   AssetAltPlugin,
@@ -67,6 +71,7 @@ const cellPlugins = [
       ModeEnum.IMAGE_MODE_FLAG,
   }),
   ButtonPlugin,
+  CarouselPlugin,
   CodeSnippet,
   CollectionPlugin,
   CollectionsPlugin,
@@ -84,8 +89,8 @@ const cellPlugins = [
   QrCodeReceive,
   ExtendedSpacer,
   SearchNFTPlugin,
+  ShowCasePlugin,
   StackPlugin,
-
   //  CustomLayoutPlugin,
   // SwapPlugin,
   Swap2Plugin,
@@ -105,6 +110,7 @@ const nftPlugins = [
       ModeEnum.IMAGE_MODE_FLAG,
   }),
   ButtonPlugin,
+  CarouselPlugin,
   CodeSnippet,
   CollectionPlugin,
   ContainerPlugin,
@@ -119,6 +125,7 @@ const nftPlugins = [
   ExtendedSpacer,
   StackPlugin,
   SearchNFTPlugin,
+  ShowCasePlugin,
   DefaultSlate,
   CustomContentPluginTwitter,
   video,
@@ -134,6 +141,7 @@ const swapPlugins = [
       ModeEnum.IMAGE_MODE_FLAG,
   }),
   ButtonPlugin,
+  CarouselPlugin,
   CodeSnippet,
   ContainerPlugin,
   ContractFormPlugin,
@@ -143,6 +151,7 @@ const swapPlugins = [
   ImagePlugin,
   QrCodeReceive,
   ExtendedSpacer,
+  ShowCasePlugin,
   StackPlugin,
   TokenTradePlugin,
   //  CustomLayoutPlugin,
