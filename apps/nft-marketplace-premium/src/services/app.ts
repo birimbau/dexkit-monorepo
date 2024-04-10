@@ -101,7 +101,7 @@ export async function getAppConfig(
 
   if (site?.startsWith('localhost')) {
     const [slug,] = site?.split('.') || [];
-    //const slug = 'zuriexswap';
+    //const slug = 'crypto-fans';
     if (slug) {
       const configResponse = (await getConfig({ slug, appPage })).data;
 
