@@ -38,7 +38,7 @@
     "@date-io/moment": "^2.13.1",
     "@dexkit/core": "*",
     "@dexkit/darkblock-evm-widget": "*",
-    "@dexkit/evm-chains": "^1.10.0",
+    "@dexkit/evm-chains": "^1.14",
     "@dexkit/ui": "*",
     "@dexkit/unlock-widget": "*",
     "@dexkit/wallet-connectors": "*",
