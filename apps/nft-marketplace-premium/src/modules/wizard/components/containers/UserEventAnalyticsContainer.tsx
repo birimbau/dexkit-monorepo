@@ -22,6 +22,7 @@ import Typography from '@mui/material/Typography';
 import { DataGrid } from '@mui/x-data-grid/DataGrid';
 import { GridToolbar } from '@mui/x-data-grid/components';
 
+import { UserOnChainEvents } from '@dexkit/core/constants/userEvents';
 import { Button, FormControl, MenuItem } from '@mui/material';
 import {
   GridColDef,
@@ -33,8 +34,7 @@ import { Select } from 'formik-mui';
 import { useCallback, useEffect, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { myAppsApi } from 'src/services/whitelabel';
-import SwapUserEventsData from './SwapUserEventsData';
-import TransferUserEventsData from './TransferUserEventsData';
+import UserEventsTable from './UserEventsTable';
 import EventDetailDialog from './dialogs/EventDetailDialog';
 
 export interface OnChainDataGridProps {
@@ -96,8 +96,6 @@ function OnChainDataGrid({ siteId, onViewDetails }: OnChainDataGridProps) {
   }, []);
 
   const columns: GridColDef[] = [
-    { field: 'id', headerName: 'ID', width: 90 },
-
     {
       field: 'createdAt',
       headerName: 'Created At',
@@ -317,6 +315,565 @@ function OffChainDataGrid({ siteId }: Props) {
   );
 }
 
+const columnTypes: { [key: string]: GridColDef[] } = {
+  [UserOnChainEvents.nftAcceptListERC1155]: [
+    {
+      field: 'chainId',
+      headerName: 'Network',
+      width: 110,
+      valueGetter: ({ row }) => {
+        return NETWORK_NAME(row.chainId);
+      },
+    },
+    {
+      field: 'hash',
+      headerName: 'TX',
+      width: 160,
+      renderCell: (params: any) =>
+        params.row.hash ? (
+          <Link
+            target="_blank"
+            href={`${NETWORK_EXPLORER(params.row.chainId)}/tx/${
+              params.row.hash
+            }`}
+          >
+            {truncateHash(params.row.hash)}
+          </Link>
+        ) : null,
+    },
+    {
+      field: 'tokenId',
+      headerName: 'tokenId',
+      width: 200,
+      renderCell: (params: any) => {
+        return params.row.processedMetadata.tokenId;
+      },
+    },
+    {
+      field: 'referral',
+      headerName: 'Referral',
+      width: 200,
+    },
+  ],
+  [UserOnChainEvents.swap]: [
+    {
+      field: 'chainId',
+      headerName: 'Network',
+      width: 110,
+      valueGetter: ({ row }) => {
+        return NETWORK_NAME(row.chainId);
+      },
+    },
+    {
+      field: 'hash',
+      headerName: 'TX',
+      width: 160,
+      renderCell: (params: any) =>
+        params.row.hash ? (
+          <Link
+            target="_blank"
+            href={`${NETWORK_EXPLORER(params.row.chainId)}/tx/${
+              params.row.hash
+            }`}
+          >
+            {truncateHash(params.row.hash)}
+          </Link>
+        ) : null,
+    },
+    {
+      field: 'amountIn',
+      headerName: 'Amount In',
+      width: 200,
+      renderCell: (params: any) => {
+        const { tokenInAmount, tokenIn } = params.row.processedMetadata;
+
+        return (
+          <Typography>
+            {tokenInAmount} {tokenIn?.symbol?.toUpperCase()}
+          </Typography>
+        );
+      },
+    },
+    {
+      field: 'amountOut',
+      headerName: 'Amount Out',
+      width: 200,
+      renderCell: (params: any) => {
+        const { tokenOut, tokenOutAmount } = params.row.processedMetadata;
+
+        return (
+          <Typography>
+            {tokenOutAmount} {tokenOut?.symbol?.toUpperCase()}
+          </Typography>
+        );
+      },
+    },
+    {
+      field: 'referral',
+      renderHeader: () => (
+        <FormattedMessage id="referral" defaultMessage="Referral" />
+      ),
+      width: 200,
+    },
+  ],
+  [UserOnChainEvents.transfer]: [
+    {
+      field: 'chainId',
+      headerName: 'Network',
+      width: 110,
+      valueGetter: ({ row }) => {
+        return NETWORK_NAME(row.chainId);
+      },
+    },
+    {
+      field: 'hash',
+      headerName: 'TX',
+      width: 160,
+      renderCell: (params: any) =>
+        params.row.hash ? (
+          <Link
+            target="_blank"
+            href={`${NETWORK_EXPLORER(params.row.chainId)}/tx/${
+              params.row.hash
+            }`}
+          >
+            {truncateHash(params.row.hash)}
+          </Link>
+        ) : null,
+    },
+    {
+      field: 'from',
+      headerName: 'From',
+      width: 160,
+      renderCell: (params: any) => {
+        return (
+          <Link
+            target="_blank"
+            href={`${NETWORK_EXPLORER(params.row.chainId)}/address/${
+              params.row.from
+            }`}
+          >
+            {truncateAddress(params.row.from)}
+          </Link>
+        );
+      },
+    },
+    {
+      field: 'amount',
+      headerName: 'Amount',
+      width: 160,
+      renderCell: (params: any) => {
+        return params.row.processedMetadata.amount;
+      },
+    },
+    {
+      field: 'to',
+      headerName: 'To',
+      width: 160,
+      renderCell: (params: any) => {
+        return (
+          <Link
+            target="_blank"
+            href={`${NETWORK_EXPLORER(params.row.chainId)}/address/${
+              params.row.processedMetadata.to
+            }`}
+          >
+            {truncateAddress(params.row.processedMetadata.to)}
+          </Link>
+        );
+      },
+    },
+    {
+      field: 'referral',
+      headerName: 'Referral',
+      width: 200,
+      renderCell: (params: any) => {
+        return (
+          <Link
+            target="_blank"
+            href={`${NETWORK_EXPLORER(params.row.chainId)}/address/${
+              params.row.referral
+            }`}
+          >
+            {truncateAddress(params.row.referral)}
+          </Link>
+        );
+      },
+    },
+  ],
+  [UserOnChainEvents.nftAcceptOfferERC1155]: [
+    {
+      field: 'chainId',
+      headerName: 'Network',
+      width: 110,
+      valueGetter: ({ row }) => {
+        return NETWORK_NAME(row.chainId);
+      },
+    },
+    {
+      field: 'hash',
+      headerName: 'TX',
+      width: 160,
+      renderCell: (params: any) =>
+        params.row.hash ? (
+          <Link
+            target="_blank"
+            href={`${NETWORK_EXPLORER(params.row.chainId)}/tx/${
+              params.row.hash
+            }`}
+          >
+            {truncateHash(params.row.hash)}
+          </Link>
+        ) : null,
+    },
+    {
+      headerName: 'tokenId',
+      field: 'tokenId',
+      renderCell: (params: any) => {
+        const { tokenId } = params.row.processedMetadata;
+
+        return tokenId;
+      },
+    },
+    {
+      headerName: 'Token Amount',
+      field: 'tokenAmount',
+      renderCell: (params: any) => {
+        const { tokenAmount } = params.row.processedMetadata;
+        return tokenAmount;
+      },
+    },
+    {
+      headerName: 'Collection Name',
+      field: 'collectionName',
+      renderCell: (params: any) => {
+        const { collection } = params.row.processedMetadata;
+
+        return collection.name;
+      },
+    },
+    {
+      headerName: 'NFT Amount',
+      field: 'nftAmount',
+      renderCell: (params: any) => {
+        const { nftAmount } = params.row.processedMetadata;
+
+        return nftAmount;
+      },
+    },
+    {
+      field: 'referral',
+      renderHeader: () => (
+        <FormattedMessage id="referral" defaultMessage="Referral" />
+      ),
+      width: 200,
+      renderCell: (params: any) => {
+        return (
+          <Link
+            target="_blank"
+            href={`${NETWORK_EXPLORER(params.row.chainId)}/address/${
+              params.row.referral
+            }`}
+          >
+            {truncateAddress(params.row.referral)}
+          </Link>
+        );
+      },
+    },
+  ],
+  [UserOnChainEvents.nftAcceptOfferERC721]: [
+    {
+      field: 'chainId',
+      headerName: 'Network',
+      width: 110,
+      valueGetter: ({ row }) => {
+        return NETWORK_NAME(row.chainId);
+      },
+    },
+    {
+      field: 'hash',
+      headerName: 'TX',
+      width: 160,
+      renderCell: (params: any) =>
+        params.row.hash ? (
+          <Link
+            target="_blank"
+            href={`${NETWORK_EXPLORER(params.row.chainId)}/tx/${
+              params.row.hash
+            }`}
+          >
+            {truncateHash(params.row.hash)}
+          </Link>
+        ) : null,
+    },
+    {
+      headerName: 'Token Amount',
+      field: 'tokenAmount',
+      renderCell: (params: any) => {
+        const { tokenAmount } = params.row.processedMetadata;
+        return tokenAmount;
+      },
+    },
+    {
+      headerName: 'Collection Name',
+      field: 'collectionName',
+      renderCell: (params: any) => {
+        const { collection } = params.row.processedMetadata;
+
+        return collection.name;
+      },
+    },
+    {
+      headerName: 'NFT Amount',
+      field: 'nftAmount',
+      renderCell: (params: any) => {
+        const { nftAmount } = params.row.processedMetadata;
+
+        return nftAmount;
+      },
+    },
+    {
+      field: 'referral',
+      renderHeader: () => (
+        <FormattedMessage id="referral" defaultMessage="Referral" />
+      ),
+      width: 200,
+      renderCell: (params: any) => {
+        return (
+          <Link
+            target="_blank"
+            href={`${NETWORK_EXPLORER(params.row.chainId)}/address/${
+              params.row.referral
+            }`}
+          >
+            {truncateAddress(params.row.referral)}
+          </Link>
+        );
+      },
+    },
+  ],
+  [UserOnChainEvents.nftAcceptListERC721]: [
+    {
+      field: 'chainId',
+      headerName: 'Network',
+      width: 110,
+      valueGetter: ({ row }) => {
+        return NETWORK_NAME(row.chainId);
+      },
+    },
+    {
+      field: 'hash',
+      headerName: 'TX',
+      width: 160,
+      renderCell: (params: any) =>
+        params.row.hash ? (
+          <Link
+            target="_blank"
+            href={`${NETWORK_EXPLORER(params.row.chainId)}/tx/${
+              params.row.hash
+            }`}
+          >
+            {truncateHash(params.row.hash)}
+          </Link>
+        ) : null,
+    },
+    {
+      headerName: 'Token Amount',
+      field: 'tokenAmount',
+      renderCell: (params: any) => {
+        const { tokenAmount } = params.row.processedMetadata;
+        return tokenAmount;
+      },
+    },
+    {
+      headerName: 'Collection Name',
+      field: 'collectionName',
+      renderCell: (params: any) => {
+        const { collection } = params.row.processedMetadata;
+
+        return collection.name;
+      },
+    },
+    {
+      headerName: 'NFT Amount',
+      field: 'nftAmount',
+      renderCell: (params: any) => {
+        const { nftAmount } = params.row.processedMetadata;
+
+        return nftAmount;
+      },
+    },
+    {
+      field: 'referral',
+      renderHeader: () => (
+        <FormattedMessage id="referral" defaultMessage="Referral" />
+      ),
+      width: 200,
+      renderCell: (params: any) => {
+        return (
+          <Link
+            target="_blank"
+            href={`${NETWORK_EXPLORER(params.row.chainId)}/address/${
+              params.row.referral
+            }`}
+          >
+            {truncateAddress(params.row.referral)}
+          </Link>
+        );
+      },
+    },
+  ],
+  [UserOnChainEvents.buyDropCollection]: [
+    {
+      field: 'chainId',
+      headerName: 'Network',
+      width: 110,
+      valueGetter: ({ row }) => {
+        return NETWORK_NAME(row.chainId);
+      },
+    },
+    {
+      field: 'hash',
+      headerName: 'TX',
+      width: 160,
+      renderCell: (params: any) =>
+        params.row.hash ? (
+          <Link
+            target="_blank"
+            href={`${NETWORK_EXPLORER(params.row.chainId)}/tx/${
+              params.row.hash
+            }`}
+          >
+            {truncateHash(params.row.hash)}
+          </Link>
+        ) : null,
+    },
+    {
+      headerName: 'Price',
+      field: 'price',
+      renderCell: (params: any) => {
+        const { price } = params.row.processedMetadata;
+        return price;
+      },
+    },
+    {
+      headerName: 'Collection Name',
+      field: 'collectionName',
+      renderCell: (params: any) => {
+        const { collection } = params.row.processedMetadata;
+
+        return collection.name;
+      },
+    },
+    {
+      headerName: 'NFT Amount',
+      field: 'nftAmount',
+      renderCell: (params: any) => {
+        const { nftAmount } = params.row.processedMetadata;
+
+        return nftAmount;
+      },
+    },
+    {
+      field: 'referral',
+      renderHeader: () => (
+        <FormattedMessage id="referral" defaultMessage="Referral" />
+      ),
+      width: 200,
+      renderCell: (params: any) => {
+        return (
+          <Link
+            target="_blank"
+            href={`${NETWORK_EXPLORER(params.row.chainId)}/address/${
+              params.row.referral
+            }`}
+          >
+            {truncateAddress(params.row.referral)}
+          </Link>
+        );
+      },
+    },
+  ],
+  [UserOnChainEvents.buyDropEdition]: [
+    {
+      field: 'chainId',
+      headerName: 'Network',
+      width: 110,
+      valueGetter: ({ row }) => {
+        return NETWORK_NAME(row.chainId);
+      },
+    },
+    {
+      field: 'hash',
+      headerName: 'TX',
+      width: 160,
+      renderCell: (params: any) =>
+        params.row.hash ? (
+          <Link
+            target="_blank"
+            href={`${NETWORK_EXPLORER(params.row.chainId)}/tx/${
+              params.row.hash
+            }`}
+          >
+            {truncateHash(params.row.hash)}
+          </Link>
+        ) : null,
+    },
+    {
+      headerName: 'Price',
+      field: 'price',
+      renderCell: (params: any) => {
+        const { price } = params.row.processedMetadata;
+        return price;
+      },
+    },
+    {
+      renderHeader: () => (
+        <FormattedMessage
+          id="collection.name"
+          defaultMessage="Collection Name"
+        />
+      ),
+      field: 'collectionName',
+      renderCell: (params: any) => {
+        const { collection } = params.row.processedMetadata;
+
+        return collection.name;
+      },
+    },
+    {
+      renderHeader: () => (
+        <FormattedMessage id="nft.amount" defaultMessage="NFT Amount" />
+      ),
+      field: 'nftAmount',
+      renderCell: (params: any) => {
+        const { nftAmount } = params.row.processedMetadata;
+
+        return nftAmount;
+      },
+    },
+    {
+      field: 'referral',
+      renderHeader: () => (
+        <FormattedMessage id="referral" defaultMessage="Referral" />
+      ),
+      width: 200,
+      renderCell: (params: any) => {
+        return (
+          <Link
+            target="_blank"
+            href={`${NETWORK_EXPLORER(params.row.chainId)}/address/${
+              params.row.referral
+            }`}
+          >
+            {truncateAddress(params.row.referral)}
+          </Link>
+        );
+      },
+    },
+  ],
+};
+
 interface Props {
   siteId?: number;
 }
@@ -342,7 +899,11 @@ export default function UserEventAnalyticsContainer({ siteId }: Props) {
     setEvent(event);
   };
 
-  const handleSubmit = () => {};
+  const handleSubmit = (values: any) => {};
+
+  const getColumns = (type: string): GridColDef[] => {
+    return columnTypes[type];
+  };
 
   return (
     <>
@@ -417,31 +978,70 @@ export default function UserEventAnalyticsContainer({ siteId }: Props) {
                 >
                   {({ values }) => (
                     <Grid container spacing={2}>
-                      <Grid item xs={12}>
-                        <FormControl>
+                      <Grid item xs={12} sm={4}>
+                        <FormControl fullWidth>
                           <Field
+                            fullWidth
                             component={Select}
                             name="txType"
                             label={
                               <FormattedMessage
-                                id="transaction.type"
-                                defaultMessage="Transaction type"
+                                id="event.type"
+                                defaultMessage="Event type"
                               />
                             }
                           >
                             <MenuItem value="all">
                               <FormattedMessage id="all" defaultMessage="All" />
                             </MenuItem>
-                            <MenuItem value="swap">
+                            <MenuItem value={UserOnChainEvents.swap}>
                               <FormattedMessage
                                 id="swap"
                                 defaultMessage="Swap"
                               />
                             </MenuItem>
-                            <MenuItem value="transfer">
+                            <MenuItem value={UserOnChainEvents.transfer}>
                               <FormattedMessage
                                 id="transfer"
                                 defaultMessage="Transfer"
+                              />
+                            </MenuItem>
+                            <MenuItem
+                              value={UserOnChainEvents.nftAcceptListERC1155}
+                            >
+                              <FormattedMessage
+                                id="accept.nft.listing.erc1155"
+                                defaultMessage="Accept NFT Listing ERC1155"
+                              />
+                            </MenuItem>
+                            <MenuItem
+                              value={UserOnChainEvents.nftAcceptOfferERC1155}
+                            >
+                              <FormattedMessage
+                                id="accepted.offers.erc1155"
+                                defaultMessage="Accepted Offers ERC1155"
+                              />
+                            </MenuItem>
+                            <MenuItem
+                              value={UserOnChainEvents.nftAcceptOfferERC721}
+                            >
+                              <FormattedMessage
+                                id="accepted.offers.erc721"
+                                defaultMessage="Accepted Offers ERC721"
+                              />
+                            </MenuItem>
+                            <MenuItem
+                              value={UserOnChainEvents.buyDropCollection}
+                            >
+                              <FormattedMessage
+                                id="buy.collection.drop"
+                                defaultMessage="Buy Collection Drops"
+                              />
+                            </MenuItem>
+                            <MenuItem value={UserOnChainEvents.buyDropEdition}>
+                              <FormattedMessage
+                                id="buy.edition.drop"
+                                defaultMessage="Buy Edition Drops"
                               />
                             </MenuItem>
                           </Field>
@@ -454,11 +1054,13 @@ export default function UserEventAnalyticsContainer({ siteId }: Props) {
                             onViewDetails={handleViewDetails}
                           />
                         )}
-                        {values.txType === 'swap' && (
-                          <SwapUserEventsData siteId={siteId} />
-                        )}
-                        {values.txType === 'transfer' && (
-                          <TransferUserEventsData siteId={siteId} />
+                        {values.txType !== 'all' && (
+                          <UserEventsTable
+                            key={values.txType}
+                            type={values.txType as UserOnChainEvents}
+                            columns={getColumns(values.txType)}
+                            siteId={siteId}
+                          />
                         )}
                       </Grid>
                     </Grid>
