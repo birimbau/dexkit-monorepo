@@ -91,6 +91,7 @@ export default function DeployPage() {
   const thirdwebMetadataQuery = useThirdwebContractMetadataQuery({
     id: slug as string,
     clientId: THIRDWEB_CLIENT_ID,
+    creator: creator as string,
   });
 
   const formConfigParamsQuery = useFormConfigParamsQuery({

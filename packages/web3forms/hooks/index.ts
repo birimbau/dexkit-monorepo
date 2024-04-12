@@ -514,14 +514,23 @@ export const THIRDWEB_CONTRACT_METADATA = "THIRDWEB_CONTRACT_METADATA";
 export default function useThirdwebContractMetadataQuery({
   id,
   clientId,
+  creator,
 }: {
   id: string;
+  creator?: string;
   clientId?: string;
 }) {
-  return useQuery([THIRDWEB_CONTRACT_METADATA, id, clientId], async () => {
+  return useQuery([THIRDWEB_CONTRACT_METADATA, id, creator], async () => {
+    let publisher = "deployer.thirdweb.eth";
+
+    if (creator === 'blast' || creator === 'dexkit') {
+      publisher = '0x5265Bde27F57E738bE6c1F6AB3544e82cdc92a8f';
+    }
+
+
     const contract = await new ThirdwebSDK("polygon", { clientId })
       .getPublisher()
-      .getLatest("deployer.thirdweb.eth", id);
+      .getLatest(publisher, id);
 
     if (contract) {
       const normalizedUrl = getNormalizedUrl(contract.metadataUri);

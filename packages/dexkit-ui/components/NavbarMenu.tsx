@@ -157,7 +157,7 @@ export default function NavbarMenu(props: Props) {
         }}
       >
         {menu.children?.map((m, k, arr) => (
-          <>
+          <div key={k}>
             {renderMenu(m, k)}
             {k < arr.length - 1 && (
               <Divider
@@ -168,7 +168,7 @@ export default function NavbarMenu(props: Props) {
                 }}
               />
             )}
-          </>
+          </div>
         ))}
       </Menu>
     </>
