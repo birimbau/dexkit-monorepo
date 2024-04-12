@@ -89,6 +89,7 @@ export function ContractMetadataHeader({
       case "DropERC721":
         url = `/drop/nft/${network}/${address}`;
         break;
+      case "DropAllowanceERC20":
       case "DropERC20":
         url = `/drop/token/${network}/${address}`;
         break;

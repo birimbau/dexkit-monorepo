@@ -9,6 +9,20 @@ export const COMMON_NOTIFICATION_TYPES: { [key: string]: AppNotificationType } =
     color: "primary.light",
     icon: "check",
   },
+  approveSpender: {
+    type: "approveSpender",
+    message: "Allow {spender} to spend {quantity} {name} ({symbol}) on your behalf",
+    id: "approve.spender.quantity.on.your.behalf",
+    color: "primary.light",
+    icon: "check",
+  },
+  revokeSpender: {
+    type: "revokeSpender",
+    message: "Revoke {spender} to spend {name} ({symbol}) on your behalf",
+    id: "revoke.spender.quantity.on.your.behalf",
+    color: "primary.light",
+    icon: "check",
+  },
   approveForAll: {
     type: "approveForAll",
     message: "Approve {name} ({tokenId}) to trade",
