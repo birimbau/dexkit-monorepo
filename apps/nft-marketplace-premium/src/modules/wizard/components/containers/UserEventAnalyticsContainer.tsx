@@ -319,7 +319,9 @@ const columnTypes: { [key: string]: GridColDef[] } = {
   [UserOnChainEvents.nftAcceptListERC1155]: [
     {
       field: 'chainId',
-      headerName: 'Network',
+      renderHeader: () => (
+        <FormattedMessage id="network" defaultMessage="Network" />
+      ),
       width: 110,
       valueGetter: ({ row }) => {
         return NETWORK_NAME(row.chainId);
@@ -343,7 +345,9 @@ const columnTypes: { [key: string]: GridColDef[] } = {
     },
     {
       field: 'tokenId',
-      headerName: 'tokenId',
+      renderHeader: () => (
+        <FormattedMessage id="token.id" defaultMessage="Token ID" />
+      ),
       width: 200,
       renderCell: (params: any) => {
         return params.row.processedMetadata.tokenId;
@@ -358,7 +362,9 @@ const columnTypes: { [key: string]: GridColDef[] } = {
   [UserOnChainEvents.swap]: [
     {
       field: 'chainId',
-      headerName: 'Network',
+      renderHeader: () => (
+        <FormattedMessage id="network" defaultMessage="Network" />
+      ),
       width: 110,
       valueGetter: ({ row }) => {
         return NETWORK_NAME(row.chainId);
@@ -382,7 +388,9 @@ const columnTypes: { [key: string]: GridColDef[] } = {
     },
     {
       field: 'amountIn',
-      headerName: 'Amount In',
+      renderHeader: () => (
+        <FormattedMessage id="amount.in" defaultMessage="Amount In" />
+      ),
       width: 200,
       renderCell: (params: any) => {
         const { tokenInAmount, tokenIn } = params.row.processedMetadata;
@@ -396,7 +404,9 @@ const columnTypes: { [key: string]: GridColDef[] } = {
     },
     {
       field: 'amountOut',
-      headerName: 'Amount Out',
+      renderHeader: () => (
+        <FormattedMessage id="amount.out" defaultMessage="Amount Out" />
+      ),
       width: 200,
       renderCell: (params: any) => {
         const { tokenOut, tokenOutAmount } = params.row.processedMetadata;
@@ -419,7 +429,9 @@ const columnTypes: { [key: string]: GridColDef[] } = {
   [UserOnChainEvents.transfer]: [
     {
       field: 'chainId',
-      headerName: 'Network',
+      renderHeader: () => (
+        <FormattedMessage id="network" defaultMessage="Network" />
+      ),
       width: 110,
       valueGetter: ({ row }) => {
         return NETWORK_NAME(row.chainId);
@@ -443,7 +455,7 @@ const columnTypes: { [key: string]: GridColDef[] } = {
     },
     {
       field: 'from',
-      headerName: 'From',
+      renderHeader: () => <FormattedMessage id="from" defaultMessage="From" />,
       width: 160,
       renderCell: (params: any) => {
         return (
@@ -460,7 +472,9 @@ const columnTypes: { [key: string]: GridColDef[] } = {
     },
     {
       field: 'amount',
-      headerName: 'Amount',
+      renderHeader: () => (
+        <FormattedMessage id="amount" defaultMessage="Amount" />
+      ),
       width: 160,
       renderCell: (params: any) => {
         return params.row.processedMetadata.amount;
@@ -468,7 +482,7 @@ const columnTypes: { [key: string]: GridColDef[] } = {
     },
     {
       field: 'to',
-      headerName: 'To',
+      renderHeader: () => <FormattedMessage id="to" defaultMessage="To" />,
       width: 160,
       renderCell: (params: any) => {
         return (
@@ -504,7 +518,9 @@ const columnTypes: { [key: string]: GridColDef[] } = {
   [UserOnChainEvents.nftAcceptOfferERC1155]: [
     {
       field: 'chainId',
-      headerName: 'Network',
+      renderHeader: () => (
+        <FormattedMessage id="network" defaultMessage="Network" />
+      ),
       width: 110,
       valueGetter: ({ row }) => {
         return NETWORK_NAME(row.chainId);
@@ -527,7 +543,9 @@ const columnTypes: { [key: string]: GridColDef[] } = {
         ) : null,
     },
     {
-      headerName: 'tokenId',
+      renderHeader: () => (
+        <FormattedMessage id="tokenId" defaultMessage="Token ID" />
+      ),
       field: 'tokenId',
       renderCell: (params: any) => {
         const { tokenId } = params.row.processedMetadata;
@@ -536,7 +554,9 @@ const columnTypes: { [key: string]: GridColDef[] } = {
       },
     },
     {
-      headerName: 'Token Amount',
+      renderHeader: () => (
+        <FormattedMessage id="token.amount" defaultMessage="Token Amount" />
+      ),
       field: 'tokenAmount',
       renderCell: (params: any) => {
         const { tokenAmount } = params.row.processedMetadata;
@@ -544,7 +564,12 @@ const columnTypes: { [key: string]: GridColDef[] } = {
       },
     },
     {
-      headerName: 'Collection Name',
+      renderHeader: () => (
+        <FormattedMessage
+          id="collection.name"
+          defaultMessage="Collection Name"
+        />
+      ),
       field: 'collectionName',
       renderCell: (params: any) => {
         const { collection } = params.row.processedMetadata;
@@ -553,7 +578,9 @@ const columnTypes: { [key: string]: GridColDef[] } = {
       },
     },
     {
-      headerName: 'NFT Amount',
+      renderHeader: () => (
+        <FormattedMessage id="nft.amount" defaultMessage="NFT Amount" />
+      ),
       field: 'nftAmount',
       renderCell: (params: any) => {
         const { nftAmount } = params.row.processedMetadata;
@@ -584,7 +611,9 @@ const columnTypes: { [key: string]: GridColDef[] } = {
   [UserOnChainEvents.nftAcceptOfferERC721]: [
     {
       field: 'chainId',
-      headerName: 'Network',
+      renderHeader: () => (
+        <FormattedMessage id="network" defaultMessage="Network" />
+      ),
       width: 110,
       valueGetter: ({ row }) => {
         return NETWORK_NAME(row.chainId);
@@ -607,7 +636,9 @@ const columnTypes: { [key: string]: GridColDef[] } = {
         ) : null,
     },
     {
-      headerName: 'Token Amount',
+      renderHeader: () => (
+        <FormattedMessage id="token.amount" defaultMessage="Token Amount" />
+      ),
       field: 'tokenAmount',
       renderCell: (params: any) => {
         const { tokenAmount } = params.row.processedMetadata;
@@ -615,7 +646,12 @@ const columnTypes: { [key: string]: GridColDef[] } = {
       },
     },
     {
-      headerName: 'Collection Name',
+      renderHeader: () => (
+        <FormattedMessage
+          id="collection.name"
+          defaultMessage="Collection Name"
+        />
+      ),
       field: 'collectionName',
       renderCell: (params: any) => {
         const { collection } = params.row.processedMetadata;
@@ -624,7 +660,9 @@ const columnTypes: { [key: string]: GridColDef[] } = {
       },
     },
     {
-      headerName: 'NFT Amount',
+      renderHeader: () => (
+        <FormattedMessage id="nft.amount" defaultMessage="NFT Amount" />
+      ),
       field: 'nftAmount',
       renderCell: (params: any) => {
         const { nftAmount } = params.row.processedMetadata;
@@ -655,7 +693,9 @@ const columnTypes: { [key: string]: GridColDef[] } = {
   [UserOnChainEvents.nftAcceptListERC721]: [
     {
       field: 'chainId',
-      headerName: 'Network',
+      renderHeader: () => (
+        <FormattedMessage id="network" defaultMessage="Network" />
+      ),
       width: 110,
       valueGetter: ({ row }) => {
         return NETWORK_NAME(row.chainId);
@@ -678,7 +718,9 @@ const columnTypes: { [key: string]: GridColDef[] } = {
         ) : null,
     },
     {
-      headerName: 'Token Amount',
+      renderHeader: () => (
+        <FormattedMessage id="token.amount" defaultMessage="Token Amount" />
+      ),
       field: 'tokenAmount',
       renderCell: (params: any) => {
         const { tokenAmount } = params.row.processedMetadata;
@@ -686,7 +728,12 @@ const columnTypes: { [key: string]: GridColDef[] } = {
       },
     },
     {
-      headerName: 'Collection Name',
+      renderHeader: () => (
+        <FormattedMessage
+          id="collection.name"
+          defaultMessage="Collection name"
+        />
+      ),
       field: 'collectionName',
       renderCell: (params: any) => {
         const { collection } = params.row.processedMetadata;
@@ -695,7 +742,9 @@ const columnTypes: { [key: string]: GridColDef[] } = {
       },
     },
     {
-      headerName: 'NFT Amount',
+      renderHeader: () => (
+        <FormattedMessage id="nft.amount" defaultMessage="NFT Amount" />
+      ),
       field: 'nftAmount',
       renderCell: (params: any) => {
         const { nftAmount } = params.row.processedMetadata;
@@ -726,7 +775,9 @@ const columnTypes: { [key: string]: GridColDef[] } = {
   [UserOnChainEvents.buyDropCollection]: [
     {
       field: 'chainId',
-      headerName: 'Network',
+      renderHeader: () => (
+        <FormattedMessage id="network" defaultMessage="Network" />
+      ),
       width: 110,
       valueGetter: ({ row }) => {
         return NETWORK_NAME(row.chainId);
@@ -749,7 +800,9 @@ const columnTypes: { [key: string]: GridColDef[] } = {
         ) : null,
     },
     {
-      headerName: 'Price',
+      renderHeader: () => (
+        <FormattedMessage id="price" defaultMessage="Collection Name" />
+      ),
       field: 'price',
       renderCell: (params: any) => {
         const { price } = params.row.processedMetadata;
@@ -757,7 +810,12 @@ const columnTypes: { [key: string]: GridColDef[] } = {
       },
     },
     {
-      headerName: 'Collection Name',
+      renderHeader: () => (
+        <FormattedMessage
+          id="collection.name"
+          defaultMessage="Collection Name"
+        />
+      ),
       field: 'collectionName',
       renderCell: (params: any) => {
         const { collection } = params.row.processedMetadata;
@@ -766,7 +824,9 @@ const columnTypes: { [key: string]: GridColDef[] } = {
       },
     },
     {
-      headerName: 'NFT Amount',
+      renderHeader: () => (
+        <FormattedMessage id="nft.amount" defaultMessage="NFT Amount" />
+      ),
       field: 'nftAmount',
       renderCell: (params: any) => {
         const { nftAmount } = params.row.processedMetadata;
@@ -820,7 +880,9 @@ const columnTypes: { [key: string]: GridColDef[] } = {
         ) : null,
     },
     {
-      headerName: 'Price',
+      renderHeader: () => (
+        <FormattedMessage id="price" defaultMessage="Price" />
+      ),
       field: 'price',
       renderCell: (params: any) => {
         const { price } = params.row.processedMetadata;
