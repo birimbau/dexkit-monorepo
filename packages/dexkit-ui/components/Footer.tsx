@@ -194,8 +194,8 @@ export function Footer({ appConfig, isPreview, appNFT }: Props) {
                       <Image
                         src={media?.iconUrl}
                         alt={media?.label || ""}
-                        height={Number(theme.spacing(3))}
-                        width={Number(theme.spacing(3))}
+                        height={24}
+                        width={24}
                       />
                     </IconButton>
                   ))}

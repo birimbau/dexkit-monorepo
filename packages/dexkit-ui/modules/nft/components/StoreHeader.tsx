@@ -42,12 +42,7 @@ export function StoreHeader(props: Props) {
                 borderColor: "white",
               })}
             >
-              <Image
-                src={profileImageURL}
-                alt={description || " "}
-                height={Number(theme.spacing(14))}
-                width={Number(theme.spacing(14))}
-              />
+              <Image src={profileImageURL} alt={description || " "} fill />
             </Box>
           ) : (
             <Avatar
