@@ -1,5 +1,14 @@
 /** @type {import('next').NextConfig} */
 export default {
+  experimental: {
+    optimizePackageImports: ['ethers'],
+    turbo: {
+      resolveAlias: {
+        'react/jsx-runtime.js': 'react/jsx-runtime',
+        'react/jsx-dev-runtime.js': 'react/jsx-dev-runtime',
+      },
+    },
+  },
   transpilePackages: [
     '@dexkit/widgets',
     '@dexkit/ui',

@@ -1,4 +1,4 @@
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import {
   Divider,
   Icon,
@@ -6,15 +6,15 @@ import {
   ListItemIcon,
   ListItemText,
   alpha,
-} from '@mui/material';
-import Button from '@mui/material/Button';
-import Menu from '@mui/material/Menu';
-import * as React from 'react';
-import { FormattedMessage } from 'react-intl';
-import { MenuTree } from '../types/config';
-import Link from './Link';
+} from "@mui/material";
+import Button from "@mui/material/Button";
+import Menu from "@mui/material/Menu";
+import * as React from "react";
+import { FormattedMessage } from "react-intl";
+import { MenuTree } from "../modules/wizard/types/config";
+import Link from "./AppLink";
 
-import LaunchIcon from '@mui/icons-material/Launch';
+import LaunchIcon from "@mui/icons-material/Launch";
 
 interface Props {
   menu: MenuTree;
@@ -55,14 +55,14 @@ export default function NavbarMenu(props: Props) {
   };
 
   const renderMenu = (item: MenuTree, key: number) => {
-    if (item.type === 'Page') {
+    if (item.type === "Page") {
       return (
         <ListItemButton
           dense
           key={key}
           disabled={isPreview}
           LinkComponent={Link}
-          href={item.href || ''}
+          href={item.href || ""}
         >
           {item.data?.iconName && (
             <ListItemIcon>
@@ -75,7 +75,7 @@ export default function NavbarMenu(props: Props) {
       );
     }
 
-    if (item.type === 'External') {
+    if (item.type === "External") {
       return (
         <ListItemButton
           dense
@@ -83,7 +83,7 @@ export default function NavbarMenu(props: Props) {
           target="_blank"
           disabled={isPreview}
           LinkComponent={Link}
-          href={item.href || ''}
+          href={item.href || ""}
         >
           <LaunchIcon fontSize="inherit" sx={{ mr: 2 }} />
           <ListItemText primary={item.name} />
@@ -91,7 +91,7 @@ export default function NavbarMenu(props: Props) {
       );
     }
 
-    if (item.type === 'Menu' && item.children) {
+    if (item.type === "Menu" && item.children) {
       return <MenuItem item={item} />;
     }
   };
@@ -101,9 +101,9 @@ export default function NavbarMenu(props: Props) {
       {child ? (
         <ListItemButton
           dense
-          aria-controls={open ? 'navbar-menu' : undefined}
+          aria-controls={open ? "navbar-menu" : undefined}
           aria-haspopup="true"
-          aria-expanded={open ? 'true' : undefined}
+          aria-expanded={open ? "true" : undefined}
           onClick={handleClick}
         >
           {menu.data?.iconName && (
@@ -118,15 +118,15 @@ export default function NavbarMenu(props: Props) {
       ) : (
         <Button
           id="navbar-menu"
-          aria-controls={open ? 'navbar-menu' : undefined}
+          aria-controls={open ? "navbar-menu" : undefined}
           aria-haspopup="true"
-          aria-expanded={open ? 'true' : undefined}
+          aria-expanded={open ? "true" : undefined}
           sx={{
             fontWeight: 600,
-            textDecoration: 'none',
-            color: 'text.primary',
-            textTransform: 'none',
-            fontSize: 'inherit',
+            textDecoration: "none",
+            color: "text.primary",
+            textTransform: "none",
+            fontSize: "inherit",
           }}
           startIcon={
             menu.data?.iconName ? <Icon>{menu.data?.iconName}</Icon> : undefined
@@ -148,27 +148,27 @@ export default function NavbarMenu(props: Props) {
         onClose={handleClose}
         anchorOrigin={
           child
-            ? { horizontal: 'right', vertical: 'center' }
-            : { vertical: 'bottom', horizontal: 'left' }
+            ? { horizontal: "right", vertical: "center" }
+            : { vertical: "bottom", horizontal: "left" }
         }
         MenuListProps={{
-          'aria-labelledby': 'navbar-menu',
+          "aria-labelledby": "navbar-menu",
           disablePadding: true,
         }}
       >
         {menu.children?.map((m, k, arr) => (
-          <>
+          <div key={k}>
             {renderMenu(m, k)}
             {k < arr.length - 1 && (
               <Divider
                 sx={{
-                  display: 'block',
+                  display: "block",
                   borderColor: (theme) =>
                     alpha(theme.palette.text.disabled, 0.1),
                 }}
               />
             )}
-          </>
+          </div>
         ))}
       </Menu>
     </>

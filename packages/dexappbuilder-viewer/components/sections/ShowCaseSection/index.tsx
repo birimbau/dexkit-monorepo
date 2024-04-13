@@ -1,15 +1,15 @@
-import { useIsMobile } from '@dexkit/core';
+import { useIsMobile } from "@dexkit/core";
 import {
   ShowCaseItem,
   ShowCasePageSection,
-} from '@dexkit/ui/modules/wizard/types/section';
-import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
-import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
-import { Box, Grid, IconButton, Stack, alpha } from '@mui/material';
-import { useMemo, useState } from 'react';
-import SwipeableViews from 'react-swipeable-views';
-import Pagination from '../CarouselSection/Pagination';
-import ShowCaseCard from './ShowCaseCard';
+} from "@dexkit/ui/modules/wizard/types/section";
+import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
+import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
+import { Box, Grid, IconButton, Stack, alpha } from "@mui/material";
+import { useMemo, useState } from "react";
+import SwipeableViews from "react-swipeable-views";
+import Pagination from "../CarouselSection/Pagination";
+import ShowCaseCard from "./ShowCaseCard";
 
 function chunk<T>(arr: T[], len: number) {
   var chunks = [],
@@ -38,6 +38,8 @@ export default function ShowCaseSection({ section }: ShowCaseSectionProps) {
     return chunk<ShowCaseItem>(items, isMobile ? 2 : 4);
   }, [items, isMobile]);
 
+  console.log(pages);
+
   const handleChangeIndex = (index: number, indexLatest: number) => {
     setIndex(index);
   };
@@ -60,9 +62,9 @@ export default function ShowCaseSection({ section }: ShowCaseSectionProps) {
 
   const alignItemsValue = useMemo(() => {
     const results = {
-      left: 'flex-start',
-      center: 'center',
-      right: 'flex-end',
+      left: "flex-start",
+      center: "center",
+      right: "flex-end",
     };
 
     return results[alignItems];
@@ -92,7 +94,7 @@ export default function ShowCaseSection({ section }: ShowCaseSectionProps) {
         <Box sx={{ flex: 1 }}>
           <SwipeableViews index={index} onChangeIndex={handleChangeIndex}>
             {pages.map((page, pageIndex) => (
-              <Box sx={{ position: 'aboslute' }} key={pageIndex}>
+              <Box sx={{ position: "aboslute" }} key={pageIndex}>
                 <Grid
                   container
                   justifyContent={alignItemsValue}
@@ -122,7 +124,7 @@ export default function ShowCaseSection({ section }: ShowCaseSectionProps) {
         )}
       </Stack>
       {pages.length > 1 && (
-        <Box sx={{ position: 'relative', py: 2 }}>
+        <Box sx={{ position: "relative", py: 2 }}>
           <Pagination
             dots={pages?.length}
             index={index}

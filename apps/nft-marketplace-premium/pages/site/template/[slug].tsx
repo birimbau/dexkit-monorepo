@@ -162,7 +162,6 @@ export const SiteTemplatePage: NextPage<{
                       top: 0,
                       width: '100%',
                     }}
-                    fill
                     alt={formatMessage({
                       id: 'nft.image',
                       defaultMessage: 'NFT Image',

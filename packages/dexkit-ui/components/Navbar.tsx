@@ -67,7 +67,7 @@ import {
 } from "@dexkit/ui/hooks";
 import { AppConfig } from "@dexkit/ui/modules/wizard/types/config";
 import AppProfileMenu from "./AppProfileMenu";
-import NavbarMenu from "./Menu";
+import NavbarMenu from "./NavbarMenu";
 import { ThemeModeSelector } from "./ThemeModeSelector";
 
 interface Props {
@@ -330,7 +330,6 @@ function Navbar({ appConfig, isPreview }: Props) {
           mode === ThemeMode.dark ? (
             <Link href={isPreview ? "#" : "/"}>
               <Image
-                fill
                 src={appConfig?.logoDark?.url || ""}
                 alt={appConfig.name}
                 title={appConfig.name}
@@ -451,7 +450,10 @@ function Navbar({ appConfig, isPreview }: Props) {
                     <Button
                       color="inherit"
                       href={isPreview ? "#" : m.href || "/"}
-                      sx={{ fontWeight: 600, textDecoration: "none" }}
+                      sx={{
+                        fontWeight: 600,
+                        textDecoration: "none",
+                      }}
                       key={key}
                       LinkComponent={Link}
                       startIcon={

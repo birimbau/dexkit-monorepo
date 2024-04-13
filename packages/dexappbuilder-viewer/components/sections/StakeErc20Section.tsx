@@ -1,9 +1,9 @@
-import { useThirdwebApprove } from "@/modules/contract-wizard/hooks/thirdweb";
 import { formatBigNumber } from "@dexkit/core/utils";
 import { formatUnits } from "@dexkit/core/utils/ethers/formatUnits";
 import { parseUnits } from "@dexkit/core/utils/ethers/parseUnits";
 import { useDexKitContext } from "@dexkit/ui";
 import FormikDecimalInput from "@dexkit/ui/components/FormikDecimalInput";
+import { useThirdwebApprove } from "@dexkit/ui/modules/contract-wizard/hooks/thirdweb";
 import { StakeErc20PageSection } from "@dexkit/ui/modules/wizard/types/section";
 import { useAsyncMemo } from "@dexkit/widgets/src/hooks";
 import {

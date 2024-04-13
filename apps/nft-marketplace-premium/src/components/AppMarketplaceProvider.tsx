@@ -1,7 +1,7 @@
 import {
   SUPPORTED_DEXAPPBUILDER_CHAIN_IDS,
   SUPPORTED_LEGACY_CHAIN_IDS,
-} from '@dexkit/evm-chains';
+} from '@dexkit/evm-chains/constants';
 
 import { EXCHANGE_NOTIFICATION_TYPES } from '@dexkit/exchange/constants/messages';
 import { DexkitProvider } from '@dexkit/ui/components';

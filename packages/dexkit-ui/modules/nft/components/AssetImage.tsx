@@ -39,12 +39,11 @@ export function AssetImage({ src, enableLightBox }: Props) {
           {isWhitelistedDomain(src) ? (
             <Image
               src={ipfsUriToUrl(src)}
+              fill
               style={{
                 position: "absolute",
                 top: 0,
-                width: "100%",
               }}
-              fill
               alt={formatMessage({
                 id: "nft.image",
                 defaultMessage: "NFT Image",
@@ -54,12 +53,11 @@ export function AssetImage({ src, enableLightBox }: Props) {
             <Image
               src={ipfsUriToUrl(src)}
               unoptimized={true}
+              fill
               style={{
                 position: "absolute",
                 top: 0,
-                width: "100%",
               }}
-              fill
               alt={formatMessage({
                 id: "nft.image",
                 defaultMessage: "NFT Image",

@@ -1,6 +1,6 @@
-import { useApproveForAll } from "@/modules/contract-wizard/hooks/thirdweb";
 import { formatBigNumber } from "@dexkit/core/utils";
 import { useDexKitContext } from "@dexkit/ui";
+import { useApproveForAll } from "@dexkit/ui/modules/contract-wizard/hooks/thirdweb";
 import { StakeErc721PageSection } from "@dexkit/ui/modules/wizard/types/section";
 import { useAsyncMemo } from "@dexkit/widgets/src/hooks";
 import Token from "@mui/icons-material/Token";
