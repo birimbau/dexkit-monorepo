@@ -28,8 +28,6 @@ export const getStaticProps: GetStaticProps = async ({
   const queryClient = new QueryClient();
   const { data } = await getUserByUsername(params?.username);
 
-  console.log(data);
-
   await queryClient.prefetchQuery(
     [GET_USER_BY_USERNAME_QUERY, params?.username],
     async () => data,
