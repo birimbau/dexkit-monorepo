@@ -76,25 +76,28 @@ export function useUserEventsList<T = any>({
     skip?: number;
     take?: number;
     total?: number;
-  }>([USER_EVENTS_LIST_QUERY, sort, page, pageSize, filter], async () => {
-    if (instance) {
-      return (
-        await instance.get<{
-          data: UserEvent<T>[];
-          skip?: number;
-          take?: number;
-          total?: number;
-        }>(`/user-events/site/all/${siteId}`, {
-          params: {
-            skip: page * pageSize,
-            take: pageSize,
-            sort,
-            filter: filter ? JSON.stringify(filter) : undefined,
-          },
-        })
-      ).data;
-    }
+  }>(
+    [USER_EVENTS_LIST_QUERY, siteId, sort, page, pageSize, filter],
+    async () => {
+      if (instance) {
+        return (
+          await instance.get<{
+            data: UserEvent<T>[];
+            skip?: number;
+            take?: number;
+            total?: number;
+          }>(`/user-events/site/all/${siteId}`, {
+            params: {
+              skip: page * pageSize,
+              take: pageSize,
+              sort,
+              filter: filter ? JSON.stringify(filter) : undefined,
+            },
+          })
+        ).data;
+      }
 
-    return { data: [] };
-  });
+      return { data: [] };
+    }
+  );
 }

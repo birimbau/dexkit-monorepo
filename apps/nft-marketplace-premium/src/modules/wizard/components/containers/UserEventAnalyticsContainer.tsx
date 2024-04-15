@@ -99,7 +99,7 @@ function OnChainDataGrid({ siteId, onViewDetails }: OnChainDataGridProps) {
     {
       field: 'createdAt',
       headerName: 'Created At',
-      width: 200,
+      minWidth: 200,
       valueGetter: ({ row }) => {
         return new Date(row.createdAt).toLocaleString();
       },
@@ -107,7 +107,7 @@ function OnChainDataGrid({ siteId, onViewDetails }: OnChainDataGridProps) {
     {
       field: 'type',
       headerName: 'Type',
-      width: 150,
+      minWidth: 150,
       valueGetter: ({ row }) => {
         return beautifyCamelCase(row.type);
       },
@@ -115,7 +115,7 @@ function OnChainDataGrid({ siteId, onViewDetails }: OnChainDataGridProps) {
     {
       field: 'chainId',
       headerName: 'Network',
-      width: 110,
+      minWidth: 110,
       valueGetter: ({ row }) => {
         return NETWORK_NAME(row.chainId);
       },
@@ -123,7 +123,7 @@ function OnChainDataGrid({ siteId, onViewDetails }: OnChainDataGridProps) {
     {
       field: 'hash',
       headerName: 'TX',
-      width: 160,
+      minWidth: 160,
       renderCell: (params: any) =>
         params.row.hash ? (
           <Link
@@ -139,7 +139,7 @@ function OnChainDataGrid({ siteId, onViewDetails }: OnChainDataGridProps) {
     {
       field: 'from',
       headerName: 'Account',
-      width: 200,
+      minWidth: 200,
       renderCell: (params: any) =>
         params.row?.from || params.row?.account?.address ? (
           <Link
@@ -155,12 +155,12 @@ function OnChainDataGrid({ siteId, onViewDetails }: OnChainDataGridProps) {
     {
       field: 'referral',
       headerName: 'Referral',
-      width: 200,
+      minWidth: 200,
     },
     {
       field: 'action',
       headerName: 'Action',
-      width: 200,
+      minWidth: 200,
       renderCell: (params: any) => (
         <Button onClick={() => onViewDetails(params.row)}>
           <FormattedMessage id="details" defaultMessage="Details" />
@@ -322,7 +322,7 @@ const columnTypes: { [key: string]: GridColDef[] } = {
       renderHeader: () => (
         <FormattedMessage id="network" defaultMessage="Network" />
       ),
-      width: 110,
+      minWidth: 200,
       valueGetter: ({ row }) => {
         return NETWORK_NAME(row.chainId);
       },
@@ -330,7 +330,7 @@ const columnTypes: { [key: string]: GridColDef[] } = {
     {
       field: 'hash',
       headerName: 'TX',
-      width: 160,
+      minWidth: 200,
       renderCell: (params: any) =>
         params.row.hash ? (
           <Link
@@ -344,19 +344,70 @@ const columnTypes: { [key: string]: GridColDef[] } = {
         ) : null,
     },
     {
+      field: 'paidAmount',
+      renderHeader: () => (
+        <FormattedMessage id="paid.amount" defaultMessage="Paid amount" />
+      ),
+      minWidth: 200,
+      renderCell: (params: any) => {
+        const { tokenAmount, token } = params.row.processedMetadata;
+
+        return (
+          <>
+            {tokenAmount} {token?.symbol?.toUpperCase()}
+          </>
+        );
+      },
+    },
+    {
+      field: 'paidAmount',
+      renderHeader: () => (
+        <FormattedMessage id="paid.amount" defaultMessage="Paid amount" />
+      ),
+      minWidth: 200,
+      renderCell: (params: any) => {
+        const { collection } = params.row.processedMetadata;
+
+        if (collection?.name) {
+          return (
+            <Link
+              href={`${NETWORK_EXPLORER(
+                params.row.chainId,
+              )}/address/${collection?.address}`}
+              target="_blank"
+            >
+              {collection?.name}
+            </Link>
+          );
+        }
+      },
+    },
+    {
       field: 'tokenId',
       renderHeader: () => (
         <FormattedMessage id="token.id" defaultMessage="Token ID" />
       ),
-      width: 200,
+      minWidth: 200,
       renderCell: (params: any) => {
         return params.row.processedMetadata.tokenId;
       },
     },
     {
+      field: 'amount',
+      renderHeader: () => (
+        <FormattedMessage id="amount" defaultMessage="Amount" />
+      ),
+      minWidth: 200,
+      renderCell: (params: any) => {
+        const { nftAmount } = params.row.processedMetadata;
+
+        return <>{nftAmount}</>;
+      },
+    },
+    {
       field: 'referral',
       headerName: 'Referral',
-      width: 200,
+      minWidth: 200,
     },
   ],
   [UserOnChainEvents.swap]: [
@@ -365,7 +416,7 @@ const columnTypes: { [key: string]: GridColDef[] } = {
       renderHeader: () => (
         <FormattedMessage id="network" defaultMessage="Network" />
       ),
-      width: 110,
+      minWidth: 200,
       valueGetter: ({ row }) => {
         return NETWORK_NAME(row.chainId);
       },
@@ -373,7 +424,8 @@ const columnTypes: { [key: string]: GridColDef[] } = {
     {
       field: 'hash',
       headerName: 'TX',
-      width: 160,
+      minWidth: 200,
+
       renderCell: (params: any) =>
         params.row.hash ? (
           <Link
@@ -391,7 +443,8 @@ const columnTypes: { [key: string]: GridColDef[] } = {
       renderHeader: () => (
         <FormattedMessage id="amount.in" defaultMessage="Amount In" />
       ),
-      width: 200,
+      minWidth: 200,
+      flex: 1,
       renderCell: (params: any) => {
         const { tokenInAmount, tokenIn } = params.row.processedMetadata;
 
@@ -407,7 +460,8 @@ const columnTypes: { [key: string]: GridColDef[] } = {
       renderHeader: () => (
         <FormattedMessage id="amount.out" defaultMessage="Amount Out" />
       ),
-      width: 200,
+      flex: 1,
+      minWidth: 200,
       renderCell: (params: any) => {
         const { tokenOut, tokenOutAmount } = params.row.processedMetadata;
 
@@ -423,7 +477,7 @@ const columnTypes: { [key: string]: GridColDef[] } = {
       renderHeader: () => (
         <FormattedMessage id="referral" defaultMessage="Referral" />
       ),
-      width: 200,
+      minWidth: 200,
     },
   ],
   [UserOnChainEvents.transfer]: [
@@ -432,7 +486,7 @@ const columnTypes: { [key: string]: GridColDef[] } = {
       renderHeader: () => (
         <FormattedMessage id="network" defaultMessage="Network" />
       ),
-      width: 110,
+      minWidth: 110,
       valueGetter: ({ row }) => {
         return NETWORK_NAME(row.chainId);
       },
@@ -440,7 +494,7 @@ const columnTypes: { [key: string]: GridColDef[] } = {
     {
       field: 'hash',
       headerName: 'TX',
-      width: 160,
+      minWidth: 160,
       renderCell: (params: any) =>
         params.row.hash ? (
           <Link
@@ -456,7 +510,8 @@ const columnTypes: { [key: string]: GridColDef[] } = {
     {
       field: 'from',
       renderHeader: () => <FormattedMessage id="from" defaultMessage="From" />,
-      width: 160,
+      minWidth: 160,
+      flex: 1,
       renderCell: (params: any) => {
         return (
           <Link
@@ -472,18 +527,27 @@ const columnTypes: { [key: string]: GridColDef[] } = {
     },
     {
       field: 'amount',
+      flex: 1,
       renderHeader: () => (
         <FormattedMessage id="amount" defaultMessage="Amount" />
       ),
-      width: 160,
+      minWidth: 160,
       renderCell: (params: any) => {
-        return params.row.processedMetadata.amount;
+        const { amount, token } = params.row.processedMetadata;
+        if (amount && token) {
+          return (
+            <>
+              {amount} {token.symbol.toUpperCase()}
+            </>
+          );
+        }
       },
     },
     {
       field: 'to',
       renderHeader: () => <FormattedMessage id="to" defaultMessage="To" />,
-      width: 160,
+      minWidth: 160,
+      flex: 1,
       renderCell: (params: any) => {
         return (
           <Link
@@ -500,7 +564,7 @@ const columnTypes: { [key: string]: GridColDef[] } = {
     {
       field: 'referral',
       headerName: 'Referral',
-      width: 200,
+      minWidth: 200,
       renderCell: (params: any) => {
         return (
           <Link
@@ -521,7 +585,7 @@ const columnTypes: { [key: string]: GridColDef[] } = {
       renderHeader: () => (
         <FormattedMessage id="network" defaultMessage="Network" />
       ),
-      width: 110,
+      minWidth: 110,
       valueGetter: ({ row }) => {
         return NETWORK_NAME(row.chainId);
       },
@@ -529,7 +593,7 @@ const columnTypes: { [key: string]: GridColDef[] } = {
     {
       field: 'hash',
       headerName: 'TX',
-      width: 160,
+      minWidth: 160,
       renderCell: (params: any) =>
         params.row.hash ? (
           <Link
@@ -547,6 +611,7 @@ const columnTypes: { [key: string]: GridColDef[] } = {
         <FormattedMessage id="tokenId" defaultMessage="Token ID" />
       ),
       field: 'tokenId',
+      flex: 1,
       renderCell: (params: any) => {
         const { tokenId } = params.row.processedMetadata;
 
@@ -558,6 +623,7 @@ const columnTypes: { [key: string]: GridColDef[] } = {
         <FormattedMessage id="token.amount" defaultMessage="Token Amount" />
       ),
       field: 'tokenAmount',
+      flex: 1,
       renderCell: (params: any) => {
         const { tokenAmount } = params.row.processedMetadata;
         return tokenAmount;
@@ -571,6 +637,7 @@ const columnTypes: { [key: string]: GridColDef[] } = {
         />
       ),
       field: 'collectionName',
+      flex: 1,
       renderCell: (params: any) => {
         const { collection } = params.row.processedMetadata;
 
@@ -582,6 +649,7 @@ const columnTypes: { [key: string]: GridColDef[] } = {
         <FormattedMessage id="nft.amount" defaultMessage="NFT Amount" />
       ),
       field: 'nftAmount',
+      flex: 1,
       renderCell: (params: any) => {
         const { nftAmount } = params.row.processedMetadata;
 
@@ -593,7 +661,7 @@ const columnTypes: { [key: string]: GridColDef[] } = {
       renderHeader: () => (
         <FormattedMessage id="referral" defaultMessage="Referral" />
       ),
-      width: 200,
+      minWidth: 200,
       renderCell: (params: any) => {
         return (
           <Link
@@ -614,7 +682,7 @@ const columnTypes: { [key: string]: GridColDef[] } = {
       renderHeader: () => (
         <FormattedMessage id="network" defaultMessage="Network" />
       ),
-      width: 110,
+      minWidth: 110,
       valueGetter: ({ row }) => {
         return NETWORK_NAME(row.chainId);
       },
@@ -622,7 +690,7 @@ const columnTypes: { [key: string]: GridColDef[] } = {
     {
       field: 'hash',
       headerName: 'TX',
-      width: 160,
+      minWidth: 160,
       renderCell: (params: any) =>
         params.row.hash ? (
           <Link
@@ -639,10 +707,16 @@ const columnTypes: { [key: string]: GridColDef[] } = {
       renderHeader: () => (
         <FormattedMessage id="token.amount" defaultMessage="Token Amount" />
       ),
+      minWidth: 200,
+      flex: 1,
       field: 'tokenAmount',
       renderCell: (params: any) => {
-        const { tokenAmount } = params.row.processedMetadata;
-        return tokenAmount;
+        const { tokenAmount, token } = params.row.processedMetadata;
+        return (
+          <>
+            {tokenAmount} {token?.symbol?.toUpperCase()}
+          </>
+        );
       },
     },
     {
@@ -652,22 +726,30 @@ const columnTypes: { [key: string]: GridColDef[] } = {
           defaultMessage="Collection Name"
         />
       ),
+      minWidth: 200,
+      flex: 1,
       field: 'collectionName',
       renderCell: (params: any) => {
         const { collection } = params.row.processedMetadata;
 
-        return collection.name;
+        return collection?.name;
       },
     },
     {
       renderHeader: () => (
         <FormattedMessage id="nft.amount" defaultMessage="NFT Amount" />
       ),
+      flex: 1,
+      minWidth: 200,
       field: 'nftAmount',
       renderCell: (params: any) => {
-        const { nftAmount } = params.row.processedMetadata;
+        const { nftAmount, token } = params.row.processedMetadata;
 
-        return nftAmount;
+        return (
+          <>
+            {nftAmount} {token?.symbol?.toUpperCase()}
+          </>
+        );
       },
     },
     {
@@ -675,7 +757,7 @@ const columnTypes: { [key: string]: GridColDef[] } = {
       renderHeader: () => (
         <FormattedMessage id="referral" defaultMessage="Referral" />
       ),
-      width: 200,
+      minWidth: 200,
       renderCell: (params: any) => {
         return (
           <Link
@@ -696,7 +778,7 @@ const columnTypes: { [key: string]: GridColDef[] } = {
       renderHeader: () => (
         <FormattedMessage id="network" defaultMessage="Network" />
       ),
-      width: 110,
+      minWidth: 110,
       valueGetter: ({ row }) => {
         return NETWORK_NAME(row.chainId);
       },
@@ -704,7 +786,7 @@ const columnTypes: { [key: string]: GridColDef[] } = {
     {
       field: 'hash',
       headerName: 'TX',
-      width: 160,
+      minWidth: 160,
       renderCell: (params: any) =>
         params.row.hash ? (
           <Link
@@ -721,10 +803,16 @@ const columnTypes: { [key: string]: GridColDef[] } = {
       renderHeader: () => (
         <FormattedMessage id="token.amount" defaultMessage="Token Amount" />
       ),
+      minWidth: 200,
       field: 'tokenAmount',
+      flex: 1,
       renderCell: (params: any) => {
-        const { tokenAmount } = params.row.processedMetadata;
-        return tokenAmount;
+        const { tokenAmount, token } = params.row.processedMetadata;
+        return (
+          <>
+            {tokenAmount} {token.symbol}
+          </>
+        );
       },
     },
     {
@@ -734,6 +822,8 @@ const columnTypes: { [key: string]: GridColDef[] } = {
           defaultMessage="Collection name"
         />
       ),
+      flex: 1,
+      minWidth: 200,
       field: 'collectionName',
       renderCell: (params: any) => {
         const { collection } = params.row.processedMetadata;
@@ -746,6 +836,8 @@ const columnTypes: { [key: string]: GridColDef[] } = {
         <FormattedMessage id="nft.amount" defaultMessage="NFT Amount" />
       ),
       field: 'nftAmount',
+      flex: 1,
+      minWidth: 200,
       renderCell: (params: any) => {
         const { nftAmount } = params.row.processedMetadata;
 
@@ -757,7 +849,7 @@ const columnTypes: { [key: string]: GridColDef[] } = {
       renderHeader: () => (
         <FormattedMessage id="referral" defaultMessage="Referral" />
       ),
-      width: 200,
+      minWidth: 200,
       renderCell: (params: any) => {
         return (
           <Link
@@ -778,7 +870,7 @@ const columnTypes: { [key: string]: GridColDef[] } = {
       renderHeader: () => (
         <FormattedMessage id="network" defaultMessage="Network" />
       ),
-      width: 110,
+      minWidth: 110,
       valueGetter: ({ row }) => {
         return NETWORK_NAME(row.chainId);
       },
@@ -786,7 +878,7 @@ const columnTypes: { [key: string]: GridColDef[] } = {
     {
       field: 'hash',
       headerName: 'TX',
-      width: 160,
+      minWidth: 160,
       renderCell: (params: any) =>
         params.row.hash ? (
           <Link
@@ -801,9 +893,11 @@ const columnTypes: { [key: string]: GridColDef[] } = {
     },
     {
       renderHeader: () => (
-        <FormattedMessage id="price" defaultMessage="Collection Name" />
+        <FormattedMessage id="price" defaultMessage="Price" />
       ),
+      minWidth: 200,
       field: 'price',
+      flex: 1,
       renderCell: (params: any) => {
         const { price } = params.row.processedMetadata;
         return price;
@@ -816,6 +910,8 @@ const columnTypes: { [key: string]: GridColDef[] } = {
           defaultMessage="Collection Name"
         />
       ),
+      minWidth: 200,
+      flex: 1,
       field: 'collectionName',
       renderCell: (params: any) => {
         const { collection } = params.row.processedMetadata;
@@ -828,6 +924,8 @@ const columnTypes: { [key: string]: GridColDef[] } = {
         <FormattedMessage id="nft.amount" defaultMessage="NFT Amount" />
       ),
       field: 'nftAmount',
+      minWidth: 200,
+      flex: 1,
       renderCell: (params: any) => {
         const { nftAmount } = params.row.processedMetadata;
 
@@ -839,7 +937,7 @@ const columnTypes: { [key: string]: GridColDef[] } = {
       renderHeader: () => (
         <FormattedMessage id="referral" defaultMessage="Referral" />
       ),
-      width: 200,
+      minWidth: 200,
       renderCell: (params: any) => {
         return (
           <Link
@@ -858,7 +956,7 @@ const columnTypes: { [key: string]: GridColDef[] } = {
     {
       field: 'chainId',
       headerName: 'Network',
-      width: 110,
+      minWidth: 200,
       valueGetter: ({ row }) => {
         return NETWORK_NAME(row.chainId);
       },
@@ -866,7 +964,7 @@ const columnTypes: { [key: string]: GridColDef[] } = {
     {
       field: 'hash',
       headerName: 'TX',
-      width: 160,
+      minWidth: 200,
       renderCell: (params: any) =>
         params.row.hash ? (
           <Link
@@ -883,7 +981,9 @@ const columnTypes: { [key: string]: GridColDef[] } = {
       renderHeader: () => (
         <FormattedMessage id="price" defaultMessage="Price" />
       ),
+      minWidth: 200,
       field: 'price',
+      flex: 1,
       renderCell: (params: any) => {
         const { price } = params.row.processedMetadata;
         return price;
@@ -896,6 +996,8 @@ const columnTypes: { [key: string]: GridColDef[] } = {
           defaultMessage="Collection Name"
         />
       ),
+      flex: 1,
+      minWidth: 200,
       field: 'collectionName',
       renderCell: (params: any) => {
         const { collection } = params.row.processedMetadata;
@@ -907,7 +1009,9 @@ const columnTypes: { [key: string]: GridColDef[] } = {
       renderHeader: () => (
         <FormattedMessage id="nft.amount" defaultMessage="NFT Amount" />
       ),
+      minWidth: 200,
       field: 'nftAmount',
+      flex: 1,
       renderCell: (params: any) => {
         const { nftAmount } = params.row.processedMetadata;
 
@@ -919,7 +1023,95 @@ const columnTypes: { [key: string]: GridColDef[] } = {
       renderHeader: () => (
         <FormattedMessage id="referral" defaultMessage="Referral" />
       ),
-      width: 200,
+      minWidth: 200,
+      renderCell: (params: any) => {
+        return (
+          <Link
+            target="_blank"
+            href={`${NETWORK_EXPLORER(params.row.chainId)}/address/${
+              params.row.referral
+            }`}
+          >
+            {truncateAddress(params.row.referral)}
+          </Link>
+        );
+      },
+    },
+  ],
+  // {"name":"ASdasd","contractAddress":"0x2F4fBcbB1801FeB1074A4c38BBeb1a42ce578712","type":"TokenERC721","createdAtTx":"0x48155d516b43317513aab9303a5b1216df38248c5a7f41dc1a4c4545232af3f0","chainId":137,"metadata":"{\"name\":\"ASdasd\",\"symbol\":\"asdasd\",\"image\":\"https://dexkit-test.nyc3.digitaloceanspaces.com/dexkit/media-library/account/0xd50e4d1e0b49eb64a6bf2f48731c035e8948d219/branco.webp\",\"description\":\"asdasdasd\"}","owner":"0xd50e4d1e0b49eb64a6bf2f48731c035e8948d219"}
+  [UserOnChainEvents.deployContract]: [
+    {
+      field: 'chainId',
+      headerName: 'Network',
+      minWidth: 200,
+      valueGetter: ({ row }) => {
+        return NETWORK_NAME(row.chainId);
+      },
+    },
+    {
+      field: 'hash',
+      headerName: 'TX',
+      minWidth: 200,
+      renderCell: (params: any) =>
+        params.row.hash ? (
+          <Link
+            target="_blank"
+            href={`${NETWORK_EXPLORER(params.row.chainId)}/tx/${
+              params.row.hash
+            }`}
+          >
+            {truncateHash(params.row.hash)}
+          </Link>
+        ) : null,
+    },
+    {
+      renderHeader: () => <FormattedMessage id="type" defaultMessage="Type" />,
+      minWidth: 200,
+      flex: 1,
+      field: 'type',
+      renderCell: (params: any) => {
+        const { type } = params.row.processedMetadata;
+
+        return type;
+      },
+    },
+    {
+      renderHeader: () => <FormattedMessage id="name" defaultMessage="Name" />,
+      minWidth: 200,
+      flex: 1,
+      field: 'name',
+      renderCell: (params: any) => {
+        const { name } = params.row.processedMetadata;
+
+        return name;
+      },
+    },
+    {
+      renderHeader: () => (
+        <FormattedMessage id="address" defaultMessage="Address" />
+      ),
+      minWidth: 200,
+      flex: 1,
+      field: 'address',
+      renderCell: (params: any) => {
+        const { address } = params.row.processedMetadata;
+
+        return (
+          <Link
+            target="_blank"
+            href={`${NETWORK_EXPLORER(params.row.chainId)}/address/${address}`}
+          >
+            {truncateAddress(address)}
+          </Link>
+        );
+      },
+    },
+    {
+      field: 'referral',
+      renderHeader: () => (
+        <FormattedMessage id="referral" defaultMessage="Referral" />
+      ),
+      minWidth: 200,
       renderCell: (params: any) => {
         return (
           <Link
@@ -1056,24 +1248,22 @@ export default function UserEventAnalyticsContainer({ siteId }: Props) {
                             <MenuItem value="all">
                               <FormattedMessage id="all" defaultMessage="All" />
                             </MenuItem>
-                            <MenuItem value={UserOnChainEvents.swap}>
-                              <FormattedMessage
-                                id="swap"
-                                defaultMessage="Swap"
-                              />
-                            </MenuItem>
-                            <MenuItem value={UserOnChainEvents.transfer}>
-                              <FormattedMessage
-                                id="transfer"
-                                defaultMessage="Transfer"
-                              />
-                            </MenuItem>
+
                             <MenuItem
                               value={UserOnChainEvents.nftAcceptListERC1155}
                             >
                               <FormattedMessage
                                 id="accept.nft.listing.erc1155"
                                 defaultMessage="Accept NFT Listing ERC1155"
+                              />
+                            </MenuItem>
+
+                            <MenuItem
+                              value={UserOnChainEvents.nftAcceptListERC721}
+                            >
+                              <FormattedMessage
+                                id="accept.nft.list.erc721"
+                                defaultMessage="Accept NFT List ERC721"
                               />
                             </MenuItem>
                             <MenuItem
@@ -1104,6 +1294,24 @@ export default function UserEventAnalyticsContainer({ siteId }: Props) {
                               <FormattedMessage
                                 id="buy.edition.drop"
                                 defaultMessage="Buy Edition Drops"
+                              />
+                            </MenuItem>
+                            <MenuItem value={UserOnChainEvents.deployContract}>
+                              <FormattedMessage
+                                id="contract.deployment"
+                                defaultMessage="Contract deployment"
+                              />
+                            </MenuItem>
+                            <MenuItem value={UserOnChainEvents.swap}>
+                              <FormattedMessage
+                                id="swap"
+                                defaultMessage="Swap"
+                              />
+                            </MenuItem>
+                            <MenuItem value={UserOnChainEvents.transfer}>
+                              <FormattedMessage
+                                id="transfer"
+                                defaultMessage="Transfer"
                               />
                             </MenuItem>
                           </Field>
