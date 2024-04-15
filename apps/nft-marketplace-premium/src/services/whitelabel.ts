@@ -1,4 +1,5 @@
 import { CollectionOwnershipNFTFormType } from '@/modules/contract-wizard/types';
+import { myAppsApi } from '@dexkit/ui/constants/api';
 import { SiteMetadata } from '@dexkit/ui/modules/wizard/types';
 import { AppPageSection } from '@dexkit/ui/modules/wizard/types/section';
 import { getAccessToken, getAccessTokenAndRefresh, getRefreshAccessToken } from '@dexkit/ui/services/auth';
@@ -6,10 +7,8 @@ import axios from 'axios';
 import { DEXKIT_BASE_API_URL } from 'src/constants';
 import {
   ConfigResponse,
-  PageTemplateFormData,
   PageTemplateResponse,
-  SiteResponse,
-  WhitelabelFormData,
+  SiteResponse
 } from '../types/whitelabel';
 
 
@@ -24,10 +23,10 @@ const MY_APPS_ENDPOINT = `${DEXKIT_BASE_API_URL}`;
  * @returns
  */
 
-export const myAppsApi = axios.create({
+/*export const myAppsApi = axios.create({
   baseURL: MY_APPS_ENDPOINT,
   headers: { 'content-type': 'application/json' },
-});
+});*/
 
 export const testAppsApi = axios.create({
   baseURL: 'http://localhost:3001',
@@ -73,7 +72,7 @@ testAppsApi.interceptors.response.use(
   }
 );
 
-myAppsApi.interceptors.request.use(
+/*myAppsApi.interceptors.request.use(
   async (config) => {
     const access_token = await getAccessTokenAndRefresh();
     if (access_token)
@@ -118,7 +117,7 @@ export async function sendConfig(formData: WhitelabelFormData) {
 
 export async function upsertPageTemplate(formData: PageTemplateFormData) {
   return await myAppsApi.post('/site/create-page-template', formData);
-}
+}*/
 
 /**
  * Get all configs associated with a wallet

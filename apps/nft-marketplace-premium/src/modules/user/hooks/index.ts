@@ -144,7 +144,9 @@ export function useUserQuery(username?: string) {
   return useQuery(
     [GET_USER_BY_USERNAME_QUERY, username, isLoggedIn],
     async () => {
-      if (username && isLoggedIn) {
+      console.log(username);
+      console.log(isLoggedIn);
+      if (username) {
         const userRequest = await getUserByUsername(username);
         return userRequest.data;
       }
