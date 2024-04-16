@@ -45,7 +45,8 @@ export type SectionType =
   | "token-trade"
   | "claim-airdrop-token-erc-20"
   | "carousel"
-  | "showcase";
+  | "showcase"
+  | "plugin";
 
 export interface PageSection {
   type: SectionType;
@@ -323,6 +324,13 @@ export interface CarouselPageSection extends PageSection {
   settings: CarouselFormType;
 }
 
+
+export interface PluginPageSection extends PageSection {
+  type: 'plugin';
+  data: unknown;
+  pluginPath: string;
+}
+
 export type ShowCaseActionLink = {
   type: 'link';
   url: string;
@@ -423,7 +431,8 @@ export type AppPageSection =
   | ClaimAirdropErc20PageSection
   | TokenTradePageSection
   | CarouselPageSection
-  | ShowCasePageSection;
+  | ShowCasePageSection
+  | PluginPageSection;
 
 export interface SectionMetadata {
   type: SectionType;

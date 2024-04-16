@@ -1,7 +1,7 @@
 {
   "name": "@dexkit/exchange",
   "version": "0.10.0",
-  "private": true,
+  "private": false,
   "license": "MIT",
   "scripts": {
     "lint": "TIMING=1 eslint \"**/*.ts*\"",
@@ -40,5 +40,8 @@
     "@0x/protocol-utils": "^11.22.4",
     "@dexkit/core": "*",
     "@dexkit/ui": "*"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
