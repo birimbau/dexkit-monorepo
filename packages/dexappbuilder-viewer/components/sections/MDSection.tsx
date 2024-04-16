@@ -2,15 +2,8 @@ import { MarkdownEditorPageSection } from "@dexkit/ui/modules/wizard/types/secti
 import { Container, useTheme } from "@mui/material";
 import "@uiw/react-markdown-preview/markdown.css";
 import "@uiw/react-md-editor/markdown-editor.css";
-import dynamic from "next/dynamic";
 
-const EditerMarkdown = dynamic(
-  () =>
-    import("@uiw/react-md-editor").then((mod) => {
-      return mod.default.Markdown;
-    }),
-  { ssr: false }
-);
+import MDEditor from "@uiw/react-md-editor";
 
 interface Props {
   section: MarkdownEditorPageSection;
@@ -21,7 +14,7 @@ export default function MDSection({ section }: Props) {
 
   return (
     <Container>
-      <EditerMarkdown
+      <MDEditor.Markdown
         source={section.config?.source}
         style={{
           backgroundColor: theme.palette.background.paper,

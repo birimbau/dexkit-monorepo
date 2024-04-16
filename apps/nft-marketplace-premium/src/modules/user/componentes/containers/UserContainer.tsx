@@ -46,7 +46,9 @@ export function UserContainer({ username }: { username?: string }) {
   };
 
   const userQuery = useUserQuery(username);
+
   const user = userQuery?.data;
+
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const { account } = useWeb3React();

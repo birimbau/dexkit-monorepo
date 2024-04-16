@@ -33,7 +33,7 @@
     "ts-loader": "^9.4.2",
     "tsconfig": "*",
     "tsup": "^6.5.0",
-    "typescript": "^4.5.2",
+    "typescript": "^5.4.4",
     "vite": "^4.2.1"
   },
   "dependencies": {
@@ -43,7 +43,6 @@
     "@dexkit/wallet-connectors": "*",
     "@dexkit/web3forms": "*",
     "@dexkit/widgets": "*",
-    "@uiw/react-md-editor": "^3.23.3",
     "html-react-parser": "^4.0.0",
     "react-swipeable-views": "^0.14.0",
     "react-swipeable-views-utils": "^0.14.0",

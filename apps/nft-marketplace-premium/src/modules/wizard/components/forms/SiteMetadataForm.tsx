@@ -1,5 +1,5 @@
 import { ImageFormUpload } from '@/modules/contract-wizard/components/ImageFormUpload';
-import { EVM_CHAINS } from '@dexkit/evm-chains';
+import { EVM_CHAINS } from '@dexkit/evm-chains/constants';
 import CompletationProvider from '@dexkit/ui/components/CompletationProvider';
 import { SiteMetadata } from '@dexkit/ui/modules/wizard/types';
 import {

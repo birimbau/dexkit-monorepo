@@ -63,16 +63,14 @@ export function GatedConditionView({
               <Image
                 src={layout?.frontImage}
                 alt={'gated page front image'}
-                height={
-                  layout?.frontImageHeight
+                style={{
+                  height: layout?.frontImageHeight
                     ? `${layout?.frontImageHeight}px`
-                    : theme.spacing(20)
-                }
-                width={
-                  layout?.frontImageWidth
+                    : theme.spacing(20),
+                  width: layout?.frontImageWidth
                     ? `${layout?.frontImageWidth}px`
-                    : theme.spacing(20)
-                }
+                    : theme.spacing(20),
+                }}
               />
             ) : (
               <ShieldIcon sx={{ fontSize: 80 }} />

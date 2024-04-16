@@ -30,7 +30,7 @@ export const getStaticProps: GetStaticProps = async ({
 
   await queryClient.prefetchQuery(
     [GET_USER_BY_USERNAME_QUERY, params?.username],
-    async () => data
+    async () => data,
   );
   const configResponse = await getAppConfig(params?.site, 'no-page-defined');
 

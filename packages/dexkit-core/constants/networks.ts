@@ -1,6 +1,6 @@
 
 
-import { COINGECKO_IDS, EVM_CHAINS, WRAPPED_TOKEN_ADDRESSES } from "@dexkit/evm-chains";
+import { COINGECKO_IDS, EVM_CHAINS, WRAPPED_TOKEN_ADDRESSES } from "@dexkit/evm-chains/constants";
 import { providers } from "ethers";
 import { Network } from "../types";
 import { ChainId } from "./enums";

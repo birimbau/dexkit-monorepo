@@ -1,13 +1,5 @@
-import {
-  Box,
-  Button,
-  NoSsr,
-  Paper,
-  Stack,
-  Typography,
-  useColorScheme,
-} from "@mui/material";
-
+import { Box, Button, NoSsr, Paper, Stack, Typography } from "@mui/material";
+import { useColorScheme } from "@mui/material/styles";
 import dynamic from "next/dynamic";
 import React, { useEffect, useMemo } from "react";
 
