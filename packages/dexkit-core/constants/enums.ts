@@ -2,6 +2,7 @@ export enum ChainId {
   Ethereum = 1,
   Ropsten = 3,
   BSC = 56,
+  BSCTest = 97,
   Polygon = 137,
   Avax = 43114,
   Fantom = 250,
@@ -14,7 +15,7 @@ export enum ChainId {
   BlastSepolia = 168587773,
   Blast = 81457,
   Sepolia = 11155111,
-  Pulse = 369
+  Pulse = 369,
 }
 
 export enum TransactionStatus {
@@ -24,12 +25,11 @@ export enum TransactionStatus {
 }
 
 export enum CoinTypes {
-  EVM_NATIVE = 'evm-native',
-  EVM_ERC20 = 'evm-erc20',
-  BITCOIN_NATIVE = 'bitcoin',
-  SOLANA_NATIVE = 'solana-native',
+  EVM_NATIVE = "evm-native",
+  EVM_ERC20 = "evm-erc20",
+  BITCOIN_NATIVE = "bitcoin",
+  SOLANA_NATIVE = "solana-native",
 }
-
 
 export enum TransactionType {
   APPROVE,

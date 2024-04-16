@@ -74,7 +74,7 @@ export default function TransferDetail({ event }: TranserDetailProps) {
       </Stack>
       <Stack justifyContent="space-between" alignItems="center" direction="row">
         <Typography>
-          <FormattedMessage id="to" defaultMessage="to" />
+          <FormattedMessage id="to" defaultMessage="To" />
         </Typography>
         <Typography color="text.secondary">
           <Link

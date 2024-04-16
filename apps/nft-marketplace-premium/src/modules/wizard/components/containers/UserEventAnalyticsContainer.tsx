@@ -615,7 +615,9 @@ const columnTypes: { [key: string]: GridColDef[] } = {
       renderCell: (params: any) => {
         const { tokenId } = params.row.processedMetadata;
 
-        return tokenId;
+        if (tokenId) {
+          return tokenId;
+        }
       },
     },
     {
@@ -626,7 +628,9 @@ const columnTypes: { [key: string]: GridColDef[] } = {
       flex: 1,
       renderCell: (params: any) => {
         const { tokenAmount } = params.row.processedMetadata;
-        return tokenAmount;
+        if (tokenAmount) {
+          return tokenAmount;
+        }
       },
     },
     {
@@ -641,7 +645,9 @@ const columnTypes: { [key: string]: GridColDef[] } = {
       renderCell: (params: any) => {
         const { collection } = params.row.processedMetadata;
 
-        return collection.name;
+        if (collection) {
+          return collection?.name;
+        }
       },
     },
     {
@@ -653,7 +659,9 @@ const columnTypes: { [key: string]: GridColDef[] } = {
       renderCell: (params: any) => {
         const { nftAmount } = params.row.processedMetadata;
 
-        return nftAmount;
+        if (nftAmount) {
+          return nftAmount;
+        }
       },
     },
     {
@@ -712,11 +720,13 @@ const columnTypes: { [key: string]: GridColDef[] } = {
       field: 'tokenAmount',
       renderCell: (params: any) => {
         const { tokenAmount, token } = params.row.processedMetadata;
-        return (
-          <>
-            {tokenAmount} {token?.symbol?.toUpperCase()}
-          </>
-        );
+        if (tokenAmount) {
+          return (
+            <>
+              {tokenAmount} {token?.symbol?.toUpperCase()}
+            </>
+          );
+        }
       },
     },
     {
@@ -732,7 +742,9 @@ const columnTypes: { [key: string]: GridColDef[] } = {
       renderCell: (params: any) => {
         const { collection } = params.row.processedMetadata;
 
-        return collection?.name;
+        if (collection?.name) {
+          return collection?.name;
+        }
       },
     },
     {
@@ -745,11 +757,9 @@ const columnTypes: { [key: string]: GridColDef[] } = {
       renderCell: (params: any) => {
         const { nftAmount, token } = params.row.processedMetadata;
 
-        return (
-          <>
-            {nftAmount} {token?.symbol?.toUpperCase()}
-          </>
-        );
+        if (nftAmount) {
+          return <>{nftAmount}</>;
+        }
       },
     },
     {
@@ -808,11 +818,14 @@ const columnTypes: { [key: string]: GridColDef[] } = {
       flex: 1,
       renderCell: (params: any) => {
         const { tokenAmount, token } = params.row.processedMetadata;
-        return (
-          <>
-            {tokenAmount} {token.symbol}
-          </>
-        );
+
+        if (tokenAmount && token) {
+          return (
+            <>
+              {tokenAmount} {token?.symbol?.toUpperCase()}
+            </>
+          );
+        }
       },
     },
     {
@@ -828,7 +841,9 @@ const columnTypes: { [key: string]: GridColDef[] } = {
       renderCell: (params: any) => {
         const { collection } = params.row.processedMetadata;
 
-        return collection.name;
+        if (collection?.name) {
+          return collection?.name;
+        }
       },
     },
     {
@@ -841,7 +856,9 @@ const columnTypes: { [key: string]: GridColDef[] } = {
       renderCell: (params: any) => {
         const { nftAmount } = params.row.processedMetadata;
 
-        return nftAmount;
+        if (nftAmount) {
+          return nftAmount;
+        }
       },
     },
     {
@@ -900,7 +917,10 @@ const columnTypes: { [key: string]: GridColDef[] } = {
       flex: 1,
       renderCell: (params: any) => {
         const { price } = params.row.processedMetadata;
-        return price;
+
+        if (price) {
+          return price;
+        }
       },
     },
     {
@@ -916,7 +936,9 @@ const columnTypes: { [key: string]: GridColDef[] } = {
       renderCell: (params: any) => {
         const { collection } = params.row.processedMetadata;
 
-        return collection.name;
+        if (collection?.name) {
+          return collection?.name;
+        }
       },
     },
     {
@@ -929,7 +951,9 @@ const columnTypes: { [key: string]: GridColDef[] } = {
       renderCell: (params: any) => {
         const { nftAmount } = params.row.processedMetadata;
 
-        return nftAmount;
+        if (nftAmount) {
+          return nftAmount;
+        }
       },
     },
     {
@@ -986,7 +1010,10 @@ const columnTypes: { [key: string]: GridColDef[] } = {
       flex: 1,
       renderCell: (params: any) => {
         const { price } = params.row.processedMetadata;
-        return price;
+
+        if (price) {
+          return price;
+        }
       },
     },
     {
@@ -1002,7 +1029,9 @@ const columnTypes: { [key: string]: GridColDef[] } = {
       renderCell: (params: any) => {
         const { collection } = params.row.processedMetadata;
 
-        return collection.name;
+        if (collection?.name) {
+          return collection?.name;
+        }
       },
     },
     {
@@ -1015,7 +1044,9 @@ const columnTypes: { [key: string]: GridColDef[] } = {
       renderCell: (params: any) => {
         const { nftAmount } = params.row.processedMetadata;
 
-        return nftAmount;
+        if (nftAmount) {
+          return nftAmount;
+        }
       },
     },
     {
@@ -1038,7 +1069,6 @@ const columnTypes: { [key: string]: GridColDef[] } = {
       },
     },
   ],
-  // {"name":"ASdasd","contractAddress":"0x2F4fBcbB1801FeB1074A4c38BBeb1a42ce578712","type":"TokenERC721","createdAtTx":"0x48155d516b43317513aab9303a5b1216df38248c5a7f41dc1a4c4545232af3f0","chainId":137,"metadata":"{\"name\":\"ASdasd\",\"symbol\":\"asdasd\",\"image\":\"https://dexkit-test.nyc3.digitaloceanspaces.com/dexkit/media-library/account/0xd50e4d1e0b49eb64a6bf2f48731c035e8948d219/branco.webp\",\"description\":\"asdasdasd\"}","owner":"0xd50e4d1e0b49eb64a6bf2f48731c035e8948d219"}
   [UserOnChainEvents.deployContract]: [
     {
       field: 'chainId',
@@ -1072,7 +1102,9 @@ const columnTypes: { [key: string]: GridColDef[] } = {
       renderCell: (params: any) => {
         const { type } = params.row.processedMetadata;
 
-        return type;
+        if (type) {
+          return type;
+        }
       },
     },
     {
@@ -1083,7 +1115,9 @@ const columnTypes: { [key: string]: GridColDef[] } = {
       renderCell: (params: any) => {
         const { name } = params.row.processedMetadata;
 
-        return name;
+        if (name) {
+          return name;
+        }
       },
     },
     {

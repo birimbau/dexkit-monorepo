@@ -38,6 +38,7 @@ import {
 import {
   AppDialogTitle,
   useActiveChainIds,
+  useDexKitContext,
   useSwitchNetworkMutation,
 } from '@dexkit/ui';
 import { PageHeader } from '@dexkit/ui/components/PageHeader';
@@ -106,6 +107,8 @@ export default function DeployPage() {
 
   const [showLoading, setShowLoading] = useState(false);
 
+  const { affiliateReferral } = useDexKitContext();
+
   const handleSubmit = useCallback(
     async (values: any, formValues: any) => {
       const params = values['params'];
@@ -164,6 +167,7 @@ export default function DeployPage() {
               name,
               chainId,
               type: slug as string,
+              referral: affiliateReferral,
               metadata: {
                 name: formValues?.name,
                 symbol: formValues?.symbol,
@@ -200,6 +204,7 @@ export default function DeployPage() {
       thirdwebMetadataQuery.data,
       selectedChainId,
       hasChainDiff,
+      affiliateReferral,
     ],
   );
 

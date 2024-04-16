@@ -46,6 +46,7 @@ export default {
       'assets.otherside.xyz',
       'dexkit-storage.nyc3.cdn.digitaloceanspaces.com',
       'dexkit-storage.nyc3.digitaloceanspaces.com',
+      'dexkit-test.nyc3.digitaloceanspaces.com',
     ],
   },
 };
