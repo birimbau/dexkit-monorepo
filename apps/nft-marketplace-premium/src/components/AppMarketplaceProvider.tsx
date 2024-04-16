@@ -42,8 +42,8 @@ export function AppMarketplaceProvider({
   const siteId = useSiteId();
   const router = useRouter();
 
-  const { locale: defaultLocale } = useLocale();
-  const [locale, setLocale] = useState(defaultLocale);
+  const { locale, onChangeLocale } = useLocale();
+
   const [ref, setRef] = useAtom(referralAtom);
   const { mode } = useThemeMode();
 
@@ -194,7 +194,7 @@ export function AppMarketplaceProvider({
       transactionsAtom={transactionsAtomV2}
       notificationsAtom={notificationsAtom}
       siteId={siteId}
-      onChangeLocale={(loc) => setLocale(loc)}
+      onChangeLocale={(loc) => onChangeLocale(loc)}
     >
       <DefaultSeo {...SEO} />
       {children}

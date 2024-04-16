@@ -30,6 +30,7 @@ import {
 
   TradeDirection,
 } from "@traderxyz/nft-swap-sdk";
+import { SUPPORTED_SWAP_CHAIN_IDS } from "../../../constants/zrx";
 import { getCollectionByApi } from "../services/collection";
 import { AssetRari } from "../types/rarible";
 
@@ -176,6 +177,10 @@ export function useSwapSdkV4(provider: any, chainId?: number) {
   return useMemo(() => {
     if (chainId === undefined || provider === undefined) {
       return undefined;
+    }
+    // swap sdk gives error if chainId not supported
+    if (chainId && !SUPPORTED_SWAP_CHAIN_IDS.includes(chainId)) {
+      return undefined
     }
 
     return new NftSwapV4(provider, provider.getSigner(), chainId);

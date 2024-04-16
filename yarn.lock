@@ -31,10 +31,15 @@
     js-sha3 "^0.7.0"
     uuid "^3.3.2"
 
-"@0x/contract-addresses@^7.4.0", "@0x/contract-addresses@^7.4.1":
+"@0x/contract-addresses@^7.4.0":
   version "7.4.1"
   resolved "https://registry.yarnpkg.com/@0x/contract-addresses/-/contract-addresses-7.4.1.tgz#7ff613cc9019747744665b36d351be59481de53b"
   integrity sha512-Wl4zVKLJgWxYWDidYSYYXenAHiRAso3WkXCqDpz2fzSgWTWOMEG/F0s0KxGxzDOmOBVNyFT4dQJpmWv/8mD24Q==
+
+"@0x/contract-addresses@^8.13.0":
+  version "8.13.0"
+  resolved "https://registry.yarnpkg.com/@0x/contract-addresses/-/contract-addresses-8.13.0.tgz#f7991048116a5814c3cdd63fc3091c015367e456"
+  integrity sha512-wWqDSPYZOu2YNDRXdIY5pfzel+w9jM3DBNjVT8o9+wdySY0X09kxHVwazIi4QL4Fa79HLN86KY5sXlfhXNBG9w==
 
 "@0x/contract-addresses@^8.7.0", "@0x/contract-addresses@^8.9.0":
   version "8.9.0"

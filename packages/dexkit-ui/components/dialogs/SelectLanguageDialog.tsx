@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import { FormattedMessage } from "react-intl";
 
+import { useState } from "react";
 import { LANGUAGES } from "../../constants";
 import { useLocale } from "../../hooks";
 import { Language } from "../../types/app";
@@ -27,10 +28,19 @@ function SelectLanguageDialog({ dialogProps }: Props) {
 
   const { locale, onChangeLocale } = useLocale();
 
+  const [defaultLocale] = useState(locale);
+
   const handleClose = () => {
     if (onClose) {
       onClose({}, "backdropClick");
     }
+  };
+
+  const handleCancel = () => {
+    if (onClose) {
+      onClose({}, "backdropClick");
+    }
+    onChangeLocale(defaultLocale);
   };
 
   const handleSelectLocale = (loc: string) => {
@@ -85,7 +95,7 @@ function SelectLanguageDialog({ dialogProps }: Props) {
             description="Confirm"
           />
         </Button>
-        <Button onClick={handleClose}>
+        <Button onClick={handleCancel}>
           <FormattedMessage
             id="cancel"
             defaultMessage="Cancel"
