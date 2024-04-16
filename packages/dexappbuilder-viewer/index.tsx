@@ -2,7 +2,7 @@
 
 import MainLayout from "@dexkit/ui/components/layouts/main";
 import { AppConfig } from "@dexkit/ui/modules/wizard/types/config";
-import { SectionRender } from "./components/SectionRender";
+import { SectionRender } from "./components/SectionRenderWithPlugin";
 import { useWhitelabelConfigQuery } from "./hooks";
 
 interface Props {

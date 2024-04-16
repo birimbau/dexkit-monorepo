@@ -1,9 +1,16 @@
 import LazyComponent from "@dexkit/ui/components/LazyComponent";
 import { AppPageSection } from "@dexkit/ui/modules/wizard/types/section";
 import dynamic from "next/dynamic";
-import { useEffect, useState } from "react";
-import CarouselSection from "./sections/CarouselSection";
-import ShowCaseSection from "./sections/ShowCaseSection";
+const CodeSection = dynamic(() => import("./sections/CodeSection"));
+const CollectionSection = dynamic(() => import("./sections/CollectionSection"));
+const DexGeneratorSection = dynamic(
+  () => import("./sections/DexGeneratorSection")
+);
+const AssetSection = dynamic(() => import("./sections/AssetSection"));
+const RankingSection = dynamic(() => import("./sections/RankingSection"));
+const TokenTradeSection = dynamic(() => import("./sections/TokenTradeSection"));
+const CarouselSection = dynamic(() => import("./sections/CarouselSection"));
+const ShowCaseSection = dynamic(() => import("./sections/ShowCaseSection"));
 
 const ExchangeSection = dynamic(() => import("./sections/ExchangeSection"));
 const AssetStoreSection = dynamic(() => import("./sections/AssetStoreSection"));
@@ -30,24 +37,58 @@ interface Props {
   section: AppPageSection;
   useLazy?: boolean;
 }
-async function loadPlugin({ path }: { path: string }) {
-  const plugin = await import("@dexkit/plugins/" + path);
-  return plugin;
-}
-
-function LoadPlugin({ path, data }: { path: string; data: unknown }) {
-  const [pluginRender, setPluginRender] = useState<
-    { render: ({ data }: { data: unknown }) => JSX.Element } | undefined
-  >();
-  useEffect(() => {
-    if (path) {
-      loadPlugin({ path }).then((pl) => setPluginRender(pl));
-    }
-  }, [path]);
-  if (pluginRender) {
-    return pluginRender.render({ data: data });
-  } else {
-    return <></>;
+/**
+ * This function it is to be used inside SectionRender
+ * @param param0
+ * @returns
+ */
+export function SectionToRender({ section }: Props) {
+  if (section.type === "featured") {
+    return <FeaturedSection title={section.title} items={section.items} />;
+  } else if (section.type === "video") {
+    return (
+      <VideoSection
+        embedType={section.embedType}
+        videoUrl={section.videoUrl}
+        title={section.title}
+      />
+    );
+  } else if (section.type === "call-to-action") {
+    return <CallToActionSection section={section} />;
+  } else if (section.type === "collections") {
+    return <CollectionsSection section={section} />;
+  } else if (section.type === "custom") {
+    return <CustomSection section={section} />;
+  } else if (section.type === "swap") {
+    return <SwapSection section={section} />;
+  } else if (section.type === "asset-store") {
+    return <AssetStoreSection section={section} />;
+  } else if (section.type === "markdown") {
+    return <MDSection section={section} />;
+  } else if (section.type === "wallet") {
+    return <WalletSection section={section} />;
+  } else if (section.type === "contract") {
+    return <ContractSection section={section} />;
+  } else if (section.type === "user-contract-form") {
+    return <UserContractSection section={section} />;
+  } else if (section.type === "exchange") {
+    return <ExchangeSection section={section} />;
+  } else if (section.type === "code-page-section") {
+    return <CodeSection section={section} />;
+  } else if (section.type === "collection") {
+    return <CollectionSection section={section} />;
+  } else if (section.type === "dex-generator-section") {
+    return <DexGeneratorSection section={section} />;
+  } else if (section.type === "asset-section") {
+    return <AssetSection section={section} />;
+  } else if (section.type === "ranking") {
+    return <RankingSection section={section} />;
+  } else if (section.type === "token-trade") {
+    return <TokenTradeSection section={section} />;
+  } else if (section.type === "carousel") {
+    return <CarouselSection section={section} />;
+  } else if (section.type === "showcase") {
+    return <ShowCaseSection section={section} />;
   }
 }
 
@@ -55,46 +96,8 @@ export function SectionRender({ section, useLazy }: Props) {
   if (!section?.type) {
     return <></>;
   }
-  const sectionToRender = () => {
-    if (section.type === "featured") {
-      return <FeaturedSection title={section.title} items={section.items} />;
-    } else if (section.type === "video") {
-      return (
-        <VideoSection
-          embedType={section.embedType}
-          videoUrl={section.videoUrl}
-          title={section.title}
-        />
-      );
-    } else if (section.type === "call-to-action") {
-      return <CallToActionSection section={section} />;
-    } else if (section.type === "collections") {
-      return <CollectionsSection section={section} />;
-    } else if (section.type === "custom") {
-      return <CustomSection section={section} />;
-    } else if (section.type === "swap") {
-      return <SwapSection section={section} />;
-    } else if (section.type === "asset-store") {
-      return <AssetStoreSection section={section} />;
-    } else if (section.type === "markdown") {
-      return <MDSection section={section} />;
-    } else if (section.type === "wallet") {
-      return <WalletSection section={section} />;
-    } else if (section.type === "contract") {
-      return <ContractSection section={section} />;
-    } else if (section.type === "user-contract-form") {
-      return <UserContractSection section={section} />;
-    } else if (section.type === "exchange") {
-      return <ExchangeSection section={section} />;
-    } else if (section.type === "plugin") {
-      return <LoadPlugin data={section.data} path={section.pluginPath} />;
-    } else if (section.type === "carousel") {
-      return <CarouselSection section={section} />;
-    } else if (section.type === "showcase") {
-      return <ShowCaseSection section={section} />;
-    }
-  };
-  const getSection = sectionToRender();
+
+  const getSection = SectionToRender({ section });
   if (getSection) {
     if (useLazy) {
       return <LazyComponent>{getSection}</LazyComponent>;
