@@ -122,8 +122,6 @@ const MainLayout: React.FC<Props> = ({
 
   const handleCloseDrawer = () => isDrawerOpen.setIsOpen(false);
 
-  console.log(mobileView);
-
   const render = () => (
     <ErrorBoundary
       fallbackRender={({ error, resetErrorBoundary }) => (
