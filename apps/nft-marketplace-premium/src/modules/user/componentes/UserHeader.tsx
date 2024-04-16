@@ -57,9 +57,9 @@ export function UserHeader(props: Props) {
           >
             <Image
               src={profileImageURL}
-              alt={bio}
-              height={theme.spacing(14)}
-              width={theme.spacing(14)}
+              alt={bio || ' '}
+              width={14 * 8}
+              height={14 * 8}
             />
           </Box>
         ) : (

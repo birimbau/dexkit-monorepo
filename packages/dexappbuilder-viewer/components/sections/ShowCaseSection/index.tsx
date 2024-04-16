@@ -38,8 +38,6 @@ export default function ShowCaseSection({ section }: ShowCaseSectionProps) {
     return chunk<ShowCaseItem>(items, isMobile ? 2 : 4);
   }, [items, isMobile]);
 
-  console.log(pages);
-
   const handleChangeIndex = (index: number, indexLatest: number) => {
     setIndex(index);
   };

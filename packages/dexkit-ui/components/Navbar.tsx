@@ -333,19 +333,23 @@ function Navbar({ appConfig, isPreview }: Props) {
                 src={appConfig?.logoDark?.url || ""}
                 alt={appConfig.name}
                 title={appConfig.name}
-                width={
-                  isMobile && appConfig?.logoDark?.widthMobile
-                    ? appConfig?.logoDark?.widthMobile
-                    : appConfig?.logoDark?.width ||
-                      appConfig?.logo?.width ||
-                      theme.spacing(6)
-                }
                 height={
                   isMobile && appConfig?.logoDark?.heightMobile
-                    ? appConfig?.logoDark?.heightMobile
-                    : appConfig?.logoDark?.height ||
-                      appConfig?.logo?.height ||
-                      theme.spacing(6)
+                    ? Number(appConfig?.logoDark?.heightMobile)
+                    : Number(
+                        appConfig?.logoDark?.height ||
+                          appConfig?.logo?.height ||
+                          theme.spacing(6)
+                      )
+                }
+                width={
+                  isMobile && appConfig?.logoDark?.widthMobile
+                    ? Number(appConfig?.logoDark?.widthMobile)
+                    : Number(
+                        appConfig?.logoDark?.width ||
+                          appConfig?.logo?.width ||
+                          theme.spacing(6)
+                      )
                 }
               />
             </Link>
@@ -357,13 +361,13 @@ function Navbar({ appConfig, isPreview }: Props) {
                 title={appConfig.name}
                 width={
                   isMobile && appConfig?.logo?.widthMobile
-                    ? appConfig?.logo?.widthMobile
-                    : appConfig?.logo?.width || theme.spacing(6)
+                    ? Number(appConfig?.logo?.widthMobile)
+                    : Number(appConfig?.logo?.width || theme.spacing(6))
                 }
                 height={
                   isMobile && appConfig?.logo?.heightMobile
-                    ? appConfig?.logo?.heightMobile
-                    : appConfig?.logo?.height || theme.spacing(6)
+                    ? Number(appConfig?.logo?.heightMobile)
+                    : Number(appConfig?.logo?.height || theme.spacing(6))
                 }
               />
             </Link>

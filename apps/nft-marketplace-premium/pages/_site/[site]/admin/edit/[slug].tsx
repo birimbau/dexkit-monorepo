@@ -30,10 +30,10 @@ import AuthMainLayout from 'src/components/layouts/authMain';
 
 import { AdminContext } from '@dexkit/ui/context/AdminContext';
 
+import { myAppsApi } from '@dexkit/ui/constants/api';
 import { useAuth } from '@dexkit/ui/hooks/auth';
 import { useAdminWhitelabelConfigQuery } from 'src/hooks/whitelabel';
 import { getAppConfig } from 'src/services/app';
-import { myAppsApi } from 'src/services/whitelabel';
 
 export const WizardEditPage: NextPage = () => {
   const router = useRouter();

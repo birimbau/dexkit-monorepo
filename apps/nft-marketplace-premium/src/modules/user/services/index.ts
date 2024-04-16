@@ -1,7 +1,8 @@
+import { myAppsApi } from '@dexkit/ui/constants/api';
 import { UserOptions } from '@dexkit/ui/types/ai';
 import axios from 'axios';
 import { DEXKIT_BASE_API_URL } from 'src/constants';
-import { myAppsApi } from 'src/services/whitelabel';
+
 
 const USER_ENDPOINT = `${DEXKIT_BASE_API_URL}/user`;
 /**

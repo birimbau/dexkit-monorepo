@@ -272,10 +272,9 @@ export default function ImportAssetDialog({ dialogProps }: Props) {
                       }}
                     >
                       <Image
+                        fill
                         alt={metadata?.name}
                         src={ipfsUriToUrl(metadata?.image || "")}
-                        height="100%"
-                        width="100%"
                         objectFit="contain"
                       />
                     </Box>

@@ -101,12 +101,16 @@ export async function getAppConfig(
 
   if (site?.startsWith('localhost')) {
     const [slug,] = site?.split('.') || [];
-    //const slug = 'crypto-fans';
+    // const slug = 'crypto-fans';
     if (slug) {
       const configResponse = (await getConfig({ slug, appPage })).data;
 
+
+
       if (configResponse) {
         const appConfig = JSON.parse(configResponse.config) as AppConfig;
+
+
         const appLocaleMessages = await getLocaleMessages(appConfig.locale);
 
 

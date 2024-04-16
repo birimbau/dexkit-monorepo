@@ -1,7 +1,7 @@
 import { Box, Button, Divider, Grid, Stack, Typography } from '@mui/material';
 import { FormattedMessage, useIntl } from 'react-intl';
 
-import { EVM_CHAINS } from '@dexkit/evm-chains';
+import { EVM_CHAINS } from '@dexkit/evm-chains/constants';
 import { useActiveChainIds } from '@dexkit/ui';
 import Add from '@mui/icons-material/Add';
 import Close from '@mui/icons-material/Close';
