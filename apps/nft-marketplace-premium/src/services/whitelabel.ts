@@ -6,8 +6,10 @@ import { getAccessToken, getAccessTokenAndRefresh, getRefreshAccessToken } from 
 import axios from 'axios';
 import {
   ConfigResponse,
+  PageTemplateFormData,
   PageTemplateResponse,
-  SiteResponse
+  SiteResponse,
+  WhitelabelFormData
 } from '../types/whitelabel';
 
 
@@ -107,7 +109,7 @@ myAppsApi.interceptors.response.use(
     }
     return Promise.reject(error);
   }
-);
+);*/
 
 export async function sendConfig(formData: WhitelabelFormData) {
   return await myAppsApi.post<{ slug: string }>('/site/create-site', formData);
@@ -115,7 +117,7 @@ export async function sendConfig(formData: WhitelabelFormData) {
 
 export async function upsertPageTemplate(formData: PageTemplateFormData) {
   return await myAppsApi.post('/site/create-page-template', formData);
-}*/
+}
 
 /**
  * Get all configs associated with a wallet
