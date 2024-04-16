@@ -1,10 +1,9 @@
 import { CollectionOwnershipNFTFormType } from '@/modules/contract-wizard/types';
-import { myAppsApi } from '@dexkit/ui/constants/api';
+import { myAppsApi as myAppsApiUI } from '@dexkit/ui/constants/api';
 import { SiteMetadata } from '@dexkit/ui/modules/wizard/types';
 import { AppPageSection } from '@dexkit/ui/modules/wizard/types/section';
 import { getAccessToken, getAccessTokenAndRefresh, getRefreshAccessToken } from '@dexkit/ui/services/auth';
 import axios from 'axios';
-import { DEXKIT_BASE_API_URL } from 'src/constants';
 import {
   ConfigResponse,
   PageTemplateResponse,
@@ -14,7 +13,7 @@ import {
 
 //const MY_APPS_ENDPOINT = 'https://dexkitapi-8oo4v.ondigitalocean.app';
 //const MY_APPS_ENDPOINT = 'http://localhost:3001';
-const MY_APPS_ENDPOINT = `${DEXKIT_BASE_API_URL}`;
+//const MY_APPS_ENDPOINT = `${DEXKIT_BASE_API_URL}`;
 //const MY_APPS_ENDPOINT = 'https://squid-app-xzo63.ondigitalocean.app';
 
 /**
@@ -23,10 +22,9 @@ const MY_APPS_ENDPOINT = `${DEXKIT_BASE_API_URL}`;
  * @returns
  */
 
-/*export const myAppsApi = axios.create({
-  baseURL: MY_APPS_ENDPOINT,
-  headers: { 'content-type': 'application/json' },
-});*/
+export const myAppsApi = myAppsApiUI;
+
+
 
 export const testAppsApi = axios.create({
   baseURL: 'http://localhost:3001',
