@@ -153,13 +153,14 @@ const MainLayout: React.FC<Props> = ({
           appConfig={appConfig}
         />
       )}
-      <GlobalDialogs />
+
       {!mobileView && <Navbar appConfig={appConfig} isPreview={isPreview} />}
       {!mobileView && <NavbarAlt appConfig={appConfig} isPreview={isPreview} />}
 
       <WrapperLayout appConfig={appConfig}>
         {mobileView && <Navbar appConfig={appConfig} isPreview={isPreview} />}
         <Box sx={{ flex: 1 }} py={disablePadding ? 0 : 4}>
+          <GlobalDialogs />
           <ErrorBoundary
             fallbackRender={({ error, resetErrorBoundary }) => (
               <Stack justifyContent="center" alignItems="center">

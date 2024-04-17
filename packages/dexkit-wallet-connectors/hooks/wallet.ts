@@ -13,7 +13,7 @@ export function useWalletActivate({
   magicRedirectUrl: string;
   selectedWalletAtom: PrimitiveAtom<string>;
 }) {
-  const { connector, chainId } = useWeb3React();
+  const { chainId } = useWeb3React();
   const { setWalletConnectorMetadata } = useWalletConnectorMetadata()
   // This should be deprecated
   const [walletConnector, setWalletConnector] = useAtom(selectedWalletAtom);
@@ -22,7 +22,7 @@ export function useWalletActivate({
     /* if (connector.deactivate) {
        await connector.deactivate();
      }*/
-
+    const connector = params.connector;
     if (params?.overrideActivate && params?.overrideActivate(chainId)) return;
 
 
