@@ -135,20 +135,22 @@ function AppDrawer({ open, onClose, appConfig }: Props) {
         {isMobile && (
           <Box>
             {!isActive ? (
-              <Button
-                variant="outlined"
-                color="inherit"
-                onClick={handleConnectWallet}
-                startIcon={<Wallet />}
-                endIcon={<ChevronRightIcon />}
-                fullWidth
-              >
-                <FormattedMessage
-                  id="connect.wallet"
-                  defaultMessage="Connect Wallet"
-                  description="Connect wallet button"
-                />
-              </Button>
+              <Box p={2}>
+                <Button
+                  variant="outlined"
+                  color="inherit"
+                  onClick={handleConnectWallet}
+                  startIcon={<Wallet />}
+                  endIcon={<ChevronRightIcon />}
+                  fullWidth
+                >
+                  <FormattedMessage
+                    id="connect.wallet"
+                    defaultMessage="Connect Wallet"
+                    description="Connect wallet button"
+                  />
+                </Button>
+              </Box>
             ) : (
               <Stack spacing={2}>
                 {user && (

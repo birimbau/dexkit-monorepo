@@ -5,7 +5,9 @@ import React, { useEffect, useMemo } from "react";
 
 const AppDrawer = dynamic(() => import("../AppDrawer"));
 
+import { useIsMobile } from "@dexkit/core";
 import { AppConfig } from "@dexkit/ui/modules/wizard/types/config";
+import { isMobile } from "@dexkit/wallet-connectors/utils/userAgent";
 import { ErrorBoundary } from "react-error-boundary";
 import { FormattedMessage } from "react-intl";
 import {
@@ -31,12 +33,13 @@ const WrapperLayout: React.FC<{
   appConfig: AppConfig;
   children?: React.ReactNode | React.ReactNode[];
 }> = ({ children, appConfig }) => {
-  
   const isDrawerOpen = useDrawerIsOpen();
+  const isMobileUI = useIsMobile();
 
   const handleCloseDrawer = () => isDrawerOpen.setIsOpen(false);
+  const mobileView = isMobile || isMobileUI;
 
-  if (appConfig.menuSettings?.layout?.type === "sidebar") {
+  if (appConfig.menuSettings?.layout?.type === "sidebar" && !mobileView) {
     return (
       <Box
         sx={{
@@ -94,6 +97,9 @@ const MainLayout: React.FC<Props> = ({
   appConfigProps,
   isPreview,
 }) => {
+  const isMobileUI = useIsMobile();
+  const mobileView = isMobile || isMobileUI;
+
   const { mode } = useThemeMode();
   const { setMode } = useColorScheme();
 
@@ -147,12 +153,14 @@ const MainLayout: React.FC<Props> = ({
           appConfig={appConfig}
         />
       )}
-      <GlobalDialogs />
-      <Navbar appConfig={appConfig} isPreview={isPreview} />
-      <NavbarAlt appConfig={appConfig} isPreview={isPreview} />
+
+      {!mobileView && <Navbar appConfig={appConfig} isPreview={isPreview} />}
+      {!mobileView && <NavbarAlt appConfig={appConfig} isPreview={isPreview} />}
 
       <WrapperLayout appConfig={appConfig}>
+        {mobileView && <Navbar appConfig={appConfig} isPreview={isPreview} />}
         <Box sx={{ flex: 1 }} py={disablePadding ? 0 : 4}>
+          <GlobalDialogs />
           <ErrorBoundary
             fallbackRender={({ error, resetErrorBoundary }) => (
               <Stack justifyContent="center" alignItems="center">

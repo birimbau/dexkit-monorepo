@@ -36,7 +36,7 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import Language from "@mui/icons-material/Language";
 import SettingsIcon from "@mui/icons-material/Settings";
 import dynamic from "next/dynamic";
-import Image from "next/image";
+import Image from "next/legacy/image";
 import { FormattedMessage } from "react-intl";
 
 import { WalletButton } from "@dexkit/ui/components/WalletButton";

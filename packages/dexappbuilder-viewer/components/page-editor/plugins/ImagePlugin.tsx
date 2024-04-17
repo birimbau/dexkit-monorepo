@@ -4,7 +4,7 @@ import type { CellPlugin } from "@react-page/editor";
 import Link from "@dexkit/ui/components/AppLink";
 import { DEXKIT_BASE_FILES_HOST } from "@dexkit/ui/constants";
 import { Stack } from "@mui/material";
-import Image from "next/image";
+import Image from "next/legacy/image";
 import { useMemo } from "react";
 
 type Data = {
