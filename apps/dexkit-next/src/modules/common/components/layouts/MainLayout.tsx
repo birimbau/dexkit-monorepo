@@ -198,7 +198,7 @@ export default function MainLayout({
               address: account,
               type: AccountType.EVM,
               connector: WalletConnectType.Magic,
-              loginType: connector.loginType,
+              loginType: connector?.loginType,
             },
             true
           );

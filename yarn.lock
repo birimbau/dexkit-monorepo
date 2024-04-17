@@ -11884,10 +11884,10 @@
     "@uniswap/v3-core" "1.0.0"
     "@uniswap/v3-periphery" "^1.0.1"
 
-"@unlock-protocol/unlock-js@^0.43.2":
-  version "0.43.2"
-  resolved "https://registry.yarnpkg.com/@unlock-protocol/unlock-js/-/unlock-js-0.43.2.tgz#5a42ce2b6f6a5f09b0d679253436bb263b0add02"
-  integrity sha512-zHEYu62yYc+WZK9wYSgC+lfaXzsaUidxfbcsXWvzzxuq4Qu2hyxpWXKsOHPcYuWqfekPHBGjNxJj3GivcfdPIw==
+"@unlock-protocol/unlock-js@^0.45.1":
+  version "0.45.1"
+  resolved "https://registry.yarnpkg.com/@unlock-protocol/unlock-js/-/unlock-js-0.45.1.tgz#03e28ed6559b469c3a6f08efde43e4b0dca6d42c"
+  integrity sha512-+G7wVQxZ3YqnbN7QJfG2MGifqPHRPZqt7H39HcLNBbmrJ8+PZ020cg9h0WboS06JOGKg5f/+oixar/2fb2RyAw==
   dependencies:
     "@uniswap/sdk-core" "4.0.9"
     "@uniswap/smart-order-router" "3.17.2"

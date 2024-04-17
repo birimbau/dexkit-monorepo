@@ -37,7 +37,7 @@ export function useWalletActivate({
       // This should be deprecated
       setWalletConnector("magic");
       return await magic.activate({
-        loginType: params.loginType,
+        loginType: params?.loginType,
         email: params.email,
         redirectUrl: magicRedirectUrl,
       });
