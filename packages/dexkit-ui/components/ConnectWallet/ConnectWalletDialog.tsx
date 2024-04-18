@@ -144,12 +144,12 @@ export default function ConnectWalletDialog({
             disabled={
               isActivating &&
               connectorName === conn.id &&
-              conn.loginType === loginType
+              conn?.loginType === loginType
             }
             onClick={() =>
               handleActivateWallet({
                 connectorName: conn.id,
-                loginType: conn.loginType,
+                loginType: conn?.loginType,
                 connector: conn.connector,
                 icon: conn?.icon,
                 name: conn?.name,
@@ -174,7 +174,7 @@ export default function ConnectWalletDialog({
             <ListItemText primary={conn.name} />
             {isActivating &&
               connectorName === conn.id &&
-              conn.loginType === loginType && (
+              conn?.loginType === loginType && (
                 <CircularProgress
                   color="primary"
                   sx={{ fontSize: (theme) => theme.spacing(2) }}
@@ -183,7 +183,7 @@ export default function ConnectWalletDialog({
             {isActive &&
               activeConnectorName === conn.id &&
               (activeConnectorName === "magic" ? (
-                conn.loginType === loginType ? (
+                conn?.loginType === loginType ? (
                   <Stack
                     direction="row"
                     justifyContent="center"

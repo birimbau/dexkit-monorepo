@@ -61,6 +61,6 @@ export const networks = {
   },
   11155111: {
     unlockAddress: "0x36b34e10295cCE69B652eEB5a8046041074515Da", // Smart contracts docs include all addresses on all networks
-    provider: "https://rpc.unlock-protocol.com/534352",
+    provider: "https://rpc.unlock-protocol.com/11155111",
   },
 };

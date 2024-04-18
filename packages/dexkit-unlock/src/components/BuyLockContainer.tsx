@@ -18,6 +18,7 @@ interface Props {
 export default function BuyLockContainer({ lockAddress, lockChainId }: Props) {
   const { account } = useWeb3React();
   const lockQuery = useLockQuery({ lockAddress, lockChainId });
+
   const lockByOwner = useLockKeybyOwnerQuery({
     lockAddress,
     lockChainId,
@@ -29,6 +30,7 @@ export default function BuyLockContainer({ lockAddress, lockChainId }: Props) {
     lockChainId,
     account,
   });
+
   const tokens = useTokenList({ includeNative: true, chainId: lockChainId });
   const data = lockQuery.data;
   const token = useMemo(() => {
