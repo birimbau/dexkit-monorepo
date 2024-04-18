@@ -4,6 +4,7 @@ import {
 } from '@dexkit/core/constants/networks';
 import {
   beautifyCamelCase,
+  formatStringNumber,
   truncateAddress,
   truncateHash,
 } from '@dexkit/core/utils';
@@ -136,27 +137,7 @@ function OnChainDataGrid({ siteId, onViewDetails }: OnChainDataGridProps) {
           </Link>
         ) : null,
     },
-    {
-      field: 'from',
-      headerName: 'Account',
-      minWidth: 200,
-      renderCell: (params: any) =>
-        params.row?.from || params.row?.account?.address ? (
-          <Link
-            target="_blank"
-            href={`${NETWORK_EXPLORER(params.row.chainId)}/address/${
-              params.row?.from || params.row?.account?.address
-            }`}
-          >
-            {truncateAddress(params.row?.from || params.row?.account?.address)}
-          </Link>
-        ) : null,
-    },
-    {
-      field: 'referral',
-      headerName: 'Referral',
-      minWidth: 200,
-    },
+    referralColumn,
     {
       field: 'action',
       headerName: 'Action',
@@ -266,22 +247,6 @@ function OffChainDataGrid({ siteId }: Props) {
       },
     },
     {
-      field: 'from',
-      headerName: 'Account',
-      width: 200,
-      renderCell: (params: any) =>
-        params.row?.from || params.row?.account?.address ? (
-          <Link
-            target="_blank"
-            href={`${NETWORK_EXPLORER(params.row.chainId)}/tx/${
-              params.row?.from || params.row?.account?.address
-            }`}
-          >
-            {truncateAddress(params.row?.from || params.row?.account?.address)}
-          </Link>
-        ) : null,
-    },
-    {
       field: 'referral',
       headerName: 'Referral',
       width: 200,
@@ -315,36 +280,81 @@ function OffChainDataGrid({ siteId }: Props) {
   );
 }
 
+const accountColumn: GridColDef = {
+  renderHeader: () => (
+    <FormattedMessage id="account" defaultMessage="Account" />
+  ),
+  minWidth: 200,
+  flex: 1,
+  field: 'from',
+  renderCell: (params: any) => {
+    return (
+      <Link
+        target="_blank"
+        href={`${NETWORK_EXPLORER(params.row.chainId)}/address/${
+          params.row.from
+        }`}
+      >
+        {truncateAddress(params.row.from)}
+      </Link>
+    );
+  },
+};
+
+const chainIdColumn: GridColDef = {
+  field: 'chainId',
+  renderHeader: () => (
+    <FormattedMessage id="network" defaultMessage="Network" />
+  ),
+  minWidth: 200,
+  valueGetter: ({ row }) => {
+    return NETWORK_NAME(row.chainId);
+  },
+};
+
+const hashColunn: GridColDef = {
+  field: 'hash',
+  disableReorder: true,
+  headerName: 'TX',
+  minWidth: 200,
+  renderCell: (params: any) =>
+    params.row.hash ? (
+      <Link
+        target="_blank"
+        href={`${NETWORK_EXPLORER(params.row.chainId)}/tx/${params.row.hash}`}
+      >
+        {truncateHash(params.row.hash)}
+      </Link>
+    ) : null,
+};
+
+const referralColumn: GridColDef = {
+  field: 'referral',
+  headerName: 'Referral',
+  minWidth: 200,
+  renderCell: (params: any) => {
+    return (
+      <Link
+        target="_blank"
+        href={`${NETWORK_EXPLORER(params.row.chainId)}/address/${
+          params.row.referral
+        }`}
+      >
+        {truncateAddress(params.row.referral)}
+      </Link>
+    );
+  },
+};
+
+const commonColumns = [chainIdColumn, hashColunn, accountColumn];
+
 const columnTypes: { [key: string]: GridColDef[] } = {
   [UserOnChainEvents.nftAcceptListERC1155]: [
-    {
-      field: 'chainId',
-      renderHeader: () => (
-        <FormattedMessage id="network" defaultMessage="Network" />
-      ),
-      minWidth: 200,
-      valueGetter: ({ row }) => {
-        return NETWORK_NAME(row.chainId);
-      },
-    },
-    {
-      field: 'hash',
-      headerName: 'TX',
-      minWidth: 200,
-      renderCell: (params: any) =>
-        params.row.hash ? (
-          <Link
-            target="_blank"
-            href={`${NETWORK_EXPLORER(params.row.chainId)}/tx/${
-              params.row.hash
-            }`}
-          >
-            {truncateHash(params.row.hash)}
-          </Link>
-        ) : null,
-    },
+    ...commonColumns,
     {
       field: 'paidAmount',
+
+      sortable: false,
       renderHeader: () => (
         <FormattedMessage id="paid.amount" defaultMessage="Paid amount" />
       ),
@@ -354,13 +364,15 @@ const columnTypes: { [key: string]: GridColDef[] } = {
 
         return (
           <>
-            {tokenAmount} {token?.symbol?.toUpperCase()}
+            {formatStringNumber(tokenAmount)} {token?.symbol?.toUpperCase()}
           </>
         );
       },
     },
     {
       field: 'paidAmount',
+
+      sortable: false,
       renderHeader: () => (
         <FormattedMessage id="paid.amount" defaultMessage="Paid amount" />
       ),
@@ -384,6 +396,8 @@ const columnTypes: { [key: string]: GridColDef[] } = {
     },
     {
       field: 'tokenId',
+
+      sortable: false,
       renderHeader: () => (
         <FormattedMessage id="token.id" defaultMessage="Token ID" />
       ),
@@ -394,6 +408,7 @@ const columnTypes: { [key: string]: GridColDef[] } = {
     },
     {
       field: 'amount',
+      sortable: false,
       renderHeader: () => (
         <FormattedMessage id="amount" defaultMessage="Amount" />
       ),
@@ -404,129 +419,77 @@ const columnTypes: { [key: string]: GridColDef[] } = {
         return <>{nftAmount}</>;
       },
     },
-    {
-      field: 'referral',
-      headerName: 'Referral',
-      minWidth: 200,
-    },
+    referralColumn,
   ],
   [UserOnChainEvents.swap]: [
-    {
-      field: 'chainId',
-      renderHeader: () => (
-        <FormattedMessage id="network" defaultMessage="Network" />
-      ),
-      minWidth: 200,
-      valueGetter: ({ row }) => {
-        return NETWORK_NAME(row.chainId);
-      },
-    },
-    {
-      field: 'hash',
-      headerName: 'TX',
-      minWidth: 200,
-
-      renderCell: (params: any) =>
-        params.row.hash ? (
-          <Link
-            target="_blank"
-            href={`${NETWORK_EXPLORER(params.row.chainId)}/tx/${
-              params.row.hash
-            }`}
-          >
-            {truncateHash(params.row.hash)}
-          </Link>
-        ) : null,
-    },
+    ...commonColumns,
     {
       field: 'amountIn',
+      disableReorder: true,
+      sortable: false,
       renderHeader: () => (
         <FormattedMessage id="amount.in" defaultMessage="Amount In" />
       ),
-      minWidth: 200,
+      minWidth: 280,
       flex: 1,
       renderCell: (params: any) => {
         const { tokenInAmount, tokenIn } = params.row.processedMetadata;
 
         return (
           <Typography>
-            {tokenInAmount} {tokenIn?.symbol?.toUpperCase()}
+            {formatStringNumber(tokenInAmount)} {tokenIn?.symbol?.toUpperCase()}
           </Typography>
         );
       },
     },
     {
       field: 'amountOut',
+      disableReorder: true,
+      sortable: false,
       renderHeader: () => (
         <FormattedMessage id="amount.out" defaultMessage="Amount Out" />
       ),
       flex: 1,
-      minWidth: 200,
+      minWidth: 280,
       renderCell: (params: any) => {
         const { tokenOut, tokenOutAmount } = params.row.processedMetadata;
 
         return (
           <Typography>
-            {tokenOutAmount} {tokenOut?.symbol?.toUpperCase()}
+            {formatStringNumber(tokenOutAmount)}{' '}
+            {tokenOut?.symbol?.toUpperCase()}
           </Typography>
         );
       },
     },
     {
-      field: 'referral',
+      field: 'receivedFee',
+      disableReorder: true,
+      sortable: false,
       renderHeader: () => (
-        <FormattedMessage id="referral" defaultMessage="Referral" />
+        <FormattedMessage id="Received.fee" defaultMessage="Received Fee" />
       ),
-      minWidth: 200,
+      flex: 1,
+      minWidth: 280,
+      renderCell: (params: any) => {
+        const { receivedFee, tokenIn } = params.row.processedMetadata;
+
+        if (receivedFee && tokenIn && tokenIn?.symbol) {
+          return (
+            <Typography>
+              {formatStringNumber(receivedFee)} {tokenIn?.symbol?.toUpperCase()}
+            </Typography>
+          );
+        }
+      },
     },
+    referralColumn,
   ],
   [UserOnChainEvents.transfer]: [
-    {
-      field: 'chainId',
-      renderHeader: () => (
-        <FormattedMessage id="network" defaultMessage="Network" />
-      ),
-      minWidth: 110,
-      valueGetter: ({ row }) => {
-        return NETWORK_NAME(row.chainId);
-      },
-    },
-    {
-      field: 'hash',
-      headerName: 'TX',
-      minWidth: 160,
-      renderCell: (params: any) =>
-        params.row.hash ? (
-          <Link
-            target="_blank"
-            href={`${NETWORK_EXPLORER(params.row.chainId)}/tx/${
-              params.row.hash
-            }`}
-          >
-            {truncateHash(params.row.hash)}
-          </Link>
-        ) : null,
-    },
-    {
-      field: 'from',
-      renderHeader: () => <FormattedMessage id="from" defaultMessage="From" />,
-      minWidth: 160,
-      flex: 1,
-      renderCell: (params: any) => {
-        return (
-          <Link
-            target="_blank"
-            href={`${NETWORK_EXPLORER(params.row.chainId)}/address/${
-              params.row.from
-            }`}
-          >
-            {truncateAddress(params.row.from)}
-          </Link>
-        );
-      },
-    },
+    ...commonColumns,
     {
       field: 'amount',
+      sortable: false,
       flex: 1,
       renderHeader: () => (
         <FormattedMessage id="amount" defaultMessage="Amount" />
@@ -537,7 +500,7 @@ const columnTypes: { [key: string]: GridColDef[] } = {
         if (amount && token) {
           return (
             <>
-              {amount} {token.symbol.toUpperCase()}
+              {formatStringNumber(amount)} {token.symbol.toUpperCase()}
             </>
           );
         }
@@ -545,6 +508,7 @@ const columnTypes: { [key: string]: GridColDef[] } = {
     },
     {
       field: 'to',
+      sortable: false,
       renderHeader: () => <FormattedMessage id="to" defaultMessage="To" />,
       minWidth: 160,
       flex: 1,
@@ -561,56 +525,17 @@ const columnTypes: { [key: string]: GridColDef[] } = {
         );
       },
     },
-    {
-      field: 'referral',
-      headerName: 'Referral',
-      minWidth: 200,
-      renderCell: (params: any) => {
-        return (
-          <Link
-            target="_blank"
-            href={`${NETWORK_EXPLORER(params.row.chainId)}/address/${
-              params.row.referral
-            }`}
-          >
-            {truncateAddress(params.row.referral)}
-          </Link>
-        );
-      },
-    },
+    referralColumn,
   ],
   [UserOnChainEvents.nftAcceptOfferERC1155]: [
-    {
-      field: 'chainId',
-      renderHeader: () => (
-        <FormattedMessage id="network" defaultMessage="Network" />
-      ),
-      minWidth: 110,
-      valueGetter: ({ row }) => {
-        return NETWORK_NAME(row.chainId);
-      },
-    },
-    {
-      field: 'hash',
-      headerName: 'TX',
-      minWidth: 160,
-      renderCell: (params: any) =>
-        params.row.hash ? (
-          <Link
-            target="_blank"
-            href={`${NETWORK_EXPLORER(params.row.chainId)}/tx/${
-              params.row.hash
-            }`}
-          >
-            {truncateHash(params.row.hash)}
-          </Link>
-        ) : null,
-    },
+    ...commonColumns,
     {
       renderHeader: () => (
         <FormattedMessage id="tokenId" defaultMessage="Token ID" />
       ),
       field: 'tokenId',
+
+      sortable: false,
       flex: 1,
       renderCell: (params: any) => {
         const { tokenId } = params.row.processedMetadata;
@@ -625,6 +550,8 @@ const columnTypes: { [key: string]: GridColDef[] } = {
         <FormattedMessage id="token.amount" defaultMessage="Token Amount" />
       ),
       field: 'tokenAmount',
+
+      sortable: false,
       flex: 1,
       renderCell: (params: any) => {
         const { tokenAmount } = params.row.processedMetadata;
@@ -641,6 +568,8 @@ const columnTypes: { [key: string]: GridColDef[] } = {
         />
       ),
       field: 'collectionName',
+
+      sortable: false,
       flex: 1,
       renderCell: (params: any) => {
         const { collection } = params.row.processedMetadata;
@@ -656,6 +585,8 @@ const columnTypes: { [key: string]: GridColDef[] } = {
       ),
       field: 'nftAmount',
       flex: 1,
+
+      sortable: false,
       renderCell: (params: any) => {
         const { nftAmount } = params.row.processedMetadata;
 
@@ -664,53 +595,10 @@ const columnTypes: { [key: string]: GridColDef[] } = {
         }
       },
     },
-    {
-      field: 'referral',
-      renderHeader: () => (
-        <FormattedMessage id="referral" defaultMessage="Referral" />
-      ),
-      minWidth: 200,
-      renderCell: (params: any) => {
-        return (
-          <Link
-            target="_blank"
-            href={`${NETWORK_EXPLORER(params.row.chainId)}/address/${
-              params.row.referral
-            }`}
-          >
-            {truncateAddress(params.row.referral)}
-          </Link>
-        );
-      },
-    },
+    referralColumn,
   ],
   [UserOnChainEvents.nftAcceptOfferERC721]: [
-    {
-      field: 'chainId',
-      renderHeader: () => (
-        <FormattedMessage id="network" defaultMessage="Network" />
-      ),
-      minWidth: 110,
-      valueGetter: ({ row }) => {
-        return NETWORK_NAME(row.chainId);
-      },
-    },
-    {
-      field: 'hash',
-      headerName: 'TX',
-      minWidth: 160,
-      renderCell: (params: any) =>
-        params.row.hash ? (
-          <Link
-            target="_blank"
-            href={`${NETWORK_EXPLORER(params.row.chainId)}/tx/${
-              params.row.hash
-            }`}
-          >
-            {truncateHash(params.row.hash)}
-          </Link>
-        ) : null,
-    },
+    ...commonColumns,
     {
       renderHeader: () => (
         <FormattedMessage id="token.amount" defaultMessage="Token Amount" />
@@ -718,12 +606,14 @@ const columnTypes: { [key: string]: GridColDef[] } = {
       minWidth: 200,
       flex: 1,
       field: 'tokenAmount',
+
+      sortable: false,
       renderCell: (params: any) => {
         const { tokenAmount, token } = params.row.processedMetadata;
         if (tokenAmount) {
           return (
             <>
-              {tokenAmount} {token?.symbol?.toUpperCase()}
+              {formatStringNumber(tokenAmount)} {token?.symbol?.toUpperCase()}
             </>
           );
         }
@@ -738,6 +628,8 @@ const columnTypes: { [key: string]: GridColDef[] } = {
       ),
       minWidth: 200,
       flex: 1,
+
+      sortable: false,
       field: 'collectionName',
       renderCell: (params: any) => {
         const { collection } = params.row.processedMetadata;
@@ -754,6 +646,8 @@ const columnTypes: { [key: string]: GridColDef[] } = {
       flex: 1,
       minWidth: 200,
       field: 'nftAmount',
+
+      sortable: false,
       renderCell: (params: any) => {
         const { nftAmount, token } = params.row.processedMetadata;
 
@@ -762,59 +656,18 @@ const columnTypes: { [key: string]: GridColDef[] } = {
         }
       },
     },
-    {
-      field: 'referral',
-      renderHeader: () => (
-        <FormattedMessage id="referral" defaultMessage="Referral" />
-      ),
-      minWidth: 200,
-      renderCell: (params: any) => {
-        return (
-          <Link
-            target="_blank"
-            href={`${NETWORK_EXPLORER(params.row.chainId)}/address/${
-              params.row.referral
-            }`}
-          >
-            {truncateAddress(params.row.referral)}
-          </Link>
-        );
-      },
-    },
+    referralColumn,
   ],
   [UserOnChainEvents.nftAcceptListERC721]: [
-    {
-      field: 'chainId',
-      renderHeader: () => (
-        <FormattedMessage id="network" defaultMessage="Network" />
-      ),
-      minWidth: 110,
-      valueGetter: ({ row }) => {
-        return NETWORK_NAME(row.chainId);
-      },
-    },
-    {
-      field: 'hash',
-      headerName: 'TX',
-      minWidth: 160,
-      renderCell: (params: any) =>
-        params.row.hash ? (
-          <Link
-            target="_blank"
-            href={`${NETWORK_EXPLORER(params.row.chainId)}/tx/${
-              params.row.hash
-            }`}
-          >
-            {truncateHash(params.row.hash)}
-          </Link>
-        ) : null,
-    },
+    ...commonColumns,
     {
       renderHeader: () => (
         <FormattedMessage id="token.amount" defaultMessage="Token Amount" />
       ),
       minWidth: 200,
       field: 'tokenAmount',
+
+      sortable: false,
       flex: 1,
       renderCell: (params: any) => {
         const { tokenAmount, token } = params.row.processedMetadata;
@@ -822,7 +675,7 @@ const columnTypes: { [key: string]: GridColDef[] } = {
         if (tokenAmount && token) {
           return (
             <>
-              {tokenAmount} {token?.symbol?.toUpperCase()}
+              {formatStringNumber(tokenAmount)} {token?.symbol?.toUpperCase()}
             </>
           );
         }
@@ -837,6 +690,8 @@ const columnTypes: { [key: string]: GridColDef[] } = {
       ),
       flex: 1,
       minWidth: 200,
+
+      sortable: false,
       field: 'collectionName',
       renderCell: (params: any) => {
         const { collection } = params.row.processedMetadata;
@@ -851,6 +706,8 @@ const columnTypes: { [key: string]: GridColDef[] } = {
         <FormattedMessage id="nft.amount" defaultMessage="NFT Amount" />
       ),
       field: 'nftAmount',
+
+      sortable: false,
       flex: 1,
       minWidth: 200,
       renderCell: (params: any) => {
@@ -861,53 +718,10 @@ const columnTypes: { [key: string]: GridColDef[] } = {
         }
       },
     },
-    {
-      field: 'referral',
-      renderHeader: () => (
-        <FormattedMessage id="referral" defaultMessage="Referral" />
-      ),
-      minWidth: 200,
-      renderCell: (params: any) => {
-        return (
-          <Link
-            target="_blank"
-            href={`${NETWORK_EXPLORER(params.row.chainId)}/address/${
-              params.row.referral
-            }`}
-          >
-            {truncateAddress(params.row.referral)}
-          </Link>
-        );
-      },
-    },
+    referralColumn,
   ],
   [UserOnChainEvents.buyDropCollection]: [
-    {
-      field: 'chainId',
-      renderHeader: () => (
-        <FormattedMessage id="network" defaultMessage="Network" />
-      ),
-      minWidth: 110,
-      valueGetter: ({ row }) => {
-        return NETWORK_NAME(row.chainId);
-      },
-    },
-    {
-      field: 'hash',
-      headerName: 'TX',
-      minWidth: 160,
-      renderCell: (params: any) =>
-        params.row.hash ? (
-          <Link
-            target="_blank"
-            href={`${NETWORK_EXPLORER(params.row.chainId)}/tx/${
-              params.row.hash
-            }`}
-          >
-            {truncateHash(params.row.hash)}
-          </Link>
-        ) : null,
-    },
+    ...commonColumns,
     {
       renderHeader: () => (
         <FormattedMessage id="price" defaultMessage="Price" />
@@ -915,6 +729,7 @@ const columnTypes: { [key: string]: GridColDef[] } = {
       minWidth: 200,
       field: 'price',
       flex: 1,
+      sortable: false,
       renderCell: (params: any) => {
         const { price } = params.row.processedMetadata;
 
@@ -933,6 +748,8 @@ const columnTypes: { [key: string]: GridColDef[] } = {
       minWidth: 200,
       flex: 1,
       field: 'collectionName',
+
+      sortable: false,
       renderCell: (params: any) => {
         const { collection } = params.row.processedMetadata;
 
@@ -946,6 +763,8 @@ const columnTypes: { [key: string]: GridColDef[] } = {
         <FormattedMessage id="nft.amount" defaultMessage="NFT Amount" />
       ),
       field: 'nftAmount',
+
+      sortable: false,
       minWidth: 200,
       flex: 1,
       renderCell: (params: any) => {
@@ -956,51 +775,10 @@ const columnTypes: { [key: string]: GridColDef[] } = {
         }
       },
     },
-    {
-      field: 'referral',
-      renderHeader: () => (
-        <FormattedMessage id="referral" defaultMessage="Referral" />
-      ),
-      minWidth: 200,
-      renderCell: (params: any) => {
-        return (
-          <Link
-            target="_blank"
-            href={`${NETWORK_EXPLORER(params.row.chainId)}/address/${
-              params.row.referral
-            }`}
-          >
-            {truncateAddress(params.row.referral)}
-          </Link>
-        );
-      },
-    },
+    referralColumn,
   ],
   [UserOnChainEvents.buyDropEdition]: [
-    {
-      field: 'chainId',
-      headerName: 'Network',
-      minWidth: 200,
-      valueGetter: ({ row }) => {
-        return NETWORK_NAME(row.chainId);
-      },
-    },
-    {
-      field: 'hash',
-      headerName: 'TX',
-      minWidth: 200,
-      renderCell: (params: any) =>
-        params.row.hash ? (
-          <Link
-            target="_blank"
-            href={`${NETWORK_EXPLORER(params.row.chainId)}/tx/${
-              params.row.hash
-            }`}
-          >
-            {truncateHash(params.row.hash)}
-          </Link>
-        ) : null,
-    },
+    ...commonColumns,
     {
       renderHeader: () => (
         <FormattedMessage id="price" defaultMessage="Price" />
@@ -1008,6 +786,7 @@ const columnTypes: { [key: string]: GridColDef[] } = {
       minWidth: 200,
       field: 'price',
       flex: 1,
+      sortable: false,
       renderCell: (params: any) => {
         const { price } = params.row.processedMetadata;
 
@@ -1026,6 +805,8 @@ const columnTypes: { [key: string]: GridColDef[] } = {
       flex: 1,
       minWidth: 200,
       field: 'collectionName',
+
+      sortable: false,
       renderCell: (params: any) => {
         const { collection } = params.row.processedMetadata;
 
@@ -1041,6 +822,7 @@ const columnTypes: { [key: string]: GridColDef[] } = {
       minWidth: 200,
       field: 'nftAmount',
       flex: 1,
+      sortable: false,
       renderCell: (params: any) => {
         const { nftAmount } = params.row.processedMetadata;
 
@@ -1049,56 +831,16 @@ const columnTypes: { [key: string]: GridColDef[] } = {
         }
       },
     },
-    {
-      field: 'referral',
-      renderHeader: () => (
-        <FormattedMessage id="referral" defaultMessage="Referral" />
-      ),
-      minWidth: 200,
-      renderCell: (params: any) => {
-        return (
-          <Link
-            target="_blank"
-            href={`${NETWORK_EXPLORER(params.row.chainId)}/address/${
-              params.row.referral
-            }`}
-          >
-            {truncateAddress(params.row.referral)}
-          </Link>
-        );
-      },
-    },
+    referralColumn,
   ],
   [UserOnChainEvents.deployContract]: [
-    {
-      field: 'chainId',
-      headerName: 'Network',
-      minWidth: 200,
-      valueGetter: ({ row }) => {
-        return NETWORK_NAME(row.chainId);
-      },
-    },
-    {
-      field: 'hash',
-      headerName: 'TX',
-      minWidth: 200,
-      renderCell: (params: any) =>
-        params.row.hash ? (
-          <Link
-            target="_blank"
-            href={`${NETWORK_EXPLORER(params.row.chainId)}/tx/${
-              params.row.hash
-            }`}
-          >
-            {truncateHash(params.row.hash)}
-          </Link>
-        ) : null,
-    },
+    ...commonColumns,
     {
       renderHeader: () => <FormattedMessage id="type" defaultMessage="Type" />,
       minWidth: 200,
       flex: 1,
       field: 'type',
+      sortable: false,
       renderCell: (params: any) => {
         const { type } = params.row.processedMetadata;
 
@@ -1112,6 +854,7 @@ const columnTypes: { [key: string]: GridColDef[] } = {
       minWidth: 200,
       flex: 1,
       field: 'name',
+      sortable: false,
       renderCell: (params: any) => {
         const { name } = params.row.processedMetadata;
 
@@ -1127,6 +870,7 @@ const columnTypes: { [key: string]: GridColDef[] } = {
       minWidth: 200,
       flex: 1,
       field: 'address',
+      sortable: false,
       renderCell: (params: any) => {
         const { address } = params.row.processedMetadata;
 
@@ -1140,25 +884,7 @@ const columnTypes: { [key: string]: GridColDef[] } = {
         );
       },
     },
-    {
-      field: 'referral',
-      renderHeader: () => (
-        <FormattedMessage id="referral" defaultMessage="Referral" />
-      ),
-      minWidth: 200,
-      renderCell: (params: any) => {
-        return (
-          <Link
-            target="_blank"
-            href={`${NETWORK_EXPLORER(params.row.chainId)}/address/${
-              params.row.referral
-            }`}
-          >
-            {truncateAddress(params.row.referral)}
-          </Link>
-        );
-      },
-    },
+    referralColumn,
   ],
 };
 
@@ -1192,6 +918,8 @@ export default function UserEventAnalyticsContainer({ siteId }: Props) {
   const getColumns = (type: string): GridColDef[] => {
     return columnTypes[type];
   };
+
+  const handleSubmitFilters = () => {};
 
   return (
     <>
@@ -1234,6 +962,69 @@ export default function UserEventAnalyticsContainer({ siteId }: Props) {
             />
           </Alert>
         </Grid>
+        {/* <Grid item xs={12}>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <Box>
+                <Formik
+                  initialValues={{ start: '', end: '' }}
+                  onSubmit={handleSubmitFilters}
+                >
+                  {({}) => (
+                    <Grid container spacing={2}>
+                      <Grid item xs={12} sm={4}>
+                        <Field
+                          component={DateTimePicker}
+                          label={
+                            <FormattedMessage
+                              id="start"
+                              defaultMessage="Start"
+                            />
+                          }
+                          name="name"
+                          textField={{
+                            fullWidth: true,
+                          }}
+                          fullWidth
+                        />
+                      </Grid>
+                      <Grid item xs={12} sm={4}>
+                        <Field
+                          component={DateTimePicker}
+                          label={
+                            <FormattedMessage id="end" defaultMessage="End" />
+                          }
+                          name="name"
+                          textField={{
+                            fullWidth: true,
+                          }}
+                          fullWidth
+                        />
+                      </Grid>
+                    </Grid>
+                  )}
+                </Formik>
+              </Box>
+            </Grid>
+            <Grid item xs={12} sm={3}>
+              <Card>
+                <CardContent>
+                  <Typography variant="caption" color="text.secondary">
+                    <FormattedMessage
+                      id="total.events"
+                      defaultMessage="Total events"
+                    />
+                  </Typography>
+                  <Typography variant="h5">300</Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+
+            <Grid item xs={12} sm={3}>
+              <TopEventsCard />
+            </Grid>
+          </Grid>
+        </Grid> */}
         <Grid item xs={12}>
           <Box sx={{ width: '100%', typography: 'body1' }}>
             <TabContext value={value}>

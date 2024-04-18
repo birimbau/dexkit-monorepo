@@ -36,8 +36,6 @@ export default function EventDetailDialog({
 
   const data = event?.processedMetadata;
 
-  console.log(data);
-
   return (
     <Dialog {...DialogProps}>
       <AppDialogTitle
