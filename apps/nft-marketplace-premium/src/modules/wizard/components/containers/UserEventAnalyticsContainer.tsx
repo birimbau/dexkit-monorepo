@@ -950,15 +950,12 @@ export default function UserEventAnalyticsContainer({ siteId }: Props) {
         <Grid item xs={12}>
           <Stack>
             <Typography variant={'h6'}>
-              <FormattedMessage
-                id="user.events.analytics"
-                defaultMessage="User events analytics"
-              />
+              <FormattedMessage id="events" defaultMessage="Events" />
             </Typography>
             <Typography variant={'body2'}>
               <FormattedMessage
-                id="user.events.analytics.wizard.description"
-                defaultMessage="User events analytics on your app"
+                id="view.user.interaction.data.within.your.dApp.to.gain.insights"
+                defaultMessage="View user interaction data within your DApp to gain insights"
               />
             </Typography>
           </Stack>
