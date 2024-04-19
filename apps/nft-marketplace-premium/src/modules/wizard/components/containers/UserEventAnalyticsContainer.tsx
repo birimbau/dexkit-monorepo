@@ -346,7 +346,21 @@ const referralColumn: GridColDef = {
   },
 };
 
-const commonColumns = [chainIdColumn, hashColunn, accountColumn];
+const createdAtColumn: GridColDef = {
+  field: 'createdAt',
+  headerName: 'Created At',
+  minWidth: 200,
+  valueGetter: ({ row }) => {
+    return new Date(row.createdAt).toLocaleString();
+  },
+};
+
+const commonColumns = [
+  createdAtColumn,
+  chainIdColumn,
+  hashColunn,
+  accountColumn,
+];
 
 const columnTypes: { [key: string]: GridColDef[] } = {
   [UserOnChainEvents.nftAcceptListERC1155]: [
