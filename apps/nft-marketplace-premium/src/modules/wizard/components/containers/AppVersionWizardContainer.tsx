@@ -574,12 +574,12 @@ export default function AppVersionWizardContainer({ site }: Props) {
         <Grid item xs={12}>
           <Stack>
             <Typography variant={'h6'}>
-              <FormattedMessage id="app.version" defaultMessage="App version" />
+              <FormattedMessage id="version" defaultMessage="Version" />
             </Typography>
             <Typography variant={'body2'}>
               <FormattedMessage
-                id="add.versions.to.your.app.for.backup.and.to.enable.rollback"
-                defaultMessage="Add versions to your app for backup and to enable rollback"
+                id="ddd.versions.to.your.app.to.back.up.and.revert.to.previous.versions"
+                defaultMessage="Add versions to your app to back up and revert to previous versions"
               />
             </Typography>
           </Stack>

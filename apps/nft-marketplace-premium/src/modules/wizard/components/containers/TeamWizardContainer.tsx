@@ -48,10 +48,7 @@ export default function TeamWizardContainer({ site }: Props) {
         <Grid item xs={12}>
           <Stack>
             <Typography variant={'h6'}>
-              <FormattedMessage
-                id="team.management"
-                defaultMessage="Team management"
-              />
+              <FormattedMessage id="team" defaultMessage="Team" />
             </Typography>
             <Typography variant={'body2'}>
               <FormattedMessage
