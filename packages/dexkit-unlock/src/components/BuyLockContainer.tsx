@@ -1,7 +1,8 @@
 import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "@dexkit/core/constants/zrx";
 import { useTokenList } from "@dexkit/ui";
+import { useInterval } from "@dexkit/ui/hooks/misc";
 import { useWeb3React } from "@web3-react/core";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import {
   useLockBalanceQuery,
   useLockKeybyOwnerQuery,
@@ -19,6 +20,8 @@ export default function BuyLockContainer({ lockAddress, lockChainId }: Props) {
   const { account } = useWeb3React();
   const lockQuery = useLockQuery({ lockAddress, lockChainId });
 
+  const [count, setCount] = useState<number>(0);
+
   const lockByOwner = useLockKeybyOwnerQuery({
     lockAddress,
     lockChainId,
@@ -30,6 +33,41 @@ export default function BuyLockContainer({ lockAddress, lockChainId }: Props) {
     lockChainId,
     account,
   });
+
+  const unlimitedDuration = lockQuery.data?.expirationDuration === -1;
+
+  const countDown = useMemo(() => {
+    if (!unlimitedDuration && lockByOwner.data?.expiration) {
+      const countDownDate = lockByOwner.data?.expiration;
+
+      const now = new Date().getTime() / 1000;
+
+      const distance = countDownDate - now;
+      if (distance < 0) {
+        return "Expired";
+      }
+
+      const days = Math.floor(distance / (60 * 60 * 24));
+      const hours = Math.floor((distance % (60 * 60 * 24)) / (60 * 60));
+      const minutes = Math.floor((distance % (60 * 60)) / 60);
+      const seconds = Math.floor(distance % 60);
+
+      if (days) {
+        return days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
+      } else {
+        return hours + "h " + minutes + "m " + seconds + "s ";
+      }
+    }
+  }, [unlimitedDuration, lockByOwner.data?.expiration, count]);
+
+  useInterval(
+    () => {
+      // Your custom logic here
+      setCount(count + 1);
+    },
+    // Delay in milliseconds or null to stop it
+    countDown === "Expired" || unlimitedDuration ? null : 1000
+  );
 
   const tokens = useTokenList({ includeNative: true, chainId: lockChainId });
   const data = lockQuery.data;
@@ -83,7 +121,10 @@ export default function BuyLockContainer({ lockAddress, lockChainId }: Props) {
               : data.maxNumberOfKeys - data.outstandingKeys
           }
           token={token}
+          lockDuration={lockQuery.data?.expirationDuration}
           currencyAddress={data.currencyContractAddress}
+          unlimitedDuration={unlimitedDuration}
+          expireAtCounter={countDown}
         />
       )}
       {isLoading && <BuyLockSkeleton />}

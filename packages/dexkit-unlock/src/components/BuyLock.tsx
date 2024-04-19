@@ -16,7 +16,10 @@ import CardContent from "@mui/material/CardContent";
 import Grid from "@mui/material/Grid";
 import { useWeb3React } from "@web3-react/core";
 import { FormattedMessage } from "react-intl";
-import { usePurchaseLockKeysMutation } from "../hooks";
+import {
+  usePurchaseLockKeysMutation,
+  useRenewLockKeysMutation,
+} from "../hooks";
 interface Props {
   lockName?: string;
   lockAddress: string;
@@ -24,6 +27,9 @@ interface Props {
   price: string;
   tokenId?: number;
   currencyAddress: string | null;
+  lockDuration?: number | null;
+  unlimitedDuration?: boolean;
+  expireAtCounter?: string;
   token: {
     name?: string;
     imageUrl?: string;
@@ -41,9 +47,13 @@ export default function BuyLock({
   price,
   remainingTickets,
   currencyAddress,
+  unlimitedDuration,
+  expireAtCounter,
+  lockDuration,
 }: Props) {
   const { account, chainId } = useWeb3React();
   const purchaseLockMutation = usePurchaseLockKeysMutation();
+  const renewLockMutation = useRenewLockKeysMutation();
 
   const connectWalletDialog = useConnectWalletDialog();
   const switchNetwork = useSwitchNetworkMutation();
@@ -68,31 +78,94 @@ export default function BuyLock({
             </Grid>
           )}
           {tokenId !== 0 && chainId && (
-            <Grid item xs={12}>
-              <Stack
-                spacing={1}
-                flexDirection={"column"}
-                alignContent={"center"}
-                alignItems={"center"}
-                justifyContent={"center"}
-              >
-                <Typography variant="body1">
-                  <FormattedMessage
-                    id={"you.already.own.key"}
-                    defaultMessage={"You already own a key"}
-                  />
-                </Typography>
-                <Button
-                  href={`/asset/${NETWORK_SLUG(
-                    chainId
-                  )}/${lockAddress}/${tokenId}`}
-                  startIcon={<KeyIcon />}
-                  variant={"contained"}
+            <>
+              <Grid item xs={12}>
+                <Stack
+                  spacing={1}
+                  flexDirection={"column"}
+                  alignContent={"center"}
+                  alignItems={"center"}
+                  justifyContent={"center"}
                 >
-                  <FormattedMessage id={"see.key"} defaultMessage={"See key"} />
-                </Button>
-              </Stack>
-            </Grid>
+                  <Typography variant="body1">
+                    <FormattedMessage
+                      id={"you.already.own.key"}
+                      defaultMessage={"You already own a key"}
+                    />
+                  </Typography>
+                  <Button
+                    href={`/asset/${NETWORK_SLUG(
+                      chainId
+                    )}/${lockAddress}/${tokenId}`}
+                    startIcon={<KeyIcon />}
+                    variant={"contained"}
+                  >
+                    <FormattedMessage
+                      id={"see.key"}
+                      defaultMessage={"See key"}
+                    />
+                  </Button>
+                </Stack>
+              </Grid>
+              {!unlimitedDuration && (
+                <Grid item xs={12}>
+                  <Box
+                    pt={1}
+                    display={"flex"}
+                    alignContent={"center"}
+                    alignItems={"center"}
+                    justifyContent={"center"}
+                  >
+                    <Typography variant="body1">
+                      <FormattedMessage
+                        id={"expire.at"}
+                        defaultMessage={"Expire at"}
+                      />
+                      :
+                    </Typography>
+                    <Typography variant="body2" pl={1}>
+                      {expireAtCounter || " "}
+                    </Typography>
+                  </Box>
+                  {account && lockChainId === chainId && (
+                    <Box display={"flex"} justifyContent={"center"} pt={1}>
+                      <Button
+                        onClick={() =>
+                          renewLockMutation.mutate({
+                            lockAddress: lockAddress,
+                            lockName: lockName,
+                            currency: currencyAddress,
+                            currencySymbol: token?.symbol,
+                            keyPrice: price,
+                            tokenId: tokenId ? String(tokenId) : undefined,
+                            lockDuration: lockDuration,
+                          })
+                        }
+                        disabled={renewLockMutation.isLoading}
+                        startIcon={
+                          renewLockMutation.isLoading && (
+                            <CircularProgress color="inherit" size="1rem" />
+                          )
+                        }
+                        variant={"contained"}
+                      >
+                        {expireAtCounter === "Expired" ? (
+                          <FormattedMessage
+                            id={"renew.key"}
+                            defaultMessage={"Renew key duration"}
+                          />
+                        ) : (
+                          <FormattedMessage
+                            id={"extend.key.duraction"}
+                            defaultMessage={"Extend key duration"}
+                          />
+                        )}
+                      </Button>
+                    </Box>
+                  )}
+                </Grid>
+              )}
+            </>
           )}
 
           {tokenId === 0 && (
@@ -115,7 +188,9 @@ export default function BuyLock({
                       src={token?.imageUrl || " "}
                       alt={token?.name || " "}
                     ></Avatar>
-                    <Typography variant="body2" sx={{ pl: 1 }}>{price || "0"}</Typography>
+                    <Typography variant="body2" sx={{ pl: 1 }}>
+                      {price || "0"}
+                    </Typography>
                     <Typography sx={{ pl: 1 }} variant="body2">
                       {token?.symbol}
                     </Typography>
@@ -143,6 +218,7 @@ export default function BuyLock({
                   )}
                 </Box>
               </Grid>
+
               <Grid item xs={12}>
                 <Box display={"flex"} justifyContent={"center"}>
                   {!account && (
@@ -184,6 +260,7 @@ export default function BuyLock({
                         purchaseLockMutation.mutate({
                           lockAddress: lockAddress,
                           lockName: lockName,
+                          currencySymbol: token?.symbol,
                           currency: currencyAddress,
                           keyPrice: price,
                         })

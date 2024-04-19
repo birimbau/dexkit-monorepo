@@ -83,7 +83,7 @@ export function useTokenAllowanceQuery({
   provider,
 }: {
   account?: string;
-  tokenAddress?: string;
+  tokenAddress?: string | null;
   spender?: string;
   provider?: providers.Web3Provider;
 }) {
