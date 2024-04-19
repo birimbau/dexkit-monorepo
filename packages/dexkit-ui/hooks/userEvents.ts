@@ -1,7 +1,9 @@
 import { UserEventsType } from "@dexkit/core/constants/userEvents";
+import { DexkitApiProvider } from "@dexkit/core/providers";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useWeb3React } from "@web3-react/core";
 import { AxiosInstance } from "axios";
+import { useContext } from "react";
 import { useDexKitContext } from ".";
 import { postTrackUserEvent } from "../services/userEvents";
 
@@ -100,4 +102,67 @@ export function useUserEventsList<T = any>({
       return { data: [] };
     }
   );
+}
+
+export type CountFilter = {
+  siteId?: number;
+  chainId?: number;
+  referral?: string;
+  skip?: number;
+  take?: number;
+  from?: string;
+  start: string;
+  end: string;
+  type?: string;
+};
+
+export const TOP_USER_EVENTS_QUERY = "TOP_USER_EVENTS_QUERY";
+
+export function useTopUserEvents({ filters }: { filters: CountFilter }) {
+  const { instance } = useContext(DexkitApiProvider);
+
+  return useQuery([TOP_USER_EVENTS_QUERY, filters], async () => {
+    if (!filters.siteId) {
+      return [];
+    }
+
+    if (!instance) {
+      throw new Error("no http client");
+    }
+
+    return (
+      (
+        await instance?.get<{ count: number; name: string }[]>(
+          "/user-events/count-by-type",
+          {
+            params: filters,
+          }
+        )
+      ).data || []
+    );
+  });
+}
+
+const COUNT_USER_EVENTS_QUERY = "COUNT_USER_EVENTS_QUERY";
+
+export function useCountUserEvents({ filters }: { filters: CountFilter }) {
+  const { instance } = useContext(DexkitApiProvider);
+
+  return useQuery([COUNT_USER_EVENTS_QUERY, filters], async () => {
+    if (!filters.siteId) {
+      return 0;
+    }
+
+    if (!instance) {
+      throw new Error("no http client");
+    }
+
+    return (
+      (
+        await instance?.get<{ count: number }>("/user-events/count", {
+          params: filters,
+        })
+      ).data?.count || Number(0)
+    );
+  });
 }

@@ -1,12 +1,13 @@
 import { myAppsApi } from '@dexkit/ui/constants/api';
-import { useUserEventsList } from '@dexkit/ui/hooks/userEvents';
+import { CountFilter, useUserEventsList } from '@dexkit/ui/hooks/userEvents';
 import {
   DataGrid,
-  GridColDef,
   GridFilterModel,
   GridSortModel,
   GridToolbar,
 } from '@mui/x-data-grid';
+
+import { GridColDef } from '@mui/x-data-grid';
 import { useCallback, useEffect, useState } from 'react';
 
 import { UserOnChainEvents } from '@dexkit/core/constants/userEvents';
@@ -14,6 +15,7 @@ import { UserOnChainEvents } from '@dexkit/core/constants/userEvents';
 export interface UserEventsTableProps {
   siteId?: number;
   type?: UserOnChainEvents;
+  filters?: CountFilter;
   columns: GridColDef[];
 }
 
@@ -21,6 +23,7 @@ export default function UserEventsTable({
   siteId,
   type,
   columns,
+  filters,
 }: UserEventsTableProps) {
   const [queryOptions, setQueryOptions] = useState<any>({
     filter: {
@@ -28,6 +31,11 @@ export default function UserEventsTable({
       hash: {
         not: null,
       },
+      createdAt: { gte: filters?.start, lte: filters?.end },
+      referral: filters?.referral ? filters.referral : undefined,
+      from: filters?.from ? filters.from : undefined,
+      chainId:
+        filters?.chainId && filters?.chainId > 0 ? filters?.chainId : undefined,
     },
   });
 
@@ -80,7 +88,7 @@ export default function UserEventsTable({
       autoHeight
       slots={{ toolbar: GridToolbar }}
       rows={data?.data || []}
-      columns={columns}
+      columns={columns ? columns : []}
       rowCount={rowCountState}
       paginationModel={paginationModel}
       paginationMode="server"
