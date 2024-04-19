@@ -44,7 +44,7 @@ export default function NotificationsList({
         const hash = notification.metadata["hash"];
 
         if (hash) {
-          const status = transactions[hash].status;
+          const status = transactions[hash]?.status;
 
           if (status === TransactionStatus.Pending) {
             return <CircularProgress size="1.5rem" color="primary" />;
@@ -70,7 +70,7 @@ export default function NotificationsList({
       const hash = notification.metadata["hash"];
 
       if (hash) {
-        const txChainId = transactions[hash].chainId;
+        const txChainId = transactions[hash]?.chainId;
 
         return `${getBlockExplorerUrl(txChainId)}/tx/${hash}`;
       }

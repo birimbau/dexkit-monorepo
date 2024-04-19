@@ -1,34 +1,30 @@
-import axios from 'axios';
-
+import axios from "axios";
 
 let access_token: string | undefined;
 let refreshedWasCalled = false;
 
-
-
-const AUTH_ENDPOINT = `https://nft-api.dexkit.com/auth`;
-
-
+const AUTH_ENDPOINT = process.env.NEXT_PUBLIC_DEXKIT_DASH_ENDPOINT
+  ? `${process.env.NEXT_PUBLIC_DEXKIT_DASH_ENDPOINT}/auth`
+  : "http://localhost:5000/auth";
 
 /**
  * send config to server
  * @param formData
  * @returns
  */
-const authApi = axios.create({ baseURL: AUTH_ENDPOINT, headers: { 'content-type': 'application/json' } });
+const authApi = axios.create({
+  baseURL: AUTH_ENDPOINT,
+  headers: { "content-type": "application/json" },
+});
 
 export async function requestSignature({ address }: { address: string }) {
   return authApi.get<string>(`/message-to-sign/${address}`);
 }
 
-
-
-
 export function getAccessToken() {
   if (access_token) {
     return access_token;
   }
-
 }
 
 export function setAccessToken(token: string | undefined) {
@@ -41,7 +37,9 @@ export async function getAccessTokenAndRefresh() {
   }
   if (!access_token && !refreshedWasCalled) {
     try {
-      const response = await axios.get('/api/dex-auth/refresh-token', { withCredentials: true });
+      const response = await axios.get("/api/dex-auth/refresh-token", {
+        withCredentials: true,
+      });
       refreshedWasCalled = false;
       access_token = response.data.access_token;
       return access_token;
@@ -55,15 +53,17 @@ export async function getAccessTokenAndRefresh() {
 
 /**
  * We refresh here the access token, this is called on 401 error
- * @returns 
+ * @returns
  */
 export async function getRefreshAccessToken() {
   try {
-    const response = await axios.get('/api/dex-auth/refresh-token', { withCredentials: true });
+    const response = await axios.get("/api/dex-auth/refresh-token", {
+      withCredentials: true,
+    });
     access_token = response.data.access_token;
     return access_token;
   } catch (error) {
-    await axios.get('/api/dex-auth/logout', { withCredentials: true });
+    await axios.get("/api/dex-auth/logout", { withCredentials: true });
     access_token = undefined;
     return access_token;
   }
@@ -71,15 +71,15 @@ export async function getRefreshAccessToken() {
 
 /**
  * Api route that logouts in DexKit backend
- * @param param0 
- * @returns 
+ * @param param0
+ * @returns
  */
 
 export async function logoutApp({ accessTk }: { accessTk: string }) {
-  return axios.get<{ logout: boolean }>('/api/dex-auth/logout', {
+  return axios.get<{ logout: boolean }>("/api/dex-auth/logout", {
     headers: {
-      'Authorization': `Bearer ${accessTk}`
-    }
+      Authorization: `Bearer ${accessTk}`,
+    },
   });
 }
 
@@ -92,7 +92,7 @@ export async function loginApp({
   address,
   signature,
   siteId,
-  referral
+  referral,
 }: {
   address: string;
   signature: string;
@@ -100,7 +100,7 @@ export async function loginApp({
   referral?: string;
 }) {
   return axios.post<{ access_token: string; refresh_token: string }>(
-    '/api/dex-auth/login',
+    "/api/dex-auth/login",
     { data: { address, signature, siteId, referral } }
   );
 }
@@ -112,20 +112,19 @@ export async function loginApp({
  */
 
 export async function logout({ accessTk }: { accessTk: string }) {
-  return authApi.get<{ logout: boolean }>('/logout', {
+  return authApi.get<{ logout: boolean }>("/logout", {
     headers: {
       Authorization: `Bearer ${accessTk}`,
     },
   });
 }
 
-
 export async function requestAccestoken({
   refreshToken,
 }: {
   refreshToken: string;
 }) {
-  return authApi.get<{ access_token: string }>('refresh-token', {
+  return authApi.get<{ access_token: string }>("refresh-token", {
     headers: {
       Authorization: `Bearer ${refreshToken}`,
     },
@@ -145,7 +144,7 @@ export async function login({
   signature: string;
 }) {
   return authApi.post<{ access_token: string; refresh_token: string }>(
-    '/login',
+    "/login",
     { data: { address, signature } }
   );
 }

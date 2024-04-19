@@ -20,7 +20,7 @@ export async function createForm({
   return await myAppsApi.post(
     '/forms/create',
     { creatorAddress, params, name, description, templateId },
-    { signal }
+    { signal },
   );
 }
 
@@ -40,7 +40,7 @@ export async function updateForm({
   return await myAppsApi.post(
     `/forms/${id}`,
     { name, description, params },
-    { signal }
+    { signal },
   );
 }
 
@@ -70,7 +70,7 @@ export async function createFormTemplate({
   return await myAppsApi.post(
     '/forms/templates/create',
     { name, description, bytecode, abi },
-    { signal }
+    { signal },
   );
 }
 
@@ -92,7 +92,7 @@ export async function updateFormTemplate({
   return await myAppsApi.post(
     `/forms/templates/${id}`,
     { name, description, bytecode, abi },
-    { signal }
+    { signal },
   );
 }
 
@@ -161,7 +161,7 @@ export async function createTemplateInstance({
 }
 
 export async function listTemplateInstances(
-  templateId: number
+  templateId: number,
 ): Promise<TemplateInstance[]> {
   return (await myAppsApi.get(`/forms/templates/${templateId}/instances`)).data;
 }
@@ -190,6 +190,7 @@ export async function saveContractDeploy({
   metadata,
   createdAtTx,
   owner,
+  referral,
 }: {
   contractAddress: string;
   name?: string;
@@ -197,12 +198,13 @@ export async function saveContractDeploy({
   chainId: number;
   owner?: string;
   createdAtTx?: string;
+  referral?: string;
   metadata?: {
-    name?: string,
-    description?: string,
-    symbol?: string,
-    image?: string
-  }
+    name?: string;
+    description?: string;
+    symbol?: string;
+    image?: string;
+  };
 }) {
   return await myAppsApi.post(`/forms/deploy`, {
     name,
@@ -210,7 +212,8 @@ export async function saveContractDeploy({
     type,
     createdAtTx,
     chainId,
+    referral,
     metadata: JSON.stringify(metadata),
-    owner
+    owner,
   });
 }

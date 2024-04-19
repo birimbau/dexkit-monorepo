@@ -109,8 +109,6 @@ export function useRenewLockKeysMutation() {
       return;
     }
 
-    console.log(currencySymbol);
-
     const walletService = new WalletService(networks);
     const web3Service = new Web3Service(networks);
     await walletService.connect(provider);

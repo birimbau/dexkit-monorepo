@@ -326,12 +326,14 @@ export function useSaveContractDeployed() {
       type,
       metadata,
       createdAtTx,
+      referral,
     }: {
       contractAddress: string;
       name?: string;
       type?: string;
       chainId: number;
       createdAtTx?: string;
+      referral?: string;
       metadata?: {
         name?: string;
         description?: string;
@@ -347,6 +349,7 @@ export function useSaveContractDeployed() {
         metadata,
         owner: account?.toLowerCase(),
         createdAtTx,
+        referral,
       });
     },
   );
@@ -480,7 +483,7 @@ export function useListDeployedContracts({
 export const DEPLOYABLE_CONTRACTS_QUERY = 'DEPLOYABLE_CONTRACTS_QUERY';
 
 export function useDeployableContractsQuery() {
-  return useQuery([DEPLOYABLE_CONTRACTS_QUERY], async ({ }) => {
+  return useQuery([DEPLOYABLE_CONTRACTS_QUERY], async ({}) => {
     return (await axios.get<DeployableContract[]>(DEPLOYABLE_CONTRACTS_URL))
       .data;
   });
