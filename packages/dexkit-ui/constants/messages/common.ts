@@ -206,8 +206,15 @@ export const COMMON_NOTIFICATION_TYPES: { [key: string]: AppNotificationType } =
   },
   purchaseKey: {
     type: "purchaseKey",
-    message: "Purchase key from lock: {name}",
+    message: "Purchase key from lock {name} for {price} {currency}",
     id: "purchase.key.name",
+    icon: 'key',
+  },
+  renewKey: {
+    type: "renewKey",
+    message: "Renew key from lock {name} for {price} {currency} for {durationInDays}",
+    id: "purchase.key.name",
+    icon: 'autorenew'
   },
   claimAirdropERC20: {
     type: "claimAirdropERC20",
