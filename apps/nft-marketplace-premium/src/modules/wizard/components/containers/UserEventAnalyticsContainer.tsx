@@ -431,7 +431,6 @@ export default function UserEventAnalyticsContainer({ siteId }: Props) {
             />
           </Alert>
         </Grid>
-
         <Grid item xs={12}>
           <Box sx={{ width: '100%', typography: 'body1' }}>
             <TabContext value={value}>
