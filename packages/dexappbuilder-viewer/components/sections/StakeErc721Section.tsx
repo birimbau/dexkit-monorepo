@@ -1,5 +1,6 @@
 import { formatBigNumber } from "@dexkit/core/utils";
 import { useDexKitContext } from "@dexkit/ui";
+import { useWeb3React } from "@dexkit/ui/hooks/thirdweb";
 import { useApproveForAll } from "@dexkit/ui/modules/contract-wizard/hooks/thirdweb";
 import { StakeErc721PageSection } from "@dexkit/ui/modules/wizard/types/section";
 import { useAsyncMemo } from "@dexkit/widgets/src/hooks";
@@ -26,7 +27,6 @@ import {
   useContractWrite,
   useTokenBalance,
 } from "@thirdweb-dev/react";
-import { useWeb3React } from "@web3-react/core";
 import { BigNumber } from "ethers";
 import { SyntheticEvent, useMemo, useState } from "react";
 import { FormattedMessage } from "react-intl";

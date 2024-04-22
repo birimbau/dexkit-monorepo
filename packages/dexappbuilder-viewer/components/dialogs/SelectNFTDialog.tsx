@@ -1,6 +1,7 @@
-import { getNormalizedUrl } from '@dexkit/core/utils';
-import { AppDialogTitle } from '@dexkit/ui';
-import { useAsyncMemo } from '@dexkit/widgets/src/hooks';
+import { getNormalizedUrl } from "@dexkit/core/utils";
+import { AppDialogTitle } from "@dexkit/ui";
+import { useWeb3React } from "@dexkit/ui/hooks/thirdweb";
+import { useAsyncMemo } from "@dexkit/widgets/src/hooks";
 import {
   Box,
   Button,
@@ -18,16 +19,15 @@ import {
   Skeleton,
   Stack,
   Typography,
-} from '@mui/material';
+} from "@mui/material";
 import {
   NFT,
   useContract,
   useContractRead,
   useOwnedNFTs,
-} from '@thirdweb-dev/react';
-import { useWeb3React } from '@web3-react/core';
-import { useCallback, useState } from 'react';
-import { FormattedMessage } from 'react-intl';
+} from "@thirdweb-dev/react";
+import { useCallback, useState } from "react";
+import { FormattedMessage } from "react-intl";
 
 export default function SelectNFTDialog({
   address,
@@ -45,24 +45,24 @@ export default function SelectNFTDialog({
   isUnstake?: boolean;
 }) {
   const { onClose } = DialogProps;
-  const { data: stakingNFTContract } = useContract(address, 'nft-collection');
+  const { data: stakingNFTContract } = useContract(address, "nft-collection");
 
   const { account } = useWeb3React();
 
   const { data: stakingContract } = useContract(
     stakingContractAddress,
-    'custom',
+    "custom"
   );
 
   const {
     data: infoNfts,
     refetch,
     isLoading,
-  } = useContractRead(stakingContract, 'getStakeInfo', [account]);
+  } = useContractRead(stakingContract, "getStakeInfo", [account]);
 
   const { data: accountNftsData, isLoading: isLoadingNfts } = useOwnedNFTs(
     stakingNFTContract,
-    account,
+    account
   );
 
   const nfts = useAsyncMemo(
@@ -86,7 +86,7 @@ export default function SelectNFTDialog({
       return accountNftsData;
     },
     [],
-    [accountNftsData, infoNfts, isUnstake],
+    [accountNftsData, infoNfts, isUnstake]
   );
 
   const [tokenIds, setTokenIds] = useState<string[]>([]);
@@ -111,7 +111,7 @@ export default function SelectNFTDialog({
 
   const handleClose = () => {
     if (onClose) {
-      onClose({}, 'backdropClick');
+      onClose({}, "backdropClick");
     }
     setTokenIds([]);
   };
@@ -120,7 +120,7 @@ export default function SelectNFTDialog({
     (tokenId: string) => {
       return tokenIds.includes(tokenId);
     },
-    [tokenIds],
+    [tokenIds]
   );
 
   const renderCard = (nft: NFT) => {
@@ -136,12 +136,12 @@ export default function SelectNFTDialog({
           {nft.metadata.image ? (
             <CardMedia
               image={getNormalizedUrl(nft.metadata.image)}
-              sx={{ aspectRatio: '1/1', height: '100%' }}
+              sx={{ aspectRatio: "1/1", height: "100%" }}
             />
           ) : (
             <Skeleton
               variant="rectangular"
-              sx={{ aspectRatio: '16/9', height: '100%' }}
+              sx={{ aspectRatio: "16/9", height: "100%" }}
             />
           )}
           <Divider />

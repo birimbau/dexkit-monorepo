@@ -1,12 +1,12 @@
 import { ChainId } from '@dexkit/core/constants';
 import { getProviderByChainId } from '@dexkit/core/utils/blockchain';
+import { useWeb3React } from '@dexkit/ui/hooks/thirdweb';
 import {
   useMutation,
   UseMutationOptions,
   useQuery,
 } from '@tanstack/react-query';
 import { SwappableAssetV4 } from '@traderxyz/nft-swap-sdk';
-import { useWeb3React } from '@web3-react/core';
 import { BigNumber, Contract, providers } from 'ethers';
 import { useCallback } from 'react';
 

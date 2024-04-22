@@ -1,4 +1,5 @@
 import { ChainId } from '@dexkit/core/constants';
+import { useWeb3React } from '@dexkit/ui/hooks/thirdweb';
 import WalletAssetsFilter from '@dexkit/ui/modules/wallet/components/WalletAssetsFilter';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import ImportExport from '@mui/icons-material/ImportExport';
@@ -16,7 +17,6 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
-import { useWeb3React } from '@web3-react/core';
 import { useSnackbar } from 'notistack';
 import { ChangeEvent, useCallback, useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';

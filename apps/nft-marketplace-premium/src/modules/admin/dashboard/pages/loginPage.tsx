@@ -1,60 +1,27 @@
-import ConnectWalletDialog from '@dexkit/ui/components/ConnectWallet/ConnectWalletDialog';
 import { useLoginAccountMutation } from '@dexkit/ui/hooks/auth';
-import { useWalletActivate } from '@dexkit/wallet-connectors/hooks';
-import { WalletActivateParams } from '@dexkit/wallet-connectors/types';
+import { useWeb3React } from '@dexkit/ui/hooks/thirdweb';
+import { createThirdwebClient } from 'thirdweb';
+
+import { THIRDWEB_CLIENT_ID } from '@dexkit/ui/constants/thirdweb';
 import { Box, Button, Container } from '@mui/material';
-import { useWeb3React } from '@web3-react/core';
 import { useLogin } from 'react-admin';
 import { FormattedMessage } from 'react-intl';
+import { ConnectButton } from 'thirdweb/react';
 
-import { useConnectWalletDialog } from 'src/hooks/app';
-import { selectedWalletAtom } from 'src/state/atoms';
+const client = createThirdwebClient({ clientId: THIRDWEB_CLIENT_ID });
 
 const MyLoginPage = () => {
   const { account } = useWeb3React();
   const login = useLogin();
   const loginMutation = useLoginAccountMutation();
-  const connectWalletDialog = useConnectWalletDialog();
-  const walletActivate = useWalletActivate({
-    magicRedirectUrl:
-      typeof window !== 'undefined'
-        ? window.location.href
-        : process.env.NEXT_PUBLIC_MAGIC_REDIRECT_URL || '',
-    selectedWalletAtom,
-  });
-  const { isActive } = useWeb3React();
 
   const handleLoginMutation = async () => {
     await loginMutation.mutateAsync();
     login({});
   };
 
-  const handleCloseConnectWalletDialog = () => {
-    connectWalletDialog.setOpen(false);
-  };
-
-  const handleConnectWallet = () => {
-    connectWalletDialog.setOpen(true);
-  };
-
-  const handleActivateWallet = async (params: WalletActivateParams) => {
-    await walletActivate.mutation.mutateAsync(params);
-  };
-
   return (
     <Container maxWidth="xs">
-      <ConnectWalletDialog
-        DialogProps={{
-          open: connectWalletDialog.isOpen,
-          onClose: handleCloseConnectWalletDialog,
-          fullWidth: true,
-          maxWidth: 'sm',
-        }}
-        isActive={isActive}
-        isActivating={walletActivate.mutation.isLoading}
-        activeConnectorName={walletActivate.connectorName}
-        activate={handleActivateWallet}
-      />
       <Box
         sx={{
           marginTop: 8,
@@ -63,14 +30,7 @@ const MyLoginPage = () => {
           alignItems: 'center',
         }}
       >
-        {!account && (
-          <Button variant={'contained'} onClick={handleConnectWallet}>
-            <FormattedMessage
-              defaultMessage={'Connect Wallet'}
-              id={'connect.wallet'}
-            ></FormattedMessage>
-          </Button>
-        )}
+        {!account && <ConnectButton client={client} />}
         {account && (
           <Button variant={'contained'} onClick={handleLoginMutation}>
             <FormattedMessage

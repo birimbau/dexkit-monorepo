@@ -1,6 +1,6 @@
+import { useWeb3React } from "@dexkit/ui/hooks/thirdweb";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { useWeb3React } from "@web3-react/core";
 import { useCallback, useEffect, useState } from "react";
 
 export function usePositionPaginator(pageSize = 5) {

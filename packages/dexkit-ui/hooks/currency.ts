@@ -1,8 +1,8 @@
 import { NETWORKS } from "@dexkit/core/constants/networks";
 import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "@dexkit/core/constants/zrx";
 import { getTokenPrices } from "@dexkit/core/services";
+import { useWeb3React } from "@dexkit/ui/hooks/thirdweb";
 import { useQuery } from "@tanstack/react-query";
-import { useWeb3React } from "@web3-react/core";
 import { useAtom } from "jotai";
 import { useMemo } from "react";
 import { useAppConfig } from ".";

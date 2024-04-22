@@ -1,5 +1,6 @@
 import { NETWORK_FROM_SLUG } from '@dexkit/core/constants/networks';
 import AppConfirmDialog from '@dexkit/ui/components/AppConfirmDialog';
+import { useWeb3React } from '@dexkit/ui/hooks/thirdweb';
 import Delete from '@mui/icons-material/Delete';
 import {
   Button,
@@ -9,7 +10,6 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
-import { useWeb3React } from '@web3-react/core';
 import { FieldArray, Form, useFormikContext } from 'formik';
 import React, { useState } from 'react';
 import { FormattedMessage } from 'react-intl';

@@ -9,15 +9,17 @@ import {
   TokenWhitelabelApp,
   TransactionMetadata,
 } from "@dexkit/core/types";
-import { CONNECTORS } from "@dexkit/wallet-connectors/constants";
-import { switchNetwork } from "@dexkit/wallet-connectors/utils";
-import { useMutation, useQuery } from "@tanstack/react-query";
 
-import { Web3ReactHooks, useWeb3React } from "@web3-react/core";
-import { Connector } from "@web3-react/types";
+
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { useSwitchActiveWalletChain } from "thirdweb/react";
+
+
+import { useWeb3React } from "@dexkit/ui/hooks/thirdweb";
 import { PrimitiveAtom, atom, useAtom, useAtomValue } from "jotai";
 import { useUpdateAtom } from "jotai/utils";
 import { useCallback, useContext, useMemo, useState } from "react";
+import { defineChain } from "thirdweb/chains";
 
 import useMediaQuery from "@mui/material/useMediaQuery";
 
@@ -100,33 +102,7 @@ export function useAppWizardConfig() {
   return { wizardConfig, setWizardConfig };
 }
 
-export function useOrderedConnectors({
-  selectedWalletAtom,
-}: {
-  selectedWalletAtom: PrimitiveAtom<string>;
-}) {
-  const selectedWallet = useAtomValue(selectedWalletAtom);
 
-  return useMemo(() => {
-    let connectors: [Connector, Web3ReactHooks][] = [];
-
-    if (selectedWallet) {
-      const otherConnectors = Object.keys(CONNECTORS)
-        .filter((key) => selectedWallet !== key)
-        .map((key) => CONNECTORS[key]);
-
-      connectors = [CONNECTORS[selectedWallet], ...otherConnectors];
-    } else {
-      const otherConnectors = Object.keys(CONNECTORS).map(
-        (key) => CONNECTORS[key]
-      );
-
-      connectors = otherConnectors;
-    }
-
-    return connectors;
-  }, [selectedWallet]);
-}
 
 export function useDexkitContextState({
   notificationTypes,
@@ -274,14 +250,14 @@ export function useNotifications() {
 }
 
 export function useSwitchNetworkMutation() {
-  const { connector } = useWeb3React();
+  const switchChain = useSwitchActiveWalletChain();
 
   return useMutation<unknown, Error, { chainId: number }>(
     async ({ chainId }) => {
-      if (connector) {
-        return switchNetwork(connector, chainId);
+      if (chainId) {
+        return switchChain(defineChain(chainId));
       }
-    }
+    },
   );
 }
 

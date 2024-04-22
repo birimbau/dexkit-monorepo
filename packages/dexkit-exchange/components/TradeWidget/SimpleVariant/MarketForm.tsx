@@ -17,6 +17,7 @@ import {
   useSwitchNetworkMutation,
   useWaitTransactionConfirmation,
 } from "@dexkit/ui/hooks";
+import { useWeb3React } from "@dexkit/ui/hooks/thirdweb";
 import { useTrackUserEventsMutation } from "@dexkit/ui/hooks/userEvents";
 import { AppNotificationType } from "@dexkit/ui/types";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
@@ -34,7 +35,6 @@ import {
   Typography,
 } from "@mui/material";
 import { useMutation } from "@tanstack/react-query";
-import { useWeb3React } from "@web3-react/core";
 import { BigNumber, providers } from "ethers";
 import { useCallback, useMemo, useState } from "react";
 import { FormattedMessage } from "react-intl";
@@ -283,7 +283,7 @@ export default function MarketForm({
     setShowReview(true);
   };
 
-  const { chainId: providerChainId, connector } = useWeb3React();
+  const { chainId: providerChainId } = useWeb3React();
   const switchNetworkMutation = useSwitchNetworkMutation();
 
   const renderActionButton = useCallback(() => {
@@ -354,7 +354,6 @@ export default function MarketForm({
   }, [
     chainId,
     side,
-    connector,
     providerChainId,
     baseToken,
     quoteToken,

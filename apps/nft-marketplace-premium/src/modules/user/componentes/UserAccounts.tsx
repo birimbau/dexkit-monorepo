@@ -1,6 +1,7 @@
 import { isAddressEqual, truncateAddress } from '@dexkit/core/utils';
 import AppConfirmDialog from '@dexkit/ui/components/AppConfirmDialog';
 import { useAuth } from '@dexkit/ui/hooks/auth';
+import { useWeb3React } from '@dexkit/ui/hooks/thirdweb';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import DeleteIcon from '@mui/icons-material/Delete';
 import {
@@ -20,7 +21,6 @@ import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import { useWeb3React } from '@web3-react/core';
 import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import {

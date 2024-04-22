@@ -32,8 +32,8 @@ import { NETWORKS } from '../../../../constants/chain';
 
 import { useDebounce } from '../../../../hooks/misc';
 import { Token } from '../../../../types/blockchain';
-import { Network } from '../../../../types/chains';
 
+import { Network } from '@dexkit/core/types';
 import { ipfsUriToUrl } from '@dexkit/core/utils/ipfs';
 import { AppDialogTitle } from '@dexkit/ui/components/AppDialogTitle';
 import { useTokenData } from '@dexkit/ui/hooks/blockchain';

@@ -19,6 +19,7 @@ import {
 import { getWindowUrl } from '@dexkit/core/utils/browser';
 import Link from '@dexkit/ui/components/AppLink';
 import Heart from '@dexkit/ui/components/icons/Heart';
+import { useWeb3React } from '@dexkit/ui/hooks/thirdweb';
 import ShareDialog from '@dexkit/ui/modules/nft/components/dialogs/ShareDialog';
 import {
   useAsset,
@@ -27,7 +28,6 @@ import {
 } from '@dexkit/ui/modules/nft/hooks';
 import LaunchIcon from '@mui/icons-material/Launch';
 import Share from '@mui/icons-material/Share';
-import { useWeb3React } from '@web3-react/core';
 import { useState } from 'react';
 
 interface Props {

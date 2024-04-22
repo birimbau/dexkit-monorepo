@@ -9,7 +9,7 @@ import ContractListDataGrid from '@/modules/forms/components/ContractListDataGri
 
 import { ConnectWalletBox } from '@dexkit/ui/components/ConnectWalletBox';
 import { PageHeader } from '@dexkit/ui/components/PageHeader';
-import { useWeb3React } from '@web3-react/core';
+import { useWeb3React } from '@dexkit/ui/hooks/thirdweb';
 import {
   GetStaticPaths,
   GetStaticPathsContext,

@@ -1,4 +1,5 @@
 import { getBlockExplorerUrl, truncateAddress } from '@dexkit/core/utils';
+import { useWeb3React } from '@dexkit/ui/hooks/thirdweb';
 import EvmBurnNftDialog from '@dexkit/ui/modules/evm-burn-nft/components/dialogs/EvmBurnNftDialog';
 import EvmTransferNftDialog from '@dexkit/ui/modules/evm-transfer-nft/components/dialogs/EvmTransferNftDialog';
 import { AssetImage } from '@dexkit/ui/modules/nft/components/AssetImage';
@@ -15,7 +16,6 @@ import {
 } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import { useContract, useContractMetadata, useNFT } from '@thirdweb-dev/react';
-import { useWeb3React } from '@web3-react/core';
 import { useState } from 'react';
 
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';

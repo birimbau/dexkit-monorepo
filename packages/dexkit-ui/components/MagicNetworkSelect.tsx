@@ -2,6 +2,7 @@ import { ChainId } from "@dexkit/core/constants/enums";
 import { NETWORKS } from "@dexkit/core/constants/networks";
 
 import { parseChainId, switchNetwork } from "@dexkit/core/utils";
+import { useWeb3React } from "@dexkit/ui/hooks/thirdweb";
 import { MagicConnector } from "@dexkit/wallet-connectors/connectors/magic";
 import {
   Avatar,
@@ -15,7 +16,6 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import { useWeb3React } from "@web3-react/core";
 import { MetaMask } from "@web3-react/metamask";
 import { useSnackbar } from "notistack";
 import { memo, useState } from "react";

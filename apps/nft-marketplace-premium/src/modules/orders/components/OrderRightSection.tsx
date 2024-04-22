@@ -26,8 +26,8 @@ import {
   truncateAddress,
 } from '@dexkit/core/utils/blockchain';
 import { formatUnits } from '@dexkit/core/utils/ethers/formatUnits';
+import { useWeb3React } from '@dexkit/ui/hooks/thirdweb';
 import { SwappableAssetV4 } from '@traderxyz/nft-swap-sdk';
-import { useWeb3React } from '@web3-react/core';
 import { BigNumber, constants } from 'ethers';
 import moment from 'moment';
 import { useCallback, useMemo } from 'react';

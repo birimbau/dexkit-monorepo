@@ -18,6 +18,7 @@ import {
   useErc20ApproveMutationV2,
 } from "@dexkit/ui/hooks/balances";
 import { useInterval } from "@dexkit/ui/hooks/misc";
+import { useWeb3React } from "@dexkit/ui/hooks/thirdweb";
 import { useTrackUserEventsMutation } from "@dexkit/ui/hooks/userEvents";
 import {
   Alert,
@@ -35,7 +36,6 @@ import { styled } from "@mui/material/styles";
 import { useNFTBalance } from "@thirdweb-dev/react";
 import { ClaimEligibility, NATIVE_TOKEN_ADDRESS } from "@thirdweb-dev/sdk";
 import { SwappableAssetV4 } from "@traderxyz/nft-swap-sdk";
-import { useWeb3React } from "@web3-react/core";
 import { BigNumber } from "ethers";
 import { useCallback, useMemo, useState } from "react";
 import { FormattedMessage } from "react-intl";

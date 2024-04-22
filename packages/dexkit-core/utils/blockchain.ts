@@ -1,6 +1,5 @@
 
 
-import { MetaMask } from '@web3-react/metamask';
 
 import { ChainId } from '@dexkit/core/constants';
 
@@ -151,30 +150,3 @@ export function getChainLogoImage(chainId?: number) {
   }
 }
 
-export async function switchNetwork(connector: any, chainId: number) {
-  if (connector instanceof MetaMask) {
-    if (chainId === ChainId.Arbitrum) {
-      return connector.provider?.request({
-        method: 'wallet_addEthereumChain',
-        params: [{
-          chainId:
-            `0x${chainId.toString(16)}`,
-          chainName: NETWORKS[ChainId.Arbitrum].name,
-          nativeCurrency: {
-            name: 'Ethereum',
-            symbol: 'ETH',
-            decimals: 18,
-          },
-          rpcUrls: [NETWORKS[ChainId.Arbitrum].providerRpcUrl],
-          blockExplorerUrls: [NETWORKS[ChainId.Arbitrum].explorerUrl],
-        }],
-      });
-    }
-
-
-    return connector.provider?.request({
-      method: 'wallet_switchEthereumChain',
-      params: [{ chainId: `0x${chainId.toString(16)}` }],
-    });
-  }
-}

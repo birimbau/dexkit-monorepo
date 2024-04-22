@@ -4,6 +4,7 @@ import { useCreateToken } from '@/modules/contract-wizard/hooks';
 import { TokenForm } from '@/modules/contract-wizard/types';
 import AppConfirmDialog from '@dexkit/ui/components/AppConfirmDialog';
 import { PageHeader } from '@dexkit/ui/components/PageHeader';
+import { useWeb3React } from '@dexkit/ui/hooks/thirdweb';
 import {
   Box,
   Button,
@@ -15,7 +16,6 @@ import {
   Typography,
 } from '@mui/material';
 import { QueryClient, dehydrate } from '@tanstack/react-query';
-import { useWeb3React } from '@web3-react/core';
 import { Field, Form, Formik } from 'formik';
 import { TextField } from 'formik-mui';
 import type {

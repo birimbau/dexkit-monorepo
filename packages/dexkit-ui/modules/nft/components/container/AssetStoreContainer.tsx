@@ -1,3 +1,4 @@
+import { useWeb3React } from "@dexkit/ui/hooks/thirdweb";
 import { Search } from "@mui/icons-material";
 import {
   Button,
@@ -9,7 +10,6 @@ import {
   TextField,
 } from "@mui/material";
 import Box from "@mui/material/Box";
-import { useWeb3React } from "@web3-react/core";
 import dynamic from "next/dynamic";
 import { useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";

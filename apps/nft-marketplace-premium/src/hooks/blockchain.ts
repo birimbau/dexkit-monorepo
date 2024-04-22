@@ -1,11 +1,10 @@
 import {
   getNativeCurrencyImage,
   getNativeCurrencySymbol,
-  getProviderByChainId,
-  switchNetwork,
+  getProviderByChainId
 } from '@dexkit/core/utils/blockchain';
+import { useWeb3React } from '@dexkit/ui/hooks/thirdweb';
 import { useMutation } from '@tanstack/react-query';
-import { useWeb3React } from '@web3-react/core';
 import { useAtomValue } from 'jotai';
 import { useUpdateAtom } from 'jotai/utils';
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -15,11 +14,11 @@ import {
   tokensAtom,
 } from '../state/atoms';
 
-
+import { useSwitchActiveWalletChain } from "thirdweb/react";
 import { Token } from '../types/blockchain';
 
+import { defineChain } from "thirdweb/chains";
 import { NETWORKS } from '../constants/chain';
-
 
 import { useAppWizardConfig } from '@/modules/wizard/hooks';
 import { ChainId } from '@dexkit/core/constants';
@@ -64,12 +63,12 @@ export function useSwitchNetwork() {
 }
 
 export function useSwitchNetworkMutation() {
-  const { connector } = useWeb3React();
+  const switchChain = useSwitchActiveWalletChain();
 
   return useMutation<unknown, Error, { chainId: number }>(
     async ({ chainId }) => {
-      if (connector) {
-        return switchNetwork(connector, chainId);
+      if (chainId) {
+        return switchChain(defineChain(chainId));
       }
     },
   );

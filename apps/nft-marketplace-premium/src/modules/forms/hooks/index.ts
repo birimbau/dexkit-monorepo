@@ -1,8 +1,8 @@
 import { ChainId } from '@dexkit/core';
 import { DexkitApiProvider } from '@dexkit/core/providers';
+import { useWeb3React } from '@dexkit/ui/hooks/thirdweb';
 import { ContractFormParams } from '@dexkit/web3forms/types';
 import { useInfiniteQuery, useMutation, useQuery } from '@tanstack/react-query';
-import { useWeb3React } from '@web3-react/core';
 import axios from 'axios';
 import { ContractFactory } from 'ethers';
 import { useContext } from 'react';
@@ -483,7 +483,7 @@ export function useListDeployedContracts({
 export const DEPLOYABLE_CONTRACTS_QUERY = 'DEPLOYABLE_CONTRACTS_QUERY';
 
 export function useDeployableContractsQuery() {
-  return useQuery([DEPLOYABLE_CONTRACTS_QUERY], async ({}) => {
+  return useQuery([DEPLOYABLE_CONTRACTS_QUERY], async ({ }) => {
     return (await axios.get<DeployableContract[]>(DEPLOYABLE_CONTRACTS_URL))
       .data;
   });

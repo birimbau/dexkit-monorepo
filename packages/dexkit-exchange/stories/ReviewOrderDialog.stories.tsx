@@ -2,11 +2,11 @@ import { ComponentMeta, ComponentStory } from "@storybook/react";
 
 import { getConnectorName } from "@dexkit/core/utils";
 import { useOrderedConnectors } from "@dexkit/ui/hooks";
+import { Web3ReactProvider, useWeb3React } from "@dexkit/ui/hooks/thirdweb";
 import { Button } from "@mui/material";
 import ThemeProvider from "@mui/material/styles/ThemeProvider";
 import createTheme from "@mui/material/styles/createTheme";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Web3ReactProvider, useWeb3React } from "@web3-react/core";
 import { BigNumber } from "ethers";
 import { atom } from "jotai";
 import { useEffect, useMemo } from "react";

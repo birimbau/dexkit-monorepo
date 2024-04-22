@@ -1,3 +1,4 @@
+import { useWeb3React } from "@dexkit/ui/hooks/thirdweb";
 import EvmTransferCoin from "@dexkit/ui/modules/evm-transfer-coin/components/EvmTransferCoin";
 import {
   Box,
@@ -8,7 +9,6 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import { useWeb3React } from "@web3-react/core";
 import QRCode from "qrcode.react";
 import { useState } from "react";
 

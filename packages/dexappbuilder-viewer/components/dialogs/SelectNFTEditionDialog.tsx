@@ -1,7 +1,8 @@
-import { getNormalizedUrl } from '@dexkit/core/utils';
-import { AppDialogTitle } from '@dexkit/ui';
-import DecimalInput from '@dexkit/ui/components/DecimalInput';
-import { useAsyncMemo } from '@dexkit/widgets/src/hooks';
+import { getNormalizedUrl } from "@dexkit/core/utils";
+import { AppDialogTitle } from "@dexkit/ui";
+import DecimalInput from "@dexkit/ui/components/DecimalInput";
+import { useWeb3React } from "@dexkit/ui/hooks/thirdweb";
+import { useAsyncMemo } from "@dexkit/widgets/src/hooks";
 import {
   Box,
   Button,
@@ -19,17 +20,16 @@ import {
   Skeleton,
   Stack,
   Typography,
-} from '@mui/material';
+} from "@mui/material";
 import {
   NFT,
   useContract,
   useContractRead,
   useOwnedNFTs,
-} from '@thirdweb-dev/react';
-import { useWeb3React } from '@web3-react/core';
-import { BigNumber } from 'ethers';
-import { useMemo, useState } from 'react';
-import { FormattedMessage, useIntl } from 'react-intl';
+} from "@thirdweb-dev/react";
+import { BigNumber } from "ethers";
+import { useMemo, useState } from "react";
+import { FormattedMessage, useIntl } from "react-intl";
 
 export interface SelectNFTEditionDialogProps {
   DialogProps: DialogProps;
@@ -49,24 +49,24 @@ export default function SelectNFTEditionDialog({
   stakingContractAddress,
 }: SelectNFTEditionDialogProps) {
   const { onClose } = DialogProps;
-  const { data: stakingNFTContract } = useContract(address, 'edition');
+  const { data: stakingNFTContract } = useContract(address, "edition");
 
   const { account } = useWeb3React();
 
   const { data: stakingContract } = useContract(
     stakingContractAddress,
-    'custom',
+    "custom"
   );
 
   const {
     data: infoNfts,
     refetch,
     isLoading,
-  } = useContractRead(stakingContract, 'getStakeInfo', [account]);
+  } = useContractRead(stakingContract, "getStakeInfo", [account]);
 
   const { data: accountNftsData, isLoading: isLoadingNfts } = useOwnedNFTs(
     stakingNFTContract,
-    account,
+    account
   );
 
   const nfts = useAsyncMemo(
@@ -90,11 +90,11 @@ export default function SelectNFTEditionDialog({
       return accountNftsData;
     },
     [],
-    [accountNftsData, infoNfts, isUnstake],
+    [accountNftsData, infoNfts, isUnstake]
   );
 
   const [tokenId, setTokenId] = useState<string>();
-  const [amount, setAmount] = useState<string>('');
+  const [amount, setAmount] = useState<string>("");
 
   const handleChangeAmount = (value: string) => {
     setAmount(value);
@@ -110,15 +110,15 @@ export default function SelectNFTEditionDialog({
       refetch();
     }
     setTokenId(undefined);
-    setAmount('');
+    setAmount("");
   };
 
   const handleClose = () => {
     if (onClose) {
-      onClose({}, 'backdropClick');
+      onClose({}, "backdropClick");
     }
     setTokenId(undefined);
-    setAmount('');
+    setAmount("");
   };
 
   const balance = useAsyncMemo(
@@ -140,7 +140,7 @@ export default function SelectNFTEditionDialog({
 
         const value = await stakingNFTContract?.erc1155.balanceOf(
           account,
-          tokenId,
+          tokenId
         );
 
         return value?.toNumber() || 0;
@@ -156,25 +156,25 @@ export default function SelectNFTEditionDialog({
       stakingContractAddress,
       infoNfts,
       isUnstake,
-    ],
+    ]
   );
 
   const { formatMessage } = useIntl();
 
   const amountError = useMemo(() => {
-    let value = parseInt(amount || '0');
+    let value = parseInt(amount || "0");
 
     if (value > balance) {
       return formatMessage({
-        id: 'amount.exceeds.the.nft.balance',
-        defaultMessage: 'amount exceeds the NFT balance',
+        id: "amount.exceeds.the.nft.balance",
+        defaultMessage: "amount exceeds the NFT balance",
       });
     }
 
     if (value === 0) {
       return formatMessage({
-        id: 'the.amount.cannot.be.zero',
-        defaultMessage: 'the amount cannot be zero',
+        id: "the.amount.cannot.be.zero",
+        defaultMessage: "the amount cannot be zero",
       });
     }
   }, [balance, amount]);
@@ -193,12 +193,12 @@ export default function SelectNFTEditionDialog({
           {nft.metadata.image ? (
             <CardMedia
               image={getNormalizedUrl(nft.metadata.image)}
-              sx={{ aspectRatio: '1/1', height: '100%' }}
+              sx={{ aspectRatio: "1/1", height: "100%" }}
             />
           ) : (
             <Skeleton
               variant="rectangular"
-              sx={{ aspectRatio: '16/9', height: '100%' }}
+              sx={{ aspectRatio: "16/9", height: "100%" }}
             />
           )}
           <Divider />
@@ -279,7 +279,7 @@ export default function SelectNFTEditionDialog({
           value={amount}
           TextFieldProps={{
             fullWidth: true,
-            autoComplete: 'off',
+            autoComplete: "off",
             helperText: amountError ? amountError : undefined,
             error: Boolean(amountError),
           }}

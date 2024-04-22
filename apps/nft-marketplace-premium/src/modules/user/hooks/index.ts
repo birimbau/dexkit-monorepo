@@ -1,6 +1,6 @@
+import { useWeb3React } from '@dexkit/ui/hooks/thirdweb';
 import { UserOptions } from '@dexkit/ui/types/ai';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useWeb3React } from '@web3-react/core';
 import axios from 'axios';
 
 import { useAuth, useLoginAccountMutation } from '@dexkit/ui/hooks/auth';

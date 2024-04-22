@@ -5,8 +5,8 @@ import {
   WizardItem,
 } from '@/modules/contract-wizard/types';
 import AppConfirmDialog from '@dexkit/ui/components/AppConfirmDialog';
+import { useWeb3React } from '@dexkit/ui/hooks/thirdweb';
 import { Alert, Container, Grid, Typography } from '@mui/material';
-import { useWeb3React } from '@web3-react/core';
 import { Formik } from 'formik';
 import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';

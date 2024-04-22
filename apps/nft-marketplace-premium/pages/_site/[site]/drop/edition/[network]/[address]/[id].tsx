@@ -15,6 +15,7 @@ import {
 } from '@dexkit/core/constants/networks';
 import { ipfsUriToUrl, truncateAddress } from '@dexkit/core/utils';
 import { PageHeader } from '@dexkit/ui/components/PageHeader';
+import { useWeb3React } from '@dexkit/ui/hooks/thirdweb';
 import {
   BEST_SELL_ORDER_RARIBLE,
   useAsset,
@@ -22,7 +23,6 @@ import {
 } from '@dexkit/ui/modules/nft/hooks';
 import { truncateErc1155TokenId } from '@dexkit/ui/modules/nft/utils';
 import { ThirdwebSDKProvider } from '@thirdweb-dev/react';
-import { useWeb3React } from '@web3-react/core';
 import { NextSeo } from 'next-seo';
 import { FormattedMessage } from 'react-intl';
 import MainLayout from 'src/components/layouts/main';

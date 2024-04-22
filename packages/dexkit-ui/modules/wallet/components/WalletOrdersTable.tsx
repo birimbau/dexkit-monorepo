@@ -1,3 +1,4 @@
+import { useWeb3React } from "@dexkit/ui/hooks/thirdweb";
 import { Wallet } from "@mui/icons-material";
 import {
   Box,
@@ -11,7 +12,6 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import { useWeb3React } from "@web3-react/core";
 import { useCallback } from "react";
 import { FormattedMessage } from "react-intl";
 import CloseCircle from "../../../components/icons/CloseCircle";

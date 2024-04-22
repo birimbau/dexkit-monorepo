@@ -18,8 +18,8 @@ import { formatBigNumber, getChainName } from "@dexkit/core/utils";
 import { formatUnits } from "@dexkit/core/utils/ethers/formatUnits";
 import { parseUnits } from "@dexkit/core/utils/ethers/parseUnits";
 import { useSwitchNetworkMutation } from "@dexkit/ui/hooks";
+import { useWeb3React } from "@dexkit/ui/hooks/thirdweb";
 import RefreshIcon from "@mui/icons-material/Refresh";
-import { useWeb3React } from "@web3-react/core";
 import { BigNumber, providers } from "ethers";
 import { ORDER_LIMIT_DURATIONS } from "../../constants";
 import { useSendLimitOrderMutation } from "../../hooks";
@@ -235,7 +235,7 @@ export default function BuyForm({
     handleQuotePrice();
   }, [handleQuotePrice]);*/
 
-  const { chainId: providerChainId, connector } = useWeb3React();
+  const { chainId: providerChainId } = useWeb3React();
   const switchNetworkMutation = useSwitchNetworkMutation();
 
   const renderActionButton = useCallback(() => {
@@ -273,7 +273,6 @@ export default function BuyForm({
   }, [
     chainId,
     buttonMessage,
-    connector,
     providerChainId,
     baseToken,
     quoteToken,

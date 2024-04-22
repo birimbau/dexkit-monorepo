@@ -1,3 +1,4 @@
+import { useWeb3React } from "@dexkit/ui/hooks/thirdweb";
 import {
   Button,
   Grid,
@@ -8,7 +9,6 @@ import {
   Tabs,
   Typography,
 } from "@mui/material";
-import { useWeb3React } from "@web3-react/core";
 import dynamic from "next/dynamic";
 import { Suspense, useCallback, useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";

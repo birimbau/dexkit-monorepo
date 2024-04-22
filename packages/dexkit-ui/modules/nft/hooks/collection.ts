@@ -9,10 +9,10 @@ import { ChainId } from "@dexkit/core/constants/enums";
 import { Asset } from "@dexkit/core/types/nft";
 import { omitNull } from "@dexkit/core/utils";
 import { getNetworkSlugFromChainId, isAddressEqual } from "@dexkit/core/utils/blockchain";
+import { useWeb3React } from "@dexkit/ui/hooks/thirdweb";
 import {
   ThirdwebSDK,
 } from '@thirdweb-dev/react';
-import { useWeb3React } from "@web3-react/core";
 import { THIRDWEB_CLIENT_ID } from "../../../constants/thirdweb";
 import { hexToString } from "../../../utils";
 import { NFTType } from "../constants/enum";

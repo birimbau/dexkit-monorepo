@@ -33,11 +33,11 @@ import {
 } from "../../modules/file/hooks";
 import { AppDialogTitle } from "../AppDialogTitle";
 
+import { useWeb3React } from "@dexkit/ui/hooks/thirdweb";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SearchIcon from "@mui/icons-material/Search";
 import IconButton from "@mui/material/IconButton";
 import Pagination from "@mui/material/Pagination";
-import { useWeb3React } from "@web3-react/core";
 import AppConfirmDialog from "../AppConfirmDialog";
 import DeleteImageDialog from "./DeleteImageDialog";
 

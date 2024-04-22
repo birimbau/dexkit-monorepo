@@ -15,9 +15,9 @@ import { Experimental_CssVarsProvider as CssVarsProvider } from '@mui/material/s
 import dynamic from 'next/dynamic';
 
 import AppConfirmDialog from '@dexkit/ui/components/AppConfirmDialog';
+import { useWeb3React } from '@dexkit/ui/hooks/thirdweb';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import Close from '@mui/icons-material/Close';
-import { useWeb3React } from '@web3-react/core';
 import { Field, Form, Formik } from 'formik';
 import { TextField } from 'formik-mui';
 import { NextSeo } from 'next-seo';

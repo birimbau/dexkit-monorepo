@@ -3,6 +3,7 @@ import InfoIcon from "@mui/icons-material/Info";
 import TipsAndUpdatesIcon from "@mui/icons-material/TipsAndUpdates";
 import { useListFormsQuery } from "../../../forms/hooks";
 
+import { useWeb3React } from "@dexkit/ui/hooks/thirdweb";
 import AddIcon from "@mui/icons-material/Add";
 import Search from "@mui/icons-material/Search";
 import {
@@ -19,7 +20,6 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { useWeb3React } from "@web3-react/core";
 import { ChangeEvent, useCallback, useEffect, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import Link from "../../../../components/AppLink";

@@ -1,4 +1,5 @@
 import { useDexKitContext } from '@dexkit/ui';
+import { useWeb3React } from '@dexkit/ui/hooks/thirdweb';
 import { Box, CircularProgress, Grid } from '@mui/material';
 import { useMutation } from '@tanstack/react-query';
 import {
@@ -6,7 +7,6 @@ import {
   useContractMetadata,
   useContractMetadataUpdate,
 } from '@thirdweb-dev/react';
-import { useWeb3React } from '@web3-react/core';
 import { ContractMetadataFormType } from '../types';
 import MetadataUpdateForm from './form/MetadataUpdateForm';
 

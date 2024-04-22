@@ -4,6 +4,7 @@ import MarketTradeSection from "@dexkit/dexappbuilder-viewer/components/sections
 import TokenErc20Section from "@dexkit/dexappbuilder-viewer/components/sections/TokenErc20Section";
 import { OrderMarketType } from "@dexkit/exchange/constants";
 import { useTokenList } from "@dexkit/ui/hooks";
+import { useWeb3React } from "@dexkit/ui/hooks/thirdweb";
 import { hexToString } from "@dexkit/ui/utils";
 import { isAddress } from "@ethersproject/address";
 import BrowserNotSupportedIcon from "@mui/icons-material/BrowserNotSupported";
@@ -16,7 +17,6 @@ import {
   useContractRead,
   useContractType,
 } from "@thirdweb-dev/react";
-import { useWeb3React } from "@web3-react/core";
 import { NextSeo } from "next-seo";
 import { useMemo } from "react";
 import { FormattedMessage, useIntl } from "react-intl";

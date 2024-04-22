@@ -1,8 +1,8 @@
 import OrdersTable from "@dexkit/exchange/components/OrdersTable";
 import TradingGraph from "@dexkit/exchange/components/TradingGraph";
 import { GET_GECKOTERMINAL_NETWORK } from "@dexkit/exchange/constants";
+import { useWeb3React } from "@dexkit/ui/hooks/thirdweb";
 import { Box, Container, Grid } from "@mui/material";
-import { useWeb3React } from "@web3-react/core";
 
 import SelectPairDialog from "@dexkit/exchange/components/dialogs/SelectPairDialog";
 import {

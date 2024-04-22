@@ -22,10 +22,10 @@ import {
   useSwitchNetworkMutation,
   useWaitTransactionConfirmation,
 } from "@dexkit/ui/hooks";
+import { useWeb3React } from "@dexkit/ui/hooks/thirdweb";
 import { useTrackUserEventsMutation } from "@dexkit/ui/hooks/userEvents";
 import { AppNotificationType } from "@dexkit/ui/types";
 import { useMutation } from "@tanstack/react-query";
-import { useWeb3React } from "@web3-react/core";
 import { EXCHANGE_NOTIFICATION_TYPES } from "../../constants/messages";
 import { useZrxQuoteMutation } from "../../hooks/zrx";
 import { getZrxExchangeAddress } from "../../utils";

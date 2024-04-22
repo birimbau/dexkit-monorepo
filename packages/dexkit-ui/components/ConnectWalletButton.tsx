@@ -1,28 +1,27 @@
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import WalletIcon from "@mui/icons-material/Wallet";
-import Button from "@mui/material/Button";
-import { FormattedMessage } from "react-intl";
-import { useConnectWalletDialog } from "../hooks";
+import { createThirdwebClient } from "thirdweb";
+import { ConnectButton } from "thirdweb/react";
+import { createWallet } from "thirdweb/wallets";
+import { ThemeMode } from "../constants/enum";
+import { THIRDWEB_CLIENT_ID } from "../constants/thirdweb";
+import { useThemeMode } from "../hooks";
+
+const client = createThirdwebClient({ clientId: THIRDWEB_CLIENT_ID });
+
+const wallets = [
+  createWallet("io.metamask"),
+  createWallet("com.coinbase.wallet"),
+  createWallet("me.rainbow"),
+];
 
 export function ConnectWalletButton() {
-  const connectWalletDialog = useConnectWalletDialog();
+  const { mode } = useThemeMode();
 
-  const handleOpenConnectWalletDialog = () => {
-    connectWalletDialog.setOpen(true);
-  };
   return (
-    <Button
-      variant="outlined"
-      color="inherit"
-      onClick={handleOpenConnectWalletDialog}
-      startIcon={<WalletIcon />}
-      endIcon={<ChevronRightIcon />}
-    >
-      <FormattedMessage
-        id="connect.wallet"
-        defaultMessage="Connect Wallet"
-        description="Connect wallet button"
-      />
-    </Button>
+    <ConnectButton
+      client={client}
+      theme={mode === ThemeMode.dark ? "dark" : "light"}
+      wallets={wallets}
+      connectModal={{ showThirdwebBranding: false, titleIcon: "" }}
+    />
   );
 }

@@ -19,7 +19,7 @@ import {
 } from '../../../../../src/modules/forms/hooks';
 
 import { PageHeader } from '@dexkit/ui/components/PageHeader';
-import { useWeb3React } from '@web3-react/core';
+import { useWeb3React } from '@dexkit/ui/hooks/thirdweb';
 import AuthMainLayout from 'src/components/layouts/authMain';
 
 import FormInfoCard from '@/modules/forms/components/FormInfoCard';

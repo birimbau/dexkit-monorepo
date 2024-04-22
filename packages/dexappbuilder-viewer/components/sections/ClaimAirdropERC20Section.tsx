@@ -25,7 +25,7 @@ import {
   useContractRead,
 } from "@thirdweb-dev/react";
 
-import { useWeb3React } from "@web3-react/core";
+import { useWeb3React } from "@dexkit/ui/hooks/thirdweb";
 import { BigNumber } from "ethers";
 import { useMemo, useState } from "react";
 

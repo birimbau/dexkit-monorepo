@@ -1,4 +1,5 @@
 import { PageHeader } from '@dexkit/ui/components/PageHeader';
+import { useWeb3React } from '@dexkit/ui/hooks/thirdweb';
 import TableSkeleton from '@dexkit/ui/modules/nft/components/tables/TableSkeleton';
 import HiddenAssetsSection from '@dexkit/ui/modules/wallet/components/HiddenAssetsSection';
 import WalletAssetsFilter from '@dexkit/ui/modules/wallet/components/WalletAssetsFilter';
@@ -16,7 +17,6 @@ import {
 } from '@mui/material';
 import Tab from '@mui/material/Tab';
 import { QueryErrorResetBoundary } from '@tanstack/react-query';
-import { useWeb3React } from '@web3-react/core';
 import { GetStaticProps, GetStaticPropsContext, NextPage } from 'next';
 import dynamic from 'next/dynamic';
 import { Suspense, useState } from 'react';

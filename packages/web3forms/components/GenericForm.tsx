@@ -11,7 +11,7 @@ import {
 import MuiTextField from "@mui/material/TextField";
 import { Form, FormElement, FormOutputFormat } from "../types";
 
-import { useWeb3React } from "@web3-react/core";
+import { useWeb3React } from "@dexkit/ui/hooks/thirdweb";
 import React from "react";
 import * as Yup from "yup";
 import DecimalInput from "./DecimalInput";

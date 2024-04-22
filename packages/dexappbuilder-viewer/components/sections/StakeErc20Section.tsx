@@ -3,6 +3,7 @@ import { formatUnits } from "@dexkit/core/utils/ethers/formatUnits";
 import { parseUnits } from "@dexkit/core/utils/ethers/parseUnits";
 import { useDexKitContext } from "@dexkit/ui";
 import FormikDecimalInput from "@dexkit/ui/components/FormikDecimalInput";
+import { useWeb3React } from "@dexkit/ui/hooks/thirdweb";
 import { useThirdwebApprove } from "@dexkit/ui/modules/contract-wizard/hooks/thirdweb";
 import { StakeErc20PageSection } from "@dexkit/ui/modules/wizard/types/section";
 import { useAsyncMemo } from "@dexkit/widgets/src/hooks";
@@ -28,7 +29,6 @@ import {
   useContractWrite,
   useTokenBalance,
 } from "@thirdweb-dev/react";
-import { useWeb3React } from "@web3-react/core";
 import { BigNumber } from "ethers";
 import { Formik, FormikErrors } from "formik";
 import { SyntheticEvent, useMemo, useState } from "react";

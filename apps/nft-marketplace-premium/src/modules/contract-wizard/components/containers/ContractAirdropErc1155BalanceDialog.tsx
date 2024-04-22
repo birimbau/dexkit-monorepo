@@ -1,4 +1,5 @@
 import { AppDialogTitle } from '@dexkit/ui';
+import { useWeb3React } from '@dexkit/ui/hooks/thirdweb';
 import {
   Dialog,
   DialogContent,
@@ -7,7 +8,6 @@ import {
   List,
 } from '@mui/material';
 import { useContract, useNFTs } from '@thirdweb-dev/react';
-import { useWeb3React } from '@web3-react/core';
 import { FormattedMessage } from 'react-intl';
 import ContractAirdropErc1155ListItem from './ContractAirdropErc1155ListItem';
 

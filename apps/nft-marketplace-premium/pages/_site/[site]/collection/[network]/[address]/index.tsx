@@ -16,6 +16,7 @@ import {
   NFTType,
 } from '@dexkit/ui/modules/nft/constants/enum';
 
+import { useWeb3React } from '@dexkit/ui/hooks/thirdweb';
 import { Collection, TraderOrderFilter } from '@dexkit/ui/modules/nft/types';
 import { hexToString } from '@dexkit/ui/utils';
 import { getIsLockAsync } from '@dexkit/unlock-widget';
@@ -38,7 +39,6 @@ import {
   ThirdwebSDKProvider,
   useContractType,
 } from '@thirdweb-dev/react';
-import { useWeb3React } from '@web3-react/core';
 import axios from 'axios';
 import { NextSeo } from 'next-seo';
 import { useRouter } from 'next/router';

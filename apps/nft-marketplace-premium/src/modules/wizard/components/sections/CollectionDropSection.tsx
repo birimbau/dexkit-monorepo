@@ -23,8 +23,8 @@ import Stack from '@mui/material/Stack';
 import { detectContractFeature, NATIVE_TOKEN_ADDRESS } from '@thirdweb-dev/sdk';
 
 import { formatUnits } from '@dexkit/core/utils/ethers/formatUnits';
+import { useWeb3React } from '@dexkit/ui/hooks/thirdweb';
 import { SwappableAssetV4 } from '@traderxyz/nft-swap-sdk';
-import { useWeb3React } from '@web3-react/core';
 import { BigNumber } from 'ethers';
 import { useCallback, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';

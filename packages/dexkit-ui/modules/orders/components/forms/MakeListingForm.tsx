@@ -23,8 +23,8 @@ import { FormattedMessage, useIntl } from "react-intl";
 
 import { FormikHelpers, useFormik } from "formik";
 
+import { useWeb3React } from "@dexkit/ui/hooks/thirdweb";
 import { ExpandMore } from "@mui/icons-material";
-import { useWeb3React } from "@web3-react/core";
 import * as Yup from "yup";
 
 import { TokenWhitelabelApp } from "@dexkit/core/types";

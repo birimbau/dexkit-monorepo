@@ -4,6 +4,7 @@ import LazyTextField from '@dexkit/ui/components/LazyTextField';
 import { DeployedContract } from '@/modules/forms/types';
 import { ipfsUriToUrl, parseChainId } from '@dexkit/core/utils';
 import { useActiveChainIds } from '@dexkit/ui/hooks';
+import { useWeb3React } from '@dexkit/ui/hooks/thirdweb';
 import { DexGeneratorPageSection } from '@dexkit/ui/modules/wizard/types/section';
 import Error from '@mui/icons-material/Error';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
@@ -29,7 +30,6 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
-import { useWeb3React } from '@web3-react/core';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { NETWORKS } from 'src/constants/chain';

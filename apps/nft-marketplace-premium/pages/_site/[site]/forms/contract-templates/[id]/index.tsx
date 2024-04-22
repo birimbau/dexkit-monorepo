@@ -40,9 +40,9 @@ import { getChainName } from '@dexkit/core/utils/blockchain';
 import { getWindowUrl } from '@dexkit/core/utils/browser';
 import Link from '@dexkit/ui/components/AppLink';
 import { PageHeader } from '@dexkit/ui/components/PageHeader';
+import { useWeb3React } from '@dexkit/ui/hooks/thirdweb';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
-import { useWeb3React } from '@web3-react/core';
 
 export default function TemplatePage() {
   const router = useRouter();

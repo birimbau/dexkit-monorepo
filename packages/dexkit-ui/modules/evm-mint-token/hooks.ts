@@ -1,6 +1,6 @@
+import { useWeb3React } from "@dexkit/ui/hooks/thirdweb";
 import { useMutation } from "@tanstack/react-query";
 import { useContract } from "@thirdweb-dev/react";
-import { useWeb3React } from "@web3-react/core";
 
 
 export function useMintToken({

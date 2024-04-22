@@ -16,9 +16,9 @@ import {
   truncateAddress,
 } from "@dexkit/core/utils/blockchain";
 import Link from "@dexkit/ui/components/AppLink";
+import { useWeb3React } from "@dexkit/ui/hooks/thirdweb";
 import LaunchIcon from "@mui/icons-material/Launch";
 import Share from "@mui/icons-material/Share";
-import { useWeb3React } from "@web3-react/core";
 import { useState } from "react";
 import Heart from "../../../components/icons/Heart";
 import {

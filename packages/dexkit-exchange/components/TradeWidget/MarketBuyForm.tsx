@@ -9,6 +9,7 @@ import {
   useSwitchNetworkMutation,
   useWaitTransactionConfirmation,
 } from "@dexkit/ui/hooks";
+import { useWeb3React } from "@dexkit/ui/hooks/thirdweb";
 import { useTrackUserEventsMutation } from "@dexkit/ui/hooks/userEvents";
 import { AppNotificationType } from "@dexkit/ui/types";
 import {
@@ -21,7 +22,6 @@ import {
   Typography,
 } from "@mui/material";
 import { useMutation } from "@tanstack/react-query";
-import { useWeb3React } from "@web3-react/core";
 import { BigNumber, providers } from "ethers";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { FormattedMessage } from "react-intl";

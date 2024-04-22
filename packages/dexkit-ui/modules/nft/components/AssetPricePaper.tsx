@@ -1,6 +1,6 @@
 import DollarSquare from "@dexkit/ui/components/icons/DollarSquare";
+import { useWeb3React } from "@dexkit/ui/hooks/thirdweb";
 import { Button, Grid, Paper, Stack } from "@mui/material";
-import { useWeb3React } from "@web3-react/core";
 import { BigNumber } from "ethers";
 import { useCallback, useMemo, useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";

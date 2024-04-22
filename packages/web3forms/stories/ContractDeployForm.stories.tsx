@@ -17,9 +17,9 @@ const BYTECODE =
 import { TokenWhitelabelApp } from "@dexkit/core/types";
 import { DexkitProvider } from "@dexkit/ui/components";
 import { ThemeMode } from "@dexkit/ui/constants/enum";
+import { useWeb3React } from "@dexkit/ui/hooks/thirdweb";
 import { AppNotification } from "@dexkit/ui/types";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useWeb3React } from "@web3-react/core";
 import { atom } from "jotai";
 import { useEffect } from "react";
 import theme from "../theme";

@@ -4,6 +4,7 @@ import { formatBigNumber, getChainName } from "@dexkit/core/utils";
 import { formatUnits } from "@dexkit/core/utils/ethers/formatUnits";
 import { parseUnits } from "@dexkit/core/utils/ethers/parseUnits";
 import { useSwitchNetworkMutation } from "@dexkit/ui/hooks";
+import { useWeb3React } from "@dexkit/ui/hooks/thirdweb";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import {
   Box,
@@ -15,7 +16,6 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import { useWeb3React } from "@web3-react/core";
 import { BigNumber, providers } from "ethers";
 import { useSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
@@ -257,7 +257,7 @@ export default function SellForm({
     }
   };
 
-  const { chainId: providerChainId, connector } = useWeb3React();
+  const { chainId: providerChainId } = useWeb3React();
   const switchNetworkMutation = useSwitchNetworkMutation();
 
   const renderActionButton = useCallback(() => {
@@ -295,7 +295,6 @@ export default function SellForm({
   }, [
     chainId,
     buttonMessage,
-    connector,
     providerChainId,
     baseToken,
     quoteToken,

@@ -4,7 +4,7 @@ import Grid from "@mui/material/Grid";
 import { NETWORKS } from "@dexkit/core/constants/networks";
 import { parseEther } from "@dexkit/core/utils/ethers/parseEther";
 import { useSwitchNetworkMutation } from "@dexkit/ui/hooks";
-import { useWeb3React } from "@web3-react/core";
+import { useWeb3React } from "@dexkit/ui/hooks/thirdweb";
 import { BigNumber, providers } from "ethers";
 import { useCallback, useMemo, useState } from "react";
 import { useCallOnMountFields, useContractCallMutation } from "../hooks";

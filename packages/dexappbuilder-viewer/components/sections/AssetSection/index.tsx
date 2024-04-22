@@ -1,4 +1,5 @@
 import { NETWORK_FROM_SLUG } from "@dexkit/core/constants/networks";
+import { useWeb3React } from "@dexkit/ui/hooks/thirdweb";
 import AssetLeftSection from "@dexkit/ui/modules/nft/components/AssetLeftSection";
 import AssetOptionsProvider from "@dexkit/ui/modules/nft/components/AssetOptionsProvider";
 import AssetRightSection from "@dexkit/ui/modules/nft/components/AssetRightSection";
@@ -10,7 +11,6 @@ import { useAsyncMemo } from "@dexkit/widgets/src/hooks";
 import { Alert, Box, Grid, NoSsr, Typography } from "@mui/material";
 import { useQueryClient } from "@tanstack/react-query";
 import { ThirdwebSDKProvider, useContract } from "@thirdweb-dev/react";
-import { useWeb3React } from "@web3-react/core";
 import { Suspense, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import EditionDropSection from "../EditionDropSection";

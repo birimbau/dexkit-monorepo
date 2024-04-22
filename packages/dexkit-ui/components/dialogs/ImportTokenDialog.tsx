@@ -27,7 +27,7 @@ import { useDebounce } from "@dexkit/core/hooks/misc";
 import { Network } from "@dexkit/core/types";
 import { ipfsUriToUrl, isAddressEqual } from "@dexkit/core/utils";
 import { isAddress } from "@dexkit/core/utils/ethers/isAddress";
-import { useWeb3React } from "@web3-react/core";
+import { useWeb3React } from "@dexkit/ui/hooks/thirdweb";
 import { AxiosError } from "axios";
 import { useSnackbar } from "notistack";
 import { useDexKitContext } from "../../hooks";

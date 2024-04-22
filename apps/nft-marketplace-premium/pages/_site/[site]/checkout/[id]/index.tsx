@@ -18,6 +18,7 @@ import {
   useCheckoutItems,
   useConfirmCheckout,
 } from '@dexkit/ui/hooks/payments';
+import { useWeb3React } from '@dexkit/ui/hooks/thirdweb';
 import Wallet from '@mui/icons-material/Wallet';
 import {
   Alert,
@@ -41,7 +42,6 @@ import {
   Typography,
 } from '@mui/material';
 import { QueryClient, dehydrate, useMutation } from '@tanstack/react-query';
-import { useWeb3React } from '@web3-react/core';
 import { BigNumber, ethers } from 'ethers';
 import {
   GetStaticPaths,

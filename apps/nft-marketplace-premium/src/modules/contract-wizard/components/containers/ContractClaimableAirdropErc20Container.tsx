@@ -7,6 +7,7 @@ import {
 import { formatUnits } from '@dexkit/core/utils/ethers/formatUnits';
 import { useDexKitContext } from '@dexkit/ui';
 import { DEXKIT_STORAGE_MERKLE_TREE_URL } from '@dexkit/ui/constants/api';
+import { useWeb3React } from '@dexkit/ui/hooks/thirdweb';
 import { useAsyncMemo } from '@dexkit/widgets/src/hooks';
 import {
   Alert,
@@ -30,7 +31,6 @@ import {
   useContract,
   useContractRead,
 } from '@thirdweb-dev/react';
-import { useWeb3React } from '@web3-react/core';
 import { BigNumber, constants } from 'ethers';
 import { SyntheticEvent, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';

@@ -6,6 +6,7 @@ import { useDebounce } from '@dexkit/core/hooks';
 import Link from '@dexkit/ui/components/AppLink';
 import { PageHeader } from '@dexkit/ui/components/PageHeader';
 import { useAuth } from '@dexkit/ui/hooks/auth';
+import { useWeb3React } from '@dexkit/ui/hooks/thirdweb';
 import Add from '@mui/icons-material/Add';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import Search from '@mui/icons-material/Search';
@@ -24,7 +25,6 @@ import {
   Typography,
 } from '@mui/material';
 import { QueryClient, dehydrate } from '@tanstack/react-query';
-import { useWeb3React } from '@web3-react/core';
 import {
   GetStaticPaths,
   GetStaticPathsContext,

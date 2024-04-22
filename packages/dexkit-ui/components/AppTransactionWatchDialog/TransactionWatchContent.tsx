@@ -1,4 +1,5 @@
 import { getBlockExplorerUrl } from "@dexkit/core/utils";
+import { useWeb3React } from "@dexkit/ui/hooks/thirdweb";
 import {
   Avatar,
   Box,
@@ -9,7 +10,6 @@ import {
   Typography,
 } from "@mui/material";
 import { useMutation } from "@tanstack/react-query";
-import { useWeb3React } from "@web3-react/core";
 import { FormattedMessage } from "react-intl";
 import { useWaitTransactionConfirmation } from "../../hooks";
 import { TxDialogTransaction } from "../../types";

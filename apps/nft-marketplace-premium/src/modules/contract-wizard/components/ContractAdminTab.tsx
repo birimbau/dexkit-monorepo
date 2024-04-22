@@ -1,4 +1,5 @@
 import { useDexKitContext } from '@dexkit/ui';
+import { useWeb3React } from '@dexkit/ui/hooks/thirdweb';
 import Delete from '@mui/icons-material/Delete';
 import {
   Box,
@@ -17,7 +18,6 @@ import {
   useContractMetadata,
   useSetAllRoleMembers,
 } from '@thirdweb-dev/react';
-import { useWeb3React } from '@web3-react/core';
 import { Field, FieldArray, Formik } from 'formik';
 import { TextField } from 'formik-mui';
 import { FormattedMessage } from 'react-intl';

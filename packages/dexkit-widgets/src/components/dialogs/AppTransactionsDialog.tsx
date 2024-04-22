@@ -1,5 +1,6 @@
 import { Notifications } from "@mui/icons-material";
 
+import { useWeb3React } from "@dexkit/ui/hooks/thirdweb";
 import {
   Button,
   Dialog,
@@ -10,7 +11,6 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import { useWeb3React } from "@web3-react/core";
 import { useAtom, useAtomValue } from "jotai";
 import { useMemo } from "react";
 import { FormattedMessage } from "react-intl";

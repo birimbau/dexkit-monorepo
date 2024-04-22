@@ -1,8 +1,8 @@
 import { ContractContainer } from '@/modules/contract-wizard/components/containers/ContractContainer';
 import { NETWORK_FROM_SLUG } from '@dexkit/core/constants/networks';
+import { useWeb3React } from '@dexkit/ui/hooks/thirdweb';
 import Container from '@mui/material/Container';
 import { ThirdwebSDKProvider } from '@thirdweb-dev/react';
-import { useWeb3React } from '@web3-react/core';
 import { GetStaticProps, GetStaticPropsContext } from 'next';
 import { useRouter } from 'next/router';
 import AuthMainLayout from 'src/components/layouts/authMain';

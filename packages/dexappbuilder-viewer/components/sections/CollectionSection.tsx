@@ -24,6 +24,7 @@ import { AppErrorBoundary } from "@dexkit/ui/components/AppErrorBoundary";
 import LazyTextField from "@dexkit/ui/components/LazyTextField";
 import SidebarFilters from "@dexkit/ui/components/SidebarFilters";
 import SidebarFiltersContent from "@dexkit/ui/components/SidebarFiltersContent";
+import { useWeb3React } from "@dexkit/ui/hooks/thirdweb";
 import { AssetListCollection } from "@dexkit/ui/modules/nft/components/AssetListCollection";
 import { AssetList } from "@dexkit/ui/modules/nft/components/AssetListOrderbook";
 import { CollectionHeader } from "@dexkit/ui/modules/nft/components/CollectionHeader";
@@ -36,7 +37,6 @@ import { CollectionPageSection } from "@dexkit/ui/modules/wizard/types/section";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import Search from "@mui/icons-material/Search";
 import { ThirdwebSDKProvider, useContractType } from "@thirdweb-dev/react";
-import { useWeb3React } from "@web3-react/core";
 import { Suspense, SyntheticEvent, useMemo, useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 

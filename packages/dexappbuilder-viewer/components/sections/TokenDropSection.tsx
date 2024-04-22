@@ -1,6 +1,7 @@
 import { formatUnits } from "@dexkit/core/utils/ethers/formatUnits";
 import LazyTextField from "@dexkit/ui/components/LazyTextField";
 import { useInterval } from "@dexkit/ui/hooks/misc";
+import { useWeb3React } from "@dexkit/ui/hooks/thirdweb";
 import TokenDropSummary from "@dexkit/ui/modules/token/components/TokenDropSummary";
 import { TokenDropPageSection } from "@dexkit/ui/modules/wizard/types/section";
 import {
@@ -27,7 +28,6 @@ import {
   useTokenSupply,
 } from "@thirdweb-dev/react";
 import { CurrencyValue } from "@thirdweb-dev/sdk/evm";
-import { useWeb3React } from "@web3-react/core";
 import { BigNumber } from "ethers";
 import { useSnackbar } from "notistack";
 import { useEffect, useMemo, useState } from "react";

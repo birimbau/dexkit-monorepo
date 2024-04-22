@@ -3,6 +3,7 @@ import { UserEvents } from "@dexkit/core/constants/userEvents";
 import { formatUnits } from "@dexkit/core/utils/ethers/formatUnits";
 import { useDexKitContext } from "@dexkit/ui/hooks";
 import { useInterval } from "@dexkit/ui/hooks/misc";
+import { useWeb3React } from "@dexkit/ui/hooks/thirdweb";
 import { useTrackUserEventsMutation } from "@dexkit/ui/hooks/userEvents";
 import { useClaimNft } from "@dexkit/ui/modules/nft/hooks/thirdweb";
 import { NftDropPageSection } from "@dexkit/ui/modules/wizard/types/section";
@@ -30,7 +31,6 @@ import {
   useOwnedNFTs,
   useUnclaimedNFTSupply,
 } from "@thirdweb-dev/react";
-import { useWeb3React } from "@web3-react/core";
 import { BigNumber } from "ethers";
 import { useMemo, useState } from "react";
 import { FormattedMessage } from "react-intl";

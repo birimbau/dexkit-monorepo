@@ -4,6 +4,7 @@ import { formatBigNumber, isAddressEqual } from '@dexkit/core/utils';
 import { formatUnits } from '@dexkit/core/utils/ethers/formatUnits';
 import { parseUnits } from '@dexkit/core/utils/ethers/parseUnits';
 import { useDexKitContext } from '@dexkit/ui';
+import { useWeb3React } from '@dexkit/ui/hooks/thirdweb';
 import { useThirdwebApprove } from '@dexkit/ui/modules/contract-wizard/hooks/thirdweb';
 import { useAsyncMemo } from '@dexkit/widgets/src/hooks';
 import {
@@ -27,7 +28,6 @@ import {
   useBalance,
   useContract,
 } from '@thirdweb-dev/react';
-import { useWeb3React } from '@web3-react/core';
 import { BigNumber, constants } from 'ethers';
 import { useSnackbar } from 'notistack';
 import { SyntheticEvent, useState } from 'react';

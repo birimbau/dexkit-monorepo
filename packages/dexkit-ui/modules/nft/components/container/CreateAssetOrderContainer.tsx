@@ -6,6 +6,7 @@ const OrderCreatedDialog = dynamic(
 );
 import { getERC20Name, getERC20Symbol } from "@dexkit/core/services/balances";
 import { useDexKitContext } from "@dexkit/ui";
+import { useWeb3React } from "@dexkit/ui/hooks/thirdweb";
 import ImportExportIcon from "@mui/icons-material/ImportExport";
 import Launch from "@mui/icons-material/Launch";
 import {
@@ -29,7 +30,6 @@ import {
 } from "@mui/material";
 import { SwappableAssetV4 } from "@traderxyz/nft-swap-sdk";
 import { PostOrderResponsePayload } from "@traderxyz/nft-swap-sdk/dist/sdk/v4/orderbook";
-import { useWeb3React } from "@web3-react/core";
 import { BigNumber } from "ethers";
 import dynamic from "next/dynamic";
 import Image from "next/image";

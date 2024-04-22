@@ -27,8 +27,8 @@ import { Token } from '../../../../types/blockchain';
 import { FormikHelpers, useFormik } from 'formik';
 
 import { isAddressEqual } from '@dexkit/core/utils/blockchain';
+import { useWeb3React } from '@dexkit/ui/hooks/thirdweb';
 import ExpandMore from '@mui/icons-material/ExpandMore';
-import { useWeb3React } from '@web3-react/core';
 import * as Yup from 'yup';
 
 import { ipfsUriToUrl } from '@dexkit/core/utils/ipfs';

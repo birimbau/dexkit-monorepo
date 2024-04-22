@@ -1,4 +1,4 @@
-import { useWeb3React } from "@web3-react/core";
+import { useWeb3React } from "@dexkit/ui/hooks/thirdweb";
 import { PrimitiveAtom, useAtom } from "jotai";
 import { useSnackbar } from "notistack";
 import { useCallback, useEffect, useMemo } from "react";

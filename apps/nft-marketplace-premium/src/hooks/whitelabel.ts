@@ -1,4 +1,5 @@
 import { CollectionOwnershipNFTFormType } from '@/modules/contract-wizard/types';
+import { useWeb3React } from '@dexkit/ui/hooks/thirdweb';
 import { SiteMetadata } from '@dexkit/ui/modules/wizard/types';
 import {
   useMutation,
@@ -6,7 +7,6 @@ import {
   useQuery,
   useQueryClient,
 } from '@tanstack/react-query';
-import { useWeb3React } from '@web3-react/core';
 import { useSetAtom } from 'jotai';
 import { holdsKitDialogAtom } from 'src/state/atoms';
 import { AppWhitelabelType } from '../constants/enum';

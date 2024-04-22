@@ -15,7 +15,7 @@ import { ETHER_SCAN_API_URL } from "../constants";
 
 import { getNormalizedUrl } from "@dexkit/core/utils";
 import { isAddress } from "@dexkit/core/utils/ethers/isAddress";
-import { useWeb3React } from "@web3-react/core";
+import { useWeb3React } from "@dexkit/ui/hooks/thirdweb";
 import { useContext, useEffect, useState } from "react";
 import {
   AbiFragment,

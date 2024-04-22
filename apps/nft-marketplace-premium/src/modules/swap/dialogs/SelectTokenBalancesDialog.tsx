@@ -1,4 +1,5 @@
 import { ChainId, TOKEN_ICON_URL } from '@dexkit/core/constants';
+import { useWeb3React } from '@dexkit/ui/hooks/thirdweb';
 import {
   Avatar,
   Dialog,
@@ -15,7 +16,6 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { useWeb3React } from '@web3-react/core';
 import { memo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 

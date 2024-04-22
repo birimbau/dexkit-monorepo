@@ -17,8 +17,8 @@ import Paper from "@mui/material/Paper";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 
+import { useWeb3React } from "@dexkit/ui/hooks/thirdweb";
 import { estimateFees } from "@mycrypto/gas-estimation";
-import { useWeb3React } from "@web3-react/core";
 import { BigNumber, constants } from "ethers";
 
 import { ChangeEvent, useCallback, useEffect, useMemo, useState } from "react";

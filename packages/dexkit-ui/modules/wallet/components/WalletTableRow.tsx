@@ -1,6 +1,7 @@
 import { TOKEN_ICON_URL } from "@dexkit/core/constants";
 import { ipfsUriToUrl } from "@dexkit/core/utils";
 import { formatUnits } from "@dexkit/core/utils/ethers/formatUnits";
+import { useWeb3React } from "@dexkit/ui/hooks/thirdweb";
 import {
   Avatar,
   Box,
@@ -10,7 +11,6 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import { useWeb3React } from "@web3-react/core";
 import { FormattedNumber } from "react-intl";
 import { TokenBalance } from "../types";
 

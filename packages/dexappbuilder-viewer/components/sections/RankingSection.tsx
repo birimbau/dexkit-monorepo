@@ -1,6 +1,7 @@
 import { Box, Grid, TablePagination, Typography } from "@mui/material";
 
 import { CopyAddress } from "@dexkit/ui/components/CopyAddress";
+import { useWeb3React } from "@dexkit/ui/hooks/thirdweb";
 import { useAppRankingQuery } from "@dexkit/ui/modules/wizard/hooks/ranking";
 import { RankingPageSection } from "@dexkit/ui/modules/wizard/types/section";
 import LeaderboardIcon from "@mui/icons-material/Leaderboard";
@@ -12,7 +13,6 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import TableSortLabel from "@mui/material/TableSortLabel";
 import { visuallyHidden } from "@mui/utils";
-import { useWeb3React } from "@web3-react/core";
 import { useState } from "react";
 import { FormattedMessage } from "react-intl";
 export interface RankingSectionProps {

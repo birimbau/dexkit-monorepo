@@ -19,11 +19,11 @@ import {
   Typography,
 } from "@mui/material";
 
+import { useWeb3React } from "@dexkit/ui/hooks/thirdweb";
 import AttachMoney from "@mui/icons-material/AttachMoney";
 import Language from "@mui/icons-material/Language";
 import MenuIcon from "@mui/icons-material/Menu";
 import MenuOpenIcon from "@mui/icons-material/MenuOpen";
-import { useWeb3React } from "@web3-react/core";
 import { FormattedMessage } from "react-intl";
 
 import DrawerMenu from "./DrawerMenu";

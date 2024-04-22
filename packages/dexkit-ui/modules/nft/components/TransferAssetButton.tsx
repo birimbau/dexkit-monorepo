@@ -1,16 +1,16 @@
-import { Asset } from '@dexkit/core/types';
-import Send from '@mui/icons-material/Send';
-import Button from '@mui/material/Button';
-import { useWeb3React } from '@web3-react/core';
-import dynamic from 'next/dynamic';
+import { Asset } from "@dexkit/core/types";
+import { useWeb3React } from "@dexkit/ui/hooks/thirdweb";
+import Send from "@mui/icons-material/Send";
+import Button from "@mui/material/Button";
+import dynamic from "next/dynamic";
 
-import { useState } from 'react';
-import { FormattedMessage } from 'react-intl';
+import { useState } from "react";
+import { FormattedMessage } from "react-intl";
 
 const EvmTransferNftDialog = dynamic(
   () =>
     import(
-      '@dexkit/ui/modules/evm-transfer-nft/components/dialogs/EvmTransferNftDialog'
+      "@dexkit/ui/modules/evm-transfer-nft/components/dialogs/EvmTransferNftDialog"
     )
 );
 

@@ -1,8 +1,8 @@
 import { useEvmNativeBalanceQuery } from "@dexkit/core";
 
 import { formatBigNumber } from "@dexkit/core/utils";
+import { useWeb3React } from "@dexkit/ui/hooks/thirdweb";
 import { Typography } from "@mui/material";
-import { useWeb3React } from "@web3-react/core";
 import { useMemo } from "react";
 
 import { NETWORK_COIN_SYMBOL } from "@dexkit/core/constants/networks";

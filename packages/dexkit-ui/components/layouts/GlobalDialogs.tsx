@@ -1,10 +1,6 @@
-import { useEffect } from "react";
-
-import { useWeb3React } from "@web3-react/core";
 import { useRouter } from "next/router";
 
 import {
-  useConnectWalletDialog,
   useHoldsKitDialog,
   useShowSelectCurrency,
   useShowSelectLocale,
@@ -13,7 +9,6 @@ import {
 } from "@dexkit/ui/hooks";
 import dynamic from "next/dynamic";
 
-import { selectedWalletAtom } from "@dexkit/ui/state";
 const SignMessageDialog = dynamic(
   () => import("@dexkit/ui/components/dialogs/SignMessageDialog")
 );
@@ -22,12 +17,7 @@ const SwitchNetworkDialog = dynamic(
 );
 
 import { useDexKitContext, useExecuteTransactionsDialog } from "@dexkit/ui";
-import { useWalletActivate } from "@dexkit/wallet-connectors/hooks/wallet";
-import { WalletActivateParams } from "@dexkit/wallet-connectors/types";
 
-const ConnectWalletDialog = dynamic(
-  () => import("@dexkit/ui/components/ConnectWallet/ConnectWalletDialog")
-);
 const WatchTransactionDialog = dynamic(
   () => import("@dexkit/ui/components/dialogs/WatchTransactionDialog")
 );
@@ -47,45 +37,7 @@ const SelectLanguageDialog = dynamic(
 );
 
 export function GlobalDialogs() {
-  const { connector, isActive, isActivating } = useWeb3React();
   const router = useRouter();
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      // connector.activate();
-      const handleNetworkChange = (newNetwork: any, oldNetwork: any) => {
-        if (connector && connector.connectEagerly) {
-          connector.connectEagerly();
-        }
-
-        // When a Provider makes its initial connection, it emits a "network"
-        // event with a null oldNetwork along with the newNetwork. So, if the
-        // oldNetwork exists, it represents a changing network
-        //window.location.reload();
-      };
-
-      if (connector?.provider?.on) {
-        connector?.provider?.on("chainChanged", handleNetworkChange);
-      }
-
-      return () => {
-        if (connector?.provider?.removeListener) {
-          connector?.provider?.removeListener(
-            "chainChanged",
-            handleNetworkChange
-          );
-        }
-      };
-    }
-  }, [connector, connector?.provider]);
-
-  useEffect(() => {
-    if (typeof window !== "undefined" && connector) {
-      if (connector.connectEagerly) {
-        connector.connectEagerly();
-      }
-    }
-  }, [connector]);
 
   const { watchTransactionDialog } = useDexKitContext();
 
@@ -96,12 +48,6 @@ export function GlobalDialogs() {
   const showSelectCurrency = useShowSelectCurrency();
 
   const showSelectLocale = useShowSelectLocale();
-
-  const connectWalletDialog = useConnectWalletDialog();
-
-  const handleCloseConnectWalletDialog = () => {
-    connectWalletDialog.setOpen(false);
-  };
 
   const handleCloseTransactionDialog = () => {
     if (watchTransactionDialog.redirectUrl) {
@@ -138,17 +84,6 @@ export function GlobalDialogs() {
   };
 
   const txDialog = useExecuteTransactionsDialog();
-  const walletActivate = useWalletActivate({
-    magicRedirectUrl:
-      typeof window !== "undefined"
-        ? window.location.href
-        : process.env.NEXT_PUBLIC_MAGIC_REDIRECT_URL || "",
-    selectedWalletAtom,
-  });
-
-  const handleActivateWallet = async (params: WalletActivateParams) => {
-    await walletActivate.mutation.mutateAsync(params);
-  };
 
   return (
     <>
@@ -221,20 +156,7 @@ export function GlobalDialogs() {
           chainId={switchNetwork.networkChainId}
         />
       )}
-      {connectWalletDialog.isOpen && (
-        <ConnectWalletDialog
-          DialogProps={{
-            open: connectWalletDialog.isOpen || isActivating,
-            onClose: handleCloseConnectWalletDialog,
-            fullWidth: true,
-            maxWidth: "sm",
-          }}
-          isActive={isActive}
-          isActivating={walletActivate.mutation.isLoading || isActivating}
-          activeConnectorName={walletActivate.connectorName}
-          activate={handleActivateWallet}
-        />
-      )}
+
       {txDialog.show && (
         <AppTransactionWatchDialog
           DialogProps={{

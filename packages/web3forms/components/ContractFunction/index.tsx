@@ -29,8 +29,8 @@ import { getSchemaForInputs } from "../../utils";
 
 import { ChainId } from "@dexkit/core/constants";
 import { getBlockExplorerUrl } from "@dexkit/core/utils";
+import { useWeb3React } from "@dexkit/ui/hooks/thirdweb";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { useWeb3React } from "@web3-react/core";
 import { BigNumber } from "ethers";
 
 import { arrayify } from "@dexkit/core/utils/ethers/arrayify";

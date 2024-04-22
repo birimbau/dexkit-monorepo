@@ -10,6 +10,8 @@ import {
   useLogoutAccountMutation,
 } from "@dexkit/ui";
 import CopyIconButton from "@dexkit/ui/components/CopyIconButton";
+import { useWeb3React } from "@dexkit/ui/hooks/thirdweb";
+import VerticalAlignBottomIcon from "@mui/icons-material/VerticalAlignBottom";
 import {
   Avatar,
   Box,
@@ -21,19 +23,17 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { useWeb3React } from "@web3-react/core";
+import dynamic from "next/dynamic";
 import { useCallback, useMemo, useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
-
-import VerticalAlignBottomIcon from "@mui/icons-material/VerticalAlignBottom";
-import dynamic from "next/dynamic";
+import { useDisconnect } from "thirdweb/react";
 
 import { NETWORK_IMAGE, NETWORK_NAME } from "@dexkit/core/constants/networks";
 
 import { AccountBalance } from "@dexkit/ui/components/AccountBalance";
 import TransakWidget from "@dexkit/ui/components/Transak";
 import { GET_WALLET_ICON } from "@dexkit/wallet-connectors/connectors";
-import { useWalletConnectorMetadata } from "@dexkit/wallet-connectors/hooks";
+
 import FileCopy from "@mui/icons-material/FileCopy";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import Logout from "@mui/icons-material/Logout";
@@ -59,9 +59,10 @@ const SelectNetworkDialog = dynamic(
 );
 
 export default function WalletContent() {
-  const { connector, account, ENSName, provider, chainId } = useWeb3React();
+  const { account, ENSName, provider, chainId, wallet } = useWeb3React();
+  const { disconnect } = useDisconnect();
   const logoutMutation = useLogoutAccountMutation();
-  const { walletConnectorMetadata } = useWalletConnectorMetadata();
+
   const connectWalletDialog = useConnectWalletDialog();
   const handleSwitchWallet = () => {
     connectWalletDialog.setOpen(true);
@@ -69,14 +70,10 @@ export default function WalletContent() {
 
   const handleLogoutWallet = useCallback(() => {
     logoutMutation.mutate();
-    if (connector?.deactivate) {
-      connector.deactivate();
-    } else {
-      if (connector?.resetState) {
-        connector?.resetState();
-      }
+    if (wallet) {
+      disconnect(wallet);
     }
-  }, [connector]);
+  }, [wallet]);
 
   const { data: balance } = useEvmNativeBalanceQuery({ provider, account });
 
@@ -189,7 +186,7 @@ export default function WalletContent() {
           >
             <Stack direction="row" spacing={1} alignItems="center">
               <Avatar
-                src={walletConnectorMetadata.icon || GET_WALLET_ICON(connector)}
+                src={GET_WALLET_ICON(wallet?.id)}
                 sx={(theme) => ({
                   width: theme.spacing(2),
                   height: theme.spacing(2),

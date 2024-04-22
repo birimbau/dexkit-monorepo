@@ -1,6 +1,6 @@
 import { ChainId } from "@dexkit/core/constants";
+import { useWeb3React } from "@dexkit/ui/hooks/thirdweb";
 import { IconButton, Stack } from "@mui/material";
-import { useWeb3React } from "@web3-react/core";
 import { useMemo } from "react";
 
 import { useTokenList } from "../../../hooks/blockchain";

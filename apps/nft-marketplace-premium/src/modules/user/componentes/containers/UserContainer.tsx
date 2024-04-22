@@ -1,4 +1,5 @@
 import { PageHeader } from '@dexkit/ui/components/PageHeader';
+import { useWeb3React } from '@dexkit/ui/hooks/thirdweb';
 import Edit from '@mui/icons-material/Edit';
 import {
   Button,
@@ -15,7 +16,6 @@ import {
   useTheme,
 } from '@mui/material';
 import { QueryErrorResetBoundary } from '@tanstack/react-query';
-import { useWeb3React } from '@web3-react/core';
 import { useRouter } from 'next/router';
 import { Suspense, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';

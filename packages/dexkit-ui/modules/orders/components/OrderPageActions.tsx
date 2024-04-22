@@ -10,9 +10,9 @@ import {
 } from "@mui/material";
 import { FormattedMessage } from "react-intl";
 
+import { useWeb3React } from "@dexkit/ui/hooks/thirdweb";
 import { Share } from "@mui/icons-material";
 import LaunchIcon from "@mui/icons-material/Launch";
-import { useWeb3React } from "@web3-react/core";
 import { useState } from "react";
 import Link from "../../../components/AppLink";
 import Heart from "../../../components/icons/Heart";
@@ -71,9 +71,9 @@ export function OrderPageActions({ address, id, nonce }: Props) {
                 <FormattedMessage id="owned.by" defaultMessage="Owned by" />
               </Typography>
               <Link
-                href={`${NETWORK_EXPLORER(asset?.chainId)}/address/${
-                  asset?.owner
-                }`}
+                href={`${NETWORK_EXPLORER(
+                  asset?.chainId
+                )}/address/${asset?.owner}`}
                 color="primary"
                 target="_blank"
               >

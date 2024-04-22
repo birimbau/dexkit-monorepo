@@ -1,5 +1,5 @@
 import { useSwitchNetworkMutation } from "@dexkit/ui/hooks";
-import { useWeb3React } from "@web3-react/core";
+import { useWeb3React } from "@dexkit/ui/hooks/thirdweb";
 import WidgetLayout from "../../components/WidgetLayout";
 import { useConnectWalletDialog } from "../../hooks";
 import EvmTransferCoin from "./components/EvmTransferCoin";

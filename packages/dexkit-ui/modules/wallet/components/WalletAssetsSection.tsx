@@ -1,4 +1,5 @@
 import { ChainId } from "@dexkit/core/constants";
+import { useWeb3React } from "@dexkit/ui/hooks/thirdweb";
 import { Search } from "@mui/icons-material";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import {
@@ -13,7 +14,6 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import { useWeb3React } from "@web3-react/core";
 import dynamic from "next/dynamic";
 import { ChangeEvent, useMemo, useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";

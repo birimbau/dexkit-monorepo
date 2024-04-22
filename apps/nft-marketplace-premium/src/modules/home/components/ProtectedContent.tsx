@@ -2,11 +2,11 @@ import { GatedConditionView } from '@/modules/wizard/components/GatedConditionVi
 import { SectionsRenderer } from '@/modules/wizard/components/sections/SectionsRenderer';
 import { useCheckGatedConditions } from '@/modules/wizard/hooks';
 import { useAuth } from '@dexkit/ui/hooks/auth';
+import { useWeb3React } from '@dexkit/ui/hooks/thirdweb';
 import {
   GatedCondition,
   GatedPageLayout,
 } from '@dexkit/ui/modules/wizard/types';
-import { useWeb3React } from '@web3-react/core';
 
 import { useProtectedAppConfig } from 'src/hooks/app';
 

@@ -2,23 +2,14 @@ import { NETWORKS } from "@dexkit/core/constants/networks";
 import { Token } from "@dexkit/core/types";
 import { formatUnits } from "@dexkit/core/utils/ethers/formatUnits";
 import { isAddress } from "@dexkit/core/utils/ethers/isAddress";
-import { MagicConnector } from "@dexkit/wallet-connectors/connectors/magic";
 
-import { MetaMask } from "@web3-react/metamask";
-import { Connector } from "@web3-react/types";
+
+
 import { BigNumber } from "ethers";
 
-// import { MagicConnector } from "../connectors/magic";
 
-export function getConnectorName(connector?: Connector) {
-  // if (connector instanceof MagicConnector) {
-  //   return "magic";
-  // } else
 
-  if (connector instanceof MetaMask) {
-    return "metamask";
-  }
-}
+
 
 export function isAddressEqual(address?: string, other?: string) {
   if (address === undefined || other === undefined) {
@@ -70,16 +61,7 @@ export function parseChainId(chainId: string | number) {
     : Number.parseInt(chainId, chainId.startsWith("0x") ? 16 : 10);
 }
 
-export async function switchNetwork(connector: Connector, chainId: number) {
-  if (connector instanceof MetaMask) {
-    return connector.provider?.request({
-      method: "wallet_switchEthereumChain",
-      params: [{ chainId: `0x${chainId.toString(16)}` }],
-    });
-  } else if (connector instanceof MagicConnector) {
-    connector.changeNetwork(chainId);
-  }
-}
+
 
 export function tokenKey(token: Token) {
   return `${token.chainId}-${token.address.toLowerCase()}`;

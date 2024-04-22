@@ -1,6 +1,7 @@
 import { getNativeCurrencySymbol } from '@dexkit/core/utils/blockchain';
 import { formatEther } from '@dexkit/core/utils/ethers/formatEther';
 import { formatUnits } from '@dexkit/core/utils/ethers/formatUnits';
+import { useWeb3React } from '@dexkit/ui/hooks/thirdweb';
 import {
   Alert,
   Button,
@@ -13,7 +14,6 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
-import { useWeb3React } from '@web3-react/core';
 import { BigNumber } from 'ethers';
 import { memo } from 'react';
 import { FormattedMessage, FormattedNumber } from 'react-intl';

@@ -1,6 +1,7 @@
-import { getNormalizedUrl } from '@dexkit/core/utils';
-import { AppDialogTitle } from '@dexkit/ui';
-import { useAsyncMemo } from '@dexkit/widgets/src/hooks';
+import { getNormalizedUrl } from "@dexkit/core/utils";
+import { AppDialogTitle } from "@dexkit/ui";
+import { useWeb3React } from "@dexkit/ui/hooks/thirdweb";
+import { useAsyncMemo } from "@dexkit/widgets/src/hooks";
 import {
   Box,
   Button,
@@ -18,13 +19,12 @@ import {
   Skeleton,
   Stack,
   Typography,
-} from '@mui/material';
-import { useMutation } from '@tanstack/react-query';
-import { NFT, useContract, useContractRead } from '@thirdweb-dev/react';
-import { useWeb3React } from '@web3-react/core';
-import { BigNumber } from 'ethers';
-import { useState } from 'react';
-import { FormattedMessage } from 'react-intl';
+} from "@mui/material";
+import { useMutation } from "@tanstack/react-query";
+import { NFT, useContract, useContractRead } from "@thirdweb-dev/react";
+import { BigNumber } from "ethers";
+import { useState } from "react";
+import { FormattedMessage } from "react-intl";
 
 export interface SelectNFTEditionClaimDialogProps {
   DialogProps: DialogProps;
@@ -40,20 +40,20 @@ export default function SelectNFTEditionClaimDialog({
   stakingContractAddress,
 }: SelectNFTEditionClaimDialogProps) {
   const { onClose } = DialogProps;
-  const { data: stakingNFTContract } = useContract(address, 'edition');
+  const { data: stakingNFTContract } = useContract(address, "edition");
 
   const { account } = useWeb3React();
 
   const { data: stakingContract } = useContract(
     stakingContractAddress,
-    'custom',
+    "custom"
   );
 
   const {
     data: infoNfts,
     refetch,
     isLoading,
-  } = useContractRead(stakingContract, 'getStakeInfo', [account]);
+  } = useContractRead(stakingContract, "getStakeInfo", [account]);
 
   const nfts = useAsyncMemo(
     async () => {
@@ -76,7 +76,7 @@ export default function SelectNFTEditionClaimDialog({
       }
     },
     [],
-    [infoNfts, stakingNFTContract],
+    [infoNfts, stakingNFTContract]
   );
 
   const [tokenId, setTokenId] = useState<string>();
@@ -89,7 +89,7 @@ export default function SelectNFTEditionClaimDialog({
     async ({ tokenId }: { tokenId: string }) => {
       await onClaim(tokenId);
       await refetch();
-    },
+    }
   );
 
   const handleConfirm = async () => {
@@ -101,7 +101,7 @@ export default function SelectNFTEditionClaimDialog({
 
   const handleClose = () => {
     if (onClose) {
-      onClose({}, 'backdropClick');
+      onClose({}, "backdropClick");
     }
     setTokenId(undefined);
   };
@@ -125,7 +125,7 @@ export default function SelectNFTEditionClaimDialog({
       return 0;
     },
     0,
-    [tokenId, infoNfts],
+    [tokenId, infoNfts]
   );
 
   const renderCard = (nft: NFT) => {
@@ -142,12 +142,12 @@ export default function SelectNFTEditionClaimDialog({
           {nft.metadata.image ? (
             <CardMedia
               image={getNormalizedUrl(nft.metadata.image)}
-              sx={{ aspectRatio: '1/1', height: '100%' }}
+              sx={{ aspectRatio: "1/1", height: "100%" }}
             />
           ) : (
             <Skeleton
               variant="rectangular"
-              sx={{ aspectRatio: '16/9', height: '100%' }}
+              sx={{ aspectRatio: "16/9", height: "100%" }}
             />
           )}
           <Divider />

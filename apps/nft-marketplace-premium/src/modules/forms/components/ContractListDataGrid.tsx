@@ -5,6 +5,7 @@ import {
 } from '@dexkit/core/constants/networks';
 import { truncateAddress } from '@dexkit/core/utils';
 import Link from '@dexkit/ui/components/AppLink';
+import { useWeb3React } from '@dexkit/ui/hooks/thirdweb';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
@@ -15,7 +16,6 @@ import {
   GridSortModel,
   GridToolbar,
 } from '@mui/x-data-grid';
-import { useWeb3React } from '@web3-react/core';
 import { useCallback, useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { useListDeployedContracts } from '../hooks';

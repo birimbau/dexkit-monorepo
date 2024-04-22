@@ -1,9 +1,9 @@
 import { NETWORK_FROM_SLUG } from '@dexkit/core/constants/networks';
 import NFTGrid from '@dexkit/dexappbuilder-viewer/components/NFTGrid';
+import { useWeb3React } from '@dexkit/ui/hooks/thirdweb';
 import { EditionDropPageSection } from '@dexkit/ui/modules/wizard/types/section';
 import { Grid } from '@mui/material';
 import { ThirdwebSDKProvider, useContract, useNFTs } from '@thirdweb-dev/react';
-import { useWeb3React } from '@web3-react/core';
 import { Formik } from 'formik';
 import { THIRDWEB_CLIENT_ID } from 'src/constants';
 

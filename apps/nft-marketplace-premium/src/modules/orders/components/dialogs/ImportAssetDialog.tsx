@@ -3,6 +3,7 @@ import {
   isAddressEqual,
   truncateAddress,
 } from '@dexkit/core/utils/blockchain';
+import { useWeb3React } from '@dexkit/ui/hooks/thirdweb';
 import Launch from '@mui/icons-material/Launch';
 import {
   Alert,
@@ -24,7 +25,6 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { useWeb3React } from '@web3-react/core';
 import { FormikHelpers, useFormik } from 'formik';
 import Image from 'next/image';
 import { SyntheticEvent, useEffect, useMemo, useState } from 'react';

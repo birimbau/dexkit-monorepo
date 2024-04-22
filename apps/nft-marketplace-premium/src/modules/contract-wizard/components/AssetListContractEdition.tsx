@@ -1,4 +1,5 @@
 import { Asset } from '@dexkit/core/types/nft';
+import { useWeb3React } from '@dexkit/ui/hooks/thirdweb';
 import EvmBurnNftDialog from '@dexkit/ui/modules/evm-burn-nft/components/dialogs/EvmBurnNftDialog';
 import EvmTransferNftDialog from '@dexkit/ui/modules/evm-transfer-nft/components/dialogs/EvmTransferNftDialog';
 import { AssetMedia } from '@dexkit/ui/modules/nft/components/AssetMedia';
@@ -21,7 +22,6 @@ import {
   Typography,
 } from '@mui/material';
 import Tab from '@mui/material/Tab';
-import { useWeb3React } from '@web3-react/core';
 import { useRouter } from 'next/router';
 import { useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';

@@ -42,6 +42,7 @@ import {
   useSwitchNetworkMutation,
 } from '@dexkit/ui';
 import { PageHeader } from '@dexkit/ui/components/PageHeader';
+import { useWeb3React } from '@dexkit/ui/hooks/thirdweb';
 import useThirdwebContractMetadataQuery, {
   useDeployThirdWebContractMutation,
   useFormConfigParamsQuery,
@@ -49,7 +50,6 @@ import useThirdwebContractMetadataQuery, {
 import { dkGetTrustedForwarders } from '@dexkit/web3forms/utils';
 import CheckCircle from '@mui/icons-material/CheckCircle';
 import { QueryClient, dehydrate } from '@tanstack/react-query';
-import { useWeb3React } from '@web3-react/core';
 import {
   GetStaticPaths,
   GetStaticPathsContext,

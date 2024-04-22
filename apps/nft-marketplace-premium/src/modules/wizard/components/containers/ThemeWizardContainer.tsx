@@ -33,8 +33,8 @@ const ExchangeSection = dynamic(
 );
 
 import { ChainId } from '@dexkit/core';
+import { useWeb3React } from '@dexkit/ui/hooks/thirdweb';
 import { ExchangePageSection } from '@dexkit/ui/modules/wizard/types/section';
-import { useWeb3React } from '@web3-react/core';
 import appConfig from '../../../../../config/app.json';
 import ThemePreviewMenu from '../ThemePreviewMenu';
 interface Props {

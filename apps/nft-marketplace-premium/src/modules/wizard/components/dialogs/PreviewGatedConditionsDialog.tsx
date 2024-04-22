@@ -10,11 +10,11 @@ import {
   Typography,
 } from '@mui/material';
 
+import { useWeb3React } from '@dexkit/ui/hooks/thirdweb';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import { useWeb3React } from '@web3-react/core';
 import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { useCheckGatedConditions } from '../../hooks';

@@ -1,16 +1,14 @@
 import { IntlProvider, MessageFormatElement } from "react-intl";
 
-import { Web3ReactProvider } from "@web3-react/core";
 import { SnackbarProvider } from "notistack";
-import { useMemo } from "react";
-import { useDexkitContextState, useOrderedConnectors } from "../hooks";
+import { ThirdwebProvider } from "thirdweb/react";
+import { useDexkitContextState } from "../hooks";
 
 import { AppTransaction, Asset, TokenWhitelabelApp } from "@dexkit/core/types";
 
 import { CssBaseline } from "@mui/material";
 import { PrimitiveAtom, SetStateAction, WritableAtom } from "jotai";
 
-import { GET_CONNECTOR_NAME } from "@dexkit/wallet-connectors/connectors";
 import {
   Experimental_CssVarsProvider as CssVarsProvider,
   SupportedColorScheme,
@@ -18,7 +16,6 @@ import {
 import React from "react";
 import { DexKitContext } from "../context/DexKitContext";
 import { AppNotification, AppNotificationType } from "../types";
-import { MagicStateProvider } from "./MagicStateProvider";
 import TransactionUpdater from "./TransactionUpdater";
 export interface DexkitProviderProps {
   theme: {
@@ -76,14 +73,6 @@ export function DexkitProvider({
   activeChainIds,
   siteId,
 }: DexkitProviderProps) {
-  const connectors = useOrderedConnectors({ selectedWalletAtom });
-
-  const web3ReactKey = useMemo(
-    () =>
-      connectors.map((connector) => GET_CONNECTOR_NAME(connector[0])).join("-"),
-    [connectors]
-  );
-
   const appState = useDexkitContextState({
     notificationTypes,
     notificationsAtom,
@@ -105,24 +94,24 @@ export function DexkitProvider({
         activeChainIds: activeChainIds ? activeChainIds : [1],
       }}
     >
-      <IntlProvider
-        locale={locale}
-        defaultLocale={locale}
-        messages={localeMessages}
-      >
-        <Web3ReactProvider connectors={connectors} key={web3ReactKey}>
+      <ThirdwebProvider>
+        <IntlProvider
+          locale={locale}
+          defaultLocale={locale}
+          messages={localeMessages}
+        >
           <CssVarsProvider theme={theme}>
             <SnackbarProvider
               maxSnack={3}
               anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
             >
               <CssBaseline />
-              <MagicStateProvider currency="usd">{children}</MagicStateProvider>
+              {children}
               <TransactionUpdater pendingTransactionsAtom={transactionsAtom} />
             </SnackbarProvider>
           </CssVarsProvider>
-        </Web3ReactProvider>
-      </IntlProvider>
+        </IntlProvider>
+      </ThirdwebProvider>
     </DexKitContext.Provider>
   );
 }

@@ -1,3 +1,4 @@
+import { useWeb3React } from '@dexkit/ui/hooks/thirdweb';
 import { StoreHeader } from '@dexkit/ui/modules/nft/components/StoreHeader';
 import { StoreOrderbook } from '@dexkit/ui/modules/nft/components/StoreOrderbook';
 import { useAssetsOrderBook } from '@dexkit/ui/modules/nft/hooks';
@@ -12,7 +13,6 @@ import {
   TextField,
 } from '@mui/material';
 import Box from '@mui/material/Box';
-import { useWeb3React } from '@web3-react/core';
 import dynamic from 'next/dynamic';
 import { useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';

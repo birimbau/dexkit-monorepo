@@ -1,5 +1,5 @@
+import { useWeb3React } from "@dexkit/ui/hooks/thirdweb";
 import { Button, Grid, NoSsr, Paper, Stack, Typography } from "@mui/material";
-import { useWeb3React } from "@web3-react/core";
 import { Suspense, useCallback, useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { FormattedMessage } from "react-intl";

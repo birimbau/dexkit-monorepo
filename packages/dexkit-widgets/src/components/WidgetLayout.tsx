@@ -1,5 +1,5 @@
+import { useWeb3React } from "@dexkit/ui/hooks/thirdweb";
 import { Box } from "@mui/material";
-import { useWeb3React } from "@web3-react/core";
 import { useAtom } from "jotai";
 import dynamic from "next/dynamic";
 import React, { useEffect } from "react";

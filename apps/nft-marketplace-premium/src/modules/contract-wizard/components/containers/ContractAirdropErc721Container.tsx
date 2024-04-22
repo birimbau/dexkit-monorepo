@@ -1,5 +1,6 @@
 import { useDexKitContext } from '@dexkit/ui';
 import AppDataTableDialog from '@dexkit/ui/components/dialogs/AppDataTableDialog';
+import { useWeb3React } from '@dexkit/ui/hooks/thirdweb';
 import { useApproveForAll } from '@dexkit/ui/modules/contract-wizard/hooks/thirdweb';
 import {
   Box,
@@ -21,7 +22,6 @@ import {
   useContractRead,
   useNFTBalance,
 } from '@thirdweb-dev/react';
-import { useWeb3React } from '@web3-react/core';
 import { utils } from 'ethers';
 import { SyntheticEvent, useState } from 'react';
 import { FormattedMessage } from 'react-intl';

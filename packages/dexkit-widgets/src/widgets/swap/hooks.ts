@@ -14,7 +14,7 @@ import {
 
 import { Transak } from "@transak/transak-sdk";
 
-import { Connector } from "@web3-react/types";
+
 import { BigNumber, Contract, constants, providers } from "ethers";
 import { useSnackbar } from "notistack";
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
@@ -39,11 +39,14 @@ import { ZeroExQuote, ZeroExQuoteResponse } from "../../services/zeroex/types";
 
 import { UserEvents } from "@dexkit/core/constants/userEvents";
 import { Token } from "@dexkit/core/types";
-import { isAddressEqual, switchNetwork } from "../../utils";
+import { isAddressEqual } from "../../utils";
 import { ExecType, NotificationCallbackParams, SwapSide } from "./types";
 
 import { SiteContext } from "@dexkit/ui/providers/SiteProvider";
+import { defineChain } from "thirdweb/chains";
+import { useSwitchActiveWalletChain } from "thirdweb/react";
 import { SUPPORTED_SWAP_CHAIN_IDS } from "./constants/supportedChainIds";
+
 
 export function useErc20ApproveMutation({
   options,
@@ -319,7 +322,6 @@ export function useSwapState({
   provider,
   defaultSellToken,
   defaultBuyToken,
-  connector,
   connectorProvider,
   selectedChainId: chainId,
   connectedChainId,
@@ -364,7 +366,6 @@ export function useSwapState({
   enableBuyCryptoButton?: boolean;
   provider?: providers.BaseProvider;
   connectorProvider?: providers.Web3Provider;
-  connector?: Connector;
   isActive?: boolean;
   isActivating?: boolean;
   account?: string;
@@ -380,6 +381,8 @@ export function useSwapState({
   maxSlippage: number;
   isAutoSlippage: boolean;
 }) {
+  const switchChain = useSwitchActiveWalletChain();
+
   const transak = useMemo(() => {
     if (transakApiKey) {
       return new Transak({
@@ -764,8 +767,8 @@ export function useSwapState({
           },
         }
       );
-    } else if (execType === "switch" && connector && chainId) {
-      switchNetwork(connector, chainId);
+    } else if (execType === "switch" && chainId) {
+      switchChain(defineChain(chainId));
     }
   }, [
     quoteQuery.data,
@@ -773,7 +776,7 @@ export function useSwapState({
     lazySellAmount,
     sellToken,
     chainId,
-    connector,
+
     connectorProvider,
   ]);
 

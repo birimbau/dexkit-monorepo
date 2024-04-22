@@ -2,9 +2,9 @@ import { EvmCoin } from '@dexkit/core/types';
 import QrCodeReceiveViewer from '@dexkit/dexappbuilder-viewer/components/page-editor/plugins/QrCodeReceivePayment';
 import EvmReceiveForm from '@dexkit/ui/components/EvmReceiveForm';
 import { useEvmCoins } from '@dexkit/ui/hooks/blockchain';
+import { useWeb3React } from '@dexkit/ui/hooks/thirdweb';
 import { Container } from '@mui/material';
 import type { CellPlugin } from '@react-page/editor';
-import { useWeb3React } from '@web3-react/core';
 
 type Props = {
   receiver?: string | null;

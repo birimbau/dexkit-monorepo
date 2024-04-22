@@ -21,7 +21,7 @@ import { FormattedMessage } from "react-intl";
 
 import { NETWORKS } from "@dexkit/core/constants/networks";
 import { Network } from "@dexkit/core/types";
-import { useWeb3React } from "@web3-react/core";
+import { useWeb3React } from "@dexkit/ui/hooks/thirdweb";
 import { useActiveChainIds, useSwitchNetworkMutation } from "../../hooks";
 import { AppDialogTitle } from "../AppDialogTitle";
 

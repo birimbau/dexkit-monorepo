@@ -1,5 +1,5 @@
+import { useWeb3React } from "@dexkit/ui/hooks/thirdweb";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useWeb3React } from "@web3-react/core";
 import jwt_decode from 'jwt-decode';
 import { useContext } from "react";
 import { useDexKitContext, useSignMessageDialog } from ".";

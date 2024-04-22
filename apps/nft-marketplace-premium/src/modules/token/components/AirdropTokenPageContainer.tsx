@@ -11,7 +11,7 @@ import {
   useContractType,
 } from '@thirdweb-dev/react';
 
-import { useWeb3React } from '@web3-react/core';
+import { useWeb3React } from '@dexkit/ui/hooks/thirdweb';
 import { NextSeo } from 'next-seo';
 
 import { FormattedMessage, useIntl } from 'react-intl';

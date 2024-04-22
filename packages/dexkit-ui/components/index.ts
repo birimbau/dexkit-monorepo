@@ -4,7 +4,6 @@ import EvmReceiveForm from './EvmReceiveForm';
 import EvmReceiveQRCode from './EvmReceiveQRCode';
 import LazyYoutubeFrame from "./LazyYoutubeFrame";
 export * from "./AppDialogTitle";
-export * from "./ConnectWallet/ConnectWalletDialog";
 export * from "./CopyIconButton";
 export * from "./DexkitProvider";
 export * from "./EvmReceive";

@@ -1,7 +1,7 @@
 import { MagicTxConfirmDialog } from "./dialogs/MagicTxConfirmDialog";
 
-import { useWeb3React } from "@web3-react/core";
-import { ReactNode, useCallback, useEffect, useState } from "react";
+import { useWeb3React } from "@dexkit/ui/hooks/thirdweb";
+import { ReactNode, useCallback, useState } from "react";
 
 import MagicSignDataDialog from "../components/dialogs/MagicSignDataDialog";
 
@@ -14,9 +14,9 @@ interface Props {
 }
 
 export function MagicStateProvider(props: Props) {
-  const { connector, chainId } = useWeb3React();
+  const { chainId } = useWeb3React();
 
-  const magicConnector: MagicConnector = connector as any;
+  const magicConnector: MagicConnector = {} as any;
 
   const { children, currency } = props;
   const [showTransactionModal, setShowTransactionModal] = useState(false);
@@ -80,14 +80,14 @@ export function MagicStateProvider(props: Props) {
     setShowSignDataDialog(false);
   }, [magicConnector]);
 
-  useEffect(() => {
+  /* useEffect(() => {
     if (chainId && connector instanceof MagicConnector) {
       resetEvents();
       return () => {
         magicConnector.providerWrapper?.eventEmitter.removeAllListeners();
       };
     }
-  }, [chainId, magicConnector]);
+  }, [chainId, magicConnector]);*/
 
   return (
     <MagicStateContext.Provider

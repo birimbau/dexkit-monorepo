@@ -1,6 +1,7 @@
 import { useActiveChainIds } from '@dexkit/ui';
 import { PageHeader } from '@dexkit/ui/components/PageHeader';
 import SidebarFilters from '@dexkit/ui/components/SidebarFilters';
+import { useWeb3React } from '@dexkit/ui/hooks/thirdweb';
 import {
   Box,
   Button,
@@ -17,7 +18,6 @@ import {
   useTheme,
 } from '@mui/material';
 import { QueryErrorResetBoundary } from '@tanstack/react-query';
-import { useWeb3React } from '@web3-react/core';
 import type { GetStaticProps, GetStaticPropsContext, NextPage } from 'next';
 import { Suspense, useEffect, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';

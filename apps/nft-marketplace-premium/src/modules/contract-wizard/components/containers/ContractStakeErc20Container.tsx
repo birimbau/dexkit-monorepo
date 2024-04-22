@@ -3,6 +3,7 @@ import { formatUnits } from '@dexkit/core/utils/ethers/formatUnits';
 import { parseUnits } from '@dexkit/core/utils/ethers/parseUnits';
 import { useDexKitContext } from '@dexkit/ui';
 import FormikDecimalInput from '@dexkit/ui/components/FormikDecimalInput';
+import { useWeb3React } from '@dexkit/ui/hooks/thirdweb';
 import {
   useDepositRewardTokensMutation,
   useSetDefaultTimeUnit,
@@ -33,7 +34,6 @@ import {
   useContractWrite,
   useTokenBalance,
 } from '@thirdweb-dev/react';
-import { useWeb3React } from '@web3-react/core';
 import { BigNumber } from 'ethers';
 import { Field, Formik } from 'formik';
 import { Switch, TextField } from 'formik-mui';

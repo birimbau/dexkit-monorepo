@@ -8,11 +8,11 @@ import { useTokenList } from "@dexkit/ui/hooks";
 
 import { convertTokenToEvmCoin } from "@dexkit/core/utils";
 import TransakWidget from "@dexkit/ui/components/Transak";
+import { useWeb3React } from "@dexkit/ui/hooks/thirdweb";
 import { useTokenBalance } from "@dexkit/widgets/src/hooks";
 import Send from "@mui/icons-material/Send";
 import VerticalAlignBottomIcon from "@mui/icons-material/VerticalAlignBottom";
 import { Avatar, Box, Button, Grid, Stack, Typography } from "@mui/material";
-import { useWeb3React } from "@web3-react/core";
 import dynamic from "next/dynamic";
 import { useMemo, useState } from "react";
 import { FormattedMessage } from "react-intl";
