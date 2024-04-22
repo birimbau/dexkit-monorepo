@@ -58,6 +58,7 @@ import { z } from 'zod';
 import { toFormikValidationSchema } from 'zod-formik-adapter';
 import useColumns from '../../hooks/useColumns';
 import CountEventsCard from './CountEventsCard';
+import CountFeesCard from './CountFeesCard';
 import UserEventsTable from './UserEventsTable';
 import EventDetailDialog from './dialogs/EventDetailDialog';
 
@@ -460,17 +461,22 @@ export default function UserEventAnalyticsContainer({ siteId }: Props) {
                 <Grid container spacing={2}>
                   <Grid item xs={12}>
                     <Grid container spacing={2}>
-                      {filters.type === '' && (
-                        <>
-                          <Grid item xs={12} sm={3}>
-                            <DexkitApiProvider.Provider
-                              value={{ instance: myAppsApi }}
-                            >
+                      <DexkitApiProvider.Provider
+                        value={{ instance: myAppsApi }}
+                      >
+                        {filters.type === '' && (
+                          <>
+                            <Grid item xs={12} sm={3}>
                               <CountEventsCard filters={filters} />
-                            </DexkitApiProvider.Provider>
+                            </Grid>
+                          </>
+                        )}
+                        {filters.type === UserOnChainEvents.swap && (
+                          <Grid item xs={12} sm={4}>
+                            <CountFeesCard filters={filters} />
                           </Grid>
-                        </>
-                      )}
+                        )}
+                      </DexkitApiProvider.Provider>
                       <Grid item xs={12}>
                         <Box>
                           <Formik

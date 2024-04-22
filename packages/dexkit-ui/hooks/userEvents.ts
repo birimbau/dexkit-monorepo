@@ -166,3 +166,38 @@ export function useCountUserEvents({ filters }: { filters: CountFilter }) {
     );
   });
 }
+
+type TokenInfo = {
+  tokenName: string;
+  symbol: string;
+  amount: string;
+  decimals: number;
+};
+
+type TokenFeesResult = {
+  [tokenAddress: string]: TokenInfo;
+};
+
+const SWAP_FEES_BY_TOKEN_QUERY = "SWAP_FEES_BY_TOKEN_QUERY";
+
+export function useSwapFeesByToken({ filters }: { filters: CountFilter }) {
+  const { instance } = useContext(DexkitApiProvider);
+
+  return useQuery([SWAP_FEES_BY_TOKEN_QUERY, filters], async () => {
+    if (!filters.siteId) {
+      return {};
+    }
+
+    if (!instance) {
+      throw new Error("no http client");
+    }
+
+    return (
+      (
+        await instance?.get<TokenFeesResult>("/user-events/fees-by-token", {
+          params: filters,
+        })
+      ).data || {}
+    );
+  });
+}
