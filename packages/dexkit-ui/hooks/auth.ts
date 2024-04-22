@@ -2,6 +2,7 @@ import { useWeb3React } from "@dexkit/ui/hooks/thirdweb";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import jwt_decode from 'jwt-decode';
 import { useContext } from "react";
+import { useActiveAccount } from "thirdweb/react";
 import { useDexKitContext, useSignMessageDialog } from ".";
 import { AuthContext } from "../context/AuthContext";
 import { getUserByAccount } from "../modules/user/services";
@@ -53,7 +54,9 @@ export function useAuthUserQuery() {
 }
 
 export function useLoginAccountMutation() {
-  const { account, provider } = useWeb3React();
+  const { provider } = useWeb3React();
+  const account = useActiveAccount();
+
   const signMessageDialog = useSignMessageDialog();
   const { siteId, affiliateReferral } = useDexKitContext();
 
@@ -64,11 +67,11 @@ export function useLoginAccountMutation() {
       return;
     }
     signMessageDialog.setOpen(true)
-    const messageToSign = await requestSignature({ address: account });
+    const messageToSign = await requestSignature({ address: account.address });
 
-    const signature = await provider.getSigner().signMessage(messageToSign.data);
+    const signature = await account.signMessage({ message: messageToSign.data });
 
-    const loginResponse = await loginApp({ signature, address: account, siteId, referral: affiliateReferral });
+    const loginResponse = await loginApp({ signature, address: account.address, siteId, referral: affiliateReferral });
     if (setIsLoggedIn) {
       setIsLoggedIn(true);
     }
