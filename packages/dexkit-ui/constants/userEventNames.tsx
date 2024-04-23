@@ -32,4 +32,12 @@ export const USER_EVENT_NAMES: Record<
     id: "contract.deployment",
     defaultMessage: "Contract deployment",
   },
+  [UserOnChainEvents.nftAcceptListERC721]: {
+    defaultMessage: "Accept NFT List ERC721",
+    id: "accept.nft.list.erc721",
+  },
+  [UserOnChainEvents.nftAcceptOfferERC1155]: {
+    defaultMessage: "Accept NFT Offer ERC1155",
+    id: "accept.nft.offer.erc1155",
+  },
 };

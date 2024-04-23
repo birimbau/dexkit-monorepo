@@ -1,18 +1,18 @@
 import {
   NETWORK_EXPLORER,
   NETWORK_NAME,
-} from "@dexkit/core/constants/networks";
-import { UserOnChainEvents } from "@dexkit/core/constants/userEvents";
+} from '@dexkit/core/constants/networks';
+import { UserOnChainEvents } from '@dexkit/core/constants/userEvents';
 import {
   formatStringNumber,
   truncateAddress,
   truncateHash,
-} from "@dexkit/core/utils";
-import { Link, Typography } from "@mui/material";
-import { GridColDef } from "@mui/x-data-grid";
+} from '@dexkit/core/utils';
+import { Link, Typography } from '@mui/material';
+import { GridColDef } from '@mui/x-data-grid';
 
-import { useMemo } from "react";
-import { FormattedMessage, useIntl } from "react-intl";
+import { useMemo } from 'react';
+import { FormattedMessage, useIntl } from 'react-intl';
 
 export default function useColumns(type?: string) {
   const { formatMessage } = useIntl();
@@ -23,9 +23,9 @@ export default function useColumns(type?: string) {
         <FormattedMessage id="account" defaultMessage="Account" />
       ),
       minWidth: 200,
-      headerName: formatMessage({ id: "from", defaultMessage: "From" }),
+      headerName: formatMessage({ id: 'from', defaultMessage: 'From' }),
       flex: 1,
-      field: "from",
+      field: 'from',
       renderCell: (params: any) => {
         return (
           <Link
@@ -41,8 +41,8 @@ export default function useColumns(type?: string) {
     };
 
     const chainIdColumn: GridColDef = {
-      field: "chainId",
-      headerName: formatMessage({ id: "network", defaultMessage: "Network" }),
+      field: 'chainId',
+      headerName: formatMessage({ id: 'network', defaultMessage: 'Network' }),
       renderHeader: () => (
         <FormattedMessage id="network" defaultMessage="Network" />
       ),
@@ -53,9 +53,9 @@ export default function useColumns(type?: string) {
     };
 
     const hashColunn: GridColDef = {
-      field: "hash",
+      field: 'hash',
       disableReorder: true,
-      headerName: "TX",
+      headerName: 'TX',
       minWidth: 200,
       renderCell: (params: any) =>
         params.row.hash ? (
@@ -71,8 +71,8 @@ export default function useColumns(type?: string) {
     };
 
     const referralColumn: GridColDef = {
-      field: "referral",
-      headerName: formatMessage({ id: "referral", defaultMessage: "Referral" }),
+      field: 'referral',
+      headerName: formatMessage({ id: 'referral', defaultMessage: 'Referral' }),
       minWidth: 200,
       renderCell: (params: any) => {
         return (
@@ -89,10 +89,10 @@ export default function useColumns(type?: string) {
     };
 
     const createdAtColumn: GridColDef = {
-      field: "createdAt",
+      field: 'createdAt',
       headerName: formatMessage({
-        id: "created.at",
-        defaultMessage: "Created At",
+        id: 'created.at',
+        defaultMessage: 'Created At',
       }),
       minWidth: 200,
       valueGetter: ({ row }) => {
@@ -111,11 +111,11 @@ export default function useColumns(type?: string) {
       [UserOnChainEvents.nftAcceptListERC1155]: [
         ...commonColumns,
         {
-          field: "paidAmount",
+          field: 'paidAmount',
           sortable: false,
           headerName: formatMessage({
-            id: "token.amount",
-            defaultMessage: "Token amount",
+            id: 'token.amount',
+            defaultMessage: 'Token amount',
           }),
           renderHeader: () => (
             <FormattedMessage id="token.amount" defaultMessage="Token Amount" />
@@ -132,11 +132,11 @@ export default function useColumns(type?: string) {
           },
         },
         {
-          field: "paidAmount",
+          field: 'paidAmount',
 
           headerName: formatMessage({
-            id: "paid.amount",
-            defaultMessage: "Paid amount",
+            id: 'paid.amount',
+            defaultMessage: 'Paid amount',
           }),
           sortable: false,
           renderHeader: () => (
@@ -150,7 +150,7 @@ export default function useColumns(type?: string) {
               return (
                 <Link
                   href={`${NETWORK_EXPLORER(
-                    params.row.chainId
+                    params.row.chainId,
                   )}/address/${collection?.address}`}
                   target="_blank"
                 >
@@ -161,11 +161,11 @@ export default function useColumns(type?: string) {
           },
         },
         {
-          field: "tokenId",
+          field: 'tokenId',
 
           headerName: formatMessage({
-            id: "token.id",
-            defaultMessage: "Token ID",
+            id: 'token.id',
+            defaultMessage: 'Token ID',
           }),
           sortable: false,
           renderHeader: () => (
@@ -177,8 +177,8 @@ export default function useColumns(type?: string) {
           },
         },
         {
-          headerName: formatMessage({ id: "amount", defaultMessage: "Amount" }),
-          field: "amount",
+          headerName: formatMessage({ id: 'amount', defaultMessage: 'Amount' }),
+          field: 'amount',
           sortable: false,
           renderHeader: () => (
             <FormattedMessage id="amount" defaultMessage="Amount" />
@@ -195,10 +195,10 @@ export default function useColumns(type?: string) {
       [UserOnChainEvents.swap]: [
         ...commonColumns,
         {
-          field: "amountIn",
+          field: 'amountIn',
           headerName: formatMessage({
-            id: "amount.in",
-            defaultMessage: "Amount In",
+            id: 'amount.in',
+            defaultMessage: 'Amount In',
           }),
           disableReorder: true,
           sortable: false,
@@ -212,18 +212,18 @@ export default function useColumns(type?: string) {
 
             return (
               <Typography>
-                {formatStringNumber(tokenInAmount)}{" "}
+                {formatStringNumber(tokenInAmount)}{' '}
                 {tokenIn?.symbol?.toUpperCase()}
               </Typography>
             );
           },
         },
         {
-          field: "amountOut",
+          field: 'amountOut',
           disableReorder: true,
           headerName: formatMessage({
-            id: "amount.out",
-            defaultMessage: "Amount Out",
+            id: 'amount.out',
+            defaultMessage: 'Amount Out',
           }),
           sortable: false,
           renderHeader: () => (
@@ -236,18 +236,18 @@ export default function useColumns(type?: string) {
 
             return (
               <Typography>
-                {formatStringNumber(tokenOutAmount)}{" "}
+                {formatStringNumber(tokenOutAmount)}{' '}
                 {tokenOut?.symbol?.toUpperCase()}
               </Typography>
             );
           },
         },
         {
-          field: "receivedFee",
+          field: 'receivedFee',
 
           headerName: formatMessage({
-            id: "received.fee",
-            defaultMessage: "Received Fee",
+            id: 'received.fee',
+            defaultMessage: 'Received Fee',
           }),
           disableReorder: true,
           sortable: false,
@@ -262,7 +262,7 @@ export default function useColumns(type?: string) {
             if (receivedFee && tokenIn && tokenIn?.symbol) {
               return (
                 <Typography>
-                  {formatStringNumber(receivedFee)}{" "}
+                  {formatStringNumber(receivedFee)}{' '}
                   {tokenIn?.symbol?.toUpperCase()}
                 </Typography>
               );
@@ -274,11 +274,11 @@ export default function useColumns(type?: string) {
       [UserOnChainEvents.transfer]: [
         ...commonColumns,
         {
-          field: "amount",
+          field: 'amount',
           sortable: false,
           flex: 1,
 
-          headerName: formatMessage({ id: "amount", defaultMessage: "Amount" }),
+          headerName: formatMessage({ id: 'amount', defaultMessage: 'Amount' }),
           renderHeader: () => (
             <FormattedMessage id="amount" defaultMessage="Amount" />
           ),
@@ -295,9 +295,9 @@ export default function useColumns(type?: string) {
           },
         },
         {
-          field: "to",
+          field: 'to',
           sortable: false,
-          headerName: formatMessage({ id: "to", defaultMessage: "To" }),
+          headerName: formatMessage({ id: 'to', defaultMessage: 'To' }),
           renderHeader: () => <FormattedMessage id="to" defaultMessage="To" />,
           minWidth: 160,
           flex: 1,
@@ -320,13 +320,13 @@ export default function useColumns(type?: string) {
         ...commonColumns,
         {
           headerName: formatMessage({
-            id: "token.id",
-            defaultMessage: "Token ID",
+            id: 'token.id',
+            defaultMessage: 'Token ID',
           }),
           renderHeader: () => (
             <FormattedMessage id="token.id" defaultMessage="Token ID" />
           ),
-          field: "tokenId",
+          field: 'tokenId',
 
           sortable: false,
           flex: 1,
@@ -340,13 +340,13 @@ export default function useColumns(type?: string) {
         },
         {
           headerName: formatMessage({
-            id: "total.amount",
-            defaultMessage: "Total amount",
+            id: 'total.amount',
+            defaultMessage: 'Total amount',
           }),
           renderHeader: () => (
             <FormattedMessage id="token.amount" defaultMessage="Token Amount" />
           ),
-          field: "tokenAmount",
+          field: 'tokenAmount',
 
           sortable: false,
           flex: 1,
@@ -359,8 +359,8 @@ export default function useColumns(type?: string) {
         },
         {
           headerName: formatMessage({
-            id: "collection.name",
-            defaultMessage: "Collection Name",
+            id: 'collection.name',
+            defaultMessage: 'Collection Name',
           }),
           renderHeader: () => (
             <FormattedMessage
@@ -368,7 +368,7 @@ export default function useColumns(type?: string) {
               defaultMessage="Collection Name"
             />
           ),
-          field: "collectionName",
+          field: 'collectionName',
 
           sortable: false,
           flex: 1,
@@ -382,13 +382,13 @@ export default function useColumns(type?: string) {
         },
         {
           headerName: formatMessage({
-            id: "nft.amount",
-            defaultMessage: "NFT Amount",
+            id: 'nft.amount',
+            defaultMessage: 'NFT Amount',
           }),
           renderHeader: () => (
             <FormattedMessage id="nft.amount" defaultMessage="NFT Amount" />
           ),
-          field: "nftAmount",
+          field: 'nftAmount',
           flex: 1,
 
           sortable: false,
@@ -406,15 +406,15 @@ export default function useColumns(type?: string) {
         ...commonColumns,
         {
           headerName: formatMessage({
-            id: "tokenAmount",
-            defaultMessage: "Token Amount",
+            id: 'tokenAmount',
+            defaultMessage: 'Token Amount',
           }),
           renderHeader: () => (
             <FormattedMessage id="token.amount" defaultMessage="Token Amount" />
           ),
           minWidth: 200,
           flex: 1,
-          field: "tokenAmount",
+          field: 'tokenAmount',
 
           sortable: false,
           renderCell: (params: any) => {
@@ -422,7 +422,7 @@ export default function useColumns(type?: string) {
             if (tokenAmount) {
               return (
                 <>
-                  {formatStringNumber(tokenAmount)}{" "}
+                  {formatStringNumber(tokenAmount)}{' '}
                   {token?.symbol?.toUpperCase()}
                 </>
               );
@@ -431,8 +431,8 @@ export default function useColumns(type?: string) {
         },
         {
           headerName: formatMessage({
-            id: "collection.name",
-            defaultMessage: "Collection Name",
+            id: 'collection.name',
+            defaultMessage: 'Collection Name',
           }),
           renderHeader: () => (
             <FormattedMessage
@@ -444,7 +444,7 @@ export default function useColumns(type?: string) {
           flex: 1,
 
           sortable: false,
-          field: "collectionName",
+          field: 'collectionName',
           renderCell: (params: any) => {
             const { collection } = params.row.processedMetadata;
 
@@ -455,15 +455,15 @@ export default function useColumns(type?: string) {
         },
         {
           headerName: formatMessage({
-            id: "nft.amount",
-            defaultMessage: "NFT Amount",
+            id: 'nft.amount',
+            defaultMessage: 'NFT Amount',
           }),
           renderHeader: () => (
             <FormattedMessage id="nft.amount" defaultMessage="NFT Amount" />
           ),
           flex: 1,
           minWidth: 200,
-          field: "nftAmount",
+          field: 'nftAmount',
 
           sortable: false,
           renderCell: (params: any) => {
@@ -480,14 +480,14 @@ export default function useColumns(type?: string) {
         ...commonColumns,
         {
           headerName: formatMessage({
-            id: "token.amount",
-            defaultMessage: "Token Amount",
+            id: 'token.amount',
+            defaultMessage: 'Token Amount',
           }),
           renderHeader: () => (
             <FormattedMessage id="token.amount" defaultMessage="Token Amount" />
           ),
           minWidth: 200,
-          field: "tokenAmount",
+          field: 'tokenAmount',
 
           sortable: false,
           flex: 1,
@@ -497,7 +497,7 @@ export default function useColumns(type?: string) {
             if (tokenAmount && token) {
               return (
                 <>
-                  {formatStringNumber(tokenAmount)}{" "}
+                  {formatStringNumber(tokenAmount)}{' '}
                   {token?.symbol?.toUpperCase()}
                 </>
               );
@@ -506,8 +506,8 @@ export default function useColumns(type?: string) {
         },
         {
           headerName: formatMessage({
-            id: "collection.name",
-            defaultMessage: "Collection name",
+            id: 'collection.name',
+            defaultMessage: 'Collection name',
           }),
           renderHeader: () => (
             <FormattedMessage
@@ -519,7 +519,7 @@ export default function useColumns(type?: string) {
           minWidth: 200,
 
           sortable: false,
-          field: "collectionName",
+          field: 'collectionName',
           renderCell: (params: any) => {
             const { collection } = params.row.processedMetadata;
 
@@ -530,13 +530,13 @@ export default function useColumns(type?: string) {
         },
         {
           headerName: formatMessage({
-            id: "nft.amount",
-            defaultMessage: "NFT Amount",
+            id: 'nft.amount',
+            defaultMessage: 'NFT Amount',
           }),
           renderHeader: () => (
             <FormattedMessage id="nft.amount" defaultMessage="NFT Amount" />
           ),
-          field: "nftAmount",
+          field: 'nftAmount',
 
           sortable: false,
           flex: 1,
@@ -554,12 +554,12 @@ export default function useColumns(type?: string) {
       [UserOnChainEvents.buyDropCollection]: [
         ...commonColumns,
         {
-          headerName: formatMessage({ id: "price", defaultMessage: "Price" }),
+          headerName: formatMessage({ id: 'price', defaultMessage: 'Price' }),
           renderHeader: () => (
             <FormattedMessage id="price" defaultMessage="Price" />
           ),
           minWidth: 200,
-          field: "price",
+          field: 'price',
           flex: 1,
           sortable: false,
           renderCell: (params: any) => {
@@ -572,8 +572,8 @@ export default function useColumns(type?: string) {
         },
         {
           headerName: formatMessage({
-            id: "collection.name",
-            defaultMessage: "Collection Name",
+            id: 'collection.name',
+            defaultMessage: 'Collection Name',
           }),
           renderHeader: () => (
             <FormattedMessage
@@ -583,7 +583,7 @@ export default function useColumns(type?: string) {
           ),
           minWidth: 200,
           flex: 1,
-          field: "collectionName",
+          field: 'collectionName',
 
           sortable: false,
           renderCell: (params: any) => {
@@ -596,13 +596,13 @@ export default function useColumns(type?: string) {
         },
         {
           headerName: formatMessage({
-            id: "nft.amount",
-            defaultMessage: "NFT Amount",
+            id: 'nft.amount',
+            defaultMessage: 'NFT Amount',
           }),
           renderHeader: () => (
             <FormattedMessage id="nft.amount" defaultMessage="NFT Amount" />
           ),
-          field: "nftAmount",
+          field: 'nftAmount',
 
           sortable: false,
           minWidth: 200,
@@ -619,27 +619,11 @@ export default function useColumns(type?: string) {
       ],
       [UserOnChainEvents.buyDropEdition]: [
         ...commonColumns,
-        {
-          headerName: formatMessage({ id: "price", defaultMessage: "Price" }),
-          renderHeader: () => (
-            <FormattedMessage id="price" defaultMessage="Price" />
-          ),
-          minWidth: 200,
-          field: "price",
-          flex: 1,
-          sortable: false,
-          renderCell: (params: any) => {
-            const { price } = params.row.processedMetadata;
 
-            if (price) {
-              return price;
-            }
-          },
-        },
         {
           headerName: formatMessage({
-            id: "collection.name",
-            defaultMessage: "Collection Name",
+            id: 'collection.name',
+            defaultMessage: 'Collection Name',
           }),
           renderHeader: () => (
             <FormattedMessage
@@ -649,7 +633,7 @@ export default function useColumns(type?: string) {
           ),
           flex: 1,
           minWidth: 200,
-          field: "collectionName",
+          field: 'collectionName',
 
           sortable: false,
           renderCell: (params: any) => {
@@ -662,14 +646,35 @@ export default function useColumns(type?: string) {
         },
         {
           headerName: formatMessage({
-            id: "nftAmount",
-            defaultMessage: "NFT Amount",
+            id: 'token.id',
+            defaultMessage: 'Token ID',
+          }),
+          renderHeader: () => (
+            <FormattedMessage id="token.id" defaultMessage="Token ID" />
+          ),
+          flex: 1,
+          minWidth: 200,
+          field: 'tokenId',
+
+          sortable: false,
+          renderCell: (params: any) => {
+            const { tokenId } = params.row.processedMetadata;
+
+            if (tokenId) {
+              return tokenId;
+            }
+          },
+        },
+        {
+          headerName: formatMessage({
+            id: 'nftAmount',
+            defaultMessage: 'NFT Amount',
           }),
           renderHeader: () => (
             <FormattedMessage id="nft.amount" defaultMessage="NFT Amount" />
           ),
           minWidth: 200,
-          field: "nftAmount",
+          field: 'nftAmount',
           flex: 1,
           sortable: false,
           renderCell: (params: any) => {
@@ -680,18 +685,35 @@ export default function useColumns(type?: string) {
             }
           },
         },
+        {
+          headerName: formatMessage({ id: 'price', defaultMessage: 'Price' }),
+          renderHeader: () => (
+            <FormattedMessage id="price" defaultMessage="Price" />
+          ),
+          minWidth: 200,
+          field: 'price',
+          flex: 1,
+          sortable: false,
+          renderCell: (params: any) => {
+            const { price } = params.row.processedMetadata;
+
+            if (price) {
+              return price;
+            }
+          },
+        },
         referralColumn,
       ],
       [UserOnChainEvents.deployContract]: [
         ...commonColumns,
         {
-          headerName: formatMessage({ id: "type", defaultMessage: "Type" }),
+          headerName: formatMessage({ id: 'type', defaultMessage: 'Type' }),
           renderHeader: () => (
             <FormattedMessage id="type" defaultMessage="Type" />
           ),
           minWidth: 200,
           flex: 1,
-          field: "type",
+          field: 'type',
           sortable: false,
           renderCell: (params: any) => {
             const { type } = params.row.processedMetadata;
@@ -702,13 +724,13 @@ export default function useColumns(type?: string) {
           },
         },
         {
-          headerName: formatMessage({ id: "name", defaultMessage: "Name" }),
+          headerName: formatMessage({ id: 'name', defaultMessage: 'Name' }),
           renderHeader: () => (
             <FormattedMessage id="name" defaultMessage="Name" />
           ),
           minWidth: 200,
           flex: 1,
-          field: "name",
+          field: 'name',
           sortable: false,
           renderCell: (params: any) => {
             const { name } = params.row.processedMetadata;
@@ -720,15 +742,15 @@ export default function useColumns(type?: string) {
         },
         {
           headerName: formatMessage({
-            id: "address",
-            defaultMessage: "Address",
+            id: 'address',
+            defaultMessage: 'Address',
           }),
           renderHeader: () => (
             <FormattedMessage id="address" defaultMessage="Address" />
           ),
           minWidth: 200,
           flex: 1,
-          field: "address",
+          field: 'address',
           sortable: false,
           renderCell: (params: any) => {
             const { address } = params.row.processedMetadata;
@@ -737,7 +759,7 @@ export default function useColumns(type?: string) {
               <Link
                 target="_blank"
                 href={`${NETWORK_EXPLORER(
-                  params.row.chainId
+                  params.row.chainId,
                 )}/address/${address}`}
               >
                 {truncateAddress(address)}

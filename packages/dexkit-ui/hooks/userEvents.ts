@@ -167,6 +167,30 @@ export function useCountUserEvents({ filters }: { filters: CountFilter }) {
   });
 }
 
+export const COUNT_EVENT_ACCOUNTS_QUERY = "COUNT_EVENT_ACCOUNTS_QUERY";
+
+export function useCountEventAccounts({ filters }: { filters: CountFilter }) {
+  const { instance } = useContext(DexkitApiProvider);
+
+  return useQuery([COUNT_EVENT_ACCOUNTS_QUERY, filters], async () => {
+    if (!filters.siteId) {
+      return 0;
+    }
+
+    if (!instance) {
+      throw new Error("no http client");
+    }
+
+    return (
+      (
+        await instance?.get<{ count: number }>("/user-events/count-accounts", {
+          params: filters,
+        })
+      ).data?.count || Number(0)
+    );
+  });
+}
+
 type TokenInfo = {
   tokenName: string;
   symbol: string;
@@ -197,6 +221,84 @@ export function useSwapFeesByToken({ filters }: { filters: CountFilter }) {
         await instance?.get<TokenFeesResult>("/user-events/fees-by-token", {
           params: filters,
         })
+      ).data || {}
+    );
+  });
+}
+
+type DropNFTTokenInfo = {
+  tokenName: string;
+  symbol: string;
+  amount: string;
+  decimals: number;
+  nftAmount: number;
+};
+
+type DropNFTTokenResult = {
+  [tokenAddress: string]: DropNFTTokenInfo;
+};
+
+const COUNT_COLLECTION_DROPS_QUERY = "COUNT_COLLECTION_DROPS_QUERY";
+
+export function useCountDropCollection({ filters }: { filters: CountFilter }) {
+  const { instance } = useContext(DexkitApiProvider);
+
+  return useQuery([COUNT_COLLECTION_DROPS_QUERY, filters], async () => {
+    if (!filters.siteId) {
+      return {};
+    }
+
+    if (!instance) {
+      throw new Error("no http client");
+    }
+
+    return (
+      (
+        await instance?.get<DropNFTTokenResult>(
+          "/user-events/count-buy-drop-collection",
+          {
+            params: filters,
+          }
+        )
+      ).data || {}
+    );
+  });
+}
+
+type DropNFTEditionInfo = {
+  tokenName: string;
+  symbol: string;
+  amount: string;
+  decimals: number;
+  nftAmount: number;
+};
+
+type DropNFTEditionResult = {
+  [tokenAddress: string]: DropNFTEditionInfo;
+};
+
+const COUNT_EDITION_DROPS_QUERY = "COUNT_EDITION_DROPS_QUERY";
+
+export function useCountDropEdition({ filters }: { filters: CountFilter }) {
+  const { instance } = useContext(DexkitApiProvider);
+
+  return useQuery([COUNT_EDITION_DROPS_QUERY, filters], async () => {
+    if (!filters.siteId) {
+      return {};
+    }
+
+    if (!instance) {
+      throw new Error("no http client");
+    }
+
+    return (
+      (
+        await instance?.get<DropNFTEditionResult>(
+          "/user-events/count-buy-drop-edition",
+          {
+            params: filters,
+          }
+        )
       ).data || {}
     );
   });

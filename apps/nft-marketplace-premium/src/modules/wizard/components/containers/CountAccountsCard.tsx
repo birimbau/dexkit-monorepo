@@ -1,10 +1,11 @@
-import { CountFilter, useCountUserEvents } from '@dexkit/ui/hooks/userEvents';
+import {
+  CountFilter,
+  useCountEventAccounts,
+} from '@dexkit/ui/hooks/userEvents';
 import {
   Box,
-  Button,
   Card,
   CardContent,
-  Divider,
   Skeleton,
   Stack,
   Typography,
@@ -13,16 +14,12 @@ import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import TopEventsDialog from './TopEventsDialog';
 
-export interface CountEventsCardProps {
+export interface CountAccountsCardProps {
   filters: CountFilter;
-  disableDetails?: boolean;
 }
 
-export default function CountEventsCard({
-  filters,
-  disableDetails,
-}: CountEventsCardProps) {
-  const countEventsQuery = useCountUserEvents({
+export default function CountAccountsCard({ filters }: CountAccountsCardProps) {
+  const countAccountsQuery = useCountEventAccounts({
     filters,
   });
 
@@ -53,34 +50,18 @@ export default function CountEventsCard({
             <Box>
               <Typography variant="caption" color="text.secondary">
                 <FormattedMessage
-                  id="total.events"
-                  defaultMessage="Total events"
+                  id="total.accounts"
+                  defaultMessage="Total accounts"
                 />
               </Typography>
               <Typography variant="h5">
-                {countEventsQuery.isLoading ? (
+                {countAccountsQuery.isLoading ? (
                   <Skeleton />
                 ) : (
-                  countEventsQuery.data
+                  countAccountsQuery.data
                 )}
               </Typography>
             </Box>
-            {!disableDetails && (
-              <>
-                <Divider />
-                <Button
-                  size="small"
-                  variant="outlined"
-                  onClick={handleOpen}
-                  fullWidth
-                >
-                  <FormattedMessage
-                    defaultMessage="View events"
-                    id="view.events"
-                  />
-                </Button>
-              </>
-            )}
           </Stack>
         </CardContent>
       </Card>

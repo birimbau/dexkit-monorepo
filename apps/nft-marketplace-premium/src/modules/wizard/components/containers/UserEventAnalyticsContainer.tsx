@@ -57,8 +57,12 @@ import { myAppsApi } from 'src/services/whitelabel';
 import { z } from 'zod';
 import { toFormikValidationSchema } from 'zod-formik-adapter';
 import useColumns from '../../hooks/useColumns';
+import ChangeListener from '../ChangeListener';
+import CountAccountsCard from './CountAccountsCard';
+import CountEditionDropsCard from './CountEditionDropsCard';
 import CountEventsCard from './CountEventsCard';
 import CountFeesCard from './CountFeesCard';
+import CountNftDropsCard from './CountNftDropsCard';
 import UserEventsTable from './UserEventsTable';
 import EventDetailDialog from './dialogs/EventDetailDialog';
 
@@ -464,16 +468,29 @@ export default function UserEventAnalyticsContainer({ siteId }: Props) {
                       <DexkitApiProvider.Provider
                         value={{ instance: myAppsApi }}
                       >
-                        {filters.type === '' && (
-                          <>
-                            <Grid item xs={12} sm={3}>
-                              <CountEventsCard filters={filters} />
-                            </Grid>
-                          </>
-                        )}
+                        <Grid item xs={12} sm={3}>
+                          <CountEventsCard
+                            filters={filters}
+                            disableDetails={filters.type !== ''}
+                          />
+                        </Grid>
+                        <Grid item xs={12} sm={3}>
+                          <CountAccountsCard filters={filters} />
+                        </Grid>
                         {filters.type === UserOnChainEvents.swap && (
                           <Grid item xs={12} sm={4}>
                             <CountFeesCard filters={filters} />
+                          </Grid>
+                        )}
+                        {filters.type ===
+                          UserOnChainEvents.buyDropCollection && (
+                          <Grid item xs={12} sm={4}>
+                            <CountNftDropsCard filters={filters} />
+                          </Grid>
+                        )}
+                        {filters.type === UserOnChainEvents.buyDropEdition && (
+                          <Grid item xs={12} sm={4}>
+                            <CountEditionDropsCard filters={filters} />
                           </Grid>
                         )}
                       </DexkitApiProvider.Provider>
@@ -485,6 +502,9 @@ export default function UserEventAnalyticsContainer({ siteId }: Props) {
                             validationSchema={toFormikValidationSchema(
                               FilterSchema,
                             )}
+                            validate={(values: any) => {
+                              console.log('values', values);
+                            }}
                           >
                             {({
                               values,
@@ -494,233 +514,258 @@ export default function UserEventAnalyticsContainer({ siteId }: Props) {
                               setFieldValue,
                               setValues,
                               errors,
+                              touched,
                               resetForm,
                             }) => (
-                              <Grid container spacing={2}>
-                                <Grid item xs={12} sm={4}>
-                                  <FormControl fullWidth>
-                                    <Field
-                                      fullWidth
-                                      component={Select}
-                                      name="type"
-                                      displayEmpty
-                                      notched
-                                      inputLabel={{ shrink: true }}
+                              <>
+                                <ChangeListener
+                                  isValid={isValid}
+                                  onChange={(vals: any) => {
+                                    setFilters(vals);
+                                  }}
+                                  values={values}
+                                />
+                                <Grid container spacing={2}>
+                                  <Grid item xs={12} sm={4}>
+                                    <FormControl fullWidth>
+                                      <Field
+                                        fullWidth
+                                        component={Select}
+                                        name="type"
+                                        displayEmpty
+                                        notched
+                                        inputLabel={{ shrink: true }}
+                                        label={
+                                          <FormattedMessage
+                                            id="event.type"
+                                            defaultMessage="Event Type"
+                                          />
+                                        }
+                                      >
+                                        <MenuItem value="">
+                                          <FormattedMessage
+                                            id="all"
+                                            defaultMessage="All"
+                                          />
+                                        </MenuItem>
+                                        {Object.keys(USER_EVENT_NAMES).map(
+                                          (key) => (
+                                            <MenuItem key={key} value={key}>
+                                              <FormattedMessage
+                                                id={USER_EVENT_NAMES[key].id}
+                                                defaultMessage={
+                                                  USER_EVENT_NAMES[key]
+                                                    .defaultMessage
+                                                }
+                                              />
+                                            </MenuItem>
+                                          ),
+                                        )}
+                                      </Field>
+                                    </FormControl>
+                                  </Grid>
+                                  <Grid item xs={12} sm={4}>
+                                    <DateTimePicker
                                       label={
                                         <FormattedMessage
-                                          id="event.type"
-                                          defaultMessage="Event Type"
+                                          id="start"
+                                          defaultMessage="Start"
                                         />
                                       }
-                                    >
-                                      <MenuItem value="">
-                                        <FormattedMessage
-                                          id="all"
-                                          defaultMessage="All"
-                                        />
-                                      </MenuItem>
-                                      {Object.keys(USER_EVENT_NAMES).map(
-                                        (key) => (
-                                          <MenuItem key={key} value={key}>
-                                            <FormattedMessage
-                                              id={USER_EVENT_NAMES[key].id}
-                                              defaultMessage={
-                                                USER_EVENT_NAMES[key]
-                                                  .defaultMessage
-                                              }
-                                            />
-                                          </MenuItem>
-                                        ),
+                                      value={moment(values.start)}
+                                      onChange={(value: Moment | null) => {
+                                        if (value) {
+                                          setFieldValue(
+                                            'start',
+                                            value?.format(),
+                                          );
+                                        }
+                                      }}
+                                      renderInput={(props) => (
+                                        <MuiTextField {...props} fullWidth />
                                       )}
-                                    </Field>
-                                  </FormControl>
-                                </Grid>
-                                <Grid item xs={12} sm={4}>
-                                  <DateTimePicker
-                                    label={
-                                      <FormattedMessage
-                                        id="start"
-                                        defaultMessage="Start"
-                                      />
-                                    }
-                                    value={moment(values.start)}
-                                    onChange={(value: Moment | null) => {
-                                      if (value) {
-                                        setFieldValue('start', value?.format());
-                                      }
-                                    }}
-                                    renderInput={(props) => (
-                                      <MuiTextField {...props} fullWidth />
-                                    )}
-                                  />
-                                </Grid>
-                                <Grid item xs={12} sm={4}>
-                                  <DateTimePicker
-                                    label={
-                                      <FormattedMessage
-                                        id="end"
-                                        defaultMessage="End"
-                                      />
-                                    }
-                                    value={moment(values.end)}
-                                    onChange={(value: Moment | null) => {
-                                      if (value) {
-                                        setFieldValue('end', value?.format());
-                                      }
-                                    }}
-                                    renderInput={(props) => (
-                                      <MuiTextField {...props} fullWidth />
-                                    )}
-                                  />
-                                </Grid>
-                                <Grid item xs={12} sm={4}>
-                                  <FormControl fullWidth>
-                                    <Field
-                                      component={Select}
-                                      type="number"
-                                      name="chainId"
+                                    />
+                                  </Grid>
+                                  <Grid item xs={12} sm={4}>
+                                    <DateTimePicker
                                       label={
                                         <FormattedMessage
-                                          id="network"
-                                          defaultMessage="Network"
+                                          id="end"
+                                          defaultMessage="End"
                                         />
                                       }
-                                      renderValue={(value: number) => {
-                                        const key = parseChainId(value);
+                                      value={moment(values.end)}
+                                      onChange={(value: Moment | null) => {
+                                        if (value) {
+                                          setFieldValue('end', value?.format());
+                                        }
+                                      }}
+                                      renderInput={(props) => (
+                                        <MuiTextField {...props} fullWidth />
+                                      )}
+                                    />
+                                  </Grid>
+                                  <Grid item xs={12} sm={4}>
+                                    <FormControl fullWidth>
+                                      <Field
+                                        component={Select}
+                                        type="number"
+                                        name="chainId"
+                                        label={
+                                          <FormattedMessage
+                                            id="network"
+                                            defaultMessage="Network"
+                                          />
+                                        }
+                                        renderValue={(value: number) => {
+                                          const key = parseChainId(value);
 
-                                        if (key === 0) {
+                                          if (key === 0) {
+                                            return (
+                                              <Typography>
+                                                <FormattedMessage
+                                                  id="all"
+                                                  defaultMessage="All"
+                                                />
+                                              </Typography>
+                                            );
+                                          }
+
                                           return (
-                                            <Typography>
+                                            <Stack
+                                              direction="row"
+                                              alignItems="center"
+                                              alignContent="center"
+                                              spacing={1}
+                                            >
+                                              <Avatar
+                                                src={ipfsUriToUrl(
+                                                  NETWORKS[key]?.imageUrl || '',
+                                                )}
+                                                style={{
+                                                  width: '1rem',
+                                                  height: '1rem',
+                                                }}
+                                              />
+                                              <Typography variant="body1">
+                                                {NETWORKS[key].name}
+                                              </Typography>
+                                            </Stack>
+                                          );
+                                        }}
+                                        fullWidth
+                                      >
+                                        <MenuItem value={0}>
+                                          <ListItemText
+                                            primary={
                                               <FormattedMessage
                                                 id="all"
                                                 defaultMessage="All"
                                               />
-                                            </Typography>
-                                          );
-                                        }
-
-                                        return (
-                                          <Stack
-                                            direction="row"
-                                            alignItems="center"
-                                            alignContent="center"
-                                            spacing={1}
-                                          >
-                                            <Avatar
-                                              src={ipfsUriToUrl(
-                                                NETWORKS[key]?.imageUrl || '',
-                                              )}
-                                              style={{
-                                                width: '1rem',
-                                                height: '1rem',
-                                              }}
-                                            />
-                                            <Typography variant="body1">
-                                              {NETWORKS[key].name}
-                                            </Typography>
-                                          </Stack>
-                                        );
-                                      }}
-                                      fullWidth
-                                    >
-                                      <MenuItem value={0}>
-                                        <ListItemText
-                                          primary={
-                                            <FormattedMessage
-                                              id="all"
-                                              defaultMessage="All"
-                                            />
-                                          }
-                                        />
-                                      </MenuItem>
-                                      {Object.keys(NETWORKS)
-                                        .filter((n) =>
-                                          activeChainIds.includes(Number(n)),
-                                        )
-                                        .map((key) => (
-                                          <MenuItem
-                                            key={key}
-                                            value={parseChainId(key)}
-                                          >
-                                            <ListItemIcon>
-                                              <Avatar
-                                                sx={{
-                                                  height: '1rem',
-                                                  width: '1rem',
-                                                }}
-                                                src={
+                                            }
+                                          />
+                                        </MenuItem>
+                                        {Object.keys(NETWORKS)
+                                          .filter((n) =>
+                                            activeChainIds.includes(Number(n)),
+                                          )
+                                          .map((key) => (
+                                            <MenuItem
+                                              key={key}
+                                              value={parseChainId(key)}
+                                            >
+                                              <ListItemIcon>
+                                                <Avatar
+                                                  sx={{
+                                                    height: '1rem',
+                                                    width: '1rem',
+                                                  }}
+                                                  src={
+                                                    NETWORKS[parseChainId(key)]
+                                                      .imageUrl
+                                                  }
+                                                />
+                                              </ListItemIcon>
+                                              <ListItemText
+                                                primary={
                                                   NETWORKS[parseChainId(key)]
-                                                    .imageUrl
+                                                    .name
                                                 }
                                               />
-                                            </ListItemIcon>
-                                            <ListItemText
-                                              primary={
-                                                NETWORKS[parseChainId(key)].name
-                                              }
-                                            />
-                                          </MenuItem>
-                                        ))}
-                                    </Field>
-                                  </FormControl>
-                                </Grid>
-                                <Grid item xs={12} sm={4}>
-                                  <Field
-                                    component={TextField}
-                                    name="referral"
-                                    label={
-                                      <FormattedMessage
-                                        id="referral"
-                                        defaultMessage="Referral"
-                                      />
-                                    }
-                                    fullWidth
-                                  />
-                                </Grid>
-                                <Grid item xs={12} sm={4}>
-                                  <Field
-                                    component={TextField}
-                                    name="from"
-                                    label={
-                                      <FormattedMessage
-                                        id="from"
-                                        defaultMessage="From"
-                                      />
-                                    }
-                                    fullWidth
-                                  />
-                                </Grid>
-                                <Grid item xs={12}>
-                                  <Box>
-                                    <Stack
-                                      spacing={2}
-                                      alignItems="center"
-                                      direction="row"
-                                    >
-                                      <Button
-                                        onClick={submitForm}
-                                        disabled={!isValid || isSubmitting}
-                                        variant="contained"
-                                      >
+                                            </MenuItem>
+                                          ))}
+                                      </Field>
+                                    </FormControl>
+                                  </Grid>
+                                  <Grid item xs={12} sm={4}>
+                                    <Field
+                                      component={TextField}
+                                      name="referral"
+                                      onChange={(e: any) => {
+                                        setFieldValue(
+                                          'referral',
+                                          e.target.value,
+                                        );
+                                      }}
+                                      label={
                                         <FormattedMessage
-                                          id="filter"
-                                          defaultMessage="Filter"
+                                          id="referral"
+                                          defaultMessage="Referral"
                                         />
-                                      </Button>
-                                      <Button
-                                        onClick={() => resetForm()}
-                                        disabled={!isValid || isSubmitting}
-                                        variant="outlined"
-                                      >
+                                      }
+                                      fullWidth
+                                    />
+                                  </Grid>
+                                  <Grid item xs={12} sm={4}>
+                                    <Field
+                                      component={TextField}
+                                      name="from"
+                                      label={
                                         <FormattedMessage
-                                          id="reset.filters"
-                                          defaultMessage="Reset filters"
+                                          id="from"
+                                          defaultMessage="From"
                                         />
-                                      </Button>
-                                    </Stack>
-                                  </Box>
+                                      }
+                                      fullWidth
+                                    />
+                                  </Grid>
+                                  <Grid item xs={12}>
+                                    <Box>
+                                      <Stack
+                                        spacing={2}
+                                        alignItems="center"
+                                        direction="row"
+                                      >
+                                        {/* <Button
+                                          onClick={submitForm}
+                                          disabled={!isValid || isSubmitting}
+                                          variant="contained"
+                                        >
+                                          <FormattedMessage
+                                            id="filter"
+                                            defaultMessage="Filter"
+                                          />
+                                        </Button> */}
+                                        <Button
+                                          onClick={async () => {
+                                            resetForm();
+                                            await submitForm();
+                                          }}
+                                          disabled={
+                                            !isValid || isSubmitting || !touched
+                                          }
+                                          variant="outlined"
+                                        >
+                                          <FormattedMessage
+                                            id="reset.filters"
+                                            defaultMessage="Reset filters"
+                                          />
+                                        </Button>
+                                      </Stack>
+                                    </Box>
+                                  </Grid>
                                 </Grid>
-                              </Grid>
+                              </>
                             )}
                           </Formik>
                         </Box>
