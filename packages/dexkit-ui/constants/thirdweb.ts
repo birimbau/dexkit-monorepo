@@ -1,5 +1,6 @@
 export const THIRDWEB_CONTRACTTYPE_TO_NAME: { [key: string]: string } = {
   DropERC20: "Token Drop",
+  DropAllowanceERC20: "Token Drop",
   DropERC721: "NFT Drop",
   DropERC1155: "Edition Drop",
   MarketplaceV3: "Marketplace",

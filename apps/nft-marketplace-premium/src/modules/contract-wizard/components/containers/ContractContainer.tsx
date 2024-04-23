@@ -16,6 +16,10 @@ const ContractTokenDropContainer = dynamic(
   () => import('./ContractTokenDropContainer'),
 );
 
+const ContractTokenAllowanceDropContainer = dynamic(
+  () => import('./ContractTokenAllowanceDropContainer'),
+);
+
 import { NETWORK_FROM_SLUG } from '@dexkit/core/constants/networks';
 import { useSwitchNetworkMutation } from '@dexkit/ui';
 import { ContractMetadataHeader } from '@dexkit/ui/modules/contract-wizard/components/ContractMetadataHeader';
@@ -75,7 +79,12 @@ export function ContractContainer({ address, network }: Props) {
     } else if (contractType === 'DropERC20') {
       return <ContractTokenDropContainer address={address} network={network} />;
     } else if (contractType === 'DropAllowanceERC20') {
-      return <ContractTokenDropContainer address={address} network={network} />;
+      return (
+        <ContractTokenAllowanceDropContainer
+          address={address}
+          network={network}
+        />
+      );
     } else if (contractType === 'TokenERC1155') {
       return <ContractEditionContainer address={address} network={network} />;
     } else if (contractType === 'DropERC721') {
