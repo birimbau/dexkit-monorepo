@@ -2,7 +2,8 @@
   "extends": "tsconfig/react-library.json",
   "include": [
     ".",
-    "modules/contract-wizard/components/ContractMetadataHeader.tsx"
+    "modules/contract-wizard/components/ContractMetadataHeader.tsx",
+    "hooks/useColumns.tsx"
   ],
   "compilerOptions": {
     "resolveJsonModule": true,

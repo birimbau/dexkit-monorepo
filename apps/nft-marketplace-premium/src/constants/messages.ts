@@ -44,10 +44,18 @@ export const WHITELABEL_NOTIFICATION_TYPES: {
     type: 'mintEditionDrop',
     message: 'Minting {quantity} with id {tokenId} from edition {name}',
     id: 'mint.edition.drop.notification.message',
+    icon: 'gavel',
   },
   mintNFTDrop: {
     type: 'mintNFTDrop',
     message: 'Minting {quantity} from collection drop {name}',
     id: 'mint.collection.drop.notification.message',
+    icon: 'gavel',
+  },
+  mintTokenDrop: {
+    type: 'mintTokenDrop',
+    message: 'Minting {quantity} from token drop {name}',
+    id: 'mint.token.drop.notification.message',
+    icon: 'gavel',
   },
 };
