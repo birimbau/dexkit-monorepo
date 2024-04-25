@@ -320,7 +320,7 @@
       "description": "Wallet built by the quick wizard from DexAppBuilder. Store your crypto was never so easy.",
       "images": [
         {
-          "url": "https://dexkit-storage.nyc3.cdn.digitaloceanspaces.com/dexkit%2Fimages%2Finternal%2Fdexappbuilderopengraph.png",
+          "url": "https://dexappbuilder.dexkit.com/assets/images/dexappbuilder_seo.png",
           "width": 800,
           "height": 600,
           "alt": "DexAppBuilder: create crypto apps easily",

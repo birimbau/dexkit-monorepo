@@ -156,12 +156,7 @@ export const SiteTemplatePage: NextPage<{
                 >
                   <Image
                     src={metadata?.imageURL}
-                    style={{
-                      maxHeight: '350px',
-                      position: 'absolute',
-                      top: 0,
-                      width: '100%',
-                    }}
+                    fill={true}
                     alt={formatMessage({
                       id: 'nft.image',
                       defaultMessage: 'NFT Image',

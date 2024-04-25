@@ -12,15 +12,17 @@ import { FormattedMessage } from 'react-intl';
 interface Props {
   onFilterUsecase?: (usecase: string) => void;
   selectedUsecases?: string[];
+  defaultExpanded?: boolean;
 }
 
 export function UsecasesAccordion({
   onFilterUsecase,
   selectedUsecases,
+  defaultExpanded,
 }: Props) {
   return (
     <Stack spacing={2} sx={{ pt: 2 }}>
-      <Accordion defaultExpanded>
+      <Accordion defaultExpanded={defaultExpanded}>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="usecases"
