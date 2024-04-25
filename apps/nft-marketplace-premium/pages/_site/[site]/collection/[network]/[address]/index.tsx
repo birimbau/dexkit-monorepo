@@ -324,39 +324,41 @@ export const getStaticProps: GetStaticProps = async ({
   let key: any[] = [GET_COLLECTION_DATA, address as string, chainId];
 
   try {
-    const sdk = new ThirdwebSDK(network as string, {
-      secretKey: process.env.THIRDWEB_API_KEY_SECRET,
-    });
-
-    const twContract = await sdk.getContract(address as string);
-
-    isTw = twContract.abi.find((m) => m.name === 'contractVersion');
-
-    if (isTw) {
-      const contractType: string = hexToString(
-        await twContract.call('contractType'),
-      );
-
-      const metadata = await twContract.metadata.get();
-
-      let type = contractType?.toLowerCase()?.startsWith('edition')
-        ? NFTType.ERC1155
-        : NFTType.ERC721;
-
-      await queryClient.prefetchQuery(key, async () => {
-        let coll = collection || ({} as Collection);
-
-        return {
-          address,
-          name: metadata.name,
-          chainId: NETWORK_FROM_SLUG(network)?.chainId,
-          symbol: metadata.symbol,
-          description: metadata.description,
-          imageUrl: metadata.image,
-          nftType: type,
-          ...omitNull(coll),
-        } as Collection;
+    if (chainId) {
+      const sdk = new ThirdwebSDK(chainId as number, {
+        secretKey: process.env.THIRDWEB_API_KEY_SECRET,
       });
+
+      const twContract = await sdk.getContract(address as string);
+
+      isTw = twContract.abi.find((m) => m.name === 'contractVersion');
+
+      if (isTw) {
+        const contractType: string = hexToString(
+          await twContract.call('contractType'),
+        );
+
+        const metadata = await twContract.metadata.get();
+
+        let type = contractType?.toLowerCase()?.startsWith('edition')
+          ? NFTType.ERC1155
+          : NFTType.ERC721;
+
+        await queryClient.prefetchQuery(key, async () => {
+          let coll = collection || ({} as Collection);
+
+          return {
+            address,
+            name: metadata.name,
+            chainId: NETWORK_FROM_SLUG(network)?.chainId,
+            symbol: metadata.symbol,
+            description: metadata.description,
+            imageUrl: metadata.image,
+            nftType: type,
+            ...omitNull(coll),
+          } as Collection;
+        });
+      }
     }
   } catch {}
 
