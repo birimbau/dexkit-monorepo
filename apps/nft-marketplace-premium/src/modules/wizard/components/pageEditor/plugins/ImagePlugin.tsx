@@ -57,6 +57,7 @@ const ImagePlugin: CellPlugin<Data> = {
             position: {
               type: 'string',
               title: 'Position',
+              default: 'center',
               enum: ['center', 'start', 'end'],
             },
             padding: {

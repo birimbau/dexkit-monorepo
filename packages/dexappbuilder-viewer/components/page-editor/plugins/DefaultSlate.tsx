@@ -4,7 +4,7 @@ import slate from "@react-page/plugins-slate";
 // import '@react-page/plugins-slate/lib/index.css';
 
 import ColorLensIcon from "@mui/icons-material/ColorLens";
-import LineWeightIcon from "@mui/icons-material/LineWeight";
+import FormatLineSpacingIcon from "@mui/icons-material/FormatLineSpacing";
 import TextFieldsIcon from "@mui/icons-material/TextFields";
 import { ColorPickerField } from "@react-page/editor";
 import { pluginFactories } from "@react-page/plugins-slate";
@@ -71,7 +71,7 @@ const lineHeightSlate = pluginFactories.createComponentPlugin<{
   addToolbarButton: true, // whether to show it in the bottom toolbar
   type: "SetLineHeight", // a well defined string, this is kind of the id of the plugin
   object: "mark", // mark is like a span, other options are inline and block
-  icon: <LineWeightIcon />, // an icon to show
+  icon: <FormatLineSpacingIcon />, // an icon to show
   label: "Set line height",
   Component: "div", // the component to render
   getStyle: ({ lineHeight }) => ({ lineHeight }),
