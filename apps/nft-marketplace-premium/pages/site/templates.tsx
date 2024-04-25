@@ -1,6 +1,7 @@
 import { PageHeader } from '@dexkit/ui/components/PageHeader';
 import SidebarFilters from '@dexkit/ui/components/SidebarFilters';
 import SidebarFiltersContent from '@dexkit/ui/components/SidebarFiltersContent';
+import { useIsMobile } from '@dexkit/ui/hooks/misc';
 import SearchOffIcon from '@mui/icons-material/SearchOff';
 import {
   Box,
@@ -50,6 +51,8 @@ export const SiteTemplatesPage: NextPage = () => {
     usecases: usecases,
   });
 
+  const isMobile = useIsMobile();
+
   const { formatMessage } = useIntl();
   const appConfig = useAppConfig();
 
@@ -85,6 +88,7 @@ export const SiteTemplatesPage: NextPage = () => {
             <UsecasesAccordion
               onFilterUsecase={onFilterUsecase}
               selectedUsecases={usecases}
+              defaultExpanded={isMobile ? false : true}
             />
           </Stack>
         </SidebarFiltersContent>
@@ -272,6 +276,22 @@ export const SiteTemplatesPage: NextPage = () => {
                             </Box>
                           </CardContent>
                         </CardActionArea>
+                        {/*    <CardActions>
+                          <Stack
+                            spacing={1}
+                            direction={'row'}
+                            sx={{ p: 2 }}
+                            style={{ overflow: 'scroll', overflowY: 'hidden' }}
+                          >
+                            {site?.metadata?.usecases?.map((cid, key) => (
+                              <Chip
+                                label={cid}
+                                size={'small'}
+                                key={`use-${key}`}
+                              />
+                            ))}
+                          </Stack>
+                          </CardActions>*/}
                         <CardActions>
                           <Stack
                             spacing={2}
