@@ -28,6 +28,10 @@ export const USER_EVENT_NAMES: Record<
     id: "buy.edition.drop",
     defaultMessage: "Buy Edition Drops",
   },
+  [UserOnChainEvents.buyDropToken]: {
+    id: "buy.token.drop",
+    defaultMessage: "Buy Token Drops",
+  },
   [UserOnChainEvents.deployContract]: {
     id: "contract.deployment",
     defaultMessage: "Contract deployment",
@@ -39,5 +43,21 @@ export const USER_EVENT_NAMES: Record<
   [UserOnChainEvents.nftAcceptOfferERC1155]: {
     defaultMessage: "Accept NFT Offer ERC1155",
     id: "accept.nft.offer.erc1155",
+  },
+  [UserOnChainEvents.marketSell]: {
+    defaultMessage: "Market Sell Orders",
+    id: "market.sell.orders",
+  },
+  [UserOnChainEvents.marketBuy]: {
+    defaultMessage: "Market Buy Orders",
+    id: "market.buy.orders",
+  },
+  [UserOnChainEvents.purchaseKey]: {
+    defaultMessage: "Unlock Purchase Keys",
+    id: "unlock.purchase.keys",
+  },
+  [UserOnChainEvents.renewKey]: {
+    defaultMessage: "Unlock Renew Keys",
+    id: "unlock.renew.keys",
   },
 };

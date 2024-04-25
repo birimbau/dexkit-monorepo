@@ -226,7 +226,7 @@ export function useSwapFeesByToken({ filters }: { filters: CountFilter }) {
   });
 }
 
-type DropNFTTokenInfo = {
+export type DropNFTTokenInfo = {
   tokenName: string;
   symbol: string;
   amount: string;
@@ -263,6 +263,135 @@ export function useCountDropCollection({ filters }: { filters: CountFilter }) {
       ).data || {}
     );
   });
+}
+
+export const COUNT_COLLECTION_DROPS_BY_GROUP_QUERY =
+  "COUNT_COLLECTION_DROPS_BY_GROUP_QUERY";
+
+type DropNFTTokenAccountResult = {
+  [key: string]: { tokens: DropNFTTokenResult };
+};
+
+export function useCountDropCollectionByGroup({
+  filters,
+  group,
+}: {
+  filters: CountFilter;
+  group: string;
+}) {
+  const { instance } = useContext(DexkitApiProvider);
+
+  return useQuery(
+    [COUNT_COLLECTION_DROPS_BY_GROUP_QUERY, filters, group],
+    async () => {
+      if (!filters.siteId) {
+        return {};
+      }
+
+      if (!instance) {
+        throw new Error("no http client");
+      }
+
+      return (
+        (
+          await instance?.get<DropNFTTokenAccountResult>(
+            "/user-events/count-buy-drop-collection-by-group",
+            {
+              params: { ...filters, group },
+            }
+          )
+        ).data || {}
+      );
+    }
+  );
+}
+
+export const COUNT_DROP_BY_TOKEN_GROUP_QUERY =
+  "COUNT_DROP_BY_TOKEN_GROUP_QUERY";
+
+export type DropNFTTokenDropInfo = {
+  [key: string]: {
+    tokenName: string;
+    symbol: string;
+    amount: string;
+    decimals: number;
+    quantity: number;
+  };
+};
+
+export type DropNFTTokenDropResult = {
+  [key: string]: { tokens: DropNFTTokenDropInfo };
+};
+
+export function useCountDropTokenByGroup({
+  filters,
+  group,
+}: {
+  filters: CountFilter;
+  group: string;
+}) {
+  const { instance } = useContext(DexkitApiProvider);
+
+  return useQuery(
+    [COUNT_DROP_BY_TOKEN_GROUP_QUERY, filters, group],
+    async () => {
+      if (!filters.siteId) {
+        return {};
+      }
+
+      if (!instance) {
+        throw new Error("no http client");
+      }
+
+      return (
+        (
+          await instance?.get<DropNFTTokenDropResult>(
+            "/user-events/count-buy-drop-token",
+            {
+              params: { ...filters, group },
+            }
+          )
+        ).data || {}
+      );
+    }
+  );
+}
+
+export const COUNT_EDITION_DROPS_BY_GROUP_QUERY =
+  "COUNT_COLLECTION_DROPS_BY_GROUP_QUERY";
+
+export function useCountDropEditionByGroup({
+  filters,
+  group,
+}: {
+  filters: CountFilter;
+  group: string;
+}) {
+  const { instance } = useContext(DexkitApiProvider);
+
+  return useQuery(
+    [COUNT_EDITION_DROPS_BY_GROUP_QUERY, filters, group],
+    async () => {
+      if (!filters.siteId) {
+        return {};
+      }
+
+      if (!instance) {
+        throw new Error("no http client");
+      }
+
+      return (
+        (
+          await instance?.get<DropNFTTokenAccountResult>(
+            "/user-events/count-buy-drop-edition-by-group",
+            {
+              params: { ...filters, group },
+            }
+          )
+        ).data || {}
+      );
+    }
+  );
 }
 
 type DropNFTEditionInfo = {

@@ -1,6 +1,9 @@
+import { UserEvents } from "@dexkit/core/constants/userEvents";
 import { formatUnits } from "@dexkit/core/utils/ethers/formatUnits";
+import { useDexKitContext } from "@dexkit/ui";
 import LazyTextField from "@dexkit/ui/components/LazyTextField";
 import { useInterval } from "@dexkit/ui/hooks/misc";
+import { useTrackUserEventsMutation } from "@dexkit/ui/hooks/userEvents";
 import TokenDropSummary from "@dexkit/ui/modules/token/components/TokenDropSummary";
 import { TokenDropPageSection } from "@dexkit/ui/modules/wizard/types/section";
 import {
@@ -365,18 +368,76 @@ export default function TokenDropSection({ section }: TokenDropSectionProps) {
     }
   };
 
+  const { watchTransactionDialog, createNotification } = useDexKitContext();
+
   const claimMutation = useMutation(async () => {
     if (account) {
-      return await contract?.erc20.claimTo(account, lazyQuantity.toString());
+      let tx = await contract?.erc20.claimTo.prepare(
+        account,
+        lazyQuantity.toString()
+      );
+
+      const values = {
+        quantity: String(lazyQuantity),
+        name: String(contractMetadataQuery.data?.name || " "),
+      };
+
+      watchTransactionDialog.open("mintTokenDrop", values);
+
+      let res = await tx?.send();
+
+      if (res?.hash) {
+        watchTransactionDialog.watch(res?.hash);
+      }
+
+      return res;
     }
   });
 
   const { enqueueSnackbar } = useSnackbar();
 
+  const trackUserEventsMutation = useTrackUserEventsMutation();
+
+  const { chainId } = useWeb3React();
+
+  const contractMetadataQuery = useContractMetadata(contract);
+
   const handleExecute = async () => {
     if (canClaim) {
       try {
-        await claimMutation.mutateAsync();
+        let res = await claimMutation.mutateAsync();
+
+        const values = {
+          quantity: String(lazyQuantity),
+          name: String(contractMetadataQuery.data?.name || " "),
+        };
+
+        if (res?.hash && chainId) {
+          createNotification({
+            type: "transaction",
+            subtype: "mintTokenDrop",
+            values,
+            metadata: {
+              chainId,
+              hash: res?.hash,
+            },
+          });
+        }
+
+        const metadata = {
+          name: contractMetadataQuery.data?.name,
+          quantity: String(lazyQuantity),
+          price: activeClaimCondition.data?.price.toString(),
+          currency: activeClaimCondition.data?.currencyAddress,
+          address: tokenAddress,
+        };
+
+        trackUserEventsMutation.mutate({
+          event: UserEvents.buyDropToken,
+          chainId,
+          hash: res?.hash,
+          metadata: JSON.stringify(metadata),
+        });
       } catch (err) {
         enqueueSnackbar(
           <FormattedMessage

@@ -1,4 +1,5 @@
 import {
+  NETWORKS,
   NETWORK_EXPLORER,
   NETWORK_NAME,
 } from '@dexkit/core/constants/networks';
@@ -8,11 +9,45 @@ import {
   truncateAddress,
   truncateHash,
 } from '@dexkit/core/utils';
+import { useTokenData } from '@dexkit/ui';
 import { Link, Typography } from '@mui/material';
 import { GridColDef } from '@mui/x-data-grid';
 
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
+
+export interface KeyPriceProps {
+  currency: string | null;
+  keyPrice: string;
+  chainId?: number;
+}
+
+export function KeyPrice({ keyPrice, currency, chainId }: KeyPriceProps) {
+  const tokenDataMutation = useTokenData();
+
+  useEffect(() => {
+    if (currency !== null && chainId) {
+      tokenDataMutation.mutate({
+        address: currency,
+        chainId: chainId,
+      });
+    }
+  }, [currency]);
+
+  const [symbol] = useMemo(() => {
+    if (currency === null && chainId) {
+      return [NETWORKS[chainId].coinSymbol];
+    } else {
+      return [(tokenDataMutation.data as any)?.symbol];
+    }
+  }, [currency, tokenDataMutation.data]);
+
+  return (
+    <Typography>
+      {formatStringNumber(keyPrice)} {symbol?.toUpperCase()}
+    </Typography>
+  );
+}
 
 export default function useColumns(type?: string) {
   const { formatMessage } = useIntl();
@@ -193,6 +228,222 @@ export default function useColumns(type?: string) {
         referralColumn,
       ],
       [UserOnChainEvents.swap]: [
+        ...commonColumns,
+        {
+          field: 'amountIn',
+          headerName: formatMessage({
+            id: 'amount.in',
+            defaultMessage: 'Amount In',
+          }),
+          disableReorder: true,
+          sortable: false,
+          renderHeader: () => (
+            <FormattedMessage id="amount.in" defaultMessage="Amount In" />
+          ),
+          minWidth: 280,
+          flex: 1,
+          renderCell: (params: any) => {
+            const { tokenInAmount, tokenIn } = params.row.processedMetadata;
+
+            return (
+              <Typography>
+                {formatStringNumber(tokenInAmount)}{' '}
+                {tokenIn?.symbol?.toUpperCase()}
+              </Typography>
+            );
+          },
+        },
+        {
+          field: 'amountOut',
+          disableReorder: true,
+          headerName: formatMessage({
+            id: 'amount.out',
+            defaultMessage: 'Amount Out',
+          }),
+          sortable: false,
+          renderHeader: () => (
+            <FormattedMessage id="amount.out" defaultMessage="Amount Out" />
+          ),
+          flex: 1,
+          minWidth: 280,
+          renderCell: (params: any) => {
+            const { tokenOut, tokenOutAmount } = params.row.processedMetadata;
+
+            return (
+              <Typography>
+                {formatStringNumber(tokenOutAmount)}{' '}
+                {tokenOut?.symbol?.toUpperCase()}
+              </Typography>
+            );
+          },
+        },
+        {
+          field: 'receivedFee',
+
+          headerName: formatMessage({
+            id: 'received.fee',
+            defaultMessage: 'Received Fee',
+          }),
+          disableReorder: true,
+          sortable: false,
+          renderHeader: () => (
+            <FormattedMessage id="Received.fee" defaultMessage="Received Fee" />
+          ),
+          flex: 1,
+          minWidth: 280,
+          renderCell: (params: any) => {
+            const { receivedFee, tokenIn } = params.row.processedMetadata;
+
+            if (receivedFee && tokenIn && tokenIn?.symbol) {
+              return (
+                <Typography>
+                  {formatStringNumber(receivedFee)}{' '}
+                  {tokenIn?.symbol?.toUpperCase()}
+                </Typography>
+              );
+            }
+          },
+        },
+        referralColumn,
+      ],
+      [UserOnChainEvents.renewKey]: [
+        ...commonColumns,
+        {
+          field: 'amountPaid',
+          headerName: formatMessage({
+            id: 'amount.paid',
+            defaultMessage: 'Amount Paid In',
+          }),
+          disableReorder: true,
+          sortable: false,
+          renderHeader: () => (
+            <FormattedMessage id="amount.paid" defaultMessage="Amount Paid" />
+          ),
+          minWidth: 280,
+          flex: 1,
+          renderCell: (params: any) => {
+            const { keyPrice, currency } = params.row.processedMetadata;
+
+            return (
+              <KeyPrice
+                currency={currency}
+                keyPrice={keyPrice}
+                chainId={params.row.chainId}
+              />
+            );
+          },
+        },
+        referralColumn,
+      ],
+      [UserOnChainEvents.purchaseKey]: [
+        ...commonColumns,
+        {
+          field: 'amountPaid',
+          headerName: formatMessage({
+            id: 'amount.paid',
+            defaultMessage: 'Amount Paid In',
+          }),
+          disableReorder: true,
+          sortable: false,
+          renderHeader: () => (
+            <FormattedMessage id="amount.paid" defaultMessage="Amount Paid" />
+          ),
+          minWidth: 280,
+          flex: 1,
+          renderCell: (params: any) => {
+            const { keyPrice, currency } = params.row.processedMetadata;
+
+            return (
+              <KeyPrice
+                currency={currency}
+                keyPrice={keyPrice}
+                chainId={params.row.chainId}
+              />
+            );
+          },
+        },
+        referralColumn,
+      ],
+      [UserOnChainEvents.marketBuy]: [
+        ...commonColumns,
+        {
+          field: 'amountIn',
+          headerName: formatMessage({
+            id: 'amount.in',
+            defaultMessage: 'Amount In',
+          }),
+          disableReorder: true,
+          sortable: false,
+          renderHeader: () => (
+            <FormattedMessage id="amount.in" defaultMessage="Amount In" />
+          ),
+          minWidth: 280,
+          flex: 1,
+          renderCell: (params: any) => {
+            const { tokenInAmount, tokenIn } = params.row.processedMetadata;
+
+            return (
+              <Typography>
+                {formatStringNumber(tokenInAmount)}{' '}
+                {tokenIn?.symbol?.toUpperCase()}
+              </Typography>
+            );
+          },
+        },
+        {
+          field: 'amountOut',
+          disableReorder: true,
+          headerName: formatMessage({
+            id: 'amount.out',
+            defaultMessage: 'Amount Out',
+          }),
+          sortable: false,
+          renderHeader: () => (
+            <FormattedMessage id="amount.out" defaultMessage="Amount Out" />
+          ),
+          flex: 1,
+          minWidth: 280,
+          renderCell: (params: any) => {
+            const { tokenOut, tokenOutAmount } = params.row.processedMetadata;
+
+            return (
+              <Typography>
+                {formatStringNumber(tokenOutAmount)}{' '}
+                {tokenOut?.symbol?.toUpperCase()}
+              </Typography>
+            );
+          },
+        },
+        {
+          field: 'receivedFee',
+
+          headerName: formatMessage({
+            id: 'received.fee',
+            defaultMessage: 'Received Fee',
+          }),
+          disableReorder: true,
+          sortable: false,
+          renderHeader: () => (
+            <FormattedMessage id="Received.fee" defaultMessage="Received Fee" />
+          ),
+          flex: 1,
+          minWidth: 280,
+          renderCell: (params: any) => {
+            const { receivedFee, tokenIn } = params.row.processedMetadata;
+
+            if (receivedFee && tokenIn && tokenIn?.symbol) {
+              return (
+                <Typography>
+                  {formatStringNumber(receivedFee)}{' '}
+                  {tokenIn?.symbol?.toUpperCase()}
+                </Typography>
+              );
+            }
+          },
+        },
+        referralColumn,
+      ],
+      [UserOnChainEvents.marketSell]: [
         ...commonColumns,
         {
           field: 'amountIn',
@@ -699,6 +950,72 @@ export default function useColumns(type?: string) {
 
             if (price) {
               return price;
+            }
+          },
+        },
+        referralColumn,
+      ],
+      [UserOnChainEvents.buyDropToken]: [
+        ...commonColumns,
+        {
+          headerName: formatMessage({ id: 'price', defaultMessage: 'Price' }),
+          renderHeader: () => (
+            <FormattedMessage id="price" defaultMessage="Price" />
+          ),
+          minWidth: 200,
+          field: 'price',
+          flex: 1,
+          sortable: false,
+          renderCell: (params: any) => {
+            const { price } = params.row.processedMetadata;
+
+            if (price) {
+              return price;
+            }
+          },
+        },
+        {
+          headerName: formatMessage({
+            id: 'collection.name',
+            defaultMessage: 'Collection Name',
+          }),
+          renderHeader: () => (
+            <FormattedMessage
+              id="collection.name"
+              defaultMessage="Collection Name"
+            />
+          ),
+          minWidth: 200,
+          flex: 1,
+          field: 'collectionName',
+
+          sortable: false,
+          renderCell: (params: any) => {
+            const { collection } = params.row.processedMetadata;
+
+            if (collection?.name) {
+              return collection?.name;
+            }
+          },
+        },
+        {
+          headerName: formatMessage({
+            id: 'quantity',
+            defaultMessage: 'Quantity',
+          }),
+          renderHeader: () => (
+            <FormattedMessage id="Quantity" defaultMessage="Quantity" />
+          ),
+          field: 'quantity',
+
+          sortable: false,
+          minWidth: 200,
+          flex: 1,
+          renderCell: (params: any) => {
+            const { quantity } = params.row.processedMetadata;
+
+            if (quantity) {
+              return quantity;
             }
           },
         },

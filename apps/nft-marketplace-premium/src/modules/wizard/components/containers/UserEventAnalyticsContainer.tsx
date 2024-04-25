@@ -5,6 +5,8 @@ import {
 } from '@dexkit/core/constants/networks';
 import {
   beautifyCamelCase,
+  formatBigNumber,
+  getBlockExplorerUrl,
   ipfsUriToUrl,
   parseChainId,
   truncateAddress,
@@ -31,12 +33,16 @@ import { GridToolbar } from '@mui/x-data-grid/components';
 
 import { UserOnChainEvents } from '@dexkit/core/constants/userEvents';
 import { DexkitApiProvider } from '@dexkit/core/providers';
-import { useActiveChainIds } from '@dexkit/ui';
+import { useActiveChainIds, useCollectionByApi } from '@dexkit/ui';
 import { USER_EVENT_NAMES } from '@dexkit/ui/constants/userEventNames';
 import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
   Avatar,
   Button,
   FormControl,
+  ListItem,
   ListItemIcon,
   ListItemText,
   MenuItem,
@@ -46,7 +52,9 @@ import { GridFilterModel, GridSortModel } from '@mui/x-data-grid/models';
 
 import { GridColDef } from '@mui/x-data-grid';
 
+import ExpandMore from '@mui/icons-material/ExpandMore';
 import { DateTimePicker } from '@mui/x-date-pickers';
+import { BigNumber } from 'ethers';
 import { isAddress } from 'ethers/lib/utils';
 import { Field, Formik } from 'formik';
 import { Select, TextField } from 'formik-mui';
@@ -59,12 +67,55 @@ import { toFormikValidationSchema } from 'zod-formik-adapter';
 import useColumns from '../../hooks/useColumns';
 import ChangeListener from '../ChangeListener';
 import CountAccountsCard from './CountAccountsCard';
+import CountEditionDropsByGroupCard from './CountEditionDropsByGroupCard';
 import CountEditionDropsCard from './CountEditionDropsCard';
 import CountEventsCard from './CountEventsCard';
 import CountFeesCard from './CountFeesCard';
+import CountNftDropsByGroupCard from './CountNftDropsByGroupCard';
 import CountNftDropsCard from './CountNftDropsCard';
+import CountTokenDropsByGroupCard from './CountTokenDropsByGroupCard';
 import UserEventsTable from './UserEventsTable';
 import EventDetailDialog from './dialogs/EventDetailDialog';
+
+interface RenderGroupProps {
+  group: string;
+}
+
+export function RenderGroup({ group }: RenderGroupProps) {
+  const [chainId, address] = group.split('-');
+
+  const { data: collection } = useCollectionByApi({
+    chainId: parseInt(chainId),
+    contractAddress: address,
+  });
+
+  return (
+    <Link
+      target="_blank"
+      href={`${getBlockExplorerUrl(parseChainId(chainId))}/address/${address}`}
+    >
+      {collection?.name}
+    </Link>
+  );
+}
+
+export function RenderTokenGroup({ group }: RenderGroupProps) {
+  const [chainId, address, tokenId] = group.split('-');
+
+  const { data: collection } = useCollectionByApi({
+    chainId: parseInt(chainId),
+    contractAddress: address,
+  });
+
+  return (
+    <Link
+      target="_blank"
+      href={`${getBlockExplorerUrl(parseChainId(chainId))}/address/${address}`}
+    >
+      {collection?.name} #{tokenId}
+    </Link>
+  );
+}
 
 export interface OnChainDataGridProps {
   siteId?: number;
@@ -477,20 +528,632 @@ export default function UserEventAnalyticsContainer({ siteId }: Props) {
                         <Grid item xs={12} sm={3}>
                           <CountAccountsCard filters={filters} />
                         </Grid>
-                        {filters.type === UserOnChainEvents.swap && (
-                          <Grid item xs={12} sm={4}>
-                            <CountFeesCard filters={filters} />
-                          </Grid>
-                        )}
-                        {filters.type ===
-                          UserOnChainEvents.buyDropCollection && (
-                          <Grid item xs={12} sm={4}>
-                            <CountNftDropsCard filters={filters} />
-                          </Grid>
-                        )}
-                        {filters.type === UserOnChainEvents.buyDropEdition && (
-                          <Grid item xs={12} sm={4}>
-                            <CountEditionDropsCard filters={filters} />
+                        {filters.type !== '' && (
+                          <Grid item xs={12}>
+                            <Accordion>
+                              <AccordionSummary expandIcon={<ExpandMore />}>
+                                <Typography>
+                                  <FormattedMessage
+                                    id="advanced"
+                                    defaultMessage="Advanced"
+                                  />
+                                </Typography>
+                              </AccordionSummary>
+                              <Divider />
+                              <AccordionDetails sx={{ py: 2 }}>
+                                <Grid container spacing={2}>
+                                  {filters.type === UserOnChainEvents.swap && (
+                                    <Grid item xs={12} sm={4}>
+                                      <CountFeesCard filters={filters} />
+                                    </Grid>
+                                  )}
+                                  {filters.type ===
+                                    UserOnChainEvents.buyDropCollection && (
+                                    <>
+                                      <Grid item xs={12} sm={4}>
+                                        <CountNftDropsCard filters={filters} />
+                                      </Grid>
+                                      <Grid item xs={12} sm={4}>
+                                        <CountNftDropsByGroupCard
+                                          title={
+                                            <FormattedMessage
+                                              id="total.by.account"
+                                              defaultMessage="Total by account"
+                                            />
+                                          }
+                                          filters={filters}
+                                          group="from"
+                                          renderGroup={(group) =>
+                                            truncateAddress(group)
+                                          }
+                                          renderItem={(item, index) => {
+                                            return (
+                                              <ListItem key={index}>
+                                                <ListItemText
+                                                  primary={`${item.tokenName} (${item.nftAmount})`}
+                                                />
+                                                <Typography color="text.secondary">
+                                                  {formatBigNumber(
+                                                    BigNumber.from(item.amount),
+                                                    item.decimals,
+                                                  )}{' '}
+                                                  {item.symbol.toUpperCase()}
+                                                </Typography>
+                                              </ListItem>
+                                            );
+                                          }}
+                                        />
+                                      </Grid>
+
+                                      <Grid item xs={12} sm={4}>
+                                        <CountNftDropsByGroupCard
+                                          title={
+                                            <FormattedMessage
+                                              id="total.by.referral"
+                                              defaultMessage="Total by referral"
+                                            />
+                                          }
+                                          filters={filters}
+                                          group="referral"
+                                          renderGroup={(group) =>
+                                            truncateAddress(group)
+                                          }
+                                          renderItem={(item, index) => {
+                                            return (
+                                              <ListItem key={index}>
+                                                <ListItemText
+                                                  primary={`${item.tokenName} (${item.nftAmount})`}
+                                                />
+                                                <Typography color="text.secondary">
+                                                  {formatBigNumber(
+                                                    BigNumber.from(item.amount),
+                                                    item.decimals,
+                                                  )}{' '}
+                                                  {item.symbol.toUpperCase()}
+                                                </Typography>
+                                              </ListItem>
+                                            );
+                                          }}
+                                        />
+                                      </Grid>
+                                      <Grid item xs={12} sm={4}>
+                                        <CountNftDropsByGroupCard
+                                          title={
+                                            <FormattedMessage
+                                              id="total.by.network"
+                                              defaultMessage="Total by network"
+                                            />
+                                          }
+                                          filters={filters}
+                                          group="chainId"
+                                          renderGroup={(group) =>
+                                            NETWORKS[parseInt(group)].name
+                                          }
+                                          renderItem={(item, index) => {
+                                            return (
+                                              <ListItem key={index}>
+                                                <ListItemText
+                                                  primary={`${item.tokenName} (${item.nftAmount})`}
+                                                />
+                                                <Typography color="text.secondary">
+                                                  {formatBigNumber(
+                                                    BigNumber.from(item.amount),
+                                                    item.decimals,
+                                                  )}{' '}
+                                                  {item.symbol.toUpperCase()}
+                                                </Typography>
+                                              </ListItem>
+                                            );
+                                          }}
+                                        />
+                                      </Grid>
+                                      <Grid item xs={12} sm={4}>
+                                        <CountNftDropsByGroupCard
+                                          title={
+                                            <FormattedMessage
+                                              id="total.by.network"
+                                              defaultMessage="Total by collection"
+                                            />
+                                          }
+                                          filters={filters}
+                                          group="collection"
+                                          renderGroup={(group) => (
+                                            <RenderGroup group={group} />
+                                          )}
+                                          renderItem={(item, index) => {
+                                            return (
+                                              <ListItem key={index}>
+                                                <ListItemText
+                                                  primary={`${item.tokenName} (${item.nftAmount})`}
+                                                />
+                                                <Typography color="text.secondary">
+                                                  {formatBigNumber(
+                                                    BigNumber.from(item.amount),
+                                                    item.decimals,
+                                                  )}{' '}
+                                                  {item.symbol.toUpperCase()}
+                                                </Typography>
+                                              </ListItem>
+                                            );
+                                          }}
+                                        />
+                                      </Grid>
+                                    </>
+                                  )}
+                                  {filters.type ===
+                                    UserOnChainEvents.buyDropEdition && (
+                                    <>
+                                      <Grid item xs={12} sm={4}>
+                                        <CountEditionDropsCard
+                                          filters={filters}
+                                        />
+                                      </Grid>
+                                      <Grid item xs={12} sm={4}>
+                                        <CountEditionDropsByGroupCard
+                                          title={
+                                            <FormattedMessage
+                                              id="total.by.account"
+                                              defaultMessage="Total by account"
+                                            />
+                                          }
+                                          filters={filters}
+                                          group="from"
+                                          renderGroup={(group) =>
+                                            truncateAddress(group)
+                                          }
+                                          renderItem={(item, index) => {
+                                            return (
+                                              <ListItem key={index}>
+                                                <ListItemText
+                                                  primary={`${item.tokenName} (${item.nftAmount})`}
+                                                />
+                                                <Typography color="text.secondary">
+                                                  {formatBigNumber(
+                                                    BigNumber.from(item.amount),
+                                                    item.decimals,
+                                                  )}{' '}
+                                                  {item.symbol.toUpperCase()}
+                                                </Typography>
+                                              </ListItem>
+                                            );
+                                          }}
+                                        />
+                                      </Grid>
+                                      <Grid item xs={12} sm={4}>
+                                        <CountEditionDropsByGroupCard
+                                          title={
+                                            <FormattedMessage
+                                              id="total.by.token"
+                                              defaultMessage="Total by token"
+                                            />
+                                          }
+                                          filters={filters}
+                                          group="token"
+                                          renderGroup={(group) => (
+                                            <RenderTokenGroup group={group} />
+                                          )}
+                                          renderItem={(item, index) => {
+                                            return (
+                                              <ListItem key={index}>
+                                                <ListItemText
+                                                  primary={`${item.tokenName} (${item.nftAmount})`}
+                                                />
+                                                <Typography color="text.secondary">
+                                                  {formatBigNumber(
+                                                    BigNumber.from(item.amount),
+                                                    item.decimals,
+                                                  )}{' '}
+                                                  {item.symbol.toUpperCase()}
+                                                </Typography>
+                                              </ListItem>
+                                            );
+                                          }}
+                                        />
+                                      </Grid>
+                                      <Grid item xs={12} sm={4}>
+                                        <CountEditionDropsByGroupCard
+                                          title={
+                                            <FormattedMessage
+                                              id="total.by.referral"
+                                              defaultMessage="Total by referral"
+                                            />
+                                          }
+                                          filters={filters}
+                                          group="referral"
+                                          renderGroup={(group) =>
+                                            truncateAddress(group)
+                                          }
+                                          renderItem={(item, index) => {
+                                            return (
+                                              <ListItem key={index}>
+                                                <ListItemText
+                                                  primary={`${item.tokenName} (${item.nftAmount})`}
+                                                />
+                                                <Typography color="text.secondary">
+                                                  {formatBigNumber(
+                                                    BigNumber.from(item.amount),
+                                                    item.decimals,
+                                                  )}{' '}
+                                                  {item.symbol.toUpperCase()}
+                                                </Typography>
+                                              </ListItem>
+                                            );
+                                          }}
+                                        />
+                                      </Grid>
+                                      <Grid item xs={12} sm={4}>
+                                        <CountEditionDropsByGroupCard
+                                          title={
+                                            <FormattedMessage
+                                              id="total.by.network"
+                                              defaultMessage="Total by network"
+                                            />
+                                          }
+                                          filters={filters}
+                                          group="chainId"
+                                          renderGroup={(group) =>
+                                            NETWORKS[parseInt(group)].name
+                                          }
+                                          renderItem={(item, index) => {
+                                            return (
+                                              <ListItem key={index}>
+                                                <ListItemText
+                                                  primary={`${item.tokenName} (${item.nftAmount})`}
+                                                />
+                                                <Typography color="text.secondary">
+                                                  {formatBigNumber(
+                                                    BigNumber.from(item.amount),
+                                                    item.decimals,
+                                                  )}{' '}
+                                                  {item.symbol.toUpperCase()}
+                                                </Typography>
+                                              </ListItem>
+                                            );
+                                          }}
+                                        />
+                                      </Grid>
+                                      <Grid item xs={12} sm={4}>
+                                        <CountEditionDropsByGroupCard
+                                          title={
+                                            <FormattedMessage
+                                              id="total.by.network"
+                                              defaultMessage="Total by collection"
+                                            />
+                                          }
+                                          filters={filters}
+                                          group="collection"
+                                          renderGroup={(group) => (
+                                            <RenderGroup group={group} />
+                                          )}
+                                          renderItem={(item, index) => {
+                                            return (
+                                              <ListItem key={index}>
+                                                <ListItemText
+                                                  primary={`${item.tokenName} (${item.nftAmount})`}
+                                                />
+                                                <Typography color="text.secondary">
+                                                  {formatBigNumber(
+                                                    BigNumber.from(item.amount),
+                                                    item.decimals,
+                                                  )}{' '}
+                                                  {item.symbol.toUpperCase()}
+                                                </Typography>
+                                              </ListItem>
+                                            );
+                                          }}
+                                        />
+                                      </Grid>
+                                    </>
+                                  )}
+                                  {filters.type ===
+                                    UserOnChainEvents.buyDropToken && (
+                                    <>
+                                      <Grid item xs={12} sm={4}>
+                                        <CountTokenDropsByGroupCard
+                                          title={
+                                            <FormattedMessage
+                                              id="total.by.account"
+                                              defaultMessage="Total by account"
+                                            />
+                                          }
+                                          filters={filters}
+                                          group="from"
+                                          renderGroup={(group) =>
+                                            truncateAddress(group)
+                                          }
+                                          renderItem={(item, index) => {
+                                            return (
+                                              <ListItem key={index}>
+                                                <ListItemText
+                                                  primary={`${item.tokenName} (${item.quantity})`}
+                                                />
+                                                <Typography color="text.secondary">
+                                                  $
+                                                  {formatBigNumber(
+                                                    BigNumber.from(
+                                                      item.amount,
+                                                    ).mul(item.quantity),
+                                                    item.decimals,
+                                                  )}{' '}
+                                                  {item.symbol.toUpperCase()}
+                                                </Typography>
+                                              </ListItem>
+                                            );
+                                          }}
+                                        />
+                                      </Grid>
+                                      <Grid item xs={12} sm={4}>
+                                        <CountTokenDropsByGroupCard
+                                          title={
+                                            <FormattedMessage
+                                              id="total.by.referral"
+                                              defaultMessage="Total by referral"
+                                            />
+                                          }
+                                          filters={filters}
+                                          group="referral"
+                                          renderGroup={(group) =>
+                                            truncateAddress(group)
+                                          }
+                                          renderItem={(item, index) => {
+                                            return (
+                                              <ListItem key={index}>
+                                                <ListItemText
+                                                  primary={`${item.tokenName} (${item.quantity})`}
+                                                />
+                                                <Typography color="text.secondary">
+                                                  $
+                                                  {formatBigNumber(
+                                                    BigNumber.from(
+                                                      item.amount,
+                                                    ).mul(item.quantity),
+                                                    item.decimals,
+                                                  )}{' '}
+                                                  {item.symbol.toUpperCase()}
+                                                </Typography>
+                                              </ListItem>
+                                            );
+                                          }}
+                                        />
+                                      </Grid>
+                                      <Grid item xs={12} sm={4}>
+                                        <CountTokenDropsByGroupCard
+                                          title={
+                                            <FormattedMessage
+                                              id="total.by.network"
+                                              defaultMessage="Total by network"
+                                            />
+                                          }
+                                          filters={filters}
+                                          group="chainId"
+                                          renderGroup={(group) =>
+                                            NETWORKS[parseInt(group)].name
+                                          }
+                                          renderItem={(item, index) => {
+                                            return (
+                                              <ListItem key={index}>
+                                                <ListItemText
+                                                  primary={`${item.tokenName} (${item.quantity})`}
+                                                />
+                                                <Typography color="text.secondary">
+                                                  $
+                                                  {formatBigNumber(
+                                                    BigNumber.from(
+                                                      item.amount,
+                                                    ).mul(item.quantity),
+                                                    item.decimals,
+                                                  )}{' '}
+                                                  {item.symbol.toUpperCase()}
+                                                </Typography>
+                                              </ListItem>
+                                            );
+                                          }}
+                                        />
+                                      </Grid>
+                                      <Grid item xs={12} sm={4}>
+                                        <CountTokenDropsByGroupCard
+                                          title={
+                                            <FormattedMessage
+                                              id="total.by.network"
+                                              defaultMessage="Total by collection"
+                                            />
+                                          }
+                                          filters={filters}
+                                          group="collection"
+                                          renderGroup={(group) => (
+                                            <RenderGroup group={group} />
+                                          )}
+                                          renderItem={(item, index) => {
+                                            return (
+                                              <ListItem key={index}>
+                                                <ListItemText
+                                                  primary={`${item.tokenName} (${item.quantity})`}
+                                                />
+                                                <Typography color="text.secondary">
+                                                  $
+                                                  {formatBigNumber(
+                                                    BigNumber.from(
+                                                      item.amount,
+                                                    ).mul(item.quantity),
+                                                    item.decimals,
+                                                  )}{' '}
+                                                  {item.symbol.toUpperCase()}
+                                                </Typography>
+                                              </ListItem>
+                                            );
+                                          }}
+                                        />
+                                      </Grid>
+                                    </>
+                                  )}
+                                  {filters.type ===
+                                    UserOnChainEvents.buyDropEdition && (
+                                    <>
+                                      <Grid item xs={12} sm={4}>
+                                        <CountEditionDropsCard
+                                          filters={filters}
+                                        />
+                                      </Grid>
+                                      <Grid item xs={12} sm={4}>
+                                        <CountEditionDropsByGroupCard
+                                          title={
+                                            <FormattedMessage
+                                              id="total.by.account"
+                                              defaultMessage="Total by account"
+                                            />
+                                          }
+                                          filters={filters}
+                                          group="from"
+                                          renderGroup={(group) =>
+                                            truncateAddress(group)
+                                          }
+                                          renderItem={(item, index) => {
+                                            return (
+                                              <ListItem key={index}>
+                                                <ListItemText
+                                                  primary={`${item.tokenName} (${item.nftAmount})`}
+                                                />
+                                                <Typography color="text.secondary">
+                                                  {formatBigNumber(
+                                                    BigNumber.from(item.amount),
+                                                    item.decimals,
+                                                  )}{' '}
+                                                  {item.symbol.toUpperCase()}
+                                                </Typography>
+                                              </ListItem>
+                                            );
+                                          }}
+                                        />
+                                      </Grid>
+                                      <Grid item xs={12} sm={4}>
+                                        <CountEditionDropsByGroupCard
+                                          title={
+                                            <FormattedMessage
+                                              id="total.by.token"
+                                              defaultMessage="Total by token"
+                                            />
+                                          }
+                                          filters={filters}
+                                          group="token"
+                                          renderGroup={(group) => (
+                                            <RenderTokenGroup group={group} />
+                                          )}
+                                          renderItem={(item, index) => {
+                                            return (
+                                              <ListItem key={index}>
+                                                <ListItemText
+                                                  primary={`${item.tokenName} (${item.nftAmount})`}
+                                                />
+                                                <Typography color="text.secondary">
+                                                  {formatBigNumber(
+                                                    BigNumber.from(item.amount),
+                                                    item.decimals,
+                                                  )}{' '}
+                                                  {item.symbol.toUpperCase()}
+                                                </Typography>
+                                              </ListItem>
+                                            );
+                                          }}
+                                        />
+                                      </Grid>
+                                      <Grid item xs={12} sm={4}>
+                                        <CountEditionDropsByGroupCard
+                                          title={
+                                            <FormattedMessage
+                                              id="total.by.referral"
+                                              defaultMessage="Total by referral"
+                                            />
+                                          }
+                                          filters={filters}
+                                          group="referral"
+                                          renderGroup={(group) =>
+                                            truncateAddress(group)
+                                          }
+                                          renderItem={(item, index) => {
+                                            return (
+                                              <ListItem key={index}>
+                                                <ListItemText
+                                                  primary={`${item.tokenName} (${item.nftAmount})`}
+                                                />
+                                                <Typography color="text.secondary">
+                                                  {formatBigNumber(
+                                                    BigNumber.from(item.amount),
+                                                    item.decimals,
+                                                  )}{' '}
+                                                  {item.symbol.toUpperCase()}
+                                                </Typography>
+                                              </ListItem>
+                                            );
+                                          }}
+                                        />
+                                      </Grid>
+                                      <Grid item xs={12} sm={4}>
+                                        <CountEditionDropsByGroupCard
+                                          title={
+                                            <FormattedMessage
+                                              id="total.by.network"
+                                              defaultMessage="Total by network"
+                                            />
+                                          }
+                                          filters={filters}
+                                          group="chainId"
+                                          renderGroup={(group) =>
+                                            NETWORKS[parseInt(group)].name
+                                          }
+                                          renderItem={(item, index) => {
+                                            return (
+                                              <ListItem key={index}>
+                                                <ListItemText
+                                                  primary={`${item.tokenName} (${item.nftAmount})`}
+                                                />
+                                                <Typography color="text.secondary">
+                                                  {formatBigNumber(
+                                                    BigNumber.from(item.amount),
+                                                    item.decimals,
+                                                  )}{' '}
+                                                  {item.symbol.toUpperCase()}
+                                                </Typography>
+                                              </ListItem>
+                                            );
+                                          }}
+                                        />
+                                      </Grid>
+                                      <Grid item xs={12} sm={4}>
+                                        <CountEditionDropsByGroupCard
+                                          title={
+                                            <FormattedMessage
+                                              id="total.by.network"
+                                              defaultMessage="Total by collection"
+                                            />
+                                          }
+                                          filters={filters}
+                                          group="collection"
+                                          renderGroup={(group) => (
+                                            <RenderGroup group={group} />
+                                          )}
+                                          renderItem={(item, index) => {
+                                            return (
+                                              <ListItem key={index}>
+                                                <ListItemText
+                                                  primary={`${item.tokenName} (${item.nftAmount})`}
+                                                />
+                                                <Typography color="text.secondary">
+                                                  {formatBigNumber(
+                                                    BigNumber.from(item.amount),
+                                                    item.decimals,
+                                                  )}{' '}
+                                                  {item.symbol.toUpperCase()}
+                                                </Typography>
+                                              </ListItem>
+                                            );
+                                          }}
+                                        />
+                                      </Grid>
+                                    </>
+                                  )}
+                                </Grid>
+                              </AccordionDetails>
+                            </Accordion>
                           </Grid>
                         )}
                       </DexkitApiProvider.Provider>
@@ -502,9 +1165,6 @@ export default function UserEventAnalyticsContainer({ siteId }: Props) {
                             validationSchema={toFormikValidationSchema(
                               FilterSchema,
                             )}
-                            validate={(values: any) => {
-                              console.log('values', values);
-                            }}
                           >
                             {({
                               values,
