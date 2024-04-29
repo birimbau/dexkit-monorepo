@@ -19,7 +19,6 @@ import { NoSsr } from '@mui/material';
 import { SessionProvider } from 'next-auth/react';
 import AuthMainLayout from 'src/components/layouts/authMain';
 import { GlobalDialogs } from 'src/components/layouts/GlobalDialogs';
-import { REVALIDATE_PAGE_TIME } from 'src/constants';
 
 const EmbedPage: NextPage<{
   site: string;
@@ -147,7 +146,6 @@ export const getServerSideProps: GetServerSideProps = async ({
         partialResults: {},
         ...configResponse,
       },
-      revalidate: REVALIDATE_PAGE_TIME,
     };
   }
 
@@ -160,7 +158,6 @@ export const getServerSideProps: GetServerSideProps = async ({
 
       ...configResponse,
     },
-    revalidate: REVALIDATE_PAGE_TIME,
   };
 };
 
