@@ -8,7 +8,7 @@
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
     "esModuleInterop": true,
-  
+
     "module": "esnext",
     "moduleResolution": "Bundler",
     "resolveJsonModule": true,
@@ -31,10 +31,7 @@
     "**/*.ts",
     "**/*.tsx",
     "next-sitemap.config.js",
-    "scripts/local-diff.js",
-    "../../packages/dexkit-ui/components/NavbarMenuAlt.tsx",
-    "../../packages/dexkit-ui/components/NavbarAlt.tsx",
-    "../../packages/dexkit-ui/components/AppDefaultMenuList.tsx"
+    "scripts/local-diff.js"
   ],
   "exclude": ["node_modules"]
 }
