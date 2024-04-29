@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 
 import {
+  useConnectWalletDialog,
   useHoldsKitDialog,
   useShowSelectCurrency,
   useShowSelectLocale,
@@ -36,6 +37,13 @@ const SelectLanguageDialog = dynamic(
   () => import("@dexkit/ui/components/dialogs/SelectLanguageDialog")
 );
 
+const ConnectWalletDialog = dynamic(
+  () =>
+    import(
+      "@dexkit/ui/components/dialogs/ConnectWalletDialog/ConnectWalletDialog"
+    )
+);
+
 export function GlobalDialogs() {
   const router = useRouter();
 
@@ -44,6 +52,8 @@ export function GlobalDialogs() {
   const holdsKitDialog = useHoldsKitDialog();
 
   const switchNetwork = useSwitchNetwork();
+
+  const connectWalletDialog = useConnectWalletDialog();
 
   const showSelectCurrency = useShowSelectCurrency();
 
@@ -84,6 +94,10 @@ export function GlobalDialogs() {
   };
 
   const txDialog = useExecuteTransactionsDialog();
+
+  const handleCloseConnectWalletDialog = () => {
+    connectWalletDialog.setOpen(false);
+  };
 
   return (
     <>
@@ -166,6 +180,16 @@ export function GlobalDialogs() {
             onClose: txDialog.handleClose,
           }}
           transactions={txDialog.transactions}
+        />
+      )}
+      {connectWalletDialog.isOpen && (
+        <ConnectWalletDialog
+          DialogProps={{
+            open: connectWalletDialog.isOpen,
+            onClose: handleCloseConnectWalletDialog,
+            fullWidth: true,
+            maxWidth: "sm",
+          }}
         />
       )}
     </>

@@ -2,6 +2,8 @@ import { JsonRpcProvider } from '@ethersproject/providers';
 
 // this strategy is deprecated use src/constants/chains.ts file
 
+
+
 const infuraKey = process.env.INFURA_API_KEY;
 
 export const mainnetProvider = new JsonRpcProvider(

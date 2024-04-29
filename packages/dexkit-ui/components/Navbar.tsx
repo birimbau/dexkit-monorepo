@@ -65,11 +65,10 @@ import {
 } from "@dexkit/ui/hooks";
 import { AppConfig } from "@dexkit/ui/modules/wizard/types/config";
 import AppProfileMenu from "./AppProfileMenu";
-import { ConnectWalletButton } from "./ConnectWalletButton";
 import NavbarMenu from "./NavbarMenu";
 import { ThemeModeSelector } from "./ThemeModeSelector";
-
-interface Props {
+import { ConnectWalletButton } from "./dialogs/ConnectWalletDialog/ConnectWalletButton";
+/*import { ConnectWalletButton } from "./ConnectWalletButton"*/ interface Props {
   appConfig: AppConfig;
   isPreview?: boolean;
 }

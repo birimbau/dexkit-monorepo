@@ -5,7 +5,12 @@ import ListItemAvatar from "@mui/material/ListItemAvatar";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
 import Stack from "@mui/material/Stack";
-import { useActiveWallet, useConnect } from "thirdweb/react";
+import type { ThirdwebClient } from "thirdweb";
+import {
+  useActiveWallet,
+  useConnect,
+  useSetActiveWallet,
+} from "thirdweb/react";
 import {
   InjectedSupportedWalletIds,
   Wallet,
@@ -16,13 +21,7 @@ import { useWalletInfo } from "./hooks/useWalletInfo";
 import { getInstalledWalletProviders } from "./utils/injectedProviders";
 type WalletSelectorProps = {
   wallets: Wallet[];
-  selectWallet: (wallet: Wallet) => void;
-  onGetStarted: () => void;
-  title: string;
-  done: (wallet: Wallet) => void;
-  goBack?: () => void;
-  onShowAll: () => void;
-  setModalVisibility: (value: boolean) => void;
+  client: ThirdwebClient;
 };
 
 function WalletItem({
@@ -30,10 +29,11 @@ function WalletItem({
   client,
 }: {
   wallet: Wallet;
-  client: ThirdWebClient;
+  client: ThirdwebClient;
 }) {
   const walletInfo = useWalletInfo(wallet.id);
   const activeWallet = useActiveWallet();
+  const setActiveWallet = useSetActiveWallet();
   const { connect, isConnecting, error } = useConnect();
 
   return (
@@ -41,7 +41,11 @@ function WalletItem({
       divider
       key={wallet.id}
       disabled={false}
-      onClick={() => wallet.connect({ client })}
+      onClick={() => {
+        console.log(wallet);
+        setActiveWallet(wallet);
+        wallet.connect({ client });
+      }}
     >
       <ListItemAvatar>
         <Avatar>
@@ -71,23 +75,41 @@ function WalletItem({
   );
 }
 
+type WalletConfig = {
+  wallet: Wallet;
+  isInstalled: boolean;
+};
+
 export function WalletSelector(props: WalletSelectorProps) {
-  const { wallets, client } = props;
+  const { client } = props;
   const installedWallets = getInstalledWallets();
+
   const propsWallets = props.wallets;
-  const _wallets: Wallet[] = [...propsWallets];
+  const _wallets: WalletConfig[] = propsWallets.length
+    ? propsWallets.map((w) => {
+        return { wallet: w, isInstalled: false };
+      })
+    : [];
   for (const iW of installedWallets) {
     if (!propsWallets.find((w) => w.id === iW.id)) {
-      _wallets.push(iW);
+      _wallets.push({ wallet: iW, isInstalled: true });
     }
   }
 
   return (
     <>
       {" "}
-      {wallets.map((wallet: Wallet, index: number) => (
-        <WalletItem wallet={wallet} key={wallet.id} client={client} />
-      ))}
+      {_wallets
+        .sort(function (x, y) {
+          return x.isInstalled ? -1 : 1;
+        })
+        .map((walletConfig: WalletConfig) => (
+          <WalletItem
+            wallet={walletConfig.wallet}
+            key={walletConfig.wallet.id}
+            client={client}
+          />
+        ))}
     </>
   );
 }

@@ -1,5 +1,4 @@
 import {
-  Avatar,
   Box,
   Button,
   CircularProgress,
@@ -7,11 +6,7 @@ import {
   DialogContent,
   DialogProps,
   Divider,
-  lighten,
   List,
-  ListItemAvatar,
-  ListItemButton,
-  ListItemText,
   Stack,
   TextField,
 } from "@mui/material";
@@ -26,16 +21,15 @@ import { AppDialogTitle } from "../../AppDialogTitle";
 
 import { createWallet } from "thirdweb/wallets";
 
-import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import Wallet from "@mui/icons-material/Wallet";
+import { createThirdwebClient } from "thirdweb";
+import { THIRDWEB_CLIENT_ID } from "../../../constants/thirdweb";
+import { WalletSelector } from "./WalletSelector";
+
+import { useConnect } from "thirdweb/react";
 
 export interface ConnectWalletDialogProps {
   DialogProps: DialogProps;
-  activate: (params: any) => Promise<void>;
-  isActivating: boolean;
-  isActive: boolean;
-  activeConnectorName?: string;
-  magicRedirectUrl?: string;
 }
 
 const wallets = [
@@ -44,16 +38,18 @@ const wallets = [
   createWallet("me.rainbow"),
 ];
 
+const client = createThirdwebClient({
+  clientId: THIRDWEB_CLIENT_ID,
+});
+
 export default function ConnectWalletDialog({
   DialogProps: dialogProps,
-  activate,
-  isActivating,
-  isActive,
-  activeConnectorName,
 }: ConnectWalletDialogProps) {
   const { onClose } = dialogProps;
 
   const { formatMessage } = useIntl();
+
+  const { connect, isConnecting, error } = useConnect();
 
   const [connectorName, setConnectorName] = useState<string>();
 
@@ -62,24 +58,6 @@ export default function ConnectWalletDialog({
   };
 
   const { enqueueSnackbar } = useSnackbar();
-
-  const handleActivateWallet = async ({
-    loginType,
-    email,
-    icon,
-    name,
-    connectorName,
-    overrideActivate,
-  }: {
-    connectorName: any;
-    name?: string;
-    icon?: string;
-    loginType?: any;
-    email?: string;
-    overrideActivate?: (chainId?: number) => boolean;
-  }) => {
-    handleClose();
-  };
 
   const [email, setEmail] = useState("");
 
@@ -91,7 +69,7 @@ export default function ConnectWalletDialog({
     setEmail((e.target as any).value);
   };
 
-  const renderConnectors = () => {
+  /* const renderConnectors = () => {
     return wallets.map((conn: Wallet, index: number) => (
       <>
         {conn.id.shouldDisplay() && (
@@ -162,7 +140,7 @@ export default function ConnectWalletDialog({
         )}
       </>
     ));
-  };
+  };*/
 
   return (
     <Dialog {...dialogProps} onClose={handleClose}>
@@ -181,7 +159,7 @@ export default function ConnectWalletDialog({
         <Box p={2}>
           <Stack spacing={2}>
             <TextField
-              disabled={isActivating && connectorName === "magic"}
+              disabled={isConnecting && connectorName === "magic"}
               value={email}
               onChange={handleChangeEmail}
               type="email"
@@ -191,9 +169,9 @@ export default function ConnectWalletDialog({
               })}
             />
             <Button
-              disabled={isActivating && connectorName === "magic"}
+              disabled={isConnecting && connectorName === "magic"}
               startIcon={
-                isActivating &&
+                isConnecting &&
                 connectorName === "magic" && (
                   <CircularProgress
                     color="primary"
@@ -212,7 +190,9 @@ export default function ConnectWalletDialog({
           </Stack>
         </Box>
         <Divider />
-        <List disablePadding>{renderConnectors()}</List>
+        <List disablePadding>
+          <WalletSelector client={client} wallets={wallets}></WalletSelector>
+        </List>
       </DialogContent>
     </Dialog>
   );
