@@ -95,7 +95,11 @@ export default function DexGeneratorContractForm({
           section={section?.type === 'collection' ? section : undefined}
         />
       );
-    } else if (contractType === 'TokenStake' || contractType === 'NFTStake') {
+    } else if (
+      contractType === 'TokenStake' ||
+      contractType === 'NFTStake' ||
+      contractType === 'EditionStake'
+    ) {
       return (
         <Stack>
           <Typography align="center" variant="h5">
