@@ -285,6 +285,18 @@ export default function DexGeneratorSectionForm({
             contract: newContract,
             type: 'dex-generator-section',
           });
+        } else if (newContract.type === 'EditionStake') {
+          handleChangeSection({
+            section: {
+              type: 'edition-stake',
+              settings: {
+                address: newContract.contractAddress,
+                network,
+              },
+            },
+            contract: newContract,
+            type: 'dex-generator-section',
+          });
         } else if (newContract.type === 'AirdropERC20Claimable') {
           handleChangeSection({
             section: {
