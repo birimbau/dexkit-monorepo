@@ -68,10 +68,10 @@ export default function WalletContent() {
     connectWalletDialog.setOpen(true);
   };
 
-  const handleLogoutWallet = useCallback(() => {
+  const handleLogoutWallet = useCallback(async () => {
     logoutMutation.mutate();
     if (wallet) {
-      disconnect(wallet);
+      await disconnect(wallet);
     }
   }, [wallet]);
 

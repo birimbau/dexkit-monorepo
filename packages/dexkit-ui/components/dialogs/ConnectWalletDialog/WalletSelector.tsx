@@ -1,10 +1,13 @@
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
+import { Typography } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import CircularProgress from "@mui/material/CircularProgress";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
 import Stack from "@mui/material/Stack";
+import { useState } from "react";
+import { FormattedMessage } from "react-intl";
 import type { ThirdwebClient } from "thirdweb";
 import {
   useActiveWallet,
@@ -16,6 +19,8 @@ import {
   Wallet,
   createWallet,
 } from "thirdweb/wallets";
+import { ThemeMode } from "../../../constants/enum";
+import { useConnectWalletDialog, useThemeMode } from "../../../hooks";
 import { WalletImage } from "./WalletImage";
 import { useWalletInfo } from "./hooks/useWalletInfo";
 import { getInstalledWalletProviders } from "./utils/injectedProviders";
@@ -32,8 +37,11 @@ function WalletItem({
   client: ThirdwebClient;
 }) {
   const walletInfo = useWalletInfo(wallet.id);
+  const [startConnecting, setStartConnecting] = useState<string>();
+  const { mode } = useThemeMode();
   const activeWallet = useActiveWallet();
   const setActiveWallet = useSetActiveWallet();
+  const connectWalletDialog = useConnectWalletDialog();
   const { connect, isConnecting, error } = useConnect();
 
   return (
@@ -41,10 +49,39 @@ function WalletItem({
       divider
       key={wallet.id}
       disabled={false}
-      onClick={() => {
-        console.log(wallet);
-        setActiveWallet(wallet);
-        wallet.connect({ client });
+      onClick={async () => {
+        try {
+          setStartConnecting(wallet.id);
+          if (wallet.id === "walletConnect") {
+            await wallet.connect({
+              client,
+              qrModalOptions: {
+                desktopWallets: undefined,
+                enableExplorer: true,
+                explorerExcludedWalletIds: undefined,
+                explorerRecommendedWalletIds: undefined,
+                mobileWallets: undefined,
+                privacyPolicyUrl: undefined,
+                termsOfServiceUrl: undefined,
+                themeMode: mode === ThemeMode.dark ? "dark" : "light",
+                themeVariables: {
+                  "--wcm-font-family": '"Inter custom", sans-serif',
+                  "--wcm-z-index": "5000",
+                },
+                walletImages: undefined,
+              },
+            });
+          } else {
+            await wallet.connect({ client });
+          }
+
+          await wallet.connect({ client });
+          setActiveWallet(wallet);
+          connectWalletDialog.setOpen(false);
+        } catch (e) {
+          setStartConnecting(undefined);
+          console.log(e);
+        }
       }}
     >
       <ListItemAvatar>
@@ -59,6 +96,25 @@ function WalletItem({
           sx={{ fontSize: (theme) => theme.spacing(2) }}
         />
       )}
+      {startConnecting && wallet.id === startConnecting && (
+        <Stack
+          flexDirection={"row"}
+          alignContent={"center"}
+          alignItems={"center"}
+        >
+          <Typography sx={{ pr: 1 }}>
+            <FormattedMessage
+              id={"accept.connect.in.walelt"}
+              defaultMessage={"Accept in wallet"}
+            ></FormattedMessage>
+          </Typography>
+          <CircularProgress
+            color="primary"
+            sx={{ fontSize: (theme) => theme.spacing(2) }}
+          />
+        </Stack>
+      )}
+
       {wallet.id === activeWallet?.id && (
         <Stack
           direction="row"

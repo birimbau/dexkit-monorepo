@@ -36,6 +36,8 @@ const wallets = [
   createWallet("io.metamask"),
   createWallet("com.coinbase.wallet"),
   createWallet("me.rainbow"),
+  createWallet("com.trustwallet.app"),
+  createWallet("walletConnect"),
 ];
 
 const client = createThirdwebClient({

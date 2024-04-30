@@ -1,6 +1,6 @@
 import type { ExternalProvider } from '@ethersproject/providers'
 import { BRAVE_ICON, BROWSER_WALLET_ICON, LEDGER_ICON, METAMASK_ICON, RABBY_ICON, TRUST_WALLET_ICON } from '../../constants/icons'
-import { Connection, ConnectionType, ProviderInfo } from '../../types'
+
 import { getInjectedMeta } from "../../utils/walletMeta"
 import { EIP6963ProviderDetail } from "./eip6963/types"
 
@@ -8,7 +8,7 @@ export const getIsInjected = () => typeof window !== "undefined" ? Boolean(windo
 
 
 
-const InjectedWalletTable: { [key in string]?: ProviderInfo } = {
+const InjectedWalletTable: { [key in string]?: any } = {
   isBraveWallet: { name: 'Brave', icon: BRAVE_ICON },
   isRabby: { name: 'Rabby', icon: RABBY_ICON },
   isTrust: { name: 'Trust Wallet', icon: TRUST_WALLET_ICON },
@@ -49,7 +49,7 @@ export function shouldUseDeprecatedInjector(providerDetails: readonly EIP6963Pro
  *
  * @param isDarkMode - optional parameter to determine which color mode of the
  */
-export function getDeprecatedInjection(): ProviderInfo | undefined {
+export function getDeprecatedInjection(): any {
   if (typeof window === "undefined") {
     return;
   }
@@ -89,11 +89,3 @@ export enum ErrorCode {
   CB_REJECTED_REQUEST = 'Error: User denied account authorization',
 }
 
-// TODO(WEB-1973): merge this function with existing didUserReject for Swap errors
-export function didUserReject(connection: Connection, error: any): boolean {
-  return (
-    error?.code === ErrorCode.USER_REJECTED_REQUEST ||
-    (connection.type === ConnectionType.WALLET_CONNECT_V2 && error?.toString?.() === ErrorCode.WC_V2_MODAL_CLOSED) ||
-    (connection.type === ConnectionType.COINBASE_WALLET && error?.toString?.() === ErrorCode.CB_REJECTED_REQUEST)
-  )
-}
