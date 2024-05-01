@@ -110,7 +110,7 @@ export function DexkitProvider({
         defaultLocale={locale}
         messages={localeMessages}
       >
-        <Web3ReactProvider connectors={connectors}>
+        <Web3ReactProvider connectors={connectors} key={web3ReactKey}>
           <CssVarsProvider theme={theme}>
             <SnackbarProvider
               maxSnack={3}
