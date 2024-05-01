@@ -28,15 +28,15 @@ export function useWalletActivate({
 
     setWalletConnectorMetadata(
       {
-        id: params.connectorName,
-        icon: params.icon,
+        id: params?.connectorName,
+        icon: params?.icon,
         rdns: params?.rdns,
-        name: params.name,
+        name: params?.name,
         type: params?.connectionType
       }
     )
 
-    if (params.loginType) {
+    if (params?.loginType) {
       // This should be deprecated
       setWalletConnector("magic");
       return await magic.activate({
@@ -47,7 +47,7 @@ export function useWalletActivate({
     } else {
 
       // This should be deprecated
-      setWalletConnector(params.connectorName);
+      setWalletConnector(params?.connectorName);
 
 
       return await connector.activate();

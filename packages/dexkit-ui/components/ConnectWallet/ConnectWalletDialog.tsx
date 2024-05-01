@@ -67,42 +67,15 @@ export default function ConnectWalletDialog({
 
   const { enqueueSnackbar } = useSnackbar();
 
-  const handleActivateWallet = async ({
-    connector,
-    loginType,
-    email,
-    icon,
-    name,
-    connectorName,
-    rdns,
-    connectionType,
-    overrideActivate,
-  }: WalletActivateParams) => {
-    setConnectorName(connectorName);
-    setLoginType(loginType);
+  const handleActivateWallet = async (params: WalletActivateParams) => {
+    setConnectorName(params?.connectorName);
+    setLoginType(params?.loginType);
 
     try {
-      if (loginType) {
-        await activate({
-          connectorName,
-          email,
-          loginType,
-          connector,
-          rdns,
-          connectionType,
-          icon,
-          name,
-        });
+      if (params?.loginType) {
+        await activate(params);
       } else {
-        await activate({
-          connectorName,
-          connector,
-          icon,
-          rdns,
-          connectionType,
-          name,
-          overrideActivate,
-        });
+        await activate(params);
       }
     } catch (err: any) {
       enqueueSnackbar(err.message, {
@@ -143,12 +116,12 @@ export default function ConnectWalletDialog({
             divider
             key={index}
             disabled={
-              isActivating && connectorName === conn.getProviderInfo().name
+              isActivating && connectorName === conn.getProviderInfo()?.name
             }
             onClick={() => {
               handleActivateWallet({
                 connectorName: conn.getProviderInfo().name,
-                connector: conn.connector,
+                connector: conn?.connector,
                 loginType: conn?.loginType,
                 rdns: conn.getProviderInfo()?.rdns,
                 connectionType: conn?.type,
@@ -167,8 +140,8 @@ export default function ConnectWalletDialog({
                     width: "auto",
                     height: theme.spacing(5),
                   })}
-                  src={conn?.getProviderInfo().icon}
-                  alt={conn?.getProviderInfo().name}
+                  src={conn?.getProviderInfo()?.icon}
+                  alt={conn?.getProviderInfo()?.name}
                 />
               </Avatar>
             </ListItemAvatar>
