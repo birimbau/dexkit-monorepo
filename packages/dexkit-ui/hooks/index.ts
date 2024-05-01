@@ -105,9 +105,7 @@ export function useAppWizardConfig() {
 export function useOrderedConnectors() {
   const { walletConnectorMetadata } = useWalletConnectorMetadata();
 
-
   return useMemo(() => {
-
     // We need to put the previous connection always first to Web3React be able to connect eagerly
     if (walletConnectorMetadata) {
       if (walletConnectorMetadata.type === ConnectionType.EIP_6963_INJECTED) {
@@ -116,28 +114,26 @@ export function useOrderedConnectors() {
         if (firstConnection) {
           const injectedConnection = firstConnection.wrap({ name: walletConnectorMetadata.name as string, rdns: walletConnectorMetadata.rdns, icon: walletConnectorMetadata.icon });
           if (injectedConnection) {
-            return [injectedConnection, ...filteredConnections].map<[Connector, Web3ReactHooks]>(({ hooks, connector }) => [connector, hooks])
+            return { connectors: [injectedConnection, ...filteredConnections].map<[Connector, Web3ReactHooks]>(({ hooks, connector }) => [connector, hooks]), connectorsKey: 'eip-6963-injected-first' }
           }
         }
       } else {
         if (walletConnectorMetadata.type === ConnectionType.INJECTED) {
           const firstConnection = connections.find(c => c?.type === ConnectionType.INJECTED);
-
           const filteredConnections = connections.filter(c => c?.type !== ConnectionType.INJECTED);
           if (firstConnection) {
-            return [firstConnection, ...filteredConnections].map<[Connector, Web3ReactHooks]>(({ hooks, connector }) => [connector, hooks])
+            return { connectors: [firstConnection, ...filteredConnections].map<[Connector, Web3ReactHooks]>(({ hooks, connector }) => [connector, hooks]), connectorsKey: 'injected-first' }
           }
         }
         const firstConnection = connections.find(c => c.getProviderInfo()?.rdns === walletConnectorMetadata?.rdns);
-
         const filteredConnections = connections.filter(c => c.getProviderInfo()?.rdns !== walletConnectorMetadata?.rdns);
         if (firstConnection) {
-          return [firstConnection, ...filteredConnections].map<[Connector, Web3ReactHooks]>(({ hooks, connector }) => [connector, hooks])
+          return { connectors: [firstConnection, ...filteredConnections].map<[Connector, Web3ReactHooks]>(({ hooks, connector }) => [connector, hooks]), connectorsKey: 'non-injected-first' }
         }
       }
     }
 
-    return connections.map<[Connector, Web3ReactHooks]>(({ hooks, connector }) => [connector, hooks])
+    return { connectors: connections.map<[Connector, Web3ReactHooks]>(({ hooks, connector }) => [connector, hooks]), connectorsKey: 'default' }
 
   }, [walletConnectorMetadata]);
 }
