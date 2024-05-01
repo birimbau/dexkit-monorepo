@@ -247,11 +247,11 @@ export const connectionsList = [
 
 export const connections = [
   deprecatedInjectedConnection,
+  eip6963Connection,
   emailConnection,
   googleConnection,
   twitterConnection,
   discordConnection,
-  eip6963Connection,
   walletConnectV2Connection,
   // coinbaseWalletConnection,
 ]
