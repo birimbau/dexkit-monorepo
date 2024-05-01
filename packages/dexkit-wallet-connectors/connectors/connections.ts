@@ -246,21 +246,14 @@ export const connectionsList = [
 
 
 export const connections = [
+  deprecatedInjectedConnection,
   emailConnection,
   googleConnection,
   twitterConnection,
   discordConnection,
   eip6963Connection,
-  deprecatedInjectedConnection,
-
-
   walletConnectV2Connection,
-
-
-
   // coinbaseWalletConnection,
-
-
 ]
 
 export function getConnection(c: Connector | ConnectionType) {
