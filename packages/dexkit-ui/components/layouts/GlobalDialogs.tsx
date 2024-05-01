@@ -66,8 +66,10 @@ export function GlobalDialogs() {
       const handleNetworkChange = (newNetwork: any, oldNetwork: any) => {
         if (connector && connector?.connectEagerly) {
           if (
-            walletConnectorMetadata.type === ConnectionType.EIP_6963_INJECTED &&
-            walletConnectorMetadata.rdns
+            walletConnectorMetadata &&
+            walletConnectorMetadata?.type ===
+              ConnectionType.EIP_6963_INJECTED &&
+            walletConnectorMetadata?.rdns
           ) {
             if ((connector as EIP6963)?.selectProvider) {
               (connector as EIP6963)?.selectProvider(
@@ -101,16 +103,12 @@ export function GlobalDialogs() {
   }, [connector, connector?.provider, walletConnectorMetadata]);
 
   useEffect(() => {
-    if (
-      typeof window !== "undefined" &&
-      connector &&
-      !runnedEagerly &&
-      walletConnectorMetadata
-    ) {
+    if (typeof window !== "undefined" && connector && !runnedEagerly) {
       if (connector.connectEagerly) {
         if (
-          walletConnectorMetadata.type === ConnectionType.EIP_6963_INJECTED &&
-          walletConnectorMetadata.rdns
+          walletConnectorMetadata &&
+          walletConnectorMetadata?.type === ConnectionType.EIP_6963_INJECTED &&
+          walletConnectorMetadata?.rdns
         ) {
           if ((connector as EIP6963)?.selectProvider) {
             (connector as EIP6963)?.selectProvider(

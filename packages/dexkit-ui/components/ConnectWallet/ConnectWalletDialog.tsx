@@ -24,7 +24,10 @@ import { useSnackbar } from "notistack";
 
 import { AppDialogTitle } from "../AppDialogTitle";
 
-import { magic } from "@dexkit/wallet-connectors/connectors/connections";
+import {
+  getIsInjectedMobileBrowser,
+  magic,
+} from "@dexkit/wallet-connectors/connectors/connections";
 import { MagicLoginType } from "@dexkit/wallet-connectors/connectors/magic";
 import { EMAIL_ICON } from "@dexkit/wallet-connectors/constants/icons";
 import { useOrderedConnections } from "@dexkit/wallet-connectors/hooks/useOrderedConnections";
@@ -147,10 +150,10 @@ export default function ConnectWalletDialog({
                 connectorName: conn.getProviderInfo().name,
                 connector: conn.connector,
                 loginType: conn?.loginType,
-                rdns: conn.getProviderInfo().rdns,
+                rdns: conn.getProviderInfo()?.rdns,
                 connectionType: conn?.type,
-                icon: conn?.getProviderInfo().icon,
-                name: conn?.getProviderInfo().name,
+                icon: conn?.getProviderInfo()?.icon,
+                name: conn?.getProviderInfo()?.name,
                 overrideActivate: conn?.overrideActivate,
               });
             }}
@@ -211,44 +214,48 @@ export default function ConnectWalletDialog({
       />
       <Divider />
       <DialogContent sx={{ padding: 0 }}>
-        <Box p={2}>
-          <Stack spacing={2}>
-            <TextField
-              disabled={
-                isActivating &&
-                connectorName === "magic" &&
-                loginType === "email"
-              }
-              value={email}
-              onChange={handleChangeEmail}
-              type="email"
-              placeholder={formatMessage({
-                id: "email",
-                defaultMessage: "Email",
-              })}
-            />
-            <Button
-              disabled={
-                isActivating &&
-                connectorName === "magic" &&
-                loginType === "email"
-              }
-              startIcon={
-                isActivating &&
-                connectorName === "magic" &&
-                loginType === "email"
-              }
-              onClick={handleConnectWithEmail}
-              variant="contained"
-            >
-              <FormattedMessage
-                id="connect.with.email"
-                defaultMessage="Connect with e-mail"
-              />
-            </Button>
-          </Stack>
-        </Box>
-        <Divider />
+        {!getIsInjectedMobileBrowser() && (
+          <>
+            <Box p={2}>
+              <Stack spacing={2}>
+                <TextField
+                  disabled={
+                    isActivating &&
+                    connectorName === "magic" &&
+                    loginType === "email"
+                  }
+                  value={email}
+                  onChange={handleChangeEmail}
+                  type="email"
+                  placeholder={formatMessage({
+                    id: "email",
+                    defaultMessage: "Email",
+                  })}
+                />
+                <Button
+                  disabled={
+                    isActivating &&
+                    connectorName === "magic" &&
+                    loginType === "email"
+                  }
+                  startIcon={
+                    isActivating &&
+                    connectorName === "magic" &&
+                    loginType === "email"
+                  }
+                  onClick={handleConnectWithEmail}
+                  variant="contained"
+                >
+                  <FormattedMessage
+                    id="connect.with.email"
+                    defaultMessage="Connect with e-mail"
+                  />
+                </Button>
+              </Stack>
+            </Box>
+            <Divider />
+          </>
+        )}
         <List disablePadding>{renderConnectors()}</List>
       </DialogContent>
     </Dialog>

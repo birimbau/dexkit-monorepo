@@ -105,24 +105,29 @@ export function useAppWizardConfig() {
 export function useOrderedConnectors() {
   const { walletConnectorMetadata } = useWalletConnectorMetadata();
 
-  //return connections.map<[Connector, Web3ReactHooks]>(({ hooks, connector }) => [connector, hooks])
 
   return useMemo(() => {
 
-    //const CONNECTORS  = connections.map<[Connector, Web3ReactHooks]>(({ hooks, connector }) => [connector, hooks]);
-
+    // We need to put the previous connection always first to Web3React be able to connect eagerly
     if (walletConnectorMetadata) {
       if (walletConnectorMetadata.type === ConnectionType.EIP_6963_INJECTED) {
         const firstConnection = connections.find(c => c.type === ConnectionType.EIP_6963_INJECTED) as InjectedConnection;
         const filteredConnections = connections.filter(c => c.type !== ConnectionType.EIP_6963_INJECTED);
         if (firstConnection) {
           const injectedConnection = firstConnection.wrap({ name: walletConnectorMetadata.name as string, rdns: walletConnectorMetadata.rdns, icon: walletConnectorMetadata.icon });
-
           if (injectedConnection) {
             return [injectedConnection, ...filteredConnections].map<[Connector, Web3ReactHooks]>(({ hooks, connector }) => [connector, hooks])
           }
         }
       } else {
+        if (walletConnectorMetadata.type === ConnectionType.INJECTED) {
+          const firstConnection = connections.find(c => c?.type === ConnectionType.INJECTED);
+
+          const filteredConnections = connections.filter(c => c?.type !== ConnectionType.INJECTED);
+          if (firstConnection) {
+            return [firstConnection, ...filteredConnections].map<[Connector, Web3ReactHooks]>(({ hooks, connector }) => [connector, hooks])
+          }
+        }
         const firstConnection = connections.find(c => c.getProviderInfo()?.rdns === walletConnectorMetadata?.rdns);
 
         const filteredConnections = connections.filter(c => c.getProviderInfo()?.rdns !== walletConnectorMetadata?.rdns);
@@ -130,14 +135,9 @@ export function useOrderedConnectors() {
           return [firstConnection, ...filteredConnections].map<[Connector, Web3ReactHooks]>(({ hooks, connector }) => [connector, hooks])
         }
       }
-
-
-
-
     }
 
     return connections.map<[Connector, Web3ReactHooks]>(({ hooks, connector }) => [connector, hooks])
-
 
   }, [walletConnectorMetadata]);
 }
