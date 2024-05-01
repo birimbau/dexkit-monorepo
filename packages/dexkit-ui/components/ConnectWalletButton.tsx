@@ -1,10 +1,14 @@
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import WalletIcon from "@mui/icons-material/Wallet";
 import Button from "@mui/material/Button";
+import CircularProgress from "@mui/material/CircularProgress";
+import { useWeb3React } from "@web3-react/core";
 import { FormattedMessage } from "react-intl";
 import { useConnectWalletDialog } from "../hooks";
+import WalletIcon from "./icons/Wallet";
 
 export function ConnectWalletButton() {
+  const { isActivating } = useWeb3React();
+
   const connectWalletDialog = useConnectWalletDialog();
 
   const handleOpenConnectWalletDialog = () => {
@@ -15,14 +19,31 @@ export function ConnectWalletButton() {
       variant="outlined"
       color="inherit"
       onClick={handleOpenConnectWalletDialog}
-      startIcon={<WalletIcon />}
+      startIcon={
+        isActivating ? (
+          <CircularProgress
+            color="inherit"
+            sx={{ fontSize: (theme) => theme.spacing(2) }}
+          />
+        ) : (
+          <WalletIcon />
+        )
+      }
       endIcon={<ChevronRightIcon />}
     >
-      <FormattedMessage
-        id="connect.wallet"
-        defaultMessage="Connect Wallet"
-        description="Connect wallet button"
-      />
+      {isActivating ? (
+        <FormattedMessage
+          id="loading.wallet"
+          defaultMessage="Loading Wallet"
+          description="Loading wallet button"
+        />
+      ) : (
+        <FormattedMessage
+          id="connect.wallet"
+          defaultMessage="Connect Wallet"
+          description="Connect wallet button"
+        />
+      )}
     </Button>
   );
 }

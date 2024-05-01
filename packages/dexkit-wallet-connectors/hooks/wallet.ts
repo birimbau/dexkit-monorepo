@@ -39,18 +39,20 @@ export function useWalletActivate({
     if (params?.loginType) {
       // This should be deprecated
       setWalletConnector("magic");
-      return await magic.activate({
+      const activedConnector = await magic.activate({
         loginType: params?.loginType,
         email: params.email,
         redirectUrl: magicRedirectUrl,
       });
+      return activedConnector;
     } else {
 
       // This should be deprecated
       setWalletConnector(params?.connectorName);
 
 
-      return await connector.activate();
+      const activatedConnector = await connector.activate();
+      return activatedConnector;
     }
   });
 

@@ -85,6 +85,7 @@ export default function ConnectWalletDialog({
           horizontal: "right",
         },
       });
+      setLoginType(undefined);
       setConnectorName(undefined);
     }
     handleClose();
@@ -146,14 +147,12 @@ export default function ConnectWalletDialog({
               </Avatar>
             </ListItemAvatar>
             <ListItemText primary={conn?.getProviderInfo().name} />
-            {isActivating &&
-              connectorName === conn?.getProviderInfo().name &&
-              conn?.loginType === loginType && (
-                <CircularProgress
-                  color="primary"
-                  sx={{ fontSize: (theme) => theme.spacing(2) }}
-                />
-              )}
+            {isActivating && connectorName === conn?.getProviderInfo().name && (
+              <CircularProgress
+                color="primary"
+                sx={{ fontSize: (theme) => theme.spacing(2) }}
+              />
+            )}
             {isActive &&
               activeConnectorName === conn?.getProviderInfo().name && (
                 <Stack

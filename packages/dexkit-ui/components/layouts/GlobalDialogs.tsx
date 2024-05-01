@@ -259,7 +259,10 @@ export function GlobalDialogs() {
       {connectWalletDialog.isOpen && (
         <ConnectWalletDialog
           DialogProps={{
-            open: connectWalletDialog.isOpen || isActivating,
+            open:
+              connectWalletDialog.isOpen ||
+              isActivating ||
+              walletActivate.mutation.isLoading,
             onClose: handleCloseConnectWalletDialog,
             fullWidth: true,
             maxWidth: "sm",
