@@ -374,6 +374,10 @@ export default function GatedConditionsFormDialog({
                                           getProviderByChainId(coll.chainId),
                                           coll.contractAddress,
                                         ).then((v) => {
+                                          setFieldValue(
+                                            `conditions[${index}].protocol`,
+                                            v,
+                                          );
                                           selectedCollections[index].protocol =
                                             v;
                                           setSelectedCollections({

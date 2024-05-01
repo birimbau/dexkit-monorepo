@@ -67,6 +67,7 @@ export const getStaticProps: GetStaticProps = async ({
   const configResponse = await getAppConfig(params?.site, params?.page);
   const { appConfig } = configResponse;
   const homePage = appConfig.pages[params?.page || ''];
+
   if (!homePage) {
     return {
       redirect: {

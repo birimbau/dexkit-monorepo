@@ -16,7 +16,7 @@ import {
   Typography,
   useTheme,
 } from '@mui/material';
-import Image from 'next/image';
+import Image from 'next/legacy/image';
 import { FormattedMessage } from 'react-intl';
 import { LoginAppButton } from 'src/components/LoginAppButton';
 
@@ -63,14 +63,16 @@ export function GatedConditionView({
               <Image
                 src={layout?.frontImage}
                 alt={'gated page front image'}
-                style={{
-                  height: layout?.frontImageHeight
-                    ? `${layout?.frontImageHeight}px`
-                    : theme.spacing(20),
-                  width: layout?.frontImageWidth
-                    ? `${layout?.frontImageWidth}px`
-                    : theme.spacing(20),
-                }}
+                height={
+                  layout?.frontImageHeight
+                    ? Number(layout?.frontImageHeight)
+                    : 20 * 8
+                }
+                width={
+                  layout?.frontImageWidth
+                    ? Number(layout?.frontImageWidth)
+                    : 20 * 8
+                }
               />
             ) : (
               <ShieldIcon sx={{ fontSize: 80 }} />
@@ -103,7 +105,7 @@ export function GatedConditionView({
         <Grid item xs={12}>
           {account && isLoggedIn ? (
             (conditions || []).map((condition, index) => (
-              <>
+              <Box key={index}>
                 {condition.condition && (
                   <Stack
                     key={index}
@@ -187,7 +189,7 @@ export function GatedConditionView({
                     )}
                   </Stack>
                 </Box>
-              </>
+              </Box>
             ))
           ) : (
             <Stack justifyContent={'center'} alignItems={'center'}>
