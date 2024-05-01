@@ -143,7 +143,6 @@ export default function ConnectWalletDialog({
               isActivating && connectorName === conn.getProviderInfo().name
             }
             onClick={() => {
-              console.log(conn);
               handleActivateWallet({
                 connectorName: conn.getProviderInfo().name,
                 connector: conn.connector,

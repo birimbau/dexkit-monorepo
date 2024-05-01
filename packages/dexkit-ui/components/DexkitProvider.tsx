@@ -76,7 +76,7 @@ export function DexkitProvider({
   activeChainIds,
   siteId,
 }: DexkitProviderProps) {
-  const connectors = useOrderedConnectors({ selectedWalletAtom });
+  const connectors = useOrderedConnectors();
 
   const web3ReactKey = useMemo(
     () =>
