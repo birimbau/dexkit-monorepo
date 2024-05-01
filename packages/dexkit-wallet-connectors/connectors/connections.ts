@@ -12,7 +12,7 @@ import { getDeprecatedInjection, getIsCoinbaseWallet, getIsInjected, getIsMetaMa
 import { WalletConnectV2 } from '../constants/connectors/walletConnect'
 import { COINBASE_WALLET_ICON, DISCORD_ICON, EMAIL_ICON, GOOGLE_ICON, TWITTER_ICON, WALLET_CONNECT_ICON } from '../constants/icons'
 import { MagicApiKey } from '../constants/magic'
-import { Connection, ConnectionLoginType, ConnectionType, ProviderInfo } from '../types'
+import { Connection, ConnectionType, ProviderInfo } from '../types'
 import { isMobile } from '../utils/userAgent'
 import { MagicConnector } from './magic'
 
@@ -29,7 +29,7 @@ function onError(error: Error) {
   console.debug(`web3-react error: ${error}`)
 }
 
-type InjectedConnection = Connection & {
+export type InjectedConnection = Connection & {
   /** Returns a copy of the connection with metadata & activation for a specific extension/provider */
   wrap: (providerInfo: ProviderInfo) => Connection | undefined
   /** Sets which extension/provider the connector should activate */
@@ -54,6 +54,7 @@ export const eip6963Connection: InjectedConnection = {
       ...this,
       getProviderInfo: () => providerInfo,
       overrideActivate() {
+
         eip6963.selectProvider(rdns) // Select the specific eip6963 provider before activating
         return false
       },
@@ -98,6 +99,7 @@ export const walletConnectV2Connection: Connection = new (class implements Conne
   getProviderInfo = () => ({
     name: 'WalletConnect',
     icon: WALLET_CONNECT_ICON,
+    rdns: 'walletconnectv2'
   })
   shouldDisplay = () => !getIsInjectedMobileBrowser()
 
@@ -212,35 +214,53 @@ const magicConnection: Connection = {
 
 const emailConnection: Connection = {
   ...magicConnection,
-  loginType: ConnectionLoginType.EMAIL,
-  getProviderInfo: () => ({ name: 'Email', icon: EMAIL_ICON }),
+  loginType: 'email',
+  getProviderInfo: () => ({ name: 'Email', icon: EMAIL_ICON, rdns: 'magic.email' }),
 }
 const googleConnection: Connection = {
   ...magicConnection,
-  loginType: ConnectionLoginType.GOOGLE,
-  getProviderInfo: () => ({ name: 'Google', icon: GOOGLE_ICON }),
+  loginType: 'google',
+  getProviderInfo: () => ({ name: 'Google', icon: GOOGLE_ICON, rdns: 'magic.google' }),
 }
 const twitterConnection: Connection = {
   ...magicConnection,
-  loginType: ConnectionLoginType.TWITTER,
-  getProviderInfo: () => ({ name: 'Twitter', icon: TWITTER_ICON }),
+  loginType: 'twitter',
+  getProviderInfo: () => ({ name: 'Twitter', icon: TWITTER_ICON, rdns: 'magic.twitter' }),
 }
 const discordConnection: Connection = {
   ...magicConnection,
-  loginType: ConnectionLoginType.TWITTER,
-  getProviderInfo: () => ({ name: 'Discord', icon: DISCORD_ICON }),
+  loginType: 'discord',
+  getProviderInfo: () => ({ name: 'Discord', icon: DISCORD_ICON, rdns: 'magic.discord' }),
 }
 
-
-export const connections = [
+export const connectionsList = [
   deprecatedInjectedConnection,
+  eip6963Connection,
   walletConnectV2Connection,
   // coinbaseWalletConnection,
-  eip6963Connection,
-  emailConnection,
+
   googleConnection,
   twitterConnection,
   discordConnection
+]
+
+
+export const connections = [
+  emailConnection,
+  googleConnection,
+  twitterConnection,
+  discordConnection,
+  eip6963Connection,
+  deprecatedInjectedConnection,
+
+
+  walletConnectV2Connection,
+
+
+
+  // coinbaseWalletConnection,
+
+
 ]
 
 export function getConnection(c: Connector | ConnectionType) {

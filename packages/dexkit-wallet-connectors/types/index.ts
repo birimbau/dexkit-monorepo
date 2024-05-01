@@ -1,15 +1,19 @@
 
 
-import { Web3ReactHooks } from '@web3-react/core';
+import type { Web3ReactHooks } from '@web3-react/core';
 import { Connector } from '@web3-react/types';
 import { MagicLoginType } from "../connectors/magic";
 
 export type BaseActivateParams = {
-  connectorName: "magic" | "metamask" | "walletConnect" | "coinbase";
+  connectorName: string;
   name?: string,
+  rdns?: string,
   icon?: string,
   connector: Connector,
   overrideActivate?: (chainId?: number) => boolean;
+  loginType?: MagicLoginType;
+  connectionType?: ConnectionType;
+  email?: string;
 };
 
 export type ActivateMetamaskParams = BaseActivateParams & {
@@ -30,11 +34,15 @@ export type ActivateMagicParams = BaseActivateParams & {
   email?: string;
 };
 
+export type ActivateInjectedParams = BaseActivateParams & {
+  connectorName: string;
+};
+
 export type WalletActivateParams =
   ActivateMetamaskParams
   | ActivateMagicParams
   | ActivateWalletConnectParams
-  | ActivateCoinbaseParams;
+  | ActivateCoinbaseParams | ActivateInjectedParams;
 
 
 export enum ConnectionType {
@@ -66,7 +74,7 @@ export interface Connection {
   connector: Connector
   hooks: Web3ReactHooks
   type: ConnectionType
-  loginType?: ConnectionLoginType
+  loginType?: MagicLoginType
   shouldDisplay(): boolean
   /** Executes specific pre-activation steps necessary for some connection types. Returns true if the connection should not be activated. */
   overrideActivate?: (chainId?: number) => boolean

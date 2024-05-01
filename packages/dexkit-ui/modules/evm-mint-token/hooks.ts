@@ -23,7 +23,7 @@ export function useMintToken({
     if (!contractAddress || !quantity) {
       return false;
     }
-    console.log(to)
+
 
     let tx;
 

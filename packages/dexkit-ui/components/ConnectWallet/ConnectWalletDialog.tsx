@@ -24,14 +24,13 @@ import { useSnackbar } from "notistack";
 
 import { AppDialogTitle } from "../AppDialogTitle";
 
-import { WALLET_CONNECTORS } from "@dexkit/wallet-connectors/connectors";
 import { magic } from "@dexkit/wallet-connectors/connectors/connections";
 import { MagicLoginType } from "@dexkit/wallet-connectors/connectors/magic";
 import { EMAIL_ICON } from "@dexkit/wallet-connectors/constants/icons";
+import { useOrderedConnections } from "@dexkit/wallet-connectors/hooks/useOrderedConnections";
 import { WalletActivateParams } from "@dexkit/wallet-connectors/types";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import Wallet from "@mui/icons-material/Wallet";
-import { Connector } from "@web3-react/types";
 
 export interface ConnectWalletDialogProps {
   DialogProps: DialogProps;
@@ -49,6 +48,7 @@ export default function ConnectWalletDialog({
   isActive,
   activeConnectorName,
 }: ConnectWalletDialogProps) {
+  const { orderedConnections } = useOrderedConnections();
   const { onClose } = dialogProps;
 
   const { formatMessage } = useIntl();
@@ -58,7 +58,7 @@ export default function ConnectWalletDialog({
     localStorage.getItem("loginType") as MagicLoginType
   );
 
-  const handelClose = () => {
+  const handleClose = () => {
     onClose!({}, "backdropClick");
   };
 
@@ -71,26 +71,22 @@ export default function ConnectWalletDialog({
     icon,
     name,
     connectorName,
+    rdns,
+    connectionType,
     overrideActivate,
-  }: {
-    connectorName: WalletActivateParams["connectorName"];
-    name?: string;
-    icon?: string;
-    loginType?: MagicLoginType;
-    email?: string;
-    connector: Connector;
-    overrideActivate?: (chainId?: number) => boolean;
-  }) => {
+  }: WalletActivateParams) => {
     setConnectorName(connectorName);
     setLoginType(loginType);
 
     try {
-      if (connectorName === "magic") {
+      if (loginType) {
         await activate({
           connectorName,
           email,
           loginType,
           connector,
+          rdns,
+          connectionType,
           icon,
           name,
         });
@@ -99,6 +95,8 @@ export default function ConnectWalletDialog({
           connectorName,
           connector,
           icon,
+          rdns,
+          connectionType,
           name,
           overrideActivate,
         });
@@ -113,7 +111,7 @@ export default function ConnectWalletDialog({
       });
       setConnectorName(undefined);
     }
-    handelClose();
+    handleClose();
   };
 
   const [email, setEmail] = useState("");
@@ -135,27 +133,28 @@ export default function ConnectWalletDialog({
   };
 
   const renderConnectors = () => {
-    return WALLET_CONNECTORS.map((conn, index: number) => (
+    return orderedConnections.map(({ connection: conn }, index: number) => (
       <>
         {conn.shouldDisplay() && (
           <ListItemButton
             divider
             key={index}
             disabled={
-              isActivating &&
-              connectorName === conn.id &&
-              conn?.loginType === loginType
+              isActivating && connectorName === conn.getProviderInfo().name
             }
-            onClick={() =>
+            onClick={() => {
+              console.log(conn);
               handleActivateWallet({
-                connectorName: conn.id,
-                loginType: conn?.loginType,
+                connectorName: conn.getProviderInfo().name,
                 connector: conn.connector,
-                icon: conn?.icon,
-                name: conn?.name,
+                loginType: conn?.loginType,
+                rdns: conn.getProviderInfo().rdns,
+                connectionType: conn?.type,
+                icon: conn?.getProviderInfo().icon,
+                name: conn?.getProviderInfo().name,
                 overrideActivate: conn?.overrideActivate,
-              })
-            }
+              });
+            }}
           >
             <ListItemAvatar>
               <Avatar>
@@ -166,14 +165,14 @@ export default function ConnectWalletDialog({
                     width: "auto",
                     height: theme.spacing(5),
                   })}
-                  src={conn.icon}
-                  alt={conn.name}
+                  src={conn?.getProviderInfo().icon}
+                  alt={conn?.getProviderInfo().name}
                 />
               </Avatar>
             </ListItemAvatar>
-            <ListItemText primary={conn.name} />
+            <ListItemText primary={conn?.getProviderInfo().name} />
             {isActivating &&
-              connectorName === conn.id &&
+              connectorName === conn?.getProviderInfo().name &&
               conn?.loginType === loginType && (
                 <CircularProgress
                   color="primary"
@@ -181,21 +180,7 @@ export default function ConnectWalletDialog({
                 />
               )}
             {isActive &&
-              activeConnectorName === conn.id &&
-              (activeConnectorName === "magic" ? (
-                conn?.loginType === loginType ? (
-                  <Stack
-                    direction="row"
-                    justifyContent="center"
-                    alignItems="center"
-                    alignContent="center"
-                  >
-                    <FiberManualRecordIcon
-                      sx={{ color: (theme) => theme.palette.success.light }}
-                    />
-                  </Stack>
-                ) : null
-              ) : (
+              activeConnectorName === conn?.getProviderInfo().name && (
                 <Stack
                   direction="row"
                   justifyContent="center"
@@ -206,7 +191,7 @@ export default function ConnectWalletDialog({
                     sx={{ color: (theme) => theme.palette.success.light }}
                   />
                 </Stack>
-              ))}
+              )}
           </ListItemButton>
         )}
       </>
@@ -214,7 +199,7 @@ export default function ConnectWalletDialog({
   };
 
   return (
-    <Dialog {...dialogProps} onClose={handelClose}>
+    <Dialog {...dialogProps} onClose={handleClose}>
       <AppDialogTitle
         icon={<Wallet />}
         title={
@@ -223,7 +208,7 @@ export default function ConnectWalletDialog({
             defaultMessage="Connect Your Wallet"
           />
         }
-        onClose={handelClose}
+        onClose={handleClose}
       />
       <Divider />
       <DialogContent sx={{ padding: 0 }}>

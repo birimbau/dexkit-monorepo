@@ -9,7 +9,6 @@ import {
   TokenWhitelabelApp,
   TransactionMetadata,
 } from "@dexkit/core/types";
-import { CONNECTORS } from "@dexkit/wallet-connectors/constants";
 import { switchNetwork } from "@dexkit/wallet-connectors/utils";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
@@ -43,6 +42,9 @@ import {
 } from "../types";
 
 import { isHexString } from '@dexkit/core/utils/ethers/isHexString';
+import { InjectedConnection, connections } from "@dexkit/wallet-connectors/connectors/connections";
+import { useWalletConnectorMetadata } from "@dexkit/wallet-connectors/hooks";
+import { ConnectionType } from "@dexkit/wallet-connectors/types";
 import { providers } from "ethers";
 import { AdminContext } from "../context/AdminContext";
 
@@ -100,32 +102,44 @@ export function useAppWizardConfig() {
   return { wizardConfig, setWizardConfig };
 }
 
-export function useOrderedConnectors({
-  selectedWalletAtom,
-}: {
-  selectedWalletAtom: PrimitiveAtom<string>;
-}) {
-  const selectedWallet = useAtomValue(selectedWalletAtom);
+export function useOrderedConnectors() {
+  const { walletConnectorMetadata } = useWalletConnectorMetadata();
+
+  //return connections.map<[Connector, Web3ReactHooks]>(({ hooks, connector }) => [connector, hooks])
 
   return useMemo(() => {
-    let connectors: [Connector, Web3ReactHooks][] = [];
 
-    if (selectedWallet) {
-      const otherConnectors = Object.keys(CONNECTORS)
-        .filter((key) => selectedWallet !== key)
-        .map((key) => CONNECTORS[key]);
+    //const CONNECTORS  = connections.map<[Connector, Web3ReactHooks]>(({ hooks, connector }) => [connector, hooks]);
 
-      connectors = [CONNECTORS[selectedWallet], ...otherConnectors];
-    } else {
-      const otherConnectors = Object.keys(CONNECTORS).map(
-        (key) => CONNECTORS[key]
-      );
+    if (walletConnectorMetadata) {
+      if (walletConnectorMetadata.type === ConnectionType.EIP_6963_INJECTED) {
+        const firstConnection = connections.find(c => c.type === ConnectionType.EIP_6963_INJECTED) as InjectedConnection;
+        const filteredConnections = connections.filter(c => c.type !== ConnectionType.EIP_6963_INJECTED);
+        if (firstConnection) {
+          const injectedConnection = firstConnection.wrap({ name: walletConnectorMetadata.name as string, rdns: walletConnectorMetadata.rdns, icon: walletConnectorMetadata.icon });
 
-      connectors = otherConnectors;
+          if (injectedConnection) {
+            return [injectedConnection, ...filteredConnections].map<[Connector, Web3ReactHooks]>(({ hooks, connector }) => [connector, hooks])
+          }
+        }
+      } else {
+        const firstConnection = connections.find(c => c.getProviderInfo()?.rdns === walletConnectorMetadata?.rdns);
+
+        const filteredConnections = connections.filter(c => c.getProviderInfo()?.rdns !== walletConnectorMetadata?.rdns);
+        if (firstConnection) {
+          return [firstConnection, ...filteredConnections].map<[Connector, Web3ReactHooks]>(({ hooks, connector }) => [connector, hooks])
+        }
+      }
+
+
+
+
     }
 
-    return connectors;
-  }, [selectedWallet]);
+    return connections.map<[Connector, Web3ReactHooks]>(({ hooks, connector }) => [connector, hooks])
+
+
+  }, [walletConnectorMetadata]);
 }
 
 export function useDexkitContextState({

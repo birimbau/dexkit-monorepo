@@ -26,7 +26,7 @@ export interface WalletButtonProps {
 }
 
 export function WalletButton({ align }: WalletButtonProps) {
-  const { connector, account, ENSName } = useWeb3React();
+  const { account, ENSName } = useWeb3React();
   const { walletConnectorMetadata } = useWalletConnectorMetadata();
   const isBalancesVisible = useIsBalanceVisible();
 
@@ -60,7 +60,7 @@ export function WalletButton({ align }: WalletButtonProps) {
       >
         <Stack direction="row" spacing={1} alignItems="center">
           <Avatar
-            src={walletConnectorMetadata.icon || GET_WALLET_ICON(connector)}
+            src={walletConnectorMetadata.icon || GET_WALLET_ICON()}
             sx={(theme) => ({
               width: theme.spacing(2),
               height: theme.spacing(2),

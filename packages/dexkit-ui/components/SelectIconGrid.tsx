@@ -26,7 +26,7 @@ export default function SelectIconGrid({
     });
   }, [filters]);
 
-  console.log(filters?.theme, "theme");
+
 
   const theme = useTheme();
 
