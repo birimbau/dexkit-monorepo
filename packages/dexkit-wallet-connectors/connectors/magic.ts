@@ -1,5 +1,5 @@
-import { OAuthExtension } from "@magic-ext/oauth";
-import { InstanceWithExtensions, SDKBase } from "@magic-sdk/provider";
+import type { OAuthExtension } from "@magic-ext/oauth";
+import type { InstanceWithExtensions, SDKBase } from "@magic-sdk/provider";
 import type {
   Actions,
 } from '@web3-react/types';

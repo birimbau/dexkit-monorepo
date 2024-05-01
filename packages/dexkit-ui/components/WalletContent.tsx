@@ -71,6 +71,9 @@ export default function WalletContent() {
     logoutMutation.mutate();
     if (connector?.deactivate) {
       connector.deactivate();
+      if (connector?.resetState) {
+        connector?.resetState();
+      }
     } else {
       if (connector?.resetState) {
         connector?.resetState();
@@ -189,7 +192,7 @@ export default function WalletContent() {
           >
             <Stack direction="row" spacing={1} alignItems="center">
               <Avatar
-                src={walletConnectorMetadata.icon || GET_WALLET_ICON(connector)}
+                src={walletConnectorMetadata.icon || GET_WALLET_ICON()}
                 sx={(theme) => ({
                   width: theme.spacing(2),
                   height: theme.spacing(2),

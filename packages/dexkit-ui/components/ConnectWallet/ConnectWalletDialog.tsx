@@ -24,14 +24,16 @@ import { useSnackbar } from "notistack";
 
 import { AppDialogTitle } from "../AppDialogTitle";
 
-import { WALLET_CONNECTORS } from "@dexkit/wallet-connectors/connectors";
-import { magic } from "@dexkit/wallet-connectors/connectors/connections";
+import {
+  getIsInjectedMobileBrowser,
+  magic,
+} from "@dexkit/wallet-connectors/connectors/connections";
 import { MagicLoginType } from "@dexkit/wallet-connectors/connectors/magic";
 import { EMAIL_ICON } from "@dexkit/wallet-connectors/constants/icons";
+import { useOrderedConnections } from "@dexkit/wallet-connectors/hooks/useOrderedConnections";
 import { WalletActivateParams } from "@dexkit/wallet-connectors/types";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import Wallet from "@mui/icons-material/Wallet";
-import { Connector } from "@web3-react/types";
 
 export interface ConnectWalletDialogProps {
   DialogProps: DialogProps;
@@ -49,6 +51,7 @@ export default function ConnectWalletDialog({
   isActive,
   activeConnectorName,
 }: ConnectWalletDialogProps) {
+  const { orderedConnections } = useOrderedConnections();
   const { onClose } = dialogProps;
 
   const { formatMessage } = useIntl();
@@ -58,50 +61,21 @@ export default function ConnectWalletDialog({
     localStorage.getItem("loginType") as MagicLoginType
   );
 
-  const handelClose = () => {
+  const handleClose = () => {
     onClose!({}, "backdropClick");
   };
 
   const { enqueueSnackbar } = useSnackbar();
 
-  const handleActivateWallet = async ({
-    connector,
-    loginType,
-    email,
-    icon,
-    name,
-    connectorName,
-    overrideActivate,
-  }: {
-    connectorName: WalletActivateParams["connectorName"];
-    name?: string;
-    icon?: string;
-    loginType?: MagicLoginType;
-    email?: string;
-    connector: Connector;
-    overrideActivate?: (chainId?: number) => boolean;
-  }) => {
-    setConnectorName(connectorName);
-    setLoginType(loginType);
+  const handleActivateWallet = async (params: WalletActivateParams) => {
+    setConnectorName(params?.connectorName);
+    setLoginType(params?.loginType);
 
     try {
-      if (connectorName === "magic") {
-        await activate({
-          connectorName,
-          email,
-          loginType,
-          connector,
-          icon,
-          name,
-        });
+      if (params?.loginType) {
+        await activate(params);
       } else {
-        await activate({
-          connectorName,
-          connector,
-          icon,
-          name,
-          overrideActivate,
-        });
+        await activate(params);
       }
     } catch (err: any) {
       enqueueSnackbar(err.message, {
@@ -111,9 +85,10 @@ export default function ConnectWalletDialog({
           horizontal: "right",
         },
       });
+      setLoginType(undefined);
       setConnectorName(undefined);
     }
-    handelClose();
+    handleClose();
   };
 
   const [email, setEmail] = useState("");
@@ -135,27 +110,27 @@ export default function ConnectWalletDialog({
   };
 
   const renderConnectors = () => {
-    return WALLET_CONNECTORS.map((conn, index: number) => (
+    return orderedConnections.map(({ connection: conn }, index: number) => (
       <>
         {conn.shouldDisplay() && (
           <ListItemButton
             divider
             key={index}
             disabled={
-              isActivating &&
-              connectorName === conn.id &&
-              conn?.loginType === loginType
+              isActivating && connectorName === conn.getProviderInfo()?.name
             }
-            onClick={() =>
+            onClick={() => {
               handleActivateWallet({
-                connectorName: conn.id,
+                connectorName: conn.getProviderInfo().name,
+                connector: conn?.connector,
                 loginType: conn?.loginType,
-                connector: conn.connector,
-                icon: conn?.icon,
-                name: conn?.name,
+                rdns: conn.getProviderInfo()?.rdns,
+                connectionType: conn?.type,
+                icon: conn?.getProviderInfo()?.icon,
+                name: conn?.getProviderInfo()?.name,
                 overrideActivate: conn?.overrideActivate,
-              })
-            }
+              });
+            }}
           >
             <ListItemAvatar>
               <Avatar>
@@ -166,36 +141,20 @@ export default function ConnectWalletDialog({
                     width: "auto",
                     height: theme.spacing(5),
                   })}
-                  src={conn.icon}
-                  alt={conn.name}
+                  src={conn?.getProviderInfo()?.icon}
+                  alt={conn?.getProviderInfo()?.name}
                 />
               </Avatar>
             </ListItemAvatar>
-            <ListItemText primary={conn.name} />
-            {isActivating &&
-              connectorName === conn.id &&
-              conn?.loginType === loginType && (
-                <CircularProgress
-                  color="primary"
-                  sx={{ fontSize: (theme) => theme.spacing(2) }}
-                />
-              )}
+            <ListItemText primary={conn?.getProviderInfo().name} />
+            {isActivating && connectorName === conn?.getProviderInfo().name && (
+              <CircularProgress
+                color="primary"
+                sx={{ fontSize: (theme) => theme.spacing(2) }}
+              />
+            )}
             {isActive &&
-              activeConnectorName === conn.id &&
-              (activeConnectorName === "magic" ? (
-                conn?.loginType === loginType ? (
-                  <Stack
-                    direction="row"
-                    justifyContent="center"
-                    alignItems="center"
-                    alignContent="center"
-                  >
-                    <FiberManualRecordIcon
-                      sx={{ color: (theme) => theme.palette.success.light }}
-                    />
-                  </Stack>
-                ) : null
-              ) : (
+              activeConnectorName === conn?.getProviderInfo().name && (
                 <Stack
                   direction="row"
                   justifyContent="center"
@@ -206,7 +165,7 @@ export default function ConnectWalletDialog({
                     sx={{ color: (theme) => theme.palette.success.light }}
                   />
                 </Stack>
-              ))}
+              )}
           </ListItemButton>
         )}
       </>
@@ -214,7 +173,7 @@ export default function ConnectWalletDialog({
   };
 
   return (
-    <Dialog {...dialogProps} onClose={handelClose}>
+    <Dialog {...dialogProps} onClose={handleClose}>
       <AppDialogTitle
         icon={<Wallet />}
         title={
@@ -223,48 +182,52 @@ export default function ConnectWalletDialog({
             defaultMessage="Connect Your Wallet"
           />
         }
-        onClose={handelClose}
+        onClose={handleClose}
       />
       <Divider />
       <DialogContent sx={{ padding: 0 }}>
-        <Box p={2}>
-          <Stack spacing={2}>
-            <TextField
-              disabled={
-                isActivating &&
-                connectorName === "magic" &&
-                loginType === "email"
-              }
-              value={email}
-              onChange={handleChangeEmail}
-              type="email"
-              placeholder={formatMessage({
-                id: "email",
-                defaultMessage: "Email",
-              })}
-            />
-            <Button
-              disabled={
-                isActivating &&
-                connectorName === "magic" &&
-                loginType === "email"
-              }
-              startIcon={
-                isActivating &&
-                connectorName === "magic" &&
-                loginType === "email"
-              }
-              onClick={handleConnectWithEmail}
-              variant="contained"
-            >
-              <FormattedMessage
-                id="connect.with.email"
-                defaultMessage="Connect with e-mail"
-              />
-            </Button>
-          </Stack>
-        </Box>
-        <Divider />
+        {!getIsInjectedMobileBrowser() && (
+          <>
+            <Box p={2}>
+              <Stack spacing={2}>
+                <TextField
+                  disabled={
+                    isActivating &&
+                    connectorName === "magic" &&
+                    loginType === "email"
+                  }
+                  value={email}
+                  onChange={handleChangeEmail}
+                  type="email"
+                  placeholder={formatMessage({
+                    id: "email",
+                    defaultMessage: "Email",
+                  })}
+                />
+                <Button
+                  disabled={
+                    isActivating &&
+                    connectorName === "magic" &&
+                    loginType === "email"
+                  }
+                  startIcon={
+                    isActivating &&
+                    connectorName === "magic" &&
+                    loginType === "email"
+                  }
+                  onClick={handleConnectWithEmail}
+                  variant="contained"
+                >
+                  <FormattedMessage
+                    id="connect.with.email"
+                    defaultMessage="Connect with e-mail"
+                  />
+                </Button>
+              </Stack>
+            </Box>
+            <Divider />
+          </>
+        )}
         <List disablePadding>{renderConnectors()}</List>
       </DialogContent>
     </Dialog>

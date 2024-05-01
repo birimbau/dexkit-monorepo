@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import { useWeb3React } from "@web3-react/core";
-import { WalletActivateParams } from "../types";
+import { ConnectionType, WalletActivateParams } from "../types";
 
 import { PrimitiveAtom, useAtom } from "jotai";
 import { atomWithStorage } from "jotai/utils";
@@ -26,41 +26,40 @@ export function useWalletActivate({
     if (params?.overrideActivate && params?.overrideActivate(chainId)) return;
 
 
-    if (params.connectorName === "magic") {
-      setWalletConnectorMetadata(
-        {
-          id: params.connectorName,
-          icon: params.icon,
-          name: params.name
-        }
-      )
+    setWalletConnectorMetadata(
+      {
+        id: params?.connectorName,
+        icon: params?.icon,
+        rdns: params?.rdns,
+        name: params?.name,
+        type: params?.connectionType
+      }
+    )
+
+    if (params?.loginType) {
       // This should be deprecated
       setWalletConnector("magic");
-      return await magic.activate({
+      const activedConnector = await magic.activate({
         loginType: params?.loginType,
         email: params.email,
         redirectUrl: magicRedirectUrl,
       });
+      return activedConnector;
     } else {
-      setWalletConnectorMetadata(
-        {
-          id: params.connectorName,
-          icon: params.icon,
-          name: params.name
-        }
-      )
+
       // This should be deprecated
-      setWalletConnector(params.connectorName);
+      setWalletConnector(params?.connectorName);
 
 
-      return await connector.activate();
+      const activatedConnector = await connector.activate();
+      return activatedConnector;
     }
   });
 
   return { connectorName: walletConnector, mutation };
 }
 
-const walletConnectorMetadataAtom = atomWithStorage<{ id?: string, name?: string, icon?: string }>("wallet-connector-metadata", {});
+const walletConnectorMetadataAtom = atomWithStorage<{ id?: string, name?: string, icon?: string, rdns?: string, type?: ConnectionType }>("wallet-connector-metadata", {});
 
 /**
  * Return current active connector metadata

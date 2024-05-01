@@ -2,7 +2,6 @@ import { IntlProvider, MessageFormatElement } from "react-intl";
 
 import { Web3ReactProvider } from "@web3-react/core";
 import { SnackbarProvider } from "notistack";
-import { useMemo } from "react";
 import { useDexkitContextState, useOrderedConnectors } from "../hooks";
 
 import { AppTransaction, Asset, TokenWhitelabelApp } from "@dexkit/core/types";
@@ -10,7 +9,6 @@ import { AppTransaction, Asset, TokenWhitelabelApp } from "@dexkit/core/types";
 import { CssBaseline } from "@mui/material";
 import { PrimitiveAtom, SetStateAction, WritableAtom } from "jotai";
 
-import { GET_CONNECTOR_NAME } from "@dexkit/wallet-connectors/connectors";
 import {
   Experimental_CssVarsProvider as CssVarsProvider,
   SupportedColorScheme,
@@ -76,13 +74,7 @@ export function DexkitProvider({
   activeChainIds,
   siteId,
 }: DexkitProviderProps) {
-  const connectors = useOrderedConnectors({ selectedWalletAtom });
-
-  const web3ReactKey = useMemo(
-    () =>
-      connectors.map((connector) => GET_CONNECTOR_NAME(connector[0])).join("-"),
-    [connectors]
-  );
+  const { connectors, connectorsKey } = useOrderedConnectors();
 
   const appState = useDexkitContextState({
     notificationTypes,
@@ -110,7 +102,7 @@ export function DexkitProvider({
         defaultLocale={locale}
         messages={localeMessages}
       >
-        <Web3ReactProvider connectors={connectors} key={web3ReactKey}>
+        <Web3ReactProvider connectors={connectors} key={connectorsKey}>
           <CssVarsProvider theme={theme}>
             <SnackbarProvider
               maxSnack={3}

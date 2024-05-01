@@ -110,9 +110,9 @@ export class EIP6963 extends Connector {
   public async connectEagerly(): Promise<void> {
     const cancelActivation = this.actions.startActivation()
 
+
     try {
       if (!this.provider) return cancelActivation()
-
       // Wallets may resolve eth_chainId and hang on eth_accounts pending user interaction, which may include changing
       // chains; they should be requested serially, with accounts first, so that the chainId can settle.
       const accounts = (await this.provider.request({ method: 'eth_accounts' })) as string[]

@@ -32,7 +32,6 @@ import { useWeb3React } from "@web3-react/core";
 
 import { getChainLogoImage, getChainName } from "@dexkit/core/utils/blockchain";
 import AttachMoney from "@mui/icons-material/AttachMoney";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import Language from "@mui/icons-material/Language";
 import SettingsIcon from "@mui/icons-material/Settings";
 import dynamic from "next/dynamic";
@@ -67,6 +66,7 @@ import {
 } from "@dexkit/ui/hooks";
 import { AppConfig } from "@dexkit/ui/modules/wizard/types/config";
 import AppProfileMenu from "./AppProfileMenu";
+import { ConnectWalletButton } from "./ConnectWalletButton";
 import NavbarMenu from "./NavbarMenu";
 import { ThemeModeSelector } from "./ThemeModeSelector";
 
@@ -542,19 +542,7 @@ function Navbar({ appConfig, isPreview }: Props) {
               )}
 
               {!isActive ? (
-                <Button
-                  variant="outlined"
-                  color="inherit"
-                  onClick={handleOpenConnectWalletDialog}
-                  startIcon={<Wallet />}
-                  endIcon={<ChevronRightIcon />}
-                >
-                  <FormattedMessage
-                    id="connect.wallet"
-                    defaultMessage="Connect Wallet"
-                    description="Connect wallet button"
-                  />
-                </Button>
+                <ConnectWalletButton />
               ) : (
                 <Stack direction="row" alignItems="center" spacing={2}>
                   <ButtonBase

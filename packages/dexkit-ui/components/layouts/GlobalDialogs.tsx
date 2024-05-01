@@ -22,8 +22,15 @@ const SwitchNetworkDialog = dynamic(
 );
 
 import { useDexKitContext, useExecuteTransactionsDialog } from "@dexkit/ui";
-import { useWalletActivate } from "@dexkit/wallet-connectors/hooks/wallet";
-import { WalletActivateParams } from "@dexkit/wallet-connectors/types";
+import { EIP6963 } from "@dexkit/wallet-connectors/constants/connectors/eip6963";
+import {
+  useWalletActivate,
+  useWalletConnectorMetadata,
+} from "@dexkit/wallet-connectors/hooks/wallet";
+import {
+  ConnectionType,
+  WalletActivateParams,
+} from "@dexkit/wallet-connectors/types";
 
 const ConnectWalletDialog = dynamic(
   () => import("@dexkit/ui/components/ConnectWallet/ConnectWalletDialog")
@@ -46,16 +53,32 @@ const SelectLanguageDialog = dynamic(
   () => import("@dexkit/ui/components/dialogs/SelectLanguageDialog")
 );
 
+let runnedEagerly = false;
+
 export function GlobalDialogs() {
   const { connector, isActive, isActivating } = useWeb3React();
+  const { walletConnectorMetadata } = useWalletConnectorMetadata();
   const router = useRouter();
 
   useEffect(() => {
     if (typeof window !== "undefined") {
       // connector.activate();
       const handleNetworkChange = (newNetwork: any, oldNetwork: any) => {
-        if (connector && connector.connectEagerly) {
+        if (connector && connector?.connectEagerly) {
+          if (
+            walletConnectorMetadata &&
+            walletConnectorMetadata?.type ===
+              ConnectionType.EIP_6963_INJECTED &&
+            walletConnectorMetadata?.rdns
+          ) {
+            if ((connector as EIP6963)?.selectProvider) {
+              (connector as EIP6963)?.selectProvider(
+                walletConnectorMetadata.rdns
+              );
+            }
+          }
           connector.connectEagerly();
+          runnedEagerly = true;
         }
 
         // When a Provider makes its initial connection, it emits a "network"
@@ -77,15 +100,27 @@ export function GlobalDialogs() {
         }
       };
     }
-  }, [connector, connector?.provider]);
+  }, [connector, connector?.provider, walletConnectorMetadata]);
 
   useEffect(() => {
-    if (typeof window !== "undefined" && connector) {
+    if (typeof window !== "undefined" && connector && !runnedEagerly) {
       if (connector.connectEagerly) {
+        if (
+          walletConnectorMetadata &&
+          walletConnectorMetadata?.type === ConnectionType.EIP_6963_INJECTED &&
+          walletConnectorMetadata?.rdns
+        ) {
+          if ((connector as EIP6963)?.selectProvider) {
+            (connector as EIP6963)?.selectProvider(
+              walletConnectorMetadata.rdns
+            );
+          }
+        }
         connector.connectEagerly();
+        runnedEagerly = true;
       }
     }
-  }, [connector]);
+  }, [connector, walletConnectorMetadata]);
 
   const { watchTransactionDialog } = useDexKitContext();
 
@@ -224,7 +259,10 @@ export function GlobalDialogs() {
       {connectWalletDialog.isOpen && (
         <ConnectWalletDialog
           DialogProps={{
-            open: connectWalletDialog.isOpen || isActivating,
+            open:
+              connectWalletDialog.isOpen ||
+              isActivating ||
+              walletActivate.mutation.isLoading,
             onClose: handleCloseConnectWalletDialog,
             fullWidth: true,
             maxWidth: "sm",
