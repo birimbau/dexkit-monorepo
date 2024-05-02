@@ -414,6 +414,10 @@ export default function GatedConditionsFormDialog({
                                           `conditions[${index}].decimals`,
                                           tk?.decimals,
                                         );
+                                        setFieldValue(
+                                          `conditions[${index}].protocol`,
+                                          undefined,
+                                        );
                                       }}
                                     />
                                   </Grid>
