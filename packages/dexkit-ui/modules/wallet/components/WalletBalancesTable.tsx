@@ -11,8 +11,9 @@ import {
 import { useMemo } from "react";
 import { FormattedMessage } from "react-intl";
 
-import { useCoinPricesQuery, useCurrency } from "../../../hooks/currency";
+import { useCurrency } from "../../../hooks/currency";
 
+import { useSimpleCoinPricesQuery } from "../../../hooks/currency/useSimpleCoinPricesCurrency";
 import { useERC20BalancesQuery, useIsBalanceVisible } from "../hooks";
 import WalletTableRow from "./WalletTableRow";
 
@@ -25,10 +26,11 @@ interface Props {
 function WalletBalancesTable({ isBalancesVisible, chainId, filter }: Props) {
   const tokenBalancesQuery = useERC20BalancesQuery(undefined, chainId, false);
 
-  const coinPricesQuery = useCoinPricesQuery({
+  const coinPricesQuery = useSimpleCoinPricesQuery({
     includeNative: true,
     chainId,
   });
+
   const prices = coinPricesQuery.data;
   const currency = useCurrency();
 

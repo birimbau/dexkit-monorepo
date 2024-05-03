@@ -3,7 +3,8 @@ import { useMemo } from "react";
 import { FormattedNumber } from "react-intl";
 
 import { formatUnits } from "@dexkit/core/utils/ethers/formatUnits";
-import { useCoinPricesQuery, useCurrency } from "../../../hooks/currency";
+import { useCurrency } from "../../../hooks/currency";
+import { useSimpleCoinPricesQuery } from "../../../hooks/currency/useSimpleCoinPricesCurrency";
 import { useERC20BalancesQuery, useIsBalanceVisible } from "../hooks";
 
 interface Props {
@@ -14,7 +15,7 @@ export function WalletTotalBalance({ chainId }: Props) {
   const isBalancesVisible = useIsBalanceVisible();
   const currency = useCurrency();
 
-  const coinPricesQuery = useCoinPricesQuery({
+  const coinPricesQuery = useSimpleCoinPricesQuery({
     includeNative: true,
     chainId: chainId,
   });
