@@ -5,10 +5,10 @@ import { useQuery } from "@tanstack/react-query";
 import { useWeb3React } from "@web3-react/core";
 import { useAtom } from "jotai";
 import { useMemo } from "react";
-import { useAppConfig } from ".";
 import { getCoinPrices } from "../services/currency";
 import { currencyUserAtom } from "../state";
 import { useTokenList } from "./blockchain";
+import { useAppConfig } from "./useAppConfig";
 
 export function useCurrency(): { currency: string, setCurrency: (currency: string) => void } {
   const appConfig = useAppConfig();

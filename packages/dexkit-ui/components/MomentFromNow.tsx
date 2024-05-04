@@ -1,6 +1,6 @@
 import moment from "moment";
 import { memo } from "react";
-import { useLocale } from "../hooks";
+import { useLocale } from "../hooks/useLocale";
 
 interface Props {
   from: moment.Moment;

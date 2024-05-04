@@ -10,12 +10,10 @@ import { AppConfig } from "@dexkit/ui/modules/wizard/types/config";
 import { isMobile } from "@dexkit/wallet-connectors/utils/userAgent";
 import { ErrorBoundary } from "react-error-boundary";
 import { FormattedMessage } from "react-intl";
-import {
-  useAppConfig,
-  useAppNFT,
-  useDrawerIsOpen,
-  useThemeMode,
-} from "../../hooks";
+import { useAppNFT, useDrawerIsOpen, useThemeMode } from "../../hooks";
+
+import { useAppConfig } from "../../hooks/useAppConfig";
+
 import { Footer } from "../Footer";
 import Navbar from "../Navbar";
 import NavbarAlt from "../NavbarAlt";

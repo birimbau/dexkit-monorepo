@@ -1,7 +1,7 @@
 
 
 import { COINGECKO_IDS, EVM_CHAINS, WRAPPED_TOKEN_ADDRESSES } from "@dexkit/evm-chains/constants";
-import { providers } from "ethers";
+
 import { Network } from "../types";
 import { ChainId } from "./enums";
 import { EVM_CHAIN_IMAGES, GET_EVM_CHAIN_IMAGE, UNKNOWN_LOGO_URL } from "./evmChainImages";
@@ -230,10 +230,7 @@ export const NETWORK_COIN_NAME = (chainId?: ChainId) =>
 export const NETWORK_COIN_IMAGE = (chainId?: ChainId) =>
   chainId && NETWORKS[chainId] ? NETWORKS[chainId]?.coinImageUrl ? NETWORKS[chainId]?.coinImageUrl : NETWORKS[chainId].imageUrl : undefined;
 
-export const NETWORK_PROVIDER = (chainId?: ChainId) => {
-  return chainId && NETWORKS[chainId] ? new providers.JsonRpcProvider(NETWORKS[chainId].providerRpcUrl
-  ) : undefined;
-}
+
 
 export const NETWORK_FROM_SLUG = (slug?: string) => {
   if (slug) {

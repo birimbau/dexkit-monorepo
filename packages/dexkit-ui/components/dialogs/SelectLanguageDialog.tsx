@@ -15,7 +15,7 @@ import { FormattedMessage } from "react-intl";
 
 import { useState } from "react";
 import { LANGUAGES } from "../../constants";
-import { useLocale } from "../../hooks";
+import { useLocale } from "../../hooks/useLocale";
 import { Language } from "../../types/app";
 import { AppDialogTitle } from "../AppDialogTitle";
 

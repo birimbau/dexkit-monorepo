@@ -35,10 +35,10 @@ import {
   useAuthUserQuery,
   useConnectWalletDialog,
   useCurrency,
-  useLocale,
   useShowSelectCurrency,
   useShowSelectLocale,
 } from "@dexkit/ui/hooks";
+import { useLocale } from "@dexkit/ui/hooks/useLocale";
 import { useAtom } from "jotai";
 import { useMemo } from "react";
 import { AppConfig } from "../modules/wizard/types/config";

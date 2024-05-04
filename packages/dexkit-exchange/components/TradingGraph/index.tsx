@@ -1,4 +1,4 @@
-import { useLocale } from "@dexkit/ui/hooks";
+import { useLocale } from "@dexkit/ui/hooks/useLocale";
 import {
   Box,
   Card,

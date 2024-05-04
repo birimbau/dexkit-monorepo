@@ -1,4 +1,4 @@
-import { ChainId } from "@dexkit/core/constants/enums";
+import type { ChainId } from "@dexkit/core/constants/enums";
 import { NETWORKS } from "@dexkit/core/constants/networks";
 import { useQuery } from "@tanstack/react-query";
 import { providers } from "ethers";

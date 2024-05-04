@@ -1,4 +1,4 @@
-import { OrderMarketType } from '@dexkit/exchange/constants';
+import type { OrderMarketType } from '@dexkit/exchange/constants';
 
 
 export interface MarketTradeConfig {

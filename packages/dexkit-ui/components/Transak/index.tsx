@@ -5,7 +5,8 @@ import { Transak, TransakConfig } from "@transak/transak-sdk";
 import { useWeb3React } from "@web3-react/core";
 import { useEffect, useRef } from "react";
 import { FormattedMessage } from "react-intl";
-import { useAppConfig, useCurrency } from "../../hooks";
+import { useCurrency } from "../../hooks";
+import { useAppConfig } from "../../hooks/useAppConfig";
 
 interface Props {
   //@ts-ignore

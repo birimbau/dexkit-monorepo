@@ -4,7 +4,8 @@ import TradeWidgetSimpleVariant from "@dexkit/exchange/components/TradeWidget/Si
 import { isAddressEqual } from "@dexkit/core/utils";
 import { OrderMarketType } from "@dexkit/exchange/constants";
 import { ZEROEX_AFFILIATE_ADDRESS } from "@dexkit/exchange/constants/zrx";
-import { useAppConfig, useTokenList } from "@dexkit/ui";
+import { useTokenList } from "@dexkit/ui";
+import { useAppConfig } from "@dexkit/ui/hooks/useAppConfig";
 import { MarketTradePageSection } from "@dexkit/ui/modules/wizard/types/section";
 import { Box, Container, Grid, Stack } from "@mui/material";
 import { useWeb3React } from "@web3-react/core";

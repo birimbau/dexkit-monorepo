@@ -56,7 +56,6 @@ import {
   useCurrency,
   useDexKitContext,
   useDrawerIsOpen,
-  useLocale,
   useNotifications,
   useSelectNetworkDialog,
   useShowAppTransactions,
@@ -64,6 +63,8 @@ import {
   useShowSelectLocale,
   useThemeMode,
 } from "@dexkit/ui/hooks";
+
+import { useLocale } from "@dexkit/ui/hooks/useLocale";
 import { AppConfig } from "@dexkit/ui/modules/wizard/types/config";
 import AppProfileMenu from "./AppProfileMenu";
 import { ConnectWalletButton } from "./ConnectWalletButton";

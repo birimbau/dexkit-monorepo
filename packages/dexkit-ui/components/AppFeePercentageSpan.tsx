@@ -1,5 +1,5 @@
 import { memo, useMemo } from "react";
-import { useAppConfig } from "../hooks";
+import { useAppConfig } from "../hooks/useAppConfig";
 
 function AppFeePercentageSpan() {
   const appConfig = useAppConfig();

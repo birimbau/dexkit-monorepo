@@ -9,7 +9,8 @@ import { useWeb3React } from "@web3-react/core";
 import { useRouter } from "next/router";
 import { useMemo } from "react";
 import { useIntl } from "react-intl";
-import { useAllTokenList, useAppConfig } from "../hooks";
+import { useAllTokenList } from "../hooks";
+import { useAppConfig } from "../hooks/useAppConfig";
 interface Props {
   hideCollections?: boolean;
   hideTokens?: boolean;

@@ -1,4 +1,4 @@
-import { ChainId } from "@dexkit/core";
+import { ChainId } from "@dexkit/core/constants/enums";
 
 export enum OrderMarketType {
   'buy' = 'buy',

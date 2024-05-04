@@ -1,7 +1,7 @@
 
 import { ChainId, CoinTypes } from '@dexkit/core/constants';
 import { ERC20Abi } from '@dexkit/core/constants/abis';
-import { NETWORK_PROVIDER } from '@dexkit/core/constants/networks';
+import { NETWORK_PROVIDER } from '@dexkit/core/constants/networkProvider';
 import { Coin, EvmCoin } from '@dexkit/core/types';
 import { parseUnits } from '@dexkit/core/utils/ethers/parseUnits';
 import { useMutation } from '@tanstack/react-query';

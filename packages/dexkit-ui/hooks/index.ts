@@ -32,7 +32,7 @@ import {
   AppWizardConfigContext,
 } from "../context/AppConfigContext";
 import { DexKitContext } from "../context/DexKitContext";
-import { localeUserAtom, userThemeModeAtom } from "../state";
+import { userThemeModeAtom } from "../state";
 import {
   AppNotification,
   AppNotificationType,
@@ -45,17 +45,18 @@ import { isHexString } from '@dexkit/core/utils/ethers/isHexString';
 import { InjectedConnection, connections } from "@dexkit/wallet-connectors/connectors/connections";
 import { useWalletConnectorMetadata } from "@dexkit/wallet-connectors/hooks";
 import { ConnectionType } from "@dexkit/wallet-connectors/types";
-import { providers } from "ethers";
+import type { providers } from "ethers";
 import { AdminContext } from "../context/AdminContext";
+import { useAppConfig } from "./useAppConfig";
 
 export * from "./auth";
 export * from "./blockchain";
 export * from "./currency";
 
-// App config context needs to be initialized on widgets
-export function useAppConfig() {
-  return useContext(AppConfigContext).appConfig;
-}
+
+export { useAppConfig };
+
+
 
 export function useAppNFT() {
   return useContext(AppConfigContext).appNFT;
@@ -81,20 +82,7 @@ export function useThemeMode() {
   return { mode: mode, setThemeMode, userMode };
 }
 
-export function useLocale() {
-  const [locUser, setLocUser] = useAtom(localeUserAtom);
-  const appConfig = useAppConfig();
-  const locale = useMemo(() => {
-    if (locUser) {
-      return locUser;
-    }
-    if (appConfig.locale) {
-      return appConfig.locale;
-    }
-    return "en-US" as string;
-  }, [appConfig.locale, locUser]);
-  return { locale, onChangeLocale: setLocUser };
-}
+
 
 // Wizard App config context needs to be initialized on widgets that needs wizard to customize
 export function useAppWizardConfig() {

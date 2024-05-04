@@ -1,4 +1,4 @@
-import { AppNotificationType } from "../../types";
+import type { AppNotificationType } from "../../types";
 
 export const COMMON_NOTIFICATION_TYPES: { [key: string]: AppNotificationType } =
 {
