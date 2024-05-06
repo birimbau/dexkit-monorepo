@@ -1,11 +1,10 @@
-import { MultiCall } from '@indexed-finance/multicall';
-import { providers } from 'ethers';
+import type { providers } from 'ethers';
 
 export const getMulticallFromProvider = async (
   provider?: providers.JsonRpcProvider
 ) => {
   if (provider !== undefined) {
-    return new MultiCall(provider);
+    return new (await import('@indexed-finance/multicall')).MultiCall(provider);
   }
 };
 

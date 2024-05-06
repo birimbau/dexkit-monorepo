@@ -1,9 +1,9 @@
 import { ERC721Abi } from "@dexkit/core/constants/abis";
 import { Asset } from "@dexkit/core/types/nft";
 import { Interface } from '@dexkit/core/utils/ethers/abi/Interface';
-import { CallInput } from '@indexed-finance/multicall';
+import type { CallInput } from '@indexed-finance/multicall';
 import axios from 'axios';
-import { providers } from "ethers";
+import type { providers } from "ethers";
 import { getAssetProtocol, getAssetsData, getOrderbookOrders } from ".";
 import { DEXKIT_AUTHENTICATE_API_KEY } from "../../../constants";
 import { dexkitNFTapi } from "../../../constants/api";

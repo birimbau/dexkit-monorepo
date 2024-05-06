@@ -1,5 +1,6 @@
-import MultiCall, { TokenBalances } from "@indexed-finance/multicall";
-import { BigNumber, Contract, constants, providers } from "ethers";
+import type { TokenBalances } from "@indexed-finance/multicall";
+import type { BigNumber, providers } from "ethers";
+import { Contract, constants } from "ethers";
 import { COINGECKO_ENDPOIT, COINGECKO_PLATFORM_ID } from "../constants";
 import { ERC20Abi } from "../constants/abis";
 import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "../constants/zrx";
@@ -65,7 +66,7 @@ export async function getTokensBalance(
 
   await provider.ready;
 
-  const multicall = new MultiCall(provider);
+  const multicall = new (await import('@indexed-finance/multicall')).MultiCall(provider);
 
   const [, balances] = await multicall.getBalances(
     tokens.map((t) => {

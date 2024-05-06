@@ -3,7 +3,7 @@ import { NETWORK_FROM_SLUG } from '@dexkit/core/constants/networks';
 import { Asset, AssetMetadata } from '@dexkit/core/types/nft';
 import { Interface } from '@dexkit/core/utils/ethers/abi/Interface';
 import { ipfsUriToUrl } from '@dexkit/core/utils/ipfs';
-import { CallInput } from '@indexed-finance/multicall';
+import type { CallInput } from '@indexed-finance/multicall';
 import axios from 'axios';
 import { BigNumber, Contract, providers } from 'ethers';
 import { DEXKIT_NFT_BASE_URL, ENS_BASE_URL, TRADER_ORDERBOOK_API, dexkitNFTapi, metadataENSapi } from '../../../constants/api';

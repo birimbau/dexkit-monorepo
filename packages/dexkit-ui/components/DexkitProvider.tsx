@@ -2,9 +2,14 @@ import { IntlProvider, MessageFormatElement } from "react-intl";
 
 import { Web3ReactProvider } from "@web3-react/core";
 import { SnackbarProvider } from "notistack";
-import { useDexkitContextState, useOrderedConnectors } from "../hooks";
+import { useDexkitContextState } from "../hooks/useDexKitContextState";
+import { useOrderedConnectors } from "../hooks/useOrderedConnectors";
 
-import { AppTransaction, Asset, TokenWhitelabelApp } from "@dexkit/core/types";
+import type {
+  AppTransaction,
+  Asset,
+  TokenWhitelabelApp,
+} from "@dexkit/core/types";
 
 import { CssBaseline } from "@mui/material";
 import { PrimitiveAtom, SetStateAction, WritableAtom } from "jotai";
