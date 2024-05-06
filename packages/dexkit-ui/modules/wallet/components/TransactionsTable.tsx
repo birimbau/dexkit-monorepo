@@ -1,40 +1,52 @@
-import { useDexKitContext } from '@dexkit/ui';
+import { useDexKitContext } from "@dexkit/ui";
 import {
   Stack,
   Table,
   TableBody,
   TableCell,
   TableContainer,
+  TableFooter,
   TableHead,
+  TablePagination,
   TableRow,
   Typography,
-} from '@mui/material';
-import { useMemo } from 'react';
-import { FormattedMessage } from 'react-intl';
-import { TransactionsTableRow } from './TransactionsTableRow';
+} from "@mui/material";
+import { useMemo, useState } from "react";
+import { FormattedMessage } from "react-intl";
+import { TransactionsTableRow } from "./TransactionsTableRow";
 
 export enum TransactionsTableFilter {
   Transactions,
   Trades,
 }
 
-export function TransactionsTable({
-  filter,
-}: {
+export interface TransactionsTableProps {
   filter: TransactionsTableFilter;
-}) {
+}
+
+export function TransactionsTable({ filter }: TransactionsTableProps) {
   const { notifications } = useDexKitContext();
+
+  const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(5);
 
   const filteredNotifications = useMemo(() => {
     if (filter === TransactionsTableFilter.Trades) {
-      return notifications.filter((n) => n.subtype === 'swap');
+      return notifications.filter((n) => n.subtype === "swap");
     }
 
-    return notifications.filter((n) => n.subtype !== 'swap');
+    return notifications.filter((n) => n.subtype !== "swap");
   }, [notifications, filter]);
 
+  const pageList = useMemo(() => {
+    return filteredNotifications.slice(
+      page * pageSize,
+      page * pageSize + pageSize
+    );
+  }, [filteredNotifications, page, pageSize]);
+
   const renderTransactionsList = () => {
-    if (filteredNotifications.length === 0) {
+    if (pageList.length === 0) {
       return (
         <TableRow>
           <TableCell colSpan={5}>
@@ -51,11 +63,22 @@ export function TransactionsTable({
       );
     }
 
-    if (filteredNotifications.length > 0) {
-      return filteredNotifications.map((notification, key) => (
+    if (pageList.length > 0) {
+      return pageList.map((notification, key) => (
         <TransactionsTableRow key={key} notification={notification} />
       ));
     }
+  };
+
+  const handlePageChange = (event: any, page: number) => {
+    setPage(page);
+  };
+
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setPageSize(parseInt(event.target.value, 10));
+    setPage(0);
   };
 
   return (
@@ -76,6 +99,18 @@ export function TransactionsTable({
           </TableRow>
         </TableHead>
         <TableBody>{renderTransactionsList()}</TableBody>
+        <TableFooter>
+          <TableRow>
+            <TablePagination
+              onRowsPerPageChange={handleChangeRowsPerPage}
+              page={page}
+              count={filteredNotifications.length}
+              onPageChange={handlePageChange}
+              rowsPerPage={pageSize}
+              rowsPerPageOptions={[5, 10]}
+            />
+          </TableRow>
+        </TableFooter>
       </Table>
     </TableContainer>
   );

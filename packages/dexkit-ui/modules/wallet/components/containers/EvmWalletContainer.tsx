@@ -42,8 +42,10 @@ import Wallet from "@mui/icons-material/Wallet";
 import { NetworkSelectButton } from "../../../../components/NetworkSelectButton";
 const TransakWidget = dynamic(() => import("@dexkit/ui/components/Transak"));
 
+import { DexkitApiProvider } from "@dexkit/core/providers";
 import ImportTokenDialog from "../../../../components/dialogs/ImportTokenDialog";
 import CloseCircle from "../../../../components/icons/CloseCircle";
+import { myAppsApi } from "../../../../constants/api";
 import {
   useAppConfig,
   useConnectWalletDialog,
@@ -55,6 +57,7 @@ import {
   TransactionsTableFilter,
 } from "../TransactionsTable";
 import { TransferCoinButton } from "../TransferCoinButton";
+import UserActivityTable from "../UserActivityTable";
 import WalletActionButton from "../WalletActionButton";
 import WalletBalances from "../WalletBalancesTable";
 import { WalletTotalBalanceCointainer } from "../WalletTotalBalanceContainer";
@@ -504,6 +507,9 @@ const EvmWalletContainer = () => {
                         : TransactionsTableFilter.Trades
                     }
                   />
+                  <DexkitApiProvider.Provider value={{ instance: myAppsApi }}>
+                    <UserActivityTable />
+                  </DexkitApiProvider.Provider>
                 </NoSsr>
               </Grid>
             </>
