@@ -7,11 +7,20 @@ import DarkblockWrapper from "@dexkit/ui/modules/wizard/components/DarkblockWrap
 import { AssetPageSection } from "@dexkit/ui/modules/wizard/types/section";
 import { hexToString } from "@dexkit/ui/utils";
 import { useAsyncMemo } from "@dexkit/widgets/src/hooks";
-import { Alert, Box, Grid, NoSsr, Typography } from "@mui/material";
+import {
+  Alert,
+  Box,
+  Button,
+  Grid,
+  NoSsr,
+  Stack,
+  Typography,
+} from "@mui/material";
 import { useQueryClient } from "@tanstack/react-query";
 import { ThirdwebSDKProvider, useContract } from "@thirdweb-dev/react";
 import { useWeb3React } from "@web3-react/core";
 import { Suspense, useEffect } from "react";
+import { ErrorBoundary } from "react-error-boundary";
 import { FormattedMessage } from "react-intl";
 import EditionDropSection from "../EditionDropSection";
 
@@ -105,15 +114,39 @@ export default function AssetSection({ section }: AssetSectionProps) {
         <Grid item xs={12} sm={8}>
           <AssetRightSection address={address} id={tokenId} />
           {enableDarkblock && (
-            <NoSsr>
-              <Suspense>
-                <DarkblockWrapper
-                  address={address as string}
-                  tokenId={tokenId}
-                  network={network}
-                />
-              </Suspense>
-            </NoSsr>
+            <ErrorBoundary
+              key={"darkblock-error-boundary"}
+              fallbackRender={({ error, resetErrorBoundary }) => (
+                <Stack justifyContent="center" alignItems="center">
+                  <Typography variant="h6">
+                    <FormattedMessage
+                      id="something.went.wrong.with.darkblock.contact.support"
+                      defaultMessage="Oops, something went wrong with darkblock. Contact support"
+                    />
+                  </Typography>
+                  <Typography variant="body1" color="textSecondary">
+                    {String(error)}
+                  </Typography>
+                  <Button color="primary" onClick={resetErrorBoundary}>
+                    <FormattedMessage
+                      id="try.again"
+                      defaultMessage="Try again"
+                      description="Try again"
+                    />
+                  </Button>
+                </Stack>
+              )}
+            >
+              <NoSsr>
+                <Suspense>
+                  <DarkblockWrapper
+                    address={address as string}
+                    tokenId={tokenId}
+                    network={network}
+                  />
+                </Suspense>
+              </NoSsr>
+            </ErrorBoundary>
           )}
         </Grid>
         {enableDrops && (

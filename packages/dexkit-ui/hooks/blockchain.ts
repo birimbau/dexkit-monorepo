@@ -11,7 +11,8 @@ import { EvmCoin, TokenWhitelabelApp } from "@dexkit/core/types";
 import { convertTokenToEvmCoin, ipfsUriToUrl } from "@dexkit/core/utils";
 import { UseMutationOptions, useMutation, useQuery } from "@tanstack/react-query";
 import { useWeb3React } from "@web3-react/core";
-import { ethers } from "ethers";
+import type { providers } from "ethers";
+import { Contract } from "ethers";
 import { useContext, useMemo } from "react";
 import { useAppConfig, useAppWizardConfig, useDexKitContext } from ".";
 import { AdminContext } from "../context/AdminContext";
@@ -296,7 +297,7 @@ export type ContractMetadata = {
 export default function useContractMetadata(params?: {
   chainId?: number;
   contractAddress?: string;
-  provider?: ethers.providers.Provider;
+  provider?: providers.Provider;
 }) {
   return useQuery<ContractMetadata | null>(
     [CONTRACT_METADATA, params?.contractAddress, params?.chainId],
@@ -308,7 +309,7 @@ export default function useContractMetadata(params?: {
       const abi = [
         "function contractURI() public view returns (string memory)",
       ];
-      const contract = new ethers.Contract(
+      const contract = new Contract(
         params.contractAddress,
         abi,
         params.provider

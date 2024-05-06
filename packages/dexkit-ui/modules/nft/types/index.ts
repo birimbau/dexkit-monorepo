@@ -2,7 +2,7 @@ import { Token } from '@dexkit/core/types';
 
 import { DkApiPlatformCoin } from '@dexkit/widgets/src/types/api';
 import { UseQueryOptions } from '@tanstack/react-query';
-import { BigNumber } from 'ethers';
+import type { BigNumber } from 'ethers';
 import { NFTType, SellOrBuy, TraderOrderStatus } from "../constants/enum";
 
 export interface AssetMetadata {

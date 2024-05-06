@@ -71,6 +71,7 @@ export async function getAppConfig(
 
   if (site?.startsWith('dexkit.app')) {
     const slug = site.split(':');
+
     if (slug.length > 1) {
       const configResponse = await (
         await getConfig({ slug: slug[1], appPage })
@@ -101,10 +102,11 @@ export async function getAppConfig(
 
   if (site?.startsWith('localhost')) {
     const [slug,] = site?.split('.') || [];
-    // const slug = 'crypto-fans';
+    // const slug = 'simple';
+
     if (slug) {
       const configResponse = (await getConfig({ slug, appPage })).data;
-
+      console.log(configResponse);
 
 
       if (configResponse) {
