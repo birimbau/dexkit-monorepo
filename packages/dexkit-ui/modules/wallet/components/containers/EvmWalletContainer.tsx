@@ -69,6 +69,7 @@ const EvmReceiveDialog = dynamic(
 enum WalletTabs {
   Transactions,
   Trades,
+  Activity,
 }
 
 const EvmWalletContainer = () => {
@@ -496,20 +497,32 @@ const EvmWalletContainer = () => {
                       <FormattedMessage id="trades" defaultMessage="Trades" />
                     }
                   />
+                  <Tab
+                    value={WalletTabs.Activity}
+                    label={
+                      <FormattedMessage
+                        id="user.activity"
+                        defaultMessage="User Activity"
+                      />
+                    }
+                  />
                 </Tabs>
               </Grid>
               <Grid item xs={12}>
                 <NoSsr>
-                  <TransactionsTable
-                    filter={
-                      selectedTab === WalletTabs.Transactions
-                        ? TransactionsTableFilter.Transactions
-                        : TransactionsTableFilter.Trades
-                    }
-                  />
-                  <DexkitApiProvider.Provider value={{ instance: myAppsApi }}>
-                    <UserActivityTable />
-                  </DexkitApiProvider.Provider>
+                  {selectedTab === WalletTabs.Activity ? (
+                    <DexkitApiProvider.Provider value={{ instance: myAppsApi }}>
+                      <UserActivityTable />
+                    </DexkitApiProvider.Provider>
+                  ) : (
+                    <TransactionsTable
+                      filter={
+                        selectedTab === WalletTabs.Transactions
+                          ? TransactionsTableFilter.Transactions
+                          : TransactionsTableFilter.Trades
+                      }
+                    />
+                  )}
                 </NoSsr>
               </Grid>
             </>

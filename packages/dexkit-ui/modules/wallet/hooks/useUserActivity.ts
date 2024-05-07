@@ -6,6 +6,7 @@ export const USER_ACTIVITY_QUERY = "USER_ACTIVITY_QUERY";
 
 export interface UserActivityParams {
   account?: string;
+  pageSize?: number;
 }
 
 export type UserEvent = {
@@ -27,7 +28,10 @@ export type UserEvent = {
   processedMetadata: any | null;
 };
 
-export default function useUserActivity({ account }: UserActivityParams) {
+export default function useUserActivity({
+  account,
+  pageSize,
+}: UserActivityParams) {
   const { instance } = useContext(DexkitApiProvider);
 
   return useInfiniteQuery(
@@ -36,11 +40,9 @@ export default function useUserActivity({ account }: UserActivityParams) {
       const data = (
         await instance?.get<{ count: number; data: UserEvent[]; page: number }>(
           "/user-events/events",
-          { params: { page: pageParam, pageSize: 5 } }
+          { params: { page: pageParam, pageSize } }
         )
       )?.data;
-
-      console.log("chama papai");
 
       return data;
     },

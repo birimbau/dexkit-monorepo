@@ -12,6 +12,7 @@ import { useWeb3React } from "@web3-react/core";
 import React, { useState } from "react";
 import { FormattedMessage } from "react-intl";
 import useUserActivity from "../hooks/useUserActivity";
+import UserActivityTableRow from "./UserActivityTableRow";
 
 export interface UserActivityTableProps {}
 
@@ -21,7 +22,7 @@ export default function UserActivityTable({}: UserActivityTableProps) {
 
   const { account } = useWeb3React();
 
-  const userActivityQuery = useUserActivity({ account });
+  const userActivityQuery = useUserActivity({ account, pageSize });
 
   const renderPages = () => {
     // if (pageList.length === 0) {
@@ -46,15 +47,18 @@ export default function UserActivityTable({}: UserActivityTableProps) {
       userActivityQuery.data?.pages.length > 0
     ) {
       return userActivityQuery.data?.pages[page]?.data.map((event, key) => (
-        <TableRow key={`event-${page}-${key}`}>
-          <TableCell>{event.from}</TableCell>
-        </TableRow>
+        <UserActivityTableRow event={event} key={`event-${page}-${key}`} />
       ));
     }
   };
 
-  const handlePageChange = (event: any, page: number) => {
-    setPage(page);
+  const handlePageChange = async (event: any, nextPage: number) => {
+    if (nextPage > page) {
+      await userActivityQuery.fetchNextPage();
+    } else {
+      await userActivityQuery.fetchPreviousPage();
+    }
+    setPage(nextPage);
   };
 
   const handleChangeRowsPerPage = (
@@ -69,29 +73,27 @@ export default function UserActivityTable({}: UserActivityTableProps) {
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell colSpan={2}>
-              <FormattedMessage id="transaction" defaultMessage="Transaction" />
+            <TableCell>
+              <FormattedMessage id="activity" defaultMessage="Activity" />
             </TableCell>
             <TableCell>
               <FormattedMessage id="date" defaultMessage="Date" />
             </TableCell>
-            <TableCell>
-              <FormattedMessage id="status" defaultMessage="Status" />
-            </TableCell>
-            <TableCell></TableCell>
           </TableRow>
         </TableHead>
         <TableBody>{renderPages()}</TableBody>
         <TableFooter>
           <TableRow>
-            <TablePagination
-              onRowsPerPageChange={handleChangeRowsPerPage}
-              page={page}
-              count={0}
-              onPageChange={handlePageChange}
-              rowsPerPage={pageSize}
-              rowsPerPageOptions={[5, 10]}
-            />
+            {userActivityQuery.data && (
+              <TablePagination
+                onRowsPerPageChange={handleChangeRowsPerPage}
+                page={page}
+                count={userActivityQuery.data?.pages[page]?.count || 0}
+                onPageChange={handlePageChange}
+                rowsPerPage={pageSize}
+                rowsPerPageOptions={[5, 10]}
+              />
+            )}
           </TableRow>
         </TableFooter>
       </Table>
