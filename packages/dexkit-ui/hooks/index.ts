@@ -45,7 +45,7 @@ import { isHexString } from '@dexkit/core/utils/ethers/isHexString';
 import { InjectedConnection, connections } from "@dexkit/wallet-connectors/connectors/connections";
 import { useWalletConnectorMetadata } from "@dexkit/wallet-connectors/hooks";
 import { ConnectionType } from "@dexkit/wallet-connectors/types";
-import { providers } from "ethers";
+import type { providers } from "ethers";
 import { AdminContext } from "../context/AdminContext";
 
 export * from "./auth";

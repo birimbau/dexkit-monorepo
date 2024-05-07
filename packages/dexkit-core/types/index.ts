@@ -2,7 +2,7 @@ export * from "./blockchain";
 export * from "./coin";
 export * from "./nft";
 
-import { AxiosInstance } from "axios";
+import type { AxiosInstance } from "axios";
 import { Dispatch, SetStateAction } from "react";
 import { ChainId, TransactionStatus, TransactionType } from "../constants";
 import { TransactionMetadata } from "./blockchain";
