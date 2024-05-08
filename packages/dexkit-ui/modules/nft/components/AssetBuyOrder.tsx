@@ -1,5 +1,5 @@
+import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import { Button, Grid, NoSsr, Paper, Stack, Typography } from "@mui/material";
-import { useWeb3React } from "@web3-react/core";
 import { Suspense, useCallback, useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { FormattedMessage } from "react-intl";
@@ -9,23 +9,23 @@ import { QueryErrorResetBoundary, useQueryClient } from "@tanstack/react-query";
 import { UserEvents } from "@dexkit/core/constants/userEvents";
 import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "@dexkit/core/constants/zrx";
 import {
-  getERC20Decimals,
-  getERC20Name,
-  getERC20Symbol,
+    getERC20Decimals,
+    getERC20Name,
+    getERC20Symbol,
 } from "@dexkit/core/services/balances";
 import { Asset, SwapApiOrder } from "@dexkit/core/types/nft";
 import { isAddressEqual } from "@dexkit/core/utils";
 import { formatUnits } from "@dexkit/core/utils/ethers/formatUnits";
 import {
-  useConnectWalletDialog,
-  useDexKitContext,
-  useSwitchNetwork,
+    useConnectWalletDialog,
+    useDexKitContext,
+    useSwitchNetwork,
 } from "@dexkit/ui";
 import CancelIcon from "@mui/icons-material/Cancel";
 import {
-  SignedNftOrderV4,
-  SwappableAssetV4,
-  TradeDirection,
+    SignedNftOrderV4,
+    SwappableAssetV4,
+    TradeDirection,
 } from "@traderxyz/nft-swap-sdk";
 import { BigNumber } from "ethers";
 import dynamic from "next/dynamic";
@@ -34,11 +34,11 @@ import { useTokenList } from "../../../hooks/blockchain";
 import { useTrackUserEventsMutation } from "../../../hooks/userEvents";
 import { OrderDirection } from "../constants/enum";
 import {
-  GET_NFT_ORDERS,
-  useApproveAssetMutation,
-  useCancelSignedOrderMutation,
-  useFillSignedOrderMutation,
-  useSwapSdkV4,
+    GET_NFT_ORDERS,
+    useApproveAssetMutation,
+    useCancelSignedOrderMutation,
+    useFillSignedOrderMutation,
+    useSwapSdkV4,
 } from "../hooks";
 import { OrderBookItem } from "../types";
 import { getAssetProtocol } from "../utils";

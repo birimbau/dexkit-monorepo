@@ -1,14 +1,14 @@
 import EvmTransferCoin from "@dexkit/ui/modules/evm-transfer-coin/components/EvmTransferCoin";
+import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import {
-  Box,
-  Container,
-  Grid,
-  Stack,
-  Typography,
-  useMediaQuery,
-  useTheme,
+    Box,
+    Container,
+    Grid,
+    Stack,
+    Typography,
+    useMediaQuery,
+    useTheme,
 } from "@mui/material";
-import { useWeb3React } from "@web3-react/core";
 import QRCode from "qrcode.react";
 import { useState } from "react";
 

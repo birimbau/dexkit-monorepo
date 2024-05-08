@@ -1,23 +1,23 @@
 import { NETWORK_FROM_SLUG } from "@dexkit/core/constants/networks";
 import {
-  Box,
-  Button,
-  Checkbox,
-  Divider,
-  Drawer,
-  FormControlLabel,
-  FormGroup,
-  Grid,
-  IconButton,
-  InputAdornment,
-  NoSsr,
-  Stack,
-  Tab,
-  Tabs,
-  TextField,
-  Typography,
-  useMediaQuery,
-  useTheme,
+    Box,
+    Button,
+    Checkbox,
+    Divider,
+    Drawer,
+    FormControlLabel,
+    FormGroup,
+    Grid,
+    IconButton,
+    InputAdornment,
+    NoSsr,
+    Stack,
+    Tab,
+    Tabs,
+    TextField,
+    Typography,
+    useMediaQuery,
+    useTheme,
 } from "@mui/material";
 
 import { AppErrorBoundary } from "@dexkit/ui/components/AppErrorBoundary";
@@ -33,10 +33,10 @@ import { CollectionTraits } from "@dexkit/ui/modules/nft/components/CollectionTr
 import { StoreOrdebookContainer } from "@dexkit/ui/modules/nft/components/container/StoreOrderbookContainer";
 import { TableSkeleton } from "@dexkit/ui/modules/nft/components/tables/TableSkeleton";
 import { CollectionPageSection } from "@dexkit/ui/modules/wizard/types/section";
+import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import Search from "@mui/icons-material/Search";
 import { ThirdwebSDKProvider, useContractType } from "@thirdweb-dev/react";
-import { useWeb3React } from "@web3-react/core";
 import { Suspense, SyntheticEvent, useMemo, useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 

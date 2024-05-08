@@ -6,31 +6,31 @@ import { FormattedMessage } from "react-intl";
 import { Formik } from "formik";
 
 import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Alert,
-  Box,
-  Card,
-  CircularProgress,
-  Divider,
-  Skeleton,
-  Stack,
-  Typography,
+    Accordion,
+    AccordionDetails,
+    AccordionSummary,
+    Alert,
+    Box,
+    Card,
+    CircularProgress,
+    Divider,
+    Skeleton,
+    Stack,
+    Typography,
 } from "@mui/material";
 import { useCallback, useMemo } from "react";
 import {
-  CallParams,
-  ContractFormParams,
-  FunctionInput,
-  OutputType,
+    CallParams,
+    ContractFormParams,
+    FunctionInput,
+    OutputType,
 } from "../../types";
 import { getSchemaForInputs } from "../../utils";
 
 import { ChainId } from "@dexkit/core/constants";
 import { getBlockExplorerUrl } from "@dexkit/core/utils";
+import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { useWeb3React } from "@web3-react/core";
 import { BigNumber } from "ethers";
 
 import { arrayify } from "@dexkit/core/utils/ethers/arrayify";

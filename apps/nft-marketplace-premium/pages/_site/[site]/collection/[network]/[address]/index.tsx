@@ -12,33 +12,33 @@ import SidebarFilters from '@dexkit/ui/components/SidebarFilters';
 import SidebarFiltersContent from '@dexkit/ui/components/SidebarFiltersContent';
 import { CollectionTraits } from '@dexkit/ui/modules/nft/components/CollectionTraits';
 import {
-  CollectionSyncStatus,
-  NFTType,
+    CollectionSyncStatus,
+    NFTType,
 } from '@dexkit/ui/modules/nft/constants/enum';
 
 import { Collection, TraderOrderFilter } from '@dexkit/ui/modules/nft/types';
 import { hexToString } from '@dexkit/ui/utils';
 import { getIsLockAsync } from '@dexkit/unlock-widget';
+import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import Search from '@mui/icons-material/Search';
 import {
-  Checkbox,
-  Container,
-  Drawer,
-  FormControlLabel,
-  FormGroup,
-  InputAdornment,
-  Stack,
-  TextField,
-  useMediaQuery,
-  useTheme,
+    Checkbox,
+    Container,
+    Drawer,
+    FormControlLabel,
+    FormGroup,
+    InputAdornment,
+    Stack,
+    TextField,
+    useMediaQuery,
+    useTheme,
 } from '@mui/material';
 import { QueryClient, dehydrate } from '@tanstack/react-query';
 import {
-  ThirdwebSDK,
-  ThirdwebSDKProvider,
-  useContractType,
+    ThirdwebSDK,
+    ThirdwebSDKProvider,
+    useContractType,
 } from '@thirdweb-dev/react';
-import { useWeb3React } from '@web3-react/core';
 import axios from 'axios';
 import { NextSeo } from 'next-seo';
 import { useRouter } from 'next/router';
@@ -52,22 +52,22 @@ import { getAppConfig } from 'src/services/app';
 import CollectionSection from '@dexkit/dexappbuilder-viewer/components/sections/CollectionSection';
 import { NETWORK_ID } from '@dexkit/ui/constants/enum';
 import {
-  MAP_COIN_TO_RARIBLE,
-  MAP_NETWORK_TO_RARIBLE,
+    MAP_COIN_TO_RARIBLE,
+    MAP_NETWORK_TO_RARIBLE,
 } from '@dexkit/ui/modules/nft/constants/marketplaces';
 import {
-  COLLECTION_ASSETS_FROM_ORDERBOOK,
-  GET_ASSET_LIST_FROM_COLLECTION,
-  GET_COLLECTION_DATA,
-  GET_COLLECTION_STATS,
-  useCollection,
+    COLLECTION_ASSETS_FROM_ORDERBOOK,
+    GET_ASSET_LIST_FROM_COLLECTION,
+    GET_COLLECTION_DATA,
+    GET_COLLECTION_STATS,
+    useCollection,
 } from '@dexkit/ui/modules/nft/hooks/collection';
 import {
-  getApiCollectionData,
-  getCollectionAssetsDexKitApi,
-  getCollectionAssetsFromOrderbook,
-  getCollectionData,
-  getSyncCollectionData,
+    getApiCollectionData,
+    getCollectionAssetsDexKitApi,
+    getCollectionAssetsFromOrderbook,
+    getCollectionData,
+    getSyncCollectionData,
 } from '@dexkit/ui/modules/nft/services/collection';
 import { getRariCollectionStats } from '@dexkit/ui/modules/nft/services/rarible';
 import { getProviderBySlug } from '@dexkit/ui/services/providers';

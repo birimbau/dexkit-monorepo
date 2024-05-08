@@ -1,7 +1,7 @@
 import { CollectionPageSection } from '@dexkit/ui/modules/wizard/types/section';
+import { useWeb3React } from '@dexkit/wallet-connectors/hooks/useWeb3React';
 import { FormControlLabel, Grid, Switch } from '@mui/material';
 import { ThirdwebSDKProvider } from '@thirdweb-dev/react';
-import { useWeb3React } from '@web3-react/core';
 import { Formik } from 'formik';
 import { FormattedMessage } from 'react-intl';
 import { THIRDWEB_CLIENT_ID } from 'src/constants';

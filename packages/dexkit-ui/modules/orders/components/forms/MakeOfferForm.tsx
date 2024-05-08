@@ -1,22 +1,22 @@
 import {
-  Alert,
-  Avatar,
-  Button,
-  FormControl,
-  Grid,
-  ListItemIcon,
-  ListItemText,
-  MenuItem,
-  Select,
-  Skeleton,
-  Stack,
-  TextField,
-  Typography,
+    Alert,
+    Avatar,
+    Button,
+    FormControl,
+    Grid,
+    ListItemIcon,
+    ListItemText,
+    MenuItem,
+    Select,
+    Skeleton,
+    Stack,
+    TextField,
+    Typography,
 } from "@mui/material";
 
 import { BigNumber } from "ethers";
 
-import { useWeb3React } from "@web3-react/core";
+import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import moment from "moment";
 import { useMemo } from "react";
 import { FormattedMessage, useIntl } from "react-intl";

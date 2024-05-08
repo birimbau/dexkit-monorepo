@@ -5,29 +5,29 @@ import { formatUnits } from '@dexkit/core/utils/ethers/formatUnits';
 import { parseUnits } from '@dexkit/core/utils/ethers/parseUnits';
 import { useDexKitContext } from '@dexkit/ui';
 import { useThirdwebApprove } from '@dexkit/ui/modules/contract-wizard/hooks/thirdweb';
+import { useWeb3React } from '@dexkit/wallet-connectors/hooks/useWeb3React';
 import { useAsyncMemo } from '@dexkit/widgets/src/hooks';
 import {
-  Alert,
-  Box,
-  Button,
-  Card,
-  CardContent,
-  CircularProgress,
-  Divider,
-  Grid,
-  Skeleton,
-  Stack,
-  Tab,
-  Tabs,
-  Typography,
+    Alert,
+    Box,
+    Button,
+    Card,
+    CardContent,
+    CircularProgress,
+    Divider,
+    Grid,
+    Skeleton,
+    Stack,
+    Tab,
+    Tabs,
+    Typography,
 } from '@mui/material';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import {
-  NATIVE_TOKEN_ADDRESS,
-  useBalance,
-  useContract,
+    NATIVE_TOKEN_ADDRESS,
+    useBalance,
+    useContract,
 } from '@thirdweb-dev/react';
-import { useWeb3React } from '@web3-react/core';
 import { BigNumber, constants } from 'ethers';
 import { useSnackbar } from 'notistack';
 import { SyntheticEvent, useState } from 'react';

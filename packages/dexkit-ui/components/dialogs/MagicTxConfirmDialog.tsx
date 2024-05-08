@@ -17,8 +17,8 @@ import Paper from "@mui/material/Paper";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 
+import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import { estimateFees } from "@mycrypto/gas-estimation";
-import { useWeb3React } from "@web3-react/core";
 import { BigNumber, constants } from "ethers";
 
 import { ChangeEvent, useCallback, useEffect, useMemo, useState } from "react";
@@ -26,9 +26,9 @@ import { FormattedMessage } from "react-intl";
 
 import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "@dexkit/core/constants/zrx";
 import {
-  getNativeTokenSymbol,
-  hasLondonHardForkSupport,
-  truncateAddress,
+    getNativeTokenSymbol,
+    hasLondonHardForkSupport,
+    truncateAddress,
 } from "@dexkit/core/utils";
 
 import { formatEther } from "@dexkit/core/utils/ethers/formatEther";

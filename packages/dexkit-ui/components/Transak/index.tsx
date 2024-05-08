@@ -1,8 +1,8 @@
+import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import CreditCardIcon from "@mui/icons-material/CreditCard";
 import { useTheme } from "@mui/material";
 import Button from "@mui/material/Button";
 import { Transak, TransakConfig } from "@transak/transak-sdk";
-import { useWeb3React } from "@web3-react/core";
 import { useEffect, useRef } from "react";
 import { FormattedMessage } from "react-intl";
 import { useAppConfig, useCurrency } from "../../hooks";

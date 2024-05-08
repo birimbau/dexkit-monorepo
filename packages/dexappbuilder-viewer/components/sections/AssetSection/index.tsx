@@ -6,19 +6,19 @@ import { fetchAssetForQueryClient } from "@dexkit/ui/modules/nft/services/query"
 import DarkblockWrapper from "@dexkit/ui/modules/wizard/components/DarkblockWrapper";
 import { AssetPageSection } from "@dexkit/ui/modules/wizard/types/section";
 import { hexToString } from "@dexkit/ui/utils";
+import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import { useAsyncMemo } from "@dexkit/widgets/src/hooks";
 import {
-  Alert,
-  Box,
-  Button,
-  Grid,
-  NoSsr,
-  Stack,
-  Typography,
+    Alert,
+    Box,
+    Button,
+    Grid,
+    NoSsr,
+    Stack,
+    Typography,
 } from "@mui/material";
 import { useQueryClient } from "@tanstack/react-query";
 import { ThirdwebSDKProvider, useContract } from "@thirdweb-dev/react";
-import { useWeb3React } from "@web3-react/core";
 import { Suspense, useEffect } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { FormattedMessage } from "react-intl";

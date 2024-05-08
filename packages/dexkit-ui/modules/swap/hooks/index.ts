@@ -3,10 +3,10 @@ import { NETWORK_FROM_SLUG, NETWORK_SLUG } from "@dexkit/core/constants/networks
 import { TokenWhitelabelApp } from "@dexkit/core/types";
 import { isAddressEqual } from "@dexkit/core/utils";
 import { formatUnits } from "@dexkit/core/utils/ethers/formatUnits";
+import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import { DkApiPlatformCoin } from "@dexkit/widgets/src/types/api";
 import { NotificationCallbackParams, RenderOptions } from "@dexkit/widgets/src/widgets/swap/types";
 import { useQuery } from "@tanstack/react-query";
-import { useWeb3React } from "@web3-react/core";
 import { useAtom } from "jotai";
 import { useCallback, useMemo } from "react";
 import { useAppConfig, useConnectWalletDialog, useDexKitContext } from "../../../hooks";

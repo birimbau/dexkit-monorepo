@@ -8,27 +8,27 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import { useRef, useState } from "react";
 
+import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import {
-  Avatar,
-  Badge,
-  Box,
-  Button,
-  ButtonBase,
-  Divider,
-  Icon,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Menu,
-  MenuItem,
-  NoSsr,
-  Popover,
-  Stack,
-  useMediaQuery,
-  useTheme,
+    Avatar,
+    Badge,
+    Box,
+    Button,
+    ButtonBase,
+    Divider,
+    Icon,
+    List,
+    ListItem,
+    ListItemIcon,
+    ListItemText,
+    Menu,
+    MenuItem,
+    NoSsr,
+    Popover,
+    Stack,
+    useMediaQuery,
+    useTheme,
 } from "@mui/material";
-import { useWeb3React } from "@web3-react/core";
 
 import { getChainLogoImage, getChainName } from "@dexkit/core/utils/blockchain";
 import AttachMoney from "@mui/icons-material/AttachMoney";
@@ -51,18 +51,18 @@ import Link from "@dexkit/ui/components/AppLink";
 import NotificationsDialog from "@dexkit/ui/components/dialogs/NotificationsDialog";
 import { ThemeMode } from "@dexkit/ui/constants/enum";
 import {
-  useAuthUserQuery,
-  useConnectWalletDialog,
-  useCurrency,
-  useDexKitContext,
-  useDrawerIsOpen,
-  useLocale,
-  useNotifications,
-  useSelectNetworkDialog,
-  useShowAppTransactions,
-  useShowSelectCurrency,
-  useShowSelectLocale,
-  useThemeMode,
+    useAuthUserQuery,
+    useConnectWalletDialog,
+    useCurrency,
+    useDexKitContext,
+    useDrawerIsOpen,
+    useLocale,
+    useNotifications,
+    useSelectNetworkDialog,
+    useShowAppTransactions,
+    useShowSelectCurrency,
+    useShowSelectLocale,
+    useThemeMode,
 } from "@dexkit/ui/hooks";
 import { AppConfig } from "@dexkit/ui/modules/wizard/types/config";
 import AppProfileMenu from "./AppProfileMenu";

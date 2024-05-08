@@ -4,19 +4,19 @@ import { FormattedMessage } from 'react-intl';
 import { myAppsApi } from '@/modules/admin/dashboard/dataProvider';
 import ContractButton from '@/modules/forms/components/ContractButton';
 import {
-  useDeployableContractsQuery,
-  useInfiniteListDeployedContracts,
+    useDeployableContractsQuery,
+    useInfiniteListDeployedContracts,
 } from '@/modules/forms/hooks';
 import { DexkitApiProvider } from '@dexkit/core/providers';
 
 import { PageHeader } from '@dexkit/ui/components/PageHeader';
+import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import { QueryClient, dehydrate } from '@tanstack/react-query';
-import { useWeb3React } from '@web3-react/core';
 import {
-  GetStaticPaths,
-  GetStaticPathsContext,
-  GetStaticProps,
-  GetStaticPropsContext,
+    GetStaticPaths,
+    GetStaticPathsContext,
+    GetStaticProps,
+    GetStaticPropsContext,
 } from 'next';
 import { useRouter } from 'next/router';
 import { useState } from 'react';

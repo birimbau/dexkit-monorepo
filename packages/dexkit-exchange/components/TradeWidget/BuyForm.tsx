@@ -1,10 +1,10 @@
 import {
-  Button,
-  Divider,
-  IconButton,
-  InputAdornment,
-  Stack,
-  Typography,
+    Button,
+    Divider,
+    IconButton,
+    InputAdornment,
+    Stack,
+    Typography,
 } from "@mui/material";
 import { useCallback, useMemo, useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
@@ -18,8 +18,8 @@ import { formatBigNumber, getChainName } from "@dexkit/core/utils";
 import { formatUnits } from "@dexkit/core/utils/ethers/formatUnits";
 import { parseUnits } from "@dexkit/core/utils/ethers/parseUnits";
 import { useSwitchNetworkMutation } from "@dexkit/ui/hooks";
+import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import RefreshIcon from "@mui/icons-material/Refresh";
-import { useWeb3React } from "@web3-react/core";
 import { BigNumber, providers } from "ethers";
 import { ORDER_LIMIT_DURATIONS } from "../../constants";
 import { useSendLimitOrderMutation } from "../../hooks";

@@ -1,14 +1,14 @@
+import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import {
-  Button,
-  Grid,
-  NoSsr,
-  Paper,
-  Stack,
-  Tab,
-  Tabs,
-  Typography,
+    Button,
+    Grid,
+    NoSsr,
+    Paper,
+    Stack,
+    Tab,
+    Tabs,
+    Typography,
 } from "@mui/material";
-import { useWeb3React } from "@web3-react/core";
 import dynamic from "next/dynamic";
 import { Suspense, useCallback, useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
@@ -17,40 +17,40 @@ import { FormattedMessage } from "react-intl";
 import { QueryErrorResetBoundary, useQueryClient } from "@tanstack/react-query";
 
 import {
-  getNetworkSlugFromChainId,
-  isAddressEqual,
+    getNetworkSlugFromChainId,
+    isAddressEqual,
 } from "@dexkit/core/utils/blockchain";
 import {
-  GET_NFT_ORDERS,
-  useApproveAssetMutation,
-  useAsset,
-  useAssetMetadata,
-  useCancelSignedOrderMutation,
-  useFillSignedOrderMutation,
-  useSwapSdkV4,
+    GET_NFT_ORDERS,
+    useApproveAssetMutation,
+    useAsset,
+    useAssetMetadata,
+    useCancelSignedOrderMutation,
+    useFillSignedOrderMutation,
+    useSwapSdkV4,
 } from "../hooks";
 import TableSkeleton from "./tables/TableSkeleton";
 
 import { UserEvents } from "@dexkit/core/constants/userEvents";
 import { formatUnits } from "@dexkit/core/utils/ethers/formatUnits";
 import {
-  useDexKitContext,
-  useSwitchNetwork,
-  useTokenList,
+    useDexKitContext,
+    useSwitchNetwork,
+    useTokenList,
 } from "@dexkit/ui/hooks";
 import { useTrackUserEventsMutation } from "@dexkit/ui/hooks/userEvents";
 import {
-  SignedNftOrderV4,
-  SwappableAssetV4,
-  TradeDirection,
+    SignedNftOrderV4,
+    SwappableAssetV4,
+    TradeDirection,
 } from "@traderxyz/nft-swap-sdk";
 import { BigNumber } from "ethers";
 
 import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "@dexkit/core/constants/zrx";
 import {
-  getERC20Decimals,
-  getERC20Name,
-  getERC20Symbol,
+    getERC20Decimals,
+    getERC20Name,
+    getERC20Symbol,
 } from "@dexkit/core/services";
 import { SwapApiOrder } from "@dexkit/core/types/nft";
 import { getWindowUrl } from "@dexkit/core/utils/browser";

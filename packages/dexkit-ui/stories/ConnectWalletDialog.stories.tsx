@@ -1,8 +1,8 @@
 import { useWalletActivate } from "@dexkit/core/hooks";
 import { TokenWhitelabelApp, WalletActivateParams } from "@dexkit/core/types";
+import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import { Meta, StoryObj } from "@storybook/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useWeb3React } from "@web3-react/core";
 
 import { atom } from "jotai";
 import ConnectWalletDialog from "../components/ConnectWallet/ConnectWalletDialog";

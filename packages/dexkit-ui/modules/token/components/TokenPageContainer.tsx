@@ -5,18 +5,18 @@ import TokenErc20Section from "@dexkit/dexappbuilder-viewer/components/sections/
 import { OrderMarketType } from "@dexkit/exchange/constants";
 import { useTokenList } from "@dexkit/ui/hooks";
 import { hexToString } from "@dexkit/ui/utils";
+import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import { isAddress } from "@ethersproject/address";
 import BrowserNotSupportedIcon from "@mui/icons-material/BrowserNotSupported";
 import { Typography } from "@mui/material";
 import Container from "@mui/material/Container";
 import Stack from "@mui/material/Stack";
 import {
-  ThirdwebSDKProvider,
-  useContract,
-  useContractRead,
-  useContractType,
+    ThirdwebSDKProvider,
+    useContract,
+    useContractRead,
+    useContractType,
 } from "@thirdweb-dev/react";
-import { useWeb3React } from "@web3-react/core";
 import { NextSeo } from "next-seo";
 import { useMemo } from "react";
 import { FormattedMessage, useIntl } from "react-intl";

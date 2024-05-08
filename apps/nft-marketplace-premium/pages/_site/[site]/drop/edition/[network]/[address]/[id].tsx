@@ -10,19 +10,19 @@ import AssetLeftSection from '@dexkit/ui/modules/nft/components/AssetLeftSection
 
 import { ChainId } from '@dexkit/core/constants';
 import {
-  NETWORK_FROM_SLUG,
-  NETWORK_SLUG,
+    NETWORK_FROM_SLUG,
+    NETWORK_SLUG,
 } from '@dexkit/core/constants/networks';
 import { ipfsUriToUrl, truncateAddress } from '@dexkit/core/utils';
 import { PageHeader } from '@dexkit/ui/components/PageHeader';
 import {
-  BEST_SELL_ORDER_RARIBLE,
-  useAsset,
-  useAssetMetadata,
+    BEST_SELL_ORDER_RARIBLE,
+    useAsset,
+    useAssetMetadata,
 } from '@dexkit/ui/modules/nft/hooks';
 import { truncateErc1155TokenId } from '@dexkit/ui/modules/nft/utils';
+import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import { ThirdwebSDKProvider } from '@thirdweb-dev/react';
-import { useWeb3React } from '@web3-react/core';
 import { NextSeo } from 'next-seo';
 import { FormattedMessage } from 'react-intl';
 import MainLayout from 'src/components/layouts/main';

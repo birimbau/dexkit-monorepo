@@ -4,26 +4,26 @@ import Share from "@mui/icons-material/Share";
 import Visibility from "@mui/icons-material/Visibility";
 
 import {
-  IconButton,
-  ListItemIcon,
-  ListItemText,
-  Menu,
-  MenuItem,
-  Stack,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Typography,
+    IconButton,
+    ListItemIcon,
+    ListItemText,
+    Menu,
+    MenuItem,
+    Stack,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Typography,
 } from "@mui/material";
 
 import {
-  getNetworkSlugFromChainId,
-  isAddressEqual,
+    getNetworkSlugFromChainId,
+    isAddressEqual,
 } from "@dexkit/core/utils/blockchain";
-import { useWeb3React } from "@web3-react/core";
+import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import moment from "moment";
 import { useRouter } from "next/router";
 import { useState } from "react";

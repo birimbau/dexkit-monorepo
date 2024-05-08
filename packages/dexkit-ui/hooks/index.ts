@@ -12,7 +12,8 @@ import {
 import { switchNetwork } from "@dexkit/wallet-connectors/utils";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
-import { Web3ReactHooks, useWeb3React } from "@web3-react/core";
+import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
+import type { Web3ReactHooks } from '@web3-react/core';
 import { Connector } from "@web3-react/types";
 import { PrimitiveAtom, atom, useAtom, useAtomValue } from "jotai";
 import { useUpdateAtom } from "jotai/utils";

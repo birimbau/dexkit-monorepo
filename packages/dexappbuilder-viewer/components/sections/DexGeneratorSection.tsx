@@ -1,6 +1,6 @@
+import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import { Container, Grid } from "@mui/material";
 import { ThirdwebSDKProvider } from "@thirdweb-dev/react";
-import { useWeb3React } from "@web3-react/core";
 
 import { THIRDWEB_CLIENT_ID } from "@dexkit/ui/constants/thirdweb";
 import { DexGeneratorPageSection } from "@dexkit/ui/modules/wizard/types/section";

@@ -6,31 +6,31 @@ import { useInterval } from "@dexkit/ui/hooks/misc";
 import { useTrackUserEventsMutation } from "@dexkit/ui/hooks/userEvents";
 import { useClaimNft } from "@dexkit/ui/modules/nft/hooks/thirdweb";
 import { NftDropPageSection } from "@dexkit/ui/modules/wizard/types/section";
+import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import {
-  Avatar,
-  Box,
-  Button,
-  CircularProgress,
-  Container,
-  Divider,
-  Grid,
-  Stack,
-  Typography,
+    Avatar,
+    Box,
+    Button,
+    CircularProgress,
+    Container,
+    Divider,
+    Grid,
+    Stack,
+    Typography,
 } from "@mui/material";
 import {
-  ClaimEligibility,
-  detectContractFeature,
-  useActiveClaimConditionForWallet,
-  useClaimConditions,
-  useClaimIneligibilityReasons,
-  useClaimedNFTSupply,
-  useClaimerProofs,
-  useContract,
-  useContractMetadata,
-  useOwnedNFTs,
-  useUnclaimedNFTSupply,
+    ClaimEligibility,
+    detectContractFeature,
+    useActiveClaimConditionForWallet,
+    useClaimConditions,
+    useClaimIneligibilityReasons,
+    useClaimedNFTSupply,
+    useClaimerProofs,
+    useContract,
+    useContractMetadata,
+    useOwnedNFTs,
+    useUnclaimedNFTSupply,
 } from "@thirdweb-dev/react";
-import { useWeb3React } from "@web3-react/core";
 import { BigNumber } from "ethers";
 import { useMemo, useState } from "react";
 import { FormattedMessage } from "react-intl";

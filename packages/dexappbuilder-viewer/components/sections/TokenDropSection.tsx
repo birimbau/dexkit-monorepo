@@ -6,31 +6,31 @@ import { useInterval } from "@dexkit/ui/hooks/misc";
 import { useTrackUserEventsMutation } from "@dexkit/ui/hooks/userEvents";
 import TokenDropSummary from "@dexkit/ui/modules/token/components/TokenDropSummary";
 import { TokenDropPageSection } from "@dexkit/ui/modules/wizard/types/section";
+import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import {
-  Alert,
-  Avatar,
-  Box,
-  Button,
-  CircularProgress,
-  Container,
-  Divider,
-  Skeleton,
-  Stack,
-  Typography,
+    Alert,
+    Avatar,
+    Box,
+    Button,
+    CircularProgress,
+    Container,
+    Divider,
+    Skeleton,
+    Stack,
+    Typography,
 } from "@mui/material";
 import { useMutation } from "@tanstack/react-query";
 import {
-  ClaimEligibility,
-  useActiveClaimConditionForWallet,
-  useClaimConditions,
-  useClaimIneligibilityReasons,
-  useClaimerProofs,
-  useContract,
-  useContractMetadata,
-  useTokenSupply,
+    ClaimEligibility,
+    useActiveClaimConditionForWallet,
+    useClaimConditions,
+    useClaimIneligibilityReasons,
+    useClaimerProofs,
+    useContract,
+    useContractMetadata,
+    useTokenSupply,
 } from "@thirdweb-dev/react";
 import { CurrencyValue } from "@thirdweb-dev/sdk/evm";
-import { useWeb3React } from "@web3-react/core";
 import { BigNumber } from "ethers";
 import { useSnackbar } from "notistack";
 import { useEffect, useMemo, useState } from "react";

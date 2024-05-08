@@ -5,39 +5,39 @@ import { DeployedContract } from '@/modules/forms/types';
 import { ipfsUriToUrl, parseChainId } from '@dexkit/core/utils';
 import { useActiveChainIds } from '@dexkit/ui/hooks';
 import { DexGeneratorPageSection } from '@dexkit/ui/modules/wizard/types/section';
+import { useWeb3React } from '@dexkit/wallet-connectors/hooks/useWeb3React';
 import Error from '@mui/icons-material/Error';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import Search from '@mui/icons-material/Search';
 import {
-  Avatar,
-  Box,
-  Button,
-  Card,
-  CardContent,
-  FormControl,
-  Grid,
-  IconButton,
-  InputAdornment,
-  InputLabel,
-  ListItemIcon,
-  ListItemText,
-  MenuItem,
-  Select,
-  SelectChangeEvent,
-  Skeleton,
-  Stack,
-  Typography,
+    Avatar,
+    Box,
+    Button,
+    Card,
+    CardContent,
+    FormControl,
+    Grid,
+    IconButton,
+    InputAdornment,
+    InputLabel,
+    ListItemIcon,
+    ListItemText,
+    MenuItem,
+    Select,
+    SelectChangeEvent,
+    Skeleton,
+    Stack,
+    Typography,
 } from '@mui/material';
-import { useWeb3React } from '@web3-react/core';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { NETWORKS } from 'src/constants/chain';
 
 import { getChainSlug } from '@dexkit/core/utils/blockchain';
 import {
-  DEX_GENERATOR_CONTRACT_TYPES,
-  DEX_GENERATOR_CONTRACT_TYPES_AVAIL,
+    DEX_GENERATOR_CONTRACT_TYPES,
+    DEX_GENERATOR_CONTRACT_TYPES_AVAIL,
 } from '../../../constants';
 import DexGeneratorSectionCard from '../../DexGeneratorSectionCard';
 import DexGeneratorContractForm from './DexGeneratorContractForm';

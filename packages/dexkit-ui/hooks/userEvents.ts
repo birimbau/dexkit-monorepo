@@ -1,7 +1,7 @@
 import { UserEventsType } from "@dexkit/core/constants/userEvents";
 import { DexkitApiProvider } from "@dexkit/core/providers";
+import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useWeb3React } from "@web3-react/core";
 import { AxiosInstance } from "axios";
 import { useContext } from "react";
 import { useDexKitContext } from ".";

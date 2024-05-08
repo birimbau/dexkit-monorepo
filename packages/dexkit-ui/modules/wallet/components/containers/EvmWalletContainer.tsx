@@ -1,20 +1,20 @@
 import { NavigateNext, Search } from "@mui/icons-material";
 import {
-  Box,
-  Button,
-  Collapse,
-  Divider,
-  Grid,
-  IconButton,
-  InputAdornment,
-  NoSsr,
-  Stack,
-  Tab,
-  Tabs,
-  TextField,
-  Typography,
-  useMediaQuery,
-  useTheme,
+    Box,
+    Button,
+    Collapse,
+    Divider,
+    Grid,
+    IconButton,
+    InputAdornment,
+    NoSsr,
+    Stack,
+    Tab,
+    Tabs,
+    TextField,
+    Typography,
+    useMediaQuery,
+    useTheme,
 } from "@mui/material";
 
 import React, { useEffect, useState } from "react";
@@ -24,7 +24,7 @@ import { FormattedMessage, useIntl } from "react-intl";
 
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 
-import { useWeb3React } from "@web3-react/core";
+import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import { useAtom } from "jotai";
 
 import VerticalAlignBottomIcon from "@mui/icons-material/VerticalAlignBottom";
@@ -45,14 +45,14 @@ const TransakWidget = dynamic(() => import("@dexkit/ui/components/Transak"));
 import ImportTokenDialog from "../../../../components/dialogs/ImportTokenDialog";
 import CloseCircle from "../../../../components/icons/CloseCircle";
 import {
-  useAppConfig,
-  useConnectWalletDialog,
-  useEvmCoins,
+    useAppConfig,
+    useConnectWalletDialog,
+    useEvmCoins,
 } from "../../../../hooks";
 import { isBalancesVisibleAtom } from "../../state";
 import {
-  TransactionsTable,
-  TransactionsTableFilter,
+    TransactionsTable,
+    TransactionsTableFilter,
 } from "../TransactionsTable";
 import { TransferCoinButton } from "../TransferCoinButton";
 import WalletActionButton from "../WalletActionButton";
