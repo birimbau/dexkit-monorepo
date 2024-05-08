@@ -128,13 +128,9 @@ export function useCollection(
   return useQuery(
     [GET_COLLECTION_DATA, contractAddress, chainId],
     async () => {
-      console.log("vem aqui 1", chainId, contractAddress);
-
       if (chainId === undefined || contractAddress === undefined) {
         return;
       }
-
-      console.log("vem aqui 2", chainId, contractAddress);
 
       const sdk = new ThirdwebSDK(chainId, { clientId: THIRDWEB_CLIENT_ID });
 

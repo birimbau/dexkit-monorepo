@@ -5,6 +5,7 @@ export enum UserOnChainEvents {
   unwrap = "unwrap",
   wrap = "wrap",
   transfer = "transfer",
+  receive = "receive",
   buyDropEdition = "buyDropEdition",
   buyDropCollection = "buyDropCollection",
   buyDropToken = "buyDropToken",
@@ -22,7 +23,7 @@ export enum UserOnChainEvents {
   marketSell = "marketSell",
   orderCancelled = "orderCancelled",
   purchaseKey = "purchaseKey",
-  renewKey = 'renewKey',
+  renewKey = "renewKey",
   cancelNFTERC721order = "cancelNFTERC721Order",
   cancelNFTERC1155order = "cancelNFTERC1155Order",
 }

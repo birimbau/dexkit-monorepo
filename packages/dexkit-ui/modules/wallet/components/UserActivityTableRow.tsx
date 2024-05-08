@@ -104,6 +104,29 @@ export default function UserActivityTableRow({
     );
   }
 
+  if (event.type === UserEvents.receive) {
+    const { from, amount, token } = event.processedMetadata;
+    cells.push(
+      <FormattedMessage
+        id="transfer.amount"
+        defaultMessage="Receive {amount} {symbol} from {from}"
+        values={{
+          from: (
+            <Link
+              href={`${
+                event.chainId ? getBlockExplorerUrl(event.chainId) : undefined
+              }/address/${from}`}
+            >
+              {truncateAddress(from)}
+            </Link>
+          ),
+          amount,
+          symbol: token.symbol,
+        }}
+      />
+    );
+  }
+
   if (event.type === UserEvents.swap) {
     const { tokenOutAmount, tokenInAmount, tokenOut, tokenIn } =
       event.processedMetadata;
@@ -128,7 +151,7 @@ export default function UserActivityTableRow({
     cells.push(
       <FormattedMessage
         id="deploy.contract"
-        defaultMessage="Deploy contract:  {contract}"
+        defaultMessage="Deploy contract: {contract}"
         values={{
           contract: (
             <Link
@@ -149,9 +172,20 @@ export default function UserActivityTableRow({
       {cells.map((cell) => (
         <TableCell>{cell}</TableCell>
       ))}
-      <TableCell>{event.type}</TableCell>
       <TableCell>
         <MomentFormatted date={event.createdAt} format="LLLL" />
+      </TableCell>
+      <TableCell>
+        {event.hash && (
+          <Link
+            href={`${getBlockExplorerUrl(
+              event.chainId ? event.chainId : undefined
+            )}/tx/${event.hash}`}
+            target="_blank"
+          >
+            <FormattedMessage id="view.tx" defaultMessage="View" />
+          </Link>
+        )}
       </TableCell>
     </TableRow>
   );

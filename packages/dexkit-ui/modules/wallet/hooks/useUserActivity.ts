@@ -35,7 +35,7 @@ export default function useUserActivity({
   const { instance } = useContext(DexkitApiProvider);
 
   return useInfiniteQuery(
-    [USER_ACTIVITY_QUERY, account],
+    [USER_ACTIVITY_QUERY, account, pageSize],
     async ({ pageParam = 0 }) => {
       const data = (
         await instance?.get<{ count: number; data: UserEvent[]; page: number }>(

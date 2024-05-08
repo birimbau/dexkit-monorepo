@@ -1,4 +1,5 @@
 import {
+  Stack,
   Table,
   TableBody,
   TableCell,
@@ -7,6 +8,7 @@ import {
   TableHead,
   TablePagination,
   TableRow,
+  Typography,
 } from "@mui/material";
 import { useWeb3React } from "@web3-react/core";
 import React, { useState } from "react";
@@ -25,22 +27,25 @@ export default function UserActivityTable({}: UserActivityTableProps) {
   const userActivityQuery = useUserActivity({ account, pageSize });
 
   const renderPages = () => {
-    // if (pageList.length === 0) {
-    //   return (
-    //     <TableRow>
-    //       <TableCell colSpan={5}>
-    //         <Stack sx={{ py: 2 }} alignItems="center" justifyContent="center">
-    //           <Typography variant="body1" color="textSecondary">
-    //             <FormattedMessage
-    //               id="nothing.to.see.here"
-    //               defaultMessage="Nothing to see here"
-    //             />
-    //           </Typography>
-    //         </Stack>
-    //       </TableCell>
-    //     </TableRow>
-    //   );
-    // }
+    if (
+      userActivityQuery.data?.pages &&
+      userActivityQuery.data?.pages.length === 0
+    ) {
+      return (
+        <TableRow>
+          <TableCell colSpan={5}>
+            <Stack sx={{ py: 2 }} alignItems="center" justifyContent="center">
+              <Typography variant="body1" color="textSecondary">
+                <FormattedMessage
+                  id="nothing.to.see.here"
+                  defaultMessage="Nothing to see here"
+                />
+              </Typography>
+            </Stack>
+          </TableCell>
+        </TableRow>
+      );
+    }
 
     if (
       userActivityQuery.data?.pages &&
@@ -78,6 +83,9 @@ export default function UserActivityTable({}: UserActivityTableProps) {
             </TableCell>
             <TableCell>
               <FormattedMessage id="date" defaultMessage="Date" />
+            </TableCell>
+            <TableCell>
+              <FormattedMessage id="transaction" defaultMessage="Transaction" />
             </TableCell>
           </TableRow>
         </TableHead>
