@@ -94,7 +94,11 @@
           "href": "/dexgenerator",
           "name": "DexGenerator",
           "children": [
-            { "type": "Page", "href": "/dexgenerator", "name": "DexGenerator" },
+            {
+              "type": "Page",
+              "href": "/dexgenerator",
+              "name": "About DexGenerator"
+            },
             {
               "type": "Page",
               "href": "/forms/contracts/create",
