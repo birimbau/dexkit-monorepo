@@ -20,6 +20,7 @@ import Typography from '@mui/material/Typography';
 import { QueryClient, dehydrate } from '@tanstack/react-query';
 import { GetStaticProps, GetStaticPropsContext, NextPage } from 'next';
 import { NextSeo } from 'next-seo';
+import Image from 'next/image';
 import { useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { UsecasesAccordion } from 'src/components/UsecasesAccordion';
@@ -242,12 +243,23 @@ export const SiteTemplatesPage: NextPage = () => {
                           href={`/site/template/${site.slug}`}
                           target={'_blank'}
                         >
-                          <CardMedia
-                            component="img"
-                            height="160"
-                            image={site?.metadata?.imageURL}
-                            alt=""
-                          />
+                          <CardMedia sx={{ height: 160 }}>
+                            <div
+                              style={{
+                                position: 'relative',
+                                width: '100%',
+                                height: '100%',
+                              }}
+                            >
+                              <Image
+                                src={site?.metadata?.imageURL}
+                                layout="fill"
+                                objectFit="contain"
+                                alt={' '}
+                              />
+                            </div>
+                          </CardMedia>
+
                           <CardContent>
                             <Box>
                               <Stack spacing={2}>
