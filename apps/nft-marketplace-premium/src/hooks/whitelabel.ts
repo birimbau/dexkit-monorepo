@@ -37,6 +37,7 @@ import { useAccountHoldDexkitMutation } from '@dexkit/ui/hooks/account';
 import { useAuth, useLoginAccountMutation } from '@dexkit/ui/hooks/auth';
 import { AppConfig } from '@dexkit/ui/modules/wizard/types/config';
 import { useSiteId } from './app';
+//import SiteConfig from '../../config/dexappbuilder.json';
 
 export const useSendConfigMutation = ({ slug }: { slug?: string }) => {
   const { account, provider, chainId } = useWeb3React();

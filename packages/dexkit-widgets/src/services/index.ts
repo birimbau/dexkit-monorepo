@@ -58,13 +58,13 @@ export async function getTokensBalance(
   provider: providers.BaseProvider,
   account: string
 ): Promise<TokenBalances> {
-  await provider.ready;
+  // await provider.ready;
 
   const multicall = new MultiCall(provider);
 
   const [, balances] = await multicall.getBalances(
     tokens.map((t) => {
-      if (isAddressEqual(t.address, ZEROEX_NATIVE_TOKEN_ADDRESS)) {
+      if (t.address && ZEROEX_NATIVE_TOKEN_ADDRESS && t.address.toLowerCase() === ZEROEX_NATIVE_TOKEN_ADDRESS.toLowerCase()) {
         return constants.AddressZero;
       }
 

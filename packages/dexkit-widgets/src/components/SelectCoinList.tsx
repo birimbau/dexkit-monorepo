@@ -1,4 +1,4 @@
-import { TokenBalances } from "@indexed-finance/multicall";
+import type { TokenBalances } from "@indexed-finance/multicall";
 import TipsAndUpdates from "@mui/icons-material/TipsAndUpdates";
 
 import { Box, List, Stack, Typography } from "@mui/material";
@@ -14,12 +14,14 @@ export interface SelectCoinListProps {
   onSelect: (token: Token) => void;
   tokenBalances?: TokenBalances;
   subHeader?: React.ReactNode;
+  isLoading: boolean;
 }
 
 function SelectCoinList({
   tokens,
   onSelect,
   tokenBalances,
+  isLoading,
   subHeader,
 }: SelectCoinListProps) {
   if (tokens.length === 0) {
@@ -49,6 +51,7 @@ function SelectCoinList({
         <SelectCoinListItem
           key={index}
           token={token}
+          isLoading={isLoading}
           onSelect={onSelect}
           tokenBalances={tokenBalances}
         />

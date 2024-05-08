@@ -5,6 +5,7 @@
   "scripts": {
     "lint": "TIMING=1 eslint \"**/*.ts*\"",
     "storybook": "storybook dev -p 6006",
+    "build-umd": "tsup",
     "build-storybook": "storybook build",
     "release": "changeset publish"
   },

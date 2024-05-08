@@ -20,20 +20,23 @@ import { defineConfig } from 'tsup';
 
 export default defineConfig({
   replaceNodeEnv: true,
+  outDir: 'dist/widget',
   define: {
     'process.env.NODE_ENV': JSON.stringify('production'),
   },
   entry: {
     index: 'index.tsx',
+    wallet: 'widgets/wallet.tsx'
   },
   esbuildOptions(options) {
     options.alias = {
       'react/jsx-runtime.js': 'react/jsx-runtime'
     }
   },
-  format: ['cjs', 'esm'],
-  // shims: true,
-  // minify: true,
+  injectStyle: true,
+  format: ['iife'],
+  //shims: true,
+  minify: true,
   // esbuildPlugins: [replaceNodeBuiltIns()],
   // plugins: [replaceNodeBuiltIns()],
   //platform: 'browser'
