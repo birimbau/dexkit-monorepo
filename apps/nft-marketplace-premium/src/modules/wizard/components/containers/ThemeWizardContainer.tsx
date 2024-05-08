@@ -3,18 +3,18 @@ import { AppConfig } from '@dexkit/ui/modules/wizard/types/config';
 import Cancel from '@mui/icons-material/Cancel';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import {
-  Autocomplete,
-  Box,
-  Button,
-  Divider,
-  FormControl,
-  Grid,
-  MenuItem,
-  Select,
-  Stack,
-  Switch,
-  TextField,
-  Typography,
+    Autocomplete,
+    Box,
+    Button,
+    Divider,
+    FormControl,
+    Grid,
+    MenuItem,
+    Select,
+    Stack,
+    Switch,
+    TextField,
+    Typography,
 } from '@mui/material';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
@@ -34,7 +34,7 @@ const ExchangeSection = dynamic(
 
 import { ChainId } from '@dexkit/core';
 import { ExchangePageSection } from '@dexkit/ui/modules/wizard/types/section';
-import { useWeb3React } from '@web3-react/core';
+import { useWeb3React } from '@dexkit/wallet-connectors/hooks/useWeb3React';
 import appConfig from '../../../../../config/app.json';
 import ThemePreviewMenu from '../ThemePreviewMenu';
 interface Props {

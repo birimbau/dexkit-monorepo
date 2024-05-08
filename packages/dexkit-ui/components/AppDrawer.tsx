@@ -1,29 +1,29 @@
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 
 import {
-  Avatar,
-  Box,
-  Button,
-  Divider,
-  Drawer,
-  IconButton,
-  List,
-  ListItemButton,
-  ListItemIcon,
-  ListItemSecondaryAction,
-  ListItemText,
-  ListSubheader,
-  Paper,
-  Stack,
-  styled,
-  Typography,
+    Avatar,
+    Box,
+    Button,
+    Divider,
+    Drawer,
+    IconButton,
+    List,
+    ListItemButton,
+    ListItemIcon,
+    ListItemSecondaryAction,
+    ListItemText,
+    ListSubheader,
+    Paper,
+    Stack,
+    styled,
+    Typography,
 } from "@mui/material";
 
+import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import AttachMoney from "@mui/icons-material/AttachMoney";
 import Language from "@mui/icons-material/Language";
 import MenuIcon from "@mui/icons-material/Menu";
 import MenuOpenIcon from "@mui/icons-material/MenuOpen";
-import { useWeb3React } from "@web3-react/core";
 import { FormattedMessage } from "react-intl";
 
 import DrawerMenu from "./DrawerMenu";
@@ -32,12 +32,12 @@ import Wallet from "./icons/Wallet";
 import { useIsMobile } from "@dexkit/core/hooks";
 import WalletContent from "@dexkit/ui/components/WalletContent";
 import {
-  useAuthUserQuery,
-  useConnectWalletDialog,
-  useCurrency,
-  useLocale,
-  useShowSelectCurrency,
-  useShowSelectLocale,
+    useAuthUserQuery,
+    useConnectWalletDialog,
+    useCurrency,
+    useLocale,
+    useShowSelectCurrency,
+    useShowSelectLocale,
 } from "@dexkit/ui/hooks";
 import { useAtom } from "jotai";
 import { useMemo } from "react";

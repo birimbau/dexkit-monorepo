@@ -1,5 +1,5 @@
 import { ChainId } from '@dexkit/core/constants';
-import { NETWORK_PROVIDER } from '@dexkit/core/constants/networks';
+import { NETWORK_PROVIDER } from '@dexkit/core/constants/networkProvider';
 import { isAddress } from '@dexkit/core/utils/ethers/isAddress';
 import * as Yup from 'yup';
 

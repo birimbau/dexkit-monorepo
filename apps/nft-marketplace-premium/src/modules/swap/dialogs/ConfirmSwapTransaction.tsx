@@ -1,19 +1,19 @@
 import { getNativeCurrencySymbol } from '@dexkit/core/utils/blockchain';
 import { formatEther } from '@dexkit/core/utils/ethers/formatEther';
 import { formatUnits } from '@dexkit/core/utils/ethers/formatUnits';
+import { useWeb3React } from '@dexkit/wallet-connectors/hooks/useWeb3React';
 import {
-  Alert,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogProps,
-  Divider,
-  Grid,
-  Stack,
-  Typography,
+    Alert,
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogProps,
+    Divider,
+    Grid,
+    Stack,
+    Typography,
 } from '@mui/material';
-import { useWeb3React } from '@web3-react/core';
 import { BigNumber } from 'ethers';
 import { memo } from 'react';
 import { FormattedMessage, FormattedNumber } from 'react-intl';

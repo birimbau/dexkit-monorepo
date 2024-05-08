@@ -1,20 +1,20 @@
 import CloseIcon from '@mui/icons-material/Close';
 import {
-  Box,
-  Button,
-  Container,
-  Dialog,
-  DialogProps,
-  IconButton,
-  Stack,
-  Typography,
+    Box,
+    Button,
+    Container,
+    Dialog,
+    DialogProps,
+    IconButton,
+    Stack,
+    Typography,
 } from '@mui/material';
 
+import { useWeb3React } from '@dexkit/wallet-connectors/hooks/useWeb3React';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import { useWeb3React } from '@web3-react/core';
 import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { useCheckGatedConditions } from '../../hooks';

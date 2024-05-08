@@ -1,6 +1,7 @@
 import { getNetworkFromSlug } from '@dexkit/core/utils/blockchain';
 import Link from '@dexkit/ui/components/AppLink';
 import { useAccountContractCollection } from '@dexkit/ui/modules/nft/hooks/collection';
+import { useWeb3React } from '@dexkit/wallet-connectors/hooks/useWeb3React';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { Button, MenuItem, Stack, Typography } from '@mui/material';
@@ -12,7 +13,6 @@ import ListItem from '@mui/material/ListItem';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import ListItemText from '@mui/material/ListItemText';
 import Menu from '@mui/material/Menu';
-import { useWeb3React } from '@web3-react/core';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';

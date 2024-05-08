@@ -1,19 +1,19 @@
 import { ChainId } from "@dexkit/core/constants";
+import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import { Search } from "@mui/icons-material";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import {
-  Box,
-  Chip,
-  Grid,
-  IconButton,
-  InputAdornment,
-  Stack,
-  TextField,
-  Typography,
-  useMediaQuery,
-  useTheme,
+    Box,
+    Chip,
+    Grid,
+    IconButton,
+    InputAdornment,
+    Stack,
+    TextField,
+    Typography,
+    useMediaQuery,
+    useTheme,
 } from "@mui/material";
-import { useWeb3React } from "@web3-react/core";
 import { ChangeEvent, useMemo, useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 import CloseCircle from "../../../components/icons/CloseCircle";

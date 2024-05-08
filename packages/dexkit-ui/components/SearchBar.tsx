@@ -1,11 +1,11 @@
 import { NETWORK_IMAGE, NETWORK_SLUG } from "@dexkit/core/constants/networks";
+import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import SearchIcon from "@mui/icons-material/Search";
 import { Avatar, InputAdornment, Typography } from "@mui/material";
 import Autocomplete from "@mui/material/Autocomplete";
 import Badge from "@mui/material/Badge";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
-import { useWeb3React } from "@web3-react/core";
 import { useRouter } from "next/router";
 import { useMemo } from "react";
 import { useIntl } from "react-intl";

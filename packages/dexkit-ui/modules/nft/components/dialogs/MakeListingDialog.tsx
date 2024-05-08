@@ -1,24 +1,24 @@
 import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Alert,
-  Box,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogProps,
-  FormControl,
-  Grid,
-  ListItemIcon,
-  ListItemText,
-  MenuItem,
-  Select,
-  Skeleton,
-  Stack,
-  TextField,
-  Typography,
+    Accordion,
+    AccordionDetails,
+    AccordionSummary,
+    Alert,
+    Box,
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogProps,
+    FormControl,
+    Grid,
+    ListItemIcon,
+    ListItemText,
+    MenuItem,
+    Select,
+    Skeleton,
+    Stack,
+    TextField,
+    Typography,
 } from "@mui/material";
 
 import { isAddress } from "@dexkit/core/utils/ethers/isAddress";
@@ -36,8 +36,8 @@ import { Asset, AssetMetadata } from "@dexkit/core/types/nft";
 import { ipfsUriToUrl } from "@dexkit/core/utils";
 import { isAddressEqual } from "@dexkit/core/utils/blockchain";
 import { isValidDecimal } from "@dexkit/core/utils/numbers";
+import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import ExpandMore from "@mui/icons-material/ExpandMore";
-import { useWeb3React } from "@web3-react/core";
 import Image from "next/image";
 import * as Yup from "yup";
 import { AppDialogTitle } from "../../../../components/AppDialogTitle";

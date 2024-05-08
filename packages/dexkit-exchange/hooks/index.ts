@@ -8,8 +8,8 @@ import {
 } from "@dexkit/core/services/zrx/constants";
 import { Token } from "@dexkit/core/types";
 import { useTrackUserEventsMutation } from "@dexkit/ui/hooks/userEvents";
+import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useWeb3React } from "@web3-react/core";
 import axios from "axios";
 import { BigNumber } from "bignumber.js";
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";

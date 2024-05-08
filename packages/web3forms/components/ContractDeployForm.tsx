@@ -2,7 +2,7 @@ import { Box, Button } from "@mui/material";
 
 import { ChainId } from "@dexkit/core/constants";
 import { useSwitchNetworkMutation } from "@dexkit/ui/hooks";
-import { useWeb3React } from "@web3-react/core";
+import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import { BigNumber, Contract } from "ethers";
 import { useSnackbar } from "notistack";
 import { useCallback, useState } from "react";

@@ -1,7 +1,7 @@
 import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "@dexkit/core/constants/zrx";
 import { WRAPPED_TOKEN_ADDRESSES } from "@dexkit/evm-chains/constants";
+import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import { useQuery } from "@tanstack/react-query";
-import { useWeb3React } from "@web3-react/core";
 import { getSimpleCoinPrices } from "../../services/currency";
 import { useTokenList } from "../blockchain";
 import { useCurrency } from "../currency";

@@ -1,17 +1,17 @@
 import DollarSquare from "@dexkit/ui/components/icons/DollarSquare";
+import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import { Button, Grid, Paper, Stack } from "@mui/material";
-import { useWeb3React } from "@web3-react/core";
 import { BigNumber } from "ethers";
 import { useCallback, useMemo, useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 
 import { isAddressEqual } from "@dexkit/core/utils/blockchain";
 import {
-  useConnectWalletDialog,
-  useDexKitContext,
-  useSignMessageDialog,
-  useSwitchNetwork,
-  useTokenList,
+    useConnectWalletDialog,
+    useDexKitContext,
+    useSignMessageDialog,
+    useSwitchNetwork,
+    useTokenList,
 } from "@dexkit/ui/hooks";
 import { useQueryClient } from "@tanstack/react-query";
 import { SwappableAssetV4 } from "@traderxyz/nft-swap-sdk";
@@ -20,14 +20,14 @@ import dynamic from "next/dynamic";
 import { getERC20Name, getERC20Symbol } from "@dexkit/core/services/balances";
 import Icon from "../../../components/Icon";
 import {
-  GET_NFT_ORDERS,
-  useApproveAssetMutation,
-  useAsset,
-  useAssetBalance,
-  useAssetMetadata,
-  useMakeListingMutation,
-  useMakeOfferMutation,
-  useSwapSdkV4,
+    GET_NFT_ORDERS,
+    useApproveAssetMutation,
+    useAsset,
+    useAssetBalance,
+    useAssetMetadata,
+    useMakeListingMutation,
+    useMakeOfferMutation,
+    useSwapSdkV4,
 } from "../hooks";
 import { getAssetProtocol, isERC1155Owner } from "../utils";
 import { TransferAssetButton } from "./TransferAssetButton";

@@ -10,6 +10,7 @@ import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
 import { truncateAddress } from "@dexkit/core/utils";
 
 import { arrayify } from "@dexkit/core/utils/ethers/arrayify";
+import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import TreeItem from "@mui/lab/TreeItem";
 import TreeView from "@mui/lab/TreeView";
 import Button from "@mui/material/Button";
@@ -19,7 +20,6 @@ import DialogContent from "@mui/material/DialogContent";
 import Divider from "@mui/material/Divider";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
-import { useWeb3React } from "@web3-react/core";
 import { AppDialogTitle } from "../AppDialogTitle";
 
 interface ObjectToTreeProps {

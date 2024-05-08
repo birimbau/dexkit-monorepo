@@ -1,6 +1,6 @@
 import { MagicTxConfirmDialog } from "./dialogs/MagicTxConfirmDialog";
 
-import { useWeb3React } from "@web3-react/core";
+import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import { ReactNode, useCallback, useEffect, useState } from "react";
 
 import MagicSignDataDialog from "../components/dialogs/MagicSignDataDialog";

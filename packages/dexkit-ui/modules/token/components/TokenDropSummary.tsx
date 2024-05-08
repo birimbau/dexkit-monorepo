@@ -1,12 +1,12 @@
-import { useIsMobile } from '@dexkit/core';
-import { Skeleton, Stack, Typography } from '@mui/material';
+import { useIsMobile } from "@dexkit/core";
+import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
+import { Skeleton, Stack, Typography } from "@mui/material";
 import {
-  TokenDrop,
-  useTokenBalance,
-  useTokenSupply,
-} from '@thirdweb-dev/react';
-import { useWeb3React } from '@web3-react/core';
-import { FormattedMessage } from 'react-intl';
+    TokenDrop,
+    useTokenBalance,
+    useTokenSupply,
+} from "@thirdweb-dev/react";
+import { FormattedMessage } from "react-intl";
 
 export interface TokenDropSummaryProps {
   contract?: TokenDrop;
@@ -17,21 +17,21 @@ export default function TokenDropSummary({ contract }: TokenDropSummaryProps) {
 
   const { account } = useWeb3React();
   const supplyQuery = useTokenSupply(contract);
-  const balanceQuery = useTokenBalance(contract, account || '');
+  const balanceQuery = useTokenBalance(contract, account || "");
 
   return (
-    <Stack spacing={{ sm: 2, xs: 0 }} direction={{ sm: 'row', xs: 'column' }}>
+    <Stack spacing={{ sm: 2, xs: 0 }} direction={{ sm: "row", xs: "column" }}>
       <Stack
         justifyContent="space-between"
-        direction={{ xs: 'row', sm: 'column' }}
+        direction={{ xs: "row", sm: "column" }}
       >
         <Typography
           color="text.secondary"
-          variant={isMobile ? 'body1' : 'caption'}
+          variant={isMobile ? "body1" : "caption"}
         >
           <FormattedMessage id="total.supply" defaultMessage="Total supply" />
         </Typography>
-        <Typography variant={isMobile ? 'body1' : 'h5'}>
+        <Typography variant={isMobile ? "body1" : "h5"}>
           {supplyQuery.isLoading ? (
             <Skeleton />
           ) : (
@@ -41,15 +41,15 @@ export default function TokenDropSummary({ contract }: TokenDropSummaryProps) {
       </Stack>
       <Stack
         justifyContent="space-between"
-        direction={{ xs: 'row', sm: 'column' }}
+        direction={{ xs: "row", sm: "column" }}
       >
         <Typography
           color="text.secondary"
-          variant={isMobile ? 'body1' : 'caption'}
+          variant={isMobile ? "body1" : "caption"}
         >
           <FormattedMessage id="your.balance" defaultMessage="Your balance" />
         </Typography>
-        <Typography variant={isMobile ? 'body1' : 'h5'}>
+        <Typography variant={isMobile ? "body1" : "h5"}>
           {balanceQuery.isLoading ? (
             <Skeleton />
           ) : (
@@ -59,15 +59,15 @@ export default function TokenDropSummary({ contract }: TokenDropSummaryProps) {
       </Stack>
       <Stack
         justifyContent="space-between"
-        direction={{ xs: 'row', sm: 'column' }}
+        direction={{ xs: "row", sm: "column" }}
       >
         <Typography
           color="text.secondary"
-          variant={isMobile ? 'body1' : 'caption'}
+          variant={isMobile ? "body1" : "caption"}
         >
           <FormattedMessage id="decimals" defaultMessage="Decimals" />
         </Typography>
-        <Typography variant={isMobile ? 'body1' : 'h5'}>
+        <Typography variant={isMobile ? "body1" : "h5"}>
           {supplyQuery.isLoading ? <Skeleton /> : supplyQuery.data?.decimals}
         </Typography>
       </Stack>

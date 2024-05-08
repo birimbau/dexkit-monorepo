@@ -1,16 +1,16 @@
-import { formatBigNumber } from '@dexkit/core/utils';
-import { useAsyncMemo } from '@dexkit/widgets/src/hooks';
-import { Box, Grid, Typography } from '@mui/material';
-import { useContract } from '@thirdweb-dev/react';
-import { useWeb3React } from '@web3-react/core';
-import { FormattedMessage } from 'react-intl';
+import { formatBigNumber } from "@dexkit/core/utils";
+import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
+import { useAsyncMemo } from "@dexkit/widgets/src/hooks";
+import { Box, Grid, Typography } from "@mui/material";
+import { useContract } from "@thirdweb-dev/react";
+import { FormattedMessage } from "react-intl";
 
 export interface TokenSummaryProps {
   address: string;
 }
 
 export default function TokenSummary({ address }: TokenSummaryProps) {
-  const { data: contract } = useContract(address, 'token');
+  const { data: contract } = useContract(address, "token");
   const { account } = useWeb3React();
 
   const [info, totalSupply, balance] = useAsyncMemo<any>(
@@ -22,7 +22,7 @@ export default function TokenSummary({ address }: TokenSummaryProps) {
       ];
     },
     [],
-    [],
+    []
   );
 
   return (
@@ -33,7 +33,7 @@ export default function TokenSummary({ address }: TokenSummaryProps) {
             <FormattedMessage id="your.balance" defaultMessage="Your balance" />
           </Typography>
           <Typography variant="h5">
-            {formatBigNumber(balance?.value, balance?.decimals)}{' '}
+            {formatBigNumber(balance?.value, balance?.decimals)}{" "}
             {balance?.symbol}
           </Typography>
         </Grid>
@@ -42,7 +42,7 @@ export default function TokenSummary({ address }: TokenSummaryProps) {
             <FormattedMessage id="total.supply" defaultMessage="Total Supply" />
           </Typography>
           <Typography variant="h5">
-            {formatBigNumber(totalSupply?.value, totalSupply?.decimals)}{' '}
+            {formatBigNumber(totalSupply?.value, totalSupply?.decimals)}{" "}
             {totalSupply?.symbol}
           </Typography>
         </Grid>

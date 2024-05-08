@@ -8,7 +8,7 @@ import { ThemeMode } from "@dexkit/ui/constants/enum";
 import { AppNotification } from "@dexkit/ui/types";
 
 import { AppConfig } from "@dexkit/ui/modules/wizard/types/config";
-import { useWeb3React } from "@web3-react/core";
+import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import { atom } from "jotai";
 import { useEffect } from "react";
 import { renderDexAppBuilderFromConfig } from "..";

@@ -1,5 +1,5 @@
+import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import { useQuery } from "@tanstack/react-query";
-import { useWeb3React } from "@web3-react/core";
 import { getDKCoinPrices } from "../../services/currency";
 import { useTokenList } from "../blockchain";
 import { useCurrency } from "../currency";

@@ -5,11 +5,11 @@ import {
 } from '@tanstack/react-query';
 import { BigNumber } from 'ethers';
 
+import { useWeb3React } from '@dexkit/wallet-connectors/hooks/useWeb3React';
 import {
   NotificationCallbackParams,
   RenderOptions,
 } from '@dexkit/widgets/src/widgets/swap/types';
-import { useWeb3React } from '@web3-react/core';
 import axios from 'axios';
 import { useAtom } from 'jotai';
 import { useCallback, useEffect, useMemo, useState } from 'react';

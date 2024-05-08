@@ -1,7 +1,7 @@
 import { convertTokenToEvmCoin } from "@dexkit/core/utils";
+import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import Send from "@mui/icons-material/Send";
 import Button from "@mui/material/Button";
-import { useWeb3React } from "@web3-react/core";
 import dynamic from "next/dynamic";
 import { useState } from "react";
 import { FormattedMessage } from "react-intl";

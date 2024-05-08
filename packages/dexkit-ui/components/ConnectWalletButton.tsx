@@ -1,7 +1,7 @@
+import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import Button from "@mui/material/Button";
 import CircularProgress from "@mui/material/CircularProgress";
-import { useWeb3React } from "@web3-react/core";
 import { FormattedMessage } from "react-intl";
 import { useConnectWalletDialog } from "../hooks";
 import WalletIcon from "./icons/Wallet";

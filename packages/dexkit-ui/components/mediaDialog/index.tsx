@@ -1,23 +1,23 @@
 import AutoFixHighIcon from "@mui/icons-material/AutoFixHigh";
 import BrowseGalleryIcon from "@mui/icons-material/BrowseGallery";
 import {
-  Box,
-  Button,
-  ButtonBase,
-  CircularProgress,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogProps,
-  Divider,
-  Grid,
-  InputAdornment,
-  Skeleton,
-  Stack,
-  styled,
-  TextField,
-  Tooltip,
-  Typography,
+    Box,
+    Button,
+    ButtonBase,
+    CircularProgress,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogProps,
+    Divider,
+    Grid,
+    InputAdornment,
+    Skeleton,
+    Stack,
+    styled,
+    TextField,
+    Tooltip,
+    Typography,
 } from "@mui/material";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
@@ -26,18 +26,18 @@ import Select, { SelectChangeEvent } from "@mui/material/Select";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import {
-  useDeleteAccountFile,
-  useEditAccountFile,
-  useGetAccountFiles,
-  useUploadAccountFile,
+    useDeleteAccountFile,
+    useEditAccountFile,
+    useGetAccountFiles,
+    useUploadAccountFile,
 } from "../../modules/file/hooks";
 import { AppDialogTitle } from "../AppDialogTitle";
 
+import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SearchIcon from "@mui/icons-material/Search";
 import IconButton from "@mui/material/IconButton";
 import Pagination from "@mui/material/Pagination";
-import { useWeb3React } from "@web3-react/core";
 import AppConfirmDialog from "../AppConfirmDialog";
 import DeleteImageDialog from "./DeleteImageDialog";
 
