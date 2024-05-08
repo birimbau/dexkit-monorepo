@@ -453,6 +453,8 @@ function Navbar({ appConfig, isPreview }: Props) {
                       sx={{
                         fontWeight: 600,
                         textDecoration: "none",
+                        textTransform: "none",
+                        fontSize: "inherit",
                       }}
                       key={key}
                       LinkComponent={Link}
