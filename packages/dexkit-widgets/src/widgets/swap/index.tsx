@@ -259,6 +259,8 @@ export function SwapWidget({
             fullWidth: true,
             onClose: handleCloseSelectToken,
           }}
+          isLoadingSearch={searchQuery.isLoading}
+          chainId={selectedChainId}
           account={account}
           provider={swapProvider}
           featuredTokens={featuredTokensByChain}

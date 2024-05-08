@@ -1,4 +1,3 @@
-import { ChainId } from "@dexkit/core/constants/enums";
 import { useIsMobile } from "@dexkit/core/hooks";
 import Search from "@mui/icons-material/Search";
 
@@ -18,7 +17,7 @@ import { FormattedMessage, useIntl } from "react-intl";
 import AppDialogTitle from "../../components/AppDialogTitle";
 import SearchTextField from "../../components/SearchTextField";
 import SelectCoinList from "../../components/SelectCoinList";
-import { useAsyncMemo, useMultiTokenBalance } from "../../hooks";
+import { useMultiTokenBalance } from "../../hooks";
 
 import { Token } from "@dexkit/core/types";
 import SwapFeaturedTokens from "./SwapFeaturedTokens";
@@ -29,6 +28,8 @@ export interface SwapSelectCoinDialogProps {
   onSelect: (token: Token) => void;
   onClearRecentTokens: () => void;
   tokens: Token[];
+  chainId?: number;
+  isLoadingSearch: boolean;
   recentTokens?: Token[];
   account?: string;
   provider?: providers.BaseProvider;
@@ -38,10 +39,12 @@ export interface SwapSelectCoinDialogProps {
 export default function SwapSelectCoinDialog({
   DialogProps,
   tokens,
+  chainId,
   featuredTokens,
   recentTokens,
   account,
   provider,
+  isLoadingSearch,
   onSelect,
   onQueryChange,
   onClearRecentTokens,
@@ -57,18 +60,6 @@ export default function SwapSelectCoinDialog({
   };
 
   const tokenBalances = useMultiTokenBalance({ tokens, account, provider });
-
-  const chainId = useAsyncMemo<ChainId | undefined>(
-    async (initial?: ChainId) => {
-      if (provider) {
-        return (await provider?.getNetwork()).chainId;
-      }
-
-      return initial;
-    },
-    undefined,
-    [provider]
-  );
 
   const isMobile = useIsMobile();
 
@@ -148,6 +139,7 @@ export default function SwapSelectCoinDialog({
                 tokens={recentTokens}
                 tokenBalances={tokenBalances.data}
                 onSelect={onSelect}
+                isLoading={tokenBalances.isLoading}
               />
             </>
           )}
@@ -157,6 +149,7 @@ export default function SwapSelectCoinDialog({
             tokens={tokens}
             onSelect={onSelect}
             tokenBalances={tokenBalances.data}
+            isLoading={tokenBalances.isLoading}
           />
         </Stack>
       </DialogContent>
