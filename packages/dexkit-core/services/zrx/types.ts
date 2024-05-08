@@ -100,3 +100,50 @@ export type ZrxOrderbookResponse = {
   perPage: number;
   records: ZrxOrderRecord[];
 };
+
+
+export type ZeroExGaslessQuoteResponse = {
+  price: string;
+  guaranteedPrice: any;
+  estimatedPriceImpact: any;
+  to: string;
+  data: string;
+  value: string;
+  gasPrice: string;
+  gas: string;
+  estimatedGas: string;
+  protocolFee: string;
+  minimumProtocolFee: string;
+  buyAmount: string;
+  sellAmount: string;
+  sources: any;
+  buyTokenAddress: string;
+  sellTokenAddress: string;
+  allowanceTarget: any;
+  orders: any;
+  sellTokenToEthRate: any;
+  buyTokenToEthRate: any;
+  expectedSlippage: any;
+  trade: {
+    type: string,
+    hash: string,
+    eip721: {
+      types: any,
+      primaryType: any,
+      domain: any,
+      message: any,
+    }
+  }
+  approval: {
+    isRequired: boolean,
+    isGasslessAvailable: boolean,
+    type: string,
+    hash: string,
+    eip721: {
+      types: any,
+      primaryType: any,
+      domain: any,
+      message: any,
+    }
+  }
+};

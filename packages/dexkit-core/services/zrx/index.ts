@@ -5,11 +5,13 @@ import {
   ZEROEX_ORDERBOOK_ENDPOINT,
   ZEROEX_ORDERBOOK_ORDERS_ENDPOINT,
   ZEROEX_QUOTE_ENDPOINT,
+  ZEROEX_QUOTE_TX_RELAY_ENDPOINT,
   ZEROEX_TOKENS_ENDPOINT,
   ZERO_EX_URL,
 } from "./constants";
 
 import {
+  ZeroExGaslessQuoteResponse,
   ZeroExQuote,
   ZeroExQuoteResponse,
   ZrxOrderRecord,
@@ -45,6 +47,21 @@ export class ZeroExApiClient {
   ): Promise<ZeroExQuoteResponse> {
     const resp = await this.axiosInstance.get(
       ZERO_EX_URL(this.chainId, this.siteId) + ZEROEX_QUOTE_ENDPOINT,
+      {
+        params: quote,
+        signal,
+      }
+    );
+
+    return resp.data;
+  }
+
+  async quoteGasless(
+    quote: ZeroExQuote,
+    { signal }: { signal?: AbortSignal }
+  ): Promise<ZeroExGaslessQuoteResponse> {
+    const resp = await this.axiosInstance.get(
+      ZERO_EX_URL(this.chainId, this.siteId) + ZEROEX_QUOTE_TX_RELAY_ENDPOINT,
       {
         params: quote,
         signal,
