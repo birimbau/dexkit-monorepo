@@ -1,5 +1,5 @@
 import { ChainId } from "@dexkit/core/constants";
-import { NETWORK_PROVIDER } from "@dexkit/core/constants/networks";
+import { NETWORK_PROVIDER } from "@dexkit/core/constants/networkProvider";
 import { Box, Card, Grid } from "@mui/material";
 import { ComponentMeta, ComponentStory } from "@storybook/react";
 

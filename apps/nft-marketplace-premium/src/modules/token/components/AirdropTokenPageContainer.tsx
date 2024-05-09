@@ -5,13 +5,13 @@ import Container from '@mui/material/Container';
 import Stack from '@mui/material/Stack';
 import { useQuery } from '@tanstack/react-query';
 import {
-  ThirdwebSDKProvider,
-  useContract,
-  useContractRead,
-  useContractType,
+    ThirdwebSDKProvider,
+    useContract,
+    useContractRead,
+    useContractType,
 } from '@thirdweb-dev/react';
 
-import { useWeb3React } from '@web3-react/core';
+import { useWeb3React } from '@dexkit/wallet-connectors/hooks/useWeb3React';
 import { NextSeo } from 'next-seo';
 
 import { FormattedMessage, useIntl } from 'react-intl';

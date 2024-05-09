@@ -26,7 +26,7 @@ import { FormattedMessage, useIntl } from "react-intl";
 
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 
-import { useWeb3React } from "@web3-react/core";
+import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import { useAtom } from "jotai";
 
 import VerticalAlignBottomIcon from "@mui/icons-material/VerticalAlignBottom";

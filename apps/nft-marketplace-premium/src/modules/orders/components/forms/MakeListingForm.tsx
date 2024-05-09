@@ -1,19 +1,19 @@
 import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Alert,
-  Box,
-  Button,
-  FormControl,
-  Grid,
-  ListItemIcon,
-  ListItemText,
-  MenuItem,
-  Select,
-  Stack,
-  TextField,
-  Typography,
+    Accordion,
+    AccordionDetails,
+    AccordionSummary,
+    Alert,
+    Box,
+    Button,
+    FormControl,
+    Grid,
+    ListItemIcon,
+    ListItemText,
+    MenuItem,
+    Select,
+    Stack,
+    TextField,
+    Typography,
 } from '@mui/material';
 
 import { isAddress } from '@dexkit/core/utils/ethers/isAddress';
@@ -27,8 +27,8 @@ import { Token } from '../../../../types/blockchain';
 import { FormikHelpers, useFormik } from 'formik';
 
 import { isAddressEqual } from '@dexkit/core/utils/blockchain';
+import { useWeb3React } from '@dexkit/wallet-connectors/hooks/useWeb3React';
 import ExpandMore from '@mui/icons-material/ExpandMore';
-import { useWeb3React } from '@web3-react/core';
 import * as Yup from 'yup';
 
 import { ipfsUriToUrl } from '@dexkit/core/utils/ipfs';

@@ -1,38 +1,38 @@
 import {
-  useActiveClaimConditionForWallet,
-  useClaimConditions,
-  useClaimedNFTSupply,
-  useClaimerProofs,
-  useClaimIneligibilityReasons,
-  useContract,
-  useContractMetadata,
-  useUnclaimedNFTSupply,
+    useActiveClaimConditionForWallet,
+    useClaimConditions,
+    useClaimedNFTSupply,
+    useClaimerProofs,
+    useClaimIneligibilityReasons,
+    useContract,
+    useContractMetadata,
+    useUnclaimedNFTSupply,
 } from '@thirdweb-dev/react';
 
 import { useDexKitContext } from '@dexkit/ui/hooks';
 import {
-  Alert,
-  Button,
-  Card,
-  CardContent,
-  Grid,
-  Typography,
+    Alert,
+    Button,
+    Card,
+    CardContent,
+    Grid,
+    Typography,
 } from '@mui/material';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import { detectContractFeature, NATIVE_TOKEN_ADDRESS } from '@thirdweb-dev/sdk';
 
 import { formatUnits } from '@dexkit/core/utils/ethers/formatUnits';
+import { useWeb3React } from '@dexkit/wallet-connectors/hooks/useWeb3React';
 import { SwappableAssetV4 } from '@traderxyz/nft-swap-sdk';
-import { useWeb3React } from '@web3-react/core';
 import { BigNumber } from 'ethers';
 import { useCallback, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { parseIneligibility } from '@dexkit/dexappbuilder-viewer/components/sections/EditionDropSection';
 import {
-  useErc20AllowanceMutation,
-  useErc20ApproveMutationV2,
+    useErc20AllowanceMutation,
+    useErc20ApproveMutationV2,
 } from '@dexkit/ui/hooks/balances';
 import { EditionDropPageSection } from '@dexkit/ui/modules/wizard/types/section';
 

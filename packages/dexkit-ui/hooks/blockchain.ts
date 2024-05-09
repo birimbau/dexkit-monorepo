@@ -9,8 +9,8 @@ import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "@dexkit/core/constants/zrx";
 import { EvmCoin, TokenWhitelabelApp } from "@dexkit/core/types";
 
 import { convertTokenToEvmCoin, ipfsUriToUrl } from "@dexkit/core/utils";
+import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import { UseMutationOptions, useMutation, useQuery } from "@tanstack/react-query";
-import { useWeb3React } from "@web3-react/core";
 import type { providers } from "ethers";
 import { Contract } from "ethers";
 import { useContext, useMemo } from "react";

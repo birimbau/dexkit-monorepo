@@ -3,15 +3,15 @@ import { BigNumber } from "ethers";
 import { Field, Formik, getIn } from "formik";
 import { Autocomplete, Checkbox, TextField } from "formik-mui";
 import {
-  useIfpsUploadMutation,
-  useServerUploadMerkleTreeMutation,
-  useServerUploadMutation,
+    useIfpsUploadMutation,
+    useServerUploadMerkleTreeMutation,
+    useServerUploadMutation,
 } from "../hooks";
 
 import MuiTextField from "@mui/material/TextField";
 import { Form, FormElement, FormOutputFormat } from "../types";
 
-import { useWeb3React } from "@web3-react/core";
+import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import React from "react";
 import * as Yup from "yup";
 import DecimalInput from "./DecimalInput";

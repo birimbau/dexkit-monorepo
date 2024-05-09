@@ -1,29 +1,29 @@
 import { useDexKitContext } from '@dexkit/ui';
 import AppDataTableDialog from '@dexkit/ui/components/dialogs/AppDataTableDialog';
 import { useApproveForAll } from '@dexkit/ui/modules/contract-wizard/hooks/thirdweb';
+import { useWeb3React } from '@dexkit/wallet-connectors/hooks/useWeb3React';
 import {
-  Avatar,
-  Box,
-  Button,
-  Card,
-  CardContent,
-  CircularProgress,
-  Divider,
-  Grid,
-  Skeleton,
-  Stack,
-  Tab,
-  Tabs,
-  Typography,
+    Avatar,
+    Box,
+    Button,
+    Card,
+    CardContent,
+    CircularProgress,
+    Divider,
+    Grid,
+    Skeleton,
+    Stack,
+    Tab,
+    Tabs,
+    Typography,
 } from '@mui/material';
 import { useMutation } from '@tanstack/react-query';
 import {
-  CustomContractMetadata,
-  useContract,
-  useContractRead,
-  useMetadata,
+    CustomContractMetadata,
+    useContract,
+    useContractRead,
+    useMetadata,
 } from '@thirdweb-dev/react';
-import { useWeb3React } from '@web3-react/core';
 import { utils } from 'ethers';
 import { SyntheticEvent, useState } from 'react';
 import { FormattedMessage } from 'react-intl';

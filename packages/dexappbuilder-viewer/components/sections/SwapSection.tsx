@@ -1,8 +1,8 @@
 import { ChainId } from "@dexkit/core/constants";
+import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import { SwapWidget } from "@dexkit/widgets/src/widgets/swap";
 import { Container } from "@mui/material";
 import Box from "@mui/material/Box";
-import { useWeb3React } from "@web3-react/core";
 
 import { useActiveChainIds, useCurrency } from "@dexkit/ui/hooks";
 import { useSwapState } from "@dexkit/ui/modules/swap/hooks";

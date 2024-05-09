@@ -1,23 +1,23 @@
 import GenericForm from '@dexkit/web3forms/components/GenericForm';
 import {
-  Avatar,
-  Box,
-  Button,
-  CircularProgress,
-  Container,
-  Dialog,
-  DialogContent,
-  Divider,
-  Grid,
-  Link,
-  ListItemText,
-  MenuItem,
-  Paper,
-  Select,
-  SelectChangeEvent,
-  Skeleton,
-  Stack,
-  Typography,
+    Avatar,
+    Box,
+    Button,
+    CircularProgress,
+    Container,
+    Dialog,
+    DialogContent,
+    Divider,
+    Grid,
+    Link,
+    ListItemText,
+    MenuItem,
+    Paper,
+    Select,
+    SelectChangeEvent,
+    Skeleton,
+    Stack,
+    Typography,
 } from '@mui/material';
 import AuthMainLayout from 'src/components/layouts/authMain';
 
@@ -30,31 +30,31 @@ import { useSaveContractDeployed } from '@/modules/forms/hooks';
 import { ChainId } from '@dexkit/core';
 import { NETWORKS, NETWORK_SLUG } from '@dexkit/core/constants/networks';
 import {
-  getBlockExplorerUrl,
-  getNormalizedUrl,
-  parseChainId,
-  truncateAddress,
+    getBlockExplorerUrl,
+    getNormalizedUrl,
+    parseChainId,
+    truncateAddress,
 } from '@dexkit/core/utils';
 import {
-  AppDialogTitle,
-  useActiveChainIds,
-  useDexKitContext,
-  useSwitchNetworkMutation,
+    AppDialogTitle,
+    useActiveChainIds,
+    useDexKitContext,
+    useSwitchNetworkMutation,
 } from '@dexkit/ui';
 import { PageHeader } from '@dexkit/ui/components/PageHeader';
+import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import useThirdwebContractMetadataQuery, {
-  useDeployThirdWebContractMutation,
-  useFormConfigParamsQuery,
+    useDeployThirdWebContractMutation,
+    useFormConfigParamsQuery,
 } from '@dexkit/web3forms/hooks';
 import { dkGetTrustedForwarders } from '@dexkit/web3forms/utils';
 import CheckCircle from '@mui/icons-material/CheckCircle';
 import { QueryClient, dehydrate } from '@tanstack/react-query';
-import { useWeb3React } from '@web3-react/core';
 import {
-  GetStaticPaths,
-  GetStaticPathsContext,
-  GetStaticProps,
-  GetStaticPropsContext,
+    GetStaticPaths,
+    GetStaticPathsContext,
+    GetStaticProps,
+    GetStaticPropsContext,
 } from 'next';
 import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';

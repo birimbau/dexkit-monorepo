@@ -5,7 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { TokenWhitelabelApp } from "@dexkit/core/types";
 import { DexkitProvider } from "@dexkit/ui/components";
 import { AppNotification } from "@dexkit/ui/types";
-import { useWeb3React } from "@web3-react/core";
+import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import { atom } from "jotai";
 import { useEffect } from "react";
 import { RenderDexAppBuilder } from "..";

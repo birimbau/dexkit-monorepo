@@ -1,14 +1,14 @@
 import {
-  Box,
-  Button,
-  Container,
-  Drawer,
-  Grid,
-  IconButton,
-  Stack,
-  Typography,
-  useMediaQuery,
-  useTheme,
+    Box,
+    Button,
+    Container,
+    Drawer,
+    Grid,
+    IconButton,
+    Stack,
+    Typography,
+    useMediaQuery,
+    useTheme,
 } from '@mui/material';
 
 import AppConfirmDialog from '@dexkit/ui/components/AppConfirmDialog';
@@ -39,13 +39,13 @@ import { isAddressEqual } from '@dexkit/core/utils';
 import { PageHeader } from '@dexkit/ui/components/PageHeader';
 import { useAuth } from '@dexkit/ui/hooks/auth';
 import { AppConfig } from '@dexkit/ui/modules/wizard/types/config';
+import { useWeb3React } from '@dexkit/wallet-connectors/hooks/useWeb3React';
 import AnalyticsIcon from '@mui/icons-material/Analytics';
 import DatasetIcon from '@mui/icons-material/Dataset';
 import SettingsIcon from '@mui/icons-material/Settings';
 import SpaceDashboardIcon from '@mui/icons-material/SpaceDashboard';
 import TourIcon from '@mui/icons-material/Tour';
 import { TourProvider, useTour } from '@reactour/tour';
-import { useWeb3React } from '@web3-react/core';
 import { useAtom } from 'jotai';
 import { useRouter } from 'next/router';
 import { BuilderKit } from '../../constants';

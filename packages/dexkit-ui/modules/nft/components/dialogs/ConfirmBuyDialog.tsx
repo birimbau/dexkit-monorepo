@@ -1,18 +1,18 @@
 import {
-  Alert,
-  Button,
-  Chip,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogProps,
-  Grid,
-  Paper,
-  Skeleton,
-  Stack,
-  TextField,
-  Tooltip,
-  Typography,
+    Alert,
+    Button,
+    Chip,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogProps,
+    Grid,
+    Paper,
+    Skeleton,
+    Stack,
+    TextField,
+    Tooltip,
+    Typography,
 } from "@mui/material";
 import { AppDialogTitle } from "../../../../components/AppDialogTitle";
 
@@ -21,8 +21,8 @@ import { Asset, AssetMetadata, Token } from "@dexkit/core/types";
 import { isAddressEqual } from "@dexkit/core/utils";
 import { formatUnits } from "@dexkit/core/utils/ethers/formatUnits";
 import { ipfsUriToUrl } from "@dexkit/core/utils/ipfs";
+import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import { Box } from "@mui/material";
-import { useWeb3React } from "@web3-react/core";
 import { BigNumber } from "ethers";
 import Image from "next/image";
 import { useMemo, useState } from "react";

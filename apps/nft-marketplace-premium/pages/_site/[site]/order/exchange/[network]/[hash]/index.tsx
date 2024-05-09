@@ -1,9 +1,9 @@
 import { useRouter } from 'next/router';
 
 import { PageHeader } from '@dexkit/ui/components/PageHeader';
+import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import { Container, Grid } from '@mui/material';
 import { QueryClient, dehydrate } from '@tanstack/react-query';
-import { useWeb3React } from '@web3-react/core';
 import { GetStaticPropsContext } from 'next';
 import { FormattedMessage } from 'react-intl';
 import MainLayout from 'src/components/layouts/main';
@@ -13,8 +13,8 @@ import { ZrxOrder } from '@dexkit/core/services/zrx/types';
 import OrderWidget from '@dexkit/exchange/components/OrderWidget';
 import { EXCHANGE_NOTIFICATION_TYPES } from '@dexkit/exchange/constants/messages';
 import {
-  useZrxCancelOrderMutation,
-  useZrxOrderbookOrder,
+    useZrxCancelOrderMutation,
+    useZrxOrderbookOrder,
 } from '@dexkit/exchange/hooks/zrx';
 import { useDexKitContext, useExecuteTransactionsDialog } from '@dexkit/ui';
 import { AppNotificationType } from '@dexkit/ui/types';

@@ -5,30 +5,30 @@ import { useDexKitContext } from "@dexkit/ui";
 import FormikDecimalInput from "@dexkit/ui/components/FormikDecimalInput";
 import { useThirdwebApprove } from "@dexkit/ui/modules/contract-wizard/hooks/thirdweb";
 import { StakeErc20PageSection } from "@dexkit/ui/modules/wizard/types/section";
+import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import { useAsyncMemo } from "@dexkit/widgets/src/hooks";
 import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  CircularProgress,
-  Divider,
-  Grid,
-  InputAdornment,
-  Skeleton,
-  Stack,
-  Tab,
-  Tabs,
-  Typography,
+    Box,
+    Button,
+    Card,
+    CardContent,
+    CircularProgress,
+    Divider,
+    Grid,
+    InputAdornment,
+    Skeleton,
+    Stack,
+    Tab,
+    Tabs,
+    Typography,
 } from "@mui/material";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
-  useContract,
-  useContractRead,
-  useContractWrite,
-  useTokenBalance,
+    useContract,
+    useContractRead,
+    useContractWrite,
+    useTokenBalance,
 } from "@thirdweb-dev/react";
-import { useWeb3React } from "@web3-react/core";
 import { BigNumber } from "ethers";
 import { Formik, FormikErrors } from "formik";
 import { SyntheticEvent, useMemo, useState } from "react";

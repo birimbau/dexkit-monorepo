@@ -1,16 +1,16 @@
 import { useDexKitContext } from '@dexkit/ui';
 import { AppDialogTitle } from '@dexkit/ui/components';
 import { useBurnToken } from '@dexkit/ui/modules/evm-burn-nft/hooks';
+import { useWeb3React } from '@dexkit/wallet-connectors/hooks/useWeb3React';
 import {
-  Button,
-  CircularProgress,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogProps,
+    Button,
+    CircularProgress,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogProps,
 } from '@mui/material';
 import { useContract } from '@thirdweb-dev/react';
-import { useWeb3React } from '@web3-react/core';
 import { Field, Formik } from 'formik';
 import { TextField } from 'formik-mui';
 import { FormattedMessage } from 'react-intl';

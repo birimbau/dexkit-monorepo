@@ -3,23 +3,23 @@ import CreateCollectionDialog from '@/modules/contract-wizard/components/dialogs
 
 import { CollectionFormSchema } from '@/modules/contract-wizard/constants/schemas';
 import {
-  useCreateCollection,
-  useCreateCollectionMetadataMutation,
+    useCreateCollection,
+    useCreateCollectionMetadataMutation,
 } from '@/modules/contract-wizard/hooks';
 import { CollectionForm } from '@/modules/contract-wizard/types';
 import { getNetworkSlugFromChainId } from '@dexkit/core/utils/blockchain';
 import AppConfirmDialog from '@dexkit/ui/components/AppConfirmDialog';
 import { PageHeader } from '@dexkit/ui/components/PageHeader';
 import { useAuth, useLoginAccountMutation } from '@dexkit/ui/hooks/auth';
+import { useWeb3React } from '@dexkit/wallet-connectors/hooks/useWeb3React';
 import { Alert, Box, Container, Grid, Stack, Typography } from '@mui/material';
-import { useWeb3React } from '@web3-react/core';
 import { Formik } from 'formik';
 import { ReactNode, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import {
-  DEXKIT_DISCORD_SUPPORT_CHANNEL,
-  MIN_KIT_HOLDING_AI_GENERATION,
+    DEXKIT_DISCORD_SUPPORT_CHANNEL,
+    MIN_KIT_HOLDING_AI_GENERATION,
 } from 'src/constants';
 
 const INITIAL_VALUES: CollectionForm = {

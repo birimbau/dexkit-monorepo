@@ -1,5 +1,5 @@
+import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { useWeb3React } from "@web3-react/core";
 import { MIN_KIT_HOLDING_AI_GENERATION, WHITELISTED_AI_ACCOUNTS } from '../constants';
 import { getKitBalanceOfThreshold } from '../services/balances';
 

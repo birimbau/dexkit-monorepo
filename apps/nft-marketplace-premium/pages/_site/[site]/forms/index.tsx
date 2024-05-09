@@ -1,10 +1,10 @@
 import ContractButton from '@/modules/forms/components/ContractButton';
 import Link from '@dexkit/ui/components/AppLink';
 import { PageHeader } from '@dexkit/ui/components/PageHeader';
+import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import { THIRDWEB_ICON_URL } from '@dexkit/web3forms/constants';
 import WalletIcon from '@mui/icons-material/Wallet';
 import { Box, Button, Container, Grid, Stack, Typography } from '@mui/material';
-import { useWeb3React } from '@web3-react/core';
 import { useRouter } from 'next/router';
 import { FormattedMessage } from 'react-intl';
 import AuthMainLayout from 'src/components/layouts/authMain';

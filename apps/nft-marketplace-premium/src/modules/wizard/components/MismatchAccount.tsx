@@ -1,7 +1,7 @@
 import { truncateAddress } from '@dexkit/core/utils';
 import { useAuth } from '@dexkit/ui/hooks/auth';
+import { useWeb3React } from '@dexkit/wallet-connectors/hooks/useWeb3React';
 import { Alert, Box, Stack } from '@mui/material';
-import { useWeb3React } from '@web3-react/core';
 import { FormattedMessage } from 'react-intl';
 import { LoginButton } from 'src/components/LoginButton';
 

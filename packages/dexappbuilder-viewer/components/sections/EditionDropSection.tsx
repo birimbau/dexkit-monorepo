@@ -1,12 +1,12 @@
 import { EditionDropPageSection } from "@dexkit/ui/modules/wizard/types/section";
 import {
-  useActiveClaimConditionForWallet,
-  useClaimConditions,
-  useClaimerProofs,
-  useClaimIneligibilityReasons,
-  useContract,
-  useContractMetadata,
-  useTotalCirculatingSupply,
+    useActiveClaimConditionForWallet,
+    useClaimConditions,
+    useClaimerProofs,
+    useClaimIneligibilityReasons,
+    useContract,
+    useContractMetadata,
+    useTotalCirculatingSupply,
 } from "@thirdweb-dev/react";
 
 import { UserEvents } from "@dexkit/core/constants/userEvents";
@@ -14,20 +14,21 @@ import { formatUnits } from "@dexkit/core/utils/ethers/formatUnits";
 import { ConnectWalletButton } from "@dexkit/ui/components/ConnectWalletButton";
 import { useDexKitContext } from "@dexkit/ui/hooks";
 import {
-  useErc20AllowanceMutation,
-  useErc20ApproveMutationV2,
+    useErc20AllowanceMutation,
+    useErc20ApproveMutationV2,
 } from "@dexkit/ui/hooks/balances";
 import { useInterval } from "@dexkit/ui/hooks/misc";
 import { useTrackUserEventsMutation } from "@dexkit/ui/hooks/userEvents";
+import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import {
-  Alert,
-  Button,
-  Card,
-  CardContent,
-  Grid,
-  Skeleton,
-  TextField,
-  Typography,
+    Alert,
+    Button,
+    Card,
+    CardContent,
+    Grid,
+    Skeleton,
+    TextField,
+    Typography,
 } from "@mui/material";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
@@ -35,7 +36,6 @@ import { styled } from "@mui/material/styles";
 import { useNFTBalance } from "@thirdweb-dev/react";
 import { ClaimEligibility, NATIVE_TOKEN_ADDRESS } from "@thirdweb-dev/sdk";
 import { SwappableAssetV4 } from "@traderxyz/nft-swap-sdk";
-import { useWeb3React } from "@web3-react/core";
 import { BigNumber } from "ethers";
 import { useCallback, useMemo, useState } from "react";
 import { FormattedMessage } from "react-intl";

@@ -1,8 +1,8 @@
 import { useAuthUserQuery } from '@/modules/user/hooks';
 import { useAuth, useLoginAccountMutation } from '@dexkit/ui/hooks/auth';
+import { useWeb3React } from '@dexkit/wallet-connectors/hooks/useWeb3React';
 import { Button } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
-import { useWeb3React } from '@web3-react/core';
 import { useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
 

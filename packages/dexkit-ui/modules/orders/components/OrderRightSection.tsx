@@ -1,20 +1,20 @@
 import { useDexKitContext } from "@dexkit/ui";
 import {
-  Alert,
-  Box,
-  Button,
-  Chip,
-  NoSsr,
-  Paper,
-  Stack,
-  Tooltip,
-  Typography,
-  useMediaQuery,
-  useTheme,
+    Alert,
+    Box,
+    Button,
+    Chip,
+    NoSsr,
+    Paper,
+    Stack,
+    Tooltip,
+    Typography,
+    useMediaQuery,
+    useTheme,
 } from "@mui/material";
 
+import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import { SwappableAssetV4 } from "@traderxyz/nft-swap-sdk";
-import { useWeb3React } from "@web3-react/core";
 import { BigNumber, constants } from "ethers";
 import moment from "moment";
 import { useCallback, useMemo } from "react";
@@ -24,28 +24,28 @@ import Link from "../../../components/AppLink";
 import Calendar from "../../../components/icons/Calendar";
 
 import {
-  useApproveAssetMutation,
-  useAsset,
-  useAssetMetadata,
-  useCancelSignedOrderMutation,
-  useFillSignedOrderMutation,
-  useSwapSdkV4,
+    useApproveAssetMutation,
+    useAsset,
+    useAssetMetadata,
+    useCancelSignedOrderMutation,
+    useFillSignedOrderMutation,
+    useSwapSdkV4,
 } from "../../nft/hooks";
 
 import {
-  NETWORK_EXPLORER,
-  NETWORK_SLUG,
+    NETWORK_EXPLORER,
+    NETWORK_SLUG,
 } from "@dexkit/core/constants/networks";
 import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "@dexkit/core/constants/zrx";
 import {
-  getERC20Decimals,
-  getERC20Symbol,
+    getERC20Decimals,
+    getERC20Symbol,
 } from "@dexkit/core/services/balances";
 import { SwapApiOrder } from "@dexkit/core/types/nft";
 import {
-  ipfsUriToUrl,
-  isAddressEqual,
-  truncateAddress,
+    ipfsUriToUrl,
+    isAddressEqual,
+    truncateAddress,
 } from "@dexkit/core/utils";
 import { formatUnits } from "@dexkit/core/utils/ethers/formatUnits";
 import AppFeePercentageSpan from "../../../components/AppFeePercentageSpan";

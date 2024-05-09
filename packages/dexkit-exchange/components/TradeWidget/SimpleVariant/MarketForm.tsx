@@ -1,40 +1,40 @@
 import {
-  ChainId,
-  useApproveToken,
-  useErc20BalanceQuery,
-  useTokenAllowanceQuery,
+    ChainId,
+    useApproveToken,
+    useErc20BalanceQuery,
+    useTokenAllowanceQuery,
 } from "@dexkit/core";
 import { UserEvents } from "@dexkit/core/constants/userEvents";
 import { Token } from "@dexkit/core/types";
 import {
-  formatBigNumber,
-  getChainName,
-  isAddressEqual,
+    formatBigNumber,
+    getChainName,
+    isAddressEqual,
 } from "@dexkit/core/utils";
 import { parseUnits } from "@dexkit/core/utils/ethers/parseUnits";
 import {
-  useDexKitContext,
-  useSwitchNetworkMutation,
-  useWaitTransactionConfirmation,
+    useDexKitContext,
+    useSwitchNetworkMutation,
+    useWaitTransactionConfirmation,
 } from "@dexkit/ui/hooks";
 import { useTrackUserEventsMutation } from "@dexkit/ui/hooks/userEvents";
 import { AppNotificationType } from "@dexkit/ui/types";
+import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import {
-  Box,
-  Button,
-  CircularProgress,
-  Divider,
-  Grid,
-  Menu,
-  MenuItem,
-  Skeleton,
-  Stack,
-  Typography,
+    Box,
+    Button,
+    CircularProgress,
+    Divider,
+    Grid,
+    Menu,
+    MenuItem,
+    Skeleton,
+    Stack,
+    Typography,
 } from "@mui/material";
 import { useMutation } from "@tanstack/react-query";
-import { useWeb3React } from "@web3-react/core";
 import { BigNumber, providers } from "ethers";
 import { useCallback, useMemo, useState } from "react";
 import { FormattedMessage } from "react-intl";
