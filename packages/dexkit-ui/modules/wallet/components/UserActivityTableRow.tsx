@@ -59,6 +59,129 @@ export default function UserActivityTableRow({
     cells.push(<UserActivityLockRenewPrice event={event} />);
   }
 
+  if (event.type === UserEvents.stakeErc20) {
+    const { stakeAddress, symbol, amount, name } = event.processedMetadata;
+
+    cells.push(
+      <FormattedMessage
+        id="stake.on"
+        defaultMessage="Stake {amount} {symbol} on {name}"
+        values={{
+          name: (
+            <Link
+              href={`${getBlockExplorerUrl(
+                event.chainId ? event.chainId : undefined
+              )}/address/${stakeAddress}`}
+              target="_blank"
+            >
+              <strong>{name}</strong>
+            </Link>
+          ),
+          amount: <strong>{amount}</strong>,
+          symbol: <strong>{symbol}</strong>,
+        }}
+      />
+    );
+  }
+
+  if (event.type === UserEvents.unstakeErc20) {
+    const { stakeAddress, symbol, amount, name } = event.processedMetadata;
+
+    cells.push(
+      <FormattedMessage
+        id="unstake.on"
+        defaultMessage="Unstake {amount} {symbol} on {name}"
+        values={{
+          name: (
+            <Link
+              href={`${getBlockExplorerUrl(
+                event.chainId ? event.chainId : undefined
+              )}/address/${stakeAddress}`}
+              target="_blank"
+            >
+              <strong>{name}</strong>
+            </Link>
+          ),
+          amount: <strong>{amount}</strong>,
+          symbol: <strong>{symbol}</strong>,
+        }}
+      />
+    );
+  }
+
+  if (event.type === UserEvents.stakeClaimErc20) {
+    const { stakeAddress, symbol, amount, name } = event.processedMetadata;
+
+    cells.push(
+      <FormattedMessage
+        id="claim.reward.for"
+        defaultMessage="Claim Reward {amount} {symbol} on {name}"
+        values={{
+          name: (
+            <Link
+              href={`${getBlockExplorerUrl(
+                event.chainId ? event.chainId : undefined
+              )}/address/${stakeAddress}`}
+              target="_blank"
+            >
+              <strong>{name}</strong>
+            </Link>
+          ),
+          amount: <strong>{amount}</strong>,
+          symbol: <strong>{symbol}</strong>,
+        }}
+      />
+    );
+  }
+
+  if (event.type === UserEvents.stakeErc721) {
+    const { stakeAddress, name, tokenIds } = event.processedMetadata;
+
+    cells.push(
+      <FormattedMessage
+        id="stake.tokens.on.erc721"
+        defaultMessage="Stake Tokens: {tokens} on {name}"
+        values={{
+          name: (
+            <Link
+              href={`${getBlockExplorerUrl(
+                event.chainId ? event.chainId : undefined
+              )}/address/${stakeAddress}`}
+              target="_blank"
+            >
+              <strong>{name}</strong>
+            </Link>
+          ),
+          tokens: <strong>{tokenIds.join(", ")}</strong>,
+        }}
+      />
+    );
+  }
+
+  if (event.type === UserEvents.unstakeErc721) {
+    const { stakeAddress, name, tokenIds } = event.processedMetadata;
+
+    cells.push(
+      <FormattedMessage
+        id="unstake.tokens.on.erc721"
+        defaultMessage="Unstake Tokens: {tokens} from {name}"
+        values={{
+          name: (
+            <Link
+              href={`${getBlockExplorerUrl(
+                event.chainId ? event.chainId : undefined
+              )}/address/${stakeAddress}`}
+              target="_blank"
+            >
+              <strong>{name}</strong>
+            </Link>
+          ),
+          tokens: <strong>{tokenIds.join(", ")}</strong>,
+        }}
+      />
+    );
+  }
+
   if (event.type === UserEvents.purchaseKey) {
     cells.push(<UserActivityLockPurchasePrice event={event} />);
   }

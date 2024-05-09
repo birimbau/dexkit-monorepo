@@ -9,7 +9,7 @@ import { NextSeo } from 'next-seo';
 import EvmWalletContainer from '@dexkit/ui/modules/wallet/components/containers/EvmWalletContainer';
 import { REVALIDATE_PAGE_TIME } from 'src/constants';
 
-import AuthMainLayout from 'src/components/layouts/authMain';
+import MainLayout from '@dexkit/ui/components/layouts/main';
 import { getAppConfig } from '../../../../src/services/app';
 
 const WalletPage: NextPage = () => {
@@ -87,7 +87,7 @@ export async function getStaticPaths() {
 }
 
 (WalletPage as any).getLayout = function getLayout(page: any) {
-  return <AuthMainLayout noSsr>{page}</AuthMainLayout>;
+  return <MainLayout noSsr>{page}</MainLayout>;
 };
 
 export default WalletPage;

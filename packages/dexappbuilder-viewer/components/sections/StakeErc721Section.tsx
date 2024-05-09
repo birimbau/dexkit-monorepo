@@ -1,31 +1,33 @@
+import { UserEvents } from "@dexkit/core/constants/userEvents";
 import { formatBigNumber } from "@dexkit/core/utils";
 import { useDexKitContext } from "@dexkit/ui";
+import { useTrackUserEventsMutation } from "@dexkit/ui/hooks/userEvents";
 import { useApproveForAll } from "@dexkit/ui/modules/contract-wizard/hooks/thirdweb";
 import { StakeErc721PageSection } from "@dexkit/ui/modules/wizard/types/section";
 import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import { useAsyncMemo } from "@dexkit/widgets/src/hooks";
 import Token from "@mui/icons-material/Token";
 import {
-    Box,
-    Button,
-    Card,
-    CardActionArea,
-    CardContent,
-    CircularProgress,
-    Grid,
-    Paper,
-    Skeleton,
-    Stack,
-    Tab,
-    Tabs,
-    Typography,
+  Box,
+  Button,
+  Card,
+  CardActionArea,
+  CardContent,
+  CircularProgress,
+  Grid,
+  Paper,
+  Skeleton,
+  Stack,
+  Tab,
+  Tabs,
+  Typography,
 } from "@mui/material";
 import { useMutation } from "@tanstack/react-query";
 import {
-    useContract,
-    useContractRead,
-    useContractWrite,
-    useTokenBalance,
+  useContract,
+  useContractRead,
+  useContractWrite,
+  useTokenBalance,
 } from "@thirdweb-dev/react";
 import { BigNumber } from "ethers";
 import { SyntheticEvent, useMemo, useState } from "react";
@@ -39,6 +41,7 @@ export interface StakeErc721SectionProps {
 export default function StakeErc721Section({
   section,
 }: StakeErc721SectionProps) {
+  const trackUserEventsMutation = useTrackUserEventsMutation();
   const { address, network } = section.settings;
 
   const [tab, setTab] = useState<"stake" | "unstake">("stake");
@@ -157,7 +160,20 @@ export default function StakeErc721Section({
         watchTransactionDialog.watch(tx.hash);
       }
 
-      return await tx?.wait();
+      const res = await tx?.wait();
+
+      await trackUserEventsMutation.mutateAsync({
+        event: UserEvents.stakeErc721,
+        chainId,
+        hash: tx?.hash,
+        metadata: JSON.stringify({
+          tokenIds: tokenIds,
+          stakeAddress: address,
+          account,
+        }),
+      });
+
+      return res;
     }
   );
 
@@ -185,13 +201,28 @@ export default function StakeErc721Section({
         watchTransactionDialog.watch(tx.hash);
       }
 
-      return await tx?.wait();
+      const res = await tx?.wait();
+
+      await trackUserEventsMutation.mutateAsync({
+        event: UserEvents.unstakeErc721,
+        chainId,
+        hash: tx?.hash,
+        metadata: JSON.stringify({
+          tokenIds: tokenIds,
+          stakeAddress: address,
+          account,
+        }),
+      });
+
+      return res;
     }
   );
 
   const { chainId } = useWeb3React();
 
   const claimRewardsMutation = useMutation(async () => {
+    const amount = rewardTokenBalance?.value.toString();
+
     let call = contract?.prepare("claimRewards", []);
 
     let values = {
@@ -214,7 +245,18 @@ export default function StakeErc721Section({
       watchTransactionDialog.watch(tx.hash);
     }
 
-    return await tx?.wait();
+    await tx?.wait();
+
+    await trackUserEventsMutation.mutateAsync({
+      event: UserEvents.stakeClaimErc721,
+      chainId,
+      hash: tx?.hash,
+      metadata: JSON.stringify({
+        amount: rewardTokenBalance?.value.toString(),
+        stakeAddress: address,
+        account,
+      }),
+    });
   });
 
   const handleClaim = async () => {

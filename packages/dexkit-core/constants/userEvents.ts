@@ -6,6 +6,18 @@ export enum UserOnChainEvents {
   wrap = "wrap",
   transfer = "transfer",
   receive = "receive",
+  stakeErc20 = "stakeErc20",
+  unstakeErc20 = "unstakeErc20",
+  stakeClaimErc20 = "stakeClaimErc20",
+
+  stakeErc721 = "stakeErc721",
+  unstakeErc721 = "unstakeErc721",
+  stakeClaimErc721 = "stakeClaimErc721",
+
+  stakeErc1155 = "stakeErc1155",
+  unstakeErc1155 = "unstakeErc1155",
+  stakeClaimErc1155 = "stakeClaimErc1155",
+
   buyDropEdition = "buyDropEdition",
   buyDropCollection = "buyDropCollection",
   buyDropToken = "buyDropToken",

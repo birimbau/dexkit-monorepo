@@ -1,33 +1,35 @@
+import { UserEvents } from "@dexkit/core/constants/userEvents";
 import { formatBigNumber } from "@dexkit/core/utils";
 import { formatUnits } from "@dexkit/core/utils/ethers/formatUnits";
 import { parseUnits } from "@dexkit/core/utils/ethers/parseUnits";
 import { useDexKitContext } from "@dexkit/ui";
 import FormikDecimalInput from "@dexkit/ui/components/FormikDecimalInput";
+import { useTrackUserEventsMutation } from "@dexkit/ui/hooks/userEvents";
 import { useThirdwebApprove } from "@dexkit/ui/modules/contract-wizard/hooks/thirdweb";
 import { StakeErc20PageSection } from "@dexkit/ui/modules/wizard/types/section";
 import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import { useAsyncMemo } from "@dexkit/widgets/src/hooks";
 import {
-    Box,
-    Button,
-    Card,
-    CardContent,
-    CircularProgress,
-    Divider,
-    Grid,
-    InputAdornment,
-    Skeleton,
-    Stack,
-    Tab,
-    Tabs,
-    Typography,
+  Box,
+  Button,
+  Card,
+  CardContent,
+  CircularProgress,
+  Divider,
+  Grid,
+  InputAdornment,
+  Skeleton,
+  Stack,
+  Tab,
+  Tabs,
+  Typography,
 } from "@mui/material";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
-    useContract,
-    useContractRead,
-    useContractWrite,
-    useTokenBalance,
+  useContract,
+  useContractRead,
+  useContractWrite,
+  useTokenBalance,
 } from "@thirdweb-dev/react";
 import { BigNumber } from "ethers";
 import { Formik, FormikErrors } from "formik";
@@ -145,6 +147,8 @@ export default function StakeErc20Section({ section }: StakeErc20SectionProps) {
     [stakingToken]
   );
 
+  const trackEventMutation = useTrackUserEventsMutation();
+
   const stakeMutation = useMutation(
     async ({ amount }: { amount: BigNumber }) => {
       let call = contract?.prepare("stake", [amount]);
@@ -171,6 +175,17 @@ export default function StakeErc20Section({ section }: StakeErc20SectionProps) {
       }
 
       await tx?.wait();
+
+      await trackEventMutation.mutateAsync({
+        event: UserEvents.stakeErc20,
+        chainId,
+        hash: tx?.hash,
+        metadata: JSON.stringify({
+          amount: amount.toString(),
+          stakeAddress: address,
+          account,
+        }),
+      });
     }
   );
 
@@ -200,6 +215,17 @@ export default function StakeErc20Section({ section }: StakeErc20SectionProps) {
       }
 
       await tx?.wait();
+
+      await trackEventMutation.mutateAsync({
+        event: UserEvents.unstakeErc20,
+        chainId,
+        hash: tx?.hash,
+        metadata: JSON.stringify({
+          amount: amount.toString(),
+          stakeAddress: address,
+          account,
+        }),
+      });
     }
   );
 
@@ -239,6 +265,17 @@ export default function StakeErc20Section({ section }: StakeErc20SectionProps) {
       });
 
       watchTransactionDialog.watch(tx.hash);
+
+      await trackEventMutation.mutateAsync({
+        event: UserEvents.stakeClaimErc20,
+        chainId,
+        hash: tx?.hash,
+        metadata: JSON.stringify({
+          amount: rewardTokenBalance?.value.toString(),
+          stakeAddress: address,
+          account,
+        }),
+      });
     }
 
     await tx?.wait();

@@ -97,7 +97,7 @@ const EvmWalletContainer = () => {
 
   const [isReceiveOpen, setIsReceiveOpen] = useState(false);
 
-  const { isLoggedIn, user } = useAuth();
+  const { isLoggedIn } = useAuth();
 
   const [selectedTab, setSelectedTab] = useState(WalletTabs.Activity);
   const [isTableOpen, setIsTableOpen] = useState(isDesktop);
@@ -548,7 +548,7 @@ const EvmWalletContainer = () => {
                           </Card>
                         )}
                       >
-                        {isLoggedIn ? (
+                        {isLoggedIn && isActive ? (
                           <UserActivityTable />
                         ) : (
                           <Stack justifyContent="center">
