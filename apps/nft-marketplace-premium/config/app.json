@@ -58,7 +58,7 @@
         {
           "type": "Menu",
           "href": "",
-          "name": "Quick Builde Appr",
+          "name": "Quick Builder App",
           "children": [
             {
               "type": "Page",
@@ -103,17 +103,22 @@
             {
               "type": "Page",
               "href": "/forms/contracts/create",
-              "name": "Create contracts"
+              "name": "Deploy Contract"
             },
             {
               "type": "Page",
               "href": "/forms/contracts/list",
-              "name": "Manage contracts"
+              "name": "Manage Contracts"
+            },
+            {
+              "type": "Page",
+              "href": "/forms/manage",
+              "name": "Manage Contract Forms"
             },
             {
               "type": "Page",
               "href": "/forms",
-              "name": "Manage contracts forms"
+              "name": "Create Contract Forms"
             }
           ]
         }

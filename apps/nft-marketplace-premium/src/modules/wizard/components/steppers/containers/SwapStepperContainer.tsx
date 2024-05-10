@@ -165,8 +165,8 @@ export default function SwapStepperContainer({ site }: Props) {
             {!isMobile && (
               <Typography variant="h5">
                 <FormattedMessage
-                  id="swap.quick.builder.title"
-                  defaultMessage="Swap - Quick builder"
+                  id="build.your.swap.quickly"
+                  defaultMessage="Build your Swap quickly"
                 />
               </Typography>
             )}
