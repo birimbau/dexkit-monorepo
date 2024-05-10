@@ -3,6 +3,7 @@ import PageTemplatesTable from '@/modules/admin/components/tables/PageTemplatesT
 import { useDebounce } from '@dexkit/core/hooks';
 import Link from '@dexkit/ui/components/AppLink';
 import { PageHeader } from '@dexkit/ui/components/PageHeader';
+import { useWeb3React } from '@dexkit/wallet-connectors/hooks/useWeb3React';
 import Add from '@mui/icons-material/Add';
 import Search from '@mui/icons-material/Search';
 import {
@@ -19,7 +20,6 @@ import {
   Typography,
 } from '@mui/material';
 import { QueryClient, dehydrate } from '@tanstack/react-query';
-import { useWeb3React } from '@web3-react/core';
 import {
   GetStaticPaths,
   GetStaticPathsContext,

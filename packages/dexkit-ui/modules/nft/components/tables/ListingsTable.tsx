@@ -1,25 +1,25 @@
 import {
-  getNetworkSlugFromChainId,
-  isAddressEqual,
+    getNetworkSlugFromChainId,
+    isAddressEqual,
 } from "@dexkit/core/utils/blockchain";
 import {
-  IconButton,
-  ListItemIcon,
-  ListItemText,
-  Menu,
-  MenuItem,
-  Stack,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Typography,
+    IconButton,
+    ListItemIcon,
+    ListItemText,
+    Menu,
+    MenuItem,
+    Stack,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Typography,
 } from "@mui/material";
 import { constants } from "ethers";
 
-import { useWeb3React } from "@web3-react/core";
+import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import { FormattedMessage } from "react-intl";
 
 import ListingsTableRow from "./ListingsTableRow";
@@ -27,8 +27,8 @@ import ListingsTableRow from "./ListingsTableRow";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import {
-  default as Share,
-  default as Visibility,
+    default as Share,
+    default as Visibility,
 } from "@mui/icons-material/Visibility";
 import moment from "moment";
 import { useRouter } from "next/router";

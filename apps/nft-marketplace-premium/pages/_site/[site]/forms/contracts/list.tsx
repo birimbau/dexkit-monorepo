@@ -9,12 +9,12 @@ import ContractListDataGrid from '@/modules/forms/components/ContractListDataGri
 
 import { ConnectWalletBox } from '@dexkit/ui/components/ConnectWalletBox';
 import { PageHeader } from '@dexkit/ui/components/PageHeader';
-import { useWeb3React } from '@web3-react/core';
+import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import {
-  GetStaticPaths,
-  GetStaticPathsContext,
-  GetStaticProps,
-  GetStaticPropsContext,
+    GetStaticPaths,
+    GetStaticPathsContext,
+    GetStaticProps,
+    GetStaticPropsContext,
 } from 'next';
 import { LoginAppButton } from 'src/components/LoginAppButton';
 import AuthMainLayout from 'src/components/layouts/authMain';

@@ -1,9 +1,9 @@
 import { ChainId } from "@dexkit/core/constants";
 import { ERC1155Abi, ERC721Abi } from "@dexkit/core/constants/abis";
-import { NETWORK_PROVIDER } from "@dexkit/core/constants/networks";
+import { NETWORK_PROVIDER } from "@dexkit/core/constants/networkProvider";
 import { useMutation } from "@tanstack/react-query";
-import { Contract, providers } from "ethers";
-
+import type { providers } from "ethers";
+import { Contract } from "ethers";
 export function useNftTransfer({
   contractAddress,
   provider,

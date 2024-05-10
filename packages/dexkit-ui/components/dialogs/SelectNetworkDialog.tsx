@@ -1,27 +1,27 @@
 import {
-  Alert,
-  Avatar,
-  Box,
-  Button,
-  CircularProgress,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogProps,
-  List,
-  ListItemButton,
-  ListItemIcon,
-  ListItemSecondaryAction,
-  ListItemText,
-  Radio,
-  Stack,
+    Alert,
+    Avatar,
+    Box,
+    Button,
+    CircularProgress,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogProps,
+    List,
+    ListItemButton,
+    ListItemIcon,
+    ListItemSecondaryAction,
+    ListItemText,
+    Radio,
+    Stack,
 } from "@mui/material";
 import { useState } from "react";
 import { FormattedMessage } from "react-intl";
 
 import { NETWORKS } from "@dexkit/core/constants/networks";
 import { Network } from "@dexkit/core/types";
-import { useWeb3React } from "@web3-react/core";
+import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import { useActiveChainIds, useSwitchNetworkMutation } from "../../hooks";
 import { AppDialogTitle } from "../AppDialogTitle";
 

@@ -1,23 +1,23 @@
 import {
-  Box,
-  Button,
-  Container,
-  Divider,
-  Drawer,
-  Grid,
-  IconButton,
-  Stack,
-  Typography,
-  useMediaQuery,
-  useTheme,
+    Box,
+    Button,
+    Container,
+    Divider,
+    Drawer,
+    Grid,
+    IconButton,
+    Stack,
+    Typography,
+    useMediaQuery,
+    useTheme,
 } from '@mui/material';
 import { Experimental_CssVarsProvider as CssVarsProvider } from '@mui/material/styles';
 import dynamic from 'next/dynamic';
 
 import AppConfirmDialog from '@dexkit/ui/components/AppConfirmDialog';
+import { useWeb3React } from '@dexkit/wallet-connectors/hooks/useWeb3React';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import Close from '@mui/icons-material/Close';
-import { useWeb3React } from '@web3-react/core';
 import { Field, Form, Formik } from 'formik';
 import { TextField } from 'formik-mui';
 import { NextSeo } from 'next-seo';
@@ -31,8 +31,8 @@ import { IS_STAGING } from '../../../../constants';
 import { useConnectWalletDialog } from '../../../../hooks/app';
 
 import {
-  useSendConfigMutation,
-  useTemplateWhitelabelConfigQuery,
+    useSendConfigMutation,
+    useTemplateWhitelabelConfigQuery,
 } from '../../../../hooks/whitelabel';
 import { getTheme } from '../../../../theme';
 

@@ -10,24 +10,24 @@ import { DexkitApiProvider } from '@dexkit/core/providers';
 import { parseChainId } from '@dexkit/core/utils';
 import { isAddress } from '@dexkit/core/utils/ethers/isAddress';
 import CompletationProvider from '@dexkit/ui/components/CompletationProvider';
+import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import ContractFormView from '@dexkit/web3forms/components/ContractFormView';
 import { ContractFormParams } from '@dexkit/web3forms/types';
 import InfoIcon from '@mui/icons-material/Info';
 import {
-  Backdrop,
-  Box,
-  Button,
-  CircularProgress,
-  Container,
-  Grid,
-  NoSsr,
-  Paper,
-  Stack,
-  TextField,
-  Typography,
+    Backdrop,
+    Box,
+    Button,
+    CircularProgress,
+    Container,
+    Grid,
+    NoSsr,
+    Paper,
+    Stack,
+    TextField,
+    Typography,
 } from '@mui/material';
 import { QueryClient, dehydrate } from '@tanstack/react-query';
-import { useWeb3React } from '@web3-react/core';
 import { ChangeEvent, useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 

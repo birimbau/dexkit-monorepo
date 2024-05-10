@@ -1,12 +1,12 @@
 import { CollectionItemSchema } from '@/modules/contract-wizard/constants/schemas';
 import { useEditAssetMetadataMutation } from '@/modules/contract-wizard/hooks';
 import {
-  CollectionItemFormType,
-  WizardItem,
+    CollectionItemFormType,
+    WizardItem,
 } from '@/modules/contract-wizard/types';
 import AppConfirmDialog from '@dexkit/ui/components/AppConfirmDialog';
+import { useWeb3React } from '@dexkit/wallet-connectors/hooks/useWeb3React';
 import { Alert, Container, Grid, Typography } from '@mui/material';
-import { useWeb3React } from '@web3-react/core';
 import { Formik } from 'formik';
 import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';

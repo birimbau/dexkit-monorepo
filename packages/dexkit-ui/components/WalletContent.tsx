@@ -1,27 +1,27 @@
 import { useEvmNativeBalanceQuery } from "@dexkit/core";
 import {
-  copyToClipboard,
-  formatBigNumber,
-  truncateAddress,
+    copyToClipboard,
+    formatBigNumber,
+    truncateAddress,
 } from "@dexkit/core/utils";
 import {
-  useConnectWalletDialog,
-  useEvmCoins,
-  useLogoutAccountMutation,
+    useConnectWalletDialog,
+    useEvmCoins,
+    useLogoutAccountMutation,
 } from "@dexkit/ui";
 import CopyIconButton from "@dexkit/ui/components/CopyIconButton";
+import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import {
-  Avatar,
-  Box,
-  Button,
-  ButtonBase,
-  Divider,
-  IconButton,
-  Stack,
-  Tooltip,
-  Typography,
+    Avatar,
+    Box,
+    Button,
+    ButtonBase,
+    Divider,
+    IconButton,
+    Stack,
+    Tooltip,
+    Typography,
 } from "@mui/material";
-import { useWeb3React } from "@web3-react/core";
 import { useCallback, useMemo, useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 

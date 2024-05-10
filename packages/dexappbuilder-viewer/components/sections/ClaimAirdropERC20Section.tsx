@@ -6,26 +6,26 @@ import { useInterval } from "@dexkit/ui/hooks/misc";
 import { useTrackUserEventsMutation } from "@dexkit/ui/hooks/userEvents";
 import { useMerkleTreeAllowListQuery } from "@dexkit/ui/modules/token/hooks/merkleTree";
 import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  CircularProgress,
-  Divider,
-  Grid,
-  Skeleton,
-  Typography,
+    Box,
+    Button,
+    Card,
+    CardContent,
+    CircularProgress,
+    Divider,
+    Grid,
+    Skeleton,
+    Typography,
 } from "@mui/material";
 import Stack from "@mui/material/Stack";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
-  createMerkleTreeFromAllowList,
-  getProofsForAllowListEntry,
-  useContract,
-  useContractRead,
+    createMerkleTreeFromAllowList,
+    getProofsForAllowListEntry,
+    useContract,
+    useContractRead,
 } from "@thirdweb-dev/react";
 
-import { useWeb3React } from "@web3-react/core";
+import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import { BigNumber } from "ethers";
 import { useMemo, useState } from "react";
 

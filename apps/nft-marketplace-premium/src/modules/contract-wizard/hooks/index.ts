@@ -1,6 +1,6 @@
+import { useWeb3React } from '@dexkit/wallet-connectors/hooks/useWeb3React';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useContract } from '@thirdweb-dev/react';
-import { useWeb3React } from '@web3-react/core';
 import axios from 'axios';
 import { Contract, ContractFactory, providers } from 'ethers';
 import { useAtomValue, useSetAtom } from 'jotai';

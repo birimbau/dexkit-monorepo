@@ -1,24 +1,24 @@
 import { AppDialogTitle } from '@dexkit/ui/components';
 import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  Dialog,
-  DialogContent,
-  DialogProps,
-  Divider,
-  Grid,
-  Stack,
-  Typography,
+    Box,
+    Button,
+    Card,
+    CardContent,
+    Dialog,
+    DialogContent,
+    DialogProps,
+    Divider,
+    Grid,
+    Stack,
+    Typography,
 } from '@mui/material';
 import { FormattedMessage } from 'react-intl';
 
 import { ChainId } from '@dexkit/core';
 import { getBlockExplorerUrl } from '@dexkit/core/utils';
+import { useWeb3React } from '@dexkit/wallet-connectors/hooks/useWeb3React';
 import ContractDeployForm from '@dexkit/web3forms/components/ContractDeployForm';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import { useWeb3React } from '@web3-react/core';
 import { useState } from 'react';
 import { useSaveInstanceMutation } from '../hooks';
 

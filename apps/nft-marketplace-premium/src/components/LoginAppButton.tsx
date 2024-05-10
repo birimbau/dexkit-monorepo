@@ -1,8 +1,8 @@
 import { useAuthUserQuery } from '@/modules/user/hooks';
+import { useWeb3React } from '@dexkit/wallet-connectors/hooks/useWeb3React';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { Alert, Button, Stack, Typography } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
-import { useWeb3React } from '@web3-react/core';
 import { useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
 

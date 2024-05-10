@@ -5,23 +5,23 @@ import { Token } from "@dexkit/core/types";
 import { formatBigNumber, getChainName } from "@dexkit/core/utils";
 import { parseUnits } from "@dexkit/core/utils/ethers/parseUnits";
 import {
-  useDexKitContext,
-  useSwitchNetworkMutation,
-  useWaitTransactionConfirmation,
+    useDexKitContext,
+    useSwitchNetworkMutation,
+    useWaitTransactionConfirmation,
 } from "@dexkit/ui/hooks";
 import { useTrackUserEventsMutation } from "@dexkit/ui/hooks/userEvents";
 import { AppNotificationType } from "@dexkit/ui/types";
+import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import {
-  Box,
-  Button,
-  Divider,
-  Grid,
-  Skeleton,
-  Stack,
-  Typography,
+    Box,
+    Button,
+    Divider,
+    Grid,
+    Skeleton,
+    Stack,
+    Typography,
 } from "@mui/material";
 import { useMutation } from "@tanstack/react-query";
-import { useWeb3React } from "@web3-react/core";
 import { BigNumber, providers } from "ethers";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { FormattedMessage } from "react-intl";

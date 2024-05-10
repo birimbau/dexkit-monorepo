@@ -1,7 +1,7 @@
 import { ChainId } from '@0x/contract-addresses';
 import { getCoinPrices } from '@dexkit/ui/services/currency';
+import { useWeb3React } from '@dexkit/wallet-connectors/hooks/useWeb3React';
 import { useQuery } from '@tanstack/react-query';
-import { useWeb3React } from '@web3-react/core';
 import axios from 'axios';
 import { useAtomValue } from 'jotai';
 import { useMemo } from 'react';

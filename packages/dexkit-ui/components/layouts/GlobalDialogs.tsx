@@ -1,15 +1,15 @@
 import { useEffect } from "react";
 
-import { useWeb3React } from "@web3-react/core";
+import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import { useRouter } from "next/router";
 
 import {
-  useConnectWalletDialog,
-  useHoldsKitDialog,
-  useShowSelectCurrency,
-  useShowSelectLocale,
-  useSignMessageDialog,
-  useSwitchNetwork,
+    useConnectWalletDialog,
+    useHoldsKitDialog,
+    useShowSelectCurrency,
+    useShowSelectLocale,
+    useSignMessageDialog,
+    useSwitchNetwork,
 } from "@dexkit/ui/hooks";
 import dynamic from "next/dynamic";
 
@@ -24,12 +24,12 @@ const SwitchNetworkDialog = dynamic(
 import { useDexKitContext, useExecuteTransactionsDialog } from "@dexkit/ui";
 import { EIP6963 } from "@dexkit/wallet-connectors/constants/connectors/eip6963";
 import {
-  useWalletActivate,
-  useWalletConnectorMetadata,
+    useWalletActivate,
+    useWalletConnectorMetadata,
 } from "@dexkit/wallet-connectors/hooks/wallet";
 import {
-  ConnectionType,
-  WalletActivateParams,
+    ConnectionType,
+    WalletActivateParams,
 } from "@dexkit/wallet-connectors/types";
 
 const ConnectWalletDialog = dynamic(

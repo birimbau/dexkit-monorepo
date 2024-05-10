@@ -1,21 +1,21 @@
 import {
-  NETWORK_EXPLORER,
-  NETWORK_NAME,
-  NETWORK_SLUG,
+    NETWORK_EXPLORER,
+    NETWORK_NAME,
+    NETWORK_SLUG,
 } from '@dexkit/core/constants/networks';
 import { truncateAddress } from '@dexkit/core/utils';
 import Link from '@dexkit/ui/components/AppLink';
+import { useWeb3React } from '@dexkit/wallet-connectors/hooks/useWeb3React';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import {
-  DataGrid,
-  GridColDef,
-  GridFilterModel,
-  GridSortModel,
-  GridToolbar,
+    DataGrid,
+    GridColDef,
+    GridFilterModel,
+    GridSortModel,
+    GridToolbar,
 } from '@mui/x-data-grid';
-import { useWeb3React } from '@web3-react/core';
 import { useCallback, useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { useListDeployedContracts } from '../hooks';

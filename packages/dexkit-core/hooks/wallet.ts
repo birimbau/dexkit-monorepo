@@ -2,7 +2,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { Token } from "../types";
 
 import { ChainId } from "../constants";
-import { NETWORK_PROVIDER } from "../constants/networks";
+import { NETWORK_PROVIDER } from "../constants/networkProvider";
 import { getPricesByChain } from "../services";
 
 

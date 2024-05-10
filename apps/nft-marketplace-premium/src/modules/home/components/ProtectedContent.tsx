@@ -3,10 +3,10 @@ import { SectionsRenderer } from '@/modules/wizard/components/sections/SectionsR
 import { useCheckGatedConditions } from '@/modules/wizard/hooks';
 import { useAuth } from '@dexkit/ui/hooks/auth';
 import {
-  GatedCondition,
-  GatedPageLayout,
+    GatedCondition,
+    GatedPageLayout,
 } from '@dexkit/ui/modules/wizard/types';
-import { useWeb3React } from '@web3-react/core';
+import { useWeb3React } from '@dexkit/wallet-connectors/hooks/useWeb3React';
 
 import { useProtectedAppConfig } from 'src/hooks/app';
 

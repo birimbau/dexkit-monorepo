@@ -3,6 +3,7 @@ import { NETWORKS } from "@dexkit/core/constants/networks";
 import { useNetworkProvider } from "@dexkit/core/hooks/blockchain";
 import { Asset, AssetMetadata, SwapApiOrder } from "@dexkit/core/types/nft";
 import { isAddressEqual } from "@dexkit/core/utils";
+import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import { UseMutationOptions, UseQueryOptions, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   NftSwapV4,
@@ -10,7 +11,6 @@ import {
   SwappableNftV4,
 } from '@traderxyz/nft-swap-sdk';
 import { PostOrderResponsePayload } from '@traderxyz/nft-swap-sdk/dist/sdk/v4/orderbook';
-import { useWeb3React } from "@web3-react/core";
 import axios from 'axios';
 import { BigNumber } from "ethers";
 import { useAtom } from "jotai";

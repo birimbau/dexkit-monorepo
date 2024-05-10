@@ -1,26 +1,26 @@
 import {
-  Box,
-  Divider,
-  Grid,
-  IconButton,
-  Paper,
-  Stack,
-  Tooltip,
-  Typography,
+    Box,
+    Divider,
+    Grid,
+    IconButton,
+    Paper,
+    Stack,
+    Tooltip,
+    Typography,
 } from "@mui/material";
 import { FormattedMessage } from "react-intl";
 
+import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import { Share } from "@mui/icons-material";
 import LaunchIcon from "@mui/icons-material/Launch";
-import { useWeb3React } from "@web3-react/core";
 import { useState } from "react";
 import Link from "../../../components/AppLink";
 import Heart from "../../../components/icons/Heart";
 import { useAsset, useAssetMetadata, useFavoriteAssets } from "../../nft/hooks";
 
 import {
-  NETWORK_EXPLORER,
-  NETWORK_SLUG,
+    NETWORK_EXPLORER,
+    NETWORK_SLUG,
 } from "@dexkit/core/constants/networks";
 import { isAddressEqual, truncateAddress } from "@dexkit/core/utils";
 import { getWindowUrl } from "@dexkit/core/utils/browser";
@@ -71,9 +71,9 @@ export function OrderPageActions({ address, id, nonce }: Props) {
                 <FormattedMessage id="owned.by" defaultMessage="Owned by" />
               </Typography>
               <Link
-                href={`${NETWORK_EXPLORER(asset?.chainId)}/address/${
-                  asset?.owner
-                }`}
+                href={`${NETWORK_EXPLORER(
+                  asset?.chainId
+                )}/address/${asset?.owner}`}
                 color="primary"
                 target="_blank"
               >

@@ -1,36 +1,36 @@
 import { NETWORK_FROM_SLUG } from '@dexkit/core/constants/networks';
 import {
-  formatBigNumber,
-  isAddressEqual,
-  truncateAddress,
+    formatBigNumber,
+    isAddressEqual,
+    truncateAddress,
 } from '@dexkit/core/utils';
 import { formatUnits } from '@dexkit/core/utils/ethers/formatUnits';
 import { useDexKitContext } from '@dexkit/ui';
 import { DEXKIT_STORAGE_MERKLE_TREE_URL } from '@dexkit/ui/constants/api';
+import { useWeb3React } from '@dexkit/wallet-connectors/hooks/useWeb3React';
 import { useAsyncMemo } from '@dexkit/widgets/src/hooks';
 import {
-  Alert,
-  Box,
-  Button,
-  Card,
-  CardContent,
-  CircularProgress,
-  Divider,
-  Grid,
-  Skeleton,
-  Stack,
-  Tab,
-  Tabs,
-  Typography,
+    Alert,
+    Box,
+    Button,
+    Card,
+    CardContent,
+    CircularProgress,
+    Divider,
+    Grid,
+    Skeleton,
+    Stack,
+    Tab,
+    Tabs,
+    Typography,
 } from '@mui/material';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import {
-  NATIVE_TOKEN_ADDRESS,
-  useBalance,
-  useContract,
-  useContractRead,
+    NATIVE_TOKEN_ADDRESS,
+    useBalance,
+    useContract,
+    useContractRead,
 } from '@thirdweb-dev/react';
-import { useWeb3React } from '@web3-react/core';
 import { BigNumber, constants } from 'ethers';
 import { SyntheticEvent, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';

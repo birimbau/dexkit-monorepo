@@ -4,36 +4,36 @@ import { parseUnits } from '@dexkit/core/utils/ethers/parseUnits';
 import { useDexKitContext } from '@dexkit/ui';
 import FormikDecimalInput from '@dexkit/ui/components/FormikDecimalInput';
 import {
-  useDepositRewardTokensMutation,
-  useSetDefaultTimeUnit,
-  useSetRewardsPerUnitTime,
-  useThirdwebApprove,
-  useWithdrawRewardsMutation,
+    useDepositRewardTokensMutation,
+    useSetDefaultTimeUnit,
+    useSetRewardsPerUnitTime,
+    useThirdwebApprove,
+    useWithdrawRewardsMutation,
 } from '@dexkit/ui/modules/contract-wizard/hooks/thirdweb';
+import { useWeb3React } from '@dexkit/wallet-connectors/hooks/useWeb3React';
 import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  CircularProgress,
-  FormControl,
-  FormControlLabel,
-  Grid,
-  InputAdornment,
-  Skeleton,
-  Stack,
-  Tab,
-  Tabs,
-  Typography,
+    Box,
+    Button,
+    Card,
+    CardContent,
+    CircularProgress,
+    FormControl,
+    FormControlLabel,
+    Grid,
+    InputAdornment,
+    Skeleton,
+    Stack,
+    Tab,
+    Tabs,
+    Typography,
 } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import {
-  useContract,
-  useContractRead,
-  useContractWrite,
-  useTokenBalance,
+    useContract,
+    useContractRead,
+    useContractWrite,
+    useTokenBalance,
 } from '@thirdweb-dev/react';
-import { useWeb3React } from '@web3-react/core';
 import { BigNumber } from 'ethers';
 import { Field, Formik } from 'formik';
 import { Switch, TextField } from 'formik-mui';

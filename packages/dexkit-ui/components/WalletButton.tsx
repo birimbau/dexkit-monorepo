@@ -2,17 +2,17 @@ import { truncateAddress } from "@dexkit/core/utils/blockchain";
 import { AccountBalance } from "@dexkit/ui/components/AccountBalance";
 import { GET_WALLET_ICON } from "@dexkit/wallet-connectors/connectors";
 import { useWalletConnectorMetadata } from "@dexkit/wallet-connectors/hooks";
+import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import {
-  Avatar,
-  Box,
-  ButtonBase,
-  Popover,
-  Stack,
-  Typography,
+    Avatar,
+    Box,
+    ButtonBase,
+    Popover,
+    Stack,
+    Typography,
 } from "@mui/material";
-import { useWeb3React } from "@web3-react/core";
 import dynamic from "next/dynamic";
 import { useState } from "react";
 import { useIsBalanceVisible } from "../modules/wallet/hooks";

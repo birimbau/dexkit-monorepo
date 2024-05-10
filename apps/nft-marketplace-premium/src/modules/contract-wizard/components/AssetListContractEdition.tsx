@@ -4,6 +4,7 @@ import EvmTransferNftDialog from '@dexkit/ui/modules/evm-transfer-nft/components
 import { AssetMedia } from '@dexkit/ui/modules/nft/components/AssetMedia';
 import { BaseAssetCard } from '@dexkit/ui/modules/nft/components/BaseAssetCard';
 import { useAsset } from '@dexkit/ui/modules/nft/hooks';
+import { useWeb3React } from '@dexkit/wallet-connectors/hooks/useWeb3React';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import SendIcon from '@mui/icons-material/Send';
@@ -11,17 +12,16 @@ import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
 import {
-  Alert,
-  Box,
-  Button,
-  Grid,
-  Pagination,
-  Skeleton,
-  Stack,
-  Typography,
+    Alert,
+    Box,
+    Button,
+    Grid,
+    Pagination,
+    Skeleton,
+    Stack,
+    Typography,
 } from '@mui/material';
 import Tab from '@mui/material/Tab';
-import { useWeb3React } from '@web3-react/core';
 import { useRouter } from 'next/router';
 import { useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';

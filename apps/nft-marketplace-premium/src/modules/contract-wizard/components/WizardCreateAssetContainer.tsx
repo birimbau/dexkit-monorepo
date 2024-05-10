@@ -2,16 +2,16 @@ import CollectionItemsCard from '@/modules/contract-wizard/components/Collection
 import CreateAssetDialog from '@/modules/contract-wizard/components/dialogs/CreateAssetDialog';
 import { CollectionItemsSchema } from '@/modules/contract-wizard/constants/schemas';
 import {
-  useCreateAssetsMetadataMutation,
-  useCreateItems,
+    useCreateAssetsMetadataMutation,
+    useCreateItems,
 } from '@/modules/contract-wizard/hooks';
 import {
-  CollectionItemsForm,
-  WizardItem,
+    CollectionItemsForm,
+    WizardItem,
 } from '@/modules/contract-wizard/types';
 import AppConfirmDialog from '@dexkit/ui/components/AppConfirmDialog';
+import { useWeb3React } from '@dexkit/wallet-connectors/hooks/useWeb3React';
 import { Alert, Container, Grid, Typography } from '@mui/material';
-import { useWeb3React } from '@web3-react/core';
 import { Formik } from 'formik';
 import { ReactNode, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
@@ -19,9 +19,9 @@ import { FormattedMessage } from 'react-intl';
 import { PageHeader } from '@dexkit/ui/components/PageHeader';
 import { getERC721TotalSupply } from '@dexkit/ui/modules/nft/services';
 import {
-  DEXKIT_DISCORD_SUPPORT_CHANNEL,
-  DEXKIT_NFT_METADATA_URI,
-  MIN_KIT_HOLDING_AI_GENERATION,
+    DEXKIT_DISCORD_SUPPORT_CHANNEL,
+    DEXKIT_NFT_METADATA_URI,
+    MIN_KIT_HOLDING_AI_GENERATION,
 } from 'src/constants';
 
 interface Props {
