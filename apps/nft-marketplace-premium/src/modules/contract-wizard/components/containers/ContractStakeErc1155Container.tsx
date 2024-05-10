@@ -4,35 +4,35 @@ import { parseUnits } from '@dexkit/core/utils/ethers/parseUnits';
 import { useDexKitContext } from '@dexkit/ui';
 import FormikDecimalInput from '@dexkit/ui/components/FormikDecimalInput';
 import {
-    useDepositRewardTokensMutation,
-    useSetDefaultTimeUnit,
-    useSetRewardsPerUnitTime,
-    useThirdwebApprove,
-    useWithdrawRewardsMutation,
+  useDepositRewardTokensMutation,
+  useSetDefaultTimeUnit,
+  useSetRewardsPerUnitTime,
+  useThirdwebApprove,
+  useWithdrawRewardsMutation,
 } from '@dexkit/ui/modules/contract-wizard/hooks/thirdweb';
 import { useWeb3React } from '@dexkit/wallet-connectors/hooks/useWeb3React';
 import {
-    Box,
-    Button,
-    Card,
-    CardContent,
-    CircularProgress,
-    FormControl,
-    FormControlLabel,
-    Grid,
-    InputAdornment,
-    Skeleton,
-    Stack,
-    Tab,
-    Tabs,
-    Typography,
+  Box,
+  Button,
+  Card,
+  CardContent,
+  CircularProgress,
+  FormControl,
+  FormControlLabel,
+  Grid,
+  InputAdornment,
+  Skeleton,
+  Stack,
+  Tab,
+  Tabs,
+  Typography,
 } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import {
-    useContract,
-    useContractRead,
-    useContractWrite,
-    useTokenBalance,
+  useContract,
+  useContractRead,
+  useContractWrite,
+  useTokenBalance,
 } from '@thirdweb-dev/react';
 import { BigNumber } from 'ethers';
 import { Field, Formik } from 'formik';
@@ -102,8 +102,8 @@ export default function ContractStakeErc1155Container({
   );
 
   const rewardsPerUnitTimeValue = useMemo(() => {
-    return rewardsPerUnitTime?.toNumber();
-  }, [rewardsPerUnitTime]);
+    return formatBigNumber(rewardsPerUnitTime, rewardTokenBalance?.decimals);
+  }, [rewardsPerUnitTime, rewardTokenBalance?.decimals]);
 
   const { data: allowance } = useQuery(
     ['REWARD_TOKEN_ALLOWANCE', rewardTokenAddress],
@@ -228,9 +228,18 @@ export default function ContractStakeErc1155Container({
               <FormattedMessage id="reward.time" defaultMessage="Reward Time" />
             </Typography>
             <Typography variant="h5">
-              {moment
-                .duration(rewardTimeUnit?.toNumber(), 'seconds')
-                .humanize()}
+              <FormattedMessage
+                id="every.reward"
+                defaultMessage="Every {timeUnit}"
+                values={{
+                  timeUnit:
+                    rewardTimeUnit?.toNumber() <= 60
+                      ? `${rewardTimeUnit?.toNumber()}s`
+                      : moment
+                          .duration(rewardTimeUnit?.toNumber(), 'seconds')
+                          .humanize(),
+                }}
+              />
             </Typography>
           </Stack>
         </Stack>

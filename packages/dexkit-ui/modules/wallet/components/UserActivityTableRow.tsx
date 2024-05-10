@@ -1,5 +1,6 @@
 import { UserEvents } from "@dexkit/core/constants/userEvents";
 import { getBlockExplorerUrl, truncateAddress } from "@dexkit/core/utils";
+import { getNetworkSlugFromChainId } from "@dexkit/core/utils/blockchain";
 import { TableCell, TableRow } from "@mui/material";
 import React from "react";
 import { FormattedMessage } from "react-intl";
@@ -69,9 +70,9 @@ export default function UserActivityTableRow({
         values={{
           name: (
             <Link
-              href={`${getBlockExplorerUrl(
+              href={`/stake/${getNetworkSlugFromChainId(
                 event.chainId ? event.chainId : undefined
-              )}/address/${stakeAddress}`}
+              )}/${stakeAddress}`}
               target="_blank"
             >
               <strong>{name}</strong>
@@ -94,9 +95,9 @@ export default function UserActivityTableRow({
         values={{
           name: (
             <Link
-              href={`${getBlockExplorerUrl(
+              href={`/stake/${getNetworkSlugFromChainId(
                 event.chainId ? event.chainId : undefined
-              )}/address/${stakeAddress}`}
+              )}/${stakeAddress}`}
               target="_blank"
             >
               <strong>{name}</strong>
@@ -119,9 +120,34 @@ export default function UserActivityTableRow({
         values={{
           name: (
             <Link
-              href={`${getBlockExplorerUrl(
+              href={`/stake/${getNetworkSlugFromChainId(
                 event.chainId ? event.chainId : undefined
-              )}/address/${stakeAddress}`}
+              )}/${stakeAddress}`}
+              target="_blank"
+            >
+              <strong>{name}</strong>
+            </Link>
+          ),
+          amount: <strong>{amount}</strong>,
+          symbol: <strong>{symbol}</strong>,
+        }}
+      />
+    );
+  }
+
+  if (event.type === UserEvents.stakeClaimErc721) {
+    const { stakeAddress, symbol, amount, name } = event.processedMetadata;
+
+    cells.push(
+      <FormattedMessage
+        id="claim.reward.for.erc721"
+        defaultMessage="Claim Reward {amount} {symbol} on {name}"
+        values={{
+          name: (
+            <Link
+              href={`/stake/${getNetworkSlugFromChainId(
+                event.chainId ? event.chainId : undefined
+              )}/${stakeAddress}`}
               target="_blank"
             >
               <strong>{name}</strong>
@@ -144,9 +170,9 @@ export default function UserActivityTableRow({
         values={{
           name: (
             <Link
-              href={`${getBlockExplorerUrl(
+              href={`/stake/${getNetworkSlugFromChainId(
                 event.chainId ? event.chainId : undefined
-              )}/address/${stakeAddress}`}
+              )}/${stakeAddress}`}
               target="_blank"
             >
               <strong>{name}</strong>
@@ -168,15 +194,89 @@ export default function UserActivityTableRow({
         values={{
           name: (
             <Link
-              href={`${getBlockExplorerUrl(
+              href={`/stake/${getNetworkSlugFromChainId(
                 event.chainId ? event.chainId : undefined
-              )}/address/${stakeAddress}`}
+              )}/${stakeAddress}`}
               target="_blank"
             >
               <strong>{name}</strong>
             </Link>
           ),
           tokens: <strong>{tokenIds.join(", ")}</strong>,
+        }}
+      />
+    );
+  }
+
+  if (event.type === UserEvents.unstakeErc1155) {
+    const { stakeAddress, name, tokenId, amount } = event.processedMetadata;
+
+    cells.push(
+      <FormattedMessage
+        id="unstake.tokens.on.erc1155"
+        defaultMessage="Unstake {amount} of token #{token} from {name}"
+        values={{
+          name: (
+            <Link
+              href={`/stake/${getNetworkSlugFromChainId(
+                event.chainId ? event.chainId : undefined
+              )}/${stakeAddress}`}
+              target="_blank"
+            >
+              <strong>{name}</strong>
+            </Link>
+          ),
+          amount,
+          token: <strong>{tokenId}</strong>,
+        }}
+      />
+    );
+  }
+
+  if (event.type === UserEvents.stakeErc1155) {
+    const { stakeAddress, name, tokenId, amount } = event.processedMetadata;
+
+    cells.push(
+      <FormattedMessage
+        id="stake.tokens.on.erc1155"
+        defaultMessage="Stake {amount} of token #{token} on {name}"
+        values={{
+          name: (
+            <Link
+              href={`/stake/${getNetworkSlugFromChainId(
+                event.chainId ? event.chainId : undefined
+              )}/${stakeAddress}`}
+              target="_blank"
+            >
+              <strong>{name}</strong>
+            </Link>
+          ),
+          amount,
+          token: <strong>{tokenId}</strong>,
+        }}
+      />
+    );
+  }
+
+  if (event.type === UserEvents.stakeClaimErc1155) {
+    const { stakeAddress, name, tokenId } = event.processedMetadata;
+
+    cells.push(
+      <FormattedMessage
+        id="claimReawards.from.erc1155"
+        defaultMessage="Claim rewards of token #{token} from {name}"
+        values={{
+          name: (
+            <Link
+              href={`/stake/${getNetworkSlugFromChainId(
+                event.chainId ? event.chainId : undefined
+              )}/${stakeAddress}`}
+              target="_blank"
+            >
+              <strong>{name}</strong>
+            </Link>
+          ),
+          token: <strong>{tokenId}</strong>,
         }}
       />
     );

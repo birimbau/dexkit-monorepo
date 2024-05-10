@@ -1,30 +1,32 @@
+import { UserEvents } from "@dexkit/core/constants/userEvents";
 import { formatBigNumber } from "@dexkit/core/utils";
 import { useDexKitContext } from "@dexkit/ui";
+import { useTrackUserEventsMutation } from "@dexkit/ui/hooks/userEvents";
 import { useApproveForAll } from "@dexkit/ui/modules/contract-wizard/hooks/thirdweb";
 import { StakeErc155PageSection } from "@dexkit/ui/modules/wizard/types/section";
 import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import { useAsyncMemo } from "@dexkit/widgets/src/hooks";
 import Token from "@mui/icons-material/Token";
 import {
-    Box,
-    Button,
-    Card,
-    CardActionArea,
-    CardContent,
-    CircularProgress,
-    Grid,
-    Paper,
-    Skeleton,
-    Stack,
-    Tab,
-    Tabs,
-    Typography,
+  Box,
+  Button,
+  Card,
+  CardActionArea,
+  CardContent,
+  CircularProgress,
+  Grid,
+  Paper,
+  Skeleton,
+  Stack,
+  Tab,
+  Tabs,
+  Typography,
 } from "@mui/material";
 import { useMutation } from "@tanstack/react-query";
 import {
-    useContract,
-    useContractRead,
-    useTokenBalance,
+  useContract,
+  useContractRead,
+  useTokenBalance,
 } from "@thirdweb-dev/react";
 import { BigNumber } from "ethers";
 import { SyntheticEvent, useMemo, useState } from "react";
@@ -85,10 +87,10 @@ export default function StakeErc1155Section({
 
   const rewardPerUnitTime = useMemo(() => {
     if (rewardRatio) {
-      return rewardRatio?.toNumber();
+      return rewardRatio;
     }
 
-    return 0;
+    return "0";
   }, [rewardRatio]);
 
   const { data: rewardsBalance } = useContractRead(
@@ -119,6 +121,8 @@ export default function StakeErc1155Section({
     setAmount(amount);
     handleClose();
   };
+
+  const trackUserEvent = useTrackUserEventsMutation();
 
   const { data: stakingTokenContract } = useContract(stakingAddress, "custom");
 
@@ -157,6 +161,18 @@ export default function StakeErc1155Section({
         watchTransactionDialog.watch(tx.hash);
       }
 
+      await trackUserEvent.mutateAsync({
+        event: UserEvents.stakeErc1155,
+        chainId,
+        hash: tx?.hash,
+        metadata: JSON.stringify({
+          tokenId,
+          amount: amount.toString(),
+          stakeAddress: address,
+          account,
+        }),
+      });
+
       return await tx?.wait();
     }
   );
@@ -186,6 +202,18 @@ export default function StakeErc1155Section({
         watchTransactionDialog.watch(tx.hash);
       }
 
+      await trackUserEvent.mutateAsync({
+        event: UserEvents.unstakeErc1155,
+        chainId,
+        hash: tx?.hash,
+        metadata: JSON.stringify({
+          tokenId,
+          amount: amount.toString(),
+          stakeAddress: address,
+          account,
+        }),
+      });
+
       return await tx?.wait();
     }
   );
@@ -194,7 +222,7 @@ export default function StakeErc1155Section({
 
   const claimRewardsMutation = useMutation(
     async ({ tokenId }: { tokenId: string }) => {
-      let call = contract?.prepare("claimRewards", []);
+      let call = contract?.prepare("claimRewards", [tokenId]);
 
       let values = {
         nft: tokenId,
@@ -216,7 +244,20 @@ export default function StakeErc1155Section({
         watchTransactionDialog.watch(tx.hash);
       }
 
-      return await tx?.wait();
+      const res = await tx?.wait();
+
+      await trackUserEvent.mutateAsync({
+        event: UserEvents.stakeClaimErc1155,
+        chainId,
+        hash: tx?.hash,
+        metadata: JSON.stringify({
+          tokenId,
+          stakeAddress: address,
+          account,
+        }),
+      });
+
+      return res;
     }
   );
 
@@ -411,8 +452,12 @@ export default function StakeErc1155Section({
                           <Typography color="text.secondary">
                             {rewardTimeUnit ? (
                               <>
-                                {rewardPerUnitTime} {rewardTokenBalance?.symbol}
-                                /{rewardTimeUnit?.toNumber()}
+                                {formatBigNumber(
+                                  rewardPerUnitTime,
+                                  rewardTokenBalance?.decimals
+                                )}{" "}
+                                {rewardTokenBalance?.symbol}/
+                                {rewardTimeUnit?.toNumber()}
                               </>
                             ) : (
                               <Skeleton />
@@ -427,8 +472,14 @@ export default function StakeErc1155Section({
                             />
                           </Typography>
                           <Typography color="text.secondary">
-                            {rewardTokenBalance ? (
-                              `${rewards} ${rewardTokenBalance?.symbol}`
+                            {stakeInfo &&
+                            stakeInfo.length > 1 &&
+                            stakeInfo[2] &&
+                            rewardTokenBalance ? (
+                              `${formatBigNumber(
+                                stakeInfo[2],
+                                rewardTokenBalance.decimals
+                              )} ${rewardTokenBalance?.symbol}`
                             ) : (
                               <Skeleton />
                             )}
@@ -461,6 +512,7 @@ export default function StakeErc1155Section({
                       color="primary"
                       fullWidth
                       size="large"
+                      disabled={rewardTokenBalance?.value.isZero()}
                     >
                       <FormattedMessage
                         id="claim.rewards"
@@ -557,8 +609,12 @@ export default function StakeErc1155Section({
                           <Typography color="text.secondary">
                             {rewardTimeUnit ? (
                               <>
-                                {rewardPerUnitTime} {rewardTokenBalance?.symbol}
-                                /{rewardTimeUnit?.toNumber()}
+                                {formatBigNumber(
+                                  rewardPerUnitTime,
+                                  rewardTokenBalance?.decimals
+                                )}{" "}
+                                {rewardTokenBalance?.symbol}/
+                                {rewardTimeUnit?.toNumber()}
                               </>
                             ) : (
                               <Skeleton />
@@ -574,8 +630,14 @@ export default function StakeErc1155Section({
                             />
                           </Typography>
                           <Typography color="text.secondary">
-                            {rewardTokenBalance ? (
-                              `${rewards} ${rewardTokenBalance?.symbol}`
+                            {stakeInfo &&
+                            stakeInfo.length > 1 &&
+                            stakeInfo[2] &&
+                            rewardTokenBalance ? (
+                              `${formatBigNumber(
+                                stakeInfo[2],
+                                rewardTokenBalance.decimals
+                              )} ${rewardTokenBalance?.symbol}`
                             ) : (
                               <Skeleton />
                             )}

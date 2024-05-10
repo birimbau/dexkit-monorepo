@@ -433,8 +433,11 @@ export default function StakeErc20Section({ section }: StakeErc20SectionProps) {
                               />
                             </Typography>
                             <Typography color="text.secondary">
-                              {rewardTokenBalance ? (
-                                `${rewards} ${rewardTokenBalance?.symbol}`
+                              {rewardTokenBalance && stakeInfo?.length > 1 ? (
+                                `${formatBigNumber(
+                                  stakeInfo[1],
+                                  rewardTokenBalance.decimals
+                                )} ${rewardTokenBalance?.symbol}`
                               ) : (
                                 <Skeleton />
                               )}

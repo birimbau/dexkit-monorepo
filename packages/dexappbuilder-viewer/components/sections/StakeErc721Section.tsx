@@ -99,18 +99,18 @@ export default function StakeErc721Section({
   );
   const { data: rewardTimeUnit } = useContractRead(contract, "getTimeUnit");
 
-  const rewardPerUnitTime = useMemo(() => {
-    if (rewardRatio) {
-      return rewardRatio?.toNumber();
-    }
-
-    return 0;
-  }, [rewardRatio]);
-
   const { data: rewardsBalance } = useContractRead(
     contract,
     "getRewardTokenBalance"
   );
+
+  const rewardPerUnitTime = useMemo(() => {
+    if (rewardRatio) {
+      return formatBigNumber(rewardRatio, rewardTokenBalance?.decimals);
+    }
+
+    return 0;
+  }, [rewardRatio, rewardTokenBalance?.decimals]);
 
   const handleChangeTab = (e: SyntheticEvent, value: "stake" | "unstake") => {
     setTab(value);
@@ -226,7 +226,10 @@ export default function StakeErc721Section({
     let call = contract?.prepare("claimRewards", []);
 
     let values = {
-      amount: `${rewards} ${rewardTokenBalance?.symbol}`,
+      amount: `${formatBigNumber(
+        stakeInfo && stakeInfo.length > 0 ? stakeInfo[1] : "0",
+        rewardTokenBalance?.decimals
+      )} ${rewardTokenBalance?.symbol}`,
       name: contractInfo?.name || "",
     };
 
@@ -438,8 +441,11 @@ export default function StakeErc721Section({
                             />
                           </Typography>
                           <Typography color="text.secondary">
-                            {rewardTokenBalance ? (
-                              `${rewards} ${rewardTokenBalance?.symbol}`
+                            {stakeInfo?.length > 0 && rewardTokenBalance ? (
+                              `${formatBigNumber(
+                                stakeInfo[1],
+                                rewardTokenBalance?.decimals
+                              )} ${rewardTokenBalance?.symbol}`
                             ) : (
                               <Skeleton />
                             )}
@@ -478,7 +484,7 @@ export default function StakeErc721Section({
                       }
                       disabled={
                         claimRewardsMutation.isLoading ||
-                        rewards?.toNumber() === 0
+                        rewardsBalance?.isZero()
                       }
                       variant="outlined"
                       color="primary"
@@ -608,7 +614,7 @@ export default function StakeErc721Section({
                           </Typography>
                           <Typography color="text.secondary">
                             {rewardTokenBalance ? (
-                              `${rewards} ${rewardTokenBalance?.symbol}`
+                              `${stakeInfo[1]} --- ${rewardTokenBalance?.symbol}`
                             ) : (
                               <Skeleton />
                             )}
