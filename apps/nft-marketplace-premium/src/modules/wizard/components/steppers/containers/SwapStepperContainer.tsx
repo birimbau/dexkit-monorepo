@@ -147,7 +147,7 @@ export default function SwapStepperContainer({ site }: Props) {
                   caption: (
                     <FormattedMessage
                       id="swap.quick.builder.title"
-                      defaultMessage="Swap - Quick builder"
+                      defaultMessage="Swap - Quick Builder"
                     />
                   ),
                   uri: '/admin/quick-builder/swap',

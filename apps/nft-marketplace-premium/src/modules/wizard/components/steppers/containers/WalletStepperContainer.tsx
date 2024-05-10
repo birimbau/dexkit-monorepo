@@ -134,14 +134,19 @@ export default function WalletStepperContainer({ site }: Props) {
                   uri: '/admin',
                 },
                 {
-                  caption: <FormattedMessage id="apps" defaultMessage="Apps" />,
+                  caption: (
+                    <FormattedMessage
+                      id="manage.apps"
+                      defaultMessage="Manage Apps"
+                    />
+                  ),
                   uri: '/admin',
                 },
                 {
                   caption: (
                     <FormattedMessage
                       id="wallet.quick.builder.title"
-                      defaultMessage="Wallet - Quick builder"
+                      defaultMessage="Wallet - Quick Builder"
                     />
                   ),
                   uri: '/admin/quick-wizard/builder',

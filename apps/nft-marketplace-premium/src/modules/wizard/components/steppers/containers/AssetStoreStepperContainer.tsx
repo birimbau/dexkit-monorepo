@@ -134,14 +134,19 @@ export default function AssetStoreStepperContainer({ site }: Props) {
                   uri: '/admin',
                 },
                 {
-                  caption: <FormattedMessage id="apps" defaultMessage="Apps" />,
+                  caption: (
+                    <FormattedMessage
+                      id="manage.apps"
+                      defaultMessage="Manage Apps"
+                    />
+                  ),
                   uri: '/admin',
                 },
                 {
                   caption: (
                     <FormattedMessage
                       id="nft.store.quick.builder.title"
-                      defaultMessage="NFT Store - Quick builder"
+                      defaultMessage="NFT Store - Quick Builder"
                     />
                   ),
                   uri: '/admin/quick-wizard/builder',

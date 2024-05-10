@@ -255,15 +255,18 @@ export function CreateWizardContainer({ slug, isSwapWizard }: Props) {
                         defaultMessage="Swap apps"
                       />
                     ) : (
-                      <FormattedMessage id="apps" defaultMessage="Apps" />
+                      <FormattedMessage
+                        id="manage.apps"
+                        defaultMessage="Manage Apps"
+                      />
                     ),
                     uri: '/admin',
                   },
                   {
                     caption: (
                       <FormattedMessage
-                        id="build.app"
-                        defaultMessage="Build App"
+                        id="create.app"
+                        defaultMessage="Create App"
                       />
                     ),
                     uri: isSwapWizard ? '/admin/create-swap' : '/admin/create',
