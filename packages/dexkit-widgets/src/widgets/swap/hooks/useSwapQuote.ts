@@ -10,6 +10,7 @@ import { UseQueryResult, useQuery } from "@tanstack/react-query";
 import type { BigNumber } from "ethers";
 import { ZEROEX_AFFILIATE_ADDRESS } from "../../../services/zeroex/constants";
 import { SwapSide } from "../types";
+import { isNativeInSell } from "../utils";
 
 export interface SwapQuoteParams {
   sellToken?: Token;
@@ -110,7 +111,7 @@ export function useSwapQuote({
       const client = new ZeroExApiClient(chainId, zeroExApiKey, siteId);
 
       if (buyToken && sellToken && quoteFor) {
-        if (isGasless && SUPPORTED_GASLESS_CHAIN.includes(chainId)) {
+        if (isGasless && SUPPORTED_GASLESS_CHAIN.includes(chainId) && !isNativeInSell({ side: quoteFor, sellToken, buyToken })) {
           const quoteParam: ZeroExQuoteGasless = {
             buyToken: buyToken?.address,
             sellToken: sellToken?.address,

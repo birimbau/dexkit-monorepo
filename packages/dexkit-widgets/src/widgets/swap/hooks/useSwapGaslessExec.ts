@@ -87,32 +87,24 @@ export function useSwapGaslessExec({
 }
 
 export function useSwapGaslessTradeStatusQuery({
-  onNotification,
   zeroExApiKey,
   tradeHash,
   chainId,
-  quote,
-  sellToken,
-  buyToken
 }: {
-  quote: ZeroExQuoteGasless,
-  chainId: ChainId,
-  sellToken: Token;
-  buyToken: Token;
+  chainId?: ChainId,
   zeroExApiKey?: string,
   tradeHash: string | undefined
-  onNotification: (params: NotificationCallbackParams) => void;
 }) {
 
   const { siteId } = useContext(SiteContext);
 
-
+  console.log(tradeHash);
 
   return useQuery([tradeHash], async ({ signal }) => {
     if (!zeroExApiKey) {
       throw new Error("no api key");
     }
-    if (!tradeHash) {
+    if (!tradeHash || !chainId) {
       return null
     }
 

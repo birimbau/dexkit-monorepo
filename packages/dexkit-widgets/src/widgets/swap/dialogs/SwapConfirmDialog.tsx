@@ -16,11 +16,14 @@ import { BigNumber } from "ethers";
 import { FormattedMessage } from "react-intl";
 import AppDialogTitle from "../../../components/AppDialogTitle";
 
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
+
+import ErrorIcon from "@mui/icons-material/Error";
 import { ZeroExQuoteResponse } from "../../../services/zeroex/types";
 
 import { Token } from "@dexkit/core/types";
 import { useMemo } from "react";
-import { formatBigNumber } from "../../../utils";
+import { formatBigNumber, getBlockExplorerUrl } from "../../../utils";
 import SwapFeeSummary from "../SwapFeeSummary";
 import { ExecSwapState } from "../constants/enum";
 
@@ -30,9 +33,12 @@ export interface SwapConfirmDialogProps {
   chainId?: ChainId;
   execSwapState: ExecSwapState;
   isQuoting?: boolean;
+  isLoadingStatusGasless?: boolean;
+  reasonFailedGasless?: string;
   onConfirm: () => void;
   currency: string;
   isLoadingSignGasless?: boolean;
+  successTxGasless?: { hash: string };
   sellToken?: Token;
   buyToken?: Token;
 }
@@ -45,6 +51,9 @@ export default function SwapConfirmDialog({
   onConfirm,
   execSwapState,
   isLoadingSignGasless,
+  isLoadingStatusGasless,
+  reasonFailedGasless,
+  successTxGasless,
   currency,
   sellToken,
   buyToken,
@@ -67,7 +76,10 @@ export default function SwapConfirmDialog({
         />
       );
     }
-    if (execSwapState === ExecSwapState.gasless_trade_submit) {
+    if (
+      execSwapState === ExecSwapState.gasless_trade_submit ||
+      isLoadingStatusGasless
+    ) {
       return (
         <FormattedMessage
           id="submitting.trade"
@@ -82,7 +94,7 @@ export default function SwapConfirmDialog({
     }
 
     return <FormattedMessage id="confirm" defaultMessage="Confirm" />;
-  }, [execSwapState, sellToken]);
+  }, [execSwapState, sellToken, isLoadingStatusGasless]);
 
   const isMobile = useIsMobile();
 
@@ -90,7 +102,14 @@ export default function SwapConfirmDialog({
     <Dialog {...DialogProps} onClose={handleClose} fullScreen={isMobile}>
       <AppDialogTitle
         title={
-          <FormattedMessage id="confirm.swap" defaultMessage="Confirm swap" />
+          successTxGasless ? (
+            <FormattedMessage
+              id="trade.confirmed"
+              defaultMessage="Trade confirmed"
+            />
+          ) : (
+            <FormattedMessage id="confirm.swap" defaultMessage="Confirm swap" />
+          )
         }
         onClose={handleClose}
       />
@@ -104,6 +123,39 @@ export default function SwapConfirmDialog({
           {quote && sellToken && buyToken && (
             <>
               <Stack>
+                {successTxGasless && (
+                  <Stack
+                    direction="column"
+                    justifyContent="center"
+                    alignItems="center"
+                  >
+                    <CheckCircleOutlineIcon
+                      color="success"
+                      sx={{ fontSize: 60 }}
+                    />
+                    <Typography variant="body1">
+                      <FormattedMessage
+                        id="trade.confirmed"
+                        defaultMessage="Trade confirmed"
+                      />
+                    </Typography>
+                  </Stack>
+                )}
+
+                {reasonFailedGasless && (
+                  <Stack
+                    direction="column"
+                    justifyContent="center"
+                    alignItems="center"
+                  >
+                    <ErrorIcon color="success" sx={{ fontSize: 60 }} />
+                    <Typography variant="body1">
+                      Trade failed reason:{" "}
+                      {reasonFailedGasless.split("_").join(" ")}
+                    </Typography>
+                  </Stack>
+                )}
+
                 <Stack
                   direction="row"
                   justifyContent="space-between"
@@ -168,14 +220,57 @@ export default function SwapConfirmDialog({
               defaultMessage="Confirm on wallet"
             />
           </Button>
+        ) : successTxGasless ? (
+          <Stack
+            display={"flex"}
+            spacing={2}
+            direction={"row"}
+            justifyContent={"center"}
+          >
+            <Button onClick={handleClose} variant="contained">
+              <FormattedMessage id="new.trade" defaultMessage="new trade" />
+            </Button>
+
+            <Button
+              size="large"
+              href={`${getBlockExplorerUrl(chainId)}/tx/${
+                successTxGasless.hash
+              }`}
+              target="_blank"
+              variant="outlined"
+              color="primary"
+            >
+              <FormattedMessage
+                id="view.transaction"
+                defaultMessage="View transaction"
+              />
+            </Button>
+          </Stack>
+        ) : reasonFailedGasless ? (
+          <Button onClick={handleClose} variant="contained">
+            <FormattedMessage id="back" defaultMessage="back" />
+          </Button>
         ) : (
-          <Button disabled={isQuoting} onClick={onConfirm} variant="contained">
+          <Button
+            disabled={isQuoting || isLoadingStatusGasless}
+            startIcon={
+              (isQuoting ||
+                isLoadingStatusGasless ||
+                execSwapState === ExecSwapState.gasless_trade_submit) && (
+                <CircularProgress size={20} />
+              )
+            }
+            onClick={onConfirm}
+            variant="contained"
+          >
             {btnMessage}
           </Button>
         )}
-        <Button onClick={handleClose}>
-          <FormattedMessage id="cancel" defaultMessage="Cancel" />
-        </Button>
+        {!successTxGasless && (
+          <Button onClick={handleClose}>
+            <FormattedMessage id="cancel" defaultMessage="Cancel" />
+          </Button>
+        )}
       </DialogActions>
     </Dialog>
   );

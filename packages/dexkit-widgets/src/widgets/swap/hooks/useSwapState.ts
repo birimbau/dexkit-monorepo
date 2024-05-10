@@ -1,5 +1,4 @@
 import { ChainId } from "@dexkit/core/constants";
-import { WRAPPED_TOKEN_ADDRESS } from "@dexkit/core/constants/networks";
 import { Token } from "@dexkit/core/types";
 import { UseMutationResult } from "@tanstack/react-query";
 import { Transak } from "@transak/transak-sdk";
@@ -10,13 +9,13 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useIntl } from "react-intl";
 import { useAsyncMemo, useDebounce, useRecentTokens, useTokenBalance, useWrapToken } from "../../../hooks";
 import { useSignTypeData } from "../../../hooks/useSignTypeData";
-import { hasSufficientAllowance } from "../../../services";
-import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "../../../services/zeroex/constants";
 import { ZeroExQuoteMetaTransactionResponse, ZeroExQuoteResponse } from "../../../services/zeroex/types";
 import { isAddressEqual, switchNetwork } from "../../../utils";
 import { ExecSwapState } from "../constants/enum";
-import { SUPPORTED_SWAP_CHAIN_IDS } from "../constants/supportedChainIds";
-import { ExecType, NotificationCallbackParams, SwapSide } from "../types";
+import { NotificationCallbackParams, SwapSide } from "../types";
+import { isNativeInSell } from "../utils";
+import { useExecType } from "./useExecType";
+import { useGaslessSwapState } from "./useGaslessSwapState";
 import { SwapExecParams } from "./useSwapExec";
 import { SwapGaslessExecParams } from "./useSwapGaslessExec";
 import { useSwapQuote } from "./useSwapQuote";
@@ -94,6 +93,7 @@ export function useSwapState({
   onShowTransactions: () => void;
   maxSlippage: number;
   isAutoSlippage: boolean;
+
 }) {
   const transak = useMemo(() => {
     if (transakApiKey) {
@@ -105,10 +105,10 @@ export function useSwapState({
   }, [transakApiKey]);
 
 
-
   const { wrapMutation, unwrapMutation } = useWrapToken({ onNotification });
 
   const [showSelect, setShowSelectToken] = useState(false);
+  const [tradeHash, setTradeHash] = useState<string>();
 
   const [execSwapState, setExecSwapState] = useState(ExecSwapState.quote);
 
@@ -154,15 +154,17 @@ export function useSwapState({
       if (data) {
         const [quotedFor, quote] = data;
 
-        if (quotedFor === "buy" && quote) {
+        if (quotedFor === "buy" && quote && quote?.sellAmount) {
           setSellAmount(BigNumber.from(quote?.sellAmount));
-        } else if (quotedFor === "sell" && quote) {
+        } else if (quotedFor === "sell" && quote && quote?.buyAmount) {
           setBuyAmount(BigNumber.from(quote?.buyAmount));
         }
       }
     },
     [quoteFor]
   );
+
+  const gaslessSwapState = useGaslessSwapState({ zeroExApiKey, chainId, tradeHash });
 
   const quote = useSwapQuote({
     onSuccess: handleQuoteSuccess,
@@ -299,6 +301,14 @@ export function useSwapState({
     setShowConfirmSwap(false);
     quote.setSkipValidation(true);
     quote.setIntentOnFilling(false);
+    setTradeHash(undefined);
+    // If we came from gasless state just refetch
+    if (execSwapState === ExecSwapState.gasless_trade_submit) {
+      gaslessSwapState.statusGaslessQuery.refetch();
+      sellTokenBalance.refetch();
+      buyTokenBalance.refetch();
+    }
+
     setExecSwapState(ExecSwapState.quote)
   };
 
@@ -325,94 +335,17 @@ export function useSwapState({
     [provider]
   );
 
-  const execType: ExecType = useAsyncMemo<ExecType>(
-    async (initial) => {
-      let result: ExecType = initial;
-      if (connectedChainId && chainId && chainId !== connectedChainId) {
-        return "switch";
-      }
-
-      if (chainId && !SUPPORTED_SWAP_CHAIN_IDS.includes(chainId as unknown as number)) {
-        return 'network_not_supported'
-      }
-
-      const isBuyTokenWrapped =
-        lazyBuyToken &&
-        chainId &&
-        isAddressEqual(WRAPPED_TOKEN_ADDRESS(chainId), lazyBuyToken.address);
-
-      const isSellTokenWrapped =
-        lazySellToken &&
-        chainId &&
-        isAddressEqual(WRAPPED_TOKEN_ADDRESS(chainId), lazySellToken.address);
-
-      if (lazyBuyToken && lazySellToken && quoteQuery.data) {
-        if (!isBuyTokenWrapped && !isSellTokenWrapped) {
-          if (account) {
-            if (isGasless) {
-              const [, data] = quoteQuery.data as unknown as [string, ZeroExQuoteMetaTransactionResponse];
-              if (data && data?.approval && data?.approval?.isRequired && data?.approval?.isGaslessAvailable) {
-                const { isRequired, isGaslessAvailable } = data.approval
-                if (isRequired && isGaslessAvailable) {
-                  return 'approve_gasless';
-                }
-                if (isRequired) {
-                  return 'approve';
-                }
-              }
-            } else {
-              const [, data] = quoteQuery.data;
-              if (data) {
-                const sufficientAllowance = await hasSufficientAllowance({
-                  spender: data.allowanceTarget,
-                  tokenAddress: data.sellTokenAddress,
-                  amount: BigNumber.from(data.sellAmount),
-                  provider,
-                  account,
-                });
-
-                if (!sufficientAllowance) {
-                  return "approve";
-                }
-              }
-            }
-          }
-        }
-
-        return isGasless ? 'swap_gasless' : 'swap';
-      }
-
-      result =
-        isBuyTokenWrapped &&
-          isAddressEqual(lazySellToken?.address, ZEROEX_NATIVE_TOKEN_ADDRESS)
-          ? "wrap"
-          : isSellTokenWrapped &&
-            isAddressEqual(lazyBuyToken?.address, ZEROEX_NATIVE_TOKEN_ADDRESS)
-            ? "unwrap"
-            : isGasless ? 'swap_gasless' : 'swap';
-
-      return result;
-    },
-    "quote",
-    [
-      provider,
-      connectedChainId,
-      lazyBuyToken,
-      lazySellToken,
-      quoteQuery.data,
-      account,
-      lazySellAmount,
-      chainId,
-      isGasless
-    ]
-  );
+  const execType = useExecType({ chainId, connectedChainId, lazyBuyToken, lazySellToken, account, quoteQuery, quoteFor, isGasless, lazySellAmount, provider })
 
   const { enqueueSnackbar } = useSnackbar();
 
   const { formatMessage } = useIntl();
 
   const handleConfirmExecSwap = async () => {
-    if (isGasless && quote.quoteQuery.data && sellToken && buyToken && connectedChainId) {
+    // Gasless not work on native token as sell side
+    const canGasless = isGasless && lazySellToken && quoteFor && lazyBuyToken && !isNativeInSell({ sellToken: lazySellToken, buyToken: lazyBuyToken, side: quoteFor })
+    console.log(canGasless);
+    if (canGasless && quote.quoteQuery.data && sellToken && buyToken && connectedChainId) {
       const [, data] = quoteQuery.data as unknown as [string, ZeroExQuoteMetaTransactionResponse];
       const { eip712: eip712Approval, isRequired, isGaslessAvailable, type: approvalType } = data.approval
       let trade;
@@ -468,11 +401,16 @@ export function useSwapState({
         }
       }
       setExecSwapState(ExecSwapState.gasless_trade_submit)
-      await execGaslessMutation.mutateAsync({
+      const tradeHash = await execGaslessMutation.mutateAsync({
         trade, approval, quote: data, onHash: (hash: string) => { }, sellToken, buyToken, chainId: connectedChainId
       })
-      handleCloseConfirmSwap();
-      setExecSwapState(ExecSwapState.quote)
+
+      setTradeHash(tradeHash);
+
+
+
+      // handleCloseConfirmSwap();
+      // setExecSwapState(ExecSwapState.quote)
 
 
     } else if (quoteQuery.data) {
@@ -504,6 +442,10 @@ export function useSwapState({
               onError,
             }
           );
+          sellTokenBalance.refetch();
+          buyTokenBalance.refetch();
+
+
         }
       } catch (err: unknown) { }
     }
@@ -527,31 +469,13 @@ export function useSwapState({
       quote.setIntentOnFilling(true);
       quote.quoteQuery.refetch();
       setExecSwapState(ExecSwapState.gasless_trade)
-      /* const [, data] = quoteQuery.data as unknown as [string, ZeroExQuoteMetaTransactionResponse];
-       const { eip712 } = data.trade
-       await signTypeDataMutation.mutateAsync({ domain: eip712.domain, types: eip712.types, value: eip712.message }, {
-         onSuccess: (signature: string | null) => {
-           if (signature) {
-             quote.setTradeSignature(signature);
-           }
-         }
-       })*/
+
 
     } else if (execType === "approve_gasless" && quoteQuery.data) {
       setShowConfirmSwap(true);
       quote.setIntentOnFilling(true);
       setExecSwapState(ExecSwapState.gasless_approval)
       quote.quoteQuery.refetch();
-      /*const [, data] = quoteQuery.data as unknown as [string, ZeroExQuoteMetaTransactionResponse];
-      const { eip712 } = data.approval
-      await signTypeDataMutation.mutateAsync({ domain: eip712.domain, types: eip712.types, value: eip712.message },
-        {
-          onSuccess: (signature: string | null) => {
-            if (signature) {
-              quote.setApprovalSignature(signature);
-            }
-          }
-        })*/
     } else if (execType === "wrap") {
       await wrapMutation.mutateAsync(
         {
@@ -669,6 +593,7 @@ export function useSwapState({
     isProviderReady,
     recentTokens: recentTokens.tokens,
     setQuoteFor,
+    gaslessSwapState,
     execSwapState,
     setSellAmount,
     setBuyAmount,

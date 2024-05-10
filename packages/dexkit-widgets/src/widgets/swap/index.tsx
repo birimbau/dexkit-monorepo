@@ -157,6 +157,7 @@ export function SwapWidget({
     handleClearRecentTokens,
     handleShowTransak,
     isLoadingSignGasless,
+    gaslessSwapState,
     execSwapState,
   } = useSwapState({
     execGaslessMutation: execSwapGaslessMutation,
@@ -173,7 +174,6 @@ export function SwapWidget({
     onConnectWallet,
     onShowTransactions,
     connector,
-
     account,
     swapFees,
     isActive: isActive && !disableWallet,
@@ -181,6 +181,7 @@ export function SwapWidget({
     maxSlippage,
     isAutoSlippage,
     transakApiKey,
+
     defaultBuyToken:
       selectedChainId && configsByChain[selectedChainId]
         ? convertOldTokenToNew(configsByChain[selectedChainId].buyToken)
@@ -307,6 +308,9 @@ export function SwapWidget({
           quote={quote}
           isQuoting={isQuoting}
           isLoadingSignGasless={isLoadingSignGasless}
+          isLoadingStatusGasless={gaslessSwapState.isLoadingStatusGasless}
+          reasonFailedGasless={gaslessSwapState.reasonFailedGasless}
+          successTxGasless={gaslessSwapState.successTxGasless}
           onConfirm={handleConfirmExecSwap}
           execSwapState={execSwapState}
           chainId={chainId}
