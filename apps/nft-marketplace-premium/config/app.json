@@ -54,22 +54,23 @@
       "name": "App Builder",
       "children": [
         { "type": "Page", "href": "/admin/create", "name": "Build App" },
-        { "type": "Page", "href": "/admin", "name": "Manage App" },
+        { "type": "Page", "href": "/admin", "name": "Manage Apps" },
         {
           "type": "Menu",
           "href": "",
-          "name": "Quick Builder",
+          "name": "Quick Builde Appr",
           "children": [
             {
               "type": "Page",
               "href": "/admin/quick-builder/swap",
-              "name": "Build Swap App"
+              "name": "Build Swap"
             },
             {
               "type": "Page",
-              "href": "/admin/quick-builder/nft-store",
-              "name": "Build NFT Store App"
+              "href": "/admin/quick-builder/exchange",
+              "name": "Build Exchange"
             },
+
             {
               "type": "Page",
               "href": "/admin/quick-builder/wallet",
@@ -77,8 +78,8 @@
             },
             {
               "type": "Page",
-              "href": "/admin/quick-builder/exchange",
-              "name": "Build Exchange App"
+              "href": "/admin/quick-builder/nft-store",
+              "name": "Build NFT Store"
             }
           ]
         }

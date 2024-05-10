@@ -135,14 +135,19 @@ export default function SwapStepperContainer({ site }: Props) {
                   uri: '/admin',
                 },
                 {
-                  caption: <FormattedMessage id="apps" defaultMessage="Apps" />,
+                  caption: (
+                    <FormattedMessage
+                      id="manage.apps"
+                      defaultMessage="Manage Apps"
+                    />
+                  ),
                   uri: '/admin',
                 },
                 {
                   caption: (
                     <FormattedMessage
-                      id="swap.quick.builder"
-                      defaultMessage="Swap quick builder"
+                      id="swap.quick.builder.title"
+                      defaultMessage="Swap - Quick builder"
                     />
                   ),
                   uri: '/admin/quick-builder/swap',
@@ -160,8 +165,8 @@ export default function SwapStepperContainer({ site }: Props) {
             {!isMobile && (
               <Typography variant="h5">
                 <FormattedMessage
-                  id="quick.swap.builder"
-                  defaultMessage="Quick swap builder"
+                  id="swap.quick.builder.title"
+                  defaultMessage="Swap - Quick builder"
                 />
               </Typography>
             )}

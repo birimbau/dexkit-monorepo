@@ -140,8 +140,8 @@ export default function ExchangeStepperContainer({ site }: Props) {
                 {
                   caption: (
                     <FormattedMessage
-                      id="exchange.app.builder"
-                      defaultMessage="Exchange App Builder"
+                      id="exchange.app.builder.title"
+                      defaultMessage="Exchange - Quick Builder"
                     />
                   ),
                   uri: '/admin/quick-builder/exchange',
@@ -156,8 +156,8 @@ export default function ExchangeStepperContainer({ site }: Props) {
             {!isMobile && (
               <Typography variant="h5">
                 <FormattedMessage
-                  id="quick.exchange.builder"
-                  defaultMessage="Quick Exchange Builder"
+                  id="build.your.exchange.quickly"
+                  defaultMessage="Build your Exchange quickly"
                 />
               </Typography>
             )}

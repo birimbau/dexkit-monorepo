@@ -140,8 +140,8 @@ export default function AssetStoreStepperContainer({ site }: Props) {
                 {
                   caption: (
                     <FormattedMessage
-                      id="nft.store.quick.builder"
-                      defaultMessage="NFT store quick builder"
+                      id="nft.store.quick.builder.title"
+                      defaultMessage="NFT Store - Quick builder"
                     />
                   ),
                   uri: '/admin/quick-wizard/builder',
@@ -159,8 +159,8 @@ export default function AssetStoreStepperContainer({ site }: Props) {
             {!isMobile && (
               <Typography variant="h5">
                 <FormattedMessage
-                  id="quick.nft.store.builder"
-                  defaultMessage="Quick NFT store builder"
+                  id="build.your.nft.store.quickly"
+                  defaultMessage="Build your NFT Store quickly"
                 />
               </Typography>
             )}

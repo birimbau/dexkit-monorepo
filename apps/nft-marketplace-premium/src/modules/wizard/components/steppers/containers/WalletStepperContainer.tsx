@@ -140,8 +140,8 @@ export default function WalletStepperContainer({ site }: Props) {
                 {
                   caption: (
                     <FormattedMessage
-                      id="wallet.quick.builder"
-                      defaultMessage="Wallet quick builder"
+                      id="wallet.quick.builder.title"
+                      defaultMessage="Wallet - Quick builder"
                     />
                   ),
                   uri: '/admin/quick-wizard/builder',
@@ -159,8 +159,8 @@ export default function WalletStepperContainer({ site }: Props) {
             {!isMobile && (
               <Typography variant="h5">
                 <FormattedMessage
-                  id="quick.waççet.builder"
-                  defaultMessage="Quick wallet builder"
+                  id="build.your.wallet.quickly"
+                  defaultMessage="Build your Wallet quickly"
                 />
               </Typography>
             )}
