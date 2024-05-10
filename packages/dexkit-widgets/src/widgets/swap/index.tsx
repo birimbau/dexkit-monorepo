@@ -8,10 +8,11 @@ import {
 import { useWeb3React } from "@web3-react/core";
 import { useEffect, useMemo, useState } from "react";
 
+import dynamic from "next/dynamic";
 import { usePlatformCoinSearch } from "../../hooks/api";
 import { apiCoinToTokens } from "../../utils/api";
-import SwapConfirmDialog from "./dialogs/SwapConfirmDialog";
 import SwapSettingsDialog from "./dialogs/SwapSettingsDialog";
+const SwapConfirmDialog = dynamic(() => import("./dialogs/SwapConfirmDialog"));
 
 // declare global {
 //   function renderSwapWidget(id: string, options: RenderOptions): void;
@@ -20,14 +21,14 @@ import SwapSettingsDialog from "./dialogs/SwapSettingsDialog";
 import { NETWORKS } from "@dexkit/core/constants/networks";
 import { Token } from "@dexkit/core/types";
 import SwitchNetworkDialog from "../../components/SwitchNetworkDialog";
+import { SUPPORTED_GASLESS_CHAIN } from "../../constants";
 import SwapSelectCoinDialog from "./SwapSelectCoinDialog";
 import { SUPPORTED_SWAP_CHAIN_IDS } from "./constants/supportedChainIds";
-import {
-  useErc20ApproveMutation,
-  useSwapExec,
-  useSwapProvider,
-  useSwapState,
-} from "./hooks";
+import { useErc20ApproveMutation } from "./hooks";
+import { useSwapExec } from "./hooks/useSwapExec";
+import { useSwapGaslessExec } from "./hooks/useSwapGaslessExec";
+import { useSwapProvider } from "./hooks/useSwapProvider";
+import { useSwapState } from "./hooks/useSwapState";
 import { NotificationCallbackParams, RenderOptions } from "./types";
 import { convertOldTokenToNew } from "./utils";
 
@@ -84,9 +85,15 @@ export function SwapWidget({
     enableBuyCryptoButton,
     zeroExApiKey,
     featuredTokens,
+    useGasless,
   } = options;
 
   const execSwapMutation = useSwapExec({ onNotification });
+
+  const execSwapGaslessMutation = useSwapGaslessExec({
+    onNotification,
+    zeroExApiKey,
+  });
 
   const [selectedChainId, setSelectedChainId] = useState<ChainId>();
 
@@ -100,6 +107,12 @@ export function SwapWidget({
     defaultChainId: selectedChainId,
     disableWallet,
   });
+
+  const isGasless = useMemo(() => {
+    if (selectedChainId) {
+      return SUPPORTED_GASLESS_CHAIN.includes(selectedChainId) && useGasless;
+    }
+  }, [selectedChainId, useGasless]);
 
   const approveMutation = useErc20ApproveMutation({ onNotification });
 
@@ -143,8 +156,12 @@ export function SwapWidget({
     handleShowTransactions,
     handleClearRecentTokens,
     handleShowTransak,
+    isLoadingSignGasless,
+    execSwapState,
   } = useSwapState({
+    execGaslessMutation: execSwapGaslessMutation,
     zeroExApiKey,
+    isGasless: isGasless,
     selectedChainId,
     connectedChainId,
     execMutation: execSwapMutation,
@@ -156,6 +173,7 @@ export function SwapWidget({
     onConnectWallet,
     onShowTransactions,
     connector,
+
     account,
     swapFees,
     isActive: isActive && !disableWallet,
@@ -278,21 +296,25 @@ export function SwapWidget({
         }}
         chainId={chainId}
       />
-      <SwapConfirmDialog
-        DialogProps={{
-          open: showConfirmSwap,
-          maxWidth: "xs",
-          fullWidth: true,
-          onClose: handleCloseConfirmSwap,
-        }}
-        quote={quote}
-        isQuoting={isQuoting}
-        onConfirm={handleConfirmExecSwap}
-        chainId={chainId}
-        currency={currency || "usd"}
-        sellToken={sellToken}
-        buyToken={buyToken}
-      />
+      {showConfirmSwap && (
+        <SwapConfirmDialog
+          DialogProps={{
+            open: showConfirmSwap,
+            maxWidth: "xs",
+            fullWidth: true,
+            onClose: handleCloseConfirmSwap,
+          }}
+          quote={quote}
+          isQuoting={isQuoting}
+          isLoadingSignGasless={isLoadingSignGasless}
+          onConfirm={handleConfirmExecSwap}
+          execSwapState={execSwapState}
+          chainId={chainId}
+          currency={currency || "usd"}
+          sellToken={sellToken}
+          buyToken={buyToken}
+        />
+      )}
       <SwapSettingsDialog
         DialogProps={{
           open: showSettings,

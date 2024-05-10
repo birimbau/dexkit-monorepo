@@ -18,6 +18,10 @@ export type ExecType =
   | "quote"
   | "switch"
   | "network_not_supported"
+  | "approve_gasless"
+  | "swap_gasless"
+  | "quote_gasless"
+
 
   ;
 
@@ -84,10 +88,19 @@ export type RenderOptions = {
   defaultChainId?: ChainId;
   transakApiKey?: string;
   currency: string;
+  useGasless?: boolean;
 };
 
 export type SwapNotificationParams = {
   type: "swap";
+  sellToken: Token;
+  buyToken: Token;
+  sellAmount: string;
+  buyAmount: string;
+};
+
+export type SwapGaslessNotificationParams = {
+  type: "swapGasless";
   sellToken: Token;
   buyToken: Token;
   sellAmount: string;
@@ -101,11 +114,11 @@ export type ApproveNotificationParams = {
 
 export type BaseNotificationParams =
   | ApproveNotificationParams
-  | SwapNotificationParams;
+  | SwapNotificationParams | SwapGaslessNotificationParams;
 
 export type NotificationCallbackParams = {
   title: string;
-  hash: string;
+  hash?: string;
   chainId: ChainId;
   params: BaseNotificationParams;
 };

@@ -38,6 +38,15 @@ export interface DexkitProviderProps {
   };
   userEventsURL?: string;
   siteId?: number;
+  gaslessTradesAtom: WritableAtom<
+    {
+      [key: string]: AppTransaction;
+    },
+    SetStateAction<{
+      [key: string]: AppTransaction;
+    }>,
+    void
+  >;
   transactionsAtom: WritableAtom<
     {
       [key: string]: AppTransaction;
@@ -61,6 +70,7 @@ export function DexkitProvider({
   affiliateReferral,
   currencyUserAtom,
   selectedWalletAtom,
+  gaslessTradesAtom,
   transactionsAtom,
   locale,
   tokensAtom,
@@ -79,6 +89,7 @@ export function DexkitProvider({
   const appState = useDexkitContextState({
     notificationTypes,
     notificationsAtom,
+    gaslessTradesAtom,
     tokensAtom,
     assetsAtom,
     hiddenAssetsAtom,

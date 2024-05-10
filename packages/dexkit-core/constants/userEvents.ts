@@ -1,6 +1,7 @@
 export enum UserOnChainEvents {
   approve = "approve",
   swap = "swap",
+  gaslessSwap = "gaslessSwap",
   deployContract = "deployContract",
   unwrap = "unwrap",
   wrap = "wrap",
@@ -45,3 +46,5 @@ export const UserEvents = {
   ...UserOnChainEvents,
   ...UserOffChainEvents,
 };
+
+

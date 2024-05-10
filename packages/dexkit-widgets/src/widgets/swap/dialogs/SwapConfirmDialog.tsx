@@ -2,6 +2,7 @@ import { ChainId } from "@dexkit/core/constants/enums";
 import { useIsMobile } from "@dexkit/core/hooks";
 import {
   Button,
+  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -18,17 +19,20 @@ import AppDialogTitle from "../../../components/AppDialogTitle";
 import { ZeroExQuoteResponse } from "../../../services/zeroex/types";
 
 import { Token } from "@dexkit/core/types";
+import { useMemo } from "react";
 import { formatBigNumber } from "../../../utils";
 import SwapFeeSummary from "../SwapFeeSummary";
+import { ExecSwapState } from "../constants/enum";
 
 export interface SwapConfirmDialogProps {
   DialogProps: DialogProps;
   quote?: ZeroExQuoteResponse | null;
   chainId?: ChainId;
+  execSwapState: ExecSwapState;
   isQuoting?: boolean;
   onConfirm: () => void;
   currency: string;
-
+  isLoadingSignGasless?: boolean;
   sellToken?: Token;
   buyToken?: Token;
 }
@@ -39,6 +43,8 @@ export default function SwapConfirmDialog({
   isQuoting,
   chainId,
   onConfirm,
+  execSwapState,
+  isLoadingSignGasless,
   currency,
   sellToken,
   buyToken,
@@ -50,6 +56,33 @@ export default function SwapConfirmDialog({
       onClose({}, "backdropClick");
     }
   };
+
+  const btnMessage = useMemo(() => {
+    if (execSwapState === ExecSwapState.gasless_approval) {
+      return (
+        <FormattedMessage
+          id="approve.token.gasless"
+          defaultMessage="Approve {symbol}"
+          values={{ symbol: sellToken?.symbol?.toUpperCase() || "" }}
+        />
+      );
+    }
+    if (execSwapState === ExecSwapState.gasless_trade_submit) {
+      return (
+        <FormattedMessage
+          id="submitting.trade"
+          defaultMessage="Submitting trade"
+        />
+      );
+    }
+    if (execSwapState === ExecSwapState.gasless_trade) {
+      return (
+        <FormattedMessage id="submit.trade" defaultMessage="Submit trade" />
+      );
+    }
+
+    return <FormattedMessage id="confirm" defaultMessage="Confirm" />;
+  }, [execSwapState, sellToken]);
 
   const isMobile = useIsMobile();
 
@@ -123,9 +156,23 @@ export default function SwapConfirmDialog({
       </DialogContent>
       <Divider />
       <DialogActions>
-        <Button disabled={isQuoting} onClick={onConfirm} variant="contained">
-          <FormattedMessage id="confirm" defaultMessage="Confirm" />
-        </Button>
+        {isLoadingSignGasless ? (
+          <Button
+            disabled={isLoadingSignGasless}
+            onClick={onConfirm}
+            variant="contained"
+            startIcon={<CircularProgress size={20} />}
+          >
+            <FormattedMessage
+              id="confirm.on.wallet"
+              defaultMessage="Confirm on wallet"
+            />
+          </Button>
+        ) : (
+          <Button disabled={isQuoting} onClick={onConfirm} variant="contained">
+            {btnMessage}
+          </Button>
+        )}
         <Button onClick={handleClose}>
           <FormattedMessage id="cancel" defaultMessage="Cancel" />
         </Button>
