@@ -1,15 +1,15 @@
 import {
-    Box,
-    Button,
-    Container,
-    Divider,
-    Drawer,
-    Grid,
-    IconButton,
-    Stack,
-    Typography,
-    useMediaQuery,
-    useTheme,
+  Box,
+  Button,
+  Container,
+  Divider,
+  Drawer,
+  Grid,
+  IconButton,
+  Stack,
+  Typography,
+  useMediaQuery,
+  useTheme,
 } from '@mui/material';
 import { Experimental_CssVarsProvider as CssVarsProvider } from '@mui/material/styles';
 import dynamic from 'next/dynamic';
@@ -31,8 +31,8 @@ import { IS_STAGING } from '../../../../constants';
 import { useConnectWalletDialog } from '../../../../hooks/app';
 
 import {
-    useSendConfigMutation,
-    useTemplateWhitelabelConfigQuery,
+  useSendConfigMutation,
+  useTemplateWhitelabelConfigQuery,
 } from '../../../../hooks/whitelabel';
 import { getTheme } from '../../../../theme';
 
@@ -286,12 +286,12 @@ export function CreateWizardContainer({ slug, isSwapWizard }: Props) {
             <WelcomeMessage />
           </Grid>
           <Grid item xs={12} sm={12}>
-            <Typography variant="body2">
+            {/* <Typography variant="body2">
               <FormattedMessage
                 id="start.for.free"
                 defaultMessage="Start for free"
               />
-            </Typography>
+            </Typography>*/}
             <Typography variant="h5">
               <FormattedMessage
                 id="create.your.app"
