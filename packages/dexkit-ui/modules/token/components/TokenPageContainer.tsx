@@ -12,10 +12,10 @@ import { Typography } from "@mui/material";
 import Container from "@mui/material/Container";
 import Stack from "@mui/material/Stack";
 import {
-    ThirdwebSDKProvider,
-    useContract,
-    useContractRead,
-    useContractType,
+  ThirdwebSDKProvider,
+  useContract,
+  useContractRead,
+  useContractType,
 } from "@thirdweb-dev/react";
 import { NextSeo } from "next-seo";
 import { useMemo } from "react";
@@ -108,6 +108,7 @@ function TokenPageContainer({ address, network, orderMarketType }: Props) {
               type: "market-trade",
               config: {
                 show: orderMarketType,
+                useGasless: true,
                 baseTokenConfig: {
                   address: token?.address as string,
                   chainId: token?.chainId as number,

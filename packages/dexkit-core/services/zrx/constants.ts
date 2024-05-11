@@ -53,7 +53,11 @@ export const ZEROEX_FEE_RECIPIENT =
   "0x5bD68B4d6f90Bcc9F3a9456791c0Db5A43df676d";
 
 // TX relay endpoints
-export const ZEROEX_QUOTE_TX_RELAY_ENDPOINT = "tx-relay/v1/swap/quote";
-export const ZEROEX_PRICE_TX_RELAY_ENDPOINT = "tx-relay/v1/swap/price";
-export const ZEROEX_SUBMIT_TX_RELAY_ENDPOINT = "tx-relay/v1/swap/submit";
-export const ZEROEX_STATUS_TX_RELAY_ENDPOINT = "tx-relay/v1/swap/status";
+
+export const ZEROEX_GASLESS_PRICE_ENDPOINT = "/tx-relay/v1/swap/price";
+
+export const ZEROEX_GASLESS_QUOTE_ENDPOINT = "/tx-relay/v1/swap/quote";
+
+export const ZEROEX_GASLESS_SUBMIT_ENDPOINT = "/tx-relay/v1/swap/submit";
+
+export const ZEROEX_GASLESS_STATUS_ENDPOINT = "/tx-relay/v1/swap/status";

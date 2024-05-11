@@ -150,8 +150,13 @@ export default function SwapConfirmDialog({
                   >
                     <ErrorIcon color="success" sx={{ fontSize: 60 }} />
                     <Typography variant="body1">
-                      Trade failed reason:{" "}
-                      {reasonFailedGasless.split("_").join(" ")}
+                      <FormattedMessage
+                        id="trade.gasless.failed.reason.explanation"
+                        defaultMessage="Trade failed reason: {reason}"
+                        values={{
+                          reason: reasonFailedGasless.split("_").join(" "),
+                        }}
+                      />
                     </Typography>
                   </Stack>
                 )}

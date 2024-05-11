@@ -1,5 +1,5 @@
 import { ChainId } from "@dexkit/core";
-import { providers } from "ethers";
+import type { providers } from "ethers";
 
 import { UserEvents } from "@dexkit/core/constants/userEvents";
 import {

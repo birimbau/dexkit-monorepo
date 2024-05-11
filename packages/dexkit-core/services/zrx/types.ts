@@ -127,7 +127,7 @@ export type ZeroExGaslessQuoteResponse = {
   trade: {
     type: string,
     hash: string,
-    eip721: {
+    eip712: {
       types: any,
       primaryType: any,
       domain: any,
@@ -139,11 +139,55 @@ export type ZeroExGaslessQuoteResponse = {
     isGasslessAvailable: boolean,
     type: string,
     hash: string,
-    eip721: {
+    eip712: {
       types: any,
       primaryType: any,
       domain: any,
       message: any,
     }
   }
+};
+
+export type ZeroExQuoteGasless = {
+  // Ethereum Address
+  sellToken?: string;
+
+  // Ethereum Address
+  buyToken?: string;
+
+  // bigNumber
+  sellAmount?: string;
+
+  // bigNumber
+  buyAmount?: string;
+
+  // 0.03 = 3%
+  slippagePercentage?: number;
+
+  // bigNumber
+  gasPrice?: string;
+
+  // Ethereum Address
+  takerAddress?: string;
+
+  skipValidation?: boolean;
+
+  feeType?: 'volume';
+
+  acceptedTypes?: 'metatransaction_v2' | 'otc';
+
+  // Ethereum Address
+  feeRecipient?: string;
+
+  feeSellTokenPercentage?: number;
+
+  enableSlippageProtection?: boolean;
+
+  priceImpactProtectionPercentage?: boolean;
+
+  checkApproval?: boolean;
+
+  intentOnFilling?: boolean;
+
+
 };

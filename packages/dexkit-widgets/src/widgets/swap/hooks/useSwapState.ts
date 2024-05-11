@@ -1,5 +1,6 @@
 import { ChainId } from "@dexkit/core/constants";
 import { Token } from "@dexkit/core/types";
+import { isNativeInSell } from "@dexkit/core/utils/zrx";
 import { UseMutationResult } from "@tanstack/react-query";
 import { Transak } from "@transak/transak-sdk";
 import { Connector } from "@web3-react/types";
@@ -13,7 +14,6 @@ import { ZeroExQuoteMetaTransactionResponse, ZeroExQuoteResponse } from "../../.
 import { isAddressEqual, switchNetwork } from "../../../utils";
 import { ExecSwapState } from "../constants/enum";
 import { NotificationCallbackParams, SwapSide } from "../types";
-import { isNativeInSell } from "../utils";
 import { useExecType } from "./useExecType";
 import { useGaslessSwapState } from "./useGaslessSwapState";
 import { SwapExecParams } from "./useSwapExec";
@@ -344,7 +344,7 @@ export function useSwapState({
   const handleConfirmExecSwap = async () => {
     // Gasless not work on native token as sell side
     const canGasless = isGasless && lazySellToken && quoteFor && lazyBuyToken && !isNativeInSell({ sellToken: lazySellToken, buyToken: lazyBuyToken, side: quoteFor })
-    console.log(canGasless);
+
     if (canGasless && quote.quoteQuery.data && sellToken && buyToken && connectedChainId) {
       const [, data] = quoteQuery.data as unknown as [string, ZeroExQuoteMetaTransactionResponse];
       const { eip712: eip712Approval, isRequired, isGaslessAvailable, type: approvalType } = data.approval

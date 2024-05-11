@@ -1,31 +1,18 @@
-import { ChainId } from "@dexkit/core";
+import { ChainId } from "@dexkit/core/constants";
 import { UserEvents } from "@dexkit/core/constants/userEvents";
+import { ZeroExApiClient } from "@dexkit/core/services/zrx";
 import { Token } from "@dexkit/core/types";
 import { useTrackUserEventsMutation } from "@dexkit/ui/hooks/userEvents";
 import { SiteContext } from "@dexkit/ui/providers/SiteProvider";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useContext } from "react";
 import { useIntl } from "react-intl";
-import { ZeroExApiClient } from "../../../services/zeroex";
-import { ZeroExQuoteGasless } from "../../../services/zeroex/types";
-import { NotificationCallbackParams } from "../types";
 
-export interface SwapGaslessExecParams {
-  quote: ZeroExQuoteGasless;
-  trade: any;
-  approval: any;
-  chainId: ChainId;
-  onHash: (hash: string) => void;
-  sellToken: Token;
-  buyToken: Token;
-}
-
-export function useSwapGaslessExec({
+export function useMarketTradeGaslessExec({
   onNotification,
-  zeroExApiKey
+
 }: {
-  zeroExApiKey?: string
-  onNotification: (params: NotificationCallbackParams) => void;
+  onNotification: (params: any) => void;
 }) {
 
   const { siteId } = useContext(SiteContext);
@@ -41,11 +28,13 @@ export function useSwapGaslessExec({
       chainId,
       sellToken,
       buyToken,
-    }: SwapGaslessExecParams) => {
-      if (!zeroExApiKey) {
-        throw new Error("no api key");
+    }: { quote: any, trade: any, approval?: any, chainId?: number, sellToken: Token, buyToken: Token }) => {
+      if (!chainId) {
+        return null
       }
-      const client = new ZeroExApiClient(chainId, zeroExApiKey, siteId);
+
+
+      const client = new ZeroExApiClient(chainId, process.env.NEXT_PUBLIC_ZRX_API_KEY, siteId);
 
       try {
 
@@ -86,13 +75,12 @@ export function useSwapGaslessExec({
   );
 }
 
-export function useSwapGaslessTradeStatusQuery({
-  zeroExApiKey,
+
+export function useMarketGaslessTradeStatusQuery({
   tradeHash,
   chainId,
 }: {
   chainId?: ChainId,
-  zeroExApiKey?: string,
   tradeHash: string | undefined
 }) {
 
@@ -100,14 +88,11 @@ export function useSwapGaslessTradeStatusQuery({
 
 
   return useQuery([tradeHash], async ({ signal }) => {
-    if (!zeroExApiKey) {
-      throw new Error("no api key");
-    }
     if (!tradeHash || !chainId) {
       return null
     }
 
-    const client = new ZeroExApiClient(chainId, zeroExApiKey, siteId);
+    const client = new ZeroExApiClient(chainId, process.env.NEXT_PUBLIC_ZRX_API_KEY, siteId);
 
     try {
 

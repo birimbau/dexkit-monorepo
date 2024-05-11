@@ -1,12 +1,13 @@
 import { ChainId } from "@dexkit/core";
 import { useMemo } from "react";
-import { useSwapGaslessTradeStatusQuery } from "./useSwapGaslessExec";
+import { useMarketGaslessTradeStatusQuery } from "./useMarketTradeGaslessExec";
 
 
 
-export function useGaslessSwapState({ zeroExApiKey, chainId, tradeHash }: { zeroExApiKey?: string, chainId?: ChainId, tradeHash?: string }) {
 
-  const statusGaslessQuery = useSwapGaslessTradeStatusQuery({ zeroExApiKey, chainId, tradeHash });
+export function useMarketTradeGaslessState({ chainId, tradeHash }: { zeroExApiKey?: string, chainId?: ChainId, tradeHash?: string }) {
+
+  const statusGaslessQuery = useMarketGaslessTradeStatusQuery({ chainId, tradeHash });
 
   const isLoadingStatusGasless = useMemo(() => {
     if (statusGaslessQuery.isLoading) {
@@ -23,23 +24,33 @@ export function useGaslessSwapState({ zeroExApiKey, chainId, tradeHash }: { zero
       return
     }
 
+    if (statusGaslessQuery.data && statusGaslessQuery.data.status === "succeeded") {
+      return statusGaslessQuery.data.transactions ? statusGaslessQuery.data.transactions[0] : undefined
+    }
+  }, [statusGaslessQuery.isLoading, tradeHash, statusGaslessQuery.data]);
+
+  const confirmedTxGasless = useMemo(() => {
+    if (!tradeHash) {
+      return
+    }
+
     if (statusGaslessQuery.data && statusGaslessQuery.data.status === 'confirmed') {
       return statusGaslessQuery.data.transactions ? statusGaslessQuery.data.transactions[0] : undefined
     }
-  }, [statusGaslessQuery.isLoading, tradeHash]);
+  }, [statusGaslessQuery.isLoading, tradeHash, statusGaslessQuery.data]);
+
 
   const reasonFailedGasless = useMemo(() => {
     if (!tradeHash) {
       return
     }
-
     if (statusGaslessQuery.data && statusGaslessQuery.data.status !== 'failed' && statusGaslessQuery.data.reason) {
       return statusGaslessQuery.data.reason
     }
-  }, [statusGaslessQuery?.data]);
+  }, [statusGaslessQuery?.data, tradeHash]);
 
 
-  return { statusGaslessQuery, isLoadingStatusGasless, successTxGasless, reasonFailedGasless }
+  return { statusGaslessQuery, isLoadingStatusGasless, successTxGasless, reasonFailedGasless, confirmedTxGasless }
 
 
 }

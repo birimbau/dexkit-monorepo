@@ -33,6 +33,7 @@ export interface TradeWidgetSimpleVariantProps {
   buyTokenPercentageFee?: number;
   defaultOrderSide: "buy" | "sell";
   show: OrderMarketType;
+  useGasless?: boolean;
 }
 
 export default function TradeWidgetSimpleVariant({
@@ -49,6 +50,7 @@ export default function TradeWidgetSimpleVariant({
   affiliateAddress,
   quoteToken,
   baseToken,
+  useGasless,
 }: TradeWidgetSimpleVariantProps) {
   const [selectedOrderSide, setOrderSide] = useState<"buy" | "sell">(
     defaultOrderSide
@@ -124,6 +126,7 @@ export default function TradeWidgetSimpleVariant({
             quoteTokens={quoteTokens}
             chainId={chainId}
             side={orderSide}
+            useGasless={useGasless}
           />
         ) : null}
       </Stack>

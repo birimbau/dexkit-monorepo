@@ -1,7 +1,7 @@
 import { ChainId } from "@dexkit/core";
 import { Token } from "@dexkit/core/types";
 import { isAddress } from "@dexkit/core/utils/ethers/isAddress";
-import { providers } from "ethers";
+import type { providers } from "ethers";
 
 import * as Yup from "yup";
 

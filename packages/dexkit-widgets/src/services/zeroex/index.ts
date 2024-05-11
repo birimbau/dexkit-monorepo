@@ -84,7 +84,7 @@ export class ZeroExApiClient {
   async submitStatusGasless(
     { tradeHash }: { tradeHash: string },
     { signal }: { signal?: AbortSignal }
-  ): Promise<{ status: "confirmed" | "failed" | 'pending' | "succeed" | "submitted", transactions: { hash: string, timestamp: number }[], reason?: string }> {
+  ): Promise<{ status: "confirmed" | "failed" | 'pending' | 'succeeded' | "submitted", transactions: { hash: string, timestamp: number }[], reason?: string }> {
     const resp = await this.axiosInstance.get(
       ZERO_EX_URL(this.chainId, this.siteId) + ZEROEX_GASLESS_STATUS_ENDPOINT + `/${tradeHash}`,
       {
