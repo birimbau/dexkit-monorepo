@@ -510,8 +510,6 @@ export default function MarketForm({
     hasSufficientBalance,
   ]);
 
-  console.log(gaslessTradeStatus);
-
   return (
     <>
       <ReviewMarketOrderDialog
