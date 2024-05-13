@@ -9,6 +9,7 @@ import {
   truncateAddress,
   truncateHash,
 } from '@dexkit/core/utils';
+import { getNetworkSlugFromChainId } from '@dexkit/core/utils/blockchain';
 import { useTokenData } from '@dexkit/ui';
 import { Link, Typography } from '@mui/material';
 import { GridColDef } from '@mui/x-data-grid';
@@ -1081,6 +1082,568 @@ export default function useColumns(type?: string) {
               >
                 {truncateAddress(address)}
               </Link>
+            );
+          },
+        },
+        referralColumn,
+      ],
+      [UserOnChainEvents.stakeErc20]: [
+        ...commonColumns,
+        {
+          field: 'amount',
+          headerName: formatMessage({
+            id: 'amount',
+            defaultMessage: 'Amount',
+          }),
+          disableReorder: true,
+          sortable: false,
+          renderHeader: () => (
+            <FormattedMessage id="amount" defaultMessage="Amount" />
+          ),
+          minWidth: 280,
+          flex: 1,
+          renderCell: (params: any) => {
+            const { amount, symbol } = params.row.processedMetadata;
+
+            return (
+              <Typography>
+                {formatStringNumber(amount)} {symbol?.toUpperCase()}
+              </Typography>
+            );
+          },
+        },
+        {
+          field: 'contract',
+          disableReorder: true,
+          headerName: formatMessage({
+            id: 'contract',
+            defaultMessage: 'Contract',
+          }),
+          sortable: false,
+          renderHeader: () => (
+            <FormattedMessage id="contract" defaultMessage="Contract" />
+          ),
+          flex: 1,
+          minWidth: 280,
+          renderCell: (params: any) => {
+            const { name, stakeAddress } = params.row.processedMetadata;
+
+            return (
+              <Typography>
+                <Link
+                  target="_blank"
+                  href={`/stake/${getNetworkSlugFromChainId(
+                    params.row.chainId,
+                  )}/${stakeAddress}`}
+                >
+                  {name}
+                </Link>
+              </Typography>
+            );
+          },
+        },
+        referralColumn,
+      ],
+      [UserOnChainEvents.unstakeErc20]: [
+        ...commonColumns,
+        {
+          field: 'amount',
+          headerName: formatMessage({
+            id: 'amount',
+            defaultMessage: 'Amount',
+          }),
+          disableReorder: true,
+          sortable: false,
+          renderHeader: () => (
+            <FormattedMessage id="amount" defaultMessage="Amount" />
+          ),
+          minWidth: 280,
+          flex: 1,
+          renderCell: (params: any) => {
+            const { amount, symbol } = params.row.processedMetadata;
+
+            return (
+              <Typography>
+                {formatStringNumber(amount)} {symbol?.toUpperCase()}
+              </Typography>
+            );
+          },
+        },
+        {
+          field: 'contract',
+          disableReorder: true,
+          headerName: formatMessage({
+            id: 'contract',
+            defaultMessage: 'Contract',
+          }),
+          sortable: false,
+          renderHeader: () => (
+            <FormattedMessage id="contract" defaultMessage="Contract" />
+          ),
+          flex: 1,
+          minWidth: 280,
+          renderCell: (params: any) => {
+            const { name, stakeAddress } = params.row.processedMetadata;
+
+            return (
+              <Typography>
+                <Link
+                  target="_blank"
+                  href={`/stake/${getNetworkSlugFromChainId(
+                    params.row.chainId,
+                  )}/${stakeAddress}`}
+                >
+                  {name}
+                </Link>
+              </Typography>
+            );
+          },
+        },
+        referralColumn,
+      ],
+      [UserOnChainEvents.stakeErc721]: [
+        ...commonColumns,
+        {
+          field: 'tokenIds',
+          headerName: formatMessage({
+            id: 'tokenIds',
+            defaultMessage: 'TokenIDs',
+          }),
+          disableReorder: true,
+          sortable: false,
+          renderHeader: () => (
+            <FormattedMessage id="tokenIds" defaultMessage="Token IDs" />
+          ),
+          minWidth: 280,
+          flex: 1,
+          renderCell: (params: any) => {
+            const { tokenIds } = params.row.processedMetadata;
+
+            return <Typography>{tokenIds.join(', ')}</Typography>;
+          },
+        },
+        {
+          field: 'contract',
+          disableReorder: true,
+          headerName: formatMessage({
+            id: 'contract',
+            defaultMessage: 'Contract',
+          }),
+          sortable: false,
+          renderHeader: () => (
+            <FormattedMessage id="contract" defaultMessage="Contract" />
+          ),
+          flex: 1,
+          minWidth: 280,
+          renderCell: (params: any) => {
+            const { name, stakeAddress } = params.row.processedMetadata;
+
+            return (
+              <Typography>
+                <Link
+                  target="_blank"
+                  href={`/stake/${getNetworkSlugFromChainId(
+                    params.row.chainId,
+                  )}/${stakeAddress}`}
+                >
+                  {name}
+                </Link>
+              </Typography>
+            );
+          },
+        },
+        referralColumn,
+      ],
+      [UserOnChainEvents.unstakeErc721]: [
+        ...commonColumns,
+        {
+          field: 'tokenIds',
+          headerName: formatMessage({
+            id: 'tokenIds',
+            defaultMessage: 'TokenIDs',
+          }),
+          disableReorder: true,
+          sortable: false,
+          renderHeader: () => (
+            <FormattedMessage id="tokenIds" defaultMessage="Token IDs" />
+          ),
+          minWidth: 280,
+          flex: 1,
+          renderCell: (params: any) => {
+            const { tokenIds } = params.row.processedMetadata;
+
+            return <Typography>{tokenIds.join(', ')}</Typography>;
+          },
+        },
+        {
+          field: 'contract',
+          disableReorder: true,
+          headerName: formatMessage({
+            id: 'contract',
+            defaultMessage: 'Contract',
+          }),
+          sortable: false,
+          renderHeader: () => (
+            <FormattedMessage id="contract" defaultMessage="Contract" />
+          ),
+          flex: 1,
+          minWidth: 280,
+          renderCell: (params: any) => {
+            const { name, stakeAddress } = params.row.processedMetadata;
+
+            return (
+              <Typography>
+                <Link
+                  target="_blank"
+                  href={`/stake/${getNetworkSlugFromChainId(
+                    params.row.chainId,
+                  )}/${stakeAddress}`}
+                >
+                  {name}
+                </Link>
+              </Typography>
+            );
+          },
+        },
+        referralColumn,
+      ],
+      [UserOnChainEvents.stakeClaimErc20]: [
+        ...commonColumns,
+        {
+          field: 'amount',
+          headerName: formatMessage({
+            id: 'amount',
+            defaultMessage: 'Amount',
+          }),
+          disableReorder: true,
+          sortable: false,
+          renderHeader: () => (
+            <FormattedMessage id="amount" defaultMessage="Amount" />
+          ),
+          minWidth: 280,
+          flex: 1,
+          renderCell: (params: any) => {
+            const { amount, symbol } = params.row.processedMetadata;
+
+            return (
+              <Typography>
+                {formatStringNumber(amount)} {symbol?.toUpperCase()}
+              </Typography>
+            );
+          },
+        },
+        {
+          field: 'contract',
+          disableReorder: true,
+          headerName: formatMessage({
+            id: 'contract',
+            defaultMessage: 'Contract',
+          }),
+          sortable: false,
+          renderHeader: () => (
+            <FormattedMessage id="contract" defaultMessage="Contract" />
+          ),
+          flex: 1,
+          minWidth: 280,
+          renderCell: (params: any) => {
+            const { name, stakeAddress } = params.row.processedMetadata;
+
+            return (
+              <Typography>
+                <Link
+                  target="_blank"
+                  href={`/stake/${getNetworkSlugFromChainId(
+                    params.row.chainId,
+                  )}/${stakeAddress}`}
+                >
+                  {name}
+                </Link>
+              </Typography>
+            );
+          },
+        },
+        referralColumn,
+      ],
+      [UserOnChainEvents.stakeClaimErc721]: [
+        ...commonColumns,
+        {
+          field: 'amount',
+          headerName: formatMessage({
+            id: 'amount',
+            defaultMessage: 'Amount',
+          }),
+          disableReorder: true,
+          sortable: false,
+          renderHeader: () => (
+            <FormattedMessage id="amount" defaultMessage="Amount" />
+          ),
+          minWidth: 280,
+          flex: 1,
+          renderCell: (params: any) => {
+            const { amount, symbol } = params.row.processedMetadata;
+
+            return (
+              <Typography>
+                {formatStringNumber(amount)} {symbol?.toUpperCase()}
+              </Typography>
+            );
+          },
+        },
+        {
+          field: 'contract',
+          disableReorder: true,
+          headerName: formatMessage({
+            id: 'contract',
+            defaultMessage: 'Contract',
+          }),
+          sortable: false,
+          renderHeader: () => (
+            <FormattedMessage id="contract" defaultMessage="Contract" />
+          ),
+          flex: 1,
+          minWidth: 280,
+          renderCell: (params: any) => {
+            const { name, stakeAddress } = params.row.processedMetadata;
+
+            return (
+              <Typography>
+                <Link
+                  target="_blank"
+                  href={`/stake/${getNetworkSlugFromChainId(
+                    params.row.chainId,
+                  )}/${stakeAddress}`}
+                >
+                  {name}
+                </Link>
+              </Typography>
+            );
+          },
+        },
+        referralColumn,
+      ],
+      [UserOnChainEvents.stakeClaimErc1155]: [
+        ...commonColumns,
+        {
+          field: 'amount',
+          headerName: formatMessage({
+            id: 'amount',
+            defaultMessage: 'Amount',
+          }),
+          disableReorder: true,
+          sortable: false,
+          renderHeader: () => (
+            <FormattedMessage id="amount" defaultMessage="Amount" />
+          ),
+          minWidth: 280,
+          flex: 1,
+          renderCell: (params: any) => {
+            const { amount, symbol } = params.row.processedMetadata;
+
+            return (
+              <Typography>
+                {formatStringNumber(amount)} {symbol?.toUpperCase()}
+              </Typography>
+            );
+          },
+        },
+        {
+          field: 'contract',
+          disableReorder: true,
+          headerName: formatMessage({
+            id: 'contract',
+            defaultMessage: 'Contract',
+          }),
+          sortable: false,
+          renderHeader: () => (
+            <FormattedMessage id="contract" defaultMessage="Contract" />
+          ),
+          flex: 1,
+          minWidth: 280,
+          renderCell: (params: any) => {
+            const { name, stakeAddress } = params.row.processedMetadata;
+
+            return (
+              <Typography>
+                <Link
+                  href={`/stake/${getNetworkSlugFromChainId(
+                    params.row.chainId,
+                  )}/${stakeAddress}`}
+                  target="_blank"
+                >
+                  {name}
+                </Link>
+              </Typography>
+            );
+          },
+        },
+        {
+          field: 'tokenId',
+          disableReorder: true,
+          headerName: formatMessage({
+            id: 'tokenId',
+            defaultMessage: 'tokenId',
+          }),
+          sortable: false,
+          renderHeader: () => (
+            <FormattedMessage id="tokenId" defaultMessage="TokenId" />
+          ),
+          flex: 1,
+          minWidth: 280,
+          renderCell: (params: any) => {
+            const { tokenId } = params.row.processedMetadata;
+
+            return <Typography>{tokenId}</Typography>;
+          },
+        },
+        referralColumn,
+      ],
+      [UserOnChainEvents.stakeErc1155]: [
+        ...commonColumns,
+        {
+          field: 'tokenId',
+          headerName: formatMessage({
+            id: 'tokenId',
+            defaultMessage: 'TokenID',
+          }),
+          disableReorder: true,
+          sortable: false,
+          renderHeader: () => (
+            <FormattedMessage id="tokenId" defaultMessage="Token ID" />
+          ),
+          minWidth: 280,
+          flex: 1,
+          renderCell: (params: any) => {
+            const { tokenId } = params.row.processedMetadata;
+
+            return <Typography>{tokenId}</Typography>;
+          },
+        },
+        {
+          field: 'amount',
+          headerName: formatMessage({
+            id: 'amount',
+            defaultMessage: 'Amount',
+          }),
+          disableReorder: true,
+          sortable: false,
+          renderHeader: () => (
+            <FormattedMessage id="amount" defaultMessage="Amount" />
+          ),
+          minWidth: 280,
+          flex: 1,
+          renderCell: (params: any) => {
+            const { amount, symbol } = params.row.processedMetadata;
+
+            return (
+              <Typography>
+                {formatStringNumber(amount)} {symbol?.toUpperCase()}
+              </Typography>
+            );
+          },
+        },
+        {
+          field: 'contract',
+          disableReorder: true,
+          headerName: formatMessage({
+            id: 'contract',
+            defaultMessage: 'Contract',
+          }),
+          sortable: false,
+          renderHeader: () => (
+            <FormattedMessage id="contract" defaultMessage="Contract" />
+          ),
+          flex: 1,
+          minWidth: 280,
+          renderCell: (params: any) => {
+            const { name, stakeAddress } = params.row.processedMetadata;
+
+            return (
+              <Typography>
+                <Link
+                  target="_blank"
+                  href={`/stake/${getNetworkSlugFromChainId(
+                    params.row.chainId,
+                  )}/${stakeAddress}`}
+                >
+                  {name}
+                </Link>
+              </Typography>
+            );
+          },
+        },
+        referralColumn,
+      ],
+      [UserOnChainEvents.unstakeErc1155]: [
+        ...commonColumns,
+        {
+          field: 'tokenId',
+          headerName: formatMessage({
+            id: 'tokenId',
+            defaultMessage: 'TokenID',
+          }),
+          disableReorder: true,
+          sortable: false,
+          renderHeader: () => (
+            <FormattedMessage id="tokenId" defaultMessage="Token ID" />
+          ),
+          minWidth: 280,
+          flex: 1,
+          renderCell: (params: any) => {
+            const { tokenId } = params.row.processedMetadata;
+
+            return <Typography>{tokenId}</Typography>;
+          },
+        },
+        {
+          field: 'amount',
+          headerName: formatMessage({
+            id: 'amount',
+            defaultMessage: 'Amount',
+          }),
+          disableReorder: true,
+          sortable: false,
+          renderHeader: () => (
+            <FormattedMessage id="amount" defaultMessage="Amount" />
+          ),
+          minWidth: 280,
+          flex: 1,
+          renderCell: (params: any) => {
+            const { amount, symbol } = params.row.processedMetadata;
+
+            return (
+              <Typography>
+                {formatStringNumber(amount)} {symbol?.toUpperCase()}
+              </Typography>
+            );
+          },
+        },
+        {
+          field: 'contract',
+          disableReorder: true,
+          headerName: formatMessage({
+            id: 'contract',
+            defaultMessage: 'Contract',
+          }),
+          sortable: false,
+          renderHeader: () => (
+            <FormattedMessage id="contract" defaultMessage="Contract" />
+          ),
+          flex: 1,
+          minWidth: 280,
+          renderCell: (params: any) => {
+            const { name, stakeAddress } = params.row.processedMetadata;
+
+            return (
+              <Typography>
+                <Link
+                  target="_blank"
+                  href={`/stake/${getNetworkSlugFromChainId(
+                    params.row.chainId,
+                  )}/${stakeAddress}`}
+                >
+                  {name}
+                </Link>
+              </Typography>
             );
           },
         },

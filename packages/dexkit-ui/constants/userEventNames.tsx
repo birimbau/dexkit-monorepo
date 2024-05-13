@@ -60,4 +60,43 @@ export const USER_EVENT_NAMES: Record<
     defaultMessage: "Unlock Renew Keys",
     id: "unlock.renew.keys",
   },
+  [UserOnChainEvents.stakeErc20]: {
+    defaultMessage: "Stake Token",
+    id: "stake.erc20",
+  },
+  [UserOnChainEvents.unstakeErc20]: {
+    defaultMessage: "Unstake Token",
+    id: "unstake.erc20",
+  },
+  [UserOnChainEvents.stakeClaimErc20]: {
+    defaultMessage: "Claim Token Rewards",
+    id: "claim.token.rewards",
+  },
+
+  [UserOnChainEvents.stakeClaimErc721]: {
+    defaultMessage: "Claim Collection Rewards",
+    id: "claim.collection.rewards",
+  },
+
+  [UserOnChainEvents.stakeClaimErc1155]: {
+    defaultMessage: "Claim Edition Rewards",
+    id: "claim.edition.rewards",
+  },
+
+  [UserOnChainEvents.stakeErc721]: {
+    defaultMessage: "Stake Collection",
+    id: "stake.erc721",
+  },
+  [UserOnChainEvents.unstakeErc721]: {
+    defaultMessage: "Unstake Collection",
+    id: "unstake.erc721",
+  },
+  [UserOnChainEvents.stakeErc1155]: {
+    defaultMessage: "Stake Edition",
+    id: "stake.erc721",
+  },
+  [UserOnChainEvents.unstakeErc1155]: {
+    defaultMessage: "Unstake Edition",
+    id: "unstake.erc1155",
+  },
 };
