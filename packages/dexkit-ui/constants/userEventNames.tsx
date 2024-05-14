@@ -99,4 +99,8 @@ export const USER_EVENT_NAMES: Record<
     defaultMessage: "Unstake Edition",
     id: "unstake.erc1155",
   },
+  [UserOnChainEvents.orderCancelled]: {
+    defaultMessage: "Cancelled Orders",
+    id: "cancelled.orders",
+  },
 };

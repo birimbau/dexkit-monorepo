@@ -1649,6 +1649,69 @@ export default function useColumns(type?: string) {
         },
         referralColumn,
       ],
+      [UserOnChainEvents.orderCancelled]: [
+        createdAtColumn,
+        accountColumn,
+        {
+          field: 'chainId',
+          headerName: formatMessage({
+            id: 'network',
+            defaultMessage: 'Network',
+          }),
+          renderHeader: () => (
+            <FormattedMessage id="network" defaultMessage="Network" />
+          ),
+          minWidth: 200,
+          valueGetter: ({ row }) => {
+            return NETWORK_NAME(row.processedMetadata.chainId);
+          },
+        },
+        {
+          field: 'taker.amount',
+          headerName: formatMessage({
+            id: 'taker.amount',
+            defaultMessage: 'Taker Amount',
+          }),
+          disableReorder: true,
+          sortable: false,
+          minWidth: 280,
+          flex: 1,
+          renderCell: (params: any) => {
+            const { takerAmount, takerTokenSymbol } =
+              params.row.processedMetadata;
+
+            console.log('sadasd', params.row.processedMetadata);
+
+            return (
+              <Typography>
+                {formatStringNumber(takerAmount)} {takerTokenSymbol}
+              </Typography>
+            );
+          },
+        },
+        {
+          field: 'maker.amount',
+          headerName: formatMessage({
+            id: 'maker.amount',
+            defaultMessage: 'Maker Amount',
+          }),
+          disableReorder: true,
+          sortable: false,
+          minWidth: 280,
+          flex: 1,
+          renderCell: (params: any) => {
+            const { makerTokenAmount, makerTokenSymbol } =
+              params.row.processedMetadata;
+
+            return (
+              <Typography>
+                {formatStringNumber(makerTokenAmount)} {makerTokenSymbol}
+              </Typography>
+            );
+          },
+        },
+        referralColumn,
+      ],
     };
 
     if (type && columnTypes[type]) {

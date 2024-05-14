@@ -4,14 +4,20 @@ import { useNetworkProvider } from "@dexkit/core/hooks/blockchain";
 import { Asset, AssetMetadata, SwapApiOrder } from "@dexkit/core/types/nft";
 import { isAddressEqual } from "@dexkit/core/utils";
 import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
-import { UseMutationOptions, UseQueryOptions, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  UseMutationOptions,
+  UseQueryOptions,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import {
   NftSwapV4,
   SwappableAssetV4,
   SwappableNftV4,
-} from '@traderxyz/nft-swap-sdk';
-import { PostOrderResponsePayload } from '@traderxyz/nft-swap-sdk/dist/sdk/v4/orderbook';
-import axios from 'axios';
+} from "@traderxyz/nft-swap-sdk";
+import { PostOrderResponsePayload } from "@traderxyz/nft-swap-sdk/dist/sdk/v4/orderbook";
+import axios from "axios";
 import { BigNumber } from "ethers";
 import { useAtom } from "jotai";
 import { useCallback, useMemo } from "react";
@@ -20,21 +26,38 @@ import { useAppConfig, useDexKitContext } from "../../../hooks";
 import { useActiveChainIds, useTokenList } from "../../../hooks/blockchain";
 import { accountAssetsAtom } from "../../../state";
 import { NFTType } from "../constants/enum";
-import { getAssetByApi, getAssetData, getAssetMetadata, getAssetsData, getDKAssetOrderbook, getERC1155Balance, getOrderbookOrders, searchAssetsDexKitApi } from "../services";
-import { AssetAPI, AssetBalance, CollectionUniformItem, HiddenAsset, OrderBookItem, TraderOrderFilter } from "../types";
+import {
+  getAssetByApi,
+  getAssetData,
+  getAssetMetadata,
+  getAssetsData,
+  getDKAssetOrderbook,
+  getERC1155Balance,
+  getOrderbookOrders,
+  searchAssetsDexKitApi,
+} from "../services";
+import {
+  AssetAPI,
+  AssetBalance,
+  CollectionUniformItem,
+  HiddenAsset,
+  OrderBookItem,
+  TraderOrderFilter,
+} from "../types";
 import { calculeFees, parseAssetApi } from "../utils";
 
-import { getChainSlug, getNetworkSlugFromChainId } from "@dexkit/core/utils/blockchain";
+import { UserEvents } from "@dexkit/core/constants/userEvents";
 import {
-  SignedNftOrderV4,
-
-  TradeDirection,
-} from "@traderxyz/nft-swap-sdk";
+  getChainSlug,
+  getNetworkSlugFromChainId,
+} from "@dexkit/core/utils/blockchain";
+import { SignedNftOrderV4, TradeDirection } from "@traderxyz/nft-swap-sdk";
 import { SUPPORTED_SWAP_CHAIN_IDS } from "../../../constants/zrx";
+import { useTrackUserEventsMutation } from "../../../hooks/userEvents";
 import { getCollectionByApi } from "../services/collection";
 import { AssetRari } from "../types/rarible";
 
-export const GET_ASSET_BALANCE = 'GET_ASSET_BALANCE';
+export const GET_ASSET_BALANCE = "GET_ASSET_BALANCE";
 
 export function useAssetBalance(asset?: Asset, account?: string) {
   const { provider, chainId } = useWeb3React();
@@ -49,7 +72,7 @@ export function useAssetBalance(asset?: Asset, account?: string) {
     }
     let balance: BigNumber | undefined;
 
-    if (asset?.protocol === 'ERC1155') {
+    if (asset?.protocol === "ERC1155") {
       balance = await getERC1155Balance({
         provider,
         account,
@@ -65,9 +88,9 @@ export function useAssetBalance(asset?: Asset, account?: string) {
   });
 }
 
-export const GET_NFT_ORDERS = 'GET_NFT_ORDERS';
+export const GET_NFT_ORDERS = "GET_NFT_ORDERS";
 
-export const GET_COLLECTION_BY_API = 'GET_COLLECTION_BY_API';
+export const GET_COLLECTION_BY_API = "GET_COLLECTION_BY_API";
 
 export function useCollectionByApi({
   chainId,
@@ -84,11 +107,11 @@ export function useCollectionByApi({
       }
 
       return await getCollectionByApi({ chainId, contractAddress });
-    },
+    }
   );
 }
 
-export const GET_ASSETS_ORDERBOOK = 'GET_ASSETS_ORDERBOOK';
+export const GET_ASSETS_ORDERBOOK = "GET_ASSETS_ORDERBOOK";
 
 export const useAssetsOrderBook = (orderFilter?: TraderOrderFilter) => {
   return useQuery([GET_ASSETS_ORDERBOOK, orderFilter], async () => {
@@ -96,7 +119,7 @@ export const useAssetsOrderBook = (orderFilter?: TraderOrderFilter) => {
   });
 };
 
-export const GET_ASSET_BY_API = 'GET_ASSET_BY_API';
+export const GET_ASSET_BY_API = "GET_ASSET_BY_API";
 
 export function useAssetByApi({
   chainId,
@@ -142,7 +165,7 @@ export function useFullAsset({
   }
 }
 
-export const GET_ASSET_METADATA = 'GET_ASSET_METADATA';
+export const GET_ASSET_METADATA = "GET_ASSET_METADATA";
 
 export function useAssetMetadata(
   asset?: Asset,
@@ -162,10 +185,10 @@ export function useAssetMetadata(
       return await getAssetMetadata(
         asset?.tokenURI,
         {
-          image: '',
+          image: "",
           name: `${asset.collectionName} #${asset.id}`,
         },
-        asset?.protocol === 'ERC1155',
+        asset?.protocol === "ERC1155",
         asset?.id
       );
     },
@@ -180,7 +203,7 @@ export function useSwapSdkV4(provider: any, chainId?: number) {
     }
     // swap sdk gives error if chainId not supported
     if (chainId && !SUPPORTED_SWAP_CHAIN_IDS.includes(chainId)) {
-      return undefined
+      return undefined;
     }
 
     return new NftSwapV4(provider, provider.getSigner(), chainId);
@@ -215,15 +238,16 @@ export function useApproveAssetMutation(
   return mutation;
 }
 
-
 export function useMakeOfferMutation(
   nftSwapSdk?: NftSwapV4,
   address?: string,
   chainId?: number,
-  options?: UseMutationOptions<PostOrderResponsePayload | undefined, any, any>,
+  options?: UseMutationOptions<PostOrderResponsePayload | undefined, any, any>
 ) {
   const appConfig = useAppConfig();
   const tokens = useTokenList({ chainId });
+
+  const trackEvent = useTrackUserEventsMutation();
 
   const mutation = useMutation<PostOrderResponsePayload | undefined, any, any>(
     async ({
@@ -239,7 +263,7 @@ export function useMakeOfferMutation(
         return undefined;
       }
 
-      if (another.type !== 'ERC20') {
+      if (another.type !== "ERC20") {
         return;
       }
 
@@ -248,14 +272,14 @@ export function useMakeOfferMutation(
       };
 
       const token = tokens.find((t) =>
-        isAddressEqual(t.address, another.tokenAddress),
+        isAddressEqual(t.address, another.tokenAddress)
       );
 
       if (appConfig.fees && token) {
         options.fees = calculeFees(
           BigNumber.from(another.amount),
           token.decimals,
-          appConfig.fees,
+          appConfig.fees
         );
       }
 
@@ -264,19 +288,33 @@ export function useMakeOfferMutation(
         //@ts-ignore
         assetOffer,
         address,
-        options,
+        options
       );
 
       const signedOrder = await nftSwapSdk.signOrder(order);
 
       const newOrder = await nftSwapSdk.postOrder(
         signedOrder,
-        nftSwapSdk.chainId.toString(),
+        nftSwapSdk.chainId.toString()
       );
+
+      let event: any;
+
+      if (assetOffer.type === "ERC1155") {
+        event = UserEvents.nftERC1155Offer;
+      } else if (assetOffer.type === "ERC721") {
+        event = UserEvents.nftERC721Offer;
+      }
+
+      await trackEvent.mutateAsync({
+        event: event,
+        chainId,
+        metadata: JSON.stringify({ order: newOrder }),
+      });
 
       return newOrder;
     },
-    options,
+    options
   );
 
   return mutation;
@@ -286,10 +324,12 @@ export function useMakeListingMutation(
   nftSwapSdk?: NftSwapV4,
   address?: string,
   chainId?: number,
-  options?: UseMutationOptions<PostOrderResponsePayload | undefined, any, any>,
+  options?: UseMutationOptions<PostOrderResponsePayload | undefined, any, any>
 ) {
   const tokens = useTokenList({ includeNative: true, chainId });
   const appConfig = useAppConfig();
+
+  const trackEvent = useTrackUserEventsMutation();
 
   const mutation = useMutation<PostOrderResponsePayload | undefined, any, any>(
     async ({ assetOffer, another, expiry, taker }: any) => {
@@ -303,14 +343,14 @@ export function useMakeListingMutation(
       };
 
       const token = tokens.find((t) =>
-        isAddressEqual(t.address, another.tokenAddress),
+        isAddressEqual(t.address, another.tokenAddress)
       );
 
       if (appConfig.fees && token) {
         options.fees = calculeFees(
           BigNumber.from(another.amount),
           token.decimals,
-          appConfig.fees,
+          appConfig.fees
         );
       }
 
@@ -318,19 +358,33 @@ export function useMakeListingMutation(
         assetOffer,
         another,
         address,
-        options,
+        options
       );
 
       const signedOrder = await nftSwapSdk.signOrder(order);
 
       const newOrder = await nftSwapSdk.postOrder(
         signedOrder,
-        nftSwapSdk.chainId.toString(),
+        nftSwapSdk.chainId.toString()
       );
+
+      let event: any;
+
+      if (assetOffer.type === "ERC1155") {
+        event = UserEvents.nftERC1155List;
+      } else if (assetOffer.type === "ERC721") {
+        event = UserEvents.nftERC721List;
+      }
+
+      await trackEvent.mutateAsync({
+        event: event,
+        chainId,
+        metadata: JSON.stringify({ order: newOrder }),
+      });
 
       return newOrder;
     },
-    options,
+    options
   );
 
   return mutation;
@@ -364,7 +418,7 @@ export function useFavoriteAssets() {
         asset !== undefined &&
         assets !== undefined &&
         assets[
-        `${asset.chainId}-${asset.contractAddress.toLowerCase()}-${asset.id}`
+          `${asset.chainId}-${asset.contractAddress.toLowerCase()}-${asset.id}`
         ] !== undefined
       );
     },
@@ -382,11 +436,11 @@ export function useFavoriteAssets() {
   return { add, remove, assets, isFavorite, toggleFavorite };
 }
 
-const GET_ACCOUNTS_ASSETS = 'GET_ACCOUNTS_ASSETS';
+const GET_ACCOUNTS_ASSETS = "GET_ACCOUNTS_ASSETS";
 
 export function useAccountAssetsBalance(
   accounts: string[],
-  useSuspense = true,
+  useSuspense = true
 ) {
   const [accountAssets, setAccountAssets] = useAtom(accountAssetsAtom);
   const { activeChainIds } = useActiveChainIds();
@@ -410,11 +464,11 @@ export function useAccountAssetsBalance(
         return false;
       }
       const networks = Object.values(NETWORKS)
-        .filter(n => activeChainIds.includes(n.chainId))
+        .filter((n) => activeChainIds.includes(n.chainId))
         .filter((n) => !n.testnet)
         .map((n) => n.slug)
-        .join(',');
-      const accFlat = accounts.join(',');
+        .join(",");
+      const accFlat = accounts.join(",");
       const response = await axios.get<
         {
           total?: number;
@@ -444,19 +498,19 @@ export function useAccountAssetsBalance(
       }
       return true;
     },
-    { suspense: useSuspense },
+    { suspense: useSuspense }
   );
   return { accountAssets, accountAssetsQuery };
 }
 
-export const GET_ASSET_DATA = 'GET_ASSET_DATA';
+export const GET_ASSET_DATA = "GET_ASSET_DATA";
 
 export function useAsset(
   contractAddress?: string,
   tokenId?: string,
   options?: Omit<UseQueryOptions<Asset>, any>,
   lazy?: boolean,
-  networkChainId?: ChainId,
+  networkChainId?: ChainId
 ) {
   const queryClient = useQueryClient();
   const networkProvider = useNetworkProvider(networkChainId);
@@ -478,7 +532,7 @@ export function useAsset(
 
   const hasChainDiff =
     provider !== undefined &&
-    typeof window !== 'undefined' &&
+    typeof window !== "undefined" &&
     assetCached?.data?.chainId !== chainId;
 
   return useQuery(
@@ -496,21 +550,21 @@ export function useAsset(
         provider,
         contractAddress,
         tokenId,
-        account,
+        account
       );
 
       let assetApi: AssetAPI | undefined;
       try {
         assetApi = await getAssetDexKitApi({
-          networkId: getChainSlug(chainId) || '',
+          networkId: getChainSlug(chainId) || "",
           contractAddress: contractAddress,
           tokenId: tokenId,
         });
       } catch {
         console.log(
           `error fetching token ${tokenId}, address: ${contractAddress} at ${getChainSlug(
-            chainId,
-          )} from api`,
+            chainId
+          )} from api`
         );
       }
       if (assetApi) {
@@ -521,9 +575,9 @@ export function useAsset(
           id: assetApi.tokenId,
           chainId: chainId as ChainId,
           contractAddress: assetApi.address,
-          tokenURI: assetApi.tokenURI || '',
-          collectionName: assetApi.collectionName || '',
-          symbol: assetApi.symbol || '',
+          tokenURI: assetApi.tokenURI || "",
+          collectionName: assetApi.collectionName || "",
+          symbol: assetApi.symbol || "",
           metadata: { ...rawMetadata, image: assetApi?.imageUrl },
           owner: asset?.owner,
           protocol: asset?.protocol,
@@ -542,16 +596,15 @@ export function useAsset(
         (Boolean(lazy) &&
           contractAddress !== undefined &&
           tokenId !== undefined),
-    },
+    }
   );
 }
 
-
 export function useCancelSignedOrderMutation(
   nftSwapSdk?: NftSwapV4,
-  orderType?: 'ERC721' | 'ERC1155', // TODO: types
+  orderType?: "ERC721" | "ERC1155", // TODO: types
   onHash?: (hash: string, order: SwapApiOrder) => void,
-  options?: Omit<UseMutationOptions, any>,
+  options?: Omit<UseMutationOptions, any>
 ) {
   return useMutation<any, any, any>(
     async ({ order }: { order: SwapApiOrder }) => {
@@ -567,26 +620,31 @@ export function useCancelSignedOrderMutation(
 
       return await tx.wait();
     },
-    options,
+    options
   );
 }
 /**
  * mutation to fill nft signed orderr
- * @param nftSwapSdk 
- * @param address 
- * @param options 
- * @returns 
+ * @param nftSwapSdk
+ * @param address
+ * @param options
+ * @returns
  */
 export function useFillSignedOrderMutation(
   nftSwapSdk?: NftSwapV4,
   address?: string,
   options?: Omit<UseMutationOptions, any>,
-  onHash?: ({ hash, accept, order, quantity }: {
+  onHash?: ({
+    hash,
+    accept,
+    order,
+    quantity,
+  }: {
     hash: string;
     accept?: boolean;
     order: SignedNftOrderV4;
-    quantity?: number
-  }) => void,
+    quantity?: number;
+  }) => void
 ) {
   return useMutation(
     async ({
@@ -606,7 +664,7 @@ export function useFillSignedOrderMutation(
         quantity &&
         quantity > 1 &&
         order.direction === TradeDirection.SellNFT &&
-        'erc1155Token' in order &&
+        "erc1155Token" in order &&
         quantity !== Number(order.erc1155TokenAmount)
       ) {
         const canOrderTypeBeFilledWithNativeToken =
@@ -618,7 +676,7 @@ export function useFillSignedOrderMutation(
         const erc20TotalAmount = nftSwapSdk
           .getErc20TotalIncludingFees(order)
           .mul(
-            BigNumber.from(quantity).mul(100000).div(order.erc1155TokenAmount),
+            BigNumber.from(quantity).mul(100000).div(order.erc1155TokenAmount)
           )
           .div(100000);
 
@@ -626,13 +684,13 @@ export function useFillSignedOrderMutation(
           order as any,
           order.signature,
           quantity,
-          '0x',
+          "0x",
           {
             value: needsEthAttached ? erc20TotalAmount : undefined,
-          },
+          }
         );
         if (onHash) {
-          onHash({ hash: tx?.hash, accept, order, quantity })
+          onHash({ hash: tx?.hash, accept, order, quantity });
         }
         await tx.wait();
         return { hash: tx?.hash, accept, order, quantity };
@@ -640,22 +698,21 @@ export function useFillSignedOrderMutation(
 
       const tx = await nftSwapSdk.fillSignedOrder(order, {});
       if (onHash) {
-        onHash({ hash: tx?.hash, accept, order })
+        onHash({ hash: tx?.hash, accept, order });
       }
       await tx.wait();
 
       return { hash: tx?.hash, accept, order };
     },
-    options,
+    options
   );
 }
 
-
-const SEARCH_ASSETS = 'SEARCH_ASSETS';
+const SEARCH_ASSETS = "SEARCH_ASSETS";
 
 export function useSearchAssets(
   search?: string,
-  collections?: CollectionUniformItem[],
+  collections?: CollectionUniformItem[]
 ) {
   return useQuery([SEARCH_ASSETS, search], () => {
     if (!search) {
@@ -667,10 +724,10 @@ export function useSearchAssets(
         .map(
           (c) =>
             `${getNetworkSlugFromChainId(
-              c.chainId,
-            )}:${c.contractAddress.toLowerCase()}`,
+              c.chainId
+            )}:${c.contractAddress.toLowerCase()}`
         )
-        .join(',');
+        .join(",");
     }
 
     return searchAssetsDexKitApi({
@@ -680,11 +737,11 @@ export function useSearchAssets(
   });
 }
 
-export const GET_ASSET_LIST_FROM_ORDERBOOK = 'GET_ASSET_LIST_FROM_ORDERBOOK';
+export const GET_ASSET_LIST_FROM_ORDERBOOK = "GET_ASSET_LIST_FROM_ORDERBOOK";
 /**
  * Returns nfts associated with orders
- * @param orderFilter 
- * @returns 
+ * @param orderFilter
+ * @returns
  */
 export const useAssetListFromOrderbook = (orderFilter: TraderOrderFilter) => {
   const ordebookQuery = useOrderBook(orderFilter);
@@ -740,7 +797,7 @@ export const useAssetListFromOrderbook = (orderFilter: TraderOrderFilter) => {
           provider,
           collection,
           itensCollection.map((or) => or.nftTokenId),
-          nftType === NFTType.ERC1155,
+          nftType === NFTType.ERC1155
         );
         if (nfts) {
           assets = assets.concat(nfts);
@@ -748,14 +805,14 @@ export const useAssetListFromOrderbook = (orderFilter: TraderOrderFilter) => {
       }
       return assets;
     },
-    { enabled: provider !== undefined, suspense: true },
+    { enabled: provider !== undefined, suspense: true }
   );
 };
 
 /**
  * Return nft orderbook
- * @param orderFilter 
- * @returns 
+ * @param orderFilter
+ * @returns
  */
 export const useOrderBook = (orderFilter: TraderOrderFilter) => {
   return useQuery(
@@ -767,15 +824,15 @@ export const useOrderBook = (orderFilter: TraderOrderFilter) => {
 
       return await getOrderbookOrders(orderFilter);
     },
-    { enabled: orderFilter.chainId !== undefined, suspense: true },
+    { enabled: orderFilter.chainId !== undefined, suspense: true }
   );
 };
 
-export const GET_ASSET_METADATA_FROM_LIST = 'GET_ASSET_METADATA_FROM_LIST';
+export const GET_ASSET_METADATA_FROM_LIST = "GET_ASSET_METADATA_FROM_LIST";
 /**
  * Returns assets metadata from orderbook list
- * @param orderFilter 
- * @returns 
+ * @param orderFilter
+ * @returns
  */
 export const useAssetMetadataFromList = (orderFilter: TraderOrderFilter) => {
   const assetListQuery = useAssetListFromOrderbook(orderFilter);
@@ -793,8 +850,8 @@ export const useAssetMetadataFromList = (orderFilter: TraderOrderFilter) => {
         const metadata = await getAssetMetadata(
           asset.tokenURI,
           undefined,
-          asset.protocol === 'ERC1155',
-          asset.id,
+          asset.protocol === "ERC1155",
+          asset.id
         );
         assetMetadata.push({
           ...asset,
@@ -803,13 +860,13 @@ export const useAssetMetadataFromList = (orderFilter: TraderOrderFilter) => {
       }
       return assetMetadata;
     },
-    { suspense: true },
+    { suspense: true }
   );
 };
 
-
 export function useHiddenAssets() {
-  const { hiddenAssets: assets, setHiddenAssets: setAssets } = useDexKitContext();
+  const { hiddenAssets: assets, setHiddenAssets: setAssets } =
+    useDexKitContext();
 
   const add = (asset: HiddenAsset) => {
     setAssets((value) => ({
@@ -836,11 +893,11 @@ export function useHiddenAssets() {
         asset !== undefined &&
         assets !== undefined &&
         assets[
-        `${asset.chainId}-${asset.contractAddress.toLowerCase()}-${asset.id}`
+          `${asset.chainId}-${asset.contractAddress.toLowerCase()}-${asset.id}`
         ] === true
       );
     },
-    [assets],
+    [assets]
   );
   const toggleHidden = (asset?: Asset) => {
     if (asset !== undefined) {
@@ -855,28 +912,28 @@ export function useHiddenAssets() {
   return { add, remove, assets, isHidden, toggleHidden };
 }
 
-export const BEST_SELL_ORDER_RARIBLE = 'BEST_SELL_ORDER_RARIBLE';
+export const BEST_SELL_ORDER_RARIBLE = "BEST_SELL_ORDER_RARIBLE";
 
 export function useBestSellOrderAssetRari(
   network?: string,
   address?: string,
-  id?: string,
+  id?: string
 ) {
   return useQuery<AssetRari | undefined>(
     [BEST_SELL_ORDER_RARIBLE, network, address, id],
     () => {
       return undefined;
     },
-    { enabled: false },
+    { enabled: false }
   );
 }
 
-export const GET_ASSET_APPROVAL = 'GET_ASSET_APPROVAL';
+export const GET_ASSET_APPROVAL = "GET_ASSET_APPROVAL";
 
 export function useIsAssetApproved(
   nftSwapSdk?: NftSwapV4,
   asset?: SwappableAssetV4,
-  address?: string,
+  address?: string
 ) {
   return useQuery(
     [GET_ASSET_APPROVAL, nftSwapSdk, address, asset],
@@ -890,11 +947,6 @@ export function useIsAssetApproved(
       }
 
       return await nftSwapSdk?.loadApprovalStatus(asset, address);
-    },
+    }
   );
 }
-
-
-
-
-

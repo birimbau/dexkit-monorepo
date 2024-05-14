@@ -7,14 +7,14 @@ import { useSwitchNetworkMutation } from "@dexkit/ui/hooks";
 import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import {
-    Box,
-    Button,
-    Divider,
-    IconButton,
-    InputAdornment,
-    Slider,
-    Stack,
-    Typography,
+  Box,
+  Button,
+  Divider,
+  IconButton,
+  InputAdornment,
+  Slider,
+  Stack,
+  Typography,
 } from "@mui/material";
 import { BigNumber, providers } from "ethers";
 import { useSnackbar } from "notistack";
@@ -226,6 +226,8 @@ export default function SellForm({
     ) {
       return;
     }
+
+    console.log("vem aqui");
 
     try {
       await sendLimitOrderMutation.mutateAsync({
