@@ -17,6 +17,7 @@ import theDefaultConfig from '../../../../../../config/quick.exchange.default.ap
 import { PreviewAppButton } from '../../PreviewAppButton';
 import SignConfigDialog from '../../dialogs/SignConfigDialog';
 import ExchangeStepper from '../ExchangeStepper';
+import { WelcomeExchangeStepperMessage } from '../Welcome/WelcomeExchangeStepperMessage';
 const defaultConfig = theDefaultConfig as unknown as AppConfig;
 
 interface Props {
@@ -157,6 +158,9 @@ export default function ExchangeStepperContainer({ site }: Props) {
           </Stack>
         </Grid>
         <Grid item xs={12} sm={12}>
+          <WelcomeExchangeStepperMessage />
+        </Grid>
+        <Grid item xs={12} sm={12}>
           <Stack direction="row" justifyContent="space-between">
             {!isMobile && (
               <Typography variant="h5">
@@ -171,6 +175,7 @@ export default function ExchangeStepperContainer({ site }: Props) {
             </Stack>
           </Stack>
         </Grid>
+
         <Grid item xs={12} sm={12}>
           <ExchangeStepper
             onSave={handleSave}

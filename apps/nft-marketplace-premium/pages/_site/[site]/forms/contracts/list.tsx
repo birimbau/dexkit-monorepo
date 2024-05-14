@@ -1,4 +1,12 @@
-import { Box, Container, Grid, NoSsr, Stack, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  Container,
+  Grid,
+  NoSsr,
+  Stack,
+  Typography,
+} from '@mui/material';
 import { FormattedMessage } from 'react-intl';
 
 import { myAppsApi } from '@/modules/admin/dashboard/dataProvider';
@@ -6,19 +14,20 @@ import { myAppsApi } from '@/modules/admin/dashboard/dataProvider';
 import { DexkitApiProvider } from '@dexkit/core/providers';
 
 import ContractListDataGrid from '@/modules/forms/components/ContractListDataGrid';
-
 import { ConnectWalletBox } from '@dexkit/ui/components/ConnectWalletBox';
 import { PageHeader } from '@dexkit/ui/components/PageHeader';
-import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
+import { useWeb3React } from '@dexkit/wallet-connectors/hooks/useWeb3React';
+import AddIcon from '@mui/icons-material/Add';
 import {
-    GetStaticPaths,
-    GetStaticPathsContext,
-    GetStaticProps,
-    GetStaticPropsContext,
+  GetStaticPaths,
+  GetStaticPathsContext,
+  GetStaticProps,
+  GetStaticPropsContext,
 } from 'next';
 import { LoginAppButton } from 'src/components/LoginAppButton';
 import AuthMainLayout from 'src/components/layouts/authMain';
 
+import Link from '@dexkit/ui/components/AppLink';
 import { useAuth } from '@dexkit/ui/hooks/auth';
 import { QueryClient, dehydrate } from '@tanstack/react-query';
 import { getAppConfig } from 'src/services/app';
@@ -40,13 +49,19 @@ export default function FormsListContractsPage() {
                 },
                 {
                   caption: (
-                    <FormattedMessage id="forms" defaultMessage="Forms" />
+                    <FormattedMessage
+                      id="dexgenerator"
+                      defaultMessage="DexGenerator"
+                    />
                   ),
                   uri: '/forms',
                 },
                 {
                   caption: (
-                    <FormattedMessage id="create" defaultMessage="Contracts" />
+                    <FormattedMessage
+                      id="manage.contracts"
+                      defaultMessage="Manage Contracts"
+                    />
                   ),
                   uri: `/forms/contracts/list`,
                   active: true,
@@ -59,16 +74,24 @@ export default function FormsListContractsPage() {
               <Grid item xs={12}>
                 <Typography variant="h5">
                   <FormattedMessage
-                    id="my.contracts"
-                    defaultMessage="My contracts"
+                    id="my.deployed.contracts"
+                    defaultMessage="My deployed contracts"
                   />
                 </Typography>
-                <Typography variant="body1" color="text.secondary">
+              </Grid>
+              <Grid item xs={12}>
+                <Button
+                  href="/forms/contracts/create"
+                  LinkComponent={Link}
+                  startIcon={<AddIcon />}
+                  variant="contained"
+                  color="primary"
+                >
                   <FormattedMessage
-                    id="contracts.you.deployed"
-                    defaultMessage="Contracts you deployed"
+                    id="new.contract"
+                    defaultMessage="New contract"
                   />
-                </Typography>
+                </Button>
               </Grid>
 
               <Grid item xs={12}>

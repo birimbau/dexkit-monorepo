@@ -7,7 +7,7 @@ import Link from '@dexkit/ui/components/AppLink';
 import { PageHeader } from '@dexkit/ui/components/PageHeader';
 import { useAuth } from '@dexkit/ui/hooks/auth';
 import { useWeb3React } from '@dexkit/wallet-connectors/hooks/useWeb3React';
-import Add from '@mui/icons-material/Add';
+import { default as Add, default as AddIcon } from '@mui/icons-material/Add';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import Search from '@mui/icons-material/Search';
 import Wallet from '@mui/icons-material/Wallet';
@@ -165,7 +165,7 @@ export const AdminIndexPage: NextPage = () => {
             startIcon={<Add />}
             variant="outlined"
           >
-            <FormattedMessage id="new" defaultMessage="New" />
+            <FormattedMessage id="new.app" defaultMessage="New App" />
           </Button>
         </Stack>
       </Box>
@@ -269,6 +269,11 @@ export const AdminIndexPage: NextPage = () => {
             <MismatchAccount />
           </Grid>
           <Grid item xs={12}>
+            <Typography variant="h4">
+              <FormattedMessage id="my.apps" defaultMessage="My apps" />
+            </Typography>
+          </Grid>
+          <Grid item xs={12}>
             <Stack
               direction="row"
               alignItems="center"
@@ -277,10 +282,11 @@ export const AdminIndexPage: NextPage = () => {
               <Button
                 href="/admin/setup"
                 LinkComponent={Link}
+                startIcon={<AddIcon />}
                 variant="contained"
                 color="primary"
               >
-                <FormattedMessage id="new" defaultMessage="New" />
+                <FormattedMessage id="new.app" defaultMessage="New App" />
               </Button>
               <TextField
                 value={search}

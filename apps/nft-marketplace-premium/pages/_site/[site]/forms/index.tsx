@@ -117,7 +117,7 @@ export default function FormsPage() {
                       <Stack direction="row" spacing={2}>
                         <Button
                           LinkComponent={Link}
-                          href="/forms/contracts"
+                          href="/forms/contracts/list"
                           variant="outlined"
                         >
                           <FormattedMessage
@@ -156,7 +156,7 @@ export default function FormsPage() {
               <Grid item xs={12}>
                 <Typography variant="h5">
                   <FormattedMessage
-                    id="Create forms"
+                    id="create.forms"
                     defaultMessage="Create forms"
                   />
                 </Typography>
