@@ -1,5 +1,9 @@
 import { UserEvents } from "@dexkit/core/constants/userEvents";
-import { getBlockExplorerUrl, truncateAddress } from "@dexkit/core/utils";
+import {
+  formatStringNumber,
+  getBlockExplorerUrl,
+  truncateAddress,
+} from "@dexkit/core/utils";
 import { getNetworkSlugFromChainId } from "@dexkit/core/utils/blockchain";
 import { TableCell, TableRow } from "@mui/material";
 import React from "react";
@@ -282,6 +286,135 @@ export default function UserActivityTableRow({
     );
   }
 
+  if (event.type === UserEvents.postLimitOrder) {
+    const {
+      chainId,
+      takerAmount,
+      makerTokenAmount,
+      makerTokenSymbol,
+      takerTokenSymbol,
+    } = event.processedMetadata;
+
+    cells.push(
+      <FormattedMessage
+        id="post.limit.order"
+        defaultMessage="Limit Order: {makerTokenAmount} {makerTokenSymbol} for {takerAmount} {takerTokenSymbol}"
+        values={{
+          makerTokenAmount: formatStringNumber(makerTokenAmount),
+          takerAmount: formatStringNumber(takerAmount),
+          takerTokenSymbol,
+          makerTokenSymbol,
+        }}
+      />
+    );
+  }
+
+  if (event.type === UserEvents.nftERC721Offer) {
+    const {
+      chainId,
+      erc20TokenAmount,
+      erc721Name,
+      erc721TokenId,
+      erc20Symbol,
+    } = event.processedMetadata;
+
+    cells.push(
+      <FormattedMessage
+        id="offer.order.erc721"
+        defaultMessage="Offer {erc20TokenAmount} {erc20Symbol} for {erc721Name} #{erc721TokenId}"
+        values={{
+          erc20TokenAmount: (
+            <strong>{formatStringNumber(erc20TokenAmount)}</strong>
+          ),
+          erc20Symbol,
+          erc721Name: <strong>{erc721Name}</strong>,
+          erc721TokenId,
+        }}
+      />
+    );
+  }
+
+  if (event.type === UserEvents.nftERC721List) {
+    const {
+      chainId,
+      erc20TokenAmount,
+      erc721Name,
+      erc721TokenId,
+      erc20Symbol,
+    } = event.processedMetadata;
+
+    cells.push(
+      <FormattedMessage
+        id="post.limit.list.erc721"
+        defaultMessage="List {erc20TokenAmount} {erc20Symbol} for {erc721Name} #{erc721TokenId}"
+        values={{
+          erc20TokenAmount: (
+            <strong>{formatStringNumber(erc20TokenAmount)}</strong>
+          ),
+          erc20Symbol,
+          erc721Name: <strong>{erc721Name}</strong>,
+          erc721TokenId,
+        }}
+      />
+    );
+  }
+
+  if (event.type === UserEvents.nftERC1155Offer) {
+    const {
+      erc1155Name,
+      erc20Symbol,
+      erc1155TokenId,
+      erc20TokenAmount,
+      erc1155TokenAmount,
+    } = event.processedMetadata;
+
+    cells.push(
+      <FormattedMessage
+        id="offer.order.erc1155"
+        defaultMessage="Offer {erc20TokenAmount} {erc20Symbol} for {erc1155Name} #{erc1155TokenId} ({erc1155TokenAmount})"
+        values={{
+          erc20Symbol,
+          erc1155TokenId,
+          erc20TokenAmount: (
+            <strong>{formatStringNumber(erc20TokenAmount)}</strong>
+          ),
+          erc1155Name: <strong>{erc1155Name}</strong>,
+          erc1155TokenAmount,
+        }}
+      />
+    );
+  }
+
+  if (event.type === UserEvents.nftERC1155List) {
+    const {
+      chainId,
+      erc20Name,
+      erc20Token,
+      erc1155Name,
+      erc20Symbol,
+      erc1155Token,
+      erc1155TokenId,
+      erc20TokenAmount,
+      erc1155TokenAmount,
+    } = event.processedMetadata;
+
+    cells.push(
+      <FormattedMessage
+        id="list.order.erc1155"
+        defaultMessage="Listing: Sell {erc1155Name} #{erc1155TokenId} ({erc1155TokenAmount}) for {erc20TokenAmount} {erc20Symbol}"
+        values={{
+          erc20TokenAmount: (
+            <strong>{formatStringNumber(erc20TokenAmount)}</strong>
+          ),
+          erc1155Name: <strong>{erc1155Name}</strong>,
+          erc1155TokenAmount,
+          erc1155TokenId,
+          erc20Symbol: <strong>{erc20Symbol}</strong>,
+        }}
+      />
+    );
+  }
+
   if (event.type === UserEvents.purchaseKey) {
     cells.push(<UserActivityLockPurchasePrice event={event} />);
   }
@@ -363,6 +496,31 @@ export default function UserActivityTableRow({
           tokenInAmount,
           tokenOutSymbol: tokenOut?.symbol,
           tokenInSymbol: tokenIn?.symbol,
+        }}
+      />
+    );
+  }
+
+  if (event.type === UserEvents.orderCancelled) {
+    const {
+      makerTokenAmount,
+      makerTokenName,
+      makerTokenSymbol,
+      chainId,
+      takerAmount,
+      takerTokenName,
+      takerTokenSymbol,
+    } = event.processedMetadata;
+
+    cells.push(
+      <FormattedMessage
+        id="cancelled.order"
+        defaultMessage="Cancel order: {makerTokenAmount} {makerTokenSymbol} for {takerAmount} {takerTokenSymbol}"
+        values={{
+          makerTokenAmount: <strong>{makerTokenAmount}</strong>,
+          makerTokenSymbol: <strong>{makerTokenSymbol}</strong>,
+          takerAmount: <strong>{takerAmount}</strong>,
+          takerTokenSymbol: <strong>{takerTokenSymbol}</strong>,
         }}
       />
     );
