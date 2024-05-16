@@ -1,4 +1,3 @@
-import { beautifyCamelCase } from '@dexkit/core/utils';
 import { myAppsApi } from '@dexkit/ui/constants/api';
 import { useUserEventsList } from '@dexkit/ui/hooks/userEvents';
 import {
@@ -11,13 +10,20 @@ import {
 import { useCallback, useEffect, useState } from 'react';
 
 export interface OffChainDataGridProps {
-  siteId?: string;
+  siteId?: number;
+  columns: GridColDef[];
+  type: string;
 }
 
-export default function OffChainDataGrid({ siteId }: OffChainDataGridProps) {
+export default function OffChainDataGrid({
+  siteId,
+  columns,
+  type,
+}: OffChainDataGridProps) {
   const [queryOptions, setQueryOptions] = useState<any>({
     filter: {
       hash: null,
+      type,
     },
   });
 
@@ -64,31 +70,6 @@ export default function OffChainDataGrid({ siteId }: OffChainDataGridProps) {
 
     setQueryOptions({ ...queryOptions, filter });
   }, []);
-
-  const columns: GridColDef[] = [
-    { field: 'id', headerName: 'ID', width: 90 },
-    {
-      field: 'createdAt',
-      headerName: 'Created At',
-      width: 200,
-      valueGetter: ({ row }) => {
-        return new Date(row.createdAt).toLocaleString();
-      },
-    },
-    {
-      field: 'type',
-      headerName: 'Type',
-      width: 150,
-      valueGetter: ({ row }) => {
-        return beautifyCamelCase(row.type);
-      },
-    },
-    {
-      field: 'referral',
-      headerName: 'Referral',
-      width: 200,
-    },
-  ];
 
   return (
     <DataGrid

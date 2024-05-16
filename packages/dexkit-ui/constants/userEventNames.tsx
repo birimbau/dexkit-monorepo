@@ -1,4 +1,7 @@
-import { UserOnChainEvents } from "@dexkit/core/constants/userEvents";
+import {
+  UserEvents,
+  UserOnChainEvents,
+} from "@dexkit/core/constants/userEvents";
 
 export const USER_EVENT_NAMES: Record<
   string,
@@ -102,5 +105,31 @@ export const USER_EVENT_NAMES: Record<
   [UserOnChainEvents.orderCancelled]: {
     defaultMessage: "Cancelled Orders",
     id: "cancelled.orders",
+  },
+};
+
+export const USER_OFFCHAIN_EVENT_NAMES: Record<
+  string,
+  { id: string; defaultMessage: string }
+> = {
+  [UserEvents.postLimitOrder]: {
+    defaultMessage: "Post Limit Order",
+    id: "post.limit.order",
+  },
+  [UserEvents.nftERC721List]: {
+    defaultMessage: "Collection listings",
+    id: "collection.listings",
+  },
+  [UserEvents.nftERC721Offer]: {
+    defaultMessage: "Collection offers",
+    id: "collection.offers",
+  },
+  [UserEvents.nftERC1155List]: {
+    defaultMessage: "Edition listings",
+    id: "edition.listings",
+  },
+  [UserEvents.nftERC1155Offer]: {
+    defaultMessage: "Edition offers",
+    id: "edition.offers",
   },
 };

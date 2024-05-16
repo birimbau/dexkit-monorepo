@@ -1680,8 +1680,6 @@ export default function useColumns(type?: string) {
             const { takerAmount, takerTokenSymbol } =
               params.row.processedMetadata;
 
-            console.log('sadasd', params.row.processedMetadata);
-
             return (
               <Typography>
                 {formatStringNumber(takerAmount)} {takerTokenSymbol}
