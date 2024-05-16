@@ -1,12 +1,4 @@
-import {
-  Box,
-  Button,
-  Container,
-  Grid,
-  NoSsr,
-  Stack,
-  Typography,
-} from '@mui/material';
+import { Box, Button, Container, Grid, Stack, Typography } from '@mui/material';
 import { FormattedMessage } from 'react-intl';
 
 import { myAppsApi } from '@/modules/admin/dashboard/dataProvider';
@@ -40,35 +32,33 @@ export default function FormsListContractsPage() {
     <>
       <Container>
         <Stack spacing={2}>
-          <NoSsr>
-            <PageHeader
-              breadcrumbs={[
-                {
-                  caption: <FormattedMessage id="home" defaultMessage="Home" />,
-                  uri: '/',
-                },
-                {
-                  caption: (
-                    <FormattedMessage
-                      id="dexgenerator"
-                      defaultMessage="DexGenerator"
-                    />
-                  ),
-                  uri: '/forms',
-                },
-                {
-                  caption: (
-                    <FormattedMessage
-                      id="manage.contracts"
-                      defaultMessage="Manage Contracts"
-                    />
-                  ),
-                  uri: `/forms/contracts/list`,
-                  active: true,
-                },
-              ]}
-            />
-          </NoSsr>
+          <PageHeader
+            breadcrumbs={[
+              {
+                caption: <FormattedMessage id="home" defaultMessage="Home" />,
+                uri: '/',
+              },
+              {
+                caption: (
+                  <FormattedMessage
+                    id="dexgenerator"
+                    defaultMessage="DexGenerator"
+                  />
+                ),
+                uri: '/forms',
+              },
+              {
+                caption: (
+                  <FormattedMessage
+                    id="manage.contracts"
+                    defaultMessage="Manage Contracts"
+                  />
+                ),
+                uri: `/forms/contracts/list`,
+                active: true,
+              },
+            ]}
+          />
           <Box>
             <Grid container spacing={2}>
               <Grid item xs={12}>
