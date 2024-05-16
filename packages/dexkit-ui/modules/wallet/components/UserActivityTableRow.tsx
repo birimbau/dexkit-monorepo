@@ -589,14 +589,14 @@ export default function UserActivityTableRow({
         <MomentFormatted date={event.createdAt} format="LLLL" />
       </TableCell>
       <TableCell>
-        {isNFTOrder(event) && (
+        {/* {isNFTOrder(event) && (
           <Link
             href={`/order/${getOrderChainId(event)}/${getOrderHash(event)}`}
             target="_blank"
           >
             <FormattedMessage id="view.tx" defaultMessage="View" />
           </Link>
-        )}
+        )} */}
         {event.hash && (
           <Link
             href={`${getBlockExplorerUrl(
