@@ -1,5 +1,7 @@
-import MultiCall, { TokenBalances } from "@indexed-finance/multicall";
-import { BigNumber, Contract, constants, providers } from "ethers";
+import type { TokenBalances } from "@indexed-finance/multicall";
+import MultiCall from "@indexed-finance/multicall";
+import type { providers } from 'ethers';
+import { BigNumber, Contract, constants } from "ethers";
 
 import { ERC20Abi } from "../constants/abis";
 import { TokenPrices } from "../types";

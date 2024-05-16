@@ -15,6 +15,7 @@ export type TokenWhitelabelApp = {
   chainId: ChainId;
   logoURI: string;
   tradable?: boolean;
+  disableFeatured?: boolean;
 };
 
 export type Token = {

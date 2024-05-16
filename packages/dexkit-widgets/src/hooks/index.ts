@@ -253,18 +253,18 @@ export function useMultiTokenBalance({
   tokens?: Token[];
   provider?: providers.BaseProvider;
 }) {
-  const enabled = Boolean(tokens && provider && account);
+  //const enabled = Boolean(tokens && provider && account);
 
   return useQuery(
     [MULTI_TOKEN_BALANCE_QUERY, tokens, account],
     async () => {
       if (!tokens || !provider || !account) {
-        return;
+        return null;
       }
 
       return await getTokensBalance(tokens, provider, account);
     },
-    { enabled: enabled }
+    // { enabled: enabled }
   );
 }
 

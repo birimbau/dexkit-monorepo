@@ -85,7 +85,9 @@ export function SwapWidget({
     enableBuyCryptoButton,
     zeroExApiKey,
     featuredTokens,
+    nonFeaturedTokens,
     useGasless,
+    myTokensOnlyOnSearch,
   } = options;
 
   const execSwapMutation = useSwapExec({ onNotification });
@@ -197,54 +199,74 @@ export function SwapWidget({
   const searchQuery = usePlatformCoinSearch({
     keyword: query,
     network: chainId && NETWORKS[chainId] ? NETWORKS[chainId].slug : undefined,
+    disable: myTokensOnlyOnSearch,
   });
 
   const featuredTokensByChain = useMemo(() => {
-    return featuredTokens
+    return (featuredTokens
       ?.filter((t) => t.chainId === selectedChainId)
-      .map(convertOldTokenToNew) as Token[];
+      .map(convertOldTokenToNew) || []) as Token[];
   }, [featuredTokens, selectedChainId]);
 
+  const nonFeaturedTokensByChain = useMemo(() => {
+    return (nonFeaturedTokens
+      ?.filter((t) => t.chainId === selectedChainId)
+      .map(convertOldTokenToNew) || []) as Token[];
+  }, [nonFeaturedTokens, selectedChainId]);
+
   const tokens = useMemo(() => {
-    if (searchQuery.data && chainId) {
-      let tokens = [
-        GET_NATIVE_TOKEN(chainId),
-        ...apiCoinToTokens(searchQuery.data),
-      ];
-      if (featuredTokensByChain) {
+    if (chainId) {
+      if (myTokensOnlyOnSearch) {
+        let tokens = [GET_NATIVE_TOKEN(chainId)];
         tokens = [
           GET_NATIVE_TOKEN(chainId),
           ...featuredTokensByChain,
-          ...apiCoinToTokens(searchQuery.data),
+          ...nonFeaturedTokensByChain,
         ];
+
+        return tokens;
+      } else {
+        if (searchQuery.data) {
+          let tokens = [
+            GET_NATIVE_TOKEN(chainId),
+            ...apiCoinToTokens(searchQuery.data),
+          ];
+
+          tokens = [
+            GET_NATIVE_TOKEN(chainId),
+            ...featuredTokensByChain,
+            ...nonFeaturedTokensByChain,
+            ...apiCoinToTokens(searchQuery.data),
+          ];
+
+          if (query !== "") {
+            tokens = tokens.filter(
+              (c) =>
+                c.name.toLowerCase().search(query?.toLowerCase()) > -1 ||
+                c.symbol.toLowerCase().search(query?.toLowerCase()) > -1 ||
+                c.address.toLowerCase().search(query?.toLowerCase()) > -1
+            );
+          }
+
+          let tokensCopy = [
+            ...tokens
+              .filter((t) => t)
+              .filter((t) => {
+                return !DKAPI_INVALID_ADDRESSES.includes(t?.address);
+              }),
+          ];
+
+          tokensCopy = tokensCopy.filter((value, index, arr) => {
+            return (
+              arr
+                .map((a) => a.address.toLowerCase())
+                .indexOf(value.address.toLowerCase()) === index
+            );
+          });
+
+          return tokensCopy;
+        }
       }
-
-      if (query !== "") {
-        tokens = tokens.filter(
-          (c) =>
-            c.name.toLowerCase().search(query?.toLowerCase()) > -1 ||
-            c.symbol.toLowerCase().search(query?.toLowerCase()) > -1 ||
-            c.address.toLowerCase().search(query?.toLowerCase()) > -1
-        );
-      }
-
-      let tokensCopy = [
-        ...tokens
-          .filter((t) => t)
-          .filter((t) => {
-            return !DKAPI_INVALID_ADDRESSES.includes(t?.address);
-          }),
-      ];
-
-      tokensCopy = tokensCopy.filter((value, index, arr) => {
-        return (
-          arr
-            .map((a) => a.address.toLowerCase())
-            .indexOf(value.address.toLowerCase()) === index
-        );
-      });
-
-      return tokensCopy;
     }
 
     return [];

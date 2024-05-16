@@ -81,6 +81,7 @@ export type ChainConfig = {
 export type RenderOptions = {
   disableNotificationsButton?: boolean;
   featuredTokens?: Token[];
+  nonFeaturedTokens?: Token[];
   enableBuyCryptoButton?: boolean;
   disableFooter?: boolean;
   configsByChain: { [key: number]: ChainConfig };
@@ -89,6 +90,7 @@ export type RenderOptions = {
   transakApiKey?: string;
   currency: string;
   useGasless?: boolean;
+  myTokensOnlyOnSearch?: boolean;
 };
 
 export type SwapNotificationParams = {

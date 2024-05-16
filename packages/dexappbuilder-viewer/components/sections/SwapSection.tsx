@@ -31,6 +31,7 @@ export function SwapSection({ section }: Props) {
           renderOptions={{
             ...swapState.renderOptions,
             useGasless: section.config?.useGasless,
+            myTokensOnlyOnSearch: section.config?.myTokensOnlyOnSearch,
             configsByChain: section.config?.configByChain
               ? section.config?.configByChain
               : {},

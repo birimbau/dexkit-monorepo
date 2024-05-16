@@ -4,9 +4,12 @@ import { SUPPORTED_SWAP_CHAIN_IDS } from '@dexkit/widgets/src/widgets/swap/const
 import { ChainConfig } from '@dexkit/widgets/src/widgets/swap/types';
 import {
   Alert,
+  Checkbox,
   Container,
   Divider,
   FormControl,
+  FormControlLabel,
+  FormGroup,
   Grid,
   Typography,
 } from '@mui/material';
@@ -280,6 +283,51 @@ export function SwapConfigForm({ onChange, data, featuredTokens }: Props) {
             fullWidth
           />
         </Grid>
+      </Grid>
+      <Grid item xs={12}>
+        <Divider />
+      </Grid>
+      <Grid item xs={12}>
+        <FormGroup row={true}>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={formData?.useGasless}
+                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                  setFormData({
+                    ...formData,
+                    useGasless: event.target.checked,
+                  });
+                }}
+              />
+            }
+            label={
+              <FormattedMessage
+                id={'gasless.swaps'}
+                defaultMessage={'Gasless swaps'}
+              />
+            }
+          />
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={formData?.myTokensOnlyOnSearch}
+                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                  setFormData({
+                    ...formData,
+                    myTokensOnlyOnSearch: event.target.checked,
+                  });
+                }}
+              />
+            }
+            label={
+              <FormattedMessage
+                id={'Show.only.my.tokens.on.search'}
+                defaultMessage={'Show only my tokens on search'}
+              />
+            }
+          />
+        </FormGroup>
       </Grid>
     </Container>
   );

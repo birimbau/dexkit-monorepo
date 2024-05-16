@@ -13,6 +13,7 @@ interface Props {
   selectedKeys: { [key: string]: boolean };
   onSelect: (key: string) => void;
   onMakeTradable?: (key: string) => void;
+  onDisableFeatured?: (key: string) => void;
 }
 
 export default function TokensSectionList({
@@ -22,6 +23,7 @@ export default function TokensSectionList({
   onSelect,
   appUrl,
   onMakeTradable,
+  onDisableFeatured,
   search,
 }: Props) {
   const lazySearch = useDebounce<string>(search?.toLowerCase(), 500);
@@ -50,9 +52,15 @@ export default function TokensSectionList({
           selectable={selectable}
           onClick={() => onSelect(TOKEN_KEY(token))}
           disableMakeTradable={onMakeTradable === undefined}
+          disableFeatured={onDisableFeatured === undefined}
           onMakeTradable={() => {
             if (onMakeTradable) {
               onMakeTradable(TOKEN_KEY(token));
+            }
+          }}
+          onDisableFeatured={() => {
+            if (onDisableFeatured) {
+              onDisableFeatured(TOKEN_KEY(token));
             }
           }}
           selected={selectedKeys[TOKEN_KEY(token)]}
