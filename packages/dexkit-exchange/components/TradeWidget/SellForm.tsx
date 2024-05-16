@@ -227,8 +227,6 @@ export default function SellForm({
       return;
     }
 
-    console.log("vem aqui");
-
     try {
       await sendLimitOrderMutation.mutateAsync({
         chainId: chainId as number,

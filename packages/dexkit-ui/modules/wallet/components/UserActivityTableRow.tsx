@@ -1,3 +1,4 @@
+import { NETWORK_SLUG } from "@dexkit/core/constants/networks";
 import { UserEvents } from "@dexkit/core/constants/userEvents";
 import {
   formatStringNumber,
@@ -16,6 +17,37 @@ import UserActivityBuyDropEdition from "./UserActivityBuyDropEdition";
 import UserActivityBuyDropToken from "./UserActivityBuyDropToken";
 import UserActivityLockPurchasePrice from "./UserActivityLockPurchasePrice";
 import UserActivityLockRenewPrice from "./UserActivityLockRenewPrice";
+
+function isNFTOrder(event: UserEvent) {
+  const types = [
+    UserEvents.nftERC1155List,
+    UserEvents.nftERC1155Offer,
+    UserEvents.nftERC721Offer,
+    UserEvents.nftERC721List,
+  ];
+
+  return event.type !== null && types.includes(event.type as any);
+}
+
+function getOrderHash(event: UserEvent) {
+  const {
+    order: {
+      order: { nonce },
+    },
+  } = JSON.parse(event.metadata) as any;
+
+  return nonce;
+}
+
+function getOrderChainId(event: UserEvent) {
+  const { chainId } = event.processedMetadata;
+
+  if (chainId !== undefined) {
+    return NETWORK_SLUG(chainId);
+  }
+
+  return NETWORK_SLUG(event?.chainId ? event?.chainId : undefined);
+}
 
 export interface UserActivityTableRowProps {
   event: UserEvent;
@@ -557,6 +589,14 @@ export default function UserActivityTableRow({
         <MomentFormatted date={event.createdAt} format="LLLL" />
       </TableCell>
       <TableCell>
+        {isNFTOrder(event) && (
+          <Link
+            href={`/order/${getOrderChainId(event)}/${getOrderHash(event)}`}
+            target="_blank"
+          >
+            <FormattedMessage id="view.tx" defaultMessage="View" />
+          </Link>
+        )}
         {event.hash && (
           <Link
             href={`${getBlockExplorerUrl(
