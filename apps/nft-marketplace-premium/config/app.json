@@ -43,28 +43,7 @@
   ],
   "menuTree": [
     { "type": "Page", "href": "/", "name": "Home" },
-    {
-      "type": "Menu",
-      "href": "",
-      "name": "Buy KIT",
-      "children": [
-        {
-          "type": "Page",
-          "href": "/token/buy/ethereum/kit",
-          "name": "on Ethereum"
-        },
-        {
-          "type": "Page",
-          "href": "/token/buy/bsc/kit",
-          "name": "on BSC"
-        },
-        {
-          "type": "Page",
-          "href": "/token/buy/polygon/kit",
-          "name": "on Polygon"
-        }
-      ]
-    },
+
     { "type": "Page", "href": "/solutions", "name": "Solutions" },
     {
       "type": "Menu",
@@ -91,7 +70,7 @@
             {
               "type": "Page",
               "href": "/admin/quick-builder/wallet",
-              "name": "Build Wallet App"
+              "name": "Build Wallet"
             },
             {
               "type": "Page",
@@ -138,6 +117,28 @@
               "name": "Manage Contract Forms"
             }
           ]
+        }
+      ]
+    },
+    {
+      "type": "Menu",
+      "href": "",
+      "name": "Buy KIT",
+      "children": [
+        {
+          "type": "Page",
+          "href": "/token/buy/ethereum/kit",
+          "name": "on Ethereum"
+        },
+        {
+          "type": "Page",
+          "href": "/token/buy/bsc/kit",
+          "name": "on BSC"
+        },
+        {
+          "type": "Page",
+          "href": "/token/buy/polygon/kit",
+          "name": "on Polygon"
         }
       ]
     },
