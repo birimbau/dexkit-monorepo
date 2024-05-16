@@ -132,4 +132,8 @@ export const USER_OFFCHAIN_EVENT_NAMES: Record<
     defaultMessage: "Edition offers",
     id: "edition.offers",
   },
+  [UserEvents.loginSignMessage]: {
+    defaultMessage: "Account Login",
+    id: "account.login",
+  },
 };

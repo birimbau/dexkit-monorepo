@@ -321,6 +321,11 @@ export default function useOffChainColumns() {
         createdAtColumn,
         referralColumn,
       ],
+      [UserEvents.loginSignMessage]: [
+        accountColumn,
+        createdAtColumn,
+        referralColumn,
+      ],
     } as { [key: string]: GridColDef[] };
   }, []);
 
