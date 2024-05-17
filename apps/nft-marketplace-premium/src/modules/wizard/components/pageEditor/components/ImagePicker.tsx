@@ -1,20 +1,21 @@
-import { Container, Stack, styled, Typography } from '@mui/material';
-import Button from '@mui/material/Button';
+import { Box, Container, Stack, styled, Typography } from '@mui/material';
 import { useState } from 'react';
 
 import MediaDialog from '@dexkit/ui/components/mediaDialog';
 import ImageIcon from '@mui/icons-material/Image';
 import { FormattedMessage } from 'react-intl';
 import { connectField } from 'uniforms';
+
 const CustomImage = styled('img')(({ theme }) => ({
   height: theme.spacing(20),
-  width: theme.spacing(20),
+  width: 'auto',
 }));
 
 const CustomImageIcon = styled(ImageIcon)(({ theme }) => ({
   height: theme.spacing(20),
-  width: theme.spacing(20),
+  width: 'auto',
 }));
+
 // @dev check here how to connect uniforms and custom form components: https://github.com/react-page/react-page/blob/master/packages/editor/src/ui/ColorPicker/ColorPickerField.tsx
 export const ImagePicker = connectField<{
   value: string;
@@ -37,11 +38,11 @@ export const ImagePicker = connectField<{
           props.onChange(file.url);
         }}
       />
-      <Stack>
+      <Stack alignItems="center" spacing={1}>
         <Typography variant="body2">
           <FormattedMessage id={props.label} defaultMessage={props.label} />
         </Typography>
-        <Button
+        <Box
           onClick={() => {
             setOpenMediaDialog(true);
           }}
@@ -51,7 +52,7 @@ export const ImagePicker = connectField<{
           ) : (
             <CustomImageIcon />
           )}
-        </Button>
+        </Box>
       </Stack>
     </Container>
   );

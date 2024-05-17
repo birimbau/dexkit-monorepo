@@ -64,7 +64,8 @@ interface Props {
 
 const CustomImage = styled("img")(({ theme }) => ({
   height: theme.spacing(20),
-  width: "100%",
+  width: "auto",
+  borderRadius: theme.shape.borderRadius,
 }));
 
 const CustomFileImage = styled("img")(({ theme }) => ({
@@ -348,8 +349,19 @@ export default function MediaDialog({
                   justifyContent={"center"}
                   alignItems={"center"}
                 >
-                  <CustomImage alt="" ref={imgRef} />
-
+                  <Box sx={{ position: "relative" }}>
+                    <CustomImage alt="" ref={imgRef} />
+                    <Box
+                      sx={{
+                        position: "absolute",
+                        backgroundColor: "rgba(0, 0, 0,0.4)",
+                        top: 0,
+                        left: 0,
+                        bottom: 0,
+                        right: 0,
+                      }}
+                    />
+                  </Box>
                   <Stack spacing={2} direction={"row"}>
                     <Button
                       color="primary"
