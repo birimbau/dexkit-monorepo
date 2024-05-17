@@ -652,10 +652,10 @@ export default function MediaDialog({
                       </ButtonBase>
                       <Stack
                         spacing={1}
-                        direction={"row"}
-                        justifyContent={"space-around"}
-                        alignContent={"center"}
-                        alignItems={"center"}
+                        direction={{ sm: "row" }}
+                        justifyContent="space-between"
+                        alignContent="center"
+                        alignItems="center"
                       >
                         <Box>
                           {editFileName === f.id ? (
@@ -666,32 +666,29 @@ export default function MediaDialog({
                                   setNewFileName(event.currentTarget.value)
                                 }
                               />
-                              <Box>
+                              <Stack direction="row" alignItems="center">
                                 <IconButton
                                   aria-label="edit"
+                                  size="small"
                                   onClick={() => setShowConfirmEdit(true)}
                                 >
                                   <CheckIcon />
                                 </IconButton>
                                 <IconButton
                                   aria-label="clear"
+                                  size="small"
                                   onClick={() => setEditFileName(undefined)}
                                 >
                                   <ClearIcon />
                                 </IconButton>
-                              </Box>
+                              </Stack>
                             </>
-                          ) : f?.name.length > 50 ? (
-                            <Typography>{truncateText(f?.name, 10)}</Typography>
-                          ) : (
-                            <Typography
-                              style={{
-                                overflowWrap: "break-word",
-                                maxWidth: "160px",
-                              }}
-                            >
-                              {f?.name}
+                          ) : f?.name.length > 30 ? (
+                            <Typography variant="caption">
+                              {truncateText(f?.name, 10)}
                             </Typography>
+                          ) : (
+                            <Typography variant="caption">{f?.name}</Typography>
                           )}
                         </Box>
                         {selectedFile?.id === f.id && !editFileName && (
@@ -705,6 +702,7 @@ export default function MediaDialog({
                               }
                             >
                               <IconButton
+                                size="small"
                                 aria-label="delete"
                                 onClick={() => setShowConfirmRemove(true)}
                               >
@@ -721,6 +719,7 @@ export default function MediaDialog({
                               }
                             >
                               <IconButton
+                                size="small"
                                 aria-label="edit"
                                 onClick={() => setEditFileName(f.id)}
                               >
@@ -734,6 +733,7 @@ export default function MediaDialog({
                               }
                             >
                               <IconButton
+                                size="small"
                                 onClick={() => handleOpenAI(selectedFile.url)}
                                 aria-label="ai"
                               >
