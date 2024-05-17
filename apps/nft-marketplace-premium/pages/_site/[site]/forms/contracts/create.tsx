@@ -1,4 +1,4 @@
-import { Box, Container, Grid, NoSsr, Stack, Typography } from '@mui/material';
+import { Box, Container, Grid, Stack, Typography } from '@mui/material';
 import { FormattedMessage } from 'react-intl';
 
 import { myAppsApi } from '@/modules/admin/dashboard/dataProvider';
@@ -64,44 +64,42 @@ export default function FormsContractsPage() {
     <>
       <Container>
         <Stack spacing={2}>
-          <NoSsr>
-            <PageHeader
-              breadcrumbs={[
-                {
-                  caption: <FormattedMessage id="home" defaultMessage="Home" />,
-                  uri: '/',
-                },
-                {
-                  caption: (
-                    <FormattedMessage
-                      id="dexgenerator"
-                      defaultMessage="DexGenerator"
-                    />
-                  ),
-                  uri: '/forms',
-                },
-                {
-                  caption: (
-                    <FormattedMessage
-                      id="manage.contracts"
-                      defaultMessage="Manage Contracts"
-                    />
-                  ),
-                  uri: `/forms/contracts/list`,
-                },
-                {
-                  caption: (
-                    <FormattedMessage
-                      id="deploy.contract"
-                      defaultMessage="Deploy Contract"
-                    />
-                  ),
-                  uri: `/forms/contracts/create`,
-                  active: true,
-                },
-              ]}
-            />
-          </NoSsr>
+          <PageHeader
+            breadcrumbs={[
+              {
+                caption: <FormattedMessage id="home" defaultMessage="Home" />,
+                uri: '/',
+              },
+              {
+                caption: (
+                  <FormattedMessage
+                    id="dexgenerator"
+                    defaultMessage="DexGenerator"
+                  />
+                ),
+                uri: '/forms',
+              },
+              {
+                caption: (
+                  <FormattedMessage
+                    id="manage.contracts"
+                    defaultMessage="Manage Contracts"
+                  />
+                ),
+                uri: `/forms/contracts/list`,
+              },
+              {
+                caption: (
+                  <FormattedMessage
+                    id="deploy.contract"
+                    defaultMessage="Deploy Contract"
+                  />
+                ),
+                uri: `/forms/contracts/create`,
+                active: true,
+              },
+            ]}
+          />
           <Box>
             <Grid container spacing={2}>
               <Grid item xs={12}>
@@ -137,11 +135,8 @@ export default function FormsContractsPage() {
                           imageUrl: contract.publisherIcon,
                           name: contract.publisherName,
                         }}
-                        onClick={() => {
-                          router.push(
-                            `/forms/deploy/thirdweb/${contract.slug}`,
-                          );
-                        }}
+                        href={`/forms/deploy/thirdweb/${contract.slug}`}
+                        targetBlank={true}
                       />
                     </Grid>
                   ))}

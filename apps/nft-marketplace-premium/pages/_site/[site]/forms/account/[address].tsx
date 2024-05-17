@@ -17,7 +17,6 @@ import {
   Container,
   Grid,
   InputAdornment,
-  NoSsr,
   Skeleton,
   Stack,
   Table,
@@ -52,38 +51,37 @@ export default function FormsAccountPage() {
     <>
       <Container>
         <Stack spacing={2}>
-          <NoSsr>
-            <PageHeader
-              breadcrumbs={[
-                {
-                  caption: <FormattedMessage id="home" defaultMessage="Home" />,
-                  uri: '/',
-                },
-                {
-                  caption: (
-                    <FormattedMessage
-                      id="dexgenerator"
-                      defaultMessage="DexGenerator"
-                    />
-                  ),
-                  uri: '/forms',
-                },
-                {
-                  caption: (
-                    <FormattedMessage
-                      id="creator.address"
-                      defaultMessage="Creator: {address}"
-                      values={{
-                        address: truncateAddress(address as string),
-                      }}
-                    />
-                  ),
-                  uri: `/forms/account/${address as string}`,
-                  active: true,
-                },
-              ]}
-            />
-          </NoSsr>
+          <PageHeader
+            breadcrumbs={[
+              {
+                caption: <FormattedMessage id="home" defaultMessage="Home" />,
+                uri: '/',
+              },
+              {
+                caption: (
+                  <FormattedMessage
+                    id="dexgenerator"
+                    defaultMessage="DexGenerator"
+                  />
+                ),
+                uri: '/forms',
+              },
+              {
+                caption: (
+                  <FormattedMessage
+                    id="creator.address"
+                    defaultMessage="Creator: {address}"
+                    values={{
+                      address: truncateAddress(address as string),
+                    }}
+                  />
+                ),
+                uri: `/forms/account/${address as string}`,
+                active: true,
+              },
+            ]}
+          />
+
           <Box>
             <Card>
               <CardContent>

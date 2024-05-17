@@ -15,9 +15,9 @@ import { AppConfig } from '@dexkit/ui/modules/wizard/types/config';
 import { SiteResponse } from 'src/types/whitelabel';
 import theDefaultConfig from '../../../../../../config/quick.exchange.default.app.json';
 import { PreviewAppButton } from '../../PreviewAppButton';
+import { WelcomeMessage } from '../../WelcomeMessage';
 import SignConfigDialog from '../../dialogs/SignConfigDialog';
 import ExchangeStepper from '../ExchangeStepper';
-import { WelcomeExchangeStepperMessage } from '../Welcome/WelcomeExchangeStepperMessage';
 const defaultConfig = theDefaultConfig as unknown as AppConfig;
 
 interface Props {
@@ -158,7 +158,7 @@ export default function ExchangeStepperContainer({ site }: Props) {
           </Stack>
         </Grid>
         <Grid item xs={12} sm={12}>
-          <WelcomeExchangeStepperMessage />
+          <WelcomeMessage />
         </Grid>
         <Grid item xs={12} sm={12}>
           <Stack direction="row" justifyContent="space-between">

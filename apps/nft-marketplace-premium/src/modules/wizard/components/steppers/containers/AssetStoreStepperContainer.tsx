@@ -17,7 +17,8 @@ import theDefaultConfig from '../../../../../../config/quick.store.default.app.j
 import { PreviewAppButton } from '../../PreviewAppButton';
 import SignConfigDialog from '../../dialogs/SignConfigDialog';
 import AssetStoreStepper from '../AssetStoreStepper.tsx';
-import { WelcomeAssetStoreStepperMessage } from '../Welcome/WelcomeAssetStoreStepperMessage';
+
+import { WelcomeMessage } from '../../WelcomeMessage';
 const defaultConfig = theDefaultConfig as unknown as AppConfig;
 
 interface Props {
@@ -157,7 +158,7 @@ export default function AssetStoreStepperContainer({ site }: Props) {
           </Stack>
         </Grid>
         <Grid item xs={12} sm={12}>
-          <WelcomeAssetStoreStepperMessage />
+          <WelcomeMessage />
         </Grid>
         <Grid item xs={12} sm={12}>
           <Stack direction={'row'} justifyContent={'space-between'}>

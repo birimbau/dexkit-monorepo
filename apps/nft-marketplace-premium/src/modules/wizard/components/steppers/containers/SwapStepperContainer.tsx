@@ -15,9 +15,9 @@ import { AppConfig } from '@dexkit/ui/modules/wizard/types/config';
 import { SiteResponse } from 'src/types/whitelabel';
 import theDefaultConfig from '../../../../../../config/quick.swap.default.app.json';
 import { PreviewAppButton } from '../../PreviewAppButton';
+import { WelcomeMessage } from '../../WelcomeMessage';
 import SignConfigDialog from '../../dialogs/SignConfigDialog';
 import SwapStepper from '../SwapStepper/SwapStepper';
-import { WelcomeSwapStepperMessage } from '../Welcome/WelcomeSwapStepperMessage';
 const defaultConfig = theDefaultConfig as unknown as AppConfig;
 
 interface Props {
@@ -158,7 +158,7 @@ export default function SwapStepperContainer({ site }: Props) {
           </Stack>
         </Grid>
         <Grid item xs={12} sm={12}>
-          <WelcomeSwapStepperMessage />
+          <WelcomeMessage />
         </Grid>
         <Grid item xs={12} sm={12}>
           <Stack direction={'row'} justifyContent={'space-between'}>

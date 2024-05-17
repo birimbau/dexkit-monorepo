@@ -1,22 +1,22 @@
-import { Box, Container, Grid, NoSsr, Stack, Typography } from '@mui/material';
+import { Box, Container, Grid, Stack, Typography } from '@mui/material';
 import { FormattedMessage } from 'react-intl';
 
 import { myAppsApi } from '@/modules/admin/dashboard/dataProvider';
 import ContractButton from '@/modules/forms/components/ContractButton';
 import {
-    useDeployableContractsQuery,
-    useInfiniteListDeployedContracts,
+  useDeployableContractsQuery,
+  useInfiniteListDeployedContracts,
 } from '@/modules/forms/hooks';
 import { DexkitApiProvider } from '@dexkit/core/providers';
 
 import { PageHeader } from '@dexkit/ui/components/PageHeader';
-import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
+import { useWeb3React } from '@dexkit/wallet-connectors/hooks/useWeb3React';
 import { QueryClient, dehydrate } from '@tanstack/react-query';
 import {
-    GetStaticPaths,
-    GetStaticPathsContext,
-    GetStaticProps,
-    GetStaticPropsContext,
+  GetStaticPaths,
+  GetStaticPathsContext,
+  GetStaticProps,
+  GetStaticPropsContext,
 } from 'next';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
@@ -63,29 +63,26 @@ export default function FormsContractsPage() {
     <>
       <Container>
         <Stack spacing={2}>
-          <NoSsr>
-            <PageHeader
-              breadcrumbs={[
-                {
-                  caption: <FormattedMessage id="home" defaultMessage="Home" />,
-                  uri: '/',
-                },
-                {
-                  caption: (
-                    <FormattedMessage id="forms" defaultMessage="Forms" />
-                  ),
-                  uri: '/forms',
-                },
-                {
-                  caption: (
-                    <FormattedMessage id="create" defaultMessage="Contracts" />
-                  ),
-                  uri: `/forms/contracts`,
-                  active: true,
-                },
-              ]}
-            />
-          </NoSsr>
+          <PageHeader
+            breadcrumbs={[
+              {
+                caption: <FormattedMessage id="home" defaultMessage="Home" />,
+                uri: '/',
+              },
+              {
+                caption: <FormattedMessage id="forms" defaultMessage="Forms" />,
+                uri: '/forms',
+              },
+              {
+                caption: (
+                  <FormattedMessage id="create" defaultMessage="Contracts" />
+                ),
+                uri: `/forms/contracts`,
+                active: true,
+              },
+            ]}
+          />
+
           <Box>
             <Grid container spacing={2}>
               <Grid item xs={12}>
