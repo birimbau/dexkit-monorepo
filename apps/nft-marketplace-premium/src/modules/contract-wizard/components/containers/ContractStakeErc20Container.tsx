@@ -31,7 +31,6 @@ import { useQuery } from '@tanstack/react-query';
 import {
   useContract,
   useContractRead,
-  useContractWrite,
   useTokenBalance,
 } from '@thirdweb-dev/react';
 import { BigNumber } from 'ethers';
@@ -68,11 +67,6 @@ export default function ContractStakeErc20Container({
   };
 
   const { data: contract } = useContract(address, 'custom');
-
-  const { mutateAsync: depositRewardTokens } = useContractWrite(
-    contract,
-    'depositRewardTokens',
-  );
 
   const { account } = useWeb3React();
 
@@ -178,11 +172,6 @@ export default function ContractStakeErc20Container({
     isAltVersion: true,
   });
 
-  const { mutateAsync: setRewardRatio } = useContractWrite(
-    contract,
-    'setRewardRatio',
-  );
-
   const handleSubmitTimeUnit = async ({ timeUnit }: { timeUnit: string }) => {
     await setDefaultTimeUnit.mutateAsync({ timeUnit });
   };
@@ -221,19 +210,30 @@ export default function ContractStakeErc20Container({
           <Stack>
             <Typography variant="caption" color="text.secondary">
               <FormattedMessage
-                id="reward.ratio"
-                defaultMessage="Reward ratio"
+                id="reward.ratio.each.reward.time"
+                defaultMessage="Reward ratio each reward time"
               />
             </Typography>
             <Typography variant="h5">
-              {denominator.gt(0)
-                ? numerator.mul(10000).div(denominator).toNumber() / 10000
-                : 0}
+              {denominator.gt(0) ? (
+                <>
+                  {numerator.mul(10000).div(denominator).toNumber() / 10000}{' '}
+                  {rewardTokenBalance?.symbol}{' '}
+                  {moment
+                    .duration(rewardTimeUnit?.toNumber(), 'seconds')
+                    .humanize()}{' '}
+                </>
+              ) : (
+                0
+              )}
             </Typography>
           </Stack>
           <Stack>
             <Typography variant="caption" color="text.secondary">
-              <FormattedMessage id="rewards" defaultMessage="Rewards" />
+              <FormattedMessage
+                id="available.rewards"
+                defaultMessage="Available rewards"
+              />
             </Typography>
             <Typography variant="h5">
               {rewardsBalance && rewardTokenBalance ? (
