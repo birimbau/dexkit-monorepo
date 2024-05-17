@@ -4,35 +4,35 @@ import { parseUnits } from '@dexkit/core/utils/ethers/parseUnits';
 import { useDexKitContext } from '@dexkit/ui';
 import FormikDecimalInput from '@dexkit/ui/components/FormikDecimalInput';
 import {
-    useDepositRewardTokensMutation,
-    useSetDefaultTimeUnit,
-    useSetRewardRatio,
-    useThirdwebApprove,
-    useWithdrawRewardsMutation,
+  useDepositRewardTokensMutation,
+  useSetDefaultTimeUnit,
+  useSetRewardRatio,
+  useThirdwebApprove,
+  useWithdrawRewardsMutation,
 } from '@dexkit/ui/modules/contract-wizard/hooks/thirdweb';
 import { useWeb3React } from '@dexkit/wallet-connectors/hooks/useWeb3React';
 import {
-    Box,
-    Button,
-    Card,
-    CardContent,
-    CircularProgress,
-    FormControl,
-    FormControlLabel,
-    Grid,
-    InputAdornment,
-    Skeleton,
-    Stack,
-    Tab,
-    Tabs,
-    Typography,
+  Box,
+  Button,
+  Card,
+  CardContent,
+  CircularProgress,
+  FormControl,
+  FormControlLabel,
+  Grid,
+  InputAdornment,
+  Skeleton,
+  Stack,
+  Tab,
+  Tabs,
+  Typography,
 } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import {
-    useContract,
-    useContractRead,
-    useContractWrite,
-    useTokenBalance,
+  useContract,
+  useContractRead,
+  useContractWrite,
+  useTokenBalance,
 } from '@thirdweb-dev/react';
 import { BigNumber } from 'ethers';
 import { Field, Formik } from 'formik';
@@ -109,10 +109,10 @@ export default function ContractStakeErc20Container({
   const [numerator, denominator] = useMemo(() => {
     if (rewardRatio) {
       const [n, d] = rewardRatio;
-      return [n.toNumber(), d.toNumber()];
+      return [n as BigNumber, d as BigNumber];
     }
 
-    return [0, 0];
+    return [BigNumber.from(0), BigNumber.from(0)];
   }, [rewardRatio]);
 
   const { data: allowance } = useQuery(
@@ -226,7 +226,9 @@ export default function ContractStakeErc20Container({
               />
             </Typography>
             <Typography variant="h5">
-              {numerator}/{denominator}
+              {denominator.gt(0)
+                ? numerator.mul(10000).div(denominator).toNumber() / 10000
+                : 0}
             </Typography>
           </Stack>
           <Stack>
