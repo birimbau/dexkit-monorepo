@@ -63,8 +63,8 @@ interface Props {
 }
 
 const CustomImage = styled("img")(({ theme }) => ({
-  height: theme.spacing(20),
-  width: "auto",
+  height: "100%",
+  width: theme.spacing(24),
   borderRadius: theme.shape.borderRadius,
 }));
 
@@ -349,8 +349,18 @@ export default function MediaDialog({
                   justifyContent={"center"}
                   alignItems={"center"}
                 >
-                  <Box sx={{ position: "relative" }}>
-                    <CustomImage alt="" ref={imgRef} />
+                  <Box sx={{ position: "relative", width: "100%", flex: 1 }}>
+                    <Box
+                      sx={{
+                        backgroundImage: `url("${URL.createObjectURL(file)}")`,
+
+                        height: (theme) => theme.spacing(22),
+                        width: "100%",
+                        backgroundSize: "contain",
+                        backgroundRepeat: "no-repeat",
+                        backgroundPosition: "center",
+                      }}
+                    />
                     <Box
                       sx={{
                         position: "absolute",
@@ -635,7 +645,9 @@ export default function MediaDialog({
                             sx={(theme) => ({
                               borderRadius: theme.shape.borderRadius / 2,
                               backgroundImage: `url("${f.url}")`,
-                              backgroundSize: "cover",
+                              backgroundSize: "contain",
+                              backgroundRepeat: "no-repeat",
+                              backgroundPosition: "center",
                               width: "100%",
                               aspectRatio: "1/1",
                               height: (theme) => theme.spacing(16),
