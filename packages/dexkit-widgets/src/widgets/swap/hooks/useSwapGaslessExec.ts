@@ -3,11 +3,11 @@ import { UserEvents } from "@dexkit/core/constants/userEvents";
 import { Token } from "@dexkit/core/types";
 import { useTrackUserEventsMutation } from "@dexkit/ui/hooks/userEvents";
 import { SiteContext } from "@dexkit/ui/providers/SiteProvider";
+import { ZeroExApiClient } from "@dexkit/zrx-swap/services";
+import { ZeroExQuoteGasless } from "@dexkit/zrx-swap/types";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useContext } from "react";
 import { useIntl } from "react-intl";
-import { ZeroExApiClient } from "../../../services/zeroex";
-import { ZeroExQuoteGasless } from "../../../services/zeroex/types";
 import { NotificationCallbackParams } from "../types";
 
 export interface SwapGaslessExecParams {

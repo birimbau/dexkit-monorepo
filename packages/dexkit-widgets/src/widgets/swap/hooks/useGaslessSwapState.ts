@@ -22,11 +22,20 @@ export function useGaslessSwapState({ zeroExApiKey, chainId, tradeHash }: { zero
     if (!tradeHash) {
       return
     }
+    if (statusGaslessQuery.data && statusGaslessQuery.data.status === 'succeeded') {
+      return statusGaslessQuery.data.transactions ? statusGaslessQuery.data.transactions[0] : undefined
+    }
+  }, [statusGaslessQuery.isLoading, tradeHash, statusGaslessQuery.data]);
 
+  const confirmedTxGasless = useMemo(() => {
+    if (!tradeHash) {
+      return
+    }
     if (statusGaslessQuery.data && statusGaslessQuery.data.status === 'confirmed') {
       return statusGaslessQuery.data.transactions ? statusGaslessQuery.data.transactions[0] : undefined
     }
-  }, [statusGaslessQuery.isLoading, tradeHash]);
+  }, [statusGaslessQuery.isLoading, tradeHash, statusGaslessQuery.data]);
+
 
   const reasonFailedGasless = useMemo(() => {
     if (!tradeHash) {
@@ -36,10 +45,10 @@ export function useGaslessSwapState({ zeroExApiKey, chainId, tradeHash }: { zero
     if (statusGaslessQuery.data && statusGaslessQuery.data.status !== 'failed' && statusGaslessQuery.data.reason) {
       return statusGaslessQuery.data.reason
     }
-  }, [statusGaslessQuery?.data]);
+  }, [statusGaslessQuery?.data, tradeHash]);
 
 
-  return { statusGaslessQuery, isLoadingStatusGasless, successTxGasless, reasonFailedGasless }
+  return { statusGaslessQuery, isLoadingStatusGasless, successTxGasless, reasonFailedGasless, confirmedTxGasless }
 
 
 }

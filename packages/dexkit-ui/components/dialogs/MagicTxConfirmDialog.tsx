@@ -24,11 +24,11 @@ import { BigNumber, constants } from "ethers";
 import { ChangeEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { FormattedMessage } from "react-intl";
 
-import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "@dexkit/core/constants/zrx";
+import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "@dexkit/core/constants";
 import {
-    getNativeTokenSymbol,
-    hasLondonHardForkSupport,
-    truncateAddress,
+  getNativeTokenSymbol,
+  hasLondonHardForkSupport,
+  truncateAddress,
 } from "@dexkit/core/utils";
 
 import { formatEther } from "@dexkit/core/utils/ethers/formatEther";

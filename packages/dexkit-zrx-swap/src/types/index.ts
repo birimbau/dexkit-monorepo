@@ -37,6 +37,116 @@ export type ZeroExQuote = {
   intentOnFilling?: boolean;
 };
 
+export type ZeroExQuoteResponse = {
+  price: string;
+  guaranteedPrice: any;
+  estimatedPriceImpact: any;
+  to: string;
+  data: string;
+  value: string;
+  gasPrice: string;
+  gas: string;
+  estimatedGas: string;
+  protocolFee: string;
+  minimumProtocolFee: string;
+  buyAmount: string;
+  sellAmount: string;
+  sources: any;
+  buyTokenAddress: string;
+  sellTokenAddress: string;
+  allowanceTarget: any;
+  orders: any;
+  sellTokenToEthRate: any;
+  buyTokenToEthRate: any;
+  expectedSlippage: any;
+};
+
+
+export type ZrxOrder = {
+  chainId: number;
+  expiry: string;
+  feeRecipient: string;
+  maker: string;
+  makerAmount: string;
+  makerToken: string;
+  pool: string;
+  salt: string;
+  sender: string;
+  signature: {
+    r: string;
+    s: string;
+    signatureType: number;
+    v: number;
+  };
+  taker: string;
+  takerAmount: string;
+  takerToken: string;
+  takerTokenFeeAmount: string;
+  verifyingContract: string;
+};
+
+export type ZrxOrderRecord = {
+  metaData: {
+    createdAt: string;
+    orderHash: string;
+    remainingFillableTakerAmount: string;
+  };
+  order: ZrxOrder;
+};
+
+export type ZrxOrderbookResponse = {
+  total: number;
+  page: number;
+  perPage: number;
+  records: ZrxOrderRecord[];
+};
+
+
+export type ZeroExGaslessQuoteResponse = {
+  price: string;
+  guaranteedPrice: any;
+  estimatedPriceImpact: any;
+  to: string;
+  data: string;
+  value: string;
+  gasPrice: string;
+  gas: string;
+  estimatedGas: string;
+  protocolFee: string;
+  minimumProtocolFee: string;
+  buyAmount: string;
+  sellAmount: string;
+  sources: any;
+  buyTokenAddress: string;
+  sellTokenAddress: string;
+  allowanceTarget: any;
+  orders: any;
+  sellTokenToEthRate: any;
+  buyTokenToEthRate: any;
+  expectedSlippage: any;
+  trade: {
+    type: string,
+    hash: string,
+    eip712: {
+      types: any,
+      primaryType: any,
+      domain: any,
+      message: any,
+    }
+  }
+  approval: {
+    isRequired: boolean,
+    isGasslessAvailable: boolean,
+    type: string,
+    hash: string,
+    eip712: {
+      types: any,
+      primaryType: any,
+      domain: any,
+      message: any,
+    }
+  }
+};
 
 export type ZeroExQuoteGasless = {
   // Ethereum Address
@@ -77,35 +187,11 @@ export type ZeroExQuoteGasless = {
 
   checkApproval?: boolean;
 
+  intentOnFilling?: boolean;
+
 
 };
 
-export type ZeroExQuoteResponse = {
-  price: string;
-  guaranteedPrice: any;
-  estimatedPriceImpact: any;
-  to: string;
-  data: string;
-  value: string;
-  gasPrice: string;
-  gas: string;
-  estimatedGas: string;
-  protocolFee: string;
-  minimumProtocolFee: string;
-  grossPrice: string;
-  buyAmount: string;
-  grossBuyAmount: string;
-  grossSellAmount: string;
-  sellAmount: string;
-  sources: any;
-  buyTokenAddress: string;
-  sellTokenAddress: string;
-  allowanceTarget: any;
-  orders: any;
-  sellTokenToEthRate: any;
-  buyTokenToEthRate: any;
-  expectedSlippage: any;
-};
 export type ZeroExQuoteMetaTransactionResponse =
   {
     "liquidityAvailable": boolean;

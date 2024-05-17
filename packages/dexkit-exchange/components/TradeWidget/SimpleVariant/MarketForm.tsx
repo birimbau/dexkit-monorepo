@@ -5,8 +5,6 @@ import {
   useTokenAllowanceQuery,
 } from "@dexkit/core";
 import { UserEvents } from "@dexkit/core/constants/userEvents";
-import { SUPPORTED_GASLESS_CHAIN } from "@dexkit/core/constants/zrx";
-import { ZeroExGaslessQuoteResponse } from "@dexkit/core/services/zrx/types";
 import { Token } from "@dexkit/core/types";
 import {
   formatBigNumber,
@@ -14,7 +12,6 @@ import {
   isAddressEqual,
 } from "@dexkit/core/utils";
 import { parseUnits } from "@dexkit/core/utils/ethers/parseUnits";
-import { isNativeInSell } from "@dexkit/core/utils/zrx";
 import {
   useDexKitContext,
   useSwitchNetworkMutation,
@@ -24,6 +21,10 @@ import { useTrackUserEventsMutation } from "@dexkit/ui/hooks/userEvents";
 import { useSignTypeData } from "@dexkit/ui/hooks/web3/useSignTypeData";
 import { AppNotificationType } from "@dexkit/ui/types";
 import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
+
+import { SUPPORTED_GASLESS_CHAIN } from "@dexkit/zrx-swap/constants";
+import { ZeroExGaslessQuoteResponse } from "@dexkit/zrx-swap/types";
+import { isNativeInSell } from "@dexkit/zrx-swap/utils";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import {

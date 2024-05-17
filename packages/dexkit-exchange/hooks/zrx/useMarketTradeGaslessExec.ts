@@ -1,9 +1,9 @@
 import { ChainId } from "@dexkit/core/constants";
 import { UserEvents } from "@dexkit/core/constants/userEvents";
-import { ZeroExApiClient } from "@dexkit/core/services/zrx";
 import { Token } from "@dexkit/core/types";
 import { useTrackUserEventsMutation } from "@dexkit/ui/hooks/userEvents";
 import { SiteContext } from "@dexkit/ui/providers/SiteProvider";
+import { ZeroExApiClient } from "@dexkit/zrx-swap/services";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useContext } from "react";
 import { useIntl } from "react-intl";

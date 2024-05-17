@@ -1,16 +1,16 @@
+import { ZeroExApiClient } from "@dexkit/zrx-swap/services";
+import { ZeroExQuote, ZeroExQuoteGasless, ZeroExQuoteResponse } from "@dexkit/zrx-swap/types";
 import { useContext, useState } from "react";
 import { SUPPORTED_GASLESS_CHAIN } from "../../../constants";
-import { ZeroExApiClient } from "../../../services/zeroex";
-import { ZeroExQuote, ZeroExQuoteGasless, ZeroExQuoteResponse } from "../../../services/zeroex/types";
 
 import { ChainId } from "@dexkit/core/constants";
 import { Token } from "@dexkit/core/types";
 import { SiteContext } from "@dexkit/ui/providers/SiteProvider";
+import { ZEROEX_AFFILIATE_ADDRESS } from "@dexkit/zrx-swap/constants";
+import { isNativeInSell } from "@dexkit/zrx-swap/utils";
 import { UseQueryResult, useQuery } from "@tanstack/react-query";
 import type { BigNumber } from "ethers";
-import { ZEROEX_AFFILIATE_ADDRESS } from "../../../services/zeroex/constants";
 import { SwapSide } from "../types";
-import { isNativeInSell } from "../utils";
 
 export interface SwapQuoteParams {
   sellToken?: Token;

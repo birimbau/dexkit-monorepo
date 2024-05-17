@@ -12,7 +12,7 @@ import SelectCoinListItem from "./SelectCoinListItem";
 export interface SelectCoinListProps {
   tokens: Token[];
   onSelect: (token: Token) => void;
-  tokenBalances?: TokenBalances;
+  tokenBalances?: TokenBalances | null;
   subHeader?: React.ReactNode;
   isLoading: boolean;
 }

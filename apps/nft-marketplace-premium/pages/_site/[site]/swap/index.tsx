@@ -64,11 +64,6 @@ const SwapPage: NextPage = () => {
               <NoSsr>
                 <SwapSection
                   section={{
-                    ...{
-                      config: {
-                        useGasless: true,
-                      },
-                    },
                     ...swapSection,
                   }}
                 />

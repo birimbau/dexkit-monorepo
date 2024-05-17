@@ -333,6 +333,7 @@ export function SwapWidget({
           isLoadingStatusGasless={gaslessSwapState.isLoadingStatusGasless}
           reasonFailedGasless={gaslessSwapState.reasonFailedGasless}
           successTxGasless={gaslessSwapState.successTxGasless}
+          confirmedTxGasless={gaslessSwapState.confirmedTxGasless}
           onConfirm={handleConfirmExecSwap}
           execSwapState={execSwapState}
           chainId={chainId}

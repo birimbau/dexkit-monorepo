@@ -1,5 +1,5 @@
+import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "@dexkit/core/constants";
 import { NETWORKS } from "@dexkit/core/constants/networks";
-import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "@dexkit/core/constants/zrx";
 import { getTokenPrices } from "@dexkit/core/services";
 import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import { useQuery } from "@tanstack/react-query";

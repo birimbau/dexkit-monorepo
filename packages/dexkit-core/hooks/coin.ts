@@ -1,7 +1,8 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { BigNumber, Contract, providers } from "ethers";
 import { ERC20Abi } from "../constants/abis";
-import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "../constants/zrx";
+
+import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "../constants";
 import { getERC20TokenAllowance } from "../services";
 import { approveToken, getERC20Balance } from "../services/balances";
 import { isAddressEqual } from "../utils";

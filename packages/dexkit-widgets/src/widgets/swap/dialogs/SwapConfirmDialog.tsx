@@ -18,8 +18,8 @@ import AppDialogTitle from "../../../components/AppDialogTitle";
 
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 
+import { ZeroExQuoteResponse } from "@dexkit/zrx-swap/types";
 import ErrorIcon from "@mui/icons-material/Error";
-import { ZeroExQuoteResponse } from "../../../services/zeroex/types";
 
 import { Token } from "@dexkit/core/types";
 import { useMemo } from "react";
@@ -39,6 +39,7 @@ export interface SwapConfirmDialogProps {
   currency: string;
   isLoadingSignGasless?: boolean;
   successTxGasless?: { hash: string };
+  confirmedTxGasless?: { hash: string };
   sellToken?: Token;
   buyToken?: Token;
 }
@@ -53,6 +54,7 @@ export default function SwapConfirmDialog({
   isLoadingSignGasless,
   isLoadingStatusGasless,
   reasonFailedGasless,
+  confirmedTxGasless,
   successTxGasless,
   currency,
   sellToken,
@@ -65,6 +67,8 @@ export default function SwapConfirmDialog({
       onClose({}, "backdropClick");
     }
   };
+
+  console.log(execSwapState);
 
   const btnMessage = useMemo(() => {
     if (execSwapState === ExecSwapState.gasless_approval) {
@@ -102,7 +106,7 @@ export default function SwapConfirmDialog({
     <Dialog {...DialogProps} onClose={handleClose} fullScreen={isMobile}>
       <AppDialogTitle
         title={
-          successTxGasless ? (
+          confirmedTxGasless ? (
             <FormattedMessage
               id="trade.confirmed"
               defaultMessage="Trade confirmed"
@@ -123,7 +127,7 @@ export default function SwapConfirmDialog({
           {quote && sellToken && buyToken && (
             <>
               <Stack>
-                {successTxGasless && (
+                {confirmedTxGasless && (
                   <Stack
                     direction="column"
                     justifyContent="center"
@@ -232,8 +236,16 @@ export default function SwapConfirmDialog({
             direction={"row"}
             justifyContent={"center"}
           >
-            <Button onClick={handleClose} variant="contained">
-              <FormattedMessage id="new.trade" defaultMessage="new trade" />
+            <Button
+              disabled={true}
+              startIcon={<CircularProgress size={20} />}
+              onClick={onConfirm}
+              variant="contained"
+            >
+              <FormattedMessage
+                id="confirming.trade"
+                defaultMessage="Confirming Trade"
+              />
             </Button>
 
             <Button
@@ -251,13 +263,43 @@ export default function SwapConfirmDialog({
               />
             </Button>
           </Stack>
+        ) : confirmedTxGasless ? (
+          <Stack
+            display={"flex"}
+            spacing={2}
+            direction={"row"}
+            justifyContent={"center"}
+          >
+            <Button onClick={handleClose} variant="contained">
+              <FormattedMessage id="new.trade" defaultMessage="new trade" />
+            </Button>
+
+            <Button
+              size="large"
+              href={`${getBlockExplorerUrl(chainId)}/tx/${
+                confirmedTxGasless.hash
+              }`}
+              target="_blank"
+              variant="outlined"
+              color="primary"
+            >
+              <FormattedMessage
+                id="view.transaction"
+                defaultMessage="View transaction"
+              />
+            </Button>
+          </Stack>
         ) : reasonFailedGasless ? (
           <Button onClick={handleClose} variant="contained">
             <FormattedMessage id="back" defaultMessage="back" />
           </Button>
         ) : (
           <Button
-            disabled={isQuoting || isLoadingStatusGasless}
+            disabled={
+              isQuoting ||
+              isLoadingStatusGasless ||
+              execSwapState === ExecSwapState.gasless_trade_submit
+            }
             startIcon={
               (isQuoting ||
                 isLoadingStatusGasless ||
@@ -271,11 +313,14 @@ export default function SwapConfirmDialog({
             {btnMessage}
           </Button>
         )}
-        {!successTxGasless && (
-          <Button onClick={handleClose}>
-            <FormattedMessage id="cancel" defaultMessage="Cancel" />
-          </Button>
-        )}
+        {!successTxGasless &&
+          !confirmedTxGasless &&
+          !isLoadingSignGasless &&
+          !(execSwapState === ExecSwapState.gasless_trade_submit) && (
+            <Button onClick={handleClose}>
+              <FormattedMessage id="cancel" defaultMessage="Cancel" />
+            </Button>
+          )}
       </DialogActions>
     </Dialog>
   );

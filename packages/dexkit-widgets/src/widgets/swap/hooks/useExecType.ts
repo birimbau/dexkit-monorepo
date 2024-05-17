@@ -1,15 +1,16 @@
-import { BigNumber, providers } from "ethers";
+import type { providers } from "ethers";
+import { BigNumber } from "ethers";
 import { useAsyncMemo } from "../../../hooks";
 import { SUPPORTED_SWAP_CHAIN_IDS } from "../constants/supportedChainIds";
 import { ExecType, SwapSide } from "../types";
 
 import { WRAPPED_TOKEN_ADDRESS } from "@dexkit/core/constants/networks";
 import { Token } from "@dexkit/core/types";
+import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "@dexkit/zrx-swap/constants";
+import { ZeroExQuoteMetaTransactionResponse } from "@dexkit/zrx-swap/types";
+import { isNativeInSell } from "@dexkit/zrx-swap/utils";
 import { hasSufficientAllowance } from "../../../services";
-import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "../../../services/zeroex/constants";
-import { ZeroExQuoteMetaTransactionResponse } from "../../../services/zeroex/types";
 import { isAddressEqual } from "../../../utils";
-import { isNativeInSell } from "../utils";
 
 
 

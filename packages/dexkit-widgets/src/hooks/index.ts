@@ -5,6 +5,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 
 import { WRAPPED_TOKEN_ADDRESS } from "@dexkit/core/constants/networks";
 import { Token, TransactionMetadata } from "@dexkit/core/types";
+import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "@dexkit/zrx-swap/constants";
 import { BigNumber, Contract, providers } from "ethers";
 import { useAtom } from "jotai";
 import { useUpdateAtom } from "jotai/utils";
@@ -13,7 +14,6 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useIntl } from "react-intl";
 import { ERC20Abi, WETHAbi } from "../constants/abis";
 import { getPricesByChain, getTokensBalance } from "../services";
-import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "../services/zeroex/constants";
 import {
   isConnectWalletOpenAtom,
   recentTokensAtom,

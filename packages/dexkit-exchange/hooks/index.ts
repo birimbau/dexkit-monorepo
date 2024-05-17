@@ -2,13 +2,13 @@ import { ChainId } from "@dexkit/core";
 import type { providers } from "ethers";
 
 import { UserEvents } from "@dexkit/core/constants/userEvents";
-import {
-  ZEROEX_ORDERBOOK_ENDPOINT,
-  ZERO_EX_URL,
-} from "@dexkit/core/services/zrx/constants";
 import { Token } from "@dexkit/core/types";
 import { useTrackUserEventsMutation } from "@dexkit/ui/hooks/userEvents";
 import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
+import {
+  ZEROEX_ORDERBOOK_ENDPOINT,
+  ZERO_EX_URL,
+} from "@dexkit/zrx-swap/constants";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { BigNumber } from "bignumber.js";

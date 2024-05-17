@@ -1,4 +1,4 @@
-import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "@dexkit/core/constants/zrx";
+import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "@dexkit/core/constants";
 import TradeWidgetSimpleVariant from "@dexkit/exchange/components/TradeWidget/SimpleVariant";
 
 import { isAddressEqual } from "@dexkit/core/utils";

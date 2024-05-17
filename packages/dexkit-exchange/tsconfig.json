@@ -4,6 +4,7 @@
   "exclude": ["dist", "build", "node_modules"],
   "compilerOptions": {
     "baseUrl": ".", // This must be specified if "paths" is.
+    "moduleResolution": "Bundler",
     "typeRoots": [
       "node_modules/@0x/typescript-typings/types",
       "node_modules/@types"

@@ -1,8 +1,8 @@
 import { ChainId } from "@dexkit/core/constants/enums";
 import { Token } from "@dexkit/core/types";
+import { ZeroExQuoteResponse } from "@dexkit/zrx-swap/types";
 import type { BigNumber } from "ethers";
 import React from "react";
-import { ZeroExQuoteResponse } from "../../services/zeroex/types";
 
 
 export type Empty = {

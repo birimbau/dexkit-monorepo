@@ -1,16 +1,17 @@
 import { ChainId } from "@dexkit/core/constants";
 import { Token } from "@dexkit/core/types";
-import { isNativeInSell } from "@dexkit/core/utils/zrx";
+import { ZeroExQuoteMetaTransactionResponse, ZeroExQuoteResponse } from "@dexkit/zrx-swap/types";
+import { isNativeInSell } from "@dexkit/zrx-swap/utils";
 import { UseMutationResult } from "@tanstack/react-query";
 import { Transak } from "@transak/transak-sdk";
 import { Connector } from "@web3-react/types";
-import { BigNumber, constants, providers, utils } from "ethers";
+import type { providers } from 'ethers';
+import { BigNumber, constants, utils } from "ethers";
 import { useSnackbar } from "notistack";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useIntl } from "react-intl";
 import { useAsyncMemo, useDebounce, useRecentTokens, useTokenBalance, useWrapToken } from "../../../hooks";
 import { useSignTypeData } from "../../../hooks/useSignTypeData";
-import { ZeroExQuoteMetaTransactionResponse, ZeroExQuoteResponse } from "../../../services/zeroex/types";
 import { isAddressEqual, switchNetwork } from "../../../utils";
 import { ExecSwapState } from "../constants/enum";
 import { NotificationCallbackParams, SwapSide } from "../types";
@@ -301,13 +302,12 @@ export function useSwapState({
     setShowConfirmSwap(false);
     quote.setSkipValidation(true);
     quote.setIntentOnFilling(false);
-    setTradeHash(undefined);
-    // If we came from gasless state just refetch
-    if (execSwapState === ExecSwapState.gasless_trade_submit) {
-      gaslessSwapState.statusGaslessQuery.refetch();
+    // if there is 
+    if (gaslessSwapState.confirmedTxGasless) {
       sellTokenBalance.refetch();
       buyTokenBalance.refetch();
     }
+    setTradeHash(undefined);
 
     setExecSwapState(ExecSwapState.quote)
   };
@@ -400,12 +400,21 @@ export function useSwapState({
           }
         }
       }
-      setExecSwapState(ExecSwapState.gasless_trade_submit)
-      const tradeHash = await execGaslessMutation.mutateAsync({
-        trade, approval, quote: data, onHash: (hash: string) => { }, sellToken, buyToken, chainId: connectedChainId
-      })
+      try {
+        setExecSwapState(ExecSwapState.gasless_trade_submit)
+        const tradeHash = await execGaslessMutation.mutateAsync({
+          trade, approval, quote: data, onHash: (hash: string) => { }, sellToken, buyToken, chainId: connectedChainId
+        })
 
-      setTradeHash(tradeHash);
+
+
+        setTradeHash(tradeHash);
+
+      } catch {
+        setTradeHash(undefined);
+      }
+
+
 
 
 

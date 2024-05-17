@@ -41,6 +41,7 @@
     "@dexkit/core": "*",
     "@dexkit/exchange": "*",
     "@dexkit/ui": "*",
+    "@dexkit/zrx-swap": "*",
     "@dexkit/wallet-connectors": "*",
     "@dexkit/web3forms": "*",
     "@dexkit/widgets": "*",

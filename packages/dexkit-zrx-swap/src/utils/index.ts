@@ -1,4 +1,4 @@
-import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "../../constants/zrx";
+import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "../constants";
 
 /**
  * Gasless swaps don't work with native token

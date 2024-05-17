@@ -38,7 +38,8 @@
     "@0x/contract-addresses": "^8.7.0",
     "@0x/protocol-utils": "^11.22.4",
     "@dexkit/core": "*",
-    "@dexkit/ui": "*"
+    "@dexkit/ui": "*",
+    "@dexkit/zrx-swap": "*"
   },
   "publishConfig": {
     "access": "public"

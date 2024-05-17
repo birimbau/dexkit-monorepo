@@ -1,8 +1,7 @@
 import MultiCall, { TokenBalances } from "@indexed-finance/multicall";
 import { BigNumber, Contract, constants, providers } from "ethers";
-import { COINGECKO_ENDPOIT, COINGECKO_PLATFORM_ID } from "../constants";
+import { COINGECKO_ENDPOIT, COINGECKO_PLATFORM_ID, ZEROEX_NATIVE_TOKEN_ADDRESS } from "../constants";
 import { ERC20Abi } from "../constants/abis";
-import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "../constants/zrx";
 import { Token, TokenPrices } from "../types";
 import { isAddressEqual } from "../utils";
 export * from './balances';
