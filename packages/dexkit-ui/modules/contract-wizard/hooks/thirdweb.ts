@@ -135,8 +135,10 @@ export function useThirdwebApprove({
 
 export function useSetRewardsPerUnitTime({
   contract,
+  isEdition,
 }: {
   contract?: SmartContract;
+  isEdition?: boolean;
 }) {
   const { watchTransactionDialog, createNotification } = useDexKitContext();
   const { chainId } = useWeb3React();
@@ -148,7 +150,7 @@ export function useSetRewardsPerUnitTime({
 
     watchTransactionDialog.open('setRewardPerUnitTime', values);
 
-    const call = contract?.prepare('setDefaultRewardsPerUnitTime', [unitTime]);
+    const call = contract?.prepare(isEdition ? 'setDefaultRewardsPerUnitTime' : 'setRewardsPerUnitTime', [unitTime]);
 
     try {
       let tx = await call?.send();
