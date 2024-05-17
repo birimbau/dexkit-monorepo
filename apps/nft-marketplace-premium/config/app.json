@@ -82,40 +82,33 @@
     },
     {
       "type": "Menu",
-      "href": "",
-      "name": "Tools",
+      "href": "/dexgenerator",
+      "name": "DexGenerator",
       "children": [
         {
-          "type": "Menu",
+          "type": "Page",
           "href": "/dexgenerator",
-          "name": "DexGenerator",
-          "children": [
-            {
-              "type": "Page",
-              "href": "/dexgenerator",
-              "name": "About DexGenerator"
-            },
-            {
-              "type": "Page",
-              "href": "/forms/contracts/create",
-              "name": "Deploy Contract"
-            },
-            {
-              "type": "Page",
-              "href": "/forms/contracts/list",
-              "name": "Manage Contracts"
-            },
-            {
-              "type": "Page",
-              "href": "/forms",
-              "name": "Create Contract Form"
-            },
-            {
-              "type": "Page",
-              "href": "/forms/manage",
-              "name": "Manage Contract Forms"
-            }
-          ]
+          "name": "About DexGenerator"
+        },
+        {
+          "type": "Page",
+          "href": "/forms/contracts/create",
+          "name": "Deploy Contract"
+        },
+        {
+          "type": "Page",
+          "href": "/forms/contracts/list",
+          "name": "Manage Contracts"
+        },
+        {
+          "type": "Page",
+          "href": "/forms/create",
+          "name": "Create Contract Form"
+        },
+        {
+          "type": "Page",
+          "href": "/forms/manage",
+          "name": "Manage Contract Forms"
         }
       ]
     },

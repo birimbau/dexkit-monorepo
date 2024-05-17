@@ -368,7 +368,7 @@ export function CreateWizardContainer({ slug, isSwapWizard }: Props) {
                         <Stack
                           spacing={1}
                           direction="row"
-                          justifyContent="flex-end"
+                          justifyContent="flex-start"
                         >
                           {isActive ? (
                             <Button
