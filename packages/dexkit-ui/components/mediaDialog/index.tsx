@@ -1,23 +1,23 @@
 import AutoFixHighIcon from "@mui/icons-material/AutoFixHigh";
 import BrowseGalleryIcon from "@mui/icons-material/BrowseGallery";
 import {
-    Box,
-    Button,
-    ButtonBase,
-    CircularProgress,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogProps,
-    Divider,
-    Grid,
-    InputAdornment,
-    Skeleton,
-    Stack,
-    styled,
-    TextField,
-    Tooltip,
-    Typography,
+  Box,
+  Button,
+  ButtonBase,
+  CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogProps,
+  Divider,
+  Grid,
+  InputAdornment,
+  Skeleton,
+  Stack,
+  styled,
+  TextField,
+  Tooltip,
+  Typography,
 } from "@mui/material";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
@@ -26,10 +26,10 @@ import Select, { SelectChangeEvent } from "@mui/material/Select";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import {
-    useDeleteAccountFile,
-    useEditAccountFile,
-    useGetAccountFiles,
-    useUploadAccountFile,
+  useDeleteAccountFile,
+  useEditAccountFile,
+  useGetAccountFiles,
+  useUploadAccountFile,
 } from "../../modules/file/hooks";
 import { AppDialogTitle } from "../AppDialogTitle";
 
@@ -64,7 +64,14 @@ interface Props {
 
 const CustomImage = styled("img")(({ theme }) => ({
   height: theme.spacing(20),
-  width: theme.spacing(20),
+  width: "100%",
+}));
+
+const CustomFileImage = styled("img")(({ theme }) => ({
+  height: "100%",
+  width: "100%",
+  borderRadius: theme.shape.borderRadius,
+  aspectRatio: "1/1",
 }));
 
 const CustomButton = styled(ButtonBase)(({ theme }) => ({
@@ -342,6 +349,7 @@ export default function MediaDialog({
                   alignItems={"center"}
                 >
                   <CustomImage alt="" ref={imgRef} />
+
                   <Stack spacing={2} direction={"row"}>
                     <Button
                       color="primary"
@@ -419,7 +427,6 @@ export default function MediaDialog({
                       />
                     </Typography>
                   </Box>
-
                   {fileUploadMutation.isError && (
                     <Box sx={{ p: 2 }}>
                       <FormattedMessage id="reason" defaultMessage="Reason" />:{" "}
@@ -579,114 +586,168 @@ export default function MediaDialog({
               </Grid>
             )}
 
-            {filesQuery.data?.files?.map((f, key) => (
-              <Grid item xs={3} key={key}>
-                <Stack spacing={2}>
-                  <Button
-                    variant={selectedFile?.id === f.id ? "contained" : "text"}
-                    onClick={() =>
-                      selectedFile
-                        ? selectedFile.id === f.id
-                          ? setSelectedFile(undefined)
-                          : setSelectedFile(f)
-                        : setSelectedFile(f)
-                    }
-                  >
-                    <CustomImage alt={f?.name || ""} src={f?.url || ""} />
-                  </Button>
-                  <Stack
-                    spacing={1}
-                    direction={"row"}
-                    justifyContent={"space-around"}
-                    alignContent={"center"}
-                    alignItems={"center"}
-                  >
-                    <Box>
-                      {editFileName === f.id ? (
-                        <>
-                          <TextField
-                            defaultValue={f?.name}
-                            onChange={(event) =>
-                              setNewFileName(event.currentTarget.value)
-                            }
+            <Grid item xs={12}>
+              <Grid container spacing={2}>
+                {filesQuery.data?.files?.map((f, key) => (
+                  <Grid item xs={6} sm={2} key={key}>
+                    <Stack
+                      spacing={2}
+                      justifyContent="center"
+                      alignItems="center"
+                    >
+                      <ButtonBase
+                        sx={{
+                          borderRadius: (theme) => theme.shape.borderRadius / 2,
+                        }}
+                        onClick={() =>
+                          selectedFile
+                            ? selectedFile.id === f.id
+                              ? setSelectedFile(undefined)
+                              : setSelectedFile(f)
+                            : setSelectedFile(f)
+                        }
+                      >
+                        <Box
+                          sx={(theme) => ({
+                            position: "relative",
+
+                            p: selectedFile?.id === f.id ? 1 : undefined,
+                            border:
+                              selectedFile?.id === f.id
+                                ? `2px solid ${theme.palette.primary.main}`
+                                : undefined,
+                            borderRadius: theme.shape.borderRadius / 2,
+                          })}
+                        >
+                          <Box
+                            sx={(theme) => ({
+                              borderRadius: theme.shape.borderRadius / 2,
+                              backgroundImage: `url("${f.url}")`,
+                              backgroundSize: "cover",
+                              width: "100%",
+                              aspectRatio: "1/1",
+                              height: (theme) => theme.spacing(16),
+                              [theme.breakpoints.up("sm")]: {
+                                height: (theme) => theme.spacing(20),
+                              },
+                              [theme.breakpoints.up("lg")]: {
+                                height: (theme) => theme.spacing(22),
+                              },
+                            })}
                           />
-                          <Box>
-                            <IconButton
-                              aria-label="edit"
-                              onClick={() => setShowConfirmEdit(true)}
+                          <Box
+                            sx={{
+                              position: "absolute",
+                              top: 0,
+                              bottom: 0,
+                              left: 0,
+                              right: 0,
+                              backgroundColor:
+                                selectedFile?.id === f.id
+                                  ? "rgba(0, 0, 0, 0.3)"
+                                  : undefined,
+                            }}
+                          />
+                        </Box>
+                      </ButtonBase>
+                      <Stack
+                        spacing={1}
+                        direction={"row"}
+                        justifyContent={"space-around"}
+                        alignContent={"center"}
+                        alignItems={"center"}
+                      >
+                        <Box>
+                          {editFileName === f.id ? (
+                            <>
+                              <TextField
+                                defaultValue={f?.name}
+                                onChange={(event) =>
+                                  setNewFileName(event.currentTarget.value)
+                                }
+                              />
+                              <Box>
+                                <IconButton
+                                  aria-label="edit"
+                                  onClick={() => setShowConfirmEdit(true)}
+                                >
+                                  <CheckIcon />
+                                </IconButton>
+                                <IconButton
+                                  aria-label="clear"
+                                  onClick={() => setEditFileName(undefined)}
+                                >
+                                  <ClearIcon />
+                                </IconButton>
+                              </Box>
+                            </>
+                          ) : f?.name.length > 50 ? (
+                            <Typography>{truncateText(f?.name, 10)}</Typography>
+                          ) : (
+                            <Typography
+                              style={{
+                                overflowWrap: "break-word",
+                                maxWidth: "160px",
+                              }}
                             >
-                              <CheckIcon />
-                            </IconButton>
-                            <IconButton
-                              aria-label="clear"
-                              onClick={() => setEditFileName(undefined)}
+                              {f?.name}
+                            </Typography>
+                          )}
+                        </Box>
+                        {selectedFile?.id === f.id && !editFileName && (
+                          <Stack spacing={0.5} direction="row">
+                            <Tooltip
+                              title={
+                                <FormattedMessage
+                                  id="delete"
+                                  defaultMessage="Delete"
+                                />
+                              }
                             >
-                              <ClearIcon />
-                            </IconButton>
-                          </Box>
-                        </>
-                      ) : f?.name.length > 50 ? (
-                        <Typography>{truncateText(f?.name, 10)}</Typography>
-                      ) : (
-                        <Typography
-                          style={{
-                            overflowWrap: "break-word",
-                            maxWidth: "160px",
-                          }}
-                        >
-                          {f?.name}
-                        </Typography>
-                      )}
-                    </Box>
-                    {selectedFile?.id === f.id && !editFileName && (
-                      <Stack spacing={0.5} direction="row">
-                        <Tooltip
-                          title={
-                            <FormattedMessage
-                              id="delete"
-                              defaultMessage="Delete"
-                            />
-                          }
-                        >
-                          <IconButton
-                            aria-label="delete"
-                            onClick={() => setShowConfirmRemove(true)}
-                          >
-                            <DeleteIcon />
-                          </IconButton>
-                        </Tooltip>
+                              <IconButton
+                                aria-label="delete"
+                                onClick={() => setShowConfirmRemove(true)}
+                              >
+                                <DeleteIcon />
+                              </IconButton>
+                            </Tooltip>
 
-                        <Tooltip
-                          title={
-                            <FormattedMessage id="edit" defaultMessage="Edit" />
-                          }
-                        >
-                          <IconButton
-                            aria-label="edit"
-                            onClick={() => setEditFileName(f.id)}
-                          >
-                            <EditIcon />
-                          </IconButton>
-                        </Tooltip>
+                            <Tooltip
+                              title={
+                                <FormattedMessage
+                                  id="edit"
+                                  defaultMessage="Edit"
+                                />
+                              }
+                            >
+                              <IconButton
+                                aria-label="edit"
+                                onClick={() => setEditFileName(f.id)}
+                              >
+                                <EditIcon />
+                              </IconButton>
+                            </Tooltip>
 
-                        <Tooltip
-                          title={
-                            <FormattedMessage id="AI" defaultMessage="AI" />
-                          }
-                        >
-                          <IconButton
-                            onClick={() => handleOpenAI(selectedFile.url)}
-                            aria-label="ai"
-                          >
-                            <AutoFixHighIcon />
-                          </IconButton>
-                        </Tooltip>
+                            <Tooltip
+                              title={
+                                <FormattedMessage id="AI" defaultMessage="AI" />
+                              }
+                            >
+                              <IconButton
+                                onClick={() => handleOpenAI(selectedFile.url)}
+                                aria-label="ai"
+                              >
+                                <AutoFixHighIcon />
+                              </IconButton>
+                            </Tooltip>
+                          </Stack>
+                        )}
                       </Stack>
-                    )}
-                  </Stack>
-                </Stack>
+                    </Stack>
+                  </Grid>
+                ))}
               </Grid>
-            ))}
+            </Grid>
 
             <Grid item xs={12} container justifyContent={"flex-end"}>
               {filesQuery.isSuccess &&
