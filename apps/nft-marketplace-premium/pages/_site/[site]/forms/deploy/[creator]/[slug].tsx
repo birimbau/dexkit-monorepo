@@ -538,7 +538,7 @@ export default function DeployPage() {
 }
 
 (DeployPage as any).getLayout = function getLayout(page: any) {
-  <AuthMainLayout>{page}</AuthMainLayout>;
+  return <AuthMainLayout>{page}</AuthMainLayout>;
 };
 
 type Params = {
