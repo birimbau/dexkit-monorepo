@@ -265,7 +265,7 @@ export function CreateWizardContainer({ slug, isSwapWizard }: Props) {
                   {
                     caption: (
                       <FormattedMessage
-                        id="create.app"
+                        id="create.app.uppercased"
                         defaultMessage="Create App"
                       />
                     ),
