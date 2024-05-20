@@ -1,23 +1,28 @@
 import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import jwt_decode from 'jwt-decode';
+import jwt_decode from "jwt-decode";
 import { useContext } from "react";
 import { useDexKitContext, useSignMessageDialog } from ".";
-import { AuthContext } from "../context/AuthContext";
+import { AuthStateContext } from "../context/AuthContext";
 import { getUserByAccount } from "../modules/user/services";
-import { getRefreshAccessToken, loginApp, logoutApp, requestSignature, setAccessToken } from "../services/auth";
-
+import {
+  getRefreshAccessToken,
+  loginApp,
+  logoutApp,
+  requestSignature,
+  setAccessToken,
+} from "../services/auth";
 
 export function useAuth() {
-  const { setIsLoggedIn, isLoggedIn, user, setUser } = useContext(AuthContext);
-  return { setIsLoggedIn, isLoggedIn, user, setUser }
+  const { setIsLoggedIn, isLoggedIn, user, setUser } =
+    useContext(AuthStateContext);
+  return { setIsLoggedIn, isLoggedIn, user, setUser };
 }
-
 
 export function useLogoutAccountMutation() {
   const { account } = useWeb3React();
 
-  const { setIsLoggedIn } = useAuth();
+  const { setIsLoggedIn, setUser } = useAuth();
 
   return useMutation(async () => {
     if (!account) {
@@ -31,15 +36,18 @@ export function useLogoutAccountMutation() {
         if (setIsLoggedIn) {
           setIsLoggedIn(false);
         }
-        setAccessToken(undefined)
+        if (setUser) {
+          setUser(undefined);
+        }
+        setAccessToken(undefined);
       }
       return data.logout;
     }
-    throw Error('not able to logout')
-  })
+    throw Error("not able to logout");
+  });
 }
 
-export const GET_AUTH_USER = 'GET_AUTH_USER';
+export const GET_AUTH_USER = "GET_AUTH_USER";
 export function useAuthUserQuery() {
   const { account } = useWeb3React();
   return useQuery([GET_AUTH_USER, account], async () => {
@@ -48,8 +56,7 @@ export function useAuthUserQuery() {
     }
     const userRequest = await getUserByAccount();
     return userRequest.data;
-
-  })
+  });
 }
 
 export function useLoginAccountMutation() {
@@ -59,33 +66,43 @@ export function useLoginAccountMutation() {
 
   const { setIsLoggedIn, setUser } = useAuth();
 
-  return useMutation(async () => {
-    if (!account || !provider) {
-      return;
-    }
-    signMessageDialog.setOpen(true)
-    const messageToSign = await requestSignature({ address: account });
+  return useMutation(
+    async () => {
+      if (!account || !provider) {
+        return;
+      }
+      signMessageDialog.setOpen(true);
+      const messageToSign = await requestSignature({ address: account });
 
-    const signature = await provider.getSigner().signMessage(messageToSign.data);
+      const signature = await provider
+        .getSigner()
+        .signMessage(messageToSign.data);
 
-    const loginResponse = await loginApp({ signature, address: account, siteId, referral: affiliateReferral });
-    if (setIsLoggedIn) {
-      setIsLoggedIn(true);
-    }
+      const loginResponse = await loginApp({
+        signature,
+        address: account,
+        siteId,
+        referral: affiliateReferral,
+      });
+      if (setIsLoggedIn) {
+        setIsLoggedIn(true);
+      }
 
-    if (setUser && loginResponse.data.access_token) {
-      setUser(jwt_decode(loginResponse.data.access_token))
-    }
-    setAccessToken(loginResponse.data.access_token)
+      if (setUser && loginResponse.data.access_token) {
+        setUser(jwt_decode(loginResponse.data.access_token));
+      }
+      setAccessToken(loginResponse.data.access_token);
 
-    return loginResponse.data;
-  }, {
-    onError(error) {
-      signMessageDialog.setOpen(false)
-      // signMessageDialog.setError(Error('Error signing message'));
+      return loginResponse.data;
     },
-    onSettled() {
-      signMessageDialog.setOpen(false)
+    {
+      onError(error) {
+        signMessageDialog.setOpen(false);
+        // signMessageDialog.setError(Error('Error signing message'));
+      },
+      onSettled() {
+        signMessageDialog.setOpen(false);
+      },
     }
-  })
+  );
 }

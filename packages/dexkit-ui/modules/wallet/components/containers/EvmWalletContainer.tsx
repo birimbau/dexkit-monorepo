@@ -1,20 +1,22 @@
 import { NavigateNext, Search } from "@mui/icons-material";
 import {
-    Box,
-    Button,
-    Collapse,
-    Divider,
-    Grid,
-    IconButton,
-    InputAdornment,
-    NoSsr,
-    Stack,
-    Tab,
-    Tabs,
-    TextField,
-    Typography,
-    useMediaQuery,
-    useTheme,
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Collapse,
+  Divider,
+  Grid,
+  IconButton,
+  InputAdornment,
+  NoSsr,
+  Stack,
+  Tab,
+  Tabs,
+  TextField,
+  Typography,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 
 import React, { useEffect, useState } from "react";
@@ -42,22 +44,29 @@ import Wallet from "@mui/icons-material/Wallet";
 import { NetworkSelectButton } from "../../../../components/NetworkSelectButton";
 const TransakWidget = dynamic(() => import("@dexkit/ui/components/Transak"));
 
+import { DexkitApiProvider } from "@dexkit/core/providers";
+import { AppErrorBoundary } from "../../../../components/AppErrorBoundary";
 import ImportTokenDialog from "../../../../components/dialogs/ImportTokenDialog";
 import CloseCircle from "../../../../components/icons/CloseCircle";
+import { myAppsApi } from "../../../../constants/api";
 import {
-    useAppConfig,
-    useConnectWalletDialog,
-    useEvmCoins,
+  useAppConfig,
+  useAuth,
+  useConnectWalletDialog,
+  useEvmCoins,
 } from "../../../../hooks";
 import { isBalancesVisibleAtom } from "../../state";
 import {
-    TransactionsTable,
-    TransactionsTableFilter,
+  TransactionsTable,
+  TransactionsTableFilter,
 } from "../TransactionsTable";
 import { TransferCoinButton } from "../TransferCoinButton";
+import UserActivityTable from "../UserActivityTable";
 import WalletActionButton from "../WalletActionButton";
 import WalletBalances from "../WalletBalancesTable";
 import { WalletTotalBalanceCointainer } from "../WalletTotalBalanceContainer";
+
+import LoginAppButton from "@dexkit/ui/components/LoginAppButton";
 
 const EvmReceiveDialog = dynamic(
   () => import("@dexkit/ui/components/dialogs/EvmReceiveDialog")
@@ -66,6 +75,7 @@ const EvmReceiveDialog = dynamic(
 enum WalletTabs {
   Transactions,
   Trades,
+  Activity,
 }
 
 const EvmWalletContainer = () => {
@@ -87,7 +97,9 @@ const EvmWalletContainer = () => {
 
   const [isReceiveOpen, setIsReceiveOpen] = useState(false);
 
-  const [selectedTab, setSelectedTab] = useState(WalletTabs.Transactions);
+  const { isLoggedIn } = useAuth();
+
+  const [selectedTab, setSelectedTab] = useState(WalletTabs.Activity);
   const [isTableOpen, setIsTableOpen] = useState(isDesktop);
   const [search, setSearch] = useState("");
 
@@ -479,6 +491,15 @@ const EvmWalletContainer = () => {
               <Grid item xs={12}>
                 <Tabs value={selectedTab} onChange={handleChangeTab}>
                   <Tab
+                    value={WalletTabs.Activity}
+                    label={
+                      <FormattedMessage
+                        id="activity"
+                        defaultMessage="Activity"
+                      />
+                    }
+                  />
+                  <Tab
                     value={WalletTabs.Transactions}
                     label={
                       <FormattedMessage
@@ -497,13 +518,56 @@ const EvmWalletContainer = () => {
               </Grid>
               <Grid item xs={12}>
                 <NoSsr>
-                  <TransactionsTable
-                    filter={
-                      selectedTab === WalletTabs.Transactions
-                        ? TransactionsTableFilter.Transactions
-                        : TransactionsTableFilter.Trades
-                    }
-                  />
+                  {selectedTab === WalletTabs.Activity ? (
+                    <DexkitApiProvider.Provider value={{ instance: myAppsApi }}>
+                      <AppErrorBoundary
+                        fallbackRender={({ error }) => (
+                          <Card>
+                            <CardContent>
+                              <Stack
+                                alignItems="center"
+                                direction="row"
+                                justifyContent="center"
+                              >
+                                <Stack spacing={1} alignItems="center">
+                                  <Typography align="center">
+                                    <FormattedMessage
+                                      id="error.while.loading.activity"
+                                      defaultMessage="Error while Loading activity"
+                                    />
+                                  </Typography>
+                                  <Button variant="outlined">
+                                    <FormattedMessage
+                                      id="try.again"
+                                      defaultMessage="try again"
+                                    />
+                                  </Button>
+                                </Stack>
+                              </Stack>
+                            </CardContent>
+                          </Card>
+                        )}
+                      >
+                        {isLoggedIn ? (
+                          <UserActivityTable />
+                        ) : (
+                          <Stack justifyContent="center">
+                            <Box>
+                              <LoginAppButton />
+                            </Box>
+                          </Stack>
+                        )}
+                      </AppErrorBoundary>
+                    </DexkitApiProvider.Provider>
+                  ) : (
+                    <TransactionsTable
+                      filter={
+                        selectedTab === WalletTabs.Transactions
+                          ? TransactionsTableFilter.Transactions
+                          : TransactionsTableFilter.Trades
+                      }
+                    />
+                  )}
                 </NoSsr>
               </Grid>
             </>

@@ -1,4 +1,7 @@
-import { UserOnChainEvents } from "@dexkit/core/constants/userEvents";
+import {
+  UserEvents,
+  UserOnChainEvents,
+} from "@dexkit/core/constants/userEvents";
 
 export const USER_EVENT_NAMES: Record<
   string,
@@ -59,5 +62,78 @@ export const USER_EVENT_NAMES: Record<
   [UserOnChainEvents.renewKey]: {
     defaultMessage: "Unlock Renew Keys",
     id: "unlock.renew.keys",
+  },
+  [UserOnChainEvents.stakeErc20]: {
+    defaultMessage: "Stake Token",
+    id: "stake.erc20",
+  },
+  [UserOnChainEvents.unstakeErc20]: {
+    defaultMessage: "Unstake Token",
+    id: "unstake.erc20",
+  },
+  [UserOnChainEvents.stakeClaimErc20]: {
+    defaultMessage: "Claim Token Rewards",
+    id: "claim.token.rewards",
+  },
+
+  [UserOnChainEvents.stakeClaimErc721]: {
+    defaultMessage: "Claim Collection Rewards",
+    id: "claim.collection.rewards",
+  },
+
+  [UserOnChainEvents.stakeClaimErc1155]: {
+    defaultMessage: "Claim Edition Rewards",
+    id: "claim.edition.rewards",
+  },
+
+  [UserOnChainEvents.stakeErc721]: {
+    defaultMessage: "Stake Collection",
+    id: "stake.erc721",
+  },
+  [UserOnChainEvents.unstakeErc721]: {
+    defaultMessage: "Unstake Collection",
+    id: "unstake.erc721",
+  },
+  [UserOnChainEvents.stakeErc1155]: {
+    defaultMessage: "Stake Edition",
+    id: "stake.erc721",
+  },
+  [UserOnChainEvents.unstakeErc1155]: {
+    defaultMessage: "Unstake Edition",
+    id: "unstake.erc1155",
+  },
+  [UserOnChainEvents.orderCancelled]: {
+    defaultMessage: "Cancelled Orders",
+    id: "cancelled.orders",
+  },
+};
+
+export const USER_OFFCHAIN_EVENT_NAMES: Record<
+  string,
+  { id: string; defaultMessage: string }
+> = {
+  [UserEvents.postLimitOrder]: {
+    defaultMessage: "Post Limit Order",
+    id: "post.limit.order",
+  },
+  [UserEvents.nftERC721List]: {
+    defaultMessage: "Collection listings",
+    id: "collection.listings",
+  },
+  [UserEvents.nftERC721Offer]: {
+    defaultMessage: "Collection offers",
+    id: "collection.offers",
+  },
+  [UserEvents.nftERC1155List]: {
+    defaultMessage: "Edition listings",
+    id: "edition.listings",
+  },
+  [UserEvents.nftERC1155Offer]: {
+    defaultMessage: "Edition offers",
+    id: "edition.offers",
+  },
+  [UserEvents.loginSignMessage]: {
+    defaultMessage: "Account Login",
+    id: "account.login",
   },
 };

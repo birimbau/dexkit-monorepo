@@ -1,5 +1,7 @@
+import { UserEvents } from "@dexkit/core/constants/userEvents";
 import { formatBigNumber } from "@dexkit/core/utils";
 import { useDexKitContext } from "@dexkit/ui";
+import { useTrackUserEventsMutation } from "@dexkit/ui/hooks/userEvents";
 import { useApproveForAll } from "@dexkit/ui/modules/contract-wizard/hooks/thirdweb";
 import { StakeErc155PageSection } from "@dexkit/ui/modules/wizard/types/section";
 import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
@@ -111,6 +113,8 @@ export default function StakeErc1155Section({
     handleClose();
   };
 
+  const trackUserEvent = useTrackUserEventsMutation();
+
   const { data: stakingTokenContract } = useContract(stakingAddress, "custom");
 
   const contractInfo = useAsyncMemo(
@@ -148,6 +152,18 @@ export default function StakeErc1155Section({
         watchTransactionDialog.watch(tx.hash);
       }
 
+      await trackUserEvent.mutateAsync({
+        event: UserEvents.stakeErc1155,
+        chainId,
+        hash: tx?.hash,
+        metadata: JSON.stringify({
+          tokenId,
+          amount: amount.toString(),
+          stakeAddress: address,
+          account,
+        }),
+      });
+
       return await tx?.wait();
     }
   );
@@ -177,6 +193,18 @@ export default function StakeErc1155Section({
         watchTransactionDialog.watch(tx.hash);
       }
 
+      await trackUserEvent.mutateAsync({
+        event: UserEvents.unstakeErc1155,
+        chainId,
+        hash: tx?.hash,
+        metadata: JSON.stringify({
+          tokenId,
+          amount: amount.toString(),
+          stakeAddress: address,
+          account,
+        }),
+      });
+
       return await tx?.wait();
     }
   );
@@ -185,7 +213,7 @@ export default function StakeErc1155Section({
 
   const claimRewardsMutation = useMutation(
     async ({ tokenId }: { tokenId: string }) => {
-      let call = contract?.prepare("claimRewards", []);
+      let call = contract?.prepare("claimRewards", [tokenId]);
 
       let values = {
         nft: tokenId,
@@ -207,7 +235,20 @@ export default function StakeErc1155Section({
         watchTransactionDialog.watch(tx.hash);
       }
 
-      return await tx?.wait();
+      const res = await tx?.wait();
+
+      await trackUserEvent.mutateAsync({
+        event: UserEvents.stakeClaimErc1155,
+        chainId,
+        hash: tx?.hash,
+        metadata: JSON.stringify({
+          tokenId,
+          stakeAddress: address,
+          account,
+        }),
+      });
+
+      return res;
     }
   );
 

@@ -1,10 +1,10 @@
 import {
-    Button,
-    Divider,
-    IconButton,
-    InputAdornment,
-    Stack,
-    Typography,
+  Button,
+  Divider,
+  IconButton,
+  InputAdornment,
+  Stack,
+  Typography,
 } from "@mui/material";
 import { useCallback, useMemo, useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";

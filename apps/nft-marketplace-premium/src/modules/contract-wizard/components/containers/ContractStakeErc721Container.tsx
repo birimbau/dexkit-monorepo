@@ -85,8 +85,8 @@ export default function ContractStakeErc721Container({
   const { data: rewardTimeUnit } = useContractRead(contract, 'getTimeUnit');
 
   const rewardsPerUnitTimeValue = useMemo(() => {
-    return rewardsPerUnitTime?.toNumber();
-  }, [rewardsPerUnitTime]);
+    return formatBigNumber(rewardsPerUnitTime, rewardTokenBalance?.decimals);
+  }, [rewardsPerUnitTime, rewardTokenBalance?.decimals]);
 
   const { data: allowance } = useQuery(
     ['REWARD_TOKEN_ALLOWANCE', rewardTokenAddress],
@@ -193,7 +193,7 @@ export default function ContractStakeErc721Container({
           <Stack>
             <Typography variant="caption" color="text.secondary">
               <FormattedMessage
-                id="reward.per.time.unit"
+                id="reward.per.time.unit1"
                 defaultMessage="Reward per time Unit"
               />
             </Typography>
@@ -225,9 +225,18 @@ export default function ContractStakeErc721Container({
               <FormattedMessage id="reward.time" defaultMessage="Reward Time" />
             </Typography>
             <Typography variant="h5">
-              {moment
-                .duration(rewardTimeUnit?.toNumber(), 'seconds')
-                .humanize()}
+              <FormattedMessage
+                id="every.reward"
+                defaultMessage="Every {timeUnit}"
+                values={{
+                  timeUnit:
+                    rewardTimeUnit?.toNumber() <= 60
+                      ? `${rewardTimeUnit?.toNumber()}s`
+                      : moment
+                          .duration(rewardTimeUnit?.toNumber(), 'seconds')
+                          .humanize(),
+                }}
+              />
             </Typography>
           </Stack>
         </Stack>

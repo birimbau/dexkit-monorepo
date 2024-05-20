@@ -1,23 +1,30 @@
 import { useAppConfig } from "../../../hooks";
 
-
-
-import { useQuery } from '@tanstack/react-query';
-import { getApiAccountContractCollectionData, getApiContractCollectionData, getCollectionAssetsDexKitApi, getCollectionAssetsFromOrderbook } from "../services/collection";
+import { useQuery } from "@tanstack/react-query";
+import {
+  getApiAccountContractCollectionData,
+  getApiContractCollectionData,
+  getCollectionAssetsDexKitApi,
+  getCollectionAssetsFromOrderbook,
+} from "../services/collection";
 
 import { ChainId } from "@dexkit/core/constants/enums";
 import { Asset } from "@dexkit/core/types/nft";
 import { omitNull } from "@dexkit/core/utils";
-import { getNetworkSlugFromChainId, isAddressEqual } from "@dexkit/core/utils/blockchain";
-import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import {
-  ThirdwebSDK,
-} from '@thirdweb-dev/react';
+  getNetworkSlugFromChainId,
+  isAddressEqual,
+} from "@dexkit/core/utils/blockchain";
+import { ThirdwebSDK } from "@thirdweb-dev/react";
+import { useWeb3React } from "@web3-react/core";
 import { THIRDWEB_CLIENT_ID } from "../../../constants/thirdweb";
 import { hexToString } from "../../../utils";
 import { NFTType } from "../constants/enum";
 
-import { getApiCollectionData, getCollectionData } from "../services/collection";
+import {
+  getApiCollectionData,
+  getCollectionData,
+} from "../services/collection";
 import { TraderOrderFilter } from "../types";
 import { CollectionStatsRari } from "../types/rarible";
 
@@ -26,34 +33,44 @@ export function useCollections() {
   return appConfig?.collections;
 }
 
-export const GET_ASSET_LIST_FROM_COLLECTION = 'GET_ASSET_LIST_FROM_COLLECTION';
+export const GET_ASSET_LIST_FROM_COLLECTION = "GET_ASSET_LIST_FROM_COLLECTION";
 
 interface Props {
-  network: string,
-  address: string,
+  network: string;
+  address: string;
   skip?: number;
   take?: number;
-  traitsFilter?: string
+  traitsFilter?: string;
 }
 
-
 export const useAssetListFromCollection = (params: Props) => {
-  const { network, address, traitsFilter, skip, take } = params
+  const { network, address, traitsFilter, skip, take } = params;
 
   return useQuery(
-    [GET_ASSET_LIST_FROM_COLLECTION, network, address, traitsFilter, skip, take],
+    [
+      GET_ASSET_LIST_FROM_COLLECTION,
+      network,
+      address,
+      traitsFilter,
+      skip,
+      take,
+    ],
     async () => {
       /* let traitsFilterString;
        if (traitsFilter) {
          traitsFilterString = traitsFilter.map(t => `${t.property}.${t.value}`);
          traitsFilterString = traitsFilterString.join(',')
        }*/
-      const { data, total } = await getCollectionAssetsDexKitApi({ networkId: network, contractAddress: address, traitsFilter: traitsFilter, skip: skip, take })
-
+      const { data, total } = await getCollectionAssetsDexKitApi({
+        networkId: network,
+        contractAddress: address,
+        traitsFilter: traitsFilter,
+        skip: skip,
+        take,
+      });
 
       return {
-
-        assets: data.map(asset => {
+        assets: data.map((asset) => {
           let metadata: any = {};
           if (asset.rawData) {
             metadata = JSON.parse(asset.rawData);
@@ -73,39 +90,37 @@ export const useAssetListFromCollection = (params: Props) => {
         }) as Asset[],
         skip,
         take,
-        total
+        total,
       };
-
     }
   );
 };
 
-
-export const GET_COLLECTION_STATS = 'GET_COLLECTION_STATS';
+export const GET_COLLECTION_STATS = "GET_COLLECTION_STATS";
 
 interface CollectionStatsProps {
-  network?: string,
-  address?: string,
+  network?: string;
+  address?: string;
 }
 
 export const useCollectionStats = (params: CollectionStatsProps) => {
-  const { network, address } = params
+  const { network, address } = params;
 
   return useQuery<CollectionStatsRari | undefined>(
     [GET_COLLECTION_STATS, network, address],
     async () => {
-      return undefined
-    }, { enabled: false }
-
+      return undefined;
+    },
+    { enabled: false }
   );
 };
 
-export const GET_COLLECTION_DATA = 'GET_COLLECTION_DATA';
+export const GET_COLLECTION_DATA = "GET_COLLECTION_DATA";
 
 export function useCollection(
   contractAddress?: string,
   chainId?: ChainId,
-  lazy?: boolean,
+  lazy?: boolean
 ) {
   const { provider, chainId: chainProvider } = useWeb3React();
   const appConfig = useAppConfig();
@@ -113,7 +128,7 @@ export function useCollection(
   return useQuery(
     [GET_COLLECTION_DATA, contractAddress, chainId],
     async () => {
-      if (!chainId || contractAddress === undefined) {
+      if (chainId === undefined || contractAddress === undefined) {
         return;
       }
 
@@ -121,8 +136,7 @@ export function useCollection(
 
       const twContract = await sdk.getContract(contractAddress as string);
 
-      const isTw = twContract.abi.find((m) => m.name === 'contractVersion');
-
+      const isTw = twContract.abi.find((m) => m.name === "contractVersion");
 
       let collectionFromConfig: any = {};
       let collectionObj: any = {};
@@ -130,7 +144,7 @@ export function useCollection(
       collectionFromConfig = appConfig.collections?.find(
         (c) =>
           isAddressEqual(c.contractAddress, contractAddress) &&
-          c.chainId === chainId,
+          c.chainId === chainId
       );
 
       if (isTw) {
@@ -138,10 +152,10 @@ export function useCollection(
         let metadata = await contract.metadata.get();
 
         const contractType: string = hexToString(
-          await twContract.call('contractType'),
+          await twContract.call("contractType")
         );
 
-        let type = contractType?.toLowerCase()?.startsWith('edition')
+        let type = contractType?.toLowerCase()?.startsWith("edition")
           ? NFTType.ERC1155
           : NFTType.ERC721;
 
@@ -152,7 +166,7 @@ export function useCollection(
           symbol: metadata.symbol,
           description: metadata.description,
           imageUrl: metadata.image,
-          nftType: type?.toLowerCase()?.startsWith('edition')
+          nftType: type?.toLowerCase()?.startsWith("edition")
             ? NFTType.ERC1155
             : NFTType.ERC721,
         };
@@ -160,7 +174,7 @@ export function useCollection(
 
       const collection = await getApiCollectionData(
         getNetworkSlugFromChainId(chainId),
-        contractAddress,
+        contractAddress
       );
 
       if (collection) {
@@ -182,7 +196,7 @@ export function useCollection(
 
       const onChainCollection = await getCollectionData(
         provider,
-        contractAddress,
+        contractAddress
       );
 
       return {
@@ -196,16 +210,16 @@ export function useCollection(
         (provider !== undefined && chainId === chainProvider) || Boolean(lazy),
       refetchOnMount: Boolean(lazy),
       refetchOnWindowFocus: Boolean(lazy),
-    },
+    }
   );
 }
 
 export const COLLECTION_ASSETS_FROM_ORDERBOOK =
-  'COLLECTION_ASSETS_FROM_ORDERBOOK';
+  "COLLECTION_ASSETS_FROM_ORDERBOOK";
 
 export function useCollectionAssetsFromOrderbook(
   filters: TraderOrderFilter,
-  networkChainId?: ChainId,
+  networkChainId?: ChainId
 ) {
   const { provider, chainId: injectedChainId } = useWeb3React();
   const chainId = networkChainId || injectedChainId;
@@ -224,12 +238,12 @@ export function useCollectionAssetsFromOrderbook(
 
       return getCollectionAssetsFromOrderbook(provider, filters);
     },
-    { enabled: isProviderEnabled },
+    { enabled: isProviderEnabled }
   );
 }
 
 export const GET_ACCOUNT_CONTRACT_COLLECTION_DATA =
-  'GET_ACCOUNT_CONTRACT_COLLECTION_DATA';
+  "GET_ACCOUNT_CONTRACT_COLLECTION_DATA";
 
 export function useAccountContractCollection(account?: string) {
   return useQuery([GET_COLLECTION_DATA, account], async () => {
@@ -243,7 +257,7 @@ export function useAccountContractCollection(account?: string) {
   });
 }
 
-export const GET_CONTRACT_COLLECTION_DATA = 'GET_CONTRACT_COLLECTION_DATA';
+export const GET_CONTRACT_COLLECTION_DATA = "GET_CONTRACT_COLLECTION_DATA";
 
 export function useContractCollection(networkId?: string, address?: string) {
   return useQuery(
@@ -254,11 +268,11 @@ export function useContractCollection(networkId?: string, address?: string) {
       }
       const contractData = await getApiContractCollectionData(
         networkId,
-        address,
+        address
       );
       if (contractData) {
         return contractData;
       }
-    },
+    }
   );
 }
