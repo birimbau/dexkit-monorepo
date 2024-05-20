@@ -21,13 +21,14 @@ export function getSchemaForInputs(inputs: FunctionInput[]) {
   return Yup.object(obj);
 }
 export async function dkGetTrustedForwarders(
-  provider?: providers.Provider
+  provider?: providers.Provider,
+  clientId?: string
 ) {
   if (!provider) {
     return null;
   }
 
-  const storage = new ThirdwebStorage();
+  const storage = new ThirdwebStorage({ clientId });
 
   let trustedForwarders = await getTrustedForwarders(provider, storage);
 

@@ -6,27 +6,28 @@ import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import { useAsyncMemo } from "@dexkit/widgets/src/hooks";
 import Token from "@mui/icons-material/Token";
 import {
-    Box,
-    Button,
-    Card,
-    CardActionArea,
-    CardContent,
-    CircularProgress,
-    Grid,
-    Paper,
-    Skeleton,
-    Stack,
-    Tab,
-    Tabs,
-    Typography,
+  Box,
+  Button,
+  Card,
+  CardActionArea,
+  CardContent,
+  CircularProgress,
+  Grid,
+  Paper,
+  Skeleton,
+  Stack,
+  Tab,
+  Tabs,
+  Typography,
 } from "@mui/material";
 import { useMutation } from "@tanstack/react-query";
 import {
-    useContract,
-    useContractRead,
-    useTokenBalance,
+  useContract,
+  useContractRead,
+  useTokenBalance,
 } from "@thirdweb-dev/react";
 import { BigNumber } from "ethers";
+import moment from "moment";
 import { SyntheticEvent, useMemo, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import SelectNFTEditionClaimDialog from "../dialogs/SelectNFTEditionClaimDialog";
@@ -53,13 +54,16 @@ export default function StakeErc1155Section({
 
   const { data: rewardTokenAddress } = useContractRead(contract, "rewardToken");
 
-  const { data: stakeInfo } = useContractRead(contract, "getStakeInfo", [
-    account,
-  ]);
+  const { data: stakeInfo, refetch: refetchStakeInfo } = useContractRead(
+    contract,
+    "getStakeInfo",
+    [account]
+  );
 
   const { data: rewardToken } = useContract(rewardTokenAddress || "", "token");
 
-  const { data: rewardTokenBalance } = useTokenBalance(rewardToken, account);
+  const { data: rewardTokenBalance, refetch: refetchRewardTokenBalance } =
+    useTokenBalance(rewardToken, account);
 
   const [stakedTokenIds, rewards] = useMemo(() => {
     if (stakeInfo) {
@@ -81,19 +85,6 @@ export default function StakeErc1155Section({
   const { data: rewardTimeUnit } = useContractRead(
     contract,
     "getDefaultTimeUnit"
-  );
-
-  const rewardPerUnitTime = useMemo(() => {
-    if (rewardRatio) {
-      return rewardRatio?.toNumber();
-    }
-
-    return 0;
-  }, [rewardRatio]);
-
-  const { data: rewardsBalance } = useContractRead(
-    contract,
-    "getRewardTokenBalance"
   );
 
   const handleChangeTab = (e: SyntheticEvent, value: "stake" | "unstake") => {
@@ -242,6 +233,8 @@ export default function StakeErc1155Section({
           tokenId: selectedTokenId,
           amount: BigNumber.from(amount),
         });
+        refetchStakeInfo();
+        refetchRewardTokenBalance();
       } catch (err) {
         watchTransactionDialog.setError(err as any);
       }
@@ -258,6 +251,8 @@ export default function StakeErc1155Section({
           tokenId: selectedTokenId,
           amount: BigNumber.from(amount),
         });
+        refetchStakeInfo();
+        refetchRewardTokenBalance();
       } catch (err) {
         watchTransactionDialog.setError(err as any);
       }
@@ -280,6 +275,7 @@ export default function StakeErc1155Section({
   const handleClaim = async (tokenId: string) => {
     try {
       await claimRewardsMutation.mutateAsync({ tokenId });
+      refetchRewardTokenBalance();
     } catch (err) {
       watchTransactionDialog.setError(err as any);
     }
@@ -383,7 +379,7 @@ export default function StakeErc1155Section({
                   <Grid item xs={12}>
                     <Box>
                       <Stack>
-                        <Stack direction="row" justifyContent="space-between">
+                        {/* <Stack direction="row" justifyContent="space-between">
                           <Typography>
                             <FormattedMessage
                               id="total.rewards"
@@ -400,19 +396,28 @@ export default function StakeErc1155Section({
                               <Skeleton />
                             )}
                           </Typography>
-                        </Stack>
+                          </Stack>*/}
                         <Stack direction="row" justifyContent="space-between">
                           <Typography>
                             <FormattedMessage
-                              id="rewards.second"
-                              defaultMessage="Rewards/second"
+                              id="rewards.rate"
+                              defaultMessage="Rewards rate"
                             />
                           </Typography>
                           <Typography color="text.secondary">
-                            {rewardTimeUnit ? (
+                            {rewardRatio && rewardTimeUnit ? (
                               <>
-                                {rewardPerUnitTime} {rewardTokenBalance?.symbol}
-                                /{rewardTimeUnit?.toNumber()}
+                                {formatBigNumber(
+                                  rewardRatio,
+                                  rewardTokenBalance?.decimals || 18
+                                )}{" "}
+                                {rewardTokenBalance?.symbol}{" "}
+                                {moment
+                                  .duration(
+                                    rewardTimeUnit?.toNumber(),
+                                    "seconds"
+                                  )
+                                  .humanize()}
                               </>
                             ) : (
                               <Skeleton />
@@ -427,8 +432,11 @@ export default function StakeErc1155Section({
                             />
                           </Typography>
                           <Typography color="text.secondary">
-                            {rewardTokenBalance ? (
-                              `${rewards} ${rewardTokenBalance?.symbol}`
+                            {rewardTokenBalance && rewards ? (
+                              `${formatBigNumber(
+                                rewards,
+                                rewardTokenBalance?.decimals || 18
+                              )} ${rewardTokenBalance?.symbol}`
                             ) : (
                               <Skeleton />
                             )}
@@ -454,20 +462,22 @@ export default function StakeErc1155Section({
                       <FormattedMessage id="stake" defaultMessage="Stake" />
                     </Button>
                   </Grid>
-                  <Grid item xs={12}>
-                    <Button
-                      onClick={handleOpenClaim}
-                      variant="outlined"
-                      color="primary"
-                      fullWidth
-                      size="large"
-                    >
-                      <FormattedMessage
-                        id="claim.rewards"
-                        defaultMessage="Claim rewards"
-                      />
-                    </Button>
-                  </Grid>
+                  {rewards && rewards.gt(0) && (
+                    <Grid item xs={12}>
+                      <Button
+                        onClick={handleOpenClaim}
+                        variant="outlined"
+                        color="primary"
+                        fullWidth
+                        size="large"
+                      >
+                        <FormattedMessage
+                          id="claim.rewards"
+                          defaultMessage="Claim rewards"
+                        />
+                      </Button>
+                    </Grid>
+                  )}
                 </Grid>
               </Box>
             )}
@@ -528,7 +538,7 @@ export default function StakeErc1155Section({
                   <Grid item xs={12}>
                     <Box>
                       <Stack>
-                        <Stack direction="row" justifyContent="space-between">
+                        {/*  <Stack direction="row" justifyContent="space-between">
                           <Typography>
                             <FormattedMessage
                               id="total.rewards"
@@ -545,7 +555,7 @@ export default function StakeErc1155Section({
                               <Skeleton />
                             )}
                           </Typography>
-                        </Stack>
+                          </Stack>*/}
 
                         <Stack direction="row" justifyContent="space-between">
                           <Typography>
@@ -555,10 +565,19 @@ export default function StakeErc1155Section({
                             />
                           </Typography>
                           <Typography color="text.secondary">
-                            {rewardTimeUnit ? (
+                            {rewardRatio && rewardTimeUnit ? (
                               <>
-                                {rewardPerUnitTime} {rewardTokenBalance?.symbol}
-                                /{rewardTimeUnit?.toNumber()}
+                                {formatBigNumber(
+                                  rewardRatio,
+                                  rewardTokenBalance?.decimals || 18
+                                )}{" "}
+                                {rewardTokenBalance?.symbol}{" "}
+                                {moment
+                                  .duration(
+                                    rewardTimeUnit?.toNumber(),
+                                    "seconds"
+                                  )
+                                  .humanize()}
                               </>
                             ) : (
                               <Skeleton />
@@ -574,8 +593,11 @@ export default function StakeErc1155Section({
                             />
                           </Typography>
                           <Typography color="text.secondary">
-                            {rewardTokenBalance ? (
-                              `${rewards} ${rewardTokenBalance?.symbol}`
+                            {rewardTokenBalance && rewards ? (
+                              `${formatBigNumber(
+                                rewards,
+                                rewardTokenBalance?.decimals || 18
+                              )} ${rewardTokenBalance?.symbol}`
                             ) : (
                               <Skeleton />
                             )}

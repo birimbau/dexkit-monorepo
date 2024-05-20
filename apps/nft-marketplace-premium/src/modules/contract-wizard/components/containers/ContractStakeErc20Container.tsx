@@ -4,35 +4,34 @@ import { parseUnits } from '@dexkit/core/utils/ethers/parseUnits';
 import { useDexKitContext } from '@dexkit/ui';
 import FormikDecimalInput from '@dexkit/ui/components/FormikDecimalInput';
 import {
-    useDepositRewardTokensMutation,
-    useSetDefaultTimeUnit,
-    useSetRewardRatio,
-    useThirdwebApprove,
-    useWithdrawRewardsMutation,
+  useDepositRewardTokensMutation,
+  useSetDefaultTimeUnit,
+  useSetRewardRatio,
+  useThirdwebApprove,
+  useWithdrawRewardsMutation,
 } from '@dexkit/ui/modules/contract-wizard/hooks/thirdweb';
 import { useWeb3React } from '@dexkit/wallet-connectors/hooks/useWeb3React';
 import {
-    Box,
-    Button,
-    Card,
-    CardContent,
-    CircularProgress,
-    FormControl,
-    FormControlLabel,
-    Grid,
-    InputAdornment,
-    Skeleton,
-    Stack,
-    Tab,
-    Tabs,
-    Typography,
+  Box,
+  Button,
+  Card,
+  CardContent,
+  CircularProgress,
+  FormControl,
+  FormControlLabel,
+  Grid,
+  InputAdornment,
+  Skeleton,
+  Stack,
+  Tab,
+  Tabs,
+  Typography,
 } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import {
-    useContract,
-    useContractRead,
-    useContractWrite,
-    useTokenBalance,
+  useContract,
+  useContractRead,
+  useTokenBalance,
 } from '@thirdweb-dev/react';
 import { BigNumber } from 'ethers';
 import { Field, Formik } from 'formik';
@@ -69,11 +68,6 @@ export default function ContractStakeErc20Container({
 
   const { data: contract } = useContract(address, 'custom');
 
-  const { mutateAsync: depositRewardTokens } = useContractWrite(
-    contract,
-    'depositRewardTokens',
-  );
-
   const { account } = useWeb3React();
 
   const { data: rewardTokenAddress } = useContractRead(contract, 'rewardToken');
@@ -109,10 +103,10 @@ export default function ContractStakeErc20Container({
   const [numerator, denominator] = useMemo(() => {
     if (rewardRatio) {
       const [n, d] = rewardRatio;
-      return [n.toNumber(), d.toNumber()];
+      return [n as BigNumber, d as BigNumber];
     }
 
-    return [0, 0];
+    return [BigNumber.from(0), BigNumber.from(0)];
   }, [rewardRatio]);
 
   const { data: allowance } = useQuery(
@@ -178,11 +172,6 @@ export default function ContractStakeErc20Container({
     isAltVersion: true,
   });
 
-  const { mutateAsync: setRewardRatio } = useContractWrite(
-    contract,
-    'setRewardRatio',
-  );
-
   const handleSubmitTimeUnit = async ({ timeUnit }: { timeUnit: string }) => {
     await setDefaultTimeUnit.mutateAsync({ timeUnit });
   };
@@ -221,17 +210,30 @@ export default function ContractStakeErc20Container({
           <Stack>
             <Typography variant="caption" color="text.secondary">
               <FormattedMessage
-                id="reward.ratio"
-                defaultMessage="Reward ratio"
+                id="reward.ratio.each.reward.time"
+                defaultMessage="Reward ratio each reward time"
               />
             </Typography>
             <Typography variant="h5">
-              {numerator}/{denominator}
+              {denominator.gt(0) ? (
+                <>
+                  {numerator.mul(10000).div(denominator).toNumber() / 10000}{' '}
+                  {rewardTokenBalance?.symbol}{' '}
+                  {moment
+                    .duration(rewardTimeUnit?.toNumber(), 'seconds')
+                    .humanize()}{' '}
+                </>
+              ) : (
+                0
+              )}
             </Typography>
           </Stack>
           <Stack>
             <Typography variant="caption" color="text.secondary">
-              <FormattedMessage id="rewards" defaultMessage="Rewards" />
+              <FormattedMessage
+                id="available.rewards"
+                defaultMessage="Available rewards"
+              />
             </Typography>
             <Typography variant="h5">
               {rewardsBalance && rewardTokenBalance ? (

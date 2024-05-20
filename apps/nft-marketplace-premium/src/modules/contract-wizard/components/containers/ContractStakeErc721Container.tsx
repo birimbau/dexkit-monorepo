@@ -4,35 +4,34 @@ import { parseUnits } from '@dexkit/core/utils/ethers/parseUnits';
 import { useDexKitContext } from '@dexkit/ui';
 import FormikDecimalInput from '@dexkit/ui/components/FormikDecimalInput';
 import {
-    useDepositRewardTokensMutation,
-    useSetDefaultTimeUnit,
-    useSetRewardsPerUnitTime,
-    useThirdwebApprove,
-    useWithdrawRewardsMutation,
+  useDepositRewardTokensMutation,
+  useSetDefaultTimeUnit,
+  useSetRewardsPerUnitTime,
+  useThirdwebApprove,
+  useWithdrawRewardsMutation,
 } from '@dexkit/ui/modules/contract-wizard/hooks/thirdweb';
 import { useWeb3React } from '@dexkit/wallet-connectors/hooks/useWeb3React';
 import {
-    Box,
-    Button,
-    Card,
-    CardContent,
-    CircularProgress,
-    FormControl,
-    FormControlLabel,
-    Grid,
-    InputAdornment,
-    Skeleton,
-    Stack,
-    Tab,
-    Tabs,
-    Typography,
+  Box,
+  Button,
+  Card,
+  CardContent,
+  CircularProgress,
+  FormControl,
+  FormControlLabel,
+  Grid,
+  InputAdornment,
+  Skeleton,
+  Stack,
+  Tab,
+  Tabs,
+  Typography,
 } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import {
-    useContract,
-    useContractRead,
-    useContractWrite,
-    useTokenBalance,
+  useContract,
+  useContractRead,
+  useTokenBalance,
 } from '@thirdweb-dev/react';
 import { BigNumber } from 'ethers';
 import { Field, Formik } from 'formik';
@@ -69,32 +68,20 @@ export default function ContractStakeErc721Container({
 
   const { data: contract } = useContract(address, 'custom');
 
-  const { mutateAsync: depositRewardTokens } = useContractWrite(
-    contract,
-    'depositRewardTokens',
-  );
-
   const { account } = useWeb3React();
 
   const { data: rewardTokenAddress } = useContractRead(contract, 'rewardToken');
 
-  const { data: rewardsBalance } = useContractRead(
-    contract,
-    'getRewardTokenBalance',
-  );
+  const { data: rewardsBalance, refetch: refetchRewardsBalance } =
+    useContractRead(contract, 'getRewardTokenBalance');
 
-  const { data: stakingTokenAddress } = useContractRead(
-    contract,
-    'stakingToken',
-  );
   const { data: rewardToken } = useContract(rewardTokenAddress || '', 'token');
 
-  const { data: rewardTokenBalance } = useTokenBalance(rewardToken, account);
+  const { data: rewardTokenBalance, refetch: refetchRewardTokenBalance } =
+    useTokenBalance(rewardToken, account);
 
-  const { data: rewardsPerUnitTime } = useContractRead(
-    contract,
-    'getRewardsPerUnitTime',
-  );
+  const { data: rewardsPerUnitTime, refetch: refetchRewardsPerUnitTime } =
+    useContractRead(contract, 'getRewardsPerUnitTime');
   const { data: rewardTimeUnit } = useContractRead(contract, 'getTimeUnit');
 
   const rewardsPerUnitTimeValue = useMemo(() => {
@@ -142,6 +129,8 @@ export default function ContractStakeErc721Container({
         await withdrawRewardTokensMutation.mutateAsync({
           amount: amountParsed,
         });
+        refetchRewardsBalance();
+        refetchRewardTokenBalance();
       } catch (err) {
         watchTransactionDialog.setError(err as any);
       }
@@ -157,6 +146,8 @@ export default function ContractStakeErc721Container({
       await depositRewardTokensMutation.mutateAsync({
         amount: amountParsed,
       });
+      refetchRewardsBalance();
+      refetchRewardTokenBalance();
     } catch (err) {
       watchTransactionDialog.setError(err as any);
     }
@@ -177,6 +168,7 @@ export default function ContractStakeErc721Container({
     await setRewardsPerUnitTimeMutation.mutateAsync({
       unitTime: rewardsPerUnitTime,
     });
+    refetchRewardsPerUnitTime();
   };
 
   return (
@@ -205,7 +197,13 @@ export default function ContractStakeErc721Container({
                 defaultMessage="Reward per time Unit"
               />
             </Typography>
-            <Typography variant="h5">{rewardsPerUnitTimeValue}</Typography>
+            <Typography variant="h5">
+              {formatBigNumber(
+                rewardsPerUnitTime || BigNumber.from('0'),
+                rewardTokenBalance?.decimals || 18,
+              )}{' '}
+              {rewardTokenBalance?.symbol}
+            </Typography>
           </Stack>
           <Stack>
             <Typography variant="caption" color="text.secondary">

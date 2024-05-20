@@ -1,6 +1,7 @@
 import { DexkitApiProvider } from "@dexkit/core/providers";
 import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
-import { BigNumber, Contract, ContractFactory, ContractInterface, providers } from "ethers";
+import type { providers } from "ethers";
+import { BigNumber, Contract, ContractFactory, ContractInterface } from "ethers";
 import { useSnackbar } from "notistack";
 import { useIntl } from "react-intl";
 
@@ -452,13 +453,13 @@ export function useFormConfigParamsQuery({
   );
 }
 
-export function useDeployThirdWebContractMutation() {
+export function useDeployThirdWebContractMutation({ clientId }: { clientId: string }) {
   const { provider, chainId } = useWeb3React();
   const [sdk, setSdk] = useState<ThirdwebSDK>();
 
   useEffect(() => {
     if (provider) {
-      setSdk(new ThirdwebSDK(provider.getSigner()));
+      setSdk(new ThirdwebSDK(provider.getSigner(), { clientId }));
     }
   }, [provider, chainId]);
 
