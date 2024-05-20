@@ -548,7 +548,7 @@ const EvmWalletContainer = () => {
                           </Card>
                         )}
                       >
-                        {isLoggedIn && isActive ? (
+                        {isLoggedIn ? (
                           <UserActivityTable />
                         ) : (
                           <Stack justifyContent="center">

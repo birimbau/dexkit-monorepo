@@ -68,7 +68,6 @@ export default function LoginAppButton({
       <Stack spacing={2}>
         <Alert severity={"info"}>
           <Typography variant={"body1"}>
-            {" "}
             {connectWalletMsg ? (
               connectWalletMsg
             ) : (
@@ -79,19 +78,21 @@ export default function LoginAppButton({
             )}
           </Typography>
         </Alert>
-        <Button
-          variant="outlined"
-          color="inherit"
-          onClick={handleOpenConnectWalletDialog}
-          startIcon={<Wallet />}
-          endIcon={<ChevronRightIcon />}
-        >
-          <FormattedMessage
-            id="connect.wallet"
-            defaultMessage="Connect Wallet"
-            description="Connect wallet button"
-          />
-        </Button>
+        <Stack alignItems="center" justifyContent="center">
+          <Button
+            variant="outlined"
+            color="inherit"
+            onClick={handleOpenConnectWalletDialog}
+            startIcon={<Wallet />}
+            endIcon={<ChevronRightIcon />}
+          >
+            <FormattedMessage
+              id="connect.wallet"
+              defaultMessage="Connect Wallet"
+              description="Connect wallet button"
+            />
+          </Button>
+        </Stack>
       </Stack>
     );
   }
@@ -111,18 +112,20 @@ export default function LoginAppButton({
           )}
         </Typography>
       </Alert>
-      <Button
-        variant={"contained"}
-        disabled={loginMutation.isLoading || isSameUserAccount}
-        startIcon={
-          loginMutation.isLoading && (
-            <CircularProgress size="1rem" color="inherit" />
-          )
-        }
-        onClick={handleLogin}
-      >
-        {buttonMsg()}
-      </Button>
+      <Stack alignItems="center" justifyContent="center">
+        <Button
+          variant={"contained"}
+          disabled={loginMutation.isLoading || isSameUserAccount}
+          startIcon={
+            loginMutation.isLoading && (
+              <CircularProgress size="1rem" color="inherit" />
+            )
+          }
+          onClick={handleLogin}
+        >
+          {buttonMsg()}
+        </Button>
+      </Stack>
     </Stack>
   );
 }

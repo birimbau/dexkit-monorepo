@@ -5,7 +5,10 @@ import {
   getBlockExplorerUrl,
   truncateAddress,
 } from "@dexkit/core/utils";
-import { getNetworkSlugFromChainId } from "@dexkit/core/utils/blockchain";
+import {
+  getChainSlug,
+  getNetworkSlugFromChainId,
+} from "@dexkit/core/utils/blockchain";
 import { TableCell, TableRow } from "@mui/material";
 import React from "react";
 import { FormattedMessage } from "react-intl";
@@ -568,9 +571,10 @@ export default function UserActivityTableRow({
         values={{
           contract: (
             <Link
-              href={`${
-                event.chainId ? getBlockExplorerUrl(event.chainId) : undefined
-              }/address/${address}`}
+              href={`/contract/${
+                event.chainId ? getChainSlug(event.chainId) : undefined
+              }/${address}`}
+              target="_blank"
             >
               {name}
             </Link>

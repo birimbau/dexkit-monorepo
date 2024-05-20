@@ -1,7 +1,7 @@
 import { useLoginAccountMutation } from "@dexkit/ui/hooks/auth";
 import {
-    getAccessToken,
-    getAccessTokenAndRefresh,
+  getAccessToken,
+  getAccessTokenAndRefresh,
 } from "@dexkit/ui/services/auth";
 import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import jwt_decode from "jwt-decode";
@@ -10,6 +10,7 @@ import { AuthContext, AuthStateContext } from "../context/AuthContext";
 
 interface Props {
   children: ReactNode;
+  disableAutoLogin?: boolean;
 }
 
 export function AuthProvider(props: Props) {
@@ -19,10 +20,17 @@ export function AuthProvider(props: Props) {
     useContext(AuthStateContext);
 
   const loginMutation = useLoginAccountMutation();
-  const { children } = props;
+  const { children, disableAutoLogin } = props;
 
   useEffect(() => {
-    if (account && !isLoggedIn && triedLogin && setIsLoggedIn && setUser) {
+    if (
+      account &&
+      !isLoggedIn &&
+      triedLogin &&
+      setIsLoggedIn &&
+      setUser &&
+      !disableAutoLogin
+    ) {
       loginMutation.mutateAsync().then((d) => {
         setIsLoggedIn(true);
         if (d?.access_token) {
