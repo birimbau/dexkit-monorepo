@@ -1,7 +1,7 @@
 import { ChainId } from "@dexkit/core/constants/enums";
 import { UserEvents } from "@dexkit/core/constants/userEvents";
-import { ZrxOrder } from "@dexkit/core/services/zrx/types";
 import { useTrackUserEventsMutation } from "@dexkit/ui/hooks/userEvents";
+import { ZrxOrder } from "@dexkit/zrx-swap/types";
 import { useMutation } from "@tanstack/react-query";
 import type { providers } from "ethers";
 import { Contract } from "ethers";

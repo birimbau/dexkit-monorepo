@@ -1,7 +1,7 @@
 import { getApiKeyData } from '@/modules/wizard/services/integrations';
 import { MY_APPS_ENDPOINT } from '@dexkit/core';
 import { NETWORK_FROM_SLUG } from '@dexkit/core/constants/networks';
-import { ZEROEX_CHAIN_PREFIX } from '@dexkit/core/services/zrx/constants';
+import { ZEROEX_CHAIN_PREFIX } from '@dexkit/zrx-swap/constants';
 import axios from 'axios';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
@@ -35,7 +35,7 @@ export default async function handler(
 
     const response = await axios.get(
       GET_ZRX_URL(NETWORK_FROM_SLUG(network as string)?.chainId) +
-        '/swap/v1/quote',
+      '/swap/v1/quote',
       {
         params: req.query,
         headers: {

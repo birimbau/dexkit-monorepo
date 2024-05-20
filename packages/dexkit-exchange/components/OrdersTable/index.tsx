@@ -1,5 +1,5 @@
 import { ChainId } from "@dexkit/core";
-import { ZrxOrder } from "@dexkit/core/services/zrx/types";
+import { ZrxOrder } from "@dexkit/zrx-swap/types";
 import {
   Box,
   Button,

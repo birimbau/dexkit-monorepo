@@ -9,13 +9,13 @@ import { FormattedMessage } from 'react-intl';
 import MainLayout from 'src/components/layouts/main';
 import { getAppConfig } from 'src/services/app';
 
-import { ZrxOrder } from '@dexkit/core/services/zrx/types';
 import OrderWidget from '@dexkit/exchange/components/OrderWidget';
 import { EXCHANGE_NOTIFICATION_TYPES } from '@dexkit/exchange/constants/messages';
 import { useZrxOrderbookOrder } from '@dexkit/exchange/hooks/zrx';
 import { useZrxCancelOrderMutation } from '@dexkit/exchange/hooks/zrx/useZrxCancelOrderMutation';
 import { useDexKitContext, useExecuteTransactionsDialog } from '@dexkit/ui';
 import { AppNotificationType } from '@dexkit/ui/types';
+import { ZrxOrder } from '@dexkit/zrx-swap/types';
 import { useCallback } from 'react';
 import { REVALIDATE_PAGE_TIME } from 'src/constants';
 
