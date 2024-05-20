@@ -1,4 +1,4 @@
-import { NavigateNext, Search } from "@mui/icons-material";
+import { NavigateNext, QrCodeScanner, Search } from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -19,6 +19,7 @@ import {
   useTheme,
 } from "@mui/material";
 
+import ScanWalletQrCodeDialog from "@dexkit/ui/components/dialogs/ScanWalletQrCodeDialog";
 import React, { useEffect, useState } from "react";
 
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -33,6 +34,8 @@ import VerticalAlignBottomIcon from "@mui/icons-material/VerticalAlignBottom";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import Link from "../../../../components/AppLink";
+
+import { parse } from "eth-url-parser";
 
 import { copyToClipboard, truncateAddress } from "@dexkit/core/utils";
 import CopyIconButton from "@dexkit/ui/components/CopyIconButton";
@@ -156,8 +159,34 @@ const EvmWalletContainer = () => {
     }
   }, [walletChainId]);
 
+  const [showQrCode, setShowQrCode] = useState(false);
+
+  const handleOpenQrCodeScannerClose = () => {
+    setShowQrCode(false);
+  };
+
+  const handleAddressResult = (result: string) => {
+    try {
+      parse(result);
+
+      window.open(`/wallet/send/${encodeURI(result)}`, "_blank");
+      handleOpenQrCodeScannerClose();
+    } catch (err) {}
+  };
+
+  const handleOpenQrCode = () => setShowQrCode(true);
+
   return (
     <>
+      <ScanWalletQrCodeDialog
+        DialogProps={{
+          open: showQrCode,
+          maxWidth: "sm",
+          fullWidth: true,
+          onClose: handleOpenQrCodeScannerClose,
+        }}
+        onResult={handleAddressResult}
+      />
       <EvmReceiveDialog
         dialogProps={{
           open: isReceiveOpen,
@@ -274,6 +303,18 @@ const EvmWalletContainer = () => {
                     </Grid>
                     <Grid item>
                       <TransferCoinButton />
+                    </Grid>
+                    <Grid item>
+                      <Button
+                        onClick={handleOpenQrCode}
+                        startIcon={<QrCodeScanner />}
+                        variant="outlined"
+                      >
+                        <FormattedMessage
+                          id="scan.wallet"
+                          defaultMessage="Scan Wallet"
+                        />
+                      </Button>
                     </Grid>
                   </Grid>
                 </Grid>

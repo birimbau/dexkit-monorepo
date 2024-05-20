@@ -4,7 +4,7 @@ import { formatEther } from "@dexkit/core/utils/ethers/formatEther";
 import { formatUnits } from "@dexkit/core/utils/ethers/formatUnits";
 import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import { useQuery } from "@tanstack/react-query";
-import { ParseOutput, parse } from 'eth-url-parser';
+import { ParseOutput, parse } from "eth-url-parser";
 import { useAtom } from "jotai";
 import { useAtomValue } from "jotai/utils";
 import { useMemo } from "react";
@@ -13,11 +13,9 @@ import { getERC20Balances } from "../services";
 import { isBalancesVisibleAtom } from "../state";
 import { TokenBalance } from "../types";
 
-export const GET_ERC20_BALANCES = 'GET_ERC20_BALANCES';
-
+export const GET_ERC20_BALANCES = "GET_ERC20_BALANCES";
 
 type SelectCalback = (data?: TokenBalance[]) => TokenBalance[] | undefined;
-
 
 export function useIsBalanceVisible() {
   return useAtomValue(isBalancesVisibleAtom);
@@ -68,8 +66,6 @@ export const useERC20BalancesQuery = (
   );
 };
 
-
-
 export function useParsePaymentRequest({
   paymentURL,
 }: {
@@ -90,9 +86,9 @@ export function useParsePaymentRequest({
       if (parsedPayment.chain_id) {
         url.chainId = Number(parsedPayment.chain_id);
       }
-      if (parsedPayment.function_name === 'transfer') {
-        if (parsedPayment.parameters && parsedPayment.parameters['address']) {
-          url.to = parsedPayment.parameters['address'];
+      if (parsedPayment.function_name === "transfer") {
+        if (parsedPayment.parameters && parsedPayment.parameters["address"]) {
+          url.to = parsedPayment.parameters["address"];
         }
       } else {
         if (parsedPayment.function_name === undefined) {
@@ -110,7 +106,7 @@ export function useParsePaymentRequest({
   const defaultCoin = useMemo(() => {
     if (paymentUrlParsed?.parsedOutput && evmCoins) {
       let defaultCoin;
-      if (paymentUrlParsed.parsedOutput.function_name === 'transfer') {
+      if (paymentUrlParsed.parsedOutput.function_name === "transfer") {
         if (
           paymentUrlParsed.chainId &&
           paymentUrlParsed.parsedOutput.target_address
@@ -133,7 +129,7 @@ export function useParsePaymentRequest({
         defaultCoin = evmCoins.find(
           (c) =>
             c.coinType === CoinTypes.EVM_NATIVE &&
-            c.network.chainId === paymentUrlParsed.chainId,
+            c.network.chainId === paymentUrlParsed.chainId
         );
       }
       return defaultCoin;
@@ -144,21 +140,21 @@ export function useParsePaymentRequest({
       let amount;
       const parsedPayment = paymentUrlParsed?.parsedOutput;
 
-      if (parsedPayment.function_name === 'transfer') {
+      if (parsedPayment.function_name === "transfer") {
         if (
           parsedPayment.parameters &&
-          parsedPayment.parameters['uint256'] &&
+          parsedPayment.parameters["uint256"] &&
           defaultCoin.decimals !== undefined
         ) {
           amount = formatUnits(
-            parsedPayment.parameters['uint256'],
-            defaultCoin.decimals,
+            parsedPayment.parameters["uint256"],
+            defaultCoin.decimals
           );
         }
       }
       if (parsedPayment.function_name === undefined) {
-        if (parsedPayment.parameters && parsedPayment.parameters['value']) {
-          amount = formatEther(parsedPayment.parameters['value']);
+        if (parsedPayment.parameters && parsedPayment.parameters["value"]) {
+          amount = formatEther(parsedPayment.parameters["value"]);
         }
       }
       return amount;
