@@ -19,7 +19,6 @@ import {
   useTheme,
 } from "@mui/material";
 
-import ScanWalletQrCodeDialog from "@dexkit/ui/components/dialogs/ScanWalletQrCodeDialog";
 import React, { useEffect, useState } from "react";
 
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -73,6 +72,10 @@ import LoginAppButton from "@dexkit/ui/components/LoginAppButton";
 
 const EvmReceiveDialog = dynamic(
   () => import("@dexkit/ui/components/dialogs/EvmReceiveDialog")
+);
+
+const ScanWalletQrCodeDialog = dynamic(
+  async () => import("@dexkit/ui/components/dialogs/ScanWalletQrCodeDialog")
 );
 
 enum WalletTabs {
@@ -178,15 +181,18 @@ const EvmWalletContainer = () => {
 
   return (
     <>
-      <ScanWalletQrCodeDialog
-        DialogProps={{
-          open: showQrCode,
-          maxWidth: "sm",
-          fullWidth: true,
-          onClose: handleOpenQrCodeScannerClose,
-        }}
-        onResult={handleAddressResult}
-      />
+      {showQrCode && (
+        <ScanWalletQrCodeDialog
+          DialogProps={{
+            open: showQrCode,
+            maxWidth: "sm",
+            fullWidth: true,
+            onClose: handleOpenQrCodeScannerClose,
+          }}
+          onResult={handleAddressResult}
+        />
+      )}
+
       <EvmReceiveDialog
         dialogProps={{
           open: isReceiveOpen,

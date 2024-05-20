@@ -21,10 +21,13 @@ import {
   TextField,
 } from "@mui/material";
 
+import dynamic from "next/dynamic";
 import { ChangeEvent, SyntheticEvent, useMemo, useState } from "react";
 import { FormattedMessage } from "react-intl";
 
-import ScanWalletQrCodeDialog from "@dexkit/ui/components/dialogs/ScanWalletQrCodeDialog";
+const ScanWalletQrCodeDialog = dynamic(
+  async () => import("@dexkit/ui/components/dialogs/ScanWalletQrCodeDialog")
+);
 
 const filter = createFilterOptions<string>();
 
@@ -136,15 +139,18 @@ export function EvmSendForm({
 
   return (
     <>
-      <ScanWalletQrCodeDialog
-        DialogProps={{
-          open: showQrCode,
-          maxWidth: "sm",
-          fullWidth: true,
-          onClose: handleOpenQrCodeScannerClose,
-        }}
-        onResult={handleAddressResult}
-      />
+      {showQrCode && (
+        <ScanWalletQrCodeDialog
+          DialogProps={{
+            open: showQrCode,
+            maxWidth: "sm",
+            fullWidth: true,
+            onClose: handleOpenQrCodeScannerClose,
+          }}
+          onResult={handleAddressResult}
+        />
+      )}
+
       <Stack spacing={2}>
         <Autocomplete
           disablePortal

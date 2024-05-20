@@ -1,22 +1,22 @@
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 
 import {
-    Avatar,
-    Box,
-    Button,
-    Divider,
-    Drawer,
-    IconButton,
-    List,
-    ListItemButton,
-    ListItemIcon,
-    ListItemSecondaryAction,
-    ListItemText,
-    ListSubheader,
-    Paper,
-    Stack,
-    styled,
-    Typography,
+  Avatar,
+  Box,
+  Button,
+  Divider,
+  Drawer,
+  IconButton,
+  List,
+  ListItemButton,
+  ListItemIcon,
+  ListItemSecondaryAction,
+  ListItemText,
+  ListSubheader,
+  Paper,
+  Stack,
+  styled,
+  Typography,
 } from "@mui/material";
 
 import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
@@ -32,19 +32,27 @@ import Wallet from "./icons/Wallet";
 import { useIsMobile } from "@dexkit/core/hooks";
 import WalletContent from "@dexkit/ui/components/WalletContent";
 import {
-    useAuthUserQuery,
-    useConnectWalletDialog,
-    useCurrency,
-    useLocale,
-    useShowSelectCurrency,
-    useShowSelectLocale,
+  useAuthUserQuery,
+  useConnectWalletDialog,
+  useCurrency,
+  useLocale,
+  useShowSelectCurrency,
+  useShowSelectLocale,
 } from "@dexkit/ui/hooks";
+import QrCodeScanner from "@mui/icons-material/QrCodeScanner";
 import { useAtom } from "jotai";
-import { useMemo } from "react";
+import dynamic from "next/dynamic";
+import { parse } from "papaparse";
+import { useMemo, useState } from "react";
 import { AppConfig } from "../modules/wizard/types/config";
 import { isMiniSidebarAtom } from "../state";
 import AppDefaultMenuList from "./AppDefaultMenuList";
+import Link from "./AppLink";
 import { ThemeModeSelector } from "./ThemeModeSelector";
+
+const ScanWalletQrCodeDialog = dynamic(
+  async () => import("@dexkit/ui/components/dialogs/ScanWalletQrCodeDialog")
+);
 
 const CustomListItemSecondaryAction = styled(ListItemSecondaryAction)({
   display: "flex",
@@ -108,6 +116,23 @@ function AppDrawer({ open, onClose, appConfig }: Props) {
     setIsMiniSidebar((value) => !value);
   };
 
+  const [showQrCode, setShowQrCode] = useState(false);
+
+  const handleOpenQrCodeScannerClose = () => {
+    setShowQrCode(false);
+  };
+
+  const handleAddressResult = (result: string) => {
+    try {
+      parse(result);
+
+      window.open(`/wallet/send/${encodeURI(result)}`, "_blank");
+      handleOpenQrCodeScannerClose();
+    } catch (err) {}
+  };
+
+  const handleOpenQrCode = () => setShowQrCode(true);
+
   const renderContent = () => {
     return (
       <Box
@@ -155,14 +180,22 @@ function AppDrawer({ open, onClose, appConfig }: Props) {
               <Stack spacing={2}>
                 {user && (
                   <>
-                    <Box>
-                      <Stack direction="row">
-                        <Avatar src={user?.profileImageURL} />
-                        <Box>
-                          <Typography variant="body1">
+                    <Box sx={{ px: 2, pt: 1 }}>
+                      <Stack
+                        direction="row"
+                        alignItems="center"
+                        justifyContent="space-between"
+                        spacing={2}
+                      >
+                        <Stack direction="row" alignItems="center" spacing={2}>
+                          <Avatar src={user?.profileImageURL} />
+                          <Link href={`/u/${user.username}`} variant="body1">
                             {user?.username}
-                          </Typography>
-                        </Box>
+                          </Link>
+                        </Stack>
+                        <IconButton onClick={handleOpenQrCode}>
+                          <QrCodeScanner />
+                        </IconButton>
                       </Stack>
                     </Box>
                     <Divider />
@@ -259,9 +292,27 @@ function AppDrawer({ open, onClose, appConfig }: Props) {
   }
 
   return (
-    <Drawer PaperProps={{ variant: "elevation" }} open={open} onClose={onClose}>
-      {renderContent()}
-    </Drawer>
+    <>
+      {showQrCode && (
+        <ScanWalletQrCodeDialog
+          DialogProps={{
+            open: showQrCode,
+            maxWidth: "sm",
+            fullWidth: true,
+            onClose: handleOpenQrCodeScannerClose,
+            fullScreen: isMobile,
+          }}
+          onResult={handleAddressResult}
+        />
+      )}
+      <Drawer
+        PaperProps={{ variant: "elevation" }}
+        open={open}
+        onClose={onClose}
+      >
+        {renderContent()}
+      </Drawer>
+    </>
   );
 }
 
