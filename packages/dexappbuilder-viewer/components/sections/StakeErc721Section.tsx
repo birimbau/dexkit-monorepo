@@ -26,10 +26,10 @@ import { useMutation } from "@tanstack/react-query";
 import {
   useContract,
   useContractRead,
-  useContractWrite,
   useTokenBalance,
 } from "@thirdweb-dev/react";
 import { BigNumber } from "ethers";
+import moment from "moment";
 import { SyntheticEvent, useMemo, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import SelectNFTDialog from "../dialogs/SelectNFTDialog";
@@ -48,29 +48,21 @@ export default function StakeErc721Section({
 
   const { data: contract } = useContract(address, "custom");
 
-  const { mutateAsync: withdraw, isLoading: isClaiming } = useContractWrite(
-    contract,
-    "withdraw"
-  );
-
-  const { mutateAsync: claimRewards } = useContractWrite(
-    contract,
-    "claimRewards"
-  );
-
   const { watchTransactionDialog, createNotification } = useDexKitContext();
 
   const { account } = useWeb3React();
 
+  const { data: stakeInfo, refetch: refetchStakeInfo } = useContractRead(
+    contract,
+    "getStakeInfo",
+    [account]
+  );
   const { data: rewardTokenAddress } = useContractRead(contract, "rewardToken");
-
-  const { data: stakeInfo } = useContractRead(contract, "getStakeInfo", [
-    account,
-  ]);
 
   const { data: rewardToken } = useContract(rewardTokenAddress || "", "token");
 
-  const { data: rewardTokenBalance } = useTokenBalance(rewardToken, account);
+  const { data: rewardTokenBalance, refetch: refetchRewardTokenBalance } =
+    useTokenBalance(rewardToken, account);
 
   const [stakedTokenIds, rewards] = useMemo(() => {
     if (stakeInfo) {
@@ -103,14 +95,6 @@ export default function StakeErc721Section({
     contract,
     "getRewardTokenBalance"
   );
-
-  const rewardPerUnitTime = useMemo(() => {
-    if (rewardRatio) {
-      return formatBigNumber(rewardRatio, rewardTokenBalance?.decimals);
-    }
-
-    return 0;
-  }, [rewardRatio, rewardTokenBalance?.decimals]);
 
   const handleChangeTab = (e: SyntheticEvent, value: "stake" | "unstake") => {
     setTab(value);
@@ -264,14 +248,11 @@ export default function StakeErc721Section({
 
   const handleClaim = async () => {
     await claimRewardsMutation.mutateAsync();
+    refetchRewardTokenBalance();
+    refetchStakeInfo();
   };
 
   const { data: stakingTokenContract } = useContract(stakingAddress, "custom");
-
-  const { mutateAsync: setApproveForAll } = useContractWrite(
-    stakingTokenContract,
-    "setApprovalForAll"
-  );
 
   const approveForAllMuation = useApproveForAll({
     contract: stakingTokenContract,
@@ -290,12 +271,15 @@ export default function StakeErc721Section({
     }
 
     await stakeNftMutation.mutateAsync({ tokenIds: selectedTokenIds });
-
+    refetchRewardTokenBalance();
+    refetchStakeInfo();
     setSelectedTokenIds([]);
   };
 
   const handleUnstake = async () => {
-    unstakeRewardsMutation.mutateAsync({ tokenIds: selectedTokenIds });
+    await unstakeRewardsMutation.mutateAsync({ tokenIds: selectedTokenIds });
+    refetchRewardTokenBalance();
+    refetchStakeInfo();
 
     setSelectedTokenIds([]);
   };
@@ -418,15 +402,27 @@ export default function StakeErc721Section({
                         <Stack direction="row" justifyContent="space-between">
                           <Typography>
                             <FormattedMessage
-                              id="rewards.second"
-                              defaultMessage="Rewards/second"
+                              id="rewards.rate"
+                              defaultMessage="Rewards rate"
                             />
                           </Typography>
+
                           <Typography color="text.secondary">
-                            {rewardTokenBalance ? (
+                            {rewardRatio &&
+                            rewardTimeUnit &&
+                            rewardTokenBalance ? (
                               <>
-                                {rewardPerUnitTime} {rewardTokenBalance?.symbol}
-                                /{rewardTimeUnit?.toNumber()}
+                                {formatBigNumber(
+                                  rewardRatio,
+                                  rewardTokenBalance?.decimals || 18
+                                )}{" "}
+                                {rewardTokenBalance?.symbol}{" "}
+                                {moment
+                                  .duration(
+                                    rewardTimeUnit?.toNumber(),
+                                    "seconds"
+                                  )
+                                  .humanize()}
                               </>
                             ) : (
                               <Skeleton />
@@ -441,10 +437,10 @@ export default function StakeErc721Section({
                             />
                           </Typography>
                           <Typography color="text.secondary">
-                            {stakeInfo?.length > 0 && rewardTokenBalance ? (
+                            {rewardTokenBalance && rewards ? (
                               `${formatBigNumber(
-                                stakeInfo[1],
-                                rewardTokenBalance?.decimals
+                                rewards,
+                                rewardTokenBalance?.decimals || 18
                               )} ${rewardTokenBalance?.symbol}`
                             ) : (
                               <Skeleton />
@@ -474,29 +470,31 @@ export default function StakeErc721Section({
                       <FormattedMessage id="stake" defaultMessage="Stake" />
                     </Button>
                   </Grid>
-                  <Grid item xs={12}>
-                    <Button
-                      onClick={handleClaim}
-                      startIcon={
-                        claimRewardsMutation.isLoading ? (
-                          <CircularProgress color="inherit" size="1rem" />
-                        ) : undefined
-                      }
-                      disabled={
-                        claimRewardsMutation.isLoading ||
-                        rewardsBalance?.isZero()
-                      }
-                      variant="outlined"
-                      color="primary"
-                      fullWidth
-                      size="large"
-                    >
-                      <FormattedMessage
-                        id="claim.rewards"
-                        defaultMessage="Claim rewards"
-                      />
-                    </Button>
-                  </Grid>
+                  {rewards && rewards.gt(0) && (
+                    <Grid item xs={12}>
+                      <Button
+                        onClick={handleClaim}
+                        startIcon={
+                          claimRewardsMutation.isLoading ? (
+                            <CircularProgress color="inherit" size="1rem" />
+                          ) : undefined
+                        }
+                        disabled={
+                          claimRewardsMutation.isLoading ||
+                          rewards?.toNumber() === 0
+                        }
+                        variant="outlined"
+                        color="primary"
+                        fullWidth
+                        size="large"
+                      >
+                        <FormattedMessage
+                          id="claim.rewards"
+                          defaultMessage="Claim rewards"
+                        />
+                      </Button>
+                    </Grid>
+                  )}
                 </Grid>
               </Box>
             )}
@@ -589,15 +587,24 @@ export default function StakeErc721Section({
                         <Stack direction="row" justifyContent="space-between">
                           <Typography>
                             <FormattedMessage
-                              id="rewards.second"
-                              defaultMessage="Rewards/second"
+                              id="rewards.rate"
+                              defaultMessage="Rewards rate"
                             />
                           </Typography>
                           <Typography color="text.secondary">
-                            {rewardTokenBalance ? (
+                            {rewardRatio && rewardTimeUnit ? (
                               <>
-                                {rewardPerUnitTime} {rewardTokenBalance?.symbol}
-                                /{rewardTimeUnit?.toNumber()}
+                                {formatBigNumber(
+                                  rewardRatio,
+                                  rewardTokenBalance?.decimals || 18
+                                )}{" "}
+                                {rewardTokenBalance?.symbol}{" "}
+                                {moment
+                                  .duration(
+                                    rewardTimeUnit?.toNumber(),
+                                    "seconds"
+                                  )
+                                  .humanize()}
                               </>
                             ) : (
                               <Skeleton />
@@ -613,8 +620,11 @@ export default function StakeErc721Section({
                             />
                           </Typography>
                           <Typography color="text.secondary">
-                            {rewardTokenBalance ? (
-                              `${stakeInfo[1]} --- ${rewardTokenBalance?.symbol}`
+                            {rewardTokenBalance && rewards ? (
+                              `${formatBigNumber(
+                                rewards,
+                                rewardTokenBalance?.decimals || 18
+                              )} ${rewardTokenBalance?.symbol}`
                             ) : (
                               <Skeleton />
                             )}

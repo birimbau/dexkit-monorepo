@@ -4,14 +4,14 @@ import StakeErc20Section from '@dexkit/dexappbuilder-viewer/components/sections/
 import StakeErc721Section from '@dexkit/dexappbuilder-viewer/components/sections/StakeErc721Section';
 import { PageHeader } from '@dexkit/ui/components/PageHeader';
 import { hexToString } from '@dexkit/ui/utils';
-import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
+import { useWeb3React } from '@dexkit/wallet-connectors/hooks/useWeb3React';
 import { Box, Container, Grid, Skeleton } from '@mui/material';
 import { QueryClient, dehydrate } from '@tanstack/react-query';
 import {
-    ThirdwebSDKProvider,
-    useContract,
-    useContractMetadata,
-    useContractRead,
+  ThirdwebSDKProvider,
+  useContract,
+  useContractMetadata,
+  useContractRead,
 } from '@thirdweb-dev/react';
 import { GetStaticPropsContext } from 'next';
 import { useRouter } from 'next/router';
@@ -85,12 +85,12 @@ export function StakePage() {
                   caption: <FormattedMessage id="home" defaultMessage="Home" />,
                   uri: '/',
                 },
-                {
+                /*  {
                   caption: (
                     <FormattedMessage id="stake" defaultMessage="Stake" />
                   ),
                   uri: '/stake',
-                },
+                },*/
                 {
                   caption: isLoading ? <Skeleton /> : metadata?.name,
                   uri: `/stake/${network}/${address}`,
