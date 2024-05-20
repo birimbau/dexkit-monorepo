@@ -1,5 +1,6 @@
 import AutoFixHighIcon from "@mui/icons-material/AutoFixHigh";
 import BrowseGalleryIcon from "@mui/icons-material/BrowseGallery";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import {
   Box,
   Button,
@@ -359,6 +360,7 @@ export default function MediaDialog({
                         backgroundSize: "contain",
                         backgroundRepeat: "no-repeat",
                         backgroundPosition: "center",
+                        borderRadius: (theme) => theme.shape.borderRadius / 2,
                       }}
                     />
                     <Box
@@ -369,6 +371,7 @@ export default function MediaDialog({
                         left: 0,
                         bottom: 0,
                         right: 0,
+                        borderRadius: (theme) => theme.shape.borderRadius / 2,
                       }}
                     />
                   </Box>
@@ -384,7 +387,7 @@ export default function MediaDialog({
                       onClick={onUploadFile}
                       startIcon={
                         fileUploadMutation.isLoading && (
-                          <CircularProgress color="inherit" />
+                          <CircularProgress color="inherit" size="1rem" />
                         )
                       }
                     >
@@ -672,6 +675,16 @@ export default function MediaDialog({
                                   : undefined,
                             }}
                           />
+                          {selectedFile?.id === f.id && (
+                            <CheckCircleIcon
+                              color="primary"
+                              sx={{
+                                position: "absolute",
+                                right: (theme) => theme.spacing(1),
+                                top: (theme) => theme.spacing(1),
+                              }}
+                            />
+                          )}
                         </Box>
                       </ButtonBase>
                       <Stack
