@@ -4,7 +4,7 @@ import { useState } from 'react';
 import MediaDialog from '@dexkit/ui/components/mediaDialog';
 import ImageIcon from '@mui/icons-material/Image';
 import { FormattedMessage } from 'react-intl';
-import { connectField } from 'uniforms';
+import { connectField, useForm } from 'uniforms';
 
 const CustomImage = styled('img')(({ theme }) => ({
   height: theme.spacing(20),
@@ -23,6 +23,9 @@ export const ImagePicker = connectField<{
   onChange: (v: string | void) => void;
 }>((props) => {
   const [openMediaDialog, setOpenMediaDialog] = useState(false);
+
+  const { formRef } = useForm();
+
   return (
     <Container>
       <MediaDialog
@@ -36,6 +39,15 @@ export const ImagePicker = connectField<{
         }}
         onConfirmSelectFile={(file) => {
           props.onChange(file.url);
+
+          const image = new Image();
+
+          image.src = file.url;
+
+          image.onload = () => {
+            formRef.change('width', image.width);
+            formRef.change('height', image.height);
+          };
         }}
       />
       <Stack alignItems="center" spacing={1}>
