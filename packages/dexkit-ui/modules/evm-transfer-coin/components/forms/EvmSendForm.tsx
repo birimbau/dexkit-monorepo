@@ -137,7 +137,7 @@ export function EvmSendForm({
 
       let address = "";
 
-      if (res.parameters && res.parameters["address"]) {
+      if (res.parameters && res.parameters["address"] && res.function_name) {
         address = res.parameters["address"];
       } else {
         address = res.target_address;
