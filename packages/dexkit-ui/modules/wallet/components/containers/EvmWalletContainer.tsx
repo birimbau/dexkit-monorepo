@@ -316,10 +316,7 @@ const EvmWalletContainer = () => {
                         startIcon={<QrCodeScanner />}
                         variant="outlined"
                       >
-                        <FormattedMessage
-                          id="scan.wallet"
-                          defaultMessage="Scan Wallet"
-                        />
+                        <FormattedMessage id="scan" defaultMessage="Scan" />
                       </Button>
                     </Grid>
                   </Grid>
