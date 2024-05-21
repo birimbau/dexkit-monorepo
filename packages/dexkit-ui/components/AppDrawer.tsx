@@ -178,29 +178,30 @@ function AppDrawer({ open, onClose, appConfig }: Props) {
               </Box>
             ) : (
               <Stack spacing={2}>
-                {user && (
-                  <>
-                    <Box sx={{ px: 2, pt: 1 }}>
-                      <Stack
-                        direction="row"
-                        alignItems="center"
-                        justifyContent="space-between"
-                        spacing={2}
-                      >
+                <>
+                  <Box sx={{ px: 2, pt: 1 }}>
+                    <Stack
+                      direction="row"
+                      alignItems="center"
+                      justifyContent="space-between"
+                      spacing={2}
+                    >
+                      {user && (
                         <Stack direction="row" alignItems="center" spacing={2}>
                           <Avatar src={user?.profileImageURL} />
                           <Link href={`/u/${user.username}`} variant="body1">
                             {user?.username}
                           </Link>
                         </Stack>
-                        <IconButton onClick={handleOpenQrCode}>
-                          <QrCodeScanner />
-                        </IconButton>
-                      </Stack>
-                    </Box>
-                    <Divider />
-                  </>
-                )}
+                      )}
+
+                      <IconButton onClick={handleOpenQrCode}>
+                        <QrCodeScanner />
+                      </IconButton>
+                    </Stack>
+                  </Box>
+                  <Divider />
+                </>
 
                 {isMobile && <WalletContent />}
               </Stack>

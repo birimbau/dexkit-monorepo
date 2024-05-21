@@ -31,14 +31,11 @@ export default function QrCodeScanner({
         },
         { preferredCamera: cameraId }
       );
-      scanner.current.start();
+
+      (async () => {
+        await scanner.current?.start();
+      })();
     }
-
-    (async () => {
-      const x = await QrScanner.listCameras();
-
-      x[0];
-    })();
 
     return () => {
       scanner.current?.destroy();

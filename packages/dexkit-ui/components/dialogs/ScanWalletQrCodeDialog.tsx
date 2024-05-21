@@ -1,5 +1,8 @@
-import { useAsyncMemo } from "@dexkit/widgets/src/hooks";
+import VideoCall from "@mui/icons-material/VideoCall";
+
 import {
+  Box,
+  Button,
   Dialog,
   DialogContent,
   DialogProps,
@@ -8,6 +11,7 @@ import {
   Select,
   SelectChangeEvent,
   Stack,
+  Typography,
 } from "@mui/material";
 import QrScanner from "qr-scanner";
 import { useEffect, useState } from "react";
@@ -24,6 +28,7 @@ export default function ScanWalletQrCodeDialog({
   DialogProps,
   onResult,
 }: ScanWalletQrCodeDialogProps) {
+  const [cameras, setCameras] = useState<QrScanner.Camera[]>([]);
   const [camera, setCamera] = useState<string>();
 
   const { onClose } = DialogProps;
@@ -34,13 +39,32 @@ export default function ScanWalletQrCodeDialog({
     }
   };
 
-  const cameras = useAsyncMemo(
-    async () => {
-      return await QrScanner.listCameras();
-    },
-    [],
-    []
-  );
+  const requestCameraAccess = () => {
+    navigator.mediaDevices
+      .getUserMedia({ video: true })
+      .then(async function (stream) {
+        console.log("Camera access granted.");
+
+        let cameras = await QrScanner.listCameras();
+
+        setCameras(cameras);
+
+        if (cameras.length > 0) {
+          setCamera(cameras[0].id);
+        }
+      })
+      .catch(function (error) {
+        console.error("Error accessing the camera: ", error);
+      });
+  };
+
+  useEffect(() => {
+    (async () => {
+      let cameras = await QrScanner.listCameras();
+
+      setCameras(cameras);
+    })();
+  }, []);
 
   useEffect(() => {
     if (cameras.length > 0) {
@@ -60,7 +84,7 @@ export default function ScanWalletQrCodeDialog({
       <DialogContent>
         <Stack spacing={2}>
           <Select
-            value={camera}
+            value={camera || ""}
             onChange={(e: SelectChangeEvent<string>) =>
               setCamera(e.target.value)
             }
@@ -71,8 +95,38 @@ export default function ScanWalletQrCodeDialog({
               </MenuItem>
             ))}
           </Select>
-          {camera && (
+
+          {camera && cameras.length > 0 ? (
             <QrCodeScanner cameraId={camera} key={camera} onResult={onResult} />
+          ) : (
+            <Stack justifyContent="center" alignItems="center" spacing={2}>
+              <VideoCall fontSize="large" />
+              <Box>
+                <Typography align="center" variant="h5">
+                  <FormattedMessage
+                    id="camera.permission"
+                    defaultMessage="Camera Permission"
+                  />
+                </Typography>
+                <Typography
+                  align="center"
+                  variant="body1"
+                  color="text.secondary"
+                >
+                  <FormattedMessage
+                    id="camera.permission.message"
+                    defaultMessage="Please grant permission to continue."
+                  />
+                </Typography>
+              </Box>
+
+              <Button onClick={requestCameraAccess} variant="contained">
+                <FormattedMessage
+                  id="grang.access"
+                  defaultMessage="Grant acccess"
+                />
+              </Button>
+            </Stack>
           )}
         </Stack>
       </DialogContent>
