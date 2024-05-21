@@ -1,5 +1,7 @@
 import {
+  alpha,
   Button,
+  ButtonBase,
   Divider,
   FormControl,
   FormHelperText,
@@ -62,8 +64,9 @@ interface Props {
 }
 
 const CustomImage = styled('img')(({ theme }) => ({
-  height: theme.spacing(20),
-  width: theme.spacing(20),
+  width: '100%',
+  height: 'auto',
+  display: 'block',
 }));
 
 const NoImage = styled(ImageIcon)(({ theme }) => ({
@@ -239,14 +242,36 @@ export default function GeneralSection({
                     defaultMessage="Logo for light mode"
                   />
                 </Typography>
-                <Button
+                <ButtonBase
+                  sx={{
+                    position: 'relative',
+                    p: 2,
+                    borderRadius: (theme) => theme.shape.borderRadius / 2,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+
+                    backgroundColor: (theme) =>
+                      theme.palette.mode === 'light'
+                        ? 'rgba(0,0,0, 0.2)'
+                        : alpha(theme.palette.common.white, 0.1),
+                  }}
                   onClick={() => {
                     setOpenMediaDialog(true);
                     setMediaFieldToEdit('logoUrl');
                   }}
                 >
-                  <CustomImage src={formik.values.logoUrl} />
-                </Button>
+                  <Stack
+                    sx={{
+                      height: (theme) => theme.spacing(20),
+
+                      width: (theme) => theme.spacing(20),
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <CustomImage src={formik.values.logoUrl} />
+                  </Stack>
+                </ButtonBase>
               </Stack>
             </Grid>
 
@@ -258,19 +283,36 @@ export default function GeneralSection({
                     defaultMessage="Logo for dark mode"
                   />
                 </Typography>
-                <Button
-                  sx={{ backgroundColor: 'black' }}
+                <ButtonBase
+                  sx={{
+                    backgroundColor: 'black',
+
+                    p: 2,
+                    borderRadius: (theme) => theme.shape.borderRadius / 2,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    position: 'relative',
+                  }}
                   onClick={() => {
                     setOpenMediaDialog(true);
                     setMediaFieldToEdit('logoDarkUrl');
                   }}
                 >
-                  {formik.values?.logoDarkUrl ? (
-                    <CustomImage src={formik.values.logoDarkUrl} />
-                  ) : (
-                    <NoImage />
-                  )}
-                </Button>
+                  <Stack
+                    sx={{
+                      height: (theme) => theme.spacing(20),
+                      width: (theme) => theme.spacing(20),
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    {formik.values?.logoDarkUrl ? (
+                      <CustomImage src={formik.values.logoDarkUrl} />
+                    ) : (
+                      <NoImage />
+                    )}
+                  </Stack>
+                </ButtonBase>
               </Stack>
             </Grid>
 

@@ -2,6 +2,7 @@ import AutoFixHighIcon from "@mui/icons-material/AutoFixHigh";
 import BrowseGalleryIcon from "@mui/icons-material/BrowseGallery";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import {
+  alpha,
   Box,
   Button,
   ButtonBase,
@@ -350,7 +351,19 @@ export default function MediaDialog({
                   justifyContent={"center"}
                   alignItems={"center"}
                 >
-                  <Box sx={{ position: "relative", width: "100%", flex: 1 }}>
+                  <Box
+                    sx={{
+                      position: "relative",
+                      width: "100%",
+                      flex: 1,
+                      p: 2,
+                      backgroundColor: (theme) =>
+                        theme.palette.mode === "light"
+                          ? theme.palette.grey[300]
+                          : alpha(theme.palette.common.white, 0.2),
+                      borderRadius: (theme) => theme.shape.borderRadius / 2,
+                    }}
+                  >
                     <Box
                       sx={{
                         backgroundImage: `url("${URL.createObjectURL(file)}")`,
@@ -366,7 +379,7 @@ export default function MediaDialog({
                     <Box
                       sx={{
                         position: "absolute",
-                        backgroundColor: "rgba(0, 0, 0,0.4)",
+                        backgroundColor: "rgba(0, 0, 0, 0.1)",
                         top: 0,
                         left: 0,
                         bottom: 0,
@@ -623,6 +636,10 @@ export default function MediaDialog({
                       <ButtonBase
                         sx={{
                           borderRadius: (theme) => theme.shape.borderRadius / 2,
+                          backgroundColor: (theme) =>
+                            theme.palette.mode === "light"
+                              ? theme.palette.grey[300]
+                              : alpha(theme.palette.common.white, 0.2),
                         }}
                         onClick={() =>
                           selectedFile
@@ -635,8 +652,14 @@ export default function MediaDialog({
                         <Box
                           sx={(theme) => ({
                             position: "relative",
-
-                            p: selectedFile?.id === f.id ? 1 : undefined,
+                            height: (theme) => theme.spacing(16),
+                            [theme.breakpoints.up("sm")]: {
+                              height: (theme) => theme.spacing(20),
+                            },
+                            [theme.breakpoints.up("lg")]: {
+                              height: (theme) => theme.spacing(22),
+                            },
+                            p: 2,
                             border:
                               selectedFile?.id === f.id
                                 ? `2px solid ${theme.palette.primary.main}`
@@ -652,14 +675,8 @@ export default function MediaDialog({
                               backgroundRepeat: "no-repeat",
                               backgroundPosition: "center",
                               width: "100%",
+                              height: "100%",
                               aspectRatio: "1/1",
-                              height: (theme) => theme.spacing(16),
-                              [theme.breakpoints.up("sm")]: {
-                                height: (theme) => theme.spacing(20),
-                              },
-                              [theme.breakpoints.up("lg")]: {
-                                height: (theme) => theme.spacing(22),
-                              },
                             })}
                           />
                           <Box
@@ -720,7 +737,7 @@ export default function MediaDialog({
                                 </IconButton>
                               </Stack>
                             </>
-                          ) : f?.name.length > 30 ? (
+                          ) : f?.name.length > 10 ? (
                             <Typography variant="caption">
                               {truncateText(f?.name, 10)}
                             </Typography>
