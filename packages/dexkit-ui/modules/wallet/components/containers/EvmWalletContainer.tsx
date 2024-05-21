@@ -68,6 +68,8 @@ import WalletActionButton from "../WalletActionButton";
 import WalletBalances from "../WalletBalancesTable";
 import { WalletTotalBalanceCointainer } from "../WalletTotalBalanceContainer";
 
+import { useRouter } from "next/router";
+
 import { useIsMobile } from "@dexkit/core";
 import LoginAppButton from "@dexkit/ui/components/LoginAppButton";
 
@@ -169,12 +171,14 @@ const EvmWalletContainer = () => {
     setShowQrCode(false);
   };
 
+  const router = useRouter();
+
   const handleAddressResult = (result: string) => {
     try {
       parse(result);
 
       if (isMobile) {
-        location.href = `/wallet/send/${encodeURI(result)}`;
+        router.push(`/wallet/send/${encodeURI(result)}`);
       } else {
         window.open(`/wallet/send/${encodeURI(result)}`, "_blank");
       }

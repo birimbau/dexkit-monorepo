@@ -50,6 +50,8 @@ import AppDefaultMenuList from "./AppDefaultMenuList";
 import Link from "./AppLink";
 import { ThemeModeSelector } from "./ThemeModeSelector";
 
+import { useRouter } from "next/router";
+
 const ScanWalletQrCodeDialog = dynamic(
   async () => import("@dexkit/ui/components/dialogs/ScanWalletQrCodeDialog")
 );
@@ -122,12 +124,14 @@ function AppDrawer({ open, onClose, appConfig }: Props) {
     setShowQrCode(false);
   };
 
+  const router = useRouter();
+
   const handleAddressResult = (result: string) => {
     try {
       parse(result);
 
       if (isMobile) {
-        location.href = `/wallet/send/${encodeURI(result)}`;
+        router.push(`/wallet/send/${encodeURI(result)}`);
       } else {
         window.open(`/wallet/send/${encodeURI(result)}`, "_blank");
       }
