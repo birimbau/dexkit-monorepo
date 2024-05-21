@@ -8,29 +8,29 @@ import { StakeErc20PageSection } from "@dexkit/ui/modules/wizard/types/section";
 import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import { useAsyncMemo } from "@dexkit/widgets/src/hooks";
 import {
-    Box,
-    Button,
-    Card,
-    CardContent,
-    CircularProgress,
-    Divider,
-    Grid,
-    InputAdornment,
-    Skeleton,
-    Stack,
-    Tab,
-    Tabs,
-    Typography,
+  Box,
+  Button,
+  Card,
+  CardContent,
+  CircularProgress,
+  Divider,
+  Grid,
+  InputAdornment,
+  Skeleton,
+  Stack,
+  Tab,
+  Tabs,
+  Typography,
 } from "@mui/material";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
-    useContract,
-    useContractRead,
-    useContractWrite,
-    useTokenBalance,
+  useContract,
+  useContractRead,
+  useTokenBalance,
 } from "@thirdweb-dev/react";
 import { BigNumber } from "ethers";
 import { Formik, FormikErrors } from "formik";
+import moment from "moment";
 import { SyntheticEvent, useMemo, useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 
@@ -45,18 +45,6 @@ export default function StakeErc20Section({ section }: StakeErc20SectionProps) {
 
   const { data: contract } = useContract(address, "custom");
 
-  const { mutateAsync: stake } = useContractWrite(contract, "stake");
-
-  const { mutateAsync: withdraw, isLoading: isClaiming } = useContractWrite(
-    contract,
-    "withdraw"
-  );
-
-  const { mutateAsync: claimRewards } = useContractWrite(
-    contract,
-    "claimRewards"
-  );
-
   const { account } = useWeb3React();
 
   const { data: rewardTokenAddress } = useContractRead(contract, "rewardToken");
@@ -66,20 +54,33 @@ export default function StakeErc20Section({ section }: StakeErc20SectionProps) {
     "stakingToken"
   );
 
-  const { data: stakeInfo } = useContractRead(contract, "getStakeInfo", [
-    account,
-  ]);
+  const { data: stakeInfo, refetch: refetchStakeInfo } = useContractRead(
+    contract,
+    "getStakeInfo",
+    [account]
+  );
 
-  const { data: rewardToken } = useContract(rewardTokenAddress || "", "token");
+  const { data: rewardToken, isLoading: isLoadingRewardToken } = useContract(
+    rewardTokenAddress || "",
+    "token"
+  );
 
   const { data: stakingToken } = useContract(
     stakingTokenAddress || "",
     "token"
   );
 
-  const { data: rewardTokenBalance } = useTokenBalance(rewardToken, account);
+  const rewardRatioQuery = useContractRead(contract, "getRewardRatio");
+  const rewardTimeUnitQuery = useContractRead(contract, "getTimeUnit");
 
-  const { data: stakingTokenBalance } = useTokenBalance(stakingToken, account);
+  const {
+    data: rewardTokenBalance,
+    refetch: refetchRewardTokenBalance,
+    isLoading: isLoadingRewardTokenBalance,
+  } = useTokenBalance(rewardToken, account);
+
+  const { data: stakingTokenBalance, refetch: refetchStakingTokenBalance } =
+    useTokenBalance(stakingToken, account);
 
   const [tokensStaked, rewards, tokensStakedValueFormatted, tokensStakedValue] =
     useMemo(() => {
@@ -95,6 +96,32 @@ export default function StakeErc20Section({ section }: StakeErc20SectionProps) {
 
       return ["0", "0", "0", BigNumber.from(0)];
     }, [stakeInfo, rewardTokenBalance, stakingTokenBalance]);
+
+  const rewardsPerSecond = useMemo(() => {
+    if (
+      rewardRatioQuery.data &&
+      rewardTimeUnitQuery.data &&
+      rewardTokenBalance?.symbol
+    ) {
+      const dividerConst = 10000;
+      const [n, d] = rewardRatioQuery.data as [BigNumber, BigNumber];
+      const seconds = rewardTimeUnitQuery.data as BigNumber;
+      const ratio = n.mul(dividerConst).div(d).toNumber() / dividerConst;
+      return `${ratio} ${rewardTokenBalance.symbol} ${moment
+        .duration(seconds?.toNumber(), "seconds")
+        .humanize()}`;
+    }
+    return "-";
+  }, [
+    rewardRatioQuery.data,
+    rewardTimeUnitQuery.data,
+    rewardTokenBalance?.symbol,
+  ]);
+
+  const isLoadingRatio =
+    rewardRatioQuery.isLoading ||
+    rewardTimeUnitQuery.isLoading ||
+    isLoadingRewardTokenBalance;
 
   // const { data: rewardRatio } = useContractRead(contract, 'getRewardRatio');
   // const { data: rewardTimeUnit } = useContractRead(contract, 'getTimeUnit');
@@ -137,14 +164,6 @@ export default function StakeErc20Section({ section }: StakeErc20SectionProps) {
     [rewardToken]
   );
 
-  const stakingTokenInfo = useAsyncMemo(
-    async () => {
-      return await stakingToken?.get();
-    },
-    undefined,
-    [stakingToken]
-  );
-
   const stakeMutation = useMutation(
     async ({ amount }: { amount: BigNumber }) => {
       let call = contract?.prepare("stake", [amount]);
@@ -171,6 +190,7 @@ export default function StakeErc20Section({ section }: StakeErc20SectionProps) {
       }
 
       await tx?.wait();
+      refetchStakeInfo();
     }
   );
 
@@ -200,6 +220,8 @@ export default function StakeErc20Section({ section }: StakeErc20SectionProps) {
       }
 
       await tx?.wait();
+      refetchStakingTokenBalance();
+      refetchStakeInfo();
     }
   );
 
@@ -242,6 +264,8 @@ export default function StakeErc20Section({ section }: StakeErc20SectionProps) {
     }
 
     await tx?.wait();
+
+    refetchRewardTokenBalance();
   });
 
   const handleClaim = async () => {
@@ -358,8 +382,8 @@ export default function StakeErc20Section({ section }: StakeErc20SectionProps) {
                           <Stack direction="row" justifyContent="space-between">
                             <Typography>
                               <FormattedMessage
-                                id="total.staked"
-                                defaultMessage="Total staked"
+                                id="your.staked"
+                                defaultMessage="Your stake"
                               />
                             </Typography>
                             <Typography color="text.secondary">
@@ -371,6 +395,21 @@ export default function StakeErc20Section({ section }: StakeErc20SectionProps) {
                             </Typography>
                           </Stack>
                           <Stack direction="row" justifyContent="space-between">
+                            <Typography>
+                              <FormattedMessage
+                                id="rewards.rate"
+                                defaultMessage="Rewards rate"
+                              />
+                            </Typography>
+                            <Typography color="text.secondary">
+                              {!isLoadingRatio ? (
+                                `${rewardsPerSecond}`
+                              ) : (
+                                <Skeleton />
+                              )}
+                            </Typography>
+                          </Stack>
+                          {/* <Stack direction="row" justifyContent="space-between">
                             <Typography>
                               <FormattedMessage
                                 id="total.rewards"
@@ -387,7 +426,7 @@ export default function StakeErc20Section({ section }: StakeErc20SectionProps) {
                                 <Skeleton />
                               )}
                             </Typography>
-                          </Stack>
+                            </Stack>*/}
                           <Stack direction="row" justifyContent="space-between">
                             <Typography>
                               <FormattedMessage
@@ -458,7 +497,11 @@ export default function StakeErc20Section({ section }: StakeErc20SectionProps) {
                     <Grid item xs={12}>
                       <Button
                         onClick={submitForm}
-                        disabled={isSubmitting || !isValid}
+                        disabled={
+                          isSubmitting ||
+                          !isValid ||
+                          (rewardsBalance && rewardsBalance.eq(0))
+                        }
                         startIcon={
                           isSubmitting ? (
                             <CircularProgress color="inherit" size="1rem" />
@@ -469,31 +512,40 @@ export default function StakeErc20Section({ section }: StakeErc20SectionProps) {
                         fullWidth
                         size="large"
                       >
-                        <FormattedMessage id="stake" defaultMessage="Stake" />
+                        {rewardsBalance && rewardsBalance.eq(0) ? (
+                          <FormattedMessage
+                            id="no.rewards"
+                            defaultMessage="no.rewards"
+                          />
+                        ) : (
+                          <FormattedMessage id="stake" defaultMessage="Stake" />
+                        )}
                       </Button>
                     </Grid>
-                    <Grid item xs={12}>
-                      <Button
-                        onClick={handleClaim}
-                        disabled={
-                          isSubmitting || claimRewardsMutation.isLoading
-                        }
-                        startIcon={
-                          isClaiming ? (
-                            <CircularProgress color="inherit" size="1rem" />
-                          ) : undefined
-                        }
-                        variant="outlined"
-                        color="primary"
-                        fullWidth
-                        size="large"
-                      >
-                        <FormattedMessage
-                          id="claim.rewards"
-                          defaultMessage="Claim rewards"
-                        />
-                      </Button>
-                    </Grid>
+                    {rewardTokenBalance && rewardTokenBalance.value.gt(0) && (
+                      <Grid item xs={12}>
+                        <Button
+                          onClick={handleClaim}
+                          disabled={
+                            isSubmitting || claimRewardsMutation.isLoading
+                          }
+                          startIcon={
+                            claimRewardsMutation.isLoading ? (
+                              <CircularProgress color="inherit" size="1rem" />
+                            ) : undefined
+                          }
+                          variant="outlined"
+                          color="primary"
+                          fullWidth
+                          size="large"
+                        >
+                          <FormattedMessage
+                            id="claim.rewards"
+                            defaultMessage="Claim rewards"
+                          />
+                        </Button>
+                      </Grid>
+                    )}
                   </Grid>
                 )}
               </Formik>
@@ -514,8 +566,8 @@ export default function StakeErc20Section({ section }: StakeErc20SectionProps) {
                           <Stack direction="row" justifyContent="space-between">
                             <Typography>
                               <FormattedMessage
-                                id="total.staked"
-                                defaultMessage="Total staked"
+                                id="your.stake"
+                                defaultMessage="Your stake"
                               />
                             </Typography>
                             <Typography color="text.secondary">

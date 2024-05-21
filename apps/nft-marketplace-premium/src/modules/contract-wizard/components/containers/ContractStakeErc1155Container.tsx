@@ -4,41 +4,40 @@ import { parseUnits } from '@dexkit/core/utils/ethers/parseUnits';
 import { useDexKitContext } from '@dexkit/ui';
 import FormikDecimalInput from '@dexkit/ui/components/FormikDecimalInput';
 import {
-    useDepositRewardTokensMutation,
-    useSetDefaultTimeUnit,
-    useSetRewardsPerUnitTime,
-    useThirdwebApprove,
-    useWithdrawRewardsMutation,
+  useDepositRewardTokensMutation,
+  useSetDefaultTimeUnit,
+  useSetRewardsPerUnitTime,
+  useThirdwebApprove,
+  useWithdrawRewardsMutation,
 } from '@dexkit/ui/modules/contract-wizard/hooks/thirdweb';
 import { useWeb3React } from '@dexkit/wallet-connectors/hooks/useWeb3React';
 import {
-    Box,
-    Button,
-    Card,
-    CardContent,
-    CircularProgress,
-    FormControl,
-    FormControlLabel,
-    Grid,
-    InputAdornment,
-    Skeleton,
-    Stack,
-    Tab,
-    Tabs,
-    Typography,
+  Box,
+  Button,
+  Card,
+  CardContent,
+  CircularProgress,
+  FormControl,
+  FormControlLabel,
+  Grid,
+  InputAdornment,
+  Skeleton,
+  Stack,
+  Tab,
+  Tabs,
+  Typography,
 } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import {
-    useContract,
-    useContractRead,
-    useContractWrite,
-    useTokenBalance,
+  useContract,
+  useContractRead,
+  useTokenBalance,
 } from '@thirdweb-dev/react';
 import { BigNumber } from 'ethers';
 import { Field, Formik } from 'formik';
 import { Switch, TextField } from 'formik-mui';
 import moment from 'moment';
-import { SyntheticEvent, useMemo, useState } from 'react';
+import { SyntheticEvent, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import ContractAdminTab from '../ContractAdminTab';
 import ContractMetadataTab from '../ContractMetadataTab';
@@ -60,50 +59,24 @@ export default function ContractStakeErc1155Container({
 
   const { data: contract } = useContract(address, 'custom');
 
-  const { mutateAsync: depositRewardTokens } = useContractWrite(
-    contract,
-    'depositRewardTokens',
-  );
-
   const { account } = useWeb3React();
 
   const { data: rewardTokenAddress } = useContractRead(contract, 'rewardToken');
 
-  const { data: rewardsBalance } = useContractRead(
-    contract,
-    'getRewardTokenBalance',
-  );
+  const { data: rewardsBalance, refetch: refetchRewardsBalance } =
+    useContractRead(contract, 'getRewardTokenBalance');
 
-  const { data: totalStakedBalance } = useContractRead(
-    contract,
-    'stakingTokenBalance',
-  );
-
-  const { data: stakingTokenAddress } = useContractRead(
-    contract,
-    'stakingToken',
-  );
   const { data: rewardToken } = useContract(rewardTokenAddress || '', 'token');
 
-  const { data: stakingToken } = useContract(
-    stakingTokenAddress || '',
-    'token',
-  );
+  const { data: rewardTokenBalance, refetch: refetchRewardTokenBalance } =
+    useTokenBalance(rewardToken, account);
 
-  const { data: rewardTokenBalance } = useTokenBalance(rewardToken, account);
-
-  const { data: rewardsPerUnitTime } = useContractRead(
-    contract,
-    'getDefaultRewardsPerUnitTime',
-  );
+  const { data: rewardsPerUnitTime, refetch: refetchRewardsPerUnitTime } =
+    useContractRead(contract, 'getDefaultRewardsPerUnitTime');
   const { data: rewardTimeUnit } = useContractRead(
     contract,
     'getDefaultTimeUnit',
   );
-
-  const rewardsPerUnitTimeValue = useMemo(() => {
-    return rewardsPerUnitTime?.toNumber();
-  }, [rewardsPerUnitTime]);
 
   const { data: allowance } = useQuery(
     ['REWARD_TOKEN_ALLOWANCE', rewardTokenAddress],
@@ -143,6 +116,8 @@ export default function ContractStakeErc1155Container({
         await withdrawRewardTokensMutation.mutateAsync({
           amount: amountParsed,
         });
+        refetchRewardTokenBalance();
+        refetchRewardsBalance();
       } catch (err) {
         watchTransactionDialog.setError(err as any);
       }
@@ -158,13 +133,18 @@ export default function ContractStakeErc1155Container({
       await depositRewardTokensMutation.mutateAsync({
         amount: amountParsed,
       });
+      refetchRewardTokenBalance();
+      refetchRewardsBalance();
     } catch (err) {
       watchTransactionDialog.setError(err as any);
     }
   };
 
   const setDefaultTimeUnit = useSetDefaultTimeUnit({ contract });
-  const setRewardsPerUnitTimeMutation = useSetRewardsPerUnitTime({ contract });
+  const setRewardsPerUnitTimeMutation = useSetRewardsPerUnitTime({
+    contract,
+    isEdition: true,
+  });
 
   const handleSubmitTimeUnit = async ({ timeUnit }: { timeUnit: string }) => {
     await setDefaultTimeUnit.mutateAsync({ timeUnit });
@@ -178,6 +158,7 @@ export default function ContractStakeErc1155Container({
     await setRewardsPerUnitTimeMutation.mutateAsync({
       unitTime: rewardsPerUnitTime,
     });
+    refetchRewardsPerUnitTime();
   };
 
   return (
@@ -206,7 +187,14 @@ export default function ContractStakeErc1155Container({
                 defaultMessage="Reward per time Unit"
               />
             </Typography>
-            <Typography variant="h5">{rewardsPerUnitTimeValue}</Typography>
+            <Typography variant="h5">
+              {' '}
+              {formatBigNumber(
+                rewardsPerUnitTime || BigNumber.from('0'),
+                rewardTokenBalance?.decimals || 18,
+              )}{' '}
+              {rewardTokenBalance?.symbol}
+            </Typography>
           </Stack>
           <Stack>
             <Typography variant="caption" color="text.secondary">
@@ -365,7 +353,7 @@ export default function ContractStakeErc1155Container({
                     <Box>
                       <Formik
                         initialValues={{
-                          rewardsPerUnitTime: rewardsPerUnitTimeValue,
+                          rewardsPerUnitTime: rewardsPerUnitTime.toString(),
                         }}
                         onSubmit={handleSubmitRewardRatio}
                       >
