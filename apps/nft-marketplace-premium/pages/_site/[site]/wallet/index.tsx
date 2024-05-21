@@ -1,6 +1,5 @@
 import { Box, Container, Grid } from '@mui/material';
 import type { GetStaticProps, GetStaticPropsContext, NextPage } from 'next';
-import MainLayout from '../../../../src/components/layouts/main';
 
 import { FormattedMessage, useIntl } from 'react-intl';
 
@@ -10,6 +9,7 @@ import { NextSeo } from 'next-seo';
 import EvmWalletContainer from '@dexkit/ui/modules/wallet/components/containers/EvmWalletContainer';
 import { REVALIDATE_PAGE_TIME } from 'src/constants';
 
+import AuthMainLayout from 'src/components/layouts/authMain';
 import { getAppConfig } from '../../../../src/services/app';
 
 const WalletPage: NextPage = () => {
@@ -87,7 +87,11 @@ export async function getStaticPaths() {
 }
 
 (WalletPage as any).getLayout = function getLayout(page: any) {
-  return <MainLayout noSsr>{page}</MainLayout>;
+  return (
+    <AuthMainLayout disableAutoLogin noSsr>
+      {page}
+    </AuthMainLayout>
+  );
 };
 
 export default WalletPage;

@@ -31,7 +31,10 @@ import Typography from '@mui/material/Typography';
 import { DataGrid } from '@mui/x-data-grid/DataGrid';
 import { GridToolbar } from '@mui/x-data-grid/components';
 
-import { UserOnChainEvents } from '@dexkit/core/constants/userEvents';
+import {
+  UserEvents,
+  UserOnChainEvents,
+} from '@dexkit/core/constants/userEvents';
 import { DexkitApiProvider } from '@dexkit/core/providers';
 import { useActiveChainIds, useCollectionByApi } from '@dexkit/ui';
 import { USER_EVENT_NAMES } from '@dexkit/ui/constants/userEventNames';
@@ -74,6 +77,7 @@ import CountFeesCard from './CountFeesCard';
 import CountNftDropsByGroupCard from './CountNftDropsByGroupCard';
 import CountNftDropsCard from './CountNftDropsCard';
 import CountTokenDropsByGroupCard from './CountTokenDropsByGroupCard';
+import OffChainTab from './OffChainTab';
 import UserEventsTable from './UserEventsTable';
 import EventDetailDialog from './dialogs/EventDetailDialog';
 
@@ -284,109 +288,6 @@ function OnChainDataGrid({
   );
 }
 
-function OffChainDataGrid({ siteId }: Props) {
-  const [queryOptions, setQueryOptions] = useState<any>({
-    filter: {
-      hash: null,
-    },
-  });
-
-  const [paginationModel, setPaginationModel] = useState({
-    page: 0,
-    pageSize: 10,
-  });
-
-  const { data, isLoading } = useUserEventsList({
-    instance: myAppsApi,
-    ...paginationModel,
-    ...queryOptions,
-    siteId,
-  });
-
-  const [rowCountState, setRowCountState] = useState((data?.total as any) || 0);
-
-  useEffect(() => {
-    setRowCountState((prevRowCountState: number) =>
-      data?.total !== undefined ? data?.total : prevRowCountState,
-    );
-  }, [data?.total, setRowCountState]);
-
-  const handleSortModelChange = useCallback((sortModel: GridSortModel) => {
-    // Here you save the data you need from the sort model
-    setQueryOptions({
-      ...queryOptions,
-      sort:
-        sortModel && sortModel.length
-          ? [sortModel[0].field, sortModel[0].sort]
-          : [],
-    });
-  }, []);
-
-  const onFilterChange = useCallback((filterModel: GridFilterModel) => {
-    // Here you save the data you need from the filter model
-    let filter = { ...queryOptions?.filter };
-    if (filterModel.quickFilterValues?.length) {
-      filter = {
-        ...filter,
-        q: filterModel.quickFilterValues[0],
-      };
-    }
-
-    setQueryOptions({ ...queryOptions, filter });
-  }, []);
-
-  const columns: GridColDef[] = [
-    { field: 'id', headerName: 'ID', width: 90 },
-    {
-      field: 'createdAt',
-      headerName: 'Created At',
-      width: 200,
-      valueGetter: ({ row }) => {
-        return new Date(row.createdAt).toLocaleString();
-      },
-    },
-    {
-      field: 'type',
-      headerName: 'Type',
-      width: 150,
-      valueGetter: ({ row }) => {
-        return beautifyCamelCase(row.type);
-      },
-    },
-    {
-      field: 'referral',
-      headerName: 'Referral',
-      width: 200,
-    },
-  ];
-
-  return (
-    <DataGrid
-      autoHeight
-      slots={{ toolbar: GridToolbar }}
-      rows={(data?.data as any) || []}
-      columns={columns}
-      rowCount={rowCountState}
-      paginationModel={paginationModel}
-      paginationMode="server"
-      disableColumnFilter
-      sortingMode="server"
-      slotProps={{
-        toolbar: {
-          showQuickFilter: true,
-        },
-      }}
-      onPaginationModelChange={setPaginationModel}
-      filterMode="server"
-      onFilterModelChange={onFilterChange}
-      onSortModelChange={handleSortModelChange}
-      pageSizeOptions={[5, 10, 25, 50]}
-      disableRowSelectionOnClick
-      loading={isLoading}
-    />
-  );
-}
-
 const addressSchema = z.string().refine((arg) => {
   return isAddress(arg);
 }, 'invalid address');
@@ -448,6 +349,8 @@ export default function UserEventAnalyticsContainer({ siteId }: Props) {
   };
 
   const { activeChainIds } = useActiveChainIds();
+
+  const [offchainType, setOffChainType] = useState(UserEvents.postLimitOrder);
 
   return (
     <>
@@ -1453,7 +1356,7 @@ export default function UserEventAnalyticsContainer({ siteId }: Props) {
                 </Grid>
               </TabPanel>
               <TabPanel value="2">
-                <OffChainDataGrid siteId={siteId} />
+                <OffChainTab siteId={siteId} />
               </TabPanel>
             </TabContext>
           </Box>

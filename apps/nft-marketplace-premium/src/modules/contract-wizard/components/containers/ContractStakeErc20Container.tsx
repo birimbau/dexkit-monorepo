@@ -269,9 +269,18 @@ export default function ContractStakeErc20Container({
               <FormattedMessage id="reward.time" defaultMessage="Reward Time" />
             </Typography>
             <Typography variant="h5">
-              {moment
-                .duration(rewardTimeUnit?.toNumber(), 'seconds')
-                .humanize()}
+              <FormattedMessage
+                id="every.reward"
+                defaultMessage="Every {timeUnit}"
+                values={{
+                  timeUnit:
+                    rewardTimeUnit?.toNumber() <= 60
+                      ? `${rewardTimeUnit?.toNumber()}s`
+                      : moment
+                          .duration(rewardTimeUnit?.toNumber(), 'seconds')
+                          .humanize(),
+                }}
+              />
             </Typography>
           </Stack>
         </Stack>
