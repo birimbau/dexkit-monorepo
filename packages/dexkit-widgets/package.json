@@ -14,7 +14,6 @@
   "devDependencies": {
     "@dexkit/core": "*",
     "@dexkit/ui": "*",
-    "@dexkit/zrx-swap": "*",
     "@dexkit/wallet-connectors": "*",
     "@babel/core": "^7.20.12",
     "@rollup/plugin-commonjs": "^24.0.1",

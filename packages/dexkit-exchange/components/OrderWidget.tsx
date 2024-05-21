@@ -11,8 +11,8 @@ import { Interface } from "@dexkit/core/utils/ethers/abi/Interface";
 import { formatUnits } from "@dexkit/core/utils/ethers/formatUnits";
 import { parseUnits } from "@dexkit/core/utils/ethers/parseUnits";
 import MomentFromSpan from "@dexkit/ui/components/MomentFromSpan";
-import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "@dexkit/zrx-swap/constants";
-import { ZrxOrder, ZrxOrderRecord } from "@dexkit/zrx-swap/types";
+import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "@dexkit/ui/modules/swap/constants";
+import { ZrxOrder, ZrxOrderRecord } from "@dexkit/ui/modules/swap/types";
 import MultiCall, { CallInput } from "@indexed-finance/multicall";
 import {
   Box,

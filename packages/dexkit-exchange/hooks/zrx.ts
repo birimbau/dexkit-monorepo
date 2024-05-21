@@ -1,15 +1,15 @@
 import { ChainId } from "@dexkit/core";
-import { ZeroExApiClient } from "@dexkit/zrx-swap/services";
+import { ZeroExApiClient } from "@dexkit/ui/modules/swap/services/zrxClient";
 import {
   ZeroExQuote,
   ZeroExQuoteGasless,
   ZrxOrderRecord,
   ZrxOrderbookResponse,
-} from "@dexkit/zrx-swap/types";
+} from "@dexkit/ui/modules/swap/types";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { getZrxExchangeAddress } from "../utils";
 
-import { ZrxOrder } from "@dexkit/zrx-swap/types";
+import { ZrxOrder } from "@dexkit/ui/modules/swap/types";
 import type { providers } from 'ethers';
 import { BigNumber, Contract } from "ethers";
 import { useContext } from "react";

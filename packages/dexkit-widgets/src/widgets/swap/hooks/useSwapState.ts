@@ -1,7 +1,7 @@
 import { ChainId } from "@dexkit/core/constants";
 import { Token } from "@dexkit/core/types";
-import { ZeroExQuoteMetaTransactionResponse, ZeroExQuoteResponse } from "@dexkit/zrx-swap/types";
-import { isNativeInSell } from "@dexkit/zrx-swap/utils";
+import { ZeroExQuoteMetaTransactionResponse, ZeroExQuoteResponse } from "@dexkit/ui/modules/swap/types";
+import { isNativeInSell } from "@dexkit/ui/modules/swap/utils";
 import { UseMutationResult } from "@tanstack/react-query";
 import { Transak } from "@transak/transak-sdk";
 import { Connector } from "@web3-react/types";

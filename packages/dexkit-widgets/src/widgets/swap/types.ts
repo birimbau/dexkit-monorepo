@@ -1,6 +1,6 @@
 import { ChainId } from "@dexkit/core/constants/enums";
 import { Token } from "@dexkit/core/types";
-import { ZeroExQuoteResponse } from "@dexkit/zrx-swap/types";
+import { ZeroExQuoteResponse } from "@dexkit/ui/modules/swap/types";
 import type { BigNumber } from "ethers";
 import React from "react";
 

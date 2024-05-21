@@ -3,7 +3,7 @@ import MultiCall from "@indexed-finance/multicall";
 import type { providers } from 'ethers';
 import { BigNumber, Contract, constants } from "ethers";
 
-import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "@dexkit/zrx-swap/constants";
+import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "@dexkit/ui/modules/swap/constants";
 import { ERC20Abi } from "../constants/abis";
 import { TokenPrices } from "../types";
 import { isAddressEqual } from "../utils";

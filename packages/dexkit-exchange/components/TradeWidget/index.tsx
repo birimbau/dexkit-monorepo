@@ -19,7 +19,7 @@ import { TradeWidgetTabs } from "./TradeWidgetTabs";
 import { NETWORKS } from "@dexkit/core/constants/networks";
 import { useErc20BalanceQuery } from "@dexkit/core/hooks";
 import SwapSettingsDialog from "@dexkit/ui/modules/swap/components/dialogs/SwapSettingsDialog";
-import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "@dexkit/zrx-swap/constants";
+import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "@dexkit/ui/modules/swap/constants";
 import SettingsIcon from "@mui/icons-material/Settings";
 import { DEFAULT_ZRX_NETWORKS } from "../../constants";
 import { useExchangeContext } from "../../hooks";

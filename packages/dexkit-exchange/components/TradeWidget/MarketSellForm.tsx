@@ -22,9 +22,9 @@ import {
   useWaitTransactionConfirmation,
 } from "@dexkit/ui/hooks";
 import { useTrackUserEventsMutation } from "@dexkit/ui/hooks/userEvents";
+import { ZeroExQuoteResponse } from "@dexkit/ui/modules/swap/types";
 import { AppNotificationType } from "@dexkit/ui/types";
 import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
-import { ZeroExQuoteResponse } from "@dexkit/zrx-swap/types";
 import { useMutation } from "@tanstack/react-query";
 import { EXCHANGE_NOTIFICATION_TYPES } from "../../constants/messages";
 import { useZrxQuoteMutation } from "../../hooks/zrx";

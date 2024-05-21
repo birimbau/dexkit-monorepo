@@ -1,7 +1,7 @@
 import { UserEvents } from "@dexkit/core/constants/userEvents";
 import { Token } from "@dexkit/core/types";
 import { useTrackUserEventsMutation } from "@dexkit/ui/hooks/userEvents";
-import { ZeroExQuoteResponse } from "@dexkit/zrx-swap/types";
+import { ZeroExQuoteResponse } from "@dexkit/ui/modules/swap/types";
 import { useMutation } from "@tanstack/react-query";
 import type { providers } from "ethers";
 import { BigNumber } from "ethers";
@@ -71,6 +71,7 @@ export function useSwapExec({
             buyToken,
           }),
         });
+
         onHash(tx.hash);
 
         return await tx.wait();

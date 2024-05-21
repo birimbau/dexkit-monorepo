@@ -5,7 +5,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 
 import { WRAPPED_TOKEN_ADDRESS } from "@dexkit/core/constants/networks";
 import { Token, TransactionMetadata } from "@dexkit/core/types";
-import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "@dexkit/zrx-swap/constants";
+import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "@dexkit/ui/modules/swap/constants";
 import { BigNumber, Contract, providers } from "ethers";
 import { useAtom } from "jotai";
 import { useUpdateAtom } from "jotai/utils";

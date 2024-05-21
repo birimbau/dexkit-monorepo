@@ -1,4 +1,4 @@
-import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "../constants";
+import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "@dexkit/ui/modules/swap/constants";
 
 /**
  * Gasless swaps don't work with native token

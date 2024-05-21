@@ -11,7 +11,7 @@ import {
   ZEROEX_QUOTE_ENDPOINT,
   ZEROEX_TOKENS_ENDPOINT,
   ZERO_EX_URL
-} from "../constants";
+} from "@dexkit/ui/modules/swap/constants";
 
 import {
   ZeroExQuote,

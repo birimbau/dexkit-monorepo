@@ -14,8 +14,8 @@ import { EXCHANGE_NOTIFICATION_TYPES } from '@dexkit/exchange/constants/messages
 import { useZrxOrderbookOrder } from '@dexkit/exchange/hooks/zrx';
 import { useZrxCancelOrderMutation } from '@dexkit/exchange/hooks/zrx/useZrxCancelOrderMutation';
 import { useDexKitContext, useExecuteTransactionsDialog } from '@dexkit/ui';
+import { ZrxOrder } from '@dexkit/ui/modules/swap/types';
 import { AppNotificationType } from '@dexkit/ui/types';
-import { ZrxOrder } from '@dexkit/zrx-swap/types';
 import { useCallback } from 'react';
 import { REVALIDATE_PAGE_TIME } from 'src/constants';
 

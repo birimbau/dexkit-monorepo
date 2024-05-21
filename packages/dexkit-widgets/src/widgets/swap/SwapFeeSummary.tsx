@@ -9,7 +9,7 @@ import { FormattedMessage, FormattedNumber } from "react-intl";
 import { GET_NATIVE_TOKEN } from "@dexkit/core/constants";
 import { Token } from "@dexkit/core/types";
 import { formatEther } from "@dexkit/core/utils/ethers/formatEther";
-import { ZeroExQuoteResponse } from "@dexkit/zrx-swap/types";
+import { ZeroExQuoteResponse } from "@dexkit/ui/modules/swap/types";
 import { useCoinPrices, useGasPrice } from "../../hooks";
 import { formatBigNumber } from "../../utils";
 

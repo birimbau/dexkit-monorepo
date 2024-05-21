@@ -2,7 +2,7 @@ import { Token } from "@dexkit/core/types";
 import { isAddressEqual } from "@dexkit/core/utils";
 import { formatUnits } from "@dexkit/core/utils/ethers/formatUnits";
 import MomentFromSpan from "@dexkit/ui/components/MomentFromSpan";
-import { ZrxOrder, ZrxOrderRecord } from "@dexkit/zrx-swap/types";
+import { ZrxOrder, ZrxOrderRecord } from "@dexkit/ui/modules/swap/types";
 import { Button, TableCell, TableRow, Typography } from "@mui/material";
 import { BigNumber } from "ethers";
 import moment from "moment";

@@ -1,7 +1,7 @@
 import { getApiKeyData } from '@/modules/wizard/services/integrations';
 import { MY_APPS_ENDPOINT } from '@dexkit/core';
 import { NETWORK_FROM_SLUG } from '@dexkit/core/constants/networks';
-import { ZEROEX_CHAIN_PREFIX } from '@dexkit/zrx-swap/constants';
+import { ZEROEX_CHAIN_PREFIX } from '@dexkit/ui/modules/swap/constants';
 import axios from 'axios';
 import type { NextApiRequest, NextApiResponse } from 'next';
 

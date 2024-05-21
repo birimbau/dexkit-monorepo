@@ -1,13 +1,13 @@
-import { ZeroExApiClient } from "@dexkit/zrx-swap/services";
-import { ZeroExQuote, ZeroExQuoteGasless, ZeroExQuoteResponse } from "@dexkit/zrx-swap/types";
+import { ZeroExApiClient } from "@dexkit/ui/modules/swap/services/zrxClient";
+import { ZeroExQuote, ZeroExQuoteGasless, ZeroExQuoteResponse } from "@dexkit/ui/modules/swap/types";
 import { useContext, useState } from "react";
 import { SUPPORTED_GASLESS_CHAIN } from "../../../constants";
 
 import { ChainId } from "@dexkit/core/constants";
 import { Token } from "@dexkit/core/types";
+import { ZEROEX_AFFILIATE_ADDRESS } from "@dexkit/ui/modules/swap/constants";
+import { isNativeInSell } from "@dexkit/ui/modules/swap/utils";
 import { SiteContext } from "@dexkit/ui/providers/SiteProvider";
-import { ZEROEX_AFFILIATE_ADDRESS } from "@dexkit/zrx-swap/constants";
-import { isNativeInSell } from "@dexkit/zrx-swap/utils";
 import { UseQueryResult, useQuery } from "@tanstack/react-query";
 import type { BigNumber } from "ethers";
 import { SwapSide } from "../types";

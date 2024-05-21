@@ -2,12 +2,11 @@ import { ChainId } from "@dexkit/core/constants";
 import { UserEvents } from "@dexkit/core/constants/userEvents";
 import { Token } from "@dexkit/core/types";
 import { useTrackUserEventsMutation } from "@dexkit/ui/hooks/userEvents";
+import { useGaslessTrades } from "@dexkit/ui/modules/swap/hooks/useGaslessTrades";
+import { ZeroExApiClient } from "@dexkit/ui/modules/swap/services/zrxClient";
 import { SiteContext } from "@dexkit/ui/providers/SiteProvider";
-import { ZeroExApiClient } from "@dexkit/zrx-swap/services";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useContext } from "react";
-import { useIntl } from "react-intl";
-
 export function useMarketTradeGaslessExec({
   onNotification,
 
@@ -16,8 +15,9 @@ export function useMarketTradeGaslessExec({
 }) {
 
   const { siteId } = useContext(SiteContext);
+  const [gaslessTrades, setGaslessTrades] = useGaslessTrades()
 
-  const { formatMessage } = useIntl();
+
   const trackUserEvent = useTrackUserEventsMutation();
 
   return useMutation(
@@ -28,7 +28,8 @@ export function useMarketTradeGaslessExec({
       chainId,
       sellToken,
       buyToken,
-    }: { quote: any, trade: any, approval?: any, chainId?: number, sellToken: Token, buyToken: Token }) => {
+      side
+    }: { quote: any, trade: any, approval?: any, chainId?: number, sellToken: Token, buyToken: Token, side: 'sell' | 'buy' }) => {
       if (!chainId) {
         return null
       }
@@ -40,29 +41,27 @@ export function useMarketTradeGaslessExec({
 
         const { tradeHash } = await client.submitGasless({ trade, approval })
 
-        onNotification({
-          chainId,
-          title: formatMessage({
-            id: "swap.tokens",
-            defaultMessage: "Swap Tokens", // TODO: add token symbols and amounts
-          }),
-          params: {
-            type: "swapGasless",
-            sellAmount: quote.sellAmount as string,
-            buyAmount: quote.buyAmount as string,
-            sellToken,
-            buyToken,
-          },
-        });
+
+        if (tradeHash) {
+          gaslessTrades.push({
+            chainId,
+            tradeHash,
+            values: {
+              sellAmount: quote.sellAmount as string,
+              buyAmount: quote.buyAmount as string,
+              sellToken,
+              buyToken,
+            }
+          })
+          // We use this on gasless trade updater to issue swap trades notifications
+          setGaslessTrades(gaslessTrades);
+        }
 
         trackUserEvent.mutate({
-          event: UserEvents.gaslessSwap,
+          event: side === 'buy' ? UserEvents.marketBuyGasless : UserEvents.marketSellGasless,
           chainId,
           metadata: JSON.stringify({
-            tradeHash: tradeHash,
             quote: quote,
-            sellToken,
-            buyToken,
           }),
         })
 

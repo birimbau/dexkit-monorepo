@@ -12,7 +12,7 @@ import { memo } from "react";
 
 import { TOKEN_ICON_URL } from "@dexkit/core/constants";
 import { Token } from "@dexkit/core/types";
-import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "@dexkit/zrx-swap/constants";
+import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "@dexkit/ui/modules/swap/constants";
 import { formatBigNumber } from "../utils";
 
 export interface SelectCoinListItemProps {

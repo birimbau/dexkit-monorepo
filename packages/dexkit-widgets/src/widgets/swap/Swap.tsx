@@ -22,7 +22,7 @@ import { ChainId } from "@dexkit/core/constants/enums";
 import { NETWORKS } from "@dexkit/core/constants/networks";
 import { useIsMobile } from "@dexkit/core/hooks";
 import { Token } from "@dexkit/core/types";
-import { ZeroExQuoteResponse } from "@dexkit/zrx-swap/types";
+import { ZeroExQuoteResponse } from "@dexkit/ui/modules/swap/types";
 import { CreditCard } from "@mui/icons-material";
 import SettingsIcon from "@mui/icons-material/Settings";
 import WalletIcon from "@mui/icons-material/Wallet";

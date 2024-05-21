@@ -22,9 +22,9 @@ import { useSignTypeData } from "@dexkit/ui/hooks/web3/useSignTypeData";
 import { AppNotificationType } from "@dexkit/ui/types";
 import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 
-import { SUPPORTED_GASLESS_CHAIN } from "@dexkit/zrx-swap/constants";
-import { ZeroExGaslessQuoteResponse } from "@dexkit/zrx-swap/types";
-import { isNativeInSell } from "@dexkit/zrx-swap/utils";
+import { SUPPORTED_GASLESS_CHAIN } from "@dexkit/ui/modules/swap/constants";
+import { ZeroExGaslessQuoteResponse } from "@dexkit/ui/modules/swap/types";
+import { isNativeInSell } from "@dexkit/ui/modules/swap/utils";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import {
@@ -314,8 +314,20 @@ export default function MarketForm({
               chainId,
               sellToken: baseToken,
               buyToken: quoteToken,
+              side,
             });
             if (trHash) {
+              trackUserEvent.mutate({
+                event:
+                  side == "buy"
+                    ? UserEvents.marketBuyGasless
+                    : UserEvents.marketSellGasless,
+                chainId,
+                metadata: JSON.stringify({
+                  quote,
+                }),
+              });
+
               setTradeHash(trHash);
             }
           }

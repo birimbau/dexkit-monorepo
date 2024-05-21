@@ -18,7 +18,6 @@ import { useAppConfig, useSiteId, useThemeMode } from 'src/hooks/app';
 import {
   assetsAtom,
   currencyUserAtom,
-  gaslessTradesAtom,
   hiddenAssetsAtom,
   notificationsAtom,
   referralAtom,
@@ -169,7 +168,6 @@ export function AppMarketplaceProvider({
       tokensAtom={tokensAtom}
       assetsAtom={assetsAtom}
       hiddenAssetsAtom={hiddenAssetsAtom}
-      gaslessTradesAtom={gaslessTradesAtom}
       defaultLocale={locale}
       affiliateReferral={ref}
       currencyUserAtom={currencyUserAtom}

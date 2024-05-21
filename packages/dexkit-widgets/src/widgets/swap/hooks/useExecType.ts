@@ -6,9 +6,9 @@ import { ExecType, SwapSide } from "../types";
 
 import { WRAPPED_TOKEN_ADDRESS } from "@dexkit/core/constants/networks";
 import { Token } from "@dexkit/core/types";
-import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "@dexkit/zrx-swap/constants";
-import { ZeroExQuoteMetaTransactionResponse } from "@dexkit/zrx-swap/types";
-import { isNativeInSell } from "@dexkit/zrx-swap/utils";
+import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "@dexkit/ui/modules/swap/constants";
+import { ZeroExQuoteMetaTransactionResponse } from "@dexkit/ui/modules/swap/types";
+import { isNativeInSell } from "@dexkit/ui/modules/swap/utils";
 import { hasSufficientAllowance } from "../../../services";
 import { isAddressEqual } from "../../../utils";
 

@@ -146,7 +146,6 @@ export function useDexkitContextState({
   assetsAtom,
   hiddenAssetsAtom,
   transactionsAtom,
-  gaslessTradesAtom,
   onChangeLocale,
   currencyUserAtom,
 }: {
@@ -157,7 +156,7 @@ export function useDexkitContextState({
   hiddenAssetsAtom: PrimitiveAtom<{ [key: string]: boolean }>;
   currencyUserAtom: PrimitiveAtom<string>;
   transactionsAtom: PrimitiveAtom<{ [key: string]: AppTransaction }>;
-  gaslessTradesAtom: PrimitiveAtom<{ [key: string]: AppTransaction }>;
+
   onChangeLocale: (locale: string) => void;
 }) {
   const [notifications, setNotifications] = useAtom(notificationsAtom);
@@ -166,7 +165,6 @@ export function useDexkitContextState({
   const [hiddenAssets, setHiddenAssets] = useAtom(hiddenAssetsAtom);
   const currencyUser = useAtomValue(currencyUserAtom);
   const [transactions, setTransactions] = useAtom(transactionsAtom);
-  const [gaslessTrades, setGaslessTrades] = useAtom(gaslessTradesAtom);
   const watchTransactionDialog = useWatchTransactionDialog({
     transactionsAtom,
   });
@@ -204,26 +202,6 @@ export function useDexkitContextState({
             return {
               ...transactions,
               [hash]: {
-                chainId,
-                created: date,
-                status: TransactionStatus.Pending,
-                values: params.values,
-                type: params.subtype,
-              },
-            };
-          });
-        }
-      }
-
-      if (params.metadata && params.metadata["tradeHash"]) {
-        const tradeHash = params.metadata["tradeHash"];
-        const chainId = params.metadata["chainId"];
-
-        if (chainId) {
-          setGaslessTrades((transactions) => {
-            return {
-              ...transactions,
-              [tradeHash]: {
                 chainId,
                 created: date,
                 status: TransactionStatus.Pending,
@@ -617,3 +595,13 @@ export function useEditSiteId() {
 
   return { editSiteId }
 }
+
+
+
+
+
+
+
+
+
+

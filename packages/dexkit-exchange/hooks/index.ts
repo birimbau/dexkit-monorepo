@@ -4,11 +4,11 @@ import type { providers } from "ethers";
 import { UserEvents } from "@dexkit/core/constants/userEvents";
 import { Token } from "@dexkit/core/types";
 import { useTrackUserEventsMutation } from "@dexkit/ui/hooks/userEvents";
-import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import {
   ZEROEX_ORDERBOOK_ENDPOINT,
   ZERO_EX_URL,
-} from "@dexkit/zrx-swap/constants";
+} from "@dexkit/ui/modules/swap/constants";
+import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { BigNumber } from "bignumber.js";

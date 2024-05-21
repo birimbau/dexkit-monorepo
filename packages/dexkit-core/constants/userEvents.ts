@@ -1,7 +1,6 @@
 export enum UserOnChainEvents {
   approve = "approve",
   swap = "swap",
-  gaslessSwap = "gaslessSwap",
   deployContract = "deployContract",
   unwrap = "unwrap",
   wrap = "wrap",
@@ -30,6 +29,9 @@ export enum UserOnChainEvents {
 
 export enum UserOffChainEvents {
   signMessage = "signMessage",
+  swapGasless = "swapGasless",
+  marketBuyGasless = "marketBuyGasless",
+  marketSellGasless = "marketSellGasless",
   loginSignMessage = "loginSignMessage",
   connectAccount = "connectAccount",
   disconnectAccount = "disconnectAccount",

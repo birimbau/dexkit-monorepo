@@ -9,9 +9,9 @@ import {
   useWaitTransactionConfirmation,
 } from "@dexkit/ui/hooks";
 import { useTrackUserEventsMutation } from "@dexkit/ui/hooks/userEvents";
+import { ZeroExQuoteResponse } from "@dexkit/ui/modules/swap/types";
 import { AppNotificationType } from "@dexkit/ui/types";
 import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
-import { ZeroExQuoteResponse } from "@dexkit/zrx-swap/types";
 import {
   Box,
   Button,

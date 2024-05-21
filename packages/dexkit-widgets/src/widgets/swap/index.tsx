@@ -93,7 +93,6 @@ export function SwapWidget({
   const execSwapMutation = useSwapExec({ onNotification });
 
   const execSwapGaslessMutation = useSwapGaslessExec({
-    onNotification,
     zeroExApiKey,
   });
 

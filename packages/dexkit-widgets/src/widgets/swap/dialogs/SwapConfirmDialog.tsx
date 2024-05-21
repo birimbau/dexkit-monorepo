@@ -18,7 +18,7 @@ import AppDialogTitle from "../../../components/AppDialogTitle";
 
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 
-import { ZeroExQuoteResponse } from "@dexkit/zrx-swap/types";
+import { ZeroExQuoteResponse } from "@dexkit/ui/modules/swap/types";
 import ErrorIcon from "@mui/icons-material/Error";
 
 import { Token } from "@dexkit/core/types";
