@@ -126,7 +126,11 @@ function AppDrawer({ open, onClose, appConfig }: Props) {
     try {
       parse(result);
 
-      window.open(`/wallet/send/${encodeURI(result)}`, "_blank");
+      if (isMobile) {
+        location.href = `/wallet/send/${encodeURI(result)}`;
+      } else {
+        window.open(`/wallet/send/${encodeURI(result)}`, "_blank");
+      }
       handleOpenQrCodeScannerClose();
     } catch (err) {}
   };

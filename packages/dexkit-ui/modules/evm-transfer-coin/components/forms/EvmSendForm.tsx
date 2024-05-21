@@ -1,4 +1,4 @@
-import { useEnsNameQuery } from "@dexkit/core/hooks";
+import { useEnsNameQuery, useIsMobile } from "@dexkit/core/hooks";
 import { Coin } from "@dexkit/core/types";
 import { isAddress } from "@dexkit/core/utils/ethers/isAddress";
 import { QrCodeScanner } from "@mui/icons-material";
@@ -11,7 +11,6 @@ import {
   Avatar,
   Button,
   CircularProgress,
-  createFilterOptions,
   IconButton,
   InputAdornment,
   ListItem,
@@ -19,7 +18,10 @@ import {
   ListItemText,
   Stack,
   TextField,
+  createFilterOptions,
 } from "@mui/material";
+
+import { parse } from "eth-url-parser";
 
 import dynamic from "next/dynamic";
 import { ChangeEvent, SyntheticEvent, useMemo, useState } from "react";
@@ -130,12 +132,24 @@ export function EvmSendForm({
   };
 
   const handleAddressResult = (result: string) => {
-    if (isAddress(result)) {
-      onChange({ ...values, address: result });
+    try {
+      let res = parse(result);
+
+      let address = "";
+
+      if (res.parameters && res.parameters["address"]) {
+        address = res.parameters["address"];
+      } else {
+        address = res.target_address;
+      }
+
+      onChange({ ...values, address });
       setAddressTouched(true);
       handleOpenQrCodeScannerClose();
-    }
+    } catch (err) {}
   };
+
+  const isMobile = useIsMobile();
 
   return (
     <>
@@ -145,6 +159,7 @@ export function EvmSendForm({
             open: showQrCode,
             maxWidth: "sm",
             fullWidth: true,
+            fullScreen: isMobile,
             onClose: handleOpenQrCodeScannerClose,
           }}
           onResult={handleAddressResult}

@@ -68,6 +68,7 @@ import WalletActionButton from "../WalletActionButton";
 import WalletBalances from "../WalletBalancesTable";
 import { WalletTotalBalanceCointainer } from "../WalletTotalBalanceContainer";
 
+import { useIsMobile } from "@dexkit/core";
 import LoginAppButton from "@dexkit/ui/components/LoginAppButton";
 
 const EvmReceiveDialog = dynamic(
@@ -172,12 +173,18 @@ const EvmWalletContainer = () => {
     try {
       parse(result);
 
-      window.open(`/wallet/send/${encodeURI(result)}`, "_blank");
+      if (isMobile) {
+        location.href = `/wallet/send/${encodeURI(result)}`;
+      } else {
+        window.open(`/wallet/send/${encodeURI(result)}`, "_blank");
+      }
       handleOpenQrCodeScannerClose();
     } catch (err) {}
   };
 
   const handleOpenQrCode = () => setShowQrCode(true);
+
+  const isMobile = useIsMobile();
 
   return (
     <>
@@ -187,6 +194,7 @@ const EvmWalletContainer = () => {
             open: showQrCode,
             maxWidth: "sm",
             fullWidth: true,
+            fullScreen: isMobile,
             onClose: handleOpenQrCodeScannerClose,
           }}
           onResult={handleAddressResult}
