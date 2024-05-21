@@ -73,7 +73,7 @@ export function useSendLimitOrderMutation() {
           : undefined
       );
 
-      trackUserEvent.mutate({
+      await trackUserEvent.mutateAsync({
         event: UserEvents.postLimitOrder,
         metadata: JSON.stringify({
           order: signedOrder,
@@ -188,6 +188,3 @@ export function useExchangeContextState(params: {
       : process.env.NEXT_PUBLIC_ZRX_API_KEY,
   };
 }
-
-
-
