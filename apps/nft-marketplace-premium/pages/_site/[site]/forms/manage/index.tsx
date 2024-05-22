@@ -1,19 +1,17 @@
 import { myAppsApi } from '@/modules/admin/dashboard/dataProvider';
 import { useListFormsQuery } from '@/modules/forms/hooks';
 import { DexkitApiProvider } from '@dexkit/core/providers';
-import { truncateAddress } from '@dexkit/core/utils';
 import LazyTextField from '@dexkit/ui/components/LazyTextField';
 import Info from '@mui/icons-material/Info';
 import Search from '@mui/icons-material/Search';
 
 import Link from '@dexkit/ui/components/AppLink';
+import { ConnectWalletButton } from '@dexkit/ui/components/ConnectWalletButton';
 import { PageHeader } from '@dexkit/ui/components/PageHeader';
+import { useWeb3React } from '@dexkit/wallet-connectors/hooks/useWeb3React';
 import {
-  Avatar,
   Box,
   Button,
-  Card,
-  CardContent,
   Container,
   Grid,
   InputAdornment,
@@ -26,15 +24,12 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
-import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import AuthMainLayout from 'src/components/layouts/authMain';
 
 export default function FormsAccountPage() {
-  const router = useRouter();
-
-  const { address } = router.query;
+  const { account: address } = useWeb3React();
 
   const [searchForm, setSearchForm] = useState<string>();
 
@@ -69,37 +64,36 @@ export default function FormsAccountPage() {
               {
                 caption: (
                   <FormattedMessage
-                    id="creator.address"
-                    defaultMessage="Creator: {address}"
-                    values={{
-                      address: truncateAddress(address as string),
-                    }}
+                    id="manage.contract.forms"
+                    defaultMessage="Manage Contract Forms"
                   />
                 ),
-                uri: `/forms/account/${address as string}`,
+                uri: `/forms/manage`,
                 active: true,
               },
             ]}
           />
 
-          <Box>
+          {/*  <Box>
             <Card>
               <CardContent>
-                <Stack spacing={2} justifyContent="center" alignItems="center">
-                  <Avatar sx={{ width: '6rem', height: '6rem' }} />
-                  <Typography sx={{ fontWeight: 600 }} variant="body1">
-                    <FormattedMessage
-                      id="creator.address"
-                      defaultMessage="Creator: {address}"
-                      values={{
-                        address: truncateAddress(address as string),
-                      }}
-                    />
-                  </Typography>
-                </Stack>
+                {address ? (
+                  <Stack
+                    spacing={2}
+                    justifyContent="center"
+                    alignItems="center"
+                  >
+                    <Avatar sx={{ width: '6rem', height: '6rem' }} />
+                    <Typography sx={{ fontWeight: 600 }} variant="body1">
+                      {truncateAddress(address as string)}
+                    </Typography>
+                  </Stack>
+                ) : (
+                  <ConnectWalletButton />
+                )}
               </CardContent>
             </Card>
-          </Box>
+              </Box>*/}
           <Box>
             <Stack
               direction="row"
@@ -108,7 +102,10 @@ export default function FormsAccountPage() {
               justifyContent="space-between"
             >
               <Typography variant="h5">
-                <FormattedMessage id="forms" defaultMessage="Forms" />
+                <FormattedMessage
+                  id="my.contract.forms"
+                  defaultMessage="My Contract Forms"
+                />
               </Typography>
             </Stack>
           </Box>
@@ -116,9 +113,9 @@ export default function FormsAccountPage() {
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <Stack
-                  direction={'row'}
                   justifyContent={'space-between'}
                   alignItems={'center'}
+                  direction={'row'}
                 >
                   <Button
                     LinkComponent={Link}
@@ -128,13 +125,14 @@ export default function FormsAccountPage() {
                   >
                     <FormattedMessage
                       id="create.contract.form"
-                      defaultMessage="Create Contract Form"
+                      defaultMessage="New Contract Form"
                     />
                   </Button>
+
                   <LazyTextField
                     TextFieldProps={{
                       size: 'small',
-                      fullWidth: true,
+
                       InputProps: {
                         startAdornment: (
                           <InputAdornment position="start">
@@ -165,7 +163,20 @@ export default function FormsAccountPage() {
                       </TableCell>
                     </TableRow>
                   </TableHead>
-                  {listFormsQuery.isLoading ? (
+
+                  {!address ? (
+                    <TableBody>
+                      <TableRow>
+                        <TableCell colSpan={3}>
+                          <Box>
+                            <Stack spacing={2} alignItems="center">
+                              <ConnectWalletButton />
+                            </Stack>
+                          </Box>
+                        </TableCell>
+                      </TableRow>
+                    </TableBody>
+                  ) : listFormsQuery.isLoading ? (
                     <TableBody>
                       {new Array(5).fill(null).map((_, key) => (
                         <TableRow key={key}>

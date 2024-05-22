@@ -17,7 +17,8 @@ import theDefaultConfig from '../../../../../../config/quick.store.default.app.j
 import { PreviewAppButton } from '../../PreviewAppButton';
 import SignConfigDialog from '../../dialogs/SignConfigDialog';
 import AssetStoreStepper from '../AssetStoreStepper.tsx';
-import { WelcomeAssetStoreStepperMessage } from '../Welcome/WelcomeAssetStoreStepperMessage';
+
+import { WelcomeMessage } from '../../WelcomeMessage';
 const defaultConfig = theDefaultConfig as unknown as AppConfig;
 
 interface Props {
@@ -134,14 +135,19 @@ export default function AssetStoreStepperContainer({ site }: Props) {
                   uri: '/admin',
                 },
                 {
-                  caption: <FormattedMessage id="apps" defaultMessage="Apps" />,
+                  caption: (
+                    <FormattedMessage
+                      id="manage.apps"
+                      defaultMessage="Manage Apps"
+                    />
+                  ),
                   uri: '/admin',
                 },
                 {
                   caption: (
                     <FormattedMessage
-                      id="nft.store.quick.builder"
-                      defaultMessage="NFT store quick builder"
+                      id="nft.store.quick.builder.title"
+                      defaultMessage="NFT Store - Quick Builder"
                     />
                   ),
                   uri: '/admin/quick-wizard/builder',
@@ -152,15 +158,15 @@ export default function AssetStoreStepperContainer({ site }: Props) {
           </Stack>
         </Grid>
         <Grid item xs={12} sm={12}>
-          <WelcomeAssetStoreStepperMessage />
+          <WelcomeMessage />
         </Grid>
         <Grid item xs={12} sm={12}>
           <Stack direction={'row'} justifyContent={'space-between'}>
             {!isMobile && (
               <Typography variant="h5">
                 <FormattedMessage
-                  id="quick.nft.store.builder"
-                  defaultMessage="Quick NFT store builder"
+                  id="build.your.nft.store.quickly"
+                  defaultMessage="Build your NFT Store quickly"
                 />
               </Typography>
             )}

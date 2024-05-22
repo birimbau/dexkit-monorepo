@@ -17,6 +17,8 @@ export interface ContractButtonProps {
   };
   disabled?: boolean;
   onClick?: () => void;
+  href?: string;
+  targetBlank?: boolean;
 }
 
 export default function ContractButton({
@@ -25,11 +27,34 @@ export default function ContractButton({
   title,
   onClick,
   disabled,
+  href,
+  targetBlank,
 }: ContractButtonProps) {
+  const CustomButton = React.useMemo(
+    () =>
+      // TODO: add typing here: https://mui.com/material-ui/guides/composition/
+      React.forwardRef<any, any>(function ButtonB(ButtonBaseProps, ref) {
+        if (href) {
+          return (
+            <ButtonBase
+              ref={ref}
+              href={href}
+              target={targetBlank ? '_blank' : undefined}
+              {...ButtonBaseProps}
+            />
+          );
+        }
+        return <ButtonBase ref={ref} {...ButtonBaseProps} />;
+      }),
+    [href, targetBlank],
+  );
+
   return (
     <Paper
-      component={ButtonBase}
+      component={CustomButton}
       onClick={onClick}
+      href={href}
+      targetBlank={targetBlank}
       disabled={disabled}
       sx={{
         p: 2,

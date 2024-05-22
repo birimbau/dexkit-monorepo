@@ -38,6 +38,7 @@ function SwapTokenButton({ token, ButtonBaseProps }: SwapTokenButtonProps) {
               height: theme.spacing(4),
               width: theme.spacing(4),
             })}
+            imgProps={{ sx: { objectFit: "fill" } }}
             src={
               token.logoURI
                 ? token.logoURI

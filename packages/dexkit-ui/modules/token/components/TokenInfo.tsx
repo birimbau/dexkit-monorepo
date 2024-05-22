@@ -1,8 +1,8 @@
 import {
-    formatBigNumber,
-    getBlockExplorerUrl,
-    getTokenBlockExplorerUrl,
-    isAddressEqual,
+  formatBigNumber,
+  getBlockExplorerUrl,
+  getTokenBlockExplorerUrl,
+  isAddressEqual,
 } from "@dexkit/core/utils";
 import { useTokenList } from "@dexkit/ui/hooks";
 
@@ -122,7 +122,11 @@ export default function TokenInfo({ address, chainId }: TokenSummaryProps) {
               justifyContent={"center"}
               alignItems={"center"}
             >
-              <Avatar src={token?.logoURI} />
+              <Avatar
+                src={token?.logoURI}
+                imgProps={{ sx: { objectFit: "fill" } }}
+              ></Avatar>
+
               <Box
                 sx={{ pl: 1 }}
                 display={"flex"}

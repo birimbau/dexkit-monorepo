@@ -204,8 +204,7 @@ export function useListFormsQuery({
             templateId: form.template?.id,
           }) as ContractFormData,
       );
-    },
-    { enabled: creatorAddress !== undefined },
+    }
   );
 }
 

@@ -80,6 +80,18 @@ function TokenPageContainer({ address, network, orderMarketType }: Props) {
     return "sell";
   }, [orderMarketType]);
 
+  const getBreadcrumbURI = useMemo(() => {
+    if (network && token) {
+      if (orderMarketType === OrderMarketType.buyAndSell) {
+        return `/token/${network}/${token?.symbol}`;
+      }
+      if (orderMarketType === OrderMarketType.buy) {
+        return `/token/buy/${network}/${token?.symbol}`;
+      }
+      return `/token/sell/${network}/${token?.symbol}`;
+    }
+  }, [orderMarketType, network, token]);
+
   let contractType = hexToString(contractRead.data);
   const renderContent = () => {
     if (!contractType) {
@@ -196,14 +208,17 @@ function TokenPageContainer({ address, network, orderMarketType }: Props) {
             {
               caption: (
                 <FormattedMessage
-                  id="token.symbol.message"
-                  defaultMessage="Token {tokenSymbol}"
+                  id="trade.typetoken.symbol.message.network"
+                  defaultMessage="{tradeType} {tokenSymbol} on {network}"
                   values={{
                     tokenSymbol: token?.symbol || address,
+                    network: network?.toUpperCase() || " ",
+                    tradeType:
+                      tradeType.charAt(0).toUpperCase() + tradeType.slice(1),
                   }}
                 />
               ),
-              uri: "/token",
+              uri: getBreadcrumbURI || "/",
               active: true,
             },
           ]}

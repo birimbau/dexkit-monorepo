@@ -354,27 +354,33 @@ export default function DeployPage() {
                 },
                 {
                   caption: (
-                    <FormattedMessage id="forms" defaultMessage="Forms" />
+                    <FormattedMessage
+                      id="dexgenerator"
+                      defaultMessage="DexGenerator"
+                    />
                   ),
                   uri: '/forms',
                 },
                 {
                   caption: (
                     <FormattedMessage
-                      id="contracts"
-                      defaultMessage="Contracts"
+                      id="manage.contracts"
+                      defaultMessage="Manage Contracts"
                     />
                   ),
                   uri: '/forms/contracts',
                 },
-                /*  {
-                  caption: (
-                    <FormattedMessage id="deploy" defaultMessage="Deploy" />
-                  ),
-                  uri: `/forms/deploy`,
-                },*/
                 {
-                  caption: thirdwebMetadataQuery.data?.name,
+                  caption: (
+                    <FormattedMessage
+                      id="deploy.contract"
+                      defaultMessage="Deploy Contract"
+                    />
+                  ),
+                  uri: `/forms/contracts/create`,
+                },
+                {
+                  caption: thirdwebMetadataQuery.data?.displayName,
                   uri: `/forms/deploy/${
                     creator as string
                   }/${thirdwebMetadataQuery.data?.name}`,
@@ -520,8 +526,8 @@ export default function DeployPage() {
                           />
                         ) : (
                           <FormattedMessage
-                            id="Deploy"
-                            defaultMessage="Deploy"
+                            id="deploy.contract"
+                            defaultMessage="Deploy Contract"
                           />
                         )
                       }
