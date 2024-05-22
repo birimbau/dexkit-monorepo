@@ -57,9 +57,7 @@ export default function AddPageDialog({
   return (
     <Dialog {...dialogProps}>
       <AppDialogTitle
-        title={
-          <FormattedMessage id="create.page" defaultMessage="Create page" />
-        }
+        title={<FormattedMessage id="new.page" defaultMessage="New page" />}
         onClose={handleClose}
       />
       <Formik
@@ -71,7 +69,7 @@ export default function AddPageDialog({
               formatMessage({
                 id: 'use.home.as.title.not.allowed',
                 defaultMessage: 'Use Home as title is not allowed for pages',
-              }),
+              })
             );
             return;
           }
@@ -107,8 +105,9 @@ export default function AddPageDialog({
                   <Field
                     component={TextField}
                     name="title"
+                    fullWidth
                     label={
-                      <FormattedMessage id={'title'} defaultMessage={'Title'} />
+                      <FormattedMessage id="title" defaultMessage="Title" />
                     }
                   />
                 </Grid>

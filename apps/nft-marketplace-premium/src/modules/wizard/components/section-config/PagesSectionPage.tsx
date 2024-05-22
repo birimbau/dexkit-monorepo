@@ -9,6 +9,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 
 import ViewCarouselIcon from '@mui/icons-material/ViewCarousel';
 import {
+  Box,
   Button,
   Card,
   CardContent,
@@ -53,6 +54,8 @@ import AddPageDialog from '../dialogs/AddPageDialog';
 import GatedConditionsFormDialog from '../dialogs/GatedConditionsFormDialog';
 import PreviewPageDialog from '../dialogs/PreviewPageDialog';
 import { SectionHeader } from '../sections/SectionHeader';
+import Pages from './Pages';
+
 interface Props {
   sections: AppPageSection[];
   pages: { [key: string]: AppPage };
@@ -312,6 +315,8 @@ export default function PagesSectionPage({
     });
   };
 
+  const [showSections, setShowSections] = useState(false);
+
   return (
     <>
       <CssVarsProvider theme={theme}>
@@ -378,6 +383,9 @@ export default function PagesSectionPage({
       </AppConfirmDialog>
 
       <Stack spacing={2}>
+        <Box>
+          <Pages pages={pages} />
+        </Box>
         <Card>
           <CardContent>
             <Stack
@@ -450,9 +458,10 @@ export default function PagesSectionPage({
         </Card>
         <Divider />
 
-        {sections.map((section, index) =>
-          renderSection(section, index, isVisibleIndexes.includes(index))
-        )}
+        {showSections &&
+          sections.map((section, index) =>
+            renderSection(section, index, isVisibleIndexes.includes(index))
+          )}
       </Stack>
     </>
   );
