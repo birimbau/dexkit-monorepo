@@ -12,7 +12,7 @@ import {
   ListSubheader,
   Stack,
 } from "@mui/material";
-import { providers } from "ethers";
+import type { providers } from "ethers";
 import { FormattedMessage, useIntl } from "react-intl";
 import AppDialogTitle from "../../components/AppDialogTitle";
 import SearchTextField from "../../components/SearchTextField";

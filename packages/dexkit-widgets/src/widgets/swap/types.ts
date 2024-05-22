@@ -1,8 +1,8 @@
 import { ChainId } from "@dexkit/core/constants/enums";
 import { Token } from "@dexkit/core/types";
+import { ZeroExQuoteResponse } from "@dexkit/ui/modules/swap/types";
 import type { BigNumber } from "ethers";
 import React from "react";
-import { ZeroExQuoteResponse } from "../../services/zeroex/types";
 
 
 export type Empty = {
@@ -18,6 +18,10 @@ export type ExecType =
   | "quote"
   | "switch"
   | "network_not_supported"
+  | "approve_gasless"
+  | "swap_gasless"
+  | "quote_gasless"
+
 
   ;
 
@@ -77,6 +81,7 @@ export type ChainConfig = {
 export type RenderOptions = {
   disableNotificationsButton?: boolean;
   featuredTokens?: Token[];
+  nonFeaturedTokens?: Token[];
   enableBuyCryptoButton?: boolean;
   disableFooter?: boolean;
   configsByChain: { [key: number]: ChainConfig };
@@ -84,10 +89,20 @@ export type RenderOptions = {
   defaultChainId?: ChainId;
   transakApiKey?: string;
   currency: string;
+  useGasless?: boolean;
+  myTokensOnlyOnSearch?: boolean;
 };
 
 export type SwapNotificationParams = {
   type: "swap";
+  sellToken: Token;
+  buyToken: Token;
+  sellAmount: string;
+  buyAmount: string;
+};
+
+export type SwapGaslessNotificationParams = {
+  type: "swapGasless";
   sellToken: Token;
   buyToken: Token;
   sellAmount: string;
@@ -101,11 +116,11 @@ export type ApproveNotificationParams = {
 
 export type BaseNotificationParams =
   | ApproveNotificationParams
-  | SwapNotificationParams;
+  | SwapNotificationParams | SwapGaslessNotificationParams;
 
 export type NotificationCallbackParams = {
   title: string;
-  hash: string;
+  hash?: string;
   chainId: ChainId;
   params: BaseNotificationParams;
 };

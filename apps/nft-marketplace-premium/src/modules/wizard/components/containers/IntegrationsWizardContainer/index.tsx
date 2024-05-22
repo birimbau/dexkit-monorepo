@@ -47,7 +47,7 @@ export default function IntegrationsWizardContainer({
           <Card>
             <CardContent>
               <Grid container spacing={2}>
-                <Grid item xs={12}>
+                {/* <Grid item xs={12}>
                   <Grid container spacing={2}>
                     <Grid item xs={12}>
                       <Typography variant="subtitle1" fontWeight="bold">
@@ -84,7 +84,7 @@ export default function IntegrationsWizardContainer({
                       <Divider />
                     </Grid>
                   </Grid>
-                </Grid>
+  </Grid>*/}
                 <Grid item xs={12}>
                   <Grid container spacing={2}>
                     <Grid item xs={12}>

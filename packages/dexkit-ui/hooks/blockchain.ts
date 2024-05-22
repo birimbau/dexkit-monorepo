@@ -1,11 +1,10 @@
-import { ChainId } from "@dexkit/core/constants";
+import { ChainId, ZEROEX_NATIVE_TOKEN_ADDRESS } from "@dexkit/core/constants";
 import {
   NETWORKS,
   NETWORK_COIN_IMAGE,
   NETWORK_COIN_NAME,
   NETWORK_COIN_SYMBOL,
 } from "@dexkit/core/constants/networks";
-import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "@dexkit/core/constants/zrx";
 import { EvmCoin, TokenWhitelabelApp } from "@dexkit/core/types";
 
 import { convertTokenToEvmCoin, ipfsUriToUrl } from "@dexkit/core/utils";

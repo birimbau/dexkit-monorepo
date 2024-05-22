@@ -30,10 +30,13 @@ export function SwapSection({ section }: Props) {
           activeChainIds={activeChainIds}
           renderOptions={{
             ...swapState.renderOptions,
+            useGasless: section.config?.useGasless,
+            myTokensOnlyOnSearch: section.config?.myTokensOnlyOnSearch,
             configsByChain: section.config?.configByChain
               ? section.config?.configByChain
               : {},
             currency: currency.currency,
+            // useGasless: false,
             defaultChainId:
               chainId || section.config?.defaultChainId || ChainId.Ethereum,
             zeroExApiKey: process?.env.NEXT_PUBLIC_ZRX_API_KEY || "",

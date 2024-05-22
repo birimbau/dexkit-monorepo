@@ -32,3 +32,5 @@ export const localeUserAtom = atomWithStorage<string>('dexkit-ui.user-app-locale
 export const currencyUserAtom = atomWithStorage<string>('dexkit-ui.user-currency', 'usd');
 
 export const selectedWalletAtom = atomWithStorage<string>('dexkit-ui.connector', '');
+
+export const gaslessTrades = atomWithStorage<{ chainId: number, tradeHash: string, type: 'swap' | 'marketBuy' | 'marketSell', values: any, mutationCalled?: boolean, mutationCalledTimes?: number, icon?: string }[]>('dexkit-ui.gasless-trades', []);

@@ -42,6 +42,9 @@ export enum UserOnChainEvents {
 
 export enum UserOffChainEvents {
   signMessage = "signMessage",
+  swapGasless = "swapGasless",
+  marketBuyGasless = "marketBuyGasless",
+  marketSellGasless = "marketSellGasless",
   loginSignMessage = "loginSignMessage",
   connectAccount = "connectAccount",
   disconnectAccount = "disconnectAccount",
@@ -58,3 +61,5 @@ export const UserEvents = {
   ...UserOnChainEvents,
   ...UserOffChainEvents,
 };
+
+

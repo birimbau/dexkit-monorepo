@@ -77,6 +77,25 @@ export default function TokenWizardContainer({
     }
   };
 
+  const handleDisableFeatured = (key: string) => {
+    const newTokens = [...tokens];
+    const index = newTokens.findIndex((t) => TOKEN_KEY(t) === key);
+
+    if (index > -1) {
+      const token = { ...newTokens[index] } as Token;
+
+      if (token?.disableFeatured) {
+        token.disableFeatured = false;
+      } else {
+        token.disableFeatured = true;
+      }
+
+      newTokens[index] = token;
+      setTokens(newTokens);
+      setHasChanged(true);
+    }
+  };
+
   const handleRemoveTokens = () => {
     setHasChanged(true);
     return setTokens((value) => {
@@ -176,6 +195,7 @@ export default function TokenWizardContainer({
           tokens={tokens}
           appUrl={appUrl}
           onMakeTradable={isSwap ? undefined : handleMakeTradable}
+          onDisableFeatured={isSwap ? handleDisableFeatured : undefined}
         />
       </Grid>
       <Grid item xs={12}>

@@ -9,13 +9,21 @@ export const COIN_PLATFORM_SEARCH_QUERY = "COIN_PLATFORM_SEARCH_QUERY";
 export function usePlatformCoinSearch({
   keyword,
   network,
+  disable,
 }: {
   keyword?: string;
   network?: string;
+  disable?: boolean
 }) {
   return useQuery(
-    [COIN_PLATFORM_SEARCH_QUERY, keyword, network],
+    [COIN_PLATFORM_SEARCH_QUERY, keyword, network, disable],
     async ({ signal }) => {
+      if (disable) {
+        return null;
+      }
+
+
+
       const req = await axios.get<DkApiPlatformCoin[]>(
         `${DEXKIT_API_URL}/coin/search-platforms`,
         { signal, params: { keyword, network } }

@@ -1,4 +1,4 @@
-import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "@dexkit/core/constants/zrx";
+import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "@dexkit/core/constants";
 import TradeWidgetSimpleVariant from "@dexkit/exchange/components/TradeWidget/SimpleVariant";
 
 import { isAddressEqual } from "@dexkit/core/utils";
@@ -17,7 +17,7 @@ export interface MarketTradeSectionProps {
 export default function MarketTradeSection({
   section,
 }: MarketTradeSectionProps) {
-  const { show, baseTokenConfig, slippage } = section.config;
+  const { show, baseTokenConfig, slippage, useGasless } = section.config;
   const { account, provider } = useWeb3React();
   const appConfig = useAppConfig();
 
@@ -82,6 +82,7 @@ export default function MarketTradeSection({
                   provider={provider}
                   chainId={appChaind}
                   show={show}
+                  useGasless={useGasless}
                 />
               </Stack>
             </Box>

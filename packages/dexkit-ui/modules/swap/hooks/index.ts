@@ -30,12 +30,12 @@ export function useSwapState() {
     setIsAutoSlippage((value) => !value);
   }, []);
 
-  const config = useAppConfig();
 
   const featuredTokens = useMemo(() => {
-    return config.tokens
+    return appConfig.tokens
       ?.map((t) => t.tokens)
       .flat()
+      .filter(t => !t?.disableFeatured)
       .map((t) => {
         return {
           chainId: t.chainId as number,
@@ -46,7 +46,26 @@ export function useSwapState() {
           logoURI: t.logoURI,
         };
       });
-  }, [config]);
+  }, [appConfig]);
+
+
+  const nonFeaturedTokens = useMemo(() => {
+    return appConfig.tokens
+      ?.map((t) => t.tokens)
+      .flat()
+      .filter(t => t?.disableFeatured)
+      .map((t) => {
+        return {
+          chainId: t.chainId as number,
+          contractAddress: t.address,
+          decimals: t.decimals,
+          name: t.name,
+          symbol: t.symbol,
+          logoURI: t.logoURI,
+        };
+      });
+  }, [appConfig]);
+
 
   const renderOptions = useMemo(() => {
     return {
@@ -54,6 +73,7 @@ export function useSwapState() {
       disableNotificationsButton: true,
       configsByChain: {},
       featuredTokens,
+      nonFeaturedTokens,
       currency: 'usd',
       defaultChainId: chainId || ChainId.Ethereum,
       zeroExApiKey: process.env.NEXT_PUBLIC_ZRX_API_KEY || '',

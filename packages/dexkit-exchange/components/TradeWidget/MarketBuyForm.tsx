@@ -1,25 +1,25 @@
 import { ChainId, useApproveToken, useTokenAllowanceQuery } from "@dexkit/core";
 import { UserEvents } from "@dexkit/core/constants/userEvents";
-import { ZeroExQuoteResponse } from "@dexkit/core/services/zrx/types";
 import { Token } from "@dexkit/core/types";
 import { formatBigNumber, getChainName } from "@dexkit/core/utils";
 import { parseUnits } from "@dexkit/core/utils/ethers/parseUnits";
 import {
-    useDexKitContext,
-    useSwitchNetworkMutation,
-    useWaitTransactionConfirmation,
+  useDexKitContext,
+  useSwitchNetworkMutation,
+  useWaitTransactionConfirmation,
 } from "@dexkit/ui/hooks";
 import { useTrackUserEventsMutation } from "@dexkit/ui/hooks/userEvents";
+import { ZeroExQuoteResponse } from "@dexkit/ui/modules/swap/types";
 import { AppNotificationType } from "@dexkit/ui/types";
 import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import {
-    Box,
-    Button,
-    Divider,
-    Grid,
-    Skeleton,
-    Stack,
-    Typography,
+  Box,
+  Button,
+  Divider,
+  Grid,
+  Skeleton,
+  Stack,
+  Typography,
 } from "@mui/material";
 import { useMutation } from "@tanstack/react-query";
 import { BigNumber, providers } from "ethers";

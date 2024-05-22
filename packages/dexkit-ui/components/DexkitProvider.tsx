@@ -16,6 +16,7 @@ import {
 import React from "react";
 import { DexKitContext } from "../context/DexKitContext";
 import { AppNotification, AppNotificationType } from "../types";
+import GaslessTradesUpdater from "./GaslessTradesUpdater";
 import { MagicStateProvider } from "./MagicStateProvider";
 import TransactionUpdater from "./TransactionUpdater";
 export interface DexkitProviderProps {
@@ -111,6 +112,7 @@ export function DexkitProvider({
               <CssBaseline />
               <MagicStateProvider currency="usd">{children}</MagicStateProvider>
               <TransactionUpdater pendingTransactionsAtom={transactionsAtom} />
+              <GaslessTradesUpdater />
             </SnackbarProvider>
           </CssVarsProvider>
         </Web3ReactProvider>

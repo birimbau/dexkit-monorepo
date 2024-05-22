@@ -1,45 +1,54 @@
 import {
-    ChainId,
-    useApproveToken,
-    useErc20BalanceQuery,
-    useTokenAllowanceQuery,
+  ChainId,
+  useApproveToken,
+  useErc20BalanceQuery,
+  useTokenAllowanceQuery,
 } from "@dexkit/core";
 import { UserEvents } from "@dexkit/core/constants/userEvents";
 import { Token } from "@dexkit/core/types";
 import {
-    formatBigNumber,
-    getChainName,
-    isAddressEqual,
+  formatBigNumber,
+  getChainName,
+  isAddressEqual,
 } from "@dexkit/core/utils";
 import { parseUnits } from "@dexkit/core/utils/ethers/parseUnits";
 import {
-    useDexKitContext,
-    useSwitchNetworkMutation,
-    useWaitTransactionConfirmation,
+  useDexKitContext,
+  useSwitchNetworkMutation,
+  useWaitTransactionConfirmation,
 } from "@dexkit/ui/hooks";
 import { useTrackUserEventsMutation } from "@dexkit/ui/hooks/userEvents";
+import { useSignTypeData } from "@dexkit/ui/hooks/web3/useSignTypeData";
 import { AppNotificationType } from "@dexkit/ui/types";
 import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
+
+import { SUPPORTED_GASLESS_CHAIN } from "@dexkit/ui/modules/swap/constants";
+import { useGaslessTrades } from "@dexkit/ui/modules/swap/hooks/useGaslessTrades";
+import { ZeroExGaslessQuoteResponse } from "@dexkit/ui/modules/swap/types";
+import { isNativeInSell } from "@dexkit/ui/modules/swap/utils";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import {
-    Box,
-    Button,
-    CircularProgress,
-    Divider,
-    Grid,
-    Menu,
-    MenuItem,
-    Skeleton,
-    Stack,
-    Typography,
+  Box,
+  Button,
+  CircularProgress,
+  Divider,
+  Grid,
+  Menu,
+  MenuItem,
+  Skeleton,
+  Stack,
+  Typography,
 } from "@mui/material";
 import { useMutation } from "@tanstack/react-query";
-import { BigNumber, providers } from "ethers";
+import type { providers } from "ethers";
+import { BigNumber, utils } from "ethers";
 import { useCallback, useMemo, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { EXCHANGE_NOTIFICATION_TYPES } from "../../../constants/messages";
 import { useZrxQuoteQuery } from "../../../hooks/zrx";
+import { useMarketTradeGaslessExec } from "../../../hooks/zrx/useMarketTradeGaslessExec";
+import { useMarketTradeGaslessState } from "../../../hooks/zrx/useMarketTradeGaslessState";
 import { getZrxExchangeAddress } from "../../../utils";
 import LazyDecimalInput from "../LazyDecimalInput";
 import ReviewMarketOrderDialog from "../ReviewMarketOrderDialog";
@@ -57,6 +66,7 @@ export interface MarketBuyFormProps {
   affiliateAddress?: string;
   chainId?: ChainId;
   isActive?: boolean;
+  useGasless?: boolean;
 }
 
 export default function MarketForm({
@@ -71,10 +81,12 @@ export default function MarketForm({
   buyTokenPercentageFee,
   feeRecipient,
   quoteTokens,
+  useGasless,
   isActive,
 }: MarketBuyFormProps) {
   const { createNotification } = useDexKitContext();
   const [showReview, setShowReview] = useState(false);
+  const [gaslessTrades, setGaslessTrades] = useGaslessTrades();
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -159,6 +171,26 @@ export default function MarketForm({
     sideToBuy.sellAmount = amountToTrade;
   }
 
+  const canGasless = useMemo(() => {
+    if (
+      useGasless &&
+      chainId &&
+      SUPPORTED_GASLESS_CHAIN.includes(chainId) &&
+      !isNativeInSell({
+        side,
+        sellToken: {
+          address: side === "buy" ? quoteToken.address : baseToken.address,
+        },
+        buyToken: {
+          address: side === "buy" ? baseToken.address : quoteToken.address,
+        },
+      })
+    ) {
+      return true;
+    }
+    return false;
+  }, [useGasless, chainId, quoteToken?.address, baseToken?.address, side]);
+
   const quoteQuery = useZrxQuoteQuery({
     chainId,
     params: {
@@ -168,9 +200,18 @@ export default function MarketForm({
       affiliateAddress: affiliateAddress ? affiliateAddress : "",
       skipValidation: showReview ? false : true,
       slippagePercentage: slippage,
+      takerAddress: account,
       feeRecipient,
       buyTokenPercentageFee,
+      acceptedTypes: "metatransaction_v2",
+      feeType: "volume",
+      feeSellTokenPercentage: buyTokenPercentageFee,
     },
+    useGasless: canGasless,
+  });
+
+  const marketTradeGasless = useMarketTradeGaslessExec({
+    onNotification: createNotification,
   });
 
   const quote = quoteQuery.data;
@@ -215,64 +256,176 @@ export default function MarketForm({
   }, [quote, quoteTokenBalance, quoteToken, side, baseToken, baseTokenBalance]);
 
   const [hash, setHash] = useState<string>();
+  const [tradeHash, setTradeHash] = useState<string>();
+  const [approvalSignature, setApprovalSignature] = useState<string>();
   const trackUserEvent = useTrackUserEventsMutation();
+  const gaslessTradeStatus = useMarketTradeGaslessState({ chainId, tradeHash });
+
   const waitTxResult = useWaitTransactionConfirmation({
     transactionHash: hash,
     provider,
   });
 
-  const sendTxMutation = useMutation(async () => {
-    if (amount) {
-      let res = await provider?.getSigner().sendTransaction({
-        data: quote?.data,
-        to: quote?.to,
-        value: BigNumber.from(quote?.value),
-      });
-      const subType = side == "buy" ? "marketBuy" : "marketSell";
-      const messageType = EXCHANGE_NOTIFICATION_TYPES[
-        subType
-      ] as AppNotificationType;
-      createNotification({
-        type: "transaction",
-        icon: messageType.icon,
-        subtype: subType,
-        metadata: {
-          hash: res?.hash,
-          chainId: chainId,
-        },
-        values: {
-          sellAmount: amount,
-          sellTokenSymbol: baseToken.symbol.toUpperCase(),
-          buyAmount: formattedCost,
-          buyTokenSymbol: quoteToken.symbol.toUpperCase(),
-        },
-      });
-      trackUserEvent.mutate({
-        event: side == "buy" ? UserEvents.marketBuy : UserEvents.marketSell,
-        hash: res?.hash,
-        chainId,
-        metadata: JSON.stringify({
-          quote,
-        }),
-      });
+  const signTypeDataMutation = useSignTypeData();
 
-      setHash(res?.hash);
+  const sendTxMutation = useMutation(async () => {
+    if (amount && chainId && quote) {
+      if (canGasless) {
+        const data = quote as ZeroExGaslessQuoteResponse;
+
+        if (data.trade) {
+          const { eip712, type } = data.trade;
+          const signature = await signTypeDataMutation.mutateAsync({
+            domain: eip712.domain,
+            value: eip712.message,
+            primaryType: eip712.primaryType,
+            types: eip712.types,
+          });
+          if (signature) {
+            const sign = utils.splitSignature(signature);
+            const trade = {
+              type: type,
+              eip712: eip712,
+              signature: {
+                v: sign.v,
+                r: sign.r,
+                s: sign.s,
+                signatureType: 2,
+              },
+            };
+
+            let approval;
+            if (approvalSignature) {
+              const signAppr = utils.splitSignature(approvalSignature);
+              const { eip712: eip721Appr, type: ApprType } = data.approval;
+              approval = {
+                type: ApprType,
+                eip712: eip721Appr,
+                signature: {
+                  v: signAppr.v,
+                  r: signAppr.r,
+                  s: signAppr.s,
+                  signatureType: 2,
+                },
+              };
+            }
+            const trHash = await marketTradeGasless.mutateAsync({
+              trade: trade,
+              approval: approval,
+              quote: data,
+              chainId,
+              sellToken: baseToken,
+              buyToken: quoteToken,
+              side,
+            });
+            if (trHash) {
+              const subType = side == "buy" ? "marketBuy" : "marketSell";
+              const messageType = EXCHANGE_NOTIFICATION_TYPES[
+                subType
+              ] as AppNotificationType;
+
+              gaslessTrades.push({
+                type: subType,
+                chainId,
+                tradeHash: trHash,
+                icon: messageType.icon,
+                values: {
+                  sellAmount: amount,
+                  sellTokenSymbol: baseToken.symbol.toUpperCase(),
+                  buyAmount: formattedCost,
+                  buyTokenSymbol: quoteToken.symbol.toUpperCase(),
+                },
+              });
+              // We use this on gasless trade updater to issue swap trades notifications
+              setGaslessTrades(gaslessTrades);
+
+              setTradeHash(trHash);
+            }
+          }
+        }
+      } else {
+        let res = await provider?.getSigner().sendTransaction({
+          data: quote?.data,
+          to: quote?.to,
+          value: BigNumber.from(quote?.value),
+        });
+        const subType = side == "buy" ? "marketBuy" : "marketSell";
+        const messageType = EXCHANGE_NOTIFICATION_TYPES[
+          subType
+        ] as AppNotificationType;
+        createNotification({
+          type: "transaction",
+          icon: messageType.icon,
+          subtype: subType,
+          metadata: {
+            hash: res?.hash,
+            chainId: chainId,
+          },
+          values: {
+            sellAmount: amount,
+            sellTokenSymbol: baseToken.symbol.toUpperCase(),
+            buyAmount: formattedCost,
+            buyTokenSymbol: quoteToken.symbol.toUpperCase(),
+          },
+        });
+        trackUserEvent.mutate({
+          event: side == "buy" ? UserEvents.marketBuy : UserEvents.marketSell,
+          hash: res?.hash,
+          chainId,
+          metadata: JSON.stringify({
+            quote,
+          }),
+        });
+
+        setHash(res?.hash);
+      }
     }
   });
 
   const handleCloseReview = () => {
+    baseTokenBalanceQuery.refetch();
+    quoteTokenBalanceQuery.refetch();
     setShowReview(false);
+    setTradeHash(undefined);
+    setApprovalSignature(undefined);
   };
 
   const handleApprove = async () => {
-    await approveMutation.mutateAsync({
-      onSubmited: (hash: string) => {},
-      amount: BigNumber.from(quote?.sellAmount),
-      provider,
-      spender: getZrxExchangeAddress(chainId),
-      tokenContract: quote?.sellTokenAddress,
-    });
-    tokenAllowanceQuery.refetch();
+    if (canGasless) {
+      const gaslessQuote = quoteQuery.data as ZeroExGaslessQuoteResponse;
+      if (gaslessQuote?.approval && gaslessQuote?.approval.isRequired) {
+        if (gaslessQuote.approval.isGasslessAvailable) {
+          const { eip712 } = gaslessQuote.approval;
+          const signature = await signTypeDataMutation.mutateAsync({
+            domain: eip712.domain,
+            value: eip712.message,
+            primaryType: eip712.primaryType,
+            types: eip712.types,
+          });
+          if (signature) {
+            setApprovalSignature(signature);
+          }
+        } else {
+          await approveMutation.mutateAsync({
+            onSubmited: (hash: string) => {},
+            amount: BigNumber.from(quote?.sellAmount),
+            provider,
+            spender: getZrxExchangeAddress(chainId),
+            tokenContract: quote?.sellTokenAddress,
+          });
+          tokenAllowanceQuery.refetch();
+        }
+      }
+    } else {
+      await approveMutation.mutateAsync({
+        onSubmited: (hash: string) => {},
+        amount: BigNumber.from(quote?.sellAmount),
+        provider,
+        spender: getZrxExchangeAddress(chainId),
+        tokenContract: quote?.sellTokenAddress,
+      });
+      tokenAllowanceQuery.refetch();
+    }
   };
 
   const handleConfirm = async () => {
@@ -285,6 +438,26 @@ export default function MarketForm({
 
   const { chainId: providerChainId, connector } = useWeb3React();
   const switchNetworkMutation = useSwitchNetworkMutation();
+
+  const isApproval = useMemo(() => {
+    if (canGasless) {
+      const gaslessQuote = quoteQuery.data as ZeroExGaslessQuoteResponse;
+      if (gaslessQuote?.approval) {
+        return gaslessQuote?.approval?.isRequired && !approvalSignature;
+      }
+    } else {
+      return (
+        tokenAllowanceQuery.data !== null &&
+        tokenAllowanceQuery.data?.lt(BigNumber.from(quote?.sellAmount || "0"))
+      );
+    }
+  }, [
+    tokenAllowanceQuery.data,
+    quote?.sellAmount,
+    canGasless,
+    approvalSignature,
+    quoteQuery.data,
+  ]);
 
   const renderActionButton = useCallback(() => {
     if (providerChainId && chainId && providerChainId !== chainId) {
@@ -371,14 +544,15 @@ export default function MarketForm({
           fullWidth: true,
           onClose: handleCloseReview,
         }}
-        isApproving={approveMutation.isLoading}
-        isApproval={
-          tokenAllowanceQuery.data !== null &&
-          tokenAllowanceQuery.data?.lt(BigNumber.from(quote?.sellAmount || "0"))
+        isApproving={
+          approveMutation.isLoading || signTypeDataMutation.isLoading
         }
+        isApproval={isApproval}
         chainId={chainId}
         price={quote?.price}
-        hash={hash}
+        pendingHash={gaslessTradeStatus?.successTxGasless?.hash}
+        hash={hash || gaslessTradeStatus?.confirmedTxGasless?.hash}
+        reasonFailedGasless={gaslessTradeStatus?.reasonFailedGasless}
         quoteToken={quoteToken}
         baseToken={baseToken}
         baseAmount={
@@ -396,9 +570,14 @@ export default function MarketForm({
             : undefined
         }
         side={side}
-        isPlacingOrder={sendTxMutation.isLoading || waitTxResult.isFetching}
+        isPlacingOrder={
+          sendTxMutation.isLoading ||
+          waitTxResult.isFetching ||
+          gaslessTradeStatus?.isLoadingStatusGasless
+        }
         onConfirm={handleConfirm}
         onApprove={handleApprove}
+        canGasless={canGasless}
       />
       <Box>
         <Grid container spacing={2}>

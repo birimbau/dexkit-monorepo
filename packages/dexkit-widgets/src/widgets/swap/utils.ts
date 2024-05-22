@@ -12,5 +12,4 @@ export function convertOldTokenToNew(tk?: Token) {
     tk.address = tk?.contractAddress;
   }
   return tk;
-
 }

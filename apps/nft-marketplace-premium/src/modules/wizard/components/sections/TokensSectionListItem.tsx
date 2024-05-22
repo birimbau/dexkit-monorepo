@@ -3,6 +3,7 @@ import {
   Avatar,
   Checkbox,
   Chip,
+  FormControlLabel,
   ListItem,
   ListItemAvatar,
   ListItemSecondaryAction,
@@ -32,7 +33,9 @@ interface Props {
   selected?: boolean;
   onClick: () => void;
   onMakeTradable?: () => void;
+  onDisableFeatured?: () => void;
   disableMakeTradable?: boolean;
+  disableFeatured?: boolean;
   divider?: boolean;
 }
 
@@ -42,6 +45,8 @@ export default function TokensSectionListItem({
   selected,
   onClick,
   onMakeTradable,
+  onDisableFeatured,
+  disableFeatured,
   divider,
   appUrl,
   disableMakeTradable,
@@ -114,7 +119,9 @@ export default function TokensSectionListItem({
         }
       />
 
-      {(!(disableMakeTradable === true) || selectable) && (
+      {(!(disableMakeTradable === true) ||
+        selectable ||
+        !(disableFeatured === true)) && (
         <ListItemSecondaryAction>
           {selectable ? (
             <Checkbox
@@ -123,19 +130,58 @@ export default function TokensSectionListItem({
               inputProps={{ 'aria-label': 'controlled' }}
             />
           ) : (
-            <Tooltip
-              title={
-                <FormattedMessage
-                  id="make.token.available.on.the.marketplace"
-                  defaultMessage="Make token available on the marketplace"
+            <>
+              {disableFeatured === false && (
+                <FormControlLabel
+                  control={
+                    <Tooltip
+                      title={
+                        <FormattedMessage
+                          id="disable.feature.token.on.swap.search"
+                          defaultMessage="Disable feature token on swap search"
+                        />
+                      }
+                    >
+                      <Switch
+                        checked={Boolean(token.disableFeatured)}
+                        onClick={onDisableFeatured}
+                      />
+                    </Tooltip>
+                  }
+                  label={
+                    <FormattedMessage
+                      id={'disable.featured'}
+                      defaultMessage={'Disable featured'}
+                    />
+                  }
                 />
-              }
-            >
-              <Switch
-                checked={Boolean(token.tradable)}
-                onClick={onMakeTradable}
-              />
-            </Tooltip>
+              )}
+              {disableMakeTradable === false && (
+                <FormControlLabel
+                  control={
+                    <Tooltip
+                      title={
+                        <FormattedMessage
+                          id="make.token.available.on.the.marketplace"
+                          defaultMessage="Make token available on the marketplace"
+                        />
+                      }
+                    >
+                      <Switch
+                        checked={Boolean(token.tradable)}
+                        onClick={onMakeTradable}
+                      />
+                    </Tooltip>
+                  }
+                  label={
+                    <FormattedMessage
+                      id={'Marketplace'}
+                      defaultMessage={'Marketplace'}
+                    />
+                  }
+                />
+              )}
+            </>
           )}
           {appUrl && (
             <IconButton

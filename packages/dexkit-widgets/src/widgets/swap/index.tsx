@@ -8,10 +8,11 @@ import {
 import { useWeb3React } from "@web3-react/core";
 import { useEffect, useMemo, useState } from "react";
 
+import dynamic from "next/dynamic";
 import { usePlatformCoinSearch } from "../../hooks/api";
 import { apiCoinToTokens } from "../../utils/api";
-import SwapConfirmDialog from "./dialogs/SwapConfirmDialog";
 import SwapSettingsDialog from "./dialogs/SwapSettingsDialog";
+const SwapConfirmDialog = dynamic(() => import("./dialogs/SwapConfirmDialog"));
 
 // declare global {
 //   function renderSwapWidget(id: string, options: RenderOptions): void;
@@ -20,14 +21,14 @@ import SwapSettingsDialog from "./dialogs/SwapSettingsDialog";
 import { NETWORKS } from "@dexkit/core/constants/networks";
 import { Token } from "@dexkit/core/types";
 import SwitchNetworkDialog from "../../components/SwitchNetworkDialog";
+import { SUPPORTED_GASLESS_CHAIN } from "../../constants";
 import SwapSelectCoinDialog from "./SwapSelectCoinDialog";
 import { SUPPORTED_SWAP_CHAIN_IDS } from "./constants/supportedChainIds";
-import {
-  useErc20ApproveMutation,
-  useSwapExec,
-  useSwapProvider,
-  useSwapState,
-} from "./hooks";
+import { useErc20ApproveMutation } from "./hooks";
+import { useSwapExec } from "./hooks/useSwapExec";
+import { useSwapGaslessExec } from "./hooks/useSwapGaslessExec";
+import { useSwapProvider } from "./hooks/useSwapProvider";
+import { useSwapState } from "./hooks/useSwapState";
 import { NotificationCallbackParams, RenderOptions } from "./types";
 import { convertOldTokenToNew } from "./utils";
 
@@ -84,9 +85,16 @@ export function SwapWidget({
     enableBuyCryptoButton,
     zeroExApiKey,
     featuredTokens,
+    nonFeaturedTokens,
+    useGasless,
+    myTokensOnlyOnSearch,
   } = options;
 
   const execSwapMutation = useSwapExec({ onNotification });
+
+  const execSwapGaslessMutation = useSwapGaslessExec({
+    zeroExApiKey,
+  });
 
   const [selectedChainId, setSelectedChainId] = useState<ChainId>();
 
@@ -100,6 +108,12 @@ export function SwapWidget({
     defaultChainId: selectedChainId,
     disableWallet,
   });
+
+  const isGasless = useMemo(() => {
+    if (selectedChainId) {
+      return SUPPORTED_GASLESS_CHAIN.includes(selectedChainId) && useGasless;
+    }
+  }, [selectedChainId, useGasless]);
 
   const approveMutation = useErc20ApproveMutation({ onNotification });
 
@@ -143,8 +157,13 @@ export function SwapWidget({
     handleShowTransactions,
     handleClearRecentTokens,
     handleShowTransak,
+    isLoadingSignGasless,
+    gaslessSwapState,
+    execSwapState,
   } = useSwapState({
+    execGaslessMutation: execSwapGaslessMutation,
     zeroExApiKey,
+    isGasless: isGasless,
     selectedChainId,
     connectedChainId,
     execMutation: execSwapMutation,
@@ -163,6 +182,7 @@ export function SwapWidget({
     maxSlippage,
     isAutoSlippage,
     transakApiKey,
+
     defaultBuyToken:
       selectedChainId && configsByChain[selectedChainId]
         ? convertOldTokenToNew(configsByChain[selectedChainId].buyToken)
@@ -178,54 +198,74 @@ export function SwapWidget({
   const searchQuery = usePlatformCoinSearch({
     keyword: query,
     network: chainId && NETWORKS[chainId] ? NETWORKS[chainId].slug : undefined,
+    disable: myTokensOnlyOnSearch,
   });
 
   const featuredTokensByChain = useMemo(() => {
-    return featuredTokens
+    return (featuredTokens
       ?.filter((t) => t.chainId === selectedChainId)
-      .map(convertOldTokenToNew) as Token[];
+      .map(convertOldTokenToNew) || []) as Token[];
   }, [featuredTokens, selectedChainId]);
 
+  const nonFeaturedTokensByChain = useMemo(() => {
+    return (nonFeaturedTokens
+      ?.filter((t) => t.chainId === selectedChainId)
+      .map(convertOldTokenToNew) || []) as Token[];
+  }, [nonFeaturedTokens, selectedChainId]);
+
   const tokens = useMemo(() => {
-    if (searchQuery.data && chainId) {
-      let tokens = [
-        GET_NATIVE_TOKEN(chainId),
-        ...apiCoinToTokens(searchQuery.data),
-      ];
-      if (featuredTokensByChain) {
+    if (chainId) {
+      if (myTokensOnlyOnSearch) {
+        let tokens = [GET_NATIVE_TOKEN(chainId)];
         tokens = [
           GET_NATIVE_TOKEN(chainId),
           ...featuredTokensByChain,
-          ...apiCoinToTokens(searchQuery.data),
+          ...nonFeaturedTokensByChain,
         ];
+
+        return tokens;
+      } else {
+        if (searchQuery.data) {
+          let tokens = [
+            GET_NATIVE_TOKEN(chainId),
+            ...apiCoinToTokens(searchQuery.data),
+          ];
+
+          tokens = [
+            GET_NATIVE_TOKEN(chainId),
+            ...featuredTokensByChain,
+            ...nonFeaturedTokensByChain,
+            ...apiCoinToTokens(searchQuery.data),
+          ];
+
+          if (query !== "") {
+            tokens = tokens.filter(
+              (c) =>
+                c.name.toLowerCase().search(query?.toLowerCase()) > -1 ||
+                c.symbol.toLowerCase().search(query?.toLowerCase()) > -1 ||
+                c.address.toLowerCase().search(query?.toLowerCase()) > -1
+            );
+          }
+
+          let tokensCopy = [
+            ...tokens
+              .filter((t) => t)
+              .filter((t) => {
+                return !DKAPI_INVALID_ADDRESSES.includes(t?.address);
+              }),
+          ];
+
+          tokensCopy = tokensCopy.filter((value, index, arr) => {
+            return (
+              arr
+                .map((a) => a.address.toLowerCase())
+                .indexOf(value.address.toLowerCase()) === index
+            );
+          });
+
+          return tokensCopy;
+        }
       }
-
-      if (query !== "") {
-        tokens = tokens.filter(
-          (c) =>
-            c.name.toLowerCase().search(query?.toLowerCase()) > -1 ||
-            c.symbol.toLowerCase().search(query?.toLowerCase()) > -1 ||
-            c.address.toLowerCase().search(query?.toLowerCase()) > -1
-        );
-      }
-
-      let tokensCopy = [
-        ...tokens
-          .filter((t) => t)
-          .filter((t) => {
-            return !DKAPI_INVALID_ADDRESSES.includes(t?.address);
-          }),
-      ];
-
-      tokensCopy = tokensCopy.filter((value, index, arr) => {
-        return (
-          arr
-            .map((a) => a.address.toLowerCase())
-            .indexOf(value.address.toLowerCase()) === index
-        );
-      });
-
-      return tokensCopy;
     }
 
     return [];
@@ -278,21 +318,31 @@ export function SwapWidget({
         }}
         chainId={chainId}
       />
-      <SwapConfirmDialog
-        DialogProps={{
-          open: showConfirmSwap,
-          maxWidth: "xs",
-          fullWidth: true,
-          onClose: handleCloseConfirmSwap,
-        }}
-        quote={quote}
-        isQuoting={isQuoting}
-        onConfirm={handleConfirmExecSwap}
-        chainId={chainId}
-        currency={currency || "usd"}
-        sellToken={sellToken}
-        buyToken={buyToken}
-      />
+      {showConfirmSwap && (
+        <SwapConfirmDialog
+          DialogProps={{
+            open: showConfirmSwap,
+            maxWidth: "xs",
+            fullWidth: true,
+            onClose: handleCloseConfirmSwap,
+          }}
+          quote={quote}
+          isQuoting={isQuoting}
+          isApproving={approveMutation.isLoading}
+          isLoadingSignGasless={isLoadingSignGasless}
+          isLoadingStatusGasless={gaslessSwapState.isLoadingStatusGasless}
+          reasonFailedGasless={gaslessSwapState.reasonFailedGasless}
+          successTxGasless={gaslessSwapState.successTxGasless}
+          confirmedTxGasless={gaslessSwapState.confirmedTxGasless}
+          onConfirm={handleConfirmExecSwap}
+          execSwapState={execSwapState}
+          execType={execType}
+          chainId={chainId}
+          currency={currency || "usd"}
+          sellToken={sellToken}
+          buyToken={buyToken}
+        />
+      )}
       <SwapSettingsDialog
         DialogProps={{
           open: showSettings,

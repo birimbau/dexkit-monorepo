@@ -192,6 +192,10 @@ export const transactionsAtomV2 = atomWithStorage<{
   [key: string]: AppTransaction;
 }>('dexkit.transactions', {});
 
+export const gaslessTradesAtom = atomWithStorage<{
+  [key: string]: AppTransaction;
+}>('dexkit.gaslesstrades', {});
+
 export const notificationsAtom = atomWithStorage<AppNotification[]>(
   'dexkit.notifications',
   []

@@ -9,8 +9,8 @@ import { FormattedMessage, FormattedNumber } from "react-intl";
 import { GET_NATIVE_TOKEN } from "@dexkit/core/constants";
 import { Token } from "@dexkit/core/types";
 import { formatEther } from "@dexkit/core/utils/ethers/formatEther";
+import { ZeroExQuoteResponse } from "@dexkit/ui/modules/swap/types";
 import { useCoinPrices, useGasPrice } from "../../hooks";
-import { ZeroExQuoteResponse } from "../../services/zeroex/types";
 import { formatBigNumber } from "../../utils";
 
 export interface SwapFeeSummaryProps {
@@ -37,7 +37,7 @@ export default function SwapFeeSummary({
   });
 
   const maxFee = useMemo(() => {
-    if (quote) {
+    if (quote && quote?.gas && quote?.gasPrice) {
       return BigNumber.from(quote.gas).mul(quote.gasPrice);
     }
 
@@ -45,7 +45,7 @@ export default function SwapFeeSummary({
   }, [quote]);
 
   const amount = useMemo(() => {
-    if (quote) {
+    if (quote && quote?.value) {
       return BigNumber.from(quote.value);
     }
 
@@ -87,7 +87,7 @@ export default function SwapFeeSummary({
   const handelToggle = () => setToggleSide((value) => !value);
 
   const sellTokenByBuyToken = useMemo(() => {
-    if (buyToken && sellToken && quote) {
+    if (buyToken && sellToken && quote && quote.sellAmount && quote.buyAmount) {
       const sellAmount = parseFloat(
         formatBigNumber(BigNumber.from(quote.sellAmount), sellToken.decimals)
       );

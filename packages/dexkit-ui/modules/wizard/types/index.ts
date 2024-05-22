@@ -121,6 +121,8 @@ export type DeployedContract = {
 export interface SwapConfig {
   defaultChainId?: number;
   defaultEditChainId?: number;
+  useGasless?: boolean;
+  myTokensOnlyOnSearch?: boolean;
   configByChain?: {
     [chain: number]: ChainConfig;
   };

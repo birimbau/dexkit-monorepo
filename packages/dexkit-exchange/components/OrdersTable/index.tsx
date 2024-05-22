@@ -1,5 +1,5 @@
 import { ChainId } from "@dexkit/core";
-import { ZrxOrder } from "@dexkit/core/services/zrx/types";
+import { ZrxOrder } from "@dexkit/ui/modules/swap/types";
 import {
   Box,
   Button,
@@ -15,11 +15,12 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import { providers } from "ethers";
+import type { providers } from "ethers";
 import { useCallback, useMemo } from "react";
 import { FormattedMessage } from "react-intl";
 import { useExchangeContext } from "../../hooks";
-import { useZrxCancelOrderMutation, useZrxOrderbook } from "../../hooks/zrx";
+import { useZrxOrderbook } from "../../hooks/zrx";
+import { useZrxCancelOrderMutation } from "../../hooks/zrx/useZrxCancelOrderMutation";
 import OrdersTableRow from "./OrdersTableRow";
 
 import {

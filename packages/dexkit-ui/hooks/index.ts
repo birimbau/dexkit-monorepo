@@ -156,6 +156,7 @@ export function useDexkitContextState({
   hiddenAssetsAtom: PrimitiveAtom<{ [key: string]: boolean }>;
   currencyUserAtom: PrimitiveAtom<string>;
   transactionsAtom: PrimitiveAtom<{ [key: string]: AppTransaction }>;
+
   onChangeLocale: (locale: string) => void;
 }) {
   const [notifications, setNotifications] = useAtom(notificationsAtom);
@@ -594,3 +595,13 @@ export function useEditSiteId() {
 
   return { editSiteId }
 }
+
+
+
+
+
+
+
+
+
+

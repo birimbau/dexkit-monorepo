@@ -1,11 +1,11 @@
-export * from "./blockchain";
-export * from "./coin";
-export * from "./nft";
+export type * from "./blockchain";
+export type * from "./coin";
+export type * from "./nft";
 
 import type { AxiosInstance } from "axios";
 import { Dispatch, SetStateAction } from "react";
-import { ChainId, TransactionStatus, TransactionType } from "../constants";
-import { TransactionMetadata } from "./blockchain";
+import type { ChainId, TransactionStatus, TransactionType } from "../constants";
+import type { TransactionMetadata } from "./blockchain";
 
 export type TokenWhitelabelApp = {
   address: string;
@@ -15,6 +15,7 @@ export type TokenWhitelabelApp = {
   chainId: ChainId;
   logoURI: string;
   tradable?: boolean;
+  disableFeatured?: boolean;
 };
 
 export type Token = {
