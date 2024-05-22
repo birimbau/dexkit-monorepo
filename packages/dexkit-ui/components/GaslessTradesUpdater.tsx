@@ -18,65 +18,56 @@ export default function GaslessTradesUpdater() {
   const blockNumber = useBlockNumber();
 
   useEffect(() => {
-    try {
-      if (chainId !== undefined && blockNumber !== undefined && gaslessTrades) {
-        console.log(gaslessTrades);
-        for (let index = 0; index < gaslessTrades.length; index++) {
+    if (chainId !== undefined && blockNumber !== undefined && gaslessTrades) {
+      for (let index = 0; index < gaslessTrades.length; index++) {
+        async function fetchTradeStatus() {
           const trade = gaslessTrades[index];
           if (!trade.mutationCalled) {
             trade.mutationCalled = true;
-            statusMutation
-              .mutateAsync({
+            try {
+              const status = await statusMutation.mutateAsync({
                 tradeHash: trade.tradeHash,
                 chainId: trade.chainId,
-              })
-              .then((status) => {
-                try {
-                  if (
-                    status?.status === "succeeded" ||
-                    status?.status === "confirmed"
-                  ) {
-                    onNotification({
-                      hash: status.transactions[0].hash,
-                      chainId: trade.chainId,
-                      title: "",
-                      params: {
-                        type: "swap",
-                        sellAmount: trade.values.sellAmount,
-                        buyAmount: trade.values.buyAmount,
-                        sellToken: trade.values.sellToken,
-                        buyToken: trade.values.buyToken,
-                      },
-                    });
-                    setGaslessTrades(
-                      gaslessTrades.filter(
-                        (t) => t.tradeHash !== trade.tradeHash
-                      )
-                    );
-                  }
-                  if (status?.status === "failed") {
-                    setGaslessTrades(
-                      gaslessTrades.filter(
-                        (t) => t.tradeHash !== trade.tradeHash
-                      )
-                    );
-                  }
-                  trade.mutationCalledTimes =
-                    (trade.mutationCalledTimes
-                      ? trade.mutationCalledTimes
-                      : 0) + 1;
-                } catch {
-                  trade.mutationCalledTimes =
-                    (trade.mutationCalledTimes
-                      ? trade.mutationCalledTimes
-                      : 0) + 1;
+              });
+
+              if (
+                status?.status === "succeeded" ||
+                status?.status === "confirmed" ||
+                status?.status === "failed"
+              ) {
+                if (status.status !== "failed") {
+                  onNotification({
+                    hash: status.transactions[0].hash,
+                    chainId: trade.chainId,
+                    title: "",
+                    params: {
+                      type: "swap",
+                      sellAmount: trade.values.sellAmount,
+                      buyAmount: trade.values.buyAmount,
+                      sellToken: trade.values.sellToken,
+                      buyToken: trade.values.buyToken,
+                    },
+                  });
                 }
-              })
-              .catch(() => {
-                trade.mutationCalledTimes =
+                setGaslessTrades(
+                  gaslessTrades.filter((t) => t.tradeHash !== trade.tradeHash)
+                );
+              } else {
+                gaslessTrades[index].mutationCalledTimes =
                   (trade.mutationCalledTimes ? trade.mutationCalledTimes : 0) +
                   1;
-              });
+
+                gaslessTrades[index].mutationCalled = false;
+                setGaslessTrades(gaslessTrades);
+              }
+            } catch {
+              gaslessTrades[index].mutationCalledTimes =
+                (trade.mutationCalledTimes ? trade.mutationCalledTimes : 0) + 1;
+
+              gaslessTrades[index].mutationCalled = false;
+              setGaslessTrades(gaslessTrades);
+            }
+
             // If we call several times, maybe this trade is broken
             if (trade.mutationCalledTimes && trade.mutationCalledTimes > 20) {
               setGaslessTrades(
@@ -85,8 +76,10 @@ export default function GaslessTradesUpdater() {
             }
           }
         }
+
+        fetchTradeStatus();
       }
-    } catch {}
+    }
   }, [blockNumber, chainId]);
 
   return null;

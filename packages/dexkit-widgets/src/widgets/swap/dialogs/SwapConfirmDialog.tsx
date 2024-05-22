@@ -32,6 +32,8 @@ export interface SwapConfirmDialogProps {
   quote?: ZeroExQuoteResponse | null;
   chainId?: ChainId;
   execSwapState: ExecSwapState;
+  isApproving?: boolean;
+  execType: string;
   isQuoting?: boolean;
   isLoadingStatusGasless?: boolean;
   reasonFailedGasless?: string;
@@ -51,6 +53,8 @@ export default function SwapConfirmDialog({
   chainId,
   onConfirm,
   execSwapState,
+  isApproving,
+  execType,
   isLoadingSignGasless,
   isLoadingStatusGasless,
   reasonFailedGasless,
@@ -68,9 +72,17 @@ export default function SwapConfirmDialog({
     }
   };
 
-  console.log(execSwapState);
-
   const btnMessage = useMemo(() => {
+    if (execType === "approve") {
+      return (
+        <FormattedMessage
+          id="approve.token.gasless"
+          defaultMessage="Approve {symbol}"
+          values={{ symbol: sellToken?.symbol?.toUpperCase() || "" }}
+        />
+      );
+    }
+
     if (execSwapState === ExecSwapState.gasless_approval) {
       return (
         <FormattedMessage
@@ -98,7 +110,7 @@ export default function SwapConfirmDialog({
     }
 
     return <FormattedMessage id="confirm" defaultMessage="Confirm" />;
-  }, [execSwapState, sellToken, isLoadingStatusGasless]);
+  }, [execSwapState, sellToken, isLoadingStatusGasless, execType]);
 
   const isMobile = useIsMobile();
 
@@ -298,14 +310,14 @@ export default function SwapConfirmDialog({
             disabled={
               isQuoting ||
               isLoadingStatusGasless ||
-              execSwapState === ExecSwapState.gasless_trade_submit
+              execSwapState === ExecSwapState.gasless_trade_submit ||
+              isApproving
             }
             startIcon={
               (isQuoting ||
                 isLoadingStatusGasless ||
-                execSwapState === ExecSwapState.gasless_trade_submit) && (
-                <CircularProgress size={20} />
-              )
+                execSwapState === ExecSwapState.gasless_trade_submit ||
+                isApproving) && <CircularProgress size={20} />
             }
             onClick={onConfirm}
             variant="contained"

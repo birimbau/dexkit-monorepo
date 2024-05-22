@@ -328,6 +328,7 @@ export function SwapWidget({
           }}
           quote={quote}
           isQuoting={isQuoting}
+          isApproving={approveMutation.isLoading}
           isLoadingSignGasless={isLoadingSignGasless}
           isLoadingStatusGasless={gaslessSwapState.isLoadingStatusGasless}
           reasonFailedGasless={gaslessSwapState.reasonFailedGasless}
@@ -335,6 +336,7 @@ export function SwapWidget({
           confirmedTxGasless={gaslessSwapState.confirmedTxGasless}
           onConfirm={handleConfirmExecSwap}
           execSwapState={execSwapState}
+          execType={execType}
           chainId={chainId}
           currency={currency || "usd"}
           sellToken={sellToken}

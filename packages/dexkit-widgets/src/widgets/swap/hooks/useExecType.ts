@@ -16,6 +16,7 @@ import { isAddressEqual } from "../../../utils";
 
 export function useExecType({ chainId, connectedChainId, lazyBuyToken, lazySellToken, account, quoteQuery, quoteFor, isGasless, lazySellAmount, provider }: { chainId?: number, connectedChainId?: number, lazyBuyToken?: Token, lazySellToken?: Token, isGasless?: boolean, quoteFor?: SwapSide, lazySellAmount?: BigNumber, provider?: providers.BaseProvider, account?: string, quoteQuery: any }) {
 
+
   return useAsyncMemo<ExecType>(
     async (initial) => {
 
@@ -39,17 +40,17 @@ export function useExecType({ chainId, connectedChainId, lazyBuyToken, lazySellT
         isAddressEqual(WRAPPED_TOKEN_ADDRESS(chainId), lazySellToken.address);
 
       // Gasless not work on native token as sell side
-      const canGasless = isGasless && lazySellToken && quoteFor && lazyBuyToken && isNativeInSell({ sellToken: lazySellToken, buyToken: lazyBuyToken, side: quoteFor })
-
-
+      const canGasless = isGasless && lazySellToken && quoteFor && lazyBuyToken && !isNativeInSell({ sellToken: lazySellToken, buyToken: lazyBuyToken, side: quoteFor })
 
       if (lazyBuyToken && lazySellToken && quoteQuery.data) {
         if (!isBuyTokenWrapped && !isSellTokenWrapped) {
           if (account) {
             if (canGasless) {
               const [, data] = quoteQuery.data as unknown as [string, ZeroExQuoteMetaTransactionResponse];
-              if (data && data?.approval && data?.approval?.isRequired && data?.approval?.isGaslessAvailable) {
-                const { isRequired, isGaslessAvailable } = data.approval
+              if (data && data?.approval && data?.approval?.isRequired !== undefined && data?.approval?.isGaslessAvailable !== undefined) {
+
+                const { isRequired, isGaslessAvailable } = data.approval;
+
                 if (isRequired && isGaslessAvailable) {
                   return 'approve_gasless';
                 }
@@ -59,6 +60,7 @@ export function useExecType({ chainId, connectedChainId, lazyBuyToken, lazySellT
               }
             } else {
               const [, data] = quoteQuery.data;
+
               if (data) {
                 const sufficientAllowance = await hasSufficientAllowance({
                   spender: data.allowanceTarget,

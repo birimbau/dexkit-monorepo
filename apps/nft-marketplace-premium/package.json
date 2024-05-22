@@ -41,7 +41,6 @@
     "@dexkit/darkblock-evm-widget": "*",
     "@dexkit/evm-chains": "^1.14",
     "@dexkit/ui": "*",
-    "@dexkit/zrx-swap": "*",
     "@dexkit/unlock-widget": "*",
     "@dexkit/wallet-connectors": "*",
     "@dexkit/web3forms": "*",

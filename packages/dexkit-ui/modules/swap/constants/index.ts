@@ -1,5 +1,4 @@
 import { ChainId } from "@dexkit/core/constants/enums";
-import { DEXKIT_UI_BASE_API_URL } from "@dexkit/ui/constants/api";
 
 export const SUPPORTED_GASLESS_CHAIN = [1, 137, 42161, 8453, 10]
 
@@ -38,7 +37,7 @@ export const ZEROEX_CHAIN_PREFIX = (chainId?: number) => {
 
 export const ZERO_EX_URL = (chainId?: number, siteId?: number) => {
 
-  return `${DEXKIT_UI_BASE_API_URL}/swap/zrx-api/chain/${chainId}`;
+  return `/api/zrx-api/${siteId || 'dexappbuilder'}/${chainId}`;
 
   /*if (siteId !== undefined) {
     return `/api/zrx/${siteId}/${NETWORK_SLUG(chainId)}`;

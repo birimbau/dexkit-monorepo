@@ -6,6 +6,7 @@ export enum ExecSwapState {
   gasless_trade = 'gasless_trade',
   gasless_trade_submit = 'gasless_trade_submit',
   gasless_trade_confirmed = 'gasless_trade_confirmed',
+  approve = 'approve',
   swap = 'swap'
 }
 

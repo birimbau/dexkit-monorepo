@@ -116,6 +116,7 @@ export function useSwapQuote({
             buyToken: buyToken?.address,
             sellToken: sellToken?.address,
             feeRecipient: swapFees?.recipient,
+            affiliateAddress: ZEROEX_AFFILIATE_ADDRESS,
             acceptedTypes: "metatransaction_v2",
             feeType: "volume",
             feeSellTokenPercentage: swapFees

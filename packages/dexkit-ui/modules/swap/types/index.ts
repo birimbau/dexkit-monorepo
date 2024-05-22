@@ -189,6 +189,8 @@ export type ZeroExQuoteGasless = {
 
   intentOnFilling?: boolean;
 
+  affiliateAddress?: string;
+
 
 };
 

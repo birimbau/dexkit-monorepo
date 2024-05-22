@@ -12,6 +12,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  return;
   const { network, site } = req.query;
 
   const controller = new AbortController();

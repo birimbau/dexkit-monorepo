@@ -376,7 +376,26 @@ export function useSwapState({
           }
         }
       }
+      if (isRequired && !isGaslessAvailable) {
+        if (data && sellToken) {
+          setExecSwapState(ExecSwapState.approve);
+          await approveMutation.mutateAsync(
+            {
+              spender: data.allowanceTarget,
+              provider: connectorProvider as providers.Web3Provider,
+              tokenAddress: data.sellTokenAddress,
+              amount: constants.MaxUint256,
+              token: sellToken,
+            },
+            {
+              onSuccess: () => { },
+            }
+          );
+          quote.quoteQuery.refetch();
+          return;
 
+        }
+      }
       const { eip712, type } = data.trade
       setExecSwapState(ExecSwapState.gasless_trade)
       const signature = await signTypeDataMutation.mutateAsync({ domain: eip712.domain, types: eip712.types, value: eip712.message, primaryType: eip712.primaryType }, {
@@ -480,12 +499,12 @@ export function useSwapState({
       setExecSwapState(ExecSwapState.gasless_trade)
 
 
-    } else if (execType === "approve_gasless" && quoteQuery.data) {
+    } /*else if (execType === "approve_gasless" && quoteQuery.data) {
       setShowConfirmSwap(true);
       quote.setIntentOnFilling(true);
       setExecSwapState(ExecSwapState.gasless_approval)
       quote.quoteQuery.refetch();
-    } else if (execType === "wrap") {
+    }*/ else if (execType === "wrap") {
       await wrapMutation.mutateAsync(
         {
           provider: connectorProvider as providers.Web3Provider,
@@ -498,6 +517,7 @@ export function useSwapState({
       );
     } else if (execType === "approve" && quoteQuery.data) {
       const [, data] = quoteQuery.data;
+      setExecSwapState(ExecSwapState.approve)
 
       if (data && sellToken) {
         await approveMutation.mutateAsync(
