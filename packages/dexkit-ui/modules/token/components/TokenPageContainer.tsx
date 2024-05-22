@@ -135,6 +135,7 @@ function TokenPageContainer({ address, network, orderMarketType }: Props) {
               type: "market-trade",
               config: {
                 show: orderMarketType,
+                useGasless: true,
                 baseTokenConfig: {
                   address: address as string,
                   chainId: chainId,

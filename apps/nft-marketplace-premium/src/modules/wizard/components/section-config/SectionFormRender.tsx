@@ -3,10 +3,9 @@ import {
   AppPageSection,
   SectionType,
 } from '@dexkit/ui/modules/wizard/types/section';
-import { Alert, Box, Button, Container, Grid } from '@mui/material';
+import { Box, Grid } from '@mui/material';
 import dynamic from 'next/dynamic';
 import { useContext, useState } from 'react';
-import { FormattedMessage } from 'react-intl';
 import { myAppsApi } from 'src/services/whitelabel';
 import { SiteContext } from '../../providers/SiteWizardProvider';
 import AddCarouselForm from '../forms/AddCarouselForm';
@@ -112,7 +111,7 @@ export function SectionFormRender({
         )}
         <Box>
           <Grid container spacing={2}>
-            <Grid item xs={12}>
+            {/*<Grid item xs={12}>
               <Container>
                 <Alert
                   severity="info"
@@ -132,7 +131,7 @@ export function SectionFormRender({
                   />
                 </Alert>
               </Container>
-            </Grid>
+            </Grid>*/}
             <Grid item xs={12}>
               <SwapConfigSectionForm
                 onCancel={onClose}

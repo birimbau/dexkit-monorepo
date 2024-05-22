@@ -23,6 +23,7 @@ import { AppNotificationType } from "@dexkit/ui/types";
 import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 
 import { SUPPORTED_GASLESS_CHAIN } from "@dexkit/ui/modules/swap/constants";
+import { useGaslessTrades } from "@dexkit/ui/modules/swap/hooks/useGaslessTrades";
 import { ZeroExGaslessQuoteResponse } from "@dexkit/ui/modules/swap/types";
 import { isNativeInSell } from "@dexkit/ui/modules/swap/utils";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
@@ -85,6 +86,7 @@ export default function MarketForm({
 }: MarketBuyFormProps) {
   const { createNotification } = useDexKitContext();
   const [showReview, setShowReview] = useState(false);
+  const [gaslessTrades, setGaslessTrades] = useGaslessTrades();
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -187,7 +189,7 @@ export default function MarketForm({
       return true;
     }
     return false;
-  }, [useGasless]);
+  }, [useGasless, chainId, quoteToken?.address, baseToken?.address, side]);
 
   const quoteQuery = useZrxQuoteQuery({
     chainId,
@@ -267,9 +269,9 @@ export default function MarketForm({
   const signTypeDataMutation = useSignTypeData();
 
   const sendTxMutation = useMutation(async () => {
-    if (amount) {
+    if (amount && chainId && quote) {
       if (canGasless) {
-        const data = quoteQuery.data as ZeroExGaslessQuoteResponse;
+        const data = quote as ZeroExGaslessQuoteResponse;
 
         if (data.trade) {
           const { eip712, type } = data.trade;
@@ -327,6 +329,25 @@ export default function MarketForm({
                   quote,
                 }),
               });
+              const subType = side == "buy" ? "marketBuy" : "marketSell";
+              const messageType = EXCHANGE_NOTIFICATION_TYPES[
+                subType
+              ] as AppNotificationType;
+
+              gaslessTrades.push({
+                type: subType,
+                chainId,
+                tradeHash: trHash,
+                icon: messageType.icon,
+                values: {
+                  sellAmount: amount,
+                  sellTokenSymbol: baseToken.symbol.toUpperCase(),
+                  buyAmount: formattedCost,
+                  buyTokenSymbol: quoteToken.symbol.toUpperCase(),
+                },
+              });
+              // We use this on gasless trade updater to issue swap trades notifications
+              setGaslessTrades(gaslessTrades);
 
               setTradeHash(trHash);
             }
@@ -444,6 +465,7 @@ export default function MarketForm({
     tokenAllowanceQuery.data,
     quote?.sellAmount,
     canGasless,
+    approvalSignature,
     quoteQuery.data,
   ]);
 

@@ -14,6 +14,7 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  Stack,
   Typography,
 } from '@mui/material';
 import TextField from '@mui/material/TextField';
@@ -59,27 +60,50 @@ export function TokenTradeConfigForm({
     <Container sx={{ pt: 2 }}>
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <FormGroup>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={formData?.showTokenDetails}
-                  onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                    setFormData({
-                      ...(formData || {}),
-                      showTokenDetails: event.target.checked,
-                    });
-                  }}
-                />
-              }
-              label={
-                <FormattedMessage
-                  id={'show.token.details'}
-                  defaultMessage={'Show token details'}
-                />
-              }
-            />
-          </FormGroup>
+          <Stack spacing={1} direction={'row'}>
+            <FormGroup>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={formData?.showTokenDetails}
+                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                      setFormData({
+                        ...(formData || {}),
+                        showTokenDetails: event.target.checked,
+                      });
+                    }}
+                  />
+                }
+                label={
+                  <FormattedMessage
+                    id={'show.token.details'}
+                    defaultMessage={'Show token details'}
+                  />
+                }
+              />
+            </FormGroup>
+            <FormGroup>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={formData?.useGasless}
+                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                      setFormData({
+                        ...(formData || {}),
+                        useGasless: event.target.checked,
+                      });
+                    }}
+                  />
+                }
+                label={
+                  <FormattedMessage
+                    id={'use.gasless'}
+                    defaultMessage={'Use gasless'}
+                  />
+                }
+              />
+            </FormGroup>
+          </Stack>
         </Grid>
         <Grid item xs={12}>
           <FormControl fullWidth>

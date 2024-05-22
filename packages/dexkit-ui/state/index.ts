@@ -33,4 +33,4 @@ export const currencyUserAtom = atomWithStorage<string>('dexkit-ui.user-currency
 
 export const selectedWalletAtom = atomWithStorage<string>('dexkit-ui.connector', '');
 
-export const gaslessTrades = atomWithStorage<{ chainId: number, tradeHash: string, values: any, mutationCalled?: boolean, mutationCalledTimes?: number }[]>('dexkit-ui.gasless-trades', []);
+export const gaslessTrades = atomWithStorage<{ chainId: number, tradeHash: string, type: 'swap' | 'marketBuy' | 'marketSell', values: any, mutationCalled?: boolean, mutationCalledTimes?: number, icon?: string }[]>('dexkit-ui.gasless-trades', []);

@@ -242,6 +242,7 @@ export interface TokenTradePageSection extends PageSection {
   config: {
     showTokenDetails?: boolean;
     show?: OrderMarketType;
+    useGasless?: boolean;
     slippage?: number;
     baseTokenConfig?: { address?: string, chainId?: number };
   };
