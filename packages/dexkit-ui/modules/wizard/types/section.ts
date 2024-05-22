@@ -274,6 +274,7 @@ export interface CollectionPageSection extends PageSection {
 export interface TokenTradePageSection extends PageSection {
   type: "token-trade";
   config: {
+    useGasless?: boolean;
     showTokenDetails?: boolean;
     show?: OrderMarketType;
     slippage?: number;

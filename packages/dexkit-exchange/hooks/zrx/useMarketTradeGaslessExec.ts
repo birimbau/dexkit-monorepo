@@ -2,7 +2,6 @@ import { ChainId } from "@dexkit/core/constants";
 import { UserEvents } from "@dexkit/core/constants/userEvents";
 import { Token } from "@dexkit/core/types";
 import { useTrackUserEventsMutation } from "@dexkit/ui/hooks/userEvents";
-import { useGaslessTrades } from "@dexkit/ui/modules/swap/hooks/useGaslessTrades";
 import { ZeroExApiClient } from "@dexkit/ui/modules/swap/services/zrxClient";
 import { SiteContext } from "@dexkit/ui/providers/SiteProvider";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -15,7 +14,6 @@ export function useMarketTradeGaslessExec({
 }) {
 
   const { siteId } = useContext(SiteContext);
-  const [gaslessTrades, setGaslessTrades] = useGaslessTrades()
 
 
   const trackUserEvent = useTrackUserEventsMutation();
@@ -40,22 +38,6 @@ export function useMarketTradeGaslessExec({
       try {
 
         const { tradeHash } = await client.submitGasless({ trade, approval })
-
-
-        if (tradeHash) {
-          gaslessTrades.push({
-            chainId,
-            tradeHash,
-            values: {
-              sellAmount: quote.sellAmount as string,
-              buyAmount: quote.buyAmount as string,
-              sellToken,
-              buyToken,
-            }
-          })
-          // We use this on gasless trade updater to issue swap trades notifications
-          setGaslessTrades(gaslessTrades);
-        }
 
         trackUserEvent.mutate({
           event: side === 'buy' ? UserEvents.marketBuyGasless : UserEvents.marketSellGasless,

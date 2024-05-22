@@ -23,7 +23,7 @@ export default function GaslessTradesUpdater() {
   useEffect(() => {
     if (chainId !== undefined && blockNumber !== undefined && gaslessTrades) {
       for (let index = 0; index < gaslessTrades.length; index++) {
-        async function fetchTradeStatus() {
+        const fetchTradeStatus = async () => {
           const trade = gaslessTrades[index];
           if (!trade.mutationCalled) {
             trade.mutationCalled = true;
@@ -100,7 +100,7 @@ export default function GaslessTradesUpdater() {
               );
             }
           }
-        }
+        };
         try {
           fetchTradeStatus();
         } catch {}

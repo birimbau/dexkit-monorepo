@@ -319,16 +319,6 @@ export default function MarketForm({
               side,
             });
             if (trHash) {
-              trackUserEvent.mutate({
-                event:
-                  side == "buy"
-                    ? UserEvents.marketBuyGasless
-                    : UserEvents.marketSellGasless,
-                chainId,
-                metadata: JSON.stringify({
-                  quote,
-                }),
-              });
               const subType = side == "buy" ? "marketBuy" : "marketSell";
               const messageType = EXCHANGE_NOTIFICATION_TYPES[
                 subType
