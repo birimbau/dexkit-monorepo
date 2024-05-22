@@ -129,13 +129,12 @@ function AppDrawer({ open, onClose, appConfig }: Props) {
   const handleAddressResult = (result: string) => {
     try {
       parse(result);
-
+      handleOpenQrCodeScannerClose();
       if (isMobile) {
         router.push(`/wallet/send/${encodeURI(result)}`);
       } else {
         window.open(`/wallet/send/${encodeURI(result)}`, "_blank");
       }
-      handleOpenQrCodeScannerClose();
     } catch (err) {}
   };
 

@@ -43,8 +43,6 @@ export default function ScanWalletQrCodeDialog({
     navigator.mediaDevices
       .getUserMedia({ video: true })
       .then(async function (stream) {
-        console.log("Camera access granted.");
-
         let cameras = await QrScanner.listCameras();
 
         setCameras(cameras);

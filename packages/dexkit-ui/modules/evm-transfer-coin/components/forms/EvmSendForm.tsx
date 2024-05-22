@@ -39,7 +39,7 @@ export interface EvmSendFormProps {
   values: { address?: string; amount?: number; coin?: Coin | null };
   accounts?: { address: string }[];
   onChange: (params: {
-    address?: string;
+    address?: string | null;
     amount?: number;
     coin?: Coin | null;
   }) => void;
@@ -83,7 +83,9 @@ export function EvmSendForm({
   ) => {
     if (typeof newValue === "string") {
       onChange({ ...values, address: newValue });
-      setAddressTouched(true);
+    }
+    if (newValue === null) {
+      onChange({ ...values, address: null });
     }
   };
 
@@ -249,7 +251,7 @@ export function EvmSendForm({
                   </InputAdornment>
                 ),
               }}
-              value={values.address}
+              value={values.address || null}
               name="address"
               error={
                 !isAddressValid && addressTouched && !ensNameQuery.isLoading

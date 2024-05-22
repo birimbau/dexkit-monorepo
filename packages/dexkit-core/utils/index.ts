@@ -224,7 +224,7 @@ export function buildEtherReceiveAddress({
   contractAddress,
   amount,
 }: {
-  receiver?: string;
+  receiver?: string | null;
   amount?: string;
   chainId?: number;
   contractAddress?: string;

@@ -35,15 +35,15 @@ export function useEnsNameQuery({
 }) {
   return useQuery([ENS_NAME_QUERY, address], async () => {
     if (!address) {
-      return;
+      return null;
     }
     if (address.split('.').length < 2) {
-      return
+      return null
     }
 
     const provider = NETWORK_PROVIDER(ChainId.Ethereum);
     if (!provider) {
-      return;
+      return null;
     }
 
     return await provider.resolveName(address);

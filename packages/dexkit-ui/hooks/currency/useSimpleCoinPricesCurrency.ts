@@ -59,7 +59,7 @@ export const useSimpleCoinPricesQuery = ({
 
 
       let simplePrices = await getSimpleCoinPrices({ chainId: chain, contractAddresses, currency });
-      console.log(simplePrices);
+
 
       if (includeNative) {
         const priceWrapped = simplePrices[wrapped_address];
