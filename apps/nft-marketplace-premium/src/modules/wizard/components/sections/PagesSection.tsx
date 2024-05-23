@@ -2,11 +2,9 @@ import {
   AppPageSection,
   CustomEditorSection,
 } from '@dexkit/ui/modules/wizard/types/section';
-import AddIcon from '@mui/icons-material/Add';
-import { Alert, Box, Button, CssVarsTheme, Stack, Theme } from '@mui/material';
+import { CssVarsTheme, Stack, Theme } from '@mui/material';
 import dynamic from 'next/dynamic';
 import { useState } from 'react';
-import { FormattedMessage } from 'react-intl';
 
 import {
   AppPage,
@@ -15,7 +13,7 @@ import {
 import { BuilderKit } from '../../constants';
 import PagesSectionPage from '../section-config/PagesSectionPage';
 const EditSectionDialog = dynamic(
-  () => import('../section-config/dialogs/EditSectionDialog'),
+  () => import('../section-config/dialogs/EditSectionDialog')
 );
 const PageEditorDialog = dynamic(() => import('../dialogs/PageEditorDialog'));
 
@@ -29,11 +27,11 @@ interface Props {
   onEditPage: (pageOptions: AppPageOptions) => void;
   onViewPage: (slug: string) => void;
   onSave: (section: AppPageSection, index: number) => void;
-  onRemove: (index: number) => void;
-  onEdit: (index: number) => void;
+  onRemove: (page: string, index: number) => void;
+  onEdit: (page: string, index: number) => void;
   onAdd: () => void;
   onCancelEdit: () => void;
-  onSwap: (index: number, direction: 'up' | 'down') => void;
+  onSwap: (page: string, index: number, other: number) => void;
   theme?: Omit<Theme, 'palette'> & CssVarsTheme;
   builderKit?: BuilderKit;
   previewUrl?: string;
@@ -62,8 +60,10 @@ export default function PagesSection({
   const [isOpenEditor, setIsOpenEditor] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [viewIndexes, setViewIndexes] = useState<number[]>([]);
-  const onView = (ind: number) => {
+
+  const onView = (page: string, ind: number) => {
     const newViewIndexes = [...viewIndexes];
+
     const newIndex = newViewIndexes.indexOf(ind);
     if (newIndex !== -1) {
       newViewIndexes.splice(newIndex, 1);
@@ -80,16 +80,13 @@ export default function PagesSection({
     setIsOpen(true);
   };
 
-  const handleCloneSection = (index: number) => {
-    onSave(sections[index], -1);
-  };
-
   const handleAddCustomSection = () => {
     setIsOpenEditor(true);
   };
 
-  const handleEdit = (index: number) => {
-    onEdit(index);
+  const handleEdit = (page: string, index: number) => {
+    onEdit(page, index);
+
     if (sections[index].type === 'custom') {
       setIsOpenEditor(true);
     } else {
@@ -100,22 +97,6 @@ export default function PagesSection({
 
   const handleSave = (section: AppPageSection, index: number) => {
     onSave(section, index);
-  };
-
-  const handleOnHideMobile = (index: number) => {
-    const newSection = {
-      ...sections[index],
-      hideMobile: !sections[index].hideMobile,
-    };
-    onSave(newSection, index);
-  };
-
-  const handleOnHideDesktop = (index: number) => {
-    const newSection = {
-      ...sections[index],
-      hideDesktop: !sections[index].hideDesktop,
-    };
-    onSave(newSection, index);
   };
 
   const handleClose = () => {
@@ -170,46 +151,14 @@ export default function PagesSection({
           onRemove={onRemove}
           onEdit={handleEdit}
           onView={onView}
-          onHideDesktop={handleOnHideDesktop}
-          onHideMobile={handleOnHideMobile}
-          onClone={handleCloneSection}
+          onHideDesktop={() => {}}
+          onHideMobile={() => {}}
+          onClone={() => {}}
           isVisibleIndexes={viewIndexes}
           onSwap={onSwap}
           theme={theme}
           previewUrl={previewUrl}
         />
-        <Box maxWidth={'xs'}>
-          <Button
-            variant="outlined"
-            onClick={handleAddSection}
-            startIcon={<AddIcon />}
-          >
-            <FormattedMessage id="add.section" defaultMessage="Add section" />
-          </Button>
-        </Box>
-
-        <Box display={'flex'} maxWidth={'sm'}>
-          <Alert severity="info">
-            <FormattedMessage
-              id={'info.about.custom.section'}
-              defaultMessage={
-                'Instead of using pre-defined sections, you have the freedom to create a personalized section by effortlessly dragging and dropping functional blocks to design your ideal layout.'
-              }
-            />
-          </Alert>
-        </Box>
-        <Box maxWidth={'xs'}>
-          <Button
-            variant="outlined"
-            onClick={handleAddCustomSection}
-            startIcon={<AddIcon />}
-          >
-            <FormattedMessage
-              id="add.custom.section"
-              defaultMessage="Add custom section"
-            />
-          </Button>
-        </Box>
       </Stack>
     </>
   );

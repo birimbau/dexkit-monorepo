@@ -11,15 +11,17 @@ import {
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import Edit from '@mui/icons-material/Edit';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import Visibility from '@mui/icons-material/Visibility';
 import { FormattedMessage } from 'react-intl';
 
 export interface PageProps {
   page: AppPage;
   index: number;
   onSelect: () => void;
+  onPreview: () => void;
 }
 
-export default function Page({ page, index, onSelect }: PageProps) {
+export default function Page({ page, index, onSelect, onPreview }: PageProps) {
   return (
     <Card>
       <Box sx={{ px: 2, py: 1 }}>
@@ -35,7 +37,9 @@ export default function Page({ page, index, onSelect }: PageProps) {
             direction="row"
             spacing={1}
           >
-            <IconButton></IconButton>
+            <IconButton onClick={onPreview}>
+              <Visibility />
+            </IconButton>
             <IconButton>
               <Tooltip
                 title={<FormattedMessage id="clone" defaultMessage="Clone" />}

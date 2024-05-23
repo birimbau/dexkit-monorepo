@@ -6,10 +6,11 @@ import dynamic from 'next/dynamic';
 import { FormattedMessage } from 'react-intl';
 
 const PreviewPagePlatform = dynamic(() => import('../PreviewPagePlatform'));
+
 interface Props {
   dialogProps: DialogProps;
   sections?: AppPageSection[];
-  name: string;
+  name?: string;
   disabled?: boolean;
   withLayout?: boolean;
   appConfig?: AppConfig;

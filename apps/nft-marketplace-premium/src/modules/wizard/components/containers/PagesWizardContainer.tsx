@@ -19,7 +19,7 @@ import AddIcon from '@mui/icons-material/Add';
 import dynamic from 'next/dynamic';
 
 const ApiKeyIntegrationDialog = dynamic(
-  () => import('../dialogs/ApiKeyIntegrationDialog'),
+  () => import('../dialogs/ApiKeyIntegrationDialog')
 );
 
 interface Props {
@@ -162,9 +162,6 @@ export default function PagesWizardContainer({
           </Stack>
         </Grid>
         <Grid item xs={12}>
-          <Divider />
-        </Grid>
-        <Grid item xs={12}>
           <Box sx={{ pt: 2, pb: 2 }}>
             <Button
               variant="contained"
@@ -177,7 +174,7 @@ export default function PagesWizardContainer({
           </Box>
         </Grid>
         <Grid item xs={12}>
-          {currentPage && pages && (
+          {pages && (
             <PagesContainer
               builderKit={builderKit}
               pages={pages}
@@ -191,7 +188,6 @@ export default function PagesWizardContainer({
             />
           )}
         </Grid>
-
         <Grid item xs={12}>
           <Divider />
         </Grid>
@@ -207,10 +203,6 @@ export default function PagesWizardContainer({
             </Button>
           </Stack>
         </Grid>
-        <Grid item xs={12}>
-          <Divider />
-        </Grid>
-        <Grid item xs={12}></Grid>
       </Grid>
     </>
   );

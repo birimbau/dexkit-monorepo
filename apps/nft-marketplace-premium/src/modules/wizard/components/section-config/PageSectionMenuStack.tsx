@@ -22,19 +22,18 @@ export default function PageSectionMenuStack({
   return (
     <Stack direction="row" spacing={0.5} alignItems="center">
       {menuArr.map((item, index) => (
-        <Tooltip
-          key={index}
-          title={
-            <FormattedMessage
-              id={item.title.id}
-              defaultMessage={item.title.defaultMessage}
-            />
-          }
-        >
-          <IconButton onClick={() => onAction(item.value)}>
+        <IconButton key={index} onClick={() => onAction(item.value)}>
+          <Tooltip
+            title={
+              <FormattedMessage
+                id={item.title.id}
+                defaultMessage={item.title.defaultMessage}
+              />
+            }
+          >
             {item.icon}
-          </IconButton>
-        </Tooltip>
+          </Tooltip>
+        </IconButton>
       ))}
     </Stack>
   );

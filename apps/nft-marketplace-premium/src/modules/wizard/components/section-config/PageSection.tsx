@@ -19,6 +19,7 @@ export interface PageSectionProps {
   subtitle?: React.ReactNode;
   id: string;
   expand?: boolean;
+  onAction: (action: string) => void;
 }
 
 export default function PageSection({
@@ -27,19 +28,15 @@ export default function PageSection({
   subtitle,
   id,
   expand,
+  onAction,
 }: PageSectionProps) {
   const hideMobile = false;
   const isVisible = true;
   const hideDesktop = false;
 
-  const { transform, setNodeRef, listeners, attributes } = useDraggable({ id });
+  const { transform, setNodeRef, listeners, attributes, isDragging } =
+    useDraggable({ id });
   const { isOver, setNodeRef: setNodeRefDrop } = useDroppable({ id });
-
-  const style = {
-    transform: CSS.Translate.toString(transform),
-  };
-
-  const handleAction = (action: string) => {};
 
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
@@ -69,7 +66,16 @@ export default function PageSection({
         })}
         ref={setNodeRefDrop}
       >
-        <Card style={style} ref={setNodeRef} variant="elevation">
+        <Card
+          sx={{
+            transform: CSS.Translate.toString(transform),
+            zIndex: isDragging
+              ? (theme) => theme.zIndex.snackbar + 1
+              : undefined,
+          }}
+          ref={setNodeRef}
+          variant="elevation"
+        >
           <Box sx={{ py: 1, px: 2 }}>
             <Stack
               spacing={2}
@@ -83,7 +89,6 @@ export default function PageSection({
                 justifyContent="space-between"
                 direction="row"
               >
-                {icon}
                 <Box>
                   <Typography variant="body1">{subtitle}</Typography>
                   <Typography variant="body2" color="text.secondary">
@@ -93,12 +98,14 @@ export default function PageSection({
               </Stack>
               <Stack direction="row" spacing={0.5} alignItems="center">
                 {expand ? (
-                  <PageSectionMenuStack
-                    hideDesktop={hideDesktop}
-                    hideMobile={hideMobile}
-                    isVisible={isVisible}
-                    onAction={handleAction}
-                  />
+                  <Box pr={8}>
+                    <PageSectionMenuStack
+                      hideDesktop={hideDesktop}
+                      hideMobile={hideMobile}
+                      isVisible={isVisible}
+                      onAction={onAction}
+                    />
+                  </Box>
                 ) : (
                   <IconButton onClick={handleOpenMenu}>
                     <MoreVert />

@@ -1,39 +1,46 @@
 import { AppPage } from '@dexkit/ui/modules/wizard/types/config';
 import {
   Box,
-  Divider,
+  Button,
   Grid,
   IconButton,
+  InputAdornment,
   Stack,
+  TextField,
   Typography,
 } from '@mui/material';
-
-import AppsIcon from '@mui/icons-material/Apps';
-import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
-import BookmarkIcon from '@mui/icons-material/Bookmark';
-import CallToAction from '@mui/icons-material/CallToAction';
-import CollectionsIcon from '@mui/icons-material/Collections';
-import ShowChartIcon from '@mui/icons-material/ShowChart';
-import VideocamIcon from '@mui/icons-material/Videocam';
 
 import {
   AppPageSection,
   SectionType,
 } from '@dexkit/ui/modules/wizard/types/section';
+import AppsIcon from '@mui/icons-material/Apps';
+import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
+import BookmarkIcon from '@mui/icons-material/Bookmark';
+import CallToAction from '@mui/icons-material/CallToAction';
 import Code from '@mui/icons-material/Code';
+import CollectionsIcon from '@mui/icons-material/Collections';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import FormatColorTextIcon from '@mui/icons-material/FormatColorText';
 import GavelIcon from '@mui/icons-material/Gavel';
 import LeaderboardIcon from '@mui/icons-material/Leaderboard';
+import ShowChartIcon from '@mui/icons-material/ShowChart';
 import StoreIcon from '@mui/icons-material/Store';
 import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
+import VideocamIcon from '@mui/icons-material/Videocam';
 import Wallet from '@mui/icons-material/Wallet';
 import { FormattedMessage } from 'react-intl';
 
 import ViewCarouselIcon from '@mui/icons-material/ViewCarousel';
 
-import { DndContext } from '@dnd-kit/core';
+import { useIsMobile } from '@dexkit/ui/hooks/misc';
+import { DndContext, DragEndEvent } from '@dnd-kit/core';
 import ArrowBack from '@mui/icons-material/ArrowBack';
+import Edit from '@mui/icons-material/Edit';
+import Search from '@mui/icons-material/Search';
 import TokenIcon from '@mui/icons-material/Token';
+import Visibility from '@mui/icons-material/Visibility';
 import React, { ReactNode } from 'react';
 import PageSection from './PageSection';
 
@@ -207,34 +214,98 @@ function getSectionType(section: AppPageSection) {
 
 export interface PageSectionsProps {
   page: AppPage;
+  onSwap: (index: number, other: number) => void;
+  onAction: (action: string, index: number) => void;
+  onClose: () => void;
 }
 
-export default function PageSections({ page }: PageSectionsProps) {
+export default function PageSections({
+  page,
+  onSwap,
+  onAction,
+  onClose,
+}: PageSectionsProps) {
+  const isMobile = useIsMobile();
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    if (event.over) {
+      onSwap(
+        parseInt(event.active.id.toString()),
+        parseInt(event.over?.id.toString())
+      );
+    }
+  };
+
+  const handleAction = (index: number) => {
+    return (action: string) => {
+      onAction(action, index);
+    };
+  };
+
   return (
     <Box>
       <Stack spacing={2}>
-        <Stack direction="row" alignItems="center" spacing={1}>
+        <Stack direction="row" alignItems="center" spacing={2}>
+          <Stack direction="row" alignItems="center" spacing={1}>
+            <IconButton onClick={onClose}>
+              <ArrowBack color="primary" />
+            </IconButton>
+            <Box>
+              <Typography variant="h5">{page.title}</Typography>
+            </Box>
+          </Stack>
           <IconButton>
-            <ArrowBack />
+            <Edit />
           </IconButton>
-          <Box>
-            <Typography variant="body2" color="text.secondary">
-              <FormattedMessage id="edit.page" defaultMessage="Edit page" />
-            </Typography>
-            <Typography variant="h5">{page.title}</Typography>
-          </Box>
+          <Button startIcon={<Visibility />}>
+            <FormattedMessage id="preview" defaultMessage="Preview" />
+          </Button>
+          <Button startIcon={<ContentCopyIcon />}>
+            <FormattedMessage id="clone" defaultMessage="Clone" />
+          </Button>
         </Stack>
-        <Divider />
+        <Stack
+          direction="row"
+          alignItems="center"
+          spacing={2}
+          justifyContent="space-between"
+        >
+          <Stack direction="row" alignItems="center" spacing={2}>
+            <Typography fontWeight="400" variant="h6">
+              <FormattedMessage
+                id="page.sections"
+                defaultMessage="Page Sections"
+              />
+            </Typography>
+            <IconButton>
+              <FilterAltIcon />
+            </IconButton>
+          </Stack>
+          <TextField
+            type="search"
+            size="small"
+            variant="standard"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <Search color="primary" />
+                </InputAdornment>
+              ),
+            }}
+          />
+        </Stack>
         <Box>
-          <DndContext>
+          <DndContext onDragEnd={handleDragEnd}>
             <Grid container spacing={2}>
               {page.sections.map((section, index) => (
                 <Grid item xs={12} key={index}>
                   <PageSection
+                    expand={!isMobile}
                     icon={getSectionType(section)?.icon}
                     title={getSectionType(section)?.title}
                     subtitle={getSectionType(section)?.subtitle}
                     id={index.toString()}
+                    onAction={handleAction(index)}
                   />
                 </Grid>
               ))}
