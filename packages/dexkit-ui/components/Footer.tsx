@@ -20,8 +20,11 @@ import { useMemo } from "react";
 import { FormattedMessage } from "react-intl";
 
 import Link from "@dexkit/ui/components/AppLink";
-import { AssetAPI } from "@dexkit/ui/modules/nft/types";
-import { AppConfig, SocialMedia } from "@dexkit/ui/modules/wizard/types/config";
+import type { AssetAPI } from "@dexkit/ui/modules/nft/types";
+import type {
+  AppConfig,
+  SocialMedia,
+} from "@dexkit/ui/modules/wizard/types/config";
 import NavbarMenu from "./Menu";
 
 interface Props {

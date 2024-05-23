@@ -1,9 +1,9 @@
-import { Token } from '@dexkit/core/types';
+import type { Token } from '@dexkit/core/types';
 
-import { DkApiPlatformCoin } from '@dexkit/widgets/src/types/api';
-import { UseQueryOptions } from '@tanstack/react-query';
+import type { DkApiPlatformCoin } from '@dexkit/widgets/src/types/api';
+import type { UseQueryOptions } from '@tanstack/react-query';
 import type { BigNumber } from 'ethers';
-import { NFTType, SellOrBuy, TraderOrderStatus } from "../constants/enum";
+import type { NFTType, SellOrBuy, TraderOrderStatus } from "../constants/enum";
 
 export interface AssetMetadata {
   name: string;

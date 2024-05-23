@@ -1,6 +1,6 @@
 import { atom } from "jotai";
 import { atomWithStorage } from "jotai/utils";
-import { TxDialogOptions, TxDialogTransaction } from "./types";
+import type { TxDialogOptions, TxDialogTransaction } from "./types";
 
 export const selectedWalletAtom = atomWithStorage<string>("selectedWallet", "");
 
