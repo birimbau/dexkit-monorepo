@@ -37,6 +37,8 @@ export default async function handler(
         }
       );
 
+
+
       return res.status(200).json(response.data);
     }
     if (req.method === 'POST') {
@@ -60,6 +62,7 @@ export default async function handler(
     if (err?.status) {
       return res.status(err?.status).json(err);
     }
+    console.log(err.response.data);
 
     return res.status(499).json(err);
   }
