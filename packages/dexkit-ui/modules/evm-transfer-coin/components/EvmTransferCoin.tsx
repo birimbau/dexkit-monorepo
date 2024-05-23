@@ -18,7 +18,7 @@ import { UserEvents } from "@dexkit/core/constants/userEvents";
 import { parseEther } from "@dexkit/core/utils/ethers/parseEther";
 import { parseUnits } from "@dexkit/core/utils/ethers/parseUnits";
 import { Divider, Skeleton, Stack, Typography } from "@mui/material";
-import { providers } from "ethers";
+import type { providers } from "ethers";
 import { useSnackbar } from "notistack";
 import { useMemo, useState } from "react";
 import { useIntl } from "react-intl";

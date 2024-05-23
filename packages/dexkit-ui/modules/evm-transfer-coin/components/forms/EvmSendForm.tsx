@@ -36,7 +36,7 @@ const filter = createFilterOptions<string>();
 export interface EvmSendFormProps {
   coins?: Coin[];
   isSubmitting?: boolean;
-  values: { address?: string; amount?: number; coin?: Coin | null };
+  values: { address?: string | null; amount?: number; coin?: Coin | null };
   accounts?: { address: string }[];
   onChange: (params: {
     address?: string | null;
@@ -66,7 +66,7 @@ export function EvmSendForm({
 }: EvmSendFormProps) {
   const [addressTouched, setAddressTouched] = useState<boolean>(false);
 
-  const ensNameQuery = useEnsNameQuery({ address: values.address });
+  const ensNameQuery = useEnsNameQuery({ address: values?.address });
 
   const handleChangeCoin = (
     event: SyntheticEvent<Element, Event>,

@@ -31,7 +31,7 @@ export const ENS_NAME_QUERY = "ENS_NAME_QUERY";
 export function useEnsNameQuery({
   address
 }: {
-  address?: string;
+  address?: string | null;
 }) {
   return useQuery([ENS_NAME_QUERY, address], async () => {
     if (!address) {
