@@ -1,7 +1,9 @@
 import MultiCall, { CallInput } from "@indexed-finance/multicall";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { providers, utils } from "ethers";
+import { utils } from "ethers";
+
+import type { providers } from 'ethers';
 
 import { ERC721Abi } from "../constants/abis";
 import { Nft, NftMetadata } from "../types/nft";

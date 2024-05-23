@@ -32,8 +32,8 @@ import { AppConfigContext } from '../src/contexts';
 
 import './customCss.css';
 
-import { AssetAPI } from '@dexkit/ui/modules/nft/types';
-import { AppConfig } from '@dexkit/ui/modules/wizard/types/config';
+import type { AssetAPI } from '@dexkit/ui/modules/nft/types';
+import type { AppConfig } from '@dexkit/ui/modules/wizard/types/config';
 import SiteProvider from '@dexkit/ui/providers/SiteProvider';
 import { AuthStateProvider } from '@dexkit/ui/providers/authStateProvider';
 import { AppBarANN } from 'src/components/AppBarANN';

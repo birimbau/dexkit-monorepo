@@ -1,62 +1,49 @@
 import {
-  ChainId,
-  TransactionStatus,
-  TransactionType,
+  TransactionStatus
 } from "@dexkit/core/constants";
 import {
-  AppTransaction,
-  Asset,
-  TokenWhitelabelApp,
-  TransactionMetadata,
+  AppTransaction
 } from "@dexkit/core/types";
 import { switchNetwork } from "@dexkit/wallet-connectors/utils";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
 import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
-import type { Web3ReactHooks } from '@web3-react/core';
-import { Connector } from "@web3-react/types";
-import { PrimitiveAtom, atom, useAtom, useAtomValue } from "jotai";
-import { useUpdateAtom } from "jotai/utils";
-import { useCallback, useContext, useMemo, useState } from "react";
+
+import { atom, useAtom } from "jotai";
+
+import { useContext, useMemo } from "react";
 
 import useMediaQuery from "@mui/material/useMediaQuery";
 
-import {
-  showTxDialogAtom,
-  txDialogLoading,
-  txDialogOptions,
-  txDialogTransactionsAtom,
-} from "../atoms";
 import { ThemeMode } from "../constants/enum";
 import {
   AppConfigContext,
   AppWizardConfigContext,
 } from "../context/AppConfigContext";
-import { DexKitContext } from "../context/DexKitContext";
-import { localeUserAtom, userThemeModeAtom } from "../state";
-import {
-  AppNotification,
-  AppNotificationType,
-  CreateAppNotificationParams,
-  TxDialogOptions,
-  TxDialogTransaction,
-} from "../types";
+
+import { userThemeModeAtom } from "../state";
 
 import { isHexString } from '@dexkit/core/utils/ethers/isHexString';
-import { InjectedConnection, connections } from "@dexkit/wallet-connectors/connectors/connections";
-import { useWalletConnectorMetadata } from "@dexkit/wallet-connectors/hooks";
-import { ConnectionType } from "@dexkit/wallet-connectors/types";
 import type { providers } from "ethers";
 import { AdminContext } from "../context/AdminContext";
+
+import { useAppConfig } from './useAppConfig';
+import { useDexKitContext } from './useDexKitContext';
+import { useLocale } from './useLocale';
+
 
 export * from "./auth";
 export * from "./blockchain";
 export * from "./currency";
+export * from './ui';
 
-// App config context needs to be initialized on widgets
-export function useAppConfig() {
-  return useContext(AppConfigContext).appConfig;
-}
+export * from './useDexkitContextState';
+
+export * from './useOrderedConnectors';
+export * from './useWatchTransactionsDialog';
+
+
+export { useAppConfig, useDexKitContext, useLocale };
 
 export function useAppNFT() {
   return useContext(AppConfigContext).appNFT;
@@ -82,20 +69,7 @@ export function useThemeMode() {
   return { mode: mode, setThemeMode, userMode };
 }
 
-export function useLocale() {
-  const [locUser, setLocUser] = useAtom(localeUserAtom);
-  const appConfig = useAppConfig();
-  const locale = useMemo(() => {
-    if (locUser) {
-      return locUser;
-    }
-    if (appConfig.locale) {
-      return appConfig.locale;
-    }
-    return "en-US" as string;
-  }, [appConfig.locale, locUser]);
-  return { locale, onChangeLocale: setLocUser };
-}
+
 
 // Wizard App config context needs to be initialized on widgets that needs wizard to customize
 export function useAppWizardConfig() {
@@ -103,142 +77,10 @@ export function useAppWizardConfig() {
   return { wizardConfig, setWizardConfig };
 }
 
-export function useOrderedConnectors() {
-  const { walletConnectorMetadata } = useWalletConnectorMetadata();
 
-  return useMemo(() => {
-    // We need to put the previous connection always first to Web3React be able to connect eagerly
-    if (walletConnectorMetadata) {
-      if (walletConnectorMetadata.type === ConnectionType.EIP_6963_INJECTED) {
-        const firstConnection = connections.find(c => c.type === ConnectionType.EIP_6963_INJECTED) as InjectedConnection;
-        const filteredConnections = connections.filter(c => c.type !== ConnectionType.EIP_6963_INJECTED);
-        if (firstConnection) {
-          const injectedConnection = firstConnection.wrap({ name: walletConnectorMetadata.name as string, rdns: walletConnectorMetadata.rdns, icon: walletConnectorMetadata.icon });
-          if (injectedConnection) {
-            return { connectors: [injectedConnection, ...filteredConnections].map<[Connector, Web3ReactHooks]>(({ hooks, connector }) => [connector, hooks]), connectorsKey: 'eip-6963-injected-first' }
-          }
-        }
-      } else {
-        if (walletConnectorMetadata.type === ConnectionType.INJECTED) {
-          const firstConnection = connections.find(c => c?.type === ConnectionType.INJECTED);
-          const filteredConnections = connections.filter(c => c?.type !== ConnectionType.INJECTED);
-          if (firstConnection) {
-            return { connectors: [firstConnection, ...filteredConnections].map<[Connector, Web3ReactHooks]>(({ hooks, connector }) => [connector, hooks]), connectorsKey: 'injected-first' }
-          }
-        }
-        const firstConnection = connections.find(c => c.getProviderInfo()?.rdns === walletConnectorMetadata?.rdns);
-        const filteredConnections = connections.filter(c => c.getProviderInfo()?.rdns !== walletConnectorMetadata?.rdns);
-        if (firstConnection) {
-          return { connectors: [firstConnection, ...filteredConnections].map<[Connector, Web3ReactHooks]>(({ hooks, connector }) => [connector, hooks]), connectorsKey: 'non-injected-first' }
-        }
-      }
-    }
 
-    return { connectors: connections.map<[Connector, Web3ReactHooks]>(({ hooks, connector }) => [connector, hooks]), connectorsKey: 'default' }
 
-  }, [walletConnectorMetadata]);
-}
 
-export function useDexkitContextState({
-  notificationTypes,
-  notificationsAtom,
-  tokensAtom,
-  assetsAtom,
-  hiddenAssetsAtom,
-  transactionsAtom,
-  onChangeLocale,
-  currencyUserAtom,
-}: {
-  notificationTypes: { [key: string]: AppNotificationType };
-  notificationsAtom: PrimitiveAtom<AppNotification[]>;
-  tokensAtom: PrimitiveAtom<TokenWhitelabelApp[]>;
-  assetsAtom: PrimitiveAtom<{ [key: string]: Asset }>;
-  hiddenAssetsAtom: PrimitiveAtom<{ [key: string]: boolean }>;
-  currencyUserAtom: PrimitiveAtom<string>;
-  transactionsAtom: PrimitiveAtom<{ [key: string]: AppTransaction }>;
-
-  onChangeLocale: (locale: string) => void;
-}) {
-  const [notifications, setNotifications] = useAtom(notificationsAtom);
-  const [tokens, setTokens] = useAtom(tokensAtom);
-  const [assets, setAssets] = useAtom(assetsAtom);
-  const [hiddenAssets, setHiddenAssets] = useAtom(hiddenAssetsAtom);
-  const currencyUser = useAtomValue(currencyUserAtom);
-  const [transactions, setTransactions] = useAtom(transactionsAtom);
-  const watchTransactionDialog = useWatchTransactionDialog({
-    transactionsAtom,
-  });
-
-  const checkAllNotifications = () => {
-    setNotifications((notifications) => {
-      return notifications.map((n) => ({ ...n, checked: true }));
-    });
-  };
-
-  const clearNotifications = () => {
-    setNotifications([]);
-  };
-
-  const createNotification = (params: CreateAppNotificationParams) => {
-    setNotifications((notifications) => {
-      const date = new Date().getTime();
-
-      const newNotification: AppNotification = {
-        date,
-        subtype: params.subtype,
-        type: params.type,
-        icon: params.icon,
-        metadata: params.metadata,
-        values: params.values,
-        url: params.url,
-      };
-
-      if (params.metadata && params.metadata["hash"]) {
-        const hash = params.metadata["hash"];
-        const chainId = params.metadata["chainId"];
-
-        if (chainId) {
-          setTransactions((transactions) => {
-            return {
-              ...transactions,
-              [hash]: {
-                chainId,
-                created: date,
-                status: TransactionStatus.Pending,
-                values: params.values,
-                type: params.subtype,
-              },
-            };
-          });
-        }
-      }
-
-      return [...notifications, newNotification];
-    });
-  };
-
-  return {
-    tokens,
-    setTokens,
-    assets,
-    currencyUser,
-    setAssets,
-    hiddenAssets,
-    setHiddenAssets,
-    transactions,
-    createNotification,
-    clearNotifications,
-    checkAllNotifications,
-    onChangeLocale,
-    notificationTypes,
-    notifications: notifications.reverse(),
-    watchTransactionDialog,
-  };
-}
-
-export function useDexKitContext() {
-  return useContext(DexKitContext);
-}
 
 export function useNotifications() {
   const { chainId } = useWeb3React();
@@ -297,183 +139,14 @@ export function useSwitchNetworkMutation() {
   );
 }
 
-export function useWatchTransactionDialog({
-  transactionsAtom,
-}: {
-  transactionsAtom: PrimitiveAtom<{
-    [key: string]: AppTransaction;
-  }>;
-}) {
-  const updateTransactions = useUpdateAtom(transactionsAtom);
 
-  const [isOpen, setDialogIsOpen] = useState(false);
-  const [hash, setHash] = useState<string>();
-  const [error, setError] = useState<Error>();
-  const [metadata, setMetadata] = useState<TransactionMetadata>();
-  const [type, setType] = useState<string>();
 
-  const [values, setValues] = useState<Record<string, any>>();
 
-  const [redirectUrl, setRedirectUrl] = useState<string>();
 
-  const watch = useCallback((hash: string) => {
-    setHash(hash);
-  }, []);
 
-  const open = useCallback((type: string, values: Record<string, any>) => {
-    setDialogIsOpen(true);
-    setValues(values);
-    setType(type);
-    setHash(undefined);
-  }, []);
 
-  const close = useCallback(() => {
-    setDialogIsOpen(false);
-    setType(undefined);
-    setValues(undefined);
-    setMetadata(undefined);
-    setError(undefined);
-    setHash(undefined);
-  }, []);
 
-  const showDialog = useCallback(
-    (open: boolean, metadata?: TransactionMetadata, type?: TransactionType) => {
-      setDialogIsOpen(open);
-      setMetadata(metadata);
 
-      if (!open) {
-        setHash(undefined);
-        setMetadata(undefined);
-        setType(undefined);
-        setError(undefined);
-      }
-    },
-    []
-  );
-
-  const setDialogError = useCallback(
-    (error?: Error) => {
-      if (isOpen) {
-        setError(error);
-      }
-    },
-    [setError, isOpen]
-  );
-
-  const addTransaction = ({
-    hash,
-    type,
-    metadata,
-    values,
-    chainId,
-  }: {
-    hash: string;
-    type: TransactionType;
-    metadata?: TransactionMetadata;
-    values: Record<string, any>;
-    chainId: ChainId;
-  }) => {
-    if (chainId !== undefined) {
-      setHash(hash);
-
-      updateTransactions((txs) => ({
-        ...txs,
-        [hash]: {
-          chainId,
-          created: new Date().getTime(),
-          status: TransactionStatus.Pending,
-          type,
-          metadata,
-          checked: false,
-          values,
-        },
-      }));
-    }
-  };
-
-  return {
-    values,
-    open,
-    close,
-    redirectUrl,
-    setRedirectUrl,
-    error,
-    hash,
-    metadata,
-    type,
-    setHash,
-    isOpen,
-    setDialogIsOpen,
-    setError,
-    setMetadata,
-    setType,
-    showDialog,
-    setDialogError,
-    addTransaction,
-    watch,
-  };
-}
-
-const signMessageDialogOpenAtom = atom(false);
-const signMessageDialogErrorAtom = atom<Error | undefined>(undefined);
-const signMessageDialogSuccessAtom = atom<boolean>(false);
-const signMessageDialogMessage = atom<string | undefined>(undefined);
-
-export function useSignMessageDialog() {
-  const [open, setOpen] = useAtom(signMessageDialogOpenAtom);
-  const [error, setError] = useAtom(signMessageDialogErrorAtom);
-  const [isSuccess, setIsSuccess] = useAtom(signMessageDialogSuccessAtom);
-  const [message, setMessage] = useAtom(signMessageDialogMessage);
-
-  return {
-    isSuccess,
-    setIsSuccess,
-    error,
-    setError,
-    open,
-    setOpen,
-    message,
-    setMessage,
-  };
-}
-const isConnectWalletOpenAtom = atom(false);
-
-export function useConnectWalletDialog() {
-  const [isOpen, setOpen] = useAtom(isConnectWalletOpenAtom);
-
-  const handleConnectWallet = useCallback(() => {
-    setOpen(true);
-  }, []);
-
-  return {
-    isOpen,
-    setOpen,
-    handleConnectWallet,
-  };
-}
-
-export const switchNetworkOpenAtom = atom(false);
-export const switchNetworkChainIdAtom = atom<number | undefined>(undefined);
-
-export function useSwitchNetwork() {
-  const [isOpenSwitchNetwork, setOpenSwitchNetwork] = useAtom(
-    switchNetworkOpenAtom
-  );
-  const [networkChainId, setNetworkChainId] = useAtom(switchNetworkChainIdAtom);
-
-  const openDialog = function (chainId: number | undefined) {
-    setOpenSwitchNetwork(true);
-    setNetworkChainId(chainId);
-  };
-
-  return {
-    isOpenSwitchNetwork,
-    setOpenSwitchNetwork,
-    networkChainId,
-    setNetworkChainId,
-    openDialog,
-  };
-}
 
 const showSelectIsOpenAtom = atom(false);
 
@@ -491,21 +164,9 @@ export function useDrawerIsOpen() {
   return { isOpen, setIsOpen };
 }
 
-const showSelectCurrency = atom(false);
 
-export function useShowSelectCurrency() {
-  const [isOpen, setIsOpen] = useAtom(showSelectCurrency);
 
-  return { isOpen, setIsOpen };
-}
 
-const showSelectLocaleAtom = atom(false);
-
-export function useShowSelectLocale() {
-  const [isOpen, setIsOpen] = useAtom(showSelectLocaleAtom);
-
-  return { isOpen, setIsOpen };
-}
 
 const showAppTransactionsAtom = atom(false);
 
@@ -515,13 +176,7 @@ export function useShowAppTransactions() {
   return { isOpen, setIsOpen };
 }
 
-export const holdsKitDialogoAtom = atom(false);
 
-export function useHoldsKitDialog() {
-  const [isOpen, setIsOpen] = useAtom(holdsKitDialogoAtom);
-
-  return { isOpen, setIsOpen };
-}
 export const WAIT_TRANSACTION_QUERY = "WAIT_TRANSACTION_QUERY";
 
 export function useWaitTransactionConfirmation({
@@ -555,39 +210,6 @@ export function useWaitTransactionConfirmation({
   );
 }
 
-export function useExecuteTransactionsDialog() {
-  const [show, setShow] = useAtom(showTxDialogAtom);
-  const [transactions, setTransactions] = useAtom(txDialogTransactionsAtom);
-  const [isLoading, setIsLoading] = useAtom(txDialogLoading);
-  const [options, setOptions] = useAtom(txDialogOptions);
-
-  const handleClose = useCallback(() => {
-    setShow(false);
-    setTransactions([]);
-    setOptions(undefined);
-  }, []);
-
-  const execute = useCallback(
-    (transactions: TxDialogTransaction[], opts?: TxDialogOptions) => {
-      setShow(true);
-      setTransactions(transactions);
-      setOptions(opts);
-    },
-    []
-  );
-
-  return {
-    options,
-    isLoading,
-    setIsLoading,
-    show,
-    setShow,
-    transactions,
-    setTransactions,
-    handleClose,
-    execute,
-  };
-}
 
 
 export function useEditSiteId() {

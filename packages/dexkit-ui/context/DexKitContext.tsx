@@ -1,5 +1,5 @@
-import { ChainId, TransactionType } from "@dexkit/core/constants";
-import {
+import type { ChainId, TransactionType } from "@dexkit/core/constants";
+import type {
   AppTransaction,
   Asset,
   TokenWhitelabelApp,
@@ -8,7 +8,7 @@ import {
 } from "@dexkit/core/types";
 import { SUPPORTED_LEGACY_CHAIN_IDS } from "@dexkit/evm-chains/constants";
 import React, { SetStateAction } from "react";
-import {
+import type {
   AppNotification,
   AppNotificationType,
   CreateAppNotificationParams,
