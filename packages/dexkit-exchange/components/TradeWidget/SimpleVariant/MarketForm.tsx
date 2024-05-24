@@ -179,10 +179,10 @@ export default function MarketForm({
       !isNativeInSell({
         side,
         sellToken: {
-          address: side === "buy" ? quoteToken.address : baseToken.address,
+          address: side === "buy" ? baseToken.address : quoteToken.address,
         },
         buyToken: {
-          address: side === "buy" ? baseToken.address : quoteToken.address,
+          address: side === "buy" ? quoteToken.address : baseToken.address,
         },
       })
     ) {

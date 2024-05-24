@@ -37,6 +37,8 @@ export default async function handler(
         }
       );
 
+
+
       return res.status(200).json(response.data);
     }
     if (req.method === 'POST') {
@@ -57,11 +59,11 @@ export default async function handler(
     }
 
   } catch (err: any) {
-    if (err?.status) {
+    /*if (err?.status) {
       return res.status(err?.status).json(err);
-    }
+    }*/
 
-    return res.status(499).json(err);
+    return res.status(err.response?.status).json(err.response?.data);
   }
   return res.status(500).json({ message: 'method not supported' });
 
