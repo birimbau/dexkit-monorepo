@@ -1,8 +1,8 @@
 import React from 'react';
 
 
-import { AssetAPI } from '@dexkit/ui/modules/nft/types';
-import { AppConfig } from '@dexkit/ui/modules/wizard/types/config';
+import type { AssetAPI } from '@dexkit/ui/modules/nft/types';
+import type { AppConfig } from '@dexkit/ui/modules/wizard/types/config';
 import defaultAppConfig from '../../config/app.json';
 
 export const AppConfigContext = React.createContext<{

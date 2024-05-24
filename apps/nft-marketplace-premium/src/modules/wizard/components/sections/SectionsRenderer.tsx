@@ -1,4 +1,4 @@
-import { AppPageSection } from '@dexkit/ui/modules/wizard/types/section';
+import type { AppPageSection } from '@dexkit/ui/modules/wizard/types/section';
 import { Button, Stack, Typography, useTheme } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
 

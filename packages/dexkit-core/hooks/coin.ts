@@ -1,6 +1,8 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { BigNumber, Contract, providers } from "ethers";
+import { BigNumber, Contract } from "ethers";
 import { ERC20Abi } from "../constants/abis";
+
+import type { providers } from 'ethers';
 
 import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "../constants";
 import { getERC20TokenAllowance } from "../services";

@@ -2,9 +2,15 @@ import { IntlProvider, MessageFormatElement } from "react-intl";
 
 import { Web3ReactProvider } from "@web3-react/core";
 import { SnackbarProvider } from "notistack";
-import { useDexkitContextState, useOrderedConnectors } from "../hooks";
 
-import { AppTransaction, Asset, TokenWhitelabelApp } from "@dexkit/core/types";
+import { useDexkitContextState } from "../hooks/useDexkitContextState";
+import { useOrderedConnectors } from "../hooks/useOrderedConnectors";
+
+import type {
+  AppTransaction,
+  Asset,
+  TokenWhitelabelApp,
+} from "@dexkit/core/types";
 
 import { CssBaseline } from "@mui/material";
 import { PrimitiveAtom, SetStateAction, WritableAtom } from "jotai";
@@ -15,7 +21,7 @@ import {
 } from "@mui/material/styles";
 import React from "react";
 import { DexKitContext } from "../context/DexKitContext";
-import { AppNotification, AppNotificationType } from "../types";
+import type { AppNotification, AppNotificationType } from "../types";
 import GaslessTradesUpdater from "./GaslessTradesUpdater";
 import { MagicStateProvider } from "./MagicStateProvider";
 import TransactionUpdater from "./TransactionUpdater";
