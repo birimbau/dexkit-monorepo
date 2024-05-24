@@ -110,8 +110,8 @@ export default function AddPageDialog({
                       fullWidth
                       label={
                         <FormattedMessage
-                          id={'title'}
-                          defaultMessage={'Title'}
+                          id="page.title"
+                          defaultMessage="Page Title"
                         />
                       }
                     />

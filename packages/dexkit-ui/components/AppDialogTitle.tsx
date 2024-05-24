@@ -26,7 +26,8 @@ export function AppDialogTitle({
         zIndex: (theme) => theme.zIndex.modal + 1,
         display: "flex",
         justifyContent: "space-between",
-        p: 2,
+        px: 3,
+        py: 1.5,
         alignItems: "center",
         alignContent: "center",
       }}
@@ -41,7 +42,7 @@ export function AppDialogTitle({
         <Typography variant="inherit">{title}</Typography>
       </Stack>
       {onClose && !hideCloseButton && (
-        <IconButton disabled={disableClose} onClick={onClose}>
+        <IconButton size="small" disabled={disableClose} onClick={onClose}>
           <CloseIcon />
         </IconButton>
       )}
