@@ -133,7 +133,8 @@ export function useSwitchNetworkMutation() {
   return useMutation<unknown, Error, { chainId: number }>(
     async ({ chainId }) => {
       if (connector) {
-        return switchNetwork(connector, chainId);
+        const response = await switchNetwork(connector, chainId);
+        return null
       }
     }
   );
