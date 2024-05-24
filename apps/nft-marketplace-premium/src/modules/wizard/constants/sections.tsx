@@ -13,9 +13,9 @@ export const SECTION_MENU_OPTIONS = ({
   isVisible,
   hideDesktop,
 }: {
-  hideMobile: boolean;
-  isVisible: boolean;
-  hideDesktop: boolean;
+  hideMobile?: boolean;
+  isVisible?: boolean;
+  hideDesktop?: boolean;
 }) => {
   return [
     {
@@ -24,7 +24,7 @@ export const SECTION_MENU_OPTIONS = ({
         defaultMessage: 'Hide on mobile',
       },
       icon: hideMobile ? <MobileOffIcon /> : <SmartphoneIcon />,
-      value: hideMobile ? 'hideMobile' : 'showMobile',
+      value: 'hide.mobile',
     },
     {
       title: {
@@ -32,7 +32,7 @@ export const SECTION_MENU_OPTIONS = ({
         defaultMessage: 'Hide on desktop',
       },
       icon: hideDesktop ? <DesktopAccessDisabledIcon /> : <ComputerIcon />,
-      value: hideDesktop ? 'hideDesktop' : 'showDesktop',
+      value: 'hide.desktop',
     },
     {
       title: {
@@ -44,11 +44,11 @@ export const SECTION_MENU_OPTIONS = ({
     },
     {
       title: {
-        id: 'view.section',
-        defaultMessage: 'View section',
+        id: isVisible ? 'hide.section' : 'view.section',
+        defaultMessage: isVisible ? 'Hide section' : 'View section',
       },
       icon: isVisible ? <VisibilityOffIcon /> : <VisibilityIcon />,
-      value: isVisible ? 'hideSection' : 'showSection',
+      value: isVisible ? 'hide.section' : 'show.section',
     },
     {
       title: {

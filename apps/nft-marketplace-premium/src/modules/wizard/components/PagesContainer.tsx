@@ -57,26 +57,31 @@ export function PagesContainer({
   };
 
   const handleSavePageSections = (section: AppPageSection, index: number) => {
-    // setPages((value) => {
-    //   if (index === -1) {
-    //     const newPages = { ...value };
-    //     const newPage = newPages[currentPage.key || 'home'];
-    //     const newSections = [...newPage.sections, section];
-    //     newPage.sections = newSections;
-    //     newPages[currentPage.key || 'home'] = newPage;
-    //     setCurrentPage(newPage);
-    //     return newPages;
-    //   } else {
-    //     const newPages = { ...value };
-    //     const newPage = newPages[currentPage.key || 'home'];
-    //     const newSections = [...newPage.sections];
-    //     newSections[index] = section;
-    //     newPage.sections = newSections;
-    //     newPages[currentPage.key || 'home'] = newPage;
-    //     setCurrentPage(newPage);
-    //     return newPages;
-    //   }
-    // });
+    setPages((value) => {
+      if (selectedPage) {
+        if (index === -1) {
+          const newPages = { ...value };
+          const newPage = newPages[selectedPage];
+          const newSections = [...newPage.sections, section];
+
+          newPage.sections = newSections;
+          newPages[selectedPage] = newPage;
+
+          return newPages;
+        } else {
+          const newPages = { ...value };
+          const newPage = newPages[selectedPage];
+          const newSections = [...newPage.sections];
+
+          newSections[index] = section;
+          newPage.sections = newSections;
+          newPages[selectedPage] = newPage;
+
+          return newPages;
+        }
+      }
+      return value;
+    });
   };
 
   // const handleCancelEdit = () => {
@@ -89,7 +94,8 @@ export function PagesContainer({
     setShowConfirmRemove(true);
   };
 
-  const handleAddPageSections = () => {
+  const handleAddPageSections = (page: string) => {
+    setSelectedPage(page);
     setSelectedSectionindex(-1);
   };
 
@@ -192,6 +198,38 @@ export function PagesContainer({
     []
   );
 
+  const handleHideDesktop = (page: string, index: number) => {
+    setPages((value) => {
+      const newPages = { ...value };
+
+      const newPage = newPages[page];
+
+      let section = { ...newPage.sections[index] };
+
+      section.hideDesktop = !Boolean(section.hideDesktop);
+
+      newPages[page].sections[index] = section;
+
+      return newPages;
+    });
+  };
+
+  const handleHideMobile = (page: string, index: number) => {
+    setPages((value) => {
+      const newPages = { ...value };
+
+      const newPage = newPages[page];
+
+      let section = { ...newPage.sections[index] };
+
+      section.hideMobile = !Boolean(section.hideMobile);
+
+      newPages[page].sections[index] = section;
+
+      return newPages;
+    });
+  };
+
   const handleCloseAddPage = () => {
     setShowAddPage(false);
     // setPageToClone(undefined);
@@ -224,20 +262,18 @@ export function PagesContainer({
         pages={pages}
         theme={theme}
         sections={currentPage.sections}
-        onRemovePage={() => {}}
         onEditPage={onEditPage}
-        onViewPage={onViewPage}
-        onSave={handleSavePageSections}
+        onSaveSection={handleSavePageSections}
         onRemove={handleRemovePageSections}
         onSwap={handleSwap}
-        onCancelEdit={() => {}}
+        onHideDesktop={handleHideDesktop}
+        onHideMobile={handleHideMobile}
         onEdit={handleEditPageSections}
         onAdd={handleAddPageSections}
         currentIndex={selectedSectionIndex}
-        currentPage={currentPage}
         section={
-          selectedSectionIndex > -1
-            ? currentPage.sections[selectedSectionIndex]
+          selectedPage && selectedSectionIndex > -1
+            ? pages[selectedPage].sections[selectedSectionIndex]
             : undefined
         }
         previewUrl={previewUrl}

@@ -6,9 +6,11 @@ import DragHandleIcon from '@mui/icons-material/DragHandle';
 
 import { CSS } from '@dnd-kit/utilities';
 
+import { AppPageSection } from '@dexkit/ui/modules/wizard/types/section';
 import { useDraggable, useDroppable } from '@dnd-kit/core';
 import MoreVert from '@mui/icons-material/MoreVert';
 import dynamic from 'next/dynamic';
+import PreviewPagePlatform from '../PreviewPagePlatform';
 import PageSectionMenuStack from './PageSectionMenuStack';
 
 const PageSectionMenu = dynamic(() => import('./PageSectionMenu'));
@@ -20,6 +22,7 @@ export interface PageSectionProps {
   id: string;
   expand?: boolean;
   onAction: (action: string) => void;
+  section?: AppPageSection;
 }
 
 export default function PageSection({
@@ -29,11 +32,8 @@ export default function PageSection({
   id,
   expand,
   onAction,
+  section,
 }: PageSectionProps) {
-  const hideMobile = false;
-  const isVisible = true;
-  const hideDesktop = false;
-
   const { transform, setNodeRef, listeners, attributes, isDragging } =
     useDraggable({ id });
   const { isOver, setNodeRef: setNodeRefDrop } = useDroppable({ id });
@@ -48,15 +48,24 @@ export default function PageSection({
     setAnchorEl(null);
   };
 
+  const [isVisible, setVisible] = useState(false);
+
+  const handleToggleVisibility = () => {
+    setVisible((value) => !value);
+  };
+
   return (
     <>
-      <PageSectionMenu
-        hideDesktop={hideDesktop}
-        hideMobile={hideMobile}
-        isVisible={isVisible}
-        anchorEl={anchorEl}
-        onClose={handleCloseMenu}
-      />
+      {anchorEl && section && (
+        <PageSectionMenu
+          hideDesktop={section?.hideDesktop}
+          hideMobile={section?.hideMobile}
+          isVisible={isVisible}
+          anchorEl={anchorEl}
+          onClose={handleCloseMenu}
+        />
+      )}
+
       <Box
         sx={(theme) => ({
           borderRadius: theme.shape.borderRadius / 2,
@@ -90,20 +99,21 @@ export default function PageSection({
                 direction="row"
               >
                 <Box>
-                  <Typography variant="body1">{subtitle}</Typography>
+                  <Typography variant="body1">{title}</Typography>
                   <Typography variant="body2" color="text.secondary">
-                    {title}
+                    {subtitle}
                   </Typography>
                 </Box>
               </Stack>
               <Stack direction="row" spacing={0.5} alignItems="center">
-                {expand ? (
+                {expand && section ? (
                   <Box pr={8}>
                     <PageSectionMenuStack
-                      hideDesktop={hideDesktop}
-                      hideMobile={hideMobile}
+                      hideDesktop={section?.hideDesktop}
+                      hideMobile={section?.hideMobile}
                       isVisible={isVisible}
                       onAction={onAction}
+                      onToggleVisibilty={handleToggleVisibility}
                     />
                   </Box>
                 ) : (
@@ -116,6 +126,9 @@ export default function PageSection({
               </Stack>
             </Stack>
           </Box>
+          {isVisible && section && (
+            <PreviewPagePlatform sections={[section]} disabled={true} />
+          )}
         </Card>
       </Box>
     </>

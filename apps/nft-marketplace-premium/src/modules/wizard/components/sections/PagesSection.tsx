@@ -22,15 +22,13 @@ interface Props {
   sections: AppPageSection[];
   section?: AppPageSection;
   currentIndex: number;
-  currentPage?: AppPage;
-  onRemovePage: (slug: string) => void;
   onEditPage: (pageOptions: AppPageOptions) => void;
-  onViewPage: (slug: string) => void;
-  onSave: (section: AppPageSection, index: number) => void;
+  onHideDesktop: (page: string, index: number) => void;
+  onHideMobile: (page: string, index: number) => void;
+  onSaveSection: (section: AppPageSection, index: number) => void;
   onRemove: (page: string, index: number) => void;
   onEdit: (page: string, index: number) => void;
-  onAdd: () => void;
-  onCancelEdit: () => void;
+  onAdd: (page: string) => void;
   onSwap: (page: string, index: number, other: number) => void;
   theme?: Omit<Theme, 'palette'> & CssVarsTheme;
   builderKit?: BuilderKit;
@@ -42,46 +40,31 @@ export default function PagesSection({
   sections,
   section,
   theme,
-  onRemovePage,
   onEditPage,
-  onViewPage,
-  onSave,
+  onSaveSection: onSave,
+  onHideDesktop,
+  onHideMobile,
   onRemove,
   onEdit,
   onAdd,
-  onCancelEdit,
   onSwap,
   currentIndex,
-  currentPage,
   pages,
   previewUrl,
 }: Props) {
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenEditor, setIsOpenEditor] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
-  const [viewIndexes, setViewIndexes] = useState<number[]>([]);
 
-  const onView = (page: string, ind: number) => {
-    const newViewIndexes = [...viewIndexes];
-
-    const newIndex = newViewIndexes.indexOf(ind);
-    if (newIndex !== -1) {
-      newViewIndexes.splice(newIndex, 1);
-      setViewIndexes(newViewIndexes);
+  const handleAddSection = (page: string, custom?: boolean) => {
+    if (custom) {
+      onAdd(page);
+      setIsOpenEditor(true);
     } else {
-      newViewIndexes.push(ind);
-      setViewIndexes(newViewIndexes);
+      onAdd(page);
+      setIsEdit(false);
+      setIsOpen(true);
     }
-  };
-
-  const handleAddSection = () => {
-    onAdd();
-    setIsEdit(false);
-    setIsOpen(true);
-  };
-
-  const handleAddCustomSection = () => {
-    setIsOpenEditor(true);
   };
 
   const handleEdit = (page: string, index: number) => {
@@ -101,12 +84,10 @@ export default function PagesSection({
 
   const handleClose = () => {
     setIsOpen(false);
-    onCancelEdit();
   };
 
   const handleCloseEditor = () => {
     setIsOpenEditor(false);
-    onCancelEdit();
   };
 
   return (
@@ -143,18 +124,13 @@ export default function PagesSection({
       <Stack spacing={2}>
         <PagesSectionPage
           pages={pages}
-          currentPage={currentPage}
-          sections={sections}
-          onRemovePage={onRemovePage}
-          onViewPage={onViewPage}
           onEditPage={onEditPage}
           onRemove={onRemove}
           onEdit={handleEdit}
-          onView={onView}
-          onHideDesktop={() => {}}
-          onHideMobile={() => {}}
+          onAdd={handleAddSection}
+          onHideDesktop={onHideDesktop}
+          onHideMobile={onHideMobile}
           onClone={() => {}}
-          isVisibleIndexes={viewIndexes}
           onSwap={onSwap}
           theme={theme}
           previewUrl={previewUrl}

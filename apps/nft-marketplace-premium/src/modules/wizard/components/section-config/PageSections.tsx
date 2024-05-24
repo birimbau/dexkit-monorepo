@@ -77,15 +77,7 @@ const sectionConfig: Record<
     icon: <StoreIcon />,
   },
   custom: {
-    title: (section: AppPageSection) =>
-      section?.title ? (
-        section.title
-      ) : (
-        <FormattedMessage
-          id="custom.page.editor"
-          defaultMessage="Custom Page Editor"
-        />
-      ),
+    title: <FormattedMessage id="custom" defaultMessage="Custom" />,
     icon: <AutoAwesomeIcon />,
   },
   markdown: {
@@ -201,11 +193,11 @@ function getSectionType(section: AppPageSection) {
   const config = sectionConfig[section.type];
   if (config) {
     return {
-      title:
+      subtitle:
         typeof config.title === 'function'
           ? config.title(section)
           : config.title,
-      subtitle: section.title || '',
+      title: section.title || '',
       icon: config.icon,
     };
   }
@@ -217,6 +209,7 @@ export interface PageSectionsProps {
   onSwap: (index: number, other: number) => void;
   onAction: (action: string, index: number) => void;
   onClose: () => void;
+  onAdd: () => void;
 }
 
 export default function PageSections({
@@ -224,6 +217,7 @@ export default function PageSections({
   onSwap,
   onAction,
   onClose,
+  onAdd,
 }: PageSectionsProps) {
   const isMobile = useIsMobile();
 
@@ -306,6 +300,7 @@ export default function PageSections({
                     subtitle={getSectionType(section)?.subtitle}
                     id={index.toString()}
                     onAction={handleAction(index)}
+                    section={section}
                   />
                 </Grid>
               ))}

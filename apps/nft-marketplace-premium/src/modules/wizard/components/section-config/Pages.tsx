@@ -17,13 +17,20 @@ export interface PagesProps {
   };
   onSwap: (page: string, index: number, other: number) => void;
   onAction: (action: string, page: string, index: number) => void;
+  onAdd: (page: string, custom?: boolean) => void;
   theme?: {
     cssVarPrefix?: string | undefined;
     colorSchemes: Record<SupportedColorScheme, Record<string, any>>;
   };
 }
 
-export default function Pages({ pages, onSwap, onAction, theme }: PagesProps) {
+export default function Pages({
+  pages,
+  onSwap,
+  onAction,
+  theme,
+  onAdd,
+}: PagesProps) {
   const keys = useMemo(() => {
     return Object.keys(pages);
   }, [pages]);
@@ -69,6 +76,12 @@ export default function Pages({ pages, onSwap, onAction, theme }: PagesProps) {
     setIsEdit(false);
   };
 
+  const handleAdd = (page: string, custom?: boolean) => {
+    return () => {
+      onAdd(page, custom);
+    };
+  };
+
   if (selectedKey !== undefined && isEdit) {
     return (
       <Grid container spacing={2}>
@@ -78,6 +91,7 @@ export default function Pages({ pages, onSwap, onAction, theme }: PagesProps) {
             onSwap={handleSwap(selectedKey)}
             onAction={handleAction(selectedKey)}
             onClose={handlePageClose}
+            onAdd={handleAdd(selectedKey)}
           />
         </Grid>
         <Grid item xs={12}>
@@ -96,7 +110,7 @@ export default function Pages({ pages, onSwap, onAction, theme }: PagesProps) {
               <Box maxWidth={'xs'}>
                 <Button
                   variant="outlined"
-                  onClick={() => {}}
+                  onClick={handleAdd(selectedKey)}
                   startIcon={<Add />}
                 >
                   <FormattedMessage
@@ -109,7 +123,7 @@ export default function Pages({ pages, onSwap, onAction, theme }: PagesProps) {
               <Box maxWidth={'xs'}>
                 <Button
                   variant="outlined"
-                  onClick={() => {}}
+                  onClick={handleAdd(selectedKey, true)}
                   startIcon={<Add />}
                 >
                   <FormattedMessage

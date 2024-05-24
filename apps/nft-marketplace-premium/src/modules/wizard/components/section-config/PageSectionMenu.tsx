@@ -5,9 +5,9 @@ import { FormattedMessage } from 'react-intl';
 import { SECTION_MENU_OPTIONS } from '../../constants/sections';
 
 export interface PageSectionMenuProps {
-  hideMobile: boolean;
-  isVisible: boolean;
-  hideDesktop: boolean;
+  hideMobile?: boolean;
+  isVisible?: boolean;
+  hideDesktop?: boolean;
   anchorEl: HTMLElement | null;
   onClose: () => void;
 }
@@ -23,6 +23,8 @@ export default function PageSectionMenu({
     return SECTION_MENU_OPTIONS({ hideMobile, hideDesktop, isVisible });
   }, [hideMobile, hideDesktop, isVisible]);
 
+  console.log('hid', hideMobile, hideDesktop);
+
   return (
     <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={onClose}>
       {menuArr.map((menu, index) => (
@@ -31,6 +33,7 @@ export default function PageSectionMenu({
           <ListItemText
             primary={
               <FormattedMessage
+                key={menu.title.id}
                 id={menu.title.id}
                 defaultMessage={menu.title.defaultMessage}
               />
