@@ -50,6 +50,7 @@ export const ZEROEX_QUOTE_ENDPOINT = "/swap/v1/quote";
 
 export const ZEROEX_TOKENS_ENDPOINT = "/swap/v1/tokens";
 export const ZEROEX_ORDERBOOK_ENDPOINT = "/orderbook/v1/order";
+
 export const ZEROEX_ORDERBOOK_ORDERS_ENDPOINT = "/orderbook/v1/orders";
 
 export const ZEROEX_AFFILIATE_ADDRESS =
@@ -66,3 +67,5 @@ export const ZEROEX_GASLESS_QUOTE_ENDPOINT = "/tx-relay/v1/swap/quote";
 export const ZEROEX_GASLESS_SUBMIT_ENDPOINT = "/tx-relay/v1/swap/submit";
 
 export const ZEROEX_GASLESS_STATUS_ENDPOINT = "/tx-relay/v1/swap/status";
+
+export const ZEROEX_SUPPORTS_GASLESS_ENDPOINT = "/tx-relay/v1/swap/supported-tokens";
