@@ -19,13 +19,13 @@ import {
 } from "@dexkit/ui/hooks";
 import { useTrackUserEventsMutation } from "@dexkit/ui/hooks/userEvents";
 import { useSignTypeData } from "@dexkit/ui/hooks/web3/useSignTypeData";
-import { AppNotificationType } from "@dexkit/ui/types";
-import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
-
 import { SUPPORTED_GASLESS_CHAIN } from "@dexkit/ui/modules/swap/constants";
 import { useGaslessTrades } from "@dexkit/ui/modules/swap/hooks/useGaslessTrades";
+import { useIsGaslessSupportedToken } from "@dexkit/ui/modules/swap/hooks/useIsGaslessSupportedToken";
 import { ZeroExGaslessQuoteResponse } from "@dexkit/ui/modules/swap/types";
 import { isNativeInSell } from "@dexkit/ui/modules/swap/utils";
+import { AppNotificationType } from "@dexkit/ui/types";
+import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import {
@@ -171,18 +171,25 @@ export default function MarketForm({
     sideToBuy.sellAmount = amountToTrade;
   }
 
+  const isTokenGaslessSupported = useIsGaslessSupportedToken({
+    chainId,
+    useGasless,
+    sellToken: side === "buy" ? quoteToken.address : baseToken.address,
+  });
+
   const canGasless = useMemo(() => {
     if (
+      isTokenGaslessSupported &&
       useGasless &&
       chainId &&
       SUPPORTED_GASLESS_CHAIN.includes(chainId) &&
       !isNativeInSell({
         side,
         sellToken: {
-          address: side === "buy" ? quoteToken.address : baseToken.address,
+          address: side === "buy" ? baseToken.address : quoteToken.address,
         },
         buyToken: {
-          address: side === "buy" ? baseToken.address : quoteToken.address,
+          address: side === "buy" ? quoteToken.address : baseToken.address,
         },
       })
     ) {
@@ -479,10 +486,30 @@ export default function MarketForm({
         </Button>
       );
     }
+    let errorMsg = null;
+
+    if (quoteQuery?.isError) {
+      if (quoteQuery?.error) {
+        const errorResponse = (quoteQuery?.error as any)?.response;
+
+        if (
+          errorResponse?.data.validationErrors &&
+          Array.isArray(errorResponse?.data.validationErrors)
+        ) {
+          const validationError = errorResponse?.data.validationErrors[0];
+
+          if (validationError?.reason) {
+            errorMsg = validationError?.reason.split("_").join(" ");
+          }
+        }
+      }
+    }
 
     return (
       <Button
-        disabled={quoteQuery.isLoading || !hasSufficientBalance}
+        disabled={
+          quoteQuery.isLoading || !hasSufficientBalance || quoteQuery.isError
+        }
         size="large"
         fullWidth
         startIcon={
@@ -491,7 +518,9 @@ export default function MarketForm({
         variant="contained"
         onClick={handleExecute}
       >
-        {quoteQuery.isLoading ? (
+        {errorMsg ? (
+          <>{errorMsg}</>
+        ) : quoteQuery.isLoading ? (
           <FormattedMessage
             id="loading.quote"
             defaultMessage="Loading quote..."

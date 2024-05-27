@@ -49,6 +49,16 @@ export const CORE_PAGES: { [key: string]: AppPageOptions } = {
   },
 };
 
+export const CUSTOM_PAGE_KEY = 'custom-page-dexappbuilder';
+
+export const CUSTOM_PAGE: { [key: string]: AppPageOptions } = {
+  [CUSTOM_PAGE_KEY]: {
+    title: 'Custom',
+    uri: '/',
+  },
+
+};
+
 export enum BuilderKit {
   ALL = 'All Kits',
   NFT = 'NFT Kit',

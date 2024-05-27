@@ -14,11 +14,13 @@ import {
 import { ChangeEvent, memo, useMemo, useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 import { AppDialogTitle } from "../../../../components/AppDialogTitle";
+import { useUserGaslessSettings } from "../../hooks/useUserGaslessSettings";
 
 interface SwapSettingsDialogProps {
   DialogProps: DialogProps;
   maxSlippage: number;
   title?: JSX.Element;
+  useGasless?: boolean;
   isAutoSlippage: boolean;
   onAutoSlippage: (value: boolean) => void;
   onChangeSlippage: (value: number) => void;
@@ -28,6 +30,7 @@ function SwapSettingsDialog({
   DialogProps,
   maxSlippage,
   isAutoSlippage,
+  useGasless,
   onAutoSlippage,
   onChangeSlippage,
   title,
@@ -38,6 +41,8 @@ function SwapSettingsDialog({
     (maxSlippage * 100).toString()
   );
 
+  const [userGasless, setUserGasless] = useUserGaslessSettings();
+
   const handleClose = () => {
     onClose!({}, "backdropClick");
   };
@@ -47,6 +52,13 @@ function SwapSettingsDialog({
     checked: boolean
   ) => {
     return onAutoSlippage(checked);
+  };
+
+  const handleToggleUserGasless = (
+    event: ChangeEvent<HTMLInputElement>,
+    checked: boolean
+  ) => {
+    return setUserGasless(checked);
   };
 
   const handleChangeSlippage = (e: ChangeEvent<HTMLInputElement>) => {
@@ -83,14 +95,7 @@ function SwapSettingsDialog({
     <Dialog {...DialogProps} onClose={handleClose}>
       <AppDialogTitle
         title={
-          title ? (
-            title
-          ) : (
-            <FormattedMessage
-              id="swap.settings"
-              defaultMessage="Swap Settings"
-            />
-          )
+          <FormattedMessage id="swap.settings" defaultMessage="Swap Settings" />
         }
         onClose={handleClose}
       />
@@ -123,6 +128,20 @@ function SwapSettingsDialog({
               }}
             />
           )}
+          <FormControlLabel
+            control={
+              <Switch
+                checked={userGasless !== undefined ? userGasless : useGasless}
+                onChange={handleToggleUserGasless}
+              />
+            }
+            label={
+              <FormattedMessage
+                id="gasless.swaps"
+                defaultMessage="Gasless swaps"
+              />
+            }
+          />
         </Stack>
       </DialogContent>
       <DialogActions>

@@ -9,6 +9,7 @@ import {
   ZEROEX_ORDERBOOK_ENDPOINT,
   ZEROEX_ORDERBOOK_ORDERS_ENDPOINT,
   ZEROEX_QUOTE_ENDPOINT,
+  ZEROEX_SUPPORTS_GASLESS_ENDPOINT,
   ZEROEX_TOKENS_ENDPOINT,
   ZERO_EX_URL
 } from "@dexkit/ui/modules/swap/constants";
@@ -118,6 +119,12 @@ export class ZeroExApiClient {
   async tokens(): Promise<any> {
     return this.axiosInstance.get(
       ZERO_EX_URL(this.chainId) + ZEROEX_TOKENS_ENDPOINT
+    );
+  }
+
+  async isTokenGaslessSupported(): Promise<any> {
+    return this.axiosInstance.get(
+      ZERO_EX_URL(this.chainId) + ZEROEX_SUPPORTS_GASLESS_ENDPOINT
     );
   }
 

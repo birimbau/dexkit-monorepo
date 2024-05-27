@@ -11,15 +11,17 @@ import { useEffect, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import { usePlatformCoinSearch } from "../../hooks/api";
 import { apiCoinToTokens } from "../../utils/api";
-import SwapSettingsDialog from "./dialogs/SwapSettingsDialog";
+const SwapSettingsDialog = dynamic(
+  () => import("@dexkit/ui/modules/swap/components/dialogs/SwapSettingsDialog")
+);
 const SwapConfirmDialog = dynamic(() => import("./dialogs/SwapConfirmDialog"));
 
 // declare global {
 //   function renderSwapWidget(id: string, options: RenderOptions): void;
 // }
-
 import { NETWORKS } from "@dexkit/core/constants/networks";
 import { Token } from "@dexkit/core/types";
+import { useUserGaslessSettings } from "@dexkit/ui/modules/swap/hooks/useUserGaslessSettings";
 import SwitchNetworkDialog from "../../components/SwitchNetworkDialog";
 import { SUPPORTED_GASLESS_CHAIN } from "../../constants";
 import SwapSelectCoinDialog from "./SwapSelectCoinDialog";
@@ -109,11 +111,16 @@ export function SwapWidget({
     disableWallet,
   });
 
+  const [userGasless] = useUserGaslessSettings();
+
   const isGasless = useMemo(() => {
     if (selectedChainId) {
-      return SUPPORTED_GASLESS_CHAIN.includes(selectedChainId) && useGasless;
+      return SUPPORTED_GASLESS_CHAIN.includes(selectedChainId) &&
+        userGasless !== undefined
+        ? userGasless
+        : useGasless;
     }
-  }, [selectedChainId, useGasless]);
+  }, [selectedChainId, useGasless, userGasless]);
 
   const approveMutation = useErc20ApproveMutation({ onNotification });
 
@@ -132,6 +139,7 @@ export function SwapWidget({
     execType,
     isExecuting,
     quote,
+    quoteQuery,
     buyTokenBalance,
     sellTokenBalance,
     insufficientBalance,
@@ -343,24 +351,28 @@ export function SwapWidget({
           buyToken={buyToken}
         />
       )}
-      <SwapSettingsDialog
-        DialogProps={{
-          open: showSettings,
-          maxWidth: "xs",
-          fullWidth: true,
-          onClose: handleCloseSettings,
-        }}
-        onAutoSlippage={onAutoSlippage}
-        onChangeSlippage={onChangeSlippage}
-        maxSlippage={maxSlippage}
-        isAutoSlippage={isAutoSlippage}
-      />
+      {showSettings && (
+        <SwapSettingsDialog
+          DialogProps={{
+            open: showSettings,
+            maxWidth: "xs",
+            fullWidth: true,
+            onClose: handleCloseSettings,
+          }}
+          useGasless={useGasless}
+          onAutoSlippage={onAutoSlippage}
+          onChangeSlippage={onChangeSlippage}
+          maxSlippage={maxSlippage}
+          isAutoSlippage={isAutoSlippage}
+        />
+      )}
       <Swap
         currency={currency}
         disableNotificationsButton={disableNotificationsButton}
         chainId={chainId}
         activeChainIds={filteredChainIds}
         quoteFor={quoteFor}
+        quoteQuery={quoteQuery}
         clickOnMax={clickOnMax}
         isActive={isActive && !disableWallet}
         buyToken={buyToken}

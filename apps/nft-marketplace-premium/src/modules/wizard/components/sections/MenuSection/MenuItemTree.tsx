@@ -22,8 +22,8 @@ import {
 import dynamic from 'next/dynamic';
 import React, { useState } from 'react';
 
-const AddMenuPageDialog = dynamic(
-  () => import('../../dialogs/AddMenuPageDialog'),
+const EditMenuPageDialog = dynamic(
+  () => import('../../dialogs/EditMenuPageDialog'),
   { ssr: false },
 );
 
@@ -262,7 +262,7 @@ export default function MenuItemTree({
         {isOpenEdit &&
           renderEdit(handleConfirmEdit, handleCloseEdit, isOpenEdit, item)}
         {openAdd && (
-          <AddMenuPageDialog
+          <EditMenuPageDialog
             key={`${depth}-dialog`}
             dialogProps={{
               open: openAdd,

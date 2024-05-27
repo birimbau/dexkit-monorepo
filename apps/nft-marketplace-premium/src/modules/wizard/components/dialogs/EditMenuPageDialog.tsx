@@ -18,10 +18,26 @@ import MenuItem from '@mui/material/MenuItem';
 import { Field, Form, Formik } from 'formik';
 import { Select, TextField } from 'formik-mui';
 import { useCallback, useMemo } from 'react';
-import { CORE_PAGES } from '../../constants';
+import { CORE_PAGES, CUSTOM_PAGE, CUSTOM_PAGE_KEY } from '../../constants';
 
 const MenuOptionsSchema = Yup.object().shape({
   name: Yup.string().required(),
+  uri: Yup.string().when('name', {
+    is: CUSTOM_PAGE_KEY,
+    then: (schema) =>
+      schema
+        .required()
+        .matches(
+          /\/.*$/,
+          'Not a valid pathname uri. Start with /, avoid spaces and double /',
+        ),
+    otherwise: (schema) => schema,
+  }),
+  title: Yup.string().when('name', {
+    is: CUSTOM_PAGE_KEY,
+    then: (schema) => schema.required(),
+    otherwise: (schema) => schema,
+  }),
   href: Yup.string().when('type', {
     is: 'External',
     then: (schema) => schema.url().required(),
@@ -60,10 +76,12 @@ export default function EditMenuPageDialog({
   };
 
   const allPages = useMemo(() => {
-    return { ...pages, ...CORE_PAGES };
+    return { ...pages, ...CORE_PAGES, ...CUSTOM_PAGE };
   }, [pages]);
 
   const pageKeys = Object.keys(allPages);
+
+  const isCreate = !value;
 
   const getInitials = useCallback(() => {
     if (value) {
@@ -77,6 +95,18 @@ export default function EditMenuPageDialog({
             name: page.title?.toLocaleLowerCase() || '',
             href: page.uri || '',
           } as MenuTree;
+        } else {
+          // If there href and name, it is a custom page uri
+          if (value.href && value.name) {
+            return {
+              ...value,
+              type: 'Page',
+              title: value.name,
+              name: CUSTOM_PAGE_KEY,
+              uri: value.href,
+              href: value.href || '',
+            } as MenuTree;
+          }
         }
       }
       if (value.type === 'External' || value.type === 'Menu') {
@@ -87,6 +117,8 @@ export default function EditMenuPageDialog({
     return {
       type: 'Page',
       href: '',
+      title: '',
+      uri: '',
       name: pageKeys[0] || '',
     };
   }, [allPages, value]);
@@ -95,7 +127,16 @@ export default function EditMenuPageDialog({
     <Dialog {...dialogProps}>
       <AppDialogTitle
         title={
-          fatherIndex !== undefined ? (
+          isCreate ? (
+            fatherIndex !== undefined ? (
+              <FormattedMessage
+                id="create.submenu"
+                defaultMessage="Create submenu"
+              />
+            ) : (
+              <FormattedMessage id="create.menu" defaultMessage="Create menu" />
+            )
+          ) : fatherIndex !== undefined ? (
             <FormattedMessage id="edit.submenu" defaultMessage="Edit submenu" />
           ) : (
             <FormattedMessage id="edit.menu" defaultMessage="Edit menu" />
@@ -105,18 +146,36 @@ export default function EditMenuPageDialog({
       />
       <Formik
         key={JSON.stringify(getInitials())}
-        onSubmit={(values) => {
+        onSubmit={(values: any) => {
+          const newValues = { ...values };
+          // Avoid uri and title to be saved on the JSON file, as they are being used here as auxiliary fields
+          if (newValues) {
+            delete newValues.uri;
+            delete newValues.title;
+          }
+
           if (values.type === 'Page') {
-            onSubmit(
-              {
-                ...(values as MenuTree),
-                name: allPages[values.name].title || '',
-                href: allPages[values.name].uri || '',
-              },
-              fatherIndex,
-            );
+            if (values.name === CUSTOM_PAGE_KEY) {
+              onSubmit(
+                {
+                  ...(newValues as MenuTree),
+                  name: values?.title || '',
+                  href: values?.uri || '',
+                },
+                fatherIndex,
+              );
+            } else {
+              onSubmit(
+                {
+                  ...(newValues as MenuTree),
+                  name: allPages[values.name].title || '',
+                  href: allPages[values.name].uri || '',
+                },
+                fatherIndex,
+              );
+            }
           } else {
-            onSubmit(values as MenuTree, fatherIndex);
+            onSubmit(newValues as MenuTree, fatherIndex);
           }
           handleClose();
         }}
@@ -155,21 +214,53 @@ export default function EditMenuPageDialog({
                   </Field>
                 </Grid>
                 {values.type === 'Page' && (
-                  <Grid item xs={12}>
-                    <Field
-                      component={Select}
-                      name="name"
-                      label={
-                        <FormattedMessage id="name" defaultMessage="Name" />
-                      }
-                    >
-                      {pageKeys.map((item, key) => (
-                        <MenuItem value={item} key={key}>
-                          {allPages[item].title || ''}
-                        </MenuItem>
-                      ))}
-                    </Field>
-                  </Grid>
+                  <>
+                    <Grid item xs={12}>
+                      <Field
+                        component={Select}
+                        name="name"
+                        label={
+                          <FormattedMessage id="name" defaultMessage="Name" />
+                        }
+                      >
+                        {pageKeys.map((item, key) => (
+                          <MenuItem value={item} key={key}>
+                            {allPages[item].title || ''}
+                          </MenuItem>
+                        ))}
+                      </Field>
+                    </Grid>
+                    {/*TODO: this implementation should be changed on the future*/}
+                    {values.name === CUSTOM_PAGE_KEY && (
+                      <>
+                        <Grid item xs={12}>
+                          <Field
+                            component={TextField}
+                            name="title"
+                            label={
+                              <FormattedMessage
+                                id={'name'}
+                                defaultMessage={'Name'}
+                              />
+                            }
+                          />
+                        </Grid>
+                        <Grid item xs={12}>
+                          <Field
+                            component={TextField}
+                            name="uri"
+                            fullWidth
+                            label={
+                              <FormattedMessage
+                                id={'uri'}
+                                defaultMessage={'URI'}
+                              />
+                            }
+                          />
+                        </Grid>
+                      </>
+                    )}
+                  </>
                 )}
 
                 {values.type !== 'Page' && (
