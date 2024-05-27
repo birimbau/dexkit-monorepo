@@ -121,7 +121,13 @@ export default function AddPageDialog({
             </DialogContent>
             <DialogActions>
               {isSubmitting && <LinearProgress />}
-              <Stack direction="row" spacing={1} justifyContent="flex-end">
+              <Stack
+                py={0.5}
+                px={2}
+                direction="row"
+                spacing={1}
+                justifyContent="flex-end"
+              >
                 <Button
                   disabled={!isValid || isSubmitting}
                   variant="contained"
