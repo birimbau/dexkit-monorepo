@@ -6,12 +6,32 @@ import {
   AppPage,
   AppPageOptions,
 } from '@dexkit/ui/modules/wizard/types/config';
+import slugify from 'slugify';
 import { BuilderKit } from '../constants';
+import { PageSectionKey } from '../hooks/sections';
 import AddPageDialog from './dialogs/AddPageDialog';
 import PagesSection from './sections/PagesSection';
+
 const ConfirmRemoveSectionDialog = dynamic(
   () => import('./dialogs/ConfirmRemoveSectionDialog')
 );
+
+const CloneSectionDialog = dynamic(
+  () => import('./dialogs/CloneSectionDialog')
+);
+
+const ClonePageDialog = dynamic(() => import('./dialogs/ClonePageDialog'));
+
+function generateRandomString(length: number) {
+  const characters =
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let result = '';
+  const charactersLength = characters.length;
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
+}
 
 interface Props {
   pages: {
@@ -44,12 +64,11 @@ export function PagesContainer({
 }: Props) {
   const [showConfirmRemove, setShowConfirmRemove] = useState(false);
   const [selectedSectionIndex, setSelectedSectionindex] = useState<number>(-1);
+  const [pageToClone, setPageToClone] = useState<string>();
+
+  const [sectionToClone, setSectionToClone] = useState<PageSectionKey>();
 
   const [selectedPage, setSelectedPage] = useState<string>();
-
-  // const [pageToClone, setPageToClone] = useState<
-  //   { key?: string; title?: string } | undefined
-  // >();
 
   const handleEditPageSections = (page: string, index: number) => {
     setSelectedPage(page);
@@ -62,7 +81,7 @@ export function PagesContainer({
         if (index === -1) {
           const newPages = { ...value };
           const newPage = newPages[selectedPage];
-          const newSections = [...newPage.sections, section];
+          const newSections = [...(newPage.sections || []), section];
 
           newPage.sections = newSections;
           newPages[selectedPage] = newPage;
@@ -71,7 +90,7 @@ export function PagesContainer({
         } else {
           const newPages = { ...value };
           const newPage = newPages[selectedPage];
-          const newSections = [...newPage.sections];
+          const newSections = [...(newPage.sections || [])];
 
           newSections[index] = section;
           newPage.sections = newSections;
@@ -83,10 +102,6 @@ export function PagesContainer({
       return value;
     });
   };
-
-  // const handleCancelEdit = () => {
-  //   setSelectedSectionindex(-1);
-  // };
 
   const handleRemovePageSections = (page: string, index: number) => {
     setSelectedPage(page);
@@ -177,8 +192,6 @@ export function PagesContainer({
     // });
   };
 
-  const onViewPage = (slug: string) => {};
-
   const handleSwap = useCallback(
     (page: string, index: number, otherIndex: number) => {
       setPages((value) => {
@@ -232,7 +245,98 @@ export function PagesContainer({
 
   const handleCloseAddPage = () => {
     setShowAddPage(false);
-    // setPageToClone(undefined);
+    setPageToClone(undefined);
+  };
+
+  const [showCloneSection, setShowCloneSection] = useState(false);
+  ('');
+
+  const [showClonePage, setShowClonePage] = useState(false);
+
+  const handleClone = (page: string, index: number) => {
+    setSectionToClone({ page, index });
+    setShowCloneSection(true);
+  };
+
+  const [activeSection, setActiveSection] = useState<PageSectionKey>();
+
+  const handleConfirmCloneSection = (name: string) => {
+    setPages((value) => {
+      const newPages = { ...value };
+
+      if (sectionToClone) {
+        const newPage = newPages[sectionToClone.page];
+
+        const sections = [...newPage.sections];
+        const cloneSection = { ...sections[sectionToClone.index], title: name };
+
+        sections.splice(sectionToClone.index + 1, 0, cloneSection);
+
+        newPages[sectionToClone.page].sections = sections;
+      }
+
+      return newPages;
+    });
+
+    if (sectionToClone) {
+      setActiveSection({
+        page: sectionToClone.page,
+        index: sectionToClone.index + 1,
+      });
+
+      setTimeout(() => {
+        setActiveSection(undefined);
+      }, 5000);
+    }
+
+    setShowCloneSection(false);
+    setSectionToClone(undefined);
+  };
+
+  const handleClonePage = (page: string) => {
+    setShowClonePage(true);
+    setPageToClone(page);
+  };
+
+  const handleConfirmClonePage = (name: string) => {
+    setPages((value) => {
+      const newPages = { ...value };
+
+      if (pageToClone) {
+        const newPage = {
+          ...newPages[pageToClone],
+          title: name,
+          uri: `/${slugify(name)}`,
+        };
+
+        newPages[`${pageToClone}-${generateRandomString(10)}`] = newPage;
+      }
+
+      return newPages;
+    });
+
+    setShowClonePage(false);
+    setPageToClone(undefined);
+  };
+
+  const handleCloseClonePage = () => {
+    setShowClonePage(false);
+  };
+
+  const handleCloseCloneSection = () => {
+    setShowCloneSection(false);
+  };
+
+  const handleAddPage = (page: AppPage) => {
+    setPages((pages) => {
+      const newPages = { ...pages };
+
+      if (page.title) {
+        newPages[slugify(page.title)] = { ...page, sections: [] };
+      }
+
+      return newPages;
+    });
   };
 
   return (
@@ -248,6 +352,31 @@ export function PagesContainer({
         onCancel={handleCloseAddPage}
         onSubmit={onEditPage}
       />
+      {sectionToClone && showCloneSection && (
+        <CloneSectionDialog
+          DialogProps={{
+            open: showCloneSection,
+            maxWidth: 'sm',
+            fullWidth: true,
+            onClose: handleCloseCloneSection,
+          }}
+          onConfirm={handleConfirmCloneSection}
+          section={pages[sectionToClone.page].sections[sectionToClone.index]}
+        />
+      )}
+      {pageToClone && showClonePage && (
+        <ClonePageDialog
+          DialogProps={{
+            open: showClonePage,
+            maxWidth: 'sm',
+            fullWidth: true,
+            onClose: handleCloseClonePage,
+          }}
+          onConfirm={handleConfirmClonePage}
+          page={pages[pageToClone]}
+        />
+      )}
+
       <ConfirmRemoveSectionDialog
         dialogProps={{
           open: showConfirmRemove,
@@ -266,10 +395,14 @@ export function PagesContainer({
         onSaveSection={handleSavePageSections}
         onRemove={handleRemovePageSections}
         onSwap={handleSwap}
+        onClone={handleClone}
+        onAddPage={handleAddPage}
+        onClonePage={handleClonePage}
         onHideDesktop={handleHideDesktop}
         onHideMobile={handleHideMobile}
         onEdit={handleEditPageSections}
         onAdd={handleAddPageSections}
+        activeSection={activeSection}
         currentIndex={selectedSectionIndex}
         section={
           selectedPage && selectedSectionIndex > -1

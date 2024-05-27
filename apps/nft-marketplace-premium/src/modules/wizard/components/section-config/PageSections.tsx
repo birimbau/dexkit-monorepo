@@ -6,7 +6,6 @@ import {
   IconButton,
   InputAdornment,
   Stack,
-  TextField,
   Typography,
 } from '@mui/material';
 
@@ -14,6 +13,7 @@ import {
   AppPageSection,
   SectionType,
 } from '@dexkit/ui/modules/wizard/types/section';
+
 import AppsIcon from '@mui/icons-material/Apps';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
@@ -34,6 +34,7 @@ import { FormattedMessage } from 'react-intl';
 
 import ViewCarouselIcon from '@mui/icons-material/ViewCarousel';
 
+import LazyTextField from '@dexkit/ui/components/LazyTextField';
 import { useIsMobile } from '@dexkit/ui/hooks/misc';
 import { DndContext, DragEndEvent } from '@dnd-kit/core';
 import ArrowBack from '@mui/icons-material/ArrowBack';
@@ -41,7 +42,8 @@ import Edit from '@mui/icons-material/Edit';
 import Search from '@mui/icons-material/Search';
 import TokenIcon from '@mui/icons-material/Token';
 import Visibility from '@mui/icons-material/Visibility';
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useMemo, useState } from 'react';
+import { PageSectionKey } from '../../hooks/sections';
 import PageSection from './PageSection';
 
 type Callback = (section: AppPageSection) => ReactNode;
@@ -210,14 +212,20 @@ export interface PageSectionsProps {
   onAction: (action: string, index: number) => void;
   onClose: () => void;
   onAdd: () => void;
+  onPreview: () => void;
+  activeSection?: PageSectionKey;
+  pageKey?: string;
 }
 
 export default function PageSections({
   page,
+  pageKey,
   onSwap,
   onAction,
   onClose,
   onAdd,
+  activeSection,
+  onPreview,
 }: PageSectionsProps) {
   const isMobile = useIsMobile();
 
@@ -236,6 +244,22 @@ export default function PageSections({
     };
   };
 
+  const [query, setQuery] = useState('');
+
+  const handleChangeQuery = (value: string) => {
+    setQuery(value);
+  };
+
+  const filteredSections = useMemo(() => {
+    return page.sections?.filter((s) => {
+      const hasTitle =
+        s && s.title && s.title.toLowerCase()?.search(query) > -1;
+      const hasType = s && s.type && s.type.toLowerCase()?.search(query) > -1;
+
+      return hasTitle || hasType || query === '';
+    });
+  }, [page.sections, query]);
+
   return (
     <Box>
       <Stack spacing={2}>
@@ -251,7 +275,7 @@ export default function PageSections({
           <IconButton>
             <Edit />
           </IconButton>
-          <Button startIcon={<Visibility />}>
+          <Button onClick={onPreview} startIcon={<Visibility />}>
             <FormattedMessage id="preview" defaultMessage="Preview" />
           </Button>
           <Button startIcon={<ContentCopyIcon />}>
@@ -275,23 +299,27 @@ export default function PageSections({
               <FilterAltIcon />
             </IconButton>
           </Stack>
-          <TextField
-            type="search"
-            size="small"
-            variant="standard"
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <Search color="primary" />
-                </InputAdornment>
-              ),
+          <LazyTextField
+            onChange={handleChangeQuery}
+            value={query}
+            TextFieldProps={{
+              size: 'small',
+              variant: 'standard',
+              value: query,
+              InputProps: {
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Search color="primary" />
+                  </InputAdornment>
+                ),
+              },
             }}
           />
         </Stack>
         <Box>
           <DndContext onDragEnd={handleDragEnd}>
             <Grid container spacing={2}>
-              {page.sections.map((section, index) => (
+              {filteredSections?.map((section, index) => (
                 <Grid item xs={12} key={index}>
                   <PageSection
                     expand={!isMobile}
@@ -301,6 +329,12 @@ export default function PageSections({
                     id={index.toString()}
                     onAction={handleAction(index)}
                     section={section}
+                    active={
+                      pageKey !== undefined &&
+                      activeSection !== undefined &&
+                      activeSection?.index === index &&
+                      pageKey === activeSection.page
+                    }
                   />
                 </Grid>
               ))}

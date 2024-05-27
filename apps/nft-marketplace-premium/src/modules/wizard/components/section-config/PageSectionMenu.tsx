@@ -23,8 +23,6 @@ export default function PageSectionMenu({
     return SECTION_MENU_OPTIONS({ hideMobile, hideDesktop, isVisible });
   }, [hideMobile, hideDesktop, isVisible]);
 
-  console.log('hid', hideMobile, hideDesktop);
-
   return (
     <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={onClose}>
       {menuArr.map((menu, index) => (

@@ -1,36 +1,47 @@
 import { AppPage } from '@dexkit/ui/modules/wizard/types/config';
-import {
-  Box,
-  Card,
-  IconButton,
-  Stack,
-  Tooltip,
-  Typography,
-} from '@mui/material';
+import { Box, Card, IconButton, Link, Stack, Tooltip } from '@mui/material';
 
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import Edit from '@mui/icons-material/Edit';
+import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import Visibility from '@mui/icons-material/Visibility';
 import { FormattedMessage } from 'react-intl';
 
 export interface PageProps {
   page: AppPage;
-  index: number;
+  pageKey: string;
   onSelect: () => void;
   onPreview: () => void;
+  onClone: () => void;
 }
 
-export default function Page({ page, index, onSelect, onPreview }: PageProps) {
+export default function Page({
+  page,
+  onSelect,
+  onPreview,
+  onClone,
+  pageKey,
+}: PageProps) {
   return (
-    <Card>
+    <Card variant="elevation">
       <Box sx={{ px: 2, py: 1 }}>
         <Stack
           alignItems="center"
           justifyContent="space-between"
           direction="row"
         >
-          <Typography>{page.title}</Typography>
+          <Stack alignItems="center" direction="row" spacing={1}>
+            <Link
+              variant="body1"
+              color="text.primary"
+              underline="hover"
+              sx={{ cursor: 'pointer' }}
+              onClick={onSelect}
+            >
+              {page.title}
+            </Link>
+            <KeyboardArrowRightIcon color="primary" />
+          </Stack>
           <Stack
             alignItems="center"
             justifyContent="center"
@@ -40,22 +51,23 @@ export default function Page({ page, index, onSelect, onPreview }: PageProps) {
             <IconButton onClick={onPreview}>
               <Visibility />
             </IconButton>
-            <IconButton>
+            <IconButton onClick={onClone}>
               <Tooltip
                 title={<FormattedMessage id="clone" defaultMessage="Clone" />}
               >
                 <ContentCopyIcon />
               </Tooltip>
             </IconButton>
-            <IconButton>
+            <IconButton
+              LinkComponent={Link}
+              href={`/${pageKey}`}
+              target="_blank"
+            >
               <Tooltip
                 title={<FormattedMessage id="open" defaultMessage="Open" />}
               >
                 <OpenInNewIcon />
               </Tooltip>
-            </IconButton>
-            <IconButton onClick={onSelect}>
-              <Edit />
             </IconButton>
           </Stack>
         </Stack>

@@ -1,11 +1,9 @@
 import { AppConfig, AppPage } from '@dexkit/ui/modules/wizard/types/config';
 import {
-  Box,
   Button,
   Divider,
   Grid,
   Stack,
-  Typography,
   createTheme,
   responsiveFontSizes,
 } from '@mui/material';
@@ -15,7 +13,6 @@ import { getTheme } from '../../../../theme';
 import { BuilderKit } from '../../constants';
 import { PagesContainer } from '../PagesContainer';
 
-import AddIcon from '@mui/icons-material/Add';
 import dynamic from 'next/dynamic';
 
 const ApiKeyIntegrationDialog = dynamic(
@@ -84,95 +81,9 @@ export default function PagesWizardContainer({
     setShowAddPage(true);
   };
 
-  /* const hasSwap = useMemo(() => {
-    return Object.keys(pages)
-      .map((key) => pages[key])
-      .some((page) =>
-        page.sections.some(
-          (section) =>
-            section.type === 'swap' ||
-            section.type === 'exchange' ||
-            section.type === 'token-trade',
-        ),
-      );
-  }, [JSON.stringify(pages)]);
-
-  const { data } = useGetApiKeyQuery({ type: 'zrx', siteId });*/
-
-  const [showSetApiKey, setShowSetApiKey] = useState(false);
-
-  const handleCloseApiKey = () => {
-    setShowSetApiKey(false);
-  };
-
-  const handleSetZrxApiKey = () => {
-    setShowSetApiKey(true);
-  };
-
   return (
     <>
-      {showSetApiKey && (
-        <ApiKeyIntegrationDialog
-          DialogProps={{
-            open: showSetApiKey,
-            onClose: handleCloseApiKey,
-            fullWidth: true,
-            maxWidth: 'sm',
-          }}
-          siteId={siteId}
-        />
-      )}
       <Grid container spacing={2}>
-        {/*!data?.value && hasSwap && (
-          <Grid item xs={12}>
-            <Alert
-              severity="info"
-              action={
-                <Button
-                  onClick={handleSetZrxApiKey}
-                  variant="outlined"
-                  size="small"
-                >
-                  <FormattedMessage
-                    id="set.api.key"
-                    defaultMessage="Set api Key"
-                  />
-                </Button>
-              }
-            >
-              <FormattedMessage
-                id="configure.0x.text"
-                defaultMessage="Ensure a smooth experience by configuring your 0x API key for access to our swap and exchange services."
-              />
-            </Alert>
-          </Grid>
-        )*/}
-        <Grid item xs={12}>
-          <Stack direction={'column'}>
-            <Typography variant={'h6'}>
-              <FormattedMessage id="pages" defaultMessage="Pages" />
-            </Typography>
-
-            <Typography variant={'body2'}>
-              <FormattedMessage
-                id="pages.wizard.description"
-                defaultMessage="Create and manage your app's pages"
-              />
-            </Typography>
-          </Stack>
-        </Grid>
-        <Grid item xs={12}>
-          <Box sx={{ pt: 2, pb: 2 }}>
-            <Button
-              variant="contained"
-              onClick={handleShowAddPage}
-              size="small"
-              startIcon={<AddIcon />}
-            >
-              <FormattedMessage id="New.page" defaultMessage="New page" />
-            </Button>
-          </Box>
-        </Grid>
         <Grid item xs={12}>
           {pages && (
             <PagesContainer

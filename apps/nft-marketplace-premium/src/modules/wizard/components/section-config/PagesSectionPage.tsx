@@ -1,12 +1,12 @@
 import { Box, Stack } from '@mui/material';
 import { SupportedColorScheme } from '@mui/material/styles';
 
-import AppConfirmDialog from '@dexkit/ui/components/AppConfirmDialog';
 import {
   AppPage,
   AppPageOptions,
 } from '@dexkit/ui/modules/wizard/types/config';
 import { useState } from 'react';
+import { PageSectionKey } from '../../hooks/sections';
 import AddPageDialog from '../dialogs/AddPageDialog';
 import Pages from './Pages';
 
@@ -17,42 +17,41 @@ interface Props {
   onClone: (page: string, index: number) => void;
   onEdit: (page: string, index: number) => void;
   onAdd: (page: string, custom?: boolean) => void;
+  onClonePage: (page: string) => void;
   onHideDesktop: (page: string, index: number) => void;
   onHideMobile: (page: string, index: number) => void;
   onSwap: (page: string, index: number, other: number) => void;
+  onAddPage: (page: AppPage) => void;
   theme?: {
     cssVarPrefix?: string | undefined;
     colorSchemes: Record<SupportedColorScheme, Record<string, any>>;
   };
   previewUrl?: string;
+  activeSection?: PageSectionKey;
 }
 
 export default function PagesSectionPage({
   onRemove,
   onEdit,
   onClone,
+  onClonePage,
+  onAddPage,
   onSwap,
   onEditPage,
   onAdd,
   onHideDesktop,
   onHideMobile,
   pages,
+  activeSection,
 }: Props) {
-  const [pageToClone, setPageToClone] = useState<
-    { key?: string; title?: string } | undefined
-  >();
-
-  const [showDeletePageDialog, setShowDeleteDialogPage] = useState(false);
-
   const [showAddPage, setShowAddPage] = useState(false);
+
+  const handleAddPage = () => {
+    setShowAddPage(true);
+  };
 
   const handleCloseAddPage = () => {
     setShowAddPage(false);
-    setPageToClone(undefined);
-  };
-
-  const handleCloseConfirmDeletePage = () => {
-    setShowDeleteDialogPage(false);
   };
 
   const handleAction = (action: string, page: string, index: number) => {
@@ -86,9 +85,8 @@ export default function PagesSectionPage({
           fullWidth: true,
           onClose: handleCloseAddPage,
         }}
-        clonedPage={pageToClone}
         onCancel={handleCloseAddPage}
-        onSubmit={onEditPage}
+        onSubmit={(opt) => onAddPage(opt as AppPage)}
       />
       {/* <GatedConditionsFormDialog
         dialogProps={{
@@ -102,32 +100,6 @@ export default function PagesSectionPage({
         onCancel={handleCloseGatedModalForm}
         onSubmit={onEditGatedContidions}
       /> */}
-      <AppConfirmDialog
-        DialogProps={{
-          open: showDeletePageDialog,
-          maxWidth: 'xs',
-          fullWidth: true,
-          onClose: handleCloseConfirmDeletePage,
-        }}
-        onConfirm={() => {}}
-      >
-        <Stack>
-          {/* <Typography variant="h5" align="center">
-            <FormattedMessage
-              id="delete.page"
-              defaultMessage="Delete page {page}"
-              values={{ page: currentPage?.title || '' }}
-            />
-          </Typography>
-          <Typography variant="body1" align="center" color="textSecondary">
-            <FormattedMessage
-              id="do.you.really.want.to.delete.this.page"
-              defaultMessage="Do you really want to delete {page} page?"
-              values={{ page: currentPage?.title || '' }}
-            />
-          </Typography> */}
-        </Stack>
-      </AppConfirmDialog>
 
       <Stack spacing={2}>
         <Box>
@@ -136,6 +108,9 @@ export default function PagesSectionPage({
             onSwap={onSwap}
             onAction={handleAction}
             onAdd={onAdd}
+            onClonePage={onClonePage}
+            onAddPage={handleAddPage}
+            activeSection={activeSection}
           />
         </Box>
       </Stack>

@@ -23,6 +23,7 @@ export interface PageSectionProps {
   expand?: boolean;
   onAction: (action: string) => void;
   section?: AppPageSection;
+  active?: boolean;
 }
 
 export default function PageSection({
@@ -33,6 +34,7 @@ export default function PageSection({
   expand,
   onAction,
   section,
+  active,
 }: PageSectionProps) {
   const { transform, setNodeRef, listeners, attributes, isDragging } =
     useDraggable({ id });
@@ -77,6 +79,9 @@ export default function PageSection({
       >
         <Card
           sx={{
+            border: active
+              ? (theme) => `2px solid ${theme.palette.primary.main}`
+              : undefined,
             transform: CSS.Translate.toString(transform),
             zIndex: isDragging
               ? (theme) => theme.zIndex.snackbar + 1

@@ -11,6 +11,7 @@ import {
   AppPageOptions,
 } from '@dexkit/ui/modules/wizard/types/config';
 import { BuilderKit } from '../../constants';
+import { PageSectionKey } from '../../hooks/sections';
 import PagesSectionPage from '../section-config/PagesSectionPage';
 const EditSectionDialog = dynamic(
   () => import('../section-config/dialogs/EditSectionDialog')
@@ -30,9 +31,13 @@ interface Props {
   onEdit: (page: string, index: number) => void;
   onAdd: (page: string) => void;
   onSwap: (page: string, index: number, other: number) => void;
+  onClone: (page: string, index: number) => void;
+  onClonePage: (page: string) => void;
+  onAddPage: (page: AppPage) => void;
   theme?: Omit<Theme, 'palette'> & CssVarsTheme;
   builderKit?: BuilderKit;
   previewUrl?: string;
+  activeSection?: PageSectionKey;
 }
 
 export default function PagesSection({
@@ -40,12 +45,16 @@ export default function PagesSection({
   sections,
   section,
   theme,
+  activeSection,
   onEditPage,
   onSaveSection: onSave,
   onHideDesktop,
   onHideMobile,
   onRemove,
   onEdit,
+  onClone,
+  onClonePage,
+  onAddPage,
   onAdd,
   onSwap,
   currentIndex,
@@ -127,13 +136,16 @@ export default function PagesSection({
           onEditPage={onEditPage}
           onRemove={onRemove}
           onEdit={handleEdit}
+          onAddPage={onAddPage}
           onAdd={handleAddSection}
+          onClonePage={onClonePage}
           onHideDesktop={onHideDesktop}
           onHideMobile={onHideMobile}
-          onClone={() => {}}
+          onClone={onClone}
           onSwap={onSwap}
           theme={theme}
           previewUrl={previewUrl}
+          activeSection={activeSection}
         />
       </Stack>
     </>
