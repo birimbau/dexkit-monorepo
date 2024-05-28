@@ -1,5 +1,6 @@
 import { ChainId } from "@dexkit/core/constants";
 import { Token } from "@dexkit/core/types";
+import { useIsGaslessSupportedToken } from "@dexkit/ui/modules/swap/hooks/useIsGaslessSupportedToken";
 import { ZeroExQuoteMetaTransactionResponse, ZeroExQuoteResponse } from "@dexkit/ui/modules/swap/types";
 import { isNativeInSell } from "@dexkit/ui/modules/swap/utils";
 import { UseMutationResult } from "@tanstack/react-query";
@@ -34,7 +35,7 @@ export function useSwapState({
   connectedChainId,
   account,
   swapFees,
-  isGasless,
+  isGasless: useGasless,
   isActive,
   isActivating,
   disableFooter,
@@ -164,6 +165,9 @@ export function useSwapState({
     },
     [quoteFor]
   );
+
+  const isTokenGaslessSupported = useIsGaslessSupportedToken({ chainId, useGasless, sellToken: lazyQuoteFor === 'sell' ? lazySellToken?.address : lazyBuyToken?.address })
+  const isGasless = useGasless && isTokenGaslessSupported;
 
   const gaslessSwapState = useGaslessSwapState({ zeroExApiKey, chainId, tradeHash });
 
@@ -613,6 +617,7 @@ export function useSwapState({
       execMutation.isLoading ||
       approveMutation.isLoading,
     quote: quoteData,
+    quoteQuery: quote.quoteQuery,
     isQuoting: quoteQuery.isFetching,
     sellTokenBalance: sellTokenBalance.data,
     buyTokenBalance: buyTokenBalance.data,

@@ -49,7 +49,7 @@ export function useZrxQuoteMutation({ chainId, useGasless }: { chainId?: ChainId
 export function useZrxQuoteQuery({ chainId, params, useGasless }: { chainId?: ChainId, params: ZeroExQuote | ZeroExQuoteGasless, useGasless?: boolean }) {
   const { siteId } = useContext(SiteContext);
 
-  return useQuery([chainId, params, params.skipValidation], async () => {
+  return useQuery([chainId, params, params.skipValidation, useGasless], async () => {
     if (!chainId || !(params.buyAmount || params.sellAmount)) {
       return null;
     }
@@ -67,12 +67,9 @@ export function useZrxQuoteQuery({ chainId, params, useGasless }: { chainId?: Ch
       } else {
         return zrxClient.priceGasless(gaslessParams, {});
       }
-
     } else {
       return zrxClient.quote(params as ZeroExQuote, {});
     }
-
-
   });
 }
 

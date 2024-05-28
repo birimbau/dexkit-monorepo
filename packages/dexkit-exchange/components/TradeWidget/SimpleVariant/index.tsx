@@ -9,15 +9,18 @@ import {
 } from "@mui/material";
 import { SyntheticEvent, useMemo, useState } from "react";
 
-import { FormattedMessage } from "react-intl";
-
 import { Token } from "@dexkit/core/types";
-import SwapSettingsDialog from "@dexkit/ui/modules/swap/components/dialogs/SwapSettingsDialog";
+import { useUserGaslessSettings } from "@dexkit/ui/modules/swap/hooks/useUserGaslessSettings";
 import SettingsIcon from "@mui/icons-material/Settings";
 import { providers } from "ethers";
+import dynamic from "next/dynamic";
+import { FormattedMessage } from "react-intl";
 import { OrderMarketType } from "../../../constants";
 import TradeWidgetTabAlt from "../TradeWidgetTabAlt";
 import MarketForm from "./MarketForm";
+const SwapSettingsDialog = dynamic(
+  () => import("@dexkit/ui/modules/swap/components/dialogs/SwapSettingsDialog")
+);
 
 export interface TradeWidgetSimpleVariantProps {
   isActive: boolean;
@@ -52,6 +55,7 @@ export default function TradeWidgetSimpleVariant({
   baseToken,
   useGasless,
 }: TradeWidgetSimpleVariantProps) {
+  const [userGasless] = useUserGaslessSettings();
   const [selectedOrderSide, setOrderSide] = useState<"buy" | "sell">(
     defaultOrderSide
   );
@@ -126,7 +130,7 @@ export default function TradeWidgetSimpleVariant({
             quoteTokens={quoteTokens}
             chainId={chainId}
             side={orderSide}
-            useGasless={useGasless}
+            useGasless={userGasless !== undefined ? userGasless : useGasless}
           />
         ) : null}
       </Stack>
@@ -148,6 +152,7 @@ export default function TradeWidgetSimpleVariant({
             defaultMessage="Market Settings"
           />
         }
+        useGasless={useGasless}
         onAutoSlippage={(auto) => setAutoSlippage(auto)}
         onChangeSlippage={(sl) => setSlippage(sl)}
         maxSlippage={slippage as number}
