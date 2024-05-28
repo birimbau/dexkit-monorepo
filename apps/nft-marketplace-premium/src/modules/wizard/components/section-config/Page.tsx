@@ -3,6 +3,7 @@ import { Box, Card, IconButton, Link, Stack, Tooltip } from '@mui/material';
 
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
+import LockIcon from '@mui/icons-material/Lock';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import Visibility from '@mui/icons-material/Visibility';
 import { FormattedMessage } from 'react-intl';
@@ -13,6 +14,7 @@ export interface PageProps {
   onSelect: () => void;
   onPreview: () => void;
   onClone: () => void;
+  onEditConditions: () => void;
 }
 
 export default function Page({
@@ -20,6 +22,7 @@ export default function Page({
   onSelect,
   onPreview,
   onClone,
+  onEditConditions,
   pageKey,
 }: PageProps) {
   return (
@@ -58,6 +61,21 @@ export default function Page({
                 <ContentCopyIcon />
               </Tooltip>
             </IconButton>
+            {pageKey !== 'home' && (
+              <IconButton onClick={onEditConditions}>
+                <Tooltip
+                  title={
+                    <FormattedMessage
+                      id="open"
+                      defaultMessage="Gated Conditions"
+                    />
+                  }
+                >
+                  <LockIcon />
+                </Tooltip>
+              </IconButton>
+            )}
+
             <IconButton
               LinkComponent={Link}
               href={`/${pageKey}`}

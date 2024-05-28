@@ -1,7 +1,6 @@
 import { AppPage } from '@dexkit/ui/modules/wizard/types/config';
 import {
   Box,
-  Button,
   Grid,
   IconButton,
   InputAdornment,
@@ -20,7 +19,6 @@ import BookmarkIcon from '@mui/icons-material/Bookmark';
 import CallToAction from '@mui/icons-material/CallToAction';
 import Code from '@mui/icons-material/Code';
 import CollectionsIcon from '@mui/icons-material/Collections';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import FormatColorTextIcon from '@mui/icons-material/FormatColorText';
 import GavelIcon from '@mui/icons-material/Gavel';
@@ -37,20 +35,16 @@ import ViewCarouselIcon from '@mui/icons-material/ViewCarousel';
 import LazyTextField from '@dexkit/ui/components/LazyTextField';
 import { useIsMobile } from '@dexkit/ui/hooks/misc';
 import { DndContext, DragEndEvent } from '@dnd-kit/core';
-import ArrowBack from '@mui/icons-material/ArrowBack';
-import Edit from '@mui/icons-material/Edit';
 import Search from '@mui/icons-material/Search';
 import TokenIcon from '@mui/icons-material/Token';
-import Visibility from '@mui/icons-material/Visibility';
-import React, { ReactNode, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { PageSectionKey } from '../../hooks/sections';
 import PageSection from './PageSection';
-
-type Callback = (section: AppPageSection) => ReactNode;
+import PageSectionsHeader from './PageSectionsHeader';
 
 const sectionConfig: Record<
   SectionType,
-  { title: React.ReactNode | Callback; icon: React.ReactNode }
+  { title: React.ReactNode; icon: React.ReactNode }
 > = {
   video: {
     title: <FormattedMessage id="video" defaultMessage="Video" />,
@@ -195,11 +189,18 @@ function getSectionType(section: AppPageSection) {
   const config = sectionConfig[section.type];
   if (config) {
     return {
-      subtitle:
-        typeof config.title === 'function'
-          ? config.title(section)
-          : config.title,
-      title: section.title || '',
+      subtitle: config.title,
+      title:
+        section.type === 'custom' && !section.name && !section.title ? (
+          <FormattedMessage
+            id="custom.section"
+            defaultMessage="Custom Section"
+          />
+        ) : section.name ? (
+          section.name
+        ) : (
+          section.title || ''
+        ),
       icon: config.icon,
     };
   }
@@ -211,6 +212,8 @@ export interface PageSectionsProps {
   onSwap: (index: number, other: number) => void;
   onAction: (action: string, index: number) => void;
   onClose: () => void;
+  onClone: () => void;
+  onEditTitle: (page: string, title: string) => void;
   onAdd: () => void;
   onPreview: () => void;
   activeSection?: PageSectionKey;
@@ -224,6 +227,8 @@ export default function PageSections({
   onAction,
   onClose,
   onAdd,
+  onEditTitle,
+  onClone,
   activeSection,
   onPreview,
 }: PageSectionsProps) {
@@ -258,30 +263,22 @@ export default function PageSections({
 
       return hasTitle || hasType || query === '';
     });
-  }, [page.sections, query]);
+  }, [JSON.stringify(page.sections), query]);
 
   return (
     <Box>
       <Stack spacing={2}>
-        <Stack direction="row" alignItems="center" spacing={2}>
-          <Stack direction="row" alignItems="center" spacing={1}>
-            <IconButton onClick={onClose}>
-              <ArrowBack color="primary" />
-            </IconButton>
-            <Box>
-              <Typography variant="h5">{page.title}</Typography>
-            </Box>
-          </Stack>
-          <IconButton>
-            <Edit />
-          </IconButton>
-          <Button onClick={onPreview} startIcon={<Visibility />}>
-            <FormattedMessage id="preview" defaultMessage="Preview" />
-          </Button>
-          <Button startIcon={<ContentCopyIcon />}>
-            <FormattedMessage id="clone" defaultMessage="Clone" />
-          </Button>
-        </Stack>
+        <PageSectionsHeader
+          onClose={onClose}
+          onPreview={onPreview}
+          onClone={onClone}
+          onEditTitle={(title) => {
+            if (pageKey) {
+              onEditTitle(pageKey, title);
+            }
+          }}
+          page={page}
+        />
         <Stack
           direction="row"
           alignItems="center"

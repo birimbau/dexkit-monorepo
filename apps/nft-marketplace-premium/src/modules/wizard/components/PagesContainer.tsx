@@ -6,6 +6,8 @@ import {
   AppPage,
   AppPageOptions,
 } from '@dexkit/ui/modules/wizard/types/config';
+import { useSnackbar } from 'notistack';
+import { FormattedMessage } from 'react-intl';
 import slugify from 'slugify';
 import { BuilderKit } from '../constants';
 import { PageSectionKey } from '../hooks/sections';
@@ -143,53 +145,32 @@ export function PagesContainer({
   };
 
   const onEditPage = (pageOptions: AppPageOptions) => {
-    // setPages((value) => {
-    // // Logic to add conditions to current page
-    // if (pageOptions.isEditGatedConditions) {
-    //   if (!pageOptions?.key) {
-    //     return value;
-    //   }
-    //   const newPages = { ...value };
-    //   newPages[pageOptions.key || ''] = {
-    //     ...newPages[pageOptions.key || ''],
-    //     gatedConditions: pageOptions?.gatedConditions,
-    //     gatedPageLayout: pageOptions?.gatedPageLayout,
-    //   };
-    //   setCurrentPage(newPages[pageOptions.key || '']);
-    //   return newPages;
-    // }
-    // // we don't allow edit home page
-    // if (pageOptions?.key === 'home') {
-    //   return value;
-    // } else {
-    //   if (!pageOptions?.key) {
-    //     return value;
-    //   }
-    //   const newPages = { ...value };
-    //   // it's a clone
-    //   if (pageOptions?.clonedPageKey) {
-    //     newPages[pageOptions.key || ''] = {
-    //       ...newPages[pageOptions.clonedPageKey || ''],
-    //       ...pageOptions,
-    //     };
-    //     setCurrentPage(newPages[pageOptions.key || '']);
-    //     return newPages;
-    //   }
-    //   // it's an edit
-    //   if (newPages[pageOptions.key]) {
-    //     newPages[pageOptions.key || ''] = {
-    //       ...newPages[pageOptions.key || ''],
-    //       ...pageOptions,
-    //     };
-    //     setCurrentPage(newPages[pageOptions.key || '']);
-    //   } else {
-    //     // create new page
-    //     newPages[pageOptions.key || ''] = { sections: [], ...pageOptions };
-    //     setCurrentPage(newPages[pageOptions.key || '']);
-    //   }
-    //   return newPages;
-    // }
-    // });
+    setPages((value) => {
+      const newPages = { ...value };
+
+      if (pageOptions.key) {
+        newPages[pageOptions.key] = {
+          ...newPages[pageOptions.key],
+          gatedConditions: pageOptions.gatedConditions,
+          gatedPageLayout: pageOptions.gatedPageLayout,
+        };
+      }
+
+      return newPages;
+    });
+  };
+
+  const handleEditTitle = (page: string, title: string) => {
+    setPages((value) => {
+      const newPages = { ...value };
+
+      newPages[page] = {
+        ...newPages[page],
+        title,
+      };
+
+      return newPages;
+    });
   };
 
   const handleSwap = useCallback(
@@ -298,6 +279,8 @@ export function PagesContainer({
     setPageToClone(page);
   };
 
+  const { enqueueSnackbar } = useSnackbar();
+
   const handleConfirmClonePage = (name: string) => {
     setPages((value) => {
       const newPages = { ...value };
@@ -317,6 +300,10 @@ export function PagesContainer({
 
     setShowClonePage(false);
     setPageToClone(undefined);
+    enqueueSnackbar(
+      <FormattedMessage id="page.created" defaultMessage="Page Created" />,
+      { variant: 'success' }
+    );
   };
 
   const handleCloseClonePage = () => {
@@ -390,6 +377,7 @@ export function PagesContainer({
         builderKit={builderKit}
         pages={pages}
         theme={theme}
+        onEditTitle={handleEditTitle}
         sections={currentPage.sections}
         onEditPage={onEditPage}
         onSaveSection={handleSavePageSections}

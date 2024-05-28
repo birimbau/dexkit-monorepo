@@ -14,13 +14,16 @@ import {
   Grid,
   SelectChangeEvent,
   Stack,
+  TextField,
   Typography,
 } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
-import { useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { AppDialogTitle } from '@dexkit/ui/components/AppDialogTitle';
+import Check from '@mui/icons-material/Check';
+import Edit from '@mui/icons-material/Edit';
 import { BuilderKit } from '../../../constants';
 import PreviewPagePlatform from '../../PreviewPagePlatform';
 import { SectionFormRender } from '../SectionFormRender';
@@ -47,7 +50,7 @@ export default function EditSectionDialog({
   const { onClose } = dialogProps;
   const { formatMessage } = useIntl();
   const [sectionType, setSectionType] = useState<SectionType | undefined>(
-    section?.type,
+    section?.type
   );
 
   const [sectionMetadata, setSectionMetadata] = useState<
@@ -76,6 +79,25 @@ export default function EditSectionDialog({
 
   const handleChange = (section: AppPageSection) => {
     setChangedSection(section);
+  };
+
+  const [isEditName, setIsEditName] = useState(false);
+  const [name, setName] = useState(section?.name || section?.title);
+
+  const handleEdit = () => {
+    setIsEditName(true);
+  };
+
+  const handleSaveName = () => {
+    setIsEditName(false);
+
+    if (section) {
+      onSave({ ...section, name }, index);
+    }
+  };
+
+  const handleChangeName = (e: ChangeEvent<HTMLInputElement>) => {
+    setName(e.target.value);
   };
 
   const renderSectionType = (sectionType?: SectionType) => {
@@ -108,16 +130,17 @@ export default function EditSectionDialog({
     <Dialog {...dialogProps} onClose={handleClose}>
       <AppDialogTitle
         title={
-          isEdit ? (
-            <Stack
-              spacing={2}
-              direction={'row'}
-              alignContent={'center'}
-              alignItems={'center'}
-            >
-              <IconButton aria-label="close dialog" onClick={handleClose}>
-                <CloseIcon />
-              </IconButton>
+          <Stack
+            spacing={2}
+            direction={'row'}
+            alignContent={'center'}
+            alignItems={'center'}
+          >
+            <IconButton aria-label="close dialog" onClick={handleClose}>
+              <CloseIcon />
+            </IconButton>
+
+            {isEdit ? (
               <Box>
                 <FormattedMessage
                   id="edit.section"
@@ -125,23 +148,46 @@ export default function EditSectionDialog({
                 />
                 :
               </Box>
-              <Box>{section?.title || ''}</Box>
-            </Stack>
-          ) : (
-            <Stack
-              spacing={2}
-              direction={'row'}
-              alignContent={'center'}
-              alignItems={'center'}
-            >
-              <IconButton aria-label="close dialog" onClick={handleClose}>
-                <CloseIcon />
+            ) : (
+              <Stack
+                spacing={2}
+                direction={'row'}
+                alignContent={'center'}
+                alignItems={'center'}
+              >
+                <FormattedMessage
+                  id="add.section"
+                  defaultMessage="Add Section"
+                />
+              </Stack>
+            )}
+            {isEditName && (
+              <TextField
+                variant="standard"
+                onChange={handleChangeName}
+                value={name}
+                placeholder={formatMessage({
+                  id: 'section.name',
+                  defaultMessage: 'Section name',
+                })}
+              />
+            )}
+            {isEdit && !isEditName && (
+              <Box>{section?.name || section?.title}</Box>
+            )}
+            {isEdit && isEditName && (
+              <IconButton onClick={handleSaveName}>
+                <Check />
               </IconButton>
-              <FormattedMessage id="add.section" defaultMessage="Add Section" />
-            </Stack>
-          )
+            )}
+            {isEdit && !isEditName && (
+              <IconButton onClick={handleEdit}>
+                <Edit />
+              </IconButton>
+            )}
+          </Stack>
         }
-        hideCloseButton={true}
+        hideCloseButton
         onClose={handleClose}
       />
       <Divider />

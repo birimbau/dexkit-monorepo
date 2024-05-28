@@ -32,6 +32,8 @@ export interface PagesProps {
   onClonePage: (page: string) => void;
   onAdd: (page: string, custom?: boolean) => void;
   onAddPage: () => void;
+  onEditTitle: (page: string, title: string) => void;
+  onEditConditions: (page: string) => void;
   theme?: {
     cssVarPrefix?: string | undefined;
     colorSchemes: Record<SupportedColorScheme, Record<string, any>>;
@@ -47,6 +49,8 @@ export default function Pages({
   activeSection,
   onAdd,
   onClonePage,
+  onEditConditions,
+  onEditTitle,
   onAddPage,
 }: PagesProps) {
   const [query, setQuery] = useState('');
@@ -56,7 +60,7 @@ export default function Pages({
   };
 
   const [page, setPage] = useState(0);
-  const [pageSize, setPageSize] = useState(2);
+  const [pageSize, setPageSize] = useState(5);
 
   const keys = useMemo(() => {
     return Object.keys(pages).filter((key) => {
@@ -158,6 +162,7 @@ export default function Pages({
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <PageSections
+              onEditTitle={onEditTitle}
               pageKey={selectedKey}
               page={pages[selectedKey]}
               onSwap={handleSwap(selectedKey)}
@@ -166,6 +171,7 @@ export default function Pages({
               onAdd={handleAdd(selectedKey)}
               onPreview={handleShowPreview(selectedKey)}
               activeSection={activeSection}
+              onClone={() => onClonePage(selectedKey)}
             />
           </Grid>
           <Grid item xs={12}>
@@ -275,6 +281,7 @@ export default function Pages({
                 onSelect={handleSelect(pageKey)}
                 onPreview={handleShowPreview(pageKey)}
                 onClone={handleClonePage(pageKey)}
+                onEditConditions={() => onEditConditions(pageKey)}
               />
             </Grid>
           ))}
