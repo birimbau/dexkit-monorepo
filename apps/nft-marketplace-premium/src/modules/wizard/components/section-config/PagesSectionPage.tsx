@@ -28,6 +28,7 @@ interface Props {
   onEditTitle: (page: string, title: string) => void;
   onSwap: (page: string, index: number, other: number) => void;
   onAddPage: (page: AppPage) => void;
+  onRemovePage: (page: string) => void;
   theme?: {
     cssVarPrefix?: string | undefined;
     colorSchemes: Record<SupportedColorScheme, Record<string, any>>;
@@ -44,6 +45,7 @@ export default function PagesSectionPage({
   onAddPage,
   onSwap,
   onEditPage,
+  onRemovePage,
   onAdd,
   onHideDesktop,
   onEditTitle,
@@ -154,6 +156,7 @@ export default function PagesSectionPage({
             onEditConditions={handleEditGateConditions}
             activeSection={activeSection}
             onEditTitle={onEditTitle}
+            onRemovePage={onRemovePage}
           />
         </Box>
       </Stack>

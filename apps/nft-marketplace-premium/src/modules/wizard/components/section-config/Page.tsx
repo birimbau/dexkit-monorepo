@@ -1,12 +1,22 @@
 import { AppPage } from '@dexkit/ui/modules/wizard/types/config';
-import { Box, Card, IconButton, Link, Stack, Tooltip } from '@mui/material';
+import {
+  Card,
+  CardActionArea,
+  IconButton,
+  Link,
+  Stack,
+  Tooltip,
+  Typography,
+} from '@mui/material';
 
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import LockIcon from '@mui/icons-material/Lock';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import Visibility from '@mui/icons-material/Visibility';
 import { FormattedMessage } from 'react-intl';
+
+import DeleteIcon from '@mui/icons-material/Delete';
+import React, { MouseEvent } from 'react';
 
 export interface PageProps {
   page: AppPage;
@@ -14,6 +24,7 @@ export interface PageProps {
   onSelect: () => void;
   onPreview: () => void;
   onClone: () => void;
+  onRemove: () => void;
   onEditConditions: () => void;
 }
 
@@ -21,53 +32,86 @@ export default function Page({
   page,
   onSelect,
   onPreview,
+  onRemove,
   onClone,
   onEditConditions,
   pageKey,
 }: PageProps) {
+  const handleMouseDown: any = (e: MouseEvent) => e.stopPropagation();
+
+  const handleAction = (callback: () => void) => {
+    return (e: React.MouseEvent) => {
+      e.stopPropagation();
+
+      callback();
+    };
+  };
+
   return (
     <Card variant="elevation">
-      <Box sx={{ px: 2, py: 1 }}>
+      <CardActionArea sx={{ px: 2, py: 1 }} onClick={onSelect}>
         <Stack
           alignItems="center"
           justifyContent="space-between"
           direction="row"
         >
-          <Stack alignItems="center" direction="row" spacing={1}>
-            <Link
-              variant="body1"
-              color="text.primary"
-              underline="hover"
-              sx={{ cursor: 'pointer' }}
-              onClick={onSelect}
-            >
-              {page.title}
-            </Link>
-            <KeyboardArrowRightIcon color="primary" />
-          </Stack>
+          <Typography variant="body1" color="text.primary">
+            {page.title}
+          </Typography>
           <Stack
             alignItems="center"
             justifyContent="center"
             direction="row"
             spacing={1}
           >
-            <IconButton onClick={onPreview}>
-              <Visibility />
-            </IconButton>
-            <IconButton onClick={onClone}>
+            <IconButton
+              onClick={handleAction(onPreview)}
+              onMouseDown={handleMouseDown}
+            >
               <Tooltip
-                title={<FormattedMessage id="clone" defaultMessage="Clone" />}
+                title={
+                  <FormattedMessage
+                    id="preview.page"
+                    defaultMessage="Preview page"
+                  />
+                }
+              >
+                <Visibility />
+              </Tooltip>
+            </IconButton>
+            <IconButton onClick={handleAction(onClone)}>
+              <Tooltip
+                title={
+                  <FormattedMessage
+                    id="clone.page"
+                    defaultMessage="Clone Page"
+                  />
+                }
               >
                 <ContentCopyIcon />
               </Tooltip>
             </IconButton>
+            <IconButton
+              onMouseDown={handleMouseDown}
+              LinkComponent={Link}
+              href={`/${pageKey}`}
+              target="_blank"
+            >
+              <Tooltip
+                title={
+                  <FormattedMessage id="open.url" defaultMessage="Open URL" />
+                }
+              >
+                <OpenInNewIcon />
+              </Tooltip>
+            </IconButton>
             {pageKey !== 'home' && (
-              <IconButton onClick={onEditConditions}>
+              <IconButton onClick={handleAction(onEditConditions)}>
                 <Tooltip
                   title={
                     <FormattedMessage
-                      id="open"
-                      defaultMessage="Gated Conditions"
+                      id="add.gated.conditions"
+                      defaultMessage="Add Gated Conditions"
                     />
                   }
                 >
@@ -76,20 +120,16 @@ export default function Page({
               </IconButton>
             )}
 
-            <IconButton
-              LinkComponent={Link}
-              href={`/${pageKey}`}
-              target="_blank"
-            >
+            <IconButton onClick={handleAction(onRemove)}>
               <Tooltip
-                title={<FormattedMessage id="open" defaultMessage="Open" />}
+                title={<FormattedMessage id="Delete" defaultMessage="Delete" />}
               >
-                <OpenInNewIcon />
+                <DeleteIcon color="error" />
               </Tooltip>
             </IconButton>
           </Stack>
         </Stack>
-      </Box>
+      </CardActionArea>
     </Card>
   );
 }

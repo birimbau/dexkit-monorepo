@@ -6,6 +6,7 @@ import {
   Alert,
   Box,
   Button,
+  Divider,
   Grid,
   InputAdornment,
   Stack,
@@ -34,6 +35,7 @@ export interface PagesProps {
   onAddPage: () => void;
   onEditTitle: (page: string, title: string) => void;
   onEditConditions: (page: string) => void;
+  onRemovePage: (page: string) => void;
   theme?: {
     cssVarPrefix?: string | undefined;
     colorSchemes: Record<SupportedColorScheme, Record<string, any>>;
@@ -50,6 +52,7 @@ export default function Pages({
   onAdd,
   onClonePage,
   onEditConditions,
+  onRemovePage,
   onEditTitle,
   onAddPage,
 }: PagesProps) {
@@ -240,20 +243,29 @@ export default function Pages({
             </Stack>
           </Grid>
           <Grid item xs={12}>
+            <Divider />
+          </Grid>
+          <Grid item xs={12}>
+            <Button
+              variant="contained"
+              onClick={onAddPage}
+              size="small"
+              startIcon={<Add />}
+              sx={{ p: 1 }}
+            >
+              <FormattedMessage id="New.page" defaultMessage="New page" />
+            </Button>
+          </Grid>
+          <Grid item xs={12}>
             <Box>
               <Stack
                 direction="row"
                 alignItems="center"
                 justifyContent="space-between"
               >
-                <Button
-                  variant="contained"
-                  onClick={onAddPage}
-                  size="small"
-                  startIcon={<Add />}
-                >
-                  <FormattedMessage id="New.page" defaultMessage="New page" />
-                </Button>
+                <Typography fontWeight="400" variant="h6">
+                  <FormattedMessage id="page.list" defaultMessage="Page List" />
+                </Typography>
                 <LazyTextField
                   onChange={handleChangeQuery}
                   value={query}
@@ -264,7 +276,7 @@ export default function Pages({
                     InputProps: {
                       startAdornment: (
                         <InputAdornment position="start">
-                          <Search color="primary" />
+                          <Search />
                         </InputAdornment>
                       ),
                     },
@@ -282,6 +294,7 @@ export default function Pages({
                 onPreview={handleShowPreview(pageKey)}
                 onClone={handleClonePage(pageKey)}
                 onEditConditions={() => onEditConditions(pageKey)}
+                onRemove={() => onRemovePage(pageKey)}
               />
             </Grid>
           ))}

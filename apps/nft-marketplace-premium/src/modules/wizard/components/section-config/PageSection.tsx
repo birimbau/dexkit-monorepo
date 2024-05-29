@@ -1,4 +1,11 @@
-import { Box, Card, IconButton, Stack, Typography } from '@mui/material';
+import {
+  Box,
+  Card,
+  IconButton,
+  Stack,
+  Tooltip,
+  Typography,
+} from '@mui/material';
 
 import React, { MouseEvent, useState } from 'react';
 
@@ -10,6 +17,7 @@ import { AppPageSection } from '@dexkit/ui/modules/wizard/types/section';
 import { useDraggable, useDroppable } from '@dnd-kit/core';
 import MoreVert from '@mui/icons-material/MoreVert';
 import dynamic from 'next/dynamic';
+import { FormattedMessage } from 'react-intl';
 import PreviewPagePlatform from '../PreviewPagePlatform';
 import PageSectionMenuStack from './PageSectionMenuStack';
 
@@ -127,7 +135,16 @@ export default function PageSection({
                   </IconButton>
                 )}
 
-                <DragHandleIcon {...listeners} {...attributes} />
+                <Tooltip
+                  title={
+                    <FormattedMessage
+                      id="drag.section"
+                      defaultMessage="Drag section"
+                    />
+                  }
+                >
+                  <DragHandleIcon {...listeners} {...attributes} />
+                </Tooltip>
               </Stack>
             </Stack>
           </Box>

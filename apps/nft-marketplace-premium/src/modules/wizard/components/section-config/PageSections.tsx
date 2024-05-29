@@ -1,9 +1,21 @@
 import { AppPage } from '@dexkit/ui/modules/wizard/types/config';
 import {
   Box,
+  Card,
+  Checkbox,
+  Collapse,
+  FormControl,
+  FormControlLabel,
+  FormGroup,
+  FormLabel,
   Grid,
   IconButton,
   InputAdornment,
+  InputLabel,
+  ListItemIcon,
+  ListItemText,
+  MenuItem,
+  Select,
   Stack,
   Typography,
 } from '@mui/material';
@@ -13,180 +25,22 @@ import {
   SectionType,
 } from '@dexkit/ui/modules/wizard/types/section';
 
-import AppsIcon from '@mui/icons-material/Apps';
-import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
-import BookmarkIcon from '@mui/icons-material/Bookmark';
-import CallToAction from '@mui/icons-material/CallToAction';
-import Code from '@mui/icons-material/Code';
-import CollectionsIcon from '@mui/icons-material/Collections';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
-import FormatColorTextIcon from '@mui/icons-material/FormatColorText';
-import GavelIcon from '@mui/icons-material/Gavel';
-import LeaderboardIcon from '@mui/icons-material/Leaderboard';
-import ShowChartIcon from '@mui/icons-material/ShowChart';
-import StoreIcon from '@mui/icons-material/Store';
-import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
-import VideocamIcon from '@mui/icons-material/Videocam';
-import Wallet from '@mui/icons-material/Wallet';
 import { FormattedMessage } from 'react-intl';
-
-import ViewCarouselIcon from '@mui/icons-material/ViewCarousel';
 
 import LazyTextField from '@dexkit/ui/components/LazyTextField';
 import { useIsMobile } from '@dexkit/ui/hooks/misc';
 import { DndContext, DragEndEvent } from '@dnd-kit/core';
+import FilterAltOffIcon from '@mui/icons-material/FilterAltOff';
 import Search from '@mui/icons-material/Search';
-import TokenIcon from '@mui/icons-material/Token';
-import React, { useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
+import { SECTION_CONFIG } from '../../constants/sections';
 import { PageSectionKey } from '../../hooks/sections';
 import PageSection from './PageSection';
 import PageSectionsHeader from './PageSectionsHeader';
 
-const sectionConfig: Record<
-  SectionType,
-  { title: React.ReactNode; icon: React.ReactNode }
-> = {
-  video: {
-    title: <FormattedMessage id="video" defaultMessage="Video" />,
-    icon: <VideocamIcon />,
-  },
-  'call-to-action': {
-    title: (
-      <FormattedMessage id="call.to.action" defaultMessage="Call to Action" />
-    ),
-    icon: <CallToAction />,
-  },
-  featured: {
-    title: <FormattedMessage id="featured" defaultMessage="Featured" />,
-    icon: <BookmarkIcon />,
-  },
-  collections: {
-    title: <FormattedMessage id="collections" defaultMessage="Collections" />,
-    icon: <AppsIcon />,
-  },
-  swap: {
-    title: <FormattedMessage id="swap" defaultMessage="Swap" />,
-    icon: <SwapHorizIcon />,
-  },
-  'asset-store': {
-    title: <FormattedMessage id="nft.store" defaultMessage="NFT store" />,
-    icon: <StoreIcon />,
-  },
-  custom: {
-    title: <FormattedMessage id="custom" defaultMessage="Custom" />,
-    icon: <AutoAwesomeIcon />,
-  },
-  markdown: {
-    title: <FormattedMessage id="markdown" defaultMessage="Markdown" />,
-    icon: <FormatColorTextIcon />,
-  },
-  wallet: {
-    title: <FormattedMessage id="wallet" defaultMessage="Wallet" />,
-    icon: <Wallet />,
-  },
-  contract: {
-    title: <FormattedMessage id="contract" defaultMessage="Contract" />,
-    icon: <GavelIcon />,
-  },
-  'user-contract-form': {
-    title: (
-      <FormattedMessage
-        id="user.contract.form"
-        defaultMessage="User contract form"
-      />
-    ),
-    icon: <GavelIcon />,
-  },
-  exchange: {
-    title: <FormattedMessage id="exchange" defaultMessage="Exchange" />,
-    icon: <ShowChartIcon />,
-  },
-  'code-page-section': {
-    title: <FormattedMessage id="code" defaultMessage="Code" />,
-    icon: <Code />,
-  },
-  collection: {
-    title: <FormattedMessage id="collection" defaultMessage="Collection" />,
-    icon: <AppsIcon />,
-  },
-  'dex-generator-section': {
-    title: (
-      <FormattedMessage id="dex.generator" defaultMessage="Dex Generator" />
-    ),
-    icon: <GavelIcon />,
-  },
-  'asset-section': {
-    title: <FormattedMessage id="asset" defaultMessage="Asset" />,
-    icon: <AppsIcon />,
-  },
-  ranking: {
-    title: <FormattedMessage id="leaderboard" defaultMessage="Leaderboard" />,
-    icon: <LeaderboardIcon />,
-  },
-  'token-trade': {
-    title: <FormattedMessage id="token.trade" defaultMessage="Token Trade" />,
-    icon: <TokenIcon />,
-  },
-  carousel: {
-    title: <FormattedMessage id="carousel" defaultMessage="Carousel" />,
-    icon: <ViewCarouselIcon />,
-  },
-  showcase: {
-    title: <FormattedMessage id="showcase" defaultMessage="Showcase Gallery" />,
-    icon: <CollectionsIcon />,
-  },
-  'edition-drop-section': {
-    title: undefined,
-    icon: undefined,
-  },
-  'edition-drop-list-section': {
-    title: undefined,
-    icon: undefined,
-  },
-  'token-drop': {
-    title: undefined,
-    icon: undefined,
-  },
-  'nft-drop': {
-    title: undefined,
-    icon: undefined,
-  },
-  'token-stake': {
-    title: undefined,
-    icon: undefined,
-  },
-  'nft-stake': {
-    title: undefined,
-    icon: undefined,
-  },
-  'edition-stake': {
-    title: undefined,
-    icon: undefined,
-  },
-  token: {
-    title: undefined,
-    icon: undefined,
-  },
-  'airdrop-token': {
-    title: undefined,
-    icon: undefined,
-  },
-  'market-trade': {
-    title: undefined,
-    icon: undefined,
-  },
-  'claim-airdrop-token-erc-20': {
-    title: undefined,
-    icon: undefined,
-  },
-  plugin: {
-    title: undefined,
-    icon: undefined,
-  },
-};
-
 function getSectionType(section: AppPageSection) {
-  const config = sectionConfig[section.type];
+  const config = SECTION_CONFIG[section.type];
   if (config) {
     return {
       subtitle: config.title,
@@ -234,6 +88,15 @@ export default function PageSections({
 }: PageSectionsProps) {
   const isMobile = useIsMobile();
 
+  const [hideDesktop, setHideDesktop] = useState(false);
+  const [hideMobile, setHideMobile] = useState(false);
+
+  const [showFilters, setShowFilters] = useState(false);
+
+  const [sectionType, setSectionType] = useState<SectionType>(
+    '' as SectionType
+  );
+
   const handleDragEnd = (event: DragEndEvent) => {
     if (event.over) {
       onSwap(
@@ -261,9 +124,31 @@ export default function PageSections({
         s && s.title && s.title.toLowerCase()?.search(query) > -1;
       const hasType = s && s.type && s.type.toLowerCase()?.search(query) > -1;
 
-      return hasTitle || hasType || query === '';
+      const filter = hasTitle || hasType || query === '';
+
+      if (hideDesktop && !s.hideDesktop) {
+        return false;
+      }
+
+      if (hideMobile && !s.hideMobile) {
+        return false;
+      }
+
+      console.log('sectionType', sectionType);
+
+      if ((sectionType as string) !== '') {
+        return filter && sectionType === s.type;
+      }
+
+      return filter;
     });
-  }, [JSON.stringify(page.sections), query]);
+  }, [
+    JSON.stringify(page.sections),
+    query,
+    hideDesktop,
+    hideMobile,
+    sectionType,
+  ]);
 
   return (
     <Box>
@@ -292,8 +177,8 @@ export default function PageSections({
                 defaultMessage="Page Sections"
               />
             </Typography>
-            <IconButton>
-              <FilterAltIcon />
+            <IconButton onClick={() => setShowFilters((value) => !value)}>
+              {showFilters ? <FilterAltOffIcon /> : <FilterAltIcon />}
             </IconButton>
           </Stack>
           <LazyTextField
@@ -306,13 +191,128 @@ export default function PageSections({
               InputProps: {
                 startAdornment: (
                   <InputAdornment position="start">
-                    <Search color="primary" />
+                    <Search />
                   </InputAdornment>
                 ),
               },
             }}
           />
         </Stack>
+        <Collapse in={showFilters}>
+          <Card>
+            <Box p={2}>
+              <Grid container spacing={2} alignItems="center">
+                <Grid item xs={4}>
+                  <FormControl fullWidth>
+                    <InputLabel shrink>
+                      <FormattedMessage
+                        id="section.type"
+                        defaultMessage="Section Type"
+                      />
+                    </InputLabel>
+                    <Select
+                      notched
+                      onChange={(e) =>
+                        setSectionType(e.target.value as SectionType)
+                      }
+                      value={sectionType}
+                      label={
+                        <FormattedMessage
+                          id="section.type"
+                          defaultMessage="Section Type"
+                        />
+                      }
+                      renderValue={(value) => {
+                        if ((value as string) === '') {
+                          return (
+                            <FormattedMessage id="all" defaultMessage="All" />
+                          );
+                        }
+
+                        return (
+                          <Stack
+                            direction="row"
+                            alignItems="center"
+                            spacing={2}
+                          >
+                            {SECTION_CONFIG[value as SectionType]?.icon}
+                            <Typography>
+                              {SECTION_CONFIG[value as SectionType]?.title}
+                            </Typography>
+                          </Stack>
+                        );
+                      }}
+                      fullWidth
+                      displayEmpty
+                    >
+                      <MenuItem value="">
+                        <ListItemText
+                          primary={
+                            <FormattedMessage id="all" defaultMessage="All" />
+                          }
+                        />
+                      </MenuItem>
+                      {Object.keys(SECTION_CONFIG)
+                        .filter(
+                          (key) =>
+                            SECTION_CONFIG[key as SectionType].title !==
+                            undefined
+                        )
+                        .map((key) => (
+                          <MenuItem value={key} key={key}>
+                            <ListItemIcon>
+                              {SECTION_CONFIG[key as SectionType].icon}
+                            </ListItemIcon>
+                            <ListItemText
+                              primary={SECTION_CONFIG[key as SectionType].title}
+                            />
+                          </MenuItem>
+                        ))}
+                    </Select>
+                  </FormControl>
+                </Grid>
+                <Grid item xs={4}>
+                  <FormControl>
+                    <FormLabel component="legend">
+                      <FormattedMessage
+                        id="visibility"
+                        defaultMessage="Visibility"
+                      />
+                    </FormLabel>
+                    <FormGroup aria-label="position" row>
+                      <FormControlLabel
+                        value="end"
+                        control={<Checkbox />}
+                        label={
+                          <FormattedMessage
+                            id="desktop"
+                            defaultMessage="Desktop"
+                          />
+                        }
+                        checked={hideDesktop}
+                        onChange={(e, checked) => setHideDesktop(checked)}
+                        labelPlacement="end"
+                      />
+                      <FormControlLabel
+                        value="end"
+                        control={<Checkbox />}
+                        label={
+                          <FormattedMessage
+                            id="mobile"
+                            defaultMessage="Mobile"
+                          />
+                        }
+                        onChange={(e, checked) => setHideMobile(checked)}
+                        checked={hideMobile}
+                        labelPlacement="end"
+                      />
+                    </FormGroup>
+                  </FormControl>
+                </Grid>
+              </Grid>
+            </Box>
+          </Card>
+        </Collapse>
         <Box>
           <DndContext onDragEnd={handleDragEnd}>
             <Grid container spacing={2}>

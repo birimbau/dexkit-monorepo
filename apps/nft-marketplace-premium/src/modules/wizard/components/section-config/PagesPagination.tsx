@@ -51,6 +51,9 @@ export default function PagesPagination({
       spacing={2}
       justifyContent="flex-end"
     >
+      <Typography variant="body1">
+        <FormattedMessage id="rows.per.page" defaultMessage="Rows per page:" />
+      </Typography>
       <Select
         size="small"
         variant="standard"

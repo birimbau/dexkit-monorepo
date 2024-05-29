@@ -2,10 +2,12 @@ import { AppPageSection } from '@dexkit/ui/modules/wizard/types/section';
 import dynamic from 'next/dynamic';
 import { Dispatch, SetStateAction, useCallback, useState } from 'react';
 
+import { AppConfirmDialog } from '@dexkit/ui';
 import {
   AppPage,
   AppPageOptions,
 } from '@dexkit/ui/modules/wizard/types/config';
+import { Typography } from '@mui/material';
 import { useSnackbar } from 'notistack';
 import { FormattedMessage } from 'react-intl';
 import slugify from 'slugify';
@@ -306,6 +308,34 @@ export function PagesContainer({
     );
   };
 
+  const [showRemovePage, setShowRemovePage] = useState(false);
+  const [pageToRemove, setPageToRemove] = useState<string>();
+
+  const handleRemovePage = (page: string) => {
+    setPageToRemove(page);
+    setShowRemovePage(true);
+  };
+
+  const handelCloseConfirmRemove = () => {
+    setShowRemovePage(false);
+    setPageToRemove(undefined);
+  };
+
+  const handleConfirmRemove = () => {
+    setPages((value) => {
+      const newPages = { ...value };
+
+      if (pageToRemove) {
+        delete newPages[pageToRemove];
+      }
+
+      return newPages;
+    });
+
+    setShowRemovePage(false);
+    setPageToRemove(undefined);
+  };
+
   const handleCloseClonePage = () => {
     setShowClonePage(false);
   };
@@ -364,6 +394,25 @@ export function PagesContainer({
         />
       )}
 
+      {pageToRemove && (
+        <AppConfirmDialog
+          onConfirm={handleConfirmRemove}
+          DialogProps={{
+            maxWidth: 'sm',
+            fullWidth: true,
+            open: showRemovePage,
+            onClose: handelCloseConfirmRemove,
+          }}
+        >
+          <Typography variant="body1">
+            <FormattedMessage
+              id="remove.this.page"
+              defaultMessage="Remove this page?"
+            />
+          </Typography>
+        </AppConfirmDialog>
+      )}
+
       <ConfirmRemoveSectionDialog
         dialogProps={{
           open: showConfirmRemove,
@@ -380,6 +429,7 @@ export function PagesContainer({
         onEditTitle={handleEditTitle}
         sections={currentPage.sections}
         onEditPage={onEditPage}
+        onRemovePage={handleRemovePage}
         onSaveSection={handleSavePageSections}
         onRemove={handleRemovePageSections}
         onSwap={handleSwap}
