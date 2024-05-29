@@ -63,7 +63,7 @@ export default function Pages({
   };
 
   const [page, setPage] = useState(0);
-  const [pageSize, setPageSize] = useState(5);
+  const [pageSize, setPageSize] = useState(10);
 
   const keys = useMemo(() => {
     return Object.keys(pages).filter((key) => {

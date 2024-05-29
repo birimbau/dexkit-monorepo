@@ -88,8 +88,8 @@ export default function PageSections({
 }: PageSectionsProps) {
   const isMobile = useIsMobile();
 
-  const [hideDesktop, setHideDesktop] = useState(false);
-  const [hideMobile, setHideMobile] = useState(false);
+  const [hideDesktop, setHideDesktop] = useState(true);
+  const [hideMobile, setHideMobile] = useState(true);
 
   const [showFilters, setShowFilters] = useState(false);
 
@@ -121,20 +121,21 @@ export default function PageSections({
   const filteredSections = useMemo(() => {
     return page.sections?.filter((s) => {
       const hasTitle =
-        s && s.title && s.title.toLowerCase()?.search(query) > -1;
-      const hasType = s && s.type && s.type.toLowerCase()?.search(query) > -1;
+        s && s.title && s.title.toLowerCase()?.search(query.toLowerCase()) > -1;
+      const hasName =
+        s && s.name && s.name.toLowerCase()?.search(query.toLowerCase()) > -1;
+      const hasType =
+        s && s.type.toLowerCase()?.search(query.toLowerCase()) > -1;
 
-      const filter = hasTitle || hasType || query === '';
+      const filter = hasTitle || hasType || hasName || query === '';
 
-      if (hideDesktop && !s.hideDesktop) {
+      if (!hideDesktop && s.hideDesktop) {
         return false;
       }
 
-      if (hideMobile && !s.hideMobile) {
+      if (!hideMobile && s.hideMobile) {
         return false;
       }
-
-      console.log('sectionType', sectionType);
 
       if ((sectionType as string) !== '') {
         return filter && sectionType === s.type;
@@ -198,121 +199,126 @@ export default function PageSections({
             }}
           />
         </Stack>
-        <Collapse in={showFilters}>
-          <Card>
-            <Box p={2}>
-              <Grid container spacing={2} alignItems="center">
-                <Grid item xs={4}>
-                  <FormControl fullWidth>
-                    <InputLabel shrink>
-                      <FormattedMessage
-                        id="section.type"
-                        defaultMessage="Section Type"
-                      />
-                    </InputLabel>
-                    <Select
-                      notched
-                      onChange={(e) =>
-                        setSectionType(e.target.value as SectionType)
-                      }
-                      value={sectionType}
-                      label={
+        {showFilters && (
+          <Collapse in={showFilters}>
+            <Card>
+              <Box p={2}>
+                <Grid container spacing={2} alignItems="center">
+                  <Grid item xs={4}>
+                    <FormControl fullWidth>
+                      <InputLabel shrink>
                         <FormattedMessage
                           id="section.type"
                           defaultMessage="Section Type"
                         />
-                      }
-                      renderValue={(value) => {
-                        if ((value as string) === '') {
-                          return (
-                            <FormattedMessage id="all" defaultMessage="All" />
-                          );
+                      </InputLabel>
+                      <Select
+                        notched
+                        onChange={(e) =>
+                          setSectionType(e.target.value as SectionType)
                         }
-
-                        return (
-                          <Stack
-                            direction="row"
-                            alignItems="center"
-                            spacing={2}
-                          >
-                            {SECTION_CONFIG[value as SectionType]?.icon}
-                            <Typography>
-                              {SECTION_CONFIG[value as SectionType]?.title}
-                            </Typography>
-                          </Stack>
-                        );
-                      }}
-                      fullWidth
-                      displayEmpty
-                    >
-                      <MenuItem value="">
-                        <ListItemText
-                          primary={
-                            <FormattedMessage id="all" defaultMessage="All" />
+                        value={sectionType}
+                        label={
+                          <FormattedMessage
+                            id="section.type"
+                            defaultMessage="Section Type"
+                          />
+                        }
+                        renderValue={(value) => {
+                          if ((value as string) === '') {
+                            return (
+                              <FormattedMessage id="all" defaultMessage="All" />
+                            );
                           }
+
+                          return (
+                            <Stack
+                              direction="row"
+                              alignItems="center"
+                              spacing={2}
+                            >
+                              {SECTION_CONFIG[value as SectionType]?.icon}
+                              <Typography>
+                                {SECTION_CONFIG[value as SectionType]?.title}
+                              </Typography>
+                            </Stack>
+                          );
+                        }}
+                        fullWidth
+                        displayEmpty
+                      >
+                        <MenuItem value="">
+                          <ListItemText
+                            primary={
+                              <FormattedMessage id="all" defaultMessage="All" />
+                            }
+                          />
+                        </MenuItem>
+                        {Object.keys(SECTION_CONFIG)
+                          .filter(
+                            (key) =>
+                              SECTION_CONFIG[key as SectionType].title !==
+                              undefined
+                          )
+                          .map((key) => (
+                            <MenuItem value={key} key={key}>
+                              <ListItemIcon>
+                                {SECTION_CONFIG[key as SectionType].icon}
+                              </ListItemIcon>
+                              <ListItemText
+                                primary={
+                                  SECTION_CONFIG[key as SectionType].title
+                                }
+                              />
+                            </MenuItem>
+                          ))}
+                      </Select>
+                    </FormControl>
+                  </Grid>
+                  <Grid item xs={4}>
+                    <FormControl>
+                      <FormLabel component="legend">
+                        <FormattedMessage
+                          id="show.hidden"
+                          defaultMessage="Show Hidden"
                         />
-                      </MenuItem>
-                      {Object.keys(SECTION_CONFIG)
-                        .filter(
-                          (key) =>
-                            SECTION_CONFIG[key as SectionType].title !==
-                            undefined
-                        )
-                        .map((key) => (
-                          <MenuItem value={key} key={key}>
-                            <ListItemIcon>
-                              {SECTION_CONFIG[key as SectionType].icon}
-                            </ListItemIcon>
-                            <ListItemText
-                              primary={SECTION_CONFIG[key as SectionType].title}
+                      </FormLabel>
+                      <FormGroup aria-label="position" row>
+                        <FormControlLabel
+                          value="end"
+                          control={<Checkbox />}
+                          label={
+                            <FormattedMessage
+                              id="desktop"
+                              defaultMessage="Desktop"
                             />
-                          </MenuItem>
-                        ))}
-                    </Select>
-                  </FormControl>
+                          }
+                          checked={hideDesktop}
+                          onChange={(e, checked) => setHideDesktop(checked)}
+                          labelPlacement="end"
+                        />
+                        <FormControlLabel
+                          value="end"
+                          control={<Checkbox />}
+                          label={
+                            <FormattedMessage
+                              id="mobile"
+                              defaultMessage="Mobile"
+                            />
+                          }
+                          onChange={(e, checked) => setHideMobile(checked)}
+                          checked={hideMobile}
+                          labelPlacement="end"
+                        />
+                      </FormGroup>
+                    </FormControl>
+                  </Grid>
                 </Grid>
-                <Grid item xs={4}>
-                  <FormControl>
-                    <FormLabel component="legend">
-                      <FormattedMessage
-                        id="visibility"
-                        defaultMessage="Visibility"
-                      />
-                    </FormLabel>
-                    <FormGroup aria-label="position" row>
-                      <FormControlLabel
-                        value="end"
-                        control={<Checkbox />}
-                        label={
-                          <FormattedMessage
-                            id="desktop"
-                            defaultMessage="Desktop"
-                          />
-                        }
-                        checked={hideDesktop}
-                        onChange={(e, checked) => setHideDesktop(checked)}
-                        labelPlacement="end"
-                      />
-                      <FormControlLabel
-                        value="end"
-                        control={<Checkbox />}
-                        label={
-                          <FormattedMessage
-                            id="mobile"
-                            defaultMessage="Mobile"
-                          />
-                        }
-                        onChange={(e, checked) => setHideMobile(checked)}
-                        checked={hideMobile}
-                        labelPlacement="end"
-                      />
-                    </FormGroup>
-                  </FormControl>
-                </Grid>
-              </Grid>
-            </Box>
-          </Card>
-        </Collapse>
+              </Box>
+            </Card>
+          </Collapse>
+        )}
+
         <Box>
           <DndContext onDragEnd={handleDragEnd}>
             <Grid container spacing={2}>
