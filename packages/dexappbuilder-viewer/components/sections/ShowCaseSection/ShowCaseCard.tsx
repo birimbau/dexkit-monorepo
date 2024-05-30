@@ -86,7 +86,7 @@ export default function ShowCaseCard({ item }: ShowCaseCardProps) {
           )}
         </CardActionArea>
         <Divider />
-        {(item.title || item.subtitle) && (
+        {(item?.title || item?.subtitle) && (
           <CardContent sx={{ minHeight: (theme) => theme.spacing(12) }}>
             <Stack spacing={1}>
               <Box>
