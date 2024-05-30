@@ -7,12 +7,12 @@ import Delete from '@mui/icons-material/Delete';
 import Edit from '@mui/icons-material/Edit';
 import Image from '@mui/icons-material/Image';
 
-import { CORE_PAGES } from '@/modules/wizard/constants';
+import { CORE_PAGES, CUSTOM_PAGE_KEY } from '@/modules/wizard/constants';
 import { ChainId } from '@dexkit/core';
 import { NETWORKS } from '@dexkit/core/constants/networks';
 import { Network } from '@dexkit/core/types';
 import { getNetworks } from '@dexkit/core/utils/blockchain';
-import { useActiveChainIds } from '@dexkit/ui';
+import { useActiveChainIds, useAppWizardConfig } from '@dexkit/ui';
 import {
   Avatar,
   Box,
@@ -24,7 +24,9 @@ import {
   ListItemIcon,
   ListItemText,
   MenuItem,
+  Select as MuiSelect,
   Paper,
+  SelectChangeEvent,
   Stack,
   Typography,
 } from '@mui/material';
@@ -54,24 +56,77 @@ export default function ShowCaseFormItem({
   disableDown,
   onSelectImage,
 }: ShowCaseFormItemProps) {
+  const { wizardConfig } = useAppWizardConfig();
+
   const { activeChainIds } = useActiveChainIds();
 
   const [itemProps, itemMeta, itemHelpers] = useField<ShowCaseItem>(
     `items[${index}]`,
   );
 
+  const [pageProps, pageMeta, pageHelpers] = useField<string>(
+    `items[${index}].page`,
+  );
+
   const [isEditing, setIsEditing] = useState(false);
+
+  const [auxPage, setAuxPage] = useState(pageProps.value);
 
   const [imgProps, imgMeta, imgHelpers] = useField<string>(
     `items[${index}].image`,
   );
 
+  const pages = wizardConfig.pages;
+
+  const appPagesData = useMemo(() => {
+    return { ...pages, ...CORE_PAGES };
+  }, [pages]);
+
+  const appPagesUri = useMemo(() => {
+    return (
+      Object.keys(appPagesData).map((key) => appPagesData[key].uri as string) ||
+      []
+    );
+  }, [appPagesData]);
+
+  const isCustomPage = useMemo(() => {
+    if (appPagesUri && auxPage) {
+      return !appPagesUri.includes(auxPage);
+    }
+  }, [appPagesUri, auxPage]);
+
   const allPages = useMemo(() => {
-    return Object.keys(CORE_PAGES).map((key) => ({
-      page: key,
-      uri: CORE_PAGES[key].uri,
-    }));
-  }, []);
+    if (isCustomPage) {
+      return Object.keys(appPagesData)
+        .map((key) => ({
+          page: key,
+          title: appPagesData[key]?.title,
+          uri: appPagesData[key].uri,
+        }))
+        .concat({
+          page: CUSTOM_PAGE_KEY,
+          title: 'Custom',
+          uri: auxPage,
+        });
+    } else {
+      return Object.keys(appPagesData)
+        .map((key) => ({
+          page: key,
+          title: appPagesData[key]?.title,
+          uri: appPagesData[key].uri,
+        }))
+        .concat({
+          page: CUSTOM_PAGE_KEY,
+          title: 'Custom',
+          uri: `/${CUSTOM_PAGE_KEY}`,
+        });
+    }
+  }, [appPagesData, isCustomPage, auxPage]);
+
+  const handleChangePage = (event: SelectChangeEvent<unknown>) => {
+    pageHelpers.setValue(event.target.value as string);
+    setAuxPage(event.target.value as string);
+  };
 
   if (isEditing) {
     return (
@@ -181,24 +236,31 @@ export default function ShowCaseFormItem({
                   </FormControl>
                 </Grid>
                 {itemMeta.value?.actionType === 'page' ? (
-                  <Grid item xs={12}>
-                    <FormControl fullWidth>
-                      <Field
-                        fullWidth
-                        component={Select}
-                        name={`items[${index}].page`}
-                        label={
-                          <FormattedMessage id="page" defaultMessage="Page" />
-                        }
-                      >
-                        {allPages.map((page, key) => (
-                          <MenuItem key={key} value={page.uri}>
-                            {page.page}
-                          </MenuItem>
-                        ))}
-                      </Field>
-                    </FormControl>
-                  </Grid>
+                  <>
+                    <Grid item xs={12}>
+                      <FormControl fullWidth>
+                        <MuiSelect value={auxPage} onChange={handleChangePage}>
+                          {allPages.map((page, key) => (
+                            <MenuItem key={key} value={page.uri}>
+                              {page.title || ' '}
+                            </MenuItem>
+                          ))}
+                        </MuiSelect>
+                      </FormControl>
+                    </Grid>
+                    <Grid item xs={12}>
+                      {isCustomPage && (
+                        <Field
+                          component={TextField}
+                          fullWidth
+                          label={
+                            <FormattedMessage id="uri" defaultMessage="URI" />
+                          }
+                          name={`items[${index}].page`}
+                        />
+                      )}
+                    </Grid>
+                  </>
                 ) : (
                   <Grid item xs={12}>
                     <Field

@@ -86,31 +86,33 @@ export default function ShowCaseCard({ item }: ShowCaseCardProps) {
           )}
         </CardActionArea>
         <Divider />
-        <CardContent sx={{ minHeight: (theme) => theme.spacing(12) }}>
-          <Stack spacing={1}>
-            <Box>
-              {item.title && (
-                <Typography
-                  sx={{ textOverflow: "ellipsis", overflow: "hidden" }}
-                  variant="body1"
-                  fontWeight="bold"
-                >
-                  {item.title}
-                </Typography>
-              )}
-              {item.subtitle && (
-                <AppExpandableTypography
-                  TypographyProps={{
-                    sx: { textOverflow: "ellipsis", overflow: "hidden" },
-                    variant: "body2",
-                    color: "text.secondary",
-                  }}
-                  value={item.subtitle || ""}
-                />
-              )}
-            </Box>
-          </Stack>
-        </CardContent>
+        {(item.title || item.subtitle) && (
+          <CardContent sx={{ minHeight: (theme) => theme.spacing(12) }}>
+            <Stack spacing={1}>
+              <Box>
+                {item.title && (
+                  <Typography
+                    sx={{ textOverflow: "ellipsis", overflow: "hidden" }}
+                    variant="body1"
+                    fontWeight="bold"
+                  >
+                    {item.title}
+                  </Typography>
+                )}
+                {item.subtitle && (
+                  <AppExpandableTypography
+                    TypographyProps={{
+                      sx: { textOverflow: "ellipsis", overflow: "hidden" },
+                      variant: "body2",
+                      color: "text.secondary",
+                    }}
+                    value={item.subtitle || ""}
+                  />
+                )}
+              </Box>
+            </Stack>
+          </CardContent>
+        )}
       </Card>
     );
   }
