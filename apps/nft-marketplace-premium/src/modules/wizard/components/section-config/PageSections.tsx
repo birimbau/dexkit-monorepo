@@ -9,10 +9,6 @@ import {
   IconButton,
   InputAdornment,
   InputLabel,
-  ListItemIcon,
-  ListItemText,
-  MenuItem,
-  Select,
   Stack,
   Typography,
 } from '@mui/material';
@@ -36,6 +32,8 @@ import { SECTION_CONFIG } from '../../constants/sections';
 import { PageSectionKey } from '../../hooks/sections';
 import PageSection from './PageSection';
 import PageSectionsHeader from './PageSectionsHeader';
+import SectionTypeAutocomplete from './SectionTypeAutocomplete';
+import SectionsPagination from './SectionsPagination';
 import VisibilityAutocomplete from './VisibilityAutocomplete';
 
 function getSectionType(section: AppPageSection) {
@@ -140,11 +138,11 @@ export default function PageSections({
 
       const filter = hasTitle || hasType || hasName || query === '';
 
-      if (!hideDesktop && s.hideDesktop) {
+      if (hideDesktop && s.hideDesktop) {
         return false;
       }
 
-      if (!hideMobile && s.hideMobile) {
+      if (hideMobile && s.hideMobile) {
         return false;
       }
 
@@ -163,6 +161,17 @@ export default function PageSections({
   ]);
 
   const { formatMessage } = useIntl();
+
+  const [currPage, setCurrPage] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
+
+  const [offset, limit] = useMemo(() => {
+    return [currPage * pageSize, currPage * pageSize + pageSize];
+  }, [JSON.stringify(filteredSections), currPage, pageSize]);
+
+  const pageList = useMemo(() => {
+    return filteredSections.slice(offset, limit);
+  }, [JSON.stringify(filteredSections), offset, limit]);
 
   return (
     <Box>
@@ -258,67 +267,10 @@ export default function PageSections({
                           defaultMessage="Section Type"
                         />
                       </InputLabel>
-                      <Select
-                        notched
-                        onChange={(e) =>
-                          setSectionType(e.target.value as SectionType)
-                        }
-                        value={sectionType}
-                        label={
-                          <FormattedMessage
-                            id="section.type"
-                            defaultMessage="Section Type"
-                          />
-                        }
-                        renderValue={(value) => {
-                          if ((value as string) === '') {
-                            return (
-                              <FormattedMessage id="all" defaultMessage="All" />
-                            );
-                          }
-
-                          return (
-                            <Stack
-                              direction="row"
-                              alignItems="center"
-                              spacing={2}
-                            >
-                              {SECTION_CONFIG[value as SectionType]?.icon}
-                              <Typography>
-                                {SECTION_CONFIG[value as SectionType]?.title}
-                              </Typography>
-                            </Stack>
-                          );
-                        }}
-                        fullWidth
-                        displayEmpty
-                      >
-                        <MenuItem value="">
-                          <ListItemText
-                            primary={
-                              <FormattedMessage id="all" defaultMessage="All" />
-                            }
-                          />
-                        </MenuItem>
-                        {Object.keys(SECTION_CONFIG)
-                          .filter(
-                            (key) =>
-                              SECTION_CONFIG[key as SectionType].title !==
-                              undefined
-                          )
-                          .map((key) => (
-                            <MenuItem value={key} key={key}>
-                              <ListItemIcon>
-                                {SECTION_CONFIG[key as SectionType].icon}
-                              </ListItemIcon>
-                              <ListItemText
-                                primary={
-                                  SECTION_CONFIG[key as SectionType].title
-                                }
-                              />
-                            </MenuItem>
-                          ))}
-                      </Select>
+                      <SectionTypeAutocomplete
+                        sectionType={sectionType}
+                        setSectionType={setSectionType}
+                      />
                     </FormControl>
                   </Grid>
                   <Grid item xs={4}>
@@ -340,13 +292,24 @@ export default function PageSections({
         <Box>
           <DndContext onDragEnd={handleDragEnd}>
             <Grid container spacing={2}>
-              {filteredSections?.map((section, index) => (
+              {pageList?.map((section, index) => (
                 <Grid item xs={12} key={index}>
                   <PageSection
                     expand={!isMobile}
                     icon={getSectionType(section)?.icon}
                     title={getSectionType(section)?.title}
-                    subtitle={getSectionType(section)?.subtitle}
+                    subtitle={
+                      getSectionType(section)?.subtitle ? (
+                        <FormattedMessage
+                          id={getSectionType(section)?.subtitle?.id}
+                          defaultMessage={
+                            getSectionType(section)?.subtitle?.defaultMessage
+                          }
+                        />
+                      ) : (
+                        ''
+                      )
+                    }
                     id={index.toString()}
                     onAction={handleAction(index)}
                     section={section}
@@ -360,6 +323,21 @@ export default function PageSections({
                   />
                 </Grid>
               ))}
+              <Grid item xs={12}>
+                <SectionsPagination
+                  pageSize={pageSize}
+                  from={offset}
+                  to={limit}
+                  onChange={(pageSize) => {
+                    setCurrPage(0);
+                    setPageSize(pageSize);
+                  }}
+                  onChangePage={(page: number) => setCurrPage(page)}
+                  count={filteredSections.length}
+                  pageCount={pageList.length}
+                  page={currPage}
+                />
+              </Grid>
             </Grid>
           </DndContext>
         </Box>

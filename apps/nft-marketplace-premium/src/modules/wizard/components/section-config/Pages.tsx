@@ -285,7 +285,10 @@ export default function Pages({
                 pageSize={pageSize}
                 from={offset}
                 to={limit}
-                onChange={(pageSize) => setPageSize(pageSize)}
+                onChange={(pageSize) => {
+                  setPage(0);
+                  setPageSize(pageSize);
+                }}
                 onChangePage={(page: number) => setPage(page)}
                 count={keys.length}
                 pageCount={pageList.length}

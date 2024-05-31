@@ -7,7 +7,6 @@ import MobileOffIcon from '@mui/icons-material/MobileOffOutlined';
 import SmartphoneIcon from '@mui/icons-material/SmartphoneOutlined';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOffOutlined';
 import VisibilityIcon from '@mui/icons-material/VisibilityOutlined';
-import { FormattedMessage } from 'react-intl';
 
 import TokenIcon from '@mui/icons-material/Token';
 
@@ -26,6 +25,7 @@ import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
 import VideocamIcon from '@mui/icons-material/Videocam';
 import ViewCarouselIcon from '@mui/icons-material/ViewCarousel';
 import Wallet from '@mui/icons-material/Wallet';
+import React from 'react';
 
 export const SECTION_MENU_OPTIONS = ({
   hideMobile,
@@ -80,97 +80,90 @@ export const SECTION_MENU_OPTIONS = ({
   ];
 };
 
-export const SECTION_CONFIG: Record<
-  SectionType,
-  { title: React.ReactNode; icon: React.ReactNode }
-> = {
+export const SECTION_CONFIG: {
+  [key in SectionType]: {
+    title: { id: string; defaultMessage: string } | undefined;
+    icon: React.ReactNode | undefined;
+  };
+} = {
   video: {
-    title: <FormattedMessage id="video" defaultMessage="Video" />,
+    title: { id: 'video', defaultMessage: 'Video' },
     icon: <VideocamIcon />,
   },
   'call-to-action': {
-    title: (
-      <FormattedMessage id="call.to.action" defaultMessage="Call to Action" />
-    ),
+    title: { id: 'call.to.action', defaultMessage: 'Call to Action' },
     icon: <CallToAction />,
   },
   featured: {
-    title: <FormattedMessage id="featured" defaultMessage="Featured" />,
+    title: { id: 'featured', defaultMessage: 'Featured' },
     icon: <BookmarkIcon />,
   },
   collections: {
-    title: <FormattedMessage id="collections" defaultMessage="Collections" />,
+    title: { id: 'collections', defaultMessage: 'Collections' },
     icon: <AppsIcon />,
   },
   swap: {
-    title: <FormattedMessage id="swap" defaultMessage="Swap" />,
+    title: { id: 'swap', defaultMessage: 'Swap' },
     icon: <SwapHorizIcon />,
   },
   'asset-store': {
-    title: <FormattedMessage id="nft.store" defaultMessage="NFT store" />,
+    title: { id: 'nft.store', defaultMessage: 'NFT store' },
     icon: <StoreIcon />,
   },
   custom: {
-    title: <FormattedMessage id="custom" defaultMessage="Custom" />,
+    title: { id: 'custom', defaultMessage: 'Custom' },
     icon: <AutoAwesomeIcon />,
   },
   markdown: {
-    title: <FormattedMessage id="markdown" defaultMessage="Markdown" />,
+    title: { id: 'markdown', defaultMessage: 'Markdown' },
     icon: <FormatColorTextIcon />,
   },
   wallet: {
-    title: <FormattedMessage id="wallet" defaultMessage="Wallet" />,
+    title: { id: 'wallet', defaultMessage: 'Wallet' },
     icon: <Wallet />,
   },
   contract: {
-    title: <FormattedMessage id="contract" defaultMessage="Contract" />,
+    title: { id: 'contract', defaultMessage: 'Contract' },
     icon: <GavelIcon />,
   },
   'user-contract-form': {
-    title: (
-      <FormattedMessage
-        id="user.contract.form"
-        defaultMessage="User contract form"
-      />
-    ),
+    title: { id: 'user.contract.form', defaultMessage: 'User contract form' },
     icon: <GavelIcon />,
   },
   exchange: {
-    title: <FormattedMessage id="exchange" defaultMessage="Exchange" />,
+    title: { id: 'exchange', defaultMessage: 'Exchange' },
     icon: <ShowChartIcon />,
   },
   'code-page-section': {
-    title: <FormattedMessage id="code" defaultMessage="Code" />,
+    title: { id: 'code', defaultMessage: 'Code' },
     icon: <Code />,
   },
   collection: {
-    title: <FormattedMessage id="collection" defaultMessage="Collection" />,
+    title: { id: 'collection', defaultMessage: 'Collection' },
     icon: <AppsIcon />,
   },
   'dex-generator-section': {
-    title: (
-      <FormattedMessage id="dex.generator" defaultMessage="Dex Generator" />
-    ),
+    title: { id: 'dex.generator', defaultMessage: 'Dex Generator' },
     icon: <GavelIcon />,
   },
   'asset-section': {
-    title: <FormattedMessage id="asset" defaultMessage="Asset" />,
+    title: { id: 'asset', defaultMessage: 'Asset' },
     icon: <AppsIcon />,
   },
   ranking: {
-    title: <FormattedMessage id="leaderboard" defaultMessage="Leaderboard" />,
+    title: { id: 'leaderboard', defaultMessage: 'Leaderboard' },
     icon: <LeaderboardIcon />,
   },
   'token-trade': {
-    title: <FormattedMessage id="token.trade" defaultMessage="Token Trade" />,
+    title: { id: 'token.trade', defaultMessage: 'Token Trade' },
     icon: <TokenIcon />,
   },
   carousel: {
-    title: <FormattedMessage id="carousel" defaultMessage="Carousel" />,
+    title: { id: 'carousel', defaultMessage: 'Carousel' },
     icon: <ViewCarouselIcon />,
   },
   showcase: {
-    title: <FormattedMessage id="showcase" defaultMessage="Showcase Gallery" />,
+    title: { id: 'showcase', defaultMessage: 'Showcase Gallery' },
     icon: <CollectionsIcon />,
   },
   'edition-drop-section': {
