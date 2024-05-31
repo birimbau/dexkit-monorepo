@@ -25,7 +25,14 @@ export default function PageSectionMenuStack({
     <Stack direction="row" spacing={0.5} alignItems="center">
       {menuArr.map((item, index) =>
         item.value === 'show.section' || item.value === 'hide.section' ? (
-          <IconButton key={index} onClick={onToggleVisibilty}>
+          <IconButton
+            key={index}
+            onClick={(e) => {
+              e.stopPropagation();
+
+              onToggleVisibilty();
+            }}
+          >
             <Tooltip
               title={
                 <FormattedMessage
@@ -38,7 +45,14 @@ export default function PageSectionMenuStack({
             </Tooltip>
           </IconButton>
         ) : (
-          <IconButton key={index} onClick={() => onAction(item.value)}>
+          <IconButton
+            key={index}
+            onClick={(e) => {
+              e.stopPropagation();
+
+              onAction(item.value);
+            }}
+          >
             <Tooltip
               title={
                 <FormattedMessage

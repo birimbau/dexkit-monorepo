@@ -3,7 +3,6 @@ import { AppPage } from '@dexkit/ui/modules/wizard/types/config';
 import Add from '@mui/icons-material/Add';
 import Search from '@mui/icons-material/Search';
 import {
-  Alert,
   Box,
   Button,
   Divider,
@@ -17,7 +16,7 @@ import {
   SupportedColorScheme,
 } from '@mui/material/styles';
 import { useMemo, useState } from 'react';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 import { PageSectionKey } from '../../hooks/sections';
 import PreviewPageDialog from '../dialogs/PreviewPageDialog';
 import Page from './Page';
@@ -36,6 +35,7 @@ export interface PagesProps {
   onEditTitle: (page: string, title: string) => void;
   onEditConditions: (page: string) => void;
   onRemovePage: (page: string) => void;
+  onChangeName: (page: string, index: number, name: string) => void;
   theme?: {
     cssVarPrefix?: string | undefined;
     colorSchemes: Record<SupportedColorScheme, Record<string, any>>;
@@ -55,6 +55,7 @@ export default function Pages({
   onRemovePage,
   onEditTitle,
   onAddPage,
+  onChangeName,
 }: PagesProps) {
   const [query, setQuery] = useState('');
 
@@ -138,6 +139,14 @@ export default function Pages({
     };
   };
 
+  const handleChangeName = (page: string) => {
+    return (index: number, name: string) => {
+      onChangeName(page, index, name);
+    };
+  };
+
+  const { formatMessage } = useIntl();
+
   const renderPreviewDialog = () => {
     if (showPreview && selectedKey) {
       return (
@@ -165,6 +174,8 @@ export default function Pages({
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <PageSections
+              onAddSection={handleAdd(selectedKey)}
+              onAddCustomSection={handleAdd(selectedKey, true)}
               onEditTitle={onEditTitle}
               pageKey={selectedKey}
               page={pages[selectedKey]}
@@ -175,48 +186,8 @@ export default function Pages({
               onPreview={handleShowPreview(selectedKey)}
               activeSection={activeSection}
               onClone={() => onClonePage(selectedKey)}
+              onChangeName={handleChangeName(selectedKey)}
             />
-          </Grid>
-          <Grid item xs={12}>
-            <Alert severity="info">
-              <FormattedMessage
-                id={'info.about.custom.section'}
-                defaultMessage={
-                  'Instead of using pre-defined sections, you have the freedom to create a personalized section by effortlessly dragging and dropping functional blocks to design your ideal layout.'
-                }
-              />
-            </Alert>
-          </Grid>
-          <Grid item xs={12}>
-            <Box>
-              <Stack spacing={2} direction="row">
-                <Box maxWidth={'xs'}>
-                  <Button
-                    variant="outlined"
-                    onClick={handleAdd(selectedKey)}
-                    startIcon={<Add />}
-                  >
-                    <FormattedMessage
-                      id="add.section"
-                      defaultMessage="Add section"
-                    />
-                  </Button>
-                </Box>
-
-                <Box maxWidth={'xs'}>
-                  <Button
-                    variant="outlined"
-                    onClick={handleAdd(selectedKey, true)}
-                    startIcon={<Add />}
-                  >
-                    <FormattedMessage
-                      id="add.custom.section"
-                      defaultMessage="Add custom section"
-                    />
-                  </Button>
-                </Box>
-              </Stack>
-            </Box>
           </Grid>
         </Grid>
       </>
@@ -251,7 +222,7 @@ export default function Pages({
               onClick={onAddPage}
               size="small"
               startIcon={<Add />}
-              sx={{ p: 1 }}
+              sx={{ my: 2 }}
             >
               <FormattedMessage id="New.page" defaultMessage="New page" />
             </Button>
@@ -263,8 +234,8 @@ export default function Pages({
                 alignItems="center"
                 justifyContent="space-between"
               >
-                <Typography fontWeight="400" variant="h6">
-                  <FormattedMessage id="page.list" defaultMessage="Page List" />
+                <Typography fontWeight="bold" variant="h6">
+                  <FormattedMessage id="page.list" defaultMessage="Page list" />
                 </Typography>
                 <LazyTextField
                   onChange={handleChangeQuery}
@@ -272,6 +243,10 @@ export default function Pages({
                   TextFieldProps={{
                     size: 'small',
                     variant: 'standard',
+                    placeholder: formatMessage({
+                      id: 'search.dots',
+                      defaultMessage: 'Search...',
+                    }),
                     value: query,
                     InputProps: {
                       startAdornment: (
@@ -285,30 +260,38 @@ export default function Pages({
               </Stack>
             </Box>
           </Grid>
-          {pageList.map((pageKey, index) => (
-            <Grid item xs={12} key={index}>
-              <Page
-                pageKey={pageKey}
-                page={pages[pageKey]}
-                onSelect={handleSelect(pageKey)}
-                onPreview={handleShowPreview(pageKey)}
-                onClone={handleClonePage(pageKey)}
-                onEditConditions={() => onEditConditions(pageKey)}
-                onRemove={() => onRemovePage(pageKey)}
-              />
-            </Grid>
-          ))}
           <Grid item xs={12}>
-            <PagesPagination
-              pageSize={pageSize}
-              from={offset}
-              to={limit}
-              onChange={(pageSize) => setPageSize(pageSize)}
-              onChangePage={(page: number) => setPage(page)}
-              count={keys.length}
-              pageCount={pageList.length}
-              page={page}
-            />
+            <Box>
+              <Grid container spacing={2}>
+                {pageList.map((pageKey, index) => (
+                  <Grid item xs={12} key={index}>
+                    <Page
+                      pageKey={pageKey}
+                      page={pages[pageKey]}
+                      onSelect={handleSelect(pageKey)}
+                      onPreview={handleShowPreview(pageKey)}
+                      onClone={handleClonePage(pageKey)}
+                      onEditConditions={() => onEditConditions(pageKey)}
+                      onRemove={() => onRemovePage(pageKey)}
+                    />
+                  </Grid>
+                ))}
+              </Grid>
+            </Box>
+          </Grid>
+          <Grid item xs={12}>
+            <Box>
+              <PagesPagination
+                pageSize={pageSize}
+                from={offset}
+                to={limit}
+                onChange={(pageSize) => setPageSize(pageSize)}
+                onChangePage={(page: number) => setPage(page)}
+                count={keys.length}
+                pageCount={pageList.length}
+                page={page}
+              />
+            </Box>
           </Grid>
         </Grid>
       </Box>

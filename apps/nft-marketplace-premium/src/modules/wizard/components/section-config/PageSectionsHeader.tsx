@@ -2,8 +2,6 @@ import { AppPage } from '@dexkit/ui/modules/wizard/types/config';
 import ArrowBack from '@mui/icons-material/ArrowBack';
 import Check from '@mui/icons-material/Check';
 import Close from '@mui/icons-material/Close';
-import ContentCopy from '@mui/icons-material/ContentCopy';
-import Edit from '@mui/icons-material/Edit';
 import Visibility from '@mui/icons-material/Visibility';
 import {
   Box,
@@ -62,11 +60,17 @@ export default function PageSectionsHeader({
           <TextField value={title} variant="standard" onChange={handleChange} />
         ) : (
           <Box>
-            <Typography variant="h5">{page.title}</Typography>
+            <Typography
+              variant="h5"
+              sx={{ cursor: 'pointer' }}
+              onClick={handleEdit}
+            >
+              {page.title}
+            </Typography>
           </Box>
         )}
       </Stack>
-      {isEditTitle ? (
+      {isEditTitle && (
         <Stack direction="row" alignItems="center" spacing={0.5}>
           <IconButton size="small" onClick={handleSave}>
             <Check />
@@ -75,17 +79,10 @@ export default function PageSectionsHeader({
             <Close />
           </IconButton>
         </Stack>
-      ) : (
-        <IconButton onClick={handleEdit}>
-          <Edit />
-        </IconButton>
       )}
 
       <Button onClick={onPreview} startIcon={<Visibility />}>
         <FormattedMessage id="preview" defaultMessage="Preview" />
-      </Button>
-      <Button onClick={onClone} startIcon={<ContentCopy />}>
-        <FormattedMessage id="clone" defaultMessage="Clone" />
       </Button>
     </Stack>
   );

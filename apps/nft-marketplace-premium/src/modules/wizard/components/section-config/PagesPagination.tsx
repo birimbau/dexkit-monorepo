@@ -2,6 +2,7 @@ import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import {
   IconButton,
+  Input,
   MenuItem,
   Select,
   SelectChangeEvent,
@@ -58,6 +59,7 @@ export default function PagesPagination({
         size="small"
         variant="standard"
         value={pageSize}
+        input={<Input disableUnderline />}
         onChange={(e: SelectChangeEvent<number>) =>
           onChange(e.target.value as number)
         }

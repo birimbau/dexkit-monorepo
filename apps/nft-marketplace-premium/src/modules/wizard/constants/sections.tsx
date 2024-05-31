@@ -1,13 +1,12 @@
 import { SectionType } from '@dexkit/ui/modules/wizard/types/section';
-import ComputerIcon from '@mui/icons-material/Computer';
-import DeleteIcon from '@mui/icons-material/Delete';
-import DesktopAccessDisabledIcon from '@mui/icons-material/DesktopAccessDisabled';
-import Edit from '@mui/icons-material/Edit';
-import FileCopyIcon from '@mui/icons-material/FileCopy';
-import MobileOffIcon from '@mui/icons-material/MobileOff';
-import SmartphoneIcon from '@mui/icons-material/Smartphone';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import ComputerIcon from '@mui/icons-material/ComputerOutlined';
+import DeleteIcon from '@mui/icons-material/DeleteOutlined';
+import DesktopAccessDisabledIcon from '@mui/icons-material/DesktopAccessDisabledOutlined';
+import FileCopyIcon from '@mui/icons-material/FileCopyOutlined';
+import MobileOffIcon from '@mui/icons-material/MobileOffOutlined';
+import SmartphoneIcon from '@mui/icons-material/SmartphoneOutlined';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOffOutlined';
+import VisibilityIcon from '@mui/icons-material/VisibilityOutlined';
 import { FormattedMessage } from 'react-intl';
 
 import TokenIcon from '@mui/icons-material/Token';
@@ -69,14 +68,6 @@ export const SECTION_MENU_OPTIONS = ({
       },
       icon: isVisible ? <VisibilityOffIcon /> : <VisibilityIcon />,
       value: isVisible ? 'hide.section' : 'show.section',
-    },
-    {
-      title: {
-        id: 'edit.section',
-        defaultMessage: 'Edit section',
-      },
-      icon: <Edit />,
-      value: 'edit',
     },
     {
       title: {

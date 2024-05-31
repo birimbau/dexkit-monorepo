@@ -356,6 +356,20 @@ export function PagesContainer({
     });
   };
 
+  const handleChangeName = (page: string, index: number, name: string) => {
+    setPages((pages) => {
+      const newPages = { ...pages };
+
+      const newSections = [...newPages[page].sections];
+
+      newSections[index].name = name;
+
+      newPages[page] = { ...newPages[page], sections: newSections };
+
+      return newPages;
+    });
+  };
+
   return (
     <>
       <AddPageDialog
@@ -426,6 +440,7 @@ export function PagesContainer({
         builderKit={builderKit}
         pages={pages}
         theme={theme}
+        onChangeName={handleChangeName}
         onEditTitle={handleEditTitle}
         sections={currentPage.sections}
         onEditPage={onEditPage}

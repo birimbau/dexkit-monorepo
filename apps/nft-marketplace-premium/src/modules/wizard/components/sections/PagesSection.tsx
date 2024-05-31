@@ -35,6 +35,7 @@ interface Props {
   onClonePage: (page: string) => void;
   onAddPage: (page: AppPage) => void;
   onEditTitle: (page: string, title: string) => void;
+  onChangeName: (page: string, index: number, name: string) => void;
   onRemovePage: (page: string) => void;
   theme?: Omit<Theme, 'palette'> & CssVarsTheme;
   builderKit?: BuilderKit;
@@ -52,6 +53,7 @@ export default function PagesSection({
   onSaveSection: onSave,
   onHideDesktop,
   onHideMobile,
+  onChangeName,
   onRemovePage,
   onEditTitle,
   onRemove,
@@ -144,6 +146,7 @@ export default function PagesSection({
           onEdit={handleEdit}
           onAddPage={onAddPage}
           onAdd={handleAddSection}
+          onChangeName={onChangeName}
           onClonePage={onClonePage}
           onHideDesktop={onHideDesktop}
           onHideMobile={onHideMobile}

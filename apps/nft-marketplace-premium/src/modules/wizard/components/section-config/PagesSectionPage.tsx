@@ -27,6 +27,7 @@ interface Props {
   onHideMobile: (page: string, index: number) => void;
   onEditTitle: (page: string, title: string) => void;
   onSwap: (page: string, index: number, other: number) => void;
+  onChangeName: (page: string, index: number, name: string) => void;
   onAddPage: (page: AppPage) => void;
   onRemovePage: (page: string) => void;
   theme?: {
@@ -50,6 +51,7 @@ export default function PagesSectionPage({
   onHideDesktop,
   onEditTitle,
   onHideMobile,
+  onChangeName,
   pages,
   activeSection,
 }: Props) {
@@ -114,6 +116,9 @@ export default function PagesSectionPage({
       case 'hide.mobile':
         onHideMobile(page, index);
         break;
+      case 'change.name':
+        break;
+
       default:
         break;
     }
@@ -145,11 +150,12 @@ export default function PagesSectionPage({
       />
 
       <Stack spacing={2}>
-        <Box>
+        <Box px={8}>
           <Pages
             pages={pages}
             onSwap={onSwap}
             onAction={handleAction}
+            onChangeName={onChangeName}
             onAdd={onAdd}
             onClonePage={onClonePage}
             onAddPage={handleAddPage}

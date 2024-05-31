@@ -9,13 +9,13 @@ import {
   Typography,
 } from '@mui/material';
 
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import LockIcon from '@mui/icons-material/Lock';
-import OpenInNewIcon from '@mui/icons-material/OpenInNew';
-import Visibility from '@mui/icons-material/Visibility';
+import ContentCopyIcon from '@mui/icons-material/ContentCopyOutlined';
+import LinkOutlined from '@mui/icons-material/LinkOutlined';
+import LockIcon from '@mui/icons-material/LockOutlined';
+import Visibility from '@mui/icons-material/VisibilityOutlined';
 import { FormattedMessage } from 'react-intl';
 
-import DeleteIcon from '@mui/icons-material/Delete';
+import DeleteOutlined from '@mui/icons-material/DeleteOutlined';
 import React, { MouseEvent } from 'react';
 
 export interface PageProps {
@@ -48,7 +48,7 @@ export default function Page({
   };
 
   return (
-    <Card variant="elevation">
+    <Card>
       <CardActionArea sx={{ px: 2, py: 1 }} onClick={onSelect}>
         <Stack
           alignItems="center"
@@ -62,6 +62,7 @@ export default function Page({
             alignItems="center"
             justifyContent="center"
             direction="row"
+            mr={{ sm: 4, xs: 0 }}
             spacing={1}
           >
             <IconButton
@@ -99,10 +100,13 @@ export default function Page({
             >
               <Tooltip
                 title={
-                  <FormattedMessage id="open.url" defaultMessage="Open URL" />
+                  <FormattedMessage
+                    id="open.url.alt"
+                    defaultMessage="Open URL"
+                  />
                 }
               >
-                <OpenInNewIcon />
+                <LinkOutlined />
               </Tooltip>
             </IconButton>
             {pageKey !== 'home' && (
@@ -124,7 +128,7 @@ export default function Page({
               <Tooltip
                 title={<FormattedMessage id="Delete" defaultMessage="Delete" />}
               >
-                <DeleteIcon color="error" />
+                <DeleteOutlined color="error" />
               </Tooltip>
             </IconButton>
           </Stack>

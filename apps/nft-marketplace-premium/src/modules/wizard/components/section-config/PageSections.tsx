@@ -1,13 +1,10 @@
 import { AppPage } from '@dexkit/ui/modules/wizard/types/config';
 import {
   Box,
+  Button,
   Card,
-  Checkbox,
   Collapse,
   FormControl,
-  FormControlLabel,
-  FormGroup,
-  FormLabel,
   Grid,
   IconButton,
   InputAdornment,
@@ -26,11 +23,12 @@ import {
 } from '@dexkit/ui/modules/wizard/types/section';
 
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 
 import LazyTextField from '@dexkit/ui/components/LazyTextField';
 import { useIsMobile } from '@dexkit/ui/hooks/misc';
 import { DndContext, DragEndEvent } from '@dnd-kit/core';
+import Add from '@mui/icons-material/Add';
 import FilterAltOffIcon from '@mui/icons-material/FilterAltOff';
 import Search from '@mui/icons-material/Search';
 import { useMemo, useState } from 'react';
@@ -38,6 +36,7 @@ import { SECTION_CONFIG } from '../../constants/sections';
 import { PageSectionKey } from '../../hooks/sections';
 import PageSection from './PageSection';
 import PageSectionsHeader from './PageSectionsHeader';
+import VisibilityAutocomplete from './VisibilityAutocomplete';
 
 function getSectionType(section: AppPageSection) {
   const config = SECTION_CONFIG[section.type];
@@ -71,6 +70,9 @@ export interface PageSectionsProps {
   onAdd: () => void;
   onPreview: () => void;
   activeSection?: PageSectionKey;
+  onAddSection: () => void;
+  onAddCustomSection: () => void;
+  onChangeName: (index: number, name: string) => void;
   pageKey?: string;
 }
 
@@ -81,9 +83,12 @@ export default function PageSections({
   onAction,
   onClose,
   onAdd,
+  onChangeName,
   onEditTitle,
   onClone,
   activeSection,
+  onAddSection,
+  onAddCustomSection,
   onPreview,
 }: PageSectionsProps) {
   const isMobile = useIsMobile();
@@ -109,6 +114,12 @@ export default function PageSections({
   const handleAction = (index: number) => {
     return (action: string) => {
       onAction(action, index);
+    };
+  };
+
+  const handleChangeName = (index: number) => {
+    return (name: string) => {
+      onChangeName(index, name);
     };
   };
 
@@ -151,6 +162,8 @@ export default function PageSections({
     sectionType,
   ]);
 
+  const { formatMessage } = useIntl();
+
   return (
     <Box>
       <Stack spacing={2}>
@@ -165,6 +178,35 @@ export default function PageSections({
           }}
           page={page}
         />
+        <Box>
+          <Stack spacing={2} direction="row">
+            <Box maxWidth={'xs'}>
+              <Button
+                variant="outlined"
+                onClick={onAddSection}
+                startIcon={<Add />}
+              >
+                <FormattedMessage
+                  id="add.section"
+                  defaultMessage="Add section"
+                />
+              </Button>
+            </Box>
+
+            <Box maxWidth={'xs'}>
+              <Button
+                variant="outlined"
+                onClick={onAddCustomSection}
+                startIcon={<Add />}
+              >
+                <FormattedMessage
+                  id="add.custom.section"
+                  defaultMessage="Add custom section"
+                />
+              </Button>
+            </Box>
+          </Stack>
+        </Box>
         <Stack
           direction="row"
           alignItems="center"
@@ -172,10 +214,10 @@ export default function PageSections({
           justifyContent="space-between"
         >
           <Stack direction="row" alignItems="center" spacing={2}>
-            <Typography fontWeight="400" variant="h6">
+            <Typography fontWeight="bold" variant="h6">
               <FormattedMessage
                 id="page.sections"
-                defaultMessage="Page Sections"
+                defaultMessage="Page sections"
               />
             </Typography>
             <IconButton onClick={() => setShowFilters((value) => !value)}>
@@ -189,6 +231,10 @@ export default function PageSections({
               size: 'small',
               variant: 'standard',
               value: query,
+              placeholder: formatMessage({
+                id: 'search.dots',
+                defaultMessage: 'Search...',
+              }),
               InputProps: {
                 startAdornment: (
                   <InputAdornment position="start">
@@ -276,42 +322,14 @@ export default function PageSections({
                     </FormControl>
                   </Grid>
                   <Grid item xs={4}>
-                    <FormControl>
-                      <FormLabel component="legend">
-                        <FormattedMessage
-                          id="show.hidden"
-                          defaultMessage="Show Hidden"
-                        />
-                      </FormLabel>
-                      <FormGroup aria-label="position" row>
-                        <FormControlLabel
-                          value="end"
-                          control={<Checkbox />}
-                          label={
-                            <FormattedMessage
-                              id="desktop"
-                              defaultMessage="Desktop"
-                            />
-                          }
-                          checked={hideDesktop}
-                          onChange={(e, checked) => setHideDesktop(checked)}
-                          labelPlacement="end"
-                        />
-                        <FormControlLabel
-                          value="end"
-                          control={<Checkbox />}
-                          label={
-                            <FormattedMessage
-                              id="mobile"
-                              defaultMessage="Mobile"
-                            />
-                          }
-                          onChange={(e, checked) => setHideMobile(checked)}
-                          checked={hideMobile}
-                          labelPlacement="end"
-                        />
-                      </FormGroup>
-                    </FormControl>
+                    <VisibilityAutocomplete
+                      onChange={(desktop, mobile) => {
+                        setHideDesktop(desktop);
+                        setHideMobile(mobile);
+                      }}
+                      desktop={hideDesktop}
+                      mobile={hideMobile}
+                    />
                   </Grid>
                 </Grid>
               </Box>
@@ -332,6 +350,7 @@ export default function PageSections({
                     id={index.toString()}
                     onAction={handleAction(index)}
                     section={section}
+                    onChangeName={handleChangeName(index)}
                     active={
                       pageKey !== undefined &&
                       activeSection !== undefined &&
