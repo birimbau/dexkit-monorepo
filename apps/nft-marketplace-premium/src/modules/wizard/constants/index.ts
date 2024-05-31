@@ -54,7 +54,7 @@ export const CUSTOM_PAGE_KEY = 'custom-page-dexappbuilder';
 export const CUSTOM_PAGE: { [key: string]: AppPageOptions } = {
   [CUSTOM_PAGE_KEY]: {
     title: 'Custom',
-    uri: '/',
+    uri: '/custom-page-dexappbuilder',
   },
 
 };
