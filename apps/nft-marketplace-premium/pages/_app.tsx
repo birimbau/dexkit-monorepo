@@ -23,7 +23,7 @@ import { ThemeMode } from '@dexkit/ui/constants/enum';
 import { AppConfigContext as AppUIConfigContext } from '@dexkit/ui/context/AppConfigContext';
 import { Backdrop, CircularProgress } from '@mui/material';
 import { experimental_extendTheme as extendTheme } from '@mui/material/styles';
-import type {} from '@mui/material/themeCssVarsAugmentation';
+import type { } from '@mui/material/themeCssVarsAugmentation';
 import { getTheme } from 'src/theme';
 
 import defaultAppConfig from '../config/app.json';
@@ -36,8 +36,9 @@ import type { AssetAPI } from '@dexkit/ui/modules/nft/types';
 import type { AppConfig } from '@dexkit/ui/modules/wizard/types/config';
 import SiteProvider from '@dexkit/ui/providers/SiteProvider';
 import { AuthStateProvider } from '@dexkit/ui/providers/authStateProvider';
+import { wagmiConfig } from '@dexkit/wallet-connectors/constants/wagmiConfig';
 import { AppBarANN } from 'src/components/AppBarANN';
-
+import { WagmiProvider } from 'wagmi';
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
 
@@ -258,6 +259,7 @@ export default function MyApp(props: MyAppProps) {
             <AppUIConfigContext.Provider
               value={{ appConfig: config, appNFT, siteId }}
             >
+              <WagmiProvider config={wagmiConfig}>
               <QueryClientProvider client={queryClient}>
                 <Hydrate state={pageProps.dehydratedState}>
                   <DefaultSeo {...SEO} />
@@ -281,6 +283,7 @@ export default function MyApp(props: MyAppProps) {
                   </LocalizationProvider>
                 </Hydrate>
               </QueryClientProvider>
+              </WagmiProvider>
             </AppUIConfigContext.Provider>
           </AppConfigContext.Provider>
         </SiteProvider>
