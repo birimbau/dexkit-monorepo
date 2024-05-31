@@ -546,8 +546,8 @@ export default function TokenDropSection({ section }: TokenDropSectionProps) {
                 variant="body1"
               >
                 <FormattedMessage
-                  id="claim.erc20.tokens.from.contractName"
-                  defaultMessage="Claim ERC20 Tokens from {contractName}"
+                  id="claim.tokens.from.contractName"
+                  defaultMessage="Claim Tokens from {contractName}"
                   values={{
                     contractName: <strong>{contractMetadata?.name}</strong>,
                   }}
