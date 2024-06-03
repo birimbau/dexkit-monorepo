@@ -70,7 +70,7 @@ export default function AddPageDialog({
               formatMessage({
                 id: 'use.home.as.title.not.allowed',
                 defaultMessage: 'Use Home as title is not allowed for pages',
-              })
+              }),
             );
             return;
           }
@@ -111,7 +111,7 @@ export default function AddPageDialog({
                       label={
                         <FormattedMessage
                           id="page.title"
-                          defaultMessage="Page Title"
+                          defaultMessage="Page title"
                         />
                       }
                     />
