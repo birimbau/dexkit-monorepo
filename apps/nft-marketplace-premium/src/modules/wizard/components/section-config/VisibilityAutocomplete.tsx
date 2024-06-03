@@ -1,5 +1,6 @@
 import { Autocomplete, Chip, TextField } from '@mui/material';
 import { useMemo } from 'react';
+import { useIntl } from 'react-intl';
 
 const options = [
   { id: 'desktop', label: 'Desktop' },
@@ -41,6 +42,8 @@ const VisibilityAutocomplete = ({
     return values;
   }, [desktop, mobile]);
 
+  const { formatMessage } = useIntl();
+
   return (
     <Autocomplete
       multiple
@@ -57,7 +60,16 @@ const VisibilityAutocomplete = ({
           />
         ))
       }
-      renderInput={(params) => <TextField {...params} variant="standard" />}
+      renderInput={(params) => (
+        <TextField
+          placeholder={formatMessage({
+            id: 'display.on.device',
+            defaultMessage: 'Display on Device',
+          })}
+          {...params}
+          variant="standard"
+        />
+      )}
     />
   );
 };

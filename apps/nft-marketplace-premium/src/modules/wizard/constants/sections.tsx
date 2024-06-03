@@ -1,10 +1,10 @@
 import { SectionType } from '@dexkit/ui/modules/wizard/types/section';
-import ComputerIcon from '@mui/icons-material/ComputerOutlined';
+import ContentCopyOutlined from '@mui/icons-material/ContentCopyOutlined';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
-import DesktopAccessDisabledIcon from '@mui/icons-material/DesktopAccessDisabledOutlined';
-import FileCopyIcon from '@mui/icons-material/FileCopyOutlined';
-import MobileOffIcon from '@mui/icons-material/MobileOffOutlined';
-import SmartphoneIcon from '@mui/icons-material/SmartphoneOutlined';
+import DesktopAccessDisabledIcon from '@mui/icons-material/DesktopAccessDisabled';
+import DesktopWindows from '@mui/icons-material/DesktopWindows';
+import MobileOffOutlined from '@mui/icons-material/MobileOffOutlined';
+import SmartphoneOutlined from '@mui/icons-material/SmartphoneOutlined';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOffOutlined';
 import VisibilityIcon from '@mui/icons-material/VisibilityOutlined';
 
@@ -39,10 +39,26 @@ export const SECTION_MENU_OPTIONS = ({
   return [
     {
       title: {
+        id: isVisible ? 'hide.preview' : 'preview.section',
+        defaultMessage: isVisible ? 'Hide preview' : 'Preview section',
+      },
+      icon: isVisible ? <VisibilityOffIcon /> : <VisibilityIcon />,
+      value: isVisible ? 'hide.section' : 'show.section',
+    },
+    {
+      title: {
+        id: 'clone.section',
+        defaultMessage: 'Clone section',
+      },
+      icon: <ContentCopyOutlined />,
+      value: 'clone',
+    },
+    {
+      title: {
         id: 'hide.on.mobile',
         defaultMessage: 'Hide on mobile',
       },
-      icon: hideMobile ? <MobileOffIcon /> : <SmartphoneIcon />,
+      icon: hideMobile ? <MobileOffOutlined /> : <SmartphoneOutlined />,
       value: 'hide.mobile',
     },
     {
@@ -50,29 +66,13 @@ export const SECTION_MENU_OPTIONS = ({
         id: 'hide.on.desktop',
         defaultMessage: 'Hide on desktop',
       },
-      icon: hideDesktop ? <DesktopAccessDisabledIcon /> : <ComputerIcon />,
+      icon: hideDesktop ? <DesktopAccessDisabledIcon /> : <DesktopWindows />,
       value: 'hide.desktop',
     },
     {
       title: {
-        id: 'clone.section',
-        defaultMessage: 'Clone section',
-      },
-      icon: <FileCopyIcon />,
-      value: 'clone',
-    },
-    {
-      title: {
-        id: isVisible ? 'hide.section' : 'view.section',
-        defaultMessage: isVisible ? 'Hide section' : 'View section',
-      },
-      icon: isVisible ? <VisibilityOffIcon /> : <VisibilityIcon />,
-      value: isVisible ? 'hide.section' : 'show.section',
-    },
-    {
-      title: {
-        id: 'remove.section',
-        defaultMessage: 'Remove section',
+        id: 'delete',
+        defaultMessage: 'Delete',
       },
       icon: <DeleteIcon color={'error'} />,
       value: 'remove',

@@ -2,7 +2,7 @@ import { AppPage } from '@dexkit/ui/modules/wizard/types/config';
 import ArrowBack from '@mui/icons-material/ArrowBack';
 import Check from '@mui/icons-material/Check';
 import Close from '@mui/icons-material/Close';
-import Visibility from '@mui/icons-material/Visibility';
+import Visibility from '@mui/icons-material/VisibilityOutlined';
 import {
   Box,
   Button,
@@ -11,7 +11,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useRef, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 export interface PageSectionsHeaderProps {
@@ -31,7 +31,14 @@ export default function PageSectionsHeader({
 }: PageSectionsHeaderProps) {
   const [isEditTitle, setIsEditTitle] = useState(false);
 
-  const handleEdit = () => setIsEditTitle(true);
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const handleEdit = () => {
+    setIsEditTitle(true);
+
+    setTimeout(() => {
+      inputRef.current?.focus();
+    }, 300);
+  };
 
   const [title, setTitle] = useState(page.title || '');
 
@@ -57,12 +64,27 @@ export default function PageSectionsHeader({
         </IconButton>
 
         {isEditTitle ? (
-          <TextField value={title} variant="standard" onChange={handleChange} />
+          <TextField
+            inputRef={(ref) => (inputRef.current = ref)}
+            value={title}
+            variant="standard"
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                handleSave();
+              }
+              if (e.key === 'Escape') {
+                handleCancel();
+              }
+            }}
+            onChange={handleChange}
+          />
         ) : (
           <Box>
             <Typography
               variant="h5"
-              sx={{ cursor: 'pointer' }}
+              sx={{
+                cursor: 'pointer',
+              }}
               onClick={handleEdit}
             >
               {page.title}

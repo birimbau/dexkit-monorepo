@@ -15,7 +15,7 @@ import {
   Experimental_CssVarsProvider as CssVarsProvider,
   SupportedColorScheme,
 } from '@mui/material/styles';
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { PageSectionKey } from '../../hooks/sections';
 import PreviewPageDialog from '../dialogs/PreviewPageDialog';
@@ -105,11 +105,15 @@ export default function Pages({
     };
   };
 
-  const handleAction = (page: string) => {
-    return (action: string, index: number) => {
-      onAction(action, page, index);
-    };
-  };
+  const handleAction = useCallback(
+    (page: string) => {
+      return (action: string, index: number) => {
+        onAction(action, page, index);
+        console.log('action', page, action, index);
+      };
+    },
+    [onAction]
+  );
 
   const handleShowPreview = (pageKey: string) => {
     return () => {
@@ -169,7 +173,7 @@ export default function Pages({
 
   if (selectedKey !== undefined && isEdit) {
     return (
-      <>
+      <Box px={{ sm: 4 }}>
         {renderPreviewDialog()}
         <Grid container spacing={2}>
           <Grid item xs={12}>
@@ -190,22 +194,22 @@ export default function Pages({
             />
           </Grid>
         </Grid>
-      </>
+      </Box>
     );
   }
 
   return (
     <>
       {renderPreviewDialog()}
-      <Box>
+      <Box sx={{ px: { sm: 4 } }}>
         <Grid container spacing={2}>
           <Grid item xs={12}>
-            <Stack direction={'column'}>
-              <Typography variant={'h6'}>
+            <Stack direction="column">
+              <Typography fontWeight="bold" variant="h6">
                 <FormattedMessage id="pages" defaultMessage="Pages" />
               </Typography>
 
-              <Typography variant={'body2'}>
+              <Typography variant="body2">
                 <FormattedMessage
                   id="pages.wizard.description"
                   defaultMessage="Create and manage your app's pages"
@@ -234,7 +238,7 @@ export default function Pages({
                 alignItems="center"
                 justifyContent="space-between"
               >
-                <Typography fontWeight="bold" variant="h6">
+                <Typography fontWeight="400" variant="h6">
                   <FormattedMessage id="page.list" defaultMessage="Page list" />
                 </Typography>
                 <LazyTextField

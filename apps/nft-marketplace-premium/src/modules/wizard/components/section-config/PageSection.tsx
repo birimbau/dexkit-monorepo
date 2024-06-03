@@ -10,9 +10,9 @@ import {
   Typography,
 } from '@mui/material';
 
-import React, { MouseEvent, useState } from 'react';
+import React, { KeyboardEvent, MouseEvent, useRef, useState } from 'react';
 
-import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
+import DragIndicatorIcon from '@mui/icons-material/DragIndicatorOutlined';
 
 import { CSS } from '@dnd-kit/utilities';
 
@@ -54,6 +54,8 @@ export default function PageSection({
     useDraggable({ id });
   const { isOver, setNodeRef: setNodeRefDrop } = useDroppable({ id });
 
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
   const handleOpenMenu = (e: MouseEvent<HTMLElement>) => {
@@ -76,9 +78,22 @@ export default function PageSection({
 
   const [name, setName] = useState(section?.name || section?.title);
 
-  const handleSave = (e: MouseEvent) => {
-    e.stopPropagation();
+  const handleEdit = () => {
+    setIsEdit(true);
 
+    setTimeout(() => {
+      inputRef.current?.focus();
+    }, 300);
+  };
+
+  const handleStopPropagation = (cb: () => void) => {
+    return (e: MouseEvent) => {
+      e.stopPropagation();
+      return cb();
+    };
+  };
+
+  const handleSave = () => {
     if (name) {
       onChangeName(name);
     }
@@ -86,11 +101,18 @@ export default function PageSection({
     setIsEdit(false);
   };
 
-  const handleCancel = (e: MouseEvent) => {
-    e.stopPropagation();
-
+  const handleCancel = () => {
     setIsEdit(false);
     setName(section?.name || section?.title);
+  };
+
+  const handleKeyDown = (e: KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleSave();
+    }
+    if (e.key === 'Escape') {
+      handleCancel();
+    }
   };
 
   return (
@@ -143,8 +165,8 @@ export default function PageSection({
                   <Tooltip
                     title={
                       <FormattedMessage
-                        id="drag.section"
-                        defaultMessage="Drag section"
+                        id="drag.to.reorder"
+                        defaultMessage="Drag to reorder"
                       />
                     }
                   >
@@ -155,15 +177,23 @@ export default function PageSection({
                       <Stack direction="row" alignItems="center" spacing={0.5}>
                         <TextField
                           value={name}
+                          inputRef={(ref) => (inputRef.current = ref)}
                           onClick={(e) => e.stopPropagation()}
                           onChange={(e) => setName(e.target.value)}
                           variant="standard"
                           size="small"
+                          onKeyDown={handleKeyDown}
                         />
-                        <IconButton size="small" onClick={handleSave}>
+                        <IconButton
+                          size="small"
+                          onClick={handleStopPropagation(handleSave)}
+                        >
                           <CheckOutlined />
                         </IconButton>
-                        <IconButton size="small" onClick={handleCancel}>
+                        <IconButton
+                          size="small"
+                          onClick={handleStopPropagation(handleCancel)}
+                        >
                           <CloseOutlined />
                         </IconButton>
                       </Stack>
@@ -171,12 +201,9 @@ export default function PageSection({
                       <Box>
                         <Link
                           variant="body1"
-                          underline="hover"
+                          underline="none"
                           sx={{ cursor: 'pointer' }}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setIsEdit(true);
-                          }}
+                          onClick={handleStopPropagation(handleEdit)}
                           color="text.primary"
                         >
                           {title}

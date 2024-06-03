@@ -1,11 +1,5 @@
 import { SectionType } from '@dexkit/ui/modules/wizard/types/section';
-import {
-  Autocomplete,
-  ListItemIcon,
-  ListItemText,
-  Stack,
-  TextField,
-} from '@mui/material';
+import { Autocomplete, ListItemText, Stack, TextField } from '@mui/material';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { SECTION_CONFIG } from '../../constants/sections';
 
@@ -20,9 +14,19 @@ function SectionTypeAutocomplete({
 }: SectionTypeAutocompleteProps) {
   const { formatMessage } = useIntl();
 
-  const keys = Object.keys(SECTION_CONFIG).filter(
-    (key) => SECTION_CONFIG[key as SectionType].title !== undefined
-  );
+  const keys = Object.keys(SECTION_CONFIG)
+    .map((key) => ({ key, obj: SECTION_CONFIG[key as SectionType] }))
+    .filter((k) => k.obj.title !== undefined)
+    .sort((a, b) => {
+      if (a.obj.title && b.obj.title) {
+        return a.obj.title.defaultMessage.localeCompare(
+          b.obj.title.defaultMessage
+        );
+      }
+
+      return 0;
+    })
+    .map((k) => k.key);
 
   return (
     <Autocomplete
@@ -76,11 +80,6 @@ function SectionTypeAutocomplete({
         return (
           <li {...props}>
             <Stack direction="row" alignItems="center" spacing={2}>
-              {SECTION_CONFIG[option as SectionType]?.icon && (
-                <ListItemIcon>
-                  {SECTION_CONFIG[option as SectionType].icon}
-                </ListItemIcon>
-              )}
               <ListItemText
                 primary={
                   <FormattedMessage

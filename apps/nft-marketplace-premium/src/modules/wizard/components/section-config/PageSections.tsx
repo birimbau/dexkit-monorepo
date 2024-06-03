@@ -18,15 +18,15 @@ import {
   SectionType,
 } from '@dexkit/ui/modules/wizard/types/section';
 
-import FilterAltIcon from '@mui/icons-material/FilterAlt';
+import FilterAltIcon from '@mui/icons-material/FilterAltOutlined';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import LazyTextField from '@dexkit/ui/components/LazyTextField';
 import { useIsMobile } from '@dexkit/ui/hooks/misc';
 import { DndContext, DragEndEvent } from '@dnd-kit/core';
-import Add from '@mui/icons-material/Add';
-import FilterAltOffIcon from '@mui/icons-material/FilterAltOff';
-import Search from '@mui/icons-material/Search';
+import Add from '@mui/icons-material/AddOutlined';
+import FilterAltOffIcon from '@mui/icons-material/FilterAltOffOutlined';
+import Search from '@mui/icons-material/SearchOutlined';
 import { useMemo, useState } from 'react';
 import { SECTION_CONFIG } from '../../constants/sections';
 import { PageSectionKey } from '../../hooks/sections';
@@ -91,8 +91,8 @@ export default function PageSections({
 }: PageSectionsProps) {
   const isMobile = useIsMobile();
 
-  const [hideDesktop, setHideDesktop] = useState(true);
-  const [hideMobile, setHideMobile] = useState(true);
+  const [showDesktop, setHideDesktop] = useState(true);
+  const [showMobile, setHideMobile] = useState(true);
 
   const [showFilters, setShowFilters] = useState(false);
 
@@ -138,14 +138,6 @@ export default function PageSections({
 
       const filter = hasTitle || hasType || hasName || query === '';
 
-      if (hideDesktop && s.hideDesktop) {
-        return false;
-      }
-
-      if (hideMobile && s.hideMobile) {
-        return false;
-      }
-
       if ((sectionType as string) !== '') {
         return filter && sectionType === s.type;
       }
@@ -155,8 +147,8 @@ export default function PageSections({
   }, [
     JSON.stringify(page.sections),
     query,
-    hideDesktop,
-    hideMobile,
+    showDesktop,
+    showMobile,
     sectionType,
   ]);
 
@@ -173,6 +165,48 @@ export default function PageSections({
     return filteredSections.slice(offset, limit);
   }, [JSON.stringify(filteredSections), offset, limit]);
 
+  const renderSections = () => {
+    return pageList?.map((section, index) => {
+      if (showDesktop && section.hideDesktop) {
+        return null;
+      } else if (showMobile && section.hideMobile) {
+        return null;
+      }
+
+      return (
+        <Grid item xs={12} key={index}>
+          <PageSection
+            expand={!isMobile}
+            icon={getSectionType(section)?.icon}
+            title={getSectionType(section)?.title}
+            subtitle={
+              getSectionType(section)?.subtitle ? (
+                <FormattedMessage
+                  id={getSectionType(section)?.subtitle?.id}
+                  defaultMessage={
+                    getSectionType(section)?.subtitle?.defaultMessage
+                  }
+                />
+              ) : (
+                ''
+              )
+            }
+            id={index.toString()}
+            onAction={handleAction(index)}
+            section={section}
+            onChangeName={handleChangeName(index)}
+            active={
+              pageKey !== undefined &&
+              activeSection !== undefined &&
+              activeSection?.index === index &&
+              pageKey === activeSection.page
+            }
+          />
+        </Grid>
+      );
+    });
+  };
+
   return (
     <Box>
       <Stack spacing={2}>
@@ -187,7 +221,47 @@ export default function PageSections({
           }}
           page={page}
         />
-        <Box>
+
+        <Stack
+          direction="row"
+          alignItems="center"
+          spacing={2}
+          justifyContent="space-between"
+        >
+          <Stack direction="row" alignItems="center" spacing={2}>
+            <Typography fontWeight="400" variant="h6">
+              <FormattedMessage
+                id="page.sections"
+                defaultMessage="Page sections"
+              />
+            </Typography>
+            <IconButton onClick={() => setShowFilters((value) => !value)}>
+              {showFilters ? <FilterAltOffIcon /> : <FilterAltIcon />}
+            </IconButton>
+          </Stack>
+
+          <LazyTextField
+            onChange={handleChangeQuery}
+            value={query}
+            TextFieldProps={{
+              size: 'small',
+              variant: 'standard',
+              value: query,
+              placeholder: formatMessage({
+                id: 'search.dots',
+                defaultMessage: 'Search...',
+              }),
+              InputProps: {
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Search />
+                  </InputAdornment>
+                ),
+              },
+            }}
+          />
+        </Stack>
+        <Box py={2}>
           <Stack spacing={2} direction="row">
             <Box maxWidth={'xs'}>
               <Button
@@ -216,44 +290,6 @@ export default function PageSections({
             </Box>
           </Stack>
         </Box>
-        <Stack
-          direction="row"
-          alignItems="center"
-          spacing={2}
-          justifyContent="space-between"
-        >
-          <Stack direction="row" alignItems="center" spacing={2}>
-            <Typography fontWeight="bold" variant="h6">
-              <FormattedMessage
-                id="page.sections"
-                defaultMessage="Page sections"
-              />
-            </Typography>
-            <IconButton onClick={() => setShowFilters((value) => !value)}>
-              {showFilters ? <FilterAltOffIcon /> : <FilterAltIcon />}
-            </IconButton>
-          </Stack>
-          <LazyTextField
-            onChange={handleChangeQuery}
-            value={query}
-            TextFieldProps={{
-              size: 'small',
-              variant: 'standard',
-              value: query,
-              placeholder: formatMessage({
-                id: 'search.dots',
-                defaultMessage: 'Search...',
-              }),
-              InputProps: {
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <Search />
-                  </InputAdornment>
-                ),
-              },
-            }}
-          />
-        </Stack>
         {showFilters && (
           <Collapse in={showFilters}>
             <Card>
@@ -279,8 +315,8 @@ export default function PageSections({
                         setHideDesktop(desktop);
                         setHideMobile(mobile);
                       }}
-                      desktop={hideDesktop}
-                      mobile={hideMobile}
+                      desktop={showDesktop}
+                      mobile={showMobile}
                     />
                   </Grid>
                 </Grid>
@@ -292,37 +328,7 @@ export default function PageSections({
         <Box>
           <DndContext onDragEnd={handleDragEnd}>
             <Grid container spacing={2}>
-              {pageList?.map((section, index) => (
-                <Grid item xs={12} key={index}>
-                  <PageSection
-                    expand={!isMobile}
-                    icon={getSectionType(section)?.icon}
-                    title={getSectionType(section)?.title}
-                    subtitle={
-                      getSectionType(section)?.subtitle ? (
-                        <FormattedMessage
-                          id={getSectionType(section)?.subtitle?.id}
-                          defaultMessage={
-                            getSectionType(section)?.subtitle?.defaultMessage
-                          }
-                        />
-                      ) : (
-                        ''
-                      )
-                    }
-                    id={index.toString()}
-                    onAction={handleAction(index)}
-                    section={section}
-                    onChangeName={handleChangeName(index)}
-                    active={
-                      pageKey !== undefined &&
-                      activeSection !== undefined &&
-                      activeSection?.index === index &&
-                      pageKey === activeSection.page
-                    }
-                  />
-                </Grid>
-              ))}
+              {renderSections()}
               <Grid item xs={12}>
                 <SectionsPagination
                   pageSize={pageSize}
