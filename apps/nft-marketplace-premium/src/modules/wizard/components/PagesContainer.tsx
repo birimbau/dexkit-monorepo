@@ -10,7 +10,7 @@ import { BuilderKit } from '../constants';
 import AddPageDialog from './dialogs/AddPageDialog';
 import PagesSection from './sections/PagesSection';
 const ConfirmRemoveSectionDialog = dynamic(
-  () => import('./dialogs/ConfirmRemoveSectionDialog'),
+  () => import('./dialogs/ConfirmRemoveSectionDialog')
 );
 
 interface Props {
@@ -219,7 +219,7 @@ export function PagesContainer({
         });
       }
     },
-    [currentPage.sections],
+    [currentPage.sections]
   );
 
   const handleCloseAddPage = () => {
@@ -232,7 +232,7 @@ export function PagesContainer({
       <AddPageDialog
         dialogProps={{
           open: showAddPage,
-          maxWidth: 'sm',
+          maxWidth: 'xs',
           fullWidth: true,
           onClose: handleCloseAddPage,
         }}
