@@ -17,7 +17,10 @@ export function useOrderedConnectors() {
         if (firstConnection) {
           const injectedConnection = firstConnection.wrap({ name: walletConnectorMetadata.name as string, rdns: walletConnectorMetadata.rdns, icon: walletConnectorMetadata.icon });
           if (injectedConnection) {
-            return { connectors: [injectedConnection, ...filteredConnections].map<[Connector, Web3ReactHooks]>(({ hooks, connector }) => [connector, hooks]), connectorsKey: 'eip-6963-injected-first' }
+            const connectors = [injectedConnection, ...filteredConnections];
+            const connectorsKey = connectors.map(c => c.getProviderInfo()?.name).reduce((p, c) => `${p}:${c || ''}`)
+
+            return { connectors: connectors.map<[Connector, Web3ReactHooks]>(({ hooks, connector }) => [connector, hooks]), connectorsKey: `eip-6963-injected-first:${connectorsKey}` }
           }
         }
       } else {
@@ -25,18 +28,23 @@ export function useOrderedConnectors() {
           const firstConnection = connections.find(c => c?.type === ConnectionType.INJECTED);
           const filteredConnections = connections.filter(c => c?.type !== ConnectionType.INJECTED);
           if (firstConnection) {
-            return { connectors: [firstConnection, ...filteredConnections].map<[Connector, Web3ReactHooks]>(({ hooks, connector }) => [connector, hooks]), connectorsKey: 'injected-first' }
+            const connectors = [firstConnection, ...filteredConnections];
+            const connectorsKey = connectors.map(c => c.getProviderInfo()?.name).reduce((p, c) => `${p}:${c || ''}`)
+            return { connectors: connectors.map<[Connector, Web3ReactHooks]>(({ hooks, connector }) => [connector, hooks]), connectorsKey: `injected-first: ${connectorsKey}` }
           }
         }
         const firstConnection = connections.find(c => c.getProviderInfo()?.rdns === walletConnectorMetadata?.rdns);
         const filteredConnections = connections.filter(c => c.getProviderInfo()?.rdns !== walletConnectorMetadata?.rdns);
         if (firstConnection) {
-          return { connectors: [firstConnection, ...filteredConnections].map<[Connector, Web3ReactHooks]>(({ hooks, connector }) => [connector, hooks]), connectorsKey: 'non-injected-first' }
+          const connectors = [firstConnection, ...filteredConnections];
+          const connectorsKey = connectors.map(c => c.getProviderInfo()?.name).reduce((p, c) => `${p}:${c || ''}`)
+          return { connectors: [firstConnection, ...filteredConnections].map<[Connector, Web3ReactHooks]>(({ hooks, connector }) => [connector, hooks]), connectorsKey: `non-injected-first:${connectorsKey}` }
         }
       }
     }
+    const connectorsKey = connections.map(c => c.getProviderInfo()?.name).reduce((p, c) => `${p}:${c || ''}`)
 
-    return { connectors: connections.map<[Connector, Web3ReactHooks]>(({ hooks, connector }) => [connector, hooks]), connectorsKey: 'default' }
+    return { connectors: connections.map<[Connector, Web3ReactHooks]>(({ hooks, connector }) => [connector, hooks]), connectorsKey: `default:${connectorsKey}` }
 
   }, [walletConnectorMetadata]);
 }
