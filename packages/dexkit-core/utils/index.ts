@@ -66,6 +66,20 @@ export const beautifyCamelCase = (camelCase: string | undefined) => {
   return;
 };
 
+export const beautifyUnderscoreCase = (underscoreCase: string | undefined) => {
+  if (underscoreCase) {
+    return (
+      underscoreCase
+        .replace(/_/g, " ")
+        // uppercase the first character
+        .replace(/^./, function (str) {
+          return str.toUpperCase();
+        })
+    );
+  }
+  return;
+};
+
 export function hasLondonHardForkSupport(chainId: ChainId) {
   switch (chainId) {
     case ChainId.Ropsten:
