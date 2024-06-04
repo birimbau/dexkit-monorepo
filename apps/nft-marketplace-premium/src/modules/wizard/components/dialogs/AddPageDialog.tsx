@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   Dialog,
   DialogActions,
@@ -57,7 +58,7 @@ export default function AddPageDialog({
   return (
     <Dialog {...dialogProps}>
       <AppDialogTitle
-        title={<FormattedMessage id="new.page" defaultMessage="New page" />}
+        title={<FormattedMessage id="new.page" defaultMessage="New Page" />}
         onClose={handleClose}
       />
       <Formik
@@ -102,26 +103,40 @@ export default function AddPageDialog({
                   </Grid>
                 )}
                 <Grid item xs={12}>
-                  <Field
-                    component={TextField}
-                    name="title"
-                    fullWidth
-                    label={
-                      <FormattedMessage id="title" defaultMessage="Title" />
-                    }
-                  />
+                  <Box py={2}>
+                    <Field
+                      component={TextField}
+                      name="title"
+                      fullWidth
+                      label={
+                        <FormattedMessage
+                          id="page.title"
+                          defaultMessage="Page title"
+                        />
+                      }
+                    />
+                  </Box>
                 </Grid>
               </Grid>
             </DialogContent>
             <DialogActions>
               {isSubmitting && <LinearProgress />}
-              <Stack direction="row" spacing={1} justifyContent="flex-end">
+              <Stack
+                py={0.5}
+                px={2}
+                direction="row"
+                spacing={1}
+                justifyContent="flex-end"
+              >
                 <Button
                   disabled={!isValid || isSubmitting}
                   variant="contained"
                   onClick={submitForm}
                 >
-                  <FormattedMessage id="save" defaultMessage="Save" />
+                  <FormattedMessage
+                    id="create.new.page"
+                    defaultMessage="Create New Page"
+                  />
                 </Button>
                 <Button onClick={onCancel}>
                   <FormattedMessage id="cancel" defaultMessage="Cancel" />

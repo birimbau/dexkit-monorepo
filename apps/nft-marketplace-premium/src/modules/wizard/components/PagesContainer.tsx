@@ -191,7 +191,7 @@ export function PagesContainer({
         return newPages;
       });
     },
-    []
+    [currentPage.sections]
   );
 
   const handleHideDesktop = (page: string, index: number) => {
@@ -375,7 +375,7 @@ export function PagesContainer({
       <AddPageDialog
         dialogProps={{
           open: showAddPage,
-          maxWidth: 'sm',
+          maxWidth: 'xs',
           fullWidth: true,
           onClose: handleCloseAddPage,
         }}

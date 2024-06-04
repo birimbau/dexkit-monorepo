@@ -137,7 +137,16 @@ function DeployDomainDialog({
                 {showDetails ? <ExpandLess /> : <ExpandMore />}
               </Button>
               <Collapse in={showDetails}>
-                <Typography color="error">{String(error)}</Typography>
+                {error &&
+                error?.response &&
+                error?.response?.data &&
+                error?.response?.data?.message ? (
+                  <Typography color="error">
+                    {String(error?.response?.data?.message)}
+                  </Typography>
+                ) : (
+                  <Typography color="error">{String(error)}</Typography>
+                )}
               </Collapse>
             </>
           )}
