@@ -109,7 +109,6 @@ export default function Pages({
     (page: string) => {
       return (action: string, index: number) => {
         onAction(action, page, index);
-        console.log('action', page, action, index);
       };
     },
     [onAction]
