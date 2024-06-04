@@ -2,7 +2,7 @@ import { SectionType } from '@dexkit/ui/modules/wizard/types/section';
 import ContentCopyOutlined from '@mui/icons-material/ContentCopyOutlined';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import DesktopAccessDisabledIcon from '@mui/icons-material/DesktopAccessDisabled';
-import DesktopWindows from '@mui/icons-material/DesktopWindows';
+import DesktopWindows from '@mui/icons-material/DesktopWindowsOutlined';
 import MobileOffOutlined from '@mui/icons-material/MobileOffOutlined';
 import SmartphoneOutlined from '@mui/icons-material/SmartphoneOutlined';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOffOutlined';
