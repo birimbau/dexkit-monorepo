@@ -91,8 +91,8 @@ export default function PageSections({
 }: PageSectionsProps) {
   const isMobile = useIsMobile();
 
-  const [showDesktop, setHideDesktop] = useState(true);
-  const [showMobile, setHideMobile] = useState(true);
+  const [hideDesktop, setHideDesktop] = useState(false);
+  const [hideMobile, setHideMobile] = useState(false);
 
   const [showFilters, setShowFilters] = useState(false);
 
@@ -128,27 +128,31 @@ export default function PageSections({
   };
 
   const filteredSections = useMemo(() => {
-    return page.sections?.filter((s) => {
-      const hasTitle =
-        s && s.title && s.title.toLowerCase()?.search(query.toLowerCase()) > -1;
-      const hasName =
-        s && s.name && s.name.toLowerCase()?.search(query.toLowerCase()) > -1;
-      const hasType =
-        s && s.type.toLowerCase()?.search(query.toLowerCase()) > -1;
+    return (
+      page.sections?.filter((s) => {
+        const hasTitle =
+          s &&
+          s.title &&
+          s.title.toLowerCase()?.search(query.toLowerCase()) > -1;
+        const hasName =
+          s && s.name && s.name.toLowerCase()?.search(query.toLowerCase()) > -1;
+        const hasType =
+          s && s.type.toLowerCase()?.search(query.toLowerCase()) > -1;
 
-      const filter = hasTitle || hasType || hasName || query === '';
+        const filter = hasTitle || hasType || hasName || query === '';
 
-      if ((sectionType as string) !== '') {
-        return filter && sectionType === s.type;
-      }
+        if ((sectionType as string) !== '') {
+          return filter && sectionType === s.type;
+        }
 
-      return filter;
-    });
+        return filter;
+      }) || []
+    );
   }, [
     JSON.stringify(page.sections),
     query,
-    showDesktop,
-    showMobile,
+    hideDesktop,
+    hideMobile,
     sectionType,
   ]);
 
@@ -162,15 +166,23 @@ export default function PageSections({
   }, [JSON.stringify(filteredSections), currPage, pageSize]);
 
   const pageList = useMemo(() => {
-    return filteredSections.slice(offset, limit);
+    return filteredSections?.slice(offset, limit) || [];
   }, [JSON.stringify(filteredSections), offset, limit]);
 
   const renderSections = () => {
     return pageList?.map((section, index) => {
-      if (showDesktop && section.hideDesktop) {
-        return null;
-      } else if (showMobile && section.hideMobile) {
-        return null;
+      if (hideDesktop && hideMobile) {
+        if (section.hideDesktop && section.hideMobile) {
+          return null;
+        }
+      } else if (hideDesktop && !hideMobile) {
+        if (section.hideDesktop) {
+          return null;
+        }
+      } else if (!hideDesktop && hideMobile) {
+        if (section.hideMobile) {
+          return null;
+        }
       }
 
       return (
@@ -315,8 +327,8 @@ export default function PageSections({
                         setHideDesktop(desktop);
                         setHideMobile(mobile);
                       }}
-                      desktop={showDesktop}
-                      mobile={showMobile}
+                      desktop={hideDesktop}
+                      mobile={hideMobile}
                     />
                   </Grid>
                 </Grid>

@@ -243,15 +243,34 @@ export function PagesContainer({
 
   const [activeSection, setActiveSection] = useState<PageSectionKey>();
 
-  const handleConfirmCloneSection = (name: string) => {
+  const handleConfirmCloneSection = (name: string, page?: string) => {
     setPages((value) => {
       const newPages = { ...value };
+
+      if (page && page !== '' && sectionToClone) {
+        const oldPage = newPages[sectionToClone.page];
+
+        let clonedSection = oldPage.sections[sectionToClone.index];
+
+        let newSections = [
+          ...(newPages[page].sections || []),
+          { ...clonedSection, title: name, name: name },
+        ];
+
+        newPages[page].sections = newSections;
+
+        return { ...newPages };
+      }
 
       if (sectionToClone) {
         const newPage = newPages[sectionToClone.page];
 
         const sections = [...newPage.sections];
-        const cloneSection = { ...sections[sectionToClone.index], title: name };
+        const cloneSection = {
+          ...sections[sectionToClone.index],
+          title: name,
+          name: name,
+        };
 
         sections.splice(sectionToClone.index + 1, 0, cloneSection);
 
@@ -391,6 +410,7 @@ export function PagesContainer({
             fullWidth: true,
             onClose: handleCloseCloneSection,
           }}
+          pages={pages}
           onConfirm={handleConfirmCloneSection}
           section={pages[sectionToClone.page].sections[sectionToClone.index]}
         />
