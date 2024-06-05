@@ -107,7 +107,7 @@ export const SECTION_CONFIG: {
     icon: <SwapHorizIcon />,
   },
   'asset-store': {
-    title: { id: 'nft.store', defaultMessage: 'NFT store' },
+    title: { id: 'nft.store.new', defaultMessage: 'NFT Store' },
     icon: <StoreIcon />,
   },
   custom: {
@@ -127,7 +127,10 @@ export const SECTION_CONFIG: {
     icon: <GavelIcon />,
   },
   'user-contract-form': {
-    title: { id: 'user.contract.form', defaultMessage: 'User contract form' },
+    title: {
+      id: 'list.user.contract.form',
+      defaultMessage: 'User Contract Form',
+    },
     icon: <GavelIcon />,
   },
   exchange: {
@@ -139,11 +142,11 @@ export const SECTION_CONFIG: {
     icon: <Code />,
   },
   collection: {
-    title: { id: 'collection', defaultMessage: 'Collection' },
+    title: { id: 'collection.list', defaultMessage: 'Collection List' },
     icon: <AppsIcon />,
   },
   'dex-generator-section': {
-    title: { id: 'dex.generator', defaultMessage: 'Dex Generator' },
+    title: { id: 'dex.generator.new', defaultMessage: 'DexGenerator' },
     icon: <GavelIcon />,
   },
   'asset-section': {

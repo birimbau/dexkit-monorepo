@@ -106,7 +106,7 @@ export const sections = [
   {
     type: 'user-contract-form',
     titleId: 'user.contract.form',
-    titleDefaultMessage: 'User contract form',
+    titleDefaultMessage: 'User Contract Form',
     category: 'web3',
     description:
       'Customize forms for your interactions with blockchain contracts.',

@@ -70,6 +70,8 @@ export function PagesContainer({
   const [selectedSectionIndex, setSelectedSectionindex] = useState<number>(-1);
   const [pageToClone, setPageToClone] = useState<string>();
 
+  const [activeSection, setActiveSection] = useState<PageSectionKey>();
+
   const [sectionToClone, setSectionToClone] = useState<PageSectionKey>();
 
   const [selectedPage, setSelectedPage] = useState<string>();
@@ -110,6 +112,7 @@ export function PagesContainer({
   const handleRemovePageSections = (page: string, index: number) => {
     setSelectedPage(page);
     setSelectedSectionindex(index);
+
     setShowConfirmRemove(true);
   };
 
@@ -175,21 +178,33 @@ export function PagesContainer({
     });
   };
 
+  const handleActivateSection = (key: PageSectionKey) => {
+    setActiveSection(key);
+
+    setTimeout(() => {
+      setActiveSection(undefined);
+    }, 3000);
+  };
+
   const handleSwap = useCallback(
-    (page: string, index: number, otherIndex: number) => {
+    (page: string, fromIndex: number, toIndex: number) => {
       setPages((value) => {
         const newPages = { ...value };
 
         const newPage = newPages[page];
 
-        let firstSection = newPage.sections[index];
-        let secondSection = newPage.sections[otherIndex];
+        if (fromIndex === toIndex) {
+          return newPages;
+        }
 
-        newPage.sections[index] = secondSection;
-        newPage.sections[otherIndex] = firstSection;
+        let [another] = newPage.sections.splice(fromIndex, 1);
 
-        return newPages;
+        newPage.sections.splice(toIndex + 1, 0, another);
+
+        return { ...newPages };
       });
+
+      handleActivateSection({ index: toIndex + 1, page });
     },
     [currentPage.sections]
   );
@@ -241,8 +256,6 @@ export function PagesContainer({
     setShowCloneSection(true);
   };
 
-  const [activeSection, setActiveSection] = useState<PageSectionKey>();
-
   const handleConfirmCloneSection = (name: string, page?: string) => {
     setPages((value) => {
       const newPages = { ...value };
@@ -281,14 +294,10 @@ export function PagesContainer({
     });
 
     if (sectionToClone) {
-      setActiveSection({
+      handleActivateSection({
         page: sectionToClone.page,
         index: sectionToClone.index + 1,
       });
-
-      setTimeout(() => {
-        setActiveSection(undefined);
-      }, 5000);
     }
 
     setShowCloneSection(false);
@@ -406,11 +415,12 @@ export function PagesContainer({
         <CloneSectionDialog
           DialogProps={{
             open: showCloneSection,
-            maxWidth: 'sm',
+            maxWidth: 'xs',
             fullWidth: true,
             onClose: handleCloseCloneSection,
           }}
           pages={pages}
+          page={sectionToClone.page}
           onConfirm={handleConfirmCloneSection}
           section={pages[sectionToClone.page].sections[sectionToClone.index]}
         />
@@ -419,7 +429,7 @@ export function PagesContainer({
         <ClonePageDialog
           DialogProps={{
             open: showClonePage,
-            maxWidth: 'sm',
+            maxWidth: 'xs',
             fullWidth: true,
             onClose: handleCloseClonePage,
           }}
@@ -432,30 +442,54 @@ export function PagesContainer({
         <AppConfirmDialog
           onConfirm={handleConfirmRemove}
           DialogProps={{
-            maxWidth: 'sm',
+            maxWidth: 'xs',
             fullWidth: true,
             open: showRemovePage,
             onClose: handelCloseConfirmRemove,
           }}
+          title={
+            <FormattedMessage
+              id="delete.page.page"
+              defaultMessage="Delete Page: {page}"
+              values={{
+                page: (
+                  <Typography
+                    component="span"
+                    variant="inherit"
+                    fontWeight="400"
+                  >
+                    {pages[pageToRemove].title}
+                  </Typography>
+                ),
+              }}
+            />
+          }
+          actionCaption={
+            <FormattedMessage id="delete" defaultMessage="Delete" />
+          }
         >
           <Typography variant="body1">
             <FormattedMessage
-              id="remove.this.page"
-              defaultMessage="Remove this page?"
+              id="are.you.sure.you.want.to.delete.this.page"
+              defaultMessage="Are you sure you want to delete this page?"
             />
           </Typography>
         </AppConfirmDialog>
       )}
 
-      <ConfirmRemoveSectionDialog
-        dialogProps={{
-          open: showConfirmRemove,
-          maxWidth: 'xs',
-          fullWidth: true,
-          onClose: handleCloseConfirmRemove,
-        }}
-        onConfirm={handleConfimRemoveSection}
-      />
+      {selectedPage && selectedSectionIndex > -1 && (
+        <ConfirmRemoveSectionDialog
+          dialogProps={{
+            open: showConfirmRemove,
+            maxWidth: 'xs',
+            fullWidth: true,
+            onClose: handleCloseConfirmRemove,
+          }}
+          section={pages[selectedPage].sections[selectedSectionIndex]}
+          onConfirm={handleConfimRemoveSection}
+        />
+      )}
+
       <PagesSection
         builderKit={builderKit}
         pages={pages}

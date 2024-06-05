@@ -17,7 +17,7 @@ import DragIndicatorIcon from '@mui/icons-material/DragIndicatorOutlined';
 import { CSS } from '@dnd-kit/utilities';
 
 import { AppPageSection } from '@dexkit/ui/modules/wizard/types/section';
-import { useDraggable, useDroppable } from '@dnd-kit/core';
+import { useDndContext, useDraggable, useDroppable } from '@dnd-kit/core';
 import { CheckOutlined, CloseOutlined } from '@mui/icons-material';
 import MoreVert from '@mui/icons-material/MoreVert';
 import dynamic from 'next/dynamic';
@@ -52,7 +52,9 @@ export default function PageSection({
 }: PageSectionProps) {
   const { transform, setNodeRef, listeners, attributes, isDragging } =
     useDraggable({ id });
-  const { isOver, setNodeRef: setNodeRefDrop } = useDroppable({ id });
+
+  const { isOver: isOverBottom, setNodeRef: setNodeRefDropBottom } =
+    useDroppable({ id });
 
   const inputRef = useRef<HTMLInputElement | null>(null);
 
@@ -115,6 +117,8 @@ export default function PageSection({
     }
   };
 
+  const { active: activeNode } = useDndContext();
+
   return (
     <>
       {anchorEl && section && (
@@ -126,121 +130,117 @@ export default function PageSection({
           onClose={handleCloseMenu}
         />
       )}
-
-      <Box
-        sx={(theme) => ({
-          borderRadius: theme.shape.borderRadius / 2,
-          border: isOver
-            ? `2px solid ${theme.palette.primary.main}`
+      <Card
+        sx={{
+          border: active
+            ? (theme) => `2px solid ${theme.palette.primary.main}`
             : undefined,
-        })}
-        ref={setNodeRefDrop}
+          transform: CSS.Translate.toString(transform),
+          zIndex: isDragging ? (theme) => theme.zIndex.snackbar + 1 : undefined,
+        }}
+        ref={setNodeRef}
       >
-        <Card
-          sx={{
-            border: active
-              ? (theme) => `2px solid ${theme.palette.primary.main}`
-              : undefined,
-            transform: CSS.Translate.toString(transform),
-            zIndex: isDragging
-              ? (theme) => theme.zIndex.snackbar + 1
-              : undefined,
-          }}
-          ref={setNodeRef}
-        >
-          <CardActionArea onClick={() => onAction('edit')}>
-            <Box sx={{ py: 1, px: 2 }}>
+        <CardActionArea onClick={() => onAction('edit')}>
+          <Box sx={{ py: 1, px: 2 }}>
+            <Stack
+              spacing={2}
+              alignItems="center"
+              justifyContent="space-between"
+              direction="row"
+            >
               <Stack
                 spacing={2}
                 alignItems="center"
                 justifyContent="space-between"
                 direction="row"
               >
-                <Stack
-                  spacing={2}
-                  alignItems="center"
-                  justifyContent="space-between"
-                  direction="row"
+                <Tooltip
+                  title={
+                    <FormattedMessage
+                      id="drag.to.reorder"
+                      defaultMessage="Drag to reorder"
+                    />
+                  }
                 >
-                  <Tooltip
-                    title={
-                      <FormattedMessage
-                        id="drag.to.reorder"
-                        defaultMessage="Drag to reorder"
+                  <DragIndicatorIcon {...listeners} {...attributes} />
+                </Tooltip>
+                <Box>
+                  {isEdit ? (
+                    <Stack direction="row" alignItems="center" spacing={0.5}>
+                      <TextField
+                        value={name}
+                        inputRef={(ref) => (inputRef.current = ref)}
+                        onClick={(e) => e.stopPropagation()}
+                        onChange={(e) => setName(e.target.value)}
+                        variant="standard"
+                        size="small"
+                        onKeyDown={handleKeyDown}
                       />
-                    }
-                  >
-                    <DragIndicatorIcon {...listeners} {...attributes} />
-                  </Tooltip>
-                  <Box>
-                    {isEdit ? (
-                      <Stack direction="row" alignItems="center" spacing={0.5}>
-                        <TextField
-                          value={name}
-                          inputRef={(ref) => (inputRef.current = ref)}
-                          onClick={(e) => e.stopPropagation()}
-                          onChange={(e) => setName(e.target.value)}
-                          variant="standard"
-                          size="small"
-                          onKeyDown={handleKeyDown}
-                        />
-                        <IconButton
-                          size="small"
-                          onClick={handleStopPropagation(handleSave)}
-                        >
-                          <CheckOutlined />
-                        </IconButton>
-                        <IconButton
-                          size="small"
-                          onClick={handleStopPropagation(handleCancel)}
-                        >
-                          <CloseOutlined />
-                        </IconButton>
-                      </Stack>
-                    ) : (
-                      <Box>
-                        <Link
-                          variant="body1"
-                          underline="none"
-                          sx={{ cursor: 'pointer' }}
-                          onClick={handleStopPropagation(handleEdit)}
-                          color="text.primary"
-                        >
-                          {title}
-                        </Link>
-
-                        <Typography variant="body2" color="text.secondary">
-                          {subtitle}
-                        </Typography>
-                      </Box>
-                    )}
-                  </Box>
-                </Stack>
-                <Stack direction="row" spacing={0.5} alignItems="center">
-                  {expand && section ? (
-                    <Box pr={4}>
-                      <PageSectionMenuStack
-                        hideDesktop={section?.hideDesktop}
-                        hideMobile={section?.hideMobile}
-                        isVisible={isVisible}
-                        onAction={onAction}
-                        onToggleVisibilty={handleToggleVisibility}
-                      />
-                    </Box>
+                      <IconButton
+                        size="small"
+                        onClick={handleStopPropagation(handleSave)}
+                      >
+                        <CheckOutlined />
+                      </IconButton>
+                      <IconButton
+                        size="small"
+                        onClick={handleStopPropagation(handleCancel)}
+                      >
+                        <CloseOutlined />
+                      </IconButton>
+                    </Stack>
                   ) : (
-                    <IconButton onClick={handleOpenMenu}>
-                      <MoreVert />
-                    </IconButton>
+                    <Box>
+                      <Link
+                        variant="body1"
+                        underline="none"
+                        sx={{ cursor: 'pointer' }}
+                        onClick={handleStopPropagation(handleEdit)}
+                        color="text.primary"
+                      >
+                        {title}
+                      </Link>
+
+                      <Typography variant="body2" color="text.secondary">
+                        {subtitle}
+                      </Typography>
+                    </Box>
                   )}
-                </Stack>
+                </Box>
               </Stack>
-            </Box>
-          </CardActionArea>
-          {isVisible && section && (
-            <PreviewPagePlatform sections={[section]} disabled={true} />
-          )}
-        </Card>
-      </Box>
+              <Stack direction="row" spacing={0.5} alignItems="center">
+                {expand && section ? (
+                  <Box pr={4}>
+                    <PageSectionMenuStack
+                      hideDesktop={section?.hideDesktop}
+                      hideMobile={section?.hideMobile}
+                      isVisible={isVisible}
+                      onAction={onAction}
+                      onToggleVisibilty={handleToggleVisibility}
+                    />
+                  </Box>
+                ) : (
+                  <IconButton onClick={handleOpenMenu}>
+                    <MoreVert />
+                  </IconButton>
+                )}
+              </Stack>
+            </Stack>
+          </Box>
+        </CardActionArea>
+        {isVisible && section && (
+          <PreviewPagePlatform sections={[section]} disabled={true} />
+        )}
+      </Card>
+      <Box
+        sx={(theme) => ({
+          display: activeNode ? 'block' : 'none',
+          height: 2,
+          position: 'static',
+          bgcolor: isOverBottom ? theme.palette.primary.main : 'rgba(0,0,0,0)',
+        })}
+        ref={setNodeRefDropBottom}
+      />
     </>
   );
 }

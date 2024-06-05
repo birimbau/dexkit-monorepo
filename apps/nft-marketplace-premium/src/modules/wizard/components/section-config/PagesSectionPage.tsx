@@ -100,8 +100,6 @@ export default function PagesSectionPage({
   };
 
   const handleAction = (action: string, page: string, index: number) => {
-    console.log('handle', page, action, index);
-
     switch (action) {
       case 'remove':
         onRemove(page, index);

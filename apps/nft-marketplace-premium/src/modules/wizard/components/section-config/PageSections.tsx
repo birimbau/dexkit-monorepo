@@ -18,14 +18,14 @@ import {
   SectionType,
 } from '@dexkit/ui/modules/wizard/types/section';
 
-import FilterAltIcon from '@mui/icons-material/FilterAltOutlined';
+import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import LazyTextField from '@dexkit/ui/components/LazyTextField';
 import { useIsMobile } from '@dexkit/ui/hooks/misc';
 import { DndContext, DragEndEvent } from '@dnd-kit/core';
 import Add from '@mui/icons-material/AddOutlined';
-import FilterAltOffIcon from '@mui/icons-material/FilterAltOffOutlined';
+import FilterAltOffIcon from '@mui/icons-material/FilterAltOff';
 import Search from '@mui/icons-material/SearchOutlined';
 import { useMemo, useState } from 'react';
 import { SECTION_CONFIG } from '../../constants/sections';
@@ -234,6 +234,36 @@ export default function PageSections({
           page={page}
         />
 
+        <Box py={2}>
+          <Stack spacing={2} direction="row">
+            <Box maxWidth={'xs'}>
+              <Button
+                variant="outlined"
+                onClick={onAddSection}
+                startIcon={<Add />}
+              >
+                <FormattedMessage
+                  id="add.section"
+                  defaultMessage="Add section"
+                />
+              </Button>
+            </Box>
+
+            <Box maxWidth={'xs'}>
+              <Button
+                variant="outlined"
+                onClick={onAddCustomSection}
+                startIcon={<Add />}
+              >
+                <FormattedMessage
+                  id="add.custom.section"
+                  defaultMessage="Add custom section"
+                />
+              </Button>
+            </Box>
+          </Stack>
+        </Box>
+
         <Stack
           direction="row"
           alignItems="center"
@@ -241,7 +271,7 @@ export default function PageSections({
           justifyContent="space-between"
         >
           <Stack direction="row" alignItems="center" spacing={2}>
-            <Typography fontWeight="400" variant="h6">
+            <Typography fontWeight="500" variant="h6">
               <FormattedMessage
                 id="page.sections"
                 defaultMessage="Page sections"
@@ -273,35 +303,7 @@ export default function PageSections({
             }}
           />
         </Stack>
-        <Box py={2}>
-          <Stack spacing={2} direction="row">
-            <Box maxWidth={'xs'}>
-              <Button
-                variant="outlined"
-                onClick={onAddSection}
-                startIcon={<Add />}
-              >
-                <FormattedMessage
-                  id="add.section"
-                  defaultMessage="Add section"
-                />
-              </Button>
-            </Box>
 
-            <Box maxWidth={'xs'}>
-              <Button
-                variant="outlined"
-                onClick={onAddCustomSection}
-                startIcon={<Add />}
-              >
-                <FormattedMessage
-                  id="add.custom.section"
-                  defaultMessage="Add custom section"
-                />
-              </Button>
-            </Box>
-          </Stack>
-        </Box>
         {showFilters && (
           <Collapse in={showFilters}>
             <Card>

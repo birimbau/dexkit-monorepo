@@ -237,7 +237,7 @@ export default function Pages({
                 alignItems="center"
                 justifyContent="space-between"
               >
-                <Typography fontWeight="400" variant="h6">
+                <Typography fontWeight="500" variant="h6">
                   <FormattedMessage id="page.list" defaultMessage="Page list" />
                 </Typography>
                 <LazyTextField

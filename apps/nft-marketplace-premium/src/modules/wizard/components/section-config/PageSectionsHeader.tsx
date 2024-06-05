@@ -4,12 +4,13 @@ import Check from '@mui/icons-material/Check';
 import Close from '@mui/icons-material/Close';
 import Visibility from '@mui/icons-material/VisibilityOutlined';
 import {
-  Box,
   Button,
+  ButtonBase,
   IconButton,
   Stack,
   TextField,
   Typography,
+  alpha,
 } from '@mui/material';
 import { ChangeEvent, useRef, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
@@ -79,17 +80,28 @@ export default function PageSectionsHeader({
             onChange={handleChange}
           />
         ) : (
-          <Box>
+          <ButtonBase
+            sx={{
+              px: 1,
+              py: 0.25,
+
+              borderRadius: (theme) => theme.shape.borderRadius / 2,
+              '&: hover': {
+                backgroundColor: (theme) =>
+                  alpha(theme.palette.primary.main, 0.1),
+              },
+            }}
+            onClick={handleEdit}
+          >
             <Typography
               variant="h5"
               sx={{
                 cursor: 'pointer',
               }}
-              onClick={handleEdit}
             >
               {page.title}
             </Typography>
-          </Box>
+          </ButtonBase>
         )}
       </Stack>
       {isEditTitle && (

@@ -13,6 +13,7 @@ import {
   Select,
   Stack,
   TextField,
+  Typography,
 } from '@mui/material';
 import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
@@ -22,12 +23,14 @@ export interface CloneSectionDialogProps {
   section: AppPageSection;
   onConfirm: (name: string, page?: string) => void;
   pages: { [key: string]: AppPage };
+  page: string;
 }
 
 export default function CloneSectionDialog({
   DialogProps,
   section,
   pages,
+  page,
   onConfirm,
 }: CloneSectionDialogProps) {
   const [name, setName] = useState('');
@@ -41,39 +44,60 @@ export default function CloneSectionDialog({
     setName('');
   };
 
-  const [page, setPage] = useState<string>('');
+  const [selectedPage, setPage] = useState(page);
 
   return (
     <Dialog {...DialogProps}>
       <AppDialogTitle
         title={
           <FormattedMessage
-            id="clone.section"
+            id="clone.section.section"
             defaultMessage="Clone Section: {section}"
-            values={{ section: section.title }}
+            values={{
+              section: (
+                <Typography variant="inherit" component="span" fontWeight="400">
+                  {section?.title || section?.name}
+                </Typography>
+              ),
+            }}
           />
         }
         onClose={handleClose}
+        titleBox={{ px: 2 }}
       />
-      <DialogContent dividers sx={{ py: 4 }}>
+      <DialogContent dividers sx={{ p: 4 }}>
         <Stack spacing={2}>
+          <TextField
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            label={
+              <FormattedMessage
+                id="new.section.name"
+                defaultMessage="New section name"
+              />
+            }
+            fullWidth
+          />
           <FormControl>
             <InputLabel shrink>
-              <FormattedMessage id="page" defaultMessage="Page" />
+              <FormattedMessage
+                id="clone.section.to.page"
+                defaultMessage="Clone section to Page"
+              />
             </InputLabel>
             <Select
-              value={page}
+              value={selectedPage}
               onChange={(e) => setPage(e.target.value)}
               displayEmpty
               notched
-              label={<FormattedMessage id="page" defaultMessage="Page" />}
-            >
-              <MenuItem value="">
+              fullWidth
+              label={
                 <FormattedMessage
-                  id="current.page"
-                  defaultMessage="Current page"
+                  id="clone.section.to.page"
+                  defaultMessage="Clone section to Page"
                 />
-              </MenuItem>
+              }
+            >
               {Object.keys(pages).map((key) => (
                 <MenuItem key={key} value={key}>
                   {pages[key].title}
@@ -81,25 +105,14 @@ export default function CloneSectionDialog({
               ))}
             </Select>
           </FormControl>
-          <TextField
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            label={
-              <FormattedMessage
-                id="section.name"
-                defaultMessage="Section name"
-              />
-            }
-            fullWidth
-          />
         </Stack>
       </DialogContent>
-      <DialogActions>
-        <Button onClick={() => onConfirm(name, page)} variant="contained">
-          <FormattedMessage id="clone.section" defaultMessage="Clone Section" />
-        </Button>
+      <DialogActions sx={{ px: 4, py: 2 }}>
         <Button onClick={handleClose}>
           <FormattedMessage id="cancel" defaultMessage="Cancel" />
+        </Button>
+        <Button onClick={() => onConfirm(name, page)} variant="contained">
+          <FormattedMessage id="clone" defaultMessage="Clone" />
         </Button>
       </DialogActions>
     </Dialog>

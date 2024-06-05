@@ -39,6 +39,7 @@ export default function PagesWizardContainer({
   const [currentPage, setCurrentPage] = useState<AppPage>(config.pages['home']);
   const [pages, setPages] = useState<{ [key: string]: AppPage }>(config.pages);
   const [showAddPage, setShowAddPage] = useState(false);
+  
   useEffect(() => {
     if (config && !currentPage) {
       setCurrentPage(currentPage);
