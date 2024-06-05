@@ -293,6 +293,7 @@ export function EditWizardContainer({ site }: Props) {
     setShowConfirmSendConfig(true);
 
     const newConfig = { ...wizardConfig, ..._config };
+
     setWizardConfig(newConfig);
   };
 
@@ -1038,6 +1039,7 @@ export function EditWizardContainer({ site }: Props) {
                     <PagesWizardContainer
                       config={config}
                       onSave={handleSave}
+                      onChange={handleChange}
                       onHasChanges={setHasChanges}
                       builderKit={activeBuilderKit}
                       siteId={site?.id}

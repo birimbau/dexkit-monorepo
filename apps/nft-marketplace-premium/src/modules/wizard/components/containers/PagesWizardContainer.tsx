@@ -22,6 +22,7 @@ const ApiKeyIntegrationDialog = dynamic(
 interface Props {
   config: AppConfig;
   onSave: (config: AppConfig) => void;
+  onChange: (config: AppConfig) => void;
   builderKit?: BuilderKit;
   onHasChanges: (hasChanges: boolean) => void;
   siteId?: number;
@@ -34,12 +35,13 @@ export default function PagesWizardContainer({
   onSave,
   builderKit,
   onHasChanges,
+  onChange,
   previewUrl,
 }: Props) {
   const [currentPage, setCurrentPage] = useState<AppPage>(config.pages['home']);
   const [pages, setPages] = useState<{ [key: string]: AppPage }>(config.pages);
   const [showAddPage, setShowAddPage] = useState(false);
-  
+
   useEffect(() => {
     if (config && !currentPage) {
       setCurrentPage(currentPage);
@@ -60,8 +62,11 @@ export default function PagesWizardContainer({
   useMemo(() => {
     if (onHasChanges) {
       onHasChanges(pagesChanged);
+
+      const newConfig = { ...config, pages };
+      onChange(newConfig);
     }
-  }, [onHasChanges, pagesChanged]);
+  }, [onHasChanges, pagesChanged, pages]);
 
   const selectedTheme = useMemo(() => {
     if (config.theme !== undefined) {
