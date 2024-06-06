@@ -1,5 +1,5 @@
 import MarketplacesTableSkeleton from '@/modules/admin/components/tables/MaketplacesTableSkeleton';
-import MarketplacesTable from '@/modules/admin/components/tables/MarketplacesTable';
+import MarketplacesTableV2 from '@/modules/admin/components/tables/MarketplacesTableV2';
 import { MismatchAccount } from '@/modules/wizard/components/MismatchAccount';
 import { WelcomeMessage } from '@/modules/wizard/components/WelcomeMessage';
 import ConfigureDomainDialog from '@/modules/wizard/components/dialogs/ConfigureDomainDialog';
@@ -99,8 +99,7 @@ export const AdminIndexPage: NextPage = () => {
       if (lazySearch) {
         return configsQuery.data.filter(
           (c) =>
-            c.appConfig.name.toLowerCase().search(lazySearch.toLowerCase()) >
-            -1,
+            c.appConfig.name.toLowerCase().search(lazySearch.toLowerCase()) > -1
         );
       }
 
@@ -127,12 +126,14 @@ export const AdminIndexPage: NextPage = () => {
 
     if (configs && configs.length > 0) {
       return (
-        <TableContainer>
-          <MarketplacesTable
-            configs={configs}
-            onConfigureDomain={handleShowConfigureDomain}
-          />
-        </TableContainer>
+        <Container>
+          <TableContainer>
+            <MarketplacesTableV2
+              configs={configs}
+              onConfigureDomain={handleShowConfigureDomain}
+            />
+          </TableContainer>
+        </Container>
       );
     }
 
