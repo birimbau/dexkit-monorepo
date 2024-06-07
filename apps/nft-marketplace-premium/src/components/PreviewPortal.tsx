@@ -1,6 +1,6 @@
 import createCache from '@emotion/cache';
 import { CacheProvider } from '@emotion/react';
-import { styled } from '@mui/material';
+import { CssBaseline, ThemeProvider, styled, useTheme } from '@mui/material';
 import { useState } from 'react';
 import ReactDOM from 'react-dom';
 
@@ -11,52 +11,65 @@ const PreviewIframe = styled('iframe')(() => ({
   height: '500px',
   width: '500px',
 }));
+
 export const PreviewPortal = (props: any) => {
-  const [contentRef, setContentRef] = useState<any>(null);
+  const [contentRef, setContentRef] = useState<HTMLIFrameElement | null>(null);
+
   const mountNode = contentRef?.contentWindow?.document?.body;
+
   const cache = createCache({
-    key: 'css-iframe',
+    key: 'css',
     container: contentRef?.contentWindow?.document?.head,
     prepend: true,
   });
 
-  return (
-    <PreviewIframe ref={setContentRef}>
-      {mountNode &&
-        ReactDOM.createPortal(
-          <CacheProvider value={cache}>
-            <link
-              type="text/css"
-              rel="stylesheet"
-              href="/css/react-page/editor/index.css"
-            />
-            <link
-              type="text/css"
-              rel="stylesheet"
-              href="/css/react-page/plugins-image/index.css"
-            />
-            <link
-              type="text/css"
-              rel="stylesheet"
-              href="/css/react-page/plugins-slate/index.css"
-            />
-            <link
-              type="text/css"
-              rel="stylesheet"
-              href="/css/react-page/plugins-spacer/index.css"
-            />
-            <link
-              type="text/css"
-              rel="stylesheet"
-              href="/css/react-page/plugins-video/index.css"
-            />
+  const theme = useTheme();
 
-            {props.children}
-          </CacheProvider>,
-          mountNode,
-          'preview-mobile-key'
-        )}
-    </PreviewIframe>
+  return (
+    <CacheProvider value={cache}>
+      <PreviewIframe ref={setContentRef}>
+        {mountNode &&
+          ReactDOM.createPortal(
+            <>
+              <link
+                rel="stylesheet"
+                href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"
+              />
+              <link
+                type="text/css"
+                rel="stylesheet"
+                href="/css/react-page/editor/index.css"
+              />
+              <link
+                type="text/css"
+                rel="stylesheet"
+                href="/css/react-page/plugins-image/index.css"
+              />
+              <link
+                type="text/css"
+                rel="stylesheet"
+                href="/css/react-page/plugins-slate/index.css"
+              />
+              <link
+                type="text/css"
+                rel="stylesheet"
+                href="/css/react-page/plugins-spacer/index.css"
+              />
+              <link
+                type="text/css"
+                rel="stylesheet"
+                href="/css/react-page/plugins-video/index.css"
+              />
+              <ThemeProvider theme={theme}>
+                <CssBaseline />
+                {props.children}
+              </ThemeProvider>
+            </>,
+            mountNode,
+            'preview-mobile-key'
+          )}
+      </PreviewIframe>
+    </CacheProvider>
   );
 };
 
