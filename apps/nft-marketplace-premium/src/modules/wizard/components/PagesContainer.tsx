@@ -1,6 +1,6 @@
 import { AppPageSection } from '@dexkit/ui/modules/wizard/types/section';
 import dynamic from 'next/dynamic';
-import { Dispatch, SetStateAction, useCallback, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 
 import { AppConfirmDialog } from '@dexkit/ui';
 import {
@@ -37,18 +37,16 @@ function generateRandomString(length: number) {
   return result;
 }
 
+type Callback = (cb: { [key: string]: AppPage }) => {
+  [key: string]: AppPage;
+};
+
 interface Props {
   pages: {
     [key: string]: AppPage;
   };
-  setPages: Dispatch<
-    SetStateAction<{
-      [key: string]: AppPage;
-    }>
-  >;
+  setPages: (cb: Callback) => void;
   theme: any;
-  currentPage: AppPage;
-  setCurrentPage: Dispatch<SetStateAction<AppPage>>;
   builderKit?: BuilderKit;
   showAddPage: boolean;
   setShowAddPage: (show: boolean) => void;
@@ -56,15 +54,13 @@ interface Props {
 }
 
 export function PagesContainer({
-  pages,
-  setPages,
   theme,
-  currentPage,
-  setCurrentPage,
   builderKit,
   showAddPage,
   setShowAddPage,
   previewUrl,
+  pages,
+  setPages,
 }: Props) {
   const [showConfirmRemove, setShowConfirmRemove] = useState(false);
   const [selectedSectionIndex, setSelectedSectionindex] = useState<number>(-1);
@@ -105,6 +101,7 @@ export function PagesContainer({
           return newPages;
         }
       }
+
       return value;
     });
   };
@@ -145,7 +142,6 @@ export function PagesContainer({
 
       return newPages;
     });
-
     setShowConfirmRemove(false);
   };
 
@@ -178,13 +174,20 @@ export function PagesContainer({
     });
   };
 
-  const handleActivateSection = (key: PageSectionKey) => {
+  const activeRef = useRef<NodeJS.Timeout | null>(null);
+
+  const handleActivateSection = useCallback((key: PageSectionKey) => {
+    if (activeRef.current != null) {
+      clearTimeout(activeRef.current);
+    }
+
     setActiveSection(key);
 
-    setTimeout(() => {
+    activeRef.current = setTimeout(() => {
       setActiveSection(undefined);
+      activeRef.current = null;
     }, 3000);
-  };
+  }, []);
 
   const handleSwap = useCallback(
     (page: string, fromIndex: number, toIndex: number) => {
@@ -194,19 +197,23 @@ export function PagesContainer({
         const newPage = newPages[page];
 
         if (fromIndex === toIndex) {
-          return newPages;
+          return { ...newPages };
         }
 
-        let [another] = newPage.sections.splice(fromIndex, 1);
+        const newSections = newPage.sections.map((x) => x);
 
-        newPage.sections.splice(toIndex + 1, 0, another);
+        let [another] = newSections.splice(fromIndex, 1);
 
-        return { ...newPages };
+        newSections.splice(toIndex, 0, { ...another });
+
+        newPage.sections = [...newSections];
+
+        return { ...newPages, [page]: { ...newPage } };
       });
 
-      handleActivateSection({ index: toIndex + 1, page });
+      handleActivateSection({ index: toIndex, page });
     },
-    [currentPage.sections]
+    [handleActivateSection, setPages]
   );
 
   const handleHideDesktop = (page: string, index: number) => {
@@ -247,7 +254,6 @@ export function PagesContainer({
   };
 
   const [showCloneSection, setShowCloneSection] = useState(false);
-  ('');
 
   const [showClonePage, setShowClonePage] = useState(false);
 
@@ -496,7 +502,7 @@ export function PagesContainer({
         theme={theme}
         onChangeName={handleChangeName}
         onEditTitle={handleEditTitle}
-        sections={currentPage.sections}
+        sections={selectedPage ? pages[selectedPage].sections : []}
         onEditPage={onEditPage}
         onRemovePage={handleRemovePage}
         onSaveSection={handleSavePageSections}

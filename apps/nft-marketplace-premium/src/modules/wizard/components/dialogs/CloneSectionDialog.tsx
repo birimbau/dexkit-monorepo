@@ -111,7 +111,12 @@ export default function CloneSectionDialog({
         <Button onClick={handleClose}>
           <FormattedMessage id="cancel" defaultMessage="Cancel" />
         </Button>
-        <Button onClick={() => onConfirm(name, page)} variant="contained">
+        <Button
+          onClick={() =>
+            onConfirm(name, page !== selectedPage ? selectedPage : undefined)
+          }
+          variant="contained"
+        >
           <FormattedMessage id="clone" defaultMessage="Clone" />
         </Button>
       </DialogActions>

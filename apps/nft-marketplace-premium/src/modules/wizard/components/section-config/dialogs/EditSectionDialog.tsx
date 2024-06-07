@@ -7,6 +7,7 @@ import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import CloseIcon from '@mui/icons-material/Close';
 import {
   Box,
+  ButtonBase,
   Dialog,
   DialogContent,
   DialogProps,
@@ -16,11 +17,13 @@ import {
   Stack,
   TextField,
   Typography,
+  alpha,
 } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
-import { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, KeyboardEvent, useEffect, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
+import { useIsMobile } from '@dexkit/core';
 import { AppDialogTitle } from '@dexkit/ui/components/AppDialogTitle';
 import Check from '@mui/icons-material/Check';
 import Edit from '@mui/icons-material/Edit';
@@ -88,6 +91,10 @@ export default function EditSectionDialog({
     setIsEditName(true);
   };
 
+  const handleCancel = () => {
+    setIsEditName(false);
+  };
+
   const handleSaveName = () => {
     setIsEditName(false);
 
@@ -125,6 +132,19 @@ export default function EditSectionDialog({
       setSectionMetadata(undefined);
     }
   }, [sectionType]);
+
+  const isMobile = useIsMobile();
+
+  const handleKeyDown = (e: KeyboardEvent) => {
+    e.stopPropagation();
+
+    if (e.key === 'Enter') {
+      handleSaveName();
+    }
+    if (e.key === 'Escape') {
+      handleCancel();
+    }
+  };
 
   return (
     <Dialog {...dialogProps} onClose={handleClose}>
@@ -166,6 +186,7 @@ export default function EditSectionDialog({
                 variant="standard"
                 onChange={handleChangeName}
                 value={name}
+                onKeyDown={handleKeyDown}
                 placeholder={formatMessage({
                   id: 'section.name',
                   defaultMessage: 'Section name',
@@ -173,14 +194,30 @@ export default function EditSectionDialog({
               />
             )}
             {isEdit && !isEditName && (
-              <Box>{section?.name || section?.title}</Box>
+              <ButtonBase
+                sx={{
+                  px: 1,
+                  py: 0.25,
+
+                  borderRadius: (theme) => theme.shape.borderRadius / 2,
+                  '&: hover': {
+                    backgroundColor: (theme) =>
+                      alpha(theme.palette.primary.main, 0.1),
+                  },
+                }}
+                onClick={handleEdit}
+              >
+                <Typography variant="h6">
+                  {section?.name || section?.title}
+                </Typography>
+              </ButtonBase>
             )}
-            {isEdit && isEditName && (
+            {isEdit && isMobile && isEditName && (
               <IconButton onClick={handleSaveName}>
                 <Check />
               </IconButton>
             )}
-            {isEdit && !isEditName && (
+            {isEdit && isMobile && !isEditName && (
               <IconButton onClick={handleEdit}>
                 <Edit />
               </IconButton>

@@ -7,13 +7,14 @@ import {
   createTheme,
   responsiveFontSizes,
 } from '@mui/material';
-import { useEffect, useMemo, useState } from 'react';
+import { useContext, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { getTheme } from '../../../../theme';
 import { BuilderKit } from '../../constants';
 import { PagesContainer } from '../PagesContainer';
 
 import dynamic from 'next/dynamic';
+import { PagesContext } from './EditWizardContainer';
 
 const ApiKeyIntegrationDialog = dynamic(
   () => import('../dialogs/ApiKeyIntegrationDialog')
@@ -23,6 +24,7 @@ interface Props {
   config: AppConfig;
   onSave: (config: AppConfig) => void;
   onChange: (config: AppConfig) => void;
+  hasChanges?: boolean;
   builderKit?: BuilderKit;
   onHasChanges: (hasChanges: boolean) => void;
   siteId?: number;
@@ -34,39 +36,16 @@ export default function PagesWizardContainer({
   siteId,
   onSave,
   builderKit,
+  hasChanges,
   onHasChanges,
   onChange,
   previewUrl,
 }: Props) {
-  const [currentPage, setCurrentPage] = useState<AppPage>(config.pages['home']);
-  const [pages, setPages] = useState<{ [key: string]: AppPage }>(config.pages);
+  const [pages, setPages] = useState<{ [key: string]: AppPage }>(
+    structuredClone(config.pages)
+  );
+
   const [showAddPage, setShowAddPage] = useState(false);
-
-  useEffect(() => {
-    if (config && !currentPage) {
-      setCurrentPage(currentPage);
-    }
-    if (config && !pages) {
-      setPages(config.pages);
-    }
-  }, [config]);
-
-  const pagesChanged = useMemo(() => {
-    if (config.pages !== pages) {
-      return true;
-    } else {
-      return false;
-    }
-  }, [config.pages, pages]);
-
-  useMemo(() => {
-    if (onHasChanges) {
-      onHasChanges(pagesChanged);
-
-      const newConfig = { ...config, pages };
-      onChange(newConfig);
-    }
-  }, [onHasChanges, pagesChanged, pages]);
 
   const selectedTheme = useMemo(() => {
     if (config.theme !== undefined) {
@@ -79,42 +58,61 @@ export default function PagesWizardContainer({
   }, [config.customTheme, config.theme]);
 
   const handleSave = () => {
-    const newConfig = { ...config, pages };
+    const newConfig = { ...config };
     onSave(newConfig);
   };
 
-  const handleShowAddPage = () => {
-    setShowAddPage(true);
+  const { handleCancelEdit } = useContext(PagesContext);
+
+  const handleCancel = () => {
+    handleCancelEdit();
+    setPages(structuredClone(config.pages));
+  };
+
+  const handleSetPages = (
+    cb: (prev: { [key: string]: AppPage }) => { [key: string]: AppPage }
+  ) => {
+    setPages((value) => {
+      let res = cb(value);
+
+      onChange({
+        ...config,
+        pages: { ...(res as { [key: string]: AppPage }) },
+      });
+
+      onHasChanges(true);
+
+      return res;
+    });
   };
 
   return (
     <>
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          {pages && (
-            <PagesContainer
-              builderKit={builderKit}
-              pages={pages}
-              currentPage={currentPage}
-              setPages={setPages}
-              setCurrentPage={setCurrentPage}
-              theme={selectedTheme}
-              showAddPage={showAddPage}
-              setShowAddPage={setShowAddPage}
-              previewUrl={previewUrl}
-            />
-          )}
+          <PagesContainer
+            builderKit={builderKit}
+            pages={pages}
+            setPages={handleSetPages}
+            theme={selectedTheme}
+            showAddPage={showAddPage}
+            setShowAddPage={setShowAddPage}
+            previewUrl={previewUrl}
+          />
         </Grid>
         <Grid item xs={12}>
           <Divider />
         </Grid>
         <Grid item xs={12}>
           <Stack spacing={1} direction="row" justifyContent="flex-end">
+            <Button onClick={handleCancel} disabled={!hasChanges}>
+              <FormattedMessage id="cancel" defaultMessage="Cancel" />
+            </Button>
             <Button
               variant="contained"
               color="primary"
               onClick={handleSave}
-              disabled={!pagesChanged}
+              disabled={!hasChanges}
             >
               <FormattedMessage id="save" defaultMessage="Save" />
             </Button>

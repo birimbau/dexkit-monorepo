@@ -15,9 +15,10 @@ import {
   Experimental_CssVarsProvider as CssVarsProvider,
   SupportedColorScheme,
 } from '@mui/material/styles';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useContext, useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { PageSectionKey } from '../../hooks/sections';
+import { PagesContext } from '../containers/EditWizardContainer';
 import PreviewPageDialog from '../dialogs/PreviewPageDialog';
 import Page from './Page';
 import PageSections from './PageSections';
@@ -84,17 +85,16 @@ export default function Pages({
 
   const pageList = useMemo(() => {
     return keys.slice(offset, limit);
-  }, [keys, offset, limit]);
+  }, [keys, offset, limit, pages]);
 
-  const [selectedKey, setSelectedKey] = useState<string>();
-
-  const [isEdit, setIsEdit] = useState(false);
+  const { setSelectedKey, setIsEditPage, isEditPage, selectedKey } =
+    useContext(PagesContext);
 
   const [showPreview, setShowPreview] = useState(false);
 
   const handleSelect = (id: string) => {
     return () => {
-      setIsEdit(true);
+      setIsEditPage(true);
       setSelectedKey(id);
     };
   };
@@ -127,7 +127,7 @@ export default function Pages({
 
   const handlePageClose = () => {
     setSelectedKey(undefined);
-    setIsEdit(false);
+    setIsEditPage(false);
   };
 
   const handleAdd = (page: string, custom?: boolean) => {
@@ -170,7 +170,7 @@ export default function Pages({
     }
   };
 
-  if (selectedKey !== undefined && isEdit) {
+  if (selectedKey !== undefined && isEditPage) {
     return (
       <Box px={{ sm: 4 }}>
         {renderPreviewDialog()}

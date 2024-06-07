@@ -16,8 +16,9 @@ import DragIndicatorIcon from '@mui/icons-material/DragIndicatorOutlined';
 
 import { CSS } from '@dnd-kit/utilities';
 
+import { useIsMobile } from '@dexkit/core';
 import { AppPageSection } from '@dexkit/ui/modules/wizard/types/section';
-import { useDndContext, useDraggable, useDroppable } from '@dnd-kit/core';
+import { useDraggable, useDroppable } from '@dnd-kit/core';
 import { CheckOutlined, CloseOutlined } from '@mui/icons-material';
 import MoreVert from '@mui/icons-material/MoreVert';
 import dynamic from 'next/dynamic';
@@ -37,6 +38,7 @@ export interface PageSectionProps {
   onChangeName: (name: string) => void;
   section?: AppPageSection;
   active?: boolean;
+  showTopDroppable?: boolean;
 }
 
 export default function PageSection({
@@ -49,12 +51,29 @@ export default function PageSection({
   onChangeName,
   section,
   active,
+  showTopDroppable,
 }: PageSectionProps) {
-  const { transform, setNodeRef, listeners, attributes, isDragging } =
-    useDraggable({ id });
+  const {
+    transform,
+    setNodeRef,
+    listeners,
+    attributes,
+    isDragging,
+    active: activeNode,
+  } = useDraggable({ id, data: { index: id } });
+
+  const { isOver: isOverTop, setNodeRef: setNodeRefDropTop } = useDroppable({
+    id: `${id}:top`,
+    data: {
+      index: (parseInt(id) - 1).toString(),
+    },
+  });
 
   const { isOver: isOverBottom, setNodeRef: setNodeRefDropBottom } =
-    useDroppable({ id });
+    useDroppable({
+      id: `${id}:bottom`,
+      data: { index: (parseInt(id) + 1).toString() },
+    });
 
   const inputRef = useRef<HTMLInputElement | null>(null);
 
@@ -117,7 +136,7 @@ export default function PageSection({
     }
   };
 
-  const { active: activeNode } = useDndContext();
+  const isMobile = useIsMobile();
 
   return (
     <>
@@ -130,6 +149,16 @@ export default function PageSection({
           onClose={handleCloseMenu}
         />
       )}
+      <Box
+        sx={(theme) => ({
+          display: Boolean(activeNode) && showTopDroppable ? 'block' : 'none',
+          height: 2,
+          position: 'static',
+          bgcolor: isOverTop ? theme.palette.primary.main : 'rgba(0,0,0,0)',
+        })}
+        ref={setNodeRefDropTop}
+      />
+
       <Card
         sx={{
           border: active
@@ -176,18 +205,22 @@ export default function PageSection({
                         size="small"
                         onKeyDown={handleKeyDown}
                       />
-                      <IconButton
-                        size="small"
-                        onClick={handleStopPropagation(handleSave)}
-                      >
-                        <CheckOutlined />
-                      </IconButton>
-                      <IconButton
-                        size="small"
-                        onClick={handleStopPropagation(handleCancel)}
-                      >
-                        <CloseOutlined />
-                      </IconButton>
+                      {isMobile && (
+                        <>
+                          <IconButton
+                            size="small"
+                            onClick={handleStopPropagation(handleSave)}
+                          >
+                            <CheckOutlined />
+                          </IconButton>
+                          <IconButton
+                            size="small"
+                            onClick={handleStopPropagation(handleCancel)}
+                          >
+                            <CloseOutlined />
+                          </IconButton>
+                        </>
+                      )}
                     </Stack>
                   ) : (
                     <Box>
@@ -195,7 +228,7 @@ export default function PageSection({
                         variant="body1"
                         underline="none"
                         sx={{ cursor: 'pointer' }}
-                        onClick={handleStopPropagation(handleEdit)}
+                        // onClick={handleStopPropagation(handleEdit)}
                         color="text.primary"
                       >
                         {title}
@@ -234,7 +267,7 @@ export default function PageSection({
       </Card>
       <Box
         sx={(theme) => ({
-          display: activeNode ? 'block' : 'none',
+          display: Boolean(activeNode) ? 'block' : 'none',
           height: 2,
           position: 'static',
           bgcolor: isOverBottom ? theme.palette.primary.main : 'rgba(0,0,0,0)',

@@ -102,10 +102,18 @@ export default function PageSections({
 
   const handleDragEnd = (event: DragEndEvent) => {
     if (event.over) {
-      onSwap(
-        parseInt(event.active.id.toString()),
-        parseInt(event.over?.id.toString())
-      );
+      const index = parseInt(event.active.data.current?.index);
+      const otherIndex = parseInt(event.over.data.current?.index);
+
+      if (index === 0 && otherIndex === 1) {
+        return;
+      }
+
+      if (index === 0) {
+        return onSwap(index, otherIndex - 1);
+      }
+
+      onSwap(index, otherIndex);
     }
   };
 
@@ -148,13 +156,7 @@ export default function PageSections({
         return filter;
       }) || []
     );
-  }, [
-    JSON.stringify(page.sections),
-    query,
-    hideDesktop,
-    hideMobile,
-    sectionType,
-  ]);
+  }, [page, JSON.stringify(page), query, hideDesktop, hideMobile, sectionType]);
 
   const { formatMessage } = useIntl();
 
@@ -163,11 +165,16 @@ export default function PageSections({
 
   const [offset, limit] = useMemo(() => {
     return [currPage * pageSize, currPage * pageSize + pageSize];
-  }, [JSON.stringify(filteredSections), currPage, pageSize]);
+  }, [
+    JSON.stringify(filteredSections),
+    currPage,
+    pageSize,
+    JSON.stringify(page),
+  ]);
 
   const pageList = useMemo(() => {
     return filteredSections?.slice(offset, limit) || [];
-  }, [JSON.stringify(filteredSections), offset, limit]);
+  }, [JSON.stringify(filteredSections), offset, limit, JSON.stringify(page)]);
 
   const renderSections = () => {
     return pageList?.map((section, index) => {
@@ -186,8 +193,9 @@ export default function PageSections({
       }
 
       return (
-        <Grid item xs={12} key={index}>
+        <Grid item xs={12} key={`${JSON.stringify(section)}-${index}`}>
           <PageSection
+            showTopDroppable={index === 0}
             expand={!isMobile}
             icon={getSectionType(section)?.icon}
             title={getSectionType(section)?.title}

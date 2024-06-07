@@ -62,10 +62,14 @@ const VisibilityAutocomplete = ({
       }
       renderInput={(params) => (
         <TextField
-          placeholder={formatMessage({
-            id: 'display.on.device',
-            defaultMessage: 'Display on Device',
-          })}
+          placeholder={
+            !desktop && !mobile
+              ? formatMessage({
+                  id: 'display.on.device',
+                  defaultMessage: 'Display on Device',
+                })
+              : undefined
+          }
           {...params}
           variant="standard"
         />

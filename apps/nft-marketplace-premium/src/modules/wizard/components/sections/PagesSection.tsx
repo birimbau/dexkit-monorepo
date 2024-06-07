@@ -85,7 +85,7 @@ export default function PagesSection({
   const handleEdit = (page: string, index: number) => {
     onEdit(page, index);
 
-    if (sections[index].type === 'custom') {
+    if (sections[index]?.type === 'custom') {
       setIsOpenEditor(true);
     } else {
       setIsOpen(true);

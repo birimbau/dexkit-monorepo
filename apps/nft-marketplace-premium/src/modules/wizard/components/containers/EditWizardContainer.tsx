@@ -27,7 +27,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import { NextSeo } from 'next-seo';
 import dynamic from 'next/dynamic';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { useSendConfigMutation } from '../../../../hooks/whitelabel';
@@ -133,6 +133,21 @@ export enum ActiveMenu {
   Networks = 'networks',
 }
 
+export type PagesContextType = {
+  selectedKey?: string;
+  setSelectedKey: (key?: string) => void;
+  isEditPage: boolean;
+  setIsEditPage: (value: boolean) => void;
+  handleCancelEdit: () => void;
+};
+
+export const PagesContext = React.createContext<PagesContextType>({
+  setSelectedKey: () => {},
+  setIsEditPage: () => {},
+  isEditPage: false,
+  handleCancelEdit: () => {},
+});
+
 function TourButton() {
   const { setIsOpen } = useTour();
   const [isFirstVisit, setIsFirstVisit] = useAtom(isFirstVisitOnEditWizardAtom);
@@ -163,6 +178,18 @@ export function EditWizardContainer({ site }: Props) {
   const { tab } = router.query as { tab?: ActiveMenu };
   const [hasChanges, setHasChanges] = useState(false);
   const [openHasChangesConfirm, setOpenHasChangesConfirm] = useState(false);
+
+  const { setWizardConfig, wizardConfig } = useAppWizardConfig();
+
+  const [selectedKey, setSelectedKey] = useState<string>();
+  const [isEditPage, setIsEditPage] = useState(false);
+
+  const handleCancelEdit = () => {
+    setSelectedKey(undefined);
+    setIsEditPage(false);
+    setWizardConfig({ ...config });
+    setHasChanges(false);
+  };
 
   const { formatMessage } = useIntl();
   const [openMenu, setOpenMenu] = useState({
@@ -235,8 +262,6 @@ export function EditWizardContainer({ site }: Props) {
 
   const sendConfigMutation = useSendConfigMutation({ slug: site?.slug });
 
-  const { setWizardConfig, wizardConfig } = useAppWizardConfig();
-
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const [showPreview, setShowPreview] = useState(false);
@@ -248,7 +273,7 @@ export function EditWizardContainer({ site }: Props) {
 
   useEffect(() => {
     if (config) {
-      setWizardConfig(config);
+      setWizardConfig({ ...config });
     }
   }, [activeMenu, config]);
 
@@ -299,7 +324,7 @@ export function EditWizardContainer({ site }: Props) {
 
   const handleChange = useCallback(
     (_config: AppConfig) => {
-      const newConfig = { ...wizardConfig, ..._config };
+      const newConfig = { ..._config };
 
       setWizardConfig(newConfig);
     },
@@ -811,6 +836,8 @@ export function EditWizardContainer({ site }: Props) {
           setOpenHasChangesConfirm(false);
           setActiveMenu(activeMenuWithChanges);
           setWizardConfig(config);
+          setIsEditPage(false);
+          setSelectedKey(undefined);
         }}
       >
         <Stack>
@@ -1036,15 +1063,28 @@ export function EditWizardContainer({ site }: Props) {
                   )}
 
                   {activeMenu === ActiveMenu.Pages && config && (
-                    <PagesWizardContainer
-                      config={config}
-                      onSave={handleSave}
-                      onChange={handleChange}
-                      onHasChanges={setHasChanges}
-                      builderKit={activeBuilderKit}
-                      siteId={site?.id}
-                      previewUrl={site?.previewUrl}
-                    />
+                    <>
+                      <PagesContext.Provider
+                        value={{
+                          selectedKey,
+                          setSelectedKey,
+                          isEditPage,
+                          setIsEditPage,
+                          handleCancelEdit,
+                        }}
+                      >
+                        <PagesWizardContainer
+                          config={config}
+                          onSave={handleSave}
+                          onChange={handleChange}
+                          onHasChanges={setHasChanges}
+                          hasChanges={hasChanges}
+                          builderKit={activeBuilderKit}
+                          siteId={site?.id}
+                          previewUrl={site?.previewUrl}
+                        />
+                      </PagesContext.Provider>
+                    </>
                   )}
 
                   {activeMenu === ActiveMenu.MarketplaceFees && config && (

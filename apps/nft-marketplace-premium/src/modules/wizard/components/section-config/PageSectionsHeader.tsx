@@ -1,3 +1,4 @@
+import { useIsMobile } from '@dexkit/core';
 import { AppPage } from '@dexkit/ui/modules/wizard/types/config';
 import ArrowBack from '@mui/icons-material/ArrowBack';
 import Check from '@mui/icons-material/Check';
@@ -57,6 +58,8 @@ export default function PageSectionsHeader({
     setTitle(page.title || '');
   };
 
+  const isMobile = useIsMobile();
+
   return (
     <Stack direction="row" alignItems="center" spacing={2}>
       <Stack direction="row" alignItems="center" spacing={1}>
@@ -104,7 +107,7 @@ export default function PageSectionsHeader({
           </ButtonBase>
         )}
       </Stack>
-      {isEditTitle && (
+      {isEditTitle && isMobile && (
         <Stack direction="row" alignItems="center" spacing={0.5}>
           <IconButton size="small" onClick={handleSave}>
             <Check />
