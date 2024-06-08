@@ -53,7 +53,7 @@ export type Wallet = {
   name: string;
   rdns?: string;
   shortName?: string;
-  iconUrl: string | (() => Promise<string>);
+  iconUrl: string | (() => Promise<any>);
   iconAccent?: string;
   iconBackground: string;
   installed?: boolean;

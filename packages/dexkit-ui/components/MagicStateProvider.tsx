@@ -1,13 +1,17 @@
-import { MagicTxConfirmDialog } from "./dialogs/MagicTxConfirmDialog";
-
 import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
+import dynamic from "next/dynamic";
 import { ReactNode, useCallback, useEffect, useState } from "react";
 
-import MagicSignDataDialog from "../components/dialogs/MagicSignDataDialog";
+const MagicSignDataDialog = dynamic(
+  () => import("../components/dialogs/MagicSignDataDialog")
+);
+
+const MagicTxConfirmDialog = dynamic(
+  () => import("./dialogs/MagicTxConfirmDialog")
+);
 
 import { ProviderWrapper } from "@dexkit/wallet-connectors/connectors/magic";
 import { useAsyncMemo } from "@dexkit/widgets/src/hooks";
-import { useConnectors } from "wagmi";
 import { MagicStateContext } from "../context/MagicStateContext";
 
 interface Props {
@@ -17,7 +21,6 @@ interface Props {
 
 export function MagicStateProvider(props: Props) {
   const { connector, chainId } = useWeb3React();
-  const connectors = useConnectors();
 
   const providerWrapper: ProviderWrapper | undefined = useAsyncMemo(
     async () => {
