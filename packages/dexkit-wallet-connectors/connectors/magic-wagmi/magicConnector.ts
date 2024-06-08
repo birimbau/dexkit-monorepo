@@ -29,6 +29,15 @@ export const MagicOauthConnectors = [
 ]
 
 
+export function getMagicIcon() {
+  const loginType = localStorage.getItem('loginType');
+
+  if (loginType) {
+    return MagicOauthConnectors.find(m => m.oauth === loginType)?.icon;
+  }
+}
+
+
 
 import { NETWORKS } from '@dexkit/core/constants/networks';
 import { ProviderWrapper } from '../magic';
@@ -77,6 +86,7 @@ function setCustomNode(chainId?: number) {
       };
     }
   }
+  return customNode
 }
 
 
@@ -98,13 +108,17 @@ export function magicConnector({ options }: MagicConnectorParams) {
     if (options.connectorType === 'dedicated') {
       const Magic = (await import('magic-sdk')).Magic;
       const OAuthExtension = (await import('@magic-ext/oauth')).OAuthExtension;
+      const defaultChainId = localStorage.getItem('magic:defaultChainId') ? Number(localStorage.getItem('magic:defaultChainId')) : 1;
+
       return new Magic(options.apiKey, {
         ...options.magicSdkConfiguration,
         network: {
-          ...customNode
+          ...setCustomNode(defaultChainId)
         },
         extensions: [new OAuthExtension()],
       })
+
+
     }
     if (options.connectorType === 'universal') {
       const Magic = (await import('magic-sdk')).Magic;

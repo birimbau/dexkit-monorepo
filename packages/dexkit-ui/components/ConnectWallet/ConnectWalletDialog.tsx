@@ -80,6 +80,8 @@ export default function ConnectWalletDialog({
     if (magicConnector) {
       //@ts-ignore
       magicConnector.connect({ email });
+
+      setLoginType("email");
     }
 
     setEmail("");

@@ -16,7 +16,7 @@ export function ConnectorIcon({ name, icon }: { name?: string; icon?: any }) {
         height: theme.spacing(5),
       })}
       src={typeof image === "string" ? image : image?.src}
-      alt={name}
+      alt={name || "connector-icon"}
     />
   );
 }

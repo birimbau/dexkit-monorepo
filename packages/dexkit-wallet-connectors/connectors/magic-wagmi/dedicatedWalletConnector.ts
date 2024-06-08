@@ -85,8 +85,6 @@ export function dedicatedWalletConnector({
         throw new Error('Magic API Key is not provided.')
       }
 
-      console.log('connecting to magic');
-
       const provider = (await getProvider())?.provider
 
 
@@ -105,7 +103,6 @@ export function dedicatedWalletConnector({
       }
 
       if (await this.isAuthorized()) {
-        console.log('is authorized')
         return {
           chainId,
           accounts: [await getAccount()],
@@ -142,7 +139,14 @@ export function dedicatedWalletConnector({
           chainId,
         }
 
+
+
+
+
       throw new UserRejectedRequestError(Error('User Rejected Request'))
+
+
+
     },
 
     disconnect: async () => {
@@ -193,15 +197,23 @@ export function dedicatedWalletConnector({
         }
 
         const isLoggedIn = await magic.user.isLoggedIn()
-        const result = await magic.oauth.getRedirectResult()
-        if (result) {
-          localStorage.setItem('magicRedirectResult', JSON.stringify(result))
-        }
+        let result: any;
+        try {
+          result = await magic.oauth.getRedirectResult()
+          if (result) {
+            localStorage.setItem('magicRedirectResult', JSON.stringify(result))
+          }
+        } catch { }
 
         if (isLoggedIn) return true
 
         return result !== null
-      } catch { }
+      } catch (e) {
+
+
+
+
+      }
       return false
     },
 
@@ -211,6 +223,7 @@ export function dedicatedWalletConnector({
       const chain = config.chains.find((x) => x.id === chainId)
       if (!chain) throw new SwitchChainError(new ChainNotConfiguredError())
       switchChain({ chainId: chainId })
+      localStorage.setItem('magic:defaultChainId', String(chainId))
       config.emitter.emit('change', { chainId })
 
       return chain

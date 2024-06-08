@@ -1,15 +1,11 @@
-import { useEvmNativeBalanceQuery } from "@dexkit/core";
-import {
-  copyToClipboard,
-  formatBigNumber,
-  truncateAddress,
-} from "@dexkit/core/utils";
+import { copyToClipboard, truncateAddress } from "@dexkit/core/utils";
 import {
   useConnectWalletDialog,
   useEvmCoins,
   useLogoutAccountMutation,
 } from "@dexkit/ui";
 import CopyIconButton from "@dexkit/ui/components/CopyIconButton";
+import { useConnectorImage } from "@dexkit/wallet-connectors/hooks/useConnectorImage";
 import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import {
   Avatar,
@@ -22,7 +18,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 
 import VerticalAlignBottomIcon from "@mui/icons-material/VerticalAlignBottom";
@@ -32,8 +28,6 @@ import { NETWORK_IMAGE, NETWORK_NAME } from "@dexkit/core/constants/networks";
 
 import { AccountBalance } from "@dexkit/ui/components/AccountBalance";
 import TransakWidget from "@dexkit/ui/components/Transak";
-import { GET_WALLET_ICON } from "@dexkit/wallet-connectors/connectors";
-import { useWalletConnectorMetadata } from "@dexkit/wallet-connectors/hooks";
 import FileCopy from "@mui/icons-material/FileCopy";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import Logout from "@mui/icons-material/Logout";
@@ -60,10 +54,12 @@ const SelectNetworkDialog = dynamic(
 
 export default function WalletContent() {
   const { account, ENSName, provider, chainId, connector } = useWeb3React();
+
+  const icon = useConnectorImage({ connector });
+
   const { disconnect } = useDisconnect();
 
   const logoutMutation = useLogoutAccountMutation();
-  const { walletConnectorMetadata } = useWalletConnectorMetadata();
   const connectWalletDialog = useConnectWalletDialog();
   const handleSwitchWallet = () => {
     connectWalletDialog.setOpen(true);
@@ -74,21 +70,11 @@ export default function WalletContent() {
     disconnect();
   }, [logoutMutation, connector]);
 
-  const { data: balance } = useEvmNativeBalanceQuery({ provider, account });
-
   const [isBalancesVisible, setIsBalancesVisible] = useBalanceVisible();
 
   const handleToggleVisibility = () => {
     setIsBalancesVisible((value: boolean) => !value);
   };
-
-  const formattedBalance = useMemo(() => {
-    if (balance) {
-      return formatBigNumber(balance);
-    }
-
-    return "0.00";
-  }, [balance]);
 
   const handleCopy = () => {
     if (account) {
@@ -185,7 +171,7 @@ export default function WalletContent() {
           >
             <Stack direction="row" spacing={1} alignItems="center">
               <Avatar
-                src={connector?.icon || GET_WALLET_ICON()}
+                src={icon}
                 sx={(theme) => ({
                   width: theme.spacing(2),
                   height: theme.spacing(2),

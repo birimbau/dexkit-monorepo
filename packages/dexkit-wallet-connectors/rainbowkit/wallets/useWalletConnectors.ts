@@ -146,7 +146,6 @@ export function useWalletConnectors({ activeChainIds, defaultChainId, setConnect
       ),
     );
 
-  console.log(rainbowKitConnectors)
 
   const combinedConnectors = [...eip6963Connectors, ...rainbowKitConnectors];
 

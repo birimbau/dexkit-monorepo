@@ -62,7 +62,7 @@ export function useAsyncImage(
   url?: string | AsyncImageSrc,
 ): string | { src: string } | undefined {
 
-  console.log(url);
+
   const cachedUrl = typeof url === 'function' ? cachedUrls.get(url) : undefined;
   const forceUpdate = useForceUpdate();
 
