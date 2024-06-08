@@ -1,8 +1,6 @@
-import type { ExternalProvider } from '@ethersproject/providers'
 import { BRAVE_ICON, BROWSER_WALLET_ICON, LEDGER_ICON, METAMASK_ICON, RABBY_ICON, TRUST_WALLET_ICON } from '../../constants/icons'
-import { Connection, ConnectionType, ProviderInfo } from '../../types'
-import { getInjectedMeta } from "../../utils/walletMeta"
-import { EIP6963ProviderDetail } from "./eip6963/types"
+import { ProviderInfo } from '../../types'
+
 
 export const getIsInjected = () => typeof window !== "undefined" ? Boolean(window.ethereum) : false
 
@@ -22,25 +20,7 @@ const InjectedWalletTable: { [key in string]?: ProviderInfo } = {
 type NonMetaMaskFlag = 'isRabby' | 'isBraveWallet' | 'isTrustWallet' | 'isLedgerConnect'
 const allNonMetamaskFlags: NonMetaMaskFlag[] = ['isRabby', 'isBraveWallet', 'isTrustWallet', 'isLedgerConnect']
 
-/** Returns boolean representing whether the app should still use the deprecated window.ethereum provider, based on eip6963 providers present */
-export function shouldUseDeprecatedInjector(providerDetails: readonly EIP6963ProviderDetail[]): boolean {
-  if (typeof window === "undefined") {
-    return false;
-  }
 
-  if (typeof window !== "undefined" && !window.ethereum) return false
-
-  const { name: deprecatedInjectionName } = getInjectedMeta(window.ethereum as any)
-
-  for (const injector of providerDetails) {
-    // Compares window.ethereum flags (isMetaMask) to corresponding flags on eip6963 providers
-    if (getInjectedMeta(injector.provider as ExternalProvider).name === deprecatedInjectionName) {
-      return false
-    }
-  }
-
-  return true
-}
 
 
 /**
@@ -90,10 +70,3 @@ export enum ErrorCode {
 }
 
 // TODO(WEB-1973): merge this function with existing didUserReject for Swap errors
-export function didUserReject(connection: Connection, error: any): boolean {
-  return (
-    error?.code === ErrorCode.USER_REJECTED_REQUEST ||
-    (connection.type === ConnectionType.WALLET_CONNECT_V2 && error?.toString?.() === ErrorCode.WC_V2_MODAL_CLOSED) ||
-    (connection.type === ConnectionType.COINBASE_WALLET && error?.toString?.() === ErrorCode.CB_REJECTED_REQUEST)
-  )
-}

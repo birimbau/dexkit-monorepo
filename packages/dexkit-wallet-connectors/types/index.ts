@@ -1,48 +1,10 @@
 
 
-import type { Web3ReactHooks } from '@web3-react/core';
-import { Connector } from '@web3-react/types';
-import { MagicLoginType } from "../connectors/magic";
 
-export type BaseActivateParams = {
-  connectorName: string;
-  name?: string,
-  rdns?: string,
-  icon?: string,
-  connector: Connector,
-  overrideActivate?: (chainId?: number) => boolean;
-  loginType?: MagicLoginType;
-  connectionType?: ConnectionType;
-  email?: string;
-};
 
-export type ActivateMetamaskParams = BaseActivateParams & {
-  connectorName: "metamask";
-};
 
-export type ActivateCoinbaseParams = BaseActivateParams & {
-  connectorName: "coinbase";
-};
 
-export type ActivateWalletConnectParams = BaseActivateParams & {
-  connectorName: "walletConnect";
-};
 
-export type ActivateMagicParams = BaseActivateParams & {
-  connectorName: "magic";
-  loginType?: MagicLoginType;
-  email?: string;
-};
-
-export type ActivateInjectedParams = BaseActivateParams & {
-  connectorName: string;
-};
-
-export type WalletActivateParams =
-  ActivateMetamaskParams
-  | ActivateMagicParams
-  | ActivateWalletConnectParams
-  | ActivateCoinbaseParams | ActivateInjectedParams;
 
 
 export enum ConnectionType {
@@ -70,14 +32,3 @@ export interface ProviderInfo {
   rdns?: string
 }
 
-export interface Connection {
-  connector: Connector
-  hooks: Web3ReactHooks
-  type: ConnectionType
-  loginType?: MagicLoginType
-  shouldDisplay(): boolean
-  /** Executes specific pre-activation steps necessary for some connection types. Returns true if the connection should not be activated. */
-  overrideActivate?: (chainId?: number) => boolean
-  /** Optionally include isDarkMode when displaying icons that should change with current theme */
-  getProviderInfo(isDarkMode?: boolean): ProviderInfo
-}

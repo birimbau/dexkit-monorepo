@@ -5,7 +5,9 @@ import { ReactNode, useCallback, useEffect, useState } from "react";
 
 import MagicSignDataDialog from "../components/dialogs/MagicSignDataDialog";
 
-import { MagicConnector } from "@dexkit/wallet-connectors/connectors/magic";
+import { ProviderWrapper } from "@dexkit/wallet-connectors/connectors/magic";
+import { useAsyncMemo } from "@dexkit/widgets/src/hooks";
+import { useConnectors } from "wagmi";
 import { MagicStateContext } from "../context/MagicStateContext";
 
 interface Props {
@@ -15,8 +17,17 @@ interface Props {
 
 export function MagicStateProvider(props: Props) {
   const { connector, chainId } = useWeb3React();
+  const connectors = useConnectors();
 
-  const magicConnector: MagicConnector = connector as any;
+  const providerWrapper: ProviderWrapper | undefined = useAsyncMemo(
+    async () => {
+      if (connector && connector.id === "magic" && connector?.getProvider) {
+        return (await connector?.getProvider()) as any;
+      }
+    },
+    undefined,
+    [connector]
+  );
 
   const { children, currency } = props;
   const [showTransactionModal, setShowTransactionModal] = useState(false);
@@ -36,18 +47,18 @@ export function MagicStateProvider(props: Props) {
   }, []);
 
   const resetEvents = useCallback(() => {
-    magicConnector.providerWrapper?.eventEmitter.removeAllListeners();
+    providerWrapper?.eventEmitter.removeAllListeners();
 
-    magicConnector.providerWrapper?.eventEmitter.on("request", (args: any) => {
+    providerWrapper?.eventEmitter.on("request", (args: any) => {
       setData(args);
       handleShowTransactionModal();
     });
 
-    magicConnector.providerWrapper?.eventEmitter.on("sign", (args: any) => {
+    providerWrapper?.eventEmitter.on("sign", (args: any) => {
       setSignData(args);
       handleShowSignDataDialog();
     });
-  }, [handleShowTransactionModal, handleShowSignDataDialog, magicConnector]);
+  }, [handleShowTransactionModal, handleShowSignDataDialog, providerWrapper]);
 
   const handleCloseTransactionModal = useCallback(() => {
     setShowTransactionModal(false);
@@ -57,37 +68,37 @@ export function MagicStateProvider(props: Props) {
 
   const handleTransactionConfirm = useCallback(
     (data: any) => {
-      if (magicConnector.providerWrapper?.eventEmitter) {
-        magicConnector.providerWrapper?.eventEmitter.emit("execute", data);
+      if (providerWrapper?.eventEmitter) {
+        providerWrapper?.eventEmitter.emit("execute", data);
       }
       setShowTransactionModal(false);
     },
-    [magicConnector]
+    [providerWrapper]
   );
 
   const handleTransactionCancel = useCallback(() => {
-    magicConnector.providerWrapper?.eventEmitter.emit("cancel");
+    providerWrapper?.eventEmitter.emit("cancel");
     setShowTransactionModal(false);
-  }, [magicConnector]);
+  }, [providerWrapper]);
 
   const handleSignConfirm = useCallback(() => {
-    magicConnector.providerWrapper?.eventEmitter.emit("sign.confirm");
+    providerWrapper?.eventEmitter.emit("sign.confirm");
     setShowSignDataDialog(false);
-  }, [magicConnector]);
+  }, [providerWrapper]);
 
   const handleSignCancel = useCallback(() => {
-    magicConnector.providerWrapper?.eventEmitter.emit("sign.cancel");
+    providerWrapper?.eventEmitter.emit("sign.cancel");
     setShowSignDataDialog(false);
-  }, [magicConnector]);
+  }, [providerWrapper]);
 
   useEffect(() => {
-    if (chainId && connector instanceof MagicConnector) {
+    if (chainId && connector && connector.id === "magic" && providerWrapper) {
       resetEvents();
       return () => {
-        magicConnector.providerWrapper?.eventEmitter.removeAllListeners();
+        providerWrapper?.eventEmitter.removeAllListeners();
       };
     }
-  }, [chainId, magicConnector]);
+  }, [chainId, providerWrapper]);
 
   return (
     <MagicStateContext.Provider

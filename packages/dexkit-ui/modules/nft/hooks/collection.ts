@@ -15,8 +15,8 @@ import {
   getNetworkSlugFromChainId,
   isAddressEqual,
 } from "@dexkit/core/utils/blockchain";
+import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import { ThirdwebSDK } from "@thirdweb-dev/react";
-import { useWeb3React } from "@web3-react/core";
 import { THIRDWEB_CLIENT_ID } from "../../../constants/thirdweb";
 import { hexToString } from "../../../utils";
 import { NFTType } from "../constants/enum";
