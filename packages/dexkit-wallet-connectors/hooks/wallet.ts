@@ -1,10 +1,11 @@
 import { useMutation } from "@tanstack/react-query";
-import { useWeb3React } from "@web3-react/core";
-import { ConnectionType, WalletActivateParams } from "../types";
+
+import { ConnectionType } from "../types";
 
 import { PrimitiveAtom, useAtom } from "jotai";
 import { atomWithStorage } from "jotai/utils";
-import { magic } from "../constants/connectors/magic";
+
+import { useWeb3React } from "./useWeb3React";
 
 export function useWalletActivate({
   magicRedirectUrl,
@@ -18,7 +19,7 @@ export function useWalletActivate({
   // This should be deprecated
   const [walletConnector, setWalletConnector] = useAtom(selectedWalletAtom);
 
-  const mutation = useMutation(async (params: WalletActivateParams) => {
+  const mutation = useMutation(async (params: any) => {
     /* if (connector.deactivate) {
        await connector.deactivate();
      }*/
@@ -39,20 +40,15 @@ export function useWalletActivate({
     if (params?.loginType) {
       // This should be deprecated
       setWalletConnector("magic");
-      const activedConnector = await magic.activate({
-        loginType: params?.loginType,
-        email: params.email,
-        redirectUrl: magicRedirectUrl,
-      });
-      return activedConnector;
+
+
     } else {
 
       // This should be deprecated
       setWalletConnector(params?.connectorName);
 
 
-      const activatedConnector = await connector.activate();
-      return activatedConnector;
+      return null;
     }
   });
 

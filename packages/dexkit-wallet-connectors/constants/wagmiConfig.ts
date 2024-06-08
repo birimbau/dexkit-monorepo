@@ -1,10 +1,13 @@
-import { createConfig, http } from 'wagmi'
-import { arbitrum, avalanche, base, bsc, fantom, mainnet, optimism, polygon, polygonAmoy, sepolia } from 'wagmi/chains'
+import { chainsViem } from '@dexkit/core/constants/chainsViem';
+import { getDefaultConfig } from '../rainbowkit/config/getDefaultConfig';
 
-import { coinbaseWallet, injected, walletConnect } from 'wagmi/connectors'
-export const wagmiConfig = createConfig({
+
+export const wagmiConfig = getDefaultConfig({ chains: chainsViem, appName: 'Dapp', projectId: 'bcd1271357ab9202f271bc908324aff6' })
+
+
+/*createConfig({
   chains: [mainnet, sepolia, polygon, polygonAmoy, bsc, fantom, avalanche, base, optimism, arbitrum],
-  connectors: [injected(), coinbaseWallet(), walletConnect({ projectId: '' })],
+  connectors: [coinbaseWallet(), walletConnect({  })/* metaMask({ dappMetadata: { name: 'Wallet' } })
   ssr: true,
   transports: {
     [mainnet.id]: http(),
@@ -18,4 +21,4 @@ export const wagmiConfig = createConfig({
     [arbitrum.id]: http(),
     [polygonAmoy.id]: http()
   },
-})
+})*/

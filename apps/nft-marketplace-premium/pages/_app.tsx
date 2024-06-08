@@ -26,7 +26,7 @@ import { experimental_extendTheme as extendTheme } from '@mui/material/styles';
 import type { } from '@mui/material/themeCssVarsAugmentation';
 import { getTheme } from 'src/theme';
 
-import defaultAppConfig from '../config/app.json';
+import defaultAppConfig from '../config/app.minimal.json';
 import { AppMarketplaceProvider } from '../src/components/AppMarketplaceProvider';
 import { AppConfigContext } from '../src/contexts';
 
@@ -35,10 +35,9 @@ import './customCss.css';
 import type { AssetAPI } from '@dexkit/ui/modules/nft/types';
 import type { AppConfig } from '@dexkit/ui/modules/wizard/types/config';
 import SiteProvider from '@dexkit/ui/providers/SiteProvider';
+import { WagmiUIProvider } from '@dexkit/ui/providers/WagmiUIProvider';
 import { AuthStateProvider } from '@dexkit/ui/providers/authStateProvider';
-import { wagmiConfig } from '@dexkit/wallet-connectors/constants/wagmiConfig';
 import { AppBarANN } from 'src/components/AppBarANN';
-import { WagmiProvider } from 'wagmi';
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
 
@@ -49,6 +48,7 @@ interface MyAppProps extends AppProps<{ dehydratedState: DehydratedState }> {
 export default function MyApp(props: MyAppProps) {
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props;
 
+  
   const router = useRouter();
 
   const [loading, setLoading] = React.useState(false);
@@ -213,6 +213,8 @@ export default function MyApp(props: MyAppProps) {
       }
     }
   }, [appConfig, appPage]);
+
+
   React.useEffect(() => {
     router.events.on('routeChangeStart', () => {
       setLoading(true);
@@ -259,7 +261,7 @@ export default function MyApp(props: MyAppProps) {
             <AppUIConfigContext.Provider
               value={{ appConfig: config, appNFT, siteId }}
             >
-              <WagmiProvider config={wagmiConfig}>
+              <WagmiUIProvider config={config}>
               <QueryClientProvider client={queryClient}>
                 <Hydrate state={pageProps.dehydratedState}>
                   <DefaultSeo {...SEO} />
@@ -283,7 +285,7 @@ export default function MyApp(props: MyAppProps) {
                   </LocalizationProvider>
                 </Hydrate>
               </QueryClientProvider>
-              </WagmiProvider>
+              </WagmiUIProvider>
             </AppUIConfigContext.Provider>
           </AppConfigContext.Provider>
         </SiteProvider>

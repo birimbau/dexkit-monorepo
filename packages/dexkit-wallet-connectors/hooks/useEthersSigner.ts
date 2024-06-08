@@ -11,8 +11,8 @@ export function clientToSigner(client: Client<Transport, Chain, Account>) {
     ensAddress: chain.contracts?.ensRegistry?.address,
   }
   const provider = new providers.Web3Provider(transport, network)
-  const signer = provider.getSigner(account.address)
-  return signer
+  //const signer = provider.getSigner(account.address)
+  return provider
 }
 
 /** Hook to convert a Viem Client to an ethers.js Signer. */

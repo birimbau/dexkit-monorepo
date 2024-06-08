@@ -26,6 +26,7 @@ import {
   transactionsAtomV2,
 } from 'src/state/atoms';
 import { getTheme } from 'src/theme';
+import { useConnectors } from 'wagmi';
 import defaultAppConfig from '../../config/app.json';
 import { loadLocaleMessages } from '../utils/intl';
 
@@ -39,6 +40,7 @@ export function AppMarketplaceProvider({
   appLocaleMessages,
 }: AppMarketplaceContextProps) {
   const appConfig = useAppConfig();
+  const connectors = useConnectors();
   const siteId = useSiteId();
   const router = useRouter();
 

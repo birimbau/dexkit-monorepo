@@ -7,7 +7,6 @@ import {
   DialogContent,
   DialogProps,
   Divider,
-  lighten,
   List,
   ListItemAvatar,
   ListItemButton,
@@ -22,22 +21,19 @@ import { FormattedMessage, useIntl } from "react-intl";
 
 import { useSnackbar } from "notistack";
 
-import { AppDialogTitle } from "../AppDialogTitle";
-
-import {
-  getIsInjectedMobileBrowser,
-  magic,
-} from "@dexkit/wallet-connectors/connectors/connections";
+import { getIsInjectedMobileBrowser } from "@dexkit/wallet-connectors/connectors/connections";
 import { MagicLoginType } from "@dexkit/wallet-connectors/connectors/magic";
-import { EMAIL_ICON } from "@dexkit/wallet-connectors/constants/icons";
-import { useOrderedConnections } from "@dexkit/wallet-connectors/hooks/useOrderedConnections";
-import { WalletActivateParams } from "@dexkit/wallet-connectors/types";
+import { MagicOauthConnectors } from "@dexkit/wallet-connectors/connectors/magic-wagmi/magicConnector";
+import { ConnectorIcon } from "@dexkit/wallet-connectors/rainbowkit/components/ConnectorIcon";
+import { useWalletConnectors } from "@dexkit/wallet-connectors/rainbowkit/wallets/useWalletConnectors";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import Wallet from "@mui/icons-material/Wallet";
+import { useConnect } from "wagmi";
+import { useActiveChainIds, useConnectWalletDialog } from "../../hooks";
+import { AppDialogTitle } from "../AppDialogTitle";
 
 export interface ConnectWalletDialogProps {
   DialogProps: DialogProps;
-  activate: (params: WalletActivateParams) => Promise<void>;
   isActivating: boolean;
   isActive: boolean;
   activeConnectorName?: string;
@@ -46,12 +42,21 @@ export interface ConnectWalletDialogProps {
 
 export default function ConnectWalletDialog({
   DialogProps: dialogProps,
-  activate,
   isActivating,
   isActive,
   activeConnectorName,
 }: ConnectWalletDialogProps) {
-  const { orderedConnections } = useOrderedConnections();
+  const { activeChainIds } = useActiveChainIds();
+  const connectWalletDialog = useConnectWalletDialog();
+
+  const connectors = useWalletConnectors({
+    activeChainIds,
+    defaultChainId: activeChainIds[0],
+    setConnectWalletState: connectWalletDialog.setOpen,
+  });
+
+  const { connectors: wagmiConnectors } = useConnect();
+
   const { onClose } = dialogProps;
 
   const { formatMessage } = useIntl();
@@ -67,41 +72,16 @@ export default function ConnectWalletDialog({
 
   const { enqueueSnackbar } = useSnackbar();
 
-  const handleActivateWallet = async (params: WalletActivateParams) => {
-    setConnectorName(params?.connectorName);
-    setLoginType(params?.loginType);
-
-    try {
-      if (params?.loginType) {
-        await activate(params);
-      } else {
-        await activate(params);
-      }
-    } catch (err: any) {
-      enqueueSnackbar(err.message, {
-        variant: "error",
-        anchorOrigin: {
-          vertical: "bottom",
-          horizontal: "right",
-        },
-      });
-      setLoginType(undefined);
-      setConnectorName(undefined);
-    }
-    handleClose();
-  };
-
   const [email, setEmail] = useState("");
 
   const handleConnectWithEmail = () => {
-    handleActivateWallet({
-      connectorName: "magic",
-      name: "Email",
-      icon: EMAIL_ICON,
-      loginType: "email",
-      email: email,
-      connector: magic,
-    });
+    const magicConnector = wagmiConnectors.find((c) => c.id === "magic");
+
+    if (magicConnector) {
+      //@ts-ignore
+      magicConnector.connect({ email });
+    }
+
     setEmail("");
   };
 
@@ -110,64 +90,129 @@ export default function ConnectWalletDialog({
   };
 
   const renderConnectors = () => {
-    return orderedConnections.map(({ connection: conn }, index: number) => (
+    return connectors.map((conn, index: number) => (
       <>
-        {conn.shouldDisplay() && (
-          <ListItemButton
-            divider
-            key={index}
-            disabled={
-              isActivating && connectorName === conn.getProviderInfo()?.name
-            }
-            onClick={() => {
-              handleActivateWallet({
-                connectorName: conn.getProviderInfo().name,
-                connector: conn?.connector,
-                loginType: conn?.loginType,
-                rdns: conn.getProviderInfo()?.rdns,
-                connectionType: conn?.type,
-                icon: conn?.getProviderInfo()?.icon,
-                name: conn?.getProviderInfo()?.name,
-                overrideActivate: conn?.overrideActivate,
+        <ListItemButton
+          divider
+          key={index}
+          disabled={isActivating && connectorName === conn.name}
+          onClick={async () => {
+            try {
+              setConnectorName(conn?.name);
+
+              if (conn.id === "walletConnect" && conn?.showWalletConnectModal) {
+                await conn?.showWalletConnectModal();
+              } else {
+                await conn.connect();
+              }
+
+              handleClose();
+            } catch (err: any) {
+              enqueueSnackbar(err.message, {
+                variant: "error",
+                anchorOrigin: {
+                  vertical: "bottom",
+                  horizontal: "right",
+                },
               });
-            }}
-          >
-            <ListItemAvatar>
-              <Avatar>
-                <Avatar
-                  sx={(theme) => ({
-                    background: lighten(theme.palette.background.default, 0.05),
-                    padding: theme.spacing(1),
-                    width: "auto",
-                    height: theme.spacing(5),
-                  })}
-                  src={conn?.getProviderInfo()?.icon}
-                  alt={conn?.getProviderInfo()?.name}
-                />
-              </Avatar>
-            </ListItemAvatar>
-            <ListItemText primary={conn?.getProviderInfo().name} />
-            {isActivating && connectorName === conn?.getProviderInfo().name && (
-              <CircularProgress
-                color="primary"
-                sx={{ fontSize: (theme) => theme.spacing(2) }}
+              setLoginType(undefined);
+              setConnectorName(undefined);
+            }
+          }}
+        >
+          <ListItemAvatar>
+            <Avatar>
+              <ConnectorIcon
+                name={conn.name}
+                icon={conn.icon || conn?.iconUrl}
               />
-            )}
-            {isActive &&
-              activeConnectorName === conn?.getProviderInfo().name && (
-                <Stack
-                  direction="row"
-                  justifyContent="center"
-                  alignItems="center"
-                  alignContent="center"
-                >
-                  <FiberManualRecordIcon
-                    sx={{ color: (theme) => theme.palette.success.light }}
-                  />
-                </Stack>
-              )}
-          </ListItemButton>
-        )}
+            </Avatar>
+          </ListItemAvatar>
+          <ListItemText primary={conn?.name} />
+          {isActivating && connectorName === conn?.name && (
+            <CircularProgress
+              color="primary"
+              sx={{ fontSize: (theme) => theme.spacing(2) }}
+            />
+          )}
+          {isActive && activeConnectorName === conn?.name && (
+            <Stack
+              direction="row"
+              justifyContent="center"
+              alignItems="center"
+              alignContent="center"
+            >
+              <FiberManualRecordIcon
+                sx={{ color: (theme) => theme.palette.success.light }}
+              />
+            </Stack>
+          )}
+        </ListItemButton>
+      </>
+    ));
+  };
+
+  const renderOauthConnectors = () => {
+    return MagicOauthConnectors.map((conn, index: number) => (
+      <>
+        <ListItemButton
+          divider
+          key={index}
+          disabled={isActivating && connectorName === conn.name}
+          onClick={async () => {
+            try {
+              setConnectorName(conn?.name);
+
+              const magicConnector = wagmiConnectors.find(
+                (c) => c.id === "magic"
+              );
+
+              if (magicConnector) {
+                //@ts-ignore
+                await magicConnector.connect({ oauthProvider: conn.oauth });
+              }
+
+              setLoginType(conn.oauth as any);
+
+              handleClose();
+            } catch (err: any) {
+              enqueueSnackbar(err.message, {
+                variant: "error",
+                anchorOrigin: {
+                  vertical: "bottom",
+                  horizontal: "right",
+                },
+              });
+              setLoginType(undefined);
+              setConnectorName(undefined);
+            }
+          }}
+        >
+          <ListItemAvatar>
+            <Avatar>
+              <ConnectorIcon name={conn.name} icon={conn.icon} />
+            </Avatar>
+          </ListItemAvatar>
+          <ListItemText primary={conn?.name} />
+          {isActivating && connectorName === conn?.name && (
+            <CircularProgress
+              color="primary"
+              sx={{ fontSize: (theme) => theme.spacing(2) }}
+            />
+          )}
+          {isActive && activeConnectorName === conn?.name && (
+            <Stack
+              direction="row"
+              justifyContent="center"
+              alignItems="center"
+              alignContent="center"
+            >
+              <FiberManualRecordIcon
+                sx={{ color: (theme) => theme.palette.success.light }}
+              />
+            </Stack>
+          )}
+        </ListItemButton>
       </>
     ));
   };
@@ -228,7 +273,10 @@ export default function ConnectWalletDialog({
             <Divider />
           </>
         )}
-        <List disablePadding>{renderConnectors()}</List>
+        <List disablePadding>
+          {renderConnectors()}
+          {renderOauthConnectors()}
+        </List>
       </DialogContent>
     </Dialog>
   );

@@ -1,10 +1,8 @@
 import { IntlProvider, MessageFormatElement } from "react-intl";
 
-import { Web3ReactProvider } from "@web3-react/core";
 import { SnackbarProvider } from "notistack";
 
 import { useDexkitContextState } from "../hooks/useDexkitContextState";
-import { useOrderedConnectors } from "../hooks/useOrderedConnectors";
 
 import type {
   AppTransaction,
@@ -81,8 +79,6 @@ export function DexkitProvider({
   activeChainIds,
   siteId,
 }: DexkitProviderProps) {
-  const { connectors, connectorsKey } = useOrderedConnectors();
-
   const appState = useDexkitContextState({
     notificationTypes,
     notificationsAtom,
@@ -109,19 +105,17 @@ export function DexkitProvider({
         defaultLocale={locale}
         messages={localeMessages}
       >
-        <Web3ReactProvider connectors={connectors} key={connectorsKey}>
-          <CssVarsProvider theme={theme}>
-            <SnackbarProvider
-              maxSnack={3}
-              anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
-            >
-              <CssBaseline />
-              <MagicStateProvider currency="usd">{children}</MagicStateProvider>
-              <TransactionUpdater pendingTransactionsAtom={transactionsAtom} />
-              <GaslessTradesUpdater />
-            </SnackbarProvider>
-          </CssVarsProvider>
-        </Web3ReactProvider>
+        <CssVarsProvider theme={theme}>
+          <SnackbarProvider
+            maxSnack={3}
+            anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+          >
+            <CssBaseline />
+            <MagicStateProvider currency="usd">{children}</MagicStateProvider>
+            <TransactionUpdater pendingTransactionsAtom={transactionsAtom} />
+            <GaslessTradesUpdater />
+          </SnackbarProvider>
+        </CssVarsProvider>
       </IntlProvider>
     </DexKitContext.Provider>
   );

@@ -1,4 +1,5 @@
-import { useWeb3React } from "@web3-react/core";
+
+import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import { useEffect, useState } from "react";
 export function useBlockNumber() {
   const { provider } = useWeb3React();
