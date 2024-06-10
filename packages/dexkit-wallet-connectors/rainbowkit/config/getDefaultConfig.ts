@@ -7,6 +7,7 @@ import { connectorsForWallets } from '../wallets/connectorsForWallets';
 import {
   coinbaseWallet,
   metaMaskWallet,
+  trustWallet,
   walletConnectWallet
 } from '../wallets/walletConnectors';
 
@@ -14,6 +15,7 @@ import { dedicatedWalletConnector } from '../../connectors/magic-wagmi/dedicated
 
 import { NETWORKS } from '@dexkit/core/constants/networks';
 import { MagicApiKey } from '../../constants/magic';
+import { isMobile } from '../utils/isMobile';
 
 
 export type _chains = readonly [Chain, ...Chain[]];
@@ -83,17 +85,20 @@ export const getDefaultConfig = <
     appUrl,
     appIcon,
   });
+  const walletsConnectors = [
+    metaMaskWallet,
+    coinbaseWallet,
+    walletConnectWallet,
+  ];
+  // Add Trust when in mobile browser
+  isMobile() ? walletsConnectors.push(trustWallet) : undefined
+
 
   const connectors = connectorsForWallets(
     wallets || [
       {
         groupName: 'Popular',
-        wallets: [
-          metaMaskWallet,
-          coinbaseWallet,
-          walletConnectWallet,
-
-        ],
+        wallets: walletsConnectors
       },
     ],
     {

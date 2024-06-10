@@ -80,14 +80,12 @@ export function dedicatedWalletConnector({
     type,
     name,
     getProvider,
-    connect: async function ({ oauthProvider, email, phoneNumber }: { oauthProvider?: OAuthProvider, email?: string, phoneNumber?: string }) {
+    connect: async function ({ oauthProvider, email, phoneNumber, isLoggingIn }: { oauthProvider?: OAuthProvider, email?: string, phoneNumber?: string, isLoggingIn?: () => void }) {
       if (!options.apiKey) {
         throw new Error('Magic API Key is not provided.')
       }
 
       const provider = (await getProvider())?.provider
-
-
 
       if (provider?.on) {
         provider.on('accountsChanged', this.onAccountsChanged.bind(this))
@@ -115,11 +113,15 @@ export function dedicatedWalletConnector({
       >
 
       // LOGIN WITH MAGIC USING OAUTH PROVIDER
-      if (oauthProvider)
+      if (oauthProvider) {
         await magic.oauth.loginWithRedirect({
           provider: oauthProvider,
           redirectURI: oauthCallbackUrl ?? window.location.href,
         })
+
+
+      }
+
 
       // LOGIN WITH MAGIC USING EMAIL
       if (email)
@@ -139,10 +141,6 @@ export function dedicatedWalletConnector({
           chainId,
         }
 
-
-
-
-
       throw new UserRejectedRequestError(Error('User Rejected Request'))
 
 
@@ -154,6 +152,7 @@ export function dedicatedWalletConnector({
         const magic = await getMagicSDK()
         await magic?.wallet.disconnect()
         localStorage.removeItem('magicRedirectResult')
+        localStorage.removeItem('loginType')
         config.emitter.emit('disconnect')
       } catch (error) {
         console.error('Error disconnecting from Magic SDK:', error)
@@ -197,21 +196,21 @@ export function dedicatedWalletConnector({
         }
 
         const isLoggedIn = await magic.user.isLoggedIn()
+
         let result: any;
         try {
           result = await magic.oauth.getRedirectResult()
           if (result) {
             localStorage.setItem('magicRedirectResult', JSON.stringify(result))
           }
-        } catch { }
+        } catch {
+          localStorage.removeItem('magicRedirectResult')
+        }
 
         if (isLoggedIn) return true
 
-        return result !== null
+        return result && result !== null
       } catch (e) {
-
-
-
 
       }
       return false

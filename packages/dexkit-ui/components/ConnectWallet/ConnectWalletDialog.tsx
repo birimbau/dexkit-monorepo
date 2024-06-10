@@ -160,11 +160,14 @@ export default function ConnectWalletDialog({
         <ListItemButton
           divider
           key={index}
-          disabled={isActivating && connectorName === conn.name}
+          disabled={
+            isActivating && connectorName === `${conn?.name}:${conn?.oauth}`
+          }
           onClick={async () => {
             try {
-              setConnectorName(conn?.name);
-
+              setConnectorName(`${conn?.name}:${conn?.oauth}`);
+              setLoginType(conn.oauth as any);
+              localStorage.setItem("loginType", conn.oauth);
               const magicConnector = wagmiConnectors.find(
                 (c) => c.id === "magic"
               );
@@ -173,8 +176,6 @@ export default function ConnectWalletDialog({
                 //@ts-ignore
                 await magicConnector.connect({ oauthProvider: conn.oauth });
               }
-
-              setLoginType(conn.oauth as any);
 
               handleClose();
             } catch (err: any) {
@@ -196,24 +197,26 @@ export default function ConnectWalletDialog({
             </Avatar>
           </ListItemAvatar>
           <ListItemText primary={conn?.name} />
-          {isActivating && connectorName === conn?.name && (
+          {isActivating && connectorName === `${conn?.name}:${conn?.oauth}` && (
             <CircularProgress
               color="primary"
               sx={{ fontSize: (theme) => theme.spacing(2) }}
             />
           )}
-          {isActive && activeConnectorName === conn?.name && (
-            <Stack
-              direction="row"
-              justifyContent="center"
-              alignItems="center"
-              alignContent="center"
-            >
-              <FiberManualRecordIcon
-                sx={{ color: (theme) => theme.palette.success.light }}
-              />
-            </Stack>
-          )}
+          {isActive &&
+            activeConnectorName === "Magic" &&
+            loginType === conn?.oauth && (
+              <Stack
+                direction="row"
+                justifyContent="center"
+                alignItems="center"
+                alignContent="center"
+              >
+                <FiberManualRecordIcon
+                  sx={{ color: (theme) => theme.palette.success.light }}
+                />
+              </Stack>
+            )}
         </ListItemButton>
       </>
     ));
