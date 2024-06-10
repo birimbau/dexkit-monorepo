@@ -95,9 +95,12 @@ export const getDefaultConfig = <
   const hasInjectedOnMobileBrowser = getHashInjectionOnMobileBrowser();
   if (hasInjectedOnMobileBrowser) {
     const walletConnector = getDeprecatedInjectionOnMobileBrowser();
-    if (walletConnector)
+    walletConnectors = [];
+    if (walletConnector) {
       //@ts-ignore
       walletConnectors = [walletConnector]
+    }
+
   }
 
 

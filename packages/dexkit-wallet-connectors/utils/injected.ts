@@ -1,6 +1,6 @@
 import { isMobile } from '../rainbowkit/utils/isMobile';
 import { CreateWalletFn } from '../rainbowkit/wallets/Wallet';
-import { braveWallet, coinbaseWallet, ledgerWallet, metaMaskWallet, rabbyWallet, trustWallet } from '../rainbowkit/wallets/walletConnectors';
+import { braveWallet, coinbaseWallet, ledgerWallet, rabbyWallet, trustWallet } from '../rainbowkit/wallets/walletConnectors';
 
 
 const InjectedWalletTable: { [key in string]?: CreateWalletFn } = {
@@ -31,7 +31,8 @@ export function getDeprecatedInjectionOnMobileBrowser(): (CreateWalletFn | undef
   }
 
   // Check for MetaMask last, as some injectors will set isMetaMask = true in addition to their own, i.e. Brave browser
-  if (window.ethereum?.isMetaMask) return metaMaskWallet
+  // Metamask is injected has eip on app but is not being filtered
+  //if (window.ethereum?.isMetaMask) return metaMaskWallet
 
 
   if (window.ethereum?.isCoinbaseWallet) return coinbaseWallet
