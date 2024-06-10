@@ -21,11 +21,11 @@ import { FormattedMessage, useIntl } from "react-intl";
 
 import { useSnackbar } from "notistack";
 
-import { getIsInjectedMobileBrowser } from "@dexkit/wallet-connectors/connectors/connections";
 import { MagicLoginType } from "@dexkit/wallet-connectors/connectors/magic";
 import { MagicOauthConnectors } from "@dexkit/wallet-connectors/connectors/magic-wagmi/magicConnector";
 import { ConnectorIcon } from "@dexkit/wallet-connectors/rainbowkit/components/ConnectorIcon";
 import { useWalletConnectors } from "@dexkit/wallet-connectors/rainbowkit/wallets/useWalletConnectors";
+import { getHashInjectionOnMobileBrowser } from "@dexkit/wallet-connectors/utils/injected";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import Wallet from "@mui/icons-material/Wallet";
 import { useConnect } from "wagmi";
@@ -54,6 +54,8 @@ export default function ConnectWalletDialog({
     defaultChainId: activeChainIds[0],
     setConnectWalletState: connectWalletDialog.setOpen,
   });
+
+  const isOnMobileBrowser = getHashInjectionOnMobileBrowser();
 
   const { connectors: wagmiConnectors } = useConnect();
 
@@ -155,6 +157,10 @@ export default function ConnectWalletDialog({
   };
 
   const renderOauthConnectors = () => {
+    if (isOnMobileBrowser) {
+      return null;
+    }
+
     return MagicOauthConnectors.map((conn, index: number) => (
       <>
         <ListItemButton
@@ -236,7 +242,7 @@ export default function ConnectWalletDialog({
       />
       <Divider />
       <DialogContent sx={{ padding: 0 }}>
-        {!getIsInjectedMobileBrowser() && (
+        {!isOnMobileBrowser && (
           <>
             <Box p={2}>
               <Stack spacing={2}>

@@ -1,12 +1,3 @@
-
-
-
-
-
-
-
-
-
 export enum ConnectionType {
   UNISWAP_WALLET_V2 = 'UNISWAP_WALLET_V2',
   INJECTED = 'INJECTED',

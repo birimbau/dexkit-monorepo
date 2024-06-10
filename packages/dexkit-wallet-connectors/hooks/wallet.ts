@@ -23,8 +23,6 @@ export function useWalletActivate({
     /* if (connector.deactivate) {
        await connector.deactivate();
      }*/
-    const connector = params.connector;
-    if (params?.overrideActivate && params?.overrideActivate(chainId)) return;
 
 
     setWalletConnectorMetadata(
