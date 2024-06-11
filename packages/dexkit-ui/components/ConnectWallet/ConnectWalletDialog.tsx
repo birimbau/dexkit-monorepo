@@ -99,7 +99,10 @@ export default function ConnectWalletDialog({
         <ListItemButton
           divider
           key={index}
-          disabled={isActivating && connectorName === conn.name}
+          disabled={
+            (isActivating && connectorName === conn.name) ||
+            (isActive && activeConnectorName === conn?.name)
+          }
           onClick={async () => {
             try {
               setConnectorName(conn?.name);
