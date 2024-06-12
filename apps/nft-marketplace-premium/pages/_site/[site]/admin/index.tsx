@@ -33,7 +33,7 @@ import {
   NextPage,
 } from 'next';
 import { ChangeEvent, ReactNode, useCallback, useMemo, useState } from 'react';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 import { LoginAppButton } from 'src/components/LoginAppButton';
 import AuthMainLayout from 'src/components/layouts/authMain';
 import { DEXKIT_DISCORD_SUPPORT_CHANNEL, WIZARD_DOCS_URL } from 'src/constants';
@@ -126,14 +126,12 @@ export const AdminIndexPage: NextPage = () => {
 
     if (configs && configs.length > 0) {
       return (
-        <Container>
-          <TableContainer>
-            <MarketplacesTableV2
-              configs={configs}
-              onConfigureDomain={handleShowConfigureDomain}
-            />
-          </TableContainer>
-        </Container>
+        <TableContainer>
+          <MarketplacesTableV2
+            configs={configs}
+            onConfigureDomain={handleShowConfigureDomain}
+          />
+        </TableContainer>
       );
     }
 
@@ -214,6 +212,8 @@ export const AdminIndexPage: NextPage = () => {
     );
   };
 
+  const { formatMessage } = useIntl();
+
   return (
     <>
       <ConfigureDomainDialog
@@ -275,18 +275,6 @@ export const AdminIndexPage: NextPage = () => {
               >
                 <FormattedMessage id="new.app" defaultMessage="New App" />
               </Button>
-              <TextField
-                value={search}
-                onChange={handleSearchChange}
-                size="small"
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <Search />
-                    </InputAdornment>
-                  ),
-                }}
-              />
             </Stack>
           </Grid>
 
@@ -294,7 +282,36 @@ export const AdminIndexPage: NextPage = () => {
             <Divider />
           </Grid>
           <Grid item xs={12}>
-            {renderTable()}
+            <Grid container spacing={2} justifyContent="center">
+              <Grid item xs={12} sm={8}>
+                <Box>
+                  <Stack spacing={2}>
+                    <Box>
+                      <Stack justifyContent="flex-end" direction="row">
+                        <TextField
+                          value={search}
+                          placeholder={formatMessage({
+                            id: 'search.dots',
+                            defaultMessage: 'Search...',
+                          })}
+                          onChange={handleSearchChange}
+                          size="small"
+                          variant="standard"
+                          InputProps={{
+                            startAdornment: (
+                              <InputAdornment position="start">
+                                <Search />
+                              </InputAdornment>
+                            ),
+                          }}
+                        />
+                      </Stack>
+                    </Box>
+                    {renderTable()}
+                  </Stack>
+                </Box>
+              </Grid>
+            </Grid>
           </Grid>
         </Grid>
       </Container>

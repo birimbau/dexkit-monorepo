@@ -4,7 +4,7 @@ import { ConfigResponse } from '../../../../../types/whitelabel';
 
 import { ADMIN_TABLE_LIST } from '@/modules/admin/constants';
 import { useIsMobile } from '@dexkit/core';
-import { AppLink } from '@dexkit/ui';
+import { AppConfirmDialog, AppLink } from '@dexkit/ui';
 import { AppConfig } from '@dexkit/ui/modules/wizard/types/config';
 import MoreVert from '@mui/icons-material/MoreVert';
 import { IconButton, Stack, Tooltip } from '@mui/material';
@@ -14,9 +14,11 @@ import {
   GridFilterModel,
   GridRowId,
   GridSortModel,
-  GridToolbar,
 } from '@mui/x-data-grid';
+import { useSnackbar } from 'notistack';
 import { FormattedMessage, useIntl } from 'react-intl';
+import { IS_STAGING } from 'src/constants';
+import { useDeleteMyAppMutation } from 'src/hooks/whitelabel';
 import Menu from './Menu';
 
 interface Props {
@@ -50,15 +52,127 @@ export default function MarketplacesTableV2({ configs }: Props) {
     setShowRemove(false);
   };
 
+  const { enqueueSnackbar } = useSnackbar();
+
+  const handleExport = (id: GridRowId) => {
+    const config = configs.find((c) => c.id === id);
+
+    if (config) {
+      const jsonString = `data:text/json;chatset=utf-8,${encodeURIComponent(
+        config?.config
+      )}`;
+      const link = document.createElement('a');
+      link.href = jsonString;
+      link.download = 'config.json';
+
+      link.click();
+
+      enqueueSnackbar(
+        <FormattedMessage
+          id="config.exported"
+          defaultMessage="Config exported"
+        />,
+        { variant: 'success' }
+      );
+    }
+  };
+
+  const handlePreview = (id: GridRowId) => {
+    const config = configs.find((c) => c.id === id);
+
+    if (config) {
+      window.open(
+        IS_STAGING
+          ? `https://test.dev.dexkit.app?mid=${config?.slug}`
+          : `https://dexappbuilder.dexkit.com?mid=${config?.slug}`,
+        '_blank'
+      );
+    }
+    handleCloseMenu();
+  };
+
+  const handleEdit = (id: GridRowId) => {
+    const config = configs.find((c) => c.id === id);
+    handleCloseMenu();
+
+    router.push(`/admin/edit/${config?.slug}`);
+  };
+
+  const handleDeleteSuccess = () => {
+    enqueueSnackbar(
+      formatMessage({
+        defaultMessage: 'App removed',
+        id: 'app.removed',
+      }),
+      {
+        variant: 'success',
+        anchorOrigin: {
+          vertical: 'bottom',
+          horizontal: 'right',
+        },
+      }
+    );
+  };
+
+  const handleDeleteError = (error: any) => {
+    enqueueSnackbar(
+      `${formatMessage({
+        defaultMessage: 'Error',
+        id: 'error',
+      })}: ${String(error)}`,
+      {
+        variant: 'error',
+        anchorOrigin: {
+          vertical: 'bottom',
+          horizontal: 'right',
+        },
+      }
+    );
+  };
+
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedId, setSelectedId] = useState<number>();
+
+  const deleteMutation = useDeleteMyAppMutation({
+    options: { onSuccess: handleDeleteSuccess, onError: handleDeleteError },
+  });
+
+  const handleConfirmRemove = () => {
+    if (selectedId) {
+      const slug = configs.find((c) => c.id === selectedId)?.slug;
+
+      if (slug) {
+        deleteMutation.mutate({
+          slug: slug,
+        });
+      }
+    }
+    setIsOpen(false);
+  };
+
+  const handleClose = () => {
+    setIsOpen(false);
+  };
+
+  const handleRemove = (id: GridRowId) => {
+    setIsOpen(true);
+    setSelectedId(id as number);
+    handleCloseMenu();
+  };
+
   const handleAction = (action: string, id: GridRowId) => {
     switch (action) {
-      case '':
+      case 'export':
+        handleExport(id);
         break;
-      case '':
+      case 'preview':
+        handlePreview(id);
         break;
-      case '':
+      case 'edit':
+        handleEdit(id);
         break;
-      case '':
+      case 'delete':
+        handleRemove(id);
         break;
       default:
         break;
@@ -75,13 +189,15 @@ export default function MarketplacesTableV2({ configs }: Props) {
     {
       field: 'name',
       headerName: formatMessage({ id: 'name', defaultMessage: 'Name' }),
-      minWidth: 200,
+
+      flex: 1,
       valueGetter: ({ row }) => {
         return row.slug;
       },
     },
     {
       field: 'domain',
+      flex: 1,
       headerName: formatMessage({ id: 'domain', defaultMessage: 'Domain' }),
       minWidth: 200,
       renderCell: ({ row }) => {
@@ -102,6 +218,7 @@ export default function MarketplacesTableV2({ configs }: Props) {
     },
     {
       field: 'action',
+      flex: 1,
       headerName: formatMessage({ id: 'actions', defaultMessage: 'Actions' }),
       minWidth: 200,
       renderCell: ({ row, id }) => {
@@ -143,12 +260,21 @@ export default function MarketplacesTableV2({ configs }: Props) {
 
   const onFilterChange = useCallback((filterModel: GridFilterModel) => {}, []);
 
-  const handleSortModelChange = useCallback((sortModel: GridSortModel) => {},
-  []);
+  const [sortModel, setSortModel] = useState<GridSortModel>([
+    {
+      field: 'rating',
+      sort: 'desc',
+    },
+  ]);
+
+  const handleSortModelChange = useCallback((sortModel: GridSortModel) => {
+    console.log('ass', sortModel);
+    setSortModel(sortModel);
+  }, []);
 
   return (
     <>
-      {/* <AppConfirmDialog
+      <AppConfirmDialog
         DialogProps={{
           open: isOpen,
           onClose: handleClose,
@@ -159,7 +285,7 @@ export default function MarketplacesTableV2({ configs }: Props) {
           id="do.you.really.want.to.remove.this.app"
           defaultMessage="Do you really want to remove this app"
         />
-      </AppConfirmDialog> */}
+      </AppConfirmDialog>
       <Menu
         anchorEl={anchorEl}
         onAction={handleMenuAction}
@@ -169,19 +295,18 @@ export default function MarketplacesTableV2({ configs }: Props) {
       <DataGrid
         getRowId={(row) => row.id}
         autoHeight
-        slots={{ toolbar: GridToolbar }}
         rows={configs || []}
         columns={columns}
         rowCount={configs.length}
         paginationModel={paginationModel}
         paginationMode="server"
         disableColumnFilter
-        sortingMode="server"
         slotProps={{
           toolbar: {
             showQuickFilter: true,
           },
         }}
+        sortModel={sortModel}
         onPaginationModelChange={setPaginationModel}
         filterMode="server"
         onFilterModelChange={onFilterChange}

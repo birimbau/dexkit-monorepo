@@ -1,9 +1,20 @@
-import { Box, Button, Container, Grid, Stack, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  Checkbox,
+  Container,
+  Divider,
+  FormControlLabel,
+  Grid,
+  Stack,
+  Typography,
+} from '@mui/material';
 import { FormattedMessage } from 'react-intl';
 
 import { myAppsApi } from '@/modules/admin/dashboard/dataProvider';
 
 import { DexkitApiProvider } from '@dexkit/core/providers';
+import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 
 import ContractListDataGrid from '@/modules/forms/components/ContractListDataGrid';
 import { ConnectWalletBox } from '@dexkit/ui/components/ConnectWalletBox';
@@ -19,17 +30,39 @@ import {
 import { LoginAppButton } from 'src/components/LoginAppButton';
 import AuthMainLayout from 'src/components/layouts/authMain';
 
+import ImportContractDialog from '@/modules/forms/components/dialogs/ImportContractDialog';
 import Link from '@dexkit/ui/components/AppLink';
 import { useAuth } from '@dexkit/ui/hooks/auth';
 import { QueryClient, dehydrate } from '@tanstack/react-query';
+import { useState } from 'react';
 import { getAppConfig } from 'src/services/app';
 
 export default function FormsListContractsPage() {
   const { isActive } = useWeb3React();
   const { isLoggedIn } = useAuth();
 
+  const [showHidden, setShowHidden] = useState(false);
+
+  const [showImport, setShowImport] = useState(false);
+
+  const handleClose = () => {
+    setShowImport(false);
+  };
+
+  const handleOpen = () => {
+    setShowImport(true);
+  };
+
   return (
     <>
+      <ImportContractDialog
+        DialogProps={{
+          open: showImport,
+          onClose: handleClose,
+          maxWidth: 'sm',
+          fullWidth: true,
+        }}
+      />
       <Container>
         <Stack spacing={2}>
           <PageHeader
@@ -70,24 +103,67 @@ export default function FormsListContractsPage() {
                 </Typography>
               </Grid>
               <Grid item xs={12}>
-                <Button
-                  href="/forms/contracts/create"
-                  LinkComponent={Link}
-                  startIcon={<AddIcon />}
-                  variant="contained"
-                  color="primary"
-                >
-                  <FormattedMessage
-                    id="new.contract"
-                    defaultMessage="New contract"
-                  />
-                </Button>
+                <Box>
+                  <Stack
+                    alignItems="center"
+                    justifyContent="space-between"
+                    direction="row"
+                    spacing={2}
+                  >
+                    <Stack alignItems="center" direction="row" spacing={2}>
+                      <Button
+                        href="/forms/contracts/create"
+                        LinkComponent={Link}
+                        startIcon={<AddIcon />}
+                        variant="contained"
+                        color="primary"
+                      >
+                        <FormattedMessage
+                          id="new.contract"
+                          defaultMessage="New contract"
+                        />
+                      </Button>
+                      <Button
+                        onClick={handleOpen}
+                        startIcon={<FileDownloadOutlinedIcon />}
+                        variant="outlined"
+                        color="primary"
+                      >
+                        <FormattedMessage
+                          id="import.contract"
+                          defaultMessage="Import Contract"
+                        />
+                      </Button>
+                    </Stack>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={showHidden}
+                          onChange={(e) => setShowHidden(e.target.checked)}
+                        />
+                      }
+                      label={
+                        <FormattedMessage
+                          id="show.hidden"
+                          defaultMessage="Show Hidden"
+                        />
+                      }
+                    />
+                  </Stack>
+                </Box>
               </Grid>
-
+              <Grid item xs={12}>
+                <Divider />
+              </Grid>
               <Grid item xs={12}>
                 {isActive ? (
                   isLoggedIn ? (
-                    <ContractListDataGrid />
+                    <Container>
+                      <ContractListDataGrid
+                        showHidden={showHidden}
+                        key={showHidden ? 'hidden' : 'visible'}
+                      />
+                    </Container>
                   ) : (
                     <Stack justifyContent={'center'} alignItems={'center'}>
                       <Box sx={{ maxWidth: '500px' }}>

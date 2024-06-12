@@ -1,7 +1,7 @@
-import Delete from '@mui/icons-material/Delete';
-import Edit from '@mui/icons-material/Edit';
-import FileDownload from '@mui/icons-material/FileDownload';
-import Visibility from '@mui/icons-material/Visibility';
+import Delete from '@mui/icons-material/DeleteOutlined';
+import Edit from '@mui/icons-material/EditOutlined';
+import FileDownload from '@mui/icons-material/FileDownloadOutlined';
+import Visibility from '@mui/icons-material/VisibilityOutlined';
 import React from 'react';
 
 export const ADMIN_TABLE_LIST: {
