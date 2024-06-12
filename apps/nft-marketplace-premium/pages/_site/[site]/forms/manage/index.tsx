@@ -2,25 +2,25 @@ import { myAppsApi } from '@/modules/admin/dashboard/dataProvider';
 import { useListFormsQuery } from '@/modules/forms/hooks';
 import { DexkitApiProvider } from '@dexkit/core/providers';
 import LazyTextField from '@dexkit/ui/components/LazyTextField';
-import Info from '@mui/icons-material/Info';
 import Search from '@mui/icons-material/Search';
 
+import AccountFormsTable from '@/modules/forms/components/AccountFormsTable';
 import Link from '@dexkit/ui/components/AppLink';
 import { ConnectWalletButton } from '@dexkit/ui/components/ConnectWalletButton';
 import { PageHeader } from '@dexkit/ui/components/PageHeader';
 import { useWeb3React } from '@dexkit/wallet-connectors/hooks/useWeb3React';
+import Add from '@mui/icons-material/Add';
 import {
   Box,
   Button,
   Container,
+  Divider,
   Grid,
   InputAdornment,
   Skeleton,
   Stack,
-  Table,
   TableBody,
   TableCell,
-  TableHead,
   TableRow,
   Typography,
 } from '@mui/material';
@@ -73,27 +73,6 @@ export default function FormsAccountPage() {
               },
             ]}
           />
-
-          {/*  <Box>
-            <Card>
-              <CardContent>
-                {address ? (
-                  <Stack
-                    spacing={2}
-                    justifyContent="center"
-                    alignItems="center"
-                  >
-                    <Avatar sx={{ width: '6rem', height: '6rem' }} />
-                    <Typography sx={{ fontWeight: 600 }} variant="body1">
-                      {truncateAddress(address as string)}
-                    </Typography>
-                  </Stack>
-                ) : (
-                  <ConnectWalletButton />
-                )}
-              </CardContent>
-            </Card>
-              </Box>*/}
           <Box>
             <Stack
               direction="row"
@@ -121,7 +100,8 @@ export default function FormsAccountPage() {
                     LinkComponent={Link}
                     href="/forms/create"
                     size="small"
-                    variant="outlined"
+                    variant="contained"
+                    startIcon={<Add />}
                   >
                     <FormattedMessage
                       id="create.contract.form"
@@ -146,36 +126,14 @@ export default function FormsAccountPage() {
                 </Stack>
               </Grid>
               <Grid item xs={12}>
-                <Table>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>
-                        <FormattedMessage id="id" defaultMessage="ID" />
-                      </TableCell>
-                      <TableCell>
-                        <FormattedMessage id="name" defaultMessage="Name" />
-                      </TableCell>
-                      <TableCell>
-                        <FormattedMessage
-                          id="description"
-                          defaultMessage="Description"
-                        />
-                      </TableCell>
-                    </TableRow>
-                  </TableHead>
-
+                <Divider />
+              </Grid>
+              <Grid item xs={12}>
+                <Container>
                   {!address ? (
-                    <TableBody>
-                      <TableRow>
-                        <TableCell colSpan={3}>
-                          <Box>
-                            <Stack spacing={2} alignItems="center">
-                              <ConnectWalletButton />
-                            </Stack>
-                          </Box>
-                        </TableCell>
-                      </TableRow>
-                    </TableBody>
+                    <div>
+                      <ConnectWalletButton />
+                    </div>
                   ) : listFormsQuery.isLoading ? (
                     <TableBody>
                       {new Array(5).fill(null).map((_, key) => (
@@ -193,48 +151,16 @@ export default function FormsAccountPage() {
                       ))}
                     </TableBody>
                   ) : (
-                    <TableBody>
-                      {listFormsQuery.data?.length === 0 && (
-                        <TableRow>
-                          <TableCell colSpan={3}>
-                            <Box>
-                              <Stack spacing={2} alignItems="center">
-                                <Info fontSize="large" />
-                                <Box>
-                                  <Typography align="center" variant="h5">
-                                    <FormattedMessage
-                                      id="no.forms.yet"
-                                      defaultMessage="No forms yet"
-                                    />
-                                  </Typography>
-                                  <Typography
-                                    align="center"
-                                    color="text.secondary"
-                                    variant="body1"
-                                  >
-                                    <FormattedMessage
-                                      defaultMessage="Create forms to interact with contracts"
-                                      id="create.forms.to interact.with.contracts"
-                                    />
-                                  </Typography>
-                                </Box>
-                              </Stack>
-                            </Box>
-                          </TableCell>
-                        </TableRow>
-                      )}
-                      {listFormsQuery.data?.map((form) => (
-                        <TableRow key={form.id}>
-                          <TableCell>{form.id}</TableCell>
-                          <TableCell>
-                            <Link href={`/forms/${form.id}`}>{form.name}</Link>
-                          </TableCell>
-                          <TableCell>{form.description}</TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
+                    <div>
+                      {listFormsQuery.data &&
+                        listFormsQuery.data?.length > 0 && (
+                          <AccountFormsTable
+                            forms={listFormsQuery.data ?? []}
+                          />
+                        )}
+                    </div>
                   )}
-                </Table>
+                </Container>
               </Grid>
             </Grid>
           </Box>

@@ -1,5 +1,6 @@
 import { ChainId } from '@dexkit/core';
 import { DexkitApiProvider } from '@dexkit/core/providers';
+import { ContractFormData } from '@dexkit/ui/modules/forms/hooks';
 import { useWeb3React } from '@dexkit/wallet-connectors/hooks/useWeb3React';
 import { ContractFormParams } from '@dexkit/web3forms/types';
 import { useInfiniteQuery, useMutation, useQuery } from '@tanstack/react-query';
@@ -71,15 +72,6 @@ export function useUpdateFormMutation() {
     }
   );
 }
-
-type ContractFormData = {
-  id: number;
-  creatorAddress: string;
-  params: ContractFormParams;
-  templateId?: number;
-  name?: string;
-  description?: string;
-};
 
 export const GET_FORM = 'GET_FORM';
 
