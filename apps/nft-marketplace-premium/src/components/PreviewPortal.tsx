@@ -1,6 +1,6 @@
 import createCache from '@emotion/cache';
 import { CacheProvider } from '@emotion/react';
-import { styled } from '@mui/material';
+import { CssBaseline, styled } from '@mui/material';
 import { useState } from 'react';
 import ReactDOM from 'react-dom';
 
@@ -50,7 +50,7 @@ export const PreviewPortal = (props: any) => {
               rel="stylesheet"
               href="/css/react-page/plugins-video/index.css"
             />
-
+            <CssBaseline />
             {props.children}
           </CacheProvider>,
           mountNode,
