@@ -72,7 +72,17 @@ export default function ShowCaseCard({ item }: ShowCaseCardProps) {
           }
         >
           {item.imageUrl ? (
-            <CardMedia image={item.imageUrl} sx={{ aspectRatio: "1/1" }} />
+            <Box
+              sx={{
+                aspectRatio: "1/1",
+                backgroundSize: "contain",
+                backgroundPosition: "center center",
+                backgroundRepeat: "no-repeat",
+                height: (theme) => theme.spacing(24),
+                width: "100%",
+                backgroundImage: `url('${item.imageUrl}')`,
+              }}
+            />
           ) : (
             <Skeleton
               variant="rectangular"
