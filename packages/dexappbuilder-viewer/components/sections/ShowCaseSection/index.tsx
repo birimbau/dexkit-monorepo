@@ -5,7 +5,7 @@ import {
 } from "@dexkit/ui/modules/wizard/types/section";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
-import { Box, Grid, IconButton, Stack, alpha } from "@mui/material";
+import { Box, Container, Grid, IconButton, Stack, alpha } from "@mui/material";
 import { useMemo, useState } from "react";
 import SwipeableViews from "react-swipeable-views";
 import Pagination from "../CarouselSection/Pagination";
@@ -68,70 +68,79 @@ export default function ShowCaseSection({ section }: ShowCaseSectionProps) {
     return results[alignItems];
   }, [alignItems]);
 
-  return (
-    <Box
-      sx={{
-        pt: section.settings.paddingTop,
-        pb: section.settings.paddingBottom,
-      }}
-    >
-      <Stack direction="row" spacing={{ sm: 2, xs: 1 }} alignItems="center">
-        {pages.length > 1 && (
-          <Box>
-            <IconButton
-              sx={{
-                bgcolor: (theme) => alpha(theme.palette.action.focus, 0.25),
-              }}
-              onClick={handlePrev}
-            >
-              <KeyboardArrowLeftIcon />
-            </IconButton>
-          </Box>
-        )}
+  console.log(isMobile, "mobile");
 
-        <Box sx={{ flex: 1 }}>
-          <SwipeableViews index={index} onChangeIndex={handleChangeIndex}>
-            {pages.map((page, pageIndex) => (
-              <Box sx={{ position: "aboslute" }} key={pageIndex}>
-                <Grid
-                  container
-                  justifyContent={alignItemsValue}
-                  spacing={itemsSpacing}
-                >
-                  {page.map((item, itemIndex) => (
-                    <Grid item xs={6} sm={3} key={`${pageIndex}-${itemIndex}`}>
-                      <ShowCaseCard item={item} />
-                    </Grid>
-                  ))}
-                </Grid>
-              </Box>
-            ))}
-          </SwipeableViews>
-        </Box>
+  return (
+    <Container sx={{ p: { xs: 0, ms: 2 } }}>
+      <Box
+        sx={{
+          pt: section.settings.paddingTop,
+          pb: section.settings.paddingBottom,
+        }}
+      >
+        <Stack direction="row" spacing={{ sm: 2, xs: 1 }} alignItems="center">
+          {!isMobile && pages.length > 1 && (
+            <Box>
+              <IconButton
+                sx={{
+                  bgcolor: (theme) => alpha(theme.palette.action.focus, 0.25),
+                }}
+                onClick={handlePrev}
+              >
+                <KeyboardArrowLeftIcon />
+              </IconButton>
+            </Box>
+          )}
+
+          <Box sx={{ flex: 1, overflowX: "hidden" }}>
+            <SwipeableViews index={index} onChangeIndex={handleChangeIndex}>
+              {pages.map((page, pageIndex) => (
+                <Box sx={{ position: "aboslute", p: 2 }} key={pageIndex}>
+                  <Grid
+                    container
+                    justifyContent={alignItemsValue}
+                    spacing={itemsSpacing}
+                  >
+                    {page.map((item, itemIndex) => (
+                      <Grid
+                        item
+                        xs={6}
+                        sm={3}
+                        key={`${pageIndex}-${itemIndex}`}
+                      >
+                        <ShowCaseCard item={item} />
+                      </Grid>
+                    ))}
+                  </Grid>
+                </Box>
+              ))}
+            </SwipeableViews>
+          </Box>
+          {!isMobile && pages.length > 1 && (
+            <Box>
+              <IconButton
+                sx={{
+                  bgcolor: (theme) => alpha(theme.palette.action.focus, 0.25),
+                }}
+                onClick={handleNext}
+              >
+                <KeyboardArrowRightIcon />
+              </IconButton>
+            </Box>
+          )}
+        </Stack>
         {pages.length > 1 && (
-          <Box>
-            <IconButton
-              sx={{
-                bgcolor: (theme) => alpha(theme.palette.action.focus, 0.25),
+          <Box sx={{ position: "relative", py: 2 }}>
+            <Pagination
+              dots={pages?.length}
+              index={index}
+              onChangeIndex={(index: number) => {
+                setIndex(index);
               }}
-              onClick={handleNext}
-            >
-              <KeyboardArrowRightIcon />
-            </IconButton>
+            />
           </Box>
         )}
-      </Stack>
-      {pages.length > 1 && (
-        <Box sx={{ position: "relative", py: 2 }}>
-          <Pagination
-            dots={pages?.length}
-            index={index}
-            onChangeIndex={(index: number) => {
-              setIndex(index);
-            }}
-          />
-        </Box>
-      )}
-    </Box>
+      </Box>
+    </Container>
   );
 }
