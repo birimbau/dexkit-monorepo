@@ -68,7 +68,6 @@ export default function ShowCaseSection({ section }: ShowCaseSectionProps) {
     return results[alignItems];
   }, [alignItems]);
 
-  console.log(isMobile, "mobile");
 
   return (
     <Container sx={{ p: { xs: 0, ms: 2 } }}>
