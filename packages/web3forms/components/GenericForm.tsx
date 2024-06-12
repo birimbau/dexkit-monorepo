@@ -1,18 +1,18 @@
 import { Button, FormControlLabel, Grid } from "@mui/material";
 import { BigNumber } from "ethers";
-import { Field, Formik, getIn } from "formik";
+import { Field, Formik, FormikErrors, getIn } from "formik";
 import { Autocomplete, Checkbox, TextField } from "formik-mui";
 import {
-    useIfpsUploadMutation,
-    useServerUploadMerkleTreeMutation,
-    useServerUploadMutation,
+  useIfpsUploadMutation,
+  useServerUploadMerkleTreeMutation,
+  useServerUploadMutation,
 } from "../hooks";
 
 import MuiTextField from "@mui/material/TextField";
 import { Form, FormElement, FormOutputFormat } from "../types";
 
 import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
-import React from "react";
+import React, { useEffect } from "react";
 import * as Yup from "yup";
 import DecimalInput from "./DecimalInput";
 import { ImageInput } from "./ImageInput";
@@ -43,6 +43,30 @@ function getValidation(type?: string) {
   if (type === "address") {
     return validateAddress("invalid address");
   }
+}
+// Syncs context always when updated
+function SyncContext({
+  context,
+  setFieldValue,
+}: {
+  context?: { [key: string]: any };
+  setFieldValue: (
+    field: string,
+    value: any,
+    shouldValidate?: boolean | undefined
+  ) => Promise<void | FormikErrors<any>>;
+}) {
+  useEffect(() => {
+    if (context) {
+      const keys = Object.keys(context);
+      for (let index = 0; index < keys.length; index++) {
+        const value = context[keys[index]];
+        setFieldValue(keys[index], value);
+      }
+    }
+  }, [context, setFieldValue]);
+
+  return <></>;
 }
 
 export interface GenericFormProps {
@@ -516,6 +540,7 @@ export default function GenericForm({
         setFieldValue,
       }) => (
         <Grid container spacing={2}>
+          <SyncContext context={context} setFieldValue={setFieldValue} />
           {renderElements(form.elements, undefined, { setFieldValue, values })}
           <Grid item xs={12}>
             <Button
