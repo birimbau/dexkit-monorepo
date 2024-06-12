@@ -229,8 +229,6 @@ export default function DeployPage() {
     clientId: THIRDWEB_CLIENT_ID,
   });
 
-  console.log(trustedForwarders);
-
   return (
     <>
       <Dialog open={showLoading} fullWidth maxWidth="sm">

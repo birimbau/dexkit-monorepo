@@ -45,9 +45,11 @@ function getValidation(type?: string) {
   }
 }
 // Syncs context always when updated
-function SyncContext({
+function SyncContextAndHiddenFields({
   context,
   setFieldValue,
+  elements,
+  account,
 }: {
   context?: { [key: string]: any };
   setFieldValue: (
@@ -55,7 +57,10 @@ function SyncContext({
     value: any,
     shouldValidate?: boolean | undefined
   ) => Promise<void | FormikErrors<any>>;
+  elements: FormElement[];
+  account?: string;
 }) {
+  // syncs context fields
   useEffect(() => {
     if (context) {
       const keys = Object.keys(context);
@@ -65,6 +70,24 @@ function SyncContext({
       }
     }
   }, [context, setFieldValue]);
+  // syncs hidden fields with connected accounts. Sometimes account is not available at beginning
+  useEffect(() => {
+    if (elements) {
+      const inputElements = elements.filter((el) => el.type === "input");
+      for (let index = 0; index < inputElements.length; index++) {
+        const element = inputElements[index];
+        if (
+          element.type === "input" &&
+          element?.component?.type === "hidden" &&
+          element?.component.subtype === "connected-address"
+        ) {
+          if (element.ref && typeof element.ref === "string") {
+            setFieldValue(element.ref, account);
+          }
+        }
+      }
+    }
+  }, [account, setFieldValue, elements]);
 
   return <></>;
 }
@@ -540,7 +563,12 @@ export default function GenericForm({
         setFieldValue,
       }) => (
         <Grid container spacing={2}>
-          <SyncContext context={context} setFieldValue={setFieldValue} />
+          <SyncContextAndHiddenFields
+            context={context}
+            setFieldValue={setFieldValue}
+            elements={form.elements}
+            account={account}
+          />
           {renderElements(form.elements, undefined, { setFieldValue, values })}
           <Grid item xs={12}>
             <Button
