@@ -30,10 +30,14 @@ import {
 import { LoginAppButton } from 'src/components/LoginAppButton';
 import AuthMainLayout from 'src/components/layouts/authMain';
 
-import ImportContractDialog from '@/modules/forms/components/dialogs/ImportContractDialog';
+const ImportContractDialog = dynamic(
+  () => import('@/modules/forms/components/dialogs/ImportContractDialog')
+);
+
 import Link from '@dexkit/ui/components/AppLink';
 import { useAuth } from '@dexkit/ui/hooks/auth';
-import { QueryClient, dehydrate } from '@tanstack/react-query';
+import { QueryClient, dehydrate, useQueryClient } from '@tanstack/react-query';
+import dynamic from 'next/dynamic';
 import { useState } from 'react';
 import { getAppConfig } from 'src/services/app';
 
@@ -45,8 +49,11 @@ export default function FormsListContractsPage() {
 
   const [showImport, setShowImport] = useState(false);
 
-  const handleClose = () => {
+  const queryClient = useQueryClient();
+
+  const handleClose = async () => {
     setShowImport(false);
+    await queryClient.invalidateQueries(['LIST_DEPLOYED_CONTRACTS']);
   };
 
   const handleOpen = () => {
@@ -55,14 +62,17 @@ export default function FormsListContractsPage() {
 
   return (
     <>
-      <ImportContractDialog
-        DialogProps={{
-          open: showImport,
-          onClose: handleClose,
-          maxWidth: 'sm',
-          fullWidth: true,
-        }}
-      />
+      {showImport && (
+        <ImportContractDialog
+          DialogProps={{
+            open: showImport,
+            onClose: handleClose,
+            maxWidth: 'sm',
+            fullWidth: true,
+          }}
+        />
+      )}
+
       <Container>
         <Stack spacing={2}>
           <PageHeader

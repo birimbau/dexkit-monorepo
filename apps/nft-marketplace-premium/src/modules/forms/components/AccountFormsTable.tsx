@@ -19,6 +19,7 @@ import ShareDialog from '@dexkit/ui/components/dialogs/ShareDialog';
 import { ContractFormData } from '@dexkit/ui/modules/forms/hooks/index';
 import MoreVert from '@mui/icons-material/MoreVert';
 import {
+  Box,
   IconButton,
   ListItemIcon,
   ListItemText,
@@ -26,15 +27,43 @@ import {
   MenuItem,
   Stack,
   Tooltip,
+  Typography,
 } from '@mui/material';
 import Link from 'next/link';
 import { ADMIN_FORMS_ACTION_LIST } from '../constants/actions';
+import { useCloseFormMutation, useDeleteFormMutation } from '../hooks';
+
+const NoResultsStack = () => {
+  return (
+    <Stack py={2} alignItems="center" justifyItems="center" spacing={1}>
+      <Box>
+        <Typography align="center" variant="h5">
+          <FormattedMessage id="no.forms" defaultMessage="No Forms" />
+        </Typography>
+        <Typography align="center" variant="body1" color="text.secondary">
+          <FormattedMessage
+            id="table.no.records"
+            defaultMessage="No forms records are currently available"
+          />
+        </Typography>
+      </Box>
+    </Stack>
+  );
+};
 
 export interface AccountFormsTableProps {
   forms: ContractFormData[];
+  refetch: () => Promise<void>;
+  onSearch: (value: string) => void;
+  count: number;
 }
 
-export default function AccountFormsTable({ forms }: AccountFormsTableProps) {
+export default function AccountFormsTable({
+  forms,
+  refetch,
+  onSearch,
+  count,
+}: AccountFormsTableProps) {
   const router = useRouter();
 
   const [paginationModel, setPaginationModel] = useState({
@@ -55,6 +84,8 @@ export default function AccountFormsTable({ forms }: AccountFormsTableProps) {
   };
 
   const [showRemove, setShowRemove] = useState(false);
+
+  const [showConfirmClone, setShowConfirmClone] = useState(false);
 
   const handleCloseRemove = () => {
     setShowRemove(false);
@@ -93,6 +124,11 @@ export default function AccountFormsTable({ forms }: AccountFormsTableProps) {
     setSelectedId(undefined);
   };
 
+  const handleClone = (id: GridRowId) => {
+    setShowConfirmClone(true);
+    setSelectedId(id as number);
+  };
+
   const handleAction = (action: string, id: GridRowId) => {
     switch (action) {
       case 'preview':
@@ -104,11 +140,67 @@ export default function AccountFormsTable({ forms }: AccountFormsTableProps) {
       case 'delete':
         handleRemove(id);
         break;
+      case 'clone':
+        handleClone(id);
+        break;
       case 'share':
         handleShare(id);
         break;
       default:
         break;
+    }
+  };
+
+  const deleteFormMutation = useDeleteFormMutation();
+
+  const handleDeleteForm = async () => {
+    try {
+      if (selectedId) {
+        await deleteFormMutation.mutateAsync({ id: selectedId });
+
+        enqueueSnackbar(
+          formatMessage({
+            id: 'form.deleted.successfully',
+            defaultMessage: 'Form deleted successfully',
+          }),
+          {
+            variant: 'success',
+          }
+        );
+
+        await refetch();
+      }
+    } catch (err) {
+      enqueueSnackbar(String(err), { variant: 'error' });
+    }
+  };
+
+  const cloneFormMutation = useCloseFormMutation();
+
+  const handleCloseClone = () => {
+    setShowConfirmClone(false);
+  };
+
+  const handleConfirmClone = async () => {
+    if (selectedId) {
+      try {
+        await cloneFormMutation.mutateAsync({
+          id: selectedId,
+        });
+        setShowConfirmClone(false);
+        enqueueSnackbar(
+          formatMessage({
+            id: 'form.cloned.successfully',
+            defaultMessage: 'Form cloned successfully',
+          }),
+          {
+            variant: 'success',
+          }
+        );
+        await refetch();
+      } catch (err) {
+        enqueueSnackbar(String(err), { variant: 'error' });
+      }
     }
   };
 
@@ -122,6 +214,14 @@ export default function AccountFormsTable({ forms }: AccountFormsTableProps) {
           }`}
           target="_blank"
         >
+          {menuItem.icon}
+        </IconButton>
+      );
+    }
+
+    if (menuItem.value === 'set') {
+      return (
+        <IconButton LinkComponent={Link} href={`/forms/${row.id}`}>
           {menuItem.icon}
         </IconButton>
       );
@@ -190,14 +290,28 @@ export default function AccountFormsTable({ forms }: AccountFormsTableProps) {
                 {renderIconButton(row, item)}
               </Tooltip>
             ))}
-            <div>{}</div>
           </Stack>
         );
       },
     },
   ];
 
-  const onFilterChange = useCallback((filterModel: GridFilterModel) => {}, []);
+  const [filter, setFilter] = useState<GridFilterModel>();
+
+  const onFilterChange = useCallback(
+    (filterModel: GridFilterModel) => {
+      let query = '';
+
+      if (filterModel?.quickFilterValues) {
+        query = filterModel?.quickFilterValues[0] ?? '';
+      }
+
+      onSearch(query);
+
+      setFilter(filterModel);
+    },
+    [onSearch]
+  );
 
   const [sortModel, setSortModel] = useState<GridSortModel>([
     {
@@ -219,21 +333,42 @@ export default function AccountFormsTable({ forms }: AccountFormsTableProps) {
   };
 
   const handleConfirmRemove = () => {
+    handleDeleteForm();
+
     setSelectedId(undefined);
     setShowRemove(false);
   };
 
   return (
     <>
-      <ShareDialog
-        dialogProps={{
-          open: showShare,
-          onClose: handleCloseShare,
+      {showShare && (
+        <ShareDialog
+          dialogProps={{
+            open: showShare,
+            onClose: handleCloseShare,
+            maxWidth: 'sm',
+            fullWidth: true,
+          }}
+          url={`${getWindowUrl()}/forms/${selectedId}`}
+        />
+      )}
+
+      <AppConfirmDialog
+        onConfirm={handleConfirmClone}
+        DialogProps={{
           maxWidth: 'sm',
           fullWidth: true,
+          open: showConfirmClone,
+          onClose: handleCloseClone,
         }}
-        url={`${getWindowUrl()}/forms/${selectedId}`}
-      />
+      >
+        <Typography variant="body1">
+          <FormattedMessage
+            id="do.you.really.want.to.clone.this.form"
+            defaultMessage="Do you really want to clone this form?"
+          />
+        </Typography>
+      </AppConfirmDialog>
       {rowId && (
         <Menu open={Boolean(anchorEl)} onClose={handleCloseMenu}>
           {ADMIN_FORMS_ACTION_LIST.map((item, index) => (
@@ -274,16 +409,18 @@ export default function AccountFormsTable({ forms }: AccountFormsTableProps) {
         autoHeight
         rows={forms}
         columns={columns}
-        rowCount={forms.length}
+        rowCount={count}
         paginationModel={paginationModel}
         paginationMode="server"
         disableColumnFilter
-        slots={{ toolbar: GridToolbar }}
+        slots={{ toolbar: GridToolbar, noRowsOverlay: NoResultsStack }}
         slotProps={{
           toolbar: {
             showQuickFilter: true,
+            quickFilterProps: { debounceMs: 500 },
           },
         }}
+        filterModel={filter}
         sortModel={sortModel}
         onPaginationModelChange={setPaginationModel}
         filterMode="server"

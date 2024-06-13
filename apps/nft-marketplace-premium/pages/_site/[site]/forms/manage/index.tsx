@@ -1,10 +1,12 @@
 import { myAppsApi } from '@/modules/admin/dashboard/dataProvider';
+
+const AccountFormsTable = dynamic(
+  () => import('@/modules/forms/components/AccountFormsTable')
+);
+
 import { useListFormsQuery } from '@/modules/forms/hooks';
 import { DexkitApiProvider } from '@dexkit/core/providers';
-import LazyTextField from '@dexkit/ui/components/LazyTextField';
-import Search from '@mui/icons-material/Search';
-
-import AccountFormsTable from '@/modules/forms/components/AccountFormsTable';
+import { AppErrorBoundary } from '@dexkit/ui/components/AppErrorBoundary';
 import Link from '@dexkit/ui/components/AppLink';
 import { ConnectWalletButton } from '@dexkit/ui/components/ConnectWalletButton';
 import { PageHeader } from '@dexkit/ui/components/PageHeader';
@@ -16,14 +18,10 @@ import {
   Container,
   Divider,
   Grid,
-  InputAdornment,
-  Skeleton,
   Stack,
-  TableBody,
-  TableCell,
-  TableRow,
   Typography,
 } from '@mui/material';
+import dynamic from 'next/dynamic';
 import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import AuthMainLayout from 'src/components/layouts/authMain';
@@ -37,10 +35,6 @@ export default function FormsAccountPage() {
     creatorAddress: address as string,
     query: searchForm,
   });
-
-  const handleChangeSearchForm = (value: string) => {
-    setSearchForm(value);
-  };
 
   return (
     <>
@@ -108,21 +102,6 @@ export default function FormsAccountPage() {
                       defaultMessage="New Contract Form"
                     />
                   </Button>
-
-                  <LazyTextField
-                    TextFieldProps={{
-                      size: 'small',
-
-                      InputProps: {
-                        startAdornment: (
-                          <InputAdornment position="start">
-                            <Search />
-                          </InputAdornment>
-                        ),
-                      },
-                    }}
-                    onChange={handleChangeSearchForm}
-                  />
                 </Stack>
               </Grid>
               <Grid item xs={12}>
@@ -134,31 +113,44 @@ export default function FormsAccountPage() {
                     <div>
                       <ConnectWalletButton />
                     </div>
-                  ) : listFormsQuery.isLoading ? (
-                    <TableBody>
-                      {new Array(5).fill(null).map((_, key) => (
-                        <TableRow key={key}>
-                          <TableCell>
-                            <Skeleton />
-                          </TableCell>
-                          <TableCell>
-                            <Skeleton />
-                          </TableCell>
-                          <TableCell>
-                            <Skeleton />
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
                   ) : (
-                    <div>
-                      {listFormsQuery.data &&
-                        listFormsQuery.data?.length > 0 && (
-                          <AccountFormsTable
-                            forms={listFormsQuery.data ?? []}
-                          />
-                        )}
-                    </div>
+                    <AppErrorBoundary
+                      fallbackRender={({ resetErrorBoundary, error }) => {
+                        return (
+                          <Stack justifyContent="center" alignItems="center">
+                            <Typography variant="h6">
+                              <FormattedMessage
+                                id="something.went.wrong"
+                                defaultMessage="Oops, something went wrong"
+                                description="Something went wrong error message"
+                              />
+                            </Typography>
+                            <Typography variant="body1" color="textSecondary">
+                              {String(error)}
+                            </Typography>
+                            <Button
+                              color="primary"
+                              onClick={resetErrorBoundary}
+                            >
+                              <FormattedMessage
+                                id="try.again"
+                                defaultMessage="Try again"
+                                description="Try again"
+                              />
+                            </Button>
+                          </Stack>
+                        );
+                      }}
+                    >
+                      <AccountFormsTable
+                        forms={listFormsQuery.data ?? []}
+                        refetch={async () => {
+                          await listFormsQuery.refetch();
+                        }}
+                        count={listFormsQuery.data?.length ?? 0}
+                        onSearch={(value: string) => setSearchForm(value)}
+                      />
+                    </AppErrorBoundary>
                   )}
                 </Container>
               </Grid>

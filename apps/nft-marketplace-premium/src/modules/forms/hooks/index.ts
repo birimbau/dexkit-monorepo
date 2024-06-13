@@ -346,6 +346,37 @@ export function useSaveContractDeployed() {
   );
 }
 
+export function useImportContract() {
+  const { account } = useWeb3React();
+
+  const { instance } = useContext(DexkitApiProvider);
+
+  return useMutation(
+    async ({
+      contractAddress,
+      name,
+      chainId,
+      type,
+      referral,
+    }: {
+      contractAddress: string;
+      name?: string;
+      type?: string;
+      chainId: number;
+      referral?: string;
+    }) => {
+      return await instance?.post('/forms/deploy/contract/import', {
+        contractAddress,
+        name,
+        chainId,
+        type,
+        owner: account?.toLowerCase(),
+        referral,
+      });
+    }
+  );
+}
+
 export const INFINITE_LIST_DEPLOYED_CONTRACTS =
   'INFINITE_LIST_DEPLOYED_CONTRACTS';
 
