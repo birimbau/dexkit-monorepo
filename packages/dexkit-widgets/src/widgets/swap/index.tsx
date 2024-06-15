@@ -1,5 +1,3 @@
-import Swap from "./Swap";
-
 import {
   ChainId,
   DKAPI_INVALID_ADDRESSES,
@@ -24,7 +22,6 @@ import { Token } from "@dexkit/core/types";
 import { useUserGaslessSettings } from "@dexkit/ui/modules/swap/hooks/useUserGaslessSettings";
 import SwitchNetworkDialog from "../../components/SwitchNetworkDialog";
 import { SUPPORTED_GASLESS_CHAIN } from "../../constants";
-import SwapSelectCoinDialog from "./SwapSelectCoinDialog";
 import { SUPPORTED_SWAP_CHAIN_IDS } from "./constants/supportedChainIds";
 import { useErc20ApproveMutation } from "./hooks";
 import { useSwapExec } from "./hooks/useSwapExec";
@@ -32,6 +29,8 @@ import { useSwapGaslessExec } from "./hooks/useSwapGaslessExec";
 import { useSwapProvider } from "./hooks/useSwapProvider";
 import { useSwapState } from "./hooks/useSwapState";
 import { NotificationCallbackParams, RenderOptions } from "./types";
+import SwapSelectCoinUniswapDialog from "./uniswap/SwapSelectCoinUniswapDialog";
+import SwapUniswap from "./uniswap/SwapUniswap";
 import { convertOldTokenToNew } from "./utils";
 
 export interface SwapWidgetProps {
@@ -291,10 +290,18 @@ export function SwapWidget({
     return activeChainIds.filter((k) => SUPPORTED_SWAP_CHAIN_IDS.includes(k));
   }, [activeChainIds]);
 
+  const SelectCoinDialogComponent = useMemo(() => {
+    return SwapSelectCoinUniswapDialog;
+  }, []);
+
+  const SwapComponent = useMemo(() => {
+    return SwapUniswap;
+  }, []);
+
   return (
     <>
       {chainId && (
-        <SwapSelectCoinDialog
+        <SelectCoinDialogComponent
           tokens={tokens}
           recentTokens={recentTokens
             ?.map((t) => convertOldTokenToNew(t) as Token)
@@ -303,7 +310,7 @@ export function SwapWidget({
           onSelect={handleSelectToken}
           DialogProps={{
             open: showSelect,
-            maxWidth: "sm",
+            maxWidth: "xs",
             fullWidth: true,
             onClose: handleCloseSelectToken,
           }}
@@ -313,6 +320,10 @@ export function SwapWidget({
           provider={swapProvider}
           featuredTokens={featuredTokensByChain}
           onClearRecentTokens={handleClearRecentTokens}
+          isProviderReady={isProviderReady}
+          filteredChainIds={filteredChainIds}
+          onToggleChangeNetwork={handleToggleSwitchNetwork}
+          onChangeNetwork={handleChangeNetwork}
         />
       )}
       <SwitchNetworkDialog
@@ -366,7 +377,7 @@ export function SwapWidget({
           isAutoSlippage={isAutoSlippage}
         />
       )}
-      <Swap
+      <SwapComponent
         currency={currency}
         disableNotificationsButton={disableNotificationsButton}
         chainId={chainId}
