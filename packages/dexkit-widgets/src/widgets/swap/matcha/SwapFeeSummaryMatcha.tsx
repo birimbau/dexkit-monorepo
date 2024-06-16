@@ -24,23 +24,25 @@ import { formatBigNumber } from "../../../utils";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import LocalGasStationIcon from "@mui/icons-material/LocalGasStation";
 
-export interface SwapFeeSummaryUniswapProps {
+export interface SwapFeeSummaryMatchaProps {
   quote?: ZeroExQuoteResponse | null;
   chainId?: ChainId;
   currency: string;
   sellToken?: Token;
   buyToken?: Token;
   provider?: providers.BaseProvider;
+  defaultExpanded?: boolean;
 }
 
-export default function SwapFeeSummaryUniswap({
+export default function SwapFeeSummaryMatcha({
   quote,
   chainId,
   currency,
   sellToken,
   buyToken,
   provider,
-}: SwapFeeSummaryUniswapProps) {
+  defaultExpanded,
+}: SwapFeeSummaryMatchaProps) {
   const coinPrices = useCoinPrices({
     currency,
     tokens: chainId ? [GET_NATIVE_TOKEN(chainId)] : [],
@@ -138,7 +140,7 @@ export default function SwapFeeSummaryUniswap({
     }
   }, [sellToken, buyToken, quote, toggleSide, fiatNativePrice]);*/
 
-  const [showSummary, setShowSummary] = useState(false);
+  const [showSummary, setShowSummary] = useState(Boolean(defaultExpanded));
 
   return (
     <Box>
@@ -181,7 +183,7 @@ export default function SwapFeeSummaryUniswap({
               {!showSummary && (
                 <Stack direction="row" alignItems="center" spacing={0.5}>
                   <LocalGasStationIcon
-                    sx={{ color: (theme) => theme.palette.grey[300] }}
+                    sx={{ color: (theme) => theme.palette.grey[500] }}
                     fontSize="inherit"
                   />
                   <Typography variant="body2" color="text.secondary">

@@ -28,9 +28,12 @@ import { useSwapExec } from "./hooks/useSwapExec";
 import { useSwapGaslessExec } from "./hooks/useSwapGaslessExec";
 import { useSwapProvider } from "./hooks/useSwapProvider";
 import { useSwapState } from "./hooks/useSwapState";
+import SwapMatcha from "./matcha/SwapMatcha";
+import SwapSelectCoinMatchaDialog from "./matcha/SwapSelectCoinMatchaDialog";
 import { NotificationCallbackParams, RenderOptions } from "./types";
-import SwapSelectCoinUniswapDialog from "./uniswap/SwapSelectCoinUniswapDialog";
-import SwapUniswap from "./uniswap/SwapUniswap";
+
+import SwapConfirmMatchaDialog from "./matcha/SwapConfirmMatchaDialog";
+
 import { convertOldTokenToNew } from "./utils";
 
 export interface SwapWidgetProps {
@@ -291,11 +294,18 @@ export function SwapWidget({
   }, [activeChainIds]);
 
   const SelectCoinDialogComponent = useMemo(() => {
-    return SwapSelectCoinUniswapDialog;
+    return SwapSelectCoinMatchaDialog;
+
+    // return SwapSelectCoinUniswapDialog;
   }, []);
 
   const SwapComponent = useMemo(() => {
-    return SwapUniswap;
+    return SwapMatcha;
+    // return SwapUniswap;
+  }, []);
+
+  const SwapConfirmDialogComponent = useMemo(() => {
+    return SwapConfirmMatchaDialog;
   }, []);
 
   return (
@@ -338,7 +348,7 @@ export function SwapWidget({
         chainId={chainId}
       />
       {showConfirmSwap && (
-        <SwapConfirmDialog
+        <SwapConfirmDialogComponent
           DialogProps={{
             open: showConfirmSwap,
             maxWidth: "xs",
@@ -378,6 +388,7 @@ export function SwapWidget({
         />
       )}
       <SwapComponent
+        onSetToken={handleSelectToken}
         currency={currency}
         disableNotificationsButton={disableNotificationsButton}
         chainId={chainId}
