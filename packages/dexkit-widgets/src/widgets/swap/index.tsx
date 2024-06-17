@@ -28,12 +28,18 @@ import { useSwapExec } from "./hooks/useSwapExec";
 import { useSwapGaslessExec } from "./hooks/useSwapGaslessExec";
 import { useSwapProvider } from "./hooks/useSwapProvider";
 import { useSwapState } from "./hooks/useSwapState";
-import SwapMatcha from "./matcha/SwapMatcha";
-import SwapSelectCoinMatchaDialog from "./matcha/SwapSelectCoinMatchaDialog";
 import { NotificationCallbackParams, RenderOptions } from "./types";
 
 import SwapConfirmMatchaDialog from "./matcha/SwapConfirmMatchaDialog";
 
+import { SwapVariant } from "@dexkit/ui/modules/wizard/types";
+import Swap from "./Swap";
+import SwapSelectCoinDialog from "./SwapSelectCoinDialog";
+import SwapMatcha from "./matcha/SwapMatcha";
+import SwapSelectCoinMatchaDialog from "./matcha/SwapSelectCoinMatchaDialog";
+import SwapConfirmUniswapDialog from "./uniswap/SwapConfirmUniswapDialog";
+import SwapSelectCoinUniswapDialog from "./uniswap/SwapSelectCoinUniswapDialog";
+import SwapUniswap from "./uniswap/SwapUniswap";
 import { convertOldTokenToNew } from "./utils";
 
 export interface SwapWidgetProps {
@@ -78,12 +84,12 @@ export function SwapWidget({
     isActivating,
     chainId: connectedChainId,
   } = useWeb3React();
-
   const {
     configsByChain,
     defaultChainId,
     disableNotificationsButton,
     transakApiKey,
+    variant,
     currency,
     disableFooter,
     enableBuyCryptoButton,
@@ -293,25 +299,10 @@ export function SwapWidget({
     return activeChainIds.filter((k) => SUPPORTED_SWAP_CHAIN_IDS.includes(k));
   }, [activeChainIds]);
 
-  const SelectCoinDialogComponent = useMemo(() => {
-    return SwapSelectCoinMatchaDialog;
-
-    // return SwapSelectCoinUniswapDialog;
-  }, []);
-
-  const SwapComponent = useMemo(() => {
-    return SwapMatcha;
-    // return SwapUniswap;
-  }, []);
-
-  const SwapConfirmDialogComponent = useMemo(() => {
-    return SwapConfirmMatchaDialog;
-  }, []);
-
-  return (
-    <>
-      {chainId && (
-        <SelectCoinDialogComponent
+  const renderDialogComponent = () => {
+    if (variant === SwapVariant.UniswapLike) {
+      return (
+        <SwapSelectCoinUniswapDialog
           tokens={tokens}
           recentTokens={recentTokens
             ?.map((t) => convertOldTokenToNew(t) as Token)
@@ -335,60 +326,156 @@ export function SwapWidget({
           onToggleChangeNetwork={handleToggleSwitchNetwork}
           onChangeNetwork={handleChangeNetwork}
         />
-      )}
-      <SwitchNetworkDialog
-        onChangeNetwork={handleChangeNetwork}
-        activeChainIds={filteredChainIds}
+      );
+    }
+
+    if (variant === SwapVariant.MatchaLike) {
+      return (
+        <SwapSelectCoinMatchaDialog
+          tokens={tokens}
+          recentTokens={recentTokens
+            ?.map((t) => convertOldTokenToNew(t) as Token)
+            .filter((t) => t.chainId === chainId)}
+          onQueryChange={handleQueryChange}
+          onSelect={handleSelectToken}
+          DialogProps={{
+            open: showSelect,
+            maxWidth: "xs",
+            fullWidth: true,
+            onClose: handleCloseSelectToken,
+          }}
+          isLoadingSearch={searchQuery.isLoading}
+          chainId={selectedChainId}
+          account={account}
+          provider={swapProvider}
+          featuredTokens={featuredTokensByChain}
+          onClearRecentTokens={handleClearRecentTokens}
+          isProviderReady={isProviderReady}
+          filteredChainIds={filteredChainIds}
+          onToggleChangeNetwork={handleToggleSwitchNetwork}
+          onChangeNetwork={handleChangeNetwork}
+        />
+      );
+    }
+
+    return (
+      <SwapSelectCoinDialog
+        tokens={tokens}
+        recentTokens={recentTokens
+          ?.map((t) => convertOldTokenToNew(t) as Token)
+          .filter((t) => t.chainId === chainId)}
+        onQueryChange={handleQueryChange}
+        onSelect={handleSelectToken}
         DialogProps={{
-          open: showSwitchNetwork,
+          open: showSelect,
           maxWidth: "xs",
           fullWidth: true,
-          onClose: handleToggleSwitchNetwork,
+          onClose: handleCloseSelectToken,
         }}
-        chainId={chainId}
+        isLoadingSearch={searchQuery.isLoading}
+        chainId={selectedChainId}
+        account={account}
+        provider={swapProvider}
+        featuredTokens={featuredTokensByChain}
+        onClearRecentTokens={handleClearRecentTokens}
       />
-      {showConfirmSwap && (
-        <SwapConfirmDialogComponent
-          DialogProps={{
-            open: showConfirmSwap,
-            maxWidth: "xs",
-            fullWidth: true,
-            onClose: handleCloseConfirmSwap,
-          }}
+    );
+  };
+
+  const cond = false;
+
+  const renderSwapComponent = () => {
+    if (variant === SwapVariant.MatchaLike) {
+      return (
+        <SwapMatcha
+          onSetToken={handleSelectToken}
+          currency={currency}
+          disableNotificationsButton={disableNotificationsButton}
+          chainId={chainId}
+          activeChainIds={filteredChainIds}
+          quoteFor={quoteFor}
+          quoteQuery={quoteQuery}
+          clickOnMax={clickOnMax}
+          isActive={isActive && !disableWallet}
+          buyToken={buyToken}
+          sellToken={sellToken}
+          onSelectToken={handleOpenSelectToken}
+          onSwapTokens={handleSwapTokens}
+          onConnectWallet={handleConnectWallet}
+          sellAmount={sellAmount}
+          buyAmount={buyAmount}
+          networkName={
+            chainId && NETWORKS[chainId] ? NETWORKS[chainId].name : undefined
+          }
+          onToggleChangeNetwork={handleToggleSwitchNetwork}
+          onChangeBuyAmount={handleChangeBuyAmount}
+          onChangeSellAmount={handleChangeSellAmount}
+          onExec={handleExecSwap}
+          execType={execType}
+          isExecuting={isExecuting}
           quote={quote}
           isQuoting={isQuoting}
-          isApproving={approveMutation.isLoading}
-          isLoadingSignGasless={isLoadingSignGasless}
-          isLoadingStatusGasless={gaslessSwapState.isLoadingStatusGasless}
-          reasonFailedGasless={gaslessSwapState.reasonFailedGasless}
-          successTxGasless={gaslessSwapState.successTxGasless}
-          confirmedTxGasless={gaslessSwapState.confirmedTxGasless}
-          onConfirm={handleConfirmExecSwap}
-          execSwapState={execSwapState}
-          execType={execType}
+          provider={provider}
+          isProviderReady={isProviderReady}
+          sellTokenBalance={sellTokenBalance}
+          insufficientBalance={insufficientBalance}
+          buyTokenBalance={buyTokenBalance}
+          onChangeNetwork={handleChangeNetwork}
+          onShowSettings={handleShowSettings}
+          onShowTransactions={handleShowTransactions}
+          onShowTransak={transakApiKey ? handleShowTransak : undefined}
+          disableFooter={disableFooter}
+          enableBuyCryptoButton={enableBuyCryptoButton}
+        />
+      );
+    }
+
+    if (variant === SwapVariant.UniswapLike) {
+      return (
+        <SwapUniswap
+          currency={currency}
+          disableNotificationsButton={disableNotificationsButton}
           chainId={chainId}
-          currency={currency || "usd"}
-          sellToken={sellToken}
+          activeChainIds={filteredChainIds}
+          quoteFor={quoteFor}
+          quoteQuery={quoteQuery}
+          clickOnMax={clickOnMax}
+          isActive={isActive && !disableWallet}
           buyToken={buyToken}
+          sellToken={sellToken}
+          onSelectToken={handleOpenSelectToken}
+          onSwapTokens={handleSwapTokens}
+          onConnectWallet={handleConnectWallet}
+          sellAmount={sellAmount}
+          buyAmount={buyAmount}
+          networkName={
+            chainId && NETWORKS[chainId] ? NETWORKS[chainId].name : undefined
+          }
+          onToggleChangeNetwork={handleToggleSwitchNetwork}
+          onChangeBuyAmount={handleChangeBuyAmount}
+          onChangeSellAmount={handleChangeSellAmount}
+          onExec={handleExecSwap}
+          execType={execType}
+          isExecuting={isExecuting}
+          quote={quote}
+          isQuoting={isQuoting}
+          provider={provider}
+          isProviderReady={isProviderReady}
+          sellTokenBalance={sellTokenBalance}
+          insufficientBalance={insufficientBalance}
+          buyTokenBalance={buyTokenBalance}
+          onChangeNetwork={handleChangeNetwork}
+          onShowSettings={handleShowSettings}
+          onShowTransactions={handleShowTransactions}
+          onShowTransak={transakApiKey ? handleShowTransak : undefined}
+          disableFooter={disableFooter}
+          enableBuyCryptoButton={enableBuyCryptoButton}
         />
-      )}
-      {showSettings && (
-        <SwapSettingsDialog
-          DialogProps={{
-            open: showSettings,
-            maxWidth: "xs",
-            fullWidth: true,
-            onClose: handleCloseSettings,
-          }}
-          useGasless={useGasless}
-          onAutoSlippage={onAutoSlippage}
-          onChangeSlippage={onChangeSlippage}
-          maxSlippage={maxSlippage}
-          isAutoSlippage={isAutoSlippage}
-        />
-      )}
-      <SwapComponent
-        onSetToken={handleSelectToken}
+      );
+    }
+
+    return (
+      <Swap
         currency={currency}
         disableNotificationsButton={disableNotificationsButton}
         chainId={chainId}
@@ -427,6 +514,124 @@ export function SwapWidget({
         disableFooter={disableFooter}
         enableBuyCryptoButton={enableBuyCryptoButton}
       />
+    );
+  };
+
+  const renderConfirmDialog = () => {
+    if (variant === SwapVariant.MatchaLike) {
+      return (
+        <SwapConfirmMatchaDialog
+          DialogProps={{
+            open: showConfirmSwap,
+            maxWidth: "xs",
+            fullWidth: true,
+            onClose: handleCloseConfirmSwap,
+          }}
+          quote={quote}
+          isQuoting={isQuoting}
+          isApproving={approveMutation.isLoading}
+          isLoadingSignGasless={isLoadingSignGasless}
+          isLoadingStatusGasless={gaslessSwapState.isLoadingStatusGasless}
+          reasonFailedGasless={gaslessSwapState.reasonFailedGasless}
+          successTxGasless={gaslessSwapState.successTxGasless}
+          confirmedTxGasless={gaslessSwapState.confirmedTxGasless}
+          onConfirm={handleConfirmExecSwap}
+          execSwapState={execSwapState}
+          execType={execType}
+          chainId={chainId}
+          currency={currency || "usd"}
+          sellToken={sellToken}
+          buyToken={buyToken}
+        />
+      );
+    }
+
+    if (variant === SwapVariant.UniswapLike) {
+      return (
+        <SwapConfirmUniswapDialog
+          DialogProps={{
+            open: showConfirmSwap,
+            maxWidth: "xs",
+            fullWidth: true,
+            onClose: handleCloseConfirmSwap,
+          }}
+          quote={quote}
+          isQuoting={isQuoting}
+          isApproving={approveMutation.isLoading}
+          isLoadingSignGasless={isLoadingSignGasless}
+          isLoadingStatusGasless={gaslessSwapState.isLoadingStatusGasless}
+          reasonFailedGasless={gaslessSwapState.reasonFailedGasless}
+          successTxGasless={gaslessSwapState.successTxGasless}
+          confirmedTxGasless={gaslessSwapState.confirmedTxGasless}
+          onConfirm={handleConfirmExecSwap}
+          execSwapState={execSwapState}
+          execType={execType}
+          chainId={chainId}
+          currency={currency || "usd"}
+          sellToken={sellToken}
+          buyToken={buyToken}
+        />
+      );
+    }
+
+    return (
+      <SwapConfirmDialog
+        DialogProps={{
+          open: showConfirmSwap,
+          maxWidth: "xs",
+          fullWidth: true,
+          onClose: handleCloseConfirmSwap,
+        }}
+        quote={quote}
+        isQuoting={isQuoting}
+        isApproving={approveMutation.isLoading}
+        isLoadingSignGasless={isLoadingSignGasless}
+        isLoadingStatusGasless={gaslessSwapState.isLoadingStatusGasless}
+        reasonFailedGasless={gaslessSwapState.reasonFailedGasless}
+        successTxGasless={gaslessSwapState.successTxGasless}
+        confirmedTxGasless={gaslessSwapState.confirmedTxGasless}
+        onConfirm={handleConfirmExecSwap}
+        execSwapState={execSwapState}
+        execType={execType}
+        chainId={chainId}
+        currency={currency || "usd"}
+        sellToken={sellToken}
+        buyToken={buyToken}
+      />
+    );
+  };
+
+  return (
+    <>
+      {chainId && renderDialogComponent()}
+      <SwitchNetworkDialog
+        onChangeNetwork={handleChangeNetwork}
+        activeChainIds={filteredChainIds}
+        DialogProps={{
+          open: showSwitchNetwork,
+          maxWidth: "xs",
+          fullWidth: true,
+          onClose: handleToggleSwitchNetwork,
+        }}
+        chainId={chainId}
+      />
+      {showConfirmSwap && renderConfirmDialog()}
+      {showSettings && (
+        <SwapSettingsDialog
+          DialogProps={{
+            open: showSettings,
+            maxWidth: "xs",
+            fullWidth: true,
+            onClose: handleCloseSettings,
+          }}
+          useGasless={useGasless}
+          onAutoSlippage={onAutoSlippage}
+          onChangeSlippage={onChangeSlippage}
+          maxSlippage={maxSlippage}
+          isAutoSlippage={isAutoSlippage}
+        />
+      )}
+      {renderSwapComponent()}
     </>
   );
 }

@@ -1,9 +1,9 @@
 import { ChainId } from "@dexkit/core/constants/enums";
 import { Token } from "@dexkit/core/types";
 import { ZeroExQuoteResponse } from "@dexkit/ui/modules/swap/types";
+import { SwapVariant } from "@dexkit/ui/modules/wizard/types";
 import type { BigNumber } from "ethers";
 import React from "react";
-
 
 export type Empty = {
   name: string;
@@ -20,10 +20,7 @@ export type ExecType =
   | "network_not_supported"
   | "approve_gasless"
   | "swap_gasless"
-  | "quote_gasless"
-
-
-  ;
+  | "quote_gasless";
 
 export type SwapState = {
   chainId?: ChainId;
@@ -84,6 +81,7 @@ export type RenderOptions = {
   nonFeaturedTokens?: Token[];
   enableBuyCryptoButton?: boolean;
   disableFooter?: boolean;
+  variant?: SwapVariant;
   configsByChain: { [key: number]: ChainConfig };
   zeroExApiKey?: string;
   defaultChainId?: ChainId;
@@ -116,7 +114,8 @@ export type ApproveNotificationParams = {
 
 export type BaseNotificationParams =
   | ApproveNotificationParams
-  | SwapNotificationParams | SwapGaslessNotificationParams;
+  | SwapNotificationParams
+  | SwapGaslessNotificationParams;
 
 export type NotificationCallbackParams = {
   title: string;

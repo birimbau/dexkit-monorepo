@@ -1,12 +1,9 @@
 import { useIsMobile } from "@dexkit/core/hooks";
 import Search from "@mui/icons-material/Search";
-import React from "react";
 
 import {
-  Avatar,
   Box,
   Button,
-  ButtonBase,
   Dialog,
   DialogContent,
   DialogProps,
@@ -14,6 +11,7 @@ import {
   InputAdornment,
   ListSubheader,
   Stack,
+  Typography,
 } from "@mui/material";
 import type { providers } from "ethers";
 import { FormattedMessage, useIntl } from "react-intl";
@@ -22,12 +20,10 @@ import SearchTextField from "../../../components/SearchTextField";
 import { useMultiTokenBalance } from "../../../hooks";
 
 import { ChainId } from "@dexkit/core";
-import { NETWORKS } from "@dexkit/core/constants/networks";
 import { Token } from "@dexkit/core/types";
-import ExpandMore from "@mui/icons-material/ExpandMore";
-import SwitchNetworkSelect from "../../../components/SwitchNetworkSelect";
 import SelectCoinMatchaList from "./SelectCoinMatchaList";
 import SwapFeaturedMatchaTokens from "./SwapFeaturedMatchaTokens";
+import SwapNetworkButtons from "./SwapNetworkButtons";
 
 export interface SwapSelectCoinMatchaDialogProps {
   DialogProps: DialogProps;
@@ -88,7 +84,7 @@ export default function SwapSelectCoinMatchaDialog({
       />
       <Divider />
       <Stack spacing={2} sx={{ py: 2 }}>
-        <Box sx={{ px: 2 }}>
+        <Stack sx={{ px: 2 }} spacing={2}>
           <Stack direction="row" spacing={2}>
             <SearchTextField
               onChange={onQueryChange}
@@ -110,41 +106,20 @@ export default function SwapSelectCoinMatchaDialog({
                 }),
               }}
             />
-            {isProviderReady &&
-              chainId &&
-              (isMobile ? (
-                <ButtonBase
-                  sx={{
-                    color: (theme) => theme.palette.text.primary,
-                    borderRadius: (theme) => theme.shape.borderRadius / 2,
-                    borderColor: (theme) => theme.palette.divider,
-                    borderWidth: 1,
-                    borderStyle: "solid",
-                    px: 1,
-                    py: 1,
-                  }}
-                  onClick={onToggleChangeNetwork}
-                >
-                  <Stack direction="row" alignItems="center" spacing={0.5}>
-                    {NETWORKS[chainId] ? (
-                      <Avatar
-                        sx={{ width: "1rem", height: "1rem" }}
-                        src={NETWORKS[chainId].imageUrl}
-                      />
-                    ) : undefined}
-                    <ExpandMore />
-                  </Stack>
-                </ButtonBase>
-              ) : (
-                <SwitchNetworkSelect
-                  iconOnly
-                  chainId={chainId}
-                  activeChainIds={filteredChainIds}
-                  onChangeNetwork={onChangeNetwork}
-                  SelectProps={{ size: "small" }}
-                />
-              ))}
           </Stack>
+          {isProviderReady && chainId && (
+            <SwapNetworkButtons
+              chainId={chainId}
+              activeChainIds={filteredChainIds}
+              onChangeNetwork={onChangeNetwork}
+            />
+          )}
+        </Stack>
+        <Divider />
+        <Box px={2}>
+          <Typography variant="body2" color="text.secondary">
+            <FormattedMessage id="most.popular" defaultMessage="Most popular" />
+          </Typography>
         </Box>
         {featuredTokens && featuredTokens.length > 0 && (
           <SwapFeaturedMatchaTokens

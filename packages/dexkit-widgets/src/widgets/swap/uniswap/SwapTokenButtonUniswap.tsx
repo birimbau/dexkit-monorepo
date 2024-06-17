@@ -67,10 +67,21 @@ function SwapTokenButtonUniswap({
           alignItems="center"
           spacing={0.5}
         >
-          <Typography fontWeight="bold">
+          <Typography
+            sx={{
+              color: (theme) =>
+                theme.palette.getContrastText(theme.palette.primary.main),
+            }}
+            fontWeight="bold"
+          >
             <FormattedMessage id="select.token" defaultMessage="Select token" />
           </Typography>
-          <ExpandMoreIcon />
+          <ExpandMoreIcon
+            sx={{
+              color: (theme) =>
+                theme.palette.getContrastText(theme.palette.primary.main),
+            }}
+          />
         </Stack>
       )}
     </ButtonBase>

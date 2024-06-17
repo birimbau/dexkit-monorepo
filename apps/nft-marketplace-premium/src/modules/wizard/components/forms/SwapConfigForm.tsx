@@ -1,5 +1,6 @@
 import { SwapConfig } from '@/modules/swap/types';
 import { useActiveChainIds } from '@dexkit/ui/hooks';
+import { SwapVariant } from '@dexkit/ui/modules/wizard/types';
 import { SUPPORTED_SWAP_CHAIN_IDS } from '@dexkit/widgets/src/widgets/swap/constants/supportedChainIds';
 import { ChainConfig } from '@dexkit/widgets/src/widgets/swap/types';
 import {
@@ -11,6 +12,9 @@ import {
   FormControlLabel,
   FormGroup,
   Grid,
+  InputLabel,
+  MenuItem,
+  Select,
   Typography,
 } from '@mui/material';
 import TextField from '@mui/material/TextField';
@@ -31,7 +35,7 @@ export function SwapConfigForm({ onChange, data, featuredTokens }: Props) {
   const [formData, setFormData] = useState<SwapConfig | undefined>(data);
 
   const [selectedChainId, setSelectedChainId] = useState<number | undefined>(
-    data?.defaultChainId,
+    data?.defaultChainId
   );
 
   const sellToken = useMemo(() => {
@@ -132,7 +136,7 @@ export function SwapConfigForm({ onChange, data, featuredTokens }: Props) {
               }}
               activeChainIds={
                 activeChainIds.filter((ch) =>
-                  SUPPORTED_SWAP_CHAIN_IDS.includes(ch),
+                  SUPPORTED_SWAP_CHAIN_IDS.includes(ch)
                 ) || []
               }
               labelId={'config-per-network'}
@@ -140,7 +144,38 @@ export function SwapConfigForm({ onChange, data, featuredTokens }: Props) {
             />
           </FormControl>
         </Grid>
-
+        <Grid item xs={12}>
+          <FormControl fullWidth>
+            <InputLabel>
+              <FormattedMessage id="variant" defaultMessage="Variant" />
+            </InputLabel>
+            <Select
+              fullWidth
+              label={<FormattedMessage id="variant" defaultMessage="Variant" />}
+              value={formData?.variant === undefined ? '' : formData?.variant}
+              displayEmpty
+              onChange={(e) => {
+                setFormData((form) => ({
+                  ...form,
+                  variant:
+                    e.target.value !== ''
+                      ? (e.target.value as SwapVariant)
+                      : undefined,
+                }));
+              }}
+            >
+              <MenuItem value="">
+                <FormattedMessage id="classic" defaultMessage="Classic" />
+              </MenuItem>
+              <MenuItem value={SwapVariant.MatchaLike}>
+                <FormattedMessage id="pro" defaultMessage="Pro" />
+              </MenuItem>
+              <MenuItem value={SwapVariant.UniswapLike}>
+                <FormattedMessage id="alt" defaultMessage="Alt" />
+              </MenuItem>
+            </Select>
+          </FormControl>
+        </Grid>
         <Grid item xs={12}>
           <SearchTokenAutocomplete
             label={
