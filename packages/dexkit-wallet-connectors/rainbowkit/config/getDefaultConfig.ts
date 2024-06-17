@@ -125,8 +125,9 @@ export const getDefaultConfig = <
 
 
   return createConfig({
+
     connectors: allConnectors,
-    // syncConnectedChain: false,
+    ssr: true,
     chains,
     transports:
       transports || createDefaultTransports<chains, transports>(chains),

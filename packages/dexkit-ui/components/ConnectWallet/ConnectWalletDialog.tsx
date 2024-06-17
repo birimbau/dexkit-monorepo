@@ -51,7 +51,7 @@ export default function ConnectWalletDialog({
 
   const connectors = useWalletConnectors({
     activeChainIds,
-    defaultChainId: activeChainIds[0],
+    // defaultChainId: activeChainIds[0],
     setConnectWalletState: connectWalletDialog.setOpen,
   });
 
