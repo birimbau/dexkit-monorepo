@@ -23,10 +23,13 @@ export interface SwapTokenFieldMatchaProps {
   title?: React.ReactNode;
   isBuyToken?: boolean;
   onSetToken?: (token?: Token) => void;
+  featuredTokensByChain: Token[];
+  enableHalfAmount?: boolean;
 }
 
 function SwapTokenFieldMatcha({
   InputBaseProps,
+  featuredTokensByChain,
   onChange,
   onSelectToken,
   token,
@@ -38,10 +41,17 @@ function SwapTokenFieldMatcha({
   title,
   isBuyToken,
   onSetToken,
+  enableHalfAmount,
 }: SwapTokenFieldMatchaProps) {
   const handleMax = () => {
     if (balance) {
       onChange(balance, true);
+    }
+  };
+
+  const handleHalfAmont = () => {
+    if (balance) {
+      onChange(balance.div(2), true);
     }
   };
 
@@ -97,26 +107,49 @@ function SwapTokenFieldMatcha({
             ButtonBaseProps={{ onClick: () => onSelectToken(token) }}
           />
           {token && balance && showBalance ? (
-            <Button
-              variant="contained"
-              color="inherit"
-              onClick={handleMax}
-              size="small"
-              disableElevation
-              disableTouchRipple
-              sx={{
-                backgroundColor: (theme) =>
-                  theme.palette.mode === "dark"
-                    ? theme.palette.background.default
-                    : theme.palette.grey[200],
-                borderRadius: (theme) => theme.shape.borderRadius,
-              }}
-            >
-              <FormattedMessage id="max" defaultMessage="Max" />
-            </Button>
+            <Stack direction="row" alignItems="center" spacing={0.5}>
+              {enableHalfAmount && (
+                <Button
+                  variant="contained"
+                  color="inherit"
+                  onClick={handleHalfAmont}
+                  size="small"
+                  disableElevation
+                  disableTouchRipple
+                  sx={{
+                    backgroundColor: (theme) =>
+                      theme.palette.mode === "dark"
+                        ? theme.palette.background.default
+                        : theme.palette.grey[200],
+                    borderRadius: (theme) => theme.shape.borderRadius,
+                  }}
+                >
+                  <FormattedMessage id="50.percent" defaultMessage="50%" />
+                </Button>
+              )}
+
+              <Button
+                variant="contained"
+                color="inherit"
+                onClick={handleMax}
+                size="small"
+                disableElevation
+                disableTouchRipple
+                sx={{
+                  backgroundColor: (theme) =>
+                    theme.palette.mode === "dark"
+                      ? theme.palette.background.default
+                      : theme.palette.grey[200],
+                  borderRadius: (theme) => theme.shape.borderRadius,
+                }}
+              >
+                <FormattedMessage id="max" defaultMessage="Max" />
+              </Button>
+            </Stack>
           ) : isBuyToken ? (
             <SelectTokenShortcutMatcha
               onSelectToken={(token) => onSetToken!(token)}
+              featuredTokensByChain={featuredTokensByChain}
             />
           ) : null}
         </Stack>

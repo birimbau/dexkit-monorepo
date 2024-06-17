@@ -171,7 +171,7 @@ export function SwapConfigForm({ onChange, data, featuredTokens }: Props) {
                 <FormattedMessage id="pro" defaultMessage="Pro" />
               </MenuItem>
               <MenuItem value={SwapVariant.UniswapLike}>
-                <FormattedMessage id="alt" defaultMessage="Alt" />
+                <FormattedMessage id="modern" defaultMessage="Modern" />
               </MenuItem>
             </Select>
           </FormControl>

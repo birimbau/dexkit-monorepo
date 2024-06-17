@@ -64,6 +64,7 @@ export interface SwapMatchaProps {
   disableFooter?: boolean;
   networkName?: string;
   activeChainIds: number[];
+  featuredTokensByChain: Token[];
   onSelectToken: (selectFor: SwapSide, token?: Token) => void;
   onSwapTokens: () => void;
   onChangeSellAmount: (value: BigNumber, clickOnMax?: boolean) => void;
@@ -84,6 +85,7 @@ import SwapSwitchTokensMatchaButton from "./SwapSwitchTokensMatchaButton";
 export default function SwapMatcha({
   chainId,
   networkName,
+  featuredTokensByChain,
   disabled,
   quoteFor,
   isActive,
@@ -255,6 +257,8 @@ export default function SwapMatcha({
           <Stack spacing={2}>
             <Stack>
               <SwapTokenFieldMatcha
+                featuredTokensByChain={[]}
+                enableHalfAmount
                 title={<FormattedMessage id="sell" defaultMessage="Sell" />}
                 InputBaseProps={{ fullWidth: true }}
                 onChange={onChangeSellAmount}
@@ -289,6 +293,7 @@ export default function SwapMatcha({
                 </Box>
               </Stack>
               <SwapTokenFieldMatcha
+                featuredTokensByChain={featuredTokensByChain}
                 title={<FormattedMessage id="buy" defaultMessage="Buy" />}
                 InputBaseProps={{ fullWidth: true }}
                 onChange={onChangeBuyAmount}

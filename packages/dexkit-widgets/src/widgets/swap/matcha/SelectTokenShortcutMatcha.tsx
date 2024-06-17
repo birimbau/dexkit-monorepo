@@ -5,10 +5,12 @@ import { useRecentTokens } from "../../../hooks";
 
 export interface SelectTokenShortcutMatchaProps {
   onSelectToken: (token: Token) => void;
+  featuredTokensByChain: Token[];
 }
 
 export default function SelectTokenShortcutMatcha({
   onSelectToken,
+  featuredTokensByChain,
 }: SelectTokenShortcutMatchaProps) {
   const recentTokens = useRecentTokens();
 
@@ -17,8 +19,12 @@ export default function SelectTokenShortcutMatcha({
       return recentTokens.tokens.slice(0, 3);
     }
 
+    if (featuredTokensByChain.length >= 3) {
+      return featuredTokensByChain.slice(0, 3);
+    }
+
     return [];
-  }, []);
+  }, [featuredTokensByChain]);
 
   return (
     <Stack direction="row" alignItems="center" spacing={1}>

@@ -89,7 +89,6 @@ export function SwapWidget({
     defaultChainId,
     disableNotificationsButton,
     transakApiKey,
-    variant,
     currency,
     disableFooter,
     enableBuyCryptoButton,
@@ -99,6 +98,8 @@ export function SwapWidget({
     useGasless,
     myTokensOnlyOnSearch,
   } = options;
+
+  let variant = SwapVariant.MatchaLike;
 
   const execSwapMutation = useSwapExec({ onNotification });
 
@@ -300,9 +301,9 @@ export function SwapWidget({
   }, [activeChainIds]);
 
   const renderDialogComponent = () => {
-    if (variant === SwapVariant.UniswapLike) {
+    if (variant === SwapVariant.MatchaLike) {
       return (
-        <SwapSelectCoinUniswapDialog
+        <SwapSelectCoinMatchaDialog
           tokens={tokens}
           recentTokens={recentTokens
             ?.map((t) => convertOldTokenToNew(t) as Token)
@@ -327,11 +328,9 @@ export function SwapWidget({
           onChangeNetwork={handleChangeNetwork}
         />
       );
-    }
-
-    if (variant === SwapVariant.MatchaLike) {
+    } else if (variant === SwapVariant.UniswapLike) {
       return (
-        <SwapSelectCoinMatchaDialog
+        <SwapSelectCoinUniswapDialog
           tokens={tokens}
           recentTokens={recentTokens
             ?.map((t) => convertOldTokenToNew(t) as Token)
@@ -389,6 +388,7 @@ export function SwapWidget({
       return (
         <SwapMatcha
           onSetToken={handleSelectToken}
+          featuredTokensByChain={featuredTokensByChain}
           currency={currency}
           disableNotificationsButton={disableNotificationsButton}
           chainId={chainId}
