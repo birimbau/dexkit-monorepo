@@ -82,6 +82,7 @@ export type RenderOptions = {
   enableBuyCryptoButton?: boolean;
   disableFooter?: boolean;
   variant?: SwapVariant;
+  enableUrlParams?: boolean;
   configsByChain: { [key: number]: ChainConfig };
   zeroExApiKey?: string;
   defaultChainId?: ChainId;

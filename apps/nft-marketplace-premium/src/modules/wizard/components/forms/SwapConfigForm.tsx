@@ -3,8 +3,10 @@ import { useActiveChainIds } from '@dexkit/ui/hooks';
 import { SwapVariant } from '@dexkit/ui/modules/wizard/types';
 import { SUPPORTED_SWAP_CHAIN_IDS } from '@dexkit/widgets/src/widgets/swap/constants/supportedChainIds';
 import { ChainConfig } from '@dexkit/widgets/src/widgets/swap/types';
+import Info from '@mui/icons-material/Info';
 import {
   Alert,
+  Box,
   Checkbox,
   Container,
   Divider,
@@ -15,6 +17,8 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  Stack,
+  Tooltip,
   Typography,
 } from '@mui/material';
 import TextField from '@mui/material/TextField';
@@ -146,7 +150,7 @@ export function SwapConfigForm({ onChange, data, featuredTokens }: Props) {
         </Grid>
         <Grid item xs={12}>
           <FormControl fullWidth>
-            <InputLabel>
+            <InputLabel shrink>
               <FormattedMessage id="variant" defaultMessage="Variant" />
             </InputLabel>
             <Select
@@ -154,6 +158,7 @@ export function SwapConfigForm({ onChange, data, featuredTokens }: Props) {
               label={<FormattedMessage id="variant" defaultMessage="Variant" />}
               value={formData?.variant === undefined ? '' : formData?.variant}
               displayEmpty
+              notched
               onChange={(e) => {
                 setFormData((form) => ({
                   ...form,
@@ -175,6 +180,41 @@ export function SwapConfigForm({ onChange, data, featuredTokens }: Props) {
               </MenuItem>
             </Select>
           </FormControl>
+        </Grid>
+        <Grid item xs={12}>
+          <Box>
+            <Stack spacing={1} alignItems="center" direction="row">
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={Boolean(formData?.enableUrlParams)}
+                    onChange={(e) =>
+                      setFormData((value) => ({
+                        ...value,
+                        enableUrlParams: e.target.checked,
+                      }))
+                    }
+                  />
+                }
+                label={
+                  <FormattedMessage
+                    id="enable.url.params"
+                    defaultMessage="Enable url params"
+                  />
+                }
+              />
+              <Tooltip
+                title={
+                  <FormattedMessage
+                    id="url.parameters.Explanation"
+                    defaultMessage="By selecting this checkbox, the URL parameters will be used to set the token and network for the swap."
+                  />
+                }
+              >
+                <Info fontSize="inherit" color="inherit" />
+              </Tooltip>
+            </Stack>
+          </Box>
         </Grid>
         <Grid item xs={12}>
           <SearchTokenAutocomplete

@@ -123,6 +123,7 @@ export enum SwapVariant {
 export interface SwapConfig {
   defaultChainId?: number;
   defaultEditChainId?: number;
+  enableUrlParams?: boolean;
   useGasless?: boolean;
   variant?: SwapVariant;
   myTokensOnlyOnSearch?: boolean;

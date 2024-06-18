@@ -2,11 +2,11 @@ import {
   Alert,
   Box,
   Button,
-  Card,
   CircularProgress,
   Divider,
   IconButton,
   LinearProgress,
+  Paper,
   Stack,
   Typography,
 } from "@mui/material";
@@ -185,7 +185,7 @@ export default function SwapMatcha({
   const isMobile = useIsMobile();
 
   return (
-    <Card>
+    <Paper variant="elevation">
       <Stack spacing={1}>
         <Box px={1} pt={1}>
           {chainId && !SUPPORTED_SWAP_CHAIN_IDS.includes(chainId) && (
@@ -251,7 +251,14 @@ export default function SwapMatcha({
         {isQuoting && !disabled ? (
           <LinearProgress color="primary" sx={{ height: "1px" }} />
         ) : (
-          <Divider />
+          <Divider
+            sx={{
+              borderColor: (theme) =>
+                theme.palette.mode === "dark"
+                  ? theme.palette.background.default
+                  : theme.palette.divider,
+            }}
+          />
         )}
         <Box pb={2}>
           <Stack spacing={2}>
@@ -405,6 +412,6 @@ export default function SwapMatcha({
           </Box>
         )}
       </Stack>
-    </Card>
+    </Paper>
   );
 }

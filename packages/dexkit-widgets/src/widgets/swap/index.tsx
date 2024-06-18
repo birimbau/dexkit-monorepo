@@ -89,6 +89,8 @@ export function SwapWidget({
     defaultChainId,
     disableNotificationsButton,
     transakApiKey,
+    variant,
+    enableUrlParams,
     currency,
     disableFooter,
     enableBuyCryptoButton,
@@ -98,8 +100,6 @@ export function SwapWidget({
     useGasless,
     myTokensOnlyOnSearch,
   } = options;
-
-  let variant = SwapVariant.MatchaLike;
 
   const execSwapMutation = useSwapExec({ onNotification });
 
@@ -600,6 +600,30 @@ export function SwapWidget({
       />
     );
   };
+
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    if (mounted && Boolean(enableUrlParams)) {
+      const url = new URL(window.location.href);
+
+      if (chainId) {
+        url.searchParams.set("chainId", chainId.toString());
+      }
+
+      if (sellToken !== undefined) {
+        url.searchParams.set("sellToken", sellToken.address);
+      }
+
+      if (buyToken !== undefined) {
+        url.searchParams.set("buyToken", buyToken.address);
+      }
+
+      history.pushState({}, "", url);
+    } else {
+      setMounted(true);
+    }
+  }, [sellToken, buyToken, chainId, mounted, enableUrlParams]);
 
   return (
     <>

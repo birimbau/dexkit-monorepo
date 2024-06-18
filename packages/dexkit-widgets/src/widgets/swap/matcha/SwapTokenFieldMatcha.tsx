@@ -146,7 +146,7 @@ function SwapTokenFieldMatcha({
                 <FormattedMessage id="max" defaultMessage="Max" />
               </Button>
             </Stack>
-          ) : isBuyToken ? (
+          ) : isBuyToken && !token ? (
             <SelectTokenShortcutMatcha
               onSelectToken={(token) => onSetToken!(token)}
               featuredTokensByChain={featuredTokensByChain}

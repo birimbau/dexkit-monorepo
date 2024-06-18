@@ -14,9 +14,10 @@ interface Props {
 
 interface Props {
   section: SwapPageSection;
+  selectedChainId?: ChainId;
 }
 
-export function SwapSection({ section }: Props) {
+export function SwapSection({ section, selectedChainId }: Props) {
   const currency = useCurrency();
   const { chainId } = useWeb3React();
   const { activeChainIds } = useActiveChainIds();
@@ -37,8 +38,12 @@ export function SwapSection({ section }: Props) {
               : {},
             currency: currency.currency,
             variant: section.config?.variant,
+            enableUrlParams: section.config?.enableUrlParams,
             defaultChainId:
-              chainId || section.config?.defaultChainId || ChainId.Ethereum,
+              selectedChainId ||
+              chainId ||
+              section.config?.defaultChainId ||
+              ChainId.Ethereum,
             zeroExApiKey: process?.env.NEXT_PUBLIC_ZRX_API_KEY || "",
             transakApiKey: process?.env.NEXT_PUBLIC_TRANSAK_API_KEY || "",
           }}

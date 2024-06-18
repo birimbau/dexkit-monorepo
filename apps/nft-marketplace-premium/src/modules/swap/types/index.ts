@@ -4,6 +4,7 @@ import { ChainConfig } from '@dexkit/widgets/src/widgets/swap/types';
 export interface SwapConfig {
   useGasless?: boolean;
   variant?: SwapVariant;
+  enableUrlParams?: boolean;
   myTokensOnlyOnSearch?: boolean;
   defaultChainId?: number;
   defaultEditChainId?: number;
