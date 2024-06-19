@@ -5,7 +5,7 @@ import { AbiFragment, FunctionInput } from "../types";
 
 import { getTrustedForwarders } from "@thirdweb-dev/sdk/evm";
 import { ThirdwebStorage } from "@thirdweb-dev/storage";
-import { providers } from "ethers";
+import type { providers } from "ethers";
 
 export function getSchemaForInput(type: string) {
   return EvmSchemaTypes[type];
