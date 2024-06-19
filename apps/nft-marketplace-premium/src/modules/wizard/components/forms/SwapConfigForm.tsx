@@ -369,7 +369,7 @@ export function SwapConfigForm({ onChange, data, featuredTokens }: Props) {
               />
             </Grid>
             <Grid item>
-              <Grid container spacing={2} alignItems="center" spacing={0}>
+              <Grid container spacing={0} alignItems="center">
                 <Grid item>
                   <FormControlLabel
                     control={
