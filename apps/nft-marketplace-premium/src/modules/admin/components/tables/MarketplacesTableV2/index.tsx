@@ -7,7 +7,7 @@ import { useIsMobile } from '@dexkit/core';
 import { AppConfirmDialog, AppLink } from '@dexkit/ui';
 import { AppConfig } from '@dexkit/ui/modules/wizard/types/config';
 import MoreVert from '@mui/icons-material/MoreVert';
-import { IconButton, Stack, Tooltip } from '@mui/material';
+import { IconButton, Stack, Tooltip, Typography } from '@mui/material';
 import {
   DataGrid,
   GridColDef,
@@ -187,15 +187,60 @@ export default function MarketplacesTableV2({ configs }: Props) {
 
   const columns: GridColDef<ConfigResponse>[] = [
     {
+      disableColumnMenu: true,
+      renderHeader: (params) => {
+        return (
+          <Typography
+            sx={(theme) => ({
+              fontSize: isMobile
+                ? theme.typography.fontSize * 1.25
+                : theme.typography.fontSize,
+            })}
+            fontWeight="500"
+          >
+            {params.colDef.headerName}
+          </Typography>
+        );
+      },
       field: 'name',
       headerName: formatMessage({ id: 'name', defaultMessage: 'Name' }),
-
-      flex: 1,
+      minWidth: 200,
+      renderCell: (params) => {
+        return (
+          <Typography
+            sx={(theme) => ({
+              fontSize: isMobile
+                ? theme.typography.fontSize * 1.25
+                : theme.typography.fontSize,
+            })}
+            fontWeight="400"
+          >
+            {params.value}
+          </Typography>
+        );
+      },
       valueGetter: ({ row }) => {
         return row.slug;
       },
     },
     {
+      disableColumnMenu: true,
+      disableReorder: true,
+      sortable: false,
+      renderHeader: (params) => {
+        return (
+          <Typography
+            sx={(theme) => ({
+              fontSize: isMobile
+                ? theme.typography.fontSize * 1.25
+                : theme.typography.fontSize,
+            })}
+            fontWeight="500"
+          >
+            {params.colDef.headerName}
+          </Typography>
+        );
+      },
       field: 'domain',
       flex: 1,
       headerName: formatMessage({ id: 'domain', defaultMessage: 'Domain' }),
@@ -204,12 +249,31 @@ export default function MarketplacesTableV2({ configs }: Props) {
         const appConfig: AppConfig = JSON.parse(row.config);
 
         if (row.previewUrl) {
-          return <AppLink href={row.previewUrl}>{row.previewUrl}</AppLink>;
+          return (
+            <AppLink
+              sx={(theme) => ({
+                fontSize: isMobile
+                  ? theme.typography.fontSize * 1.25
+                  : theme.typography.fontSize,
+              })}
+              href={row.previewUrl}
+            >
+              {row.previewUrl}
+            </AppLink>
+          );
         }
 
         if (appConfig.domain && appConfig.domain !== '') {
           return (
-            <AppLink href={appConfig.domain} target={'_blank'}>
+            <AppLink
+              sx={(theme) => ({
+                fontSize: isMobile
+                  ? theme.typography.fontSize * 1.25
+                  : theme.typography.fontSize,
+              })}
+              href={appConfig.domain}
+              target={'_blank'}
+            >
               {appConfig.domain}
             </AppLink>
           );
@@ -218,9 +282,26 @@ export default function MarketplacesTableV2({ configs }: Props) {
     },
     {
       field: 'action',
+      disableReorder: true,
+      sortable: false,
+      disableColumnMenu: true,
+      renderHeader: (params) => {
+        return (
+          <Typography
+            sx={(theme) => ({
+              fontSize: isMobile
+                ? theme.typography.fontSize * 1.25
+                : theme.typography.fontSize,
+            })}
+            fontWeight="500"
+          >
+            {params.colDef.headerName}
+          </Typography>
+        );
+      },
       flex: 1,
+      minWidth: isMobile ? 150 : undefined,
       headerName: formatMessage({ id: 'actions', defaultMessage: 'Actions' }),
-      minWidth: 200,
       renderCell: ({ row, id }) => {
         if (isMobile) {
           return (
@@ -236,7 +317,12 @@ export default function MarketplacesTableV2({ configs }: Props) {
         }
 
         return (
-          <Stack direction="row" alignItems="center">
+          <Stack
+            sx={{ width: '100%' }}
+            direction="row"
+            alignItems="center"
+            justifyContent="flex-end"
+          >
             {ADMIN_TABLE_LIST.map((item, index) => (
               <Tooltip
                 key={index}
@@ -268,7 +354,6 @@ export default function MarketplacesTableV2({ configs }: Props) {
   ]);
 
   const handleSortModelChange = useCallback((sortModel: GridSortModel) => {
-    console.log('ass', sortModel);
     setSortModel(sortModel);
   }, []);
 
@@ -305,6 +390,7 @@ export default function MarketplacesTableV2({ configs }: Props) {
           toolbar: {
             showQuickFilter: true,
           },
+          pagination: { sx: { mx: 0.75 } },
         }}
         sortModel={sortModel}
         onPaginationModelChange={setPaginationModel}

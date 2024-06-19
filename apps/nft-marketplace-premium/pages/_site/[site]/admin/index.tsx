@@ -226,7 +226,7 @@ export const AdminIndexPage: NextPage = () => {
         config={selectedConfig}
       />
       <Container>
-        <Grid container spacing={2}>
+        <Grid container spacing={3}>
           <Grid item xs={12}>
             <PageHeader
               breadcrumbs={[
@@ -282,11 +282,11 @@ export const AdminIndexPage: NextPage = () => {
             <Divider />
           </Grid>
           <Grid item xs={12}>
-            <Grid container spacing={2} justifyContent="center">
+            <Grid container spacing={3} justifyContent="center">
               <Grid item xs={12} sm={8}>
                 <Box>
-                  <Stack spacing={2}>
-                    <Box>
+                  <Stack spacing={3}>
+                    <Box px={3}>
                       <Stack justifyContent="flex-end" direction="row">
                         <TextField
                           value={search}
