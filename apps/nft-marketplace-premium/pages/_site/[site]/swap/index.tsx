@@ -1,5 +1,3 @@
-import { Token } from '@dexkit/core/types';
-import { isAddressEqual, parseChainId } from '@dexkit/core/utils';
 import SwapSection from '@dexkit/dexappbuilder-viewer/components/sections/SwapSection';
 import { PageHeader } from '@dexkit/ui/components/PageHeader';
 import { SwapPageSection } from '@dexkit/ui/modules/wizard/types/section';
@@ -8,7 +6,6 @@ import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import type { GetStaticProps, GetStaticPropsContext, NextPage } from 'next';
 import { NextSeo } from 'next-seo';
-import { useSearchParams } from 'next/navigation';
 import { useMemo } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import MainLayout from 'src/components/layouts/main';
@@ -38,72 +35,6 @@ const SwapPage: NextPage = () => {
     } as SwapPageSection;
   }, [appConfig]);
 
-  const params = useSearchParams();
-
-  const configParams = useMemo(() => {
-    const chainId = parseChainId(params.get('chainId') ?? '0');
-    const buyTokenAddress = params.get('buyToken');
-    const sellTokenAddress = params.get('sellToken');
-
-    let tokens = appConfig?.tokens?.length
-      ? appConfig?.tokens[0].tokens || []
-      : [];
-
-    let buyToken: Token | undefined;
-    let sellToken: Token | undefined;
-
-    if (chainId && buyTokenAddress) {
-      buyToken = tokens.find(
-        (t) =>
-          isAddressEqual(t.address, buyTokenAddress ?? '') &&
-          t.chainId === chainId
-      );
-    }
-
-    if (chainId && sellTokenAddress) {
-      sellToken = tokens.find(
-        (t) =>
-          isAddressEqual(t.address, sellTokenAddress ?? '') &&
-          t.chainId === chainId
-      );
-    }
-
-    if (chainId) {
-      const config = {
-        ...swapSection.config,
-        defaultChainId: chainId,
-        configByChain: {
-          ...swapSection.config?.configByChain,
-        },
-      };
-
-      config.configByChain[chainId] = {
-        slippage: 0,
-      };
-
-      if (swapSection.config?.configByChain?.[chainId].slippage) {
-        config.configByChain[chainId].slippage =
-          swapSection.config?.configByChain?.[chainId].slippage;
-      }
-
-      if (buyToken) {
-        config.configByChain[chainId].buyToken = buyToken;
-      } else if (swapSection.config?.configByChain?.[chainId].buyToken) {
-        config.configByChain[chainId].buyToken =
-          swapSection.config?.configByChain?.[chainId].buyToken;
-      }
-
-      if (sellToken) {
-        config.configByChain[chainId].sellToken = sellToken;
-      } else if (swapSection.config?.configByChain?.[chainId].sellToken) {
-        config.configByChain[chainId].sellToken =
-          swapSection.config?.configByChain?.[chainId].sellToken;
-      }
-
-      return config;
-    }
-  }, [params]);
-
   return (
     <>
       <NextSeo title={formatMessage({ id: 'swap', defaultMessage: 'Swap' })} />
@@ -131,22 +62,7 @@ const SwapPage: NextPage = () => {
             </Grid>
             <Grid item xs={12} sm={6}>
               <NoSsr>
-                <SwapSection
-                  section={{
-                    ...swapSection,
-                    config: {
-                      ...swapSection.config,
-                      ...(swapSection.config?.enableUrlParams
-                        ? configParams
-                        : {}),
-                    },
-                  }}
-                  selectedChainId={
-                    swapSection.config?.enableUrlParams
-                      ? configParams?.defaultChainId
-                      : undefined
-                  }
-                />
+                <SwapSection section={swapSection} />
               </NoSsr>
             </Grid>
           </Grid>

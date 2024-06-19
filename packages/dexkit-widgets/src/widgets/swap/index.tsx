@@ -607,7 +607,8 @@ export function SwapWidget({
     if (mounted && Boolean(enableUrlParams)) {
       const url = new URL(window.location.href);
 
-      if (chainId) {
+      console.log("entra aqui", chainId);
+      if (chainId !== undefined) {
         url.searchParams.set("chainId", chainId.toString());
       }
 
@@ -624,6 +625,8 @@ export function SwapWidget({
       setMounted(true);
     }
   }, [sellToken, buyToken, chainId, mounted, enableUrlParams]);
+
+  console.log(chainId);
 
   return (
     <>

@@ -6,18 +6,16 @@ import { ChainConfig } from '@dexkit/widgets/src/widgets/swap/types';
 import Info from '@mui/icons-material/Info';
 import {
   Alert,
-  Box,
   Checkbox,
   Container,
   Divider,
   FormControl,
   FormControlLabel,
-  FormGroup,
   Grid,
+  IconButton,
   InputLabel,
   MenuItem,
   Select,
-  Stack,
   Tooltip,
   Typography,
 } from '@mui/material';
@@ -182,41 +180,6 @@ export function SwapConfigForm({ onChange, data, featuredTokens }: Props) {
           </FormControl>
         </Grid>
         <Grid item xs={12}>
-          <Box>
-            <Stack spacing={1} alignItems="center" direction="row">
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={Boolean(formData?.enableUrlParams)}
-                    onChange={(e) =>
-                      setFormData((value) => ({
-                        ...value,
-                        enableUrlParams: e.target.checked,
-                      }))
-                    }
-                  />
-                }
-                label={
-                  <FormattedMessage
-                    id="enable.url.params"
-                    defaultMessage="Enable url params"
-                  />
-                }
-              />
-              <Tooltip
-                title={
-                  <FormattedMessage
-                    id="url.parameters.Explanation"
-                    defaultMessage="By selecting this checkbox, the URL parameters will be used to set the token and network for the swap."
-                  />
-                }
-              >
-                <Info fontSize="inherit" color="inherit" />
-              </Tooltip>
-            </Stack>
-          </Box>
-        </Grid>
-        <Grid item xs={12}>
           <SearchTokenAutocomplete
             label={
               <FormattedMessage
@@ -358,51 +321,94 @@ export function SwapConfigForm({ onChange, data, featuredTokens }: Props) {
             fullWidth
           />
         </Grid>
-      </Grid>
-      <Grid item xs={12}>
-        <Divider />
-      </Grid>
-      <Grid item xs={12}>
-        <FormGroup row={true}>
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={formData?.useGasless}
-                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                  setFormData({
-                    ...formData,
-                    useGasless: event.target.checked,
-                  });
-                }}
+        <Grid item xs={12}>
+          <Divider />
+        </Grid>
+        <Grid item xs={12}>
+          <Grid container spacing={2}>
+            <Grid item>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={formData?.myTokensOnlyOnSearch}
+                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                      setFormData({
+                        ...formData,
+                        myTokensOnlyOnSearch: event.target.checked,
+                      });
+                    }}
+                  />
+                }
+                label={
+                  <FormattedMessage
+                    id={'Show.only.my.tokens.on.search'}
+                    defaultMessage={'Show only my tokens on search'}
+                  />
+                }
               />
-            }
-            label={
-              <FormattedMessage
-                id={'gasless.swaps'}
-                defaultMessage={'Gasless swaps'}
+            </Grid>
+            <Grid item>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={formData?.useGasless}
+                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                      setFormData({
+                        ...formData,
+                        useGasless: event.target.checked,
+                      });
+                    }}
+                  />
+                }
+                label={
+                  <FormattedMessage
+                    id={'gasless.swaps'}
+                    defaultMessage={'Gasless swaps'}
+                  />
+                }
               />
-            }
-          />
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={formData?.myTokensOnlyOnSearch}
-                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                  setFormData({
-                    ...formData,
-                    myTokensOnlyOnSearch: event.target.checked,
-                  });
-                }}
-              />
-            }
-            label={
-              <FormattedMessage
-                id={'Show.only.my.tokens.on.search'}
-                defaultMessage={'Show only my tokens on search'}
-              />
-            }
-          />
-        </FormGroup>
+            </Grid>
+            <Grid item>
+              <Grid container spacing={2} alignItems="center" spacing={0}>
+                <Grid item>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={Boolean(formData?.enableUrlParams)}
+                        onChange={(e) =>
+                          setFormData((value) => ({
+                            ...value,
+                            enableUrlParams: e.target.checked,
+                          }))
+                        }
+                      />
+                    }
+                    label={
+                      <FormattedMessage
+                        id="enable.url.params"
+                        defaultMessage="Enable url params"
+                      />
+                    }
+                  />
+                </Grid>
+                <Grid item>
+                  <IconButton>
+                    <Tooltip
+                      title={
+                        <FormattedMessage
+                          id="url.parameters.Explanation"
+                          defaultMessage="By selecting this checkbox, the URL parameters will be used to set the token and network for the swap."
+                        />
+                      }
+                    >
+                      <Info fontSize="small" color="inherit" />
+                    </Tooltip>
+                  </IconButton>
+                </Grid>
+              </Grid>
+            </Grid>
+          </Grid>
+        </Grid>
       </Grid>
     </Container>
   );
