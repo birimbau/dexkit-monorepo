@@ -105,12 +105,16 @@ export default function PageSections({
       const index = parseInt(event.active.data.current?.index);
       const otherIndex = parseInt(event.over.data.current?.index);
 
-      if (index === 0 && otherIndex === 1) {
+      if (otherIndex === 0 && event.over.data.current?.position === 'bottom') {
+        return onSwap(index, otherIndex + 1);
+      }
+
+      if (index === 0 && otherIndex === 0) {
         return;
       }
 
       if (index === 0) {
-        return onSwap(index, otherIndex - 1);
+        return onSwap(index, otherIndex);
       }
 
       onSwap(index, otherIndex);
@@ -137,24 +141,30 @@ export default function PageSections({
 
   const filteredSections = useMemo(() => {
     return (
-      page.sections?.filter((s) => {
-        const hasTitle =
-          s &&
-          s.title &&
-          s.title.toLowerCase()?.search(query.toLowerCase()) > -1;
-        const hasName =
-          s && s.name && s.name.toLowerCase()?.search(query.toLowerCase()) > -1;
-        const hasType =
-          s && s.type.toLowerCase()?.search(query.toLowerCase()) > -1;
+      page.sections
+        .map((p, index) => {
+          return { ...p, index };
+        })
+        ?.filter((s) => {
+          const hasTitle =
+            s &&
+            s.title &&
+            s.title.toLowerCase()?.search(query.toLowerCase()) > -1;
+          const hasName =
+            s &&
+            s.name &&
+            s.name.toLowerCase()?.search(query.toLowerCase()) > -1;
+          const hasType =
+            s && s.type.toLowerCase()?.search(query.toLowerCase()) > -1;
 
-        const filter = hasTitle || hasType || hasName || query === '';
+          const filter = hasTitle || hasType || hasName || query === '';
 
-        if ((sectionType as string) !== '') {
-          return filter && sectionType === s.type;
-        }
+          if ((sectionType as string) !== '') {
+            return filter && sectionType === s.type;
+          }
 
-        return filter;
-      }) || []
+          return filter;
+        }) || []
     );
   }, [page, JSON.stringify(page), query, hideDesktop, hideMobile, sectionType]);
 
@@ -193,9 +203,9 @@ export default function PageSections({
       }
 
       return (
-        <Grid item xs={12} key={`${JSON.stringify(section)}-${index}`}>
+        <Grid item xs={12} key={`${JSON.stringify(section)}-${section.index}`}>
           <PageSection
-            showTopDroppable={index === 0}
+            showTopDroppable={section.index === 0}
             expand={!isMobile}
             icon={getSectionType(section)?.icon}
             title={getSectionType(section)?.title}
@@ -211,14 +221,14 @@ export default function PageSections({
                 ''
               )
             }
-            id={index.toString()}
-            onAction={handleAction(index)}
+            id={section.index.toString()}
+            onAction={handleAction(section.index)}
             section={section}
-            onChangeName={handleChangeName(index)}
+            onChangeName={handleChangeName(section.index)}
             active={
               pageKey !== undefined &&
               activeSection !== undefined &&
-              activeSection?.index === index &&
+              activeSection?.index === section.index &&
               pageKey === activeSection.page
             }
           />

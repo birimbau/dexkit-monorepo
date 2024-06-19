@@ -56,7 +56,12 @@ export default function CloneSectionDialog({
             values={{
               section: (
                 <Typography variant="inherit" component="span" fontWeight="400">
-                  {section?.title || section?.name}
+                  {section?.name || section?.title || (
+                    <FormattedMessage
+                      id="unnamed.section"
+                      defaultMessage="Unnamed Section"
+                    />
+                  )}
                 </Typography>
               ),
             }}

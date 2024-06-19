@@ -65,14 +65,14 @@ export default function PageSection({
   const { isOver: isOverTop, setNodeRef: setNodeRefDropTop } = useDroppable({
     id: `${id}:top`,
     data: {
-      index: (parseInt(id) - 1).toString(),
+      index: '0',
     },
   });
 
   const { isOver: isOverBottom, setNodeRef: setNodeRefDropBottom } =
     useDroppable({
       id: `${id}:bottom`,
-      data: { index: (parseInt(id) + 1).toString() },
+      data: { index: parseInt(id).toString(), position: `bottom` },
     });
 
   const inputRef = useRef<HTMLInputElement | null>(null);
