@@ -1,13 +1,9 @@
-
-import { ChainId } from '@dexkit/core/constants';
-import { ERC721Abi } from '@dexkit/core/constants/abis';
+import { ChainId } from "@dexkit/core/constants";
+import { ERC721Abi } from "@dexkit/core/constants/abis";
 import { NETWORK_PROVIDER } from "@dexkit/core/constants/networkProvider";
-import { useMutation } from '@tanstack/react-query';
-import { Contract, providers } from 'ethers';
-import { ERC1155Abi } from '../../constants/abis';
-
-
-
+import { useMutation } from "@tanstack/react-query";
+import { Contract, providers } from "ethers";
+import { ERC1155Abi } from "../../constants/abis";
 
 export function useNftTransfer({
   contractAddress,
@@ -30,41 +26,47 @@ export function useNftTransfer({
     }: {
       to: string;
       from: string;
-      protocol?: 'ERC721' | 'ERC1155'
+      protocol?: "ERC721" | "ERC1155";
       tokenId: string;
       quantity?: string;
     }) => {
-      if (!contractAddress || !tokenId || !provider || (protocol === 'ERC1155' && !quantity)) {
-        console.log('returning');
+      if (
+        !contractAddress ||
+        !tokenId ||
+        !provider ||
+        (protocol === "ERC1155" && !quantity)
+      ) {
         return false;
       }
 
-
-
       let contract = new Contract(
         contractAddress,
-        protocol === 'ERC1155' ? ERC1155Abi : ERC721Abi,
+        protocol === "ERC1155" ? ERC1155Abi : ERC721Abi,
         provider?.getSigner()
       );
       let toAddress: string | null = to;
-      if (to.split('.').length > 1) {
-        const networkProvider = NETWORK_PROVIDER(ChainId.Ethereum)
+      if (to.split(".").length > 1) {
+        const networkProvider = NETWORK_PROVIDER(ChainId.Ethereum);
         if (networkProvider) {
           toAddress = await networkProvider.resolveName(to);
         }
-
       }
 
       if (!toAddress) {
         return;
       }
       let tx;
-      if (protocol === 'ERC1155') {
-        tx = await contract.safeTransferFrom(from, toAddress, tokenId, quantity, '');
+      if (protocol === "ERC1155") {
+        tx = await contract.safeTransferFrom(
+          from,
+          toAddress,
+          tokenId,
+          quantity,
+          ""
+        );
       } else {
         tx = await contract.safeTransferFrom(from, toAddress, tokenId);
       }
-
 
       if (onSubmit) {
         onSubmit(tx.hash);
@@ -74,4 +76,3 @@ export function useNftTransfer({
     }
   );
 }
-
