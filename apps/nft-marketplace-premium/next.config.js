@@ -25,6 +25,13 @@ export default {
     'mui-color-input',
   ],
   webpack(config) {
+    /*config.module.rules.push({
+      test: /\.svg$/i,
+      issuer: /\.[jt]sx?$/,
+      use: ['@svgr/webpack'],
+    })*/
+
+
     config.resolve.alias = {
       ...config.resolve.alias,
       'react/jsx-runtime.js': 'react/jsx-runtime',

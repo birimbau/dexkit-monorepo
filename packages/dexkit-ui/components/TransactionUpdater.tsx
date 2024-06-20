@@ -5,8 +5,8 @@ import { useCallback, useEffect, useMemo } from "react";
 import { useIntl } from "react-intl";
 
 import { TransactionStatus } from "@dexkit/core/constants";
-import { useBlockNumber } from "@dexkit/core/hooks/useBlockNumber";
 import type { AppTransaction } from "@dexkit/core/types";
+import { useBlockNumber } from "@dexkit/ui/hooks/useBlockNumber";
 
 interface Props {
   pendingTransactionsAtom: PrimitiveAtom<{

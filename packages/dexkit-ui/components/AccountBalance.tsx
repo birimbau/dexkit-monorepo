@@ -1,29 +1,31 @@
-import { useEvmNativeBalanceQuery } from "@dexkit/core";
-
-import { formatBigNumber } from "@dexkit/core/utils";
+import { NETWORK_COIN_SYMBOL } from "@dexkit/core/constants/networks";
+import { formatStringNumber } from "@dexkit/core/utils/formatStringNumber";
 import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import { Typography } from "@mui/material";
 import { useMemo } from "react";
-
-import { NETWORK_COIN_SYMBOL } from "@dexkit/core/constants/networks";
+import { formatEther } from "viem";
+import { useBalance } from "wagmi";
 
 export interface AccountBalanceProps {
   isBalancesVisible: boolean;
 }
 
 export function AccountBalance({ isBalancesVisible }: AccountBalanceProps) {
-  const { account, provider, chainId } = useWeb3React();
+  const { account, chainId } = useWeb3React();
 
-  const { data: balance } = useEvmNativeBalanceQuery({ provider, account });
+  const balanceQuery = useBalance({
+    address: account,
+  });
 
   const formattedBalance = useMemo(() => {
-    if (balance) {
-      return formatBigNumber(balance);
+    if (balanceQuery && balanceQuery.data) {
+      return formatStringNumber({
+        value: formatEther(balanceQuery.data?.value),
+      });
     }
 
     return "0.00";
-  }, [balance]);
-
+  }, [balanceQuery]);
   return (
     <Typography
       color="text.secondary"

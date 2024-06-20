@@ -56,7 +56,9 @@ interface ValuesType {
   nonce?: number | null;
 }
 
-export function MagicTxConfirmDialog(props: TransactionConfirmDialogProps) {
+export default function MagicTxConfirmDialog(
+  props: TransactionConfirmDialogProps
+) {
   const { data, onCancel, onConfirm, currency } = props;
   const { dialogProps } = props;
   const { provider, chainId, account } = useWeb3React();

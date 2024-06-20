@@ -2,12 +2,8 @@
 
 import getLocaleMessages from 'src/i18n';
 
-import { AssetAPI } from '@dexkit/ui/modules/nft/types';
-import { AppConfig } from '@dexkit/ui/modules/wizard/types/config';
-import appBoredApeJson from '../../config/app.boredape.json';
-import appCryptoPunksJson from '../../config/app.cryptopunks.json';
-import appConfigJson from '../../config/app.json';
-import appMutantBoredApeJson from '../../config/app.mutantboredape.json';
+import type { AssetAPI } from '@dexkit/ui/modules/nft/types';
+import type { AppConfig } from '@dexkit/ui/modules/wizard/types/config';
 import { getConfig, getSitemapConfig } from './whitelabel';
 
 export async function getAppConfig(
@@ -23,6 +19,8 @@ export async function getAppConfig(
 }> {
   /**/
   if (site === 'boredapes.dexkit.com') {
+    const appBoredApeJson = (await import('../../config/app.boredape.json')).default;
+
     return Promise.resolve({
       appConfig: appBoredApeJson as AppConfig,
       appNFT: null,
@@ -30,6 +28,9 @@ export async function getAppConfig(
   }
 
   if (site === 'mutantboredapes.dexkit.com') {
+    const appMutantBoredApeJson = (await import('../../config/app.mutantboredape.json')).default;
+
+
     return Promise.resolve({
       appConfig: appMutantBoredApeJson as AppConfig,
       appNFT: null,
@@ -37,6 +38,9 @@ export async function getAppConfig(
   }
 
   if (site === 'cryptopunks.dexkit.com') {
+    const appCryptoPunksJson = (await import('../../config/app.cryptopunks.json')).default;
+
+
     return Promise.resolve({
       appConfig: appCryptoPunksJson as AppConfig,
       appNFT: null,
@@ -66,6 +70,7 @@ export async function getAppConfig(
         };
       }
     }
+    const appConfigJson = (await import('../../config/app.json')).default;
     return Promise.resolve({ appConfig: appConfigJson as AppConfig });
   }
 
@@ -91,6 +96,8 @@ export async function getAppConfig(
         };
       }
     }
+    const appConfigJson = (await import('../../config/app.json')).default;
+
     return Promise.resolve({
       appConfig: appConfigJson as AppConfig,
       appNFT: null,
@@ -106,8 +113,6 @@ export async function getAppConfig(
 
     if (slug) {
       const configResponse = (await getConfig({ slug, appPage })).data;
-      console.log(configResponse);
-
 
       if (configResponse) {
         const appConfig = JSON.parse(configResponse.config) as AppConfig;
@@ -125,6 +130,7 @@ export async function getAppConfig(
         };
       }
     }
+    const appConfigJson = (await import('../../config/app.json')).default;
     const appConfig = appConfigJson as AppConfig;
     const appLocaleMessages = await getLocaleMessages(appConfig.locale);
 
@@ -136,6 +142,7 @@ export async function getAppConfig(
   }
 
   if (site?.endsWith('dex-kit.vercel.app')) {
+    const appConfigJson = (await import('../../config/app.json')).default;
     return Promise.resolve({
       appConfig: appConfigJson as AppConfig,
       appNFT: null,
@@ -143,6 +150,7 @@ export async function getAppConfig(
   }
 
   if (site?.endsWith('.vercel.app')) {
+    const appConfigJson = (await import('../../config/app.json')).default;
     return Promise.resolve({
       appConfig: appConfigJson as AppConfig,
       appNFT: null,
@@ -180,6 +188,7 @@ export async function getAppSitemapConfig(
 
   /**/
   if (site === 'boredapes.dexkit.com') {
+    const appBoredApeJson = (await import('../../config/app.boredape.json')).default;
     return Promise.resolve({
       appConfig: appBoredApeJson as AppConfig,
       appNFT: null,
@@ -187,6 +196,7 @@ export async function getAppSitemapConfig(
   }
 
   if (site === 'mutantboredapes.dexkit.com') {
+    const appMutantBoredApeJson = (await import('../../config/app.mutantboredape.json')).default;
     return Promise.resolve({
       appConfig: appMutantBoredApeJson as AppConfig,
       appNFT: null,
@@ -194,6 +204,7 @@ export async function getAppSitemapConfig(
   }
 
   if (site === 'cryptopunks.dexkit.com') {
+    const appCryptoPunksJson = (await import('../../config/app.cryptopunks.json')).default;
     return Promise.resolve({
       appConfig: appCryptoPunksJson as AppConfig,
       appNFT: null,
@@ -217,6 +228,7 @@ export async function getAppSitemapConfig(
         };
       }
     }
+    const appConfigJson = (await import('../../config/app.json')).default;
     return Promise.resolve({ appConfig: appConfigJson as AppConfig });
   }
 
@@ -236,6 +248,7 @@ export async function getAppSitemapConfig(
         };
       }
     }
+    const appConfigJson = (await import('../../config/app.json')).default;
     return Promise.resolve({
       appConfig: appConfigJson as AppConfig,
       appNFT: null,
@@ -260,7 +273,7 @@ export async function getAppSitemapConfig(
         };
       }
     }
-
+    const appConfigJson = (await import('../../config/app.json')).default;
     return Promise.resolve({
       appConfig: appConfigJson as AppConfig,
       appNFT: null,
@@ -268,6 +281,7 @@ export async function getAppSitemapConfig(
   }
 
   if (site?.endsWith('dex-kit.vercel.app')) {
+    const appConfigJson = (await import('../../config/app.json')).default;
     return Promise.resolve({
       appConfig: appConfigJson as AppConfig,
       appNFT: null,
@@ -275,6 +289,7 @@ export async function getAppSitemapConfig(
   }
 
   if (site?.endsWith('.vercel.app')) {
+    const appConfigJson = (await import('../../config/app.json')).default;
     return Promise.resolve({
       appConfig: appConfigJson as AppConfig,
       appNFT: null,

@@ -4,4 +4,4 @@ export * from "./nft";
 export * from "./wallet";
 
 
-export * from './useBlockNumber';
+export * from '@dexkit/ui/hooks/useBlockNumber';

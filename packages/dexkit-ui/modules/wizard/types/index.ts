@@ -1,4 +1,6 @@
-import { ChainConfig } from "@dexkit/widgets/src/widgets/swap/types";
+import type { ChainConfig } from '@dexkit/widgets/src/widgets/swap/types';
+
+
 
 export interface SwapFeeForm {
   recipient: string;

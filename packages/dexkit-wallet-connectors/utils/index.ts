@@ -1,8 +1,6 @@
-import { parseChainId } from "@dexkit/core/utils";
-import { MetaMask } from "@web3-react/metamask";
-import { Connector } from "@web3-react/types";
+
 import { EventEmitter } from "events";
-import { MagicConnector } from "../connectors/magic";
+
 
 
 
@@ -20,23 +18,7 @@ export function waitForEvent<T>(
   });
 }
 
-export async function switchNetwork(connector: Connector, chainId: number) {
-  if (connector instanceof MetaMask) {
-    return connector.provider?.request({
-      method: "wallet_switchEthereumChain",
-      params: [{ chainId: `0x${chainId.toString(16)}` }],
-    });
-  }
 
-  if (connector instanceof MagicConnector) {
-    return connector.changeNetwork(parseChainId(chainId));
-  }
-
-  return connector.provider?.request({
-    method: "wallet_switchEthereumChain",
-    params: [{ chainId: `0x${chainId.toString(16)}` }],
-  });
-}
 
 /**
  * Returns true if the string is a RFC2397-compliant data URI

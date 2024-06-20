@@ -1,7 +1,7 @@
 import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "@dexkit/core/constants/zrx";
 import { useTokenList } from "@dexkit/ui";
 import { useInterval } from "@dexkit/ui/hooks/misc";
-import { useWeb3React } from "@web3-react/core";
+import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import { useMemo, useState } from "react";
 import {
   useLockBalanceQuery,
