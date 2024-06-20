@@ -1,5 +1,6 @@
 import { NETWORK_SLUG } from "@dexkit/core/constants/networks";
 import { useConnectWalletDialog, useSwitchNetworkMutation } from "@dexkit/ui";
+import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import ConfirmationNumberIcon from "@mui/icons-material/ConfirmationNumber";
 import KeyIcon from "@mui/icons-material/Key";
 import Wallet from "@mui/icons-material/Wallet";
@@ -14,7 +15,6 @@ import {
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Grid from "@mui/material/Grid";
-import { useWeb3React } from "@web3-react/core";
 import { FormattedMessage } from "react-intl";
 import {
   usePurchaseLockKeysMutation,

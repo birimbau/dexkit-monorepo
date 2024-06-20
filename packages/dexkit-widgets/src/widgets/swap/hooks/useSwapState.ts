@@ -5,15 +5,16 @@ import { ZeroExQuoteMetaTransactionResponse, ZeroExQuoteResponse } from "@dexkit
 import { isNativeInSell } from "@dexkit/ui/modules/swap/utils";
 import { UseMutationResult } from "@tanstack/react-query";
 import { Transak } from "@transak/transak-sdk";
-import { Connector } from "@web3-react/types";
+
 import type { providers } from 'ethers';
 import { BigNumber, constants, utils } from "ethers";
 import { useSnackbar } from "notistack";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useIntl } from "react-intl";
+import { useSwitchChain } from 'wagmi';
 import { useAsyncMemo, useDebounce, useRecentTokens, useTokenBalance, useWrapToken } from "../../../hooks";
 import { useSignTypeData } from "../../../hooks/useSignTypeData";
-import { isAddressEqual, switchNetwork } from "../../../utils";
+import { isAddressEqual } from "../../../utils";
 import { ExecSwapState } from "../constants/enum";
 import { NotificationCallbackParams, SwapSide } from "../types";
 import { useExecType } from "./useExecType";
@@ -22,14 +23,12 @@ import { SwapExecParams } from "./useSwapExec";
 import { SwapGaslessExecParams } from "./useSwapGaslessExec";
 import { useSwapQuote } from "./useSwapQuote";
 
-
 export function useSwapState({
   execMutation,
   approveMutation,
   provider,
   defaultSellToken,
   defaultBuyToken,
-  connector,
   connectorProvider,
   selectedChainId: chainId,
   connectedChainId,
@@ -79,7 +78,6 @@ export function useSwapState({
   enableBuyCryptoButton?: boolean;
   provider?: providers.BaseProvider;
   connectorProvider?: providers.Web3Provider;
-  connector?: Connector;
   isGasless?: boolean;
   isActive?: boolean;
   isActivating?: boolean;
@@ -97,6 +95,8 @@ export function useSwapState({
   isAutoSlippage: boolean;
 
 }) {
+  const { switchChain } = useSwitchChain()
+
   const transak = useMemo(() => {
     if (transakApiKey) {
       return new Transak({
@@ -437,10 +437,6 @@ export function useSwapState({
         setTradeHash(undefined);
       }
 
-
-
-
-
       // handleCloseConfirmSwap();
       // setExecSwapState(ExecSwapState.quote)
 
@@ -550,8 +546,8 @@ export function useSwapState({
           },
         }
       );
-    } else if (execType === "switch" && connector && chainId) {
-      switchNetwork(connector, chainId);
+    } else if (execType === "switch" && chainId) {
+      switchChain({ chainId });
     }
   }, [
     quoteQuery.data,
@@ -559,7 +555,7 @@ export function useSwapState({
     lazySellAmount,
     sellToken,
     chainId,
-    connector,
+
     connectorProvider,
   ]);
 

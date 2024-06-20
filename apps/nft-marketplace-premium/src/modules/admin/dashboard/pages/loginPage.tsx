@@ -2,7 +2,7 @@ import ConnectWalletDialog from '@dexkit/ui/components/ConnectWallet/ConnectWall
 import { useLoginAccountMutation } from '@dexkit/ui/hooks/auth';
 import { useWalletActivate } from '@dexkit/wallet-connectors/hooks';
 import { useWeb3React } from '@dexkit/wallet-connectors/hooks/useWeb3React';
-import { WalletActivateParams } from '@dexkit/wallet-connectors/types';
+
 import { Box, Button, Container } from '@mui/material';
 import { useLogin } from 'react-admin';
 import { FormattedMessage } from 'react-intl';
@@ -37,10 +37,6 @@ const MyLoginPage = () => {
     connectWalletDialog.setOpen(true);
   };
 
-  const handleActivateWallet = async (params: WalletActivateParams) => {
-    await walletActivate.mutation.mutateAsync(params);
-  };
-
   return (
     <Container maxWidth="xs">
       <ConnectWalletDialog
@@ -53,7 +49,6 @@ const MyLoginPage = () => {
         isActive={isActive}
         isActivating={walletActivate.mutation.isLoading}
         activeConnectorName={walletActivate.connectorName}
-        activate={handleActivateWallet}
       />
       <Box
         sx={{
