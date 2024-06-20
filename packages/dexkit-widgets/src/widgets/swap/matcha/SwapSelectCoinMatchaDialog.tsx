@@ -21,6 +21,7 @@ import { useMultiTokenBalance } from "../../../hooks";
 
 import { ChainId } from "@dexkit/core";
 import { Token } from "@dexkit/core/types";
+import { useSelectImport } from "../hooks";
 import SelectCoinMatchaList from "./SelectCoinMatchaList";
 import SwapFeaturedMatchaTokens from "./SwapFeaturedMatchaTokens";
 import SwapNetworkButtons from "./SwapNetworkButtons";
@@ -70,9 +71,21 @@ export default function SwapSelectCoinMatchaDialog({
     }
   };
 
-  const tokenBalances = useMultiTokenBalance({ tokens, account, provider });
-
   const isMobile = useIsMobile();
+
+  const {
+    fetchTokenData,
+    handleChangeQuery,
+    handleSelect,
+    importedTokens,
+    isOnList,
+  } = useSelectImport({ chainId, onQueryChange, onSelect, tokens });
+
+  const tokenBalances = useMultiTokenBalance({
+    tokens: [...importedTokens.tokens, ...tokens],
+    account,
+    provider,
+  });
 
   return (
     <Dialog {...DialogProps} onClose={handleClose} fullScreen={isMobile}>
@@ -87,7 +100,7 @@ export default function SwapSelectCoinMatchaDialog({
         <Stack sx={{ px: 2 }} spacing={2}>
           <Stack direction="row" spacing={2}>
             <SearchTextField
-              onChange={onQueryChange}
+              onChange={handleChangeQuery}
               TextFieldProps={{
                 fullWidth: true,
                 size: "small",
@@ -173,10 +186,13 @@ export default function SwapSelectCoinMatchaDialog({
 
         <Divider />
         <SelectCoinMatchaList
-          tokens={tokens}
-          onSelect={onSelect}
+          tokens={[...importedTokens.tokens, ...tokens]}
+          onSelect={handleSelect}
+          externToken={
+            !isOnList && fetchTokenData.data ? fetchTokenData.data : undefined
+          }
           tokenBalances={tokenBalances.data}
-          isLoading={tokenBalances.isLoading}
+          isLoading={tokenBalances.isLoading || fetchTokenData.isLoading}
         />
       </DialogContent>
     </Dialog>
