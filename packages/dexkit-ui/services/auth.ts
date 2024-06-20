@@ -93,15 +93,17 @@ export async function loginApp({
   signature,
   siteId,
   referral,
+  chainId,
 }: {
   address: string;
   signature: string;
+  chainId?: number;
   siteId?: number;
   referral?: string;
 }) {
   return axios.post<{ access_token: string; refresh_token: string }>(
     "/api/dex-auth/login",
-    { data: { address, signature, siteId, referral } }
+    { data: { address, signature, siteId, referral, chainId } }
   );
 }
 
@@ -139,12 +141,14 @@ export async function requestAccestoken({
 export async function login({
   address,
   signature,
+  chainId,
 }: {
   address: string;
   signature: string;
+  chainId?: number;
 }) {
   return authApi.post<{ access_token: string; refresh_token: string }>(
     "/login",
-    { data: { address, signature } }
+    { data: { address, signature, chainId } }
   );
 }

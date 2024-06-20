@@ -3,7 +3,7 @@ import {
   DKAPI_INVALID_ADDRESSES,
   GET_NATIVE_TOKEN,
 } from "@dexkit/core/constants";
-import { useWeb3React } from "@web3-react/core";
+import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import { useEffect, useMemo, useState } from "react";
 
 import dynamic from "next/dynamic";
@@ -78,7 +78,6 @@ export function SwapWidget({
 }: SwapWidgetProps) {
   const {
     provider,
-    connector,
     account,
     isActive,
     isActivating,
@@ -191,7 +190,6 @@ export function SwapWidget({
     onNotification,
     onConnectWallet,
     onShowTransactions,
-    connector,
     account,
     swapFees,
     isActive: isActive && !disableWallet,

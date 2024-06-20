@@ -1,6 +1,6 @@
 {
   "extends": "tsconfig/react-library.json",
-  "include": ["."],
+  "include": [".", "../dexkit-ui/hooks/useBlockNumber.ts"],
   "outDir": "./dist",
 
   "exclude": ["dist", "build", "node_modules"],

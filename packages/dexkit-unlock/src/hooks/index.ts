@@ -1,9 +1,9 @@
 import { UserEvents } from "@dexkit/core/constants/userEvents";
 import { useDexKitContext } from "@dexkit/ui/hooks";
 import { useTrackUserEventsMutation } from "@dexkit/ui/hooks/userEvents";
+import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { WalletService, Web3Service } from "@unlock-protocol/unlock-js";
-import { useWeb3React } from "@web3-react/core";
 import { networks } from "../constants";
 import { Lock } from "../constants/types";
 import { convertDurationInDays } from "../utils/time";
