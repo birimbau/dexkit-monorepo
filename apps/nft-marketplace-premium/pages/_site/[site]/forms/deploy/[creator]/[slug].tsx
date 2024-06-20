@@ -47,7 +47,7 @@ import useThirdwebContractMetadataQuery, {
   useDeployThirdWebContractMutation,
   useFormConfigParamsQuery,
 } from '@dexkit/web3forms/hooks';
-import { dkGetTrustedForwarders } from '@dexkit/web3forms/utils';
+import { useTrustedForwarders } from '@dexkit/web3forms/hooks/useTrustedForwarders';
 import CheckCircle from '@mui/icons-material/CheckCircle';
 import { QueryClient, dehydrate } from '@tanstack/react-query';
 import {
@@ -225,22 +225,9 @@ export default function DeployPage() {
     setSelectedChainId(parseChainId(event.target.value));
   };
 
-  const { provider } = useWeb3React();
-
-  const [trustedForwarders, setTrustedForwarders] = useState<string[]>([]);
-
-  useEffect(() => {
-    (async () => {
-      const forwarders = await dkGetTrustedForwarders(
-        provider,
-        THIRDWEB_CLIENT_ID,
-      );
-
-      if (forwarders !== null) {
-        setTrustedForwarders(forwarders);
-      }
-    })();
-  }, [provider]);
+  const { data: trustedForwarders } = useTrustedForwarders({
+    clientId: THIRDWEB_CLIENT_ID,
+  });
 
   return (
     <>

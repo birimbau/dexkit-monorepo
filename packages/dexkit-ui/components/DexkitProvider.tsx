@@ -1,4 +1,8 @@
-import { IntlProvider, MessageFormatElement } from "react-intl";
+import {
+  FormattedMessage,
+  IntlProvider,
+  MessageFormatElement,
+} from "react-intl";
 
 import { SnackbarProvider } from "notistack";
 
@@ -10,7 +14,7 @@ import type {
   TokenWhitelabelApp,
 } from "@dexkit/core/types";
 
-import { CssBaseline } from "@mui/material";
+import { Button, CssBaseline, Stack, Typography } from "@mui/material";
 import { PrimitiveAtom, SetStateAction, WritableAtom } from "jotai";
 
 import {
@@ -20,6 +24,7 @@ import {
 import React from "react";
 import { DexKitContext } from "../context/DexKitContext";
 import type { AppNotification, AppNotificationType } from "../types";
+import { AppErrorBoundary } from "./AppErrorBoundary";
 import GaslessTradesUpdater from "./GaslessTradesUpdater";
 import { MagicStateProvider } from "./MagicStateProvider";
 import TransactionUpdater from "./TransactionUpdater";
@@ -105,17 +110,41 @@ export function DexkitProvider({
         defaultLocale={locale}
         messages={localeMessages}
       >
-        <CssVarsProvider theme={theme}>
-          <SnackbarProvider
-            maxSnack={3}
-            anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
-          >
-            <CssBaseline />
-            <MagicStateProvider currency="usd">{children}</MagicStateProvider>
-            <TransactionUpdater pendingTransactionsAtom={transactionsAtom} />
-            <GaslessTradesUpdater />
-          </SnackbarProvider>
-        </CssVarsProvider>
+        <AppErrorBoundary
+          fallbackRender={({ resetErrorBoundary, error }) => (
+            <Stack justifyContent="center" alignItems="center">
+              <Typography variant="h6">
+                <FormattedMessage
+                  id="something.went.wrong"
+                  defaultMessage="Oops, something went wrong"
+                  description="Something went wrong error message"
+                />
+              </Typography>
+              <Typography variant="body1" color="textSecondary">
+                {String(error)}
+              </Typography>
+              <Button color="primary" onClick={resetErrorBoundary}>
+                <FormattedMessage
+                  id="try.again"
+                  defaultMessage="Try again"
+                  description="Try again"
+                />
+              </Button>
+            </Stack>
+          )}
+        >
+          <CssVarsProvider theme={theme}>
+            <SnackbarProvider
+              maxSnack={3}
+              anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+            >
+              <CssBaseline />
+              <MagicStateProvider currency="usd">{children}</MagicStateProvider>
+              <TransactionUpdater pendingTransactionsAtom={transactionsAtom} />
+              <GaslessTradesUpdater />
+            </SnackbarProvider>
+          </CssVarsProvider>
+        </AppErrorBoundary>
       </IntlProvider>
     </DexKitContext.Provider>
   );

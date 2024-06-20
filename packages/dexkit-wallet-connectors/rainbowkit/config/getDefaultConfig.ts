@@ -5,7 +5,7 @@ import type { WalletList } from '../wallets/Wallet';
 import { computeWalletConnectMetaData } from '../wallets/computeWalletConnectMetaData';
 import { connectorsForWallets } from '../wallets/connectorsForWallets';
 import {
-  coinbaseWallet,
+  // coinbaseWallet,
   metaMaskWallet,
   walletConnectWallet
 } from '../wallets/walletConnectors';
@@ -88,7 +88,7 @@ export const getDefaultConfig = <
 
   let walletConnectors = [
     metaMaskWallet,
-    coinbaseWallet,
+    //  coinbaseWallet,
     walletConnectWallet,
   ];
 

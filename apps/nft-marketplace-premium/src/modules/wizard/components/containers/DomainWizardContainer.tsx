@@ -1,6 +1,7 @@
 import AppConfirmDialog from '@dexkit/ui/components/AppConfirmDialog';
 import InfoIcon from '@mui/icons-material/Info';
 import {
+  Box,
   Button,
   Divider,
   Grid,
@@ -12,11 +13,16 @@ import { useSnackbar } from 'notistack';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import {
+  QUERY_ADMIN_WHITELABEL_CONFIG_NAME,
   useSetupDomainConfigMutation,
   useVerifyDomainMutation,
 } from '../../../../hooks/whitelabel';
 
+import { CopyText } from '@dexkit/ui/components/CopyText';
+
+import { beautifyUnderscoreCase } from '@dexkit/core/utils';
 import { AppConfig } from '@dexkit/ui/modules/wizard/types/config';
+import { useQueryClient } from '@tanstack/react-query';
 import { SiteResponse } from '../../../../types/whitelabel';
 import {
   default as CheckDomainDialog,
@@ -37,6 +43,7 @@ export default function DomainWizardContainer({
   site,
   onHasChanges,
 }: Props) {
+  const queryClient = useQueryClient();
   const { enqueueSnackbar } = useSnackbar();
   const [openInfo, setOpenInfo] = useState(false);
   const [titleInfo, setTitleInfo] = useState('');
@@ -68,6 +75,16 @@ export default function DomainWizardContainer({
     }
   }, [config]);
 
+  const verifyDomainData = useMemo(() => {
+    if (site?.verifyDomainRawData) {
+      try {
+        return JSON.parse(site?.verifyDomainRawData);
+      } catch {
+        return undefined;
+      }
+    }
+  }, [site?.verifyDomainRawData]);
+
   const handleConfirmDeploy = () => {
     if (site && site.domain) {
       deployDomainMutation.mutate(
@@ -77,6 +94,7 @@ export default function DomainWizardContainer({
         {
           onSuccess: () => {
             setIsDeploySignOpen(false);
+            queryClient.invalidateQueries([QUERY_ADMIN_WHITELABEL_CONFIG_NAME]);
           },
           onError: console.log,
         },
@@ -163,8 +181,7 @@ export default function DomainWizardContainer({
     setContentInfo(
       formatMessage({
         id: 'info.wizard.content.cname',
-        defaultMessage: `Deploy your domain, make sure first your domain is not used with other records. After domain successfully added to our system you will receive a CNAME and A record to be added to your DNS provider. After added the CNAME and A record, press button check deploy status, if status VERIFIED, wait for domain to propagate and you will have your marketplace set on your custom domain. 
-          Note, if you are on a subdomain, replace @ with subdomain value. Any issue contact our support channels.`,
+        defaultMessage: `Deploy your domain. First, ensure that your domain is not used with other records. After the domain has been successfully added to our system, you will receive a CNAME and A record to be added to your DNS provider. Once you have added the CNAME and A record, click the \"Check Deploy Status\" button. If the status shows as \"VERIFIED\" wait for the domain to propagate, and your app will be set on your custom domain. If you are on a subdomain, replace \"@\" with the subdomain value. If you encounter any issues, please contact our support channels.`,
       }),
     );
   }, []);
@@ -316,7 +333,11 @@ export default function DomainWizardContainer({
                     {' '}
                     <FormattedMessage id="name" defaultMessage="name" />:
                   </Typography>
-                  <Typography sx={{ fontWeight: 'bold' }}>{'@'}</Typography>
+                  <Typography sx={{ fontWeight: 'bold' }}>
+                    {site?.domain.split('.').length > 2
+                      ? site?.domain.split('.')[0]
+                      : '@'}
+                  </Typography>
                   <Typography>
                     <FormattedMessage id="value" defaultMessage="Value" />:
                   </Typography>
@@ -326,6 +347,7 @@ export default function DomainWizardContainer({
                 </Stack>
               </Stack>
             </Grid>
+
             <Grid item xs={12}>
               <Stack direction={'column'} spacing={1}>
                 <Typography>
@@ -336,7 +358,11 @@ export default function DomainWizardContainer({
                     {' '}
                     <FormattedMessage id="name" defaultMessage="name" />:
                   </Typography>
-                  <Typography sx={{ fontWeight: 'bold' }}>{'@'}</Typography>
+                  <Typography sx={{ fontWeight: 'bold' }}>
+                    {site?.domain.split('.').length > 2
+                      ? site?.domain.split('.')[0]
+                      : '@'}
+                  </Typography>
                   <Typography>
                     <FormattedMessage id="value" defaultMessage="Value" />:
                   </Typography>
@@ -346,6 +372,63 @@ export default function DomainWizardContainer({
                 </Stack>
               </Stack>
             </Grid>
+            {verifyDomainData &&
+              verifyDomainData?.verified === false &&
+              verifyDomainData?.verification && (
+                <Grid item xs={12}>
+                  {verifyDomainData?.verification.map(
+                    (ver: any, key: number) => (
+                      <Stack
+                        direction={'column'}
+                        spacing={1}
+                        key={`verification-list-${key}`}
+                      >
+                        <Typography>
+                          <FormattedMessage
+                            id="record"
+                            defaultMessage="Record"
+                          />
+                          : {ver.type}
+                        </Typography>
+                        <Stack direction={'row'} spacing={1}>
+                          <Typography>
+                            {' '}
+                            <FormattedMessage id="name" defaultMessage="name" />
+                            :
+                          </Typography>
+                          <Typography sx={{ fontWeight: 'bold' }}>
+                            {ver?.domain}
+                          </Typography>
+                          <Box display={'flex'}>
+                            <Typography sx={{ pr: 1 }}>
+                              <FormattedMessage
+                                id="value"
+                                defaultMessage="Value"
+                              />
+                              :
+                            </Typography>
+
+                            <Typography sx={{ fontWeight: 'bold' }}>
+                              {ver.value}{' '}
+                            </Typography>
+                            <CopyText text={ver.value} />
+                          </Box>
+                          <Typography>
+                            <FormattedMessage
+                              id="status"
+                              defaultMessage="Status"
+                            />
+                            :
+                          </Typography>
+                          <Typography sx={{ fontWeight: 'bold' }}>
+                            {beautifyUnderscoreCase(ver.reason)}{' '}
+                          </Typography>
+                        </Stack>
+                      </Stack>
+                    ),
+                  )}
+                </Grid>
+              )}
           </>
         )}
 

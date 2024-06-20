@@ -98,11 +98,12 @@ export function SectionRender({ section, useLazy }: Props) {
   }
 
   const getSection = SectionToRender({ section });
+
   if (getSection) {
     if (useLazy) {
       return <LazyComponent>{getSection}</LazyComponent>;
     } else {
-      return <>{getSection}</>;
+      return <div>{getSection}</div>;
     }
   }
 
