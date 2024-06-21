@@ -3,6 +3,7 @@ import {
   InputBaseProps,
   lighten,
   Link,
+  Skeleton,
   Stack,
   Typography,
 } from "@mui/material";
@@ -17,6 +18,8 @@ import SwapTokenButtonUniswap from "./SwapTokenButtonUniswap";
 
 export interface SwapTokenFieldUniswapProps {
   InputBaseProps?: InputBaseProps;
+  priceLoading?: boolean;
+  price?: string;
   disabled?: boolean;
   onChange: (value: BigNumber, clickOnMax?: boolean) => void;
   token?: Token;
@@ -35,6 +38,8 @@ function SwapTokenFieldUniswap({
   token,
   value,
   disabled,
+  price,
+  priceLoading,
   balance,
   showBalance,
   isUserInput,
@@ -102,7 +107,17 @@ function SwapTokenFieldUniswap({
           }}
         >
           <Typography variant="caption" color="text.secondary">
-            $30,00
+            {priceLoading ? (
+              <Skeleton>
+                <Typography variant="caption" color="text.secondary">
+                  $-,--
+                </Typography>
+              </Skeleton>
+            ) : price ? (
+              <Typography variant="caption" color="text.secondary">
+                {price}
+              </Typography>
+            ) : null}
           </Typography>
           <Stack
             direction="row"

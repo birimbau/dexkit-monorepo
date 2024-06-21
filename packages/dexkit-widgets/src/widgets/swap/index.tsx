@@ -147,6 +147,7 @@ export function SwapWidget({
     execType,
     isExecuting,
     quote,
+    quoteQueryPrice,
     quoteQuery,
     buyTokenBalance,
     sellTokenBalance,
@@ -197,6 +198,8 @@ export function SwapWidget({
     maxSlippage,
     isAutoSlippage,
     transakApiKey,
+    currency,
+    variant,
 
     defaultBuyToken:
       selectedChainId && configsByChain[selectedChainId]
@@ -379,17 +382,20 @@ export function SwapWidget({
     );
   };
 
-  const cond = false;
-
   const renderSwapComponent = () => {
     if (variant === SwapVariant.MatchaLike) {
       return (
         <SwapMatcha
+          priceBuy={quoteQueryPrice?.buyPrice}
+          priceSell={quoteQueryPrice?.sellPrice}
+          priceBuyLoading={quoteQueryPrice?.isLoadingPrice}
+          priceSellLoading={quoteQueryPrice?.isLoadingPrice}
           onSetToken={handleSelectToken}
           featuredTokensByChain={featuredTokensByChain}
           currency={currency}
           disableNotificationsButton={disableNotificationsButton}
           chainId={chainId}
+          selectedChainId={selectedChainId}
           activeChainIds={filteredChainIds}
           quoteFor={quoteFor}
           quoteQuery={quoteQuery}
@@ -433,6 +439,10 @@ export function SwapWidget({
         <SwapUniswap
           currency={currency}
           disableNotificationsButton={disableNotificationsButton}
+          priceBuy={quoteQueryPrice?.buyPrice}
+          priceSell={quoteQueryPrice?.sellPrice}
+          priceBuyLoading={quoteQueryPrice?.isLoadingPrice}
+          priceSellLoading={quoteQueryPrice?.isLoadingPrice}
           chainId={chainId}
           activeChainIds={filteredChainIds}
           quoteFor={quoteFor}

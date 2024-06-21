@@ -9,6 +9,7 @@ import { isNativeInSell } from "@dexkit/ui/modules/swap/utils";
 import { UseMutationResult } from "@tanstack/react-query";
 import { Transak } from "@transak/transak-sdk";
 
+import { SwapVariant } from "@dexkit/ui/modules/wizard/types";
 import type { providers } from 'ethers';
 import { BigNumber, constants, utils } from "ethers";
 import { useSnackbar } from "notistack";
@@ -22,6 +23,7 @@ import { ExecSwapState } from "../constants/enum";
 import { NotificationCallbackParams, SwapSide } from "../types";
 import { useExecType } from "./useExecType";
 import { useGaslessSwapState } from "./useGaslessSwapState";
+import { useSwapCurrencyPrice } from "./useSwapCurrencyPrice";
 import { SwapExecParams } from "./useSwapExec";
 import { SwapGaslessExecParams } from "./useSwapGaslessExec";
 import { useSwapQuote } from "./useSwapQuote";
@@ -50,6 +52,8 @@ export function useSwapState({
   onConnectWallet,
   onShowTransactions,
   execGaslessMutation,
+  currency,
+  variant,
 }: {
   zeroExApiKey?: string;
   execMutation: UseMutationResult<
@@ -99,6 +103,8 @@ export function useSwapState({
   onShowTransactions: () => void;
   maxSlippage: number;
   isAutoSlippage: boolean;
+  currency: string;
+  variant?: SwapVariant
 }) {
   const { switchChain } = useSwitchChain()
 
@@ -199,6 +205,24 @@ export function useSwapState({
       quoteFor: lazyQuoteFor,
       account,
     },
+  });
+
+  const quoteQueryPrice = useSwapCurrencyPrice({
+
+    maxSlippage: !isAutoSlippage ? maxSlippage : undefined,
+    zeroExApiKey,
+    currency,
+    swapFees,
+    params: {
+      chainId: chainId as ChainId,
+      sellToken: lazySellToken,
+      buyToken: lazyBuyToken,
+      sellTokenAmount: lazySellAmount,
+      buyTokenAmount: lazyBuyAmount,
+      quoteFor: lazyQuoteFor,
+      account,
+    },
+    variant
   });
 
   const { quoteQuery } = quote;
@@ -656,6 +680,7 @@ export function useSwapState({
     showSelect,
     selectSide,
     execType,
+    quoteQueryPrice,
     sellAmount: lazySellAmount,
     buyAmount: lazyBuyAmount,
     quoteFor: quote.params?.quoteFor,

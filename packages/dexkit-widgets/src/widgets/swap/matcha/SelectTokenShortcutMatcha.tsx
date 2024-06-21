@@ -1,22 +1,32 @@
+import type { ChainId } from "@dexkit/core/constants/enums";
 import { Token } from "@dexkit/core/types";
 import { Avatar, ButtonBase, Stack } from "@mui/material";
 import { useMemo } from "react";
 import { useRecentTokens } from "../../../hooks";
 
 export interface SelectTokenShortcutMatchaProps {
+  selectedChainId?: ChainId;
   onSelectToken: (token: Token) => void;
   featuredTokensByChain: Token[];
 }
 
 export default function SelectTokenShortcutMatcha({
+  selectedChainId,
   onSelectToken,
   featuredTokensByChain,
 }: SelectTokenShortcutMatchaProps) {
   const recentTokens = useRecentTokens();
 
+  const filteredRecentTokens = useMemo(() => {
+    if (selectedChainId) {
+      return recentTokens.tokens.filter((t) => t.chainId === selectedChainId);
+    }
+    return [];
+  }, [selectedChainId, recentTokens.tokens]);
+
   const tokens = useMemo(() => {
-    if (recentTokens.tokens.length >= 3) {
-      return recentTokens.tokens.slice(0, 3);
+    if (filteredRecentTokens.length >= 3) {
+      return filteredRecentTokens.slice(0, 3);
     }
 
     if (featuredTokensByChain.length >= 3) {
@@ -24,7 +34,7 @@ export default function SelectTokenShortcutMatcha({
     }
 
     return [];
-  }, [featuredTokensByChain]);
+  }, [featuredTokensByChain, filteredRecentTokens]);
 
   return (
     <Stack direction="row" alignItems="center" spacing={1}>

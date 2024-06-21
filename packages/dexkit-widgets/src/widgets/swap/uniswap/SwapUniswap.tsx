@@ -47,6 +47,10 @@ export interface SwapProps {
   maxSlippage?: number;
   sellToken?: Token;
   buyToken?: Token;
+  priceBuy?: string;
+  priceBuyLoading?: boolean;
+  priceSell?: string;
+  priceSellLoading?: boolean;
   sellAmount: BigNumber;
   buyAmount: BigNumber;
   execType?: ExecType;
@@ -76,11 +80,16 @@ export interface SwapProps {
   onShowTransak?: () => void;
 }
 
+import { useExecButtonMessage } from "../hooks/useExecButtonMessage";
 import SwapFeeSummaryUniswap from "./SwapFeeSummaryUniswap";
 import SwapSwitchTokensUniswapButton from "./SwapSwitchTokensUniswapButton";
 
 export default function SwapUniswap({
   chainId,
+  priceBuy,
+  priceBuyLoading,
+  priceSell,
+  priceSellLoading,
   networkName,
   disabled,
   quoteFor,
@@ -125,57 +134,13 @@ export default function SwapUniswap({
     onSelectToken("buy", token);
   };
 
-  const renderExecButtonMessage = () => {
-    if (quoteQuery?.isError) {
-      if (quoteQuery?.error) {
-        if (
-          quoteQuery?.error?.response?.data.validationErrors &&
-          Array.isArray(quoteQuery?.error?.response?.data.validationErrors)
-        ) {
-          const validationError =
-            quoteQuery?.error?.response?.data.validationErrors[0];
-
-          if (validationError?.reason) {
-            return validationError?.reason.split("_").join(" ");
-          }
-        }
-      }
-    }
-
-    if (quoteQuery?.isLoading) {
-      return <FormattedMessage id="quoting" defaultMessage="Quoting" />;
-    }
-
-    if (insufficientBalance) {
-      return (
-        <FormattedMessage
-          id="insufficient.symbol.balance"
-          defaultMessage="Insufficient {symbol} balance"
-          values={{ symbol: sellToken?.symbol.toUpperCase() }}
-        />
-      );
-    }
-    return execType === "wrap" ? (
-      <FormattedMessage id="wrap" defaultMessage="Wrap" />
-    ) : execType === "unwrap" ? (
-      <FormattedMessage id="Unwrap" defaultMessage="Unwrap" />
-    ) : execType === "switch" ? (
-      <FormattedMessage
-        id="switch.wallet.network"
-        defaultMessage="Switch wallet to {networkName}"
-        values={{ networkName }}
-      />
-    ) : execType === "approve" ? (
-      <FormattedMessage id="approve" defaultMessage="Approve" />
-    ) : execType === "network_not_supported" ? (
-      <FormattedMessage
-        id="network_not_supported"
-        defaultMessage="Network not supported"
-      />
-    ) : (
-      <FormattedMessage id="swap" defaultMessage="Swap" />
-    );
-  };
+  const renderExecButtonMessage = useExecButtonMessage({
+    quoteQuery,
+    insufficientBalance,
+    sellTokenSymbol: sellToken?.symbol,
+    networkName,
+    execType,
+  });
 
   const isMobile = useIsMobile();
 
@@ -256,6 +221,8 @@ export default function SwapUniswap({
                 InputBaseProps={{ fullWidth: true }}
                 onChange={onChangeSellAmount}
                 onSelectToken={handleSelectSellToken}
+                price={priceSell}
+                priceLoading={priceSellLoading}
                 token={sellToken}
                 value={sellAmount}
                 balance={sellTokenBalance}
@@ -280,6 +247,8 @@ export default function SwapUniswap({
                 InputBaseProps={{ fullWidth: true }}
                 onChange={onChangeBuyAmount}
                 onSelectToken={handleSelectBuyToken}
+                price={priceBuy}
+                priceLoading={priceBuyLoading}
                 token={buyToken}
                 value={buyAmount}
                 balance={buyTokenBalance}

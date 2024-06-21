@@ -13,7 +13,7 @@ import { useSnackbar } from "notistack";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useIntl } from "react-intl";
 import { ERC20Abi, WETHAbi } from "../constants/abis";
-import { getPricesByChain, getTokensBalance } from "../services";
+import { getTokensBalance } from "../services";
 import {
   isConnectWalletOpenAtom,
   recentTokensAtom,
@@ -29,6 +29,8 @@ import {
 import { isAddressEqual, tokenKey } from "../utils";
 import { NotificationCallbackParams } from "../widgets/swap/types";
 import { convertOldTokenToNew } from "../widgets/swap/utils";
+
+export { useCoinPrices } from './useCoinPrices';
 
 export function useConnectWalletDialog() {
   const [isOpen, setOpen] = useAtom(isConnectWalletOpenAtom);
@@ -270,23 +272,7 @@ export function useMultiTokenBalance({
 
 export const COIN_PRICES_QUERY = "COIN_PRICES_QUERY";
 
-export function useCoinPrices({
-  currency,
-  tokens,
-  chainId,
-}: {
-  tokens?: Token[];
-  chainId?: ChainId;
-  currency?: string;
-}) {
-  return useQuery([COIN_PRICES_QUERY, chainId, tokens, currency], async () => {
-    if (!chainId || !tokens || !currency) {
-      return;
-    }
 
-    return await getPricesByChain(chainId, tokens, currency);
-  });
-}
 
 
 

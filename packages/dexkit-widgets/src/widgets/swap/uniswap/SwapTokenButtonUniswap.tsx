@@ -72,7 +72,6 @@ function SwapTokenButtonUniswap({
               color: (theme) =>
                 theme.palette.getContrastText(theme.palette.primary.main),
             }}
-            fontWeight="bold"
           >
             <FormattedMessage id="select.token" defaultMessage="Select token" />
           </Typography>

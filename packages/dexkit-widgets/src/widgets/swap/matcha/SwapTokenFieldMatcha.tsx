@@ -1,4 +1,11 @@
-import { Box, Button, InputBaseProps, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  InputBaseProps,
+  Skeleton,
+  Stack,
+  Typography,
+} from "@mui/material";
 import { BigNumber } from "ethers";
 import { FormattedMessage } from "react-intl";
 
@@ -8,15 +15,19 @@ import { formatBigNumber } from "../../../utils";
 import { CurrencyField } from "../CurrencyField";
 import SwapTokenButtonMatcha from "./SwapTokenButtonMatcha";
 
+import type { ChainId } from "@dexkit/core/constants/enums";
 import SelectTokenShortcutMatcha from "./SelectTokenShortcutMatcha";
 
 export interface SwapTokenFieldMatchaProps {
   InputBaseProps?: InputBaseProps;
   disabled?: boolean;
+  selectedChainId?: ChainId;
   onChange: (value: BigNumber, clickOnMax?: boolean) => void;
   token?: Token;
   onSelectToken: (token?: Token) => void;
   value: BigNumber;
+  price?: string;
+  priceLoading?: boolean;
   balance?: BigNumber;
   showBalance?: boolean;
   isUserInput?: boolean;
@@ -29,10 +40,13 @@ export interface SwapTokenFieldMatchaProps {
 
 function SwapTokenFieldMatcha({
   InputBaseProps,
+  selectedChainId,
   featuredTokensByChain,
   onChange,
   onSelectToken,
   token,
+  price,
+  priceLoading,
   value,
   disabled,
   balance,
@@ -148,6 +162,7 @@ function SwapTokenFieldMatcha({
             </Stack>
           ) : isBuyToken && !token ? (
             <SelectTokenShortcutMatcha
+              selectedChainId={selectedChainId}
               onSelectToken={(token) => onSetToken!(token)}
               featuredTokensByChain={featuredTokensByChain}
             />
@@ -163,7 +178,7 @@ function SwapTokenFieldMatcha({
         <CurrencyField
           InputBaseProps={{
             ...InputBaseProps,
-            sx: { fontSize: "2rem", flex: 1 },
+            sx: { fontSize: "2rem", flex: 1, pt: 1 },
             disabled,
           }}
           onChange={onChange}
@@ -171,9 +186,17 @@ function SwapTokenFieldMatcha({
           isUserInput={isUserInput}
           decimals={token?.decimals}
         />
-        <Typography variant="caption" color="text.secondary">
-          $30,00
-        </Typography>
+        {priceLoading ? (
+          <Skeleton>
+            <Typography variant="caption" color="text.secondary">
+              $-,--
+            </Typography>
+          </Skeleton>
+        ) : price ? (
+          <Typography variant="caption" color="text.secondary">
+            {price}
+          </Typography>
+        ) : null}
       </Stack>
     </Box>
   );

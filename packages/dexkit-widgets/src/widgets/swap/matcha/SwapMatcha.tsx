@@ -33,6 +33,7 @@ import SwapTokenFieldMatcha from "./SwapTokenFieldMatcha";
 
 export interface SwapMatchaProps {
   chainId?: ChainId;
+  selectedChainId?: ChainId;
   currency: string;
   disabled?: boolean;
   quoteFor?: SwapSide;
@@ -46,6 +47,10 @@ export interface SwapMatchaProps {
   isActive?: boolean;
   isAutoSlippage?: boolean;
   maxSlippage?: number;
+  priceBuy?: string;
+  priceBuyLoading?: boolean;
+  priceSell?: string;
+  priceSellLoading?: boolean;
   sellToken?: Token;
   buyToken?: Token;
   sellAmount: BigNumber;
@@ -79,6 +84,7 @@ export interface SwapMatchaProps {
   onSetToken?: (token: Token) => void;
 }
 
+import { useExecButtonMessage } from "../hooks/useExecButtonMessage";
 import SwapFeeSummaryMatcha from "./SwapFeeSummaryMatcha";
 import SwapSwitchTokensMatchaButton from "./SwapSwitchTokensMatchaButton";
 
@@ -88,7 +94,12 @@ export default function SwapMatcha({
   featuredTokensByChain,
   disabled,
   quoteFor,
+  priceBuy,
+  priceBuyLoading,
+  priceSell,
+  priceSellLoading,
   isActive,
+  selectedChainId,
   quoteQuery,
   execType,
   isQuoting,
@@ -130,57 +141,13 @@ export default function SwapMatcha({
     onSelectToken("buy", token);
   };
 
-  const renderExecButtonMessage = () => {
-    if (quoteQuery?.isError) {
-      if (quoteQuery?.error) {
-        if (
-          quoteQuery?.error?.response?.data.validationErrors &&
-          Array.isArray(quoteQuery?.error?.response?.data.validationErrors)
-        ) {
-          const validationError =
-            quoteQuery?.error?.response?.data.validationErrors[0];
-
-          if (validationError?.reason) {
-            return validationError?.reason.split("_").join(" ");
-          }
-        }
-      }
-    }
-
-    if (quoteQuery?.isLoading) {
-      return <FormattedMessage id="quoting" defaultMessage="Quoting" />;
-    }
-
-    if (insufficientBalance) {
-      return (
-        <FormattedMessage
-          id="insufficient.symbol.balance"
-          defaultMessage="Insufficient {symbol} balance"
-          values={{ symbol: sellToken?.symbol.toUpperCase() }}
-        />
-      );
-    }
-    return execType === "wrap" ? (
-      <FormattedMessage id="wrap" defaultMessage="Wrap" />
-    ) : execType === "unwrap" ? (
-      <FormattedMessage id="Unwrap" defaultMessage="Unwrap" />
-    ) : execType === "switch" ? (
-      <FormattedMessage
-        id="switch.wallet.network"
-        defaultMessage="Switch wallet to {networkName}"
-        values={{ networkName }}
-      />
-    ) : execType === "approve" ? (
-      <FormattedMessage id="approve" defaultMessage="Approve" />
-    ) : execType === "network_not_supported" ? (
-      <FormattedMessage
-        id="network_not_supported"
-        defaultMessage="Network not supported"
-      />
-    ) : (
-      <FormattedMessage id="swap" defaultMessage="Swap" />
-    );
-  };
+  const renderExecButtonMessage = useExecButtonMessage({
+    quoteQuery,
+    insufficientBalance,
+    sellTokenSymbol: sellToken?.symbol,
+    networkName,
+    execType,
+  });
 
   const isMobile = useIsMobile();
 
@@ -265,8 +232,11 @@ export default function SwapMatcha({
             <Stack>
               <SwapTokenFieldMatcha
                 featuredTokensByChain={[]}
+                selectedChainId={selectedChainId}
                 enableHalfAmount
                 title={<FormattedMessage id="sell" defaultMessage="Sell" />}
+                price={priceSell}
+                priceLoading={priceSellLoading}
                 InputBaseProps={{ fullWidth: true }}
                 onChange={onChangeSellAmount}
                 onSelectToken={handleSelectSellToken}
@@ -301,7 +271,10 @@ export default function SwapMatcha({
               </Stack>
               <SwapTokenFieldMatcha
                 featuredTokensByChain={featuredTokensByChain}
+                selectedChainId={selectedChainId}
                 title={<FormattedMessage id="buy" defaultMessage="Buy" />}
+                price={priceBuy}
+                priceLoading={priceBuyLoading}
                 InputBaseProps={{ fullWidth: true }}
                 onChange={onChangeBuyAmount}
                 onSelectToken={handleSelectBuyToken}

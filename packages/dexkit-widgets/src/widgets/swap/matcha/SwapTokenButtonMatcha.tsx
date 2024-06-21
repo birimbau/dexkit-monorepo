@@ -68,8 +68,9 @@ function SwapTokenButtonMatcha({
           spacing={0.5}
         >
           <Typography
-            fontWeight="bold"
             sx={(theme) => ({
+              pb: 0.5,
+              pt: 0.5,
               color: theme.palette.getContrastText(theme.palette.primary.main),
             })}
           >
