@@ -847,18 +847,27 @@ export function EditWizardContainer({ site }: Props) {
           setIsEditPage(false);
           setSelectedKey(undefined);
         }}
+        title={
+          <FormattedMessage
+            id="discard.changes"
+            defaultMessage="Discard Changes"
+          />
+        }
+        actionCaption={
+          <FormattedMessage id="discard" defaultMessage="Discard" />
+        }
       >
         <Stack>
-          <Typography variant="h5" align="center">
+          <Typography variant="body1">
             <FormattedMessage
-              id="changes.unsaved"
-              defaultMessage="Changes unsaved"
+              id="would.you.like.to.discard.your.changes"
+              defaultMessage="Would you like to discard your changes?"
             />
           </Typography>
-          <Typography variant="body1" align="center" color="textSecondary">
+          <Typography variant="caption" color="text.secondary">
             <FormattedMessage
-              id="you.have.changes.unsaved.do.you.want.to.proceed.without.saving"
-              defaultMessage="You have changes unsaved do you want to proceed without saving?"
+              id="Save.your.changes.now.to.avoid.losing.them."
+              defaultMessage="Save your changes now to avoid losing them."
             />
           </Typography>
         </Stack>
@@ -872,18 +881,21 @@ export function EditWizardContainer({ site }: Props) {
           onClose: handleCloseConfirmSendConfig,
         }}
         onConfirm={handleConfirmSendConfig}
+        title={
+          <FormattedMessage id="save.changes" defaultMessage="Save Changes" />
+        }
       >
         <Stack>
-          <Typography variant="h5" align="center">
+          <Typography variant="body1">
             <FormattedMessage
-              id="send.settings"
-              defaultMessage="Send settings"
+              id="would.you.like.to.save.your.changes"
+              defaultMessage="Would you like to save your changes?"
             />
           </Typography>
-          <Typography variant="body1" align="center" color="textSecondary">
+          <Typography variant="caption" color="text.secondary">
             <FormattedMessage
-              id="do.you.really.want.to.send.this.app.settings"
-              defaultMessage="Do you really want to send it?"
+              id="your.settings.will.be.sent.to.the.server"
+              defaultMessage="Your settings will be sent to the server."
             />
           </Typography>
         </Stack>

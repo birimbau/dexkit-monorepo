@@ -42,7 +42,7 @@ export default function PageSectionsHeader({
     }, 300);
   };
 
-  const [title, setTitle] = useState(page.title || '');
+  const [title, setTitle] = useState(page?.title ?? '');
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setTitle(e.target.value);
@@ -55,7 +55,7 @@ export default function PageSectionsHeader({
 
   const handleCancel = () => {
     setIsEditTitle(false);
-    setTitle(page.title || '');
+    setTitle(page?.title || '');
   };
 
   const isMobile = useIsMobile();
@@ -102,7 +102,7 @@ export default function PageSectionsHeader({
                 cursor: 'pointer',
               }}
             >
-              {page.title}
+              {page?.title}
             </Typography>
           </ButtonBase>
         )}

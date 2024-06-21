@@ -68,7 +68,11 @@ export default function PagesWizardContainer({
     useContext(PagesContext);
 
   const handleCancel = () => {
-    setOpenHasChangesConfirm(true);
+    if (selectedKey && oldPage) {
+      return setOpenHasChangesConfirm(true);
+    }
+
+    handleCancelEdit(true);
   };
 
   const handleSetPages = (
@@ -100,7 +104,8 @@ export default function PagesWizardContainer({
           onClose: () => setOpenHasChangesConfirm(false),
         }}
         onConfirm={() => {
-          handleCancelEdit(false);
+          onHasChanges(true);
+
           if (selectedKey && oldPage) {
             setPages((pages) => {
               const newPages = { ...pages };
@@ -113,21 +118,34 @@ export default function PagesWizardContainer({
           } else {
             setPages(structuredClone(config.pages));
           }
+
           setOpenHasChangesConfirm(false);
           setSelectedKey(undefined);
+
+          handleCancelEdit(false);
+          onHasChanges(true);
         }}
+        title={
+          <FormattedMessage
+            id="discard.changes"
+            defaultMessage="Discard Changes"
+          />
+        }
+        actionCaption={
+          <FormattedMessage id="discard" defaultMessage="Discard" />
+        }
       >
         <Stack>
-          <Typography variant="h5" align="center">
+          <Typography variant="body1">
             <FormattedMessage
-              id="changes.unsaved"
-              defaultMessage="Changes unsaved"
+              id="would.you.like.to.discard.your.changes"
+              defaultMessage="Would you like to discard your changes?"
             />
           </Typography>
-          <Typography variant="body1" align="center" color="textSecondary">
+          <Typography variant="caption" color="text.secondary">
             <FormattedMessage
-              id="you.have.changes.unsaved.do.you.want.to.proceed.without.saving"
-              defaultMessage="You have changes unsaved do you want to proceed without saving?"
+              id="if.you.discard.now.your.changes.will.be.lost."
+              defaultMessage="If you discard now, your changes will be lost."
             />
           </Typography>
         </Stack>

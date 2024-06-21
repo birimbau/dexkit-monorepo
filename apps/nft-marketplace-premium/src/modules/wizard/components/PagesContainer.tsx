@@ -383,7 +383,11 @@ export function PagesContainer({
       const newPages = { ...pages };
 
       if (page.title) {
-        newPages[slugify(page.title)] = { ...page, sections: [] };
+        newPages[slugify(page.title)] = {
+          ...page,
+          sections: [],
+          title: page.title,
+        };
       }
 
       return newPages;

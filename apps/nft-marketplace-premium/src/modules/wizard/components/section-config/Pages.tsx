@@ -94,9 +94,11 @@ export default function Pages({
 
   const handleSelect = (id: string) => {
     return () => {
+      const page = structuredClone(pages[id]);
+
       setIsEditPage(true);
       setSelectedKey(id);
-      setOldPage(pages[id]);
+      setOldPage(page);
     };
   };
 
