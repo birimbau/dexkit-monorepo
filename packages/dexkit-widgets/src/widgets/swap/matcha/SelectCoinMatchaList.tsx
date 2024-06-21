@@ -1,6 +1,5 @@
 import type { TokenBalances } from "@indexed-finance/multicall";
 import TipsAndUpdates from "@mui/icons-material/TipsAndUpdates";
-import React from "react";
 
 import { Box, List, Stack, Typography } from "@mui/material";
 
@@ -8,24 +7,27 @@ import { memo } from "react";
 import { FormattedMessage } from "react-intl";
 
 import { Token } from "@dexkit/core/types";
+import SwapSelectCoinListSkeleton from "../SwapSelectCoinListSkeleton";
 import SelectCoinListMatchaItem from "./SelectCoinListMatchaItem";
 
-export interface SelectCoinMatchaListProps {
+export interface SelectCoinListProps {
   tokens: Token[];
-  onSelect: (token: Token) => void;
+  externToken?: Token;
+  onSelect: (token: Token, isExtern?: boolean) => void;
   tokenBalances?: TokenBalances | null;
   subHeader?: React.ReactNode;
   isLoading: boolean;
 }
 
-function SelectCoinMatchaList({
+function SelectCoinList({
   tokens,
   onSelect,
   tokenBalances,
   isLoading,
   subHeader,
-}: SelectCoinMatchaListProps) {
-  if (tokens.length === 0) {
+  externToken,
+}: SelectCoinListProps) {
+  if (tokens.length === 0 && !externToken) {
     return (
       <Box py={2}>
         <Stack spacing={2} alignItems="center" justifyContent="center">
@@ -46,11 +48,27 @@ function SelectCoinMatchaList({
     );
   }
 
+  if (isLoading) {
+    return <SwapSelectCoinListSkeleton />;
+  }
+
+  if (externToken) {
+    return (
+      <SelectCoinListMatchaItem
+        token={externToken}
+        isLoading={isLoading}
+        onSelect={onSelect}
+        tokenBalances={tokenBalances}
+        isExtern
+      />
+    );
+  }
+
   return (
-    <List disablePadding subheader={subHeader} dense>
+    <List disablePadding subheader={subHeader}>
       {tokens.map((token: Token, index: number) => (
         <SelectCoinListMatchaItem
-          key={index}
+          key={`item-${index}`}
           token={token}
           isLoading={isLoading}
           onSelect={onSelect}
@@ -61,4 +79,4 @@ function SelectCoinMatchaList({
   );
 }
 
-export default memo(SelectCoinMatchaList);
+export default memo(SelectCoinList);

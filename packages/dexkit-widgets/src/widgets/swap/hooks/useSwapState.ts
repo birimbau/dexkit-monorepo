@@ -11,12 +11,21 @@ import { Transak } from "@transak/transak-sdk";
 
 import { SwapVariant } from "@dexkit/ui/modules/wizard/types";
 import type { providers } from 'ethers';
+
 import { BigNumber, constants, utils } from "ethers";
 import { useSnackbar } from "notistack";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useIntl } from "react-intl";
 import { useSwitchChain } from 'wagmi';
-import { useAsyncMemo, useDebounce, useRecentTokens, useTokenBalance, useWrapToken } from "../../../hooks";
+
+
+import {
+  useAsyncMemo,
+  useDebounce,
+  useRecentTokens,
+  useTokenBalance,
+  useWrapToken,
+} from "../../../hooks";
 import { useSignTypeData } from "../../../hooks/useSignTypeData";
 import { isAddressEqual } from "../../../utils";
 import { ExecSwapState } from "../constants/enum";
@@ -106,7 +115,7 @@ export function useSwapState({
   currency: string;
   variant?: SwapVariant
 }) {
-  const { switchChain } = useSwitchChain()
+  const { switchChain } = useSwitchChain();
 
   const transak = useMemo(() => {
     if (transakApiKey) {

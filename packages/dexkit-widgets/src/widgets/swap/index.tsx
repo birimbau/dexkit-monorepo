@@ -33,6 +33,7 @@ import { NotificationCallbackParams, RenderOptions } from "./types";
 import SwapConfirmMatchaDialog from "./matcha/SwapConfirmMatchaDialog";
 
 import { SwapVariant } from "@dexkit/ui/modules/wizard/types";
+import ExternTokenWarningDialog from "./ExternTokenWarningDialog";
 import Swap from "./Swap";
 import SwapSelectCoinDialog from "./SwapSelectCoinDialog";
 import SwapMatcha from "./matcha/SwapMatcha";
@@ -88,7 +89,6 @@ export function SwapWidget({
     defaultChainId,
     disableNotificationsButton,
     transakApiKey,
-    variant,
     enableUrlParams,
     currency,
     disableFooter,
@@ -98,6 +98,7 @@ export function SwapWidget({
     nonFeaturedTokens,
     useGasless,
     myTokensOnlyOnSearch,
+    variant,
   } = options;
 
   const execSwapMutation = useSwapExec({ onNotification });
@@ -107,6 +108,9 @@ export function SwapWidget({
   });
 
   const [selectedChainId, setSelectedChainId] = useState<ChainId>();
+
+  const [showWarningDialog, setShowWarningDialog] = useState(false);
+  const [selectedToken, setSelecteToken] = useState<Token>();
 
   useEffect(() => {
     if (defaultChainId) {
@@ -161,7 +165,7 @@ export function SwapWidget({
     handleConnectWallet,
     handleOpenSelectToken,
     handleSwapTokens,
-    handleSelectToken,
+    handleSelectToken: handleSelectTokenState,
     handleChangeSellAmount,
     handleChangeBuyAmount,
     handleExecSwap,
@@ -295,6 +299,16 @@ export function SwapWidget({
 
   const handleToggleSwitchNetwork = () => {
     setShowSwitchNetwork((value) => !value);
+  };
+
+  const handleSelectToken = (token: Token, isExtern?: boolean) => {
+    if (isExtern) {
+      setShowWarningDialog(true);
+      setSelecteToken(token);
+      return;
+    }
+
+    handleSelectTokenState(token);
   };
 
   const filteredChainIds = useMemo(() => {
@@ -633,8 +647,32 @@ export function SwapWidget({
     }
   }, [sellToken, buyToken, chainId, mounted, enableUrlParams]);
 
+  const handleCloseWarning = () => {
+    setSelecteToken(undefined);
+    setShowWarningDialog(false);
+  };
+
+  const handleConfirmSelectToken = () => {
+    if (selectedToken) {
+      handleSelectTokenState(selectedToken);
+    }
+  };
+
   return (
     <>
+      {selectedToken && showWarningDialog && (
+        <ExternTokenWarningDialog
+          DialogProps={{
+            open: showWarningDialog,
+            onClose: handleCloseWarning,
+            fullWidth: true,
+            maxWidth: "sm",
+          }}
+          onConfirm={handleConfirmSelectToken}
+          token={selectedToken}
+        />
+      )}
+
       {chainId && renderDialogComponent()}
       <SwitchNetworkDialog
         onChangeNetwork={handleChangeNetwork}

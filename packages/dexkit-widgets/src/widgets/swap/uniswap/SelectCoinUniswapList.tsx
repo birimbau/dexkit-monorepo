@@ -7,12 +7,14 @@ import { memo } from "react";
 import { FormattedMessage } from "react-intl";
 
 import { Token } from "@dexkit/core/types";
+import SwapSelectCoinListSkeleton from "../SwapSelectCoinListSkeleton";
 import SelectCoinListUniswapItem from "./SelectCoinListUniswapItem";
 
 export interface SelectCoinUniswapListProps {
   tokens: Token[];
-  onSelect: (token: Token) => void;
+  onSelect: (token: Token, isExtern?: boolean) => void;
   tokenBalances?: TokenBalances | null;
+  externToken?: Token;
   subHeader?: React.ReactNode;
   isLoading: boolean;
 }
@@ -23,6 +25,7 @@ function SelectCoinUniswapList({
   tokenBalances,
   isLoading,
   subHeader,
+  externToken,
 }: SelectCoinUniswapListProps) {
   if (tokens.length === 0) {
     return (
@@ -42,6 +45,22 @@ function SelectCoinUniswapList({
           </Box>
         </Stack>
       </Box>
+    );
+  }
+
+  if (isLoading) {
+    return <SwapSelectCoinListSkeleton />;
+  }
+
+  if (externToken) {
+    return (
+      <SelectCoinListUniswapItem
+        token={externToken}
+        isLoading={isLoading}
+        onSelect={onSelect}
+        tokenBalances={tokenBalances}
+        isExtern
+      />
     );
   }
 

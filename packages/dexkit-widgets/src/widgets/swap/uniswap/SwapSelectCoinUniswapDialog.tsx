@@ -25,6 +25,7 @@ import { NETWORKS } from "@dexkit/core/constants/networks";
 import { Token } from "@dexkit/core/types";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import SwitchNetworkSelect from "../../../components/SwitchNetworkSelect";
+import { useSelectImport } from "../hooks";
 import SelectCoinUniswapList from "./SelectCoinUniswapList";
 import SwapFeaturedUniswapTokens from "./SwapFeaturedUniswapTokens";
 
@@ -73,7 +74,19 @@ export default function SwapSelectCoinUniswapDialog({
     }
   };
 
-  const tokenBalances = useMultiTokenBalance({ tokens, account, provider });
+  const {
+    fetchTokenData,
+    handleChangeQuery,
+    handleSelect,
+    importedTokens,
+    isOnList,
+  } = useSelectImport({ chainId, onQueryChange, onSelect, tokens });
+
+  const tokenBalances = useMultiTokenBalance({
+    tokens: [...importedTokens.tokens, ...tokens],
+    account,
+    provider,
+  });
 
   const isMobile = useIsMobile();
 
@@ -90,7 +103,7 @@ export default function SwapSelectCoinUniswapDialog({
         <Box sx={{ px: 2 }}>
           <Stack direction="row" spacing={2}>
             <SearchTextField
-              onChange={onQueryChange}
+              onChange={handleChangeQuery}
               TextFieldProps={{
                 fullWidth: true,
                 size: "small",
@@ -197,10 +210,13 @@ export default function SwapSelectCoinUniswapDialog({
 
         <Divider />
         <SelectCoinUniswapList
-          tokens={tokens}
-          onSelect={onSelect}
+          tokens={[...importedTokens.tokens, ...tokens]}
+          onSelect={handleSelect}
+          externToken={
+            !isOnList && fetchTokenData.data ? fetchTokenData.data : undefined
+          }
           tokenBalances={tokenBalances.data}
-          isLoading={tokenBalances.isLoading}
+          isLoading={tokenBalances.isLoading || fetchTokenData.isLoading}
         />
       </DialogContent>
     </Dialog>

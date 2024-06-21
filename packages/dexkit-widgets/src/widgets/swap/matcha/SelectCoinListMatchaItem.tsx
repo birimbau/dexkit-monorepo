@@ -1,14 +1,14 @@
-import React from "react";
-
 import type { TokenBalances } from "@indexed-finance/multicall";
 import {
   Avatar,
+  Badge,
   Box,
   ListItemAvatar,
   ListItemButton,
   ListItemText,
   Skeleton,
   Stack,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import { BigNumber, constants } from "ethers";
@@ -18,12 +18,15 @@ import { TOKEN_ICON_URL } from "@dexkit/core/constants";
 import { Token } from "@dexkit/core/types";
 import { formatBigNumber } from "@dexkit/core/utils";
 import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "@dexkit/ui/modules/swap/constants";
+import Warning from "@mui/icons-material/Warning";
+import { FormattedMessage } from "react-intl";
 
 export interface SelectCoinListMatchaItemProps {
   token: Token;
-  onSelect: (token: Token) => void;
+  onSelect: (token: Token, isExtern?: boolean) => void;
   tokenBalances?: TokenBalances | null;
   isLoading: boolean;
+  isExtern?: boolean;
 }
 
 function SelectCoinListMatchaItem({
@@ -31,6 +34,7 @@ function SelectCoinListMatchaItem({
   onSelect,
   tokenBalances,
   isLoading,
+  isExtern,
 }: SelectCoinListMatchaItemProps) {
   const balance = tokenBalances
     ? tokenBalances[
@@ -41,10 +45,25 @@ function SelectCoinListMatchaItem({
       ]
     : BigNumber.from(0);
 
-  return (
-    <ListItemButton onClick={() => onSelect(token)}>
-      <ListItemAvatar>
-        <Stack alignItems="center" justifyContent="center">
+  const renderAvatar = () => {
+    if (isExtern) {
+      return (
+        <Badge
+          overlap="circular"
+          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+          badgeContent={
+            <Tooltip
+              title={
+                <FormattedMessage
+                  id="this.token.is.not.whitelisted.by.this.app"
+                  defaultMessage="This token is not whitelisted by this app"
+                />
+              }
+            >
+              <Warning />
+            </Tooltip>
+          }
+        >
           <Avatar
             src={
               token.logoURI
@@ -54,6 +73,28 @@ function SelectCoinListMatchaItem({
             imgProps={{ sx: { objectFit: "fill" } }}
             sx={{ height: "1.5rem", width: "1.5rem" }}
           />
+        </Badge>
+      );
+    }
+
+    return (
+      <Avatar
+        src={
+          token.logoURI
+            ? token.logoURI
+            : TOKEN_ICON_URL(token.address, token.chainId)
+        }
+        imgProps={{ sx: { objectFit: "fill" } }}
+        sx={{ height: "1.5rem", width: "1.5rem" }}
+      />
+    );
+  };
+
+  return (
+    <ListItemButton onClick={() => onSelect(token, isExtern)}>
+      <ListItemAvatar>
+        <Stack alignItems="center" justifyContent="center">
+          {renderAvatar()}
         </Stack>
       </ListItemAvatar>
       <ListItemText

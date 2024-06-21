@@ -22,10 +22,12 @@ import { useMultiTokenBalance } from "../../hooks";
 import { Token } from "@dexkit/core/types";
 import SwapFeaturedTokens from "./SwapFeaturedTokens";
 
+import { useSelectImport } from "./hooks";
+
 export interface SwapSelectCoinDialogProps {
   DialogProps: DialogProps;
   onQueryChange: (value: string) => void;
-  onSelect: (token: Token) => void;
+  onSelect: (token: Token, isExtern?: boolean) => void;
   onClearRecentTokens: () => void;
   tokens: Token[];
   chainId?: number;
@@ -59,9 +61,21 @@ export default function SwapSelectCoinDialog({
     }
   };
 
-  const tokenBalances = useMultiTokenBalance({ tokens, account, provider });
-
   const isMobile = useIsMobile();
+
+  const {
+    fetchTokenData,
+    handleChangeQuery,
+    handleSelect,
+    importedTokens,
+    isOnList,
+  } = useSelectImport({ chainId, onQueryChange, onSelect, tokens });
+
+  const tokenBalances = useMultiTokenBalance({
+    tokens: [...importedTokens.tokens, ...tokens],
+    account,
+    provider,
+  });
 
   return (
     <Dialog {...DialogProps} onClose={handleClose} fullScreen={isMobile}>
@@ -77,7 +91,7 @@ export default function SwapSelectCoinDialog({
           <Stack spacing={2} sx={{ pb: 2 }}>
             <Box sx={{ px: 2 }}>
               <SearchTextField
-                onChange={onQueryChange}
+                onChange={handleChangeQuery}
                 TextFieldProps={{
                   fullWidth: true,
                   InputProps: {
@@ -138,18 +152,20 @@ export default function SwapSelectCoinDialog({
                 }
                 tokens={recentTokens}
                 tokenBalances={tokenBalances.data}
-                onSelect={onSelect}
+                onSelect={handleSelect}
                 isLoading={tokenBalances.isLoading}
               />
             </>
           )}
-
           <Divider />
           <SelectCoinList
-            tokens={tokens}
-            onSelect={onSelect}
+            tokens={[...importedTokens.tokens, ...tokens]}
+            onSelect={handleSelect}
+            externToken={
+              !isOnList && fetchTokenData.data ? fetchTokenData.data : undefined
+            }
             tokenBalances={tokenBalances.data}
-            isLoading={tokenBalances.isLoading}
+            isLoading={tokenBalances.isLoading || fetchTokenData.isLoading}
           />
         </Stack>
       </DialogContent>
