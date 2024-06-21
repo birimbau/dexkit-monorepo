@@ -17,11 +17,11 @@ import AddPageDialog from './dialogs/AddPageDialog';
 import PagesSection from './sections/PagesSection';
 
 const ConfirmRemoveSectionDialog = dynamic(
-  () => import('./dialogs/ConfirmRemoveSectionDialog')
+  () => import('./dialogs/ConfirmRemoveSectionDialog'),
 );
 
 const CloneSectionDialog = dynamic(
-  () => import('./dialogs/CloneSectionDialog')
+  () => import('./dialogs/CloneSectionDialog'),
 );
 
 const ClonePageDialog = dynamic(() => import('./dialogs/ClonePageDialog'));
@@ -213,7 +213,7 @@ export function PagesContainer({
 
       handleActivateSection({ index: toIndex, page });
     },
-    [handleActivateSection, setPages]
+    [handleActivateSection, setPages],
   );
 
   const handleHideDesktop = (page: string, index: number) => {
@@ -338,7 +338,7 @@ export function PagesContainer({
     setPageToClone(undefined);
     enqueueSnackbar(
       <FormattedMessage id="page.created" defaultMessage="Page Created" />,
-      { variant: 'success' }
+      { variant: 'success' },
     );
   };
 
@@ -483,7 +483,7 @@ export function PagesContainer({
         </AppConfirmDialog>
       )}
 
-      {selectedPage && selectedSectionIndex > -1 && (
+      {selectedPage && selectedSectionIndex > -1 && pages[selectedPage] && (
         <ConfirmRemoveSectionDialog
           dialogProps={{
             open: showConfirmRemove,
@@ -502,7 +502,7 @@ export function PagesContainer({
         theme={theme}
         onChangeName={handleChangeName}
         onEditTitle={handleEditTitle}
-        sections={selectedPage ? pages[selectedPage].sections : []}
+        sections={selectedPage ? pages[selectedPage]?.sections : []}
         onEditPage={onEditPage}
         onRemovePage={handleRemovePage}
         onSaveSection={handleSavePageSections}
@@ -519,7 +519,7 @@ export function PagesContainer({
         currentIndex={selectedSectionIndex}
         section={
           selectedPage && selectedSectionIndex > -1
-            ? pages[selectedPage].sections[selectedSectionIndex]
+            ? pages[selectedPage]?.sections[selectedSectionIndex]
             : undefined
         }
         previewUrl={previewUrl}
