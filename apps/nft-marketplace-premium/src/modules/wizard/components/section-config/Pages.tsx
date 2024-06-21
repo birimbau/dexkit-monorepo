@@ -87,7 +87,7 @@ export default function Pages({
     return keys.slice(offset, limit);
   }, [keys, offset, limit, pages]);
 
-  const { setSelectedKey, setIsEditPage, isEditPage, selectedKey } =
+  const { setSelectedKey, setIsEditPage, isEditPage, selectedKey, setOldPage } =
     useContext(PagesContext);
 
   const [showPreview, setShowPreview] = useState(false);
@@ -96,6 +96,7 @@ export default function Pages({
     return () => {
       setIsEditPage(true);
       setSelectedKey(id);
+      setOldPage(pages[id]);
     };
   };
 
@@ -111,7 +112,7 @@ export default function Pages({
         onAction(action, page, index);
       };
     },
-    [onAction]
+    [onAction],
   );
 
   const handleShowPreview = (pageKey: string) => {

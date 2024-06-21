@@ -38,7 +38,7 @@ import { useAppWizardConfig } from '../../hooks';
 import { isAddressEqual } from '@dexkit/core/utils';
 import { PageHeader } from '@dexkit/ui/components/PageHeader';
 import { useAuth } from '@dexkit/ui/hooks/auth';
-import { AppConfig } from '@dexkit/ui/modules/wizard/types/config';
+import { AppConfig, AppPage } from '@dexkit/ui/modules/wizard/types/config';
 import { useWeb3React } from '@dexkit/wallet-connectors/hooks/useWeb3React';
 import AnalyticsIcon from '@mui/icons-material/Analytics';
 import DatasetIcon from '@mui/icons-material/Dataset';
@@ -60,50 +60,50 @@ import SignConfigDialog from '../dialogs/SignConfigDialog';
 import RankingWizardContainer from './RankingWizardContainer';
 
 const NetworksWizardContainer = dynamic(
-  () => import('./NetworksWizardContainer')
+  () => import('./NetworksWizardContainer'),
 );
 
 const IntegrationsWizardContainer = dynamic(
-  () => import('./IntegrationsWizardContainer')
+  () => import('./IntegrationsWizardContainer'),
 );
 
 const UserEventAnalyticsContainer = dynamic(
-  () => import('./UserEventAnalyticsContainer')
+  () => import('./UserEventAnalyticsContainer'),
 );
 
 const OwnershipWizardContainer = dynamic(
-  () => import('./OwnershipWizardContainer')
+  () => import('./OwnershipWizardContainer'),
 );
 const CollectionWizardContainer = dynamic(
-  () => import('./CollectionWizardContainer')
+  () => import('./CollectionWizardContainer'),
 );
 const DomainWizardContainer = dynamic(() => import('./DomainWizardContainer'));
 const FooterMenuWizardContainer = dynamic(
-  () => import('./FooterMenuWizardContainer')
+  () => import('./FooterMenuWizardContainer'),
 );
 const GeneralWizardContainer = dynamic(
-  () => import('./GeneralWizardContainer')
+  () => import('./GeneralWizardContainer'),
 );
 const MarketplaceFeeWizardContainer = dynamic(
-  () => import('./MarketplaceFeeWizardContainer')
+  () => import('./MarketplaceFeeWizardContainer'),
 );
 const PagesMenuWizardContainer = dynamic(
-  () => import('./NavbarWizardContainer')
+  () => import('./NavbarWizardContainer'),
 );
 const PagesWizardContainer = dynamic(() => import('./PagesWizardContainer'));
 const SeoWizardContainer = dynamic(() => import('./SeoWizardContainer'));
 const SocialWizardContainer = dynamic(() => import('./SocialWizardContainer'));
 const SwapFeeWizardContainer = dynamic(
-  () => import('./SwapFeeWizardContainer')
+  () => import('./SwapFeeWizardContainer'),
 );
 const ThemeWizardContainer = dynamic(() => import('./ThemeWizardContainer'));
 const TokenWizardContainer = dynamic(() => import('./TokenWizardContainer'));
 const TeamWizardContainer = dynamic(() => import('./TeamWizardContainer'));
 const AppVersionWizardContainer = dynamic(
-  () => import('./AppVersionWizardContainer')
+  () => import('./AppVersionWizardContainer'),
 );
 const AnalyticsWizardContainer = dynamic(
-  () => import('./AnalyticsWizardContainer')
+  () => import('./AnalyticsWizardContainer'),
 );
 
 interface Props {
@@ -136,16 +136,19 @@ export enum ActiveMenu {
 export type PagesContextType = {
   selectedKey?: string;
   setSelectedKey: (key?: string) => void;
+  setOldPage: (appPage: AppPage) => void;
+  oldPage?: AppPage;
   isEditPage: boolean;
   setIsEditPage: (value: boolean) => void;
-  handleCancelEdit: () => void;
+  handleCancelEdit: (hasChanges?: boolean) => void;
 };
 
 export const PagesContext = React.createContext<PagesContextType>({
   setSelectedKey: () => {},
   setIsEditPage: () => {},
+  setOldPage: () => {},
   isEditPage: false,
-  handleCancelEdit: () => {},
+  handleCancelEdit: (hasChanges?: boolean) => {},
 });
 
 function TourButton() {
@@ -183,8 +186,13 @@ export function EditWizardContainer({ site }: Props) {
 
   const [selectedKey, setSelectedKey] = useState<string>();
   const [isEditPage, setIsEditPage] = useState(false);
+  const [oldPage, setOldPage] = useState<AppPage>();
 
-  const handleCancelEdit = () => {
+  const handleCancelEdit = (hasChanges?: boolean) => {
+    if (hasChanges) {
+      return setOpenHasChangesConfirm(true);
+    }
+
     setSelectedKey(undefined);
     setIsEditPage(false);
     setWizardConfig({ ...config });
@@ -227,12 +235,12 @@ export function EditWizardContainer({ site }: Props) {
   const { isLoggedIn, user } = useAuth();
 
   const [activeMenu, setActiveMenu] = useState<ActiveMenu>(
-    tab || ActiveMenu.General
+    tab || ActiveMenu.General,
   );
   const [activeMenuWithChanges, setActiveMenuWithChanges] =
     useState<ActiveMenu>(tab || ActiveMenu.General);
   const [activeBuilderKit, setActiveBuilderKit] = useState<BuilderKit>(
-    BuilderKit.ALL
+    BuilderKit.ALL,
   );
 
   const handleChangeTab = (mn: ActiveMenu) => {
@@ -329,7 +337,7 @@ export function EditWizardContainer({ site }: Props) {
       setWizardConfig(newConfig);
     },
 
-    [wizardConfig, setWizardConfig]
+    [wizardConfig, setWizardConfig],
   );
 
   const renderMenu = () => (
@@ -1071,6 +1079,8 @@ export function EditWizardContainer({ site }: Props) {
                           isEditPage,
                           setIsEditPage,
                           handleCancelEdit,
+                          setOldPage,
+                          oldPage,
                         }}
                       >
                         <PagesWizardContainer

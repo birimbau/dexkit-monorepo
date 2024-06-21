@@ -4,6 +4,7 @@ import {
   Divider,
   Grid,
   Stack,
+  Typography,
   createTheme,
   responsiveFontSizes,
 } from '@mui/material';
@@ -13,11 +14,12 @@ import { getTheme } from '../../../../theme';
 import { BuilderKit } from '../../constants';
 import { PagesContainer } from '../PagesContainer';
 
+import { AppConfirmDialog } from '@dexkit/ui';
 import dynamic from 'next/dynamic';
 import { PagesContext } from './EditWizardContainer';
 
 const ApiKeyIntegrationDialog = dynamic(
-  () => import('../dialogs/ApiKeyIntegrationDialog')
+  () => import('../dialogs/ApiKeyIntegrationDialog'),
 );
 
 interface Props {
@@ -42,7 +44,7 @@ export default function PagesWizardContainer({
   previewUrl,
 }: Props) {
   const [pages, setPages] = useState<{ [key: string]: AppPage }>(
-    structuredClone(config.pages)
+    structuredClone(config.pages),
   );
 
   const [showAddPage, setShowAddPage] = useState(false);
@@ -62,15 +64,15 @@ export default function PagesWizardContainer({
     onSave(newConfig);
   };
 
-  const { handleCancelEdit } = useContext(PagesContext);
+  const { handleCancelEdit, setSelectedKey, selectedKey, oldPage } =
+    useContext(PagesContext);
 
   const handleCancel = () => {
-    handleCancelEdit();
-    setPages(structuredClone(config.pages));
+    setOpenHasChangesConfirm(true);
   };
 
   const handleSetPages = (
-    cb: (prev: { [key: string]: AppPage }) => { [key: string]: AppPage }
+    cb: (prev: { [key: string]: AppPage }) => { [key: string]: AppPage },
   ) => {
     setPages((value) => {
       let res = cb(value);
@@ -86,8 +88,50 @@ export default function PagesWizardContainer({
     });
   };
 
+  const [openHasChangesConfirm, setOpenHasChangesConfirm] = useState(false);
+
   return (
     <>
+      <AppConfirmDialog
+        DialogProps={{
+          open: openHasChangesConfirm,
+          maxWidth: 'xs',
+          fullWidth: true,
+          onClose: () => setOpenHasChangesConfirm(false),
+        }}
+        onConfirm={() => {
+          handleCancelEdit(false);
+          if (selectedKey && oldPage) {
+            setPages((pages) => {
+              const newPages = { ...pages };
+
+              return {
+                ...newPages,
+                [selectedKey]: oldPage,
+              };
+            });
+          } else {
+            setPages(structuredClone(config.pages));
+          }
+          setOpenHasChangesConfirm(false);
+          setSelectedKey(undefined);
+        }}
+      >
+        <Stack>
+          <Typography variant="h5" align="center">
+            <FormattedMessage
+              id="changes.unsaved"
+              defaultMessage="Changes unsaved"
+            />
+          </Typography>
+          <Typography variant="body1" align="center" color="textSecondary">
+            <FormattedMessage
+              id="you.have.changes.unsaved.do.you.want.to.proceed.without.saving"
+              defaultMessage="You have changes unsaved do you want to proceed without saving?"
+            />
+          </Typography>
+        </Stack>
+      </AppConfirmDialog>
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <PagesContainer

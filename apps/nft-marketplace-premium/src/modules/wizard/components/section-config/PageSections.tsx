@@ -97,7 +97,7 @@ export default function PageSections({
   const [showFilters, setShowFilters] = useState(false);
 
   const [sectionType, setSectionType] = useState<SectionType>(
-    '' as SectionType
+    '' as SectionType,
   );
 
   const handleDragEnd = (event: DragEndEvent) => {
@@ -141,8 +141,8 @@ export default function PageSections({
 
   const filteredSections = useMemo(() => {
     return (
-      page.sections
-        .map((p, index) => {
+      page?.sections
+        ?.map((p, index) => {
           return { ...p, index };
         })
         ?.filter((s) => {
