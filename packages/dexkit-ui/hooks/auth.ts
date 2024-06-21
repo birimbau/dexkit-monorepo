@@ -60,7 +60,7 @@ export function useAuthUserQuery() {
 }
 
 export function useLoginAccountMutation() {
-  const { account, provider } = useWeb3React();
+  const { account, provider, chainId, connector } = useWeb3React();
   const signMessageDialog = useSignMessageDialog();
   const { siteId, affiliateReferral } = useDexKitContext();
 
@@ -78,9 +78,14 @@ export function useLoginAccountMutation() {
         .getSigner()
         .signMessage(messageToSign.data);
 
+      const chain = connector?.id === 'coinbase' ? chainId : undefined
+
+
+
       const loginResponse = await loginApp({
         signature,
         address: account,
+        chainId: chain,
         siteId,
         referral: affiliateReferral,
       });

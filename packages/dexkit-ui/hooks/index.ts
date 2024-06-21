@@ -4,7 +4,6 @@ import {
 import {
   AppTransaction
 } from "@dexkit/core/types";
-import { switchNetwork } from "@dexkit/wallet-connectors/utils";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
 import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
@@ -27,10 +26,10 @@ import { isHexString } from '@dexkit/core/utils/ethers/isHexString';
 import type { providers } from "ethers";
 import { AdminContext } from "../context/AdminContext";
 
+import { useAccount } from 'wagmi';
 import { useAppConfig } from './useAppConfig';
 import { useDexKitContext } from './useDexKitContext';
 import { useLocale } from './useLocale';
-
 
 export * from "./auth";
 export * from "./blockchain";
@@ -39,7 +38,7 @@ export * from './ui';
 
 export * from './useDexkitContextState';
 
-export * from './useOrderedConnectors';
+
 export * from './useWatchTransactionsDialog';
 
 
@@ -128,12 +127,15 @@ export function useNotifications() {
 }
 
 export function useSwitchNetworkMutation() {
-  const { connector } = useWeb3React();
+  const { connector } = useAccount();
 
   return useMutation<unknown, Error, { chainId: number }>(
     async ({ chainId }) => {
-      if (connector) {
-        const response = await switchNetwork(connector, chainId);
+      if (connector && connector.switchChain) {
+        await connector.switchChain({ chainId })
+
+
+        //  const response = await switchNetwork(connector, chainId);
         return null
       }
     }

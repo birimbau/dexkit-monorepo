@@ -1,17 +1,16 @@
 import { truncateAddress } from "@dexkit/core/utils/blockchain";
 import { AccountBalance } from "@dexkit/ui/components/AccountBalance";
-import { GET_WALLET_ICON } from "@dexkit/wallet-connectors/connectors";
-import { useWalletConnectorMetadata } from "@dexkit/wallet-connectors/hooks";
+import { useConnectorImage } from "@dexkit/wallet-connectors/hooks/useConnectorImage";
 import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import {
-    Avatar,
-    Box,
-    ButtonBase,
-    Popover,
-    Stack,
-    Typography,
+  Avatar,
+  Box,
+  ButtonBase,
+  Popover,
+  Stack,
+  Typography,
 } from "@mui/material";
 import dynamic from "next/dynamic";
 import { useState } from "react";
@@ -26,9 +25,11 @@ export interface WalletButtonProps {
 }
 
 export function WalletButton({ align }: WalletButtonProps) {
-  const { account, ENSName } = useWeb3React();
-  const { walletConnectorMetadata } = useWalletConnectorMetadata();
+  const { account, ENSName, connector } = useWeb3React();
+
   const isBalancesVisible = useIsBalanceVisible();
+
+  const icon = useConnectorImage({ connector });
 
   const justifyContent = align === "left" ? "flex-start" : "center";
 
@@ -60,7 +61,7 @@ export function WalletButton({ align }: WalletButtonProps) {
       >
         <Stack direction="row" spacing={1} alignItems="center">
           <Avatar
-            src={walletConnectorMetadata.icon || GET_WALLET_ICON()}
+            src={icon}
             sx={(theme) => ({
               width: theme.spacing(2),
               height: theme.spacing(2),
