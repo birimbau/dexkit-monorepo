@@ -53,7 +53,7 @@ export default function EditSectionDialog({
   const { onClose } = dialogProps;
   const { formatMessage } = useIntl();
   const [sectionType, setSectionType] = useState<SectionType | undefined>(
-    section?.type
+    section?.type,
   );
 
   const [sectionMetadata, setSectionMetadata] = useState<
@@ -151,7 +151,7 @@ export default function EditSectionDialog({
       <AppDialogTitle
         title={
           <Stack
-            spacing={2}
+            spacing={1}
             direction={'row'}
             alignContent={'center'}
             alignItems={'center'}
@@ -208,7 +208,12 @@ export default function EditSectionDialog({
                 onClick={handleEdit}
               >
                 <Typography variant="h6">
-                  {section?.name || section?.title}
+                  {section?.name ||
+                    section?.title ||
+                    formatMessage({
+                      id: 'unnamed.section',
+                      defaultMessage: 'Unnamed Section',
+                    })}
                 </Typography>
               </ButtonBase>
             )}

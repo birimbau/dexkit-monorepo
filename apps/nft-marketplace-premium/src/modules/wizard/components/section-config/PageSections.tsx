@@ -19,7 +19,7 @@ import {
 } from '@dexkit/ui/modules/wizard/types/section';
 
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
-import { FormattedMessage, useIntl } from 'react-intl';
+import { FormattedMessage, MessageDescriptor, useIntl } from 'react-intl';
 
 import LazyTextField from '@dexkit/ui/components/LazyTextField';
 import { useIsMobile } from '@dexkit/ui/hooks/misc';
@@ -36,22 +36,26 @@ import SectionTypeAutocomplete from './SectionTypeAutocomplete';
 import SectionsPagination from './SectionsPagination';
 import VisibilityAutocomplete from './VisibilityAutocomplete';
 
-function getSectionType(section: AppPageSection) {
+function getSectionType(
+  section: AppPageSection,
+  formatMessage: (
+    descriptor: MessageDescriptor,
+    values?: Record<string, any>,
+  ) => string,
+) {
   const config = SECTION_CONFIG[section.type];
   if (config) {
     return {
       subtitle: config.title,
       title:
-        section.type === 'custom' && !section.name && !section.title ? (
-          <FormattedMessage
-            id="custom.section"
-            defaultMessage="Custom Section"
-          />
-        ) : section.name ? (
-          section.name
-        ) : (
-          section.title || ''
-        ),
+        !section.name && !section.title
+          ? formatMessage({
+              id: 'unnamed.section',
+              defaultMessage: 'Unnamed Section',
+            })
+          : section.name
+          ? section.name
+          : section.title || '',
       icon: config.icon,
     };
   }
@@ -207,14 +211,15 @@ export default function PageSections({
           <PageSection
             showTopDroppable={section.index === 0}
             expand={!isMobile}
-            icon={getSectionType(section)?.icon}
-            title={getSectionType(section)?.title}
+            icon={getSectionType(section, formatMessage)?.icon}
+            title={getSectionType(section, formatMessage)?.title}
             subtitle={
-              getSectionType(section)?.subtitle ? (
+              getSectionType(section, formatMessage)?.subtitle ? (
                 <FormattedMessage
-                  id={getSectionType(section)?.subtitle?.id}
+                  id={getSectionType(section, formatMessage)?.subtitle?.id}
                   defaultMessage={
-                    getSectionType(section)?.subtitle?.defaultMessage
+                    getSectionType(section, formatMessage)?.subtitle
+                      ?.defaultMessage
                   }
                 />
               ) : (

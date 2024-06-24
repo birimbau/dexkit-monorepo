@@ -16,7 +16,7 @@ import {
   Typography,
 } from '@mui/material';
 import { useState } from 'react';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 
 export interface CloneSectionDialogProps {
   DialogProps: DialogProps;
@@ -46,6 +46,8 @@ export default function CloneSectionDialog({
 
   const [selectedPage, setPage] = useState(page);
 
+  const { formatMessage } = useIntl();
+
   return (
     <Dialog {...DialogProps}>
       <AppDialogTitle
@@ -55,13 +57,16 @@ export default function CloneSectionDialog({
             defaultMessage="Clone Section: {section}"
             values={{
               section: (
-                <Typography variant="inherit" component="span" fontWeight="400">
-                  {section?.name || section?.title || (
-                    <FormattedMessage
-                      id="unnamed.section"
-                      defaultMessage="Unnamed Section"
-                    />
-                  )}
+                <Typography component="span" variant="inherit" fontWeight="400">
+                  {section !== undefined
+                    ? section.title ||
+                      section.name || (
+                        <FormattedMessage
+                          id="unnamed.section"
+                          defaultMessage="Unnamed Section"
+                        />
+                      )
+                    : ''}
                 </Typography>
               ),
             }}
@@ -87,7 +92,7 @@ export default function CloneSectionDialog({
             <InputLabel shrink>
               <FormattedMessage
                 id="clone.section.to.page"
-                defaultMessage="Clone section to Page"
+                defaultMessage="Clone section to page"
               />
             </InputLabel>
             <Select
@@ -99,13 +104,20 @@ export default function CloneSectionDialog({
               label={
                 <FormattedMessage
                   id="clone.section.to.page"
-                  defaultMessage="Clone section to Page"
+                  defaultMessage="Clone section to page"
                 />
               }
             >
               {Object.keys(pages).map((key) => (
                 <MenuItem key={key} value={key}>
-                  {pages[key].title}
+                  {page === key ? (
+                    <FormattedMessage
+                      id="current.page"
+                      defaultMessage="Current page"
+                    />
+                  ) : (
+                    pages[key].title
+                  )}
                 </MenuItem>
               ))}
             </Select>

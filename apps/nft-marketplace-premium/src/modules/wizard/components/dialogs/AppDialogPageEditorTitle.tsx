@@ -11,7 +11,7 @@ import {
 
 import { CustomEditorSection } from '@dexkit/ui/modules/wizard/types/section';
 import { useState } from 'react';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 interface Props {
   section?: CustomEditorSection;
   onSave?: (section: CustomEditorSection, index: number) => void;
@@ -29,6 +29,8 @@ export function AppDialogPageEditorTitle({
 }: Props) {
   const [isEditMode, setIsEditMode] = useState(false);
   const [title, setTitle] = useState<string>();
+
+  const { formatMessage } = useIntl();
 
   return (
     <DialogTitle
@@ -58,7 +60,13 @@ export function AppDialogPageEditorTitle({
             <TextField
               id="edit-title"
               variant="standard"
-              defaultValue={section?.title || 'Custom Page Editor'}
+              defaultValue={
+                section?.title ||
+                formatMessage({
+                  id: 'unnamed.section',
+                  defaultMessage: 'Unnamed Section',
+                })
+              }
               onChange={(ev) => setTitle(ev.currentTarget.value)}
             />
             <Button
@@ -92,7 +100,11 @@ export function AppDialogPageEditorTitle({
                   id="section.editor"
                   defaultMessage="Section editor"
                 />{' '}
-                : {'Custom Page Editor'}
+                :{' '}
+                {formatMessage({
+                  id: 'unnamed.section',
+                  defaultMessage: 'Unnamed Section',
+                })}
               </Typography>
             )}
             <IconButton aria-label="edit" onClick={() => setIsEditMode(true)}>

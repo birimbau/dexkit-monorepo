@@ -30,7 +30,10 @@ import dynamic from 'next/dynamic';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
-import { useSendConfigMutation } from '../../../../hooks/whitelabel';
+import {
+  QUERY_ADMIN_WHITELABEL_CONFIG_NAME,
+  useSendConfigMutation,
+} from '../../../../hooks/whitelabel';
 
 import { SiteResponse } from '../../../../types/whitelabel';
 import { useAppWizardConfig } from '../../hooks';
@@ -46,6 +49,7 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import SpaceDashboardIcon from '@mui/icons-material/SpaceDashboard';
 import TourIcon from '@mui/icons-material/Tour';
 import { TourProvider, useTour } from '@reactour/tour';
+import { useQueryClient } from '@tanstack/react-query';
 import { useAtom } from 'jotai';
 import { useRouter } from 'next/router';
 import { BuilderKit } from '../../constants';
@@ -290,14 +294,19 @@ export function EditWizardContainer({ site }: Props) {
     setShowConfirmSendConfig(false);
   };
 
+  const queryClient = useQueryClient();
+
   const handleConfirmSendConfig = async () => {
     setShowConfirmSendConfig(false);
     const newSite = { ...site, config: wizardConfig };
-    sendConfigMutation.mutate(newSite, {
+
+    await sendConfigMutation.mutateAsync(newSite, {
       onSuccess: () => {
         setHasChanges(false);
+        queryClient.invalidateQueries([QUERY_ADMIN_WHITELABEL_CONFIG_NAME]);
       },
     });
+
     setShowSendingConfig(true);
   };
 
@@ -849,28 +858,25 @@ export function EditWizardContainer({ site }: Props) {
         }}
         title={
           <FormattedMessage
-            id="discard.changes"
-            defaultMessage="Discard Changes"
+            id="Leave.without.saving"
+            defaultMessage="Leave Without Saving "
           />
         }
-        actionCaption={
-          <FormattedMessage id="discard" defaultMessage="Discard" />
-        }
+        actionCaption={<FormattedMessage id="leave" defaultMessage="Leave" />}
+        cancelCaption={<FormattedMessage id="stay" defaultMessage="Stay" />}
       >
-        <Stack>
-          <Typography variant="body1">
-            <FormattedMessage
-              id="would.you.like.to.discard.your.changes"
-              defaultMessage="Would you like to discard your changes?"
-            />
-          </Typography>
-          <Typography variant="caption" color="text.secondary">
-            <FormattedMessage
-              id="Save.your.changes.now.to.avoid.losing.them."
-              defaultMessage="Save your changes now to avoid losing them."
-            />
-          </Typography>
-        </Stack>
+        <Typography variant="body1">
+          <FormattedMessage
+            id="you.have.unsaved.changes"
+            defaultMessage="You have unsaved changes"
+          />
+        </Typography>
+        <Typography variant="caption" color="text.secondary">
+          <FormattedMessage
+            id="are.you.sure.you.want.to.leave.without.saving"
+            defaultMessage="Are you sure you want to leave without saving?"
+          />
+        </Typography>
       </AppConfirmDialog>
 
       <AppConfirmDialog

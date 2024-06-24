@@ -60,7 +60,8 @@ export default function PagesWizardContainer({
   }, [config.customTheme, config.theme]);
 
   const handleSave = () => {
-    const newConfig = { ...config };
+    const newConfig = { ...config, pages };
+
     onSave(newConfig);
   };
 

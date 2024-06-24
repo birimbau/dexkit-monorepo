@@ -153,6 +153,8 @@ export default function Pages({
 
   const { formatMessage } = useIntl();
 
+  const [isEditGate, setIsEditGate] = useState(false);
+
   const renderPreviewDialog = () => {
     if (showPreview && selectedKey) {
       return (
@@ -178,23 +180,25 @@ export default function Pages({
       <Box px={{ sm: 4 }}>
         {renderPreviewDialog()}
         <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <PageSections
-              onAddSection={handleAdd(selectedKey)}
-              onAddCustomSection={handleAdd(selectedKey, true)}
-              onEditTitle={onEditTitle}
-              pageKey={selectedKey}
-              page={pages[selectedKey]}
-              onSwap={handleSwap(selectedKey)}
-              onAction={handleAction(selectedKey)}
-              onClose={handlePageClose}
-              onAdd={handleAdd(selectedKey)}
-              onPreview={handleShowPreview(selectedKey)}
-              activeSection={activeSection}
-              onClone={() => onClonePage(selectedKey)}
-              onChangeName={handleChangeName(selectedKey)}
-            />
-          </Grid>
+          {isEditPage && (
+            <Grid item xs={12}>
+              <PageSections
+                onAddSection={handleAdd(selectedKey)}
+                onAddCustomSection={handleAdd(selectedKey, true)}
+                onEditTitle={onEditTitle}
+                pageKey={selectedKey}
+                page={pages[selectedKey]}
+                onSwap={handleSwap(selectedKey)}
+                onAction={handleAction(selectedKey)}
+                onClose={handlePageClose}
+                onAdd={handleAdd(selectedKey)}
+                onPreview={handleShowPreview(selectedKey)}
+                activeSection={activeSection}
+                onClone={() => onClonePage(selectedKey)}
+                onChangeName={handleChangeName(selectedKey)}
+              />
+            </Grid>
+          )}
         </Grid>
       </Box>
     );
