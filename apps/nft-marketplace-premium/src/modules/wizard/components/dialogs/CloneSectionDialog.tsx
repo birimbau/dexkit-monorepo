@@ -76,7 +76,7 @@ export default function CloneSectionDialog({
         titleBox={{ px: 2 }}
       />
       <DialogContent dividers sx={{ p: 4 }}>
-        <Stack spacing={2}>
+        <Stack spacing={3}>
           <TextField
             value={name}
             onChange={(e) => setName(e.target.value)}

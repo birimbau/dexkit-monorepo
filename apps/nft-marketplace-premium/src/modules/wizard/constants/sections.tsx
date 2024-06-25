@@ -99,7 +99,7 @@ export const SECTION_CONFIG: {
     icon: <BookmarkIcon />,
   },
   collections: {
-    title: { id: 'collections', defaultMessage: 'Collections' },
+    title: { id: 'collection', defaultMessage: 'Collection' },
     icon: <AppsIcon />,
   },
   swap: {

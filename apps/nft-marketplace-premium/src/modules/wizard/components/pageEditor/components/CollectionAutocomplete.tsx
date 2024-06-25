@@ -33,6 +33,7 @@ export function CollectionAutocomplete(props: Props) {
       inputValue={formValue?.name ? formValue.name : ''}
       options={collections}
       autoHighlight
+      fullWidth
       onChange={(_change, value) => {
         if (value) {
           data.onChange({
@@ -60,6 +61,7 @@ export function CollectionAutocomplete(props: Props) {
         <TextField
           {...params}
           label="Choose a collection"
+          fullWidth
           inputProps={{
             ...params.inputProps,
             autoComplete: 'off', // disable autocomplete and autofill

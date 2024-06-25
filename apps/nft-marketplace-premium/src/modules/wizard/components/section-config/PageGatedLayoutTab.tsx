@@ -1,8 +1,5 @@
-import React from 'react';
-
 import {
   Box,
-  Button,
   ButtonBase,
   Grid,
   Stack,
@@ -32,15 +29,7 @@ export default function PageGatedLayoutTab({}: PageGatedLayoutTabProps) {
         <Box>
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              <Button variant="outlined" color="primary">
-                <FormattedMessage
-                  id="add.condition"
-                  defaultMessage="Add condition"
-                />
-              </Button>
-            </Grid>
-            <Grid item xs={12}>
-              <Typography variant="body1">
+              <Typography variant="body1" fontWeight="bold">
                 <FormattedMessage
                   id="cover.image"
                   defaultMessage="Cover image"
@@ -50,70 +39,78 @@ export default function PageGatedLayoutTab({}: PageGatedLayoutTabProps) {
             <Grid item xs={12}>
               <Grid container spacing={2}>
                 <Grid item xs={12} sm={6}>
-                  <Typography variant="body1">
-                    <FormattedMessage
-                      id="cover.image.for.light.mode"
-                      defaultMessage="Cover image for light mode"
-                    />
-                  </Typography>
-                  <ButtonBase
-                    sx={{
-                      position: 'relative',
-                      p: 2,
-                      borderRadius: (theme) => theme.shape.borderRadius / 2,
-                      alignItems: 'center',
-                      justifyContent: 'center',
+                  <Box>
+                    <Stack spacing={2}>
+                      <Typography variant="body1">
+                        <FormattedMessage
+                          id="cover.image.for.light.mode"
+                          defaultMessage="Cover image for light mode"
+                        />
+                      </Typography>
+                      <ButtonBase
+                        sx={{
+                          position: 'relative',
+                          p: 2,
+                          borderRadius: (theme) => theme.shape.borderRadius / 2,
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          width: '100%',
+                          backgroundColor: (theme) =>
+                            theme.palette.mode === 'light'
+                              ? 'rgba(0,0,0, 0.2)'
+                              : alpha(theme.palette.common.white, 0.1),
+                        }}
+                        onClick={() => {}}
+                      >
+                        <Stack
+                          sx={{
+                            height: (theme) => theme.spacing(20),
 
-                      backgroundColor: (theme) =>
-                        theme.palette.mode === 'light'
-                          ? 'rgba(0,0,0, 0.2)'
-                          : alpha(theme.palette.common.white, 0.1),
-                    }}
-                    onClick={() => {}}
-                  >
-                    <Stack
-                      sx={{
-                        height: (theme) => theme.spacing(20),
-
-                        width: (theme) => theme.spacing(20),
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                      }}
-                    >
-                      <CustomImage />
+                            width: (theme) => theme.spacing(20),
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                          }}
+                        >
+                          <CustomImage />
+                        </Stack>
+                      </ButtonBase>
                     </Stack>
-                  </ButtonBase>
+                  </Box>
                 </Grid>
                 <Grid item xs={12} sm={6}>
-                  <Typography variant="body1">
-                    <FormattedMessage
-                      id="cover.image.for.dark.mode"
-                      defaultMessage="Cover image for dark mode"
-                    />
-                  </Typography>
-                  <ButtonBase
-                    sx={{
-                      backgroundColor: 'black',
-
-                      p: 2,
-                      borderRadius: (theme) => theme.shape.borderRadius / 2,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      position: 'relative',
-                    }}
-                    onClick={() => {}}
-                  >
-                    <Stack
-                      sx={{
-                        height: (theme) => theme.spacing(20),
-                        width: (theme) => theme.spacing(20),
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                      }}
-                    >
-                      <CustomImage />
+                  <Box>
+                    <Stack spacing={2}>
+                      <Typography variant="body1">
+                        <FormattedMessage
+                          id="cover.image.for.dark.mode"
+                          defaultMessage="Cover image for dark mode"
+                        />
+                      </Typography>
+                      <ButtonBase
+                        sx={{
+                          backgroundColor: 'black',
+                          width: '100%',
+                          p: 2,
+                          borderRadius: (theme) => theme.shape.borderRadius / 2,
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          position: 'relative',
+                        }}
+                        onClick={() => {}}
+                      >
+                        <Stack
+                          sx={{
+                            height: (theme) => theme.spacing(20),
+                            width: (theme) => theme.spacing(20),
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                          }}
+                        >
+                          <CustomImage />
+                        </Stack>
+                      </ButtonBase>
                     </Stack>
-                  </ButtonBase>
+                  </Box>
                 </Grid>
               </Grid>
             </Grid>

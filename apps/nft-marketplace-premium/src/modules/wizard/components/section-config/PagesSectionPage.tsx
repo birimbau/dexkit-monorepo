@@ -28,6 +28,11 @@ interface Props {
   onEditTitle: (page: string, title: string) => void;
   onSwap: (page: string, index: number, other: number) => void;
   onChangeName: (page: string, index: number, name: string) => void;
+  onUpdateGatedConditions: (
+    page: string,
+    conditions?: GatedCondition[],
+    layout?: GatedPageLayout,
+  ) => void;
   onAddPage: (page: AppPage) => void;
   onRemovePage: (page: string) => void;
   theme?: {
@@ -43,6 +48,7 @@ export default function PagesSectionPage({
   onEdit,
   onClone,
   onClonePage,
+  onUpdateGatedConditions,
   onAddPage,
   onSwap,
   onEditPage,
@@ -76,7 +82,7 @@ export default function PagesSectionPage({
 
   const handleSubmitGatedConditions = (
     conditions: GatedCondition[],
-    layout: GatedPageLayout
+    layout: GatedPageLayout,
   ) => {
     if (page) {
       onEditPage({
@@ -118,7 +124,6 @@ export default function PagesSectionPage({
         break;
       case 'change.name':
         break;
-
       default:
         break;
     }
@@ -163,6 +168,7 @@ export default function PagesSectionPage({
             activeSection={activeSection}
             onEditTitle={onEditTitle}
             onRemovePage={onRemovePage}
+            onUpdateGatedConditions={onUpdateGatedConditions}
           />
         </Box>
       </Stack>

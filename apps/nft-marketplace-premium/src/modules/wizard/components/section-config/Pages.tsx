@@ -1,5 +1,10 @@
 import LazyTextField from '@dexkit/ui/components/LazyTextField';
-import { AppPage } from '@dexkit/ui/modules/wizard/types/config';
+
+import { GatedPageLayout } from '@dexkit/ui/modules/wizard/types';
+import {
+  AppPage,
+  GatedCondition,
+} from '@dexkit/ui/modules/wizard/types/config';
 import Add from '@mui/icons-material/Add';
 import Search from '@mui/icons-material/Search';
 import {
@@ -21,6 +26,7 @@ import { PageSectionKey } from '../../hooks/sections';
 import { PagesContext } from '../containers/EditWizardContainer';
 import PreviewPageDialog from '../dialogs/PreviewPageDialog';
 import Page from './Page';
+import PageGatedContent from './PageGatedContent';
 import PageSections from './PageSections';
 import PagesPagination from './PagesPagination';
 
@@ -34,6 +40,11 @@ export interface PagesProps {
   onAdd: (page: string, custom?: boolean) => void;
   onAddPage: () => void;
   onEditTitle: (page: string, title: string) => void;
+  onUpdateGatedConditions: (
+    page: string,
+    conditions?: GatedCondition[],
+    layout?: GatedPageLayout,
+  ) => void;
   onEditConditions: (page: string) => void;
   onRemovePage: (page: string) => void;
   onChangeName: (page: string, index: number, name: string) => void;
@@ -53,6 +64,7 @@ export default function Pages({
   onAdd,
   onClonePage,
   onEditConditions,
+  onUpdateGatedConditions,
   onRemovePage,
   onEditTitle,
   onAddPage,
@@ -145,15 +157,31 @@ export default function Pages({
     };
   };
 
+  const [isEditGate, setIsEditGate] = useState(false);
+
+  const handleEditCondtions = (page: string) => {
+    return () => {
+      setSelectedKey(page);
+      setIsEditGate(true);
+    };
+  };
+
   const handleChangeName = (page: string) => {
     return (index: number, name: string) => {
       onChangeName(page, index, name);
     };
   };
 
-  const { formatMessage } = useIntl();
+  const handleSaveGatedConditions = (
+    conditions?: GatedCondition[],
+    layout?: GatedPageLayout,
+  ) => {
+    if (selectedKey) {
+      onUpdateGatedConditions(selectedKey, conditions, layout);
+    }
+  };
 
-  const [isEditGate, setIsEditGate] = useState(false);
+  const { formatMessage } = useIntl();
 
   const renderPreviewDialog = () => {
     if (showPreview && selectedKey) {
@@ -174,6 +202,15 @@ export default function Pages({
       );
     }
   };
+
+  if (selectedKey !== undefined && isEditGate) {
+    return (
+      <PageGatedContent
+        page={pages[selectedKey]}
+        onSaveGatedConditions={handleSaveGatedConditions}
+      />
+    );
+  }
 
   if (selectedKey !== undefined && isEditPage) {
     return (
@@ -281,7 +318,7 @@ export default function Pages({
                       onSelect={handleSelect(pageKey)}
                       onPreview={handleShowPreview(pageKey)}
                       onClone={handleClonePage(pageKey)}
-                      onEditConditions={() => onEditConditions(pageKey)}
+                      onEditConditions={handleEditCondtions(pageKey)}
                       onRemove={() => onRemovePage(pageKey)}
                     />
                   </Grid>

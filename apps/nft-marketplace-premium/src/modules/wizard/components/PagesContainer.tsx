@@ -4,6 +4,10 @@ import { useCallback, useRef, useState } from 'react';
 
 import { AppConfirmDialog } from '@dexkit/ui';
 import {
+  GatedCondition,
+  GatedPageLayout,
+} from '@dexkit/ui/modules/wizard/types';
+import {
   AppPage,
   AppPageOptions,
 } from '@dexkit/ui/modules/wizard/types/config';
@@ -408,6 +412,26 @@ export function PagesContainer({
     });
   };
 
+  const handleUpdateGatedConditions = (
+    page: string,
+    conditions?: GatedCondition[],
+    layout?: GatedPageLayout,
+  ) => {
+    setPages((pages) => {
+      const newPages = structuredClone({ ...pages });
+
+      if (conditions) {
+        newPages[page].gatedConditions = conditions;
+      }
+
+      if (layout) {
+        newPages[page].gatedPageLayout = layout;
+      }
+
+      return newPages;
+    });
+  };
+
   return (
     <>
       <AddPageDialog
@@ -521,6 +545,7 @@ export function PagesContainer({
         onAdd={handleAddPageSections}
         activeSection={activeSection}
         currentIndex={selectedSectionIndex}
+        onUpdateGatedConditions={handleUpdateGatedConditions}
         section={
           selectedPage && selectedSectionIndex > -1
             ? pages[selectedPage]?.sections[selectedSectionIndex]

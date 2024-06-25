@@ -7,6 +7,10 @@ import dynamic from 'next/dynamic';
 import { useState } from 'react';
 
 import {
+  GatedCondition,
+  GatedPageLayout,
+} from '@dexkit/ui/modules/wizard/types';
+import {
   AppPage,
   AppPageOptions,
 } from '@dexkit/ui/modules/wizard/types/config';
@@ -14,7 +18,7 @@ import { BuilderKit } from '../../constants';
 import { PageSectionKey } from '../../hooks/sections';
 import PagesSectionPage from '../section-config/PagesSectionPage';
 const EditSectionDialog = dynamic(
-  () => import('../section-config/dialogs/EditSectionDialog')
+  () => import('../section-config/dialogs/EditSectionDialog'),
 );
 const PageEditorDialog = dynamic(() => import('../dialogs/PageEditorDialog'));
 
@@ -37,6 +41,11 @@ interface Props {
   onEditTitle: (page: string, title: string) => void;
   onChangeName: (page: string, index: number, name: string) => void;
   onRemovePage: (page: string) => void;
+  onUpdateGatedConditions: (
+    page: string,
+    conditions?: GatedCondition[],
+    layout?: GatedPageLayout,
+  ) => void;
   theme?: Omit<Theme, 'palette'> & CssVarsTheme;
   builderKit?: BuilderKit;
   previewUrl?: string;
@@ -52,6 +61,7 @@ export default function PagesSection({
   onEditPage,
   onSaveSection: onSave,
   onHideDesktop,
+  onUpdateGatedConditions,
   onHideMobile,
   onChangeName,
   onRemovePage,
@@ -155,6 +165,7 @@ export default function PagesSection({
           theme={theme}
           previewUrl={previewUrl}
           activeSection={activeSection}
+          onUpdateGatedConditions={onUpdateGatedConditions}
         />
       </Stack>
     </>

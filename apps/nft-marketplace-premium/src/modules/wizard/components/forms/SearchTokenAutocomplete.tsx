@@ -91,6 +91,7 @@ export function SearchTokenAutocomplete(props: Props) {
       defaultValue={formValue || null}
       value={formValue || null}
       options={assets}
+      fullWidth
       autoHighlight
       isOptionEqualToValue={(op, val) =>
         op?.chainId === val?.chainId &&
@@ -137,6 +138,7 @@ export function SearchTokenAutocomplete(props: Props) {
           <TextField
             {...params}
             label={label || 'Search Token'}
+            fullWidth
             onChange={(ev) => setSearch(ev.currentTarget.value)}
             inputProps={{
               ...params.inputProps,
