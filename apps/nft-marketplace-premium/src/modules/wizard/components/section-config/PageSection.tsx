@@ -39,6 +39,9 @@ export interface PageSectionProps {
   section?: AppPageSection;
   active?: boolean;
   showTopDroppable?: boolean;
+  index?: number;
+  page?: string;
+  siteId?: string;
 }
 
 export default function PageSection({
@@ -52,6 +55,9 @@ export default function PageSection({
   section,
   active,
   showTopDroppable,
+  siteId,
+  page,
+  index,
 }: PageSectionProps) {
   const {
     transform,
@@ -262,7 +268,13 @@ export default function PageSection({
           </Box>
         </CardActionArea>
         {isVisible && section && (
-          <PreviewPagePlatform sections={[section]} disabled={true} />
+          <PreviewPagePlatform
+            sections={[section]}
+            page={page}
+            site={siteId}
+            index={index}
+            disabled={true}
+          />
         )}
       </Card>
       <Box

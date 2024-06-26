@@ -29,13 +29,13 @@ interface Props {
   hasChanges?: boolean;
   builderKit?: BuilderKit;
   onHasChanges: (hasChanges: boolean) => void;
-  siteId?: number;
+  siteSlug?: string;
   previewUrl?: string;
 }
 
 export default function PagesWizardContainer({
   config,
-  siteId,
+  siteSlug,
   onSave,
   builderKit,
   hasChanges,
@@ -161,6 +161,7 @@ export default function PagesWizardContainer({
             showAddPage={showAddPage}
             setShowAddPage={setShowAddPage}
             previewUrl={previewUrl}
+            site={siteSlug?.toString()}
           />
         </Grid>
         <Grid item xs={12}>

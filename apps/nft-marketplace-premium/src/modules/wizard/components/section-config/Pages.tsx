@@ -53,6 +53,7 @@ export interface PagesProps {
     colorSchemes: Record<SupportedColorScheme, Record<string, any>>;
   };
   activeSection?: PageSectionKey;
+  site?: string;
 }
 
 export default function Pages({
@@ -69,6 +70,7 @@ export default function Pages({
   onEditTitle,
   onAddPage,
   onChangeName,
+  site,
 }: PagesProps) {
   const [query, setQuery] = useState('');
 
@@ -197,6 +199,8 @@ export default function Pages({
             disabled={true}
             sections={pages[selectedKey].sections}
             name={pages[selectedKey]?.title}
+            page={selectedKey}
+            site={site}
           />
         </CssVarsProvider>
       );
@@ -233,6 +237,7 @@ export default function Pages({
                 activeSection={activeSection}
                 onClone={() => onClonePage(selectedKey)}
                 onChangeName={handleChangeName(selectedKey)}
+                siteId={site}
               />
             </Grid>
           )}

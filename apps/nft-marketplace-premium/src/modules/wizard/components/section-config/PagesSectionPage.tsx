@@ -41,6 +41,7 @@ interface Props {
   };
   previewUrl?: string;
   activeSection?: PageSectionKey;
+  site?: string;
 }
 
 export default function PagesSectionPage({
@@ -60,6 +61,7 @@ export default function PagesSectionPage({
   onChangeName,
   pages,
   activeSection,
+  site,
 }: Props) {
   const [showAddPage, setShowAddPage] = useState(false);
 
@@ -169,6 +171,7 @@ export default function PagesSectionPage({
             onEditTitle={onEditTitle}
             onRemovePage={onRemovePage}
             onUpdateGatedConditions={onUpdateGatedConditions}
+            site={site}
           />
         </Box>
       </Stack>

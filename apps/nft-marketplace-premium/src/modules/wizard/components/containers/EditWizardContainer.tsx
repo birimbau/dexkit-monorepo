@@ -1001,7 +1001,7 @@ export function EditWizardContainer({ site }: Props) {
                 onChangeMenu={(menu) => setActiveBuilderKit(menu)}
               />
               <Stack direction={'row'} alignItems={'center'} spacing={2}>
-                <PreviewAppButton appConfig={wizardConfig} />
+                <PreviewAppButton appConfig={wizardConfig} site={site?.slug} />
                 {site?.previewUrl && (
                   <Button
                     href={site?.previewUrl}
@@ -1108,7 +1108,7 @@ export function EditWizardContainer({ site }: Props) {
                           onHasChanges={setHasChanges}
                           hasChanges={hasChanges}
                           builderKit={activeBuilderKit}
-                          siteId={site?.id}
+                          siteSlug={site?.slug}
                           previewUrl={site?.previewUrl}
                         />
                       </PagesContext.Provider>

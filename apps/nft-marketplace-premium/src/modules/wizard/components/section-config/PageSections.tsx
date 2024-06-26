@@ -76,11 +76,13 @@ export interface PageSectionsProps {
   onAddCustomSection: () => void;
   onChangeName: (index: number, name: string) => void;
   pageKey?: string;
+  siteId?: string;
 }
 
 export default function PageSections({
   page,
   pageKey,
+  siteId,
   onSwap,
   onAction,
   onClose,
@@ -210,6 +212,9 @@ export default function PageSections({
         <Grid item xs={12} key={`${JSON.stringify(section)}-${section.index}`}>
           <PageSection
             showTopDroppable={section.index === 0}
+            index={section.index}
+            siteId={siteId}
+            page={pageKey}
             expand={!isMobile}
             icon={getSectionType(section, formatMessage)?.icon}
             title={getSectionType(section, formatMessage)?.title}

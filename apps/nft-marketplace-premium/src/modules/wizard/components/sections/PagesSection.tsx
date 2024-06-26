@@ -50,6 +50,7 @@ interface Props {
   builderKit?: BuilderKit;
   previewUrl?: string;
   activeSection?: PageSectionKey;
+  site?: string;
 }
 
 export default function PagesSection({
@@ -76,6 +77,7 @@ export default function PagesSection({
   currentIndex,
   pages,
   previewUrl,
+  site,
 }: Props) {
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenEditor, setIsOpenEditor] = useState(false);
@@ -163,6 +165,7 @@ export default function PagesSection({
           onClone={onClone}
           onSwap={onSwap}
           theme={theme}
+          site={site}
           previewUrl={previewUrl}
           activeSection={activeSection}
           onUpdateGatedConditions={onUpdateGatedConditions}

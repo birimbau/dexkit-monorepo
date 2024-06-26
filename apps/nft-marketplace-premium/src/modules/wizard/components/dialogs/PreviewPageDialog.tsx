@@ -14,6 +14,9 @@ interface Props {
   disabled?: boolean;
   withLayout?: boolean;
   appConfig?: AppConfig;
+  page?: string;
+  site?: string;
+  index?: number;
 }
 
 export default function PreviewPageDialog({
@@ -23,6 +26,9 @@ export default function PreviewPageDialog({
   disabled,
   withLayout,
   appConfig,
+  page,
+  site,
+  index,
 }: Props) {
   const { onClose } = dialogProps;
 
@@ -53,6 +59,9 @@ export default function PreviewPageDialog({
         withLayout={withLayout}
         appConfig={appConfig}
         enableOverflow={true}
+        page={page}
+        site={site}
+        index={index}
         title={
           <Typography variant="body1">
             <FormattedMessage
