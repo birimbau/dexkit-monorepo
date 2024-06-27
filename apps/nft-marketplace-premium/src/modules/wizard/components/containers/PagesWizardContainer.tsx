@@ -8,7 +8,7 @@ import {
   createTheme,
   responsiveFontSizes,
 } from '@mui/material';
-import { useContext, useMemo, useState } from 'react';
+import { useCallback, useContext, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { getTheme } from '../../../../theme';
 import { BuilderKit } from '../../constants';
@@ -47,6 +47,9 @@ export default function PagesWizardContainer({
     structuredClone(config.pages),
   );
 
+  const [hasPageChanges, setHasPageChanges] = useState(false);
+  const [hasSectionChanges, setHasSectionChanges] = useState(false);
+
   const [showAddPage, setShowAddPage] = useState(false);
 
   const selectedTheme = useMemo(() => {
@@ -69,31 +72,36 @@ export default function PagesWizardContainer({
     useContext(PagesContext);
 
   const handleCancel = () => {
-    if (selectedKey && oldPage) {
-      return setOpenHasChangesConfirm(true);
-    }
-
-    handleCancelEdit(true);
+    setOpenHasChangesConfirm(true);
   };
 
-  const handleSetPages = (
-    cb: (prev: { [key: string]: AppPage }) => { [key: string]: AppPage },
-  ) => {
-    setPages((value) => {
-      let res = cb(value);
+  const handleSetPages = useCallback(
+    (cb: (prev: { [key: string]: AppPage }) => { [key: string]: AppPage }) => {
+      setPages((value) => {
+        let res = cb(value);
 
-      onChange({
-        ...config,
-        pages: { ...(res as { [key: string]: AppPage }) },
+        onChange({
+          ...config,
+          pages: { ...(res as { [key: string]: AppPage }) },
+        });
+
+        onHasChanges(true);
+
+        return res;
       });
-
-      onHasChanges(true);
-
-      return res;
-    });
-  };
+    },
+    [onHasChanges, onChange],
+  );
 
   const [openHasChangesConfirm, setOpenHasChangesConfirm] = useState(false);
+
+  const handleChangePages = () => {
+    setHasPageChanges(true);
+  };
+
+  const handleChangeSection = () => {
+    setHasSectionChanges(true);
+  };
 
   return (
     <>
@@ -105,8 +113,6 @@ export default function PagesWizardContainer({
           onClose: () => setOpenHasChangesConfirm(false),
         }}
         onConfirm={() => {
-          onHasChanges(true);
-
           if (selectedKey && oldPage) {
             setPages((pages) => {
               const newPages = { ...pages };
@@ -116,15 +122,16 @@ export default function PagesWizardContainer({
                 [selectedKey]: oldPage,
               };
             });
+            setHasSectionChanges(false);
           } else {
             setPages(structuredClone(config.pages));
+            setHasPageChanges(false);
           }
 
           setOpenHasChangesConfirm(false);
           setSelectedKey(undefined);
 
           handleCancelEdit(false);
-          onHasChanges(true);
         }}
         title={
           <FormattedMessage
@@ -139,8 +146,8 @@ export default function PagesWizardContainer({
         <Stack>
           <Typography variant="body1">
             <FormattedMessage
-              id="would.you.like.to.discard.your.changes"
-              defaultMessage="Would you like to discard your changes?"
+              id="are.you.sure.you.want.to.discard.your.changes?"
+              defaultMessage="Are you sure you want to discard your changes?"
             />
           </Typography>
           <Typography variant="caption" color="text.secondary">
@@ -157,6 +164,8 @@ export default function PagesWizardContainer({
             builderKit={builderKit}
             pages={pages}
             setPages={handleSetPages}
+            onChangePages={handleChangePages}
+            onChangeSections={handleChangeSection}
             theme={selectedTheme}
             showAddPage={showAddPage}
             setShowAddPage={setShowAddPage}
@@ -169,14 +178,17 @@ export default function PagesWizardContainer({
         </Grid>
         <Grid item xs={12}>
           <Stack spacing={1} direction="row" justifyContent="flex-end">
-            <Button onClick={handleCancel} disabled={!hasChanges}>
+            <Button
+              onClick={handleCancel}
+              disabled={!hasSectionChanges && !hasPageChanges}
+            >
               <FormattedMessage id="cancel" defaultMessage="Cancel" />
             </Button>
             <Button
               variant="contained"
               color="primary"
               onClick={handleSave}
-              disabled={!hasChanges}
+              disabled={!hasSectionChanges && !hasPageChanges}
             >
               <FormattedMessage id="save" defaultMessage="Save" />
             </Button>

@@ -79,8 +79,8 @@ export const sections = [
   },
   {
     type: 'collections',
-    titleId: 'collections',
-    titleDefaultMessage: 'Collections',
+    titleId: 'collection',
+    titleDefaultMessage: 'Collection',
     category: 'nft',
     description: 'Add new NFT collections to diversify your digital assets.',
     icon: <CollectionsIcon fontSize="large" />,
@@ -131,8 +131,8 @@ export const sections = [
   },
   {
     type: 'collection',
-    titleId: 'Collection',
-    titleDefaultMessage: 'Collection',
+    titleId: 'collection.list',
+    titleDefaultMessage: 'Collection List',
     category: 'nft',
     description: 'Easily add a collection',
     icon: <CollectionsIcon fontSize="large" />,

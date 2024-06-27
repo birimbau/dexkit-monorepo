@@ -54,6 +54,8 @@ interface Props {
   builderKit?: BuilderKit;
   showAddPage: boolean;
   setShowAddPage: (show: boolean) => void;
+  onChangePages: () => void;
+  onChangeSections: () => void;
   previewUrl?: string;
   site?: string;
 }
@@ -63,6 +65,8 @@ export function PagesContainer({
   builderKit,
   showAddPage,
   setShowAddPage,
+  onChangePages,
+  onChangeSections,
   previewUrl,
   pages,
   setPages,
@@ -96,7 +100,7 @@ export function PagesContainer({
 
           return newPages;
         } else {
-          const newPages = { ...value };
+          const newPages = structuredClone({ ...value });
           const newPage = newPages[selectedPage];
           const newSections = [...(newPage.sections || [])];
 
@@ -110,6 +114,7 @@ export function PagesContainer({
 
       return value;
     });
+    onChangeSections();
   };
 
   const handleRemovePageSections = (page: string, index: number) => {
@@ -148,6 +153,7 @@ export function PagesContainer({
 
       return newPages;
     });
+    onChangeSections();
     setShowConfirmRemove(false);
   };
 
@@ -217,9 +223,10 @@ export function PagesContainer({
         return { ...newPages, [page]: { ...newPage } };
       });
 
+      onChangeSections();
       handleActivateSection({ index: toIndex, page });
     },
-    [handleActivateSection, setPages],
+    [handleActivateSection, setPages, onChangeSections],
   );
 
   const handleHideDesktop = (page: string, index: number) => {
@@ -252,6 +259,7 @@ export function PagesContainer({
 
       return newPages;
     });
+    onChangeSections();
   };
 
   const handleCloseAddPage = () => {
@@ -312,6 +320,7 @@ export function PagesContainer({
       });
     }
 
+    onChangeSections();
     setShowCloneSection(false);
     setSectionToClone(undefined);
   };
@@ -339,6 +348,8 @@ export function PagesContainer({
 
       return newPages;
     });
+
+    onChangePages();
 
     setShowClonePage(false);
     setPageToClone(undefined);
@@ -371,7 +382,7 @@ export function PagesContainer({
 
       return newPages;
     });
-
+    onChangePages();
     setShowRemovePage(false);
     setPageToRemove(undefined);
   };
@@ -398,6 +409,7 @@ export function PagesContainer({
 
       return newPages;
     });
+    onChangePages();
   };
 
   const handleChangeName = (page: string, index: number, name: string) => {
@@ -412,6 +424,7 @@ export function PagesContainer({
 
       return newPages;
     });
+    onChangeSections();
   };
 
   const handleUpdateGatedConditions = (
@@ -445,7 +458,10 @@ export function PagesContainer({
         }}
         // clonedPage={pageToClone}
         onCancel={handleCloseAddPage}
-        onSubmit={onEditPage}
+        onSubmit={(item: AppPageOptions) => {
+          onChangePages();
+          onEditPage(item);
+        }}
       />
       {sectionToClone && showCloneSection && (
         <CloneSectionDialog
@@ -530,6 +546,7 @@ export function PagesContainer({
         builderKit={builderKit}
         pages={pages}
         theme={theme}
+        page={selectedPage}
         onChangeName={handleChangeName}
         onEditTitle={handleEditTitle}
         sections={selectedPage ? pages[selectedPage]?.sections : []}

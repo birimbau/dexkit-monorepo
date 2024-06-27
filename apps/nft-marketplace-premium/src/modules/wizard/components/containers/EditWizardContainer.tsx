@@ -871,7 +871,7 @@ export function EditWizardContainer({ site }: Props) {
             defaultMessage="You have unsaved changes"
           />
         </Typography>
-        <Typography variant="caption" color="text.secondary">
+        <Typography variant="body1">
           <FormattedMessage
             id="are.you.sure.you.want.to.leave.without.saving"
             defaultMessage="Are you sure you want to leave without saving?"

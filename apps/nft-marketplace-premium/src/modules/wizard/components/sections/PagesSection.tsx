@@ -24,6 +24,7 @@ const PageEditorDialog = dynamic(() => import('../dialogs/PageEditorDialog'));
 
 interface Props {
   pages: { [key: string]: AppPage };
+  page?: string;
   sections: AppPageSection[];
   section?: AppPageSection;
   currentIndex: number;
@@ -57,6 +58,7 @@ export default function PagesSection({
   builderKit,
   sections,
   section,
+  page,
   theme,
   activeSection,
   onEditPage,
@@ -109,6 +111,12 @@ export default function PagesSection({
     onSave(section, index);
   };
 
+  const handleSaveName = (name: string) => {
+    if (page) {
+      onChangeName(page, currentIndex, name);
+    }
+  };
+
   const handleClose = () => {
     setIsOpen(false);
   };
@@ -131,6 +139,7 @@ export default function PagesSection({
           isEdit={isEdit}
           section={section}
           onSave={handleSave}
+          onSaveName={handleSaveName}
           index={currentIndex}
         />
       )}
