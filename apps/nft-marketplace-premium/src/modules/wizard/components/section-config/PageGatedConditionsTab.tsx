@@ -3,8 +3,10 @@ import AddOutlined from '@mui/icons-material/AddOutlined';
 import { Box, Button, Grid, Typography } from '@mui/material';
 import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import PageAddConditionDialog from './dialogs/PageAddConditionDialog';
+import EditGatedConditionDialog from './dialogs/EditGatedConditionDialog';
 
+import { AppConfirmDialog } from '@dexkit/ui';
+import { useSnackbar } from 'notistack';
 import PageGatedConditionsList from './PageGatedConditionsList';
 
 export interface PageGatedConditionsTabProps {
@@ -16,30 +18,125 @@ export default function PageGatedConditionsTab({
   conditions,
   onSaveGatedConditions,
 }: PageGatedConditionsTabProps) {
-  const [showAdd, setShowAdd] = useState(false);
+  const [showForm, setShowForm] = useState(false);
+
+  const [showConfirm, setShowConfirm] = useState(false);
+
+  const [cond, setCond] = useState<{
+    condition: GatedCondition;
+    index: number;
+  }>();
 
   const handleClose = () => {
-    setShowAdd(false);
+    setShowForm(false);
+    setCond(undefined);
   };
 
   const handleOpen = () => {
-    setShowAdd(true);
+    setShowForm(true);
+  };
+
+  const { enqueueSnackbar } = useSnackbar();
+
+  const handleAction = (index: number, action: string) => {
+    const condition = conditions[index];
+
+    setCond({ index, condition });
+
+    if (action === 'edit') {
+      setShowForm(true);
+    } else if (action === 'remove') {
+      setShowConfirm(true);
+    }
+  };
+
+  const handleCloseConfirm = () => {
+    setShowConfirm(false);
+  };
+
+  const handleConfirmRemove = () => {
+    if (cond?.index !== undefined) {
+      const newConditions = structuredClone(conditions);
+
+      newConditions.splice(cond.index, 1);
+
+      onSaveGatedConditions(newConditions);
+
+      enqueueSnackbar(
+        <FormattedMessage
+          id="condition.removed"
+          defaultMessage="Condition removed"
+        />,
+        { variant: 'success' },
+      );
+
+      handleCloseConfirm();
+    }
+  };
+
+  const handleSaveCondition = (condition: GatedCondition) => {
+    if (cond?.index !== undefined) {
+      const newConditions = structuredClone(conditions);
+
+      newConditions[cond.index] = { ...condition };
+
+      onSaveGatedConditions(newConditions);
+      enqueueSnackbar(
+        <FormattedMessage
+          id="condition.saved"
+          defaultMessage="Condition saved"
+        />,
+        { variant: 'success' },
+      );
+    } else {
+      const newConditions = structuredClone(conditions);
+
+      newConditions.push(condition);
+
+      onSaveGatedConditions(newConditions);
+
+      enqueueSnackbar(
+        <FormattedMessage
+          id="new.condition.created"
+          defaultMessage="New condition created"
+        />,
+        { variant: 'success' },
+      );
+    }
+
+    handleClose();
   };
 
   return (
     <>
-      {showAdd && (
-        <PageAddConditionDialog
+      {showForm && cond && (
+        <EditGatedConditionDialog
           DialogProps={{
-            open: showAdd,
+            open: showForm,
             onClose: handleClose,
             fullWidth: true,
             maxWidth: 'lg',
           }}
-          onSaveGatedConditions={onSaveGatedConditions}
-          conditions={conditions}
+          onSaveGatedCondition={handleSaveCondition}
+          isFirst={cond.index === 0}
+          index={cond.index}
+          condition={cond.condition}
         />
       )}
+      {showConfirm && (
+        <AppConfirmDialog
+          DialogProps={{
+            open: showConfirm,
+            maxWidth: 'sm',
+            fullWidth: true,
+            onClose: handleCloseConfirm,
+          }}
+          onConfirm={handleConfirmRemove}
+        >
+          <Typography></Typography>
+        </AppConfirmDialog>
+      )}
+
       <Box>
         <Grid container spacing={2}>
           <Grid item xs={12}>
@@ -64,7 +161,10 @@ export default function PageGatedConditionsTab({
             </Typography>
           </Grid>
           <Grid item xs={12}>
-            <PageGatedConditionsList conditions={conditions} />
+            <PageGatedConditionsList
+              conditions={conditions}
+              onAction={handleAction}
+            />
           </Grid>
         </Grid>
       </Box>

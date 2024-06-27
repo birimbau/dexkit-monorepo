@@ -10,14 +10,16 @@ import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 export interface PageGatedConditionsListItemProps {
   condition: GatedCondition;
   index: number;
+  onRemove: () => void;
+  onEdit: () => void;
 }
 
 export default function PageGatedConditionsListItem({
   condition,
   index,
+  onEdit,
+  onRemove,
 }: PageGatedConditionsListItemProps) {
-  const [] = [];
-
   const { data: collection } = useCollection(
     condition.address as string,
     condition.chainId,
@@ -46,13 +48,13 @@ export default function PageGatedConditionsListItem({
               <FormattedMessage
                 id="condition.index"
                 defaultMessage="Condition {index}"
-                values={{ index }}
+                values={{ index: index + 1 }}
               />
             </Typography>
-            <IconButton size="small">
+            <IconButton onClick={onEdit} size="small">
               <EditOutlinedIcon />
             </IconButton>
-            <IconButton size="small">
+            <IconButton onClick={onRemove} size="small">
               <DeleteIcon color="error" />
             </IconButton>
           </Stack>
