@@ -3,18 +3,25 @@ import { ERC20Abi } from "@dexkit/core/constants/abis";
 import { useNetworkProvider } from "@dexkit/core/hooks/blockchain";
 import type { Token } from "@dexkit/core/types";
 import type { CallInput } from "@indexed-finance/multicall";
-import { useMutation } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { utils } from "ethers";
+import { isAddress } from 'viem';
 import { getMulticallFromProvider } from "../services/multical";
 
-
-export default function useFetchTokenData({ chainId }: { chainId?: ChainId }) {
-
+export function useTokenData({ chainId, address }: { chainId?: ChainId, address?: string }) {
 
   const provider = useNetworkProvider(chainId);
 
-  return useMutation(
-    async ({ contractAddress }: { contractAddress: string }) => {
+  return useQuery([chainId, address],
+    async () => {
+      if (!address || !chainId) {
+        return null
+      }
+
+      if (!isAddress(address, { strict: false })) {
+        return null
+      }
+
       const multical = await getMulticallFromProvider(provider);
 
       const iface = new utils.Interface(ERC20Abi);
@@ -23,19 +30,19 @@ export default function useFetchTokenData({ chainId }: { chainId?: ChainId }) {
 
       calls.push({
         interface: iface,
-        target: contractAddress,
+        target: address,
         function: "name",
       });
 
       calls.push({
         interface: iface,
-        target: contractAddress,
+        target: address,
         function: "symbol",
       });
 
       calls.push({
         interface: iface,
-        target: contractAddress,
+        target: address,
         function: "decimals",
       });
 
@@ -46,7 +53,7 @@ export default function useFetchTokenData({ chainId }: { chainId?: ChainId }) {
           name: results[0] ?? "",
           symbol: results[1] ?? "",
           decimals: results[2] ?? "",
-          address: contractAddress,
+          address: address,
           chainId: chainId,
         } as Token;
       }
