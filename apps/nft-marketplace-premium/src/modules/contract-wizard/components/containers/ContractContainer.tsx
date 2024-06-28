@@ -1,9 +1,9 @@
 import Grid from '@mui/material/Grid';
 import {
-    useContract,
-    useContractMetadata,
-    useContractRead,
-    useContractType,
+  useContract,
+  useContractMetadata,
+  useContractRead,
+  useContractType,
 } from '@thirdweb-dev/react';
 const ContractEditionDropContainer = dynamic(
   () => import('./ContractEditionDropContainer'),
@@ -66,6 +66,7 @@ export function ContractContainer({ address, network }: Props) {
   const { data } = useContractType(address);
 
   const { data: contract } = useContract(address);
+
   const contractRead = useContractRead(contract, 'contractType');
   const { data: contractMetadata } = useContractMetadata(contract);
 
