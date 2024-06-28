@@ -90,6 +90,7 @@ export type RenderOptions = {
   currency: string;
   useGasless?: boolean;
   myTokensOnlyOnSearch?: boolean;
+  enableImportExterTokens?: boolean;
 };
 
 export type SwapNotificationParams = {

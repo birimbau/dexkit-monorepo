@@ -42,6 +42,7 @@ export interface SwapSelectCoinMatchaDialogProps {
   onToggleChangeNetwork: () => void;
   onChangeNetwork: (chanId: ChainId) => void;
   filteredChainIds: number[];
+  enableImportExterTokens?: boolean;
 }
 
 export default function SwapSelectCoinMatchaDialog({
@@ -60,6 +61,7 @@ export default function SwapSelectCoinMatchaDialog({
   isProviderReady,
   onToggleChangeNetwork,
   onClearRecentTokens,
+  enableImportExterTokens,
 }: SwapSelectCoinMatchaDialogProps) {
   const { onClose } = DialogProps;
 
@@ -79,7 +81,13 @@ export default function SwapSelectCoinMatchaDialog({
     handleSelect,
     importedTokens,
     isOnList,
-  } = useSelectImport({ chainId, onQueryChange, onSelect, tokens });
+  } = useSelectImport({
+    chainId,
+    onQueryChange,
+    onSelect,
+    tokens,
+    enableImportExterTokens,
+  });
 
   const tokenBalances = useMultiTokenBalance({
     tokens: [...importedTokens.tokens, ...tokens],

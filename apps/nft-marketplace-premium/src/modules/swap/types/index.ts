@@ -5,6 +5,7 @@ export interface SwapConfig {
   useGasless?: boolean;
   variant?: SwapVariant;
   enableUrlParams?: boolean;
+  enableImportExternTokens?: boolean;
   myTokensOnlyOnSearch?: boolean;
   defaultChainId?: number;
   defaultEditChainId?: number;

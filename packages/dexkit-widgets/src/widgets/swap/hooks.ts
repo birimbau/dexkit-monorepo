@@ -71,17 +71,19 @@ export function useSelectImport({
   onQueryChange,
   onSelect,
   tokens,
+  enableImportExterTokens,
 }: {
   tokens: Token[];
   chainId?: ChainId;
   onQueryChange: (value: string) => void;
   onSelect: (token: Token, isExtern?: boolean) => void;
+  enableImportExterTokens?: boolean;
 }) {
   const importedTokens = useSwapImportTokens({ chainId });
   const fetchTokenData = useFetchTokenData({ chainId });
 
   const handleChangeQuery = (value: string) => {
-    if (isAddress(value)) {
+    if (isAddress(value) && enableImportExterTokens) {
       fetchTokenData.mutate({ contractAddress: value });
     } else {
       fetchTokenData.reset();

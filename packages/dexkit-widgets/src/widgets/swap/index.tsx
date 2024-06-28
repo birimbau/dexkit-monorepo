@@ -90,6 +90,7 @@ export function SwapWidget({
     disableNotificationsButton,
     transakApiKey,
     enableUrlParams,
+    enableImportExterTokens,
     currency,
     disableFooter,
     enableBuyCryptoButton,
@@ -341,6 +342,7 @@ export function SwapWidget({
           filteredChainIds={filteredChainIds}
           onToggleChangeNetwork={handleToggleSwitchNetwork}
           onChangeNetwork={handleChangeNetwork}
+          enableImportExterTokens={enableImportExterTokens}
         />
       );
     } else if (variant === SwapVariant.UniswapLike) {
@@ -368,6 +370,7 @@ export function SwapWidget({
           filteredChainIds={filteredChainIds}
           onToggleChangeNetwork={handleToggleSwitchNetwork}
           onChangeNetwork={handleChangeNetwork}
+          enableImportExterTokens={enableImportExterTokens}
         />
       );
     }
@@ -392,6 +395,7 @@ export function SwapWidget({
         provider={swapProvider}
         featuredTokens={featuredTokensByChain}
         onClearRecentTokens={handleClearRecentTokens}
+        enableImportExterTokens={enableImportExterTokens}
       />
     );
   };

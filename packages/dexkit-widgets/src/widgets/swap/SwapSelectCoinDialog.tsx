@@ -36,6 +36,7 @@ export interface SwapSelectCoinDialogProps {
   account?: string;
   provider?: providers.BaseProvider;
   featuredTokens?: Token[];
+  enableImportExterTokens?: boolean;
 }
 
 export default function SwapSelectCoinDialog({
@@ -50,6 +51,7 @@ export default function SwapSelectCoinDialog({
   onSelect,
   onQueryChange,
   onClearRecentTokens,
+  enableImportExterTokens,
 }: SwapSelectCoinDialogProps) {
   const { onClose } = DialogProps;
 
@@ -69,7 +71,13 @@ export default function SwapSelectCoinDialog({
     handleSelect,
     importedTokens,
     isOnList,
-  } = useSelectImport({ chainId, onQueryChange, onSelect, tokens });
+  } = useSelectImport({
+    chainId,
+    onQueryChange,
+    onSelect,
+    tokens,
+    enableImportExterTokens,
+  });
 
   const tokenBalances = useMultiTokenBalance({
     tokens: [...importedTokens.tokens, ...tokens],

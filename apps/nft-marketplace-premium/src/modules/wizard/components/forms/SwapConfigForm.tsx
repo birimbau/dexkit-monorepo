@@ -37,7 +37,7 @@ export function SwapConfigForm({ onChange, data, featuredTokens }: Props) {
   const [formData, setFormData] = useState<SwapConfig | undefined>(data);
 
   const [selectedChainId, setSelectedChainId] = useState<number | undefined>(
-    data?.defaultChainId
+    data?.defaultChainId,
   );
 
   const sellToken = useMemo(() => {
@@ -93,6 +93,39 @@ export function SwapConfigForm({ onChange, data, featuredTokens }: Props) {
         </Grid>
         <Grid item xs={12}>
           <FormControl fullWidth>
+            <InputLabel shrink>
+              <FormattedMessage id="variant" defaultMessage="Variant" />
+            </InputLabel>
+            <Select
+              fullWidth
+              label={<FormattedMessage id="variant" defaultMessage="Variant" />}
+              value={formData?.variant === undefined ? '' : formData?.variant}
+              displayEmpty
+              notched
+              onChange={(e) => {
+                setFormData((form) => ({
+                  ...form,
+                  variant:
+                    e.target.value !== ''
+                      ? (e.target.value as SwapVariant)
+                      : undefined,
+                }));
+              }}
+            >
+              <MenuItem value="">
+                <FormattedMessage id="classic" defaultMessage="Classic" />
+              </MenuItem>
+              <MenuItem value={SwapVariant.MatchaLike}>
+                <FormattedMessage id="pro" defaultMessage="Pro" />
+              </MenuItem>
+              <MenuItem value={SwapVariant.UniswapLike}>
+                <FormattedMessage id="modern" defaultMessage="Modern" />
+              </MenuItem>
+            </Select>
+          </FormControl>
+        </Grid>
+        <Grid item xs={12}>
+          <FormControl fullWidth>
             <Typography variant="caption">
               <FormattedMessage
                 id="default.network"
@@ -138,45 +171,12 @@ export function SwapConfigForm({ onChange, data, featuredTokens }: Props) {
               }}
               activeChainIds={
                 activeChainIds.filter((ch) =>
-                  SUPPORTED_SWAP_CHAIN_IDS.includes(ch)
+                  SUPPORTED_SWAP_CHAIN_IDS.includes(ch),
                 ) || []
               }
               labelId={'config-per-network'}
               chainId={selectedChainId}
             />
-          </FormControl>
-        </Grid>
-        <Grid item xs={12}>
-          <FormControl fullWidth>
-            <InputLabel shrink>
-              <FormattedMessage id="variant" defaultMessage="Variant" />
-            </InputLabel>
-            <Select
-              fullWidth
-              label={<FormattedMessage id="variant" defaultMessage="Variant" />}
-              value={formData?.variant === undefined ? '' : formData?.variant}
-              displayEmpty
-              notched
-              onChange={(e) => {
-                setFormData((form) => ({
-                  ...form,
-                  variant:
-                    e.target.value !== ''
-                      ? (e.target.value as SwapVariant)
-                      : undefined,
-                }));
-              }}
-            >
-              <MenuItem value="">
-                <FormattedMessage id="classic" defaultMessage="Classic" />
-              </MenuItem>
-              <MenuItem value={SwapVariant.MatchaLike}>
-                <FormattedMessage id="pro" defaultMessage="Pro" />
-              </MenuItem>
-              <MenuItem value={SwapVariant.UniswapLike}>
-                <FormattedMessage id="modern" defaultMessage="Modern" />
-              </MenuItem>
-            </Select>
           </FormControl>
         </Grid>
         <Grid item xs={12}>
@@ -398,6 +398,45 @@ export function SwapConfigForm({ onChange, data, featuredTokens }: Props) {
                         <FormattedMessage
                           id="url.parameters.Explanation"
                           defaultMessage="By selecting this checkbox, the URL parameters will be used to set the token and network for the swap."
+                        />
+                      }
+                    >
+                      <Info fontSize="small" color="inherit" />
+                    </Tooltip>
+                  </IconButton>
+                </Grid>
+              </Grid>
+            </Grid>
+            <Grid item>
+              <Grid container spacing={0} alignItems="center">
+                <Grid item>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={Boolean(formData?.enableImportExternTokens)}
+                        onChange={(e) =>
+                          setFormData((value) => ({
+                            ...value,
+                            enableImportExternTokens: e.target.checked,
+                          }))
+                        }
+                      />
+                    }
+                    label={
+                      <FormattedMessage
+                        id="enable.extern.tokens"
+                        defaultMessage="Enable extern tokens"
+                      />
+                    }
+                  />
+                </Grid>
+                <Grid item>
+                  <IconButton>
+                    <Tooltip
+                      title={
+                        <FormattedMessage
+                          id="enable.import.extern.tokens"
+                          defaultMessage="Enable import external tokens"
                         />
                       }
                     >

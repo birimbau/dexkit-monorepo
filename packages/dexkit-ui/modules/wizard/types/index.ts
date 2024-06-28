@@ -1,6 +1,4 @@
-import type { ChainConfig } from '@dexkit/widgets/src/widgets/swap/types';
-
-
+import type { ChainConfig } from "@dexkit/widgets/src/widgets/swap/types";
 
 export interface SwapFeeForm {
   recipient: string;
@@ -126,6 +124,7 @@ export interface SwapConfig {
   defaultChainId?: number;
   defaultEditChainId?: number;
   enableUrlParams?: boolean;
+  enableImportExternTokens?: boolean;
   useGasless?: boolean;
   variant?: SwapVariant;
   myTokensOnlyOnSearch?: boolean;

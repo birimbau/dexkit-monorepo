@@ -118,6 +118,7 @@ export function SwapSection({ section }: Props) {
             currency: currency.currency,
             variant: section.config?.variant,
             enableUrlParams: enableUrlParams,
+            enableImportExterTokens: section.config?.enableImportExternTokens,
             defaultChainId:
               selectedChainId ||
               chainId ||
