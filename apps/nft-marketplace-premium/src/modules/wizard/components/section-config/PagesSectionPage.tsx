@@ -136,7 +136,7 @@ export default function PagesSectionPage({
       <AddPageDialog
         dialogProps={{
           open: showAddPage,
-          maxWidth: 'sm',
+          maxWidth: 'xs',
           fullWidth: true,
           onClose: handleCloseAddPage,
         }}
@@ -157,7 +157,7 @@ export default function PagesSectionPage({
       />
 
       <Stack spacing={2}>
-        <Box px={8}>
+        <Box px={8} pt={2}>
           <Pages
             pages={pages}
             onSwap={onSwap}

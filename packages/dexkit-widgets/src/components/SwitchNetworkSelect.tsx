@@ -17,6 +17,7 @@ import { FormattedMessage } from "react-intl";
 
 // import { MagicConnector } from '../connectors/magic';
 
+import { ExpandMore } from "@mui/icons-material";
 import { parseChainId } from "../utils";
 
 interface SwitchNetworkSelectProps {
@@ -24,6 +25,7 @@ interface SwitchNetworkSelectProps {
   onChangeNetwork: (chainId: ChainId) => void;
   activeChainIds: number[];
   chainId?: ChainId;
+  iconOnly?: boolean;
 }
 
 function SwitchNetworkSelect({
@@ -31,10 +33,9 @@ function SwitchNetworkSelect({
   onChangeNetwork,
   activeChainIds,
   chainId,
+  iconOnly,
 }: SwitchNetworkSelectProps) {
   const [isLoading, setIsLoading] = useState(false);
-
-  // const { enqueueSnackbar } = useSnackbar();
 
   const handleChange = async (e: SelectChangeEvent<unknown>) => {
     onChangeNetwork(parseInt(e.target.value as string));
@@ -46,6 +47,8 @@ function SwitchNetworkSelect({
       disabled={isLoading}
       value={chainId ? String(chainId) : ""}
       onChange={handleChange}
+      sx={{ borderRadius: 2, border: "none" }}
+      IconComponent={ExpandMore}
       renderValue={
         chainId
           ? () => (
@@ -65,7 +68,10 @@ function SwitchNetworkSelect({
                     }
                   />
                 )}
-                <Typography component="span">
+                <Typography
+                  sx={iconOnly ? { width: 0, opacity: "0" } : undefined}
+                  component="div"
+                >
                   {isLoading ? (
                     <FormattedMessage
                       id="changing.network"

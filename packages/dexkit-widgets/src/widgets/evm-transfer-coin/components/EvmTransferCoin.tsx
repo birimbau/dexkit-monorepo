@@ -122,9 +122,6 @@ export default function EvmTransferCoin({
   };
 
   const handleSubmit = async () => {
-    console.log(values.amount);
-    console.log(values.coin);
-    console.log(values.address);
     if (values.address && values.amount && values.coin) {
       try {
         await evmTransferMutation.mutateAsync({

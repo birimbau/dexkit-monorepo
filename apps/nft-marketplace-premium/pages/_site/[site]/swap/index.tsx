@@ -18,7 +18,7 @@ const SwapPage: NextPage = () => {
   const appConfig = useAppConfig();
   const swapSection = useMemo(() => {
     const swapSectionPageIndex = appConfig.pages['home']?.sections.findIndex(
-      (s) => s.type === 'swap',
+      (s) => s.type === 'swap'
     );
     if (swapSectionPageIndex !== -1) {
       return (
@@ -62,11 +62,7 @@ const SwapPage: NextPage = () => {
             </Grid>
             <Grid item xs={12} sm={6}>
               <NoSsr>
-                <SwapSection
-                  section={{
-                    ...swapSection,
-                  }}
-                />
+                <SwapSection section={swapSection} />
               </NoSsr>
             </Grid>
           </Grid>

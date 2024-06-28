@@ -23,28 +23,26 @@ export default async function handler(
   });
 
   try {
-
     if (req.method === 'GET') {
       const response = await axios.get(
-        GET_ZRX_URL(parseInt(chainId as string)) +
-        proxiedRoute,
+        GET_ZRX_URL(parseInt(chainId as string)) + proxiedRoute,
         {
           params: req.query,
           headers: {
-            '0x-api-key': process.env.ZRX_API_KEY_PRO || '',
+            '0x-api-key':
+              process.env.ZRX_API_KEY_PRO ??
+              process.env.NEXT_PUBLIC_ZRX_API_KEY ??
+              '',
           },
           signal,
         }
       );
 
-
-
       return res.status(200).json(response.data);
     }
     if (req.method === 'POST') {
       const response = await axios.post(
-        GET_ZRX_URL(parseInt(chainId as string)) +
-        proxiedRoute,
+        GET_ZRX_URL(parseInt(chainId as string)) + proxiedRoute,
         req.body,
         {
           params: req.query,
@@ -57,7 +55,6 @@ export default async function handler(
 
       return res.status(200).json(response.data);
     }
-
   } catch (err: any) {
     /*if (err?.status) {
       return res.status(err?.status).json(err);
@@ -66,5 +63,4 @@ export default async function handler(
     return res.status(err.response?.status).json(err.response?.data);
   }
   return res.status(500).json({ message: 'method not supported' });
-
 }

@@ -229,6 +229,9 @@ export function RankingSectionForm({
                 justifyContent="flex-end"
                 spacing={2}
               >
+                <Button onClick={onCancel}>
+                  <FormattedMessage id="cancel" defaultMessage="Cancel" />
+                </Button>
                 <Button
                   onClick={handleSave}
                   disabled={selectedRanking === undefined}
@@ -236,9 +239,6 @@ export function RankingSectionForm({
                   color="primary"
                 >
                   <FormattedMessage id="save" defaultMessage="Save" />
-                </Button>
-                <Button onClick={onCancel}>
-                  <FormattedMessage id="cancel" defaultMessage="Cancel" />
                 </Button>
               </Stack>
             </Box>

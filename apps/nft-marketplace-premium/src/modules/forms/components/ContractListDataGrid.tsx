@@ -6,30 +6,45 @@ import {
 import { truncateAddress } from '@dexkit/core/utils';
 import Link from '@dexkit/ui/components/AppLink';
 import { useWeb3React } from '@dexkit/wallet-connectors/hooks/useWeb3React';
+import PostAddOutlinedIcon from '@mui/icons-material/PostAddOutlined';
+import Settings from '@mui/icons-material/SettingsOutlined';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import VisibilityOutlined from '@mui/icons-material/VisibilityOutlined';
+import { IconButton, Tooltip } from '@mui/material';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import {
   DataGrid,
+  GridCallbackDetails,
   GridColDef,
   GridFilterModel,
+  GridRowSelectionModel,
   GridSortModel,
   GridToolbar,
 } from '@mui/x-data-grid';
 import { useCallback, useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { useListDeployedContracts } from '../hooks';
+import { useContractVisibility, useListDeployedContracts } from '../hooks';
 
-export default function ContractListDataGrid() {
+export interface ContractListDataGridProps {
+  showHidden: boolean;
+}
+
+export default function ContractListDataGrid({
+  showHidden,
+}: ContractListDataGridProps) {
   const { account } = useWeb3React();
+
   const [queryOptions, setQueryOptions] = useState<any>({
-    filter: { owner: account?.toLowerCase() },
+    filter: { owner: account?.toLowerCase },
   });
+
   const [paginationModel, setPaginationModel] = useState({
     page: 0,
     pageSize: 10,
   });
-  const { data, isLoading } = useListDeployedContracts({
+
+  const { data, isLoading, refetch } = useListDeployedContracts({
     ...queryOptions,
     ...paginationModel,
   });
@@ -37,15 +52,19 @@ export default function ContractListDataGrid() {
   useEffect(() => {
     setQueryOptions({
       ...queryOptions,
-      filter: { ...queryOptions?.filter, owner: account?.toLowerCase() || '' },
+      filter: {
+        ...queryOptions?.filter,
+        owner: account?.toLowerCase() || '',
+        hide: showHidden ? undefined : false,
+      },
     });
-  }, [account]);
+  }, [account, showHidden]);
 
   const [rowCountState, setRowCountState] = useState((data?.total as any) || 0);
 
   useEffect(() => {
     setRowCountState((prevRowCountState: number) =>
-      data?.total !== undefined ? data?.total : prevRowCountState,
+      data?.total !== undefined ? data?.total : prevRowCountState
     );
   }, [data?.total, setRowCountState]);
 
@@ -60,30 +79,61 @@ export default function ContractListDataGrid() {
     });
   }, []);
 
+  const [filterModel, setFilterModel] = useState<GridFilterModel>({
+    items: [],
+  });
+
   const onFilterChange = useCallback((filterModel: GridFilterModel) => {
     // Here you save the data you need from the filter model
+
     let filter = { ...queryOptions?.filter };
+
+    const firstFilter = filterModel.items[0];
+
     if (filterModel.quickFilterValues?.length) {
       filter = {
         ...filter,
         q: filterModel.quickFilterValues[0],
       };
+    } else if (
+      firstFilter.field === 'name' &&
+      firstFilter.operator === 'contains' &&
+      firstFilter.value !== ''
+    ) {
+      filter = {
+        ...filter,
+        q: firstFilter.value,
+      };
     }
+
+    setFilterModel(filterModel);
 
     setQueryOptions({ ...queryOptions, filter });
   }, []);
 
+  const { mutateAsync: toggleVisibility } = useContractVisibility();
+
+  const handleHideContract = (id: number) => {
+    return async () => {
+      const toggled = data?.data.find((c) => c.id === id);
+
+      await toggleVisibility({ id, visibility: !Boolean(toggled?.hide) });
+      await refetch();
+    };
+  };
+
   const columns: GridColDef[] = [
-    { field: 'id', headerName: 'ID', width: 90 },
     {
       field: 'name',
       headerName: 'Name',
-      width: 200,
+      minWidth: 200,
+      flex: 1,
     },
     {
       field: 'createdAt',
       headerName: 'Created At',
-      width: 200,
+      minWidth: 200,
+      flex: 1,
       valueGetter: ({ row }) => {
         return new Date(row.createdAt).toLocaleString();
       },
@@ -123,54 +173,82 @@ export default function ContractListDataGrid() {
       renderCell: ({ row }) => {
         return (
           <Stack direction={'row'} spacing={1}>
-            <Button
+            <IconButton
               LinkComponent={Link}
               href={`/contract/${NETWORK_SLUG(row.chainId)}/${
                 row.contractAddress
               }`}
               size="small"
-              variant="outlined"
             >
-              <FormattedMessage
-                id="config.contract"
-                defaultMessage="Config Contract"
-              />
-            </Button>
-            <Button
+              <Tooltip
+                title={
+                  <FormattedMessage
+                    id="config.contract"
+                    defaultMessage="Config Contract"
+                  />
+                }
+              >
+                <Settings />
+              </Tooltip>
+            </IconButton>
+            <IconButton
               LinkComponent={Link}
               href={`/forms/create?contractAddress=${row.contractAddress}&chainId=${row.chainId}`}
               target="_blank"
               size="small"
-              variant="outlined"
             >
-              <FormattedMessage id="create.form" defaultMessage="Create form" />
-            </Button>
+              <Tooltip
+                title={
+                  <FormattedMessage
+                    id="create.form"
+                    defaultMessage="Create form"
+                  />
+                }
+              >
+                <PostAddOutlinedIcon />
+              </Tooltip>
+            </IconButton>
+            <IconButton onClick={handleHideContract(row.id)}>
+              <Tooltip
+                title={<FormattedMessage id="hide" defaultMessage="Hide" />}
+              >
+                {row.hide ? <VisibilityOutlined /> : <VisibilityOff />}
+              </Tooltip>
+            </IconButton>
           </Stack>
         );
       },
     },
   ];
 
+  const [rowSelectionModel, setRowSelectionModel] =
+    useState<GridRowSelectionModel>();
+
+  const handleChangeRowSelectionModel = (
+    rowSelectionModel: GridRowSelectionModel,
+    details: GridCallbackDetails<any>
+  ) => {
+    setRowSelectionModel(rowSelectionModel);
+  };
+
   return (
     <Box sx={{ height: 600, width: '100%' }}>
       <DataGrid
         slots={{ toolbar: GridToolbar }}
+        slotProps={{ toolbar: { showQuickFilter: true } }}
+        filterModel={filterModel}
         rows={(data?.data as any) || []}
         columns={columns}
         rowCount={rowCountState}
-        paginationModel={paginationModel}
-        paginationMode="server"
-        disableColumnFilter
-        sortingMode="server"
-        slotProps={{
-          toolbar: {
-            showQuickFilter: true,
-          },
-        }}
-        onPaginationModelChange={setPaginationModel}
         filterMode="server"
+        paginationMode="server"
+        sortingMode="client"
+        paginationModel={paginationModel}
+        onPaginationModelChange={setPaginationModel}
         onFilterModelChange={onFilterChange}
         onSortModelChange={handleSortModelChange}
+        rowSelectionModel={rowSelectionModel}
+        onRowSelectionModelChange={handleChangeRowSelectionModel}
         pageSizeOptions={[5, 10, 25, 50]}
         disableRowSelectionOnClick
         loading={isLoading}

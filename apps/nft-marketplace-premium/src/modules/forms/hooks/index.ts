@@ -1,5 +1,6 @@
 import { ChainId } from '@dexkit/core';
 import { DexkitApiProvider } from '@dexkit/core/providers';
+import { ContractFormData } from '@dexkit/ui/modules/forms/hooks';
 import { useWeb3React } from '@dexkit/wallet-connectors/hooks/useWeb3React';
 import { ContractFormParams } from '@dexkit/web3forms/types';
 import { useInfiniteQuery, useMutation, useQuery } from '@tanstack/react-query';
@@ -50,7 +51,7 @@ export function useCreateFormMutation({ templateId }: { templateId?: number }) {
         params: JSON.parse(data.rawData),
         templateId: data.template?.id,
       } as ContractFormData;
-    },
+    }
   );
 }
 
@@ -68,18 +69,9 @@ export function useUpdateFormMutation() {
         description: params.description,
         params: JSON.stringify(params.params),
       });
-    },
+    }
   );
 }
-
-type ContractFormData = {
-  id: number;
-  creatorAddress: string;
-  params: ContractFormParams;
-  templateId?: number;
-  name?: string;
-  description?: string;
-};
 
 export const GET_FORM = 'GET_FORM';
 
@@ -102,7 +94,7 @@ export function useFormQuery({ id }: { id?: number }) {
         templateId: data.template?.id,
       } as ContractFormData;
     },
-    { enabled: id !== undefined },
+    { enabled: id !== undefined }
   );
 }
 
@@ -122,7 +114,7 @@ export function useCreateFormTemplateMutation() {
           name: params.name,
         })
       ).data;
-    },
+    }
   );
 }
 
@@ -144,7 +136,7 @@ export function useUpdateFormTemplateMutation() {
           name: params.name,
         })
       ).data;
-    },
+    }
   );
 }
 
@@ -169,7 +161,7 @@ export function useFormTemplateQuery({ id }: { id?: number }) {
         name: data.name,
       } as FormTemplate;
     },
-    { enabled: id !== undefined, refetchOnWindowFocus: false },
+    { enabled: id !== undefined, refetchOnWindowFocus: false }
   );
 }
 
@@ -202,7 +194,7 @@ export function useListFormsQuery({
             creatorAddress: form.creatorAddress,
             params: JSON.parse(form.rawData),
             templateId: form.template?.id,
-          }) as ContractFormData,
+          } as ContractFormData)
       );
     }
   );
@@ -241,10 +233,10 @@ export function useListFormTemplatesQuery({
             bytecode: template.bytecode,
             description: template.description,
             name: template.name,
-          }) as FormTemplate,
+          } as FormTemplate)
       );
     },
-    { enabled: creatorAddress !== undefined },
+    { enabled: creatorAddress !== undefined }
   );
 }
 
@@ -278,7 +270,7 @@ export function useSaveInstanceMutation() {
       description: string;
     }) => {
       return await createTemplateInstance(params);
-    },
+    }
   );
 }
 
@@ -298,7 +290,7 @@ export function useListTemplateInstances({
 
       return await listTemplateInstances(templateId);
     },
-    { enabled: templateId !== undefined },
+    { enabled: templateId !== undefined }
   );
 }
 
@@ -350,7 +342,38 @@ export function useSaveContractDeployed() {
         createdAtTx,
         referral,
       });
-    },
+    }
+  );
+}
+
+export function useImportContract() {
+  const { account } = useWeb3React();
+
+  const { instance } = useContext(DexkitApiProvider);
+
+  return useMutation(
+    async ({
+      contractAddress,
+      name,
+      chainId,
+      type,
+      referral,
+    }: {
+      contractAddress: string;
+      name?: string;
+      type?: string;
+      chainId: number;
+      referral?: string;
+    }) => {
+      return await instance?.post('/forms/deploy/contract/import', {
+        contractAddress,
+        name,
+        chainId,
+        type,
+        owner: account?.toLowerCase(),
+        referral,
+      });
+    }
   );
 }
 
@@ -405,7 +428,7 @@ export function useInfiniteListDeployedContracts({
     },
     {
       getNextPageParam: ({ nextCursor }) => nextCursor,
-    },
+    }
   );
 }
 
@@ -475,14 +498,28 @@ export function useListDeployedContracts({
       }
 
       return { data: [] };
-    },
+    }
+  );
+}
+
+export function useContractVisibility() {
+  const { instance } = useContext(DexkitApiProvider);
+
+  return useMutation(
+    async ({ visibility, id }: { id: number; visibility: boolean }) => {
+      return (
+        await instance?.post(`/forms/deploy/contract/${id}/visibility`, {
+          visibility,
+        })
+      )?.data;
+    }
   );
 }
 
 export const DEPLOYABLE_CONTRACTS_QUERY = 'DEPLOYABLE_CONTRACTS_QUERY';
 
 export function useDeployableContractsQuery() {
-  return useQuery([DEPLOYABLE_CONTRACTS_QUERY], async ({ }) => {
+  return useQuery([DEPLOYABLE_CONTRACTS_QUERY], async ({}) => {
     return (await axios.get<DeployableContract[]>(DEPLOYABLE_CONTRACTS_URL))
       .data;
   });

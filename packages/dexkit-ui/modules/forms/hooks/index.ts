@@ -1,9 +1,8 @@
-
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { cloneForm, getForm, listForms } from "../services";
 import { ContractFormParams } from "../types";
 
-type ContractFormData = {
+export type ContractFormData = {
   id: number;
   creatorAddress: string;
   params: ContractFormParams;
@@ -11,13 +10,14 @@ type ContractFormData = {
   name?: string;
   description?: string;
 };
+
 export function useCloseFormMutation() {
   return useMutation(async ({ id }: { id: number }) => {
     return await cloneForm({ id });
   });
 }
 
-export const GET_FORM = 'GET_FORM';
+export const GET_FORM = "GET_FORM";
 
 export function useFormQuery({ id }: { id?: number }) {
   return useQuery<ContractFormData | null>(
@@ -42,7 +42,7 @@ export function useFormQuery({ id }: { id?: number }) {
   );
 }
 
-export const LIST_FORMS = 'LIST_FORMS';
+export const LIST_FORMS = "LIST_FORMS";
 
 export function useListFormsQuery({
   creatorAddress,
@@ -64,14 +64,14 @@ export function useListFormsQuery({
 
       return data.map(
         (form: any) =>
-        ({
-          id: form.id,
-          name: form.name,
-          description: form.description,
-          creatorAddress: form.creatorAddress,
-          params: JSON.parse(form.rawData),
-          templateId: form.template?.id,
-        } as ContractFormData)
+          ({
+            id: form.id,
+            name: form.name,
+            description: form.description,
+            creatorAddress: form.creatorAddress,
+            params: JSON.parse(form.rawData),
+            templateId: form.template?.id,
+          } as ContractFormData)
       );
     },
     { enabled: creatorAddress !== undefined }

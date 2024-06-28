@@ -1,9 +1,10 @@
 import DialogTitle from "@mui/material/DialogTitle";
 import IconButton from "@mui/material/IconButton";
-import Stack, { StackProps } from "@mui/material/Stack";
-import Typography, { TypographyProps } from "@mui/material/Typography";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
 
 import CloseIcon from "@mui/icons-material/Close";
+import { SxProps, Theme } from "@mui/material";
 
 interface Props {
   title?: string | React.ReactNode | React.ReactNode[];
@@ -11,8 +12,8 @@ interface Props {
   onClose?: () => void;
   disableClose?: boolean;
   hideCloseButton?: boolean;
-  titleProps?: TypographyProps;
-  titleBox?: StackProps;
+  titleBox?: SxProps<Theme> | undefined;
+  sx?: SxProps<Theme> | undefined;
 }
 
 export function AppDialogTitle({
@@ -21,8 +22,8 @@ export function AppDialogTitle({
   onClose,
   disableClose,
   hideCloseButton,
-  titleProps,
   titleBox,
+  sx,
 }: Props) {
   return (
     <DialogTitle
@@ -30,6 +31,9 @@ export function AppDialogTitle({
         zIndex: (theme) => theme.zIndex.modal + 1,
         px: 2,
         py: 1.5,
+        alignItems: "center",
+        alignContent: "center",
+        ...sx,
       }}
     >
       <Stack
@@ -37,8 +41,7 @@ export function AppDialogTitle({
         justifyContent="space-between"
         alignItems="center"
         alignContent="center"
-        sx={{}}
-        {...titleBox}
+        sx={titleBox}
       >
         <Stack
           direction="row"
