@@ -7,27 +7,27 @@ import { memo } from "react";
 import { FormattedMessage } from "react-intl";
 
 import { Token } from "@dexkit/core/types";
-import SwapSelectCoinListSkeleton from "../widgets/swap/SwapSelectCoinListSkeleton";
-import SelectCoinListItem from "./SelectCoinListItem";
+import SwapSelectCoinListSkeleton from "../SwapSelectCoinListSkeleton";
+import SelectCoinListUniswapItem from "./SelectCoinListUniswapItem";
 
-export interface SelectCoinListProps {
+export interface SelectCoinUniswapListProps {
   tokens: Token[];
-  externToken?: Token;
-  onSelect: (token: Token) => void;
+  onSelect: (token: Token, isExtern?: boolean) => void;
   tokenBalances?: TokenBalances | null;
+  externToken?: Token;
   subHeader?: React.ReactNode;
   isLoading: boolean;
 }
 
-function SelectCoinList({
+function SelectCoinUniswapList({
   tokens,
   onSelect,
   tokenBalances,
   isLoading,
   subHeader,
   externToken,
-}: SelectCoinListProps) {
-  if (tokens.length === 0 && !externToken) {
+}: SelectCoinUniswapListProps) {
+  if (tokens.length === 0) {
     return (
       <Box py={2}>
         <Stack spacing={2} alignItems="center" justifyContent="center">
@@ -54,7 +54,7 @@ function SelectCoinList({
 
   if (externToken) {
     return (
-      <SelectCoinListItem
+      <SelectCoinListUniswapItem
         token={externToken}
         isLoading={isLoading}
         onSelect={onSelect}
@@ -65,10 +65,10 @@ function SelectCoinList({
   }
 
   return (
-    <List disablePadding subheader={subHeader}>
+    <List disablePadding subheader={subHeader} dense>
       {tokens.map((token: Token, index: number) => (
-        <SelectCoinListItem
-          key={`item-${index}`}
+        <SelectCoinListUniswapItem
+          key={index}
           token={token}
           isLoading={isLoading}
           onSelect={onSelect}
@@ -79,4 +79,4 @@ function SelectCoinList({
   );
 }
 
-export default memo(SelectCoinList);
+export default memo(SelectCoinUniswapList);

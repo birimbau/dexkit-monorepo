@@ -8,25 +8,25 @@ import { useThirdwebApprove } from '@dexkit/ui/modules/contract-wizard/hooks/thi
 import { useWeb3React } from '@dexkit/wallet-connectors/hooks/useWeb3React';
 import { useAsyncMemo } from '@dexkit/widgets/src/hooks';
 import {
-    Alert,
-    Box,
-    Button,
-    Card,
-    CardContent,
-    CircularProgress,
-    Divider,
-    Grid,
-    Skeleton,
-    Stack,
-    Tab,
-    Tabs,
-    Typography,
+  Alert,
+  Box,
+  Button,
+  Card,
+  CardContent,
+  CircularProgress,
+  Divider,
+  Grid,
+  Skeleton,
+  Stack,
+  Tab,
+  Tabs,
+  Typography,
 } from '@mui/material';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import {
-    NATIVE_TOKEN_ADDRESS,
-    useBalance,
-    useContract,
+  NATIVE_TOKEN_ADDRESS,
+  useBalance,
+  useContract,
 } from '@thirdweb-dev/react';
 import { BigNumber, constants } from 'ethers';
 import { useSnackbar } from 'notistack';
@@ -53,7 +53,10 @@ export default function ContractAirdropErc20Container({
   const [tokenAddress, setTokenAddress] = useState<string>();
   const { account } = useWeb3React();
 
-  const { data: tokenContract } = useContract(tokenAddress, 'token');
+  const { data: tokenContract, isLoading: isLoadingToken } = useContract(
+    tokenAddress,
+    'token',
+  );
 
   const { data: allowance } = useQuery(
     ['REWARD_TOKEN_ALLOWANCE', tokenAddress],
@@ -228,6 +231,7 @@ export default function ContractAirdropErc20Container({
       <SelectTokenDialog
         dialogProps={{ open: showSelectToken, onClose: handleCloseSelectToken }}
         onSelect={handleSelect}
+        enableImport={true}
         chainId={chainId}
         includeNative
       />
@@ -328,15 +332,38 @@ export default function ContractAirdropErc20Container({
                   <Grid item xs={12} sm={4}>
                     <Card>
                       <CardContent>
-                        <Typography variant="caption" color="text.secondary">
-                          <FormattedMessage
-                            id="total.for.airdrop"
-                            defaultMessage="Total for Airdrop"
-                          />
-                        </Typography>
-                        <Typography variant="h5">
-                          {tokenAddress ? totalAmountFormatted : '0.00'}
-                        </Typography>
+                        {isLoadingToken && tokenAddress ? (
+                          <>
+                            <Typography
+                              variant="caption"
+                              color="text.secondary"
+                            >
+                              <FormattedMessage
+                                id="total.for.airdrop"
+                                defaultMessage="Total for Airdrop"
+                              />
+                            </Typography>
+                            <Skeleton>
+                              {' '}
+                              <Typography variant="h5">0.00 Token</Typography>
+                            </Skeleton>
+                          </>
+                        ) : (
+                          <>
+                            <Typography
+                              variant="caption"
+                              color="text.secondary"
+                            >
+                              <FormattedMessage
+                                id="total.for.airdrop"
+                                defaultMessage="Total for Airdrop"
+                              />
+                            </Typography>
+                            <Typography variant="h5">
+                              {tokenAddress ? totalAmountFormatted : '0.00'}
+                            </Typography>
+                          </>
+                        )}
                       </CardContent>
                     </Card>
                   </Grid>

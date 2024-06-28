@@ -33,6 +33,7 @@ import SwitchNetworkSelect from "../../components/SwitchNetworkSelect";
 import TransakIcon from "../../components/icons/TransakIcon";
 import SwapFeeSummary from "./SwapFeeSummary";
 import { SUPPORTED_SWAP_CHAIN_IDS } from "./constants/supportedChainIds";
+import { useExecButtonMessage } from "./hooks/useExecButtonMessage";
 
 // @ts-ignore
 
@@ -128,57 +129,13 @@ export default function Swap({
     onSelectToken("buy", token);
   };
 
-  const renderExecButtonMessage = () => {
-    if (quoteQuery?.isError) {
-      if (quoteQuery?.error) {
-        if (
-          quoteQuery?.error?.response?.data.validationErrors &&
-          Array.isArray(quoteQuery?.error?.response?.data.validationErrors)
-        ) {
-          const validationError =
-            quoteQuery?.error?.response?.data.validationErrors[0];
-
-          if (validationError?.reason) {
-            return validationError?.reason.split("_").join(" ");
-          }
-        }
-      }
-    }
-
-    if (quoteQuery?.isLoading) {
-      return <FormattedMessage id="quoting" defaultMessage="Quoting" />;
-    }
-
-    if (insufficientBalance) {
-      return (
-        <FormattedMessage
-          id="insufficient.symbol.balance"
-          defaultMessage="Insufficient {symbol} balance"
-          values={{ symbol: sellToken?.symbol.toUpperCase() }}
-        />
-      );
-    }
-    return execType === "wrap" ? (
-      <FormattedMessage id="wrap" defaultMessage="Wrap" />
-    ) : execType === "unwrap" ? (
-      <FormattedMessage id="Unwrap" defaultMessage="Unwrap" />
-    ) : execType === "switch" ? (
-      <FormattedMessage
-        id="switch.wallet.network"
-        defaultMessage="Switch wallet to {networkName}"
-        values={{ networkName }}
-      />
-    ) : execType === "approve" ? (
-      <FormattedMessage id="approve" defaultMessage="Approve" />
-    ) : execType === "network_not_supported" ? (
-      <FormattedMessage
-        id="network_not_supported"
-        defaultMessage="Network not supported"
-      />
-    ) : (
-      <FormattedMessage id="swap" defaultMessage="Swap" />
-    );
-  };
+  const renderExecButtonMessage = useExecButtonMessage({
+    quoteQuery,
+    insufficientBalance,
+    sellTokenSymbol: sellToken?.symbol,
+    networkName,
+    execType,
+  });
 
   const isMobile = useIsMobile();
 

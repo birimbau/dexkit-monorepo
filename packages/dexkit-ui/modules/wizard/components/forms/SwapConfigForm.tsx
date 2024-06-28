@@ -13,8 +13,9 @@ import { FormattedMessage } from "react-intl";
 
 import { TokenWhitelabelApp } from "@dexkit/core/types";
 import { NetworkSelectDropdown } from "../../../../components/NetworkSelectDropdown";
-import { SwapConfig } from "../../../../types/sections";
+
 import { SearchTokenAutocomplete } from "../../../swap/components/SearchTokenAutocomplete";
+import { SwapConfig } from "../../types";
 
 interface Props {
   data?: SwapConfig;
@@ -148,14 +149,14 @@ export function SwapConfigForm({ onChange, data, featuredTokens }: Props) {
                     [selectedChainId]: {
                       ...oldFormData,
                       sellToken: tk
-                        ? {
+                        ? ({
                             chainId: tk.chainId as number,
                             contractAddress: tk.address,
                             decimals: tk.decimals,
                             name: tk.name,
                             symbol: tk.symbol,
                             logoURI: tk.logoURI,
-                          }
+                          } as any)
                         : undefined,
                     },
                   },
@@ -197,14 +198,14 @@ export function SwapConfigForm({ onChange, data, featuredTokens }: Props) {
                         [selectedChainId]: {
                           ...oldFormData,
                           buyToken: tk
-                            ? {
+                            ? ({
                                 chainId: tk.chainId as number,
                                 contractAddress: tk.address,
                                 decimals: tk.decimals,
                                 name: tk.name,
                                 symbol: tk.symbol,
                                 logoURI: tk.logoURI,
-                              }
+                              } as any)
                             : undefined,
                         },
                       },
