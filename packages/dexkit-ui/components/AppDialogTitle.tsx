@@ -12,6 +12,7 @@ interface Props {
   onClose?: () => void;
   disableClose?: boolean;
   hideCloseButton?: boolean;
+  titleBox?: SxProps<Theme> | undefined;
   sx?: SxProps<Theme> | undefined;
 }
 
@@ -21,6 +22,7 @@ export function AppDialogTitle({
   onClose,
   disableClose,
   hideCloseButton,
+  titleBox,
   sx,
 }: Props) {
   return (
@@ -39,8 +41,7 @@ export function AppDialogTitle({
         justifyContent="space-between"
         alignItems="center"
         alignContent="center"
-        sx={{}}
-        {...titleBox}
+        sx={titleBox}
       >
         <Stack
           direction="row"

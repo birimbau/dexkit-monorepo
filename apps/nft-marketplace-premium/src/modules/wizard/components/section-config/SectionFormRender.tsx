@@ -292,6 +292,7 @@ export function SectionFormRender({
     return (
       <AddCarouselForm
         onChange={(data) => onChange({ type: 'carousel', settings: data })}
+        onCancel={onClose}
         onSave={(data) => onSave({ type: 'carousel', settings: data })}
         data={section?.type === sectionType ? section.settings : undefined}
         saveOnChange
@@ -301,6 +302,7 @@ export function SectionFormRender({
     return (
       <AddShowCaseSectionForm
         onChange={(data) => onChange({ type: 'showcase', settings: data })}
+        onCancel={onClose}
         onSave={(data) => onSave({ type: 'showcase', settings: data })}
         data={section?.type === sectionType ? section.settings : undefined}
         saveOnChange

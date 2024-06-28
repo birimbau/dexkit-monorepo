@@ -11,24 +11,24 @@ import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import Search from '@mui/icons-material/Search';
 import {
-    Avatar,
-    Box,
-    Button,
-    Card,
-    CardContent,
-    FormControl,
-    Grid,
-    IconButton,
-    InputAdornment,
-    InputLabel,
-    ListItemIcon,
-    ListItemText,
-    MenuItem,
-    Select,
-    SelectChangeEvent,
-    Skeleton,
-    Stack,
-    Typography,
+  Avatar,
+  Box,
+  Button,
+  Card,
+  CardContent,
+  FormControl,
+  Grid,
+  IconButton,
+  InputAdornment,
+  InputLabel,
+  ListItemIcon,
+  ListItemText,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  Skeleton,
+  Stack,
+  Typography,
 } from '@mui/material';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
@@ -36,8 +36,8 @@ import { NETWORKS } from 'src/constants/chain';
 
 import { getChainSlug } from '@dexkit/core/utils/blockchain';
 import {
-    DEX_GENERATOR_CONTRACT_TYPES,
-    DEX_GENERATOR_CONTRACT_TYPES_AVAIL,
+  DEX_GENERATOR_CONTRACT_TYPES,
+  DEX_GENERATOR_CONTRACT_TYPES_AVAIL,
 } from '../../../constants';
 import DexGeneratorSectionCard from '../../DexGeneratorSectionCard';
 import DexGeneratorContractForm from './DexGeneratorContractForm';
@@ -556,7 +556,15 @@ export default function DexGeneratorSectionForm({
         {showSaveButton && (
           <Grid item xs={12}>
             <Box>
-              <Stack direction="row" alignItems="center" spacing={2}>
+              <Stack
+                direction="row"
+                alignItems="center"
+                spacing={2}
+                justifyContent="flex-end"
+              >
+                <Button onClick={onCancel}>
+                  <FormattedMessage id="cancel" defaultMessage="Cancel" />
+                </Button>
                 <Button
                   disabled={!contract}
                   onClick={handleSave}
@@ -564,9 +572,6 @@ export default function DexGeneratorSectionForm({
                   color="primary"
                 >
                   <FormattedMessage id="save" defaultMessage="Save" />
-                </Button>
-                <Button onClick={onCancel}>
-                  <FormattedMessage id="cancel" defaultMessage="Cancel" />
                 </Button>
               </Stack>
             </Box>

@@ -10,7 +10,6 @@ import Search from '@mui/icons-material/Search';
 import {
   Box,
   Button,
-  Divider,
   Grid,
   InputAdornment,
   Stack,
@@ -251,23 +250,6 @@ export default function Pages({
       {renderPreviewDialog()}
       <Box sx={{ px: { sm: 4 } }}>
         <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <Stack direction="column">
-              <Typography fontWeight="bold" variant="h6">
-                <FormattedMessage id="pages" defaultMessage="Pages" />
-              </Typography>
-
-              <Typography variant="body2">
-                <FormattedMessage
-                  id="pages.wizard.description"
-                  defaultMessage="Create and manage your app's pages"
-                />
-              </Typography>
-            </Stack>
-          </Grid>
-          <Grid item xs={12}>
-            <Divider />
-          </Grid>
           <Grid item xs={12}>
             <Button
               variant="contained"

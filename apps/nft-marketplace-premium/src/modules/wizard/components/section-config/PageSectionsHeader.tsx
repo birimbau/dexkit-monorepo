@@ -63,10 +63,9 @@ export default function PageSectionsHeader({
   return (
     <Stack direction="row" alignItems="center" spacing={2}>
       <Stack direction="row" alignItems="center" spacing={1}>
-        <IconButton onClick={onClose}>
+        <IconButton onClick={onClose} sx={{ pl: 0, ml: 0 }}>
           <ArrowBack color="primary" />
         </IconButton>
-
         {isEditTitle ? (
           <TextField
             inputRef={(ref) => (inputRef.current = ref)}

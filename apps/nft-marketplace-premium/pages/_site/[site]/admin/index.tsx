@@ -99,7 +99,8 @@ export const AdminIndexPage: NextPage = () => {
       if (lazySearch) {
         return configsQuery.data.filter(
           (c) =>
-            c.appConfig.name.toLowerCase().search(lazySearch.toLowerCase()) > -1
+            c.appConfig.name.toLowerCase().search(lazySearch.toLowerCase()) >
+            -1,
         );
       }
 
@@ -225,8 +226,8 @@ export const AdminIndexPage: NextPage = () => {
         }}
         config={selectedConfig}
       />
-      <Container>
-        <Grid container spacing={3}>
+      <Container maxWidth={'xl'}>
+        <Grid container spacing={2}>
           <Grid item xs={12}>
             <PageHeader
               breadcrumbs={[
@@ -256,8 +257,8 @@ export const AdminIndexPage: NextPage = () => {
             <MismatchAccount />
           </Grid>
           <Grid item xs={12}>
-            <Typography variant="h4">
-              <FormattedMessage id="my.apps" defaultMessage="My apps" />
+            <Typography variant="h5">
+              <FormattedMessage id="my.apps.upper" defaultMessage="My Apps" />
             </Typography>
           </Grid>
           <Grid item xs={12}>
@@ -265,6 +266,7 @@ export const AdminIndexPage: NextPage = () => {
               direction="row"
               alignItems="center"
               justifyContent="space-between"
+              sx={{ pt: 1 }}
             >
               <Button
                 href="/admin/setup"
@@ -279,7 +281,7 @@ export const AdminIndexPage: NextPage = () => {
           </Grid>
 
           <Grid item xs={12}>
-            <Divider />
+            <Divider sx={{ py: 1 }} />
           </Grid>
           <Grid item xs={12}>
             <Grid container spacing={3} justifyContent="center">

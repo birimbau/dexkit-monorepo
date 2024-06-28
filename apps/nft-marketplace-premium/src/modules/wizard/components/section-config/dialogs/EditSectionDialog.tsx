@@ -156,7 +156,7 @@ export default function EditSectionDialog({
         section={section}
         sectionType={sectionType}
         onSave={handleSave}
-        onClose={handleClose}
+        onClose={isEdit ? handleClose : () => setSectionType(undefined)}
         onChange={handleChange}
       />
     );

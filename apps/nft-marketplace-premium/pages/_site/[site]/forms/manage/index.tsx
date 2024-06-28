@@ -1,7 +1,7 @@
 import { myAppsApi } from '@/modules/admin/dashboard/dataProvider';
 
 const AccountFormsTable = dynamic(
-  () => import('@/modules/forms/components/AccountFormsTable')
+  () => import('@/modules/forms/components/AccountFormsTable'),
 );
 
 import { useListFormsQuery } from '@/modules/forms/hooks';
@@ -38,7 +38,7 @@ export default function FormsAccountPage() {
 
   return (
     <>
-      <Container>
+      <Container maxWidth={'xl'}>
         <Stack spacing={2}>
           <PageHeader
             breadcrumbs={[

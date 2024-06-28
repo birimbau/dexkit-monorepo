@@ -887,15 +887,16 @@ export function EditWizardContainer({ site }: Props) {
           onClose: handleCloseConfirmSendConfig,
         }}
         onConfirm={handleConfirmSendConfig}
+        actionCaption={<FormattedMessage id="save" defaultMessage="Save" />}
         title={
           <FormattedMessage id="save.changes" defaultMessage="Save Changes" />
         }
       >
-        <Stack>
+        <Stack spacing={1}>
           <Typography variant="body1">
             <FormattedMessage
-              id="would.you.like.to.save.your.changes"
-              defaultMessage="Would you like to save your changes?"
+              id="are.you.sure.you.want.to.save.your.changes"
+              defaultMessage="Are you sure you want to save your changes?"
             />
           </Typography>
           <Typography variant="caption" color="text.secondary">

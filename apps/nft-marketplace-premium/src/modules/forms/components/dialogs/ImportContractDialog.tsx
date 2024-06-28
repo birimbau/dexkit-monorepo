@@ -2,6 +2,7 @@ import { Network } from '@dexkit/core/types';
 import { ipfsUriToUrl, parseChainId } from '@dexkit/core/utils';
 import { AppDialogTitle, useDexKitContext } from '@dexkit/ui';
 import { hexToString } from '@dexkit/ui/utils';
+import { useWeb3React } from '@dexkit/wallet-connectors/hooks/useWeb3React';
 import {
   Avatar,
   Box,
@@ -18,7 +19,7 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
-import { useWeb3React } from '@web3-react/core';
+
 import { isAddress } from 'ethers/lib/utils';
 import { Field, Formik } from 'formik';
 import { TextField } from 'formik-mui';
@@ -81,7 +82,7 @@ export default function ImportContractDialog({
           type: 'function',
         },
       ],
-      provider
+      provider,
     );
 
     let contractTypeHex = '';
@@ -112,7 +113,7 @@ export default function ImportContractDialog({
           id="contract.imported"
           defaultMessage="Contract imported"
         />,
-        { variant: 'success' }
+        { variant: 'success' },
       );
 
       handleClose();
@@ -122,7 +123,7 @@ export default function ImportContractDialog({
           id="error.while.import"
           defaultMessage="Error while import"
         />,
-        { variant: 'error' }
+        { variant: 'error' },
       );
     }
   };
@@ -169,7 +170,7 @@ export default function ImportContractDialog({
                           >
                             <Avatar
                               src={ipfsUriToUrl(
-                                NETWORKS[values.chainId].imageUrl || ''
+                                NETWORKS[values.chainId].imageUrl || '',
                               )}
                               style={{ width: 'auto', height: '1rem' }}
                             />
@@ -196,7 +197,7 @@ export default function ImportContractDialog({
                               >
                                 <Avatar
                                   src={ipfsUriToUrl(
-                                    (NETWORKS[key] as Network)?.imageUrl || ''
+                                    (NETWORKS[key] as Network)?.imageUrl || '',
                                   )}
                                   sx={{
                                     width: 'auto',

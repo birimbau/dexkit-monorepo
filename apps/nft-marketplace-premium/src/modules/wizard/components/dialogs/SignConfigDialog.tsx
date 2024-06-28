@@ -104,8 +104,8 @@ function SignConfigDialog({
               <Stack spacing={2}>
                 <Typography align="center" variant="body1">
                   <FormattedMessage
-                    id="setting.successfully.sent"
-                    defaultMessage="Setting successfully sent"
+                    id="settings.successfully.sent"
+                    defaultMessage="Settings successfully sent"
                   />
                 </Typography>
                 <Alert severity="warning">
@@ -122,7 +122,7 @@ function SignConfigDialog({
                   >
                     <FormattedMessage
                       id="Changes.to.the.app.may.take.a.few.minutes."
-                      defaultMessage="Changes to the app may take a few minutes to update and appear live. Thank you for your patience."
+                      defaultMessage="Changes to the app may take a few minutes to update and appear live."
                     />
                   </Typography>
                 </Alert>

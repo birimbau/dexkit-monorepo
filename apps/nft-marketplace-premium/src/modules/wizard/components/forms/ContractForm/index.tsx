@@ -225,6 +225,11 @@ export default function ContractForm({
             {showSaveButton && (
               <Grid item xs={12}>
                 <Stack justifyContent="flex-end" direction="row" spacing={2}>
+                  {onCancel && (
+                    <Button onClick={onCancel}>
+                      <FormattedMessage id="cancel" defaultMessage="Cancel" />
+                    </Button>
+                  )}
                   <Button
                     onClick={submitForm}
                     variant="contained"
@@ -232,12 +237,6 @@ export default function ContractForm({
                   >
                     <FormattedMessage id="Save" defaultMessage="Save" />
                   </Button>
-
-                  {onCancel && (
-                    <Button onClick={onCancel}>
-                      <FormattedMessage id="cancel" defaultMessage="Cancel" />
-                    </Button>
-                  )}
                 </Stack>
               </Grid>
             )}

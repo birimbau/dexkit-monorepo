@@ -59,7 +59,7 @@ export default function MarketplacesTableV2({ configs }: Props) {
 
     if (config) {
       const jsonString = `data:text/json;chatset=utf-8,${encodeURIComponent(
-        config?.config
+        config?.config,
       )}`;
       const link = document.createElement('a');
       link.href = jsonString;
@@ -72,7 +72,7 @@ export default function MarketplacesTableV2({ configs }: Props) {
           id="config.exported"
           defaultMessage="Config exported"
         />,
-        { variant: 'success' }
+        { variant: 'success' },
       );
     }
   };
@@ -85,7 +85,7 @@ export default function MarketplacesTableV2({ configs }: Props) {
         IS_STAGING
           ? `https://test.dev.dexkit.app?mid=${config?.slug}`
           : `https://dexappbuilder.dexkit.com?mid=${config?.slug}`,
-        '_blank'
+        '_blank',
       );
     }
     handleCloseMenu();
@@ -110,7 +110,7 @@ export default function MarketplacesTableV2({ configs }: Props) {
           vertical: 'bottom',
           horizontal: 'right',
         },
-      }
+      },
     );
   };
 
@@ -126,7 +126,7 @@ export default function MarketplacesTableV2({ configs }: Props) {
           vertical: 'bottom',
           horizontal: 'right',
         },
-      }
+      },
     );
   };
 
@@ -302,6 +302,7 @@ export default function MarketplacesTableV2({ configs }: Props) {
       flex: 1,
       minWidth: isMobile ? 150 : undefined,
       headerName: formatMessage({ id: 'actions', defaultMessage: 'Actions' }),
+      headerAlign: 'center',
       renderCell: ({ row, id }) => {
         if (isMobile) {
           return (
@@ -321,7 +322,7 @@ export default function MarketplacesTableV2({ configs }: Props) {
             sx={{ width: '100%' }}
             direction="row"
             alignItems="center"
-            justifyContent="flex-end"
+            justifyContent="center"
           >
             {ADMIN_TABLE_LIST.map((item, index) => (
               <Tooltip

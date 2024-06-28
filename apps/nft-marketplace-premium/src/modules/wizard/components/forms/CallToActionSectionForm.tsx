@@ -359,6 +359,9 @@ export default function CallToActionSectionForm({
 
         <Grid item xs={12}>
           <Stack spacing={2} direction="row" justifyContent="flex-end">
+            <Button onClick={onCancel}>
+              <FormattedMessage id="cancel" defaultMessage="Cancel" />
+            </Button>
             <Button
               disabled={!formik.isValid}
               type="submit"
@@ -366,9 +369,6 @@ export default function CallToActionSectionForm({
               color="primary"
             >
               <FormattedMessage id="save" defaultMessage="Save" />
-            </Button>
-            <Button onClick={onCancel}>
-              <FormattedMessage id="cancel" defaultMessage="Cancel" />
             </Button>
           </Stack>
         </Grid>

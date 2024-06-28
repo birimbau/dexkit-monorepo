@@ -160,6 +160,23 @@ export default function PagesWizardContainer({
       </AppConfirmDialog>
       <Grid container spacing={2}>
         <Grid item xs={12}>
+          <Stack direction="column">
+            <Typography fontWeight="bold" variant="h6">
+              <FormattedMessage id="pages" defaultMessage="Pages" />
+            </Typography>
+
+            <Typography variant="body2">
+              <FormattedMessage
+                id="pages.wizard.description"
+                defaultMessage="Create and manage your app's pages"
+              />
+            </Typography>
+          </Stack>
+        </Grid>
+        <Grid item xs={12}>
+          <Divider />
+        </Grid>
+        <Grid item xs={12}>
           <PagesContainer
             builderKit={builderKit}
             pages={pages}
