@@ -115,10 +115,19 @@ export type DeployedContract = {
   chainId?: number;
 };
 
+export enum SwapVariant {
+  Classic = "classic",
+  UniswapLike = "uniswap-like",
+  MatchaLike = "matcha-like",
+}
+
 export interface SwapConfig {
   defaultChainId?: number;
   defaultEditChainId?: number;
+  enableUrlParams?: boolean;
+  enableImportExternTokens?: boolean;
   useGasless?: boolean;
+  variant?: SwapVariant;
   myTokensOnlyOnSearch?: boolean;
   configByChain?: {
     [chain: number]: ChainConfig;
