@@ -27,9 +27,7 @@ export function AppDialogTitle({
     <DialogTitle
       sx={{
         zIndex: (theme) => theme.zIndex.modal + 1,
-        display: "flex",
-        justifyContent: "space-between",
-        px: 3,
+        px: 2,
         py: 1.5,
         alignItems: "center",
         alignContent: "center",
@@ -38,18 +36,27 @@ export function AppDialogTitle({
     >
       <Stack
         direction="row"
-        spacing={1}
+        justifyContent="space-between"
         alignItems="center"
         alignContent="center"
+        sx={{}}
+        {...titleBox}
       >
-        {icon}
-        <Typography variant="inherit">{title}</Typography>
+        <Stack
+          direction="row"
+          spacing={1}
+          alignItems="center"
+          alignContent="center"
+        >
+          {icon}
+          <Typography variant="inherit">{title}</Typography>
+        </Stack>
+        {onClose && !hideCloseButton && (
+          <IconButton size="small" disabled={disableClose} onClick={onClose}>
+            <CloseIcon />
+          </IconButton>
+        )}
       </Stack>
-      {onClose && !hideCloseButton && (
-        <IconButton size="small" disabled={disableClose} onClick={onClose}>
-          <CloseIcon />
-        </IconButton>
-      )}
     </DialogTitle>
   );
 }

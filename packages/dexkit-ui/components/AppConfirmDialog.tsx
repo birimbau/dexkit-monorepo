@@ -17,6 +17,8 @@ interface Props {
   icon?: React.ReactNode | React.ReactNode[];
   children?: React.ReactNode | React.ReactNode[];
   isConfirming?: boolean;
+  actionCaption?: React.ReactNode;
+  cancelCaption?: React.ReactNode;
 }
 
 export default function AppConfirmDialog({
@@ -26,6 +28,8 @@ export default function AppConfirmDialog({
   title,
   icon,
   isConfirming,
+  actionCaption,
+  cancelCaption,
 }: Props) {
   const { onClose } = DialogProps;
 
@@ -47,14 +51,18 @@ export default function AppConfirmDialog({
           )
         }
         onClose={handleClose}
-        sx={{ px: 4, py: 2 }}
+        titleBox={{ px: 2 }}
       />
-      <DialogContent sx={{ p: 4 }} dividers>
+      <DialogContent dividers sx={{ p: 4 }}>
         {children}
       </DialogContent>
       <DialogActions sx={{ px: 4, py: 2 }}>
         <Button disabled={isConfirming} onClick={handleClose}>
-          <FormattedMessage id="cancel" defaultMessage="Cancel" />
+          {cancelCaption ? (
+            cancelCaption
+          ) : (
+            <FormattedMessage id="cancel" defaultMessage="Cancel" />
+          )}
         </Button>
         <Button
           startIcon={
@@ -67,6 +75,8 @@ export default function AppConfirmDialog({
         >
           {isConfirming ? (
             <FormattedMessage id="confirming" defaultMessage="Confirming" />
+          ) : actionCaption ? (
+            actionCaption
           ) : (
             <FormattedMessage id="confirm" defaultMessage="Confirm" />
           )}

@@ -7,6 +7,7 @@ import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import CloseIcon from '@mui/icons-material/Close';
 import {
   Box,
+  ButtonBase,
   Dialog,
   DialogContent,
   DialogProps,
@@ -14,13 +15,27 @@ import {
   Grid,
   SelectChangeEvent,
   Stack,
+  TextField,
   Typography,
+  alpha,
 } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
-import { useEffect, useState } from 'react';
+import {
+  ChangeEvent,
+  FocusEvent,
+  KeyboardEvent,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
+import { useIsMobile } from '@dexkit/core';
 import { AppDialogTitle } from '@dexkit/ui/components/AppDialogTitle';
+import Check from '@mui/icons-material/Check';
+import Edit from '@mui/icons-material/Edit';
+import { isDeepEqual } from '@mui/x-data-grid/internals';
+import { useSnackbar } from 'notistack';
 import { BuilderKit } from '../../../constants';
 import PreviewPagePlatform from '../../PreviewPagePlatform';
 import { SectionFormRender } from '../SectionFormRender';
@@ -31,6 +46,7 @@ interface Props {
   dialogProps: DialogProps;
   isEdit: boolean;
   onSave: (section: AppPageSection, index: number) => void;
+  onSaveName: (name: string) => void;
   index: number;
   section?: AppPageSection;
   builderKit?: BuilderKit;
@@ -40,6 +56,7 @@ export default function EditSectionDialog({
   dialogProps,
   isEdit,
   onSave,
+  onSaveName,
   index,
   section,
   builderKit,
@@ -58,6 +75,13 @@ export default function EditSectionDialog({
     AppPageSection | undefined
   >(section);
 
+  const [hasChanges, setHasChanges] = useState(false);
+
+  const [isEditName, setIsEditName] = useState(false);
+  const [name, setName] = useState(section?.name || section?.title);
+
+  const inputNameRef = useRef<HTMLInputElement | null>(null);
+
   const handleClose = () => {
     if (onClose) {
       onClose({}, 'backdropClick');
@@ -69,13 +93,61 @@ export default function EditSectionDialog({
     setSectionType(e.target.value as SectionType);
   };
 
+  const { enqueueSnackbar } = useSnackbar();
+
   const handleSave = (section: AppPageSection) => {
-    onSave(section, index);
+    if (!hasChanges) {
+      return handleClose();
+    }
+
+    let sec = { ...section };
+
+    if (name) {
+      sec.name = name;
+    }
+
+    onSave(sec, index);
     handleClose();
+    if (!isEdit) {
+      enqueueSnackbar(
+        <FormattedMessage
+          id="section.created"
+          defaultMessage="Section created"
+        />,
+        { variant: 'success' },
+      );
+    }
   };
 
   const handleChange = (section: AppPageSection) => {
+    if (!isDeepEqual(section, changedSection)) {
+      setHasChanges(true);
+    }
+
     setChangedSection(section);
+  };
+
+  const handleEdit = () => {
+    setIsEditName(true);
+    setTimeout(() => {
+      inputNameRef.current?.focus();
+    }, 300);
+  };
+
+  const handleCancel = () => {
+    setIsEditName(false);
+  };
+
+  const handleSaveName = () => {
+    setIsEditName(false);
+
+    if (name) {
+      onSaveName(name);
+    }
+  };
+
+  const handleChangeName = (e: ChangeEvent<HTMLInputElement>) => {
+    setName(e.target.value);
   };
 
   const renderSectionType = (sectionType?: SectionType) => {
@@ -104,20 +176,39 @@ export default function EditSectionDialog({
     }
   }, [sectionType]);
 
+  const isMobile = useIsMobile();
+
+  const handleKeyDown = (e: KeyboardEvent) => {
+    e.stopPropagation();
+
+    if (e.key === 'Enter') {
+      handleSaveName();
+    }
+    if (e.key === 'Escape') {
+      handleCancel();
+    }
+  };
+
+  const handleBlur = (e: FocusEvent<HTMLInputElement>) => {
+    setIsEditName(false);
+    setName(e.target.value);
+  };
+
   return (
     <Dialog {...dialogProps} onClose={handleClose}>
       <AppDialogTitle
         title={
-          isEdit ? (
-            <Stack
-              spacing={2}
-              direction={'row'}
-              alignContent={'center'}
-              alignItems={'center'}
-            >
-              <IconButton aria-label="close dialog" onClick={handleClose}>
-                <CloseIcon />
-              </IconButton>
+          <Stack
+            spacing={1}
+            direction={'row'}
+            alignContent={'center'}
+            alignItems={'center'}
+          >
+            <IconButton aria-label="close dialog" onClick={handleClose}>
+              <CloseIcon />
+            </IconButton>
+
+            {isEdit ? (
               <Box>
                 <FormattedMessage
                   id="edit.section"
@@ -125,23 +216,82 @@ export default function EditSectionDialog({
                 />
                 :
               </Box>
-              <Box>{section?.title || ''}</Box>
-            </Stack>
-          ) : (
-            <Stack
-              spacing={2}
-              direction={'row'}
-              alignContent={'center'}
-              alignItems={'center'}
-            >
-              <IconButton aria-label="close dialog" onClick={handleClose}>
-                <CloseIcon />
+            ) : (
+              <Stack
+                spacing={2}
+                direction={'row'}
+                alignContent={'center'}
+                alignItems={'center'}
+              >
+                <Typography variant="inherit">
+                  <FormattedMessage
+                    id="add.section"
+                    defaultMessage="Add Section"
+                  />
+                </Typography>
+                <TextField
+                  variant="standard"
+                  onChange={handleChangeName}
+                  value={name}
+                  inputRef={(ref) => (inputNameRef.current = ref)}
+                  placeholder={formatMessage({
+                    id: 'section.name',
+                    defaultMessage: 'Section name',
+                  })}
+                />
+              </Stack>
+            )}
+            {isEditName && (
+              <TextField
+                variant="standard"
+                onChange={handleChangeName}
+                value={name}
+                inputRef={(ref) => (inputNameRef.current = ref)}
+                onKeyDown={handleKeyDown}
+                onBlur={handleBlur}
+                placeholder={formatMessage({
+                  id: 'section.name',
+                  defaultMessage: 'Section name',
+                })}
+              />
+            )}
+            {isEdit && !isEditName && (
+              <ButtonBase
+                sx={{
+                  px: 1,
+                  py: 0.25,
+
+                  borderRadius: (theme) => theme.shape.borderRadius / 2,
+                  '&: hover': {
+                    backgroundColor: (theme) =>
+                      alpha(theme.palette.primary.main, 0.1),
+                  },
+                }}
+                onClick={handleEdit}
+              >
+                <Typography variant="h6">
+                  {section?.name ||
+                    section?.title ||
+                    formatMessage({
+                      id: 'unnamed.section',
+                      defaultMessage: 'Unnamed Section',
+                    })}
+                </Typography>
+              </ButtonBase>
+            )}
+            {isEdit && isMobile && isEditName && (
+              <IconButton onClick={handleSaveName}>
+                <Check />
               </IconButton>
-              <FormattedMessage id="add.section" defaultMessage="Add Section" />
-            </Stack>
-          )
+            )}
+            {isEdit && isMobile && !isEditName && (
+              <IconButton onClick={handleEdit}>
+                <Edit />
+              </IconButton>
+            )}
+          </Stack>
         }
-        hideCloseButton={true}
+        hideCloseButton
         onClose={handleClose}
       />
       <Divider />

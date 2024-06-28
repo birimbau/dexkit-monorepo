@@ -56,6 +56,7 @@ export interface GatedCondition {
 
 export interface GatedPageLayout {
   frontImage?: string;
+  frontImageDark?: string;
   frontImageHeight?: number;
   frontImageWidth?: number;
   accessRequirementsMessage?: string;

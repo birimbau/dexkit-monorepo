@@ -12,9 +12,10 @@ const PreviewPageDialog = dynamic(() => import('./dialogs/PreviewPageDialog'));
 
 interface Props {
   appConfig?: AppConfig;
+  site?: string;
 }
 
-export function PreviewAppButton({ appConfig }: Props) {
+export function PreviewAppButton({ appConfig, site }: Props) {
   const [showPreview, setShowPreview] = useState(false);
   const { mode } = useThemeMode();
   const handleClosePreview = () => {
@@ -72,6 +73,8 @@ export function PreviewAppButton({ appConfig }: Props) {
           sections={appConfig?.pages['home']?.sections}
           name="Home"
           withLayout={true}
+          page="home"
+          site={site}
         />
       </CssVarsProvider>
       <Button

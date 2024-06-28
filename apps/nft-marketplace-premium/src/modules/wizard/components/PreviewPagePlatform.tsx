@@ -14,6 +14,9 @@ interface Props {
   appConfig?: AppConfig;
   title?: React.ReactNode;
   enableOverflow?: boolean;
+  page?: string;
+  site?: string;
+  index?: number;
 }
 
 export default function PreviewPagePlatform({
@@ -23,6 +26,9 @@ export default function PreviewPagePlatform({
   appConfig,
   title,
   enableOverflow,
+  page,
+  site,
+  index,
 }: Props) {
   const [previewPlatform, setPreviewPlatform] = useState<any>('desktop');
 
@@ -72,7 +78,7 @@ export default function PreviewPagePlatform({
             alignItems={'center'}
             alignContent={'center'}
           >
-            <PreviewPortal>{pagePreview}</PreviewPortal>
+            <PreviewPortal page={page} site={site} index={index} />
           </Stack>
         )}
       </Box>

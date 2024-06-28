@@ -9,9 +9,12 @@ import {
   useTheme,
 } from '@mui/material';
 import { useState } from 'react';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 
-import { CustomEditorSection } from '@dexkit/ui/modules/wizard/types/section';
+import {
+  AppPageSection,
+  CustomEditorSection,
+} from '@dexkit/ui/modules/wizard/types/section';
 import { BuilderKit } from '../../constants';
 import PageEditor from '../pageEditor/PageEditor';
 import { AppDialogPageEditorTitle } from './AppDialogPageEditorTitle';
@@ -36,6 +39,17 @@ export default function PageEditorDialog({
 
   const { onClose } = dialogProps;
 
+  const { formatMessage } = useIntl();
+
+  const [name, setName] = useState(
+    section?.name
+      ? section.name
+      : formatMessage({
+          id: 'unnamed.section',
+          defaultMessage: 'Unnamed Section',
+        }),
+  );
+
   const handleClose = () => {
     if (onClose) {
       onClose({}, 'backdropClick');
@@ -49,6 +63,10 @@ export default function PageEditorDialog({
 
   const theme = useTheme();
 
+  const handleChangeName = (name: string) => {
+    setName(name);
+  };
+
   return (
     <Dialog {...dialogProps} sx={{ zIndex: 1199 }}>
       <Box sx={{ paddingLeft: 4 }}>
@@ -57,6 +75,8 @@ export default function PageEditorDialog({
           onClose={handleClose}
           index={index}
           onSave={onSave}
+          name={name}
+          onChangeName={handleChangeName}
         />
       </Box>
       <DialogContent>
@@ -75,7 +95,18 @@ export default function PageEditorDialog({
             variant="contained"
             color="primary"
             onClick={() => {
-              onSave({ ...section, type: 'custom', data }, index);
+              let saveData: AppPageSection = {
+                ...section,
+                type: 'custom',
+                data,
+              };
+
+              if (name) {
+                saveData.name = name;
+              }
+
+              onSave(saveData, index);
+
               handleClose();
             }}
           >

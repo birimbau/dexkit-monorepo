@@ -1,6 +1,5 @@
 import { AppConfig, AppPage } from '@dexkit/ui/modules/wizard/types/config';
 import {
-  Box,
   Button,
   Divider,
   Grid,
@@ -9,14 +8,15 @@ import {
   createTheme,
   responsiveFontSizes,
 } from '@mui/material';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useContext, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { getTheme } from '../../../../theme';
 import { BuilderKit } from '../../constants';
 import { PagesContainer } from '../PagesContainer';
 
-import AddIcon from '@mui/icons-material/Add';
+import { AppConfirmDialog } from '@dexkit/ui';
 import dynamic from 'next/dynamic';
+import { PagesContext } from './EditWizardContainer';
 
 const ApiKeyIntegrationDialog = dynamic(
   () => import('../dialogs/ApiKeyIntegrationDialog'),
@@ -25,45 +25,32 @@ const ApiKeyIntegrationDialog = dynamic(
 interface Props {
   config: AppConfig;
   onSave: (config: AppConfig) => void;
+  onChange: (config: AppConfig) => void;
+  hasChanges?: boolean;
   builderKit?: BuilderKit;
   onHasChanges: (hasChanges: boolean) => void;
-  siteId?: number;
+  siteSlug?: string;
   previewUrl?: string;
 }
 
 export default function PagesWizardContainer({
   config,
-  siteId,
+  siteSlug,
   onSave,
   builderKit,
+  hasChanges,
   onHasChanges,
+  onChange,
   previewUrl,
 }: Props) {
-  const [currentPage, setCurrentPage] = useState<AppPage>(config.pages['home']);
-  const [pages, setPages] = useState<{ [key: string]: AppPage }>(config.pages);
+  const [pages, setPages] = useState<{ [key: string]: AppPage }>(
+    structuredClone(config.pages),
+  );
+
+  const [hasPageChanges, setHasPageChanges] = useState(false);
+  const [hasSectionChanges, setHasSectionChanges] = useState(false);
+
   const [showAddPage, setShowAddPage] = useState(false);
-  useEffect(() => {
-    if (config && !currentPage) {
-      setCurrentPage(currentPage);
-    }
-    if (config && !pages) {
-      setPages(config.pages);
-    }
-  }, [config]);
-
-  const pagesChanged = useMemo(() => {
-    if (config.pages !== pages) {
-      return true;
-    } else {
-      return false;
-    }
-  }, [config.pages, pages]);
-
-  useMemo(() => {
-    if (onHasChanges) {
-      onHasChanges(pagesChanged);
-    }
-  }, [onHasChanges, pagesChanged]);
 
   const selectedTheme = useMemo(() => {
     if (config.theme !== undefined) {
@@ -77,140 +64,136 @@ export default function PagesWizardContainer({
 
   const handleSave = () => {
     const newConfig = { ...config, pages };
+
     onSave(newConfig);
   };
 
-  const handleShowAddPage = () => {
-    setShowAddPage(true);
+  const { handleCancelEdit, setSelectedKey, selectedKey, oldPage } =
+    useContext(PagesContext);
+
+  const handleCancel = () => {
+    setOpenHasChangesConfirm(true);
   };
 
-  /* const hasSwap = useMemo(() => {
-    return Object.keys(pages)
-      .map((key) => pages[key])
-      .some((page) =>
-        page.sections.some(
-          (section) =>
-            section.type === 'swap' ||
-            section.type === 'exchange' ||
-            section.type === 'token-trade',
-        ),
-      );
-  }, [JSON.stringify(pages)]);
+  const handleSetPages = useCallback(
+    (cb: (prev: { [key: string]: AppPage }) => { [key: string]: AppPage }) => {
+      setPages((value) => {
+        let res = cb(value);
 
-  const { data } = useGetApiKeyQuery({ type: 'zrx', siteId });*/
+        onChange({
+          ...config,
+          pages: { ...(res as { [key: string]: AppPage }) },
+        });
 
-  const [showSetApiKey, setShowSetApiKey] = useState(false);
+        onHasChanges(true);
 
-  const handleCloseApiKey = () => {
-    setShowSetApiKey(false);
+        return res;
+      });
+    },
+    [onHasChanges, onChange],
+  );
+
+  const [openHasChangesConfirm, setOpenHasChangesConfirm] = useState(false);
+
+  const handleChangePages = () => {
+    setHasPageChanges(true);
   };
 
-  const handleSetZrxApiKey = () => {
-    setShowSetApiKey(true);
+  const handleChangeSection = () => {
+    setHasSectionChanges(true);
   };
 
   return (
     <>
-      {showSetApiKey && (
-        <ApiKeyIntegrationDialog
-          DialogProps={{
-            open: showSetApiKey,
-            onClose: handleCloseApiKey,
-            fullWidth: true,
-            maxWidth: 'sm',
-          }}
-          siteId={siteId}
-        />
-      )}
-      <Grid container spacing={2}>
-        {/*!data?.value && hasSwap && (
-          <Grid item xs={12}>
-            <Alert
-              severity="info"
-              action={
-                <Button
-                  onClick={handleSetZrxApiKey}
-                  variant="outlined"
-                  size="small"
-                >
-                  <FormattedMessage
-                    id="set.api.key"
-                    defaultMessage="Set api Key"
-                  />
-                </Button>
-              }
-            >
-              <FormattedMessage
-                id="configure.0x.text"
-                defaultMessage="Ensure a smooth experience by configuring your 0x API key for access to our swap and exchange services."
-              />
-            </Alert>
-          </Grid>
-        )*/}
-        <Grid item xs={12}>
-          <Stack direction={'column'}>
-            <Typography variant={'h6'}>
-              <FormattedMessage id="pages" defaultMessage="Pages" />
-            </Typography>
+      <AppConfirmDialog
+        DialogProps={{
+          open: openHasChangesConfirm,
+          maxWidth: 'xs',
+          fullWidth: true,
+          onClose: () => setOpenHasChangesConfirm(false),
+        }}
+        onConfirm={() => {
+          if (selectedKey && oldPage) {
+            setPages((pages) => {
+              const newPages = { ...pages };
 
-            <Typography variant={'body2'}>
-              <FormattedMessage
-                id="pages.wizard.description"
-                defaultMessage="Create and manage your app's pages"
-              />
-            </Typography>
-          </Stack>
-        </Grid>
-        <Grid item xs={12}>
-          <Divider />
-        </Grid>
-        <Grid item xs={12}>
-          <Box sx={{ pt: 2, pb: 2 }}>
-            <Button
-              variant="contained"
-              onClick={handleShowAddPage}
-              size="small"
-              startIcon={<AddIcon />}
-            >
-              <FormattedMessage id="New.page" defaultMessage="New page" />
-            </Button>
-          </Box>
-        </Grid>
-        <Grid item xs={12}>
-          {currentPage && pages && (
-            <PagesContainer
-              builderKit={builderKit}
-              pages={pages}
-              currentPage={currentPage}
-              setPages={setPages}
-              setCurrentPage={setCurrentPage}
-              theme={selectedTheme}
-              showAddPage={showAddPage}
-              setShowAddPage={setShowAddPage}
-              previewUrl={previewUrl}
+              return {
+                ...newPages,
+                [selectedKey]: oldPage,
+              };
+            });
+            setHasSectionChanges(false);
+          } else {
+            setPages(structuredClone(config.pages));
+            setHasPageChanges(false);
+          }
+
+          setOpenHasChangesConfirm(false);
+          setSelectedKey(undefined);
+
+          handleCancelEdit(false);
+        }}
+        title={
+          <FormattedMessage
+            id="discard.changes"
+            defaultMessage="Discard Changes"
+          />
+        }
+        actionCaption={
+          <FormattedMessage id="discard" defaultMessage="Discard" />
+        }
+      >
+        <Stack>
+          <Typography variant="body1">
+            <FormattedMessage
+              id="are.you.sure.you.want.to.discard.your.changes?"
+              defaultMessage="Are you sure you want to discard your changes?"
             />
-          )}
+          </Typography>
+          <Typography variant="caption" color="text.secondary">
+            <FormattedMessage
+              id="if.you.discard.now.your.changes.will.be.lost."
+              defaultMessage="If you discard now, your changes will be lost."
+            />
+          </Typography>
+        </Stack>
+      </AppConfirmDialog>
+      <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <PagesContainer
+            builderKit={builderKit}
+            pages={pages}
+            setPages={handleSetPages}
+            onChangePages={handleChangePages}
+            onChangeSections={handleChangeSection}
+            theme={selectedTheme}
+            showAddPage={showAddPage}
+            setShowAddPage={setShowAddPage}
+            previewUrl={previewUrl}
+            site={siteSlug?.toString()}
+          />
         </Grid>
-
         <Grid item xs={12}>
           <Divider />
         </Grid>
         <Grid item xs={12}>
           <Stack spacing={1} direction="row" justifyContent="flex-end">
             <Button
+              onClick={handleCancel}
+              disabled={!hasSectionChanges && !hasPageChanges}
+            >
+              <FormattedMessage id="cancel" defaultMessage="Cancel" />
+            </Button>
+            <Button
               variant="contained"
               color="primary"
               onClick={handleSave}
-              disabled={!pagesChanged}
+              disabled={!hasSectionChanges && !hasPageChanges}
             >
               <FormattedMessage id="save" defaultMessage="Save" />
             </Button>
           </Stack>
         </Grid>
-        <Grid item xs={12}>
-          <Divider />
-        </Grid>
-        <Grid item xs={12}></Grid>
       </Grid>
     </>
   );
