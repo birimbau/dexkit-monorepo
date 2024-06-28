@@ -4,6 +4,7 @@ import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 
 import CloseIcon from "@mui/icons-material/Close";
+import { SxProps, Theme } from "@mui/material";
 
 interface Props {
   title?: string | React.ReactNode | React.ReactNode[];
@@ -11,6 +12,7 @@ interface Props {
   onClose?: () => void;
   disableClose?: boolean;
   hideCloseButton?: boolean;
+  sx?: SxProps<Theme> | undefined;
 }
 
 export function AppDialogTitle({
@@ -19,6 +21,7 @@ export function AppDialogTitle({
   onClose,
   disableClose,
   hideCloseButton,
+  sx,
 }: Props) {
   return (
     <DialogTitle
@@ -30,6 +33,7 @@ export function AppDialogTitle({
         py: 1.5,
         alignItems: "center",
         alignContent: "center",
+        ...sx,
       }}
     >
       <Stack

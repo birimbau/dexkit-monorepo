@@ -47,9 +47,15 @@ export default function AppConfirmDialog({
           )
         }
         onClose={handleClose}
+        sx={{ px: 4, py: 2 }}
       />
-      <DialogContent dividers>{children}</DialogContent>
-      <DialogActions>
+      <DialogContent sx={{ p: 4 }} dividers>
+        {children}
+      </DialogContent>
+      <DialogActions sx={{ px: 4, py: 2 }}>
+        <Button disabled={isConfirming} onClick={handleClose}>
+          <FormattedMessage id="cancel" defaultMessage="Cancel" />
+        </Button>
         <Button
           startIcon={
             isConfirming && <CircularProgress color="inherit" size="1rem" />
@@ -64,9 +70,6 @@ export default function AppConfirmDialog({
           ) : (
             <FormattedMessage id="confirm" defaultMessage="Confirm" />
           )}
-        </Button>
-        <Button disabled={isConfirming} onClick={handleClose}>
-          <FormattedMessage id="cancel" defaultMessage="Cancel" />
         </Button>
       </DialogActions>
     </Dialog>
