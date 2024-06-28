@@ -12,6 +12,8 @@ import {
   GatedCondition,
 } from '@dexkit/ui/modules/wizard/types/config';
 import { useState } from 'react';
+import PreviewGatedConditionsDialog from '../dialogs/PreviewGatedConditionsDialog';
+import PageGatedConditionsHeader from './PageGatedConditionsHeader';
 import PageGatedConditionsTab from './PageGatedConditionsTab';
 import PageGatedLayoutTab from './PageGatedLayoutTab';
 
@@ -21,62 +23,97 @@ export interface PageGatedContentProps {
     conditions?: GatedCondition[],
     layout?: GatedPageLayout,
   ) => void;
+  onClose: () => void;
 }
 
 export default function PageGatedContent({
   page,
   onSaveGatedConditions,
+  onClose,
 }: PageGatedContentProps) {
   const [tab, setTab] = useState('conditions');
 
+  const [showPreview, setShowPreview] = useState(false);
+
+  const handleClose = () => {
+    setShowPreview(false);
+  };
+
+  const handlePreview = () => {
+    setShowPreview(true);
+  };
+
   return (
-    <Box>
-      <Grid container spacing={2}>
-        <Grid item xs={12}>
-          <Typography variant="h6" fontWeight="bold">
-            <FormattedMessage
-              id="gated.conditions"
-              defaultMessage="Gated Conditions"
+    <>
+      {showPreview && (
+        <PreviewGatedConditionsDialog
+          dialogProps={{ open: showPreview, onClose: handleClose }}
+          conditions={page.gatedConditions}
+          gatedPageLayout={page.gatedPageLayout}
+        />
+      )}
+      <Box>
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <PageGatedConditionsHeader
+              onClone={() => {}}
+              onEditTitle={() => {}}
+              onPreview={handlePreview}
+              page={page}
+              onClose={onClose}
             />
-          </Typography>
-        </Grid>
-        <Grid item xs={12}>
-          <TabContext value={tab}>
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <Tabs value={tab} onChange={(e, value) => setTab(value)}>
-                  <Tab
-                    value="conditions"
-                    label={
-                      <FormattedMessage
-                        id="conditions"
-                        defaultMessage="conditions"
-                      />
-                    }
-                  />
-                  <Tab
-                    value="layout"
-                    label={
-                      <FormattedMessage id="layout" defaultMessage="Layout" />
-                    }
-                  />
-                </Tabs>
+          </Grid>
+          <Grid item xs={12}>
+            <Typography variant="h6" fontWeight="bold">
+              <FormattedMessage
+                id="gated.conditions"
+                defaultMessage="Gated Conditions"
+              />
+            </Typography>
+          </Grid>
+          <Grid item xs={12}>
+            <TabContext value={tab}>
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  <Tabs value={tab} onChange={(e, value) => setTab(value)}>
+                    <Tab
+                      value="conditions"
+                      label={
+                        <FormattedMessage
+                          id="conditions"
+                          defaultMessage="conditions"
+                        />
+                      }
+                    />
+                    <Tab
+                      value="layout"
+                      label={
+                        <FormattedMessage id="layout" defaultMessage="Layout" />
+                      }
+                    />
+                  </Tabs>
+                </Grid>
+                <Grid item xs={12}>
+                  <TabPanel sx={{ p: 0, m: 0 }} value="conditions">
+                    <PageGatedConditionsTab
+                      onSaveGatedConditions={onSaveGatedConditions}
+                      conditions={page.gatedConditions ?? []}
+                    />
+                  </TabPanel>
+                  <TabPanel sx={{ p: 0, m: 0 }} value="layout">
+                    <PageGatedLayoutTab
+                      onSaveGatedLayout={(layout) =>
+                        onSaveGatedConditions(undefined, layout)
+                      }
+                      layout={page.gatedPageLayout}
+                    />
+                  </TabPanel>
+                </Grid>
               </Grid>
-              <Grid item xs={12}>
-                <TabPanel sx={{ p: 0, m: 0 }} value="conditions">
-                  <PageGatedConditionsTab
-                    onSaveGatedConditions={onSaveGatedConditions}
-                    conditions={page.gatedConditions ?? []}
-                  />
-                </TabPanel>
-                <TabPanel sx={{ p: 0, m: 0 }} value="layout">
-                  <PageGatedLayoutTab />
-                </TabPanel>
-              </Grid>
-            </Grid>
-          </TabContext>
+            </TabContext>
+          </Grid>
         </Grid>
-      </Grid>
-    </Box>
+      </Box>
+    </>
   );
 }

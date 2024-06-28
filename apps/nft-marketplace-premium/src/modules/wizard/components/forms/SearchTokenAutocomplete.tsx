@@ -1,4 +1,5 @@
 import { NETWORKS } from '@dexkit/core/constants/networks';
+import { isAddressEqual } from '@dexkit/core/utils';
 import { getChainName, getChainSymbol } from '@dexkit/core/utils/blockchain';
 import { useTokenList } from '@dexkit/ui';
 import { Stack } from '@mui/material';
@@ -21,10 +22,6 @@ export function SearchTokenAutocomplete(props: Props) {
   const { data, label, onChange, chainId, disabled, tokens } = props;
 
   const [search, setSearch] = useState<string>();
-
-  const formValue = useMemo(() => {
-    return { ...data };
-  }, [data]);
 
   const assets = useMemo(() => {
     if (search) {
@@ -82,45 +79,36 @@ export function SearchTokenAutocomplete(props: Props) {
           };
         }) || []
     );
-  }, [formValue, chainId, tokens, search]);
+  }, [chainId, tokens, search]);
+
+  console.log('tem dados', data);
 
   return (
     <Autocomplete
       id="search-token"
       disabled={disabled}
-      defaultValue={formValue || null}
-      value={formValue || null}
+      value={data}
+      defaultValue={data}
       options={assets}
       fullWidth
       autoHighlight
       isOptionEqualToValue={(op, val) =>
         op?.chainId === val?.chainId &&
-        op?.address?.toLowerCase() === val?.address?.toLowerCase()
+        isAddressEqual(op?.address, val?.address)
       }
-      filterOptions={(x) => x}
       onChange={(_change, value) => {
         if (
           value &&
           onChange &&
           (chainId !== undefined ? value.chainId === chainId : true)
         ) {
-          onChange({
-            name: value.name,
-            address: value.address,
-            network: value.network,
-            chainId: value.chainId,
-            symbol: value.symbol,
-            decimals: value.decimals,
-            logoURI: value?.logoURI,
-          });
+          onChange(value);
         } else {
           onChange(undefined);
         }
       }}
       getOptionLabel={(option) => {
-        return option.name
-          ? `${getChainSymbol(option.chainId)}-${option.name}`
-          : '';
+        return `${getChainSymbol(option.chainId)}-${option?.name}`;
       }}
       renderOption={(props, option) => (
         <Box
@@ -153,16 +141,11 @@ export function SearchTokenAutocomplete(props: Props) {
                 alignContent={'center'}
                 flexDirection={'row'}
               >
-                <img
-                  loading="lazy"
-                  width="25"
-                  src={`${formValue.logoURI}`}
-                  alt=""
-                />
-                {formValue.chainId && (
+                <img loading="lazy" width="25" src={`${data.logoURI}`} alt="" />
+                {data.chainId && (
                   <Box sx={{ pl: 1 }}>
-                    {getChainName(formValue.chainId)} - {formValue.name} -
-                    {formValue?.symbol?.toUpperCase()}
+                    {getChainName(data.chainId)} - {data.name} -
+                    {data?.symbol?.toUpperCase()}
                   </Box>
                 )}
               </Stack>

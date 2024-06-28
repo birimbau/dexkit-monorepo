@@ -66,6 +66,9 @@ export default function PagesWizardContainer({
     const newConfig = { ...config, pages };
 
     onSave(newConfig);
+
+    setHasPageChanges(false);
+    setHasSectionChanges(false);
   };
 
   const { handleCancelEdit, setSelectedKey, selectedKey, oldPage } =

@@ -184,6 +184,11 @@ export default function Pages({
 
   const { formatMessage } = useIntl();
 
+  const handleCloseGate = () => {
+    setIsEditGate(false);
+    setSelectedKey(undefined);
+  };
+
   const renderPreviewDialog = () => {
     if (showPreview && selectedKey) {
       return (
@@ -211,6 +216,7 @@ export default function Pages({
       <PageGatedContent
         page={pages[selectedKey]}
         onSaveGatedConditions={handleSaveGatedConditions}
+        onClose={handleCloseGate}
       />
     );
   }

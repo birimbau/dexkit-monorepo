@@ -109,7 +109,7 @@ export default function PageGatedConditionsTab({
 
   return (
     <>
-      {showForm && cond && (
+      {showForm && (
         <EditGatedConditionDialog
           DialogProps={{
             open: showForm,
@@ -118,9 +118,9 @@ export default function PageGatedConditionsTab({
             maxWidth: 'lg',
           }}
           onSaveGatedCondition={handleSaveCondition}
-          isFirst={cond.index === 0}
-          index={cond.index}
-          condition={cond.condition}
+          isFirst={cond?.index === 0 || cond === undefined}
+          index={cond?.index}
+          condition={cond?.condition}
         />
       )}
       {showConfirm && (
@@ -132,8 +132,25 @@ export default function PageGatedConditionsTab({
             onClose: handleCloseConfirm,
           }}
           onConfirm={handleConfirmRemove}
+          title={
+            <FormattedMessage
+              id="remove.condition"
+              defaultMessage="Remove Condition"
+            />
+          }
         >
-          <Typography></Typography>
+          <Typography variant="subtitle1">
+            <FormattedMessage
+              id="are.you.sure.you.want.to.remove.your.this.condition"
+              defaultMessage="Are you sure you want to remove this condition?"
+            />
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            <FormattedMessage
+              id="if.you.remove.now.your.changes.will.be.permanent"
+              defaultMessage="If you remove now, your changes will be permanent."
+            />
+          </Typography>
         </AppConfirmDialog>
       )}
 
@@ -164,6 +181,7 @@ export default function PageGatedConditionsTab({
             <PageGatedConditionsList
               conditions={conditions}
               onAction={handleAction}
+              onChange={onSaveGatedConditions}
             />
           </Grid>
         </Grid>

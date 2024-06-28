@@ -12,9 +12,10 @@ import { FormattedMessage } from 'react-intl';
 import MediaDialog from '@dexkit/ui/components/mediaDialog';
 import { AccountFile } from '@dexkit/ui/modules/file/types';
 import { GatedPageLayout } from '@dexkit/ui/modules/wizard/types';
-import { Field, Formik } from 'formik';
+import { Field, Formik, FormikHelpers } from 'formik';
 import { TextField } from 'formik-mui';
 import { useState } from 'react';
+import ChangeListener from '../ChangeListener';
 
 const CustomImage = styled('img')(({ theme }) => ({
   width: '100%',
@@ -24,12 +25,20 @@ const CustomImage = styled('img')(({ theme }) => ({
 
 export interface PageGatedLayoutTabProps {
   layout?: GatedPageLayout;
+  onSaveGatedLayout: (layout?: GatedPageLayout) => void;
 }
 
 export default function PageGatedLayoutTab({
   layout,
+  onSaveGatedLayout,
 }: PageGatedLayoutTabProps) {
-  const handleSubmit = async (values: { layout: GatedPageLayout }) => {};
+  const handleSubmit = async (
+    values: { layout: GatedPageLayout },
+    helpers: FormikHelpers<any>,
+  ) => {
+    onSaveGatedLayout(values.layout);
+    helpers.resetForm();
+  };
 
   const [showSelect, setShowSelect] = useState(false);
   const [mode, setMode] = useState<string>();
@@ -51,12 +60,19 @@ export default function PageGatedLayoutTab({
       value: any,
       shouldValidate?: boolean | undefined,
     ) => void,
+    setFieldTouched: (
+      field: string,
+      isTouched?: boolean | undefined,
+      shouldValidate?: boolean | undefined,
+    ) => void,
   ) => {
     return (file: AccountFile) => {
       if (mode === 'light') {
         setFieldValue('layout.frontImage', file.url);
+        setFieldTouched('layout.frontImage');
       } else if (mode === 'dark') {
         setFieldValue('layout.frontImageDark', file.url);
+        setFieldTouched('layout.frontImageDark');
       }
     };
   };
@@ -77,8 +93,23 @@ export default function PageGatedLayoutTab({
       }
       onSubmit={handleSubmit}
     >
-      {({ submitForm, setFieldValue, values }) => (
+      {({
+        submitForm,
+        setFieldValue,
+        values,
+        isValid,
+        touched,
+        setFieldTouched,
+      }) => (
         <>
+          {touched.layout && (
+            <ChangeListener
+              values={values}
+              isValid={isValid}
+              onChange={(values: any) => onSaveGatedLayout(values.layout)}
+            />
+          )}
+
           {showSelect && (
             <MediaDialog
               dialogProps={{
@@ -87,7 +118,10 @@ export default function PageGatedLayoutTab({
                 fullWidth: true,
                 onClose: handleSelectClose,
               }}
-              onConfirmSelectFile={handleSelectFile(setFieldValue)}
+              onConfirmSelectFile={handleSelectFile(
+                setFieldValue,
+                setFieldTouched,
+              )}
             />
           )}
 
@@ -178,6 +212,46 @@ export default function PageGatedLayoutTab({
                         </ButtonBase>
                       </Stack>
                     </Box>
+                  </Grid>
+                </Grid>
+              </Grid>
+              <Grid item xs={12}>
+                <Grid container spacing={2}>
+                  <Grid item xs={12}>
+                    <Typography variant="body1">
+                      <FormattedMessage
+                        id="cover.image.size"
+                        defaultMessage="Cover image size"
+                      />
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={12} sm={3}>
+                    <Field
+                      component={TextField}
+                      type="text"
+                      fullWidth
+                      label={
+                        <FormattedMessage
+                          id="width.px"
+                          defaultMessage="Width(px)"
+                        />
+                      }
+                      name="layout.frontImageWidth"
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={3}>
+                    <Field
+                      component={TextField}
+                      type="text"
+                      fullWidth
+                      label={
+                        <FormattedMessage
+                          id="heigth.px"
+                          defaultMessage="Height(px)"
+                        />
+                      }
+                      name="layout.frontImageHeight"
+                    />
                   </Grid>
                 </Grid>
               </Grid>

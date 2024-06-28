@@ -1,13 +1,10 @@
-import CloseIcon from '@mui/icons-material/Close';
 import {
-    Box,
-    Button,
-    Container,
-    Dialog,
-    DialogProps,
-    IconButton,
-    Stack,
-    Typography,
+  Box,
+  Button,
+  Dialog,
+  DialogContent,
+  DialogProps,
+  Stack,
 } from '@mui/material';
 
 import { useWeb3React } from '@dexkit/wallet-connectors/hooks/useWeb3React';
@@ -19,6 +16,7 @@ import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { useCheckGatedConditions } from '../../hooks';
 
+import { AppDialogTitle } from '@dexkit/ui';
 import { GatedPageLayout } from '@dexkit/ui/modules/wizard/types';
 import { GatedCondition } from '@dexkit/ui/modules/wizard/types/config';
 import { GatedConditionView } from '../GatedConditionView';
@@ -63,6 +61,7 @@ export default function PreviewGatedConditionsDialog({
   };
 
   const [previewPlatform, setPreviewPlatform] = useState<any>('desktop');
+
   const handleClose = () => {
     if (onClose) {
       onClose({}, 'backdropClick');
@@ -70,33 +69,27 @@ export default function PreviewGatedConditionsDialog({
   };
 
   const pagePreview = (
-    <Container>
-      <GatedConditionView
-        layout={gatedPageLayout}
-        conditions={conditions}
-        {...conditionResult.data}
-        account={selectedIndex === 1 ? undefined : account}
-        isLoggedIn={selectedIndex === 1 || selectedIndex === 2 ? false : true}
-      />
-    </Container>
+    <GatedConditionView
+      layout={gatedPageLayout}
+      conditions={conditions}
+      {...conditionResult.data}
+      account={selectedIndex === 1 ? undefined : account}
+      isLoggedIn={selectedIndex === 1 || selectedIndex === 2 ? false : true}
+    />
   );
 
   return (
     <Dialog {...dialogProps} sx={{ p: 0, m: 0 }}>
-      <IconButton
-        aria-label="close"
-        onClick={handleClose}
-        sx={{
-          position: 'absolute',
-          right: 8,
-          top: 8,
-          color: (theme) => theme.palette.grey[500],
-        }}
-      >
-        <CloseIcon />
-      </IconButton>
-
-      <>
+      <AppDialogTitle
+        title={
+          <FormattedMessage
+            id="gated.conditions"
+            defaultMessage="Gated Condition preview"
+          />
+        }
+        onClose={handleClose}
+      />
+      <DialogContent dividers>
         <Stack
           alignItems={'center'}
           direction={'column'}
@@ -105,12 +98,6 @@ export default function PreviewGatedConditionsDialog({
           spacing={2}
           sx={{ pb: 2, pt: 2, backgroundColor: 'background.default' }}
         >
-          <Typography>
-            <FormattedMessage
-              id={'gated.conditions'}
-              defaultMessage={'Gated Condition preview'}
-            />
-          </Typography>
           {false && (
             <div>
               <Button
@@ -150,7 +137,7 @@ export default function PreviewGatedConditionsDialog({
           )}
         </Stack>
         <Box sx={{ p: 2 }}>{previewPlatform === 'desktop' && pagePreview}</Box>
-      </>
+      </DialogContent>
     </Dialog>
   );
 }
