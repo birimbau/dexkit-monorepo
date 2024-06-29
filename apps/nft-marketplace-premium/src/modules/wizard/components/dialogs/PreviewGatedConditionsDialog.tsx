@@ -75,6 +75,7 @@ export default function PreviewGatedConditionsDialog({
       {...conditionResult.data}
       account={selectedIndex === 1 ? undefined : account}
       isLoggedIn={selectedIndex === 1 || selectedIndex === 2 ? false : true}
+      isEdit
     />
   );
 
@@ -91,12 +92,11 @@ export default function PreviewGatedConditionsDialog({
       />
       <DialogContent dividers>
         <Stack
-          alignItems={'center'}
-          direction={'column'}
-          justifyContent={'center'}
-          alignContent={'center'}
+          alignItems="center"
+          direction="column"
+          justifyContent="center"
+          alignContent="center"
           spacing={2}
-          sx={{ pb: 2, pt: 2, backgroundColor: 'background.default' }}
         >
           {false && (
             <div>

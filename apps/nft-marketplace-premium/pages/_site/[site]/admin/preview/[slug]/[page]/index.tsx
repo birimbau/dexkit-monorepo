@@ -44,8 +44,20 @@ function PreviewPage() {
   return <SectionsRenderer sections={sections} />;
 }
 
-(PreviewPage as any).getLayout = function getLayout(page: any) {
-  return <PreviewAuthLayout noSsr>{page}</PreviewAuthLayout>;
+(PreviewPage as any).getLayout = function getLayout(children: any) {
+  const router = useRouter();
+
+  const { disableLayout } = router.query;
+
+  const disableLayoutFlag = useMemo(() => {
+    return Boolean(disableLayout as string);
+  }, [disableLayout]);
+
+  return (
+    <PreviewAuthLayout noSsr disableLayout={disableLayoutFlag}>
+      {children}
+    </PreviewAuthLayout>
+  );
 };
 
 type Params = {

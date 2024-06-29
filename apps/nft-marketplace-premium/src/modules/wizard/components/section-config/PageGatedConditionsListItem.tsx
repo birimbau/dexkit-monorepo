@@ -27,7 +27,7 @@ export default function PageGatedConditionsListItem({
     (condition: GatedCondition) => {
       onChange(condition, index);
     },
-    [index, onChange],
+    [index, onChange, condition],
   );
 
   return (

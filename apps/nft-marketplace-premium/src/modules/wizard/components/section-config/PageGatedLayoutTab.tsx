@@ -17,6 +17,9 @@ import { TextField } from 'formik-mui';
 import { useState } from 'react';
 import ChangeListener from '../ChangeListener';
 
+import CompletationProvider from '@dexkit/ui/components/CompletationProvider';
+import ImageIcon from '@mui/icons-material/Image';
+
 const CustomImage = styled('img')(({ theme }) => ({
   width: '100%',
   height: 'auto',
@@ -159,19 +162,36 @@ export default function PageGatedLayoutTab({
                               theme.palette.mode === 'light'
                                 ? 'rgba(0,0,0, 0.2)'
                                 : alpha(theme.palette.common.white, 0.1),
+
+                            backgroundImage: `url('${values.layout.frontImage}')`,
+                            backgroundRepeat: 'no-repeat',
+                            backgroundPosition: 'center',
+                            backgroundSize: 'cover',
                           }}
                           onClick={handleSelectImage('light')}
                         >
                           <Stack
                             sx={{
-                              height: (theme) => theme.spacing(20),
-
-                              width: (theme) => theme.spacing(20),
+                              height: (theme) => values.layout.frontImageHeight,
+                              maxHeight: 300,
+                              minHeight: 50,
+                              width: '100%',
                               alignItems: 'center',
                               justifyContent: 'center',
+                              color: (theme) =>
+                                theme.palette.getContrastText(
+                                  theme.palette.mode === 'light'
+                                    ? 'rgba(0,0,0, 0.2)'
+                                    : alpha(theme.palette.common.white, 0.1),
+                                ),
                             }}
                           >
-                            <CustomImage src={values.layout.frontImage} />
+                            {!values.layout.frontImage && (
+                              <ImageIcon
+                                color="inherit"
+                                sx={{ fontSize: '6rem' }}
+                              />
+                            )}
                           </Stack>
                         </ButtonBase>
                       </Stack>
@@ -190,24 +210,37 @@ export default function PageGatedLayoutTab({
                           sx={{
                             backgroundColor: 'black',
                             width: '100%',
-                            p: 2,
                             borderRadius: (theme) =>
                               theme.shape.borderRadius / 2,
                             alignItems: 'center',
                             justifyContent: 'center',
                             position: 'relative',
+                            p: 2,
+                            backgroundImage: `url('${values.layout.frontImageDark}')`,
+                            backgroundRepeat: 'no-repeat',
+                            backgroundPosition: 'center',
+                            backgroundSize: 'cover',
                           }}
                           onClick={handleSelectImage('dark')}
                         >
                           <Stack
                             sx={{
-                              height: (theme) => theme.spacing(20),
-                              width: (theme) => theme.spacing(20),
+                              height: values.layout.frontImageHeight,
+                              maxHeight: 300,
+                              minHeight: 50,
+                              width: '100%',
                               alignItems: 'center',
                               justifyContent: 'center',
+                              color: (theme) =>
+                                theme.palette.getContrastText('#000'),
                             }}
                           >
-                            <CustomImage src={values.layout.frontImageDark} />
+                            {!values.layout.frontImage && (
+                              <ImageIcon
+                                sx={{ fontSize: '6rem' }}
+                                color="inherit"
+                              />
+                            )}
                           </Stack>
                         </ButtonBase>
                       </Stack>
@@ -225,6 +258,7 @@ export default function PageGatedLayoutTab({
                       />
                     </Typography>
                   </Grid>
+                  {/*
                   <Grid item xs={12} sm={3}>
                     <Field
                       component={TextField}
@@ -238,12 +272,14 @@ export default function PageGatedLayoutTab({
                       }
                       name="layout.frontImageWidth"
                     />
-                  </Grid>
+                  </Grid> */}
                   <Grid item xs={12} sm={3}>
                     <Field
                       component={TextField}
-                      type="text"
+                      type="number"
                       fullWidth
+                      min={50}
+                      max={300}
                       label={
                         <FormattedMessage
                           id="heigth.px"
@@ -256,18 +292,29 @@ export default function PageGatedLayoutTab({
                 </Grid>
               </Grid>
               <Grid item xs={12}>
-                <Field
-                  component={TextField}
-                  type="text"
-                  fullWidth
-                  label={
-                    <FormattedMessage
-                      id="access.requirements.message"
-                      defaultMessage="Access requirements message"
+                <CompletationProvider
+                  onCompletation={(output: string) => {
+                    setFieldValue('layout.accessRequirementsMessage', output);
+                  }}
+                  initialPrompt={values.layout.accessRequirementsMessage}
+                >
+                  {({ inputAdornment, ref }) => (
+                    <Field
+                      component={TextField}
+                      type="text"
+                      fullWidth
+                      label={
+                        <FormattedMessage
+                          id="access.requirements.message"
+                          defaultMessage="Access requirements message"
+                        />
+                      }
+                      name="layout.accessRequirementsMessage"
+                      inputRef={ref}
+                      InputProps={{ endAdornment: inputAdornment('end') }}
                     />
-                  }
-                  name="layout.accessRequirementsMessage"
-                />
+                  )}
+                </CompletationProvider>
               </Grid>
             </Grid>
           </Box>

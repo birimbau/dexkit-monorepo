@@ -81,8 +81,6 @@ export function SearchTokenAutocomplete(props: Props) {
     );
   }, [chainId, tokens, search]);
 
-  console.log('tem dados', data);
-
   return (
     <Autocomplete
       id="search-token"
