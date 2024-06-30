@@ -445,6 +445,8 @@ export function PagesContainer({
 
       return newPages;
     });
+
+    onChangeSections();
   };
 
   return (

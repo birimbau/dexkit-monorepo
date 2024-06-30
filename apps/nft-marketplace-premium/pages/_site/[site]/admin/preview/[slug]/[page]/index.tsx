@@ -11,7 +11,7 @@ import {
   GetStaticPropsContext,
 } from 'next';
 import { useMemo } from 'react';
-import { useWhitelabelConfigQuery } from 'src/hooks/whitelabel';
+import { useAdminWhitelabelConfigQuery } from 'src/hooks/whitelabel';
 import { getAppConfig } from 'src/services/app';
 
 import PreviewAuthLayout from 'src/components/layouts/PreviewAuthLayout';
@@ -19,11 +19,9 @@ import PreviewAuthLayout from 'src/components/layouts/PreviewAuthLayout';
 function PreviewPage() {
   const router = useRouter();
 
-  const { slug, page, index } = router.query;
+  const { slug, page, index, disableLayout } = router.query;
 
-  console.log(router.query);
-
-  const { data } = useWhitelabelConfigQuery({ slug: slug as string });
+  const { data } = useAdminWhitelabelConfigQuery({ slug: slug as string });
 
   const appConfig = useMemo(() => {
     if (data?.config) {
@@ -34,23 +32,24 @@ function PreviewPage() {
   const sections = useMemo(() => {
     const sectionIndex = parseInt((index as string) ?? '-1');
 
-    console.log('sectionIndex', sectionIndex);
-
     if (sectionIndex >= 0) {
-      return appConfig
-        ? [appConfig.pages[page as string].sections[sectionIndex]] ?? []
-        : [];
-    }
+      let result = appConfig?.pages[page as string]?.sections[sectionIndex];
 
-    return appConfig ? appConfig.pages[page as string].sections ?? [] : [];
+      return appConfig && result ? [result] ?? [] : [];
+    }
+    return appConfig ? appConfig.pages[page as string]?.sections ?? [] : [];
   }, [appConfig, page, index]);
 
-  return <SectionsRenderer sections={sections} />;
-}
+  const disableLayoutFlag = useMemo(() => {
+    return Boolean(disableLayout as string);
+  }, [disableLayout]);
 
-(PreviewPage as any).getLayout = function getLayout(page: any) {
-  return <PreviewAuthLayout noSsr>{page}</PreviewAuthLayout>;
-};
+  return (
+    <PreviewAuthLayout noSsr disableLayout={disableLayoutFlag}>
+      <SectionsRenderer sections={sections} />
+    </PreviewAuthLayout>
+  );
+}
 
 type Params = {
   site?: string;

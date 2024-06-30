@@ -46,6 +46,7 @@ export interface GatedCondition {
   type?: "collection" | "coin" | "multiCollection";
   condition?: "and" | "or";
   protocol?: "ERC20" | "ERC711" | "ERC1155";
+  name?: string;
   decimals?: number;
   address?: string;
   symbol?: string;

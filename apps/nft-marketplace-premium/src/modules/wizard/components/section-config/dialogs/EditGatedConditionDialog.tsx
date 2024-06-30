@@ -1,3 +1,4 @@
+import { ChainId } from '@dexkit/core';
 import { Token } from '@dexkit/core/types';
 import { getProviderByChainId } from '@dexkit/core/utils/blockchain';
 import { AppDialogTitle, getAssetProtocol, useAllTokenList } from '@dexkit/ui';
@@ -89,18 +90,32 @@ export default function EditGatedConditionDialog({
     isWizardConfig: true,
   });
 
-  const [selectedCoin, setSelectedCoin] = useState<Token>();
+  const [selectedCoin, setSelectedCoin] = useState<Token | undefined>(
+    condition !== undefined
+      ? {
+          address: condition?.address ?? '',
+          symbol: condition?.symbol ?? '',
+          chainId: condition?.chainId ?? ChainId.Ethereum,
+          decimals: condition?.decimals ?? 0,
+          name: condition?.name ?? '',
+        }
+      : undefined,
+  );
 
   return (
     <Formik
       onSubmit={handleSubmit}
-      initialValues={{
-        condition: {
-          type: 'collection',
-          amount: '1',
-          condition: 'or',
-        },
-      }}
+      initialValues={
+        condition
+          ? { condition }
+          : {
+              condition: {
+                type: 'collection',
+                amount: '1',
+                condition: 'or',
+              },
+            }
+      }
       validationSchema={GatedConditionFormSchema}
     >
       {({
@@ -115,36 +130,46 @@ export default function EditGatedConditionDialog({
           <AppDialogTitle
             onClose={handleClose}
             title={
-              <FormattedMessage
-                id="add.gated.condition"
-                defaultMessage="Add gated condition"
-              />
+              condition ? (
+                <FormattedMessage
+                  id="edit.gated.condition"
+                  defaultMessage="Edit gated condition"
+                />
+              ) : (
+                <FormattedMessage
+                  id="add.gated.condition"
+                  defaultMessage="Add gated condition"
+                />
+              )
             }
             titleBox={{ px: 3, py: 1 }}
           />
           <DialogContent sx={{ px: 4 }} dividers>
             <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <Box>
-                  <Stack
-                    direction="row"
-                    justifyContent="space-between"
-                    alignItems="center"
-                  >
-                    <Typography align="left">
-                      <b>
-                        <FormattedMessage
-                          id="condition.index.value"
-                          defaultMessage="Condition {index}"
-                          values={{
-                            index: index ?? 0 + 1,
-                          }}
-                        />
-                      </b>
-                    </Typography>
-                  </Stack>
-                </Box>
-              </Grid>
+              {index !== undefined && (
+                <Grid item xs={12}>
+                  <Box>
+                    <Stack
+                      direction="row"
+                      justifyContent="space-between"
+                      alignItems="center"
+                    >
+                      <Typography align="left">
+                        <b>
+                          <FormattedMessage
+                            id="condition.index.value"
+                            defaultMessage="Condition {index}"
+                            values={{
+                              index: index >= 0 ? index + 1 : 0,
+                            }}
+                          />
+                        </b>
+                      </Typography>
+                    </Stack>
+                  </Box>
+                </Grid>
+              )}
+
               {!isFirst && (
                 <Grid item xs={12} sm={3}>
                   <FormControl fullWidth variant="filled">
@@ -215,6 +240,7 @@ export default function EditGatedConditionDialog({
                           );
                           setFieldValue('condition.chainId', coll.chainId);
                           setFieldValue('condition.symbol', coll.name);
+                          setFieldValue('condition.name', coll.name);
                           // We identify protocol to then check if we need to add token Id
                           getAssetProtocol(
                             getProviderByChainId(coll.chainId),
@@ -234,7 +260,7 @@ export default function EditGatedConditionDialog({
                         tokens={featuredTokens}
                         data={selectedCoin}
                         onChange={(tk: any) => {
-                          setSelectedCoin({ ...tk });
+                          setSelectedCoin(tk);
 
                           setFieldValue('condition', {
                             ...values.condition,
@@ -242,7 +268,7 @@ export default function EditGatedConditionDialog({
                             symbol: tk.symbol,
                             chainId: tk?.chainId,
                             decimals: tk?.decimals,
-                            protocol: undefined,
+                            name: tk?.name,
                           });
                         }}
                       />

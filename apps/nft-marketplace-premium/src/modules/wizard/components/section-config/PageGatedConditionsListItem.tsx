@@ -3,15 +3,17 @@ import { Box, IconButton, Stack, Typography } from '@mui/material';
 import { GatedCondition } from '@dexkit/ui/modules/wizard/types';
 import { FormattedMessage } from 'react-intl';
 
-import { useCollection } from '@dexkit/ui/modules/nft/hooks/collection';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import { useCallback } from 'react';
+import PageGatedConditionSplitButton from './PageGatedConditionSplitButton';
 
 export interface PageGatedConditionsListItemProps {
   condition: GatedCondition;
   index: number;
   onRemove: () => void;
   onEdit: () => void;
+  onChange: (condition: GatedCondition, index: number) => void;
 }
 
 export default function PageGatedConditionsListItem({
@@ -19,23 +21,25 @@ export default function PageGatedConditionsListItem({
   index,
   onEdit,
   onRemove,
+  onChange,
 }: PageGatedConditionsListItemProps) {
-  const { data: collection } = useCollection(
-    condition.address as string,
-    condition.chainId,
+  const handleChange = useCallback(
+    (condition: GatedCondition) => {
+      onChange(condition, index);
+    },
+    [index, onChange, condition],
   );
 
   return (
     <Box>
       <Stack spacing={1}>
         {condition.condition && index > 0 && (
-          <Typography
-            sx={{ textTransform: 'uppercase' }}
-            fontWeight="bold"
-            color="primary"
-          >
-            {condition.condition}
-          </Typography>
+          <Box>
+            <PageGatedConditionSplitButton
+              condition={condition}
+              onChange={handleChange}
+            />
+          </Box>
         )}
         <Box
           sx={{
@@ -75,7 +79,7 @@ export default function PageGatedConditionsListItem({
                         component="span"
                         fontWeight="400"
                       >
-                        {collection?.name ?? ''}
+                        {condition?.name ?? ''}
                       </Typography>
                     ),
                   }}
@@ -98,6 +102,54 @@ export default function PageGatedConditionsListItem({
                         fontWeight="400"
                       >
                         {condition.amount}
+                      </Typography>
+                    ),
+                  }}
+                />
+              </Typography>
+            </>
+          )}
+
+          {condition.type === 'coin' && (
+            <>
+              <Typography
+                fontWeight="500"
+                variant="body2"
+                color="text.secondary"
+              >
+                <FormattedMessage
+                  id="token.collection.text"
+                  defaultMessage="Token: {collection}"
+                  values={{
+                    collection: (
+                      <Typography
+                        variant="inherit"
+                        component="span"
+                        fontWeight="400"
+                      >
+                        {condition?.name ?? ''}
+                      </Typography>
+                    ),
+                  }}
+                />
+              </Typography>
+
+              <Typography
+                fontWeight="500"
+                variant="body2"
+                color="text.secondary"
+              >
+                <FormattedMessage
+                  id="required.quantity.index"
+                  defaultMessage="Required quantity: {amount}"
+                  values={{
+                    amount: (
+                      <Typography
+                        variant="inherit"
+                        component="span"
+                        fontWeight="400"
+                      >
+                        {condition.amount} {condition.symbol}
                       </Typography>
                     ),
                   }}
