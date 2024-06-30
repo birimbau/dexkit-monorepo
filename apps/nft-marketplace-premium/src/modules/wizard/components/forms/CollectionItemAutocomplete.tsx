@@ -86,7 +86,7 @@ export function CollectionItemAutocomplete(props: Props) {
   return (
     <Autocomplete
       id="item-collection"
-      sx={{ width: 300 }}
+      fullWidth
       value={dataValue || null}
       defaultValue={dataValue || null}
       options={collections}
@@ -126,6 +126,7 @@ export function CollectionItemAutocomplete(props: Props) {
         <TextField
           {...params}
           label="Choose a collection"
+          fullWidth
           inputProps={{
             ...params.inputProps,
             autoComplete: 'off', // disable autocomplete and autofill

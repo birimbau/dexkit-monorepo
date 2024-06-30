@@ -74,6 +74,7 @@ export interface AppPageOptions {
   clonedPageKey?: string;
   uri?: string;
   isEditGatedConditions?: boolean;
+  enableGatedConditions?: boolean;
   gatedConditions?: GatedCondition[];
   gatedPageLayout?: GatedPageLayout
 }

@@ -65,6 +65,7 @@ const FormSchema = z.object({
 export interface AddCarouselFormProps {
   data?: CarouselFormType;
   onChange: (data: CarouselFormType) => void;
+  onCancel?: () => void;
   onSave: (data: CarouselFormType) => void;
   saveOnChange?: boolean;
   disableButtons?: boolean;
@@ -73,6 +74,7 @@ export interface AddCarouselFormProps {
 export default function AddCarouselForm({
   data,
   onChange,
+  onCancel,
   onSave,
   saveOnChange,
   disableButtons,
@@ -296,13 +298,21 @@ export default function AddCarouselForm({
               </Grid>
               {!disableButtons && (
                 <Grid item xs={12}>
-                  <Button
-                    disabled={!isValid || isSubmitting}
-                    variant="contained"
-                    onClick={submitForm}
-                  >
-                    <FormattedMessage id="save" defaultMessage="Save" />
-                  </Button>
+                  <Stack direction="row" spacing={1} justifyContent="flex-end">
+                    {onCancel && (
+                      <Button onClick={onCancel}>
+                        <FormattedMessage id="cancel" defaultMessage="Cancel" />
+                      </Button>
+                    )}
+
+                    <Button
+                      disabled={!isValid || isSubmitting}
+                      variant="contained"
+                      onClick={submitForm}
+                    >
+                      <FormattedMessage id="save" defaultMessage="Save" />
+                    </Button>
+                  </Stack>
                 </Grid>
               )}
             </Grid>

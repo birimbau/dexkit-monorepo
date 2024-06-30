@@ -22,8 +22,8 @@ import CodeMirror, { Extension } from '@uiw/react-codemirror';
 import { css } from '@codemirror/lang-css';
 import { html } from '@codemirror/lang-html';
 import { javascript } from '@codemirror/lang-javascript';
-import { CodePageSection } from '@dexkit/ui/modules/wizard/types/section';
 import { AppDialogTitle } from '@dexkit/ui';
+import { CodePageSection } from '@dexkit/ui/modules/wizard/types/section';
 import Fullscreen from '@mui/icons-material/Fullscreen';
 import parse from 'html-react-parser';
 import { SyntheticEvent, useState } from 'react';
@@ -274,11 +274,11 @@ function CodeSectionForm({
             <Grid item xs={12}>
               <Box>
                 <Stack justifyContent="flex-end" direction="row" spacing={1}>
-                  <Button onClick={submitForm} variant="contained">
-                    <FormattedMessage id="save" defaultMessage="Save" />
-                  </Button>
                   <Button onClick={onCancel}>
                     <FormattedMessage id="cancel" defaultMessage="Cancel" />
+                  </Button>
+                  <Button onClick={submitForm} variant="contained">
+                    <FormattedMessage id="save" defaultMessage="Save" />
                   </Button>
                 </Stack>
               </Box>

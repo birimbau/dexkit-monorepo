@@ -1,15 +1,15 @@
-import { ChainId } from '@dexkit/core';
+import { ChainId } from "@dexkit/core";
 import {
   getBlockExplorerUrl,
   isAddressEqual,
   truncateAddress,
-} from '@dexkit/core/utils';
+} from "@dexkit/core/utils";
 
-import AccountTreeIcon from '@mui/icons-material/AccountTree';
-import EditIcon from '@mui/icons-material/Edit';
-import FileCopyIcon from '@mui/icons-material/FileCopy';
-import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
-import ShareIcon from '@mui/icons-material/Share';
+import AccountTreeIcon from "@mui/icons-material/AccountTree";
+import EditIcon from "@mui/icons-material/Edit";
+import FileCopyIcon from "@mui/icons-material/FileCopy";
+import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
+import ShareIcon from "@mui/icons-material/Share";
 
 import {
   Avatar,
@@ -21,10 +21,10 @@ import {
   Skeleton,
   Stack,
   Typography,
-} from '@mui/material';
+} from "@mui/material";
 
-import NextLink from 'next/link';
-import { FormattedMessage } from 'react-intl';
+import NextLink from "next/link";
+import { FormattedMessage } from "react-intl";
 
 export interface FormInfoCardProps {
   onShare: () => void;
@@ -71,7 +71,7 @@ export default function FormInfoCard({
             alignItems="center"
             alignContent="center"
           >
-            <Avatar sx={{ width: '1rem', height: '1rem' }} />
+            <Avatar sx={{ width: "1rem", height: "1rem" }} />
             <Link
               component={NextLink}
               href={`/forms/account/${creatorAddress}`}

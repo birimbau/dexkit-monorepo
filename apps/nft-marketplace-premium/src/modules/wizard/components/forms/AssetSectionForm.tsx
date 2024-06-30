@@ -305,15 +305,15 @@ export default function AssetSectionForm({
               <Grid item xs={12}>
                 <Box>
                   <Stack justifyContent="flex-end" direction="row" spacing={1}>
+                    <Button onClick={onCancel}>
+                      <FormattedMessage id="cancel" defaultMessage="Cancel" />
+                    </Button>
                     <Button
                       disabled={!isValid}
                       onClick={submitForm}
                       variant="contained"
                     >
                       <FormattedMessage id="save" defaultMessage="Save" />
-                    </Button>
-                    <Button onClick={onCancel}>
-                      <FormattedMessage id="cancel" defaultMessage="Cancel" />
                     </Button>
                   </Stack>
                 </Box>

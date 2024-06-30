@@ -58,7 +58,12 @@ export default function AddPageDialog({
   return (
     <Dialog {...dialogProps}>
       <AppDialogTitle
-        title={<FormattedMessage id="new.page" defaultMessage="New Page" />}
+        title={
+          <FormattedMessage
+            id="create.new.page.uppercased"
+            defaultMessage="Create New Page"
+          />
+        }
         onClose={handleClose}
       />
       <Formik
@@ -70,7 +75,7 @@ export default function AddPageDialog({
               formatMessage({
                 id: 'use.home.as.title.not.allowed',
                 defaultMessage: 'Use Home as title is not allowed for pages',
-              }),
+              })
             );
             return;
           }
@@ -128,18 +133,15 @@ export default function AddPageDialog({
                 spacing={1}
                 justifyContent="flex-end"
               >
+                <Button onClick={onCancel}>
+                  <FormattedMessage id="cancel" defaultMessage="Cancel" />
+                </Button>
                 <Button
                   disabled={!isValid || isSubmitting}
                   variant="contained"
                   onClick={submitForm}
                 >
-                  <FormattedMessage
-                    id="create.new.page"
-                    defaultMessage="Create New Page"
-                  />
-                </Button>
-                <Button onClick={onCancel}>
-                  <FormattedMessage id="cancel" defaultMessage="Cancel" />
+                  <FormattedMessage id="create" defaultMessage="Create" />
                 </Button>
               </Stack>
             </DialogActions>

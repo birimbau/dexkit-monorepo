@@ -1,29 +1,27 @@
 import { myAppsApi } from '@/modules/admin/dashboard/dataProvider';
+
+const AccountFormsTable = dynamic(
+  () => import('@/modules/forms/components/AccountFormsTable'),
+);
+
 import { useListFormsQuery } from '@/modules/forms/hooks';
 import { DexkitApiProvider } from '@dexkit/core/providers';
-import LazyTextField from '@dexkit/ui/components/LazyTextField';
-import Info from '@mui/icons-material/Info';
-import Search from '@mui/icons-material/Search';
-
+import { AppErrorBoundary } from '@dexkit/ui/components/AppErrorBoundary';
 import Link from '@dexkit/ui/components/AppLink';
 import { ConnectWalletButton } from '@dexkit/ui/components/ConnectWalletButton';
 import { PageHeader } from '@dexkit/ui/components/PageHeader';
 import { useWeb3React } from '@dexkit/wallet-connectors/hooks/useWeb3React';
+import Add from '@mui/icons-material/Add';
 import {
   Box,
   Button,
   Container,
+  Divider,
   Grid,
-  InputAdornment,
-  Skeleton,
   Stack,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
   Typography,
 } from '@mui/material';
+import dynamic from 'next/dynamic';
 import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import AuthMainLayout from 'src/components/layouts/authMain';
@@ -38,13 +36,9 @@ export default function FormsAccountPage() {
     query: searchForm,
   });
 
-  const handleChangeSearchForm = (value: string) => {
-    setSearchForm(value);
-  };
-
   return (
     <>
-      <Container>
+      <Container maxWidth={'xl'}>
         <Stack spacing={2}>
           <PageHeader
             breadcrumbs={[
@@ -73,27 +67,6 @@ export default function FormsAccountPage() {
               },
             ]}
           />
-
-          {/*  <Box>
-            <Card>
-              <CardContent>
-                {address ? (
-                  <Stack
-                    spacing={2}
-                    justifyContent="center"
-                    alignItems="center"
-                  >
-                    <Avatar sx={{ width: '6rem', height: '6rem' }} />
-                    <Typography sx={{ fontWeight: 600 }} variant="body1">
-                      {truncateAddress(address as string)}
-                    </Typography>
-                  </Stack>
-                ) : (
-                  <ConnectWalletButton />
-                )}
-              </CardContent>
-            </Card>
-              </Box>*/}
           <Box>
             <Stack
               direction="row"
@@ -121,120 +94,65 @@ export default function FormsAccountPage() {
                     LinkComponent={Link}
                     href="/forms/create"
                     size="small"
-                    variant="outlined"
+                    variant="contained"
+                    startIcon={<Add />}
                   >
                     <FormattedMessage
                       id="create.contract.form"
                       defaultMessage="New Contract Form"
                     />
                   </Button>
-
-                  <LazyTextField
-                    TextFieldProps={{
-                      size: 'small',
-
-                      InputProps: {
-                        startAdornment: (
-                          <InputAdornment position="start">
-                            <Search />
-                          </InputAdornment>
-                        ),
-                      },
-                    }}
-                    onChange={handleChangeSearchForm}
-                  />
                 </Stack>
               </Grid>
               <Grid item xs={12}>
-                <Table>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>
-                        <FormattedMessage id="id" defaultMessage="ID" />
-                      </TableCell>
-                      <TableCell>
-                        <FormattedMessage id="name" defaultMessage="Name" />
-                      </TableCell>
-                      <TableCell>
-                        <FormattedMessage
-                          id="description"
-                          defaultMessage="Description"
-                        />
-                      </TableCell>
-                    </TableRow>
-                  </TableHead>
-
+                <Divider />
+              </Grid>
+              <Grid item xs={12}>
+                <Container>
                   {!address ? (
-                    <TableBody>
-                      <TableRow>
-                        <TableCell colSpan={3}>
-                          <Box>
-                            <Stack spacing={2} alignItems="center">
-                              <ConnectWalletButton />
-                            </Stack>
-                          </Box>
-                        </TableCell>
-                      </TableRow>
-                    </TableBody>
-                  ) : listFormsQuery.isLoading ? (
-                    <TableBody>
-                      {new Array(5).fill(null).map((_, key) => (
-                        <TableRow key={key}>
-                          <TableCell>
-                            <Skeleton />
-                          </TableCell>
-                          <TableCell>
-                            <Skeleton />
-                          </TableCell>
-                          <TableCell>
-                            <Skeleton />
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
+                    <div>
+                      <ConnectWalletButton />
+                    </div>
                   ) : (
-                    <TableBody>
-                      {listFormsQuery.data?.length === 0 && (
-                        <TableRow>
-                          <TableCell colSpan={3}>
-                            <Box>
-                              <Stack spacing={2} alignItems="center">
-                                <Info fontSize="large" />
-                                <Box>
-                                  <Typography align="center" variant="h5">
-                                    <FormattedMessage
-                                      id="no.forms.yet"
-                                      defaultMessage="No forms yet"
-                                    />
-                                  </Typography>
-                                  <Typography
-                                    align="center"
-                                    color="text.secondary"
-                                    variant="body1"
-                                  >
-                                    <FormattedMessage
-                                      defaultMessage="Create forms to interact with contracts"
-                                      id="create.forms.to interact.with.contracts"
-                                    />
-                                  </Typography>
-                                </Box>
-                              </Stack>
-                            </Box>
-                          </TableCell>
-                        </TableRow>
-                      )}
-                      {listFormsQuery.data?.map((form) => (
-                        <TableRow key={form.id}>
-                          <TableCell>{form.id}</TableCell>
-                          <TableCell>
-                            <Link href={`/forms/${form.id}`}>{form.name}</Link>
-                          </TableCell>
-                          <TableCell>{form.description}</TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
+                    <AppErrorBoundary
+                      fallbackRender={({ resetErrorBoundary, error }) => {
+                        return (
+                          <Stack justifyContent="center" alignItems="center">
+                            <Typography variant="h6">
+                              <FormattedMessage
+                                id="something.went.wrong"
+                                defaultMessage="Oops, something went wrong"
+                                description="Something went wrong error message"
+                              />
+                            </Typography>
+                            <Typography variant="body1" color="textSecondary">
+                              {String(error)}
+                            </Typography>
+                            <Button
+                              color="primary"
+                              onClick={resetErrorBoundary}
+                            >
+                              <FormattedMessage
+                                id="try.again"
+                                defaultMessage="Try again"
+                                description="Try again"
+                              />
+                            </Button>
+                          </Stack>
+                        );
+                      }}
+                    >
+                      <AccountFormsTable
+                        forms={listFormsQuery.data ?? []}
+                        refetch={async () => {
+                          await listFormsQuery.refetch();
+                        }}
+                        count={listFormsQuery.data?.length ?? 0}
+                        onSearch={(value: string) => setSearchForm(value)}
+                      />
+                    </AppErrorBoundary>
                   )}
-                </Table>
+                </Container>
               </Grid>
             </Grid>
           </Box>

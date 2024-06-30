@@ -1,5 +1,5 @@
 import MarketplacesTableSkeleton from '@/modules/admin/components/tables/MaketplacesTableSkeleton';
-import MarketplacesTable from '@/modules/admin/components/tables/MarketplacesTable';
+import MarketplacesTableV2 from '@/modules/admin/components/tables/MarketplacesTableV2';
 import { MismatchAccount } from '@/modules/wizard/components/MismatchAccount';
 import { WelcomeMessage } from '@/modules/wizard/components/WelcomeMessage';
 import ConfigureDomainDialog from '@/modules/wizard/components/dialogs/ConfigureDomainDialog';
@@ -33,7 +33,7 @@ import {
   NextPage,
 } from 'next';
 import { ChangeEvent, ReactNode, useCallback, useMemo, useState } from 'react';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 import { LoginAppButton } from 'src/components/LoginAppButton';
 import AuthMainLayout from 'src/components/layouts/authMain';
 import { DEXKIT_DISCORD_SUPPORT_CHANNEL, WIZARD_DOCS_URL } from 'src/constants';
@@ -128,7 +128,7 @@ export const AdminIndexPage: NextPage = () => {
     if (configs && configs.length > 0) {
       return (
         <TableContainer>
-          <MarketplacesTable
+          <MarketplacesTableV2
             configs={configs}
             onConfigureDomain={handleShowConfigureDomain}
           />
@@ -213,6 +213,8 @@ export const AdminIndexPage: NextPage = () => {
     );
   };
 
+  const { formatMessage } = useIntl();
+
   return (
     <>
       <ConfigureDomainDialog
@@ -224,7 +226,7 @@ export const AdminIndexPage: NextPage = () => {
         }}
         config={selectedConfig}
       />
-      <Container>
+      <Container maxWidth={'xl'}>
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <PageHeader
@@ -255,8 +257,8 @@ export const AdminIndexPage: NextPage = () => {
             <MismatchAccount />
           </Grid>
           <Grid item xs={12}>
-            <Typography variant="h4">
-              <FormattedMessage id="my.apps" defaultMessage="My apps" />
+            <Typography variant="h5">
+              <FormattedMessage id="my.apps.upper" defaultMessage="My Apps" />
             </Typography>
           </Grid>
           <Grid item xs={12}>
@@ -264,6 +266,7 @@ export const AdminIndexPage: NextPage = () => {
               direction="row"
               alignItems="center"
               justifyContent="space-between"
+              sx={{ pt: 1 }}
             >
               <Button
                 href="/admin/setup"
@@ -274,26 +277,43 @@ export const AdminIndexPage: NextPage = () => {
               >
                 <FormattedMessage id="new.app" defaultMessage="New App" />
               </Button>
-              <TextField
-                value={search}
-                onChange={handleSearchChange}
-                size="small"
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <Search />
-                    </InputAdornment>
-                  ),
-                }}
-              />
             </Stack>
           </Grid>
 
           <Grid item xs={12}>
-            <Divider />
+            <Divider sx={{ py: 1 }} />
           </Grid>
           <Grid item xs={12}>
-            {renderTable()}
+            <Grid container spacing={3} justifyContent="center">
+              <Grid item xs={12} sm={8}>
+                <Box>
+                  <Stack spacing={3}>
+                    <Box px={3}>
+                      <Stack justifyContent="flex-end" direction="row">
+                        <TextField
+                          value={search}
+                          placeholder={formatMessage({
+                            id: 'search.dots',
+                            defaultMessage: 'Search...',
+                          })}
+                          onChange={handleSearchChange}
+                          size="small"
+                          variant="standard"
+                          InputProps={{
+                            startAdornment: (
+                              <InputAdornment position="start">
+                                <Search />
+                              </InputAdornment>
+                            ),
+                          }}
+                        />
+                      </Stack>
+                    </Box>
+                    {renderTable()}
+                  </Stack>
+                </Box>
+              </Grid>
+            </Grid>
           </Grid>
         </Grid>
       </Container>

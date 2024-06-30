@@ -332,7 +332,10 @@ export default function CollectionSectionFormAlt({
           {showSaveButton && (
             <Grid item xs={12}>
               <Box>
-                <Stack spacing={1} direction="row">
+                <Stack spacing={1} direction="row" justifyContent="flex-end">
+                  <Button onClick={onCancel}>
+                    <FormattedMessage id="cancel" defaultMessage="Cancel" />
+                  </Button>
                   <Button
                     disabled={!isValid}
                     onClick={submitForm}
@@ -340,9 +343,6 @@ export default function CollectionSectionFormAlt({
                     color="primary"
                   >
                     <FormattedMessage id="save" defaultMessage="Save" />
-                  </Button>
-                  <Button onClick={onCancel}>
-                    <FormattedMessage id="cancel" defaultMessage="Cancel" />
                   </Button>
                 </Stack>
               </Box>

@@ -8,6 +8,7 @@ import {
   ZEROEX_GASLESS_SUBMIT_ENDPOINT,
   ZEROEX_ORDERBOOK_ENDPOINT,
   ZEROEX_ORDERBOOK_ORDERS_ENDPOINT,
+  ZEROEX_PRICE_ENDPOINT,
   ZEROEX_QUOTE_ENDPOINT,
   ZEROEX_SUPPORTS_GASLESS_ENDPOINT,
   ZEROEX_TOKENS_ENDPOINT,
@@ -51,6 +52,21 @@ export class ZeroExApiClient {
   ): Promise<ZeroExQuoteResponse> {
     const resp = await this.axiosInstance.get(
       ZERO_EX_URL(this.chainId, this.siteId) + ZEROEX_QUOTE_ENDPOINT,
+      {
+        params: quote,
+        signal,
+      }
+    );
+
+    return resp.data;
+  }
+
+  async price(
+    quote: ZeroExQuote,
+    { signal }: { signal?: AbortSignal }
+  ): Promise<ZeroExQuoteResponse> {
+    const resp = await this.axiosInstance.get(
+      ZERO_EX_URL(this.chainId, this.siteId) + ZEROEX_PRICE_ENDPOINT,
       {
         params: quote,
         signal,

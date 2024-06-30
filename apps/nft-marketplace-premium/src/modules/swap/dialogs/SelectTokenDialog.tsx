@@ -14,17 +14,21 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
+  Skeleton,
   TextField,
   Typography,
 } from '@mui/material';
-import { memo, useState } from 'react';
+import { memo, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
+import { TokenWhitelabelApp } from '@dexkit/core/types';
 import { useTokenList } from '@dexkit/ui/hooks/blockchain';
+import { useTokenData } from '@dexkit/ui/hooks/useTokenData';
 import { Token } from '../../../types/blockchain';
 
 interface Props {
   dialogProps: DialogProps;
+  enableImport?: boolean;
   onSelect: (token: Token) => void;
   excludeToken?: Token;
   chainId?: ChainId;
@@ -34,6 +38,7 @@ interface Props {
 function SelectTokenDialog({
   dialogProps,
   onSelect,
+  enableImport,
   excludeToken,
   chainId,
   includeNative = true,
@@ -46,6 +51,40 @@ function SelectTokenDialog({
     onClose!({}, 'backdropClick');
     setValue('');
   };
+
+  const { data, isLoading } = useTokenData({
+    address: enableImport ? value : undefined,
+    chainId,
+  });
+
+  const allTokens = useMemo(() => {
+    if (data) {
+      const tokenExists = tokens.find(
+        (t) => t.address.toLowerCase() === data?.address.toLowerCase(),
+      );
+      if (tokenExists) {
+        return tokens;
+      } else {
+        return [...tokens, data as TokenWhitelabelApp];
+      }
+    }
+
+    return tokens;
+  }, [tokens, data]);
+
+  const filteredTokens = useMemo(() => {
+    return allTokens
+      ?.filter((token) => {
+        return excludeToken !== token;
+      })
+      ?.filter((token) => {
+        return (
+          token.name.toLowerCase().search(value.toLowerCase()) > -1 ||
+          token.symbol.toLowerCase().search(value.toLowerCase()) > -1 ||
+          token.address.toLowerCase().search(value.toLowerCase()) > -1
+        );
+      });
+  }, [allTokens, value]);
 
   return (
     <Dialog {...dialogProps} onClose={handleClose}>
@@ -74,7 +113,11 @@ function SelectTokenDialog({
           <Grid item xs={12}>
             <Box sx={{ px: 2 }}>
               <TextField
-                placeholder="Search for a token name"
+                placeholder={
+                  enableImport
+                    ? 'Search for a token name or paste address'
+                    : 'Search for a token name'
+                }
                 fullWidth
                 value={value}
                 onChange={(e) => setValue(e.target.value)}
@@ -83,34 +126,57 @@ function SelectTokenDialog({
           </Grid>
           <Grid item xs={12}>
             <List disablePadding>
-              {tokens
-                ?.filter((token) => {
-                  return excludeToken !== token;
-                })
-                ?.filter((token) => {
-                  return (
-                    token.name.toLowerCase().search(value.toLowerCase()) > -1 ||
-                    token.symbol.toLowerCase().search(value.toLowerCase()) > -1
-                  );
-                })
-                .map((token: Token, index: number) => (
-                  <ListItemButton key={index} onClick={() => onSelect(token)}>
-                    <ListItemIcon>
-                      <Avatar
-                        sx={(theme) => ({
-                          width: 'auto',
-                          height: theme.spacing(4),
-                        })}
-                        src={
-                          token.logoURI
-                            ? token.logoURI
-                            : TOKEN_ICON_URL(token.address, chainId as ChainId)
+              {filteredTokens.map((token: Token, index: number) => (
+                <ListItemButton key={index} onClick={() => onSelect(token)}>
+                  <ListItemIcon>
+                    <Avatar
+                      sx={(theme) => ({
+                        width: 'auto',
+                        height: theme.spacing(4),
+                      })}
+                      src={
+                        token?.logoURI
+                          ? token?.logoURI
+                          : TOKEN_ICON_URL(token?.address, chainId as ChainId)
+                      }
+                    />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={token?.symbol}
+                    secondary={token?.name}
+                  />
+                </ListItemButton>
+              ))}
+              {filteredTokens &&
+                filteredTokens.length === 0 &&
+                (enableImport && isLoading ? (
+                  <ListItemButton>
+                    <Skeleton>
+                      <ListItemIcon>
+                        <Avatar
+                          sx={(theme) => ({
+                            width: 'auto',
+                            height: theme.spacing(4),
+                          })}
+                        />
+                      </ListItemIcon>
+                    </Skeleton>
+                    <Skeleton>
+                      <ListItemText
+                        primary={
+                          <FormattedMessage
+                            defaultMessage={'Importing...'}
+                            id={'importing.with.final.dots'}
+                          />
                         }
                       />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={token.symbol}
-                      secondary={token.name}
+                    </Skeleton>
+                  </ListItemButton>
+                ) : (
+                  <ListItemButton>
+                    <FormattedMessage
+                      defaultMessage={'No tokens found'}
+                      id={'not.tokens.found'}
                     />
                   </ListItemButton>
                 ))}

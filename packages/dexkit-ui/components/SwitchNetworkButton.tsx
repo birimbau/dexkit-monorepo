@@ -18,10 +18,7 @@ export function SwitchNetworkButton({ desiredChainId }: Props) {
       variant="contained"
       startIcon={
         switchNetworkMutation.isLoading ? (
-          <CircularProgress
-            color="inherit"
-            sx={{ fontSize: (theme) => theme.spacing(0.5) }}
-          />
+          <CircularProgress color="inherit" size="1rem" />
         ) : null
       }
       onClick={async () => {
