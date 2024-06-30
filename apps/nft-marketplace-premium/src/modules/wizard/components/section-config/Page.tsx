@@ -26,6 +26,7 @@ export interface PageProps {
   onClone: () => void;
   onRemove: () => void;
   onEditConditions: () => void;
+  previewUrl?: string;
 }
 
 export default function Page({
@@ -36,6 +37,7 @@ export default function Page({
   onClone,
   onEditConditions,
   pageKey,
+  previewUrl,
 }: PageProps) {
   const handleMouseDown: any = (e: MouseEvent) => e.stopPropagation();
 
@@ -95,7 +97,8 @@ export default function Page({
             <IconButton
               onMouseDown={handleMouseDown}
               LinkComponent={Link}
-              href={`/${pageKey}`}
+              onClick={(e) => e.stopPropagation()}
+              href={`${previewUrl}/${pageKey}`}
               target="_blank"
             >
               <Tooltip
@@ -110,13 +113,25 @@ export default function Page({
               </Tooltip>
             </IconButton>
             {pageKey !== 'home' && (
-              <IconButton onClick={handleAction(onEditConditions)}>
+              <IconButton
+                onClick={handleAction(onEditConditions)}
+                color={
+                  page.enableGatedConditions === true ? 'success' : undefined
+                }
+              >
                 <Tooltip
                   title={
-                    <FormattedMessage
-                      id="add.gated.conditions"
-                      defaultMessage="Add Gated Conditions"
-                    />
+                    page.enableGatedConditions === true ? (
+                      <FormattedMessage
+                        id="page.protected.enabled"
+                        defaultMessage="Page protected enabled"
+                      />
+                    ) : (
+                      <FormattedMessage
+                        id="add.gated.conditions"
+                        defaultMessage="Add Gated Conditions"
+                      />
+                    )
                   }
                 >
                   <LockIcon />

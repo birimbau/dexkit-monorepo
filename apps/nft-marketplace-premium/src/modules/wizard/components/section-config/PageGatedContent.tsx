@@ -2,6 +2,10 @@ import { Box, Grid, Tab, Tabs, Typography } from '@mui/material';
 
 import { FormattedMessage } from 'react-intl';
 
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormGroup from '@mui/material/FormGroup';
+import Switch from '@mui/material/Switch';
+
 import TabContext from '@mui/lab/TabContext';
 
 import TabPanel from '@mui/lab/TabPanel';
@@ -22,6 +26,7 @@ export interface PageGatedContentProps {
   onSaveGatedConditions: (
     conditions?: GatedCondition[],
     layout?: GatedPageLayout,
+    enableGatedConditions?: boolean,
   ) => void;
   onClose: () => void;
 }
@@ -34,6 +39,12 @@ export default function PageGatedContent({
   const [tab, setTab] = useState('conditions');
 
   const [showPreview, setShowPreview] = useState(false);
+
+  const [checkedEnableProtectedPage, setCheckedEnableProtectedPage] = useState(
+    page.enableGatedConditions !== undefined
+      ? page.enableGatedConditions
+      : true,
+  );
 
   const handleClose = () => {
     setShowPreview(false);
@@ -74,6 +85,35 @@ export default function PageGatedContent({
           <Grid item xs={12}>
             <TabContext value={tab}>
               <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  <FormGroup>
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={checkedEnableProtectedPage}
+                          onChange={() => {
+                            setCheckedEnableProtectedPage(
+                              !checkedEnableProtectedPage,
+                            );
+
+                            onSaveGatedConditions(
+                              page.gatedConditions,
+                              page.gatedPageLayout,
+                              !checkedEnableProtectedPage,
+                            );
+                          }}
+                        />
+                      }
+                      label={
+                        <FormattedMessage
+                          id={'protect.page'}
+                          defaultMessage={'Protect page'}
+                        ></FormattedMessage>
+                      }
+                    />
+                  </FormGroup>
+                </Grid>
+
                 <Grid item xs={12}>
                   <Tabs value={tab} onChange={(e, value) => setTab(value)}>
                     <Tab

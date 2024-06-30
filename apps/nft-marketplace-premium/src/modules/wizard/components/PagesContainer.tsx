@@ -166,6 +166,10 @@ export function PagesContainer({
           ...newPages[pageOptions.key],
           gatedConditions: pageOptions.gatedConditions,
           gatedPageLayout: pageOptions.gatedPageLayout,
+          enableGatedConditions:
+            pageOptions?.enableGatedConditions === undefined
+              ? true
+              : pageOptions?.enableGatedConditions,
         };
       }
 
@@ -431,6 +435,7 @@ export function PagesContainer({
     page: string,
     conditions?: GatedCondition[],
     layout?: GatedPageLayout,
+    enableGatedConditions?: boolean,
   ) => {
     setPages((pages) => {
       const newPages = structuredClone({ ...pages });
@@ -442,6 +447,9 @@ export function PagesContainer({
       if (layout) {
         newPages[page].gatedPageLayout = layout;
       }
+
+      newPages[page].enableGatedConditions =
+        enableGatedConditions === undefined ? true : enableGatedConditions;
 
       return newPages;
     });

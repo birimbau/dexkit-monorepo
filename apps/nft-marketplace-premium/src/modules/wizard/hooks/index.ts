@@ -102,7 +102,7 @@ export function useCheckGatedConditions({
 }) {
   return useQuery(['GET_CHECKED_GATED_CONDITIONS', account, conditions], () => {
     if (!conditions) {
-      return;
+      return null;
     }
 
     return checkGatedConditions({ account, conditions });

@@ -43,8 +43,8 @@ export interface PagesProps {
     page: string,
     conditions?: GatedCondition[],
     layout?: GatedPageLayout,
+    enableGatedConditions?: boolean,
   ) => void;
-  onEditConditions: (page: string) => void;
   onRemovePage: (page: string) => void;
   onChangeName: (page: string, index: number, name: string) => void;
   theme?: {
@@ -53,6 +53,7 @@ export interface PagesProps {
   };
   activeSection?: PageSectionKey;
   site?: string;
+  previewUrl?: string;
 }
 
 export default function Pages({
@@ -63,13 +64,13 @@ export default function Pages({
   activeSection,
   onAdd,
   onClonePage,
-  onEditConditions,
   onUpdateGatedConditions,
   onRemovePage,
   onEditTitle,
   onAddPage,
   onChangeName,
   site,
+  previewUrl,
 }: PagesProps) {
   const [query, setQuery] = useState('');
 
@@ -176,9 +177,15 @@ export default function Pages({
   const handleSaveGatedConditions = (
     conditions?: GatedCondition[],
     layout?: GatedPageLayout,
+    enableGatedConditions?: boolean,
   ) => {
     if (selectedKey) {
-      onUpdateGatedConditions(selectedKey, conditions, layout);
+      onUpdateGatedConditions(
+        selectedKey,
+        conditions,
+        layout,
+        enableGatedConditions === undefined ? true : enableGatedConditions,
+      );
     }
   };
 
@@ -313,6 +320,7 @@ export default function Pages({
                       onClone={handleClonePage(pageKey)}
                       onEditConditions={handleEditCondtions(pageKey)}
                       onRemove={() => onRemovePage(pageKey)}
+                      previewUrl={previewUrl}
                     />
                   </Grid>
                 ))}

@@ -77,7 +77,11 @@ export const getStaticProps: GetStaticProps = async ({
     };
   }
 
-  if (homePage?.gatedConditions && homePage.gatedConditions.length > 0) {
+  if (
+    homePage?.enableGatedConditions !== undefined
+      ? homePage?.enableGatedConditions
+      : homePage?.gatedConditions && homePage.gatedConditions.length > 0
+  ) {
     return {
       props: {
         isProtected: true,

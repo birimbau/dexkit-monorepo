@@ -32,6 +32,7 @@ interface Props {
     page: string,
     conditions?: GatedCondition[],
     layout?: GatedPageLayout,
+    enableGatedConditions?: boolean,
   ) => void;
   onAddPage: (page: AppPage) => void;
   onRemovePage: (page: string) => void;
@@ -62,6 +63,7 @@ export default function PagesSectionPage({
   pages,
   activeSection,
   site,
+  previewUrl,
 }: Props) {
   const [showAddPage, setShowAddPage] = useState(false);
 
@@ -85,10 +87,12 @@ export default function PagesSectionPage({
   const handleSubmitGatedConditions = (
     conditions: GatedCondition[],
     layout: GatedPageLayout,
+    enableGatedConditions?: boolean,
   ) => {
     if (page) {
       onEditPage({
         clonedPageKey: pages[page].clonedPageKey,
+        enableGatedConditions: enableGatedConditions,
         gatedConditions: conditions,
         gatedPageLayout: layout,
         isEditGatedConditions: true,
@@ -100,11 +104,6 @@ export default function PagesSectionPage({
 
     setShowGatedModalForm(true);
     setPage(undefined);
-  };
-
-  const handleEditGateConditions = (page: string) => {
-    setShowGatedModalForm(true);
-    setPage(page);
   };
 
   const handleAction = (action: string, page: string, index: number) => {
@@ -166,12 +165,12 @@ export default function PagesSectionPage({
             onAdd={onAdd}
             onClonePage={onClonePage}
             onAddPage={handleAddPage}
-            onEditConditions={handleEditGateConditions}
             activeSection={activeSection}
             onEditTitle={onEditTitle}
             onRemovePage={onRemovePage}
             onUpdateGatedConditions={onUpdateGatedConditions}
             site={site}
+            previewUrl={previewUrl}
           />
         </Box>
       </Stack>
