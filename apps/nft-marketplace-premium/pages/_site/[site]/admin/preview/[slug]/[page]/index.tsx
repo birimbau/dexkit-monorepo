@@ -19,7 +19,7 @@ import PreviewAuthLayout from 'src/components/layouts/PreviewAuthLayout';
 function PreviewPage() {
   const router = useRouter();
 
-  const { slug, page, index } = router.query;
+  const { slug, page, index, disableLayout } = router.query;
 
   const { data } = useAdminWhitelabelConfigQuery({ slug: slug as string });
 
@@ -37,17 +37,8 @@ function PreviewPage() {
 
       return appConfig && result ? [result] ?? [] : [];
     }
-
     return appConfig ? appConfig.pages[page as string]?.sections ?? [] : [];
   }, [appConfig, page, index]);
-
-  return <SectionsRenderer sections={sections} />;
-}
-
-(PreviewPage as any).getLayout = function getLayout(children: any) {
-  const router = useRouter();
-
-  const { disableLayout } = router.query;
 
   const disableLayoutFlag = useMemo(() => {
     return Boolean(disableLayout as string);
@@ -55,10 +46,10 @@ function PreviewPage() {
 
   return (
     <PreviewAuthLayout noSsr disableLayout={disableLayoutFlag}>
-      {children}
+      <SectionsRenderer sections={sections} />
     </PreviewAuthLayout>
   );
-};
+}
 
 type Params = {
   site?: string;

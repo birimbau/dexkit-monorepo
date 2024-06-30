@@ -290,7 +290,7 @@ export function GatedConditionView({
                 ? `url('${
                     theme.palette.mode === 'light'
                       ? layout?.frontImage
-                      : layout?.frontImageDark
+                      : layout?.frontImageDark || layout?.frontImage
                   }')`
                 : undefined,
             backgroundRepeat: 'no-repeat',
