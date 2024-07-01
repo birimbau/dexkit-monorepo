@@ -4,9 +4,8 @@ import { BigNumber } from "ethers";
 
 import { formatUnits } from "@ethersproject/units";
 import { EventEmitter } from "events";
-import { ChainId, CoinTypes, IPFS_GATEWAY } from "../constants";
+import { ChainId, CoinTypes, IPFS_GATEWAY, ZEROEX_NATIVE_TOKEN_ADDRESS } from "../constants";
 import { NETWORKS } from "../constants/networks";
-import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "../constants/zrx";
 import { EvmCoin, TokenWhitelabelApp } from "../types";
 
 export * from "./ipfs";
@@ -58,6 +57,20 @@ export const beautifyCamelCase = (camelCase: string | undefined) => {
     return (
       camelCase
         .replace(/([A-Z])/g, " $1")
+        // uppercase the first character
+        .replace(/^./, function (str) {
+          return str.toUpperCase();
+        })
+    );
+  }
+  return;
+};
+
+export const beautifyUnderscoreCase = (underscoreCase: string | undefined) => {
+  if (underscoreCase) {
+    return (
+      underscoreCase
+        .replace(/_/g, " ")
         // uppercase the first character
         .replace(/^./, function (str) {
           return str.toUpperCase();

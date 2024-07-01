@@ -54,6 +54,7 @@ export interface SiteResponse {
   lastVersionSet?: {
     version: string;
   }
+  verifyDomainRawData?: string;
   permissions?: {
     accountId: string;
     permissions: {

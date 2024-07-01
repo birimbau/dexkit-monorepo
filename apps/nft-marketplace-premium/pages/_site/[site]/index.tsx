@@ -14,10 +14,7 @@ import { SectionsRenderer } from '@/modules/wizard/components/sections/SectionsR
 import { GET_ASSETS_ORDERBOOK } from '@dexkit/ui/modules/nft/hooks';
 import { getDKAssetOrderbook } from '@dexkit/ui/modules/nft/services';
 import { fetchMultipleAssetForQueryClient } from '@dexkit/ui/modules/nft/services/query';
-import { AppPageSection } from '@dexkit/ui/modules/wizard/types/section';
-
-const imgUrl =
-  'https://c4.wallpaperflare.com/wallpaper/1000/190/378/3-316-16-9-aspect-ratio-s-sfw-wallpaper-preview.jpg';
+import type { AppPageSection } from '@dexkit/ui/modules/wizard/types/section';
 
 const Home: NextPage<{ sections: AppPageSection[] }> = ({ sections }) => {
   return (
@@ -48,7 +45,7 @@ export const getStaticProps: GetStaticProps = async ({
       const assetResponse = await getDKAssetOrderbook({ maker });
       await queryClient.prefetchQuery(
         [GET_ASSETS_ORDERBOOK, { maker: maker || null }],
-        async () => assetResponse.data
+        async () => assetResponse.data,
       );
     }
   }

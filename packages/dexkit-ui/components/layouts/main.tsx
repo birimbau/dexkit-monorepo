@@ -6,7 +6,7 @@ import React, { useEffect, useMemo } from "react";
 const AppDrawer = dynamic(() => import("../AppDrawer"));
 
 import { useIsMobile } from "@dexkit/core";
-import { AppConfig } from "@dexkit/ui/modules/wizard/types/config";
+import type { AppConfig } from "@dexkit/ui/modules/wizard/types/config";
 import { isMobile } from "@dexkit/wallet-connectors/utils/userAgent";
 import { ErrorBoundary } from "react-error-boundary";
 import { FormattedMessage } from "react-intl";

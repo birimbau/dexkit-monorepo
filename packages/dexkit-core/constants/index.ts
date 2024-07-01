@@ -5,6 +5,8 @@ import { isAddressEqual } from "../utils";
 import { getAddress } from '../utils/ethers/getAddress';
 import { isAddress } from '../utils/ethers/isAddress';
 import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "./zrx";
+export { ZEROEX_NATIVE_TOKEN_ADDRESS } from "./zrx";
+
 
 
 

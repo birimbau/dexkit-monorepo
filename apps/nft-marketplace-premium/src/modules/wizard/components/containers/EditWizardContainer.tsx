@@ -1,14 +1,14 @@
 import {
-    Box,
-    Button,
-    Container,
-    Drawer,
-    Grid,
-    IconButton,
-    Stack,
-    Typography,
-    useMediaQuery,
-    useTheme,
+  Box,
+  Button,
+  Container,
+  Drawer,
+  Grid,
+  IconButton,
+  Stack,
+  Typography,
+  useMediaQuery,
+  useTheme,
 } from '@mui/material';
 
 import AppConfirmDialog from '@dexkit/ui/components/AppConfirmDialog';
@@ -882,7 +882,10 @@ export function EditWizardContainer({ site }: Props) {
                   },
                   {
                     caption: (
-                      <FormattedMessage id="apps" defaultMessage="Apps" />
+                      <FormattedMessage
+                        id="manage.apps"
+                        defaultMessage="Manage Apps"
+                      />
                     ),
                     uri: '/admin',
                   },

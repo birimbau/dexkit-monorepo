@@ -29,9 +29,8 @@ export function WelcomeMessage() {
   return (
     <Alert severity="info">
       <FormattedMessage
-        id="wizard.welcome.index.message"
-        defaultMessage="Welcome to DexAppBuilder! This is a beta product with constant development and at the moment is offered for free. 
-    If you need support please reach us on our <a>dedicated Discord channel</a>. Please check our <d>docs</d> for whitelabels. Reach us at our email <b>info@dexkit.com</b> if you need a custom solution that the wizard not attend."
+        id="wizard.welcome.index.message.dexappbuilder"
+        defaultMessage="Welcome to DexAppBuilder! Our beta product is constantly evolving and currently available for free. For support, join our <a>Discord channel</a>. Explore our <d>docs</d> for whitelabels.<br></br> Need a custom solution? Email us at <b>info@dexkit.com</b>. We're here to help!"
         values={{
           //@ts-ignore
           a: handleHrefDiscord,
@@ -39,6 +38,8 @@ export function WelcomeMessage() {
           d: handleHrefDocs,
           //@ts-ignore
           b: (chunks) => <b>{chunks}</b>,
+          //@ts-ignore
+          br: (chunks) => <br />,
         }}
       />
     </Alert>

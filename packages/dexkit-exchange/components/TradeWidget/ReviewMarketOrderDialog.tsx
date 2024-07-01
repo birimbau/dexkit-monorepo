@@ -4,6 +4,7 @@ import { formatBigNumber, getBlockExplorerUrl } from "@dexkit/core/utils";
 import { AppDialogTitle } from "@dexkit/ui/components/AppDialogTitle";
 import CheckIcon from "@mui/icons-material/Check";
 
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
 import {
   Button,
@@ -23,19 +24,24 @@ import { BigNumber } from "ethers";
 import { useMemo, useState } from "react";
 import { FormattedMessage } from "react-intl";
 
+import ErrorIcon from "@mui/icons-material/Error";
+
 export interface ReviewMarketOrderDialogProps {
   DialogProps: DialogProps;
+  canGasless?: boolean;
   isPlacingOrder?: boolean;
   quoteAmount?: BigNumber;
   baseAmount?: BigNumber;
   price?: string;
   quoteToken?: Token;
+  pendingHash?: string;
   baseToken?: Token;
   isApproval?: boolean;
   isApproving?: boolean;
   side?: "sell" | "buy";
   hash?: string;
   chainId?: ChainId;
+  reasonFailedGasless?: string;
   onApprove?: () => void;
   onConfirm: () => void;
 }
@@ -51,10 +57,13 @@ export default function ReviewMarketOrderDialog({
   isApproving,
   isApproval,
   onConfirm,
+  reasonFailedGasless,
   side,
   baseAmount: amount,
   chainId,
+  canGasless,
   hash,
+  pendingHash,
 }: ReviewMarketOrderDialogProps) {
   const pricePerTokenInverseFormatted = useMemo(() => {
     if (price && Number(price) > 0) {
@@ -83,6 +92,18 @@ export default function ReviewMarketOrderDialog({
       return formatBigNumber(quoteAmount, quoteToken?.decimals);
     }
   }, [quoteAmount, quoteToken]);
+
+  const { onClose } = DialogProps;
+
+  const handleClose = () => {
+    if (onClose) {
+      onClose({}, "backdropClick");
+    }
+  };
+
+  const gaslessConfirmed = canGasless && hash;
+
+  const gaslessPending = canGasless && pendingHash;
 
   const renderActions = () => {
     if (isApproval) {
@@ -119,25 +140,40 @@ export default function ReviewMarketOrderDialog({
     }
 
     return (
-      <Stack spacing={1}>
-        <Button
-          size="large"
-          startIcon={
-            isPlacingOrder ? (
-              <CircularProgress size="1rem" color="inherit" />
-            ) : undefined
-          }
-          disabled={isPlacingOrder}
-          onClick={onConfirm}
-          variant="contained"
-          color="primary"
-        >
-          <FormattedMessage id="place.order" defaultMessage="Place Order" />
-        </Button>
-        {hash && (
+      <Stack spacing={1} direction={"row"} justifyContent={"center"}>
+        {reasonFailedGasless ? (
           <Button
             size="large"
-            href={`${getBlockExplorerUrl(chainId)}/tx/${hash}`}
+            onClick={handleClose}
+            variant="contained"
+            color="primary"
+          >
+            <FormattedMessage id="back" defaultMessage="Back" />
+          </Button>
+        ) : (
+          <Button
+            size="large"
+            startIcon={
+              isPlacingOrder && !gaslessConfirmed ? (
+                <CircularProgress size="1rem" color="inherit" />
+              ) : undefined
+            }
+            disabled={isPlacingOrder && !gaslessConfirmed}
+            onClick={gaslessConfirmed ? handleClose : onConfirm}
+            variant="contained"
+            color="primary"
+          >
+            {gaslessConfirmed ? (
+              <FormattedMessage id="new.trade" defaultMessage="New trade" />
+            ) : (
+              <FormattedMessage id="place.order" defaultMessage="Place Order" />
+            )}
+          </Button>
+        )}
+        {(hash || pendingHash) && (
+          <Button
+            size="large"
+            href={`${getBlockExplorerUrl(chainId)}/tx/${hash || pendingHash}`}
             target="_blank"
             variant="outlined"
             color="primary"
@@ -152,36 +188,92 @@ export default function ReviewMarketOrderDialog({
     );
   };
 
-  const { onClose } = DialogProps;
-
-  const handleClose = () => {
-    if (onClose) {
-      onClose({}, "backdropClick");
-    }
-  };
-
   const [swapPrices, setSwapPrices] = useState(true);
 
   const handleSwapPrices = () => setSwapPrices((val) => !val);
 
+  const dialogTitle = () => {
+    if (gaslessPending) {
+      return (
+        <FormattedMessage
+          id="confirming.trade"
+          defaultMessage="Confirming trade"
+        />
+      );
+    }
+
+    if (gaslessConfirmed) {
+      return (
+        <FormattedMessage
+          id="trade.confirmed"
+          defaultMessage="Trade confirmed"
+        />
+      );
+    }
+    if (reasonFailedGasless) {
+      return (
+        <FormattedMessage id="trade.failed" defaultMessage="Trade failed" />
+      );
+    }
+
+    return <FormattedMessage id="review.order" defaultMessage="Review Order" />;
+  };
+
   return (
     <Dialog {...DialogProps}>
-      <AppDialogTitle
-        title={
-          <FormattedMessage id="review.order" defaultMessage="Review Order" />
-        }
-        onClose={handleClose}
-      />
+      <AppDialogTitle title={dialogTitle()} onClose={handleClose} />
       <Divider />
       <DialogContent>
         <Stack spacing={2}>
+          {gaslessConfirmed && (
+            <Stack
+              direction="column"
+              justifyContent="center"
+              alignItems="center"
+            >
+              <CheckCircleOutlineIcon color="success" sx={{ fontSize: 60 }} />
+              <Typography variant="body1">
+                <FormattedMessage
+                  id="trade.confirmed"
+                  defaultMessage="Trade confirmed"
+                />
+              </Typography>
+            </Stack>
+          )}
+
+          {reasonFailedGasless && (
+            <Stack
+              direction="column"
+              justifyContent="center"
+              alignItems="center"
+            >
+              <ErrorIcon color="success" sx={{ fontSize: 60 }} />
+              <Typography variant="body1">
+                <FormattedMessage
+                  id="trade.gasless.failed.reason.explanation"
+                  defaultMessage="Trade failed reason: {reason}"
+                  values={{ reason: reasonFailedGasless.split("_").join(" ") }}
+                />
+              </Typography>
+            </Stack>
+          )}
+
           <Stack>
             <Typography align="center" variant="body1" color="text.secondary">
               {side === "sell" ? (
-                <FormattedMessage
-                  id="you.are.selling"
-                  defaultMessage="You are selling"
-                />
+                gaslessConfirmed ? (
+                  <FormattedMessage
+                    id="you.selled"
+                    defaultMessage="You selled"
+                  />
+                ) : (
+                  <FormattedMessage
+                    id="you.are.selling"
+                    defaultMessage="You are selling"
+                  />
+                )
+              ) : gaslessConfirmed ? (
+                <FormattedMessage id="you.bought" defaultMessage="You bought" />
               ) : (
                 <FormattedMessage
                   id="you.are.buying"

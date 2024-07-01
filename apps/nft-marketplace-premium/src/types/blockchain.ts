@@ -84,6 +84,7 @@ export interface Token {
   chainId: ChainId;
   logoURI: string;
   tradable?: boolean;
+  disableFeatured?: boolean;
 }
 
 export interface TokenList {

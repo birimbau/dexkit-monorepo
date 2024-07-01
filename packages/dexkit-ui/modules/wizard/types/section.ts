@@ -232,6 +232,7 @@ export interface MarketTradePageSection extends PageSection {
   config: {
     show: OrderMarketType;
     slippage?: number;
+    useGasless?: boolean;
     baseTokenConfig: { address: string, chainId: number };
   };
 }
@@ -241,6 +242,7 @@ export interface TokenTradePageSection extends PageSection {
   config: {
     showTokenDetails?: boolean;
     show?: OrderMarketType;
+    useGasless?: boolean;
     slippage?: number;
     baseTokenConfig?: { address?: string, chainId?: number };
   };
@@ -272,6 +274,7 @@ export interface CollectionPageSection extends PageSection {
 export interface TokenTradePageSection extends PageSection {
   type: "token-trade";
   config: {
+    useGasless?: boolean;
     showTokenDetails?: boolean;
     show?: OrderMarketType;
     slippage?: number;

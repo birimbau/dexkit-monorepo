@@ -10,22 +10,22 @@ import { DexkitApiProvider } from '@dexkit/core/providers';
 import { parseChainId } from '@dexkit/core/utils';
 import { isAddress } from '@dexkit/core/utils/ethers/isAddress';
 import CompletationProvider from '@dexkit/ui/components/CompletationProvider';
-import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
+import { useWeb3React } from '@dexkit/wallet-connectors/hooks/useWeb3React';
 import ContractFormView from '@dexkit/web3forms/components/ContractFormView';
 import { ContractFormParams } from '@dexkit/web3forms/types';
 import InfoIcon from '@mui/icons-material/Info';
 import {
-    Backdrop,
-    Box,
-    Button,
-    CircularProgress,
-    Container,
-    Grid,
-    NoSsr,
-    Paper,
-    Stack,
-    TextField,
-    Typography,
+  Backdrop,
+  Box,
+  Button,
+  CircularProgress,
+  Container,
+  Grid,
+  NoSsr,
+  Paper,
+  Stack,
+  TextField,
+  Typography,
 } from '@mui/material';
 import { QueryClient, dehydrate } from '@tanstack/react-query';
 import { ChangeEvent, useMemo, useState } from 'react';
@@ -181,13 +181,28 @@ export default function FormsCreatePage({
                 },
                 {
                   caption: (
-                    <FormattedMessage id="forms" defaultMessage="Forms" />
+                    <FormattedMessage
+                      id="dexgenerator"
+                      defaultMessage="DexGenerator"
+                    />
                   ),
                   uri: '/forms',
                 },
                 {
                   caption: (
-                    <FormattedMessage id="create" defaultMessage="Create" />
+                    <FormattedMessage
+                      id="manage.contract.forms"
+                      defaultMessage="Manage Contract Forms"
+                    />
+                  ),
+                  uri: '/forms',
+                },
+                {
+                  caption: (
+                    <FormattedMessage
+                      id="create.contract.form"
+                      defaultMessage="Create Contract Form"
+                    />
                   ),
                   uri: `/forms/create`,
                   active: true,
@@ -198,14 +213,22 @@ export default function FormsCreatePage({
           <Box>
             <Grid container spacing={2}>
               <Grid item xs={12}>
+                <Typography variant="h5">
+                  <FormattedMessage
+                    id="create.your.contract.form"
+                    defaultMessage="Create your contract form"
+                  />
+                </Typography>
+              </Grid>
+              <Grid item xs={12}>
                 <Button
                   disabled={createFormMutation.isLoading || isFormInvalid}
                   onClick={handleShowConfirm}
                   variant="contained"
                 >
                   <FormattedMessage
-                    id="create.form"
-                    defaultMessage="Create Form"
+                    id="create.contract.form"
+                    defaultMessage="Create Contract Form"
                   />
                 </Button>
               </Grid>

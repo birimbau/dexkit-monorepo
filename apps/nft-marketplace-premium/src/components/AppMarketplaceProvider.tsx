@@ -4,10 +4,10 @@ import {
 } from '@dexkit/evm-chains/constants';
 
 import { EXCHANGE_NOTIFICATION_TYPES } from '@dexkit/exchange/constants/messages';
-import { DexkitProvider } from '@dexkit/ui/components';
+import { DexkitProvider } from '@dexkit/ui/components/DexkitProvider';
 import { ThemeMode } from '@dexkit/ui/constants/enum';
 import { COMMON_NOTIFICATION_TYPES } from '@dexkit/ui/constants/messages/common';
-import { useLocale } from '@dexkit/ui/hooks';
+import { useLocale } from '@dexkit/ui/hooks/useLocale';
 import { experimental_extendTheme as extendTheme } from '@mui/material/styles';
 import { useAtom } from 'jotai';
 import { DefaultSeo } from 'next-seo';
@@ -26,7 +26,7 @@ import {
   transactionsAtomV2,
 } from 'src/state/atoms';
 import { getTheme } from 'src/theme';
-import defaultAppConfig from '../../config/app.json';
+import defaultAppConfig from '../../config/app.minimal.json';
 import { loadLocaleMessages } from '../utils/intl';
 
 export interface AppMarketplaceContextProps {

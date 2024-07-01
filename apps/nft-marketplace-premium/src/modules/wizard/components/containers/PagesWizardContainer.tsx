@@ -1,14 +1,13 @@
 import { AppConfig, AppPage } from '@dexkit/ui/modules/wizard/types/config';
 import {
-  Alert,
   Box,
   Button,
-  createTheme,
   Divider,
   Grid,
-  responsiveFontSizes,
   Stack,
   Typography,
+  createTheme,
+  responsiveFontSizes,
 } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
@@ -18,7 +17,6 @@ import { PagesContainer } from '../PagesContainer';
 
 import AddIcon from '@mui/icons-material/Add';
 import dynamic from 'next/dynamic';
-import { useGetApiKeyQuery } from '../../hooks/integrations';
 
 const ApiKeyIntegrationDialog = dynamic(
   () => import('../dialogs/ApiKeyIntegrationDialog'),
@@ -86,7 +84,7 @@ export default function PagesWizardContainer({
     setShowAddPage(true);
   };
 
-  const hasSwap = useMemo(() => {
+  /* const hasSwap = useMemo(() => {
     return Object.keys(pages)
       .map((key) => pages[key])
       .some((page) =>
@@ -99,7 +97,7 @@ export default function PagesWizardContainer({
       );
   }, [JSON.stringify(pages)]);
 
-  const { data } = useGetApiKeyQuery({ type: 'zrx', siteId });
+  const { data } = useGetApiKeyQuery({ type: 'zrx', siteId });*/
 
   const [showSetApiKey, setShowSetApiKey] = useState(false);
 
@@ -125,7 +123,7 @@ export default function PagesWizardContainer({
         />
       )}
       <Grid container spacing={2}>
-        {!data?.value && hasSwap && (
+        {/*!data?.value && hasSwap && (
           <Grid item xs={12}>
             <Alert
               severity="info"
@@ -148,7 +146,7 @@ export default function PagesWizardContainer({
               />
             </Alert>
           </Grid>
-        )}
+        )*/}
         <Grid item xs={12}>
           <Stack direction={'column'}>
             <Typography variant={'h6'}>

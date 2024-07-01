@@ -15,6 +15,7 @@ import { AppConfig } from '@dexkit/ui/modules/wizard/types/config';
 import { SiteResponse } from 'src/types/whitelabel';
 import theDefaultConfig from '../../../../../../config/quick.exchange.default.app.json';
 import { PreviewAppButton } from '../../PreviewAppButton';
+import { WelcomeMessage } from '../../WelcomeMessage';
 import SignConfigDialog from '../../dialogs/SignConfigDialog';
 import ExchangeStepper from '../ExchangeStepper';
 const defaultConfig = theDefaultConfig as unknown as AppConfig;
@@ -134,14 +135,19 @@ export default function ExchangeStepperContainer({ site }: Props) {
                   uri: '/admin',
                 },
                 {
-                  caption: <FormattedMessage id="apps" defaultMessage="Apps" />,
+                  caption: (
+                    <FormattedMessage
+                      id="manage.apps"
+                      defaultMessage="Manage Apps"
+                    />
+                  ),
                   uri: '/admin',
                 },
                 {
                   caption: (
                     <FormattedMessage
-                      id="exchange.app.builder"
-                      defaultMessage="Exchange App Builder"
+                      id="exchange.app.builder.title"
+                      defaultMessage="Exchange - Quick Builder"
                     />
                   ),
                   uri: '/admin/quick-builder/exchange',
@@ -152,12 +158,15 @@ export default function ExchangeStepperContainer({ site }: Props) {
           </Stack>
         </Grid>
         <Grid item xs={12} sm={12}>
+          <WelcomeMessage />
+        </Grid>
+        <Grid item xs={12} sm={12}>
           <Stack direction="row" justifyContent="space-between">
             {!isMobile && (
               <Typography variant="h5">
                 <FormattedMessage
-                  id="quick.exchange.builder"
-                  defaultMessage="Quick Exchange Builder"
+                  id="build.your.exchange.quickly"
+                  defaultMessage="Build your Exchange quickly"
                 />
               </Typography>
             )}
@@ -166,6 +175,7 @@ export default function ExchangeStepperContainer({ site }: Props) {
             </Stack>
           </Stack>
         </Grid>
+
         <Grid item xs={12} sm={12}>
           <ExchangeStepper
             onSave={handleSave}

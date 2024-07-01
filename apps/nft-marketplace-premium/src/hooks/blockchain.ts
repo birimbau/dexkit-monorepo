@@ -2,19 +2,18 @@ import {
   getNativeCurrencyImage,
   getNativeCurrencySymbol,
   getProviderByChainId,
-  switchNetwork,
 } from '@dexkit/core/utils/blockchain';
 import { useWeb3React } from '@dexkit/wallet-connectors/hooks/useWeb3React';
 import { useMutation } from '@tanstack/react-query';
 import { useAtomValue } from 'jotai';
 import { useUpdateAtom } from 'jotai/utils';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useSwitchChain } from 'wagmi';
 import {
   switchNetworkChainIdAtom,
   switchNetworkOpenAtom,
   tokensAtom,
 } from '../state/atoms';
-
 
 import { Token } from '../types/blockchain';
 
@@ -29,6 +28,7 @@ import { useAppConfig } from './app';
 
 export function useBlockNumber() {
   const { provider } = useWeb3React();
+
 
   const [blockNumber, setBlockNumber] = useState(0);
 
@@ -64,13 +64,17 @@ export function useSwitchNetwork() {
 }
 
 export function useSwitchNetworkMutation() {
-  const { connector } = useWeb3React();
+  const { switchChain } = useSwitchChain()
 
   return useMutation<unknown, Error, { chainId: number }>(
     async ({ chainId }) => {
-      if (connector) {
-        return switchNetwork(connector, chainId);
+      if (chainId) {
+        await switchChain({ chainId: chainId });
+        return true
       }
+      return null
+
+
     },
   );
 }

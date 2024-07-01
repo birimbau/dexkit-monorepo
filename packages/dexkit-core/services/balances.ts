@@ -2,8 +2,9 @@ import { BigNumber, Contract, providers } from "ethers";
 
 import { ERC20Abi } from "../constants/abis";
 
+import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "../constants";
 import { NETWORK_COIN_SYMBOL } from "../constants/networks";
-import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "../constants/zrx";
+
 
 export const getERC20Decimals = async (
   contractAddress?: string,

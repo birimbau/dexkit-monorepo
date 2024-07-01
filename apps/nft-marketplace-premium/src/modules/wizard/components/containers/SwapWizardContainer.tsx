@@ -52,15 +52,35 @@ export default function SwapWizardContainer({
   const featuredTokens = useMemo<Token[]>(() => {
     let tokens = config?.tokens?.length ? config?.tokens[0].tokens || [] : [];
 
-    return tokens.map<Token>((t: Token) => {
-      return {
-        address: t.address,
-        chainId: t.chainId as number,
-        decimals: t.decimals,
-        name: t.name,
-        symbol: t.symbol,
-      } as Token;
-    });
+    return tokens
+      .filter((t) => !t?.disableFeatured)
+      .map<Token>((t: Token) => {
+        return {
+          address: t.address,
+          chainId: t.chainId as number,
+          decimals: t.decimals,
+          name: t.name,
+          symbol: t.symbol,
+          logoURI: t.logoURI,
+        } as Token;
+      });
+  }, [config]);
+
+  const nonFeaturedTokens = useMemo<Token[]>(() => {
+    let tokens = config?.tokens?.length ? config?.tokens[0].tokens || [] : [];
+
+    return tokens
+      .filter((t) => t?.disableFeatured)
+      .map<Token>((t: Token) => {
+        return {
+          address: t.address,
+          chainId: t.chainId as number,
+          decimals: t.decimals,
+          name: t.name,
+          symbol: t.symbol,
+          logoURI: t.logoURI,
+        } as Token;
+      });
   }, [config]);
 
   const tokens = useMemo<Token[]>(() => {
@@ -152,9 +172,12 @@ export default function SwapWizardContainer({
                 : {},
               defaultChainId: swapFormData?.defaultChainId || ChainId.Ethereum,
               featuredTokens: featuredTokens,
+              nonFeaturedTokens: nonFeaturedTokens,
               currency,
               zeroExApiKey: process.env.NEXT_PUBLIC_ZRX_API_KEY || '',
               transakApiKey: process.env.NEXT_PUBLIC_TRANSAK_API_KEY || '',
+              useGasless: swapFormData?.useGasless,
+              myTokensOnlyOnSearch: swapFormData?.myTokensOnlyOnSearch,
             }}
           />
         </CssVarsProvider>

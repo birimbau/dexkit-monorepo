@@ -47,7 +47,7 @@ import useThirdwebContractMetadataQuery, {
   useDeployThirdWebContractMutation,
   useFormConfigParamsQuery,
 } from '@dexkit/web3forms/hooks';
-import { dkGetTrustedForwarders } from '@dexkit/web3forms/utils';
+import { useTrustedForwarders } from '@dexkit/web3forms/hooks/useTrustedForwarders';
 import CheckCircle from '@mui/icons-material/CheckCircle';
 import { QueryClient, dehydrate } from '@tanstack/react-query';
 import {
@@ -225,22 +225,9 @@ export default function DeployPage() {
     setSelectedChainId(parseChainId(event.target.value));
   };
 
-  const { provider } = useWeb3React();
-
-  const [trustedForwarders, setTrustedForwarders] = useState<string[]>([]);
-
-  useEffect(() => {
-    (async () => {
-      const forwarders = await dkGetTrustedForwarders(
-        provider,
-        THIRDWEB_CLIENT_ID,
-      );
-
-      if (forwarders !== null) {
-        setTrustedForwarders(forwarders);
-      }
-    })();
-  }, [provider]);
+  const { data: trustedForwarders } = useTrustedForwarders({
+    clientId: THIRDWEB_CLIENT_ID,
+  });
 
   return (
     <>
@@ -354,27 +341,33 @@ export default function DeployPage() {
                 },
                 {
                   caption: (
-                    <FormattedMessage id="forms" defaultMessage="Forms" />
+                    <FormattedMessage
+                      id="dexgenerator"
+                      defaultMessage="DexGenerator"
+                    />
                   ),
                   uri: '/forms',
                 },
                 {
                   caption: (
                     <FormattedMessage
-                      id="contracts"
-                      defaultMessage="Contracts"
+                      id="manage.contracts"
+                      defaultMessage="Manage Contracts"
                     />
                   ),
                   uri: '/forms/contracts',
                 },
-                /*  {
-                  caption: (
-                    <FormattedMessage id="deploy" defaultMessage="Deploy" />
-                  ),
-                  uri: `/forms/deploy`,
-                },*/
                 {
-                  caption: thirdwebMetadataQuery.data?.name,
+                  caption: (
+                    <FormattedMessage
+                      id="deploy.contract"
+                      defaultMessage="Deploy Contract"
+                    />
+                  ),
+                  uri: `/forms/contracts/create`,
+                },
+                {
+                  caption: thirdwebMetadataQuery.data?.displayName,
                   uri: `/forms/deploy/${
                     creator as string
                   }/${thirdwebMetadataQuery.data?.name}`,
@@ -520,8 +513,8 @@ export default function DeployPage() {
                           />
                         ) : (
                           <FormattedMessage
-                            id="Deploy"
-                            defaultMessage="Deploy"
+                            id="deploy.contract"
+                            defaultMessage="Deploy Contract"
                           />
                         )
                       }

@@ -1,4 +1,4 @@
-import { AppNotificationType } from "@dexkit/ui/types";
+import type { AppNotificationType } from "@dexkit/ui/types";
 
 export const EXCHANGE_NOTIFICATION_TYPES: { [key: string]: AppNotificationType } = {
 

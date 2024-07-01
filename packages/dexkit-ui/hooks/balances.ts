@@ -12,7 +12,7 @@ import { useCallback } from 'react';
 
 
 
-import { ZEROEX_NATIVE_TOKEN_ADDRESS } from '@dexkit/core/constants/zrx';
+import { ZEROEX_NATIVE_TOKEN_ADDRESS } from '@dexkit/core/constants';
 
 import { ERC20Abi } from '@dexkit/core/constants/abis';
 import { Token } from '@dexkit/core/types';

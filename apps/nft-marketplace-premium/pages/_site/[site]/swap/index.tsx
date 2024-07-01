@@ -62,7 +62,11 @@ const SwapPage: NextPage = () => {
             </Grid>
             <Grid item xs={12} sm={6}>
               <NoSsr>
-                <SwapSection section={swapSection} />
+                <SwapSection
+                  section={{
+                    ...swapSection,
+                  }}
+                />
               </NoSsr>
             </Grid>
           </Grid>

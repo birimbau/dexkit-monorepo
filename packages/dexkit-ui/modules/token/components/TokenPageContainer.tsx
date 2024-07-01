@@ -12,10 +12,10 @@ import { Typography } from "@mui/material";
 import Container from "@mui/material/Container";
 import Stack from "@mui/material/Stack";
 import {
-    ThirdwebSDKProvider,
-    useContract,
-    useContractRead,
-    useContractType,
+  ThirdwebSDKProvider,
+  useContract,
+  useContractRead,
+  useContractType,
 } from "@thirdweb-dev/react";
 import { NextSeo } from "next-seo";
 import { useMemo } from "react";
@@ -80,6 +80,18 @@ function TokenPageContainer({ address, network, orderMarketType }: Props) {
     return "sell";
   }, [orderMarketType]);
 
+  const getBreadcrumbURI = useMemo(() => {
+    if (network && token) {
+      if (orderMarketType === OrderMarketType.buyAndSell) {
+        return `/token/${network}/${token?.symbol}`;
+      }
+      if (orderMarketType === OrderMarketType.buy) {
+        return `/token/buy/${network}/${token?.symbol}`;
+      }
+      return `/token/sell/${network}/${token?.symbol}`;
+    }
+  }, [orderMarketType, network, token]);
+
   let contractType = hexToString(contractRead.data);
   const renderContent = () => {
     if (!contractType) {
@@ -108,6 +120,7 @@ function TokenPageContainer({ address, network, orderMarketType }: Props) {
               type: "market-trade",
               config: {
                 show: orderMarketType,
+                useGasless: true,
                 baseTokenConfig: {
                   address: token?.address as string,
                   chainId: token?.chainId as number,
@@ -134,6 +147,7 @@ function TokenPageContainer({ address, network, orderMarketType }: Props) {
               type: "market-trade",
               config: {
                 show: orderMarketType,
+                useGasless: true,
                 baseTokenConfig: {
                   address: address as string,
                   chainId: chainId,
@@ -194,14 +208,17 @@ function TokenPageContainer({ address, network, orderMarketType }: Props) {
             {
               caption: (
                 <FormattedMessage
-                  id="token.symbol.message"
-                  defaultMessage="Token {tokenSymbol}"
+                  id="trade.typetoken.symbol.message.network"
+                  defaultMessage="{tradeType} {tokenSymbol} on {network}"
                   values={{
                     tokenSymbol: token?.symbol || address,
+                    network: network?.toUpperCase() || " ",
+                    tradeType:
+                      tradeType.charAt(0).toUpperCase() + tradeType.slice(1),
                   }}
                 />
               ),
-              uri: "/token",
+              uri: getBreadcrumbURI || "/",
               active: true,
             },
           ]}

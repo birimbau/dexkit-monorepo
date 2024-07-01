@@ -1,34 +1,37 @@
+import { NETWORK_FROM_SLUG } from "@dexkit/core/constants/networks";
 import { UserEvents } from "@dexkit/core/constants/userEvents";
 import { formatUnits } from "@dexkit/core/utils/ethers/formatUnits";
 import { useDexKitContext } from "@dexkit/ui";
+import { ConnectWalletButton } from "@dexkit/ui/components/ConnectWalletButton";
 import LazyTextField from "@dexkit/ui/components/LazyTextField";
+import { SwitchNetworkButton } from "@dexkit/ui/components/SwitchNetworkButton";
 import { useInterval } from "@dexkit/ui/hooks/misc";
 import { useTrackUserEventsMutation } from "@dexkit/ui/hooks/userEvents";
 import TokenDropSummary from "@dexkit/ui/modules/token/components/TokenDropSummary";
 import { TokenDropPageSection } from "@dexkit/ui/modules/wizard/types/section";
 import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import {
-    Alert,
-    Avatar,
-    Box,
-    Button,
-    CircularProgress,
-    Container,
-    Divider,
-    Skeleton,
-    Stack,
-    Typography,
+  Alert,
+  Avatar,
+  Box,
+  Button,
+  CircularProgress,
+  Container,
+  Divider,
+  Skeleton,
+  Stack,
+  Typography,
 } from "@mui/material";
 import { useMutation } from "@tanstack/react-query";
 import {
-    ClaimEligibility,
-    useActiveClaimConditionForWallet,
-    useClaimConditions,
-    useClaimIneligibilityReasons,
-    useClaimerProofs,
-    useContract,
-    useContractMetadata,
-    useTokenSupply,
+  ClaimEligibility,
+  useActiveClaimConditionForWallet,
+  useClaimConditions,
+  useClaimIneligibilityReasons,
+  useClaimerProofs,
+  useContract,
+  useContractMetadata,
+  useTokenSupply,
 } from "@thirdweb-dev/react";
 import { CurrencyValue } from "@thirdweb-dev/sdk/evm";
 import { BigNumber } from "ethers";
@@ -74,9 +77,11 @@ export default function TokenDropSection({ section }: TokenDropSectionProps) {
 
   const { address: tokenAddress, network } = section.settings;
 
+  const networkChainId = NETWORK_FROM_SLUG(network)?.chainId;
+
   const { contract } = useContract(tokenAddress as string, "token-drop");
 
-  const { account } = useWeb3React();
+  const { account, chainId } = useWeb3React();
 
   const [lazyQuantity, setQuantity] = useState(1);
 
@@ -398,8 +403,6 @@ export default function TokenDropSection({ section }: TokenDropSectionProps) {
 
   const trackUserEventsMutation = useTrackUserEventsMutation();
 
-  const { chainId } = useWeb3React();
-
   const contractMetadataQuery = useContractMetadata(contract);
 
   const handleExecute = async () => {
@@ -543,8 +546,8 @@ export default function TokenDropSection({ section }: TokenDropSectionProps) {
                 variant="body1"
               >
                 <FormattedMessage
-                  id="claim.erc20.tokens.from.contractName"
-                  defaultMessage="Claim ERC20 Tokens from {contractName}"
+                  id="claim.tokens.from.contractName"
+                  defaultMessage="Claim Tokens from {contractName}"
                   values={{
                     contractName: <strong>{contractMetadata?.name}</strong>,
                   }}
@@ -558,7 +561,11 @@ export default function TokenDropSection({ section }: TokenDropSectionProps) {
 
         {section.settings.variant === "detailed" && (
           <Box>
-            <TokenDropSummary contract={contract} />
+            <TokenDropSummary
+              contract={contract}
+              hideDecimals
+              hideTotalSupply
+            />
             {activeClaimCondition.data?.metadata?.name && (
               <Stack direction="row" justifyContent="flex-start" spacing={2}>
                 <Typography variant="body1">
@@ -622,20 +629,26 @@ export default function TokenDropSection({ section }: TokenDropSectionProps) {
             value="1"
             onChange={handleChangeQuantity}
           />
-          <Button
-            size="large"
-            disabled={!canClaim || claimMutation.isLoading}
-            startIcon={
-              claimMutation.isLoading ? (
-                <CircularProgress size="1rem" color="inherit" />
-              ) : undefined
-            }
-            sx={{ width: { xs: "100%", sm: "auto" } }}
-            onClick={handleExecute}
-            variant="contained"
-          >
-            {buttonText}
-          </Button>
+          {!account ? (
+            <ConnectWalletButton />
+          ) : chainId !== networkChainId ? (
+            <SwitchNetworkButton desiredChainId={networkChainId} />
+          ) : (
+            <Button
+              size="large"
+              disabled={!canClaim || claimMutation.isLoading}
+              startIcon={
+                claimMutation.isLoading ? (
+                  <CircularProgress size="1rem" color="inherit" />
+                ) : undefined
+              }
+              sx={{ width: { xs: "100%", sm: "auto" } }}
+              onClick={handleExecute}
+              variant="contained"
+            >
+              {buttonText}
+            </Button>
+          )}
         </Stack>
       </Stack>
     </Container>

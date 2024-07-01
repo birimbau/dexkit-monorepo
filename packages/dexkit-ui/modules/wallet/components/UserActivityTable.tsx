@@ -1,3 +1,4 @@
+import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import {
   Stack,
   Table,
@@ -10,7 +11,6 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import { useWeb3React } from "@web3-react/core";
 import React, { useState } from "react";
 import { FormattedMessage } from "react-intl";
 import useUserActivity from "../hooks/useUserActivity";

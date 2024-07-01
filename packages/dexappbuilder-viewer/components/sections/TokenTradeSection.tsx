@@ -18,6 +18,7 @@ export default function TokenTradeSection({ section }: TokenTradeSectionProps) {
   const baseTokenConfig = section?.config?.baseTokenConfig;
   const showTokenDetails = section?.config?.showTokenDetails;
   const slippage = section?.config?.slippage;
+  const useGasless = section?.config?.useGasless;
 
   const appChaind = useMemo(() => {
     return baseTokenConfig?.chainId;
@@ -51,6 +52,7 @@ export default function TokenTradeSection({ section }: TokenTradeSectionProps) {
                 type: "market-trade",
                 config: {
                   show: show || OrderMarketType.buyAndSell,
+                  useGasless: useGasless,
                   slippage: slippage,
                   baseTokenConfig: {
                     address: baseToken?.address as string,

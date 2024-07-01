@@ -2,17 +2,23 @@ import { useIsMobile } from "@dexkit/core";
 import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import { Skeleton, Stack, Typography } from "@mui/material";
 import {
-    TokenDrop,
-    useTokenBalance,
-    useTokenSupply,
+  TokenDrop,
+  useTokenBalance,
+  useTokenSupply,
 } from "@thirdweb-dev/react";
 import { FormattedMessage } from "react-intl";
 
 export interface TokenDropSummaryProps {
   contract?: TokenDrop;
+  hideTotalSupply?: boolean;
+  hideDecimals?: boolean;
 }
 
-export default function TokenDropSummary({ contract }: TokenDropSummaryProps) {
+export default function TokenDropSummary({
+  contract,
+  hideDecimals,
+  hideTotalSupply,
+}: TokenDropSummaryProps) {
   const isMobile = useIsMobile();
 
   const { account } = useWeb3React();
@@ -21,24 +27,26 @@ export default function TokenDropSummary({ contract }: TokenDropSummaryProps) {
 
   return (
     <Stack spacing={{ sm: 2, xs: 0 }} direction={{ sm: "row", xs: "column" }}>
-      <Stack
-        justifyContent="space-between"
-        direction={{ xs: "row", sm: "column" }}
-      >
-        <Typography
-          color="text.secondary"
-          variant={isMobile ? "body1" : "caption"}
+      {!hideTotalSupply && (
+        <Stack
+          justifyContent="space-between"
+          direction={{ xs: "row", sm: "column" }}
         >
-          <FormattedMessage id="total.supply" defaultMessage="Total supply" />
-        </Typography>
-        <Typography variant={isMobile ? "body1" : "h5"}>
-          {supplyQuery.isLoading ? (
-            <Skeleton />
-          ) : (
-            supplyQuery.data?.displayValue
-          )}
-        </Typography>
-      </Stack>
+          <Typography
+            color="text.secondary"
+            variant={isMobile ? "body1" : "caption"}
+          >
+            <FormattedMessage id="total.supply" defaultMessage="Total supply" />
+          </Typography>
+          <Typography variant={isMobile ? "body1" : "h5"}>
+            {supplyQuery.isLoading ? (
+              <Skeleton />
+            ) : (
+              supplyQuery.data?.displayValue
+            )}
+          </Typography>
+        </Stack>
+      )}
       <Stack
         justifyContent="space-between"
         direction={{ xs: "row", sm: "column" }}
@@ -57,20 +65,22 @@ export default function TokenDropSummary({ contract }: TokenDropSummaryProps) {
           )}
         </Typography>
       </Stack>
-      <Stack
-        justifyContent="space-between"
-        direction={{ xs: "row", sm: "column" }}
-      >
-        <Typography
-          color="text.secondary"
-          variant={isMobile ? "body1" : "caption"}
+      {!hideDecimals && (
+        <Stack
+          justifyContent="space-between"
+          direction={{ xs: "row", sm: "column" }}
         >
-          <FormattedMessage id="decimals" defaultMessage="Decimals" />
-        </Typography>
-        <Typography variant={isMobile ? "body1" : "h5"}>
-          {supplyQuery.isLoading ? <Skeleton /> : supplyQuery.data?.decimals}
-        </Typography>
-      </Stack>
+          <Typography
+            color="text.secondary"
+            variant={isMobile ? "body1" : "caption"}
+          >
+            <FormattedMessage id="decimals" defaultMessage="Decimals" />
+          </Typography>
+          <Typography variant={isMobile ? "body1" : "h5"}>
+            {supplyQuery.isLoading ? <Skeleton /> : supplyQuery.data?.decimals}
+          </Typography>
+        </Stack>
+      )}
     </Stack>
   );
 }

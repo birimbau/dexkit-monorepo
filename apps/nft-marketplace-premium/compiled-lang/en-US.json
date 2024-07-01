@@ -704,7 +704,7 @@
   "info.create.nfts.dialog": "Please don't close modal or reload app till finish data submission!",
   "info.edit.nft.dialog": "Please don't close modal or reload app till finish data submission!",
   "info.quick.wizard.store.account": "Fill first your store account with the address from where you want to sell your NFTs.",
-  "info.wizard.content.cname": "Deploy your domain, make sure first your domain is not used with other records. After domain successfully added to our system you will receive a CNAME and A record to be added to your DNS provider. After added the CNAME and A record, press button check deploy status, if status VERIFIED, wait for domain to propagate and you will have your marketplace set on your custom domain. Note, if you are on a subdomain, replace @ with subdomain value. Any issue contact our support channels.",
+  "info.wizard.content.cname": "Deploy your domain. First, ensure that your domain is not used with other records. After the domain has been successfully added to our system, you will receive a CNAME and A record to be added to your DNS provider. Once you have added the CNAME and A record, click the \"Check Deploy Status\" button. If the status shows as \"VERIFIED\" wait for the domain to propagate, and your app will be set on your custom domain. If you are on a subdomain, replace \"@\" with the subdomain value. If you encounter any issues, please contact our support channels.",
   "info.wizard.title.domain.records.setup": "Domain records setup info",
   "input.type": "Input Type",
   "inputs": "Inputs",

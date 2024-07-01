@@ -1,26 +1,26 @@
 import { ChainId } from "@dexkit/core";
-import { ZeroExApiClient } from "@dexkit/core/services/zrx";
+import { ZeroExApiClient } from "@dexkit/ui/modules/swap/services/zrxClient";
 import {
   ZeroExQuote,
+  ZeroExQuoteGasless,
   ZrxOrderRecord,
   ZrxOrderbookResponse,
-} from "@dexkit/core/services/zrx/types";
-import { useTrackUserEventsMutation } from "@dexkit/ui/hooks/userEvents";
+} from "@dexkit/ui/modules/swap/types";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { getZrxExchangeAddress } from "../utils";
 
-import { UserEvents } from "@dexkit/core/constants/userEvents";
-import { ZrxOrder } from "@dexkit/core/services/zrx/types";
-import { BigNumber, Contract, providers } from "ethers";
+import { ZrxOrder } from "@dexkit/ui/modules/swap/types";
+import type { providers } from 'ethers';
+import { BigNumber, Contract } from "ethers";
 import { useContext } from "react";
 import { ZRX_EXCHANGE_ABI } from "../constants/zrx";
 
 import { SiteContext } from "@dexkit/ui/providers/SiteProvider";
 
-export function useZrxQuoteMutation({ chainId }: { chainId?: ChainId }) {
+export function useZrxQuoteMutation({ chainId, useGasless }: { chainId?: ChainId, useGasless?: boolean }) {
   const { siteId } = useContext(SiteContext);
 
-  return useMutation(async (params: ZeroExQuote) => {
+  return useMutation(async (params: ZeroExQuote | ZeroExQuoteGasless) => {
     if (!chainId) {
       return null;
     }
@@ -31,15 +31,25 @@ export function useZrxQuoteMutation({ chainId }: { chainId?: ChainId }) {
       siteId
     );
 
-    return zrxClient.quote(params, {});
+    if (useGasless) {
+      let gaslessParams = params as ZeroExQuoteGasless;
+      if (params.intentOnFilling) {
+        return zrxClient.quoteGasless(gaslessParams, {});
+      } else {
+        return zrxClient.priceGasless(gaslessParams, {});
+      }
+
+    } else {
+      return zrxClient.quote(params as ZeroExQuote, {});
+    }
   });
 }
 
 
-export function useZrxQuoteQuery({ chainId, params }: { chainId?: ChainId, params: ZeroExQuote }) {
+export function useZrxQuoteQuery({ chainId, params, useGasless }: { chainId?: ChainId, params: ZeroExQuote | ZeroExQuoteGasless, useGasless?: boolean }) {
   const { siteId } = useContext(SiteContext);
 
-  return useQuery([chainId, params], async () => {
+  return useQuery([chainId, params, params.skipValidation, useGasless], async () => {
     if (!chainId || !(params.buyAmount || params.sellAmount)) {
       return null;
     }
@@ -50,7 +60,16 @@ export function useZrxQuoteQuery({ chainId, params }: { chainId?: ChainId, param
       siteId
     );
 
-    return zrxClient.quote(params, {});
+    if (useGasless) {
+      let gaslessParams = params as ZeroExQuoteGasless;
+      if (params.skipValidation === false) {
+        return zrxClient.quoteGasless(gaslessParams, {});
+      } else {
+        return zrxClient.priceGasless(gaslessParams, {});
+      }
+    } else {
+      return zrxClient.quote(params as ZeroExQuote, {});
+    }
   });
 }
 
@@ -106,45 +125,7 @@ export function useZrxOrderbookOrder({
   );
 }
 
-export function useZrxCancelOrderMutation() {
-  const trackUserEvent = useTrackUserEventsMutation();
-  return useMutation(
-    async ({
-      chainId,
-      provider,
-      order,
-    }: {
-      chainId?: ChainId;
-      provider?: providers.Web3Provider;
-      order: ZrxOrder;
-    }) => {
-      const contractAddress = getZrxExchangeAddress(chainId);
 
-      if (!contractAddress || !provider || !chainId) {
-        throw new Error("no provider or contract address");
-      }
-
-      const contract = new Contract(
-        contractAddress,
-        ZRX_EXCHANGE_ABI,
-        provider.getSigner()
-      );
-
-      const tx = await contract.cancelLimitOrder(order);
-
-      trackUserEvent.mutate({
-        event: UserEvents.orderCancelled,
-        hash: tx.hash,
-        chainId,
-        metadata: JSON.stringify({
-          order,
-        }),
-      });
-
-      return tx.hash;
-    }
-  );
-}
 
 export function useZrxFillOrderMutation() {
   // const trackUserEvent = useTrackUserEventsMutation();

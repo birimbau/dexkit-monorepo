@@ -5,7 +5,6 @@ import { FormattedMessage } from 'react-intl';
 import AddIcon from '@mui/icons-material/Add';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
-import AddMenuPageDialog from '../../dialogs/AddMenuPageDialog';
 import MenuItemTree from './MenuItemTree';
 
 import SelectIconDialog from '@dexkit/ui/components/dialogs/SelectIconDialog';
@@ -20,7 +19,6 @@ interface Props {
 export default function MenuSection(props: Props) {
   const { menu, onSetMenu, pages } = props;
   const [isAddOpen, setIsAddOpen] = useState(false);
-  const [isEditOpen, setIsEditOpen] = useState(false);
 
   const onAddMenu = (item: MenuTree, fIndex?: number) => {
     const newMenu = [...menu, item];
@@ -33,14 +31,6 @@ export default function MenuSection(props: Props) {
   };
 
   const handleClose = () => {
-    setIsAddOpen(false);
-  };
-
-  const handleEditMenuPage = () => {
-    setIsAddOpen(true);
-  };
-
-  const handleEditClose = () => {
     setIsAddOpen(false);
   };
 
@@ -92,18 +82,10 @@ export default function MenuSection(props: Props) {
     };
   };
 
-  const [showSelectIcons, setShowSelectIcons] = useState(true);
-
-  const handleCloseSelectIcon = () => {
-    setShowSelectIcons(false);
-  };
-
-  const [selectedIndex, setSelectetIndex] = useState(-1);
-
   return (
     <Stack spacing={2}>
       {isAddOpen && (
-        <AddMenuPageDialog
+        <EditMenuPageDialog
           dialogProps={{
             open: isAddOpen,
             maxWidth: 'sm',
@@ -115,19 +97,7 @@ export default function MenuSection(props: Props) {
           onSubmit={onAddMenu}
         />
       )}
-      {isAddOpen && (
-        <AddMenuPageDialog
-          dialogProps={{
-            open: isAddOpen,
-            maxWidth: 'sm',
-            fullWidth: true,
-            onClose: handleClose,
-          }}
-          pages={pages}
-          onCancel={handleClose}
-          onSubmit={onAddMenu}
-        />
-      )}
+
       <Button
         variant="outlined"
         onClick={handleAddMenuPage}

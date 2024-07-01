@@ -1,4 +1,4 @@
-import { ChainConfig } from '@dexkit/widgets/src/widgets/swap/types';
+import type { ChainConfig } from '@dexkit/widgets/src/widgets/swap/types';
 
 
 
@@ -121,6 +121,8 @@ export type DeployedContract = {
 export interface SwapConfig {
   defaultChainId?: number;
   defaultEditChainId?: number;
+  useGasless?: boolean;
+  myTokensOnlyOnSearch?: boolean;
   configByChain?: {
     [chain: number]: ChainConfig;
   };

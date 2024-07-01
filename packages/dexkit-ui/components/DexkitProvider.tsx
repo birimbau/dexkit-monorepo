@@ -1,12 +1,20 @@
-import { IntlProvider, MessageFormatElement } from "react-intl";
+import {
+  FormattedMessage,
+  IntlProvider,
+  MessageFormatElement,
+} from "react-intl";
 
-import { Web3ReactProvider } from "@web3-react/core";
 import { SnackbarProvider } from "notistack";
-import { useDexkitContextState, useOrderedConnectors } from "../hooks";
 
-import { AppTransaction, Asset, TokenWhitelabelApp } from "@dexkit/core/types";
+import { useDexkitContextState } from "../hooks/useDexkitContextState";
 
-import { CssBaseline } from "@mui/material";
+import type {
+  AppTransaction,
+  Asset,
+  TokenWhitelabelApp,
+} from "@dexkit/core/types";
+
+import { Button, CssBaseline, Stack, Typography } from "@mui/material";
 import { PrimitiveAtom, SetStateAction, WritableAtom } from "jotai";
 
 import {
@@ -15,7 +23,9 @@ import {
 } from "@mui/material/styles";
 import React from "react";
 import { DexKitContext } from "../context/DexKitContext";
-import { AppNotification, AppNotificationType } from "../types";
+import type { AppNotification, AppNotificationType } from "../types";
+import { AppErrorBoundary } from "./AppErrorBoundary";
+import GaslessTradesUpdater from "./GaslessTradesUpdater";
 import { MagicStateProvider } from "./MagicStateProvider";
 import TransactionUpdater from "./TransactionUpdater";
 export interface DexkitProviderProps {
@@ -74,8 +84,6 @@ export function DexkitProvider({
   activeChainIds,
   siteId,
 }: DexkitProviderProps) {
-  const { connectors, connectorsKey } = useOrderedConnectors();
-
   const appState = useDexkitContextState({
     notificationTypes,
     notificationsAtom,
@@ -102,7 +110,29 @@ export function DexkitProvider({
         defaultLocale={locale}
         messages={localeMessages}
       >
-        <Web3ReactProvider connectors={connectors} key={connectorsKey}>
+        <AppErrorBoundary
+          fallbackRender={({ resetErrorBoundary, error }) => (
+            <Stack justifyContent="center" alignItems="center">
+              <Typography variant="h6">
+                <FormattedMessage
+                  id="something.went.wrong"
+                  defaultMessage="Oops, something went wrong"
+                  description="Something went wrong error message"
+                />
+              </Typography>
+              <Typography variant="body1" color="textSecondary">
+                {String(error)}
+              </Typography>
+              <Button color="primary" onClick={resetErrorBoundary}>
+                <FormattedMessage
+                  id="try.again"
+                  defaultMessage="Try again"
+                  description="Try again"
+                />
+              </Button>
+            </Stack>
+          )}
+        >
           <CssVarsProvider theme={theme}>
             <SnackbarProvider
               maxSnack={3}
@@ -111,9 +141,10 @@ export function DexkitProvider({
               <CssBaseline />
               <MagicStateProvider currency="usd">{children}</MagicStateProvider>
               <TransactionUpdater pendingTransactionsAtom={transactionsAtom} />
+              <GaslessTradesUpdater />
             </SnackbarProvider>
           </CssVarsProvider>
-        </Web3ReactProvider>
+        </AppErrorBoundary>
       </IntlProvider>
     </DexKitContext.Provider>
   );

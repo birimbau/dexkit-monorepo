@@ -12,13 +12,13 @@ import { memo } from "react";
 
 import { TOKEN_ICON_URL } from "@dexkit/core/constants";
 import { Token } from "@dexkit/core/types";
-import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "../services/zeroex/constants";
+import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "@dexkit/ui/modules/swap/constants";
 import { formatBigNumber } from "../utils";
 
 export interface SelectCoinListItemProps {
   token: Token;
   onSelect: (token: Token) => void;
-  tokenBalances?: TokenBalances;
+  tokenBalances?: TokenBalances | null;
   isLoading: boolean;
 }
 
@@ -46,6 +46,7 @@ function SelectCoinListItem({
               ? token.logoURI
               : TOKEN_ICON_URL(token.address, token.chainId)
           }
+          imgProps={{ sx: { objectFit: "fill" } }}
         />
       </ListItemAvatar>
       <ListItemText

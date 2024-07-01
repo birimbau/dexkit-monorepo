@@ -1,18 +1,18 @@
 import MarketplacesTableSkeleton from '@/modules/admin/components/tables/MaketplacesTableSkeleton';
 import MarketplacesTable from '@/modules/admin/components/tables/MarketplacesTable';
 import { MismatchAccount } from '@/modules/wizard/components/MismatchAccount';
+import { WelcomeMessage } from '@/modules/wizard/components/WelcomeMessage';
 import ConfigureDomainDialog from '@/modules/wizard/components/dialogs/ConfigureDomainDialog';
 import { useDebounce } from '@dexkit/core/hooks';
 import Link from '@dexkit/ui/components/AppLink';
 import { PageHeader } from '@dexkit/ui/components/PageHeader';
 import { useAuth } from '@dexkit/ui/hooks/auth';
 import { useWeb3React } from '@dexkit/wallet-connectors/hooks/useWeb3React';
-import Add from '@mui/icons-material/Add';
+import { default as Add, default as AddIcon } from '@mui/icons-material/Add';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import Search from '@mui/icons-material/Search';
 import Wallet from '@mui/icons-material/Wallet';
 import {
-  Alert,
   Box,
   Button,
   Container,
@@ -165,7 +165,7 @@ export const AdminIndexPage: NextPage = () => {
             startIcon={<Add />}
             variant="outlined"
           >
-            <FormattedMessage id="new" defaultMessage="New" />
+            <FormattedMessage id="new.app" defaultMessage="New App" />
           </Button>
         </Stack>
       </Box>
@@ -236,7 +236,12 @@ export const AdminIndexPage: NextPage = () => {
                   uri: '/admin',
                 },
                 {
-                  caption: <FormattedMessage id="apps" defaultMessage="Apps" />,
+                  caption: (
+                    <FormattedMessage
+                      id="manage.apps"
+                      defaultMessage="Manage Apps"
+                    />
+                  ),
                   uri: '/admin',
                   active: true,
                 },
@@ -244,24 +249,15 @@ export const AdminIndexPage: NextPage = () => {
             />
           </Grid>
           <Grid item xs={12} sm={12}>
-            <Alert severity="info">
-              <FormattedMessage
-                id="wizard.welcome.index.message"
-                defaultMessage="Welcome to DexAppBuilder! This is a beta product with constant development and at the moment is offered for free. 
-              If you need support please reach us on our <a>dedicated Discord channel</a>. Please check our <d>docs</d> for whitelabels. Reach us at our email <b>info@dexkit.com</b> if you need a custom solution that the wizard not attend."
-                values={{
-                  //@ts-ignore
-                  a: handleHrefDiscord,
-                  //@ts-ignore
-                  d: handleHrefDocs,
-                  //@ts-ignore
-                  b: (chunks) => <b>{chunks} </b>,
-                }}
-              />
-            </Alert>
+            <WelcomeMessage />
           </Grid>
           <Grid item xs={12}>
             <MismatchAccount />
+          </Grid>
+          <Grid item xs={12}>
+            <Typography variant="h4">
+              <FormattedMessage id="my.apps" defaultMessage="My apps" />
+            </Typography>
           </Grid>
           <Grid item xs={12}>
             <Stack
@@ -272,10 +268,11 @@ export const AdminIndexPage: NextPage = () => {
               <Button
                 href="/admin/setup"
                 LinkComponent={Link}
+                startIcon={<AddIcon />}
                 variant="contained"
                 color="primary"
               >
-                <FormattedMessage id="new" defaultMessage="New" />
+                <FormattedMessage id="new.app" defaultMessage="New App" />
               </Button>
               <TextField
                 value={search}

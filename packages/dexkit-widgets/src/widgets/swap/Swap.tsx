@@ -22,13 +22,15 @@ import { ChainId } from "@dexkit/core/constants/enums";
 import { NETWORKS } from "@dexkit/core/constants/networks";
 import { useIsMobile } from "@dexkit/core/hooks";
 import { Token } from "@dexkit/core/types";
+import { SwitchNetworkButton } from "@dexkit/ui/components/SwitchNetworkButton";
+import { ZeroExQuoteResponse } from "@dexkit/ui/modules/swap/types";
 import { CreditCard } from "@mui/icons-material";
 import SettingsIcon from "@mui/icons-material/Settings";
 import WalletIcon from "@mui/icons-material/Wallet";
+import type { UseQueryResult } from "@tanstack/react-query";
 import { AppNotificationsBadge } from "../../components/AppNotificationBadge";
 import SwitchNetworkSelect from "../../components/SwitchNetworkSelect";
 import TransakIcon from "../../components/icons/TransakIcon";
-import { ZeroExQuoteResponse } from "../../services/zeroex/types";
 import SwapFeeSummary from "./SwapFeeSummary";
 import { SUPPORTED_SWAP_CHAIN_IDS } from "./constants/supportedChainIds";
 
@@ -39,6 +41,10 @@ export interface SwapProps {
   currency: string;
   disabled?: boolean;
   quoteFor?: SwapSide;
+  quoteQuery?: UseQueryResult<
+    [string, ZeroExQuoteResponse | null] | undefined,
+    any
+  >;
   provider?: providers.Web3Provider | providers.BaseProvider;
   account?: string;
   isActivating?: boolean;
@@ -82,6 +88,7 @@ export default function Swap({
   disabled,
   quoteFor,
   isActive,
+  quoteQuery,
   execType,
   isQuoting,
   buyAmount,
@@ -122,6 +129,26 @@ export default function Swap({
   };
 
   const renderExecButtonMessage = () => {
+    if (quoteQuery?.isError) {
+      if (quoteQuery?.error) {
+        if (
+          quoteQuery?.error?.response?.data.validationErrors &&
+          Array.isArray(quoteQuery?.error?.response?.data.validationErrors)
+        ) {
+          const validationError =
+            quoteQuery?.error?.response?.data.validationErrors[0];
+
+          if (validationError?.reason) {
+            return validationError?.reason.split("_").join(" ");
+          }
+        }
+      }
+    }
+
+    if (quoteQuery?.isLoading) {
+      return <FormattedMessage id="quoting" defaultMessage="Quoting" />;
+    }
+
     if (insufficientBalance) {
       return (
         <FormattedMessage
@@ -131,7 +158,6 @@ export default function Swap({
         />
       );
     }
-
     return execType === "wrap" ? (
       <FormattedMessage id="wrap" defaultMessage="Wrap" />
     ) : execType === "unwrap" ? (
@@ -315,25 +341,31 @@ export default function Swap({
             </Button>
           )}
           {isActive ? (
-            <Button
-              onClick={onExec}
-              variant="contained"
-              color="primary"
-              size="large"
-              disabled={
-                isExecuting ||
-                (!quote && execType === "swap") ||
-                insufficientBalance ||
-                disabled
-              }
-              startIcon={
-                isExecuting ? (
-                  <CircularProgress color="inherit" size="1rem" />
-                ) : undefined
-              }
-            >
-              {renderExecButtonMessage()}
-            </Button>
+            execType === "switch" ? (
+              <SwitchNetworkButton desiredChainId={chainId} />
+            ) : (
+              <Button
+                onClick={onExec}
+                variant="contained"
+                color="primary"
+                size="large"
+                disabled={
+                  isExecuting ||
+                  (!quote && execType === "swap") ||
+                  insufficientBalance ||
+                  disabled ||
+                  quoteQuery?.isError ||
+                  quoteQuery?.isLoading
+                }
+                startIcon={
+                  isExecuting || quoteQuery?.isLoading ? (
+                    <CircularProgress color="inherit" size="1rem" />
+                  ) : undefined
+                }
+              >
+                {renderExecButtonMessage()}
+              </Button>
+            )
           ) : (
             <Button
               onClick={onConnectWallet}

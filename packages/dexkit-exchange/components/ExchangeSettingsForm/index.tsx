@@ -39,7 +39,7 @@ import { FormattedMessage, useIntl } from "react-intl";
 import { DexkitExchangeSettings, ExchangeSettingsSchema } from "../../types";
 import FormActions from "./ExchangeSettingsFormActions";
 
-import { ZEROEX_AFFILIATE_ADDRESS } from "@dexkit/core/services/zrx/constants";
+import { ZEROEX_AFFILIATE_ADDRESS } from "@dexkit/ui/modules/swap/constants";
 import Edit from "@mui/icons-material/Edit";
 import TextFieldMui from "@mui/material/TextField";
 import { useFormikContext } from "formik";

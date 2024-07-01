@@ -1,18 +1,18 @@
 import { Button, FormControlLabel, Grid } from "@mui/material";
 import { BigNumber } from "ethers";
-import { Field, Formik, getIn } from "formik";
+import { Field, Formik, FormikErrors, getIn } from "formik";
 import { Autocomplete, Checkbox, TextField } from "formik-mui";
 import {
-    useIfpsUploadMutation,
-    useServerUploadMerkleTreeMutation,
-    useServerUploadMutation,
+  useIfpsUploadMutation,
+  useServerUploadMerkleTreeMutation,
+  useServerUploadMutation,
 } from "../hooks";
 
 import MuiTextField from "@mui/material/TextField";
 import { Form, FormElement, FormOutputFormat } from "../types";
 
 import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
-import React from "react";
+import React, { useEffect } from "react";
 import * as Yup from "yup";
 import DecimalInput from "./DecimalInput";
 import { ImageInput } from "./ImageInput";
@@ -43,6 +43,53 @@ function getValidation(type?: string) {
   if (type === "address") {
     return validateAddress("invalid address");
   }
+}
+// Syncs context always when updated
+function SyncContextAndHiddenFields({
+  context,
+  setFieldValue,
+  elements,
+  account,
+}: {
+  context?: { [key: string]: any };
+  setFieldValue: (
+    field: string,
+    value: any,
+    shouldValidate?: boolean | undefined
+  ) => Promise<void | FormikErrors<any>>;
+  elements: FormElement[];
+  account?: string;
+}) {
+  // syncs context fields
+  useEffect(() => {
+    if (context) {
+      const keys = Object.keys(context);
+      for (let index = 0; index < keys.length; index++) {
+        const value = context[keys[index]];
+        setFieldValue(keys[index], value);
+      }
+    }
+  }, [context, setFieldValue]);
+  // syncs hidden fields with connected accounts. Sometimes account is not available at beginning
+  useEffect(() => {
+    if (elements) {
+      const inputElements = elements.filter((el) => el.type === "input");
+      for (let index = 0; index < inputElements.length; index++) {
+        const element = inputElements[index];
+        if (
+          element.type === "input" &&
+          element?.component?.type === "hidden" &&
+          element?.component.subtype === "connected-address"
+        ) {
+          if (element.ref && typeof element.ref === "string") {
+            setFieldValue(element.ref, account);
+          }
+        }
+      }
+    }
+  }, [account, setFieldValue, elements]);
+
+  return <></>;
 }
 
 export interface GenericFormProps {
@@ -516,6 +563,12 @@ export default function GenericForm({
         setFieldValue,
       }) => (
         <Grid container spacing={2}>
+          <SyncContextAndHiddenFields
+            context={context}
+            setFieldValue={setFieldValue}
+            elements={form.elements}
+            account={account}
+          />
           {renderElements(form.elements, undefined, { setFieldValue, values })}
           <Grid item xs={12}>
             <Button

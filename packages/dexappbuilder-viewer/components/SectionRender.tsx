@@ -1,5 +1,5 @@
 import LazyComponent from "@dexkit/ui/components/LazyComponent";
-import { AppPageSection } from "@dexkit/ui/modules/wizard/types/section";
+import type { AppPageSection } from "@dexkit/ui/modules/wizard/types/section";
 import dynamic from "next/dynamic";
 const CodeSection = dynamic(() => import("./sections/CodeSection"));
 const CollectionSection = dynamic(() => import("./sections/CollectionSection"));
@@ -98,11 +98,12 @@ export function SectionRender({ section, useLazy }: Props) {
   }
 
   const getSection = SectionToRender({ section });
+
   if (getSection) {
     if (useLazy) {
       return <LazyComponent>{getSection}</LazyComponent>;
     } else {
-      return <>{getSection}</>;
+      return <div>{getSection}</div>;
     }
   }
 

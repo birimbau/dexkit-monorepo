@@ -1,7 +1,7 @@
 import ContractButton from '@/modules/forms/components/ContractButton';
 import Link from '@dexkit/ui/components/AppLink';
 import { PageHeader } from '@dexkit/ui/components/PageHeader';
-import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
+import { useWeb3React } from '@dexkit/wallet-connectors/hooks/useWeb3React';
 import { THIRDWEB_ICON_URL } from '@dexkit/web3forms/constants';
 import WalletIcon from '@mui/icons-material/Wallet';
 import { Box, Button, Container, Grid, Stack, Typography } from '@mui/material';
@@ -75,7 +75,12 @@ export default function FormsPage() {
                 uri: '/',
               },
               {
-                caption: <FormattedMessage id="forms" defaultMessage="Forms" />,
+                caption: (
+                  <FormattedMessage
+                    id="dexgenerator"
+                    defaultMessage="DexGenerator"
+                  />
+                ),
                 uri: '/forms',
                 active: true,
               },
@@ -100,24 +105,24 @@ export default function FormsPage() {
                             defaultMessage="DexGenerator"
                           />
                         </Typography>
-                        <Typography variant="body1" color="text.secondary">
+                        {/* <Typography variant="body1" color="text.secondary">
                           <FormattedMessage
                             id="explore.our.new.tool.dexgenerator"
                             defaultMessage="Explore our new tool: DexGenerator"
                           />
-                        </Typography>
+          </Typography>*/}
                       </Box>
                     </Grid>
                     <Grid item>
                       <Stack direction="row" spacing={2}>
                         <Button
                           LinkComponent={Link}
-                          href="/forms/contracts"
+                          href="/forms/contracts/list"
                           variant="outlined"
                         >
                           <FormattedMessage
-                            id="contracts"
-                            defaultMessage="Contracts"
+                            id="manage.contracts"
+                            defaultMessage="Manage Contracts"
                           />
                         </Button>
                         {isActive ? (
@@ -127,8 +132,8 @@ export default function FormsPage() {
                             variant="outlined"
                           >
                             <FormattedMessage
-                              id="forms"
-                              defaultMessage="Forms"
+                              id="manage.forms"
+                              defaultMessage="Manage Forms"
                             />
                           </Button>
                         ) : (
@@ -151,7 +156,7 @@ export default function FormsPage() {
               <Grid item xs={12}>
                 <Typography variant="h5">
                   <FormattedMessage
-                    id="Create forms"
+                    id="create.forms"
                     defaultMessage="Create forms"
                   />
                 </Typography>

@@ -1,16 +1,18 @@
-import { useEffect } from "react";
-
 import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import { useRouter } from "next/router";
 
 import {
-    useConnectWalletDialog,
-    useHoldsKitDialog,
-    useShowSelectCurrency,
-    useShowSelectLocale,
-    useSignMessageDialog,
-    useSwitchNetwork,
-} from "@dexkit/ui/hooks";
+  useConnectWalletDialog,
+  useExecuteTransactionsDialog,
+  useHoldsKitDialog,
+  useShowSelectCurrency,
+  useShowSelectLocale,
+  useSignMessageDialog,
+  useSwitchNetwork,
+} from "@dexkit/ui/hooks/ui";
+
+import { useDexKitContext } from "@dexkit/ui/hooks/useDexKitContext";
+
 import dynamic from "next/dynamic";
 
 import { selectedWalletAtom } from "@dexkit/ui/state";
@@ -21,16 +23,7 @@ const SwitchNetworkDialog = dynamic(
   () => import("@dexkit/ui/components/dialogs/SwitchNetworkDialog")
 );
 
-import { useDexKitContext, useExecuteTransactionsDialog } from "@dexkit/ui";
-import { EIP6963 } from "@dexkit/wallet-connectors/constants/connectors/eip6963";
-import {
-    useWalletActivate,
-    useWalletConnectorMetadata,
-} from "@dexkit/wallet-connectors/hooks/wallet";
-import {
-    ConnectionType,
-    WalletActivateParams,
-} from "@dexkit/wallet-connectors/types";
+import { useWalletActivate } from "@dexkit/wallet-connectors/hooks/wallet";
 
 const ConnectWalletDialog = dynamic(
   () => import("@dexkit/ui/components/ConnectWallet/ConnectWalletDialog")
@@ -57,10 +50,9 @@ let runnedEagerly = false;
 
 export function GlobalDialogs() {
   const { connector, isActive, isActivating } = useWeb3React();
-  const { walletConnectorMetadata } = useWalletConnectorMetadata();
   const router = useRouter();
 
-  useEffect(() => {
+  /* useEffect(() => {
     if (typeof window !== "undefined") {
       // connector.activate();
       const handleNetworkChange = (newNetwork: any, oldNetwork: any) => {
@@ -120,7 +112,7 @@ export function GlobalDialogs() {
         runnedEagerly = true;
       }
     }
-  }, [connector, walletConnectorMetadata]);
+  }, [connector, walletConnectorMetadata]);*/
 
   const { watchTransactionDialog } = useDexKitContext();
 
@@ -180,10 +172,6 @@ export function GlobalDialogs() {
         : process.env.NEXT_PUBLIC_MAGIC_REDIRECT_URL || "",
     selectedWalletAtom,
   });
-
-  const handleActivateWallet = async (params: WalletActivateParams) => {
-    await walletActivate.mutation.mutateAsync(params);
-  };
 
   return (
     <>
@@ -269,8 +257,7 @@ export function GlobalDialogs() {
           }}
           isActive={isActive}
           isActivating={walletActivate.mutation.isLoading || isActivating}
-          activeConnectorName={walletActivate.connectorName}
-          activate={handleActivateWallet}
+          activeConnectorName={connector?.name}
         />
       )}
       {txDialog.show && (

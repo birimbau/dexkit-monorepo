@@ -5,6 +5,9 @@ import { Network } from "../types";
 import { ChainId } from "./enums";
 import { EVM_CHAIN_IMAGES, GET_EVM_CHAIN_IMAGE, UNKNOWN_LOGO_URL } from "./evmChainImages";
 
+
+
+
 const IS_TESTNET = typeof process !== 'undefined' ? process?.env.NODE_ENV !== "development" : true;
 
 export const NETWORK_NAME_OVERLAP: { [key: number]: string } = {
@@ -204,6 +207,9 @@ export const NETWORKS = NETS;
     testnet: IS_TESTNET,
   },
 };*/
+
+export const NETWORK_PROVIDER_URL = (chainId?: ChainId) =>
+  chainId && NETWORKS[chainId] ? NETWORKS[chainId].providerRpcUrl : undefined;
 
 export const NETWORK_NAME = (chainId?: ChainId) =>
   chainId && NETWORKS[chainId] ? NETWORKS[chainId].name : undefined;

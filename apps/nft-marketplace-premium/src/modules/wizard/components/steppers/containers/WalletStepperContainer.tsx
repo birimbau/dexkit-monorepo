@@ -15,9 +15,9 @@ import { AppConfig } from '@dexkit/ui/modules/wizard/types/config';
 import { SiteResponse } from 'src/types/whitelabel';
 import theDefaultConfig from '../../../../../../config/quick.wallet.default.app.json';
 import { PreviewAppButton } from '../../PreviewAppButton';
+import { WelcomeMessage } from '../../WelcomeMessage';
 import SignConfigDialog from '../../dialogs/SignConfigDialog';
 import WalletStepper from '../WalletStepper.tsx';
-import { WelcomeWalletStepperMessage } from '../Welcome/WelcomeWalletStepperMessage';
 const defaultConfig = theDefaultConfig as unknown as AppConfig;
 
 interface Props {
@@ -134,14 +134,19 @@ export default function WalletStepperContainer({ site }: Props) {
                   uri: '/admin',
                 },
                 {
-                  caption: <FormattedMessage id="apps" defaultMessage="Apps" />,
+                  caption: (
+                    <FormattedMessage
+                      id="manage.apps"
+                      defaultMessage="Manage Apps"
+                    />
+                  ),
                   uri: '/admin',
                 },
                 {
                   caption: (
                     <FormattedMessage
-                      id="wallet.quick.builder"
-                      defaultMessage="Wallet quick builder"
+                      id="wallet.quick.builder.title"
+                      defaultMessage="Wallet - Quick Builder"
                     />
                   ),
                   uri: '/admin/quick-wizard/builder',
@@ -152,15 +157,15 @@ export default function WalletStepperContainer({ site }: Props) {
           </Stack>
         </Grid>
         <Grid item xs={12} sm={12}>
-          <WelcomeWalletStepperMessage />
+          <WelcomeMessage />
         </Grid>
         <Grid item xs={12} sm={12}>
           <Stack direction={'row'} justifyContent={'space-between'}>
             {!isMobile && (
               <Typography variant="h5">
                 <FormattedMessage
-                  id="quick.waççet.builder"
-                  defaultMessage="Quick wallet builder"
+                  id="build.your.wallet.quickly"
+                  defaultMessage="Build your Wallet quickly"
                 />
               </Typography>
             )}

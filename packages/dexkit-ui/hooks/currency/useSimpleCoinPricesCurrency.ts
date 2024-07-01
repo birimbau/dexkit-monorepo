@@ -1,4 +1,4 @@
-import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "@dexkit/core/constants/zrx";
+import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "@dexkit/core/constants";
 import { WRAPPED_TOKEN_ADDRESSES } from "@dexkit/evm-chains/constants";
 import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import { useQuery } from "@tanstack/react-query";

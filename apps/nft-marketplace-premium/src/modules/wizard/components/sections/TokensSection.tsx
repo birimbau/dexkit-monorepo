@@ -30,6 +30,7 @@ interface Props {
   selectedKeys: { [key: string]: boolean };
   onSelect: (key: string) => void;
   onMakeTradable?: (key: string) => void;
+  onDisableFeatured?: (key: string) => void;
   onSave: (token: Token[]) => void;
   onSelectAll: () => void;
   onRemove: () => void;
@@ -44,6 +45,7 @@ export default function TokensSection({
   onSave,
   onRemove,
   onMakeTradable,
+  onDisableFeatured,
 }: Props) {
   const { formatMessage } = useIntl();
   const [showAddToken, setShowAddToken] = useState(false);
@@ -255,6 +257,7 @@ export default function TokensSection({
               selectedKeys={selectedKeys}
               onSelect={onSelect}
               onMakeTradable={onMakeTradable}
+              onDisableFeatured={onDisableFeatured}
             />
           </Box>
         ) : (

@@ -37,6 +37,7 @@ function SwapFeaturedTokens({
                       ? token.logoURI
                       : TOKEN_ICON_URL(token.address, token.chainId)
                   }
+                  imgProps={{ sx: { objectFit: "fill" } }}
                 />
               }
               onClick={() => onSelect(token)}

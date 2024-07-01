@@ -1,7 +1,7 @@
 import {
-    NETWORK_EXPLORER,
-    NETWORK_NAME,
-    NETWORK_SLUG,
+  NETWORK_EXPLORER,
+  NETWORK_NAME,
+  NETWORK_SLUG,
 } from '@dexkit/core/constants/networks';
 import { truncateAddress } from '@dexkit/core/utils';
 import Link from '@dexkit/ui/components/AppLink';
@@ -10,11 +10,11 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import {
-    DataGrid,
-    GridColDef,
-    GridFilterModel,
-    GridSortModel,
-    GridToolbar,
+  DataGrid,
+  GridColDef,
+  GridFilterModel,
+  GridSortModel,
+  GridToolbar,
 } from '@mui/x-data-grid';
 import { useCallback, useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
@@ -131,7 +131,10 @@ export default function ContractListDataGrid() {
               size="small"
               variant="outlined"
             >
-              <FormattedMessage id="manage" defaultMessage="Manage" />
+              <FormattedMessage
+                id="config.contract"
+                defaultMessage="Config Contract"
+              />
             </Button>
             <Button
               LinkComponent={Link}
