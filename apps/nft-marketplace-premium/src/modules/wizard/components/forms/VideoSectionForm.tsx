@@ -158,11 +158,11 @@ export default function VideoSectionForm({
 
         <Grid item xs={12}>
           <Stack spacing={2} direction="row" justifyContent="flex-end">
-            <Button type="submit" variant="contained" color="primary">
-              <FormattedMessage id="save" defaultMessage="Save" />
-            </Button>
             <Button onClick={onCancel}>
               <FormattedMessage id="cancel" defaultMessage="Cancel" />
+            </Button>
+            <Button type="submit" variant="contained" color="primary">
+              <FormattedMessage id="save" defaultMessage="Save" />
             </Button>
           </Stack>
         </Grid>

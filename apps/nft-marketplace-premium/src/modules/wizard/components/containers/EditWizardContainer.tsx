@@ -27,10 +27,13 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import { NextSeo } from 'next-seo';
 import dynamic from 'next/dynamic';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
-import { useSendConfigMutation } from '../../../../hooks/whitelabel';
+import {
+  QUERY_ADMIN_WHITELABEL_CONFIG_NAME,
+  useSendConfigMutation,
+} from '../../../../hooks/whitelabel';
 
 import { SiteResponse } from '../../../../types/whitelabel';
 import { useAppWizardConfig } from '../../hooks';
@@ -38,7 +41,7 @@ import { useAppWizardConfig } from '../../hooks';
 import { isAddressEqual } from '@dexkit/core/utils';
 import { PageHeader } from '@dexkit/ui/components/PageHeader';
 import { useAuth } from '@dexkit/ui/hooks/auth';
-import { AppConfig } from '@dexkit/ui/modules/wizard/types/config';
+import { AppConfig, AppPage } from '@dexkit/ui/modules/wizard/types/config';
 import { useWeb3React } from '@dexkit/wallet-connectors/hooks/useWeb3React';
 import AnalyticsIcon from '@mui/icons-material/Analytics';
 import DatasetIcon from '@mui/icons-material/Dataset';
@@ -46,6 +49,7 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import SpaceDashboardIcon from '@mui/icons-material/SpaceDashboard';
 import TourIcon from '@mui/icons-material/Tour';
 import { TourProvider, useTour } from '@reactour/tour';
+import { useQueryClient } from '@tanstack/react-query';
 import { useAtom } from 'jotai';
 import { useRouter } from 'next/router';
 import { BuilderKit } from '../../constants';
@@ -133,6 +137,24 @@ export enum ActiveMenu {
   Networks = 'networks',
 }
 
+export type PagesContextType = {
+  selectedKey?: string;
+  setSelectedKey: (key?: string) => void;
+  setOldPage: (appPage: AppPage) => void;
+  oldPage?: AppPage;
+  isEditPage: boolean;
+  setIsEditPage: (value: boolean) => void;
+  handleCancelEdit: (hasChanges?: boolean) => void;
+};
+
+export const PagesContext = React.createContext<PagesContextType>({
+  setSelectedKey: () => {},
+  setIsEditPage: () => {},
+  setOldPage: () => {},
+  isEditPage: false,
+  handleCancelEdit: (hasChanges?: boolean) => {},
+});
+
 function TourButton() {
   const { setIsOpen } = useTour();
   const [isFirstVisit, setIsFirstVisit] = useAtom(isFirstVisitOnEditWizardAtom);
@@ -163,6 +185,23 @@ export function EditWizardContainer({ site }: Props) {
   const { tab } = router.query as { tab?: ActiveMenu };
   const [hasChanges, setHasChanges] = useState(false);
   const [openHasChangesConfirm, setOpenHasChangesConfirm] = useState(false);
+
+  const { setWizardConfig, wizardConfig } = useAppWizardConfig();
+
+  const [selectedKey, setSelectedKey] = useState<string>();
+  const [isEditPage, setIsEditPage] = useState(false);
+  const [oldPage, setOldPage] = useState<AppPage>();
+
+  const handleCancelEdit = (hasChanges?: boolean) => {
+    if (hasChanges) {
+      return setOpenHasChangesConfirm(true);
+    }
+
+    setSelectedKey(undefined);
+    setIsEditPage(false);
+    setWizardConfig({ ...config });
+    setHasChanges(false);
+  };
 
   const { formatMessage } = useIntl();
   const [openMenu, setOpenMenu] = useState({
@@ -235,8 +274,6 @@ export function EditWizardContainer({ site }: Props) {
 
   const sendConfigMutation = useSendConfigMutation({ slug: site?.slug });
 
-  const { setWizardConfig, wizardConfig } = useAppWizardConfig();
-
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const [showPreview, setShowPreview] = useState(false);
@@ -248,7 +285,7 @@ export function EditWizardContainer({ site }: Props) {
 
   useEffect(() => {
     if (config) {
-      setWizardConfig(config);
+      setWizardConfig({ ...config });
     }
   }, [activeMenu, config]);
 
@@ -257,14 +294,19 @@ export function EditWizardContainer({ site }: Props) {
     setShowConfirmSendConfig(false);
   };
 
+  const queryClient = useQueryClient();
+
   const handleConfirmSendConfig = async () => {
     setShowConfirmSendConfig(false);
     const newSite = { ...site, config: wizardConfig };
-    sendConfigMutation.mutate(newSite, {
+
+    await sendConfigMutation.mutateAsync(newSite, {
       onSuccess: () => {
         setHasChanges(false);
+        queryClient.invalidateQueries([QUERY_ADMIN_WHITELABEL_CONFIG_NAME]);
       },
     });
+
     setShowSendingConfig(true);
   };
 
@@ -293,12 +335,13 @@ export function EditWizardContainer({ site }: Props) {
     setShowConfirmSendConfig(true);
 
     const newConfig = { ...wizardConfig, ..._config };
+
     setWizardConfig(newConfig);
   };
 
   const handleChange = useCallback(
     (_config: AppConfig) => {
-      const newConfig = { ...wizardConfig, ..._config };
+      const newConfig = { ..._config };
 
       setWizardConfig(newConfig);
     },
@@ -809,22 +852,31 @@ export function EditWizardContainer({ site }: Props) {
           setHasChanges(false);
           setOpenHasChangesConfirm(false);
           setActiveMenu(activeMenuWithChanges);
+          setWizardConfig(config);
+          setIsEditPage(false);
+          setSelectedKey(undefined);
         }}
+        title={
+          <FormattedMessage
+            id="Leave.without.saving"
+            defaultMessage="Leave Without Saving "
+          />
+        }
+        actionCaption={<FormattedMessage id="leave" defaultMessage="Leave" />}
+        cancelCaption={<FormattedMessage id="stay" defaultMessage="Stay" />}
       >
-        <Stack>
-          <Typography variant="h5" align="center">
-            <FormattedMessage
-              id="changes.unsaved"
-              defaultMessage="Changes unsaved"
-            />
-          </Typography>
-          <Typography variant="body1" align="center" color="textSecondary">
-            <FormattedMessage
-              id="you.have.changes.unsaved.do.you.want.to.proceed.without.saving"
-              defaultMessage="You have changes unsaved do you want to proceed without saving?"
-            />
-          </Typography>
-        </Stack>
+        <Typography variant="body1">
+          <FormattedMessage
+            id="you.have.unsaved.changes"
+            defaultMessage="You have unsaved changes"
+          />
+        </Typography>
+        <Typography variant="body1">
+          <FormattedMessage
+            id="are.you.sure.you.want.to.leave.without.saving"
+            defaultMessage="Are you sure you want to leave without saving?"
+          />
+        </Typography>
       </AppConfirmDialog>
 
       <AppConfirmDialog
@@ -835,18 +887,22 @@ export function EditWizardContainer({ site }: Props) {
           onClose: handleCloseConfirmSendConfig,
         }}
         onConfirm={handleConfirmSendConfig}
+        actionCaption={<FormattedMessage id="save" defaultMessage="Save" />}
+        title={
+          <FormattedMessage id="save.changes" defaultMessage="Save Changes" />
+        }
       >
-        <Stack>
-          <Typography variant="h5" align="center">
+        <Stack spacing={1}>
+          <Typography variant="body1">
             <FormattedMessage
-              id="send.settings"
-              defaultMessage="Send settings"
+              id="are.you.sure.you.want.to.save.your.changes"
+              defaultMessage="Are you sure you want to save your changes?"
             />
           </Typography>
-          <Typography variant="body1" align="center" color="textSecondary">
+          <Typography variant="caption" color="text.secondary">
             <FormattedMessage
-              id="do.you.really.want.to.send.this.app.settings"
-              defaultMessage="Do you really want to send it?"
+              id="your.settings.will.be.sent.to.the.server"
+              defaultMessage="Your settings will be sent to the server."
             />
           </Typography>
         </Stack>
@@ -946,7 +1002,7 @@ export function EditWizardContainer({ site }: Props) {
                 onChangeMenu={(menu) => setActiveBuilderKit(menu)}
               />
               <Stack direction={'row'} alignItems={'center'} spacing={2}>
-                <PreviewAppButton appConfig={wizardConfig} />
+                <PreviewAppButton appConfig={wizardConfig} site={site?.slug} />
                 {site?.previewUrl && (
                   <Button
                     href={site?.previewUrl}
@@ -1034,14 +1090,30 @@ export function EditWizardContainer({ site }: Props) {
                   )}
 
                   {activeMenu === ActiveMenu.Pages && config && (
-                    <PagesWizardContainer
-                      config={config}
-                      onSave={handleSave}
-                      onHasChanges={setHasChanges}
-                      builderKit={activeBuilderKit}
-                      siteId={site?.id}
-                      previewUrl={site?.previewUrl}
-                    />
+                    <>
+                      <PagesContext.Provider
+                        value={{
+                          selectedKey,
+                          setSelectedKey,
+                          isEditPage,
+                          setIsEditPage,
+                          handleCancelEdit,
+                          setOldPage,
+                          oldPage,
+                        }}
+                      >
+                        <PagesWizardContainer
+                          config={config}
+                          onSave={handleSave}
+                          onChange={handleChange}
+                          onHasChanges={setHasChanges}
+                          hasChanges={hasChanges}
+                          builderKit={activeBuilderKit}
+                          siteSlug={site?.slug}
+                          previewUrl={site?.previewUrl}
+                        />
+                      </PagesContext.Provider>
+                    </>
                   )}
 
                   {activeMenu === ActiveMenu.MarketplaceFees && config && (

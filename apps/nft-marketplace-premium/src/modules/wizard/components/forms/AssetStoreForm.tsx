@@ -197,6 +197,11 @@ export default function AssetStoreForm({
             {onSubmit && (
               <Grid item xs={12}>
                 <Stack direction="row" spacing={1} justifyContent="flex-end">
+                  {onCancel && (
+                    <Button onClick={onCancel}>
+                      <FormattedMessage id="cancel" defaultMessage="Cancel" />
+                    </Button>
+                  )}
                   <Button
                     disabled={!isValid}
                     variant="contained"
@@ -204,11 +209,6 @@ export default function AssetStoreForm({
                   >
                     <FormattedMessage id="save" defaultMessage="Save" />
                   </Button>
-                  {onCancel && (
-                    <Button onClick={onCancel}>
-                      <FormattedMessage id="cancel" defaultMessage="Cancel" />
-                    </Button>
-                  )}
                 </Stack>
               </Grid>
             )}

@@ -1,6 +1,4 @@
-import type { ChainConfig } from '@dexkit/widgets/src/widgets/swap/types';
-
-
+import type { ChainConfig } from "@dexkit/widgets/src/widgets/swap/types";
 
 export interface SwapFeeForm {
   recipient: string;
@@ -45,9 +43,10 @@ export interface StepperButtonProps {
 }
 
 export interface GatedCondition {
-  type?: 'collection' | 'coin' | 'multiCollection';
-  condition?: 'and' | 'or';
-  protocol?: 'ERC20' | 'ERC711' | 'ERC1155';
+  type?: "collection" | "coin" | "multiCollection";
+  condition?: "and" | "or";
+  protocol?: "ERC20" | "ERC711" | "ERC1155";
+  name?: string;
   decimals?: number;
   address?: string;
   symbol?: string;
@@ -58,6 +57,7 @@ export interface GatedCondition {
 
 export interface GatedPageLayout {
   frontImage?: string;
+  frontImageDark?: string;
   frontImageHeight?: number;
   frontImageWidth?: number;
   accessRequirementsMessage?: string;
@@ -87,9 +87,9 @@ export type ThemeFormType = {
 };
 
 export enum PreviewType {
-  Swap = 'swap',
-  Exchange = 'exchange',
-  NFTs = 'nfts',
+  Swap = "swap",
+  Exchange = "exchange",
+  NFTs = "nfts",
 }
 
 export type AssetFormType = {
@@ -116,26 +116,32 @@ export type DeployedContract = {
   chainId?: number;
 };
 
-
+export enum SwapVariant {
+  Classic = "classic",
+  UniswapLike = "uniswap-like",
+  MatchaLike = "matcha-like",
+}
 
 export interface SwapConfig {
   defaultChainId?: number;
   defaultEditChainId?: number;
+  enableUrlParams?: boolean;
+  enableImportExternTokens?: boolean;
   useGasless?: boolean;
+  variant?: SwapVariant;
   myTokensOnlyOnSearch?: boolean;
   configByChain?: {
     [chain: number]: ChainConfig;
   };
 }
 
-
 export interface SiteMetadata {
-  id?: number,
-  slug?: string,
-  title: string,
-  subtitle: string,
-  description: string,
-  imageURL: string,
-  chainIds?: number[],
-  usecases?: string[]
+  id?: number;
+  slug?: string;
+  title: string;
+  subtitle: string;
+  description: string;
+  imageURL: string;
+  chainIds?: number[];
+  usecases?: string[];
 }

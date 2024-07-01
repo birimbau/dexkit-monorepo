@@ -1,4 +1,5 @@
 import {
+  Alert,
   Box,
   Button,
   CircularProgress,
@@ -56,6 +57,7 @@ function SignConfigDialog({
   const handleClose = () => {
     if (onClose) {
       onClose({}, 'backdropClick');
+      setShowDetails(false);
     }
   };
 
@@ -68,18 +70,22 @@ function SignConfigDialog({
       <AppDialogTitle
         title={
           isSuccess ? (
-            <FormattedMessage id="config.sent" defaultMessage="Config sent" />
+            <FormattedMessage
+              id="settings.sent"
+              defaultMessage="Settings Sent"
+            />
           ) : (
             <FormattedMessage
-              id="sending.config"
-              defaultMessage="Sending config"
+              id="sending.settings"
+              defaultMessage="Sending Settings"
             />
           )
         }
         onClose={handleClose}
+        titleBox={{ px: 2 }}
       />
       <Divider />
-      <DialogContent>
+      <DialogContent sx={{ p: 4 }}>
         <Stack
           spacing={2}
           justifyContent="center"
@@ -89,31 +95,54 @@ function SignConfigDialog({
           {!error && isLoading ? (
             <CircularProgress size="4rem" color="primary" />
           ) : !error && isSuccess ? (
-            <CheckCircle fontSize="large" color="success" />
+            <CheckCircle sx={{ fontSize: '4rem' }} color="success" />
           ) : error !== null ? (
-            <Error fontSize="large" color="error" />
+            <Error sx={{ fontSize: '4rem' }} color="error" />
           ) : null}
           <Box>
-            <Typography align="center" variant="h6">
-              {error !== null && !isLoading && !isSuccess ? (
-                <>
+            {isSuccess ? (
+              <Stack spacing={2}>
+                <Typography align="center" variant="body1">
+                  <FormattedMessage
+                    id="settings.successfully.sent"
+                    defaultMessage="Settings successfully sent"
+                  />
+                </Typography>
+                <Alert severity="warning">
+                  <Typography fontWeight="bold">
+                    <FormattedMessage
+                      id="update.in.progress"
+                      defaultMessage="Update in progress"
+                    />
+                  </Typography>
+                  <Typography
+                    fontWeight="400"
+                    variant="caption"
+                    component="div"
+                  >
+                    <FormattedMessage
+                      id="Changes.to.the.app.may.take.a.few.minutes."
+                      defaultMessage="Changes to the app may take a few minutes to update and appear live."
+                    />
+                  </Typography>
+                </Alert>
+              </Stack>
+            ) : (
+              <Typography align="center" variant="body1">
+                {error !== null && !isLoading && !isSuccess ? (
                   <FormattedMessage
                     id="oops.something.went.wrong"
                     defaultMessage="Oops, something went wrong"
                   />
-                </>
-              ) : isSuccess ? (
-                <FormattedMessage
-                  id="sent.successfully.be.aware.info"
-                  defaultMessage="Sent successfully. Be aware that it takes several minutes to update and reflect on the live site."
-                />
-              ) : (
-                <FormattedMessage
-                  id="sending.app.settings"
-                  defaultMessage="Sending app settings"
-                />
-              )}
-            </Typography>
+                ) : (
+                  <FormattedMessage
+                    id="sending.app.settings.to.the.server"
+                    defaultMessage="Sending app settings to the server"
+                  />
+                )}
+              </Typography>
+            )}
+
             <Typography align="center" variant="body1" color="textSecondary">
               {error !== null &&
                 !isLoading &&

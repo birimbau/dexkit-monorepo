@@ -1,31 +1,6 @@
-import AppsIcon from '@mui/icons-material/Apps';
-import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
-import BookmarkIcon from '@mui/icons-material/Bookmark';
-import CallToAction from '@mui/icons-material/CallToAction';
-import CollectionsIcon from '@mui/icons-material/Collections';
-import ShowChartIcon from '@mui/icons-material/ShowChart';
-import VideocamIcon from '@mui/icons-material/Videocam';
-import VisibilityIcon from '@mui/icons-material/Visibility';
+import { Box, Stack } from '@mui/material';
+import { SupportedColorScheme } from '@mui/material/styles';
 
-import ViewCarouselIcon from '@mui/icons-material/ViewCarousel';
-import {
-  Button,
-  Card,
-  CardContent,
-  Divider,
-  IconButton,
-  Stack,
-  Typography,
-} from '@mui/material';
-import {
-  Experimental_CssVarsProvider as CssVarsProvider,
-  SupportedColorScheme,
-} from '@mui/material/styles';
-import { FormattedMessage } from 'react-intl';
-
-import TokenIcon from '@mui/icons-material/Token';
-
-import AppConfirmDialog from '@dexkit/ui/components/AppConfirmDialog';
 import {
   GatedCondition,
   GatedPageLayout,
@@ -34,309 +9,138 @@ import {
   AppPage,
   AppPageOptions,
 } from '@dexkit/ui/modules/wizard/types/config';
-import { AppPageSection } from '@dexkit/ui/modules/wizard/types/section';
-import Code from '@mui/icons-material/Code';
-import DeleteIcon from '@mui/icons-material/Delete';
-import FileCopyIcon from '@mui/icons-material/FileCopy';
-import FormatColorTextIcon from '@mui/icons-material/FormatColorText';
-import GavelIcon from '@mui/icons-material/Gavel';
-import LeaderboardIcon from '@mui/icons-material/Leaderboard';
-import LinkIcon from '@mui/icons-material/Link';
-import ShieldIcon from '@mui/icons-material/Shield';
-import StoreIcon from '@mui/icons-material/Store';
-import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
-import Wallet from '@mui/icons-material/Wallet';
 import { useState } from 'react';
-import PagesMenu from '../PagesMenu';
-import PreviewPagePlatform from '../PreviewPagePlatform';
+import { PageSectionKey } from '../../hooks/sections';
 import AddPageDialog from '../dialogs/AddPageDialog';
 import GatedConditionsFormDialog from '../dialogs/GatedConditionsFormDialog';
-import PreviewPageDialog from '../dialogs/PreviewPageDialog';
-import { SectionHeader } from '../sections/SectionHeader';
+import Pages from './Pages';
+
 interface Props {
-  sections: AppPageSection[];
   pages: { [key: string]: AppPage };
-  currentPage?: AppPage;
-  onRemovePage: (slug: string) => void;
   onEditPage: (pageOptions: AppPageOptions) => void;
-  onViewPage: (slug: string) => void;
-  onRemove: (index: number) => void;
-  onClone: (index: number) => void;
-  onEdit: (index: number) => void;
-  onView: (index: number) => void;
-  onHideDesktop: (index: number) => void;
-  onHideMobile: (index: number) => void;
-  isVisibleIndexes: number[];
-  onSwap: (index: number, direction: 'up' | 'down') => void;
+  onRemove: (page: string, index: number) => void;
+  onClone: (page: string, index: number) => void;
+  onEdit: (page: string, index: number) => void;
+  onAdd: (page: string, custom?: boolean) => void;
+  onClonePage: (page: string) => void;
+  onHideDesktop: (page: string, index: number) => void;
+  onHideMobile: (page: string, index: number) => void;
+  onEditTitle: (page: string, title: string) => void;
+  onSwap: (page: string, index: number, other: number) => void;
+  onChangeName: (page: string, index: number, name: string) => void;
+  onUpdateGatedConditions: (
+    page: string,
+    conditions?: GatedCondition[],
+    layout?: GatedPageLayout,
+    enableGatedConditions?: boolean,
+  ) => void;
+  onAddPage: (page: AppPage) => void;
+  onRemovePage: (page: string) => void;
   theme?: {
     cssVarPrefix?: string | undefined;
     colorSchemes: Record<SupportedColorScheme, Record<string, any>>;
   };
   previewUrl?: string;
+  activeSection?: PageSectionKey;
+  site?: string;
 }
 
 export default function PagesSectionPage({
-  sections,
   onRemove,
   onEdit,
-  onView,
   onClone,
+  onClonePage,
+  onUpdateGatedConditions,
+  onAddPage,
   onSwap,
-  isVisibleIndexes,
   onEditPage,
-  onViewPage,
   onRemovePage,
+  onAdd,
   onHideDesktop,
+  onEditTitle,
   onHideMobile,
-  theme,
-  currentPage,
+  onChangeName,
   pages,
+  activeSection,
+  site,
   previewUrl,
 }: Props) {
-  const renderSection = (
-    section: AppPageSection,
-    index: number,
-    isVisible: boolean
-  ) => {
-    let title;
-    let subtitle;
-    let icon;
-    if (section.type === 'video') {
-      title = <FormattedMessage id="video" defaultMessage="Video" />;
-      subtitle = section.title;
-      icon = <VideocamIcon />;
-    } else if (section.type === 'call-to-action') {
-      title = (
-        <FormattedMessage id="call.to.action" defaultMessage="Call to Action" />
-      );
-      subtitle = section.title;
-      icon = <CallToAction />;
-    } else if (section.type === 'featured') {
-      title = <FormattedMessage id="featured" defaultMessage="Featured" />;
-      subtitle = section.title;
-      icon = <BookmarkIcon />;
-    } else if (section.type === 'collections') {
-      title = (
-        <FormattedMessage id="collections" defaultMessage="Collections" />
-      );
-      subtitle = section.title || '';
-      icon = <AppsIcon />;
-    } else if (section.type === 'swap') {
-      title = <FormattedMessage id="swap" defaultMessage="Swap" />;
-      subtitle = section.title || '';
-      icon = <SwapHorizIcon />;
-    } else if (section.type === 'asset-store') {
-      title = <FormattedMessage id="nft.store" defaultMessage="NFT store" />;
-      subtitle = section.title || '';
-      icon = <StoreIcon />;
-    } else if (section.type === 'custom') {
-      title = section?.title ? (
-        section.title
-      ) : (
-        <FormattedMessage
-          id="custom.page.editor"
-          defaultMessage="Custom Page Editor"
-        />
-      );
-      subtitle = section.title || '';
-      icon = <AutoAwesomeIcon />;
-    } else if (section.type === 'markdown') {
-      title = <FormattedMessage id="markdown" defaultMessage="Markdown" />;
-      subtitle = section.title || '';
-      icon = <FormatColorTextIcon />;
-    } else if (section.type === 'wallet') {
-      title = <FormattedMessage id="wallet" defaultMessage="Wallet" />;
-      subtitle = section.title || '';
-      icon = <Wallet />;
-    } else if (section.type === 'contract') {
-      title = <FormattedMessage id="contract" defaultMessage="Contract" />;
-      subtitle = section.title || '';
-      icon = <GavelIcon />;
-    } else if (section.type === 'user-contract-form') {
-      title = (
-        <FormattedMessage
-          id="user.contract.form"
-          defaultMessage="User contract form"
-        />
-      );
-      subtitle = section.title || '';
-      icon = <GavelIcon />;
-    } else if (section.type === 'exchange') {
-      title = <FormattedMessage id="exchange" defaultMessage="Exchange" />;
-      subtitle = section.title || '';
-      icon = <ShowChartIcon />;
-    } else if (section.type === 'code-page-section') {
-      title = <FormattedMessage id="code" defaultMessage="Code" />;
-      subtitle = section.title || '';
-      icon = <Code />;
-    } else if (section.type === 'collection') {
-      title = <FormattedMessage id="collection" defaultMessage="Collection" />;
-      subtitle = section.title || '';
-      icon = <AppsIcon />;
-    } else if (section.type === 'dex-generator-section') {
-      title = (
-        <FormattedMessage id="dex.generator" defaultMessage="Dex Generator" />
-      );
-      subtitle = section.title || '';
-      icon = <GavelIcon />;
-    } else if (section.type === 'asset-section') {
-      title = <FormattedMessage id="asset" defaultMessage="Asset" />;
-      subtitle = section.title || '';
-      icon = <AppsIcon />;
-    } else if (section.type === 'ranking') {
-      title = (
-        <FormattedMessage id="leaderboard" defaultMessage="Leaderboard" />
-      );
-      subtitle = section.title || '';
-      icon = <LeaderboardIcon />;
-    } else if (section.type === 'token-trade') {
-      title = (
-        <FormattedMessage id="token.trade" defaultMessage="Token Trade" />
-      );
-      subtitle = section.title || '';
-      icon = <TokenIcon />;
-    } else if (section.type === 'carousel') {
-      title = <FormattedMessage id="carousel" defaultMessage="Carousel" />;
-      subtitle = section.title || '';
-      icon = <ViewCarouselIcon />;
-    } else if (section.type === 'showcase') {
-      title = (
-        <FormattedMessage id="showcase" defaultMessage="Showcase Gallery" />
-      );
-      subtitle = section.title || '';
-      icon = <CollectionsIcon />;
-    }
-
-    if (!title) {
-      return null;
-    }
-
-    return (
-      <Card key={index} sx={{ bgcolor: 'background.default' }}>
-        <CardContent>
-          <SectionHeader
-            title={title}
-            subtitle={subtitle}
-            icon={icon}
-            onSwap={onSwap}
-            onRemove={onRemove}
-            onClone={onClone}
-            onEdit={onEdit}
-            onView={onView}
-            index={index}
-            onHideDesktop={onHideDesktop}
-            onHideMobile={onHideMobile}
-            hideDesktop={section.hideDesktop}
-            hideMobile={section.hideMobile}
-            isVisible={isVisible}
-            length={sections.length}
-          />
-        </CardContent>
-
-        {isVisible && (
-          <PreviewPagePlatform sections={[section]} disabled={true} />
-        )}
-      </Card>
-    );
-  };
-
-  const [showPreview, setShowPreview] = useState(false);
-  const [pageToClone, setPageToClone] = useState<
-    { key?: string; title?: string } | undefined
-  >();
-
-  const [showDeletePageDialog, setShowDeleteDialogPage] = useState(false);
-
   const [showAddPage, setShowAddPage] = useState(false);
 
-  const [showGatedModalForm, setShowGatedModalForm] = useState(false);
-
-  const handleShowPreview = () => {
-    setShowPreview(true);
-  };
-
-  const handleClosePreview = () => {
-    setShowPreview(false);
-  };
-
-  const handleShowAddPage = () => {
-    setShowAddPage(true);
-  };
-
-  const handleShowGatedModalForm = () => {
-    setShowGatedModalForm(true);
-  };
-
-  const handleClonePage = () => {
-    setPageToClone({
-      title: currentPage?.title,
-      key: currentPage?.key,
-    });
+  const handleAddPage = () => {
     setShowAddPage(true);
   };
 
   const handleCloseAddPage = () => {
     setShowAddPage(false);
-    setPageToClone(undefined);
   };
+
+  const [showGatedModalForm, setShowGatedModalForm] = useState(false);
+
+  const [page, setPage] = useState<string>();
 
   const handleCloseGatedModalForm = () => {
     setShowGatedModalForm(false);
+    setPage(undefined);
   };
 
-  const handleConfirmDeletePage = () => {
-    setShowDeleteDialogPage(false);
-    if (currentPage && currentPage.key) {
-      onRemovePage(currentPage.key);
-    }
-  };
-
-  const handleCloseConfirmDeletePage = () => {
-    setShowDeleteDialogPage(false);
-  };
-
-  const handleShowPageDeleteDialog = () => {
-    setShowDeleteDialogPage(true);
-  };
-
-  const onEditGatedContidions = (
-    gatedConditions: GatedCondition[],
-    gatedLayout: GatedPageLayout
+  const handleSubmitGatedConditions = (
+    conditions: GatedCondition[],
+    layout: GatedPageLayout,
+    enableGatedConditions?: boolean,
   ) => {
-    onEditPage({
-      isEditGatedConditions: true,
-      gatedPageLayout: gatedLayout,
-      gatedConditions: gatedConditions,
-      title: currentPage?.title,
-      key: currentPage?.key,
-    });
+    if (page) {
+      onEditPage({
+        clonedPageKey: pages[page].clonedPageKey,
+        enableGatedConditions: enableGatedConditions,
+        gatedConditions: conditions,
+        gatedPageLayout: layout,
+        isEditGatedConditions: true,
+        key: page,
+        title: pages[page].title,
+        uri: pages[page].uri,
+      });
+    }
+
+    setShowGatedModalForm(true);
+    setPage(undefined);
+  };
+
+  const handleAction = (action: string, page: string, index: number) => {
+    switch (action) {
+      case 'remove':
+        onRemove(page, index);
+        break;
+      case 'clone':
+        onClone(page, index);
+        break;
+      case 'edit':
+        onEdit(page, index);
+        break;
+      case 'hide.desktop':
+        onHideDesktop(page, index);
+        break;
+      case 'hide.mobile':
+        onHideMobile(page, index);
+        break;
+      case 'change.name':
+        break;
+      default:
+        break;
+    }
   };
 
   return (
     <>
-      <CssVarsProvider theme={theme}>
-        <PreviewPageDialog
-          dialogProps={{
-            open: showPreview,
-            maxWidth: 'xl',
-            fullWidth: true,
-            onClose: handleClosePreview,
-          }}
-          disabled={true}
-          sections={sections}
-          name={currentPage?.title || 'Home'}
-        />
-      </CssVarsProvider>
       <AddPageDialog
         dialogProps={{
           open: showAddPage,
-          maxWidth: 'sm',
+          maxWidth: 'xs',
           fullWidth: true,
           onClose: handleCloseAddPage,
         }}
-        clonedPage={pageToClone}
         onCancel={handleCloseAddPage}
-        onSubmit={onEditPage}
+        onSubmit={(opt) => onAddPage(opt as AppPage)}
       />
       <GatedConditionsFormDialog
         dialogProps={{
@@ -345,114 +149,30 @@ export default function PagesSectionPage({
           fullWidth: true,
           onClose: handleCloseGatedModalForm,
         }}
-        conditions={currentPage?.gatedConditions}
-        gatedPageLayout={currentPage?.gatedPageLayout}
+        conditions={page ? pages[page]?.gatedConditions : undefined}
+        gatedPageLayout={page ? pages[page]?.gatedPageLayout : undefined}
         onCancel={handleCloseGatedModalForm}
-        onSubmit={onEditGatedContidions}
+        onSubmit={handleSubmitGatedConditions}
       />
-      <AppConfirmDialog
-        DialogProps={{
-          open: showDeletePageDialog,
-          maxWidth: 'xs',
-          fullWidth: true,
-          onClose: handleCloseConfirmDeletePage,
-        }}
-        onConfirm={handleConfirmDeletePage}
-      >
-        <Stack>
-          <Typography variant="h5" align="center">
-            <FormattedMessage
-              id="delete.page"
-              defaultMessage="Delete page {page}"
-              values={{ page: currentPage?.title || '' }}
-            />
-          </Typography>
-          <Typography variant="body1" align="center" color="textSecondary">
-            <FormattedMessage
-              id="do.you.really.want.to.delete.this.page"
-              defaultMessage="Do you really want to delete {page} page?"
-              values={{ page: currentPage?.title || '' }}
-            />
-          </Typography>
-        </Stack>
-      </AppConfirmDialog>
 
       <Stack spacing={2}>
-        <Card>
-          <CardContent>
-            <Stack
-              direction="row"
-              alignItems="center"
-              alignContent="center"
-              spacing={6}
-            >
-              <PagesMenu
-                currentPage={currentPage}
-                pages={pages}
-                onClickMenu={onViewPage}
-              />
-
-              <Stack direction={'row'} alignItems="center" spacing={2}>
-                <Button
-                  onClick={handleShowPreview}
-                  size="small"
-                  startIcon={<VisibilityIcon />}
-                >
-                  <FormattedMessage id="preview" defaultMessage="Preview" />
-                </Button>
-
-                <Button
-                  variant="outlined"
-                  onClick={handleClonePage}
-                  size="small"
-                  startIcon={<FileCopyIcon />}
-                >
-                  <FormattedMessage
-                    id="clone.page"
-                    defaultMessage="Clone page"
-                  />
-                </Button>
-                {currentPage?.key !== 'home' && (
-                  <Button
-                    variant="outlined"
-                    onClick={handleShowGatedModalForm}
-                    size="small"
-                    startIcon={<ShieldIcon />}
-                  >
-                    <FormattedMessage
-                      id="gated.conditions"
-                      defaultMessage="Gated conditions"
-                    />
-                  </Button>
-                )}
-                {currentPage?.uri && previewUrl && (
-                  <Button
-                    href={`${previewUrl}${currentPage?.uri}`}
-                    target={'_blank'}
-                    startIcon={<LinkIcon />}
-                  >
-                    <FormattedMessage id="open.url" defaultMessage="Open url" />
-                  </Button>
-                )}
-
-                {currentPage?.key !== 'home' && (
-                  <IconButton
-                    aria-label="delete"
-                    color={'error'}
-                    onClick={handleShowPageDeleteDialog}
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                )}
-              </Stack>
-            </Stack>
-          </CardContent>
-        </Card>
-        <Divider />
-
-        {sections.map((section, index) =>
-          renderSection(section, index, isVisibleIndexes.includes(index))
-        )}
+        <Box px={8} pt={2}>
+          <Pages
+            pages={pages}
+            onSwap={onSwap}
+            onAction={handleAction}
+            onChangeName={onChangeName}
+            onAdd={onAdd}
+            onClonePage={onClonePage}
+            onAddPage={handleAddPage}
+            activeSection={activeSection}
+            onEditTitle={onEditTitle}
+            onRemovePage={onRemovePage}
+            onUpdateGatedConditions={onUpdateGatedConditions}
+            site={site}
+            previewUrl={previewUrl}
+          />
+        </Box>
       </Stack>
     </>
   );

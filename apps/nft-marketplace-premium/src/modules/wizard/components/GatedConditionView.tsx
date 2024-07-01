@@ -3,34 +3,32 @@ import {
   GatedCondition,
   GatedPageLayout,
 } from '@dexkit/ui/modules/wizard/types';
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
-import ShieldIcon from '@mui/icons-material/Shield';
+import Check from '@mui/icons-material/Check';
+import InfoIcon from '@mui/icons-material/Info';
+import Security from '@mui/icons-material/Security';
 import {
   Alert,
   AlertTitle,
   Box,
-  Container,
+  Card,
+  CardContent,
   Divider,
   Grid,
+  Paper,
   Stack,
   Typography,
+  alpha,
+  styled,
   useTheme,
 } from '@mui/material';
-import Image from 'next/legacy/image';
 import { FormattedMessage } from 'react-intl';
 import { LoginAppButton } from 'src/components/LoginAppButton';
 
-function ShowBalance({ balance }: { balance: string }) {
-  return (
-    <Typography>
-      <b>
-        {' '}
-        <FormattedMessage id={'your.balance'} defaultMessage={'Your Balance'} />
-        : {balance}
-      </b>
-    </Typography>
-  );
-}
+const CustomImage = styled('img')(({ theme }) => ({
+  width: '100%',
+  height: 'auto',
+  display: 'block',
+}));
 
 export function GatedConditionView({
   conditions,
@@ -39,6 +37,7 @@ export function GatedConditionView({
   account,
   isLoggedIn,
   layout,
+  isEdit,
 }: {
   layout?: GatedPageLayout;
   conditions?: GatedCondition[];
@@ -47,159 +46,387 @@ export function GatedConditionView({
   isLoggedIn?: boolean;
   partialResults?: { [key: number]: boolean };
   balances?: { [key: number]: string };
+  isEdit?: boolean;
 }) {
+  const renderStatus = (index: number) => {
+    if (isEdit) {
+      return (
+        <Paper
+          sx={{
+            px: 0.5,
+            py: 0.25,
+            border: (theme) => `2px solid ${theme.palette.info.main}`,
+          }}
+          variant="outlined"
+        >
+          <Typography variant="body2" color="success.dark">
+            <Stack direction="row" alignItems="center" spacing={0.5}>
+              <InfoIcon
+                fontSize="inherit"
+                sx={{ color: (theme) => theme.palette.info.dark }}
+              />{' '}
+              <Box
+                component="span"
+                sx={{ color: (theme) => theme.palette.info.main }}
+              >
+                <FormattedMessage id="status" defaultMessage="Status" />
+              </Box>
+            </Stack>
+          </Typography>
+        </Paper>
+      );
+    }
+
+    return partialResults &&
+      partialResults[index] &&
+      partialResults[index] === true ? (
+      <Paper
+        sx={{
+          px: 0.5,
+          py: 0.25,
+          border: (theme) => `2px solid ${theme.palette.success.main}`,
+        }}
+        variant="outlined"
+      >
+        <Typography variant="body2" color="success.dark">
+          <Stack direction="row" alignItems="center" spacing={0.5}>
+            <Check fontSize="inherit" color="success" />{' '}
+            <Box
+              component="span"
+              sx={{ color: (theme) => theme.palette.error.dark }}
+            >
+              <FormattedMessage id="pending" defaultMessage="Pending" />
+            </Box>
+          </Stack>
+        </Typography>
+      </Paper>
+    ) : (
+      <Paper
+        sx={{
+          px: 0.5,
+          py: 0.25,
+          border: (theme) => `2px solid ${theme.palette.error.main}`,
+        }}
+        variant="outlined"
+      >
+        <Typography variant="body2" color="error.main">
+          <Stack direction="row" alignItems="center" spacing={0.5}>
+            <InfoIcon fontSize="inherit" color="error" />{' '}
+            <Box
+              component="span"
+              sx={{ color: (theme) => theme.palette.error.dark }}
+            >
+              <FormattedMessage id="pending" defaultMessage="Pending" />
+            </Box>
+          </Stack>
+        </Typography>
+      </Paper>
+    );
+  };
+
+  const renderCondition = (condition: GatedCondition, index: number) => {
+    if (condition.type === 'collection') {
+      return (
+        <Stack spacing={1}>
+          <Typography color="text.secondary" fontWeight="bold" variant="body2">
+            <FormattedMessage
+              id="collection.collection"
+              defaultMessage="Collection: {collection}"
+              values={{
+                collection: (
+                  <Typography
+                    fontWeight="400"
+                    variant="inherit"
+                    component="span"
+                  >
+                    {getNetworkSlugFromChainId(
+                      condition.chainId,
+                    )?.toUpperCase()}{' '}
+                    - {condition.symbol}
+                  </Typography>
+                ),
+              }}
+            />
+          </Typography>
+          <Stack direction="row" spacing={1} alignItems="center">
+            <Typography color="text.secondary" variant="body2">
+              <b>
+                <FormattedMessage
+                  id="must.have.amount"
+                  defaultMessage="Must Have: {amount}"
+                  values={{
+                    amount: (
+                      <Typography
+                        variant="inherit"
+                        fontWeight="400"
+                        component="span"
+                      >
+                        {condition.amount}
+                      </Typography>
+                    ),
+                  }}
+                />
+              </b>
+            </Typography>
+            <Divider orientation="vertical" sx={{ height: '1rem' }} />
+            {balances && balances[index] && (
+              <Typography
+                color="text.secondary"
+                fontWeight="bold"
+                variant="body2"
+              >
+                <FormattedMessage
+                  id="your.balance.amount"
+                  defaultMessage="Your Balance: {amount}"
+                  values={{
+                    amount: (
+                      <Typography
+                        variant="inherit"
+                        fontWeight="400"
+                        component="span"
+                      >
+                        {balances[index]}
+                      </Typography>
+                    ),
+                  }}
+                />
+              </Typography>
+            )}
+            <Box pl={2}>{renderStatus(index)}</Box>
+          </Stack>
+        </Stack>
+      );
+    }
+
+    if (condition.type === 'coin') {
+      return (
+        <Stack spacing={1}>
+          <Typography color="text.secondary" variant="body2" fontWeight="bold">
+            <FormattedMessage
+              id="coin.coin"
+              defaultMessage="Coin: {coin}"
+              values={{
+                coin: (
+                  <Typography
+                    fontWeight="400"
+                    variant="inherit"
+                    component="span"
+                  >
+                    {condition.name}
+                  </Typography>
+                ),
+              }}
+            />
+          </Typography>
+          <Stack direction="row" spacing={1} alignItems="center">
+            <Typography
+              color="text.secondary"
+              variant="body2"
+              fontWeight="bold"
+            >
+              <FormattedMessage
+                id="must.have.amount"
+                defaultMessage="Must Have: {amount}"
+                values={{
+                  amount: (
+                    <Typography
+                      fontWeight="400"
+                      variant="inherit"
+                      component="span"
+                    >
+                      {condition.amount} {condition.symbol}
+                    </Typography>
+                  ),
+                }}
+              />
+            </Typography>
+
+            <Divider orientation="vertical" sx={{ height: '1rem' }} />
+            {balances && balances[index] && (
+              <Typography
+                color="text.secondary"
+                variant="body2"
+                fontWeight="bold"
+              >
+                <FormattedMessage
+                  id="your.balance.amount"
+                  defaultMessage="Your balance: {amount}"
+                  values={{
+                    amount: (
+                      <Typography
+                        fontWeight="400"
+                        variant="inherit"
+                        component="span"
+                      >
+                        {balances[index]}
+                      </Typography>
+                    ),
+                  }}
+                />
+              </Typography>
+            )}
+
+            {renderStatus(index)}
+          </Stack>
+        </Stack>
+      );
+    }
+  };
+
   const theme = useTheme();
 
   return (
-    <Container>
-      <Grid container spacing={2}>
-        <Grid item xs={12}>
-          <Stack
-            justifyContent={'center'}
-            alignContent={'center'}
-            alignItems={'center'}
-          >
-            {layout?.frontImage ? (
-              <Image
-                src={layout?.frontImage}
-                alt={'gated page front image'}
-                height={
-                  layout?.frontImageHeight
-                    ? Number(layout?.frontImageHeight)
-                    : 20 * 8
-                }
-                width={
-                  layout?.frontImageWidth
-                    ? Number(layout?.frontImageWidth)
-                    : 20 * 8
-                }
+    <Grid container spacing={2}>
+      <Grid item xs={12}>
+        <Box
+          sx={{
+            backgroundColor: (theme) =>
+              theme.palette.mode === 'light'
+                ? 'rgba(0,0,0, 0.2)'
+                : alpha(theme.palette.common.white, 0.1),
+            borderRadius: (theme) => theme.shape.borderRadius / 4,
+            backgroundImage: (theme) =>
+              layout?.frontImageDark || layout?.frontImage
+                ? `url('${
+                    theme.palette.mode === 'light'
+                      ? layout?.frontImage
+                      : layout?.frontImageDark || layout?.frontImage
+                  }')`
+                : undefined,
+            backgroundRepeat: 'no-repeat',
+            backgroundPosition: 'center',
+            backgroundSize: 'cover',
+          }}
+        >
+          {((theme.palette.mode === 'light' && !layout?.frontImage) ||
+            (theme.palette.mode === 'dark' &&
+              !(layout?.frontImage || layout?.frontImageDark))) && (
+            <Stack
+              justifyContent={'center'}
+              alignContent={'center'}
+              alignItems={'center'}
+              sx={{
+                height: layout?.frontImageHeight,
+                maxHeight: 300,
+                minHeight: 50,
+              }}
+            >
+              <Security
+                sx={{
+                  fontSize: 80,
+                  color: (theme) =>
+                    theme.palette.getContrastText(
+                      theme.palette.mode === 'light'
+                        ? 'rgba(0,0,0, 0.2)'
+                        : alpha(theme.palette.common.white, 0.1),
+                    ),
+                }}
               />
-            ) : (
-              <ShieldIcon sx={{ fontSize: 80 }} />
-            )}
-          </Stack>
-        </Grid>
-        <Grid item xs={12}>
-          <Divider />
-        </Grid>
-        <Grid item xs={12}>
-          <Alert severity="warning">
-            <AlertTitle>
-              <FormattedMessage
-                id={'access.requirements'}
-                defaultMessage={'Access Requirements'}
-              />
-            </AlertTitle>
-            {layout?.accessRequirementsMessage ? (
-              layout?.accessRequirementsMessage
-            ) : (
-              <FormattedMessage
-                id={'access.requirements.description.gated.view.conditions'}
-                defaultMessage={
-                  'To access this private page, please ensure that you meet all the conditions below, as defined by the page owner:'
-                }
-              />
-            )}
-          </Alert>
-        </Grid>
-        <Grid item xs={12}>
-          {account && isLoggedIn ? (
-            (conditions || []).map((condition, index) => (
-              <Box key={index}>
-                {condition.condition && (
-                  <Stack
-                    key={index}
-                    spacing={2}
-                    direction={'row'}
-                    justifyContent={'center'}
-                  >
-                    <Typography variant="h6"> {condition.condition}</Typography>
-                  </Stack>
-                )}
-                <Box py={1}>
-                  <Stack key={index} spacing={2} direction={'row'}>
-                    {partialResults &&
-                    partialResults[index] &&
-                    partialResults[index] === true ? (
-                      <CheckCircleOutlineIcon color={'success'} />
-                    ) : (
-                      <CheckCircleOutlineIcon color={'error'} />
-                    )}
-                    {condition.type === 'collection' && (
-                      <>
-                        <b>
-                          <FormattedMessage
-                            id={'collection'}
-                            defaultMessage={'Collection'}
-                          />
-                        </b>
-                        :
-                        <Typography>
-                          {getNetworkSlugFromChainId(
-                            condition.chainId,
-                          )?.toUpperCase()}
-                        </Typography>{' '}
-                        - {condition.symbol}
-                        <Typography>
-                          <b>
-                            <FormattedMessage
-                              id={'must.have'}
-                              defaultMessage={'Must Have'}
-                            />
-                            : {condition.amount}{' '}
-                          </b>
-                        </Typography>
-                        <Typography>|</Typography>
-                        {balances && balances[index] && (
-                          <ShowBalance balance={balances[index]} />
-                        )}
-                      </>
-                    )}
-                    {condition.type === 'coin' && (
-                      <>
-                        <Typography>
-                          <b>
-                            <FormattedMessage
-                              id={'coin'}
-                              defaultMessage={'Coin'}
-                            />{' '}
-                          </b>
-                          :
-                        </Typography>
-                        <Typography>
-                          {getNetworkSlugFromChainId(
-                            condition.chainId,
-                          )?.toUpperCase()}{' '}
-                          - {condition.symbol}
-                        </Typography>
-                        <Typography>
-                          <b>
-                            <FormattedMessage
-                              id={'must.have'}
-                              defaultMessage={'Must Have'}
-                            />
-                            : {condition.amount}
-                          </b>
-                        </Typography>
-                        <Typography>|</Typography>
-                        {balances && balances[index] && (
-                          <ShowBalance balance={balances[index]} />
-                        )}
-                      </>
-                    )}
-                  </Stack>
-                </Box>
-              </Box>
-            ))
-          ) : (
-            <Stack justifyContent={'center'} alignItems={'center'}>
-              <Box sx={{ maxWidth: '500px' }}>
-                <LoginAppButton />
-              </Box>
             </Stack>
           )}
-        </Grid>
+        </Box>
       </Grid>
-    </Container>
+      <Grid item xs={12}>
+        <Alert severity="warning">
+          <AlertTitle>
+            <FormattedMessage
+              id="access.requirements"
+              defaultMessage="Access Requirements"
+            />
+          </AlertTitle>
+          {layout?.accessRequirementsMessage ? (
+            layout?.accessRequirementsMessage
+          ) : (
+            <FormattedMessage
+              id="access.requirements.description.gated.view.conditions"
+              defaultMessage="To access this private page, please ensure that you meet all the conditions below, as defined by the page owner:"
+            />
+          )}
+        </Alert>
+      </Grid>
+      <Grid item xs={12}>
+        {account && isLoggedIn ? (
+          <Grid container spacing={2}>
+            {(conditions || []).map((condition, index) => (
+              <Grid item xs={12} key={index}>
+                <Box>
+                  <Stack spacing={2}>
+                    {index !== 0 && (
+                      <Paper
+                        sx={{
+                          py: 0.5,
+                          backgroundColor:
+                            theme.palette.action.disabledBackground,
+                        }}
+                      >
+                        <Typography
+                          variant="body1"
+                          textAlign="center"
+                          textTransform="uppercase"
+                          fontWeight="bold"
+                        >
+                          {isEdit ? (
+                            <FormattedMessage
+                              id="role.connector.message"
+                              defaultMessage="Rule Connector: {condition}"
+                              values={{
+                                condition: (
+                                  <Typography
+                                    variant="inherit"
+                                    component="span"
+                                    fontWeight="400"
+                                  >
+                                    {condition.condition === 'or' ? (
+                                      <FormattedMessage
+                                        id="or"
+                                        defaultMessage="Or"
+                                      />
+                                    ) : (
+                                      <FormattedMessage
+                                        id="and"
+                                        defaultMessage="And"
+                                      />
+                                    )}
+                                  </Typography>
+                                ),
+                              }}
+                            />
+                          ) : condition.condition === 'or' ? (
+                            <FormattedMessage id="or" defaultMessage="Or" />
+                          ) : (
+                            <FormattedMessage id="and" defaultMessage="And" />
+                          )}
+                        </Typography>
+                      </Paper>
+                    )}
+
+                    <Card>
+                      <CardContent>
+                        <Stack spacing={2}>
+                          <Typography variant="body1" fontWeight="bold">
+                            <FormattedMessage
+                              id="condition.index"
+                              defaultMessage="Condition {index}"
+                              values={{ index: index + 1 }}
+                            />
+                          </Typography>
+                          {renderCondition(condition, index)}
+                        </Stack>
+                      </CardContent>
+                    </Card>
+                  </Stack>
+                </Box>
+              </Grid>
+            ))}
+          </Grid>
+        ) : (
+          <Stack justifyContent={'center'} alignItems={'center'}>
+            <Box sx={{ maxWidth: '500px' }}>
+              <LoginAppButton />
+            </Box>
+          </Stack>
+        )}
+      </Grid>
+    </Grid>
   );
 }

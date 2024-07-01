@@ -1,4 +1,4 @@
-import { NavigateNext, Search } from "@mui/icons-material";
+import { NavigateNext, QrCodeScanner, Search } from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -34,6 +34,8 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import Link from "../../../../components/AppLink";
 
+import { parse } from "eth-url-parser";
+
 import { copyToClipboard, truncateAddress } from "@dexkit/core/utils";
 import CopyIconButton from "@dexkit/ui/components/CopyIconButton";
 import FileCopy from "@mui/icons-material/FileCopy";
@@ -66,10 +68,17 @@ import WalletActionButton from "../WalletActionButton";
 import WalletBalances from "../WalletBalancesTable";
 import { WalletTotalBalanceCointainer } from "../WalletTotalBalanceContainer";
 
+import { useRouter } from "next/router";
+
+import { useIsMobile } from "@dexkit/core";
 import LoginAppButton from "@dexkit/ui/components/LoginAppButton";
 
 const EvmReceiveDialog = dynamic(
   () => import("@dexkit/ui/components/dialogs/EvmReceiveDialog")
+);
+
+const ScanWalletQrCodeDialog = dynamic(
+  async () => import("@dexkit/ui/components/dialogs/ScanWalletQrCodeDialog")
 );
 
 enum WalletTabs {
@@ -156,8 +165,46 @@ const EvmWalletContainer = () => {
     }
   }, [walletChainId]);
 
+  const [showQrCode, setShowQrCode] = useState(false);
+
+  const handleOpenQrCodeScannerClose = () => {
+    setShowQrCode(false);
+  };
+
+  const router = useRouter();
+
+  const handleAddressResult = (result: string) => {
+    try {
+      parse(result);
+
+      if (isMobile) {
+        router.push(`/wallet/send/${encodeURI(result)}`);
+      } else {
+        window.open(`/wallet/send/${encodeURI(result)}`, "_blank");
+      }
+      handleOpenQrCodeScannerClose();
+    } catch (err) {}
+  };
+
+  const handleOpenQrCode = () => setShowQrCode(true);
+
+  const isMobile = useIsMobile();
+
   return (
     <>
+      {showQrCode && (
+        <ScanWalletQrCodeDialog
+          DialogProps={{
+            open: showQrCode,
+            maxWidth: "sm",
+            fullWidth: true,
+            fullScreen: isMobile,
+            onClose: handleOpenQrCodeScannerClose,
+          }}
+          onResult={handleAddressResult}
+        />
+      )}
+
       <EvmReceiveDialog
         dialogProps={{
           open: isReceiveOpen,
@@ -274,6 +321,15 @@ const EvmWalletContainer = () => {
                     </Grid>
                     <Grid item>
                       <TransferCoinButton />
+                    </Grid>
+                    <Grid item>
+                      <Button
+                        onClick={handleOpenQrCode}
+                        startIcon={<QrCodeScanner />}
+                        variant="outlined"
+                      >
+                        <FormattedMessage id="scan" defaultMessage="Scan" />
+                      </Button>
                     </Grid>
                   </Grid>
                 </Grid>

@@ -88,6 +88,7 @@ const FormSchema = z.object({
 
 export interface AddShowCaseSectionFormProps {
   data?: ShowCaseParams;
+  onCancel?: () => void;
   onChange: (data: ShowCaseParams) => void;
   onSave: (data: ShowCaseParams) => void;
   saveOnChange?: boolean;
@@ -98,6 +99,7 @@ export default function AddShowCaseSectionForm({
   data,
   onChange,
   onSave,
+  onCancel,
   saveOnChange,
   disableButtons,
 }: AddShowCaseSectionFormProps) {
@@ -336,13 +338,21 @@ export default function AddShowCaseSectionForm({
               </Grid>
               {!disableButtons && (
                 <Grid item xs={12}>
-                  <Button
-                    disabled={!isValid || isSubmitting}
-                    variant="contained"
-                    onClick={submitForm}
-                  >
-                    <FormattedMessage id="save" defaultMessage="Save" />
-                  </Button>
+                  <Stack direction="row" spacing={1} justifyContent="flex-end">
+                    {onCancel && (
+                      <Button onClick={onCancel}>
+                        <FormattedMessage id="cancel" defaultMessage="Cancel" />
+                      </Button>
+                    )}
+
+                    <Button
+                      disabled={!isValid || isSubmitting}
+                      variant="contained"
+                      onClick={submitForm}
+                    >
+                      <FormattedMessage id="save" defaultMessage="Save" />
+                    </Button>
+                  </Stack>
                 </Grid>
               )}
             </Grid>

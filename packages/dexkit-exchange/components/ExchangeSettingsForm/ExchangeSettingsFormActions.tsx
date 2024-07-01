@@ -16,11 +16,11 @@ export default function FormActions({ onCancel, onSubmit }: FormActionsProps) {
       <Grid item xs={12}>
         <Box>
           <Stack spacing={2} direction="row" justifyContent="flex-end">
-            <Button disabled={!isValid} onClick={onSubmit} variant="contained">
-              <FormattedMessage id="save" defaultMessage="Save" />
-            </Button>
             <Button onClick={onCancel}>
               <FormattedMessage id="cancel" defaultMessage="Cancel" />
+            </Button>
+            <Button disabled={!isValid} onClick={onSubmit} variant="contained">
+              <FormattedMessage id="save" defaultMessage="Save" />
             </Button>
           </Stack>
         </Box>

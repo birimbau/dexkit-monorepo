@@ -1,5 +1,3 @@
-
-
 import getLocaleMessages from 'src/i18n';
 
 import type { AssetAPI } from '@dexkit/ui/modules/nft/types';
@@ -8,18 +6,19 @@ import { getConfig, getSitemapConfig } from './whitelabel';
 
 export async function getAppConfig(
   site?: string,
-  appPage?: string
+  appPage?: string,
 ): Promise<{
   appConfig: AppConfig;
   appPage?: string;
   appNFT?: AssetAPI | null;
-  siteId?: number,
-  slug?: string
-  appLocaleMessages?: Record<string, string> | null
+  siteId?: number;
+  slug?: string;
+  appLocaleMessages?: Record<string, string> | null;
 }> {
   /**/
   if (site === 'boredapes.dexkit.com') {
-    const appBoredApeJson = (await import('../../config/app.boredape.json')).default;
+    const appBoredApeJson = (await import('../../config/app.boredape.json'))
+      .default;
 
     return Promise.resolve({
       appConfig: appBoredApeJson as AppConfig,
@@ -28,8 +27,9 @@ export async function getAppConfig(
   }
 
   if (site === 'mutantboredapes.dexkit.com') {
-    const appMutantBoredApeJson = (await import('../../config/app.mutantboredape.json')).default;
-
+    const appMutantBoredApeJson = (
+      await import('../../config/app.mutantboredape.json')
+    ).default;
 
     return Promise.resolve({
       appConfig: appMutantBoredApeJson as AppConfig,
@@ -38,8 +38,9 @@ export async function getAppConfig(
   }
 
   if (site === 'cryptopunks.dexkit.com') {
-    const appCryptoPunksJson = (await import('../../config/app.cryptopunks.json')).default;
-
+    const appCryptoPunksJson = (
+      await import('../../config/app.cryptopunks.json')
+    ).default;
 
     return Promise.resolve({
       appConfig: appCryptoPunksJson as AppConfig,
@@ -58,7 +59,6 @@ export async function getAppConfig(
       if (configResponse) {
         const appConfig = JSON.parse(configResponse.config) as AppConfig;
         const appLocaleMessages = await getLocaleMessages(appConfig.locale);
-
 
         return {
           appConfig,
@@ -85,7 +85,6 @@ export async function getAppConfig(
         const appConfig = JSON.parse(configResponse.config) as AppConfig;
         const appLocaleMessages = await getLocaleMessages(appConfig.locale);
 
-
         return {
           appConfig,
           appLocaleMessages,
@@ -104,11 +103,8 @@ export async function getAppConfig(
     });
   }
 
-
-
-
-  if (site?.startsWith('localhost')) {
-    const [slug,] = site?.split('.') || [];
+  if (site?.includes('localhost:')) {
+    const [slug] = site?.split('.') || [];
     // const slug = 'simple';
 
     if (slug) {
@@ -117,9 +113,7 @@ export async function getAppConfig(
       if (configResponse) {
         const appConfig = JSON.parse(configResponse.config) as AppConfig;
 
-
         const appLocaleMessages = await getLocaleMessages(appConfig.locale);
-
 
         return {
           appConfig,
@@ -177,18 +171,16 @@ export async function getAppConfig(
   // return appConfigJson as Promise<AppConfig>;
 }
 
-export async function getAppSitemapConfig(
-  site?: string,
-): Promise<{
+export async function getAppSitemapConfig(site?: string): Promise<{
   appConfig: AppConfig;
   appNFT?: AssetAPI | null;
-  siteId?: number,
-  slug?: string
+  siteId?: number;
+  slug?: string;
 }> {
-
   /**/
   if (site === 'boredapes.dexkit.com') {
-    const appBoredApeJson = (await import('../../config/app.boredape.json')).default;
+    const appBoredApeJson = (await import('../../config/app.boredape.json'))
+      .default;
     return Promise.resolve({
       appConfig: appBoredApeJson as AppConfig,
       appNFT: null,
@@ -196,7 +188,9 @@ export async function getAppSitemapConfig(
   }
 
   if (site === 'mutantboredapes.dexkit.com') {
-    const appMutantBoredApeJson = (await import('../../config/app.mutantboredape.json')).default;
+    const appMutantBoredApeJson = (
+      await import('../../config/app.mutantboredape.json')
+    ).default;
     return Promise.resolve({
       appConfig: appMutantBoredApeJson as AppConfig,
       appNFT: null,
@@ -204,7 +198,9 @@ export async function getAppSitemapConfig(
   }
 
   if (site === 'cryptopunks.dexkit.com') {
-    const appCryptoPunksJson = (await import('../../config/app.cryptopunks.json')).default;
+    const appCryptoPunksJson = (
+      await import('../../config/app.cryptopunks.json')
+    ).default;
     return Promise.resolve({
       appConfig: appCryptoPunksJson as AppConfig,
       appNFT: null,
@@ -224,7 +220,7 @@ export async function getAppSitemapConfig(
           appConfig: JSON.parse(configResponse.config) as AppConfig,
           appNFT: configResponse.nft === undefined ? null : configResponse.nft,
           siteId: configResponse?.id,
-          slug: configResponse?.slug
+          slug: configResponse?.slug,
         };
       }
     }
@@ -244,7 +240,7 @@ export async function getAppSitemapConfig(
           appConfig: JSON.parse(configResponse.config) as AppConfig,
           appNFT: configResponse.nft === undefined ? null : configResponse.nft,
           siteId: configResponse?.id,
-          slug: configResponse?.slug
+          slug: configResponse?.slug,
         };
       }
     }
@@ -255,11 +251,8 @@ export async function getAppSitemapConfig(
     });
   }
 
-
-
-
   if (site?.startsWith('localhost')) {
-    const [slug,] = site?.split('.') || [];
+    const [slug] = site?.split('.') || [];
     //const slug = 'swapkit';
     if (slug) {
       const configResponse = (await getSitemapConfig({ slug })).data;
@@ -302,7 +295,7 @@ export async function getAppSitemapConfig(
       appConfig: JSON.parse(configResponse.config) as AppConfig,
       appNFT: configResponse.nft === undefined ? configResponse.nft : null,
       siteId: configResponse?.id,
-      slug: configResponse?.slug
+      slug: configResponse?.slug,
     };
   }
 

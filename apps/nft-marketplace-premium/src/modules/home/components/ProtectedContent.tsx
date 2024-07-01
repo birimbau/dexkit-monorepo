@@ -3,10 +3,11 @@ import { SectionsRenderer } from '@/modules/wizard/components/sections/SectionsR
 import { useCheckGatedConditions } from '@/modules/wizard/hooks';
 import { useAuth } from '@dexkit/ui/hooks/auth';
 import {
-    GatedCondition,
-    GatedPageLayout,
+  GatedCondition,
+  GatedPageLayout,
 } from '@dexkit/ui/modules/wizard/types';
 import { useWeb3React } from '@dexkit/wallet-connectors/hooks/useWeb3React';
+import { Container, Grid } from '@mui/material';
 
 import { useProtectedAppConfig } from 'src/hooks/app';
 
@@ -44,16 +45,20 @@ export default function ProtectedContent({
   }
 
   return (
-    <>
-      <GatedConditionView
-        account={account}
-        conditions={conditions}
-        layout={layout}
-        isLoggedIn={isLoggedIn}
-        result={conditionsData?.result}
-        partialResults={conditionsData?.partialResults}
-        balances={conditionsData?.balances}
-      />
-    </>
+    <Container>
+      <Grid container justifyContent="center">
+        <Grid item xs={12} sm={8}>
+          <GatedConditionView
+            account={account}
+            conditions={conditions}
+            layout={layout}
+            isLoggedIn={isLoggedIn}
+            result={conditionsData?.result}
+            partialResults={conditionsData?.partialResults}
+            balances={conditionsData?.balances}
+          />
+        </Grid>
+      </Grid>
+    </Container>
   );
 }

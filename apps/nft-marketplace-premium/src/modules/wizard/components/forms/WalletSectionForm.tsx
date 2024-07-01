@@ -48,6 +48,9 @@ export default function WalletSectionForm({
       </Grid>
       <Grid item xs={12}>
         <Stack spacing={2} direction="row" justifyContent="flex-end">
+          <Button onClick={onCancel}>
+            <FormattedMessage id="cancel" defaultMessage="Cancel" />
+          </Button>
           <Button
             onClick={() =>
               onSave({
@@ -59,9 +62,6 @@ export default function WalletSectionForm({
             color="primary"
           >
             <FormattedMessage id="save" defaultMessage="Save" />
-          </Button>
-          <Button onClick={onCancel}>
-            <FormattedMessage id="cancel" defaultMessage="Cancel" />
           </Button>
         </Stack>
       </Grid>

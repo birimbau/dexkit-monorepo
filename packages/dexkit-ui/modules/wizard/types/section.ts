@@ -3,16 +3,9 @@ import { DexkitExchangeSettings } from "@dexkit/exchange/types";
 import { ContractFormParams } from "@dexkit/web3forms/types";
 import React from "react";
 
-
-import { AssetFormType, DeployedContract, SwapConfig } from '.';
-import { AssetStoreOptions } from '../../nft/types';
-import {
-  PageSectionVariant,
-  SectionItem,
-  VideoEmbedType,
-} from './config';
-
-
+import { AssetFormType, DeployedContract, SwapConfig } from ".";
+import { AssetStoreOptions } from "../../nft/types";
+import { PageSectionVariant, SectionItem, VideoEmbedType } from "./config";
 
 export type SectionType =
   | "video"
@@ -51,6 +44,7 @@ export type SectionType =
 export interface PageSection {
   type: SectionType;
   title?: string;
+  name?: string;
   variant?: PageSectionVariant;
   hideMobile?: boolean;
   hideDesktop?: boolean;
@@ -233,18 +227,18 @@ export interface MarketTradePageSection extends PageSection {
     show: OrderMarketType;
     slippage?: number;
     useGasless?: boolean;
-    baseTokenConfig: { address: string, chainId: number };
+    baseTokenConfig: { address: string; chainId: number };
   };
 }
 
 export interface TokenTradePageSection extends PageSection {
-  type: 'token-trade';
+  type: "token-trade";
   config: {
     showTokenDetails?: boolean;
     show?: OrderMarketType;
     useGasless?: boolean;
     slippage?: number;
-    baseTokenConfig?: { address?: string, chainId?: number };
+    baseTokenConfig?: { address?: string; chainId?: number };
   };
 }
 
@@ -290,13 +284,13 @@ export interface RankingPageSection extends PageSection {
 }
 
 export type SlideActionLink = {
-  type: 'link';
+  type: "link";
   caption?: string;
   url?: string;
 };
 
 export type SlideActionPage = {
-  type: 'page';
+  type: "page";
   page?: string;
   caption?: string;
 };
@@ -323,38 +317,37 @@ export interface CarouselFormType {
 }
 
 export interface CarouselPageSection extends PageSection {
-  type: 'carousel';
+  type: "carousel";
   settings: CarouselFormType;
 }
 
-
 export interface PluginPageSection extends PageSection {
-  type: 'plugin';
+  type: "plugin";
   data: unknown;
   pluginPath: string;
 }
 
 export type ShowCaseActionLink = {
-  type: 'link';
+  type: "link";
   url: string;
 };
 
 export type ShowCaseActionPage = {
-  type: 'page';
+  type: "page";
   page: string;
 };
 
 export type ShowCaseAction = ShowCaseActionLink | ShowCaseActionPage;
 
 export type ShowCaseItemAsset = {
-  type: 'asset';
+  type: "asset";
   contractAddress: string;
   tokenId: string;
   chainId: number;
 };
 
 export type ShowCaseItemCollection = {
-  type: 'collection';
+  type: "collection";
   title?: string;
   subtitle: string;
   imageUrl: string;
@@ -364,14 +357,14 @@ export type ShowCaseItemCollection = {
 };
 
 export type ShowCaseItemImage = {
-  type: 'image';
+  type: "image";
   textColor?: string;
   title: string;
   subtitle?: string;
   imageUrl: string;
   url?: string;
   page?: string;
-  actionType?: 'link' | 'page';
+  actionType?: "link" | "page";
 };
 
 export type ShowCaseItem =
@@ -380,7 +373,7 @@ export type ShowCaseItem =
   | ShowCaseItemCollection;
 
 export type ShowCaseParams = {
-  alignItems: 'center' | 'left' | 'right';
+  alignItems: "center" | "left" | "right";
   itemsSpacing: number;
   paddingTop: number;
   paddingBottom: number;
@@ -388,7 +381,7 @@ export type ShowCaseParams = {
 };
 
 export interface ShowCasePageSection extends PageSection {
-  type: 'showcase';
+  type: "showcase";
   settings: ShowCaseParams;
 }
 

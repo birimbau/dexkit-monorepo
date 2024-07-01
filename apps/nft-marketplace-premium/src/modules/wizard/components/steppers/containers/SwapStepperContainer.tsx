@@ -171,7 +171,7 @@ export default function SwapStepperContainer({ site }: Props) {
               </Typography>
             )}
             <Stack direction={'row'} spacing={2}>
-              <PreviewAppButton appConfig={wizardConfig} />
+              <PreviewAppButton appConfig={wizardConfig} site={site?.slug} />
             </Stack>
           </Stack>
         </Grid>

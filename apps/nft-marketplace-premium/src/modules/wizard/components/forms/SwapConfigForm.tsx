@@ -1,7 +1,9 @@
 import { SwapConfig } from '@/modules/swap/types';
 import { useActiveChainIds } from '@dexkit/ui/hooks';
+import { SwapVariant } from '@dexkit/ui/modules/wizard/types';
 import { SUPPORTED_SWAP_CHAIN_IDS } from '@dexkit/widgets/src/widgets/swap/constants/supportedChainIds';
 import { ChainConfig } from '@dexkit/widgets/src/widgets/swap/types';
+import Info from '@mui/icons-material/Info';
 import {
   Alert,
   Checkbox,
@@ -9,8 +11,12 @@ import {
   Divider,
   FormControl,
   FormControlLabel,
-  FormGroup,
   Grid,
+  IconButton,
+  InputLabel,
+  MenuItem,
+  Select,
+  Tooltip,
   Typography,
 } from '@mui/material';
 import TextField from '@mui/material/TextField';
@@ -87,6 +93,39 @@ export function SwapConfigForm({ onChange, data, featuredTokens }: Props) {
         </Grid>
         <Grid item xs={12}>
           <FormControl fullWidth>
+            <InputLabel shrink>
+              <FormattedMessage id="variant" defaultMessage="Variant" />
+            </InputLabel>
+            <Select
+              fullWidth
+              label={<FormattedMessage id="variant" defaultMessage="Variant" />}
+              value={formData?.variant === undefined ? '' : formData?.variant}
+              displayEmpty
+              notched
+              onChange={(e) => {
+                setFormData((form) => ({
+                  ...form,
+                  variant:
+                    e.target.value !== ''
+                      ? (e.target.value as SwapVariant)
+                      : undefined,
+                }));
+              }}
+            >
+              <MenuItem value="">
+                <FormattedMessage id="classic" defaultMessage="Classic" />
+              </MenuItem>
+              <MenuItem value={SwapVariant.MatchaLike}>
+                <FormattedMessage id="pro" defaultMessage="Pro" />
+              </MenuItem>
+              <MenuItem value={SwapVariant.UniswapLike}>
+                <FormattedMessage id="modern" defaultMessage="Modern" />
+              </MenuItem>
+            </Select>
+          </FormControl>
+        </Grid>
+        <Grid item xs={12}>
+          <FormControl fullWidth>
             <Typography variant="caption">
               <FormattedMessage
                 id="default.network"
@@ -140,7 +179,6 @@ export function SwapConfigForm({ onChange, data, featuredTokens }: Props) {
             />
           </FormControl>
         </Grid>
-
         <Grid item xs={12}>
           <SearchTokenAutocomplete
             label={
@@ -283,51 +321,133 @@ export function SwapConfigForm({ onChange, data, featuredTokens }: Props) {
             fullWidth
           />
         </Grid>
-      </Grid>
-      <Grid item xs={12}>
-        <Divider />
-      </Grid>
-      <Grid item xs={12}>
-        <FormGroup row={true}>
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={formData?.useGasless}
-                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                  setFormData({
-                    ...formData,
-                    useGasless: event.target.checked,
-                  });
-                }}
+        <Grid item xs={12}>
+          <Divider />
+        </Grid>
+        <Grid item xs={12}>
+          <Grid container spacing={2}>
+            <Grid item>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={formData?.myTokensOnlyOnSearch}
+                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                      setFormData({
+                        ...formData,
+                        myTokensOnlyOnSearch: event.target.checked,
+                      });
+                    }}
+                  />
+                }
+                label={
+                  <FormattedMessage
+                    id={'Show.only.my.tokens.on.search'}
+                    defaultMessage={'Show only my tokens on search'}
+                  />
+                }
               />
-            }
-            label={
-              <FormattedMessage
-                id={'gasless.swaps'}
-                defaultMessage={'Gasless swaps'}
+            </Grid>
+            <Grid item>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={formData?.useGasless}
+                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                      setFormData({
+                        ...formData,
+                        useGasless: event.target.checked,
+                      });
+                    }}
+                  />
+                }
+                label={
+                  <FormattedMessage
+                    id={'gasless.swaps'}
+                    defaultMessage={'Gasless swaps'}
+                  />
+                }
               />
-            }
-          />
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={formData?.myTokensOnlyOnSearch}
-                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                  setFormData({
-                    ...formData,
-                    myTokensOnlyOnSearch: event.target.checked,
-                  });
-                }}
-              />
-            }
-            label={
-              <FormattedMessage
-                id={'Show.only.my.tokens.on.search'}
-                defaultMessage={'Show only my tokens on search'}
-              />
-            }
-          />
-        </FormGroup>
+            </Grid>
+            <Grid item>
+              <Grid container spacing={0} alignItems="center">
+                <Grid item>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={Boolean(formData?.enableUrlParams)}
+                        onChange={(e) =>
+                          setFormData((value) => ({
+                            ...value,
+                            enableUrlParams: e.target.checked,
+                          }))
+                        }
+                      />
+                    }
+                    label={
+                      <FormattedMessage
+                        id="enable.url.params"
+                        defaultMessage="Enable url params"
+                      />
+                    }
+                  />
+                </Grid>
+                <Grid item>
+                  <IconButton>
+                    <Tooltip
+                      title={
+                        <FormattedMessage
+                          id="url.parameters.Explanation"
+                          defaultMessage="By selecting this checkbox, the URL parameters will be used to set the token and network for the swap."
+                        />
+                      }
+                    >
+                      <Info fontSize="small" color="inherit" />
+                    </Tooltip>
+                  </IconButton>
+                </Grid>
+              </Grid>
+            </Grid>
+            <Grid item>
+              <Grid container spacing={0} alignItems="center">
+                <Grid item>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={Boolean(formData?.enableImportExternTokens)}
+                        onChange={(e) =>
+                          setFormData((value) => ({
+                            ...value,
+                            enableImportExternTokens: e.target.checked,
+                          }))
+                        }
+                      />
+                    }
+                    label={
+                      <FormattedMessage
+                        id="enable.extern.tokens"
+                        defaultMessage="Enable extern tokens"
+                      />
+                    }
+                  />
+                </Grid>
+                <Grid item>
+                  <IconButton>
+                    <Tooltip
+                      title={
+                        <FormattedMessage
+                          id="enable.import.extern.tokens"
+                          defaultMessage="Enable import external tokens"
+                        />
+                      }
+                    >
+                      <Info fontSize="small" color="inherit" />
+                    </Tooltip>
+                  </IconButton>
+                </Grid>
+              </Grid>
+            </Grid>
+          </Grid>
+        </Grid>
       </Grid>
     </Container>
   );

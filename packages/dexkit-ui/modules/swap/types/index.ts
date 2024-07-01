@@ -56,8 +56,8 @@ export type ZeroExQuoteResponse = {
   sellTokenAddress: string;
   allowanceTarget: any;
   orders: any;
-  sellTokenToEthRate: any;
-  buyTokenToEthRate: any;
+  sellTokenToEthRate: string;
+  buyTokenToEthRate: string;
   expectedSlippage: any;
 };
 

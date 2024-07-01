@@ -7,18 +7,18 @@ import { useWeb3React } from '@dexkit/wallet-connectors/hooks/useWeb3React';
 import AddIcon from '@mui/icons-material/Add';
 import Search from '@mui/icons-material/Search';
 import {
-    Box,
-    Button,
-    Card,
-    CardContent,
-    Checkbox,
-    FormControlLabel,
-    Grid,
-    InputAdornment,
-    Skeleton,
-    Stack,
-    Tooltip,
-    Typography,
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Checkbox,
+  FormControlLabel,
+  Grid,
+  InputAdornment,
+  Skeleton,
+  Stack,
+  Tooltip,
+  Typography,
 } from '@mui/material';
 import { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
@@ -215,6 +215,9 @@ export function UserContractForm({
                 justifyContent="flex-end"
                 spacing={2}
               >
+                <Button onClick={onCancel}>
+                  <FormattedMessage id="cancel" defaultMessage="Cancel" />
+                </Button>
                 <Button
                   onClick={handleSave}
                   disabled={selectedFormId === undefined}
@@ -222,9 +225,6 @@ export function UserContractForm({
                   color="primary"
                 >
                   <FormattedMessage id="save" defaultMessage="Save" />
-                </Button>
-                <Button onClick={onCancel}>
-                  <FormattedMessage id="cancel" defaultMessage="Cancel" />
                 </Button>
               </Stack>
             </Box>

@@ -135,8 +135,6 @@ export default function useOffChainColumns() {
             const { erc20Symbol, erc20TokenAmount } =
               params.row.processedMetadata;
 
-            console.log(params.row.processedMetadata, params.row.id);
-
             return (
               <Typography>
                 {formatStringNumber(erc20TokenAmount)} {erc20Symbol}
