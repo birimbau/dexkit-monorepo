@@ -1,10 +1,10 @@
-import { CollectionOwnershipNFTFormType } from '@/modules/contract-wizard/types';
+import type { CollectionOwnershipNFTFormType } from '@/modules/contract-wizard/types';
 import { myAppsApi as myAppsApiUI } from '@dexkit/ui/constants/api';
-import { SiteMetadata } from '@dexkit/ui/modules/wizard/types';
-import { AppPageSection } from '@dexkit/ui/modules/wizard/types/section';
+import type { SiteMetadata } from '@dexkit/ui/modules/wizard/types';
+import type { AppPageSection } from '@dexkit/ui/modules/wizard/types/section';
 import { getAccessToken, getAccessTokenAndRefresh, getRefreshAccessToken } from '@dexkit/ui/services/auth';
 import axios from 'axios';
-import {
+import type {
   ConfigResponse,
   PageTemplateFormData,
   PageTemplateResponse,
