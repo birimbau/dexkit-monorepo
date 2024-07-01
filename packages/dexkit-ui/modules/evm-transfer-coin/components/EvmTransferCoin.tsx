@@ -18,7 +18,7 @@ import { UserEvents } from "@dexkit/core/constants/userEvents";
 import { parseEther } from "@dexkit/core/utils/ethers/parseEther";
 import { parseUnits } from "@dexkit/core/utils/ethers/parseUnits";
 import { Divider, Skeleton, Stack, Typography } from "@mui/material";
-import { providers } from "ethers";
+import type { providers } from "ethers";
 import { useSnackbar } from "notistack";
 import { useMemo, useState } from "react";
 import { useIntl } from "react-intl";
@@ -60,7 +60,7 @@ export default function EvmTransferCoin({
   const trackUserEventsMutation = useTrackUserEventsMutation();
 
   const [values, setValues] = useState<{
-    address?: string;
+    address?: string | null;
     amount?: number;
     coin?: Coin | null;
   }>({ address: to, amount: amount, coin: defaultCoin });
@@ -159,7 +159,7 @@ export default function EvmTransferCoin({
   };
 
   const handleChange = (values: {
-    address?: string;
+    address?: string | null;
     amount?: number;
     coin?: Coin | null;
   }) => {
