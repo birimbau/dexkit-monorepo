@@ -1,7 +1,7 @@
 import { GatedCondition } from '@dexkit/ui/modules/wizard/types/config';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
-import { useCheckGatedConditions } from '../hooks';
+import { useCheckGatedConditions } from '../../hooks';
 
 export function GatedConditionRefresher({
   conditions,

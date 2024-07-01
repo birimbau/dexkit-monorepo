@@ -69,17 +69,17 @@ import { z } from 'zod';
 import { toFormikValidationSchema } from 'zod-formik-adapter';
 import useColumns from '../../hooks/useColumns';
 import ChangeListener from '../ChangeListener';
-import CountAccountsCard from './CountAccountsCard';
-import CountEditionDropsByGroupCard from './CountEditionDropsByGroupCard';
-import CountEditionDropsCard from './CountEditionDropsCard';
-import CountEventsCard from './CountEventsCard';
-import CountFeesCard from './CountFeesCard';
-import CountNftDropsByGroupCard from './CountNftDropsByGroupCard';
-import CountNftDropsCard from './CountNftDropsCard';
-import CountTokenDropsByGroupCard from './CountTokenDropsByGroupCard';
-import OffChainTab from './OffChainTab';
-import UserEventsTable from './UserEventsTable';
-import EventDetailDialog from './dialogs/EventDetailDialog';
+import EventDetailDialog from '../dialogs/EventDetailDialog';
+import CountAccountsCard from '../user-events/CountAccountsCard';
+import CountEditionDropsByGroupCard from '../user-events/CountEditionDropsByGroupCard';
+import CountEditionDropsCard from '../user-events/CountEditionDropsCard';
+import CountEventsCard from '../user-events/CountEventsCard';
+import CountFeesCard from '../user-events/CountFeesCard';
+import CountNftDropsByGroupCard from '../user-events/CountNftDropsByGroupCard';
+import CountNftDropsCard from '../user-events/CountNftDropsCard';
+import CountTokenDropsByGroupCard from '../user-events/CountTokenDropsByGroupCard';
+import OffChainTab from '../user-events/OffChainTab';
+import UserEventsTable from '../user-events/UserEventsTable';
 
 interface RenderGroupProps {
   group: string;

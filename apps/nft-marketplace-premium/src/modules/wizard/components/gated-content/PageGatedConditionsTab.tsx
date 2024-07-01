@@ -3,7 +3,7 @@ import AddOutlined from '@mui/icons-material/AddOutlined';
 import { Box, Button, Grid, Typography } from '@mui/material';
 import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import EditGatedConditionDialog from './dialogs/EditGatedConditionDialog';
+import EditGatedConditionDialog from '../section-config/dialogs/EditGatedConditionDialog';
 
 import { AppConfirmDialog } from '@dexkit/ui';
 import { useSnackbar } from 'notistack';

@@ -1,4 +1,4 @@
-import { GatedConditionView } from '@/modules/wizard/components/GatedConditionView';
+import { GatedConditionView } from '@/modules/wizard/components/gated-content/GatedConditionView';
 import { SectionsRenderer } from '@/modules/wizard/components/sections/SectionsRenderer';
 import { useCheckGatedConditions } from '@/modules/wizard/hooks';
 import { useAuth } from '@dexkit/ui/hooks/auth';

@@ -24,8 +24,8 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import { PageSectionKey } from '../../hooks/sections';
 import { PagesContext } from '../containers/EditWizardContainer';
 import PreviewPageDialog from '../dialogs/PreviewPageDialog';
+import PageGatedContent from '../gated-content/PageGatedContent';
 import Page from './Page';
-import PageGatedContent from './PageGatedContent';
 import PageSections from './PageSections';
 import PagesPagination from './PagesPagination';
 

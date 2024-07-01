@@ -19,7 +19,7 @@ import { useCheckGatedConditions } from '../../hooks';
 import { AppDialogTitle } from '@dexkit/ui';
 import { GatedPageLayout } from '@dexkit/ui/modules/wizard/types';
 import { GatedCondition } from '@dexkit/ui/modules/wizard/types/config';
-import { GatedConditionView } from '../GatedConditionView';
+import { GatedConditionView } from '../gated-content/GatedConditionView';
 
 interface Props {
   dialogProps: DialogProps;
