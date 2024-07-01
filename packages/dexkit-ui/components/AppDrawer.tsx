@@ -193,11 +193,17 @@ function AppDrawer({ open, onClose, appConfig }: Props) {
                       justifyContent="space-between"
                       spacing={2}
                     >
-                      {user && (
+                      {user ? (
                         <Stack direction="row" alignItems="center" spacing={2}>
                           <Avatar src={user?.profileImageURL} />
                           <Link href={`/u/${user.username}`} variant="body1">
                             {user?.username}
+                          </Link>
+                        </Stack>
+                      ) : (
+                        <Stack direction="row" alignItems="center" spacing={2}>
+                          <Link href={`/u/create-profile`} variant="body1">
+                            <Avatar />
                           </Link>
                         </Stack>
                       )}
