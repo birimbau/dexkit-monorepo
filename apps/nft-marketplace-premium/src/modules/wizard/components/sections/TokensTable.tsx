@@ -12,7 +12,7 @@ import {
   Typography,
 } from '@mui/material';
 import { DataGrid, GridColDef, GridRowSelectionModel } from '@mui/x-data-grid';
-import { MouseEvent, useMemo, useState } from 'react';
+import { MouseEvent, useCallback, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { TOKEN_KEY } from '../../utils';
 import TokensTableMenu from './TokensTableMenu';
@@ -23,6 +23,7 @@ export interface TokensTableProps {
   networks: Network[];
   appUrl?: string;
   onMakeTradable: (key: string) => void;
+  onDisableFeatured: (key: string) => void;
   selection: string[];
   onChangeSelection: (selection: string[]) => void;
 }
@@ -39,6 +40,7 @@ export default function TokensTable({
   appUrl,
   onMakeTradable,
   onChangeSelection,
+  onDisableFeatured,
   selection,
 }: TokensTableProps) {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
@@ -105,13 +107,27 @@ export default function TokensTable({
     return filteredTokens?.slice(offset, limit) || [];
   }, [JSON.stringify(filteredTokens), offset, limit]);
 
-  const handleMakeTradable = (token: TokenWhitelabelApp) => {
-    return (e: MouseEvent) => {
-      e.stopPropagation();
+  const handleMakeTradable = useCallback(
+    (token: TokenWhitelabelApp) => {
+      return (e: MouseEvent) => {
+        e.stopPropagation();
 
-      return onMakeTradable(TOKEN_KEY(token));
-    };
-  };
+        return onMakeTradable(TOKEN_KEY(token));
+      };
+    },
+    [onMakeTradable],
+  );
+
+  const handleDisableFeatured = useCallback(
+    (token: TokenWhitelabelApp) => {
+      return (e: MouseEvent) => {
+        e.stopPropagation();
+
+        return onDisableFeatured(TOKEN_KEY(token));
+      };
+    },
+    [onDisableFeatured],
+  );
 
   const columns: GridColDef<TokenWhitelabelAppWithIndex>[] = useMemo(() => {
     return [
@@ -160,32 +176,35 @@ export default function TokensTable({
         },
         disableColumnMenu: true,
       },
-      // {
-      //   flex: 1,
-      //   field: 'Highlight',
-      //   disableColumnMenu: true,
-      //   disableReorder: true,
-      //   sortable: false,
-      //   renderHeader: () => (
-      //     <Typography>
-      //       <FormattedMessage id="highlight" defaultMessage="Highlight" />
-      //     </Typography>
-      //   ),
-      //   renderCell: () => {
-      //     return (
-      //       <Tooltip
-      //         title={
-      //           <FormattedMessage
-      //             id="select.the.tokens.that.will.be.highlighted.in.the.swap.section"
-      //             defaultMessage="Select the tokens that will be highlighted in the Swap section"
-      //           />
-      //         }
-      //       >
-      //         <Switch />
-      //       </Tooltip>
-      //     );
-      //   },
-      // },
+      {
+        flex: 1,
+        field: 'Highlight',
+        disableColumnMenu: true,
+        disableReorder: true,
+        sortable: false,
+        renderHeader: () => (
+          <Typography>
+            <FormattedMessage id="highlight" defaultMessage="Highlight" />
+          </Typography>
+        ),
+        renderCell: ({ row }) => {
+          return (
+            <Tooltip
+              title={
+                <FormattedMessage
+                  id="select.the.tokens.that.will.be.highlighted.in.the.swap.section"
+                  defaultMessage="Select the tokens that will be highlighted in the Swap section"
+                />
+              }
+            >
+              <Switch
+                checked={!Boolean(row.token.disableFeatured)}
+                onClick={handleDisableFeatured(row.token)}
+              />
+            </Tooltip>
+          );
+        },
+      },
       {
         flex: 1,
         field: 'assign',

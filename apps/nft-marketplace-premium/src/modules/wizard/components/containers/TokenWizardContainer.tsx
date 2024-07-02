@@ -101,22 +101,26 @@ export default function TokenWizardContainer({
   }, []);
 
   const handleDisableFeatured = (key: string) => {
-    const newTokens = [...tokens];
-    const index = newTokens.findIndex((t) => TOKEN_KEY(t) === key);
+    setTokens((tokens) => {
+      const newTokens = [...tokens];
+      const index = newTokens.findIndex((t) => TOKEN_KEY(t) === key);
 
-    if (index > -1) {
-      const token = { ...newTokens[index] } as Token;
+      if (index > -1) {
+        const token = { ...newTokens[index] } as Token;
 
-      if (token?.disableFeatured) {
-        token.disableFeatured = false;
-      } else {
-        token.disableFeatured = true;
+        if (token?.disableFeatured) {
+          token.disableFeatured = false;
+        } else {
+          token.disableFeatured = true;
+        }
+
+        newTokens[index] = token;
+
+        setHasChanged(true);
       }
 
-      newTokens[index] = token;
-      setTokens(newTokens);
-      setHasChanged(true);
-    }
+      return newTokens;
+    });
   };
 
   const handleRemoveTokens = () => {
@@ -247,8 +251,48 @@ export default function TokenWizardContainer({
     setSelection(selection);
   };
 
+  const [openHasChangesConfirm, setOpenHasChangesConfirm] = useState(false);
+
+  const handleConfirmCancel = () => {
+    setOpenHasChangesConfirm(false);
+    setHasChanged(false);
+    setTokens(config?.tokens?.length ? config?.tokens[0].tokens ?? [] : []);
+  };
   return (
     <>
+      <AppConfirmDialog
+        DialogProps={{
+          open: openHasChangesConfirm,
+          maxWidth: 'xs',
+          fullWidth: true,
+          onClose: () => setOpenHasChangesConfirm(false),
+        }}
+        onConfirm={handleConfirmCancel}
+        title={
+          <FormattedMessage
+            id="discard.changes"
+            defaultMessage="Discard Changes"
+          />
+        }
+        actionCaption={
+          <FormattedMessage id="discard" defaultMessage="Discard" />
+        }
+      >
+        <Stack>
+          <Typography variant="body1">
+            <FormattedMessage
+              id="are.you.sure.you.want.to.discard.your.changes?"
+              defaultMessage="Are you sure you want to discard your changes?"
+            />
+          </Typography>
+          <Typography variant="caption" color="text.secondary">
+            <FormattedMessage
+              id="if.you.discard.now.your.changes.will.be.lost."
+              defaultMessage="If you discard now, your changes will be lost."
+            />
+          </Typography>
+        </Stack>
+      </AppConfirmDialog>
       {showAddToken && (
         <AddTokenDialog
           tokens={tokens}
@@ -380,6 +424,7 @@ export default function TokenWizardContainer({
                 search={search}
                 networks={selectedNetwoks}
                 appUrl={appUrl}
+                onDisableFeatured={handleDisableFeatured}
                 onMakeTradable={handleMakeTradable}
                 onChangeSelection={handleChangeSelection}
                 selection={selection}
@@ -417,6 +462,12 @@ export default function TokenWizardContainer({
             />
           ) : (
             <Stack spacing={1} direction="row" justifyContent="flex-end">
+              <Button
+                onClick={() => setOpenHasChangesConfirm(true)}
+                disabled={!hasChanged}
+              >
+                <FormattedMessage id="cancel" defaultMessage="Cancel" />
+              </Button>
               <Button
                 variant="contained"
                 color="primary"
