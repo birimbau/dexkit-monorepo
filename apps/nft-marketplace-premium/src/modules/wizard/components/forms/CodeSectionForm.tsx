@@ -29,7 +29,6 @@ import parse from 'html-react-parser';
 import { SyntheticEvent, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { FormattedMessage } from 'react-intl';
-import ChangeListener from '../ChangeListener';
 
 export interface InputParam {
   name: string;
@@ -137,6 +136,7 @@ function CodeSectionForm({
       value: string,
       shouldValidate?: boolean,
     ) => void,
+    values: { html: string; css: string; js: string },
   ) => {
     return (
       <Grid container spacing={2}>
@@ -169,6 +169,12 @@ function CodeSectionForm({
     setCurrTab(value);
   };
 
+  const handleRun = (values: { html: string; css: string; js: string }) => {
+    return () => {
+      onChange({ type: 'code-page-section', config: values });
+    };
+  };
+
   const renderTabs = (
     nodes: InputParam[],
     setFieldValue: (
@@ -176,15 +182,31 @@ function CodeSectionForm({
       value: string,
       shouldValidate?: boolean,
     ) => void,
+    values: {
+      html: string;
+      js: string;
+      css: string;
+    },
   ) => {
     return (
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <Tabs value={currTab} onChange={handleChangeTab}>
-            {nodes.map((node, key) => (
-              <Tab label={node.name} value={node.name} key={key} />
-            ))}
-          </Tabs>
+          <Box>
+            <Stack direction="row" justifyContent="space-between">
+              <Tabs value={currTab} onChange={handleChangeTab}>
+                {nodes.map((node, key) => (
+                  <Tab label={node.name} value={node.name} key={key} />
+                ))}
+              </Tabs>
+              <Button
+                onClick={handleRun(values)}
+                size="small"
+                variant="contained"
+              >
+                <FormattedMessage id="run" defaultMessage="Run" />
+              </Button>
+            </Stack>
+          </Box>
         </Grid>
         {nodes
           .filter((n) => n.name === currTab)
@@ -220,7 +242,11 @@ function CodeSectionForm({
   const inputs = (values: { html: string; js: string; css: string }) => {
     return [
       {
-        extensions: [html()],
+        extensions: [
+          html({ matchClosingTags: false, selfClosingTags: true }),
+          javascript({ jsx: false }),
+          css(),
+        ],
         name: 'html',
         value: values.html,
       },
@@ -249,27 +275,38 @@ function CodeSectionForm({
     >
       {({ setFieldValue, values, isValid, submitForm }) => (
         <>
-          <ChangeListener
-            isValid={isValid}
-            onChange={(value: any) =>
-              onChange({ type: 'code-page-section', config: value })
-            }
-            values={values}
-          />
           {renderDialog(inputs(values), setFieldValue, showAsFullScreen)}
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              <FormControlLabel
-                control={<Switch checked={showList} onClick={handleToggle} />}
-                label={
-                  <FormattedMessage id="show.all" defaultMessage="Show all" />
-                }
-              />
+              <Box>
+                <Stack direction="row" justifyContent="space-between">
+                  <FormControlLabel
+                    control={
+                      <Switch checked={showList} onClick={handleToggle} />
+                    }
+                    label={
+                      <FormattedMessage
+                        id="show.all"
+                        defaultMessage="Show all"
+                      />
+                    }
+                  />
+                  {showList && (
+                    <Button
+                      onClick={handleRun(values)}
+                      size="small"
+                      variant="contained"
+                    >
+                      <FormattedMessage id="run" defaultMessage="Run" />
+                    </Button>
+                  )}
+                </Stack>
+              </Box>
             </Grid>
             <Grid item xs={12}>
               {showList
-                ? renderList(inputs(values), setFieldValue)
-                : renderTabs(inputs(values), setFieldValue)}
+                ? renderList(inputs(values), setFieldValue, values)
+                : renderTabs(inputs(values), setFieldValue, values)}
             </Grid>
             <Grid item xs={12}>
               <Box>

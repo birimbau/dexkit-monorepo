@@ -432,7 +432,7 @@ export default function EditSectionDialog({
           </Grid>*/}
           <Grid item xs={12} sm={6} md={7} lg={7} xl={8}>
             <PreviewPagePlatform
-              key={sectionType}
+              key={JSON.stringify(changedSection)}
               sections={sectionType ? [changedSection as AppPageSection] : []}
               title={
                 <b>
