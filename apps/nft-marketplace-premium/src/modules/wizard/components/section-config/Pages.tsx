@@ -161,10 +161,13 @@ export default function Pages({
 
   const [isEditGate, setIsEditGate] = useState(false);
 
-  const handleEditCondtions = (page: string) => {
+  const handleEditCondtions = (pageKey: string) => {
     return () => {
-      setSelectedKey(page);
+      const page = structuredClone(pages[pageKey]);
+
+      setSelectedKey(pageKey);
       setIsEditGate(true);
+      setOldPage(page);
     };
   };
 
