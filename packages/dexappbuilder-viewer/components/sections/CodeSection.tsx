@@ -1,12 +1,11 @@
-
-import { CodePageSection } from '@dexkit/ui/modules/wizard/types/section';
-import { Widget } from '../Widget';
+import { CodePageSection } from "@dexkit/ui/modules/wizard/types/section";
+import { Widget } from "../Widget";
 
 export interface CodeSectionProps {
   section: CodePageSection;
 }
 
-export default function CodeSection({ section }: CodeSectionProps) {
+export function CodeSection({ section }: CodeSectionProps) {
   const { js, css, html } = section.config;
 
   /* useEffect(() => {

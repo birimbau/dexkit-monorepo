@@ -13,6 +13,7 @@ import {
 import {
   AppPage,
   AppPageOptions,
+  PageSectionsLayout,
 } from '@dexkit/ui/modules/wizard/types/config';
 import { BuilderKit } from '../../constants';
 import { PageSectionKey } from '../../hooks/sections';
@@ -42,6 +43,7 @@ interface Props {
   onEditTitle: (page: string, title: string) => void;
   onChangeName: (page: string, index: number, name: string) => void;
   onRemovePage: (page: string) => void;
+  onUpdatePageLayout: (page: string, layout: PageSectionsLayout) => void;
   onUpdateGatedConditions: (
     page: string,
     conditions?: GatedCondition[],
@@ -64,6 +66,7 @@ export default function PagesSection({
   onEditPage,
   onSaveSection: onSave,
   onHideDesktop,
+  onUpdatePageLayout,
   onUpdateGatedConditions,
   onHideMobile,
   onChangeName,
@@ -160,6 +163,7 @@ export default function PagesSection({
       <Stack spacing={2}>
         <PagesSectionPage
           pages={pages}
+          onUpdatePageLayout={onUpdatePageLayout}
           onRemovePage={onRemovePage}
           onEditTitle={onEditTitle}
           onEditPage={onEditPage}

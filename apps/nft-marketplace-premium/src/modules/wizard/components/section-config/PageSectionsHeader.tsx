@@ -21,6 +21,7 @@ export interface PageSectionsHeaderProps {
   onPreview: () => void;
   onClone: () => void;
   onEditTitle: (title: string) => void;
+  onEditLayout: () => void;
   page: AppPage;
 }
 
@@ -29,6 +30,7 @@ export default function PageSectionsHeader({
   onPreview,
   onClone,
   onEditTitle,
+  onEditLayout,
   page,
 }: PageSectionsHeaderProps) {
   const [isEditTitle, setIsEditTitle] = useState(false);
@@ -120,6 +122,7 @@ export default function PageSectionsHeader({
       <Button onClick={onPreview} startIcon={<Visibility />}>
         <FormattedMessage id="preview" defaultMessage="Preview" />
       </Button>
+      <Button onClick={onEditLayout}>EditLayout</Button>
     </Stack>
   );
 }

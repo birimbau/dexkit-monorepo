@@ -1,22 +1,27 @@
+import type { TokenWhitelabelApp } from "@dexkit/core/types";
+import type { AppWhitelabelType, ThemeMode } from "@dexkit/ui/constants/enum";
+import type { GatedPageLayout } from ".";
+import type { AssetAPI } from "../../nft/types";
+import type { AppPageSection } from "./section";
 
-import type { TokenWhitelabelApp } from '@dexkit/core/types';
-import type { AppWhitelabelType, ThemeMode } from '@dexkit/ui/constants/enum';
-import type { GatedPageLayout } from '.';
-import type { AssetAPI } from '../../nft/types';
-import type { AppPageSection } from './section';
+export type VideoEmbedType = "youtube" | "vimeo";
 
-export type VideoEmbedType = 'youtube' | 'vimeo';
-
-export type SocialMediaTypes = 'instagram' | 'facebook' | 'twitter' | 'youtube' | 'linkedin' | 'pinterest' | 'reddit';
+export type SocialMediaTypes =
+  | "instagram"
+  | "facebook"
+  | "twitter"
+  | "youtube"
+  | "linkedin"
+  | "pinterest"
+  | "reddit";
 
 export interface MenuTree {
   name: string;
-  type: 'Page' | 'Menu' | 'External';
+  type: "Page" | "Menu" | "External";
   href?: string;
   data?: any;
   children?: MenuTree[];
 }
-
 
 export interface MenuSettings {
   layout?: {
@@ -26,7 +31,7 @@ export interface MenuSettings {
 }
 
 export interface AssetItemType {
-  type: 'asset';
+  type: "asset";
   title: string;
   chainId: number;
   contractAddress: string;
@@ -40,8 +45,8 @@ export interface SearchbarConfig {
 }
 
 export interface CollectionItemType {
-  type: 'collection';
-  variant: 'default' | 'simple';
+  type: "collection";
+  variant: "default" | "simple";
   featured?: boolean;
   title: string;
   subtitle: string;
@@ -52,38 +57,55 @@ export interface CollectionItemType {
 
 export type SectionItem = AssetItemType | CollectionItemType;
 
-export type PageSectionVariant = 'dark' | 'light';
+export type PageSectionVariant = "dark" | "light";
 
 export interface GatedCondition {
-  type?: 'collection' | 'coin' | 'multiCollection';
-  condition?: 'and' | 'or';
-  protocol?: 'ERC20' | 'ERC711' | 'ERC1155';
+  type?: "collection" | "coin" | "multiCollection";
+  condition?: "and" | "or";
+  protocol?: "ERC20" | "ERC711" | "ERC1155";
   decimals?: number;
   address?: string;
   symbol?: string;
   chainId?: number;
   amount: string;
   tokenId?: string;
+}
+
+export type LayoutPosMobile = "top" | "bottom";
+export type LayoutPosDesktop = "top" | "bottom" | "side";
+
+export type PageSectionsTabsLayout = {
+  type: "tabs";
+  layout?: {
+    desktop: { position: LayoutPosDesktop };
+    mobile: { position: LayoutPosMobile };
+  };
 };
 
+export type PageSectionsListLayout = {
+  type: "list";
+};
 
+export type PageSectionsLayout =
+  | PageSectionsListLayout
+  | PageSectionsTabsLayout;
 
 export interface AppPageOptions {
   key?: string;
   title?: string;
   clonedPageKey?: string;
   uri?: string;
+  layout?: PageSectionsLayout;
   isEditGatedConditions?: boolean;
   enableGatedConditions?: boolean;
   gatedConditions?: GatedCondition[];
-  gatedPageLayout?: GatedPageLayout
+  gatedPageLayout?: GatedPageLayout;
 }
 
 export type AppPage = {
   gatedConditions?: GatedCondition[];
   sections: AppPageSection[];
-} & AppPageOptions
-
+} & AppPageOptions;
 
 export interface SocialMedia {
   type: SocialMediaTypes;
@@ -91,7 +113,9 @@ export interface SocialMedia {
 }
 
 export interface SocialMediaCustom {
-  link: string, iconUrl: string, label: string;
+  link: string;
+  iconUrl: string;
+  label: string;
 }
 
 interface SeoImage {
@@ -141,7 +165,7 @@ export interface AppConfig {
   font?: {
     family: string;
     category?: string;
-  }
+  };
   defaultThemeMode?: ThemeMode;
   theme: string;
   customTheme?: string;
@@ -182,19 +206,18 @@ export interface AppConfig {
     date: string;
     datetime: string;
   };
-  menuSettings?: MenuSettings,
+  menuSettings?: MenuSettings;
   menuTree?: MenuTree[];
   footerMenuTree?: MenuTree[];
   collections?: AppCollection[];
   seo?: {
-    [key: string | 'home']: PageSeo;
+    [key: string | "home"]: PageSeo;
   };
   analytics?: {
     gtag?: string;
-  }
+  };
   tokens?: AppToken[];
 }
-
 
 export interface ConfigResponse {
   id: number;
@@ -206,6 +229,5 @@ export interface ConfigResponse {
   type: AppWhitelabelType;
   active?: boolean;
   previewUrl?: string;
-  nft?: AssetAPI
+  nft?: AssetAPI;
 }
-

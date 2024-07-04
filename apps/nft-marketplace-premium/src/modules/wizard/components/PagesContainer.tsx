@@ -10,6 +10,7 @@ import {
 import {
   AppPage,
   AppPageOptions,
+  PageSectionsLayout,
 } from '@dexkit/ui/modules/wizard/types/config';
 import { Typography } from '@mui/material';
 import { useSnackbar } from 'notistack';
@@ -457,6 +458,17 @@ export function PagesContainer({
     onChangeSections();
   };
 
+  const handleUpdatePageLayout = (page: string, layout: PageSectionsLayout) => {
+    setPages((pages) => {
+      const newPages = structuredClone({ ...pages });
+
+      newPages[page].layout = layout;
+
+      return newPages;
+    });
+    onChangePages();
+  };
+
   return (
     <>
       <AddPageDialog
@@ -559,6 +571,7 @@ export function PagesContainer({
         page={selectedPage}
         onChangeName={handleChangeName}
         onEditTitle={handleEditTitle}
+        onUpdatePageLayout={handleUpdatePageLayout}
         sections={selectedPage ? pages[selectedPage]?.sections : []}
         onEditPage={onEditPage}
         onRemovePage={handleRemovePage}
