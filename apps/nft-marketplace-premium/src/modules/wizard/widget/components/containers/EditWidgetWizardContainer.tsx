@@ -114,8 +114,6 @@ export const PagesContext = React.createContext<PagesContextType>({
 });
 
 export function EditWidgetWizardContainer({ widget }: Props) {
-
-
   const router = useRouter();
   const { tab } = router.query as { tab?: ActiveMenu };
   const [hasChanges, setHasChanges] = useState(false);
@@ -588,7 +586,7 @@ export function EditWidgetWizardContainer({ widget }: Props) {
   );
 
   return (
- 
+    <>
       <Drawer open={isMenuOpen} onClose={handleCloseMenu}>
         <Box
           sx={(theme) => ({ minWidth: `${theme.breakpoints.values.sm / 2}px` })}
@@ -767,7 +765,6 @@ export function EditWidgetWizardContainer({ widget }: Props) {
                   <FormattedMessage id="menu" defaultMessage="Menu" />
                 </Button>
               )}
-           
             </Stack>
           </Grid>
           <Grid item xs={12} sm={12}>
@@ -932,6 +929,6 @@ export function EditWidgetWizardContainer({ widget }: Props) {
           </Grid>
         </Grid>
       </Container>
-  
+    </>
   );
 }
