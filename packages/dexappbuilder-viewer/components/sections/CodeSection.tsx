@@ -5,7 +5,7 @@ export interface CodeSectionProps {
   section: CodePageSection;
 }
 
-export function CodeSection({ section }: CodeSectionProps) {
+export default function CodeSection({ section }: CodeSectionProps) {
   const { js, css, html } = section.config;
 
   /* useEffect(() => {
