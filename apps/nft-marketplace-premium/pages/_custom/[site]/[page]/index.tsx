@@ -97,9 +97,11 @@ export const getStaticProps: GetStaticProps = async ({
       },
     };
   }
+  const sections = homePage?.sections || [];
+
   await fetchMultipleAssetForQueryClient({
     queryClient,
-    sections: homePage.sections,
+    sections: sections,
   });
 
   /*for (let section of homePage.sections) {
@@ -140,7 +142,7 @@ export const getStaticProps: GetStaticProps = async ({
     }
   }*/
 
-  for (let section of homePage.sections) {
+  for (let section of sections) {
     if (section.type === 'asset-store') {
       const maker = section.config?.storeAccount?.toLowerCase();
       const assetResponse = await getDKAssetOrderbook({ maker });
@@ -155,7 +157,7 @@ export const getStaticProps: GetStaticProps = async ({
     props: {
       dehydratedState: dehydrate(queryClient),
       page: params?.page,
-      sections: homePage.sections,
+      sections: sections,
       site: params?.site,
       ...configResponse,
     },

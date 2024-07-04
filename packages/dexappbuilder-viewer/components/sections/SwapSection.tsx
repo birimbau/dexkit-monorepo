@@ -71,21 +71,21 @@ export function SwapSection({ section }: Props) {
         slippage: 0,
       };
 
-      if (section.config?.configByChain?.[chainId].slippage) {
+      if (section.config?.configByChain?.[chainId]?.slippage) {
         config.configByChain[chainId].slippage =
           section.config?.configByChain?.[chainId].slippage;
       }
 
       if (buyToken) {
         config.configByChain[chainId].buyToken = buyToken;
-      } else if (section.config?.configByChain?.[chainId].buyToken) {
+      } else if (section.config?.configByChain?.[chainId]?.buyToken) {
         config.configByChain[chainId].buyToken =
           section.config?.configByChain?.[chainId].buyToken;
       }
 
       if (sellToken) {
         config.configByChain[chainId].sellToken = sellToken;
-      } else if (section.config?.configByChain?.[chainId].sellToken) {
+      } else if (section.config?.configByChain?.[chainId]?.sellToken) {
         config.configByChain[chainId].sellToken =
           section.config?.configByChain?.[chainId].sellToken;
       }

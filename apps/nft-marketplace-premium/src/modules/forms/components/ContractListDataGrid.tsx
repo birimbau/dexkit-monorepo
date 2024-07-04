@@ -8,7 +8,7 @@ import Link from '@dexkit/ui/components/AppLink';
 import { useWeb3React } from '@dexkit/wallet-connectors/hooks/useWeb3React';
 import PostAddOutlinedIcon from '@mui/icons-material/PostAddOutlined';
 import Settings from '@mui/icons-material/SettingsOutlined';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import VisibilityOff from '@mui/icons-material/VisibilityOffOutlined';
 import VisibilityOutlined from '@mui/icons-material/VisibilityOutlined';
 import { IconButton, Tooltip } from '@mui/material';
 import Box from '@mui/material/Box';
@@ -22,9 +22,14 @@ import {
   GridSortModel,
   GridToolbar,
 } from '@mui/x-data-grid';
+import { useQueryClient } from '@tanstack/react-query';
 import { useCallback, useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { useContractVisibility, useListDeployedContracts } from '../hooks';
+import {
+  LIST_DEPLOYED_CONTRACTS,
+  useContractVisibility,
+  useListDeployedContracts,
+} from '../hooks';
 
 export interface ContractListDataGridProps {
   showHidden: boolean;
@@ -43,6 +48,8 @@ export default function ContractListDataGrid({
     page: 0,
     pageSize: 10,
   });
+
+  const queryClient = useQueryClient();
 
   const { data, isLoading, refetch } = useListDeployedContracts({
     ...queryOptions,
@@ -64,7 +71,7 @@ export default function ContractListDataGrid({
 
   useEffect(() => {
     setRowCountState((prevRowCountState: number) =>
-      data?.total !== undefined ? data?.total : prevRowCountState
+      data?.total !== undefined ? data?.total : prevRowCountState,
     );
   }, [data?.total, setRowCountState]);
 
@@ -118,7 +125,10 @@ export default function ContractListDataGrid({
       const toggled = data?.data.find((c) => c.id === id);
 
       await toggleVisibility({ id, visibility: !Boolean(toggled?.hide) });
-      await refetch();
+
+      queryClient.invalidateQueries({
+        queryKey: [LIST_DEPLOYED_CONTRACTS],
+      });
     };
   };
 
@@ -209,11 +219,24 @@ export default function ContractListDataGrid({
               </Tooltip>
             </IconButton>
             <IconButton onClick={handleHideContract(row.id)}>
-              <Tooltip
-                title={<FormattedMessage id="hide" defaultMessage="Hide" />}
-              >
-                {row.hide ? <VisibilityOutlined /> : <VisibilityOff />}
-              </Tooltip>
+              {row.hide ? (
+                <Tooltip
+                  title={
+                    <FormattedMessage
+                      id="make.visible"
+                      defaultMessage="Make visible"
+                    />
+                  }
+                >
+                  <VisibilityOff />
+                </Tooltip>
+              ) : (
+                <Tooltip
+                  title={<FormattedMessage id="hide" defaultMessage="Hide" />}
+                >
+                  <VisibilityOutlined />
+                </Tooltip>
+              )}
             </IconButton>
           </Stack>
         );
@@ -226,7 +249,7 @@ export default function ContractListDataGrid({
 
   const handleChangeRowSelectionModel = (
     rowSelectionModel: GridRowSelectionModel,
-    details: GridCallbackDetails<any>
+    details: GridCallbackDetails<any>,
   ) => {
     setRowSelectionModel(rowSelectionModel);
   };
