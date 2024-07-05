@@ -7,16 +7,18 @@ import {
   Divider,
   Grid,
   Paper,
+  Portal,
   Stack,
   Tab,
   Tabs,
   Typography,
+  alpha,
   useTheme,
 } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
 
 import { PageSectionsLayout } from '@dexkit/ui/modules/wizard/types/config';
-import { useCallback, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { FormattedMessage } from 'react-intl';
 import { SectionRender } from '../section-config/SectionRender';
@@ -28,9 +30,27 @@ export interface BottomNavActionProps {
 }
 
 function BottomNavAction({ label, onClick, active }: BottomNavActionProps) {
+  const theme = useTheme();
+
   return (
-    <ButtonBase onClick={onClick} sx={{ p: 2, width: '100%', height: '100%' }}>
-      <Typography variant="caption">{label}</Typography>
+    <ButtonBase
+      onClick={onClick}
+      TouchRippleProps={{ style: { color: theme.palette.primary.light } }}
+      sx={{
+        p: 2,
+        width: '100%',
+        height: '100%',
+        backgroundColor: (theme) =>
+          active ? alpha(theme.palette.primary.main, 0.05) : undefined,
+      }}
+    >
+      <Typography
+        fontWeight={active ? 'bold' : '400'}
+        variant="body1"
+        color={active ? 'primary.light' : 'inherit'}
+      >
+        {label}
+      </Typography>
     </ButtonBase>
   );
 }
@@ -149,7 +169,7 @@ export function SectionsRenderer({ sections, layout }: Props) {
   }, []);
 
   const renderBottomNavigationActions = () => {
-    return sections.map((section, index) => {
+    return sections.map((section, index, arr) => {
       if (isMobile && section.hideMobile) {
         return null;
       }
@@ -163,6 +183,7 @@ export function SectionsRenderer({ sections, layout }: Props) {
           key={index}
           sx={{
             minWidth: theme.spacing(18),
+            flex: arr.length <= 3 ? 1 : undefined,
           }}
         >
           <BottomNavAction
@@ -200,39 +221,41 @@ export function SectionsRenderer({ sections, layout }: Props) {
       return (
         <TabContext value={tab}>
           {renderPanels()}
-          <Paper
-            variant="elevation"
-            sx={{
-              overflowX: 'auto',
-              position: 'fixed',
-              bottom: 0,
-              left: 0,
-              right: 0,
-              zIndex: (theme) => theme.zIndex.appBar + 1,
-            }}
-            elevation={3}
-          >
-            <Stack
+          <Portal container={document.body}>
+            <Paper
+              variant="elevation"
               sx={{
-                overflowX: 'auto',
+                overflowX: sections.length > 3 ? 'auto' : undefined,
+                position: 'sticky',
+                bottom: 0,
+                left: 0,
+                right: 0,
+                zIndex: (theme) => theme.zIndex.appBar + 1,
               }}
-              divider={
-                <Divider
-                  orientation="vertical"
-                  flexItem
-                  sx={{
-                    borderColor: (theme) =>
-                      theme.palette.mode === 'dark'
-                        ? theme.palette.grey[800]
-                        : undefined,
-                  }}
-                />
-              }
-              direction="row"
+              elevation={3}
             >
-              {renderBottomNavigationActions()}
-            </Stack>
-          </Paper>
+              <Stack
+                sx={{
+                  overflowX: 'auto',
+                }}
+                divider={
+                  <Divider
+                    orientation="vertical"
+                    flexItem
+                    sx={{
+                      borderColor: (theme) =>
+                        theme.palette.mode === 'dark'
+                          ? theme.palette.grey[800]
+                          : undefined,
+                    }}
+                  />
+                }
+                direction="row"
+              >
+                {renderBottomNavigationActions()}
+              </Stack>
+            </Paper>
+          </Portal>
         </TabContext>
       );
     }
@@ -251,6 +274,7 @@ export function SectionsRenderer({ sections, layout }: Props) {
               <Tabs
                 centered
                 variant={isMobile ? 'scrollable' : undefined}
+                allowScrollButtonsMobile
                 orientation={
                   isMobile
                     ? 'horizontal'

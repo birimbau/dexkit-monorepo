@@ -3,6 +3,7 @@ import { AppPage } from '@dexkit/ui/modules/wizard/types/config';
 import ArrowBack from '@mui/icons-material/ArrowBack';
 import Check from '@mui/icons-material/Check';
 import Close from '@mui/icons-material/Close';
+import Dashboard from '@mui/icons-material/Dashboard';
 import Visibility from '@mui/icons-material/VisibilityOutlined';
 import {
   Button,
@@ -122,7 +123,9 @@ export default function PageSectionsHeader({
       <Button onClick={onPreview} startIcon={<Visibility />}>
         <FormattedMessage id="preview" defaultMessage="Preview" />
       </Button>
-      <Button onClick={onEditLayout}>EditLayout</Button>
+      <Button startIcon={<Dashboard />} onClick={onEditLayout}>
+        <FormattedMessage id="edit.layout" defaultMessage="Edit layout" />
+      </Button>
     </Stack>
   );
 }

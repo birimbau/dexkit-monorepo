@@ -6,6 +6,7 @@ import {
   GatedCondition,
   GatedPageLayout,
 } from '@dexkit/ui/modules/wizard/types';
+import { PageSectionsLayout } from '@dexkit/ui/modules/wizard/types/config';
 import { useWeb3React } from '@dexkit/wallet-connectors/hooks/useWeb3React';
 import { Container, Grid } from '@mui/material';
 
@@ -17,10 +18,12 @@ export default function ProtectedContent({
   site,
   page,
   layout,
+  pageLayout,
   slug,
 }: {
   isProtected: boolean;
   layout?: GatedPageLayout;
+  pageLayout?: PageSectionsLayout;
   conditions?: GatedCondition[];
   site: string;
   slug?: string;
@@ -41,7 +44,9 @@ export default function ProtectedContent({
   });
 
   if (data?.data?.result) {
-    return <SectionsRenderer sections={data?.data?.sections} />;
+    return (
+      <SectionsRenderer sections={data?.data?.sections} layout={pageLayout} />
+    );
   }
 
   return (

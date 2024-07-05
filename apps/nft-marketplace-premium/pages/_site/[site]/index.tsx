@@ -14,12 +14,16 @@ import { SectionsRenderer } from '@/modules/wizard/components/sections/SectionsR
 import { GET_ASSETS_ORDERBOOK } from '@dexkit/ui/modules/nft/hooks';
 import { getDKAssetOrderbook } from '@dexkit/ui/modules/nft/services';
 import { fetchMultipleAssetForQueryClient } from '@dexkit/ui/modules/nft/services/query';
+import { PageSectionsLayout } from '@dexkit/ui/modules/wizard/types/config';
 import type { AppPageSection } from '@dexkit/ui/modules/wizard/types/section';
 
-const Home: NextPage<{ sections: AppPageSection[] }> = ({ sections }) => {
+const Home: NextPage<{
+  sections: AppPageSection[];
+  layout: PageSectionsLayout;
+}> = ({ sections, layout }) => {
   return (
     <MainLayout disablePadding>
-      <SectionsRenderer sections={sections} />
+      <SectionsRenderer sections={sections} layout={layout} />
       {/*<ActionButtonsSection />*/}
     </MainLayout>
   );
@@ -61,6 +65,7 @@ export const getStaticProps: GetStaticProps = async ({
     props: {
       dehydratedState: dehydrate(queryClient),
       sections: sections,
+      layout: homePage.layout,
       ...configResponse,
     },
     revalidate: 300,
