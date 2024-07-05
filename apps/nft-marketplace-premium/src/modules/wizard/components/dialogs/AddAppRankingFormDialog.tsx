@@ -74,11 +74,12 @@ export default function AddRankingFormDialog({
         <AppDialogTitle
           title={
             <FormattedMessage
-              id="add.app.ranking"
-              defaultMessage="Add app ranking"
+              id="add.leaderboard"
+              defaultMessage="Add Leaderboard"
             />
           }
           onClose={handleClose}
+          sx={{ px: 4, py: 2 }}
         />
 
         <Formik
@@ -101,7 +102,7 @@ export default function AddRankingFormDialog({
         >
           {({ submitForm, values, setFieldValue }) => (
             <Form>
-              <DialogContent dividers>
+              <DialogContent sx={{ p: 4 }} dividers>
                 <Grid container spacing={2}>
                   <Grid item xs={12}>
                     <Box>
@@ -165,22 +166,18 @@ export default function AddRankingFormDialog({
                 </Grid>
               </DialogContent>
 
-              <DialogActions>
+              <DialogActions sx={{ px: 4, py: 2 }}>
                 <Grid item xs={12}>
                   <Stack spacing={1} direction="row" justifyContent="flex-end">
+                    <Button color="primary" onClick={handleClose}>
+                      <FormattedMessage id="cancel" defaultMessage="cancel" />
+                    </Button>
                     <Button
                       variant="contained"
                       color="primary"
                       onClick={submitForm}
                     >
                       <FormattedMessage id="save" defaultMessage="Save" />
-                    </Button>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={handleClose}
-                    >
-                      <FormattedMessage id="cancel" defaultMessage="cancel" />
                     </Button>
                   </Stack>
                 </Grid>

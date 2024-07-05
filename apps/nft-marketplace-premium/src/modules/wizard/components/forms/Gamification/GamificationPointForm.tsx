@@ -1,13 +1,11 @@
 import {
-  Alert,
-  AlertTitle,
   Autocomplete as AutocompleteMUI,
   AutocompleteRenderInputParams,
   Box,
   Button,
   Divider,
-  Fab,
   FormControl,
+  IconButton,
   Stack,
   TextField as TextFieldMUI,
   Typography,
@@ -200,327 +198,326 @@ export default function GamificationPointForm({
           <Form>
             <Grid container spacing={2}>
               <Grid item xs={12}>
-                <Typography sx={{ pb: 2 }} variant="subtitle1">
+                <Typography variant="subtitle1">
                   <FormattedMessage
-                    id={'filter.by.data'}
-                    defaultMessage={'Filter by date'}
-                  ></FormattedMessage>
-                  :
+                    id="filter.by.data"
+                    defaultMessage="Filter by date:"
+                  />
                 </Typography>
-
-                <Stack spacing={2} direction={'row'}>
-                  <Field
-                    component={TextField}
-                    type={'datetime-local'}
-                    sx={{ maxWidth: '350px' }}
-                    name={`from`}
-                    label={<FormattedMessage id="From" defaultMessage="From" />}
-                    fullWidth
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                  />
-                  <Field
-                    component={TextField}
-                    type={'datetime-local'}
-                    sx={{ maxWidth: '350px' }}
-                    name={`to`}
-                    label={<FormattedMessage id="to" defaultMessage="to" />}
-                    fullWidth
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                  />
-                </Stack>
               </Grid>
-
               <Grid item xs={12}>
-                <Alert severity="info">
-                  <AlertTitle>
-                    <FormattedMessage
-                      id="info.alert.title.filter.ranking.points"
-                      defaultMessage="Define and attribute points to each user event to build a ranking"
+                <Grid container spacing={2}>
+                  <Grid item xs={12} sm={4}>
+                    <Field
+                      component={TextField}
+                      type="datetime-local"
+                      name="from"
+                      label={
+                        <FormattedMessage id="From" defaultMessage="From" />
+                      }
+                      fullWidth
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
                     />
-                  </AlertTitle>
-                </Alert>
-                {false && (
-                  <Box sx={{ p: 2 }}>
-                    <Button variant="contained" onClick={() => setOpen(true)}>
-                      <FormattedMessage
-                        id={'preview'}
-                        defaultMessage={'Preview'}
-                      ></FormattedMessage>
-                    </Button>
-                  </Box>
-                )}
+                  </Grid>
+                  <Grid item xs={12} sm={4}>
+                    <Field
+                      component={TextField}
+                      type="datetime-local"
+                      name="to"
+                      label={
+                        <FormattedMessage id="to.date" defaultMessage="To" />
+                      }
+                      fullWidth
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                    />
+                  </Grid>
+                </Grid>
+              </Grid>
+              <Grid item xs={12}>
+                <FieldArray
+                  name="settings"
+                  render={(arrayHelpers) => (
+                    <Box>
+                      {values.settings.map((setting, index) => (
+                        <Box key={index}>
+                          <Grid container spacing={2} key={index}>
+                            {index !== 0 && (
+                              <Grid item xs={12}>
+                                <Divider />
+                              </Grid>
+                            )}
+
+                            <Grid item xs={12}>
+                              <Stack
+                                direction="row"
+                                justifyContent="space-between"
+                                alignItems="center"
+                              >
+                                <Typography align="left">
+                                  <b>
+                                    <FormattedMessage
+                                      id="rule.index.value"
+                                      defaultMessage="Rule {index}"
+                                      values={{
+                                        index: index + 1,
+                                      }}
+                                    />
+                                  </b>
+                                </Typography>
+                                <IconButton
+                                  variant="extended"
+                                  onClick={() => arrayHelpers.remove(index)}
+                                >
+                                  <DeleteIcon />
+                                </IconButton>
+                              </Stack>
+                            </Grid>
+                            <Grid item xs={12}>
+                              <FormControl fullWidth variant="filled">
+                                <AutocompleteMUI
+                                  value={userEvents.find(
+                                    (u) =>
+                                      u.value ===
+                                      values.settings[index]?.userEventType,
+                                  )}
+                                  options={userEvents}
+                                  onChange={(e: any, value: any) =>
+                                    setFieldValue(
+                                      `settings[${index}].userEventType`,
+                                      value?.value,
+                                    )
+                                  }
+                                  isOptionEqualToValue={(
+                                    option: any,
+                                    value: any,
+                                  ) => {
+                                    return option.value === value;
+                                  }}
+                                  getOptionLabel={(option: {
+                                    name?: string;
+                                    value?: string;
+                                  }) => option?.name || ' '}
+                                  style={{ width: 350 }}
+                                  renderInput={(
+                                    params: AutocompleteRenderInputParams,
+                                  ) => (
+                                    <TextFieldMUI
+                                      {...params}
+                                      // We have to manually set the corresponding fields on the input component
+
+                                      //@ts-ignore
+                                      error={
+                                        //@ts-ignore
+                                        touched[
+                                          `settings[${index}].userEventType`
+                                        ] &&
+                                        //@ts-ignore
+                                        !!errors[
+                                          `settings[${index}].userEventType`
+                                        ]
+                                      }
+                                      helperText={
+                                        //@ts-ignore
+                                        errors[
+                                          `settings[${index}].userEventType`
+                                        ]
+                                      }
+                                      label={
+                                        <FormattedMessage
+                                          id="user.event"
+                                          defaultMessage="User Event"
+                                        />
+                                      }
+                                      variant="outlined"
+                                    />
+                                  )}
+                                />
+                              </FormControl>
+                            </Grid>
+
+                            <Grid item xs={12}>
+                              <Field
+                                component={TextField}
+                                type={'number'}
+                                sx={{ maxWidth: '350px' }}
+                                name={`settings[${index}].points`}
+                                label={
+                                  <FormattedMessage
+                                    id="points"
+                                    defaultMessage="Points"
+                                  />
+                                }
+                                fullWidth
+                              />
+                            </Grid>
+
+                            {values.settings[index]?.userEventType ===
+                              UserEvents.swap && (
+                              <Grid item xs={12}>
+                                <Accordion sx={{ maxWidth: '350px' }}>
+                                  <AccordionSummary
+                                    expandIcon={<ArrowDownwardIcon />}
+                                    aria-controls="panel1-content"
+                                    id="panel1-header"
+                                  >
+                                    <Typography>
+                                      <FormattedMessage
+                                        id="filter"
+                                        defaultMessage="Filter"
+                                      />
+                                    </Typography>
+                                  </AccordionSummary>
+                                  <AccordionDetails>
+                                    <SwapFilterForm
+                                      item={
+                                        values?.settings[index]?.filter
+                                          ? JSON.parse(
+                                              values?.settings[index]
+                                                ?.filter as string,
+                                            )
+                                          : undefined
+                                      }
+                                      onChange={(item) =>
+                                        setFieldValue(
+                                          `settings[${index}].filter`,
+                                          item
+                                            ? JSON.stringify(item)
+                                            : undefined,
+                                        )
+                                      }
+                                    />
+                                  </AccordionDetails>
+                                </Accordion>
+                              </Grid>
+                            )}
+
+                            {(values.settings[index]?.userEventType ===
+                              UserEvents.nftAcceptListERC721 ||
+                              values.settings[index]?.userEventType ===
+                                UserEvents.nftAcceptOfferERC721 ||
+                              values.settings[index]?.userEventType ===
+                                UserEvents.nftAcceptOfferERC1155 ||
+                              values.settings[index]?.userEventType ===
+                                UserEvents.nftAcceptListERC1155) && (
+                              <Grid item xs={12}>
+                                <Accordion sx={{ maxWidth: '350px' }}>
+                                  <AccordionSummary
+                                    expandIcon={<ArrowDownwardIcon />}
+                                    aria-controls="panel1-content"
+                                    id="panel1-header"
+                                  >
+                                    <Typography>
+                                      <FormattedMessage
+                                        id="filter"
+                                        defaultMessage="Filter"
+                                      />
+                                    </Typography>
+                                  </AccordionSummary>
+                                  <AccordionDetails>
+                                    <CollectionFilterForm
+                                      item={
+                                        values?.settings[index]?.filter
+                                          ? JSON.parse(
+                                              values?.settings[index]
+                                                ?.filter as string,
+                                            )
+                                          : undefined
+                                      }
+                                      onChange={(item) =>
+                                        setFieldValue(
+                                          `settings[${index}].filter`,
+                                          item
+                                            ? JSON.stringify(item)
+                                            : undefined,
+                                        )
+                                      }
+                                      isERC1155={
+                                        values.settings[index]
+                                          ?.userEventType ===
+                                          UserEvents.nftAcceptOfferERC1155 ||
+                                        values.settings[index]
+                                          ?.userEventType ===
+                                          UserEvents.nftAcceptListERC1155
+                                      }
+                                    />
+                                  </AccordionDetails>
+                                </Accordion>
+                              </Grid>
+                            )}
+                            {(values.settings[index]?.userEventType ===
+                              UserEvents.buyDropCollection ||
+                              values.settings[index]?.userEventType ===
+                                UserEvents.buyDropEdition) && (
+                              <Grid item xs={12}>
+                                <Accordion sx={{ maxWidth: '350px' }}>
+                                  <AccordionSummary
+                                    expandIcon={<ArrowDownwardIcon />}
+                                    aria-controls="panel1-content"
+                                    id="panel1-header"
+                                  >
+                                    <Typography>
+                                      <FormattedMessage
+                                        id="filter"
+                                        defaultMessage="Filter"
+                                      />
+                                    </Typography>
+                                  </AccordionSummary>
+                                  <AccordionDetails>
+                                    <DropCollectionFilterForm
+                                      item={
+                                        values?.settings[index]?.filter
+                                          ? JSON.parse(
+                                              values?.settings[index]
+                                                ?.filter as string,
+                                            )
+                                          : undefined
+                                      }
+                                      onChange={(item) =>
+                                        setFieldValue(
+                                          `settings[${index}].filter`,
+                                          item
+                                            ? JSON.stringify(item)
+                                            : undefined,
+                                        )
+                                      }
+                                      isERC1155={
+                                        values.settings[index]
+                                          ?.userEventType ===
+                                        UserEvents.buyDropEdition
+                                      }
+                                    />
+                                  </AccordionDetails>
+                                </Accordion>
+                              </Grid>
+                            )}
+                          </Grid>
+                        </Box>
+                      ))}
+
+                      <Box
+                        sx={{ p: 2 }}
+                        display={'flex'}
+                        justifyContent={'flex-end'}
+                      >
+                        <Button
+                          variant="contained"
+                          onClick={() => arrayHelpers.push({})}
+                        >
+                          <FormattedMessage
+                            id="add.rule"
+                            defaultMessage="Add rule"
+                          />
+                        </Button>
+                      </Box>
+                    </Box>
+                  )}
+                />
               </Grid>
             </Grid>
-
-            <FieldArray
-              name="settings"
-              render={(arrayHelpers) => (
-                <Box sx={{ p: 2 }}>
-                  {values.settings.map((setting, index) => (
-                    <Box sx={{ p: 2 }} key={index}>
-                      <Grid container spacing={2} key={index}>
-                        {index !== 0 && (
-                          <Grid item xs={12}>
-                            <Divider />
-                          </Grid>
-                        )}
-
-                        <Grid item xs={12}>
-                          <Stack
-                            direction="row"
-                            justifyContent={'space-between'}
-                            alignItems="center"
-                          >
-                            <Typography align="left">
-                              <b>
-                                <FormattedMessage
-                                  id="rule.index.value"
-                                  defaultMessage="Rule {index}"
-                                  values={{
-                                    index: index + 1,
-                                  }}
-                                />
-                              </b>
-                            </Typography>
-                            <Fab
-                              variant="extended"
-                              onClick={() => arrayHelpers.remove(index)}
-                            >
-                              <DeleteIcon />
-                            </Fab>
-                          </Stack>
-                        </Grid>
-                        <Grid item xs={12}>
-                          <FormControl fullWidth variant="filled">
-                            <AutocompleteMUI
-                              value={userEvents.find(
-                                (u) =>
-                                  u.value ===
-                                  values.settings[index]?.userEventType,
-                              )}
-                              options={userEvents}
-                              onChange={(e: any, value: any) =>
-                                setFieldValue(
-                                  `settings[${index}].userEventType`,
-                                  value?.value,
-                                )
-                              }
-                              isOptionEqualToValue={(
-                                option: any,
-                                value: any,
-                              ) => {
-                                return option.value === value;
-                              }}
-                              getOptionLabel={(option: {
-                                name?: string;
-                                value?: string;
-                              }) => option?.name || ' '}
-                              style={{ width: 350 }}
-                              renderInput={(
-                                params: AutocompleteRenderInputParams,
-                              ) => (
-                                <TextFieldMUI
-                                  {...params}
-                                  // We have to manually set the corresponding fields on the input component
-
-                                  //@ts-ignore
-                                  error={
-                                    //@ts-ignore
-                                    touched[
-                                      `settings[${index}].userEventType`
-                                    ] &&
-                                    //@ts-ignore
-                                    !!errors[`settings[${index}].userEventType`]
-                                  }
-                                  helperText={
-                                    //@ts-ignore
-                                    errors[`settings[${index}].userEventType`]
-                                  }
-                                  label={
-                                    <FormattedMessage
-                                      id="user.event"
-                                      defaultMessage="User Event"
-                                    />
-                                  }
-                                  variant="outlined"
-                                />
-                              )}
-                            />
-                          </FormControl>
-                        </Grid>
-
-                        <Grid item xs={12}>
-                          <Field
-                            component={TextField}
-                            type={'number'}
-                            sx={{ maxWidth: '350px' }}
-                            name={`settings[${index}].points`}
-                            label={
-                              <FormattedMessage
-                                id="points"
-                                defaultMessage="Points"
-                              />
-                            }
-                            fullWidth
-                          />
-                        </Grid>
-
-                        {values.settings[index]?.userEventType ===
-                          UserEvents.swap && (
-                          <Grid item xs={12}>
-                            <Accordion sx={{ maxWidth: '350px' }}>
-                              <AccordionSummary
-                                expandIcon={<ArrowDownwardIcon />}
-                                aria-controls="panel1-content"
-                                id="panel1-header"
-                              >
-                                <Typography>
-                                  <FormattedMessage
-                                    id="filter"
-                                    defaultMessage="Filter"
-                                  />
-                                </Typography>
-                              </AccordionSummary>
-                              <AccordionDetails>
-                                <SwapFilterForm
-                                  item={
-                                    values?.settings[index]?.filter
-                                      ? JSON.parse(
-                                          values?.settings[index]
-                                            ?.filter as string,
-                                        )
-                                      : undefined
-                                  }
-                                  onChange={(item) =>
-                                    setFieldValue(
-                                      `settings[${index}].filter`,
-                                      item ? JSON.stringify(item) : undefined,
-                                    )
-                                  }
-                                />
-                              </AccordionDetails>
-                            </Accordion>
-                          </Grid>
-                        )}
-
-                        {(values.settings[index]?.userEventType ===
-                          UserEvents.nftAcceptListERC721 ||
-                          values.settings[index]?.userEventType ===
-                            UserEvents.nftAcceptOfferERC721 ||
-                          values.settings[index]?.userEventType ===
-                            UserEvents.nftAcceptOfferERC1155 ||
-                          values.settings[index]?.userEventType ===
-                            UserEvents.nftAcceptListERC1155) && (
-                          <Grid item xs={12}>
-                            <Accordion sx={{ maxWidth: '350px' }}>
-                              <AccordionSummary
-                                expandIcon={<ArrowDownwardIcon />}
-                                aria-controls="panel1-content"
-                                id="panel1-header"
-                              >
-                                <Typography>
-                                  <FormattedMessage
-                                    id="filter"
-                                    defaultMessage="Filter"
-                                  />
-                                </Typography>
-                              </AccordionSummary>
-                              <AccordionDetails>
-                                <CollectionFilterForm
-                                  item={
-                                    values?.settings[index]?.filter
-                                      ? JSON.parse(
-                                          values?.settings[index]
-                                            ?.filter as string,
-                                        )
-                                      : undefined
-                                  }
-                                  onChange={(item) =>
-                                    setFieldValue(
-                                      `settings[${index}].filter`,
-                                      item ? JSON.stringify(item) : undefined,
-                                    )
-                                  }
-                                  isERC1155={
-                                    values.settings[index]?.userEventType ===
-                                      UserEvents.nftAcceptOfferERC1155 ||
-                                    values.settings[index]?.userEventType ===
-                                      UserEvents.nftAcceptListERC1155
-                                  }
-                                />
-                              </AccordionDetails>
-                            </Accordion>
-                          </Grid>
-                        )}
-                        {(values.settings[index]?.userEventType ===
-                          UserEvents.buyDropCollection ||
-                          values.settings[index]?.userEventType ===
-                            UserEvents.buyDropEdition) && (
-                          <Grid item xs={12}>
-                            <Accordion sx={{ maxWidth: '350px' }}>
-                              <AccordionSummary
-                                expandIcon={<ArrowDownwardIcon />}
-                                aria-controls="panel1-content"
-                                id="panel1-header"
-                              >
-                                <Typography>
-                                  <FormattedMessage
-                                    id="filter"
-                                    defaultMessage="Filter"
-                                  />
-                                </Typography>
-                              </AccordionSummary>
-                              <AccordionDetails>
-                                <DropCollectionFilterForm
-                                  item={
-                                    values?.settings[index]?.filter
-                                      ? JSON.parse(
-                                          values?.settings[index]
-                                            ?.filter as string,
-                                        )
-                                      : undefined
-                                  }
-                                  onChange={(item) =>
-                                    setFieldValue(
-                                      `settings[${index}].filter`,
-                                      item ? JSON.stringify(item) : undefined,
-                                    )
-                                  }
-                                  isERC1155={
-                                    values.settings[index]?.userEventType ===
-                                    UserEvents.buyDropEdition
-                                  }
-                                />
-                              </AccordionDetails>
-                            </Accordion>
-                          </Grid>
-                        )}
-                      </Grid>
-                    </Box>
-                  ))}
-
-                  <Box
-                    sx={{ p: 2 }}
-                    display={'flex'}
-                    justifyContent={'flex-end'}
-                  >
-                    <Button
-                      variant="contained"
-                      onClick={() => arrayHelpers.push({})}
-                    >
-                      <FormattedMessage
-                        id="add.rule"
-                        defaultMessage="Add rule"
-                      />
-                    </Button>
-                  </Box>
-                </Box>
-              )}
-            />
 
             {isSubmitting && <LinearProgress />}
             <Stack direction="row" spacing={1} justifyContent="flex-end">

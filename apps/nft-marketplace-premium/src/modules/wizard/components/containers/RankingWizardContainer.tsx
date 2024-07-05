@@ -19,16 +19,17 @@ import { useCallback, useEffect, useState } from 'react';
 
 import RankingSection from '@dexkit/dexappbuilder-viewer/components/sections/RankingSection';
 import { useAppRankingListQuery } from '@dexkit/ui/modules/wizard/hooks/ranking';
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
-import FileDownloadIcon from '@mui/icons-material/FileDownload';
-import LeaderboardIcon from '@mui/icons-material/Leaderboard';
-import PreviewIcon from '@mui/icons-material/Preview';
+import DeleteIcon from '@mui/icons-material/DeleteOutlined';
+import EditIcon from '@mui/icons-material/EditOutlined';
+import FileDownloadIcon from '@mui/icons-material/FileDownloadOutlined';
+import LeaderboardIcon from '@mui/icons-material/LeaderboardOutlined';
+import VisibilityIcon from '@mui/icons-material/VisibilityOutlined';
 import {
   DataGrid,
   GridColDef,
   GridFilterModel,
   GridRenderCellParams,
+  GridRowSelectionModel,
   GridSortModel,
   GridToolbar,
 } from '@mui/x-data-grid';
@@ -98,24 +99,27 @@ function ExpandableCell({ value }: GridRenderCellParams) {
 function EmptyRankings() {
   return (
     <Stack
+      py={2}
       spacing={1}
-      justifyContent={'center'}
-      alignContent={'center'}
-      alignItems={'center'}
+      justifyContent="center"
+      alignContent="center"
+      alignItems="center"
     >
-      <LeaderboardIcon sx={{ fontSize: '50px' }} />
-      <Typography variant="h6">
-        <FormattedMessage
-          id={'no.app.leaderboards'}
-          defaultMessage={'No app leaderboards'}
-        />
-      </Typography>
-      <Typography variant="subtitle1">
-        <FormattedMessage
-          id={'add.leaderboards.to.your.app'}
-          defaultMessage={'Add leaderboards to your app'}
-        />
-      </Typography>
+      <LeaderboardIcon fontSize="large" />
+      <Box>
+        <Typography textAlign="center" variant="h6">
+          <FormattedMessage
+            id="no.leaderboard"
+            defaultMessage="No leaderboard"
+          />
+        </Typography>
+        <Typography textAlign="center" variant="body1" color="text.secondary">
+          <FormattedMessage
+            id="add.leaderboards.to.your.app"
+            defaultMessage="Add leaderboards to your app"
+          />
+        </Typography>
+      </Box>
     </Stack>
   );
 }
@@ -178,17 +182,17 @@ function AppRankingList({
     { field: 'id', headerName: 'ID', width: 90 },
 
     {
+      field: 'title',
+      headerName: 'Title',
+      width: 150,
+    },
+    {
       field: 'createdAt',
       headerName: 'Created At',
       width: 200,
       valueGetter: ({ row }) => {
         return new Date(row.createdAt).toLocaleString();
       },
-    },
-    {
-      field: 'title',
-      headerName: 'Title',
-      width: 150,
     },
     {
       field: 'description',
@@ -204,38 +208,23 @@ function AppRankingList({
       width: 240,
       renderCell: ({ row }) => {
         return (
-          <Stack direction={'row'} spacing={1}>
+          <Stack direction="row" spacing={1}>
             <Tooltip
-              title={
-                <FormattedMessage
-                  id={'preview.app.leaderboard'}
-                  defaultMessage={'Preview app leaderboard'}
-                />
-              }
+              title={<FormattedMessage id="preview" defaultMessage="Preview" />}
             >
               <IconButton onClick={() => onClickPreview({ ranking: row })}>
-                <PreviewIcon />
+                <VisibilityIcon />
               </IconButton>
             </Tooltip>
             <Tooltip
-              title={
-                <FormattedMessage
-                  id={'edit.leaderboard'}
-                  defaultMessage={'Edit leaderboard'}
-                />
-              }
+              title={<FormattedMessage id="edit" defaultMessage="Edit" />}
             >
               <IconButton onClick={() => onClickEdit({ ranking: row })}>
                 <EditIcon />
               </IconButton>
             </Tooltip>
             <Tooltip
-              title={
-                <FormattedMessage
-                  id={'export.leaderboard'}
-                  defaultMessage={'Export leaderboard'}
-                />
-              }
+              title={<FormattedMessage id="export" defaultMessage="Export" />}
             >
               <IconButton onClick={() => onClickExport({ ranking: row })}>
                 <FileDownloadIcon />
@@ -244,10 +233,7 @@ function AppRankingList({
 
             <Tooltip
               title={
-                <FormattedMessage
-                  id={'delete.app.leaderboard'}
-                  defaultMessage={'Delete app leaderboard'}
-                />
+                <FormattedMessage id={'delete'} defaultMessage={'Delete'} />
               }
             >
               <IconButton
@@ -264,6 +250,8 @@ function AppRankingList({
   ];
 
   const rows = (data?.data as any) || [];
+
+  const [rowSelection, setRowSelection] = useState<GridRowSelectionModel>([]);
 
   return (
     <>
@@ -290,8 +278,11 @@ function AppRankingList({
         onFilterModelChange={onFilterChange}
         onSortModelChange={handleSortModelChange}
         pageSizeOptions={[5, 10, 25, 50]}
-        disableRowSelectionOnClick
         loading={isLoading}
+        rowSelectionModel={rowSelection}
+        disableRowSelectionOnClick
+        checkboxSelection
+        onRowSelectionModelChange={(rows) => setRowSelection(rows)}
         sx={{ '--DataGrid-overlayHeight': '150px' }}
       />
     </>
