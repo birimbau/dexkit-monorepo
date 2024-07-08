@@ -540,7 +540,6 @@ export default function RankingWizardContainer({
                       </TabList>
                     </Box>
                     <TabPanel value="1">
-                      {' '}
                       <GamificationPointForm
                         settings={selectedEditRanking.settings}
                         siteId={siteId}

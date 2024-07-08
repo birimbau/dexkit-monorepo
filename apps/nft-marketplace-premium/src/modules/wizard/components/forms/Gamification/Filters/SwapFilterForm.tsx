@@ -73,12 +73,6 @@ export default function SwapFilterForm({ item, onSubmit, onChange }: Props) {
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <FormControl fullWidth>
-                <Typography variant="caption">
-                  <FormattedMessage
-                    id="choose.network"
-                    defaultMessage="Choose network"
-                  />
-                </Typography>
                 <NetworkSelectDropdown
                   chainId={values.chainId}
                   onChange={(chainId) => {
@@ -87,149 +81,173 @@ export default function SwapFilterForm({ item, onSubmit, onChange }: Props) {
                     setFieldValue('tokenInAddress', undefined);
                   }}
                   labelId="Choose network"
+                  label={
+                    <FormattedMessage
+                      id="choose.network"
+                      defaultMessage="Choose network"
+                    />
+                  }
                   enableTestnet={true}
                 />
               </FormControl>
             </Grid>
             <Grid item xs={12}>
-              <SearchTokenAutocompleteWithTokens
-                label={
-                  <FormattedMessage
-                    id="search.token.in"
-                    defaultMessage="Search token in"
-                  />
-                }
-                disabled={values.chainId === undefined}
-                data={{
-                  address: values.tokenInAddress,
-                  chainId: values.chainId,
-                }}
-                chainId={values.chainId}
-                onChange={(tk: any) => {
-                  if (tk) {
-                    setFieldValue('tokenInAddress', tk.address);
-                  } else {
-                    setFieldValue('tokenInAddress', undefined);
-                  }
-                }}
-              />
+              <Typography fontWeight="bold" variant="body1">
+                <FormattedMessage
+                  id="input.token"
+                  defaultMessage="Input token"
+                />
+              </Typography>
             </Grid>
             <Grid item xs={12}>
-              <FormControl fullWidth>
-                <InputLabel id="condition-amount-in-select-label">
-                  <FormattedMessage
-                    id="condition.amount.in"
-                    defaultMessage="Condition amount in"
+              <Grid container spacing={2}>
+                <Grid item xs={12} sm={4}>
+                  <SearchTokenAutocompleteWithTokens
+                    label={
+                      <FormattedMessage id="token" defaultMessage="Token" />
+                    }
+                    disabled={values.chainId === undefined}
+                    data={{
+                      address: values.tokenInAddress,
+                      chainId: values.chainId,
+                    }}
+                    chainId={values.chainId}
+                    onChange={(tk: any) => {
+                      if (tk) {
+                        setFieldValue('tokenInAddress', tk.address);
+                      } else {
+                        setFieldValue('tokenInAddress', undefined);
+                      }
+                    }}
                   />
-                </InputLabel>
-                <Select
-                  labelId="condition-amount-in-select-label"
-                  id="demo-simple-select"
-                  value={values.conditionIn}
-                  label={
-                    <FormattedMessage
-                      id="condition.amount.in"
-                      defaultMessage="Condition amount in"
-                    />
-                  }
-                  onChange={(ev) =>
-                    setFieldValue('conditionIn', ev.target.value)
-                  }
-                >
-                  {Conditions.map((v, i) => (
-                    <MenuItem value={v} key={i}>
-                      {v}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+                </Grid>
+                <Grid item xs={12} sm={4}>
+                  <FormControl fullWidth>
+                    <InputLabel id="condition-amount-in-select-label">
+                      <FormattedMessage
+                        id="amount.condition"
+                        defaultMessage="Amount condition"
+                      />
+                    </InputLabel>
+                    <Select
+                      labelId="condition-amount-in-select-label"
+                      id="demo-simple-select"
+                      value={values.conditionIn}
+                      label={
+                        <FormattedMessage
+                          id="amount.condition"
+                          defaultMessage="Amount condition"
+                        />
+                      }
+                      onChange={(ev) =>
+                        setFieldValue('conditionIn', ev.target.value)
+                      }
+                    >
+                      {Conditions.map((v, i) => (
+                        <MenuItem value={v.symbol} key={i}>
+                          {v.symbol} {v.sign}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Grid>
+
+                <Grid item xs={12} sm={4}>
+                  <Field
+                    component={TextField}
+                    type="number"
+                    fullWidth
+                    label={
+                      <FormattedMessage
+                        id="token.amount"
+                        defaultMessage="Token amount"
+                      />
+                    }
+                    InputProps={{ min: 0 }}
+                    name="amountIn"
+                  />
+                </Grid>
+              </Grid>
             </Grid>
 
             <Grid item xs={12}>
-              <Field
-                component={TextField}
-                type="number"
-                fullWidth
-                label={
-                  <FormattedMessage
-                    id={'Amount in'}
-                    defaultMessage={'Amount In'}
-                  />
-                }
-                InputProps={{ min: 0 }}
-                name="amountIn"
-              />
+              <Typography fontWeight="bold" variant="body1">
+                <FormattedMessage
+                  id="output.token"
+                  defaultMessage="Output token"
+                />
+              </Typography>
             </Grid>
-
             <Grid item xs={12}>
-              <SearchTokenAutocompleteWithTokens
-                label={
-                  <FormattedMessage
-                    id="search.token.out"
-                    defaultMessage="Search token out"
+              <Grid container spacing={2}>
+                <Grid item xs={12} sm={4}>
+                  <SearchTokenAutocompleteWithTokens
+                    label={
+                      <FormattedMessage id="token" defaultMessage="Token" />
+                    }
+                    disabled={values.chainId === undefined}
+                    data={{
+                      address: values.tokenOutAddress,
+                      chainId: values.chainId,
+                    }}
+                    chainId={values.chainId}
+                    onChange={(tk: any) => {
+                      if (tk) {
+                        setFieldValue('tokenOutAddress', tk.address);
+                      } else {
+                        setFieldValue('tokenOutAddress', undefined);
+                      }
+                    }}
                   />
-                }
-                disabled={values.chainId === undefined}
-                data={{
-                  address: values.tokenOutAddress,
-                  chainId: values.chainId,
-                }}
-                chainId={values.chainId}
-                onChange={(tk: any) => {
-                  if (tk) {
-                    setFieldValue('tokenOutAddress', tk.address);
-                  } else {
-                    setFieldValue('tokenOutAddress', undefined);
-                  }
-                }}
-              />
-            </Grid>
+                </Grid>
 
-            <Grid item xs={12}>
-              <FormControl fullWidth>
-                <InputLabel id="condition-amount-out-select-label">
-                  <FormattedMessage
-                    id="condition.amount.out"
-                    defaultMessage="Condition amount out"
-                  />
-                </InputLabel>
-                <Select
-                  labelId="condition-amount-out-select-label"
-                  id="select-amount-out-id"
-                  value={values.conditionOut}
-                  label={
-                    <FormattedMessage
-                      id="condition.amount.out"
-                      defaultMessage="Condition amount out"
-                    />
-                  }
-                  onChange={(ev) =>
-                    setFieldValue('conditionOut', ev.target.value)
-                  }
-                >
-                  {Conditions.map((v, i) => (
-                    <MenuItem value={v} key={i}>
-                      {v}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Grid>
+                <Grid item xs={12} sm={4}>
+                  <FormControl fullWidth>
+                    <InputLabel id="condition-amount-out-select-label">
+                      <FormattedMessage
+                        id="amount.condition"
+                        defaultMessage="Amount condition"
+                      />
+                    </InputLabel>
+                    <Select
+                      labelId="condition-amount-out-select-label"
+                      id="select-amount-out-id"
+                      value={values.conditionOut}
+                      label={
+                        <FormattedMessage
+                          id="amount.condition"
+                          defaultMessage="Amount condition"
+                        />
+                      }
+                      onChange={(ev) =>
+                        setFieldValue('conditionOut', ev.target.value)
+                      }
+                    >
+                      {Conditions.map((v, i) => (
+                        <MenuItem value={v.symbol} key={i}>
+                          {v.symbol} {v.sign}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Grid>
 
-            <Grid item xs={12}>
-              <Field
-                component={TextField}
-                type="number"
-                fullWidth
-                label={
-                  <FormattedMessage
-                    id={'Amount in'}
-                    defaultMessage={'Amount In'}
+                <Grid item xs={12} sm={4}>
+                  <Field
+                    component={TextField}
+                    type="number"
+                    fullWidth
+                    label={
+                      <FormattedMessage
+                        id="token.amount"
+                        defaultMessage="Token amount"
+                      />
+                    }
+                    InputProps={{ min: 0 }}
+                    name="amountOut"
                   />
-                }
-                InputProps={{ min: 0 }}
-                name="amountOut"
-              />
+                </Grid>
+              </Grid>
             </Grid>
             <Grid item xs={12}>
               <Box display={'flex'} justifyContent={'flex-end'}>

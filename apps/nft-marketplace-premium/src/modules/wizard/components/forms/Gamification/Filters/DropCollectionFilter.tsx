@@ -6,9 +6,7 @@ import {
   InputLabel,
   MenuItem,
   Select,
-  Tab,
-  Tabs,
-  Typography,
+  SelectChangeEvent,
 } from '@mui/material';
 import { Field, Form, Formik } from 'formik';
 import { TextField } from 'formik-mui';
@@ -78,9 +76,11 @@ export default function DropCollectionFilterForm({
   isERC1155,
 }: Props) {
   const [value, setValue] = useState(0);
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-    setValue(newValue);
+
+  const handleChange = (event: SelectChangeEvent<number>) => {
+    setValue(event.target.value as number);
   };
+
   return (
     <Formik
       initialValues={{ ...item }}
@@ -108,71 +108,96 @@ export default function DropCollectionFilterForm({
           />
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              <FormControl fullWidth>
-                <Typography variant="caption">
+              <NetworkSelectDropdown
+                label={
                   <FormattedMessage
                     id="choose.network"
                     defaultMessage="Choose network"
                   />
-                </Typography>
-                <NetworkSelectDropdown
-                  chainId={values.chainId}
-                  onChange={(chainId) => {
-                    setFieldValue('chainId', chainId);
-                    setFieldValue('tokenAddress', undefined);
-                    setFieldValue('collectionAddress', undefined);
-                  }}
-                  labelId="Choose network"
-                  enableTestnet={true}
-                />
-              </FormControl>
+                }
+                chainId={values.chainId}
+                onChange={(chainId) => {
+                  setFieldValue('chainId', chainId);
+                  setFieldValue('tokenAddress', undefined);
+                  setFieldValue('collectionAddress', undefined);
+                }}
+                labelId="Choose network"
+                enableTestnet={true}
+              />
             </Grid>
 
-            <>
-              <Tabs
-                value={value}
-                onChange={handleChange}
-                aria-label="collection tabs"
-              >
-                <Tab label="Import" {...a11yProps(0)} />
-                <Tab label="Your collections" {...a11yProps(1)} />
-              </Tabs>
-              <TabPanel value={value} index={1}>
-                <Grid item xs={12}>
-                  <CollectionItemAutocomplete
-                    onChange={(coll) => {
-                      setFieldValue('collectionAddress', coll?.contractAddress);
-                    }}
-                    filterByChainId={true}
-                    chainId={values.chainId}
-                    disabled={values.chainId === undefined}
-                    formValue={{
-                      contractAddress: values.collectionAddress,
-                      chainId: values.chainId,
-                    }}
-                  />
-                </Grid>
-              </TabPanel>
-              <TabPanel value={value} index={0}>
-                <Grid item xs={12}>
-                  <Field
-                    component={TextField}
-                    label={
+            <Grid item xs={12}>
+              <Grid container spacing={2}>
+                <Grid item xs={12} sm={3}>
+                  <FormControl fullWidth>
+                    <InputLabel>
                       <FormattedMessage
-                        id="collection.address"
-                        defaultMessage="Collection address"
+                        id="choose.an.option"
+                        defaultMessage="Choose an option"
                       />
-                    }
-                    fullWidth
-                    name="collectionAddress"
-                    required
-                  />
+                    </InputLabel>
+                    <Select
+                      fullWidth
+                      value={value}
+                      onChange={handleChange}
+                      aria-label="collection tabs"
+                      label={
+                        <FormattedMessage
+                          id="choose.an.option"
+                          defaultMessage="Choose an option"
+                        />
+                      }
+                    >
+                      <MenuItem value={0}>
+                        <FormattedMessage id="import" defaultMessage="Import" />
+                      </MenuItem>
+                      <MenuItem value={1}>
+                        <FormattedMessage
+                          id="my.collections"
+                          defaultMessage="My Collections"
+                        />
+                      </MenuItem>
+                    </Select>
+                  </FormControl>
                 </Grid>
-              </TabPanel>
-            </>
+                <Grid item xs={12} sm={9}>
+                  <TabPanel value={value} index={1}>
+                    <CollectionItemAutocomplete
+                      onChange={(coll) => {
+                        setFieldValue(
+                          'collectionAddress',
+                          coll?.contractAddress,
+                        );
+                      }}
+                      filterByChainId={true}
+                      chainId={values.chainId}
+                      disabled={values.chainId === undefined}
+                      formValue={{
+                        contractAddress: values.collectionAddress,
+                        chainId: values.chainId,
+                      }}
+                    />
+                  </TabPanel>
+                  <TabPanel value={value} index={0}>
+                    <Field
+                      component={TextField}
+                      label={
+                        <FormattedMessage
+                          id="collection.address"
+                          defaultMessage="Collection address"
+                        />
+                      }
+                      fullWidth
+                      name="collectionAddress"
+                      required
+                    />
+                  </TabPanel>
+                </Grid>
+              </Grid>
+            </Grid>
             {isERC1155 === true && (
               <>
-                <Grid item xs={12}>
+                <Grid item xs={12} sm={4}>
                   <Field
                     component={TextField}
                     type="text"
@@ -187,7 +212,7 @@ export default function DropCollectionFilterForm({
                     name="tokenId"
                   />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid item xs={12} sm={4}>
                   <FormControl fullWidth>
                     <InputLabel id="condition-amount-nft-select-label">
                       <FormattedMessage
@@ -210,15 +235,15 @@ export default function DropCollectionFilterForm({
                       }
                     >
                       {Conditions.map((v, i) => (
-                        <MenuItem value={v} key={i}>
-                          {v}
+                        <MenuItem value={v.symbol} key={i}>
+                          {v.symbol} {v.sign}
                         </MenuItem>
                       ))}
                     </Select>
                   </FormControl>
                 </Grid>
 
-                <Grid item xs={12}>
+                <Grid item xs={12} sm={4}>
                   <Field
                     component={TextField}
                     type="number"
@@ -237,7 +262,7 @@ export default function DropCollectionFilterForm({
             )}
 
             <Grid item xs={12}>
-              <Box display={'flex'} justifyContent={'flex-end'}>
+              <Box display="flex" justifyContent="flex-end">
                 <Button onClick={() => resetForm()}>
                   <FormattedMessage id="cancel" defaultMessage="Cancel" />
                 </Button>
