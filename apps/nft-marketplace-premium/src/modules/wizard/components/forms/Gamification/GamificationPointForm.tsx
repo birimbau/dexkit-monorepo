@@ -1,14 +1,21 @@
-import { Button, Divider, Stack, Typography } from '@mui/material';
+import {
+  Button,
+  CircularProgress,
+  Divider,
+  Stack,
+  Typography,
+} from '@mui/material';
 
 import { FormattedMessage, useIntl } from 'react-intl';
 import * as Yup from 'yup';
 
-import { Grid, LinearProgress } from '@mui/material';
+import { Grid } from '@mui/material';
 import { Field, FieldArray, Form, Formik } from 'formik';
 import { TextField } from 'formik-mui';
 import { useState } from 'react';
 
 import { useAddAppRankingMutation } from '@/modules/wizard/hooks';
+import { AppRanking } from '@/modules/wizard/types/ranking';
 import { UserEvents } from '@dexkit/core/constants/userEvents';
 import { beautifyCamelCase } from '@dexkit/core/utils';
 import Add from '@mui/icons-material/Add';
@@ -79,6 +86,7 @@ interface Props {
   settings?: GamificationPoint[] | string;
   from?: string;
   to?: string;
+  ranking: AppRanking;
 }
 // @see https://stackoverflow.com/a/66558369
 function localDate({ dateString }: { dateString: string }) {
@@ -97,11 +105,15 @@ export default function GamificationPointForm({
   settings,
   from,
   to,
+  ranking,
 }: Props) {
   const { enqueueSnackbar } = useSnackbar();
   const { formatMessage } = useIntl();
   const [open, setOpen] = useState(false);
   const mutationAddRanking = useAddAppRankingMutation();
+
+  const handleClose = () => {};
+
   const handleAppRankingUpdatedSuccess = () => {
     enqueueSnackbar(
       formatMessage({
@@ -179,68 +191,73 @@ export default function GamificationPointForm({
           touched,
         }) => (
           <Form>
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <Typography variant="subtitle1">
-                  <FormattedMessage
-                    id="active.period"
-                    defaultMessage="Active period"
-                  />
-                </Typography>
-              </Grid>
-              <Grid item xs={12}>
+            <FieldArray
+              name="settings"
+              render={({ handleInsert, handleRemove }) => (
                 <Grid container spacing={2}>
-                  <Grid item xs={12} sm={4}>
-                    <Field
-                      component={TextField}
-                      type="datetime-local"
-                      name="from"
-                      label={
-                        <FormattedMessage id="From" defaultMessage="From" />
-                      }
-                      fullWidth
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={4}>
-                    <Field
-                      component={TextField}
-                      type="datetime-local"
-                      name="to"
-                      label={
-                        <FormattedMessage id="to.date" defaultMessage="To" />
-                      }
-                      fullWidth
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                    />
-                  </Grid>
-                </Grid>
-              </Grid>
-              {values.settings.map((rule, index) => (
-                <Grid item xs={12}>
-                  <div>
-                    <Stack spacing={2}>
-                      <LeaderboardRule
-                        index={index}
-                        key={index}
-                        setFieldValue={setFieldValue}
-                        values={values}
-                        touched={touched}
-                        errors={errors}
+                  <Grid item xs={12}>
+                    <Typography variant="subtitle1">
+                      <FormattedMessage
+                        id="active.period"
+                        defaultMessage="Active period"
                       />
-                      <Divider />
-                    </Stack>
-                  </div>
-                </Grid>
-              ))}
-              <Grid item xs={12}>
-                <FieldArray
-                  name="settings"
-                  render={({ handleInsert }) => (
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Grid container spacing={2}>
+                      <Grid item xs={12} sm={4}>
+                        <Field
+                          component={TextField}
+                          type="datetime-local"
+                          name="from"
+                          label={
+                            <FormattedMessage id="From" defaultMessage="From" />
+                          }
+                          fullWidth
+                          InputLabelProps={{
+                            shrink: true,
+                          }}
+                        />
+                      </Grid>
+                      <Grid item xs={12} sm={4}>
+                        <Field
+                          component={TextField}
+                          type="datetime-local"
+                          name="to"
+                          label={
+                            <FormattedMessage
+                              id="to.date"
+                              defaultMessage="To"
+                            />
+                          }
+                          fullWidth
+                          InputLabelProps={{
+                            shrink: true,
+                          }}
+                        />
+                      </Grid>
+                    </Grid>
+                  </Grid>
+                  {values.settings.map((rule, index) => (
+                    <Grid item xs={12} key={index}>
+                      <div>
+                        <Stack spacing={2}>
+                          <LeaderboardRule
+                            index={index}
+                            key={index}
+                            setFieldValue={setFieldValue}
+                            values={values}
+                            touched={touched}
+                            errors={errors}
+                            ranking={ranking}
+                            onRemove={handleRemove(index)}
+                          />
+                          <Divider />
+                        </Stack>
+                      </div>
+                    </Grid>
+                  ))}
+                  <Grid item xs={12}>
                     <Button
                       onClick={handleInsert(values.settings.length, {})}
                       startIcon={<Add />}
@@ -251,30 +268,44 @@ export default function GamificationPointForm({
                         defaultMessage="Add rule"
                       />
                     </Button>
-                  )}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <Divider />
-              </Grid>
-              <Grid item xs={12}>
-                <div>
-                  {isSubmitting && <LinearProgress />}
-                  <Stack direction="row" spacing={1} justifyContent="flex-end">
-                    <Button onClick={() => resetForm()}>
-                      <FormattedMessage id="cancel" defaultMessage="Cancel" />
-                    </Button>
-                    <Button
-                      disabled={!isValid || isSubmitting}
-                      variant="contained"
-                      onClick={submitForm}
-                    >
-                      <FormattedMessage id="save" defaultMessage="Save" />
-                    </Button>
-                  </Stack>
-                </div>
-              </Grid>
-            </Grid>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Divider />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <div>
+                      <Stack
+                        direction="row"
+                        spacing={1}
+                        justifyContent="flex-end"
+                      >
+                        <Button
+                          disabled={isSubmitting}
+                          onClick={() => resetForm()}
+                        >
+                          <FormattedMessage
+                            id="cancel"
+                            defaultMessage="Cancel"
+                          />
+                        </Button>
+                        <Button
+                          disabled={!isValid || isSubmitting}
+                          variant="contained"
+                          onClick={submitForm}
+                          startIcon={
+                            isSubmitting ? (
+                              <CircularProgress color="inherit" size="1rem" />
+                            ) : undefined
+                          }
+                        >
+                          <FormattedMessage id="save" defaultMessage="Save" />
+                        </Button>
+                      </Stack>
+                    </div>
+                  </Grid>
+                </Grid>
+              )}
+            />
           </Form>
         )}
       </Formik>

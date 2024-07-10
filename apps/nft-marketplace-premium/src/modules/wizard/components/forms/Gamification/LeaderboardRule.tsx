@@ -1,7 +1,9 @@
 import { GamificationPoint } from '@/modules/wizard/types';
+import { AppRanking } from '@/modules/wizard/types/ranking';
 import { UserEvents } from '@dexkit/core/constants/userEvents';
 import { beautifyCamelCase } from '@dexkit/core/utils';
 import ArrowDownward from '@mui/icons-material/ArrowDownward';
+import DeleteOutlined from '@mui/icons-material/DeleteOutlined';
 import {
   Accordion,
   AccordionDetails,
@@ -12,6 +14,8 @@ import {
   Divider,
   FormControl,
   Grid,
+  IconButton,
+  Stack,
   TextField as TextFieldMUI,
   Typography,
 } from '@mui/material';
@@ -75,6 +79,8 @@ export interface LeaderboardRuleProps {
     to: string | undefined;
     settings: GamificationPoint[];
   }>;
+  ranking: AppRanking;
+  onRemove: () => void;
 }
 
 export default function LeaderboardRule({
@@ -83,6 +89,8 @@ export default function LeaderboardRule({
   values,
   touched,
   errors,
+  ranking,
+  onRemove,
 }: LeaderboardRuleProps) {
   const renderFilter = (event?: string) => {
     switch (event) {
@@ -159,15 +167,20 @@ export default function LeaderboardRule({
     <Box>
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <Typography fontWeight="bold" variant="body1">
-            <FormattedMessage
-              id="rule.index.value"
-              defaultMessage="Rule {index}"
-              values={{
-                index: index + 1,
-              }}
-            />
-          </Typography>
+          <Stack direction="row" alignItems="center" spacing={2}>
+            <Typography fontWeight="bold" variant="body1">
+              <FormattedMessage
+                id="rule.index.value"
+                defaultMessage="Rule {index}"
+                values={{
+                  index: index + 1,
+                }}
+              />
+            </Typography>
+            <IconButton onClick={onRemove}>
+              <DeleteOutlined color="error" />
+            </IconButton>
+          </Stack>
         </Grid>
 
         <Grid item xs={12}>

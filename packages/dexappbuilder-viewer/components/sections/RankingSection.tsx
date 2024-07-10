@@ -1,255 +1,117 @@
-import { Box, Grid, TablePagination, Typography } from "@mui/material";
+import { Box, Grid, Link, Stack, Typography } from "@mui/material";
 
-import { CopyAddress } from "@dexkit/ui/components/CopyAddress";
 import { useAppRankingQuery } from "@dexkit/ui/modules/wizard/hooks/ranking";
 import { RankingPageSection } from "@dexkit/ui/modules/wizard/types/section";
 import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
-import LeaderboardIcon from "@mui/icons-material/Leaderboard";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import TableSortLabel from "@mui/material/TableSortLabel";
-import { visuallyHidden } from "@mui/utils";
-import { useState } from "react";
+import React, { useMemo } from "react";
+
+import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { FormattedMessage } from "react-intl";
+
+import { getBlockExplorerUrl, truncateAddress } from "@dexkit/core/utils";
+import MilitaryTechIcon from "@mui/icons-material/MilitaryTech";
+
 export interface RankingSectionProps {
   section: RankingPageSection;
 }
 
-interface HeadCell {
-  disablePadding: boolean;
-  id: string;
-  label: string;
-  numeric: boolean;
-}
-
-const headCells: readonly HeadCell[] = [
-  {
-    id: "account",
-    numeric: false,
-    disablePadding: false,
-    label: "Account",
-  },
-  {
-    id: "points",
-    numeric: true,
-    disablePadding: false,
-    label: "Points",
-  },
-];
-
-interface EnhancedTableProps {
-  onRequestSort: (event: React.MouseEvent<unknown>, property: any) => void;
-
-  order: Order;
-  orderBy?: string;
-  rowCount: number;
-}
-
-function EnhancedTableHead(props: EnhancedTableProps) {
-  const { order, orderBy, rowCount, onRequestSort } = props;
-  const createSortHandler =
-    (property: any) => (event: React.MouseEvent<unknown>) => {
-      onRequestSort(event, property);
-    };
-
+const NoRows: React.FC = () => {
   return (
-    <TableHead>
-      <TableRow>
-        {headCells.map((headCell) => (
-          <TableCell
-            key={headCell.id}
-            //align={headCell.numeric ? 'right' : 'left'}
-            padding={headCell.disablePadding ? "none" : "normal"}
-            sortDirection={orderBy === headCell.id ? order : false}
-          >
-            <TableSortLabel
-              sx={{ fontSize: "22px" }}
-              active={orderBy === headCell.id}
-              direction={orderBy === headCell.id ? order : "asc"}
-              onClick={createSortHandler(headCell.id)}
-            >
-              <FormattedMessage
-                id={headCell.id}
-                defaultMessage={headCell.label}
-              />
-
-              {orderBy === headCell.id ? (
-                <Box component="span" sx={visuallyHidden}>
-                  {order === "desc" ? "sorted descending" : "sorted ascending"}
-                </Box>
-              ) : null}
-            </TableSortLabel>
-          </TableCell>
-        ))}
-      </TableRow>
-    </TableHead>
+    <Box sx={{ py: 4 }}>
+      <Stack spacing={2} alignItems="center" justifyContent="center">
+        <MilitaryTechIcon fontSize="large" />
+        <div>
+          <Typography variant="h5" textAlign="center">
+            <FormattedMessage
+              id="no.leaderboard"
+              defaultMessage="No Leaderboard"
+            />
+          </Typography>
+          <Typography variant="body1" color="text.secondary" textAlign="center">
+            <FormattedMessage
+              id="create.rules.to.see.accounts.here"
+              defaultMessage="Create rules to see accounts here"
+            />
+          </Typography>
+        </div>
+      </Stack>
+    </Box>
   );
-}
-
-type Order = "asc" | "desc";
+};
 
 export default function RankingSection({ section }: RankingSectionProps) {
-  const [order, setOrder] = useState<Order>("asc");
-  const [orderBy, setOrderBy] = useState<string | undefined>();
-  const [page, setPage] = useState(0);
-  const [dense, setDense] = useState(false);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
-
-  const { account } = useWeb3React();
+  const { account, chainId } = useWeb3React();
 
   const queryRanking = useAppRankingQuery({
     rankingId: section.settings.rankingId,
   });
 
-  const handleChangePage = (event: unknown, newPage: number) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
-
-  const handleRequestSort = (
-    event: React.MouseEvent<unknown>,
-    property: any
-  ) => {
-    const isAsc = orderBy === property && order === "asc";
-    setOrder(isAsc ? "desc" : "asc");
-    setOrderBy(property);
-  };
-
   const rows = queryRanking.data?.data ? queryRanking.data?.data : [];
 
-  const sortTable = (
-    a: { account: string; points: number },
-    b: { account: string; points: number }
-  ) => {
-    if (orderBy === "points") {
-      if (order === "asc") {
-        return a.points - b.points;
-      }
-      if (order === "desc") {
-        return b.points - a.points;
-      }
-    }
+  const columns = useMemo(() => {
+    return [
+      {
+        field: "account",
+        disableReorder: true,
+        sortable: false,
+        hideSortIcons: true,
+        filterable: false,
+        hideable: false,
+        disableColumnMenu: true,
 
-    if (orderBy === "account") {
-      if (order === "asc") {
-        if (a.account.toUpperCase() < b.account.toUpperCase()) {
-          return -1;
-        } else {
-          return 1;
-        }
-      }
-      if (order === "desc") {
-        if (a.account.toUpperCase() > b.account.toUpperCase()) {
-          return -1;
-        } else {
-          return 1;
-        }
-      }
-    }
-
-    return 0;
-  };
+        flex: 1,
+        renderHeader: () => {
+          return <FormattedMessage id="account" defaultMessage="Account" />;
+        },
+        renderCell: ({ row }) => {
+          return (
+            <Link
+              href={`${getBlockExplorerUrl(chainId)}/address/${row.account}`}
+              target="_blank"
+            >
+              {truncateAddress(row.account)}
+            </Link>
+          );
+        },
+      },
+      {
+        field: "points",
+        flex: 1,
+        filterable: false,
+        disableReorder: true,
+        sortable: false,
+        hideSortIcons: true,
+        hideable: false,
+        disableColumnMenu: true,
+        renderHeader: () => {
+          return <FormattedMessage id="points" defaultMessage="Points" />;
+        },
+      },
+    ] as GridColDef<{
+      account: string;
+      points: number;
+    }>[];
+  }, []);
 
   return (
     <Grid container spacing={2}>
       <Grid item xs={12}>
-        <Typography
-          sx={{
-            display: "block",
-            textOverflow: "ellipsis",
-            overflow: "hidden",
-            textAlign: { xs: "center", sm: "left" },
-          }}
-          variant="h5"
-          component="h1"
-        >
+        <Typography variant="h6">
           {queryRanking?.data?.ranking?.title || ""}
         </Typography>
-        <Typography
-          sx={{
-            display: "block",
-            textOverflow: "ellipsis",
-            overflow: "hidden",
-            textAlign: { xs: "center", sm: "left" },
-          }}
-          variant="body2"
-          component="p"
-        >
+        <Typography variant="body2" color="text.secondary">
           {queryRanking?.data?.ranking?.description || ""}
         </Typography>
       </Grid>
       <Grid item xs={12}>
-        <Box sx={{ width: "100%", mb: 2, mt: 2 }}>
-          <TableContainer>
-            <Table aria-label="ranking table" size={dense ? "small" : "medium"}>
-              <EnhancedTableHead
-                order={order}
-                orderBy={orderBy}
-                onRequestSort={handleRequestSort}
-                rowCount={rows.length}
-              />
-              <TableBody>
-                {rows.sort(sortTable).map((row, id) => (
-                  <TableRow
-                    selected={
-                      account && row?.account
-                        ? account?.toLowerCase() === row?.account?.toLowerCase()
-                        : false
-                    }
-                    key={id}
-                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                  >
-                    <TableCell component="th" scope="row">
-                      {row.account} <CopyAddress account={row.account} />
-                    </TableCell>
-                    <TableCell>
-                      <Typography sx={{ fontSize: "16px" }}>
-                        {row.points}
-                      </Typography>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-          {rows.length === 0 && (
-            <Box
-              display={"flex"}
-              alignContent={"center"}
-              alignItems={"center"}
-              justifyContent={"center"}
-              flexDirection={"column"}
-              sx={{ pt: 2, pb: 2 }}
-            >
-              <LeaderboardIcon fontSize="large"></LeaderboardIcon>
-              <Typography variant="h5">
-                <FormattedMessage
-                  id={"empty.leaderboard"}
-                  defaultMessage={"Empty leaderboard"}
-                ></FormattedMessage>
-              </Typography>
-            </Box>
-          )}
-          <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
-            component="div"
-            count={rows.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />
-        </Box>
+        <DataGrid
+          getRowId={(row) => row.account}
+          rowCount={rows.length}
+          rows={rows}
+          columns={columns}
+          sx={{ minHeight: 300 }}
+          slots={{ noRowsOverlay: NoRows, noResultsOverlay: NoRows }}
+        />
       </Grid>
     </Grid>
   );

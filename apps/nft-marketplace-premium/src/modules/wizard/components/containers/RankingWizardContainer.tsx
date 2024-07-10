@@ -1,5 +1,4 @@
 import AppConfirmDialog from '@dexkit/ui/components/AppConfirmDialog';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
@@ -17,8 +16,8 @@ import {
 import Tab from '@mui/material/Tab';
 import { useCallback, useEffect, useState } from 'react';
 
-import RankingSection from '@dexkit/dexappbuilder-viewer/components/sections/RankingSection';
 import { useAppRankingListQuery } from '@dexkit/ui/modules/wizard/hooks/ranking';
+import Add from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import EditIcon from '@mui/icons-material/EditOutlined';
 import FileDownloadIcon from '@mui/icons-material/FileDownloadOutlined';
@@ -37,9 +36,10 @@ import dynamic from 'next/dynamic';
 import { useSnackbar } from 'notistack';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useDeleteAppRankingMutation } from '../../hooks';
-import { GamificationPoint } from '../../types';
+import { AppRanking } from '../../types/ranking';
 import { ExportRanking } from '../ExportRanking';
 import GamificationPointForm from '../forms/Gamification/GamificationPointForm';
+import LeaderboardHeader from '../forms/Gamification/LeaderboardHeader';
 import RankingMetadataForm from '../forms/Gamification/RankingMetadataForm';
 const AddAppRankingFormDialog = dynamic(
   () => import('../dialogs/AddAppRankingFormDialog'),
@@ -50,16 +50,6 @@ const ExportRankingDialog = dynamic(
 );
 export interface RankingWizardContainerProps {
   siteId?: number;
-}
-
-interface AppRanking {
-  id: number;
-  title: string;
-  createdAt: number;
-  description: string;
-  from: string;
-  to: string;
-  settings: GamificationPoint[];
 }
 
 interface TableProps {
@@ -107,7 +97,7 @@ function EmptyRankings() {
     >
       <LeaderboardIcon fontSize="large" />
       <Box>
-        <Typography textAlign="center" variant="h6">
+        <Typography textAlign="center" variant="h5">
           <FormattedMessage
             id="no.leaderboard"
             defaultMessage="No leaderboard"
@@ -364,6 +354,10 @@ export default function RankingWizardContainer({
     );
   };
 
+  const handleCloseEditRanking = () => {
+    setSelectedEditRanking(undefined);
+  };
+
   return (
     <>
       {openAddRanking && (
@@ -470,10 +464,11 @@ export default function RankingWizardContainer({
                 onClick={() => {
                   setOpenAddRanking(true);
                 }}
+                startIcon={<Add />}
               >
                 <FormattedMessage
-                  id={'add.leaderboard'}
-                  defaultMessage={'Add leaderboard'}
+                  id="new.leaderboard"
+                  defaultMessage="New leaderboard"
                 />
               </Button>
             </Grid>
@@ -493,15 +488,20 @@ export default function RankingWizardContainer({
             <Grid item xs={12}>
               <Grid container spacing={2}>
                 <Grid item xs={12}>
-                  <Button
-                    startIcon={<ArrowBackIcon />}
-                    onClick={() => setSelectedEditRanking(undefined)}
-                  >
-                    <FormattedMessage
-                      id={'back.to.leaderboard.list'}
-                      defaultMessage={'Back to leaderboard List'}
-                    />{' '}
-                  </Button>
+                  <div>
+                    <LeaderboardHeader
+                      title={selectedEditRanking.title}
+                      onClose={handleCloseEditRanking}
+                      onEditTitle={() => {}}
+                      onPreview={() => {
+                        if (selectedEditRanking) {
+                          handlePreviewRanking({
+                            ranking: selectedEditRanking,
+                          });
+                        }
+                      }}
+                    />
+                  </div>
                 </Grid>
                 <Grid item xs={12}>
                   <TabContext value={value}>
@@ -546,6 +546,7 @@ export default function RankingWizardContainer({
                         from={selectedEditRanking.from}
                         to={selectedEditRanking.to}
                         rankingId={selectedEditRanking.id}
+                        ranking={selectedEditRanking}
                       />
                     </TabPanel>
                     <TabPanel value="2">
@@ -560,26 +561,6 @@ export default function RankingWizardContainer({
                       <ExportRanking rankingId={selectedEditRanking.id} />
                     </TabPanel>
                   </TabContext>
-                </Grid>
-                <Grid item xs={12}>
-                  <Typography variant="h5">
-                    <FormattedMessage
-                      id={'leaderboard.preview'}
-                      defaultMessage={'Leaderboard preview'}
-                    />
-                  </Typography>
-                </Grid>
-                <Grid item xs={12}>
-                  <Divider></Divider>
-                </Grid>
-
-                <Grid item xs={12}>
-                  <RankingSection
-                    section={{
-                      type: 'ranking',
-                      settings: { rankingId: selectedEditRanking.id },
-                    }}
-                  />
                 </Grid>
               </Grid>
             </Grid>
