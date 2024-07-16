@@ -1,6 +1,7 @@
 import { Network, TokenWhitelabelApp } from '@dexkit/core/types';
 import { getChainName } from '@dexkit/core/utils';
-import MoreVert from '@mui/icons-material/MoreVert';
+import { InfoOutlined } from '@mui/icons-material';
+import MoreHoriz from '@mui/icons-material/MoreHorizOutlined';
 import {
   Avatar,
   Box,
@@ -54,7 +55,6 @@ export default function TokensTable({
 
   const handleCloseMenu = () => {
     setAnchorEl(null);
-    setSelectedToken(undefined);
   };
 
   const handleOpenMenu = (token: TokenWhitelabelApp) => {
@@ -155,8 +155,13 @@ export default function TokensTable({
                 src={row.token.logoURI}
               />
               <Box>
-                <Typography variant="body2">{row.token.name}</Typography>
-                <Stack direction="row" spacing={1}>
+                <Stack direction="row" alignItems="center" spacing={1}>
+                  <Typography variant="body2">{row.token.name}</Typography>
+                  <IconButton size="small" onClick={handleOpenMenu(row.token)}>
+                    <MoreHoriz fontSize="small" />
+                  </IconButton>
+                </Stack>
+                <Stack direction="row" spacing={1} alignItems="center">
                   <Chip label={getChainName(row.token.chainId)} size="small" />
                   {row.token.tradable && (
                     <Chip
@@ -183,12 +188,10 @@ export default function TokensTable({
         disableReorder: true,
         sortable: false,
         renderHeader: () => (
-          <Typography>
-            <FormattedMessage id="highlight" defaultMessage="Highlight" />
-          </Typography>
-        ),
-        renderCell: ({ row }) => {
-          return (
+          <Stack direction="row" alignItems="center" spacing={0.5}>
+            <Typography variant="inherit">
+              <FormattedMessage id="highlight" defaultMessage="Highlight" />
+            </Typography>
             <Tooltip
               title={
                 <FormattedMessage
@@ -197,11 +200,16 @@ export default function TokensTable({
                 />
               }
             >
-              <Switch
-                checked={!Boolean(row.token.disableFeatured)}
-                onClick={handleDisableFeatured(row.token)}
-              />
+              <InfoOutlined fontSize="inherit" />
             </Tooltip>
+          </Stack>
+        ),
+        renderCell: ({ row }) => {
+          return (
+            <Switch
+              checked={!Boolean(row.token.disableFeatured)}
+              onClick={handleDisableFeatured(row.token)}
+            />
           );
         },
       },
@@ -212,12 +220,10 @@ export default function TokensTable({
         disableReorder: true,
         sortable: false,
         renderHeader: () => (
-          <Typography>
-            <FormattedMessage id="assign" defaultMessage="Assign" />
-          </Typography>
-        ),
-        renderCell: ({ row }) => {
-          return (
+          <Stack direction="row" alignItems="center" spacing={0.5}>
+            <Typography variant="inherit">
+              <FormattedMessage id="assign" defaultMessage="Assign" />
+            </Typography>
             <Tooltip
               title={
                 <FormattedMessage
@@ -226,33 +232,38 @@ export default function TokensTable({
                 />
               }
             >
-              <Switch
-                checked={Boolean(row.token.tradable)}
-                onClick={handleMakeTradable(row.token)}
-              />
+              <InfoOutlined fontSize="inherit" />
             </Tooltip>
-          );
-        },
-      },
-      {
-        flex: 1,
-        field: 'actions',
-        disableColumnMenu: true,
-        disableReorder: true,
-        sortable: false,
-        renderHeader: () => (
-          <Typography>
-            <FormattedMessage id="actions" defaultMessage="Actions" />
-          </Typography>
+          </Stack>
         ),
         renderCell: ({ row }) => {
           return (
-            <IconButton onClick={handleOpenMenu(row.token)}>
-              <MoreVert />
-            </IconButton>
+            <Switch
+              checked={Boolean(row.token.tradable)}
+              onClick={handleMakeTradable(row.token)}
+            />
           );
         },
       },
+      // {
+      //   flex: 1,
+      //   field: 'actions',
+      //   disableColumnMenu: true,
+      //   disableReorder: true,
+      //   sortable: false,
+      //   renderHeader: () => (
+      //     <Typography>
+      //       <FormattedMessage id="actions" defaultMessage="Actions" />
+      //     </Typography>
+      //   ),
+      //   renderCell: ({ row }) => {
+      //     return (
+      //       <IconButton onClick={handleOpenMenu(row.token)}>
+      //         <MoreVert />
+      //       </IconButton>
+      //     );
+      //   },
+      // },
     ] as GridColDef<TokenWhitelabelAppWithIndex>[];
   }, []);
 
@@ -269,18 +280,28 @@ export default function TokensTable({
         token={selectedToken}
       />
       <DataGrid
+        sx={{
+          '& .MuiDataGrid-cell:focus': {
+            outline: 'none',
+          },
+          '& .MuiDataGrid-cell:focus-within': {
+            outline: 'none !important',
+          },
+        }}
         columns={columns}
         rows={pageList}
         rowSelection
         rowCount={filteredTokens.length}
         checkboxSelection
         getRowId={(row) => TOKEN_KEY(row.token as any)}
-        rowHeight={60}
+        rowHeight={70}
         pageSizeOptions={[5, 10, 25, 50]}
         onPaginationModelChange={setPaginationModel}
         paginationModel={paginationModel}
         paginationMode="server"
         rowSelectionModel={selection}
+        disableRowSelectionOnClick
+        disableColumnSelector
         onRowSelectionModelChange={(rowSelection) =>
           onChangeSelection(rowSelection as string[])
         }

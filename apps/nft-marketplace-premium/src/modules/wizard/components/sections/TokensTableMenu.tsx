@@ -1,8 +1,17 @@
 import { NETWORK_SLUG } from '@dexkit/core/constants/networks';
 import { TokenWhitelabelApp } from '@dexkit/core/types';
-import { Menu, MenuItem } from '@mui/material';
+import {
+  Divider,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Menu,
+  MenuItem,
+} from '@mui/material';
 import Link from 'next/link';
 import { FormattedMessage } from 'react-intl';
+
+import FileOpenOutlinedIcon from '@mui/icons-material/FileOpenOutlined';
 
 export interface TokensTableMenuProps {
   anchorEl: HTMLElement | null;
@@ -22,11 +31,25 @@ export default function TokensTableMenu({
       id="long-menu"
       MenuListProps={{
         'aria-labelledby': 'long-button',
+        sx: { p: 0 },
       }}
+      slotProps={{ paper: { variant: 'elevation' } }}
       anchorEl={anchorEl}
       open={Boolean(anchorEl)}
       onClose={onClose}
     >
+      <ListItem>
+        <ListItemText
+          primary={
+            <FormattedMessage
+              id="token.pages.alt"
+              defaultMessage="Token pages"
+            />
+          }
+          primaryTypographyProps={{ variant: 'body2', fontWeight: 'bold' }}
+        />
+      </ListItem>
+      <Divider />
       <MenuItem
         key={1}
         onClick={onClose}
@@ -36,9 +59,16 @@ export default function TokensTableMenu({
         )}/${token?.symbol}`}
         target="_blank"
       >
-        <FormattedMessage
-          id={'buy.token?.page'}
-          defaultMessage={'Buy token page'}
+        <ListItemIcon>
+          <FileOpenOutlinedIcon />
+        </ListItemIcon>
+        <ListItemText
+          primary={
+            <FormattedMessage
+              id="buy.token.page"
+              defaultMessage="Buy token page"
+            />
+          }
         />
       </MenuItem>
       <MenuItem
@@ -50,9 +80,16 @@ export default function TokensTableMenu({
         )}/${token?.symbol}`}
         target="_blank"
       >
-        <FormattedMessage
-          id={'sell.token?.page'}
-          defaultMessage={'Sell token page'}
+        <ListItemIcon>
+          <FileOpenOutlinedIcon />
+        </ListItemIcon>
+        <ListItemText
+          primary={
+            <FormattedMessage
+              id="sell.token.page"
+              defaultMessage="Sell token page"
+            />
+          }
         />
       </MenuItem>
       <MenuItem
@@ -64,9 +101,13 @@ export default function TokensTableMenu({
         )}/${token?.symbol}`}
         target="_blank"
       >
-        <FormattedMessage
-          id={'trade.token?.page'}
-          defaultMessage={'Trade token page'}
+        <ListItemIcon>
+          <FileOpenOutlinedIcon />
+        </ListItemIcon>
+        <ListItemText
+          primary={
+            <FormattedMessage id="trade.token" defaultMessage="Trade token" />
+          }
         />
       </MenuItem>
     </Menu>

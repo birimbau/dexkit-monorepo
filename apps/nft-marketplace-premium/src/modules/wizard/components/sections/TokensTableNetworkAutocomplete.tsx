@@ -20,7 +20,10 @@ export default function TokensTableNetworkAutocomplete({
   const networks = useMemo(() => {
     return Object.keys(NETWORKS)
       .filter((n) => activeChainIds.includes(Number(n)))
-      .map((key) => NETWORKS[parseChainId(key)]);
+      .map((key) => NETWORKS[parseChainId(key)])
+      .sort(function (a, b) {
+        return a.name.localeCompare(b.name);
+      });
   }, [activeChainIds]);
 
   const { formatMessage } = useIntl();
@@ -33,10 +36,14 @@ export default function TokensTableNetworkAutocomplete({
         <TextField
           {...params}
           variant="standard"
-          placeholder={formatMessage({
-            id: 'select.network',
-            defaultMessage: 'Select Network',
-          })}
+          placeholder={
+            selectedNetwoks.length > 0
+              ? ''
+              : formatMessage({
+                  id: 'select.network.alt',
+                  defaultMessage: 'Select network',
+                })
+          }
         />
       )}
       getOptionLabel={(opt) => opt.name}

@@ -315,28 +315,23 @@ export default function TokenWizardContainer({
         }}
         onConfirm={handleConfirmRemove}
         title={
-          selectedTokenCount > 0 ? (
+          selection.length > 0 ? (
             <FormattedMessage
-              id="remove.tokens"
-              defaultMessage="Remove tokens"
+              id="delete.tokens"
+              defaultMessage="Delete Tokens"
             />
           ) : (
-            <FormattedMessage id="remove.token" defaultMessage="Remove token" />
+            <FormattedMessage
+              id="delete.token.alt"
+              defaultMessage="Delete Token"
+            />
           )
         }
       >
-        {Object.keys(selectedKeys).length > 1 ? (
-          <FormattedMessage
-            id="do.you.want.to.remove.all.number.tokens"
-            defaultMessage="Do you want to remove all {count} tokens?"
-            values={{ count: <b>{selectedTokenCount}</b> }}
-          />
-        ) : (
-          <FormattedMessage
-            id="do.you.want.to.remove.this.token"
-            defaultMessage="Do you want to remove this token?"
-          />
-        )}
+        <FormattedMessage
+          id="Are.you.sure.you.want.to.delete.the.token.s"
+          defaultMessage="Are you sure you want to delete the token(s)?"
+        />
       </AppConfirmDialog>
       <Grid container spacing={2}>
         <Grid item xs={12}>
