@@ -29,7 +29,11 @@ export default function QrCodeScanner({
           onResult(result.data);
           scanner.current?.stop();
         },
-        { preferredCamera: cameraId }
+        {
+          preferredCamera: cameraId,
+          highlightScanRegion: true,
+          highlightCodeOutline: true,
+        }
       );
 
       (async () => {

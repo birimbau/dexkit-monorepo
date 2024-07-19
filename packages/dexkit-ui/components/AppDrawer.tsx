@@ -42,7 +42,6 @@ import {
 import QrCodeScanner from "@mui/icons-material/QrCodeScanner";
 import { useAtom } from "jotai";
 import dynamic from "next/dynamic";
-import { parse } from "papaparse";
 import { useMemo, useState } from "react";
 import { AppConfig } from "../modules/wizard/types/config";
 import { isMiniSidebarAtom } from "../state";
@@ -128,12 +127,11 @@ function AppDrawer({ open, onClose, appConfig }: Props) {
 
   const handleAddressResult = (result: string) => {
     try {
-      parse(result);
       handleOpenQrCodeScannerClose();
       if (isMobile) {
-        router.push(`/wallet/send/${encodeURI(result)}`);
+        router.push(`/wallet/send/${encodeURIComponent(result)}`);
       } else {
-        window.open(`/wallet/send/${encodeURI(result)}`, "_blank");
+        window.open(`/wallet/send/${encodeURIComponent(result)}`, "_blank");
       }
     } catch (err) {}
   };
