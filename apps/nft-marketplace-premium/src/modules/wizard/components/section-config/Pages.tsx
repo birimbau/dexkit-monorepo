@@ -254,6 +254,7 @@ export default function Pages({
             name={pages[selectedKey]?.title}
             page={selectedKey}
             site={site}
+            layout={pages[selectedKey].layout}
           />
         </CssVarsProvider>
       );

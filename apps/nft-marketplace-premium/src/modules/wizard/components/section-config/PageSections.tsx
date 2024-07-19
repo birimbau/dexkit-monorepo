@@ -243,6 +243,7 @@ export default function PageSections({
               activeSection?.index === section.index &&
               pageKey === activeSection.page
             }
+            layout={page.layout}
           />
         </Grid>
       );

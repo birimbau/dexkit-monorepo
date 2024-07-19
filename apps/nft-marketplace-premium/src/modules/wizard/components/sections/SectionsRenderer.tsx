@@ -9,6 +9,7 @@ import {
   Paper,
   Portal,
   Stack,
+  SvgIconTypeMap,
   Tab,
   Tabs,
   Typography,
@@ -18,18 +19,28 @@ import {
 import useMediaQuery from '@mui/material/useMediaQuery';
 
 import { PageSectionsLayout } from '@dexkit/ui/modules/wizard/types/config';
+import { OverridableComponent } from '@mui/material/OverridableComponent';
 import React, { useCallback, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { FormattedMessage } from 'react-intl';
 import { SectionRender } from '../section-config/SectionRender';
+import { SECTIONS_TYPE_DATA_ICONS } from '../section-config/Sections';
 
 export interface BottomNavActionProps {
   label: React.ReactNode;
   onClick: () => void;
   active?: boolean;
+  Icon?: OverridableComponent<SvgIconTypeMap<{}, 'svg'>> & {
+    muiName: string;
+  };
 }
 
-function BottomNavAction({ label, onClick, active }: BottomNavActionProps) {
+function BottomNavAction({
+  label,
+  onClick,
+  active,
+  Icon,
+}: BottomNavActionProps) {
   const theme = useTheme();
 
   return (
@@ -44,13 +55,18 @@ function BottomNavAction({ label, onClick, active }: BottomNavActionProps) {
           active ? alpha(theme.palette.primary.main, 0.05) : undefined,
       }}
     >
-      <Typography
-        fontWeight={active ? 'bold' : '400'}
-        variant="body1"
-        color={active ? 'primary.light' : 'inherit'}
-      >
-        {label}
-      </Typography>
+      <Stack alignItems="center" spacing={1}>
+        {Icon && (
+          <Icon fontSize="small" color={active ? 'primary' : undefined} />
+        )}
+        <Typography
+          fontWeight={active ? 'bold' : '400'}
+          variant="caption"
+          color={active ? 'primary.light' : 'inherit'}
+        >
+          {label}
+        </Typography>
+      </Stack>
     </ButtonBase>
   );
 }
@@ -190,6 +206,7 @@ export function SectionsRenderer({ sections, layout }: Props) {
             label={
               section.name ? section.name : section.title ? section.title : ''
             }
+            Icon={SECTIONS_TYPE_DATA_ICONS[section.type]}
             active={tab === `tab-${index}`}
             onClick={handleSelectTab(`tab-${index}`)}
           />
