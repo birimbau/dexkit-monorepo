@@ -62,7 +62,7 @@ export default function CheckoutCartTable({ name }: CheckoutCartTableProps) {
             <FormattedMessage id="quantity" defaultMessage="Quantity" />
           </TableCell>
           <TableCell>
-            <FormattedMessage id="quantity" defaultMessage="Total" />
+            <FormattedMessage id="total" defaultMessage="Total" />
           </TableCell>
         </TableRow>
       </TableHead>
