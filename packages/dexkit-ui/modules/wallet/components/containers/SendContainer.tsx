@@ -1,13 +1,13 @@
 import EvmTransferCoin from "@dexkit/ui/modules/evm-transfer-coin/components/EvmTransferCoin";
 import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import {
-    Box,
-    Container,
-    Grid,
-    Stack,
-    Typography,
-    useMediaQuery,
-    useTheme,
+  Box,
+  Container,
+  Grid,
+  Stack,
+  Typography,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import QRCode from "qrcode.react";
 import { useState } from "react";
@@ -24,6 +24,7 @@ interface Props {
 function SendContainer({ paymentURL }: Props) {
   const theme = useTheme();
   const { account, chainId, provider } = useWeb3React();
+
   const [payment, setPayment] = useState(paymentURL);
   const paymentUrlParsed = useParsePaymentRequest({ paymentURL });
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));

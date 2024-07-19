@@ -39,6 +39,8 @@ export function useNftTransfer({
         return false;
       }
 
+
+
       let contract = new Contract(
         contractAddress,
         protocol === "ERC1155" ? ERC1155Abi : ERC721Abi,
@@ -60,12 +62,13 @@ export function useNftTransfer({
       let tx;
 
       if (protocol === "ERC1155") {
+
         tx = await contract.safeTransferFrom(
           from,
           toAddress,
           tokenId,
           quantity,
-          ""
+          "0x"
         );
       } else {
         tx = await contract.transferFrom(from, toAddress, tokenId);
