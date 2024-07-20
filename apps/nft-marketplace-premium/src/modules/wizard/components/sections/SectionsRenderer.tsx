@@ -56,9 +56,9 @@ function BottomNavAction({
       }}
     >
       <Stack alignItems="center" spacing={1}>
-        {Icon && (
+        {/* {Icon && (
           <Icon fontSize="small" color={active ? 'primary' : undefined} />
-        )}
+        )} */}
         <Typography
           fontWeight={active ? 'bold' : '400'}
           variant="caption"
