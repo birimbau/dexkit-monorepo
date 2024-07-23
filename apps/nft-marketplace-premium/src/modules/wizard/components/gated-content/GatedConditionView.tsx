@@ -143,6 +143,9 @@ export function GatedConditionView({
                       condition.chainId,
                     )?.toUpperCase()}{' '}
                     - {condition.symbol}
+                    {condition.protocol === 'ERC1155' && condition.tokenId
+                      ? `- ID - ${condition.tokenId}`
+                      : null}
                   </Typography>
                 ),
               }}
