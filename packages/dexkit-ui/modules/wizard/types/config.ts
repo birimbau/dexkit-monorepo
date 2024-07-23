@@ -57,7 +57,7 @@ export type PageSectionVariant = 'dark' | 'light';
 export interface GatedCondition {
   type?: 'collection' | 'coin' | 'multiCollection';
   condition?: 'and' | 'or';
-  protocol?: 'ERC20' | 'ERC711' | 'ERC1155';
+  protocol?: 'ERC20' | 'ERC721' | 'ERC1155';
   decimals?: number;
   address?: string;
   symbol?: string;

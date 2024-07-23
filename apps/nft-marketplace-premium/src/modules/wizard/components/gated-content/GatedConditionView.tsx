@@ -143,6 +143,9 @@ export function GatedConditionView({
                       condition.chainId,
                     )?.toUpperCase()}{' '}
                     - {condition.symbol}
+                    {condition.protocol === 'ERC1155' && condition.tokenId
+                      ? `- ID - ${condition.tokenId}`
+                      : null}
                   </Typography>
                 ),
               }}
@@ -298,19 +301,19 @@ export function GatedConditionView({
             backgroundSize: 'cover',
           }}
         >
-          {((theme.palette.mode === 'light' && !layout?.frontImage) ||
-            (theme.palette.mode === 'dark' &&
-              !(layout?.frontImage || layout?.frontImageDark))) && (
-            <Stack
-              justifyContent={'center'}
-              alignContent={'center'}
-              alignItems={'center'}
-              sx={{
-                height: layout?.frontImageHeight,
-                maxHeight: 300,
-                minHeight: 50,
-              }}
-            >
+          <Stack
+            justifyContent={'center'}
+            alignContent={'center'}
+            alignItems={'center'}
+            sx={{
+              height: layout?.frontImageHeight,
+              maxHeight: 300,
+              minHeight: 50,
+            }}
+          >
+            {((theme.palette.mode === 'light' && !layout?.frontImage) ||
+              (theme.palette.mode === 'dark' &&
+                !(layout?.frontImage || layout?.frontImageDark))) && (
               <Security
                 sx={{
                   fontSize: 80,
@@ -322,8 +325,8 @@ export function GatedConditionView({
                     ),
                 }}
               />
-            </Stack>
-          )}
+            )}
+          </Stack>
         </Box>
       </Grid>
       <Grid item xs={12}>

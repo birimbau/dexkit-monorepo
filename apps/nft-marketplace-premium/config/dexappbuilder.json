@@ -19,7 +19,9 @@
   "favicon_url": "https://dexkit-storage.nyc3.cdn.digitaloceanspaces.com/dexkit/images/logo/favicon.ico",
   "social": [
     { "type": "twitter", "handle": "dexkit" },
-    { "type": "instagram", "handle": "dexkit.io" }
+    { "type": "instagram", "handle": "dexkit.io" },
+    { "type": "linkedin", "handle": "dexkit" },
+    { "type": "youtube", "handle": "@DexKit" }
   ],
   "transak": { "enabled": true },
   "fees": [

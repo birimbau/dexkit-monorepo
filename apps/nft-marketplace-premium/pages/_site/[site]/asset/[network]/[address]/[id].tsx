@@ -26,7 +26,11 @@ import { REVALIDATE_PAGE_TIME } from 'src/constants';
 
 import AssetSection from '@dexkit/dexappbuilder-viewer/components/sections/AssetSection';
 import { PageHeader } from '@dexkit/ui/components/PageHeader';
-import { MAP_NETWORK_TO_RARIBLE } from '@dexkit/ui/modules/nft/constants/marketplaces';
+import {
+  IS_SUPPORTED_BY_RARIBLE,
+  MAP_NETWORK_TO_RARIBLE,
+  SUPPORTED_RARIBLE_NETWORKS,
+} from '@dexkit/ui/modules/nft/constants/marketplaces';
 import {
   BEST_SELL_ORDER_RARIBLE,
   useAsset,
@@ -35,7 +39,6 @@ import {
 import { getRariAsset } from '@dexkit/ui/modules/nft/services/rarible';
 import { truncateErc1155TokenId } from '@dexkit/ui/modules/nft/utils';
 
-import { NETWORK_ID } from '@dexkit/ui/constants/enum';
 import { getAppConfig } from '../../../../../../src/services/app';
 
 const AssetDetailPage: NextPage<any> = ({
@@ -145,9 +148,14 @@ export const getStaticProps: GetStaticProps = async ({
     await fetchAssetForQueryClient({ queryClient, item });
 
     try {
-      if (network === NETWORK_ID.Ethereum || network === NETWORK_ID.Polygon) {
+      if (
+        network &&
+        IS_SUPPORTED_BY_RARIBLE(network as SUPPORTED_RARIBLE_NETWORKS)
+      ) {
         const { data } = await getRariAsset(
-          `${MAP_NETWORK_TO_RARIBLE[network]}:${address}:${id}`,
+          `${
+            MAP_NETWORK_TO_RARIBLE[network as SUPPORTED_RARIBLE_NETWORKS]
+          }:${address}:${id}`,
         );
         await queryClient.prefetchQuery(
           [BEST_SELL_ORDER_RARIBLE, network, address, id],
