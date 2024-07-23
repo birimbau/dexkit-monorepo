@@ -7,9 +7,12 @@ const AddProductsDialog = dynamic(
 
 import DashboardLayout from '@/modules/commerce/components/layout/DashboardLayout';
 import { PageHeader } from '@dexkit/ui/components/PageHeader';
+import Add from '@mui/icons-material/Add';
 import {
+  Box,
   Button,
   Container,
+  Divider,
   FormControlLabel,
   FormGroup,
   Grid,
@@ -53,44 +56,47 @@ export default function CreateCheckoutPage() {
         />
       )}
       <DashboardLayout page="checkout">
-        <Container>
-          <Stack spacing={2}>
-            <PageHeader
-              breadcrumbs={[
-                {
-                  caption: (
-                    <FormattedMessage id="commerce" defaultMessage="Commerce" />
-                  ),
-                  uri: '/u/account/commerce',
-                },
-                {
-                  caption: (
-                    <FormattedMessage
-                      id="checkouts"
-                      defaultMessage="Checkouts"
-                    />
-                  ),
-                  uri: '/u/account/commerce/orders',
-                },
-                {
-                  caption: (
-                    <FormattedMessage id="create" defaultMessage="Create" />
-                  ),
-                  uri: '/u/account/commerce/checkout/create',
-                  active: true,
-                },
-              ]}
-            />
-            <div>
-              <Formik
-                initialValues={{
-                  title: '',
-                  requireEmail: false,
-                  requireAccount: false,
-                }}
-                onSubmit={handleSubmit}
-              >
-                {({ submitForm, isSubmitting, isValid }) => (
+        <Formik
+          initialValues={{
+            title: '',
+            requireEmail: false,
+            requireAccount: false,
+          }}
+          onSubmit={handleSubmit}
+        >
+          {({ submitForm, isSubmitting, isValid }) => (
+            <Container>
+              <Stack spacing={2}>
+                <PageHeader
+                  breadcrumbs={[
+                    {
+                      caption: (
+                        <FormattedMessage
+                          id="commerce"
+                          defaultMessage="Commerce"
+                        />
+                      ),
+                      uri: '/u/account/commerce',
+                    },
+                    {
+                      caption: (
+                        <FormattedMessage
+                          id="checkouts"
+                          defaultMessage="Checkouts"
+                        />
+                      ),
+                      uri: '/u/account/commerce/checkouts',
+                    },
+                    {
+                      caption: (
+                        <FormattedMessage id="create" defaultMessage="Create" />
+                      ),
+                      uri: '/u/account/commerce/checkout/create',
+                      active: true,
+                    },
+                  ]}
+                />
+                <div>
                   <Grid container spacing={2}>
                     <Grid item xs={12}>
                       <Field
@@ -122,7 +128,11 @@ export default function CreateCheckoutPage() {
                       <CheckoutCartTable name="items" />
                     </Grid>
                     <Grid item xs={12}>
-                      <Button onClick={handleAddProducts} variant="outlined">
+                      <Button
+                        startIcon={<Add />}
+                        onClick={handleAddProducts}
+                        variant="outlined"
+                      >
                         <FormattedMessage
                           id="add.products"
                           defaultMessage="Add products"
@@ -130,19 +140,30 @@ export default function CreateCheckoutPage() {
                       </Button>
                     </Grid>
                     <Grid item xs={12}>
-                      <Button
-                        onClick={submitForm}
-                        disabled={!isValid || isSubmitting}
-                      >
-                        <FormattedMessage id="create" defaultMessage="Create" />
-                      </Button>
+                      <Divider />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <Box>
+                        <Stack justifyContent="flex-end" direction="row">
+                          <Button
+                            onClick={submitForm}
+                            disabled={!isValid || isSubmitting}
+                            variant="contained"
+                          >
+                            <FormattedMessage
+                              id="create"
+                              defaultMessage="Create"
+                            />
+                          </Button>
+                        </Stack>
+                      </Box>
                     </Grid>
                   </Grid>
-                )}
-              </Formik>
-            </div>
-          </Stack>
-        </Container>
+                </div>
+              </Stack>
+            </Container>
+          )}
+        </Formik>
       </DashboardLayout>
     </>
   );
