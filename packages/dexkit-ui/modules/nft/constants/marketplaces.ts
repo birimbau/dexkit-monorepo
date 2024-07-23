@@ -1,5 +1,5 @@
+import { ChainId } from "@dexkit/core/constants";
 import { NETWORK_ID } from "../../../constants/enum";
-
 
 export enum MARKETPLACES {
   OPEN_SEA = 'OPEN_SEA',
@@ -49,6 +49,8 @@ export const MARKETPLACES_INFO = {
 export type SUPPORTED_RARIBLE_NETWORKS = NETWORK_ID.Ethereum | NETWORK_ID.Polygon | NETWORK_ID.Base
 
 export const IS_SUPPORTED_BY_RARIBLE = (network?: SUPPORTED_RARIBLE_NETWORKS) => network ? (network === NETWORK_ID.Ethereum || network === NETWORK_ID.Polygon || network === NETWORK_ID.Base) : false;
+
+export const IS_CHAIN_SUPPORTED_BY_RARIBLE = (chainId?: number) => chainId ? (chainId === ChainId.Ethereum || chainId === ChainId.Polygon || chainId === ChainId.Base) : false;
 
 export const MAP_NETWORK_TO_RARIBLE = {
   [NETWORK_ID.Ethereum]: 'ETHEREUM',
