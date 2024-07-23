@@ -10,18 +10,18 @@ import AssetLeftSection from '@dexkit/ui/modules/nft/components/AssetLeftSection
 
 import { ChainId } from '@dexkit/core/constants';
 import {
-    NETWORK_FROM_SLUG,
-    NETWORK_SLUG,
+  NETWORK_FROM_SLUG,
+  NETWORK_SLUG,
 } from '@dexkit/core/constants/networks';
 import { ipfsUriToUrl, truncateAddress } from '@dexkit/core/utils';
 import { PageHeader } from '@dexkit/ui/components/PageHeader';
 import {
-    BEST_SELL_ORDER_RARIBLE,
-    useAsset,
-    useAssetMetadata,
+  BEST_SELL_ORDER_RARIBLE,
+  useAsset,
+  useAssetMetadata,
 } from '@dexkit/ui/modules/nft/hooks';
 import { truncateErc1155TokenId } from '@dexkit/ui/modules/nft/utils';
-import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
+import { useWeb3React } from '@dexkit/wallet-connectors/hooks/useWeb3React';
 import { ThirdwebSDKProvider } from '@thirdweb-dev/react';
 import { NextSeo } from 'next-seo';
 import { FormattedMessage } from 'react-intl';
@@ -30,8 +30,11 @@ import { REVALIDATE_PAGE_TIME, THIRDWEB_CLIENT_ID } from 'src/constants';
 
 import { DropEditionListSection } from '@dexkit/dexappbuilder-viewer/components/sections/DropEditionListSection';
 import EditionDropSection from '@dexkit/dexappbuilder-viewer/components/sections/EditionDropSection';
-import { NETWORK_ID } from '@dexkit/ui/constants/enum';
-import { MAP_NETWORK_TO_RARIBLE } from '@dexkit/ui/modules/nft/constants/marketplaces';
+import {
+  IS_SUPPORTED_BY_RARIBLE,
+  MAP_NETWORK_TO_RARIBLE,
+  SUPPORTED_RARIBLE_NETWORKS,
+} from '@dexkit/ui/modules/nft/constants/marketplaces';
 import { fetchAssetForQueryClient } from '@dexkit/ui/modules/nft/services/query';
 import { getRariAsset } from '@dexkit/ui/modules/nft/services/rarible';
 import { getAppConfig } from 'src/services/app';
@@ -177,9 +180,14 @@ export const getStaticProps: GetStaticProps = async ({
     await fetchAssetForQueryClient({ queryClient, item });
 
     try {
-      if (network === NETWORK_ID.Ethereum || network === NETWORK_ID.Polygon) {
+      if (
+        network &&
+        IS_SUPPORTED_BY_RARIBLE(network as SUPPORTED_RARIBLE_NETWORKS)
+      ) {
         const { data } = await getRariAsset(
-          `${MAP_NETWORK_TO_RARIBLE[network]}:${address}:${id}`,
+          `${
+            MAP_NETWORK_TO_RARIBLE[network as SUPPORTED_RARIBLE_NETWORKS]
+          }:${address}:${id}`,
         );
         await queryClient.prefetchQuery(
           [BEST_SELL_ORDER_RARIBLE, network, address, id],
