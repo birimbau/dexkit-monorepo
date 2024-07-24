@@ -1,6 +1,7 @@
 import DashboardLayout from '@/modules/commerce/components/layout/DashboardLayout';
 import ProductPriceTable from '@/modules/commerce/components/ProductPriceTable';
-import useCreateProduct from '@/modules/commerce/hooks/useCreateProduct';
+import useProduct from '@/modules/commerce/hooks/useProduct';
+import useUpdateProduct from '@/modules/commerce/hooks/useUpdateProduct';
 import { ProductSchema } from '@/modules/commerce/schemas';
 import { ProductFormType } from '@/modules/commerce/types';
 import { ChainId } from '@dexkit/core';
@@ -18,22 +19,27 @@ import {
 } from '@mui/material';
 import { Field, FieldArray, Formik } from 'formik';
 import { TextField } from 'formik-mui';
+import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { toFormikValidationSchema } from 'zod-formik-adapter';
 
-function CreateProductComponent() {
-  const { mutateAsync: createProduct } = useCreateProduct();
+export interface UpdateProductComponentProps {
+  product: ProductFormType;
+}
+
+function UpdateProductComponent({ product }: UpdateProductComponentProps) {
+  const { mutateAsync: updateProduct } = useUpdateProduct();
 
   const { enqueueSnackbar } = useSnackbar();
 
   const handleSubmit = async (values: ProductFormType) => {
     try {
-      await createProduct(values);
+      await updateProduct(values);
       enqueueSnackbar(
         <FormattedMessage
-          id="product.created"
-          defaultMessage="Product created"
+          id="product.updated"
+          defaultMessage="Product updated"
         />,
         { variant: 'success' },
       );
@@ -62,8 +68,8 @@ function CreateProductComponent() {
               uri: '/u/account/commerce/products',
             },
             {
-              caption: <FormattedMessage id="create" defaultMessage="Create" />,
-              uri: '/u/account/commerce/checkout/create',
+              caption: product.name,
+              uri: `/u/account/commerce/checkout/${product?.id}`,
               active: true,
             },
           ]}
@@ -81,8 +87,9 @@ function CreateProductComponent() {
             ),
           )}
           initialValues={{
-            name: '',
-            prices: [],
+            id: product.id,
+            name: product.name,
+            prices: product.prices,
           }}
         >
           {({ isValid, submitForm, errors }) => (
@@ -184,7 +191,7 @@ function CreateProductComponent() {
                         disabled={!isValid}
                         variant="contained"
                       >
-                        <FormattedMessage id="create" defaultMessage="Create" />
+                        <FormattedMessage id="save" defaultMessage="Save" />
                       </Button>
                     </Stack>
                   </Box>
@@ -198,10 +205,22 @@ function CreateProductComponent() {
   );
 }
 
-export default function CreateProductPage() {
+function UpdateProductPagePage() {
+  const router = useRouter();
+
+  const { id } = router.query;
+
+  console.log(router.query);
+
+  const { data: product } = useProduct({ id: id as string });
+
+  return product && <UpdateProductComponent product={product} />;
+}
+
+export default function UpdateProductPage() {
   return (
     <DashboardLayout>
-      <CreateProductComponent />
+      <UpdateProductPagePage />
     </DashboardLayout>
   );
 }

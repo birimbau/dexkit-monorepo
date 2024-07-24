@@ -1,5 +1,4 @@
-import { isAddressEqual } from '@dexkit/core/utils';
-import { useTokenList } from '@dexkit/ui';
+import { useDebounce } from '@dexkit/core';
 import {
   Autocomplete,
   Avatar,
@@ -9,50 +8,55 @@ import {
   TextField,
 } from '@mui/material';
 import { useField } from 'formik';
-import { useMemo } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
+import useProduct from '../hooks/useProduct';
+import useProductList from '../hooks/useProductList';
 import { ProductPriceType } from '../types';
 
-export interface ProductTokenAutocompleteProps {
+export interface ProductAutocompleteProps {
   name: string;
   prefix: string;
 }
 
-export default function ProductTokenAutocomplete({
+export default function ProductAutocomplete({
   name,
   prefix,
-}: ProductTokenAutocompleteProps) {
+}: ProductAutocompleteProps) {
   const [props, meta, helpers] = useField<ProductPriceType>(prefix);
   const [propsField, metaField, helpersField] = useField<string>(name);
 
-  const tokens = useTokenList({
-    chainId: props.value.chainId,
-    includeNative: true,
-  });
+  const { data: products, mutateAsync: fetchProducts } = useProductList();
 
-  const value = useMemo(() => {
-    return (
-      tokens.find(
-        (t) =>
-          isAddressEqual(t.address, propsField.value) &&
-          t.chainId === props.value.chainId,
-      ) ?? null
-    );
-  }, [tokens, propsField.value]);
+  const [query, setQuery] = useState('');
+
+  const lazyQuery = useDebounce(query, 500);
+
+  useEffect(() => {
+    if (lazyQuery !== '') {
+      fetchProducts({ page: 1, limit: 10 });
+    }
+  }, [lazyQuery]);
+
+  const { data: product } = useProduct({ id: props.value.id });
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setQuery(e.target.value);
+  };
 
   return (
     <Autocomplete
-      options={tokens}
-      value={value}
+      options={products?.items ?? []}
+      value={product}
       sx={{ minWidth: { sm: '300px' } }}
       getOptionLabel={(t) => t.name}
       onChange={(e, value, reason) => {
-        helpersField.setValue(value?.address ?? '');
+        helpersField.setValue(value?.id ?? '');
       }}
       fullWidth
       renderOption={(params, opt) => (
         <ListItem {...params}>
           <ListItemIcon>
-            <Avatar sx={{ width: '1rem', height: '1rem' }} src={opt.logoURI} />
+            <Avatar sx={{ width: '1rem', height: '1rem' }} variant="rounded" />
           </ListItemIcon>
           <ListItemText primary={opt.name} />
         </ListItem>
@@ -64,6 +68,8 @@ export default function ProductTokenAutocomplete({
           fullWidth
           error={Boolean(metaField.error)}
           helperText={metaField.error?.toString() ?? undefined}
+          value={query}
+          onChange={handleChange}
         />
       )}
     />

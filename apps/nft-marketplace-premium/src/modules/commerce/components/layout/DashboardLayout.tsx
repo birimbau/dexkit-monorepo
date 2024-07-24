@@ -12,6 +12,8 @@ import {
 import Link from 'next/link';
 import { FormattedMessage } from 'react-intl';
 
+import { DexkitApiProvider } from '@dexkit/core/providers';
+import { myAppsApi } from '@dexkit/ui/constants/api';
 import HomeIcon from '@mui/icons-material/Home';
 import InboxIcon from '@mui/icons-material/Inbox';
 import Settings from '@mui/icons-material/Settings';
@@ -104,7 +106,9 @@ export default function DashboardLayout({
             </Paper>
           </Grid>
           <Grid item xs={12} sm={9}>
-            {children}
+            <DexkitApiProvider.Provider value={{ instance: myAppsApi }}>
+              {children}
+            </DexkitApiProvider.Provider>
           </Grid>
         </Grid>
       </Container>
