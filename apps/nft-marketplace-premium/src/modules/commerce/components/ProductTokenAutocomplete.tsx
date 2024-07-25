@@ -10,7 +10,6 @@ import {
 } from '@mui/material';
 import { useField } from 'formik';
 import { useMemo } from 'react';
-import { ProductPriceType } from '../types';
 
 export interface ProductTokenAutocompleteProps {
   name: string;
@@ -21,7 +20,7 @@ export default function ProductTokenAutocomplete({
   name,
   prefix,
 }: ProductTokenAutocompleteProps) {
-  const [props, meta, helpers] = useField<ProductPriceType>(prefix);
+  const [props, meta, helpers] = useField<any>(prefix);
   const [propsField, metaField, helpersField] = useField<string>(name);
 
   const tokens = useTokenList({

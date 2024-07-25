@@ -1,15 +1,14 @@
 import CheckoutItemsTable from '@/modules/commerce/components/CheckoutItemsTable';
-import { Product } from '@/modules/commerce/components/dialogs/AddProductsDialog';
 
 const AddProductsDialog = dynamic(
   () => import('@/modules/commerce/components/dialogs/AddProductsDialog'),
 );
 
 import DashboardLayout from '@/modules/commerce/components/layout/DashboardLayout';
+import useCreateCheckout from '@/modules/commerce/hooks/checkout/useCreateCheckout';
 import { CheckoutSchema } from '@/modules/commerce/schemas';
 import { CheckoutFormType, CheckoutItemType } from '@/modules/commerce/types';
 import { PageHeader } from '@dexkit/ui/components/PageHeader';
-import Add from '@mui/icons-material/Add';
 import {
   Box,
   Button,
@@ -23,41 +22,32 @@ import {
 import { Field, FieldArray, Formik } from 'formik';
 import { Checkbox, TextField } from 'formik-mui';
 import dynamic from 'next/dynamic';
-import { useState } from 'react';
+import { useSnackbar } from 'notistack';
 import { FormattedMessage } from 'react-intl';
 import { toFormikValidationSchema } from 'zod-formik-adapter';
 
 function CreateCheckoutComponent() {
-  const handleSubmit = async (values: CheckoutFormType) => {};
+  const { mutateAsync: createCheckout } = useCreateCheckout();
 
-  const [showAddProducts, setShowAddProducts] = useState(false);
+  const { enqueueSnackbar } = useSnackbar();
 
-  const handleAddProducts = () => {
-    setShowAddProducts(true);
+  const handleSubmit = async (values: CheckoutFormType) => {
+    try {
+      await createCheckout(values);
+      enqueueSnackbar(
+        <FormattedMessage
+          id="checkout.created"
+          defaultMessage="Checkout Created"
+        />,
+        { variant: 'success' },
+      );
+    } catch (err) {
+      enqueueSnackbar(String(err), { variant: 'error' });
+    }
   };
-
-  const handleCloseAddProducts = () => {
-    setShowAddProducts(false);
-  };
-
-  const handleConfirm = (product: Product[]) => {};
 
   return (
     <>
-      {showAddProducts && (
-        <AddProductsDialog
-          DialogProps={{
-            open: showAddProducts,
-            onClose: handleCloseAddProducts,
-          }}
-          defaultSelection={[]}
-          products={[
-            { id: '372834', name: 'Camiseta X', price: 3050 },
-            { id: '37283444434', name: 'Camiseta X', price: 43050 },
-          ]}
-          onConfirm={handleConfirm}
-        />
-      )}
       <Formik
         initialValues={{
           requireEmail: false,
@@ -69,7 +59,7 @@ function CreateCheckoutComponent() {
         onSubmit={handleSubmit}
         validationSchema={toFormikValidationSchema(CheckoutSchema)}
       >
-        {({ submitForm, isSubmitting, isValid }) => (
+        {({ submitForm, isSubmitting, isValid, errors }) => (
           <Container>
             <Stack spacing={2}>
               <PageHeader
@@ -102,28 +92,49 @@ function CreateCheckoutComponent() {
                 ]}
               />
               <div>
+                {JSON.stringify(errors)}
                 <Grid container spacing={2}>
+                  <Grid item xs={12}>
+                    <Field
+                      label={
+                        <FormattedMessage id="name" defaultMessage="Name" />
+                      }
+                      component={TextField}
+                      name="name"
+                      fullWidth
+                    />
+                  </Grid>
                   <Grid item xs={12}>
                     <Field
                       label={
                         <FormattedMessage id="title" defaultMessage="Title" />
                       }
                       component={TextField}
-                      name="title"
+                      name="description"
                       fullWidth
+                      multiline
+                      rows={3}
                     />
                   </Grid>
                   <Grid item xs={12}>
                     <FormGroup row>
                       <FormControlLabel
                         control={
-                          <Field component={Checkbox} name="requireEmail" />
+                          <Field
+                            component={Checkbox}
+                            type="checkbox"
+                            name="requireEmail"
+                          />
                         }
                         label="Require email"
                       />
                       <FormControlLabel
                         control={
-                          <Field component={Checkbox} name="requireAccount" />
+                          <Field
+                            component={Checkbox}
+                            type="checkbox"
+                            name="requireAccount"
+                          />
                         }
                         label="Require account"
                       />
@@ -150,18 +161,6 @@ function CreateCheckoutComponent() {
                         </Button>
                       )}
                     />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Button
-                      startIcon={<Add />}
-                      onClick={handleAddProducts}
-                      variant="outlined"
-                    >
-                      <FormattedMessage
-                        id="add.products"
-                        defaultMessage="Add products"
-                      />
-                    </Button>
                   </Grid>
                   <Grid item xs={12}>
                     <Divider />

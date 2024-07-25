@@ -1,27 +1,11 @@
 import { z } from 'zod';
 
-export const ProductPriceSchema = z.object({
+export const ProductSchema = z.object({
   id: z.string().optional(),
-  chainId: z.number(),
-  contractAddress: z.string(),
-  amount: z.string(),
+  name: z.string().max(30),
+  price: z.string(),
+  imageUrl: z.string().url().optional(),
 });
-
-export const ProductSchema = (errMessage: string) =>
-  z.object({
-    id: z.string().optional(),
-    name: z.string().max(30),
-    prices: z.array(ProductPriceSchema).refine(
-      (arg) => {
-        const unique = new Set(
-          arg.map((i) => `${i.chainId}-${i.contractAddress}`),
-        );
-
-        return unique.size === arg.length;
-      },
-      { message: errMessage },
-    ),
-  });
 
 export const CheckoutSchemaItem = z.object({
   id: z.string().optional(),
@@ -30,9 +14,19 @@ export const CheckoutSchemaItem = z.object({
 });
 
 export const CheckoutSchema = z.object({
+  id: z.string().optional(),
   name: z.string(),
   description: z.string(),
   requireEmail: z.boolean(),
   requireAccount: z.boolean(),
   items: z.array(CheckoutSchemaItem).min(1).max(50),
+});
+
+export const CheckoutNetworksUpdateSchema = z.object({
+  chainIds: z.array(z.number()),
+});
+
+export const CheckoutSettingsSchema = z.object({
+  receiverAccount: z.string(),
+  receiverEmail: z.string().email(),
 });

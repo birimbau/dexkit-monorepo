@@ -1,7 +1,8 @@
+import CheckoutGeneralSettingsForm from '@/modules/commerce/components/CheckoutGeneralSettingsForm';
+import CheckoutNetworksUpdateForm from '@/modules/commerce/components/CheckoutNetworksUpdateForm';
 import DashboardLayout from '@/modules/commerce/components/layout/DashboardLayout';
-import ProductsTable from '@/modules/commerce/components/ProductsTable';
 import { PageHeader } from '@dexkit/ui/components/PageHeader';
-import { Container, Stack } from '@mui/material';
+import { Box, Container, Grid, Stack, Typography } from '@mui/material';
 import { FormattedMessage } from 'react-intl';
 
 export default function CommerceProductsPage() {
@@ -26,7 +27,32 @@ export default function CommerceProductsPage() {
               },
             ]}
           />
-          <ProductsTable />
+          <Box>
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <Typography variant="h6" fontWeight="bold">
+                  <FormattedMessage
+                    id="general.settings"
+                    defaultMessage="General Settings"
+                  />
+                </Typography>
+              </Grid>
+              <Grid item xs={12}>
+                <CheckoutGeneralSettingsForm />
+              </Grid>
+              <Grid item xs={12}>
+                <Typography variant="h6" fontWeight="bold">
+                  <FormattedMessage
+                    id="checkout.networks"
+                    defaultMessage="Checkout Networks"
+                  />
+                </Typography>
+              </Grid>
+              <Grid item xs={12}>
+                <CheckoutNetworksUpdateForm />
+              </Grid>
+            </Grid>
+          </Box>
         </Stack>
       </Container>
     </DashboardLayout>

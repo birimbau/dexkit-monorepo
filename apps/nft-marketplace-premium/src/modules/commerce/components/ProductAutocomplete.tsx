@@ -8,36 +8,32 @@ import {
   TextField,
 } from '@mui/material';
 import { useField } from 'formik';
-import { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, useState } from 'react';
 import useProduct from '../hooks/useProduct';
 import useProductList from '../hooks/useProductList';
-import { ProductPriceType } from '../types';
 
 export interface ProductAutocompleteProps {
   name: string;
-  prefix: string;
 }
 
 export default function ProductAutocomplete({
   name,
-  prefix,
 }: ProductAutocompleteProps) {
-  const [props, meta, helpers] = useField<ProductPriceType>(prefix);
-  const [propsField, metaField, helpersField] = useField<string>(name);
-
-  const { data: products, mutateAsync: fetchProducts } = useProductList();
+  const [props, meta, helpers] = useField<string>(`${name}.productId`);
 
   const [query, setQuery] = useState('');
 
-  const lazyQuery = useDebounce(query, 500);
+  const lazyQuery = useDebounce<string>(query, 500);
 
-  useEffect(() => {
-    if (lazyQuery !== '') {
-      fetchProducts({ page: 1, limit: 10 });
-    }
-  }, [lazyQuery]);
+  const { data: products } = useProductList({
+    limit: 10,
+    page: 0,
+    q: lazyQuery,
+  });
 
-  const { data: product } = useProduct({ id: props.value.id });
+  console.log(products);
+
+  const { data: product } = useProduct({ id: props.value });
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
@@ -46,11 +42,12 @@ export default function ProductAutocomplete({
   return (
     <Autocomplete
       options={products?.items ?? []}
-      value={product}
+      value={product ?? null}
       sx={{ minWidth: { sm: '300px' } }}
       getOptionLabel={(t) => t.name}
+      isOptionEqualToValue={(opt, value) => opt.id === value.id}
       onChange={(e, value, reason) => {
-        helpersField.setValue(value?.id ?? '');
+        helpers.setValue(value?.id ?? '');
       }}
       fullWidth
       renderOption={(params, opt) => (
@@ -66,8 +63,8 @@ export default function ProductAutocomplete({
           {...params}
           size="small"
           fullWidth
-          error={Boolean(metaField.error)}
-          helperText={metaField.error?.toString() ?? undefined}
+          error={Boolean(meta.error)}
+          helperText={meta.error?.toString() ?? undefined}
           value={query}
           onChange={handleChange}
         />

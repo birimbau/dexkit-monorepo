@@ -8,7 +8,6 @@ import {
 import { FieldArray, useFormikContext } from 'formik';
 import { FormattedMessage } from 'react-intl';
 import { ProductFormType } from '../types';
-import ProductPriceTableRow from './ProductPriceTableRow';
 
 export interface ProductPriceTableProps {}
 
@@ -36,15 +35,7 @@ export default function ProductPriceTable({}: ProductPriceTableProps) {
               </TableCell>
             </TableRow>
           </TableHead>
-          <TableBody>
-            {values.prices.map((_, index) => (
-              <ProductPriceTableRow
-                key={index}
-                namePrefix={`prices.${index}`}
-                onRemove={handleRemove(index)}
-              />
-            ))}
-          </TableBody>
+          <TableBody></TableBody>
         </Table>
       )}
     />

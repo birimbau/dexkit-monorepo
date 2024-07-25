@@ -6,7 +6,6 @@ import DeleteIcon from '@mui/icons-material/DeleteOutline';
 import { useField } from 'formik';
 import { useEffect } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { ProductPriceType } from '../types';
 import ProductNetworkAutocomplete from './ProductNetworkAutocomplete';
 import ProductTokenAutocomplete from './ProductTokenAutocomplete';
 
@@ -19,9 +18,7 @@ export default function ProductPriceTableRow({
   namePrefix,
   onRemove,
 }: ProductPriceTableRowProps) {
-  const [propsField, metaField, helpersField] = useField<ProductPriceType>(
-    `${namePrefix}`,
-  );
+  const [propsField, metaField, helpersField] = useField<any>(`${namePrefix}`);
 
   const {
     data: token,
