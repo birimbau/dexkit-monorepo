@@ -17,6 +17,7 @@ import { myAppsApi } from '@dexkit/ui/constants/api';
 import HomeIcon from '@mui/icons-material/Home';
 import InboxIcon from '@mui/icons-material/Inbox';
 import Settings from '@mui/icons-material/Settings';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 
 export interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -51,12 +52,27 @@ export default function DashboardLayout({
                 </ListItemButton>
                 <ListItemButton
                   LinkComponent={Link}
+                  href="/u/account/commerce/orders"
+                  divider
+                  selected={page === 'orders'}
+                >
+                  <ListItemIcon>
+                    <InboxIcon />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={
+                      <FormattedMessage id="Orders" defaultMessage="Orders" />
+                    }
+                  />
+                </ListItemButton>
+                <ListItemButton
+                  LinkComponent={Link}
                   href="/u/account/commerce/checkouts"
                   divider
                   selected={page === 'checkouts'}
                 >
                   <ListItemIcon>
-                    <InboxIcon />
+                    <ShoppingCartIcon />
                   </ListItemIcon>
                   <ListItemText
                     primary={

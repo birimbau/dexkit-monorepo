@@ -3,7 +3,7 @@ import { useMutation } from '@tanstack/react-query';
 import { useContext } from 'react';
 import { CheckoutFormType } from '../../types';
 
-export default function useUpdateCheckout() {
+export default function useCreateOrder() {
   const { instance } = useContext(DexkitApiProvider);
 
   return useMutation(async (data: CheckoutFormType) => {
@@ -11,6 +11,6 @@ export default function useUpdateCheckout() {
       throw new Error('no instance');
     }
 
-    return (await instance?.put(`/checkouts/${data?.id}`, data)).data;
+    return (await instance?.post('/orders/', data)).data;
   });
 }

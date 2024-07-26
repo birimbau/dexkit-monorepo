@@ -1,16 +1,15 @@
 import { DexkitApiProvider } from '@dexkit/core/providers';
 import { useMutation } from '@tanstack/react-query';
 import { useContext } from 'react';
-import { CheckoutFormType } from '../../types';
 
-export default function useUpdateCheckout() {
+export default function useDeleteOrder() {
   const { instance } = useContext(DexkitApiProvider);
 
-  return useMutation(async (data: CheckoutFormType) => {
+  return useMutation(async (data: { id: string }) => {
     if (!instance) {
       throw new Error('no instance');
     }
 
-    return (await instance?.put(`/checkouts/${data?.id}`, data)).data;
+    return (await instance?.delete(`/orders/${data.id}`)).data;
   });
 }

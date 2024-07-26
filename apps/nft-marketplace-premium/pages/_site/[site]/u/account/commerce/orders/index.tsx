@@ -1,10 +1,10 @@
-import CheckoutsTable from '@/modules/commerce/components/CheckoutsTable';
 import DashboardLayout from '@/modules/commerce/components/layout/DashboardLayout';
 import LazyTextField from '@dexkit/ui/components/LazyTextField';
 import { PageHeader } from '@dexkit/ui/components/PageHeader';
 import { Button, Container, InputAdornment, Stack } from '@mui/material';
 import { FormattedMessage, useIntl } from 'react-intl';
 
+import OrdersTable from '@/modules/commerce/components/OrdersTable';
 import Search from '@mui/icons-material/Search';
 import NextLink from 'next/link';
 import { useState } from 'react';
@@ -19,7 +19,7 @@ export default function CommerceCheckoutsPage() {
   const { formatMessage } = useIntl();
 
   return (
-    <DashboardLayout page="checkouts">
+    <DashboardLayout page="orders">
       <Container>
         <Stack spacing={2}>
           <PageHeader
@@ -32,7 +32,7 @@ export default function CommerceCheckoutsPage() {
               },
               {
                 caption: (
-                  <FormattedMessage id="checkouts" defaultMessage="Checkouts" />
+                  <FormattedMessage id="orders" defaultMessage="Orders" />
                 ),
                 uri: '/u/account/commerce/orders',
                 active: true,
@@ -46,7 +46,7 @@ export default function CommerceCheckoutsPage() {
           >
             <Button
               LinkComponent={NextLink}
-              href="/u/account/commerce/checkouts/create"
+              href="/u/account/commerce/orders/create"
               variant="contained"
             >
               <FormattedMessage id="create" defaultMessage="Create" />
@@ -56,8 +56,8 @@ export default function CommerceCheckoutsPage() {
                 size: 'small',
                 variant: 'standard',
                 placeholder: formatMessage({
-                  id: 'search.for.a.checkout',
-                  defaultMessage: 'Search for a checkout',
+                  id: 'search.for.a.product',
+                  defaultMessage: 'Search for an order',
                 }),
                 InputProps: {
                   startAdornment: (
@@ -70,7 +70,7 @@ export default function CommerceCheckoutsPage() {
               onChange={handleChange}
             />
           </Stack>
-          <CheckoutsTable query={query} />
+          <OrdersTable query={query} />
         </Stack>
       </Container>
     </DashboardLayout>

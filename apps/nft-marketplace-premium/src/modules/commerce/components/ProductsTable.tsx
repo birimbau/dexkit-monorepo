@@ -8,7 +8,11 @@ import { ProductFormType } from '../types';
 
 import NextLink from 'next/link';
 
-export default function ProductsTable() {
+export interface ProducstTableProps {
+  query: string;
+}
+
+export default function ProductsTable({ query }: ProducstTableProps) {
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: 5,
     pageSize: 10,
@@ -17,6 +21,7 @@ export default function ProductsTable() {
   const { data } = useProductList({
     limit: paginationModel.pageSize,
     page: paginationModel.page,
+    q: query,
   });
 
   const { formatMessage } = useIntl();

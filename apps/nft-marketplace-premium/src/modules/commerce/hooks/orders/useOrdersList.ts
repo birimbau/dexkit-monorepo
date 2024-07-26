@@ -3,16 +3,16 @@ import { useQuery } from '@tanstack/react-query';
 import { useContext } from 'react';
 import { CheckoutFormType } from '../../types';
 
-export const GET_CHECKOUT_LIST = 'GET_CHECKOUT_LIST';
+export const GET_ORDER_LIST_QUERY = 'GET_ORDER_LIST_QUERY';
 
-export default function useCheckoutList(params: {
+export default function useOrderList(params: {
   page: number;
   limit: number;
   q?: string;
 }) {
   const { instance } = useContext(DexkitApiProvider);
 
-  return useQuery([GET_CHECKOUT_LIST, params], async () => {
+  return useQuery([GET_ORDER_LIST_QUERY, params], async () => {
     if (!instance) {
       throw new Error('no instance');
     }
@@ -23,7 +23,7 @@ export default function useCheckoutList(params: {
         totalItems: number;
         totalPages: number;
         currentPage: number;
-      }>('/checkouts', { params })
+      }>('/orders', { params })
     ).data;
   });
 }

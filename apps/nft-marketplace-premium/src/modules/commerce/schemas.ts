@@ -15,10 +15,10 @@ export const CheckoutSchemaItem = z.object({
 
 export const CheckoutSchema = z.object({
   id: z.string().optional(),
-  name: z.string(),
+  title: z.string(),
   description: z.string(),
   requireEmail: z.boolean(),
-  requireAccount: z.boolean(),
+  requireAddress: z.boolean(),
   items: z.array(CheckoutSchemaItem).min(1).max(50),
 });
 

@@ -1,6 +1,7 @@
-import { Skeleton, TableCell, TableRow } from '@mui/material';
+import Delete from '@mui/icons-material/DeleteOutlined';
+import { IconButton, Skeleton, TableCell, TableRow } from '@mui/material';
 import Decimal from 'decimal.js';
-import { Field, useField } from 'formik';
+import { Field, FieldArray, useField } from 'formik';
 import { TextField } from 'formik-mui';
 import { FormattedNumber } from 'react-intl';
 import useProduct from '../hooks/useProduct';
@@ -8,10 +9,12 @@ import ProductAutocomplete from './ProductAutocomplete';
 
 export interface CheckoutItemsTableRowProps {
   name: string;
+  index: number;
 }
 
 export default function CheckoutItemsTableRow({
   name,
+  index,
 }: CheckoutItemsTableRowProps) {
   const [props, meta, helpers] = useField<string>(`${name}.productId`);
   const [propsQtd, metaQtd, helpersQtd] = useField<number | undefined>(
@@ -19,8 +22,6 @@ export default function CheckoutItemsTableRow({
   );
 
   const { data: product, isLoading } = useProduct({ id: props.value });
-
-  console.log(product);
 
   return (
     <TableRow>
@@ -64,6 +65,16 @@ export default function CheckoutItemsTableRow({
             />
           )
         )}
+      </TableCell>
+      <TableCell>
+        <FieldArray
+          name="items"
+          render={({ handleRemove }) => (
+            <IconButton onClick={handleRemove(index)}>
+              <Delete color="error" />
+            </IconButton>
+          )}
+        />
       </TableCell>
     </TableRow>
   );

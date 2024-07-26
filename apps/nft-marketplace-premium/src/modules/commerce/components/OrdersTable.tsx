@@ -1,31 +1,29 @@
 import { DataGrid, GridColDef, GridPaginationModel } from '@mui/x-data-grid';
 import { useMemo, useState } from 'react';
 import { useIntl } from 'react-intl';
-import useCheckoutList from '../hooks/checkout/useCheckoutList';
 import { CheckoutFormType } from '../types';
 
 import Link from '@mui/material/Link';
 import NextLink from 'next/link';
+import useOrderList from '../hooks/orders/useOrdersList';
 
-export interface CheckoutsTableProps {
+export interface OrdersTableProps {
   query: string;
 }
 
-export default function CheckoutsTable({ query }: CheckoutsTableProps) {
+export default function OrdersTable({ query }: OrdersTableProps) {
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: 0,
     pageSize: 5,
   });
 
-  const { data } = useCheckoutList({
+  const { data } = useOrderList({
     limit: paginationModel.pageSize,
     page: paginationModel.page,
     q: query,
   });
 
   const { formatMessage } = useIntl();
-
-  console.log('vem amis', data);
 
   const columns = useMemo(() => {
     return [

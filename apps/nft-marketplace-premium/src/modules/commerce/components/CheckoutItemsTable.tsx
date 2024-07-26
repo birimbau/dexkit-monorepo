@@ -37,7 +37,11 @@ export default function CheckoutItemsTable({ name }: CheckoutItemsTableProps) {
       </TableHead>
       <TableBody>
         {props.value.map((item, index) => (
-          <CheckoutItemsTableRow name={`${name}.${index}`} key={index} />
+          <CheckoutItemsTableRow
+            name={`${name}.${index}`}
+            key={index}
+            index={index}
+          />
         ))}
       </TableBody>
     </Table>

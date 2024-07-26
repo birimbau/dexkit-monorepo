@@ -4,12 +4,24 @@ import { TextField } from 'formik-mui';
 import { useSnackbar } from 'notistack';
 import { FormattedMessage } from 'react-intl';
 import { toFormikValidationSchema } from 'zod-formik-adapter';
+import useCheckoutSettings from '../hooks/settings/useCheckoutSettings';
 import useUpdateCheckoutSettings from '../hooks/settings/useUpdateCheckoutSettings';
 import { CheckoutSettingsSchema } from '../schemas';
 import { CheckoutSettingsType } from '../types';
 
-function CheckoutGeneralSettingsFormBase() {
+interface CheckoutGeneralSettingsFormBaseProps {
+  settings: {
+    notificationEmail: string;
+    receiverAddress: string;
+  };
+}
+
+function CheckoutGeneralSettingsFormBase({
+  settings,
+}: CheckoutGeneralSettingsFormBaseProps) {
   const { mutateAsync: update } = useUpdateCheckoutSettings();
+
+  console.log('settings', settings);
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -32,7 +44,10 @@ function CheckoutGeneralSettingsFormBase() {
   return (
     <Formik
       onSubmit={handleSubmit}
-      initialValues={{ receiverAccount: '', receiverEmail: '' }}
+      initialValues={{
+        receiverAccount: settings.receiverAddress,
+        receiverEmail: settings.notificationEmail,
+      }}
       validationSchema={toFormikValidationSchema(CheckoutSettingsSchema)}
     >
       {({ submitForm, isValid, isSubmitting }) => (
@@ -95,5 +110,9 @@ function CheckoutGeneralSettingsFormBase() {
 }
 
 export default function CheckoutGeneralSettingsForm() {
-  return <CheckoutGeneralSettingsFormBase />;
+  const { data: settings } = useCheckoutSettings();
+
+  console.log('settings', settings);
+
+  return settings && <CheckoutGeneralSettingsFormBase settings={settings} />;
 }
