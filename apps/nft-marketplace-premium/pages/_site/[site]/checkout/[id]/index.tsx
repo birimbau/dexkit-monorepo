@@ -8,46 +8,46 @@ import { DexkitApiProvider } from '@dexkit/core/providers';
 import { Token } from '@dexkit/core/types';
 import { ipfsUriToUrl, parseChainId } from '@dexkit/core/utils';
 import {
-    useActiveChainIds,
-    useConnectWalletDialog,
-    useSwitchNetworkMutation,
+  useActiveChainIds,
+  useConnectWalletDialog,
+  useSwitchNetworkMutation,
 } from '@dexkit/ui';
 import { PageHeader } from '@dexkit/ui/components/PageHeader';
 import {
-    useCheckoutData,
-    useCheckoutItems,
-    useConfirmCheckout,
+  useCheckoutData,
+  useCheckoutItems,
+  useConfirmCheckout,
 } from '@dexkit/ui/hooks/payments';
-import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
+import { useWeb3React } from '@dexkit/wallet-connectors/hooks/useWeb3React';
 import Wallet from '@mui/icons-material/Wallet';
 import {
-    Alert,
-    Avatar,
-    Button,
-    Card,
-    CardContent,
-    CircularProgress,
-    Container,
-    Divider,
-    FormControl,
-    Grid,
-    InputLabel,
-    ListItemIcon,
-    ListItemText,
-    MenuItem,
-    Select,
-    SelectChangeEvent,
-    Skeleton,
-    Stack,
-    Typography,
+  Alert,
+  Avatar,
+  Button,
+  Card,
+  CardContent,
+  CircularProgress,
+  Container,
+  Divider,
+  FormControl,
+  Grid,
+  InputLabel,
+  ListItemIcon,
+  ListItemText,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  Skeleton,
+  Stack,
+  Typography,
 } from '@mui/material';
 import { QueryClient, dehydrate, useMutation } from '@tanstack/react-query';
 import { BigNumber, ethers } from 'ethers';
 import {
-    GetStaticPaths,
-    GetStaticPathsContext,
-    GetStaticProps,
-    GetStaticPropsContext,
+  GetStaticPaths,
+  GetStaticPathsContext,
+  GetStaticProps,
+  GetStaticPropsContext,
 } from 'next';
 import { useSnackbar } from 'notistack';
 import { ReactNode, useEffect, useMemo, useState } from 'react';

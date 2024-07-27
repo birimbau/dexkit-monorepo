@@ -1,5 +1,23 @@
-import { useQuery } from 'react-query';
+import { DexkitApiProvider } from '@dexkit/core/providers';
+import { useQuery } from '@tanstack/react-query';
+import { useContext } from 'react';
+import { Checkout } from '../../types';
 
-export default function useUserCheckout({ id }: { id: string }) {
-  return useQuery([], async () => {});
+export const GET_USER_CHECKOUT_QUERY = 'GET_USER_CHECKOUT_QUERY';
+
+export default function useUserCheckout({ id }: { id?: string }) {
+  const { instance } = useContext(DexkitApiProvider);
+
+  return useQuery([GET_USER_CHECKOUT_QUERY, id], async () => {
+    if (!instance) {
+      throw new Error('no instance');
+    }
+
+    const result = (await instance?.get<Checkout>(`/checkouts/user/${id}`))
+      .data;
+
+    console.log('vem aqui', result);
+
+    return result;
+  });
 }

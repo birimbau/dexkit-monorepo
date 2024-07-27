@@ -2,7 +2,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { BigNumber, Contract } from "ethers";
 import { ERC20Abi } from "../constants/abis";
 
-import type { providers } from 'ethers';
+import type { providers } from "ethers";
 
 import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "../constants";
 import { getERC20TokenAllowance } from "../services";
@@ -23,6 +23,8 @@ export function useErc20BalanceQuery({
   provider,
 }: Erc20BalanceParams) {
   return useQuery([ERC20_BALANCE, account, contractAddress], async () => {
+    console.log("saldo", contractAddress, provider, account);
+
     if (!contractAddress || !provider || !account) {
       return BigNumber.from(0);
     }
@@ -30,6 +32,8 @@ export function useErc20BalanceQuery({
     if (isAddressEqual(contractAddress, ZEROEX_NATIVE_TOKEN_ADDRESS)) {
       return await provider.getBalance(account);
     }
+
+    await provider.ready;
 
     const contract = new Contract(contractAddress, ERC20Abi, provider);
 

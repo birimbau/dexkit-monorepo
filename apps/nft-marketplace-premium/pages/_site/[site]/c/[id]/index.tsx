@@ -1,7 +1,10 @@
 import CheckoutTokenAutocomplete from '@/modules/checkout/components/CheckoutTokenAutocomplete';
+import CheckoutUserItemList from '@/modules/commerce/components/CheckoutUserItemsTable';
 import { CHECKOUT_TOKENS } from '@/modules/commerce/constants';
 import useCheckoutTransfer from '@/modules/commerce/hooks/checkout/useCheckoutTransfer';
-import { ChainId, useErc20Balance } from '@dexkit/core';
+import useUserCheckout from '@/modules/commerce/hooks/checkout/useUserCheckout';
+import { sumItems } from '@/modules/commerce/hooks/utils';
+import { ChainId, useErc20BalanceQuery } from '@dexkit/core';
 import { NETWORKS } from '@dexkit/core/constants/networks';
 import { DexkitApiProvider } from '@dexkit/core/providers';
 import { Token } from '@dexkit/core/types';
@@ -37,19 +40,27 @@ import {
   Typography,
 } from '@mui/material';
 import { dehydrate, QueryClient } from '@tanstack/react-query';
-import { BigNumber, ethers } from 'ethers';
+import Decimal from 'decimal.js';
+import { ethers } from 'ethers';
 import {
   GetStaticPaths,
   GetStaticPathsContext,
   GetStaticProps,
   GetStaticPropsContext,
 } from 'next';
+import { useRouter } from 'next/router';
 import { ReactNode, useEffect, useMemo, useState } from 'react';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, FormattedNumber } from 'react-intl';
 import AuthMainLayout from 'src/components/layouts/authMain';
 import { getAppConfig } from 'src/services/app';
 
 export default function UserCheckout() {
+  const router = useRouter();
+
+  const { id } = router.query;
+
+  const userCheckout = useUserCheckout({ id: id as string });
+
   const {} = useCheckoutTransfer();
 
   const { activeChainIds } = useActiveChainIds();
@@ -76,17 +87,38 @@ export default function UserCheckout() {
   } = useWeb3React();
 
   const total = useMemo(() => {
-    return BigNumber.from(0);
+    if (userCheckout.data) {
+      return sumItems(
+        userCheckout.data.items.map((c) =>
+          new Decimal(c.price).mul(c.quantity),
+        ),
+      );
+    }
+
+    return new Decimal('0');
+  }, [userCheckout.data]);
+
+  const balanceQuery = useErc20BalanceQuery({
+    provider,
+    contractAddress: token?.address,
+    account,
+  });
+
+  console.log(token?.address, balanceQuery.data);
+
+  const decimalBalance = useMemo(() => {
+    if (!balanceQuery.data || token?.decimals) {
+      return new Decimal(0);
+    }
+
+    return new Decimal(
+      ethers.utils.formatUnits(balanceQuery.data, token?.decimals),
+    );
   }, []);
 
-  const balanceQuery = useErc20Balance(provider, token?.address, account);
-
   const hasSufficientBalance = useMemo(() => {
-    if (total && balanceQuery.data) {
-      return balanceQuery.data?.gte(total);
-    }
-    return false;
-  }, [total, balanceQuery.data]);
+    return decimalBalance.gte(total);
+  }, [total, decimalBalance]);
 
   const disabled = useMemo(() => {
     return false;
@@ -126,6 +158,8 @@ export default function UserCheckout() {
   };
 
   const renderPayButton = () => {
+    return <Button variant="contained">Pay</Button>;
+
     if (chainId && providerChainId && chainId !== providerChainId) {
       return (
         <Button
@@ -171,8 +205,7 @@ export default function UserCheckout() {
               defaultMessage="Pay {amount} {tokenSymbol}"
               values={{
                 tokenSymbol: token?.symbol,
-                amount:
-                  total && ethers.utils.formatUnits(total, token?.decimals),
+                amount: total.toString(),
               }}
             />
           ) : (
@@ -240,13 +273,21 @@ export default function UserCheckout() {
                   <FormattedMessage id="total" defaultMessage="total" />
                 </Typography>
                 <Typography variant="h5" fontWeight="bold">
-                  {total &&
-                    ethers.utils.formatUnits(total, token?.decimals || 6)}{' '}
+                  <FormattedNumber
+                    value={total.toNumber()}
+                    style="currency"
+                    currency="usd"
+                    maximumFractionDigits={token?.decimals}
+                    minimumFractionDigits={token?.decimals}
+                  />{' '}
                   {token ? token?.symbol : 'USD'}
                 </Typography>
               </CardContent>
               <Divider />
-              {/* <CheckoutItemList id={id} token={token} /> */}
+              <CheckoutUserItemList
+                token={token}
+                items={userCheckout.data?.items ?? []}
+              />
               <CardContent>
                 <Stack
                   direction="row"
@@ -261,7 +302,13 @@ export default function UserCheckout() {
                   </Typography>
 
                   <Typography color="text.secondary" variant="body2">
-                    total USD
+                    <FormattedNumber
+                      style="currency"
+                      currency="usd"
+                      value={total.toNumber()}
+                      maximumFractionDigits={token?.decimals}
+                      minimumFractionDigits={token?.decimals}
+                    />
                   </Typography>
                 </Stack>
               </CardContent>
@@ -364,10 +411,7 @@ export default function UserCheckout() {
                       </Typography>
                       <Typography variant="body1" color="text.secondary">
                         {balanceQuery.data ? (
-                          ethers.utils.formatUnits(
-                            balanceQuery.data,
-                            token?.decimals,
-                          )
+                          decimalBalance.toNumber()
                         ) : (
                           <Skeleton />
                         )}{' '}
