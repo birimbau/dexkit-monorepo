@@ -18,7 +18,6 @@ export default function useCheckoutSettings() {
         receiverAddress: string;
       }>('/checkouts/settings')
     ).data;
-    console.log('vem até aqui', result);
 
     return result;
   });

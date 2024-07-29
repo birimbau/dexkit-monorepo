@@ -1,7 +1,7 @@
 import DashboardLayout from '@/modules/commerce/components/layout/DashboardLayout';
 import LazyTextField from '@dexkit/ui/components/LazyTextField';
 import { PageHeader } from '@dexkit/ui/components/PageHeader';
-import { Button, Container, InputAdornment, Stack } from '@mui/material';
+import { Button, InputAdornment, Stack, Typography } from '@mui/material';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import OrdersTable from '@/modules/commerce/components/OrdersTable';
@@ -20,59 +20,58 @@ export default function CommerceCheckoutsPage() {
 
   return (
     <DashboardLayout page="orders">
-      <Container>
-        <Stack spacing={2}>
-          <PageHeader
-            breadcrumbs={[
-              {
-                caption: (
-                  <FormattedMessage id="commerce" defaultMessage="Commerce" />
-                ),
-                uri: '/u/account/commerce',
-              },
-              {
-                caption: (
-                  <FormattedMessage id="orders" defaultMessage="Orders" />
-                ),
-                uri: '/u/account/commerce/orders',
-                active: true,
-              },
-            ]}
-          />
-          <Stack
-            direction="row"
-            alignItems="center"
-            justifyContent="space-between"
+      <Stack spacing={2}>
+        <PageHeader
+          breadcrumbs={[
+            {
+              caption: (
+                <FormattedMessage id="commerce" defaultMessage="Commerce" />
+              ),
+              uri: '/u/account/commerce',
+            },
+            {
+              caption: <FormattedMessage id="orders" defaultMessage="Orders" />,
+              uri: '/u/account/commerce/orders',
+              active: true,
+            },
+          ]}
+        />
+        <Typography variant="h6">
+          <FormattedMessage id="orders" defaultMessage="Orders" />
+        </Typography>
+        <Stack
+          direction="row"
+          alignItems="center"
+          justifyContent="space-between"
+        >
+          <Button
+            LinkComponent={NextLink}
+            href="/u/account/commerce/orders/create"
+            variant="contained"
           >
-            <Button
-              LinkComponent={NextLink}
-              href="/u/account/commerce/orders/create"
-              variant="contained"
-            >
-              <FormattedMessage id="create" defaultMessage="Create" />
-            </Button>
-            <LazyTextField
-              TextFieldProps={{
-                size: 'small',
-                variant: 'standard',
-                placeholder: formatMessage({
-                  id: 'search.for.a.product',
-                  defaultMessage: 'Search for an order',
-                }),
-                InputProps: {
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <Search />
-                    </InputAdornment>
-                  ),
-                },
-              }}
-              onChange={handleChange}
-            />
-          </Stack>
-          <OrdersTable query={query} />
+            <FormattedMessage id="create" defaultMessage="Create" />
+          </Button>
+          <LazyTextField
+            TextFieldProps={{
+              size: 'small',
+              variant: 'standard',
+              placeholder: formatMessage({
+                id: 'search.for.a.product',
+                defaultMessage: 'Search for an order',
+              }),
+              InputProps: {
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Search />
+                  </InputAdornment>
+                ),
+              },
+            }}
+            onChange={handleChange}
+          />
         </Stack>
-      </Container>
+        <OrdersTable query={query} />
+      </Stack>
     </DashboardLayout>
   );
 }

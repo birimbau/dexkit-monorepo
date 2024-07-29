@@ -16,8 +16,6 @@ export default function useUserCheckout({ id }: { id?: string }) {
     const result = (await instance?.get<Checkout>(`/checkouts/user/${id}`))
       .data;
 
-    console.log('vem aqui', result);
-
     return result;
   });
 }

@@ -2,9 +2,10 @@ import CheckoutsTable from '@/modules/commerce/components/CheckoutsTable';
 import DashboardLayout from '@/modules/commerce/components/layout/DashboardLayout';
 import LazyTextField from '@dexkit/ui/components/LazyTextField';
 import { PageHeader } from '@dexkit/ui/components/PageHeader';
-import { Button, Container, InputAdornment, Stack } from '@mui/material';
+import { Button, InputAdornment, Stack, Typography } from '@mui/material';
 import { FormattedMessage, useIntl } from 'react-intl';
 
+import ShareDialog from '@dexkit/ui/components/dialogs/ShareDialog';
 import Search from '@mui/icons-material/Search';
 import NextLink from 'next/link';
 import { useState } from 'react';
@@ -18,9 +19,31 @@ export default function CommerceCheckoutsPage() {
 
   const { formatMessage } = useIntl();
 
+  const [url, setUrl] = useState<string>();
+
+  const handleShare = (url: string) => {
+    setUrl(url);
+  };
+
+  const handleClose = () => {
+    setUrl(undefined);
+  };
+
   return (
-    <DashboardLayout page="checkouts">
-      <Container>
+    <>
+      {url && (
+        <ShareDialog
+          url={url}
+          dialogProps={{
+            open: true,
+            maxWidth: 'sm',
+            fullWidth: true,
+            onClose: handleClose,
+          }}
+        />
+      )}
+
+      <DashboardLayout page="checkouts">
         <Stack spacing={2}>
           <PageHeader
             breadcrumbs={[
@@ -39,6 +62,9 @@ export default function CommerceCheckoutsPage() {
               },
             ]}
           />
+          <Typography variant="h6">
+            <FormattedMessage id="checkouts" defaultMessage="Checkouts" />
+          </Typography>
           <Stack
             direction="row"
             alignItems="center"
@@ -70,9 +96,9 @@ export default function CommerceCheckoutsPage() {
               onChange={handleChange}
             />
           </Stack>
-          <CheckoutsTable query={query} />
-        </Stack>
-      </Container>
-    </DashboardLayout>
+          <CheckoutsTable query={query} onShare={handleShare} />
+        </Stack>{' '}
+      </DashboardLayout>
+    </>
   );
 }

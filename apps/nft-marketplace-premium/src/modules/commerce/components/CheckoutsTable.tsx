@@ -1,17 +1,24 @@
 import { DataGrid, GridColDef, GridPaginationModel } from '@mui/x-data-grid';
 import { useMemo, useState } from 'react';
-import { useIntl } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 import useCheckoutList from '../hooks/checkout/useCheckoutList';
 import { CheckoutFormType } from '../types';
 
+import { getWindowUrl } from '@dexkit/core/utils/browser';
+import Share from '@mui/icons-material/Share';
+import { IconButton, Tooltip } from '@mui/material';
 import Link from '@mui/material/Link';
 import NextLink from 'next/link';
 
 export interface CheckoutsTableProps {
   query: string;
+  onShare: (url: string) => void;
 }
 
-export default function CheckoutsTable({ query }: CheckoutsTableProps) {
+export default function CheckoutsTable({
+  query,
+  onShare,
+}: CheckoutsTableProps) {
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: 0,
     pageSize: 5,
@@ -25,11 +32,10 @@ export default function CheckoutsTable({ query }: CheckoutsTableProps) {
 
   const { formatMessage } = useIntl();
 
-  console.log('vem amis', data);
-
   const columns = useMemo(() => {
     return [
       {
+        flex: 1,
         field: 'title',
         headerName: formatMessage({ id: 'title', defaultMessage: 'Title' }),
         renderCell: ({ row }) => (
@@ -42,6 +48,7 @@ export default function CheckoutsTable({ query }: CheckoutsTableProps) {
         ),
       },
       {
+        flex: 1,
         field: 'description',
         headerName: formatMessage({
           id: 'description',
@@ -49,8 +56,21 @@ export default function CheckoutsTable({ query }: CheckoutsTableProps) {
         }),
       },
       {
-        field: 'total',
-        headerName: formatMessage({ id: 'total', defaultMessage: 'total' }),
+        flex: 1,
+        field: 'actions',
+        headerName: formatMessage({
+          id: 'actions',
+          defaultMessage: 'Actions',
+        }),
+        renderCell: ({ row }) => (
+          <IconButton onClick={() => onShare(`${getWindowUrl()}/c/${row.id}`)}>
+            <Tooltip
+              title={<FormattedMessage id="share" defaultMessage="Share" />}
+            >
+              <Share />
+            </Tooltip>
+          </IconButton>
+        ),
       },
     ] as GridColDef<CheckoutFormType>[];
   }, []);
@@ -64,6 +84,8 @@ export default function CheckoutsTable({ query }: CheckoutsTableProps) {
       getRowId={(row) => String(row.id)}
       paginationModel={paginationModel}
       onPaginationModelChange={setPaginationModel}
+      disableRowSelectionOnClick
+      disableColumnSelector
     />
   );
 }

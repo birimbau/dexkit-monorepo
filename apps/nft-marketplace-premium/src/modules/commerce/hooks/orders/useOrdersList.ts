@@ -1,7 +1,7 @@
 import { DexkitApiProvider } from '@dexkit/core/providers';
 import { useQuery } from '@tanstack/react-query';
 import { useContext } from 'react';
-import { CheckoutFormType } from '../../types';
+import { Order } from '../../types';
 
 export const GET_ORDER_LIST_QUERY = 'GET_ORDER_LIST_QUERY';
 
@@ -19,7 +19,7 @@ export default function useOrderList(params: {
 
     return (
       await instance.get<{
-        items: CheckoutFormType[];
+        items: Order[];
         totalItems: number;
         totalPages: number;
         currentPage: number;

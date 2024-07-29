@@ -86,11 +86,7 @@ function UpdateProductPagePage() {
 
   const { id } = router.query;
 
-  console.log(router.query);
-
   const { data: product } = useProduct({ id: id as string });
-
-  console.log(product);
 
   return product && <UpdateProductComponent product={product} />;
 }

@@ -1,14 +1,14 @@
 import { DexkitApiProvider } from '@dexkit/core/providers';
 import { useQuery } from '@tanstack/react-query';
 import { useContext } from 'react';
-import { Order } from '../../types';
+import { OrderItem } from '../../types';
 
-export const GET_ORDER_QUERY = 'GET_ORDER_QUERY';
+export const GET_ORDER_ITEMS_QUERY = 'GET_ORDER_ITEMS_QUERY';
 
-export default function useOrder(params: { id?: string }) {
+export default function useOrderItems(params: { id?: string }) {
   const { instance } = useContext(DexkitApiProvider);
 
-  return useQuery([GET_ORDER_QUERY, params], async () => {
+  return useQuery([GET_ORDER_ITEMS_QUERY, params], async () => {
     if (!instance) {
       throw new Error('no instance');
     }
@@ -17,6 +17,6 @@ export default function useOrder(params: { id?: string }) {
       return null;
     }
 
-    return (await instance.get<Order>(`/orders/${params.id}`)).data;
+    return (await instance.get<OrderItem[]>(`/orders/${params.id}/items`)).data;
   });
 }

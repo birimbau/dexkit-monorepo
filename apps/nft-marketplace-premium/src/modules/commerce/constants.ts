@@ -83,4 +83,13 @@ export const CHECKOUT_TOKENS: Token[] = [
     name: 'USDC',
     symbol: 'USDC',
   },
+  {
+    address: '0x4300000000000000000000000000000000000003',
+    chainId: 81457,
+    logoURI:
+      'https://raw.githubusercontent.com/DexKit/dexkit-evm-chains/main/assets/evm-chain-icons/blast.png',
+    decimals: 18,
+    name: 'USDB Coin',
+    symbol: 'USDB',
+  },
 ];

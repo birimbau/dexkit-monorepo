@@ -31,8 +31,6 @@ export default function ProductAutocomplete({
     q: lazyQuery,
   });
 
-  console.log(products);
-
   const { data: product } = useProduct({ id: props.value });
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {

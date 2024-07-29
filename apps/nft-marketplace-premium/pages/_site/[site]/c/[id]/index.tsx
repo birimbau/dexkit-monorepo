@@ -1,14 +1,17 @@
 import CheckoutTokenAutocomplete from '@/modules/checkout/components/CheckoutTokenAutocomplete';
 import CheckoutUserItemList from '@/modules/commerce/components/CheckoutUserItemsTable';
 import { CHECKOUT_TOKENS } from '@/modules/commerce/constants';
-import useCheckoutTransfer from '@/modules/commerce/hooks/checkout/useCheckoutTransfer';
 import useUserCheckout from '@/modules/commerce/hooks/checkout/useUserCheckout';
 import { sumItems } from '@/modules/commerce/hooks/utils';
 import { ChainId, useErc20BalanceQuery } from '@dexkit/core';
 import { NETWORKS } from '@dexkit/core/constants/networks';
 import { DexkitApiProvider } from '@dexkit/core/providers';
-import { Token } from '@dexkit/core/types';
-import { ipfsUriToUrl, parseChainId } from '@dexkit/core/utils';
+import { Token, TokenWhitelabelApp } from '@dexkit/core/types';
+import {
+  convertTokenToEvmCoin,
+  ipfsUriToUrl,
+  parseChainId,
+} from '@dexkit/core/utils';
 import {
   useActiveChainIds,
   useConnectWalletDialog,
@@ -37,6 +40,7 @@ import {
   SelectChangeEvent,
   Skeleton,
   Stack,
+  TextField,
   Typography,
 } from '@mui/material';
 import { dehydrate, QueryClient } from '@tanstack/react-query';
@@ -49,10 +53,18 @@ import {
   GetStaticPropsContext,
 } from 'next';
 import { useRouter } from 'next/router';
-import { ReactNode, useEffect, useMemo, useState } from 'react';
+import { ChangeEvent, ReactNode, useEffect, useMemo, useState } from 'react';
 import { FormattedMessage, FormattedNumber } from 'react-intl';
 import AuthMainLayout from 'src/components/layouts/authMain';
 import { getAppConfig } from 'src/services/app';
+
+import CheckoutConfirmDialog from '@/modules/commerce/components/dialogs/CheckoutConfirmDialog';
+import useCheckoutPay from '@/modules/commerce/hooks/checkout/useCheckoutPay';
+import { useEvmTransferMutation } from '@dexkit/ui/modules/evm-transfer-coin/hooks';
+import { useSnackbar } from 'notistack';
+import { z } from 'zod';
+
+const validEmail = z.string().email();
 
 export default function UserCheckout() {
   const router = useRouter();
@@ -61,8 +73,6 @@ export default function UserCheckout() {
 
   const userCheckout = useUserCheckout({ id: id as string });
 
-  const {} = useCheckoutTransfer();
-
   const { activeChainIds } = useActiveChainIds();
 
   const [open, setOpen] = useState(false);
@@ -70,6 +80,9 @@ export default function UserCheckout() {
   const [token, setToken] = useState<Token | null>(null);
 
   const [chainId, setChainId] = useState<ChainId>();
+
+  const [email, setEmail] = useState('');
+  const [isValidEmail, setIsValidEmail] = useState(false);
 
   const switchNetwork = useSwitchNetworkMutation();
 
@@ -85,6 +98,61 @@ export default function UserCheckout() {
     isActive,
     provider,
   } = useWeb3React();
+
+  const [hash, setHash] = useState<string>();
+
+  const { mutateAsync: checkoutPay, reset } = useCheckoutPay();
+
+  const { enqueueSnackbar } = useSnackbar();
+
+  const {
+    data,
+    isLoading: isTransferLoading,
+    mutateAsync: transfer,
+  } = useEvmTransferMutation({
+    provider,
+    onConfirm: () => {},
+    onSubmit: async (hash, params) => {
+      setHash(hash);
+
+      enqueueSnackbar(
+        <FormattedMessage
+          id="transaction.created"
+          defaultMessage="Transaction created"
+        />,
+        { variant: 'success' },
+      );
+
+      if (chainId && token && userCheckout.data && account) {
+        try {
+          await checkoutPay({
+            id: userCheckout.data.id,
+            chainId: chainId,
+            hash,
+            tokenAddress: token?.address,
+            senderEmail: email,
+            senderAddress: account,
+          });
+
+          enqueueSnackbar(
+            <FormattedMessage
+              id="order.created"
+              defaultMessage="Order created"
+            />,
+            { variant: 'success' },
+          );
+        } catch (err) {
+          enqueueSnackbar(
+            <FormattedMessage
+              id="error.while.creating.order"
+              defaultMessage="Error while creating order"
+            />,
+            { variant: 'error' },
+          );
+        }
+      }
+    },
+  });
 
   const total = useMemo(() => {
     if (userCheckout.data) {
@@ -102,23 +170,22 @@ export default function UserCheckout() {
     provider,
     contractAddress: token?.address,
     account,
+    chainId,
   });
 
-  console.log(token?.address, balanceQuery.data);
-
   const decimalBalance = useMemo(() => {
-    if (!balanceQuery.data || token?.decimals) {
+    if (balanceQuery.data === undefined || token?.decimals === undefined) {
       return new Decimal(0);
     }
 
     return new Decimal(
       ethers.utils.formatUnits(balanceQuery.data, token?.decimals),
     );
-  }, []);
+  }, [balanceQuery.data, token]);
 
   const hasSufficientBalance = useMemo(() => {
     return decimalBalance.gte(total);
-  }, [total, decimalBalance]);
+  }, [total.toString(), decimalBalance.toString()]);
 
   const disabled = useMemo(() => {
     return false;
@@ -158,8 +225,6 @@ export default function UserCheckout() {
   };
 
   const renderPayButton = () => {
-    return <Button variant="contained">Pay</Button>;
-
     if (chainId && providerChainId && chainId !== providerChainId) {
       return (
         <Button
@@ -188,7 +253,13 @@ export default function UserCheckout() {
     if (isActive) {
       return (
         <Button
-          disabled={!hasSufficientBalance || disabled || !token}
+          disabled={
+            !hasSufficientBalance ||
+            disabled ||
+            !token ||
+            !email ||
+            !isValidEmail
+          }
           fullWidth
           onClick={handlePay}
           variant="contained"
@@ -244,8 +315,49 @@ export default function UserCheckout() {
     }
   }, [providerChainId]);
 
+  const handleConfirm = async () => {
+    if (token && userCheckout.data?.owner) {
+      try {
+        await transfer({
+          address: userCheckout.data?.owner,
+          amount: total.toNumber(),
+          coin: convertTokenToEvmCoin(token as TokenWhitelabelApp),
+        });
+      } catch (err) {}
+    }
+  };
+
+  const handleCloseConfirm = () => {
+    setOpen(false);
+    setHash(undefined);
+  };
+
+  const handleChangeEmail = (e: ChangeEvent<HTMLInputElement>) => {
+    setEmail(e.target.value);
+
+    try {
+      validEmail.parse(e.target.value);
+      setIsValidEmail(true);
+    } catch (err) {
+      setIsValidEmail(false);
+    }
+  };
+
   return (
     <>
+      <CheckoutConfirmDialog
+        DialogProps={{
+          open: open,
+          onClose: handleCloseConfirm,
+          maxWidth: 'xs',
+          fullWidth: true,
+        }}
+        onConfirm={handleConfirm}
+        txHash={hash}
+        isLoading={isTransferLoading}
+        token={token}
+        total={total}
+      />
       <Container>
         <Grid container spacing={2}>
           <Grid item xs={12}>
@@ -278,7 +390,6 @@ export default function UserCheckout() {
                     style="currency"
                     currency="usd"
                     maximumFractionDigits={token?.decimals}
-                    minimumFractionDigits={token?.decimals}
                   />{' '}
                   {token ? token?.symbol : 'USD'}
                 </Typography>
@@ -307,7 +418,6 @@ export default function UserCheckout() {
                       currency="usd"
                       value={total.toNumber()}
                       maximumFractionDigits={token?.decimals}
-                      minimumFractionDigits={token?.decimals}
                     />
                   </Typography>
                 </Stack>
@@ -396,6 +506,26 @@ export default function UserCheckout() {
                     </Alert>
                   )}
 
+                  <TextField
+                    value={email}
+                    onChange={handleChangeEmail}
+                    fullWidth
+                    label={
+                      <FormattedMessage id="email" defaultMessage="Email" />
+                    }
+                    type="email"
+                    error={!isValidEmail || email === ''}
+                    helperText={
+                      !isValidEmail || !Boolean(email) ? (
+                        <FormattedMessage
+                          id="email.is.required"
+                          defaultMessage="Email is required"
+                        />
+                      ) : undefined
+                    }
+                    required
+                  />
+
                   {token && (
                     <Stack
                       direction="row"
@@ -410,10 +540,13 @@ export default function UserCheckout() {
                         />
                       </Typography>
                       <Typography variant="body1" color="text.secondary">
-                        {balanceQuery.data ? (
-                          decimalBalance.toNumber()
-                        ) : (
+                        {balanceQuery.isLoading ? (
                           <Skeleton />
+                        ) : (
+                          <FormattedNumber
+                            value={decimalBalance.toNumber()}
+                            maximumFractionDigits={token?.decimals}
+                          />
                         )}{' '}
                         {token?.symbol}
                       </Typography>

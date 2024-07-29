@@ -1,7 +1,7 @@
 import DashboardLayout from '@/modules/commerce/components/layout/DashboardLayout';
 import ProductsTable from '@/modules/commerce/components/ProductsTable';
 import { PageHeader } from '@dexkit/ui/components/PageHeader';
-import { Button, InputAdornment, Stack } from '@mui/material';
+import { Button, InputAdornment, Stack, Typography } from '@mui/material';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import LazyTextField from '@dexkit/ui/components/LazyTextField';
@@ -38,7 +38,9 @@ export default function CommerceProductsPage() {
             },
           ]}
         />
-
+        <Typography variant="h6">
+          <FormattedMessage id="products" defaultMessage="Products" />
+        </Typography>
         <Stack
           direction="row"
           alignItems="center"

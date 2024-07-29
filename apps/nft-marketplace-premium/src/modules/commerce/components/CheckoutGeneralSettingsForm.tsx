@@ -21,8 +21,6 @@ function CheckoutGeneralSettingsFormBase({
 }: CheckoutGeneralSettingsFormBaseProps) {
   const { mutateAsync: update } = useUpdateCheckoutSettings();
 
-  console.log('settings', settings);
-
   const { enqueueSnackbar } = useSnackbar();
 
   const handleSubmit = async (value: CheckoutSettingsType) => {
@@ -111,8 +109,6 @@ function CheckoutGeneralSettingsFormBase({
 
 export default function CheckoutGeneralSettingsForm() {
   const { data: settings } = useCheckoutSettings();
-
-  console.log('settings', settings);
 
   return settings && <CheckoutGeneralSettingsFormBase settings={settings} />;
 }

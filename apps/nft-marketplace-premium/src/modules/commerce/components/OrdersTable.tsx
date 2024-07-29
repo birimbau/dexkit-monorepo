@@ -1,8 +1,9 @@
 import { DataGrid, GridColDef, GridPaginationModel } from '@mui/x-data-grid';
 import { useMemo, useState } from 'react';
-import { useIntl } from 'react-intl';
-import { CheckoutFormType } from '../types';
+import { FormattedMessage, useIntl } from 'react-intl';
+import { Order } from '../types';
 
+import { getBlockExplorerUrl, truncateAddress } from '@dexkit/core/utils';
 import Link from '@mui/material/Link';
 import NextLink from 'next/link';
 import useOrderList from '../hooks/orders/useOrdersList';
@@ -28,29 +29,81 @@ export default function OrdersTable({ query }: OrdersTableProps) {
   const columns = useMemo(() => {
     return [
       {
-        field: 'title',
-        headerName: formatMessage({ id: 'title', defaultMessage: 'Title' }),
+        flex: 1,
+        field: 'order',
+        headerName: formatMessage({
+          id: 'order.id',
+          defaultMessage: 'Order ID',
+        }),
         renderCell: ({ row }) => (
           <Link
             component={NextLink}
-            href={`/u/account/commerce/checkouts/${row.id}`}
+            href={`/u/account/commerce/orders/${row.id}`}
           >
-            {row.title}
+            {row.id.substring(10)}
           </Link>
         ),
       },
       {
-        field: 'description',
+        flex: 1,
+        field: 'total',
         headerName: formatMessage({
-          id: 'description',
-          defaultMessage: 'Description',
+          id: 'total',
+          defaultMessage: 'Total',
         }),
+        renderCell: ({ row }) => {
+          return row.amount;
+        },
       },
       {
-        field: 'total',
-        headerName: formatMessage({ id: 'total', defaultMessage: 'total' }),
+        flex: 1,
+        field: 'contractAddress',
+        headerName: formatMessage({
+          id: 'token',
+          defaultMessage: 'Token',
+        }),
+        renderCell: ({ row }) => {
+          return (
+            <Link
+              target="_blank"
+              href={`${getBlockExplorerUrl(row.chainId)}/address/${
+                row.contractAddress
+              }`}
+            >
+              {truncateAddress(row.contractAddress)}
+            </Link>
+          );
+        },
       },
-    ] as GridColDef<CheckoutFormType>[];
+      {
+        flex: 1,
+        field: 'senderAddress',
+        headerName: formatMessage({ id: 'creator', defaultMessage: 'Creator' }),
+        renderCell: ({ row }) => (
+          <Link component={NextLink} href={`/`}>
+            {truncateAddress(row.senderAddress)}
+          </Link>
+        ),
+      },
+      {
+        flex: 1,
+        field: 'hash',
+        headerName: formatMessage({
+          id: 'transaction',
+          defaultMessage: 'Transaction',
+        }),
+        renderCell: ({ row }) => {
+          return (
+            <Link
+              target="_blank"
+              href={`${getBlockExplorerUrl(row.chainId)}/tx/${row.hash}`}
+            >
+              <FormattedMessage id="transaction" defaultMessage="Transaction" />
+            </Link>
+          );
+        },
+      },
+    ] as GridColDef<Order>[];
   }, []);
 
   return (

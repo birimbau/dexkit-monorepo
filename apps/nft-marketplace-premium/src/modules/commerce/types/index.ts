@@ -41,3 +41,33 @@ export type Checkout = {
   owner: string;
   items: CheckoutItem[];
 };
+
+export type Order = {
+  id: string;
+  createdAt: Date;
+  updatedAt: Date;
+  metadata: any;
+  chainId: number;
+  contractAddress: string;
+  amount: string;
+  hash: string;
+  receiver: string;
+  receiverEmail: string;
+  notificationEmail: string;
+  senderAddress: string;
+  email: string | null;
+  owner: string;
+  status: string;
+};
+
+export type OrderItem = {
+  id: string;
+  createdAt: Date;
+  updatedAt: Date;
+  title: string;
+  orderId: string;
+  quantity: number;
+  price: string;
+  productId: string;
+  metadata: any;
+};

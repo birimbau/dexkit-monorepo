@@ -4,7 +4,7 @@ import { ERC20Abi } from "../constants/abis";
 
 import type { providers } from "ethers";
 
-import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "../constants";
+import { ChainId, ZEROEX_NATIVE_TOKEN_ADDRESS } from "../constants";
 import { getERC20TokenAllowance } from "../services";
 import { approveToken, getERC20Balance } from "../services/balances";
 import { isAddressEqual } from "../utils";
@@ -15,30 +15,32 @@ export interface Erc20BalanceParams {
   account?: string;
   contractAddress?: string;
   provider?: providers.BaseProvider;
+  chainId?: ChainId;
 }
 
 export function useErc20BalanceQuery({
   account,
   contractAddress,
   provider,
+  chainId,
 }: Erc20BalanceParams) {
-  return useQuery([ERC20_BALANCE, account, contractAddress], async () => {
-    console.log("saldo", contractAddress, provider, account);
+  return useQuery(
+    [ERC20_BALANCE, account, contractAddress, chainId],
+    async () => {
+      if (!contractAddress || !provider || !account) {
+        return BigNumber.from(0);
+      }
 
-    if (!contractAddress || !provider || !account) {
-      return BigNumber.from(0);
+      if (isAddressEqual(contractAddress, ZEROEX_NATIVE_TOKEN_ADDRESS)) {
+        return await provider.getBalance(account);
+      }
+      await provider.ready;
+
+      const contract = new Contract(contractAddress, ERC20Abi, provider);
+
+      return (await contract.balanceOf(account)) as BigNumber;
     }
-
-    if (isAddressEqual(contractAddress, ZEROEX_NATIVE_TOKEN_ADDRESS)) {
-      return await provider.getBalance(account);
-    }
-
-    await provider.ready;
-
-    const contract = new Contract(contractAddress, ERC20Abi, provider);
-
-    return (await contract.balanceOf(account)) as BigNumber;
-  });
+  );
 }
 
 const EVM_NATIVE_BALANCE_QUERY = "EVM_NATIVE_BALANCE_QUERY";
