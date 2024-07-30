@@ -6,9 +6,11 @@ import { CheckoutFormType } from '../types';
 
 import { getWindowUrl } from '@dexkit/core/utils/browser';
 import Share from '@mui/icons-material/Share';
-import { IconButton, Tooltip } from '@mui/material';
+import { Box, IconButton, Tooltip } from '@mui/material';
 import Link from '@mui/material/Link';
 import NextLink from 'next/link';
+import { LoadingOverlay } from './LoadingOverlay';
+import { noRowsOverlay } from './NoRowsOverlay';
 
 export interface CheckoutsTableProps {
   query: string;
@@ -24,7 +26,7 @@ export default function CheckoutsTable({
     pageSize: 5,
   });
 
-  const { data } = useCheckoutList({
+  const { data, isLoading } = useCheckoutList({
     limit: paginationModel.pageSize,
     page: paginationModel.page,
     q: query,
@@ -76,16 +78,41 @@ export default function CheckoutsTable({
   }, []);
 
   return (
-    <DataGrid
-      columns={columns}
-      rows={data?.items ?? []}
-      rowCount={data?.totalItems}
-      paginationMode="client"
-      getRowId={(row) => String(row.id)}
-      paginationModel={paginationModel}
-      onPaginationModelChange={setPaginationModel}
-      disableRowSelectionOnClick
-      disableColumnSelector
-    />
+    <Box>
+      <DataGrid
+        columns={columns}
+        rows={data?.items ?? []}
+        rowCount={data?.items.length}
+        paginationMode="client"
+        getRowId={(row) => String(row.id)}
+        paginationModel={paginationModel}
+        onPaginationModelChange={setPaginationModel}
+        loading={isLoading}
+        sx={{ height: 300 }}
+        slots={{
+          noRowsOverlay: noRowsOverlay(
+            <FormattedMessage
+              id="no.checkouts"
+              defaultMessage="No Checkouts"
+            />,
+            <FormattedMessage
+              id="create.checkouts.to.see.it.here"
+              defaultMessage="Create checkouts to see it here"
+            />,
+          ),
+          loadingOverlay: LoadingOverlay,
+          noResultsOverlay: noRowsOverlay(
+            <FormattedMessage
+              id="no.checkouts"
+              defaultMessage="No Checkouts"
+            />,
+            <FormattedMessage
+              id="create.checkouts.to.see.it.here"
+              defaultMessage="Create checkouts to see it here"
+            />,
+          ),
+        }}
+      />
+    </Box>
   );
 }

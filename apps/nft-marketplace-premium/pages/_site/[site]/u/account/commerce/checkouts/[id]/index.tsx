@@ -19,9 +19,9 @@ interface CheckoutEditComponentProps {
 function FormWrapper({ checkout }: CheckoutEditComponentProps) {
   const { mutateAsync: update } = useUpdateCheckout();
 
-  console.log(checkout);
-
   const { enqueueSnackbar } = useSnackbar();
+
+  const router = useRouter();
 
   const handleSubmit = async (values: CheckoutFormType) => {
     try {

@@ -46,7 +46,11 @@ export default function CommerceProductsPage() {
           alignItems="center"
           justifyContent="space-between"
         >
-          <Button LinkComponent={NextLink} variant="contained">
+          <Button
+            LinkComponent={NextLink}
+            variant="contained"
+            href="/u/account/commerce/products/create"
+          >
             <FormattedMessage id="create" defaultMessage="Create" />
           </Button>
           <LazyTextField

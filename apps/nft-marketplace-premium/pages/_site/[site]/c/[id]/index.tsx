@@ -174,7 +174,7 @@ export default function UserCheckout() {
   });
 
   const decimalBalance = useMemo(() => {
-    if (balanceQuery.data === undefined || token?.decimals === undefined) {
+    if (balanceQuery.data === undefined || token === undefined) {
       return new Decimal(0);
     }
 
@@ -257,8 +257,7 @@ export default function UserCheckout() {
             !hasSufficientBalance ||
             disabled ||
             !token ||
-            !email ||
-            !isValidEmail
+            (userCheckout.data?.requireEmail && (!email || !isValidEmail))
           }
           fullWidth
           onClick={handlePay}
@@ -506,25 +505,27 @@ export default function UserCheckout() {
                     </Alert>
                   )}
 
-                  <TextField
-                    value={email}
-                    onChange={handleChangeEmail}
-                    fullWidth
-                    label={
-                      <FormattedMessage id="email" defaultMessage="Email" />
-                    }
-                    type="email"
-                    error={!isValidEmail || email === ''}
-                    helperText={
-                      !isValidEmail || !Boolean(email) ? (
-                        <FormattedMessage
-                          id="email.is.required"
-                          defaultMessage="Email is required"
-                        />
-                      ) : undefined
-                    }
-                    required
-                  />
+                  {userCheckout.data?.requireEmail && (
+                    <TextField
+                      value={email}
+                      onChange={handleChangeEmail}
+                      fullWidth
+                      label={
+                        <FormattedMessage id="email" defaultMessage="Email" />
+                      }
+                      type="email"
+                      error={!isValidEmail || email === ''}
+                      helperText={
+                        !isValidEmail || !Boolean(email) ? (
+                          <FormattedMessage
+                            id="email.is.required"
+                            defaultMessage="Email is required"
+                          />
+                        ) : undefined
+                      }
+                      required
+                    />
+                  )}
 
                   {token && (
                     <Stack

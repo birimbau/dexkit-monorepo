@@ -6,6 +6,7 @@ import { ProductFormType } from '@/modules/commerce/types';
 import { PageHeader } from '@dexkit/ui/components/PageHeader';
 import { Grid } from '@mui/material';
 import { Formik } from 'formik';
+import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
 import { FormattedMessage } from 'react-intl';
 import { toFormikValidationSchema } from 'zod-formik-adapter';
@@ -14,6 +15,8 @@ function CreateProductComponent() {
   const { mutateAsync: createProduct } = useCreateProduct();
 
   const { enqueueSnackbar } = useSnackbar();
+
+  const router = useRouter();
 
   const handleSubmit = async (values: ProductFormType) => {
     try {
@@ -25,6 +28,7 @@ function CreateProductComponent() {
         />,
         { variant: 'success' },
       );
+      router.push('/u/account/commerce/products');
     } catch (err) {
       enqueueSnackbar(String(err), { variant: 'error' });
     }

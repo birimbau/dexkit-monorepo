@@ -43,7 +43,7 @@ export default function CheckoutItemsTableRow({
           <FormattedNumber
             style="currency"
             minimumFractionDigits={2}
-            maximumFractionDigits={2}
+            maximumFractionDigits={18}
             currency="usd"
             value={new Decimal(product?.price ?? '0').toNumber()}
           />
@@ -56,9 +56,9 @@ export default function CheckoutItemsTableRow({
           propsQtd.value && (
             <FormattedNumber
               style="currency"
-              minimumFractionDigits={2}
-              maximumFractionDigits={2}
               currency="usd"
+              minimumFractionDigits={2}
+              maximumFractionDigits={18}
               value={new Decimal(product?.price ?? '0')
                 .mul(parseInt(propsQtd.value?.toString() ?? '0').toString())
                 .toNumber()}

@@ -33,6 +33,9 @@ export default function CheckoutItemsTable({ name }: CheckoutItemsTableProps) {
           <TableCell>
             <FormattedMessage id="Total" defaultMessage="Total" />
           </TableCell>
+          <TableCell>
+            <FormattedMessage id="actions" defaultMessage="Actions" />
+          </TableCell>
         </TableRow>
       </TableHead>
       <TableBody>

@@ -1,12 +1,11 @@
 import DashboardLayout from '@/modules/commerce/components/layout/DashboardLayout';
 import LazyTextField from '@dexkit/ui/components/LazyTextField';
 import { PageHeader } from '@dexkit/ui/components/PageHeader';
-import { Button, InputAdornment, Stack, Typography } from '@mui/material';
+import { InputAdornment, Stack, Typography } from '@mui/material';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import OrdersTable from '@/modules/commerce/components/OrdersTable';
 import Search from '@mui/icons-material/Search';
-import NextLink from 'next/link';
 import { useState } from 'react';
 
 export default function CommerceCheckoutsPage() {
@@ -36,21 +35,15 @@ export default function CommerceCheckoutsPage() {
             },
           ]}
         />
-        <Typography variant="h6">
-          <FormattedMessage id="orders" defaultMessage="Orders" />
-        </Typography>
+
         <Stack
           direction="row"
-          alignItems="center"
+          alignItems="baseline"
           justifyContent="space-between"
         >
-          <Button
-            LinkComponent={NextLink}
-            href="/u/account/commerce/orders/create"
-            variant="contained"
-          >
-            <FormattedMessage id="create" defaultMessage="Create" />
-          </Button>
+          <Typography variant="h6">
+            <FormattedMessage id="orders" defaultMessage="Orders" />
+          </Typography>
           <LazyTextField
             TextFieldProps={{
               size: 'small',

@@ -14,6 +14,7 @@ import {
 } from '@mui/material';
 import { Field, useFormikContext } from 'formik';
 import { TextField } from 'formik-mui';
+import Link from 'next/link';
 import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { ProductFormType } from '../types';
@@ -124,7 +125,7 @@ export default function ProductForm({ onSubmit, isValid }: ProductFormProps) {
               justifyContent="flex-end"
               spacing={2}
             >
-              <Button>
+              <Button LinkComponent={Link} href="/u/account/commerce/products">
                 <FormattedMessage id="cancel" defaultMessage="cancel" />
               </Button>
               <Button

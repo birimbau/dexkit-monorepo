@@ -2,18 +2,25 @@ import {
   Box,
   Button,
   Divider,
+  FormControl,
   FormControlLabel,
   FormGroup,
+  FormHelperText,
   Grid,
   Stack,
 } from '@mui/material';
 import { Field, FieldArray, useFormikContext } from 'formik';
 import { Checkbox, TextField } from 'formik-mui';
+import Link from 'next/link';
 import { FormattedMessage } from 'react-intl';
 import { CheckoutItemType } from '../types';
 import CheckoutItemsTable from './CheckoutItemsTable';
 
-export default function CheckoutForm() {
+export interface CheckoutFormProps {
+  disabled?: boolean;
+}
+
+export default function CheckoutForm({ disabled }: CheckoutFormProps) {
   const { submitForm, isValid, isSubmitting } = useFormikContext();
 
   return (
@@ -24,6 +31,7 @@ export default function CheckoutForm() {
           component={TextField}
           name="title"
           fullWidth
+          disabled={disabled}
         />
       </Grid>
       <Grid item xs={12}>
@@ -36,27 +44,31 @@ export default function CheckoutForm() {
           fullWidth
           multiline
           rows={3}
+          disabled={disabled}
         />
       </Grid>
       <Grid item xs={12}>
-        <FormGroup row>
-          <FormControlLabel
-            control={
-              <Field component={Checkbox} type="checkbox" name="requireEmail" />
-            }
-            label="Require email"
-          />
-          <FormControlLabel
-            control={
-              <Field
-                component={Checkbox}
-                type="checkbox"
-                name="requireAddress"
-              />
-            }
-            label="Require account"
-          />
-        </FormGroup>
+        <FormControl>
+          <FormGroup sx={{ px: 2 }} row>
+            <FormControlLabel
+              control={
+                <Field
+                  component={Checkbox}
+                  type="checkbox"
+                  name="requireEmail"
+                />
+              }
+              disabled={disabled}
+              label="Require email"
+            />
+          </FormGroup>
+          <FormHelperText>
+            <FormattedMessage
+              id="checkbox.required.email.message"
+              defaultMessage="If you check this box, the customer will be required to provide an email address to create an order."
+            />
+          </FormHelperText>
+        </FormControl>
       </Grid>
       <Grid item xs={12}>
         <CheckoutItemsTable name="items" />
@@ -66,6 +78,7 @@ export default function CheckoutForm() {
           name="items"
           render={({ handlePush }) => (
             <Button
+              disabled={disabled}
               variant="outlined"
               onClick={handlePush({
                 productId: '',
@@ -83,12 +96,12 @@ export default function CheckoutForm() {
       <Grid item xs={12}>
         <Box>
           <Stack justifyContent="flex-end" direction="row" spacing={2}>
-            <Button>
+            <Button LinkComponent={Link} href="/u/account/commerce/checkouts">
               <FormattedMessage id="Cancel" defaultMessage="Cancel" />
             </Button>
             <Button
               onClick={submitForm}
-              disabled={!isValid || isSubmitting}
+              disabled={!isValid || isSubmitting || disabled}
               variant="contained"
             >
               <FormattedMessage id="save" defaultMessage="Save" />

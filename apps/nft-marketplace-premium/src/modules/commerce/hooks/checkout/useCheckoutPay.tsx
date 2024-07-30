@@ -25,13 +25,18 @@ export default function useCheckoutPay() {
         throw new Error('no instance');
       }
 
-      return await instance.post(`/checkouts/${id}/pay`, {
+      const params: any = {
         hash,
         tokenAddress,
         chainId,
         senderAddress,
-        senderEmail,
-      });
+      };
+
+      if (senderEmail) {
+        params.senderEmail = senderEmail;
+      }
+
+      return await instance.post(`/checkouts/${id}/pay`, params);
     },
   );
 }
