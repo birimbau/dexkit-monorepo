@@ -105,7 +105,7 @@ export async function getAppConfig(
 
   if (site?.includes('localhost:')) {
     const [slug] = site?.split('.') || [];
-    // const slug = 'simple';
+    // const slug = 'cybercows';
 
     if (slug) {
       const configResponse = (await getConfig({ slug, appPage })).data;

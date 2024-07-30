@@ -45,7 +45,7 @@ export interface StepperButtonProps {
 export interface GatedCondition {
   type?: "collection" | "coin" | "multiCollection";
   condition?: "and" | "or";
-  protocol?: "ERC20" | "ERC711" | "ERC1155";
+  protocol?: "ERC20" | "ERC721" | "ERC1155";
   name?: string;
   decimals?: number;
   address?: string;

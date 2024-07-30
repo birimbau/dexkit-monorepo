@@ -34,8 +34,6 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import Link from "../../../../components/AppLink";
 
-import { parse } from "eth-url-parser";
-
 import { copyToClipboard, truncateAddress } from "@dexkit/core/utils";
 import CopyIconButton from "@dexkit/ui/components/CopyIconButton";
 import FileCopy from "@mui/icons-material/FileCopy";
@@ -175,12 +173,10 @@ const EvmWalletContainer = () => {
 
   const handleAddressResult = (result: string) => {
     try {
-      parse(result);
-
       if (isMobile) {
-        router.push(`/wallet/send/${encodeURI(result)}`);
+        router.push(`/wallet/send/${encodeURIComponent(result)}`);
       } else {
-        window.open(`/wallet/send/${encodeURI(result)}`, "_blank");
+        window.open(`/wallet/send/${encodeURIComponent(result)}`, "_blank");
       }
       handleOpenQrCodeScannerClose();
     } catch (err) {}

@@ -98,6 +98,10 @@ function OnChangeListener({
         socials.push({ type: 'reddit', handle: values.reddit });
       }
 
+      if (values.youtube) {
+        socials.push({ type: 'youtube', handle: values.youtube });
+      }
+
       config.social = socials;
       config.social_custom = values.custom;
       onChange(config);
@@ -152,6 +156,10 @@ export default function SocialWizardContainer({
           }
           if (values.reddit) {
             socials.push({ type: 'reddit', handle: values.reddit });
+          }
+
+          if (values.youtube) {
+            socials.push({ type: 'youtube', handle: values.youtube });
           }
 
           config.social = socials;
