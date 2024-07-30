@@ -12,18 +12,22 @@ export default function useCheckoutList(params: {
 }) {
   const { instance } = useContext(DexkitApiProvider);
 
-  return useQuery([GET_CHECKOUT_LIST, params], async () => {
-    if (!instance) {
-      throw new Error('no instance');
-    }
+  return useQuery(
+    [GET_CHECKOUT_LIST, params],
+    async () => {
+      if (!instance) {
+        throw new Error('no instance');
+      }
 
-    return (
-      await instance.get<{
-        items: CheckoutFormType[];
-        totalItems: number;
-        totalPages: number;
-        currentPage: number;
-      }>('/checkouts', { params })
-    ).data;
-  });
+      return (
+        await instance.get<{
+          items: CheckoutFormType[];
+          totalItems: number;
+          totalPages: number;
+          currentPage: number;
+        }>('/checkouts', { params })
+      ).data;
+    },
+    { refetchOnWindowFocus: true },
+  );
 }

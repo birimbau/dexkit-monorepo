@@ -30,6 +30,7 @@ function CheckoutNetworksBase({ networks }: CheckoutNetworksBaseProps) {
   const availNetworks = useMemo(() => {
     return Object.keys(NETWORKS)
       .map((key: string) => NETWORKS[parseChainId(key)])
+      .filter((n) => ![ChainId.Goerli, ChainId.Mumbai].includes(n.chainId))
       .filter((n) => activeChainIds.includes(n.chainId));
   }, []);
 

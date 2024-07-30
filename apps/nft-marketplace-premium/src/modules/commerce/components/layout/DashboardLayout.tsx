@@ -1,6 +1,7 @@
-import MainLayout from '@dexkit/ui/components/layouts/main';
 import SellIcon from '@mui/icons-material/Sell';
 import {
+  Box,
+  Button,
   Container,
   Grid,
   List,
@@ -8,28 +9,44 @@ import {
   ListItemIcon,
   ListItemText,
   Paper,
+  Stack,
+  Typography,
 } from '@mui/material';
 import Link from 'next/link';
 import { FormattedMessage } from 'react-intl';
 
 import { DexkitApiProvider } from '@dexkit/core/providers';
 import { myAppsApi } from '@dexkit/ui/constants/api';
+import { useWeb3React } from '@dexkit/wallet-connectors/hooks/useWeb3React';
 import HomeIcon from '@mui/icons-material/Home';
 import InboxIcon from '@mui/icons-material/Inbox';
 import Settings from '@mui/icons-material/Settings';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import React from 'react';
+import AuthMainLayout from 'src/components/layouts/authMain';
+
+import ChevronRight from '@mui/icons-material/ChevronRight';
+import Wallet from '@mui/icons-material/Wallet';
+import { useConnectWalletDialog } from 'src/hooks/app';
 
 export interface DashboardLayoutProps {
   children: React.ReactNode;
   page?: string;
 }
 
-export default function DashboardLayout({
-  children,
+function RequireLogin({
   page,
-}: DashboardLayoutProps) {
-  return (
-    <MainLayout>
+  children,
+}: {
+  page: string;
+  children: React.ReactNode;
+}) {
+  const { isActive } = useWeb3React();
+
+  const connectWalletDialog = useConnectWalletDialog();
+
+  if (isActive) {
+    return (
       <Container>
         <Grid container spacing={2}>
           <Grid item xs={12} sm={3}>
@@ -128,6 +145,60 @@ export default function DashboardLayout({
           </Grid>
         </Grid>
       </Container>
-    </MainLayout>
+    );
+  }
+
+  return (
+    <Box py={4}>
+      <Stack
+        alignItems="center"
+        justifyContent="center"
+        alignContent="center"
+        spacing={2}
+      >
+        <Stack
+          alignItems="center"
+          justifyContent="center"
+          alignContent="center"
+        >
+          <Typography variant="h5">
+            <FormattedMessage
+              id="no.wallet.connected"
+              defaultMessage="No Wallet connected"
+            />
+          </Typography>
+          <Typography variant="body1" color="textSecondary">
+            <FormattedMessage
+              id="connect.wallet.to.see.apps.associated.with.your.account"
+              defaultMessage="Connect wallet to see apps associated with your account"
+            />
+          </Typography>
+        </Stack>
+        <Button
+          variant="outlined"
+          color="inherit"
+          onClick={() => connectWalletDialog.setOpen(true)}
+          startIcon={<Wallet />}
+          endIcon={<ChevronRight />}
+        >
+          <FormattedMessage
+            id="connect.wallet"
+            defaultMessage="Connect Wallet"
+            description="Connect wallet button"
+          />
+        </Button>
+      </Stack>
+    </Box>
+  );
+}
+
+export default function DashboardLayout({
+  children,
+  page,
+}: DashboardLayoutProps) {
+  return (
+    <AuthMainLayout noSsr>
+      <RequireLogin page={page ?? ''}>{children}</RequireLogin>
+    </AuthMainLayout>
   );
 }

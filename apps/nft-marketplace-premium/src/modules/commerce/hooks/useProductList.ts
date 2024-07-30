@@ -12,18 +12,22 @@ export default function useProductList(params: {
 }) {
   const { instance } = useContext(DexkitApiProvider);
 
-  return useQuery([GET_PRODUCT_LIST, params], async () => {
-    if (!instance) {
-      throw new Error('no instance');
-    }
+  return useQuery(
+    [GET_PRODUCT_LIST, params],
+    async () => {
+      if (!instance) {
+        throw new Error('no instance');
+      }
 
-    return (
-      await instance.get<{
-        items: ProductFormType[];
-        totalItems: number;
-        totalPages: number;
-        currentPage: number;
-      }>('/products', { params })
-    ).data;
-  });
+      return (
+        await instance.get<{
+          items: ProductFormType[];
+          totalItems: number;
+          totalPages: number;
+          currentPage: number;
+        }>('/products', { params })
+      ).data;
+    },
+    { refetchOnWindowFocus: true },
+  );
 }

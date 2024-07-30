@@ -7,12 +7,17 @@ const GET_USER_CHECKOUT_NETWORKS = 'GET_USER_CHECKOUT_NETWORKS';
 export default function useUserCheckoutNetworks({ id }: { id: string }) {
   const { instance } = useContext(DexkitApiProvider);
 
-  return useQuery([GET_USER_CHECKOUT_NETWORKS], async () => {
-    if (!instance) {
-      throw new Error('no instance');
-    }
+  return useQuery(
+    [GET_USER_CHECKOUT_NETWORKS],
+    async () => {
+      if (!instance) {
+        throw new Error('no instance');
+      }
 
-    return (await instance.get<number[]>(`/checkouts-networks/checkout/${id}`))
-      .data;
-  });
+      return (
+        await instance.get<number[]>(`/checkouts-networks/checkout/${id}`)
+      ).data;
+    },
+    { refetchOnWindowFocus: true },
+  );
 }

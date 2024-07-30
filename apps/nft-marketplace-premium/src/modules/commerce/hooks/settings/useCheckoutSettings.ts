@@ -7,18 +7,22 @@ export const GET_CHECKOUT_SETTINGS = 'GET_CHECKOUT_SETTINGS';
 export default function useCheckoutSettings() {
   const { instance } = useContext(DexkitApiProvider);
 
-  return useQuery([GET_CHECKOUT_SETTINGS], async () => {
-    if (!instance) {
-      throw new Error('no instance');
-    }
+  return useQuery(
+    [GET_CHECKOUT_SETTINGS],
+    async () => {
+      if (!instance) {
+        throw new Error('no instance');
+      }
 
-    const result = (
-      await instance.get<{
-        notificationEmail: string;
-        receiverAddress: string;
-      }>('/checkouts/settings')
-    ).data;
+      const result = (
+        await instance.get<{
+          notificationEmail: string;
+          receiverAddress: string;
+        }>('/checkouts/settings')
+      ).data;
 
-    return result;
-  });
+      return result;
+    },
+    { refetchOnWindowFocus: true },
+  );
 }

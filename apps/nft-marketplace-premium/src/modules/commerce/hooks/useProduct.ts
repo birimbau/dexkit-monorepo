@@ -8,15 +8,20 @@ export const GET_PRODUCT_QUERY = 'GET_PRODUCT_QUERY';
 export default function useProduct(params: { id?: string }) {
   const { instance } = useContext(DexkitApiProvider);
 
-  return useQuery([GET_PRODUCT_QUERY, params], async () => {
-    if (!instance) {
-      throw new Error('no instance');
-    }
+  return useQuery(
+    [GET_PRODUCT_QUERY, params],
+    async () => {
+      if (!instance) {
+        throw new Error('no instance');
+      }
 
-    if (!params.id) {
-      return null;
-    }
+      if (!params.id) {
+        return null;
+      }
 
-    return (await instance.get<ProductFormType>(`/products/${params.id}`)).data;
-  });
+      return (await instance.get<ProductFormType>(`/products/${params.id}`))
+        .data;
+    },
+    { refetchOnWindowFocus: true },
+  );
 }
