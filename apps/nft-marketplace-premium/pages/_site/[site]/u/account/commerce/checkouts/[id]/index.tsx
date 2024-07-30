@@ -5,7 +5,7 @@ import useUpdateCheckout from '@/modules/commerce/hooks/checkout/useUpdateChecko
 import { CheckoutSchema } from '@/modules/commerce/schemas';
 import { CheckoutFormType } from '@/modules/commerce/types';
 import { PageHeader } from '@dexkit/ui/components/PageHeader';
-import { Stack } from '@mui/material';
+import { Stack, Typography } from '@mui/material';
 import { Formik } from 'formik';
 import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
@@ -74,13 +74,13 @@ function CheckoutEditComponent({ checkout }: CheckoutEditComponentProps) {
             uri: '/u/account/commerce/checkouts',
           },
           {
-            caption: '',
-            uri: '/u/account/commerce/checkout/create',
+            caption: checkout.title,
+            uri: `/u/account/commerce/checkout/${checkout.id}`,
             active: true,
           },
         ]}
       />
-
+      <Typography variant="h6">{checkout.title}</Typography>
       <FormWrapper checkout={checkout} />
     </Stack>
   );

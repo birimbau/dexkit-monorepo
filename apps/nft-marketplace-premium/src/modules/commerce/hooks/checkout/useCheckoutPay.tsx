@@ -1,6 +1,7 @@
 import { DexkitApiProvider } from '@dexkit/core/providers';
 import { useMutation } from '@tanstack/react-query';
 import { useContext } from 'react';
+import { Order } from '../../types';
 
 export default function useCheckoutPay() {
   const { instance } = useContext(DexkitApiProvider);
@@ -36,7 +37,7 @@ export default function useCheckoutPay() {
         params.senderEmail = senderEmail;
       }
 
-      return await instance.post(`/checkouts/${id}/pay`, params);
+      return (await instance.post<Order>(`/checkouts/${id}/pay`, params)).data;
     },
   );
 }

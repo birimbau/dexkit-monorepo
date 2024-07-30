@@ -158,7 +158,7 @@ export default function CheckoutConfirmDialog({
   };
 
   return (
-    <Dialog {...DialogProps}>
+    <Dialog {...DialogProps} maxWidth="sm" fullWidth>
       <AppDialogTitle
         title={
           <FormattedMessage

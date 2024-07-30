@@ -60,6 +60,7 @@ import { getAppConfig } from 'src/services/app';
 
 import CheckoutConfirmDialog from '@/modules/commerce/components/dialogs/CheckoutConfirmDialog';
 import useCheckoutPay from '@/modules/commerce/hooks/checkout/useCheckoutPay';
+import useUserCheckoutNetworks from '@/modules/commerce/hooks/settings/useUserCheckoutNetworks';
 import { useEvmTransferMutation } from '@dexkit/ui/modules/evm-transfer-coin/hooks';
 import { useSnackbar } from 'notistack';
 import { z } from 'zod';
@@ -72,6 +73,8 @@ export default function UserCheckout() {
   const { id } = router.query;
 
   const userCheckout = useUserCheckout({ id: id as string });
+
+  const { data: availNetworks } = useUserCheckoutNetworks({ id: id as string });
 
   const { activeChainIds } = useActiveChainIds();
 
@@ -125,7 +128,7 @@ export default function UserCheckout() {
 
       if (chainId && token && userCheckout.data && account) {
         try {
-          await checkoutPay({
+          const result = await checkoutPay({
             id: userCheckout.data.id,
             chainId: chainId,
             hash,
@@ -136,11 +139,13 @@ export default function UserCheckout() {
 
           enqueueSnackbar(
             <FormattedMessage
-              id="order.created"
+              id="order.created.alt"
               defaultMessage="Order created"
             />,
             { variant: 'success' },
           );
+
+          router.push(`/c/orders/${result.id}`);
         } catch (err) {
           enqueueSnackbar(
             <FormattedMessage
@@ -196,12 +201,13 @@ export default function UserCheckout() {
   const networks = useMemo(() => {
     return Object.keys(NETWORKS)
       .map((key: string) => NETWORKS[parseChainId(key)])
+      .filter((n) => availNetworks?.includes(n.chainId))
       .filter((n) => {
         let token = CHECKOUT_TOKENS.find((t) => t.chainId === n.chainId);
 
         return Boolean(token);
       });
-  }, []);
+  }, [availNetworks]);
 
   const handlePay = () => {
     setOpen(true);
@@ -364,13 +370,13 @@ export default function UserCheckout() {
               breadcrumbs={[
                 {
                   caption: <FormattedMessage id="home" defaultMessage="Home" />,
-                  uri: '/',
+                  uri: '/c/orders',
                 },
                 {
                   caption: (
                     <FormattedMessage id="checkout" defaultMessage="Checkout" />
                   ),
-                  uri: '/checkout/asd8as7d98as',
+                  uri: `/c/${userCheckout.data?.id}`,
                   active: true,
                 },
               ]}
