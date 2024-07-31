@@ -28,28 +28,20 @@ import SwapFilterForm from './Filters/SwapFilterForm';
 
 const userEvents = [
   {
-    name: beautifyCamelCase(UserEvents.loginSignMessage),
-    value: UserEvents.loginSignMessage,
+    value: UserEvents.nftAcceptListERC1155,
+    name: 'Accept listing ERC1155',
   },
   {
-    name: beautifyCamelCase(UserEvents.swap),
-    value: UserEvents.swap,
+    value: UserEvents.nftAcceptOfferERC1155,
+    name: 'Accept offer ERC1155',
   },
   {
     value: UserEvents.nftAcceptListERC721,
     name: 'Accept listing ERC721',
   },
   {
-    value: UserEvents.nftAcceptListERC1155,
-    name: 'Accept listing ERC1155',
-  },
-  {
     value: UserEvents.nftAcceptOfferERC721,
     name: 'Accept offer ERC721',
-  },
-  {
-    value: UserEvents.nftAcceptOfferERC1155,
-    name: 'Accept offer ERC1155',
   },
   {
     value: UserEvents.buyDropCollection,
@@ -58,6 +50,14 @@ const userEvents = [
   {
     value: UserEvents.buyDropEdition,
     name: 'Buy drop edition',
+  },
+  {
+    name: 'Sign login message',
+    value: UserEvents.loginSignMessage,
+  },
+  {
+    name: beautifyCamelCase(UserEvents.swap),
+    value: UserEvents.swap,
   },
 ];
 
@@ -242,21 +242,26 @@ export default function LeaderboardRule({
             </Grid>
           </Grid>
         </Grid>
-        {values.settings[index]?.userEventType && (
-          <Grid item xs={12}>
-            <Accordion>
-              <AccordionSummary expandIcon={<ArrowDownward />}>
-                <Typography>
-                  <FormattedMessage id="filter" defaultMessage="Filter" />
-                </Typography>
-              </AccordionSummary>
-              <Divider />
-              <AccordionDetails sx={{ pt: 3 }}>
-                {renderFilter(values.settings[index]?.userEventType)}
-              </AccordionDetails>
-            </Accordion>
-          </Grid>
-        )}
+        {values.settings[index]?.userEventType &&
+          values.settings[index]?.userEventType !==
+            UserEvents.loginSignMessage && (
+            <Grid item xs={12}>
+              <Accordion>
+                <AccordionSummary expandIcon={<ArrowDownward />}>
+                  <Typography>
+                    <FormattedMessage
+                      id="filter.event"
+                      defaultMessage="Filter event"
+                    />
+                  </Typography>
+                </AccordionSummary>
+                <Divider />
+                <AccordionDetails sx={{ pt: 3 }}>
+                  {renderFilter(values.settings[index]?.userEventType)}
+                </AccordionDetails>
+              </Accordion>
+            </Grid>
+          )}
       </Grid>
     </Box>
   );

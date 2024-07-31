@@ -87,7 +87,13 @@ export function SearchTokenAutocomplete(props: Props) {
       disabled={disabled}
       value={data}
       defaultValue={data}
-      options={assets}
+      options={assets.sort((a, b) => {
+        if (a.name && b.name) {
+          return a.name.localeCompare(b.name);
+        }
+
+        return 0;
+      })}
       fullWidth
       autoHighlight
       isOptionEqualToValue={(op, val) =>
@@ -106,7 +112,7 @@ export function SearchTokenAutocomplete(props: Props) {
         }
       }}
       getOptionLabel={(option) => {
-        return `${getChainSymbol(option.chainId)}-${option?.name}`;
+        return `${option?.name}-${getChainSymbol(option.chainId)}`;
       }}
       renderOption={(props, option) => (
         <Box
@@ -115,8 +121,8 @@ export function SearchTokenAutocomplete(props: Props) {
           {...props}
         >
           <img loading="lazy" width="20" src={`${option.logoURI}`} alt="" />
-          {getChainName(option.chainId)} - {option.name} -
-          {option?.symbol.toUpperCase() || ''}
+          {option.name} - ({option?.symbol.toUpperCase() || ''}) -{' '}
+          {getChainName(option.chainId)}
         </Box>
       )}
       renderInput={(params) => (
@@ -142,8 +148,8 @@ export function SearchTokenAutocomplete(props: Props) {
                 <img loading="lazy" width="25" src={`${data.logoURI}`} alt="" />
                 {data.chainId && (
                   <Box sx={{ pl: 1 }}>
-                    {getChainName(data.chainId)} - {data.name} -
-                    {data?.symbol?.toUpperCase()}
+                    {data.name} - ({data?.symbol?.toUpperCase()}) -{' '}
+                    {getChainName(data.chainId)}
                   </Box>
                 )}
               </Stack>

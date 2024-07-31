@@ -1,5 +1,6 @@
 import { AppDialogTitle } from '@dexkit/ui/components/AppDialogTitle';
 import {
+  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -17,6 +18,7 @@ import * as Yup from 'yup';
 import { useAddAppRankingMutation } from '../../hooks';
 
 import CompletationProvider from '@dexkit/ui/components/CompletationProvider';
+import { useSnackbar } from 'notistack';
 import SendAddAppRankingDialog from './SendAddAppRankingDialog';
 
 interface Props {
@@ -53,6 +55,8 @@ export default function AddRankingFormDialog({
     }
   };
 
+  const { enqueueSnackbar } = useSnackbar();
+
   return (
     <>
       {open && (
@@ -70,12 +74,12 @@ export default function AddRankingFormDialog({
         />
       )}
 
-      <Dialog {...dialogProps}>
+      <Dialog {...dialogProps} maxWidth="xs">
         <AppDialogTitle
           title={
             <FormattedMessage
-              id="add.leaderboard"
-              defaultMessage="Add Leaderboard"
+              id="Create.leaderboard"
+              defaultMessage="Create Leaderboard"
             />
           }
           onClose={handleClose}
@@ -88,19 +92,35 @@ export default function AddRankingFormDialog({
             description: description ? description : undefined,
           }}
           validationSchema={AddRankingSchema}
-          onSubmit={(value, helper) => {
-            setOpen(true);
+          onSubmit={async (value, helper) => {
+            try {
+              setOpen(true);
 
-            mutationAddRanking.mutate({
-              siteId,
-              rankingId,
-              title: value?.title,
-              description: value?.description,
-            });
+              await mutationAddRanking.mutateAsync({
+                siteId,
+                rankingId,
+                title: value?.title,
+                description: value?.description,
+              });
+
+              setOpen(false);
+
+              enqueueSnackbar(
+                <FormattedMessage
+                  id="leaderboard.created"
+                  defaultMessage="Leaderboard created"
+                />,
+                { variant: 'success' },
+              );
+            } catch (err) {
+              enqueueSnackbar(String(err), { variant: 'error' });
+            }
+            handleClose();
+
             helper.setSubmitting(false);
           }}
         >
-          {({ submitForm, values, setFieldValue }) => (
+          {({ submitForm, values, setFieldValue, isSubmitting, isValid }) => (
             <Form>
               <DialogContent sx={{ p: 4 }} dividers>
                 <Grid container spacing={2}>
@@ -123,8 +143,8 @@ export default function AddRankingFormDialog({
                               }}
                               label={
                                 <FormattedMessage
-                                  id={'title'}
-                                  defaultMessage={'Title'}
+                                  id="leaderboard.title"
+                                  defaultMessage="Leaderboard title"
                                 />
                               }
                             />
@@ -152,8 +172,8 @@ export default function AddRankingFormDialog({
                               }}
                               label={
                                 <FormattedMessage
-                                  id={'description'}
-                                  defaultMessage={'Description'}
+                                  id="leaderboard.description"
+                                  defaultMessage="Leaderboard description"
                                 />
                               }
                               inputRef={ref}
@@ -176,6 +196,12 @@ export default function AddRankingFormDialog({
                       variant="contained"
                       color="primary"
                       onClick={submitForm}
+                      startIcon={
+                        isSubmitting ? (
+                          <CircularProgress color="inherit" size="1rem" />
+                        ) : undefined
+                      }
+                      disabled={isSubmitting || !isValid}
                     >
                       <FormattedMessage id="save" defaultMessage="Save" />
                     </Button>

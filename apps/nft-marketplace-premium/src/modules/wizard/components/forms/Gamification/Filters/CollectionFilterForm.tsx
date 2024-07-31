@@ -1,18 +1,18 @@
 import {
-  Box,
-  Button,
   FormControl,
   Grid,
   InputLabel,
   MenuItem,
   Select,
   SelectChangeEvent,
+  Typography,
 } from '@mui/material';
 import { Field, Form, Formik } from 'formik';
 import { TextField } from 'formik-mui';
 import * as Yup from 'yup';
 
 import { NetworkSelectDropdown } from '@dexkit/ui/components/NetworkSelectDropdown';
+import { useWeb3React } from '@dexkit/wallet-connectors/hooks/useWeb3React';
 import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import ChangeListener from '../../../ChangeListener';
@@ -80,15 +80,23 @@ export default function CollectionFilterForm({
   onChange,
   isERC1155,
 }: Props) {
-  const [value, setValue] = useState(0);
+  const [value, setValue] = useState(1);
 
   const handleChange = (event: SelectChangeEvent<number>) => {
     setValue(event.target.value as number);
   };
 
+  const { chainId } = useWeb3React();
+
   return (
     <Formik
-      initialValues={{ ...item }}
+      initialValues={
+        item
+          ? { ...item }
+          : {
+              chainId: chainId,
+            }
+      }
       onSubmit={(values) => {
         if (onSubmit) {
           onSubmit(values as CollectionFilter);
@@ -117,10 +125,7 @@ export default function CollectionFilterForm({
                 <NetworkSelectDropdown
                   chainId={values.chainId}
                   label={
-                    <FormattedMessage
-                      id="choose.network"
-                      defaultMessage="Choose network"
-                    />
+                    <FormattedMessage id="network" defaultMessage="Network" />
                   }
                   onChange={(chainId) => {
                     setFieldValue('chainId', chainId);
@@ -132,7 +137,14 @@ export default function CollectionFilterForm({
                 />
               </FormControl>
             </Grid>
-
+            <Grid item xs={12}>
+              <Typography>
+                <FormattedMessage
+                  id="filter.by.collection"
+                  defaultMessage="Filter by collection"
+                />
+              </Typography>
+            </Grid>
             <Grid item xs={12}>
               <Grid container spacing={2}>
                 <Grid item xs={12} sm={3}>
@@ -146,7 +158,6 @@ export default function CollectionFilterForm({
                     <Select
                       value={value}
                       onChange={handleChange}
-                      aria-label="collection tabs"
                       notched
                       label={
                         <FormattedMessage
@@ -157,52 +168,89 @@ export default function CollectionFilterForm({
                       fullWidth
                     >
                       <MenuItem value={0}>
-                        <FormattedMessage id="import" defaultMessage="Import" />
+                        <FormattedMessage
+                          id="import.collection"
+                          defaultMessage="Import collection"
+                        />
                       </MenuItem>
                       <MenuItem value={1}>
                         <FormattedMessage
-                          id="my.collections"
-                          defaultMessage="My Collections"
+                          id="my.collections.alt"
+                          defaultMessage="My collections"
                         />
                       </MenuItem>
                     </Select>
                   </FormControl>
                 </Grid>
+                <Grid item xs={12} sm={3}>
+                  <TabPanel value={value} index={1}>
+                    <CollectionItemAutocomplete
+                      onChange={(coll) => {
+                        setFieldValue(
+                          'collectionAddress',
+                          coll?.contractAddress,
+                        );
+                      }}
+                      filterByChainId={true}
+                      chainId={values.chainId}
+                      disabled={values.chainId === undefined}
+                      formValue={{
+                        contractAddress: values.collectionAddress,
+                        chainId: values.chainId,
+                      }}
+                    />
+                  </TabPanel>
+                  <TabPanel value={value} index={0}>
+                    <Field
+                      component={TextField}
+                      label={
+                        <FormattedMessage
+                          id="collection.address"
+                          defaultMessage="Collection address"
+                        />
+                      }
+                      fullWidth
+                      name="collectionAddress"
+                      required
+                    />
+                  </TabPanel>
+                </Grid>
               </Grid>
             </Grid>
             <Grid item xs={12}>
-              <TabPanel value={value} index={1}>
-                <CollectionItemAutocomplete
-                  onChange={(coll) => {
-                    setFieldValue('collectionAddress', coll?.contractAddress);
-                  }}
-                  filterByChainId={true}
-                  chainId={values.chainId}
-                  disabled={values.chainId === undefined}
-                  formValue={{
-                    contractAddress: values.collectionAddress,
-                    chainId: values.chainId,
-                  }}
+              <Typography variant="body1">
+                <FormattedMessage
+                  id="filter.by.token"
+                  defaultMessage="Filter by token"
                 />
-              </TabPanel>
-              <TabPanel value={value} index={0}>
-                <Field
-                  component={TextField}
-                  label={
-                    <FormattedMessage
-                      id="collection.address"
-                      defaultMessage="Collection address"
-                    />
-                  }
-                  fullWidth
-                  name="collectionAddress"
-                  required
-                />
-              </TabPanel>
+              </Typography>
             </Grid>
-            {isERC1155 === true && (
+            <Grid item xs={12} sm={4}>
+              <SearchTokenAutocompleteWithTokens
+                label={
+                  <FormattedMessage
+                    id="search.token"
+                    defaultMessage="Search token"
+                  />
+                }
+                disabled={values.chainId === undefined}
+                data={{
+                  address: values.tokenAddress,
+                  chainId: values.chainId,
+                }}
+                chainId={values.chainId}
+                onChange={(tk: any) => {
+                  if (tk) {
+                    setFieldValue('tokenAddress', tk.address);
+                  } else {
+                    setFieldValue('tokenAddress', undefined);
+                  }
+                }}
+              />
+            </Grid>
+            {Boolean(isERC1155) && (
               <>
-                <Grid item xs={12}>
+                <Grid item xs={12} sm={3}>
                   <Field
                     component={TextField}
                     type="text"
@@ -215,6 +263,21 @@ export default function CollectionFilterForm({
                     }
                     InputProps={{ min: 0 }}
                     name="tokenId"
+                  />
+                </Grid>
+                <Grid item xs={12} sm={3}>
+                  <Field
+                    component={TextField}
+                    type="number"
+                    fullWidth
+                    label={
+                      <FormattedMessage
+                        id={'Amount.nft'}
+                        defaultMessage={'Amount NFT'}
+                      />
+                    }
+                    InputProps={{ min: 0 }}
+                    name="amount"
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -247,47 +310,9 @@ export default function CollectionFilterForm({
                     </Select>
                   </FormControl>
                 </Grid>
-
-                <Grid item xs={12}>
-                  <Field
-                    component={TextField}
-                    type="number"
-                    fullWidth
-                    label={
-                      <FormattedMessage
-                        id={'Amount.nft'}
-                        defaultMessage={'Amount NFT'}
-                      />
-                    }
-                    InputProps={{ min: 0 }}
-                    name="amount"
-                  />
-                </Grid>
               </>
             )}
-            <Grid item xs={12} sm={5}>
-              <SearchTokenAutocompleteWithTokens
-                label={
-                  <FormattedMessage
-                    id="search.token"
-                    defaultMessage="Search token"
-                  />
-                }
-                disabled={values.chainId === undefined}
-                data={{
-                  address: values.tokenAddress,
-                  chainId: values.chainId,
-                }}
-                chainId={values.chainId}
-                onChange={(tk: any) => {
-                  if (tk) {
-                    setFieldValue('tokenAddress', tk.address);
-                  } else {
-                    setFieldValue('tokenAddress', undefined);
-                  }
-                }}
-              />
-            </Grid>
+
             <Grid item xs={12} sm={3}>
               <FormControl fullWidth>
                 <InputLabel id="condition-amount-select-label">
@@ -302,8 +327,8 @@ export default function CollectionFilterForm({
                   value={values.condition}
                   label={
                     <FormattedMessage
-                      id="condition.amount"
-                      defaultMessage="Condition amount"
+                      id="amount.condition"
+                      defaultMessage="Amount condition"
                     />
                   }
                   onChange={(ev) => setFieldValue('condition', ev.target.value)}
@@ -322,20 +347,10 @@ export default function CollectionFilterForm({
                 component={TextField}
                 type="number"
                 fullWidth
-                label={
-                  <FormattedMessage id={'Amount'} defaultMessage={'Amount'} />
-                }
+                label={<FormattedMessage id="Amount" defaultMessage="Amount" />}
                 InputProps={{ min: 0 }}
                 name="amount"
               />
-            </Grid>
-
-            <Grid item xs={12}>
-              <Box display="flex" justifyContent="flex-end">
-                <Button onClick={() => resetForm()}>
-                  <FormattedMessage id="clear" defaultMessage="Clear" />
-                </Button>
-              </Box>
             </Grid>
           </Grid>
         </Form>

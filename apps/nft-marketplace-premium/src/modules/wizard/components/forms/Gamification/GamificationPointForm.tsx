@@ -1,4 +1,6 @@
 import {
+  Alert,
+  AlertTitle,
   Button,
   CircularProgress,
   Divider,
@@ -11,7 +13,6 @@ import * as Yup from 'yup';
 
 import { Grid } from '@mui/material';
 import { Field, FieldArray, Form, Formik } from 'formik';
-import { TextField } from 'formik-mui';
 import { useState } from 'react';
 
 import { useAddAppRankingMutation } from '@/modules/wizard/hooks';
@@ -22,6 +23,8 @@ import Add from '@mui/icons-material/Add';
 import { useSnackbar } from 'notistack';
 import { GamificationPoint } from '../../../types';
 import LeaderboardRule from './LeaderboardRule';
+
+import { DateTimePicker } from 'formik-mui-x-date-pickers';
 
 const userEvents = [
   {
@@ -87,6 +90,7 @@ interface Props {
   from?: string;
   to?: string;
   ranking: AppRanking;
+  title?: string;
 }
 // @see https://stackoverflow.com/a/66558369
 function localDate({ dateString }: { dateString: string }) {
@@ -106,13 +110,12 @@ export default function GamificationPointForm({
   from,
   to,
   ranking,
+  title,
 }: Props) {
   const { enqueueSnackbar } = useSnackbar();
   const { formatMessage } = useIntl();
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
   const mutationAddRanking = useAddAppRankingMutation();
-
-  const handleClose = () => {};
 
   const handleAppRankingUpdatedSuccess = () => {
     enqueueSnackbar(
@@ -157,6 +160,7 @@ export default function GamificationPointForm({
                 from: values.from === '' ? undefined : values.from,
                 to: values.to === '' ? undefined : values.to,
                 settings: values.settings,
+                title,
               },
               {
                 onSuccess: handleAppRankingUpdatedSuccess,
@@ -195,6 +199,27 @@ export default function GamificationPointForm({
               name="settings"
               render={({ handleInsert, handleRemove }) => (
                 <Grid container spacing={2}>
+                  {open && (
+                    <Grid item xs={12} sm={6}>
+                      <Alert severity="info" onClose={() => setOpen(false)}>
+                        <AlertTitle sx={{ fontWeight: 'bold' }}>
+                          <Typography fontWeight="inherit" variant="body2">
+                            <FormattedMessage
+                              id="build.a.ranking.alert.message"
+                              defaultMessage="Define and assign points to each user event to build a ranking"
+                            />
+                          </Typography>
+                        </AlertTitle>
+                        <Typography variant="body2">
+                          <FormattedMessage
+                            id="points.are.awarded.based.on.user.message"
+                            defaultMessage="Points are awarded based on user activity to determine their ranking"
+                          />
+                        </Typography>
+                      </Alert>
+                    </Grid>
+                  )}
+
                   <Grid item xs={12}>
                     <Typography variant="subtitle1">
                       <FormattedMessage
@@ -205,11 +230,11 @@ export default function GamificationPointForm({
                   </Grid>
                   <Grid item xs={12}>
                     <Grid container spacing={2}>
-                      <Grid item xs={12} sm={4}>
+                      <Grid item>
                         <Field
-                          component={TextField}
-                          type="datetime-local"
+                          component={DateTimePicker}
                           name="from"
+                          ampm={false}
                           label={
                             <FormattedMessage id="From" defaultMessage="From" />
                           }
@@ -217,20 +242,22 @@ export default function GamificationPointForm({
                           InputLabelProps={{
                             shrink: true,
                           }}
+                          InputProps={{ fullWidth: true }}
                         />
                       </Grid>
-                      <Grid item xs={12} sm={4}>
+                      <Grid item>
                         <Field
-                          component={TextField}
-                          type="datetime-local"
+                          fullWidth
+                          component={DateTimePicker}
                           name="to"
+                          ampm={false}
                           label={
                             <FormattedMessage
                               id="to.date"
                               defaultMessage="To"
                             />
                           }
-                          fullWidth
+                          InputProps={{ fullWidth: true }}
                           InputLabelProps={{
                             shrink: true,
                           }}

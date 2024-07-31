@@ -46,7 +46,7 @@ export default function LeaderboardHeader({
   };
 
   const handleSave = () => {
-    onEditTitle(title);
+    onEditTitle(value);
     setIsEditTitle(false);
   };
 
@@ -66,7 +66,7 @@ export default function LeaderboardHeader({
         {isEditTitle ? (
           <TextField
             inputRef={(ref) => (inputRef.current = ref)}
-            value={title}
+            value={value}
             variant="standard"
             onKeyDown={(e) => {
               if (e.key === 'Enter') {
@@ -75,6 +75,9 @@ export default function LeaderboardHeader({
               if (e.key === 'Escape') {
                 handleCancel();
               }
+            }}
+            onBlur={() => {
+              handleSave();
             }}
             onChange={handleChange}
           />

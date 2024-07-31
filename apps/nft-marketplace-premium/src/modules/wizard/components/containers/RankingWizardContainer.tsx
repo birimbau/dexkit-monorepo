@@ -19,9 +19,8 @@ import { useCallback, useEffect, useState } from 'react';
 import { useAppRankingListQuery } from '@dexkit/ui/modules/wizard/hooks/ranking';
 import Add from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
-import EditIcon from '@mui/icons-material/EditOutlined';
 import FileDownloadIcon from '@mui/icons-material/FileDownloadOutlined';
-import LeaderboardIcon from '@mui/icons-material/LeaderboardOutlined';
+import LeaderboardIcon from '@mui/icons-material/Leaderboard';
 import VisibilityIcon from '@mui/icons-material/VisibilityOutlined';
 import {
   DataGrid,
@@ -37,7 +36,6 @@ import { useSnackbar } from 'notistack';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useDeleteAppRankingMutation } from '../../hooks';
 import { AppRanking } from '../../types/ranking';
-import { ExportRanking } from '../ExportRanking';
 import GamificationPointForm from '../forms/Gamification/GamificationPointForm';
 import LeaderboardHeader from '../forms/Gamification/LeaderboardHeader';
 import RankingMetadataForm from '../forms/Gamification/RankingMetadataForm';
@@ -69,7 +67,12 @@ function ExpandableCell({ value }: GridRenderCellParams) {
   }
 
   return (
-    <div>
+    <Box
+      sx={{
+        overflowWrap: 'break-word',
+        width: '100%',
+      }}
+    >
       {expanded ? value : value.slice(0, 100)}&nbsp;
       {value.length > 100 && (
         // eslint-disable-next-line jsx-a11y/anchor-is-valid
@@ -77,12 +80,15 @@ function ExpandableCell({ value }: GridRenderCellParams) {
           type="button"
           component="button"
           sx={{ fontSize: 'inherit' }}
-          onClick={() => setExpanded(!expanded)}
+          onClick={(e) => {
+            e.stopPropagation();
+            setExpanded(!expanded);
+          }}
         >
           {expanded ? 'view less' : 'view more'}
         </Link>
       )}
-    </div>
+    </Box>
   );
 }
 
@@ -90,13 +96,13 @@ function EmptyRankings() {
   return (
     <Stack
       py={2}
-      spacing={1}
       justifyContent="center"
       alignContent="center"
       alignItems="center"
     >
-      <LeaderboardIcon fontSize="large" />
-      <Box>
+      <LeaderboardIcon fontSize="inherit" sx={{ fontSize: '3rem' }} />
+
+      <Stack>
         <Typography textAlign="center" variant="h5">
           <FormattedMessage
             id="no.leaderboard"
@@ -109,7 +115,7 @@ function EmptyRankings() {
             defaultMessage="Add leaderboards to your app"
           />
         </Typography>
-      </Box>
+      </Stack>
     </Stack>
   );
 }
@@ -146,6 +152,8 @@ function AppRankingList({
 
   const handleSortModelChange = useCallback((sortModel: GridSortModel) => {
     // Here you save the data you need from the sort model
+
+    console.log('sortModel', sortModel);
     setQueryOptions({
       ...queryOptions,
       sort:
@@ -169,8 +177,6 @@ function AppRankingList({
   }, []);
 
   const columns: GridColDef[] = [
-    { field: 'id', headerName: 'ID', width: 90 },
-
     {
       field: 'title',
       headerName: 'Title',
@@ -178,7 +184,7 @@ function AppRankingList({
     },
     {
       field: 'createdAt',
-      headerName: 'Created At',
+      headerName: 'Created at',
       width: 200,
       valueGetter: ({ row }) => {
         return new Date(row.createdAt).toLocaleString();
@@ -202,21 +208,25 @@ function AppRankingList({
             <Tooltip
               title={<FormattedMessage id="preview" defaultMessage="Preview" />}
             >
-              <IconButton onClick={() => onClickPreview({ ranking: row })}>
+              <IconButton
+                onClick={(e) => {
+                  e.stopPropagation();
+
+                  onClickPreview({ ranking: row });
+                }}
+              >
                 <VisibilityIcon />
-              </IconButton>
-            </Tooltip>
-            <Tooltip
-              title={<FormattedMessage id="edit" defaultMessage="Edit" />}
-            >
-              <IconButton onClick={() => onClickEdit({ ranking: row })}>
-                <EditIcon />
               </IconButton>
             </Tooltip>
             <Tooltip
               title={<FormattedMessage id="export" defaultMessage="Export" />}
             >
-              <IconButton onClick={() => onClickExport({ ranking: row })}>
+              <IconButton
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onClickExport({ ranking: row });
+                }}
+              >
                 <FileDownloadIcon />
               </IconButton>
             </Tooltip>
@@ -228,7 +238,10 @@ function AppRankingList({
             >
               <IconButton
                 color={'error'}
-                onClick={() => onClickDelete({ ranking: row })}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onClickDelete({ ranking: row });
+                }}
               >
                 <DeleteIcon />
               </IconButton>
@@ -247,7 +260,14 @@ function AppRankingList({
     <>
       <DataGrid
         autoHeight
-        slots={{ toolbar: GridToolbar, noRowsOverlay: EmptyRankings }}
+        slots={{
+          toolbar: GridToolbar,
+          noRowsOverlay: EmptyRankings,
+          noResultsOverlay: EmptyRankings,
+        }}
+        onRowClick={({ row }) => {
+          onClickEdit({ ranking: row });
+        }}
         rows={rows}
         columns={columns}
         rowCount={rowCountState}
@@ -256,13 +276,10 @@ function AppRankingList({
         disableColumnFilter
         sortingMode="server"
         getRowHeight={() => 'auto'}
-        slotProps={{
-          toolbar: {
-            showQuickFilter: true,
-            printOptions: { disableToolbarButton: true },
-            csvOptions: { disableToolbarButton: true },
-          },
-        }}
+        disableColumnMenu
+        disableColumnSelector
+        disableDensitySelector
+        hideFooterPagination={rowCountState === 0}
         onPaginationModelChange={setPaginationModel}
         filterMode="server"
         onFilterModelChange={onFilterChange}
@@ -271,9 +288,17 @@ function AppRankingList({
         loading={isLoading}
         rowSelectionModel={rowSelection}
         disableRowSelectionOnClick
-        checkboxSelection
         onRowSelectionModelChange={(rows) => setRowSelection(rows)}
-        sx={{ '--DataGrid-overlayHeight': '150px' }}
+        sx={{
+          '--DataGrid-overlayHeight': '150px', // disable cell selection style
+          '.MuiDataGrid-cell:focus': {
+            outline: 'none',
+          },
+          // pointer cursor on ALL rows
+          '& .MuiDataGrid-row:hover': {
+            cursor: 'pointer',
+          },
+        }}
       />
     </>
   );
@@ -424,13 +449,29 @@ export default function RankingWizardContainer({
 
             setSelectedRanking(undefined);
           }}
+          title={
+            <Typography variant="inherit" fontWeight="bold">
+              <FormattedMessage
+                id="delete.leaderboard.name"
+                defaultMessage="Delete Leaderboard: {name}"
+                values={{
+                  name: (
+                    <Typography
+                      component="span"
+                      fontWeight="300"
+                      variant="inherit"
+                    >
+                      {selectedRanking?.title}
+                    </Typography>
+                  ),
+                }}
+              />
+            </Typography>
+          }
         >
           <FormattedMessage
-            id="do.you.really.want.to.remove.this.app.leaderboard"
-            defaultMessage="Do you really want to remove this app leaderboard {title}"
-            values={{
-              title: selectedRanking?.title,
-            }}
+            id="are.you.sure.you want.to.delete.this.leaderboard"
+            defaultMessage="Are you sure you want to delete this leaderboard?"
           />
         </AppConfirmDialog>
       )}
@@ -490,9 +531,15 @@ export default function RankingWizardContainer({
                 <Grid item xs={12}>
                   <div>
                     <LeaderboardHeader
+                      key={selectedEditRanking.title}
                       title={selectedEditRanking.title}
                       onClose={handleCloseEditRanking}
-                      onEditTitle={() => {}}
+                      onEditTitle={(title: string) => {
+                        setSelectedEditRanking({
+                          ...selectedEditRanking,
+                          title,
+                        });
+                      }}
                       onPreview={() => {
                         if (selectedEditRanking) {
                           handlePreviewRanking({
@@ -528,15 +575,6 @@ export default function RankingWizardContainer({
                           }
                           value="2"
                         />
-                        <Tab
-                          label={
-                            <FormattedMessage
-                              id={'export'}
-                              defaultMessage={'Export'}
-                            />
-                          }
-                          value="3"
-                        />
                       </TabList>
                     </Box>
                     <TabPanel value="1">
@@ -547,6 +585,7 @@ export default function RankingWizardContainer({
                         to={selectedEditRanking.to}
                         rankingId={selectedEditRanking.id}
                         ranking={selectedEditRanking}
+                        title={selectedEditRanking.title}
                       />
                     </TabPanel>
                     <TabPanel value="2">
@@ -556,9 +595,6 @@ export default function RankingWizardContainer({
                         title={selectedEditRanking.title}
                         description={selectedEditRanking.description}
                       />
-                    </TabPanel>
-                    <TabPanel value="3">
-                      <ExportRanking rankingId={selectedEditRanking.id} />
                     </TabPanel>
                   </TabContext>
                 </Grid>
