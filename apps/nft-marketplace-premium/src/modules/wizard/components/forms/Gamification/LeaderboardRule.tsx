@@ -2,6 +2,7 @@ import { GamificationPoint } from '@/modules/wizard/types';
 import { AppRanking } from '@/modules/wizard/types/ranking';
 import { UserEvents } from '@dexkit/core/constants/userEvents';
 import { beautifyCamelCase } from '@dexkit/core/utils';
+import { useWeb3React } from '@dexkit/wallet-connectors/hooks/useWeb3React';
 import ArrowDownward from '@mui/icons-material/ArrowDownward';
 import DeleteOutlined from '@mui/icons-material/DeleteOutlined';
 import {
@@ -144,12 +145,14 @@ export default function LeaderboardRule({
                 ? JSON.parse(values?.settings[index]?.filter as string)
                 : undefined
             }
-            onChange={(item) =>
+            index={index}
+            onChange={(item) => {
+              console.log('item', item);
               setFieldValue(
                 `settings[${index}].filter`,
                 item ? JSON.stringify(item) : undefined,
-              )
-            }
+              );
+            }}
             isERC1155={
               values.settings[index]?.userEventType ===
               UserEvents.buyDropEdition
@@ -162,6 +165,8 @@ export default function LeaderboardRule({
 
     return null;
   };
+
+  const { chainId } = useWeb3React();
 
   return (
     <Box>
@@ -200,12 +205,13 @@ export default function LeaderboardRule({
                     (u) => u.value === values.settings[index]?.userEventType,
                   )}
                   options={userEvents}
-                  onChange={(e: any, value: any) =>
-                    setFieldValue(
-                      `settings[${index}].userEventType`,
-                      value?.value,
-                    )
-                  }
+                  onChange={(e: any, value: any) => {
+                    setFieldValue(`settings[${index}]`, {
+                      userEventType: value?.value,
+                      chainId: chainId,
+                      points: 0,
+                    });
+                  }}
                   isOptionEqualToValue={(option: any, value: any) => {
                     return option.value === value;
                   }}

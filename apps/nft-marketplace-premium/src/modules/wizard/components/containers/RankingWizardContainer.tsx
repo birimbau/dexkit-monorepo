@@ -136,7 +136,7 @@ function AppRankingList({
     pageSize: 10,
   });
 
-  const { data, isLoading } = useAppRankingListQuery({
+  const { data, isLoading, refetch } = useAppRankingListQuery({
     ...paginationModel,
     ...queryOptions,
     siteId: siteId,
@@ -154,13 +154,21 @@ function AppRankingList({
     // Here you save the data you need from the sort model
 
     console.log('sortModel', sortModel);
-    setQueryOptions({
-      ...queryOptions,
-      sort:
-        sortModel && sortModel.length
-          ? [sortModel[0].field, sortModel[0].sort]
-          : [],
-    });
+
+    if (sortModel.length > 0) {
+      setQueryOptions((queryOptions: any) => ({
+        ...queryOptions,
+        sortField: sortModel[0].field,
+        sort: sortModel[0].sort,
+      }));
+    } else {
+      setQueryOptions((queryOptions: any) => {
+        return {
+          ...queryOptions,
+        };
+      });
+    }
+    refetch();
   }, []);
 
   const onFilterChange = useCallback((filterModel: GridFilterModel) => {
@@ -180,25 +188,31 @@ function AppRankingList({
     {
       field: 'title',
       headerName: 'Title',
-      width: 150,
+      flex: 1,
     },
     {
       field: 'createdAt',
       headerName: 'Created at',
-      width: 200,
       valueGetter: ({ row }) => {
         return new Date(row.createdAt).toLocaleString();
       },
+      flex: 1,
     },
     {
+      sortable: false,
+      disableColumnMenu: true,
+      disableReorder: true,
       field: 'description',
       headerName: 'Description',
-      width: 350,
+      flex: 1,
       renderCell: (params: GridRenderCellParams) => (
         <ExpandableCell {...params} />
       ),
     },
     {
+      sortable: false,
+      disableColumnMenu: true,
+      disableReorder: true,
       field: 'actions',
       headerName: 'Actions',
       width: 240,

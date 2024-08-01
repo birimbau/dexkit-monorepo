@@ -5,6 +5,7 @@ import {
   CircularProgress,
   Divider,
   Stack,
+  TextField,
   Typography,
 } from '@mui/material';
 
@@ -12,7 +13,7 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import * as Yup from 'yup';
 
 import { Grid } from '@mui/material';
-import { Field, FieldArray, Form, Formik } from 'formik';
+import { FieldArray, Form, Formik } from 'formik';
 import { useState } from 'react';
 
 import { useAddAppRankingMutation } from '@/modules/wizard/hooks';
@@ -20,11 +21,11 @@ import { AppRanking } from '@/modules/wizard/types/ranking';
 import { UserEvents } from '@dexkit/core/constants/userEvents';
 import { beautifyCamelCase } from '@dexkit/core/utils';
 import Add from '@mui/icons-material/Add';
+import { DateTimePicker } from '@mui/x-date-pickers';
+import moment from 'moment';
 import { useSnackbar } from 'notistack';
 import { GamificationPoint } from '../../../types';
 import LeaderboardRule from './LeaderboardRule';
-
-import { DateTimePicker } from 'formik-mui-x-date-pickers';
 
 const userEvents = [
   {
@@ -157,8 +158,8 @@ export default function GamificationPointForm({
               {
                 siteId,
                 rankingId,
-                from: values.from === '' ? undefined : values.from,
-                to: values.to === '' ? undefined : values.to,
+                from: values.from === '' ? moment().format() : values.from,
+                to: values.to === '' ? moment().format() : values.to,
                 settings: values.settings,
                 title,
               },
@@ -231,25 +232,27 @@ export default function GamificationPointForm({
                   <Grid item xs={12}>
                     <Grid container spacing={2}>
                       <Grid item>
-                        <Field
-                          component={DateTimePicker}
-                          name="from"
+                        <DateTimePicker
                           ampm={false}
+                          value={moment(values.from)}
                           label={
                             <FormattedMessage id="From" defaultMessage="From" />
                           }
-                          fullWidth
-                          InputLabelProps={{
-                            shrink: true,
-                          }}
+                          onChange={(value) =>
+                            setFieldValue('from', value?.format())
+                          }
+                          renderInput={(props) => (
+                            <TextField
+                              {...props}
+                              error={Boolean(errors.from)}
+                              helperText={Boolean(errors.from) && errors.from}
+                            />
+                          )}
                           InputProps={{ fullWidth: true }}
                         />
                       </Grid>
                       <Grid item>
-                        <Field
-                          fullWidth
-                          component={DateTimePicker}
-                          name="to"
+                        <DateTimePicker
                           ampm={false}
                           label={
                             <FormattedMessage
@@ -257,10 +260,18 @@ export default function GamificationPointForm({
                               defaultMessage="To"
                             />
                           }
+                          onChange={(value) =>
+                            setFieldValue('to', value?.format())
+                          }
+                          renderInput={(props) => (
+                            <TextField
+                              {...props}
+                              error={Boolean(errors.to)}
+                              helperText={Boolean(errors.to) && errors.to}
+                            />
+                          )}
+                          value={moment(values.to)}
                           InputProps={{ fullWidth: true }}
-                          InputLabelProps={{
-                            shrink: true,
-                          }}
                         />
                       </Grid>
                     </Grid>

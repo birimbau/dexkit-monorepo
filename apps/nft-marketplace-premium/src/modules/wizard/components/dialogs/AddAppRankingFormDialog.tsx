@@ -203,7 +203,7 @@ export default function AddRankingFormDialog({
                       }
                       disabled={isSubmitting || !isValid}
                     >
-                      <FormattedMessage id="save" defaultMessage="Save" />
+                      <FormattedMessage id="create" defaultMessage="Create" />
                     </Button>
                   </Stack>
                 </Grid>
