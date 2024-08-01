@@ -39,8 +39,15 @@ import { Switch, TextField } from 'formik-mui';
 import moment from 'moment';
 import { SyntheticEvent, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
+import * as Yup from 'yup';
 import ContractAdminTab from '../ContractAdminTab';
 import ContractMetadataTab from '../ContractMetadataTab';
+
+export const RewardsPerUnitTimeSchema = Yup.object().shape({
+  rewardsPerUnitTime: Yup.string()
+    .required()
+    .matches(/^[0-9]+$/, 'Must be only digits'),
+});
 
 export interface ContractStakeErc1155ContainerProps {
   address: string;
@@ -354,8 +361,8 @@ export default function ContractStakeErc1155Container({
                     <Typography variant="body1">
                       <strong>
                         <FormattedMessage
-                          id="reward.per.unit.time"
-                          defaultMessage="Reward per Unit Time"
+                          id="reward.per.unit.time.in.wei"
+                          defaultMessage="Reward per Unit Time (in wei)"
                         />
                       </strong>
                     </Typography>
@@ -364,6 +371,7 @@ export default function ContractStakeErc1155Container({
                         initialValues={{
                           rewardsPerUnitTime: rewardsPerUnitTime.toString(),
                         }}
+                        validationSchema={RewardsPerUnitTimeSchema}
                         onSubmit={handleSubmitRewardRatio}
                       >
                         {({ submitForm, isSubmitting, isValid }) => (
@@ -373,14 +381,12 @@ export default function ContractStakeErc1155Container({
                                 fullWidth
                                 component={TextField}
                                 name="rewardsPerUnitTime"
-                                type="number"
                                 label={
                                   <FormattedMessage
                                     id="numerator"
                                     defaultMessage="Rewards per Unit Time"
                                   />
                                 }
-                                inputProps={{ type: 'number' }}
                               />
                             </Grid>
                             <Grid item xs={12}>
