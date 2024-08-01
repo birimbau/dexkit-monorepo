@@ -33,9 +33,9 @@ export function SwapSection({ section }: Props) {
   const { tokens: appTokens } = useAppConfig();
 
   const configParams = useMemo(() => {
-    const chainId = parseChainId(params.get("chainId") ?? "0");
-    const buyTokenAddress = params.get("buyToken");
-    const sellTokenAddress = params.get("sellToken");
+    const chainId = parseChainId(params?.get("chainId") ?? "0");
+    const buyTokenAddress = params?.get("buyToken");
+    const sellTokenAddress = params?.get("sellToken");
 
     let tokens = appTokens?.length ? appTokens[0].tokens || [] : [];
 

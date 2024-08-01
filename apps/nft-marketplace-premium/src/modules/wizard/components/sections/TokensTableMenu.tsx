@@ -64,10 +64,7 @@ export default function TokensTableMenu({
         </ListItemIcon>
         <ListItemText
           primary={
-            <FormattedMessage
-              id="buy.token.page"
-              defaultMessage="Buy token page"
-            />
+            <FormattedMessage id="buy.token" defaultMessage="Buy token" />
           }
         />
       </MenuItem>
@@ -85,10 +82,7 @@ export default function TokensTableMenu({
         </ListItemIcon>
         <ListItemText
           primary={
-            <FormattedMessage
-              id="sell.token.page"
-              defaultMessage="Sell token page"
-            />
+            <FormattedMessage id="sell.token" defaultMessage="Sell token" />
           }
         />
       </MenuItem>

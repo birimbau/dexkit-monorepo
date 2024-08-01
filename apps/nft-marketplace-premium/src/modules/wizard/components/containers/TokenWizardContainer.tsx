@@ -315,18 +315,12 @@ export default function TokenWizardContainer({
         }}
         onConfirm={handleConfirmRemove}
         title={
-          selection.length > 0 ? (
-            <FormattedMessage
-              id="delete.tokens"
-              defaultMessage="Delete Tokens"
-            />
-          ) : (
-            <FormattedMessage
-              id="delete.token.alt"
-              defaultMessage="Delete Token"
-            />
-          )
+          <FormattedMessage
+            id="delete.token.alt"
+            defaultMessage="Delete Token(s)"
+          />
         }
+        actionCaption={<FormattedMessage id="delete" defaultMessage="Delete" />}
       >
         <FormattedMessage
           id="Are.you.sure.you.want.to.delete.the.token.s"

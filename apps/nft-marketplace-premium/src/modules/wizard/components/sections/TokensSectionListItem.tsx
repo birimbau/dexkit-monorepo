@@ -214,8 +214,8 @@ export default function TokensSectionListItem({
               target="_blank"
             >
               <FormattedMessage
-                id={'buy.token.page'}
-                defaultMessage={'Buy token page'}
+                id={'buy.token.alt'}
+                defaultMessage={'Buy token'}
               />
             </MenuItem>
             <MenuItem
@@ -228,8 +228,8 @@ export default function TokensSectionListItem({
               target="_blank"
             >
               <FormattedMessage
-                id={'sell.token.page'}
-                defaultMessage={'Sell token page'}
+                id={'sell.token'}
+                defaultMessage={'Sell token'}
               />
             </MenuItem>
             <MenuItem
