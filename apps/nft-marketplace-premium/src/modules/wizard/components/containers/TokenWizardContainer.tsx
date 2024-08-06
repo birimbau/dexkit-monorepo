@@ -372,52 +372,59 @@ export default function TokenWizardContainer({
         <Grid item xs={12}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              <Grid container spacing={2} justifyContent="space-between">
-                <Grid item xs={12} sm={3}>
-                  <TokensTableNetworkAutocomplete
-                    selectedNetwoks={selectedNetwoks}
-                    onChange={handleChangeSelectedNetworks}
-                  />
-                </Grid>
-                <Grid item>
-                  <Box>
-                    <Stack direction="row" alignItems="center" spacing={2}>
-                      {selection.length > 0 && (
-                        <Button
-                          color="error"
-                          variant="outlined"
-                          startIcon={<Delete />}
-                          onClick={handleRemoveTokens}
-                        >
-                          <FormattedMessage
-                            id="delete"
-                            defaultMessage="Delete"
-                          />
-                        </Button>
-                      )}
+              <Box pt={2}>
+                <Grid
+                  container
+                  alignItems="flex-end"
+                  spacing={2}
+                  justifyContent="space-between"
+                >
+                  <Grid item xs={12} sm={4}>
+                    <TokensTableNetworkAutocomplete
+                      selectedNetwoks={selectedNetwoks}
+                      onChange={handleChangeSelectedNetworks}
+                    />
+                  </Grid>
+                  <Grid item>
+                    <Box>
+                      <Stack direction="row" spacing={2}>
+                        {selection.length > 0 && (
+                          <Button
+                            color="error"
+                            variant="outlined"
+                            startIcon={<Delete />}
+                            onClick={handleRemoveTokens}
+                          >
+                            <FormattedMessage
+                              id="delete"
+                              defaultMessage="Delete"
+                            />
+                          </Button>
+                        )}
 
-                      <LazyTextField
-                        TextFieldProps={{
-                          variant: 'standard',
-                          placeholder: formatMessage({
-                            id: 'search.dots',
-                            defaultMessage: 'Search...',
-                          }),
-                          InputProps: {
-                            startAdornment: (
-                              <InputAdornment position="end">
-                                <Search />
-                              </InputAdornment>
-                            ),
-                          },
-                        }}
-                        value={search}
-                        onChange={handleChangeSearch}
-                      />
-                    </Stack>
-                  </Box>
+                        <LazyTextField
+                          TextFieldProps={{
+                            variant: 'standard',
+                            placeholder: formatMessage({
+                              id: 'search.dots',
+                              defaultMessage: 'Search...',
+                            }),
+                            InputProps: {
+                              startAdornment: (
+                                <InputAdornment position="end">
+                                  <Search />
+                                </InputAdornment>
+                              ),
+                            },
+                          }}
+                          value={search}
+                          onChange={handleChangeSearch}
+                        />
+                      </Stack>
+                    </Box>
+                  </Grid>
                 </Grid>
-              </Grid>
+              </Box>
             </Grid>
             <Grid item xs={12}>
               <TokensTable

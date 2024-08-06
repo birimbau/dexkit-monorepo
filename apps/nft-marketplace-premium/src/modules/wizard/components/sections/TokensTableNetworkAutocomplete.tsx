@@ -30,12 +30,16 @@ export default function TokensTableNetworkAutocomplete({
 
   return (
     <Autocomplete
+      componentsProps={{
+        popper: { style: { width: 'fit-content' }, placement: 'bottom-start' },
+      }}
       options={networks}
       value={selectedNetwoks}
+      limitTags={2}
       renderInput={(params) => (
         <TextField
           {...params}
-          variant="standard"
+          variant="outlined"
           placeholder={
             selectedNetwoks.length > 0
               ? ''

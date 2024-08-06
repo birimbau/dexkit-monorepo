@@ -173,12 +173,13 @@ export default function TokensTable({
               />
               <Box>
                 <Stack direction="row" alignItems="center" spacing={1}>
-                  <Typography variant="body2">
+                  <Typography fontWeight="400" variant="body1">
                     {row.token.name}{' '}
                     <Typography
                       color="text.secondary"
                       variant="caption"
                       component="span"
+                      sx={{ ml: 1.5 }}
                     >
                       {row.token.symbol.toUpperCase()}
                     </Typography>
@@ -225,8 +226,9 @@ export default function TokensTable({
                   defaultMessage="Select the tokens that will be highlighted in the Swap section"
                 />
               }
+              placement="top"
             >
-              <InfoOutlined fontSize="inherit" />
+              <InfoOutlined fontSize="inherit" sx={{ color: 'grey.400' }} />
             </Tooltip>
           </Stack>
         ),
@@ -257,8 +259,9 @@ export default function TokensTable({
                   defaultMessage="Assign tokens for NFT transactions in your app."
                 />
               }
+              placement="top"
             >
-              <InfoOutlined fontSize="inherit" />
+              <InfoOutlined fontSize="inherit" sx={{ color: 'grey.400' }} />
             </Tooltip>
           </Stack>
         ),
@@ -323,6 +326,7 @@ export default function TokensTable({
             outline: 'none !important',
           },
         }}
+        sortingOrder={['asc', 'desc']}
         columns={columns}
         rows={pageList}
         rowSelection
