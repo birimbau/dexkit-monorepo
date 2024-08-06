@@ -12,7 +12,12 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import { DataGrid, GridColDef, GridRowSelectionModel } from '@mui/x-data-grid';
+import {
+  DataGrid,
+  GridColDef,
+  GridRowSelectionModel,
+  GridSortModel,
+} from '@mui/x-data-grid';
 import { MouseEvent, useCallback, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { TOKEN_KEY } from '../../utils';
@@ -46,6 +51,8 @@ export default function TokensTable({
 }: TokensTableProps) {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
+  const [sortModel, setSortModel] = useState<GridSortModel>([]);
+
   const [selectedToken, setSelectedToken] = useState<TokenWhitelabelApp>();
 
   const [paginationModel, setPaginationModel] = useState({
@@ -77,6 +84,16 @@ export default function TokensTable({
       })),
     ];
 
+    if (sortModel.length > 0 && sortModel[0]?.sort === 'asc') {
+      newTokens = newTokens.sort((a, b) =>
+        a.token.name.localeCompare(b.token.name),
+      );
+    } else {
+      newTokens = newTokens.sort((a, b) =>
+        b.token.name.localeCompare(a.token.name),
+      );
+    }
+
     if (!tokens) {
       return [];
     }
@@ -93,7 +110,7 @@ export default function TokensTable({
         t.token.symbol.toLowerCase().search(search) > -1
       );
     });
-  }, [JSON.stringify(tokens), search, networkIds]);
+  }, [JSON.stringify(tokens), search, networkIds, sortModel]);
 
   const [offset, limit] = useMemo(() => {
     return [
@@ -156,7 +173,16 @@ export default function TokensTable({
               />
               <Box>
                 <Stack direction="row" alignItems="center" spacing={1}>
-                  <Typography variant="body2">{row.token.name}</Typography>
+                  <Typography variant="body2">
+                    {row.token.name}{' '}
+                    <Typography
+                      color="text.secondary"
+                      variant="caption"
+                      component="span"
+                    >
+                      {row.token.symbol.toUpperCase()}
+                    </Typography>
+                  </Typography>
                   <IconButton size="small" onClick={handleOpenMenu(row.token)}>
                     <MoreHoriz fontSize="small" />
                   </IconButton>
@@ -287,6 +313,15 @@ export default function TokensTable({
           '& .MuiDataGrid-cell:focus-within': {
             outline: 'none !important',
           },
+          '&.MuiDataGrid-root .MuiDataGrid-cell:focus-within': {
+            outline: 'none !important',
+          },
+          '& .MuiDataGrid-columnHeader:focus': {
+            outline: 'none !important',
+          },
+          '& .MuiDataGrid-columnHeader:focus-within': {
+            outline: 'none !important',
+          },
         }}
         columns={columns}
         rows={pageList}
@@ -295,6 +330,8 @@ export default function TokensTable({
         checkboxSelection
         getRowId={(row) => TOKEN_KEY(row.token as any)}
         rowHeight={70}
+        onSortModelChange={setSortModel}
+        sortModel={sortModel}
         pageSizeOptions={[5, 10, 25, 50]}
         onPaginationModelChange={setPaginationModel}
         paginationModel={paginationModel}

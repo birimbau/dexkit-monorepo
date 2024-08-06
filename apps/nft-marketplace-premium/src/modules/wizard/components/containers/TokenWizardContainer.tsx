@@ -56,9 +56,12 @@ export default function TokenWizardContainer({
   const [selection, setSelection] = useState<string[]>([]);
 
   const appUrl = useMemo(() => {
-    if (site?.domain) {
+    if (process.env.NODE_ENV === 'development') {
+      return `http://localhost:3000`;
+    } else if (site?.domain) {
       return `https://${site?.domain}`;
     }
+
     if (site?.previewUrl) {
       return site?.previewUrl;
     }
@@ -197,6 +200,11 @@ export default function TokenWizardContainer({
 
   const handleSaveToken = (token: Token) => {
     setShowAddToken(false);
+
+    setTokens((value) => {
+      setHasChanged(true);
+      return [...value, token];
+    });
   };
 
   const handleCloseAddToken = () => {
@@ -345,20 +353,24 @@ export default function TokenWizardContainer({
           <Divider />
         </Grid>
         <Grid item xs={12}>
-          <Button
-            onClick={handleShowAddToken}
-            startIcon={<SaveAltIcon />}
-            variant="outlined"
-          >
-            <FormattedMessage id="import.token" defaultMessage="Import Token" />
-          </Button>
+          <Box sx={{ py: 2 }}>
+            <Button
+              onClick={handleShowAddToken}
+              startIcon={<SaveAltIcon />}
+              variant="contained"
+            >
+              <FormattedMessage
+                id="import.token"
+                defaultMessage="Import Token"
+              />
+            </Button>
+          </Box>
         </Grid>
         <Grid item xs={12}>
           <Divider />
         </Grid>
         <Grid item xs={12}>
           <Grid container spacing={2}>
-            <Grid item xs={12}></Grid>
             <Grid item xs={12}>
               <Grid container spacing={2} justifyContent="space-between">
                 <Grid item xs={12} sm={3}>
