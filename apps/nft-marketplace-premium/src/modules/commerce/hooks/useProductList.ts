@@ -28,6 +28,6 @@ export default function useProductList(params: {
         }>('/products', { params })
       ).data;
     },
-    { refetchOnWindowFocus: true },
+    { refetchOnWindowFocus: true, refetchOnMount: true },
   );
 }

@@ -3,6 +3,7 @@ import useOrder from '@/modules/commerce/hooks/orders/useOrder';
 import useOrderItems from '@/modules/commerce/hooks/orders/useOrderItems';
 import { Order } from '@/modules/commerce/types';
 import { getBlockExplorerUrl, truncateAddress } from '@dexkit/core/utils';
+import { useTokenDataQuery } from '@dexkit/ui';
 import Check from '@mui/icons-material/Check';
 import Close from '@mui/icons-material/Close';
 import MoneyOffIcon from '@mui/icons-material/MoneyOff';
@@ -31,6 +32,11 @@ interface OrderComponentProps {
 
 function OrderComponent({ order }: OrderComponentProps) {
   const { data: items } = useOrderItems({ id: order.id });
+
+  const { data: tokenData } = useTokenDataQuery({
+    chainId: order.chainId,
+    address: order.contractAddress,
+  });
 
   return (
     <Stack spacing={2}>
@@ -69,7 +75,7 @@ function OrderComponent({ order }: OrderComponentProps) {
                     order.contractAddress
                   }`}
                 >
-                  {truncateAddress(order.contractAddress)}
+                  {tokenData?.name}
                 </Link>
               </Typography>
             </Grid>
@@ -77,7 +83,9 @@ function OrderComponent({ order }: OrderComponentProps) {
               <Typography variant="caption" color="text.secondary">
                 <FormattedMessage id="total" defaultMessage="Total" />
               </Typography>
-              <Typography variant="body2">{order.amount}</Typography>
+              <Typography variant="body2">
+                {order.amount} {tokenData?.symbol.toUpperCase()}
+              </Typography>
             </Grid>
           </Grid>
         </CardContent>
@@ -105,10 +113,13 @@ function OrderComponent({ order }: OrderComponentProps) {
               {items?.map((item, index) => (
                 <TableRow key={index}>
                   <TableCell>{item.title}</TableCell>
-                  <TableCell>{item.price}</TableCell>
+                  <TableCell>
+                    {item.price} {tokenData?.symbol.toUpperCase()}
+                  </TableCell>
                   <TableCell>{item.quantity}</TableCell>
                   <TableCell>
-                    {new Decimal(item.quantity).mul(item.price).toNumber()}
+                    {new Decimal(item.quantity).mul(item.price).toNumber()}{' '}
+                    {tokenData?.symbol.toUpperCase()}
                   </TableCell>
                 </TableRow>
               ))}

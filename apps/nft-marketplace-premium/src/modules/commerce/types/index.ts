@@ -18,12 +18,23 @@ export type CheckoutNetworksUpdateType = z.infer<
 
 export type CheckoutSettingsType = z.infer<typeof CheckoutSettingsSchema>;
 
+export type Product = {
+  id: string;
+  createdAt: Date;
+  updatedAt: Date;
+  name: string;
+  price: string;
+  imageUrl: string | null;
+  owner: string;
+};
+
 export type CheckoutItem = {
   id: string;
   createdAt: Date;
   updatedAt: Date;
   checkoutId: string;
   productId: string;
+  product?: Product;
   price: string;
   quantity: number;
   description: string;

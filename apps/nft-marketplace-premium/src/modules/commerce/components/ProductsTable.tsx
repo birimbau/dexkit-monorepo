@@ -10,6 +10,8 @@ import NextLink from 'next/link';
 import { LoadingOverlay } from './LoadingOverlay';
 import { noRowsOverlay } from './NoRowsOverlay';
 
+import InventoryIcon from '@mui/icons-material/Inventory';
+
 export interface ProducstTableProps {
   query: string;
 }
@@ -37,7 +39,9 @@ export default function ProductsTable({ query }: ProducstTableProps) {
           defaultMessage: 'Image',
         }),
         renderCell: ({ row }) => (
-          <Avatar variant="rounded" src={row.imageUrl} />
+          <Avatar variant="rounded" src={row.imageUrl}>
+            <InventoryIcon />
+          </Avatar>
         ),
       },
       {

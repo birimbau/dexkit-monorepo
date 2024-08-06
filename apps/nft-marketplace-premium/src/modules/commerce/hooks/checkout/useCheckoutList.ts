@@ -28,6 +28,6 @@ export default function useCheckoutList(params: {
         }>('/checkouts', { params })
       ).data;
     },
-    { refetchOnWindowFocus: true },
+    { refetchOnWindowFocus: true, refetchOnMount: true },
   );
 }

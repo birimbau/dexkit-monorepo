@@ -18,6 +18,6 @@ export default function useUserCheckoutNetworks({ id }: { id: string }) {
         await instance.get<number[]>(`/checkouts-networks/checkout/${id}`)
       ).data;
     },
-    { refetchOnWindowFocus: true },
+    { refetchOnWindowFocus: true, refetchOnMount: true },
   );
 }

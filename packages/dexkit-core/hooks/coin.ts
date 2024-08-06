@@ -39,7 +39,8 @@ export function useErc20BalanceQuery({
       const contract = new Contract(contractAddress, ERC20Abi, provider);
 
       return (await contract.balanceOf(account)) as BigNumber;
-    }
+    },
+    { refetchOnMount: true, refetchOnWindowFocus: true }
   );
 }
 

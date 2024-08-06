@@ -23,6 +23,6 @@ export default function useCheckoutSettings() {
 
       return result;
     },
-    { refetchOnWindowFocus: true },
+    { refetchOnWindowFocus: true, refetchOnMount: true },
   );
 }

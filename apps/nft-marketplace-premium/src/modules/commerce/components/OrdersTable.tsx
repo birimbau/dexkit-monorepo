@@ -4,6 +4,7 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import { Order } from '../types';
 
 import { getBlockExplorerUrl, truncateAddress } from '@dexkit/core/utils';
+import { useTokenDataQuery } from '@dexkit/ui';
 import { Box, Stack, Typography } from '@mui/material';
 import Link from '@mui/material/Link';
 import NextLink from 'next/link';
@@ -72,7 +73,12 @@ export default function OrdersTable({ query }: OrdersTableProps) {
           defaultMessage: 'Total',
         }),
         renderCell: ({ row }) => {
-          return row.amount;
+          const { data: tokenData } = useTokenDataQuery({
+            address: row.contractAddress,
+            chainId: row.chainId,
+          });
+
+          return `${row.amount} ${tokenData?.symbol.toUpperCase()}`;
         },
       },
       {
@@ -83,6 +89,11 @@ export default function OrdersTable({ query }: OrdersTableProps) {
           defaultMessage: 'Token',
         }),
         renderCell: ({ row }) => {
+          const { data: tokenData } = useTokenDataQuery({
+            address: row.contractAddress,
+            chainId: row.chainId,
+          });
+
           return (
             <Link
               target="_blank"
@@ -90,7 +101,7 @@ export default function OrdersTable({ query }: OrdersTableProps) {
                 row.contractAddress
               }`}
             >
-              {truncateAddress(row.contractAddress)}
+              {tokenData?.name}
             </Link>
           );
         },

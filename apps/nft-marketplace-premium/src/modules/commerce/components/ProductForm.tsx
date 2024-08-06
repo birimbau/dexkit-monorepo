@@ -45,7 +45,11 @@ export default function ProductForm({ onSubmit, isValid }: ProductFormProps) {
     <>
       <MediaDialog
         onConfirmSelectFile={handleSelectFile}
-        dialogProps={{ open: showSelectFile, onClose: handleClose }}
+        dialogProps={{
+          open: showSelectFile,
+          onClose: handleClose,
+          maxWidth: 'lg',
+        }}
       />
       <Grid container spacing={2}>
         <Grid item xs={12} sm={4}>

@@ -3,9 +3,10 @@ import { useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { Order } from '../types';
 
-import { getBlockExplorerUrl, truncateAddress } from '@dexkit/core/utils';
+import { getBlockExplorerUrl } from '@dexkit/core/utils';
+import { useTokenDataQuery } from '@dexkit/ui';
 import { useWeb3React } from '@dexkit/wallet-connectors/hooks/useWeb3React';
-import { Box } from '@mui/material';
+import { Box, Skeleton } from '@mui/material';
 import Link from '@mui/material/Link';
 import NextLink from 'next/link';
 import useUserOrderList from '../hooks/orders/useUserOrdersList';
@@ -56,7 +57,12 @@ export default function UserOrdersTable({ query }: OrdersTableProps) {
           defaultMessage: 'Total',
         }),
         renderCell: ({ row }) => {
-          return row.amount;
+          const { data: tokenData } = useTokenDataQuery({
+            address: row.contractAddress,
+            chainId: row.chainId,
+          });
+
+          return `${row.amount} ${tokenData?.symbol}`;
         },
       },
       {
@@ -67,6 +73,11 @@ export default function UserOrdersTable({ query }: OrdersTableProps) {
           defaultMessage: 'Token',
         }),
         renderCell: ({ row }) => {
+          const { data: tokenData, isLoading } = useTokenDataQuery({
+            address: row.contractAddress,
+            chainId: row.chainId,
+          });
+
           return (
             <Link
               target="_blank"
@@ -74,20 +85,10 @@ export default function UserOrdersTable({ query }: OrdersTableProps) {
                 row.contractAddress
               }`}
             >
-              {truncateAddress(row.contractAddress)}
+              {isLoading ? <Skeleton /> : tokenData?.name}
             </Link>
           );
         },
-      },
-      {
-        flex: 1,
-        field: 'senderAddress',
-        headerName: formatMessage({ id: 'creator', defaultMessage: 'Creator' }),
-        renderCell: ({ row }) => (
-          <Link component={NextLink} href={`/`}>
-            {truncateAddress(row.senderAddress)}
-          </Link>
-        ),
       },
       {
         flex: 1,

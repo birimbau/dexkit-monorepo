@@ -22,6 +22,6 @@ export default function useProduct(params: { id?: string }) {
       return (await instance.get<ProductFormType>(`/products/${params.id}`))
         .data;
     },
-    { refetchOnWindowFocus: true },
+    { refetchOnWindowFocus: true, refetchOnMount: true },
   );
 }

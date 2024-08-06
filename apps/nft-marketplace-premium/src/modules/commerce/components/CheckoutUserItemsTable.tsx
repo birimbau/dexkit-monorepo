@@ -1,7 +1,16 @@
 import { Token } from '@dexkit/core/types';
-import { List, ListItem, ListItemText, Typography } from '@mui/material';
+import {
+  Avatar,
+  List,
+  ListItem,
+  ListItemAvatar,
+  ListItemText,
+  Typography,
+} from '@mui/material';
 import Decimal from 'decimal.js';
 import { CheckoutItem } from '../types';
+
+import InventoryIcon from '@mui/icons-material/Inventory';
 
 export interface CheckoutUserItemListProps {
   token?: Token | null;
@@ -16,6 +25,11 @@ export default function CheckoutUserItemList({
     <List disablePadding>
       {items?.map((item: CheckoutItem, index: number) => (
         <ListItem divider key={index}>
+          <ListItemAvatar>
+            <Avatar variant="rounded" src={item.product?.imageUrl ?? undefined}>
+              <InventoryIcon />
+            </Avatar>
+          </ListItemAvatar>
           <ListItemText
             primary={item.description}
             secondary={`x${item.quantity}`}
