@@ -4,13 +4,13 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import { Order } from '../types';
 
 import { getBlockExplorerUrl, truncateAddress } from '@dexkit/core/utils';
-import { useTokenDataQuery } from '@dexkit/ui';
 import { Box, Stack, Typography } from '@mui/material';
 import Link from '@mui/material/Link';
 import NextLink from 'next/link';
 import useOrderList from '../hooks/orders/useOrdersList';
 import { LoadingOverlay } from './LoadingOverlay';
 import { noRowsOverlay } from './NoRowsOverlay';
+import TokenDataContainer from './TokenDataContainer';
 
 const Component = () => {
   return (
@@ -73,12 +73,14 @@ export default function OrdersTable({ query }: OrdersTableProps) {
           defaultMessage: 'Total',
         }),
         renderCell: ({ row }) => {
-          const { data: tokenData } = useTokenDataQuery({
-            address: row.contractAddress,
-            chainId: row.chainId,
-          });
-
-          return `${row.amount} ${tokenData?.symbol.toUpperCase()}`;
+          return (
+            <TokenDataContainer
+              contractAddress={row.contractAddress}
+              chainId={row.chainId}
+            >
+              {({ symbol }) => `${row.amount} ${symbol}`}
+            </TokenDataContainer>
+          );
         },
       },
       {
@@ -89,11 +91,6 @@ export default function OrdersTable({ query }: OrdersTableProps) {
           defaultMessage: 'Token',
         }),
         renderCell: ({ row }) => {
-          const { data: tokenData } = useTokenDataQuery({
-            address: row.contractAddress,
-            chainId: row.chainId,
-          });
-
           return (
             <Link
               target="_blank"
@@ -101,7 +98,12 @@ export default function OrdersTable({ query }: OrdersTableProps) {
                 row.contractAddress
               }`}
             >
-              {tokenData?.name}
+              <TokenDataContainer
+                contractAddress={row.contractAddress}
+                chainId={row.chainId}
+              >
+                {({ name }) => `${name}`}
+              </TokenDataContainer>
             </Link>
           );
         },
