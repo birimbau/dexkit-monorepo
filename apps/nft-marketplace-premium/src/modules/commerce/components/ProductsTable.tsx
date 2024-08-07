@@ -22,7 +22,7 @@ export default function ProductsTable({ query }: ProducstTableProps) {
     pageSize: 10,
   });
 
-  const { data } = useProductList({
+  const { data, isFetched } = useProductList({
     limit: paginationModel.pageSize,
     page: paginationModel.page,
     q: query,
@@ -78,32 +78,40 @@ export default function ProductsTable({ query }: ProducstTableProps) {
 
   return (
     <Box>
-      <DataGrid
-        columns={columns}
-        rowCount={data?.totalItems}
-        rows={data?.items ?? []}
-        paginationMode="client"
-        paginationModel={paginationModel}
-        onPaginationModelChange={setPaginationModel}
-        sx={{ height: 300 }}
-        slots={{
-          noRowsOverlay: noRowsOverlay(
-            <FormattedMessage id="no.products" defaultMessage="No Products" />,
-            <FormattedMessage
-              id="create.products.to.see.it.here"
-              defaultMessage="Create products to see it here"
-            />,
-          ),
-          loadingOverlay: LoadingOverlay,
-          noResultsOverlay: noRowsOverlay(
-            <FormattedMessage id="no.products" defaultMessage="No Products" />,
-            <FormattedMessage
-              id="create.products.to.see.it.here"
-              defaultMessage="Create products to see it here"
-            />,
-          ),
-        }}
-      />
+      {isFetched && (
+        <DataGrid
+          columns={columns}
+          rowCount={data?.totalItems}
+          rows={data?.items ?? []}
+          paginationMode="server"
+          paginationModel={paginationModel}
+          onPaginationModelChange={setPaginationModel}
+          sx={{ height: 300 }}
+          slots={{
+            noRowsOverlay: noRowsOverlay(
+              <FormattedMessage
+                id="no.products"
+                defaultMessage="No Products"
+              />,
+              <FormattedMessage
+                id="create.products.to.see.it.here"
+                defaultMessage="Create products to see it here"
+              />,
+            ),
+            loadingOverlay: LoadingOverlay,
+            noResultsOverlay: noRowsOverlay(
+              <FormattedMessage
+                id="no.products"
+                defaultMessage="No Products"
+              />,
+              <FormattedMessage
+                id="create.products.to.see.it.here"
+                defaultMessage="Create products to see it here"
+              />,
+            ),
+          }}
+        />
+      )}
     </Box>
   );
 }

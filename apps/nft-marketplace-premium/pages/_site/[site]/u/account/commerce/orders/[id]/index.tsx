@@ -4,6 +4,7 @@ import useOrderItems from '@/modules/commerce/hooks/orders/useOrderItems';
 import { Order } from '@/modules/commerce/types';
 import { getBlockExplorerUrl, truncateAddress } from '@dexkit/core/utils';
 import { useTokenDataQuery } from '@dexkit/ui';
+import { PageHeader } from '@dexkit/ui/components/PageHeader';
 import Check from '@mui/icons-material/Check';
 import Close from '@mui/icons-material/Close';
 import MoneyOffIcon from '@mui/icons-material/MoneyOff';
@@ -38,8 +39,41 @@ function OrderComponent({ order }: OrderComponentProps) {
     address: order.contractAddress,
   });
 
+  const renderStatusText = (status: string) => {
+    const statusText: { [key: string]: React.ReactNode } = {
+      PaymentConfirmed: (
+        <FormattedMessage id="confirmed" defaultMessage="Confirmed" />
+      ),
+      Pending: <FormattedMessage id="pending" defaultMessage="Pending" />,
+      Finalized: <FormattedMessage id="finalzied" defaultMessage="Finalized" />,
+      Refunded: <FormattedMessage id="refunded" defaultMessage="Refunded" />,
+      Cancelled: <FormattedMessage id="cancelled" defaultMessage="Cancelled" />,
+    };
+
+    return statusText[status];
+  };
+
   return (
     <Stack spacing={2}>
+      <PageHeader
+        breadcrumbs={[
+          {
+            caption: (
+              <FormattedMessage id="commerce" defaultMessage="Commerce" />
+            ),
+            uri: '/u/account/commerce',
+          },
+          {
+            caption: <FormattedMessage id="orders" defaultMessage="Orders" />,
+            uri: '/u/account/commerce/orders',
+          },
+          {
+            caption: order.id.substring(10),
+            uri: `/u/account/commerce/orders/${order.id}`,
+            active: true,
+          },
+        ]}
+      />
       <Card>
         <CardContent>
           <Grid container spacing={2}>
@@ -77,6 +111,14 @@ function OrderComponent({ order }: OrderComponentProps) {
                 >
                   {tokenData?.name}
                 </Link>
+              </Typography>
+            </Grid>
+            <Grid item>
+              <Typography variant="caption" color="text.secondary">
+                <FormattedMessage id="status" defaultMessage="Status" />
+              </Typography>
+              <Typography variant="body2">
+                {renderStatusText(order.status)}
               </Typography>
             </Grid>
             <Grid item>
@@ -147,9 +189,9 @@ export default function OrderPage() {
 
   const { id } = router.query;
 
-  const { data } = useOrder({ id: id as string });
+  const { data, isFetchedAfterMount } = useOrder({ id: id as string });
 
-  return data && <OrderComponent order={data} />;
+  return data && isFetchedAfterMount && <OrderComponent order={data} />;
 }
 
 OrderPage.getLayout = (page: any) => {

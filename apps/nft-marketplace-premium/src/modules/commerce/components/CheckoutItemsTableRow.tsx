@@ -16,6 +16,8 @@ export default function CheckoutItemsTableRow({
   name,
   index,
 }: CheckoutItemsTableRowProps) {
+  const [propsEditable, metaEditable, helpersEditable] =
+    useField<boolean>('editable');
   const [props, meta, helpers] = useField<string>(`${name}.productId`);
   const [propsQtd, metaQtd, helpersQtd] = useField<number | undefined>(
     `${name}.quantity`,
@@ -30,6 +32,7 @@ export default function CheckoutItemsTableRow({
       </TableCell>
       <TableCell>
         <Field
+          disabled={propsEditable.value}
           name={`${name}.quantity`}
           component={TextField}
           size="small"

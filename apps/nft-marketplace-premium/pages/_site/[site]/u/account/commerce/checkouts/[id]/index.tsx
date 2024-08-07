@@ -47,6 +47,7 @@ function FormWrapper({ checkout }: CheckoutEditComponentProps) {
         title: checkout.title,
         description: checkout.description,
         items: checkout.items,
+        editable: checkout.editable,
       }}
       onSubmit={handleSubmit}
       validationSchema={toFormikValidationSchema(CheckoutSchema)}
@@ -90,9 +91,14 @@ function CheckoutEditData() {
   const router = useRouter();
 
   const { id } = router.query;
-  const { data: checkout } = useCheckout({ id: id as string });
+  const { data: checkout, isFetchedAfterMount } = useCheckout({
+    id: id as string,
+  });
 
-  return checkout && <CheckoutEditComponent checkout={checkout} />;
+  return (
+    checkout &&
+    isFetchedAfterMount && <CheckoutEditComponent checkout={checkout} />
+  );
 }
 
 export default function CheckoutEditPage() {

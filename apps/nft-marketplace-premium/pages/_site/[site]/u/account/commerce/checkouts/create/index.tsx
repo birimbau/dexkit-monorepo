@@ -61,6 +61,7 @@ function CreateCheckoutComponent() {
           title: '',
           description: '',
           items: [],
+          editable: false,
         }}
         onSubmit={handleSubmit}
         validationSchema={toFormikValidationSchema(CheckoutSchema)}

@@ -28,6 +28,10 @@ export default function useOrderList(params: {
         }>('/orders', { params })
       ).data;
     },
-    { refetchOnWindowFocus: true, refetchOnMount: true },
+    {
+      refetchOnWindowFocus: 'always',
+      refetchOnMount: 'always',
+      staleTime: Infinity,
+    },
   );
 }

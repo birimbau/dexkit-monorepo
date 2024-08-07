@@ -50,6 +50,7 @@ export type Checkout = {
   requireEmail: boolean;
   requireAddress: boolean;
   owner: string;
+  editable: boolean;
   items: CheckoutItem[];
 };
 

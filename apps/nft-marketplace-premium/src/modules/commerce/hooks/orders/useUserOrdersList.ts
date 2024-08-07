@@ -29,6 +29,10 @@ export default function useUserOrderList(params: {
         }>(`/orders/user-orders`, { params })
       ).data;
     },
-    { refetchOnWindowFocus: true, refetchOnMount: true },
+    {
+      refetchOnWindowFocus: 'always',
+      refetchOnMount: 'always',
+      staleTime: 1000,
+    },
   );
 }

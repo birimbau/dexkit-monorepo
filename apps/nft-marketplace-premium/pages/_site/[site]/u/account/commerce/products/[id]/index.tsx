@@ -86,9 +86,14 @@ function UpdateProductPagePage() {
 
   const { id } = router.query;
 
-  const { data: product } = useProduct({ id: id as string });
+  const { data: product, isFetchedAfterMount } = useProduct({
+    id: id as string,
+  });
 
-  return product && <UpdateProductComponent product={product} />;
+  return (
+    product &&
+    isFetchedAfterMount && <UpdateProductComponent product={product} />
+  );
 }
 
 export default function UpdateProductPage() {

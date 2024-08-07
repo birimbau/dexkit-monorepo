@@ -12,6 +12,8 @@ export default function useCheckoutList(params: {
 }) {
   const { instance } = useContext(DexkitApiProvider);
 
+  console.log('chama');
+
   return useQuery(
     [GET_CHECKOUT_LIST, params],
     async () => {
@@ -28,6 +30,10 @@ export default function useCheckoutList(params: {
         }>('/checkouts', { params })
       ).data;
     },
-    { refetchOnWindowFocus: true, refetchOnMount: true },
+    {
+      refetchOnWindowFocus: 'always',
+      refetchOnMount: 'always',
+      staleTime: Infinity,
+    },
   );
 }

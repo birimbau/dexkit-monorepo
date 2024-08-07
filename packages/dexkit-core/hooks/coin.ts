@@ -40,7 +40,11 @@ export function useErc20BalanceQuery({
 
       return (await contract.balanceOf(account)) as BigNumber;
     },
-    { refetchOnMount: true, refetchOnWindowFocus: true }
+    {
+      refetchOnMount: "always",
+      refetchOnWindowFocus: "always",
+      staleTime: 1000,
+    }
   );
 }
 

@@ -22,6 +22,10 @@ export default function useCheckout(params: { id?: string }) {
       return (await instance.get<CheckoutFormType>(`/checkouts/${params.id}`))
         .data;
     },
-    { refetchOnWindowFocus: true },
+    {
+      refetchOnWindowFocus: 'always',
+      refetchOnMount: 'always',
+      staleTime: Infinity,
+    },
   );
 }

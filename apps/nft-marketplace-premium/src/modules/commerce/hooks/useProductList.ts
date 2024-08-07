@@ -19,6 +19,8 @@ export default function useProductList(params: {
         throw new Error('no instance');
       }
 
+      console.log('mount');
+
       return (
         await instance.get<{
           items: ProductFormType[];
@@ -28,6 +30,10 @@ export default function useProductList(params: {
         }>('/products', { params })
       ).data;
     },
-    { refetchOnWindowFocus: true, refetchOnMount: true },
+    {
+      refetchOnMount: 'always',
+      refetchOnWindowFocus: 'always',
+      staleTime: 1000,
+    },
   );
 }

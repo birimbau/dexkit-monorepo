@@ -14,6 +14,7 @@ export default function useCheckoutPay() {
       chainId,
       senderEmail,
       senderAddress,
+      items,
     }: {
       id: string;
       hash: string;
@@ -21,6 +22,7 @@ export default function useCheckoutPay() {
       chainId: number;
       senderEmail: string;
       senderAddress: string;
+      items: { [key: string]: { quantity: number } };
     }) => {
       if (!instance) {
         throw new Error('no instance');
@@ -31,6 +33,7 @@ export default function useCheckoutPay() {
         tokenAddress,
         chainId,
         senderAddress,
+        items,
       };
 
       if (senderEmail) {

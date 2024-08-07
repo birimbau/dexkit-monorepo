@@ -1,44 +1,29 @@
 import { Token } from '@dexkit/core/types';
-import {
-  Avatar,
-  List,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
-  Typography,
-} from '@mui/material';
-import Decimal from 'decimal.js';
+import { List } from '@mui/material';
 import { CheckoutItem } from '../types';
 
-import InventoryIcon from '@mui/icons-material/Inventory';
+import CheckoutUserItemsTableRow from './CheckoutUserItemsTableRow';
 
 export interface CheckoutUserItemListProps {
   token?: Token | null;
   items: CheckoutItem[];
+  editable?: boolean;
 }
 
 export default function CheckoutUserItemList({
   token,
   items,
+  editable,
 }: CheckoutUserItemListProps) {
   return (
     <List disablePadding>
       {items?.map((item: CheckoutItem, index: number) => (
-        <ListItem divider key={index}>
-          <ListItemAvatar>
-            <Avatar variant="rounded" src={item.product?.imageUrl ?? undefined}>
-              <InventoryIcon />
-            </Avatar>
-          </ListItemAvatar>
-          <ListItemText
-            primary={item.description}
-            secondary={`x${item.quantity}`}
-          />
-          <Typography>
-            {new Decimal(item.quantity).mul(item.price).toString()}{' '}
-            {token?.symbol ? token?.symbol : 'USD'}
-          </Typography>
-        </ListItem>
+        <CheckoutUserItemsTableRow
+          item={item}
+          key={index}
+          token={token}
+          editable={editable}
+        />
       ))}
     </List>
   );

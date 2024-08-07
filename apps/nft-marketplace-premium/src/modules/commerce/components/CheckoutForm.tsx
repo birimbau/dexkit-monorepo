@@ -72,6 +72,30 @@ export default function CheckoutForm({ disabled }: CheckoutFormProps) {
           </FormControl>
         </Grid>
         <Grid item xs={12}>
+          <FormControl>
+            <FormGroup sx={{ px: 2 }} row>
+              <FormControlLabel
+                control={
+                  <Field component={Checkbox} type="checkbox" name="editable" />
+                }
+                disabled={disabled}
+                label={
+                  <FormattedMessage
+                    id="editable.quantity"
+                    defaultMessage="Editable quantity"
+                  />
+                }
+              />
+            </FormGroup>
+            <FormHelperText>
+              <FormattedMessage
+                id="checkbox.editable"
+                defaultMessage="Check this if you want to make quantity field editable"
+              />
+            </FormHelperText>
+          </FormControl>
+        </Grid>
+        <Grid item xs={12}>
           <CheckoutItemsTable name="items" />
         </Grid>
         <Grid item xs={12}>

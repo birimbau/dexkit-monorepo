@@ -113,7 +113,10 @@ function CheckoutNetworksBase({ networks }: CheckoutNetworksBaseProps) {
 }
 
 export default function CheckoutNetworksUpdateForm() {
-  const { data: networks } = useCheckoutNetworks();
+  const { data: networks, isFetchedAfterMount } = useCheckoutNetworks();
 
-  return networks && <CheckoutNetworksBase networks={networks ?? []} />;
+  return (
+    networks &&
+    isFetchedAfterMount && <CheckoutNetworksBase networks={networks ?? []} />
+  );
 }

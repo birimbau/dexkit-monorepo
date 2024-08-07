@@ -8,14 +8,22 @@ export const GET_USER_CHECKOUT_QUERY = 'GET_USER_CHECKOUT_QUERY';
 export default function useUserCheckout({ id }: { id?: string }) {
   const { instance } = useContext(DexkitApiProvider);
 
-  return useQuery([GET_USER_CHECKOUT_QUERY, id], async () => {
-    if (!instance) {
-      throw new Error('no instance');
-    }
+  return useQuery(
+    [GET_USER_CHECKOUT_QUERY, id],
+    async () => {
+      if (!instance) {
+        throw new Error('no instance');
+      }
 
-    const result = (await instance?.get<Checkout>(`/checkouts/user/${id}`))
-      .data;
+      const result = (await instance?.get<Checkout>(`/checkouts/user/${id}`))
+        .data;
 
-    return result;
-  });
+      return result;
+    },
+    {
+      refetchOnWindowFocus: 'always',
+      refetchOnMount: 'always',
+      staleTime: Infinity,
+    },
+  );
 }

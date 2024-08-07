@@ -20,6 +20,7 @@ export const CheckoutSchema = z.object({
   requireEmail: z.boolean(),
   requireAddress: z.boolean(),
   items: z.array(CheckoutSchemaItem).min(1).max(50),
+  editable: z.boolean().default(false),
 });
 
 export const CheckoutNetworksUpdateSchema = z.object({
@@ -29,4 +30,13 @@ export const CheckoutNetworksUpdateSchema = z.object({
 export const CheckoutSettingsSchema = z.object({
   receiverAccount: z.string(),
   receiverEmail: z.string().email(),
+});
+
+export const UserCheckoutItemsFormSchema = z.object({
+  items: z.record(
+    z.object({
+      quantity: z.number().min(1).max(100),
+      price: z.string(),
+    }),
+  ),
 });

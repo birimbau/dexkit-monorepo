@@ -108,7 +108,12 @@ function CheckoutGeneralSettingsFormBase({
 }
 
 export default function CheckoutGeneralSettingsForm() {
-  const { data: settings } = useCheckoutSettings();
+  const { data: settings, isFetchedAfterMount } = useCheckoutSettings();
 
-  return settings && <CheckoutGeneralSettingsFormBase settings={settings} />;
+  return (
+    settings &&
+    isFetchedAfterMount && (
+      <CheckoutGeneralSettingsFormBase settings={settings} />
+    )
+  );
 }

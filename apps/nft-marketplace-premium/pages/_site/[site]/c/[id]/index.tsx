@@ -24,6 +24,7 @@ import Wallet from '@mui/icons-material/Wallet';
 import {
   Alert,
   Avatar,
+  Box,
   Button,
   Card,
   CardContent,
@@ -32,6 +33,7 @@ import {
   Divider,
   FormControl,
   Grid,
+  IconButton,
   InputLabel,
   ListItemIcon,
   ListItemText,
@@ -41,6 +43,7 @@ import {
   Skeleton,
   Stack,
   TextField,
+  Tooltip,
   Typography,
 } from '@mui/material';
 import { dehydrate, QueryClient } from '@tanstack/react-query';
@@ -61,9 +64,14 @@ import { getAppConfig } from 'src/services/app';
 import CheckoutConfirmDialog from '@/modules/commerce/components/dialogs/CheckoutConfirmDialog';
 import useCheckoutPay from '@/modules/commerce/hooks/checkout/useCheckoutPay';
 import useUserCheckoutNetworks from '@/modules/commerce/hooks/settings/useUserCheckoutNetworks';
+import { UserCheckoutItemsFormSchema } from '@/modules/commerce/schemas';
+import { CheckoutItem } from '@/modules/commerce/types';
 import { useEvmTransferMutation } from '@dexkit/ui/modules/evm-transfer-coin/hooks';
+import Edit from '@mui/icons-material/Edit';
+import { Formik } from 'formik';
 import { useSnackbar } from 'notistack';
 import { z } from 'zod';
+import { toFormikValidationSchema } from 'zod-formik-adapter';
 
 const validEmail = z.string().email();
 
@@ -135,6 +143,7 @@ export default function UserCheckout() {
             tokenAddress: token?.address,
             senderEmail: email,
             senderAddress: account,
+            items,
           });
 
           enqueueSnackbar(
@@ -159,7 +168,35 @@ export default function UserCheckout() {
     },
   });
 
+  const initialValues = useMemo(() => {
+    const result = (userCheckout.data?.items ?? ([] as CheckoutItem[])).reduce(
+      (prev, curr: CheckoutItem) => {
+        prev[curr.id] = {
+          quantity: curr.quantity,
+          price: curr.price,
+        } as { quantity: number; price: string };
+
+        return prev;
+      },
+      {} as { [key: string]: { quantity: number; price: string } },
+    );
+
+    return result;
+  }, [userCheckout.data]);
+
+  const [items, setItems] = useState<{
+    [key: string]: { quantity: number; price: string };
+  }>({});
+
   const total = useMemo(() => {
+    if (Object.keys(items).length > 0 && userCheckout.data?.editable) {
+      return Object.keys(items).reduce((prev, curr) => {
+        return prev.add(
+          new Decimal(items[curr].price).mul(items[curr].quantity),
+        );
+      }, new Decimal(0));
+    }
+
     if (userCheckout.data) {
       return sumItems(
         userCheckout.data.items.map((c) =>
@@ -169,7 +206,7 @@ export default function UserCheckout() {
     }
 
     return new Decimal('0');
-  }, [userCheckout.data]);
+  }, [userCheckout.data, items]);
 
   const balanceQuery = useErc20BalanceQuery({
     provider,
@@ -348,6 +385,16 @@ export default function UserCheckout() {
     }
   };
 
+  const [isEdit, setIsEdit] = useState(false);
+
+  const handleEdit = () => {
+    setIsEdit(true);
+  };
+
+  const handleCancelEdit = () => {
+    setIsEdit(false);
+  };
+
   return (
     <>
       <CheckoutConfirmDialog
@@ -386,24 +433,90 @@ export default function UserCheckout() {
           <Grid item xs={12} sm={6}>
             <Card>
               <CardContent>
-                <Typography variant="caption" color="text.secondary">
-                  <FormattedMessage id="total" defaultMessage="total" />
-                </Typography>
-                <Typography variant="h5" fontWeight="bold">
-                  <FormattedNumber
-                    value={total.toNumber()}
-                    style="currency"
-                    currency="usd"
-                    maximumFractionDigits={token?.decimals}
-                  />{' '}
-                  {token ? token?.symbol : 'USD'}
-                </Typography>
+                <Stack
+                  justifyContent="space-between"
+                  direction="row"
+                  alignItems="center"
+                >
+                  <Box>
+                    <Typography variant="caption" color="text.secondary">
+                      <FormattedMessage id="total" defaultMessage="total" />
+                    </Typography>
+                    <Typography variant="h5" fontWeight="bold">
+                      <FormattedNumber
+                        value={total.toNumber()}
+                        style="currency"
+                        currency="usd"
+                        maximumFractionDigits={token?.decimals}
+                      />{' '}
+                      {token ? token?.symbol : 'USD'}
+                    </Typography>
+                  </Box>
+                  {userCheckout.data?.editable && !isEdit && (
+                    <IconButton onClick={handleEdit}>
+                      <Tooltip
+                        title={
+                          <FormattedMessage
+                            id="edit.items"
+                            defaultMessage="Edit items"
+                          />
+                        }
+                      >
+                        <Edit />
+                      </Tooltip>
+                    </IconButton>
+                  )}
+                </Stack>
               </CardContent>
               <Divider />
-              <CheckoutUserItemList
-                token={token}
-                items={userCheckout.data?.items ?? []}
-              />
+              <Formik
+                key={JSON.stringify(initialValues)}
+                initialValues={{
+                  items: initialValues,
+                }}
+                validationSchema={toFormikValidationSchema(
+                  UserCheckoutItemsFormSchema,
+                )}
+                onSubmit={async ({
+                  items,
+                }: {
+                  items: { [key: string]: { quantity: number; price: string } };
+                }) => {
+                  setIsEdit(false);
+                  setItems(items);
+                }}
+              >
+                {({ submitForm, values }) => (
+                  <>
+                    <CheckoutUserItemList
+                      token={token}
+                      items={userCheckout.data?.items ?? []}
+                      editable={isEdit}
+                    />
+                    {isEdit && (
+                      <>
+                        <Stack
+                          direction="row"
+                          justifyContent="flex-end"
+                          spacing={2}
+                          sx={{ p: 2 }}
+                        >
+                          <Button onClick={handleCancelEdit}>
+                            <FormattedMessage
+                              id="cancel"
+                              defaultMessage="Cancel"
+                            />
+                          </Button>
+                          <Button variant="outlined" onClick={submitForm}>
+                            <FormattedMessage id="done" defaultMessage="Done" />
+                          </Button>
+                        </Stack>
+                        <Divider />
+                      </>
+                    )}
+                  </>
+                )}
+              </Formik>
               <CardContent>
                 <Stack
                   direction="row"

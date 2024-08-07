@@ -1,5 +1,5 @@
 import { DataGrid, GridColDef, GridPaginationModel } from '@mui/x-data-grid';
-import { useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { Order } from '../types';
 
@@ -46,6 +46,20 @@ export default function OrdersTable({ query }: OrdersTableProps) {
   });
 
   const { formatMessage } = useIntl();
+
+  const renderStatusText = (status: string) => {
+    const statusText: { [key: string]: React.ReactNode } = {
+      PaymentConfirmed: (
+        <FormattedMessage id="confirmed" defaultMessage="Confirmed" />
+      ),
+      Pending: <FormattedMessage id="pending" defaultMessage="Pending" />,
+      Finalized: <FormattedMessage id="finalzied" defaultMessage="Finalized" />,
+      Refunded: <FormattedMessage id="refunded" defaultMessage="Refunded" />,
+      Cancelled: <FormattedMessage id="cancelled" defaultMessage="Cancelled" />,
+    };
+
+    return statusText[status];
+  };
 
   const columns = useMemo(() => {
     return [
@@ -117,6 +131,12 @@ export default function OrdersTable({ query }: OrdersTableProps) {
             {truncateAddress(row.senderAddress)}
           </Link>
         ),
+      },
+      {
+        flex: 1,
+        field: 'status',
+        headerName: formatMessage({ id: 'status', defaultMessage: 'Status' }),
+        renderCell: ({ row }) => renderStatusText(row.status),
       },
       {
         flex: 1,
