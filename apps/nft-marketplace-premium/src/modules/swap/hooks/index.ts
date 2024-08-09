@@ -4,7 +4,11 @@ import { useMemo } from 'react';
 import { DkApiPlatformCoin } from 'src/types/api';
 import { Token } from 'src/types/blockchain';
 
-import { getChainIdFromSlug, getNetworkSlugFromChainId, isAddressEqual } from '@dexkit/core/utils/blockchain';
+import {
+  getChainIdFromSlug,
+  getNetworkSlugFromChainId,
+  isAddressEqual,
+} from '@dexkit/core/utils/blockchain';
 import { useTokenList } from '@dexkit/ui/hooks/blockchain';
 import { getApiCoinPlatforms, getApiCoins } from '../services';
 
@@ -19,7 +23,7 @@ export function useSearchSwapTokens({
   network?: string;
   excludeNative?: boolean;
   excludeTokenList?: boolean;
-  featuredTokens?: Token[]
+  featuredTokens?: Token[];
 }) {
   const tokensFromList = useTokenList({
     chainId: getChainIdFromSlug(network)?.chainId,
@@ -61,14 +65,17 @@ export function useSearchSwapTokens({
         coins = coins.filter(
           (c) =>
             c.name.toLowerCase().search(keyword?.toLowerCase()) > -1 ||
-            c.symbol.toLowerCase().search(keyword?.toLowerCase()) > -1
+            c.symbol.toLowerCase().search(keyword?.toLowerCase()) > -1,
         );
       }
 
       return coins.reduce<Token[]>((acc, current) => {
         const found =
-          acc.find((c) => isAddressEqual(c.address, current.address) && c.chainId === current.chainId) !==
-          undefined;
+          acc.find(
+            (c) =>
+              isAddressEqual(c.address, current.address) &&
+              c.chainId === current.chainId,
+          ) !== undefined;
 
         if (!found) {
           acc.push(current);
@@ -83,7 +90,7 @@ export function useSearchSwapTokens({
         tokens = tokens.filter(
           (c) =>
             c.name.toLowerCase().search(keyword?.toLowerCase()) > -1 ||
-            c.symbol.toLowerCase().search(keyword?.toLowerCase()) > -1
+            c.symbol.toLowerCase().search(keyword?.toLowerCase()) > -1,
         );
       }
       return tokens;
@@ -114,7 +121,7 @@ export function usePlatformCoinSearch({
       }
 
       return [];
-    }
+    },
   );
 }
 

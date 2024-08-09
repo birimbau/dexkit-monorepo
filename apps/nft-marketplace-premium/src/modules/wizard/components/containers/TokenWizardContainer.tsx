@@ -198,12 +198,22 @@ export default function TokenWizardContainer({
     setSearch(value);
   };
 
-  const handleSaveToken = (token: Token) => {
+  const handleSaveToken = (tokens: Token[]) => {
     setShowAddToken(false);
 
     setTokens((value) => {
       setHasChanged(true);
-      return [...value, token];
+
+      const newArr = tokens.filter((t) => {
+        const found = value.find(
+          (o) =>
+            o.chainId === t.chainId && isAddressEqual(o.address, t.address),
+        );
+
+        return !found;
+      });
+
+      return [...value, ...newArr];
     });
   };
 
@@ -405,13 +415,14 @@ export default function TokenWizardContainer({
                         <LazyTextField
                           TextFieldProps={{
                             variant: 'standard',
+                            type: 'search',
                             placeholder: formatMessage({
                               id: 'search.dots',
                               defaultMessage: 'Search...',
                             }),
                             InputProps: {
                               startAdornment: (
-                                <InputAdornment position="end">
+                                <InputAdornment sx={{ pr: 1 }} position="end">
                                   <Search />
                                 </InputAdornment>
                               ),

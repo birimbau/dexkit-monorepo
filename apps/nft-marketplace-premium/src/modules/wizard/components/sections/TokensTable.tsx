@@ -51,7 +51,9 @@ export default function TokensTable({
 }: TokensTableProps) {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
-  const [sortModel, setSortModel] = useState<GridSortModel>([]);
+  const [sortModel, setSortModel] = useState<GridSortModel>([
+    { field: 'Token', sort: 'asc' },
+  ]);
 
   const [selectedToken, setSelectedToken] = useState<TokenWhitelabelApp>();
 
@@ -84,16 +86,6 @@ export default function TokensTable({
       })),
     ];
 
-    if (sortModel.length > 0 && sortModel[0]?.sort === 'asc') {
-      newTokens = newTokens.sort((a, b) =>
-        a.token.name.localeCompare(b.token.name),
-      );
-    } else {
-      newTokens = newTokens.sort((a, b) =>
-        b.token.name.localeCompare(a.token.name),
-      );
-    }
-
     if (!tokens) {
       return [];
     }
@@ -104,12 +96,26 @@ export default function TokensTable({
       });
     }
 
-    return newTokens.filter((t) => {
+    newTokens = newTokens.filter((t) => {
       return (
-        t.token.name.toLowerCase().search(search) > -1 ||
-        t.token.symbol.toLowerCase().search(search) > -1
+        t.token.name.toLowerCase().search(search.toLowerCase()) > -1 ||
+        t.token.symbol.toLowerCase().search(search.toLowerCase()) > -1
       );
     });
+
+    if (sortModel.length > 0 && sortModel[0]?.sort === 'asc') {
+      newTokens = newTokens.sort((a, b) =>
+        a.token.name.localeCompare(b.token.name, new Intl.Locale('pt-BR')),
+      );
+    } else {
+      newTokens = newTokens
+        .sort((a, b) =>
+          a.token.name.localeCompare(b.token.name, new Intl.Locale('pt-BR')),
+        )
+        .reverse();
+    }
+
+    return newTokens;
   }, [JSON.stringify(tokens), search, networkIds, sortModel]);
 
   const [offset, limit] = useMemo(() => {
@@ -118,7 +124,7 @@ export default function TokensTable({
       paginationModel.page * paginationModel.pageSize +
         paginationModel.pageSize,
     ];
-  }, [paginationModel, tokens]);
+  }, [paginationModel, JSON.stringify(filteredTokens)]);
 
   const pageList = useMemo(() => {
     return filteredTokens?.slice(offset, limit) || [];
