@@ -215,7 +215,7 @@ export default function TokensTable({
         disableColumnMenu: true,
       },
       {
-        flex: 1,
+        flex: 0.5,
         field: 'Highlight',
         disableColumnMenu: true,
         disableReorder: true,
@@ -248,7 +248,7 @@ export default function TokensTable({
         },
       },
       {
-        flex: 1,
+        flex: 0.2,
         field: 'assign',
         disableColumnMenu: true,
         disableReorder: true,
@@ -331,6 +331,7 @@ export default function TokensTable({
           '& .MuiDataGrid-columnHeader:focus-within': {
             outline: 'none !important',
           },
+          border: 'none',
         }}
         sortingOrder={['asc', 'desc']}
         columns={columns}

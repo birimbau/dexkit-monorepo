@@ -5,7 +5,7 @@ import LazyTextField from '@dexkit/ui/components/LazyTextField';
 import { AppConfig } from '@dexkit/ui/modules/wizard/types/config';
 import Delete from '@mui/icons-material/Delete';
 import Search from '@mui/icons-material/Search';
-import { Box, InputAdornment } from '@mui/material';
+import { Box, Container, IconButton, InputAdornment } from '@mui/material';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
@@ -22,6 +22,7 @@ import TokensTable from '../sections/TokensTable';
 import TokensTableNetworkAutocomplete from '../sections/TokensTableNetworkAutocomplete';
 import { StepperButtons } from '../steppers/StepperButtons';
 
+import Close from '@mui/icons-material/Close';
 import SaveAltIcon from '@mui/icons-material/SaveAlt';
 import { useSnackbar } from 'notistack';
 
@@ -277,7 +278,7 @@ export default function TokenWizardContainer({
     setTokens(config?.tokens?.length ? config?.tokens[0].tokens ?? [] : []);
   };
   return (
-    <>
+    <Container>
       <AppConfirmDialog
         DialogProps={{
           open: openHasChangesConfirm,
@@ -380,8 +381,8 @@ export default function TokenWizardContainer({
           <Divider />
         </Grid>
         <Grid item xs={12}>
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
+          <Grid justifyContent="center" container spacing={2}>
+            <Grid item xs={12} sm={9}>
               <Box pt={2}>
                 <Grid
                   container
@@ -415,15 +416,25 @@ export default function TokenWizardContainer({
                         <LazyTextField
                           TextFieldProps={{
                             variant: 'standard',
-                            type: 'search',
                             placeholder: formatMessage({
                               id: 'search.dots',
                               defaultMessage: 'Search...',
                             }),
                             InputProps: {
                               startAdornment: (
-                                <InputAdornment sx={{ pr: 1 }} position="end">
+                                <InputAdornment sx={{ pr: 1 }} position="start">
                                   <Search />
+                                </InputAdornment>
+                              ),
+                              endAdornment: (
+                                <InputAdornment position="end">
+                                  <IconButton
+                                    size="small"
+                                    onClick={() => setSearch('')}
+                                    sx={{ color: 'text.secondary' }}
+                                  >
+                                    <Close color="inherit" fontSize="small" />
+                                  </IconButton>
                                 </InputAdornment>
                               ),
                             },
@@ -438,16 +449,20 @@ export default function TokenWizardContainer({
               </Box>
             </Grid>
             <Grid item xs={12}>
-              <TokensTable
-                tokens={tokens}
-                search={search}
-                networks={selectedNetwoks}
-                appUrl={appUrl}
-                onDisableFeatured={handleDisableFeatured}
-                onMakeTradable={handleMakeTradable}
-                onChangeSelection={handleChangeSelection}
-                selection={selection}
-              />
+              <Grid justifyContent="center" container spacing={2}>
+                <Grid item xs={12} sm={9}>
+                  <TokensTable
+                    tokens={tokens}
+                    search={search}
+                    networks={selectedNetwoks}
+                    appUrl={appUrl}
+                    onDisableFeatured={handleDisableFeatured}
+                    onMakeTradable={handleMakeTradable}
+                    onChangeSelection={handleChangeSelection}
+                    selection={selection}
+                  />
+                </Grid>
+              </Grid>
             </Grid>
           </Grid>
         </Grid>
@@ -499,6 +514,6 @@ export default function TokenWizardContainer({
           )}
         </Grid>
       </Grid>
-    </>
+    </Container>
   );
 }

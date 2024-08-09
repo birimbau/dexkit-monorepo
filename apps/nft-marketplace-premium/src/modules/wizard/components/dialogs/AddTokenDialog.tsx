@@ -299,19 +299,21 @@ function AddTokenDialog({ dialogProps, tokens, onSave }: Props) {
       <DialogContent dividers sx={{ py: 2, px: 4 }}>
         <Grid container spacing={2}>
           <Grid item xs={12}>
-            <Alert severity="info">
-              <FormattedMessage
-                id="token.import.info"
-                defaultMessage={
-                  'Search for tokens with our API or import them using the contract address'
-                }
-              />
-            </Alert>
-            {tokenData.isError && (
-              <Alert severity="error" onClose={() => tokenData.reset()}>
-                {String(tokenData.error)}
+            <Box mb={2}>
+              <Alert severity="info">
+                <FormattedMessage
+                  id="search.for.tokens.with.our.api.or.import.them.using.the.contract.address."
+                  defaultMessage={
+                    'Search for tokens with our API or import them using the contract address.'
+                  }
+                />
               </Alert>
-            )}
+              {tokenData.isError && (
+                <Alert severity="error" onClose={() => tokenData.reset()}>
+                  {String(tokenData.error)}
+                </Alert>
+              )}
+            </Box>
           </Grid>
           <Grid item xs={12} sm={9}>
             <Box>
@@ -349,6 +351,9 @@ function AddTokenDialog({ dialogProps, tokens, onSave }: Props) {
                   </Select>
                 </FormControl>
                 <FormControl>
+                  <InputLabel>
+                    <FormattedMessage id="network" defaultMessage="Network" />
+                  </InputLabel>
                   <Select
                     fullWidth
                     value={formik.values.chainId}
@@ -356,6 +361,9 @@ function AddTokenDialog({ dialogProps, tokens, onSave }: Props) {
                       formik.setFieldValue('tokens', []);
                       formik.setFieldValue('chainId', e.target.value);
                     }}
+                    label={
+                      <FormattedMessage id="network" defaultMessage="Network" />
+                    }
                     name="chainId"
                     renderValue={(value) => {
                       return (

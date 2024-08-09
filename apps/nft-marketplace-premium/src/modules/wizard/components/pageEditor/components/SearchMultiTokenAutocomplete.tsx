@@ -7,6 +7,7 @@ import { Avatar, Checkbox, Chip, Stack } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import React, { useMemo, useState } from 'react';
+import { FormattedMessage, useIntl } from 'react-intl';
 import { Token } from 'src/types/blockchain';
 
 const icon = <CheckBoxOutlineBlank fontSize="small" />;
@@ -43,12 +44,32 @@ export function SearchMultiTokenAutocomplete(props: Props) {
     });
   }, [tokensQuery.tokens]);
 
+  const { formatMessage } = useIntl();
+
+  const [focus, setFocus] = useState(false);
+
   return (
     <Autocomplete
       options={options}
       renderInput={(params) => (
         <TextField
           {...params}
+          onFocus={() => setFocus(true)}
+          onBlur={() => setFocus(false)}
+          label={
+            focus ? (
+              <FormattedMessage id="token.s" defaultMessage="Token(s)" />
+            ) : (
+              <FormattedMessage
+                id="search.token.s"
+                defaultMessage="Search token(s)"
+              />
+            )
+          }
+          placeholder={formatMessage({
+            id: 'search.tokens',
+            defaultMessage: 'Search tokens',
+          })}
           onChange={(ev) => setSearch(ev.currentTarget.value)}
         />
       )}
