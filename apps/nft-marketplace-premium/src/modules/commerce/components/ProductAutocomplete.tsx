@@ -3,7 +3,7 @@ import {
   Autocomplete,
   Avatar,
   ListItem,
-  ListItemIcon,
+  ListItemAvatar,
   ListItemText,
   TextField,
 } from '@mui/material';
@@ -50,9 +50,13 @@ export default function ProductAutocomplete({
       fullWidth
       renderOption={(params, opt) => (
         <ListItem {...params}>
-          <ListItemIcon>
-            <Avatar sx={{ width: '1rem', height: '1rem' }} variant="rounded" />
-          </ListItemIcon>
+          <ListItemAvatar>
+            <Avatar
+              src={opt.imageUrl}
+              sx={{ width: '1.5rem', height: '1.5rem' }}
+              variant="rounded"
+            />
+          </ListItemAvatar>
           <ListItemText primary={opt.name} />
         </ListItem>
       )}

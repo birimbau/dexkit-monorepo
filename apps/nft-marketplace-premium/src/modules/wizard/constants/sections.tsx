@@ -217,4 +217,8 @@ export const SECTION_CONFIG: {
     title: undefined,
     icon: undefined,
   },
+  commerce: {
+    icon: undefined,
+    title: undefined,
+  },
 };

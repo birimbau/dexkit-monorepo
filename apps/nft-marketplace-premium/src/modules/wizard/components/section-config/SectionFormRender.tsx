@@ -27,6 +27,7 @@ import { TokenTradeSectionForm } from '../forms/TokenTradeSectionForm';
 import { UserContractForm } from '../forms/UserContractForm';
 import VideoSectionForm from '../forms/VideoSectionForm';
 import WalletSectionForm from '../forms/WalletSectionForm';
+import CommerceSectionForm from '../sections/CommerceSectionForm';
 
 const ApiKeyIntegrationDialog = dynamic(
   () => import('../dialogs/ApiKeyIntegrationDialog'),
@@ -306,6 +307,20 @@ export function SectionFormRender({
         onSave={(data) => onSave({ type: 'showcase', settings: data })}
         data={section?.type === sectionType ? section.settings : undefined}
         saveOnChange
+      />
+    );
+  } else if (sectionType === 'commerce') {
+    return (
+      <CommerceSectionForm
+        onChange={(data) =>
+          onChange({ type: 'commerce', settings: { content: data } })
+        }
+        onSubmit={(data) =>
+          onSave({ type: 'commerce', settings: { content: data } })
+        }
+        initialValues={
+          section?.type === sectionType ? section.settings.content : undefined
+        }
       />
     );
   }

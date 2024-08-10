@@ -1,6 +1,9 @@
 import DashboardLayout from '@/modules/commerce/components/layout/DashboardLayout';
 import useOrder from '@/modules/commerce/hooks/orders/useOrder';
 import useOrderItems from '@/modules/commerce/hooks/orders/useOrderItems';
+import useCancelOrder from '@/modules/commerce/hooks/useCancelOrder';
+import useFinalizeOrder from '@/modules/commerce/hooks/useFinalizeOrder';
+import useRefundOrder from '@/modules/commerce/hooks/useRefundOrder';
 import { Order } from '@/modules/commerce/types';
 import { getBlockExplorerUrl, truncateAddress } from '@dexkit/core/utils';
 import { useTokenDataQuery } from '@dexkit/ui';
@@ -25,6 +28,7 @@ import {
 } from '@mui/material';
 import Decimal from 'decimal.js';
 import { useRouter } from 'next/router';
+import { useSnackbar } from 'notistack';
 import { FormattedMessage } from 'react-intl';
 
 interface OrderComponentProps {
@@ -51,6 +55,64 @@ function OrderComponent({ order }: OrderComponentProps) {
     };
 
     return statusText[status];
+  };
+
+  const { mutateAsync: finalize, isLoading: isFinalizeLoading } =
+    useFinalizeOrder();
+  const { mutateAsync: refund, isLoading: isRefundLoading } = useRefundOrder();
+  const { mutateAsync: cancel, isLoading: isCancelLoading } = useCancelOrder();
+
+  const { enqueueSnackbar } = useSnackbar();
+
+  const handleFinalized = async () => {
+    try {
+      await finalize({ id: order.id });
+      enqueueSnackbar(
+        <FormattedMessage
+          id="order.finalize"
+          defaultMessage="Order finalized"
+        />,
+        {
+          variant: 'success',
+        },
+      );
+    } catch (err) {
+      enqueueSnackbar(String(err), { variant: 'error' });
+    }
+  };
+
+  const handleCancel = async () => {
+    try {
+      await cancel({ id: order.id });
+      enqueueSnackbar(
+        <FormattedMessage
+          id="order.cancelled"
+          defaultMessage="Order cancelled"
+        />,
+        {
+          variant: 'success',
+        },
+      );
+    } catch (err) {
+      enqueueSnackbar(String(err), { variant: 'error' });
+    }
+  };
+
+  const handleRefund = async () => {
+    try {
+      await refund({ id: order.id });
+      enqueueSnackbar(
+        <FormattedMessage
+          id="order.refunded"
+          defaultMessage="Order refunded"
+        />,
+        {
+          variant: 'success',
+        },
+      );
+    } catch (err) {
+      enqueueSnackbar(String(err), { variant: 'error' });
+    }
   };
 
   return (
@@ -170,13 +232,21 @@ function OrderComponent({ order }: OrderComponentProps) {
         </TableContainer>
       </Card>
       <Stack direction="row" alignItems="center" spacing={2}>
-        <Button startIcon={<Check />} variant="contained">
+        <Button
+          onClick={handleFinalized}
+          startIcon={<Check />}
+          variant="contained"
+        >
           <FormattedMessage id="finalize" defaultMessage="Finalize" />
         </Button>
-        <Button startIcon={<MoneyOffIcon />} variant="outlined">
+        <Button
+          onClick={handleRefund}
+          startIcon={<MoneyOffIcon />}
+          variant="outlined"
+        >
           <FormattedMessage id="refund" defaultMessage="Refund" />
         </Button>
-        <Button startIcon={<Close />} variant="outlined">
+        <Button onClick={handleCancel} startIcon={<Close />} variant="outlined">
           <FormattedMessage id="cancel" defaultMessage="Cancel" />
         </Button>
       </Stack>
