@@ -66,10 +66,14 @@ export function SearchMultiTokenAutocomplete(props: Props) {
               />
             )
           }
-          placeholder={formatMessage({
-            id: 'search.tokens',
-            defaultMessage: 'Search tokens',
-          })}
+          placeholder={
+            focus
+              ? undefined
+              : formatMessage({
+                  id: 'search.tokens',
+                  defaultMessage: 'Search tokens',
+                })
+          }
           onChange={(ev) => setSearch(ev.currentTarget.value)}
         />
       )}
