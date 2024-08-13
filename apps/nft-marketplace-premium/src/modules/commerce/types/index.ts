@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import {
+  CategoryFormSchema,
   CheckoutNetworksUpdateSchema,
   CheckoutSchema,
   CheckoutSchemaItem,
@@ -83,3 +84,5 @@ export type OrderItem = {
   productId: string;
   metadata: any;
 };
+
+export type CategoryType = z.infer<typeof CategoryFormSchema>;

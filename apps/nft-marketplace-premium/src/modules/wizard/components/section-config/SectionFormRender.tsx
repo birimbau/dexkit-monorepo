@@ -321,6 +321,7 @@ export function SectionFormRender({
         initialValues={
           section?.type === sectionType ? section.settings.content : undefined
         }
+        saveOnChange
       />
     );
   }

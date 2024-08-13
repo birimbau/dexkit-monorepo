@@ -4,6 +4,7 @@ import { CommerceContent } from '@dexkit/ui/modules/wizard/types/section';
 import { Field, Formik } from 'formik';
 import { Select } from 'formik-mui';
 import { FormattedMessage } from 'react-intl';
+import StoreForm from './StoreForm';
 
 interface Props {
   isEdit?: boolean;
@@ -34,7 +35,9 @@ export default function CommerceSectionForm({
   return (
     <Formik
       initialValues={
-        initialValues ? initialValues : { type: 'store', params: {} }
+        initialValues
+          ? initialValues
+          : { type: 'store', address: '', params: {} }
       }
       onSubmit={handleSubmit}
       validate={(values: CommerceContent) => {
@@ -43,7 +46,7 @@ export default function CommerceSectionForm({
         }
       }}
     >
-      {({ submitForm }) => (
+      {({ submitForm, values }) => (
         <div>
           <Grid container spacing={2}>
             <Grid item xs={12}>
@@ -68,6 +71,9 @@ export default function CommerceSectionForm({
                   </MenuItem>
                 </Field>
               </FormControl>
+            </Grid>
+            <Grid item xs={12}>
+              {values.type === 'store' && <StoreForm />}
             </Grid>
             <Grid item xs={12}>
               <Button onClick={submitForm} variant="contained">

@@ -1,0 +1,34 @@
+import { DexkitApiProvider } from "@dexkit/core/providers";
+import { useQuery } from "@tanstack/react-query";
+import { useContext } from "react";
+import { Product } from "../types";
+
+export const GET_PRODUCTS_BY_SITE = "GET_PRODUCTS_BY_SITE";
+
+export default function useProductsBySite(params: {
+  siteId: number;
+  page: number;
+  limit: number;
+  query: string;
+}) {
+  const { siteId, page, limit, query } = params;
+
+  const { instance } = useContext(DexkitApiProvider);
+
+  return useQuery([GET_PRODUCTS_BY_SITE, params], async () => {
+    if (!instance) {
+      throw new Error("no instance");
+    }
+
+    return (
+      await instance?.get<{
+        items: Product[];
+        totalItems: number;
+        totalPages: number;
+        currentPage: number;
+      }>(`/products/by-site/${siteId}`, {
+        params: { page, limit, q: query },
+      })
+    )?.data;
+  });
+}

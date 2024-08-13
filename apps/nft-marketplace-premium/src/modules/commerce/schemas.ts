@@ -40,3 +40,8 @@ export const UserCheckoutItemsFormSchema = z.object({
     }),
   ),
 });
+
+export const CategoryFormSchema = z.object({
+  id: z.string().optional(),
+  name: z.string(),
+});
