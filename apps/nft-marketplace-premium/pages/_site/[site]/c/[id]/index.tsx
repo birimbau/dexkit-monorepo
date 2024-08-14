@@ -63,7 +63,7 @@ import { getAppConfig } from 'src/services/app';
 
 import CheckoutConfirmDialog from '@/modules/commerce/components/dialogs/CheckoutConfirmDialog';
 import useCheckoutPay from '@/modules/commerce/hooks/checkout/useCheckoutPay';
-import useUserCheckoutNetworks from '@/modules/commerce/hooks/settings/useUserCheckoutNetworks';
+
 import { UserCheckoutItemsFormSchema } from '@/modules/commerce/schemas';
 import { CheckoutItem } from '@/modules/commerce/types';
 import { useEvmTransferMutation } from '@dexkit/ui/modules/evm-transfer-coin/hooks';
@@ -82,7 +82,7 @@ export default function UserCheckout() {
 
   const userCheckout = useUserCheckout({ id: id as string });
 
-  const { data: availNetworks } = useUserCheckoutNetworks({ id: id as string });
+  // const { data: availNetworks } = useUserCheckoutNetworks({ id: id as string });
 
   const { activeChainIds } = useActiveChainIds();
 

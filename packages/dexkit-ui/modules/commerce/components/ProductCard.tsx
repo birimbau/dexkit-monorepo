@@ -11,7 +11,6 @@ import { FormattedNumber } from "react-intl";
 import useCommerce from "../hooks/useCommerce";
 import { Product } from "../types";
 
-import NextLink from "next/link";
 import { MouseEvent } from "react";
 
 export interface ProductCardProps {
@@ -30,7 +29,7 @@ export default function ProductCard({ product }: ProductCardProps) {
 
   return (
     <Card variant="elevation">
-      <CardActionArea LinkComponent={NextLink} onClick={handleClick} href={"/"}>
+      <CardActionArea onClick={handleClick}>
         {product.imageUrl ? (
           <CardMedia
             image={product.imageUrl}
