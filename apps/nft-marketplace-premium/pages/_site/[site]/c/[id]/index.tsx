@@ -64,6 +64,7 @@ import { getAppConfig } from 'src/services/app';
 import CheckoutConfirmDialog from '@/modules/commerce/components/dialogs/CheckoutConfirmDialog';
 import useCheckoutPay from '@/modules/commerce/hooks/checkout/useCheckoutPay';
 
+import useCheckoutNetworks from '@/modules/commerce/hooks/settings/useCheckoutNetworks';
 import { UserCheckoutItemsFormSchema } from '@/modules/commerce/schemas';
 import { CheckoutItem } from '@/modules/commerce/types';
 import { useEvmTransferMutation } from '@dexkit/ui/modules/evm-transfer-coin/hooks';
@@ -235,10 +236,14 @@ export default function UserCheckout() {
 
   const { handleConnectWallet } = useConnectWalletDialog();
 
+  const { data: availNetworks } = useCheckoutNetworks();
+
+  const chainIds = availNetworks?.map((n) => n.chainId) ?? [];
+
   const networks = useMemo(() => {
     return Object.keys(NETWORKS)
       .map((key: string) => NETWORKS[parseChainId(key)])
-      .filter((n) => availNetworks?.includes(n.chainId))
+      .filter((n) => chainIds?.includes(n.chainId))
       .filter((n) => {
         let token = CHECKOUT_TOKENS.find((t) => t.chainId === n.chainId);
 

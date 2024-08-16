@@ -2,7 +2,6 @@ import Inventory from "@mui/icons-material/Inventory";
 import {
   Avatar,
   Box,
-  Button,
   Grid,
   Stack,
   Table,
@@ -15,6 +14,7 @@ import {
 import { FormattedMessage } from "react-intl";
 import useCommerce from "../../hooks/useCommerce";
 import ContentHeader from "./ContentHeader";
+import PaymentCard from "./PaymentCard";
 
 export interface CartContentProps {}
 
@@ -77,9 +77,7 @@ export default function CartContent() {
                 </Stack>
               </Stack>
             </Box>
-            <Button variant="contained" size="large" fullWidth>
-              <FormattedMessage id="pay" defaultMessage="Pay" />
-            </Button>
+            <PaymentCard />
           </Stack>
         </Box>
       </Grid>

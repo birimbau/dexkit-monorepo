@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { ProductCategorySchema } from "./schemas";
+import { CartOrderSchema, ProductCategorySchema } from "./schemas";
 
 export type CommerceContextState = {
   productId?: string;
@@ -49,4 +49,24 @@ export type CartItem = {
 
 export type CartState = {
   items: CartItem[];
+};
+
+export type CartOrderType = z.infer<typeof CartOrderSchema>;
+
+export type Order = {
+  id: string;
+  createdAt: Date;
+  updatedAt: Date;
+  metadata: any;
+  chainId: number;
+  contractAddress: string;
+  amount: string;
+  hash: string;
+  receiver: string;
+  receiverEmail: string;
+  notificationEmail: string;
+  senderAddress: string;
+  email: string | null;
+  owner: string;
+  status: string;
 };
