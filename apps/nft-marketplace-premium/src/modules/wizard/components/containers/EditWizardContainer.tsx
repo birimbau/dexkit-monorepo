@@ -867,8 +867,8 @@ export function EditWizardContainer({ site }: Props) {
       >
         <Typography variant="body1">
           <FormattedMessage
-            id="you.have.unsaved.changes"
-            defaultMessage="You have unsaved changes"
+            id="you.have.unsaved.changes."
+            defaultMessage="You have unsaved changes."
           />
         </Typography>
         <Typography variant="body1">
