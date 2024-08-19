@@ -34,17 +34,12 @@ export function useErc20BalanceQuery({
       if (isAddressEqual(contractAddress, ZEROEX_NATIVE_TOKEN_ADDRESS)) {
         return await provider.getBalance(account);
       }
-      await provider.ready;
 
       const contract = new Contract(contractAddress, ERC20Abi, provider);
 
       return (await contract.balanceOf(account)) as BigNumber;
     },
-    {
-      refetchOnMount: "always",
-      refetchOnWindowFocus: "always",
-      staleTime: 1000,
-    }
+    { refetchOnMount: "always", refetchOnWindowFocus: "always" }
   );
 }
 
