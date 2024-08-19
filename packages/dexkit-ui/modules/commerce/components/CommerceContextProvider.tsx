@@ -16,6 +16,11 @@ export const dexkitCartAtom = atomWithStorage<CartState>(
 
 const ADD_CART_ITEM = "ADD_CART_ITEM";
 const UPDATE_CART_ITEM = "UPDATE_CART_ITEM";
+const CLEAR_CART = "CLEAR_CART";
+
+type ClearCart = {
+  type: typeof CLEAR_CART;
+};
 
 type CartAddItem = {
   type: typeof ADD_CART_ITEM;
@@ -33,10 +38,17 @@ type CartUpdateItem = {
   price: string;
 };
 
-type Action = CartAddItem | CartUpdateItem;
+type Action = CartAddItem | CartUpdateItem | ClearCart;
 
 const reducer = (state: CartState = { items: [] }, action?: Action) => {
   switch (action?.type) {
+    case CLEAR_CART: {
+      const newState = { ...state };
+
+      newState.items = [];
+
+      return newState;
+    }
     case ADD_CART_ITEM: {
       const newItems = [
         ...state.items,
@@ -124,6 +136,10 @@ export default function CommerceContextProvider({
     setShowCart(false);
   };
 
+  const clearCart = () => {
+    return dispatch({ type: CLEAR_CART });
+  };
+
   return (
     <CommerceContext.Provider
       value={{
@@ -133,6 +149,7 @@ export default function CommerceContextProvider({
         showCart,
         openCart,
         closeCart,
+        clearCart,
         cartItems: cart.items,
         cart: {
           addItem,

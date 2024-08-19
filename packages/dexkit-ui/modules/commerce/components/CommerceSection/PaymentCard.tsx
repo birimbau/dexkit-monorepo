@@ -52,7 +52,7 @@ import ConfirmPaymentDialog from "../dialogs/ConfirmPaymentDialog";
 const validEmail = z.string().email();
 
 export default function PaymentCard() {
-  const { cartItems } = useCommerce();
+  const { cartItems, clearCart } = useCommerce();
 
   const { activeChainIds } = useActiveChainIds();
 
@@ -198,6 +198,8 @@ export default function PaymentCard() {
             />,
             { variant: "success" }
           );
+
+          clearCart();
 
           router.push(`/c/orders/${result.id}`);
         } catch (err) {

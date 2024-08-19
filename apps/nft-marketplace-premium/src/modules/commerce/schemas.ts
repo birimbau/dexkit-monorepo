@@ -5,6 +5,7 @@ export const ProductSchema = z.object({
   name: z.string().max(30),
   price: z.string(),
   imageUrl: z.string().url().optional(),
+  publishedAt: z.coerce.date().nullable().optional(),
 });
 
 export const CheckoutSchemaItem = z.object({

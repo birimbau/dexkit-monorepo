@@ -19,8 +19,6 @@ export default function useProductList(params: {
         throw new Error('no instance');
       }
 
-      console.log('mount');
-
       return (
         await instance.get<{
           items: ProductFormType[];

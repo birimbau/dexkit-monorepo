@@ -4,6 +4,7 @@ import { CommerceContent } from '@dexkit/ui/modules/wizard/types/section';
 import { Field, Formik } from 'formik';
 import { Select } from 'formik-mui';
 import { FormattedMessage } from 'react-intl';
+import ChangeListener from '../../ChangeListener';
 import StoreForm from './StoreForm';
 
 interface Props {
@@ -46,8 +47,13 @@ export default function CommerceSectionForm({
         }
       }}
     >
-      {({ submitForm, values }) => (
+      {({ submitForm, values, isValid }) => (
         <div>
+          <ChangeListener
+            isValid={isValid}
+            values={values}
+            onChange={onChange}
+          />
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <FormControl fullWidth>

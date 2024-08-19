@@ -25,6 +25,8 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import React from 'react';
 import AuthMainLayout from 'src/components/layouts/authMain';
 
+import CategoryIcon from '@mui/icons-material/Category';
+
 import ChevronRight from '@mui/icons-material/ChevronRight';
 import Wallet from '@mui/icons-material/Wallet';
 import { useConnectWalletDialog } from 'src/hooks/app';
@@ -96,6 +98,24 @@ function RequireLogin({
                       <FormattedMessage
                         id="checkouts"
                         defaultMessage="Checkouts"
+                      />
+                    }
+                  />
+                </ListItemButton>
+                <ListItemButton
+                  divider
+                  LinkComponent={Link}
+                  href="/u/account/commerce/categories"
+                  selected={page === 'categories'}
+                >
+                  <ListItemIcon>
+                    <CategoryIcon />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={
+                      <FormattedMessage
+                        id="categories"
+                        defaultMessage="Categories"
                       />
                     }
                   />

@@ -70,6 +70,7 @@ function UpdateProductComponent({ product }: UpdateProductComponentProps) {
             name: product.name,
             price: product.price,
             imageUrl: product.imageUrl,
+            publishedAt: product.publishedAt,
           }}
         >
           {({ isValid, submitForm, errors }) => (

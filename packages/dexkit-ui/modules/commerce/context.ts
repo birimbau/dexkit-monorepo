@@ -9,6 +9,7 @@ export const CommerceContext = React.createContext<CommerceContextState>({
 
   openCart: () => {},
   closeCart: () => {},
+  clearCart: () => {},
   cart: {
     addItem: () => {},
     item: (productId: string) => {

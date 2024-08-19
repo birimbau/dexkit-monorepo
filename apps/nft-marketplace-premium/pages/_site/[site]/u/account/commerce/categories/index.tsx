@@ -1,11 +1,10 @@
-import CheckoutsTable from '@/modules/commerce/components/CheckoutsTable';
 import DashboardLayout from '@/modules/commerce/components/layout/DashboardLayout';
 import LazyTextField from '@dexkit/ui/components/LazyTextField';
 import { PageHeader } from '@dexkit/ui/components/PageHeader';
 import { Button, InputAdornment, Stack, Typography } from '@mui/material';
 import { FormattedMessage, useIntl } from 'react-intl';
 
-import ShareDialog from '@dexkit/ui/components/dialogs/ShareDialog';
+import CategoriesTable from '@/modules/commerce/components/CheckoutsCategories';
 import Search from '@mui/icons-material/Search';
 import NextLink from 'next/link';
 import { useState } from 'react';
@@ -19,30 +18,8 @@ export default function CommerceCategoriesPage() {
 
   const { formatMessage } = useIntl();
 
-  const [url, setUrl] = useState<string>();
-
-  const handleShare = (url: string) => {
-    setUrl(url);
-  };
-
-  const handleClose = () => {
-    setUrl(undefined);
-  };
-
   return (
     <>
-      {url && (
-        <ShareDialog
-          url={url}
-          dialogProps={{
-            open: true,
-            maxWidth: 'sm',
-            fullWidth: true,
-            onClose: handleClose,
-          }}
-        />
-      )}
-
       <DashboardLayout page="checkouts">
         <Stack spacing={2}>
           <PageHeader
@@ -99,7 +76,7 @@ export default function CommerceCategoriesPage() {
               onChange={handleChange}
             />
           </Stack>
-          <CheckoutsTable query={query} onShare={handleShare} />
+          <CategoriesTable query={query} />
         </Stack>{' '}
       </DashboardLayout>
     </>

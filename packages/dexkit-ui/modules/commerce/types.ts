@@ -9,6 +9,7 @@ export type CommerceContextState = {
   showCart: boolean;
   openCart: () => void;
   closeCart: () => void;
+  clearCart: () => void;
   cart: {
     addItem: (params: {
       quantity: number;

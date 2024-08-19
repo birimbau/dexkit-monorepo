@@ -25,7 +25,7 @@ export default function useCategoryList(params: {
           totalItems: number;
           totalPages: number;
           currentPage: number;
-        }>('/product-categories', { params })
+        }>('/product-category', { params })
       ).data;
     },
     {

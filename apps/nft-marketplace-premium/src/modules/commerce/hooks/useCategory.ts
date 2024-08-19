@@ -1,31 +1,26 @@
 import { DexkitApiProvider } from '@dexkit/core/providers';
 import { useQuery } from '@tanstack/react-query';
 import { useContext } from 'react';
-import { CheckoutFormType } from '../../types';
+import { CategoryType } from '../types';
 
-export const GET_CHECKOUT_LIST = 'GET_CHECKOUT_LIST';
+export const GET_CATEGORY_QUERY = 'GET_CATEGORY_QUERY';
 
-export default function useCheckoutList(params: {
-  page: number;
-  limit: number;
-  q?: string;
-}) {
+export default function useCategory(params: { id?: string }) {
   const { instance } = useContext(DexkitApiProvider);
 
   return useQuery(
-    [GET_CHECKOUT_LIST, params],
+    [GET_CATEGORY_QUERY, params],
     async () => {
       if (!instance) {
         throw new Error('no instance');
       }
 
+      if (!params.id) {
+        return null;
+      }
+
       return (
-        await instance.get<{
-          items: CheckoutFormType[];
-          totalItems: number;
-          totalPages: number;
-          currentPage: number;
-        }>('/checkouts', { params })
+        await instance.get<CategoryType>(`/product-category/${params.id}`)
       ).data;
     },
     {

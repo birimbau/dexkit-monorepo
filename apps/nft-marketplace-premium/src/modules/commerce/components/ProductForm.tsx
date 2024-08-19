@@ -7,15 +7,20 @@ import {
   Box,
   Button,
   ButtonBase,
+  Checkbox,
   Divider,
+  FormControlLabel,
   Grid,
   InputAdornment,
+  TextField as MuiTextField,
   Stack,
 } from '@mui/material';
+import { DateTimePicker } from '@mui/x-date-pickers';
 import { Field, useFormikContext } from 'formik';
 import { TextField } from 'formik-mui';
+import moment, { Moment } from 'moment';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { ProductFormType } from '../types';
 
@@ -40,6 +45,14 @@ export default function ProductForm({ onSubmit, isValid }: ProductFormProps) {
   const handleClose = () => {
     setShowSelectFile(false);
   };
+
+  const [showPublishedAt, setShowPublishedAt] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (values.publishedAt) {
+      setShowPublishedAt(true);
+    }
+  }, [values.publishedAt]);
 
   return (
     <>
@@ -118,6 +131,35 @@ export default function ProductForm({ onSubmit, isValid }: ProductFormProps) {
             decimals={6}
           />
         </Grid>
+        <Grid item xs={12}>
+          <FormControlLabel
+            label={
+              <FormattedMessage id="published" defaultMessage="Published?" />
+            }
+            control={
+              <Checkbox
+                checked={showPublishedAt}
+                onChange={(e) => {
+                  if (!e.target.checked) {
+                    setFieldValue('publishedAt', null);
+                  }
+                  setShowPublishedAt(e.target.checked);
+                }}
+              />
+            }
+          />
+        </Grid>
+        {showPublishedAt && (
+          <Grid item xs={12}>
+            <DateTimePicker
+              renderInput={(props) => <MuiTextField {...props} />}
+              value={moment(values.publishedAt)}
+              onChange={(value: Moment | null) => {
+                setFieldValue('publishedAt', value?.toDate());
+              }}
+            />
+          </Grid>
+        )}
         <Grid item xs={12}>
           <Divider />
         </Grid>

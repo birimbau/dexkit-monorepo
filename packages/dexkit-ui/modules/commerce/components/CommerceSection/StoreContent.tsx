@@ -7,11 +7,11 @@ import {
   InputAdornment,
   Stack,
   TablePagination,
+  Typography,
 } from "@mui/material";
-import { useIntl } from "react-intl";
+import { FormattedMessage, useIntl } from "react-intl";
 
 import LazyTextField from "@dexkit/ui/components/LazyTextField";
-import Filter from "@mui/icons-material/Filter";
 import Search from "@mui/icons-material/Search";
 import { useState } from "react";
 import useCategoriesBySite from "../../hooks/useCategoriesBySite";
@@ -19,6 +19,8 @@ import useProductsBySite from "../../hooks/useProductsBySite";
 import { ProductCategoryType } from "../../types";
 import CategoryAutocomplete from "../CategoryAutocomplete";
 import ProductCard from "../ProductCard";
+
+import FilterAltIcon from "@mui/icons-material/FilterAlt";
 
 export interface StoreContentProps {}
 
@@ -72,7 +74,7 @@ export default function StoreContent({}: StoreContentProps) {
             <Box>
               <Stack direction="row" justifyContent="flex-end">
                 <IconButton onClick={handleToggleFilters}>
-                  <Filter />
+                  <FilterAltIcon />
                 </IconButton>
                 <LazyTextField
                   onChange={(value) =>
@@ -115,11 +117,36 @@ export default function StoreContent({}: StoreContentProps) {
 
           <Grid item xs={12}>
             <Grid container spacing={2}>
-              {products?.items?.map((product, key) => (
-                <Grid key={key} item xs={12} sm={3}>
-                  <ProductCard product={product} />
+              {products && products?.totalItems > 0 ? (
+                products?.items?.map((product, key) => (
+                  <Grid key={key} item xs={12} sm={3}>
+                    <ProductCard product={product} />
+                  </Grid>
+                ))
+              ) : (
+                <Grid item xs={12}>
+                  <Box>
+                    <Stack sx={{ py: 2 }}>
+                      <Typography textAlign="center" variant="h5">
+                        <FormattedMessage
+                          id="no.products"
+                          defaultMessage="No Products"
+                        />
+                      </Typography>
+                      <Typography
+                        textAlign="center"
+                        variant="body1"
+                        color="text.secondary"
+                      >
+                        <FormattedMessage
+                          id="no.products.to.show"
+                          defaultMessage="No products to show"
+                        />
+                      </Typography>
+                    </Stack>
+                  </Box>
                 </Grid>
-              ))}
+              )}
             </Grid>
           </Grid>
           <Grid item xs={12}>
