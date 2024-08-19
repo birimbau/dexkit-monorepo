@@ -74,8 +74,8 @@ export default function TokensSection({
     }
   };
 
-  const handleSaveToken = (token: Token) => {
-    onSave([token]);
+  const handleSaveToken = (token: Token[]) => {
+    onSave(token);
   };
 
   const handleShowRemoveTokens = () => {
