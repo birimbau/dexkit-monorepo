@@ -1,11 +1,21 @@
 import { z } from "zod";
-import { CartOrderSchema, ProductCategorySchema } from "./schemas";
+import {
+  CartOrderSchema,
+  CategoryFormSchema,
+  CheckoutNetworksUpdateSchema,
+  CheckoutSchema,
+  CheckoutSchemaItem,
+  CheckoutSettingsSchema,
+  ProductCategorySchema,
+  ProductSchema,
+} from "./schemas";
 
 export type CommerceContextState = {
   productId?: string;
   setProduct: (productId?: string) => void;
   isSection?: boolean;
   cartItems: CartItem[];
+  requireEmail: boolean;
   showCart: boolean;
   openCart: () => void;
   closeCart: () => void;
@@ -16,6 +26,7 @@ export type CommerceContextState = {
       productId: string;
       name: string;
       price: string;
+      imageUrl?: string;
     }) => void;
 
     updateItem: (params: {
@@ -23,6 +34,7 @@ export type CommerceContextState = {
       productId: string;
       name: string;
       price: string;
+      imageUrl?: string;
     }) => void;
 
     item: (productId: string) => CartItem | undefined;
@@ -39,13 +51,14 @@ export type Product = {
   price: string;
   imageUrl: string | null;
   owner: string;
-};
+} & { category?: { id: string; name: string } };
 
 export type CartItem = {
   quantity: number;
   productId: string;
   name: string;
   price: string;
+  imageUrl?: string;
 };
 
 export type CartState = {
@@ -53,6 +66,43 @@ export type CartState = {
 };
 
 export type CartOrderType = z.infer<typeof CartOrderSchema>;
+
+export type ProductFormType = z.infer<typeof ProductSchema>;
+
+export type CheckoutFormType = z.infer<typeof CheckoutSchema>;
+export type CheckoutItemType = z.infer<typeof CheckoutSchemaItem>;
+
+export type CheckoutNetworksUpdateType = z.infer<
+  typeof CheckoutNetworksUpdateSchema
+>;
+
+export type CheckoutSettingsType = z.infer<typeof CheckoutSettingsSchema>;
+
+export type CheckoutItem = {
+  id: string;
+  createdAt: Date;
+  updatedAt: Date;
+  checkoutId: string;
+  productId: string;
+  product?: Product;
+  price: string;
+  quantity: number;
+  description: string;
+  active: boolean;
+};
+
+export type Checkout = {
+  id: string;
+  createdAt: Date;
+  updatedAt: Date;
+  title: string;
+  description: string;
+  requireEmail: boolean;
+  requireAddress: boolean;
+  owner: string;
+  editable: boolean;
+  items: CheckoutItem[];
+};
 
 export type Order = {
   id: string;
@@ -71,3 +121,17 @@ export type Order = {
   owner: string;
   status: string;
 };
+
+export type OrderItem = {
+  id: string;
+  createdAt: Date;
+  updatedAt: Date;
+  title: string;
+  orderId: string;
+  quantity: number;
+  price: string;
+  productId: string;
+  metadata: any;
+};
+
+export type CategoryType = z.infer<typeof CategoryFormSchema>;

@@ -52,7 +52,7 @@ import ConfirmPaymentDialog from "../dialogs/ConfirmPaymentDialog";
 const validEmail = z.string().email();
 
 export default function PaymentCard() {
-  const { cartItems, clearCart } = useCommerce();
+  const { cartItems, clearCart, requireEmail } = useCommerce();
 
   const { activeChainIds } = useActiveChainIds();
 
@@ -172,18 +172,11 @@ export default function PaymentCard() {
         { variant: "success" }
       );
 
-      if (
-        chainId &&
-        email &&
-        hash &&
-        cartItems.length > 0 &&
-        account &&
-        token
-      ) {
+      if (chainId && hash && cartItems.length > 0 && account && token) {
         try {
           const result = await createOrderFromCart({
             chainId,
-            email,
+            email: isValidEmail ? email : null,
             hash,
             items: cartItems,
             sender: account,
@@ -266,8 +259,7 @@ export default function PaymentCard() {
             !hasSufficientBalance ||
             disabled ||
             !token ||
-            !email ||
-            !isValidEmail
+            (requireEmail && (!email || !isValidEmail))
           }
           fullWidth
           onClick={handlePay}
@@ -427,23 +419,25 @@ export default function PaymentCard() {
               </Alert>
             )}
 
-            <TextField
-              value={email}
-              onChange={handleChangeEmail}
-              fullWidth
-              label={<FormattedMessage id="email" defaultMessage="Email" />}
-              type="email"
-              error={!isValidEmail || email === ""}
-              helperText={
-                !isValidEmail || !Boolean(email) ? (
-                  <FormattedMessage
-                    id="email.is.required"
-                    defaultMessage="Email is required"
-                  />
-                ) : undefined
-              }
-              required
-            />
+            {requireEmail && (
+              <TextField
+                value={email}
+                onChange={handleChangeEmail}
+                fullWidth
+                label={<FormattedMessage id="email" defaultMessage="Email" />}
+                type="email"
+                error={!isValidEmail || email === ""}
+                helperText={
+                  !isValidEmail || !Boolean(email) ? (
+                    <FormattedMessage
+                      id="email.is.required"
+                      defaultMessage="Email is required"
+                    />
+                  ) : undefined
+                }
+                required
+              />
+            )}
             {token && (
               <Stack
                 direction="row"

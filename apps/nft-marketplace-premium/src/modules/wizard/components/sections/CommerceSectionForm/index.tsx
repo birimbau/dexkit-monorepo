@@ -1,10 +1,18 @@
-import { Button, FormControl, Grid, MenuItem } from '@mui/material';
+import {
+  Button,
+  FormControl,
+  Grid,
+  Link,
+  MenuItem,
+  Typography,
+} from '@mui/material';
 
 import { CommerceContent } from '@dexkit/ui/modules/wizard/types/section';
 import { Field, Formik } from 'formik';
 import { Select } from 'formik-mui';
 import { FormattedMessage } from 'react-intl';
 import ChangeListener from '../../ChangeListener';
+import CheckoutForm from './CheckoutForm';
 import StoreForm from './StoreForm';
 
 interface Props {
@@ -38,7 +46,7 @@ export default function CommerceSectionForm({
       initialValues={
         initialValues
           ? initialValues
-          : { type: 'store', address: '', params: {} }
+          : { type: 'store', params: { emailRequired: false } }
       }
       onSubmit={handleSubmit}
       validate={(values: CommerceContent) => {
@@ -55,6 +63,18 @@ export default function CommerceSectionForm({
             onChange={onChange}
           />
           <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <Typography variant="body1">
+                <FormattedMessage
+                  id="edit.commerce.products.and.settings"
+                  defaultMessage="Edit Commerce products and settings"
+                />
+                :{' '}
+                <Link href="/u/account/commerce" target="_blank">
+                  <FormattedMessage id="edit.alt" defaultMessage="edit" />
+                </Link>
+              </Typography>
+            </Grid>
             <Grid item xs={12}>
               <FormControl fullWidth>
                 <Field
@@ -80,6 +100,7 @@ export default function CommerceSectionForm({
             </Grid>
             <Grid item xs={12}>
               {values.type === 'store' && <StoreForm />}
+              {values.type === 'checkout' && <CheckoutForm />}
             </Grid>
             <Grid item xs={12}>
               <Button onClick={submitForm} variant="contained">

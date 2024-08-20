@@ -1,12 +1,12 @@
-import { Autocomplete, TextField } from "@mui/material";
+import { Autocomplete, Stack, TextField, Typography } from "@mui/material";
 import { useIntl } from "react-intl";
 
 import type { ProductCategoryType } from "../../types";
 
 export interface ProductCategoryAutocompleteProps {
   categories: ProductCategoryType[];
-  value: ProductCategoryType;
-  onChange: (value: ProductCategoryType) => void;
+  value: ProductCategoryType | null;
+  onChange: (value: ProductCategoryType | null) => void;
 }
 
 export default function ProductCategoryAutocomplete({
@@ -25,7 +25,7 @@ export default function ProductCategoryAutocomplete({
           {...params}
           fullWidth
           label={
-            value.length > 0
+            value
               ? formatMessage({
                   id: "categories",
                   defaultMessage: "Categories",
@@ -33,7 +33,7 @@ export default function ProductCategoryAutocomplete({
               : undefined
           }
           placeholder={
-            value.length === 0
+            !value
               ? formatMessage({ id: "category", defaultMessage: "Category" })
               : undefined
           }

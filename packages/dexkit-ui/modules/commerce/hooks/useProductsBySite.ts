@@ -10,6 +10,7 @@ export default function useProductsBySite(params: {
   page: number;
   limit: number;
   query: string;
+  categories?: string[];
 }) {
   const { siteId, page, limit, query } = params;
 
@@ -20,6 +21,17 @@ export default function useProductsBySite(params: {
       throw new Error("no instance");
     }
 
+    let queryParams: {
+      page: number;
+      limit: number;
+      q: string;
+      categories?: string;
+    } = { page, limit, q: query };
+
+    if (params.categories) {
+      queryParams.categories = JSON.stringify(params.categories);
+    }
+
     return (
       await instance?.get<{
         items: Product[];
@@ -27,7 +39,7 @@ export default function useProductsBySite(params: {
         totalPages: number;
         currentPage: number;
       }>(`/products/by-site/${siteId}`, {
-        params: { page, limit, q: query },
+        params: queryParams,
       })
     )?.data;
   });

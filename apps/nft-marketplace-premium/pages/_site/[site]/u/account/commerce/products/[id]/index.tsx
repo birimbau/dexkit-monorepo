@@ -71,6 +71,7 @@ function UpdateProductComponent({ product }: UpdateProductComponentProps) {
             price: product.price,
             imageUrl: product.imageUrl,
             publishedAt: product.publishedAt,
+            category: product.category,
           }}
         >
           {({ isValid, submitForm, errors }) => (

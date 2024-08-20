@@ -6,7 +6,7 @@ export const CommerceContext = React.createContext<CommerceContextState>({
   isSection: true,
   cartItems: [],
   showCart: false,
-
+  requireEmail: false,
   openCart: () => {},
   closeCart: () => {},
   clearCart: () => {},

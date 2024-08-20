@@ -386,9 +386,7 @@ export interface ShowCasePageSection extends PageSection {
   settings: ShowCaseParams;
 }
 
-export type CommerceContentBase = {
-  address: string;
-};
+export type CommerceContentBase = {};
 
 export type CommerceCollectionContent = CommerceContentBase & {
   type: "collection";
@@ -402,7 +400,9 @@ export type CommerceCheckoutContent = CommerceContentBase & {
 
 export type CommerceStoreContent = CommerceContentBase & {
   type: "store";
-  params: {};
+  params: {
+    emailRequired: boolean;
+  };
 };
 
 export type CommerceContent =

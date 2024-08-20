@@ -1,10 +1,12 @@
 import { atomWithStorage, useReducerAtom } from "jotai/utils";
 import { useState } from "react";
+import { CommercePageSection } from "../../wizard/types/section";
 import { CommerceContext } from "../context";
 import { CartState } from "../types";
 
 export interface CommerceContextProviderProps {
   children: React.ReactNode;
+  section: CommercePageSection;
 }
 
 export const dexkitCartAtom = atomWithStorage<CartState>(
@@ -28,6 +30,7 @@ type CartAddItem = {
   productId: string;
   name: string;
   price: string;
+  imageUrl?: string;
 };
 
 type CartUpdateItem = {
@@ -57,6 +60,7 @@ const reducer = (state: CartState = { items: [] }, action?: Action) => {
           price: action.price,
           productId: action.productId,
           quantity: action.quantity,
+          imageUrl: action.imageUrl,
         },
       ];
 
@@ -91,6 +95,7 @@ const reducer = (state: CartState = { items: [] }, action?: Action) => {
 
 export default function CommerceContextProvider({
   children,
+  section,
 }: CommerceContextProviderProps) {
   const [productId, setProductId] = useState<string>();
   const [isSection, setIsSection] = useState(true);
@@ -111,6 +116,7 @@ export default function CommerceContextProvider({
     productId: string;
     name: string;
     price: string;
+    imageUrl?: string;
   }) => {
     dispatch({ type: ADD_CART_ITEM, ...params });
   };
@@ -124,6 +130,7 @@ export default function CommerceContextProvider({
     productId: string;
     name: string;
     price: string;
+    imageUrl?: string;
   }) => {
     return dispatch({ type: UPDATE_CART_ITEM, ...params });
   };
@@ -147,6 +154,10 @@ export default function CommerceContextProvider({
         setProduct: handleSetProduct,
         isSection,
         showCart,
+        requireEmail:
+          section.type === "commerce" &&
+          section.settings.content.type === "store" &&
+          section.settings.content.params.emailRequired,
         openCart,
         closeCart,
         clearCart,

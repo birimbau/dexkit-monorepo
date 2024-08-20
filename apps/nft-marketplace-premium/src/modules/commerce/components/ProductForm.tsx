@@ -24,6 +24,10 @@ import { useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { ProductFormType } from '../types';
 
+import ProductCategoryAutocomplete from '@dexkit/ui/modules/commerce/components/CommerceSection/ProductCategoryAutocomplete';
+import { ProductCategoryType } from '@dexkit/ui/modules/commerce/types';
+import useCategoryList from '../hooks/useCategoryList';
+
 export interface ProductFormProps {
   onSubmit: () => void;
   isValid?: boolean;
@@ -53,6 +57,8 @@ export default function ProductForm({ onSubmit, isValid }: ProductFormProps) {
       setShowPublishedAt(true);
     }
   }, [values.publishedAt]);
+
+  const { data: categories } = useCategoryList({ limit: 50, page: 0 });
 
   return (
     <>
@@ -117,6 +123,15 @@ export default function ProductForm({ onSubmit, isValid }: ProductFormProps) {
           />
         </Grid>
         <Grid item xs={12}>
+          <ProductCategoryAutocomplete
+            value={values.category ?? null}
+            onChange={(value: ProductCategoryType | null) => {
+              setFieldValue('category', value);
+            }}
+            categories={categories?.items ?? []}
+          />
+        </Grid>
+        <Grid item xs={12}>
           <FormikDecimalInput
             name="price"
             TextFieldProps={{
@@ -142,6 +157,8 @@ export default function ProductForm({ onSubmit, isValid }: ProductFormProps) {
                 onChange={(e) => {
                   if (!e.target.checked) {
                     setFieldValue('publishedAt', null);
+                  } else {
+                    setFieldValue('publishedAt', new Date());
                   }
                   setShowPublishedAt(e.target.checked);
                 }}

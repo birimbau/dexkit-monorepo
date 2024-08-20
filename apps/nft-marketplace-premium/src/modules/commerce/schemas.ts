@@ -4,6 +4,10 @@ export const ProductSchema = z.object({
   id: z.string().optional(),
   name: z.string().max(30),
   price: z.string(),
+  category: z
+    .custom<z.infer<typeof CategoryFormSchema>>()
+    .nullable()
+    .optional(),
   imageUrl: z.string().url().optional(),
   publishedAt: z.coerce.date().nullable().optional(),
 });

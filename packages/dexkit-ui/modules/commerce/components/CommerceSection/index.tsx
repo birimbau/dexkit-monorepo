@@ -4,6 +4,7 @@ import { Stack } from "@mui/material";
 import useCommerce from "../../hooks/useCommerce";
 import CommerceContextProvider from "../CommerceContextProvider";
 import CartContent from "./CartContent";
+import CheckoutContent from "./CheckoutContent";
 import ProductContent from "./ProductContent";
 import StoreContent from "./StoreContent";
 
@@ -23,7 +24,11 @@ function CommerceSectionComponent({ section }: CommerceSectionProps) {
   }
 
   if (section.type === "commerce") {
-    return <StoreContent />;
+    if (section.settings.content.type === "store") {
+      return <StoreContent />;
+    } else if (section.settings.content.type === "checkout") {
+      return <CheckoutContent id={section.settings.content.id} />;
+    }
   }
 
   return null;
@@ -31,7 +36,7 @@ function CommerceSectionComponent({ section }: CommerceSectionProps) {
 
 export default function CommerceSection({ section }: CommerceSectionProps) {
   return (
-    <CommerceContextProvider>
+    <CommerceContextProvider section={section}>
       <Stack spacing={2}>
         <CommerceSectionComponent section={section} />
       </Stack>

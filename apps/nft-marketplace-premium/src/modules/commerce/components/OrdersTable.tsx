@@ -6,11 +6,11 @@ import { Order } from '../types';
 import { getBlockExplorerUrl, truncateAddress } from '@dexkit/core/utils';
 import { Box, Stack, Typography } from '@mui/material';
 import Link from '@mui/material/Link';
+import moment from 'moment';
 import NextLink from 'next/link';
 import useOrderList from '../hooks/orders/useOrdersList';
 import { LoadingOverlay } from './LoadingOverlay';
 import { noRowsOverlay } from './NoRowsOverlay';
-import TokenDataContainer from './TokenDataContainer';
 
 const Component = () => {
   return (
@@ -81,49 +81,6 @@ export default function OrdersTable({ query }: OrdersTableProps) {
       },
       {
         flex: 1,
-        field: 'total',
-        headerName: formatMessage({
-          id: 'total',
-          defaultMessage: 'Total',
-        }),
-        renderCell: ({ row }) => {
-          return (
-            <TokenDataContainer
-              contractAddress={row.contractAddress}
-              chainId={row.chainId}
-            >
-              {({ symbol }) => `${row.amount} ${symbol}`}
-            </TokenDataContainer>
-          );
-        },
-      },
-      {
-        flex: 1,
-        field: 'contractAddress',
-        headerName: formatMessage({
-          id: 'token',
-          defaultMessage: 'Token',
-        }),
-        renderCell: ({ row }) => {
-          return (
-            <Link
-              target="_blank"
-              href={`${getBlockExplorerUrl(row.chainId)}/address/${
-                row.contractAddress
-              }`}
-            >
-              <TokenDataContainer
-                contractAddress={row.contractAddress}
-                chainId={row.chainId}
-              >
-                {({ name }) => `${name}`}
-              </TokenDataContainer>
-            </Link>
-          );
-        },
-      },
-      {
-        flex: 1,
         field: 'senderAddress',
         headerName: formatMessage({ id: 'creator', defaultMessage: 'Creator' }),
         renderCell: ({ row }) => (
@@ -131,12 +88,6 @@ export default function OrdersTable({ query }: OrdersTableProps) {
             {truncateAddress(row.senderAddress)}
           </Link>
         ),
-      },
-      {
-        flex: 1,
-        field: 'status',
-        headerName: formatMessage({ id: 'status', defaultMessage: 'Status' }),
-        renderCell: ({ row }) => renderStatusText(row.status),
       },
       {
         flex: 1,
@@ -154,6 +105,17 @@ export default function OrdersTable({ query }: OrdersTableProps) {
               <FormattedMessage id="transaction" defaultMessage="Transaction" />
             </Link>
           );
+        },
+      },
+      {
+        flex: 1,
+        field: 'createdAt',
+        headerName: formatMessage({
+          id: 'created.at',
+          defaultMessage: 'Created at',
+        }),
+        renderCell: ({ row }) => {
+          return moment(row.createdAt).format('L LTS');
         },
       },
     ] as GridColDef<Order>[];

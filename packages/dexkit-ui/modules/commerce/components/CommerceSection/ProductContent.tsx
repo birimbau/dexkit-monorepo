@@ -36,6 +36,18 @@ export default function ProductContent() {
   }, [productId, item]);
 
   const handleIncrement = () => {
+    if (!cartItem) {
+      if (product) {
+        addItem({
+          name: product.name,
+          price: product.price,
+          productId: product.id,
+          quantity: 1,
+          imageUrl: product.imageUrl ?? undefined,
+        });
+      }
+    }
+
     if (cartItem) {
       updateItem({ ...cartItem, quantity: cartItem.quantity + 1 });
     }
@@ -48,12 +60,14 @@ export default function ProductContent() {
   };
 
   const handleAddToCart = () => {
+    console.log("product", product?.imageUrl);
     if (product) {
       addItem({
         name: product.name,
         price: product.price,
         productId: product.id,
         quantity: 1,
+        imageUrl: product.imageUrl ?? undefined,
       });
     }
   };
@@ -73,6 +87,9 @@ export default function ProductContent() {
         <Box>
           <Stack spacing={2}>
             <Box>
+              <Typography color="text.secondary" variant="caption">
+                {product?.category?.name}
+              </Typography>
               <Typography variant="h5" component="h1">
                 {product?.name}
               </Typography>
@@ -88,13 +105,11 @@ export default function ProductContent() {
                 />
               </Typography>
             </Box>
-            {Boolean(cartItem) && (
-              <Counter
-                value={cartItem?.quantity ?? 0}
-                onIncrement={handleIncrement}
-                onDecrement={handleDecrement}
-              />
-            )}
+            <Counter
+              value={cartItem?.quantity ?? 0}
+              onIncrement={handleIncrement}
+              onDecrement={handleDecrement}
+            />
 
             {Boolean(cartItem) ? (
               <Button

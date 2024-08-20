@@ -55,6 +55,7 @@ export default function StoreContent({}: StoreContentProps) {
     limit: filters.pageSize,
     page: filters.page,
     query: filters.query,
+    categories: filters.categories.map((c) => c.id ?? ""),
   });
 
   const handleChangeRowsPerPage = (
