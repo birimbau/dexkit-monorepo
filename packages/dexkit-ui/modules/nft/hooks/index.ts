@@ -5,11 +5,11 @@ import { Asset, AssetMetadata, SwapApiOrder } from "@dexkit/core/types/nft";
 import { isAddressEqual } from "@dexkit/core/utils";
 import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import {
-  UseMutationOptions,
-  UseQueryOptions,
   useMutation,
+  UseMutationOptions,
   useQuery,
   useQueryClient,
+  UseQueryOptions,
 } from "@tanstack/react-query";
 import {
   NftSwapV4,
@@ -21,7 +21,7 @@ import axios from "axios";
 import { BigNumber } from "ethers";
 import { useAtom } from "jotai";
 import { useCallback, useMemo } from "react";
-import { getAssetDexKitApi } from "../../../constants/api";
+import { getAssetDexKitApi, TRADER_BASE_API } from "../../../constants/api";
 import { useAppConfig, useDexKitContext } from "../../../hooks";
 import { useActiveChainIds, useTokenList } from "../../../hooks/blockchain";
 import { accountAssetsAtom } from "../../../state";
@@ -206,7 +206,7 @@ export function useSwapSdkV4(provider: any, chainId?: number) {
       return undefined;
     }
 
-    return new NftSwapV4(provider, provider.getSigner(), chainId);
+    return new NftSwapV4(provider, provider.getSigner(), chainId, { orderbookRootUrl: TRADER_BASE_API });
   }, [provider, chainId]);
 }
 
@@ -418,7 +418,7 @@ export function useFavoriteAssets() {
         asset !== undefined &&
         assets !== undefined &&
         assets[
-          `${asset.chainId}-${asset.contractAddress.toLowerCase()}-${asset.id}`
+        `${asset.chainId}-${asset.contractAddress.toLowerCase()}-${asset.id}`
         ] !== undefined
       );
     },
@@ -893,7 +893,7 @@ export function useHiddenAssets() {
         asset !== undefined &&
         assets !== undefined &&
         assets[
-          `${asset.chainId}-${asset.contractAddress.toLowerCase()}-${asset.id}`
+        `${asset.chainId}-${asset.contractAddress.toLowerCase()}-${asset.id}`
         ] === true
       );
     },

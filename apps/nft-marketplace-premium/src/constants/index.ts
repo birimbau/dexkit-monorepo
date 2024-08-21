@@ -1,9 +1,14 @@
 import { ChainId } from '@dexkit/core/constants';
 import { ZEROEX_NATIVE_TOKEN_ADDRESS } from '@dexkit/core/constants/zrx';
+import { TRADER_BASE_API } from '@dexkit/ui/constants/api';
 import moment from 'moment';
 import { Token } from '../types/blockchain';
 
-export const TRADER_ORDERBOOK_API = 'https://api.trader.xyz/orderbook/orders';
+
+export const TRADER_BASE_URL = TRADER_BASE_API
+
+
+export const TRADER_ORDERBOOK_API = `${TRADER_BASE_URL}/orderbook/orders`;
 
 
 // revalidate page time
