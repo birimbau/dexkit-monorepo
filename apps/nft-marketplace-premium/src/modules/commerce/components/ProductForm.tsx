@@ -21,12 +21,26 @@ import { TextField } from 'formik-mui';
 import moment, { Moment } from 'moment';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 import { ProductFormType } from '../types';
 
 import ProductCategoryAutocomplete from '@dexkit/ui/modules/commerce/components/CommerceSection/ProductCategoryAutocomplete';
 import { ProductCategoryType } from '@dexkit/ui/modules/commerce/types';
+import dynamic from 'next/dynamic';
 import useCategoryList from '../hooks/useCategoryList';
+
+import '@uiw/react-markdown-preview/markdown.css';
+import { ExecuteState, TextAreaTextApi } from '@uiw/react-md-editor';
+
+import * as commands from '@uiw/react-md-editor/commands';
+
+import AutoAwesome from '@mui/icons-material/AutoAwesome';
+import '@uiw/react-md-editor/markdown-editor.css';
+
+const MDEditor = dynamic(
+  () => import('@uiw/react-md-editor').then((mod) => mod.default),
+  { ssr: false },
+);
 
 export interface ProductFormProps {
   onSubmit: () => void;
@@ -59,6 +73,8 @@ export default function ProductForm({ onSubmit, isValid }: ProductFormProps) {
   }, [values.publishedAt]);
 
   const { data: categories } = useCategoryList({ limit: 50, page: 0 });
+
+  const { formatMessage } = useIntl();
 
   return (
     <>
@@ -146,6 +162,57 @@ export default function ProductForm({ onSubmit, isValid }: ProductFormProps) {
             decimals={6}
           />
         </Grid>
+        <Grid item xs={12}>
+          <FormControlLabel
+            label={<FormattedMessage id="digital" defaultMessage="Digital?" />}
+            control={
+              <Checkbox
+                checked={values.digital}
+                onChange={(e) => {
+                  setFieldValue('digital', e.target.checked);
+                }}
+              />
+            }
+          />
+        </Grid>
+        {values.digital && (
+          <Grid item xs={12}>
+            <MDEditor
+              value={values.content ?? ''}
+              onChange={(value) => setFieldValue('content', value)}
+              commands={[
+                ...commands.getCommands(),
+                {
+                  keyCommand: 'ai',
+                  name: formatMessage({
+                    id: 'artificial.inteligence',
+                    defaultMessage: 'Artificial Inteligence',
+                  }),
+
+                  render: (command, disabled, executeCommand) => {
+                    return (
+                      <button
+                        disabled={disabled}
+                        onClick={(evn) => {
+                          // evn.stopPropagation();
+                          executeCommand(command, command.groupName);
+                        }}
+                      >
+                        <AutoAwesome fontSize="inherit" />
+                      </button>
+                    );
+                  },
+                  icon: <AutoAwesome fontSize="inherit" />,
+                  execute: async (
+                    state: ExecuteState,
+                    api: TextAreaTextApi,
+                  ) => {},
+                },
+              ]}
+            />
+          </Grid>
+        )}
+
         <Grid item xs={12}>
           <FormControlLabel
             label={

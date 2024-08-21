@@ -11,7 +11,6 @@ import {
   useConnectWalletDialog,
   useSwitchNetworkMutation,
 } from "@dexkit/ui";
-import { PageHeader } from "@dexkit/ui/components/PageHeader";
 import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import Wallet from "@mui/icons-material/Wallet";
 import {
@@ -345,6 +344,12 @@ export default function CheckoutContent({ id }: CheckoutContentProps) {
     }
   }, [providerChainId]);
 
+  useEffect(() => {
+    if (initialValues) {
+      setItems(initialValues);
+    }
+  }, [initialValues]);
+
   const handleConfirm = async () => {
     if (token && userCheckout.data?.owner) {
       try {
@@ -400,24 +405,6 @@ export default function CheckoutContent({ id }: CheckoutContentProps) {
       />
       <Container>
         <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <PageHeader
-              breadcrumbs={[
-                {
-                  caption: <FormattedMessage id="home" defaultMessage="Home" />,
-                  uri: "/c/orders",
-                },
-                {
-                  caption: (
-                    <FormattedMessage id="checkout" defaultMessage="Checkout" />
-                  ),
-                  uri: `/c/${userCheckout.data?.id}`,
-                  active: true,
-                },
-              ]}
-            />
-          </Grid>
-
           <Grid item xs={12} sm={6}>
             <Card>
               <CardContent>

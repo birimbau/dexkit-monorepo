@@ -13,6 +13,7 @@ import { Select } from 'formik-mui';
 import { FormattedMessage } from 'react-intl';
 import ChangeListener from '../../ChangeListener';
 import CheckoutForm from './CheckoutForm';
+import SingleProductForm from './SingleProductForm';
 import StoreForm from './StoreForm';
 
 interface Props {
@@ -89,6 +90,12 @@ export default function CommerceSectionForm({
                   <MenuItem value="checkout">
                     <FormattedMessage id="checkout" defaultMessage="Checkout" />
                   </MenuItem>
+                  <MenuItem value="single-product">
+                    <FormattedMessage
+                      id="single.product"
+                      defaultMessage="Single Product"
+                    />
+                  </MenuItem>
                   <MenuItem value="collection">
                     <FormattedMessage
                       id="collection"
@@ -101,6 +108,7 @@ export default function CommerceSectionForm({
             <Grid item xs={12}>
               {values.type === 'store' && <StoreForm />}
               {values.type === 'checkout' && <CheckoutForm />}
+              {values.type === 'single-product' && <SingleProductForm />}
             </Grid>
             <Grid item xs={12}>
               <Button onClick={submitForm} variant="contained">

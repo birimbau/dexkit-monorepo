@@ -10,6 +10,8 @@ export const ProductSchema = z.object({
     .optional(),
   imageUrl: z.string().url().optional(),
   publishedAt: z.coerce.date().nullable().optional(),
+  digital: z.boolean(),
+  content: z.string().nullable().optional(),
 });
 
 export const CheckoutSchemaItem = z.object({

@@ -21,15 +21,24 @@ const Image = styled("img")((theme) => ({
   width: "100%",
 }));
 
-export default function ProductContent() {
+export interface ProductContentProps {
+  productId: string;
+  disableHeader?: boolean;
+}
+
+export default function ProductContent({
+  productId,
+  disableHeader,
+}: ProductContentProps) {
   const {
-    productId,
     openCart,
     setProduct,
     cart: { item, addItem, updateItem },
   } = useCommerce();
 
   const { data: product } = useUserProduct({ id: productId });
+
+  console.log("product", product);
 
   const cartItem = useMemo(() => {
     return item(productId ?? "");
@@ -60,7 +69,6 @@ export default function ProductContent() {
   };
 
   const handleAddToCart = () => {
-    console.log("product", product?.imageUrl);
     if (product) {
       addItem({
         name: product.name,
@@ -74,12 +82,15 @@ export default function ProductContent() {
 
   return (
     <Grid container spacing={2}>
-      <Grid item xs={12}>
-        <ContentHeader
-          title={product?.name ?? <Skeleton />}
-          onBack={() => setProduct(undefined)}
-        />
-      </Grid>
+      {!disableHeader && (
+        <Grid item xs={12}>
+          <ContentHeader
+            title={product?.name ?? <Skeleton />}
+            onBack={() => setProduct(undefined)}
+          />
+        </Grid>
+      )}
+
       <Grid item xs={12} sm={6}>
         <Image src={product?.imageUrl ?? ""} />
       </Grid>
@@ -98,7 +109,7 @@ export default function ProductContent() {
                   style="currency"
                   currency="usd"
                   value={new Decimal(
-                    product?.price.toString() ?? "0"
+                    product?.price?.toString() ?? "0"
                   ).toNumber()}
                   maximumFractionDigits={18}
                   minimumFractionDigits={2}

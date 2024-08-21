@@ -133,7 +133,18 @@ function OrderComponent({ order }: OrderComponentProps) {
               <TableBody>
                 {items?.map((item, index) => (
                   <TableRow key={index}>
-                    <TableCell>{item.title}</TableCell>
+                    <TableCell>
+                      {item.product.digital ? (
+                        <Link
+                          target="_blank"
+                          href={`/c/content/${order.id}/${item.productId}`}
+                        >
+                          {item.title}
+                        </Link>
+                      ) : (
+                        item.title
+                      )}
+                    </TableCell>
                     <TableCell>
                       {item.price} {tokenData?.symbol.toUpperCase()}
                     </TableCell>

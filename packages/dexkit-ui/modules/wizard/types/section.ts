@@ -398,6 +398,11 @@ export type CommerceCheckoutContent = CommerceContentBase & {
   id: string;
 };
 
+export type CommerceSingleProductContent = CommerceContentBase & {
+  type: "single-product";
+  id: string;
+};
+
 export type CommerceStoreContent = CommerceContentBase & {
   type: "store";
   params: {
@@ -408,7 +413,8 @@ export type CommerceStoreContent = CommerceContentBase & {
 export type CommerceContent =
   | CommerceCollectionContent
   | CommerceCheckoutContent
-  | CommerceStoreContent;
+  | CommerceStoreContent
+  | CommerceSingleProductContent;
 
 export type CommerceSettings = {
   content: CommerceContent;

@@ -66,6 +66,7 @@ function CreateProductComponent() {
           initialValues={{
             name: '',
             price: '0.0',
+            digital: false,
           }}
         >
           {({ isValid, submitForm, errors }) => (
