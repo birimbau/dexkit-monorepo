@@ -30,7 +30,14 @@ import {
 import Decimal from "decimal.js";
 import { formatUnits } from "ethers/lib/utils";
 import { useSnackbar } from "notistack";
-import { ChangeEvent, ReactNode, useEffect, useMemo, useState } from "react";
+import {
+  ChangeEvent,
+  ReactNode,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { FormattedMessage, FormattedNumber } from "react-intl";
 import { z } from "zod";
 import {
@@ -45,6 +52,7 @@ import useCreateOrderFromCart from "../../hooks/useCreateOrderFromCart";
 import CheckoutTokenAutocomplete from "../CheckoutTokenAutocomplete";
 
 import { useRouter } from "next/router";
+import { SiteContext } from "../../../../providers/SiteProvider";
 import { useEvmTransferMutation } from "../../../evm-transfer-coin/hooks";
 import { useSiteOwner } from "../../hooks/useSiteOwner";
 import ConfirmPaymentDialog from "../dialogs/ConfirmPaymentDialog";
@@ -52,6 +60,8 @@ import ConfirmPaymentDialog from "../dialogs/ConfirmPaymentDialog";
 const validEmail = z.string().email();
 
 export default function PaymentCard() {
+  const { siteId } = useContext(SiteContext);
+
   const { cartItems, clearCart, requireEmail } = useCommerce();
 
   const { activeChainIds } = useActiveChainIds();
@@ -60,7 +70,9 @@ export default function PaymentCard() {
 
   const [token, setToken] = useState<Token | null>(null);
 
-  const { data: availNetworks } = useCheckoutNetworksBySite({ id: 1 });
+  const { data: availNetworks } = useCheckoutNetworksBySite({
+    id: siteId ?? 0,
+  });
 
   const { mutateAsync: createOrderFromCart } = useCreateOrderFromCart();
 
@@ -144,7 +156,7 @@ export default function PaymentCard() {
     }
   };
 
-  const { data: site } = useSiteOwner({ id: 1 });
+  const { data: site } = useSiteOwner({ id: siteId ?? 0 });
 
   const { handleConnectWallet } = useConnectWalletDialog();
 
@@ -180,7 +192,7 @@ export default function PaymentCard() {
             hash,
             items: cartItems,
             sender: account,
-            siteId: 1,
+            siteId: siteId ?? 0,
             tokenAddress: token?.address,
           });
 

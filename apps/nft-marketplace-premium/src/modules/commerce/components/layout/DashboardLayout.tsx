@@ -123,6 +123,24 @@ function RequireLogin({
                 <ListItemButton
                   divider
                   LinkComponent={Link}
+                  href="/u/account/commerce/collections"
+                  selected={page === 'collections'}
+                >
+                  <ListItemIcon>
+                    <CategoryIcon />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={
+                      <FormattedMessage
+                        id="collections"
+                        defaultMessage="Collections"
+                      />
+                    }
+                  />
+                </ListItemButton>
+                <ListItemButton
+                  divider
+                  LinkComponent={Link}
                   href="/u/account/commerce/products"
                   selected={page === 'products'}
                 >

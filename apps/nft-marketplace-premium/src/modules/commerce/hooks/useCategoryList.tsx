@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useContext } from 'react';
 import { CategoryType } from '../types';
 
-export const GET_PRODUCT_LIST = 'GET_PRODUCT_LIST';
+export const GET_CATEGORY_LIST = 'GET_CATEGORY_LIST';
 
 export default function useCategoryList(params: {
   page: number;
@@ -13,7 +13,7 @@ export default function useCategoryList(params: {
   const { instance } = useContext(DexkitApiProvider);
 
   return useQuery(
-    [GET_PRODUCT_LIST, params],
+    [GET_CATEGORY_LIST, params],
     async () => {
       if (!instance) {
         throw new Error('no instance');

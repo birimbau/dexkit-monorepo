@@ -1,9 +1,7 @@
 import {
   Box,
-  Collapse,
   Container,
   Grid,
-  IconButton,
   InputAdornment,
   Stack,
   TablePagination,
@@ -13,51 +11,31 @@ import { FormattedMessage, useIntl } from "react-intl";
 
 import LazyTextField from "@dexkit/ui/components/LazyTextField";
 import Search from "@mui/icons-material/Search";
-import { useContext, useState } from "react";
-import useCategoriesBySite from "../../hooks/useCategoriesBySite";
-import useProductsBySite from "../../hooks/useProductsBySite";
-import { ProductCategoryType } from "../../types";
-import CategoryAutocomplete from "../CategoryAutocomplete";
+import { useState } from "react";
 import ProductCard from "../ProductCard";
 
-import FilterAltIcon from "@mui/icons-material/FilterAlt";
-import { SiteContext } from "../../../../providers/SiteProvider";
+import useCollectionProductsList from "../../hooks/useCollectionProductsList";
 
-export interface StoreContentProps {}
+export interface CollectionContentProps {
+  id: string;
+}
 
-export default function StoreContent({}: StoreContentProps) {
+export default function CollectionContent({ id }: CollectionContentProps) {
   const { formatMessage } = useIntl();
 
   const [filters, setFilters] = useState<{
     query: string;
-    categories: ProductCategoryType[];
     page: number;
     pageSize: number;
-  }>({ query: "", categories: [], pageSize: 10, page: 0 });
+  }>({ query: "", pageSize: 10, page: 0 });
 
-  const [showFilters, setShowFilters] = useState(false);
+  console.log(id);
 
-  const handleToggleFilters = () => {
-    setShowFilters((value) => !value);
-  };
-
-  const handleClose = () => {
-    handleToggleFilters();
-  };
-
-  const handleChangeCategories = (categories: ProductCategoryType[]) => {
-    setFilters((values) => ({ ...values, categories }));
-  };
-
-  const { siteId } = useContext(SiteContext);
-  const { data: categories } = useCategoriesBySite({ siteId: siteId ?? 0 });
-
-  const { data: products } = useProductsBySite({
-    siteId: siteId ?? 0,
+  const { data: products } = useCollectionProductsList({
+    id,
     limit: filters.pageSize,
     page: filters.page,
     query: filters.query,
-    categories: filters.categories.map((c) => c.id ?? ""),
   });
 
   const handleChangeRowsPerPage = (
@@ -76,9 +54,6 @@ export default function StoreContent({}: StoreContentProps) {
           <Grid item xs={12}>
             <Box>
               <Stack direction="row" justifyContent="flex-end">
-                <IconButton onClick={handleToggleFilters}>
-                  <FilterAltIcon />
-                </IconButton>
                 <LazyTextField
                   onChange={(value) =>
                     setFilters((filters) => ({ ...filters, query: value }))
@@ -102,21 +77,6 @@ export default function StoreContent({}: StoreContentProps) {
               </Stack>
             </Box>
           </Grid>
-          {showFilters && (
-            <Grid item xs={12}>
-              <Collapse in>
-                <Grid container spacing={2}>
-                  <Grid item xs={12} sm={4}>
-                    <CategoryAutocomplete
-                      categories={categories?.items ?? []}
-                      value={filters.categories}
-                      onChange={handleChangeCategories}
-                    />
-                  </Grid>
-                </Grid>
-              </Collapse>
-            </Grid>
-          )}
 
           <Grid item xs={12}>
             <Grid container spacing={2}>

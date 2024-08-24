@@ -13,6 +13,7 @@ import { Select } from 'formik-mui';
 import { FormattedMessage } from 'react-intl';
 import ChangeListener from '../../ChangeListener';
 import CheckoutForm from './CheckoutForm';
+import CollectionForm from './CollectionForm';
 import SingleProductForm from './SingleProductForm';
 import StoreForm from './StoreForm';
 
@@ -109,6 +110,7 @@ export default function CommerceSectionForm({
               {values.type === 'store' && <StoreForm />}
               {values.type === 'checkout' && <CheckoutForm />}
               {values.type === 'single-product' && <SingleProductForm />}
+              {values.type === 'collection' && <CollectionForm />}
             </Grid>
             <Grid item xs={12}>
               <Button onClick={submitForm} variant="contained">

@@ -5,6 +5,7 @@ import useCommerce from "../../hooks/useCommerce";
 import CommerceContextProvider from "../CommerceContextProvider";
 import CartContent from "./CartContent";
 import CheckoutContent from "./CheckoutContent";
+import CollectionContent from "./CollectionContent";
 import ProductContent from "./ProductContent";
 import StoreContent from "./StoreContent";
 
@@ -27,6 +28,8 @@ function CommerceSectionComponent({ section }: CommerceSectionProps) {
       return <StoreContent />;
     } else if (section.settings.content.type === "checkout") {
       return <CheckoutContent id={section.settings.content.id} />;
+    } else if (section.settings.content.type === "collection") {
+      return <CollectionContent id={section.settings.content.id} />;
     } else if (section.settings.content.type === "single-product") {
       return (
         <ProductContent productId={section.settings.content.id} disableHeader />

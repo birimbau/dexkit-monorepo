@@ -1,18 +1,20 @@
-import { CommerceCheckoutContent } from '@dexkit/ui/modules/wizard/types/section';
+import { CommerceCollectionContent } from '@dexkit/ui/modules/wizard/types/section';
 import { Grid } from '@mui/material';
 import { useFormikContext } from 'formik';
 
-import CheckoutsAutocomplete from '@dexkit/ui/modules/commerce/components/CommerceSection/CheckoutsAutocomple';
-
-import useCheckoutListBySite from '@dexkit/ui/modules/commerce/hooks/checkout/useCheckoutListBySite';
 import { SiteContext } from '@dexkit/ui/providers/SiteProvider';
 import { useContext } from 'react';
 
-export default function CheckoutForm() {
-  const { setFieldValue, values } = useFormikContext<CommerceCheckoutContent>();
+import CollectionsAutocomplete from '@dexkit/ui/modules/commerce/components/CollectionsAutocomplete';
+
+import useCollectionsBySite from '@dexkit/ui/modules/commerce/hooks/useCollectionsBySite';
+
+export default function CollectionForm() {
+  const { setFieldValue, values } =
+    useFormikContext<CommerceCollectionContent>();
   const { siteId } = useContext(SiteContext);
 
-  const { data: items } = useCheckoutListBySite({
+  const { data: items } = useCollectionsBySite({
     page: 0,
     limit: 20,
     siteId: siteId ?? 0,
@@ -21,7 +23,7 @@ export default function CheckoutForm() {
   return (
     <Grid container spacing={2}>
       <Grid item xs={12}>
-        <CheckoutsAutocomplete
+        <CollectionsAutocomplete
           onChange={(value) => {
             setFieldValue('id', value ?? '');
           }}

@@ -4,7 +4,7 @@ import { PageHeader } from '@dexkit/ui/components/PageHeader';
 import { Button, InputAdornment, Stack, Typography } from '@mui/material';
 import { FormattedMessage, useIntl } from 'react-intl';
 
-import CategoriesTable from '@/modules/commerce/components/CheckoutsCategories';
+import CollectionsTable from '@/modules/commerce/components/CollectionsTable';
 import Search from '@mui/icons-material/Search';
 import NextLink from 'next/link';
 import { useState } from 'react';
@@ -20,7 +20,7 @@ export default function CommerceCategoriesPage() {
 
   return (
     <>
-      <DashboardLayout page="categories">
+      <DashboardLayout page="collections">
         <Stack spacing={2}>
           <PageHeader
             breadcrumbs={[
@@ -33,17 +33,17 @@ export default function CommerceCategoriesPage() {
               {
                 caption: (
                   <FormattedMessage
-                    id="Categories"
-                    defaultMessage="Categories"
+                    id="collections"
+                    defaultMessage="Collections"
                   />
                 ),
-                uri: '/u/account/commerce/categories',
+                uri: '/u/account/commerce/collections',
                 active: true,
               },
             ]}
           />
           <Typography variant="h6">
-            <FormattedMessage id="categories" defaultMessage="Categories" />
+            <FormattedMessage id="collections" defaultMessage="Collections" />
           </Typography>
           <Stack
             direction="row"
@@ -52,7 +52,7 @@ export default function CommerceCategoriesPage() {
           >
             <Button
               LinkComponent={NextLink}
-              href="/u/account/commerce/categories/create"
+              href="/u/account/commerce/collections/create"
               variant="contained"
             >
               <FormattedMessage id="create" defaultMessage="Create" />
@@ -63,7 +63,7 @@ export default function CommerceCategoriesPage() {
                 variant: 'standard',
                 placeholder: formatMessage({
                   id: 'search.for.a.checkout',
-                  defaultMessage: 'Search for a category',
+                  defaultMessage: 'Search for a collection',
                 }),
                 InputProps: {
                   startAdornment: (
@@ -76,8 +76,8 @@ export default function CommerceCategoriesPage() {
               onChange={handleChange}
             />
           </Stack>
-          <CategoriesTable query={query} />
-        </Stack>{' '}
+          <CollectionsTable query={query} />
+        </Stack>
       </DashboardLayout>
     </>
   );

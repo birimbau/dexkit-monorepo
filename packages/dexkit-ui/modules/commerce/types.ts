@@ -6,7 +6,9 @@ import {
   CheckoutSchema,
   CheckoutSchemaItem,
   CheckoutSettingsSchema,
+  CollectionItemSchema,
   ProductCategorySchema,
+  ProductCollectionSchema,
   ProductSchema,
 } from "./schemas";
 
@@ -135,3 +137,7 @@ export type OrderItem = {
 };
 
 export type CategoryType = z.infer<typeof CategoryFormSchema>;
+
+export type ProductCollectionItemType = z.infer<typeof CollectionItemSchema>;
+
+export type ProductCollectionType = z.infer<typeof ProductCollectionSchema>;

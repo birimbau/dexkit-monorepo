@@ -70,3 +70,14 @@ export const CategoryFormSchema = z.object({
   id: z.string().optional(),
   name: z.string(),
 });
+
+export const CollectionItemSchema = z.object({
+  id: z.string().optional(),
+  productId: z.string(),
+});
+
+export const ProductCollectionSchema = z.object({
+  id: z.string().optional(),
+  name: z.string(),
+  items: z.array(CollectionItemSchema).optional(),
+});
