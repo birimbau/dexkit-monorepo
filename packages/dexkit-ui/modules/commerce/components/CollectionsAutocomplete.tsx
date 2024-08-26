@@ -50,7 +50,6 @@ export default function CollectionsAutocomplete({
       value={inputValue}
       onChange={(e, value, reason) => {
         if (value?.id) {
-          console.log("veam", value.id);
           onChange(value?.id);
         } else {
           onChange(null);

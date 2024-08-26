@@ -71,8 +71,6 @@ export default function PaymentCard() {
 
   const [token, setToken] = useState<Token | null>(null);
 
-  console.log("siteId", siteId);
-
   const { data: availNetworks } = useCheckoutNetworksBySite({
     id: siteId ?? 0,
   });
