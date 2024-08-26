@@ -1,4 +1,5 @@
 import { AppDialogTitle } from '@dexkit/ui';
+import { ProductFormType } from '@dexkit/ui/modules/commerce/types';
 import {
   Avatar,
   Button,
@@ -17,21 +18,20 @@ import Decimal from 'decimal.js';
 import { useCallback, useState } from 'react';
 import { FormattedMessage, FormattedNumber } from 'react-intl';
 
-export type Product = { id: string; name: string; price: number };
-
 export interface AddProductsDialogProps {
   DialogProps: DialogProps;
-  products: Product[];
+  products: ProductFormType[];
 
   defaultSelection: string[];
 
-  onConfirm: (products: Product[]) => void;
+  onConfirm: (products: string[]) => void;
 }
 
 export default function AddProductsDialog({
   DialogProps,
   products,
   defaultSelection,
+  onConfirm,
 }: AddProductsDialogProps) {
   const [selection, setSection] = useState<string[]>(defaultSelection);
 
@@ -71,7 +71,7 @@ export default function AddProductsDialog({
           {products.map((product, index, arr) => (
             <ListItem divider={index < arr.length - 1} key={product.id}>
               <ListItemAvatar>
-                <Avatar variant="rounded" />
+                <Avatar src={product.imageUrl} variant="rounded" />
               </ListItemAvatar>
               <ListItemText
                 primary={product.name}
@@ -86,8 +86,8 @@ export default function AddProductsDialog({
               />
               <ListItemSecondaryAction>
                 <Checkbox
-                  checked={isSelected(product.id)}
-                  onClick={handleToggle(product.id)}
+                  checked={isSelected(product.id ?? '')}
+                  onClick={handleToggle(product.id ?? '')}
                 />
               </ListItemSecondaryAction>
             </ListItem>
@@ -98,7 +98,7 @@ export default function AddProductsDialog({
         <Button onClick={handleClose}>
           <FormattedMessage id="cancel" defaultMessage="Cancel" />
         </Button>
-        <Button variant="contained">
+        <Button onClick={() => onConfirm(selection)} variant="contained">
           <FormattedMessage id="add" defaultMessage="Add" />
         </Button>
       </DialogActions>

@@ -29,6 +29,10 @@ function CommerceSectionComponent({ section }: CommerceSectionProps) {
     } else if (section.settings.content.type === "checkout") {
       return <CheckoutContent id={section.settings.content.id} />;
     } else if (section.settings.content.type === "collection") {
+      if (productId) {
+        return <ProductContent productId={productId} />;
+      }
+
       return <CollectionContent id={section.settings.content.id} />;
     } else if (section.settings.content.type === "single-product") {
       return (

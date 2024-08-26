@@ -3,11 +3,11 @@ import {
   AppPageSection,
   SectionType,
 } from '@dexkit/ui/modules/wizard/types/section';
+import { SiteContext } from '@dexkit/ui/providers/SiteProvider';
 import { Box, Grid } from '@mui/material';
 import dynamic from 'next/dynamic';
 import { useContext, useState } from 'react';
 import { myAppsApi } from 'src/services/whitelabel';
-import { SiteContext } from '../../providers/SiteWizardProvider';
 import AddCarouselForm from '../forms/AddCarouselForm';
 import AddShowCaseSectionForm from '../forms/AddShowCaseSectionForm';
 import AssetSectionForm from '../forms/AssetSectionForm';

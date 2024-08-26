@@ -52,12 +52,13 @@ import useCreateOrderFromCart from "../../hooks/useCreateOrderFromCart";
 import CheckoutTokenAutocomplete from "../CheckoutTokenAutocomplete";
 
 import { useRouter } from "next/router";
-import { SiteContext } from "../../../../providers/SiteProvider";
 import { useEvmTransferMutation } from "../../../evm-transfer-coin/hooks";
 import { useSiteOwner } from "../../hooks/useSiteOwner";
 import ConfirmPaymentDialog from "../dialogs/ConfirmPaymentDialog";
 
 const validEmail = z.string().email();
+
+import { SiteContext } from "@dexkit/ui/providers/SiteProvider";
 
 export default function PaymentCard() {
   const { siteId } = useContext(SiteContext);
@@ -69,6 +70,8 @@ export default function PaymentCard() {
   const [chainId, setChainId] = useState<ChainId>();
 
   const [token, setToken] = useState<Token | null>(null);
+
+  console.log("siteId", siteId);
 
   const { data: availNetworks } = useCheckoutNetworksBySite({
     id: siteId ?? 0,
@@ -104,6 +107,20 @@ export default function PaymentCard() {
   const [items, setItems] = useState<{
     [key: string]: { quantity: number; price: string };
   }>({});
+
+  useEffect(() => {
+    if (cartItems.length > 0) {
+      cartItems.reduce(
+        (prev, curr) => {
+          prev[curr.productId] = { price: curr.price, quantity: curr.quantity };
+          return prev;
+        },
+        {} as {
+          [key: string]: { quantity: number; price: string };
+        }
+      );
+    }
+  }, [cartItems]);
 
   const total = useMemo(() => {
     if (cartItems.length > 0) {
