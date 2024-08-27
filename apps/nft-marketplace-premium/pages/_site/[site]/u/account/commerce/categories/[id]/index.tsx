@@ -98,7 +98,7 @@ function CategoryEditData() {
 
 export default function CategoryEditPage() {
   return (
-    <DashboardLayout>
+    <DashboardLayout page="categories">
       <CategoryEditData />
     </DashboardLayout>
   );

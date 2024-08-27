@@ -15,7 +15,8 @@ export default function useUserProduct(params: { id?: string }) {
         throw new Error("no instance");
       }
 
-      return (await instance?.get<Product>(`/products/${params.id}`))?.data;
+      return (await instance?.get<Product>(`/products/user/${params.id}`))
+        ?.data;
     },
     { enabled: Boolean(params.id) }
   );

@@ -4,7 +4,7 @@ import useCreateProduct from '@/modules/commerce/hooks/useCreateProduct';
 import { ProductSchema } from '@/modules/commerce/schemas';
 import { ProductFormType } from '@/modules/commerce/types';
 import { PageHeader } from '@dexkit/ui/components/PageHeader';
-import { Grid } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
 import { Formik } from 'formik';
 import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
@@ -52,12 +52,25 @@ function CreateProductComponent() {
               uri: '/u/account/commerce/products',
             },
             {
-              caption: <FormattedMessage id="create" defaultMessage="Create" />,
-              uri: '/u/account/commerce/checkout/create',
+              caption: (
+                <FormattedMessage
+                  id="create.product"
+                  defaultMessage="Create product"
+                />
+              ),
+              uri: '/u/account/commerce/products/create',
               active: true,
             },
           ]}
         />
+      </Grid>
+      <Grid item xs={12}>
+        <Typography variant="h5">
+          <FormattedMessage
+            id="create.product"
+            defaultMessage="Create product"
+          />
+        </Typography>
       </Grid>
       <Grid item xs={12}>
         <Formik
@@ -82,7 +95,7 @@ function CreateProductComponent() {
 
 export default function CreateProductPage() {
   return (
-    <DashboardLayout>
+    <DashboardLayout page="products">
       <CreateProductComponent />
     </DashboardLayout>
   );

@@ -43,14 +43,7 @@ function CreateCheckoutComponent() {
     }
   };
 
-  const { data: settings, isLoading } = useCheckoutSettings();
-
-  console.log(
-    'settings',
-    settings,
-    !settings?.notificationEmail,
-    !settings?.receiverAddress,
-  );
+  const { data: settings } = useCheckoutSettings();
 
   return (
     <>

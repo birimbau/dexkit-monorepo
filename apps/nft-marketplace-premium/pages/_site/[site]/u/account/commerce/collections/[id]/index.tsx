@@ -121,7 +121,7 @@ function ProductCollectionEditData() {
 
 export default function ProductCollectionEditPage() {
   return (
-    <DashboardLayout>
+    <DashboardLayout page="collections">
       <ProductCollectionEditData />
     </DashboardLayout>
   );

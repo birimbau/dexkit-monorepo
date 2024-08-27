@@ -1,10 +1,12 @@
 import {
   Box,
-  Collapse,
   Container,
   Grid,
   IconButton,
   InputAdornment,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
   Stack,
   TablePagination,
   Typography,
@@ -17,11 +19,19 @@ import { useContext, useState } from "react";
 import useCategoriesBySite from "../../hooks/useCategoriesBySite";
 import useProductsBySite from "../../hooks/useProductsBySite";
 import { ProductCategoryType } from "../../types";
-import CategoryAutocomplete from "../CategoryAutocomplete";
 import ProductCard from "../ProductCard";
 
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import { SiteContext } from "../../../../providers/SiteProvider";
+import FiltersSection from "./FiltersSection";
+
+export const DEFAULT_FILTERS = {
+  query: "",
+  categories: [],
+  pageSize: 10,
+  page: 0,
+  sort: "",
+};
 
 export interface StoreContentProps {}
 
@@ -33,7 +43,8 @@ export default function StoreContent({}: StoreContentProps) {
     categories: ProductCategoryType[];
     page: number;
     pageSize: number;
-  }>({ query: "", categories: [], pageSize: 10, page: 0 });
+    sort: string;
+  }>(DEFAULT_FILTERS);
 
   const [showFilters, setShowFilters] = useState(false);
 
@@ -55,6 +66,7 @@ export default function StoreContent({}: StoreContentProps) {
   const { data: products } = useProductsBySite({
     siteId: siteId ?? 0,
     limit: filters.pageSize,
+    sort: filters.sort,
     page: filters.page,
     query: filters.query,
     categories: filters.categories.map((c) => c.id ?? ""),
@@ -69,103 +81,158 @@ export default function StoreContent({}: StoreContentProps) {
     }));
   };
 
+  const handleChangeSort = (e: SelectChangeEvent<string>) => {
+    setFilters((values) => ({
+      ...values,
+      sort: e.target.value,
+    }));
+  };
+
+  const handleChangeFilters = (filters: {
+    query: string;
+    categories: ProductCategoryType[];
+    page: number;
+    pageSize: number;
+    sort: string;
+  }) => {
+    setFilters(filters);
+  };
+
+  const handleClear = () => {
+    setFilters(DEFAULT_FILTERS);
+  };
+
+  const handelCloseFilters = () => {
+    setShowFilters(false);
+  };
+
   return (
     <Container>
-      <Box sx={{ position: "relative" }}>
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <Box>
-              <Stack direction="row" justifyContent="flex-end">
-                <IconButton onClick={handleToggleFilters}>
-                  <FilterAltIcon />
-                </IconButton>
-                <LazyTextField
-                  onChange={(value) =>
-                    setFilters((filters) => ({ ...filters, query: value }))
-                  }
-                  value={filters.query}
-                  TextFieldProps={{
-                    placeholder: formatMessage({
-                      id: "search",
-                      defaultMessage: "Search",
-                    }),
-                    variant: "standard",
-                    InputProps: {
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <Search />
-                        </InputAdornment>
-                      ),
-                    },
-                  }}
-                />
-              </Stack>
+      <Grid container spacing={2} alignItems="stretch">
+        {showFilters && (
+          <Grid item xs={12} sm={3}>
+            <Box sx={{ height: "100%" }}>
+              <FiltersSection
+                categories={categories?.items ?? []}
+                filters={filters}
+                onChange={handleChangeFilters}
+                onClear={handleClear}
+              />
             </Box>
           </Grid>
-          {showFilters && (
-            <Grid item xs={12}>
-              <Collapse in>
-                <Grid container spacing={2}>
-                  <Grid item xs={12} sm={4}>
-                    <CategoryAutocomplete
-                      categories={categories?.items ?? []}
-                      value={filters.categories}
-                      onChange={handleChangeCategories}
-                    />
-                  </Grid>
-                </Grid>
-              </Collapse>
-            </Grid>
-          )}
-
-          <Grid item xs={12}>
+        )}
+        <Grid item xs={12} sm={showFilters ? 9 : 12}>
+          <Box sx={{ position: "relative" }}>
             <Grid container spacing={2}>
-              {products && products?.totalItems > 0 ? (
-                products?.items?.map((product, key) => (
-                  <Grid key={key} item xs={12} sm={3}>
-                    <ProductCard product={product} />
-                  </Grid>
-                ))
-              ) : (
-                <Grid item xs={12}>
-                  <Box>
-                    <Stack sx={{ py: 2 }}>
-                      <Typography textAlign="center" variant="h5">
+              <Grid item xs={12}>
+                <Box>
+                  <Stack direction="row" justifyContent="flex-end">
+                    <IconButton onClick={handleToggleFilters}>
+                      <FilterAltIcon />
+                    </IconButton>
+                    <LazyTextField
+                      onChange={(value) =>
+                        setFilters((filters) => ({ ...filters, query: value }))
+                      }
+                      value={filters.query}
+                      TextFieldProps={{
+                        placeholder: formatMessage({
+                          id: "search",
+                          defaultMessage: "Search",
+                        }),
+                        variant: "standard",
+                        InputProps: {
+                          startAdornment: (
+                            <InputAdornment position="start">
+                              <Search />
+                            </InputAdornment>
+                          ),
+                        },
+                      }}
+                    />
+                  </Stack>
+                </Box>
+              </Grid>
+              <Grid item xs={12}>
+                <Box>
+                  <Stack direction="row" justifyContent="flex-end">
+                    <Select
+                      displayEmpty
+                      onChange={handleChangeSort}
+                      value={filters.sort}
+                    >
+                      <MenuItem value="">
                         <FormattedMessage
-                          id="no.products"
-                          defaultMessage="No Products"
+                          id="Created"
+                          defaultMessage="Created"
                         />
-                      </Typography>
-                      <Typography
-                        textAlign="center"
-                        variant="body1"
-                        color="text.secondary"
-                      >
+                      </MenuItem>
+                      <MenuItem value="asc">
                         <FormattedMessage
-                          id="no.products.to.show"
-                          defaultMessage="No products to show"
+                          id="low.to.high"
+                          defaultMessage="Low to High"
                         />
-                      </Typography>
-                    </Stack>
-                  </Box>
+                      </MenuItem>
+                      <MenuItem value="desc">
+                        <FormattedMessage
+                          id="high.to.low"
+                          defaultMessage="High to low"
+                        />
+                      </MenuItem>
+                    </Select>
+                  </Stack>
+                </Box>
+              </Grid>
+              <Grid item xs={12}>
+                <Grid container spacing={2}>
+                  {products && products?.totalItems > 0 ? (
+                    products?.items?.map((product, key) => (
+                      <Grid key={key} item xs={12} sm={3}>
+                        <ProductCard product={product} />
+                      </Grid>
+                    ))
+                  ) : (
+                    <Grid item xs={12}>
+                      <Box>
+                        <Stack sx={{ py: 2 }}>
+                          <Typography textAlign="center" variant="h5">
+                            <FormattedMessage
+                              id="no.products"
+                              defaultMessage="No Products"
+                            />
+                          </Typography>
+                          <Typography
+                            textAlign="center"
+                            variant="body1"
+                            color="text.secondary"
+                          >
+                            <FormattedMessage
+                              id="no.products.to.show"
+                              defaultMessage="No products to show"
+                            />
+                          </Typography>
+                        </Stack>
+                      </Box>
+                    </Grid>
+                  )}
                 </Grid>
-              )}
+              </Grid>
+              <Grid item xs={12}>
+                <TablePagination
+                  component="div"
+                  count={products?.totalItems ?? 0}
+                  page={products?.currentPage ?? 0}
+                  onPageChange={(e, value) => {
+                    setFilters((values) => ({ ...values, page: value }));
+                  }}
+                  rowsPerPage={filters.pageSize}
+                  onRowsPerPageChange={handleChangeRowsPerPage}
+                />
+              </Grid>
             </Grid>
-          </Grid>
-          <Grid item xs={12}>
-            <TablePagination
-              component="div"
-              count={products?.totalItems ?? 0}
-              page={products?.currentPage ?? 0}
-              onPageChange={(e, value) => {
-                setFilters((values) => ({ ...values, page: value }));
-              }}
-              rowsPerPage={filters.pageSize}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-            />
-          </Grid>
+          </Box>
         </Grid>
-      </Box>
+      </Grid>
     </Container>
   );
 }

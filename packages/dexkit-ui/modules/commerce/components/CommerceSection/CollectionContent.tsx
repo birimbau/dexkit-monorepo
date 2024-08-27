@@ -29,8 +29,6 @@ export default function CollectionContent({ id }: CollectionContentProps) {
     pageSize: number;
   }>({ query: "", pageSize: 10, page: 0 });
 
-  console.log(id);
-
   const { data: products } = useCollectionProductsList({
     id,
     limit: filters.pageSize,

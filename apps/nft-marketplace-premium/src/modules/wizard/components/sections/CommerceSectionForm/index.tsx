@@ -1,4 +1,5 @@
 import {
+  Alert,
   Button,
   FormControl,
   Grid,
@@ -16,6 +17,8 @@ import CheckoutForm from './CheckoutForm';
 import CollectionForm from './CollectionForm';
 import SingleProductForm from './SingleProductForm';
 import StoreForm from './StoreForm';
+
+import useCheckoutSettings from '@dexkit/ui/modules/commerce/hooks/useCheckoutSettings';
 
 interface Props {
   isEdit?: boolean;
@@ -42,6 +45,8 @@ export default function CommerceSectionForm({
       onHasChanges(true);
     }
   };
+
+  const { data: settings, isLoading } = useCheckoutSettings();
 
   return (
     <Formik
@@ -77,6 +82,33 @@ export default function CommerceSectionForm({
                 </Link>
               </Typography>
             </Grid>
+            {(settings && !settings?.notificationEmail) ||
+              (!settings?.receiverAddress && (
+                <Grid item xs={12}>
+                  <Alert
+                    severity="error"
+                    action={
+                      <Button
+                        LinkComponent={Link}
+                        href="/u/account/commerce/settings"
+                        variant="outlined"
+                        color="inherit"
+                      >
+                        <FormattedMessage
+                          id="settings"
+                          defaultMessage="Settings"
+                        />
+                      </Button>
+                    }
+                  >
+                    <FormattedMessage
+                      id="email.and.receiver.error.message"
+                      defaultMessage="It is not possible to create a checkout without setting up the receiver's email and address."
+                    />
+                  </Alert>
+                </Grid>
+              ))}
+
             <Grid item xs={12}>
               <FormControl fullWidth>
                 <Field

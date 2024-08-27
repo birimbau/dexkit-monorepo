@@ -9,6 +9,7 @@ export default function useProductsBySite(params: {
   siteId: number;
   page: number;
   limit: number;
+  sort: string;
   query: string;
   categories?: string[];
 }) {
@@ -26,10 +27,15 @@ export default function useProductsBySite(params: {
       limit: number;
       q: string;
       categories?: string;
+      sort?: string;
     } = { page, limit, q: query };
 
     if (params.categories) {
       queryParams.categories = JSON.stringify(params.categories);
+    }
+
+    if (params.sort !== "") {
+      queryParams.sort = params.sort;
     }
 
     return (

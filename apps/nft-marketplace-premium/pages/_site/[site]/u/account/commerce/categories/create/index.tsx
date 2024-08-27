@@ -53,7 +53,12 @@ function CreateCategoryComponent() {
               uri: '/u/account/commerce/categories',
             },
             {
-              caption: <FormattedMessage id="create" defaultMessage="Create" />,
+              caption: (
+                <FormattedMessage
+                  id="create.category"
+                  defaultMessage="Create Category"
+                />
+              ),
               uri: '/u/account/commerce/categories/create',
               active: true,
             },
@@ -62,7 +67,10 @@ function CreateCategoryComponent() {
       </Grid>
       <Grid item xs={12}>
         <Typography variant="h5">
-          <FormattedMessage id="create" defaultMessage="Create" />
+          <FormattedMessage
+            id="create.category"
+            defaultMessage="Create Category"
+          />
         </Typography>
       </Grid>
       <Grid item xs={12}>
@@ -86,7 +94,7 @@ function CreateCategoryComponent() {
 
 export default function CreateProductPage() {
   return (
-    <DashboardLayout>
+    <DashboardLayout page="categories">
       <CreateCategoryComponent />
     </DashboardLayout>
   );

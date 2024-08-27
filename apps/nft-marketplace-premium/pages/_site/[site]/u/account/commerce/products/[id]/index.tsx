@@ -102,7 +102,7 @@ function UpdateProductPagePage() {
 
 export default function UpdateProductPage() {
   return (
-    <DashboardLayout>
+    <DashboardLayout page="products">
       <UpdateProductPagePage />
     </DashboardLayout>
   );

@@ -91,7 +91,7 @@ function CreateProductCollectionComponent() {
 
 export default function CreateProductCollectionPage() {
   return (
-    <DashboardLayout>
+    <DashboardLayout page="collections">
       <CreateProductCollectionComponent />
     </DashboardLayout>
   );

@@ -38,8 +38,6 @@ export default function ProductContent({
 
   const { data: product } = useUserProduct({ id: productId });
 
-  console.log("product", product);
-
   const cartItem = useMemo(() => {
     return item(productId ?? "");
   }, [productId, item]);
