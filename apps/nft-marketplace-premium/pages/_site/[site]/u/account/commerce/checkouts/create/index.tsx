@@ -43,7 +43,7 @@ function CreateCheckoutComponent() {
     }
   };
 
-  const { data: settings } = useCheckoutSettings();
+  const { data: settings, isFetched } = useCheckoutSettings();
 
   return (
     <>
@@ -87,8 +87,8 @@ function CreateCheckoutComponent() {
                 },
               ]}
             />
-            {(settings && !settings?.notificationEmail) ||
-              (!settings?.receiverAddress && (
+            {isFetched &&
+              (!settings?.notificationEmail || !settings?.receiverAddress) && (
                 <Alert
                   severity="error"
                   action={
@@ -110,7 +110,7 @@ function CreateCheckoutComponent() {
                     defaultMessage="It is not possible to create a checkout without setting up the receiver's email and address."
                   />
                 </Alert>
-              ))}
+              )}
 
             <div>
               <CheckoutForm

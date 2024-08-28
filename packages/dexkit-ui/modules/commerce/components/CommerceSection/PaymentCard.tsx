@@ -108,7 +108,7 @@ export default function PaymentCard() {
 
   useEffect(() => {
     if (cartItems.length > 0) {
-      cartItems.reduce(
+      const items = cartItems.reduce(
         (prev, curr) => {
           prev[curr.productId] = { price: curr.price, quantity: curr.quantity };
           return prev;
@@ -117,6 +117,8 @@ export default function PaymentCard() {
           [key: string]: { quantity: number; price: string };
         }
       );
+
+      setItems(items);
     }
   }, [cartItems]);
 
@@ -128,7 +130,7 @@ export default function PaymentCard() {
     }
 
     return new Decimal("0");
-  }, [items]);
+  }, [items, cartItems]);
 
   const disabled = false;
 
@@ -286,7 +288,8 @@ export default function PaymentCard() {
             !hasSufficientBalance ||
             disabled ||
             !token ||
-            (requireEmail && (!email || !isValidEmail))
+            (requireEmail && (!email || !isValidEmail)) ||
+            total.isZero()
           }
           fullWidth
           onClick={handlePay}

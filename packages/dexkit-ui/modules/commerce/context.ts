@@ -10,6 +10,7 @@ export const CommerceContext = React.createContext<CommerceContextState>({
   openCart: () => {},
   closeCart: () => {},
   clearCart: () => {},
+  checkCart: async () => {},
   cart: {
     addItem: () => {},
     item: (productId: string) => {

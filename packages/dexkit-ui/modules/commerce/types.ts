@@ -22,6 +22,7 @@ export type CommerceContextState = {
   openCart: () => void;
   closeCart: () => void;
   clearCart: () => void;
+  checkCart: () => Promise<void>;
   cart: {
     addItem: (params: {
       quantity: number;

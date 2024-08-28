@@ -1,7 +1,10 @@
 import { atomWithStorage, useReducerAtom } from "jotai/utils";
+import { useSnackbar } from "notistack";
 import { useState } from "react";
+import { FormattedMessage } from "react-intl";
 import { CommercePageSection } from "../../wizard/types/section";
 import { CommerceContext } from "../context";
+import useCheckcart from "../hooks/useCheckcart";
 import { CartState } from "../types";
 
 export interface CommerceContextProviderProps {
@@ -39,6 +42,7 @@ type CartUpdateItem = {
   productId: string;
   name: string;
   price: string;
+  imageUrl?: string;
 };
 
 type Action = CartAddItem | CartUpdateItem | ClearCart;
@@ -83,6 +87,7 @@ const reducer = (state: CartState = { items: [] }, action?: Action) => {
           price: action.price,
           productId: action.productId,
           quantity: action.quantity,
+          imageUrl: action.imageUrl,
         };
       }
 
@@ -147,6 +152,30 @@ export default function CommerceContextProvider({
     return dispatch({ type: CLEAR_CART });
   };
 
+  const { mutateAsync: checkcart } = useCheckcart();
+
+  const { enqueueSnackbar } = useSnackbar();
+
+  const checkCart = async () => {
+    const ids = await checkcart({
+      productIds: cart.items.map((i) => i.productId),
+    });
+
+    for (const id of ids) {
+      updateItem({ productId: id, quantity: 0, name: "", price: "0" });
+    }
+
+    if (ids.length > 0) {
+      enqueueSnackbar(
+        <FormattedMessage
+          id="removed.not.found.products"
+          defaultMessage="Removed not found products"
+        />,
+        { variant: "error" }
+      );
+    }
+  };
+
   return (
     <CommerceContext.Provider
       value={{
@@ -161,6 +190,7 @@ export default function CommerceContextProvider({
         openCart,
         closeCart,
         clearCart,
+        checkCart,
         cartItems: cart.items,
         cart: {
           addItem,

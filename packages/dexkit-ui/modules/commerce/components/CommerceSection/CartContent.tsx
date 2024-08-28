@@ -1,24 +1,54 @@
-import Inventory from "@mui/icons-material/Inventory";
 import {
-  Avatar,
   Grid,
-  Stack,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableRow,
-  Typography,
 } from "@mui/material";
+import { useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import useCommerce from "../../hooks/useCommerce";
+import CartContentItem from "./CartContentItem";
 import ContentHeader from "./ContentHeader";
 import PaymentCard from "./PaymentCard";
 
 export interface CartContentProps {}
 
 export default function CartContent() {
-  const { cartItems, closeCart } = useCommerce();
+  const {
+    cartItems,
+    closeCart,
+    checkCart,
+    cart: { item, updateItem },
+    productId,
+  } = useCommerce();
+
+  useEffect(() => {
+    checkCart();
+  }, []);
+
+  const handleIncrement = (productId: string) => {
+    return () => {
+      const cartItem = item(productId ?? "");
+
+      console.log("cartItem", cartItem);
+
+      if (cartItem) {
+        updateItem({ ...cartItem, quantity: cartItem.quantity + 1 });
+      }
+    };
+  };
+
+  const handleDecrement = (productId: string) => {
+    return () => {
+      const cartItem = item(productId ?? "");
+
+      if (cartItem) {
+        updateItem({ ...cartItem, quantity: cartItem.quantity - 1 });
+      }
+    };
+  };
 
   return (
     <Grid container spacing={2}>
@@ -45,18 +75,12 @@ export default function CartContent() {
           </TableHead>
           <TableBody>
             {cartItems.map((item, index) => (
-              <TableRow key={index}>
-                <TableCell>
-                  <Stack spacing={2} direction="row" alignItems="center">
-                    <Avatar src={item.imageUrl} variant="rounded">
-                      <Inventory />
-                    </Avatar>
-                    <Typography variant="inherit">{item.name}</Typography>
-                  </Stack>
-                </TableCell>
-                <TableCell>{item.price}</TableCell>
-                <TableCell>{item.quantity}</TableCell>
-              </TableRow>
+              <CartContentItem
+                key={index}
+                item={item}
+                onIncrement={handleIncrement(item.productId)}
+                onDecrement={handleDecrement(item.productId)}
+              />
             ))}
           </TableBody>
         </Table>

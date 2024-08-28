@@ -46,7 +46,7 @@ export default function CommerceSectionForm({
     }
   };
 
-  const { data: settings, isLoading } = useCheckoutSettings();
+  const { data: settings, isFetched } = useCheckoutSettings();
 
   return (
     <Formik
@@ -82,8 +82,8 @@ export default function CommerceSectionForm({
                 </Link>
               </Typography>
             </Grid>
-            {(settings && !settings?.notificationEmail) ||
-              (!settings?.receiverAddress && (
+            {isFetched &&
+              (!settings?.notificationEmail || !settings?.receiverAddress) && (
                 <Grid item xs={12}>
                   <Alert
                     severity="error"
@@ -107,7 +107,7 @@ export default function CommerceSectionForm({
                     />
                   </Alert>
                 </Grid>
-              ))}
+              )}
 
             <Grid item xs={12}>
               <FormControl fullWidth>
