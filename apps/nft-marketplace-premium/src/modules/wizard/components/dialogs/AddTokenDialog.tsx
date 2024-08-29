@@ -8,6 +8,8 @@ import {
   DialogContent,
   DialogProps,
   FormControl,
+  Grid,
+  InputLabel,
   ListItemIcon,
   ListItemText,
   MenuItem,
@@ -16,56 +18,60 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { FormikHelpers, useFormik } from 'formik';
+import { FormikHelpers, getIn, useFormik } from 'formik';
 import { useCallback, useEffect, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import * as Yup from 'yup';
 
 import { ImageFormUpload } from '@/modules/contract-wizard/components/ImageFormUpload';
-import { isAddressEqual } from '@dexkit/core/utils/blockchain';
 import { isAddress } from '@dexkit/core/utils/ethers/isAddress';
-import { AxiosError } from 'axios';
 import { useSnackbar } from 'notistack';
 
 import { NETWORKS } from '../../../../constants/chain';
 
-import { useDebounce } from '../../../../hooks/misc';
 import { Token } from '../../../../types/blockchain';
-import { Network } from '../../../../types/chains';
 
+import { useDebounce } from '@dexkit/core';
+import { parseChainId } from '@dexkit/core/utils';
 import { ipfsUriToUrl } from '@dexkit/core/utils/ipfs';
+import { useTokenData } from '@dexkit/ui';
 import { AppDialogTitle } from '@dexkit/ui/components/AppDialogTitle';
-import { useTokenData } from '@dexkit/ui/hooks/blockchain';
-import { SearchTokenAutocomplete } from '../pageEditor/components/SearchTokenAutocomplete';
+import { useWeb3React } from '@dexkit/wallet-connectors/hooks/useWeb3React';
+import { AxiosError } from 'axios';
+import { SearchMultiTokenAutocomplete } from '../pageEditor/components/SearchMultiTokenAutocomplete';
 
 interface Props {
   dialogProps: DialogProps;
   tokens: Token[];
-  onSave: (token: Token) => void;
+  onSave: (tokens: Token[]) => void;
 }
 
 interface Form {
+  type: string;
   chainId: number;
-  contractAddress: string;
-  name: string;
-  symbol: string;
-  decimals: number;
-  logoURI?: string;
+  tokens?: Token[];
 }
 
 const FormSchema: Yup.SchemaOf<Form> = Yup.object().shape({
+  type: Yup.string().required(),
   chainId: Yup.number().required(),
-  contractAddress: Yup.string()
-    .test('address', (value) => {
-      return value !== undefined ? isAddress(value) : true;
-    })
-    .required(),
+  tokens: Yup.array()
+    .of(
+      Yup.object().shape({
+        address: Yup.string()
+          .test('address', (value) => {
+            return value !== undefined ? isAddress(value) : true;
+          })
+          .required(),
 
-  name: Yup.string().required(),
-  symbol: Yup.string().required(),
-  decimals: Yup.number().required(),
-  logoURI: Yup.string(),
+        name: Yup.string().required(),
+        symbol: Yup.string().required(),
+        decimals: Yup.number().required(),
+        logoURI: Yup.string(),
+      }),
+    )
+    .optional(),
 });
 
 function AddTokenDialog({ dialogProps, tokens, onSave }: Props) {
@@ -77,21 +83,8 @@ function AddTokenDialog({ dialogProps, tokens, onSave }: Props) {
 
   const handleSubmit = useCallback(
     (values: Form, formikHelpers: FormikHelpers<Form>) => {
-      const token = tokens.find(
-        (t) =>
-          Number(t.chainId) === Number(values.chainId) &&
-          isAddressEqual(values.contractAddress, t.address),
-      );
-
-      if (!token) {
-        onSave({
-          address: values.contractAddress.toLocaleLowerCase(),
-          chainId: Number(values.chainId),
-          decimals: values.decimals,
-          logoURI: values.logoURI || '',
-          name: values.name,
-          symbol: values.symbol,
-        });
+      if (values.tokens) {
+        onSave(values.tokens);
 
         enqueueSnackbar(
           formatMessage({
@@ -117,20 +110,32 @@ function AddTokenDialog({ dialogProps, tokens, onSave }: Props) {
     [String(tokens), enqueueSnackbar, onClose],
   );
 
+  const { chainId } = useWeb3React();
+
   const formik = useFormik<Form>({
     initialValues: {
-      chainId: 1,
-      contractAddress: '',
-      name: '',
-      decimals: 0,
-      symbol: '',
-      logoURI: '',
+      type: 'via-api',
+      chainId,
     },
     validationSchema: FormSchema,
     onSubmit: handleSubmit,
   });
 
-  const lazyAddress = useDebounce<string>(formik.values.contractAddress, 500);
+  const handleSubmitForm = () => {
+    formik.submitForm();
+  };
+
+  const handleClose = () => {
+    if (onClose) {
+      onClose({}, 'backdropClick');
+    }
+    formik.resetForm();
+  };
+
+  const lazyAddress = useDebounce(
+    getIn(formik.values, 'tokens[0].address'),
+    500,
+  );
 
   const tokenData = useTokenData({
     onSuccess: ({
@@ -142,62 +147,144 @@ function AddTokenDialog({ dialogProps, tokens, onSave }: Props) {
       name: string;
       symbol: string;
     }) => {
-      formik.setValues(
-        (value) => ({
-          ...value,
-          name: name || '',
-          decimals: decimals || 0,
-          symbol: symbol || '',
-        }),
+      formik.setFieldValue(
+        'tokens.0',
+        {
+          address: lazyAddress,
+          chainId: getIn(formik.values, 'chainId'),
+          decimals,
+          name,
+          symbol,
+        } as Token,
         true,
       );
     },
-    onError: (err: AxiosError) => {
-      formik.resetForm();
-    },
+    onError: (err: AxiosError) => {},
   });
 
-  const handleSubmitForm = () => {
-    formik.submitForm();
-  };
-
-  const handleCloseError = () => tokenData.reset();
-
-  const handleClose = () => {
-    if (onClose) {
-      onClose({}, 'backdropClick');
-    }
-    formik.resetForm();
-    handleCloseError();
-  };
-
   useEffect(() => {
-    if (lazyAddress !== '') {
-      const token = tokens.find(
-        (t) =>
-          t.chainId === formik.values.chainId &&
-          isAddressEqual(lazyAddress, t.address),
-      );
+    const address = getIn(formik.values, 'tokens.0.address');
 
-      if (token) {
-        formik.setFieldError(
-          'contractAddress',
-          formatMessage({
-            id: 'token.already.imported',
-            defaultMessage: 'Token already imported',
-          }),
-        );
-      } else {
-        tokenData.mutate({
-          chainId: formik.values.chainId,
-          address: lazyAddress,
-        });
-      }
+    if (formik.values.type === 'contract-address' && isAddress(address)) {
+      tokenData.mutate({
+        address: getIn(formik.values, 'tokens.0.address'),
+        chainId: formik.values.chainId,
+      });
     }
-  }, [lazyAddress, formik.values.chainId]);
+  }, [lazyAddress, formik.values.type]);
+
+  const renderViaApi = () => {
+    return (
+      <Stack spacing={2}>
+        <SearchMultiTokenAutocomplete
+          data={autocompleteToken}
+          chainId={formik.values.chainId}
+          value={formik.values.tokens ?? []}
+          onChange={(value: Token[]) => {
+            formik.setFieldValue('tokens', value);
+          }}
+        />
+      </Stack>
+    );
+  };
+
+  const renderViaContractAddress = () => {
+    return (
+      <Stack spacing={2}>
+        <TextField
+          fullWidth
+          value={getIn(formik.values, 'tokens[0].address')}
+          onChange={formik.handleChange}
+          name="tokens[0].address"
+          label={formatMessage({
+            id: 'contract.address',
+            defaultMessage: 'Contract address',
+          })}
+          error={Boolean(getIn(formik.errors, 'tokens[0].address'))}
+          helperText={
+            Boolean(getIn(formik.errors, 'tokens[0].address'))
+              ? getIn(formik.errors, 'tokens[0].address')
+              : undefined
+          }
+          InputLabelProps={{ shrink: true }}
+        />
+        <TextField
+          disabled={tokenData.isLoading || tokenData.isSuccess}
+          fullWidth
+          value={getIn(formik.values, 'tokens[0].name')}
+          onChange={formik.handleChange}
+          name="tokens[0].name"
+          label={formatMessage({
+            id: 'name',
+            defaultMessage: 'Name',
+          })}
+          InputLabelProps={{ shrink: true }}
+          error={Boolean(getIn(formik.errors, 'tokens[0].name'))}
+          helperText={
+            Boolean(getIn(formik.errors, 'tokens[0].name'))
+              ? getIn(formik.errors, 'tokens[0].name')
+              : undefined
+          }
+        />
+        <TextField
+          disabled={tokenData.isLoading || tokenData.isSuccess}
+          fullWidth
+          value={getIn(formik.values, 'tokens[0].symbol')}
+          onChange={formik.handleChange}
+          name="tokens[0].symbol"
+          label={formatMessage({
+            id: 'symbol',
+            defaultMessage: 'Symbol',
+          })}
+          InputLabelProps={{ shrink: true }}
+          error={Boolean(getIn(formik.errors, 'tokens[0].symbol'))}
+          helperText={
+            Boolean(getIn(formik.errors, 'tokens[0].symbol'))
+              ? getIn(formik.errors, 'tokens[0].symbol')
+              : undefined
+          }
+        />
+        <TextField
+          type="number"
+          fullWidth
+          disabled={tokenData.isLoading || tokenData.isSuccess}
+          value={getIn(formik.values, 'tokens[0].decimals')}
+          onChange={formik.handleChange}
+          name="decimals"
+          label={formatMessage({
+            id: 'decimals',
+            defaultMessage: 'Decimals',
+          })}
+          InputLabelProps={{ shrink: true }}
+          error={Boolean(getIn(formik.errors, 'tokens[0].decimals'))}
+          helperText={
+            Boolean(getIn(formik.errors, 'tokens[0].decimals'))
+              ? getIn(formik.errors, 'tokens[0].decimals')
+              : undefined
+          }
+        />
+        <Stack spacing={2}>
+          <Box pl={2}>
+            <Typography variant="caption">
+              <FormattedMessage id="logo" defaultMessage="Logo" />
+            </Typography>
+          </Box>
+          <ImageFormUpload
+            error={Boolean(getIn(formik.errors, 'tokens[0].logoURI'))}
+            value={getIn(formik.values, 'tokens[0].logoURI') || null}
+            onSelectFile={(file) =>
+              formik.setFieldValue('tokens[0].logoURI', file)
+            }
+            imageHeight={10}
+            imageWidth={10}
+          />
+        </Stack>
+      </Stack>
+    );
+  };
 
   return (
-    <Dialog {...dialogProps}>
+    <Dialog {...dialogProps} maxWidth="sm" fullWidth>
       <AppDialogTitle
         title={
           <FormattedMessage
@@ -207,183 +294,147 @@ function AddTokenDialog({ dialogProps, tokens, onSave }: Props) {
           />
         }
         onClose={handleClose}
+        titleBox={{ px: 2, py: 0 }}
       />
-      <DialogContent dividers>
-        <Stack spacing={2}>
-          <Alert severity="info">
-            <FormattedMessage
-              id={'token.import.info'}
-              defaultMessage={
-                'You can search tokens on our API or import it directly by contract address'
-              }
-            />
-          </Alert>
-          {tokenData.isError && (
-            <Alert severity="error" onClose={handleCloseError}>
-              {String(tokenData.error)}
-            </Alert>
-          )}
-
-          <FormControl>
-            <SearchTokenAutocomplete
-              data={autocompleteToken}
-              onChange={(tk: any) => {
-                setAutoCompleteToken(tk);
-                if (tk) {
-                  formik.setValues(
-                    (value) => ({
-                      ...value,
-                      contractAddress: tk?.address || '',
-                      chainId: tk?.chainId || 0,
-                      logoURI: tk?.logoURI || '',
-                    }),
-                    true,
-                  );
-                }
-              }}
-            />
-          </FormControl>
-          <FormControl>
-            <Select
-              fullWidth
-              value={formik.values.chainId}
-              onChange={formik.handleChange}
-              name="chainId"
-              renderValue={(value) => {
-                return (
-                  <Stack
-                    direction="row"
-                    alignItems="center"
-                    alignContent="center"
-                    spacing={1}
-                  >
-                    <Avatar
-                      src={ipfsUriToUrl(
-                        NETWORKS[formik.values.chainId].imageUrl || '',
-                      )}
-                      style={{ width: 'auto', height: '1rem' }}
-                    />
-                    <Typography variant="body1">
-                      {NETWORKS[formik.values.chainId].name}
-                    </Typography>
-                  </Stack>
-                );
-              }}
-            >
-              {Object.keys(NETWORKS)
-                .filter((key: any) => !NETWORKS[key].testnet)
-                .map((key: any, index: number) => (
-                  <MenuItem key={index} value={key}>
-                    <ListItemIcon>
-                      <Box
-                        sx={{
-                          width: (theme) => theme.spacing(4),
-                          display: 'flex',
-                          alignItems: 'center',
-                          alignContent: 'center',
-                          justifyContent: 'center',
-                        }}
-                      >
-                        <Avatar
-                          src={ipfsUriToUrl(
-                            (NETWORKS[key] as Network)?.imageUrl || '',
-                          )}
-                          sx={{
-                            width: 'auto',
-                            height: '1rem',
-                          }}
-                        />
-                      </Box>
-                    </ListItemIcon>
-                    <ListItemText primary={NETWORKS[key].name} />
-                  </MenuItem>
-                ))}
-            </Select>
-          </FormControl>
-          <TextField
-            fullWidth
-            value={formik.values.contractAddress}
-            onChange={formik.handleChange}
-            name="contractAddress"
-            label={formatMessage({
-              id: 'contract.address',
-              defaultMessage: 'Contract address',
-            })}
-            error={Boolean(formik.errors.contractAddress)}
-            helperText={
-              Boolean(formik.errors.contractAddress)
-                ? formik.errors.contractAddress
-                : undefined
-            }
-          />
-          <TextField
-            fullWidth
-            disabled={tokenData.isLoading || tokenData.isSuccess}
-            value={formik.values.name}
-            onChange={formik.handleChange}
-            name="name"
-            label={formatMessage({
-              id: 'name',
-              defaultMessage: 'Name',
-            })}
-            error={Boolean(formik.errors.name)}
-            helperText={
-              Boolean(formik.errors.name) ? formik.errors.name : undefined
-            }
-          />
-          <TextField
-            fullWidth
-            disabled={tokenData.isLoading || tokenData.isSuccess}
-            value={formik.values.symbol}
-            onChange={formik.handleChange}
-            name="symbol"
-            label={formatMessage({
-              id: 'symbol',
-              defaultMessage: 'Symbol',
-            })}
-            error={Boolean(formik.errors.symbol)}
-            helperText={
-              Boolean(formik.errors.symbol) ? formik.errors.symbol : undefined
-            }
-          />
-          <TextField
-            disabled={tokenData.isLoading || tokenData.isSuccess}
-            type="number"
-            fullWidth
-            value={formik.values.decimals}
-            onChange={formik.handleChange}
-            name="decimals"
-            label={formatMessage({
-              id: 'decimals',
-              defaultMessage: 'Decimals',
-            })}
-            error={Boolean(formik.errors.decimals)}
-            helperText={
-              Boolean(formik.errors.decimals)
-                ? formik.errors.decimals
-                : undefined
-            }
-          />
-          <Stack spacing={2}>
-            <Box pl={2}>
-              <Typography variant="caption">
-                {' '}
-                <FormattedMessage id="logo" defaultMessage="Logo" />{' '}
-              </Typography>
+      <DialogContent dividers sx={{ py: 2, px: 4 }}>
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <Box mb={2}>
+              <Alert severity="info">
+                <FormattedMessage
+                  id="search.for.tokens.with.our.api.or.import.them.using.the.contract.address."
+                  defaultMessage={
+                    'Search for tokens with our API or import them using the contract address.'
+                  }
+                />
+              </Alert>
+              {tokenData.isError && (
+                <Alert severity="error" onClose={() => tokenData.reset()}>
+                  {String(tokenData.error)}
+                </Alert>
+              )}
             </Box>
-            <ImageFormUpload
-              error={Boolean(formik?.errors?.logoURI)}
-              value={formik.values.logoURI || null}
-              onSelectFile={(file) => formik.setFieldValue('logoURI', file)}
-              imageHeight={10}
-              imageWidth={10}
-            />
-          </Stack>
-        </Stack>
+          </Grid>
+          <Grid item xs={12} sm={9}>
+            <Box>
+              <Stack spacing={2}>
+                <FormControl>
+                  <InputLabel>
+                    <FormattedMessage
+                      id="choose.an.option"
+                      defaultMessage="Choose an option"
+                    />
+                  </InputLabel>
+                  <Select
+                    value={formik.values.type}
+                    onChange={formik.handleChange}
+                    name="type"
+                    label={
+                      <FormattedMessage
+                        id="choose.an.option"
+                        defaultMessage="Choose an option"
+                      />
+                    }
+                  >
+                    <MenuItem value="via-api">
+                      <FormattedMessage
+                        id="search.via.api"
+                        defaultMessage="Search via API"
+                      />
+                    </MenuItem>
+                    <MenuItem value="contract-address">
+                      <FormattedMessage
+                        id="import.via.address"
+                        defaultMessage="Import via address"
+                      />
+                    </MenuItem>
+                  </Select>
+                </FormControl>
+                <FormControl>
+                  <InputLabel>
+                    <FormattedMessage id="network" defaultMessage="Network" />
+                  </InputLabel>
+                  <Select
+                    fullWidth
+                    value={formik.values.chainId}
+                    onChange={(e) => {
+                      formik.setFieldValue('tokens', []);
+                      formik.setFieldValue('chainId', e.target.value);
+                    }}
+                    label={
+                      <FormattedMessage id="network" defaultMessage="Network" />
+                    }
+                    name="chainId"
+                    renderValue={(value) => {
+                      return (
+                        <Stack
+                          direction="row"
+                          alignItems="center"
+                          alignContent="center"
+                          spacing={1}
+                        >
+                          <Avatar
+                            src={ipfsUriToUrl(NETWORKS[value]?.imageUrl || '')}
+                            style={{ width: 'auto', height: '1rem' }}
+                          />
+                          <Typography variant="body1">
+                            {NETWORKS[value]?.name}
+                          </Typography>
+                        </Stack>
+                      );
+                    }}
+                  >
+                    {Object.keys(NETWORKS)
+                      .filter((key: any) => !NETWORKS[key].testnet)
+                      .map((key) => NETWORKS[parseChainId(key)])
+                      .sort((a, b) => {
+                        return a.name.localeCompare(b.name);
+                      })
+                      .map((net, index: number) => (
+                        <MenuItem key={index} value={net.chainId}>
+                          <ListItemIcon>
+                            <Box
+                              sx={{
+                                width: (theme) => theme.spacing(4),
+                                display: 'flex',
+                                alignItems: 'center',
+                                alignContent: 'center',
+                                justifyContent: 'center',
+                              }}
+                            >
+                              <Avatar
+                                src={ipfsUriToUrl(net?.imageUrl || '')}
+                                sx={{
+                                  width: 'auto',
+                                  height: '1rem',
+                                }}
+                              />
+                            </Box>
+                          </ListItemIcon>
+                          <ListItemText primary={net.name} />
+                        </MenuItem>
+                      ))}
+                  </Select>
+                </FormControl>
+                {formik.values.type === 'via-api' && renderViaApi()}
+                {formik.values.type === 'contract-address' &&
+                  renderViaContractAddress()}
+              </Stack>
+            </Box>
+          </Grid>
+        </Grid>
       </DialogContent>
-      <DialogActions>
+      <DialogActions sx={{ px: 4, py: 2 }}>
+        <Button onClick={handleClose}>
+          <FormattedMessage
+            id="cancel"
+            defaultMessage="Cancel"
+            description="Cancel"
+          />
+        </Button>
+
         <Button
-          disabled={!formik.isValid || tokenData.isLoading}
+          disabled={!formik.isValid}
           onClick={handleSubmitForm}
           variant="contained"
           color="primary"
@@ -392,13 +443,6 @@ function AddTokenDialog({ dialogProps, tokens, onSave }: Props) {
             id="import"
             defaultMessage="Import"
             description="Import"
-          />
-        </Button>
-        <Button onClick={handleClose}>
-          <FormattedMessage
-            id="cancel"
-            defaultMessage="Cancel"
-            description="Cancel"
           />
         </Button>
       </DialogActions>
