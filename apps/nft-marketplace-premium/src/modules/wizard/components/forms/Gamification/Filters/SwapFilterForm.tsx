@@ -71,7 +71,7 @@ export default function SwapFilterForm({ item, onSubmit, onChange }: Props) {
             onChange={onChange}
           />
           <Grid container spacing={2}>
-            <Grid item xs={12}>
+            <Grid item xs={12} sm={4}>
               <FormControl fullWidth>
                 <NetworkSelectDropdown
                   chainId={values.chainId}

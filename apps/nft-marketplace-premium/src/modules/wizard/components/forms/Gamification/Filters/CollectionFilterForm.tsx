@@ -22,6 +22,7 @@ import { Conditions } from '../constants/conditions';
 
 interface CollectionFilter {
   chainId?: number;
+  mode?: number;
   collectionAddress?: string;
   tokenId?: string;
   conditionNFT?: string;
@@ -41,6 +42,7 @@ const CollectionFilterSchema: Yup.SchemaOf<CollectionFilter> =
     condition: Yup.string(),
     amount: Yup.number(),
     collectionAddress: Yup.string(),
+    mode: Yup.number().optional(),
   });
 
 interface Props {
@@ -145,45 +147,47 @@ export default function CollectionFilterForm({
                 />
               </Typography>
             </Grid>
+            <Grid item xs={12} sm={4}>
+              <FormControl fullWidth>
+                <InputLabel shrink>
+                  <FormattedMessage
+                    id="choose.an.option"
+                    defaultMessage="Choose an option"
+                  />
+                </InputLabel>
+                <Select
+                  value={values.mode}
+                  onChange={(e) => {
+                    setFieldValue('mode', e.target.value as number);
+                  }}
+                  notched
+                  label={
+                    <FormattedMessage
+                      id="choose.an.option"
+                      defaultMessage="Choose an option"
+                    />
+                  }
+                  fullWidth
+                >
+                  <MenuItem value={0}>
+                    <FormattedMessage
+                      id="import.collection"
+                      defaultMessage="Import collection"
+                    />
+                  </MenuItem>
+                  <MenuItem value={1}>
+                    <FormattedMessage
+                      id="my.collections.alt"
+                      defaultMessage="My collections"
+                    />
+                  </MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
             <Grid item xs={12}>
               <Grid container spacing={2}>
-                <Grid item xs={12} sm={3}>
-                  <FormControl fullWidth>
-                    <InputLabel shrink>
-                      <FormattedMessage
-                        id="choose.an.option"
-                        defaultMessage="Choose an option"
-                      />
-                    </InputLabel>
-                    <Select
-                      value={value}
-                      onChange={handleChange}
-                      notched
-                      label={
-                        <FormattedMessage
-                          id="choose.an.option"
-                          defaultMessage="Choose an option"
-                        />
-                      }
-                      fullWidth
-                    >
-                      <MenuItem value={0}>
-                        <FormattedMessage
-                          id="import.collection"
-                          defaultMessage="Import collection"
-                        />
-                      </MenuItem>
-                      <MenuItem value={1}>
-                        <FormattedMessage
-                          id="my.collections.alt"
-                          defaultMessage="My collections"
-                        />
-                      </MenuItem>
-                    </Select>
-                  </FormControl>
-                </Grid>
-                <Grid item xs={12} sm={3}>
-                  <TabPanel value={value} index={1}>
+                <Grid item xs={12} sm={4}>
+                  <TabPanel value={values.mode ?? 0} index={1}>
                     <CollectionItemAutocomplete
                       onChange={(coll) => {
                         setFieldValue(
@@ -194,13 +198,13 @@ export default function CollectionFilterForm({
                       filterByChainId={true}
                       chainId={values.chainId}
                       disabled={values.chainId === undefined}
-                      formValue={{
+                      value={{
                         contractAddress: values.collectionAddress,
                         chainId: values.chainId,
                       }}
                     />
                   </TabPanel>
-                  <TabPanel value={value} index={0}>
+                  <TabPanel value={values.mode ?? 0} index={0}>
                     <Field
                       component={TextField}
                       label={
@@ -217,7 +221,7 @@ export default function CollectionFilterForm({
                 </Grid>
                 {Boolean(isERC1155) && (
                   <>
-                    <Grid item xs={12} sm={2}>
+                    <Grid item xs={12} sm={4}>
                       <Field
                         component={TextField}
                         type="text"
@@ -232,12 +236,12 @@ export default function CollectionFilterForm({
                         name="tokenId"
                       />
                     </Grid>
-                    <Grid item xs={12} sm={2}>
+                    <Grid item xs={12} sm={4}>
                       <FormControl fullWidth>
                         <InputLabel id="condition-amount-nft-select-label">
                           <FormattedMessage
-                            id="condition.amount.nft"
-                            defaultMessage="Condition amount NFT"
+                            id="amount.condition.nft"
+                            defaultMessage="Amount condition NFT"
                           />
                         </InputLabel>
                         <Select
@@ -246,8 +250,8 @@ export default function CollectionFilterForm({
                           value={values.conditionNFT}
                           label={
                             <FormattedMessage
-                              id="condition.amount.nft"
-                              defaultMessage="Condition amount NFT"
+                              id="amount.condition.nft"
+                              defaultMessage="Amount condition NFT"
                             />
                           }
                           onChange={(ev) =>
@@ -262,7 +266,7 @@ export default function CollectionFilterForm({
                         </Select>
                       </FormControl>
                     </Grid>
-                    <Grid item xs={12} sm={2}>
+                    <Grid item xs={12} sm={4}>
                       <Field
                         component={TextField}
                         type="number"
@@ -274,7 +278,7 @@ export default function CollectionFilterForm({
                           />
                         }
                         InputProps={{ min: 0 }}
-                        name="amount"
+                        name="amountNFT"
                       />
                     </Grid>
                   </>
@@ -313,12 +317,12 @@ export default function CollectionFilterForm({
               />
             </Grid>
 
-            <Grid item xs={12} sm={3}>
+            <Grid item xs={12} sm={4}>
               <FormControl fullWidth>
                 <InputLabel id="condition-amount-select-label">
                   <FormattedMessage
-                    id="condition.amount"
-                    defaultMessage="Condition amount"
+                    id="amount.condition"
+                    defaultMessage="Amount condition"
                   />
                 </InputLabel>
                 <Select
@@ -347,7 +351,12 @@ export default function CollectionFilterForm({
                 component={TextField}
                 type="number"
                 fullWidth
-                label={<FormattedMessage id="Amount" defaultMessage="Amount" />}
+                label={
+                  <FormattedMessage
+                    id="token.amount"
+                    defaultMessage="Token Amount"
+                  />
+                }
                 InputProps={{ min: 0 }}
                 name="amount"
               />

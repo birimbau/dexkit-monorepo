@@ -1,9 +1,17 @@
-import { FormControl, Grid, InputLabel, MenuItem, Select } from '@mui/material';
+import {
+  FormControl,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+} from '@mui/material';
 import { Field, useFormikContext } from 'formik';
 import { TextField } from 'formik-mui';
 import * as Yup from 'yup';
 
 import { GamificationPoint } from '@/modules/wizard/types';
+import { ChainId } from '@dexkit/core';
 import { NetworkSelectDropdown } from '@dexkit/ui/components/NetworkSelectDropdown';
 import { useCallback, useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
@@ -75,28 +83,40 @@ export default function DropCollectionFilterForm({
   }>();
 
   const filter = useMemo(() => {
-    if (index && values.settings[index].filter) {
-      return JSON.parse(values.settings[index].filter) as {
+    if (index !== undefined && values.settings[index].filter) {
+      return JSON.parse(values.settings[index].filter ?? '{}') as {
         chainId: number;
         collectionAddress: string;
         conditionNFT: string;
+        mode: number;
       };
     }
-  }, [index]);
+
+    return {
+      chainId: ChainId.Ethereum,
+      mode: 0,
+      collectionAddress: '',
+      conditionNFT: '',
+    };
+  }, [index, JSON.stringify(values)]);
 
   const setValue = useCallback(
     (field: string, value: any) => {
       setFieldValue(
-        'settings.filter',
+        `settings.${index}.filter`,
         JSON.stringify({ ...filter, [field]: value }),
       );
     },
-    [filter],
+    [filter, index],
   );
+
+  const handleChange = (event: SelectChangeEvent<number>) => {
+    setValue('mode', event.target.value as number);
+  };
 
   return (
     <Grid container spacing={2}>
-      <Grid item xs={12}>
+      <Grid item xs={12} sm={4}>
         <NetworkSelectDropdown
           label={
             <FormattedMessage
@@ -106,9 +126,15 @@ export default function DropCollectionFilterForm({
           }
           chainId={index !== undefined ? filter?.chainId : undefined}
           onChange={(chainId) => {
-            setFieldValue('chainId', chainId);
-            setFieldValue('tokenAddress', undefined);
-            setFieldValue('collectionAddress', undefined);
+            setFieldValue(
+              `settings.${index}.filter`,
+              JSON.stringify({
+                ...filter,
+                chainId,
+                tokenAddress: '',
+                collectionAddres: '',
+              }),
+            );
           }}
           labelId="Choose network"
           enableTestnet={true}
@@ -127,7 +153,7 @@ export default function DropCollectionFilterForm({
               </InputLabel>
               <Select
                 fullWidth
-                value={value}
+                value={filter.mode}
                 onChange={handleChange}
                 aria-label="collection tabs"
                 label={
@@ -149,22 +175,28 @@ export default function DropCollectionFilterForm({
               </Select>
             </FormControl>
           </Grid>
-          <Grid item xs={12} sm={9}>
-            <TabPanel value={value} index={1}>
+          <Grid item xs={12} sm={5}>
+            <TabPanel value={filter.mode} index={1}>
               <CollectionItemAutocomplete
                 onChange={(coll) => {
-                  setFieldValue('collectionAddress', coll?.contractAddress);
+                  setFieldValue(
+                    `settings.${index}.filter`,
+                    JSON.stringify({
+                      ...filter,
+                      collectionAddress: coll?.contractAddress,
+                    }),
+                  );
                 }}
                 filterByChainId={true}
                 chainId={filter?.chainId}
                 disabled={filter?.chainId === undefined}
-                formValue={{
+                value={{
                   contractAddress: filter?.collectionAddress,
                   chainId: filter?.chainId,
                 }}
               />
             </TabPanel>
-            <TabPanel value={value} index={0}>
+            <TabPanel value={filter.mode} index={0}>
               <Field
                 component={TextField}
                 label={
@@ -189,7 +221,7 @@ export default function DropCollectionFilterForm({
               type="text"
               fullWidth
               label={
-                <FormattedMessage id={'tokenId'} defaultMessage={'Token Id'} />
+                <FormattedMessage id="tokenId" defaultMessage="Token Id" />
               }
               InputProps={{ min: 0 }}
               name="tokenId"
@@ -232,10 +264,7 @@ export default function DropCollectionFilterForm({
               type="number"
               fullWidth
               label={
-                <FormattedMessage
-                  id={'Amount.nft'}
-                  defaultMessage={'Amount NFT'}
-                />
+                <FormattedMessage id="Amount.nft" defaultMessage="Amount NFT" />
               }
               InputProps={{ min: 0 }}
               name="amount"

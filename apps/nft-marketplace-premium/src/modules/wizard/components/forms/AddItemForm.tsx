@@ -253,7 +253,7 @@ export default function AddItemForm({ item, onCancel, onSubmit }: Props) {
             <Grid item xs={12}>
               <CollectionItemAutocomplete
                 onChange={(coll) => handleCompleteCollectionAsset(coll)}
-                formValue={assetForm.values}
+                value={assetForm.values}
               />
             </Grid>
           </TabPanel>
@@ -414,7 +414,7 @@ export default function AddItemForm({ item, onCancel, onSubmit }: Props) {
             <Grid item xs={12}>
               <CollectionItemAutocomplete
                 onChange={(coll) => handleCompleteCollection(coll)}
-                formValue={collectionForm.values}
+                value={collectionForm.values}
               />
             </Grid>
           </TabPanel>

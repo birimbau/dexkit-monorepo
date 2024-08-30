@@ -147,7 +147,6 @@ export default function LeaderboardRule({
             }
             index={index}
             onChange={(item) => {
-              console.log('item', item);
               setFieldValue(
                 `settings[${index}].filter`,
                 item ? JSON.stringify(item) : undefined,
@@ -192,6 +191,7 @@ export default function LeaderboardRule({
           <Field
             component={TextField}
             type="number"
+            InputLabelProps={{ shrink: true }}
             name={`settings[${index}].points`}
             label={<FormattedMessage id="points" defaultMessage="Points" />}
           />

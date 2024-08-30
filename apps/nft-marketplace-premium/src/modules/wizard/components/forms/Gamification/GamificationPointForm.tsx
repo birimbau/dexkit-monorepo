@@ -248,6 +248,11 @@ export default function GamificationPointForm({
                               helperText={Boolean(errors.from) && errors.from}
                             />
                           )}
+                          componentsProps={{
+                            actionBar: {
+                              actions: ['today', 'accept', 'clear'],
+                            },
+                          }}
                           InputProps={{ fullWidth: true }}
                         />
                       </Grid>
@@ -260,6 +265,11 @@ export default function GamificationPointForm({
                               defaultMessage="To"
                             />
                           }
+                          componentsProps={{
+                            actionBar: {
+                              actions: ['today', 'accept', 'clear'],
+                            },
+                          }}
                           onChange={(value) =>
                             setFieldValue('to', value?.format())
                           }
