@@ -51,7 +51,7 @@ export default function CategoriesTable({ query }: CategoriesTableProps) {
       <DataGrid
         columns={columns}
         rows={data?.items ?? []}
-        rowCount={data?.items.length}
+        rowCount={data?.totalItems}
         paginationMode="client"
         getRowId={(row) => String(row.id)}
         paginationModel={paginationModel}

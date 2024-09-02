@@ -107,7 +107,7 @@ export default function ProductForm({ onSubmit, isValid }: ProductFormProps) {
                 : undefined,
               backgroundRepeat: 'no-repeat',
               backgroundPosition: 'center',
-              backgroundSize: 'cover',
+              backgroundSize: 'contain',
             }}
           >
             <Stack
