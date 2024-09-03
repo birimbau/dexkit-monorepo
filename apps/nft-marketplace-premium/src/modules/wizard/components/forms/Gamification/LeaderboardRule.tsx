@@ -4,7 +4,10 @@ import { UserEvents } from '@dexkit/core/constants/userEvents';
 import { beautifyCamelCase } from '@dexkit/core/utils';
 import { useWeb3React } from '@dexkit/wallet-connectors/hooks/useWeb3React';
 import ArrowDownward from '@mui/icons-material/ArrowDownward';
-import DeleteOutlined from '@mui/icons-material/DeleteOutlined';
+import Cancel from '@mui/icons-material/Cancel';
+import Check from '@mui/icons-material/Check';
+import Delete from '@mui/icons-material/Delete';
+import Edit from '@mui/icons-material/Edit';
 import {
   Accordion,
   AccordionDetails,
@@ -12,16 +15,17 @@ import {
   Autocomplete as AutocompleteMUI,
   AutocompleteRenderInputParams,
   Box,
+  Button,
   Divider,
   FormControl,
   Grid,
-  IconButton,
   Stack,
   TextField as TextFieldMUI,
   Typography,
 } from '@mui/material';
 import { Field, FormikErrors, FormikTouched } from 'formik';
 import { TextField } from 'formik-mui';
+import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import CollectionFilterForm from './Filters/CollectionFilterForm';
 import DropCollectionFilterForm from './Filters/DropCollectionFilter';
@@ -82,6 +86,8 @@ export interface LeaderboardRuleProps {
   }>;
   ranking: AppRanking;
   onRemove: () => void;
+  isNew: boolean;
+  onSave: () => void;
 }
 
 export default function LeaderboardRule({
@@ -92,6 +98,8 @@ export default function LeaderboardRule({
   errors,
   ranking,
   onRemove,
+  isNew,
+  onSave,
 }: LeaderboardRuleProps) {
   const renderFilter = (event?: string) => {
     switch (event) {
@@ -167,6 +175,8 @@ export default function LeaderboardRule({
 
   const { chainId } = useWeb3React();
 
+  const [edit, setEdit] = useState(isNew);
+
   return (
     <Box>
       <Grid container spacing={2}>
@@ -181,14 +191,12 @@ export default function LeaderboardRule({
                 }}
               />
             </Typography>
-            <IconButton onClick={onRemove}>
-              <DeleteOutlined color="error" />
-            </IconButton>
           </Stack>
         </Grid>
 
         <Grid item xs={12}>
           <Field
+            disabled={!edit}
             component={TextField}
             type="number"
             InputLabelProps={{ shrink: true }}
@@ -201,6 +209,7 @@ export default function LeaderboardRule({
             <Grid item xs={12} sm={4}>
               <FormControl fullWidth variant="filled">
                 <AutocompleteMUI
+                  disabled={!edit}
                   value={userEvents.find(
                     (u) => u.value === values.settings[index]?.userEventType,
                   )}
@@ -268,6 +277,63 @@ export default function LeaderboardRule({
               </Accordion>
             </Grid>
           )}
+
+        <Grid item xs={12}>
+          {edit ? (
+            <Box>
+              <Stack direction="row" spacing={2}>
+                {!isNew ? (
+                  <Button
+                    size="small"
+                    color="error"
+                    startIcon={<Delete />}
+                    onClick={onRemove}
+                  >
+                    <FormattedMessage id="remove" defaultMessage="Remove" />
+                  </Button>
+                ) : (
+                  <Button
+                    size="small"
+                    variant="outlined"
+                    startIcon={<Cancel />}
+                    onClick={() => {
+                      if (isNew) {
+                        return onRemove();
+                      }
+                      setEdit(false);
+                    }}
+                  >
+                    <FormattedMessage id="cancel" defaultMessage="Cancel" />
+                  </Button>
+                )}
+
+                <Button
+                  size="small"
+                  startIcon={<Check />}
+                  onClick={() => {
+                    setEdit(false);
+                    onSave();
+                  }}
+                  variant="contained"
+                >
+                  <FormattedMessage id="save" defaultMessage="Save" />
+                </Button>
+              </Stack>
+            </Box>
+          ) : (
+            <Box>
+              <Stack direction="row" spacing={2}>
+                <Button
+                  size="small"
+                  startIcon={<Edit />}
+                  onClick={() => setEdit(true)}
+                >
+                  <FormattedMessage id="edit" defaultMessage="Edit" />
+                </Button>
+              </Stack>
+            </Box>
+          )}
+        </Grid>
       </Grid>
     </Box>
   );

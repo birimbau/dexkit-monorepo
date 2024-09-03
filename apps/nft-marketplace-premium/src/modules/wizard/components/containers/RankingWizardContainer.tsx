@@ -16,7 +16,10 @@ import {
 import Tab from '@mui/material/Tab';
 import { useCallback, useEffect, useState } from 'react';
 
-import { useAppRankingListQuery } from '@dexkit/ui/modules/wizard/hooks/ranking';
+import {
+  GET_APP_RANKINGS_QUERY,
+  useAppRankingListQuery,
+} from '@dexkit/ui/modules/wizard/hooks/ranking';
 import Add from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import FileDownloadIcon from '@mui/icons-material/FileDownloadOutlined';
@@ -31,10 +34,14 @@ import {
   GridSortModel,
   GridToolbar,
 } from '@mui/x-data-grid';
+import { useQueryClient } from '@tanstack/react-query';
 import dynamic from 'next/dynamic';
 import { useSnackbar } from 'notistack';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { useDeleteAppRankingMutation } from '../../hooks';
+import {
+  useAddAppRankingMutation,
+  useDeleteAppRankingMutation,
+} from '../../hooks';
 import { AppRanking } from '../../types/ranking';
 import GamificationPointForm from '../forms/Gamification/GamificationPointForm';
 import LeaderboardHeader from '../forms/Gamification/LeaderboardHeader';
@@ -70,11 +77,13 @@ function ExpandableCell({ value }: GridRenderCellParams) {
     <Box
       sx={{
         overflowWrap: 'break-word',
+        whiteSpace: 'initial',
         width: '100%',
+        py: 2,
       }}
     >
-      {expanded ? value : value.slice(0, 100)}&nbsp;
-      {value.length > 100 && (
+      {expanded ? value : value.slice(0, 20)}&nbsp;
+      {value.length > 20 && (
         // eslint-disable-next-line jsx-a11y/anchor-is-valid
         <Link
           type="button"
@@ -153,8 +162,6 @@ function AppRankingList({
   const handleSortModelChange = useCallback((sortModel: GridSortModel) => {
     // Here you save the data you need from the sort model
 
-    console.log('sortModel', sortModel);
-
     if (sortModel.length > 0) {
       setQueryOptions((queryOptions: any) => ({
         ...queryOptions,
@@ -219,47 +226,53 @@ function AppRankingList({
       renderCell: ({ row }) => {
         return (
           <Stack direction="row" spacing={1}>
-            <Tooltip
-              title={<FormattedMessage id="preview" defaultMessage="Preview" />}
-            >
-              <IconButton
-                onClick={(e) => {
-                  e.stopPropagation();
+            <IconButton
+              onClick={async (e) => {
+                e.stopPropagation();
 
-                  onClickPreview({ ranking: row });
-                }}
+                onClickPreview({ ranking: row });
+                await refetch();
+              }}
+            >
+              <Tooltip
+                title={
+                  <FormattedMessage id="preview" defaultMessage="Preview" />
+                }
               >
                 <VisibilityIcon />
-              </IconButton>
-            </Tooltip>
-            <Tooltip
-              title={<FormattedMessage id="export" defaultMessage="Export" />}
+              </Tooltip>
+            </IconButton>
+
+            <IconButton
+              onClick={async (e) => {
+                e.stopPropagation();
+                onClickExport({ ranking: row });
+                await refetch();
+              }}
             >
-              <IconButton
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onClickExport({ ranking: row });
-                }}
+              <Tooltip
+                title={<FormattedMessage id="export" defaultMessage="Export" />}
               >
                 <FileDownloadIcon />
-              </IconButton>
-            </Tooltip>
+              </Tooltip>
+            </IconButton>
 
-            <Tooltip
-              title={
-                <FormattedMessage id={'delete'} defaultMessage={'Delete'} />
-              }
+            <IconButton
+              color={'error'}
+              onClick={async (e) => {
+                e.stopPropagation();
+                onClickDelete({ ranking: row });
+                await refetch();
+              }}
             >
-              <IconButton
-                color={'error'}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onClickDelete({ ranking: row });
-                }}
+              <Tooltip
+                title={
+                  <FormattedMessage id={'delete'} defaultMessage={'Delete'} />
+                }
               >
                 <DeleteIcon />
-              </IconButton>
-            </Tooltip>
+              </Tooltip>
+            </IconButton>
           </Stack>
         );
       },
@@ -274,6 +287,8 @@ function AppRankingList({
     <>
       <DataGrid
         autoHeight
+        rowHeight={100}
+        key={data?.total}
         slots={{
           toolbar: GridToolbar,
           noRowsOverlay: EmptyRankings,
@@ -304,6 +319,22 @@ function AppRankingList({
         disableRowSelectionOnClick
         onRowSelectionModelChange={(rows) => setRowSelection(rows)}
         sx={{
+          '& .MuiDataGrid-cell:focus': {
+            outline: 'none',
+          },
+          '& .MuiDataGrid-cell:focus-within': {
+            outline: 'none !important',
+          },
+          '&.MuiDataGrid-root .MuiDataGrid-cell:focus-within': {
+            outline: 'none !important',
+          },
+          '& .MuiDataGrid-columnHeader:focus': {
+            outline: 'none !important',
+          },
+          '& .MuiDataGrid-columnHeader:focus-within': {
+            outline: 'none !important',
+          },
+          border: 'none',
           '--DataGrid-overlayHeight': '150px', // disable cell selection style
           '.MuiDataGrid-cell:focus': {
             outline: 'none',
@@ -348,6 +379,8 @@ export default function RankingWizardContainer({
   };
 
   const handleClickEdit = ({ ranking }: { ranking: AppRanking }) => {
+    console.log('ranking', ranking);
+
     setSelectedEditRanking(ranking);
   };
 
@@ -393,12 +426,67 @@ export default function RankingWizardContainer({
     );
   };
 
+  const [saved, setSaved] = useState(false);
+
+  const [showDiscard, setShowDiscard] = useState(false);
+
   const handleCloseEditRanking = () => {
-    setSelectedEditRanking(undefined);
+    if (saved) {
+      setSelectedEditRanking(undefined);
+      setSaved(false);
+      return;
+    }
+
+    return setShowDiscard(true);
   };
+
+  const handleSave = () => {
+    setSaved(true);
+  };
+
+  const queryClient = useQueryClient();
+
+  const mutationAddRanking = useAddAppRankingMutation();
 
   return (
     <>
+      {showDiscard && (
+        <AppConfirmDialog
+          DialogProps={{
+            open: showDiscard,
+            maxWidth: 'xs',
+            fullWidth: true,
+            onClose: () => setShowDiscard(false),
+          }}
+          onConfirm={() => {
+            setSelectedEditRanking(undefined);
+            setShowDiscard(false);
+          }}
+          title={
+            <FormattedMessage
+              id="Leave.without.saving"
+              defaultMessage="Leave Without Saving"
+            />
+          }
+          actionCaption={<FormattedMessage id="leave" defaultMessage="Leave" />}
+          cancelCaption={<FormattedMessage id="stay" defaultMessage="Stay" />}
+        >
+          <Stack spacing={1}>
+            <Typography variant="body1">
+              <FormattedMessage
+                id="you.have.unsaved.changes."
+                defaultMessage="You have unsaved changes."
+              />
+            </Typography>
+            <Typography variant="body1">
+              <FormattedMessage
+                id="are.you.sure.you.want.to.leave.without.saving"
+                defaultMessage="Are you sure you want to leave without saving?"
+              />
+            </Typography>
+          </Stack>
+        </AppConfirmDialog>
+      )}
       {openAddRanking && (
         <AddAppRankingFormDialog
           dialogProps={{
@@ -409,9 +497,6 @@ export default function RankingWizardContainer({
               setOpenAddRanking(false);
             },
           }}
-          title={selectedRanking?.title}
-          description={selectedRanking?.description}
-          rankingId={selectedRanking?.id}
           siteId={siteId}
         />
       )}
@@ -451,9 +536,10 @@ export default function RankingWizardContainer({
               setOpenConfirmRemove(false);
             },
           }}
-          onConfirm={() => {
+          onConfirm={async () => {
             setOpenConfirmRemove(false);
-            deleteAppRankingMutation.mutate(
+
+            await deleteAppRankingMutation.mutateAsync(
               { siteId: siteId, rankingId: selectedRanking?.id },
               {
                 onSuccess: handleAppRankingRemoved,
@@ -461,6 +547,9 @@ export default function RankingWizardContainer({
               },
             );
 
+            await queryClient.removeQueries({
+              queryKey: [GET_APP_RANKINGS_QUERY],
+            });
             setSelectedRanking(undefined);
           }}
           title={
@@ -548,11 +637,39 @@ export default function RankingWizardContainer({
                       key={selectedEditRanking.title}
                       title={selectedEditRanking.title}
                       onClose={handleCloseEditRanking}
-                      onEditTitle={(title: string) => {
+                      onEditTitle={async (title: string) => {
                         setSelectedEditRanking({
                           ...selectedEditRanking,
                           title,
                         });
+
+                        if (selectedEditRanking) {
+                          console.log('hello', selectedEditRanking);
+                          try {
+                            await mutationAddRanking.mutateAsync({
+                              ...selectedEditRanking,
+                              title,
+                              settings: selectedEditRanking.settings
+                                ? selectedEditRanking.settings
+                                : [],
+                              description: selectedEditRanking.description,
+                              from: selectedEditRanking.from,
+                              to: selectedEditRanking.to,
+                              rankingId: selectedEditRanking.id,
+                              siteId,
+                            });
+
+                            enqueueSnackbar(
+                              <FormattedMessage
+                                id="title.updated"
+                                defaultMessage="Title updated"
+                              />,
+                              { variant: 'success' },
+                            );
+                          } catch (err) {
+                            enqueueSnackbar(String(err), { variant: 'error' });
+                          }
+                        }
                       }}
                       onPreview={() => {
                         if (selectedEditRanking) {
@@ -600,6 +717,10 @@ export default function RankingWizardContainer({
                         rankingId={selectedEditRanking.id}
                         ranking={selectedEditRanking}
                         title={selectedEditRanking.title}
+                        onSave={handleSave}
+                        onChange={() => {
+                          setSaved(false);
+                        }}
                       />
                     </TabPanel>
                     <TabPanel value="2">
@@ -608,6 +729,7 @@ export default function RankingWizardContainer({
                         rankingId={selectedEditRanking.id}
                         title={selectedEditRanking.title}
                         description={selectedEditRanking.description}
+                        onSave={handleSave}
                       />
                     </TabPanel>
                   </TabContext>

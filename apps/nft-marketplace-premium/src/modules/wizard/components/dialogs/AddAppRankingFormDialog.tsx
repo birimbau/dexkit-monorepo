@@ -18,8 +18,8 @@ import * as Yup from 'yup';
 import { useAddAppRankingMutation } from '../../hooks';
 
 import CompletationProvider from '@dexkit/ui/components/CompletationProvider';
+import { useQueryClient } from '@tanstack/react-query';
 import { useSnackbar } from 'notistack';
-import SendAddAppRankingDialog from './SendAddAppRankingDialog';
 
 interface Props {
   dialogProps: DialogProps;
@@ -57,23 +57,10 @@ export default function AddRankingFormDialog({
 
   const { enqueueSnackbar } = useSnackbar();
 
+  const queryClient = useQueryClient();
+
   return (
     <>
-      {open && (
-        <SendAddAppRankingDialog
-          dialogProps={{
-            open: open,
-            onClose: () => {
-              setOpen(false);
-              mutationAddRanking.reset();
-            },
-          }}
-          isLoading={mutationAddRanking.isLoading}
-          isSuccess={mutationAddRanking.isSuccess}
-          error={mutationAddRanking.error}
-        />
-      )}
-
       <Dialog {...dialogProps} maxWidth="xs">
         <AppDialogTitle
           title={
@@ -88,8 +75,8 @@ export default function AddRankingFormDialog({
 
         <Formik
           initialValues={{
-            title: title ? title : '',
-            description: description ? description : undefined,
+            title: '',
+            description: '',
           }}
           validationSchema={AddRankingSchema}
           onSubmit={async (value, helper) => {
@@ -116,8 +103,6 @@ export default function AddRankingFormDialog({
               enqueueSnackbar(String(err), { variant: 'error' });
             }
             handleClose();
-
-            helper.setSubmitting(false);
           }}
         >
           {({ submitForm, values, setFieldValue, isSubmitting, isValid }) => (

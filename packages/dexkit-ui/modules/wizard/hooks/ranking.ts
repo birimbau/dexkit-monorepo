@@ -34,8 +34,6 @@ export function useAppRankingListQuery({
         return { data: [] };
       }
 
-      console.log("filter", filter, sort);
-
       return (
         await myAppsApi.get<{
           data: {
@@ -56,7 +54,8 @@ export function useAppRankingListQuery({
           },
         })
       ).data;
-    }
+    },
+    { refetchOnMount: "always", refetchOnWindowFocus: "always" }
   );
 }
 
