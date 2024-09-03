@@ -1,4 +1,3 @@
-import CheckoutTokenAutocomplete from '@/modules/checkout/components/CheckoutTokenAutocomplete';
 import CheckoutUserItemList from '@/modules/commerce/components/CheckoutUserItemsTable';
 import { CHECKOUT_TOKENS } from '@/modules/commerce/constants';
 import useUserCheckout from '@/modules/commerce/hooks/checkout/useUserCheckout';
@@ -38,6 +37,7 @@ import {
   ListItemIcon,
   ListItemText,
   MenuItem,
+  NoSsr,
   Select,
   SelectChangeEvent,
   Skeleton,
@@ -67,6 +67,7 @@ import useCheckoutPay from '@/modules/commerce/hooks/checkout/useCheckoutPay';
 import useCheckoutNetworks from '@/modules/commerce/hooks/settings/useCheckoutNetworks';
 import { UserCheckoutItemsFormSchema } from '@/modules/commerce/schemas';
 import { CheckoutItem } from '@/modules/commerce/types';
+import CheckoutTokenAutocomplete from '@dexkit/ui/modules/commerce/components/CheckoutTokenAutocomplete';
 import { useEvmTransferMutation } from '@dexkit/ui/modules/evm-transfer-coin/hooks';
 import Edit from '@mui/icons-material/Edit';
 import { Formik } from 'formik';
@@ -612,14 +613,16 @@ export default function UserCheckout() {
                     </FormControl>
                   )}
 
-                  <CheckoutTokenAutocomplete
-                    key={chainId}
-                    tokens={CHECKOUT_TOKENS}
-                    onChange={handleChangeToken}
-                    chainId={chainId}
-                    token={token}
-                    disabled={disabled}
-                  />
+                  <NoSsr>
+                    <CheckoutTokenAutocomplete
+                      key={chainId}
+                      tokens={CHECKOUT_TOKENS}
+                      onChange={handleChangeToken}
+                      chainId={chainId}
+                      token={token}
+                      disabled={disabled}
+                    />
+                  </NoSsr>
                   {!token && (
                     <Alert severity="error">
                       <FormattedMessage

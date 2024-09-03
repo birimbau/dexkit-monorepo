@@ -1,9 +1,14 @@
+import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "@dexkit/core";
 import { Token } from "@dexkit/core/types";
+import { formatBigNumber, isAddressEqual } from "@dexkit/core/utils";
+import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import { Avatar, Box, Stack, Typography } from "@mui/material";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
+import { BigNumber, constants } from "ethers";
 import React from "react";
 import { FormattedMessage } from "react-intl";
+import { useMultiTokenBalance } from "../../../hooks/useMultiTokenBalance";
 
 export interface CheckoutTokenAutocompleteProps {
   label?: string | React.ReactNode;
@@ -19,6 +24,30 @@ export default function CheckoutTokenAutocomplete(
   props: CheckoutTokenAutocompleteProps
 ) {
   const { data, label, onChange, chainId, disabled, tokens, token } = props;
+
+  const { account, provider } = useWeb3React();
+
+  const tokenBalances = useMultiTokenBalance({
+    tokens: tokens,
+    account,
+    provider,
+  });
+
+  const getTokenBalance = (tokenAddress: string) => {
+    if (tokenBalances?.data) {
+      const balance = tokenBalances
+        ? tokenBalances.data[
+            isAddressEqual(token?.address, ZEROEX_NATIVE_TOKEN_ADDRESS)
+              ? constants.AddressZero
+              : tokenAddress.toLocaleLowerCase()
+          ]
+        : BigNumber.from(0);
+
+      return balance;
+    }
+
+    return BigNumber.from(0);
+  };
 
   return (
     <Autocomplete
@@ -61,6 +90,10 @@ export default function CheckoutTokenAutocomplete(
               <div>{option.name}</div>
             </Stack>
             <Typography color="text.secondary">
+              {formatBigNumber(
+                getTokenBalance(option.address),
+                option.decimals
+              )}{" "}
               {option?.symbol.toUpperCase() || ""}
             </Typography>
           </Stack>
