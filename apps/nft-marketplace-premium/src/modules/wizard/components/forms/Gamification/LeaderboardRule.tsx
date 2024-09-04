@@ -34,27 +34,27 @@ import SwapFilterForm from './Filters/SwapFilterForm';
 const userEvents = [
   {
     value: UserEvents.nftAcceptListERC1155,
-    name: 'Accept listing ERC1155',
+    name: 'Accept ERC1155 NFT listing ',
   },
   {
     value: UserEvents.nftAcceptOfferERC1155,
-    name: 'Accept offer ERC1155',
+    name: 'Accept ERC1155 NFT offer ',
   },
   {
     value: UserEvents.nftAcceptListERC721,
-    name: 'Accept listing ERC721',
+    name: 'Accept ERC721 NFT listing',
   },
   {
     value: UserEvents.nftAcceptOfferERC721,
-    name: 'Accept offer ERC721',
+    name: 'Accept ERC721 NFT offer',
   },
   {
     value: UserEvents.buyDropCollection,
-    name: 'Buy drop collection',
+    name: 'Buy NFT drop collection',
   },
   {
     value: UserEvents.buyDropEdition,
-    name: 'Buy drop edition',
+    name: 'Buy NFT drop edition',
   },
   {
     name: 'Sign login message',

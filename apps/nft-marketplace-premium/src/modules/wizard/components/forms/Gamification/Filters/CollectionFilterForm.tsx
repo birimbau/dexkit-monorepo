@@ -140,7 +140,7 @@ export default function CollectionFilterForm({
               </FormControl>
             </Grid>
             <Grid item xs={12}>
-              <Typography>
+              <Typography fontWeight="bold">
                 <FormattedMessage
                   id="filter.by.collection"
                   defaultMessage="Filter by collection"
@@ -184,10 +184,10 @@ export default function CollectionFilterForm({
                 </Select>
               </FormControl>
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={12} sm={8}>
               <Grid container spacing={2}>
-                <Grid item xs={12} sm={4}>
-                  <TabPanel value={values.mode ?? 0} index={1}>
+                <TabPanel value={values.mode ?? 0} index={1}>
+                  <Grid item xs={12} sm={6}>
                     <CollectionItemAutocomplete
                       onChange={(coll) => {
                         setFieldValue(
@@ -203,8 +203,10 @@ export default function CollectionFilterForm({
                         chainId: values.chainId,
                       }}
                     />
-                  </TabPanel>
-                  <TabPanel value={values.mode ?? 0} index={0}>
+                  </Grid>
+                </TabPanel>
+                <TabPanel value={values.mode ?? 0} index={0}>
+                  <Grid item xs={12} sm={8}>
                     <Field
                       component={TextField}
                       label={
@@ -217,76 +219,78 @@ export default function CollectionFilterForm({
                       name="collectionAddress"
                       required
                     />
-                  </TabPanel>
-                </Grid>
-                {Boolean(isERC1155) && (
-                  <>
-                    <Grid item xs={12} sm={4}>
-                      <Field
-                        component={TextField}
-                        type="text"
-                        fullWidth
-                        label={
-                          <FormattedMessage
-                            id={'tokenId'}
-                            defaultMessage={'Token Id'}
-                          />
-                        }
-                        InputProps={{ min: 0 }}
-                        name="tokenId"
-                      />
-                    </Grid>
-                    <Grid item xs={12} sm={4}>
-                      <FormControl fullWidth>
-                        <InputLabel id="condition-amount-nft-select-label">
-                          <FormattedMessage
-                            id="amount.condition.nft"
-                            defaultMessage="Amount condition NFT"
-                          />
-                        </InputLabel>
-                        <Select
-                          labelId="condition-amount-nft-select-label"
-                          id="demo-simple-select"
-                          value={values.conditionNFT}
-                          label={
-                            <FormattedMessage
-                              id="amount.condition.nft"
-                              defaultMessage="Amount condition NFT"
-                            />
-                          }
-                          onChange={(ev) =>
-                            setFieldValue('conditionNFT', ev.target.value)
-                          }
-                        >
-                          {Conditions.map((v, i) => (
-                            <MenuItem value={v.symbol} key={i}>
-                              {v.symbol} {v.sign}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
-                    </Grid>
-                    <Grid item xs={12} sm={4}>
-                      <Field
-                        component={TextField}
-                        type="number"
-                        fullWidth
-                        label={
-                          <FormattedMessage
-                            id={'Amount.nft'}
-                            defaultMessage={'Amount NFT'}
-                          />
-                        }
-                        InputProps={{ min: 0 }}
-                        name="amountNFT"
-                      />
-                    </Grid>
-                  </>
-                )}
+                  </Grid>
+                </TabPanel>
               </Grid>
             </Grid>
+            {Boolean(isERC1155) && (
+              <Grid item xs={12}>
+                <Grid container spacing={2}>
+                  <Grid item xs={12} sm={4}>
+                    <Field
+                      component={TextField}
+                      type="text"
+                      fullWidth
+                      label={
+                        <FormattedMessage
+                          id={'nft.id'}
+                          defaultMessage={'NFT ID'}
+                        />
+                      }
+                      InputProps={{ min: 0 }}
+                      name="tokenId"
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={4}>
+                    <FormControl fullWidth>
+                      <InputLabel id="condition-amount-nft-select-label">
+                        <FormattedMessage
+                          id="amount.condition"
+                          defaultMessage="Amount condition"
+                        />
+                      </InputLabel>
+                      <Select
+                        labelId="condition-amount-nft-select-label"
+                        id="demo-simple-select"
+                        value={values.conditionNFT}
+                        label={
+                          <FormattedMessage
+                            id="amount.condition"
+                            defaultMessage="Amount condition"
+                          />
+                        }
+                        onChange={(ev) =>
+                          setFieldValue('conditionNFT', ev.target.value)
+                        }
+                      >
+                        {Conditions.map((v, i) => (
+                          <MenuItem value={v.symbol} key={i}>
+                            {v.symbol} {v.sign}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </Grid>
+                  <Grid item xs={12} sm={4}>
+                    <Field
+                      component={TextField}
+                      type="number"
+                      fullWidth
+                      label={
+                        <FormattedMessage
+                          id={'Amount.nft'}
+                          defaultMessage={'Amount NFT'}
+                        />
+                      }
+                      InputProps={{ min: 0 }}
+                      name="amountNFT"
+                    />
+                  </Grid>
+                </Grid>
+              </Grid>
+            )}
             <Grid item xs={12}>
-              <Typography variant="body1">
+              <Typography fontWeight="bold" variant="body1">
                 <FormattedMessage
                   id="filter.by.token"
                   defaultMessage="Filter by token"

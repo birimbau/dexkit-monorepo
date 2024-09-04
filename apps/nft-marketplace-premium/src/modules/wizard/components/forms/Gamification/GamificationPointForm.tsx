@@ -215,6 +215,7 @@ export default function GamificationPointForm({
           handleChange,
           submitForm,
           isSubmitting,
+          setFieldTouched,
           isValid,
           values,
           setFieldValue,
@@ -223,11 +224,13 @@ export default function GamificationPointForm({
           touched,
         }) => (
           <>
-            <ChangeListener
-              isValid={isValid}
-              onChange={onChange}
-              values={values}
-            />
+            {Object.keys(touched).length > 0 && (
+              <ChangeListener
+                isValid={isValid}
+                onChange={onChange}
+                values={values}
+              />
+            )}
             <Form>
               <FieldArray
                 name="settings"
@@ -274,9 +277,10 @@ export default function GamificationPointForm({
                                 defaultMessage="From"
                               />
                             }
-                            onChange={(value) =>
-                              setFieldValue('from', value?.format())
-                            }
+                            onChange={(value) => {
+                              setFieldValue('from', value?.format(), true);
+                              setFieldTouched('from', true, true);
+                            }}
                             renderInput={(props) => (
                               <TextField
                                 {...props}
@@ -306,9 +310,10 @@ export default function GamificationPointForm({
                                 actions: ['today', 'accept', 'clear'],
                               },
                             }}
-                            onChange={(value) =>
-                              setFieldValue('to', value?.format())
-                            }
+                            onChange={(value) => {
+                              setFieldValue('to', value?.format(), true);
+                              setFieldTouched('to', true, true);
+                            }}
                             renderInput={(props) => (
                               <TextField
                                 {...props}

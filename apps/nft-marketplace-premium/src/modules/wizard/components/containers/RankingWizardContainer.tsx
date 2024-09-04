@@ -8,6 +8,7 @@ import {
   Divider,
   Grid,
   IconButton,
+  InputAdornment,
   Link,
   Stack,
   Tooltip,
@@ -16,6 +17,7 @@ import {
 import Tab from '@mui/material/Tab';
 import { useCallback, useEffect, useState } from 'react';
 
+import LazyTextField from '@dexkit/ui/components/LazyTextField';
 import {
   GET_APP_RANKINGS_QUERY,
   useAppRankingListQuery,
@@ -24,6 +26,7 @@ import Add from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import FileDownloadIcon from '@mui/icons-material/FileDownloadOutlined';
 import LeaderboardIcon from '@mui/icons-material/Leaderboard';
+import Search from '@mui/icons-material/Search';
 import VisibilityIcon from '@mui/icons-material/VisibilityOutlined';
 import {
   DataGrid,
@@ -64,6 +67,7 @@ interface TableProps {
   onClickPreview({ ranking }: { ranking: AppRanking }): void;
   onClickExport({ ranking }: { ranking: AppRanking }): void;
   rankings?: AppRanking[];
+  query: string;
 }
 
 function ExpandableCell({ value }: GridRenderCellParams) {
@@ -135,6 +139,7 @@ function AppRankingList({
   onClickEdit,
   onClickPreview,
   onClickExport,
+  query,
 }: TableProps) {
   const [queryOptions, setQueryOptions] = useState<any>({
     filter: {},
@@ -149,6 +154,7 @@ function AppRankingList({
     ...paginationModel,
     ...queryOptions,
     siteId: siteId,
+    query,
   });
 
   const [rowCountState, setRowCountState] = useState((data?.total as any) || 0);
@@ -356,6 +362,8 @@ export default function RankingWizardContainer({
   const { formatMessage } = useIntl();
   const [value, setValue] = useState('1');
 
+  const [hasChanges, setHasChanges] = useState(false);
+
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
   };
@@ -379,8 +387,6 @@ export default function RankingWizardContainer({
   };
 
   const handleClickEdit = ({ ranking }: { ranking: AppRanking }) => {
-    console.log('ranking', ranking);
-
     setSelectedEditRanking(ranking);
   };
 
@@ -431,13 +437,16 @@ export default function RankingWizardContainer({
   const [showDiscard, setShowDiscard] = useState(false);
 
   const handleCloseEditRanking = () => {
-    if (saved) {
-      setSelectedEditRanking(undefined);
-      setSaved(false);
+    console.log(hasChanges, !saved);
+
+    if (hasChanges && !saved) {
+      setShowDiscard(true);
       return;
     }
 
-    return setShowDiscard(true);
+    setHasChanges(false);
+    setSaved(false);
+    setSelectedEditRanking(undefined);
   };
 
   const handleSave = () => {
@@ -447,6 +456,12 @@ export default function RankingWizardContainer({
   const queryClient = useQueryClient();
 
   const mutationAddRanking = useAddAppRankingMutation();
+
+  const [query, setQuery] = useState('');
+
+  const handleChangeQuery = (value: string) => {
+    setQuery(value);
+  };
 
   return (
     <>
@@ -603,18 +618,44 @@ export default function RankingWizardContainer({
 
           {!selectedEditRanking && (
             <Grid item xs={12}>
-              <Button
-                variant="contained"
-                onClick={() => {
-                  setOpenAddRanking(true);
-                }}
-                startIcon={<Add />}
-              >
-                <FormattedMessage
-                  id="new.leaderboard"
-                  defaultMessage="New leaderboard"
-                />
-              </Button>
+              <Box>
+                <Stack
+                  direction="row"
+                  alignItems="center"
+                  justifyContent="space-between"
+                >
+                  <Button
+                    variant="contained"
+                    onClick={() => {
+                      setOpenAddRanking(true);
+                    }}
+                    startIcon={<Add />}
+                  >
+                    <FormattedMessage
+                      id="new.leaderboard"
+                      defaultMessage="New leaderboard"
+                    />
+                  </Button>
+                  <LazyTextField
+                    TextFieldProps={{
+                      variant: 'standard',
+                      placeholder: formatMessage({
+                        id: 'search...',
+                        defaultMessage: 'Search...',
+                      }),
+                      InputProps: {
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <Search />
+                          </InputAdornment>
+                        ),
+                      },
+                    }}
+                    value={query}
+                    onChange={handleChangeQuery}
+                  />
+                </Stack>
+              </Box>
             </Grid>
           )}
           {!selectedEditRanking && (
@@ -625,6 +666,7 @@ export default function RankingWizardContainer({
                 onClickEdit={handleClickEdit}
                 onClickPreview={handlePreviewRanking}
                 onClickExport={handleClickExport}
+                query={query}
               />
             </Grid>
           )}
@@ -642,34 +684,7 @@ export default function RankingWizardContainer({
                           ...selectedEditRanking,
                           title,
                         });
-
-                        if (selectedEditRanking) {
-                          console.log('hello', selectedEditRanking);
-                          try {
-                            await mutationAddRanking.mutateAsync({
-                              ...selectedEditRanking,
-                              title,
-                              settings: selectedEditRanking.settings
-                                ? selectedEditRanking.settings
-                                : [],
-                              description: selectedEditRanking.description,
-                              from: selectedEditRanking.from,
-                              to: selectedEditRanking.to,
-                              rankingId: selectedEditRanking.id,
-                              siteId,
-                            });
-
-                            enqueueSnackbar(
-                              <FormattedMessage
-                                id="title.updated"
-                                defaultMessage="Title updated"
-                              />,
-                              { variant: 'success' },
-                            );
-                          } catch (err) {
-                            enqueueSnackbar(String(err), { variant: 'error' });
-                          }
-                        }
+                        setHasChanges(true);
                       }}
                       onPreview={() => {
                         if (selectedEditRanking) {
@@ -719,6 +734,7 @@ export default function RankingWizardContainer({
                         title={selectedEditRanking.title}
                         onSave={handleSave}
                         onChange={() => {
+                          setHasChanges(true);
                           setSaved(false);
                         }}
                       />

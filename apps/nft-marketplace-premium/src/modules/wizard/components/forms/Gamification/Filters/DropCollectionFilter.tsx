@@ -5,6 +5,7 @@ import {
   MenuItem,
   Select,
   SelectChangeEvent,
+  Typography,
 } from '@mui/material';
 import { Field, useFormikContext } from 'formik';
 import { TextField } from 'formik-mui';
@@ -140,7 +141,14 @@ export default function DropCollectionFilterForm({
           enableTestnet={true}
         />
       </Grid>
-
+      <Grid item xs={12}>
+        <Typography fontWeight="bold" variant="body1">
+          <FormattedMessage
+            id="filter.by.collection"
+            defaultMessage="Filter by collection"
+          />
+        </Typography>
+      </Grid>
       <Grid item xs={12}>
         <Grid container spacing={2}>
           <Grid item xs={12} sm={3}>
@@ -164,7 +172,10 @@ export default function DropCollectionFilterForm({
                 }
               >
                 <MenuItem value={0}>
-                  <FormattedMessage id="import" defaultMessage="Import" />
+                  <FormattedMessage
+                    id="import.collection"
+                    defaultMessage="Import collection"
+                  />
                 </MenuItem>
                 <MenuItem value={1}>
                   <FormattedMessage
@@ -175,41 +186,47 @@ export default function DropCollectionFilterForm({
               </Select>
             </FormControl>
           </Grid>
-          <Grid item xs={12} sm={5}>
-            <TabPanel value={filter.mode} index={1}>
-              <CollectionItemAutocomplete
-                onChange={(coll) => {
-                  setFieldValue(
-                    `settings.${index}.filter`,
-                    JSON.stringify({
-                      ...filter,
-                      collectionAddress: coll?.contractAddress,
-                    }),
-                  );
-                }}
-                filterByChainId={true}
-                chainId={filter?.chainId}
-                disabled={filter?.chainId === undefined}
-                value={{
-                  contractAddress: filter?.collectionAddress,
-                  chainId: filter?.chainId,
-                }}
-              />
-            </TabPanel>
-            <TabPanel value={filter.mode} index={0}>
-              <Field
-                component={TextField}
-                label={
-                  <FormattedMessage
-                    id="collection.address"
-                    defaultMessage="Collection address"
+          <Grid item xs={12} sm={9}>
+            <Grid container spacing={2}>
+              <TabPanel value={filter.mode} index={1}>
+                <Grid item xs={12} sm={4}>
+                  <CollectionItemAutocomplete
+                    onChange={(coll) => {
+                      setFieldValue(
+                        `settings.${index}.filter`,
+                        JSON.stringify({
+                          ...filter,
+                          collectionAddress: coll?.contractAddress,
+                        }),
+                      );
+                    }}
+                    filterByChainId={true}
+                    chainId={filter?.chainId}
+                    disabled={filter?.chainId === undefined}
+                    value={{
+                      contractAddress: filter?.collectionAddress,
+                      chainId: filter?.chainId,
+                    }}
                   />
-                }
-                fullWidth
-                name="collectionAddress"
-                required
-              />
-            </TabPanel>
+                </Grid>
+              </TabPanel>
+              <TabPanel value={filter.mode} index={0}>
+                <Grid item xs={12} sm={8}>
+                  <Field
+                    component={TextField}
+                    label={
+                      <FormattedMessage
+                        id="collection.address"
+                        defaultMessage="Collection address"
+                      />
+                    }
+                    fullWidth
+                    name="collectionAddress"
+                    required
+                  />
+                </Grid>
+              </TabPanel>
+            </Grid>
           </Grid>
         </Grid>
       </Grid>
@@ -220,9 +237,7 @@ export default function DropCollectionFilterForm({
               component={TextField}
               type="text"
               fullWidth
-              label={
-                <FormattedMessage id="tokenId" defaultMessage="Token Id" />
-              }
+              label={<FormattedMessage id="nft.id" defaultMessage="NFT ID" />}
               InputProps={{ min: 0 }}
               name="tokenId"
             />
@@ -231,8 +246,8 @@ export default function DropCollectionFilterForm({
             <FormControl fullWidth>
               <InputLabel id="condition-amount-nft-select-label">
                 <FormattedMessage
-                  id="condition.amount.nft"
-                  defaultMessage="Condition amount NFT"
+                  id="amount.condition"
+                  defaultMessage="Amount condition"
                 />
               </InputLabel>
               <Select
@@ -241,8 +256,8 @@ export default function DropCollectionFilterForm({
                 value={filter?.conditionNFT}
                 label={
                   <FormattedMessage
-                    id="condition.amount.nft"
-                    defaultMessage="Condition amount NFT"
+                    id="amount.condition"
+                    defaultMessage="Amount condition"
                   />
                 }
                 onChange={(ev) =>
@@ -264,7 +279,7 @@ export default function DropCollectionFilterForm({
               type="number"
               fullWidth
               label={
-                <FormattedMessage id="Amount.nft" defaultMessage="Amount NFT" />
+                <FormattedMessage id="nft.amount" defaultMessage="NFT Amount" />
               }
               InputProps={{ min: 0 }}
               name="amount"

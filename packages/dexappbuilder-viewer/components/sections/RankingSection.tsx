@@ -9,7 +9,7 @@ import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { FormattedMessage } from "react-intl";
 
 import { getBlockExplorerUrl, truncateAddress } from "@dexkit/core/utils";
-import MilitaryTechIcon from "@mui/icons-material/MilitaryTech";
+import StarOutlineIcon from "@mui/icons-material/StarOutline";
 
 export interface RankingSectionProps {
   section: RankingPageSection;
@@ -18,19 +18,27 @@ export interface RankingSectionProps {
 const NoRows: React.FC = () => {
   return (
     <Box sx={{ py: 4 }}>
-      <Stack spacing={2} alignItems="center" justifyContent="center">
-        <MilitaryTechIcon fontSize="large" />
+      <Stack spacing={1} alignItems="center" justifyContent="center">
+        <Stack
+          sx={{
+            fontSize: "3rem",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <StarOutlineIcon fontSize="inherit" />
+        </Stack>
         <div>
           <Typography variant="h5" textAlign="center">
             <FormattedMessage
-              id="no.leaderboard"
-              defaultMessage="No Leaderboard"
+              id="no.entries.yet"
+              defaultMessage="No entries yet"
             />
           </Typography>
           <Typography variant="body1" color="text.secondary" textAlign="center">
             <FormattedMessage
-              id="create.rules.to.see.accounts.here"
-              defaultMessage="Create rules to see accounts here"
+              id="add.rules.to.see.points.here"
+              defaultMessage="Add rules to see points here"
             />
           </Typography>
         </div>

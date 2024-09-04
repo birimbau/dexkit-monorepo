@@ -10,6 +10,7 @@ export function useAppRankingListQuery({
   sort,
   filter,
   sortField,
+  query,
 }: {
   page?: number;
   pageSize?: number;
@@ -17,6 +18,7 @@ export function useAppRankingListQuery({
   sort?: string;
   filter?: any;
   sortField?: string;
+  query?: string;
 }) {
   return useQuery<{
     data: {
@@ -28,7 +30,16 @@ export function useAppRankingListQuery({
     take?: number;
     total?: number;
   }>(
-    [GET_APP_RANKINGS_QUERY, sort, page, pageSize, filter, siteId, sortField],
+    [
+      GET_APP_RANKINGS_QUERY,
+      sort,
+      page,
+      pageSize,
+      filter,
+      siteId,
+      sortField,
+      query,
+    ],
     async () => {
       if (!siteId) {
         return { data: [] };
@@ -50,6 +61,7 @@ export function useAppRankingListQuery({
             take: pageSize,
             sort: sort,
             sortField: sortField,
+            query,
             filter: filter ? JSON.stringify(filter) : undefined,
           },
         })
