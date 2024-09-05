@@ -2,7 +2,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { BigNumber, Contract } from "ethers";
 import { ERC20Abi } from "../constants/abis";
 
-import type { providers } from 'ethers';
+import type { providers } from "ethers";
 
 import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "../constants";
 import { getERC20TokenAllowance } from "../services";
@@ -22,19 +22,23 @@ export function useErc20BalanceQuery({
   contractAddress,
   provider,
 }: Erc20BalanceParams) {
-  return useQuery([ERC20_BALANCE, account, contractAddress], async () => {
-    if (!contractAddress || !provider || !account) {
-      return BigNumber.from(0);
-    }
+  return useQuery(
+    [ERC20_BALANCE, account, contractAddress],
+    async () => {
+      if (!contractAddress || !provider || !account) {
+        return BigNumber.from(0);
+      }
 
-    if (isAddressEqual(contractAddress, ZEROEX_NATIVE_TOKEN_ADDRESS)) {
-      return await provider.getBalance(account);
-    }
+      if (isAddressEqual(contractAddress, ZEROEX_NATIVE_TOKEN_ADDRESS)) {
+        return await provider.getBalance(account);
+      }
 
-    const contract = new Contract(contractAddress, ERC20Abi, provider);
+      const contract = new Contract(contractAddress, ERC20Abi, provider);
 
-    return (await contract.balanceOf(account)) as BigNumber;
-  });
+      return (await contract.balanceOf(account)) as BigNumber;
+    },
+    { refetchOnMount: "always", refetchOnWindowFocus: "always" }
+  );
 }
 
 const EVM_NATIVE_BALANCE_QUERY = "EVM_NATIVE_BALANCE_QUERY";

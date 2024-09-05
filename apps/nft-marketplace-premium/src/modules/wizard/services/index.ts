@@ -9,6 +9,7 @@ import {
 import { formatUnits } from '@dexkit/core/utils/ethers/formatUnits';
 import { isAddress } from '@dexkit/core/utils/ethers/isAddress';
 import { parseUnits } from '@dexkit/core/utils/ethers/parseUnits';
+import { getAssetProtocol } from '@dexkit/ui/modules/nft/services';
 import { GamificationPoint, GatedCondition } from '@dexkit/ui/modules/wizard/types';
 import {
   getBalanceOf,
@@ -16,6 +17,7 @@ import {
 } from '@dexkit/ui/services/balances';
 import { myAppsApi } from 'src/services/whitelabel';
 import { Token } from '../../../types/blockchain';
+
 
 export async function getTokenList(url: string) {
   const response = await axios.get(url);
@@ -60,12 +62,15 @@ export async function checkGatedConditions({
   const balances: { [key: number]: string } = {};
   const partialResults: { [key: number]: boolean } = {};
 
+
+
   if (!account) {
     return { result: false, balances, partialResults };
   }
   if (account && conditions.length === 0) {
     return { result: true, balances, partialResults };
   }
+
   if (account && conditions) {
     let result;
     for (let index = 0; index < conditions.length; index++) {
@@ -92,12 +97,22 @@ export async function checkGatedConditions({
           partialResults[index] = true;
         }
       }
-      if (condition.type === 'collection' && condition.protocol !== 'ERC1155') {
+
+      let nftProtocol = condition?.protocol;
+      // This condition was added but maybe is not needed
+      if (condition?.type === 'collection' && nftProtocol === undefined) {
+        nftProtocol = (await getAssetProtocol(getProviderByChainId(condition.chainId), condition?.address) as 'ERC721' | 'ERC1155')
+      }
+
+
+      if (condition.type === 'collection' && nftProtocol !== 'ERC1155') {
+
         const balance = await getBalanceOf(
           getNetworkSlugFromChainId(condition.chainId) as string,
           condition.address as string,
           account
         );
+
         balances[index] = formatUnits(balance, 0);
         partialResults[index] = false;
         if (balance.gte(parseUnits(String(condition.amount), 0))) {
@@ -107,7 +122,7 @@ export async function checkGatedConditions({
       }
       if (
         condition.type === 'collection' &&
-        condition.protocol === 'ERC1155' &&
+        nftProtocol === 'ERC1155' &&
         condition.tokenId
       ) {
         const balance = await getBalanceOfERC1155(
@@ -116,6 +131,7 @@ export async function checkGatedConditions({
           account,
           condition.tokenId as string
         );
+
         balances[index] = formatUnits(balance, 0);
         partialResults[index] = false;
         if (balance.gte(parseUnits(String(condition.amount), 0))) {
@@ -133,6 +149,8 @@ export async function checkGatedConditions({
         result = result && thisCondition;
       }
     }
+
+
     return { result, balances, partialResults };
   }
 }

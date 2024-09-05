@@ -42,6 +42,14 @@ import { FormattedMessage } from 'react-intl';
 import ContractAdminTab from '../ContractAdminTab';
 import ContractMetadataTab from '../ContractMetadataTab';
 
+import * as Yup from 'yup';
+
+export const RewardsPerUnitTimeSchema = Yup.object().shape({
+  rewardsPerUnitTime: Yup.string()
+    .required()
+    .matches(/^[0-9]+$/, 'Must be only digits'),
+});
+
 const THIRD_WEB_STAKE_TIMEUNITS: {
   value: string;
   id: string;
@@ -371,8 +379,9 @@ export default function ContractStakeErc721Container({
                     <Box>
                       <Formik
                         initialValues={{
-                          rewardsPerUnitTime: rewardsPerUnitTimeValue,
+                          rewardsPerUnitTime: rewardsPerUnitTime?.toString(),
                         }}
+                        validationSchema={RewardsPerUnitTimeSchema}
                         onSubmit={handleSubmitRewardRatio}
                       >
                         {({ submitForm, isSubmitting, isValid }) => (
@@ -382,14 +391,12 @@ export default function ContractStakeErc721Container({
                                 fullWidth
                                 component={TextField}
                                 name="rewardsPerUnitTime"
-                                type="number"
                                 label={
                                   <FormattedMessage
                                     id="numerator"
                                     defaultMessage="Rewards per Unit Time"
                                   />
                                 }
-                                inputProps={{ type: 'number' }}
                               />
                             </Grid>
                             <Grid item xs={12}>

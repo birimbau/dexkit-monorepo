@@ -4,7 +4,7 @@ import { getNetworkSlugFromChainId } from "@dexkit/core/utils/blockchain";
 import { UserFacingFeeStruct } from '@traderxyz/nft-swap-sdk';
 import { BigNumber } from "ethers";
 import { NETWORK_ID } from "../../../constants/enum";
-import { MARKETPLACES, MARKETPLACES_INFO } from "../constants/marketplaces";
+import { IS_CHAIN_SUPPORTED_BY_RARIBLE, MARKETPLACES, MARKETPLACES_INFO } from "../constants/marketplaces";
 import { AssetAPI, AssetBalance } from "../types";
 
 export function truncateErc1155TokenId(id?: string) {
@@ -109,7 +109,7 @@ export function getMarketplaceForAssetURL(platform: MARKETPLACES, asset?: Asset)
     return `${marketplaceInfo.baseAssetUrl}${asset?.contractAddress}/${asset?.id}`
   }
 
-  if (platform === MARKETPLACES.RARIBLE && (asset?.chainId === ChainId.Ethereum || asset?.chainId === ChainId.Polygon)) {
+  if (platform === MARKETPLACES.RARIBLE && (IS_CHAIN_SUPPORTED_BY_RARIBLE(asset?.chainId))) {
     const marketplaceInfo = MARKETPLACES_INFO[MARKETPLACES.RARIBLE];
     const networkSlug = getNetworkSlugFromChainId(asset?.chainId) as any;
     //@ts-ignore

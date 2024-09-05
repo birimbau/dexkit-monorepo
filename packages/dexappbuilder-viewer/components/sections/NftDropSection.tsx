@@ -1,6 +1,9 @@
 import { useIsMobile } from "@dexkit/core";
+import { NETWORK_FROM_SLUG } from "@dexkit/core/constants/networks";
 import { UserEvents } from "@dexkit/core/constants/userEvents";
 import { formatUnits } from "@dexkit/core/utils/ethers/formatUnits";
+import { ConnectWalletButton } from "@dexkit/ui/components/ConnectWalletButton";
+import { SwitchNetworkButton } from "@dexkit/ui/components/SwitchNetworkButton";
 import { useDexKitContext } from "@dexkit/ui/hooks";
 import { useInterval } from "@dexkit/ui/hooks/misc";
 import { useTrackUserEventsMutation } from "@dexkit/ui/hooks/userEvents";
@@ -8,28 +11,28 @@ import { useClaimNft } from "@dexkit/ui/modules/nft/hooks/thirdweb";
 import { NftDropPageSection } from "@dexkit/ui/modules/wizard/types/section";
 import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import {
-    Avatar,
-    Box,
-    Button,
-    CircularProgress,
-    Container,
-    Divider,
-    Grid,
-    Stack,
-    Typography,
+  Avatar,
+  Box,
+  Button,
+  CircularProgress,
+  Container,
+  Divider,
+  Grid,
+  Stack,
+  Typography,
 } from "@mui/material";
 import {
-    ClaimEligibility,
-    detectContractFeature,
-    useActiveClaimConditionForWallet,
-    useClaimConditions,
-    useClaimIneligibilityReasons,
-    useClaimedNFTSupply,
-    useClaimerProofs,
-    useContract,
-    useContractMetadata,
-    useOwnedNFTs,
-    useUnclaimedNFTSupply,
+  ClaimEligibility,
+  detectContractFeature,
+  useActiveClaimConditionForWallet,
+  useClaimConditions,
+  useClaimIneligibilityReasons,
+  useClaimedNFTSupply,
+  useClaimerProofs,
+  useContract,
+  useContractMetadata,
+  useOwnedNFTs,
+  useUnclaimedNFTSupply,
 } from "@thirdweb-dev/react";
 import { BigNumber } from "ethers";
 import { useMemo, useState } from "react";
@@ -44,6 +47,7 @@ export interface NftDropSectionProps {
 export default function NftDropSection({ section }: NftDropSectionProps) {
   const trackUserEventsMutation = useTrackUserEventsMutation();
   const { address, network } = section.settings;
+  const networkChainId = NETWORK_FROM_SLUG(network)?.chainId;
   const { createNotification, watchTransactionDialog } = useDexKitContext();
   const { contract } = useContract(address as string, "nft-drop");
 
@@ -567,19 +571,31 @@ export default function NftDropSection({ section }: NftDropSectionProps) {
           )}
 
           <Grid item xs={12}>
-            <Button
-              onClick={handleClaimNft}
-              startIcon={
-                nftDropClaim.isLoading ? (
-                  <CircularProgress size="1rem" color="inherit" />
-                ) : undefined
-              }
-              sx={{ width: { sm: "auto", xs: "100%" } }}
-              disabled={!canClaim || nftDropClaim.isLoading}
-              variant="contained"
-            >
-              {buttonMessage}
-            </Button>
+            {isSoldOut ? (
+              <Typography variant={"h2"}>
+                <FormattedMessage id={"sold.out"} defaultMessage={"Sold out"} />
+              </Typography>
+            ) : !account ? (
+              <ConnectWalletButton />
+            ) : chainId !== networkChainId ? (
+              <Box>
+                <SwitchNetworkButton desiredChainId={networkChainId} />
+              </Box>
+            ) : (
+              <Button
+                onClick={handleClaimNft}
+                startIcon={
+                  nftDropClaim.isLoading ? (
+                    <CircularProgress size="1rem" color="inherit" />
+                  ) : undefined
+                }
+                sx={{ width: { sm: "auto", xs: "100%" } }}
+                disabled={!canClaim || nftDropClaim.isLoading}
+                variant="contained"
+              >
+                {buttonMessage}
+              </Button>
+            )}
           </Grid>
         </Grid>
       </Box>

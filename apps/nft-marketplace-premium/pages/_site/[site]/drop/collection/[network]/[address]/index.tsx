@@ -50,11 +50,12 @@ import { AppErrorBoundary } from '@dexkit/ui/components/AppErrorBoundary';
 import SidebarFilters from '@dexkit/ui/components/SidebarFilters';
 import SidebarFiltersContent from '@dexkit/ui/components/SidebarFiltersContent';
 import Funnel from '@dexkit/ui/components/icons/Filter';
-import { NETWORK_ID } from '@dexkit/ui/constants/enum';
 import { CollectionSyncStatus } from '@dexkit/ui/modules/nft/constants/enum';
 import {
+  IS_SUPPORTED_BY_RARIBLE,
   MAP_COIN_TO_RARIBLE,
   MAP_NETWORK_TO_RARIBLE,
+  SUPPORTED_RARIBLE_NETWORKS,
 } from '@dexkit/ui/modules/nft/constants/marketplaces';
 import {
   COLLECTION_ASSETS_FROM_ORDERBOOK,
@@ -320,9 +321,14 @@ export const getStaticProps: GetStaticProps = async ({
   } catch {}
 
   try {
-    if (network === NETWORK_ID.Ethereum || network === NETWORK_ID.Polygon) {
+    if (
+      network &&
+      IS_SUPPORTED_BY_RARIBLE(network as SUPPORTED_RARIBLE_NETWORKS)
+    ) {
       const { data } = await getRariCollectionStats(
-        `${MAP_NETWORK_TO_RARIBLE[network]}:${address}`,
+        `${
+          MAP_NETWORK_TO_RARIBLE[network as SUPPORTED_RARIBLE_NETWORKS]
+        }:${address}`,
         MAP_COIN_TO_RARIBLE[network],
       );
 

@@ -212,7 +212,9 @@ function TokenPageContainer({ address, network, orderMarketType }: Props) {
                   defaultMessage="{tradeType} {tokenSymbol} on {network}"
                   values={{
                     tokenSymbol: token?.symbol || address,
-                    network: network?.toUpperCase() || " ",
+                    network: `${network
+                      ?.charAt(0)
+                      .toUpperCase()}${network?.slice(1)}`,
                     tradeType:
                       tradeType.charAt(0).toUpperCase() + tradeType.slice(1),
                   }}

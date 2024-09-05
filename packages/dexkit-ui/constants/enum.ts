@@ -18,5 +18,6 @@ export const enum NETWORK_ID {
   Avalanche = 'avalanche',
   Fantom = 'fantom',
   Optimism = 'optimism',
-  Arbitrum = 'arbitrum'
+  Arbitrum = 'arbitrum',
+  Base = 'base'
 }
