@@ -439,8 +439,6 @@ export default function RankingWizardContainer({
   const [showDiscard, setShowDiscard] = useState(false);
 
   const handleCloseEditRanking = () => {
-    console.log(hasChanges, !saved);
-
     if (hasChanges && !saved) {
       setShowDiscard(true);
       return;
