@@ -94,8 +94,8 @@ const WizardIndexPage: NextPage = () => {
                       <Box>
                         <Typography variant="subtitle1">
                           <FormattedMessage
-                            id="my.collections"
-                            defaultMessage="My Collections"
+                            id="my.collections.alt"
+                            defaultMessage="My collections"
                           />
                         </Typography>
                         <Typography color="textSecondary" variant="subtitle2">

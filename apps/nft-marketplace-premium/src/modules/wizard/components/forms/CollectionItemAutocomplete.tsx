@@ -109,7 +109,7 @@ export function CollectionItemAutocomplete(props: Props) {
           {...props}
         >
           <img loading="lazy" width="20" src={`${option.image}`} alt="" />
-          {getChainName(option.chainId)} - {option.name}
+          {option.name} - {getChainName(option.chainId)}
         </Box>
       )}
       renderInput={(params) => (

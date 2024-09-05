@@ -50,7 +50,7 @@ function ExportRankingDialog({ dialogProps, rankingId }: Props) {
   };
 
   return (
-    <Dialog {...dialogProps} onClose={handleClose} maxWidth="xs" fullWidth>
+    <Dialog {...dialogProps} onClose={handleClose} maxWidth="sm" fullWidth>
       <AppDialogTitle
         title={
           <FormattedMessage
@@ -64,8 +64,8 @@ function ExportRankingDialog({ dialogProps, rankingId }: Props) {
       <DialogContent dividers sx={{ p: 4 }}>
         <Alert severity="info">
           <FormattedMessage
-            id="fileExport.csvFormattedForAirdropContracts"
-            defaultMessage="The exported CSV file is formatted for import into airdrop contracts"
+            id="fileExport.csvFormattedForAirdropContracts."
+            defaultMessage="The exported CSV file is formatted for import into airdrop contracts."
           />
         </Alert>
       </DialogContent>

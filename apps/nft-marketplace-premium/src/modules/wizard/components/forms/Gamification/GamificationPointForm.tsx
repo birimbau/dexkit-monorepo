@@ -1,6 +1,4 @@
 import {
-  Alert,
-  AlertTitle,
   Button,
   CircularProgress,
   Divider,
@@ -68,7 +66,7 @@ const options = userEvents.map((op) => op.value);
 const GamificationPointSchema = Yup.array(
   Yup.object().shape({
     userEventType: Yup.string().required(),
-    points: Yup.number().required(),
+    points: Yup.number().required().min(0),
     filter: Yup.string(),
   }),
 );
@@ -236,27 +234,6 @@ export default function GamificationPointForm({
                 name="settings"
                 render={({ handleInsert, handleRemove }) => (
                   <Grid container spacing={2}>
-                    {open && (
-                      <Grid item xs={12} sm={6}>
-                        <Alert severity="info" onClose={() => setOpen(false)}>
-                          <AlertTitle sx={{ fontWeight: 'bold' }}>
-                            <Typography fontWeight="inherit" variant="body2">
-                              <FormattedMessage
-                                id="build.a.ranking.alert.message"
-                                defaultMessage="Define and assign points to each user event to build a ranking"
-                              />
-                            </Typography>
-                          </AlertTitle>
-                          <Typography variant="body2">
-                            <FormattedMessage
-                              id="points.are.awarded.based.on.user.message"
-                              defaultMessage="Points are awarded based on user activity to determine their ranking"
-                            />
-                          </Typography>
-                        </Alert>
-                      </Grid>
-                    )}
-
                     <Grid item xs={12}>
                       <Typography variant="subtitle1">
                         <FormattedMessage
@@ -290,7 +267,7 @@ export default function GamificationPointForm({
                             )}
                             componentsProps={{
                               actionBar: {
-                                actions: ['today', 'accept', 'clear'],
+                                actions: ['clear', 'today'],
                               },
                             }}
                             InputProps={{ fullWidth: true }}
@@ -307,7 +284,7 @@ export default function GamificationPointForm({
                             }
                             componentsProps={{
                               actionBar: {
-                                actions: ['today', 'accept', 'clear'],
+                                actions: ['clear', 'today'],
                               },
                             }}
                             onChange={(value) => {
@@ -354,7 +331,9 @@ export default function GamificationPointForm({
                           <Button
                             onClick={handleAddNew(
                               values.settings.length,
-                              handleInsert(values.settings.length, {}),
+                              handleInsert(values.settings.length, {
+                                points: 1,
+                              }),
                             )}
                             startIcon={<Add />}
                             variant="outlined"

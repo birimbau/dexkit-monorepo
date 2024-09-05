@@ -1,6 +1,4 @@
 import {
-  Box,
-  Button,
   FormControl,
   Grid,
   InputLabel,
@@ -13,6 +11,7 @@ import { TextField } from 'formik-mui';
 import * as Yup from 'yup';
 
 import { NetworkSelectDropdown } from '@dexkit/ui/components/NetworkSelectDropdown';
+import { useWeb3React } from '@dexkit/wallet-connectors/hooks/useWeb3React';
 import { FormattedMessage } from 'react-intl';
 import ChangeListener from '../../../ChangeListener';
 import { SearchTokenAutocompleteWithTokens } from '../../SearchTokenAutocomplete';
@@ -45,9 +44,14 @@ interface Props {
 }
 
 export default function SwapFilterForm({ item, onSubmit, onChange }: Props) {
+  const { chainId } = useWeb3React();
+
   return (
     <Formik
-      initialValues={{ ...item }}
+      initialValues={{
+        ...item,
+        chainId: item?.chainId ? item?.chainId : chainId,
+      }}
       onSubmit={(values) => {
         if (onSubmit) {
           onSubmit(values as SwapFilter);
@@ -82,17 +86,14 @@ export default function SwapFilterForm({ item, onSubmit, onChange }: Props) {
                   }}
                   labelId="Choose network"
                   label={
-                    <FormattedMessage
-                      id="choose.network"
-                      defaultMessage="Choose network"
-                    />
+                    <FormattedMessage id="network" defaultMessage="Network" />
                   }
                   enableTestnet={true}
                 />
               </FormControl>
             </Grid>
             <Grid item xs={12}>
-              <Typography fontWeight="bold" variant="body1">
+              <Typography fontWeight="500" variant="body1">
                 <FormattedMessage
                   id="input.token"
                   defaultMessage="Input token"
@@ -130,6 +131,13 @@ export default function SwapFilterForm({ item, onSubmit, onChange }: Props) {
                       />
                     </InputLabel>
                     <Select
+                      MenuProps={{
+                        slotProps: {
+                          paper: {
+                            style: { width: 'fit-content' },
+                          },
+                        },
+                      }}
                       labelId="condition-amount-in-select-label"
                       id="demo-simple-select"
                       value={values.conditionIn}
@@ -164,6 +172,7 @@ export default function SwapFilterForm({ item, onSubmit, onChange }: Props) {
                       />
                     }
                     InputProps={{ min: 0 }}
+                    placeholder="e.g., 100"
                     name="amountIn"
                   />
                 </Grid>
@@ -171,7 +180,7 @@ export default function SwapFilterForm({ item, onSubmit, onChange }: Props) {
             </Grid>
 
             <Grid item xs={12}>
-              <Typography fontWeight="bold" variant="body1">
+              <Typography fontWeight="500" variant="body1">
                 <FormattedMessage
                   id="output.token"
                   defaultMessage="Output token"
@@ -244,17 +253,11 @@ export default function SwapFilterForm({ item, onSubmit, onChange }: Props) {
                       />
                     }
                     InputProps={{ min: 0 }}
+                    placeholder="e.g., 100"
                     name="amountOut"
                   />
                 </Grid>
               </Grid>
-            </Grid>
-            <Grid item xs={12}>
-              <Box display={'flex'} justifyContent={'flex-end'}>
-                <Button onClick={() => resetForm()}>
-                  <FormattedMessage id="cancel" defaultMessage="Cancel" />
-                </Button>
-              </Box>
             </Grid>
           </Grid>
         </Form>

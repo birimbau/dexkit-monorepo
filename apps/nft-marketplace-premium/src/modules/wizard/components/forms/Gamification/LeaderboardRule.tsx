@@ -2,6 +2,7 @@ import { GamificationPoint } from '@/modules/wizard/types';
 import { AppRanking } from '@/modules/wizard/types/ranking';
 import { UserEvents } from '@dexkit/core/constants/userEvents';
 import { beautifyCamelCase } from '@dexkit/core/utils';
+import { AppConfirmDialog } from '@dexkit/ui';
 import { useWeb3React } from '@dexkit/wallet-connectors/hooks/useWeb3React';
 import ArrowDownward from '@mui/icons-material/ArrowDownward';
 import Cancel from '@mui/icons-material/Cancel';
@@ -12,6 +13,7 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
+  AutocompleteChangeReason,
   Autocomplete as AutocompleteMUI,
   AutocompleteRenderInputParams,
   Box,
@@ -25,7 +27,7 @@ import {
 } from '@mui/material';
 import { Field, FormikErrors, FormikTouched } from 'formik';
 import { TextField } from 'formik-mui';
-import { useState } from 'react';
+import { SyntheticEvent, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import CollectionFilterForm from './Filters/CollectionFilterForm';
 import DropCollectionFilterForm from './Filters/DropCollectionFilter';
@@ -177,164 +179,227 @@ export default function LeaderboardRule({
 
   const [edit, setEdit] = useState(isNew);
 
+  const [clearConfirm, setClearConfirm] = useState(false);
+  const [newValue, setNewValue] = useState('');
+
+  const handleConfirm = () => {
+    setFieldValue(`settings[${index}]`, {
+      ...values.settings[index],
+      userEventType: newValue,
+    });
+    setClearConfirm(false);
+    setNewValue('');
+  };
+
+  const handleClose = () => {
+    setClearConfirm(false);
+  };
+
   return (
-    <Box>
-      <Grid container spacing={2}>
-        <Grid item xs={12}>
-          <Stack direction="row" alignItems="center" spacing={2}>
-            <Typography fontWeight="bold" variant="body1">
+    <>
+      {clearConfirm && (
+        <AppConfirmDialog
+          DialogProps={{
+            open: clearConfirm,
+            onClose: handleClose,
+            maxWidth: 'sm',
+            fullWidth: true,
+          }}
+          title={
+            <FormattedMessage
+              id="clear.event.type"
+              defaultMessage="Clear event type"
+            />
+          }
+          onConfirm={handleConfirm}
+        >
+          <Stack spacing={1}>
+            <Typography variant="body1">
               <FormattedMessage
-                id="rule.index.value"
-                defaultMessage="Rule {index}"
-                values={{
-                  index: index + 1,
-                }}
+                id="the.data.from.your.filter.parameters.will.be.lost"
+                defaultMessage="The data from your filter parameters will be lost"
+              />
+            </Typography>
+            <Typography variant="body2">
+              <FormattedMessage
+                id="are.you.sure.you.want.to.change.the.event.type"
+                defaultMessage="Are you sure you want to change the event type?"
               />
             </Typography>
           </Stack>
-        </Grid>
-
-        <Grid item xs={12}>
-          <Field
-            disabled={!edit}
-            component={TextField}
-            type="number"
-            InputLabelProps={{ shrink: true }}
-            name={`settings[${index}].points`}
-            label={<FormattedMessage id="points" defaultMessage="Points" />}
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <Grid container spacing={2}>
-            <Grid item xs={12} sm={4}>
-              <FormControl fullWidth variant="filled">
-                <AutocompleteMUI
-                  disabled={!edit}
-                  value={userEvents.find(
-                    (u) => u.value === values.settings[index]?.userEventType,
-                  )}
-                  options={userEvents}
-                  onChange={(e: any, value: any) => {
-                    setFieldValue(`settings[${index}]`, {
-                      userEventType: value?.value,
-                      chainId: chainId,
-                      points: 0,
-                    });
+        </AppConfirmDialog>
+      )}
+      <Box>
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <Stack direction="row" alignItems="center" spacing={2}>
+              <Typography fontWeight="bold" variant="body1">
+                <FormattedMessage
+                  id="rule.index.value"
+                  defaultMessage="Rule {index}"
+                  values={{
+                    index: index + 1,
                   }}
-                  isOptionEqualToValue={(option: any, value: any) => {
-                    return option.value === value;
-                  }}
-                  getOptionLabel={(option: { name?: string; value?: string }) =>
-                    option?.name || ' '
-                  }
-                  renderInput={(params: AutocompleteRenderInputParams) => (
-                    <TextFieldMUI
-                      {...params}
-                      // We have to manually set the corresponding fields on the input component
-
-                      //@ts-ignore
-                      error={
-                        //@ts-ignore
-                        touched[`settings[${index}].userEventType`] &&
-                        //@ts-ignore
-                        !!errors[`settings[${index}].userEventType`]
-                      }
-                      helperText={
-                        //@ts-ignore
-                        errors[`settings[${index}].userEventType`]
-                      }
-                      label={
-                        <FormattedMessage
-                          id="user.event"
-                          defaultMessage="User Event"
-                        />
-                      }
-                      variant="outlined"
-                    />
-                  )}
                 />
-              </FormControl>
+              </Typography>
+            </Stack>
+          </Grid>
+
+          <Grid item xs={12}>
+            <Field
+              disabled={!edit}
+              component={TextField}
+              type="number"
+              placeholder="e.g., 100"
+              InputLabelProps={{ shrink: true }}
+              name={`settings[${index}].points`}
+              label={<FormattedMessage id="points" defaultMessage="Points" />}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm={4}>
+                <FormControl fullWidth variant="filled">
+                  <AutocompleteMUI
+                    disabled={!edit}
+                    value={userEvents.find(
+                      (u) => u.value === values.settings[index]?.userEventType,
+                    )}
+                    options={userEvents}
+                    onChange={(
+                      e: SyntheticEvent,
+                      newValue: any,
+                      reason: AutocompleteChangeReason,
+                      details,
+                    ) => {
+                      setFieldValue(`settings[${index}]`, {
+                        userEventType: newValue?.value,
+                        chainId: chainId,
+                        points: 0,
+                      });
+                    }}
+                    isOptionEqualToValue={(option: any, value: any) => {
+                      return option.value === value;
+                    }}
+                    getOptionLabel={(option: {
+                      name?: string;
+                      value?: string;
+                    }) => option?.name || ' '}
+                    renderInput={(params: AutocompleteRenderInputParams) => (
+                      <TextFieldMUI
+                        {...params}
+                        // We have to manually set the corresponding fields on the input component
+
+                        //@ts-ignore
+                        error={
+                          //@ts-ignore
+                          touched[`settings[${index}].userEventType`] &&
+                          //@ts-ignore
+                          !!errors[`settings[${index}].userEventType`]
+                        }
+                        helperText={
+                          //@ts-ignore
+                          errors[`settings[${index}].userEventType`]
+                        }
+                        label={
+                          <FormattedMessage
+                            id="user.event.alt"
+                            defaultMessage="User event"
+                          />
+                        }
+                        variant="outlined"
+                      />
+                    )}
+                  />
+                </FormControl>
+              </Grid>
             </Grid>
           </Grid>
-        </Grid>
-        {values.settings[index]?.userEventType &&
-          values.settings[index]?.userEventType !==
-            UserEvents.loginSignMessage && (
-            <Grid item xs={12}>
-              <Accordion>
-                <AccordionSummary expandIcon={<ArrowDownward />}>
-                  <Typography>
-                    <FormattedMessage
-                      id="filter.event"
-                      defaultMessage="Filter event"
-                    />
-                  </Typography>
-                </AccordionSummary>
-                <Divider />
-                <AccordionDetails sx={{ pt: 3 }}>
-                  {renderFilter(values.settings[index]?.userEventType)}
-                </AccordionDetails>
-              </Accordion>
-            </Grid>
-          )}
-
-        <Grid item xs={12}>
-          {edit ? (
-            <Box>
-              <Stack direction="row" spacing={2}>
-                {!isNew ? (
-                  <Button
-                    size="small"
-                    color="error"
-                    startIcon={<Delete />}
-                    onClick={onRemove}
-                  >
-                    <FormattedMessage id="remove" defaultMessage="Remove" />
-                  </Button>
-                ) : (
-                  <Button
-                    size="small"
-                    variant="outlined"
-                    startIcon={<Cancel />}
-                    onClick={() => {
-                      if (isNew) {
-                        return onRemove();
-                      }
-                      setEdit(false);
+          {values.settings[index]?.userEventType &&
+            values.settings[index]?.userEventType !==
+              UserEvents.loginSignMessage && (
+              <Grid item xs={12} sm={9}>
+                <Accordion disableGutters>
+                  <AccordionSummary expandIcon={<ArrowDownward />}>
+                    <Typography fontWeight="500">
+                      <FormattedMessage
+                        id="filter.event"
+                        defaultMessage="Filter event"
+                      />
+                    </Typography>
+                  </AccordionSummary>
+                  <Divider />
+                  <AccordionDetails
+                    sx={{
+                      pt: 3,
+                      backgroundColor: (theme) =>
+                        theme.palette.background.default,
                     }}
                   >
-                    <FormattedMessage id="cancel" defaultMessage="Cancel" />
-                  </Button>
-                )}
+                    {renderFilter(values.settings[index]?.userEventType)}
+                  </AccordionDetails>
+                </Accordion>
+              </Grid>
+            )}
 
-                <Button
-                  size="small"
-                  startIcon={<Check />}
-                  onClick={() => {
-                    setEdit(false);
-                    onSave();
-                  }}
-                  variant="contained"
-                >
-                  <FormattedMessage id="save" defaultMessage="Save" />
-                </Button>
-              </Stack>
-            </Box>
-          ) : (
-            <Box>
-              <Stack direction="row" spacing={2}>
-                <Button
-                  size="small"
-                  startIcon={<Edit />}
-                  onClick={() => setEdit(true)}
-                >
-                  <FormattedMessage id="edit" defaultMessage="Edit" />
-                </Button>
-              </Stack>
-            </Box>
-          )}
+          <Grid item xs={12}>
+            {edit ? (
+              <Box>
+                <Stack direction="row" spacing={2}>
+                  {!isNew ? (
+                    <Button
+                      size="small"
+                      color="error"
+                      startIcon={<Delete />}
+                      onClick={onRemove}
+                    >
+                      <FormattedMessage id="remove" defaultMessage="Remove" />
+                    </Button>
+                  ) : (
+                    <Button
+                      size="small"
+                      variant="outlined"
+                      startIcon={<Cancel />}
+                      onClick={() => {
+                        if (isNew) {
+                          return onRemove();
+                        }
+                        setEdit(false);
+                      }}
+                    >
+                      <FormattedMessage id="cancel" defaultMessage="Cancel" />
+                    </Button>
+                  )}
+
+                  <Button
+                    size="small"
+                    startIcon={<Check />}
+                    onClick={() => {
+                      setEdit(false);
+                      onSave();
+                    }}
+                    variant="contained"
+                  >
+                    <FormattedMessage id="save" defaultMessage="Save" />
+                  </Button>
+                </Stack>
+              </Box>
+            ) : (
+              <Box>
+                <Stack direction="row" spacing={2}>
+                  <Button
+                    size="small"
+                    startIcon={<Edit />}
+                    onClick={() => setEdit(true)}
+                  >
+                    <FormattedMessage id="edit" defaultMessage="Edit" />
+                  </Button>
+                </Stack>
+              </Box>
+            )}
+          </Grid>
         </Grid>
-      </Grid>
-    </Box>
+      </Box>
+    </>
   );
 }

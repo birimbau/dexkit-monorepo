@@ -7,6 +7,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import React, { useMemo, useState } from 'react';
+import { FormattedMessage } from 'react-intl';
 import { Token } from 'src/types/blockchain';
 
 interface Props {
@@ -112,7 +113,7 @@ export function SearchTokenAutocomplete(props: Props) {
         }
       }}
       getOptionLabel={(option) => {
-        return `${option?.name}-${getChainSymbol(option.chainId)}`;
+        return `${option?.name} - ${getChainSymbol(option.chainId)}`;
       }}
       renderOption={(props, option) => (
         <Box
@@ -121,7 +122,7 @@ export function SearchTokenAutocomplete(props: Props) {
           {...props}
         >
           <img loading="lazy" width="20" src={`${option.logoURI}`} alt="" />
-          {option.name} - ({option?.symbol.toUpperCase() || ''}) -{' '}
+          {option.name} ({option?.symbol.toUpperCase() || ''}){' '}
           {getChainName(option.chainId)}
         </Box>
       )}
@@ -129,7 +130,16 @@ export function SearchTokenAutocomplete(props: Props) {
         <>
           <TextField
             {...params}
-            label={label || 'Search Token'}
+            label={
+              data ? (
+                <FormattedMessage id="Token" defaultMessage="Token" />
+              ) : (
+                <FormattedMessage
+                  id="Search token"
+                  defaultMessage="Search token"
+                />
+              )
+            }
             fullWidth
             onChange={(ev) => setSearch(ev.currentTarget.value)}
             inputProps={{
@@ -148,7 +158,7 @@ export function SearchTokenAutocomplete(props: Props) {
                 <img loading="lazy" width="25" src={`${data.logoURI}`} alt="" />
                 {data.chainId && (
                   <Box sx={{ pl: 1 }}>
-                    {data.name} - ({data?.symbol?.toUpperCase()}) -{' '}
+                    {data.name} ({data?.symbol?.toUpperCase()}){' '}
                     {getChainName(data.chainId)}
                   </Box>
                 )}

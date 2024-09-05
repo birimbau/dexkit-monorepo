@@ -3,6 +3,8 @@ import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
 import {
+  Alert,
+  AlertTitle,
   Box,
   Button,
   Divider,
@@ -463,6 +465,8 @@ export default function RankingWizardContainer({
     setQuery(value);
   };
 
+  const [open, setOpen] = useState(true);
+
   return (
     <>
       {showDiscard && (
@@ -586,6 +590,9 @@ export default function RankingWizardContainer({
               />
             </Typography>
           }
+          actionCaption={
+            <FormattedMessage id="delete" defaultMessage="Delete" />
+          }
         >
           <FormattedMessage
             id="are.you.sure.you want.to.delete.this.leaderboard"
@@ -696,6 +703,26 @@ export default function RankingWizardContainer({
                     />
                   </div>
                 </Grid>
+                {open && (
+                  <Grid item xs={12} sm={6}>
+                    <Alert severity="info" onClose={() => setOpen(false)}>
+                      <AlertTitle sx={{ fontWeight: 'bold' }}>
+                        <Typography fontWeight="inherit" variant="body2">
+                          <FormattedMessage
+                            id="build.a.ranking.alert.message"
+                            defaultMessage="Define and assign points to each user event to build a ranking."
+                          />
+                        </Typography>
+                      </AlertTitle>
+                      <Typography variant="body2">
+                        <FormattedMessage
+                          id="points.are.awarded.based.on.user.message"
+                          defaultMessage="Points are awarded based on user activity to determine their ranking."
+                        />
+                      </Typography>
+                    </Alert>
+                  </Grid>
+                )}
                 <Grid item xs={12}>
                   <TabContext value={value}>
                     <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
