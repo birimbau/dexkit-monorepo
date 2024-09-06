@@ -125,8 +125,8 @@ export default function GamificationPointForm({
   const handleAppRankingUpdatedSuccess = () => {
     enqueueSnackbar(
       formatMessage({
-        defaultMessage: 'App leaderboard updated',
-        id: 'app.leaderboard.updated',
+        defaultMessage: 'leaderboard Updated',
+        id: 'leaderboard.updated',
       }),
       {
         variant: 'success',
