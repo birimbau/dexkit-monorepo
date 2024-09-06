@@ -1,5 +1,7 @@
-
-
 export const Conditions = [
-  'gt', 'gte', 'lt', 'lte', 'eq'
-]
+  { symbol: 'gt', sign: '>' },
+  { symbol: 'gte', sign: '>=' },
+  { symbol: 'lt', sign: '<' },
+  { symbol: 'lte', sign: '<=' },
+  { symbol: 'eq', sign: '=' },
+];

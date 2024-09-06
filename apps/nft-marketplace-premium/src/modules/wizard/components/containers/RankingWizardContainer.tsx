@@ -1,9 +1,10 @@
 import AppConfirmDialog from '@dexkit/ui/components/AppConfirmDialog';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
 import {
+  Alert,
+  AlertTitle,
   Box,
   Button,
   Divider,
@@ -17,28 +18,36 @@ import {
 import Tab from '@mui/material/Tab';
 import { useCallback, useEffect, useState } from 'react';
 
-import RankingSection from '@dexkit/dexappbuilder-viewer/components/sections/RankingSection';
-import { useAppRankingListQuery } from '@dexkit/ui/modules/wizard/hooks/ranking';
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
-import FileDownloadIcon from '@mui/icons-material/FileDownload';
+import { useDebounce } from '@dexkit/core';
+import {
+  GET_APP_RANKINGS_QUERY,
+  useAppRankingListQuery,
+} from '@dexkit/ui/modules/wizard/hooks/ranking';
+import Add from '@mui/icons-material/Add';
+import DeleteIcon from '@mui/icons-material/DeleteOutlined';
+import FileDownloadIcon from '@mui/icons-material/FileDownloadOutlined';
 import LeaderboardIcon from '@mui/icons-material/Leaderboard';
-import PreviewIcon from '@mui/icons-material/Preview';
+import VisibilityIcon from '@mui/icons-material/VisibilityOutlined';
 import {
   DataGrid,
   GridColDef,
   GridFilterModel,
   GridRenderCellParams,
+  GridRowSelectionModel,
   GridSortModel,
   GridToolbar,
 } from '@mui/x-data-grid';
+import { useQueryClient } from '@tanstack/react-query';
 import dynamic from 'next/dynamic';
 import { useSnackbar } from 'notistack';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { useDeleteAppRankingMutation } from '../../hooks';
-import { GamificationPoint } from '../../types';
-import { ExportRanking } from '../ExportRanking';
+import {
+  useAddAppRankingMutation,
+  useDeleteAppRankingMutation,
+} from '../../hooks';
+import { AppRanking } from '../../types/ranking';
 import GamificationPointForm from '../forms/Gamification/GamificationPointForm';
+import LeaderboardHeader from '../forms/Gamification/LeaderboardHeader';
 import RankingMetadataForm from '../forms/Gamification/RankingMetadataForm';
 const AddAppRankingFormDialog = dynamic(
   () => import('../dialogs/AddAppRankingFormDialog'),
@@ -51,16 +60,6 @@ export interface RankingWizardContainerProps {
   siteId?: number;
 }
 
-interface AppRanking {
-  id: number;
-  title: string;
-  createdAt: number;
-  description: string;
-  from: string;
-  to: string;
-  settings: GamificationPoint[];
-}
-
 interface TableProps {
   siteId?: number | null;
   onClickDelete({ ranking }: { ranking: AppRanking }): void;
@@ -68,6 +67,7 @@ interface TableProps {
   onClickPreview({ ranking }: { ranking: AppRanking }): void;
   onClickExport({ ranking }: { ranking: AppRanking }): void;
   rankings?: AppRanking[];
+  query: string;
 }
 
 function ExpandableCell({ value }: GridRenderCellParams) {
@@ -78,44 +78,57 @@ function ExpandableCell({ value }: GridRenderCellParams) {
   }
 
   return (
-    <div>
-      {expanded ? value : value.slice(0, 100)}&nbsp;
-      {value.length > 100 && (
+    <Box
+      sx={{
+        overflowWrap: 'break-word',
+        whiteSpace: 'initial',
+        width: '100%',
+        py: 2,
+      }}
+    >
+      {expanded ? value : value.slice(0, 20)}&nbsp;
+      {value.length > 20 && (
         // eslint-disable-next-line jsx-a11y/anchor-is-valid
         <Link
           type="button"
           component="button"
           sx={{ fontSize: 'inherit' }}
-          onClick={() => setExpanded(!expanded)}
+          onClick={(e) => {
+            e.stopPropagation();
+            setExpanded(!expanded);
+          }}
         >
           {expanded ? 'view less' : 'view more'}
         </Link>
       )}
-    </div>
+    </Box>
   );
 }
 
 function EmptyRankings() {
   return (
     <Stack
-      spacing={1}
-      justifyContent={'center'}
-      alignContent={'center'}
-      alignItems={'center'}
+      py={2}
+      justifyContent="center"
+      alignContent="center"
+      alignItems="center"
     >
-      <LeaderboardIcon sx={{ fontSize: '50px' }} />
-      <Typography variant="h6">
-        <FormattedMessage
-          id={'no.app.leaderboards'}
-          defaultMessage={'No app leaderboards'}
-        />
-      </Typography>
-      <Typography variant="subtitle1">
-        <FormattedMessage
-          id={'add.leaderboards.to.your.app'}
-          defaultMessage={'Add leaderboards to your app'}
-        />
-      </Typography>
+      <LeaderboardIcon fontSize="inherit" sx={{ fontSize: '3rem' }} />
+
+      <Stack>
+        <Typography textAlign="center" variant="h5">
+          <FormattedMessage
+            id="no.leaderboard"
+            defaultMessage="No leaderboard"
+          />
+        </Typography>
+        <Typography textAlign="center" variant="body1" color="text.secondary">
+          <FormattedMessage
+            id="add.leaderboards.to.your.app"
+            defaultMessage="Add leaderboards to your app"
+          />
+        </Typography>
+      </Stack>
     </Stack>
   );
 }
@@ -127,8 +140,12 @@ function AppRankingList({
   onClickPreview,
   onClickExport,
 }: TableProps) {
+  const [query, setQuery] = useState('');
+
   const [queryOptions, setQueryOptions] = useState<any>({
     filter: {},
+    sort: 'asc',
+    sortField: 'title',
   });
 
   const [paginationModel, setPaginationModel] = useState({
@@ -136,10 +153,13 @@ function AppRankingList({
     pageSize: 10,
   });
 
-  const { data, isLoading } = useAppRankingListQuery({
+  const lazyQuery = useDebounce(query, 500);
+
+  const { data, isLoading, refetch } = useAppRankingListQuery({
     ...paginationModel,
     ...queryOptions,
     siteId: siteId,
+    query: lazyQuery,
   });
 
   const [rowCountState, setRowCountState] = useState((data?.total as any) || 0);
@@ -152,13 +172,21 @@ function AppRankingList({
 
   const handleSortModelChange = useCallback((sortModel: GridSortModel) => {
     // Here you save the data you need from the sort model
-    setQueryOptions({
-      ...queryOptions,
-      sort:
-        sortModel && sortModel.length
-          ? [sortModel[0].field, sortModel[0].sort]
-          : [],
-    });
+
+    if (sortModel.length > 0) {
+      setQueryOptions((queryOptions: any) => ({
+        ...queryOptions,
+        sortField: sortModel[0].field,
+        sort: sortModel[0].sort,
+      }));
+    } else {
+      setQueryOptions((queryOptions: any) => {
+        return {
+          ...queryOptions,
+        };
+      });
+    }
+    refetch();
   }, []);
 
   const onFilterChange = useCallback((filterModel: GridFilterModel) => {
@@ -175,88 +203,87 @@ function AppRankingList({
   }, []);
 
   const columns: GridColDef[] = [
-    { field: 'id', headerName: 'ID', width: 90 },
-
-    {
-      field: 'createdAt',
-      headerName: 'Created At',
-      width: 200,
-      valueGetter: ({ row }) => {
-        return new Date(row.createdAt).toLocaleString();
-      },
-    },
     {
       field: 'title',
       headerName: 'Title',
-      width: 150,
+      flex: 1,
     },
     {
+      field: 'createdAt',
+      headerName: 'Created at',
+      valueGetter: ({ row }) => {
+        return new Date(row.createdAt).toLocaleString();
+      },
+      flex: 1,
+    },
+    {
+      sortable: false,
+      disableColumnMenu: true,
+      disableReorder: true,
       field: 'description',
       headerName: 'Description',
-      width: 350,
+      flex: 1,
       renderCell: (params: GridRenderCellParams) => (
         <ExpandableCell {...params} />
       ),
     },
     {
+      sortable: false,
+      disableColumnMenu: true,
+      disableReorder: true,
       field: 'actions',
       headerName: 'Actions',
       width: 240,
       renderCell: ({ row }) => {
         return (
-          <Stack direction={'row'} spacing={1}>
-            <Tooltip
-              title={
-                <FormattedMessage
-                  id={'preview.app.leaderboard'}
-                  defaultMessage={'Preview app leaderboard'}
-                />
-              }
-            >
-              <IconButton onClick={() => onClickPreview({ ranking: row })}>
-                <PreviewIcon />
-              </IconButton>
-            </Tooltip>
-            <Tooltip
-              title={
-                <FormattedMessage
-                  id={'edit.leaderboard'}
-                  defaultMessage={'Edit leaderboard'}
-                />
-              }
-            >
-              <IconButton onClick={() => onClickEdit({ ranking: row })}>
-                <EditIcon />
-              </IconButton>
-            </Tooltip>
-            <Tooltip
-              title={
-                <FormattedMessage
-                  id={'export.leaderboard'}
-                  defaultMessage={'Export leaderboard'}
-                />
-              }
-            >
-              <IconButton onClick={() => onClickExport({ ranking: row })}>
-                <FileDownloadIcon />
-              </IconButton>
-            </Tooltip>
+          <Stack direction="row" spacing={1}>
+            <IconButton
+              onClick={async (e) => {
+                e.stopPropagation();
 
-            <Tooltip
-              title={
-                <FormattedMessage
-                  id={'delete.app.leaderboard'}
-                  defaultMessage={'Delete app leaderboard'}
-                />
-              }
+                onClickPreview({ ranking: row });
+                await refetch();
+              }}
             >
-              <IconButton
-                color={'error'}
-                onClick={() => onClickDelete({ ranking: row })}
+              <Tooltip
+                title={
+                  <FormattedMessage id="preview" defaultMessage="Preview" />
+                }
+              >
+                <VisibilityIcon />
+              </Tooltip>
+            </IconButton>
+
+            <IconButton
+              onClick={async (e) => {
+                e.stopPropagation();
+                onClickExport({ ranking: row });
+                await refetch();
+              }}
+            >
+              <Tooltip
+                title={<FormattedMessage id="export" defaultMessage="Export" />}
+              >
+                <FileDownloadIcon />
+              </Tooltip>
+            </IconButton>
+
+            <IconButton
+              color={'error'}
+              onClick={async (e) => {
+                e.stopPropagation();
+                onClickDelete({ ranking: row });
+                await refetch();
+              }}
+            >
+              <Tooltip
+                title={
+                  <FormattedMessage id={'delete'} defaultMessage={'Delete'} />
+                }
               >
                 <DeleteIcon />
-              </IconButton>
-            </Tooltip>
+              </Tooltip>
+            </IconButton>
           </Stack>
         );
       },
@@ -265,11 +292,23 @@ function AppRankingList({
 
   const rows = (data?.data as any) || [];
 
+  const [rowSelection, setRowSelection] = useState<GridRowSelectionModel>([]);
+
   return (
     <>
       <DataGrid
         autoHeight
-        slots={{ toolbar: GridToolbar, noRowsOverlay: EmptyRankings }}
+        rowHeight={100}
+        key={data?.total}
+        sortingOrder={['asc', 'desc']}
+        slots={{
+          toolbar: GridToolbar,
+          noRowsOverlay: EmptyRankings,
+          noResultsOverlay: EmptyRankings,
+        }}
+        onRowClick={({ row }) => {
+          onClickEdit({ ranking: row });
+        }}
         rows={rows}
         columns={columns}
         rowCount={rowCountState}
@@ -278,21 +317,57 @@ function AppRankingList({
         disableColumnFilter
         sortingMode="server"
         getRowHeight={() => 'auto'}
+        disableColumnMenu
         slotProps={{
           toolbar: {
-            showQuickFilter: true,
             printOptions: { disableToolbarButton: true },
             csvOptions: { disableToolbarButton: true },
+            showQuickFilter: true,
+            quickFilterProps: {
+              value: query,
+              onChange: (e) => {
+                setQuery(e.target.value);
+              },
+            },
           },
         }}
+        hideFooterPagination={rowCountState === 0}
         onPaginationModelChange={setPaginationModel}
         filterMode="server"
         onFilterModelChange={onFilterChange}
+        sortModel={[{ field: queryOptions.sortField, sort: queryOptions.sort }]}
         onSortModelChange={handleSortModelChange}
         pageSizeOptions={[5, 10, 25, 50]}
-        disableRowSelectionOnClick
         loading={isLoading}
-        sx={{ '--DataGrid-overlayHeight': '150px' }}
+        rowSelectionModel={rowSelection}
+        disableRowSelectionOnClick
+        onRowSelectionModelChange={(rows) => setRowSelection(rows)}
+        sx={{
+          '& .MuiDataGrid-cell:focus': {
+            outline: 'none',
+          },
+          '& .MuiDataGrid-cell:focus-within': {
+            outline: 'none !important',
+          },
+          '&.MuiDataGrid-root .MuiDataGrid-cell:focus-within': {
+            outline: 'none !important',
+          },
+          '& .MuiDataGrid-columnHeader:focus': {
+            outline: 'none !important',
+          },
+          '& .MuiDataGrid-columnHeader:focus-within': {
+            outline: 'none !important',
+          },
+          border: 'none',
+          '--DataGrid-overlayHeight': '150px', // disable cell selection style
+          '.MuiDataGrid-cell:focus': {
+            outline: 'none',
+          },
+          // pointer cursor on ALL rows
+          '& .MuiDataGrid-row:hover': {
+            cursor: 'pointer',
+          },
+        }}
       />
     </>
   );
@@ -304,6 +379,8 @@ export default function RankingWizardContainer({
   const { enqueueSnackbar } = useSnackbar();
   const { formatMessage } = useIntl();
   const [value, setValue] = useState('1');
+
+  const [hasChanges, setHasChanges] = useState(false);
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
@@ -344,8 +421,8 @@ export default function RankingWizardContainer({
   const handleAppRankingRemoved = () => {
     enqueueSnackbar(
       formatMessage({
-        defaultMessage: 'App leaderboard removed',
-        id: 'app.leaderboard.removed',
+        defaultMessage: 'Leaderboard removed',
+        id: 'leaderboard.removed',
       }),
       {
         variant: 'success',
@@ -360,8 +437,8 @@ export default function RankingWizardContainer({
   const handleAppRankingRemovedError = () => {
     enqueueSnackbar(
       formatMessage({
-        defaultMessage: 'Error on removing app leaderboard',
-        id: 'error.removing.app.leaderboard',
+        defaultMessage: 'Error on removing leaderboard',
+        id: 'error.on.removing.leaderboard',
       }),
       {
         variant: 'error',
@@ -373,8 +450,76 @@ export default function RankingWizardContainer({
     );
   };
 
+  const [saved, setSaved] = useState(false);
+
+  const [showDiscard, setShowDiscard] = useState(false);
+
+  const handleCloseEditRanking = () => {
+    if (hasChanges && !saved) {
+      setShowDiscard(true);
+      return;
+    }
+
+    setHasChanges(false);
+    setSaved(false);
+    setSelectedEditRanking(undefined);
+  };
+
+  const handleSave = () => {
+    setSaved(true);
+  };
+
+  const queryClient = useQueryClient();
+
+  const mutationAddRanking = useAddAppRankingMutation();
+
+  const [query, setQuery] = useState('');
+
+  const handleChangeQuery = (value: string) => {
+    setQuery(value);
+  };
+
+  const [open, setOpen] = useState(true);
+
   return (
     <>
+      {showDiscard && (
+        <AppConfirmDialog
+          DialogProps={{
+            open: showDiscard,
+            maxWidth: 'xs',
+            fullWidth: true,
+            onClose: () => setShowDiscard(false),
+          }}
+          onConfirm={() => {
+            setSelectedEditRanking(undefined);
+            setShowDiscard(false);
+          }}
+          title={
+            <FormattedMessage
+              id="Leave.without.saving"
+              defaultMessage="Leave Without Saving"
+            />
+          }
+          actionCaption={<FormattedMessage id="leave" defaultMessage="Leave" />}
+          cancelCaption={<FormattedMessage id="stay" defaultMessage="Stay" />}
+        >
+          <Stack spacing={1}>
+            <Typography variant="body1">
+              <FormattedMessage
+                id="you.have.unsaved.changes."
+                defaultMessage="You have unsaved changes."
+              />
+            </Typography>
+            <Typography variant="body1">
+              <FormattedMessage
+                id="are.you.sure.you.want.to.leave.without.saving"
+                defaultMessage="Are you sure you want to leave without saving?"
+              />
+            </Typography>
+          </Stack>
+        </AppConfirmDialog>
+      )}
       {openAddRanking && (
         <AddAppRankingFormDialog
           dialogProps={{
@@ -385,9 +530,6 @@ export default function RankingWizardContainer({
               setOpenAddRanking(false);
             },
           }}
-          title={selectedRanking?.title}
-          description={selectedRanking?.description}
-          rankingId={selectedRanking?.id}
           siteId={siteId}
         />
       )}
@@ -427,9 +569,10 @@ export default function RankingWizardContainer({
               setOpenConfirmRemove(false);
             },
           }}
-          onConfirm={() => {
+          onConfirm={async () => {
             setOpenConfirmRemove(false);
-            deleteAppRankingMutation.mutate(
+
+            await deleteAppRankingMutation.mutateAsync(
               { siteId: siteId, rankingId: selectedRanking?.id },
               {
                 onSuccess: handleAppRankingRemoved,
@@ -437,15 +580,37 @@ export default function RankingWizardContainer({
               },
             );
 
+            await queryClient.removeQueries({
+              queryKey: [GET_APP_RANKINGS_QUERY],
+            });
             setSelectedRanking(undefined);
           }}
+          title={
+            <Typography variant="inherit" fontWeight="bold">
+              <FormattedMessage
+                id="delete.leaderboard.name"
+                defaultMessage="Delete Leaderboard: {name}"
+                values={{
+                  name: (
+                    <Typography
+                      component="span"
+                      fontWeight="300"
+                      variant="inherit"
+                    >
+                      {selectedRanking?.title}
+                    </Typography>
+                  ),
+                }}
+              />
+            </Typography>
+          }
+          actionCaption={
+            <FormattedMessage id="delete" defaultMessage="Delete" />
+          }
         >
           <FormattedMessage
-            id="do.you.really.want.to.remove.this.app.leaderboard"
-            defaultMessage="Do you really want to remove this app leaderboard {title}"
-            values={{
-              title: selectedRanking?.title,
-            }}
+            id="are.you.sure.you want.to.delete.this.leaderboard"
+            defaultMessage="Are you sure you want to delete this leaderboard?"
           />
         </AppConfirmDialog>
       )}
@@ -474,17 +639,26 @@ export default function RankingWizardContainer({
 
           {!selectedEditRanking && (
             <Grid item xs={12}>
-              <Button
-                variant="contained"
-                onClick={() => {
-                  setOpenAddRanking(true);
-                }}
-              >
-                <FormattedMessage
-                  id={'add.leaderboard'}
-                  defaultMessage={'Add leaderboard'}
-                />
-              </Button>
+              <Box>
+                <Stack
+                  direction="row"
+                  alignItems="center"
+                  justifyContent="space-between"
+                >
+                  <Button
+                    variant="contained"
+                    onClick={() => {
+                      setOpenAddRanking(true);
+                    }}
+                    startIcon={<Add />}
+                  >
+                    <FormattedMessage
+                      id="new.leaderboard"
+                      defaultMessage="New leaderboard"
+                    />
+                  </Button>
+                </Stack>
+              </Box>
             </Grid>
           )}
           {!selectedEditRanking && (
@@ -495,6 +669,7 @@ export default function RankingWizardContainer({
                 onClickEdit={handleClickEdit}
                 onClickPreview={handlePreviewRanking}
                 onClickExport={handleClickExport}
+                query={query}
               />
             </Grid>
           )}
@@ -502,15 +677,45 @@ export default function RankingWizardContainer({
             <Grid item xs={12}>
               <Grid container spacing={2}>
                 <Grid item xs={12}>
-                  <Button
-                    startIcon={<ArrowBackIcon />}
-                    onClick={() => setSelectedEditRanking(undefined)}
-                  >
-                    <FormattedMessage
-                      id={'back.to.leaderboard.list'}
-                      defaultMessage={'Back to leaderboard List'}
-                    />{' '}
-                  </Button>
+                  <div>
+                    <LeaderboardHeader
+                      key={selectedEditRanking.title}
+                      title={selectedEditRanking.title}
+                      onClose={handleCloseEditRanking}
+                      onEditTitle={async (title: string) => {
+                        setSelectedEditRanking({
+                          ...selectedEditRanking,
+                          title,
+                        });
+                        setHasChanges(true);
+                      }}
+                      onPreview={() => {
+                        if (selectedEditRanking) {
+                          handlePreviewRanking({
+                            ranking: selectedEditRanking,
+                          });
+                        }
+                      }}
+                    />
+                  </div>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Alert severity="info">
+                    <AlertTitle sx={{ fontWeight: 'bold' }}>
+                      <Typography fontWeight="inherit" variant="body2">
+                        <FormattedMessage
+                          id="build.a.ranking.alert.message"
+                          defaultMessage="Define and assign points to each user event to build a ranking."
+                        />
+                      </Typography>
+                    </AlertTitle>
+                    <Typography variant="body2">
+                      <FormattedMessage
+                        id="points.are.awarded.based.on.user.message"
+                        defaultMessage="Points are awarded based on user activity to determine their ranking."
+                      />
+                    </Typography>
+                  </Alert>
                 </Grid>
                 <Grid item xs={12}>
                   <TabContext value={value}>
@@ -537,25 +742,22 @@ export default function RankingWizardContainer({
                           }
                           value="2"
                         />
-                        <Tab
-                          label={
-                            <FormattedMessage
-                              id={'export'}
-                              defaultMessage={'Export'}
-                            />
-                          }
-                          value="3"
-                        />
                       </TabList>
                     </Box>
                     <TabPanel value="1">
-                      {' '}
                       <GamificationPointForm
                         settings={selectedEditRanking.settings}
                         siteId={siteId}
                         from={selectedEditRanking.from}
                         to={selectedEditRanking.to}
                         rankingId={selectedEditRanking.id}
+                        ranking={selectedEditRanking}
+                        title={selectedEditRanking.title}
+                        onSave={handleSave}
+                        onChange={() => {
+                          setHasChanges(true);
+                          setSaved(false);
+                        }}
                       />
                     </TabPanel>
                     <TabPanel value="2">
@@ -564,32 +766,10 @@ export default function RankingWizardContainer({
                         rankingId={selectedEditRanking.id}
                         title={selectedEditRanking.title}
                         description={selectedEditRanking.description}
+                        onSave={handleSave}
                       />
                     </TabPanel>
-                    <TabPanel value="3">
-                      <ExportRanking rankingId={selectedEditRanking.id} />
-                    </TabPanel>
                   </TabContext>
-                </Grid>
-                <Grid item xs={12}>
-                  <Typography variant="h5">
-                    <FormattedMessage
-                      id={'leaderboard.preview'}
-                      defaultMessage={'Leaderboard preview'}
-                    />
-                  </Typography>
-                </Grid>
-                <Grid item xs={12}>
-                  <Divider></Divider>
-                </Grid>
-
-                <Grid item xs={12}>
-                  <RankingSection
-                    section={{
-                      type: 'ranking',
-                      settings: { rankingId: selectedEditRanking.id },
-                    }}
-                  />
                 </Grid>
               </Grid>
             </Grid>

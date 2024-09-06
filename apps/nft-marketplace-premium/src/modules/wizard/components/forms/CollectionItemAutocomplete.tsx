@@ -1,9 +1,11 @@
 import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 
+import { isAddressEqual } from '@dexkit/core/utils';
 import { getChainName, getChainSymbol } from '@dexkit/core/utils/blockchain';
+import { FormattedMessage } from 'react-intl';
 import { useAppWizardConfig } from '../../hooks';
 
 type Data = {
@@ -18,7 +20,7 @@ type Data = {
 };
 
 interface Props {
-  formValue: {
+  value: {
     chainId?: number;
     contractAddress?: string;
     backgroundImageUrl?: string;
@@ -30,12 +32,11 @@ interface Props {
 }
 
 export function CollectionItemAutocomplete(props: Props) {
-  const { formValue, onChange, filterByChainId, chainId, disabled } = props;
+  const { value, onChange, filterByChainId, chainId, disabled } = props;
   const { wizardConfig } = useAppWizardConfig();
-  const [collectionValue, setCollectionValue] = useState<Data | undefined>();
 
-  const collections =
-    filterByChainId && chainId
+  const collections = useMemo(() => {
+    return chainId
       ? wizardConfig.collections
           ?.filter((c) => c.chainId === chainId)
           .map((value) => {
@@ -58,43 +59,32 @@ export function CollectionItemAutocomplete(props: Props) {
             image: value.image,
           };
         }) || [];
+  }, [chainId]);
 
-  useEffect(() => {
-    if (
-      formValue &&
-      collections &&
-      formValue.chainId !== collectionValue?.chainId &&
-      formValue.contractAddress?.toLowerCase() !==
-        collectionValue?.contractAddress.toLowerCase()
-    ) {
-      const coll = collections.find(
-        (c) =>
-          Number(c.chainId) === Number(formValue.chainId) &&
-          c.contractAddress?.toLowerCase() ===
-            formValue.contractAddress?.toLowerCase(),
-      );
-      if (coll) {
-        setCollectionValue({ ...coll });
-      }
+  const defaultValue = useMemo(() => {
+    const collection = collections.find(
+      (c) =>
+        c.chainId === value.chainId &&
+        isAddressEqual(value.contractAddress, c.contractAddress),
+    );
+
+    if (collection) {
+      return collection;
     }
-  }, [formValue, collections, collectionValue]);
 
-  const dataValue = useMemo(() => {
-    return { ...collectionValue };
-  }, [collectionValue]);
+    return null;
+  }, [value, collections]);
 
   return (
     <Autocomplete
       id="item-collection"
       fullWidth
-      value={dataValue || null}
-      defaultValue={dataValue || null}
+      value={defaultValue}
       options={collections}
-      autoHighlight
+      key={String(defaultValue)}
       isOptionEqualToValue={(op, val) =>
         op?.chainId === val?.chainId &&
-        op?.contractAddress?.toLowerCase() ===
-          val?.contractAddress?.toLowerCase()
+        isAddressEqual(op?.contractAddress, val?.contractAddress)
       }
       disabled={disabled}
       onChange={(_change, value) => {
@@ -110,7 +100,7 @@ export function CollectionItemAutocomplete(props: Props) {
         }
       }}
       getOptionLabel={(option) =>
-        option.name ? `${getChainSymbol(option.chainId)}-${option.name}` : ''
+        option.name ? `${option.name}- ${getChainSymbol(option.chainId)}` : ''
       }
       renderOption={(props, option) => (
         <Box
@@ -119,13 +109,18 @@ export function CollectionItemAutocomplete(props: Props) {
           {...props}
         >
           <img loading="lazy" width="20" src={`${option.image}`} alt="" />
-          {getChainName(option.chainId)} - {option.name}
+          {option.name} - {getChainName(option.chainId)}
         </Box>
       )}
       renderInput={(params) => (
         <TextField
           {...params}
-          label="Choose a collection"
+          label={
+            <FormattedMessage
+              id="choose.a.collection"
+              defaultMessage="Choose a collection"
+            />
+          }
           fullWidth
           inputProps={{
             ...params.inputProps,

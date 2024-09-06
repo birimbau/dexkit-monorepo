@@ -245,7 +245,7 @@ export default function CollectionSectionFormAlt({
             ) : (
               <Box>
                 <CollectionItemAutocomplete
-                  formValue={{
+                  value={{
                     chainId: NETWORK_FROM_SLUG(values.network)?.chainId,
                     contractAddress: values.address.toLowerCase(),
                   }}

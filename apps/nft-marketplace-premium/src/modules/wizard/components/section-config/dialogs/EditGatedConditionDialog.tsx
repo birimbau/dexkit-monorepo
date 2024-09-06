@@ -249,7 +249,7 @@ export default function EditGatedConditionDialog({
                             setFieldValue('condition.protocol', v);
                           });
                         }}
-                        formValue={getValueFrom(values) ?? {}}
+                        value={getValueFrom(values) ?? {}}
                       />
                     </Grid>
                   )}
