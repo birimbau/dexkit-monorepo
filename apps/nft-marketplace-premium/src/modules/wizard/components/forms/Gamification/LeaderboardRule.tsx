@@ -416,6 +416,11 @@ export default function LeaderboardRule({
             {edit ? (
               <Box>
                 <Stack direction="row" spacing={2}>
+                  {!isNew && (
+                    <Button size="small" color="error" onClick={onRemove}>
+                      <FormattedMessage id="remove" defaultMessage="Remove" />
+                    </Button>
+                  )}
                   <Button
                     size="small"
                     variant="outlined"
@@ -428,11 +433,7 @@ export default function LeaderboardRule({
                   >
                     <FormattedMessage id="cancel" defaultMessage="Cancel" />
                   </Button>
-                  {!isNew && (
-                    <Button size="small" color="error" onClick={onRemove}>
-                      <FormattedMessage id="remove" defaultMessage="Remove" />
-                    </Button>
-                  )}
+
                   {values.settings[index]?.userEventType && (
                     <Button
                       size="small"
