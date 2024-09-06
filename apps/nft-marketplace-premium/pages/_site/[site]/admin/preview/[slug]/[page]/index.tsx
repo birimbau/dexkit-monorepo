@@ -29,15 +29,21 @@ function PreviewPage() {
     }
   }, [data]);
 
-  const sections = useMemo(() => {
+  const [sections, layout] = useMemo(() => {
     const sectionIndex = parseInt((index as string) ?? '-1');
 
     if (sectionIndex >= 0) {
       let result = appConfig?.pages[page as string]?.sections[sectionIndex];
 
-      return appConfig && result ? [result] ?? [] : [];
+      return [
+        appConfig && result ? [result] ?? [] : [],
+        appConfig?.pages[page as string]?.layout,
+      ];
     }
-    return appConfig ? appConfig.pages[page as string]?.sections ?? [] : [];
+    return [
+      appConfig ? appConfig.pages[page as string]?.sections ?? [] : [],
+      appConfig?.pages[page as string]?.layout,
+    ];
   }, [appConfig, page, index]);
 
   const disableLayoutFlag = useMemo(() => {
@@ -46,7 +52,7 @@ function PreviewPage() {
 
   return (
     <PreviewAuthLayout noSsr disableLayout={disableLayoutFlag}>
-      <SectionsRenderer sections={sections} />
+      <SectionsRenderer sections={sections} layout={layout} />
     </PreviewAuthLayout>
   );
 }

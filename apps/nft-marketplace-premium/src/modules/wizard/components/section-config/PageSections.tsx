@@ -69,6 +69,7 @@ export interface PageSectionsProps {
   onClose: () => void;
   onClone: () => void;
   onEditTitle: (page: string, title: string) => void;
+  onEditLayout: () => void;
   onAdd: () => void;
   onPreview: () => void;
   activeSection?: PageSectionKey;
@@ -89,6 +90,7 @@ export default function PageSections({
   onAdd,
   onChangeName,
   onEditTitle,
+  onEditLayout,
   onClone,
   activeSection,
   onAddSection,
@@ -241,6 +243,7 @@ export default function PageSections({
               activeSection?.index === section.index &&
               pageKey === activeSection.page
             }
+            layout={page.layout}
           />
         </Grid>
       );
@@ -260,6 +263,7 @@ export default function PageSections({
             }
           }}
           page={page}
+          onEditLayout={onEditLayout}
         />
 
         <Box py={2}>

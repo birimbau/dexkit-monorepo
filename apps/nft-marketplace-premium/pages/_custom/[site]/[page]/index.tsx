@@ -12,7 +12,10 @@ import { GET_ASSETS_ORDERBOOK } from '@dexkit/ui/modules/nft/hooks';
 import { getDKAssetOrderbook } from '@dexkit/ui/modules/nft/services';
 import { fetchMultipleAssetForQueryClient } from '@dexkit/ui/modules/nft/services/query';
 import { GatedPageLayout } from '@dexkit/ui/modules/wizard/types';
-import { GatedCondition } from '@dexkit/ui/modules/wizard/types/config';
+import {
+  GatedCondition,
+  PageSectionsLayout,
+} from '@dexkit/ui/modules/wizard/types/config';
 import { AppPageSection } from '@dexkit/ui/modules/wizard/types/section';
 import { SessionProvider } from 'next-auth/react';
 import AuthMainLayout from 'src/components/layouts/authMain';
@@ -23,13 +26,23 @@ const CustomPage: NextPage<{
   isProtected: boolean;
   conditions?: GatedCondition[];
   gatedLayout?: GatedPageLayout;
+  layout?: PageSectionsLayout;
   result: boolean;
   site: string;
   page: string;
   partialResults: { [key: number]: boolean };
   balances: { [key: number]: string };
   slug?: string;
-}> = ({ sections, isProtected, conditions, site, page, gatedLayout, slug }) => {
+}> = async ({
+  sections,
+  isProtected,
+  conditions,
+  site,
+  page,
+  gatedLayout,
+  slug,
+  layout,
+}) => {
   if (isProtected) {
     return (
       <SessionProvider>
@@ -41,6 +54,7 @@ const CustomPage: NextPage<{
             conditions={conditions}
             layout={gatedLayout}
             slug={slug}
+            pageLayout={layout}
           />
         </AuthMainLayout>
       </SessionProvider>
@@ -49,7 +63,7 @@ const CustomPage: NextPage<{
 
   return (
     <MainLayout disablePadding>
-      <SectionsRenderer sections={sections} />
+      <SectionsRenderer sections={sections} layout={layout} />
     </MainLayout>
   );
 };
@@ -87,6 +101,7 @@ export const getStaticProps: GetStaticProps = async ({
         isProtected: true,
         sections: [],
         result: false,
+        layout: homePage.layout,
         conditions: homePage?.gatedConditions,
         gatedLayout: homePage?.gatedPageLayout,
         site: params?.site,
@@ -157,6 +172,7 @@ export const getStaticProps: GetStaticProps = async ({
     props: {
       dehydratedState: dehydrate(queryClient),
       page: params?.page,
+      layout: homePage.layout,
       sections: sections,
       site: params?.site,
       ...configResponse,
